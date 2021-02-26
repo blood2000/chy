@@ -38,8 +38,11 @@ const user = {
       const password = userInfo.password
       const code = userInfo.code
       const uuid = userInfo.uuid
+      const app_code = userInfo.app_code
+      const app_version = userInfo.app_version
+      const oper_type = userInfo.oper_type
       return new Promise((resolve, reject) => {
-        login(username, password, code, uuid).then(res => {
+        login(username, password, code, uuid,app_code,app_version,oper_type).then(res => {
           let data = res.data
           setToken(data.access_token)
           commit('SET_TOKEN', data.access_token)
@@ -85,7 +88,7 @@ const user = {
         })
       })
     },
-    
+
     // 退出系统
     LogOut({ commit, state }) {
       return new Promise((resolve, reject) => {

@@ -64,3 +64,13 @@ export function delRole(roleId) {
     method: 'delete'
   })
 }
+
+// 查询参数列表
+export function producelist(query) {
+  return request({
+    url: '/system/produce/list',
+    method: 'get',
+    params: query
+  })
+}
+

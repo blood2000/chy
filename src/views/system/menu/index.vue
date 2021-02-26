@@ -62,16 +62,16 @@
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button size="mini" 
-            type="text" 
-            icon="el-icon-edit" 
+          <el-button size="mini"
+            type="text"
+            icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['system:menu:edit']"
           >修改</el-button>
-          <el-button 
-            size="mini" 
-            type="text" 
-            icon="el-icon-plus" 
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-plus"
             @click="handleAdd(scope.row)"
             v-hasPermi="['system:menu:add']"
           >新增</el-button>
@@ -101,6 +101,53 @@
               />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row :gutter="24">
+          <el-col :span="8">
+            <el-form-item label="产品">
+              <el-select v-model="form.produceCode"
+                         @change="changeProduce"
+                         placeholder="请选择产品">
+                <el-option
+                  v-for="item in produceList"
+                  :key="item.produceCode"
+                  :label="item.cnName"
+                  :value="item.produceCode"
+                  :disabled="item.disabled">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="应用">
+              <el-select v-model="form.appCode"
+                         @change="changeApplication"
+                         placeholder="请选择应用">
+                <el-option
+                  v-for="item in appList"
+                  :key="item.appCode"
+                  :label="item.cnName"
+                  :value="item.appCode"
+                  :disabled="item.disabled">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="版本">
+              <el-select v-model="form.versionCode" placeholder="请选择版本">
+                <el-option
+                  v-for="item in appVersionList"
+                  :key="item.code"
+                  :label="item.version"
+                  :value="item.code"
+                  :disabled="item.disabled">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="24">
             <el-form-item label="菜单类型" prop="menuType">
               <el-radio-group v-model="form.menuType">
@@ -207,6 +254,9 @@
 
 <script>
 import { listMenu, getMenu, delMenu, addMenu, updateMenu } from "@/api/system/menu";
+import { listProduce } from "@/api/system/produce";
+import { listApplication } from "@/api/system/application";
+import { listAppVersion } from "@/api/system/appVersion";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import IconSelect from "@/components/IconSelect";
@@ -237,6 +287,12 @@ export default {
         menuName: undefined,
         visible: undefined
       },
+      // 产品列表
+      produceList:[],
+      //应用列表
+      appList:[],
+      //版本列表
+      appVersionList:[],
       // 表单参数
       form: {},
       // 表单校验
@@ -261,8 +317,33 @@ export default {
     this.getDicts("sys_normal_disable").then(response => {
       this.statusOptions = response.data;
     });
+    this.getProduceList();
   },
   methods: {
+    /** 产品列表**/
+    getProduceList(){
+      listProduce().then(response =>{
+        this.produceList = response.data;
+      });
+    },
+    changeProduce(e){
+        this.getApplicationList({produceCode:e});
+    },
+    /** 应用列表 **/
+    getApplicationList(data){
+      listApplication(data).then(response =>{
+        this.appList = response.data;
+      });
+    },
+    changeApplication(e){
+      this.getAppVersionList({appCode:e});
+    },
+    /** 版本列表**/
+    getAppVersionList(data){
+      listAppVersion(data).then(response=>{
+        this.appVersionList = response.data;
+      });
+    },
     // 选择图标
     selected(name) {
       this.form.icon = name;
@@ -318,6 +399,9 @@ export default {
     reset() {
       this.form = {
         menuId: undefined,
+        produceCode:undefined,
+        appCode:undefined,
+        versionCode:undefined,
         parentId: 0,
         menuName: undefined,
         icon: undefined,

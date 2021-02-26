@@ -67,6 +67,9 @@ export default {
       loginForm: {
         username: "admin",
         password: "admin123",
+        app_version:'2.0',
+        app_code:'3f78fbfc13b14fa4b3d78665124ef4bb',
+        oper_type:'1',
         rememberMe: false,
         code: "",
         uuid: ""
@@ -110,7 +113,10 @@ export default {
       this.loginForm = {
         username: username === undefined ? this.loginForm.username : username,
         password: password === undefined ? this.loginForm.password : decrypt(password),
-        rememberMe: rememberMe === undefined ? false : Boolean(rememberMe)
+        rememberMe: rememberMe === undefined ? false : Boolean(rememberMe),
+        app_code:this.loginForm.app_code,
+        app_version:this.loginForm.app_version,
+        oper_type:this.loginForm.oper_type
       };
     },
     handleLogin() {
@@ -121,10 +127,16 @@ export default {
             Cookies.set("username", this.loginForm.username, { expires: 30 });
             Cookies.set("password", encrypt(this.loginForm.password), { expires: 30 });
             Cookies.set('rememberMe', this.loginForm.rememberMe, { expires: 30 });
+            Cookies.set('app_code', this.loginForm.app_code, { expires: 30 });
+            Cookies.set('app_version', this.loginForm.app_version, { expires: 30 });
+            Cookies.set('oper_type', this.loginForm.oper_type, { expires: 30 });
           } else {
             Cookies.remove("username");
             Cookies.remove("password");
             Cookies.remove('rememberMe');
+            Cookies.remove("app_code");
+            Cookies.remove("app_version");
+            Cookies.remove('oper_type');
           }
           this.$store.dispatch("Login", this.loginForm).then(() => {
             this.$router.push({ path: this.redirect || "/" }).catch(()=>{});

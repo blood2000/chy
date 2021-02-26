@@ -6,7 +6,7 @@
         <div class="head-container">
           <el-input
             v-model="deptName"
-            placeholder="请输入部门名称"
+            placeholder="请输入组织名称"
             clearable
             size="small"
             prefix-icon="el-icon-search"
@@ -64,7 +64,7 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="创建时间">
+          <el-form-item label="创建时间" prop="dateRange">
             <el-date-picker
               v-model="dateRange"
               size="small"
@@ -138,7 +138,7 @@
           <el-table-column label="用户编号" align="center" prop="userId" />
           <el-table-column label="用户名称" align="center" prop="userName" :show-overflow-tooltip="true" />
           <el-table-column label="用户昵称" align="center" prop="nickName" :show-overflow-tooltip="true" />
-          <el-table-column label="部门" align="center" prop="dept.deptName" :show-overflow-tooltip="true" />
+          <el-table-column label="组织" align="center" prop="dept.orgName" :show-overflow-tooltip="true" />
           <el-table-column label="手机号码" align="center" prop="phonenumber" width="120" />
           <el-table-column label="状态" align="center">
             <template slot-scope="scope">
@@ -208,8 +208,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="归属部门" prop="deptId">
-              <treeselect v-model="form.deptId" :options="deptOptions" :show-count="true" placeholder="请选择归属部门" />
+            <el-form-item label="归属组织" prop="orgCode">
+              <treeselect v-model="form.orgCode" :options="deptOptions" :show-count="true" placeholder="请选择归属组织" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -263,7 +263,7 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="12">
+        <!--  <el-col :span="12">
             <el-form-item label="岗位">
               <el-select v-model="form.postIds" multiple placeholder="请选择">
                 <el-option
@@ -275,15 +275,15 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-          </el-col>
+          </el-col>-->
           <el-col :span="12">
             <el-form-item label="角色">
-              <el-select v-model="form.roleIds" multiple placeholder="请选择">
+              <el-select v-model="form.roleCodes" multiple placeholder="请选择">
                 <el-option
                   v-for="item in roleOptions"
-                  :key="item.roleId"
+                  :key="item.roleCode"
                   :label="item.roleName"
-                  :value="item.roleId"
+                  :value="item.roleCode"
                   :disabled="item.status == 1"
                 ></el-option>
               </el-select>
@@ -484,7 +484,7 @@ export default {
     },
     // 节点单击事件
     handleNodeClick(data) {
-      this.queryParams.deptId = data.id;
+      this.queryParams.orgCode = data.code;
       this.getList();
     },
     // 用户状态修改
@@ -511,7 +511,7 @@ export default {
     reset() {
       this.form = {
         userId: undefined,
-        deptId: undefined,
+        orgCode: undefined,
         userName: undefined,
         nickName: undefined,
         password: undefined,
@@ -521,7 +521,7 @@ export default {
         status: "0",
         remark: undefined,
         postIds: [],
-        roleIds: []
+        roleCodes: []
       };
       this.resetForm("form");
     },
@@ -564,7 +564,7 @@ export default {
         this.postOptions = response.posts;
         this.roleOptions = response.roles;
         this.form.postIds = response.postIds;
-        this.form.roleIds = response.roleIds;
+        this.form.roleCodes = response.roleCodes;
         this.open = true;
         this.title = "修改用户";
         this.form.password = "";
@@ -592,6 +592,7 @@ export default {
               this.getList();
             });
           } else {
+            console.log(this.form);
             addUser(this.form).then(response => {
               this.msgSuccess("新增成功");
               this.open = false;

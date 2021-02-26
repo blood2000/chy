@@ -37,7 +37,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="创建时间">
+      <el-form-item label="创建时间" prop="dateRange">
         <el-date-picker
           v-model="dateRange"
           size="small"
@@ -99,7 +99,8 @@
 
     <el-table v-loading="loading" :data="roleList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="角色编号" prop="roleId" width="120" />
+    <!--  <el-table-column label="角色编号" prop="roleId" width="120" />-->
+      <el-table-column label="所属产品" prop="produceName" width="120" />
       <el-table-column label="角色名称" prop="roleName" :show-overflow-tooltip="true" width="150" />
       <el-table-column label="权限字符" prop="roleKey" :show-overflow-tooltip="true" width="150" />
       <el-table-column label="显示顺序" prop="roleSort" width="100" />
@@ -156,6 +157,16 @@
     <!-- 添加或修改角色配置对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <el-form-item label="所属产品" prop="produceCode">
+          <el-select v-model="form.produceCode" clearable placeholder="请选择所属产品"  style="width: 380px">
+            <el-option
+              v-for="item in produceList"
+              :key="item.produceCode"
+              :label="item.cnName"
+              :value="item.produceCode">
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="角色名称" prop="roleName">
           <el-input v-model="form.roleName" placeholder="请输入角色名称" />
         </el-form-item>
@@ -183,7 +194,7 @@
             :data="menuOptions"
             show-checkbox
             ref="menu"
-            node-key="id"
+            node-key="code"
             :check-strictly="!form.menuCheckStrictly"
             empty-text="加载中，请稍后"
             :props="defaultProps"
@@ -228,7 +239,7 @@
             show-checkbox
             default-expand-all
             ref="dept"
-            node-key="id"
+            node-key="code"
             :check-strictly="!form.deptCheckStrictly"
             empty-text="加载中，请稍后"
             :props="defaultProps"
@@ -244,7 +255,7 @@
 </template>
 
 <script>
-import { listRole, getRole, delRole, addRole, updateRole, dataScope, changeRoleStatus } from "@/api/system/role";
+import { listRole, getRole, delRole, addRole, updateRole, dataScope, changeRoleStatus,producelist } from "@/api/system/role";
 import { treeselect as menuTreeselect, roleMenuTreeselect } from "@/api/system/menu";
 import { treeselect as deptTreeselect, roleDeptTreeselect } from "@/api/system/dept";
 
@@ -307,6 +318,8 @@ export default {
       menuOptions: [],
       // 部门列表
       deptOptions: [],
+      //产品列表
+      produceList:[],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -323,6 +336,9 @@ export default {
       },
       // 表单校验
       rules: {
+        produceCode:[
+          { required: true, message: "所属产品不能为空", trigger: "change" }
+        ],
         roleName: [
           { required: true, message: "角色名称不能为空", trigger: "blur" }
         ],
@@ -342,6 +358,11 @@ export default {
     });
   },
   methods: {
+    getProduceList(){
+      producelist().then( response => {
+        this.produceList = response.data;
+      });
+    },
     /** 查询角色列表 */
     getList() {
       this.loading = true;
@@ -434,11 +455,13 @@ export default {
       this.form = {
         roleId: undefined,
         roleName: undefined,
+        produceCode:undefined,
         roleKey: undefined,
         roleSort: 0,
         status: "0",
-        menuIds: [],
-        deptIds: [],
+        menuCodes:[],
+      /*  menuIds: [],*/
+        orgCodes: [],
 		menuCheckStrictly: true,
 		deptCheckStrictly: true,
         remark: undefined
@@ -496,6 +519,7 @@ export default {
     handleAdd() {
       this.reset();
       this.getMenuTreeselect();
+      this.getProduceList();
       this.open = true;
       this.title = "添加角色";
     },
@@ -504,6 +528,7 @@ export default {
       this.reset();
       const roleId = row.roleId || this.ids
       const roleMenu = this.getRoleMenuTreeselect(roleId);
+      this.getProduceList();
       getRole(roleId).then(response => {
         this.form = response.data;
         this.open = true;
@@ -535,14 +560,14 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.roleId != undefined) {
-            this.form.menuIds = this.getMenuAllCheckedKeys();
+            this.form.menuCodes = this.getMenuAllCheckedKeys();
             updateRole(this.form).then(response => {
               this.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            this.form.menuIds = this.getMenuAllCheckedKeys();
+            this.form.menuCodes = this.getMenuAllCheckedKeys();
             addRole(this.form).then(response => {
               this.msgSuccess("新增成功");
               this.open = false;
@@ -555,7 +580,7 @@ export default {
     /** 提交按钮（数据权限） */
     submitDataScope: function() {
       if (this.form.roleId != undefined) {
-        this.form.deptIds = this.getDeptAllCheckedKeys();
+        this.form.orgCodes = this.getDeptAllCheckedKeys();
         dataScope(this.form).then(response => {
           this.msgSuccess("修改成功");
           this.openDataScope = false;

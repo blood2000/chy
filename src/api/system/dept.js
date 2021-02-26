@@ -18,9 +18,9 @@ export function listDeptExcludeChild(deptId) {
 }
 
 // 查询部门详细
-export function getDept(deptId) {
+export function getDept(orgId) {
   return request({
-    url: '/system/dept/' + deptId,
+    url: '/system/dept/' + orgId,
     method: 'get'
   })
 }
