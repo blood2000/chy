@@ -38,11 +38,12 @@ const user = {
       const password = userInfo.password
       const code = userInfo.code
       const uuid = userInfo.uuid
+      const produce_code = userInfo.produce_code
       const app_code = userInfo.app_code
       const app_version = userInfo.app_version
-      const oper_type = userInfo.oper_type
+      const terminal_type = userInfo.terminal_type
       return new Promise((resolve, reject) => {
-        login(username, password, code, uuid,app_code,app_version,oper_type).then(res => {
+        login(username, password, code, uuid,produce_code,app_code,app_version,terminal_type).then(res => {
           let data = res.data
           setToken(data.access_token)
           commit('SET_TOKEN', data.access_token)
