@@ -67,10 +67,10 @@ export default {
       loginForm: {
         username: "admin",
         password: "admin123",
-        app_version:'2.0',
-        produce_code:'776ca8e240574192b6e0f69b417163df',
-        app_code:'3f78fbfc13b14fa4b3d78665124ef4bb',
-        terminal_type:1,
+        appVersion:'2.0',
+        produceCode:'776ca8e240574192b6e0f69b417163df',
+        appCode:'3f78fbfc13b14fa4b3d78665124ef4bb',
+        terminalType:1,
         rememberMe: false,
         code: "",
         uuid: ""
@@ -115,10 +115,10 @@ export default {
         username: username === undefined ? this.loginForm.username : username,
         password: password === undefined ? this.loginForm.password : decrypt(password),
         rememberMe: rememberMe === undefined ? false : Boolean(rememberMe),
-        produce_code:this.loginForm.produce_code,
-        app_code:this.loginForm.app_code,
-        app_version:this.loginForm.app_version,
-        terminal_type:this.loginForm.terminal_type
+        produceCode:this.loginForm.produceCode,
+        appCode:this.loginForm.appCode,
+        appVersion:this.loginForm.appVersion,
+        terminalType:this.loginForm.terminalType
       };
     },
     handleLogin() {
@@ -129,18 +129,18 @@ export default {
             Cookies.set("username", this.loginForm.username, { expires: 30 });
             Cookies.set("password", encrypt(this.loginForm.password), { expires: 30 });
             Cookies.set('rememberMe', this.loginForm.rememberMe, { expires: 30 });
-            Cookies.set('produce_code', this.loginForm.produce_code, { expires: 30 });
-            Cookies.set('app_code', this.loginForm.app_code, { expires: 30 });
-            Cookies.set('app_version', this.loginForm.app_version, { expires: 30 });
-            Cookies.set('terminal_type', this.loginForm.terminal_type, { expires: 30 });
+            Cookies.set('produceCode', this.loginForm.produceCode, { expires: 30 });
+            Cookies.set('appCode', this.loginForm.appCode, { expires: 30 });
+            Cookies.set('appVersion', this.loginForm.appVersion, { expires: 30 });
+            Cookies.set('terminalType', this.loginForm.terminalType, { expires: 30 });
           } else {
             Cookies.remove("username");
             Cookies.remove("password");
             Cookies.remove('rememberMe');
-            Cookies.remove("produce_code");
-            Cookies.remove("app_code");
-            Cookies.remove("app_version");
-            Cookies.remove('terminal_type');
+            Cookies.remove("produceCode");
+            Cookies.remove("appCode");
+            Cookies.remove("appVersion");
+            Cookies.remove('terminalType');
           }
           this.$store.dispatch("Login", this.loginForm).then(() => {
             this.$router.push({ path: this.redirect || "/" }).catch(()=>{});
