@@ -42,8 +42,9 @@ const user = {
       const appCode = userInfo.appCode
       const appVersion = userInfo.appVersion
       const terminalType = userInfo.terminalType
+      const telno = userInfo.telno
       return new Promise((resolve, reject) => {
-        login(username, password, code, uuid,produceCode,appCode,appVersion,terminalType).then(res => {
+        login(username, password, code, uuid,produceCode,appCode,appVersion,terminalType,telno).then(res => {
           let data = res.data
           setToken(data.access_token)
           commit('SET_TOKEN', data.access_token)

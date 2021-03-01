@@ -70,7 +70,8 @@ export default {
         appVersion:'2.0',
         produceCode:'776ca8e240574192b6e0f69b417163df',
         appCode:'3f78fbfc13b14fa4b3d78665124ef4bb',
-        terminalType:1,
+        telno:'',
+        terminalType:2,
         rememberMe: false,
         code: "",
         uuid: ""
@@ -115,6 +116,7 @@ export default {
         username: username === undefined ? this.loginForm.username : username,
         password: password === undefined ? this.loginForm.password : decrypt(password),
         rememberMe: rememberMe === undefined ? false : Boolean(rememberMe),
+        telno:this.loginForm.telno,
         produceCode:this.loginForm.produceCode,
         appCode:this.loginForm.appCode,
         appVersion:this.loginForm.appVersion,
