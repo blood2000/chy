@@ -5,6 +5,7 @@ import { getToken } from '@/utils/auth'
 import errorCode from '@/utils/errorCode'
 import { tansParams } from "@/utils/ddc";
 
+
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 // 创建axios实例
 const service = axios.create({
@@ -14,10 +15,39 @@ const service = axios.create({
   timeout: 10000
 })
 
+// const contentType='application/json';
+const produceCode='776ca8e240574192b6e0f69b417163df';//产品编码
+const appCode='3f78fbfc13b14fa4b3d78665124ef4bb';//应用编码
+const appVersion='2.0';//应用版本
+const terminalType=2;//终端类别（0其它 1:app 2:web 3:微信小程序）
+const terminalDeviceBrand='1';//手机厂商-app
+const terminalSystemModel='2';//手机型号-app
+const terminalSystemVersion='3';//系统版本号-app
+const terminalIMEI='4';//MEI（国际移动设备识别码）-app
+
 // request拦截器
 service.interceptors.request.use(config => {
   // 是否需要设置 token
   const isToken = (config.headers || {}).isToken === false
+
+  //header添加其他信息
+  //产品编码
+  config.headers['Produce-Code'] = produceCode;
+  //应用编码
+  config.headers['App-Code'] = appCode;
+  //应用版本
+  config.headers['App-Version'] = appVersion;
+  //终端类型
+  config.headers['Terminal-Type'] = terminalType;
+  //手机厂商-app
+  config.headers['Terminal-Device-Brand'] = terminalDeviceBrand;
+  //手机型号-app
+  config.headers['Terminal-System-Model'] = terminalSystemModel;
+  //系统版本号-app
+  config.headers['Terminal-System-Version'] = terminalSystemVersion;
+  //IMEI（国际移动设备识别码）-app
+  config.headers['Terminal-IMEI'] = terminalIMEI;
+
   if (getToken() && !isToken) {
     config.headers['Authorization'] = 'Bearer ' + getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
   }
