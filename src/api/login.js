@@ -5,11 +5,11 @@ const client_secret = '123456'
 const scope = 'server'
 
 // 登录方法
-export function login(username, password, code, uuid,telno) {
+export function login(username, password, code, uuid) {
   return request({
     url: '/auth/login',
     method: 'post',
-    data: { username, password, code, uuid ,telno}
+    data: { username, password, code, uuid}
   })
 }
 

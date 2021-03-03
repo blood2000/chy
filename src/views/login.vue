@@ -67,7 +67,6 @@ export default {
       loginForm: {
         username: "admin",
         password: "admin123",
-        telno:'',
         rememberMe: false,
         code: "",
         uuid: ""
@@ -111,8 +110,7 @@ export default {
       this.loginForm = {
         username: username === undefined ? this.loginForm.username : username,
         password: password === undefined ? this.loginForm.password : decrypt(password),
-        rememberMe: rememberMe === undefined ? false : Boolean(rememberMe),
-        telno:this.loginForm.telno
+        rememberMe: rememberMe === undefined ? false : Boolean(rememberMe)
       };
     },
     handleLogin() {

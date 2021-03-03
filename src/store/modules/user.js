@@ -38,9 +38,8 @@ const user = {
       const password = userInfo.password
       const code = userInfo.code
       const uuid = userInfo.uuid
-      const telno = userInfo.telno
       return new Promise((resolve, reject) => {
-        login(username, password, code, uuid,telno).then(res => {
+        login(username, password, code, uuid).then(res => {
           let data = res.data
           setToken(data.access_token)
           commit('SET_TOKEN', data.access_token)
