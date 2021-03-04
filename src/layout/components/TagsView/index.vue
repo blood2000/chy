@@ -1,6 +1,7 @@
 <template>
   <div id="tags-view-container" class="tags-view-container">
-    <scroll-pane ref="scrollPane" class="tags-view-wrapper" @scroll="handleScroll">
+    <!-- <scroll-pane ref="scrollPane" class="tags-view-wrapper" @scroll="handleScroll"> -->
+    <div ref="scrollPane" class="tags-view-wrapper">
       <router-link
         v-for="tag in visitedViews"
         ref="tag"
@@ -16,7 +17,7 @@
         {{ tag.title }}
         <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
       </router-link>
-    </scroll-pane>
+    </div>
     <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
       <li @click="refreshSelectedTag(selectedTag)">刷新页面</li>
       <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">关闭当前</li>
@@ -125,7 +126,7 @@ export default {
       this.$nextTick(() => {
         for (const tag of tags) {
           if (tag.to.path === this.$route.path) {
-            this.$refs.scrollPane.moveToTarget(tag)
+            // this.$refs.scrollPane.moveToTarget(tag)
             // when query is different then update
             if (tag.to.fullPath !== this.$route.fullPath) {
               this.$store.dispatch('tagsView/updateVisitedView', this.$route)
@@ -210,44 +211,55 @@ export default {
 
 <style lang="scss" scoped>
 .tags-view-container {
-  height: 34px;
-  width: 100%;
+  float: left;
+  height: 40px;
+  width: calc(100% - 360px);
+  margin-top: 20px;
   background: #fff;
-  border-bottom: 1px solid #d8dce5;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
+  border-radius: 8px 8px 0px 0px;
   .tags-view-wrapper {
     .tags-view-item {
       display: inline-block;
       position: relative;
       cursor: pointer;
-      height: 26px;
-      line-height: 26px;
-      border: 1px solid #d8dce5;
-      color: #495060;
+      height: 40px;
+      line-height: 40px;
+      color: #666666;
       background: #fff;
-      padding: 0 8px;
-      font-size: 12px;
-      margin-left: 5px;
-      margin-top: 4px;
-      &:first-of-type {
-        margin-left: 15px;
+      padding: 0 10px 0 14px;
+      font-size: 14px;
+      border-radius: 8px 8px 0px 0px;
+      &:not(:first-child){
+        &::before{
+          content: '|';
+          position: absolute;
+          left: -1px;
+          top: -1px;
+          color: #CCCCCC;
+          font-size: 14px;
+        }
       }
-      &:last-of-type {
-        margin-right: 15px;
+      &:last-child{
+        &::after{
+          content: '|';
+          position: absolute;
+          right: -1px;
+          top: -1px;
+          color: #CCCCCC;
+          font-size: 14px;
+        }
       }
       &.active {
         background-color: #42b983;
         color: #fff;
         border-color: #42b983;
-        &::before {
-          content: '';
-          background: #fff;
-          display: inline-block;
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          position: relative;
-          margin-right: 2px;
+        &::before, &::after{
+          opacity: 0;
+        }
+        &+span{
+          &::before{
+            opacity: 0;
+          }
         }
       }
     }
@@ -283,15 +295,15 @@ export default {
     .el-icon-close {
       width: 16px;
       height: 16px;
-      vertical-align: 2px;
+      vertical-align: 1px;
       border-radius: 50%;
       text-align: center;
       transition: all .3s cubic-bezier(.645, .045, .355, 1);
       transform-origin: 100% 50%;
       &:before {
-        transform: scale(.6);
+        transform: scale(.8);
         display: inline-block;
-        vertical-align: -3px;
+        vertical-align: -1px;
       }
       &:hover {
         background-color: #b4bccc;

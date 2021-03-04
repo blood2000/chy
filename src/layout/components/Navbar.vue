@@ -2,7 +2,7 @@
   <div class="navbar">
     <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
-    <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
+    <tags-view v-if="needTagsView" />
 
     <div class="right-menu">
       <template v-if="device!=='mobile'">
@@ -42,8 +42,9 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { mapGetters } from 'vuex'
-import Breadcrumb from '@/components/Breadcrumb'
+import TagsView from './TagsView/index'
 import Hamburger from '@/components/Hamburger'
 import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
@@ -52,7 +53,7 @@ import DdcYiDoc from '@/components/Ddc/Doc'
 
 export default {
   components: {
-    Breadcrumb,
+    TagsView,
     Hamburger,
     Screenfull,
     SizeSelect,
@@ -60,6 +61,9 @@ export default {
     DdcYiDoc
   },
   computed: {
+    ...mapState({
+      needTagsView: state => state.settings.tagsView,
+    }),
     ...mapGetters([
       'sidebar',
       'avatar',
@@ -98,14 +102,14 @@ export default {
 
 <style lang="scss" scoped>
 .navbar {
-  height: 50px;
+  height: 60px;
   overflow: hidden;
   position: relative;
-  background: #fff;
+  background: rgb(48, 65, 86);
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
 
   .hamburger-container {
-    line-height: 46px;
+    line-height: 58px;
     height: 100%;
     float: left;
     cursor: pointer;
@@ -117,10 +121,6 @@ export default {
     }
   }
 
-  .breadcrumb-container {
-    float: left;
-  }
-
   .errLog-container {
     display: inline-block;
     vertical-align: top;
@@ -129,7 +129,11 @@ export default {
   .right-menu {
     float: right;
     height: 100%;
-    line-height: 50px;
+    line-height: 60px;
+    
+    ::v-deep .svg-icon {
+      fill: #fff;
+    }
 
     &:focus {
       outline: none;
@@ -157,7 +161,7 @@ export default {
       margin-right: 30px;
 
       .avatar-wrapper {
-        margin-top: 5px;
+        margin-top: 10px;
         position: relative;
 
         .user-avatar {
