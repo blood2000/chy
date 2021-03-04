@@ -213,7 +213,7 @@ export default {
 .tags-view-container {
   float: left;
   height: 40px;
-  width: calc(100% - 360px);
+  width: calc(100% - 400px);
   margin-top: 20px;
   background: #fff;
   border-radius: 8px 8px 0px 0px;
