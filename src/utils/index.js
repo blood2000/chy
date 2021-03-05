@@ -388,3 +388,26 @@ export function isNumberStr(str) {
   return /^[+-]?(0|([1-9]\d*))(\.\d+)?$/g.test(str)
 }
 
+// 节流
+export function ThrottleFun(callback, time){
+  let canFlag = true;
+  return function(){
+      if (!canFlag) return;
+      canFlag = false;
+      setTimeout(function(){
+          canFlag = true;
+          callback();
+      }, time)
+  }
+}
+
+// 防抖
+export function DebounceFun(callback, time){
+  var timer;
+  return function(){
+      clearTimeout(timer);
+      timer = setTimeout(function(){
+          callback();
+      }, time);
+  }
+}

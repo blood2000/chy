@@ -49,6 +49,7 @@
 
 <script>
 import path from 'path'
+import { ThrottleFun } from '@/utils/index.js'
 export default {
   data() {
     return {
@@ -90,6 +91,14 @@ export default {
   mounted() {
     this.initTags()
     this.addTags()
+    this.tagsOverflow()
+    let throttle = ThrottleFun(this.tagsOverflow, 300)
+    window.onresize = () => {
+      throttle()
+    }
+  },
+  beforeDestroy() {
+    window.onresize = null
   },
   methods: {
     isActive(route) {
@@ -233,10 +242,8 @@ export default {
       this.closeMenu()
     },
     tagsOverflow() {
-      const _this = this
       const $ContainerWidth = this.$refs.TagsViewContainer.offsetWidth
       const $TagsCount = this.visitedViews.length
-      const tagList = this.$refs.tag
 
       // 100: The width of a tag
       if ($TagsCount * 100 > $ContainerWidth) {
