@@ -108,10 +108,10 @@ export default {
   }
 
   .breadcrumb-container {
-      height: 34px;
-      width: 100%;
-      background: #fff;
-      border-bottom: 1px solid #d8dce5;
-      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
+      height: 40px;
+      background: #FFFFFF;
+      box-shadow: 0px 2px 3px 0px rgba(51, 153, 255, 0.1);
+      border-radius: 2px;
+      margin: 15px;
   }
 </style>
