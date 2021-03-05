@@ -94,6 +94,7 @@ export default {
     this.tagsOverflow()
     let throttle = ThrottleFun(this.tagsOverflow, 300)
     window.onresize = () => {
+      this.$refs.TagsDerpDown.hide()
       throttle()
     }
   },
@@ -245,9 +246,9 @@ export default {
       const $ContainerWidth = this.$refs.TagsViewContainer.offsetWidth
       const $TagsCount = this.visitedViews.length
 
-      // 100: The width of a tag
-      if ($TagsCount * 100 > $ContainerWidth) {
-        let index = parseInt($ContainerWidth / 100)
+      // 100: The width of a tag  44: The width of a arrow
+      if ($TagsCount * 100 + 44 > $ContainerWidth) {
+        let index = Math.floor(($ContainerWidth - 44) / 100)
         this.overflowTagsList = this.visitedViews.slice(index)
       } else {
         this.overflowTagsList = []
