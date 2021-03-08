@@ -138,9 +138,9 @@
               <el-select v-model="form.versionCode" placeholder="请选择版本">
                 <el-option
                   v-for="item in appVersionList"
-                  :key="item.code"
+                  :key="item.appVersionCode"
                   :label="item.version"
-                  :value="item.code"
+                  :value="item.appVersionCode"
                   :disabled="item.disabled">
                 </el-option>
               </el-select>
