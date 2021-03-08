@@ -1,7 +1,6 @@
 <template>
-  <div id="tags-view-container" class="tags-view-container">
-    <!-- <scroll-pane ref="scrollPane" class="tags-view-wrapper" @scroll="handleScroll"> -->
-    <div ref="scrollPane" class="tags-view-wrapper">
+  <div ref="TagsViewContainer" id="tags-view-container" class="tags-view-container">
+    <div class="tags-view-wrapper">
       <router-link
         v-for="tag in visitedViews"
         ref="tag"
@@ -19,12 +18,13 @@
       </router-link>
     </div>
 
-    <el-dropdown class="btn-arrow-container" trigger="click">
+    <el-dropdown ref="TagsDerpDown" class="btn-arrow-container" trigger="click">
       <div class="btn-arrow el-icon-arrow-down"></div>
       <el-dropdown-menu slot="dropdown" class="tags-dropdown">
-        <router-link 
-          v-for="tag in visitedViews"
+        <router-link
+          v-for="tag in overflowTagsList"
           :key="tag.path"
+          :class="isActive(tag)?'tags-dropdown-item-active':''"
           :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }"
           @click.middle.native="!isAffix(tag)?closeSelectedTag(tag):''"
           @contextmenu.prevent.native="openMenu(tag,$event)"
@@ -34,6 +34,7 @@
             <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
           </el-dropdown-item>
         </router-link>
+        <el-dropdown-item disabled v-show="overflowTagsList.length==0">暂无更多</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
 
@@ -47,18 +48,17 @@
 </template>
 
 <script>
-import ScrollPane from './ScrollPane'
 import path from 'path'
-
+import { ThrottleFun } from '@/utils/index.js'
 export default {
-  components: { ScrollPane },
   data() {
     return {
       visible: false,
       top: 0,
       left: 0,
       selectedTag: {},
-      affixTags: []
+      affixTags: [],
+      overflowTagsList: []
     }
   },
   computed: {
@@ -76,6 +76,9 @@ export default {
     $route() {
       this.addTags()
       this.moveToCurrentTag()
+      this.$nextTick(() => {
+        this.tagsOverflow()
+      })
     },
     visible(value) {
       if (value) {
@@ -88,6 +91,15 @@ export default {
   mounted() {
     this.initTags()
     this.addTags()
+    this.tagsOverflow()
+    let throttle = ThrottleFun(this.tagsOverflow, 300)
+    window.onresize = () => {
+      this.$refs.TagsDerpDown.hide()
+      throttle()
+    }
+  },
+  beforeDestroy() {
+    window.onresize = null
   },
   methods: {
     isActive(route) {
@@ -145,7 +157,6 @@ export default {
       this.$nextTick(() => {
         for (const tag of tags) {
           if (tag.to.path === this.$route.path) {
-            // this.$refs.scrollPane.moveToTarget(tag)
             // when query is different then update
             if (tag.to.fullPath !== this.$route.fullPath) {
               this.$store.dispatch('tagsView/updateVisitedView', this.$route)
@@ -171,6 +182,13 @@ export default {
           this.toLastView(visitedViews, view)
         }
       })
+      this.$nextTick(() => {
+        this.tagsOverflow()
+        if(this.overflowTagsList.length === 0){
+          this.$refs.TagsDerpDown.hide() 
+        }
+      })
+      
     },
     closeOthersTags() {
       this.$router.push(this.selectedTag)
@@ -223,6 +241,18 @@ export default {
     },
     handleScroll() {
       this.closeMenu()
+    },
+    tagsOverflow() {
+      const $ContainerWidth = this.$refs.TagsViewContainer.offsetWidth
+      const $TagsCount = this.visitedViews.length
+
+      // 100: The width of a tag  44: The width of a arrow
+      if ($TagsCount * 100 + 44 > $ContainerWidth) {
+        let index = Math.floor(($ContainerWidth - 44) / 100)
+        this.overflowTagsList = this.visitedViews.slice(index)
+      } else {
+        this.overflowTagsList = []
+      }
     }
   }
 }
@@ -233,7 +263,7 @@ export default {
   float: left;
   height: 40px;
   width: calc(100% - 600px);
-  min-width: 600px;
+  min-width: 650px;
   margin-top: 20px;
   background: #fff;
   border-radius: 8px 8px 0px 0px;
@@ -243,6 +273,7 @@ export default {
     position: relative;
     max-width: calc(100% - 44px);
     .tags-view-item {
+      width: 100px;
       display: inline-block;
       position: relative;
       cursor: pointer;
@@ -359,8 +390,26 @@ export default {
     }
   }
 }
-.tags-dropdown{
-  .el-icon-close{
+.tags-dropdown {
+  .tags-dropdown-item-active {
+    position: relative;
+    .el-dropdown-menu__item {
+      color: #409eff;
+      background: rgba(64, 158, 255, 0.1);
+    }
+    // &::after {
+    //   position: absolute;
+    //   top: 0;
+    //   left: 0;
+    //   right: 0;
+    //   bottom: 0;
+    //   content: '';
+    //   pointer-events: none;
+    //   background: $theme;
+    //   opacity: 0.1;
+    // }
+  }
+  .el-icon-close {
     margin-left: 6px;
     @include tag-icon-close
   }
