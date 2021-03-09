@@ -84,10 +84,22 @@
           v-hasPermi="['system:logininfor:export']"
         >导出</el-button>
       </el-col>
+      <el-col :span="1.5">
+        <tablec-cascader :options='options' v-model="tableColumnsConfig"></tablec-cascader>
+      </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="list" @selection-change="handleSelectionChange">
+    <RefactorTable :loading='loading' :data='list' :tableColumnsConfig='tableColumnsConfig' @selection-change="handleSelectionChange">
+      <template #status="{row}">
+          <span>{{statusFormat(row)}}</span>
+      </template>
+      <template #accessTime="{row}">
+          <span>{{ parseTime(row.accessTime) }}</span>
+      </template>
+    </RefactorTable>
+
+    <!-- <el-table v-loading="loading" :data="list" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="访问编号" align="center" prop="infoId" />
       <el-table-column label="用户名称" align="center" prop="userName" />
@@ -99,7 +111,7 @@
           <span>{{ parseTime(scope.row.accessTime) }}</span>
         </template>
       </el-table-column>
-    </el-table>
+    </el-table> -->
 
     <pagination
       v-show="total>0"
@@ -108,14 +120,20 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
+
+    
   </div>
 </template>
 
 <script>
 import { list, delLogininfor, cleanLogininfor } from "@/api/system/logininfor";
 
+
+
 export default {
   name: "Logininfor",
+
+
   data() {
     return {
       // 遮罩层
@@ -141,7 +159,47 @@ export default {
         ipaddr: undefined,
         userName: undefined,
         status: undefined
-      }
+      },
+
+      // 表头动态值
+      tableColumnsConfig:[],
+
+      // 下拉框展示所有的值-其中每一项就是配置项的值
+      options: [
+        {
+            prop: 'infoId',
+            label: '访问编号',
+            // width: ,
+            // align: 'center'
+        },
+        {
+            prop: 'userName',
+            label: '用户名称',
+            // width: ,
+            // align: 'center'
+        },{
+            prop: 'ipaddr',
+            label: '地址',
+            width: 130,
+            tooltip: true
+            // align: 'center'
+        },{
+            prop: 'status',
+            label: '状态'
+        },{
+            prop: 'msg',
+            label: '描述',
+            // width: ,
+            // align: 'center'
+        },{
+            prop: 'accessTime',
+            label: '访问时间',
+            width: 180,
+            // align: 'center'
+        }
+      ]
+
+
     };
   },
   created() {
@@ -149,6 +207,8 @@ export default {
     this.getDicts("sys_common_status").then(response => {
       this.statusOptions = response.data;
     });
+    // 这个可以做个判断如果有存则取存的东西, 没有就去全部
+    this.tableColumnsConfig = this.options
   },
   methods: {
     /** 查询登录日志列表 */
@@ -213,6 +273,10 @@ export default {
       this.download('system/logininfor/export', {
         ...this.queryParams
       }, `logininfor_${new Date().getTime()}.xlsx`)
+    },
+
+    handleChange(value){
+      this.tableColumnsConfig = value
     }
   }
 };

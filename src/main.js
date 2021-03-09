@@ -24,6 +24,9 @@ import RightToolbar from "@/components/RightToolbar"
 // 代码高亮插件
 import hljs from 'highlight.js'
 import 'highlight.js/styles/github-gist.css'
+// Tin添加2自定义组件
+import TablecCascader from '@/components/Ddc/Tin/TablecCascader.vue'
+import RefactorTable from '@/components/Ddc/Tin/RefactorTable.vue'
 
 // 全局方法挂载
 Vue.prototype.getDicts = getDicts
@@ -51,6 +54,8 @@ Vue.prototype.msgInfo = function (msg) {
 // 全局组件挂载
 Vue.component('Pagination', Pagination)
 Vue.component('RightToolbar', RightToolbar)
+Vue.component('RefactorTable', RefactorTable)
+Vue.component('TablecCascader', TablecCascader)
 
 Vue.use(permission)
 Vue.use(hljs.vuePlugin);
