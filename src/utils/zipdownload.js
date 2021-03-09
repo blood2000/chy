@@ -1,10 +1,19 @@
-import axios from 'axios'
+import axios from 'axios';
 import { getToken } from '@/utils/auth'
 
 const mimeMap = {
   xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   zip: 'application/zip'
 }
+
+const produceCode='776ca8e240574192b6e0f69b417163df';//产品编码
+const appCode='3f78fbfc13b14fa4b3d78665124ef4bb';//应用编码
+const appVersion='2.0';//应用版本
+const terminalType=2;//终端类别（0其它 1:app 2:web 3:微信小程序）
+const terminalDeviceBrand='1';//手机厂商-app
+const terminalSystemModel='2';//手机型号-app
+const terminalSystemVersion='3';//系统版本号-app
+const terminalIMEI='4';//MEI（国际移动设备识别码）-app
 
 const baseUrl = process.env.VUE_APP_BASE_API
 export function downLoadZip(str, filename) {
@@ -13,7 +22,13 @@ export function downLoadZip(str, filename) {
     method: 'get',
     url: url,
     responseType: 'blob',
-    headers: { 'Authorization': 'Bearer ' + getToken() }
+    headers: {
+      'Authorization': 'Bearer ' + getToken() ,
+      'Produce-Code': produceCode,
+      'App-Code': appCode,
+      'App-Version': appVersion,
+      'Terminal-Type': terminalType
+    }
   }).then(res => {
     resolveBlob(res, mimeMap.zip)
   })
