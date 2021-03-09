@@ -27,44 +27,118 @@
             <!-- 右边 -->
             <div>
                   <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="100px" class="clearfix">
-                    <el-form-item label="查询条件" prop="title">
-                      <el-select
-                        v-model="queryParams.businessType"
-                        placeholder="医院名称"
+                    <el-form-item label="下单客户" prop="testName">
+                        <el-input
+                        v-model="queryParams.testName"
+                        placeholder="请输入公司名称/客户姓名/手机号"
                         clearable
-                        size="small"
-                        style="width: 180px;margin-right:10px;"
-                      >
-                        <el-option
-                          v-for="dict in typeOptions"
-                          :key="dict.dictValue"
-                          :label="dict.dictLabel"
-                          :value="dict.dictValue"
-                        />
-                      </el-select>
-
-                      <el-input
-                        v-model="queryParams.title"
-                        placeholder="请输入相关条件"
-                        clearable
-                        style="width: 180px;"
                         size="small"
                         @keyup.enter.native="handleQuery"
-                      />
+                        />
                     </el-form-item>
 
-                    <el-form-item label="操作时间">
-                      <el-date-picker
-                        v-model="dateRange"
+                    <el-form-item label="转货信息" prop="testName1">
+                        <el-input
+                        v-model="queryParams.testName1"
+                        placeholder="装货地/装货电话/装货人"
+                        clearable
                         size="small"
-                        style="width: 240px"
+                        @keyup.enter.native="handleQuery"
+                        />
+                    </el-form-item>
+
+                    <el-form-item label="收货信息" prop="testName2">
+                        <el-input
+                        v-model="queryParams.testName2"
+                        placeholder="目的地/收货电话/收货人"
+                        clearable
+                        size="small"
+                        @keyup.enter.native="handleQuery"
+                        />
+                    </el-form-item>
+
+                    <el-form-item label="货物类型" prop="testName2">
+                        <el-select v-model="queryParams.testName3" placeholder="----请选择----" style="width: 215px">
+                        <el-option label="区域一" value="shanghai"></el-option>
+                        <el-option label="区域二" value="beijing"></el-option>
+                        </el-select>
+                    </el-form-item>
+
+                    <el-form-item label="货物描述" prop="testName2">
+                        <el-input
+                            v-model="queryParams.testName4"
+                            placeholder="目的地/收货电话/收货人"
+                            clearable
+                            size="small"
+                            @keyup.enter.native="handleQuery"
+                        />
+                    </el-form-item>
+
+                    <el-form-item label="货源单号" prop="testName2">
+                        <el-input
+                        v-model="queryParams.testName5"
+                        placeholder="目的地/收货电话/收货人"
+                        clearable
+                        size="small"
+                        @keyup.enter.native="handleQuery"
+                        />
+                    </el-form-item>
+
+                    <el-form-item label="订单状态" prop="testName2">
+                        <el-select v-model="queryParams.testName6" placeholder="----请选择----" style="width: 215px">
+                        <el-option label="区域一" value="shanghai"></el-option>
+                        <el-option label="区域二" value="beijing"></el-option>
+                        </el-select>
+                    </el-form-item>
+
+                    <el-form-item label="货源类型" prop="testName2">
+                        <el-select v-model="queryParams.testName7" placeholder="----请选择----" style="width: 215px">
+                        <el-option label="区域一" value="shanghai"></el-option>
+                        <el-option label="区域二" value="beijing"></el-option>
+                        </el-select>
+                    </el-form-item>
+
+                    <el-form-item label="是否拼单" prop="testName2">
+                        <el-select v-model="queryParams.testName8" placeholder="----请选择----" style="width: 215px">
+                            <el-option label="区域一" value="shanghai"></el-option>
+                            <el-option label="区域二" value="beijing"></el-option>
+                        </el-select>
+                    </el-form-item>
+
+                    <el-form-item label="创建时间" prop="testName2">
+                        <el-date-picker
+                        v-model="queryParams.testName9"
+                        size="small"
+                        style="width: 215px"
                         value-format="yyyy-MM-dd"
                         type="daterange"
                         range-separator="-"
                         start-placeholder="开始日期"
                         end-placeholder="结束日期"
-                      ></el-date-picker>
-                    </el-form-item> 
+                        ></el-date-picker>
+                    </el-form-item>
+
+                    <el-form-item label="可抢单量" prop="testName2">
+                        <div style="width: 215px" class="flex_b">
+                            <el-input
+                                v-model="queryParams.testName10"
+                                placeholder="目的地/收货电话/收货人"
+                                clearable
+                                size="small"
+                                style="width:100px;"
+                                @keyup.enter.native="handleQuery"
+                            />
+                            <span>-</span>
+                            <el-input
+                                v-model="queryParams.testName2"
+                                placeholder="目的地/收货电话/收货人"
+                                clearable
+                                size="small"
+                                style="width:100px;"
+                                @keyup.enter.native="handleQuery"
+                            />
+                        </div>
+                    </el-form-item>
                     
                     <el-form-item class="fr">
                       <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -219,7 +293,26 @@
                     <span>{{ row.accessTime }}</span>
                 </template>
                 <template #edit="{row}">
-                    <span>{{row.status}}</span>
+                    <el-button size="mini"
+                        type="text"
+                        icon="el-icon-edit"
+                        @click="handleUpdate(row)"
+                        v-hasPermi="['system:menu:edit']"
+                    >修改</el-button>
+                    <el-button
+                        size="mini"
+                        type="text"
+                        icon="el-icon-plus"
+                        @click="handleAdd(row)"
+                        v-hasPermi="['system:menu:add']"
+                    >新增</el-button>
+                    <el-button
+                        size="mini"
+                        type="text"
+                        icon="el-icon-delete"
+                        @click="handleDelete(row)"
+                        v-hasPermi="['system:menu:remove']"
+                    >删除</el-button>
                 </template>
               </RefactorTable>
 
@@ -743,6 +836,11 @@ export default {
   left: 0;
   top: 14px;
   background-color: #1890ff;
+}
+
+.flex_b{
+    display: flex;
+    justify-content: space-between;
 }
 
 </style>
