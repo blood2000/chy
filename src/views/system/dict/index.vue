@@ -170,6 +170,9 @@
             >{{dict.dictLabel}}</el-radio>
           </el-radio-group>
         </el-form-item>
+        <el-form-item label="额外参数" prop="additionalJson">
+          <el-input v-model="form.additionalJson" type="textarea" placeholder="额外参数（json）"></el-input>
+        </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
         </el-form-item>
@@ -265,7 +268,8 @@ export default {
         dictName: undefined,
         dictType: undefined,
         status: "0",
-        remark: undefined
+        remark: undefined,
+        additionalJson:undefined
       };
       this.resetForm("form");
     },
