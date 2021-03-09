@@ -9,6 +9,7 @@
             :prop="th.prop"
             :label="th.label"
             :width="th.width"
+            :fixed="th.fixed"
             :show-overflow-tooltip="th.tooltip || false"
             :formatter="th.formatter"
             >
@@ -62,6 +63,7 @@ export default {
                         width: 130,
                         tooltip: true  默认false
                         align: 'center' 默认居中
+                        fixed:'right' 固定
                     }
              */
             tableColumnsConfig: {
