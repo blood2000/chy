@@ -318,4 +318,7 @@ export default {
 .width28{
   width: 28%;
 }
+.el-input-number ::v-deep.el-input__inner{
+  text-align: left;
+}
 </style>
