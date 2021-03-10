@@ -91,7 +91,9 @@ export default {
   mounted() {
     this.initTags()
     this.addTags()
-    this.tagsOverflow()
+    this.$nextTick(() => {
+      this.tagsOverflow()
+    })
     let throttle = ThrottleFun(this.tagsOverflow, 300)
     window.onresize = () => {
       this.$refs.TagsDerpDown.hide()
@@ -245,12 +247,19 @@ export default {
     tagsOverflow() {
       const $ContainerWidth = this.$refs.TagsViewContainer.offsetWidth
       const $TagsCount = this.visitedViews.length
-
-      // 100: The width of a tag  44: The width of a arrow
-      if ($TagsCount * 100 + 44 > $ContainerWidth) {
-        let index = Math.floor(($ContainerWidth - 44) / 100)
-        this.overflowTagsList = this.visitedViews.slice(index)
-      } else {
+      const tagList = this.$refs.tag
+      let tagswidth = 0;
+      let index;
+      let flag = true;
+      for (let i = 0; i < tagList.length; i++) {
+        tagswidth += tagList[i].$el.clientWidth
+        if(flag && (tagswidth > $ContainerWidth - 44)) {
+          flag = false
+          index = i
+          this.overflowTagsList = this.visitedViews.slice(index) // 44: The width of a arrow
+        }
+      }
+      if(tagswidth < $ContainerWidth - 44){
         this.overflowTagsList = []
       }
     }
@@ -273,7 +282,6 @@ export default {
     position: relative;
     max-width: calc(100% - 44px);
     .tags-view-item {
-      width: 100px;
       display: inline-block;
       position: relative;
       cursor: pointer;
