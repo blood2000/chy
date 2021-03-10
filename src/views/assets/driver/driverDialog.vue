@@ -603,8 +603,7 @@ export default {
     // 表单赋值
     setForm(data) {
       this.form = data;
-      this.vehicleForm = data.vehicleInfo;
-      console.log(this.vehicleForm)
+      this.vehicleForm = data.vehicleInfo || {};
     }
   }
 }
