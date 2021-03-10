@@ -1,44 +1,44 @@
 import request from '@/utils/request'
 
-// 查询车辆列表
+// 查询调度者列表
 export function listInfo(query) {
   return request({
-    url: '/assets/vehicle/list',
+    url: '/assets/info/list',
     method: 'get',
     params: query
   })
 }
 
-// 查询车辆详细
+// 查询调度者详细
 export function getInfo(id) {
   return request({
-    url: '/assets/vehicle/' + id,
+    url: '/assets/info/' + id,
     method: 'get'
   })
 }
 
-// 新增车辆
+// 新增调度者
 export function addInfo(data) {
   return request({
-    url: '/assets/vehicle',
+    url: '/assets/info',
     method: 'post',
     data: data
   })
 }
 
-// 修改车辆
+// 修改调度者
 export function updateInfo(data) {
   return request({
-    url: '/assets/vehicle',
+    url: '/assets/info',
     method: 'put',
     data: data
   })
 }
 
-// 删除车辆
+// 删除调度者
 export function delInfo(id) {
   return request({
-    url: '/assets/vehicle/' + ids,
+    url: '/assets/info/' + id,
     method: 'delete'
   })
 }
