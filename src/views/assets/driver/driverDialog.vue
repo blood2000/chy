@@ -312,13 +312,22 @@ export default {
 .mr3{
   margin-right: 3%;
 }
+.mb{
+  margin-bottom: 22px;
+}
 .width90{
   width: 90%;
 }
 .width28{
   width: 28%;
 }
+/* 计数器样式 */
 .el-input-number ::v-deep.el-input__inner{
   text-align: left;
+}
+/* 上传图片文字样式 */
+.upload-image-label{
+  margin: 0;
+  line-height: 24px;
 }
 </style>

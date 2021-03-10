@@ -1,42 +1,91 @@
 <template>
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" label-width="140px">
-      <el-form-item label="发货人/发货企业" prop="shipmentShip">
+    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
+      <el-form-item label="发货人/发货企业" prop="shipperType">
         <el-select
           class="width90"
-          v-model="form.shipmentShip"
+          v-model="form.shipperType"
           clearable
           size="small"
         >
           <el-option
-            v-for="dict in shipOptions"
+            v-for="dict in typeOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="手机号码" prop="shipmentTelephone">
-        <el-input v-model="form.shipmentTelephone" placeholder="请输入手机号码" size="small" class="width90"/>
+      <el-form-item label="姓名" prop="adminName">
+        <el-input v-model="form.adminName" placeholder="支持自动识别" size="small" class="width90" clearable/>
       </el-form-item>
-      <el-form-item label="密码" prop="shipmentPassword">
-        <el-input v-model="form.shipmentPassword" placeholder="请输入密码" type="password" size="small" class="width90" />
+      <el-form-item label="身份证号" prop="identificationNumber">
+        <el-input v-model="form.identificationNumber" placeholder="支持自动识别" size="small" class="width90" clearable/>
       </el-form-item>
-      <el-form-item label="姓名" prop="shipmentName">
-        <el-input v-model="form.shipmentName" placeholder="支持自动识别" size="small" class="width90"/>
-      </el-form-item>
-      <el-form-item label="身份证号" prop="shipmentIDCard">
-        <el-input v-model="form.shipmentIDCard" placeholder="支持自动识别" size="small" class="width90"/>
-      </el-form-item>
-      <template v-if="form.shipmentShip == '发货企业'">
-        <el-form-item label="公司名称" prop="shipmentCompany">
-          <el-input v-model="form.shipmentCompany" placeholder="请输入公司名称" size="small" class="width90"/>
+      <template v-if="form.shipperType === 1">
+        <el-form-item label="公司名称" prop="companyName">
+          <el-input v-model="form.companyName" placeholder="请输入公司名称" size="small" class="width90" clearable/>
         </el-form-item>
-        <el-form-item label="统一社会信用代码" prop="shipmentSocialCode">
-          <el-input v-model="form.shipmentSocialCode" placeholder="请输入营业执照号" size="small" class="width90"/>
+        <el-form-item label="统一社会信用代码" prop="organizationCodeNo">
+          <el-input v-model="form.organizationCodeNo" placeholder="请输入统一社会信用代码" size="small" class="width90" clearable/>
         </el-form-item>
       </template>
-      <el-form-item label="所在区域" prop="shipmentArea">
+      <el-form-item label="营业执照号" prop="businessLicenseNo">
+        <el-input v-model="form.businessLicenseNo" placeholder="请输入营业执照号" size="small" class="width90" clearable/>
+      </el-form-item>
+      <el-form-item label="法人身份证" prop="artificialIdentificationNumber">
+        <el-input v-model="form.artificialIdentificationNumber" placeholder="请输入法人身份证" size="small" class="width90" clearable/>
+      </el-form-item>
+      <el-form-item>
+        <el-row>
+          <el-col :span="7" class="mb">
+            <p class="upload-image-label">管理员身份证正面照</p>
+            <upload-image :value="form.identificationImg"></upload-image>
+          </el-col>
+          <el-col :span="7" class="mb">
+            <p class="upload-image-label">管理员身份证背面照</p>
+            <upload-image :value="form.identificationBackImg"></upload-image>
+          </el-col>
+          <el-col :span="7" class="mb">
+            <p class="upload-image-label">手持身份证照</p>
+            <upload-image :value="form.identificationInhandImg"></upload-image>
+          </el-col>
+          <el-col :span="7">
+            <p class="upload-image-label">营业执照照</p>
+            <upload-image :value="form.businessLicenseImg"></upload-image>
+          </el-col>
+          <el-col :span="7">
+            <p class="upload-image-label">法人身份证正面照</p>
+            <upload-image :value="form.artificialIdentificationImg"></upload-image>
+          </el-col>
+        </el-row>
+      </el-form-item>
+      <el-form-item label="审核状态">
+        <el-radio-group v-model="form.authStatus">
+          <el-radio
+            v-for="dict in statusOptions"
+            :key="dict.dictValue"
+            :label="parseInt(dict.dictValue)"
+          >{{dict.dictLabel}}</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="是否冻结" prop="isFreezone">
+        <el-select
+          v-model="form.isFreezone"
+          clearable
+          size="small"
+          class="width90"
+        >
+          <el-option
+            v-for="dict in isFreezoneOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      
+      <!-- <el-form-item label="所在区域" prop="shipmentArea">
         <el-select
           v-model="form.shipmentProvince"
           clearable
@@ -79,37 +128,17 @@
       </el-form-item>
       <el-form-item label="详细地址" prop="shipmentAddress">
         <el-input v-model="form.shipmentAddress" placeholder="支持自动识别" size="small" class="width90"/>
-      </el-form-item>
-      
-      <el-form-item>
-        <upload-image></upload-image>
-      </el-form-item>
-
-      <el-form-item label="是否核算运单" prop="shipmentAccounting">
-        <el-select
-          v-model="form.shipmentAccounting"
-          clearable
-          size="small"
-          class="width90"
-        >
-          <el-option
-            v-for="dict in isOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="税点(%)" prop="shipmentTaxPoint">
+      </el-form-item> -->
+      <!-- <el-form-item label="税点(%)" prop="shipmentTaxPoint">
         <el-input-number v-model="form.shipmentTaxPoint" controls-position="right" size="small" placeholder="请输入税点" :min="0" :max="100" class="width90" />
-      </el-form-item>
-      <el-form-item label="服务费比例" prop="shipmentServiceRatio">
+      </el-form-item> -->
+      <!-- <el-form-item label="服务费比例" prop="shipmentServiceRatio">
         <el-input-number v-model="form.shipmentServiceRatio" controls-position="right" size="small" placeholder="请输入服务费比例" :min="0" :max="100" class="width90" />
-      </el-form-item>
-      <el-form-item label="服务费税率" prop="shipmentTaxTate">
+      </el-form-item> -->
+      <!-- <el-form-item label="服务费税率" prop="shipmentTaxTate">
         <el-input-number v-model="form.shipmentTaxTate" controls-position="right" size="small" placeholder="请输入服务费税率" :min="0" :max="100" class="width90" />
-      </el-form-item>
-      <el-form-item label="去零" prop="shipmentGoZero">
+      </el-form-item> -->
+      <!-- <el-form-item label="去零" prop="shipmentGoZero">
         <el-select
           v-model="form.shipmentGoZero"
           clearable
@@ -123,8 +152,8 @@
             :value="dict.dictValue"
           />
         </el-select>
-      </el-form-item>
-      <el-form-item label="合理路耗" prop="shipmentConsume">
+      </el-form-item> -->
+      <!-- <el-form-item label="合理路耗" prop="shipmentConsume">
         <el-select
           v-model="form.shipmentConsume"
           clearable
@@ -138,8 +167,8 @@
             :value="dict.dictValue"
           />
         </el-select>
-      </el-form-item>
-      <el-form-item label="是否月结客户" prop="shipmentMonthly">
+      </el-form-item> -->
+      <!-- <el-form-item label="是否月结客户" prop="shipmentMonthly">
         <el-select
           v-model="form.shipmentMonthly"
           clearable
@@ -154,8 +183,8 @@
           />
         </el-select>
         <el-input-number v-model="form.shipmentAmount" controls-position="right" size="small" placeholder="授信金额(保留两位小数)" :min="0" :max="10000" class="width28" />
-      </el-form-item>
-      <el-form-item label="是否预付运费" prop="shipmentPrepaid">
+      </el-form-item> -->
+      <!-- <el-form-item label="是否预付运费" prop="shipmentPrepaid">
         <el-select
           v-model="form.shipmentPrepaid"
           clearable
@@ -169,8 +198,8 @@
             :value="dict.dictValue"
           />
         </el-select>
-      </el-form-item>
-      <el-form-item label="索票阶段" prop="shipmentAskTicket">
+      </el-form-item> -->
+      <!-- <el-form-item label="索票阶段" prop="shipmentAskTicket">
         <el-select
           v-model="form.shipmentAskTicket"
           clearable
@@ -184,8 +213,8 @@
             :value="dict.dictValue"
           />
         </el-select>
-      </el-form-item>
-      <el-form-item label="货源代收调度" prop="shipmentSupplyDispatch">
+      </el-form-item> -->
+      <!-- <el-form-item label="货源代收调度" prop="shipmentSupplyDispatch">
         <el-select
           v-model="form.shipmentSupplyDispatch"
           clearable
@@ -199,12 +228,13 @@
             :value="dict.dictValue"
           />
         </el-select>
-      </el-form-item>
-      <el-form-item>
+      </el-form-item> -->
+      <!-- <el-form-item>
         <el-checkbox v-model="form.isReview">货源是否需要平台审核</el-checkbox>
         <el-checkbox v-model="form.isImage">是否不需要卸货图片</el-checkbox>
-      </el-form-item>
+      </el-form-item> -->
     </el-form>
+
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
@@ -213,23 +243,46 @@
 </template>
 
 <script>
-import { addConfig, updateConfig } from "@/api/assets/shipment";
+import { addShipment, updateShipment } from "@/api/assets/shipment";
 import UploadImage from '@/components/UploadImage/index';
 
 export default {
   props: {
     title: String,
-    open: Boolean
+    open: Boolean,
+    disable: Boolean
   },
   components: {
     UploadImage
   },
+  computed: {
+    visible: {
+      get() {
+        return this.open;
+      },
+      set(v) {
+        this.$emit("update:open", v);
+      },
+    },
+  },
   data() {
     return {
       // 字典
-      shipOptions: [
-        {dictLabel: '发货人', dictValue: '发货人'},
-        {dictLabel: '发货企业', dictValue: '发货企业'}
+      typeOptions: [
+        {dictLabel: '发货人', dictValue: 0},
+        {dictLabel: '发货企业', dictValue: 1}
+      ],
+      // 审核状态字典
+      statusOptions: [
+        {dictLabel: '未审核', dictValue: 0},
+        {dictLabel: '审核中', dictValue: 1},
+        {dictLabel: '审核未通过', dictValue: 2},
+        {dictLabel: '审核通过', dictValue: 3}
+      ],
+      // 是否冻结字典
+      isFreezoneOptions: [
+        {dictLabel: '正常', dictValue: 0},
+        {dictLabel: '冻结', dictValue: 1}
       ],
       isOptions: [
         {dictLabel: '是', dictValue: '是'},
@@ -265,68 +318,48 @@ export default {
       form: {},
       // 表单校验
       rules: {
-        shipmentTelephone: [
-          { required: true, message: "手机号码不能为空", trigger: "blur" }
-        ],
-        shipmentName: [
+        adminName: [
           { required: true, message: "姓名不能为空", trigger: "blur" }
         ],
-        shipmentIDCard: [
+        identificationNumber: [
           { required: true, message: "身份证号不能为空", trigger: "blur" }
         ],
-        shipmentArea: [
-          { required: true, message: "所在区域不能为空", trigger: "blur" }
-        ],
-        shipmentAddress: [
-          { required: true, message: "详细地址不能为空", trigger: "blur" }
-        ],
-        shipmentServiceRatio: [
-          { required: true, message: "服务费比例不能为空", trigger: "blur" }
-        ],
-        shipmentTaxTate: [
-          { required: true, message: "服务费税率不能为空", trigger: "blur" }
-        ],
-        shipmentGoZero: [
-          { required: true, message: "去零不能为空", trigger: "blur" }
-        ],
-        shipmentConsume: [
-          { required: true, message: "合理路耗不能为空", trigger: "blur" }
-        ],
-        shipmentCompany: [
+        companyName: [
           { required: true, message: "公司名称不能为空", trigger: "blur" }
         ],
-        shipmentSocialCode: [
+        organizationCodeNo: [
           { required: true, message: "统一社会信用代码不能为空", trigger: "blur" }
         ]
       }
     }
   },
-  computed: {
-    visible: {
-      get() {
-        return this.open;
-      },
-      set(v) {
-        this.$emit("update:open", v);
-      },
-    },
-  },
   created() {
     
   },
   methods: {
+    // 参数系统内置字典翻译
+    shipperTypeFormat(row) {
+      return this.selectDictLabel(this.typeOptions, row.shipperType);
+    },
+    authStatusFormat(row) {
+      return this.selectDictLabel(this.statusOptions, row.authStatus);
+    },
+    isFreezoneFormat(row) {
+      return this.selectDictLabel(this.isFreezoneOptions, row.isFreezone);
+    },
     /** 提交按钮 */
     submitForm: function() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          if (this.form.configId != undefined) {
-            updateConfig(this.form).then(response => {
+          if (this.form.id != undefined) {
+            updateShipment(this.form).then(response => {
               this.msgSuccess("修改成功");
               this.close();
               this.$emit('refresh');
             });
           } else {
-            addConfig(this.form).then(response => {
+            const shipmentInfo = this.form;
+            addShipment(shipmentInfo).then(response => {
               this.msgSuccess("新增成功");
               this.close();
               this.$emit('refresh');
@@ -347,13 +380,35 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        configId: undefined,
-        shipmentName: undefined,
-        configValue: undefined,
-        configType: "Y",
-        remark: undefined
+        id: null,
+        code: null,
+        adminName: null,
+        adminCode: null,
+        companyCode: null,
+        companyName: null,
+        shipperType: null,
+        identificationNumber: null,
+        identificationImg: null,
+        identificationBackImg: null,
+        identificationInhandImg: null,
+        businessLicenseImg: null,
+        businessLicenseNo: null,
+        organizationCodeNo: null,
+        artificialIdentificationNumber: null,
+        artificialIdentificationImg: null,
+        authStatus: 0,
+        isFreezone: null,
+        createTime: null,
+        updateTime: null,
+        createCode: null,
+        updateCode: null,
+        delFlag: null
       };
       this.resetForm("form");
+    },
+    // 表单赋值
+    setForm(data) {
+      this.form = data;
     },
   }
 }
@@ -363,13 +418,22 @@ export default {
 .mr3{
   margin-right: 3%;
 }
+.mb{
+  margin-bottom: 22px;
+}
 .width90{
   width: 90%;
 }
 .width28{
   width: 28%;
 }
+/* 计数器样式 */
 .el-input-number ::v-deep.el-input__inner{
   text-align: left;
+}
+/* 上传图片文字样式 */
+.upload-image-label{
+  margin: 0;
+  line-height: 24px;
 }
 </style>

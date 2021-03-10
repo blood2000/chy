@@ -1,60 +1,44 @@
 import request from '@/utils/request'
 
-// 查询参数列表
-export function listConfig(query) {
+// 查询货主列表
+export function listShipment(query) {
   return request({
-    url: '/system/config/list',
-    method: 'get',
-    params: query
+    url: '/assets/shipment/list',
+    method: 'post',
+    data: query
   })
 }
 
-// 查询参数详细
-export function getConfig(configId) {
+// 查询货主详细
+export function getShipment(id) {
   return request({
-    url: '/system/config/' + configId,
+    url: '/assets/shipment/' + id,
     method: 'get'
   })
 }
 
-// 根据参数键名查询参数值
-export function getConfigKey(configKey) {
+// 新增货主
+export function addShipment(data) {
   return request({
-    url: '/system/config/configKey/' + configKey,
-    method: 'get'
-  })
-}
-
-// 新增参数配置
-export function addConfig(data) {
-  return request({
-    url: '/system/config',
+    url: '/assets/shipment',
     method: 'post',
     data: data
   })
 }
 
-// 修改参数配置
-export function updateConfig(data) {
+// 修改货主
+export function updateShipment(data) {
   return request({
-    url: '/system/config',
+    url: '/assets/shipment',
     method: 'put',
     data: data
   })
 }
 
-// 删除参数配置
-export function delConfig(configId) {
+// 删除货主
+export function delShipment(ids) {
   return request({
-    url: '/system/config/' + configId,
-    method: 'delete'
-  })
-}
-
-// 清理参数缓存
-export function clearCache() {
-  return request({
-    url: '/system/config/clearCache',
+    url: '/assets/shipment/' + ids,
     method: 'delete'
   })
 }
