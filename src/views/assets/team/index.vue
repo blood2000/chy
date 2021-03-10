@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="编码" prop="code">
+      <!-- <el-form-item label="编码" prop="code">
         <el-input
           v-model="queryParams.code"
           placeholder="请输入编码"
@@ -9,7 +9,7 @@
           size="small"
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="网点编码" prop="branchCode">
         <el-input
           v-model="queryParams.branchCode"
@@ -167,7 +167,7 @@
     />
 
     <!-- 新增/修改/详情 对话框 -->
-    <team-dialog ref="TeamDialog" :title="title" :open.sync="open" @refresh="getList"></team-dialog>
+    <team-dialog ref="TeamDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList"></team-dialog>
   </div>
 </template>
 
@@ -224,9 +224,8 @@ export default {
       },
       // 表单参数
       form: {},
-      // 表单校验
-      rules: {
-      }
+	  // 表单是否禁用
+	  formDisable: false
     };
   },
   created() {
@@ -237,9 +236,9 @@ export default {
     // this.getDicts("${column.dictType}").then(response => {
     //   this.teamLeaderOptions = response.data;
     // });
-	// this.getDicts("${column.dictType}").then(response => {
-	//   this.statusOptions = response.data;
-	// });
+	this.getDicts("${column.dictType}").then(response => {
+	  this.statusOptions = response.data;
+	});
   },
   methods: {
     /** 查询调度者列表 */
@@ -260,9 +259,9 @@ export default {
     //   return this.selectDictLabel(this.teamLeaderOptions, row.teamLeader);
     // },
 	// 状态字典翻译
-	// statusFormat(row, column) {
-	//   return this.selectDictLabel(this.statusOptions, row.teamLeader);
-	// },
+	statusFormat(row, column) {
+	  return this.selectDictLabel(this.statusOptions, row.teamLeader);
+	},
     // 取消按钮
     cancel() {
       this.open = false;
@@ -289,26 +288,29 @@ export default {
       this.$refs.TeamDialog.reset();
       this.open = true;
       this.title = "添加调度者";
+	  this.formDisable = false;
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.$refs.TeamDialog.reset();
       const id = row.id || this.ids
       getInfo(id).then(response => {
-        this.form = response.data;
+        this.$refs.TeamDialog.setForm(response.data);
         this.open = true;
         this.title = "修改调度者";
+		this.formDisable = false;
       });
     },
 	/** 详情按钮操作 */
 	handleDEtail(row) {
-		this.$refs.TeamDialog.reset();
-		const id = row.id || this.ids
-		getInfo(id).then(response => {
-		  this.form = response.data;
-		  this.open = true;
-		  this.title = "详情";
-		});
+	  this.$refs.TeamDialog.reset();
+	  const id = row.id || this.ids
+	  getInfo(id).then(response => {
+		this.$refs.TeamDialog.setForm(response.data);
+		this.open = true;
+		this.title = "详情";
+		this.formDisable = true;
+	  });
 	},
     /** 删除按钮操作 */
     handleDelete(row) {

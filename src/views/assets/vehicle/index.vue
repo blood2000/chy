@@ -372,7 +372,7 @@
     />
 	
 	<!-- 新增/修改/详情 对话框 -->
-	<vehicle-dialog ref="VehicleDialog" :title="title" :open.sync="open" @refresh="getList"></vehicle-dialog>
+	<vehicle-dialog ref="VehicleDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList"></vehicle-dialog>
   </div>
 </template>
 
@@ -410,7 +410,7 @@ export default {
 	  // 车辆归属类型 0.自有 1.加盟字典
 	  vehicleAscriptionTypeOptions: [
 		  {dictLabel: '自有', dictValue: '0'},
-		  {dictLabel: '加盟字典', dictValue: '1'}
+		  {dictLabel: '加盟', dictValue: '1'}
 	  ],
 	  // 审核状态(0.未审核.1审核中2审核未通过3审核通过)字典
 	  authStatusOptions: [
@@ -442,6 +442,8 @@ export default {
         authStatus: null,
         isFreeze: null,
       },
+	  // 表单是否禁用
+	  formDisable: false
     };
   },
   created() {
@@ -513,15 +515,17 @@ export default {
 		this.$refs.VehicleDialog.reset();
 		this.open = true;
 		this.title = "添加车辆";
+		this.formDisable = false;
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
 		this.$refs.VehicleDialog.reset();
 		const id = row.id || this.ids
 		getInfo(id).then(response => {
-		  this.form = response.data;
+		  this.$refs.VehicleDialog.setForm(response.data);
 		  this.open = true;
 		  this.title = "修改车辆";
+		  this.formDisable = false;
 		});
     },
 	/** 详情按钮操作 */
@@ -529,9 +533,10 @@ export default {
 		this.$refs.VehicleDialog.reset();
 		const id = row.id || this.ids
 		getInfo(id).then(response => {
-		  this.form = response.data;
+		  this.$refs.VehicleDialog.setForm(response.data);
 		  this.open = true;
 		  this.title = "详情";
+		  this.formDisable = true;
 		});
 	},
     

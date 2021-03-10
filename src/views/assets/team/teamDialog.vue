@@ -1,13 +1,13 @@
 <template>
 	<!-- 添加或修改调度者对话框 -->
-	<el-dialog :title="title" :visible.sync="open" width="800px" append-to-body>
-	  <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+	<el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
+	  <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="80px">
 	    <!-- <el-form-item label="主键" prop="id">
 	      <el-input v-model="form.id" placeholder="请输入主键" />
 	    </el-form-item> -->
-	    <el-form-item label="编码" prop="code">
+	    <!-- <el-form-item label="编码" prop="code">
 	      <el-input v-model="form.code" placeholder="请输入编码" />
-	    </el-form-item>
+	    </el-form-item> -->
 	    <el-form-item label="网点编码" prop="branchCode">
 	      <el-input v-model="form.branchCode" placeholder="请输入网点编码" />
 	    </el-form-item>
@@ -30,7 +30,7 @@
 	      </el-radio-group>
 	    </el-form-item>
 		<el-form-item label="营业执照" prop="businessLicenseImg">
-		  <el-input v-model="form.businessLicenseImg" placeholder="请输入营业执照" />
+		  <uploadImage v-model="form.businessLicenseImg"/>
 		</el-form-item>
 		<el-form-item label="道路运输经营许可证照">
 		  <uploadImage v-model="form.transportPermitImage"/>
@@ -62,7 +62,8 @@
 	export default {
 	  props: {
 	    title: String,
-	    open: Boolean
+	    open: Boolean,
+		disable: Boolean
 	  },
 	  components: {
 	    UploadImage
@@ -71,7 +72,7 @@
 	    return {
 		  // 状态字典
 		  statusOptions: [
-		  		{dictLabel: '启用', dictValue: '0'},
+		  	{dictLabel: '启用', dictValue: '0'},
 		    {dictLabel: '禁用', dictValue:'1'},
 		  ],
 	      // 表单参数
@@ -157,6 +158,10 @@
 		  };
 		  this.resetForm("form");
 		},
+		// 表单赋值
+		setForm(data) {
+		  this.form = data;
+		}
 	  }
 	}
 </script>
