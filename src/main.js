@@ -27,6 +27,7 @@ import 'highlight.js/styles/github-gist.css'
 // Tin添加2自定义组件
 import TablecCascader from '@/components/Ddc/Tin/TablecCascader.vue'
 import RefactorTable from '@/components/Ddc/Tin/RefactorTable.vue'
+import { setLocalStorage,getLocalStorage,removeLocalStorage } from '@/utils/auth'
 
 // 全局方法挂载
 Vue.prototype.getDicts = getDicts
@@ -38,6 +39,9 @@ Vue.prototype.selectDictLabel = selectDictLabel
 Vue.prototype.selectDictLabels = selectDictLabels
 Vue.prototype.download = download
 Vue.prototype.handleTree = handleTree
+Vue.prototype.setLocalStorage = setLocalStorage
+Vue.prototype.getLocalStorage = getLocalStorage
+Vue.prototype.removeLocalStorage = removeLocalStorage
 
 Vue.prototype.msgSuccess = function (msg) {
   this.$message({ showClose: true, message: msg, type: "success" });

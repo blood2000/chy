@@ -481,9 +481,9 @@
         <!-- 添加或修改【请填写功能名称】对话框 -->
         <el-dialog :title="title" :visible.sync="open" width="75%" append-to-body>
         
-        <div>
-            <open-dialog></open-dialog>
-        </div>
+            <div>
+                <open-dialog></open-dialog>
+            </div>
         
         </el-dialog>
     </div>
@@ -795,6 +795,8 @@ export default {
 
         // 是否显示弹出层
         open: false,
+        // 弹框title
+        title:''
       }
     },
     methods: {
@@ -806,6 +808,10 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.app-container{
+    overflow-y: auto;
+  height: calc(100vh - 145px);
+}
 .header{
     padding-bottom: 10px;
     position: relative;

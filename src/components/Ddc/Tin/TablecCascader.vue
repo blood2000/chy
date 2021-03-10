@@ -41,6 +41,7 @@
 <script>
 
 import draggable from 'vuedraggable'
+import { setLocalStorage } from '@/utils/auth'
 
 /**
  * 调用示例:
@@ -98,12 +99,18 @@ export default {
     methods:{
         handleChange(value){
             let arr = []
-            this.$emit('input', arr.concat(...value))
+            arr = arr.concat(...value)
+            this.$emit('input', arr)
+            
+            
+            setLocalStorage(this.$route.name, arr)
         },
 
         submitForm(){
             this.open = false
             this.$emit('input', this.banner_list)
+            setLocalStorage(this.$route.name, this.banner_list)
+
             
         },
         cancel(){

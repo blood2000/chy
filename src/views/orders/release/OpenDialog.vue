@@ -405,7 +405,14 @@ export default {
 
       handleUpdate(){
 
-      }
+      },
+
+      // 多选框选中数据
+      handleSelectionChange(selection) {
+        this.ids = selection.map(item => item.testId)
+        this.single = selection.length!==1
+        this.multiple = !selection.length
+      },
     }
 }
 </script>

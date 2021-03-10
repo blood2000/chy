@@ -168,117 +168,7 @@
                     </el-form-item>
                   </el-form>
 
-              <!--<el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="100px">
-                 <el-form-item label="系统模块" prop="title">
-                  <el-input
-                    v-model="queryParams.title"
-                    placeholder="请输入系统模块"
-                    clearable
-                    style="width: 240px;"
-                    size="small"
-                    @keyup.enter.native="handleQuery"
-                  />
-                </el-form-item>
-                <el-form-item label="操作人员" prop="operName">
-                  <el-input
-                    v-model="queryParams.operName"
-                    placeholder="请输入操作人员"
-                    clearable
-                    style="width: 240px;"
-                    size="small"
-                    @keyup.enter.native="handleQuery"
-                  />
-                </el-form-item>
-                <el-form-item label="类型" prop="businessType">
-                  <el-select
-                    v-model="queryParams.businessType"
-                    placeholder="操作类型"
-                    clearable
-                    size="small"
-                    style="width: 240px"
-                  >
-                    <el-option
-                      v-for="dict in typeOptions"
-                      :key="dict.dictValue"
-                      :label="dict.dictLabel"
-                      :value="dict.dictValue"
-                    />
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="状态" prop="status">
-                  <el-select
-                    v-model="queryParams.status"
-                    placeholder="操作状态"
-                    clearable
-                    size="small"
-                    style="width: 240px"
-                  >
-                    <el-option
-                      v-for="dict in statusOptions"
-                      :key="dict.dictValue"
-                      :label="dict.dictLabel"
-                      :value="dict.dictValue"
-                    />
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="操作时间">
-                  <el-date-picker
-                    v-model="dateRange"
-                    size="small"
-                    style="width: 240px"
-                    value-format="yyyy-MM-dd"
-                    type="daterange"
-                    range-separator="-"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                  ></el-date-picker>
-                </el-form-item> 
-                <el-form-item>
-                  <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-                  <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-                </el-form-item>
-              </el-form>-->
-
               <el-row :gutter="10" class="mb8">
-                <!-- <el-col :span="1.5">
-                  <el-button
-                    type="primary"
-                    icon="el-icon-plus"
-                    size="mini"
-                    @click="handleAdd"
-                    v-hasPermi="['system:test:add']"
-                  >新增</el-button>
-                </el-col>
-                <el-col :span="1.5">
-                  <el-button
-                    type="success"
-                    icon="el-icon-edit"
-                    size="mini"
-                    :disabled="single"
-                    @click="handleUpdate"
-                    v-hasPermi="['system:test:edit']"
-                  >修改</el-button>
-                </el-col>
-                <el-col :span="1.5">
-                  <el-button
-                    type="danger"
-                    icon="el-icon-delete"
-                    size="mini"
-                    :disabled="multiple"
-                    @click="handleDelete"
-                    v-hasPermi="['system:test:remove']"
-                  >删除</el-button>
-                </el-col>
-                <el-col :span="1.5">
-                  <el-button
-                    type="warning"
-                    icon="el-icon-download"
-                    size="mini"
-                    @click="handleExport"
-                    v-hasPermi="['system:test:export']"
-                  >导出</el-button>
-                </el-col> -->
-
                 <el-col :span="1.5">
                   <tablec-cascader :options='options' v-model="tableColumnsConfig"></tablec-cascader>
                 </el-col>
@@ -707,6 +597,7 @@ export default {
     created() {
       this.getList();
       // 这个可以做个判断如果有存则取存的东西, 没有就去全部
+        
       this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || this.options
     },
     methods: {
