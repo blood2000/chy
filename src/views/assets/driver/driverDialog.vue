@@ -493,8 +493,11 @@ export default {
   methods: {
     /** 提交按钮 */
     submitForm: function() {
+      if(this.disable) {
+        this.close();
+        return;
+      }
       this.$refs["form"].validate(valid => {
-        console.log(valid)
         if (valid) {
           let driver = this.form;
           driver.vehicleInfo = this.vehicleForm;

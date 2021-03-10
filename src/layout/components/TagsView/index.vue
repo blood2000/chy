@@ -246,17 +246,17 @@ export default {
     },
     tagsOverflow() {
       const $ContainerWidth = this.$refs.TagsViewContainer.offsetWidth
-      const $TagsCount = this.visitedViews.length
       const tagList = this.$refs.tag
-      let tagswidth = 0;
-      let index;
-      let flag = true;
+      let tagswidth = 0
+      let index
+      let flag = true
       for (let i = 0; i < tagList.length; i++) {
         tagswidth += tagList[i].$el.clientWidth
+        // 44: The width of a arrow
         if(flag && (tagswidth > $ContainerWidth - 44)) {
           flag = false
           index = i
-          this.overflowTagsList = this.visitedViews.slice(index) // 44: The width of a arrow
+          this.overflowTagsList = this.visitedViews.slice(index)
         }
       }
       if(tagswidth < $ContainerWidth - 44){

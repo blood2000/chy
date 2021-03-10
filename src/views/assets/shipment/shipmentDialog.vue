@@ -339,6 +339,10 @@ export default {
   methods: {
     /** 提交按钮 */
     submitForm: function() {
+      if(this.disable) {
+        this.close();
+        return;
+      }
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.id != undefined) {
