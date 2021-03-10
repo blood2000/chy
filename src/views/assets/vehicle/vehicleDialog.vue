@@ -1,10 +1,10 @@
 <template>
 	<!-- 添加或修改车辆对话框 -->
-	<el-dialog :title="title" :visible.sync="open" width="800px" append-to-body @close="cancel">
-	  <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-		  <el-form-item label="编码" prop="code">
+	<el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
+	  <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="80px">
+		  <!-- <el-form-item label="编码" prop="code">
 		    <el-input v-model="form.code" placeholder="请输入编码" />
-		  </el-form-item>
+		  </el-form-item> -->
 		  <el-form-item label="名称" prop="licenseNumber">
 		    <el-input v-model="form.licenseNumber" placeholder="请输入名称" />
 		  </el-form-item>
@@ -30,8 +30,8 @@
 		  <el-form-item label="车身颜色" prop="vehicleColorCode">
 		    <el-input v-model="form.vehicleColorCode" placeholder="请输入车身颜色代码" />
 		  </el-form-item>
-		  <el-form-item label="车身颜色" prop="vehicleTypeCode">
-		    <el-input v-model="form.vehicleTypeCode" placeholder="请输入车身颜色代码" />
+		  <el-form-item label="车辆类型" prop="vehicleTypeCode">
+		    <el-input v-model="form.vehicleTypeCode" placeholder="请输入车辆类型代码" />
 		  </el-form-item>
 		  <el-form-item label="能源类型" prop="vehicleEnergyType">
 		    <el-select v-model="form.vehicleEnergyType" placeholder="请选择车辆能源类型">
@@ -39,7 +39,7 @@
 		        v-for="dict in vehicleEnergyTypeOptions"
 		        :key="dict.dictValue"
 		        :label="dict.dictLabel"
-		        :value="parseInt(dict.dictValue)"
+		        :value="dict.dictValue"
 		      ></el-option>
 		    </el-select>
 		  </el-form-item>
@@ -80,7 +80,7 @@
 		    <el-input v-model="form.axesNumber" placeholder="请输入轴数" />
 		  </el-form-item>
 		  <el-form-item label="年审时间" prop="annualVerificationDate">
-		    <el-date-picker clearable size="small" style="width: 200px"
+		    <el-date-picker clearable size="small"
 		      v-model="form.annualVerificationDate"
 		      type="date"
 		      value-format="yyyy-MM-dd"
@@ -100,8 +100,18 @@
 		   </el-radio-group>
 		  </el-form-item>
 		  <el-form-item label="是否冻结" prop="isFreeze">
-		    <el-input v-model="form.isFreeze" placeholder="请输入是否冻结(0正常1冻结)" />
+		    <el-select v-model="form.isFreeze" placeholder="请选择是否冻结 0.正常 1.冻结">
+		      <el-option
+		        v-for="dict in isFreezeOptions"
+		        :key="dict.dictValue"
+		        :label="dict.dictLabel"
+		        :value="dict.dictValue"
+		      />
+		    </el-select>
 		  </el-form-item>
+		  <!-- <el-form-item label="是否冻结" prop="isFreeze">
+		    <el-input v-model="form.isFreeze" placeholder="请输入是否冻结(0正常1冻结)" />
+		  </el-form-item> -->
 		  <el-form-item label="车头正面照">
 		    <uploadImage v-model="form.vehicleImage"/>
 		  </el-form-item>
@@ -132,7 +142,8 @@
 	export default {
 	  props: {
 	    title: String,
-	    open: Boolean
+	    open: Boolean,
+		disable: Boolean
 	  },
 	  components: {
 	    UploadImage
@@ -142,7 +153,7 @@
 		  // 车辆归属类型 0.自有 1.加盟字典
 		  vehicleAscriptionTypeOptions: [
 			  {dictLabel: '自有', dictValue: '0'},
-			  {dictLabel: '加盟字典', dictValue: '1'}
+			  {dictLabel: '加盟', dictValue: '1'}
 		  ],
 		  // 车辆能源类型字典
 		  vehicleEnergyTypeOptions: [],
@@ -162,51 +173,9 @@
 	      form: {},
 	      // 表单校验
 	      rules: {
-			code: [
-			  { required: true, message: "编码不能为空", trigger: "blur" }
-			],
 	        licenseNumber: [
 	          { required: true, message: "名称不能为空", trigger: "blur" }
-	        ],
-	        vehicleOwnerCode: [
-	          { required: true, message: "车主编码不能为空", trigger: "blur" }
-	        ],
-	        vehicleAscriptionType: [
-	          { required: true, message: "车辆归属类型不能为空", trigger: "blur" }
-	        ],
-	        classificationCode: [
-	          { required: true, message: "车牌类型不能为空", trigger: "blur" }
-	        ],
-	        vehicleLicenseColorCode: [
-	          { required: true, message: "车牌颜色不能为空", trigger: "blur" }
-	        ],
-	        vehicleColorCode: [
-	          { required: true, message: "车身颜色不能为空", trigger: "blur" }
-	        ],
-	        vehicleTypeCode: [
-	          { required: true, message: "车身类型不能为空", trigger: "blur" }
-	        ],
-	        vehicleEnergyType: [
-	          { required: true, message: "车辆能源类型不能为空", trigger: "blur" }
-	        ],
-	        vehicleLoadWeight: [
-	          { required: true, message: "车辆可载重量不能为空", trigger: "blur" }
-	        ],
-	        vehicleLoadVolume: [
-	          { required: true, message: "车辆可载平方不能为空", trigger: "blur" }
-	        ],
-	        vehicleRemainingLoadVolume: [
-	          { required: true, message: "车辆可载立方不能为空", trigger: "blur" }
-	        ],
-			chassisNumber: [
-			  { required: true, message: "车架号不能为空", trigger: "blur" }
-			],
-			annualVerificationDate: [
-			  { required: true, message: "年审时间不能为空", trigger: "blur" }
-			],
-			transportMeson: [
-			  { required: true, message: "运输介子不能为空", trigger: "blur" }
-			]
+	        ]
 	      }
 	    }
 	  },
@@ -297,6 +266,10 @@
 		  };
 		  this.resetForm("form");
 		},
+		// 表单赋值
+		setForm(data) {
+		  this.form = data;
+		}
 	  }
 	}
 </script>
