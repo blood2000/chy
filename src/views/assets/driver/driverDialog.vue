@@ -319,7 +319,7 @@
             v-for="dict in vehicleEnergyTypeOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
-            :value="parseInt(dict.dictValue)"
+            :value="dict.dictValue"
           ></el-option>
         </el-select>
       </el-form-item>
@@ -488,7 +488,9 @@ export default {
     },
   },
   created() {
-    
+    this.getDicts("energyTypes").then(response => {
+      this.vehicleEnergyTypeOptions = response.data;
+    });
   },
   methods: {
     /** 提交按钮 */
