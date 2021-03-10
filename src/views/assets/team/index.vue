@@ -124,14 +124,18 @@
 
     <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="编码" align="center" prop="code" />
+      <!-- <el-table-column label="编码" align="center" prop="code" /> -->
       <el-table-column label="网点编码" align="center" prop="branchCode" />
       <el-table-column label="车队名称" align="center" prop="name" />
       <el-table-column label="车队管理者" align="center" prop="teamLeader" />
-      <el-table-column label="是否删除" align="center" prop="isDel" />
+      <!-- <el-table-column label="是否删除" align="center" prop="isDel" /> -->
       <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" />
-      <el-table-column label="创建人" align="center" prop="createCode" />
-      <el-table-column label="修改人" align="center" prop="updateCode" />
+      <!-- <el-table-column label="创建人" align="center" prop="createCode" />
+      <el-table-column label="修改人" align="center" prop="updateCode" /> -->
+	  <el-table-column label="营业执照" align="center" prop="businessLicenseImg" />
+	  <el-table-column label="道路运输经营许可证照" align="center" prop="transportPermitImage" />
+	  <el-table-column label="身份证正面照片" align="center" prop="identificationImage" />
+	  <el-table-column label="身份证国徽面" align="center" prop="identificationBackImage" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
 		  <el-button
