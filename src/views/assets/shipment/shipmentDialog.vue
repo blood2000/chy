@@ -84,7 +84,7 @@
           />
         </el-select>
       </el-form-item>
-      
+
       <!-- <el-form-item label="所在区域" prop="shipmentArea">
         <el-select
           v-model="form.shipmentProvince"
@@ -337,16 +337,6 @@ export default {
     
   },
   methods: {
-    // 参数系统内置字典翻译
-    shipperTypeFormat(row) {
-      return this.selectDictLabel(this.typeOptions, row.shipperType);
-    },
-    authStatusFormat(row) {
-      return this.selectDictLabel(this.statusOptions, row.authStatus);
-    },
-    isFreezoneFormat(row) {
-      return this.selectDictLabel(this.isFreezoneOptions, row.isFreezone);
-    },
     /** 提交按钮 */
     submitForm: function() {
       this.$refs["form"].validate(valid => {
@@ -409,7 +399,7 @@ export default {
     // 表单赋值
     setForm(data) {
       this.form = data;
-    },
+    }
   }
 }
 </script>

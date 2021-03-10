@@ -1,69 +1,49 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="74px">
-      <el-form-item label="司机/调度" prop="driverRole">
-        <el-select
-          v-model="queryParams.driverRole"
-          clearable
-          size="small"
-          style="width: 240px"
-        >
+      <el-form-item label="司机类别" prop="driverType">
+        <el-select v-model="queryParams.driverType" placeholder="请选择司机类别" clearable size="small" style="width: 240px">
           <el-option
-            v-for="dict in roleOptions"
+            v-for="dict in driverTypeOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="用户名称" prop="driverName">
+      <el-form-item label="名字" prop="name">
         <el-input
-          v-model="queryParams.driverName"
-          placeholder="请输入用户名称"
+          v-model="queryParams.name"
+          placeholder="请输入名字"
           clearable
           size="small"
           style="width: 240px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="电话号码" prop="driverTelephone">
+      <el-form-item label="手机" prop="telphone">
         <el-input
-          v-model="queryParams.driverTelephone"
-          placeholder="请输入电话号码"
+          v-model="queryParams.telphone"
+          placeholder="请输入手机"
           clearable
           size="small"
           style="width: 240px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="车牌号" prop="driverPlate">
+      <el-form-item label="固话" prop="fixedPhone">
         <el-input
-          v-model="queryParams.driverPlate"
-          placeholder="请输入车牌号"
+          v-model="queryParams.fixedPhone"
+          placeholder="请输入固话"
           clearable
           size="small"
           style="width: 240px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="加入调度" prop="driverJoinSchedule">
-        <el-select
-          v-model="queryParams.driverJoinSchedule"
-          clearable
-          size="small"
-          style="width: 240px"
-        >
-          <el-option
-            v-for="dict in joinScheduleOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="身份证号" prop="driverIDCard">
+      <el-form-item label="身份证号" prop="identificationNumber">
         <el-input
-          v-model="queryParams.driverIDCard"
+          v-model="queryParams.identificationNumber"
           placeholder="请输入身份证号"
           clearable
           size="small"
@@ -71,23 +51,8 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="推荐人" prop="driverReferrer">
-        <el-input
-          v-model="queryParams.driverReferrer"
-          placeholder="请输入推荐人"
-          clearable
-          size="small"
-          style="width: 240px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="审核状态" prop="driverStatus">
-        <el-select
-          v-model="queryParams.driverStatus"
-          clearable
-          size="small"
-          style="width: 240px"
-        >
+      <el-form-item label="审核状态" prop="authStatus">
+        <el-select v-model="queryParams.authStatus" placeholder="请选择审核状态" clearable size="small" style="width: 240px">
           <el-option
             v-for="dict in statusOptions"
             :key="dict.dictValue"
@@ -150,41 +115,49 @@
 
     <el-table v-loading="loading" :data="driverList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="审核状态" align="center" prop="" sortable	/>
-      <el-table-column label="上报状态" align="center" prop="" sortable	/>
-      <el-table-column label="姓名" align="center" prop="" sortable	/> 
-      <el-table-column label="调度名称" align="center" prop="" sortable	/>
-      <el-table-column label="电话号码" align="center" prop="" sortable	/>
-      <el-table-column label="车牌号" align="center" prop="" sortable	/>
-      <el-table-column label="网商汇款账号" align="center" prop="" sortable	/>
-      <el-table-column label="定位来源" align="center" prop="" />
-      <el-table-column label="设备编号" align="center" prop="" sortable	/>
-      <el-table-column label="身份证号" align="center" prop="" sortable	/>
-      <el-table-column label="预付款余额(元)" align="center" prop="" sortable	/>
-      <el-table-column label="道路运输许可证号" align="center" prop="" sortable	/>
-      <el-table-column label="司机/调度" align="center" prop="" />
-      <el-table-column label="载重" align="center" prop="" />
-      <el-table-column label="注册时间" align="center" prop="createTime" sortable width="180">
+      <el-table-column label="司机类别" align="center" prop="driverType" :formatter="driverTypeFormat" />
+      <el-table-column label="省" align="center" prop="provinceCode" />
+      <el-table-column label="市" align="center" prop="cityCode" />
+      <el-table-column label="县/区" align="center" prop="countyCode" />
+      <el-table-column label="名字" align="center" prop="name" />
+      <el-table-column label="手机" align="center" prop="telphone" />
+      <el-table-column label="固话" align="center" prop="fixedPhone" />
+      <el-table-column label="工作单位" align="center" prop="workCompany" />
+      <el-table-column label="司机城市名称" align="center" prop="driverCity" />
+      <el-table-column label="地址" align="center" prop="homeAddress" />
+      <el-table-column label="身份证号" align="center" prop="identificationNumber" />
+      <el-table-column label="驾驶证" align="center" prop="driverLicense" />
+      <el-table-column label="驾驶证有效期自" align="center" prop="validPeriodFrom" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
+          <span>{{ parseTime(new Date(scope.row.validPeriodFrom), '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="上报日期" align="center" prop="createTime" sortable width="180">
+      <el-table-column label="驾驶证有效期至" align="center" prop="validPeriodTo" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
+          <span>{{ parseTime(new Date(scope.row.validPeriodTo), '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="驾驶证到期" align="center" prop="createTime" sortable>
+      <el-table-column label="驾驶证类型" align="center" prop="driverLicenseType" />
+      <el-table-column label="上岗证" align="center" prop="workLicense" />
+      <el-table-column label="从业资格证到期日期" align="center" prop="workLicenseDueDate" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
+          <span>{{ parseTime(new Date(scope.row.workLicenseDueDate), '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="行驶证到期" align="center" prop="createTime" sortable>
+      <el-table-column label="营业执照号" align="center" prop="businessLicenseImgNo" />
+      <el-table-column label="是否上传人员信用信息" align="center" prop="isReportPerson" :formatter="isReportPersonFormat" />
+      <el-table-column label="驾驶证发证机关" align="center" prop="issuingOrganizations" />
+      <el-table-column label="是否上传企业" align="center" prop="isReportEnterprise" :formatter="isReportEnterpriseFormat" />
+      <el-table-column label="从业资格证办理省份名称" align="center" prop="workLicenseProvinceName" />
+      <el-table-column label="审核状态" align="center" prop="authStatus" :formatter="authStatusFormat" />
+      <el-table-column label="是否冻结" align="center" prop="isFreeze" :formatter="isFreezeFormat" />
+      <el-table-column label="创建人" align="center" prop="createCode" />
+      <el-table-column label="修改人" align="center" prop="updateCode" />
+      <el-table-column label="创建时间" align="center" prop="createTime" sortable width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
+          <span>{{ parseTime(new Date(scope.row.createTime)) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="推荐人" align="center" prop="" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="180">
         <template slot-scope="scope">
           <el-button
@@ -197,7 +170,7 @@
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
+            @click="handleDEtail(scope.row, 'edit')"
             v-hasPermi="['system:config:edit']"
           >修改</el-button>
           <el-button
@@ -220,12 +193,12 @@
     />
 
     <!-- 新增/修改/详情 对话框 -->
-    <driver-dialog ref="DriverDialog" :title="title" :open.sync="open" @refresh="getList"></driver-dialog>
+    <driver-dialog ref="DriverDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList"></driver-dialog>
   </div>
 </template>
 
 <script>
-import { listConfig, getConfig, delConfig } from "@/api/assets/driver";
+import { listDriver, getDriver, delDriver } from "@/api/assets/driver";
 import DriverDialog from './driverDialog';
 
 export default {
@@ -235,6 +208,39 @@ export default {
   },
   data() {
     return {
+      // 司机类别字典
+      driverTypeOptions: [
+        {dictLabel: '独立', dictValue: 1},
+        {dictLabel: '分配', dictValue: 2},
+        {dictLabel: '其他', dictValue: 3}
+      ],
+      // 审核状态字典
+      statusOptions: [
+        {dictLabel: '未审核', dictValue: 0},
+        {dictLabel: '审核中', dictValue: 1},
+        {dictLabel: '审核未通过', dictValue: 2},
+        {dictLabel: '审核通过', dictValue: 3}
+      ],
+      // 是否冻结字典
+      isFreezoneOptions: [
+        {dictLabel: '正常', dictValue: 0},
+        {dictLabel: '冻结', dictValue: 1}
+      ],
+      // 是否
+      isOption: [
+        {dictLabel: '否', dictValue: 0},
+        {dictLabel: '是', dictValue: 1}
+      ],
+      // 网点编码字典
+      branchCodeOptions: [],
+      // 省编码字典
+      provinceCodeOptions: [],
+      // 市编码字典
+      cityCodeOptions: [],
+      // 县/区编码字典
+      countyCodeOptions: [],
+      // 驾驶证类型字典
+      driverLicenseTypeOptions: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -253,41 +259,74 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
-      // 日期范围
-      dateRange: [],
-      // 司机/调度字典
-      roleOptions: [
-        {dictLabel: '司机', dictValue: '司机'},
-        {dictLabel: '调度', dictValue: '调度'}
-      ],
-      // 加入调度字典   
-      joinScheduleOptions: [],
-      // 审核状态字典
-      statusOptions: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        driverRole: undefined,
-        driverName: undefined,
-        driverTelephone: undefined,
-        driverPlate: undefined,
-        driverJoinSchedule: undefined,
-        driverIDCard: undefined,
-        driverReferrer: undefined,
-        driverStatus: undefined
-      }
+        driverTypeOptions: undefined,
+        name: undefined,
+        telphone: undefined,
+        fixedPhone: undefined,
+        identificationNumber: undefined,
+        authStatus: undefined
+      },
+      // 表单是否禁用   
+      formDisable: false
     };
   },
   created() {
     this.getList();
   },
   methods: {
+    // 司机类别(1独立 2分配 3 其他)字典翻译
+    driverTypeFormat(row, column) {
+      return this.selectDictLabel(this.driverTypeOptions, row.driverType);
+    },
+    // 省编码字典翻译
+    provinceCodeFormat(row, column) {
+      return this.selectDictLabel(this.provinceCodeOptions, row.provinceCode);
+    },
+    // 市编码字典翻译
+    cityCodeFormat(row, column) {
+      return this.selectDictLabel(this.cityCodeOptions, row.cityCode);
+    },
+    // 县/区编码字典翻译
+    countyCodeFormat(row, column) {
+      return this.selectDictLabel(this.countyCodeOptions, row.countyCode);
+    },
+    // 司机城市名称字典翻译
+    driverCityFormat(row, column) {
+      return this.selectDictLabel(this.driverCityOptions, row.driverCity);
+    },
+    // 驾驶证类型字典翻译
+    driverLicenseTypeFormat(row, column) {
+      return this.selectDictLabel(this.driverLicenseTypeOptions, row.driverLicenseType);
+    },
+    // 从业资格证办理省份名称字典翻译
+    workLicenseProvinceNameFormat(row, column) {
+      return this.selectDictLabel(this.workLicenseProvinceNameOptions, row.workLicenseProvinceName);
+    },
+    // 审核状态字典翻译
+    authStatusFormat(row, column) {
+      return this.selectDictLabel(this.statusOptions, row.authStatus);
+    },
+    // 是否冻结字典翻译
+    isFreezeFormat(row, column) {
+      return this.selectDictLabel(this.isFreezoneOptions, row.isFreeze);
+    },
+    // 是否上传人员信用信息字典翻译
+    isReportPersonFormat(row, column) {
+      return this.selectDictLabel(this.isOption, row.isReportPerson);
+    },
+    // 是否上传企业字典翻译
+    isReportEnterpriseFormat(row, column) {
+      return this.selectDictLabel(this.isOption, row.isReportEnterprise);
+    },
     /** 查询参数列表 */
     getList() {
       this.loading = true;
-      listConfig(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
-          this.driver = response.rows;
+      listDriver(this.queryParams).then(response => {
+          this.driverList = response.rows;
           this.total = response.total;
           this.loading = false;
         }
@@ -300,7 +339,6 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.dateRange = [];
       this.resetForm("queryForm");
       this.handleQuery();
     },
@@ -309,42 +347,34 @@ export default {
       this.$refs.DriverDialog.reset();
       this.open = true;
       this.title = "新增";
+      this.formDisable = false;
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.configId)
-      this.single = selection.length!=1
-      this.multiple = !selection.length
+      this.ids = selection.map(item => item.id);
+      this.single = selection.length!=1;
+      this.multiple = !selection.length;
     },
-    /** 详情按钮操作 */
-    handleDEtail(row) {
+    /** 编辑/详情按钮操作 */
+    handleDEtail(row, flag) {
       this.$refs.DriverDialog.reset();
-      const configId = row.configId || this.ids
-      getConfig(configId).then(response => {
-        this.form = response.data;
+      const id = row.id || this.ids;
+      getDriver(id).then(response => {
+        this.$refs.DriverDialog.setForm(response.data);
         this.open = true;
-        this.title = "详情";
-      });
-    },
-    /** 修改按钮操作 */
-    handleUpdate(row) {
-      this.$refs.DriverDialog.reset();
-      const configId = row.configId || this.ids
-      getConfig(configId).then(response => {
-        this.form = response.data;
-        this.open = true;
-        this.title = "编辑";
+        this.title = flag === "edit" ? "编辑" : "详情";
+        this.formDisable = flag == "edit" ? false : true;
       });
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const configIds = row.configId || this.ids;
-      this.$confirm('是否确认删除编号为"' + configIds + '"的数据项?', "警告", {
+      const ids = row.id || this.ids;
+      this.$confirm('是否确认删除编号为"' + ids + '"的数据项?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         }).then(function() {
-          return delConfig(configIds);
+          return delDriver(ids);
         }).then(() => {
           this.getList();
           this.msgSuccess("删除成功");
