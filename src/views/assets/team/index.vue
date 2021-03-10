@@ -134,6 +134,12 @@
       <el-table-column label="修改人" align="center" prop="updateCode" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
+		  <el-button
+		    size="mini"
+		    type="text"
+		    icon="el-icon-document"
+		    @click="handleDEtail(scope.row)"
+		  >详情</el-button>
           <el-button
             size="mini"
             type="text"
@@ -160,57 +166,19 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改调度者对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <!-- <el-form-item label="主键" prop="id">
-          <el-input v-model="form.id" placeholder="请输入主键" />
-        </el-form-item> -->
-        <el-form-item label="编码" prop="code">
-          <el-input v-model="form.code" placeholder="请输入编码" />
-        </el-form-item>
-        <el-form-item label="网点编码" prop="branchCode">
-          <el-input v-model="form.branchCode" placeholder="请输入网点编码" />
-        </el-form-item>
-        <el-form-item label="车队名称" prop="name">
-          <el-input v-model="form.name" placeholder="请输入车队名称" />
-        </el-form-item>
-        <el-form-item label="管理者" prop="teamLeader">
-          <el-input v-model="form.teamLeader" placeholder="请输入车队管理者" />
-        </el-form-item>
-        <el-form-item label="是否删除" prop="isDel">
-          <el-input v-model="form.isDel" placeholder="请输入是否删除" />
-        </el-form-item>
-        <el-form-item label="状态">
-          <el-radio-group v-model="form.status">
-            <el-radio
-              v-for="dict in statusOptions"
-              :key="dict.dictValue"
-              :label="parseInt(dict.dictValue)"
-            >{{dict.dictLabel}}</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <!-- <el-form-item label="创建人" prop="createCode">
-          <el-input v-model="form.createCode" placeholder="请输入创建人" />
-        </el-form-item>
-        <el-form-item label="修改人" prop="updateCode">
-          <el-input v-model="form.updateCode" placeholder="请输入修改人" />
-        </el-form-item> -->
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
+    <!-- 新增/修改/详情 对话框 -->
+    <team-dialog ref="TeamDialog" :title="title" :open.sync="open" @refresh="getList"></team-dialog>
   </div>
 </template>
 
 <script>
-import { listInfo, getInfo, delInfo, addInfo, updateInfo } from "@/api/assets/team";
+import { listInfo, getInfo, delInfo } from "@/api/assets/team";
+import TeamDialog from './teamDialog';
 
 export default {
   name: "Team",
   components: {
+	  TeamDialog
   },
   data() {
     return {
@@ -300,23 +268,6 @@ export default {
       this.open = false;
       this.reset();
     },
-    // 表单重置
-    reset() {
-      this.form = {
-        id: null,
-        code: null,
-        branchCode: null,
-        name: null,
-        teamLeader: null,
-        isDel: null,
-        status: 0,
-        createCode: null,
-        createTime: null,
-        updateCode: null,
-        updateTime: null
-      };
-      this.resetForm("form");
-    },
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
@@ -335,13 +286,13 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd() {
-      this.reset();
+      this.$refs.TeamDialog.reset();
       this.open = true;
       this.title = "添加调度者";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      this.reset();
+      this.$refs.TeamDialog.reset();
       const id = row.id || this.ids
       getInfo(id).then(response => {
         this.form = response.data;
@@ -349,26 +300,16 @@ export default {
         this.title = "修改调度者";
       });
     },
-    /** 提交按钮 */
-    submitForm() {
-      this.$refs["form"].validate(valid => {
-        if (valid) {
-          if (this.form.id != null) {
-            updateInfo(this.form).then(response => {
-              this.msgSuccess("修改成功");
-              this.open = false;
-              this.getList();
-            });
-          } else {
-            addInfo(this.form).then(response => {
-              this.msgSuccess("新增成功");
-              this.open = false;
-              this.getList();
-            });
-          }
-        }
-      });
-    },
+	/** 详情按钮操作 */
+	handleDEtail(row) {
+		this.$refs.TeamDialog.reset();
+		const id = row.id || this.ids
+		getInfo(id).then(response => {
+		  this.form = response.data;
+		  this.open = true;
+		  this.title = "详情";
+		});
+	},
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;

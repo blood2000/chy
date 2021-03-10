@@ -28,7 +28,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="车辆归属类型 0.自有 1.加盟" prop="vehicleAscriptionType">
+      <el-form-item label="归属类型" prop="vehicleAscriptionType">
         <el-select v-model="queryParams.vehicleAscriptionType" placeholder="请选择车辆归属类型 0.自有 1.加盟" clearable size="small">
           <el-option
             v-for="dict in vehicleAscriptionTypeOptions"
