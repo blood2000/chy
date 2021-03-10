@@ -1,44 +1,19 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="用户名称" prop="shipmentName">
+      <el-form-item label="货主姓名" prop="adminName">
         <el-input
-          v-model="queryParams.shipmentName"
-          placeholder="请输入用户名称"
+          v-model="queryParams.adminName"
+          placeholder="请输入货主姓名"
           clearable
           size="small"
           style="width: 240px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="电话号码" prop="shipmentTelephone">
-        <el-input
-          v-model="queryParams.shipmentTelephone"
-          placeholder="请输入电话号码"
-          clearable
-          size="small"
-          style="width: 240px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="独立核算" prop="shipmentAccounting">
+      <el-form-item label="审核状态" prop="authStatus">
         <el-select
-          v-model="queryParams.shipmentAccounting"
-          clearable
-          size="small"
-          style="width: 240px"
-        >
-          <el-option
-            v-for="dict in aaccountingOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="审核状态" prop="shipmentStatus">
-        <el-select
-          v-model="queryParams.shipmentStatus"
+          v-model="queryParams.authStatus"
           clearable
           size="small"
           style="width: 240px"
@@ -51,9 +26,9 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="公司名称" prop="shipmentCompany">
+      <el-form-item label="公司名称" prop="companyName">
         <el-input
-          v-model="queryParams.shipmentCompany"
+          v-model="queryParams.companyName"
           placeholder="请输入公司名称"
           clearable
           size="small"
@@ -61,19 +36,9 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="推荐人" prop="shipmentReferrer">
-        <el-input
-          v-model="queryParams.shipmentReferrer"
-          placeholder="请输入推荐人"
-          clearable
-          size="small"
-          style="width: 240px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="货主类型" prop="shipmentType">
+      <el-form-item label="货主类别" prop="shipperType">
         <el-select
-          v-model="queryParams.shipmentType"
+          v-model="queryParams.shipperType"
           clearable
           size="small"
           style="width: 240px"
@@ -87,15 +52,19 @@
         </el-select>
       </el-form-item>
       <el-form-item label="审核时间">
-        <el-date-picker
-          v-model="dateRange"
-          size="small"
-          style="width: 240px"
+        <el-date-picker clearable size="small"
+          v-model="queryParams.beginTime"
+          type="date"
           value-format="yyyy-MM-dd"
-          type="daterange"
-          range-separator="-"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
+          style="width: 240px"
+          placeholder="请选择"
+        ></el-date-picker> -
+        <el-date-picker clearable size="small"
+          v-model="queryParams.endTime"
+          type="date"
+          value-format="yyyy-MM-dd"
+          style="width: 240px"
+          placeholder="请选择"
         ></el-date-picker>
       </el-form-item>
       <el-form-item>
@@ -118,28 +87,20 @@
     </el-row>
 
     <el-table v-loading="loading" :data="shipmentList">
-      <el-table-column label="审核状态" align="center" prop="" sortable	/>
-      <el-table-column label="姓名" align="center" prop="" />
-      <el-table-column label="公司名称" align="center" prop="" :show-overflow-tooltip="true" sortable />
-      <el-table-column label="货主类型" align="center" prop="" :formatter="typeFormat" />
-      <el-table-column label="电话号码" align="center" prop="" sortable />
-      <el-table-column label="网商汇款账号" align="center" prop="" sortable	/>
-      <el-table-column label="冻结保证金(元)" align="center" prop="" sortable />
-      <el-table-column label="税点(%)" align="center" prop="" sortable />
-      <el-table-column label="推荐人" align="center" prop="" />
-      <el-table-column label="是否独立核算" align="center" prop="" />
-      <el-table-column label="是否审核货源" align="center" prop="" />
-      <el-table-column label="是否预付运费" align="center" prop="" />
-      <el-table-column label="授信金额" align="center" prop="" />
-      <el-table-column label="授信余额" align="center" prop="" />
+      <el-table-column label="货主姓名" align="center" prop="adminName" />
+      <el-table-column label="公司名称" align="center" prop="companyName" sortable />
+      <el-table-column label="货主类别" align="center" prop="shipperType" :formatter="shipperTypeFormat" />
+      <el-table-column label="货主身份证" align="center" prop="identificationNumber" />
+      <el-table-column label="营业执照号" align="center" prop="businessLicenseNo" />
+      <el-table-column label="统一社会信用代码代码" align="center" prop="organizationCodeNo" />
+      <el-table-column label="法人身份证" align="center" prop="artificialIdentificationNumber" />
+      <el-table-column label="审核状态" align="center" prop="authStatus" :formatter="authStatusFormat" sortable />
+      <el-table-column label="是否冻结" align="center" prop="isFreezone" :formatter="isFreezoneFormat" />
+      <el-table-column label="创建人" align="center" prop="createCode" />
+      <el-table-column label="修改人" align="center" prop="updateCode" />
       <el-table-column label="创建时间" align="center" prop="createTime" sortable width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="审核时间" align="center" prop="createTime" sortable width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
+          <span>{{ parseTime(new Date(scope.row.createTime)) }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="180">
@@ -154,7 +115,7 @@
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
+            @click="handleDEtail(scope.row, 'edit')"
             v-hasPermi="['assets:shipment:edit']"
           >修改</el-button>
           <el-button
@@ -177,12 +138,12 @@
     />
 
     <!-- 新增/修改/详情 对话框 -->
-    <shipment-dialog ref="ShipmentDialog" :title="title" :open.sync="open" @refresh="getList"></shipment-dialog>
+    <shipment-dialog ref="ShipmentDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList"></shipment-dialog>
   </div>
 </template>
 
 <script>
-import { listConfig, getConfig, delConfig } from "@/api/assets/shipment";
+import { listShipment, getShipment, delShipment } from "@/api/assets/shipment";
 import ShipmentDialog from './shipmentDialog';
 
 export default {
@@ -194,8 +155,6 @@ export default {
     return {
       // 遮罩层
       loading: true,
-      // 选中数组
-      ids: [],
       // 非单个禁用
       single: true,
       // 非多个禁用
@@ -210,39 +169,47 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
-      // 日期范围
-      dateRange: [],
-      // 独立核算字典   
-      aaccountingOptions: [],
-      // 审核状态字典
-      statusOptions: [],
       // 货主类型数据字典
-      typeOptions: [],
+      typeOptions: [
+        {dictLabel: '发货人', dictValue: 0},
+        {dictLabel: '发货企业', dictValue: 1}
+      ],
+      // 审核状态字典
+      statusOptions: [
+        {dictLabel: '未审核', dictValue: 0},
+        {dictLabel: '审核中', dictValue: 1},
+        {dictLabel: '审核未通过', dictValue: 2},
+        {dictLabel: '审核通过', dictValue: 3}
+      ],
+      // 是否冻结字典
+      isFreezoneOptions: [
+        {dictLabel: '正常', dictValue: 0},
+        {dictLabel: '冻结', dictValue: 1}
+      ],  
       // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        shipmentName: undefined,
-        shipmentTelephone: undefined,
-        shipmentAccounting: undefined,
-        shipmentStatus: undefined,
-        shipmentCompany: undefined,
-        shipmentReferrer: undefined,
-        shipmentType: undefined,
+        adminName: undefined,
+        authStatus: undefined,
+        companyName: undefined,
+        beginTime: undefined,
+        endTime: undefined
       },
+      // 表单详情
+      form: {},
+      // 表单是否禁用   
+      formDisable: false
     };
   },
   created() {
     this.getList();
-    this.getDicts("sys_yes_no").then(response => {
-      this.typeOptions = response.data;
-    });
   },
   methods: {
     /** 查询参数列表 */
     getList() {
       this.loading = true;
-      listConfig(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
+      listShipment(this.queryParams).then(response => {
           this.shipmentList = response.rows;
           this.total = response.total;
           this.loading = false;
@@ -250,8 +217,14 @@ export default {
       );
     },
     // 参数系统内置字典翻译
-    typeFormat(row, column) {
-      return this.selectDictLabel(this.typeOptions, row.shipmentType);
+    shipperTypeFormat(row) {
+      return this.selectDictLabel(this.typeOptions, row.shipperType);
+    },
+    authStatusFormat(row) {
+      return this.selectDictLabel(this.statusOptions, row.authStatus);
+    },
+    isFreezoneFormat(row) {
+      return this.selectDictLabel(this.isFreezoneOptions, row.isFreezone);
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -260,7 +233,6 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.dateRange = [];
       this.resetForm("queryForm");
       this.handleQuery();
     },
@@ -269,46 +241,32 @@ export default {
       this.$refs.ShipmentDialog.reset();
       this.open = true;
       this.title = "新增";
+      this.formDisable = false;
     },
-    /** 详情按钮操作 */
-    handleDEtail(row) {
+    /** 修改/详情按钮操作 */
+    handleDEtail(row, flag) {
       this.$refs.ShipmentDialog.reset();
-      const configId = row.configId || this.ids
-      getConfig(configId).then(response => {
-        this.form = response.data;
+      const id = row.id;
+      getShipment(id).then(response => {
+        this.$refs.ShipmentDialog.setForm(response.data);
         this.open = true;
-        this.title = "详情";
-      });
-    },
-    /** 修改按钮操作 */
-    handleUpdate(row) {
-      this.$refs.ShipmentDialog.reset();
-      const configId = row.configId || this.ids
-      getConfig(configId).then(response => {
-        this.form = response.data;
-        this.open = true;
-        this.title = "编辑";
+        this.title = flag === "edit" ? "编辑" : "详情";
+        this.formDisable = flag == "edit" ? false : true;
       });
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const configIds = row.configId || this.ids;
-      this.$confirm('是否确认删除编号为"' + configIds + '"的数据项?', "警告", {
+      const id = row.id;
+      this.$confirm('是否确认删除编号为"' + id + '"的数据项?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         }).then(function() {
-          return delConfig(configIds);
+          return delShipment(id);
         }).then(() => {
           this.getList();
           this.msgSuccess("删除成功");
         })
-    },
-    /** 导出按钮操作 */
-    handleExport() {
-      this.download('system/config/export', {
-        ...this.queryParams
-      }, `config_${new Date().getTime()}.xlsx`)
     }
   }
 };
