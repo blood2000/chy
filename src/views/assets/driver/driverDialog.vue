@@ -227,30 +227,46 @@
           />
         </el-select>
       </el-form-item> -->
-      <!-- <el-form-item>
+      <el-form-item>
         <el-row>
           <el-col :span="7" class="mb">
-            <p class="upload-image-label">管理员身份证正面照</p>
-            <upload-image :value="form.identificationImg"></upload-image>
+            <p class="upload-image-label">驾驶证</p>
+            <upload-image :value="form.driverLicenseImage"></upload-image>
           </el-col>
           <el-col :span="7" class="mb">
-            <p class="upload-image-label">管理员身份证背面照</p>
-            <upload-image :value="form.identificationBackImg"></upload-image>
+            <p class="upload-image-label">行驶证</p>
+            <upload-image :value="form.driverOtherLicenseImage"></upload-image>
           </el-col>
           <el-col :span="7" class="mb">
-            <p class="upload-image-label">手持身份证照</p>
-            <upload-image :value="form.identificationInhandImg"></upload-image>
+            <p class="upload-image-label">行驶证副页</p>
+            <upload-image :value="form.driverOtherLicenseBackImage"></upload-image>
+          </el-col>
+          <el-col :span="7" class="mb">
+            <p class="upload-image-label">身份证正面照</p>
+            <upload-image :value="form.identificationImage"></upload-image>
+          </el-col>
+          <el-col :span="7" class="mb">
+            <p class="upload-image-label">身份证反面照</p>
+            <upload-image :value="form.identificationBackImage"></upload-image>
+          </el-col>
+          <el-col :span="7" class="mb">
+            <p class="upload-image-label">道路运输许可证</p>
+            <upload-image :value="form.transportPermitImage"></upload-image>
           </el-col>
           <el-col :span="7">
-            <p class="upload-image-label">营业执照照</p>
-            <upload-image :value="form.businessLicenseImg"></upload-image>
+            <p class="upload-image-label">车头正面照</p>
+            <upload-image :value="form.vehicleImage"></upload-image>
           </el-col>
           <el-col :span="7">
-            <p class="upload-image-label">法人身份证正面照</p>
-            <upload-image :value="form.artificialIdentificationImg"></upload-image>
+            <p class="upload-image-label">司机照片</p>
+            <upload-image :value="form.peopleImage"></upload-image>
+          </el-col>
+          <el-col :span="7">
+            <p class="upload-image-label">从业资格证</p>
+            <upload-image :value="form.workLicenseImage"></upload-image>
           </el-col>
         </el-row>
-      </el-form-item> -->
+      </el-form-item>
       <el-form-item label="车牌号" prop="licenseNumber">
         <el-input v-model="form.licenseNumber" placeholder="请输入车牌号" size="small" class="width90"/>
       </el-form-item>

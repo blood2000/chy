@@ -88,10 +88,18 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
+          type="warning"
+          icon="el-icon-upload2"
+          size="mini"
+          :disabled="multiple"
+          @click="handleExport"
+        >批量导出</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
           type="info"
           icon="el-icon-upload2"
           size="mini"
-          @click="handleExport"
         >司机批量导入</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -99,7 +107,6 @@
           type="warning"
           icon="el-icon-upload2"
           size="mini"
-          @click="handleExport"
         >司机车辆信息上报</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -107,7 +114,7 @@
           type="success"
           icon="el-icon-download"
           size="mini"
-          @click="handleExport"
+          @click="handleImportTemplateDriver"
         >下载模板</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
@@ -382,10 +389,14 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('system/config/export', {
+      this.download('assets/driver/export', {
         ...this.queryParams
-      }, `config_${new Date().getTime()}.xlsx`)
-    }
+      }, `driver_${new Date().getTime()}.xlsx`)
+    },
+    /** 下载模板 */
+    handleImportTemplateDriver() {
+      this.download('assets/driver/importTemplate', {}, `driver_${new Date().getTime()}.xlsx`)
+    },
   }
 };
 </script>
