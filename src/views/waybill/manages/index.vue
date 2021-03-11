@@ -296,13 +296,13 @@
     />
 
 		<!-- 新增/修改/详情 对话框 -->
-		<manage-dialog ref="ManagesDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList"></manage-dialog>
+		<manage-dialog ref="ManagesDialog" :title="title" :open.sync="open" :currentId="currentId" :disable="formDisable" @refresh="getList"></manage-dialog>
   </div>
 </template>
 
 <script>
-import { listManages, getManages, delManages } from "@/api/waybill/manages";
-import ManageDialog from './manageDialog';
+import { listManages, delManages } from "@/api/waybill/manages";
+import ManageDialog from '../components/detailDialog';
 
 export default {
   name: "Manages",
@@ -431,7 +431,9 @@ export default {
       form: {},
       // 表单校验
       rules: {},
-			formDisable: false
+			formDisable: false,
+			// 当前选中的运单id
+			currentId: null
     };
   },
   created() {
@@ -524,27 +526,10 @@ export default {
     /** 详情按钮操作 */
     handleUpdate(row) {
       this.$refs.ManagesDialog.reset();
-      const id = row.code;
-      getManages(id).then(response => {
-        this.form = response.data;
-        this.open = true;
-        this.title = "详情";
-				this.formDisable = true;
-      });
-    },
-    /** 删除按钮操作 */
-    handleDelete(row) {
-      const id = row.code;
-      this.$confirm('是否确认删除编号为"' + id + '"的数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return delManages(id);
-        }).then(() => {
-          this.getList();
-          this.msgSuccess("删除成功");
-        })
+      this.currentId = row.code;
+			this.open = true;
+			this.title = "查看运单详情";
+			this.formDisable = true;
     },
 		/** 标记异常按钮操作 */
 		handleMark(row) {
@@ -554,6 +539,20 @@ export default {
 		handleSeperate(row) {
 
 		},
+		/** 删除按钮操作 */
+    handleDelete(row) {
+      const id = row.code;
+      this.$confirm('是否确认作废编号为"' + id + '"的运单?', "警告", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(function() {
+          return delManages(id);
+        }).then(() => {
+          this.getList();
+          this.msgSuccess("作废成功");
+        })
+    },
 		/** 备注按钮操作 */
 		handleRemarks(row) {
 			
