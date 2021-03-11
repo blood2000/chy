@@ -295,19 +295,31 @@
       @pagination="getList"
     />
 
-		<!-- 新增/修改/详情 对话框 -->
-		<manage-dialog ref="ManagesDialog" :title="title" :open.sync="open" :currentId="currentId" :disable="formDisable" @refresh="getList"></manage-dialog>
+		<!-- 详情对话框 -->
+		<detail-dialog :title="title" :open.sync="open" :currentId="currentId" :disable="formDisable" @refresh="getList"></detail-dialog>
+		<!-- 标记异常对话框 -->
+		<mark-abnormal-dialog :title="title" :open.sync="openMarkAbanormal" :currentId="currentId" @refresh="getList"></mark-abnormal-dialog>
+		<!-- 分单列表对话框 -->
+		<seperate-list-dialog :title="title" :open.sync="openSeperateList" :currentId="currentId" @refresh="getList"></seperate-list-dialog>
+		<!-- 备注对话框 -->
+		<remark-dialog :title="title" :open.sync="openRemark" :currentId="currentId" @refresh="getList"></remark-dialog>
   </div>
 </template>
 
 <script>
 import { listManages, delManages } from "@/api/waybill/manages";
-import ManageDialog from '../components/detailDialog';
+import DetailDialog from '../components/detailDialog';
+import MarkAbnormalDialog from './markAbnormalDialog';
+import SeperateListDialog from './seperateListDialog';
+import RemarkDialog from './remarkDialog';
 
 export default {
   name: "Manages",
   components: {
-    ManageDialog
+    DetailDialog,
+		MarkAbnormalDialog,
+		SeperateListDialog,
+		RemarkDialog
   },
   data() {
     return {
@@ -323,6 +335,9 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
+			openMarkAbanormal: false,
+			openSeperateList: false,
+			openRemark: false,
 			// 是否字典
 			isOptions: [
 				{dictLabel: '否', dictValue: 0},
@@ -525,7 +540,6 @@ export default {
     },
     /** 详情按钮操作 */
     handleUpdate(row) {
-      this.$refs.ManagesDialog.reset();
       this.currentId = row.code;
 			this.open = true;
 			this.title = "查看运单详情";
@@ -533,11 +547,15 @@ export default {
     },
 		/** 标记异常按钮操作 */
 		handleMark(row) {
-
+			this.currentId = row.code;
+			this.openMarkAbanormal = true;
+			this.title = "标记异常";
 		},
 		/** 分单列表按钮操作 */
 		handleSeperate(row) {
-
+			this.currentId = row.code;
+			this.openSeperateList = true;
+			this.title = "子单列表";
 		},
 		/** 删除按钮操作 */
     handleDelete(row) {
@@ -555,7 +573,9 @@ export default {
     },
 		/** 备注按钮操作 */
 		handleRemarks(row) {
-			
+			this.currentId = row.code;
+			this.openRemark = true;
+			this.title = "编辑货主运单备注";
 		}
   }
 };

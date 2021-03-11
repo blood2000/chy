@@ -278,6 +278,7 @@ export default {
 	watch: {
 		open(val) {
 			if(val) {
+				this.reset();
 				this.getDetail();
 			}
 		}
