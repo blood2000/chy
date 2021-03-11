@@ -27,7 +27,7 @@
             <!-- 右边 -->
             <div>
                   <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="100px" class="clearfix">
-                    <el-form-item label="下单客户" prop="testName">
+                    <el-form-item label="装货信息" prop="testName">
                         <el-input
                         v-model="queryParams.testName"
                         placeholder="请输入公司名称/客户姓名/手机号"
@@ -37,7 +37,7 @@
                         />
                     </el-form-item>
 
-                    <el-form-item label="转货信息" prop="testName1">
+                    <el-form-item label="收货信息" prop="testName1">
                         <el-input
                         v-model="queryParams.testName1"
                         placeholder="装货地/装货电话/装货人"
@@ -47,7 +47,7 @@
                         />
                     </el-form-item>
 
-                    <el-form-item label="收货信息" prop="testName2">
+                    <!-- <el-form-item label="收货信息" prop="testName2">
                         <el-input
                         v-model="queryParams.testName2"
                         placeholder="目的地/收货电话/收货人"
@@ -55,7 +55,7 @@
                         size="small"
                         @keyup.enter.native="handleQuery"
                         />
-                    </el-form-item>
+                    </el-form-item> -->
 
                     <el-form-item label="货物类型" prop="testName2">
                         <el-select v-model="queryParams.testName3" placeholder="----请选择----" style="width: 215px">
@@ -64,7 +64,7 @@
                         </el-select>
                     </el-form-item>
 
-                    <el-form-item label="货物描述" prop="testName2">
+                    <!-- <el-form-item label="货物描述" prop="testName2">
                         <el-input
                             v-model="queryParams.testName4"
                             placeholder="目的地/收货电话/收货人"
@@ -72,7 +72,7 @@
                             size="small"
                             @keyup.enter.native="handleQuery"
                         />
-                    </el-form-item>
+                    </el-form-item> -->
 
                     <el-form-item label="货源单号" prop="testName2">
                         <el-input
@@ -91,19 +91,19 @@
                         </el-select>
                     </el-form-item>
 
-                    <el-form-item label="货源类型" prop="testName2">
+                    <!-- <el-form-item label="货源类型" prop="testName2">
                         <el-select v-model="queryParams.testName7" placeholder="----请选择----" style="width: 215px">
                         <el-option label="区域一" value="shanghai"></el-option>
                         <el-option label="区域二" value="beijing"></el-option>
                         </el-select>
-                    </el-form-item>
+                    </el-form-item> -->
 
-                    <el-form-item label="是否拼单" prop="testName2">
+                    <!-- <el-form-item label="是否拼单" prop="testName2">
                         <el-select v-model="queryParams.testName8" placeholder="----请选择----" style="width: 215px">
                             <el-option label="区域一" value="shanghai"></el-option>
                             <el-option label="区域二" value="beijing"></el-option>
                         </el-select>
-                    </el-form-item>
+                    </el-form-item> -->
 
                     <el-form-item label="创建时间" prop="testName2">
                         <el-date-picker
@@ -139,18 +139,33 @@
                             />
                         </div>
                     </el-form-item>
+
+                    <el-form-item>
+                        <el-checkbox v-model="queryParams.quote">是否竞价</el-checkbox>
+                        <el-checkbox v-model="queryParams.delFlag">是否隐藏</el-checkbox>
+                    </el-form-item>
                     
                     <el-form-item class="fr">
                       <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
                       <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-                      <el-button
+                      
+                      
+                      
+                    </el-form-item>
+                  </el-form>
+
+              <el-row :gutter="10" class="mb8">
+                <el-col :span="1.5">
+                  <el-button
                         type="primary"
-                        icon="el-icon-plus"
+                        icon="el-icon-edit"
                         size="mini"
                         @click="handleAdd"
                         v-hasPermi="['system:test:add']"
-                      >新增</el-button>
-                      <el-button
+                      >审核</el-button>
+                </el-col>
+                <!-- <el-col :span="1.5">
+                  <el-button
                         type="danger"
                         icon="el-icon-delete"
                         size="mini"
@@ -158,18 +173,17 @@
                         @click="handleDelete"
                         v-hasPermi="['system:test:remove']"
                       >删除</el-button>
-                      <el-button
+                </el-col> -->
+                <el-col :span="1.5">
+                  <el-button
                         type="warning"
                         icon="el-icon-download"
                         size="mini"
                         @click="handleExport"
                         v-hasPermi="['system:test:export']"
                       >导出</el-button>
-                    </el-form-item>
-                  </el-form>
-
-              <el-row :gutter="10" class="mb8">
-                <el-col :span="1.5">
+                </el-col>
+                <el-col :span="1.5" style="marginTop:-5px">
                   <tablec-cascader :options='options' v-model="tableColumnsConfig"></tablec-cascader>
                 </el-col>
                 <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
@@ -186,10 +200,10 @@
                     <el-button size="mini"
                         type="text"
                         icon="el-icon-edit"
-                        @click="handleUpdate(row)"
-                        v-hasPermi="['system:menu:edit']"
-                    >修改</el-button>
-                    <el-button
+                        @click="handleVerify(row)"
+                        v-hasPermi="['system:menu:verify']"
+                    >审核</el-button>
+                    <!-- <el-button
                         size="mini"
                         type="text"
                         icon="el-icon-plus"
@@ -202,7 +216,7 @@
                         icon="el-icon-delete"
                         @click="handleDelete(row)"
                         v-hasPermi="['system:menu:remove']"
-                    >删除</el-button>
+                    >删除</el-button> -->
                 </template>
               </RefactorTable>
 
@@ -224,8 +238,14 @@
     <!-- 添加或修改【请填写功能名称】对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="${comment}" prop="testName">
-          <el-input v-model="form.testName" placeholder="请输入${comment}" />
+        <el-form-item label="货源单号" prop="testName">
+          <el-input v-model="form.testName" placeholder="请输入货源单号" disabled />
+        </el-form-item>
+        <el-form-item label="货主报价" prop="testName">
+          <el-input v-model="form.testName" placeholder="请输入货主报价" disabled />
+        </el-form-item>
+        <el-form-item label="审核单价" prop="testName">
+          <el-input v-model="form.testName" placeholder="请输入审核单价" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -703,6 +723,12 @@ export default {
         this.download('system/test/export', {
           ...this.queryParams
         }, `system_test.xlsx`)
+      },
+      /** 审核按钮操作 */
+      handleVerify(row){
+        this.reset();
+        this.open = true;
+        this.title = "价格调整";
       }
     }
 }

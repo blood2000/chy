@@ -25,11 +25,43 @@
               <span>院区列表</span>
             </div>
             <!-- 右边 -->
+
+            <!-- 
+
+              branchCode: 27adb23841d547b8ae6f0c11481b4cfd
+              page: 1
+              pageSize: 10
+              mandator: 
+              
+              
+
+              isTrunk: 0
+              isShare: 1
+              createrInfo: 下单客户,
+              shipperInfo: 装货信息,
+              consigneeInfo: 收货信息,
+              coalType: 1700,
+              coalName: 货物描述,
+              mainOrderNumberInfo: 货源单号,
+              status: 1,
+              time:[],
+              startTime: 2021-03-08,
+              endTime: 2021-03-17,
+              minCount: 1,
+              maxCount: 2,
+              quote: 1,
+              delFlag: 2,
+              isOftenOrder:0
+
+
+
+
+             -->
             <div>
                   <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="100px" class="clearfix">
-                    <el-form-item label="下单客户" prop="testName">
+                    <el-form-item label="下单客户" prop="createrInfo">
                         <el-input
-                        v-model="queryParams.testName"
+                        v-model="queryParams.createrInfo"
                         placeholder="请输入公司名称/客户姓名/手机号"
                         clearable
                         size="small"
@@ -37,9 +69,9 @@
                         />
                     </el-form-item>
 
-                    <el-form-item label="转货信息" prop="testName1">
+                    <el-form-item label="装货信息" prop="shipperInfo">
                         <el-input
-                        v-model="queryParams.testName1"
+                        v-model="queryParams.shipperInfo"
                         placeholder="装货地/装货电话/装货人"
                         clearable
                         size="small"
@@ -47,9 +79,9 @@
                         />
                     </el-form-item>
 
-                    <el-form-item label="收货信息" prop="testName2">
+                    <el-form-item label="收货信息" prop="consigneeInfo">
                         <el-input
-                        v-model="queryParams.testName2"
+                        v-model="queryParams.consigneeInfo"
                         placeholder="目的地/收货电话/收货人"
                         clearable
                         size="small"
@@ -57,16 +89,16 @@
                         />
                     </el-form-item>
 
-                    <el-form-item label="货物类型" prop="testName2">
-                        <el-select v-model="queryParams.testName3" placeholder="----请选择----" style="width: 215px">
+                    <el-form-item label="货物类型" prop="coalType">
+                        <el-select v-model="queryParams.coalType" placeholder="----请选择----" style="width: 215px">
                         <el-option label="区域一" value="shanghai"></el-option>
                         <el-option label="区域二" value="beijing"></el-option>
                         </el-select>
                     </el-form-item>
 
-                    <el-form-item label="货物描述" prop="testName2">
+                    <el-form-item label="货物描述" prop="coalName">
                         <el-input
-                            v-model="queryParams.testName4"
+                            v-model="queryParams.coalName"
                             placeholder="目的地/收货电话/收货人"
                             clearable
                             size="small"
@@ -74,9 +106,9 @@
                         />
                     </el-form-item>
 
-                    <el-form-item label="货源单号" prop="testName2">
+                    <el-form-item label="货源单号" prop="mainOrderNumberInfo">
                         <el-input
-                        v-model="queryParams.testName5"
+                        v-model="queryParams.mainOrderNumberInfo"
                         placeholder="目的地/收货电话/收货人"
                         clearable
                         size="small"
@@ -84,30 +116,30 @@
                         />
                     </el-form-item>
 
-                    <el-form-item label="订单状态" prop="testName2">
-                        <el-select v-model="queryParams.testName6" placeholder="----请选择----" style="width: 215px">
+                    <el-form-item label="订单状态" prop="status">
+                        <el-select v-model="queryParams.status" placeholder="----请选择----" style="width: 215px">
                         <el-option label="区域一" value="shanghai"></el-option>
                         <el-option label="区域二" value="beijing"></el-option>
                         </el-select>
                     </el-form-item>
 
-                    <el-form-item label="货源类型" prop="testName2">
-                        <el-select v-model="queryParams.testName7" placeholder="----请选择----" style="width: 215px">
+                    <el-form-item label="货源类型" prop="isTrunk">
+                        <el-select v-model="queryParams.isTrunk" placeholder="----请选择----" style="width: 215px">
                         <el-option label="区域一" value="shanghai"></el-option>
                         <el-option label="区域二" value="beijing"></el-option>
                         </el-select>
                     </el-form-item>
 
-                    <el-form-item label="是否拼单" prop="testName2">
-                        <el-select v-model="queryParams.testName8" placeholder="----请选择----" style="width: 215px">
+                    <el-form-item label="是否拼单" prop="isShare">
+                        <el-select v-model="queryParams.isShare" placeholder="----请选择----" style="width: 215px">
                             <el-option label="区域一" value="shanghai"></el-option>
                             <el-option label="区域二" value="beijing"></el-option>
                         </el-select>
                     </el-form-item>
 
-                    <el-form-item label="创建时间" prop="testName2">
+                    <el-form-item label="创建时间" prop="time">
                         <el-date-picker
-                        v-model="queryParams.testName9"
+                        v-model="queryParams.time"
                         size="small"
                         style="width: 215px"
                         value-format="yyyy-MM-dd"
@@ -118,10 +150,10 @@
                         ></el-date-picker>
                     </el-form-item>
 
-                    <el-form-item label="可抢单量" prop="testName2">
+                    <el-form-item label="可抢单量" prop="minCount">
                         <div style="width: 215px" class="flex_b">
                             <el-input
-                                v-model="queryParams.testName10"
+                                v-model="queryParams.minCount"
                                 placeholder="目的地/收货电话/收货人"
                                 clearable
                                 size="small"
@@ -130,7 +162,7 @@
                             />
                             <span>-</span>
                             <el-input
-                                v-model="queryParams.testName2"
+                                v-model="queryParams.maxCount"
                                 placeholder="目的地/收货电话/收货人"
                                 clearable
                                 size="small"
@@ -138,6 +170,12 @@
                                 @keyup.enter.native="handleQuery"
                             />
                         </div>
+                    </el-form-item>
+
+                    <el-form-item>
+                        <el-checkbox v-model="queryParams.quote">是否竞价</el-checkbox>
+                        <el-checkbox v-model="queryParams.delFlag">是否隐藏</el-checkbox>
+                        <el-checkbox v-model="queryParams.isOftenOrder">常发货源</el-checkbox>
                     </el-form-item>
                     
                     <el-form-item class="fr">
@@ -298,21 +336,56 @@
                         icon="el-icon-edit"
                         @click="handleUpdate(row)"
                         v-hasPermi="['system:menu:edit']"
-                    >修改</el-button>
+                    >详情</el-button>
                     <el-button
                         size="mini"
                         type="text"
                         icon="el-icon-plus"
                         @click="handleAdd(row)"
                         v-hasPermi="['system:menu:add']"
-                    >新增</el-button>
+                    >复制</el-button>
                     <el-button
                         size="mini"
                         type="text"
                         icon="el-icon-delete"
                         @click="handleDelete(row)"
                         v-hasPermi="['system:menu:remove']"
-                    >删除</el-button>
+                    >派单</el-button>
+
+                   <el-button size="mini"
+                        type="text"
+                        icon="el-icon-edit"
+                        @click="handleUpdate(row)"
+                        v-hasPermi="['system:menu:edit']"
+                    >编辑</el-button>
+                     <!-- <el-button
+                        size="mini"
+                        type="text"
+                        icon="el-icon-plus"
+                        @click="handleAdd(row)"
+                        v-hasPermi="['system:menu:add']"
+                    >新增</el-button>-->
+                    <el-button
+                        size="mini"
+                        type="text"
+                        icon="el-icon-delete"
+                        @click="handleDelete(row)"
+                        v-hasPermi="['system:menu:remove']"
+                    >删除</el-button> 
+                    <el-button
+                        size="mini"
+                        type="text"
+                        icon="el-icon-delete"
+                        @click="handleDelete(row)"
+                        v-hasPermi="['system:menu:remove']"
+                    >暂停</el-button> 
+                    <el-button
+                        size="mini"
+                        type="text"
+                        icon="el-icon-delete"
+                        @click="handleDelete(row)"
+                        v-hasPermi="['system:menu:remove']"
+                    >调价</el-button> 
                 </template>
               </RefactorTable>
 
@@ -347,7 +420,7 @@
 </template>
 
 <script>
-import { listTest, getTest, delTest, addTest, updateTest } from "@/api/test/test";
+import { getOrderInfoList } from "@/api/order/manage";
 
 const data = [{
           id: 1,
@@ -688,10 +761,24 @@ export default {
         queryParams: {
           pageNum: 1,
           pageSize: 10,
-          title: undefined,
-          operName: undefined,
-          businessType: undefined,
-          status: undefined
+          
+          isTrunk: 0,
+          isShare: 1,
+          createrInfo: '下单客户',
+          shipperInfo: '装货信息',
+          consigneeInfo: '收货信息',
+          coalType: 1700,
+          coalName: '货物描述',
+          mainOrderNumberInfo: '货源单号',
+          status: 1,
+          time:[],
+          startTime: '2021-03-08',
+          endTime: '2021-03-17',
+          minCount: 1,
+          maxCount: 2,
+          quote: 1,
+          delFlag: 2,
+          isOftenOrder:0
         },
         // 弹框title
         title: '',
@@ -712,14 +799,16 @@ export default {
     methods: {
       /** 查询【请填写功能名称】列表 */
       getList() {
-        // this.loading = true;
-        // listTest(this.queryParams).then(response => {
-        //   this.testList = response.rows;
-        //   this.total = response.total;
-        //   this.loading = false;
-        // }).catch(err=>{
-        //   this.loading = false;
-        // })
+        this.loading = true;
+        getOrderInfoList(this.queryParams).then(response => {
+          console.log(response);
+          
+          this.list = response.rows;
+          this.total = response.total;
+          this.loading = false;
+        }).catch(err=>{
+          this.loading = false;
+        })
 
         // 测试,上面打开,下面就要删掉
           this.list = listData.rows;
@@ -743,6 +832,8 @@ export default {
       },
       /** 搜索按钮操作 */
       handleQuery() {
+        console.log(this.queryParams);
+        return
         this.queryParams.pageNum = 1;
         this.getList();
       },
