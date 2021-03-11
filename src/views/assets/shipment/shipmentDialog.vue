@@ -251,7 +251,10 @@ export default {
     UploadImage
   },
   props: {
-    title: String,
+    title: {
+      type: String,
+      default: ''
+    },
     open: Boolean,
     disable: Boolean
   },
