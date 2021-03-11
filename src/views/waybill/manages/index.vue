@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="180px">
+    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="130px">
       <el-form-item label="货源编号" prop="orderCode">
         <el-input
           v-model="queryParams.orderCode"
@@ -249,7 +249,7 @@
       <el-table-column label="司机取消订单" align="center" prop="cancelStatus" :formatter="cancelStatusFormat" />
       <el-table-column label="司机取消理由" align="center" prop="driverApplyRemark" />
       <el-table-column label="货主处理司机申请取消备注" align="center" prop="shipperDealRemark" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="200">
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="240">
         <template slot-scope="scope">
           <el-button
             size="mini"
