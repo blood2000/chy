@@ -305,8 +305,8 @@ export default {
     });
   },
   methods: {
-	/** 提交按钮 */
-	submitForm() {
+    /** 提交按钮 */
+    submitForm() {
 	  this.$refs['form'].validate(valid => {
 	    if (valid) {
 	      if (this.form.id != null) {
@@ -324,16 +324,16 @@ export default {
 	      }
 	    }
 	  });
-	},
-	/** 取消按钮 */
-	cancel() {
+    },
+    /** 取消按钮 */
+    cancel() {
 	  this.close();
 	  this.reset();
-	},
-	// 关闭弹窗
-	close() {
+    },
+    // 关闭弹窗
+    close() {
 	  this.$emit('update:open', false);
-	},
+    },
     // 表单重置
     reset() {
 	  this.form = {

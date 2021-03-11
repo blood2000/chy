@@ -332,7 +332,7 @@
       <el-table-column label="轴数" align="center" prop="axesNumber" :formatter="axesNumberFormat" />
       <el-table-column label="年审时间" align="center" prop="annualVerificationDate" width="130" sortable>
         <template slot-scope="scope">
-		  <span>{{ parseTime(new Date(scope.row.annualVerificationDate)).slice(0, 10) }}</span>
+          <span>{{ parseTime(new Date(scope.row.annualVerificationDate)).slice(0, 10) }}</span>
         </template>
       </el-table-column>
       <el-table-column label="运输介子" align="center" prop="transportMeson" />
@@ -469,27 +469,27 @@ export default {
     this.getDicts('energyTypes').then(response => {
       this.vehicleEnergyTypeOptions = response.data;
     });
-	this.getDicts('vehicleLength').then(response => {
-	  this.vehicleLengthOptions = response.data;
-	});
-	this.getDicts('vehicleWidth').then(response => {
-	  this.vehicleWidthOptions = response.data;
-	});
-	this.getDicts('vehicleHeight').then(response => {
-	  this.vehicleHeightOptions = response.data;
-	});
-	this.getDicts('vehicleZhoushu').then(response => {
-	  this.vehicleZhoushuOptions = response.data;
-	});
-	this.getDicts('vehicleCube').then(response => {
-	  this.vehicleCubeOptions = response.data;
-	});
-	this.getDicts('vehicleType').then(response => {
-	  this.vehicleTypeOptions = response.data;
-	});
-	this.getDicts('vehicleTonnage').then(response => {
-	  this.vehicleTonnageOptions = response.data;
-	});
+    this.getDicts('vehicleLength').then(response => {
+      this.vehicleLengthOptions = response.data;
+    });
+    this.getDicts('vehicleWidth').then(response => {
+      this.vehicleWidthOptions = response.data;
+    });
+    this.getDicts('vehicleHeight').then(response => {
+      this.vehicleHeightOptions = response.data;
+    });
+    this.getDicts('vehicleZhoushu').then(response => {
+      this.vehicleZhoushuOptions = response.data;
+    });
+    this.getDicts('vehicleCube').then(response => {
+      this.vehicleCubeOptions = response.data;
+    });
+    this.getDicts('vehicleType').then(response => {
+      this.vehicleTypeOptions = response.data;
+    });
+    this.getDicts('vehicleTonnage').then(response => {
+      this.vehicleTonnageOptions = response.data;
+    });
   },
   methods: {
     /** 查询车辆列表 */
@@ -509,10 +509,10 @@ export default {
     vehicleAscriptionTypeFormat(row, column) {
       return this.selectDictLabel(this.vehicleAscriptionTypeOptions, row.vehicleAscriptionType);
     },
-	// 车辆类型字典翻译
-	vehicleTypeCodeFormat(row, column) {
+    // 车辆类型字典翻译
+    vehicleTypeCodeFormat(row, column) {
 	  return this.selectDictLabel(this.vehicleTypeOptions, row.vehicleTypeCode);
-	},
+    },
     // 车长代码字典翻译
     vehicleLengthFormat(row, column) {
       return this.selectDictLabel(this.vehicleLengthOptions, row.vehicleLength);
@@ -529,22 +529,22 @@ export default {
     vehicleTotalWeightFormat(row, column) {
       return this.selectDictLabel(this.vehicleTonnageOptions, row.vehicleTotalWeight);
     },
-		// 车辆可载重量字典翻译
-		vehicleLoadWeightFormat(row, column) {
+    // 车辆可载重量字典翻译
+    vehicleLoadWeightFormat(row, column) {
 		  return this.selectDictLabel(this.vehicleTonnageOptions, row.vehicleLoadWeight);
-		},
-		// 车辆自重字典翻译
-		selfRespectFormat(row, column) {
+    },
+    // 车辆自重字典翻译
+    selfRespectFormat(row, column) {
 		  return this.selectDictLabel(this.vehicleTonnageOptions, row.selfRespect);
-		},
+    },
     // 车辆可载立方字典翻译
     vehicleRemainingLoadVolumeFormat(row, column) {
       return this.selectDictLabel(this.vehicleCubeOptions, row.vehicleRemainingLoadVolume);
     },
-		// 轴数字典翻译
-		axesNumberFormat(row, column) {
+    // 轴数字典翻译
+    axesNumberFormat(row, column) {
 		  return this.selectDictLabel(this.vehicleZhoushuOptions, row.axesNumber);
-		},
+    },
     // 审核状态(0.未审核.1审核中2审核未通过3审核通过)字典翻译
     authStatusFormat(row, column) {
       return this.selectDictLabel(this.authStatusOptions, row.authStatus);
