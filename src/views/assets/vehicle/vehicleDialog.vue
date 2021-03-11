@@ -215,73 +215,76 @@ import { addInfo, updateInfo } from '@/api/assets/vehicle';
 import UploadImage from '@/components/UploadImage/index';
 
 export default {
-	  components: {
-	    UploadImage
-	  },
-	  props: {
-	    title: String,
-	    open: Boolean,
-    	disable: Boolean
-	  },
-	  data() {
-	    return {
-		  // 车长代码字典
-		  vehicleLengthOptions: [],
-		  // 车宽代码字典
-		  vehicleWidthOptions: [],
-		  // 车高代码字典
-		  vehicleHeightOptions: [],
-		  // 轴数字典
-		  vehicleZhoushuOptions: [],
-		  // 立方代码字典
-		  vehicleCubeOptions: [],
-		  // 吨位代码字典
-		  vehicleTonnageOptions: [],
-		  // 车辆类型字典
-		  vehicleTypeOptions: [],
-		  // 车辆归属类型 0.自有 1.加盟字典
-		  vehicleAscriptionTypeOptions: [
-			  { dictLabel: '自有', dictValue: '0' },
-			  { dictLabel: '加盟', dictValue: '1' }
-		  ],
-		  // 车辆能源类型字典
-		  vehicleEnergyTypeOptions: [],
-		  // 审核状态(0.未审核.1审核中2审核未通过3审核通过)字典
-		  authStatusOptions: [
-			  { dictLabel: '未审核', dictValue: '0' },
-			  { dictLabel: '审核中', dictValue: '1' },
-			  { dictLabel: '审核未通过', dictValue: '2' },
-			  { dictLabel: '审核通过', dictValue: '3' }
-		  ],
-		  // 是否冻结(0正常1冻结)字典
-		  isFreezeOptions: [
-			  { dictLabel: '正常', dictValue: '0' },
-			  { dictLabel: '冻结', dictValue: '1' }
-		  ],
-	      // 表单参数
-	      form: {},
-	      // 表单校验
-	      rules: {
-	        licenseNumber: [
-	          { required: true, message: '名称不能为空', trigger: 'blur' }
-	        ]
-	      }
-	    };
-	  },
-	  computed: {
-	    visible: {
-	      get() {
-	        return this.open;
-	      },
-	      set(v) {
-	        this.$emit('update:open', v);
-	      }
-	    }
-	  },
-	  created() {
-	    this.getDicts('energyTypes').then(response => {
-	      this.vehicleEnergyTypeOptions = response.data;
-	    });
+  components: {
+    UploadImage
+  },
+  props: {
+    title: {
+      type: String,
+      default: ''
+    },
+    open: Boolean,
+    disable: Boolean
+  },
+  data() {
+    return {
+  	  // 车长代码字典
+  	  vehicleLengthOptions: [],
+  	  // 车宽代码字典
+  	  vehicleWidthOptions: [],
+  	  // 车高代码字典
+  	  vehicleHeightOptions: [],
+  	  // 轴数字典
+  	  vehicleZhoushuOptions: [],
+  	  // 立方代码字典
+  	  vehicleCubeOptions: [],
+  	  // 吨位代码字典
+  	  vehicleTonnageOptions: [],
+  	  // 车辆类型字典
+  	  vehicleTypeOptions: [],
+  	  // 车辆归属类型 0.自有 1.加盟字典
+  	  vehicleAscriptionTypeOptions: [
+  	    { dictLabel: '自有', dictValue: '0' },
+  	    { dictLabel: '加盟', dictValue: '1' }
+  	  ],
+  	  // 车辆能源类型字典
+  	  vehicleEnergyTypeOptions: [],
+  	  // 审核状态(0.未审核.1审核中2审核未通过3审核通过)字典
+  	  authStatusOptions: [
+  	    { dictLabel: '未审核', dictValue: '0' },
+  	    { dictLabel: '审核中', dictValue: '1' },
+  	    { dictLabel: '审核未通过', dictValue: '2' },
+  	    { dictLabel: '审核通过', dictValue: '3' }
+  	  ],
+  	  // 是否冻结(0正常1冻结)字典
+  	  isFreezeOptions: [
+  	    { dictLabel: '正常', dictValue: '0' },
+  	    { dictLabel: '冻结', dictValue: '1' }
+  	  ],
+      // 表单参数
+      form: {},
+      // 表单校验
+      rules: {
+        licenseNumber: [
+          { required: true, message: '名称不能为空', trigger: 'blur' }
+        ]
+      }
+    };
+  },
+  computed: {
+    visible: {
+      get() {
+        return this.open;
+      },
+      set(v) {
+        this.$emit('update:open', v);
+      }
+    }
+  },
+  created() {
+    this.getDicts('energyTypes').then(response => {
+      this.vehicleEnergyTypeOptions = response.data;
+    });
     this.getDicts('vehicleLength').then(response => {
       this.vehicleLengthOptions = response.data;
     });
@@ -303,80 +306,80 @@ export default {
     this.getDicts('vehicleTonnage').then(response => {
       this.vehicleTonnageOptions = response.data;
     });
-	  },
-	  methods: {
-		  /** 提交按钮 */
-		  submitForm() {
-		    this.$refs['form'].validate(valid => {
-		      if (valid) {
-		        if (this.form.id != null) {
-		          updateInfo(this.form).then(response => {
-		            this.msgSuccess('修改成功');
-		            this.close();
-		            this.$emit('refresh');
-		          });
-		        } else {
-		          addInfo(this.form).then(response => {
-		            this.msgSuccess('新增成功');
-		            this.close();
-		            this.$emit('refresh');
-		          });
-		        }
-		      }
-		    });
-		  },
-	    /** 取消按钮 */
-	    cancel() {
-	      this.close();
-	      this.reset();
-	    },
-	    // 关闭弹窗
-	    close() {
-	      this.$emit('update:open', false);
-	    },
+  },
+  methods: {
+    /** 提交按钮 */
+    submitForm() {
+	  this.$refs['form'].validate(valid => {
+	    if (valid) {
+	      if (this.form.id != null) {
+	        updateInfo(this.form).then(response => {
+	          this.msgSuccess('修改成功');
+	          this.close();
+	          this.$emit('refresh');
+	        });
+	      } else {
+	        addInfo(this.form).then(response => {
+	          this.msgSuccess('新增成功');
+	          this.close();
+	          this.$emit('refresh');
+	        });
+	      }
+	    }
+	  });
+    },
+    /** 取消按钮 */
+    cancel() {
+	  this.close();
+	  this.reset();
+    },
+    // 关闭弹窗
+    close() {
+	  this.$emit('update:open', false);
+    },
     // 表单重置
     reset() {
-		  this.form = {
-		    id: null,
-		    code: null,
-		    licenseNumber: null,
-		    vehicleOwnerCode: null,
-		    vehicleAscriptionType: null,
-		    classificationCode: null,
-		    vehicleLicenseColorCode: null,
-		    vehicleColorCode: null,
-		    vehicleTypeCode: null,
-		    vehicleEnergyType: null,
-		    vehicleLength: null,
-		    vehicleWidth: null,
-		    vehicleHeight: null,
-		    vehicleTotalWeight: null,
-		    vehicleLoadWeight: null,
-		    vehicleLoadVolume: null,
-		    vehicleRemainingLoadVolume: null,
-		    selfRespect: null,
-		    chassisNumber: null,
-		    engineNumber: null,
-		    vehicleChassisNumber: null,
-		    vehiclePower: null,
-		    axesNumber: null,
-		    annualVerificationDate: null,
-		    transportMeson: null,
-		    authStatus: 0,
-		    isFreeze: null,
-		    createCode: null,
-		    createTime: null,
-		    updateCode: null,
-		    updateTime: null,
-		    delFlag: null
-		  };
-		  this.resetForm('form');
+	  this.form = {
+	    id: null,
+	    code: null,
+	    licenseNumber: null,
+	    vehicleOwnerCode: null,
+	    vehicleAscriptionType: null,
+	    classificationCode: null,
+	    vehicleLicenseColorCode: null,
+	    vehicleColorCode: null,
+	    vehicleTypeCode: null,
+	    vehicleEnergyType: null,
+	    vehicleLength: null,
+	    vehicleWidth: null,
+	    vehicleHeight: null,
+	    vehicleTotalWeight: null,
+	    vehicleLoadWeight: null,
+	    vehicleLoadVolume: null,
+	    vehicleRemainingLoadVolume: null,
+	    selfRespect: null,
+	    chassisNumber: null,
+	    engineNumber: null,
+	    vehicleChassisNumber: null,
+	    vehiclePower: null,
+	    axesNumber: null,
+	    annualVerificationDate: null,
+	    transportMeson: null,
+	    authStatus: 0,
+	    isFreeze: null,
+	    createCode: null,
+	    createTime: null,
+	    updateCode: null,
+	    updateTime: null,
+	    delFlag: null
+	  };
+	  this.resetForm('form');
     },
     // 表单赋值
     setForm(data) {
-		  this.form = data;
+	  this.form = data;
     }
-	  }
+  }
 };
 </script>
 

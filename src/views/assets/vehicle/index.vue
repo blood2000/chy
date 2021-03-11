@@ -309,13 +309,13 @@
     <el-table v-loading="loading" :data="vehicleList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <!-- <el-table-column label="编码" align="center" prop="code" /> -->
-      <el-table-column label="名称" align="center" prop="licenseNumber" sortable />
+      <el-table-column label="名称" align="center" prop="licenseNumber" width="130" sortable />
       <el-table-column label="车主编码" align="center" prop="vehicleOwnerCode" width="130" sortable />
       <el-table-column label="车辆归属类型" align="center" prop="vehicleAscriptionType" :formatter="vehicleAscriptionTypeFormat" width="130" />
       <el-table-column label="车牌类型代码" align="center" prop="classificationCode" width="130" sortable />
       <el-table-column label="车牌颜色代码" align="center" prop="vehicleLicenseColorCode" width="130" />
       <el-table-column label="车身颜色代码" align="center" prop="vehicleColorCode" width="130" />
-      <el-table-column label="车身颜色代码" align="center" prop="vehicleTypeCode" width="130" />
+      <el-table-column label="车辆类型代码" align="center" prop="vehicleTypeCode" width="130" :formatter="vehicleTypeCodeFormat" />
       <el-table-column label="车辆能源类型" align="center" prop="vehicleEnergyType" width="130" :formatter="vehicleEnergyTypeFormat" />
       <el-table-column label="车长代码" align="center" prop="vehicleLength" width="130" sortable :formatter="vehicleLengthFormat" />
       <el-table-column label="车宽代码" align="center" prop="vehicleWidth" :formatter="vehicleWidthFormat" />
@@ -330,9 +330,9 @@
       <el-table-column label="底盘号" align="center" prop="vehicleChassisNumber" />
       <el-table-column label="功率" align="center" prop="vehiclePower" />
       <el-table-column label="轴数" align="center" prop="axesNumber" :formatter="axesNumberFormat" />
-      <el-table-column label="年审时间" align="center" prop="annualVerificationDate" width="180" sortable>
+      <el-table-column label="年审时间" align="center" prop="annualVerificationDate" width="130" sortable>
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.annualVerificationDate, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(new Date(scope.row.annualVerificationDate)).slice(0, 10) }}</span>
         </template>
       </el-table-column>
       <el-table-column label="运输介子" align="center" prop="transportMeson" />
@@ -340,7 +340,7 @@
       <el-table-column label="是否冻结" align="center" prop="isFreeze" :formatter="isFreezeFormat" />
       <!-- <el-table-column label="创建人" align="center" prop="createCode" :formatter="createCodeFormat" />
       <el-table-column label="更新人" align="center" prop="updateCode" :formatter="updateCodeFormat" /> -->
-      <el-table-column label="车头正面照" align="center" prop="vehicleImage" />
+      <el-table-column label="车头正面照" align="center" prop="vehicleImage" width="130" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="180">
         <template slot-scope="scope">
           <el-button
@@ -451,7 +451,7 @@ export default {
         licenseNumber: null,
         vehicleOwnerCode: null,
         vehicleAscriptionType: null,
-		    vehicleEnergyType: null,
+	    vehicleEnergyType: null,
         // vehicleTotalWeight: null,
         // vehicleLoadWeight: null,
         // vehicleLoadVolume: null,
@@ -468,6 +468,27 @@ export default {
     this.getList();
     this.getDicts('energyTypes').then(response => {
       this.vehicleEnergyTypeOptions = response.data;
+    });
+    this.getDicts('vehicleLength').then(response => {
+      this.vehicleLengthOptions = response.data;
+    });
+    this.getDicts('vehicleWidth').then(response => {
+      this.vehicleWidthOptions = response.data;
+    });
+    this.getDicts('vehicleHeight').then(response => {
+      this.vehicleHeightOptions = response.data;
+    });
+    this.getDicts('vehicleZhoushu').then(response => {
+      this.vehicleZhoushuOptions = response.data;
+    });
+    this.getDicts('vehicleCube').then(response => {
+      this.vehicleCubeOptions = response.data;
+    });
+    this.getDicts('vehicleType').then(response => {
+      this.vehicleTypeOptions = response.data;
+    });
+    this.getDicts('vehicleTonnage').then(response => {
+      this.vehicleTonnageOptions = response.data;
     });
   },
   methods: {
@@ -488,6 +509,10 @@ export default {
     vehicleAscriptionTypeFormat(row, column) {
       return this.selectDictLabel(this.vehicleAscriptionTypeOptions, row.vehicleAscriptionType);
     },
+    // 车辆类型字典翻译
+    vehicleTypeCodeFormat(row, column) {
+	  return this.selectDictLabel(this.vehicleTypeOptions, row.vehicleTypeCode);
+    },
     // 车长代码字典翻译
     vehicleLengthFormat(row, column) {
       return this.selectDictLabel(this.vehicleLengthOptions, row.vehicleLength);
@@ -500,13 +525,25 @@ export default {
     vehicleHeightFormat(row, column) {
       return this.selectDictLabel(this.vehicleHeightOptions, row.vehicleHeight);
     },
-    // 重量字典翻译
+    // 车辆总重量字典翻译
     vehicleTotalWeightFormat(row, column) {
       return this.selectDictLabel(this.vehicleTonnageOptions, row.vehicleTotalWeight);
     },
-    // 立方字典翻译
+    // 车辆可载重量字典翻译
+    vehicleLoadWeightFormat(row, column) {
+		  return this.selectDictLabel(this.vehicleTonnageOptions, row.vehicleLoadWeight);
+    },
+    // 车辆自重字典翻译
+    selfRespectFormat(row, column) {
+		  return this.selectDictLabel(this.vehicleTonnageOptions, row.selfRespect);
+    },
+    // 车辆可载立方字典翻译
     vehicleRemainingLoadVolumeFormat(row, column) {
       return this.selectDictLabel(this.vehicleCubeOptions, row.vehicleRemainingLoadVolume);
+    },
+    // 轴数字典翻译
+    axesNumberFormat(row, column) {
+		  return this.selectDictLabel(this.vehicleZhoushuOptions, row.axesNumber);
     },
     // 审核状态(0.未审核.1审核中2审核未通过3审核通过)字典翻译
     authStatusFormat(row, column) {
