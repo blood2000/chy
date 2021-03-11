@@ -25,43 +25,11 @@
               <span>院区列表</span>
             </div>
             <!-- 右边 -->
-
-            <!-- 
-
-              branchCode: 27adb23841d547b8ae6f0c11481b4cfd
-              page: 1
-              pageSize: 10
-              mandator: 
-              
-              
-
-              isTrunk: 0
-              isShare: 1
-              createrInfo: 下单客户,
-              shipperInfo: 装货信息,
-              consigneeInfo: 收货信息,
-              coalType: 1700,
-              coalName: 货物描述,
-              mainOrderNumberInfo: 货源单号,
-              status: 1,
-              time:[],
-              startTime: 2021-03-08,
-              endTime: 2021-03-17,
-              minCount: 1,
-              maxCount: 2,
-              quote: 1,
-              delFlag: 2,
-              isOftenOrder:0
-
-
-
-
-             -->
             <div>
                   <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="100px" class="clearfix">
-                    <el-form-item label="下单客户" prop="createrInfo">
+                    <el-form-item label="下单客户" prop="companyAndCustomerAndPhone">
                         <el-input
-                        v-model="queryParams.createrInfo"
+                        v-model="queryParams.companyAndCustomerAndPhone"
                         placeholder="请输入公司名称/客户姓名/手机号"
                         clearable
                         size="small"
@@ -69,9 +37,9 @@
                         />
                     </el-form-item>
 
-                    <el-form-item label="装货信息" prop="shipperInfo">
+                    <el-form-item label="装货信息" prop="addressAndPhoneAndMember">
                         <el-input
-                        v-model="queryParams.shipperInfo"
+                        v-model="queryParams.addressAndPhoneAndMember"
                         placeholder="装货地/装货电话/装货人"
                         clearable
                         size="small"
@@ -79,9 +47,9 @@
                         />
                     </el-form-item>
 
-                    <el-form-item label="收货信息" prop="consigneeInfo">
+                    <el-form-item label="收货信息" prop="destinationAndPhoneAndMember">
                         <el-input
-                        v-model="queryParams.consigneeInfo"
+                        v-model="queryParams.destinationAndPhoneAndMember"
                         placeholder="目的地/收货电话/收货人"
                         clearable
                         size="small"
@@ -89,16 +57,16 @@
                         />
                     </el-form-item>
 
-                    <el-form-item label="货物类型" prop="coalType">
-                        <el-select v-model="queryParams.coalType" placeholder="----请选择----" style="width: 215px">
+                    <el-form-item label="货物类型大类" prop="goodsBigType">
+                        <el-select v-model="queryParams.goodsBigType" placeholder="----请选择----" style="width: 215px">
                         <el-option label="区域一" value="shanghai"></el-option>
                         <el-option label="区域二" value="beijing"></el-option>
                         </el-select>
                     </el-form-item>
 
-                    <el-form-item label="货物描述" prop="coalName">
+                    <el-form-item label="货物描述" prop="goodsName">
                         <el-input
-                            v-model="queryParams.coalName"
+                            v-model="queryParams.goodsName"
                             placeholder="目的地/收货电话/收货人"
                             clearable
                             size="small"
@@ -106,10 +74,30 @@
                         />
                     </el-form-item>
 
-                    <el-form-item label="货源单号" prop="mainOrderNumberInfo">
+                    <el-form-item label="货主编码" prop="pubilshCode">
                         <el-input
-                        v-model="queryParams.mainOrderNumberInfo"
+                            v-model="queryParams.pubilshCode"
+                            placeholder="目的地/收货电话/收货人"
+                            clearable
+                            size="small"
+                            @keyup.enter.native="handleQuery"
+                        />
+                    </el-form-item>
+
+                    <el-form-item label="货源单号" prop="mainOrderNumber">
+                        <el-input
+                        v-model="queryParams.mainOrderNumber"
                         placeholder="目的地/收货电话/收货人"
+                        clearable
+                        size="small"
+                        @keyup.enter.native="handleQuery"
+                        />
+                    </el-form-item>
+
+                    <el-form-item label="司机id" prop="driverId">
+                        <el-input
+                        v-model="queryParams.driverId"
+                        placeholder="(司机id)查询自己公司的货源"
                         clearable
                         size="small"
                         @keyup.enter.native="handleQuery"
@@ -118,28 +106,22 @@
 
                     <el-form-item label="订单状态" prop="status">
                         <el-select v-model="queryParams.status" placeholder="----请选择----" style="width: 215px">
-                        <el-option label="区域一" value="shanghai"></el-option>
-                        <el-option label="区域二" value="beijing"></el-option>
-                        </el-select>
-                    </el-form-item>
-
-                    <el-form-item label="货源类型" prop="isTrunk">
-                        <el-select v-model="queryParams.isTrunk" placeholder="----请选择----" style="width: 215px">
-                        <el-option label="区域一" value="shanghai"></el-option>
-                        <el-option label="区域二" value="beijing"></el-option>
+                        <el-option label="区域一" :value="1"></el-option>
+                        <el-option label="区域二" :value="2"></el-option>
                         </el-select>
                     </el-form-item>
 
                     <el-form-item label="是否拼单" prop="isShare">
                         <el-select v-model="queryParams.isShare" placeholder="----请选择----" style="width: 215px">
-                            <el-option label="区域一" value="shanghai"></el-option>
-                            <el-option label="区域二" value="beijing"></el-option>
+                            <el-option label="区域一" :value="false"></el-option>
+                            <el-option label="区域二" :value="true"></el-option>
                         </el-select>
                     </el-form-item>
 
-                    <el-form-item label="创建时间" prop="time">
+                    <el-form-item label="创建时间" prop="searchTime">
                         <el-date-picker
-                        v-model="queryParams.time"
+                        v-model="queryParams.searchTime"
+                        @change="()=>{ queryParams.beginTime = queryParams.searchTime[0];queryParams.endTime = queryParams.searchTime[1] }"
                         size="small"
                         style="width: 215px"
                         value-format="yyyy-MM-dd"
@@ -150,7 +132,7 @@
                         ></el-date-picker>
                     </el-form-item>
 
-                    <el-form-item label="可抢单量" prop="minCount">
+                    <!-- <el-form-item label="可抢单量这个没有" prop="minCount">
                         <div style="width: 215px" class="flex_b">
                             <el-input
                                 v-model="queryParams.minCount"
@@ -170,115 +152,22 @@
                                 @keyup.enter.native="handleQuery"
                             />
                         </div>
-                    </el-form-item>
+                    </el-form-item> -->
 
-                    <el-form-item>
+                    <!-- <el-form-item>
                         <el-checkbox v-model="queryParams.quote">是否竞价</el-checkbox>
                         <el-checkbox v-model="queryParams.delFlag">是否隐藏</el-checkbox>
                         <el-checkbox v-model="queryParams.isOftenOrder">常发货源</el-checkbox>
-                    </el-form-item>
+                    </el-form-item> -->
                     
                     <el-form-item class="fr">
                       <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
                       <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-                      <el-button
-                        type="primary"
-                        icon="el-icon-plus"
-                        size="mini"
-                        @click="handleAdd"
-                        v-hasPermi="['system:test:add']"
-                      >新增</el-button>
-                      <el-button
-                        type="danger"
-                        icon="el-icon-delete"
-                        size="mini"
-                        :disabled="multiple"
-                        @click="handleDelete"
-                        v-hasPermi="['system:test:remove']"
-                      >删除</el-button>
-                      <el-button
-                        type="warning"
-                        icon="el-icon-download"
-                        size="mini"
-                        @click="handleExport"
-                        v-hasPermi="['system:test:export']"
-                      >导出</el-button>
                     </el-form-item>
                   </el-form>
 
-              <!--<el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="100px">
-                 <el-form-item label="系统模块" prop="title">
-                  <el-input
-                    v-model="queryParams.title"
-                    placeholder="请输入系统模块"
-                    clearable
-                    style="width: 240px;"
-                    size="small"
-                    @keyup.enter.native="handleQuery"
-                  />
-                </el-form-item>
-                <el-form-item label="操作人员" prop="operName">
-                  <el-input
-                    v-model="queryParams.operName"
-                    placeholder="请输入操作人员"
-                    clearable
-                    style="width: 240px;"
-                    size="small"
-                    @keyup.enter.native="handleQuery"
-                  />
-                </el-form-item>
-                <el-form-item label="类型" prop="businessType">
-                  <el-select
-                    v-model="queryParams.businessType"
-                    placeholder="操作类型"
-                    clearable
-                    size="small"
-                    style="width: 240px"
-                  >
-                    <el-option
-                      v-for="dict in typeOptions"
-                      :key="dict.dictValue"
-                      :label="dict.dictLabel"
-                      :value="dict.dictValue"
-                    />
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="状态" prop="status">
-                  <el-select
-                    v-model="queryParams.status"
-                    placeholder="操作状态"
-                    clearable
-                    size="small"
-                    style="width: 240px"
-                  >
-                    <el-option
-                      v-for="dict in statusOptions"
-                      :key="dict.dictValue"
-                      :label="dict.dictLabel"
-                      :value="dict.dictValue"
-                    />
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="操作时间">
-                  <el-date-picker
-                    v-model="dateRange"
-                    size="small"
-                    style="width: 240px"
-                    value-format="yyyy-MM-dd"
-                    type="daterange"
-                    range-separator="-"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                  ></el-date-picker>
-                </el-form-item> 
-                <el-form-item>
-                  <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-                  <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-                </el-form-item>
-              </el-form>-->
-
               <el-row :gutter="10" class="mb8">
-                <!-- <el-col :span="1.5">
+                <el-col :span="1.5">
                   <el-button
                     type="primary"
                     icon="el-icon-plus"
@@ -315,9 +204,9 @@
                     @click="handleExport"
                     v-hasPermi="['system:test:export']"
                   >导出</el-button>
-                </el-col> -->
+                </el-col>
 
-                <el-col :span="1.5">
+                <el-col :span="1.5" style="marginTop:-5px">
                   <tablec-cascader :options='options' v-model="tableColumnsConfig"></tablec-cascader>
                 </el-col>
                 <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
@@ -404,7 +293,7 @@
 
 
 
-    <!-- 添加或修改【请填写功能名称】对话框 -->
+    <!-- 添加或修改货源对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" label-width="80px">
         <el-form-item label="${comment}" prop="testName">
@@ -420,7 +309,7 @@
 </template>
 
 <script>
-import { getOrderInfoList } from "@/api/order/manage";
+import { getOrderInfoList, delOrder } from "@/api/order/manage";
 
 const data = [{
           id: 1,
@@ -457,58 +346,58 @@ const data = [{
             label: '二级 3-2'
           }]
 }]
-const options = [
-        {
-            prop: 'infoId',
-            label: '访问编号',
-            fixed:'left'
-            // width: ,
-            // align: 'center'
-        },
-        {
-            prop: 'userName',
-            label: '用户名称',
-            // width: ,
-            // align: 'center'
-        },{
-            prop: 'ipaddr',
-            label: '地址',
-            width: 130,
-            tooltip: true
-            // align: 'center'
-        },{
-            prop: 'status',
-            label: '状态'
-        },{
-            prop: 'msg',
-            label: '描述',
-            // width: ,
-            // align: 'center'
-        },{
-            prop: 'accessTime',
-            label: '访问时间',
-            width: 180,
-            // align: 'center'
-        },
-        {
-            prop: 'type',
-            label: '访问时间',
-            width: 250,
-            // align: 'center'
-        },
-        {
-            prop: 'terminalType',
-            label: '访问时间',
-            width: 250,
-            // align: 'center'
-        },
-        {
-            prop: 'edit',
-            label: '操作',
-            width: 180,
-            fixed:'right'
-        }
-]
+// const options = [
+//         {
+//             prop: 'infoId',
+//             label: '访问编号',
+//             fixed:'left'
+//             // width: ,
+//             // align: 'center'
+//         },
+//         {
+//             prop: 'userName',
+//             label: '用户名称',
+//             // width: ,
+//             // align: 'center'
+//         },{
+//             prop: 'ipaddr',
+//             label: '地址',
+//             width: 130,
+//             tooltip: true
+//             // align: 'center'
+//         },{
+//             prop: 'status',
+//             label: '状态'
+//         },{
+//             prop: 'msg',
+//             label: '描述',
+//             // width: ,
+//             // align: 'center'
+//         },{
+//             prop: 'accessTime',
+//             label: '访问时间',
+//             width: 180,
+//             // align: 'center'
+//         },
+//         {
+//             prop: 'type',
+//             label: '访问时间',
+//             width: 250,
+//             // align: 'center'
+//         },
+//         {
+//             prop: 'terminalType',
+//             label: '访问时间',
+//             width: 250,
+//             // align: 'center'
+//         },
+//         {
+//             prop: 'edit',
+//             label: '操作',
+//             width: 180,
+//             fixed:'right'
+//         }
+// ]
 
 const listData = {
     "total": 269,
@@ -739,6 +628,8 @@ export default {
         loading: false,
         // 选中数组
         ids: [],
+        // 非单个禁用
+        single: true,
         // 非多个禁用
         multiple: true,
         // 显示搜索条件
@@ -762,60 +653,51 @@ export default {
           pageNum: 1,
           pageSize: 10,
           
-          isTrunk: 0,
-          isShare: 1,
-          createrInfo: '下单客户',
-          shipperInfo: '装货信息',
-          consigneeInfo: '收货信息',
-          coalType: 1700,
-          coalName: '货物描述',
-          mainOrderNumberInfo: '货源单号',
-          status: 1,
-          time:[],
-          startTime: '2021-03-08',
-          endTime: '2021-03-17',
-          minCount: 1,
-          maxCount: 2,
-          quote: 1,
-          delFlag: 2,
-          isOftenOrder:0
+          companyAndCustomerAndPhone: '',
+          addressAndPhoneAndMember: '',
+          destinationAndPhoneAndMember: '',
+          goodsBigType: '',
+          goodsName: '',
+          pubilshCode:'',
+          mainOrderNumber: '',
+          driverId: undefined,
+          status: undefined,
+          isShare: false,
+          searchTime:[],
+          beginTime: '',
+          endTime: '',
         },
         // 弹框title
         title: '',
         // 表头动态值
-      tableColumnsConfig:[],
+        tableColumnsConfig:[],
 
-      // 下拉框展示所有的值-其中每一项就是配置项的值
-      options
-
-      
+        // 下拉框展示所有的值-其中每一项就是配置项的值
+        options:[]
       };
     },
     created() {
       this.getList();
-      // 这个可以做个判断如果有存则取存的东西, 没有就去全部
-      this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || this.options
+      this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || []
+      this.options = this.getLocalStorage(this.$route.name) || []
     },
     methods: {
-      /** 查询【请填写功能名称】列表 */
+      /** 查询货源列表 */
       getList() {
         this.loading = true;
         getOrderInfoList(this.queryParams).then(response => {
-          console.log(response);
-          
-          this.list = response.rows;
-          this.total = response.total;
+          // 处理一下表头
+          this.options = this.handleColumns(response.data.list[0])
+          // 展示表头
+          this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || this.options
+          // 表赋值
+          this.list = response.data.list;
+          this.total = response.data.total;
           this.loading = false;
         }).catch(err=>{
           this.loading = false;
         })
 
-        // 测试,上面打开,下面就要删掉
-          this.list = listData.rows;
-          this.total = listData.total;
-          this.loading = false;
-
-        
       },
       // 取消按钮
       cancel() {
@@ -832,8 +714,6 @@ export default {
       },
       /** 搜索按钮操作 */
       handleQuery() {
-        console.log(this.queryParams);
-        return
         this.queryParams.pageNum = 1;
         this.getList();
       },
@@ -844,7 +724,8 @@ export default {
       },
       // 多选框选中数据
       handleSelectionChange(selection) {
-        this.ids = selection.map(item => item.testId)
+        this.ids = selection.map(item => item.id)
+        console.log(this.ids, '选择了那些东西');
         this.single = selection.length!==1
         this.multiple = !selection.length
       },
@@ -852,7 +733,7 @@ export default {
       handleAdd() {
         this.reset();
         this.open = true;
-        this.title = "添加【请填写功能名称】";
+        this.title = "添加货源";
       },
       /** 修改按钮操作 */
       handleUpdate(row) {
@@ -861,7 +742,7 @@ export default {
         getTest(testId).then(response => {
           this.form = response.data;
           this.open = true;
-          this.title = "修改【请填写功能名称】";
+          this.title = "修改货源";
         });
       },
       /** 提交按钮 */
@@ -886,13 +767,14 @@ export default {
       },
       /** 删除按钮操作 */
       handleDelete(row) {
-        const testIds = row.testId || this.ids;
-        this.$confirm('是否确认删除【请填写功能名称】编号为"' + testIds + '"的数据项?', "警告", {
+       
+        const testIds = row.id || this.ids;
+        this.$confirm('是否确认删除货源编号为"' + testIds + '"的数据项?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         }).then(function() {
-          return delTest(testIds);
+          return delOrder(testIds);
         }).then(() => {
           this.getList();
           this.msgSuccess("删除成功");
@@ -903,6 +785,23 @@ export default {
         this.download('system/test/export', {
           ...this.queryParams
         }, `system_test.xlsx`)
+      },
+
+      /** 处理一下表头 **/
+      handleColumns(obj){
+        return Object.keys(obj).map(key=>{
+          return {
+            prop: key,
+            label: key,
+            // width: 180,
+            // fixed:'right'
+          }
+        }).concat({
+            prop: 'edit',
+            label: '操作',
+            width: 180,
+            fixed:'right'
+          })
       }
     }
 }

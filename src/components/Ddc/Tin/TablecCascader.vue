@@ -9,11 +9,11 @@
         ></el-cascader>
         <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate">表头排序</el-button>
 
-        <el-dialog title="拖拽排序" :visible.sync="open" width="80%" append-to-body destroy-on-close>
+        <el-dialog title="拖拽排序" :visible.sync="open" append-to-body destroy-on-close>
 
            
-            <table border="1">
-                <thead> 
+            <!-- <table border="1" class="t-thead">
+                <thead > 
                     <draggable
                             v-model="banner_list"
                             v-bind="{
@@ -27,7 +27,20 @@
                                 <th style="padding: 10px 20px" v-for="(th, key) in banner_list" :key="th.prop +''+ key">{{th.label}}</th>
                     </draggable>
                 </thead>
-            </table>
+            </table> -->
+            <ul class="t-thead">
+                <draggable
+                            v-model="banner_list"
+                            v-bind="{
+                                animation: 150,
+                                ghostClass: 'sortable-ghost',
+                                chosenClass: 'chosenClass',
+                                scroll: true,
+                                scrollSensitivity: 200
+                            }">
+                    <li style="padding: 10px 20px" v-for="(th, key) in banner_list" :key="th.prop +''+ key">{{th.label}}</li>
+                </draggable>
+            </ul>
 
             <div slot="footer" class="dialog-footer">
                 <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -127,6 +140,8 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+.t-thead li{
+    border-bottom: 1px solid #ccc;
+}
 </style>

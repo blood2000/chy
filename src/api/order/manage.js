@@ -1,10 +1,18 @@
 import request from '@/utils/request'
 
-// 查询【请填写功能名称】列表
+// 查询货源管理列表列表
 export function getOrderInfoList(query) {
   return request({
-    url: '/order/getOrderInfoList',
+    url: '/transportation/order/getOrderInfoList',
     method: 'get',
     params: query
+  })
+}
+
+// 删除货源
+export function delOrder(orderId) {
+  return request({
+    url: '/transportation/order/delete/' + orderId,
+    method: 'delete'
   })
 }
