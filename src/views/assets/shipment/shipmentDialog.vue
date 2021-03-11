@@ -22,6 +22,17 @@
       <el-form-item label="身份证号" prop="identificationNumber">
         <el-input v-model="form.identificationNumber" placeholder="支持自动识别" size="small" class="width90" clearable />
       </el-form-item>
+      <!-- <el-form-item label="身份证有效期" prop="identificationValidPeriod">
+        <el-date-picker
+          v-model="form.identificationValidPeriod"
+          clearable
+          size="small"
+          class="width90"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择"
+        />
+      </el-form-item> -->
       <template v-if="form.shipperType === 1">
         <el-form-item label="公司名称" prop="companyName">
           <el-input v-model="form.companyName" placeholder="请输入公司名称" size="small" class="width90" clearable />
@@ -235,9 +246,13 @@
       </el-form-item> -->
     </el-form>
 
-    <div slot="footer" class="dialog-footer">
+    <div v-if="title === '编辑'" slot="footer" class="dialog-footer">
       <el-button type="primary" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
+    </div>
+    <div v-if="title === '审核'" slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="reviewPass">审核通过</el-button>
+      <el-button type="danger" @click="reviewNoPass">审核不通过</el-button>
     </div>
   </el-dialog>
 </template>
@@ -251,7 +266,10 @@ export default {
     UploadImage
   },
   props: {
-    title: String,
+    title: {
+      type: String,
+      default: ''
+    },
     open: Boolean,
     disable: Boolean
   },
@@ -339,13 +357,9 @@ export default {
   methods: {
     /** 提交按钮 */
     submitForm: function() {
-      if (this.disable) {
-        this.close();
-        return;
-      }
       this.$refs['form'].validate(valid => {
         if (valid) {
-          if (this.form.id != undefined) {
+          if (this.form.id !== undefined) {
             updateShipment(this.form).then(response => {
               this.msgSuccess('修改成功');
               this.close();
@@ -367,6 +381,14 @@ export default {
       this.close();
       this.reset();
     },
+    /** 审核通过按钮 */
+    reviewPass() {
+
+    },
+    /** 审核不通过按钮 */
+    reviewNoPass() {
+
+    },
     // 关闭弹窗
     close() {
       this.$emit('update:open', false);
@@ -382,6 +404,7 @@ export default {
         companyName: null,
         shipperType: null,
         identificationNumber: null,
+        identificationValidPeriod: null,
         identificationImg: null,
         identificationBackImg: null,
         identificationInhandImg: null,

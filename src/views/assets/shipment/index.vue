@@ -113,7 +113,7 @@
             size="mini"
             type="text"
             icon="el-icon-document"
-            @click="handleDEtail(scope.row)"
+            @click="handleDEtail(scope.row, 'detail')"
           >详情</el-button>
           <el-button
             v-hasPermi="['assets:shipment:edit']"
@@ -122,6 +122,12 @@
             icon="el-icon-edit"
             @click="handleDEtail(scope.row, 'edit')"
           >修改</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-document-checked"
+            @click="handleDEtail(scope.row, 'review')"
+          >审核</el-button>
           <el-button
             v-hasPermi="['assets:shipment:remove']"
             size="mini"
@@ -141,7 +147,7 @@
       @pagination="getList"
     />
 
-    <!-- 新增/修改/详情 对话框 -->
+    <!-- 新增/修改/详情/审核 对话框 -->
     <shipment-dialog ref="ShipmentDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
   </div>
 </template>
@@ -217,8 +223,7 @@ export default {
         this.shipmentList = response.rows;
         this.total = response.total;
         this.loading = false;
-      }
-      );
+      });
     },
     // 参数系统内置字典翻译
     shipperTypeFormat(row) {
@@ -254,8 +259,14 @@ export default {
       getShipment(id).then(response => {
         this.$refs.ShipmentDialog.setForm(response.data);
         this.open = true;
-        this.title = flag === 'edit' ? '编辑' : '详情';
-        this.formDisable = flag != 'edit';
+        if (flag === 'detail') {
+          this.title = '详情';
+        } else if (flag === 'edit') {
+          this.title = '编辑';
+        } else if (flag === 'review') {
+          this.title = '审核';
+        }
+        this.formDisable = flag !== 'edit';
       });
     },
     /** 删除按钮操作 */
