@@ -221,7 +221,7 @@ export default {
   props: {
     title: String,
     open: Boolean,
-      	disable: Boolean
+    disable: Boolean
   },
   data() {
     return {
