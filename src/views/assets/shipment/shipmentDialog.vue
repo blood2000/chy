@@ -345,7 +345,7 @@ export default {
       }
       this.$refs['form'].validate(valid => {
         if (valid) {
-          if (this.form.id != undefined) {
+          if (this.form.id !== undefined) {
             updateShipment(this.form).then(response => {
               this.msgSuccess('修改成功');
               this.close();
