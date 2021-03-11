@@ -37,7 +37,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="是否删除" prop="isDel">
+      <!-- <el-form-item label="是否删除" prop="isDel">
         <el-input
           v-model="queryParams.isDel"
           placeholder="请输入是否删除"
@@ -45,7 +45,7 @@
           size="small"
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择状态" clearable size="small">
           <el-option
@@ -125,9 +125,9 @@
     <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <!-- <el-table-column label="编码" align="center" prop="code" /> -->
-      <el-table-column label="网点编码" align="center" prop="branchCode" />
-      <el-table-column label="车队名称" align="center" prop="name" />
-      <el-table-column label="车队管理者" align="center" prop="teamLeader" />
+      <el-table-column label="网点编码" align="center" prop="branchCode" sortable />
+      <el-table-column label="车队名称" align="center" prop="name" sortable />
+      <el-table-column label="车队管理者" align="center" prop="teamLeader" sortable />
       <!-- <el-table-column label="是否删除" align="center" prop="isDel" /> -->
       <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" />
       <!-- <el-table-column label="创建人" align="center" prop="createCode" />
@@ -212,7 +212,7 @@ export default {
       statusOptions: [
         { dictLabel: '启用', dictValue: '0' },
         { dictLabel: '禁用', dictValue: '1' }
-	  ],
+      ],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -234,15 +234,6 @@ export default {
   },
   created() {
     this.getList();
-    // this.getDicts("${column.dictType}").then(response => {
-    //   this.nameOptions = response.data;
-    // });
-    // this.getDicts("${column.dictType}").then(response => {
-    //   this.teamLeaderOptions = response.data;
-    // });
-    this.getDicts('${column.dictType}').then(response => {
-	  this.statusOptions = response.data;
-    });
   },
   methods: {
     /** 查询调度者列表 */
@@ -264,7 +255,7 @@ export default {
     // },
     // 状态字典翻译
     statusFormat(row, column) {
-	  return this.selectDictLabel(this.statusOptions, row.teamLeader);
+      return this.selectDictLabel(this.statusOptions, row.status);
     },
     // 取消按钮
     cancel() {
