@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
       <!-- <el-form-item label="编码" prop="code">
         <el-input
           v-model="queryParams.code"
@@ -202,12 +202,15 @@
         />
       </el-form-item> -->
       <el-form-item label="年审时间" prop="annualVerificationDate">
-        <el-date-picker clearable size="small" style="width: 215px"
+        <el-date-picker
           v-model="queryParams.annualVerificationDate"
+          clearable
+          size="small"
+          style="width: 215px"
           type="date"
           value-format="yyyy-MM-dd"
-          placeholder="选择年审时间">
-        </el-date-picker>
+          placeholder="选择年审时间"
+        />
       </el-form-item>
       <!-- <el-form-item label="运输介子" prop="transportMeson">
         <el-input
@@ -264,62 +267,62 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
+          v-hasPermi="['assets:vehicle:add']"
           type="primary"
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['assets:vehicle:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
+          v-hasPermi="['assets:vehicle:edit']"
           type="success"
           icon="el-icon-edit"
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['assets:vehicle:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
+          v-hasPermi="['assets:vehicle:remove']"
           type="danger"
           icon="el-icon-delete"
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['assets:vehicle:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
+          v-hasPermi="['system:info:export']"
           type="warning"
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['system:info:export']"
         >导出</el-button>
       </el-col>
-	  <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
-    <el-table  :data="infoList" v-loading="loading" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <!-- <el-table-column label="编码" align="center" prop="code" /> -->
-      <el-table-column label="名称" align="center" prop="licenseNumber" sortable/>
-      <el-table-column label="车主编码" align="center" prop="vehicleOwnerCode" width="130" sortable/>
+      <el-table-column label="名称" align="center" prop="licenseNumber" sortable />
+      <el-table-column label="车主编码" align="center" prop="vehicleOwnerCode" width="130" sortable />
       <el-table-column label="车辆归属类型" align="center" prop="vehicleAscriptionType" :formatter="vehicleAscriptionTypeFormat" width="130" />
-      <el-table-column label="车牌类型代码" align="center" prop="classificationCode" width="130" sortable/>
-      <el-table-column label="车牌颜色代码" align="center" prop="vehicleLicenseColorCode" width="130"/>
-      <el-table-column label="车身颜色代码" align="center" prop="vehicleColorCode" width="130"/>
-      <el-table-column label="车身颜色代码" align="center" prop="vehicleTypeCode" width="130"/>
-      <el-table-column label="车辆能源类型" align="center" prop="vehicleEnergyType" width="130" :formatter="vehicleEnergyTypeFormat"/>
-      <el-table-column label="车长代码" align="center" prop="vehicleLength" width="130" sortable/>
+      <el-table-column label="车牌类型代码" align="center" prop="classificationCode" width="130" sortable />
+      <el-table-column label="车牌颜色代码" align="center" prop="vehicleLicenseColorCode" width="130" />
+      <el-table-column label="车身颜色代码" align="center" prop="vehicleColorCode" width="130" />
+      <el-table-column label="车身颜色代码" align="center" prop="vehicleTypeCode" width="130" />
+      <el-table-column label="车辆能源类型" align="center" prop="vehicleEnergyType" width="130" :formatter="vehicleEnergyTypeFormat" />
+      <el-table-column label="车长代码" align="center" prop="vehicleLength" width="130" sortable />
       <el-table-column label="车宽代码" align="center" prop="vehicleWidth" />
       <el-table-column label="车高代码" align="center" prop="vehicleHeight" />
-      <el-table-column label="车辆总重量" align="center" prop="vehicleTotalWeight" width="130" sortable/>
-      <el-table-column label="车辆可载重量" align="center" prop="vehicleLoadWeight" width="130" sortable/>
-      <el-table-column label="车辆可载平方" align="center" prop="vehicleLoadVolume" width="130"/>
-      <el-table-column label="车辆可载立方" align="center" prop="vehicleRemainingLoadVolume" width="130"/>
+      <el-table-column label="车辆总重量" align="center" prop="vehicleTotalWeight" width="130" sortable />
+      <el-table-column label="车辆可载重量" align="center" prop="vehicleLoadWeight" width="130" sortable />
+      <el-table-column label="车辆可载平方" align="center" prop="vehicleLoadVolume" width="130" />
+      <el-table-column label="车辆可载立方" align="center" prop="vehicleRemainingLoadVolume" width="130" />
       <el-table-column label="车身自重" align="center" prop="selfRespect" />
       <el-table-column label="车架号" align="center" prop="chassisNumber" />
       <el-table-column label="发动机号" align="center" prop="engineNumber" />
@@ -336,33 +339,33 @@
       <el-table-column label="是否冻结" align="center" prop="isFreeze" :formatter="isFreezeFormat" />
       <!-- <el-table-column label="创建人" align="center" prop="createCode" :formatter="createCodeFormat" />
       <el-table-column label="更新人" align="center" prop="updateCode" :formatter="updateCodeFormat" /> -->
-	  <el-table-column label="车头正面照" align="center" prop="vehicleImage" />
+      <el-table-column label="车头正面照" align="center" prop="vehicleImage" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="180">
         <template slot-scope="scope">
-			<el-button
-			  size="mini"
-			  type="text"
-			  icon="el-icon-document"
-			  @click="handleDEtail(scope.row)"
-			>详情</el-button>
           <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-document"
+            @click="handleDEtail(scope.row)"
+          >详情</el-button>
+          <el-button
+            v-hasPermi="['assets:vehicle:edit']"
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['assets:vehicle:edit']"
           >修改</el-button>
           <el-button
+            v-hasPermi="['assets:vehicle:remove']"
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['assets:vehicle:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -370,18 +373,18 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-	
-	<!-- 新增/修改/详情 对话框 -->
-	<vehicle-dialog ref="VehicleDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList"></vehicle-dialog>
+
+    <!-- 新增/修改/详情 对话框 -->
+    <vehicle-dialog ref="VehicleDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
   </div>
 </template>
 
 <script>
-import { listInfo, getInfo, delInfo } from "@/api/assets/vehicle";
+import { listInfo, getInfo, delInfo } from '@/api/assets/vehicle';
 import VehicleDialog from './vehicleDialog';
 
 export default {
-  name: "Vehicle",
+  name: 'Vehicle',
   components: {
 	  VehicleDialog
   },
@@ -402,27 +405,27 @@ export default {
       // 【请填写功能名称】表格数据
       infoList: [],
       // 弹出层标题
-      title: "",
+      title: '',
       // 是否显示弹出层
       open: false,
 	  // 车辆能源类型字典
 	  vehicleEnergyTypeOptions: [],
 	  // 车辆归属类型 0.自有 1.加盟字典
 	  vehicleAscriptionTypeOptions: [
-		  {dictLabel: '自有', dictValue: '0'},
-		  {dictLabel: '加盟', dictValue: '1'}
+		  { dictLabel: '自有', dictValue: '0' },
+		  { dictLabel: '加盟', dictValue: '1' }
 	  ],
 	  // 审核状态(0.未审核.1审核中2审核未通过3审核通过)字典
 	  authStatusOptions: [
-		  {dictLabel: '未审核', dictValue: '0'},
-		  {dictLabel: '审核中', dictValue: '1'},
-		  {dictLabel: '审核未通过', dictValue:'2'},
-		  {dictLabel: '审核通过', dictValue: '3'}
+		  { dictLabel: '未审核', dictValue: '0' },
+		  { dictLabel: '审核中', dictValue: '1' },
+		  { dictLabel: '审核未通过', dictValue: '2' },
+		  { dictLabel: '审核通过', dictValue: '3' }
 	  ],
 	  // 是否冻结(0正常1冻结)字典
 	  isFreezeOptions: [
-		  {dictLabel: '正常', dictValue: '0'},
-		  {dictLabel: '冻结', dictValue: '1'}
+		  { dictLabel: '正常', dictValue: '0' },
+		  { dictLabel: '冻结', dictValue: '1' }
 	  ],
 	  // 是否删除(0正常1删除)字典
 	  delFlagOptions: [],
@@ -433,14 +436,14 @@ export default {
         licenseNumber: null,
         vehicleOwnerCode: null,
         vehicleAscriptionType: null,
-		vehicleEnergyType: null,
+        vehicleEnergyType: null,
         vehicleTotalWeight: null,
         vehicleLoadWeight: null,
         vehicleLoadVolume: null,
         vehicleRemainingLoadVolume: null,
         annualVerificationDate: null,
         authStatus: null,
-        isFreeze: null,
+        isFreeze: null
       },
 	  // 表单是否禁用
 	  formDisable: false
@@ -448,21 +451,21 @@ export default {
   },
   created() {
     this.getList();
-	this.getDicts("energyTypes").then(response => {
+    this.getDicts('energyTypes').then(response => {
 	  this.vehicleEnergyTypeOptions = response.data;
-	});
- //    this.getDicts("${column.dictType}").then(response => {
- //      this.vehicleAscriptionTypeOptions = response.data;
- //    });
- //    this.getDicts("${column.dictType}").then(response => {
- //      this.authStatusOptions = response.data;
- //    });
- //    this.getDicts("${column.dictType}").then(response => {
- //      this.isFreezeOptions = response.data;
- //    });
- //    this.getDicts("${column.dictType}").then(response => {
- //      this.delFlagOptions = response.data;
- //    });
+    });
+    //    this.getDicts("${column.dictType}").then(response => {
+    //      this.vehicleAscriptionTypeOptions = response.data;
+    //    });
+    //    this.getDicts("${column.dictType}").then(response => {
+    //      this.authStatusOptions = response.data;
+    //    });
+    //    this.getDicts("${column.dictType}").then(response => {
+    //      this.isFreezeOptions = response.data;
+    //    });
+    //    this.getDicts("${column.dictType}").then(response => {
+    //      this.delFlagOptions = response.data;
+    //    });
   },
   methods: {
     /** 查询车辆列表 */
@@ -474,10 +477,10 @@ export default {
         this.loading = false;
       });
     },
-	// 车辆能源类型字典翻译
-	vehicleEnergyTypeFormat(row, column) {
+    // 车辆能源类型字典翻译
+    vehicleEnergyTypeFormat(row, column) {
 	  return this.selectDictLabel(this.vehicleEnergyTypeOptions, row.vehicleEnergyType);
-	},
+    },
     // 车辆归属类型 0.自有 1.加盟字典翻译
     vehicleAscriptionTypeFormat(row, column) {
       return this.selectDictLabel(this.vehicleAscriptionTypeOptions, row.vehicleAscriptionType);
@@ -501,64 +504,64 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.resetForm("queryForm");
+      this.resetForm('queryForm');
       this.handleQuery();
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id)
-      this.single = selection.length!==1
-      this.multiple = !selection.length
+      this.ids = selection.map(item => item.id);
+      this.single = selection.length !== 1;
+      this.multiple = !selection.length;
     },
     /** 新增按钮操作 */
     handleAdd() {
-		this.$refs.VehicleDialog.reset();
-		this.open = true;
-		this.title = "添加车辆";
-		this.formDisable = false;
+      this.$refs.VehicleDialog.reset();
+      this.open = true;
+      this.title = '添加车辆';
+      this.formDisable = false;
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-		this.$refs.VehicleDialog.reset();
-		const id = row.id || this.ids
-		getInfo(id).then(response => {
+      this.$refs.VehicleDialog.reset();
+      const id = row.id || this.ids;
+      getInfo(id).then(response => {
 		  this.$refs.VehicleDialog.setForm(response.data);
 		  this.open = true;
-		  this.title = "修改车辆";
+		  this.title = '修改车辆';
 		  this.formDisable = false;
-		});
+      });
     },
-	/** 详情按钮操作 */
-	handleDEtail(row) {
-		this.$refs.VehicleDialog.reset();
-		const id = row.id || this.ids
-		getInfo(id).then(response => {
+    /** 详情按钮操作 */
+    handleDEtail(row) {
+      this.$refs.VehicleDialog.reset();
+      const id = row.id || this.ids;
+      getInfo(id).then(response => {
 		  this.$refs.VehicleDialog.setForm(response.data);
 		  this.open = true;
-		  this.title = "详情";
+		  this.title = '详情';
 		  this.formDisable = true;
-		});
-	},
-    
+      });
+    },
+
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$confirm('是否确认删除车辆编号为"' + ids + '"的数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return delInfo(ids);
-        }).then(() => {
-          this.getList();
-          this.msgSuccess("删除成功");
-        })
+      this.$confirm('是否确认删除车辆编号为"' + ids + '"的数据项?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return delInfo(ids);
+      }).then(() => {
+        this.getList();
+        this.msgSuccess('删除成功');
+      });
     },
     /** 导出按钮操作 */
     handleExport() {
       this.download('system/info/export', {
         ...this.queryParams
-      }, `system_info.xlsx`)
+      }, `system_info.xlsx`);
     }
   }
 };

@@ -572,15 +572,15 @@
 </template>
 
 <script>
-import { isArray } from 'util'
-import TreeNodeDialog from './TreeNodeDialog'
-import { isNumberStr } from '@/utils/index'
-import IconsDialog from './IconsDialog'
+import { isArray } from 'util';
+import TreeNodeDialog from './TreeNodeDialog';
+import { isNumberStr } from '@/utils/index';
+import IconsDialog from './IconsDialog';
 import {
   inputComponents,
   selectComponents,
   layoutComponents
-} from '@/utils/generator/config'
+} from '@/utils/generator/config';
 
 const dateTimeFormat = {
   date: 'yyyy-MM-dd',
@@ -591,7 +591,7 @@ const dateTimeFormat = {
   daterange: 'yyyy-MM-dd',
   monthrange: 'yyyy-MM',
   datetimerange: 'yyyy-MM-dd HH:mm:ss'
-}
+};
 
 export default {
   components: {
@@ -688,29 +688,29 @@ export default {
       ],
       layoutTreeProps: {
         label(data, node) {
-          return data.componentName || `${data.label}: ${data.vModel}`
+          return data.componentName || `${data.label}: ${data.vModel}`;
         }
       }
-    }
+    };
   },
   computed: {
     documentLink() {
       return (
-        this.activeData.document
-        || 'https://element.eleme.cn/#/zh-CN/component/installation'
-      )
+        this.activeData.document ||
+        'https://element.eleme.cn/#/zh-CN/component/installation'
+      );
     },
     dateOptions() {
       if (
-        this.activeData.type !== undefined
-        && this.activeData.tag === 'el-date-picker'
+        this.activeData.type !== undefined &&
+        this.activeData.tag === 'el-date-picker'
       ) {
         if (this.activeData['start-placeholder'] === undefined) {
-          return this.dateTypeOptions
+          return this.dateTypeOptions;
         }
-        return this.dateRangeTypeOptions
+        return this.dateRangeTypeOptions;
       }
-      return []
+      return [];
     },
     tagList() {
       return [
@@ -722,7 +722,7 @@ export default {
           label: '选择型组件',
           options: selectComponents
         }
-      ]
+      ];
     }
   },
   methods: {
@@ -730,66 +730,66 @@ export default {
       this.activeData.regList.push({
         pattern: '',
         message: ''
-      })
+      });
     },
     addSelectItem() {
       this.activeData.options.push({
         label: '',
         value: ''
-      })
+      });
     },
     addTreeItem() {
-      ++this.idGlobal
-      this.dialogVisible = true
-      this.currentNode = this.activeData.options
+      ++this.idGlobal;
+      this.dialogVisible = true;
+      this.currentNode = this.activeData.options;
     },
     renderContent(h, { node, data, store }) {
       return (
-        <div class="custom-tree-node">
+        <div class='custom-tree-node'>
           <span>{node.label}</span>
-          <span class="node-operation">
+          <span class='node-operation'>
             <i on-click={() => this.append(data)}
-              class="el-icon-plus"
-              title="添加"
+              class='el-icon-plus'
+              title='添加'
             ></i>
             <i on-click={() => this.remove(node, data)}
-              class="el-icon-delete"
-              title="删除"
+              class='el-icon-delete'
+              title='删除'
             ></i>
           </span>
         </div>
-      )
+      );
     },
     append(data) {
       if (!data.children) {
-        this.$set(data, 'children', [])
+        this.$set(data, 'children', []);
       }
-      this.dialogVisible = true
-      this.currentNode = data.children
+      this.dialogVisible = true;
+      this.currentNode = data.children;
     },
     remove(node, data) {
-      const { parent } = node
-      const children = parent.data.children || parent.data
-      const index = children.findIndex(d => d.id === data.id)
-      children.splice(index, 1)
+      const { parent } = node;
+      const children = parent.data.children || parent.data;
+      const index = children.findIndex(d => d.id === data.id);
+      children.splice(index, 1);
     },
     addNode(data) {
-      this.currentNode.push(data)
+      this.currentNode.push(data);
     },
     setOptionValue(item, val) {
-      item.value = isNumberStr(val) ? +val : val
+      item.value = isNumberStr(val) ? +val : val;
     },
     setDefaultValue(val) {
       if (Array.isArray(val)) {
-        return val.join(',')
+        return val.join(',');
       }
       if (['string', 'number'].indexOf(val) > -1) {
-        return val
+        return val;
       }
       if (typeof val === 'boolean') {
-        return `${val}`
+        return `${val}`;
       }
-      return val
+      return val;
     },
     onDefaultValueInput(str) {
       if (isArray(this.activeData.defaultValue)) {
@@ -798,73 +798,73 @@ export default {
           this.activeData,
           'defaultValue',
           str.split(',').map(val => (isNumberStr(val) ? +val : val))
-        )
+        );
       } else if (['true', 'false'].indexOf(str) > -1) {
         // 布尔
-        this.$set(this.activeData, 'defaultValue', JSON.parse(str))
+        this.$set(this.activeData, 'defaultValue', JSON.parse(str));
       } else {
         // 字符串和数字
         this.$set(
           this.activeData,
           'defaultValue',
           isNumberStr(str) ? +str : str
-        )
+        );
       }
     },
     onSwitchValueInput(val, name) {
       if (['true', 'false'].indexOf(val) > -1) {
-        this.$set(this.activeData, name, JSON.parse(val))
+        this.$set(this.activeData, name, JSON.parse(val));
       } else {
-        this.$set(this.activeData, name, isNumberStr(val) ? +val : val)
+        this.$set(this.activeData, name, isNumberStr(val) ? +val : val);
       }
     },
     setTimeValue(val, type) {
-      const valueFormat = type === 'week' ? dateTimeFormat.date : val
-      this.$set(this.activeData, 'defaultValue', null)
-      this.$set(this.activeData, 'value-format', valueFormat)
-      this.$set(this.activeData, 'format', val)
+      const valueFormat = type === 'week' ? dateTimeFormat.date : val;
+      this.$set(this.activeData, 'defaultValue', null);
+      this.$set(this.activeData, 'value-format', valueFormat);
+      this.$set(this.activeData, 'format', val);
     },
     spanChange(val) {
-      this.formConf.span = val
+      this.formConf.span = val;
     },
     multipleChange(val) {
-      this.$set(this.activeData, 'defaultValue', val ? [] : '')
+      this.$set(this.activeData, 'defaultValue', val ? [] : '');
     },
     dateTypeChange(val) {
-      this.setTimeValue(dateTimeFormat[val], val)
+      this.setTimeValue(dateTimeFormat[val], val);
     },
     rangeChange(val) {
       this.$set(
         this.activeData,
         'defaultValue',
         val ? [this.activeData.min, this.activeData.max] : this.activeData.min
-      )
+      );
     },
     rateTextChange(val) {
-      if (val) this.activeData['show-score'] = false
+      if (val) this.activeData['show-score'] = false;
     },
     rateScoreChange(val) {
-      if (val) this.activeData['show-text'] = false
+      if (val) this.activeData['show-text'] = false;
     },
     colorFormatChange(val) {
-      this.activeData.defaultValue = null
-      this.activeData['show-alpha'] = val.indexOf('a') > -1
-      this.activeData.renderKey = +new Date() // 更新renderKey,重新渲染该组件
+      this.activeData.defaultValue = null;
+      this.activeData['show-alpha'] = val.indexOf('a') > -1;
+      this.activeData.renderKey = +new Date(); // 更新renderKey,重新渲染该组件
     },
     openIconsDialog(model) {
-      this.iconsVisible = true
-      this.currentIconModel = model
+      this.iconsVisible = true;
+      this.currentIconModel = model;
     },
     setIcon(val) {
-      this.activeData[this.currentIconModel] = val
+      this.activeData[this.currentIconModel] = val;
     },
     tagChange(tagIcon) {
-      let target = inputComponents.find(item => item.tagIcon === tagIcon)
-      if (!target) target = selectComponents.find(item => item.tagIcon === tagIcon)
-      this.$emit('tag-change', target)
+      let target = inputComponents.find(item => item.tagIcon === tagIcon);
+      if (!target) target = selectComponents.find(item => item.tagIcon === tagIcon);
+      this.$emit('tag-change', target);
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

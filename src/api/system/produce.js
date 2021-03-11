@@ -6,5 +6,5 @@ export function listProduce(query) {
     url: '/system/produce/list',
     method: 'get',
     params: query
-  })
+  });
 }

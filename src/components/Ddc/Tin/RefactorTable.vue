@@ -1,25 +1,25 @@
 <template>
-    <el-table v-loading="loading" :data="data" @selection-change="handleSelectionChange">
-        
-    <el-table-column type="selection" width="55" align="center" v-if="!!_events['selection-change']" />
+  <el-table v-loading="loading" :data="data" @selection-change="handleSelectionChange">
+
+    <el-table-column v-if="!!_events['selection-change']" type="selection" width="55" align="center" />
     <template v-for="(th, key) in tableColumnsConfig">
-        <el-table-column 
-            :key="th.prop +''+ key"
-            :align="th.align || 'center'"
-            :prop="th.prop"
-            :label="th.label"
-            :width="th.width"
-            :fixed="th.fixed"
-            :show-overflow-tooltip="th.tooltip || false"
-            :formatter="th.formatter"
-            >
-            <template slot-scope="scope">
-                    <slot :name="th.prop" :row='scope.row'>{{ scope.row[th.prop] }}</slot>
-            </template>
-        </el-table-column>
+      <el-table-column
+        :key="th.prop +''+ key"
+        :align="th.align || 'center'"
+        :prop="th.prop"
+        :label="th.label"
+        :width="th.width"
+        :fixed="th.fixed"
+        :show-overflow-tooltip="th.tooltip || false"
+        :formatter="th.formatter"
+      >
+        <template slot-scope="scope">
+          <slot :name="th.prop" :row="scope.row">{{ scope.row[th.prop] }}</slot>
+        </template>
+      </el-table-column>
     </template>
 
-    </el-table>
+  </el-table>
 </template>
 
 <script>
@@ -36,26 +36,26 @@
     </refactor-table>
 */
 export default {
-        name: 'refactor-table',
-        props: {
-            /**
+  name: 'RefactorTable',
+  props: {
+    /**
              * list  渲染所需数据
              * 如：[{infoId:1,ipaddr:'abc'},{infoId:2,ipaddr:'def'}]
              */
-            data: {
-                type: Array,
-                default: function () {
-                    return []
-                }
-            },
+    data: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
 
-            /** 设置table 加载icon */
-            loading: {
-                type: Boolean,
-                default: false
-            },
-            
-            /**
+    /** 设置table 加载icon */
+    loading: {
+      type: Boolean,
+      default: false
+    },
+
+    /**
              * tableColumnsConfig  表头动态配置数据
              * 如： {
                         prop: 'ipaddr',
@@ -66,19 +66,19 @@ export default {
                         fixed:'right' 固定
                     }
              */
-            tableColumnsConfig: {
-                type: Array,
-                default: function () {
-                    return []
-                }
-            }
-        },
-        methods: {
-            handleSelectionChange(selection){
-                this.$emit('selection-change',selection)
-            }
-        }
+    tableColumnsConfig: {
+      type: Array,
+      default: function() {
+        return [];
+      }
     }
+  },
+  methods: {
+    handleSelectionChange(selection) {
+      this.$emit('selection-change', selection);
+    }
+  }
+};
 </script>
 
 <style>

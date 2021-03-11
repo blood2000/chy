@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
       <el-form-item label="货主姓名" prop="adminName">
         <el-input
           v-model="queryParams.adminName"
@@ -52,20 +52,24 @@
         </el-select>
       </el-form-item>
       <el-form-item label="审核时间">
-        <el-date-picker clearable size="small"
+        <el-date-picker
           v-model="queryParams.beginTime"
+          clearable
+          size="small"
           type="date"
           value-format="yyyy-MM-dd"
           style="width: 240px"
           placeholder="请选择"
-        ></el-date-picker> -
-        <el-date-picker clearable size="small"
+        /> -
+        <el-date-picker
           v-model="queryParams.endTime"
+          clearable
+          size="small"
           type="date"
           value-format="yyyy-MM-dd"
           style="width: 240px"
           placeholder="请选择"
-        ></el-date-picker>
+        />
       </el-form-item>
       <el-form-item>
         <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -76,14 +80,14 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
+          v-hasPermi="['assets:shipment:add']"
           type="primary"
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['assets:shipment:add']"
         >新增</el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
     <el-table v-loading="loading" :data="shipmentList">
@@ -112,18 +116,18 @@
             @click="handleDEtail(scope.row)"
           >详情</el-button>
           <el-button
+            v-hasPermi="['assets:shipment:edit']"
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleDEtail(scope.row, 'edit')"
-            v-hasPermi="['assets:shipment:edit']"
           >修改</el-button>
           <el-button
+            v-hasPermi="['assets:shipment:remove']"
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['assets:shipment:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -138,16 +142,16 @@
     />
 
     <!-- 新增/修改/详情 对话框 -->
-    <shipment-dialog ref="ShipmentDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList"></shipment-dialog>
+    <shipment-dialog ref="ShipmentDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
   </div>
 </template>
 
 <script>
-import { listShipment, getShipment, delShipment } from "@/api/assets/shipment";
+import { listShipment, getShipment, delShipment } from '@/api/assets/shipment';
 import ShipmentDialog from './shipmentDialog';
 
 export default {
-  name: "Shipment",
+  name: 'Shipment',
   components: {
     ShipmentDialog
   },
@@ -166,26 +170,26 @@ export default {
       // 参数表格数据
       shipmentList: [],
       // 弹出层标题
-      title: "",
+      title: '',
       // 是否显示弹出层
       open: false,
       // 货主类型数据字典
       typeOptions: [
-        {dictLabel: '发货人', dictValue: 0},
-        {dictLabel: '发货企业', dictValue: 1}
+        { dictLabel: '发货人', dictValue: 0 },
+        { dictLabel: '发货企业', dictValue: 1 }
       ],
       // 审核状态字典
       statusOptions: [
-        {dictLabel: '未审核', dictValue: 0},
-        {dictLabel: '审核中', dictValue: 1},
-        {dictLabel: '审核未通过', dictValue: 2},
-        {dictLabel: '审核通过', dictValue: 3}
+        { dictLabel: '未审核', dictValue: 0 },
+        { dictLabel: '审核中', dictValue: 1 },
+        { dictLabel: '审核未通过', dictValue: 2 },
+        { dictLabel: '审核通过', dictValue: 3 }
       ],
       // 是否冻结字典
       isFreezoneOptions: [
-        {dictLabel: '正常', dictValue: 0},
-        {dictLabel: '冻结', dictValue: 1}
-      ],  
+        { dictLabel: '正常', dictValue: 0 },
+        { dictLabel: '冻结', dictValue: 1 }
+      ],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -198,7 +202,7 @@ export default {
       },
       // 表单详情
       form: {},
-      // 表单是否禁用   
+      // 表单是否禁用
       formDisable: false
     };
   },
@@ -210,10 +214,10 @@ export default {
     getList() {
       this.loading = true;
       listShipment(this.queryParams).then(response => {
-          this.shipmentList = response.rows;
-          this.total = response.total;
-          this.loading = false;
-        }
+        this.shipmentList = response.rows;
+        this.total = response.total;
+        this.loading = false;
+      }
       );
     },
     // 参数系统内置字典翻译
@@ -233,14 +237,14 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.resetForm("queryForm");
+      this.resetForm('queryForm');
       this.handleQuery();
     },
     /** 新增按钮操作 */
     handleAdd() {
       this.$refs.ShipmentDialog.reset();
       this.open = true;
-      this.title = "新增";
+      this.title = '新增';
       this.formDisable = false;
     },
     /** 修改/详情按钮操作 */
@@ -250,23 +254,23 @@ export default {
       getShipment(id).then(response => {
         this.$refs.ShipmentDialog.setForm(response.data);
         this.open = true;
-        this.title = flag === "edit" ? "编辑" : "详情";
-        this.formDisable = flag == "edit" ? false : true;
+        this.title = flag === 'edit' ? '编辑' : '详情';
+        this.formDisable = flag != 'edit';
       });
     },
     /** 删除按钮操作 */
     handleDelete(row) {
       const id = row.id;
-      this.$confirm('是否确认删除编号为"' + id + '"的数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return delShipment(id);
-        }).then(() => {
-          this.getList();
-          this.msgSuccess("删除成功");
-        })
+      this.$confirm('是否确认删除编号为"' + id + '"的数据项?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return delShipment(id);
+      }).then(() => {
+        this.getList();
+        this.msgSuccess('删除成功');
+      });
     }
   }
 };

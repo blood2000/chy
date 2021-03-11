@@ -42,14 +42,14 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import { mapGetters } from 'vuex'
-import TagsView from './TagsView/index'
-import Hamburger from '@/components/Hamburger'
-import Screenfull from '@/components/Screenfull'
-import SizeSelect from '@/components/SizeSelect'
-import Search from '@/components/HeaderSearch'
-import DdcYiDoc from '@/components/Ddc/Doc'
+import { mapState } from 'vuex';
+import { mapGetters } from 'vuex';
+import TagsView from './TagsView/index';
+import Hamburger from '@/components/Hamburger';
+import Screenfull from '@/components/Screenfull';
+import SizeSelect from '@/components/SizeSelect';
+import Search from '@/components/HeaderSearch';
+import DdcYiDoc from '@/components/Ddc/Doc';
 
 export default {
   components: {
@@ -62,7 +62,7 @@ export default {
   },
   computed: {
     ...mapState({
-      needTagsView: state => state.settings.tagsView,
+      needTagsView: state => state.settings.tagsView
     }),
     ...mapGetters([
       'sidebar',
@@ -71,19 +71,19 @@ export default {
     ]),
     setting: {
       get() {
-        return this.$store.state.settings.showSettings
+        return this.$store.state.settings.showSettings;
       },
       set(val) {
         this.$store.dispatch('settings/changeSetting', {
           key: 'showSettings',
           value: val
-        })
+        });
       }
     }
   },
   methods: {
     toggleSideBar() {
-      this.$store.dispatch('app/toggleSideBar')
+      this.$store.dispatch('app/toggleSideBar');
     },
     async logout() {
       this.$confirm('确定注销并退出系统吗？', '提示', {
@@ -93,11 +93,11 @@ export default {
       }).then(() => {
         this.$store.dispatch('LogOut').then(() => {
           location.href = '/index';
-        })
-      })
+        });
+      });
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -130,7 +130,7 @@ export default {
     float: right;
     height: 100%;
     line-height: 60px;
-    
+
     ::v-deep .svg-icon {
       fill: #fff;
     }

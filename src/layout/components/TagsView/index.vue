@@ -1,5 +1,5 @@
 <template>
-  <div ref="TagsViewContainer" id="tags-view-container" class="tags-view-container">
+  <div id="tags-view-container" ref="TagsViewContainer" class="tags-view-container">
     <div class="tags-view-wrapper">
       <router-link
         v-for="tag in visitedViews"
@@ -19,7 +19,7 @@
     </div>
 
     <el-dropdown ref="TagsDerpDown" class="btn-arrow-container" trigger="click">
-      <div class="btn-arrow el-icon-arrow-down"></div>
+      <div class="btn-arrow el-icon-arrow-down" />
       <el-dropdown-menu slot="dropdown" class="tags-dropdown">
         <router-link
           v-for="tag in overflowTagsList"
@@ -34,7 +34,7 @@
             <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
           </el-dropdown-item>
         </router-link>
-        <el-dropdown-item disabled v-show="overflowTagsList.length==0">暂无更多</el-dropdown-item>
+        <el-dropdown-item v-show="overflowTagsList.length==0" disabled>暂无更多</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
 
@@ -48,8 +48,8 @@
 </template>
 
 <script>
-import path from 'path'
-import { ThrottleFun } from '@/utils/index.js'
+import path from 'path';
+import { ThrottleFun } from '@/utils/index.js';
 export default {
   data() {
     return {
@@ -59,14 +59,14 @@ export default {
       selectedTag: {},
       affixTags: [],
       overflowTagsList: []
-    }
+    };
   },
   computed: {
     visitedViews() {
-      return this.$store.state.tagsView.visitedViews
+      return this.$store.state.tagsView.visitedViews;
     },
     routes() {
-      return this.$store.state.permission.routes
+      return this.$store.state.permission.routes;
     },
     theme() {
       return this.$store.state.settings.theme;
@@ -74,197 +74,196 @@ export default {
   },
   watch: {
     $route() {
-      this.addTags()
-      this.moveToCurrentTag()
+      this.addTags();
+      this.moveToCurrentTag();
       this.$nextTick(() => {
-        this.tagsOverflow()
-      })
+        this.tagsOverflow();
+      });
     },
     visible(value) {
       if (value) {
-        document.body.addEventListener('click', this.closeMenu)
+        document.body.addEventListener('click', this.closeMenu);
       } else {
-        document.body.removeEventListener('click', this.closeMenu)
+        document.body.removeEventListener('click', this.closeMenu);
       }
     }
   },
   mounted() {
-    this.initTags()
-    this.addTags()
+    this.initTags();
+    this.addTags();
     this.$nextTick(() => {
-      this.tagsOverflow()
-    })
-    let throttle = ThrottleFun(this.tagsOverflow, 300)
+      this.tagsOverflow();
+    });
+    const throttle = ThrottleFun(this.tagsOverflow, 300);
     window.onresize = () => {
-      this.$refs.TagsDerpDown.hide()
-      throttle()
-    }
+      this.$refs.TagsDerpDown.hide();
+      throttle();
+    };
   },
   beforeDestroy() {
-    window.onresize = null
+    window.onresize = null;
   },
   methods: {
     isActive(route) {
-      return route.path === this.$route.path
+      return route.path === this.$route.path;
     },
     activeStyle(tag) {
       if (!this.isActive(tag)) return {};
       return {
-        "background-color": this.theme,
-        "border-color": this.theme
+        'background-color': this.theme,
+        'border-color': this.theme
       };
     },
     isAffix(tag) {
-      return tag.meta && tag.meta.affix
+      return tag.meta && tag.meta.affix;
     },
     filterAffixTags(routes, basePath = '/') {
-      let tags = []
+      let tags = [];
       routes.forEach(route => {
         if (route.meta && route.meta.affix) {
-          const tagPath = path.resolve(basePath, route.path)
+          const tagPath = path.resolve(basePath, route.path);
           tags.push({
             fullPath: tagPath,
             path: tagPath,
             name: route.name,
             meta: { ...route.meta }
-          })
+          });
         }
         if (route.children) {
-          const tempTags = this.filterAffixTags(route.children, route.path)
+          const tempTags = this.filterAffixTags(route.children, route.path);
           if (tempTags.length >= 1) {
-            tags = [...tags, ...tempTags]
+            tags = [...tags, ...tempTags];
           }
         }
-      })
-      return tags
+      });
+      return tags;
     },
     initTags() {
-      const affixTags = this.affixTags = this.filterAffixTags(this.routes)
+      const affixTags = this.affixTags = this.filterAffixTags(this.routes);
       for (const tag of affixTags) {
         // Must have tag name
         if (tag.name) {
-          this.$store.dispatch('tagsView/addVisitedView', tag)
+          this.$store.dispatch('tagsView/addVisitedView', tag);
         }
       }
     },
     addTags() {
-      const { name } = this.$route
+      const { name } = this.$route;
       if (name) {
-        this.$store.dispatch('tagsView/addView', this.$route)
+        this.$store.dispatch('tagsView/addView', this.$route);
       }
-      return false
+      return false;
     },
     moveToCurrentTag() {
-      const tags = this.$refs.tag
+      const tags = this.$refs.tag;
       this.$nextTick(() => {
         for (const tag of tags) {
           if (tag.to.path === this.$route.path) {
             // when query is different then update
             if (tag.to.fullPath !== this.$route.fullPath) {
-              this.$store.dispatch('tagsView/updateVisitedView', this.$route)
+              this.$store.dispatch('tagsView/updateVisitedView', this.$route);
             }
-            break
+            break;
           }
         }
-      })
+      });
     },
     refreshSelectedTag(view) {
       this.$store.dispatch('tagsView/delCachedView', view).then(() => {
-        const { fullPath } = view
+        const { fullPath } = view;
         this.$nextTick(() => {
           this.$router.replace({
             path: '/redirect' + fullPath
-          })
-        })
-      })
+          });
+        });
+      });
     },
     closeSelectedTag(view) {
       this.$store.dispatch('tagsView/delView', view).then(({ visitedViews }) => {
         if (this.isActive(view)) {
-          this.toLastView(visitedViews, view)
+          this.toLastView(visitedViews, view);
         }
-      })
+      });
       this.$nextTick(() => {
-        this.tagsOverflow()
-        if(this.overflowTagsList.length === 0){
-          this.$refs.TagsDerpDown.hide() 
+        this.tagsOverflow();
+        if (this.overflowTagsList.length === 0) {
+          this.$refs.TagsDerpDown.hide();
         }
-      })
-      
+      });
     },
     closeOthersTags() {
-      this.$router.push(this.selectedTag)
+      this.$router.push(this.selectedTag);
       this.$store.dispatch('tagsView/delOthersViews', this.selectedTag).then(() => {
-        this.moveToCurrentTag()
-      })
+        this.moveToCurrentTag();
+      });
     },
     closeAllTags(view) {
       this.$store.dispatch('tagsView/delAllViews').then(({ visitedViews }) => {
         if (this.affixTags.some(tag => tag.path === this.$route.path)) {
-          return
+          return;
         }
-        this.toLastView(visitedViews, view)
-      })
+        this.toLastView(visitedViews, view);
+      });
     },
     toLastView(visitedViews, view) {
-      const latestView = visitedViews.slice(-1)[0]
+      const latestView = visitedViews.slice(-1)[0];
       if (latestView) {
-        this.$router.push(latestView.fullPath)
+        this.$router.push(latestView.fullPath);
       } else {
         // now the default is to redirect to the home page if there is no tags-view,
         // you can adjust it according to your needs.
         if (view.name === 'Dashboard') {
           // to reload home page
-          this.$router.replace({ path: '/redirect' + view.fullPath })
+          this.$router.replace({ path: '/redirect' + view.fullPath });
         } else {
-          this.$router.push('/')
+          this.$router.push('/');
         }
       }
     },
     openMenu(tag, e) {
-      const menuMinWidth = 105
-      const offsetLeft = this.$el.getBoundingClientRect().left // container margin left
-      const offsetWidth = this.$el.offsetWidth // container width
-      const maxLeft = offsetWidth - menuMinWidth // left boundary
-      const left = e.clientX - offsetLeft + 15 // 15: margin right
+      const menuMinWidth = 105;
+      const offsetLeft = this.$el.getBoundingClientRect().left; // container margin left
+      const offsetWidth = this.$el.offsetWidth; // container width
+      const maxLeft = offsetWidth - menuMinWidth; // left boundary
+      const left = e.clientX - offsetLeft + 15; // 15: margin right
 
       if (left > maxLeft) {
-        this.left = maxLeft
+        this.left = maxLeft;
       } else {
-        this.left = left
+        this.left = left;
       }
 
-      this.top = e.clientY
-      this.visible = true
-      this.selectedTag = tag
+      this.top = e.clientY;
+      this.visible = true;
+      this.selectedTag = tag;
     },
     closeMenu() {
-      this.visible = false
+      this.visible = false;
     },
     handleScroll() {
-      this.closeMenu()
+      this.closeMenu();
     },
     tagsOverflow() {
-      const $ContainerWidth = this.$refs.TagsViewContainer.offsetWidth
-      const tagList = this.$refs.tag
-      let tagswidth = 0
-      let index
-      let flag = true
+      const $ContainerWidth = this.$refs.TagsViewContainer.offsetWidth;
+      const tagList = this.$refs.tag;
+      let tagswidth = 0;
+      let index;
+      let flag = true;
       for (let i = 0; i < tagList.length; i++) {
-        tagswidth += tagList[i].$el.clientWidth
+        tagswidth += tagList[i].$el.clientWidth;
         // 44: The width of a arrow
-        if(flag && (tagswidth > $ContainerWidth - 44)) {
-          flag = false
-          index = i
-          this.overflowTagsList = this.visitedViews.slice(index)
+        if (flag && (tagswidth > $ContainerWidth - 44)) {
+          flag = false;
+          index = i;
+          this.overflowTagsList = this.visitedViews.slice(index);
         }
       }
-      if(tagswidth < $ContainerWidth - 44){
-        this.overflowTagsList = []
+      if (tagswidth < $ContainerWidth - 44) {
+        this.overflowTagsList = [];
       }
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

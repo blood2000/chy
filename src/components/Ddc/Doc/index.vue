@@ -1,21 +1,21 @@
 <template>
   <div>
-    <svg-icon icon-class="question" @click="goto"/>
+    <svg-icon icon-class="question" @click="goto" />
   </div>
 </template>
 
 <script>
 export default {
-  name: 'ddcDoc',
+  name: 'DdcDoc',
   data() {
     return {
       url: 'https://ddcwl.com/'
-    }
+    };
   },
   methods: {
     goto() {
-      window.open(this.url)
+      window.open(this.url);
     }
   }
-}
+};
 </script>
