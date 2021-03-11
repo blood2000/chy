@@ -2,6 +2,7 @@
   <div class="component-upload-image">
     <el-upload
       :action="uploadImgUrl"
+      :data="uploadData"
       list-type="picture-card"
       :on-success="handleUploadSuccess"
       :before-upload="handleBeforeUpload"
@@ -24,16 +25,22 @@ export default {
   components: {},
   data() {
     return {
-      uploadImgUrl: process.env.VUE_APP_BASE_API + "/file/upload", // 上传的图片服务器地址
+      uploadImgUrl: process.env.VUE_APP_BASE_API + "/file/uploadToAli", // 上传的图片服务器地址
       headers: {
-        Authorization: "Bearer " + getToken(),
+        'Authorization': 'Bearer ' + getToken() ,
+        'Produce-Code': '776ca8e240574192b6e0f69b417163df',
+        'App-Code': '3f78fbfc13b14fa4b3d78665124ef4bb',
+        'App-Version': '2.0',
+        'Terminal-Type': 2
       },
+      uploadData:{
+      }
     };
   },
   props: {
     value: {
       type: String,
-      default: "",
+      default: "roadTransportCertificateImgFile",
     },
   },
   methods: {
