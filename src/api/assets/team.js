@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 查询调度者列表
 export function listInfo(query) {
   return request({
-    url: '/assets/info/list',
+    url: '/assets/team/list',
     method: 'get',
     params: query
   })
@@ -12,7 +12,7 @@ export function listInfo(query) {
 // 查询调度者详细
 export function getInfo(id) {
   return request({
-    url: '/assets/info/' + id,
+    url: '/assets/team/' + id,
     method: 'get'
   })
 }
@@ -20,7 +20,7 @@ export function getInfo(id) {
 // 新增调度者
 export function addInfo(data) {
   return request({
-    url: '/assets/info',
+    url: '/assets/team',
     method: 'post',
     data: data
   })
@@ -29,7 +29,7 @@ export function addInfo(data) {
 // 修改调度者
 export function updateInfo(data) {
   return request({
-    url: '/assets/info',
+    url: '/assets/team',
     method: 'put',
     data: data
   })
@@ -38,7 +38,7 @@ export function updateInfo(data) {
 // 删除调度者
 export function delInfo(id) {
   return request({
-    url: '/assets/info/' + id,
+    url: '/assets/team/' + id,
     method: 'delete'
   })
 }
