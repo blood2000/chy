@@ -1,10 +1,10 @@
 <template>
-  <el-form ref="genInfoForm" :model="info" :rules="rules" label-width="150px">
+  <el-form ref="genInfoForm" :model="form" :rules="rules" label-width="150px">
     <el-row>
       <el-col :span="12">
         <el-form-item prop="tplCategory">
           <span slot="label">生成模板</span>
-          <el-select v-model="info.tplCategory">
+          <el-select v-model="form.tplCategory">
             <el-option label="单表（增删改查）" value="crud" />
             <el-option label="树表（增删改查）" value="tree" />
           </el-select>
@@ -19,7 +19,7 @@
               <i class="el-icon-question" />
             </el-tooltip>
           </span>
-          <el-input v-model="info.packageName" />
+          <el-input v-model="form.packageName" />
         </el-form-item>
       </el-col>
 
@@ -31,7 +31,7 @@
               <i class="el-icon-question" />
             </el-tooltip>
           </span>
-          <el-input v-model="info.moduleName" />
+          <el-input v-model="form.moduleName" />
         </el-form-item>
       </el-col>
 
@@ -43,7 +43,7 @@
               <i class="el-icon-question" />
             </el-tooltip>
           </span>
-          <el-input v-model="info.businessName" />
+          <el-input v-model="form.businessName" />
         </el-form-item>
       </el-col>
 
@@ -55,7 +55,7 @@
               <i class="el-icon-question" />
             </el-tooltip>
           </span>
-          <el-input v-model="info.functionName" />
+          <el-input v-model="form.functionName" />
         </el-form-item>
       </el-col>
 
@@ -68,7 +68,7 @@
             </el-tooltip>
           </span>
           <treeselect
-            v-model="info.parentMenuId"
+            v-model="form.parentMenuId"
             :append-to-body="true"
             :options="menus"
             :normalizer="normalizer"
@@ -86,12 +86,12 @@
               <i class="el-icon-question" />
             </el-tooltip>
           </span>
-          <el-radio v-model="info.genType" label="0">zip压缩包</el-radio>
-          <el-radio v-model="info.genType" label="1">自定义路径</el-radio>
+          <el-radio v-model="form.genType" label="0">zip压缩包</el-radio>
+          <el-radio v-model="form.genType" label="1">自定义路径</el-radio>
         </el-form-item>
       </el-col>
 
-      <el-col v-if="info.genType == '1'" :span="24">
+      <el-col v-if="form.genType == '1'" :span="24">
         <el-form-item prop="genPath">
           <span slot="label">
             自定义路径
@@ -99,14 +99,14 @@
               <i class="el-icon-question" />
             </el-tooltip>
           </span>
-          <el-input v-model="info.genPath">
+          <el-input v-model="form.genPath">
             <el-dropdown slot="append">
               <el-button type="primary">
                 最近路径快速选择
                 <i class="el-icon-arrow-down el-icon--right" />
               </el-button>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native="info.genPath = '/'">恢复默认的生成基础路径</el-dropdown-item>
+                <el-dropdown-item @click.native="form.genPath = '/'">恢复默认的生成基础路径</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </el-input>
@@ -114,7 +114,7 @@
       </el-col>
     </el-row>
 
-    <el-row v-show="info.tplCategory == 'tree'">
+    <el-row v-show="form.tplCategory == 'tree'">
       <h4 class="form-header">其他信息</h4>
       <el-col :span="12">
         <el-form-item>
@@ -124,9 +124,9 @@
               <i class="el-icon-question" />
             </el-tooltip>
           </span>
-          <el-select v-model="info.treeCode" placeholder="请选择">
+          <el-select v-model="form.treeCode" placeholder="请选择">
             <el-option
-              v-for="column in info.columns"
+              v-for="column in form.columns"
               :key="column.columnName"
               :label="column.columnName + '：' + column.columnComment"
               :value="column.columnName"
@@ -142,9 +142,9 @@
               <i class="el-icon-question" />
             </el-tooltip>
           </span>
-          <el-select v-model="info.treeParentCode" placeholder="请选择">
+          <el-select v-model="form.treeParentCode" placeholder="请选择">
             <el-option
-              v-for="column in info.columns"
+              v-for="column in form.columns"
               :key="column.columnName"
               :label="column.columnName + '：' + column.columnComment"
               :value="column.columnName"
@@ -160,9 +160,9 @@
               <i class="el-icon-question" />
             </el-tooltip>
           </span>
-          <el-select v-model="info.treeName" placeholder="请选择">
+          <el-select v-model="form.treeName" placeholder="请选择">
             <el-option
-              v-for="column in info.columns"
+              v-for="column in form.columns"
               :key="column.columnName"
               :label="column.columnName + '：' + column.columnComment"
               :value="column.columnName"
@@ -187,11 +187,14 @@ export default {
     },
     menus: {
       type: Array,
-      default: []
+      default() {
+        return [];
+      }
     }
   },
   data() {
     return {
+      form: this.info,
       rules: {
         tplCategory: [
           { required: true, message: '请选择生成模板', trigger: 'blur' }

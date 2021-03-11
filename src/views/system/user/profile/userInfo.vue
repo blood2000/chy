@@ -1,16 +1,16 @@
 <template>
-  <el-form ref="form" :model="user" :rules="rules" label-width="80px">
+  <el-form ref="form" :model="form" :rules="rules" label-width="80px">
     <el-form-item label="用户昵称" prop="nickName">
-      <el-input v-model="user.nickName" />
+      <el-input v-model="form.nickName" />
     </el-form-item>
     <el-form-item label="手机号码" prop="phonenumber">
-      <el-input v-model="user.phonenumber" maxlength="11" />
+      <el-input v-model="form.phonenumber" maxlength="11" />
     </el-form-item>
     <el-form-item label="邮箱" prop="email">
-      <el-input v-model="user.email" maxlength="50" />
+      <el-input v-model="form.email" maxlength="50" />
     </el-form-item>
     <el-form-item label="性别">
-      <el-radio-group v-model="user.sex">
+      <el-radio-group v-model="form.sex">
         <el-radio label="0">男</el-radio>
         <el-radio label="1">女</el-radio>
       </el-radio-group>
@@ -27,12 +27,11 @@ import { updateUserProfile } from '@/api/system/user';
 
 export default {
   props: {
-    user: {
-      type: Object
-    }
+    user: Object
   },
   data() {
     return {
+      form: this.user,
       // 表单校验
       rules: {
         nickName: [
@@ -61,7 +60,7 @@ export default {
     submit() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          updateUserProfile(this.user).then(response => {
+          updateUserProfile(this.form).then(response => {
             this.msgSuccess('修改成功');
           });
         }

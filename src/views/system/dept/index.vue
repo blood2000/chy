@@ -108,7 +108,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="组织状态">
-              <el-radio-group v-model="form.status+''">
+              <el-radio-group v-model="form.status">
                 <el-radio
                   v-for="dict in statusOptions"
                   :key="dict.dictValue"
