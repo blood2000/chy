@@ -1,7 +1,7 @@
 <template>
 	<!-- 添加或修改调度者对话框 -->
 	<el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
-	  <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="80px">
+	  <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
 	    <!-- <el-form-item label="主键" prop="id">
 	      <el-input v-model="form.id" placeholder="请输入主键" />
 	    </el-form-item> -->
@@ -9,13 +9,13 @@
 	      <el-input v-model="form.code" placeholder="请输入编码" />
 	    </el-form-item> -->
 	    <el-form-item label="网点编码" prop="branchCode">
-	      <el-input v-model="form.branchCode" placeholder="请输入网点编码" />
+	      <el-input v-model="form.branchCode" placeholder="请输入网点编码" class="width90" clearable/>
 	    </el-form-item>
 	    <el-form-item label="车队名称" prop="name">
-	      <el-input v-model="form.name" placeholder="请输入车队名称" />
+	      <el-input v-model="form.name" placeholder="请输入车队名称" class="width90" clearable />
 	    </el-form-item>
 	    <el-form-item label="管理者" prop="teamLeader">
-	      <el-input v-model="form.teamLeader" placeholder="请输入车队管理者" />
+	      <el-input v-model="form.teamLeader" placeholder="请输入车队管理者" class="width90" clearable />
 	    </el-form-item>
 	    <!-- <el-form-item label="是否删除" prop="isDel">
 	      <el-input v-model="form.isDel" placeholder="请输入是否删除" />
@@ -79,9 +79,6 @@
 	      form: {},
 	      // 表单校验
 	      rules: {
-			code: [
-			  { required: true, message: "编码不能为空", trigger: "blur" }
-			],
 	        branchCode: [
 	          { required: true, message: "网点编码不能为空", trigger: "blur" }
 	        ],
