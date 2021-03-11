@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="180px">
+    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="130px">
       <el-form-item label="货源编号" prop="orderCode">
         <el-input
           v-model="queryParams.orderCode"
@@ -249,7 +249,7 @@
       <el-table-column label="司机取消订单" align="center" prop="cancelStatus" :formatter="cancelStatusFormat" />
       <el-table-column label="司机取消理由" align="center" prop="driverApplyRemark" />
       <el-table-column label="货主处理司机申请取消备注" align="center" prop="shipperDealRemark" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="200">
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="240">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -295,19 +295,31 @@
       @pagination="getList"
     />
 
-		<!-- 新增/修改/详情 对话框 -->
-		<manage-dialog ref="ManagesDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList"></manage-dialog>
+		<!-- 详情对话框 -->
+		<detail-dialog :title="title" :open.sync="open" :currentId="currentId" :disable="formDisable" @refresh="getList"></detail-dialog>
+		<!-- 标记异常对话框 -->
+		<mark-abnormal-dialog :title="title" :open.sync="openMarkAbanormal" :currentId="currentId" @refresh="getList"></mark-abnormal-dialog>
+		<!-- 分单列表对话框 -->
+		<seperate-list-dialog :title="title" :open.sync="openSeperateList" :currentId="currentId" @refresh="getList"></seperate-list-dialog>
+		<!-- 备注对话框 -->
+		<remark-dialog :title="title" :open.sync="openRemark" :currentId="currentId" @refresh="getList"></remark-dialog>
   </div>
 </template>
 
 <script>
-import { listManages, getManages, delManages } from "@/api/waybill/manages";
-import ManageDialog from './manageDialog';
+import { listManages, delManages } from "@/api/waybill/manages";
+import DetailDialog from '../components/detailDialog';
+import MarkAbnormalDialog from './markAbnormalDialog';
+import SeperateListDialog from './seperateListDialog';
+import RemarkDialog from './remarkDialog';
 
 export default {
   name: "Manages",
   components: {
-    ManageDialog
+    DetailDialog,
+		MarkAbnormalDialog,
+		SeperateListDialog,
+		RemarkDialog
   },
   data() {
     return {
@@ -323,6 +335,9 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
+			openMarkAbanormal: false,
+			openSeperateList: false,
+			openRemark: false,
 			// 是否字典
 			isOptions: [
 				{dictLabel: '否', dictValue: 0},
@@ -431,7 +446,9 @@ export default {
       form: {},
       // 表单校验
       rules: {},
-			formDisable: false
+			formDisable: false,
+			// 当前选中的运单id
+			currentId: null
     };
   },
   created() {
@@ -523,19 +540,27 @@ export default {
     },
     /** 详情按钮操作 */
     handleUpdate(row) {
-      this.$refs.ManagesDialog.reset();
-      const id = row.code;
-      getManages(id).then(response => {
-        this.form = response.data;
-        this.open = true;
-        this.title = "详情";
-				this.formDisable = true;
-      });
+      this.currentId = row.code;
+			this.open = true;
+			this.title = "查看运单详情";
+			this.formDisable = true;
     },
-    /** 删除按钮操作 */
+		/** 标记异常按钮操作 */
+		handleMark(row) {
+			this.currentId = row.code;
+			this.openMarkAbanormal = true;
+			this.title = "标记异常";
+		},
+		/** 分单列表按钮操作 */
+		handleSeperate(row) {
+			this.currentId = row.code;
+			this.openSeperateList = true;
+			this.title = "子单列表";
+		},
+		/** 删除按钮操作 */
     handleDelete(row) {
       const id = row.code;
-      this.$confirm('是否确认删除编号为"' + id + '"的数据项?', "警告", {
+      this.$confirm('是否确认作废编号为"' + id + '"的运单?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
@@ -543,20 +568,14 @@ export default {
           return delManages(id);
         }).then(() => {
           this.getList();
-          this.msgSuccess("删除成功");
+          this.msgSuccess("作废成功");
         })
     },
-		/** 标记异常按钮操作 */
-		handleMark(row) {
-
-		},
-		/** 分单列表按钮操作 */
-		handleSeperate(row) {
-
-		},
 		/** 备注按钮操作 */
 		handleRemarks(row) {
-			
+			this.currentId = row.code;
+			this.openRemark = true;
+			this.title = "编辑货主运单备注";
 		}
   }
 };

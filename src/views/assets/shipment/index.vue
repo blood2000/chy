@@ -103,7 +103,7 @@
           <span>{{ parseTime(new Date(scope.row.createTime)) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="180">
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="180">
         <template slot-scope="scope">
           <el-button
             size="mini"

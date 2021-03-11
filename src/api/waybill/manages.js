@@ -10,7 +10,7 @@ export function listManages(query) {
 }
 
 // 查询运单详细
-export function getManages(id) {
+export function getDetail(id) {
   return request({
     url: '/waybill/manages/' + id,
     method: 'get'
