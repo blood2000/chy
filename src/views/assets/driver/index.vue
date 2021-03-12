@@ -91,9 +91,8 @@
           type="warning"
           icon="el-icon-upload2"
           size="mini"
-          :disabled="multiple"
           @click="handleExport"
-        >批量导出</el-button>
+        >导出</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -359,7 +358,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id);
-      this.single = selection.length != 1;
+      this.single = selection.length !== 1;
       this.multiple = !selection.length;
     },
     /** 编辑/详情按钮操作 */
@@ -370,7 +369,7 @@ export default {
         this.$refs.DriverDialog.setForm(response.data);
         this.open = true;
         this.title = flag === 'edit' ? '编辑' : '详情';
-        this.formDisable = flag != 'edit';
+        this.formDisable = flag !== 'edit';
       });
     },
     /** 删除按钮操作 */

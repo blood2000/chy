@@ -409,7 +409,10 @@ export default {
     UploadImage
   },
   props: {
-    title: String,
+    title: {
+      type: String,
+      default: ''
+    },
     open: Boolean,
     disable: Boolean
   },
@@ -519,7 +522,7 @@ export default {
         if (valid) {
           const driver = this.form;
           driver.vehicleInfo = this.vehicleForm;
-          if (this.form.id != undefined) {
+          if (this.form.id !== undefined) {
             updateDriver(driver).then(response => {
               this.msgSuccess('修改成功');
               this.close();
