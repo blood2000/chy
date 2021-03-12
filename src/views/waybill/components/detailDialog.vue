@@ -1,6 +1,6 @@
 <template>
   <el-dialog :title="title" :visible="visible" width="1000px" append-to-body @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
+    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="160px">
       <el-row class="width90">
         <el-col :span="12">
           <el-form-item label="货源编号" prop="orderCode">
