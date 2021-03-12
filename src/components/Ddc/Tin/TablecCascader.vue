@@ -61,53 +61,50 @@ export default {
       default: function() {
         return [];
       }
+    }
+  },
+  data() {
+    return {
+      open: false,
+      banner_list: []
+    };
+  },
+  computed: {
+    cOptions() {
+      return this.options.map(item => {
+        return {
+          value: item,
+          label: item.label
+        };
+      });
+    },
+    cInitData() {
+      return this.value.map(item => {
+        return [item];
+      });
+    }
+  },
+  methods: {
+    handleChange(value) {
+      let arr = [];
+      arr = arr.concat(...value);
+      this.$emit('input', arr);
+
+      setLocalStorage(this.$route.name, arr);
     },
 
-    data() {
-      return {
-        open: false,
-        banner_list: []
-      };
+    submitForm() {
+      this.open = false;
+      this.$emit('input', this.banner_list);
+      setLocalStorage(this.$route.name, this.banner_list);
     },
-
-    computed: {
-      cOptions() {
-        return this.options.map(item => {
-          return {
-            value: item,
-            label: item.label
-          };
-        });
-      },
-      cInitData() {
-        return this.value.map(item => {
-          return [item];
-        });
-      }
+    cancel() {
+      this.open = false;
+      this.banner_list = [];
     },
-
-    methods: {
-      handleChange(value) {
-        let arr = [];
-        arr = arr.concat(...value);
-        this.$emit('input', arr);
-
-        setLocalStorage(this.$route.name, arr);
-      },
-
-      submitForm() {
-        this.open = false;
-        this.$emit('input', this.banner_list);
-        setLocalStorage(this.$route.name, this.banner_list);
-      },
-      cancel() {
-        this.open = false;
-        this.banner_list = [];
-      },
-      handleUpdate() {
-        this.open = true;
-        this.banner_list = JSON.parse(JSON.stringify(this.value));
-      }
+    handleUpdate() {
+      this.open = true;
+      this.banner_list = JSON.parse(JSON.stringify(this.value));
     }
   }
 };
