@@ -332,7 +332,7 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
-          v-hasPermi="['system:info:export']"
+          v-hasPermi="['assets:vehicle:export']"
           type="warning"
           icon="el-icon-download"
           size="mini"
@@ -805,11 +805,11 @@ export default {
     /** 导出按钮操作 */
     handleExport() {
       this.download(
-        'system/info/export',
+        'assets/vehicle/export',
         {
           ...this.queryParams
         },
-        `system_info.xlsx`
+        `vehicle_${new Date().getTime()}.xlsx`
       );
     }
   }
