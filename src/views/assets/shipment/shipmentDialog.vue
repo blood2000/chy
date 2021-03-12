@@ -348,7 +348,8 @@ export default {
           { required: true, message: '统一社会信用代码不能为空', trigger: 'blur' }
         ],
         identificationEndTime: [
-          { required: true, message: '身份证有效期不能为空', trigger: 'blur' }, { validator: this.certificateIsExpired }
+          { required: true, message: '身份证有效期不能为空', trigger: 'blur' },
+          { validator: this.certificateIsExpired }
         ]
       }
     };

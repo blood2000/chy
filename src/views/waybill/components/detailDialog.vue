@@ -219,9 +219,15 @@
 import { getDetail } from '@/api/waybill/manages';
 export default {
   props: {
-    title: String,
+    title: {
+      type: String,
+      default: ''
+    },
     open: Boolean,
-    currentId: Number,
+    currentId: {
+      type: Number,
+      default: null
+    },
     disable: Boolean
   },
   data() {
