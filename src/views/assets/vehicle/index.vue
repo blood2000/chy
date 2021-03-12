@@ -346,7 +346,7 @@
       :data="vehicleList"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" width="55" align="center" />
+      <el-table-column type="selection" width="55" align="center" fixed="left" />
       <!-- <el-table-column label="编码" align="center" prop="code" /> -->
       <el-table-column
         label="名称"
