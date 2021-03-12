@@ -183,6 +183,9 @@ export function isExpired(time) {
  * 判断证件是否过期
  */
 export function certificateIsExpired(rule, value, callback) {
+  if (value === undefined || value === null || value === '') {
+    return;
+  }
   if (isExpired(value)) {
     const msg = '该证件已过期，请更新证件';
     callback(new Error(msg));
