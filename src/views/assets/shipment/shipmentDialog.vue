@@ -29,7 +29,7 @@
       <el-form-item label="身份证号" prop="identificationNumber">
         <el-input v-model="form.identificationNumber" placeholder="支持自动识别" size="small" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="身份证有效期">
+      <el-form-item label="身份证有效期" prop="identificationEndTime">
         <el-date-picker
           v-model="form.identificationBeginTime"
           clearable
@@ -38,7 +38,6 @@
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="请选择"
-          @change="dateChange"
         />
         至
         <el-date-picker
@@ -49,7 +48,6 @@
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="请选择"
-          @change="dateChange"
         />
         <el-checkbox v-model="form.identificationEffective">长期有效</el-checkbox>
       </el-form-item>
@@ -348,6 +346,10 @@ export default {
         ],
         organizationCodeNo: [
           { required: true, message: '统一社会信用代码不能为空', trigger: 'blur' }
+        ],
+        identificationEndTime: [
+          { required: true, message: '身份证有效期不能为空', trigger: 'blur' },
+          { validator: this.certificateIsExpired }
         ]
       }
     };
@@ -476,14 +478,6 @@ export default {
         data.identificationEffective = 0;
       }
       authRead(data).then(response => {});
-    },
-    // 日期选项
-    dateChange(time) {
-      const _new = Date.now();
-      const lastTime = new Date(time[1]).getTime();
-      if (_new > lastTime) {
-        // console.log('超出');
-      }
     }
   }
 };

@@ -167,3 +167,29 @@ export function tansParams(params) {
   });
   return result;
 }
+
+/**
+ * 判断传入日期是否小于当前日期
+ */
+export function isExpired(time) {
+  const _new = Date.parse(new Date());
+  const lastTime = Date.parse(new Date(time));
+  if (_new > lastTime) {
+    return true;
+  }
+}
+
+/**
+ * 判断证件是否过期
+ */
+export function certificateIsExpired(rule, value, callback) {
+  if (value === undefined || value === null || value === '') {
+    return;
+  }
+  if (isExpired(value)) {
+    const msg = '该证件已过期，请更新证件';
+    callback(new Error(msg));
+  } else {
+    callback();
+  }
+}

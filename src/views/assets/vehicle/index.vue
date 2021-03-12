@@ -332,7 +332,7 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
-          v-hasPermi="['system:info:export']"
+          v-hasPermi="['assets:vehicle:export']"
           type="warning"
           icon="el-icon-download"
           size="mini"
@@ -346,7 +346,7 @@
       :data="vehicleList"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" width="55" align="center" />
+      <el-table-column type="selection" width="55" align="center" fixed="left" />
       <!-- <el-table-column label="编码" align="center" prop="code" /> -->
       <el-table-column
         label="名称"
@@ -805,11 +805,11 @@ export default {
     /** 导出按钮操作 */
     handleExport() {
       this.download(
-        'system/info/export',
+        'assets/vehicle/export',
         {
           ...this.queryParams
         },
-        `system_info.xlsx`
+        `vehicle_${new Date().getTime()}.xlsx`
       );
     }
   }
