@@ -3,8 +3,8 @@
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
       <el-form-item label="发货人/发货企业" prop="shipperType">
         <el-select
-          class="width90"
           v-model="form.shipperType"
+          class="width90"
           clearable
           size="small"
         >
@@ -17,46 +17,57 @@
         </el-select>
       </el-form-item>
       <el-form-item label="姓名" prop="adminName">
-        <el-input v-model="form.adminName" placeholder="支持自动识别" size="small" class="width90" clearable/>
+        <el-input v-model="form.adminName" placeholder="支持自动识别" size="small" class="width90" clearable />
       </el-form-item>
       <el-form-item label="身份证号" prop="identificationNumber">
-        <el-input v-model="form.identificationNumber" placeholder="支持自动识别" size="small" class="width90" clearable/>
+        <el-input v-model="form.identificationNumber" placeholder="支持自动识别" size="small" class="width90" clearable />
       </el-form-item>
+      <!-- <el-form-item label="身份证有效期" prop="identificationValidPeriod">
+        <el-date-picker
+          v-model="form.identificationValidPeriod"
+          clearable
+          size="small"
+          class="width90"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择"
+        />
+      </el-form-item> -->
       <template v-if="form.shipperType === 1">
         <el-form-item label="公司名称" prop="companyName">
-          <el-input v-model="form.companyName" placeholder="请输入公司名称" size="small" class="width90" clearable/>
+          <el-input v-model="form.companyName" placeholder="请输入公司名称" size="small" class="width90" clearable />
         </el-form-item>
         <el-form-item label="统一社会信用代码" prop="organizationCodeNo">
-          <el-input v-model="form.organizationCodeNo" placeholder="请输入统一社会信用代码" size="small" class="width90" clearable/>
+          <el-input v-model="form.organizationCodeNo" placeholder="请输入统一社会信用代码" size="small" class="width90" clearable />
         </el-form-item>
       </template>
       <el-form-item label="营业执照号" prop="businessLicenseNo">
-        <el-input v-model="form.businessLicenseNo" placeholder="请输入营业执照号" size="small" class="width90" clearable/>
+        <el-input v-model="form.businessLicenseNo" placeholder="请输入营业执照号" size="small" class="width90" clearable />
       </el-form-item>
       <el-form-item label="法人身份证" prop="artificialIdentificationNumber">
-        <el-input v-model="form.artificialIdentificationNumber" placeholder="请输入法人身份证" size="small" class="width90" clearable/>
+        <el-input v-model="form.artificialIdentificationNumber" placeholder="请输入法人身份证" size="small" class="width90" clearable />
       </el-form-item>
       <el-form-item>
         <el-row>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">管理员身份证正面照</p>
-            <upload-image :value="form.identificationImg"></upload-image>
+            <upload-image :value="form.identificationImg" />
           </el-col>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">管理员身份证背面照</p>
-            <upload-image :value="form.identificationBackImg"></upload-image>
+            <upload-image :value="form.identificationBackImg" />
           </el-col>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">手持身份证照</p>
-            <upload-image :value="form.identificationInhandImg"></upload-image>
+            <upload-image :value="form.identificationInhandImg" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">营业执照照</p>
-            <upload-image :value="form.businessLicenseImg"></upload-image>
+            <upload-image :value="form.businessLicenseImg" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">法人身份证正面照</p>
-            <upload-image :value="form.artificialIdentificationImg"></upload-image>
+            <upload-image :value="form.artificialIdentificationImg" />
           </el-col>
         </el-row>
       </el-form-item>
@@ -66,7 +77,7 @@
             v-for="dict in statusOptions"
             :key="dict.dictValue"
             :label="parseInt(dict.dictValue)"
-          >{{dict.dictLabel}}</el-radio>
+          >{{ dict.dictLabel }}</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="是否冻结" prop="isFreezone">
@@ -235,58 +246,55 @@
       </el-form-item> -->
     </el-form>
 
-    <div slot="footer" class="dialog-footer">
+    <div v-if="title === '编辑'" slot="footer" class="dialog-footer">
       <el-button type="primary" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
+    </div>
+    <div v-if="title === '审核'" slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="reviewPass">审核通过</el-button>
+      <el-button type="danger" @click="reviewNoPass">审核不通过</el-button>
     </div>
   </el-dialog>
 </template>
 
 <script>
-import { addShipment, updateShipment } from "@/api/assets/shipment";
+import { addShipment, updateShipment } from '@/api/assets/shipment';
 import UploadImage from '@/components/UploadImage/index';
 
 export default {
-  props: {
-    title: String,
-    open: Boolean,
-    disable: Boolean
-  },
   components: {
     UploadImage
   },
-  computed: {
-    visible: {
-      get() {
-        return this.open;
-      },
-      set(v) {
-        this.$emit("update:open", v);
-      },
+  props: {
+    title: {
+      type: String,
+      default: ''
     },
+    open: Boolean,
+    disable: Boolean
   },
   data() {
     return {
       // 字典
       typeOptions: [
-        {dictLabel: '发货人', dictValue: 0},
-        {dictLabel: '发货企业', dictValue: 1}
+        { dictLabel: '发货人', dictValue: 0 },
+        { dictLabel: '发货企业', dictValue: 1 }
       ],
       // 审核状态字典
       statusOptions: [
-        {dictLabel: '未审核', dictValue: 0},
-        {dictLabel: '审核中', dictValue: 1},
-        {dictLabel: '审核未通过', dictValue: 2},
-        {dictLabel: '审核通过', dictValue: 3}
+        { dictLabel: '未审核', dictValue: 0 },
+        { dictLabel: '审核中', dictValue: 1 },
+        { dictLabel: '审核未通过', dictValue: 2 },
+        { dictLabel: '审核通过', dictValue: 3 }
       ],
       // 是否冻结字典
       isFreezoneOptions: [
-        {dictLabel: '正常', dictValue: 0},
-        {dictLabel: '冻结', dictValue: 1}
+        { dictLabel: '正常', dictValue: 0 },
+        { dictLabel: '冻结', dictValue: 1 }
       ],
       isOptions: [
-        {dictLabel: '是', dictValue: '是'},
-        {dictLabel: '否', dictValue:'否'}
+        { dictLabel: '是', dictValue: '是' },
+        { dictLabel: '否', dictValue: '否' }
       ],
       // 区域字典
       provinceOptions: [],
@@ -294,67 +302,73 @@ export default {
       countyOptions: [],
       // 去零字典
       zeroOptions: [
-        {dictLabel: '关闭', dictValue: '关闭'},
-        {dictLabel: '1', dictValue:'1'},
-        {dictLabel: '10', dictValue:'10'}
+        { dictLabel: '关闭', dictValue: '关闭' },
+        { dictLabel: '1', dictValue: '1' },
+        { dictLabel: '10', dictValue: '10' }
       ],
       // 路耗字典
       consumeOptions: [
-        {dictLabel: '关闭', dictValue: '关闭'},
-        {dictLabel: '定额(kg/车)', dictValue:'定额(kg/车)'},
-        {dictLabel: '定率(%/车)', dictValue:'定率(%/车)'}
+        { dictLabel: '关闭', dictValue: '关闭' },
+        { dictLabel: '定额(kg/车)', dictValue: '定额(kg/车)' },
+        { dictLabel: '定率(%/车)', dictValue: '定率(%/车)' }
       ],
       // 索票阶段字典
       askTicketOptions: [
-        {dictLabel: '打款后', dictValue: '打款后'},
-        {dictLabel: '结算后', dictValue:'结算后'}
+        { dictLabel: '打款后', dictValue: '打款后' },
+        { dictLabel: '结算后', dictValue: '结算后' }
       ],
       // 货源代收调度字典
       supplyDispatchOptions: [
-        {dictLabel: '关闭', dictValue: '关闭'},
-        {dictLabel: '开启', dictValue:'开启'}
+        { dictLabel: '关闭', dictValue: '关闭' },
+        { dictLabel: '开启', dictValue: '开启' }
       ],
       // 表单参数
       form: {},
       // 表单校验
       rules: {
         adminName: [
-          { required: true, message: "姓名不能为空", trigger: "blur" }
+          { required: true, message: '姓名不能为空', trigger: 'blur' }
         ],
         identificationNumber: [
-          { required: true, message: "身份证号不能为空", trigger: "blur" }
+          { required: true, message: '身份证号不能为空', trigger: 'blur' }
         ],
         companyName: [
-          { required: true, message: "公司名称不能为空", trigger: "blur" }
+          { required: true, message: '公司名称不能为空', trigger: 'blur' }
         ],
         organizationCodeNo: [
-          { required: true, message: "统一社会信用代码不能为空", trigger: "blur" }
+          { required: true, message: '统一社会信用代码不能为空', trigger: 'blur' }
         ]
+      }
+    };
+  },
+  computed: {
+    visible: {
+      get() {
+        return this.open;
+      },
+      set(v) {
+        this.$emit('update:open', v);
       }
     }
   },
   created() {
-    
+
   },
   methods: {
     /** 提交按钮 */
     submitForm: function() {
-      if(this.disable) {
-        this.close();
-        return;
-      }
-      this.$refs["form"].validate(valid => {
+      this.$refs['form'].validate(valid => {
         if (valid) {
-          if (this.form.id != undefined) {
+          if (this.form.id !== undefined) {
             updateShipment(this.form).then(response => {
-              this.msgSuccess("修改成功");
+              this.msgSuccess('修改成功');
               this.close();
               this.$emit('refresh');
             });
           } else {
             const shipmentInfo = this.form;
             addShipment(shipmentInfo).then(response => {
-              this.msgSuccess("新增成功");
+              this.msgSuccess('新增成功');
               this.close();
               this.$emit('refresh');
             });
@@ -367,9 +381,17 @@ export default {
       this.close();
       this.reset();
     },
+    /** 审核通过按钮 */
+    reviewPass() {
+
+    },
+    /** 审核不通过按钮 */
+    reviewNoPass() {
+
+    },
     // 关闭弹窗
     close() {
-      this.$emit("update:open", false);
+      this.$emit('update:open', false);
     },
     // 表单重置
     reset() {
@@ -382,6 +404,7 @@ export default {
         companyName: null,
         shipperType: null,
         identificationNumber: null,
+        identificationValidPeriod: null,
         identificationImg: null,
         identificationBackImg: null,
         identificationInhandImg: null,
@@ -398,14 +421,14 @@ export default {
         updateCode: null,
         delFlag: null
       };
-      this.resetForm("form");
+      this.resetForm('form');
     },
     // 表单赋值
     setForm(data) {
       this.form = data;
     }
   }
-}
+};
 </script>
 
 <style scoped>

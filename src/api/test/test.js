@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/utils/request';
 
 // 查询【请填写功能名称】列表
 export function listTest(query) {
@@ -6,7 +6,7 @@ export function listTest(query) {
     url: '/system/test/list',
     method: 'get',
     params: query
-  })
+  });
 }
 
 // 查询【请填写功能名称】详细
@@ -14,7 +14,7 @@ export function getTest(testId) {
   return request({
     url: '/system/test/' + testId,
     method: 'get'
-  })
+  });
 }
 
 // 新增【请填写功能名称】
@@ -23,7 +23,7 @@ export function addTest(data) {
     url: '/system/test',
     method: 'post',
     data: data
-  })
+  });
 }
 
 // 修改【请填写功能名称】
@@ -32,7 +32,7 @@ export function updateTest(data) {
     url: '/system/test',
     method: 'put',
     data: data
-  })
+  });
 }
 
 // 删除【请填写功能名称】
@@ -40,5 +40,5 @@ export function delTest(testId) {
   return request({
     url: '/system/test/' + testId,
     method: 'delete'
-  })
+  });
 }

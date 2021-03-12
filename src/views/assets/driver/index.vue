@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="74px">
+    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="74px">
       <el-form-item label="司机类别" prop="driverType">
         <el-select v-model="queryParams.driverType" placeholder="请选择司机类别" clearable size="small" style="width: 240px">
           <el-option
@@ -70,11 +70,11 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
+          v-hasPermi="['system:driver:add']"
           type="primary"
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['system:driver:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -117,7 +117,7 @@
           @click="handleImportTemplateDriver"
         >下载模板</el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
     <el-table v-loading="loading" :data="driverList" @selection-change="handleSelectionChange">
@@ -174,18 +174,18 @@
             @click="handleDEtail(scope.row)"
           >详情</el-button>
           <el-button
+            v-hasPermi="['system:config:edit']"
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleDEtail(scope.row, 'edit')"
-            v-hasPermi="['system:config:edit']"
           >修改</el-button>
           <el-button
+            v-hasPermi="['system:config:remove']"
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['system:config:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -200,16 +200,16 @@
     />
 
     <!-- 新增/修改/详情 对话框 -->
-    <driver-dialog ref="DriverDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList"></driver-dialog>
+    <driver-dialog ref="DriverDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
   </div>
 </template>
 
 <script>
-import { listDriver, getDriver, delDriver } from "@/api/assets/driver";
+import { listDriver, getDriver, delDriver } from '@/api/assets/driver';
 import DriverDialog from './driverDialog';
 
 export default {
-  name: "Driver",
+  name: 'Driver',
   components: {
     DriverDialog
   },
@@ -217,26 +217,26 @@ export default {
     return {
       // 司机类别字典
       driverTypeOptions: [
-        {dictLabel: '独立', dictValue: 1},
-        {dictLabel: '分配', dictValue: 2},
-        {dictLabel: '其他', dictValue: 3}
+        { dictLabel: '独立', dictValue: 1 },
+        { dictLabel: '分配', dictValue: 2 },
+        { dictLabel: '其他', dictValue: 3 }
       ],
       // 审核状态字典
       statusOptions: [
-        {dictLabel: '未审核', dictValue: 0},
-        {dictLabel: '审核中', dictValue: 1},
-        {dictLabel: '审核未通过', dictValue: 2},
-        {dictLabel: '审核通过', dictValue: 3}
+        { dictLabel: '未审核', dictValue: 0 },
+        { dictLabel: '审核中', dictValue: 1 },
+        { dictLabel: '审核未通过', dictValue: 2 },
+        { dictLabel: '审核通过', dictValue: 3 }
       ],
       // 是否冻结字典
       isFreezoneOptions: [
-        {dictLabel: '正常', dictValue: 0},
-        {dictLabel: '冻结', dictValue: 1}
+        { dictLabel: '正常', dictValue: 0 },
+        { dictLabel: '冻结', dictValue: 1 }
       ],
       // 是否
       isOption: [
-        {dictLabel: '否', dictValue: 0},
-        {dictLabel: '是', dictValue: 1}
+        { dictLabel: '否', dictValue: 0 },
+        { dictLabel: '是', dictValue: 1 }
       ],
       // 网点编码字典
       branchCodeOptions: [],
@@ -263,7 +263,7 @@ export default {
       // 参数表格数据
       driverList: [],
       // 弹出层标题
-      title: "",
+      title: '',
       // 是否显示弹出层
       open: false,
       // 查询参数
@@ -277,7 +277,7 @@ export default {
         identificationNumber: undefined,
         authStatus: undefined
       },
-      // 表单是否禁用   
+      // 表单是否禁用
       formDisable: false
     };
   },
@@ -333,10 +333,10 @@ export default {
     getList() {
       this.loading = true;
       listDriver(this.queryParams).then(response => {
-          this.driverList = response.rows;
-          this.total = response.total;
-          this.loading = false;
-        }
+        this.driverList = response.rows;
+        this.total = response.total;
+        this.loading = false;
+      }
       );
     },
     /** 搜索按钮操作 */
@@ -346,20 +346,20 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.resetForm("queryForm");
+      this.resetForm('queryForm');
       this.handleQuery();
     },
     /** 新增按钮操作 */
     handleAdd() {
       this.$refs.DriverDialog.reset();
       this.open = true;
-      this.title = "新增";
+      this.title = '新增';
       this.formDisable = false;
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id);
-      this.single = selection.length!=1;
+      this.single = selection.length != 1;
       this.multiple = !selection.length;
     },
     /** 编辑/详情按钮操作 */
@@ -369,34 +369,34 @@ export default {
       getDriver(id).then(response => {
         this.$refs.DriverDialog.setForm(response.data);
         this.open = true;
-        this.title = flag === "edit" ? "编辑" : "详情";
-        this.formDisable = flag == "edit" ? false : true;
+        this.title = flag === 'edit' ? '编辑' : '详情';
+        this.formDisable = flag != 'edit';
       });
     },
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$confirm('是否确认删除编号为"' + ids + '"的数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return delDriver(ids);
-        }).then(() => {
-          this.getList();
-          this.msgSuccess("删除成功");
-        })
+      this.$confirm('是否确认删除编号为"' + ids + '"的数据项?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return delDriver(ids);
+      }).then(() => {
+        this.getList();
+        this.msgSuccess('删除成功');
+      });
     },
     /** 导出按钮操作 */
     handleExport() {
       this.download('assets/driver/export', {
         ...this.queryParams
-      }, `driver_${new Date().getTime()}.xlsx`)
+      }, `driver_${new Date().getTime()}.xlsx`);
     },
     /** 下载模板 */
     handleImportTemplateDriver() {
-      this.download('assets/driver/importTemplate', {}, `driver_${new Date().getTime()}.xlsx`)
-    },
+      this.download('assets/driver/importTemplate', {}, `driver_${new Date().getTime()}.xlsx`);
+    }
   }
 };
 </script>

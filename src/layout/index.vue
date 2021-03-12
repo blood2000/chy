@@ -1,6 +1,6 @@
 <template>
   <div :class="classObj" class="app-wrapper" :style="{'--current-color': theme}">
-    <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside"/>
+    <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
     <sidebar class="sidebar-container" :style="{ backgroundColor: sideTheme === 'theme-dark' ? variables.menuBg : variables.menuLightBg }" />
 
     <div class="main-container hasBreadcrumb">
@@ -17,12 +17,12 @@
 </template>
 
 <script>
-import RightPanel from '@/components/RightPanel'
-import { AppMain, Navbar, Settings, Sidebar } from './components'
-import Breadcrumb from '@/components/Breadcrumb'
-import ResizeMixin from './mixin/ResizeHandler'
-import { mapState } from 'vuex'
-import variables from '@/assets/styles/variables.scss'
+import RightPanel from '@/components/RightPanel';
+import { AppMain, Navbar, Settings, Sidebar } from './components';
+import Breadcrumb from '@/components/Breadcrumb';
+import ResizeMixin from './mixin/ResizeHandler';
+import { mapState } from 'vuex';
+import variables from '@/assets/styles/variables.scss';
 
 export default {
   name: 'Layout',
@@ -50,7 +50,7 @@ export default {
         openSidebar: this.sidebar.opened,
         withoutAnimation: this.sidebar.withoutAnimation,
         mobile: this.device === 'mobile'
-      }
+      };
     },
     variables() {
       return variables;
@@ -58,10 +58,10 @@ export default {
   },
   methods: {
     handleClickOutside() {
-      this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
+      this.$store.dispatch('app/closeSideBar', { withoutAnimation: false });
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -108,10 +108,10 @@ export default {
   }
 
   .breadcrumb-container {
-      height: 40px;
-      background: #FFFFFF;
-      box-shadow: 0px 2px 3px 0px rgba(51, 153, 255, 0.1);
-      border-radius: 2px;
-      margin: 15px;
+    height: 40px;
+    background: #FFFFFF;
+    box-shadow: 0px 2px 3px 0px rgba(51, 153, 255, 0.1);
+    border-radius: 2px;
+    margin: 15px;
   }
 </style>

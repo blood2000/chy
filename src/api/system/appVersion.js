@@ -5,5 +5,5 @@ export function listAppVersion(query) {
     url: '/system/version/list',
     method: 'get',
     params: query
-  })
+  });
 }

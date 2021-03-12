@@ -48,18 +48,18 @@
 
 <script>
 export default {
-  name: "index",
+  name: 'Index',
   data() {
     return {
       // 版本号
-      version: "1.2.4.0",
+      version: '1.2.4.0'
     };
   },
   methods: {
     goTarget(href) {
-      window.open(href, "_blank");
-    },
-  },
+      window.open(href, '_blank');
+    }
+  }
 };
 </script>
 

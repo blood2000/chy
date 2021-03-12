@@ -12,17 +12,23 @@
       :headers="headers"
       style="display: inline-block; vertical-align: top"
     >
-      <img v-if="value" :src="value" class="avatar" />
-      <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+      <img v-if="value" :src="value" class="avatar">
+      <i v-else class="el-icon-plus avatar-uploader-icon" />
     </el-upload>
   </div>
 </template>
 
 <script>
-import { getToken } from "@/utils/auth";
+import { getToken } from '@/utils/auth';
 
 export default {
   components: {},
+  props: {
+    value: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       uploadImgUrl: process.env.VUE_APP_BASE_API + "/file/uploadToAli", // 上传的图片服务器地址
@@ -37,33 +43,27 @@ export default {
       }
     };
   },
-  props: {
-    value: {
-      type: String,
-      default: "roadTransportCertificateImgFile",
-    },
-  },
+  watch: {},
   methods: {
     handleUploadSuccess(res) {
-      this.$emit("input", res.data.url);
+      this.$emit('input', res.data.url);
       this.loading.close();
     },
     handleBeforeUpload() {
       this.loading = this.$loading({
         lock: true,
-        text: "上传中",
-        background: "rgba(0, 0, 0, 0.7)",
+        text: '上传中',
+        background: 'rgba(0, 0, 0, 0.7)'
       });
     },
     handleUploadError() {
       this.$message({
-        type: "error",
-        message: "上传失败",
+        type: 'error',
+        message: '上传失败'
       });
       this.loading.close();
-    },
-  },
-  watch: {},
+    }
+  }
 };
 </script>
 
