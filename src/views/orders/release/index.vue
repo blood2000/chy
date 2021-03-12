@@ -8,7 +8,7 @@
             <div class="content">
                  <div class="header mb8">代发货主信息</div>
 
-                 <el-row :gutter="15">
+                 <!-- <el-row :gutter="15" >
                     <el-col :span="12">
                         <el-form-item label="代发货主" prop="field141">
                             <el-input v-model="formData.field141" placeholder="请输入代发货主" clearable :style="{width: '100%'}">
@@ -19,73 +19,100 @@
                         <el-button @click="onSubmit">选择货主</el-button>
                         <el-button>清除已选货主</el-button>
                     </el-col>
-                </el-row>
+                </el-row> -->
+
+                <el-form-item label="代发货主" prop="pubilshCode">
+                    <el-select v-model="formData.pubilshCode" placeholder="请输入代发货主" :style="{width: '100%'}" filterable >
+                        <el-option :label="'小明'" :value="1">
+                            <span style="float: left">小明</span>
+                            <span style="float: right; color: #8492a6; font-size: 13px">18888888888</span>
+                        </el-option>
+                        <el-option :label="'小红'" :value="2">
+                            <span style="float: left">小红</span>
+                            <span style="float: right; color: #8492a6; font-size: 13px">18888888888</span>
+                        </el-option>
+                </el-select>
+                </el-form-item>
+                
                 
             </div>
              <el-divider></el-divider>
 
              <div class="content">
-                <div class="header mb8">2</div>
+                <div class="header mb8">货物类型</div>
                
-               <el-form-item label="选择所属项目" prop="field122">
-                    <el-select v-model="formData.field122" placeholder="无归属项目" clearable :style="{width: '100%'}">
-                    <el-option v-for="(item, index) in field122Options" :key="index" :label="item.label"
-                        :value="item.value" :disabled="item.disabled"></el-option>
+               <el-form-item label="选择所属项目" prop="projectCode">
+                    <el-select v-model="formData.projectCode" placeholder="无归属项目" clearable :style="{width: '100%'}">
+                        <el-option label="项目1" :value="1"></el-option>
+                        <el-option label="项目2" :value="2"></el-option>
                     </el-select>
                 </el-form-item>
 
-               <el-form-item label="选择货物类型" prop="field122">
-                    <el-select v-model="formData.tin2" placeholder="煤炭及其制品" clearable :style="{width: '100%'}">
-                    <!-- <el-option v-for="(item, index) in field122Options" :key="index" :label="item.label"
-                        :value="item.value" :disabled="item.disabled"></el-option> -->
-                        <el-option label="渣土" :value="1"></el-option>
-                        <el-option label="其他" :value="2"></el-option>
+               <el-form-item label="选择货物类型" prop="goodsBigType">
+                    <el-select v-model="formData.goodsBigType" placeholder="选择货物类型" clearable :style="{width: '100%'}">
+                        <el-option label="大类型1" :value="1"></el-option>
+                        <el-option label="大类型2" :value="2"></el-option>
                     </el-select>
                 </el-form-item>
 
-               <el-form-item label="货物类型(小)" prop="field125">
-                    <el-checkbox-group v-model="formData.field125" size="medium" v-if="formData.tin2 == 1">
-                        <el-checkbox v-for="(item, index) in field125Options" :key="index" :label="item.value"
-                            :disabled="item.disabled">{{item.label}}</el-checkbox>
-                    </el-checkbox-group>
+                <template v-if="formData.goodsBigType">
+                    <el-form-item label="货物类型(小)" prop="goodsType1" v-if="isBigOdd">
+                        <el-checkbox-group v-model="formData.goodsType1" size="medium" >
+                            <el-checkbox  :label="1" >煤矿</el-checkbox>
+                            <el-checkbox  :label="2" >沙土</el-checkbox>
+                        </el-checkbox-group>
+                    </el-form-item>
+                    <el-form-item label="货物类型(小)" prop="goodsType2" v-else>
+                        <el-radio-group v-model="formData.goodsType2" size="medium" >
+                            <el-radio :label="1">商品1</el-radio>
+                            <el-radio :label="2">商品2</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                </template>
 
-                    <el-radio-group v-model="formData.field126" size="medium" v-else>
-                        <el-radio v-for="(item, index) in field126Options" :key="index" :label="item.value"
-                            :disabled="item.disabled">{{item.label}}</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-
-                <el-form-item label="发布为" prop="field126">
-                    <el-radio-group v-model="formData.tin1" size="medium">
+                <el-form-item label="发布为" prop="isPublic">
+                    <el-radio-group v-model="formData.isPublic" size="medium">
                         <el-radio :label="1">公开货源(所有人可接)</el-radio>
                         <el-radio :label="0">非公开货源</el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item label="指定接单人(调度者3人,司机1人)" prop="field126" v-if="formData.tin1 == 0">
-                    <el-select v-model="formData.field122" placeholder="选择接单人" clearable :style="{width: '100%'}">
-                        <el-option v-for="(item, index) in field122Options" :key="index" :label="item.label"
-                            :value="item.value" :disabled="item.disabled"></el-option>
-                        </el-select>
-                </el-form-item>
-                <el-form-item label="货集码" prop="field126" v-if="formData.tin1 == 0">
-                    <el-select v-model="formData.field122" placeholder="选择货集码" clearable :style="{width: '100%'}">
-                        <el-option v-for="(item, index) in field122Options" :key="index" :label="item.label"
-                            :value="item.value" :disabled="item.disabled"></el-option>
-                    </el-select>
-                </el-form-item>
 
-                <el-form-item label="备注信息">
-                    <el-input v-model="formData.field154" type="textarea" placeholder="请输入任何您想说的话..."
+                <template v-if="formData.isPublic === 0">
+                    <el-form-item label="指定接单人" prop="isSpecified">
+                        <el-radio-group v-model="formData.isSpecified" size="medium">
+                            <el-radio :label="1">是</el-radio>
+                            <el-radio :label="0">否</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                    <el-form-item label="指定接单人(调度者3人,司机1人)" prop="select_arr_4" label-width="300px" v-if="formData.isSpecified === 1">
+                        <!-- 这个要做成什么?? -->
+                        <el-select v-model="formData.select_arr_4" placeholder="选择接单人" multiple clearable :style="{width: '100%'}">
+                            <el-option label="接单1" :value="1"></el-option>
+                            <el-option label="接单2" :value="2"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="货集码" prop="tinkaikin1111111111" label-width="300px">
+                        <el-select v-model="formData.tinkaikin1111111111" placeholder="选择货集码" clearable :style="{width: '100%'}">
+                            <el-option label="接单1" :value="1"></el-option>
+                            <el-option label="接单2" :value="2"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </template>
+
+                <el-form-item label="备注信息" prop="remark">
+                    <el-input v-model="formData.remark" type="textarea" placeholder="请输入任何您想说的话..."
                         :autosize="{minRows: 4, maxRows: 4}" :style="{width: '100%'}"></el-input>
                 </el-form-item>
 
             </div>
              <el-divider></el-divider>
 
+
+            <template v-if="isBigOdd">
              <div class="content">   
                <div class="header mb8">装货类型</div>
-                <el-form-item label="装货类型" prop="field122">
-                    <el-radio-group v-model="formData.tin6" size="medium">
+                <el-form-item label="装货类型" prop="loadType">
+                    <el-radio-group v-model="formData.loadType" size="medium">
                         <el-radio :label="0">一装一卸</el-radio>
                         
                         <el-radio :label="1">多装一卸</el-radio>
@@ -94,224 +121,85 @@
                     </el-radio-group>
                 </el-form-item>
 
-                <el-form-item label="允许自装" prop="field122">
-                    <el-checkbox v-model="formData.tin7"></el-checkbox>
+                <el-form-item label="允许自装" prop="tinkaikin2222222">
+                    <el-checkbox v-model="formData.tinkaikin2222222">允许自装</el-checkbox>
                 </el-form-item>
              </div>
              <el-divider></el-divider>
+            </template>
+
+        </el-form>
 
 
+            <!-- s封装成组件 -->
             <div class="content">   
                <div class="header mb8">货源发布</div>
-
-                
-
-               <el-form-item label="装货省" prop="field102">
-                    <div class="flex">
-                        <el-select v-model="formData.field102" placeholder="请选择装货省" clearable :style="{width: '25%'}">
-                            <el-option v-for="(item, index) in field102Options" :key="index" :label="item.label"
-                                :value="item.value" :disabled="item.disabled"></el-option>
-                        </el-select>
-
-                        <span class="pl-5 pr-5">市: </span>
-                        <el-select v-model="formData.field102" placeholder="请选择装货省" clearable :style="{width: '25%'}">
-                            <el-option v-for="(item, index) in field102Options" :key="index" :label="item.label"
-                                :value="item.value" :disabled="item.disabled"></el-option>
-                        </el-select>
-
-                        <span class="pl-5 pr-5">县/区: </span>
-                        <el-select v-model="formData.field102" placeholder="请选择装货省" clearable :style="{width: '25%'}">
-                            <el-option v-for="(item, index) in field102Options" :key="index" :label="item.label"
-                                :value="item.value" :disabled="item.disabled"></el-option>
-                        </el-select>
-                        <el-button class="fahuoBtn" type="primary" @click="onSubmit">常用地址</el-button>
-                    </div>
-                </el-form-item>
-
-
-                <el-form-item label="详细地址" prop="field112">
-                    <el-input v-model="formData.field112" placeholder="请输入具体地址" clearable :style="{width: '100%'}"></el-input>
-                </el-form-item>
-
-                <el-form-item label="地址别名" prop="field112">
-                    <el-input v-model="formData.field112" clearable placeholder="优先展示, 最多输入10个字" :style="{width: '100%'}"></el-input>
-                </el-form-item>
-
-
-                 <el-row :gutter="15">
-                    <el-col :span="12">
-                        <el-form-item label="联系人" prop="field113">
-                            <el-input v-model="formData.field113" placeholder="请输入联系人" clearable :style="{width: '100%'}">
-                            </el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="12">
-                        <el-form-item label="联系电话" prop="field114">
-                            <el-input v-model="formData.field114" placeholder="请输入联系电话" clearable :style="{width: '100%'}">
-                            </el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+                <add-address :addressType='1' :showBtn='formData.loadType === 1' :isBigOdd='isBigOdd' ref="address1"></add-address>
             </div>
 
             <el-divider></el-divider>
             
             <div class="content">   
                <div class="header mb8">卸货信息</div>
-               <el-form-item label="卸货省" prop="field102">
-                    <div class="flex">
-                        <el-select v-model="formData.field102" placeholder="请选择装货省" clearable :style="{width: '25%'}">
-                            <el-option v-for="(item, index) in field102Options" :key="index" :label="item.label"
-                                :value="item.value" :disabled="item.disabled"></el-option>
-                        </el-select>
-
-                        <span class="pl-5 pr-5">市: </span>
-                        <el-select v-model="formData.field102" placeholder="请选择装货省" clearable :style="{width: '25%'}">
-                            <el-option v-for="(item, index) in field102Options" :key="index" :label="item.label"
-                                :value="item.value" :disabled="item.disabled"></el-option>
-                        </el-select>
-
-                        <span class="pl-5 pr-5">县/区: </span>
-                        <el-select v-model="formData.field102" placeholder="请选择装货省" clearable :style="{width: '25%'}">
-                            <el-option v-for="(item, index) in field102Options" :key="index" :label="item.label"
-                                :value="item.value" :disabled="item.disabled"></el-option>
-                        </el-select>
-                        <el-button class="fahuoBtn" type="primary" @click="onSubmit">选择常用收货地址</el-button>
-                    </div>
-                </el-form-item>
-
-
-                <el-form-item label="详细地址" prop="field112">
-                    <el-input v-model="formData.field112" clearable placeholder="请输入具体地址" :style="{width: '100%'}"></el-input>
-                </el-form-item>
-
-                <el-form-item label="地址别名" prop="field112">
-                    <el-input v-model="formData.field112" clearable placeholder="优先展示, 最多输入10个字" :style="{width: '100%'}"></el-input>
-                </el-form-item>
-
-                 <el-row :gutter="15">
-                    <el-col :span="12">
-                        <el-form-item label="联系人" prop="field113">
-                            <el-input v-model="formData.field113" placeholder="请输入联系人" clearable :style="{width: '100%'}">
-                            </el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="12">
-                        <el-form-item label="联系电话" prop="field114">
-                            <el-input v-model="formData.field114" placeholder="请输入联系电话" clearable :style="{width: '100%'}">
-                            </el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+               <add-address :addressType='2' :showBtn='formData.loadType === 2' :isBigOdd='isBigOdd' ref="address2"></add-address>
             </div>
+           
 
             <el-divider></el-divider>
 
-            <div class="content">
-                <div class="header mb8">货物</div>
+            <template v-if="!isBigOdd">
+                <div class="content">
+                    <div class="header mb8">货物</div>
 
-                <el-form-item label="货物计量单位" prop="field122">
-                    <el-select v-model="formData.tin3" placeholder="请选择货物计量单位" clearable :style="{width: '100%'}">
-                    <!-- <el-option v-for="(item, index) in field122Options" :key="index" :label="item.label"
-                        :value="item.value" :disabled="item.disabled"></el-option> -->
-                        <el-option label="吨" :value="1"></el-option>
-                        <el-option label="千克" :value="2"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="货物总量" prop="field122">
-                    <el-radio-group v-model="formData.tin5" size="medium">
-                        <el-radio :label="0">不限(长期货源)</el-radio>
-                        
-                        <el-radio :label="1">
-                            共 <el-input-number v-model="formData.field116" placeholder="请输入重量(吨)" step-strictly controls-position=right :style="{width: '120px'}">
-                            </el-input-number>  {{formData.tin3 == 1?'吨': '千克'}}
-                        </el-radio>
-                    </el-radio-group>
-                </el-form-item>
+                    <GoodsAccounting ref="goodsAccounting"></GoodsAccounting>
 
-                <el-form-item label="最高配载(吨/方)" prop="field121">
-                    <el-input-number v-model="formData.field121" placeholder="请输入最高配载(吨/方)" step-strictly controls-position=right :style="{width: '50%'}"></el-input-number>
-                </el-form-item>
+                </div>
+                
+                <div class="content">
+                    <div class="header mb8">核算:</div>
 
-                <el-form-item label="运输单价" prop="field119">
-                    <el-input-number v-model="formData.field119" placeholder="运输单价" step-strictly controls-position=right :style="{width: '50%'}"></el-input-number> <span>元/吨(不含税)</span>
-                </el-form-item>
+                    <AccounTing ref="accounTing"></AccounTing>
+                </div>
 
-                <el-form-item label="货物单价" prop="field119">
-                    <el-input-number v-model="formData.field119" placeholder="货物单价" step-strictly controls-position=right :style="{width: '50%'}"></el-input-number> <span>元/吨</span>
-                </el-form-item>
+                <!-- s封装成组件 -->
 
-                <el-form-item label="车型车长限制">
-                    <el-button @click="onSubmit">选择车型</el-button>
-                    <el-button @click="onSubmit">选择用车类型</el-button>
-                    <el-button @click="onSubmit">选择车长</el-button>
-                    <el-button type="primary" @click="onSubmit">清除已选</el-button>
-                </el-form-item>
+                <div class="content">
+                    <div class="header mb8">预估运费</div>
 
-                <el-form-item label="已选车型" prop="field154">
-                    <el-input v-model="formData.field154" type="textarea" placeholder="无则 不限车型, 不限车长"
-                    :autosize="{minRows: 4, maxRows: 4}" :style="{width: '100%'}" disabled></el-input>
-                </el-form-item>
-            </div>
-            
-
-            <div class="content">
-                <div class="header mb8">核算:</div>
-
-                <el-form-item label="核算规则" prop="field122">
-                    <el-select v-model="formData.tin4" placeholder="煤炭专用规则" clearable :style="{width: '100%'}">
-                    <!-- <el-option v-for="(item, index) in field122Options" :key="index" :label="item.label"
-                        :value="item.value" :disabled="item.disabled"></el-option> -->
-                        <el-option label="煤炭专用规则" :value="1"></el-option>
-                        <el-option label="规则2" :value="2"></el-option>
-                    </el-select>
-                </el-form-item>
-
-
-                <el-form-item label="免赔偿路耗规范(定额)" prop="field122">
-                    <div style="display: flex;
-      justify-content: flex-start;
-      align-items: center;">
-                        <span>-</span>
-                        <el-input-number v-model="formData.field116" placeholder="请输入重量(吨)" step-strictly controls-position=right :style="{width: '120px'}"></el-input-number>
-                        <span>吨</span>
-                        <span>-</span>
-                        <span>+</span>
-                        <el-input-number v-model="formData.field118" placeholder="请输入体积(方)" step-strictly controls-position=right :style="{width: '120px'}"></el-input-number>
-                        <span>吨</span>
+                    <div>
+                        <span>预估运费(不含税):</span> <span>￥</span><span>8566.00</span>
                     </div>
-                </el-form-item>
-
-                <el-form-item label="过路费补贴(ETC)" prop="field122">
-                        <span>+</span>
-                        <el-input-number v-model="formData.field118" placeholder="请输入体积(方)" step-strictly controls-position=right :style="{width: '120px'}"></el-input-number>
-                        <span>元</span>
-                </el-form-item>
-                <el-form-item label="装车费补贴" prop="field122">
-                        <span>+</span>
-                        <el-input-number v-model="formData.field118" placeholder="请输入体积(方)" step-strictly controls-position=right :style="{width: '120px'}"></el-input-number>
-                        <span>元</span>
-                </el-form-item>
-                <el-form-item label="卸车费补贴" prop="field122">
-                        <span>+</span>
-                        <el-input-number v-model="formData.field118" placeholder="请输入体积(方)" step-strictly controls-position=right :style="{width: '120px'}"></el-input-number>
-                        <span>元</span>
-                </el-form-item>
-
-            </div>
-            <div class="content">
-                <div class="header mb8">预估运费</div>
-
-                <div>
-                    <span>预估运费(不含税):</span> <span>￥</span><span>8566.00</span>
+                    <div>
+                        <span>(含税):</span> <span>￥</span><span>8566.00</span>
+                    </div>
                 </div>
-                <div>
-                    <span>(含税):</span> <span>￥</span><span>8566.00</span>
+            </template>
+            <template v-else>
+                <div class="content">
+                    <div class="header mb8">货物/核算</div>
+
+                    <el-tabs v-model="activeName">
+                        <el-tab-pane label="用户管理" name="first" v-for="item in formData.goodsType1" :key="item">
+                            <MultiData ref="first"></MultiData>
+                        </el-tab-pane>
+                        <el-tab-pane label="配置管理" name="second">
+                            <MultiData ref="second"></MultiData>
+                        </el-tab-pane>
+                        <el-tab-pane label="角色管理" name="third">
+                            <MultiData ref="third"></MultiData>
+                        </el-tab-pane>
+                        <el-tab-pane label="定时任务补偿" name="fourth">
+                            <MultiData ref="fourth"></MultiData>
+                        </el-tab-pane>
+                    </el-tabs>
+                    
                 </div>
-            </div>
+            </template>
 
 
-            <div class="content" v-if="false">
+
+
+            <!-- <div class="content" v-if="false">
                 <div class="header mb8">货物、路线信息:</div>
 
                 <el-row :gutter="15">
@@ -435,9 +323,9 @@
                     </el-input>
                 </el-form-item>
 
-            </div>
+            </div> -->
 
-            <el-divider v-if="false"></el-divider>
+            <!-- <el-divider v-if="false"></el-divider>
             <div class="content" v-if="false">
                  <div class="header mb8">报价信息</div>
                  <el-row :gutter="15">
@@ -582,15 +470,12 @@
                     :autosize="{minRows: 4, maxRows: 4}" :style="{width: '100%'}"></el-input>
                 </el-form-item>
                 
-            </div>
+            </div> -->
 
-
-
-            <el-form-item>
-                <el-button type="primary" @click="onSubmit">立即创建</el-button>
-                <el-button>取消</el-button>
-            </el-form-item>
-        </el-form>
+        <div>
+            <el-button type="primary" @click="onSubmit">立即创建</el-button>
+            <el-button>取消</el-button>
+        </div>
 
 
         <!-- 添加或修改【请填写功能名称】对话框 -->
@@ -606,502 +491,42 @@
 
 <script>
 import OpenDialog from './OpenDialog'
+
+import AddAddress from './component/AddAddress'
+import GoodsAccounting from './component/GoodsAccounting'
+import AccounTing from './component/AccounTing'
+import MultiData from './component/MultiData'
 export default {
     components:{
-        OpenDialog
+        OpenDialog,
+        AddAddress,
+        GoodsAccounting,
+        AccounTing,
+        MultiData
     },
     data() {
       return {
         formData: {
-            field101: 1,
-            field102: undefined,
-            field105: undefined,
-            field106: undefined,
-            field107: undefined,
-            field109: undefined,
-            field110: undefined,
-            field112: undefined,
-            field113: undefined,
-            field114: undefined,
-            field116: 0,
-            field118: 0,
-            field119: undefined,
-            field120: 0,
-            field121: 40,
-            field122: undefined,
-            field124: [],
-            field125: [],
-            field126: 2,
-            field127: 1,
-            field128: undefined,
-            field129: undefined,
-            field132: undefined,
-            field133: 1,
-            field134: undefined,
-            field137: 1,
-            field138: undefined,
-            field140: 0,
-            field141: undefined,
-            field142: 2,
-            field143: 0,
-            field144: 1,
-            field145: 1,
-            field146: undefined,
-            field148: 0,
-            field149: 1,
-            field150: 1,
-            field151: 1,
-            field152: 1,
-            field154: undefined,
-            field155: undefined,
-
-            tin1: 1,
-            tin2: 1,
-            tin3: 1,
-            tin4: 1,
-            tin5: 0,
-            tin6: 1,
-            tin7: false,
-
-            // classList:[], // 货源码列表
-            // code:'',
-            // id:'',
-            // isClass: 0,     //	*是否加入货源码 0否 1是
-            // isPublic: 0,    //	是否公开货源 0.非公开 1.公开
-            // isSpecified: 0, //	是否指定接单人 0否 1是
-            // mainOrderNumber:'', // 货源单号
-            // orderFreightBoList:[],	// 运费规则列表
-            // orderFreightDetailVOList:[], //	运费规则列表
-            // orderGoodsList:[], //	货源商品列表
-            // orderGoodsUpdateBoList:[], // 	货源商品列表
-            // orderSpecifiedList:[], //	指定接单人列表
-            // orderUpdateBoList:[], //	运费规则列表
-            // projectCode:'', //	项目编码
-            // pubilshCode:'', //	发布人Code
-            // remark: '' // 备注
-
-            // "classList": [
-            //     {
-            //         "classCode": "",
-            //         "code": ""
-            //     }
-            // ],
-            // "code": "",
-            // "id": "",
-            // "isClass": 0, // 是否加入货源码 0否 1是
-            // "isPublic": 0, // 是否公开货源 0.非公开 1.公开
-            // "isSpecified": true,
-            // "mainOrderNumber": "",
-            // "orderFreightBoList": [
-            //     {
-            //         "id": 0,
-            //         "ruleItemId": 0,
-            //         "ruleItemValue": ""
-            //     }
-            // ],
-            // "orderFreightDetailVOList": [
-            //     {
-            //         "id": 0,
-            //         "orderCode": 0,
-            //         "ruleItemId": 0,
-            //         "ruleItemValue": ""
-            //     }
-            // ],
-            // "orderGoodsList": [ // 货源商品列表
-            //     {
-            //         "addressList": [
-            //             {
-            //                 "adcode": "",
-            //                 "addressAlias": "",
-            //                 "addressType": 0,
-            //                 "city": "",
-            //                 "citycode": "",
-            //                 "code": "",
-            //                 "contact": "",
-            //                 "contactPhone": "",
-            //                 "country": "",
-            //                 "detail": "",
-            //                 "district": "",
-            //                 "id": 0,
-            //                 "level": "",
-            //                 "location": 0,
-            //                 "province": "",
-            //                 "street": ""
-            //             }
-            //         ],
-            //         "code": "",
-            //         "endLimitWastage": 0,
-            //         "goodsBigType": "",
-            //         "goodsType": "",
-            //         "goodsUnit": "",
-            //         "limitWastage": "",
-            //         "loadCartSubsidies": 0,
-            //         "orderAddressUpdateBoList": [
-            //             {
-            //                 "adcode": "",
-            //                 "addressAlias": "",
-            //                 "addressType": 0,
-            //                 "city": "",
-            //                 "citycode": "",
-            //                 "code": "",
-            //                 "contact": "",
-            //                 "contactPhone": "",
-            //                 "country": "",
-            //                 "detail": "",
-            //                 "district": "",
-            //                 "id": 0,
-            //                 "level": "",
-            //                 "location": 0,
-            //                 "province": "",
-            //                 "street": ""
-            //             }
-            //         ],
-            //         "orderCode": "",
-            //         "perWeight": 0,
-            //         "priceWastage": 0,
-            //         "roadSubsidies": 0,
-            //         "shipmentPrice": 0,
-            //         "startLimitWastage": 0,
-            //         "unloadCartSubsidies": 0,
-            //         "vehicleLength": "",
-            //         "vehicleType": "",
-            //         "weight": 0
-            //     }
-            // ],
-            // "orderGoodsUpdateBoList": [
-            //     {
-            //         "addressList": [
-            //             {
-            //                 "adcode": "",
-            //                 "addressAlias": "",
-            //                 "addressType": 0,
-            //                 "city": "",
-            //                 "citycode": "",
-            //                 "code": "",
-            //                 "contact": "",
-            //                 "contactPhone": "",
-            //                 "country": "",
-            //                 "detail": "",
-            //                 "district": "",
-            //                 "id": 0,
-            //                 "level": "",
-            //                 "location": 0,
-            //                 "province": "",
-            //                 "street": ""
-            //             }
-            //         ],
-            //         "code": "",
-            //         "endLimitWastage": 0,
-            //         "goodsBigType": "",
-            //         "goodsType": "",
-            //         "goodsUnit": "",
-            //         "limitWastage": "",
-            //         "loadCartSubsidies": 0,
-            //         "orderAddressUpdateBoList": [
-            //             {
-            //                 "adcode": "",
-            //                 "addressAlias": "",
-            //                 "addressType": 0,
-            //                 "city": "",
-            //                 "citycode": "",
-            //                 "code": "",
-            //                 "contact": "",
-            //                 "contactPhone": "",
-            //                 "country": "",
-            //                 "detail": "",
-            //                 "district": "",
-            //                 "id": 0,
-            //                 "level": "",
-            //                 "location": 0,
-            //                 "province": "",
-            //                 "street": ""
-            //             }
-            //         ],
-            //         "orderCode": "",
-            //         "perWeight": 0,
-            //         "priceWastage": 0,
-            //         "roadSubsidies": 0,
-            //         "shipmentPrice": 0,
-            //         "startLimitWastage": 0,
-            //         "unloadCartSubsidies": 0,
-            //         "vehicleLength": "",
-            //         "vehicleType": "",
-            //         "weight": 0
-            //     }
-            // ],
-            // "orderSpecifiedList": [
-            //     {
-            //         "code": "",
-            //         "driverInfoCode": "",
-            //         "teamInfoCode": "",
-            //         "userType": 0
-            //     }
-            // ],
-            // "orderUpdateBoList": [
-            //     {
-            //         "id": 0,
-            //         "ruleItemId": 0,
-            //         "ruleItemValue": ""
-            //     }
-            // ],
-            // "projectCode": "",
-            // "pubilshCode": "",
-            // "remark": ""
-
-            
+            pubilshCode: 1,
+            projectCode: undefined,
+            goodsBigType:undefined,
+            goodsType1: [],
+            goodsType2: undefined,
+            isPublic: 1,
+            isSpecified: 1,
+            tinkaikin1111111111: undefined, // 无这个字段
+            remark:'',
+            loadType: 1,
+            tinkaikin2222222: false // 无这个字段 允许自装
         },
         rules: {
-            field101: [],
-            field102: [{
-            required: true,
-            message: '请选择装货省',
-            trigger: 'change'
-            }],
-            field105: [],
-            field106: [{
-            required: true,
-            message: '请输入装货人',
-            trigger: 'blur'
-            }],
-            field107: [{
-            required: true,
-            message: '请输入装货电话',
-            trigger: 'blur'
-            }],
-            field109: [{
-            required: true,
-            message: '请输入装货时间',
-            trigger: 'blur'
-            }],
-            field110: [{
-            required: true,
-            message: '----请选择----',
-            trigger: 'change'
-            }],
-            field112: [],
-            field113: [{
-            required: true,
-            message: '请输入收货人',
-            trigger: 'blur'
-            }],
-            field114: [{
-            required: true,
-            message: '请输入收货电话',
-            trigger: 'blur'
-            }],
-            field116: [],
-            field118: [],
-            field119: [{
-            required: true,
-            message: '货物单价',
-            trigger: 'blur'
-            }],
-            field120: [],
-            field121: [],
-            field122: [{
-            required: true,
-            message: '请选择业务类型',
-            trigger: 'change'
-            }],
-            field124: [{
-            required: true,
-            type: 'array',
-            message: '请至少选择一个field124',
-            trigger: 'change'
-            }],
-            field125: [{
-            required: true,
-            type: 'array',
-            message: '请至少选择一个field125',
-            trigger: 'change'
-            }],
-            field126: [],
-            field127: [],
-            field128: [{
-            required: true,
-            message: '请输入运费单价(元)',
-            trigger: 'blur'
-            }],
-            field129: [],
-            field132: [{
-            required: true,
-            message: '合理路耗不能为空',
-            trigger: 'change'
-            }],
-            field133: [],
-            field134: [],
-            field137: [],
-            field138: [],
-            field140: [],
-            field141: [],
-            field142: [],
-            field143: [{
-            required: true,
-            message: '请输入车',
-            trigger: 'blur'
-            }],
-            field144: [],
-            field145: [],
-            field146: [],
-            field148: [],
-            field149: [],
-            field150: [],
-            field151: [],
-            field152: [],
-            field154: [],
-            field155: [],
+           goodsBigType: [{ required: true,  message: '请选择货物计量单位',  trigger: 'change' }],
+           goodsType1: [{ required: true,  message: '请选择货物计量单位',  trigger: 'change' }],
+           goodsType2: [{ required: true,  message: '请选择货物计量单位',  trigger: 'change' }],
         },
-        field101Options: [{
-            "label": "否",
-            "value": 1
-            }, {
-            "label": "是",
-            "value": 2
-            }],
-            field102Options: [{
-            "label": "选项一",
-            "value": 1
-            }, {
-            "label": "选项二",
-            "value": 2
-            }],
-            field110Options: [{
-            "label": "选项一",
-            "value": 1
-            }, {
-            "label": "选项二",
-            "value": 2
-            }],
-            field122Options: [{
-            "label": "选项一",
-            "value": 1
-            }, {
-            "label": "选项二",
-            "value": 2
-            }],
-            field124Options: [{
-            "label": "上级部级标准",
-            "value": 1
-            }],
-            field125Options: [{
-            "label": "其他",
-            "value": 1
-            }, {
-            "label": "商品汽车",
-            "value": 2
-            }, {
-            "label": "冷藏冷冻货物",
-            "value": 3
-            }, {
-            "label": "鲜活农产品",
-            "value": 4
-            }, {
-            "label": "轻工医药产品",
-            "value": 5
-            }, {
-            "label": "有色金属",
-            "value": 6
-            }],
-            field126Options: [{
-            "label": "吨(方)配载",
-            "value": 1
-            }, {
-            "label": "车数配载",
-            "value": 2
-            }],
-            field127Options: [{
-            "label": "元/吨 (方)",
-            "value": 1
-            }, {
-            "label": "元/车",
-            "value": 2
-            }, {
-            "label": "元/ (吨*公里)",
-            "value": 3
-            }],
-            field132Options: [{
-            "label": "关闭",
-            "value": 1
-            }, {
-            "label": "定额(kg/车)",
-            "value": 2
-            }, {
-            "label": "定率(% /车)",
-            "value": 3
-            }],
-            field133Options: [{
-            "label": "否",
-            "value": 1
-            }, {
-            "label": "是",
-            "value": 2
-            }],
-            field137Options: [{
-            "label": "否",
-            "value": 1
-            }, {
-            "label": "是",
-            "value": 2
-            }],
-            field142Options: [{
-            "label": "否",
-            "value": 1
-            }, {
-            "label": "是",
-            "value": 2
-            }],
-            field144Options: [{
-            "label": "否",
-            "value": 1
-            }, {
-            "label": "是",
-            "value": 2
-            }],
-            field145Options: [{
-            "label": "汽运一票制",
-            "value": 1
-            }, {
-            "label": "对付",
-            "value": 2
-            }, {
-            "label": "代收代付",
-            "value": 3
-            }],
-            field146Options: [{
-            "label": "选项一",
-            "value": 1
-            }, {
-            "label": "选项二",
-            "value": 2
-            }],
-            field149Options: [{
-            "label": "24小时",
-            "value": 1
-            }, {
-            "label": "选项二",
-            "value": 2
-            }],
-            field150Options: [{
-            "label": "否",
-            "value": 1
-            }, {
-            "label": "是",
-            "value": 2
-            }],
-            field151Options: [{
-            "label": "APP",
-            "value": 1
-            }, {
-            "label": "选项二",
-            "value": 2
-            }],
-            field152Options: [{
-            "label": "否",
-            "value": 1
-            }, {
-            "label": "是",
-            "value": 2
-        }],
+
+        // 选中的名
+        activeName:'first',
 
         // 是否显示弹出层
         open: false,
@@ -1109,11 +534,39 @@ export default {
         title:''
       }
     },
+
+    computed:{
+        isBigOdd(){
+            return this.formData.goodsBigType === 1
+        }
+    },
+
     methods: {
       onSubmit() {
-          this.open = true
-        console.log('submit!');
-      }
+          this.$refs.address1 && this.$refs.address1._submitForm().then(res=>{
+              console.log(res);
+              
+          })
+          this.$refs.address2 && this.$refs.address2._submitForm().then(res=>{
+              console.log(res);
+              
+          })
+          this.$refs.goodsAccounting && this.$refs.goodsAccounting._submitForm().then(res=>{
+              console.log(res);
+              
+          })
+          this.$refs.accounTing && this.$refs.accounTing._submitForm().then(res=>{
+              console.log(res);
+              
+          })
+
+          
+          this.$refs[this.activeName]._submitForm().then(res=>{
+              console.log(res);
+          })
+          
+          
+      },
     }
 }
 </script>
@@ -1139,17 +592,7 @@ export default {
 .content{
     width: 50%;
 }
-.flex{
-    display: flex;
-    justify-content: space-between;
-    position: relative;
-    .fahuoBtn{
-        position: absolute;
-        right: -15px;
-        top: 0;
-        transform: translateX(100%);
-    }
-}
+
 
 .vih{
     line-height: 36px;
