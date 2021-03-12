@@ -42,3 +42,21 @@ export function delShipment(ids) {
     method: 'delete'
   });
 }
+
+// 已读
+export function authRead(data) {
+  return request({
+    url: '/assets/shipment/authRead',
+    method: 'post',
+    data: data
+  });
+}
+
+// 审核
+export function examine(data) {
+  return request({
+    url: '/assets/shipment/examine',
+    method: 'post',
+    data: data
+  });
+}
