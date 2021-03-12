@@ -298,90 +298,92 @@
       :data="infoList"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" width="55" align="center" />
+      <el-table-column type="selection" width="55" align="center" fixed="left" />
       <el-table-column
-        label="回单确认状态 0未标记回单，1-已标记回单"
+        label="回单确认状态"
         align="center"
         prop="isReturn"
+        width="130"
         :formatter="isReturnFormat"
       />
       <el-table-column
         label="货源编号"
         align="center"
         prop="orderCode"
-        :formatter="orderCodeFormat"
+        width="130"
       />
       <el-table-column
         label="创建人"
         align="center"
         prop="createCode"
-        :formatter="createCodeFormat"
+        width="130"
       />
       <el-table-column
         label="运输单号"
         align="center"
         prop="waybillNo"
-        :formatter="waybillNoFormat"
+        width="130"
       />
       <el-table-column
         label="调度单号"
         align="center"
         prop="dispatchOrderCode"
-        :formatter="dispatchOrderCodeFormat"
+        width="130"
       />
       <el-table-column
-        label="实际承运人CODE"
+        label="实际承运人"
         align="center"
         prop="drvierCode"
-        :formatter="drvierCodeFormat"
+        width="130"
       />
       <el-table-column
         label="货物重量"
         align="center"
         prop="weight"
-        :formatter="weightFormat"
+        width="130"
       />
       <el-table-column
-        label="实际承运车辆CODE"
+        label="实际承运车辆"
         align="center"
         prop="vehicleCode"
-        :formatter="vehicleCodeFormat"
+        width="130"
       />
       <el-table-column
         label="装车重量"
         align="center"
         prop="loadWeight"
-        :formatter="loadWeightFormat"
+        width="130"
       />
       <el-table-column
         label="卸车重量"
         align="center"
         prop="unloadWeight"
-        :formatter="unloadWeightFormat"
+        width="130"
       />
       <el-table-column
         label="货物损耗"
         align="center"
         prop="wastage"
-        :formatter="wastageFormat"
+        width="130"
       />
       <el-table-column
         label="给货主结算的和展示的每车总费"
         align="center"
         prop="shipperDeliveryFee"
-        :formatter="shipperDeliveryFeeFormat"
+        width="210"
       />
       <el-table-column
-        label="运单状态 0未接单/1已接单/2已签收/3已回单/4已结算/5已打款"
+        label="运单状态"
         align="center"
         prop="status"
+        width="130"
         :formatter="statusFormat"
       />
       <el-table-column
         label="装货时间"
         align="center"
         prop="fillTime"
-        width="180"
+        width="130"
       >
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.fillTime, "{y}-{m}-{d}") }}</span>
@@ -391,7 +393,7 @@
         label="接单时间"
         align="center"
         prop="receiveTime"
-        width="180"
+        width="130"
       >
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.receiveTime, "{y}-{m}-{d}") }}</span>
@@ -451,6 +453,8 @@
       <el-table-column
         label="操作"
         align="center"
+        fixed="right"
+        width="180"
         class-name="small-padding fixed-width"
       >
         <template slot-scope="scope">
@@ -463,12 +467,12 @@
           <el-button
             size="mini"
             type="text"
-            @click="handleDelete(scope.row)"
+            @click="handleReturn(scope.row)"
           >退押金</el-button>
           <el-button
             size="mini"
             type="text"
-            @click="handleDelete(scope.row)"
+            @click="handleDedution(scope.row)"
           >扣押金</el-button>
         </template>
       </el-table-column>
@@ -482,12 +486,26 @@
       @pagination="getList"
     />
 
-    <!-- 新增/修改/详情 对话框 -->
+    <!-- 详情 对话框 -->
     <detail-dialog
       ref="DetailDialog"
       :title="title"
       :open.sync="open"
       :disable="formDisable"
+      @refresh="getList"
+    />
+    <!-- 扣押金 对话框 -->
+    <deduction-dialog
+      :title="title"
+      :open.sync="openDeduction"
+      :current-id="currentId"
+      @refresh="getList"
+    />
+    <!-- 退押金 对话框 -->
+    <return-dialog
+      :title="title"
+      :open.sync="openReturn"
+      :current-id="currentId"
       @refresh="getList"
     />
   </div>
@@ -496,11 +514,14 @@
 <script>
 import { listInfo, getInfo } from '@/api/waybill/receipt';
 import DetailDialog from '../components/detailDialog';
-
+import DeductionDialog from './deductionDialog';
+import ReturnDialog from './returnDialog';
 export default {
   name: 'Receipt',
   components: {
-    DetailDialog
+    DetailDialog,
+    DeductionDialog,
+    ReturnDialog
   },
   data() {
     return {
@@ -522,92 +543,62 @@ export default {
       title: '',
       // 是否显示弹出层
       open: false,
-      // 货源编号字典
-      orderCodeOptions: [],
-      // 商品编码字典
-      goodsCodeOptions: [],
-      // 运输单号字典
-      waybillNoOptions: [],
-      // 调度单号字典
-      dispatchOrderCodeOptions: [],
-      // 实际承运人CODE字典
-      drvierCodeOptions: [],
-      // 实际承运车辆CODE字典
-      vehicleCodeOptions: [],
-      // 装车重量字典
-      loadWeightOptions: [],
-      // 卸车重量字典
-      unloadWeightOptions: [],
-      // 货物损耗字典
-      wastageOptions: [],
-      // 是否接单  0-否  1-是字典
-      isReceiveOptions: [],
-      // 接单时间字典
-      receiveTimeOptions: [],
-      // 是否装货  0-否  1-是字典
-      isFillOptions: [],
-      // 装货时间字典
-      fillTimeOptions: [],
-      // 是否签收 0-否  1-是字典
-      isSignOptions: [],
-      // 签收时间字典
-      signTimeOptions: [],
+      openDeduction: false,
+      openReturn: false,
+      // 是否结算字典
+      'isOptions': [
+        { 'dictLabel': '否', 'dictValue': 0 },
+        { 'dictLabel': '是', 'dictValue': 1 }
+      ],
       // 是否结算 0未结算，1已结算字典
-      isSettleOptions: [],
-      // 结算时间字典
-      settleTimeOptions: [],
+      isSettleOptions: [
+        { 'dictLabel': '未结算', 'dictValue': 0 },
+        { 'dictLabel': '已结算', 'dictValue': 1 }
+      ],
       // 回单确认状态 0未标记回单，1-已标记回单字典
-      isReturnOptions: [],
-      // 回单确认时间字典
-      returnRemarkTimeOptions: [],
-      // 回单确认备注字典
-      returnRemarkOptions: [],
+      isReturnOptions: [
+        { 'dictLabel': '未标记回单', 'dictValue': 0 },
+        { 'dictLabel': '已标记回单', 'dictValue': 1 }
+      ],
       // 支付给司机运费状态 0-未支付 1-已支付字典
-      isPayOptions: [],
-      // 与司机结账时间字典
-      payTimeOptions: [],
+      isPayOptions: [
+        { 'dictLabel': '未支付', 'dictValue': 0 },
+        { 'dictLabel': '已支付', 'dictValue': 1 }
+      ],
       // 标记打款状态 0未打款/1已打款/2打款处理中字典
-      isMarkStatusOptions: [],
-      // 标记打款时间字典
-      markTimeOptions: [],
-      // 运单是否已打印 0-否  1-是字典
-      isPrintOrderOptions: [],
-      // 打印时间字典
-      prinTimeOptions: [],
-      // 是否批量接单订单 0-否  1-是字典
-      isMultiOrderOptions: [],
-      // 是否使用保证金 0-否  1-是字典
-      isCashOptions: [],
-      // 保证金字典
-      cashDepositOptions: [],
-      // 给货主结算的和展示的每车总费字典
-      shipperDeliveryFeeOptions: [],
+      isMarkStatusOptions: [
+        { 'dictLabel': '未打款', 'dictValue': 0 },
+        { 'dictLabel': '已打款', 'dictValue': 1 },
+        { 'dictLabel': '打款处理中', 'dictValue': 2 }
+      ],
       // 月结订单结算状态 0-未结算 1-已结算字典
-      monthlySettlementStatusOptions: [],
-      // 是否子单 0不是 字典
-      isChildOptions: [],
+      monthlySettlementStatusOptions: [
+        { 'dictLabel': '未结算', 'dictValue': 0 },
+        { 'dictLabel': '已结算', 'dictValue': 1 }
+      ],
       // 给超载的子单排序用 1车辆核载装货重量的子单，2其余重量子单字典
-      childSortOptions: [],
-      // 是否删除 0-正常 1-删除字典
-      isDelOptions: [],
+      childSortOptions: [
+        { 'dictLabel': '车辆核载装货重量的子单', 'dictValue': 1 },
+        { 'dictLabel': '其余重量子单字典', 'dictValue': 2 }
+      ],
       // 运单状态 0未接单/1已接单/2已签收/3已回单/4已结算/5已打款字典
-      statusOptions: [],
-      // 创建人字典
-      createCodeOptions: [],
-      // 创建时间字典
-      createTimeOptions: [],
-      // 修改人字典
-      updateCodeOptions: [],
-      // 修改时间字典
-      updateTimeOptions: [],
+      statusOptions: [
+        { 'dictLabel': '未接单', 'dictValue': 0 },
+        { 'dictLabel': '已接单', 'dictValue': 1 },
+        { 'dictLabel': '已签收', 'dictValue': 2 },
+        { 'dictLabel': '已回单', 'dictValue': 3 },
+        { 'dictLabel': '已结算', 'dictValue': 4 },
+        { 'dictLabel': '已打款', 'dictValue': 5 }
+      ],
       // 货物重量字典
       weightOptions: [],
       // 司机取消订单  0-》正常，1-》司机撤单申请 2-》货主同意撤销 3-》货主拒绝撤销字典
-      cancelStatusOptions: [],
-      // 司机取消理由字典
-      driverApplyRemarkOptions: [],
-      // 货主处理司机申请取消备注字典
-      shipperDealRemarkOptions: [],
+      cancelStatusOptions: [
+        { 'dictLabel': '正常', 'dictValue': 0 },
+        { 'dictLabel': '司机撤单申请', 'dictValue': 1 },
+        { 'dictLabel': '货主同意撤销', 'dictValue': 2 },
+        { 'dictLabel': '货主拒绝撤销', 'dictValue': 3 }
+      ],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -659,7 +650,9 @@ export default {
       form: {},
       // 表单校验
       rules: {},
-      formDisable: false
+      formDisable: false,
+      // 当前选中的运单id
+      'currentId': null
     };
   },
   created() {
@@ -678,142 +671,45 @@ export default {
         this.loading = false;
       });
     },
-    // id字典翻译
-    idFormat(row, column) {
-      return this.selectDictLabel(this.idOptions, row.id);
-    },
-    // code字典翻译
-    codeFormat(row, column) {
-      return this.selectDictLabel(this.codeOptions, row.code);
-    },
-    // 货源编号字典翻译
-    orderCodeFormat(row, column) {
-      return this.selectDictLabel(this.orderCodeOptions, row.orderCode);
-    },
-    // 商品编码字典翻译
-    goodsCodeFormat(row, column) {
-      return this.selectDictLabel(this.goodsCodeOptions, row.goodsCode);
-    },
-    // 运输单号字典翻译
-    waybillNoFormat(row, column) {
-      return this.selectDictLabel(this.waybillNoOptions, row.waybillNo);
-    },
-    // 调度单号字典翻译
-    dispatchOrderCodeFormat(row, column) {
-      return this.selectDictLabel(
-        this.dispatchOrderCodeOptions,
-        row.dispatchOrderCode
-      );
-    },
-    // 实际承运人CODE字典翻译
-    drvierCodeFormat(row, column) {
-      return this.selectDictLabel(this.drvierCodeOptions, row.drvierCode);
-    },
-    // 实际承运车辆CODE字典翻译
-    vehicleCodeFormat(row, column) {
-      return this.selectDictLabel(this.vehicleCodeOptions, row.vehicleCode);
-    },
-    // 装车重量字典翻译
-    loadWeightFormat(row, column) {
-      return this.selectDictLabel(this.loadWeightOptions, row.loadWeight);
-    },
-    // 卸车重量字典翻译
-    unloadWeightFormat(row, column) {
-      return this.selectDictLabel(this.unloadWeightOptions, row.unloadWeight);
-    },
-    // 货物损耗字典翻译
-    wastageFormat(row, column) {
-      return this.selectDictLabel(this.wastageOptions, row.wastage);
-    },
     // 是否接单  0-否  1-是字典翻译
     isReceiveFormat(row, column) {
-      return this.selectDictLabel(this.isReceiveOptions, row.isReceive);
-    },
-    // 接单时间字典翻译
-    receiveTimeFormat(row, column) {
-      return this.selectDictLabel(this.receiveTimeOptions, row.receiveTime);
+      return this.selectDictLabel(this.isOptions, row.isReceive);
     },
     // 是否装货  0-否  1-是字典翻译
     isFillFormat(row, column) {
-      return this.selectDictLabel(this.isFillOptions, row.isFill);
-    },
-    // 装货时间字典翻译
-    fillTimeFormat(row, column) {
-      return this.selectDictLabel(this.fillTimeOptions, row.fillTime);
+      return this.selectDictLabel(this.isOptions, row.isFill);
     },
     // 是否签收 0-否  1-是字典翻译
     isSignFormat(row, column) {
-      return this.selectDictLabel(this.isSignOptions, row.isSign);
-    },
-    // 签收时间字典翻译
-    signTimeFormat(row, column) {
-      return this.selectDictLabel(this.signTimeOptions, row.signTime);
+      return this.selectDictLabel(this.isOptions, row.isSign);
     },
     // 是否结算 0未结算，1已结算字典翻译
     isSettleFormat(row, column) {
-      return this.selectDictLabel(this.isSettleOptions, row.isSettle);
-    },
-    // 结算时间字典翻译
-    settleTimeFormat(row, column) {
-      return this.selectDictLabel(this.settleTimeOptions, row.settleTime);
+      return this.selectDictLabel(this.isOptions, row.isSettle);
     },
     // 回单确认状态 0未标记回单，1-已标记回单字典翻译
     isReturnFormat(row, column) {
       return this.selectDictLabel(this.isReturnOptions, row.isReturn);
     },
-    // 回单确认时间字典翻译
-    returnRemarkTimeFormat(row, column) {
-      return this.selectDictLabel(
-        this.returnRemarkTimeOptions,
-        row.returnRemarkTime
-      );
-    },
-    // 回单确认备注字典翻译
-    returnRemarkFormat(row, column) {
-      return this.selectDictLabel(this.returnRemarkOptions, row.returnRemark);
-    },
     // 支付给司机运费状态 0-未支付 1-已支付字典翻译
     isPayFormat(row, column) {
       return this.selectDictLabel(this.isPayOptions, row.isPay);
-    },
-    // 与司机结账时间字典翻译
-    payTimeFormat(row, column) {
-      return this.selectDictLabel(this.payTimeOptions, row.payTime);
     },
     // 标记打款状态 0未打款/1已打款/2打款处理中字典翻译
     isMarkStatusFormat(row, column) {
       return this.selectDictLabel(this.isMarkStatusOptions, row.isMarkStatus);
     },
-    // 标记打款时间字典翻译
-    markTimeFormat(row, column) {
-      return this.selectDictLabel(this.markTimeOptions, row.markTime);
-    },
     // 运单是否已打印 0-否  1-是字典翻译
     isPrintOrderFormat(row, column) {
-      return this.selectDictLabel(this.isPrintOrderOptions, row.isPrintOrder);
-    },
-    // 打印时间字典翻译
-    prinTimeFormat(row, column) {
-      return this.selectDictLabel(this.prinTimeOptions, row.prinTime);
+      return this.selectDictLabel(this.isOptions, row.isPrintOrder);
     },
     // 是否批量接单订单 0-否  1-是字典翻译
     isMultiOrderFormat(row, column) {
-      return this.selectDictLabel(this.isMultiOrderOptions, row.isMultiOrder);
+      return this.selectDictLabel(this.isOptions, row.isMultiOrder);
     },
     // 是否使用保证金 0-否  1-是字典翻译
     isCashFormat(row, column) {
-      return this.selectDictLabel(this.isCashOptions, row.isCash);
-    },
-    // 保证金字典翻译
-    cashDepositFormat(row, column) {
-      return this.selectDictLabel(this.cashDepositOptions, row.cashDeposit);
-    },
-    // 给货主结算的和展示的每车总费字典翻译
-    shipperDeliveryFeeFormat(row, column) {
-      return this.selectDictLabel(
-        this.shipperDeliveryFeeOptions,
-        row.shipperDeliveryFee
-      );
+      return this.selectDictLabel(this.isOptions, row.isCash);
     },
     // 月结订单结算状态 0-未结算 1-已结算字典翻译
     monthlySettlementStatusFormat(row, column) {
@@ -824,62 +720,19 @@ export default {
     },
     // 是否子单 0不是 字典翻译
     isChildFormat(row, column) {
-      return this.selectDictLabel(this.isChildOptions, row.isChild);
+      return this.selectDictLabel(this.isOptions, row.isChild);
     },
     // 给超载的子单排序用 1车辆核载装货重量的子单，2其余重量子单字典翻译
     childSortFormat(row, column) {
       return this.selectDictLabel(this.childSortOptions, row.childSort);
     },
-    // 是否删除 0-正常 1-删除字典翻译
-    isDelFormat(row, column) {
-      return this.selectDictLabel(this.isDelOptions, row.isDel);
-    },
     // 运单状态 0未接单/1已接单/2已签收/3已回单/4已结算/5已打款字典翻译
     statusFormat(row, column) {
       return this.selectDictLabel(this.statusOptions, row.status);
     },
-    // 创建人字典翻译
-    createCodeFormat(row, column) {
-      return this.selectDictLabel(this.createCodeOptions, row.createCode);
-    },
-    // 创建时间字典翻译
-    createTimeFormat(row, column) {
-      return this.selectDictLabel(this.createTimeOptions, row.createTime);
-    },
-    // 修改人字典翻译
-    updateCodeFormat(row, column) {
-      return this.selectDictLabel(this.updateCodeOptions, row.updateCode);
-    },
-    // 修改时间字典翻译
-    updateTimeFormat(row, column) {
-      return this.selectDictLabel(this.updateTimeOptions, row.updateTime);
-    },
-    // 货物重量字典翻译
-    weightFormat(row, column) {
-      return this.selectDictLabel(this.weightOptions, row.weight);
-    },
     // 司机取消订单  0-》正常，1-》司机撤单申请 2-》货主同意撤销 3-》货主拒绝撤销字典翻译
     cancelStatusFormat(row, column) {
       return this.selectDictLabel(this.cancelStatusOptions, row.cancelStatus);
-    },
-    // 司机取消理由字典翻译
-    driverApplyRemarkFormat(row, column) {
-      return this.selectDictLabel(
-        this.driverApplyRemarkOptions,
-        row.driverApplyRemark
-      );
-    },
-    // 货主处理司机申请取消备注字典翻译
-    shipperDealRemarkFormat(row, column) {
-      return this.selectDictLabel(
-        this.shipperDealRemarkOptions,
-        row.shipperDealRemark
-      );
-    },
-    // 取消按钮
-    cancel() {
-      this.open = false;
-      this.reset();
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -907,6 +760,18 @@ export default {
         this.title = '详情';
         this.formDisable = true;
       });
+    },
+    /** 扣押金按钮操作 */
+    handleDedution(row) {
+      this.currentId = row.code;
+      this.openDeduction = true;
+      this.title = '扣押金';
+    },
+    /** 退押金按钮操作 */
+    handleReturn(row) {
+      this.currentId = row.code;
+      this.openReturn = true;
+      this.title = '退押金';
     },
     /** 导出按钮操作 */
     handleExport() {

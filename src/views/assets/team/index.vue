@@ -123,7 +123,7 @@
     </el-row>
 
     <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
+      <el-table-column type="selection" width="55" align="center" fixed="left" />
       <!-- <el-table-column label="编码" align="center" prop="code" /> -->
       <el-table-column label="网点编码" align="center" prop="branchCode" sortable />
       <el-table-column label="车队名称" align="center" prop="name" sortable />
@@ -198,7 +198,7 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 【请填写功能名称】表格数据
+      // 调度者表格数据
       infoList: [],
       // 弹出层标题
       title: '',
