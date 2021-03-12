@@ -321,7 +321,7 @@ export default {
     handleExport() {
       this.download('assets/team/export', {
         ...this.queryParams
-      }, `assets_team.xlsx`);
+      }, `assets_${new Date().getTime()}.xlsx`);
     }
   }
 };
