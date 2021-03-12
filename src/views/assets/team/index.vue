@@ -217,14 +217,10 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        code: null,
         branchCode: null,
         name: null,
         teamLeader: null,
-        isDel: null,
-        status: null,
-        createCode: null,
-        updateCode: null
+        status: null
       },
       // 表单参数
       form: {},
