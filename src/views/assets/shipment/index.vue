@@ -11,6 +11,36 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="电话号码" prop="telphone">
+        <el-input
+          v-model="queryParams.telphone"
+          placeholder="请输入电话号码"
+          clearable
+          size="small"
+          style="width: 240px"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="是否核算" prop="isAccount">
+        <el-select v-model="queryParams.isAccount" placeholder="请选择核算方式" clearable size="small" style="width: 240px">
+          <el-option
+            v-for="dict in isOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="核算方式" prop="accountType">
+        <el-select v-model="queryParams.accountType" placeholder="请选择核算方式" clearable size="small" style="width: 240px">
+          <el-option
+            v-for="dict in accountTypeOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="审核状态" prop="authStatus">
         <el-select
           v-model="queryParams.authStatus"
@@ -71,6 +101,7 @@
           placeholder="请选择"
         />
       </el-form-item>
+
       <el-form-item>
         <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -102,9 +133,25 @@
       <el-table-column label="是否冻结" align="center" prop="isFreezone" :formatter="isFreezoneFormat" />
       <el-table-column label="创建人" align="center" prop="createCode" />
       <el-table-column label="修改人" align="center" prop="updateCode" />
-      <el-table-column label="创建时间" align="center" prop="createTime" sortable width="180">
+      <el-table-column label="省" align="center" prop="provinceCode" :formatter="provinceCodeFormat" />
+      <el-table-column label="市" align="center" prop="cityCode" :formatter="cityCodeFormat" />
+      <el-table-column label="县/区" align="center" prop="countyCode" :formatter="countyCodeFormat" />
+      <el-table-column label="是否核算" align="center" prop="isAccount" :formatter="isAccountFormat" />
+      <el-table-column label="核算方式" align="center" prop="accountType" :formatter="accountTypeFormat" />
+      <el-table-column label="是否抹零" align="center" prop="isWipe" :formatter="isWipeFormat" />
+      <el-table-column label="详细地址" align="center" prop="area" />
+      <el-table-column label="抹零方式" align="center" prop="wipeType" :formatter="wipeTypeFormat" />
+      <el-table-column label="是否月结" align="center" prop="isMonthly" :formatter="isMonthlyFormat" />
+      <el-table-column label="是否预付运费" align="center" prop="isPrepaid" :formatter="isPrepaidFormat" />
+      <el-table-column label="是否开启合理路耗" align="center" prop="isConsumption" :formatter="isConsumptionFormat" />
+      <el-table-column label="路耗单位" align="center" prop="consumptionUnit" :formatter="consumptionUnitFormat" />
+      <el-table-column label="路耗最小值" align="center" prop="consumptionMin" />
+      <el-table-column label="路耗最大值" align="center" prop="consumptionMax" />
+      <el-table-column label="调度费点数" align="center" prop="dispatchPoints" />
+      <el-table-column label="授信金额" align="center" prop="creditAmount" />
+      <el-table-column label="审核时间" align="center" prop="authTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.createTime)) }}</span>
+          <span>{{ parseTime(new Date(scope.row.authTime), '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="180">
@@ -123,6 +170,7 @@
             @click="handleDEtail(scope.row, 'edit')"
           >修改</el-button>
           <el-button
+            v-show="scope.row.authStatus === 0 || scope.row.authStatus === 1"
             size="mini"
             type="text"
             icon="el-icon-document-checked"
@@ -196,11 +244,31 @@ export default {
         { dictLabel: '正常', dictValue: 0 },
         { dictLabel: '冻结', dictValue: 1 }
       ],
+      // 是否字典
+      isOptions: [
+        { dictLabel: '否', dictValue: 0 },
+        { dictLabel: '是', dictValue: 1 }
+      ],
+      // 省编码字典
+      provinceCodeOptions: [],
+      // 市编码字典翻译
+      cityCodeOptions: [],
+      // 县/区编码字典翻译
+      countyCodeOptions: [],
+      // 核算方式字典
+      accountTypeOptions: [],
+      // 抹零方式字典
+      wipeTypeOptions: [],
+      // 路耗单位字典
+      consumptionUnitOptions: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
         adminName: undefined,
+        telphone: undefined,
+        isAccount: undefined,
+        accountType: undefined,
         authStatus: undefined,
         companyName: undefined,
         beginTime: undefined,
@@ -225,15 +293,61 @@ export default {
         this.loading = false;
       });
     },
-    // 参数系统内置字典翻译
+    // 货主类别字典翻译
     shipperTypeFormat(row) {
       return this.selectDictLabel(this.typeOptions, row.shipperType);
     },
+    // 审核状态字典翻译
     authStatusFormat(row) {
       return this.selectDictLabel(this.statusOptions, row.authStatus);
     },
+    // 是否冻结字典翻译
     isFreezoneFormat(row) {
       return this.selectDictLabel(this.isFreezoneOptions, row.isFreezone);
+    },
+    // 省编码字典翻译
+    provinceCodeFormat(row, column) {
+      return this.selectDictLabel(this.provinceCodeOptions, row.provinceCode);
+    },
+    // 市编码字典翻译
+    cityCodeFormat(row, column) {
+      return this.selectDictLabel(this.cityCodeOptions, row.cityCode);
+    },
+    // 县/区编码字典翻译
+    countyCodeFormat(row, column) {
+      return this.selectDictLabel(this.countyCodeOptions, row.countyCode);
+    },
+    // 是否核算字典翻译
+    isAccountFormat(row, column) {
+      return this.selectDictLabel(this.isOptions, row.isAccount);
+    },
+    // 核算方式字典翻译
+    accountTypeFormat(row, column) {
+      return this.selectDictLabel(this.accountTypeOptions, row.accountType);
+    },
+    // 是否抹零字典翻译
+    isWipeFormat(row, column) {
+      return this.selectDictLabel(this.isOptions, row.isWipe);
+    },
+    // 抹零方式字典翻译
+    wipeTypeFormat(row, column) {
+      return this.selectDictLabel(this.wipeTypeOptions, row.wipeType);
+    },
+    // 是否月结字典翻译
+    isMonthlyFormat(row, column) {
+      return this.selectDictLabel(this.isOptions, row.isMonthly);
+    },
+    // 是否预付运费字典翻译
+    isPrepaidFormat(row, column) {
+      return this.selectDictLabel(this.isOptions, row.isPrepaid);
+    },
+    // 是否开启合理路耗字典翻译
+    isConsumptionFormat(row, column) {
+      return this.selectDictLabel(this.isOptions, row.isConsumption);
+    },
+    // 路耗单位字典翻译
+    consumptionUnitFormat(row, column) {
+      return this.selectDictLabel(this.consumptionUnitOptions, row.consumptionUnit);
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -265,6 +379,9 @@ export default {
           this.title = '编辑';
         } else if (flag === 'review') {
           this.title = '审核';
+          if (row.authStatus === 0) {
+            this.$refs.ShipmentDialog.authRead(response.data);
+          }
         }
         this.formDisable = flag !== 'edit';
       });
