@@ -4,7 +4,7 @@ import request from '@/utils/request';
 export function listInfo(query) {
   return request({
     url: '/assets/vehicle/list',
-    method: 'get',
+    method: 'post',
     params: query
   });
 }

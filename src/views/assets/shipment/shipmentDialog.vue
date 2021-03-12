@@ -16,23 +16,43 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="手机号码" prop="telphone">
+        <el-input v-model="form.telphone" placeholder="请输入手机号" size="small" class="width90" clearable />
+      </el-form-item>
+      <el-form-item label="密码" prop="password">
+        <el-input v-model="form.password" type="password" placeholder="请输入密码" class="width60 mr3" size="small" clearable />
+        (初始密码为abcd1234@)
+      </el-form-item>
       <el-form-item label="姓名" prop="adminName">
         <el-input v-model="form.adminName" placeholder="支持自动识别" size="small" class="width90" clearable />
       </el-form-item>
       <el-form-item label="身份证号" prop="identificationNumber">
         <el-input v-model="form.identificationNumber" placeholder="支持自动识别" size="small" class="width90" clearable />
       </el-form-item>
-      <!-- <el-form-item label="身份证有效期" prop="identificationValidPeriod">
+      <el-form-item label="身份证有效期">
         <el-date-picker
-          v-model="form.identificationValidPeriod"
+          v-model="form.identificationBeginTime"
           clearable
           size="small"
-          class="width90"
+          class="width28"
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="请选择"
+          @change="dateChange"
         />
-      </el-form-item> -->
+        至
+        <el-date-picker
+          v-model="form.identificationEndTime"
+          clearable
+          size="small"
+          class="width28 mr3"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择"
+          @change="dateChange"
+        />
+        <el-checkbox v-model="form.identificationEffective">长期有效</el-checkbox>
+      </el-form-item>
       <template v-if="form.shipperType === 1">
         <el-form-item label="公司名称" prop="companyName">
           <el-input v-model="form.companyName" placeholder="请输入公司名称" size="small" class="width90" clearable />
@@ -41,12 +61,59 @@
           <el-input v-model="form.organizationCodeNo" placeholder="请输入统一社会信用代码" size="small" class="width90" clearable />
         </el-form-item>
       </template>
-      <el-form-item label="营业执照号" prop="businessLicenseNo">
+      <el-form-item label="省编码">
+        <el-select
+          v-model="form.provinceCode"
+          clearable
+          size="small"
+          class="width28 mr3"
+          placeholder="省(支持自动识别)"
+        >
+          <el-option
+            v-for="dict in isFreezoneOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+        <el-select
+          v-model="form.cityCode"
+          clearable
+          size="small"
+          class="width28 mr3"
+          placeholder="市(支持自动识别)"
+        >
+          <el-option
+            v-for="dict in isFreezoneOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+        <el-select
+          v-model="form.countyCode"
+          clearable
+          size="small"
+          class="width28 mr3"
+          placeholder="县/区(支持自动识别)"
+        >
+          <el-option
+            v-for="dict in isFreezoneOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="详细地址" prop="area">
+        <el-input v-model="form.area" clearable placeholder="支持自动识别" size="small" class="width90" />
+      </el-form-item>
+      <!-- <el-form-item label="营业执照号" prop="businessLicenseNo">
         <el-input v-model="form.businessLicenseNo" placeholder="请输入营业执照号" size="small" class="width90" clearable />
       </el-form-item>
       <el-form-item label="法人身份证" prop="artificialIdentificationNumber">
         <el-input v-model="form.artificialIdentificationNumber" placeholder="请输入法人身份证" size="small" class="width90" clearable />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item>
         <el-row>
           <el-col :span="7" class="mb">
@@ -71,16 +138,7 @@
           </el-col>
         </el-row>
       </el-form-item>
-      <el-form-item label="审核状态">
-        <el-radio-group v-model="form.authStatus">
-          <el-radio
-            v-for="dict in statusOptions"
-            :key="dict.dictValue"
-            :label="parseInt(dict.dictValue)"
-          >{{ dict.dictLabel }}</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="是否冻结" prop="isFreezone">
+      <!-- <el-form-item label="是否冻结" prop="isFreezone">
         <el-select
           v-model="form.isFreezone"
           clearable
@@ -94,171 +152,137 @@
             :value="dict.dictValue"
           />
         </el-select>
+      </el-form-item> -->
+      <el-form-item label="是否核算" prop="isAccount">
+        <el-select
+          v-model="form.isAccount"
+          clearable
+          size="small"
+          class="width90"
+        >
+          <el-option
+            v-for="dict in isOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="核算方式" prop="accountType">
+        <el-select v-model="form.accountType" placeholder="请选择核算方式" clearable size="small" class="width90">
+          <el-option
+            v-for="dict in accountTypeOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="调度费点数" prop="dispatchPoints">
+        <el-input v-model="form.dispatchPoints" placeholder="请输入调度费点数" clearable size="small" class="width90" />
+      </el-form-item>
+      <el-form-item label="是否抹零" prop="isWipe">
+        <el-select
+          v-model="form.isWipe"
+          clearable
+          size="small"
+          class="width28 mr3"
+        >
+          <el-option
+            v-for="dict in isOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+        <el-select v-model="form.wipeType" placeholder="请选择抹零方式" clearable size="small" class="width28">
+          <el-option
+            v-for="dict in wipeTypeOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
       </el-form-item>
 
-      <!-- <el-form-item label="所在区域" prop="shipmentArea">
+      <el-form-item label="是否开启合理路耗">
         <el-select
-          v-model="form.shipmentProvince"
+          v-model="form.isConsumption"
           clearable
           size="small"
           class="width28 mr3"
         >
           <el-option
-            v-for="dict in provinceOptions"
+            v-for="dict in isOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
           />
         </el-select>
         <el-select
-          v-model="form.shipmentCity"
+          v-model="form.consumptionUnit"
           clearable
           size="small"
           class="width28 mr3"
+          placeholder="路耗单位"
         >
           <el-option
-            v-for="dict in cityOptions"
+            v-for="dict in consumptionUnitOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
           />
         </el-select>
+        <el-input v-model="form.consumptionMin" placeholder="最小值" size="small" class="width12" />
+        至
+        <el-input v-model="form.consumptionMax" placeholder="最大值" size="small" class="width12" />
+      </el-form-item>
+      <el-form-item label="是否月结" prop="isMonthly">
         <el-select
-          v-model="form.shipmentCounty"
+          v-model="form.isMonthly"
           clearable
           size="small"
-          class="width28"
+          class="width28 mr3"
         >
           <el-option
-            v-for="dict in countyOptions"
+            v-for="dict in isOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+        <el-input v-model="form.creditAmount" placeholder="授信金额(保留两位小数)" size="small" class="width28" />
+      </el-form-item>
+      <el-form-item label="是否预付运费" prop="isPrepaid">
+        <el-select
+          v-model="form.isPrepaid"
+          clearable
+          size="small"
+          class="width90"
+        >
+          <el-option
+            v-for="dict in isOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="详细地址" prop="shipmentAddress">
-        <el-input v-model="form.shipmentAddress" placeholder="支持自动识别" size="small" class="width90"/>
-      </el-form-item> -->
-      <!-- <el-form-item label="税点(%)" prop="shipmentTaxPoint">
-        <el-input-number v-model="form.shipmentTaxPoint" controls-position="right" size="small" placeholder="请输入税点" :min="0" :max="100" class="width90" />
-      </el-form-item> -->
-      <!-- <el-form-item label="服务费比例" prop="shipmentServiceRatio">
-        <el-input-number v-model="form.shipmentServiceRatio" controls-position="right" size="small" placeholder="请输入服务费比例" :min="0" :max="100" class="width90" />
-      </el-form-item> -->
-      <!-- <el-form-item label="服务费税率" prop="shipmentTaxTate">
-        <el-input-number v-model="form.shipmentTaxTate" controls-position="right" size="small" placeholder="请输入服务费税率" :min="0" :max="100" class="width90" />
-      </el-form-item> -->
-      <!-- <el-form-item label="去零" prop="shipmentGoZero">
-        <el-select
-          v-model="form.shipmentGoZero"
-          clearable
-          size="small"
-          class="width90"
-        >
-          <el-option
-            v-for="dict in zeroOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item> -->
-      <!-- <el-form-item label="合理路耗" prop="shipmentConsume">
-        <el-select
-          v-model="form.shipmentConsume"
-          clearable
-          size="small"
-          class="width90"
-        >
-          <el-option
-            v-for="dict in consumeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item> -->
-      <!-- <el-form-item label="是否月结客户" prop="shipmentMonthly">
-        <el-select
-          v-model="form.shipmentMonthly"
-          clearable
-          size="small"
-          class="width28 mr3"
-        >
-          <el-option
-            v-for="dict in isOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-        <el-input-number v-model="form.shipmentAmount" controls-position="right" size="small" placeholder="授信金额(保留两位小数)" :min="0" :max="10000" class="width28" />
-      </el-form-item> -->
-      <!-- <el-form-item label="是否预付运费" prop="shipmentPrepaid">
-        <el-select
-          v-model="form.shipmentPrepaid"
-          clearable
-          size="small"
-          class="width90"
-        >
-          <el-option
-            v-for="dict in isOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item> -->
-      <!-- <el-form-item label="索票阶段" prop="shipmentAskTicket">
-        <el-select
-          v-model="form.shipmentAskTicket"
-          clearable
-          size="small"
-          class="width90"
-        >
-          <el-option
-            v-for="dict in askTicketOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item> -->
-      <!-- <el-form-item label="货源代收调度" prop="shipmentSupplyDispatch">
-        <el-select
-          v-model="form.shipmentSupplyDispatch"
-          clearable
-          size="small"
-          class="width90"
-        >
-          <el-option
-            v-for="dict in supplyDispatchOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item> -->
-      <!-- <el-form-item>
-        <el-checkbox v-model="form.isReview">货源是否需要平台审核</el-checkbox>
-        <el-checkbox v-model="form.isImage">是否不需要卸货图片</el-checkbox>
-      </el-form-item> -->
     </el-form>
 
-    <div v-if="title === '编辑'" slot="footer" class="dialog-footer">
+    <div v-if="title === '新增' || title === '编辑'" slot="footer" class="dialog-footer">
       <el-button type="primary" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
     </div>
     <div v-if="title === '审核'" slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="reviewPass">审核通过</el-button>
-      <el-button type="danger" @click="reviewNoPass">审核不通过</el-button>
+      <el-button type="primary" @click="reviewForm(3)">审核通过</el-button>
+      <el-button type="danger" @click="reviewForm(2)">审核不通过</el-button>
     </div>
   </el-dialog>
 </template>
 
 <script>
-import { addShipment, updateShipment } from '@/api/assets/shipment';
+import { addShipment, updateShipment, authRead, examine } from '@/api/assets/shipment';
 import UploadImage from '@/components/UploadImage/index';
 
 export default {
@@ -275,7 +299,7 @@ export default {
   },
   data() {
     return {
-      // 字典
+      // 货主类型数据字典
       typeOptions: [
         { dictLabel: '发货人', dictValue: 0 },
         { dictLabel: '发货企业', dictValue: 1 }
@@ -292,36 +316,23 @@ export default {
         { dictLabel: '正常', dictValue: 0 },
         { dictLabel: '冻结', dictValue: 1 }
       ],
+      // 是否字典
       isOptions: [
-        { dictLabel: '是', dictValue: '是' },
-        { dictLabel: '否', dictValue: '否' }
+        { dictLabel: '否', dictValue: 0 },
+        { dictLabel: '是', dictValue: 1 }
       ],
-      // 区域字典
-      provinceOptions: [],
-      cityOptions: [],
-      countyOptions: [],
-      // 去零字典
-      zeroOptions: [
-        { dictLabel: '关闭', dictValue: '关闭' },
-        { dictLabel: '1', dictValue: '1' },
-        { dictLabel: '10', dictValue: '10' }
-      ],
-      // 路耗字典
-      consumeOptions: [
-        { dictLabel: '关闭', dictValue: '关闭' },
-        { dictLabel: '定额(kg/车)', dictValue: '定额(kg/车)' },
-        { dictLabel: '定率(%/车)', dictValue: '定率(%/车)' }
-      ],
-      // 索票阶段字典
-      askTicketOptions: [
-        { dictLabel: '打款后', dictValue: '打款后' },
-        { dictLabel: '结算后', dictValue: '结算后' }
-      ],
-      // 货源代收调度字典
-      supplyDispatchOptions: [
-        { dictLabel: '关闭', dictValue: '关闭' },
-        { dictLabel: '开启', dictValue: '开启' }
-      ],
+      // 省编码字典
+      provinceCodeOptions: [],
+      // 市编码字典翻译
+      cityCodeOptions: [],
+      // 县/区编码字典翻译
+      countyCodeOptions: [],
+      // 核算方式字典
+      accountTypeOptions: [],
+      // 抹零方式字典
+      wipeTypeOptions: [],
+      // 路耗单位字典
+      consumptionUnitOptions: [],
       // 表单参数
       form: {},
       // 表单校验
@@ -359,14 +370,19 @@ export default {
     submitForm: function() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          if (this.form.id !== undefined) {
-            updateShipment(this.form).then(response => {
+          const shipmentInfo = this.form;
+          if (shipmentInfo.identificationEffective) {
+            shipmentInfo.identificationEffective = 1;
+          } else {
+            shipmentInfo.identificationEffective = 0;
+          }
+          if (shipmentInfo.id !== undefined) {
+            updateShipment(shipmentInfo).then(response => {
               this.msgSuccess('修改成功');
               this.close();
               this.$emit('refresh');
             });
           } else {
-            const shipmentInfo = this.form;
             addShipment(shipmentInfo).then(response => {
               this.msgSuccess('新增成功');
               this.close();
@@ -381,13 +397,14 @@ export default {
       this.close();
       this.reset();
     },
-    /** 审核通过按钮 */
-    reviewPass() {
-
-    },
-    /** 审核不通过按钮 */
-    reviewNoPass() {
-
+    /** 审核通过/未通过按钮 */
+    reviewForm(key) {
+      this.form.authStatus = key;
+      examine(this.form).then(response => {
+        this.msgSuccess('操作成功');
+        this.close();
+        this.$emit('refresh');
+      });
     },
     // 关闭弹窗
     close() {
@@ -396,15 +413,17 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        id: null,
-        code: null,
         adminName: null,
         adminCode: null,
+        telphone: null,
+        password: null,
         companyCode: null,
         companyName: null,
         shipperType: null,
         identificationNumber: null,
-        identificationValidPeriod: null,
+        identificationBeginTime: null,
+        identificationEndTime: null,
+        identificationEffective: null,
         identificationImg: null,
         identificationBackImg: null,
         identificationInhandImg: null,
@@ -419,13 +438,52 @@ export default {
         updateTime: null,
         createCode: null,
         updateCode: null,
-        delFlag: null
+        delFlag: null,
+        authTime: null,
+        provinceCode: null,
+        cityCode: null,
+        countyCode: null,
+        isAccount: null,
+        accountType: null,
+        isWipe: null,
+        area: null,
+        wipeType: null,
+        isMonthly: null,
+        isPrepaid: null,
+        isConsumption: null,
+        consumptionUnit: null,
+        consumptionMin: null,
+        consumptionMax: null,
+        dispatchPoints: null,
+        creditAmount: null
       };
       this.resetForm('form');
     },
     // 表单赋值
     setForm(data) {
       this.form = data;
+      if (this.form.identificationEffective) {
+        this.form.identificationEffective = true;
+      } else {
+        this.form.identificationEffective = false;
+      }
+    },
+    // 已读
+    authRead(data) {
+      if (data.identificationEffective) {
+        data.identificationEffective = 1;
+      } else {
+        data.identificationEffective = 0;
+      }
+      authRead(data).then(response => {});
+    },
+    // 日期选项
+    dateChange(time) {
+      const _new = Date.now();
+      const lastTime = new Date(time[1]).getTime();
+      if (_new > lastTime) {
+        // console.log('超出');
+      }
     }
   }
 };
@@ -441,8 +499,17 @@ export default {
 .width90{
   width: 90%;
 }
+.width70{
+  width: 70%;
+}
+.width60{
+  width: 60%;
+}
 .width28{
   width: 28%;
+}
+.width12{
+  width: 12%;
 }
 /* 计数器样式 */
 .el-input-number ::v-deep.el-input__inner{
