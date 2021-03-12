@@ -73,6 +73,15 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
+      <el-col :span="1.5">
+        <el-button
+          v-hasPermi="['enterprise:company:address:add']"
+          type="primary"
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleAdd"
+        >新增</el-button>
+      </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
@@ -126,79 +135,19 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="地址编码" prop="code">
-          <el-input v-model="form.code" placeholder="请输入地址编码" />
-        </el-form-item>
-        <el-form-item label="货主编码" prop="shipmentCode">
-          <el-input v-model="form.shipmentCode" placeholder="请输入货主编码" />
-        </el-form-item>
-        <el-form-item label="地址类型" prop="addressType">
-          <el-select v-model="form.addressType" placeholder="请选择地址类型">
-            <el-option
-              v-for="dict in addressTypeOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="parseInt(dict.dictValue)"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="状态(1启用 2禁用)">
-          <el-radio-group v-model="form.status">
-            <el-radio
-              v-for="dict in statusOptions"
-              :key="dict.dictValue"
-              :label="parseInt(dict.dictValue)"
-            >{{ dict.dictLabel }}</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="创建人" prop="createCode">
-          <el-input v-model="form.createCode" placeholder="请输入创建人" />
-        </el-form-item>
-        <el-form-item label="更新人" prop="updateCode">
-          <el-input v-model="form.updateCode" placeholder="请输入更新人" />
-        </el-form-item>
-        <el-form-item label="地址名称" prop="addressName">
-          <el-input v-model="form.addressName" placeholder="请输入地址名称" />
-        </el-form-item>
-        <el-form-item label="地址别名" prop="addressOtherName">
-          <el-input v-model="form.addressOtherName" placeholder="请输入地址别名" />
-        </el-form-item>
-        <el-form-item label="经度" prop="latitude">
-          <el-input v-model="form.latitude" placeholder="请输入经度" />
-        </el-form-item>
-        <el-form-item label="维度" prop="longitude">
-          <el-input v-model="form.longitude" placeholder="请输入维度" />
-        </el-form-item>
-        <el-form-item label="地址详情" prop="addressDetail">
-          <el-input v-model="form.addressDetail" placeholder="请输入地址详情" />
-        </el-form-item>
-        <el-form-item label="联系人" prop="userName">
-          <el-input v-model="form.userName" placeholder="请输入联系人" />
-        </el-form-item>
-        <el-form-item label="手机号码" prop="telphone">
-          <el-input v-model="form.telphone" placeholder="请输入手机号码" />
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" placeholder="请输入备注" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
+    <!-- 新增/编辑对话框 -->
+    <address-dialog ref="AddressDialog" :title="title" :open.sync="open" @refresh="getList" />
   </div>
 </template>
 
 <script>
 import { listAddress, getAddress, delAddress, addAddress, updateAddress } from '@/api/enterprise/company/address';
+import AddressDialog from './addressDialog.vue';
 
 export default {
   name: 'Address',
   components: {
+    AddressDialog
   },
   data() {
     return {
@@ -250,11 +199,6 @@ export default {
         addressDetail: null,
         userName: null,
         telphone: null
-      },
-      // 表单参数
-      form: {},
-      // 表单校验
-      rules: {
       }
     };
   },
@@ -291,33 +235,6 @@ export default {
     addressOtherNameFormat(row, column) {
       return this.selectDictLabel(this.addressOtherNameOptions, row.addressOtherName);
     },
-    // 取消按钮
-    cancel() {
-      this.open = false;
-      this.reset();
-    },
-    // 表单重置
-    reset() {
-      this.form = {
-        code: null,
-        shipmentCode: null,
-        addressType: null,
-        status: 0,
-        createCode: null,
-        createTime: null,
-        updateCode: null,
-        updateTime: null,
-        addressName: null,
-        addressOtherName: null,
-        latitude: null,
-        longitude: null,
-        addressDetail: null,
-        userName: null,
-        telphone: null,
-        remark: null
-      };
-      this.resetForm('form');
-    },
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
@@ -336,16 +253,16 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd() {
-      this.reset();
+      this.$refs.AddressDialog.reset();
       this.open = true;
       this.title = '添加地址';
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      this.reset();
-      const code = row.code || this.ids;
+      this.$refs.AddressDialog.reset();
+      const code = row.code;
       getAddress(code).then(response => {
-        this.form = response.data;
+        this.$refs.AddressDialog.setForm(response.data);
         this.open = true;
         this.title = '修改地址';
       });
@@ -384,11 +301,9 @@ export default {
         this.msgSuccess('删除成功');
       });
     },
-    /** 导出按钮操作 */
-    handleExport() {
-      this.download('enterprise/address/export', {
-        ...this.queryParams
-      }, `address_${new Date().getTime()}.xlsx`);
+    /** 查看地图按钮操作 */
+    handleMapView(row) {
+
     }
   }
 };
