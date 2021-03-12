@@ -11,52 +11,52 @@
       :headers="headers"
       style="display: inline-block; vertical-align: top"
     >
-      <img v-if="value" :src="value" class="avatar" />
-      <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+      <img v-if="value" :src="value" class="avatar">
+      <i v-else class="el-icon-plus avatar-uploader-icon" />
     </el-upload>
   </div>
 </template>
 
 <script>
-import { getToken } from "@/utils/auth";
+import { getToken } from '@/utils/auth';
 
 export default {
   components: {},
-  data() {
-    return {
-      uploadImgUrl: process.env.VUE_APP_BASE_API + "/file/upload", // 上传的图片服务器地址
-      headers: {
-        Authorization: "Bearer " + getToken(),
-      },
-    };
-  },
   props: {
     value: {
       type: String,
-      default: "",
-    },
+      default: ''
+    }
   },
+  data() {
+    return {
+      uploadImgUrl: process.env.VUE_APP_BASE_API + '/file/upload', // 上传的图片服务器地址
+      headers: {
+        Authorization: 'Bearer ' + getToken()
+      }
+    };
+  },
+  watch: {},
   methods: {
     handleUploadSuccess(res) {
-      this.$emit("input", res.data.url);
+      this.$emit('input', res.data.url);
       this.loading.close();
     },
     handleBeforeUpload() {
       this.loading = this.$loading({
         lock: true,
-        text: "上传中",
-        background: "rgba(0, 0, 0, 0.7)",
+        text: '上传中',
+        background: 'rgba(0, 0, 0, 0.7)'
       });
     },
     handleUploadError() {
       this.$message({
-        type: "error",
-        message: "上传失败",
+        type: 'error',
+        message: '上传失败'
       });
       this.loading.close();
-    },
-  },
-  watch: {},
+    }
+  }
 };
 </script>
 

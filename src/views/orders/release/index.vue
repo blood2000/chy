@@ -1,14 +1,14 @@
 <template>
-    <div class="app-container">
-        
-        <!-- 转货信息 -->
+  <div class="app-container">
 
-            
-        <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="110px" :label-position="'left'">
-            <div class="content">
-                 <div class="header mb8">代发货主信息</div>
+    <!-- 转货信息 -->
 
-                 <!-- <el-row :gutter="15" >
+
+    <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="110px" :label-position="'left'">
+      <div class="content">
+        <div class="header mb8">代发货主信息</div>
+
+        <!-- <el-row :gutter="15" >
                     <el-col :span="12">
                         <el-form-item label="代发货主" prop="field141">
                             <el-input v-model="formData.field141" placeholder="请输入代发货主" clearable :style="{width: '100%'}">
@@ -21,185 +21,190 @@
                     </el-col>
                 </el-row> -->
 
-                <el-form-item label="代发货主" prop="pubilshCode">
-                    <el-select v-model="formData.pubilshCode" placeholder="请输入代发货主" :style="{width: '100%'}" filterable >
-                        <el-option :label="'小明'" :value="1">
-                            <span style="float: left">小明</span>
-                            <span style="float: right; color: #8492a6; font-size: 13px">18888888888</span>
-                        </el-option>
-                        <el-option :label="'小红'" :value="2">
-                            <span style="float: left">小红</span>
-                            <span style="float: right; color: #8492a6; font-size: 13px">18888888888</span>
-                        </el-option>
-                </el-select>
-                </el-form-item>
-                
-                
-            </div>
-             <el-divider></el-divider>
-
-             <div class="content">
-                <div class="header mb8">货物类型</div>
-               
-               <el-form-item label="选择所属项目" prop="projectCode">
-                    <el-select v-model="formData.projectCode" placeholder="无归属项目" clearable :style="{width: '100%'}">
-                        <el-option label="项目1" :value="1"></el-option>
-                        <el-option label="项目2" :value="2"></el-option>
-                    </el-select>
-                </el-form-item>
-
-               <el-form-item label="选择货物类型" prop="goodsBigType">
-                    <el-select v-model="formData.goodsBigType" placeholder="选择货物类型" clearable :style="{width: '100%'}">
-                        <el-option label="大类型1" :value="1"></el-option>
-                        <el-option label="大类型2" :value="2"></el-option>
-                    </el-select>
-                </el-form-item>
-
-                <template v-if="formData.goodsBigType">
-                    <el-form-item label="货物类型(小)" prop="goodsType1" v-if="isBigOdd">
-                        <el-checkbox-group v-model="formData.goodsType1" size="medium" >
-                            <el-checkbox  :label="1" >煤矿</el-checkbox>
-                            <el-checkbox  :label="2" >沙土</el-checkbox>
-                        </el-checkbox-group>
-                    </el-form-item>
-                    <el-form-item label="货物类型(小)" prop="goodsType2" v-else>
-                        <el-radio-group v-model="formData.goodsType2" size="medium" >
-                            <el-radio :label="1">商品1</el-radio>
-                            <el-radio :label="2">商品2</el-radio>
-                        </el-radio-group>
-                    </el-form-item>
-                </template>
-
-                <el-form-item label="发布为" prop="isPublic">
-                    <el-radio-group v-model="formData.isPublic" size="medium">
-                        <el-radio :label="1">公开货源(所有人可接)</el-radio>
-                        <el-radio :label="0">非公开货源</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-
-                <template v-if="formData.isPublic === 0">
-                    <el-form-item label="指定接单人" prop="isSpecified">
-                        <el-radio-group v-model="formData.isSpecified" size="medium">
-                            <el-radio :label="1">是</el-radio>
-                            <el-radio :label="0">否</el-radio>
-                        </el-radio-group>
-                    </el-form-item>
-                    <el-form-item label="指定接单人(调度者3人,司机1人)" prop="select_arr_4" label-width="300px" v-if="formData.isSpecified === 1">
-                        <!-- 这个要做成什么?? -->
-                        <el-select v-model="formData.select_arr_4" placeholder="选择接单人" multiple clearable :style="{width: '100%'}">
-                            <el-option label="接单1" :value="1"></el-option>
-                            <el-option label="接单2" :value="2"></el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="货集码" prop="tinkaikin1111111111" label-width="300px">
-                        <el-select v-model="formData.tinkaikin1111111111" placeholder="选择货集码" clearable :style="{width: '100%'}">
-                            <el-option label="接单1" :value="1"></el-option>
-                            <el-option label="接单2" :value="2"></el-option>
-                        </el-select>
-                    </el-form-item>
-                </template>
-
-                <el-form-item label="备注信息" prop="remark">
-                    <el-input v-model="formData.remark" type="textarea" placeholder="请输入任何您想说的话..."
-                        :autosize="{minRows: 4, maxRows: 4}" :style="{width: '100%'}"></el-input>
-                </el-form-item>
-
-            </div>
-             <el-divider></el-divider>
+        <el-form-item label="代发货主" prop="pubilshCode">
+          <el-select v-model="formData.pubilshCode" placeholder="请输入代发货主" :style="{width: '100%'}" filterable>
+            <el-option :label="'小明'" :value="1">
+              <span style="float: left">小明</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">18888888888</span>
+            </el-option>
+            <el-option :label="'小红'" :value="2">
+              <span style="float: left">小红</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">18888888888</span>
+            </el-option>
+          </el-select>
+        </el-form-item>
 
 
-            <template v-if="isBigOdd">
-             <div class="content">   
-               <div class="header mb8">装货类型</div>
-                <el-form-item label="装货类型" prop="loadType">
-                    <el-radio-group v-model="formData.loadType" size="medium">
-                        <el-radio :label="0">一装一卸</el-radio>
-                        
-                        <el-radio :label="1">多装一卸</el-radio>
+      </div>
+      <el-divider />
 
-                        <el-radio :label="2">一装多卸</el-radio>
-                    </el-radio-group>
-                </el-form-item>
+      <div class="content">
+        <div class="header mb8">货物类型</div>
 
-                <el-form-item label="允许自装" prop="tinkaikin2222222">
-                    <el-checkbox v-model="formData.tinkaikin2222222">允许自装</el-checkbox>
-                </el-form-item>
-             </div>
-             <el-divider></el-divider>
-            </template>
+        <el-form-item label="选择所属项目" prop="projectCode">
+          <el-select v-model="formData.projectCode" placeholder="无归属项目" clearable :style="{width: '100%'}">
+            <el-option label="项目1" :value="1" />
+            <el-option label="项目2" :value="2" />
+          </el-select>
+        </el-form-item>
 
-        </el-form>
+        <el-form-item label="选择货物类型" prop="goodsBigType">
+          <el-select v-model="formData.goodsBigType" placeholder="选择货物类型" clearable :style="{width: '100%'}">
+            <el-option label="大类型1" :value="1" />
+            <el-option label="大类型2" :value="2" />
+          </el-select>
+        </el-form-item>
 
+        <template v-if="formData.goodsBigType">
+          <el-form-item v-if="isBigOdd" label="货物类型(小)" prop="goodsType1">
+            <el-checkbox-group v-model="formData.goodsType1" size="medium">
+              <el-checkbox :label="1">煤矿</el-checkbox>
+              <el-checkbox :label="2">沙土</el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
+          <el-form-item v-else label="货物类型(小)" prop="goodsType2">
+            <el-radio-group v-model="formData.goodsType2" size="medium">
+              <el-radio :label="1">商品1</el-radio>
+              <el-radio :label="2">商品2</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </template>
 
-            <!-- s封装成组件 -->
-            <div class="content">   
-               <div class="header mb8">货源发布</div>
-                <add-address :addressType='1' :showBtn='formData.loadType === 1' :isBigOdd='isBigOdd' ref="address1"></add-address>
-            </div>
+        <el-form-item label="发布为" prop="isPublic">
+          <el-radio-group v-model="formData.isPublic" size="medium">
+            <el-radio :label="1">公开货源(所有人可接)</el-radio>
+            <el-radio :label="0">非公开货源</el-radio>
+          </el-radio-group>
+        </el-form-item>
 
-            <el-divider></el-divider>
-            
-            <div class="content">   
-               <div class="header mb8">卸货信息</div>
-               <add-address :addressType='2' :showBtn='formData.loadType === 2' :isBigOdd='isBigOdd' ref="address2"></add-address>
-            </div>
-           
+        <template v-if="formData.isPublic === 0">
+          <el-form-item label="指定接单人" prop="isSpecified">
+            <el-radio-group v-model="formData.isSpecified" size="medium">
+              <el-radio :label="1">是</el-radio>
+              <el-radio :label="0">否</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item v-if="formData.isSpecified === 1" label="指定接单人(调度者3人,司机1人)" prop="select_arr_4" label-width="300px">
+            <!-- 这个要做成什么?? -->
+            <el-select v-model="formData.select_arr_4" placeholder="选择接单人" multiple clearable :style="{width: '100%'}">
+              <el-option label="接单1" :value="1" />
+              <el-option label="接单2" :value="2" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="货集码" prop="tinkaikin1111111111" label-width="300px">
+            <el-select v-model="formData.tinkaikin1111111111" placeholder="选择货集码" clearable :style="{width: '100%'}">
+              <el-option label="接单1" :value="1" />
+              <el-option label="接单2" :value="2" />
+            </el-select>
+          </el-form-item>
+        </template>
 
-            <el-divider></el-divider>
+        <el-form-item label="备注信息" prop="remark">
+          <el-input
+            v-model="formData.remark"
+            type="textarea"
+            placeholder="请输入任何您想说的话..."
+            :autosize="{minRows: 4, maxRows: 4}"
+            :style="{width: '100%'}"
+          />
+        </el-form-item>
 
-            <template v-if="!isBigOdd">
-                <div class="content">
-                    <div class="header mb8">货物</div>
-
-                    <GoodsAccounting ref="goodsAccounting"></GoodsAccounting>
-
-                </div>
-                
-                <div class="content">
-                    <div class="header mb8">核算:</div>
-
-                    <AccounTing ref="accounTing"></AccounTing>
-                </div>
-
-                <!-- s封装成组件 -->
-
-                <div class="content">
-                    <div class="header mb8">预估运费</div>
-
-                    <div>
-                        <span>预估运费(不含税):</span> <span>￥</span><span>8566.00</span>
-                    </div>
-                    <div>
-                        <span>(含税):</span> <span>￥</span><span>8566.00</span>
-                    </div>
-                </div>
-            </template>
-            <template v-else>
-                <div class="content">
-                    <div class="header mb8">货物/核算</div>
-
-                    <el-tabs v-model="activeName">
-                        <el-tab-pane label="用户管理" name="first" v-for="item in formData.goodsType1" :key="item">
-                            <MultiData ref="first"></MultiData>
-                        </el-tab-pane>
-                        <el-tab-pane label="配置管理" name="second">
-                            <MultiData ref="second"></MultiData>
-                        </el-tab-pane>
-                        <el-tab-pane label="角色管理" name="third">
-                            <MultiData ref="third"></MultiData>
-                        </el-tab-pane>
-                        <el-tab-pane label="定时任务补偿" name="fourth">
-                            <MultiData ref="fourth"></MultiData>
-                        </el-tab-pane>
-                    </el-tabs>
-                    
-                </div>
-            </template>
+      </div>
+      <el-divider />
 
 
+      <template v-if="isBigOdd">
+        <div class="content">
+          <div class="header mb8">装货类型</div>
+          <el-form-item label="装货类型" prop="loadType">
+            <el-radio-group v-model="formData.loadType" size="medium">
+              <el-radio :label="0">一装一卸</el-radio>
+
+              <el-radio :label="1">多装一卸</el-radio>
+
+              <el-radio :label="2">一装多卸</el-radio>
+            </el-radio-group>
+          </el-form-item>
+
+          <el-form-item label="允许自装" prop="tinkaikin2222222">
+            <el-checkbox v-model="formData.tinkaikin2222222">允许自装</el-checkbox>
+          </el-form-item>
+        </div>
+        <el-divider />
+      </template>
+
+    </el-form>
 
 
-            <!-- <div class="content" v-if="false">
+    <!-- s封装成组件 -->
+    <div class="content">
+      <div class="header mb8">货源发布</div>
+      <add-address ref="address1" :address-type="1" :show-btn="formData.loadType === 1" :is-big-odd="isBigOdd" />
+    </div>
+
+    <el-divider />
+
+    <div class="content">
+      <div class="header mb8">卸货信息</div>
+      <add-address ref="address2" :address-type="2" :show-btn="formData.loadType === 2" :is-big-odd="isBigOdd" />
+    </div>
+
+
+    <el-divider />
+
+    <template v-if="!isBigOdd">
+      <div class="content">
+        <div class="header mb8">货物</div>
+
+        <GoodsAccounting ref="goodsAccounting" />
+
+      </div>
+
+      <div class="content">
+        <div class="header mb8">核算:</div>
+
+        <AccounTing ref="accounTing" />
+      </div>
+
+      <!-- s封装成组件 -->
+
+      <div class="content">
+        <div class="header mb8">预估运费</div>
+
+        <div>
+          <span>预估运费(不含税):</span> <span>￥</span><span>8566.00</span>
+        </div>
+        <div>
+          <span>(含税):</span> <span>￥</span><span>8566.00</span>
+        </div>
+      </div>
+    </template>
+    <template v-else>
+      <div class="content">
+        <div class="header mb8">货物/核算</div>
+
+        <el-tabs v-model="activeName">
+          <el-tab-pane v-for="item in formData.goodsType1" :key="item" label="用户管理" name="first">
+            <MultiData ref="first" />
+          </el-tab-pane>
+          <el-tab-pane label="配置管理" name="second">
+            <MultiData ref="second" />
+          </el-tab-pane>
+          <el-tab-pane label="角色管理" name="third">
+            <MultiData ref="third" />
+          </el-tab-pane>
+          <el-tab-pane label="定时任务补偿" name="fourth">
+            <MultiData ref="fourth" />
+          </el-tab-pane>
+        </el-tabs>
+
+      </div>
+    </template>
+
+
+
+
+    <!-- <div class="content" v-if="false">
                 <div class="header mb8">货物、路线信息:</div>
 
                 <el-row :gutter="15">
@@ -237,7 +242,7 @@
                             </el-input-number>
                         </el-form-item>
                     </el-col>
-                    
+
                 </el-row>
                 <el-row :gutter="15">
                     <el-col :span="12">
@@ -308,7 +313,7 @@
                         <el-input-number v-model="formData.field129" placeholder="" controls-position=right :style="{width: '30%'}"></el-input-number>
                     </el-col>
 
-                        
+
                 </el-form-item>
 
                 <el-form-item label="是否特定货源" prop="field133">
@@ -325,7 +330,7 @@
 
             </div> -->
 
-            <!-- <el-divider v-if="false"></el-divider>
+    <!-- <el-divider v-if="false"></el-divider>
             <div class="content" v-if="false">
                  <div class="header mb8">报价信息</div>
                  <el-row :gutter="15">
@@ -344,7 +349,7 @@
                         </el-form-item>
                     </el-col>
                 </el-row>
-                 
+
             </div>
 
             <el-divider v-if="false"></el-divider>
@@ -357,7 +362,7 @@
             </div>
 
             <el-divider v-if="false"></el-divider>
-            
+
             <div class="content" v-if="false">
                  <div class="header mb8">其他信息</div>
 
@@ -469,106 +474,100 @@
                     <el-input v-model="formData.field155" type="textarea" placeholder="请输入已选承运"
                     :autosize="{minRows: 4, maxRows: 4}" :style="{width: '100%'}"></el-input>
                 </el-form-item>
-                
+
             </div> -->
 
-        <div>
-            <el-button type="primary" @click="onSubmit">立即创建</el-button>
-            <el-button>取消</el-button>
-        </div>
-
-
-        <!-- 添加或修改【请填写功能名称】对话框 -->
-        <el-dialog :title="title" :visible.sync="open" width="75%" append-to-body>
-        
-            <div>
-                <open-dialog></open-dialog>
-            </div>
-        
-        </el-dialog>
+    <div>
+      <el-button type="primary" @click="onSubmit">立即创建</el-button>
+      <el-button>取消</el-button>
     </div>
+
+
+    <!-- 添加或修改【请填写功能名称】对话框 -->
+    <el-dialog :title="title" :visible.sync="open" width="75%" append-to-body>
+
+      <div>
+        <open-dialog />
+      </div>
+
+    </el-dialog>
+  </div>
 </template>
 
 <script>
-import OpenDialog from './OpenDialog'
+import OpenDialog from './OpenDialog';
 
-import AddAddress from './component/AddAddress'
-import GoodsAccounting from './component/GoodsAccounting'
-import AccounTing from './component/AccounTing'
-import MultiData from './component/MultiData'
+import AddAddress from './component/AddAddress';
+import GoodsAccounting from './component/GoodsAccounting';
+import AccounTing from './component/AccounTing';
+import MultiData from './component/MultiData';
 export default {
-    components:{
-        OpenDialog,
-        AddAddress,
-        GoodsAccounting,
-        AccounTing,
-        MultiData
-    },
-    data() {
-      return {
-        formData: {
-            pubilshCode: 1,
-            projectCode: undefined,
-            goodsBigType:undefined,
-            goodsType1: [],
-            goodsType2: undefined,
-            isPublic: 1,
-            isSpecified: 1,
-            tinkaikin1111111111: undefined, // 无这个字段
-            remark:'',
-            loadType: 1,
-            tinkaikin2222222: false // 无这个字段 允许自装
-        },
-        rules: {
-           goodsBigType: [{ required: true,  message: '请选择货物计量单位',  trigger: 'change' }],
-           goodsType1: [{ required: true,  message: '请选择货物计量单位',  trigger: 'change' }],
-           goodsType2: [{ required: true,  message: '请选择货物计量单位',  trigger: 'change' }],
-        },
-
-        // 选中的名
-        activeName:'first',
-
-        // 是否显示弹出层
-        open: false,
-        // 弹框title
-        title:''
-      }
-    },
-
-    computed:{
-        isBigOdd(){
-            return this.formData.goodsBigType === 1
-        }
-    },
-
-    methods: {
-      onSubmit() {
-          this.$refs.address1 && this.$refs.address1._submitForm().then(res=>{
-              console.log(res);
-              
-          })
-          this.$refs.address2 && this.$refs.address2._submitForm().then(res=>{
-              console.log(res);
-              
-          })
-          this.$refs.goodsAccounting && this.$refs.goodsAccounting._submitForm().then(res=>{
-              console.log(res);
-              
-          })
-          this.$refs.accounTing && this.$refs.accounTing._submitForm().then(res=>{
-              console.log(res);
-              
-          })
-
-          
-          this.$refs[this.activeName]._submitForm().then(res=>{
-              console.log(res);
-          })
-          
-          
+  components: {
+    OpenDialog,
+    AddAddress,
+    GoodsAccounting,
+    AccounTing,
+    MultiData
+  },
+  data() {
+    return {
+      formData: {
+        pubilshCode: 1,
+        projectCode: undefined,
+        goodsBigType: undefined,
+        goodsType1: [],
+        goodsType2: undefined,
+        isPublic: 1,
+        isSpecified: 1,
+        tinkaikin1111111111: undefined, // 无这个字段
+        remark: '',
+        loadType: 1,
+        tinkaikin2222222: false // 无这个字段 允许自装
       },
+      rules: {
+        goodsBigType: [{ required: true, message: '请选择货物计量单位', trigger: 'change' }],
+        goodsType1: [{ required: true, message: '请选择货物计量单位', trigger: 'change' }],
+        goodsType2: [{ required: true, message: '请选择货物计量单位', trigger: 'change' }]
+      },
+
+      // 选中的名
+      activeName: 'first',
+
+      // 是否显示弹出层
+      open: false,
+      // 弹框title
+      title: ''
+    };
+  },
+
+  computed: {
+    isBigOdd() {
+      return this.formData.goodsBigType === 1;
     }
-}
+  },
+
+  methods: {
+    onSubmit() {
+      this.$refs.address1 && this.$refs.address1._submitForm().then(res => {
+        console.log(res);
+      });
+      this.$refs.address2 && this.$refs.address2._submitForm().then(res => {
+        console.log(res);
+      });
+      this.$refs.goodsAccounting && this.$refs.goodsAccounting._submitForm().then(res => {
+        console.log(res);
+      });
+      this.$refs.accounTing && this.$refs.accounTing._submitForm().then(res => {
+        console.log(res);
+      });
+
+
+      this.$refs[this.activeName]._submitForm().then(res => {
+        console.log(res);
+      });
+    }
+  }
+};
 </script>
 <style lang="scss" scoped>
 .app-container{

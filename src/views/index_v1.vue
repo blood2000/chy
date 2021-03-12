@@ -25,16 +25,15 @@
       </el-col>
     </el-row>
 
-    
   </div>
 </template>
 
 <script>
-import PanelGroup from './dashboard/PanelGroup'
-import LineChart from './dashboard/LineChart'
-import RaddarChart from './dashboard/RaddarChart'
-import PieChart from './dashboard/PieChart'
-import BarChart from './dashboard/BarChart'
+import PanelGroup from './dashboard/PanelGroup';
+import LineChart from './dashboard/LineChart';
+import RaddarChart from './dashboard/RaddarChart';
+import PieChart from './dashboard/PieChart';
+import BarChart from './dashboard/BarChart';
 
 const lineChartData = {
   newVisitis: {
@@ -53,7 +52,7 @@ const lineChartData = {
     expectedData: [130, 140, 141, 142, 145, 150, 160],
     actualData: [120, 82, 91, 154, 162, 140, 130]
   }
-}
+};
 
 export default {
   name: 'Index',
@@ -67,14 +66,14 @@ export default {
   data() {
     return {
       lineChartData: lineChartData.newVisitis
-    }
+    };
   },
   methods: {
     handleSetLineChartData(type) {
-      this.lineChartData = lineChartData[type]
+      this.lineChartData = lineChartData[type];
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

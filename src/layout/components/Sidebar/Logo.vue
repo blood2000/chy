@@ -14,8 +14,8 @@
 </template>
 
 <script>
-import logoImg from '@/assets/logo/logo.svg'
-import variables from '@/assets/styles/variables.scss'
+import logoImg from '@/assets/logo/logo.svg';
+import variables from '@/assets/styles/variables.scss';
 
 export default {
   name: 'SidebarLogo',
@@ -25,21 +25,21 @@ export default {
       required: true
     }
   },
-  computed: {
-    variables() {
-      return variables;
-    },
-	sideTheme() {
-      return this.$store.state.settings.sideTheme
-    }
-  },
   data() {
     return {
       title: '综合服务管理平台',
       logo: logoImg
+    };
+  },
+  computed: {
+    variables() {
+      return variables;
+    },
+    sideTheme() {
+      return this.$store.state.settings.sideTheme;
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

@@ -5,5 +5,5 @@ export function listApplication(query) {
     url: '/system/application/list',
     method: 'get',
     params: query
-  })
+  });
 }

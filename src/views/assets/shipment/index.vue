@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
       <el-form-item label="货主姓名" prop="adminName">
         <el-input
           v-model="queryParams.adminName"
@@ -10,6 +10,36 @@
           style="width: 240px"
           @keyup.enter.native="handleQuery"
         />
+      </el-form-item>
+      <el-form-item label="电话号码" prop="telphone">
+        <el-input
+          v-model="queryParams.telphone"
+          placeholder="请输入电话号码"
+          clearable
+          size="small"
+          style="width: 240px"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="是否核算" prop="isAccount">
+        <el-select v-model="queryParams.isAccount" placeholder="请选择核算方式" clearable size="small" style="width: 240px">
+          <el-option
+            v-for="dict in isOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="核算方式" prop="accountType">
+        <el-select v-model="queryParams.accountType" placeholder="请选择核算方式" clearable size="small" style="width: 240px">
+          <el-option
+            v-for="dict in accountTypeOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="审核状态" prop="authStatus">
         <el-select
@@ -52,21 +82,26 @@
         </el-select>
       </el-form-item>
       <el-form-item label="审核时间">
-        <el-date-picker clearable size="small"
+        <el-date-picker
           v-model="queryParams.beginTime"
+          clearable
+          size="small"
           type="date"
           value-format="yyyy-MM-dd"
           style="width: 240px"
           placeholder="请选择"
-        ></el-date-picker> -
-        <el-date-picker clearable size="small"
+        /> -
+        <el-date-picker
           v-model="queryParams.endTime"
+          clearable
+          size="small"
           type="date"
           value-format="yyyy-MM-dd"
           style="width: 240px"
           placeholder="请选择"
-        ></el-date-picker>
+        />
       </el-form-item>
+
       <el-form-item>
         <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -76,14 +111,14 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
+          v-hasPermi="['assets:shipment:add']"
           type="primary"
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['assets:shipment:add']"
         >新增</el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
     <el-table v-loading="loading" :data="shipmentList">
@@ -98,32 +133,55 @@
       <el-table-column label="是否冻结" align="center" prop="isFreezone" :formatter="isFreezoneFormat" />
       <el-table-column label="创建人" align="center" prop="createCode" />
       <el-table-column label="修改人" align="center" prop="updateCode" />
-      <el-table-column label="创建时间" align="center" prop="createTime" sortable width="180">
+      <el-table-column label="省" align="center" prop="provinceCode" :formatter="provinceCodeFormat" />
+      <el-table-column label="市" align="center" prop="cityCode" :formatter="cityCodeFormat" />
+      <el-table-column label="县/区" align="center" prop="countyCode" :formatter="countyCodeFormat" />
+      <el-table-column label="是否核算" align="center" prop="isAccount" :formatter="isAccountFormat" />
+      <el-table-column label="核算方式" align="center" prop="accountType" :formatter="accountTypeFormat" />
+      <el-table-column label="是否抹零" align="center" prop="isWipe" :formatter="isWipeFormat" />
+      <el-table-column label="详细地址" align="center" prop="area" />
+      <el-table-column label="抹零方式" align="center" prop="wipeType" :formatter="wipeTypeFormat" />
+      <el-table-column label="是否月结" align="center" prop="isMonthly" :formatter="isMonthlyFormat" />
+      <el-table-column label="是否预付运费" align="center" prop="isPrepaid" :formatter="isPrepaidFormat" />
+      <el-table-column label="是否开启合理路耗" align="center" prop="isConsumption" :formatter="isConsumptionFormat" />
+      <el-table-column label="路耗单位" align="center" prop="consumptionUnit" :formatter="consumptionUnitFormat" />
+      <el-table-column label="路耗最小值" align="center" prop="consumptionMin" />
+      <el-table-column label="路耗最大值" align="center" prop="consumptionMax" />
+      <el-table-column label="调度费点数" align="center" prop="dispatchPoints" />
+      <el-table-column label="授信金额" align="center" prop="creditAmount" />
+      <el-table-column label="审核时间" align="center" prop="authTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.createTime)) }}</span>
+          <span>{{ parseTime(new Date(scope.row.authTime), '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="180">
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="180">
         <template slot-scope="scope">
           <el-button
             size="mini"
             type="text"
             icon="el-icon-document"
-            @click="handleDEtail(scope.row)"
+            @click="handleDEtail(scope.row, 'detail')"
           >详情</el-button>
           <el-button
+            v-hasPermi="['assets:shipment:edit']"
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleDEtail(scope.row, 'edit')"
-            v-hasPermi="['assets:shipment:edit']"
           >修改</el-button>
           <el-button
+            v-show="scope.row.authStatus === 0 || scope.row.authStatus === 1"
+            size="mini"
+            type="text"
+            icon="el-icon-document-checked"
+            @click="handleDEtail(scope.row, 'review')"
+          >审核</el-button>
+          <el-button
+            v-hasPermi="['assets:shipment:remove']"
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['assets:shipment:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -137,17 +195,17 @@
       @pagination="getList"
     />
 
-    <!-- 新增/修改/详情 对话框 -->
-    <shipment-dialog ref="ShipmentDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList"></shipment-dialog>
+    <!-- 新增/修改/详情/审核 对话框 -->
+    <shipment-dialog ref="ShipmentDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
   </div>
 </template>
 
 <script>
-import { listShipment, getShipment, delShipment } from "@/api/assets/shipment";
+import { listShipment, getShipment, delShipment } from '@/api/assets/shipment';
 import ShipmentDialog from './shipmentDialog';
 
 export default {
-  name: "Shipment",
+  name: 'Shipment',
   components: {
     ShipmentDialog
   },
@@ -166,31 +224,51 @@ export default {
       // 参数表格数据
       shipmentList: [],
       // 弹出层标题
-      title: "",
+      title: '',
       // 是否显示弹出层
       open: false,
       // 货主类型数据字典
       typeOptions: [
-        {dictLabel: '发货人', dictValue: 0},
-        {dictLabel: '发货企业', dictValue: 1}
+        { dictLabel: '发货人', dictValue: 0 },
+        { dictLabel: '发货企业', dictValue: 1 }
       ],
       // 审核状态字典
       statusOptions: [
-        {dictLabel: '未审核', dictValue: 0},
-        {dictLabel: '审核中', dictValue: 1},
-        {dictLabel: '审核未通过', dictValue: 2},
-        {dictLabel: '审核通过', dictValue: 3}
+        { dictLabel: '未审核', dictValue: 0 },
+        { dictLabel: '审核中', dictValue: 1 },
+        { dictLabel: '审核未通过', dictValue: 2 },
+        { dictLabel: '审核通过', dictValue: 3 }
       ],
       // 是否冻结字典
       isFreezoneOptions: [
-        {dictLabel: '正常', dictValue: 0},
-        {dictLabel: '冻结', dictValue: 1}
-      ],  
+        { dictLabel: '正常', dictValue: 0 },
+        { dictLabel: '冻结', dictValue: 1 }
+      ],
+      // 是否字典
+      isOptions: [
+        { dictLabel: '否', dictValue: 0 },
+        { dictLabel: '是', dictValue: 1 }
+      ],
+      // 省编码字典
+      provinceCodeOptions: [],
+      // 市编码字典翻译
+      cityCodeOptions: [],
+      // 县/区编码字典翻译
+      countyCodeOptions: [],
+      // 核算方式字典
+      accountTypeOptions: [],
+      // 抹零方式字典
+      wipeTypeOptions: [],
+      // 路耗单位字典
+      consumptionUnitOptions: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
         adminName: undefined,
+        telphone: undefined,
+        isAccount: undefined,
+        accountType: undefined,
         authStatus: undefined,
         companyName: undefined,
         beginTime: undefined,
@@ -198,7 +276,7 @@ export default {
       },
       // 表单详情
       form: {},
-      // 表单是否禁用   
+      // 表单是否禁用
       formDisable: false
     };
   },
@@ -210,21 +288,66 @@ export default {
     getList() {
       this.loading = true;
       listShipment(this.queryParams).then(response => {
-          this.shipmentList = response.rows;
-          this.total = response.total;
-          this.loading = false;
-        }
-      );
+        this.shipmentList = response.rows;
+        this.total = response.total;
+        this.loading = false;
+      });
     },
-    // 参数系统内置字典翻译
+    // 货主类别字典翻译
     shipperTypeFormat(row) {
       return this.selectDictLabel(this.typeOptions, row.shipperType);
     },
+    // 审核状态字典翻译
     authStatusFormat(row) {
       return this.selectDictLabel(this.statusOptions, row.authStatus);
     },
+    // 是否冻结字典翻译
     isFreezoneFormat(row) {
       return this.selectDictLabel(this.isFreezoneOptions, row.isFreezone);
+    },
+    // 省编码字典翻译
+    provinceCodeFormat(row, column) {
+      return this.selectDictLabel(this.provinceCodeOptions, row.provinceCode);
+    },
+    // 市编码字典翻译
+    cityCodeFormat(row, column) {
+      return this.selectDictLabel(this.cityCodeOptions, row.cityCode);
+    },
+    // 县/区编码字典翻译
+    countyCodeFormat(row, column) {
+      return this.selectDictLabel(this.countyCodeOptions, row.countyCode);
+    },
+    // 是否核算字典翻译
+    isAccountFormat(row, column) {
+      return this.selectDictLabel(this.isOptions, row.isAccount);
+    },
+    // 核算方式字典翻译
+    accountTypeFormat(row, column) {
+      return this.selectDictLabel(this.accountTypeOptions, row.accountType);
+    },
+    // 是否抹零字典翻译
+    isWipeFormat(row, column) {
+      return this.selectDictLabel(this.isOptions, row.isWipe);
+    },
+    // 抹零方式字典翻译
+    wipeTypeFormat(row, column) {
+      return this.selectDictLabel(this.wipeTypeOptions, row.wipeType);
+    },
+    // 是否月结字典翻译
+    isMonthlyFormat(row, column) {
+      return this.selectDictLabel(this.isOptions, row.isMonthly);
+    },
+    // 是否预付运费字典翻译
+    isPrepaidFormat(row, column) {
+      return this.selectDictLabel(this.isOptions, row.isPrepaid);
+    },
+    // 是否开启合理路耗字典翻译
+    isConsumptionFormat(row, column) {
+      return this.selectDictLabel(this.isOptions, row.isConsumption);
+    },
+    // 路耗单位字典翻译
+    consumptionUnitFormat(row, column) {
+      return this.selectDictLabel(this.consumptionUnitOptions, row.consumptionUnit);
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -233,14 +356,14 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.resetForm("queryForm");
+      this.resetForm('queryForm');
       this.handleQuery();
     },
     /** 新增按钮操作 */
     handleAdd() {
       this.$refs.ShipmentDialog.reset();
       this.open = true;
-      this.title = "新增";
+      this.title = '新增';
       this.formDisable = false;
     },
     /** 修改/详情按钮操作 */
@@ -250,23 +373,32 @@ export default {
       getShipment(id).then(response => {
         this.$refs.ShipmentDialog.setForm(response.data);
         this.open = true;
-        this.title = flag === "edit" ? "编辑" : "详情";
-        this.formDisable = flag == "edit" ? false : true;
+        if (flag === 'detail') {
+          this.title = '详情';
+        } else if (flag === 'edit') {
+          this.title = '编辑';
+        } else if (flag === 'review') {
+          this.title = '审核';
+          if (row.authStatus === 0) {
+            this.$refs.ShipmentDialog.authRead(response.data);
+          }
+        }
+        this.formDisable = flag !== 'edit';
       });
     },
     /** 删除按钮操作 */
     handleDelete(row) {
       const id = row.id;
-      this.$confirm('是否确认删除编号为"' + id + '"的数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return delShipment(id);
-        }).then(() => {
-          this.getList();
-          this.msgSuccess("删除成功");
-        })
+      this.$confirm('是否确认删除编号为"' + id + '"的数据项?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return delShipment(id);
+      }).then(() => {
+        this.getList();
+        this.msgSuccess('删除成功');
+      });
     }
   }
 };
