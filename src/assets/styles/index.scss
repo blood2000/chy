@@ -1,9 +1,12 @@
+@import './base.scss';
 @import './variables.scss';
 @import './mixin.scss';
 @import './transition.scss';
 @import './element-ui.scss';
 @import './sidebar.scss';
 @import './btn.scss';
+@import './color.scss';
+@import './flex.scss';
 
 body {
   height: 100%;
@@ -85,6 +88,7 @@ div:focus {
   display: block;
 }
 
+/* 清除浮动 */
 .clearfix {
   &:after {
     visibility: hidden;
@@ -94,6 +98,28 @@ div:focus {
     clear: both;
     height: 0;
   }
+}
+
+/* hidden */
+.hidden{
+  display: none !important;
+}
+
+/* 单行溢出 */
+.single-row{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* 两行溢出 */
+.double-row{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  word-break: break-all;
 }
 
 aside {

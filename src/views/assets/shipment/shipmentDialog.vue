@@ -21,7 +21,7 @@
       </el-form-item>
       <el-form-item label="密码" prop="password">
         <el-input v-model="form.password" type="password" placeholder="请输入密码" class="width60 mr3" size="small" clearable />
-        (初始密码为abcd1234@)
+        (初始密码为{{ initialPassword }})
       </el-form-item>
       <el-form-item label="姓名" prop="adminName">
         <el-input v-model="form.adminName" placeholder="支持自动识别" size="small" class="width90" clearable />
@@ -29,7 +29,7 @@
       <el-form-item label="身份证号" prop="identificationNumber">
         <el-input v-model="form.identificationNumber" placeholder="支持自动识别" size="small" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="身份证有效期">
+      <el-form-item label="身份证有效期" prop="identificationEndTime">
         <el-date-picker
           v-model="form.identificationBeginTime"
           clearable
@@ -38,7 +38,6 @@
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="请选择"
-          @change="dateChange"
         />
         至
         <el-date-picker
@@ -49,7 +48,6 @@
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="请选择"
-          @change="dateChange"
         />
         <el-checkbox v-model="form.identificationEffective">长期有效</el-checkbox>
       </el-form-item>
@@ -70,7 +68,7 @@
           placeholder="省(支持自动识别)"
         >
           <el-option
-            v-for="dict in isFreezoneOptions"
+            v-for="dict in provinceCodeOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
@@ -84,7 +82,7 @@
           placeholder="市(支持自动识别)"
         >
           <el-option
-            v-for="dict in isFreezoneOptions"
+            v-for="dict in cityCodeOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
@@ -98,7 +96,7 @@
           placeholder="县/区(支持自动识别)"
         >
           <el-option
-            v-for="dict in isFreezoneOptions"
+            v-for="dict in countyCodeOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
@@ -138,7 +136,7 @@
           </el-col>
         </el-row>
       </el-form-item>
-      <!-- <el-form-item label="是否冻结" prop="isFreezone">
+      <el-form-item label="是否冻结" prop="isFreezone">
         <el-select
           v-model="form.isFreezone"
           clearable
@@ -152,7 +150,40 @@
             :value="dict.dictValue"
           />
         </el-select>
-      </el-form-item> -->
+      </el-form-item>
+      <el-form-item label="票制类别" prop="ticketType">
+        <el-select
+          v-model="form.ticketType"
+          clearable
+          size="small"
+          class="width90"
+        >
+          <el-option
+            v-for="dict in ticketTypeOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="服务费比例" prop="serviceRatio">
+        <el-input v-model="form.serviceRatio" placeholder="请输入服务费比例" size="small" class="width90" clearable />
+      </el-form-item>
+      <el-form-item label="货源是否审核" prop="supplyIsAuth">
+        <el-select
+          v-model="form.supplyIsAuth"
+          clearable
+          size="small"
+          class="width90"
+        >
+          <el-option
+            v-for="dict in isOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="是否核算" prop="isAccount">
         <el-select
           v-model="form.isAccount"
@@ -299,6 +330,8 @@ export default {
   },
   data() {
     return {
+      // 初始密码
+      initialPassword: 'abcd1234@',
       // 货主类型数据字典
       typeOptions: [
         { dictLabel: '发货人', dictValue: 0 },
@@ -316,6 +349,8 @@ export default {
         { dictLabel: '正常', dictValue: 0 },
         { dictLabel: '冻结', dictValue: 1 }
       ],
+      // 票制类别字典
+      ticketTypeOptions: [],
       // 是否字典
       isOptions: [
         { dictLabel: '否', dictValue: 0 },
@@ -348,6 +383,10 @@ export default {
         ],
         organizationCodeNo: [
           { required: true, message: '统一社会信用代码不能为空', trigger: 'blur' }
+        ],
+        identificationEndTime: [
+          { required: true, message: '身份证有效期不能为空', trigger: 'blur' },
+          { validator: this.certificateIsExpired }
         ]
       }
     };
@@ -363,9 +402,28 @@ export default {
     }
   },
   created() {
-
+    this.getDictsOptions();
   },
   methods: {
+    /** 查询字典 */
+    getDictsOptions() {
+      // 核算规则
+      this.getDicts('balance_rule').then((response) => {
+        this.accountTypeOptions = response.data;
+      });
+      // 票制类别
+      this.getDicts('assets_ticket_type').then((response) => {
+        this.ticketTypeOptions = response.data;
+      });
+      // 合理路耗计量单位
+      this.getDicts('consumption_unit').then((response) => {
+        this.consumptionUnitOptions = response.data;
+      });
+      // 抹零方式
+      this.getDicts('wipe_type').then((response) => {
+        this.wipeTypeOptions = response.data;
+      });
+    },
     /** 提交按钮 */
     submitForm: function() {
       this.$refs['form'].validate(valid => {
@@ -400,6 +458,11 @@ export default {
     /** 审核通过/未通过按钮 */
     reviewForm(key) {
       this.form.authStatus = key;
+      if (this.form.identificationEffective) {
+        this.form.identificationEffective = 1;
+      } else {
+        this.form.identificationEffective = 0;
+      }
       examine(this.form).then(response => {
         this.msgSuccess('操作成功');
         this.close();
@@ -416,7 +479,7 @@ export default {
         adminName: null,
         adminCode: null,
         telphone: null,
-        password: null,
+        password: this.initialPassword,
         companyCode: null,
         companyName: null,
         shipperType: null,
@@ -455,7 +518,10 @@ export default {
         consumptionMin: null,
         consumptionMax: null,
         dispatchPoints: null,
-        creditAmount: null
+        creditAmount: null,
+        ticketType: null,
+        serviceRatio: null,
+        supplyIsAuth: null
       };
       this.resetForm('form');
     },
@@ -467,6 +533,9 @@ export default {
       } else {
         this.form.identificationEffective = false;
       }
+      if (data.password === null || data.password === undefined || data.password === '') {
+        this.form.password = this.initialPassword;
+      }
     },
     // 已读
     authRead(data) {
@@ -475,15 +544,9 @@ export default {
       } else {
         data.identificationEffective = 0;
       }
-      authRead(data).then(response => {});
-    },
-    // 日期选项
-    dateChange(time) {
-      const _new = Date.now();
-      const lastTime = new Date(time[1]).getTime();
-      if (_new > lastTime) {
-        // console.log('超出');
-      }
+      authRead(data).then(response => {
+        this.$emit('refresh');
+      });
     }
   }
 };

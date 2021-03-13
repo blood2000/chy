@@ -1,0 +1,33 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* 通用样式 */
+ul, li, p, h1, h2, h3, h4, h5, h6, dl, dt, dd, button ,tr,td{
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: none;
+  outline: none;
+  font-weight: normal;
+}
+a{
+  text-decoration: none;
+  color: #333;
+  cursor: pointer;
+}
+a:hover{
+  text-decoration: none;
+  color: #333;
+}
+i{
+  font-style: normal;
+}
+img {
+  order: none;
+}
+table {
+  border-collapse: collapse; 
+  border-spacing: 0;
+}

@@ -1,11 +1,8 @@
 <template>
   <el-dialog :title="title" :visible="visible" width="500px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-      <el-form-item label="运输单号" prop="waybillNo">
-        <el-input v-model="form.waybillNo" />
-      </el-form-item>
-      <el-form-item label="异常原因" prop="abnormalReason">
-        <el-input v-model="form.abnormalReason" type="textarea" placeholder="请输入异常原因" />
+      <el-form-item label="押金" prop="money">
+        <el-input v-model="form.money" placeholder="请输入扣押金金额" class="width90" clearable />
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -23,11 +20,11 @@ export default {
       type: String,
       default: ''
     },
-    open: Boolean,
     currentId: {
       type: Number,
-      default: null
-    }
+      default: NaN
+    },
+    open: Boolean
   },
   data() {
     return {
@@ -87,8 +84,7 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        waybillNo: null,
-        abnormalReason: null
+        money: null
       };
       this.resetForm('form');
     }

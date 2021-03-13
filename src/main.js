@@ -17,7 +17,7 @@ import './assets/icons'; // icon
 import './permission'; // permission control
 import { getDicts } from '@/api/system/dict/data';
 import { getConfigKey } from '@/api/system/config';
-import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree } from '@/utils/ddc';
+import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree, certificateIsExpired } from '@/utils/ddc';
 import Pagination from '@/components/Pagination';
 // 自定义表格工具扩展
 import RightToolbar from '@/components/RightToolbar';
@@ -42,6 +42,7 @@ Vue.prototype.handleTree = handleTree;
 Vue.prototype.setLocalStorage = setLocalStorage;
 Vue.prototype.getLocalStorage = getLocalStorage;
 Vue.prototype.removeLocalStorage = removeLocalStorage;
+Vue.prototype.certificateIsExpired = certificateIsExpired;
 
 Vue.prototype.msgSuccess = function(msg) {
   this.$message({ showClose: true, message: msg, type: 'success' });
