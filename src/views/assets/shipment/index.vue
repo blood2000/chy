@@ -136,10 +136,10 @@
       <el-table-column label="货主姓名" align="center" prop="adminName" />
       <el-table-column label="审核状态" align="center" prop="authStatus" sortable>
         <template slot-scope="scope">
-          <span v-show="scope.row.authStatus === 0" class="color-gray">未审核</span>
-          <span v-show="scope.row.authStatus === 1" class="color-blue">审核中</span>
-          <span v-show="scope.row.authStatus === 2" class="color-error">审核未通过</span>
-          <span v-show="scope.row.authStatus === 3" class="color-success">审核通过</span>
+          <span v-show="scope.row.authStatus === 0" class="g-color-gray">未审核</span>
+          <span v-show="scope.row.authStatus === 1" class="g-color-blue">审核中</span>
+          <span v-show="scope.row.authStatus === 2" class="g-color-error">审核未通过</span>
+          <span v-show="scope.row.authStatus === 3" class="g-color-success">审核通过</span>
         </template>
       </el-table-column>
       <el-table-column label="公司名称" align="center" prop="companyName" sortable />
@@ -150,8 +150,9 @@
       <el-table-column label="统一社会信用代码代码" align="center" prop="organizationCodeNo" />
       <el-table-column label="法人身份证" align="center" prop="artificialIdentificationNumber" /> -->
       <el-table-column label="是否冻结" align="center" prop="isFreezone" :formatter="isFreezoneFormat" />
-      <el-table-column label="票制类别" align="center" prop="" />
-      <el-table-column label="服务费比例" align="center" prop="" />
+      <el-table-column label="票制类别" align="center" prop="ticketType" :formatter="ticketTypeFormat" />
+      <el-table-column label="服务费比例" align="center" prop="serviceRatio" />
+      <el-table-column label="货源是否审核" align="center" prop="supplyIsAuth" :formatter="supplyIsAuthFormat" />
       <el-table-column label="是否预付运费" align="center" prop="isPrepaid" :formatter="isPrepaidFormat" />
       <el-table-column label="授信金额" align="center" prop="creditAmount" />
       <!-- <el-table-column label="省" align="center" prop="provinceCode" :formatter="provinceCodeFormat" />
@@ -272,6 +273,8 @@ export default {
         { dictLabel: '否', dictValue: 0 },
         { dictLabel: '是', dictValue: 1 }
       ],
+      // 票制类别字典
+      ticketTypeOptions: [],
       // 省编码字典
       provinceCodeOptions: [],
       // 市编码字典翻译
@@ -304,9 +307,29 @@ export default {
     };
   },
   created() {
+    this.getDictsOptions();
     this.getList();
   },
   methods: {
+    /** 查询字典 */
+    getDictsOptions() {
+      // 核算规则
+      this.getDicts('balance_rule').then((response) => {
+        this.accountTypeOptions = response.data;
+      });
+      // 票制类别
+      this.getDicts('assets_ticket_type').then((response) => {
+        this.ticketTypeOptions = response.data;
+      });
+      // 合理路耗计量单位
+      this.getDicts('consumption_unit').then((response) => {
+        this.consumptionUnitOptions = response.data;
+      });
+      // 抹零方式
+      this.getDicts('wipe_type').then((response) => {
+        this.wipeTypeOptions = response.data;
+      });
+    },
     /** 查询参数列表 */
     getList() {
       this.loading = true;
@@ -327,6 +350,14 @@ export default {
     // 是否冻结字典翻译
     isFreezoneFormat(row) {
       return this.selectDictLabel(this.isFreezoneOptions, row.isFreezone);
+    },
+    // 票制类别字典翻译
+    ticketTypeFormat(row) {
+      return this.selectDictLabel(this.ticketTypeOptions, row.ticketType);
+    },
+    // 货源是否审核字典翻译
+    supplyIsAuthFormat(row, column) {
+      return this.selectDictLabel(this.isOptions, row.supplyIsAuth);
     },
     // 省编码字典翻译
     provinceCodeFormat(row, column) {
@@ -432,18 +463,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.color-error{
-  color: #ff4949;
-}
-.color-gray{
-  color: #909399;
-}
-.color-blue{
-  color: #1890ff;
-}
-.color-success{
-  color: #00bd93;
-}
-</style>

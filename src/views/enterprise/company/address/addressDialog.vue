@@ -23,8 +23,17 @@
       <el-form-item label="地址名称" prop="addressName">
         <el-input v-model="form.addressName" placeholder="请输入地址名称" class="width90" />
       </el-form-item>
+      <el-form-item label="联系人" prop="userName">
+        <el-input v-model="form.userName" placeholder="请输入联系人" class="width90" />
+      </el-form-item>
+      <el-form-item label="手机号码" prop="telphone">
+        <el-input v-model="form.telphone" placeholder="请输入手机号码" class="width90" />
+      </el-form-item>
       <el-form-item label="地址别名" prop="addressOtherName">
         <el-input v-model="form.addressOtherName" placeholder="请输入地址别名" class="width90" />
+      </el-form-item>
+      <el-form-item label="地址详情" prop="addressDetail">
+        <el-input v-model="form.addressDetail" placeholder="请输入地址详情" class="width90" />
       </el-form-item>
       <!-- <el-form-item label="经度" prop="latitude">
         <el-input v-model="form.latitude" placeholder="请输入经度" class="width90" />
@@ -32,17 +41,8 @@
       <el-form-item label="维度" prop="longitude">
         <el-input v-model="form.longitude" placeholder="请输入维度" class="width90" />
       </el-form-item> -->
-      <el-form-item label="地址详情" prop="addressDetail">
-        <el-input v-model="form.addressDetail" placeholder="请输入地址详情" class="width90" />
-      </el-form-item>
-      <el-form-item label="联系人" prop="userName">
-        <el-input v-model="form.userName" placeholder="请输入联系人" class="width90" />
-      </el-form-item>
-      <el-form-item label="手机号码" prop="telphone">
-        <el-input v-model="form.telphone" placeholder="请输入手机号码" class="width90" />
-      </el-form-item>
       <el-form-item label="备注" prop="remark">
-        <el-input v-model="form.remark" placeholder="请输入备注" class="width90" />
+        <el-input v-model="form.remark" type="textarea" placeholder="请输入备注" class="width90" />
       </el-form-item>
     </el-form>
 
