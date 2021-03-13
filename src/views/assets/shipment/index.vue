@@ -118,37 +118,58 @@
           @click="handleAdd"
         >新增</el-button>
       </el-col>
+      <el-col :span="1.5">
+        <el-button
+          v-hasPermi="['assets:shipment:remove']"
+          type="danger"
+          icon="el-icon-delete"
+          size="mini"
+          :disabled="multiple"
+          @click="handleDelete"
+        >批量删除</el-button>
+      </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table v-loading="loading" :data="shipmentList">
+    <el-table v-loading="loading" :data="shipmentList" @selection-change="handleSelectionChange">
+      <el-table-column type="selection" width="55" align="center" fixed="left" />
       <el-table-column label="货主姓名" align="center" prop="adminName" />
+      <el-table-column label="审核状态" align="center" prop="authStatus" sortable>
+        <template slot-scope="scope">
+          <span v-show="scope.row.authStatus === 0" class="color-gray">未审核</span>
+          <span v-show="scope.row.authStatus === 1" class="color-blue">审核中</span>
+          <span v-show="scope.row.authStatus === 2" class="color-error">审核未通过</span>
+          <span v-show="scope.row.authStatus === 3" class="color-success">审核通过</span>
+        </template>
+      </el-table-column>
       <el-table-column label="公司名称" align="center" prop="companyName" sortable />
       <el-table-column label="货主类别" align="center" prop="shipperType" :formatter="shipperTypeFormat" />
-      <el-table-column label="货主身份证" align="center" prop="identificationNumber" />
+      <el-table-column label="电话号码" align="center" prop="telphone" sortable />
+      <!-- <el-table-column label="货主身份证" align="center" prop="identificationNumber" />
       <el-table-column label="营业执照号" align="center" prop="businessLicenseNo" />
       <el-table-column label="统一社会信用代码代码" align="center" prop="organizationCodeNo" />
-      <el-table-column label="法人身份证" align="center" prop="artificialIdentificationNumber" />
-      <el-table-column label="审核状态" align="center" prop="authStatus" :formatter="authStatusFormat" sortable />
+      <el-table-column label="法人身份证" align="center" prop="artificialIdentificationNumber" /> -->
       <el-table-column label="是否冻结" align="center" prop="isFreezone" :formatter="isFreezoneFormat" />
-      <el-table-column label="创建人" align="center" prop="createCode" />
-      <el-table-column label="修改人" align="center" prop="updateCode" />
-      <el-table-column label="省" align="center" prop="provinceCode" :formatter="provinceCodeFormat" />
+      <el-table-column label="票制类别" align="center" prop="" />
+      <el-table-column label="服务费比例" align="center" prop="" />
+      <el-table-column label="是否预付运费" align="center" prop="isPrepaid" :formatter="isPrepaidFormat" />
+      <el-table-column label="授信金额" align="center" prop="creditAmount" />
+      <!-- <el-table-column label="省" align="center" prop="provinceCode" :formatter="provinceCodeFormat" />
       <el-table-column label="市" align="center" prop="cityCode" :formatter="cityCodeFormat" />
       <el-table-column label="县/区" align="center" prop="countyCode" :formatter="countyCodeFormat" />
-      <el-table-column label="是否核算" align="center" prop="isAccount" :formatter="isAccountFormat" />
-      <el-table-column label="核算方式" align="center" prop="accountType" :formatter="accountTypeFormat" />
       <el-table-column label="是否抹零" align="center" prop="isWipe" :formatter="isWipeFormat" />
       <el-table-column label="详细地址" align="center" prop="area" />
+      <el-table-column label="是否核算" align="center" prop="isAccount" :formatter="isAccountFormat" />
+      <el-table-column label="核算方式" align="center" prop="accountType" :formatter="accountTypeFormat" />
       <el-table-column label="抹零方式" align="center" prop="wipeType" :formatter="wipeTypeFormat" />
       <el-table-column label="是否月结" align="center" prop="isMonthly" :formatter="isMonthlyFormat" />
-      <el-table-column label="是否预付运费" align="center" prop="isPrepaid" :formatter="isPrepaidFormat" />
       <el-table-column label="是否开启合理路耗" align="center" prop="isConsumption" :formatter="isConsumptionFormat" />
       <el-table-column label="路耗单位" align="center" prop="consumptionUnit" :formatter="consumptionUnitFormat" />
       <el-table-column label="路耗最小值" align="center" prop="consumptionMin" />
       <el-table-column label="路耗最大值" align="center" prop="consumptionMax" />
       <el-table-column label="调度费点数" align="center" prop="dispatchPoints" />
-      <el-table-column label="授信金额" align="center" prop="creditAmount" />
+      <el-table-column label="创建人" align="center" prop="createCode" />
+      <el-table-column label="修改人" align="center" prop="updateCode" /> -->
       <el-table-column label="审核时间" align="center" prop="authTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(new Date(scope.row.authTime), '{y}-{m}-{d}') }}</span>
@@ -213,6 +234,8 @@ export default {
     return {
       // 遮罩层
       loading: true,
+      // 选中数组
+      ids: [],
       // 非单个禁用
       single: true,
       // 非多个禁用
@@ -359,6 +382,12 @@ export default {
       this.resetForm('queryForm');
       this.handleQuery();
     },
+    // 多选框选中数据
+    handleSelectionChange(selection) {
+      this.ids = selection.map(item => item.id);
+      this.single = selection.length !== 1;
+      this.multiple = !selection.length;
+    },
     /** 新增按钮操作 */
     handleAdd() {
       this.$refs.ShipmentDialog.reset();
@@ -388,13 +417,13 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const id = row.id;
-      this.$confirm('是否确认删除编号为"' + id + '"的数据项?', '警告', {
+      const ids = row.id || this.ids;
+      this.$confirm('是否确认删除编号为"' + ids + '"的数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
-        return delShipment(id);
+        return delShipment(ids);
       }).then(() => {
         this.getList();
         this.msgSuccess('删除成功');
@@ -403,3 +432,18 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.color-error{
+  color: #ff4949;
+}
+.color-gray{
+  color: #909399;
+}
+.color-blue{
+  color: #1890ff;
+}
+.color-success{
+  color: #00bd93;
+}
+</style>
