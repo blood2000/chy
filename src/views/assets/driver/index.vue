@@ -157,10 +157,10 @@
       <el-table-column label="从业资格证办理省份名称" align="center" prop="workLicenseProvinceName" />
       <el-table-column label="审核状态" align="center" prop="authStatus" sortable>
         <template slot-scope="scope">
-          <span v-show="scope.row.authStatus === 0" class="color-gray">未审核</span>
-          <span v-show="scope.row.authStatus === 1" class="color-blue">审核中</span>
-          <span v-show="scope.row.authStatus === 2" class="color-error">审核未通过</span>
-          <span v-show="scope.row.authStatus === 3" class="color-success">审核通过</span>
+          <span v-show="scope.row.authStatus === 0" class="g-color-gray">未审核</span>
+          <span v-show="scope.row.authStatus === 1" class="g-color-blue">审核中</span>
+          <span v-show="scope.row.authStatus === 2" class="g-color-error">审核未通过</span>
+          <span v-show="scope.row.authStatus === 3" class="g-color-success">审核通过</span>
         </template>
       </el-table-column>
       <el-table-column label="是否冻结" align="center" prop="isFreeze" :formatter="isFreezeFormat" />
@@ -406,18 +406,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.color-error{
-  color: #ff4949;
-}
-.color-gray{
-  color: #909399;
-}
-.color-blue{
-  color: #1890ff;
-}
-.color-success{
-  color: #00bd93;
-}
-</style>
