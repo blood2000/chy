@@ -152,6 +152,7 @@
       <el-table-column label="是否冻结" align="center" prop="isFreezone" :formatter="isFreezoneFormat" />
       <el-table-column label="票制类别" align="center" prop="ticketType" :formatter="ticketTypeFormat" />
       <el-table-column label="服务费比例" align="center" prop="serviceRatio" />
+      <el-table-column label="货源是否审核" align="center" prop="supplyIsAuth" :formatter="supplyIsAuthFormat" />
       <el-table-column label="是否预付运费" align="center" prop="isPrepaid" :formatter="isPrepaidFormat" />
       <el-table-column label="授信金额" align="center" prop="creditAmount" />
       <!-- <el-table-column label="省" align="center" prop="provinceCode" :formatter="provinceCodeFormat" />
@@ -333,6 +334,10 @@ export default {
     // 票制类别字典翻译
     ticketTypeFormat(row) {
       return this.selectDictLabel(this.ticketTypeOptions, row.ticketType);
+    },
+    // 货源是否审核字典翻译
+    supplyIsAuthFormat(row, column) {
+      return this.selectDictLabel(this.isOptions, row.supplyIsAuth);
     },
     // 省编码字典翻译
     provinceCodeFormat(row, column) {

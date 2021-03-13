@@ -169,6 +169,21 @@
       <el-form-item label="服务费比例" prop="serviceRatio">
         <el-input v-model="form.serviceRatio" placeholder="请输入服务费比例" size="small" class="width90" clearable />
       </el-form-item>
+      <el-form-item label="货源是否审核" prop="supplyIsAuth">
+        <el-select
+          v-model="form.supplyIsAuth"
+          clearable
+          size="small"
+          class="width90"
+        >
+          <el-option
+            v-for="dict in isOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="是否核算" prop="isAccount">
         <el-select
           v-model="form.isAccount"
@@ -486,7 +501,8 @@ export default {
         dispatchPoints: null,
         creditAmount: null,
         ticketType: null,
-        serviceRatio: null
+        serviceRatio: null,
+        supplyIsAuth: null
       };
       this.resetForm('form');
     },
