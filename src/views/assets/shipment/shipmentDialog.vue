@@ -402,9 +402,28 @@ export default {
     }
   },
   created() {
-
+    this.getDictsOptions();
   },
   methods: {
+    /** 查询字典 */
+    getDictsOptions() {
+      // 核算规则
+      this.getDicts('balance_rule').then((response) => {
+        this.accountTypeOptions = response.data;
+      });
+      // 票制类别
+      this.getDicts('assets_ticket_type').then((response) => {
+        this.ticketTypeOptions = response.data;
+      });
+      // 合理路耗计量单位
+      this.getDicts('consumption_unit').then((response) => {
+        this.consumptionUnitOptions = response.data;
+      });
+      // 抹零方式
+      this.getDicts('wipe_type').then((response) => {
+        this.wipeTypeOptions = response.data;
+      });
+    },
     /** 提交按钮 */
     submitForm: function() {
       this.$refs['form'].validate(valid => {
@@ -513,6 +532,9 @@ export default {
         this.form.identificationEffective = true;
       } else {
         this.form.identificationEffective = false;
+      }
+      if (data.password === null || data.password === undefined || data.password === '') {
+        this.form.password = this.initialPassword;
       }
     },
     // 已读
