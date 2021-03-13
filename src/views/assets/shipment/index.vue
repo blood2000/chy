@@ -150,8 +150,8 @@
       <el-table-column label="统一社会信用代码代码" align="center" prop="organizationCodeNo" />
       <el-table-column label="法人身份证" align="center" prop="artificialIdentificationNumber" /> -->
       <el-table-column label="是否冻结" align="center" prop="isFreezone" :formatter="isFreezoneFormat" />
-      <el-table-column label="票制类别" align="center" prop="" />
-      <el-table-column label="服务费比例" align="center" prop="" />
+      <el-table-column label="票制类别" align="center" prop="ticketType" :formatter="ticketTypeFormat" />
+      <el-table-column label="服务费比例" align="center" prop="serviceRatio" />
       <el-table-column label="是否预付运费" align="center" prop="isPrepaid" :formatter="isPrepaidFormat" />
       <el-table-column label="授信金额" align="center" prop="creditAmount" />
       <!-- <el-table-column label="省" align="center" prop="provinceCode" :formatter="provinceCodeFormat" />
@@ -272,6 +272,8 @@ export default {
         { dictLabel: '否', dictValue: 0 },
         { dictLabel: '是', dictValue: 1 }
       ],
+      // 票制类别字典
+      ticketTypeOptions: [],
       // 省编码字典
       provinceCodeOptions: [],
       // 市编码字典翻译
@@ -327,6 +329,10 @@ export default {
     // 是否冻结字典翻译
     isFreezoneFormat(row) {
       return this.selectDictLabel(this.isFreezoneOptions, row.isFreezone);
+    },
+    // 票制类别字典翻译
+    ticketTypeFormat(row) {
+      return this.selectDictLabel(this.ticketTypeOptions, row.ticketType);
     },
     // 省编码字典翻译
     provinceCodeFormat(row, column) {
