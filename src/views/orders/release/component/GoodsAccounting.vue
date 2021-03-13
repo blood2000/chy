@@ -3,8 +3,7 @@
     <el-form :ref="`formData`" :model="formData" :rules="rules" :size="formConfig.size" :label-width="formConfig.labelWidth" :label-position="formConfig.labelPosition">
       <el-form-item label="货物计量单位" prop="goodsUnit">
         <el-select v-model="formData.goodsUnit" placeholder="请选择货物计量单位" clearable :style="{width: '100%'}">
-          <el-option label="吨" :value="1" />
-          <el-option label="立方米" :value="2" />
+          <el-option v-for="(item, index1) in formDataList.measurementType" :key="index1" :label="item.dictLabel" :value="item.dictValue" />
         </el-select>
       </el-form-item>
       <el-form-item label="货物总量" prop="weight">
@@ -31,15 +30,13 @@
 
       <el-form-item label="车型" prop="vehicleType">
         <el-select v-model="formData.vehicleType" placeholder="选择车型" clearable :style="{width: '100%'}">
-          <el-option label="车型1" :value="1" />
-          <el-option label="车型2" :value="2" />
+          <el-option v-for="(item, index1) in formDataList.vehicleClassification" :key="index1" :label="item.dictLabel" :value="item.dictValue" />
         </el-select>
       </el-form-item>
 
       <el-form-item label="车长" prop="vehicleLength">
         <el-select v-model="formData.vehicleLength" placeholder="选择车长" clearable :style="{width: '100%'}">
-          <el-option label="车长1" :value="1" />
-          <el-option label="车长2" :value="2" />
+          <el-option v-for="(item, index1) in formDataList.vehicleLength" :key="index1" :label="item.dictLabel" :value="item.dictValue" />
         </el-select>
       </el-form-item>
 
@@ -76,21 +73,39 @@ export default {
   data() {
     return {
       formData: {
-        goodsUnit: 1,
+        goodsUnit: '0',
         weightType: 0,
         weight: undefined,
         perWeight: undefined,
         shipmentPrice: 0,
         goodsPrice: 0,
-        vehicleType: 1,
-        vehicleLength: 1
+        vehicleType: undefined,
+        vehicleLength: undefined
       },
       rules: {
         goodsUnit: [{ required: true, message: '请选择货物计量单位', trigger: 'change' }],
         shipmentPrice: [{ required: true, message: '请输入运输单价', trigger: 'blur' }],
         goodsPrice: [{ required: true, message: '请输入货物单价', trigger: 'blur' }]
+      },
+      formDataList: {
+        measurementType: [],
+        vehicleClassification: [],
+        vehicleLength: []
       }
     };
+  },
+
+  created() {
+    // 获取字典型
+    this.getDicts('measurementType').then(response => {
+      this.formDataList.measurementType = response.data;
+    });
+    this.getDicts('vehicleClassification').then(response => {
+      this.formDataList.vehicleClassification = response.data;
+    });
+    this.getDicts('vehicleLength').then(response => {
+      this.formDataList.vehicleLength = response.data;
+    });
   },
 
   methods: {

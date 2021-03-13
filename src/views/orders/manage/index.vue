@@ -22,14 +22,14 @@
         <el-card class="card-rigth">
           <div v-if="false" slot="header">
             <div class="left_v" />
-            <span>院区列表</span>
+            <span>货源管理</span>
           </div>
           <!-- 右边 -->
           <div>
             <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="100px" class="clearfix">
-              <el-form-item label="下单客户" prop="companyAndCustomerAndPhone">
+              <el-form-item label="下单客户" prop="tin1">
                 <el-input
-                  v-model="queryParams.companyAndCustomerAndPhone"
+                  v-model="queryParams.tin1"
                   placeholder="请输入公司名称/客户姓名/手机号"
                   clearable
                   size="small"
@@ -37,9 +37,9 @@
                 />
               </el-form-item>
 
-              <el-form-item label="装货信息" prop="addressAndPhoneAndMember">
+              <el-form-item label="装货信息" prop="tin2">
                 <el-input
-                  v-model="queryParams.addressAndPhoneAndMember"
+                  v-model="queryParams.tin2"
                   placeholder="装货地/装货电话/装货人"
                   clearable
                   size="small"
@@ -47,9 +47,9 @@
                 />
               </el-form-item>
 
-              <el-form-item label="收货信息" prop="destinationAndPhoneAndMember">
+              <el-form-item label="收货信息" prop="tin3">
                 <el-input
-                  v-model="queryParams.destinationAndPhoneAndMember"
+                  v-model="queryParams.tin3"
                   placeholder="目的地/收货电话/收货人"
                   clearable
                   size="small"
@@ -57,16 +57,16 @@
                 />
               </el-form-item>
 
-              <el-form-item label="货物类型大类" prop="goodsBigType">
-                <el-select v-model="queryParams.goodsBigType" placeholder="----请选择----" style="width: 215px">
+              <el-form-item label="货物类型大类" prop="tin4">
+                <el-select v-model="queryParams.tin4" placeholder="----请选择----" style="width: 215px">
                   <el-option label="区域一" value="shanghai" />
                   <el-option label="区域二" value="beijing" />
                 </el-select>
               </el-form-item>
 
-              <el-form-item label="货物描述" prop="goodsName">
+              <el-form-item label="货物描述" prop="tin5">
                 <el-input
-                  v-model="queryParams.goodsName"
+                  v-model="queryParams.tin5"
                   placeholder="目的地/收货电话/收货人"
                   clearable
                   size="small"
@@ -74,9 +74,9 @@
                 />
               </el-form-item>
 
-              <el-form-item label="货主编码" prop="pubilshCode">
+              <el-form-item label="货主编码" prop="tin6">
                 <el-input
-                  v-model="queryParams.pubilshCode"
+                  v-model="queryParams.tin6"
                   placeholder="目的地/收货电话/收货人"
                   clearable
                   size="small"
@@ -84,9 +84,9 @@
                 />
               </el-form-item>
 
-              <el-form-item label="货源单号" prop="mainOrderNumber">
+              <el-form-item label="货源单号" prop="tin7">
                 <el-input
-                  v-model="queryParams.mainOrderNumber"
+                  v-model="queryParams.tin7"
                   placeholder="目的地/收货电话/收货人"
                   clearable
                   size="small"
@@ -94,7 +94,7 @@
                 />
               </el-form-item>
 
-              <el-form-item label="司机id" prop="driverId">
+              <!-- <el-form-item label="司机id" prop="driverId">
                 <el-input
                   v-model="queryParams.driverId"
                   placeholder="(司机id)查询自己公司的货源"
@@ -102,25 +102,25 @@
                   size="small"
                   @keyup.enter.native="handleQuery"
                 />
-              </el-form-item>
+              </el-form-item> -->
 
-              <el-form-item label="订单状态" prop="status">
-                <el-select v-model="queryParams.status" placeholder="----请选择----" style="width: 215px">
-                  <el-option label="区域一" :value="1" />
-                  <el-option label="区域二" :value="2" />
+              <el-form-item label="订单状态" prop="tin8">
+                <el-select v-model="queryParams.tin8" placeholder="----请选择----" style="width: 215px">
+                  <el-option label="区域一" :value="'1'" />
+                  <el-option label="区域二" :value="'2'" />
                 </el-select>
               </el-form-item>
 
-              <el-form-item label="是否拼单" prop="isShare">
-                <el-select v-model="queryParams.isShare" placeholder="----请选择----" style="width: 215px">
-                  <el-option label="区域一" :value="false" />
-                  <el-option label="区域二" :value="true" />
+              <el-form-item label="是否拼单" prop="tin9">
+                <el-select v-model="queryParams.tin9" placeholder="----请选择----" style="width: 215px">
+                  <el-option label="区域一" :value="'false'" />
+                  <el-option label="区域二" :value="'true'" />
                 </el-select>
               </el-form-item>
 
-              <el-form-item label="创建时间" prop="searchTime">
+              <el-form-item label="创建时间" prop="tin10">
                 <el-date-picker
-                  v-model="queryParams.searchTime"
+                  v-model="queryParams.tin10"
                   size="small"
                   style="width: 215px"
                   value-format="yyyy-MM-dd"
@@ -128,37 +128,9 @@
                   range-separator="-"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  @change="()=>{ queryParams.beginTime = queryParams.searchTime[0];queryParams.endTime = queryParams.searchTime[1] }"
                 />
               </el-form-item>
 
-              <!-- <el-form-item label="可抢单量这个没有" prop="minCount">
-                        <div style="width: 215px" class="flex_b">
-                            <el-input
-                                v-model="queryParams.minCount"
-                                placeholder="目的地/收货电话/收货人"
-                                clearable
-                                size="small"
-                                style="width:100px;"
-                                @keyup.enter.native="handleQuery"
-                            />
-                            <span>-</span>
-                            <el-input
-                                v-model="queryParams.maxCount"
-                                placeholder="目的地/收货电话/收货人"
-                                clearable
-                                size="small"
-                                style="width:100px;"
-                                @keyup.enter.native="handleQuery"
-                            />
-                        </div>
-                    </el-form-item> -->
-
-              <!-- <el-form-item>
-                        <el-checkbox v-model="queryParams.quote">是否竞价</el-checkbox>
-                        <el-checkbox v-model="queryParams.delFlag">是否隐藏</el-checkbox>
-                        <el-checkbox v-model="queryParams.isOftenOrder">常发货源</el-checkbox>
-                    </el-form-item> -->
 
               <el-form-item class="fr">
                 <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -167,26 +139,7 @@
             </el-form>
 
             <el-row :gutter="10" class="mb8">
-              <el-col :span="1.5">
-                <el-button
-                  v-hasPermi="['system:test:add']"
-                  type="primary"
-                  icon="el-icon-plus"
-                  size="mini"
-                  @click="handleAdd"
-                >新增</el-button>
-              </el-col>
-              <el-col :span="1.5">
-                <el-button
-                  v-hasPermi="['system:test:edit']"
-                  type="success"
-                  icon="el-icon-edit"
-                  size="mini"
-                  :disabled="single"
-                  @click="handleUpdate"
-                >修改</el-button>
-              </el-col>
-              <el-col :span="1.5">
+              <!-- <el-col :span="1.5">
                 <el-button
                   v-hasPermi="['system:test:remove']"
                   type="danger"
@@ -195,7 +148,7 @@
                   :disabled="multiple"
                   @click="handleDelete"
                 >删除</el-button>
-              </el-col>
+              </el-col> -->
               <el-col :span="1.5">
                 <el-button
                   v-hasPermi="['system:test:export']"
@@ -207,14 +160,28 @@
               </el-col>
 
               <el-col :span="1.5" style="marginTop:-5px">
-                <tablec-cascader v-model="tableColumnsConfig" :options="options" />
+                <tablec-cascader v-model="tableColumnsConfig" />
               </el-col>
               <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
             </el-row>
 
-            <RefactorTable :loading="loading" :data="list" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+            <RefactorTable :loading="loading" :data="list" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
+              <!-- billingType	发运方式 0->汽运一票制，1->对付，2->代收代付 -->
+              <template #billingType="{row}">
+                <span>{{ selectDictLabel([
+                  { dictLabel: '汽运一票制', dictValue: '0' },
+                  { dictLabel: '对付', dictValue: '1' },
+                  { dictLabel: '代收代付', dictValue: '1' }
+                ], row.billingType)
+                }}</span>
+              </template>
+              <!-- status	状态 0.启用 1.禁用 -->
               <template #status="{row}">
-                <span>{{ row.status }}</span>
+                <span>{{ selectDictLabel([
+                  { dictLabel: '启用', dictValue: '0' },
+                  { dictLabel: '禁用', dictValue: '1' },
+                ], row.status)
+                }}</span>
               </template>
               <template #accessTime="{row}">
                 <span>{{ row.accessTime }}</span>
@@ -225,21 +192,21 @@
                   size="mini"
                   type="text"
                   icon="el-icon-edit"
-                  @click="handleUpdate(row)"
+                  @click="handleInfo(row)"
                 >详情</el-button>
-                <el-button
+                <!-- <el-button
                   v-hasPermi="['system:menu:add']"
                   size="mini"
                   type="text"
                   icon="el-icon-plus"
                   @click="handleAdd(row)"
-                >复制</el-button>
+                >复制</el-button> -->
                 <el-button
                   v-hasPermi="['system:menu:remove']"
                   size="mini"
                   type="text"
                   icon="el-icon-delete"
-                  @click="handleDelete(row)"
+                  @click="handleDispatch(row)"
                 >派单</el-button>
 
                 <el-button
@@ -249,13 +216,6 @@
                   icon="el-icon-edit"
                   @click="handleUpdate(row)"
                 >编辑</el-button>
-                <!-- <el-button
-                        size="mini"
-                        type="text"
-                        icon="el-icon-plus"
-                        @click="handleAdd(row)"
-                        v-hasPermi="['system:menu:add']"
-                    >新增</el-button>-->
                 <el-button
                   v-hasPermi="['system:menu:remove']"
                   size="mini"
@@ -263,20 +223,20 @@
                   icon="el-icon-delete"
                   @click="handleDelete(row)"
                 >删除</el-button>
-                <el-button
+                <!-- <el-button
                   v-hasPermi="['system:menu:remove']"
                   size="mini"
                   type="text"
                   icon="el-icon-delete"
                   @click="handleDelete(row)"
-                >暂停</el-button>
-                <el-button
+                >暂停</el-button> -->
+                <!-- <el-button
                   v-hasPermi="['system:menu:remove']"
                   size="mini"
                   type="text"
                   icon="el-icon-delete"
                   @click="handleDelete(row)"
-                >调价</el-button>
+                >调价</el-button> -->
               </template>
             </RefactorTable>
 
@@ -295,336 +255,255 @@
 
 
 
-    <!-- 添加或修改货源对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="${comment}" prop="testName">
-          <el-input v-model="form.testName" placeholder="请输入${comment}" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
+    <!-- 派送订单 -->
+    <el-dialog :title="title" :visible.sync="openDispatch" width="80%" append-to-body>
+      <open-dialog :dispatch="dispatch" @_ok="(bool)=>{openDispatch = bool; getList()}" />
     </el-dialog>
   </div>
 </template>
 
 <script>
 import { getOrderInfoList, delOrder } from '@/api/order/manage';
+import OpenDialog from './component/OpenDialog';
 
-const data = [{
-  id: 1,
-  label: '一级 1',
-  children: [{
-    id: 4,
-    label: '二级 1-1',
-    children: [{
-      id: 9,
-      label: '三级 1-1-1'
-    }, {
-      id: 10,
-      label: '三级 1-1-2'
-    }]
-  }]
-}, {
-  id: 2,
-  label: '一级 2',
-  children: [{
-    id: 5,
-    label: '二级 2-1'
-  }, {
-    id: 6,
-    label: '二级 2-2'
-  }]
-}, {
-  id: 3,
-  label: '一级 3',
-  children: [{
-    id: 7,
-    label: '二级 3-1'
-  }, {
-    id: 8,
-    label: '二级 3-2'
-  }]
-}];
-// const options = [
-//         {
-//             prop: 'infoId',
-//             label: '访问编号',
-//             fixed:'left'
-//             // width: ,
-//             // align: 'center'
-//         },
-//         {
-//             prop: 'userName',
-//             label: '用户名称',
-//             // width: ,
-//             // align: 'center'
-//         },{
-//             prop: 'ipaddr',
-//             label: '地址',
-//             width: 130,
-//             tooltip: true
-//             // align: 'center'
-//         },{
-//             prop: 'status',
-//             label: '状态'
-//         },{
-//             prop: 'msg',
-//             label: '描述',
-//             // width: ,
-//             // align: 'center'
-//         },{
-//             prop: 'accessTime',
-//             label: '访问时间',
-//             width: 180,
-//             // align: 'center'
-//         },
-//         {
-//             prop: 'type',
-//             label: '访问时间',
-//             width: 250,
-//             // align: 'center'
-//         },
-//         {
-//             prop: 'terminalType',
-//             label: '访问时间',
-//             width: 250,
-//             // align: 'center'
-//         },
-//         {
-//             prop: 'edit',
-//             label: '操作',
-//             width: 180,
-//             fixed:'right'
-//         }
-// ]
+const tableColumnsConfig = [
+  {
+    prop: 'addressAlias',
+    isShow: false,
+    label: '地址'
+  },
+  {
+    prop: 'addressAlias1',
+    isShow: false,
+    label: '地址'
+  },
+  {
+    prop: 'billingType',
+    isShow: false,
+    label: '发运方式'
+  },
+  {
+    prop: 'branchCode',
+    isShow: false,
+    label: '机构编码'
+  },
+  {
+    prop: 'cashDeposit',
+    isShow: false,
+    label: '货主保证金'
+  },
+  {
+    prop: 'classCode',
+    isShow: false,
+    label: '指定货源（分类）码编号'
+  },
+  {
+    prop: 'code',
+    isShow: false,
+    label: 'code'
+  },
+  {
+    prop: 'companyName',
+    isShow: false,
+    label: '公司名称'
+  },
+  {
+    prop: 'createCode',
+    isShow: false,
+    label: '创建人'
+  },
+  {
+    prop: 'createTime',
+    isShow: false,
+    label: '创建时间'
+  },
+  {
+    prop: 'effectiveHour',
+    isShow: false,
+    label: '货源有效时间(小时)'
+  },
+  {
+    prop: 'id',
+    isShow: false,
+    label: '主键ID'
+  },
+  {
+    prop: 'importType',
+    isShow: false,
+    label: '是否导入货源'
+  },
+  {
+    prop: 'isClass',
+    isShow: false,
+    label: '是否加入货源码'
+  },
+  {
+    prop: 'isDel',
+    isShow: false,
+    label: '是否删除'
+  },
+  {
+    prop: 'isDispatch',
+    isShow: false,
+    label: '是否已受理'
+  },
+  {
+    prop: 'isInsure',
+    isShow: false,
+    label: '投保类别'
+  },
+  {
+    prop: 'isMonthlyOrder',
+    isShow: false,
+    label: '是否月结订单'
+  },
+  {
+    prop: 'isPay',
+    isShow: false,
+    label: '是否已经支付'
+  },
+  {
+    prop: 'isPublic',
+    isShow: false,
+    label: '是否公开货源'
+  },
+  {
+    prop: 'isQuote',
+    isShow: false,
+    label: '是否允许报价'
+  },
+  {
+    prop: 'isReturn',
+    isShow: false,
+    label: '是否回单确认'
+  },
+  {
+    prop: 'isReturnMoney',
+    isShow: false,
+    label: '标记货主是否结算'
+  },
+  {
+    prop: 'isShare',
+    isShow: false,
+    label: '是否拼单'
+  },
+  {
+    prop: 'isShipperConfirm',
+    isShow: false,
+    label: '是否货主确认装货'
+  },
+  {
+    prop: 'isSpecified',
+    isShow: false,
+    label: '是否指定接单人'
+  },
+  {
+    prop: 'isSplit',
+    isShow: false,
+    label: '是否允许拆单'
+  },
+  {
+    prop: 'isTop',
+    isShow: false,
+    label: '是否置顶'
+  },
+  {
+    prop: 'isTrunk',
+    isShow: false,
+    label: '订单类型'
+  },
+  {
+    prop: 'loadType',
+    isShow: false,
+    label: '装卸类型'
+  },
+  {
+    prop: 'loadingTime',
+    isShow: false,
+    label: '计划装货时间'
+  },
+  {
+    prop: 'mainOrderNumber',
+    isShow: true,
+    label: '货源单号'
+  },
+  {
+    prop: 'nickName',
+    isShow: false,
+    label: '昵称'
+  },
+  {
+    prop: 'orderType',
+    isShow: false,
+    label: '运输类型'
+  },
+  {
+    prop: 'paymentCode',
+    isShow: false,
+    label: '支付方式'
+  },
+  {
+    prop: 'phonenumber',
+    isShow: false,
+    label: '手机号码'
+  },
+  {
+    prop: 'projectCode',
+    isShow: false,
+    label: '项目编码'
+  },
+  {
+    prop: 'pubilshCode',
+    isShow: true,
+    label: '发布人CODE'
+  },
+  {
+    prop: 'remark',
+    isShow: false,
+    label: '备注'
+  },
+  {
+    prop: 'shipperFactoryCode',
+    isShow: false,
+    label: '发货厂家编码'
+  },
+  {
+    prop: 'status',
+    isShow: false,
+    label: '状态'
+  },
+  {
+    prop: 'updateCode',
+    isShow: false,
+    label: '修改人'
+  },
+  {
+    prop: 'updateTime',
+    isShow: true,
+    label: '修改时间'
+  },
+  {
+    prop: 'userName',
+    isShow: false,
+    label: '账号名称'
+  },
+  {
+    prop: 'edit',
+    isShow: true,
+    label: '操作',
+    width: 180,
+    fixed: 'right'
+  }
+];
 
-const listData = {
-  'total': 269,
-  'rows': [
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 608,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.12',
-      'status': '0',
-      'msg': '退出成功',
-      'accessTime': '2021-03-09 13:36:53',
-      'type': 2,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    },
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 607,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.12',
-      'status': '0',
-      'msg': '登录成功',
-      'accessTime': '2021-03-09 11:55:22',
-      'type': 1,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    },
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 606,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.5',
-      'status': '0',
-      'msg': '登录成功',
-      'accessTime': '2021-03-09 11:41:21',
-      'type': 1,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    },
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 605,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.5',
-      'status': '0',
-      'msg': '登录成功',
-      'accessTime': '2021-03-09 11:33:51',
-      'type': 1,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    },
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 604,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.5',
-      'status': '0',
-      'msg': '登录成功',
-      'accessTime': '2021-03-09 11:31:27',
-      'type': 1,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    },
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 603,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.5',
-      'status': '0',
-      'msg': '退出成功',
-      'accessTime': '2021-03-09 11:31:22',
-      'type': 2,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    },
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 602,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.5',
-      'status': '0',
-      'msg': '登录成功',
-      'accessTime': '2021-03-09 11:29:00',
-      'type': 1,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    },
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 601,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.5',
-      'status': '0',
-      'msg': '退出成功',
-      'accessTime': '2021-03-09 11:28:58',
-      'type': 2,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    },
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 600,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.5',
-      'status': '0',
-      'msg': '登录成功',
-      'accessTime': '2021-03-09 11:28:42',
-      'type': 1,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    },
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 599,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.5',
-      'status': '0',
-      'msg': '退出成功',
-      'accessTime': '2021-03-09 11:28:39',
-      'type': 2,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    }
-  ],
-  'code': 200,
-  'msg': '查询成功'
-};
 
 export default {
   name: 'Testlog',
+  components: { OpenDialog },
   data() {
     return {
       // 树形数据
-      data,
+      data: [],
 
       // 遮罩层
       loading: false,
@@ -640,8 +519,9 @@ export default {
       total: 0,
       // 表格数据
       list: [],
-      // 是否显示弹出层
-      open: false,
+      // 是否显示弹出层-派送
+      openDispatch: false,
+      dispatch: null,
       // 类型数据字典
       typeOptions: [],
       // 类型数据字典
@@ -654,54 +534,59 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-
-        companyAndCustomerAndPhone: '',
-        addressAndPhoneAndMember: '',
-        destinationAndPhoneAndMember: '',
-        goodsBigType: '',
-        goodsName: '',
-        pubilshCode: '',
-        mainOrderNumber: '',
-        driverId: undefined,
-        status: undefined,
-        isShare: false,
-        searchTime: [],
-        beginTime: '',
-        endTime: ''
+        tin1: '',
+        tin2: '',
+        tin3: '',
+        tin4: '',
+        tin5: '',
+        tin6: '',
+        tin7: '',
+        tin8: '',
+        tin9: '',
+        tin10: []
       },
       // 弹框title
       title: '',
       // 表头动态值
-      tableColumnsConfig: [],
+      tableColumnsConfig
 
-      // 下拉框展示所有的值-其中每一项就是配置项的值
-      options: []
     };
-    // this.resetForm('form');
   },
-  /** 搜索按钮操作 */
-  handleQuery() {
-    this.queryParams.pageNum = 1;
+
+  computed: {
+    newQueryParams() {
+      return {
+        addressAndPhoneAndMember: this.queryParams.tin2, //	装货信息	query	false
+        beginTime: this.queryParams.tin10[0], //	开始时间	query	false
+        companyAndCustomerAndPhone: this.queryParams.tin1, //	下单客户	query	false
+        destinationAndPhoneAndMember: this.queryParams.tin3, //	收货信息	query	false
+        driverId: undefined, //	(司机id)查询自己公司的货源	query	false
+        endTime: this.queryParams.tin10[1], //	结束时间	query	false
+        goodsBigType: this.queryParams.tin4, //	货物类型大类	query	false
+        goodsName: this.queryParams.tin5, //	货物描述(名称)	query	false
+        isShare: this.queryParams.tin9, //	是否拼单	query	false
+        mainOrderNumber: this.queryParams.tin7, //	货源单号	query	false
+        pubilshCode: this.queryParams.tin6, //	货主编码	query	false
+        status: this.queryParams.tin8, //	订单状态（字典表）	query	false
+        pageNum: this.queryParams.pageNum, //	pageNum,示例值(1)	query	false
+        pageSize: this.queryParams.pageSize //	pageSize,示例值(10)	query	false
+      };
+    }
+  },
+
+  created() {
+    this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || this.tableColumnsConfig;
     this.getList();
-    this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || [];
-    this.options = this.getLocalStorage(this.$route.name) || [];
   },
   methods: {
     /** 查询货源列表 */
     getList() {
       this.loading = true;
-      getOrderInfoList(this.queryParams).then(response => {
-        // 处理一下表头
-        this.options = this.handleColumns(response.data.list[0]);
-        // 展示表头
-        this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || this.options;
-        // 表赋值
+      getOrderInfoList(this.newQueryParams).then(response => {
         this.list = response.data.list;
-        this.total = response.data.total;
+        this.total = response.data.total - 0;
         this.loading = false;
-      }).catch(err => {
-        console.log(err);
-
+      }).catch(() => {
         this.loading = false;
       });
     },
@@ -710,14 +595,7 @@ export default {
       this.open = false;
       this.reset();
     },
-    // 表单重置
-    reset() {
-      this.form = {
-        testId: null,
-        testName: null
-      };
-      this.resetForm('form');
-    },
+
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
@@ -729,51 +607,42 @@ export default {
       this.handleQuery();
     },
     // 多选框选中数据
-    handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id);
-      console.log(this.ids, '选择了那些东西');
-      this.single = selection.length !== 1;
-      this.multiple = !selection.length;
-    },
+    // handleSelectionChange(selection) {
+    //   this.ids = selection.map(item => item.id);
+    //   // console.log(this.ids, '选择了那些东西');
+    //   this.single = selection.length !== 1;
+    //   this.multiple = !selection.length;
+    // },
     /** 新增按钮操作 */
-    handleAdd() {
-      this.reset();
-      this.open = true;
-      this.title = '添加货源';
-    },
+    // handleAdd() {
+    //   this.reset();
+    //   this.open = true;
+    //   this.title = '添加货源';
+    // },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      this.reset();
-      const testId = row.testId || this.ids;
+      // this.reset();
+      // const testId = row.testId || this.ids;
       // getTest(testId).then(response => {
       //   this.form = response.data;
       //   this.open = true;
       //   this.title = '修改货源';
       // });
     },
-    /** 提交按钮 */
-    submitForm() {
-      this.$refs['form'].validate(valid => {
-        if (valid) {
-          // if (this.form.testId != null) {
-          //   updateTest(this.form).then(response => {
-          //     this.msgSuccess('修改成功');
-          //     this.open = false;
-          //     this.getList();
-          //   });
-          // } else {
-          //   addTest(this.form).then(response => {
-          //     this.msgSuccess('新增成功');
-          //     this.open = false;
-          //     this.getList();
-          //   });
-          // }
-        }
-      });
+    /** 查看详情操作 */
+    handleInfo(row) {
+      // this.reset();
+      // const testId = row.testId || this.ids;
+      // getTest(testId).then(response => {
+      //   this.form = response.data;
+      //   this.open = true;
+      //   this.title = '修改货源';
+      // });
     },
+
     /** 删除按钮操作 */
     handleDelete(row) {
-      const testIds = row.id || this.ids;
+      const testIds = row.code;
       this.$confirm('是否确认删除货源编号为"' + testIds + '"的数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -788,26 +657,15 @@ export default {
     /** 导出按钮操作 */
     handleExport() {
       this.download('system/test/export', {
-        ...this.queryParams
+        ...this.newQueryParams
       }, `system_test.xlsx`);
     },
-
-    /** 处理一下表头 **/
-    handleColumns(obj) {
-      return Object.keys(obj).map(key => {
-        return {
-          prop: key,
-          label: key
-          // width: 180,
-          // fixed:'right'
-        };
-      }).concat({
-        prop: 'edit',
-        label: '操作',
-        width: 180,
-        fixed: 'right'
-      });
+    /** 派单对话 */
+    handleDispatch(row) {
+      this.openDispatch = true;
+      this.dispatch = row;
     }
+
   }
 };
 </script>

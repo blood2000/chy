@@ -23,14 +23,7 @@
 
         <el-form-item label="代发货主" prop="pubilshCode">
           <el-select v-model="formData.pubilshCode" placeholder="请输入代发货主" :style="{width: '100%'}" filterable>
-            <el-option :label="'小明'" :value="1">
-              <span style="float: left">小明</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">18888888888</span>
-            </el-option>
-            <el-option :label="'小红'" :value="2">
-              <span style="float: left">小红</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">18888888888</span>
-            </el-option>
+            <el-option v-for="(item, index1) in formDataList.shipmentList" :key="index1" :label="item.adminName" :value="item.code" />
           </el-select>
         </el-form-item>
 
@@ -50,8 +43,8 @@
 
         <el-form-item label="选择货物类型" prop="goodsBigType">
           <el-select v-model="formData.goodsBigType" placeholder="选择货物类型" clearable :style="{width: '100%'}">
-            <el-option label="大类型1" :value="1" />
-            <el-option label="大类型2" :value="2" />
+            <el-option label="测试" :value="'test1'" />
+            <el-option v-for="(item, index1) in formDataList.coalType" :key="index1" :label="item.dictLabel" :value="item.dictValue" />
           </el-select>
         </el-form-item>
 
@@ -72,19 +65,19 @@
 
         <el-form-item label="发布为" prop="isPublic">
           <el-radio-group v-model="formData.isPublic" size="medium">
-            <el-radio :label="1">公开货源(所有人可接)</el-radio>
-            <el-radio :label="0">非公开货源</el-radio>
+            <el-radio :label="true">公开货源(所有人可接)</el-radio>
+            <el-radio :label="false">非公开货源</el-radio>
           </el-radio-group>
         </el-form-item>
 
-        <template v-if="formData.isPublic === 0">
+        <template v-if="!formData.isPublic">
           <el-form-item label="指定接单人" prop="isSpecified">
             <el-radio-group v-model="formData.isSpecified" size="medium">
-              <el-radio :label="1">是</el-radio>
-              <el-radio :label="0">否</el-radio>
+              <el-radio :label="true">是</el-radio>
+              <el-radio :label="false">否</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item v-if="formData.isSpecified === 1" label="指定接单人(调度者3人,司机1人)" prop="select_arr_4" label-width="300px">
+          <el-form-item v-if="formData.isSpecified" label="指定接单人(调度者3人,司机1人)" prop="select_arr_4" label-width="300px">
             <!-- 这个要做成什么?? -->
             <el-select v-model="formData.select_arr_4" placeholder="选择接单人" multiple clearable :style="{width: '100%'}">
               <el-option label="接单1" :value="1" />
@@ -126,8 +119,8 @@
             </el-radio-group>
           </el-form-item>
 
-          <el-form-item label="允许自装" prop="tinkaikin2222222">
-            <el-checkbox v-model="formData.tinkaikin2222222">允许自装</el-checkbox>
+          <el-form-item label="允许自装" prop="isOneselfUnload">
+            <el-checkbox v-model="formData.isOneselfUnload">允许自装</el-checkbox>
           </el-form-item>
         </div>
         <el-divider />
@@ -478,7 +471,7 @@
             </div> -->
 
     <div>
-      <el-button type="primary" @click="onSubmit">立即创建</el-button>
+      <el-button type="primary" @click="onSubmit('elForm')">立即发布</el-button>
       <el-button>取消</el-button>
     </div>
 
@@ -501,6 +494,11 @@ import AddAddress from './component/AddAddress';
 import GoodsAccounting from './component/GoodsAccounting';
 import AccounTing from './component/AccounTing';
 import MultiData from './component/MultiData';
+
+import { listShipment } from '@/api/assets/shipment.js';
+
+import { orderPubilsh } from '@/api/order/release';
+
 export default {
   components: {
     OpenDialog,
@@ -512,22 +510,26 @@ export default {
   data() {
     return {
       formData: {
-        pubilshCode: 1,
+        pubilshCode: undefined,
         projectCode: undefined,
         goodsBigType: undefined,
         goodsType1: [],
         goodsType2: undefined,
-        isPublic: 1,
-        isSpecified: 1,
+        isPublic: true,
+        isSpecified: true,
         tinkaikin1111111111: undefined, // 无这个字段
         remark: '',
         loadType: 1,
-        tinkaikin2222222: false // 无这个字段 允许自装
+        isOneselfUnload: false // 无这个字段 允许自装
       },
       rules: {
         goodsBigType: [{ required: true, message: '请选择货物计量单位', trigger: 'change' }],
         goodsType1: [{ required: true, message: '请选择货物计量单位', trigger: 'change' }],
         goodsType2: [{ required: true, message: '请选择货物计量单位', trigger: 'change' }]
+      },
+
+      formDataList: {
+        shipmentList: []
       },
 
       // 选中的名
@@ -546,24 +548,108 @@ export default {
     }
   },
 
+  async created() {
+    listShipment().then(res => {
+      this.formDataList.shipmentList = res.rows;
+    });
+
+    this.getDicts('coalType').then(response => {
+      this.formDataList.coalType = response.data;
+      console.log(this.formDataList.coalType);
+    });
+  },
+
   methods: {
-    onSubmit() {
-      this.$refs.address1 && this.$refs.address1._submitForm().then(res => {
-        console.log(res);
-      });
-      this.$refs.address2 && this.$refs.address2._submitForm().then(res => {
-        console.log(res);
-      });
-      this.$refs.goodsAccounting && this.$refs.goodsAccounting._submitForm().then(res => {
-        console.log(res);
-      });
-      this.$refs.accounTing && this.$refs.accounTing._submitForm().then(res => {
-        console.log(res);
-      });
+    async onSubmit(form) {
+      this.$refs[form].validate(async(valid) => {
+        if (valid) {
+          const address1 = this.$refs.address1 && await this.$refs.address1._submitForm() || [];
+          const address2 = this.$refs.address2 && await this.$refs.address2._submitForm() || [];
+          const goodsAccounting = this.$refs.goodsAccounting && await this.$refs.goodsAccounting._submitForm() || {};
+          const accounTing = this.$refs.accounTing && await this.$refs.accounTing._submitForm() || {};
+          const multiData = this.$refs[this.activeName] && await this.$refs[this.activeName]._submitForm() || {};
+
+          // console.log(
+          //   [...address1, ...address2],
+          //   goodsAccounting,
+          //   accounTing,
+          //   multiData
+          // );
+
+          const data = {
+            // 'classList': [
+            //   {
+            //     'classCode': ''
+            //   }
+            // ],
+            // 'isClass': true,
+            'isPublic': this.formData.isPublic,
+            'isSpecified': this.formData.isSpecified,
+            'loadType': this.formData.loadType + '', // loadType	装卸类型 1.一装一卸 2.多装一卸 3.一装多卸 4.多装多卸
+            'orderFreightBoList': [ // 运费规则
+              {
+                'ruleItemId': accounTing.ruleItemId,
+                'ruleItemValue': ''
+              }
+            ],
+            'orderGoodsList': [ // 货源商品信息_1
+              {
+                'addressList': [...address1, ...address2],
+                // [
+                //   {
+                //     'adcode': '',
+                //     'addressAlias': '',
+                //     'addressType': 0,
+                //     'city': '',
+                //     'citycode': '',
+                //     'contact': '',
+                //     'contactPhone': '',
+                //     'country': '',
+                //     'detail': '',
+                //     'district': '',
+                //     'level': '',
+                //     'location': [],
+                //     'province': '',
+                //     'street': ''
+                //   }
+                // ],
+                'endLimitWastage': accounTing.endLimitWastage,
+                'goodsBigType': this.formData.goodsBigType, // 货物类型（大类）
+                'goodsType': this.isBigOdd ? this.formData.goodsType1 : this.formData.goodsType2,
+                'goodsUnit': goodsAccounting.goodsUnit, // 货物单位 0：吨 1：立方米
+                // 'isModifyFinish': true, // 平台是否完成调价
+                // 'isOneselfLoad': true, // 是否允许自装 0否 1是 (多装模式)
+                'isOneselfUnload': this.formData.isOneselfUnload, // 是否允许自卸 0否 1是 (多卸模式)
+                // 'limitWastage': '', // 货物损耗 格式： 0/1(0-定额kg/车，1-定率千分之几/车)-1
+                'perWeight': goodsAccounting.perWeight, // 每车载重量（吨）
+                // 'priceWastage': 0, // 路耗超出范围 赔偿单价 （元/吨）
+                'shipmentPrice': goodsAccounting.shipmentPrice || multiData.shipmentPrice, // 运输单价 （元/吨）
+                'startLimitWastage': accounTing.startLimitWastage, // 免赔路耗 开始范围（定额 定律 也计算）
+                'vehicleLength': goodsAccounting.vehicleLength || multiData.vehicleLength, // 车长
+                'vehicleType': goodsAccounting.vehicleType || multiData.vehicleType, // 车型
+                'weight': goodsAccounting.weight // 货品吨数
+              }
+            ],
+            'orderSpecifiedList': [
+              {
+                'driverInfoCode': '',
+                'teamInfoCode': '',
+                'userType': 0
+              }
+            ],
+            'projectCode': this.formData.projectCode + '', // 项目编码
+            'pubilshCode': this.formData.pubilshCode,
+            'remark': this.formData.remark
+          };
 
 
-      this.$refs[this.activeName]._submitForm().then(res => {
-        console.log(res);
+          orderPubilsh(data).then(response => {
+            console.log(response);
+            this.msgSuccess('新增成功');
+          });
+        } else {
+          return false;
+        }
       });
     }
   }
