@@ -48,7 +48,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="联系人" prop="userName">
+      <!-- <el-form-item label="联系人" prop="userName">
         <el-input
           v-model="queryParams.userName"
           placeholder="请输入联系人"
@@ -65,7 +65,7 @@
           size="small"
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item>
         <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -80,27 +80,47 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-        >新增</el-button>
+        >添加新的常用地址</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
+          v-hasPermi="['enterprise:company:address:edit']"
+          type="success"
+          icon="el-icon-edit"
+          size="mini"
+          :disabled="single"
+          @click="handleUpdate"
+        >修改</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
+          v-hasPermi="['enterprise:company:address:remove']"
+          type="danger"
+          icon="el-icon-delete"
+          size="mini"
+          :disabled="multiple"
+          @click="handleDelete"
+        >删除</el-button>
       </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
     <el-table v-loading="loading" :data="addressList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="货主编码" align="center" prop="shipmentCode" />
-      <el-table-column label="地址类型" align="center" prop="addressType" :formatter="addressTypeFormat" />
-      <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" />
+      <el-table-column type="selection" width="55" align="center" fixed="left" />
+      <!-- <el-table-column label="货主编码" align="center" prop="shipmentCode" />
+      <el-table-column label="地址类型" align="center" prop="addressType" :formatter="addressTypeFormat" /> -->
       <el-table-column label="地址名称" align="center" prop="addressName" />
-      <el-table-column label="地址别名" align="center" prop="addressOtherName" />
+      <!-- <el-table-column label="地址别名" align="center" prop="addressOtherName" /> -->
       <el-table-column label="地址详情" align="center" prop="addressDetail" />
-      <el-table-column label="经度" align="center" prop="latitude" />
-      <el-table-column label="维度" align="center" prop="longitude" />
+      <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" />
       <el-table-column label="联系人" align="center" prop="userName" />
       <el-table-column label="手机号码" align="center" prop="telphone" />
+      <!-- <el-table-column label="经度" align="center" prop="latitude" />
+      <el-table-column label="维度" align="center" prop="longitude" />
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="创建人" align="center" prop="createCode" />
-      <el-table-column label="更新人" align="center" prop="updateCode" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="180" fixed="right">
+      <el-table-column label="更新人" align="center" prop="updateCode" /> -->
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="200" fixed="right">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -244,7 +264,7 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.$refs.AddressDialog.reset();
-      const id = row.id;
+      const id = row.id || this.ids;
       getAddress(id).then(response => {
         this.$refs.AddressDialog.setForm(response.data);
         this.open = true;

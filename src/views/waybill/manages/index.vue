@@ -296,16 +296,24 @@
       :gutter="10"
       class="mb8"
     >
+      <!-- <el-col :span="1.5">
+        <el-button
+          type="danger"
+          icon="el-icon-delete"
+          size="mini"
+          :disabled="multiple"
+          @click="handleDelete"
+        >批量删除</el-button>
+      </el-col> -->
       <right-toolbar
         :show-search.sync="showSearch"
         @queryTable="getList"
       />
     </el-row>
 
-    <el-table
-      v-loading="loading"
-      :data="managesList"
-    >
+    <!-- table -->
+    <el-table v-loading="loading" :data="managesList" @selection-change="handleSelectionChange">
+      <el-table-column type="selection" width="55" align="center" fixed="left" />
       <el-table-column
         label="货源编号"
         align="center"
@@ -680,6 +688,8 @@ export default {
     return {
       // 遮罩层
       'loading': true,
+      // 选中数组
+      'ids': [],
       // 显示搜索条件
       'showSearch': true,
       // 总条数
@@ -893,6 +903,12 @@ export default {
       this.resetForm('queryForm');
       this.handleQuery();
     },
+    // 多选框选中数据
+    handleSelectionChange(selection) {
+      this.ids = selection.map(item => item.code);
+      this.single = selection.length !== 1;
+      this.multiple = !selection.length;
+    },
     /** 详情按钮操作 */
     handleUpdate(row) {
       this.currentId = row.code;
@@ -914,14 +930,13 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const id = row.code;
-
-      this.$confirm('是否确认作废编号为"' + id + '"的运单?', '警告', {
+      const ids = row.code || this.ids;
+      this.$confirm('是否确认作废编号为"' + ids + '"的运单?', '警告', {
         'confirmButtonText': '确定',
         'cancelButtonText': '取消',
         'type': 'warning'
       }).then(function() {
-        return delManages(id);
+        return delManages(ids);
       }).then(() => {
         this.getList();
         this.msgSuccess('作废成功');

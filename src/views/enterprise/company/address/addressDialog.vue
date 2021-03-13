@@ -20,24 +20,18 @@
           >{{ dict.dictLabel }}</el-radio>
         </el-radio-group>
       </el-form-item>
-      <!-- <el-form-item label="创建人" prop="createCode">
-        <el-input v-model="form.createCode" placeholder="请输入创建人" class="width90" />
-      </el-form-item>
-      <el-form-item label="更新人" prop="updateCode">
-        <el-input v-model="form.updateCode" placeholder="请输入更新人" class="width90" />
-      </el-form-item> -->
       <el-form-item label="地址名称" prop="addressName">
         <el-input v-model="form.addressName" placeholder="请输入地址名称" class="width90" />
       </el-form-item>
       <el-form-item label="地址别名" prop="addressOtherName">
         <el-input v-model="form.addressOtherName" placeholder="请输入地址别名" class="width90" />
       </el-form-item>
-      <el-form-item label="经度" prop="latitude">
+      <!-- <el-form-item label="经度" prop="latitude">
         <el-input v-model="form.latitude" placeholder="请输入经度" class="width90" />
       </el-form-item>
       <el-form-item label="维度" prop="longitude">
         <el-input v-model="form.longitude" placeholder="请输入维度" class="width90" />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="地址详情" prop="addressDetail">
         <el-input v-model="form.addressDetail" placeholder="请输入地址详情" class="width90" />
       </el-form-item>

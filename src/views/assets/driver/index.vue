@@ -120,7 +120,7 @@
     </el-row>
 
     <el-table v-loading="loading" :data="driverList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
+      <el-table-column type="selection" width="55" align="center" fixed="left" />
       <el-table-column label="司机类别" align="center" prop="driverType" :formatter="driverTypeFormat" />
       <el-table-column label="省" align="center" prop="provinceCode" />
       <el-table-column label="市" align="center" prop="cityCode" />
@@ -155,7 +155,14 @@
       <el-table-column label="驾驶证发证机关" align="center" prop="issuingOrganizations" />
       <el-table-column label="是否上传企业" align="center" prop="isReportEnterprise" :formatter="isReportEnterpriseFormat" />
       <el-table-column label="从业资格证办理省份名称" align="center" prop="workLicenseProvinceName" />
-      <el-table-column label="审核状态" align="center" prop="authStatus" :formatter="authStatusFormat" />
+      <el-table-column label="审核状态" align="center" prop="authStatus" sortable>
+        <template slot-scope="scope">
+          <span v-show="scope.row.authStatus === 0" class="color-gray">未审核</span>
+          <span v-show="scope.row.authStatus === 1" class="color-blue">审核中</span>
+          <span v-show="scope.row.authStatus === 2" class="color-error">审核未通过</span>
+          <span v-show="scope.row.authStatus === 3" class="color-success">审核通过</span>
+        </template>
+      </el-table-column>
       <el-table-column label="是否冻结" align="center" prop="isFreeze" :formatter="isFreezeFormat" />
       <el-table-column label="创建人" align="center" prop="createCode" />
       <el-table-column label="修改人" align="center" prop="updateCode" />
@@ -399,3 +406,18 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.color-error{
+  color: #ff4949;
+}
+.color-gray{
+  color: #909399;
+}
+.color-blue{
+  color: #1890ff;
+}
+.color-success{
+  color: #00bd93;
+}
+</style>

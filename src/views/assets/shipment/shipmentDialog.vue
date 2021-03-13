@@ -68,7 +68,7 @@
           placeholder="省(支持自动识别)"
         >
           <el-option
-            v-for="dict in isFreezoneOptions"
+            v-for="dict in provinceCodeOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
@@ -82,7 +82,7 @@
           placeholder="市(支持自动识别)"
         >
           <el-option
-            v-for="dict in isFreezoneOptions"
+            v-for="dict in cityCodeOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
@@ -96,7 +96,7 @@
           placeholder="县/区(支持自动识别)"
         >
           <el-option
-            v-for="dict in isFreezoneOptions"
+            v-for="dict in countyCodeOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
@@ -136,7 +136,7 @@
           </el-col>
         </el-row>
       </el-form-item>
-      <!-- <el-form-item label="是否冻结" prop="isFreezone">
+      <el-form-item label="是否冻结" prop="isFreezone">
         <el-select
           v-model="form.isFreezone"
           clearable
@@ -150,7 +150,7 @@
             :value="dict.dictValue"
           />
         </el-select>
-      </el-form-item> -->
+      </el-form-item>
       <el-form-item label="是否核算" prop="isAccount">
         <el-select
           v-model="form.isAccount"
@@ -402,6 +402,11 @@ export default {
     /** 审核通过/未通过按钮 */
     reviewForm(key) {
       this.form.authStatus = key;
+      if (this.form.identificationEffective) {
+        this.form.identificationEffective = 1;
+      } else {
+        this.form.identificationEffective = 0;
+      }
       examine(this.form).then(response => {
         this.msgSuccess('操作成功');
         this.close();
@@ -477,7 +482,9 @@ export default {
       } else {
         data.identificationEffective = 0;
       }
-      authRead(data).then(response => {});
+      authRead(data).then(response => {
+        this.$emit('refresh');
+      });
     }
   }
 };
