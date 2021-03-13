@@ -1,12 +1,6 @@
 <template>
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="140px">
-      <el-form-item label="地址编码" prop="code">
-        <el-input v-model="form.code" placeholder="请输入地址编码" class="width90" />
-      </el-form-item>
-      <el-form-item label="货主编码" prop="shipmentCode">
-        <el-input v-model="form.shipmentCode" placeholder="请输入货主编码" class="width90" />
-      </el-form-item>
       <el-form-item label="地址类型" prop="addressType">
         <el-select v-model="form.addressType" placeholder="请选择地址类型" class="width90">
           <el-option
@@ -26,12 +20,12 @@
           >{{ dict.dictLabel }}</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="创建人" prop="createCode">
+      <!-- <el-form-item label="创建人" prop="createCode">
         <el-input v-model="form.createCode" placeholder="请输入创建人" class="width90" />
       </el-form-item>
       <el-form-item label="更新人" prop="updateCode">
         <el-input v-model="form.updateCode" placeholder="请输入更新人" class="width90" />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="地址名称" prop="addressName">
         <el-input v-model="form.addressName" placeholder="请输入地址名称" class="width90" />
       </el-form-item>
@@ -78,19 +72,16 @@ export default {
   },
   data() {
     return {
-      // 地址编码字典
-      codeOptions: [],
       // 地址类型字典
-      addressTypeOptions: [],
+      addressTypeOptions: [
+        { 'dictLabel': '装货地址', 'dictValue': 1 },
+        { 'dictLabel': '卸货地址', 'dictValue': 2 }
+      ],
       // 状态字典
       statusOptions: [
         { 'dictLabel': '启用', 'dictValue': 1 },
         { 'dictLabel': '禁用', 'dictValue': 2 }
       ],
-      // 地址名称字典
-      addressNameOptions: [],
-      // 地址别名字典
-      addressOtherNameOptions: [],
       // 表单参数
       form: {},
       // 表单校验
@@ -111,10 +102,6 @@ export default {
 
   },
   methods: {
-    // 地址编码字典翻译
-    codeFormat(row, column) {
-      return this.selectDictLabel(this.codeOptions, row.code);
-    },
     // 地址类型字典翻译
     addressTypeFormat(row, column) {
       return this.selectDictLabel(this.addressTypeOptions, row.addressType);
@@ -122,14 +109,6 @@ export default {
     // 状态字典翻译
     statusFormat(row, column) {
       return this.selectDictLabel(this.statusOptions, row.status);
-    },
-    // 地址名称字典翻译
-    addressNameFormat(row, column) {
-      return this.selectDictLabel(this.addressNameOptions, row.addressName);
-    },
-    // 地址别名字典翻译
-    addressOtherNameFormat(row, column) {
-      return this.selectDictLabel(this.addressOtherNameOptions, row.addressOtherName);
     },
     /** 提交按钮 */
     submitForm() {

@@ -87,20 +87,19 @@
 
     <el-table v-loading="loading" :data="addressList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="地址编码" align="center" prop="code" :formatter="codeFormat" />
       <el-table-column label="货主编码" align="center" prop="shipmentCode" />
       <el-table-column label="地址类型" align="center" prop="addressType" :formatter="addressTypeFormat" />
       <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" />
-      <el-table-column label="创建人" align="center" prop="createCode" />
-      <el-table-column label="更新人" align="center" prop="updateCode" />
-      <el-table-column label="地址名称" align="center" prop="addressName" :formatter="addressNameFormat" />
-      <el-table-column label="地址别名" align="center" prop="addressOtherName" :formatter="addressOtherNameFormat" />
+      <el-table-column label="地址名称" align="center" prop="addressName" />
+      <el-table-column label="地址别名" align="center" prop="addressOtherName" />
+      <el-table-column label="地址详情" align="center" prop="addressDetail" />
       <el-table-column label="经度" align="center" prop="latitude" />
       <el-table-column label="维度" align="center" prop="longitude" />
-      <el-table-column label="地址详情" align="center" prop="addressDetail" />
       <el-table-column label="联系人" align="center" prop="userName" />
       <el-table-column label="手机号码" align="center" prop="telphone" />
       <el-table-column label="备注" align="center" prop="remark" />
+      <el-table-column label="创建人" align="center" prop="createCode" />
+      <el-table-column label="更新人" align="center" prop="updateCode" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="180" fixed="right">
         <template slot-scope="scope">
           <el-button
@@ -169,19 +168,16 @@ export default {
       title: '',
       // 是否显示弹出层
       open: false,
-      // 地址编码字典
-      codeOptions: [],
       // 地址类型字典
-      addressTypeOptions: [],
+      addressTypeOptions: [
+        { 'dictLabel': '装货地址', 'dictValue': 1 },
+        { 'dictLabel': '卸货地址', 'dictValue': 2 }
+      ],
       // 状态字典
       statusOptions: [
         { 'dictLabel': '启用', 'dictValue': 1 },
         { 'dictLabel': '禁用', 'dictValue': 2 }
       ],
-      // 地址名称字典
-      addressNameOptions: [],
-      // 地址别名字典
-      addressOtherNameOptions: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -215,10 +211,6 @@ export default {
         this.loading = false;
       });
     },
-    // 地址编码字典翻译
-    codeFormat(row, column) {
-      return this.selectDictLabel(this.codeOptions, row.code);
-    },
     // 地址类型字典翻译
     addressTypeFormat(row, column) {
       return this.selectDictLabel(this.addressTypeOptions, row.addressType);
@@ -226,14 +218,6 @@ export default {
     // 状态字典翻译
     statusFormat(row, column) {
       return this.selectDictLabel(this.statusOptions, row.status);
-    },
-    // 地址名称字典翻译
-    addressNameFormat(row, column) {
-      return this.selectDictLabel(this.addressNameOptions, row.addressName);
-    },
-    // 地址别名字典翻译
-    addressOtherNameFormat(row, column) {
-      return this.selectDictLabel(this.addressOtherNameOptions, row.addressOtherName);
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -247,7 +231,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.code);
+      this.ids = selection.map(item => item.id);
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
     },
@@ -260,8 +244,8 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.$refs.AddressDialog.reset();
-      const code = row.code;
-      getAddress(code).then(response => {
+      const id = row.id;
+      getAddress(id).then(response => {
         this.$refs.AddressDialog.setForm(response.data);
         this.open = true;
         this.title = '修改地址';
@@ -271,7 +255,7 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          if (this.form.code != null) {
+          if (this.form.id != null) {
             updateAddress(this.form).then(response => {
               this.msgSuccess('修改成功');
               this.open = false;
@@ -289,13 +273,13 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const codes = row.code || this.ids;
-      this.$confirm('是否确认删除地址编号为"' + codes + '"的数据项?', '警告', {
+      const ids = row.id || this.ids;
+      this.$confirm('是否确认删除地址编号为"' + ids + '"的数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
-        return delAddress(codes);
+        return delAddress(ids);
       }).then(() => {
         this.getList();
         this.msgSuccess('删除成功');
