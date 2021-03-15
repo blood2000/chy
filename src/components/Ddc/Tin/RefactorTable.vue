@@ -4,6 +4,7 @@
     <el-table-column v-if="!!_events['selection-change']" type="selection" width="55" align="center" />
     <template v-for="(th, key) in tableColumnsConfig">
       <el-table-column
+        v-if="th.isShow"
         :key="th.prop +''+ key"
         :align="th.align || 'center'"
         :prop="th.prop"
@@ -11,10 +12,10 @@
         :width="th.width"
         :fixed="th.fixed"
         :show-overflow-tooltip="th.tooltip || false"
-        :formatter="th.formatter"
       >
+        <!-- :formatter="th.formatter" -->
         <template slot-scope="scope">
-          <slot :name="th.prop" :row="scope.row">{{ scope.row[th.prop] }}</slot>
+          <slot :name="th.prop" :row="scope.row">{{ scope.row[th.prop] || '' }}</slot>
         </template>
       </el-table-column>
     </template>

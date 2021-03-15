@@ -85,7 +85,7 @@
         >导出</el-button>
       </el-col>
       <el-col :span="1.5">
-        <tablec-cascader v-model="tableColumnsConfig" :options="options" />
+        <tablec-cascader v-model="tableColumnsConfig" />
       </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
@@ -157,38 +157,41 @@ export default {
         status: undefined
       },
 
-      // 表头动态值
-      tableColumnsConfig: [],
-
       // 下拉框展示所有的值-其中每一项就是配置项的值
-      options: [
+      tableColumnsConfig: [
         {
           prop: 'infoId',
-          label: '访问编号'
+          label: '访问编号',
+          isShow: true
           // width: ,
           // align: 'center'
         },
         {
           prop: 'userName',
+          isShow: true,
           label: '用户名称'
           // width: ,
           // align: 'center'
         }, {
           prop: 'ipaddr',
+          isShow: true,
           label: '地址',
           width: 130,
           tooltip: true
           // align: 'center'
         }, {
           prop: 'status',
+          isShow: true,
           label: '状态'
         }, {
           prop: 'msg',
+          isShow: true,
           label: '描述'
           // width: ,
           // align: 'center'
         }, {
           prop: 'accessTime',
+          isShow: true,
           label: '访问时间',
           width: 180
           // align: 'center'
@@ -198,12 +201,11 @@ export default {
     };
   },
   created() {
+    this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || this.tableColumnsConfig;
     this.getList();
     this.getDicts('sys_common_status').then(response => {
       this.statusOptions = response.data;
     });
-    // 这个可以做个判断如果有存则取存的东西, 没有就去全部
-    this.tableColumnsConfig = this.options;
   },
   methods: {
     /** 查询登录日志列表 */
@@ -268,11 +270,8 @@ export default {
       this.download('system/logininfor/export', {
         ...this.queryParams
       }, `logininfor_${new Date().getTime()}.xlsx`);
-    },
-
-    handleChange(value) {
-      this.tableColumnsConfig = value;
     }
+
   }
 };
 </script>
