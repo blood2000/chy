@@ -141,6 +141,12 @@
           <el-button
             size="mini"
             type="text"
+            icon="el-icon-setting"
+            @click="handleManage(scope.row)"
+          >管理</el-button>
+          <el-button
+            size="mini"
+            type="text"
             icon="el-icon-document"
             @click="handleDEtail(scope.row)"
           >详情</el-button>
@@ -172,17 +178,22 @@
 
     <!-- 新增/修改/详情 对话框 -->
     <team-dialog ref="TeamDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
+
+    <!-- 管理 对话框 -->
+    <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" />
   </div>
 </template>
 
 <script>
 import { listInfo, getInfo, delInfo } from '@/api/assets/team';
 import TeamDialog from './teamDialog';
+import ManageDialog from './manageDialog.vue';
 
 export default {
   name: 'Team',
   components: {
-	  TeamDialog
+	  TeamDialog,
+    ManageDialog
   },
   data() {
     return {
@@ -204,6 +215,7 @@ export default {
       title: '',
       // 是否显示弹出层
       open: false,
+      manageDialogOpen: false,
       // 车队名称字典
       // nameOptions: [],
       // 车队管理者字典
@@ -224,8 +236,8 @@ export default {
       },
       // 表单参数
       form: {},
-	  // 表单是否禁用
-	  formDisable: false
+      // 表单是否禁用
+      formDisable: false
     };
   },
   created() {
@@ -279,7 +291,7 @@ export default {
       this.$refs.TeamDialog.reset();
       this.open = true;
       this.title = '添加调度者';
-	  this.formDisable = false;
+	    this.formDisable = false;
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -294,14 +306,14 @@ export default {
     },
     /** 详情按钮操作 */
     handleDEtail(row) {
-	  this.$refs.TeamDialog.reset();
-	  const id = row.id || this.ids;
-	  getInfo(id).then(response => {
+      this.$refs.TeamDialog.reset();
+      const id = row.id || this.ids;
+      getInfo(id).then(response => {
         this.$refs.TeamDialog.setForm(response.data);
         this.open = true;
         this.title = '详情';
         this.formDisable = true;
-	  });
+      });
     },
     /** 删除按钮操作 */
     handleDelete(row) {
@@ -322,6 +334,10 @@ export default {
       this.download('assets/team/export', {
         ...this.queryParams
       }, `assets_${new Date().getTime()}.xlsx`);
+    },
+    /** 管理按钮操作 */
+    handleManage(row) {
+      this.manageDialogOpen = true;
     }
   }
 };
