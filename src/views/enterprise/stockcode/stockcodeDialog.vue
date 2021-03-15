@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { addStockcode, updateStockcode } from '@/api/enterprise/stockcode';
+import { addStockcode, updateStockcode, generateCode } from '@/api/enterprise/stockcode';
 export default {
   props: {
     title: {
