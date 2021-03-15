@@ -1,0 +1,53 @@
+/* 单行溢出 */
+.g-single-row{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* 两行溢出 */
+.g-double-row{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  word-break: break-all;
+}
+
+/* 字体加粗 */
+.g-strong {
+  font-weight: 700;
+}
+
+/* 标题样式 */
+.g-title-max{
+  font-size: 32px;
+  line-height: 48px;
+}
+.g-title-large{
+  font-size: 24px;
+  line-height: 36px;
+}
+.g-title-medium{
+  font-size: 20px;
+  line-height: 40px;
+}
+.g-title-small{
+  font-size: 14px;
+  line-height: 22px;
+}
+
+/* 文本样式 */
+.g-text{
+  font-size: 14px;
+  line-height: 22px;
+}
+
+/* 分割线  
+ * 注意事项: 仅用于hr标签 
+ */
+.g-hr{
+  opacity: 0.3;
+  margin: 40px 0;
+}
