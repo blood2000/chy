@@ -119,8 +119,11 @@
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table v-loading="loading" :data="driverList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="driverList" type="expand" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
+      <el-table-column type="expand">
+        <template slot-scope="scope" />
+      </el-table-column>
       <el-table-column label="司机类别" align="center" prop="driverType" :formatter="driverTypeFormat" />
       <el-table-column label="名字" align="center" prop="name" />
       <el-table-column label="手机" align="center" prop="telphone" />
