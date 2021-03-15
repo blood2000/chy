@@ -15,13 +15,13 @@
       <h3 class="g-title-medium">开票信息</h3>
       <el-form ref="form" :model="form" label-width="140px" :label-position="'left'">
         <h5 class="g-title-small g-strong g-color-gray mb20">| 增值税发票开票信息</h5>
-        <el-form-item label="发票编码" prop="code">
+        <!-- <el-form-item label="发票编码" prop="code">
           <el-input v-model="form.code" placeholder="请输入发票编码" class="input-width" clearable />
         </el-form-item>
         <el-form-item label="货主编码" prop="shipmentCode">
           <el-input v-model="form.shipmentCode" placeholder="请输入货主编码" class="input-width" clearable />
-        </el-form-item>
-        <el-form-item label="纳税人识别号" prop="tax registration">
+        </el-form-item> -->
+        <el-form-item label="纳税人识别号" prop="taxRegistration">
           <el-input v-model="form.taxRegistration" placeholder="请输入纳税人识别号" class="input-width" clearable />
         </el-form-item>
         <el-form-item label="注册地址" prop="registrationAddrtion">
@@ -42,7 +42,7 @@
         <el-form-item label="收票人姓名" prop="payeeName">
           <el-input v-model="form.payeeName" placeholder="请输入收票人姓名" class="input-width" clearable />
         </el-form-item>
-        <el-form-item label="收票人联系电话" prop="payee telphone">
+        <el-form-item label="收票人联系电话" prop="payeeTelphone">
           <el-input v-model="form.payeeTelphone" placeholder="请输入收票人联系电话" class="input-width" clearable />
         </el-form-item>
         <el-form-item label="收票人电子邮箱" prop="payeeEmail">
@@ -60,7 +60,7 @@
   </div>
 </template>
 <script>
-import { updateBilling } from '@/api/enterprise/company/billing';
+import { addBilling, updateBilling, getBilling } from '@/api/enterprise/company/billing';
 
 export default {
   data() {
@@ -69,12 +69,27 @@ export default {
     };
   },
   created() {
-
+    this.getBilling();
   },
   methods: {
+    getBilling() {
+      getBilling('8b3f41f598c64fd9a7922a5611a7ed8f').then(response => {
+        this.form = response.data;
+      });
+    },
     handleSubmit() {
-      updateBilling(this.form).then(response => {
-
+      this.$refs['form'].validate(valid => {
+        if (valid) {
+          if (this.form.id != null) {
+            updateBilling(this.form).then(response => {
+              this.msgSuccess('修改成功');
+            });
+          } else {
+            addBilling(this.form).then(response => {
+              this.msgSuccess('新增成功');
+            });
+          }
+        }
       });
     }
   }
