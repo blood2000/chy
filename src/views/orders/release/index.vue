@@ -1,93 +1,196 @@
 <template>
   <div class="app-container">
-
     <!-- 转货信息 -->
 
-
-    <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="110px" :label-position="'left'">
+    <el-form
+      ref="elForm"
+      :model="formData"
+      :rules="rules"
+      size="medium"
+      label-width="110px"
+      :label-position="'left'"
+    >
       <div class="content">
         <div class="header mb8">代发货主信息</div>
 
-        <!-- <el-row :gutter="15" >
-                    <el-col :span="12">
-                        <el-form-item label="代发货主" prop="field141">
-                            <el-input v-model="formData.field141" placeholder="请输入代发货主" clearable :style="{width: '100%'}">
-                            </el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="12">
-                        <el-button @click="onSubmit">选择货主</el-button>
-                        <el-button>清除已选货主</el-button>
-                    </el-col>
-                </el-row> -->
-
-        <el-form-item label="代发货主" prop="pubilshCode">
-          <el-select v-model="formData.pubilshCode" placeholder="请输入代发货主" :style="{width: '100%'}" filterable>
-            <el-option v-for="(item, index1) in formDataList.shipmentList" :key="index1" :label="item.adminName" :value="item.code" />
+        <el-form-item label="代发货主" prop="tin1">
+          <el-select
+            v-model="formData.tin1"
+            placeholder="请输入代发货主"
+            :style="{ width: '100%' }"
+            filterable
+          >
+            <el-option
+              v-for="(item, index1) in [{ adminName: '', code: '123456' }]"
+              :key="index1"
+              :label="item.adminName"
+              :value="item.code"
+            />
           </el-select>
         </el-form-item>
-
-
       </div>
       <el-divider />
 
       <div class="content">
         <div class="header mb8">货物类型</div>
 
-        <el-form-item label="选择所属项目" prop="projectCode">
-          <el-select v-model="formData.projectCode" placeholder="无归属项目" clearable :style="{width: '100%'}">
-            <el-option label="项目1" :value="1" />
-            <el-option label="项目2" :value="2" />
+        <el-form-item label="选择所属项目" prop="tin3">
+          <el-select
+            v-model="formData.tin3"
+            placeholder="无归属项目"
+            clearable
+            :style="{ width: '100%' }"
+          >
+            <el-option
+              v-for="item in [
+                {
+                  label: '项目1',
+                  value: '68655588',
+                },
+                {
+                  label: '项目2',
+                  value: '6865550088',
+                },
+              ]"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
           </el-select>
         </el-form-item>
 
-        <el-form-item label="选择货物类型" prop="goodsBigType">
-          <el-select v-model="formData.goodsBigType" placeholder="选择货物类型" clearable :style="{width: '100%'}">
-            <el-option label="测试" :value="'test1'" />
-            <el-option v-for="(item, index1) in formDataList.coalType" :key="index1" :label="item.dictLabel" :value="item.dictValue" />
-          </el-select>
+        <el-form-item label="选择货物类型" prop="tin2">
+          <el-radio-group v-model="formData.tin2" size="medium">
+            <el-radio
+              v-for="item in goodsBigTypeOptions"
+              :key="item.value"
+              :label="item.value"
+            >{{ item.label }}</el-radio>
+          </el-radio-group>
         </el-form-item>
 
-        <template v-if="formData.goodsBigType">
-          <el-form-item v-if="isBigOdd" label="货物类型(小)" prop="goodsType1">
-            <el-checkbox-group v-model="formData.goodsType1" size="medium">
-              <el-checkbox :label="1">煤矿</el-checkbox>
-              <el-checkbox :label="2">沙土</el-checkbox>
+        <!-- 先隐藏, 选择后显示 -->
+        <template v-if="formData.tin2">
+          <!-- isMultiGoods true->多商品 ; false->单商品 -->
+          <el-form-item v-if="isMultiGoods" label="货物类型(小)" prop="tin2_1">
+            <el-checkbox-group
+              v-model="formData.tin2_1"
+              size="medium"
+              @change="handletin2_1"
+            >
+              <el-checkbox
+                v-for="dict in tin2_1Option"
+                :key="dict.dictValue"
+                :label="dict.dictValue"
+              >{{ dict.dictLabel }}</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
-          <el-form-item v-else label="货物类型(小)" prop="goodsType2">
-            <el-radio-group v-model="formData.goodsType2" size="medium">
-              <el-radio :label="1">商品1</el-radio>
-              <el-radio :label="2">商品2</el-radio>
+          <el-form-item v-else label="货物类型(小)" prop="tin2_2">
+            <el-radio-group v-model="formData.tin2_2" size="medium">
+              <el-radio
+                v-for="dict in [
+                  { dictValue: 'shagiooe', dictLabel: '水' },
+                  { dictValue: 'shagiwwee', dictLabel: '火' },
+                ]"
+                :key="dict.dictValue"
+                :label="dict.dictValue"
+              >{{ dict.dictLabel }}</el-radio>
             </el-radio-group>
           </el-form-item>
         </template>
 
-        <el-form-item label="发布为" prop="isPublic">
-          <el-radio-group v-model="formData.isPublic" size="medium">
-            <el-radio :label="true">公开货源(所有人可接)</el-radio>
-            <el-radio :label="false">非公开货源</el-radio>
+        <el-form-item label="发布为" prop="tin4">
+          <el-radio-group v-model="formData.tin4" size="medium">
+            <el-radio
+              v-for="dict in [
+                { dictValue: true, dictLabel: '公开货源(所有人可接)' },
+                { dictValue: false, dictLabel: '非公开货源' },
+              ]"
+              :key="dict.dictValue"
+              :label="dict.dictValue"
+            >{{ dict.dictLabel }}</el-radio>
           </el-radio-group>
         </el-form-item>
 
-        <template v-if="!formData.isPublic">
-          <el-form-item label="指定接单人" prop="isSpecified">
-            <el-radio-group v-model="formData.isSpecified" size="medium">
-              <el-radio :label="true">是</el-radio>
-              <el-radio :label="false">否</el-radio>
+        <template v-if="!formData.tin4">
+          <el-form-item label="指定接单人" prop="tin5">
+            <el-radio-group v-model="formData.tin5" size="medium">
+              <el-radio
+                v-for="dict in [
+                  { dictValue: true, dictLabel: '是' },
+                  { dictValue: false, dictLabel: '否' },
+                ]"
+                :key="dict.dictValue"
+                :label="dict.dictValue"
+              >{{ dict.dictLabel }}</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item v-if="formData.isSpecified" label="指定接单人(调度者3人,司机1人)" prop="select_arr_4" label-width="300px">
-            <!-- 这个要做成什么?? -->
-            <el-select v-model="formData.select_arr_4" placeholder="选择接单人" multiple clearable :style="{width: '100%'}">
-              <el-option label="接单1" :value="1" />
-              <el-option label="接单2" :value="2" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="货集码" prop="tinkaikin1111111111" label-width="300px">
-            <el-select v-model="formData.tinkaikin1111111111" placeholder="选择货集码" clearable :style="{width: '100%'}">
-              <el-option label="接单1" :value="1" />
-              <el-option label="接单2" :value="2" />
+
+          <template v-if="formData.tin5">
+            <div style="display: flex">
+              <el-form-item
+                label="指定接单人(调度者3人,司机1人)"
+                prop="tin5_1"
+                label-width="300px"
+              >
+                <el-select
+                  v-model="formData.tin5_1"
+                  placeholder="调度者"
+                  multiple
+                  collapse-tags
+                  clearable
+                  :style="{ width: '100%' }"
+                >
+                  <el-option
+                    v-for="dict in [
+                      { dictValue: '11111', dictLabel: '调度者1' },
+                      { dictValue: '22222', dictLabel: '调度者2' },
+                    ]"
+                    :key="dict.dictValue"
+                    :label="dict.dictLabel"
+                    :value="dict.dictValue"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item prop="tin5_2" label-width="10px">
+                <el-select
+                  v-model="formData.tin5_2"
+                  placeholder="司机"
+                  clearable
+                  multiple
+                  collapse-tags
+                  :style="{ width: '100%' }"
+                >
+                  <el-option
+                    v-for="dict in [
+                      { dictValue: '10000', dictLabel: '司机1' },
+                      { dictValue: '20000', dictLabel: '司机2' },
+                    ]"
+                    :key="dict.dictValue"
+                    :label="dict.dictLabel"
+                    :value="dict.dictValue"
+                  />
+                </el-select>
+              </el-form-item>
+            </div>
+          </template>
+
+          <el-form-item label="货集码" prop="tin6" label-width="300px">
+            <el-select
+              v-model="formData.tin6"
+              placeholder="选择货集码"
+              clearable
+              :style="{ width: '100%' }"
+            >
+              <el-option
+                v-for="dict in [
+                  { dictValue: '108888000', dictLabel: '集码1' },
+                  { dictValue: '200888800', dictLabel: '集码2' },
+                ]"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
             </el-select>
           </el-form-item>
         </template>
@@ -97,60 +200,89 @@
             v-model="formData.remark"
             type="textarea"
             placeholder="请输入任何您想说的话..."
-            :autosize="{minRows: 4, maxRows: 4}"
-            :style="{width: '100%'}"
+            :autosize="{ minRows: 4, maxRows: 4 }"
+            :style="{ width: '100%' }"
           />
         </el-form-item>
-
       </div>
       <el-divider />
 
+      <!-- 如果是单商品着没有下面的 -->
+      <!-- isMultiGoods true->多商品 ; false->单商品 -->
 
-      <template v-if="isBigOdd">
+      <template v-if="isMultiGoods">
         <div class="content">
           <div class="header mb8">装货类型</div>
-          <el-form-item label="装货类型" prop="loadType">
-            <el-radio-group v-model="formData.loadType" size="medium">
-              <el-radio :label="0">一装一卸</el-radio>
-
-              <el-radio :label="1">多装一卸</el-radio>
-
-              <el-radio :label="2">一装多卸</el-radio>
+          <el-form-item label="装货类型" prop="tin7">
+            <el-radio-group v-model="formData.tin7" size="medium">
+              <el-radio
+                v-for="dict in [
+                  { dictValue: '1', dictLabel: '一装一卸' },
+                  { dictValue: '2', dictLabel: '多装一卸' },
+                  { dictValue: '3', dictLabel: '一装多卸' },
+                  { dictValue: '4', dictLabel: '多装多卸' },
+                ]"
+                :key="dict.dictValue"
+                :label="dict.dictValue"
+              >{{ dict.dictLabel }}</el-radio>
             </el-radio-group>
           </el-form-item>
 
-          <el-form-item label="允许自装" prop="isOneselfUnload">
-            <el-checkbox v-model="formData.isOneselfUnload">允许自装</el-checkbox>
+          <el-form-item label="允许自装" prop="tin8">
+            <el-checkbox v-model="formData.tin8">允许自装</el-checkbox>
           </el-form-item>
         </div>
+
         <el-divider />
       </template>
-
     </el-form>
 
-
     <!-- s封装成组件 -->
+    <!--
+      1: 多商品对应多地址/单商品就一个地址
+      2: 多装和多卸 各自可有多地址
+     -->
+
     <div class="content">
-      <div class="header mb8">货源发布</div>
-      <add-address ref="address1" :address-type="1" :show-btn="formData.loadType === 1" :is-big-odd="isBigOdd" />
+      <div class="header mb8">货源地址</div>
+      <!-- isMultiGoods true->多商品 ; false->单商品 -->
+      <!-- address-type : 1=>货源地址; 2=>卸货地址 -->
+      <!-- show-btn : true=>可多选; false=>隐藏按钮不能多选 -->
+      <add-address
+        ref="address1"
+        :address-type="1"
+        :show-btn="formData.tin7 === '2' || formData.tin7 === '4'"
+        :is-big-odd="isMultiGoods"
+      />
     </div>
 
     <el-divider />
 
     <div class="content">
-      <div class="header mb8">卸货信息</div>
-      <add-address ref="address2" :address-type="2" :show-btn="formData.loadType === 2" :is-big-odd="isBigOdd" />
+      <div class="header mb8">卸货地址</div>
+      <!-- isMultiGoods true->多商品 ; false->单商品 -->
+      <!-- address-type : 1=>货源地址; 2=>卸货地址 -->
+      <!-- show-btn : true=>可多选; false=>隐藏按钮不能多选 -->
+      <add-address
+        ref="address2"
+        :address-type="2"
+        :show-btn="formData.tin7 === '3' || formData.tin7 === '4'"
+        :is-big-odd="isMultiGoods"
+      />
     </div>
-
 
     <el-divider />
 
-    <template v-if="!isBigOdd">
+    <!--
+      多商品对应多个计算规则 orderGoodsList数组 会有多个
+      单个商品就一个计算规则
+     -->
+    <!-- isMultiGoods true->多商品 ; false->单商品 -->
+    <template v-if="!isMultiGoods">
       <div class="content">
         <div class="header mb8">货物</div>
 
         <GoodsAccounting ref="goodsAccounting" />
-
       </div>
 
       <div class="content">
@@ -167,35 +299,30 @@
         <div>
           <span>预估运费(不含税):</span> <span>￥</span><span>8566.00</span>
         </div>
-        <div>
-          <span>(含税):</span> <span>￥</span><span>8566.00</span>
-        </div>
+        <div><span>(含税):</span> <span>￥</span><span>8566.00</span></div>
       </div>
     </template>
+
     <template v-else>
       <div class="content">
         <div class="header mb8">货物/核算</div>
 
-        <el-tabs v-model="activeName">
-          <el-tab-pane v-for="item in formData.goodsType1" :key="item" label="用户管理" name="first">
-            <MultiData ref="first" />
-          </el-tab-pane>
-          <el-tab-pane label="配置管理" name="second">
-            <MultiData ref="second" />
-          </el-tab-pane>
-          <el-tab-pane label="角色管理" name="third">
-            <MultiData ref="third" />
-          </el-tab-pane>
-          <el-tab-pane label="定时任务补偿" name="fourth">
-            <MultiData ref="fourth" />
+        <!-- tin2_1 是选中的多个商品 至少选中一个
+            1. 监听选择事件 创建一个新的数组
+        -->
+        <el-tabs v-model="tin2_1tabs_activeName">
+          <el-tab-pane
+            v-for="item in tin2_1tabs"
+            :key="item.value"
+            :label="item.label"
+            :name="item.value"
+          >
+            <!-- v-model="item.data" 如果自接传在去修改会警告, 倒不如处理完返回再赋值 -->
+            <MultiData :ref="item.value" />
           </el-tab-pane>
         </el-tabs>
-
       </div>
     </template>
-
-
-
 
     <!-- <div class="content" v-if="false">
                 <div class="header mb8">货物、路线信息:</div>
@@ -475,14 +602,11 @@
       <el-button>取消</el-button>
     </div>
 
-
     <!-- 添加或修改【请填写功能名称】对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="75%" append-to-body>
-
       <div>
         <open-dialog />
       </div>
-
     </el-dialog>
   </div>
 </template>
@@ -509,24 +633,64 @@ export default {
   },
   data() {
     return {
+      // 多商品对应各自的规格
+      tin2_1tabs: [],
+      tin2_1tabs_activeName: '0',
       formData: {
-        pubilshCode: undefined,
-        projectCode: undefined,
-        goodsBigType: undefined,
-        goodsType1: [],
-        goodsType2: undefined,
-        isPublic: true,
-        isSpecified: true,
-        tinkaikin1111111111: undefined, // 无这个字段
-        remark: '',
-        loadType: 1,
-        isOneselfUnload: false // 无这个字段 允许自装
+        tin1: '', // 发布人Code
+        tin2: undefined, // 选择货物类型大类(必填)
+        tin2_1: [], // 多商品-小类(必填)
+        tin2_2: undefined, // 单商品 - 小类(必填)
+        tin3: undefined, // 项目编码
+        tin4: true, // 是否公开货源 0.非公开 1.公开 / false=>非公开
+        tin5: false, // 是否指定接单人 0否 1是 / false=>否
+        tin5_1: [], // 调度者 多个
+        tin5_2: [], // 司机 多个
+        tin6: undefined, // 货集码
+        tin7: '1', // 装卸类型 1.一装一卸 2.多装一卸 3.一装多卸 4.多装多卸
+        tin8: false // 允许自装 true=>是; false=> 否
+
+        /*
+        classList: [{ classCode: '1' }],
+        isClass: undefined, // 是否加入货源码 0否 1是
+        isPublic: undefined, // 是否公开货源 0.非公开 1.公开
+        isSpecified: undefined, // 是否指定接单人 0否 1是
+        loadType: undefined, // 装卸类型 1.一装一卸 2.多装一卸 3.一装多卸 4.多装多卸
+        orderFreightBoList: undefined,
+        orderGoodsList: undefined,
+        orderSpecifiedList: undefined,
+        projectCode: undefined, // 项目编码
+        pubilshCode: undefined, // 发布人Code
+        remark: '', // 备注
+        */
+        // goodsBigType: undefined,
+        // goodsType1: [],
+        // goodsType2: undefined,
+        // isOneselfUnload: false, // 无这个字段 允许自装
       },
       rules: {
-        goodsBigType: [{ required: true, message: '请选择货物计量单位', trigger: 'change' }],
-        goodsType1: [{ required: true, message: '请选择货物计量单位', trigger: 'change' }],
-        goodsType2: [{ required: true, message: '请选择货物计量单位', trigger: 'change' }]
+        tin2: [
+          { required: true, message: '请选择货物类型', trigger: 'change' }
+        ],
+        tin2_1: [
+          { required: true, message: '请选择货物类型(小)', trigger: 'change' }
+        ],
+        tin2_2: [
+          { required: true, message: '请选择货物类型(小)', trigger: 'change' }
+        ]
       },
+
+      // 字典类型
+      goodsBigTypeOptions: [
+        { label: '水泥', isdd: false, value: 'hhhh' }, // true 是多选
+        { label: '煤', isdd: true, value: 'hhhh3' }
+      ],
+
+      // 小类多商品
+      tin2_1Option: [
+        { dictValue: 'shagie', dictLabel: '煤炭' },
+        { dictValue: 'shagiwwee', dictLabel: '煤球' }
+      ],
 
       formDataList: {
         shipmentList: []
@@ -543,19 +707,64 @@ export default {
   },
 
   computed: {
+    // 判断子类为多选还是单选
+    isMultiGoods() {
+      console.log(this.formData.tin2);
+      let bool = false;
+      this.goodsBigTypeOptions.forEach((e) => {
+        if (e.value === this.formData.tin2) {
+          bool = e.isdd;
+        }
+      });
+      return bool;
+    },
     isBigOdd() {
       return this.formData.goodsBigType === 1;
     }
   },
 
   async created() {
-    listShipment().then(res => {
-      this.formDataList.shipmentList = res.rows;
-    });
+    listShipment()
+      .then((res) => {
+        this.formDataList.shipmentList = res.rows;
+      })
+      .catch(() => {
+        this.formDataList.shipmentList = [
+          {
+            id: 9,
+            code: 'c0e8fdb5e44942d3a10907dc97768847',
+            adminName: 'lin',
+            adminCode: 'c0e8fdb5e44942d3a10907dc97768847',
+            shipperType: 0,
+            identificationNumber: '350103199708244939',
+            authStatus: 0,
+            isFreezone: 0,
+            createTime: '2021-03-13T11:49:44.254+08:00',
+            isAccount: 1,
+            accountType: '1',
+            isWipe: 1,
+            wipeType: 'cent',
+            isMonthly: 1,
+            isPrepaid: 1,
+            isConsumption: 1,
+            consumptionUnit: 'quota',
+            consumptionMin: '10',
+            consumptionMax: '100',
+            dispatchPoints: '1',
+            creditAmount: 3000,
+            identificationBeginTime: '2021-03-08',
+            identificationEndTime: '2021-03-25',
+            identificationEffective: 0,
+            ticketType: 'one',
+            serviceRatio: '11',
+            telphone: '18859464414',
+            supplyIsAuth: 1
+          }
+        ];
+      });
 
-    this.getDicts('coalType').then(response => {
+    this.getDicts('coalType').then((response) => {
       this.formDataList.coalType = response.data;
-      console.log(this.formDataList.coalType);
     });
   },
 
@@ -563,87 +772,217 @@ export default {
     async onSubmit(form) {
       this.$refs[form].validate(async(valid) => {
         if (valid) {
-          const address1 = this.$refs.address1 && await this.$refs.address1._submitForm() || [];
-          const address2 = this.$refs.address2 && await this.$refs.address2._submitForm() || [];
-          const goodsAccounting = this.$refs.goodsAccounting && await this.$refs.goodsAccounting._submitForm() || {};
-          const accounTing = this.$refs.accounTing && await this.$refs.accounTing._submitForm() || {};
-          const multiData = this.$refs[this.activeName] && await this.$refs[this.activeName]._submitForm() || {};
+          /*
+          {
+            "classList": [
+              {
+                "classCode": "1"
+              }
+            ],
+            "isClass": true,
+            "isPublic": true,
+            "isSpecified": true,
+            "loadType": 0,
+            "orderFreightBoList": [
+              {
+                "ruleItemId": 0,
+                "ruleItemValue": "1",
+                "type": 0
+              }
+            ],
+            "orderGoodsList": [
+              {
+                "addressList": [
+                  {
+                    "adcode": "1",
+                    "addressAlias": "1",
+                    "addressType": 0,
+                    "city": "1",
+                    "citycode": "1",
+                    "contact": "1",
+                    "contactPhone": "1",
+                    "country": "1",
+                    "detail": "1",
+                    "district": "1",
+                    "level": "1",
+                    "location": [1,2],
+                    "province": "1",
+                    "street": "1"
+                  }
+                ],
+                "endLimitWastage": 0,
+                "goodsBigType": "1",
+                "goodsType": "1",
+                "goodsUnit": "1",
+                "isModifyFinish": true,
+                "isOneselfLoad": true,
+                "isOneselfUnload": true,
+                "limitWastage": "1",
+                "perWeight": 0,
+                "priceWastage": 0,
+                "shipmentPrice": 0,
+                "startLimitWastage": 0,
+                "vehicleLength": "1",
+                "vehicleType": "1",
+                "weight": 0
+              }
+            ],
+            "orderSpecifiedList": [
+              {
+                "driverInfoCode": "1",
+                "teamInfoCode": "1",
+                "userType": 0
+              }
+            ],
+            "projectCode": "1",
+            "pubilshCode": "1", // 发布人Code
+            "remark": "1"
+          }
+          */
 
-          // console.log(
-          //   [...address1, ...address2],
-          //   goodsAccounting,
-          //   accounTing,
-          //   multiData
-          // );
+          const address1 =
+            (this.$refs.address1 &&
+              (await this.$refs.address1._submitForm())) ||
+            [];
+          const address2 =
+            (this.$refs.address2 &&
+              (await this.$refs.address2._submitForm())) ||
+            [];
+
+          let goodsAccounting;
+          let accounTing;
+          let arrs;
+
+          let orderFreightBoList = [];
+          let orderGoodsList = [];
+          let orderSpecifiedList = [];
+
+          const driverInfoCode = this.formData.tin5_2.map((driverInfoCode) => {
+            return {
+              driverInfoCode,
+              teamInfoCode: '',
+              userType: 2
+            };
+          });
+          const teamInfoCode = this.formData.tin5_1.map((teamInfoCode) => {
+            return {
+              driverInfoCode: '',
+              teamInfoCode,
+              userType: 1
+            };
+          });
+          orderSpecifiedList = driverInfoCode.concat(teamInfoCode);
+
+          console.log(orderSpecifiedList);
+
+          // <!-- isMultiGoods true->多商品 ; false->单商品 -->
+          if (this.isMultiGoods) {
+            const promisArr = this.formData.tin2_1.map(async(e) => {
+              return {
+                ...((this.$refs[e][0] &&
+                  (await this.$refs[e][0]._submitForm())) ||
+                  {}),
+                goodsTypeName: e
+              };
+            });
+            arrs = await Promise.all(promisArr);
+
+            // 多商品核算规则多个
+            orderFreightBoList = arrs.map((accounTing) => {
+              return {
+                ruleItemId: accounTing.ruleItemId,
+                ruleItemValue: '', // ??
+                type: '' // ??
+              };
+            });
+
+            orderGoodsList = arrs.map((e) => {
+              return {
+                addressList: [...address1, ...address2],
+                endLimitWastage: 0, // 免赔偿路耗规范结束 多商品无此选项??
+                goodsBigType: this.formData.tin2,
+                goodsType: this.formData.tin2_1,
+                goodsUnit: '1', // 多商品没有 计量单位
+                isModifyFinish: true, // 平台是否完成调价?? 啥东西
+                isOneselfLoad: false, // 是否允许自装 0否 1是 (多装模式)?? 啥东西
+                isOneselfUnload: this.formData.tin8,
+                limitWastage: '1', // 限制损耗?? 啥东西
+                perWeight: 0, // 最高配载 多商品无此选项??
+                priceWastage: 0, // 路耗超出范围 赔偿单价 （元/吨）?? 啥东西
+                shipmentPrice: e.shipmentPrice,
+                startLimitWastage: 0, // 免赔偿路耗规范开始 多商品无此选项??
+                vehicleLength: e.vehicleLength,
+                vehicleType: e.vehicleType,
+                weight: 0 // 货物重量 多商品无此选项??
+              };
+            });
+          } else {
+            goodsAccounting =
+              (this.$refs.goodsAccounting &&
+                (await this.$refs.goodsAccounting._submitForm())) ||
+              {};
+            accounTing =
+              (this.$refs.accounTing &&
+                (await this.$refs.accounTing._submitForm())) ||
+              {};
+
+            // 单商品核算规格
+            orderFreightBoList = [
+              {
+                ruleItemId: accounTing.ruleItemId,
+                ruleItemValue: '', // ??
+                type: '' // ??
+              }
+            ];
+            // 单商品信息
+            orderGoodsList = [
+              {
+                addressList: [...address1, ...address2],
+                endLimitWastage: accounTing.endLimitWastage,
+                goodsBigType: this.formData.tin2,
+                goodsType: this.formData.tin2_2,
+                goodsUnit: goodsAccounting.goodsUnit,
+                isModifyFinish: true, // 平台是否完成调价?? 啥东西
+                isOneselfLoad: false, // 是否允许自装 0否 1是 (多装模式)?? 啥东西
+                isOneselfUnload: false, // 是否允许自卸 0否 1是 (多卸模式)
+                limitWastage: '1', // 限制损耗?? 啥东西
+                perWeight: goodsAccounting.perWeight,
+                priceWastage: 0, // 路耗超出范围 赔偿单价 （元/吨）?? 啥东西
+                shipmentPrice: goodsAccounting.shipmentPrice,
+                startLimitWastage: accounTing.startLimitWastage,
+                vehicleLength: goodsAccounting.vehicleLength,
+                vehicleType: goodsAccounting.vehicleType,
+                weight: goodsAccounting.weight
+              }
+            ];
+          }
+
+          console.log('goodsAccounting', goodsAccounting);
+          console.log('accounTing', accounTing);
+          console.log('arrs', arrs);
+          console.log('address1', address1);
+          console.log('address2', address2);
 
           const data = {
-            // 'classList': [
-            //   {
-            //     'classCode': ''
-            //   }
-            // ],
-            // 'isClass': true,
-            'isPublic': this.formData.isPublic,
-            'isSpecified': this.formData.isSpecified,
-            'loadType': this.formData.loadType + '', // loadType	装卸类型 1.一装一卸 2.多装一卸 3.一装多卸 4.多装多卸
-            'orderFreightBoList': [ // 运费规则
+            classList: [
               {
-                'ruleItemId': accounTing.ruleItemId,
-                'ruleItemValue': ''
+                classCode: '1'
               }
             ],
-            'orderGoodsList': [ // 货源商品信息_1
-              {
-                'addressList': [...address1, ...address2],
-                // [
-                //   {
-                //     'adcode': '',
-                //     'addressAlias': '',
-                //     'addressType': 0,
-                //     'city': '',
-                //     'citycode': '',
-                //     'contact': '',
-                //     'contactPhone': '',
-                //     'country': '',
-                //     'detail': '',
-                //     'district': '',
-                //     'level': '',
-                //     'location': [],
-                //     'province': '',
-                //     'street': ''
-                //   }
-                // ],
-                'endLimitWastage': accounTing.endLimitWastage,
-                'goodsBigType': this.formData.goodsBigType, // 货物类型（大类）
-                'goodsType': this.isBigOdd ? this.formData.goodsType1 : this.formData.goodsType2,
-                'goodsUnit': goodsAccounting.goodsUnit, // 货物单位 0：吨 1：立方米
-                // 'isModifyFinish': true, // 平台是否完成调价
-                // 'isOneselfLoad': true, // 是否允许自装 0否 1是 (多装模式)
-                'isOneselfUnload': this.formData.isOneselfUnload, // 是否允许自卸 0否 1是 (多卸模式)
-                // 'limitWastage': '', // 货物损耗 格式： 0/1(0-定额kg/车，1-定率千分之几/车)-1
-                'perWeight': goodsAccounting.perWeight, // 每车载重量（吨）
-                // 'priceWastage': 0, // 路耗超出范围 赔偿单价 （元/吨）
-                'shipmentPrice': goodsAccounting.shipmentPrice || multiData.shipmentPrice, // 运输单价 （元/吨）
-                'startLimitWastage': accounTing.startLimitWastage, // 免赔路耗 开始范围（定额 定律 也计算）
-                'vehicleLength': goodsAccounting.vehicleLength || multiData.vehicleLength, // 车长
-                'vehicleType': goodsAccounting.vehicleType || multiData.vehicleType, // 车型
-                'weight': goodsAccounting.weight // 货品吨数
-              }
-            ],
-            'orderSpecifiedList': [
-              {
-                'driverInfoCode': '',
-                'teamInfoCode': '',
-                'userType': 0
-              }
-            ],
-            'projectCode': this.formData.projectCode + '', // 项目编码
-            'pubilshCode': this.formData.pubilshCode,
-            'remark': this.formData.remark
+            isClass: true,
+            // 上面2个暂时没有
+            isPublic: this.formData.tin4,
+            isSpecified: this.formData.tin5,
+            loadType: this.formData.tin7, // loadType	装卸类型 1.一装一卸 2.多装一卸 3.一装多卸 4.多装多卸
+            orderFreightBoList,
+            orderGoodsList,
+            orderSpecifiedList,
+            projectCode: this.formData.tin3, // 项目编码
+            pubilshCode: this.formData.tin1,
+            remark: this.formData.remark
           };
 
-
-          orderPubilsh(data).then(response => {
+          orderPubilsh(data).then((response) => {
             console.log(response);
             this.msgSuccess('新增成功');
           });
@@ -651,36 +990,56 @@ export default {
           return false;
         }
       });
+    },
+
+    // 监听小类多商品
+    handletin2_1() {
+      this.tin2_1tabs = this.formData.tin2_1.map((e) => {
+        let obj = null;
+        this.tin2_1Option.forEach((obje) => {
+          if (obje.dictValue === e) {
+            obj = obje;
+          }
+        });
+        return {
+          label: obj.dictLabel,
+          value: obj.dictValue,
+          data: {}
+        };
+      });
+
+      // 初始赋值
+      if (this.tin2_1tabs_activeName === '0') {
+        this.tin2_1tabs_activeName = this.tin2_1tabs[0].value;
+      }
     }
   }
 };
 </script>
 <style lang="scss" scoped>
-.app-container{
-    overflow-y: auto;
+.app-container {
+  overflow-y: auto;
   height: calc(100vh - 145px);
 }
-.header{
-    padding-bottom: 10px;
-    position: relative;
-    font-weight: 700;
-    &::before{
-        content: '';
-        position: absolute;
-        width: 3px;
-        height: 20px;
-        left: -15px;
-        top: 1px;
-        background-color: #1890ff;
-    }
+.header {
+  padding-bottom: 10px;
+  position: relative;
+  font-weight: 700;
+  &::before {
+    content: "";
+    position: absolute;
+    width: 3px;
+    height: 20px;
+    left: -15px;
+    top: 1px;
+    background-color: #1890ff;
+  }
 }
-.content{
-    width: 50%;
-}
-
-
-.vih{
-    line-height: 36px;
+.content {
+  width: 50%;
 }
 
+.vih {
+  line-height: 36px;
+}
 </style>

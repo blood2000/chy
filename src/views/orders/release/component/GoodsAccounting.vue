@@ -1,56 +1,126 @@
 <template>
   <div>
-    <el-form :ref="`formData`" :model="formData" :rules="rules" :size="formConfig.size" :label-width="formConfig.labelWidth" :label-position="formConfig.labelPosition">
+    <el-form
+      :ref="`formData`"
+      :model="formData"
+      :rules="rules"
+      :size="formConfig.size"
+      :label-width="formConfig.labelWidth"
+      :label-position="formConfig.labelPosition"
+    >
       <el-form-item label="货物计量单位" prop="goodsUnit">
-        <el-select v-model="formData.goodsUnit" placeholder="请选择货物计量单位" clearable :style="{width: '100%'}">
-          <el-option v-for="(item, index1) in formDataList.measurementType" :key="index1" :label="item.dictLabel" :value="item.dictValue" />
+        <el-select
+          v-model="formData.goodsUnit"
+          placeholder="请选择货物计量单位"
+          clearable
+          :style="{ width: '100%' }"
+        >
+          <el-option
+            v-for="dict in formDataList.measurementType"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
         </el-select>
       </el-form-item>
-      <el-form-item label="货物总量" prop="weight">
+      <el-form-item label="货物总量" prop="weightType">
         <el-radio-group v-model="formData.weightType" size="medium">
-          <el-radio :label="0">不限(长期货源)</el-radio>
+          <el-radio label="0">不限(长期货源)</el-radio>
 
-          <el-radio :label="1">
-            共 <el-input-number v-model="formData.weight" placeholder="请输入重量(吨)" step-strictly controls-position="right" :style="{width: '120px'}" />  吨
+          <el-radio label="1">
+            <el-form-item
+              prop="weight"
+              style="display: inline-block"
+              :rules="[
+                {
+                  required: formData.weightType === '1',
+                  message: '请输入货物重量(吨)',
+                  trigger: 'blur',
+                },
+              ]"
+            >
+              <span class="pr-5">共</span>
+              <el-input-number
+                v-model="formData.weight"
+                :controls="false"
+                placeholder="请输入重量(吨)"
+                step-strictly
+                controls-position="right"
+                :style="{ width: '120px' }"
+              />
+              <span class="pl-5">吨</span>
+            </el-form-item>
           </el-radio>
         </el-radio-group>
       </el-form-item>
 
       <el-form-item label="最高配载" prop="perWeight">
-        <el-input-number v-model="formData.perWeight" placeholder="请输入最高配载(吨/方)" step-strictly controls-position="right" :style="{width: '50%'}" /> <span>吨/方</span>
+        <el-input-number
+          v-model="formData.perWeight"
+          :controls="false"
+          placeholder="请输入最高配载(吨/方)"
+          step-strictly
+          controls-position="right"
+          :style="{ width: '50%' }"
+        />
+        <span class="pl-5">吨/方</span>
       </el-form-item>
 
       <el-form-item label="运输单价" prop="shipmentPrice">
-        <el-input-number v-model="formData.shipmentPrice" placeholder="运输单价" step-strictly controls-position="right" :style="{width: '50%'}" /> <span>元/吨(不含税)</span>
+        <el-input-number
+          v-model="formData.shipmentPrice"
+          :controls="false"
+          placeholder="运输单价"
+          step-strictly
+          controls-position="right"
+          :style="{ width: '50%' }"
+        />
+        <span class="pl-5">元/吨(不含税)</span>
       </el-form-item>
 
       <el-form-item label="货物单价" prop="goodsPrice">
-        <el-input-number v-model="formData.goodsPrice" placeholder="货物单价" step-strictly controls-position="right" :style="{width: '50%'}" /> <span>元/吨</span>
+        <el-input-number
+          v-model="formData.goodsPrice"
+          :controls="false"
+          placeholder="货物单价"
+          step-strictly
+          controls-position="right"
+          :style="{ width: '50%' }"
+        />
+        <span class="pl-5">元/吨</span>
       </el-form-item>
 
       <el-form-item label="车型" prop="vehicleType">
-        <el-select v-model="formData.vehicleType" placeholder="选择车型" clearable :style="{width: '100%'}">
-          <el-option v-for="(item, index1) in formDataList.vehicleClassification" :key="index1" :label="item.dictLabel" :value="item.dictValue" />
+        <el-select
+          v-model="formData.vehicleType"
+          placeholder="选择车型"
+          clearable
+          :style="{ width: '100%' }"
+        >
+          <el-option
+            v-for="(item, index1) in formDataList.vehicleClassification"
+            :key="index1"
+            :label="item.dictLabel"
+            :value="item.dictValue"
+          />
         </el-select>
       </el-form-item>
 
       <el-form-item label="车长" prop="vehicleLength">
-        <el-select v-model="formData.vehicleLength" placeholder="选择车长" clearable :style="{width: '100%'}">
-          <el-option v-for="(item, index1) in formDataList.vehicleLength" :key="index1" :label="item.dictLabel" :value="item.dictValue" />
+        <el-select
+          v-model="formData.vehicleLength"
+          placeholder="选择车长"
+          clearable
+          :style="{ width: '100%' }"
+        >
+          <el-option
+            v-for="(item, index1) in formDataList.vehicleLength"
+            :key="index1"
+            :label="item.dictLabel"
+            :value="item.dictValue"
+          />
         </el-select>
       </el-form-item>
-
-      <!-- <el-form-item label="车型车长限制">
-                    <el-button @click="onSubmit">选择车型</el-button>
-                    <el-button @click="onSubmit">选择用车类型</el-button>
-                    <el-button @click="onSubmit">选择车长</el-button>
-                    <el-button type="primary" @click="onSubmit">清除已选</el-button>
-                </el-form-item>
-
-                <el-form-item label="已选车型" prop="field154">
-                    <el-input v-model="formData.field154" type="textarea" placeholder="无则 不限车型, 不限车长"
-                    :autosize="{minRows: 4, maxRows: 4}" :style="{width: '100%'}" disabled></el-input>
-                </el-form-item> -->
     </el-form>
   </div>
 </template>
@@ -62,9 +132,9 @@ export default {
       type: Object,
       default: () => {
         return {
-          'size': 'medium',
-          'labelWidth': '110px',
-          'labelPosition': 'left'
+          size: 'medium',
+          labelWidth: '110px',
+          labelPosition: 'left'
         };
       }
     }
@@ -73,22 +143,31 @@ export default {
   data() {
     return {
       formData: {
-        goodsUnit: '0',
-        weightType: 0,
-        weight: undefined,
-        perWeight: undefined,
-        shipmentPrice: 0,
-        goodsPrice: 0,
-        vehicleType: undefined,
-        vehicleLength: undefined
+        goodsUnit: '0', // 货物计量单位 0=>吨; 1=>立方米
+        weightType: '0', // 货物总量类型
+        weight: undefined, // 货物重量
+        perWeight: undefined, // 最高配载
+        shipmentPrice: undefined, // 运输单价
+        goodsPrice: undefined, // 货物单价
+        vehicleType: undefined, // 车型->查字典
+        vehicleLength: undefined // 车长->查字典
       },
       rules: {
-        goodsUnit: [{ required: true, message: '请选择货物计量单位', trigger: 'change' }],
-        shipmentPrice: [{ required: true, message: '请输入运输单价', trigger: 'blur' }],
-        goodsPrice: [{ required: true, message: '请输入货物单价', trigger: 'blur' }]
+        goodsUnit: [
+          { required: true, message: '请选择货物计量单位', trigger: 'change' }
+        ],
+        shipmentPrice: [
+          { required: true, message: '请输入运输单价', trigger: 'blur' }
+        ],
+        goodsPrice: [
+          { required: true, message: '请输入货物单价', trigger: 'blur' }
+        ]
       },
       formDataList: {
-        measurementType: [],
+        measurementType: [
+          { dictValue: '0', dictLabel: '吨' },
+          { dictValue: '1', dictLabel: '立方米' }
+        ],
         vehicleClassification: [],
         vehicleLength: []
       }
@@ -97,13 +176,13 @@ export default {
 
   created() {
     // 获取字典型
-    this.getDicts('measurementType').then(response => {
+    this.getDicts('measurementType').then((response) => {
       this.formDataList.measurementType = response.data;
     });
-    this.getDicts('vehicleClassification').then(response => {
+    this.getDicts('vehicleClassification').then((response) => {
       this.formDataList.vehicleClassification = response.data;
     });
-    this.getDicts('vehicleLength').then(response => {
+    this.getDicts('vehicleLength').then((response) => {
       this.formDataList.vehicleLength = response.data;
     });
   },
@@ -125,5 +204,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 </style>

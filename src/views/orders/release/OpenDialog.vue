@@ -77,7 +77,6 @@
 const options = [
   {
     prop: 'infoId',
-    isShow: true,
     label: '访问编号',
     fixed: 'left'
     // width: ,
@@ -85,51 +84,43 @@ const options = [
   },
   {
     prop: 'userName',
-    isShow: true,
     label: '用户名称'
     // width: ,
     // align: 'center'
   }, {
     prop: 'ipaddr',
-    isShow: true,
     label: '地址',
     width: 130,
     tooltip: true
     // align: 'center'
   }, {
     prop: 'status',
-    isShow: true,
     label: '状态'
   }, {
     prop: 'msg',
-    isShow: true,
     label: '描述'
     // width: ,
     // align: 'center'
   }, {
     prop: 'accessTime',
-    isShow: true,
     label: '访问时间',
     width: 180
     // align: 'center'
   },
   {
     prop: 'type',
-    isShow: true,
     label: '访问时间',
     width: 250
     // align: 'center'
   },
   {
     prop: 'terminalType',
-    isShow: true,
     label: '访问时间',
     width: 250
     // align: 'center'
   },
   {
     prop: 'edit',
-    isShow: true,
     label: '操作',
     width: 180,
     fixed: 'right'

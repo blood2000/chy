@@ -25,3 +25,13 @@ export function dispatchOrder(data) {
     data: data
   });
 }
+
+// 上下架货源
+export function loadAndUnloadingGoods(data) {
+  return request({
+    url: '/transportation/order/loadAndUnloadingGoods',
+    method: 'post',
+    data: data
+  });
+}
+

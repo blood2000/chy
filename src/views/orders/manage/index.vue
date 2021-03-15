@@ -106,15 +106,24 @@
 
               <el-form-item label="订单状态" prop="tin8">
                 <el-select v-model="queryParams.tin8" placeholder="----请选择----" style="width: 215px">
-                  <el-option label="区域一" :value="'1'" />
-                  <el-option label="区域二" :value="'2'" />
+                  <el-option
+                    v-for="dict in statusOptions"
+                    :key="dict.dictValue"
+                    :label="dict.dictLabel"
+                    :value="dict.dictValue"
+                  />
                 </el-select>
               </el-form-item>
 
+
               <el-form-item label="是否拼单" prop="tin9">
                 <el-select v-model="queryParams.tin9" placeholder="----请选择----" style="width: 215px">
-                  <el-option label="区域一" :value="'false'" />
-                  <el-option label="区域二" :value="'true'" />
+                  <el-option
+                    v-for="dict in isShareTypeOptions"
+                    :key="dict.dictValue"
+                    :label="dict.dictLabel"
+                    :value="dict.dictValue"
+                  />
                 </el-select>
               </el-form-item>
 
@@ -168,21 +177,85 @@
             <RefactorTable :loading="loading" :data="list" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
               <!-- billingType	发运方式 0->汽运一票制，1->对付，2->代收代付 -->
               <template #billingType="{row}">
-                <span>{{ selectDictLabel([
-                  { dictLabel: '汽运一票制', dictValue: '0' },
-                  { dictLabel: '对付', dictValue: '1' },
-                  { dictLabel: '代收代付', dictValue: '1' }
-                ], row.billingType)
-                }}</span>
+                <span>{{ selectDictLabel(billingTypeOptions, row.billingType) }}</span>
               </template>
               <!-- status	状态 0.启用 1.禁用 -->
               <template #status="{row}">
-                <span>{{ selectDictLabel([
-                  { dictLabel: '启用', dictValue: '0' },
-                  { dictLabel: '禁用', dictValue: '1' },
-                ], row.status)
-                }}</span>
+                <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
               </template>
+              <!-- importType	是否导入货源 0-正常发布货源，1-货源单导入，2-运输单导入 -->
+              <template #importType="{row}">
+                <span>{{ selectDictLabel(importTypeOptions, row.importType) }}</span>
+              </template>
+
+              <template #isClass="{row}">
+                <span>{{ selectDictLabel(isClassOptions, row.isClass) }}</span>
+              </template>
+
+              <template #isDel="{row}">
+                <span>{{ selectDictLabel(isDelTypeOptions, row.isDel) }}</span>
+              </template>
+
+              <template #isDispatch="{row}">
+                <span>{{ selectDictLabel(isDispatchTypeOptions, row.isDispatch) }}</span>
+              </template>
+
+              <template #isInsure="{row}">
+                <span>{{ selectDictLabel(isInsureTypeOptions, row.isInsure) }}</span>
+              </template>
+
+              <template #isMonthlyOrder="{row}">
+                <span>{{ selectDictLabel(isMonthlyOrderTypeOptions, row.isMonthlyOrder) }}</span>
+              </template>
+
+              <template #isPay="{row}">
+                <span>{{ selectDictLabel(isPayTypeOptions, row.isPay) }}</span>
+              </template>
+
+              <template #isPublic="{row}">
+                <span>{{ selectDictLabel(isPublicTypeOptions, row.isPublic) }}</span>
+              </template>
+
+              <template #isReturnMoney="{row}">
+                <span>{{ selectDictLabel(isReturnMoneyTypeOptions, row.isReturnMoney) }}</span>
+              </template>
+
+              <template #isShare="{row}">
+                <span>{{ selectDictLabel(isShareTypeOptions, row.isShare) }}</span>
+              </template>
+
+              <template #isShipperConfirm="{row}">
+                <span>{{ selectDictLabel(isShipperConfirmTypeOptions, row.isShipperConfirm) }}</span>
+              </template>
+
+              <template #isSpecified="{row}">
+                <span>{{ selectDictLabel(isSpecifiedTypeOptions, row.isSpecified) }}</span>
+              </template>
+
+              <template #isSplit="{row}">
+                <span>{{ selectDictLabel(isSplitTypeOptions, row.isSplit) }}</span>
+              </template>
+
+              <template #isTop="{row}">
+                <span>{{ selectDictLabel(isTopTypeOptions, row.isTop) }}</span>
+              </template>
+
+              <template #isTrunk="{row}">
+                <span>{{ selectDictLabel(isTrunkTypeOptions, row.isTrunk) }}</span>
+              </template>
+
+              <template #loadTypeType="{row}">
+                <span>{{ selectDictLabel(loadTypeTypeOptions, row.loadTypeType) }}</span>
+              </template>
+
+              <template #orderTypeType="{row}">
+                <span>{{ selectDictLabel(orderTypeTypeOptions, row.orderTypeType) }}</span>
+              </template>
+
+              <template #paymentCodeType="{row}">
+                <span>{{ selectDictLabel(paymentCodeTypeOptions, row.paymentCodeType) }}</span>
+              </template>
+
               <template #accessTime="{row}">
                 <span>{{ row.accessTime }}</span>
               </template>
@@ -194,18 +267,18 @@
                   icon="el-icon-edit"
                   @click="handleInfo(row)"
                 >详情</el-button>
-                <!-- <el-button
+                <el-button
                   v-hasPermi="['system:menu:add']"
                   size="mini"
                   type="text"
-                  icon="el-icon-plus"
-                  @click="handleAdd(row)"
-                >复制</el-button> -->
+                  icon="el-icon-edit-outline"
+                  @click="loadAndUnloading(row)"
+                >{{ row.status==='0'?'禁用':'启用' }}</el-button>
                 <el-button
                   v-hasPermi="['system:menu:remove']"
                   size="mini"
                   type="text"
-                  icon="el-icon-delete"
+                  icon="el-icon-s-promotion"
                   @click="handleDispatch(row)"
                 >派单</el-button>
 
@@ -263,238 +336,9 @@
 </template>
 
 <script>
-import { getOrderInfoList, delOrder } from '@/api/order/manage';
+import { getOrderInfoList, delOrder, loadAndUnloadingGoods } from '@/api/order/manage';
 import OpenDialog from './component/OpenDialog';
-
-const tableColumnsConfig = [
-  {
-    prop: 'addressAlias',
-    isShow: false,
-    label: '地址'
-  },
-  {
-    prop: 'addressAlias1',
-    isShow: false,
-    label: '地址'
-  },
-  {
-    prop: 'billingType',
-    isShow: false,
-    label: '发运方式'
-  },
-  {
-    prop: 'branchCode',
-    isShow: false,
-    label: '机构编码'
-  },
-  {
-    prop: 'cashDeposit',
-    isShow: false,
-    label: '货主保证金'
-  },
-  {
-    prop: 'classCode',
-    isShow: false,
-    label: '指定货源（分类）码编号'
-  },
-  {
-    prop: 'code',
-    isShow: false,
-    label: 'code'
-  },
-  {
-    prop: 'companyName',
-    isShow: false,
-    label: '公司名称'
-  },
-  {
-    prop: 'createCode',
-    isShow: false,
-    label: '创建人'
-  },
-  {
-    prop: 'createTime',
-    isShow: false,
-    label: '创建时间'
-  },
-  {
-    prop: 'effectiveHour',
-    isShow: false,
-    label: '货源有效时间(小时)'
-  },
-  {
-    prop: 'id',
-    isShow: false,
-    label: '主键ID'
-  },
-  {
-    prop: 'importType',
-    isShow: false,
-    label: '是否导入货源'
-  },
-  {
-    prop: 'isClass',
-    isShow: false,
-    label: '是否加入货源码'
-  },
-  {
-    prop: 'isDel',
-    isShow: false,
-    label: '是否删除'
-  },
-  {
-    prop: 'isDispatch',
-    isShow: false,
-    label: '是否已受理'
-  },
-  {
-    prop: 'isInsure',
-    isShow: false,
-    label: '投保类别'
-  },
-  {
-    prop: 'isMonthlyOrder',
-    isShow: false,
-    label: '是否月结订单'
-  },
-  {
-    prop: 'isPay',
-    isShow: false,
-    label: '是否已经支付'
-  },
-  {
-    prop: 'isPublic',
-    isShow: false,
-    label: '是否公开货源'
-  },
-  {
-    prop: 'isQuote',
-    isShow: false,
-    label: '是否允许报价'
-  },
-  {
-    prop: 'isReturn',
-    isShow: false,
-    label: '是否回单确认'
-  },
-  {
-    prop: 'isReturnMoney',
-    isShow: false,
-    label: '标记货主是否结算'
-  },
-  {
-    prop: 'isShare',
-    isShow: false,
-    label: '是否拼单'
-  },
-  {
-    prop: 'isShipperConfirm',
-    isShow: false,
-    label: '是否货主确认装货'
-  },
-  {
-    prop: 'isSpecified',
-    isShow: false,
-    label: '是否指定接单人'
-  },
-  {
-    prop: 'isSplit',
-    isShow: false,
-    label: '是否允许拆单'
-  },
-  {
-    prop: 'isTop',
-    isShow: false,
-    label: '是否置顶'
-  },
-  {
-    prop: 'isTrunk',
-    isShow: false,
-    label: '订单类型'
-  },
-  {
-    prop: 'loadType',
-    isShow: false,
-    label: '装卸类型'
-  },
-  {
-    prop: 'loadingTime',
-    isShow: false,
-    label: '计划装货时间'
-  },
-  {
-    prop: 'mainOrderNumber',
-    isShow: true,
-    label: '货源单号'
-  },
-  {
-    prop: 'nickName',
-    isShow: false,
-    label: '昵称'
-  },
-  {
-    prop: 'orderType',
-    isShow: false,
-    label: '运输类型'
-  },
-  {
-    prop: 'paymentCode',
-    isShow: false,
-    label: '支付方式'
-  },
-  {
-    prop: 'phonenumber',
-    isShow: false,
-    label: '手机号码'
-  },
-  {
-    prop: 'projectCode',
-    isShow: false,
-    label: '项目编码'
-  },
-  {
-    prop: 'pubilshCode',
-    isShow: true,
-    label: '发布人CODE'
-  },
-  {
-    prop: 'remark',
-    isShow: false,
-    label: '备注'
-  },
-  {
-    prop: 'shipperFactoryCode',
-    isShow: false,
-    label: '发货厂家编码'
-  },
-  {
-    prop: 'status',
-    isShow: false,
-    label: '状态'
-  },
-  {
-    prop: 'updateCode',
-    isShow: false,
-    label: '修改人'
-  },
-  {
-    prop: 'updateTime',
-    isShow: true,
-    label: '修改时间'
-  },
-  {
-    prop: 'userName',
-    isShow: false,
-    label: '账号名称'
-  },
-  {
-    prop: 'edit',
-    isShow: true,
-    label: '操作',
-    width: 180,
-    fixed: 'right'
-  }
-];
+import tableColumnsConfig from './config';
 
 
 export default {
@@ -524,8 +368,7 @@ export default {
       dispatch: null,
       // 类型数据字典
       typeOptions: [],
-      // 类型数据字典
-      statusOptions: [],
+
       // 日期范围
       dateRange: [],
       // 表单参数
@@ -548,7 +391,113 @@ export default {
       // 弹框title
       title: '',
       // 表头动态值
-      tableColumnsConfig
+      tableColumnsConfig,
+      // 订单状态字典
+      statusOptions: [
+        { dictLabel: '启用', dictValue: '0' },
+        { dictLabel: '禁用', dictValue: '1' }
+      ],
+      // 发运方式字典
+      billingTypeOptions: [
+        { dictLabel: '汽运一票制', dictValue: '0' },
+        { dictLabel: '对付', dictValue: '1' },
+        { dictLabel: '代收代付', dictValue: '2' }
+      ],
+      // 是否导入货源字典
+      importTypeOptions: [
+        { dictLabel: '正常发布货源', dictValue: '0' },
+        { dictLabel: '货源单导入', dictValue: '1' },
+        { dictLabel: '运输单导入', dictValue: '2' }
+      ],
+      // isClass	是否加入货源码 0否 1是
+      isClassOptions: [
+        { dictLabel: '否', dictValue: false },
+        { dictLabel: '是', dictValue: true }
+      ],
+      // isDel	是否删除 0.正常 1.删除	boolean
+      isDelTypeOptions: [
+        { dictLabel: '正常', dictValue: false },
+        { dictLabel: '删除', dictValue: true }
+      ],
+      // isDispatch	是否已受理 0未受理，1已受理	boolean
+      isDispatchTypeOptions: [
+        { dictLabel: '未受理', dictValue: false },
+        { dictLabel: '已受理', dictValue: true }
+      ],
+      // isInsure	投保类别 0否 1是	boolean
+      isInsureTypeOptions: [
+        { dictLabel: '否', dictValue: false },
+        { dictLabel: '是', dictValue: true }
+      ],
+      // isMonthlyOrder	是否月结订单 0否 1 是	boolean
+      isMonthlyOrderTypeOptions: [
+        { dictLabel: '否', dictValue: false },
+        { dictLabel: '是', dictValue: true }
+      ],
+      // isPay	是否已经支付 0 未支付 1 已经支付	boolean
+      isPayTypeOptions: [
+        { dictLabel: '未支付', dictValue: false },
+        { dictLabel: '已经支付', dictValue: true }
+      ],
+      // isPublic	是否公开货源 0.非公开 1.公开
+      isPublicTypeOptions: [
+        { dictLabel: '非公开', dictValue: false },
+        { dictLabel: '公开', dictValue: true }
+      ],
+      // isReturnMoney	标记货主是否结算 0 否 1-是	boolean
+      isReturnMoneyTypeOptions: [
+        { dictLabel: '否', dictValue: false },
+        { dictLabel: '是', dictValue: true }
+      ],
+      // isShare	是否拼单 0-否，1-是	boolean
+      isShareTypeOptions: [
+        { dictLabel: '否', dictValue: false },
+        { dictLabel: '是', dictValue: true }
+      ],
+      // isShipperConfirm	是否货主确认装货 0否，1是	boolean
+      isShipperConfirmTypeOptions: [
+        { dictLabel: '否', dictValue: false },
+        { dictLabel: '是', dictValue: true }
+      ],
+      // isSpecified	是否指定接单人 0否 1是	boolean
+      isSpecifiedTypeOptions: [
+        { dictLabel: '否', dictValue: false },
+        { dictLabel: '是', dictValue: true }
+      ],
+      // isSplit	是否允许拆单 0-不允许，1-允许	boolean
+      isSplitTypeOptions: [
+        { dictLabel: '不允许', dictValue: false },
+        { dictLabel: '允许', dictValue: true }
+      ],
+      // isTop	是否置顶 0否 1是	boolean
+      isTopTypeOptions: [
+        { dictLabel: '否', dictValue: false },
+        { dictLabel: '是', dictValue: true }
+      ],
+      // isTrunk	订单类型 0-整车大宗，1-零散多货	boolean
+      isTrunkTypeOptions: [
+        { dictLabel: '整车大宗', dictValue: '0' },
+        { dictLabel: '零散多货', dictValue: '1' }
+      ],
+      // loadType	装卸类型 1.一装一卸 2.多装一卸 3.一装多卸 4.多装多卸
+      loadTypeTypeOptions: [
+        { dictLabel: '', dictValue: '0' },
+        { dictLabel: '一装一卸', dictValue: '1' },
+        { dictLabel: '多装一卸', dictValue: '2' },
+        { dictLabel: '一装多卸', dictValue: '3' },
+        { dictLabel: '多装多卸', dictValue: '4' }
+      ],
+      // orderType	运输类型 0-汽运，1-船运	string
+      orderTypeTypeOptions: [
+        { dictLabel: '汽运', dictValue: '0' },
+        { dictLabel: '船运', dictValue: '1' }
+      ],
+      // paymentCode	支付方式 0-现金，1-打卡，2现金+油卡 (字典表CODE)
+      paymentCodeTypeOptions: [
+        { dictLabel: '现金', dictValue: '0' },
+        { dictLabel: '打卡', dictValue: '1' },
+        { dictLabel: '现金+油卡', dictValue: '2' }
+      ]
 
     };
   },
@@ -590,11 +539,6 @@ export default {
         this.loading = false;
       });
     },
-    // 取消按钮
-    cancel() {
-      this.open = false;
-      this.reset();
-    },
 
     /** 搜索按钮操作 */
     handleQuery() {
@@ -606,19 +550,6 @@ export default {
       this.resetForm('queryForm');
       this.handleQuery();
     },
-    // 多选框选中数据
-    // handleSelectionChange(selection) {
-    //   this.ids = selection.map(item => item.id);
-    //   // console.log(this.ids, '选择了那些东西');
-    //   this.single = selection.length !== 1;
-    //   this.multiple = !selection.length;
-    // },
-    /** 新增按钮操作 */
-    // handleAdd() {
-    //   this.reset();
-    //   this.open = true;
-    //   this.title = '添加货源';
-    // },
     /** 修改按钮操作 */
     handleUpdate(row) {
       // this.reset();
@@ -638,6 +569,24 @@ export default {
       //   this.open = true;
       //   this.title = '修改货源';
       // });
+    },
+    /** 上下架货源 */
+    loadAndUnloading(row) {
+      const msg = row.status === '1' ? '启用' : '禁用';
+      const data = {
+        'orderCode': row.code,
+        'status': row.status === '0' ? 1 : 0
+      };
+      this.$confirm('是否确认操作货源编号为"' + row.code + '"的数据项?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return loadAndUnloadingGoods(data);
+      }).then(() => {
+        this.getList();
+        this.msgSuccess(msg + '成功');
+      });
     },
 
     /** 删除按钮操作 */
@@ -665,7 +614,6 @@ export default {
       this.openDispatch = true;
       this.dispatch = row;
     }
-
   }
 };
 </script>
