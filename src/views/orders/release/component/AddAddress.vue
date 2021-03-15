@@ -13,39 +13,48 @@
         :label-width="formConfig.labelWidth"
         :label-position="formConfig.labelPosition"
       >
-        <el-form-item :label="`${title}省 :`" prop="province">
+        <el-form-item :label="`${title}省 :`" prop="provinceCode">
+
           <div class="flex">
             <el-select
-              v-model="address.province"
+              v-model="address.provinceCode"
               placeholder="请选择省"
               clearable
-              :style="{ width: '25%' }"
+              :style="{ width: '200px' }"
+              @change="getcity(address)"
             >
-              <el-option label="北京" value="北京" />
-              <el-option label="上海" value="上海" />
+              <el-option
+                v-for="dict in getprovinceOption"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
             </el-select>
+            <el-form-item prop="city">
+              <span class="pl-5 pr-5">市: </span>
+              <el-select
+                v-model="address.city"
+                placeholder="请选择城市"
+                clearable
+                :style="{ width: '200px' }"
+              >
+                <el-option label="北京" value="北京" />
+                <el-option label="上海" value="上海" />
+              </el-select>
+            </el-form-item>
 
-            <span class="pl-5 pr-5">市: </span>
-            <el-select
-              v-model="address.city"
-              placeholder="请选择城市"
-              clearable
-              :style="{ width: '25%' }"
-            >
-              <el-option label="北京" value="北京" />
-              <el-option label="上海" value="上海" />
-            </el-select>
-
-            <span class="pl-5 pr-5">县/区: </span>
-            <el-select
-              v-model="address.street"
-              placeholder="请选择县/区"
-              clearable
-              :style="{ width: '25%' }"
-            >
-              <el-option label="北京" value="北京" />
-              <el-option label="上海" value="上海" />
-            </el-select>
+            <el-form-item prop="street">
+              <span class="pl-5 pr-5">县/区: </span>
+              <el-select
+                v-model="address.street"
+                placeholder="请选择县/区"
+                clearable
+                :style="{ width: '200px' }"
+              >
+                <el-option label="北京" value="北京" />
+                <el-option label="上海" value="上海" />
+              </el-select>
+            </el-form-item>
 
             <el-button
               class="fahuoBtn"
@@ -54,6 +63,7 @@
             >{{ `选择常用${title}地址` }}</el-button>
           </div>
         </el-form-item>
+
 
         <el-form-item label="详细地址">
           <el-input
@@ -114,6 +124,9 @@
 </template>
 
 <script>
+import { getProvinceList,
+  getCityList,
+  geCountyList } from '@/api/system/area';
 export default {
   props: {
     formConfig: {
@@ -145,8 +158,14 @@ export default {
   data() {
     return {
       rules: {
-        province: [
+        provinceCode: [
           { required: true, message: '请选择装货省', trigger: 'change' }
+        ],
+        city: [
+          { required: true, message: '请选择装货市', trigger: 'change' }
+        ],
+        street: [
+          { required: true, message: '请选择装货区', trigger: 'change' }
         ],
         contact: [{ required: true, message: '请输入联系人', trigger: 'blur' }],
         contactPhone: [
@@ -158,28 +177,41 @@ export default {
         {
           // 发货地址
           time: Date.now(),
+          province: '', //	省份		false
+          provinceCode: '', // 省code
+          city: '', //	城市		false
+          cityCode: '1', //	城市编码		false
+          county: '', // 县
+          countyCode: '', // 县code
+
+          country: '1', //	国家		false
           adcode: '1', //	区域编码		false
           addressAlias: '1', //	地址别名		false
           addressType: this.addressType, //	地址类型 1.装货地 2.卸货地		false
-          city: '', //	城市		false
-          citycode: '1', //	城市编码		false
           contact: '', //	联系人		false
           contactPhone: '', //	联系电话		false
-          country: '1', //	国家		false
           detail: '', //	详细地址		false
           district: '1', //	地址所在的区		false
           level: '1', //	匹配级别		false
           location: [1, 2], //	坐标点		false
-          province: '', //	省份		false
           street: '' //	街道		false
         }
-      ]
+      ],
+
+      // 省,市,区字典
+      getprovinceOption: [],
+      getcityOption: [],
+      getstreetOption: []
     };
   },
   computed: {
     title() {
       return this.addressType === 1 ? '装货' : '卸货';
     }
+  },
+
+  created() {
+    this.getprovince();
   },
 
   methods: {
@@ -245,7 +277,25 @@ export default {
           });
         });
       });
+    },
+
+    // 获取省 市 区 code
+    getprovince() {
+      getProvinceList().then(res => {
+        this.getprovinceOption = res.rows.map(e => {
+          return { dictValue: e.provinceCode, dictLabel: e.provinceName, info: e };
+        });
+      });
+    },
+    getcity(address) {
+      getCityList({ provinceCode: address.provinceCode }).then(res => {
+        console.log(res);
+      });
+    },
+    getstreet() {
+
     }
+
   }
 };
 </script>

@@ -47,16 +47,7 @@
       <el-tab-pane label="调度" name="listInfo" />
     </el-tabs>
 
-    <RefactorTable :loading="loading" :data="list" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
-      <template #edit="{row}">
-        <el-button
-          size="mini"
-          type="text"
-          icon="el-icon-edit"
-          @click="handleUpdate(row)"
-        >选择</el-button>
-      </template>
-    </RefactorTable>
+    <refactor-table :loading="loading" :data="list" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange" />
 
     <pagination
       v-show="total>0"
@@ -78,298 +69,14 @@
 import { listDriver } from '@/api/assets/driver';
 import { listInfo } from '@/api/assets/team';
 import { dispatchOrder } from '@/api/order/manage';
+import tableColumnsConfig_listDriver from '../data/config-driver';
+import tableColumnsConfig_listInfo from '../data/config-team';
 
 // import { listShipment, getShipment, delShipment } from '@/api/assets/shipment';
 
 const apiFn = {
   listDriver, listInfo
 };
-
-const tableColumnsConfig_listDriver = [
-  {
-    prop: 'driverType',
-    isShow: true,
-    label: '司机类别'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'provinceCodedit',
-    isShow: false,
-    label: '省'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'cityCodedit',
-    isShow: false,
-    label: '市'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'countyCodedit',
-    isShow: false,
-    label: '县'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'namet',
-    isShow: false,
-    label: '名字'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'telphonet',
-    isShow: false,
-    label: '手机'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'fixedPhonet',
-    isShow: false,
-    label: '固话'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'workCompany',
-    isShow: false,
-    label: '工作单位'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'driverCity',
-    isShow: false,
-    label: '司机城市名称'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'homeAddresst',
-    isShow: false,
-    label: '地址'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'identificationNumber',
-    isShow: true,
-    label: '身份证号'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'driverLicense',
-    isShow: false,
-    label: '驾驶证'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'validPeriodFrom',
-    isShow: false,
-    label: '驾驶证有效期自'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'validPeriodTo',
-    isShow: false,
-    label: '驾驶证有效期至'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'driverLicenseType',
-    isShow: false,
-    label: '驾驶证类型'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'workLicense',
-    isShow: false,
-    label: '上岗证'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'workLicenseDueDate',
-    isShow: false,
-    label: '从业资格证到期日期'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'businessLicenseImgNo',
-    isShow: false,
-    label: '营业执照号'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'isReportPerson',
-    isShow: false,
-    label: '是否上传人员信用信息'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'issuingOrganizations',
-    isShow: false,
-    label: '驾驶证发证机关'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'isReportEnterprise',
-    isShow: false,
-    label: '是否上传企业'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'workLicenseProvinceName',
-    isShow: false,
-    label: '从业资格证办理省份名称'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'authStatus',
-    isShow: false,
-    label: '审核状态'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'isFreeze',
-    isShow: false,
-    label: '是否冻结'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'createCode',
-    isShow: false,
-    label: '创建人'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'updateCode',
-    isShow: false,
-    label: '修改人'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'createTime',
-    isShow: false,
-    label: '创建时间'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'edit',
-    isShow: false,
-    label: '操作',
-    width: 180,
-    fixed: 'right'
-  }
-];
-
-const tableColumnsConfig_listInfo = [
-  {
-    prop: 'branchCode',
-    isShow: true,
-    label: '网点编码'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'name',
-    isShow: true,
-    label: '车队名称'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'teamLeader',
-    isShow: true,
-    label: '车队管理者'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'isDel',
-    isShow: true,
-    label: '是否删除'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'status',
-    isShow: true,
-    label: '状态'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'createCode',
-    isShow: false,
-    label: '创建人'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'updateCode',
-    isShow: false,
-    label: '修改人'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'businessLicenseImg',
-    isShow: false,
-    label: '营业执照'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'transportPermitImage',
-    isShow: false,
-    label: '道路运输经营许可证照'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'identificationImage',
-    isShow: false,
-    label: '身份证正面照片'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'identificationBackImage',
-    isShow: false,
-    label: '身份证国徽面'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'edit',
-    isShow: false,
-    label: '操作',
-    width: 180,
-    fixed: 'right'
-  }
-];
 
 
 export default {
@@ -378,7 +85,7 @@ export default {
   props: {
     dispatch: {
       type: Object,
-      required: true
+      default: null
     }
   },
 
@@ -390,6 +97,8 @@ export default {
       loading: false,
       // 多选
       ids: [],
+      // 发布货源的时候调用
+      selections: [],
       // 总条数
       total_listDriver: 0,
       total_listInfo: 0,
@@ -458,39 +167,44 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.code);
+      this.selections = selection;
     },
 
     _ok(bool) {
-      if (bool) {
-        const orderSpecifiedList = this.ids.map(e => {
-          if (this.activeName === 'listDriver') {
-            return {
-              'driverInfoCode': e,
-              'teamInfoCode': '',
-              'userType': 2
-            };
-          } else {
-            return {
-              'driverInfoCode': '',
-              'teamInfoCode': e,
-              'userType': 1
-            };
-          }
-        });
-
-        const data = {
-          'oderCode': this.dispatch.code,
-          orderSpecifiedList
-        };
-
-
-        dispatchOrder(data).then(res => {
-          console.log(res);
-          this.msgSuccess('派发成功!');
-          this.$emit('_ok', false);
-        });
+      // 判断是那个地方调用这个组件了
+      if (!this.dispatch) {
+        this.$emit('handleSelectionChange', { [this.activeName]: this.selections }, bool);
       } else {
-        this.$emit('_ok', false);
+        if (bool) {
+          const orderSpecifiedList = this.ids.map(e => {
+            if (this.activeName === 'listDriver') {
+              return {
+                'driverInfoCode': e,
+                'teamInfoCode': '',
+                'userType': 2
+              };
+            } else {
+              return {
+                'driverInfoCode': '',
+                'teamInfoCode': e,
+                'userType': 1
+              };
+            }
+          });
+
+          const data = {
+            'oderCode': this.dispatch.code,
+            orderSpecifiedList
+          };
+
+
+          dispatchOrder(data).then(res => {
+            this.msgSuccess('派发成功!');
+            this.$emit('_ok', false);
+          });
+        } else {
+          this.$emit('_ok', false);
+        }
       }
     }
 

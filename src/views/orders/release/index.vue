@@ -31,183 +31,188 @@
       </div>
       <el-divider />
 
-      <div class="content">
-        <div class="header mb8">货物类型</div>
+      <template v-if="isTin1">
+        <div class="content">
+          <div class="header mb8">货物类型</div>
 
-        <el-form-item label="选择所属项目" prop="tin3">
-          <el-select
-            v-model="formData.tin3"
-            placeholder="无归属项目"
-            clearable
-            :style="{ width: '100%' }"
-          >
-            <el-option
-              v-for="item in [
-                {
-                  label: '项目1',
-                  value: '68655588',
-                },
-                {
-                  label: '项目2',
-                  value: '6865550088',
-                },
-              ]"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="选择货物类型" prop="tin2">
-          <el-radio-group v-model="formData.tin2" size="medium" @change="handletin2">
-            <el-radio
-              v-for="item in goodsBigTypeOptions"
-              :key="item.value"
-              :label="item.value"
-            >{{ item.label }}</el-radio>
-          </el-radio-group>
-        </el-form-item>
-
-        <!-- 先隐藏, 选择后显示 -->
-        <template v-if="formData.tin2">
-          <!-- isMultiGoods true->多商品 ; false->单商品 -->
-          <el-form-item v-if="isMultiGoods" label="货物类型(小)" prop="tin2_1">
-            <el-checkbox-group
-              v-model="formData.tin2_1"
-              size="medium"
-              @change="handletin2_1"
-            >
-              <el-checkbox
-                v-for="dict in tin2_1Option"
-                :key="dict.dictValue"
-                :label="dict.dictValue"
-              >{{ dict.dictLabel }}</el-checkbox>
-            </el-checkbox-group>
-          </el-form-item>
-          <el-form-item v-else label="货物类型(小)" prop="tin2_2">
-            <el-radio-group v-model="formData.tin2_2" size="medium">
-              <el-radio
-                v-for="dict in tin2_1Option"
-                :key="dict.dictValue"
-                :label="dict.dictValue"
-              >{{ dict.dictLabel }}</el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </template>
-
-        <el-form-item label="发布为" prop="tin4">
-          <el-radio-group v-model="formData.tin4" size="medium">
-            <el-radio
-              v-for="dict in [
-                { dictValue: true, dictLabel: '公开货源(所有人可接)' },
-                { dictValue: false, dictLabel: '非公开货源' },
-              ]"
-              :key="dict.dictValue"
-              :label="dict.dictValue"
-            >{{ dict.dictLabel }}</el-radio>
-          </el-radio-group>
-        </el-form-item>
-
-        <template v-if="!formData.tin4">
-          <el-form-item label="指定接单人" prop="tin5">
-            <el-radio-group v-model="formData.tin5" size="medium">
-              <el-radio
-                v-for="dict in [
-                  { dictValue: true, dictLabel: '是' },
-                  { dictValue: false, dictLabel: '否' },
-                ]"
-                :key="dict.dictValue"
-                :label="dict.dictValue"
-              >{{ dict.dictLabel }}</el-radio>
-            </el-radio-group>
-          </el-form-item>
-
-          <template v-if="formData.tin5">
-            <div style="display: flex">
-              <el-form-item
-                label="指定接单人(调度者3人,司机1人)"
-                prop="tin5_1"
-                label-width="300px"
-              >
-                <el-select
-                  v-model="formData.tin5_1"
-                  placeholder="调度者"
-                  multiple
-                  collapse-tags
-                  clearable
-                  :style="{ width: '100%' }"
-                >
-                  <el-option
-                    v-for="dict in [
-                      { dictValue: '11111', dictLabel: '调度者1' },
-                      { dictValue: '22222', dictLabel: '调度者2' },
-                    ]"
-                    :key="dict.dictValue"
-                    :label="dict.dictLabel"
-                    :value="dict.dictValue"
-                  />
-                </el-select>
-              </el-form-item>
-              <el-form-item prop="tin5_2" label-width="10px">
-                <el-select
-                  v-model="formData.tin5_2"
-                  placeholder="司机"
-                  clearable
-                  multiple
-                  collapse-tags
-                  :style="{ width: '100%' }"
-                >
-                  <el-option
-                    v-for="dict in [
-                      { dictValue: '10000', dictLabel: '司机1' },
-                      { dictValue: '20000', dictLabel: '司机2' },
-                    ]"
-                    :key="dict.dictValue"
-                    :label="dict.dictLabel"
-                    :value="dict.dictValue"
-                  />
-                </el-select>
-              </el-form-item>
-            </div>
-          </template>
-
-          <el-form-item label="货集码" prop="tin6" label-width="300px">
+          <el-form-item label="选择所属项目" prop="tin3">
             <el-select
-              v-model="formData.tin6"
-              placeholder="选择货集码"
+              v-model="formData.tin3"
+              placeholder="无归属项目"
               clearable
               :style="{ width: '100%' }"
             >
               <el-option
-                v-for="dict in [
-                  { dictValue: '108888000', dictLabel: '集码1' },
-                  { dictValue: '200888800', dictLabel: '集码2' },
+                v-for="item in [
+                  {
+                    label: '项目1',
+                    value: '68655588',
+                  },
+                  {
+                    label: '项目2',
+                    value: '6865550088',
+                  },
                 ]"
-                :key="dict.dictValue"
-                :label="dict.dictLabel"
-                :value="dict.dictValue"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
               />
             </el-select>
           </el-form-item>
-        </template>
 
-        <el-form-item label="备注信息" prop="remark">
-          <el-input
-            v-model="formData.remark"
-            type="textarea"
-            placeholder="请输入任何您想说的话..."
-            :autosize="{ minRows: 4, maxRows: 4 }"
-            :style="{ width: '100%' }"
-          />
-        </el-form-item>
-      </div>
-      <el-divider />
+          <el-form-item label="选择货物类型" prop="tin2">
+            <el-radio-group v-model="formData.tin2" size="medium" @change="handletin2">
+              <el-radio
+                v-for="item in goodsBigTypeOptions"
+                :key="item.value"
+                :label="item.value"
+              >{{ item.label }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
+
+          <!-- 先隐藏, 选择后显示 -->
+          <template v-if="formData.tin2">
+            <!-- isMultiGoods true->多商品 ; false->单商品 -->
+            <el-form-item v-if="isMultiGoods" label="货物类型(小)" prop="tin2_1">
+              <el-checkbox-group
+                v-model="formData.tin2_1"
+                size="medium"
+                @change="handletin2_1"
+              >
+                <el-checkbox
+                  v-for="dict in tin2_1Option"
+                  :key="dict.dictValue"
+                  :label="dict.dictValue"
+                >{{ dict.dictLabel }}</el-checkbox>
+              </el-checkbox-group>
+            </el-form-item>
+            <el-form-item v-else label="货物类型(小)" prop="tin2_2">
+              <el-radio-group v-model="formData.tin2_2" size="medium">
+                <el-radio
+                  v-for="dict in tin2_1Option"
+                  :key="dict.dictValue"
+                  :label="dict.dictValue"
+                >{{ dict.dictLabel }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </template>
+
+          <el-form-item label="发布为" prop="tin4">
+            <el-radio-group v-model="formData.tin4" size="medium">
+              <el-radio
+                v-for="dict in [
+                  { dictValue: true, dictLabel: '公开货源(所有人可接)' },
+                  { dictValue: false, dictLabel: '非公开货源' },
+                ]"
+                :key="dict.dictValue"
+                :label="dict.dictValue"
+              >{{ dict.dictLabel }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
+
+          <template v-if="!formData.tin4">
+            <el-form-item label="指定接单人" prop="tin5">
+              <el-radio-group v-model="formData.tin5" size="medium">
+                <el-radio
+                  v-for="dict in [
+                    { dictValue: true, dictLabel: '是' },
+                    { dictValue: false, dictLabel: '否' },
+                  ]"
+                  :key="dict.dictValue"
+                  :label="dict.dictValue"
+                >{{ dict.dictLabel }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+
+            <template v-if="formData.tin5">
+              <!-- <div style="display: flex">
+                <el-form-item
+                  label="指定接单人(调度者3人,司机1人)"
+                  prop="tin5_1"
+                  label-width="300px"
+                >
+                  <el-select
+                    v-model="formData.tin5_1"
+                    placeholder="调度者"
+                    multiple
+                    collapse-tags
+                    clearable
+                    :style="{ width: '100%' }"
+                  >
+                    <el-option
+                      v-for="dict in [
+                        { dictValue: '11111', dictLabel: '调度者1' },
+                        { dictValue: '22222', dictLabel: '调度者2' },
+                      ]"
+                      :key="dict.dictValue"
+                      :label="dict.dictLabel"
+                      :value="dict.dictValue"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item prop="tin5_2" label-width="10px">
+                  <el-select
+                    v-model="formData.tin5_2"
+                    placeholder="司机"
+                    clearable
+                    multiple
+                    collapse-tags
+                    :style="{ width: '100%' }"
+                  >
+                    <el-option
+                      v-for="dict in [
+                        { dictValue: '10000', dictLabel: '司机1' },
+                        { dictValue: '20000', dictLabel: '司机2' },
+                      ]"
+                      :key="dict.dictValue"
+                      :label="dict.dictLabel"
+                      :value="dict.dictValue"
+                    />
+                  </el-select>
+                </el-form-item>
+              </div> -->
+              <el-form-item prop="tin5_2" label-width="10px">
+                <el-button type="primary" @click="open1">指定接单人</el-button>
+              </el-form-item>
+            </template>
+
+            <el-form-item label="货集码" prop="tin6" label-width="300px">
+              <el-select
+                v-model="formData.tin6"
+                placeholder="选择货集码"
+                clearable
+                :style="{ width: '100%' }"
+              >
+                <el-option
+                  v-for="dict in [
+                    { dictValue: '108888000', dictLabel: '集码1' },
+                    { dictValue: '200888800', dictLabel: '集码2' },
+                  ]"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+            </el-form-item>
+          </template>
+
+          <el-form-item label="备注信息" prop="remark">
+            <el-input
+              v-model="formData.remark"
+              type="textarea"
+              placeholder="请输入任何您想说的话..."
+              :autosize="{ minRows: 4, maxRows: 4 }"
+              :style="{ width: '100%' }"
+            />
+          </el-form-item>
+        </div>
+        <el-divider />
+      </template>
 
       <!-- 如果是单商品着没有下面的 -->
       <!-- isMultiGoods true->多商品 ; false->单商品 -->
 
-      <template v-if="isMultiGoods">
+      <template v-if="isTin1 && isMultiGoods">
         <div class="content">
           <div class="header mb8">装货类型</div>
           <el-form-item label="装货类型" prop="tin7">
@@ -242,104 +247,109 @@
       1: 多商品对应多地址/单商品就一个地址
       2: 多装和多卸 各自可有多地址
      -->
-
-    <div class="content">
-      <div class="header mb8">货源地址</div>
-      <!-- isMultiGoods true->多商品 ; false->单商品 -->
-      <!-- address-type : 1=>货源地址; 2=>卸货地址 -->
-      <!-- show-btn : true=>可多选; false=>隐藏按钮不能多选 -->
-      <add-address
-        ref="address1"
-        :address-type="1"
-        :show-btn="formData.tin7 === '2' || formData.tin7 === '4'"
-        :is-big-odd="isMultiGoods"
-      />
-    </div>
-
-    <el-divider />
-
-    <div class="content">
-      <div class="header mb8">卸货地址</div>
-      <!-- isMultiGoods true->多商品 ; false->单商品 -->
-      <!-- address-type : 1=>货源地址; 2=>卸货地址 -->
-      <!-- show-btn : true=>可多选; false=>隐藏按钮不能多选 -->
-      <add-address
-        ref="address2"
-        :address-type="2"
-        :show-btn="formData.tin7 === '3' || formData.tin7 === '4'"
-        :is-big-odd="isMultiGoods"
-      />
-    </div>
-
-    <el-divider />
-
-    <!--
-      多商品对应多个计算规则 orderGoodsList数组 会有多个
-      单个商品就一个计算规则
-     -->
-    <!-- isMultiGoods true->多商品 ; false->单商品 -->
-    <template v-if="!isMultiGoods">
+    <template v-if="isTin1">
       <div class="content">
-        <div class="header mb8">货物</div>
-
-        <GoodsAccounting ref="goodsAccounting" />
+        <div class="header mb8">货源地址</div>
+        <!-- isMultiGoods true->多商品 ; false->单商品 -->
+        <!-- address-type : 1=>货源地址; 2=>卸货地址 -->
+        <!-- show-btn : true=>可多选; false=>隐藏按钮不能多选 -->
+        <add-address
+          ref="address1"
+          :address-type="1"
+          :show-btn="formData.tin7 === '2' || formData.tin7 === '4'"
+          :is-big-odd="isMultiGoods"
+        />
       </div>
 
-      <div class="content">
-        <div class="header mb8">核算:</div>
+      <el-divider />
 
-        <AccounTing ref="accounTing" />
+      <div class="content">
+        <div class="header mb8">卸货地址</div>
+        <!-- isMultiGoods true->多商品 ; false->单商品 -->
+        <!-- address-type : 1=>货源地址; 2=>卸货地址 -->
+        <!-- show-btn : true=>可多选; false=>隐藏按钮不能多选 -->
+        <add-address
+          ref="address2"
+          :address-type="2"
+          :show-btn="formData.tin7 === '3' || formData.tin7 === '4'"
+          :is-big-odd="isMultiGoods"
+        />
       </div>
 
-      <!-- s封装成组件 -->
+      <el-divider />
 
-      <div class="content">
-        <div class="header mb8">预估运费</div>
+      <!--
+        多商品对应多个计算规则 orderGoodsList数组 会有多个
+        单个商品就一个计算规则
+      -->
+      <!-- isMultiGoods true->多商品 ; false->单商品 -->
+      <template v-if="!isMultiGoods">
+        <div class="content">
+          <div class="header mb8">货物</div>
 
-        <div>
-          <span>预估运费(不含税):</span> <span>￥</span><span>8566.00</span>
+          <GoodsAccounting ref="goodsAccounting" />
         </div>
-        <div><span>(含税):</span> <span>￥</span><span>8566.00</span></div>
+
+        <div class="content">
+          <div class="header mb8">核算:</div>
+
+          <AccounTing ref="accounTing" />
+        </div>
+
+        <!-- s封装成组件 -->
+
+        <div class="content">
+          <div class="header mb8">预估运费</div>
+
+          <div>
+            <span>预估运费(不含税):</span> <span>￥</span><span>8566.00</span>
+          </div>
+          <div><span>(含税):</span> <span>￥</span><span>8566.00</span></div>
+        </div>
+      </template>
+
+      <template v-else>
+        <div class="content">
+          <div class="header mb8">货物/核算</div>
+
+          <!-- tin2_1 是选中的多个商品 至少选中一个
+              1. 监听选择事件 创建一个新的数组
+          -->
+          <el-tabs v-model="tin2_1tabs_activeName">
+            <el-tab-pane
+              v-for="item in tin2_1tabs"
+              :key="item.value"
+              :label="item.label"
+              :name="item.value"
+            >
+              <!-- v-model="item.data" 如果自接传在去修改会警告, 倒不如处理完返回再赋值 -->
+              <MultiData :ref="item.value" />
+            </el-tab-pane>
+          </el-tabs>
+        </div>
+      </template>
+
+      <div>
+        <el-button type="primary" @click="onSubmit('elForm')">立即发布</el-button>
+        <el-button>取消</el-button>
       </div>
     </template>
-
-    <template v-else>
-      <div class="content">
-        <div class="header mb8">货物/核算</div>
-
-        <!-- tin2_1 是选中的多个商品 至少选中一个
-            1. 监听选择事件 创建一个新的数组
-        -->
-        <el-tabs v-model="tin2_1tabs_activeName">
-          <el-tab-pane
-            v-for="item in tin2_1tabs"
-            :key="item.value"
-            :label="item.label"
-            :name="item.value"
-          >
-            <!-- v-model="item.data" 如果自接传在去修改会警告, 倒不如处理完返回再赋值 -->
-            <MultiData :ref="item.value" />
-          </el-tab-pane>
-        </el-tabs>
-      </div>
-    </template>
-
-    <div>
-      <el-button type="primary" @click="onSubmit('elForm')">立即发布</el-button>
-      <el-button>取消</el-button>
-    </div>
-
     <!-- 添加或修改【请填写功能名称】对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="75%" append-to-body>
+    <!-- <el-dialog :title="title" :visible.sync="open" width="75%" append-to-body>
       <div>
         <open-dialog />
       </div>
+    </el-dialog> -->
+    <!-- 调度者/司机 -->
+    <el-dialog :title="title" :visible.sync="open" width="80%" append-to-body>
+      <open-dialog v-if="open" @handleSelectionChange="handleSelectionChange" />
     </el-dialog>
   </div>
 </template>
 
 <script>
-import OpenDialog from './OpenDialog';
+// import OpenDialog from './OpenDialog';
+import OpenDialog from '../manage/component/OpenDialog';
 
 import AddAddress from './component/AddAddress';
 import GoodsAccounting from './component/GoodsAccounting';
@@ -380,6 +390,9 @@ export default {
 
       },
       rules: {
+        tin1: [
+          { required: true, message: '请选择货物类型', trigger: 'change' }
+        ],
         tin2: [
           { required: true, message: '请选择货物类型', trigger: 'change' }
         ],
@@ -427,6 +440,10 @@ export default {
     },
     isBigOdd() {
       return this.formData.goodsBigType === 1;
+    },
+
+    isTin1() {
+      return !!this.formData.tin1;
     }
   },
 
@@ -701,6 +718,24 @@ export default {
       this.getDicts(this.formData.tin2).then((response) => {
         this.tin2_1Option = response.data;
       });
+    },
+
+    // 打开调度者页面
+    open1() {
+      this.open = true;
+      this.title = '选择调度者';
+    },
+    // 获取选中的数组
+    handleSelectionChange(obj, bool) {
+      if (bool) {
+        this.formData.tin5_1 = obj['listInfo'] || [];
+        this.formData.tin5_2 = obj['listDriver'] || [];
+        this.open = false;
+        this.title = '';
+      } else {
+        this.open = false;
+        this.title = '';
+      }
     }
   }
 };

@@ -330,7 +330,7 @@
 
     <!-- 派送订单 -->
     <el-dialog :title="title" :visible.sync="openDispatch" width="80%" append-to-body>
-      <open-dialog :dispatch="dispatch" @_ok="(bool)=>{openDispatch = bool; getList()}" />
+      <open-dialog v-if="openDispatch" :dispatch="dispatch" @_ok="(bool)=>{openDispatch = bool; getList()}" />
     </el-dialog>
   </div>
 </template>
@@ -338,7 +338,7 @@
 <script>
 import { getOrderInfoList, delOrder, loadAndUnloadingGoods, exportOrder } from '@/api/order/manage';
 import OpenDialog from './component/OpenDialog';
-import tableColumnsConfig from './config';
+import tableColumnsConfig from './data/config-index';
 
 
 export default {
@@ -362,7 +362,7 @@ export default {
       // 总条数
       total: 0,
       // 表格数据
-      list: [],
+      list: [{ id: 1 }],
       // 是否显示弹出层-派送
       openDispatch: false,
       dispatch: null,

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="100px" class="clearfix">
+    <!-- <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="100px" class="clearfix">
       <el-form-item label="转货地址" prop="testName">
         <el-input
           v-model="queryParams.testName"
@@ -37,18 +37,17 @@
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
 
       </el-form-item>
-    </el-form>
+    </el-form> -->
 
-    <div class="mb8">
+    <!-- <div class="mb8">
       <tablec-cascader v-model="tableColumnsConfig" :options="options" />
-    </div>
+    </div> -->
+    <el-tabs v-model="activeName" type="card" @tab-click="getList()">
+      <el-tab-pane label="司机" name="listDriver" />
+      <el-tab-pane label="调度" name="listInfo" />
+    </el-tabs>
+
     <RefactorTable :loading="loading" :data="list" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
-      <template #status="{row}">
-        <span>{{ row.status }}</span>
-      </template>
-      <template #accessTime="{row}">
-        <span>{{ row.accessTime }}</span>
-      </template>
       <template #edit="{row}">
         <el-button
           size="mini"
@@ -56,7 +55,6 @@
           icon="el-icon-edit"
           @click="handleUpdate(row)"
         >选择</el-button>
-
       </template>
     </RefactorTable>
 
@@ -68,340 +66,389 @@
       @pagination="getList"
     />
 
-
+    <div>
+      <el-button type="cyan" :disabled="!(ids.length>0)" icon="el-icon-search" size="mini" @click="_ok(true)">确定</el-button>
+      <el-button icon="el-icon-refresh" size="mini" @click="_ok(false)">取消</el-button>
+    </div>
   </div>
 </template>
 
 <script>
 
-const options = [
+import { listDriver } from '@/api/assets/driver';
+import { listInfo } from '@/api/assets/team';
+import { dispatchOrder } from '@/api/order/manage';
+
+// import { listShipment, getShipment, delShipment } from '@/api/assets/shipment';
+
+const apiFn = {
+  listDriver, listInfo
+};
+
+const tableColumnsConfig_listDriver = [
   {
-    prop: 'infoId',
-    label: '访问编号',
-    fixed: 'left'
-    // width: ,
-    // align: 'center'
+    prop: 'driverType',
+    isShow: true,
+    label: '司机类别'
+    // width: 180,
+    // fixed: 'right'
   },
   {
-    prop: 'userName',
-    label: '用户名称'
-    // width: ,
-    // align: 'center'
-  }, {
-    prop: 'ipaddr',
-    label: '地址',
-    width: 130,
-    tooltip: true
-    // align: 'center'
-  }, {
-    prop: 'status',
-    label: '状态'
-  }, {
-    prop: 'msg',
-    label: '描述'
-    // width: ,
-    // align: 'center'
-  }, {
-    prop: 'accessTime',
-    label: '访问时间',
-    width: 180
-    // align: 'center'
+    prop: 'provinceCodedit',
+    isShow: false,
+    label: '省'
+    // width: 180,
+    // fixed: 'right'
   },
   {
-    prop: 'type',
-    label: '访问时间',
-    width: 250
-    // align: 'center'
+    prop: 'cityCodedit',
+    isShow: false,
+    label: '市'
+    // width: 180,
+    // fixed: 'right'
   },
   {
-    prop: 'terminalType',
-    label: '访问时间',
-    width: 250
-    // align: 'center'
+    prop: 'countyCodedit',
+    isShow: false,
+    label: '县'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'namet',
+    isShow: false,
+    label: '名字'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'telphonet',
+    isShow: false,
+    label: '手机'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'fixedPhonet',
+    isShow: false,
+    label: '固话'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'workCompany',
+    isShow: false,
+    label: '工作单位'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'driverCity',
+    isShow: false,
+    label: '司机城市名称'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'homeAddresst',
+    isShow: false,
+    label: '地址'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'identificationNumber',
+    isShow: true,
+    label: '身份证号'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'driverLicense',
+    isShow: false,
+    label: '驾驶证'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'validPeriodFrom',
+    isShow: false,
+    label: '驾驶证有效期自'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'validPeriodTo',
+    isShow: false,
+    label: '驾驶证有效期至'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'driverLicenseType',
+    isShow: false,
+    label: '驾驶证类型'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'workLicense',
+    isShow: false,
+    label: '上岗证'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'workLicenseDueDate',
+    isShow: false,
+    label: '从业资格证到期日期'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'businessLicenseImgNo',
+    isShow: false,
+    label: '营业执照号'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'isReportPerson',
+    isShow: false,
+    label: '是否上传人员信用信息'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'issuingOrganizations',
+    isShow: false,
+    label: '驾驶证发证机关'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'isReportEnterprise',
+    isShow: false,
+    label: '是否上传企业'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'workLicenseProvinceName',
+    isShow: false,
+    label: '从业资格证办理省份名称'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'authStatus',
+    isShow: false,
+    label: '审核状态'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'isFreeze',
+    isShow: false,
+    label: '是否冻结'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'createCode',
+    isShow: false,
+    label: '创建人'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'updateCode',
+    isShow: false,
+    label: '修改人'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'createTime',
+    isShow: false,
+    label: '创建时间'
+    // width: 180,
+    // fixed: 'right'
   },
   {
     prop: 'edit',
+    isShow: false,
     label: '操作',
     width: 180,
     fixed: 'right'
   }
 ];
 
-const listData = {
-  'total': 269,
-  'rows': [
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 608,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.12',
-      'status': '0',
-      'msg': '退出成功',
-      'accessTime': '2021-03-09 13:36:53',
-      'type': 2,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    },
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 607,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.12',
-      'status': '0',
-      'msg': '登录成功',
-      'accessTime': '2021-03-09 11:55:22',
-      'type': 1,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    },
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 606,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.5',
-      'status': '0',
-      'msg': '登录成功',
-      'accessTime': '2021-03-09 11:41:21',
-      'type': 1,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    },
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 605,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.5',
-      'status': '0',
-      'msg': '登录成功',
-      'accessTime': '2021-03-09 11:33:51',
-      'type': 1,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    },
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 604,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.5',
-      'status': '0',
-      'msg': '登录成功',
-      'accessTime': '2021-03-09 11:31:27',
-      'type': 1,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    },
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 603,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.5',
-      'status': '0',
-      'msg': '退出成功',
-      'accessTime': '2021-03-09 11:31:22',
-      'type': 2,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    },
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 602,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.5',
-      'status': '0',
-      'msg': '登录成功',
-      'accessTime': '2021-03-09 11:29:00',
-      'type': 1,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    },
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 601,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.5',
-      'status': '0',
-      'msg': '退出成功',
-      'accessTime': '2021-03-09 11:28:58',
-      'type': 2,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    },
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 600,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.5',
-      'status': '0',
-      'msg': '登录成功',
-      'accessTime': '2021-03-09 11:28:42',
-      'type': 1,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    },
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 599,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.5',
-      'status': '0',
-      'msg': '退出成功',
-      'accessTime': '2021-03-09 11:28:39',
-      'type': 2,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    }
-  ],
-  'code': 200,
-  'msg': '查询成功'
-};
+const tableColumnsConfig_listInfo = [
+  {
+    prop: 'branchCode',
+    isShow: true,
+    label: '网点编码'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'name',
+    isShow: true,
+    label: '车队名称'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'teamLeader',
+    isShow: true,
+    label: '车队管理者'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'isDel',
+    isShow: true,
+    label: '是否删除'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'status',
+    isShow: true,
+    label: '状态'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'createCode',
+    isShow: false,
+    label: '创建人'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'updateCode',
+    isShow: false,
+    label: '修改人'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'businessLicenseImg',
+    isShow: false,
+    label: '营业执照'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'transportPermitImage',
+    isShow: false,
+    label: '道路运输经营许可证照'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'identificationImage',
+    isShow: false,
+    label: '身份证正面照片'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'identificationBackImage',
+    isShow: false,
+    label: '身份证国徽面'
+    // width: 180,
+    // fixed: 'right'
+  },
+  {
+    prop: 'edit',
+    isShow: false,
+    label: '操作',
+    width: 180,
+    fixed: 'right'
+  }
+];
+
+
 export default {
   name: 'OpenDialog',
-  data() {
-    return {
-      // 遮罩层
-      loading: false,
-      // 总条数
-      total: 0,
-      // 查询参数
-      // 表格数据
-      list: [],
-      queryParams: {
-        pageNum: 1,
-        pageSize: 10,
-        title: undefined,
-        operName: undefined,
-        businessType: undefined,
-        status: undefined
-      },
-      // 表头动态值
-      tableColumnsConfig: [],
 
-      // 下拉框展示所有的值-其中每一项就是配置项的值
-      options
-    };
+  props: {
+    dispatch: {
+      type: Object,
+      required: true
+    }
   },
 
+  data() {
+    return {
+      // tab
+      activeName: 'listDriver',
+      // 遮罩层
+      loading: false,
+      // 多选
+      ids: [],
+      // 总条数
+      total_listDriver: 0,
+      total_listInfo: 0,
+      // 查询参数
+      // 表格数据
+      list_listDriver: [],
+      queryParams_listDriver: {
+        pageNum: 1,
+        pageSize: 10
+      },
+      list_listInfo: [],
+      queryParams_listInfo: {
+        pageNum: 1,
+        pageSize: 10
+      },
+      // 表头动态值
+      tableColumnsConfig_listDriver,
+      tableColumnsConfig_listInfo
+    };
+  },
+  computed: {
+    list() {
+      return this['list_' + this.activeName];
+    },
+    queryParams() {
+      return this['queryParams_' + this.activeName];
+    },
+    tableColumnsConfig() {
+      return this['tableColumnsConfig_' + this.activeName];
+    },
+    total() {
+      return this['total_' + this.activeName];
+    }
+  },
   created() {
     this.getList();
-    // 这个可以做个判断如果有存则取存的东西, 没有就去全部
-    this.tableColumnsConfig = this.options;
   },
 
   methods: {
     /** 查询【请填写功能名称】列表 */
     getList() {
-      // this.loading = true;
-      // listTest(this.queryParams).then(response => {
-      //   this.testList = response.rows;
-      //   this.total = response.total;
-      //   this.loading = false;
-      // }).catch(err=>{
-      //   this.loading = false;
-      // })
+      this.loading = true;
 
-      // 测试,上面打开,下面就要删掉
-      this.list = listData.rows;
-      this.total = listData.total;
-      this.loading = false;
+      apiFn[this.activeName](this.queryParams).then(response => {
+        this['list_' + this.activeName] = response.rows;
+        this['total_' + this.activeName] = response.total;
+        this.loading = false;
+      }).catch(() => {
+        this.loading = false;
+      });
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.pageNum = 1;
+      // this.queryParams.pageNum = 1;
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.resetForm('queryForm');
-      this.handleQuery();
+      // this.resetForm('queryForm');
+      // this.handleQuery();
     },
 
     handleUpdate() {
@@ -410,10 +457,44 @@ export default {
 
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.testId);
-      this.single = selection.length !== 1;
-      this.multiple = !selection.length;
+      this.ids = selection.map(item => item.code);
+    },
+
+    _ok(bool) {
+      if (bool) {
+        const orderSpecifiedList = this.ids.map(e => {
+          if (this.activeName === 'listDriver') {
+            return {
+              'driverInfoCode': e,
+              'teamInfoCode': '',
+              'userType': 2
+            };
+          } else {
+            return {
+              'driverInfoCode': '',
+              'teamInfoCode': e,
+              'userType': 1
+            };
+          }
+        });
+
+        const data = {
+          'oderCode': this.dispatch.code,
+          orderSpecifiedList
+        };
+
+
+        dispatchOrder(data).then(res => {
+          console.log(res);
+          this.msgSuccess('派发成功!');
+          this.$emit('_ok', false);
+        });
+      } else {
+        this.$emit('_ok', false);
+      }
     }
+
+
   }
 };
 </script>
