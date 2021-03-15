@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { addStockcode, updateStockcode } from '@/api/enterprise/stockcode';
+import { addStockcode, updateStockcode, generateCode } from '@/api/enterprise/stockcode';
 export default {
   props: {
     title: {
@@ -89,9 +89,9 @@ export default {
     // 表单重置
     reset() {
       this.form = {
+        shipmentCode: '8b3f41f598c64fd9a7922a5611a7ed8f',
         id: null,
         code: null,
-        shipmentCode: null,
         cargoCodeName: null,
         cargoCodeQr: null,
         delFlag: null,
