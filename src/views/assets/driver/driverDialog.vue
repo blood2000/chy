@@ -652,12 +652,20 @@ export default {
     changeProvince(code) {
       this.form.cityCode = null;
       this.form.countyCode = null;
+      this.cityCodeOptions = [];
       this.countyCodeOptions = [];
+      if (code === '') {
+        return;
+      }
       this.getCityListFun(code);
     },
     // 选中市
     changeCity(code) {
       this.form.countyCode = null;
+      this.countyCodeOptions = [];
+      if (code === '') {
+        return;
+      }
       this.geCountyListFun(code);
     },
     // 获取市
