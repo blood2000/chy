@@ -10,7 +10,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item> -->
-      <el-form-item label="货主编码" prop="shipmentCode">
+      <!-- <el-form-item label="货主编码" prop="shipmentCode">
         <el-input
           v-model="queryParams.shipmentCode"
           placeholder="请输入货主编码"
@@ -18,7 +18,7 @@
           size="small"
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="项目名称" prop="projectName">
         <el-input
           v-model="queryParams.projectName"
@@ -29,13 +29,19 @@
         />
       </el-form-item>
       <el-form-item label="商品类别" prop="commodityCategoryCode">
-        <el-input
+        <el-select
           v-model="queryParams.commodityCategoryCode"
-          placeholder="请输入商品类别编码"
+          placeholder="请选择商品类别"
           clearable
           size="small"
-          @keyup.enter.native="handleQuery"
-        />
+        >
+          <el-option
+            v-for="dict in commodityCategoryCodeOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
       </el-form-item>
       <!-- <el-form-item label="商品小类" prop="commoditySubclassCodes">
         <el-input
@@ -124,10 +130,10 @@
     <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
       <!-- <el-table-column label="编码" align="center" prop="code" :formatter="codeFormat" /> -->
-      <el-table-column label="货主编码" align="center" prop="shipmentCode" :formatter="shipmentCodeFormat" />
+      <!-- <el-table-column label="货主编码" align="center" prop="shipmentCode" :formatter="shipmentCodeFormat" /> -->
       <el-table-column label="项目名称" align="center" prop="projectName" />
-      <el-table-column label="商品类别编码" align="center" prop="commodityCategoryCode" :formatter="commodityCategoryCodeFormat" />
-      <el-table-column label="商品小类" align="center" prop="commoditySubclassCodes" :formatter="commoditySubclassCodesFormat" />
+      <el-table-column label="商品类别" align="center" prop="commodityCategoryCode" :formatter="commodityCategoryCodeFormat" />
+      <el-table-column label="商品小类" align="center" prop="commoditySubclassCodes" />
       <el-table-column label="备注" align="center" prop="projectRemark" />
       <!-- <el-table-column label="创建人" align="center" prop="createCode" :formatter="createCodeFormat" />
       <el-table-column label="更新人" align="center" prop="updateCode" :formatter="updateCodeFormat" /> -->
@@ -198,14 +204,12 @@ export default {
       title: '',
       // 是否显示弹出层
       open: false,
-      // 货主编码字典
-      shipmentCodeOptions: [],
       // 项目名称字典
       projectNameOptions: [],
       // 商品类别编码字典
       commodityCategoryCodeOptions: [],
       // 商品小类字典
-      commoditySubclassCodesOptions: [],
+      // commoditySubclassCodesOptions: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -244,17 +248,9 @@ export default {
         this.loading = false;
       });
     },
-    // 货主编码字典翻译
-    shipmentCodeFormat(row, column) {
-      return this.selectDictLabel(this.shipmentCodeOptions, row.shipmentCode);
-    },
     // 商品类别编码字典翻译
     commodityCategoryCodeFormat(row, column) {
       return this.selectDictLabel(this.commodityCategoryCodeOptions, row.commodityCategoryCode);
-    },
-    // 商品小类字典翻译
-    commoditySubclassCodesFormat(row, column) {
-      return this.selectDictLabel(this.commoditySubclassCodesOptions, row.commoditySubclassCodes);
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -283,7 +279,7 @@ export default {
       this.$refs.ProjectDialog.reset();
       const id = row.id || this.ids;
       getInfo(id).then(response => {
-        this.$refs.ProjectDialog.setFrom(response.data);
+        this.$refs.ProjectDialog.setForm(response.data);
         this.open = true;
         this.title = '修改项目';
       });

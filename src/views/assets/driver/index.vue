@@ -99,6 +99,7 @@
           type="info"
           icon="el-icon-upload2"
           size="mini"
+          @click="handleImportDriver"
         >司机批量导入</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -204,17 +205,21 @@
 
     <!-- 新增/修改/详情 对话框 -->
     <driver-dialog ref="DriverDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
+    <!-- 批量导入 对话框 -->
+    <import-dialog ref="ImportDialog" :title="title" :open.sync="openImport" @refresh="getList" />
   </div>
 </template>
 
 <script>
 import { listDriver, getDriver, delDriver } from '@/api/assets/driver';
 import DriverDialog from './driverDialog';
+import ImportDialog from './importDialog';
 
 export default {
   name: 'Driver',
   components: {
-    DriverDialog
+    DriverDialog,
+    ImportDialog
   },
   data() {
     return {
@@ -263,6 +268,7 @@ export default {
       title: '',
       // 是否显示弹出层
       open: false,
+      openImport: false,
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -376,6 +382,11 @@ export default {
       this.download('assets/driver/export', {
         ...this.queryParams
       }, `driver_${new Date().getTime()}.xlsx`);
+    },
+    /** 批量导入按钮操作 */
+    handleImportDriver() {
+      this.openImport = true;
+      this.title = '司机批量导入';
     },
     /** 下载模板 */
     handleImportTemplateDriver() {
