@@ -117,10 +117,8 @@ export default {
     }
   },
   created() {
-    // this.handlecommodityCategoryChange();
     this.getDicts('productType').then(response => {
       this.commodityCategoryCodeOptions = response.data;
-      // console.log(this.commodityCategoryCodeOptions);
     });
   },
   methods: {
@@ -128,7 +126,9 @@ export default {
     submitForm() {
 	  this.$refs['form'].validate(valid => {
 	    if (valid) {
-          this.form.commoditySubclassCodes = this.commoditySubclassCodes.join(',');
+          if (this.isMore === '1') {
+            this.form.commoditySubclassCodes = this.commoditySubclassCodes.join(',');
+          }
 	      if (this.form.id != null) {
 	        updateInfo(this.form).then(response => {
 	          this.msgSuccess('修改成功');
@@ -162,7 +162,7 @@ export default {
         shipmentCode: null,
         projectName: null,
         commodityCategoryCode: null,
-        commoditySubclassCodes: [],
+        commoditySubclassCodes: null,
         projectRemark: null,
         delFlag: null,
         createCode: null,
@@ -177,28 +177,23 @@ export default {
     setForm(data) {
 	    this.form = data;
       this.commoditySubclassCodes = data.commoditySubclassCodes.split(',');
+      this.handleChange(data.commodityCategoryCode);
     },
     // 单选商品大类
     handlecommodityCategoryChange(selection) {
+      this.handleChange(selection);
+      this.commoditySubclassCodes = [];
+    },
+    // 单选商品大类后联动数据事件
+    handleChange(value) {
       const commodity = this.commodityCategoryCodeOptions.filter(item => {
-        return item.dictValue === selection;
+        return item.dictValue === value;
       });
-      console.log(commodity);
       this.commoditySubclass = commodity[0].dictValue;
       console.log(this.commoditySubclass);
       this.getDicts(this.commoditySubclass).then(response => {
         this.commoditySubclassCodesOptions = response.data;
       });
-      // if (commodity[0].isCheckbox === '0') {
-      //   this.getDicts(this.commoditySubclass).then(response => {
-      //     this.commoditySubclassCodesOptions = response.data;
-      //   });
-      // } else {
-      //   this.getDicts(this.commoditySubclass).then(response => {
-      //     this.commoditySubclassCodesOptions1 = response.data;
-      //   });
-      // }
-      // console.log(this.commoditySubclassCodesOptions1);
       this.isMore = commodity[0].isCheckbox;
     },
     // 多选小类
