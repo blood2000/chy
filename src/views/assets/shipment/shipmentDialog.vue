@@ -59,19 +59,20 @@
           <el-input v-model="form.organizationCodeNo" placeholder="请输入统一社会信用代码" size="small" class="width90" clearable />
         </el-form-item>
       </template>
-      <el-form-item label="省编码">
+      <el-form-item label="所在地区">
         <el-select
           v-model="form.provinceCode"
           clearable
           size="small"
           class="width28 mr3"
           placeholder="省(支持自动识别)"
+          @change="changeProvince"
         >
           <el-option
             v-for="dict in provinceCodeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+            :key="dict.provinceCode"
+            :label="dict.provinceName"
+            :value="dict.provinceCode"
           />
         </el-select>
         <el-select
@@ -80,12 +81,13 @@
           size="small"
           class="width28 mr3"
           placeholder="市(支持自动识别)"
+          @change="changeCity"
         >
           <el-option
             v-for="dict in cityCodeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+            :key="dict.cityCode"
+            :label="dict.cityName"
+            :value="dict.cityCode"
           />
         </el-select>
         <el-select
@@ -97,9 +99,9 @@
         >
           <el-option
             v-for="dict in countyCodeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+            :key="dict.countyCode"
+            :label="dict.countyName"
+            :value="dict.countyCode"
           />
         </el-select>
       </el-form-item>
@@ -314,6 +316,7 @@
 
 <script>
 import { addShipment, updateShipment, authRead, examine } from '@/api/assets/shipment';
+import { getProvinceList, getCityList, geCountyList } from '@/api/system/area';
 import UploadImage from '@/components/UploadImage/index';
 
 export default {
@@ -422,6 +425,18 @@ export default {
       // 抹零方式
       this.getDicts('wipe_type').then((response) => {
         this.wipeTypeOptions = response.data;
+      });
+      // 省
+      getProvinceList().then((response) => {
+        this.provinceCodeOptions = response.rows;
+      });
+      // 市
+      getCityList().then((response) => {
+        this.cityCodeOptions = response.rows;
+      });
+      // 区
+      geCountyList().then((response) => {
+        this.countyCodeOptions = response.rows;
       });
     },
     /** 提交按钮 */
@@ -546,6 +561,22 @@ export default {
       }
       authRead(data).then(response => {
         this.$emit('refresh');
+      });
+    },
+    // 选中省
+    changeProvince(code) {
+      this.form.cityCode = null;
+      this.form.countyCode = null;
+      this.countyCodeOptions = [];
+      getCityList({ provinceCode: code }).then((response) => {
+        this.cityCodeOptions = response.rows;
+      });
+    },
+    // 选中市
+    changeCity(code) {
+      this.form.countyCode = null;
+      geCountyList({ cityCode: code }).then((response) => {
+        this.countyCodeOptions = response.rows;
       });
     }
   }

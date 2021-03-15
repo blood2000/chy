@@ -34,18 +34,18 @@
           value-format="yyyy-MM-dd"
         />
       </el-form-item>
-      <el-form-item label="从业证办理省份名称" prop="workLicenseProvinceName">
+      <el-form-item label="从业证办理省份名称" prop="workLicenseProvinceCode">
         <el-select
-          v-model="form.workLicenseProvinceName"
+          v-model="form.workLicenseProvinceCode"
           clearable
           size="small"
           class="width90"
         >
           <el-option
             v-for="dict in provinceCodeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+            :key="dict.provinceCode"
+            :label="dict.provinceName"
+            :value="dict.provinceCode"
           />
         </el-select>
       </el-form-item>
@@ -61,12 +61,14 @@
           clearable
           size="small"
           class="width28 mr3"
+          placeholder="省"
+          @change="changeProvince"
         >
           <el-option
             v-for="dict in provinceCodeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+            :key="dict.provinceCode"
+            :label="dict.provinceName"
+            :value="dict.provinceCode"
           />
         </el-select>
         <el-select
@@ -74,12 +76,14 @@
           clearable
           size="small"
           class="width28 mr3"
+          placeholder="市"
+          @change="changeCity"
         >
           <el-option
             v-for="dict in cityCodeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+            :key="dict.cityCode"
+            :label="dict.cityName"
+            :value="dict.cityCode"
           />
         </el-select>
         <el-select
@@ -87,12 +91,13 @@
           clearable
           size="small"
           class="width28"
+          placeholder="县"
         >
           <el-option
             v-for="dict in countyCodeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+            :key="dict.countyCode"
+            :label="dict.countyName"
+            :value="dict.countyCode"
           />
         </el-select>
       </el-form-item>
@@ -402,6 +407,7 @@
 
 <script>
 import { addDriver, updateDriver } from '@/api/assets/driver';
+import { getProvinceList, getCityList, geCountyList } from '@/api/system/area';
 import UploadImage from '@/components/UploadImage/index';
 
 export default {
@@ -507,11 +513,28 @@ export default {
     }
   },
   created() {
-    this.getDicts('energyTypes').then(response => {
-      this.vehicleEnergyTypeOptions = response.data;
-    });
+    this.getDictsOptions();
   },
   methods: {
+    /** 查询字典 */
+    getDictsOptions() {
+      // 车辆能源类型
+      this.getDicts('energyTypes').then(response => {
+        this.vehicleEnergyTypeOptions = response.data;
+      });
+      // 省
+      getProvinceList().then((response) => {
+        this.provinceCodeOptions = response.rows;
+      });
+      // 市
+      getCityList().then((response) => {
+        this.cityCodeOptions = response.rows;
+      });
+      // 区
+      geCountyList().then((response) => {
+        this.countyCodeOptions = response.rows;
+      });
+    },
     /** 提交按钮 */
     submitForm: function() {
       if (this.disable) {
@@ -628,6 +651,22 @@ export default {
     setForm(data) {
       this.form = data;
       this.vehicleForm = data.vehicleInfo || {};
+    },
+    // 选中省
+    changeProvince(code) {
+      this.form.cityCode = null;
+      this.form.countyCode = null;
+      this.countyCodeOptions = [];
+      getCityList({ provinceCode: code }).then((response) => {
+        this.cityCodeOptions = response.rows;
+      });
+    },
+    // 选中市
+    changeCity(code) {
+      this.form.countyCode = null;
+      geCountyList({ cityCode: code }).then((response) => {
+        this.countyCodeOptions = response.rows;
+      });
     }
   }
 };
