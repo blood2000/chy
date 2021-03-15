@@ -34,9 +34,9 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item v-if="isMore == 1" label="商品小类" prop="commoditySubclassCodes">
-        <el-checkbox-group v-model="form.commoditySubclassCodes" @change="handleCheckedChange">
+        <el-checkbox-group v-model="commoditySubclassCodes" @change="handleCheckedChange">
           <el-checkbox
-            v-for="dict in commoditySubclassCodesOptions1"
+            v-for="dict in commoditySubclassCodesOptions"
             :key="dict.dictValue"
             :label="dict.dictValue"
           >{{ dict.dictLabel }}</el-checkbox>
@@ -90,7 +90,7 @@ export default {
       commodityCategoryCodeOptions: [],
       // 商品小类字典
       commoditySubclassCodesOptions: [],
-      commoditySubclassCodesOptions1: [],
+      commoditySubclassCodes: [],
       // 表单参数
       form: {
       },
@@ -101,7 +101,7 @@ export default {
         ]
       },
       // 是否多选
-      isMore: 2,
+      isMore: '2',
       // 小类字典类型
       commoditySubclass: ''
     };
@@ -117,10 +117,8 @@ export default {
     }
   },
   created() {
-    // this.handlecommodityCategoryChange();
     this.getDicts('productType').then(response => {
       this.commodityCategoryCodeOptions = response.data;
-      console.log(this.commodityCategoryCodeOptions);
     });
   },
   methods: {
@@ -128,6 +126,9 @@ export default {
     submitForm() {
 	  this.$refs['form'].validate(valid => {
 	    if (valid) {
+          if (this.isMore === '1') {
+            this.form.commoditySubclassCodes = this.commoditySubclassCodes.join(',');
+          }
 	      if (this.form.id != null) {
 	        updateInfo(this.form).then(response => {
 	          this.msgSuccess('修改成功');
@@ -170,30 +171,29 @@ export default {
         updateTime: null
       };
       this.resetForm('form');
+      this.isMore = '2';
     },
     // 表单赋值
     setForm(data) {
 	    this.form = data;
-      console.log(data);
+      this.commoditySubclassCodes = data.commoditySubclassCodes.split(',');
+      this.handleChange(data.commodityCategoryCode);
     },
     // 单选商品大类
     handlecommodityCategoryChange(selection) {
+      this.handleChange(selection);
+      this.commoditySubclassCodes = [];
+    },
+    // 单选商品大类后联动数据事件
+    handleChange(value) {
       const commodity = this.commodityCategoryCodeOptions.filter(item => {
-        return item.dictValue === selection;
+        return item.dictValue === value;
       });
-      console.log(commodity);
       this.commoditySubclass = commodity[0].dictValue;
       console.log(this.commoditySubclass);
-      if (commodity[0].isCheckbox === '0') {
-        this.getDicts(this.commoditySubclass).then(response => {
-          this.commoditySubclassCodesOptions = response.data;
-        });
-      } else {
-        this.getDicts(this.commoditySubclass).then(response => {
-          this.commoditySubclassCodesOptions1 = response.data;
-        });
-      }
-      console.log(this.commoditySubclassCodesOptions1);
+      this.getDicts(this.commoditySubclass).then(response => {
+        this.commoditySubclassCodesOptions = response.data;
+      });
       this.isMore = commodity[0].isCheckbox;
     },
     // 多选小类

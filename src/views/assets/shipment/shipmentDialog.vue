@@ -430,14 +430,6 @@ export default {
       getProvinceList().then((response) => {
         this.provinceCodeOptions = response.rows;
       });
-      // 市
-      getCityList().then((response) => {
-        this.cityCodeOptions = response.rows;
-      });
-      // 区
-      geCountyList().then((response) => {
-        this.countyCodeOptions = response.rows;
-      });
     },
     /** 提交按钮 */
     submitForm: function() {
@@ -539,6 +531,8 @@ export default {
         supplyIsAuth: null
       };
       this.resetForm('form');
+      this.cityCodeOptions = [];
+      this.countyCodeOptions = [];
     },
     // 表单赋值
     setForm(data) {
@@ -551,6 +545,10 @@ export default {
       if (data.password === null || data.password === undefined || data.password === '') {
         this.form.password = this.initialPassword;
       }
+      // 市
+      this.getCityListFun(this.form.provinceCode);
+      // 区
+      this.geCountyListFun(this.form.cityCode);
     },
     // 已读
     authRead(data) {
@@ -567,14 +565,30 @@ export default {
     changeProvince(code) {
       this.form.cityCode = null;
       this.form.countyCode = null;
+      this.cityCodeOptions = [];
       this.countyCodeOptions = [];
-      getCityList({ provinceCode: code }).then((response) => {
-        this.cityCodeOptions = response.rows;
-      });
+      this.getCityListFun(code);
     },
     // 选中市
     changeCity(code) {
       this.form.countyCode = null;
+      this.countyCodeOptions = [];
+      this.geCountyListFun(code);
+    },
+    // 获取市
+    getCityListFun(code) {
+      if (code == null || code === '') {
+        return;
+      }
+      getCityList({ provinceCode: code }).then((response) => {
+        this.cityCodeOptions = response.rows;
+      });
+    },
+    // 获取区
+    geCountyListFun(code) {
+      if (code == null || code === '') {
+        return;
+      }
       geCountyList({ cityCode: code }).then((response) => {
         this.countyCodeOptions = response.rows;
       });

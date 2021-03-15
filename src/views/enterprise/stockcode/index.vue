@@ -10,15 +10,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="货源码" prop="cargoCodeQr">
-        <el-input
-          v-model="queryParams.cargoCodeQr"
-          placeholder="请输入货源码"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
       <el-form-item>
         <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -55,15 +46,6 @@
           @click="handleDelete"
         >删除</el-button>
       </el-col>
-      <!-- <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['enterprise:stockcode:export']"
-          type="warning"
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-        >导出</el-button>
-      </el-col> -->
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
@@ -75,9 +57,18 @@
     <el-table v-loading="loading" :data="stockcodeList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
       <el-table-column label="货源码名称" align="center" prop="cargoCodeName" />
-      <el-table-column label="货源码" align="center" prop="cargoCodeQr" />
-      <el-table-column label="创建人" align="center" prop="createCode" />
-      <el-table-column label="更新人" align="center" prop="updateCode" />
+      <el-table-column label="货源码" align="center" prop="cargoCodeQr">
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleDownloadCode(scope.row)"
+          >下载</el-button>
+        </template>
+      </el-table-column>
+      <el-table-column label="关联货源" align="center" prop="" />
+      <!-- <el-table-column label="创建人" align="center" prop="createCode" />
+      <el-table-column label="更新人" align="center" prop="updateCode" /> -->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
           <el-button
@@ -112,7 +103,7 @@
 </template>
 
 <script>
-import { listStockcode, getStockcode, delStockcode } from '@/api/enterprise/stockcode';
+import { listStockcode, getStockcode, delStockcode, downloadCode } from '@/api/enterprise/stockcode';
 import StockcodeDialog from './stockcodeDialog.vue';
 
 export default {
@@ -212,11 +203,9 @@ export default {
         this.msgSuccess('删除成功');
       });
     },
-    /** 导出按钮操作 */
-    handleExport() {
-      this.download('enterprise/stockcode/export', {
-        ...this.queryParams
-      }, `stockcode_stockcode${new Date().getTime()}.xlsx`);
+    /** 下载货源码 */
+    handleDownloadCode(row) {
+
     }
   }
 };
