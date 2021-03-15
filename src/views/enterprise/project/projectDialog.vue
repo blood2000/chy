@@ -24,7 +24,7 @@
         </el-radio-group>
         <!-- <el-input v-model="form.commodityCategoryCode" placeholder="请输入商品类别编码" /> -->
       </el-form-item>
-      <el-form-item v-if="!isMore" label="商品小类" prop="commoditySubclassCodes">
+      <el-form-item v-if="isMore == 0" label="商品小类" prop="commoditySubclassCodes">
         <el-radio-group v-model="form.commoditySubclassCodes">
           <el-radio
             v-for="dict in commoditySubclassCodesOptions"
@@ -33,7 +33,7 @@
           >{{ dict.dictLabel }}</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item v-else label="商品小类" prop="commoditySubclassCodes">
+      <el-form-item v-if="isMore == 1" label="商品小类" prop="commoditySubclassCodes">
         <el-checkbox-group v-model="form.commoditySubclassCodes" @change="handleCheckedChange">
           <el-checkbox
             v-for="dict in commoditySubclassCodesOptions1"
@@ -101,7 +101,7 @@ export default {
         ]
       },
       // 是否多选
-      isMore: false,
+      isMore: 2,
       // 小类字典类型
       commoditySubclass: ''
     };
@@ -160,7 +160,7 @@ export default {
         code: null,
         shipmentCode: null,
         projectName: null,
-        commodityCategoryCode: 'coal_test',
+        commodityCategoryCode: null,
         commoditySubclassCodes: null,
         projectRemark: null,
         delFlag: null,
@@ -193,8 +193,8 @@ export default {
           this.commoditySubclassCodesOptions1 = response.data;
         });
       }
-      console.log(this.commoditySubclassCodesOptions);
-      this.isMore = commodity[0].isCheckbox === '1';
+      console.log(this.commoditySubclassCodesOptions1);
+      this.isMore = commodity[0].isCheckbox;
     },
     // 多选小类
     handleCheckedChange(selection) {
