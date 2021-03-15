@@ -160,7 +160,7 @@
 </template>
 
 <script>
-import { listAddress, getAddress, delAddress, addAddress, updateAddress } from '@/api/enterprise/company/address';
+import { listAddress, getAddress, delAddress } from '@/api/enterprise/company/address';
 import AddressDialog from './addressDialog.vue';
 
 export default {
@@ -269,26 +269,6 @@ export default {
         this.$refs.AddressDialog.setForm(response.data);
         this.open = true;
         this.title = '修改地址';
-      });
-    },
-    /** 提交按钮 */
-    submitForm() {
-      this.$refs['form'].validate(valid => {
-        if (valid) {
-          if (this.form.id != null) {
-            updateAddress(this.form).then(response => {
-              this.msgSuccess('修改成功');
-              this.open = false;
-              this.getList();
-            });
-          } else {
-            addAddress(this.form).then(response => {
-              this.msgSuccess('新增成功');
-              this.open = false;
-              this.getList();
-            });
-          }
-        }
       });
     },
     /** 删除按钮操作 */
