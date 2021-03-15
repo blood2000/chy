@@ -133,7 +133,7 @@
       <!-- <el-table-column label="货主编码" align="center" prop="shipmentCode" :formatter="shipmentCodeFormat" /> -->
       <el-table-column label="项目名称" align="center" prop="projectName" />
       <el-table-column label="商品类别" align="center" prop="commodityCategoryCode" :formatter="commodityCategoryCodeFormat" />
-      <el-table-column label="商品小类" align="center" prop="commoditySubclassCodes" />
+      <el-table-column label="商品小类" align="center" prop="commoditySubclassNames" />
       <el-table-column label="备注" align="center" prop="projectRemark" />
       <!-- <el-table-column label="创建人" align="center" prop="createCode" :formatter="createCodeFormat" />
       <el-table-column label="更新人" align="center" prop="updateCode" :formatter="updateCodeFormat" /> -->
