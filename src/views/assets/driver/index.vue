@@ -122,9 +122,6 @@
     <el-table v-loading="loading" :data="driverList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
       <el-table-column label="司机类别" align="center" prop="driverType" :formatter="driverTypeFormat" />
-      <el-table-column label="省" align="center" prop="provinceCode" />
-      <el-table-column label="市" align="center" prop="cityCode" />
-      <el-table-column label="县/区" align="center" prop="countyCode" />
       <el-table-column label="名字" align="center" prop="name" />
       <el-table-column label="手机" align="center" prop="telphone" />
       <el-table-column label="固话" align="center" prop="fixedPhone" />
@@ -246,12 +243,6 @@ export default {
       ],
       // 网点编码字典
       branchCodeOptions: [],
-      // 省编码字典
-      provinceCodeOptions: [],
-      // 市编码字典
-      cityCodeOptions: [],
-      // 县/区编码字典
-      countyCodeOptions: [],
       // 驾驶证类型字典
       driverLicenseTypeOptions: [],
       // 遮罩层
@@ -295,18 +286,6 @@ export default {
     driverTypeFormat(row, column) {
       return this.selectDictLabel(this.driverTypeOptions, row.driverType);
     },
-    // 省编码字典翻译
-    provinceCodeFormat(row, column) {
-      return this.selectDictLabel(this.provinceCodeOptions, row.provinceCode);
-    },
-    // 市编码字典翻译
-    cityCodeFormat(row, column) {
-      return this.selectDictLabel(this.cityCodeOptions, row.cityCode);
-    },
-    // 县/区编码字典翻译
-    countyCodeFormat(row, column) {
-      return this.selectDictLabel(this.countyCodeOptions, row.countyCode);
-    },
     // 司机城市名称字典翻译
     driverCityFormat(row, column) {
       return this.selectDictLabel(this.driverCityOptions, row.driverCity);
@@ -342,8 +321,7 @@ export default {
         this.driverList = response.rows;
         this.total = response.total;
         this.loading = false;
-      }
-      );
+      });
     },
     /** 搜索按钮操作 */
     handleQuery() {
