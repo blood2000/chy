@@ -531,6 +531,8 @@ export default {
         supplyIsAuth: null
       };
       this.resetForm('form');
+      this.cityCodeOptions = [];
+      this.countyCodeOptions = [];
     },
     // 表单赋值
     setForm(data) {
@@ -565,28 +567,28 @@ export default {
       this.form.countyCode = null;
       this.cityCodeOptions = [];
       this.countyCodeOptions = [];
-      if (code === '') {
-        return;
-      }
       this.getCityListFun(code);
     },
     // 选中市
     changeCity(code) {
       this.form.countyCode = null;
       this.countyCodeOptions = [];
-      if (code === '') {
-        return;
-      }
       this.geCountyListFun(code);
     },
     // 获取市
     getCityListFun(code) {
+      if (code == null || code === '') {
+        return;
+      }
       getCityList({ provinceCode: code }).then((response) => {
         this.cityCodeOptions = response.rows;
       });
     },
     // 获取区
     geCountyListFun(code) {
+      if (code == null || code === '') {
+        return;
+      }
       geCountyList({ cityCode: code }).then((response) => {
         this.countyCodeOptions = response.rows;
       });
