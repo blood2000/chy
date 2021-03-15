@@ -34,4 +34,3 @@ export function loadAndUnloadingGoods(data) {
     data: data
   });
 }
-

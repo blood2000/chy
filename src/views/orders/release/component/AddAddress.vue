@@ -153,18 +153,25 @@ export default {
           { required: true, message: '请输入联系电话', trigger: 'blur' }
         ]
       },
+
       addressList_to: [
         {
           // 发货地址
           time: Date.now(),
-          addressType: this.addressType, // 这里都是装货地
-          province: '', // 省份
-          city: '', // 城市
-          street: '', // 街道
-          detail: '', //	详细地址
-          addressAlias: '', //	地址别名
-          contact: '', //	联系人
-          contactPhone: '' //	联系电话
+          adcode: '1', //	区域编码		false
+          addressAlias: '1', //	地址别名		false
+          addressType: this.addressType, //	地址类型 1.装货地 2.卸货地		false
+          city: '', //	城市		false
+          citycode: '1', //	城市编码		false
+          contact: '', //	联系人		false
+          contactPhone: '', //	联系电话		false
+          country: '1', //	国家		false
+          detail: '', //	详细地址		false
+          district: '1', //	地址所在的区		false
+          level: '1', //	匹配级别		false
+          location: [1, 2], //	坐标点		false
+          province: '', //	省份		false
+          street: '' //	街道		false
         }
       ]
     };
@@ -185,14 +192,20 @@ export default {
       this.addressList_to.push({
         // 发货地址
         time: Date.now(),
-        addressType: this.addressType, // 这里都是装货地
-        province: '', // 省份
-        city: '', // 城市
-        street: '', // 街道
-        detail: '', //	详细地址
-        addressAlias: '', //	地址别名
-        contact: '', //	联系人
-        contactPhone: '' //	联系电话
+        adcode: '1', //	区域编码		false
+        addressAlias: '1', //	地址别名		false
+        addressType: this.addressType, //	地址类型 1.装货地 2.卸货地		false
+        city: '', //	城市		false
+        citycode: '1', //	城市编码		false
+        contact: '', //	联系人		false
+        contactPhone: '', //	联系电话		false
+        country: '1', //	国家		false
+        detail: '', //	详细地址		false
+        district: '1', //	地址所在的区		false
+        level: '1', //	匹配级别		false
+        location: [1, 2], //	坐标点		false
+        province: '', //	省份		false
+        street: '' //	街道		false
       });
     },
     // 删除一个地址
@@ -207,7 +220,25 @@ export default {
           const elF = `elForm${e.time}`;
           this.$refs[elF][0].validate((valid) => {
             if (valid) {
-              resolve(this.addressList_to);
+              const arr = this.addressList_to.map(ee => {
+                return {
+                  adcode: ee.adcode,
+                  addressAlias: ee.addressAlias,
+                  addressType: ee.addressType,
+                  city: ee.city,
+                  citycode: ee.citycode,
+                  contact: ee.contact,
+                  contactPhone: ee.contactPhone,
+                  country: ee.country,
+                  detail: ee.detail,
+                  district: ee.district,
+                  level: ee.level,
+                  location: ee.location,
+                  province: ee.province,
+                  street: ee.street
+                };
+              });
+              resolve(arr);
             } else {
               return false;
             }

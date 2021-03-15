@@ -21,7 +21,7 @@
             filterable
           >
             <el-option
-              v-for="(item, index1) in [{ adminName: '', code: '123456' }]"
+              v-for="(item, index1) in shipmentList"
               :key="index1"
               :label="item.adminName"
               :value="item.code"
@@ -60,7 +60,7 @@
         </el-form-item>
 
         <el-form-item label="选择货物类型" prop="tin2">
-          <el-radio-group v-model="formData.tin2" size="medium">
+          <el-radio-group v-model="formData.tin2" size="medium" @change="handletin2">
             <el-radio
               v-for="item in goodsBigTypeOptions"
               :key="item.value"
@@ -88,10 +88,7 @@
           <el-form-item v-else label="货物类型(小)" prop="tin2_2">
             <el-radio-group v-model="formData.tin2_2" size="medium">
               <el-radio
-                v-for="dict in [
-                  { dictValue: 'shagiooe', dictLabel: '水' },
-                  { dictValue: 'shagiwwee', dictLabel: '火' },
-                ]"
+                v-for="dict in tin2_1Option"
                 :key="dict.dictValue"
                 :label="dict.dictValue"
               >{{ dict.dictLabel }}</el-radio>
@@ -324,279 +321,6 @@
       </div>
     </template>
 
-    <!-- <div class="content" v-if="false">
-                <div class="header mb8">货物、路线信息:</div>
-
-                <el-row :gutter="15">
-                    <el-col :span="12">
-                        <el-form-item label="重量(吨)" prop="field116">
-                            <el-input-number v-model="formData.field116" placeholder="请输入重量(吨)" step-strictly controls-position=right :style="{width: '100%'}">
-                            </el-input-number>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="12">
-                        <el-form-item label="体积(方)" prop="field118">
-                            <el-input-number v-model="formData.field118" placeholder="请输入体积(方)" step-strictly controls-position=right :style="{width: '100%'}">
-                            </el-input-number>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-
-                <el-row :gutter="15">
-                    <el-col :span="12">
-                        <el-form-item label="货物单价" prop="field119">
-                            <el-input-number v-model="formData.field119" placeholder="货物单价" step-strictly controls-position=right :style="{width: '100%'}"></el-input-number>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="12">
-                        <el-form-item label="公里数" prop="field120">
-                            <el-input-number v-model="formData.field120" placeholder="请输入公里数" step-strictly controls-position=right :style="{width: '100%'}"></el-input-number>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-
-                <el-row :gutter="15">
-                    <el-col :span="12">
-                        <el-form-item label="最高配载(吨/方)" prop="field121">
-                            <el-input-number v-model="formData.field121" placeholder="请输入最高配载(吨/方)" step-strictly controls-position=right :style="{width: '100%'}">
-                            </el-input-number>
-                        </el-form-item>
-                    </el-col>
-
-                </el-row>
-                <el-row :gutter="15">
-                    <el-col :span="12">
-                        <el-form-item label="业务类型" prop="field122">
-                            <el-select v-model="formData.field122" placeholder="请选择业务类型" clearable :style="{width: '100%'}">
-                            <el-option v-for="(item, index) in field122Options" :key="index" :label="item.label"
-                                :value="item.value" :disabled="item.disabled"></el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-
-                <el-form-item label="货物类型(大)" prop="field124">
-                    <el-checkbox-group v-model="formData.field124" size="medium">
-                    <el-checkbox v-for="(item, index) in field124Options" :key="index" :label="item.value"
-                        :disabled="item.disabled">{{item.label}}</el-checkbox>
-                    </el-checkbox-group>
-                </el-form-item>
-
-                <el-form-item label="货物类型(小)" prop="field125">
-                    <el-checkbox-group v-model="formData.field125" size="medium">
-                    <el-checkbox v-for="(item, index) in field125Options" :key="index" :label="item.value"
-                        :disabled="item.disabled">{{item.label}}</el-checkbox>
-                    </el-checkbox-group>
-                </el-form-item>
-
-                 <el-form-item label="配载方式" prop="field126">
-                    <el-radio-group v-model="formData.field126" size="medium">
-                    <el-radio v-for="(item, index) in field126Options" :key="index" :label="item.value"
-                        :disabled="item.disabled">{{item.label}}</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-
-                <el-form-item label="货物运费" prop="field127">
-                    <el-radio-group v-model="formData.field127" size="medium">
-                    <el-radio v-for="(item, index) in field127Options" :key="index" :label="item.value"
-                        :disabled="item.disabled">{{item.label}}</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-
-                <el-row :gutter="15">
-                    <el-col :span="12">
-                        <el-form-item label="运费单价(元)" prop="field128">
-                            <el-input-number v-model="formData.field128" placeholder="请输入运费单价(元)" controls-position=right :style="{width: '100%'}">
-                            </el-input-number>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="12">
-                        <el-form-item label="应付 (元)" prop="field129">
-                            <el-input-number v-model="formData.field129" placeholder="请输入应付 (元)" controls-position=right :style="{width: '100%'}">
-                            </el-input-number>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-
-                <el-form-item label="合理路耗" prop="field132">
-
-                    <el-col :span="13">
-                        <el-radio-group v-model="formData.field132" size="medium">
-                        <el-radio v-for="(item, index) in field132Options" :key="index" :label="item.value"
-                            :disabled="item.disabled">{{item.label}}</el-radio>
-                        </el-radio-group>
-                    </el-col>
-                    <el-col :span="11">
-                        <span class="pl-5 pr-5">-</span>
-                        <el-input-number v-model="formData.field129" placeholder="" controls-position=right :style="{width: '30%'}"></el-input-number>
-                        <span class="pl-5 pr-5">至</span>
-                        <el-input-number v-model="formData.field129" placeholder="" controls-position=right :style="{width: '30%'}"></el-input-number>
-                    </el-col>
-
-
-                </el-form-item>
-
-                <el-form-item label="是否特定货源" prop="field133">
-                    <el-radio-group v-model="formData.field133" size="medium">
-                    <el-radio v-for="(item, index) in field133Options" :key="index" :label="item.value"
-                        :disabled="item.disabled">{{item.label}}</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-
-                 <el-form-item label="运输要求" prop="field134">
-                    <el-input v-model="formData.field134" placeholder="请输入运输要求" clearable :style="{width: '100%'}">
-                    </el-input>
-                </el-form-item>
-
-            </div> -->
-
-    <!-- <el-divider v-if="false"></el-divider>
-            <div class="content" v-if="false">
-                 <div class="header mb8">报价信息</div>
-                 <el-row :gutter="15">
-                    <el-col :span="12">
-                        <el-form-item label="是否允许报价" prop="field137">
-                            <el-radio-group v-model="formData.field137" size="medium">
-                            <el-radio v-for="(item, index) in field137Options" :key="index" :label="item.value"
-                                :disabled="item.disabled">{{item.label}}</el-radio>
-                            </el-radio-group>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="12">
-                        <el-form-item label="最高价(元/吨(方))" prop="field138" label-width="120px">
-                            <el-input-number v-model="formData.field138" placeholder="请输入最高价(元/吨(方))" controls-position=right :style="{width: '100%'}">
-                            </el-input-number>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-
-            </div>
-
-            <el-divider v-if="false"></el-divider>
-            <div class="content" v-if="false">
-                 <div class="header mb8">费用信息</div>
-                 <el-form-item label="信息费(元)" prop="field140">
-                    <el-input-number v-model="formData.field140" placeholder="请输入信息费(元)" controls-position=right >
-                    </el-input-number>
-                </el-form-item>
-            </div>
-
-            <el-divider v-if="false"></el-divider>
-
-            <div class="content" v-if="false">
-                 <div class="header mb8">其他信息</div>
-
-                 <el-row :gutter="15">
-                    <el-col :span="10">
-                        <el-form-item label="是否拆单" prop="field142">
-                            <el-radio-group v-model="formData.field142" size="medium">
-                            <el-radio v-for="(item, index) in field142Options" :key="index" :label="item.value"
-                                :disabled="item.disabled">{{item.label}}</el-radio>
-                            </el-radio-group>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="14">
-                        <div class="flex">
-                            <el-form-item prop="field143">
-                                <el-input-number v-model="formData.field143" placeholder="请输入车" controls-position=right :style="{width: '100%'}">
-                                </el-input-number>
-                            </el-form-item>
-                            <span class="vih">车</span>
-                        </div>
-                    </el-col>
-                </el-row>
-
-                <el-form-item label="是否投保" prop="field144">
-                    <el-radio-group v-model="formData.field144" size="medium">
-                    <el-radio v-for="(item, index) in field144Options" :key="index" :label="item.value"
-                        :disabled="item.disabled">{{item.label}}</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-
-                <el-form-item label="发运方式" prop="field145">
-                    <el-radio-group v-model="formData.field145" size="medium">
-                    <el-radio v-for="(item, index) in field145Options" :key="index" :label="item.value"
-                        :disabled="item.disabled">{{item.label}}</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-
-                <el-row :gutter="15">
-                    <el-col :span="12">
-                        <el-form-item label="上游客户" prop="field146">
-                            <el-select v-model="formData.field146" placeholder="请输入上游客户" clearable :style="{width: '100%'}">
-                            <el-option v-for="(item, index) in field146Options" :key="index" :label="item.label"
-                                :value="item.value" :disabled="item.disabled"></el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="12">
-                        <el-form-item label="应收(元)" prop="field148">
-                            <el-input-number v-model="formData.field148" placeholder="请输入应收(元)" controls-position=right>
-                            </el-input-number>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row :gutter="15">
-                    <el-col :span="12">
-                        <el-form-item label="货源有效时间" prop="field149">
-                            <el-select v-model="formData.field149" placeholder="请输入货源有效时间" clearable :style="{width: '100%'}">
-                            <el-option v-for="(item, index) in field149Options" :key="index" :label="item.label"
-                                :value="item.value" :disabled="item.disabled"></el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="12">
-                        <el-form-item label="设为常发货源" prop="field150">
-                            <el-radio-group v-model="formData.field150" size="medium">
-                            <el-radio v-for="(item, index) in field150Options" :key="index" :label="item.value"
-                                :disabled="item.disabled">{{item.label}}</el-radio>
-                            </el-radio-group>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row :gutter="15">
-                    <el-col :span="12">
-                        <el-form-item label="发送方式" prop="field151">
-                            <el-select v-model="formData.field151" placeholder="请输入发送方式" clearable :style="{width: '100%'}">
-                            <el-option v-for="(item, index) in field151Options" :key="index" :label="item.label"
-                                :value="item.value" :disabled="item.disabled"></el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="12">
-                        <el-form-item label="是否隐藏" prop="field152">
-                            <el-radio-group v-model="formData.field152" size="medium">
-                            <el-radio v-for="(item, index) in field152Options" :key="index" :label="item.value"
-                                :disabled="item.disabled">{{item.label}}</el-radio>
-                            </el-radio-group>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-
-                <el-form-item>
-                    <el-button type="primary" @click="onSubmit">选择车型</el-button>
-                    <el-button type="primary" @click="onSubmit">选择用车类型</el-button>
-                    <el-button type="primary" @click="onSubmit">选择车长</el-button>
-                    <el-button type="primary" @click="onSubmit">清除已选</el-button>
-                </el-form-item>
-
-                <el-form-item label="已选车型" prop="field154">
-                    <el-input v-model="formData.field154" type="textarea" placeholder="请输入已选车型"
-                    :autosize="{minRows: 4, maxRows: 4}" :style="{width: '100%'}"></el-input>
-                </el-form-item>
-
-                <el-form-item>
-                    <el-button type="primary" @click="onSubmit">选择承运</el-button>
-                    <el-button type="primary" @click="onSubmit">清除已选</el-button>
-                </el-form-item>
-
-                <el-form-item label="已选承运" prop="field155">
-                    <el-input v-model="formData.field155" type="textarea" placeholder="请输入已选承运"
-                    :autosize="{minRows: 4, maxRows: 4}" :style="{width: '100%'}"></el-input>
-                </el-form-item>
-
-            </div> -->
-
     <div>
       <el-button type="primary" @click="onSubmit('elForm')">立即发布</el-button>
       <el-button>取消</el-button>
@@ -650,23 +374,6 @@ export default {
         tin7: '1', // 装卸类型 1.一装一卸 2.多装一卸 3.一装多卸 4.多装多卸
         tin8: false // 允许自装 true=>是; false=> 否
 
-        /*
-        classList: [{ classCode: '1' }],
-        isClass: undefined, // 是否加入货源码 0否 1是
-        isPublic: undefined, // 是否公开货源 0.非公开 1.公开
-        isSpecified: undefined, // 是否指定接单人 0否 1是
-        loadType: undefined, // 装卸类型 1.一装一卸 2.多装一卸 3.一装多卸 4.多装多卸
-        orderFreightBoList: undefined,
-        orderGoodsList: undefined,
-        orderSpecifiedList: undefined,
-        projectCode: undefined, // 项目编码
-        pubilshCode: undefined, // 发布人Code
-        remark: '', // 备注
-        */
-        // goodsBigType: undefined,
-        // goodsType1: [],
-        // goodsType2: undefined,
-        // isOneselfUnload: false, // 无这个字段 允许自装
       },
       rules: {
         tin2: [
@@ -680,21 +387,15 @@ export default {
         ]
       },
 
-      // 字典类型
-      goodsBigTypeOptions: [
-        { label: '水泥', isdd: false, value: 'hhhh' }, // true 是多选
-        { label: '煤', isdd: true, value: 'hhhh3' }
-      ],
+      // 货物类型字典型(大)
+      goodsBigTypeOptions: [],
 
       // 小类多商品
-      tin2_1Option: [
-        { dictValue: 'shagie', dictLabel: '煤炭' },
-        { dictValue: 'shagiwwee', dictLabel: '煤球' }
-      ],
+      tin2_1Option: [],
 
-      formDataList: {
-        shipmentList: []
-      },
+      shipmentList: [],
+
+
 
       // 选中的名
       activeName: 'first',
@@ -709,7 +410,6 @@ export default {
   computed: {
     // 判断子类为多选还是单选
     isMultiGoods() {
-      console.log(this.formData.tin2);
       let bool = false;
       this.goodsBigTypeOptions.forEach((e) => {
         if (e.value === this.formData.tin2) {
@@ -724,48 +424,24 @@ export default {
   },
 
   async created() {
+    // 获取代理用户表
     listShipment()
       .then((res) => {
-        this.formDataList.shipmentList = res.rows;
-      })
-      .catch(() => {
-        this.formDataList.shipmentList = [
-          {
-            id: 9,
-            code: 'c0e8fdb5e44942d3a10907dc97768847',
-            adminName: 'lin',
-            adminCode: 'c0e8fdb5e44942d3a10907dc97768847',
-            shipperType: 0,
-            identificationNumber: '350103199708244939',
-            authStatus: 0,
-            isFreezone: 0,
-            createTime: '2021-03-13T11:49:44.254+08:00',
-            isAccount: 1,
-            accountType: '1',
-            isWipe: 1,
-            wipeType: 'cent',
-            isMonthly: 1,
-            isPrepaid: 1,
-            isConsumption: 1,
-            consumptionUnit: 'quota',
-            consumptionMin: '10',
-            consumptionMax: '100',
-            dispatchPoints: '1',
-            creditAmount: 3000,
-            identificationBeginTime: '2021-03-08',
-            identificationEndTime: '2021-03-25',
-            identificationEffective: 0,
-            ticketType: 'one',
-            serviceRatio: '11',
-            telphone: '18859464414',
-            supplyIsAuth: 1
-          }
-        ];
+        this.shipmentList = res.rows;
       });
 
-    this.getDicts('coalType').then((response) => {
-      this.formDataList.coalType = response.data;
+    // 货物类型字典型(大)
+    this.getDicts('productType').then((response) => {
+      this.goodsBigTypeOptions = response.data.map(e => {
+        return {
+          label: e.dictLabel,
+          isdd: e.isCheckbox === '1',
+          value: e.dictValue
+        };
+      });
     });
+
+    // 获取司机和调度者接口
   },
 
   methods: {
@@ -890,7 +566,7 @@ export default {
             // 多商品核算规则多个
             orderFreightBoList = arrs.map((accounTing) => {
               return {
-                ruleItemId: accounTing.ruleItemId,
+                balanceRuleCode: accounTing.ruleItemId,
                 ruleItemValue: '', // ??
                 type: '' // ??
               };
@@ -929,7 +605,7 @@ export default {
             // 单商品核算规格
             orderFreightBoList = [
               {
-                ruleItemId: accounTing.ruleItemId,
+                balanceRuleCode: accounTing.ruleItemId,
                 ruleItemValue: '', // ??
                 type: '' // ??
               }
@@ -1012,6 +688,13 @@ export default {
       if (this.tin2_1tabs_activeName === '0') {
         this.tin2_1tabs_activeName = this.tin2_1tabs[0].value;
       }
+    },
+
+    // 获取小类
+    handletin2() {
+      this.getDicts(this.formData.tin2).then((response) => {
+        this.tin2_1Option = response.data;
+      });
     }
   }
 };
@@ -1036,7 +719,7 @@ export default {
   }
 }
 .content {
-  width: 50%;
+  width: 80%;
 }
 
 .vih {

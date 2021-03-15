@@ -336,7 +336,7 @@
 </template>
 
 <script>
-import { getOrderInfoList, delOrder, loadAndUnloadingGoods } from '@/api/order/manage';
+import { getOrderInfoList, delOrder, loadAndUnloadingGoods, exportOrder } from '@/api/order/manage';
 import OpenDialog from './component/OpenDialog';
 import tableColumnsConfig from './config';
 
@@ -605,9 +605,9 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('system/test/export', {
+      this.download('/transportation/order/export', {
         ...this.newQueryParams
-      }, `system_test.xlsx`);
+      }, `order_export.xlsx`);
     },
     /** 派单对话 */
     handleDispatch(row) {
