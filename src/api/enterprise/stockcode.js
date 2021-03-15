@@ -3,7 +3,7 @@ import request from '@/utils/request';
 // 查询货集码列表
 export function listStockcode(query) {
   return request({
-    url: 'system/config/list',
+    url: '/assets/shipment/cargocode/list',
     method: 'get',
     params: query
   });
@@ -12,7 +12,7 @@ export function listStockcode(query) {
 // 查询货集码详细
 export function getStockcode(id) {
   return request({
-    url: '/system/info/' + id,
+    url: `/assets/shipment/cargocode/${id}`,
     method: 'get'
   });
 }
@@ -20,7 +20,7 @@ export function getStockcode(id) {
 // 新增货集码
 export function addStockcode(data) {
   return request({
-    url: '/system/info',
+    url: '/assets/shipment/cargocode',
     method: 'post',
     data: data
   });
@@ -29,16 +29,33 @@ export function addStockcode(data) {
 // 修改货集码
 export function updateStockcode(data) {
   return request({
-    url: '/system/info',
+    url: '/assets/shipment/cargocode',
     method: 'put',
     data: data
   });
 }
 
 // 删除货集码
-export function delStockcode(id) {
+export function delStockcode(ids) {
   return request({
-    url: '/system/info/' + id,
+    url: `/assets/shipment/cargocode/${ids}`,
     method: 'delete'
+  });
+}
+
+// 生成二维码
+export function generateCode(data) {
+  return request({
+    url: '/assets/shipment/cargocode/generateCode',
+    method: 'post'
+  });
+}
+
+// 二维码下载
+export function downloadCode(query) {
+  return request({
+    url: '/assets/shipment/cargocode/downloadCode',
+    method: 'get',
+    params: query
   });
 }
