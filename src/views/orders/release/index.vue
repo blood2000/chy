@@ -228,6 +228,9 @@
           <el-form-item label="允许自装" prop="tin8">
             <el-checkbox v-model="formData.tin8">允许自装</el-checkbox>
           </el-form-item>
+          <el-form-item label="允许自装" prop="tin9">
+            <el-checkbox v-model="formData.tin9">允许自卸</el-checkbox>
+          </el-form-item>
         </div>
 
         <el-divider />
@@ -372,7 +375,8 @@ export default {
         tin5_2: [], // 司机 多个
         tin6: undefined, // 货集码
         tin7: '1', // 装卸类型 1.一装一卸 2.多装一卸 3.一装多卸 4.多装多卸
-        tin8: false // 允许自装 true=>是; false=> 否
+        tin8: false, // 允许自装 true=>是; false=> 否
+        tin9: false //  允许自卸 true=>是; false=> 否
 
       },
       rules: {
@@ -384,6 +388,9 @@ export default {
         ],
         tin2_2: [
           { required: true, message: '请选择货物类型(小)', trigger: 'change' }
+        ],
+        tin4: [
+          { required: true, message: '发布位置', trigger: 'change' }
         ]
       },
 
@@ -428,6 +435,7 @@ export default {
     listShipment()
       .then((res) => {
         this.shipmentList = res.rows;
+        console.log(this.shipmentList, '货主信息');
       });
 
     // 货物类型字典型(大)
@@ -580,7 +588,7 @@ export default {
                 goodsType: this.formData.tin2_1,
                 goodsUnit: '1', // 多商品没有 计量单位
                 isModifyFinish: true, // 平台是否完成调价?? 啥东西
-                isOneselfLoad: false, // 是否允许自装 0否 1是 (多装模式)?? 啥东西
+                isOneselfLoad: this.formData.tin9, // 是否允许自装 0否 1是 (多装模式)?? 啥东西
                 isOneselfUnload: this.formData.tin8,
                 limitWastage: '1', // 限制损耗?? 啥东西
                 perWeight: 0, // 最高配载 多商品无此选项??
@@ -685,9 +693,7 @@ export default {
       });
 
       // 初始赋值
-      if (this.tin2_1tabs_activeName === '0') {
-        this.tin2_1tabs_activeName = this.tin2_1tabs[0].value;
-      }
+      this.tin2_1tabs_activeName = this.tin2_1tabs[0].value;
     },
 
     // 获取小类
