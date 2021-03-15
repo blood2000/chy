@@ -82,7 +82,7 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
-          v-hasPermi="['assets:shipment:project:add']"
+          v-hasPermi="['enterprise:project:add']"
           type="primary"
           icon="el-icon-plus"
           size="mini"
@@ -91,7 +91,7 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
-          v-hasPermi="['assets:shipment:project:edit']"
+          v-hasPermi="['enterprise:project:edit']"
           type="success"
           icon="el-icon-edit"
           size="mini"
@@ -101,7 +101,7 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
-          v-hasPermi="['assets:shipment:project:remove']"
+          v-hasPermi="['enterprise:project:remove']"
           type="danger"
           icon="el-icon-delete"
           size="mini"
@@ -111,7 +111,7 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
-          v-hasPermi="['assets:shipment:project:export']"
+          v-hasPermi="['enterprise:project:export']"
           type="warning"
           icon="el-icon-download"
           size="mini"
@@ -134,14 +134,14 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
-            v-hasPermi="['assets:shipment:project:edit']"
+            v-hasPermi="['enterprise:project:edit']"
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
           >修改</el-button>
           <el-button
-            v-hasPermi="['assets:shipment:project:remove']"
+            v-hasPermi="['enterprise:project:remove']"
             size="mini"
             type="text"
             icon="el-icon-delete"
@@ -230,8 +230,8 @@ export default {
   },
   created() {
     this.getList();
-    this.getDicts('${column.dictType}').then(response => {
-      this.idOptions = response.data;
+    this.getDicts('productType').then(response => {
+      this.commodityCategoryCodeOptions = response.data;
     });
   },
   methods: {
