@@ -26,7 +26,7 @@
           @click="handleImportTemplateDriver"
         >下载模板</el-button>
       </el-col>
-      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+      <!-- <right-toolbar :show-search.sync="showSearch" @queryTable="getList" /> -->
     </el-row>
 
     <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange">
@@ -48,7 +48,7 @@
     </el-table>
 
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="submitForm">确 定</el-button>
+      <el-button type="primary" @click="submitForm">立即上传</el-button>
       <el-button @click="cancel">取 消</el-button>
     </div>
   </el-dialog>
@@ -59,6 +59,14 @@ import { listInfo, delInfo } from '@/api/enterprise/project';
 
 export default {
   components: {
+  },
+  props: {
+    title: {
+      type: String,
+      default: ''
+    },
+    open: Boolean
+    // disable: Boolean
   },
   data() {
     return {
@@ -76,10 +84,32 @@ export default {
       infoList: []
     };
   },
+  computed: {
+    visible: {
+      get() {
+        return this.open;
+      },
+      set(v) {
+        this.$emit('update:open', v);
+      }
+    }
+  },
   created() {
     this.getList();
   },
   methods: {
+    /** 提交按钮 */
+    submitForm() {
+      console.log('上传');
+    },
+    /** 取消按钮 */
+    cancel() {
+	    this.close();
+    },
+    // 关闭弹窗
+    close() {
+	    this.$emit('update:open', false);
+    },
     /** 查询项目列表 */
     getList() {
       this.loading = true;
