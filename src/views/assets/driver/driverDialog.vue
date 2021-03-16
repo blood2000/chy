@@ -11,51 +11,30 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="名字" prop="name">
-        <el-input v-model="form.name" placeholder="支持自动识别" size="small" class="width90" />
-      </el-form-item>
-      <el-form-item label="手机" prop="telphone">
-        <el-input v-model="form.telphone" placeholder="请输入手机" size="small" class="width90" />
-      </el-form-item>
-      <el-form-item label="固话" prop="fixedPhone">
-        <el-input v-model="form.fixedPhone" placeholder="请输入固话" size="small" class="width90" />
-      </el-form-item>
-      <el-form-item label="身份证号" prop="identificationNumber">
-        <el-input v-model="form.identificationNumber" placeholder="支持自动识别" size="small" class="width90" />
-      </el-form-item>
-      <el-form-item label="从业证到期日期" prop="workLicenseDueDate">
-        <el-date-picker
-          v-model="form.workLicenseDueDate"
-          clearable
-          size="small"
-          class="width90"
-          placeholder="请选择从业证到期日期"
-          type="date"
-          value-format="yyyy-MM-dd"
-        />
-      </el-form-item>
-      <el-form-item label="从业证办理省份名称" prop="workLicenseProvinceCode">
-        <el-select
-          v-model="form.workLicenseProvinceCode"
-          clearable
-          size="small"
-          class="width90"
-        >
+      <el-form-item label="所属调度" prop="teamCode" :required="form.driverType===2">
+        <el-select v-model="form.teamCode" size="small" class="width90" clearable>
           <el-option
-            v-for="dict in provinceCodeOptions"
-            :key="dict.provinceCode"
-            :label="dict.provinceName"
-            :value="dict.provinceCode"
+            v-for="dict in driverTypeOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="parseInt(dict.dictValue)"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="司机城市名称" prop="driverCity">
-        <el-input v-model="form.driverCity" placeholder="请输入司机城市名称" size="small" class="width90" />
+      <el-form-item label="联系人姓名" prop="name">
+        <el-input v-model="form.name" placeholder="支持自动识别" size="small" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="网点编码" prop="branchCode">
-        <el-input v-model="form.branchCode" size="small" placeholder="请输入网点编码" class="width90" />
+      <el-form-item label="联系人手机号" prop="telphone">
+        <el-input v-model="form.telphone" placeholder="请输入手机" size="small" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="所在区域" prop="provinceCode">
+      <!-- <el-form-item label="联系人固话" prop="fixedPhone">
+        <el-input v-model="form.fixedPhone" placeholder="请输入固话" size="small" class="width90" clearable />
+      </el-form-item> -->
+      <el-form-item label="密码" prop="password">
+        <el-input v-model="form.password" type="password" placeholder="请输入密码" class="width59 mr3" size="small" clearable />
+        <span class="g-color-blue">(初始密码为{{ initialPassword }})</span>
+      </el-form-item>
+      <el-form-item label="所在地区" prop="countyCode">
         <el-select
           v-model="form.provinceCode"
           clearable
@@ -102,10 +81,16 @@
         </el-select>
       </el-form-item>
       <el-form-item label="详细地址" prop="homeAddress">
-        <el-input v-model="form.homeAddress" placeholder="请输入详细地址" size="small" class="width90" />
+        <el-input v-model="form.homeAddress" placeholder="支持自动识别" size="small" class="width90" clearable />
+      </el-form-item>
+      <!-- <el-form-item label="司机城市名称" prop="driverCity">
+        <el-input v-model="form.driverCity" placeholder="请输入司机城市名称" size="small" class="width90" clearable />
+      </el-form-item> -->
+      <el-form-item label="身份证号" prop="identificationNumber">
+        <el-input v-model="form.identificationNumber" placeholder="支持自动识别" size="small" class="width90" clearable />
       </el-form-item>
       <el-form-item label="驾驶证类型" prop="driverLicenseType">
-        <el-select v-model="form.driverLicenseType" size="small" class="width90">
+        <el-select v-model="form.driverLicenseType" size="small" class="width90" placeholder="支持自动识别" clearable>
           <el-option
             v-for="dict in driverLicenseTypeOptions"
             :key="dict.dictValue"
@@ -115,44 +100,77 @@
         </el-select>
       </el-form-item>
       <el-form-item label="驾驶证号" prop="driverLicense">
-        <el-input v-model="form.driverLicense" placeholder="支持自动识别" size="small" class="width90" />
+        <el-input v-model="form.driverLicense" placeholder="支持自动识别" size="small" class="width90" clearable />
       </el-form-item>
       <el-form-item label="驾驶证发证机关" prop="issuingOrganizations">
-        <el-input v-model="form.issuingOrganizations" size="small" placeholder="请输入驾驶证发证机关" class="width90" />
+        <el-input v-model="form.issuingOrganizations" size="small" placeholder="请输入驾驶证发证机关" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="驾驶证有效期自" prop="validPeriodFrom">
+      <el-form-item label="驾驶证有效期" prop="validPeriodTo">
         <el-date-picker
           v-model="form.validPeriodFrom"
           clearable
           size="small"
-          class="width90"
+          class="width28"
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="支持自动识别"
         />
-      </el-form-item>
-      <el-form-item label="驾驶证有效期至" prop="validPeriodTo">
+        至
         <el-date-picker
           v-model="form.validPeriodTo"
           clearable
           size="small"
-          class="width90"
+          class="width28 mr3"
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="支持自动识别"
         />
+        <el-checkbox v-model="form.validPeriodAlways">长期有效</el-checkbox>
       </el-form-item>
       <el-form-item label="工作单位" prop="workCompany">
-        <el-input v-model="form.workCompany" placeholder="请输入工作单位" size="small" class="width90" />
+        <el-input v-model="form.workCompany" placeholder="请输入工作单位" size="small" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="上岗证" prop="workLicense">
-        <el-input v-model="form.workLicense" placeholder="请输入上岗证" size="small" class="width90" />
+      <el-form-item label="道路运输经营许可证号" prop="transportPermitNo">
+        <el-input v-model="form.transportPermitNo" placeholder="请输入道路运输经营许可证号" size="small" class="width90" clearable />
+      </el-form-item>
+      <el-form-item label="从业资格证" prop="workLicense">
+        <el-input v-model="form.workLicense" placeholder="请输入从业资格证" size="small" class="width90" clearable />
+      </el-form-item>
+      <el-form-item label="从业证到期日期" prop="workLicenseDueDate">
+        <el-date-picker
+          v-model="form.workLicenseDueDate"
+          clearable
+          size="small"
+          class="width90"
+          placeholder="请选择从业证到期日期"
+          type="date"
+          value-format="yyyy-MM-dd"
+        />
+      </el-form-item>
+      <el-form-item label="从业证办理省份名称" prop="workLicenseProvinceCode">
+        <el-select
+          v-model="form.workLicenseProvinceCode"
+          clearable
+          size="small"
+          class="width90"
+        >
+          <el-option
+            v-for="dict in provinceCodeOptions"
+            :key="dict.provinceCode"
+            :label="dict.provinceName"
+            :value="dict.provinceCode"
+          />
+        </el-select>
+      </el-form-item>
+      <!-- ================================================================= -->
+      <el-form-item label="网点编码" prop="branchCode">
+        <el-input v-model="form.branchCode" size="small" placeholder="请输入网点编码" class="width90" clearable />
       </el-form-item>
       <el-form-item label="营业执照号" prop="businessLicenseImgNo">
-        <el-input v-model="form.businessLicenseImgNo" placeholder="请输入营业执照号" size="small" class="width90" />
+        <el-input v-model="form.businessLicenseImgNo" placeholder="请输入营业执照号" size="small" class="width90" clearable />
       </el-form-item>
       <el-form-item label="是否上传人员信用信息" prop="isReportPerson">
-        <el-select v-model="form.isReportPerson" size="small" class="width90">
+        <el-select v-model="form.isReportPerson" size="small" class="width90" clearable>
           <el-option
             v-for="dict in isOption"
             :key="dict.dictValue"
@@ -173,7 +191,7 @@
         />
       </el-form-item>
       <el-form-item label="是否上传企业" prop="isReportEnterprise">
-        <el-select v-model="form.isReportEnterprise" size="small" class="width90">
+        <el-select v-model="form.isReportEnterprise" size="small" class="width90" clearable>
           <el-option
             v-for="dict in isOption"
             :key="dict.dictValue"
@@ -192,15 +210,6 @@
           value-format="yyyy-MM-dd"
           placeholder="请选择上传企业时间"
         />
-      </el-form-item>
-      <el-form-item label="审核状态">
-        <el-radio-group v-model="form.authStatus">
-          <el-radio
-            v-for="dict in statusOptions"
-            :key="dict.dictValue"
-            :label="parseInt(dict.dictValue)"
-          >{{ dict.dictLabel }}</el-radio>
-        </el-radio-group>
       </el-form-item>
       <el-form-item label="是否冻结" prop="isFreeze">
         <el-select
@@ -253,11 +262,11 @@
             <p class="upload-image-label">驾驶证</p>
             <upload-image :value="form.driverLicenseImage" />
           </el-col>
-          <el-col :span="7" class="mb">
+          <el-col v-if="form.driverType===1" :span="7" class="mb">
             <p class="upload-image-label">行驶证</p>
             <upload-image :value="form.driverOtherLicenseImage" />
           </el-col>
-          <el-col :span="7" class="mb">
+          <el-col v-if="form.driverType===1" :span="7" class="mb">
             <p class="upload-image-label">行驶证副页</p>
             <upload-image :value="form.driverOtherLicenseBackImage" />
           </el-col>
@@ -269,11 +278,11 @@
             <p class="upload-image-label">身份证反面照</p>
             <upload-image :value="form.identificationBackImage" />
           </el-col>
-          <el-col :span="7" class="mb">
+          <el-col v-if="form.driverType===1" :span="7" class="mb">
             <p class="upload-image-label">道路运输许可证</p>
             <upload-image :value="form.transportPermitImage" />
           </el-col>
-          <el-col :span="7">
+          <el-col v-if="form.driverType===1" :span="7">
             <p class="upload-image-label">车头正面照</p>
             <upload-image :value="form.vehicleImage" />
           </el-col>
@@ -288,13 +297,13 @@
         </el-row>
       </el-form-item>
       <el-form-item label="车牌号" prop="licenseNumber">
-        <el-input v-model="form.licenseNumber" placeholder="请输入车牌号" size="small" class="width90" />
+        <el-input v-model="form.licenseNumber" placeholder="请输入车牌号" size="small" class="width90" clearable />
       </el-form-item>
     </el-form>
 
     <el-form ref="vehicleForm" :model="vehicleForm" :rules="vehicleRules" :disabled="disable" label-width="180px">
       <el-form-item label="车辆归属类型" prop="vehicleAscriptionType">
-        <el-select v-model="vehicleForm.vehicleAscriptionType" size="small" class="width90">
+        <el-select v-model="vehicleForm.vehicleAscriptionType" size="small" class="width90" clearable>
           <el-option
             v-for="dict in vehicleAscriptionTypeOptions"
             :key="dict.dictValue"
@@ -304,7 +313,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="车牌类型" prop="classificationCode">
-        <el-select v-model="vehicleForm.classificationCode" size="small" class="width90">
+        <el-select v-model="vehicleForm.classificationCode" size="small" class="width90" clearable>
           <el-option
             v-for="dict in classificationCodeOptions"
             :key="dict.dictValue"
@@ -314,7 +323,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="车牌颜色" prop="vehicleLicenseColorCode">
-        <el-select v-model="vehicleForm.vehicleLicenseColorCode" size="small" class="width90">
+        <el-select v-model="vehicleForm.vehicleLicenseColorCode" size="small" class="width90" clearable>
           <el-option
             v-for="dict in vehicleLicenseColorCodeOptions"
             :key="dict.dictValue"
@@ -324,7 +333,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="车身颜色" prop="vehicleColorCode">
-        <el-select v-model="vehicleForm.vehicleColorCode" size="small" class="width90">
+        <el-select v-model="vehicleForm.vehicleColorCode" size="small" class="width90" clearable>
           <el-option
             v-for="dict in vehicleColorCodeOptions"
             :key="dict.dictValue"
@@ -334,7 +343,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="车辆能源类型" prop="vehicleEnergyType">
-        <el-select v-model="vehicleForm.vehicleEnergyType" size="small" class="width90">
+        <el-select v-model="vehicleForm.vehicleEnergyType" size="small" class="width90" clearable>
           <el-option
             v-for="dict in vehicleEnergyTypeOptions"
             :key="dict.dictValue"
@@ -344,43 +353,43 @@
         </el-select>
       </el-form-item>
       <el-form-item label="车长" prop="vehicleLength">
-        <el-input v-model="vehicleForm.vehicleLength" placeholder="请输入车长" size="small" class="width90" />
+        <el-input v-model="vehicleForm.vehicleLength" placeholder="请输入车长" size="small" class="width90" clearable />
       </el-form-item>
       <el-form-item label="车宽" prop="vehicleWidth">
-        <el-input v-model="vehicleForm.vehicleWidth" placeholder="请输入车宽" size="small" class="width90" />
+        <el-input v-model="vehicleForm.vehicleWidth" placeholder="请输入车宽" size="small" class="width90" clearable />
       </el-form-item>
       <el-form-item label="车高" prop="vehicleHeight">
-        <el-input v-model="vehicleForm.vehicleHeight" placeholder="请输入车高" size="small" class="width90" />
+        <el-input v-model="vehicleForm.vehicleHeight" placeholder="请输入车高" size="small" class="width90" clearable />
       </el-form-item>
       <el-form-item label="车辆总重量" prop="vehicleTotalWeight">
-        <el-input v-model="vehicleForm.vehicleTotalWeight" placeholder="请输入车辆总重量" size="small" class="width90" />
+        <el-input v-model="vehicleForm.vehicleTotalWeight" placeholder="请输入车辆总重量" size="small" class="width90" clearable />
       </el-form-item>
       <el-form-item label="车辆可载重量" prop="vehicleLoadWeight">
-        <el-input v-model="vehicleForm.vehicleLoadWeight" placeholder="请输入车辆可载重量" size="small" class="width90" />
+        <el-input v-model="vehicleForm.vehicleLoadWeight" placeholder="请输入车辆可载重量" size="small" class="width90" clearable />
       </el-form-item>
       <el-form-item label="车辆可载平方" prop="vehicleLoadVolume">
-        <el-input v-model="vehicleForm.vehicleLoadVolume" placeholder="请输入车辆可载平方" size="small" class="width90" />
+        <el-input v-model="vehicleForm.vehicleLoadVolume" placeholder="请输入车辆可载平方" size="small" class="width90" clearable />
       </el-form-item>
       <el-form-item label="车辆可载立方" prop="vehicleRemainingLoadVolume">
-        <el-input v-model="vehicleForm.vehicleRemainingLoadVolume" placeholder="请输入车辆可载立方" size="small" class="width90" />
+        <el-input v-model="vehicleForm.vehicleRemainingLoadVolume" placeholder="请输入车辆可载立方" size="small" class="width90" clearable />
       </el-form-item>
       <el-form-item label="车身自重" prop="selfRespect">
-        <el-input v-model="vehicleForm.selfRespect" placeholder="请输入车身自重" size="small" class="width90" />
+        <el-input v-model="vehicleForm.selfRespect" placeholder="请输入车身自重" size="small" class="width90" clearable />
       </el-form-item>
       <el-form-item label="车架号" prop="chassisNumber">
-        <el-input v-model="vehicleForm.chassisNumber" placeholder="请输入车架号" size="small" class="width90" />
+        <el-input v-model="vehicleForm.chassisNumber" placeholder="请输入车架号" size="small" class="width90" clearable />
       </el-form-item>
       <el-form-item label="发动机号" prop="engineNumber">
-        <el-input v-model="vehicleForm.engineNumber" placeholder="请输入发动机号" size="small" class="width90" />
+        <el-input v-model="vehicleForm.engineNumber" placeholder="请输入发动机号" size="small" class="width90" clearable />
       </el-form-item>
       <el-form-item label="底盘号" prop="vehicleChassisNumber">
-        <el-input v-model="vehicleForm.vehicleChassisNumber" placeholder="请输入底盘号" size="small" class="width90" />
+        <el-input v-model="vehicleForm.vehicleChassisNumber" placeholder="请输入底盘号" size="small" class="width90" clearable />
       </el-form-item>
       <el-form-item label="功率" prop="vehiclePower">
-        <el-input v-model="vehicleForm.vehiclePower" placeholder="请输入功率" size="small" class="width90" />
+        <el-input v-model="vehicleForm.vehiclePower" placeholder="请输入功率" size="small" class="width90" clearable />
       </el-form-item>
       <el-form-item label="轴数" prop="axesNumber">
-        <el-input v-model="vehicleForm.axesNumber" placeholder="请输入轴数" size="small" class="width90" />
+        <el-input v-model="vehicleForm.axesNumber" placeholder="请输入轴数" size="small" class="width90" clearable />
       </el-form-item>
       <el-form-item label="年审时间" prop="annualVerificationDate">
         <el-date-picker
@@ -394,7 +403,7 @@
         />
       </el-form-item>
       <el-form-item label="运输介子" prop="transportMeson">
-        <el-input v-model="vehicleForm.transportMeson" placeholder="请输入运输介子" size="small" class="width90" />
+        <el-input v-model="vehicleForm.transportMeson" placeholder="请输入运输介子" size="small" class="width90" clearable />
       </el-form-item>
     </el-form>
 
@@ -428,11 +437,12 @@ export default {
   },
   data() {
     return {
+      // 初始密码
+      initialPassword: 'abcd1234@',
       // 司机类别字典
       driverTypeOptions: [
-        { dictLabel: '独立', dictValue: 1 },
-        { dictLabel: '分配', dictValue: 2 },
-        { dictLabel: '其他', dictValue: 3 }
+        { dictLabel: '独立司机', dictValue: 1 },
+        { dictLabel: '聘用司机', dictValue: 2 }
       ],
       // 审核状态字典
       statusOptions: [
@@ -490,6 +500,10 @@ export default {
       vehicleForm: {},
       // 表单校验
       rules: {
+        countyCode: [
+          { required: true, message: '所在地区不能为空', trigger: 'blur' },
+          { validator: this.areaRequest }
+        ],
         name: [
           { required: true, message: '姓名不能为空', trigger: 'blur' }
         ],
@@ -499,11 +513,31 @@ export default {
         identificationNumber: [
           { required: true, message: '身份证号不能为空', trigger: 'blur' }
         ],
-        homeAddress: [
-          { required: true, message: '详细地址不能为空', trigger: 'blur' }
+        issuingOrganizations: [
+          { required: true, message: '驾驶证发证机关不能为空', trigger: 'blur' }
+        ],
+        validPeriodTo: [
+          { required: true, message: '驾驶证有效期不能为空', trigger: 'blur' },
+          { validator: this.certificateIsExpired }
+        ],
+        workCompany: [
+          { required: true, message: '工作单位不能为空', trigger: 'blur' }
+        ],
+        transportPermitNo: [
+          { required: true, message: '道路运输经营许可证号不能为空', trigger: 'blur' }
         ]
       },
-      vehicleRules: {}
+      vehicleRules: {
+        vehicleTotalWeight: [
+          { required: true, message: '车辆总重量不能为空', trigger: 'blur' }
+        ],
+        vehicleLoadWeight: [
+          { required: true, message: '车辆可载重量不能为空', trigger: 'blur' }
+        ],
+        chassisNumber: [
+          { required: true, message: '车架号不能为空', trigger: 'blur' }
+        ]
+      }
     };
   },
   computed: {
@@ -520,6 +554,12 @@ export default {
     this.getDictsOptions();
   },
   methods: {
+    areaRequest(rule, value, callback) {
+      if (this.form.provinceCode === '' || this.form.cityCode === '' || this.form.countyCode === '') {
+        const msg = '所在区域不能为空';
+        callback(new Error(msg));
+      }
+    },
     /** 查询字典 */
     getDictsOptions() {
       // 车辆能源类型
@@ -537,6 +577,11 @@ export default {
         if (valid) {
           const driver = this.form;
           driver.vehicleInfo = this.vehicleForm;
+          if (driver.validPeriodAlways) {
+            driver.validPeriodAlways = 1;
+          } else {
+            driver.validPeriodAlways = 0;
+          }
           if (this.form.id !== undefined) {
             updateDriver(driver).then(response => {
               this.msgSuccess('修改成功');
@@ -555,6 +600,11 @@ export default {
     },
     /** 已读 */
     authRead(data) {
+      if (data.validPeriodAlways) {
+        data.validPeriodAlways = 1;
+      } else {
+        data.validPeriodAlways = 0;
+      }
       authRead(data).then(response => {
         this.$emit('refresh');
       });
@@ -562,6 +612,11 @@ export default {
     /** 审核通过/未通过按钮 */
     reviewForm(key) {
       this.form.authStatus = key;
+      if (this.form.validPeriodAlways) {
+        this.form.validPeriodAlways = 1;
+      } else {
+        this.form.validPeriodAlways = 0;
+      }
       examine(this.form).then(response => {
         this.msgSuccess('操作成功');
         this.close();
@@ -583,11 +638,13 @@ export default {
         id: null,
         code: null,
         userCode: null,
-        driverType: null,
+        driverType: 1,
+        teamCode: null,
         branchCode: null,
         provinceCode: null,
         cityCode: null,
         countyCode: null,
+        password: this.initialPassword,
         name: null,
         telphone: null,
         fixedPhone: null,
@@ -616,7 +673,9 @@ export default {
         updateCode: null,
         updateTime: null,
         isDel: null,
-        licenseNumber: null
+        licenseNumber: null,
+        transportPermitNo: null,
+        validPeriodAlways: null
       };
       this.vehicleForm = {
         id: null,
@@ -660,6 +719,11 @@ export default {
     setForm(data) {
       this.form = data;
       this.vehicleForm = data.vehicleInfo || {};
+      if (this.form.validPeriodAlways) {
+        this.form.validPeriodAlways = true;
+      } else {
+        this.form.validPeriodAlways = false;
+      }
       // 市
       this.getCityListFun(this.form.provinceCode);
       // 区
@@ -713,6 +777,9 @@ export default {
 }
 .width28{
   width: 28%;
+}
+.width59{
+  width: 59%;
 }
 /* 计数器样式 */
 .el-input-number ::v-deep.el-input__inner{

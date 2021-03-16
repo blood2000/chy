@@ -239,9 +239,8 @@ export default {
     return {
       // 司机类别字典
       driverTypeOptions: [
-        { dictLabel: '独立', dictValue: 1 },
-        { dictLabel: '分配', dictValue: 2 },
-        { dictLabel: '其他', dictValue: 3 }
+        { dictLabel: '独立司机', dictValue: 1 },
+        { dictLabel: '聘用司机', dictValue: 2 }
       ],
       // 审核状态字典
       statusOptions: [
@@ -287,7 +286,7 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        driverTypeOptions: undefined,
+        driverType: undefined,
         name: undefined,
         telphone: undefined,
         fixedPhone: undefined,
