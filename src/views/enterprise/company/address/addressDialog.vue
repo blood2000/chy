@@ -11,7 +11,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="状态">
+      <el-form-item label="状态" prop="status">
         <el-radio-group v-model="form.status">
           <el-radio
             v-for="dict in statusOptions"
@@ -35,12 +35,6 @@
       <el-form-item label="地址详情" prop="addressDetail">
         <el-input v-model="form.addressDetail" placeholder="请输入地址详情" class="width90" />
       </el-form-item>
-      <!-- <el-form-item label="经度" prop="latitude">
-        <el-input v-model="form.latitude" placeholder="请输入经度" class="width90" />
-      </el-form-item>
-      <el-form-item label="维度" prop="longitude">
-        <el-input v-model="form.longitude" placeholder="请输入维度" class="width90" />
-      </el-form-item> -->
       <el-form-item label="备注" prop="remark">
         <el-input v-model="form.remark" type="textarea" placeholder="请输入备注" class="width90" />
       </el-form-item>
@@ -79,7 +73,23 @@ export default {
       // 表单参数
       form: {},
       // 表单校验
-      rules: {}
+      rules: {
+        addressType: [
+          { required: true, message: '请选择地址类型', trigger: 'change' }
+        ],
+        status: [
+          { required: true, message: '请选择状态', trigger: 'change' }
+        ],
+        addressName: [
+          { required: true, message: '地址名称不能为空', trigger: 'blur' }
+        ],
+        userName: [
+          { required: true, message: '联系人不能为空', trigger: 'blur' }
+        ],
+        telphone: [
+          { required: true, message: '手机号码不能为空', trigger: 'blur' }
+        ]
+      }
     };
   },
   computed: {
@@ -139,7 +149,7 @@ export default {
         code: null,
         shipmentCode: null,
         addressType: null,
-        status: 0,
+        status: 1,
         createCode: null,
         createTime: null,
         updateCode: null,
