@@ -10,9 +10,9 @@ export function listDriver(query) {
 }
 
 // 查询司机详细
-export function getDriver(driverId) {
+export function getDriver(id) {
   return request({
-    url: '/assets/driver/' + driverId,
+    url: '/assets/driver/' + id,
     method: 'get'
   });
 }

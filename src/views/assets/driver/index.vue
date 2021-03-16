@@ -125,7 +125,7 @@
       <el-table-column type="expand" />
       <el-table-column label="司机类别" align="center" prop="driverType" :formatter="driverTypeFormat" />
       <el-table-column label="名字" align="center" prop="name" />
-      <el-table-column label="审核状态" align="center" prop="authStatus" sortable>
+      <el-table-column label="审核状态" align="center" prop="authStatus" sortable width="100">
         <template slot-scope="scope">
           <span v-show="scope.row.authStatus === 0" class="g-color-gray">未审核</span>
           <span v-show="scope.row.authStatus === 1" class="g-color-blue">审核中</span>
@@ -381,7 +381,7 @@ export default {
         } else if (flag === 'review') {
           this.title = '审核';
           if (row.authStatus === 0) {
-            this.$refs.DriverDialog.authRead({ driverId: row.id });
+            this.$refs.DriverDialog.authRead({ id: row.id });
           }
         }
         this.formDisable = flag !== 'edit';
