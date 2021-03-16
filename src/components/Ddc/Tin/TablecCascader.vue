@@ -73,6 +73,11 @@ export default {
       default: function() {
         return [];
       }
+    },
+
+    lcokey: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -86,7 +91,7 @@ export default {
 
     submitForm() {
       this.$emit('input', this.banner_list);
-      setLocalStorage(this.$route.name, this.banner_list);
+      setLocalStorage(this.lcokey || this.$route.name, this.banner_list);
       this.open = false;
     },
     cancel() {

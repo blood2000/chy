@@ -3,7 +3,7 @@ import request from '@/utils/request';
 // 查询运输异常列表
 export function listAbnormal(query) {
   return request({
-    url: '/waybill/abnormal/list',
+    url: '/transportation/waybill/getOrderException',
     method: 'get',
     params: query
   });
@@ -13,6 +13,14 @@ export function listAbnormal(query) {
 export function getAbnormal(waybillCode) {
   return request({
     url: '/waybill/abnormal/' + waybillCode,
+    method: 'get'
+  });
+}
+
+// 查询运输异常详细
+export function getWaybill(waybillCode) {
+  return request({
+    url: '/transportation/waybill/getOrderExceptionDetail' + waybillCode,
     method: 'get'
   });
 }

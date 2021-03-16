@@ -574,8 +574,6 @@ export default {
           });
           orderSpecifiedList = driverInfoCode.concat(teamInfoCode);
 
-          console.log(orderSpecifiedList);
-
           // <!-- isMultiGoods true->多商品 ; false->单商品 -->
           if (this.isMultiGoods) {
             const promisArr = this.formData.tin2_1.map(async(e) => {
