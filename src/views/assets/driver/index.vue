@@ -122,7 +122,7 @@
 
     <el-table v-loading="loading" :data="driverList" type="expand" @selection-change="handleSelectionChange" @expand-change="handleExpand">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <el-table-column type="expand" />
+      <!-- <el-table-column type="expand" /> -->
       <el-table-column label="司机类别" align="center" prop="driverType" :formatter="driverTypeFormat" />
       <el-table-column label="名字" align="center" prop="name" />
       <el-table-column label="审核状态" align="center" prop="authStatus" sortable width="100">
@@ -175,6 +175,12 @@
           <el-button
             size="mini"
             type="text"
+            icon="el-icon-setting"
+            @click="handleManage(scope.row)"
+          >管理</el-button>
+          <el-button
+            size="mini"
+            type="text"
             icon="el-icon-document"
             @click="handleDEtail(scope.row)"
           >详情</el-button>
@@ -215,6 +221,8 @@
     <driver-dialog ref="DriverDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
     <!-- 批量导入 对话框 -->
     <import-dialog ref="ImportDialog" :title="title" :open.sync="openImport" @refresh="getList" />
+    <!-- 管理车辆 对话框 -->
+    <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :drivercode="drivercode" />
   </div>
 </template>
 
@@ -222,12 +230,14 @@
 import { listDriver, getDriver, delDriver } from '@/api/assets/driver';
 import DriverDialog from './driverDialog';
 import ImportDialog from './importDialog';
+import ManageDialog from './manageDialog';
 
 export default {
   name: 'Driver',
   components: {
     DriverDialog,
-    ImportDialog
+    ImportDialog,
+    ManageDialog
   },
   props: {
     teamcode: {
@@ -282,6 +292,7 @@ export default {
       // 是否显示弹出层
       open: false,
       openImport: false,
+      manageDialogOpen: false,
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -295,7 +306,9 @@ export default {
         teamCode: this.teamcode
       },
       // 表单是否禁用
-      formDisable: false
+      formDisable: false,
+      // 司机code
+      drivercode: null
     };
   },
   created() {
@@ -418,6 +431,11 @@ export default {
     /** 展开车辆列表 */
     handleExpand(row) {
       console.log(row);
+    },
+    /** 管理按钮操作 */
+    handleManage(row) {
+      this.drivercode = row.code;
+      this.manageDialogOpen = true;
     }
   }
 };

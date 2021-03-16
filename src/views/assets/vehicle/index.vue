@@ -569,6 +569,10 @@ export default {
     teamcode: {
       type: String,
       default: null
+    },
+    drivercode: {
+      type: String,
+      default: null
     }
   },
   data() {
@@ -637,7 +641,8 @@ export default {
         annualVerificationDate: undefined,
         authStatus: undefined,
         isFreeze: undefined,
-        teamCode: this.teamcode
+        teamCode: this.teamcode,
+        driverCode: this.drivercode
       },
       // 表单是否禁用
       formDisable: false

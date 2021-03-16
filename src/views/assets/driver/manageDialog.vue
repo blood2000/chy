@@ -1,0 +1,94 @@
+<template>
+  <el-dialog
+    class="page-driver-manage-dialog"
+    :visible="visible"
+    :fullscreen="isfullscreen"
+    width="1300px"
+    title="管理"
+    append-to-body
+    @close="cancel"
+  >
+    <el-tabs v-model="activeName">
+      <el-tab-pane label="车辆管理" name="vehicle">
+        <vehicle-page ref="VehiclePage" :teamcode="teamcode" :drivercode="drivercode" />
+      </el-tab-pane>
+    </el-tabs>
+  </el-dialog>
+</template>
+
+<script>
+import VehiclePage from '../vehicle/index.vue';
+
+export default {
+  name: 'TeamManageDialog',
+  components: {
+    VehiclePage
+  },
+  props: {
+    open: Boolean,
+    teamcode: {
+      type: String,
+      default: null
+    },
+    drivercode: {
+      type: String,
+      default: null
+    }
+  },
+  data() {
+    return {
+      isfullscreen: false,
+      activeName: 'vehicle'
+    };
+  },
+  computed: {
+    visible: {
+      get() {
+        return this.open;
+      },
+      set(v) {
+        this.$emit('update:open', v);
+      }
+    }
+  },
+  watch: {
+    open(val) {
+      if (val) {
+        this.$nextTick(() => {
+          this.$refs.VehiclePage.handleQuery();
+        });
+      }
+    }
+  },
+  create() {
+
+  },
+  methods: {
+    // 取消按钮
+    cancel() {
+      this.close();
+    },
+    // 关闭弹窗
+    close() {
+      this.$emit('update:open', false);
+    }
+  }
+};
+</script>
+
+<style lang="scss">
+.page-driver-manage-dialog{
+  .el-dialog{
+    height: 90vh;
+    .el-dialog__body{
+      padding: 0 20px 20px;
+      background: #fff;
+      .app-container{
+        box-shadow: none;
+        margin: 0;
+        padding: 0;
+      }
+    }
+  }
+}
+</style>
