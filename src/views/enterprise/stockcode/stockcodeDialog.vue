@@ -40,7 +40,11 @@ export default {
       // 表单参数
       form: {},
       // 表单校验
-      rules: {}
+      rules: {
+        cargoCodeName: [
+          { required: true, message: '货源码名称不能为空', trigger: 'blur' }
+        ]
+      }
     };
   },
   computed: {

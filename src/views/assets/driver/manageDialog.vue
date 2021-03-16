@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    class="page-team-manage-dialog"
+    class="page-driver-manage-dialog"
     :visible="visible"
     :fullscreen="isfullscreen"
     width="1300px"
@@ -9,24 +9,19 @@
     @close="cancel"
   >
     <el-tabs v-model="activeName">
-      <el-tab-pane label="司机管理" name="driver">
-        <driver-page ref="DriverPage" :teamcode="teamcode" />
-      </el-tab-pane>
       <el-tab-pane label="车辆管理" name="vehicle">
-        <vehicle-page ref="VehiclePage" :teamcode="teamcode" />
+        <vehicle-page ref="VehiclePage" :teamcode="teamcode" :drivercode="drivercode" />
       </el-tab-pane>
     </el-tabs>
   </el-dialog>
 </template>
 
 <script>
-import DriverPage from '../driver/index.vue';
 import VehiclePage from '../vehicle/index.vue';
 
 export default {
   name: 'TeamManageDialog',
   components: {
-    DriverPage,
     VehiclePage
   },
   props: {
@@ -34,12 +29,16 @@ export default {
     teamcode: {
       type: String,
       default: null
+    },
+    drivercode: {
+      type: String,
+      default: null
     }
   },
   data() {
     return {
       isfullscreen: false,
-      activeName: 'driver'
+      activeName: 'vehicle'
     };
   },
   computed: {
@@ -56,7 +55,6 @@ export default {
     open(val) {
       if (val) {
         this.$nextTick(() => {
-          this.$refs.DriverPage.handleQuery();
           this.$refs.VehiclePage.handleQuery();
         });
       }
@@ -79,7 +77,7 @@ export default {
 </script>
 
 <style lang="scss">
-.page-team-manage-dialog{
+.page-driver-manage-dialog{
   .el-dialog{
     height: 90vh;
     .el-dialog__body{

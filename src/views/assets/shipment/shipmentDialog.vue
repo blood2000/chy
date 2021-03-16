@@ -21,7 +21,7 @@
       </el-form-item>
       <el-form-item label="密码" prop="password">
         <el-input v-model="form.password" type="password" placeholder="请输入密码" class="width60 mr3" size="small" clearable />
-        (初始密码为{{ initialPassword }})
+        <span class="g-color-blue">(初始密码为{{ initialPassword }})</span>
       </el-form-item>
       <el-form-item label="姓名" prop="adminName">
         <el-input v-model="form.adminName" placeholder="支持自动识别" size="small" class="width90" clearable />

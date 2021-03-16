@@ -8,29 +8,10 @@
           size="mini"
         >选择文件</el-button>
       </el-col>
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['enterprise:project:remove']"
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-        >删除</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          icon="el-icon-download"
-          size="mini"
-          @click="handleImportTemplateDriver"
-        >下载模板</el-button>
-      </el-col>
-      <!-- <right-toolbar :show-search.sync="showSearch" @queryTable="getList" /> -->
     </el-row>
 
-    <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" fixed="left" />
+    <el-table v-loading="loading" :data="infoList">
+      <!-- <el-table-column type="selection" width="55" align="center" fixed="left" /> -->
       <el-table-column label="文件名" align="center" prop="projectName" />
       <el-table-column label="大小" align="center" prop="commodityCategoryCode" />
       <el-table-column label="状态" align="center" prop="commoditySubclassCodes" />
@@ -120,11 +101,11 @@ export default {
       });
     },
     // 多选框选中数据
-    handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id);
-      this.single = selection.length !== 1;
-      this.multiple = !selection.length;
-    },
+    // handleSelectionChange(selection) {
+    //   this.ids = selection.map(item => item.id);
+    //   this.single = selection.length !== 1;
+    //   this.multiple = !selection.length;
+    // },
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
@@ -138,10 +119,6 @@ export default {
         this.getList();
         this.msgSuccess('删除成功');
       });
-    },
-    /** 下载模板 */
-    handleImportTemplateDriver() {
-      this.download('assets/driver/importTemplate', {}, `driver_${new Date().getTime()}.xlsx`);
     }
   }
 };

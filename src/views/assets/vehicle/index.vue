@@ -565,6 +565,16 @@ export default {
   components: {
     VehicleDialog
   },
+  props: {
+    teamcode: {
+      type: String,
+      default: null
+    },
+    drivercode: {
+      type: String,
+      default: null
+    }
+  },
   data() {
     return {
       // 遮罩层
@@ -630,7 +640,9 @@ export default {
         vehicleEnergyType: undefined,
         annualVerificationDate: undefined,
         authStatus: undefined,
-        isFreeze: undefined
+        isFreeze: undefined,
+        teamCode: this.teamcode,
+        driverCode: this.drivercode
       },
       // 表单是否禁用
       formDisable: false

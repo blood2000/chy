@@ -6,33 +6,19 @@
           type="info"
           icon="el-icon-upload2"
           size="mini"
-        >选择文件</el-button>
+        >选择多图片</el-button>
       </el-col>
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['enterprise:project:remove']"
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-        >删除</el-button>
+    </el-row>
+    <el-row :gutter="10" class="mb8">
+      <el-col :span="24" style="color:red;">
+        图片名称格式：装货图片：运输单号_fill_x ，卸货单据/回执单：运输单号_unload_x 。 装货示例：129456474745_fill_1； (运输单号是图片所属于哪个运输单的；fill代表是装货图片，unload代表卸货单据/回执单图片；x是数字序号，代表第几张图片)
       </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          icon="el-icon-download"
-          size="mini"
-          @click="handleImportTemplateDriver"
-        >下载模板</el-button>
-      </el-col>
-      <!-- <right-toolbar :show-search.sync="showSearch" @queryTable="getList" /> -->
     </el-row>
 
-    <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" fixed="left" />
+    <el-table v-loading="loading" :data="infoList">
+      <!-- <el-table-column type="selection" width="55" align="center" fixed="left" /> -->
       <el-table-column label="文件名" align="center" prop="projectName" />
-      <el-table-column label="大小" align="center" prop="commodityCategoryCode" />
+      <!-- <el-table-column label="大小" align="center" prop="commodityCategoryCode" /> -->
       <el-table-column label="状态" align="center" prop="commoditySubclassCodes" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -120,11 +106,11 @@ export default {
       });
     },
     // 多选框选中数据
-    handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id);
-      this.single = selection.length !== 1;
-      this.multiple = !selection.length;
-    },
+    // handleSelectionChange(selection) {
+    //   this.ids = selection.map(item => item.id);
+    //   this.single = selection.length !== 1;
+    //   this.multiple = !selection.length;
+    // },
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
@@ -138,10 +124,6 @@ export default {
         this.getList();
         this.msgSuccess('删除成功');
       });
-    },
-    /** 下载模板 */
-    handleImportTemplateDriver() {
-      this.download('assets/driver/importTemplate', {}, `driver_${new Date().getTime()}.xlsx`);
     }
   }
 };

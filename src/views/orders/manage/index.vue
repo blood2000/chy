@@ -22,14 +22,14 @@
         <el-card class="card-rigth">
           <div v-if="false" slot="header">
             <div class="left_v" />
-            <span>院区列表</span>
+            <span>货源管理</span>
           </div>
           <!-- 右边 -->
           <div>
             <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="100px" class="clearfix">
-              <el-form-item label="下单客户" prop="testName">
+              <el-form-item label="下单客户" prop="tin1">
                 <el-input
-                  v-model="queryParams.testName"
+                  v-model="queryParams.tin1"
                   placeholder="请输入公司名称/客户姓名/手机号"
                   clearable
                   size="small"
@@ -37,9 +37,9 @@
                 />
               </el-form-item>
 
-              <el-form-item label="转货信息" prop="testName1">
+              <el-form-item label="装货信息" prop="tin2">
                 <el-input
-                  v-model="queryParams.testName1"
+                  v-model="queryParams.tin2"
                   placeholder="装货地/装货电话/装货人"
                   clearable
                   size="small"
@@ -47,9 +47,9 @@
                 />
               </el-form-item>
 
-              <el-form-item label="收货信息" prop="testName2">
+              <el-form-item label="收货信息" prop="tin3">
                 <el-input
-                  v-model="queryParams.testName2"
+                  v-model="queryParams.tin3"
                   placeholder="目的地/收货电话/收货人"
                   clearable
                   size="small"
@@ -57,16 +57,16 @@
                 />
               </el-form-item>
 
-              <el-form-item label="货物类型" prop="testName2">
-                <el-select v-model="queryParams.testName3" placeholder="----请选择----" style="width: 215px">
+              <el-form-item label="货物类型大类" prop="tin4">
+                <el-select v-model="queryParams.tin4" placeholder="----请选择----" style="width: 215px">
                   <el-option label="区域一" value="shanghai" />
                   <el-option label="区域二" value="beijing" />
                 </el-select>
               </el-form-item>
 
-              <el-form-item label="货物描述" prop="testName2">
+              <el-form-item label="货物描述" prop="tin5">
                 <el-input
-                  v-model="queryParams.testName4"
+                  v-model="queryParams.tin5"
                   placeholder="目的地/收货电话/收货人"
                   clearable
                   size="small"
@@ -74,9 +74,9 @@
                 />
               </el-form-item>
 
-              <el-form-item label="货源单号" prop="testName2">
+              <el-form-item label="货主编码" prop="tin6">
                 <el-input
-                  v-model="queryParams.testName5"
+                  v-model="queryParams.tin6"
                   placeholder="目的地/收货电话/收货人"
                   clearable
                   size="small"
@@ -84,30 +84,52 @@
                 />
               </el-form-item>
 
-              <el-form-item label="订单状态" prop="testName2">
-                <el-select v-model="queryParams.testName6" placeholder="----请选择----" style="width: 215px">
-                  <el-option label="区域一" value="shanghai" />
-                  <el-option label="区域二" value="beijing" />
+              <el-form-item label="货源单号" prop="tin7">
+                <el-input
+                  v-model="queryParams.tin7"
+                  placeholder="目的地/收货电话/收货人"
+                  clearable
+                  size="small"
+                  @keyup.enter.native="handleQuery"
+                />
+              </el-form-item>
+
+              <!-- <el-form-item label="司机id" prop="driverId">
+                <el-input
+                  v-model="queryParams.driverId"
+                  placeholder="(司机id)查询自己公司的货源"
+                  clearable
+                  size="small"
+                  @keyup.enter.native="handleQuery"
+                />
+              </el-form-item> -->
+
+              <el-form-item label="订单状态" prop="tin8">
+                <el-select v-model="queryParams.tin8" placeholder="----请选择----" style="width: 215px">
+                  <el-option
+                    v-for="dict in statusOptions"
+                    :key="dict.dictValue"
+                    :label="dict.dictLabel"
+                    :value="dict.dictValue"
+                  />
                 </el-select>
               </el-form-item>
 
-              <el-form-item label="货源类型" prop="testName2">
-                <el-select v-model="queryParams.testName7" placeholder="----请选择----" style="width: 215px">
-                  <el-option label="区域一" value="shanghai" />
-                  <el-option label="区域二" value="beijing" />
+
+              <el-form-item label="是否拼单" prop="tin9">
+                <el-select v-model="queryParams.tin9" placeholder="----请选择----" style="width: 215px">
+                  <el-option
+                    v-for="dict in isShareTypeOptions"
+                    :key="dict.dictValue"
+                    :label="dict.dictLabel"
+                    :value="dict.dictValue"
+                  />
                 </el-select>
               </el-form-item>
 
-              <el-form-item label="是否拼单" prop="testName2">
-                <el-select v-model="queryParams.testName8" placeholder="----请选择----" style="width: 215px">
-                  <el-option label="区域一" value="shanghai" />
-                  <el-option label="区域二" value="beijing" />
-                </el-select>
-              </el-form-item>
-
-              <el-form-item label="创建时间" prop="testName2">
+              <el-form-item label="创建时间" prop="tin10">
                 <el-date-picker
-                  v-model="queryParams.testName9"
+                  v-model="queryParams.tin10"
                   size="small"
                   style="width: 215px"
                   value-format="yyyy-MM-dd"
@@ -118,38 +140,15 @@
                 />
               </el-form-item>
 
-              <el-form-item label="可抢单量" prop="testName2">
-                <div style="width: 215px" class="flex_b">
-                  <el-input
-                    v-model="queryParams.testName10"
-                    placeholder="目的地/收货电话/收货人"
-                    clearable
-                    size="small"
-                    style="width:100px;"
-                    @keyup.enter.native="handleQuery"
-                  />
-                  <span>-</span>
-                  <el-input
-                    v-model="queryParams.testName2"
-                    placeholder="目的地/收货电话/收货人"
-                    clearable
-                    size="small"
-                    style="width:100px;"
-                    @keyup.enter.native="handleQuery"
-                  />
-                </div>
-              </el-form-item>
 
               <el-form-item class="fr">
                 <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
                 <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-                <el-button
-                  v-hasPermi="['system:test:add']"
-                  type="primary"
-                  icon="el-icon-plus"
-                  size="mini"
-                  @click="handleAdd"
-                >新增</el-button>
+              </el-form-item>
+            </el-form>
+
+            <el-row :gutter="10" class="mb8">
+              <!-- <el-col :span="1.5">
                 <el-button
                   v-hasPermi="['system:test:remove']"
                   type="danger"
@@ -158,6 +157,8 @@
                   :disabled="multiple"
                   @click="handleDelete"
                 >删除</el-button>
+              </el-col> -->
+              <el-col :span="1.5">
                 <el-button
                   v-hasPermi="['system:test:export']"
                   type="warning"
@@ -165,130 +166,96 @@
                   size="mini"
                   @click="handleExport"
                 >导出</el-button>
-              </el-form-item>
-            </el-form>
+              </el-col>
 
-            <!--<el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="100px">
-                 <el-form-item label="系统模块" prop="title">
-                  <el-input
-                    v-model="queryParams.title"
-                    placeholder="请输入系统模块"
-                    clearable
-                    style="width: 240px;"
-                    size="small"
-                    @keyup.enter.native="handleQuery"
-                  />
-                </el-form-item>
-                <el-form-item label="操作人员" prop="operName">
-                  <el-input
-                    v-model="queryParams.operName"
-                    placeholder="请输入操作人员"
-                    clearable
-                    style="width: 240px;"
-                    size="small"
-                    @keyup.enter.native="handleQuery"
-                  />
-                </el-form-item>
-                <el-form-item label="类型" prop="businessType">
-                  <el-select
-                    v-model="queryParams.businessType"
-                    placeholder="操作类型"
-                    clearable
-                    size="small"
-                    style="width: 240px"
-                  >
-                    <el-option
-                      v-for="dict in typeOptions"
-                      :key="dict.dictValue"
-                      :label="dict.dictLabel"
-                      :value="dict.dictValue"
-                    />
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="状态" prop="status">
-                  <el-select
-                    v-model="queryParams.status"
-                    placeholder="操作状态"
-                    clearable
-                    size="small"
-                    style="width: 240px"
-                  >
-                    <el-option
-                      v-for="dict in statusOptions"
-                      :key="dict.dictValue"
-                      :label="dict.dictLabel"
-                      :value="dict.dictValue"
-                    />
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="操作时间">
-                  <el-date-picker
-                    v-model="dateRange"
-                    size="small"
-                    style="width: 240px"
-                    value-format="yyyy-MM-dd"
-                    type="daterange"
-                    range-separator="-"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                  ></el-date-picker>
-                </el-form-item>
-                <el-form-item>
-                  <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-                  <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-                </el-form-item>
-              </el-form>-->
-
-            <el-row :gutter="10" class="mb8">
-              <!-- <el-col :span="1.5">
-                  <el-button
-                    type="primary"
-                    icon="el-icon-plus"
-                    size="mini"
-                    @click="handleAdd"
-                    v-hasPermi="['system:test:add']"
-                  >新增</el-button>
-                </el-col>
-                <el-col :span="1.5">
-                  <el-button
-                    type="success"
-                    icon="el-icon-edit"
-                    size="mini"
-                    :disabled="single"
-                    @click="handleUpdate"
-                    v-hasPermi="['system:test:edit']"
-                  >修改</el-button>
-                </el-col>
-                <el-col :span="1.5">
-                  <el-button
-                    type="danger"
-                    icon="el-icon-delete"
-                    size="mini"
-                    :disabled="multiple"
-                    @click="handleDelete"
-                    v-hasPermi="['system:test:remove']"
-                  >删除</el-button>
-                </el-col>
-                <el-col :span="1.5">
-                  <el-button
-                    type="warning"
-                    icon="el-icon-download"
-                    size="mini"
-                    @click="handleExport"
-                    v-hasPermi="['system:test:export']"
-                  >导出</el-button>
-                </el-col> -->
-
-              <el-col :span="1.5">
-                <tablec-cascader v-model="tableColumnsConfig" :options="options" />
+              <el-col :span="1.5" style="marginTop:-5px">
+                <tablec-cascader v-model="tableColumnsConfig" />
               </el-col>
               <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
             </el-row>
 
-            <RefactorTable :loading="loading" :data="list" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
-              <template #status="{row}">
-                <span>{{ row.status }}</span>
+            <RefactorTable :loading="loading" :data="list" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
+              <!-- billingType	发运方式 0->汽运一票制，1->对付，2->代收代付 -->
+              <template #billingType="{row}">
+                <span>{{ selectDictLabel(billingTypeOptions, row.billingType) }}</span>
               </template>
+              <!-- status	状态 0.启用 1.禁用 -->
+              <template #status="{row}">
+                <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
+              </template>
+              <!-- importType	是否导入货源 0-正常发布货源，1-货源单导入，2-运输单导入 -->
+              <template #importType="{row}">
+                <span>{{ selectDictLabel(importTypeOptions, row.importType) }}</span>
+              </template>
+
+              <template #isClass="{row}">
+                <span>{{ selectDictLabel(isClassOptions, row.isClass) }}</span>
+              </template>
+
+              <template #isDel="{row}">
+                <span>{{ selectDictLabel(isDelTypeOptions, row.isDel) }}</span>
+              </template>
+
+              <template #isDispatch="{row}">
+                <span>{{ selectDictLabel(isDispatchTypeOptions, row.isDispatch) }}</span>
+              </template>
+
+              <template #isInsure="{row}">
+                <span>{{ selectDictLabel(isInsureTypeOptions, row.isInsure) }}</span>
+              </template>
+
+              <template #isMonthlyOrder="{row}">
+                <span>{{ selectDictLabel(isMonthlyOrderTypeOptions, row.isMonthlyOrder) }}</span>
+              </template>
+
+              <template #isPay="{row}">
+                <span>{{ selectDictLabel(isPayTypeOptions, row.isPay) }}</span>
+              </template>
+
+              <template #isPublic="{row}">
+                <span>{{ selectDictLabel(isPublicTypeOptions, row.isPublic) }}</span>
+              </template>
+
+              <template #isReturnMoney="{row}">
+                <span>{{ selectDictLabel(isReturnMoneyTypeOptions, row.isReturnMoney) }}</span>
+              </template>
+
+              <template #isShare="{row}">
+                <span>{{ selectDictLabel(isShareTypeOptions, row.isShare) }}</span>
+              </template>
+
+              <template #isShipperConfirm="{row}">
+                <span>{{ selectDictLabel(isShipperConfirmTypeOptions, row.isShipperConfirm) }}</span>
+              </template>
+
+              <template #isSpecified="{row}">
+                <span>{{ selectDictLabel(isSpecifiedTypeOptions, row.isSpecified) }}</span>
+              </template>
+
+              <template #isSplit="{row}">
+                <span>{{ selectDictLabel(isSplitTypeOptions, row.isSplit) }}</span>
+              </template>
+
+              <template #isTop="{row}">
+                <span>{{ selectDictLabel(isTopTypeOptions, row.isTop) }}</span>
+              </template>
+
+              <template #isTrunk="{row}">
+                <span>{{ selectDictLabel(isTrunkTypeOptions, row.isTrunk) }}</span>
+              </template>
+
+              <template #loadTypeType="{row}">
+                <span>{{ selectDictLabel(loadTypeTypeOptions, row.loadTypeType) }}</span>
+              </template>
+
+              <template #orderTypeType="{row}">
+                <span>{{ selectDictLabel(orderTypeTypeOptions, row.orderTypeType) }}</span>
+              </template>
+
+              <template #paymentCodeType="{row}">
+                <span>{{ selectDictLabel(paymentCodeTypeOptions, row.paymentCodeType) }}</span>
+              </template>
+
               <template #accessTime="{row}">
                 <span>{{ row.accessTime }}</span>
               </template>
@@ -298,15 +265,30 @@
                   size="mini"
                   type="text"
                   icon="el-icon-edit"
-                  @click="handleUpdate(row)"
-                >修改</el-button>
+                  @click="handleInfo(row)"
+                >详情</el-button>
                 <el-button
                   v-hasPermi="['system:menu:add']"
                   size="mini"
                   type="text"
-                  icon="el-icon-plus"
-                  @click="handleAdd(row)"
-                >新增</el-button>
+                  icon="el-icon-edit-outline"
+                  @click="loadAndUnloading(row)"
+                >{{ row.status==='0'?'禁用':'启用' }}</el-button>
+                <el-button
+                  v-hasPermi="['system:menu:remove']"
+                  size="mini"
+                  type="text"
+                  icon="el-icon-s-promotion"
+                  @click="handleDispatch(row)"
+                >派单</el-button>
+
+                <el-button
+                  v-hasPermi="['system:menu:edit']"
+                  size="mini"
+                  type="text"
+                  icon="el-icon-edit"
+                  @click="handleUpdate(row)"
+                >编辑</el-button>
                 <el-button
                   v-hasPermi="['system:menu:remove']"
                   size="mini"
@@ -314,6 +296,20 @@
                   icon="el-icon-delete"
                   @click="handleDelete(row)"
                 >删除</el-button>
+                <!-- <el-button
+                  v-hasPermi="['system:menu:remove']"
+                  size="mini"
+                  type="text"
+                  icon="el-icon-delete"
+                  @click="handleDelete(row)"
+                >暂停</el-button> -->
+                <!-- <el-button
+                  v-hasPermi="['system:menu:remove']"
+                  size="mini"
+                  type="text"
+                  icon="el-icon-delete"
+                  @click="handleDelete(row)"
+                >调价</el-button> -->
               </template>
             </RefactorTable>
 
@@ -330,341 +326,35 @@
       </el-col>
     </el-row>
 
-    <!-- 添加或修改【请填写功能名称】对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="${comment}" prop="testName">
-          <el-input v-model="form.testName" placeholder="请输入${comment}" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
+
+
+    <!-- 派送订单 -->
+    <el-dialog :title="title" :visible.sync="openDispatch" width="80%" append-to-body>
+      <open-dialog v-if="openDispatch" :dispatch="dispatch" @_ok="(bool)=>{openDispatch = bool; getList()}" />
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { listTest, getTest, delTest, addTest, updateTest } from '@/api/test/test';
+import { getOrderInfoList, delOrder, loadAndUnloadingGoods, exportOrder } from '@/api/order/manage';
+import OpenDialog from './component/OpenDialog';
+import tableColumnsConfig from './data/config-index';
 
-const data = [{
-  id: 1,
-  label: '一级 1',
-  children: [{
-    id: 4,
-    label: '二级 1-1',
-    children: [{
-      id: 9,
-      label: '三级 1-1-1'
-    }, {
-      id: 10,
-      label: '三级 1-1-2'
-    }]
-  }]
-}, {
-  id: 2,
-  label: '一级 2',
-  children: [{
-    id: 5,
-    label: '二级 2-1'
-  }, {
-    id: 6,
-    label: '二级 2-2'
-  }]
-}, {
-  id: 3,
-  label: '一级 3',
-  children: [{
-    id: 7,
-    label: '二级 3-1'
-  }, {
-    id: 8,
-    label: '二级 3-2'
-  }]
-}];
-const options = [
-  {
-    prop: 'infoId',
-    label: '访问编号',
-    fixed: 'left'
-    // width: ,
-    // align: 'center'
-  },
-  {
-    prop: 'userName',
-    label: '用户名称'
-    // width: ,
-    // align: 'center'
-  }, {
-    prop: 'ipaddr',
-    label: '地址',
-    width: 130,
-    tooltip: true
-    // align: 'center'
-  }, {
-    prop: 'status',
-    label: '状态'
-  }, {
-    prop: 'msg',
-    label: '描述'
-    // width: ,
-    // align: 'center'
-  }, {
-    prop: 'accessTime',
-    label: '访问时间',
-    width: 180
-    // align: 'center'
-  },
-  {
-    prop: 'type',
-    label: '访问时间',
-    width: 250
-    // align: 'center'
-  },
-  {
-    prop: 'terminalType',
-    label: '访问时间',
-    width: 250
-    // align: 'center'
-  },
-  {
-    prop: 'edit',
-    label: '操作',
-    width: 180,
-    fixed: 'right'
-  }
-];
-
-const listData = {
-  'total': 269,
-  'rows': [
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 608,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.12',
-      'status': '0',
-      'msg': '退出成功',
-      'accessTime': '2021-03-09 13:36:53',
-      'type': 2,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    },
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 607,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.12',
-      'status': '0',
-      'msg': '登录成功',
-      'accessTime': '2021-03-09 11:55:22',
-      'type': 1,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    },
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 606,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.5',
-      'status': '0',
-      'msg': '登录成功',
-      'accessTime': '2021-03-09 11:41:21',
-      'type': 1,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    },
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 605,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.5',
-      'status': '0',
-      'msg': '登录成功',
-      'accessTime': '2021-03-09 11:33:51',
-      'type': 1,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    },
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 604,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.5',
-      'status': '0',
-      'msg': '登录成功',
-      'accessTime': '2021-03-09 11:31:27',
-      'type': 1,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    },
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 603,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.5',
-      'status': '0',
-      'msg': '退出成功',
-      'accessTime': '2021-03-09 11:31:22',
-      'type': 2,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    },
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 602,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.5',
-      'status': '0',
-      'msg': '登录成功',
-      'accessTime': '2021-03-09 11:29:00',
-      'type': 1,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    },
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 601,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.5',
-      'status': '0',
-      'msg': '退出成功',
-      'accessTime': '2021-03-09 11:28:58',
-      'type': 2,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    },
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 600,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.5',
-      'status': '0',
-      'msg': '登录成功',
-      'accessTime': '2021-03-09 11:28:42',
-      'type': 1,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    },
-    {
-      'searchValue': null,
-      'createCode': null,
-      'createBy': null,
-      'createTime': null,
-      'updateCode': null,
-      'updateBy': null,
-      'updateTime': null,
-      'remark': null,
-      'params': {},
-      'infoId': 599,
-      'userName': 'admin',
-      'operUserCode': null,
-      'ipaddr': '192.168.176.5',
-      'status': '0',
-      'msg': '退出成功',
-      'accessTime': '2021-03-09 11:28:39',
-      'type': 2,
-      'terminalType': 2,
-      'appCode': '3f78fbfc13b14fa4b3d78665124ef4bb'
-    }
-  ],
-  'code': 200,
-  'msg': '查询成功'
-};
 
 export default {
   name: 'Testlog',
+  components: { OpenDialog },
   data() {
     return {
       // 树形数据
-      data,
+      data: [],
 
       // 遮罩层
       loading: false,
       // 选中数组
       ids: [],
+      // 非单个禁用
+      single: true,
       // 非多个禁用
       multiple: true,
       // 显示搜索条件
@@ -672,13 +362,13 @@ export default {
       // 总条数
       total: 0,
       // 表格数据
-      list: [],
-      // 是否显示弹出层
-      open: false,
+      list: [{ id: 1 }],
+      // 是否显示弹出层-派送
+      openDispatch: false,
+      dispatch: null,
       // 类型数据字典
       typeOptions: [],
-      // 类型数据字典
-      statusOptions: [],
+
       // 日期范围
       dateRange: [],
       // 表单参数
@@ -687,54 +377,169 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        title: undefined,
-        operName: undefined,
-        businessType: undefined,
-        status: undefined
+        tin1: '',
+        tin2: '',
+        tin3: '',
+        tin4: '',
+        tin5: '',
+        tin6: '',
+        tin7: '',
+        tin8: '',
+        tin9: '',
+        tin10: []
       },
+      // 弹框title
+      title: '',
       // 表头动态值
-      tableColumnsConfig: [],
-
-      // 下拉框展示所有的值-其中每一项就是配置项的值
-      options
+      tableColumnsConfig,
+      // 订单状态字典
+      statusOptions: [
+        { dictLabel: '启用', dictValue: '0' },
+        { dictLabel: '禁用', dictValue: '1' }
+      ],
+      // 发运方式字典
+      billingTypeOptions: [
+        { dictLabel: '汽运一票制', dictValue: '0' },
+        { dictLabel: '对付', dictValue: '1' },
+        { dictLabel: '代收代付', dictValue: '2' }
+      ],
+      // 是否导入货源字典
+      importTypeOptions: [
+        { dictLabel: '正常发布货源', dictValue: '0' },
+        { dictLabel: '货源单导入', dictValue: '1' },
+        { dictLabel: '运输单导入', dictValue: '2' }
+      ],
+      // isClass	是否加入货源码 0否 1是
+      isClassOptions: [
+        { dictLabel: '否', dictValue: false },
+        { dictLabel: '是', dictValue: true }
+      ],
+      // isDel	是否删除 0.正常 1.删除	boolean
+      isDelTypeOptions: [
+        { dictLabel: '正常', dictValue: false },
+        { dictLabel: '删除', dictValue: true }
+      ],
+      // isDispatch	是否已受理 0未受理，1已受理	boolean
+      isDispatchTypeOptions: [
+        { dictLabel: '未受理', dictValue: false },
+        { dictLabel: '已受理', dictValue: true }
+      ],
+      // isInsure	投保类别 0否 1是	boolean
+      isInsureTypeOptions: [
+        { dictLabel: '否', dictValue: false },
+        { dictLabel: '是', dictValue: true }
+      ],
+      // isMonthlyOrder	是否月结订单 0否 1 是	boolean
+      isMonthlyOrderTypeOptions: [
+        { dictLabel: '否', dictValue: false },
+        { dictLabel: '是', dictValue: true }
+      ],
+      // isPay	是否已经支付 0 未支付 1 已经支付	boolean
+      isPayTypeOptions: [
+        { dictLabel: '未支付', dictValue: false },
+        { dictLabel: '已经支付', dictValue: true }
+      ],
+      // isPublic	是否公开货源 0.非公开 1.公开
+      isPublicTypeOptions: [
+        { dictLabel: '非公开', dictValue: false },
+        { dictLabel: '公开', dictValue: true }
+      ],
+      // isReturnMoney	标记货主是否结算 0 否 1-是	boolean
+      isReturnMoneyTypeOptions: [
+        { dictLabel: '否', dictValue: false },
+        { dictLabel: '是', dictValue: true }
+      ],
+      // isShare	是否拼单 0-否，1-是	boolean
+      isShareTypeOptions: [
+        { dictLabel: '否', dictValue: false },
+        { dictLabel: '是', dictValue: true }
+      ],
+      // isShipperConfirm	是否货主确认装货 0否，1是	boolean
+      isShipperConfirmTypeOptions: [
+        { dictLabel: '否', dictValue: false },
+        { dictLabel: '是', dictValue: true }
+      ],
+      // isSpecified	是否指定接单人 0否 1是	boolean
+      isSpecifiedTypeOptions: [
+        { dictLabel: '否', dictValue: false },
+        { dictLabel: '是', dictValue: true }
+      ],
+      // isSplit	是否允许拆单 0-不允许，1-允许	boolean
+      isSplitTypeOptions: [
+        { dictLabel: '不允许', dictValue: false },
+        { dictLabel: '允许', dictValue: true }
+      ],
+      // isTop	是否置顶 0否 1是	boolean
+      isTopTypeOptions: [
+        { dictLabel: '否', dictValue: false },
+        { dictLabel: '是', dictValue: true }
+      ],
+      // isTrunk	订单类型 0-整车大宗，1-零散多货	boolean
+      isTrunkTypeOptions: [
+        { dictLabel: '整车大宗', dictValue: '0' },
+        { dictLabel: '零散多货', dictValue: '1' }
+      ],
+      // loadType	装卸类型 1.一装一卸 2.多装一卸 3.一装多卸 4.多装多卸
+      loadTypeTypeOptions: [
+        { dictLabel: '', dictValue: '0' },
+        { dictLabel: '一装一卸', dictValue: '1' },
+        { dictLabel: '多装一卸', dictValue: '2' },
+        { dictLabel: '一装多卸', dictValue: '3' },
+        { dictLabel: '多装多卸', dictValue: '4' }
+      ],
+      // orderType	运输类型 0-汽运，1-船运	string
+      orderTypeTypeOptions: [
+        { dictLabel: '汽运', dictValue: '0' },
+        { dictLabel: '船运', dictValue: '1' }
+      ],
+      // paymentCode	支付方式 0-现金，1-打卡，2现金+油卡 (字典表CODE)
+      paymentCodeTypeOptions: [
+        { dictLabel: '现金', dictValue: '0' },
+        { dictLabel: '打卡', dictValue: '1' },
+        { dictLabel: '现金+油卡', dictValue: '2' }
+      ]
 
     };
   },
+
+  computed: {
+    newQueryParams() {
+      return {
+        addressAndPhoneAndMember: this.queryParams.tin2, //	装货信息	query	false
+        beginTime: this.queryParams.tin10[0], //	开始时间	query	false
+        companyAndCustomerAndPhone: this.queryParams.tin1, //	下单客户	query	false
+        destinationAndPhoneAndMember: this.queryParams.tin3, //	收货信息	query	false
+        driverId: undefined, //	(司机id)查询自己公司的货源	query	false
+        endTime: this.queryParams.tin10[1], //	结束时间	query	false
+        goodsBigType: this.queryParams.tin4, //	货物类型大类	query	false
+        goodsName: this.queryParams.tin5, //	货物描述(名称)	query	false
+        isShare: this.queryParams.tin9, //	是否拼单	query	false
+        mainOrderNumber: this.queryParams.tin7, //	货源单号	query	false
+        pubilshCode: this.queryParams.tin6, //	货主编码	query	false
+        status: this.queryParams.tin8, //	订单状态（字典表）	query	false
+        pageNum: this.queryParams.pageNum, //	pageNum,示例值(1)	query	false
+        pageSize: this.queryParams.pageSize //	pageSize,示例值(10)	query	false
+      };
+    }
+  },
+
   created() {
+    this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || this.tableColumnsConfig;
     this.getList();
-    // 这个可以做个判断如果有存则取存的东西, 没有就去全部
-    this.tableColumnsConfig = this.options;
   },
   methods: {
-    /** 查询【请填写功能名称】列表 */
+    /** 查询货源列表 */
     getList() {
-      // this.loading = true;
-      // listTest(this.queryParams).then(response => {
-      //   this.testList = response.rows;
-      //   this.total = response.total;
-      //   this.loading = false;
-      // }).catch(err=>{
-      //   this.loading = false;
-      // })
+      this.loading = true;
+      getOrderInfoList(this.newQueryParams).then(response => {
+        this.list = response.data.list;
+        this.total = response.data.total - 0;
+        this.loading = false;
+      }).catch(() => {
+        this.loading = false;
+      });
+    },
 
-      // 测试,上面打开,下面就要删掉
-      this.list = listData.rows;
-      this.total = listData.total;
-      this.loading = false;
-    },
-    // 取消按钮
-    cancel() {
-      this.open = false;
-      this.reset();
-    },
-    // 表单重置
-    reset() {
-      this.form = {
-        testId: null,
-        testName: null
-      };
-      this.resetForm('form');
-    },
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
@@ -745,57 +550,54 @@ export default {
       this.resetForm('queryForm');
       this.handleQuery();
     },
-    // 多选框选中数据
-    handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.testId);
-      this.single = selection.length !== 1;
-      this.multiple = !selection.length;
-    },
-    /** 新增按钮操作 */
-    handleAdd() {
-      this.reset();
-      this.open = true;
-      this.title = '添加【请填写功能名称】';
-    },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      this.reset();
-      const testId = row.testId || this.ids;
-      getTest(testId).then(response => {
-        this.form = response.data;
-        this.open = true;
-        this.title = '修改【请填写功能名称】';
-      });
+      // this.reset();
+      // const testId = row.testId || this.ids;
+      // getTest(testId).then(response => {
+      //   this.form = response.data;
+      //   this.open = true;
+      //   this.title = '修改货源';
+      // });
     },
-    /** 提交按钮 */
-    submitForm() {
-      this.$refs['form'].validate(valid => {
-        if (valid) {
-          if (this.form.testId != null) {
-            updateTest(this.form).then(response => {
-              this.msgSuccess('修改成功');
-              this.open = false;
-              this.getList();
-            });
-          } else {
-            addTest(this.form).then(response => {
-              this.msgSuccess('新增成功');
-              this.open = false;
-              this.getList();
-            });
-          }
-        }
-      });
+    /** 查看详情操作 */
+    handleInfo(row) {
+      // this.reset();
+      // const testId = row.testId || this.ids;
+      // getTest(testId).then(response => {
+      //   this.form = response.data;
+      //   this.open = true;
+      //   this.title = '修改货源';
+      // });
     },
-    /** 删除按钮操作 */
-    handleDelete(row) {
-      const testIds = row.testId || this.ids;
-      this.$confirm('是否确认删除【请填写功能名称】编号为"' + testIds + '"的数据项?', '警告', {
+    /** 上下架货源 */
+    loadAndUnloading(row) {
+      const msg = row.status === '1' ? '启用' : '禁用';
+      const data = {
+        'orderCode': row.code,
+        'status': row.status === '0' ? 1 : 0
+      };
+      this.$confirm('是否确认操作货源编号为"' + row.code + '"的数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
-        return delTest(testIds);
+        return loadAndUnloadingGoods(data);
+      }).then(() => {
+        this.getList();
+        this.msgSuccess(msg + '成功');
+      });
+    },
+
+    /** 删除按钮操作 */
+    handleDelete(row) {
+      const testIds = row.code;
+      this.$confirm('是否确认删除货源编号为"' + testIds + '"的数据项?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return delOrder(testIds);
       }).then(() => {
         this.getList();
         this.msgSuccess('删除成功');
@@ -803,9 +605,14 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('system/test/export', {
-        ...this.queryParams
-      }, `system_test.xlsx`);
+      this.download('/transportation/order/export', {
+        ...this.newQueryParams
+      }, `order_export.xlsx`);
+    },
+    /** 派单对话 */
+    handleDispatch(row) {
+      this.openDispatch = true;
+      this.dispatch = row;
     }
   }
 };

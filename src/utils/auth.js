@@ -27,3 +27,15 @@ export function setExpiresIn(time) {
 export function removeExpiresIn() {
   return Cookies.remove(ExpiresInKey);
 }
+
+// 本地存储
+export function setLocalStorage(key, data) {
+  return window.localStorage.setItem(key, JSON.stringify(data));
+}
+export function getLocalStorage(key) {
+  return JSON.parse(window.localStorage.getItem(key));
+}
+export function removeLocalStorage(key) {
+  return window.localStorage.removeItem(key);
+}
+

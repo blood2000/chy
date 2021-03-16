@@ -136,7 +136,7 @@
       <el-table-column label="道路运输经营许可证照" align="center" prop="transportPermitImage" />
       <el-table-column label="身份证正面照片" align="center" prop="identificationImage" />
       <el-table-column label="身份证国徽面" align="center" prop="identificationBackImage" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="180">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -180,7 +180,7 @@
     <team-dialog ref="TeamDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
 
     <!-- 管理 对话框 -->
-    <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" />
+    <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :teamcode="teamcode" />
   </div>
 </template>
 
@@ -237,7 +237,9 @@ export default {
       // 表单参数
       form: {},
       // 表单是否禁用
-      formDisable: false
+      formDisable: false,
+      // 调度者code
+      teamcode: null
     };
   },
   created() {
@@ -337,6 +339,7 @@ export default {
     },
     /** 管理按钮操作 */
     handleManage(row) {
+      this.teamcode = row.code;
       this.manageDialogOpen = true;
     }
   }
