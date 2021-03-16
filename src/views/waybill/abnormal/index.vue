@@ -70,50 +70,12 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <!-- <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['waybill:abnormal:add']"
-          type="primary"
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleWaybill"
-        >新增</el-button>
-      </el-col> -->
-      <!-- <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['waybill:abnormal:edit']"
-          type="success"
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleWaybill"
-        >修改</el-button>
-      </el-col> -->
-      <!-- <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['waybill:abnormal:remove']"
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-        >删除</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['waybill:abnormal:export']"
-          type="warning"
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-        >导出</el-button>
-      </el-col> -->
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
     <el-table v-loading="loading" :data="abnormalList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="运单编号" align="center" prop="waybillCode" :formatter="waybillCodeFormat" />
+      <el-table-column label="运单编号" align="center" prop="waybillCode" />
       <el-table-column label="异常标记状态" align="center" prop="isWarning" :formatter="isWarningFormat" />
       <el-table-column label="标记时间" align="center" prop="warningTime" width="180">
         <template slot-scope="scope">
@@ -123,7 +85,7 @@
       <!-- <el-table-column label="是否删除 0.正常 1.删除" align="center" prop="isDel" :formatter="isDelFormat" />
       <el-table-column label="创建人" align="center" prop="createCode" :formatter="createCodeFormat" />
       <el-table-column label="修改人" align="center" prop="updateCode" :formatter="updateCodeFormat" /> -->
-      <el-table-column label="异常说明" align="center" prop="description" :formatter="descriptionFormat" />
+      <el-table-column label="异常说明" align="center" prop="description" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -160,7 +122,7 @@
 </template>
 
 <script>
-import { listAbnormal, getAbnormal } from '@/api/waybill/abnormal';
+import { listAbnormal, getAbnormal, getWaybill } from '@/api/waybill/abnormal';
 import DetailDialog from '../components/detailDialog';
 import AbnormalDialog from './abnormalDialog';
 
@@ -201,20 +163,23 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
+        driverName: null,
         waybillCode: null,
         isWarning: null,
-        warningTime: null,
-        isDel: null,
-        createCode: null,
-        updateCode: null,
-        description: null
-      }
+        orderCode: null
+      },
+      // 表单是否禁用
+      formDisable: false
     };
   },
   created() {
     this.getList();
   },
   methods: {
+    // 异常标记状态字典翻译
+    isWarningFormat(row, column) {
+      return this.selectDictLabel(this.isWarningOptions, row.driverType);
+    },
     /** 查询运输异常列表 */
     getList() {
       this.loading = true;
@@ -244,7 +209,7 @@ export default {
     handleWaybill(row) {
       this.$refs.DetailDialog.reset();
       const id = row.waybillCode;
-      getAbnormal(id).then((response) => {
+      getWaybill(id).then((response) => {
         this.$refs.DetailDialog.setForm(response.data);
         this.open = true;
         this.title = '运输单信息';
@@ -254,7 +219,7 @@ export default {
     /** 查看日志按钮操作 */
     handleLog(row) {
       this.$refs.AbnormalDialog.reset();
-      const id = row.waybillCode;
+      const id = row.id;
       getAbnormal(id).then((response) => {
         this.$refs.AbnormalDialog.setForm(response.data);
         this.open = true;

@@ -10,9 +10,9 @@ export function listDriver(query) {
 }
 
 // 查询司机详细
-export function getDriver(driverId) {
+export function getDriver(id) {
   return request({
-    url: '/assets/driver/' + driverId,
+    url: '/assets/driver/' + id,
     method: 'get'
   });
 }
@@ -40,5 +40,23 @@ export function delDriver(userIds) {
   return request({
     url: '/assets/driver/' + userIds,
     method: 'delete'
+  });
+}
+
+// 已读
+export function authRead(data) {
+  return request({
+    url: '/assets/driver/authRead',
+    method: 'post',
+    data: data
+  });
+}
+
+// 审核
+export function examine(data) {
+  return request({
+    url: '/assets/driver/examine',
+    method: 'post',
+    data: data
   });
 }
