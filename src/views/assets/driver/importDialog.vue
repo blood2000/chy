@@ -138,6 +138,10 @@ export default {
         this.getList();
         this.msgSuccess('删除成功');
       });
+    },
+    /** 下载模板 */
+    handleImportTemplateDriver() {
+      this.download('assets/driver/importTemplate', {}, `driver_${new Date().getTime()}.xlsx`);
     }
   }
 };

@@ -13,7 +13,7 @@
 
     <div class="app-container">
       <h3 class="g-title-medium">开票信息</h3>
-      <el-form ref="form" :model="form" label-width="140px" :label-position="'left'">
+      <el-form ref="form" :model="form" :rules="rules" label-width="140px" :label-position="'left'">
         <h5 class="g-title-small g-strong g-color-gray mb20">| 增值税发票开票信息</h5>
         <!-- <el-form-item label="发票编码" prop="code">
           <el-input v-model="form.code" placeholder="请输入发票编码" class="input-width" clearable />
@@ -65,7 +65,36 @@ import { addBilling, updateBilling, getBilling } from '@/api/enterprise/company/
 export default {
   data() {
     return {
-      form: {}
+      form: {},
+      rules: {
+        taxRegistration: [
+          { required: true, message: '纳税人识别号不能为空', trigger: 'blur' }
+        ],
+        registrationAddrtion: [
+          { required: true, message: '注册地址不能为空', trigger: 'blur' }
+        ],
+        registrationTelphone: [
+          { required: true, message: '注册电话不能为空', trigger: 'blur' }
+        ],
+        openBankName: [
+          { required: true, message: '开户行不能为空', trigger: 'blur' }
+        ],
+        openBankNumber: [
+          { required: true, message: '账号不能为空', trigger: 'blur' }
+        ],
+        payeeName: [
+          { required: true, message: '收票人姓名不能为空', trigger: 'blur' }
+        ],
+        payeeTelphone: [
+          { required: true, message: '收票人联系电话不能为空', trigger: 'blur' }
+        ],
+        payeeEmail: [
+          { required: true, message: '收票人电子邮箱不能为空', trigger: 'blur' }
+        ],
+        payeeAddress: [
+          { required: true, message: '收票地址不能为空', trigger: 'blur' }
+        ]
+      }
     };
   },
   created() {
@@ -74,7 +103,7 @@ export default {
   methods: {
     getBilling() {
       getBilling('8b3f41f598c64fd9a7922a5611a7ed8f').then(response => {
-        this.form = response.data;
+        this.form = response.data || {};
       });
     },
     handleSubmit() {
