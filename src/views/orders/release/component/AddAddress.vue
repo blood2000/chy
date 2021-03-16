@@ -193,7 +193,8 @@ export default {
         level: '1', //	匹配级别		false
         location: [1, 2], //	坐标点		false
         province: '', //	省份		false
-        street: '' //	街道		false
+        street: '', //	街道		false
+        onsubmitForm: null
       });
     },
     // 删除一个地址
