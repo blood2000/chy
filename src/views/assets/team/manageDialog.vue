@@ -8,7 +8,7 @@
     append-to-body
     @close="cancel"
   >
-    <el-tabs v-model="activeName" @tab-click="handleClick">
+    <el-tabs v-model="activeName">
       <el-tab-pane label="司机管理" name="driver">
         <driver-page ref="DriverPage" :teamcode="teamcode" />
       </el-tab-pane>
@@ -66,10 +66,6 @@ export default {
 
   },
   methods: {
-    // 点击tab
-    handleClick(tab, event) {
-
-    },
     // 取消按钮
     cancel() {
       this.close();

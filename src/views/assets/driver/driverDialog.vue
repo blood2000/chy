@@ -398,15 +398,19 @@
       </el-form-item>
     </el-form>
 
-    <div slot="footer" class="dialog-footer">
+    <div v-if="title === '新增' || title === '编辑'" slot="footer" class="dialog-footer">
       <el-button type="primary" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
+    </div>
+    <div v-if="title === '审核'" slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="reviewForm(3)">审核通过</el-button>
+      <el-button type="danger" @click="reviewForm(2)">审核不通过</el-button>
     </div>
   </el-dialog>
 </template>
 
 <script>
-import { addDriver, updateDriver } from '@/api/assets/driver';
+import { addDriver, updateDriver, authRead, examine } from '@/api/assets/driver';
 import { getProvinceList, getCityList, geCountyList } from '@/api/system/area';
 import UploadImage from '@/components/UploadImage/index';
 
@@ -529,10 +533,6 @@ export default {
     },
     /** 提交按钮 */
     submitForm: function() {
-      if (this.disable) {
-        this.close();
-        return;
-      }
       this.$refs['form'].validate(valid => {
         if (valid) {
           const driver = this.form;
@@ -551,6 +551,21 @@ export default {
             });
           }
         }
+      });
+    },
+    /** 已读 */
+    authRead(data) {
+      authRead(data).then(response => {
+        this.$emit('refresh');
+      });
+    },
+    /** 审核通过/未通过按钮 */
+    reviewForm(key) {
+      this.form.authStatus = key;
+      examine(this.form).then(response => {
+        this.msgSuccess('操作成功');
+        this.close();
+        this.$emit('refresh');
       });
     },
     /** 取消按钮 */

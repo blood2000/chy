@@ -42,3 +42,21 @@ export function delDriver(userIds) {
     method: 'delete'
   });
 }
+
+// 已读
+export function authRead(data) {
+  return request({
+    url: '/assets/driver/authRead',
+    method: 'post',
+    data: data
+  });
+}
+
+// 审核
+export function examine(data) {
+  return request({
+    url: '/assets/driver/examine',
+    method: 'post',
+    data: data
+  });
+}

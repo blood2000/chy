@@ -120,13 +120,19 @@
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table v-loading="loading" :data="driverList" type="expand" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="driverList" type="expand" @selection-change="handleSelectionChange" @expand-change="handleExpand">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <!-- <el-table-column type="expand">
-        <template slot-scope="scope" />
-      </el-table-column> -->
+      <el-table-column type="expand" />
       <el-table-column label="司机类别" align="center" prop="driverType" :formatter="driverTypeFormat" />
       <el-table-column label="名字" align="center" prop="name" />
+      <el-table-column label="审核状态" align="center" prop="authStatus" sortable>
+        <template slot-scope="scope">
+          <span v-show="scope.row.authStatus === 0" class="g-color-gray">未审核</span>
+          <span v-show="scope.row.authStatus === 1" class="g-color-blue">审核中</span>
+          <span v-show="scope.row.authStatus === 2" class="g-color-error">审核未通过</span>
+          <span v-show="scope.row.authStatus === 3" class="g-color-success">审核通过</span>
+        </template>
+      </el-table-column>
       <el-table-column label="手机" align="center" prop="telphone" />
       <el-table-column label="固话" align="center" prop="fixedPhone" />
       <el-table-column label="工作单位" align="center" prop="workCompany" />
@@ -156,14 +162,6 @@
       <el-table-column label="驾驶证发证机关" align="center" prop="issuingOrganizations" />
       <el-table-column label="是否上传企业" align="center" prop="isReportEnterprise" :formatter="isReportEnterpriseFormat" />
       <el-table-column label="从业资格证办理省份名称" align="center" prop="workLicenseProvinceName" />
-      <el-table-column label="审核状态" align="center" prop="authStatus" sortable>
-        <template slot-scope="scope">
-          <span v-show="scope.row.authStatus === 0" class="g-color-gray">未审核</span>
-          <span v-show="scope.row.authStatus === 1" class="g-color-blue">审核中</span>
-          <span v-show="scope.row.authStatus === 2" class="g-color-error">审核未通过</span>
-          <span v-show="scope.row.authStatus === 3" class="g-color-success">审核通过</span>
-        </template>
-      </el-table-column>
       <el-table-column label="是否冻结" align="center" prop="isFreeze" :formatter="isFreezeFormat" />
       <el-table-column label="创建人" align="center" prop="createCode" />
       <el-table-column label="修改人" align="center" prop="updateCode" />
@@ -187,6 +185,13 @@
             icon="el-icon-edit"
             @click="handleDEtail(scope.row, 'edit')"
           >修改</el-button>
+          <el-button
+            v-show="scope.row.authStatus === 0 || scope.row.authStatus === 1"
+            size="mini"
+            type="text"
+            icon="el-icon-document-checked"
+            @click="handleDEtail(scope.row, 'review')"
+          >审核</el-button>
           <el-button
             v-hasPermi="['system:config:remove']"
             size="mini"
@@ -298,7 +303,7 @@ export default {
     this.getList();
   },
   methods: {
-    // 司机类别(1独立 2分配 3 其他)字典翻译
+    // 司机类别字典翻译
     driverTypeFormat(row, column) {
       return this.selectDictLabel(this.driverTypeOptions, row.driverType);
     },
@@ -369,7 +374,16 @@ export default {
       getDriver(id).then(response => {
         this.$refs.DriverDialog.setForm(response.data);
         this.open = true;
-        this.title = flag === 'edit' ? '编辑' : '详情';
+        if (flag === 'detail') {
+          this.title = '详情';
+        } else if (flag === 'edit') {
+          this.title = '编辑';
+        } else if (flag === 'review') {
+          this.title = '审核';
+          if (row.authStatus === 0) {
+            this.$refs.DriverDialog.authRead({ driverId: row.id });
+          }
+        }
         this.formDisable = flag !== 'edit';
       });
     },
@@ -401,6 +415,10 @@ export default {
     /** 下载模板 */
     handleImportTemplateDriver() {
       this.download('assets/driver/importTemplate', {}, `driver_${new Date().getTime()}.xlsx`);
+    },
+    /** 展开车辆列表 */
+    handleExpand(row) {
+      console.log(row);
     }
   }
 };
