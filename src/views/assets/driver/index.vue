@@ -224,6 +224,12 @@ export default {
     DriverDialog,
     ImportDialog
   },
+  props: {
+    teamcode: {
+      type: String,
+      default: null
+    }
+  },
   data() {
     return {
       // 司机类别字典
@@ -281,7 +287,8 @@ export default {
         telphone: undefined,
         fixedPhone: undefined,
         identificationNumber: undefined,
-        authStatus: undefined
+        authStatus: undefined,
+        teamCode: this.teamcode
       },
       // 表单是否禁用
       formDisable: false
