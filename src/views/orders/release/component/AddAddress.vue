@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="psr">
     <div
       v-for="(address, addindex) in addressList_to"
       :key="addindex"
@@ -13,57 +13,14 @@
         :label-width="formConfig.labelWidth"
         :label-position="formConfig.labelPosition"
       >
-        <el-form-item :label="`${title}省 :`" prop="provinceCode">
 
-          <div class="flex">
-            <el-select
-              v-model="address.provinceCode"
-              placeholder="请选择省"
-              clearable
-              :style="{ width: '200px' }"
-              @change="getcity(address)"
-            >
-              <el-option
-                v-for="dict in getprovinceOption"
-                :key="dict.dictValue"
-                :label="dict.dictLabel"
-                :value="dict.dictValue"
-              />
-            </el-select>
-            <el-form-item prop="city">
-              <span class="pl-5 pr-5">市: </span>
-              <el-select
-                v-model="address.city"
-                placeholder="请选择城市"
-                clearable
-                :style="{ width: '200px' }"
-              >
-                <el-option label="北京" value="北京" />
-                <el-option label="上海" value="上海" />
-              </el-select>
-            </el-form-item>
+        <el-button
+          class="fahuoBtn"
+          type="primary"
+          @click="_open(address)"
+        >{{ `选择常用${title}地址` }}</el-button>
 
-            <el-form-item prop="street">
-              <span class="pl-5 pr-5">县/区: </span>
-              <el-select
-                v-model="address.street"
-                placeholder="请选择县/区"
-                clearable
-                :style="{ width: '200px' }"
-              >
-                <el-option label="北京" value="北京" />
-                <el-option label="上海" value="上海" />
-              </el-select>
-            </el-form-item>
-
-            <el-button
-              class="fahuoBtn"
-              type="primary"
-              @click="_open(address)"
-            >{{ `选择常用${title}地址` }}</el-button>
-          </div>
-        </el-form-item>
-
+        <ProvinceCityCounty :ref-name="`pcc_${addindex}_${addressType}`" @onsubmitForm="(fn)=> address.onsubmitForm = fn" />
 
         <el-form-item label="详细地址">
           <el-input
@@ -114,7 +71,7 @@
     </div>
     <el-button
       v-if="isBigOdd && showBtn"
-      class="fahuoBtn"
+      class="addfahuoBtn"
       style="margin-top: 10px"
       type="primary"
       size="mini"
@@ -124,10 +81,11 @@
 </template>
 
 <script>
-import { getProvinceList,
-  getCityList,
-  geCountyList } from '@/api/system/area';
+
+import ProvinceCityCounty from '@/components/Ddc/Tin/ProvinceCityCounty';
+
 export default {
+  components: { ProvinceCityCounty },
   props: {
     formConfig: {
       type: Object,
@@ -161,10 +119,10 @@ export default {
         provinceCode: [
           { required: true, message: '请选择装货省', trigger: 'change' }
         ],
-        city: [
+        cityCode: [
           { required: true, message: '请选择装货市', trigger: 'change' }
         ],
-        street: [
+        countyCode: [
           { required: true, message: '请选择装货区', trigger: 'change' }
         ],
         contact: [{ required: true, message: '请输入联系人', trigger: 'blur' }],
@@ -180,7 +138,7 @@ export default {
           province: '', //	省份		false
           provinceCode: '', // 省code
           city: '', //	城市		false
-          cityCode: '1', //	城市编码		false
+          cityCode: '', //	城市编码		false
           county: '', // 县
           countyCode: '', // 县code
 
@@ -194,25 +152,23 @@ export default {
           district: '1', //	地址所在的区		false
           level: '1', //	匹配级别		false
           location: [1, 2], //	坐标点		false
-          street: '' //	街道		false
+          street: '', //	街道		false
+          onsubmitForm: null
         }
       ],
 
-      // 省,市,区字典
-      getprovinceOption: [],
-      getcityOption: [],
-      getstreetOption: []
+      onsubmitForm: null
     };
   },
   computed: {
     title() {
+      console.log(this.showBtn, this.isBigOdd);
+
       return this.addressType === 1 ? '装货' : '卸货';
     }
   },
 
-  created() {
-    this.getprovince();
-  },
+
 
   methods: {
     // 打开弹框选择地址
@@ -246,7 +202,24 @@ export default {
         return e.time !== address.time;
       });
     },
-    _submitForm() {
+    async _submitForm() {
+      const pccPromis = this.addressList_to.map(async pcc => {
+        const res = await pcc.onsubmitForm();
+
+        return {
+          ...pcc,
+          province: res.province.provinceName, //	省份		false
+          provinceCode: res.province.provinceCode, // 省code
+          city: res.city.cityName, //	城市		false
+          cityCode: res.city.cityCode, //	城市编码		false
+          county: res.county.countyName, // 县
+          countyCode: res.county.countyCode // 县code
+        };
+      });
+
+      this.addressList_to = await Promise.all(pccPromis);
+
+
       return new Promise((resolve, reject) => {
         this.addressList_to.forEach((e, index) => {
           const elF = `elForm${e.time}`;
@@ -258,7 +231,7 @@ export default {
                   addressAlias: ee.addressAlias,
                   addressType: ee.addressType,
                   city: ee.city,
-                  citycode: ee.citycode,
+                  citycode: ee.cityCode,
                   contact: ee.contact,
                   contactPhone: ee.contactPhone,
                   country: ee.country,
@@ -267,7 +240,7 @@ export default {
                   level: ee.level,
                   location: ee.location,
                   province: ee.province,
-                  street: ee.street
+                  street: ee.county
                 };
               });
               resolve(arr);
@@ -277,39 +250,26 @@ export default {
           });
         });
       });
-    },
-
-    // 获取省 市 区 code
-    getprovince() {
-      getProvinceList().then(res => {
-        this.getprovinceOption = res.rows.map(e => {
-          return { dictValue: e.provinceCode, dictLabel: e.provinceName, info: e };
-        });
-      });
-    },
-    getcity(address) {
-      getCityList({ provinceCode: address.provinceCode }).then(res => {
-        console.log(res);
-      });
-    },
-    getstreet() {
-
     }
-
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.flex {
-  display: flex;
-  justify-content: space-between;
+.psr,.el-form{
   position: relative;
-  .fahuoBtn {
-    position: absolute;
-    right: -15px;
-    top: 0;
-    transform: translateX(100%);
-  }
+}
+.fahuoBtn {
+  position: absolute;
+  right: -15px;
+  top: 0;
+  transform: translateX(100%);
+}
+.addfahuoBtn{
+  position: absolute;
+  right: -15px;
+  top: 60px;
+  transform: translateX(100%);
+
 }
 </style>
