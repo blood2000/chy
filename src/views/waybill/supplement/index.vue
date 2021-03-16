@@ -47,7 +47,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="运输许可证" prop="waybillCode">
+              <el-form-item label="运输许可号" prop="waybillCode">
                 <el-input v-model="form.waybillCode" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
@@ -103,11 +103,6 @@
             <el-col :span="8">
               <el-form-item label="运单总价" prop="waybillCode">
                 <el-input v-model="form.waybillCode" placeholder="请输入运单总价" class="width90" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="运输许可证" prop="waybillCode">
-                <el-input v-model="form.waybillCode" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
