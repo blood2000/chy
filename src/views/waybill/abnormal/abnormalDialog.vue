@@ -41,8 +41,8 @@ export default {
       type: String,
       default: ''
     },
-    open: Boolean
-    // disable: Boolean
+    open: Boolean,
+    disable: Boolean
   },
   data() {
     return {

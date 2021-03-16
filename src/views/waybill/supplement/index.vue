@@ -2,7 +2,7 @@
   <el-tabs type="border-card">
     <el-tab-pane label="运单补录" style="padding:0 30px;">
       <div class="container">
-        <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
+        <el-form ref="form" :model="form" :rules="rules" label-width="140px">
           <el-divider content-position="left"><span class="supplement-title">货源信息</span></el-divider>
           <el-row>
             <el-col :span="8">
@@ -12,29 +12,29 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="货物名称" prop="waybillCode">
-                <el-input v-model="form.waybillCode" readonly="true" class="width90" />
+                <el-input v-model="form.waybillCode" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="运费单价" prop="waybillCode">
-                <el-input v-model="form.waybillCode" readonly="true" class="width90" />
+                <el-input v-model="form.waybillCode" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="8">
               <el-form-item label="剩余车数" prop="waybillCode">
-                <el-input v-model="form.waybillCode" readonly="true" class="width90" />
+                <el-input v-model="form.waybillCode" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="装货地址" prop="waybillCode">
-                <el-input v-model="form.waybillCode" readonly="true" class="width90" />
+                <el-input v-model="form.waybillCode" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="卸货地址" prop="waybillCode">
-                <el-input v-model="form.waybillCode" readonly="true" class="width90" />
+                <el-input v-model="form.waybillCode" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -48,19 +48,19 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="运输许可证" prop="waybillCode">
-                <el-input v-model="form.waybillCode" readonly="true" class="width90" />
+                <el-input v-model="form.waybillCode" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="车辆载重" prop="waybillCode">
-                <el-input v-model="form.waybillCode" readonly="true" class="width90" />
+                <el-input v-model="form.waybillCode" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="8">
               <el-form-item label="车辆代码" prop="waybillCode">
-                <el-input v-model="form.waybillCode" readonly="true" class="width90" />
+                <el-input v-model="form.waybillCode" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -107,12 +107,12 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="运输许可证" prop="waybillCode">
-                <el-input v-model="form.waybillCode" readonly="true" class="width90" />
+                <el-input v-model="form.waybillCode" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="运输单号" prop="waybillCode">
-                <el-input v-model="form.waybillCode" readonly="true" class="width90" />
+                <el-input v-model="form.waybillCode" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -129,6 +129,7 @@
             </el-col>
           </el-row>
         </el-form>
+
         <el-row>
           <el-col :span="2" :offset="11">
             <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -153,7 +154,6 @@
             type="warning"
             icon="el-icon-upload2"
             size="mini"
-            :disabled="single"
             @click="handlePictureImport"
           >装/卸货图片导入</el-button>
         </el-col>
@@ -162,7 +162,6 @@
             type="success"
             icon="el-icon-download"
             size="mini"
-            :disabled="multiple"
             @click="handleDownload"
           >下载模板</el-button>
         </el-col>
@@ -170,9 +169,9 @@
     </el-tab-pane>
 
     <!-- 运输单批量导入 对话框 -->
-    <waybillimport-dialog ref="WaybillimportDialog" :title="title" :open.sync="openImport" @refresh="getList" />
+    <waybillimport-dialog ref="WaybillimportDialog" :title="title" :open.sync="openImport" />
     <!-- 装/卸货图片导入 对话框 -->
-    <pictureimport-dialog ref="PictureimportDialog" :title="title" :open.sync="open" @refresh="getList" />
+    <pictureimport-dialog ref="PictureimportDialog" :title="title" :open.sync="open" />
   </el-tabs>
 </template>
 
