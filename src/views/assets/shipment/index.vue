@@ -134,7 +134,7 @@
     <el-table v-loading="loading" :data="shipmentList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
       <el-table-column label="货主姓名" align="center" prop="adminName" />
-      <el-table-column label="审核状态" align="center" prop="authStatus" sortable>
+      <el-table-column label="审核状态" align="center" prop="authStatus" sortable width="100">
         <template slot-scope="scope">
           <span v-show="scope.row.authStatus === 0" class="g-color-gray">未审核</span>
           <span v-show="scope.row.authStatus === 1" class="g-color-blue">审核中</span>

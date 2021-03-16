@@ -30,12 +30,12 @@ export function removeExpiresIn() {
 
 // 本地存储
 export function setLocalStorage(key, data) {
-  return window.localStorage.setItem(key, JSON.stringify(data))
+  return window.localStorage.setItem(key, JSON.stringify(data));
 }
 export function getLocalStorage(key) {
-  return JSON.parse(window.localStorage.getItem(key))
+  return JSON.parse(window.localStorage.getItem(key));
 }
 export function removeLocalStorage(key) {
-  return window.localStorage.removeItem(key)
+  return window.localStorage.removeItem(key);
 }
 
