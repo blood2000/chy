@@ -1,7 +1,7 @@
 <template>
   <div class="page-billing">
     <div class="app-container">
-      <h3 class="g-title-medium">说明</h3>
+      <h3 class="g-title-medium mb10">说明</h3>
       <p class="g-text">
         增值税发票信息提交后，我们将在一个工作日内完成审核工作。如有疑问，请点击右下角联系在线客服。
       </p>
@@ -12,7 +12,7 @@
     </div>
 
     <div class="app-container">
-      <h3 class="g-title-medium">开票信息</h3>
+      <h3 class="g-title-medium mb10">开票信息</h3>
       <el-form ref="form" :model="form" :rules="rules" label-width="140px" :label-position="'left'">
         <h5 class="g-title-small g-strong g-color-gray mb20">| 增值税发票开票信息</h5>
         <!-- <el-form-item label="发票编码" prop="code">
@@ -53,7 +53,7 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="handleSubmit">确定</el-button>
+          <el-button type="primary" @click="handleSubmit">保存</el-button>
         </el-form-item>
       </el-form>
     </div>
