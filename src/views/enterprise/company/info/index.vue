@@ -1,0 +1,147 @@
+<template>
+  <div class="page-company-info">
+    <div class="app-container">
+      <h3 class="g-title-medium mb20">企业信息</h3>
+      <el-row>
+        <el-col :span="4">
+          <div class="ly-flex ly-flex-pack-center">
+            <div>
+              <el-avatar :size="100" :src="form.heard" />
+              <div class="g-text-center g-title-medium">
+                <i class="el-icon-star-off" />
+                <i class="el-icon-star-off" />
+                <i class="el-icon-star-off" />
+                <i class="el-icon-star-off" />
+                <i class="el-icon-star-off" />
+              </div>
+            </div>
+          </div>
+        </el-col>
+        <el-col :span="18">
+          <el-form ref="form" :model="form" :rules="rules" label-width="80px" :label-position="'left'">
+            <el-form-item label="企业名称" prop="name">
+              <el-input v-model="form.name" placeholder="请输入企业名称" class="input-width mr20" clearable />
+              <span class="g-color-success mr20">
+                <i class="el-icon-circle-check" />
+                已认证
+              </span>
+              <el-button type="text no-padding" @click="handleCertification">查看</el-button>
+            </el-form-item>
+            <el-form-item label="主营业务" prop="name">
+              <el-input v-model="form.name" placeholder="请输入主营业务" class="input-width" clearable />
+            </el-form-item>
+            <el-form-item label="业务城市" prop="name">
+              <el-tag
+                v-for="city in form.citys"
+                :key="city.name"
+                closable
+                class="mr8"
+                @close="tagClose"
+              >
+                {{ city.name }}
+              </el-tag>
+              <el-button icon="el-icon-plus" round size="mini">添加城市</el-button>
+            </el-form-item>
+            <el-form-item label="联系人" prop="name">
+              <el-input v-model="form.name" placeholder="请输入联系人" class="input-width" clearable />
+            </el-form-item>
+            <el-form-item label="联系电话" prop="name">
+              <el-input v-model="form.name" placeholder="请输入联系电话" class="input-width" clearable />
+            </el-form-item>
+            <el-form-item label="公司介绍" prop="name">
+              <el-input v-model="form.name" type="textarea" placeholder="请输入公司介绍" class="input-width-large" clearable />
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="handleSubmit">保存</el-button>
+            </el-form-item>
+          </el-form>
+        </el-col>
+      </el-row>
+    </div>
+
+    <div class="app-container">
+      <h3 class="g-title-medium mb10">管理员信息</h3>
+      <el-row>
+        <el-col :span="6">
+          <label>姓名：</label>
+          hst
+        </el-col>
+        <el-col :span="7">
+          <label>手机号：</label>
+          17805972760
+        </el-col>
+        <el-col :span="8">
+          <label>认证状态：</label>
+          <span class="g-color-error mr20">
+            <i class="el-icon-warning-outline" />
+            未升级
+          </span>
+          <el-button type="text no-padding" @click="securityUpgrade">安全升级</el-button>
+          <p class="g-text g-color-gray tip">为保证您的账户安全，请尽快完成安全升级</p>
+        </el-col>
+      </el-row>
+    </div>
+
+    <!-- 货主/企业认证 对话框 -->
+    <certification-dialog :open.sync="open" />
+  </div>
+</template>
+
+<script>
+import {} from '@/api/enterprise/company/info';
+import CertificationDialog from './CertificationDialog.vue';
+
+export default {
+  components: {
+    CertificationDialog
+  },
+  data() {
+    return {
+      open: false,
+      form: {
+        citys: [
+          { name: '武汉' },
+          { name: '重庆' },
+          { name: '长沙' }
+        ]
+      },
+      rules: {}
+    };
+  },
+  created() {
+
+  },
+  methods: {
+    // 修改信息
+    handleSubmit() {
+      this.$refs['form'].validate(valid => {
+
+      });
+    },
+    // 企业认证
+    handleCertification() {
+      this.open = true;
+    },
+    // 安全升级
+    securityUpgrade() {},
+    // 关闭标签
+    tagClose() {}
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+.input-width{
+  width: 300px;
+}
+.input-width-large{
+  width: 60%;
+}
+.tip{
+  margin: 5px 0 0 70px;
+  font-size: 13px;
+}
+.mr8{
+  margin-right: 8px;
+}
+</style>
