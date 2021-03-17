@@ -109,7 +109,12 @@
       <el-table-column type="selection" width="55" align="center" fixed="left" />
       <!-- <el-table-column label="货主编码" align="center" prop="shipmentCode" />
       <el-table-column label="地址类型" align="center" prop="addressType" :formatter="addressTypeFormat" /> -->
-      <el-table-column label="地址名称" align="center" prop="addressName" />
+      <el-table-column label="地址名称" align="center" prop="addressName">
+        <template slot-scope="scope">
+          {{ scope.row.addressName }}
+          <el-tag v-if="scope.row.isDefault === 1">默认地址</el-tag>
+        </template>
+      </el-table-column>
       <!-- <el-table-column label="地址别名" align="center" prop="addressOtherName" /> -->
       <el-table-column label="地址详情" align="center" prop="addressDetail" />
       <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" />
@@ -128,6 +133,12 @@
             icon="el-icon-map-location"
             @click="handleMapView(scope.row)"
           >查看地图</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-setting"
+            @click="handleSetDefault(scope.row)"
+          >设为默认地址</el-button>
           <el-button
             v-hasPermi="['enterprise:company:address:edit']"
             size="mini"
@@ -160,7 +171,7 @@
 </template>
 
 <script>
-import { listAddress, getAddress, delAddress } from '@/api/enterprise/company/address';
+import { listAddress, getAddress, delAddress, defaultAddress } from '@/api/enterprise/company/address';
 import AddressDialog from './addressDialog.vue';
 
 export default {
@@ -288,6 +299,16 @@ export default {
     /** 查看地图按钮操作 */
     handleMapView(row) {
 
+    },
+    /** 设为默认地址 */
+    handleSetDefault(row) {
+      defaultAddress({
+        addressCode: row.code,
+        shipCode: row.shipmentCode
+      }).then(response => {
+        this.msgSuccess('设置成功');
+        this.getList();
+      });
     }
   }
 };

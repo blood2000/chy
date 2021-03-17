@@ -35,6 +35,9 @@
       <el-form-item label="地址详情" prop="addressDetail">
         <el-input v-model="form.addressDetail" placeholder="请输入地址详情" class="width90" />
       </el-form-item>
+      <el-form-item label="设为默认地址" prop="isDefault">
+        <el-switch v-model="form.isDefault" />
+      </el-form-item>
       <el-form-item label="备注" prop="remark">
         <el-input v-model="form.remark" type="textarea" placeholder="请输入备注" class="width90" />
       </el-form-item>
@@ -118,6 +121,11 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
+          if (this.form.isDefault) {
+            this.form.isDefault = 1;
+          } else {
+            this.form.isDefault = 0;
+          }
           if (this.form.code != null) {
             updateAddress(this.form).then(response => {
               this.msgSuccess('修改成功');
@@ -168,6 +176,11 @@ export default {
     // 表单赋值
     setForm(data) {
       this.form = data;
+      if (this.form.isDefault) {
+        this.form.isDefault = true;
+      } else {
+        this.form.isDefault = false;
+      }
     }
   }
 };
