@@ -37,7 +37,7 @@ export default {
         'Produce-Code': '776ca8e240574192b6e0f69b417163df',
         'App-Code': '3f78fbfc13b14fa4b3d78665124ef4bb',
         'App-Version': '2.0',
-        'Terminal-Type': 2
+        'Terminal-Type': 'web'
       },
       uploadData:{
       }
