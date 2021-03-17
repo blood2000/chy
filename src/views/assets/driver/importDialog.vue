@@ -5,13 +5,16 @@
         <el-upload
           ref="upload"
           class="upload-demo"
-          action="/dev-api/assets/driver/importData"
-          :multiple="true"
+          action="upload"
+          multiple
           :on-change="change"
           :auto-upload="false"
           :show-file-list="false"
           accept=".xls, .xlsx"
           :on-success="success"
+          :headers="importHeader"
+          :http-request="uploadFile"
+          :file-list="fileList"
         >
           <template #trigger>
             <el-button size="mini" type="info" icon="el-icon-document">选择文件</el-button>
@@ -40,7 +43,7 @@
           <span>{{ (scope.row.size/1024).toFixed(1) }}kb</span>
         </template>
       </el-table-column>
-      <el-table-column label="状态" align="center" prop="status" />
+      <el-table-column label="状态" align="center" prop="status" :formatter="statusFormatter" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -52,16 +55,12 @@
         </template>
       </el-table-column>
     </el-table>
-
-    <!-- <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="submitForm">立即上传</el-button>
-      <el-button @click="cancel">取 消</el-button>
-    </div> -->
   </el-dialog>
 </template>
 
 <script>
-// import { listInfo, delInfo } from '@/api/enterprise/project';
+import { getToken } from '@/utils/auth';
+import { importData } from '@/api/assets/driver';
 
 export default {
   components: {
@@ -86,8 +85,23 @@ export default {
       multiple: true,
       // 总条数
       total: 0,
+      // 状态字典
+      statusOptions: [
+        { dictLabel: '已选择', dictValue: 'ready' },
+        { dictLabel: '上传成功', dictValue: 'success' }
+      ],
       // 项目表格数据
-      fileList: []
+      fileList: [],
+      // 文件上传数据（多文件合一）
+      fileData: '',
+      // 请求头数据
+      importHeader: {
+        'Authorization': 'Bearer ' + getToken(),
+        'Produce-Code': '776ca8e240574192b6e0f69b417163df',
+        'App-Code': '3f78fbfc13b14fa4b3d78665124ef4bb',
+        'App-Version': '2.0',
+        'Terminal-Type': 'web'
+      }
     };
   },
   computed: {
@@ -104,9 +118,9 @@ export default {
     this.change();
   },
   methods: {
-    /** 提交按钮 */
-    submitForm() {
-      console.log('上传');
+    // 状态字典翻译
+    statusFormatter(row, column) {
+      return this.selectDictLabel(this.statusOptions, row.status);
     },
     /** 取消按钮 */
     cancel() {
@@ -115,6 +129,7 @@ export default {
     // 关闭弹窗
     close() {
 	    this.$emit('update:open', false);
+      this.$emit('refresh');
     },
     // 文件状态改变事件
     change(file, fileList) {
@@ -130,9 +145,26 @@ export default {
     handleDelete(index) {
       this.fileList.splice(index, 1);
     },
+    // 选择文件操作
+    uploadFile(file) {
+		  this.fileData.append('files', file.file); // append增加数据
+    },
     // 立即上传操作
-    submitUpload() {
-      this.$refs.upload.submit();
+    submitUpload(file) {
+      if (this.fileList.length === 0) {
+	      this.$message({
+	        message: '请先选择文件',
+	        type: 'warning'
+	      });
+	    } else {
+	      this.fileData = new FormData(); // new formData对象
+	      this.$refs.upload.submit(); // 提交调用uploadFile函数
+        // 接口
+        importData(this.fileData).then((res) => {
+          this.$message(res.msg);
+          this.fileList = []; // 清除上传文件
+        });
+	    }
     },
     /** 下载模板 */
     handleImportTemplateDriver() {
