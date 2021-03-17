@@ -1,6 +1,6 @@
 <template>
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="180px">
+    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
       <el-form-item label="司机类别" prop="driverType">
         <el-select v-model="form.driverType" size="small" class="width90">
           <el-option
@@ -34,52 +34,21 @@
         <el-input v-model="form.password" type="password" placeholder="请输入密码" class="width59 mr3" size="small" clearable />
         <span class="g-color-blue">(初始密码为{{ initialPassword }})</span>
       </el-form-item>
-      <el-form-item label="所在地区" prop="countyCode">
-        <el-select
-          v-model="form.provinceCode"
-          clearable
-          size="small"
-          class="width28 mr3"
-          placeholder="省"
-          @change="changeProvince"
-        >
-          <el-option
-            v-for="dict in provinceCodeOptions"
-            :key="dict.provinceCode"
-            :label="dict.provinceName"
-            :value="dict.provinceCode"
-          />
-        </el-select>
-        <el-select
-          v-model="form.cityCode"
-          clearable
-          size="small"
-          class="width28 mr3"
-          placeholder="市"
-          @change="changeCity"
-        >
-          <el-option
-            v-for="dict in cityCodeOptions"
-            :key="dict.cityCode"
-            :label="dict.cityName"
-            :value="dict.cityCode"
-          />
-        </el-select>
-        <el-select
-          v-model="form.countyCode"
-          clearable
-          size="small"
-          class="width28"
-          placeholder="县"
-        >
-          <el-option
-            v-for="dict in countyCodeOptions"
-            :key="dict.countyCode"
-            :label="dict.countyName"
-            :value="dict.countyCode"
-          />
-        </el-select>
-      </el-form-item>
+
+      <!-- 选择省/市/区 -->
+      <province-city-county
+        ref="ChooseArea"
+        :disabled="disable"
+        :prop-province-code="form.provinceCode"
+        :prop-city-code="form.cityCode"
+        :prop-county-code="form.countyCode"
+        @refresh="(data) => {
+          form.provinceCode = data.provinceCode;
+          form.cityCode = data.cityCode;
+          form.countyCode = data.countyCode;
+        }"
+      />
+
       <el-form-item label="详细地址" prop="homeAddress">
         <el-input v-model="form.homeAddress" placeholder="支持自动识别" size="small" class="width90" clearable />
       </el-form-item>
@@ -420,12 +389,14 @@
 
 <script>
 import { addDriver, updateDriver, authRead, examine } from '@/api/assets/driver';
-import { getProvinceList, getCityList, geCountyList } from '@/api/system/area';
+import { getProvinceList } from '@/api/system/area';
 import UploadImage from '@/components/UploadImage/index';
+import ProvinceCityCounty from '@/components/ProvinceCityCounty';
 
 export default {
   components: {
-    UploadImage
+    UploadImage,
+    ProvinceCityCounty
   },
   props: {
     title: {
@@ -465,10 +436,6 @@ export default {
       branchCodeOptions: [],
       // 省编码字典
       provinceCodeOptions: [],
-      // 市编码字典
-      cityCodeOptions: [],
-      // 县/区编码字典
-      countyCodeOptions: [],
       // 驾驶证类型字典
       driverLicenseTypeOptions: [],
       // 结算方式字典
@@ -500,10 +467,6 @@ export default {
       vehicleForm: {},
       // 表单校验
       rules: {
-        countyCode: [
-          { required: true, message: '所在地区不能为空', trigger: 'blur' },
-          { validator: this.areaRequest }
-        ],
         name: [
           { required: true, message: '姓名不能为空', trigger: 'blur' }
         ],
@@ -554,12 +517,6 @@ export default {
     this.getDictsOptions();
   },
   methods: {
-    areaRequest(rule, value, callback) {
-      if (this.form.provinceCode === '' || this.form.cityCode === '' || this.form.countyCode === '') {
-        const msg = '所在区域不能为空';
-        callback(new Error(msg));
-      }
-    },
     /** 查询字典 */
     getDictsOptions() {
       // 车辆能源类型
@@ -573,8 +530,9 @@ export default {
     },
     /** 提交按钮 */
     submitForm: function() {
+      const flag = this.$refs.ChooseArea.submit();
       this.$refs['form'].validate(valid => {
-        if (valid) {
+        if (valid && flag) {
           const driver = this.form;
           driver.vehicleInfo = this.vehicleForm;
           if (driver.validPeriodAlways) {
@@ -712,8 +670,9 @@ export default {
       };
       this.resetForm('form');
       this.resetForm('vehicleForm');
-      this.cityCodeOptions = [];
-      this.countyCodeOptions = [];
+      this.$nextTick(() => {
+        this.$refs.ChooseArea.reset();
+      });
     },
     // 表单赋值
     setForm(data) {
@@ -724,48 +683,15 @@ export default {
       } else {
         this.form.validPeriodAlways = false;
       }
-      // 市
-      this.getCityListFun(this.form.provinceCode);
-      // 区
-      this.geCountyListFun(this.form.cityCode);
-    },
-    // 选中省
-    changeProvince(code) {
-      this.form.cityCode = null;
-      this.form.countyCode = null;
-      this.cityCodeOptions = [];
-      this.countyCodeOptions = [];
-      this.getCityListFun(code);
-    },
-    // 选中市
-    changeCity(code) {
-      this.form.countyCode = null;
-      this.countyCodeOptions = [];
-      this.geCountyListFun(code);
-    },
-    // 获取市
-    getCityListFun(code) {
-      if (code == null || code === '') {
-        return;
-      }
-      getCityList({ provinceCode: code }).then((response) => {
-        this.cityCodeOptions = response.rows;
-      });
-    },
-    // 获取区
-    geCountyListFun(code) {
-      if (code == null || code === '') {
-        return;
-      }
-      geCountyList({ cityCode: code }).then((response) => {
-        this.countyCodeOptions = response.rows;
+      this.$nextTick(() => {
+        this.$refs.ChooseArea.setForm();
       });
     }
   }
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .mr3{
   margin-right: 3%;
 }
@@ -789,5 +715,11 @@ export default {
 .upload-image-label{
   margin: 0;
   line-height: 24px;
+}
+/* label溢出... */
+.el-form-item ::v-deep.el-form-item__label{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 </style>

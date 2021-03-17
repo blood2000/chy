@@ -59,52 +59,21 @@
           <el-input v-model="form.organizationCodeNo" placeholder="请输入统一社会信用代码" size="small" class="width90" clearable />
         </el-form-item>
       </template>
-      <el-form-item label="所在地区">
-        <el-select
-          v-model="form.provinceCode"
-          clearable
-          size="small"
-          class="width28 mr3"
-          placeholder="省(支持自动识别)"
-          @change="changeProvince"
-        >
-          <el-option
-            v-for="dict in provinceCodeOptions"
-            :key="dict.provinceCode"
-            :label="dict.provinceName"
-            :value="dict.provinceCode"
-          />
-        </el-select>
-        <el-select
-          v-model="form.cityCode"
-          clearable
-          size="small"
-          class="width28 mr3"
-          placeholder="市(支持自动识别)"
-          @change="changeCity"
-        >
-          <el-option
-            v-for="dict in cityCodeOptions"
-            :key="dict.cityCode"
-            :label="dict.cityName"
-            :value="dict.cityCode"
-          />
-        </el-select>
-        <el-select
-          v-model="form.countyCode"
-          clearable
-          size="small"
-          class="width28 mr3"
-          placeholder="县/区(支持自动识别)"
-        >
-          <el-option
-            v-for="dict in countyCodeOptions"
-            :key="dict.countyCode"
-            :label="dict.countyName"
-            :value="dict.countyCode"
-          />
-        </el-select>
-      </el-form-item>
+
+      <!-- 选择省/市/区 -->
+      <province-city-county
+        ref="ChooseArea"
+        :disabled="disable"
+        :prop-province-code="form.provinceCode"
+        :prop-city-code="form.cityCode"
+        :prop-county-code="form.countyCode"
+        @refresh="(data) => {
+          form.provinceCode = data.provinceCode;
+          form.cityCode = data.cityCode;
+          form.countyCode = data.countyCode;
+        }"
+      />
+
       <el-form-item label="详细地址" prop="area">
         <el-input v-model="form.area" clearable placeholder="支持自动识别" size="small" class="width90" />
       </el-form-item>
@@ -316,12 +285,13 @@
 
 <script>
 import { addShipment, updateShipment, authRead, examine } from '@/api/assets/shipment';
-import { getProvinceList, getCityList, geCountyList } from '@/api/system/area';
 import UploadImage from '@/components/UploadImage/index';
+import ProvinceCityCounty from '@/components/ProvinceCityCounty';
 
 export default {
   components: {
-    UploadImage
+    UploadImage,
+    ProvinceCityCounty
   },
   props: {
     title: {
@@ -359,12 +329,6 @@ export default {
         { dictLabel: '否', dictValue: 0 },
         { dictLabel: '是', dictValue: 1 }
       ],
-      // 省编码字典
-      provinceCodeOptions: [],
-      // 市编码字典翻译
-      cityCodeOptions: [],
-      // 县/区编码字典翻译
-      countyCodeOptions: [],
       // 核算方式字典
       accountTypeOptions: [],
       // 抹零方式字典
@@ -426,15 +390,12 @@ export default {
       this.getDicts('wipe_type').then((response) => {
         this.wipeTypeOptions = response.data;
       });
-      // 省
-      getProvinceList().then((response) => {
-        this.provinceCodeOptions = response.rows;
-      });
     },
     /** 提交按钮 */
     submitForm: function() {
+      const flag = this.$refs.ChooseArea.submit();
       this.$refs['form'].validate(valid => {
-        if (valid) {
+        if (valid && flag) {
           const shipmentInfo = this.form;
           if (shipmentInfo.identificationEffective) {
             shipmentInfo.identificationEffective = 1;
@@ -531,8 +492,9 @@ export default {
         supplyIsAuth: null
       };
       this.resetForm('form');
-      this.cityCodeOptions = [];
-      this.countyCodeOptions = [];
+      this.$nextTick(() => {
+        this.$refs.ChooseArea.reset();
+      });
     },
     // 表单赋值
     setForm(data) {
@@ -545,10 +507,9 @@ export default {
       if (data.password === null || data.password === undefined || data.password === '') {
         this.form.password = this.initialPassword;
       }
-      // 市
-      this.getCityListFun(this.form.provinceCode);
-      // 区
-      this.geCountyListFun(this.form.cityCode);
+      this.$nextTick(() => {
+        this.$refs.ChooseArea.setForm();
+      });
     },
     // 已读
     authRead(data) {
@@ -559,38 +520,6 @@ export default {
       }
       authRead(data).then(response => {
         this.$emit('refresh');
-      });
-    },
-    // 选中省
-    changeProvince(code) {
-      this.form.cityCode = null;
-      this.form.countyCode = null;
-      this.cityCodeOptions = [];
-      this.countyCodeOptions = [];
-      this.getCityListFun(code);
-    },
-    // 选中市
-    changeCity(code) {
-      this.form.countyCode = null;
-      this.countyCodeOptions = [];
-      this.geCountyListFun(code);
-    },
-    // 获取市
-    getCityListFun(code) {
-      if (code == null || code === '') {
-        return;
-      }
-      getCityList({ provinceCode: code }).then((response) => {
-        this.cityCodeOptions = response.rows;
-      });
-    },
-    // 获取区
-    geCountyListFun(code) {
-      if (code == null || code === '') {
-        return;
-      }
-      geCountyList({ cityCode: code }).then((response) => {
-        this.countyCodeOptions = response.rows;
       });
     }
   }

@@ -19,6 +19,23 @@
       <el-form-item label="统一社会信用代码" prop="name">
         <el-input v-model="form.name" class="width90" clearable />
       </el-form-item>
+
+      <!-- 选择省/市/区 -->
+      <province-city-county
+        ref="ChooseArea"
+        :prop-province-code="form.provinceCode"
+        :prop-city-code="form.cityCode"
+        :prop-county-code="form.countyCode"
+        @refresh="(data) => {
+          form.provinceCode = data.provinceCode;
+          form.cityCode = data.cityCode;
+          form.countyCode = data.countyCode;
+        }"
+      />
+
+      <el-form-item label="详细地址" prop="name">
+        <el-input v-model="form.name" class="width90" clearable />
+      </el-form-item>
       <el-form-item>
         <el-row>
           <el-col :span="7" class="mb">
@@ -51,10 +68,12 @@
 <script>
 import {} from '@/api/enterprise/company/info';
 import UploadImage from '@/components/UploadImage/index';
+import ProvinceCityCounty from '@/components/ProvinceCityCounty';
 
 export default {
   components: {
-    UploadImage
+    UploadImage,
+    ProvinceCityCounty
   },
   props: {
     open: Boolean
@@ -87,11 +106,11 @@ export default {
   methods: {
     // 提交按钮
     submitForm: function() {
+      const flag = this.$refs.ChooseArea.submit();
       this.$refs['form'].validate(valid => {
-        if (valid) {
+        if (valid && flag) {
           this.msgSuccess('修改成功');
           this.close();
-          this.$emit('refresh');
         }
       });
     },
@@ -110,6 +129,14 @@ export default {
 
       };
       this.resetForm('form');
+      this.$refs.ChooseArea.reset();
+    },
+    // 表单赋值
+    setForm() {
+      this.form = {
+
+      };
+      this.$refs.ChooseArea.setForm();
     }
   }
 };
