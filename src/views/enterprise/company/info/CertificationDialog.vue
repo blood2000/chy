@@ -1,8 +1,8 @@
 <template>
   <el-dialog title="货主/企业认证" :visible="visible" width="800px" append-to-body @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" label-width="160px">
-      <el-form-item label="网商汇款账号" prop="name">
-        <el-input v-model="form.name" class="width90" clearable />
+    <el-form ref="form" :model="form" :rules="rules" label-width="140px">
+      <el-form-item label="网商汇款账号" prop="name1">
+        <el-input v-model="form.name1" class="width90" clearable />
       </el-form-item>
       <el-form-item label="手机号码" prop="name">
         <el-input v-model="form.name" class="width90" clearable />
@@ -16,8 +16,28 @@
       <el-form-item label="公司名称" prop="name">
         <el-input v-model="form.name" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="统一社会信用代码代码" prop="name">
+      <el-form-item label="统一社会信用代码" prop="name">
         <el-input v-model="form.name" class="width90" clearable />
+      </el-form-item>
+      <el-form-item>
+        <el-row>
+          <el-col :span="7" class="mb">
+            <p class="upload-image-label">身份证正面照</p>
+            <upload-image :value="form.name" />
+          </el-col>
+          <el-col :span="7" class="mb">
+            <p class="upload-image-label">身份证反面照</p>
+            <upload-image :value="form.name" />
+          </el-col>
+          <el-col :span="7" class="mb">
+            <p class="upload-image-label">本人手持身份证正面</p>
+            <upload-image :value="form.name" />
+          </el-col>
+          <el-col :span="7">
+            <p class="upload-image-label">统一社会信用代码照片</p>
+            <upload-image :value="form.name" />
+          </el-col>
+        </el-row>
       </el-form-item>
     </el-form>
 
@@ -30,8 +50,12 @@
 
 <script>
 import {} from '@/api/enterprise/company/info';
+import UploadImage from '@/components/UploadImage/index';
 
 export default {
+  components: {
+    UploadImage
+  },
   props: {
     open: Boolean
   },
@@ -40,7 +64,11 @@ export default {
       // 表单参数
       form: {},
       // 表单校验
-      rules: {}
+      rules: {
+        name: [
+          { required: true, trigger: 'blur', message: '不能为空' }
+        ]
+      }
     };
   },
   computed: {

@@ -7,7 +7,7 @@
           <div class="ly-flex ly-flex-pack-center">
             <div>
               <el-avatar :size="100" :src="form.heard" />
-              <div class="g-text-center g-title-medium">
+              <div class="g-text-center g-title-medium g-color-gray">
                 <i class="el-icon-star-off" />
                 <i class="el-icon-star-off" />
                 <i class="el-icon-star-off" />
@@ -31,16 +31,7 @@
               <el-input v-model="form.name" placeholder="请输入主营业务" class="input-width" clearable />
             </el-form-item>
             <el-form-item label="业务城市" prop="name">
-              <el-tag
-                v-for="city in form.citys"
-                :key="city.name"
-                closable
-                class="mr8"
-                @close="tagClose"
-              >
-                {{ city.name }}
-              </el-tag>
-              <el-button icon="el-icon-plus" round size="mini">添加城市</el-button>
+              <add-city-tag :prop-citys="form.citys" @refresh="(val) => form.citys=val" />
             </el-form-item>
             <el-form-item label="联系人" prop="name">
               <el-input v-model="form.name" placeholder="请输入联系人" class="input-width" clearable />
@@ -90,19 +81,33 @@
 <script>
 import {} from '@/api/enterprise/company/info';
 import CertificationDialog from './CertificationDialog.vue';
+import AddCityTag from '@/components/AddCityTag';
 
 export default {
   components: {
-    CertificationDialog
+    CertificationDialog,
+    AddCityTag
   },
   data() {
     return {
       open: false,
       form: {
         citys: [
-          { name: '武汉' },
-          { name: '重庆' },
-          { name: '长沙' }
+          {
+            cityCode: '3501',
+            cityName: '福州市',
+            createBy: null,
+            createCode: null,
+            createTime: null,
+            id: 2148,
+            params: {},
+            provinceCode: '35',
+            remark: null,
+            searchValue: null,
+            updateBy: null,
+            updateCode: null,
+            updateTime: null
+          }
         ]
       },
       rules: {}
@@ -112,10 +117,10 @@ export default {
 
   },
   methods: {
-    // 修改信息
+    // 保存
     handleSubmit() {
       this.$refs['form'].validate(valid => {
-
+        console.log(this.form);
       });
     },
     // 企业认证
@@ -123,9 +128,7 @@ export default {
       this.open = true;
     },
     // 安全升级
-    securityUpgrade() {},
-    // 关闭标签
-    tagClose() {}
+    securityUpgrade() {}
   }
 };
 </script>
@@ -140,8 +143,5 @@ export default {
 .tip{
   margin: 5px 0 0 70px;
   font-size: 13px;
-}
-.mr8{
-  margin-right: 8px;
 }
 </style>

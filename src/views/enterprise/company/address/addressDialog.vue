@@ -119,14 +119,14 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid) {
           if (this.form.code != null) {
-            addAddress(this.form).then(response => {
-              this.msgSuccess('新增成功');
+            updateAddress(this.form).then(response => {
+              this.msgSuccess('修改成功');
               this.close();
               this.$emit('refresh');
             });
           } else {
-            updateAddress(this.form).then(response => {
-              this.msgSuccess('修改成功');
+            addAddress(this.form).then(response => {
+              this.msgSuccess('新增成功');
               this.close();
               this.$emit('refresh');
             });
