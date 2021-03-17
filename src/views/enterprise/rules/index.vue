@@ -209,7 +209,7 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        userCode: null,
+        userCode: 'ca8b3f3528a34365b41ad4cdb2074f67',
         ruleName: null,
         ruleType: null,
         isLoss: null,
