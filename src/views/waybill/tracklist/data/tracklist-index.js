@@ -1,194 +1,156 @@
-
-const arr1 = [
+export default [
   {
-    prop: 'id',
+    prop: 'waybillNo',
     isShow: true,
-    label: '网点编码'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'name',
-    isShow: true,
-    label: '车队名称'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'teamLeader',
-    isShow: true,
-    label: '车队管理者'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'isDel',
-    isShow: true,
-    label: '是否删除'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'edit',
-    isShow: false,
-    label: '操作',
     width: 180,
-    fixed: 'right'
-  }
-];
-const arr2 = [
-  {
-    prop: 'id',
-    isShow: true,
-    label: '网点编码'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'transportPermitImage',
-    isShow: false,
-    label: '道路运输经营许可证照'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'identificationImage',
-    isShow: false,
-    label: '身份证正面照片'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'identificationBackImage',
-    isShow: false,
-    label: '身份证国徽面'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'edit',
-    isShow: false,
-    label: '操作',
-    width: 180,
-    fixed: 'right'
-  }
-];
-const arr3 = [
-  {
-    prop: 'id',
-    isShow: true,
-    label: '网点编码'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'name',
-    isShow: true,
-    label: '车队名称'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'teamLeader',
-    isShow: true,
-    label: '车队管理者'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'isDel',
-    isShow: true,
-    label: '是否删除'
-    // width: 180,
-    // fixed: 'right'
+    label: '运输单号'
   },
   {
     prop: 'status',
     isShow: true,
-    label: '状态'
-    // width: 180,
-    // fixed: 'right'
+    label: '取消状态'
   },
   {
-    prop: 'createCode',
-    isShow: false,
-    label: '创建人'
-    // width: 180,
-    // fixed: 'right'
+    prop: 'mainOrderNumber',
+    isShow: true,
+    label: '货源单号'
   },
   {
-    prop: 'updateCode',
-    isShow: false,
-    label: '修改人'
-    // width: 180,
-    // fixed: 'right'
+    prop: 'orderClient',
+    isShow: true,
+    label: '下单客户'
   },
   {
-    prop: 'businessLicenseImg',
-    isShow: false,
-    label: '营业执照'
-    // width: 180,
-    // fixed: 'right'
+    prop: 'shipper',
+    isShow: true,
+    label: '货主'
   },
   {
-    prop: 'transportPermitImage',
-    isShow: false,
-    label: '道路运输经营许可证照'
-    // width: 180,
-    // fixed: 'right'
+    prop: 'shipperFactory',
+    isShow: true,
+    label: '发货企业'
   },
   {
-    prop: 'identificationImage',
-    isShow: false,
-    label: '身份证正面照片'
-    // width: 180,
-    // fixed: 'right'
+    prop: 'deliveryAddress',
+    isShow: true,
+    label: '发货地'
   },
   {
-    prop: 'identificationBackImage',
+    prop: 'receivedAddress',
+    isShow: true,
+    label: '到货地'
+  },
+  {
+    prop: 'waybillType',
+    isShow: true,
+    label: '类型'
+  },
+  {
+    prop: 'driverName',
+    isShow: true,
+    label: '司机名称'
+  },
+  {
+    prop: 'driverPhone',
+    isShow: true,
+    label: '司机电话'
+  },
+  {
+    prop: 'licenseNumber',
+    isShow: true,
+    label: '车牌号'
+  },
+  {
+    prop: 'weight',
+    isShow: true,
+    label: '货物重量'
+  },
+  {
+    prop: 'goodsBigType',
+    isShow: true,
+    label: '货物类型'
+  },
+  {
+    prop: 'wastage',
+    isShow: true,
+    label: '货物损耗'
+  },
+  {
+    prop: 'loadWeight',
+    isShow: true,
+    label: '装车重量'
+  },
+  {
+    prop: 'unloadWeight',
+    isShow: true,
+    label: '卸车重量'
+  },
+  {
+    prop: 'distance',
+    isShow: true,
+    label: '公里数'
+  },
+  {
+    prop: 'deliveryFeePractical',
+    isShow: true,
+    label: '实收运费'
+  },
+  {
+    prop: 'taxFreeFee',
+    isShow: true,
+    label: '不含税价'
+  },
+  {
+    prop: 'taxPayment',
+    isShow: true,
+    label: '纳税金额'
+  },
+  {
+    prop: 'deliveryCashFee',
+    isShow: true,
+    label: '实收现金'
+  },
+  {
+    prop: 'isPay',
+    isShow: true,
+    label: '支付状态'
+  },
+  {
+    prop: 'createTime',
+    isShow: true,
+    width: 180,
+    label: '创建时间'
+  },
+  {
+    prop: 'receiveTime',
+    isShow: true,
+    width: 180,
+    label: '接单时间'
+  },
+
+
+  {
+    prop: 'goodsType',
     isShow: false,
-    label: '身份证国徽面'
-    // width: 180,
-    // fixed: 'right'
+    label: '货物类型分类'
+  },
+  {
+    prop: 'code',
+    isShow: false,
+    label: '运输单CODE'
+  },
+  {
+    prop: 'wayBillInfoId',
+    isShow: false,
+    label: '运输单ID'
   },
   {
     prop: 'edit',
-    isShow: false,
+    isShow: true,
     label: '操作',
-    width: 180,
+    width: 240,
     fixed: 'right'
   }
 ];
-
-
-export {
-  arr1, arr2, arr3
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

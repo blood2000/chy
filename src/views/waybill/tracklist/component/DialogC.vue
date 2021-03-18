@@ -1,8 +1,8 @@
 <template>
-  <!-- 车辆装货对话框 -->
+  <!-- 车辆卸货对话框 -->
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="80px">
-      <el-form-item label="装货时间" prop="loadTime">
+      <el-form-item label="卸货时间" prop="loadTime">
         <el-date-picker
           v-model="form.loadTime"
           style="width:90%;"
@@ -11,30 +11,16 @@
           value-format="yyyy-MM-dd HH:mm:ss"
         />
       </el-form-item>
-      <el-form-item label="装货重量" prop="loadWeight">
-        <el-input-number v-model="form.loadWeight" placeholder="请输入装货重量" controls-position="right" :min="0" style="width:90%;" />
-      </el-form-item>
-      <el-form-item label="装货地址" prop="waybillAddress">
-        <el-select
-          v-model="form.waybillAddress"
-          placeholder="请选择车辆装货地址"
-          clearable
-          size="small"
-        >
-          <el-option
-            v-for="dict in waybillAddressOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="装货备注" prop="remark">
-        <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入装货备注信息" />
+      <el-form-item label="卸货重量" prop="loadWeight">
+        <el-input-number v-model="form.loadWeight" placeholder="请输入卸货重量" controls-position="right" :min="0" style="width:90%;" />
       </el-form-item>
 
-      <el-form-item label="装货单据" prop="picture">
+      <el-form-item label="卸货单据" prop="picture">
         <uploadImage v-model="form.picture" />
+      </el-form-item>
+
+      <el-form-item label="卸货备注" prop="remark">
+        <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入装货备注信息" />
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -45,11 +31,11 @@
 </template>
 
 <script>
-import { load, getAddress } from '@/api/waybill/tracklist';
+import { unload } from '@/api/waybill/tracklist';
 import UploadImage from '@/components/UploadImage/index';
 
 export default {
-  name: 'DialogA',
+  name: 'DialogC',
   components: {
     UploadImage
   },
@@ -68,8 +54,6 @@ export default {
   },
   data() {
     return {
-      // 地址选择
-      waybillAddressOptions: [],
       // 表单参数
       form: {
       },
@@ -93,26 +77,19 @@ export default {
   },
   created() {},
   methods: {
-    // 获取地址信息
-    getAddress() {
-      getAddress(this.initdata.mainOrderNumber).then(response => {
-        this.waybillAddressOptions = response;
-        console.log(this.waybillAddressOptions);
-      });
-    },
     /** 提交按钮 */
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
           if (this.form.loadTime != null) {
-            load(this.form).then(response => {
+            unload(this.form).then(response => {
               this.msgSuccess('修改成功');
               this.close();
               this.$emit('refresh');
             });
           } else {
-            load(this.form).then(response => {
-              this.msgSuccess('车辆装货成功');
+            unload(this.form).then(response => {
+              this.msgSuccess('车辆卸货成功');
               this.close();
               this.$emit('refresh');
             });
@@ -136,12 +113,9 @@ export default {
         loadTime: null,
         loadWeight: null,
         picture: null,
-        remark: null,
-        waybillAddress: {}
+        remark: null
       };
-      console.log(this.initdata);
       this.resetForm('form');
-      this.getAddress();
     },
     // 表单赋值
     setForm(data) {
