@@ -40,7 +40,7 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="county" label="县/区:">
-        <el-select v-model="form.county" placeholder="请选择县/区" clearable>
+        <el-select v-model="form.county" placeholder="请选择县/区" clearable @change="changeCounty">
           <el-option
             v-for="dict in countyOption"
             :key="dict.dictValue"
@@ -61,8 +61,14 @@
 引入
 <ProvinceCityCounty :ref-name="同个页面多次调用这个refname设成唯一的" @onsubmitForm="(fn)=> onsubmitForm = fn" />
 
-定义
-data(){ return { onsubmitForm: null  } }
+属性
+cbData        回填数据
+
+事件
+onsubmitForm  返回函数   调用回调函数进行表单验证并返回promis对象
+getProvince   省切换的时候获取选中值
+getCity       市切换的时候获取选中值
+getCounty     区切换的时候获取选中值
 
 调用
 
@@ -87,6 +93,10 @@ export default {
     isrules: {
       type: Boolean,
       default: true
+    },
+    cbData: {
+      type: Object,
+      default: null
     }
   },
 
@@ -118,6 +128,13 @@ export default {
     if (!this.isrules) {
       this.rules = {};
     }
+
+    // 回填
+    if (this.cbData) {
+      this.changeProvince(this.cbData.province);
+      this.changeCity(this.cbData.city);
+      this.form = this.cbData;
+    }
   },
   mounted() {
     this.$emit('onsubmitForm', this._submitForm);
@@ -144,8 +161,10 @@ export default {
       this.countyOption = [];
       if (!data) return;
 
+      this.$emit('getProvince', JSON.parse(data));
       // 根据省code获取 市列表
       const { provinceCode } = JSON.parse(data);
+
       getCityList({ provinceCode }).then((res) => {
         this.cityOption = res.rows.map((e) => {
           const dictValue = JSON.stringify({
@@ -161,6 +180,7 @@ export default {
       this.countyOption = [];
       if (!data) return;
 
+      this.$emit('getCity', JSON.parse(data));
       // 根据市code获取 区/县列表
       const { cityCode } = JSON.parse(data);
       geCountyList({ cityCode }).then((res) => {
@@ -172,6 +192,11 @@ export default {
           return { dictValue, dictLabel: e.countyName };
         });
       });
+    },
+    changeCounty(data) {
+      this.$emit('getCounty', JSON.parse(data));
+
+      console.log('抛出的数据:', this.form);
     },
 
     _submitForm() {

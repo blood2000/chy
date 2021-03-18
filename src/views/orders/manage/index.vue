@@ -104,7 +104,7 @@
                 />
               </el-form-item> -->
 
-              <el-form-item label="订单状态" prop="tin8">
+              <el-form-item label="货源状态" prop="tin8">
                 <el-select v-model="queryParams.tin8" placeholder="----请选择----" style="width: 215px">
                   <el-option
                     v-for="dict in statusOptions"
@@ -116,7 +116,7 @@
               </el-form-item>
 
 
-              <el-form-item label="是否拼单" prop="tin9">
+              <!-- <el-form-item label="是否拼单" prop="tin9">
                 <el-select v-model="queryParams.tin9" placeholder="----请选择----" style="width: 215px">
                   <el-option
                     v-for="dict in isShareTypeOptions"
@@ -125,7 +125,7 @@
                     :value="dict.dictValue"
                   />
                 </el-select>
-              </el-form-item>
+              </el-form-item> -->
 
               <el-form-item label="创建时间" prop="tin10">
                 <el-date-picker
@@ -562,6 +562,7 @@ export default {
     },
     /** 查看详情操作 */
     handleInfo(row) {
+      this.$router.push({ name: 'Release', query: { id: row.id }});
       // this.reset();
       // const testId = row.testId || this.ids;
       // getTest(testId).then(response => {

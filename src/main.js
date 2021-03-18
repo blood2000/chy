@@ -24,10 +24,20 @@ import RightToolbar from '@/components/RightToolbar';
 // 代码高亮插件
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github-gist.css';
-// Tin添加2自定义组件
+// chenhj添加2自定义组件及使用本地存储
 import TablecCascader from '@/components/Ddc/Tin/TablecCascader.vue';
 import RefactorTable from '@/components/Ddc/Tin/RefactorTable.vue';
 import { setLocalStorage, getLocalStorage, removeLocalStorage } from '@/utils/auth';
+
+// s= chenghj 引入高德地图vue组件库 vue-amap
+import VueAMap from 'vue-amap';
+Vue.use(VueAMap);
+VueAMap.initAMapApiLoader({
+  key: '8176702ab4a0886a159684727fd7fb12', // TODO要换成公司的
+  plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PolyEditor', 'AMap.CircleEditor'],
+  v: '1.4.4'
+});
+// e=
 
 // 全局方法挂载
 Vue.prototype.getDicts = getDicts;

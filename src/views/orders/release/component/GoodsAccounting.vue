@@ -23,17 +23,17 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="货物总量" prop="weightType">
+      <el-form-item label="配载(货物)总量" prop="weightType">
         <el-radio-group v-model="formData.weightType" size="medium">
-          <el-radio label="0">不限(长期货源)</el-radio>
+          <el-radio label="1">不限(长期货源)</el-radio>
 
-          <el-radio label="1">
+          <el-radio label="2">
             <el-form-item
               prop="weight"
               style="display: inline-block"
               :rules="[
                 {
-                  required: formData.weightType === '1',
+                  required: formData.weightType === '2',
                   message: '请输入货物重量(吨)',
                   trigger: 'blur',
                 },
@@ -43,12 +43,12 @@
               <el-input-number
                 v-model="formData.weight"
                 :controls="false"
-                placeholder="请输入重量(吨)"
+                :placeholder="`请输入重量(${goodsUnitName})`"
                 step-strictly
                 controls-position="right"
                 :style="{ width: '120px' }"
               />
-              <span class="pl-5">吨</span>
+              <span class="pl-5">{{ goodsUnitName }}</span>
             </el-form-item>
           </el-radio>
         </el-radio-group>
@@ -58,12 +58,12 @@
         <el-input-number
           v-model="formData.perWeight"
           :controls="false"
-          placeholder="请输入最高配载(吨/方)"
+          placeholder="请输入最高配载"
           step-strictly
           controls-position="right"
           :style="{ width: '50%' }"
         />
-        <span class="pl-5">吨/方</span>
+        <span class="pl-5">{{ goodsUnitName }}</span>
       </el-form-item>
 
       <el-form-item label="运输单价" prop="shipmentPrice">
@@ -75,7 +75,7 @@
           controls-position="right"
           :style="{ width: '50%' }"
         />
-        <span class="pl-5">元/吨(不含税)</span>
+        <span class="pl-5">元/{{ goodsUnitName }}(不含税)</span>
       </el-form-item>
 
       <el-form-item label="货物单价" prop="goodsPrice">
@@ -87,13 +87,15 @@
           controls-position="right"
           :style="{ width: '50%' }"
         />
-        <span class="pl-5">元/吨</span>
+        <span class="pl-5">元/{{ goodsUnitName }}</span>
       </el-form-item>
 
       <el-form-item label="车型" prop="vehicleType">
         <el-select
           v-model="formData.vehicleType"
           placeholder="选择车型"
+          multiple
+          :multiple-limit="1"
           clearable
           :style="{ width: '100%' }"
         >
@@ -110,6 +112,8 @@
         <el-select
           v-model="formData.vehicleLength"
           placeholder="选择车长"
+          :multiple-limit="3"
+          multiple
           clearable
           :style="{ width: '100%' }"
         >
@@ -133,7 +137,7 @@ export default {
       default: () => {
         return {
           size: 'medium',
-          labelWidth: '110px',
+          labelWidth: '120px',
           labelPosition: 'left'
         };
       }
@@ -144,13 +148,13 @@ export default {
     return {
       formData: {
         goodsUnit: '0', // 货物计量单位 0=>吨; 1=>立方米
-        weightType: '0', // 货物总量类型
+        weightType: '1', // 货物总量类型 是不限
         weight: undefined, // 货物重量
         perWeight: undefined, // 最高配载
         shipmentPrice: undefined, // 运输单价
         goodsPrice: undefined, // 货物单价
-        vehicleType: undefined, // 车型->查字典
-        vehicleLength: undefined // 车长->查字典
+        vehicleType: [], // 车型->查字典
+        vehicleLength: [] // 车长->查字典
       },
       rules: {
         goodsUnit: [
@@ -161,17 +165,37 @@ export default {
         ],
         goodsPrice: [
           { required: true, message: '请输入货物单价', trigger: 'blur' }
-        ]
-      },
-      formDataList: {
-        measurementType: [
-          { dictValue: '0', dictLabel: '吨' },
-          { dictValue: '1', dictLabel: '立方米' }
         ],
+
+        weightType: [
+          { required: true, message: '请输入货物单价', trigger: 'blur' }
+        ],
+        perWeight: [
+          { required: true, message: '请输入货物单价', trigger: 'blur' }
+        ]
+
+      },
+      // 字典类放这里
+      formDataList: {
+        measurementType: [],
         vehicleClassification: [],
         vehicleLength: []
       }
     };
+  },
+
+  computed: {
+    goodsUnitName() {
+      let name = '';
+      this.formDataList.measurementType.forEach(e => {
+        if (e.dictValue === this.formData.goodsUnit) {
+          name = e.dictLabel;
+        }
+      });
+      console.log(name);
+
+      return name;
+    }
   },
 
   created() {
@@ -192,7 +216,11 @@ export default {
       return new Promise((resolve, reject) => {
         this.$refs['formData'].validate((valid) => {
           if (valid) {
-            resolve(this.formData);
+            resolve({
+              ...this.formData,
+              vehicleType: this.formData.vehicleType.join(','),
+              vehicleLength: this.formData.vehicleLength.join(',')
+            });
           } else {
             return false;
           }

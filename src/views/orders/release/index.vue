@@ -1,5 +1,13 @@
 <template>
   <div class="app-container">
+
+
+    <el-steps :active="1" finish-status="success">
+      <el-step title="已完成" />
+      <el-step title="进行中" />
+      <el-step title="步骤 3" />
+    </el-steps>
+
     <!-- 转货信息 -->
 
     <el-form
@@ -14,11 +22,29 @@
         <div class="header mb8">代发货主信息</div>
 
         <el-form-item label="代发货主" prop="tin1">
-          <el-select
+          <!-- <el-select
             v-model="formData.tin1"
             placeholder="请输入代发货主"
             :style="{ width: '100%' }"
             filterable
+          >
+            <el-option
+              v-for="(item, index1) in shipmentList"
+              :key="index1"
+              :label="item.adminName"
+              :value="item.code"
+            />
+          </el-select> -->
+
+          <el-select
+            v-model="formData.tin1"
+            filterable
+            remote
+            reserve-keyword
+            placeholder="请输入关键词"
+            :remote-method="remoteMethod"
+            :loading="loading"
+            @change="handleTin1"
           >
             <el-option
               v-for="(item, index1) in shipmentList"
@@ -31,40 +57,33 @@
       </div>
       <el-divider />
 
-      <template v-if="isTin1">
+      <template v-if="true || isTin1">
         <div class="content">
-          <div class="header mb8">货物类型</div>
+          <div class="header mb8">货物类型(第一步)</div>
 
           <el-form-item label="选择所属项目" prop="tin3">
             <el-select
               v-model="formData.tin3"
-              placeholder="无归属项目"
+              placeholder="请选择项目"
               clearable
               :style="{ width: '100%' }"
+              @change="handleTin3"
             >
               <el-option
-                v-for="item in [
-                  {
-                    label: '项目1',
-                    value: '68655588',
-                  },
-                  {
-                    label: '项目2',
-                    value: '6865550088',
-                  },
-                ]"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="dict in tin3Optin"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
               />
             </el-select>
           </el-form-item>
 
-          <el-form-item label="选择货物类型" prop="tin2">
+          <el-form-item label="选择货物类别" prop="tin2">
             <el-radio-group v-model="formData.tin2" size="medium" @change="handletin2">
               <el-radio
                 v-for="item in goodsBigTypeOptions"
                 :key="item.value"
+                :disabled="formData.tin3 !== '0'"
                 :label="item.value"
               >{{ item.label }}</el-radio>
             </el-radio-group>
@@ -82,6 +101,7 @@
                 <el-checkbox
                   v-for="dict in tin2_1Option"
                   :key="dict.dictValue"
+                  :disabled="formData.tin3 !== '0'"
                   :label="dict.dictValue"
                 >{{ dict.dictLabel }}</el-checkbox>
               </el-checkbox-group>
@@ -91,18 +111,19 @@
                 <el-radio
                   v-for="dict in tin2_1Option"
                   :key="dict.dictValue"
+                  :disabled="formData.tin3 !== '0'"
                   :label="dict.dictValue"
                 >{{ dict.dictLabel }}</el-radio>
               </el-radio-group>
             </el-form-item>
           </template>
 
-          <el-form-item label="发布为" prop="tin4">
-            <el-radio-group v-model="formData.tin4" size="medium">
+          <el-form-item label="发布位置" prop="tin4">
+            <el-radio-group v-model="formData.tin4" size="medium" @change="handleTin4">
               <el-radio
                 v-for="dict in [
                   { dictValue: true, dictLabel: '公开货源(所有人可接)' },
-                  { dictValue: false, dictLabel: '非公开货源' },
+                  { dictValue: false, dictLabel: '非公开货源(私密货源)' },
                 ]"
                 :key="dict.dictValue"
                 :label="dict.dictValue"
@@ -125,58 +146,16 @@
             </el-form-item>
 
             <template v-if="formData.tin5">
-              <!-- <div style="display: flex">
-                <el-form-item
-                  label="指定接单人(调度者3人,司机1人)"
-                  prop="tin5_1"
-                  label-width="300px"
-                >
-                  <el-select
-                    v-model="formData.tin5_1"
-                    placeholder="调度者"
-                    multiple
-                    collapse-tags
-                    clearable
-                    :style="{ width: '100%' }"
-                  >
-                    <el-option
-                      v-for="dict in [
-                        { dictValue: '11111', dictLabel: '调度者1' },
-                        { dictValue: '22222', dictLabel: '调度者2' },
-                      ]"
-                      :key="dict.dictValue"
-                      :label="dict.dictLabel"
-                      :value="dict.dictValue"
-                    />
-                  </el-select>
-                </el-form-item>
-                <el-form-item prop="tin5_2" label-width="10px">
-                  <el-select
-                    v-model="formData.tin5_2"
-                    placeholder="司机"
-                    clearable
-                    multiple
-                    collapse-tags
-                    :style="{ width: '100%' }"
-                  >
-                    <el-option
-                      v-for="dict in [
-                        { dictValue: '10000', dictLabel: '司机1' },
-                        { dictValue: '20000', dictLabel: '司机2' },
-                      ]"
-                      :key="dict.dictValue"
-                      :label="dict.dictLabel"
-                      :value="dict.dictValue"
-                    />
-                  </el-select>
-                </el-form-item>
-              </div> -->
-              <el-form-item prop="tin5_2" label-width="10px">
-                <el-button type="primary" @click="open1">指定接单人</el-button>
+              <el-form-item prop="tin5_2" label="指定接单人">
+                <div class="ly-flex">
+                  <el-button type="primary" @click="open1">指定接单人</el-button>
+                  <div class="ml0">调度者: {{ formData.tin5_1.length }} 人</div>
+                  <div class="ml0">司机: {{ formData.tin5_2.length }} 人</div>
+                </div>
               </el-form-item>
             </template>
 
-            <el-form-item label="货集码" prop="tin6" label-width="300px">
+            <el-form-item label="货集码" prop="tin6">
               <el-select
                 v-model="formData.tin6"
                 placeholder="选择货集码"
@@ -184,10 +163,7 @@
                 :style="{ width: '100%' }"
               >
                 <el-option
-                  v-for="dict in [
-                    { dictValue: '108888000', dictLabel: '集码1' },
-                    { dictValue: '200888800', dictLabel: '集码2' },
-                  ]"
+                  v-for="dict in tin6_Option"
                   :key="dict.dictValue"
                   :label="dict.dictLabel"
                   :value="dict.dictValue"
@@ -212,9 +188,9 @@
       <!-- 如果是单商品着没有下面的 -->
       <!-- isMultiGoods true->多商品 ; false->单商品 -->
 
-      <template v-if="isTin1 && isMultiGoods">
+      <template v-if="(true || isTin1) && isMultiGoods">
         <div class="content">
-          <div class="header mb8">装货类型</div>
+          <div class="header mb8">装卸货地址配置(第二步)</div>
           <el-form-item label="装货类型" prop="tin7">
             <el-radio-group v-model="formData.tin7" size="medium">
               <el-radio
@@ -230,11 +206,15 @@
             </el-radio-group>
           </el-form-item>
 
-          <el-form-item label="允许自装" prop="tin8">
-            <el-checkbox v-model="formData.tin8">允许自装</el-checkbox>
-          </el-form-item>
-          <el-form-item label="允许自装" prop="tin9">
-            <el-checkbox v-model="formData.tin9">允许自卸</el-checkbox>
+          <el-form-item v-if="formData.tin7 !== '1'" label="允许自卸/自装">
+            <div class="ly-flex">
+              <el-form-item v-if="formData.tin7 === '2' || formData.tin7 === '4'" prop="tin8">
+                <el-checkbox v-model="formData.tin8">允许自装</el-checkbox>
+              </el-form-item>
+              <el-form-item v-if="formData.tin7 === '3' || formData.tin7 === '4'" :label-width="formData.tin7 === '4'?'30px':null" prop="tin9">
+                <el-checkbox v-model="formData.tin9">允许自卸</el-checkbox>
+              </el-form-item>
+            </div>
           </el-form-item>
         </div>
 
@@ -247,7 +227,7 @@
       1: 多商品对应多地址/单商品就一个地址
       2: 多装和多卸 各自可有多地址
      -->
-    <template v-if="isTin1">
+    <template v-if="true || isTin1">
       <div class="content">
         <div class="header mb8">货源地址</div>
         <!-- isMultiGoods true->多商品 ; false->单商品 -->
@@ -285,15 +265,15 @@
       <!-- isMultiGoods true->多商品 ; false->单商品 -->
       <template v-if="!isMultiGoods">
         <div class="content">
-          <div class="header mb8">货物</div>
+          <div class="header mb8">配载信息(第三步)</div>
 
           <GoodsAccounting ref="goodsAccounting" />
         </div>
 
         <div class="content">
-          <div class="header mb8">核算:</div>
+          <div class="header mb8">其他规则</div>
 
-          <AccounTing ref="accounTing" />
+          <AccounTing ref="accounTing" :pubilsh-code="formData.tin1" />
         </div>
 
         <!-- s封装成组件 -->
@@ -301,10 +281,10 @@
         <div class="content">
           <div class="header mb8">预估运费</div>
 
-          <div>
-            <span>预估运费(不含税):</span> <span>￥</span><span>8566.00</span>
+          <div class="footer-box">
+            <div><span>预估运费(不含税):</span> <span>￥</span><span>8566.00</span></div>
+            <div><span>(含税):</span> <span>￥</span><span>8566.00</span></div>
           </div>
-          <div><span>(含税):</span> <span>￥</span><span>8566.00</span></div>
         </div>
       </template>
 
@@ -356,7 +336,14 @@ import GoodsAccounting from './component/GoodsAccounting';
 import AccounTing from './component/AccounTing';
 import MultiData from './component/MultiData';
 
+// 根据货主的code获取他下面的项目
+import { listInfo } from '@/api/enterprise/project';
 import { listShipment } from '@/api/assets/shipment.js';
+
+// 获取货集码列表 ? 要在什么时机调用?
+import { listStockcode } from '@/api/enterprise/stockcode';
+
+
 
 import { orderPubilsh } from '@/api/order/release';
 
@@ -370,6 +357,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       // 多商品对应各自的规格
       tin2_1tabs: [],
       tin2_1tabs_activeName: '0',
@@ -378,7 +366,8 @@ export default {
         tin2: undefined, // 选择货物类型大类(必填)
         tin2_1: [], // 多商品-小类(必填)
         tin2_2: undefined, // 单商品 - 小类(必填)
-        tin3: undefined, // 项目编码
+        tin3: '0', // 项目编码
+        tin3Code: '',
         tin4: true, // 是否公开货源 0.非公开 1.公开 / false=>非公开
         tin5: false, // 是否指定接单人 0否 1是 / false=>否
         tin5_1: [], // 调度者 多个
@@ -410,8 +399,14 @@ export default {
       // 货物类型字典型(大)
       goodsBigTypeOptions: [],
 
+      // 所属项目的字典
+      tin3Optin: [{ dictValue: '0', dictLabel: '无所属项目' }],
+
       // 小类多商品
       tin2_1Option: [],
+
+      // 货源吗字典
+      tin6_Option: [],
 
       shipmentList: [],
 
@@ -448,15 +443,8 @@ export default {
   },
 
   async created() {
-    // 获取代理用户表
-    listShipment()
-      .then((res) => {
-        this.shipmentList = res.rows;
-        console.log(this.shipmentList, '货主信息');
-      });
-
     // 货物类型字典型(大)
-    this.getDicts('productType').then((response) => {
+    this.getDicts('dictType').then((response) => {
       this.goodsBigTypeOptions = response.data.map(e => {
         return {
           label: e.dictLabel,
@@ -465,82 +453,92 @@ export default {
         };
       });
     });
-
-    // 获取司机和调度者接口
   },
 
   methods: {
+    // 根据货主的code获取他下面的项目
+    async handleTin1() {
+      // 货主切换的时候
+      console.log(this.formData.tin1);
+
+      this.formData.tin2 = undefined; // 选择货物类型大类(必填)
+      this.formData.tin2_1 = []; // 多商品-小类(必填)
+      this.formData.tin2_2 = undefined; // 单商品 - 小类(必填)
+      this.formData.tin3 = '0'; // 项目编码
+      this.tin3Optin = [{ dictValue: '0', dictLabel: '无所属项目' }];
+
+
+      const query = {
+        shipmentCode: this.formData.tin1
+      };
+      // console.log(query);
+      // 调用接口
+      const res = (await listInfo(query));
+      console.log(res);
+
+      // 返回的是个数组
+      this.tin3Optin = this.tin3Optin.concat(res.rows.map(e => {
+        console.log('项目code', e);
+
+        return { dictValue: e.id, dictLabel: e.projectName, ...e };
+      }));
+
+      console.log(this.tin3Optin);
+    },
+
+    // 根据所属项目的cod 获取对应项目
+    handleTin3() {
+      if (this.formData.tin3 === '0') {
+        this.formData.tin2 = undefined;
+        this.formData.tin2_2 = undefined;
+        this.formData.tin2_1 = [];
+        this.tin2_1Option = [];
+        return;
+      }
+      console.log(this.formData.tin3);
+      // 根据选中的id进行回填
+      const arr = this.tin3Optin.filter(e => {
+        return e.id === this.formData.tin3;
+      });
+      // console.log(this.goodsBigTypeOptions);
+
+      console.log('项目的code是:', arr[0].code);
+      // 看看是最后赋值是多少
+      this.formData.tin3Code = arr[0].code;
+      this.formData.tin2 = arr[0].commodityCategoryCode;
+
+      // 获取子类字典
+      this.handletin2(arr);
+    },
+
+    // 是否公开货源切换
+    handleTin4() {
+      console.log(this.formData.tin4);
+      if (this.tin6_Option.length) return;
+      if (this.formData.tin4) return;
+      // 要用到货主的code
+      const query = {
+        shipmentCode: this.formData.tin1
+      };
+      listStockcode(query).then(res => {
+        this.tin6_Option = res.rows.map(e => {
+          return { dictValue: e.cargoCodeQR, dictLabel: e.cargoCodeName };
+        });
+
+        if (!this.tin6_Option.length) {
+          this.tin6_Option = [
+            { dictValue: '108888000', dictLabel: '集码1' },
+            { dictValue: '200888800', dictLabel: '集码2' }
+          ];
+        }
+      });
+    },
+
+
+
     async onSubmit(form) {
       this.$refs[form].validate(async(valid) => {
         if (valid) {
-          /*
-          {
-            "classList": [
-              {
-                "classCode": "1"
-              }
-            ],
-            "isClass": true,
-            "isPublic": true,
-            "isSpecified": true,
-            "loadType": 0,
-            "orderFreightBoList": [
-              {
-                "ruleItemId": 0,
-                "ruleItemValue": "1",
-                "type": 0
-              }
-            ],
-            "orderGoodsList": [
-              {
-                "addressList": [
-                  {
-                    "adcode": "1",
-                    "addressAlias": "1",
-                    "addressType": 0,
-                    "city": "1",
-                    "citycode": "1",
-                    "contact": "1",
-                    "contactPhone": "1",
-                    "country": "1",
-                    "detail": "1",
-                    "district": "1",
-                    "level": "1",
-                    "location": [1,2],
-                    "province": "1",
-                    "street": "1"
-                  }
-                ],
-                "endLimitWastage": 0,
-                "goodsBigType": "1",
-                "goodsType": "1",
-                "goodsUnit": "1",
-                "isModifyFinish": true,
-                "isOneselfLoad": true,
-                "isOneselfUnload": true,
-                "limitWastage": "1",
-                "perWeight": 0,
-                "priceWastage": 0,
-                "shipmentPrice": 0,
-                "startLimitWastage": 0,
-                "vehicleLength": "1",
-                "vehicleType": "1",
-                "weight": 0
-              }
-            ],
-            "orderSpecifiedList": [
-              {
-                "driverInfoCode": "1",
-                "teamInfoCode": "1",
-                "userType": 0
-              }
-            ],
-            "projectCode": "1",
-            "pubilshCode": "1", // 发布人Code
-            "remark": "1"
-          }
-          */
-
           const address1 =
             (this.$refs.address1 &&
               (await this.$refs.address1._submitForm())) ||
@@ -554,9 +552,9 @@ export default {
           let accounTing;
           let arrs;
 
-          let orderFreightBoList = [];
-          let orderGoodsList = [];
-          let orderSpecifiedList = [];
+          let orderFreightBoList = []; // 运费规则Bo
+          let orderGoodsList = []; // 货源商品信息_1
+          let orderSpecifiedList = []; // 货源指定接单人表
 
           const driverInfoCode = this.formData.tin5_2.map((driverInfoCode) => {
             return {
@@ -637,7 +635,7 @@ export default {
             orderGoodsList = [
               {
                 addressList: [...address1, ...address2],
-                endLimitWastage: accounTing.endLimitWastage,
+                // endLimitWastage: accounTing.endLimitWastage,
                 goodsBigType: this.formData.tin2,
                 goodsType: this.formData.tin2_2,
                 goodsUnit: goodsAccounting.goodsUnit,
@@ -648,19 +646,15 @@ export default {
                 perWeight: goodsAccounting.perWeight,
                 priceWastage: 0, // 路耗超出范围 赔偿单价 （元/吨）?? 啥东西
                 shipmentPrice: goodsAccounting.shipmentPrice,
-                startLimitWastage: accounTing.startLimitWastage,
+                // startLimitWastage: accounTing.startLimitWastage,
                 vehicleLength: goodsAccounting.vehicleLength,
                 vehicleType: goodsAccounting.vehicleType,
-                weight: goodsAccounting.weight
+                weight: goodsAccounting.weight,
+                totalType: goodsAccounting.weightType
               }
             ];
           }
 
-          console.log('goodsAccounting', goodsAccounting);
-          console.log('accounTing', accounTing);
-          console.log('arrs', arrs);
-          console.log('address1', address1);
-          console.log('address2', address2);
 
           const data = {
             classList: [
@@ -676,10 +670,17 @@ export default {
             orderFreightBoList,
             orderGoodsList,
             orderSpecifiedList,
-            projectCode: this.formData.tin3, // 项目编码
+            projectCode: this.formData.tin3Code, // 项目编码
             pubilshCode: this.formData.tin1,
             remark: this.formData.remark
           };
+
+          console.log('运费规则Bo', orderFreightBoList);
+          console.log('货源商品信息_1', orderGoodsList);
+          console.log('货源指定接单人表', orderSpecifiedList);
+          console.log('全部', data);
+
+
 
           orderPubilsh(data).then((response) => {
             console.log(response);
@@ -695,6 +696,7 @@ export default {
     handletin2_1() {
       this.tin2_1tabs = this.formData.tin2_1.map((e) => {
         let obj = null;
+
         this.tin2_1Option.forEach((obje) => {
           if (obje.dictValue === e) {
             obj = obje;
@@ -712,27 +714,69 @@ export default {
     },
 
     // 获取小类
-    handletin2() {
+    handletin2(arr) {
       this.getDicts(this.formData.tin2).then((response) => {
         this.tin2_1Option = response.data;
+
+        // true=> 多商品
+        if (!arr) return;
+        if (this.isMultiGoods) {
+          this.formData.tin2_1 = arr[0].commoditySubclassCodes.split(',');
+          this.formData.tin2_2 = undefined;
+          console.log('true多商品', this.formData.tin2_1);
+
+          this.handletin2_1();
+        // tin2_1tabs
+        } else {
+          this.formData.tin2_1 = [];
+          this.formData.tin2_2 = arr[0].commoditySubclassCodes;
+          console.log('false单商品', this.formData.tin2_2);
+        }
       });
     },
 
     // 打开调度者页面
     open1() {
       this.open = true;
-      this.title = '选择调度者';
+      this.title = '指定接单人';
+      // 回填
+      console.log(this.formData.tin5_1);
+      console.log(this.formData.tin5_2);
     },
     // 获取选中的数组
     handleSelectionChange(obj, bool) {
       if (bool) {
         this.formData.tin5_1 = obj['listInfo'] || [];
         this.formData.tin5_2 = obj['listDriver'] || [];
+
+        if (this.formData.tin5_1.length > 1) {
+          this.msgInfo('调度者只能选择一个');
+          return;
+        }
         this.open = false;
         this.title = '';
       } else {
         this.open = false;
         this.title = '';
+      }
+    },
+    // 远程搜索 ok
+    remoteMethod(query) {
+      if (query !== '') {
+        this.loading = true;
+
+        // 获取代理用户表
+        listShipment({ adminName: query, pageNum: 1, pageSize: 10 }).then((res) => {
+          console.log(res);
+
+          this.shipmentList = res.rows;
+
+          console.log('获取代理用户表', this.shipmentList);
+
+          this.loading = false;
+        });
+      } else {
+        this.shipmentList = [];
       }
     }
   }
@@ -763,5 +807,12 @@ export default {
 
 .vih {
   line-height: 36px;
+}
+
+.footer-box{
+  padding: 20px 0;
+  line-height: 26px;
+  color: #ccc;
+  text-align: right;
 }
 </style>
