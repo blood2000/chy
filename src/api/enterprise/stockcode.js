@@ -4,8 +4,8 @@ import request from '@/utils/request';
 export function listStockcode(query) {
   return request({
     url: '/assets/shipment/cargocode/list',
-    method: 'get',
-    params: query
+    method: 'post',
+    data: query
   });
 }
 
@@ -48,14 +48,5 @@ export function generateCode(data) {
   return request({
     url: '/assets/shipment/cargocode/generateCode',
     method: 'post'
-  });
-}
-
-// 二维码下载
-export function downloadCode(query) {
-  return request({
-    url: '/assets/shipment/cargocode/downloadCode',
-    method: 'get',
-    params: query
   });
 }

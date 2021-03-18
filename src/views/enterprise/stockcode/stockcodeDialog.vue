@@ -1,17 +1,19 @@
 <template>
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="120px">
-      <!-- <el-form-item label="货主编码" prop="shipmentCode">
-        <el-input v-model="form.shipmentCode" placeholder="请输入货主编码" class="width90" clearable />
-      </el-form-item> -->
       <el-form-item label="货源码名称" prop="cargoCodeName">
-        <el-input v-model="form.cargoCodeName" placeholder="请输入货源码名称" class="width90" clearable />
+        <el-input v-model="form.cargoCodeName" placeholder="请输入货源码名称" class="width50 mr3" clearable />
+        <span class="g-color-gray">(货源码名称可自定义,如线路名称等)</span>
       </el-form-item>
-      <!-- <el-form-item label="货源码" prop="cargoCodeQr">
-        <el-input v-model="form.cargoCodeQr" placeholder="请输入货源码" class="width90" clearable />
-      </el-form-item> -->
-      <el-form-item label="货源二维码" prop="">
-        <el-button type="primary" @click="generateCode">生成货源码</el-button>
+      <el-form-item label="货源二维码">
+        <template v-if="form.id == null || form.id == undefined || form.id == ''">
+          <el-button type="primary" @click="generateCode">生成货源码</el-button>
+          <br>
+          <img v-if="form.cargoCodeQR" class="cargo-code ml24" :src="form.cargoCodeQR">
+        </template>
+        <template v-else>
+          <img v-if="form.cargoCodeQR" class="cargo-code" :src="form.cargoCodeQR">
+        </template>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -112,7 +114,11 @@ export default {
     },
     // 生成货源码
     generateCode() {
-
+      generateCode({ id: this.form.id }).then(response => {
+        this.msgSuccess(response.msg);
+        this.form.cargoCodeQR = response.data;
+        this.$forceUpdate();
+      });
     }
   }
 };
@@ -125,10 +131,14 @@ export default {
 .mb{
   margin-bottom: 22px;
 }
-.width90{
-  width: 90%;
+.width50{
+  width: 50%;
 }
-.width28{
-  width: 28%;
+.cargo-code{
+  width: 200px;
+  height: 200px;
 }
-</style>>
+.ml24{
+  margin-left: -24px;
+}
+</style>
