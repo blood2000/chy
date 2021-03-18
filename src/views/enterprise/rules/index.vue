@@ -10,54 +10,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <!-- <el-form-item
-        label="计算公式"
-        prop="ruleType"
-      >
-        <el-select
-          v-model="queryParams.ruleType"
-          placeholder="请选择计算公式"
-          clearable
-          size="small"
-        >
-          <el-option
-            v-for="dict in ruleTypeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="亏吨方案" prop="lossType">
-        <el-select v-model="queryParams.lossType" placeholder="请选择亏吨方案" clearable size="small">
-          <el-option
-            v-for="dict in lossTypeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="亏吨计算方式" prop="lossCalculateType">
-        <el-select v-model="queryParams.lossCalculateType" placeholder="请选择亏吨计算方式" clearable size="small">
-          <el-option
-            v-for="dict in lossCalculateTypeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="抹零规则" prop="wipeOffType">
-        <el-select v-model="queryParams.wipeOffType" placeholder="请选择抹零规则" clearable size="small">
-          <el-option
-            v-for="dict in wipeOffTypeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item> -->
       <el-form-item>
         <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -106,16 +58,6 @@
         prop="ruleType"
         :formatter="ruleTypeFormat"
       />
-      <el-table-column label="规则详情" align="center" prop="" />
-      <el-table-column label="关联节点" align="center" prop="" />
-      <!-- <el-table-column label="是否计算亏吨" align="center" prop="isLoss" :formatter="isLossFormat" />
-      <el-table-column label="亏吨方案" align="center" prop="lossType" :formatter="lossTypeFormat" />
-      <el-table-column label="亏吨开始范围" align="center" prop="lossStart" />
-      <el-table-column label="亏吨结束范围" align="center" prop="lossEnd" />
-      <el-table-column label="亏吨计算方式" align="center" prop="lossCalculateType" :formatter="lossCalculateTypeFormat" />
-      <el-table-column label="抹零规则" align="center" prop="wipeOffType" :formatter="wipeOffTypeFormat" />
-      <el-table-column label="创建人" align="center" prop="createCode" />
-      <el-table-column label="修改人" align="center" prop="updateCode" /> -->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
           <el-button
@@ -180,30 +122,10 @@ export default {
       open: false,
       // 计算公式字典
       ruleTypeOptions: [
-        { dictLabel: '运费 = 装货重量 * 运费单价+ 增项-减项', dictValue: 1 },
+        { dictLabel: '运费 = 装货重量 * 运费单价 + 增项 - 减项', dictValue: 1 },
         { dictLabel: '运费 = 卸货重量 * 运费单价 + 增项 - 减项', dictValue: 2 },
-        { dictLabel: '运费 = 装卸货最小重量 * 运费单价 +增项 - 减项', dictValue: 3 },
+        { dictLabel: '运费 = 装卸货最小重量 * 运费单价 + 增项 - 减项', dictValue: 3 },
         { dictLabel: '运费 = 装卸货最大重量 * 运费单价 + 增项 - 减项', dictValue: 4 }
-      ],
-      // 是否计算亏吨字典
-      isLossOptions: [
-        { dictLabel: '否', dictValue: 0 },
-        { dictLabel: '是 = 卸货重量 * 运费单价 + 增项 - 减项', dictValue: 1 }
-      ],
-      // 亏吨方案字典
-      lossTypeOptions: [
-        { dictLabel: '定额', dictValue: 1 },
-        { dictLabel: '定律', dictValue: 2 }
-      ],
-      // 亏吨计算方式字典
-      lossCalculateTypeOptions: [
-        { dictLabel: '亏吨计算', dictValue: 1 },
-        { dictLabel: '减吨计算', dictValue: 2 }
-      ],
-      // 抹零规则字典
-      wipeOffTypeOptions: [
-        { dictLabel: '角分抹零', dictValue: 1 },
-        { dictLabel: '元抹零', dictValue: 2 }
       ],
       // 查询参数
       queryParams: {
@@ -225,7 +147,7 @@ export default {
     };
   },
   created() {
-    this.getList();
+    // this.getList();
   },
   methods: {
     /** 查询列表 */
@@ -240,22 +162,6 @@ export default {
     // 计算公式字典翻译
     ruleTypeFormat(row, column) {
       return this.selectDictLabel(this.ruleTypeOptions, row.ruleType);
-    },
-    // 是否计算亏吨字典翻译
-    isLossFormat(row, column) {
-      return this.selectDictLabel(this.isLossOptions, row.isLoss);
-    },
-    // 亏吨方案字典翻译
-    lossTypeFormat(row, column) {
-      return this.selectDictLabel(this.lossTypeOptions, row.lossType);
-    },
-    // 亏吨计算方式字典翻译
-    lossCalculateTypeFormat(row, column) {
-      return this.selectDictLabel(this.lossCalculateTypeOptions, row.lossCalculateType);
-    },
-    // 抹零规则字典翻译
-    wipeOffTypeFormat(row, column) {
-      return this.selectDictLabel(this.wipeOffTypeOptions, row.wipeOffType);
     },
     /** 搜索按钮操作 */
     handleQuery() {
