@@ -262,7 +262,7 @@
       </el-form-item>
     </el-form>
 
-    <el-form ref="vehicleForm" :model="vehicleForm" :rules="vehicleRules" :disabled="disable" label-width="180px">
+    <el-form ref="vehicleForm" :model="vehicleForm" :rules="vehicleRules" :disabled="disable" label-width="140px">
       <el-form-item label="车辆归属类型" prop="vehicleAscriptionType">
         <el-select v-model="vehicleForm.vehicleAscriptionType" class="width90" clearable>
           <el-option
@@ -459,26 +459,32 @@ export default {
       // 表单校验
       rules: {
         name: [
-          { required: true, message: '姓名不能为空', trigger: 'blur' }
+          { required: true, message: '姓名不能为空', trigger: 'blur' },
+          { validator: this.formValidate.name }
         ],
         telphone: [
-          { required: true, message: '手机号码不能为空', trigger: 'blur' }
+          { required: true, message: '手机号码不能为空', trigger: 'blur' },
+          { validator: this.formValidate.telphone }
         ],
         identificationNumber: [
-          { required: true, message: '身份证号不能为空', trigger: 'blur' }
+          { required: true, message: '身份证号不能为空', trigger: 'blur' },
+          { validator: this.formValidate.idCard }
         ],
         issuingOrganizations: [
           { required: true, message: '驾驶证发证机关不能为空', trigger: 'blur' }
         ],
         validPeriodTo: [
           { required: true, message: '驾驶证有效期不能为空', trigger: 'blur' },
-          { validator: this.certificateIsExpired }
+          { validator: this.formValidate.isExpired }
         ],
         workCompany: [
           { required: true, message: '工作单位不能为空', trigger: 'blur' }
         ],
         transportPermitNo: [
           { required: true, message: '道路运输经营许可证号不能为空', trigger: 'blur' }
+        ],
+        licenseNumber: [
+          { validator: this.formValidate.plateNo }
         ]
       },
       vehicleRules: {

@@ -107,15 +107,15 @@
 
     <el-table v-loading="loading" :data="addressList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <!-- <el-table-column label="货主编码" align="center" prop="shipmentCode" />
-      <el-table-column label="地址类型" align="center" prop="addressType" :formatter="addressTypeFormat" /> -->
+      <!-- <el-table-column label="货主编码" align="center" prop="shipmentCode" /> -->
+      <!-- <el-table-column label="地址类型" align="center" prop="addressType" :formatter="addressTypeFormat" /> -->
       <el-table-column label="地址名称" align="center" prop="addressName">
         <template slot-scope="scope">
           {{ scope.row.addressName }}
           <el-tag v-if="scope.row.isDefault === 1">默认地址</el-tag>
         </template>
       </el-table-column>
-      <!-- <el-table-column label="地址别名" align="center" prop="addressOtherName" /> -->
+      <el-table-column label="地址别名" align="center" prop="addressOtherName" />
       <el-table-column label="地址详情" align="center" prop="addressDetail" />
       <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" />
       <el-table-column label="联系人" align="center" prop="userName" />

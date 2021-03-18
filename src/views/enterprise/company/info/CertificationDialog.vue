@@ -4,14 +4,14 @@
       <el-form-item label="网商汇款账号" prop="name1">
         <el-input v-model="form.name1" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="手机号码" prop="name">
-        <el-input v-model="form.name" class="width90" clearable />
+      <el-form-item label="手机号码" prop="telphone">
+        <el-input v-model="form.telphone" class="width90" clearable />
       </el-form-item>
       <el-form-item label="联系人" prop="name">
         <el-input v-model="form.name" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="身份证" prop="name">
-        <el-input v-model="form.name" class="width90" clearable />
+      <el-form-item label="身份证" prop="identificationNumber">
+        <el-input v-model="form.identificationNumber" class="width90" clearable />
       </el-form-item>
       <el-form-item label="公司名称" prop="name">
         <el-input v-model="form.name" class="width90" clearable />
@@ -85,6 +85,14 @@ export default {
       form: {},
       // 表单校验
       rules: {
+        telphone: [
+          { required: true, trigger: 'blur', message: '手机号码不能为空' },
+          { validator: this.formValidate.telphone }
+        ],
+        identificationNumber: [
+          { required: true, trigger: 'blur', message: '身份证号不能为空' },
+          { validator: this.formValidate.idCard }
+        ],
         name: [
           { required: true, trigger: 'blur', message: '不能为空' }
         ]

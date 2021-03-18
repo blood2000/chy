@@ -36,8 +36,8 @@
             <el-form-item label="联系人" prop="name">
               <el-input v-model="form.name" placeholder="请输入联系人" class="input-width" clearable />
             </el-form-item>
-            <el-form-item label="联系电话" prop="name">
-              <el-input v-model="form.name" placeholder="请输入联系电话" class="input-width" clearable />
+            <el-form-item label="联系电话" prop="telphone">
+              <el-input v-model="form.telphone" placeholder="请输入联系电话" class="input-width" clearable />
             </el-form-item>
             <el-form-item label="公司介绍" prop="name">
               <el-input v-model="form.name" type="textarea" placeholder="请输入公司介绍" class="input-width-large" clearable />
@@ -110,7 +110,11 @@ export default {
           }
         ]
       },
-      rules: {}
+      rules: {
+        telphone: [
+          { validator: this.formValidate.telphone }
+        ]
+      }
     };
   },
   created() {

@@ -23,14 +23,14 @@
       <el-form-item label="地址名称" prop="addressName">
         <el-input v-model="form.addressName" placeholder="请输入地址名称" class="width90" />
       </el-form-item>
+      <el-form-item label="地址别名" prop="addressOtherName">
+        <el-input v-model="form.addressOtherName" placeholder="请输入地址别名" class="width90" />
+      </el-form-item>
       <el-form-item label="联系人" prop="userName">
         <el-input v-model="form.userName" placeholder="请输入联系人" class="width90" />
       </el-form-item>
       <el-form-item label="手机号码" prop="telphone">
         <el-input v-model="form.telphone" placeholder="请输入手机号码" class="width90" />
-      </el-form-item>
-      <el-form-item label="地址别名" prop="addressOtherName">
-        <el-input v-model="form.addressOtherName" placeholder="请输入地址别名" class="width90" />
       </el-form-item>
       <el-form-item label="地址详情" prop="addressDetail">
         <el-input v-model="form.addressDetail" placeholder="请输入地址详情" class="width90" />
@@ -90,7 +90,8 @@ export default {
           { required: true, message: '联系人不能为空', trigger: 'blur' }
         ],
         telphone: [
-          { required: true, message: '手机号码不能为空', trigger: 'blur' }
+          { required: true, message: '手机号码不能为空', trigger: 'blur' },
+          { validator: this.formValidate.telphone }
         ]
       }
     };

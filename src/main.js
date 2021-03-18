@@ -17,7 +17,7 @@ import './assets/icons'; // icon
 import './permission'; // permission control
 import { getDicts } from '@/api/system/dict/data';
 import { getConfigKey } from '@/api/system/config';
-import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree, certificateIsExpired } from '@/utils/ddc';
+import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree } from '@/utils/ddc';
 import Pagination from '@/components/Pagination';
 // 自定义表格工具扩展
 import RightToolbar from '@/components/RightToolbar';
@@ -28,6 +28,8 @@ import 'highlight.js/styles/github-gist.css';
 import TablecCascader from '@/components/Ddc/Tin/TablecCascader.vue';
 import RefactorTable from '@/components/Ddc/Tin/RefactorTable.vue';
 import { setLocalStorage, getLocalStorage, removeLocalStorage } from '@/utils/auth';
+// 表单校验
+import { formValidate } from '@/utils/formValidate';
 
 // 全局方法挂载
 Vue.prototype.getDicts = getDicts;
@@ -42,7 +44,7 @@ Vue.prototype.handleTree = handleTree;
 Vue.prototype.setLocalStorage = setLocalStorage;
 Vue.prototype.getLocalStorage = getLocalStorage;
 Vue.prototype.removeLocalStorage = removeLocalStorage;
-Vue.prototype.certificateIsExpired = certificateIsExpired;
+Vue.prototype.formValidate = formValidate;
 
 Vue.prototype.msgSuccess = function(msg) {
   this.$message({ showClose: true, message: msg, type: 'success' });

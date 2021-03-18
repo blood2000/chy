@@ -328,11 +328,16 @@ export default {
       form: {},
       // 表单校验
       rules: {
+        telphone: [
+          { validator: this.formValidate.telphone }
+        ],
         adminName: [
-          { required: true, message: '姓名不能为空', trigger: 'blur' }
+          { required: true, message: '姓名不能为空', trigger: 'blur' },
+          { validator: this.formValidate.name }
         ],
         identificationNumber: [
-          { required: true, message: '身份证号不能为空', trigger: 'blur' }
+          { required: true, message: '身份证号不能为空', trigger: 'blur' },
+          { validator: this.formValidate.idCard }
         ],
         companyName: [
           { required: true, message: '公司名称不能为空', trigger: 'blur' }
@@ -342,7 +347,7 @@ export default {
         ],
         identificationEndTime: [
           { required: true, message: '身份证有效期不能为空', trigger: 'blur' },
-          { validator: this.certificateIsExpired }
+          { validator: this.formValidate.isExpired }
         ]
       }
     };
