@@ -130,13 +130,13 @@ error => {
 );
 
 // 通用下载方法
-export function download(url, params, filename) {
+export function download(url, params, filename, headers) {
   return service.post(url, params, {
     transformRequest: [(params) => {
       return tansParams(params);
     }],
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
+      'Content-Type': headers || 'application/x-www-form-urlencoded'
     },
     responseType: 'blob'
   }).then((data) => {

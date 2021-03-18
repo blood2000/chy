@@ -415,9 +415,7 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('assets/driver/export', {
-        ...this.queryParams
-      }, `driver_${new Date().getTime()}.xlsx`);
+      this.download('assets/driver/export', {}, `driver_${new Date().getTime()}.xlsx`, 'application/json');
     },
     /** 批量导入按钮操作 */
     handleImportDriver() {
@@ -426,7 +424,7 @@ export default {
     },
     /** 下载模板 */
     handleImportTemplateDriver() {
-      this.download('assets/driver/importTemplate', {}, `driver_${new Date().getTime()}.xlsx`);
+      this.download('assets/driver/importTemplate', {}, `driver_template_${new Date().getTime()}.xlsx`);
     },
     /** 展开车辆列表 */
     handleExpand(row) {
