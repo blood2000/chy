@@ -58,6 +58,8 @@
         prop="ruleType"
         :formatter="ruleTypeFormat"
       />
+      <el-table-column label="扣费项目" align="center" />
+      <el-table-column label="补贴项目" align="center" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
           <el-button
