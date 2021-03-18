@@ -2,21 +2,27 @@
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button
-          type="info"
-          icon="el-icon-upload2"
-          size="mini"
-        >选择文件</el-button>
+        <el-upload
+          ref="upload"
+          class="upload-demo"
+          action="upload"
+          multiple
+          :on-change="change"
+          :auto-upload="false"
+          :show-file-list="false"
+          accept=".xls, .xlsx"
+          :on-success="success"
+          :headers="importHeader"
+          :http-request="uploadFile"
+          :file-list="fileList"
+        >
+          <template #trigger>
+            <el-button size="mini" type="info" icon="el-icon-document">选择文件</el-button>
+          </template>
+        </el-upload>
       </el-col>
       <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['enterprise:project:remove']"
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-        >删除</el-button>
+        <el-button icon="el-icon-upload2" size="mini" type="primary" @click="submitUpload">立即上传</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -29,33 +35,32 @@
       <!-- <right-toolbar :show-search.sync="showSearch" @queryTable="getList" /> -->
     </el-row>
 
-    <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <el-table-column label="文件名" align="center" prop="projectName" />
-      <el-table-column label="大小" align="center" prop="commodityCategoryCode" />
-      <el-table-column label="状态" align="center" prop="commoditySubclassCodes" />
+    <el-table v-loading="loading" :data="fileList">
+      <!-- <el-table-column type="selection" width="55" align="center" fixed="left" /> -->
+      <el-table-column label="文件名" align="center" prop="name" width="200" />
+      <el-table-column label="大小" align="center" prop="size">
+        <template slot-scope="scope">
+          <span>{{ (scope.row.size/1024).toFixed(1) }}kb</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="状态" align="center" prop="status" :formatter="statusFormatter" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
-            v-hasPermi="['enterprise:project:remove']"
             size="mini"
             type="text"
             icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
+            @click="handleDelete(scope.$index)"
           >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-
-    <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="submitForm">立即上传</el-button>
-      <el-button @click="cancel">取 消</el-button>
-    </div>
   </el-dialog>
 </template>
 
 <script>
-import { listInfo, delInfo } from '@/api/enterprise/project';
+import { getToken } from '@/utils/auth';
+import { importData } from '@/api/assets/driver';
 
 export default {
   components: {
@@ -80,8 +85,23 @@ export default {
       multiple: true,
       // 总条数
       total: 0,
+      // 状态字典
+      statusOptions: [
+        { dictLabel: '已选择', dictValue: 'ready' },
+        { dictLabel: '上传成功', dictValue: 'success' }
+      ],
       // 项目表格数据
-      infoList: []
+      fileList: [],
+      // 文件上传数据（多文件合一）
+      fileData: '',
+      // 请求头数据
+      importHeader: {
+        'Authorization': 'Bearer ' + getToken(),
+        'Produce-Code': '776ca8e240574192b6e0f69b417163df',
+        'App-Code': '3f78fbfc13b14fa4b3d78665124ef4bb',
+        'App-Version': '2.0',
+        'Terminal-Type': 'web'
+      }
     };
   },
   computed: {
@@ -95,12 +115,12 @@ export default {
     }
   },
   created() {
-    this.getList();
+    this.change();
   },
   methods: {
-    /** 提交按钮 */
-    submitForm() {
-      console.log('上传');
+    // 状态字典翻译
+    statusFormatter(row, column) {
+      return this.selectDictLabel(this.statusOptions, row.status);
     },
     /** 取消按钮 */
     cancel() {
@@ -109,35 +129,42 @@ export default {
     // 关闭弹窗
     close() {
 	    this.$emit('update:open', false);
+      this.$emit('refresh');
     },
-    /** 查询项目列表 */
-    getList() {
+    // 文件状态改变事件
+    change(file, fileList) {
       this.loading = true;
-      listInfo(this.queryParams).then(response => {
-        this.infoList = response.rows;
-        this.total = response.total;
-        this.loading = false;
-      });
+      this.fileList = fileList;
+      this.loading = false;
     },
-    // 多选框选中数据
-    handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id);
-      this.single = selection.length !== 1;
-      this.multiple = !selection.length;
+    // 文件成功上传事件
+    success(response, file, fileList) {
+      console.log(response);
     },
     /** 删除按钮操作 */
-    handleDelete(row) {
-      const ids = row.id || this.ids;
-      this.$confirm('是否确认删除项目编号为"' + ids + '"的数据项?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(function() {
-        return delInfo(ids);
-      }).then(() => {
-        this.getList();
-        this.msgSuccess('删除成功');
-      });
+    handleDelete(index) {
+      this.fileList.splice(index, 1);
+    },
+    // 选择文件操作
+    uploadFile(file) {
+		  this.fileData.append('files', file.file); // append增加数据
+    },
+    // 立即上传操作
+    submitUpload(file) {
+      if (this.fileList.length === 0) {
+	      this.$message({
+	        message: '请先选择文件',
+	        type: 'warning'
+	      });
+	    } else {
+	      this.fileData = new FormData(); // new formData对象
+	      this.$refs.upload.submit(); // 提交调用uploadFile函数
+        // 接口
+        importData(this.fileData).then((res) => {
+          this.$message(res.msg);
+          this.fileList = []; // 清除上传文件
+        });
+	    }
     },
     /** 下载模板 */
     handleImportTemplateDriver() {

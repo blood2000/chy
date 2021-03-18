@@ -60,3 +60,12 @@ export function examine(data) {
     data: data
   });
 }
+
+// 批量导入
+export function importData(data) {
+  return request({
+    url: '/assets/driver/importData',
+    method: 'post',
+    data: data
+  });
+}

@@ -3,16 +3,16 @@ import request from '@/utils/request';
 // 查询规则列表
 export function listRules(query) {
   return request({
-    url: '/system/config/list',
+    url: '/assets/balanceRule/findList',
     method: 'get',
     params: query
   });
 }
 
 // 查询规则详细
-export function getRules(id) {
+export function getRules(code) {
   return request({
-    url: `/assets/shipment/cargocode/${id}`,
+    url: `/assets/balanceRule/${code}`,
     method: 'get'
   });
 }
@@ -20,7 +20,7 @@ export function getRules(id) {
 // 新增规则
 export function addRules(data) {
   return request({
-    url: '/assets/shipment/cargocode',
+    url: '/assets/balanceRule/add',
     method: 'post',
     data: data
   });
@@ -29,8 +29,8 @@ export function addRules(data) {
 // 修改规则
 export function updateRules(data) {
   return request({
-    url: '/assets/shipment/cargocode',
-    method: 'put',
+    url: '/assets/balanceRule/edit',
+    method: 'post',
     data: data
   });
 }
@@ -38,7 +38,7 @@ export function updateRules(data) {
 // 删除规则
 export function delRules(ids) {
   return request({
-    url: `/assets/shipment/cargocode/${ids}`,
+    url: `/assets/balanceRule/${ids}`,
     method: 'delete'
   });
 }

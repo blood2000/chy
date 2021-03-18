@@ -194,7 +194,7 @@
             class="tree-border"
             :data="menuOptions"
             show-checkbox
-            node-key="code"
+            node-key="id"
             :check-strictly="!form.menuCheckStrictly"
             empty-text="加载中，请稍后"
             :props="defaultProps"
@@ -239,7 +239,7 @@
             :data="deptOptions"
             show-checkbox
             default-expand-all
-            node-key="code"
+            node-key="id"
             :check-strictly="!form.deptCheckStrictly"
             empty-text="加载中，请稍后"
             :props="defaultProps"
@@ -283,7 +283,7 @@ export default {
       open: false,
       // 是否显示弹出层（数据权限）
       openDataScope: false,
-	  menuExpand: false,
+	    menuExpand: false,
       menuNodeAll: false,
       deptExpand: true,
       deptNodeAll: false,

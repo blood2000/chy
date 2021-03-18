@@ -66,7 +66,7 @@
           >下载</el-button>
         </template>
       </el-table-column>
-      <el-table-column label="关联货源" align="center" prop="" />
+      <el-table-column label="关联的货源数" align="center" prop="relationOrderNum" />
       <!-- <el-table-column label="创建人" align="center" prop="createCode" />
       <el-table-column label="更新人" align="center" prop="updateCode" /> -->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">

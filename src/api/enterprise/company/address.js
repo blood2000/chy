@@ -42,3 +42,12 @@ export function delAddress(ids) {
     method: 'delete'
   });
 }
+
+// 设为默认地址
+export function defaultAddress(data) {
+  return request({
+    url: '/assets/shipment/address/updateTShipmentAddr',
+    method: 'post',
+    data: data
+  });
+}

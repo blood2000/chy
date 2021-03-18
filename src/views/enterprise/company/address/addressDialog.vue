@@ -23,17 +23,20 @@
       <el-form-item label="地址名称" prop="addressName">
         <el-input v-model="form.addressName" placeholder="请输入地址名称" class="width90" />
       </el-form-item>
+      <el-form-item label="地址别名" prop="addressOtherName">
+        <el-input v-model="form.addressOtherName" placeholder="请输入地址别名" class="width90" />
+      </el-form-item>
       <el-form-item label="联系人" prop="userName">
         <el-input v-model="form.userName" placeholder="请输入联系人" class="width90" />
       </el-form-item>
       <el-form-item label="手机号码" prop="telphone">
         <el-input v-model="form.telphone" placeholder="请输入手机号码" class="width90" />
       </el-form-item>
-      <el-form-item label="地址别名" prop="addressOtherName">
-        <el-input v-model="form.addressOtherName" placeholder="请输入地址别名" class="width90" />
-      </el-form-item>
       <el-form-item label="地址详情" prop="addressDetail">
         <el-input v-model="form.addressDetail" placeholder="请输入地址详情" class="width90" />
+      </el-form-item>
+      <el-form-item label="设为默认地址" prop="isDefault">
+        <el-switch v-model="form.isDefault" />
       </el-form-item>
       <el-form-item label="备注" prop="remark">
         <el-input v-model="form.remark" type="textarea" placeholder="请输入备注" class="width90" />
@@ -87,7 +90,8 @@ export default {
           { required: true, message: '联系人不能为空', trigger: 'blur' }
         ],
         telphone: [
-          { required: true, message: '手机号码不能为空', trigger: 'blur' }
+          { required: true, message: '手机号码不能为空', trigger: 'blur' },
+          { validator: this.formValidate.telphone }
         ]
       }
     };
@@ -118,15 +122,20 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
+          if (this.form.isDefault) {
+            this.form.isDefault = 1;
+          } else {
+            this.form.isDefault = 0;
+          }
           if (this.form.code != null) {
-            addAddress(this.form).then(response => {
-              this.msgSuccess('新增成功');
+            updateAddress(this.form).then(response => {
+              this.msgSuccess('修改成功');
               this.close();
               this.$emit('refresh');
             });
           } else {
-            updateAddress(this.form).then(response => {
-              this.msgSuccess('修改成功');
+            addAddress(this.form).then(response => {
+              this.msgSuccess('新增成功');
               this.close();
               this.$emit('refresh');
             });
@@ -168,6 +177,11 @@ export default {
     // 表单赋值
     setForm(data) {
       this.form = data;
+      if (this.form.isDefault) {
+        this.form.isDefault = true;
+      } else {
+        this.form.isDefault = false;
+      }
     }
   }
 };

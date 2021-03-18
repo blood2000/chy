@@ -18,7 +18,7 @@ const service = axios.create({
 const produceCode = '776ca8e240574192b6e0f69b417163df';// 产品编码
 const appCode = '3f78fbfc13b14fa4b3d78665124ef4bb';// 应用编码
 const appVersion = '2.0';// 应用版本
-const terminalType = 2;// 终端类别（0其它 1:app 2:web 3:微信小程序）
+const terminalType = 'web';// 终端类别（0其它 1:app 2:web 3:微信小程序）
 const terminalDeviceBrand = '1';// 手机厂商-app
 const terminalSystemModel = '2';// 手机型号-app
 const terminalSystemVersion = '3';// 系统版本号-app
@@ -130,13 +130,13 @@ error => {
 );
 
 // 通用下载方法
-export function download(url, params, filename) {
+export function download(url, params, filename, headers) {
   return service.post(url, params, {
     transformRequest: [(params) => {
       return tansParams(params);
     }],
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
+      'Content-Type': headers || 'application/x-www-form-urlencoded'
     },
     responseType: 'blob'
   }).then((data) => {

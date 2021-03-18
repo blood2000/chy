@@ -42,25 +42,25 @@
           <el-divider content-position="left"><span class="supplement-title">承运车辆</span></el-divider>
           <el-row>
             <el-col :span="8">
-              <el-form-item label="车牌号" prop="waybillCode">
-                <el-input v-model="form.waybillCode" placeholder="请输入车牌号" class="width90" />
+              <el-form-item label="车牌号" prop="licenseNumber">
+                <el-input v-model="form.licenseNumber" placeholder="请输入车牌号" class="width90" @change="handleVehicle" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="运输许可号" prop="waybillCode">
-                <el-input v-model="form.waybillCode" :readonly="true" class="width90" />
+              <el-form-item label="运输许可号" prop="chassisNumber">
+                <el-input v-model="form.chassisNumber" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="车辆载重" prop="waybillCode">
-                <el-input v-model="form.waybillCode" :readonly="true" class="width90" />
+              <el-form-item label="车辆载重" prop="vehicleLoadWeight">
+                <el-input v-model="form.vehicleLoadWeight" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="8">
-              <el-form-item label="车辆代码" prop="waybillCode">
-                <el-input v-model="form.waybillCode" :readonly="true" class="width90" />
+              <el-form-item label="车辆代码" prop="code">
+                <el-input v-model="form.code" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -258,6 +258,10 @@ export default {
     handleDownload() {
       console.log('点击了下载模板按钮');
     //   this.download('assets/driver/importTemplate', {}, `driver_${new Date().getTime()}.xlsx`);
+    },
+    // 查询输出车辆信息
+    handleVehicle(e) {
+      console.log(e);
     }
   }
 };
