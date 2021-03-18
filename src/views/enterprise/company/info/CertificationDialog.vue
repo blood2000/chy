@@ -23,6 +23,7 @@
       <!-- 选择省/市/区 -->
       <province-city-county
         ref="ChooseArea"
+        :visible="visible"
         :prop-province-code="form.provinceCode"
         :prop-city-code="form.cityCode"
         :prop-county-code="form.countyCode"
@@ -129,14 +130,12 @@ export default {
 
       };
       this.resetForm('form');
-      this.$refs.ChooseArea.reset();
     },
     // 表单赋值
     setForm() {
       this.form = {
 
       };
-      this.$refs.ChooseArea.setForm();
     }
   }
 };

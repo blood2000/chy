@@ -6,7 +6,6 @@
           v-model="form.shipperType"
           class="width90"
           clearable
-          size="small"
         >
           <el-option
             v-for="dict in typeOptions"
@@ -17,23 +16,22 @@
         </el-select>
       </el-form-item>
       <el-form-item label="手机号码" prop="telphone">
-        <el-input v-model="form.telphone" placeholder="请输入手机号" size="small" class="width90" clearable />
+        <el-input v-model="form.telphone" placeholder="请输入手机号" class="width90" clearable />
       </el-form-item>
       <el-form-item label="密码" prop="password">
-        <el-input v-model="form.password" type="password" placeholder="请输入密码" class="width60 mr3" size="small" clearable />
+        <el-input v-model="form.password" type="password" placeholder="请输入密码" class="width60 mr3" clearable />
         <span class="g-color-blue">(初始密码为{{ initialPassword }})</span>
       </el-form-item>
       <el-form-item label="姓名" prop="adminName">
-        <el-input v-model="form.adminName" placeholder="支持自动识别" size="small" class="width90" clearable />
+        <el-input v-model="form.adminName" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
       <el-form-item label="身份证号" prop="identificationNumber">
-        <el-input v-model="form.identificationNumber" placeholder="支持自动识别" size="small" class="width90" clearable />
+        <el-input v-model="form.identificationNumber" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
       <el-form-item label="身份证有效期" prop="identificationEndTime">
         <el-date-picker
           v-model="form.identificationBeginTime"
           clearable
-          size="small"
           class="width28"
           type="date"
           value-format="yyyy-MM-dd"
@@ -43,7 +41,6 @@
         <el-date-picker
           v-model="form.identificationEndTime"
           clearable
-          size="small"
           class="width28 mr3"
           type="date"
           value-format="yyyy-MM-dd"
@@ -53,16 +50,17 @@
       </el-form-item>
       <template v-if="form.shipperType === 1">
         <el-form-item label="公司名称" prop="companyName">
-          <el-input v-model="form.companyName" placeholder="请输入公司名称" size="small" class="width90" clearable />
+          <el-input v-model="form.companyName" placeholder="请输入公司名称" class="width90" clearable />
         </el-form-item>
         <el-form-item label="统一社会信用代码" prop="organizationCodeNo">
-          <el-input v-model="form.organizationCodeNo" placeholder="请输入统一社会信用代码" size="small" class="width90" clearable />
+          <el-input v-model="form.organizationCodeNo" placeholder="请输入统一社会信用代码" class="width90" clearable />
         </el-form-item>
       </template>
 
       <!-- 选择省/市/区 -->
       <province-city-county
         ref="ChooseArea"
+        :visible="visible"
         :disabled="disable"
         :prop-province-code="form.provinceCode"
         :prop-city-code="form.cityCode"
@@ -75,13 +73,13 @@
       />
 
       <el-form-item label="详细地址" prop="area">
-        <el-input v-model="form.area" clearable placeholder="支持自动识别" size="small" class="width90" />
+        <el-input v-model="form.area" clearable placeholder="支持自动识别" class="width90" />
       </el-form-item>
       <!-- <el-form-item label="营业执照号" prop="businessLicenseNo">
-        <el-input v-model="form.businessLicenseNo" placeholder="请输入营业执照号" size="small" class="width90" clearable />
+        <el-input v-model="form.businessLicenseNo" placeholder="请输入营业执照号" class="width90" clearable />
       </el-form-item>
       <el-form-item label="法人身份证" prop="artificialIdentificationNumber">
-        <el-input v-model="form.artificialIdentificationNumber" placeholder="请输入法人身份证" size="small" class="width90" clearable />
+        <el-input v-model="form.artificialIdentificationNumber" placeholder="请输入法人身份证" class="width90" clearable />
       </el-form-item> -->
       <el-form-item>
         <el-row>
@@ -111,7 +109,6 @@
         <el-select
           v-model="form.isFreezone"
           clearable
-          size="small"
           class="width90"
         >
           <el-option
@@ -126,7 +123,6 @@
         <el-select
           v-model="form.ticketType"
           clearable
-          size="small"
           class="width90"
         >
           <el-option
@@ -138,13 +134,12 @@
         </el-select>
       </el-form-item>
       <el-form-item label="服务费比例" prop="serviceRatio">
-        <el-input v-model="form.serviceRatio" placeholder="请输入服务费比例" size="small" class="width90" clearable />
+        <el-input v-model="form.serviceRatio" placeholder="请输入服务费比例" class="width90" clearable />
       </el-form-item>
       <el-form-item label="货源是否审核" prop="supplyIsAuth">
         <el-select
           v-model="form.supplyIsAuth"
           clearable
-          size="small"
           class="width90"
         >
           <el-option
@@ -159,7 +154,6 @@
         <el-select
           v-model="form.isAccount"
           clearable
-          size="small"
           class="width90"
         >
           <el-option
@@ -171,7 +165,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="核算方式" prop="accountType">
-        <el-select v-model="form.accountType" placeholder="请选择核算方式" clearable size="small" class="width90">
+        <el-select v-model="form.accountType" placeholder="请选择核算方式" clearable class="width90">
           <el-option
             v-for="dict in accountTypeOptions"
             :key="dict.dictValue"
@@ -181,13 +175,12 @@
         </el-select>
       </el-form-item>
       <el-form-item label="调度费点数" prop="dispatchPoints">
-        <el-input v-model="form.dispatchPoints" placeholder="请输入调度费点数" clearable size="small" class="width90" />
+        <el-input v-model="form.dispatchPoints" placeholder="请输入调度费点数" clearable class="width90" />
       </el-form-item>
       <el-form-item label="是否抹零" prop="isWipe">
         <el-select
           v-model="form.isWipe"
           clearable
-          size="small"
           class="width28 mr3"
         >
           <el-option
@@ -197,7 +190,7 @@
             :value="dict.dictValue"
           />
         </el-select>
-        <el-select v-model="form.wipeType" placeholder="请选择抹零方式" clearable size="small" class="width28">
+        <el-select v-model="form.wipeType" placeholder="请选择抹零方式" clearable class="width28">
           <el-option
             v-for="dict in wipeTypeOptions"
             :key="dict.dictValue"
@@ -211,7 +204,6 @@
         <el-select
           v-model="form.isConsumption"
           clearable
-          size="small"
           class="width28 mr3"
         >
           <el-option
@@ -224,7 +216,6 @@
         <el-select
           v-model="form.consumptionUnit"
           clearable
-          size="small"
           class="width28 mr3"
           placeholder="路耗单位"
         >
@@ -235,15 +226,14 @@
             :value="dict.dictValue"
           />
         </el-select>
-        <el-input v-model="form.consumptionMin" placeholder="最小值" size="small" class="width12" />
+        <el-input v-model="form.consumptionMin" placeholder="最小值" class="width12" />
         至
-        <el-input v-model="form.consumptionMax" placeholder="最大值" size="small" class="width12" />
+        <el-input v-model="form.consumptionMax" placeholder="最大值" class="width12" />
       </el-form-item>
       <el-form-item label="是否月结" prop="isMonthly">
         <el-select
           v-model="form.isMonthly"
           clearable
-          size="small"
           class="width28 mr3"
         >
           <el-option
@@ -253,13 +243,12 @@
             :value="dict.dictValue"
           />
         </el-select>
-        <el-input v-model="form.creditAmount" placeholder="授信金额(保留两位小数)" size="small" class="width28" />
+        <el-input v-model="form.creditAmount" placeholder="授信金额(保留两位小数)" class="width28" />
       </el-form-item>
       <el-form-item label="是否预付运费" prop="isPrepaid">
         <el-select
           v-model="form.isPrepaid"
           clearable
-          size="small"
           class="width90"
         >
           <el-option
@@ -492,9 +481,6 @@ export default {
         supplyIsAuth: null
       };
       this.resetForm('form');
-      this.$nextTick(() => {
-        this.$refs.ChooseArea.reset();
-      });
     },
     // 表单赋值
     setForm(data) {
@@ -507,9 +493,6 @@ export default {
       if (data.password === null || data.password === undefined || data.password === '') {
         this.form.password = this.initialPassword;
       }
-      this.$nextTick(() => {
-        this.$refs.ChooseArea.setForm();
-      });
     },
     // 已读
     authRead(data) {

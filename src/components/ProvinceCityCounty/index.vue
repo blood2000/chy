@@ -65,6 +65,7 @@
     <province-city-county
       ref="ChooseArea"
       :label-width="'140px'"
+      :visible="visible"
       :required="true"
       :disabled="false"
       :prop-province-code="form.provinceCode"
@@ -78,10 +79,7 @@
     />
 
   表单验证：this.$refs.ChooseArea.submit();
-  表单重置：this.$refs.ChooseArea.reset();
-  表单赋值：this.$refs.ChooseArea.setForm();
 
-  注意事项：必要的时候用this.$nextTick确保ref指向的组件已经初始化
 */
 import { getProvinceList, getCityList, geCountyList } from '@/api/system/area';
 export default {
@@ -90,6 +88,7 @@ export default {
       type: String,
       default: '140px'
     },
+    visible: Boolean,
     required: {
       type: Boolean,
       default: true
@@ -138,7 +137,17 @@ export default {
       countyCodeOptions: []
     };
   },
+  watch: {
+    visible(val) {
+      if (val) {
+        this.reset();
+        this.setForm();
+      }
+    }
+  },
   created() {
+    this.reset();
+    this.setForm();
     getProvinceList().then((response) => {
       this.provinceCodeOptions = response.rows;
     });
