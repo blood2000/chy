@@ -81,7 +81,7 @@
     <el-table
       v-loading="loading"
       :data="dataList"
-      row-key="id"
+      row-key="dictCode"
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       @selection-change="handleSelectionChange"
     >
@@ -259,8 +259,8 @@ export default {
     getList() {
       this.loading = true;
       treeListData(this.queryParams).then(response => {
-        this.dataList = response.rows;
-        this.total = response.total;
+        this.dataList = response.data;
+        // this.total = response.total;
         this.loading = false;
       });
     },
