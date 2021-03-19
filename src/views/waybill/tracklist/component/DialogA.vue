@@ -60,11 +60,6 @@ export default {
     },
     open: Boolean,
     disable: Boolean
-
-    // initdata: {
-    //   type: Object,
-    //   required: true
-    // }
   },
   data() {
     return {
@@ -94,12 +89,11 @@ export default {
     }
   },
   created() {
-    // console.log(this.initdata);
   },
   methods: {
     // 获取地址信息
     getAddress() {
-      getAddress(this.waybill.mainOrderNumber).then(response => {
+      getAddress(this.waybill.goodsCode).then(response => {
         this.waybillAddressOptions = response;
         console.log(this.waybillAddressOptions);
       });

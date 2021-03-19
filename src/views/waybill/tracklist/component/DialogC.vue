@@ -14,13 +14,26 @@
       <el-form-item label="卸货重量" prop="loadWeight">
         <el-input-number v-model="form.loadWeight" placeholder="请输入卸货重量" controls-position="right" :min="0" style="width:90%;" />
       </el-form-item>
-
-      <el-form-item label="卸货单据" prop="picture">
-        <uploadImage v-model="form.picture" />
-      </el-form-item>
-
+      <!-- <el-form-item label="装货地址" prop="waybillAddress">
+        <el-select
+          v-model="form.waybillAddress"
+          placeholder="请选择车辆装货地址"
+          clearable
+          size="small"
+        >
+          <el-option
+            v-for="dict in waybillAddressOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item> -->
       <el-form-item label="卸货备注" prop="remark">
         <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入装货备注信息" />
+      </el-form-item>
+      <el-form-item label="卸货单据" prop="picture">
+        <uploadImage v-model="form.picture" />
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -45,18 +58,15 @@ export default {
       default: ''
     },
     open: Boolean,
-    disable: Boolean,
-
-    initdata: {
-      type: Object,
-      required: true
-    }
+    disable: Boolean
   },
   data() {
     return {
       // 表单参数
       form: {
       },
+      // 运单信息
+      waybill: {},
       // 表单校验
       rules: {
         tin1: [
@@ -79,7 +89,7 @@ export default {
   methods: {
     // 获取地址信息
     getAddress() {
-      getAddress(this.initdata.mainOrderNumber).then(response => {
+      getAddress(this.waybill.goodsCode).then(response => {
         this.waybillAddressOptions = response;
         console.log(this.waybillAddressOptions);
       });
@@ -128,7 +138,8 @@ export default {
     },
     // 表单赋值
     setForm(data) {
-      this.form = data;
+      this.waybill = data;
+      console.log(this.waybill);
     }
   }
 };

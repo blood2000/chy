@@ -13,6 +13,7 @@ export default [
   {
     prop: 'mainOrderNumber',
     isShow: true,
+    width: 180,
     label: '货源单号'
   },
   {

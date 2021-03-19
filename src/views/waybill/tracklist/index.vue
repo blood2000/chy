@@ -289,12 +289,13 @@
 
 
     <!-- 车辆装货 / 补装货凭证 -->
-    <dialog-a ref="DialogA" :open.sync="dialoga" :title="titlea" :initdata="dialogadata" @refresh="getList" />
+    <dialog-a ref="DialogA" :open.sync="dialoga" :title="titlea" @refresh="getList" />
     <!-- 车辆卸货 / 补卸货凭证 -->
-    <dialog-c ref="DialogC" :open.sync="dialogc" :title="titlec" :initdata="dialogcdata" @refresh="getList" />
+    <dialog-c ref="DialogC" :open.sync="dialogc" :title="titlec" @refresh="getList" />
     <!-- 投诉 -->
-    <dialog-b ref="DialogB" :open.sync="dialogb" :title="titleb" :initdata="dialogbdata" @refresh="getList" />
-
+    <dialog-b ref="DialogB" :open.sync="dialogb" :title="titleb" @refresh="getList" />
+    <!-- 取消订单 -->
+    <cancel-dialog ref="CancelDialog" :open.sync="canceldialog" :title="title" @refresh="getList" />
 
     <!-- <el-dialog :title="title" :visible.sync="visible" :width="dialogWidth" append-to-body>
       <div>{{ activeName }}</div>
@@ -306,13 +307,17 @@
 <script>
 import tableColumnsConfig from './data/tracklist-index';
 import { trackList } from '@/api/waybill/tracklist';
+// 车辆装货弹窗
 import DialogA from './component/DialogA';
 import DialogB from './component/DialogB';
+// 车辆卸货弹窗
 import DialogC from './component/DialogC';
+// 取消订单弹窗
+import CancelDialog from './component/cancelDialog';
 
 export default {
   'name': 'Tracklist',
-  components: { DialogA, DialogB, DialogC },
+  components: { DialogA, DialogB, DialogC, CancelDialog },
   data() {
     return {
       tableColumnsConfig,
@@ -355,6 +360,7 @@ export default {
       dialogbdata: {},
       dialogc: false,
       dialogcdata: {},
+      canceldialog: false,
       titlea: '',
       titleb: '',
       titlec: '',
@@ -411,20 +417,9 @@ export default {
       this.resetForm('queryForm');
       this.handleQuery();
     },
-    /** 修改按钮操作 */
-    // handleUpdate(row) {
-    //   this.$refs.VehicleDialog.reset();
-    //   const id = row.id || this.ids;
-    //   getInfo(id).then((response) => {
-    //     this.$refs.VehicleDialog.setForm(response.data);
-    //     this.open = true;
-    //     this.title = '修改车辆';
-    //     this.formDisable = false;
-    //   });
-    // },
 
     handleTableBtn(row, index) {
-      console.log(row, index);
+      // console.log(row, index);
 
       this.visible = true;
       switch (index) {
@@ -439,20 +434,21 @@ export default {
           this.$refs.DialogC.reset();
           this.dialogc = true;
           this.titlec = '车辆卸货';
-          this.dialogcdata = { ...row, myType: 2 };
+          this.$refs.DialogC.setForm(row);
           break;
         case 3:
-          this.titlea = '取消运单';
+          this.$refs.CancelDialog.reset();
+          this.canceldialog = true;
+          this.title = '取消运单';
+          this.$refs.CancelDialog.setForm(row);
           break;
         case 4:
           this.dialoga = true;
           this.titlea = '补装货凭证';
-          this.dialogadata = { ...row, myType: 3 };
           break;
         case 5:
           this.dialogc = true;
           this.titlec = '补卸货凭证';
-          this.dialogcdata = { ...row, myType: 4 };
           break;
         case 6:
           this.title = '定位';
@@ -463,12 +459,9 @@ export default {
         case 8:
           this.dialogb = true;
           this.titleb = '投诉';
-          this.dialogbdata = { ...row, myType: 5 };
           break;
         case 9:
           this.dialogb = true;
-          this.dialogbdata = { ...row, myType: 6 };
-          console.log(this.dialogbdata);
           this.titleb = '评价';
           break;
         default:
