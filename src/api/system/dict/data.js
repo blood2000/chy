@@ -50,3 +50,12 @@ export function delData(dictCode) {
     method: 'delete'
   });
 }
+
+// tin 查询字典类
+export function listByDict(data) {
+  return request({
+    url: '/system/dict/data/listByDict',
+    method: 'post',
+    data: data
+  });
+}
