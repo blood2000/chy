@@ -73,6 +73,7 @@ export default {
     },
     /**
      * 选择增项的时候,已选择的增项回显,已选择的减项不可选
+     * 选择减项的时候,已选择的减项回显,已选择的增项不可选
      */
     setForm() {
       if (this.itemType === 'add') {
@@ -127,7 +128,7 @@ export default {
       this.$emit('refresh', this.itemType, arr);
       this.close();
     },
-    // 取消按钮zhen
+    // 取消按钮
     cancel() {
       this.close();
     },
