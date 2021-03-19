@@ -3,7 +3,7 @@
     <el-checkbox-group v-model="checkGroup" size="medium" class="ml20">
       <el-row>
         <el-col v-for="item in formGroup" :key="item.code" class="mb20">
-          <el-checkbox :label="item.name" :disabled="item.disabled" border />
+          <el-checkbox :label="item.cnName" :disabled="item.disabled" border />
         </el-col>
       </el-row>
     </el-checkbox-group>
@@ -15,6 +15,8 @@
 </template>
 
 <script>
+import { getRuleItemList } from '@/api/enterprise/rules';
+
 export default {
   props: {
     open: Boolean,
@@ -37,14 +39,7 @@ export default {
   },
   data() {
     return {
-      formGroup: [
-        { name: '装车费', code: 'zcf', disabled: false },
-        { name: '卸车费', code: 'xcf', disabled: false },
-        { name: '油费', code: 'yf', disabled: false },
-        { name: 'ETC费', code: 'etcf', disabled: false },
-        { name: '超时费', code: 'csf', disabled: false },
-        { name: '扣回单费', code: 'khdf', disabled: false }
-      ],
+      formGroup: [],
       checkGroup: []
     };
   },
@@ -65,7 +60,18 @@ export default {
       this.setForm();
     }
   },
+  created() {
+    this.getList();
+  },
   methods: {
+    getList() {
+      getRuleItemList({ ruleType: 0 }).then(response => {
+        this.formGroup = response.data.list;
+        this.formGroup.forEach(el => {
+          el.disabled = false;
+        });
+      });
+    },
     reset() {
       this.formGroup.forEach(el => {
         el.disabled = false;
@@ -82,14 +88,14 @@ export default {
           this.checkGroup = [];
         } else {
           const arr = this.addCheckedItem.map(el => {
-            return el.name;
+            return el.cnName;
           });
           this.checkGroup = arr;
         }
         // 设置disable
         for (let i = 0; i < this.formGroup.length; i++) {
           for (let j = 0; j < this.reduceCheckedItem.length; j++) {
-            if (this.reduceCheckedItem[j].name === this.formGroup[i].name) {
+            if (this.reduceCheckedItem[j].cnName === this.formGroup[i].cnName) {
               this.formGroup[i].disabled = true;
               this.$set(this.formGroup[i], 'disabled', true);
             }
@@ -101,14 +107,14 @@ export default {
           this.checkGroup = [];
         } else {
           const arr = this.reduceCheckedItem.map(el => {
-            return el.name;
+            return el.cnName;
           });
           this.checkGroup = arr;
         }
         // 设置disable
         for (let i = 0; i < this.formGroup.length; i++) {
           for (let j = 0; j < this.addCheckedItem.length; j++) {
-            if (this.addCheckedItem[j].name === this.formGroup[i].name) {
+            if (this.addCheckedItem[j].cnName === this.formGroup[i].cnName) {
               this.$set(this.formGroup[i], 'disabled', true);
             }
           }
@@ -120,7 +126,7 @@ export default {
       const arr = [];
       for (let i = 0; i < this.formGroup.length; i++) {
         for (let j = 0; j < this.checkGroup.length; j++) {
-          if (this.checkGroup[j] === this.formGroup[i].name) {
+          if (this.checkGroup[j] === this.formGroup[i].cnName) {
             arr.push(this.formGroup[i]);
           }
         }

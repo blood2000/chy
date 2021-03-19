@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
-      <el-form-item label="规则名称" prop="ruleName">
+      <el-form-item label="规则名称" prop="name">
         <el-input
-          v-model="queryParams.ruleName"
+          v-model="queryParams.name"
           placeholder="请输入规则名称"
           clearable
           size="small"
@@ -51,11 +51,11 @@
 
     <el-table v-loading="loading" :data="rulesList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <el-table-column label="规则名称" align="center" prop="ruleName" />
+      <el-table-column label="规则名称" align="center" prop="name" />
       <el-table-column
         label="计算公式"
         align="center"
-        prop="ruleType"
+        prop="ruleDictType"
         :formatter="ruleTypeFormat"
       />
       <el-table-column label="扣费项目" align="center" />
@@ -133,37 +133,27 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        userCode: 'ca8b3f3528a34365b41ad4cdb2074f67',
-        ruleName: null,
-        ruleType: null,
-        isLoss: null,
-        lossType: null,
-        lossStart: null,
-        lossEnd: null,
-        lossCalculateType: null,
-        wipeOffType: null,
-        createCode: null,
-        updateCode: null,
-        isDel: null
+        shipperCode: 'ca8b3f3528a34365b41ad4cdb2074f67',
+        name: null
       }
     };
   },
   created() {
-    // this.getList();
+    this.getList();
   },
   methods: {
     /** 查询列表 */
     getList() {
       this.loading = true;
       listRules(this.queryParams).then(response => {
-        this.rulesList = response.rows;
-        this.total = response.total;
+        this.rulesList = response.data.list;
+        this.total = response.data.total;
         this.loading = false;
       });
     },
     // 计算公式字典翻译
     ruleTypeFormat(row, column) {
-      return this.selectDictLabel(this.ruleTypeOptions, row.ruleType);
+      return this.selectDictLabel(this.ruleTypeOptions, row.ruleDictType);
     },
     /** 搜索按钮操作 */
     handleQuery() {

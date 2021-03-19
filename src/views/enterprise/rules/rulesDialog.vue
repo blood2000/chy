@@ -1,16 +1,16 @@
 <template>
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" label-width="80px" label-position="left">
+    <el-form ref="form" :model="form" :rules="rules" label-width="120px" label-position="left">
       <el-row>
         <el-col :span="12">
-          <el-form-item label="规则名称" prop="ruleName">
-            <el-input v-model="form.ruleName" placeholder="请输入规则名称" class="width-small" clearable />
+          <el-form-item label="规则名称" prop="name">
+            <el-input v-model="form.name" placeholder="请输入规则名称" class="width-small" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="计算公式" prop="ruleType">
+          <el-form-item label="计算公式" prop="ruleDictType">
             <el-select
-              v-model="form.ruleType"
+              v-model="form.ruleDictType"
               placeholder="请选择计算公式"
               class="width-small mr3"
               clearable
@@ -44,25 +44,15 @@
         <el-switch v-model="form.isLoss" class="isLoss-switch" />
       </h5>
       <el-divider />
-      <el-row v-show="form.isLoss">
-        <el-form-item label="计算方式" prop="lossType">
-          <el-select v-model="form.lossType" placeholder="请选择计算方式" class="width-small" clearable>
-            <el-option
-              v-for="dict in lossTypeOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="容忍值">
-          <el-input v-model="form.lossStart" placeholder="最小值" class="width-small" clearable />
-          吨 ~
-          <el-input v-model="form.lossEnd" placeholder="最大值" class="width-small" clearable />
-          吨
-        </el-form-item>
-        <el-form-item label="规则" prop="lossCalculateType">
-          <el-select v-model="form.lossCalculateType" placeholder="请选择" class="width-small" clearable>
+      <el-row>
+        <el-form-item v-for="item in form.lossItem" :key="item.code" :label="item.cnName" :prop="item.code">
+          <el-input v-model="form.lossItemObj[item.code]" :placeholder="`请输入${item.cnName}`" class="width-small" clearable />
+          <!-- <template v-if="item.showType === 2">
+            <el-input v-model="form.lossItemObj[item.code]" placeholder="最小值" class="width-small" clearable />
+            -
+            <el-input v-model="form.lossItemObj[item.code]" placeholder="最大值" class="width-small" clearable />
+          </template>
+          <el-select v-if="item.showType === 3" v-model="form.lossItemObj[item.code]" class="width-small" clearable>
             <el-option
               v-for="dict in lossCalculateTypeOptions"
               :key="dict.dictValue"
@@ -70,6 +60,13 @@
               :value="dict.dictValue"
             />
           </el-select>
+          <el-radio-group v-if="item.showType === 4" v-model="form.lossItemObj[item.code]">
+            <el-radio
+              v-for="dict in lossCalculateTypeOptions"
+              :key="dict.dictValue"
+              :label="parseInt(dict.dictValue)"
+            >{{ dict.dictLabel }}</el-radio>
+          </el-radio-group> -->
         </el-form-item>
       </el-row>
       <!-- 减项 -->
@@ -89,8 +86,8 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-for="item in form.reduceItem" :key="item.code" :label="item.name" :prop="item.code">
-          <el-input v-model="item.code" :placeholder="`请输入${item.name}`" class="width-small mr3" clearable />
+        <el-form-item v-for="item in form.reduceItem" :key="item.code" :label="item.cnName" :prop="item.code">
+          <el-input v-model="item.enName" :placeholder="`请输入${item.cnName}`" class="width-small mr3" clearable />
           <el-button type="danger" plain icon="el-icon-delete" size="mini" circle @click="deleteItem('reduce', item.code)" />
         </el-form-item>
       </el-row>
@@ -101,8 +98,8 @@
       </h5>
       <el-divider />
       <el-row>
-        <el-form-item v-for="item in form.addItem" :key="item.code" :label="item.name" :prop="item.code">
-          <el-input v-model="item.code" :placeholder="`请输入${item.name}`" class="width-small mr3" clearable />
+        <el-form-item v-for="item in form.addItem" :key="item.code" :label="item.cnName" :prop="item.code">
+          <el-input v-model="item.enName" :placeholder="`请输入${item.cnName}`" class="width-small mr3" clearable />
           <el-button type="danger" plain icon="el-icon-delete" size="mini" circle @click="deleteItem('add', item.code)" />
         </el-form-item>
       </el-row>
@@ -124,7 +121,7 @@
 </template>
 
 <script>
-import { addRules, updateRules } from '@/api/enterprise/rules';
+import { addRules, updateRules, getRuleItemList } from '@/api/enterprise/rules';
 import chooseItemDialog from './chooseItemDialog.vue';
 
 export default {
@@ -171,7 +168,9 @@ export default {
       // 表单参数
       form: {
         addItem: [],
-        reduceItem: []
+        reduceItem: [],
+        lossItem: [],
+        lossItemObj: {}
       },
       // 表单校验
       rules: {},
@@ -190,22 +189,47 @@ export default {
       }
     }
   },
-  create() {
-
+  mounted() {
+    this.$nextTick(_ => {
+      this.getList();
+    });
   },
   methods: {
+    // 获取路耗表单list
+    getList() {
+      getRuleItemList({ ruleType: 1 }).then(response => {
+        this.$set(this.form, 'lossItem', response.data.list);
+        this.form.lossItem.forEach(el => {
+          this.$set(this.form.lossItemObj, el.code, null);
+          this.form.lossItemObj[el.code] = null;
+        });
+      });
+      console.log(this.form);
+    },
     // 提交按钮
     submitForm() {
       this.$refs['form'].validate(valid => {
+        // 构造参数
+        const params = {
+          name: this.form.name,
+          ruleDictType: this.form.ruleDictType,
+          shipperCode: this.form.shipperCode,
+          detailList: [{
+            ruleCode: '',
+            ruleItemCode: '',
+            ruleValue: '',
+            type: 1
+          }]
+        };
         if (valid) {
-          if (this.form.userCode != null) {
-            updateRules(this.form).then(response => {
+          if (this.form.code != null) {
+            updateRules(params).then(response => {
               this.msgSuccess('修改成功');
               this.close();
               this.$emit('getList');
             });
           } else {
-            addRules(this.form).then(response => {
+            addRules(params).then(response => {
               this.msgSuccess('新增成功');
               this.close();
               this.$emit('getList');
@@ -226,20 +250,15 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        userCode: null,
-        ruleName: null,
-        ruleType: null,
+        code: null,
+        shipperCode: 'ca8b3f3528a34365b41ad4cdb2074f67',
+        name: null,
+        ruleDictType: null,
         isLoss: true,
-        lossType: null,
-        lossStart: null,
-        lossEnd: null,
-        lossCalculateType: null,
-        wipeOffType: null,
-        createCode: null,
-        createTime: null,
-        updateCode: null,
-        updateTime: null,
-        isDel: null
+        addItem: [],
+        reduceItem: [],
+        lossItem: [],
+        lossItemObj: {}
       };
       this.resetForm('form');
     },
