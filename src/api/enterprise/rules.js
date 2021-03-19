@@ -29,17 +29,18 @@ export function addRules(data) {
 // 修改规则
 export function updateRules(data) {
   return request({
-    url: '',
-    method: 'post',
+    url: '/transportation/ruleInfoShipment/update',
+    method: 'put',
     data: data
   });
 }
 
 // 删除规则
-export function delRules(ids) {
+export function delRules(data) {
   return request({
-    url: `/assets/balanceRule/${ids}`,
-    method: 'delete'
+    url: `/transportation/ruleInfoShipment/delete`,
+    method: 'delete',
+    params: data
   });
 }
 

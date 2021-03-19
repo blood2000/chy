@@ -44,17 +44,17 @@
         <el-switch v-model="form.isLoss" class="isLoss-switch" />
       </h5>
       <el-divider />
-      <el-row>
+      <el-row v-show="form.isLoss">
         <el-form-item v-for="item in form.lossItem" :key="item.code" :label="item.cnName" :prop="item.code">
-          <el-input v-model="form.lossItemObj[item.code]" :placeholder="`请输入${item.cnName}`" class="width-small" clearable />
-          <!-- <template v-if="item.showType === 2">
-            <el-input v-model="form.lossItemObj[item.code]" placeholder="最小值" class="width-small" clearable />
+          <el-input v-if="item.showType === 1" v-model="form.lossItemObj[item.code]" :placeholder="`请输入${item.cnName}`" class="width-small" clearable />
+          <template v-if="item.showType === 2">
+            <el-input v-model="form.lossItemObj[item.code].start" placeholder="最小值" class="width-small" clearable />
             -
-            <el-input v-model="form.lossItemObj[item.code]" placeholder="最大值" class="width-small" clearable />
+            <el-input v-model="form.lossItemObj[item.code].end" placeholder="最大值" class="width-small" clearable />
           </template>
           <el-select v-if="item.showType === 3" v-model="form.lossItemObj[item.code]" class="width-small" clearable>
             <el-option
-              v-for="dict in lossCalculateTypeOptions"
+              v-for="dict in form[item.dictCode]"
               :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
@@ -62,11 +62,11 @@
           </el-select>
           <el-radio-group v-if="item.showType === 4" v-model="form.lossItemObj[item.code]">
             <el-radio
-              v-for="dict in lossCalculateTypeOptions"
+              v-for="dict in form[item.dictCode]"
               :key="dict.dictValue"
-              :label="parseInt(dict.dictValue)"
+              :label="dict.dictValue"
             >{{ dict.dictLabel }}</el-radio>
-          </el-radio-group> -->
+          </el-radio-group>
         </el-form-item>
       </el-row>
       <!-- 减项 -->
@@ -76,18 +76,29 @@
       </h5>
       <el-divider />
       <el-row>
-        <el-form-item label="抹零规则" prop="wipeOffType">
-          <el-select v-model="form.wipeOffType" placeholder="请选择抹零规则" class="width-small" clearable>
+        <el-form-item v-for="item in form.reduceItem" :key="item.code" :label="item.cnName" :prop="item.code">
+          <el-input v-if="item.showType === 1" v-model="form.reduceItemObj[item.code]" :placeholder="`请输入${item.cnName}`" class="width-small mr3" clearable />
+          <template v-if="item.showType === 2">
+            <el-input v-model="form.reduceItemObj[item.code].start" placeholder="最小值" class="width-small mr3" clearable />
+            -
+            <el-input v-model="form.reduceItemObj[item.code].end" placeholder="最大值" class="width-small mr3" clearable />
+          </template>
+          <el-select v-if="item.showType === 3" v-model="form.reduceItemObj[item.code]" class="width-small mr3" clearable>
             <el-option
-              v-for="dict in wipeOffTypeOptions"
+              v-for="dict in form[item.dictCode]"
               :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
             />
           </el-select>
-        </el-form-item>
-        <el-form-item v-for="item in form.reduceItem" :key="item.code" :label="item.cnName" :prop="item.code">
-          <el-input v-model="item.enName" :placeholder="`请输入${item.cnName}`" class="width-small mr3" clearable />
+          <el-radio-group v-if="item.showType === 4" v-model="form.reduceItemObj[item.code]">
+            <el-radio
+              v-for="dict in form[item.dictCode]"
+              :key="dict.dictValue"
+              :label="dict.dictValue"
+              class="mr3"
+            >{{ dict.dictLabel }}</el-radio>
+          </el-radio-group>
           <el-button type="danger" plain icon="el-icon-delete" size="mini" circle @click="deleteItem('reduce', item.code)" />
         </el-form-item>
       </el-row>
@@ -99,10 +110,42 @@
       <el-divider />
       <el-row>
         <el-form-item v-for="item in form.addItem" :key="item.code" :label="item.cnName" :prop="item.code">
-          <el-input v-model="item.enName" :placeholder="`请输入${item.cnName}`" class="width-small mr3" clearable />
+          <el-input v-if="item.showType === 1" v-model="form.addItemObj[item.code]" :placeholder="`请输入${item.cnName}`" class="width-small mr3" clearable />
+          <template v-if="item.showType === 2">
+            <el-input v-model="form.addItemObj[item.code].start" placeholder="最小值" class="width-small mr3" clearable />
+            -
+            <el-input v-model="form.addItemObj[item.code].end" placeholder="最大值" class="width-small mr3" clearable />
+          </template>
+          <el-select v-if="item.showType === 3" v-model="form.addItemObj[item.code]" class="width-small mr3" clearable>
+            <el-option
+              v-for="dict in form[item.dictCode]"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+          <el-radio-group v-if="item.showType === 4" v-model="form.addItemObj[item.code]">
+            <el-radio
+              v-for="dict in form[item.dictCode]"
+              :key="dict.dictValue"
+              :label="dict.dictValue"
+              class="mr3"
+            >{{ dict.dictLabel }}</el-radio>
+          </el-radio-group>
           <el-button type="danger" plain icon="el-icon-delete" size="mini" circle @click="deleteItem('add', item.code)" />
         </el-form-item>
       </el-row>
+      <!-- 抹零规则 -->
+      <el-form-item label="抹零规则" prop="m0DictValue">
+        <el-select v-model="form.m0DictValue" placeholder="请选择抹零规则" class="width-small" clearable>
+          <el-option
+            v-for="dict in m0DictValueOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -139,36 +182,15 @@ export default {
     return {
       value: '',
       // 计算公式字典
-      ruleTypeOptions: [
-        { dictLabel: '公式1', dictValue: 1 },
-        { dictLabel: '公式2', dictValue: 2 },
-        { dictLabel: '公式3', dictValue: 3 },
-        { dictLabel: '公式4', dictValue: 4 }
-      ],
-      // 是否计算亏吨字典
-      isLossOptions: [
-        { dictLabel: '否', dictValue: 0 },
-        { dictLabel: '是 = 卸货重量 * 运费单价 + 增项 - 减项', dictValue: 1 }
-      ],
-      // 计算方式字典
-      lossTypeOptions: [
-        { dictLabel: '定额(kg/车)', dictValue: 1 },
-        { dictLabel: '定律(%o/车)', dictValue: 2 }
-      ],
-      // 亏吨计算方式字典
-      lossCalculateTypeOptions: [
-        { dictLabel: '(重量差 - 容忍值) * 货物单价', dictValue: 1 },
-        { dictLabel: '重量差 * 货物单价', dictValue: 2 }
-      ],
+      ruleTypeOptions: [],
       // 抹零规则字典
-      wipeOffTypeOptions: [
-        { dictLabel: '角分抹零', dictValue: 1 },
-        { dictLabel: '元抹零', dictValue: 2 }
-      ],
+      m0DictValueOptions: [],
       // 表单参数
       form: {
         addItem: [],
+        addItemObj: {},
         reduceItem: [],
+        reduceItemObj: {},
         lossItem: [],
         lossItemObj: {}
       },
@@ -189,22 +211,42 @@ export default {
       }
     }
   },
-  mounted() {
-    this.$nextTick(_ => {
-      this.getList();
-    });
+  created() {
+    this.getAllDicList();
   },
   methods: {
+    // 获取字典
+    getAllDicList() {
+      // 计算公式
+      this.getDicts('ruleFormula').then((response) => {
+        this.ruleTypeOptions = response.data;
+      });
+      // 抹零规则
+      this.getDicts('M0').then((response) => {
+        this.m0DictValueOptions = response.data;
+      });
+    },
     // 获取路耗表单list
     getList() {
       getRuleItemList({ ruleType: 1 }).then(response => {
-        this.$set(this.form, 'lossItem', response.data.list);
+        this.form.lossItem = response.data.list;
         this.form.lossItem.forEach(el => {
           this.$set(this.form.lossItemObj, el.code, null);
-          this.form.lossItemObj[el.code] = null;
+          // select或radio类型的表单需要获取option字典
+          if (el.dictCode) {
+            this.getDicts(el.dictCode).then((response) => {
+              this.form[el.dictCode] = response.data;
+              this.$forceUpdate();
+            });
+          }
+          // 填范围区域的值要特殊处理
+          if (el.showType === 2) {
+            this.$set(this.form.lossItemObj, el.code, {});
+            this.$set(this.form.lossItemObj[el.code], 'start', '');
+            this.$set(this.form.lossItemObj[el.code], 'end', '');
+          }
         });
       });
-      console.log(this.form);
     },
     // 提交按钮
     submitForm() {
@@ -214,25 +256,36 @@ export default {
           name: this.form.name,
           ruleDictType: this.form.ruleDictType,
           shipperCode: this.form.shipperCode,
-          detailList: [{
-            ruleCode: '',
-            ruleItemCode: '',
-            ruleValue: '',
-            type: 1
-          }]
+          m0DictValue: this.form.m0DictValue,
+          detailList: []
         };
+        this.form.addItem.forEach(el => {
+          params.detailList.push({
+            ruleItemCode: el.code,
+            ruleValue: this.form.addItemObj[el.code],
+            type: 1
+          });
+        });
+        this.form.reduceItem.forEach(el => {
+          params.detailList.push({
+            ruleItemCode: el.code,
+            ruleValue: this.form.reduceItemObj[el.code],
+            type: 2
+          });
+        });
+        console.log(params);
         if (valid) {
           if (this.form.code != null) {
             updateRules(params).then(response => {
               this.msgSuccess('修改成功');
               this.close();
-              this.$emit('getList');
+              this.$emit('refresh');
             });
           } else {
             addRules(params).then(response => {
               this.msgSuccess('新增成功');
               this.close();
-              this.$emit('getList');
+              this.$emit('refresh');
             });
           }
         }
@@ -256,9 +309,12 @@ export default {
         ruleDictType: null,
         isLoss: true,
         addItem: [],
+        addItemObj: {},
         reduceItem: [],
+        reduceItemObj: {},
         lossItem: [],
-        lossItemObj: {}
+        lossItemObj: {},
+        m0DictValue: null
       };
       this.resetForm('form');
     },
@@ -274,8 +330,14 @@ export default {
     setItem(type, arr) {
       if (type === 'add') {
         this.form.addItem = arr;
+        this.form.addItem.forEach(el => {
+          this.$set(this.form.addItemObj, el.code, null);
+        });
       } else if (type === 'reduce') {
         this.form.reduceItem = arr;
+        this.form.reduceItem.forEach(el => {
+          this.$set(this.form.reduceItemObj, el.code, null);
+        });
       }
     },
     deleteItem(type, code) {

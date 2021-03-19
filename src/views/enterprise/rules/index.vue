@@ -26,26 +26,6 @@
           @click="handleAdd"
         >新增</el-button>
       </el-col>
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['enterprise:rules:edit']"
-          type="success"
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-        >修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['enterprise:rules:remove']"
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-        >删除</el-button>
-      </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
@@ -167,7 +147,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.userCode);
+      this.ids = selection.map(item => item.code);
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
     },
@@ -176,12 +156,13 @@ export default {
       this.$refs.RulesDialog.reset();
       this.open = true;
       this.title = '添加';
+      this.$refs.RulesDialog.getList();
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.$refs.RulesDialog.reset();
-      const userCode = row.userCode || this.ids;
-      getRules(userCode).then(response => {
+      const code = row.code || this.ids;
+      getRules(code).then(response => {
         this.$refs.RulesDialog.setForm(response.data);
         this.open = true;
         this.title = '修改';
@@ -189,13 +170,13 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const userCodes = row.userCode || this.ids;
-      this.$confirm('是否确认删除编号为"' + userCodes + '"的数据项?', '警告', {
+      const code = row.code || this.ids;
+      this.$confirm('是否确认删除规则名称为"' + row.name + '"的数据项', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
-        return delRules(userCodes);
+        return delRules({ code: code });
       }).then(() => {
         this.getList();
         this.msgSuccess('删除成功');
