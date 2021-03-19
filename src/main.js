@@ -15,7 +15,7 @@ import { download } from '@/utils/request';
 
 import './assets/icons'; // icon
 import './permission'; // permission control
-import { getDicts } from '@/api/system/dict/data';
+import { getDicts, listByDict } from '@/api/system/dict/data';
 import { getConfigKey } from '@/api/system/config';
 import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree } from '@/utils/ddc';
 import Pagination from '@/components/Pagination';
@@ -33,6 +33,7 @@ import { formValidate } from '@/utils/formValidate';
 
 // 全局方法挂载
 Vue.prototype.getDicts = getDicts;
+Vue.prototype.listByDict = listByDict;
 Vue.prototype.getConfigKey = getConfigKey;
 Vue.prototype.parseTime = parseTime;
 Vue.prototype.resetForm = resetForm;
