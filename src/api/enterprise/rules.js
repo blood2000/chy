@@ -3,7 +3,7 @@ import request from '@/utils/request';
 // 查询规则列表
 export function listRules(query) {
   return request({
-    url: '/assets/balanceRule/findList',
+    url: '/transportation/shipmentRule/list',
     method: 'get',
     params: query
   });
@@ -12,7 +12,7 @@ export function listRules(query) {
 // 查询规则详细
 export function getRules(code) {
   return request({
-    url: `/assets/balanceRule/${code}`,
+    url: `/transportation/shipmentRule/getById/${code}`,
     method: 'get'
   });
 }

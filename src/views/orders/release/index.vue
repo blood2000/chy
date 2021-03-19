@@ -2,13 +2,11 @@
   <div class="app-container">
 
 
-    <el-steps :active="1" finish-status="success">
+    <el-steps v-if="false" :active="1" finish-status="success">
       <el-step title="已完成" />
       <el-step title="进行中" />
       <el-step title="步骤 3" />
     </el-steps>
-
-    <!-- 转货信息 -->
 
     <el-form
       ref="elForm"
@@ -22,20 +20,6 @@
         <div class="header mb8">代发货主信息</div>
 
         <el-form-item label="代发货主" prop="tin1">
-          <!-- <el-select
-            v-model="formData.tin1"
-            placeholder="请输入代发货主"
-            :style="{ width: '100%' }"
-            filterable
-          >
-            <el-option
-              v-for="(item, index1) in shipmentList"
-              :key="index1"
-              :label="item.adminName"
-              :value="item.code"
-            />
-          </el-select> -->
-
           <el-select
             v-model="formData.tin1"
             filterable
@@ -56,6 +40,8 @@
         </el-form-item>
       </div>
       <el-divider />
+
+
 
       <template v-if="true || isTin1">
         <div class="content">
@@ -185,10 +171,9 @@
         <el-divider />
       </template>
 
-      <!-- 如果是单商品着没有下面的 -->
-      <!-- isMultiGoods true->多商品 ; false->单商品 -->
+      <order-basic v-else :pubilsh-code="formData.tin1" />
 
-      <template v-if="(true || isTin1) && isMultiGoods">
+      <template v-if="(isTin1) && isMultiGoods">
         <div class="content">
           <div class="header mb8">装卸货地址配置(第二步)</div>
           <el-form-item label="装货类型" prop="tin7">
@@ -222,17 +207,9 @@
       </template>
     </el-form>
 
-    <!-- s封装成组件 -->
-    <!--
-      1: 多商品对应多地址/单商品就一个地址
-      2: 多装和多卸 各自可有多地址
-     -->
     <template v-if="true || isTin1">
       <div class="content">
         <div class="header mb8">货源地址</div>
-        <!-- isMultiGoods true->多商品 ; false->单商品 -->
-        <!-- address-type : 1=>货源地址; 2=>卸货地址 -->
-        <!-- show-btn : true=>可多选; false=>隐藏按钮不能多选 -->
         <add-address
           ref="address1"
           :address-type="1"
@@ -245,9 +222,6 @@
 
       <div class="content">
         <div class="header mb8">卸货地址</div>
-        <!-- isMultiGoods true->多商品 ; false->单商品 -->
-        <!-- address-type : 1=>货源地址; 2=>卸货地址 -->
-        <!-- show-btn : true=>可多选; false=>隐藏按钮不能多选 -->
         <add-address
           ref="address2"
           :address-type="2"
@@ -258,11 +232,6 @@
 
       <el-divider />
 
-      <!--
-        多商品对应多个计算规则 orderGoodsList数组 会有多个
-        单个商品就一个计算规则
-      -->
-      <!-- isMultiGoods true->多商品 ; false->单商品 -->
       <template v-if="!isMultiGoods">
         <div class="content">
           <div class="header mb8">配载信息(第三步)</div>
@@ -273,7 +242,7 @@
         <div class="content">
           <div class="header mb8">其他规则</div>
 
-          <AccounTing ref="accounTing" :pubilsh-code="formData.tin1" />
+          <AccounTing ref="accounTing" :pubilsh-code="'48616'" />
         </div>
 
         <!-- s封装成组件 -->
@@ -292,9 +261,6 @@
         <div class="content">
           <div class="header mb8">货物/核算</div>
 
-          <!-- tin2_1 是选中的多个商品 至少选中一个
-              1. 监听选择事件 创建一个新的数组
-          -->
           <el-tabs v-model="tin2_1tabs_activeName">
             <el-tab-pane
               v-for="item in tin2_1tabs"
@@ -302,7 +268,6 @@
               :label="item.label"
               :name="item.value"
             >
-              <!-- v-model="item.data" 如果自接传在去修改会警告, 倒不如处理完返回再赋值 -->
               <MultiData :ref="item.value" />
             </el-tab-pane>
           </el-tabs>
@@ -314,12 +279,7 @@
         <el-button>取消</el-button>
       </div>
     </template>
-    <!-- 添加或修改【请填写功能名称】对话框 -->
-    <!-- <el-dialog :title="title" :visible.sync="open" width="75%" append-to-body>
-      <div>
-        <open-dialog />
-      </div>
-    </el-dialog> -->
+
     <!-- 调度者/司机 -->
     <el-dialog :title="title" :visible.sync="open" width="80%" append-to-body>
       <open-dialog v-if="open" @handleSelectionChange="handleSelectionChange" />
@@ -328,6 +288,7 @@
 </template>
 
 <script>
+import OrderBasic from './component/OrderBasic';
 // import OpenDialog from './OpenDialog';
 import OpenDialog from '../manage/component/OpenDialog';
 
@@ -343,7 +304,7 @@ import { listShipment } from '@/api/assets/shipment.js';
 // 获取货集码列表 ? 要在什么时机调用?
 import { listStockcode } from '@/api/enterprise/stockcode';
 
-
+import { listByDict } from '../../../api/system/dict/data';
 
 import { orderPubilsh } from '@/api/order/release';
 
@@ -353,7 +314,10 @@ export default {
     AddAddress,
     GoodsAccounting,
     AccounTing,
-    MultiData
+    MultiData,
+
+    //
+    OrderBasic
   },
   data() {
     return {
@@ -443,23 +407,43 @@ export default {
   },
 
   async created() {
-    // 货物类型字典型(大)
-    this.getDicts('dictType').then((response) => {
-      this.goodsBigTypeOptions = response.data.map(e => {
-        return {
-          label: e.dictLabel,
-          isdd: e.isCheckbox === '1',
-          value: e.dictValue
-        };
-      });
+    // 1. 货物类型字典型(大)
+
+
+    const { data } = await listByDict({
+      'dictPid': '0',
+      'dictType': 'goodsType'
     });
+
+    this.goodsBigTypeOptions = data.map(e => {
+      return {
+        label: e.dictLabel,
+        isdd: e.isCheckbox === '1', // 只有等于1才有多商品
+        value: e.dictValue,
+        ...e
+      };
+    });
+    // this._baozhuan(data, '', '')
+    // console.log('货物类型字典型', data);
+
+
+    // this.getDicts('dictType').then((response) => {
+    //   console.log(response);
+
+    //   this.goodsBigTypeOptions = response.data.map(e => {
+    //     return {
+    //       label: e.dictLabel,
+    //       isdd: e.isCheckbox === '1',
+    //       value: e.dictValue
+    //     };
+    //   });
+    // });
   },
 
   methods: {
     // 根据货主的code获取他下面的项目
     async handleTin1() {
       // 货主切换的时候
-      console.log(this.formData.tin1);
 
       this.formData.tin2 = undefined; // 选择货物类型大类(必填)
       this.formData.tin2_1 = []; // 多商品-小类(必填)
@@ -474,16 +458,11 @@ export default {
       // console.log(query);
       // 调用接口
       const res = (await listInfo(query));
-      console.log(res);
 
       // 返回的是个数组
       this.tin3Optin = this.tin3Optin.concat(res.rows.map(e => {
-        console.log('项目code', e);
-
         return { dictValue: e.id, dictLabel: e.projectName, ...e };
       }));
-
-      console.log(this.tin3Optin);
     },
 
     // 根据所属项目的cod 获取对应项目
@@ -495,14 +474,12 @@ export default {
         this.tin2_1Option = [];
         return;
       }
-      console.log(this.formData.tin3);
       // 根据选中的id进行回填
       const arr = this.tin3Optin.filter(e => {
         return e.id === this.formData.tin3;
       });
       // console.log(this.goodsBigTypeOptions);
 
-      console.log('项目的code是:', arr[0].code);
       // 看看是最后赋值是多少
       this.formData.tin3Code = arr[0].code;
       this.formData.tin2 = arr[0].commodityCategoryCode;
@@ -513,7 +490,6 @@ export default {
 
     // 是否公开货源切换
     handleTin4() {
-      console.log(this.formData.tin4);
       if (this.tin6_Option.length) return;
       if (this.formData.tin4) return;
       // 要用到货主的code
@@ -715,7 +691,15 @@ export default {
 
     // 获取小类
     handletin2(arr) {
-      this.getDicts(this.formData.tin2).then((response) => {
+      // this._zhaovalue(this.goodsBigTypeOptions, this.formData.tin2);
+      // console.log(this.goodsBigTypeOptions, this.formData.tin2);
+      const item = this._zhaovalue(this.goodsBigTypeOptions, this.formData.tin2);
+
+
+      listByDict({
+        'dictPid': item.dictCode,
+        'dictType': 'goodsType'
+      }).then((response) => {
         this.tin2_1Option = response.data;
 
         // true=> 多商品
@@ -723,7 +707,6 @@ export default {
         if (this.isMultiGoods) {
           this.formData.tin2_1 = arr[0].commoditySubclassCodes.split(',');
           this.formData.tin2_2 = undefined;
-          console.log('true多商品', this.formData.tin2_1);
 
           this.handletin2_1();
         // tin2_1tabs
@@ -778,6 +761,25 @@ export default {
       } else {
         this.shipmentList = [];
       }
+    },
+
+    // 工具
+    // 根据value匹配数组中的一项
+    _zhaovalue(arr, value) {
+      return arr.filter((e) => {
+        return e.dictValue === value;
+      })[0];
+    },
+
+    // 包装成
+    _baozhuan(arr, dictValue, dictLabel) {
+      return arr.map((e) => {
+        return {
+          ...e,
+          dictValue: e[dictValue],
+          dictLabel: e[dictLabel]
+        };
+      });
     }
   }
 };

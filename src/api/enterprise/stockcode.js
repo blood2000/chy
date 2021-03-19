@@ -1,11 +1,11 @@
 import request from '@/utils/request';
 
 // 查询货集码列表
-export function listStockcode(query) {
+export function listStockcode(data) {
   return request({
     url: '/assets/shipment/cargocode/list',
-    method: 'get',
-    params: query
+    method: 'post',
+    params: data
   });
 }
 
