@@ -433,7 +433,7 @@ export default {
           // const id = row.code;
           this.dialoga = true;
           this.titlea = '车辆装货';
-          this.dialogadata = { ...row, myType: 1 };
+          this.$refs.DialogA.setForm(row);
           break;
         case 2:
           this.$refs.DialogC.reset();

@@ -227,14 +227,24 @@ export default {
       form: {},
       // 表单校验
       rules: {
-      }
+      },
       // 表单是否禁用
       // formDisable: false
+      // 大类字典类型
+      commodityCategory: {
+        'dictPid': '0',
+        'dictType': 'goodsType'
+      },
+      // 小类字典类型
+      commoditySubclass: {
+        'dictPid': '',
+        'dictType': 'goodsType'
+      }
     };
   },
   created() {
     this.getList();
-    this.getDicts('productType').then(response => {
+    this.listByDict(this.commodityCategory).then(response => {
       this.commodityCategoryCodeOptions = response.data;
     });
   },

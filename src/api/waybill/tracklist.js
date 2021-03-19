@@ -37,11 +37,10 @@ export function cancel(data) {
 }
 
 // 获取装货地址和卸货地址
-export function getAddress(query) {
+export function getAddress(orderCode) {
   return request({
-    url: '/transportation/order/getOrderAddress',
-    method: 'get',
-    params: query
+    url: '/transportation/order/getOrderAddress/' + orderCode,
+    method: 'get'
   });
 }
 
