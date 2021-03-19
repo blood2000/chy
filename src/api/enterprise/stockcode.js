@@ -50,12 +50,3 @@ export function generateCode(data) {
     method: 'post'
   });
 }
-
-// 二维码下载
-export function downloadCode(query) {
-  return request({
-    url: '/assets/shipment/cargocode/downloadCode',
-    method: 'get',
-    params: query
-  });
-}

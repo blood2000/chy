@@ -103,7 +103,7 @@
 </template>
 
 <script>
-import { listStockcode, getStockcode, delStockcode, downloadCode } from '@/api/enterprise/stockcode';
+import { listStockcode, getStockcode, delStockcode } from '@/api/enterprise/stockcode';
 import StockcodeDialog from './stockcodeDialog.vue';
 
 export default {
@@ -181,8 +181,14 @@ export default {
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
+      console.log(row);
       this.$refs.StockcodeDialog.reset();
-      const id = row.id || this.ids;
+      let id;
+      if (row.id !== '' && row.id !== undefined && row.id != null) {
+        id = row.id;
+      } else {
+        id = this.ids;
+      }
       getStockcode(id).then(response => {
         this.$refs.StockcodeDialog.setForm(response.data);
         this.open = true;
@@ -205,7 +211,15 @@ export default {
     },
     /** 下载货源码 */
     handleDownloadCode(row) {
-
+      fetch(row.cargoCodeQR).then(res => res.blob().then(blob => {
+        var a = document.createElement('a');
+        var url = window.URL.createObjectURL(blob);
+        var filename = `货源码_${new Date().getTime()}.jpg`;
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      }));
     }
   }
 };

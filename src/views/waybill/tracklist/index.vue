@@ -6,14 +6,14 @@
       ref="queryForm"
       :model="queryParams"
       :inline="true"
-      label-width="130px"
+      label-width="80px"
     >
       <el-form-item
         label="下单客户"
-        prop="form1"
+        prop="orderClient"
       >
         <el-input
-          v-model="queryParams.form1"
+          v-model="queryParams.orderClient"
           placeholder="请输入下单客户"
           clearable
           size="small"
@@ -23,10 +23,10 @@
       </el-form-item>
       <el-form-item
         label="发货企业"
-        prop="form2"
+        prop="deliveryCompany"
       >
         <el-input
-          v-model="queryParams.form2"
+          v-model="queryParams.deliveryCompany"
           placeholder="请输入发货企业"
           clearable
           size="small"
@@ -36,10 +36,10 @@
       </el-form-item>
       <el-form-item
         label="装货信息"
-        prop="form3"
+        prop="loadInfo"
       >
         <el-input
-          v-model="queryParams.form3"
+          v-model="queryParams.loadInfo"
           placeholder="请输入装货信息"
           clearable
           size="small"
@@ -49,10 +49,10 @@
       </el-form-item>
       <el-form-item
         label="收货信息"
-        prop="form4"
+        prop="receivedInfo"
       >
         <el-input
-          v-model="queryParams.form4"
+          v-model="queryParams.receivedInfo"
           placeholder="请输入收货信息"
           clearable
           size="small"
@@ -62,10 +62,10 @@
       </el-form-item>
       <el-form-item
         label="货源单号"
-        prop="form5"
+        prop="mainOrderNumber"
       >
         <el-input
-          v-model="queryParams.form5"
+          v-model="queryParams.mainOrderNumber"
           placeholder="请输入货源单号"
           clearable
           size="small"
@@ -75,25 +75,34 @@
       </el-form-item>
       <el-form-item
         label="接单日期"
-        prop="form6"
+        prop="receiveTime"
       >
         <el-date-picker
-          v-model="queryParams.form6"
+          v-model="queryParams.orderStartTime"
           size="small"
-          style="width: 215px"
+          style="width: 113px"
           value-format="yyyy-MM-dd"
-          type="daterange"
-          range-separator="-"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
+          type="date"
+          placeholder="开始日期"
+          :clearable="false"
+        />
+        -
+        <el-date-picker
+          v-model="queryParams.orderEndTime"
+          size="small"
+          style="width: 113px"
+          value-format="yyyy-MM-dd"
+          type="date"
+          placeholder="结束日期"
+          :clearable="false"
         />
       </el-form-item>
       <el-form-item
         label="车牌号"
-        prop="form7"
+        prop="licenseNumber"
       >
         <el-input
-          v-model="queryParams.form7"
+          v-model="queryParams.licenseNumber"
           placeholder="请输入车牌号"
           clearable
           size="small"
@@ -103,10 +112,10 @@
       </el-form-item>
       <el-form-item
         label="司机姓名"
-        prop="form8"
+        prop="driverName"
       >
         <el-input
-          v-model="queryParams.form8"
+          v-model="queryParams.driverName"
           placeholder="请输入司机姓名"
           clearable
           size="small"
@@ -116,10 +125,10 @@
       </el-form-item>
       <el-form-item
         label="司机电话"
-        prop="form9"
+        prop="driverPhone"
       >
         <el-input
-          v-model="queryParams.form9"
+          v-model="queryParams.driverPhone"
           placeholder="请输入司机电话"
           clearable
           size="small"
@@ -129,10 +138,10 @@
       </el-form-item>
       <el-form-item
         label="运输单号"
-        prop="form10"
+        prop="waybillNo"
       >
         <el-input
-          v-model="queryParams.form10"
+          v-model="queryParams.waybillNo"
           placeholder="请输入运输单号"
           clearable
           size="small"
@@ -175,9 +184,7 @@
         >批量删除</el-button>
       </el-col> -->
       <el-col :span="1.5" style="marginTop:-5px">
-        <tablec-cascader v-if="activeName === '1'" v-model="tableColumnsConfig1" :lcokey="lcokey" />
-        <tablec-cascader v-if="activeName === '2'" v-model="tableColumnsConfig2" :lcokey="lcokey" />
-        <tablec-cascader v-if="activeName === '3'" v-model="tableColumnsConfig3" :lcokey="lcokey" />
+        <tablec-cascader v-model="tableColumnsConfig" />
       </el-col>
       <right-toolbar
         :show-search.sync="showSearch"
@@ -191,53 +198,81 @@
       <el-tab-pane label="已卸货" name="3" />
     </el-tabs>
 
-    <RefactorTable :loading="loading" :data="list" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
+    <RefactorTable :loading="loading" :data="tracklist" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
       <!-- <template #isPay="{row}">
                     <span>{{ selectDictLabel(isPayOptions, row.isPay) }}</span>
                 </template> -->
 
       <template #edit="{row}">
         <el-button
+          v-if="activeName == '1'"
           v-hasPermi="['system:menu:edit']"
           size="mini"
           type="text"
-          icon="el-icon-edit"
+          icon="el-icon-truck"
           @click="handleTableBtn(row, 1)"
+        >车辆装货</el-button>
+        <el-button
+          v-if="activeName == '2'"
+          v-hasPermi="['system:menu:edit']"
+          size="mini"
+          type="text"
+          icon="el-icon-takeaway-box"
+          @click="handleTableBtn(row, 2)"
+        >车辆卸货</el-button>
+        <el-button
+          v-if="activeName == '1'"
+          v-hasPermi="['system:menu:edit']"
+          size="mini"
+          type="text"
+          icon="el-icon-circle-close"
+          @click="handleTableBtn(row, 3)"
+        >取消订单</el-button>
+        <el-button
+          v-if="activeName != '1'"
+          v-hasPermi="['system:menu:edit']"
+          size="mini"
+          type="text"
+          icon="el-icon-notebook-1"
+          @click="handleTableBtn(row, 4)"
         >补装货凭证</el-button>
         <el-button
+          v-if="activeName == '3'"
           v-hasPermi="['system:menu:edit']"
           size="mini"
           type="text"
-          icon="el-icon-edit"
-          @click="handleTableBtn(row, 2)"
+          icon="el-icon-notebook-2"
+          @click="handleTableBtn(row, 5)"
         >补卸货凭证</el-button>
         <el-button
+          v-if="activeName != '1'"
           v-hasPermi="['system:menu:edit']"
           size="mini"
           type="text"
-          icon="el-icon-edit"
-          @click="handleTableBtn(row, 3)"
+          icon="el-icon-aim"
+          @click="handleTableBtn(row, 6)"
         >车辆跟踪</el-button>
         <el-button
           v-hasPermi="['system:menu:edit']"
           size="mini"
           type="text"
-          icon="el-icon-edit"
-          @click="handleTableBtn(row, 4)"
+          icon="el-icon-location-outline"
+          @click="handleTableBtn(row, 7)"
         >定位</el-button>
         <el-button
           v-hasPermi="['system:menu:edit']"
           size="mini"
           type="text"
-          icon="el-icon-edit"
-          @click="handleTableBtn(row, 5)"
+          icon="el-icon-edit-outline"
+          @click="handleTableBtn(row, 8)"
         >投诉</el-button>
         <el-button
+          v-if="activeName == '3'"
           v-hasPermi="['system:menu:edit']"
           size="mini"
           type="text"
-          icon="el-icon-edit"
-          @click="handleTableBtn(row, 6)"
+          icon="el-icon-chat-dot-square"
+          @click="handleTableBtn(row, 9)"
         >评价</el-button>
       </template>
     </RefactorTable>
@@ -253,11 +288,12 @@
 
 
 
-    <!-- 补装货凭证 / 补卸货凭证 -->
-    <dialog-a :open.sync="dialoga" :title="titlea" :initdata="dialogadata" />
-
+    <!-- 车辆装货 / 补装货凭证 -->
+    <dialog-a ref="DialogA" :open.sync="dialoga" :title="titlea" :initdata="dialogadata" @refresh="getList" />
+    <!-- 车辆卸货 / 补卸货凭证 -->
+    <dialog-c ref="DialogC" :open.sync="dialogc" :title="titlec" :initdata="dialogcdata" @refresh="getList" />
     <!-- 投诉 -->
-    <dialog-b :open.sync="dialogb" :title="titleb" :initdata="dialogbdata" />
+    <dialog-b ref="DialogB" :open.sync="dialogb" :title="titleb" :initdata="dialogbdata" @refresh="getList" />
 
 
     <!-- <el-dialog :title="title" :visible.sync="visible" :width="dialogWidth" append-to-body>
@@ -268,27 +304,19 @@
 </template>
 
 <script>
-import {
-  arr1 as tableColumnsConfig1,
-  arr2 as tableColumnsConfig2,
-  arr3 as tableColumnsConfig3
-} from './data/tracklist-index';
-
-import { listTest, getTest, delTest, addTest, updateTest } from '@/api/test/test';
-
+import tableColumnsConfig from './data/tracklist-index';
+import { trackList } from '@/api/waybill/tracklist';
 import DialogA from './component/DialogA';
 import DialogB from './component/DialogB';
+import DialogC from './component/DialogC';
 
 export default {
   'name': 'Tracklist',
-  components: { DialogA, DialogB },
+  components: { DialogA, DialogB, DialogC },
   data() {
     return {
-      tableColumnsConfig1,
-      tableColumnsConfig2,
-      tableColumnsConfig3,
+      tableColumnsConfig,
       activeName: '1',
-
 
       // 遮罩层
       'loading': false,
@@ -299,14 +327,24 @@ export default {
       // 总条数
       'total': 0,
       // 表格数据
-      'list1': [{ id: 1 }],
-      'list2': [{ id: 2 }],
-      'list3': [{ id: 3 }],
+      'tracklist': [],
 
       // 查询参数
       'queryParams': {
         'page': 1,
-        'pageSize': 10
+        'pageSize': 10,
+        'orderClient': undefined,
+        'deliveryCompany': undefined,
+        'loadInfo': undefined,
+        'receivedInfo': undefined,
+        'mainOrderNumber': undefined,
+        'orderEndTime': undefined,
+        'orderStartTime': undefined,
+        'licenseNumber': undefined,
+        'driverName': undefined,
+        'driverPhone': undefined,
+        'waybillNo': undefined,
+        'status': this.activeName
       },
       // 弹框 内容
       visible: false,
@@ -315,8 +353,11 @@ export default {
       dialogadata: {},
       dialogb: false,
       dialogbdata: {},
+      dialogc: false,
+      dialogcdata: {},
       titlea: '',
       titleb: '',
+      titlec: '',
       title: '',
 
       dialogWidth: '800px'
@@ -335,50 +376,31 @@ export default {
   computed: {
     lcokey() {
       return this.$route.name + this.activeName;
-    },
-    // 表头
-    tableColumnsConfig() {
-      return this['tableColumnsConfig' + this.activeName];
-    },
-    // 列表
-    list() {
-      return this['list' + this.activeName];
     }
   },
   created() {
-    this['tableColumnsConfig' + this.activeName] = this.getLocalStorage(this.lcokey) || this.tableColumnsConfig;
+    // this['tableColumnsConfig' + this.activeName] = this.getLocalStorage(this.lcokey) || this.tableColumnsConfig;
+    this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || this.tableColumnsConfig;
     this.getList();
   },
   'methods': {
     /** handleClick */
     handleClick(tab) {
-      this['tableColumnsConfig' + this.activeName] = this.getLocalStorage(this.lcokey) || this.tableColumnsConfig;
+      // this['tableColumnsConfig' + this.activeName] = this.getLocalStorage(this.lcokey) || this.tableColumnsConfig;
+      // this.queryParams.status = tab.name;
       this.queryParams.page = 1;
       this.getList();
     },
 
     /** 查询【请填写功能名称】列表 */
     getList() {
-    //   this.loading = true;
-    //   listTest(this.queryParams).then(response => {
-    //     this.list = response.rows;
-    //     this.total = response.total;
-    //     this.loading = false;
-    //   });
+      this.loading = true;
+      trackList(this.queryParams).then(response => {
+        this.tracklist = response.rows;
+        this.total = response.total;
+        this.loading = false;
+      });
     },
-    // // 取消按钮
-    // cancel() {
-    //   this.open = false;
-    //   this.reset();
-    // },
-    // // 表单重置
-    // reset() {
-    //   this.form = {
-    //     testId: null,
-    //     testName: null
-    //   };
-    //   this.resetForm('form');
-    // },
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.page = 1;
@@ -389,68 +411,17 @@ export default {
       this.resetForm('queryForm');
       this.handleQuery();
     },
-    // // 多选框选中数据
-    // handleSelectionChange(selection) {
-    //   this.ids = selection.map(item => item.testId);
-    //   this.single = selection.length !== 1;
-    //   this.multiple = !selection.length;
-    // },
-    // /** 新增按钮操作 */
-    // handleAdd() {
-    //   this.reset();
-    //   this.open = true;
-    //   this.title = '添加【请填写功能名称】';
-    // },
-    // /** 修改按钮操作 */
+    /** 修改按钮操作 */
     // handleUpdate(row) {
-    //   this.reset();
-    //   const testId = row.testId || this.ids;
-    //   getTest(testId).then(response => {
-    //     this.form = response.data;
+    //   this.$refs.VehicleDialog.reset();
+    //   const id = row.id || this.ids;
+    //   getInfo(id).then((response) => {
+    //     this.$refs.VehicleDialog.setForm(response.data);
     //     this.open = true;
-    //     this.title = '修改【请填写功能名称】';
+    //     this.title = '修改车辆';
+    //     this.formDisable = false;
     //   });
     // },
-    // /** 提交按钮 */
-    // submitForm() {
-    //   this.$refs['form'].validate(valid => {
-    //     if (valid) {
-    //       if (this.form.testId != null) {
-    //         updateTest(this.form).then(response => {
-    //           this.msgSuccess('修改成功');
-    //           this.open = false;
-    //           this.getList();
-    //         });
-    //       } else {
-    //         addTest(this.form).then(response => {
-    //           this.msgSuccess('新增成功');
-    //           this.open = false;
-    //           this.getList();
-    //         });
-    //       }
-    //     }
-    //   });
-    // },
-    // /** 删除按钮操作 */
-    // handleDelete(row) {
-    //   const testIds = row.testId || this.ids;
-    //   this.$confirm('是否确认删除【请填写功能名称】编号为"' + testIds + '"的数据项?', '警告', {
-    //     confirmButtonText: '确定',
-    //     cancelButtonText: '取消',
-    //     type: 'warning'
-    //   }).then(function() {
-    //     return delTest(testIds);
-    //   }).then(() => {
-    //     this.getList();
-    //     this.msgSuccess('删除成功');
-    //   });
-    // },
-    // /** 导出按钮操作 */
-    // handleExport() {
-    //   this.download('system/test/export', {
-    //     ...this.queryParams
-    //   }, `system_test.xlsx`);
-    // }
 
     handleTableBtn(row, index) {
       console.log(row, index);
@@ -458,35 +429,48 @@ export default {
       this.visible = true;
       switch (index) {
         case 1:
+          this.$refs.DialogA.reset();
+          // const id = row.code;
           this.dialoga = true;
-          this.titlea = '补装货凭证';
+          this.titlea = '车辆装货';
           this.dialogadata = { ...row, myType: 1 };
           break;
         case 2:
-          this.dialoga = true;
-          this.titlea = '补卸货凭证';
-          this.dialogadata = { ...row, myType: 2 };
+          this.$refs.DialogC.reset();
+          this.dialogc = true;
+          this.titlec = '车辆卸货';
+          this.dialogcdata = { ...row, myType: 2 };
           break;
         case 3:
-          this.title = '车辆跟踪';
-
+          this.titlea = '取消运单';
           break;
         case 4:
-          this.title = '定位';
+          this.dialoga = true;
+          this.titlea = '补装货凭证';
+          this.dialogadata = { ...row, myType: 3 };
           break;
         case 5:
+          this.dialogc = true;
+          this.titlec = '补卸货凭证';
+          this.dialogcdata = { ...row, myType: 4 };
+          break;
+        case 6:
+          this.title = '定位';
+          break;
+        case 7:
+          this.title = '车辆跟踪';
+          break;
+        case 8:
           this.dialogb = true;
           this.titleb = '投诉';
           this.dialogbdata = { ...row, myType: 5 };
           break;
-        case 6:
+        case 9:
           this.dialogb = true;
           this.dialogbdata = { ...row, myType: 6 };
           console.log(this.dialogbdata);
-
           this.titleb = '评价';
           break;
-
         default:
           break;
       }

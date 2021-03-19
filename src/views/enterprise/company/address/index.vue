@@ -112,7 +112,8 @@
       <el-table-column label="地址名称" align="center" prop="addressName">
         <template slot-scope="scope">
           {{ scope.row.addressName }}
-          <el-tag v-if="scope.row.isDefault === 1">默认地址</el-tag>
+          <el-tag v-if="scope.row.isDefault === 1 && scope.row.addressType === 1">装货默认地址</el-tag>
+          <el-tag v-if="scope.row.isDefault === 1 && scope.row.addressType === 2" type="warning">卸货默认地址</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="地址别名" align="center" prop="addressOtherName" />
@@ -303,8 +304,9 @@ export default {
     /** 设为默认地址 */
     handleSetDefault(row) {
       defaultAddress({
-        addressCode: row.code,
-        shipCode: row.shipmentCode
+        code: row.code,
+        shipmentCode: row.shipmentCode,
+        addressType: row.addressType
       }).then(response => {
         this.msgSuccess('设置成功');
         this.getList();

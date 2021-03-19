@@ -270,32 +270,32 @@ export default {
   methods: {
     // 获取
     async initData() {
-      const data = (await listRules()).data; // 没错
+      // const data = (await listRules()).data; // 没错
 
-      console.log(data);
+      // console.log(data);
 
-      // const data = [{
-      //   'checkRuleItemCode': '1213', // 核算规则项表CODE
-      //   'code': '12112356', // 货主编码
-      //   'id': 0, // ??
-      //   'isDel': true, // ??
-      //   'ruleType': '', // 规则项类型 1.收入 2.支出
-      //   'ruleValue': '煤炭专用规则1', // 规则项值 名称???
-      //   'status': 0, // 状态 0.正常 1.关闭
-      //   'updateCode': '',
-      //   'updateTime': ''
-      // },
-      // {
-      //   'checkRuleItemCode': '1213', // 核算规则项表CODE
-      //   'code': '1511521356', // 货主编码
-      //   'id': 2, // ??
-      //   'isDel': true, // ??
-      //   'ruleType': '', // 规则项类型 1.收入 2.支出
-      //   'ruleValue': '煤炭专用规则2', // 规则项值 名称???
-      //   'status': 0, // 状态 0.正常 1.关闭
-      //   'updateCode': '',
-      //   'updateTime': ''
-      // }];
+      const data = [{
+        'checkRuleItemCode': '1213', // 核算规则项表CODE
+        'code': '12112356', // 货主编码
+        'id': 0, // ??
+        'isDel': true, // ??
+        'ruleType': '', // 规则项类型 1.收入 2.支出
+        'ruleValue': '煤炭专用规则1', // 规则项值 名称???
+        'status': 0, // 状态 0.正常 1.关闭
+        'updateCode': '',
+        'updateTime': ''
+      },
+      {
+        'checkRuleItemCode': '1213', // 核算规则项表CODE
+        'code': '1511521356', // 货主编码
+        'id': 2, // ??
+        'isDel': true, // ??
+        'ruleType': '', // 规则项类型 1.收入 2.支出
+        'ruleValue': '煤炭专用规则2', // 规则项值 名称???
+        'status': 0, // 状态 0.正常 1.关闭
+        'updateCode': '',
+        'updateTime': ''
+      }];
 
       this.ruleItemIdOption = this._baozhuan(data, 'code', 'ruleValue');
     },
