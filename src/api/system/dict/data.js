@@ -51,7 +51,7 @@ export function delData(dictCode) {
   });
 }
 
-// tin 查询字典类
+// 查询字典类
 export function listByDict(data) {
   return request({
     url: '/system/dict/data/listByDict',
