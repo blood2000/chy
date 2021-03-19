@@ -24,7 +24,7 @@
         </el-radio-group>
         <!-- <el-input v-model="form.commodityCategoryCode" placeholder="请输入商品类别编码" /> -->
       </el-form-item>
-      <el-form-item v-if="isMore == 0" label="商品小类" prop="commoditySubclassCodes">
+      <el-form-item v-if="isMore == 0 || !isMore" label="商品小类" prop="commoditySubclassCodes">
         <el-radio-group v-model="form.commoditySubclassCodes">
           <el-radio
             v-for="dict in commoditySubclassCodesOptions"
@@ -102,8 +102,16 @@ export default {
       },
       // 是否多选
       isMore: '2',
+      // 大类字典类型
+      commodityCategory: {
+        'dictPid': '0',
+        'dictType': 'goodsType'
+      },
       // 小类字典类型
-      commoditySubclass: ''
+      commoditySubclass: {
+        'dictPid': '',
+        'dictType': 'goodsType'
+      }
     };
   },
   computed: {
@@ -117,8 +125,9 @@ export default {
     }
   },
   created() {
-    this.getDicts('productType').then(response => {
+    this.listByDict(this.commodityCategory).then(response => {
       this.commodityCategoryCodeOptions = response.data;
+      // console.log(this.commodityCategoryCodeOptions);
     });
   },
   methods: {
@@ -189,9 +198,10 @@ export default {
       const commodity = this.commodityCategoryCodeOptions.filter(item => {
         return item.dictValue === value;
       });
-      this.commoditySubclass = commodity[0].dictValue;
+      console.log(commodity);
+      this.commoditySubclass.dictPid = commodity[0].dictCode;
       console.log(this.commoditySubclass);
-      this.getDicts(this.commoditySubclass).then(response => {
+      this.listByDict(this.commoditySubclass).then(response => {
         this.commoditySubclassCodesOptions = response.data;
       });
       this.isMore = commodity[0].isCheckbox;

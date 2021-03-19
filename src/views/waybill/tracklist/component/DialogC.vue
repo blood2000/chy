@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { unload } from '@/api/waybill/tracklist';
+import { unload, getAddress } from '@/api/waybill/tracklist';
 import UploadImage from '@/components/UploadImage/index';
 
 export default {
@@ -77,6 +77,13 @@ export default {
   },
   created() {},
   methods: {
+    // 获取地址信息
+    getAddress() {
+      getAddress(this.initdata.mainOrderNumber).then(response => {
+        this.waybillAddressOptions = response;
+        console.log(this.waybillAddressOptions);
+      });
+    },
     /** 提交按钮 */
     submitForm() {
       this.$refs['form'].validate(valid => {
@@ -113,9 +120,11 @@ export default {
         loadTime: null,
         loadWeight: null,
         picture: null,
-        remark: null
+        remark: null,
+        waybillAddress: {}
       };
       this.resetForm('form');
+      this.getAddress();
     },
     // 表单赋值
     setForm(data) {
