@@ -9,6 +9,15 @@ export function listData(query) {
   });
 }
 
+// 查询字典数据列表(树)
+export function treeListData(query) {
+  return request({
+    url: '/system/dict/data/treeselect',
+    method: 'get',
+    params: query
+  });
+}
+
 // 查询字典数据详细
 export function getData(dictCode) {
   return request({
@@ -48,5 +57,13 @@ export function delData(dictCode) {
   return request({
     url: '/system/dict/data/' + dictCode,
     method: 'delete'
+  });
+}
+// 查询字典类
+export function listByDict(data) {
+  return request({
+    url: '/system/dict/data/listByDict',
+    method: 'post',
+    data: data
   });
 }
