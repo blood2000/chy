@@ -50,3 +50,11 @@ export function delData(dictCode) {
     method: 'delete'
   });
 }
+// 查询字典类
+export function listByDict(data) {
+  return request({
+    url: '/system/dict/data/listByDict',
+    method: 'post',
+    data: data
+  });
+}
