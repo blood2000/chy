@@ -180,7 +180,6 @@ export default {
   },
   data() {
     return {
-      value: '',
       // 计算公式字典
       ruleTypeOptions: [],
       // 抹零规则字典
@@ -227,7 +226,7 @@ export default {
       });
     },
     // 获取路耗表单list
-    getList() {
+    getLossList() {
       getRuleItemList({ ruleType: 1 }).then(response => {
         this.form.lossItem = response.data.list;
         this.form.lossItem.forEach(el => {
@@ -275,7 +274,7 @@ export default {
         });
         console.log(params);
         if (valid) {
-          if (this.form.code != null) {
+          if (this.form.code) {
             updateRules(params).then(response => {
               this.msgSuccess('修改成功');
               this.close();
@@ -304,7 +303,7 @@ export default {
     reset() {
       this.form = {
         code: null,
-        shipperCode: 'ca8b3f3528a34365b41ad4cdb2074f67',
+        shipperCode: '8b3f41f598c64fd9a7922a5611a7ed8f',
         name: null,
         ruleDictType: null,
         isLoss: true,
@@ -321,6 +320,12 @@ export default {
     // 表单赋值
     setForm(data) {
       this.form = data;
+      this.form.addItem = [];
+      this.form.addItemObj = {};
+      this.form.reduceItem = [];
+      this.form.reduceItemObj = {};
+      this.form.lossItem = [];
+      this.form.lossItemObj = {};
     },
     // 增减费用项目选择
     chooseItem(type) {

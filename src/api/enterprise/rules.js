@@ -44,11 +44,20 @@ export function delRules(data) {
   });
 }
 
-// 获取增减费用项目
+// 获取核算规则细项
 export function getRuleItemList(query) {
   return request({
     url: `/transportation/ruleItem/list`,
     method: 'get',
     params: query
+  });
+}
+
+// 删除核算规则细项
+export function delDetailRules(data) {
+  return request({
+    url: `/transportation/ruleDetailShipment/delete`,
+    method: 'delete',
+    params: data
   });
 }

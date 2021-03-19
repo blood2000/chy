@@ -103,25 +103,28 @@ export default {
       // 是否显示弹出层
       open: false,
       // 计算公式字典
-      ruleTypeOptions: [
-        { dictLabel: '运费 = 装货重量 * 运费单价 + 增项 - 减项', dictValue: 1 },
-        { dictLabel: '运费 = 卸货重量 * 运费单价 + 增项 - 减项', dictValue: 2 },
-        { dictLabel: '运费 = 装卸货最小重量 * 运费单价 + 增项 - 减项', dictValue: 3 },
-        { dictLabel: '运费 = 装卸货最大重量 * 运费单价 + 增项 - 减项', dictValue: 4 }
-      ],
+      ruleTypeOptions: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        shipperCode: 'ca8b3f3528a34365b41ad4cdb2074f67',
+        shipperCode: '8b3f41f598c64fd9a7922a5611a7ed8f',
         name: null
       }
     };
   },
   created() {
+    this.getAllDicList();
     this.getList();
   },
   methods: {
+    // 获取字典
+    getAllDicList() {
+      // 计算公式
+      this.getDicts('ruleFormula').then((response) => {
+        this.ruleTypeOptions = response.data;
+      });
+    },
     /** 查询列表 */
     getList() {
       this.loading = true;
@@ -156,16 +159,17 @@ export default {
       this.$refs.RulesDialog.reset();
       this.open = true;
       this.title = '添加';
-      this.$refs.RulesDialog.getList();
+      this.$refs.RulesDialog.getLossList();
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.$refs.RulesDialog.reset();
       const code = row.code || this.ids;
       getRules(code).then(response => {
-        this.$refs.RulesDialog.setForm(response.data);
         this.open = true;
         this.title = '修改';
+        this.$refs.RulesDialog.getLossList();
+        this.$refs.RulesDialog.setForm(response.data);
       });
     },
     /** 删除按钮操作 */
