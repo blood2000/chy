@@ -29,10 +29,7 @@
             >
               <i class="el-icon-info" />
               <ul slot="content">
-                <li class="g-text">公式1：运费 = 装货重量 * 运费单价 + 增项 - 减项</li>
-                <li class="g-text">公式2：运费 = 卸货重量 * 运费单价 + 增项 - 减项</li>
-                <li class="g-text">公式3：运费 = 装卸货最小重量 * 运费单价 + 增项 - 减项</li>
-                <li class="g-text">公式4：运费 = 装卸货最大重量 * 运费单价 + 增项 - 减项</li>
+                <li v-for="(item, index) in ruleTypeOptions" :key="item.dictValue" class="g-text">{{ `公式${index + 1}:${item.dictLabel}` }}</li>
               </ul>
             </el-tooltip>
           </el-form-item>
@@ -194,7 +191,14 @@ export default {
         lossItemObj: {}
       },
       // 表单校验
-      rules: {},
+      rules: {
+        name: [
+          { required: true, message: '规则名称不能为空', trigger: 'blur' }
+        ],
+        ruleDictType: [
+          { required: true, message: '计算公式不能为空', trigger: 'blur' }
+        ]
+      },
       // 增减费用项目选择弹出层显示
       chooseItemOpen: false,
       chooseItemType: ''
@@ -225,26 +229,31 @@ export default {
         this.m0DictValueOptions = response.data;
       });
     },
-    // 获取路耗表单list
+    // 新增的时候获取路耗表单list
     getLossList() {
       getRuleItemList({ ruleType: 1 }).then(response => {
         this.form.lossItem = response.data.list;
-        this.form.lossItem.forEach(el => {
-          this.$set(this.form.lossItemObj, el.code, null);
-          // select或radio类型的表单需要获取option字典
-          if (el.dictCode) {
-            this.getDicts(el.dictCode).then((response) => {
-              this.form[el.dictCode] = response.data;
-              this.$forceUpdate();
-            });
-          }
-          // 填范围区域的值要特殊处理
-          if (el.showType === 2) {
-            this.$set(this.form.lossItemObj, el.code, {});
-            this.$set(this.form.lossItemObj[el.code], 'start', '');
-            this.$set(this.form.lossItemObj[el.code], 'end', '');
-          }
-        });
+        this.setLossList(this.form.lossItem);
+      });
+    },
+    // 路耗表单回填
+    setLossList(itemList) {
+      itemList.forEach(el => {
+        // select或radio类型的表单需要获取option字典
+        if (el.dictCode) {
+          this.getDicts(el.dictCode).then((response) => {
+            this.form[el.dictCode] = response.data;
+            this.$forceUpdate();
+          });
+        }
+        // 填范围区域的值要特殊处理
+        if (el.showType === 2) {
+          this.$set(this.form.lossItemObj, el.code, {});
+          this.$set(this.form.lossItemObj[el.code], 'start', el.ruleValue ? JSON.parse(el.ruleValue)[0] : '');
+          this.$set(this.form.lossItemObj[el.code], 'end', el.ruleValue ? JSON.parse(el.ruleValue)[1] : '');
+        } else {
+          this.$set(this.form.lossItemObj, el.code, el.ruleValue ? el.ruleValue : null);
+        }
       });
     },
     // 提交按钮
@@ -258,21 +267,15 @@ export default {
           m0DictValue: this.form.m0DictValue,
           detailList: []
         };
-        this.form.addItem.forEach(el => {
-          params.detailList.push({
-            ruleItemCode: el.code,
-            ruleValue: this.form.addItemObj[el.code],
-            type: 1
-          });
-        });
-        this.form.reduceItem.forEach(el => {
-          params.detailList.push({
-            ruleItemCode: el.code,
-            ruleValue: this.form.reduceItemObj[el.code],
-            type: 2
-          });
-        });
-        console.log(params);
+        if (this.form.code) {
+          params.code = this.form.code;
+        }
+        if (this.form.isLoss) {
+          this.setParams(this.form.lossItem, this.form.lossItemObj, params);
+        }
+        this.setParams(this.form.addItem, this.form.addItemObj, params, 1);
+        this.setParams(this.form.reduceItem, this.form.reduceItemObj, params, 2);
+        // console.log(params);
         if (valid) {
           if (this.form.code) {
             updateRules(params).then(response => {
@@ -286,6 +289,42 @@ export default {
               this.close();
               this.$emit('refresh');
             });
+          }
+        }
+      });
+    },
+    // 构造参数
+    setParams(list, obj, params, type) {
+      list.forEach(el => {
+        // 判断是不是范围区间
+        if (el.showType === 2) {
+          // 判断是不是增项或减项,路耗不用传type
+          if (type) {
+            params.detailList.push({
+              ruleItemCode: el.code,
+              ruleValue: JSON.stringify([obj[el.code].start, obj[el.code].end]),
+              type: type
+            });
+          } else {
+            params.detailList.push({
+              ruleItemCode: el.code,
+              ruleValue: JSON.stringify([obj[el.code].start, obj[el.code].end])
+            });
+          }
+        } else {
+          if (obj[el.code] !== '' && obj[el.code] !== undefined && obj[el.code] !== null) {
+            if (type) {
+              params.detailList.push({
+                ruleItemCode: el.code,
+                ruleValue: obj[el.code],
+                type: type
+              });
+            } else {
+              params.detailList.push({
+                ruleItemCode: el.code,
+                ruleValue: obj[el.code]
+              });
+            }
           }
         }
       });
@@ -319,13 +358,27 @@ export default {
     },
     // 表单赋值
     setForm(data) {
-      this.form = data;
-      this.form.addItem = [];
-      this.form.addItemObj = {};
-      this.form.reduceItem = [];
-      this.form.reduceItemObj = {};
-      this.form.lossItem = [];
-      this.form.lossItemObj = {};
+      this.form.code = data.ruleInfo.code;
+      this.form.shipperCode = data.ruleInfo.shipperCode;
+      this.form.name = data.ruleInfo.name;
+      this.form.ruleDictType = data.ruleInfo.ruleDictType;
+      this.form.isLoss = !!data.lossList;
+      this.form.m0DictValue = data.ruleInfo.m0DictValue;
+      // 回填路耗
+      this.setLossList(data.lossList);
+      // 回填增减项
+      data.detailList.forEach(el => {
+        if (el.type === 1) {
+          // 增项
+          this.form.addItem.push(el);
+          this.$set(this.form.addItemObj, el.code, el.ruleValue);
+        } else if (el.type === 2) {
+          // 减项
+          this.form.reduceItem.push(el);
+          this.$set(this.form.reduceItemObj, el.code, el.ruleValue);
+        }
+      });
+      console.log(this.form);
     },
     // 增减费用项目选择
     chooseItem(type) {
@@ -334,15 +387,33 @@ export default {
     },
     setItem(type, arr) {
       if (type === 'add') {
+        const itemList = JSON.parse(JSON.stringify(this.form.addItem));
+        const itemObj = JSON.parse(JSON.stringify(this.form.addItemObj));
         this.form.addItem = arr;
-        this.form.addItem.forEach(el => {
-          this.$set(this.form.addItemObj, el.code, null);
-        });
+        this.form.addItemObj = {};
+        for (let i = 0; i < this.form.addItem.length; i++) {
+          this.$set(this.form.addItemObj, this.form.addItem[i].code, null);
+          for (let j = 0; j < itemList.length; j++) {
+            if (itemList[j].code === this.form.addItem[i].code) {
+              this.form.addItem[i] = itemList[j];
+              this.$set(this.form.addItemObj, this.form.addItem[i].code, itemObj[this.form.addItem[i].code]);
+            }
+          }
+        }
       } else if (type === 'reduce') {
+        const itemList = JSON.parse(JSON.stringify(this.form.reduceItem));
+        const itemObj = JSON.parse(JSON.stringify(this.form.reduceItemObj));
         this.form.reduceItem = arr;
-        this.form.reduceItem.forEach(el => {
-          this.$set(this.form.reduceItemObj, el.code, null);
-        });
+        this.form.reduceItemObj = {};
+        for (let i = 0; i < this.form.reduceItem.length; i++) {
+          this.$set(this.form.reduceItemObj, this.form.reduceItem[i].code, null);
+          for (let j = 0; j < itemList.length; j++) {
+            if (itemList[j].code === this.form.reduceItem[i].code) {
+              this.form.reduceItem[i] = itemList[j];
+              this.$set(this.form.reduceItemObj, this.form.reduceItem[i].code, itemObj[this.form.reduceItem[i].code]);
+            }
+          }
+        }
       }
     },
     deleteItem(type, code) {
