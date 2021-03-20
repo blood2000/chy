@@ -141,13 +141,15 @@
             <div class="header mb8">配载信息(第三步)</div>
 
             <GoodsAccounting ref="goodsAccounting" />
-          </div>
 
-          <div class="content">
+            <el-divider />
             <div class="header mb8">其他规则</div>
 
             <AccounTing ref="accounTing" :pubilsh-code="formData.tin1" />
+
           </div>
+
+
 
           <div v-if="false" class="content">
             <div class="header mb8">预估运费</div>
@@ -203,7 +205,7 @@ import { listShipment } from '@/api/assets/shipment.js';
 // 获取货集码列表 ? 要在什么时机调用?
 // import { listStockcode } from '@/api/enterprise/stockcode';
 
-// import { orderPubilsh } from '@/api/order/release';
+import { orderPubilsh } from '@/api/order/release';
 
 export default {
   components: {
@@ -267,7 +269,25 @@ export default {
   async created() {},
 
   methods: {
-    async onSubmit(form) {
+    onSubmit(form) {
+      this.$refs[form].validate(async(valid) => {
+        if (valid) {
+          const data = await this.submAllData();
+          console.log(data);
+
+
+          orderPubilsh(data).then((response) => {
+            console.log(response);
+            this.msgSuccess('新增成功');
+          });
+        } else {
+          return false;
+        }
+      });
+    },
+
+    // 3.
+    async submAllData() {
       const OrderBasic = await this.$refs.OrderBasic._submitForm();
 
       const address_add = this.address_add.map(async(e) => {
@@ -284,8 +304,11 @@ export default {
       const goodsAccounting = await this.$refs.goodsAccounting._submitForm();
       // console.log(goodsAccounting, 'goodsAccounting------------');
 
+      // 规则
+      console.log(this.$refs.accounTing);
+
       const accounTing = await this.$refs.accounTing._submitForm();
-      console.log(accounTing, 'accounTing------------');
+      // console.log(accounTing, 'accounTing 是个数组有详细的每一个细的规则------------');
 
       console.log(OrderBasic, '拼接前');
 
@@ -294,6 +317,15 @@ export default {
 
       OrderBasic.loadType = this.formData.tin7;
       OrderBasic.orderGoodsList = orderGoodsList.map(e => {
+        e.orderFreightBoList = accounTing.map(rule => {
+          return {
+            goodsBigType: this.formData.tin2,
+            goodsType: this.isMultiGoods
+              ? this.formData.tin2_1
+              : this.formData.tin2_2,
+            ...rule
+          };
+        });
         return {
           ...e,
           addressList: [...addr_xie, ...addr_add],
@@ -316,6 +348,8 @@ export default {
 
       console.log(OrderBasic, '拼接后-----');
 
+      return OrderBasic;
+
       // const data = {
 
       //   classList: [
@@ -337,161 +371,6 @@ export default {
       // }
 
       // console.log(data);
-
-
-
-
-      return;
-
-      // this.$refs[form].validate(async(valid) => {
-      //   if (valid) {
-      //     const address1 =
-      //       (this.$refs.address1 &&
-      //         (await this.$refs.address1._submitForm())) ||
-      //       [];
-      //     const address2 =
-      //       (this.$refs.address2 &&
-      //         (await this.$refs.address2._submitForm())) ||
-      //       [];
-
-      //     let goodsAccounting;
-      //     let accounTing;
-      //     let arrs;
-
-      //     let orderFreightBoList = []; // 运费规则Bo
-      //     let orderGoodsList = []; // 货源商品信息_1
-      //     let orderSpecifiedList = []; // 货源指定接单人表
-
-      //     const driverInfoCode = this.formData.tin5_2.map((driverInfoCode) => {
-      //       return {
-      //         driverInfoCode,
-      //         teamInfoCode: '',
-      //         userType: 2
-      //       };
-      //     });
-      //     const teamInfoCode = this.formData.tin5_1.map((teamInfoCode) => {
-      //       return {
-      //         driverInfoCode: '',
-      //         teamInfoCode,
-      //         userType: 1
-      //       };
-      //     });
-      //     orderSpecifiedList = driverInfoCode.concat(teamInfoCode);
-
-      //     // <!-- isMultiGoods true->多商品 ; false->单商品 -->
-      //     if (this.isMultiGoods) {
-      //       const promisArr = this.formData.tin2_1.map(async(e) => {
-      //         return {
-      //           ...((this.$refs[e][0] &&
-      //             (await this.$refs[e][0]._submitForm())) ||
-      //             {}),
-      //           goodsTypeName: e
-      //         };
-      //       });
-      //       arrs = await Promise.all(promisArr);
-
-      //       // 多商品核算规则多个
-      //       orderFreightBoList = arrs.map((accounTing) => {
-      //         return {
-      //           balanceRuleCode: accounTing.ruleItemId,
-      //           ruleItemValue: '', // ??
-      //           type: '' // ??
-      //         };
-      //       });
-
-      //       orderGoodsList = arrs.map((e) => {
-      //         return {
-      //           addressList: [...address1, ...address2],
-      //           endLimitWastage: 0, // 免赔偿路耗规范结束 多商品无此选项??
-      //           goodsBigType: this.formData.tin2,
-      //           goodsType: this.formData.tin2_1,
-      //           goodsUnit: '1', // 多商品没有 计量单位
-      //           isModifyFinish: true, // 平台是否完成调价?? 啥东西
-      //           isOneselfLoad: this.formData.tin9, // 是否允许自装 0否 1是 (多装模式)?? 啥东西
-      //           isOneselfUnload: this.formData.tin8,
-      //           limitWastage: '1', // 限制损耗?? 啥东西
-      //           perWeight: 0, // 最高配载 多商品无此选项??
-      //           priceWastage: 0, // 路耗超出范围 赔偿单价 （元/吨）?? 啥东西
-      //           shipmentPrice: e.shipmentPrice,
-      //           startLimitWastage: 0, // 免赔偿路耗规范开始 多商品无此选项??
-      //           vehicleLength: e.vehicleLength,
-      //           vehicleType: e.vehicleType,
-      //           weight: 0 // 货物重量 多商品无此选项??
-      //         };
-      //       });
-      //     } else {
-      //       goodsAccounting =
-      //         (this.$refs.goodsAccounting &&
-      //           (await this.$refs.goodsAccounting._submitForm())) ||
-      //         {};
-      //       accounTing =
-      //         (this.$refs.accounTing &&
-      //           (await this.$refs.accounTing._submitForm())) ||
-      //         {};
-
-      //       // 单商品核算规格
-      //       orderFreightBoList = [
-      //         {
-      //           balanceRuleCode: accounTing.ruleItemId,
-      //           ruleItemValue: '', // ??
-      //           type: '' // ??
-      //         }
-      //       ];
-      //       // 单商品信息
-      //       orderGoodsList = [
-      //         {
-      //           addressList: [...address1, ...address2],
-      //           // endLimitWastage: accounTing.endLimitWastage,
-      //           goodsBigType: this.formData.tin2,
-      //           goodsType: this.formData.tin2_2,
-      //           goodsUnit: goodsAccounting.goodsUnit,
-      //           isModifyFinish: true, // 平台是否完成调价?? 啥东西
-      //           isOneselfLoad: false, // 是否允许自装 0否 1是 (多装模式)?? 啥东西
-      //           isOneselfUnload: false, // 是否允许自卸 0否 1是 (多卸模式)
-      //           limitWastage: '1', // 限制损耗?? 啥东西
-      //           perWeight: goodsAccounting.perWeight,
-      //           priceWastage: 0, // 路耗超出范围 赔偿单价 （元/吨）?? 啥东西
-      //           shipmentPrice: goodsAccounting.shipmentPrice,
-      //           // startLimitWastage: accounTing.startLimitWastage,
-      //           vehicleLength: goodsAccounting.vehicleLength,
-      //           vehicleType: goodsAccounting.vehicleType,
-      //           weight: goodsAccounting.weight
-      //         }
-      //       ];
-      //     }
-
-      //     const data = {
-      //       classList: [
-      //         {
-      //           classCode: '1'
-      //         }
-      //       ],
-      //       isClass: true,
-      //       // 上面2个暂时没有
-      //       isPublic: this.formData.tin4,
-      //       isSpecified: this.formData.tin5,
-      //       loadType: this.formData.tin7, // loadType	装卸类型 1.一装一卸 2.多装一卸 3.一装多卸 4.多装多卸
-      //       orderFreightBoList,
-      //       orderGoodsList,
-      //       orderSpecifiedList,
-      //       projectCode: this.formData.tin3Code, // 项目编码
-      //       pubilshCode: this.formData.tin1,
-      //       remark: this.formData.remark
-      //     };
-
-      //     console.log('运费规则Bo', orderFreightBoList);
-      //     console.log('货源商品信息_1', orderGoodsList);
-      //     console.log('货源指定接单人表', orderSpecifiedList);
-      //     console.log('全部', data);
-
-      //     orderPubilsh(data).then((response) => {
-      //       console.log(response);
-      //       this.msgSuccess('新增成功');
-      //     });
-      //   } else {
-      //     return false;
-      //   }
-      // });
     },
 
     // 1. 远程搜索

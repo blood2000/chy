@@ -47,6 +47,7 @@
             <el-checkbox
               v-for="dict in tin2_Option"
               :key="dict.dictValue"
+              class="radio_item"
               :label="dict.dictValue"
             >{{ dict.dictLabel }}</el-checkbox>
           </el-checkbox-group>
@@ -56,6 +57,7 @@
             <el-radio
               v-for="dict in tin2_Option"
               :key="dict.dictValue"
+              class="radio_item"
               :label="dict.dictValue"
             >{{ dict.dictLabel }}</el-radio>
           </el-radio-group>
@@ -218,15 +220,19 @@ export default {
 
   computed: {
     isMultiGoods() {
-      return (
-        this._zhaovalue(this.tin2Option, this.formData.tin2).isCheckbox === '1'
-      );
+      const tin2Obj = this._zhaovalue(this.tin2Option, this.formData.tin2);
+      let bool = false;
+      if (tin2Obj.isCheckbox) {
+        bool = tin2Obj.isCheckbox === '1';
+      }
+
+      return bool;
     }
   },
 
   watch: {
     pubilshCode(value) {
-      this.$refs['elForm'].resetFields();
+      this.$refs['elForm'] && this.$refs['elForm'].resetFields();
       this.tin3Optin = [{ dictValue: '0', dictLabel: '无所属项目' }]; // 货主项目
       this.tin2Option = []; // 大类
       this.tin2_Option = []; // 小类
@@ -240,15 +246,15 @@ export default {
       ];
       this.tin6Option = [];
 
-      this.api_tin3Optin();
+      !this.tin2Option.length && this.api_tin3Optin();
+      this.api_dictInit();
     }
   },
   created() {
-    // 获取
-    this.api_tin3Optin();
-
     // 获取字典
     this.api_dictInit();
+    // 获取
+    this.api_tin3Optin();
   },
 
   methods: {
@@ -318,8 +324,9 @@ export default {
     // 3. 获取小类列表
     async handletin2(tin3item) {
       this.$emit('input', this.isMultiGoods);
+
       const { data } = await this.listByDict({
-        dictPid: this.tin2,
+        dictPid: this._zhaovalue(this.tin2Option, this.formData.tin2).dictCode,
         dictType: 'goodsType'
       });
 
@@ -331,7 +338,6 @@ export default {
       // ];
       this.tin2_Option = data;
 
-      console.log(this.tin2_Option);
       if (!tin3item) return;
 
       if (this.isMultiGoods) {
@@ -423,18 +429,6 @@ export default {
               isPublic: this.formData.tin4 === '1', //	是否公开货源 0.非公开 1.公开,
               isSpecified: this.formData.tin5 === '1', // 是否指定接单人 0否 1是		false
               // 'loadType': 0,
-              orderFreightBoList: [
-                {
-                  // 'balanceRuleCode': '',
-                  goodsBigType: this.formData.tin2,
-                  goodsType: this.isMultiGoods
-                    ? this.formData.tin2_1
-                    : this.formData.tin2_2
-                  // 'orderGoodsCode': '',
-                  // 'ruleItemValue': '',
-                  // 'type': 0
-                }
-              ],
               orderGoodsList: [
                 {
                   // 'addressList': [
@@ -473,8 +467,21 @@ export default {
                   // 'totalType': '',
                   // 'vehicleLength': '',
                   // 'vehicleType': '',
-                  // 'weight': 0
+                  // 'weight': 0,
+                  // orderFreightBoList: [
+                  //   {
+                  //     // 'balanceRuleCode': '',
+                  //     goodsBigType: this.formData.tin2,
+                  //     goodsType: this.isMultiGoods
+                  //       ? this.formData.tin2_1
+                  //       : this.formData.tin2_2
+                  //     // 'orderGoodsCode': '',
+                  //     // 'ruleItemValue': '',
+                  //     // 'type': 0
+                  //   }
+                  // ]
                 }
+
               ],
               orderSpecifiedList: tin6_1.concat(tin6_2),
               projectCode: this.formData.tin3 === '0' ? '' : this.formData.tin3,

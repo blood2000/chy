@@ -24,53 +24,22 @@
       </el-select>
     </el-form-item>
 
+    <el-divider />
 
     <template v-if="formData.ruleItemId">
 
-      <RulesForm :data-list="lossList" />
+      <div class="header mb8">路耗:</div>
       <!-- 路耗列表 -->
-      <!-- <div>
-        <div>计算路耗</div>
-        <el-divider />
+      <RulesForm v-if="lossList.length" ref="lossList" :data-list="lossList" />
 
+      <el-divider />
+      <div class="header mb8">补贴项目:</div>
 
+      <RulesForm v-if="shouruList.length" ref="shouruList" :data-list="shouruList" />
 
-        <el-form-item prop="tin1" label="计算方式">
-          <el-radio-group v-model="formData.tin1">
-            <el-radio
-              v-for="dict in [
-                {dictValue:'0', dictLabel:'定额(kg/车)'},
-                {dictValue:'0', dictLabel:'定率(%o/车)'},
-              ]"
-              :key="dict.dictValue"
-              :label="parseInt(dict.dictValue)"
-            >{{ dict.dictLabel }}</el-radio>
-          </el-radio-group>
-        </el-form-item>
-
-        <el-form-item prop="tin2" label="容忍值">
-          <el-input-number
-            v-model="formData.tin2"
-            :controls="false"
-            placeholder="-"
-            step-strictly
-            controls-position="right"
-            :style="{ width: '120px' }"
-          />
-        </el-form-item>
-        <el-form-item prop="tin3" label="规则">
-          <el-select v-model="formData.tin3" clearable>
-            <el-option
-              v-for="dict in []"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-        </el-form-item>
-
-
-      </div> -->
+      <el-divider />
+      <div class="header mb8">扣费项目:</div>
+      <RulesForm v-if="zichuList.length" ref="zichuList" :data-list="zichuList" />
 
       <!-- 细项列表 -->
       <div v-for="item in allRules" :key="item.code">
@@ -153,7 +122,7 @@ export default {
       },
       rules: {
         ruleItemId: [
-          { required: false, message: '请选择货物计量单位', trigger: 'change' }
+          { required: true, message: '请选择核算规则', trigger: 'change' }
         ]
       },
 
@@ -162,6 +131,8 @@ export default {
 
       // allRules
       lossList: [],
+      zichuList: [],
+      shouruList: [],
       allRules: []
     };
   },
@@ -190,62 +161,39 @@ export default {
     // 选择规格
     async handleRuleItemId() {
       // console.log(this.formData.ruleItemId); // ==> 通过这个code去请求列表
+
+      this.lossList = [];
+      this.zichuList = [];
+      this.shouruList = [];
       const quer = {
         code: this.formData.ruleItemId
       };
 
-      const { detailList, lossList, ruleInfo } = (await getRuleItem(quer)).data; // 没错
-
-      console.log(lossList);
+      const { detailList, lossList } = (await getRuleItem(quer)).data; // 没错
 
       this.lossList = lossList;
 
-      // console.log(data);
-      return;
-
-      data.forEach(e => {
-        if (e.showType === 2) {
-          this.formData['tin_' + e.enName + '__1'] = (JSON.parse(e.ruleValue))[0];
-          this.formData['tin_' + e.enName + '__2'] = (JSON.parse(e.ruleValue))[1];
+      detailList.forEach(e => {
+        if (e.type === '2') {
+          this.zichuList.push(e);
         } else {
-          this.formData['tin_' + e.enName] = e.ruleValue;
-        }
-        e.enName = 'tin_' + e.enName;
-        if (e.showType === 3 || e.showType === 4) {
-          // 先获取字典
-
-          this.getDicts(e.dictCode).then(res => {
-            e.arrOptin = res;
-          });
+          this.shouruList.push(e);
         }
       });
-
-
-      this.arr1 = data.filter(e => {
-        return e.type === '1';
-      });
-
-
-      this.arr2 = data.filter(e => {
-        return e.type === '2';
-      });
-
-      console.log(this.arr1, this.arr2);
-
-      // data.forEach(e => {
-      //   this.formData[e.enName] = e.value;
-      // });
-
-      // this.allRules = data;
-
-      // this.ruleItemIdOption = this._baozhuan(data, 'code', 'ruleValue');
     },
 
-    _submitForm() {
+    async _submitForm() {
       return new Promise((resolve, reject) => {
-        this.$refs['formData'].validate((valid) => {
+        this.$refs['formData'].validate(async(valid) => {
           if (valid) {
-            resolve(this.formData);
+            const lossList = await this.$refs.lossList._submitForm();
+            const shouruList = await this.$refs.shouruList._submitForm();
+            const zichuList = await this.$refs.zichuList._submitForm();
+
+            console.log(lossList, 88888888);
+            console.log(shouruList, 111111111111);
+            console.log(zichuList, 22222222222);
+            resolve([...lossList, ...shouruList, ...zichuList]);
           } else {
             return false;
           }
@@ -280,5 +228,19 @@ export default {
 .ui-flex {
   display: flex;
   align-items: center;
+}
+.header {
+  padding-bottom: 10px;
+  position: relative;
+  font-weight: 700;
+  &::before {
+    content: "";
+    position: absolute;
+    width: 3px;
+    height: 20px;
+    left: -15px;
+    top: 1px;
+    background-color: #1890ff;
+  }
 }
 </style>
