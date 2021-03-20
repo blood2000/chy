@@ -8,13 +8,14 @@
           style="width:90%;"
           type="datetime"
           placeholder="选择日期时间"
+          :default-value="new Date()"
           value-format="yyyy-MM-dd HH:mm:ss"
         />
       </el-form-item>
       <el-form-item label="装货重量" prop="loadWeight">
-        <el-input-number v-model="form.loadWeight" placeholder="请输入装货重量" controls-position="right" :min="0" style="width:90%;" />
+        <el-input-number v-model="form.loadWeight" placeholder="请输入装货过磅重量" controls-position="right" :min="0" style="width:90%;" />
       </el-form-item>
-      <!-- <el-form-item label="装货地址" prop="waybillAddress">
+      <el-form-item label="装货地址" prop="waybillAddress">
         <el-select
           v-model="form.waybillAddress"
           placeholder="请选择车辆装货地址"
@@ -24,18 +25,17 @@
         >
           <el-option
             v-for="dict in waybillAddressOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+            :key="dict.code"
+            :label="dict.formattedAddress"
+            :value="dict.code"
           />
         </el-select>
-      </el-form-item> -->
-      <el-form-item label="装货备注" prop="remark">
-        <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入装货备注信息" style="width:90%;" />
       </el-form-item>
-
       <el-form-item label="装货单据" prop="picture">
         <uploadImage v-model="form.picture" />
+      </el-form-item>
+      <el-form-item label="装货备注" prop="remark">
+        <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入装货备注信息" style="width:90%;" />
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -73,10 +73,17 @@ export default {
       waybill: {},
       // 表单校验
       rules: {
-        tin1: [
-          { required: false, message: '网点编码不能为空', trigger: 'blur' }
+        loadTime: [
+          { required: true, message: '装货时间不能为空', trigger: 'blur' }
+        ],
+        loadWeight: [
+          { required: true, message: '装货重量不能为空', trigger: 'blur' }
         ]
-      }
+      },
+      // 日期格式
+      Hours: '',
+      Minutes: '',
+      Seconds: ''
     };
   },
   computed: {
@@ -90,12 +97,23 @@ export default {
     }
   },
   created() {
+    var Hours = new Date().getHours();
+    this.Hours = Hours < 10 ? ('0' + Hours) : Hours;
+    var Minutes = new Date().getMinutes();
+    this.Minutes = Minutes < 10 ? ('0' + Minutes) : Minutes;
+    var Seconds = new Date().getSeconds();
+    this.Seconds = Seconds < 10 ? ('0' + Seconds) : Seconds;
   },
   methods: {
     // 获取地址信息
-    getAddress() {
-      getAddress(this.waybill.goodsCode).then(response => {
-        this.waybillAddressOptions = response;
+    getAddress(data) {
+      console.log(data);
+      getAddress(data.goodsCode).then(response => {
+        const address = response.data;
+        const address1 = address.filter(item => {
+          return item.addressType === 1;
+        });
+        this.waybillAddressOptions = address1;
         console.log(this.waybillAddressOptions);
       });
     },
@@ -134,17 +152,17 @@ export default {
         code: null,
         loadTime: null,
         loadWeight: null,
-        picture: null,
+        picture: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
         remark: null,
         waybillAddress: {}
       };
       this.resetForm('form');
-      this.getAddress();
+      this.form.loadTime = new Date().toISOString().slice(0, 10) + ' ' + this.Hours + ':' + this.Minutes + ':' + this.Seconds;
     },
     // 表单赋值
     setForm(data) {
       this.waybill = data;
-      console.log(this.waybill);
+      this.form.code = data.code;
     }
   }
 };

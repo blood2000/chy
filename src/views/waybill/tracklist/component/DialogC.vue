@@ -8,33 +8,34 @@
           style="width:90%;"
           type="datetime"
           placeholder="选择日期时间"
+          :default-value="new Date()"
           value-format="yyyy-MM-dd HH:mm:ss"
         />
       </el-form-item>
       <el-form-item label="卸货重量" prop="unloadWeight">
-        <el-input-number v-model="form.unloadWeight" placeholder="请输入卸货重量" controls-position="right" :min="0" style="width:90%;" />
+        <el-input-number v-model="form.unloadWeight" placeholder="请输入卸货过磅重量" controls-position="right" :min="0" style="width:90%;" />
       </el-form-item>
-      <!-- <el-form-item label="装货地址" prop="waybillAddress">
+      <el-form-item label="卸货地址" prop="waybillAddress">
         <el-select
           v-model="form.waybillAddress"
-          placeholder="请选择车辆装货地址"
+          placeholder="请选择车辆卸货地址"
           clearable
           size="small"
           style="width:90%;"
         >
           <el-option
             v-for="dict in waybillAddressOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+            :key="dict.code"
+            :label="dict.formattedAddress"
+            :value="dict.code"
           />
         </el-select>
-      </el-form-item> -->
+      </el-form-item>
+      <el-form-item label="卸货凭证" prop="picture">
+        <uploadImage v-model="form.picture" />
+      </el-form-item>
       <el-form-item label="卸货备注" prop="remark">
         <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入装货备注信息" style="width:90%;" />
-      </el-form-item>
-      <el-form-item label="卸货单据" prop="picture">
-        <uploadImage v-model="form.picture" />
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -63,6 +64,8 @@ export default {
   },
   data() {
     return {
+      // 地址选择
+      waybillAddressOptions: [],
       // 表单参数
       form: {
       },
@@ -73,7 +76,11 @@ export default {
         tin1: [
           { required: false, message: '网点编码不能为空', trigger: 'blur' }
         ]
-      }
+      },
+      // 日期格式
+      Hours: '',
+      Minutes: '',
+      Seconds: ''
     };
   },
   computed: {
@@ -86,12 +93,23 @@ export default {
       }
     }
   },
-  created() {},
+  created() {
+    var Hours = new Date().getHours();
+    this.Hours = Hours < 10 ? ('0' + Hours) : Hours;
+    var Minutes = new Date().getMinutes();
+    this.Minutes = Minutes < 10 ? ('0' + Minutes) : Minutes;
+    var Seconds = new Date().getSeconds();
+    this.Seconds = Seconds < 10 ? ('0' + Seconds) : Seconds;
+  },
   methods: {
     // 获取地址信息
-    getAddress() {
-      getAddress(this.waybill.goodsCode).then(response => {
-        this.waybillAddressOptions = response;
+    getAddress(data) {
+      getAddress(data.goodsCode).then(response => {
+        const address = response.data;
+        const address1 = address.filter(item => {
+          return item.addressType === 2;
+        });
+        this.waybillAddressOptions = address1;
         console.log(this.waybillAddressOptions);
       });
     },
@@ -135,12 +153,12 @@ export default {
         waybillAddress: {}
       };
       this.resetForm('form');
-      this.getAddress();
+      this.form.unloadTime = new Date().toISOString().slice(0, 10) + ' ' + this.Hours + ':' + this.Minutes + ':' + this.Seconds;
     },
     // 表单赋值
     setForm(data) {
       this.waybill = data;
-      console.log(this.waybill);
+      this.form.code = data.code;
     }
   }
 };
