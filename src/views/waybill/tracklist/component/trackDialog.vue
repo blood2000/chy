@@ -1,5 +1,5 @@
 <template>
-  <!-- 车辆装货对话框 -->
+  <!-- 车辆跟踪对话框 -->
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
     <el-amap vid="amapDemo" :zoom="zoom" :center="center" />
   </el-dialog>
