@@ -10,10 +10,11 @@ export function listRules(query) {
 }
 
 // 查询规则详细
-export function getRules(code) {
+export function getRules(data) {
   return request({
-    url: `${code}`,
-    method: 'get'
+    url: `/transportation/ruleInfoShipment/detail`,
+    method: 'get',
+    params: data
   });
 }
 

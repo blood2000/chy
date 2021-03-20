@@ -38,8 +38,8 @@
         prop="ruleDictType"
         :formatter="ruleTypeFormat"
       />
-      <el-table-column label="扣费项目" align="center" />
-      <el-table-column label="补贴项目" align="center" />
+      <el-table-column label="扣费项目" align="center" prop="deduction" />
+      <el-table-column label="补贴项目" align="center" prop="subsidies" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
           <el-button
@@ -165,7 +165,7 @@ export default {
     handleUpdate(row) {
       this.$refs.RulesDialog.reset();
       const code = row.code || this.ids;
-      getRules(code).then(response => {
+      getRules({ code: code }).then(response => {
         this.open = true;
         this.title = '修改';
         this.$refs.RulesDialog.getLossList();
