@@ -298,6 +298,10 @@
     <cancel-dialog ref="CancelDialog" :open.sync="canceldialog" :title="title" @refresh="getList" />
     <!-- 评价 -->
     <rate-dialog ref="RateDialog" :open.sync="ratedialog" :title="title" @refresh="getList" />
+    <!-- 车辆跟踪 -->
+    <track-dialog ref="TrackDialog" :open.sync="trackdialog" :title="title" @refresh="getList" />
+    <!-- 定位 -->
+    <location-dialog ref="LocationDialog" :open.sync="locationdialog" :title="title" @refresh="getList" />
 
     <!-- <el-dialog :title="title" :visible.sync="visible" :width="dialogWidth" append-to-body>
       <div>{{ activeName }}</div>
@@ -319,10 +323,14 @@ import DialogC from './component/DialogC';
 import CancelDialog from './component/cancelDialog';
 // 评价弹窗
 import RateDialog from './component/rateDialog';
+// 车辆跟踪弹窗
+import TrackDialog from './component/trackDialog';
+// 定位弹窗
+import LocationDialog from './component/locationDialog';
 
 export default {
   'name': 'Tracklist',
-  components: { DialogA, DialogB, DialogC, CancelDialog, RateDialog },
+  components: { DialogA, DialogB, DialogC, CancelDialog, RateDialog, TrackDialog, LocationDialog },
   data() {
     return {
       tableColumnsConfig,
@@ -367,6 +375,8 @@ export default {
       dialogcdata: {},
       canceldialog: false,
       ratedialog: false,
+      trackdialog: false,
+      locationdialog: false,
       titlea: '',
       titleb: '',
       titlec: '',
@@ -437,12 +447,14 @@ export default {
           this.dialoga = true;
           this.titlea = '车辆装货';
           this.$refs.DialogA.setForm(row);
+          this.$refs.DialogA.getAddress(row);
           break;
         case 2:
           this.$refs.DialogC.reset();
           this.dialogc = true;
           this.titlec = '车辆卸货';
           this.$refs.DialogC.setForm(row);
+          this.$refs.DialogC.getAddress(row);
           break;
         case 3:
           this.$refs.CancelDialog.reset();
@@ -455,18 +467,22 @@ export default {
           this.dialoga = true;
           this.titlea = '补装货凭证';
           this.$refs.DialogA.setForm(row);
+          this.$refs.DialogA.getAddress(row);
           break;
         case 5:
           this.$refs.DialogC.reset();
           this.dialogc = true;
           this.titlec = '补卸货凭证';
           this.$refs.DialogC.setForm(row);
+          this.$refs.DialogC.getAddress(row);
           break;
         case 6:
-          this.title = '定位';
+          this.title = '车辆跟踪';
+          this.trackdialog = true;
           break;
         case 7:
-          this.title = '车辆跟踪';
+          this.title = '定位';
+          this.locationdialog = true;
           break;
         case 8:
           this.$refs.DialogB.reset();
