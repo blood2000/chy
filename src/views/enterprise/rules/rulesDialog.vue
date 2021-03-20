@@ -267,6 +267,9 @@ export default {
           m0DictValue: this.form.m0DictValue,
           detailList: []
         };
+        if (this.form.code) {
+          params.code = this.form.code;
+        }
         if (this.form.isLoss) {
           this.setParams(this.form.lossItem, this.form.lossItemObj, params);
         }
