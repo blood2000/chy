@@ -26,9 +26,15 @@
 
 
     <template v-if="formData.ruleItemId">
-      <div>
+
+      <RulesForm :data-list="lossList" />
+      <!-- 路耗列表 -->
+      <!-- <div>
         <div>计算路耗</div>
         <el-divider />
+
+
+
         <el-form-item prop="tin1" label="计算方式">
           <el-radio-group v-model="formData.tin1">
             <el-radio
@@ -64,8 +70,9 @@
         </el-form-item>
 
 
-      </div>
+      </div> -->
 
+      <!-- 细项列表 -->
       <div v-for="item in allRules" :key="item.code">
         <div>
           <div>{{ item.add === '1'?`关于增项(费用支出)`:`关于增项(费用收入出)` }}</div>
@@ -105,122 +112,17 @@
       </div>
     </template>
 
-
-    <!-- <template v-if="formData.ruleItemId !== '0'">
-      <el-form-item label="免赔偿路耗规范">
-        <div class="ui-flex">
-          <el-form-item prop="startLimitWastage">
-            <span class="pl-5 pr-5">-</span>
-            <el-input-number
-              v-model="formData.startLimitWastage"
-              :controls="false"
-              placeholder="-"
-              step-strictly
-              controls-position="right"
-              :style="{ width: '120px' }"
-            />
-            <span class="pl-5 pr-5">吨</span>
-          </el-form-item>
-
-          <span class="m20 mr20">~</span>
-
-          <el-form-item prop="endLimitWastage">
-            <span class="pl-5 pr-5">+</span>
-            <el-input-number
-              v-model="formData.endLimitWastage"
-              :controls="false"
-              placeholder="-"
-              step-strictly
-              controls-position="right"
-              :style="{ width: '120px' }"
-            />
-            <span class="pl-5 pr-5">吨</span>
-          </el-form-item>
-
-          <span class="pl-5 pr-5">（定额 定律 也计算）</span>
-        </div>
-      </el-form-item>
-
-      <el-form-item label="过路费补贴(ETC)" prop="roadSubsidies">
-        <span class="pl-5 pr-5">+</span>
-        <el-input-number
-          v-model="formData.roadSubsidies"
-          :controls="false"
-          placeholder="请输入过路费补贴金额"
-          step-strictly
-          controls-position="right"
-          :style="{ width: '200px' }"
-        />
-        <span class="pl-5 pr-5">元</span>
-      </el-form-item>
-      <el-form-item label="装车费补贴" prop="loadCartSubsidies">
-        <span class="pl-5 pr-5">+</span>
-        <el-input-number
-          v-model="formData.loadCartSubsidies"
-          :controls="false"
-          placeholder="请输入装车费补贴"
-          step-strictly
-          controls-position="right"
-          :style="{ width: '200px' }"
-        />
-        <span class="pl-5 pr-5">元</span>
-      </el-form-item>
-      <el-form-item label="卸车费补贴" prop="unloadCartSubsidies">
-        <span class="pl-5 pr-5">+</span>
-        <el-input-number
-          v-model="formData.unloadCartSubsidies"
-          :controls="false"
-          placeholder="请输入卸车费补贴"
-          step-strictly
-          controls-position="right"
-          :style="{ width: '200px' }"
-        />
-        <span class="pl-5 pr-5">元</span>
-      </el-form-item>
-    </template>
-    <template v-else>
-      <el-form-item label="免赔偿路耗规范">
-        <div class="ui-flex">
-          <el-form-item prop="startLimitWastage">
-            <span class="pl-5 pr-5">-</span>
-            <el-input-number
-              v-model="formData.startLimitWastage"
-              :controls="false"
-              placeholder="-"
-              step-strictly
-              controls-position="right"
-              :style="{ width: '120px' }"
-            />
-            <span class="pl-5 pr-5">吨</span>
-          </el-form-item>
-
-          <span class="m20 mr20">~</span>
-
-          <el-form-item prop="endLimitWastage">
-            <span class="pl-5 pr-5">+</span>
-            <el-input-number
-              v-model="formData.endLimitWastage"
-              :controls="false"
-              placeholder="-"
-              step-strictly
-              controls-position="right"
-              :style="{ width: '120px' }"
-            />
-            <span class="pl-5 pr-5">吨</span>
-          </el-form-item>
-
-          <span class="pl-5 pr-5">（定额 定律 也计算）</span>
-        </div>
-      </el-form-item>
-    </template> -->
-
   </el-form>
 </template>
 
 <script>
-import { listRules, getRules } from '@/api/enterprise/rules';
+import { getListRules, getRuleItem } from '@/api/enterprise/rules';
+
+import RulesForm from './RulesForm';
 
 export default {
+  components: { RulesForm },
+
   props: {
     formConfig: {
       type: Object,
@@ -259,8 +161,15 @@ export default {
       ruleItemIdOption: [],
 
       // allRules
+      lossList: [],
       allRules: []
     };
+  },
+
+  watch: {
+    pubilshCode(value) {
+      this.initData();
+    }
   },
 
   created() {
@@ -270,70 +179,64 @@ export default {
   methods: {
     // 获取
     async initData() {
-      // const data = (await listRules()).data; // 没错
+      if (!this.pubilshCode) return;
 
-      // console.log(data);
+      const data = (await getListRules({ shipperCode: this.pubilshCode })).data;
 
-      const data = [{
-        'checkRuleItemCode': '1213', // 核算规则项表CODE
-        'code': '12112356', // 货主编码
-        'id': 0, // ??
-        'isDel': true, // ??
-        'ruleType': '', // 规则项类型 1.收入 2.支出
-        'ruleValue': '煤炭专用规则1', // 规则项值 名称???
-        'status': 0, // 状态 0.正常 1.关闭
-        'updateCode': '',
-        'updateTime': ''
-      },
-      {
-        'checkRuleItemCode': '1213', // 核算规则项表CODE
-        'code': '1511521356', // 货主编码
-        'id': 2, // ??
-        'isDel': true, // ??
-        'ruleType': '', // 规则项类型 1.收入 2.支出
-        'ruleValue': '煤炭专用规则2', // 规则项值 名称???
-        'status': 0, // 状态 0.正常 1.关闭
-        'updateCode': '',
-        'updateTime': ''
-      }];
-
-      this.ruleItemIdOption = this._baozhuan(data, 'code', 'ruleValue');
+      this.ruleItemIdOption = this._baozhuan(data, 'code', 'name');
     },
 
     // 交互
     // 选择规格
     async handleRuleItemId() {
-      console.log(this.formData.ruleItemId); // ==> 通过这个code去请求列表
+      // console.log(this.formData.ruleItemId); // ==> 通过这个code去请求列表
+      const quer = {
+        code: this.formData.ruleItemId
+      };
 
-      // const data = (await listRules(this.formData.ruleItemId)).data; // 没错
+      const { detailList, lossList, ruleInfo } = (await getRuleItem(quer)).data; // 没错
 
-      const data = [{
-        add: '1', // 1 支出
-        'cnName': '装车费',
-        'code': '123465',
-        'dictCode': 'abc', // 字典 这个有用 用来获取下拉值
-        'id': 0,
-        'isDel': true, // 是否删除??
-        'showType': '1', // 规则项表现形式 1.文本框 2.区域 3.下拉框
-        enName: 'tin1',
-        value: '120'
-      }, {
-        add: '2', // 收入
-        'cnName': '卸车费',
-        'code': '12346515',
-        'dictCode': 'abc88', // 字典 这个有用 用来获取下拉值
-        'id': 0,
-        'isDel': true, // 是否删除??
-        'showType': '1', // 规则项表现形式 1.文本框 2.区域 3.下拉框
-        enName: 'tin2',
-        value: '150'
-      }];
+      console.log(lossList);
+
+      this.lossList = lossList;
+
+      // console.log(data);
+      return;
 
       data.forEach(e => {
-        this.formData[e.enName] = e.value;
+        if (e.showType === 2) {
+          this.formData['tin_' + e.enName + '__1'] = (JSON.parse(e.ruleValue))[0];
+          this.formData['tin_' + e.enName + '__2'] = (JSON.parse(e.ruleValue))[1];
+        } else {
+          this.formData['tin_' + e.enName] = e.ruleValue;
+        }
+        e.enName = 'tin_' + e.enName;
+        if (e.showType === 3 || e.showType === 4) {
+          // 先获取字典
+
+          this.getDicts(e.dictCode).then(res => {
+            e.arrOptin = res;
+          });
+        }
       });
 
-      this.allRules = data;
+
+      this.arr1 = data.filter(e => {
+        return e.type === '1';
+      });
+
+
+      this.arr2 = data.filter(e => {
+        return e.type === '2';
+      });
+
+      console.log(this.arr1, this.arr2);
+
+      // data.forEach(e => {
+      //   this.formData[e.enName] = e.value;
+      // });
+
+      // this.allRules = data;
 
       // this.ruleItemIdOption = this._baozhuan(data, 'code', 'ruleValue');
     },

@@ -34,6 +34,7 @@
           <el-radio
             v-for="dict in tin2Option"
             :key="dict.dictValue"
+            class="radio_item"
             :label="dict.dictValue"
           >{{ dict.dictLabel }}</el-radio>
         </el-radio-group>
@@ -236,13 +237,15 @@ export default {
     // api相关
     // 2. 获取初始的字典值
     async api_dictInit() {
-      // const { data } = (await this.getDicts('productType'));
+      const { data } = await this.listByDict({
+        'dictPid': '0',
+        'dictType': 'goodsType'
+      });
       // 假数据
-      const data = [
-        { dictValue: '112121', dictLabel: '煤', isCheckbox: '1' },
-        { dictValue: '11782121', dictLabel: '矿', isCheckbox: '2' }
-      ];
-
+      // const data = [
+      //   { dictValue: '112121', dictLabel: '煤', isCheckbox: '1' },
+      //   { dictValue: '11782121', dictLabel: '矿', isCheckbox: '2' }
+      // ];
 
       this.tin2Option = data;
     },
@@ -254,7 +257,6 @@ export default {
         shipmentCode: this.pubilshCode
       };
       const { rows } = await listInfo(query);
-      // console.log(rows);
 
       // 假数据
       // const rows = [
@@ -297,14 +299,20 @@ export default {
 
     // 3. 获取小类列表
     async handletin2(tin3item) {
-      // 根据选中的大类去获取小类列表
       // cosnt {data} = (await this.getDicts(this.tin2))
+      const { data } = await this.listByDict({
+        'dictPid': this.tin2,
+        'dictType': 'goodsType'
+      });
+
+      console.log(data);
+
       // 假数据
-      const data = [
-        { dictValue: '1', dictLabel: '傻子' },
-        { dictValue: '2', dictLabel: '疯子' },
-        { dictValue: '3', dictLabel: '多疯子' }
-      ];
+      // const data = [
+      //   { dictValue: '1', dictLabel: '傻子' },
+      //   { dictValue: '2', dictLabel: '疯子' },
+      //   { dictValue: '3', dictLabel: '多疯子' }
+      // ];
       this.tin2_Option = data;
 
       // console.log(tin3item);
@@ -487,5 +495,8 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+.radio_item{
+  padding: 5px 10px 5px 0;
+}
 </style>
