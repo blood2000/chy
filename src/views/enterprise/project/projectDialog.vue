@@ -28,8 +28,8 @@
         <el-radio-group v-model="form.commoditySubclassCodes">
           <el-radio
             v-for="dict in commoditySubclassCodesOptions"
-            :key="dict.dictValue"
-            :label="dict.dictValue"
+            :key="dict.dictCode"
+            :label="dict.dictCode"
           >{{ dict.dictLabel }}</el-radio>
         </el-radio-group>
       </el-form-item>
@@ -37,8 +37,8 @@
         <el-checkbox-group v-model="commoditySubclassCodes" @change="handleCheckedChange">
           <el-checkbox
             v-for="dict in commoditySubclassCodesOptions"
-            :key="dict.dictValue"
-            :label="dict.dictValue"
+            :key="dict.dictCode"
+            :label="dict.dictCode"
           >{{ dict.dictLabel }}</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
