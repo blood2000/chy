@@ -1,18 +1,18 @@
 <template>
   <!-- 车辆卸货对话框 -->
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="80px">
-      <el-form-item label="卸货时间" prop="loadTime">
+    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="130px">
+      <el-form-item label="卸货时间" prop="unloadTime">
         <el-date-picker
-          v-model="form.loadTime"
+          v-model="form.unloadTime"
           style="width:90%;"
           type="datetime"
           placeholder="选择日期时间"
           value-format="yyyy-MM-dd HH:mm:ss"
         />
       </el-form-item>
-      <el-form-item label="卸货重量" prop="loadWeight">
-        <el-input-number v-model="form.loadWeight" placeholder="请输入卸货重量" controls-position="right" :min="0" style="width:90%;" />
+      <el-form-item label="卸货重量" prop="unloadWeight">
+        <el-input-number v-model="form.unloadWeight" placeholder="请输入卸货重量" controls-position="right" :min="0" style="width:90%;" />
       </el-form-item>
       <!-- <el-form-item label="装货地址" prop="waybillAddress">
         <el-select
@@ -20,6 +20,7 @@
           placeholder="请选择车辆装货地址"
           clearable
           size="small"
+          style="width:90%;"
         >
           <el-option
             v-for="dict in waybillAddressOptions"
@@ -30,7 +31,7 @@
         </el-select>
       </el-form-item> -->
       <el-form-item label="卸货备注" prop="remark">
-        <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入装货备注信息" />
+        <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入装货备注信息" style="width:90%;" />
       </el-form-item>
       <el-form-item label="卸货单据" prop="picture">
         <uploadImage v-model="form.picture" />
@@ -98,7 +99,7 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          if (this.form.loadTime != null) {
+          if (this.form.unloadTime != null) {
             unload(this.form).then(response => {
               this.msgSuccess('修改成功');
               this.close();
@@ -127,8 +128,8 @@ export default {
     reset() {
       this.form = {
         code: null,
-        loadTime: null,
-        loadWeight: null,
+        unloadTime: null,
+        unloadWeight: null,
         picture: null,
         remark: null,
         waybillAddress: {}
@@ -156,6 +157,9 @@ export default {
   width: 28%;
 }
 .el-input-number ::v-deep.el-input__inner {
+  text-align: left;
+}
+.el-input-number .el-input__inner{
   text-align: left;
 }
 </style>

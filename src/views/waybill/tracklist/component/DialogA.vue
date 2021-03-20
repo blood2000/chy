@@ -1,7 +1,7 @@
 <template>
   <!-- 车辆装货对话框 -->
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="80px">
+    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="130px">
       <el-form-item label="装货时间" prop="loadTime">
         <el-date-picker
           v-model="form.loadTime"
@@ -20,6 +20,7 @@
           placeholder="请选择车辆装货地址"
           clearable
           size="small"
+          style="width:90%;"
         >
           <el-option
             v-for="dict in waybillAddressOptions"
@@ -30,7 +31,7 @@
         </el-select>
       </el-form-item> -->
       <el-form-item label="装货备注" prop="remark">
-        <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入装货备注信息" />
+        <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入装货备注信息" style="width:90%;" />
       </el-form-item>
 
       <el-form-item label="装货单据" prop="picture">
@@ -160,6 +161,9 @@ export default {
   width: 28%;
 }
 .el-input-number ::v-deep.el-input__inner {
+  text-align: left;
+}
+.el-input-number .el-input__inner{
   text-align: left;
 }
 </style>

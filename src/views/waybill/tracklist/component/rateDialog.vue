@@ -2,8 +2,11 @@
   <!-- 车辆装货对话框 -->
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="130px">
-      <el-form-item label="取消理由" prop="driverApplyRemark">
-        <el-input v-model="form.driverApplyRemark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入取消订单申请理由" style="width:90%;" clearable />
+      <el-form-item label="综合评价" prop="tin4">
+        <el-rate v-model="form.tin4" allow-half />
+      </el-form-item>
+      <el-form-item label="评价内容" prop="driverApplyRemark">
+        <el-input v-model="form.driverApplyRemark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入您的客观评价" style="width:90%;" clearable />
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -18,7 +21,7 @@ import { cancel } from '@/api/waybill/tracklist';
 // import UploadImage from '@/components/UploadImage/index';
 
 export default {
-  name: 'CancelDialog',
+  name: 'RateDialog',
   components: {
     // UploadImage
   },
@@ -107,5 +110,8 @@ export default {
 }
 .el-input-number ::v-deep.el-input__inner {
   text-align: left;
+}
+.el-rate{
+  margin-top: 8px;
 }
 </style>
