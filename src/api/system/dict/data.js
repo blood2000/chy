@@ -4,6 +4,15 @@ import request from '@/utils/request';
 export function listData(query) {
   return request({
     url: '/system/dict/data/list',
+    method: 'post',
+    data: query
+  });
+}
+
+// 查询字典数据列表(树)
+export function treeListData(query) {
+  return request({
+    url: '/system/dict/data/treeselect',
     method: 'get',
     params: query
   });

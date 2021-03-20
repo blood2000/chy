@@ -78,7 +78,13 @@
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table v-loading="loading" :data="dataList" @selection-change="handleSelectionChange">
+    <el-table
+      v-loading="loading"
+      :data="dataList"
+      row-key="dictCode"
+      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+      @selection-change="handleSelectionChange"
+    >
       <el-table-column type="selection" width="55" align="center" />
       <!-- <el-table-column label="字典编码" align="center" prop="dictCode" />-->
       <el-table-column label="字典标签" align="center" prop="dictLabel" />
@@ -94,6 +100,14 @@
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
+          <el-button
+            v-if="scope.row.children"
+            v-hasPermi="['system:dict:add']"
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleAdd(scope.row)"
+          >新增</el-button>
           <el-button
             v-hasPermi="['system:dict:edit']"
             size="mini"
@@ -163,7 +177,7 @@
 </template>
 
 <script>
-import { listData, getData, delData, addData, updateData } from '@/api/system/dict/data';
+import { treeListData, getData, delData, addData, updateData } from '@/api/system/dict/data';
 import { listType, getType } from '@/api/system/dict/type';
 
 export default {
@@ -244,9 +258,9 @@ export default {
     /** 查询字典数据列表 */
     getList() {
       this.loading = true;
-      listData(this.queryParams).then(response => {
-        this.dataList = response.rows;
-        this.total = response.total;
+      treeListData(this.queryParams).then(response => {
+        this.dataList = response.data;
+        // this.total = response.total;
         this.loading = false;
       });
     },
@@ -284,11 +298,16 @@ export default {
       this.handleQuery();
     },
     /** 新增按钮操作 */
-    handleAdd() {
+    handleAdd(row) {
       this.reset();
       this.open = true;
       this.title = '添加字典数据';
       this.form.dictType = this.queryParams.dictType;
+      if (row.dictCode !== undefined && row.dictCode !== null && row.dictCode !== '') {
+        this.form.dicPid = row.dictCode;
+      } else {
+        this.form.dicPid = 0;
+      }
     },
     // 多选框选中数据
     handleSelectionChange(selection) {

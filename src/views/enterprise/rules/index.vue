@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
-      <el-form-item label="规则名称" prop="ruleName">
+      <el-form-item label="规则名称" prop="name">
         <el-input
-          v-model="queryParams.ruleName"
+          v-model="queryParams.name"
           placeholder="请输入规则名称"
           clearable
           size="small"
@@ -26,40 +26,20 @@
           @click="handleAdd"
         >新增</el-button>
       </el-col>
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['enterprise:rules:edit']"
-          type="success"
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-        >修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['enterprise:rules:remove']"
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-        >删除</el-button>
-      </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
     <el-table v-loading="loading" :data="rulesList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <el-table-column label="规则名称" align="center" prop="ruleName" />
+      <el-table-column label="规则名称" align="center" prop="name" />
       <el-table-column
         label="计算公式"
         align="center"
-        prop="ruleType"
+        prop="ruleDictType"
         :formatter="ruleTypeFormat"
       />
-      <el-table-column label="扣费项目" align="center" />
-      <el-table-column label="补贴项目" align="center" />
+      <el-table-column label="扣费项目" align="center" prop="deduction" />
+      <el-table-column label="补贴项目" align="center" prop="subsidies" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
           <el-button
@@ -123,47 +103,40 @@ export default {
       // 是否显示弹出层
       open: false,
       // 计算公式字典
-      ruleTypeOptions: [
-        { dictLabel: '运费 = 装货重量 * 运费单价 + 增项 - 减项', dictValue: 1 },
-        { dictLabel: '运费 = 卸货重量 * 运费单价 + 增项 - 减项', dictValue: 2 },
-        { dictLabel: '运费 = 装卸货最小重量 * 运费单价 + 增项 - 减项', dictValue: 3 },
-        { dictLabel: '运费 = 装卸货最大重量 * 运费单价 + 增项 - 减项', dictValue: 4 }
-      ],
+      ruleTypeOptions: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        userCode: 'ca8b3f3528a34365b41ad4cdb2074f67',
-        ruleName: null,
-        ruleType: null,
-        isLoss: null,
-        lossType: null,
-        lossStart: null,
-        lossEnd: null,
-        lossCalculateType: null,
-        wipeOffType: null,
-        createCode: null,
-        updateCode: null,
-        isDel: null
+        shipperCode: '8b3f41f598c64fd9a7922a5611a7ed8f',
+        name: null
       }
     };
   },
   created() {
-    // this.getList();
+    this.getAllDicList();
+    this.getList();
   },
   methods: {
+    // 获取字典
+    getAllDicList() {
+      // 计算公式
+      this.getDicts('ruleFormula').then((response) => {
+        this.ruleTypeOptions = response.data;
+      });
+    },
     /** 查询列表 */
     getList() {
       this.loading = true;
       listRules(this.queryParams).then(response => {
-        this.rulesList = response.rows;
-        this.total = response.total;
+        this.rulesList = response.data.list;
+        this.total = response.data.total;
         this.loading = false;
       });
     },
     // 计算公式字典翻译
     ruleTypeFormat(row, column) {
-      return this.selectDictLabel(this.ruleTypeOptions, row.ruleType);
+      return this.selectDictLabel(this.ruleTypeOptions, row.ruleDictType);
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -177,7 +150,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.userCode);
+      this.ids = selection.map(item => item.code);
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
     },
@@ -186,26 +159,28 @@ export default {
       this.$refs.RulesDialog.reset();
       this.open = true;
       this.title = '添加';
+      this.$refs.RulesDialog.getLossList();
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.$refs.RulesDialog.reset();
-      const userCode = row.userCode || this.ids;
-      getRules(userCode).then(response => {
-        this.$refs.RulesDialog.setForm(response.data);
+      const code = row.code || this.ids;
+      getRules({ code: code }).then(response => {
         this.open = true;
         this.title = '修改';
+        this.$refs.RulesDialog.getLossList();
+        this.$refs.RulesDialog.setForm(response.data);
       });
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const userCodes = row.userCode || this.ids;
-      this.$confirm('是否确认删除编号为"' + userCodes + '"的数据项?', '警告', {
+      const code = row.code || this.ids;
+      this.$confirm('是否确认删除规则名称为"' + row.name + '"的数据项', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
-        return delRules(userCodes);
+        return delRules({ code: code });
       }).then(() => {
         this.getList();
         this.msgSuccess('删除成功');

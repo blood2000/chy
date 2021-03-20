@@ -1,87 +1,31 @@
 <template>
   <!-- 添加或修改调度者对话框 -->
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="80px">
+    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="130px">
       <el-form-item label="运输单号" prop="tin1">
         <el-input v-model="form.tin1" class="width90" disabled />
       </el-form-item>
-
-      <template v-if="initdata.myType === 6">
-        <el-form-item label="服务态度" prop="tin4">
-          <el-rate v-model="form.tin4" allow-half />
-        </el-form-item>
-        <el-form-item label="运输速度" prop="tin5">
-          <el-rate v-model="form.tin5" allow-half />
-        </el-form-item>
-        <el-form-item label="运输安全" prop="tin6">
-          <el-rate v-model="form.tin6" allow-half />
-        </el-form-item>
-        <el-form-item label="满意度" prop="tin7">
-          <el-rate v-model="form.tin7" allow-half />
-        </el-form-item>
-
-        <el-form-item label="是否异常" prop="tin8">
-          <el-checkbox v-model="form.tin8">如有异常请勾选</el-checkbox>
-        </el-form-item>
-
-        <template v-if="form.tin8">
-          <el-form-item label="异常内容" prop="tin9">
-            <el-input
-              v-model="form.tin9"
-              class="width90"
-              type="textarea"
-              :rows="2"
-              placeholder="请输入异常内容"
-            />
-          </el-form-item>
-          <!-- 多图框 -->
-          <el-form-item label="照片" prop="tin2">
-            <div class="ly-flex">
-              <div
-                v-for="(item, index) in form.tin2"
-                :key="index"
-                class="mr5 ml5"
-              >
-                <uploadImage v-model="item.url" @input="handleUploadSuccess" />
-              </div>
-            </div>
-          </el-form-item>
-        </template>
-
-        <el-form-item label="评价内容" prop="tin10">
-          <el-input
-            v-model="form.tin10"
-            class="width90"
-            type="textarea"
-            :rows="2"
-            placeholder="请输入评价内容"
-          />
-        </el-form-item>
-      </template>
-
-      <template v-if="initdata.myType === 5">
-        <!-- 多图框 -->
-        <el-form-item label="照片" prop="tin2">
-          <div class="ly-flex">
-            <div
-              v-for="(item, index) in form.tin2"
-              :key="index"
-              class="mr5 ml5"
-            >
-              <uploadImage v-model="item.url" @input="handleUploadSuccess" />
-            </div>
+      <!-- 多图框 -->
+      <el-form-item label="照片" prop="tin2">
+        <div class="ly-flex">
+          <div
+            v-for="(item, index) in form.tin2"
+            :key="index"
+            class="mr5 ml5"
+          >
+            <uploadImage v-model="item.url" @input="handleUploadSuccess" />
           </div>
-        </el-form-item>
-        <el-form-item label="投诉说明" prop="tin3">
-          <el-input
-            v-model="form.tin3"
-            class="width90"
-            type="textarea"
-            :rows="2"
-            placeholder="请输入投诉说明内容"
-          />
-        </el-form-item>
-      </template>
+        </div>
+      </el-form-item>
+      <el-form-item label="投诉说明" prop="tin3">
+        <el-input
+          v-model="form.tin3"
+          class="width90"
+          type="textarea"
+          :rows="2"
+          placeholder="请输入投诉说明内容"
+        />
+      </el-form-item>
 
 
     </el-form>
@@ -107,12 +51,7 @@ export default {
       default: ''
     },
     open: Boolean,
-    disable: Boolean,
-
-    initdata: {
-      type: Object,
-      required: true
-    }
+    disable: Boolean
   },
   data() {
     return {
@@ -150,7 +89,6 @@ export default {
   computed: {
     visible: {
       get() {
-        // console.log(this.initdata);
         return this.open;
       },
       set(v) {

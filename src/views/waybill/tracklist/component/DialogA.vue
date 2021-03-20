@@ -1,7 +1,7 @@
 <template>
   <!-- 车辆装货对话框 -->
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="80px">
+    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="130px">
       <el-form-item label="装货时间" prop="loadTime">
         <el-date-picker
           v-model="form.loadTime"
@@ -14,12 +14,13 @@
       <el-form-item label="装货重量" prop="loadWeight">
         <el-input-number v-model="form.loadWeight" placeholder="请输入装货重量" controls-position="right" :min="0" style="width:90%;" />
       </el-form-item>
-      <el-form-item label="装货地址" prop="waybillAddress">
+      <!-- <el-form-item label="装货地址" prop="waybillAddress">
         <el-select
           v-model="form.waybillAddress"
           placeholder="请选择车辆装货地址"
           clearable
           size="small"
+          style="width:90%;"
         >
           <el-option
             v-for="dict in waybillAddressOptions"
@@ -28,9 +29,9 @@
             :value="dict.dictValue"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="装货备注" prop="remark">
-        <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入装货备注信息" />
+        <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入装货备注信息" style="width:90%;" />
       </el-form-item>
 
       <el-form-item label="装货单据" prop="picture">
@@ -59,12 +60,7 @@ export default {
       default: ''
     },
     open: Boolean,
-    disable: Boolean,
-
-    initdata: {
-      type: Object,
-      required: true
-    }
+    disable: Boolean
   },
   data() {
     return {
@@ -73,6 +69,8 @@ export default {
       // 表单参数
       form: {
       },
+      // 运单信息
+      waybill: {},
       // 表单校验
       rules: {
         tin1: [
@@ -91,11 +89,12 @@ export default {
       }
     }
   },
-  created() {},
+  created() {
+  },
   methods: {
     // 获取地址信息
     getAddress() {
-      getAddress(this.initdata.mainOrderNumber).then(response => {
+      getAddress(this.waybill.goodsCode).then(response => {
         this.waybillAddressOptions = response;
         console.log(this.waybillAddressOptions);
       });
@@ -139,13 +138,13 @@ export default {
         remark: null,
         waybillAddress: {}
       };
-      console.log(this.initdata);
       this.resetForm('form');
       this.getAddress();
     },
     // 表单赋值
     setForm(data) {
-      this.form = data;
+      this.waybill = data;
+      console.log(this.waybill);
     }
   }
 };
@@ -162,6 +161,9 @@ export default {
   width: 28%;
 }
 .el-input-number ::v-deep.el-input__inner {
+  text-align: left;
+}
+.el-input-number .el-input__inner{
   text-align: left;
 }
 </style>

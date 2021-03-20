@@ -13,6 +13,7 @@ export default [
   {
     prop: 'mainOrderNumber',
     isShow: true,
+    width: 180,
     label: '货源单号'
   },
   {
@@ -148,7 +149,7 @@ export default [
     prop: 'edit',
     isShow: true,
     label: '操作',
-    width: 240,
+    width: 280,
     fixed: 'right'
   }
 ];

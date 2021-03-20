@@ -56,7 +56,7 @@ service.interceptors.request.use(config => {
     for (const propName of Object.keys(config.params)) {
       const value = config.params[propName];
       var part = encodeURIComponent(propName) + '=';
-      if (value && typeof (value) !== 'undefined') {
+      if (value !== '' && value !== null && value !== undefined && typeof (value) !== 'undefined') {
         if (typeof value === 'object') {
           for (const key of Object.keys(value)) {
             const params = propName + '[' + key + ']';
@@ -98,7 +98,8 @@ service.interceptors.response.use(res => {
   } else if (code === 500) {
     Message({
       message: msg,
-      type: 'error'
+      type: 'error',
+      showClose: true
     });
     return Promise.reject(new Error(msg));
   } else if (code !== 200) {
@@ -123,7 +124,8 @@ error => {
   Message({
     message: message,
     type: 'error',
-    duration: 5 * 1000
+    duration: 5 * 1000,
+    showClose: true
   });
   return Promise.reject(error);
 }
