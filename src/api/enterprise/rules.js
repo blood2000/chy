@@ -62,3 +62,20 @@ export function delDetailRules(data) {
     params: data
   });
 }
+
+// 根据货主获取列表
+export function getListRules(query) {
+  return request({
+    url: '/transportation/ruleInfoShipment/curlist',
+    method: 'get',
+    params: query
+  });
+}
+// 根据CODE获取规则详情
+export function getRuleItem(query) {
+  return request({
+    url: '/transportation/ruleInfoShipment/detail',
+    method: 'get',
+    params: query
+  });
+}

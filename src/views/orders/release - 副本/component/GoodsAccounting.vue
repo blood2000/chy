@@ -149,7 +149,7 @@ export default {
       formData: {
         goodsUnit: '0', // 货物计量单位 0=>吨; 1=>立方米
         weightType: '1', // 货物总量类型 是不限
-        weight: undefined, // 货物重量
+        weight: 0, // 货物重量
         perWeight: undefined, // 最高配载
         shipmentPrice: undefined, // 运输单价
         goodsPrice: undefined, // 货物单价
@@ -192,7 +192,6 @@ export default {
           name = e.dictLabel;
         }
       });
-      console.log(name);
 
       return name;
     }
