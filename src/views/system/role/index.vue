@@ -194,7 +194,7 @@
             class="tree-border"
             :data="menuOptions"
             show-checkbox
-            node-key="id"
+            node-key="code"
             :check-strictly="!form.menuCheckStrictly"
             empty-text="加载中，请稍后"
             :props="defaultProps"
@@ -239,7 +239,7 @@
             :data="deptOptions"
             show-checkbox
             default-expand-all
-            node-key="id"
+            node-key="code"
             :check-strictly="!form.deptCheckStrictly"
             empty-text="加载中，请稍后"
             :props="defaultProps"
@@ -490,12 +490,12 @@ export default {
       if (type === 'menu') {
         const treeList = this.menuOptions;
         for (let i = 0; i < treeList.length; i++) {
-          this.$refs.menu.store.nodesMap[treeList[i].id].expanded = value;
+          this.$refs.menu.store.nodesMap[treeList[i].code].expanded = value;
         }
       } else if (type === 'dept') {
         const treeList = this.deptOptions;
         for (let i = 0; i < treeList.length; i++) {
-          this.$refs.dept.store.nodesMap[treeList[i].id].expanded = value;
+          this.$refs.dept.store.nodesMap[treeList[i].code].expanded = value;
         }
       }
     },
@@ -534,6 +534,7 @@ export default {
         this.open = true;
         this.$nextTick(() => {
           roleMenu.then(res => {
+            console.log(res.checkedKeys);
             this.$refs.menu.setCheckedKeys(res.checkedKeys);
           });
         });
@@ -559,15 +560,14 @@ export default {
     submitForm: function() {
       this.$refs['form'].validate(valid => {
         if (valid) {
+          this.form.menuCodes = this.getMenuAllCheckedKeys();
           if (this.form.roleId !== undefined) {
-            this.form.menuCodes = this.getMenuAllCheckedKeys();
             updateRole(this.form).then(response => {
               this.msgSuccess('修改成功');
               this.open = false;
               this.getList();
             });
           } else {
-            this.form.menuCodes = this.getMenuAllCheckedKeys();
             addRole(this.form).then(response => {
               this.msgSuccess('新增成功');
               this.open = false;

@@ -160,9 +160,9 @@ export default {
       form: {},
       // 表单校验
       rules: {
-        parentId: [
+        /*parentId: [
           { required: true, message: '上级组织不能为空', trigger: 'blur' }
-        ],
+        ],*/
         orgName: [
           { required: true, message: '组织名称不能为空', trigger: 'blur' }
         ],
@@ -174,7 +174,8 @@ export default {
   },
   created() {
     this.getList();
-    this.getDicts('sys_normal_disable').then(response => {
+    /**状态*/
+    this.getDictsByType({dictType:'sys_normal_disable',dictPid:'0'}).then(response => {
       this.statusOptions = response.data;
     });
   },
@@ -212,11 +213,11 @@ export default {
       this.form = {
         id: undefined,
         code: undefined,
-        parentId: undefined,
+        parentId: 0,
         orgName: undefined,
         orderNum: undefined,
         leader: undefined,
-        status: 0
+        status: '0'
       };
       this.resetForm('form');
     },
