@@ -344,6 +344,7 @@ export default {
     // 表单重置
     reset() {
       this.form = {
+        platformType: 2, // 1运营 2货主
         code: null,
         name: null,
         ruleDictType: null,
@@ -360,6 +361,7 @@ export default {
     },
     // 表单赋值
     setForm(data) {
+      this.form.platformType = 2; // 1运营 2货主
       this.form.code = data.ruleInfo.code;
       this.form.name = data.ruleInfo.name;
       this.form.ruleDictType = data.ruleInfo.ruleDictType;

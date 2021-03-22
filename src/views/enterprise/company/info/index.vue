@@ -3,7 +3,7 @@
     <div class="app-container">
       <h3 class="g-title-medium mb20">企业信息</h3>
       <el-row>
-        <el-col :span="4">
+        <!-- <el-col :span="4">
           <div class="ly-flex ly-flex-pack-center">
             <div>
               <el-avatar :size="100" :src="form.heard" />
@@ -16,18 +16,22 @@
               </div>
             </div>
           </div>
-        </el-col>
+        </el-col> -->
         <el-col :span="18">
           <el-form ref="form" :model="form" :rules="rules" label-width="80px" :label-position="'left'">
-            <el-form-item label="企业名称" prop="name">
-              <el-input v-model="form.name" placeholder="请输入企业名称" class="input-width mr20" clearable />
-              <span class="g-color-success mr20">
+            <el-form-item label="企业名称" prop="companyName">
+              <el-input v-model="form.companyName" placeholder="请输入企业名称" readonly class="input-width mr20" clearable />
+              <span v-if="form.org_auth_status" class="g-color-success mr20">
                 <i class="el-icon-circle-check" />
                 已认证
               </span>
-              <el-button type="text no-padding" @click="handleCertification">查看</el-button>
+              <span v-else class="g-color-error mr20">
+                <i class="el-icon-circle-close" />
+                未认证
+              </span>
+              <el-button type="text no-padding" @click="handleCertification">修改</el-button>
             </el-form-item>
-            <el-form-item label="主营业务" prop="name">
+            <!-- <el-form-item label="主营业务" prop="name">
               <el-input v-model="form.name" placeholder="请输入主营业务" class="input-width" clearable />
             </el-form-item>
             <el-form-item label="业务城市" prop="name">
@@ -44,7 +48,7 @@
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="handleSubmit">保存</el-button>
-            </el-form-item>
+            </el-form-item> -->
           </el-form>
         </el-col>
       </el-row>
@@ -55,11 +59,10 @@
       <el-row>
         <el-col :span="6">
           <label>姓名：</label>
-          hst
+          {{ form.adminName }}
         </el-col>
         <el-col :span="7">
           <label>手机号：</label>
-          17805972760
         </el-col>
         <el-col :span="8">
           <label>认证状态：</label>
@@ -74,42 +77,24 @@
     </div>
 
     <!-- 货主/企业认证 对话框 -->
-    <certification-dialog :open.sync="open" />
+    <certification-dialog :open.sync="open" :info="form" @refresh="getCompanyInfo" />
   </div>
 </template>
 
 <script>
-import {} from '@/api/enterprise/company/info';
+import { getCompanyInfo, saveCompanyInfo } from '@/api/enterprise/company/info';
 import CertificationDialog from './CertificationDialog.vue';
-import AddCityTag from '@/components/AddCityTag';
+// import AddCityTag from '@/components/AddCityTag';
 
 export default {
   components: {
-    CertificationDialog,
-    AddCityTag
+    CertificationDialog
+    // AddCityTag
   },
   data() {
     return {
       open: false,
-      form: {
-        citys: [
-          {
-            cityCode: '3501',
-            cityName: '福州市',
-            createBy: null,
-            createCode: null,
-            createTime: null,
-            id: 2148,
-            params: {},
-            provinceCode: '35',
-            remark: null,
-            searchValue: null,
-            updateBy: null,
-            updateCode: null,
-            updateTime: null
-          }
-        ]
-      },
+      form: {},
       rules: {
         telphone: [
           { validator: this.formValidate.telphone }
@@ -117,14 +102,43 @@ export default {
       }
     };
   },
-  created() {
-
+  mounted() {
+    this.getCompanyInfo();
   },
   methods: {
+    getCompanyInfo() {
+      getCompanyInfo().then(response => {
+        this.form = response.data;
+        // this.$set(this.form, 'citys', [
+        //   {
+        //     cityCode: '3501',
+        //     cityName: '福州市',
+        //     createBy: null,
+        //     createCode: null,
+        //     createTime: null,
+        //     id: 2148,
+        //     params: {},
+        //     provinceCode: '35',
+        //     remark: null,
+        //     searchValue: null,
+        //     updateBy: null,
+        //     updateCode: null,
+        //     updateTime: null
+        //   }
+        // ]);
+        // this.$forceUpdate();
+      });
+    },
     // 保存
     handleSubmit() {
       this.$refs['form'].validate(valid => {
-        console.log(this.form);
+        if (valid) {
+          saveCompanyInfo(this.form).then(response => {
+            this.msgSuccess('修改成功');
+            this.close();
+            this.$emit('refresh');
+          });
+        }
       });
     },
     // 企业认证
