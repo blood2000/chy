@@ -134,12 +134,12 @@
             icon="el-icon-map-location"
             @click="handleMapView(scope.row)"
           >查看地图</el-button>
-          <el-button
+          <!-- <el-button
             size="mini"
             type="text"
             icon="el-icon-setting"
             @click="handleSetDefault(scope.row)"
-          >设为默认地址</el-button>
+          >设为默认地址</el-button> -->
           <el-button
             v-hasPermi="['enterprise:company:address:edit']"
             size="mini"

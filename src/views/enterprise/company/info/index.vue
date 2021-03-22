@@ -18,7 +18,7 @@
           </div>
         </el-col> -->
         <el-col :span="18">
-          <el-form ref="form" :model="form" :rules="rules" label-width="80px" :label-position="'left'">
+          <el-form ref="form" :model="form" :rules="rules" label-width="140px" :label-position="'left'">
             <el-form-item label="企业名称" prop="companyName">
               <el-input v-model="form.companyName" placeholder="请输入企业名称" readonly class="input-width mr20" clearable />
               <span v-if="form.org_auth_status" class="g-color-success mr20">
@@ -30,6 +30,19 @@
                 未认证
               </span>
               <el-button type="text no-padding" @click="handleCertification">修改</el-button>
+            </el-form-item>
+            <el-form-item label="统一社会信用代码" prop="organizationCodeNo">
+              <el-input v-model="form.organizationCodeNo" class="input-width" clearable />
+            </el-form-item>
+            <el-form-item label="营业执照号" prop="businessLicenseNo">
+              <el-input v-model="form.businessLicenseNo" class="input-width" clearable />
+            </el-form-item>
+            <el-form-item label="营业执照照" prop="businessLicenseImg">
+              <el-row>
+                <el-col :span="7">
+                  <upload-image :value="form.businessLicenseImg" />
+                </el-col>
+              </el-row>
             </el-form-item>
             <!-- <el-form-item label="主营业务" prop="name">
               <el-input v-model="form.name" placeholder="请输入主营业务" class="input-width" clearable />
@@ -45,10 +58,10 @@
             </el-form-item>
             <el-form-item label="公司介绍" prop="name">
               <el-input v-model="form.name" type="textarea" placeholder="请输入公司介绍" class="input-width-large" clearable />
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item>
               <el-button type="primary" @click="handleSubmit">保存</el-button>
-            </el-form-item> -->
+            </el-form-item>
           </el-form>
         </el-col>
       </el-row>
@@ -57,11 +70,15 @@
     <div class="app-container">
       <h3 class="g-title-medium mb10">管理员信息</h3>
       <el-row>
-        <el-col :span="6">
+        <el-col :span="8">
           <label>姓名：</label>
           {{ form.adminName }}
         </el-col>
-        <el-col :span="7">
+        <el-col :span="8">
+          <label>身份证号：</label>
+          {{ form.identificationNumber }}
+        </el-col>
+        <!-- <el-col :span="7">
           <label>手机号：</label>
         </el-col>
         <el-col :span="8">
@@ -72,7 +89,7 @@
           </span>
           <el-button type="text no-padding" @click="securityUpgrade">安全升级</el-button>
           <p class="g-text g-color-gray tip">为保证您的账户安全，请尽快完成安全升级</p>
-        </el-col>
+        </el-col> -->
       </el-row>
     </div>
 
@@ -84,11 +101,13 @@
 <script>
 import { getCompanyInfo, saveCompanyInfo } from '@/api/enterprise/company/info';
 import CertificationDialog from './CertificationDialog.vue';
+import UploadImage from '@/components/UploadImage/index';
 // import AddCityTag from '@/components/AddCityTag';
 
 export default {
   components: {
-    CertificationDialog
+    CertificationDialog,
+    UploadImage
     // AddCityTag
   },
   data() {
@@ -96,8 +115,17 @@ export default {
       open: false,
       form: {},
       rules: {
-        telphone: [
-          { validator: this.formValidate.telphone }
+        organizationCodeNo: [
+          { required: true, trigger: 'blur', message: '统一社会信用代码不能为空' }
+        ],
+        businessLicenseNo: [
+          { required: true, trigger: 'blur', message: '营业执照号不能为空' }
+        ],
+        companyName: [
+          { required: true, trigger: 'blur', message: '公司名称不能为空' }
+        ],
+        businessLicenseImg: [
+          { required: true, trigger: 'blur', message: '营业执照照不能为空' }
         ]
       }
     };
@@ -154,7 +182,7 @@ export default {
 
 <style lang="scss" scoped>
 .input-width{
-  width: 300px;
+  width: 600px;
 }
 .input-width-large{
   width: 60%;

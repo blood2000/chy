@@ -184,6 +184,7 @@ export default {
       // 表单参数
       form: {
         platformType: 2, // 1运营 2货主
+        shipperCode: null, // 角色为货主时要传
         addItem: [],
         addItemObj: {},
         reduceItem: [],

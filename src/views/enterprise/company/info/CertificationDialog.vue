@@ -16,11 +16,11 @@
       <el-form-item label="法人身份证" prop="artificialIdentificationNumber">
         <el-input v-model="form.artificialIdentificationNumber" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="营业执照号" prop="businessLicenseNo">
-        <el-input v-model="form.businessLicenseNo" class="width90" clearable />
-      </el-form-item>
       <el-form-item label="统一社会信用代码" prop="organizationCodeNo">
         <el-input v-model="form.organizationCodeNo" class="width90" clearable />
+      </el-form-item>
+      <el-form-item label="营业执照号" prop="businessLicenseNo">
+        <el-input v-model="form.businessLicenseNo" class="width90" clearable />
       </el-form-item>
 
       <!-- 选择省/市/区 -->
@@ -119,8 +119,6 @@ export default {
   methods: {
     // 提交按钮
     submitForm: function() {
-      // 测试
-      // this.form.businessLicenseImg = '/img.jpg';
       const flag = this.$refs.ChooseArea.submit();
       this.$refs['form'].validate(valid => {
         if (valid && flag) {
