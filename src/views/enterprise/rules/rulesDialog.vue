@@ -38,7 +38,7 @@
       <!-- 计算路耗 -->
       <h5 class="g-title-small g-strong g-color-blue mt10">
         | 关于计算路耗
-        <el-switch v-model="form.isLoss" class="isLoss-switch" />
+        <el-switch v-model="form.isLoss" class="isLoss-switch" @change="switchChange" />
       </h5>
       <el-divider />
       <el-row v-show="form.isLoss">
@@ -232,12 +232,12 @@ export default {
     // 新增的时候获取路耗表单list
     getLossList() {
       getRuleItemList({ ruleType: 1 }).then(response => {
-        this.form.lossItem = response.data.list;
-        this.setLossList(this.form.lossItem);
+        this.setLossList(response.data.list);
       });
     },
     // 路耗表单回填
     setLossList(itemList) {
+      this.form.lossItem = itemList;
       itemList.forEach(el => {
         // select或radio类型的表单需要获取option字典
         if (el.dictCode) {
@@ -256,6 +256,11 @@ export default {
         }
       });
     },
+    switchChange(val) {
+      if (val && this.form.lossItem.length === 0) {
+        this.getLossList();
+      }
+    },
     // 提交按钮
     submitForm() {
       this.$refs['form'].validate(valid => {
@@ -263,7 +268,6 @@ export default {
         const params = {
           name: this.form.name,
           ruleDictType: this.form.ruleDictType,
-          shipperCode: this.form.shipperCode,
           m0DictValue: this.form.m0DictValue,
           detailList: []
         };
@@ -275,7 +279,6 @@ export default {
         }
         this.setParams(this.form.addItem, this.form.addItemObj, params, 1);
         this.setParams(this.form.reduceItem, this.form.reduceItemObj, params, 2);
-        // console.log(params);
         if (valid) {
           if (this.form.code) {
             updateRules(params).then(response => {
@@ -342,7 +345,6 @@ export default {
     reset() {
       this.form = {
         code: null,
-        shipperCode: '8b3f41f598c64fd9a7922a5611a7ed8f',
         name: null,
         ruleDictType: null,
         isLoss: true,
@@ -359,26 +361,24 @@ export default {
     // 表单赋值
     setForm(data) {
       this.form.code = data.ruleInfo.code;
-      this.form.shipperCode = data.ruleInfo.shipperCode;
       this.form.name = data.ruleInfo.name;
       this.form.ruleDictType = data.ruleInfo.ruleDictType;
-      this.form.isLoss = !!data.lossList;
+      this.form.isLoss = data.lossList.length > 0;
       this.form.m0DictValue = data.ruleInfo.m0DictValue;
       // 回填路耗
       this.setLossList(data.lossList);
       // 回填增减项
       data.detailList.forEach(el => {
-        if (el.type === 1) {
+        if (el.type === '1') {
           // 增项
           this.form.addItem.push(el);
           this.$set(this.form.addItemObj, el.code, el.ruleValue);
-        } else if (el.type === 2) {
+        } else if (el.type === '2') {
           // 减项
           this.form.reduceItem.push(el);
           this.$set(this.form.reduceItemObj, el.code, el.ruleValue);
         }
       });
-      console.log(this.form);
     },
     // 增减费用项目选择
     chooseItem(type) {

@@ -136,7 +136,6 @@ export default {
         pageNum: 1,
         pageSize: 10,
         code: null,
-        shipmentCode: null,
         cargoCodeName: null,
         cargoCodeQr: null,
         createCode: null,

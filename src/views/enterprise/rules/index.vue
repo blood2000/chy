@@ -108,7 +108,6 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        shipperCode: '8b3f41f598c64fd9a7922a5611a7ed8f',
         name: null
       }
     };
@@ -168,7 +167,6 @@ export default {
       getRules({ code: code }).then(response => {
         this.open = true;
         this.title = '修改';
-        this.$refs.RulesDialog.getLossList();
         this.$refs.RulesDialog.setForm(response.data);
       });
     },
