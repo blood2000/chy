@@ -38,7 +38,7 @@
       <!-- 计算路耗 -->
       <h5 class="g-title-small g-strong g-color-blue mt10">
         | 关于计算路耗
-        <el-switch v-model="form.isLoss" class="isLoss-switch" @change="switchChange" />
+        <el-switch v-model="form.isLoss" class="isLoss-switch" />
       </h5>
       <el-divider />
       <el-row v-show="form.isLoss">
@@ -183,6 +183,7 @@ export default {
       m0DictValueOptions: [],
       // 表单参数
       form: {
+        platformType: 2, // 1运营 2货主
         addItem: [],
         addItemObj: {},
         reduceItem: [],
@@ -229,15 +230,15 @@ export default {
         this.m0DictValueOptions = response.data;
       });
     },
-    // 新增的时候获取路耗表单list
-    getLossList() {
+    // 获取路耗表单
+    getLossList(lossList) {
       getRuleItemList({ ruleType: 1 }).then(response => {
-        this.setLossList(response.data.list);
+        this.form.lossItem = response.data.list;
+        this.setLossList(this.form.lossItem, lossList);
       });
     },
-    // 路耗表单回填
-    setLossList(itemList) {
-      this.form.lossItem = itemList;
+    // 生成路耗表单
+    setLossList(itemList, lossList) {
       itemList.forEach(el => {
         // select或radio类型的表单需要获取option字典
         if (el.dictCode) {
@@ -255,10 +256,20 @@ export default {
           this.$set(this.form.lossItemObj, el.code, el.ruleValue ? el.ruleValue : null);
         }
       });
-    },
-    switchChange(val) {
-      if (val && this.form.lossItem.length === 0) {
-        this.getLossList();
+      if (lossList) {
+        lossList.forEach(el => {
+          if (el.ruleItemCode) {
+            el.code = el.ruleItemCode;
+          }
+          // 填范围区域的值要特殊处理
+          if (el.showType === 2) {
+            this.$set(this.form.lossItemObj, el.code, {});
+            this.$set(this.form.lossItemObj[el.code], 'start', el.ruleValue ? JSON.parse(el.ruleValue)[0] : '');
+            this.$set(this.form.lossItemObj[el.code], 'end', el.ruleValue ? JSON.parse(el.ruleValue)[1] : '');
+          } else {
+            this.$set(this.form.lossItemObj, el.code, el.ruleValue ? el.ruleValue : null);
+          }
+        });
       }
     },
     // 提交按钮
@@ -273,6 +284,8 @@ export default {
         };
         if (this.form.code) {
           params.code = this.form.code;
+        } else {
+          params.platformType = this.form.platformType;
         }
         if (this.form.isLoss) {
           this.setParams(this.form.lossItem, this.form.lossItemObj, params);
@@ -296,11 +309,12 @@ export default {
         }
       });
     },
-    // 构造参数
+    // 构造提交按钮的请求参数
     setParams(list, obj, params, type) {
       list.forEach(el => {
         // 判断是不是范围区间
         if (el.showType === 2) {
+          if (obj[el.code].start === '' && obj[el.code].end === '') return;
           // 判断是不是增项或减项,路耗不用传type
           if (type) {
             params.detailList.push({
@@ -368,9 +382,10 @@ export default {
       this.form.isLoss = data.lossList.length > 0;
       this.form.m0DictValue = data.ruleInfo.m0DictValue;
       // 回填路耗
-      this.setLossList(data.lossList);
+      this.getLossList(data.lossList);
       // 回填增减项
       data.detailList.forEach(el => {
+        el.code = el.ruleItemCode;
         if (el.type === '1') {
           // 增项
           this.form.addItem.push(el);
@@ -382,11 +397,12 @@ export default {
         }
       });
     },
-    // 增减费用项目选择
+    // 新增细项
     chooseItem(type) {
       this.chooseItemOpen = true;
       this.chooseItemType = type;
     },
+    // 将勾选的细项回显
     setItem(type, arr) {
       if (type === 'add') {
         const itemList = JSON.parse(JSON.stringify(this.form.addItem));
@@ -418,6 +434,7 @@ export default {
         }
       }
     },
+    // 删除细项
     deleteItem(type, code) {
       if (type === 'add') {
         this.form.addItem = this.form.addItem.filter(el => {

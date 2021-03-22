@@ -91,7 +91,7 @@ export default {
   data() {
     return {
       // 表单参数
-      form: this.info,
+      form: {},
       // 表单校验
       rules: {
         organizationCodeNo: [
@@ -149,6 +149,9 @@ export default {
     reset() {
       this.form = {};
       this.resetForm('form');
+    },
+    setForm() {
+      this.form = this.info;
     }
   }
 };

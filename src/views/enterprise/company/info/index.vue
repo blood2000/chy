@@ -77,7 +77,7 @@
     </div>
 
     <!-- 货主/企业认证 对话框 -->
-    <certification-dialog :open.sync="open" :info="form" @refresh="getCompanyInfo" />
+    <certification-dialog ref="detailDialog" :open.sync="open" :info="form" @refresh="getCompanyInfo" />
   </div>
 </template>
 
@@ -144,6 +144,7 @@ export default {
     // 企业认证
     handleCertification() {
       this.open = true;
+      this.$refs.detailDialog.setForm();
     },
     // 安全升级
     securityUpgrade() {}
