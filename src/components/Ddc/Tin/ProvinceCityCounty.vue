@@ -1,6 +1,6 @@
 <template>
   <el-form
-    :ref="refName"
+    ref="provinceCityCounty"
     :model="form"
     :rules="rules"
     :inline="true"
@@ -40,7 +40,7 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="county" label="县/区:">
-        <el-select v-model="form.county" placeholder="请选择县/区" clearable @change="changeCounty">
+        <el-select v-model="form.county" placeholder="请选择县/区" clearable>
           <el-option
             v-for="dict in countyOption"
             :key="dict.dictValue"
@@ -76,14 +76,11 @@ this.onsubmitForm.then(res=>{   console.log(res)   })
 
 */
 import { getProvinceList, getCityList, geCountyList } from '@/api/system/area';
+
 export default {
   name: 'ProvinceCityCounty',
 
   props: {
-    refName: {
-      type: String,
-      required: true
-    },
     config: {
       type: Object,
       default: () => {
@@ -117,23 +114,30 @@ export default {
 
       provinceOption: [],
       cityOption: [],
-      countyOption: [],
-
-      cache: {}
+      countyOption: []
     };
+  },
+  watch: {
+    cbData: {
+      async handler(newName, oldName) {
+        if (!this.cbData) return;
+        const { provinceCode, citycode, adcode } = this.cbData;
+
+        this.form.province = provinceCode;
+        await this.changeProvince(provinceCode);
+        this.form.city = citycode;
+        await this.changeCity(citycode);
+        this.form.county = adcode;
+      },
+      // 代表在wacth里声明了firstName这个方法之后立即先去执行handler方法
+      immediate: true
+    }
   },
 
   created() {
     this.init();
     if (!this.isrules) {
       this.rules = {};
-    }
-
-    // 回填
-    if (this.cbData) {
-      this.changeProvince(this.cbData.province);
-      this.changeCity(this.cbData.city);
-      this.form = this.cbData;
     }
   },
   mounted() {
@@ -142,77 +146,80 @@ export default {
 
   methods: {
     // 初始获取省
-    init() {
-      getProvinceList().then((res) => {
-        this.provinceOption = res.rows.map((e) => {
-          const dictValue = JSON.stringify({
-            provinceCode: e.provinceCode,
-            provinceName: e.provinceName
-          });
-          return { dictValue, dictLabel: e.provinceName };
-        });
-      });
+    async init() {
+      const { rows } = await getProvinceList();
+      // 假数据
+      this.provinceOption = this._baozhuan(
+        rows,
+        'provinceCode',
+        'provinceName'
+      );
     },
     // 省份切换
-    changeProvince(data) {
+    async changeProvince(data) {
       this.form.city = '';
       this.form.county = '';
       this.cityOption = [];
       this.countyOption = [];
       if (!data) return;
 
-      this.$emit('getProvince', JSON.parse(data));
       // 根据省code获取 市列表
-      const { provinceCode } = JSON.parse(data);
 
-      getCityList({ provinceCode }).then((res) => {
-        this.cityOption = res.rows.map((e) => {
-          const dictValue = JSON.stringify({
-            cityCode: e.cityCode,
-            cityName: e.cityName
-          });
-          return { dictValue, dictLabel: e.cityName };
-        });
-      });
+      const { rows } = await getCityList({ provinceCode: this.form.province });
+
+      // 假数据
+      // const { rows } = a2;
+      this.cityOption = this._baozhuan(rows, 'cityCode', 'cityName');
     },
-    changeCity(data) {
+    // 市切换
+    async changeCity(data) {
+      const city = this._zhaovalue(this.cityOption, this.form.city);
+      this.$emit('getCity', city ? city.cityName : '');
+
       this.form.county = '';
       this.countyOption = [];
       if (!data) return;
 
-      this.$emit('getCity', JSON.parse(data));
       // 根据市code获取 区/县列表
-      const { cityCode } = JSON.parse(data);
-      geCountyList({ cityCode }).then((res) => {
-        this.countyOption = res.rows.map((e) => {
-          const dictValue = JSON.stringify({
-            countyCode: e.countyCode,
-            countyName: e.countyName
-          });
-          return { dictValue, dictLabel: e.countyName };
-        });
-      });
-    },
-    changeCounty(data) {
-      this.$emit('getCounty', JSON.parse(data));
-
-      console.log('抛出的数据:', this.form);
+      const { rows } = await geCountyList({ cityCode: this.form.city });
+      // 假数据
+      // const { rows } = a2;
+      this.countyOption = this._baozhuan(rows, 'countyCode', 'countyName'); // 这个要改一下
     },
 
     _submitForm() {
       return new Promise((resolve, reject) => {
-        this.$refs[this.refName].validate((valid) => {
+        this.$refs['provinceCityCounty'].validate((valid) => {
           if (valid) {
             const { province, city, county } = this.form;
             resolve({
-              province: JSON.parse(province),
-              city: JSON.parse(city),
-              county: JSON.parse(county)
+              province: this._zhaovalue(this.provinceOption, province),
+              city: this._zhaovalue(this.cityOption, city),
+              county: this._zhaovalue(this.countyOption, county)
             });
           } else {
             return false;
           }
         });
+      });
+    },
+
+    // 工具
+    // 根据value匹配数组中的一项
+    _zhaovalue(arr, value) {
+      return arr.filter((e) => {
+        return e.dictValue === value;
+      })[0];
+    },
+
+    // 包装成
+    _baozhuan(arr, dictValue, dictLabel) {
+      return arr.map((e) => {
+        return {
+          ...e,
+          dictValue: e[dictValue],
+          dictLabel: e[dictLabel]
+        };
       });
     }
   }

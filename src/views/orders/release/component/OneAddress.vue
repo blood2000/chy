@@ -8,7 +8,7 @@
       label-width="110px"
       :label-position="'left'"
     >
-      <ProvinceCityCounty ref="pccFef" @getCity="getCity" />
+      <ProvinceCityCounty ref="pccFef" :cb-data="cbData" @getCity="getCity" />
 
       <div class="ly-flex">
         <el-form-item
@@ -95,12 +95,19 @@
 </template>
 
 <script>
-import ProvinceCityCounty from '@/components/Ddc/Tin/ProvinceCityCounty-1';
+import ProvinceCityCounty from '@/components/Ddc/Tin/ProvinceCityCounty';
 export default {
   components: { ProvinceCityCounty },
 
   props: {
-    type: [String, Number]
+    type: {
+      type: [String, Number],
+      default: ''
+    },
+    cbData: {
+      type: Object,
+      default: null
+    }
   },
   data() {
     return {
@@ -131,6 +138,35 @@ export default {
       // 字典集合
       detailOptin: []
     };
+  },
+  watch: {
+    cbData: {
+      handler(value) {
+        if (!value) return;
+
+        const {
+          detail,
+          street,
+          addressAlias,
+          contact,
+          contactPhone,
+          location
+        } = value;
+
+        this.formData.tin1 = detail;
+        this.formData.tin2 = street;
+        this.formData.tin3 = addressAlias;
+        this.formData.contact = contact;
+        this.formData.contactPhone = contactPhone;
+
+        this.selected = {
+          name: detail,
+          lat: location[1],
+          lng: location[0]
+        };
+      },
+      immediate: true
+    }
   },
 
   methods: {

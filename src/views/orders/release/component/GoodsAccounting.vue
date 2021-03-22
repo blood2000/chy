@@ -142,6 +142,10 @@ export default {
           labelPosition: 'left'
         };
       }
+    },
+    cbData: {
+      type: Object,
+      default: null
     }
   },
 
@@ -193,9 +197,36 @@ export default {
           name = e.dictLabel;
         }
       });
-      console.log(name);
-
       return name;
+    }
+  },
+
+  watch: {
+    cbData: {
+      handler(value) {
+        if (!value) return;
+        const {
+          goodsUnit,
+          totalType,
+          weight,
+          perWeight,
+          shipmentPrice,
+          goodsPrice,
+          vehicleType,
+          vehicleLength } = value;
+
+        this.formData = {
+          goodsUnit,
+          weightType: totalType,
+          weight,
+          perWeight,
+          shipmentPrice,
+          goodsPrice,
+          vehicleType: vehicleType ? vehicleType.split(',') : undefined, // 车型->查字典
+          vehicleLength: vehicleLength ? vehicleLength.split(',') : undefined // 车长->查字典
+        };
+      },
+      immediate: true
     }
   },
 

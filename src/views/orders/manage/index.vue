@@ -296,20 +296,20 @@
                   icon="el-icon-delete"
                   @click="handleDelete(row)"
                 >删除</el-button>
-                <!-- <el-button
+                <el-button
                   v-hasPermi="['system:menu:remove']"
                   size="mini"
                   type="text"
                   icon="el-icon-delete"
-                  @click="handleDelete(row)"
-                >暂停</el-button> -->
-                <!-- <el-button
+                  @click="handleClose(row)"
+                >关闭</el-button>
+                <el-button
                   v-hasPermi="['system:menu:remove']"
                   size="mini"
                   type="text"
                   icon="el-icon-delete"
-                  @click="handleDelete(row)"
-                >调价</el-button> -->
+                  @click="handleReadjustPrices(row)"
+                >调价</el-button>
               </template>
             </RefactorTable>
 
@@ -332,6 +332,11 @@
     <el-dialog :title="title" :visible.sync="openDispatch" width="80%" append-to-body>
       <open-dialog v-if="openDispatch" :dispatch="dispatch" @_ok="(bool)=>{openDispatch = bool; getList()}" />
     </el-dialog>
+
+    <!-- 价格调整 -->
+    <el-dialog :title="'价格调整'" :visible.sync="openPriceAdjustment" width="80%" append-to-body>
+      <price-adjustment />
+    </el-dialog>
   </div>
 </template>
 
@@ -340,12 +345,14 @@ import { getOrderInfoList, delOrder, loadAndUnloadingGoods, exportOrder } from '
 import OpenDialog from './component/OpenDialog';
 import tableColumnsConfig from './data/config-index';
 
-
+import PriceAdjustment from './component/PriceAdjustment';
 export default {
   name: 'Testlog',
-  components: { OpenDialog },
+  components: { OpenDialog, PriceAdjustment },
   data() {
     return {
+      openPriceAdjustment: false,
+
       // 树形数据
       data: [],
 
@@ -593,7 +600,20 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const testIds = row.code;
-      this.$confirm('是否确认删除货源编号为"' + testIds + '"的数据项?', '警告', {
+      // 操作删除按钮，判断货单是否产生运单。
+      const waybill = true;
+
+      let msg = '';
+      if (waybill) {
+        msg = '该货源单下，暂无产生运单，确认是否删除';
+      } else {
+        msg = `该货源单下，已产生??条运单，确认是否删除`;
+      }
+
+      // 1、无，选择提示“该货源单下，暂无产生运单，确认是否删除”；
+      // 2、有，选择提示“该货源单下，已产生10条运单，确认是否删除”；
+
+      this.$confirm(msg, '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -603,6 +623,34 @@ export default {
         this.getList();
         this.msgSuccess('删除成功');
       });
+    },
+    /** 关闭按钮操作 */
+    handleClose(row) {
+      const testIds = row.code;
+      // 操作关闭按钮，规则：货单状态改为【下架】并且无法新建运单，且原运单状态不变。
+
+      // 选择提示“是否确认关闭该货源单，关闭后无法司机无法再继续接单。但运输中的运单则继续进行”；
+
+      const msg = '是否确认关闭该货源单，关闭后无法司机无法再继续接单。但运输中的运单则继续进行';
+      this.$confirm(msg, '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        // 关闭接口
+        console.log('关闭');
+
+        return delOrder(testIds);
+      }).then(() => {
+        this.getList();
+        this.msgSuccess('删除成功');
+      });
+    },
+    /** 调价操作 */
+    handleReadjustPrices(row) {
+      const testIds = row.code;
+      // 打开调价框
+      this.openPriceAdjustment = true;
     },
     /** 导出按钮操作 */
     handleExport() {

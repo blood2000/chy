@@ -45,6 +45,7 @@
           ref="OrderBasic"
           v-model="isMultiGoods"
           :pubilsh-code="formData.tin1"
+          :cb-data="cbData"
         />
       </div>
       <el-divider />
@@ -103,7 +104,7 @@
           :key="address.refName"
           class="oneAddress_item"
         >
-          <OneAddress :ref="address.refName" type="1" />
+          <OneAddress :ref="address.refName" type="1" :cb-data="address.cbData" />
           <el-button
             v-if="address_add.length >= 2"
             type="danger"
@@ -128,7 +129,7 @@
           :key="address.refName"
           class="oneAddress_item"
         >
-          <OneAddress :ref="address.refName" type="2" />
+          <OneAddress :ref="address.refName" type="2" :cb-data="address.cbData" />
           <el-button
             v-if="address_xie.length >= 2"
             type="danger"
@@ -142,12 +143,12 @@
           <div class="content">
             <div class="header mb8">配载信息(第三步)</div>
 
-            <GoodsAccounting ref="goodsAccounting" />
+            <GoodsAccounting ref="goodsAccounting" :cb-data="cbGoodsAccounting" />
 
             <el-divider />
             <div class="header mb8">其他规则</div>
 
-            <AccounTing ref="accounTing" :pubilsh-code="formData.tin1" />
+            <AccounTing ref="accounTing" :pubilsh-code="formData.tin1" :cb-data="orderFreightBoList" />
 
           </div>
 
@@ -220,6 +221,10 @@ export default {
   },
   data() {
     return {
+      cbData: null,
+      cbGoodsAccounting: null,
+      orderFreightBoList: null,
+
       loading: false,
       // 多商品对应各自的规格
       tin2_1tabs: [],
@@ -268,15 +273,17 @@ export default {
     }
   },
 
-  async created() {},
+  created() {
+    if (this.$route.query.id) {
+      this.getCbdata(this.$route.query.id);
+    }
+  },
 
   methods: {
     onSubmit(form) {
       this.$refs[form].validate(async(valid) => {
         if (valid) {
           const data = await this.submAllData();
-          console.log(data);
-
 
           orderPubilsh(data).then((response) => {
             console.log(response);
@@ -304,7 +311,7 @@ export default {
       // console.log([...addr_xie, ...addr_add]); // 装卸货地址集合
 
       const goodsAccounting = await this.$refs.goodsAccounting._submitForm();
-      // console.log(goodsAccounting, 'goodsAccounting------------');
+      console.log(goodsAccounting, 'goodsAccounting------------');
 
       // 规则
       console.log(this.$refs.accounTing);
@@ -321,10 +328,8 @@ export default {
       OrderBasic.orderGoodsList = orderGoodsList.map(e => {
         e.orderFreightBoList = accounTing.map(rule => {
           return {
-            goodsBigType: this.formData.tin2,
-            goodsType: this.isMultiGoods
-              ? this.formData.tin2_1
-              : this.formData.tin2_2,
+            // goodsBigType: e.goodsBigType,
+            // goodsType: e.goodsType,
             ...rule
           };
         });
@@ -339,6 +344,7 @@ export default {
           'isOneselfUnload': this.formData.tin9,
           // 'limitWastage': '', // 货物损耗 格式： 0/1(0-定额kg/车，1-定率千分之几/车)-1
           'perWeight': goodsAccounting.perWeight,
+          'goodsPrice': goodsAccounting.goodsPrice,
           // 'priceWastage': 0, // 路耗超出范围 赔偿单价 （元/吨）
           'shipmentPrice': goodsAccounting.shipmentPrice,
           'totalType': goodsAccounting.weightType,
@@ -389,6 +395,177 @@ export default {
       } else {
         this.shipmentList = [];
       }
+    },
+
+    // 回填获取数据
+    async getCbdata(id) {
+      // const { data } = await apiapiapi({code: id})
+
+      // 假数据
+      const data = {
+        classList: [
+          {
+            classCode: ''
+          }
+        ],
+        isPublic: false,
+        isSpecified: true,
+        loadType: '1',
+        orderGoodsList: [
+          {
+            addressList: [
+              {
+                'adcode': '350103',
+                'district': '台江区',
+                'addressAlias': '案发地上',
+                'addressType': '1',
+                'city': '福州市',
+                'citycode': '3501',
+                'contact': '123456',
+                'contactPhone': '12345678910',
+                'detail': '富邦总部大楼',
+                'location': [
+                  119.358265,
+                  26.045794
+                ],
+                'province': '福建省',
+                'provinceCode': '35',
+                'street': '',
+                'formattedAddress': '福建省福州市台江区富邦总部大楼'
+              },
+              {
+                'adcode': '350104',
+                'district': '仓山区',
+                'addressAlias': '1212',
+                'addressType': '2',
+                'city': '福州市',
+                'citycode': '3501',
+                'contact': '12123',
+                'contactPhone': '12345678910',
+                'detail': '富邦针织',
+                'location': [
+                  119.57298,
+                  25.827639
+                ],
+                'province': '福建省',
+                'provinceCode': '35',
+                'street': '',
+                'formattedAddress': '福建省福州市仓山区富邦针织'
+              }
+            ],
+            orderFreightBoList: [
+              {
+                'goodsBigType': '0100',
+                'goodsType': '010001',
+                'ruleCode': '085bce03d2084defa828f673996fb768',
+                'ruleDetailShipmentCode': '0ec0db55f39b4a6b9839d45086e9e6b7',
+                'ruleItemCode': '1',
+                'ruleValue': 'DL',
+                'type': null
+              },
+              {
+                'goodsBigType': '0100',
+                'goodsType': '010001',
+                'ruleCode': '085bce03d2084defa828f673996fb768',
+                'ruleDetailShipmentCode': 'aae8c7760ec84be39300d9220dcb0a8c',
+                'ruleItemCode': '2',
+                'ruleValue': '[-5,5]',
+                'type': null
+              },
+              {
+                'goodsBigType': '0100',
+                'goodsType': '010001',
+                'ruleCode': '085bce03d2084defa828f673996fb768',
+                'ruleDetailShipmentCode': 'd87420ada8024be48bba3981d1b6126d',
+                'ruleItemCode': '3',
+                'ruleValue': '1',
+                'type': null
+              },
+              {
+                'goodsBigType': '0100',
+                'goodsType': '010001',
+                'ruleCode': '085bce03d2084defa828f673996fb768',
+                'ruleDetailShipmentCode': '565f1aeabbd0494eafb1aa25d52c4d39',
+                'ruleItemCode': '11',
+                'ruleValue': 800,
+                'type': '1'
+              },
+              {
+                'goodsBigType': '0100',
+                'goodsType': '010001',
+                'ruleCode': '085bce03d2084defa828f673996fb768',
+                'ruleDetailShipmentCode': '44e8751b0cd8461aa9b41de7502799dc',
+                'ruleItemCode': '12',
+                'ruleValue': 600,
+                'type': '1'
+              },
+              {
+                'goodsBigType': '0100',
+                'goodsType': '010001',
+                'ruleCode': '085bce03d2084defa828f673996fb768',
+                'ruleDetailShipmentCode': '3e4ae497286e40f4a637a4cb65c2793c',
+                'ruleItemCode': '14',
+                'ruleValue': 300,
+                'type': '2'
+              },
+              {
+                'goodsBigType': '0100',
+                'goodsType': '010001',
+                'ruleCode': '085bce03d2084defa828f673996fb768',
+                'ruleDetailShipmentCode': 'c7b159d2e3634e4e97df8b9f376d3fdc',
+                'ruleItemCode': '13',
+                'ruleValue': 500,
+                'type': '2'
+              }
+            ],
+            'goodsBigType': '0100',
+            'goodsType': '010001',
+            'goodsUnit': '0',
+            'goodsPrice': '5000',
+            'isOneselfLoad': false,
+            'isOneselfUnload': false,
+            'perWeight': 412,
+            'shipmentPrice': 424,
+            'totalType': '1',
+            'vehicleLength': '0008,0007,0006',
+            'vehicleType': 'G11',
+            'weight': ''
+          }
+        ],
+        orderSpecifiedList: [
+          {
+            'driverInfoCode': '4059ee53bb7e4474b2395d7481aa4d27',
+            'teamInfoCode': '',
+            'userType': 2
+          },
+          {
+            'driverInfoCode': '483ed050c4144caaba662ef4204b52ca',
+            'teamInfoCode': '',
+            'userType': 2
+          }
+        ],
+        projectCode: '658b38b1bdc2478e849b57617c1a0e69', // 项目code
+        pubilshCode: 'c0e8fdb5e44942d3a10907dc97768847', // 当前用户的code
+        remark: '这是放回的备注信息'
+      };
+
+      const { pubilshCode, orderGoodsList } = data;
+      this.formData.tin1 = pubilshCode;
+
+      this.cbData = data;
+
+      orderGoodsList[0].addressList.forEach((e) => {
+        if ((e.addressType - 0) === 1) {
+          // 装
+          this.address_add[0].cbData = e;
+        } else {
+          // 卸
+          this.address_xie[0].cbData = e;
+        }
+      });
+
+      this.cbGoodsAccounting = orderGoodsList[0];
+      this.orderFreightBoList = orderGoodsList[0].orderFreightBoList;
     },
 
     // 1. 添加一个地址

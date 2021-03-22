@@ -131,7 +131,7 @@
       width="80%"
       append-to-body
     >
-      <open-dialog v-if="open" @handleSelectionChange="handleSelectionChange" />
+      <open-dialog v-if="open" :cb-data="formData['tin6_' + actionIndex]" :action-index="actionIndex" @handleSelectionChange="handleSelectionChange" />
     </el-dialog>
   </div>
 </template>
@@ -151,6 +151,10 @@ export default {
       type: String,
       required: true
     },
+    cbData: {
+      type: Object,
+      default: null
+    },
 
     value: [Boolean]
   },
@@ -168,6 +172,9 @@ export default {
       }
     };
     return {
+      orderSpecifiedList: null,
+      actionIndex: '2',
+
       open: false,
       formData: {
         tin3: '0', // 选择所属项目 0表示没有
@@ -222,12 +229,15 @@ export default {
     isMultiGoods() {
       const tin2Obj = this._zhaovalue(this.tin2Option, this.formData.tin2);
       let bool = false;
-      if (tin2Obj.isCheckbox) {
+      if (tin2Obj && tin2Obj.isCheckbox) {
         bool = tin2Obj.isCheckbox === '1';
       }
 
       return bool;
     }
+    // InfoCodes() {
+    //   return this.formData.tin6_1.concat(this.formData.tin6_2);
+    // }
   },
 
   watch: {
@@ -248,13 +258,60 @@ export default {
 
       !this.tin2Option.length && this.api_tin3Optin();
       this.api_dictInit();
+    },
+    cbData: {
+      async handler() {
+        // console.log(this.cbData);
+        // 获取字典
+        await this.api_dictInit();
+        // 获取
+        await this.api_tin3Optin();
+
+        if (!this.cbData) return;
+
+        const { projectCode, isPublic, orderGoodsList, isSpecified, remark, orderSpecifiedList } = this.cbData;
+
+
+        this.formData.tin3 = projectCode;
+
+        this.formData.tin4 = isPublic ? '1' : '0';
+        this.formData.tin5 = isSpecified ? '1' : '0';
+        this.formData.remark = remark;
+
+
+        const { goodsBigType, goodsType } = orderGoodsList[0];
+
+        this.formData.tin2 = goodsBigType;
+
+        this.handletin2();
+
+        if (this.isMultiGoods) {
+          // 多商品这里处理
+        } else {
+          this.formData.tin2_2 = goodsType;
+        }
+
+        this.orderSpecifiedList = orderSpecifiedList;
+
+
+        this.orderSpecifiedList.forEach(e => {
+          if (e.userType + '' === '1') {
+            e.code = e.teamInfoCode;
+          } else {
+            e.code = e.driverInfoCode;
+          }
+          this.actionIndex = e.userType + '';
+          this.formData['tin6_' + e.userType] = this.orderSpecifiedList;
+        });
+        // console.log(this.formData['tin6_' + 2]);
+        // console.log(this.formData['tin6_' + actionIndex]);
+        // console.log(this.actionIndex);
+      },
+      immediate: true
     }
   },
   created() {
-    // 获取字典
-    this.api_dictInit();
-    // 获取
-    this.api_tin3Optin();
+
   },
 
   methods: {
@@ -271,6 +328,8 @@ export default {
       //   { dictValue: '11782121', dictLabel: '矿', isCheckbox: '2' }
       // ];
 
+
+
       this.tin2Option = data;
     },
     // 1. 获取项目
@@ -281,6 +340,7 @@ export default {
         shipmentCode: this.pubilshCode
       };
       const { rows } = await listInfo(query);
+
 
       // 假数据
       // const rows = [
@@ -330,12 +390,6 @@ export default {
         dictType: 'goodsType'
       });
 
-      // 假数据
-      // const data = [
-      //   { dictValue: '1', dictLabel: '傻子' },
-      //   { dictValue: '2', dictLabel: '疯子' },
-      //   { dictValue: '3', dictLabel: '多疯子' }
-      // ];
       this.tin2_Option = data;
 
       if (!tin3item) return;
@@ -360,6 +414,13 @@ export default {
         this.formData.tin6_1 = obj['listInfo'] || [];
         this.formData.tin6_2 = obj['listDriver'] || [];
 
+        if (this.formData.tin6_2.length > 0) {
+          this.actionIndex = '2';
+        } else {
+          this.actionIndex = '1';
+        }
+
+
         if (this.formData.tin6_1.length > 1) {
           this.msgInfo('调度者只能选择一个');
           return;
@@ -382,20 +443,6 @@ export default {
           shipmentCode: this.pubilshCode
         };
         const { rows } = await listStockcode(query);
-
-        // 假数据
-        // const rows = [
-        //   {
-        //     cargoCodeName: '货源码名称', // 货源码名称
-        //     cargoCodeQR: 'deqdq434', // 货源码
-        //     code: '123'
-        //   },
-        //   {
-        //     cargoCodeName: '货源码名称2', // 货源码名称
-        //     cargoCodeQR: 'de455434', // 货源码
-        //     code: '1245'
-        //   }
-        // ];
 
         this.tin6Option = this._baozhuan(rows, 'cargoCodeQR', 'cargoCodeName');
       }

@@ -42,11 +42,10 @@
       <RulesForm v-if="zichuList.length" ref="zichuList" :data-list="zichuList" />
 
       <!-- 细项列表 -->
-      <div v-for="item in allRules" :key="item.code">
+      <!-- <div v-for="item in allRules" :key="item.code">
         <div>
           <div>{{ item.add === '1'?`关于增项(费用支出)`:`关于增项(费用收入出)` }}</div>
           <el-divider />
-          <!-- 文本框 -->
           <el-form-item v-if="item.showType === '1'" prop="tin4" :label="item.cnName">
             <el-input-number
               v-model="formData[item.enName]"
@@ -57,7 +56,6 @@
               :style="{ width: '120px' }"
             />
           </el-form-item>
-          <!-- 下拉框 -->
           <el-form-item v-if="item.showType === '3'" prop="tin3" :label="item.cnName">
             <el-select v-model="formData[item.enName]" clearable :placeholder="`请输入${item.cnName}`">
               <el-option
@@ -68,7 +66,6 @@
               />
             </el-select>
           </el-form-item>
-          <!-- 文本域 -->
           <el-form-item v-if="item.showType === '2'" prop="tin3" :label="item.cnName">
             <el-input
               v-model="formData[item.enName]"
@@ -78,7 +75,7 @@
             />
           </el-form-item>
         </div>
-      </div>
+      </div> -->
     </template>
 
   </el-form>
@@ -106,6 +103,10 @@ export default {
     pubilshCode: {
       type: String,
       required: true
+    },
+    cbData: {
+      type: Array,
+      default: null
     }
   },
   data() {
@@ -140,6 +141,18 @@ export default {
   watch: {
     pubilshCode(value) {
       this.initData();
+    },
+    cbData: {
+      handler(value) {
+        if (!value) return;
+
+        const { ruleCode } = value[0];
+
+        this.formData.ruleItemId = ruleCode;
+
+        this.handleRuleItemId();
+      },
+      immediate: true
     }
   },
 
@@ -190,10 +203,15 @@ export default {
             const shouruList = await this.$refs.shouruList._submitForm();
             const zichuList = await this.$refs.zichuList._submitForm();
 
-            console.log(lossList, 88888888);
-            console.log(shouruList, 111111111111);
-            console.log(zichuList, 22222222222);
-            resolve([...lossList, ...shouruList, ...zichuList]);
+            resolve([...lossList, ...shouruList, ...zichuList].map(e => {
+              return {
+                'ruleCode': e.ruleCode,
+                'ruleDetailShipmentCode': e.code,
+                'ruleItemCode': e.ruleItemCode,
+                'ruleValue': e.ruleValue,
+                'type': e.type
+              };
+            }));
           } else {
             return false;
           }
