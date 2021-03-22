@@ -3,16 +3,16 @@ import request from '@/utils/request';
 // 查询运单列表
 export function listManages(query) {
   return request({
-    url: '/system/config/list',
+    url: '/transportation/waybill/manageList',
     method: 'get',
     params: query
   });
 }
 
 // 查询运单详细
-export function getDetail(id) {
+export function getDetail(code) {
   return request({
-    url: '/waybill/manages/' + id,
+    url: '/transportation/waybill/getWayBillByCode?' + code,
     method: 'get'
   });
 }

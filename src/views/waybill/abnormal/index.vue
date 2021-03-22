@@ -101,7 +101,7 @@
     />
 
     <!-- 运单详情 对话框 -->
-    <detail-dialog ref="DetailDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
+    <detail-dialog ref="DetailDialog" :current-id="currentId" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
     <!-- 运单详情 对话框 -->
     <abnormal-dialog ref="AbnormalDialog" :title="title" :open.sync="openAbnormal" :disable="formDisable" @refresh="getList" />
   </div>
@@ -195,9 +195,10 @@ export default {
     /** 查看运单按钮操作 */
     handleWaybill(row) {
       this.$refs.DetailDialog.reset();
-      const id = row.waybillCode;
+      const id = row.waybillNo;
       getWaybill(id).then((response) => {
-        this.$refs.DetailDialog.setForm(response.data);
+        this.currentId = id;
+        // this.$refs.DetailDialog.setForm(response.data);
         this.open = true;
         this.title = '运输单信息';
         this.formDisable = true;
