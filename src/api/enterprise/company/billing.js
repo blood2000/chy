@@ -19,9 +19,9 @@ export function updateBilling(data) {
 }
 
 // 获取开票信息
-export function getBilling(shipmentCode) {
+export function getBilling() {
   return request({
-    url: `/assets/shipment/invoice/${shipmentCode}`,
+    url: `/assets/shipment/invoice`,
     method: 'get'
   });
 }

@@ -95,7 +95,6 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        shipmentCode: '8b3f41f598c64fd9a7922a5611a7ed8f',
         id: null,
         code: null,
         cargoCodeName: null,

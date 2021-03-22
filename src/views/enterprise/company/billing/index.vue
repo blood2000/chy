@@ -107,7 +107,7 @@ export default {
   },
   methods: {
     getBilling() {
-      getBilling('8b3f41f598c64fd9a7922a5611a7ed8f').then(response => {
+      getBilling().then(response => {
         this.form = response.data || {};
       });
     },
