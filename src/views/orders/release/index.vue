@@ -39,7 +39,9 @@
           </el-select>
         </el-form-item>
 
+
         <OrderBasic
+          v-if="formData.tin1"
           ref="OrderBasic"
           v-model="isMultiGoods"
           :pubilsh-code="formData.tin1"
@@ -47,7 +49,7 @@
       </div>
       <el-divider />
 
-      <div class="content">
+      <div v-if="formData.tin1" class="content">
         <div class="header mb8">装卸货地址配置(第二步)</div>
         <template v-if="isMultiGoods">
           <el-form-item label="装货类型" prop="tin7">

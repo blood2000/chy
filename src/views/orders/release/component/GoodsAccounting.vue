@@ -42,6 +42,7 @@
               <span class="pr-5">共</span>
               <el-input-number
                 v-model="formData.weight"
+                :disabled="formData.weightType === '1'"
                 :controls="false"
                 :placeholder="`请输入重量(${goodsUnitName})`"
                 step-strictly

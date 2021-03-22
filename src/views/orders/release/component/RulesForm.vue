@@ -23,7 +23,7 @@
         </el-form-item>
         <!-- 下拉框 -->
         <el-form-item v-if="item.showType === '3'" :prop="item.myName" :label="item.cnName">
-          <el-select v-model="formData[item.myName]" clearable :placeholder="`请输入${item.cnName}`">
+          <el-select v-model="formData[item.myName]" clearable :placeholder="`请输入${item.cnName}`" @change="change()">
             <el-option
               v-for="dict in item.Option"
               :key="dict.dictValue"
@@ -35,7 +35,7 @@
 
         <!-- 单选 -->
         <el-form-item v-if="item.showType === '4'" :prop="item.myName" :label="item.cnName">
-          <el-radio-group v-model="formData[item.myName]" size="medium">
+          <el-radio-group v-model="formData[item.myName]" size="medium" @change="change()">
             <el-radio
               v-for="dict in item.Option"
               :key="dict.dictValue"
@@ -139,12 +139,12 @@ export default {
       return arr.map(async e => {
         if (e.dictCode && (e.showType === '3' || e.showType === '4')) {
           // 新
-          //   const { data } = await this.listByDict({
-          //     dictPid: '0',
-          //     dictType: e.dictCode
-          //   });
+          const { data } = await this.listByDict({
+            dictPid: '0',
+            dictType: e.dictCode
+          });
           // 旧
-          const { data } = await this.getDicts(e.dictCode);
+          // const { data } = await this.getDicts(e.dictCode);
           e.Option = data;
         }
 
@@ -178,6 +178,11 @@ export default {
           }
         });
       });
+    },
+
+    //
+    change() {
+      this.$forceUpdate();
     }
   }
 

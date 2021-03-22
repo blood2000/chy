@@ -1,7 +1,9 @@
 <template>
   <!-- 车辆跟踪对话框 -->
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
-    <el-amap vid="amapDemo" :zoom="zoom" :center="center" />
+    <div style="width:100%; height: 500px;">
+      <el-amap v-if="visible" vid="amapDemo" :center="center" :zoom="zoom" />
+    </div>
   </el-dialog>
 </template>
 
@@ -24,8 +26,8 @@ export default {
   },
   data() {
     return {
-      zoom: 11,
-      center: [121.498586, 31.239637],
+      zoom: 16,
+      center: [121.59996, 31.197646],
       // 表单参数
       form: {
         wayBillInCode: null,
