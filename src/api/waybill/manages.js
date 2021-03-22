@@ -12,7 +12,7 @@ export function listManages(query) {
 // 查询运单详细
 export function getDetail(code) {
   return request({
-    url: '/transportation/waybill/getWayBillByCode?' + code,
+    url: '/transportation/waybill/getWayBillByCode?code=' + code,
     method: 'get'
   });
 }

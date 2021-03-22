@@ -108,7 +108,7 @@
 </template>
 
 <script>
-import { listAbnormal, getAbnormal, getWaybill } from '@/api/waybill/abnormal';
+import { listAbnormal, getAbnormal } from '@/api/waybill/abnormal';
 import DetailDialog from '../components/detailDialog';
 import AbnormalDialog from './abnormalDialog';
 
@@ -155,7 +155,9 @@ export default {
         orderCode: null
       },
       // 表单是否禁用
-      formDisable: false
+      formDisable: false,
+      // 当前选中的运单id
+      currentId: null
     };
   },
   created() {
@@ -195,14 +197,10 @@ export default {
     /** 查看运单按钮操作 */
     handleWaybill(row) {
       this.$refs.DetailDialog.reset();
-      const id = row.waybillNo;
-      getWaybill(id).then((response) => {
-        this.currentId = id;
-        // this.$refs.DetailDialog.setForm(response.data);
-        this.open = true;
-        this.title = '运输单信息';
-        this.formDisable = true;
-      });
+      this.currentId = row.waybillNo;
+      this.open = true;
+      this.title = '运输单信息';
+      this.formDisable = true;
     },
     /** 查看日志按钮操作 */
     handleLog(row) {
