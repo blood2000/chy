@@ -18,9 +18,9 @@ export function getAbnormal(waybillCode) {
 }
 
 // 查询运输异常详细
-export function getWaybill(waybillCode) {
+export function getWaybill(code) {
   return request({
-    url: '/transportation/waybill/getOrderExceptionDetail' + waybillCode,
+    url: '/transportation/waybill/getOrderExceptionDetail?' + code,
     method: 'get'
   });
 }
