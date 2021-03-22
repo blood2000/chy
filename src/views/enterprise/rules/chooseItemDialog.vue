@@ -77,46 +77,31 @@ export default {
         el.disabled = false;
       });
     },
+    setForm() {
+      if (this.itemType === 'add') {
+        this.setFormCheckAndDisable(this.addCheckedItem, this.reduceCheckedItem);
+      } else if (this.itemType === 'reduce') {
+        this.setFormCheckAndDisable(this.reduceCheckedItem, this.addCheckedItem);
+      }
+    },
     /**
      * 选择增项的时候,已选择的增项回显,已选择的减项不可选
      * 选择减项的时候,已选择的减项回显,已选择的增项不可选
      */
-    setForm() {
-      if (this.itemType === 'add') {
-        // 回显
-        if (this.addCheckedItem.length === 0) {
-          this.checkGroup = [];
-        } else {
-          const arr = this.addCheckedItem.map(el => {
-            return el.cnName;
-          });
-          this.checkGroup = arr;
-        }
-        // 设置disable
-        for (let i = 0; i < this.formGroup.length; i++) {
-          for (let j = 0; j < this.reduceCheckedItem.length; j++) {
-            if (this.reduceCheckedItem[j].cnName === this.formGroup[i].cnName) {
-              this.formGroup[i].disabled = true;
-              this.$set(this.formGroup[i], 'disabled', true);
-            }
-          }
-        }
-      } else if (this.itemType === 'reduce') {
-        // 回显
-        if (this.reduceCheckedItem.length === 0) {
-          this.checkGroup = [];
-        } else {
-          const arr = this.reduceCheckedItem.map(el => {
-            return el.cnName;
-          });
-          this.checkGroup = arr;
-        }
-        // 设置disable
-        for (let i = 0; i < this.formGroup.length; i++) {
-          for (let j = 0; j < this.addCheckedItem.length; j++) {
-            if (this.addCheckedItem[j].cnName === this.formGroup[i].cnName) {
-              this.$set(this.formGroup[i], 'disabled', true);
-            }
+    setFormCheckAndDisable(item1, item2) {
+      // 回显
+      if (item1.length === 0) {
+        this.checkGroup = [];
+      } else {
+        this.checkGroup = item1.map(el => {
+          return el.cnName;
+        });
+      }
+      // 设置disable
+      for (let i = 0; i < this.formGroup.length; i++) {
+        for (let j = 0; j < item2.length; j++) {
+          if (item2[j].cnName === this.formGroup[i].cnName) {
+            this.$set(this.formGroup[i], 'disabled', true);
           }
         }
       }

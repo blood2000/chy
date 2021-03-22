@@ -219,7 +219,9 @@ export default {
     this.getAllDicList();
   },
   methods: {
-    // 获取字典
+    /**
+     * 获取字典
+     */
     getAllDicList() {
       // 计算公式
       this.getDicts('ruleFormula').then((response) => {
@@ -230,49 +232,58 @@ export default {
         this.m0DictValueOptions = response.data;
       });
     },
-    // 获取路耗表单
+    /**
+     * 获取路耗表单
+     */
     getLossList(lossList) {
       getRuleItemList({ ruleType: 1 }).then(response => {
         this.form.lossItem = response.data.list;
         this.setLossList(this.form.lossItem, lossList);
       });
     },
-    // 生成路耗表单
+    /**
+     * 生成路耗表单
+     */
     setLossList(itemList, lossList) {
       itemList.forEach(el => {
-        // select或radio类型的表单需要获取option字典
         if (el.dictCode) {
-          this.getDicts(el.dictCode).then((response) => {
-            this.form[el.dictCode] = response.data;
-            this.$forceUpdate();
-          });
+          this.getOptionsByCode(el.dictCode);
         }
-        // 填范围区域的值要特殊处理
-        if (el.showType === 2) {
-          this.$set(this.form.lossItemObj, el.code, {});
-          this.$set(this.form.lossItemObj[el.code], 'start', el.ruleValue ? JSON.parse(el.ruleValue)[0] : '');
-          this.$set(this.form.lossItemObj[el.code], 'end', el.ruleValue ? JSON.parse(el.ruleValue)[1] : '');
-        } else {
-          this.$set(this.form.lossItemObj, el.code, el.ruleValue ? el.ruleValue : null);
-        }
+        this.fillFormItem(el, this.form.lossItemObj);
       });
       if (lossList) {
         lossList.forEach(el => {
-          if (el.ruleItemCode) {
-            el.code = el.ruleItemCode;
-          }
-          // 填范围区域的值要特殊处理
-          if (el.showType === 2) {
-            this.$set(this.form.lossItemObj, el.code, {});
-            this.$set(this.form.lossItemObj[el.code], 'start', el.ruleValue ? JSON.parse(el.ruleValue)[0] : '');
-            this.$set(this.form.lossItemObj[el.code], 'end', el.ruleValue ? JSON.parse(el.ruleValue)[1] : '');
-          } else {
-            this.$set(this.form.lossItemObj, el.code, el.ruleValue ? el.ruleValue : null);
-          }
+          this.fillFormItem(el, this.form.lossItemObj);
         });
       }
     },
-    // 提交按钮
+    /**
+     * 根据dictCode获取select或radio类型表单的字典
+     */
+    getOptionsByCode(dictCode) {
+      this.getDicts(dictCode).then((response) => {
+        this.form[dictCode] = response.data;
+        this.$forceUpdate();
+      });
+    },
+    /**
+     * 回填表单的值(路耗/增项/减项通用)
+     */
+    fillFormItem(el, obj) {
+      if (el.ruleItemCode) {
+        el.code = el.ruleItemCode;
+      }
+      if (el.showType === 2) { // 回填范围区域，2个值
+        this.$set(obj, el.code, {});
+        this.$set(obj[el.code], 'start', el.ruleValue ? JSON.parse(el.ruleValue)[0] : '');
+        this.$set(obj[el.code], 'end', el.ruleValue ? JSON.parse(el.ruleValue)[1] : '');
+      } else { // 回填单个值
+        this.$set(obj, el.code, el.ruleValue ? el.ruleValue : null);
+      }
+    },
+    /**
+     * 提交按钮
+     */
     submitForm() {
       this.$refs['form'].validate(valid => {
         // 构造参数
@@ -282,11 +293,6 @@ export default {
           m0DictValue: this.form.m0DictValue,
           detailList: []
         };
-        if (this.form.code) {
-          params.code = this.form.code;
-        } else {
-          params.platformType = this.form.platformType;
-        }
         if (this.form.isLoss) {
           this.setParams(this.form.lossItem, this.form.lossItemObj, params);
         }
@@ -294,12 +300,14 @@ export default {
         this.setParams(this.form.reduceItem, this.form.reduceItemObj, params, 2);
         if (valid) {
           if (this.form.code) {
+            params.code = this.form.code;
             updateRules(params).then(response => {
               this.msgSuccess('修改成功');
               this.close();
               this.$emit('refresh');
             });
           } else {
+            params.platformType = this.form.platformType;
             addRules(params).then(response => {
               this.msgSuccess('新增成功');
               this.close();
@@ -309,13 +317,16 @@ export default {
         }
       });
     },
-    // 构造提交按钮的请求参数
+    /**
+     * 构造提交按钮的请求参数
+     */
     setParams(list, obj, params, type) {
       list.forEach(el => {
-        // 判断是不是范围区间
+        // 范围区间,2个值
         if (el.showType === 2) {
+          // 忽略值为空的项
           if (obj[el.code].start === '' && obj[el.code].end === '') return;
-          // 判断是不是增项或减项,路耗不用传type
+          // 判断是不是增项或减项,增项或减项要传type,路耗不用传type
           if (type) {
             params.detailList.push({
               ruleItemCode: el.code,
@@ -328,7 +339,7 @@ export default {
               ruleValue: JSON.stringify([obj[el.code].start, obj[el.code].end])
             });
           }
-        } else {
+        } else { // 单个值
           if (obj[el.code] !== '' && obj[el.code] !== undefined && obj[el.code] !== null) {
             if (type) {
               params.detailList.push({
@@ -346,16 +357,22 @@ export default {
         }
       });
     },
-    // 取消按钮
+    /**
+     * 取消按钮
+     */
     cancel() {
       this.close();
       this.reset();
     },
-    // 关闭弹窗
+    /**
+     * 关闭弹窗
+     */
     close() {
       this.$emit('update:open', false);
     },
-    // 表单重置
+    /**
+     * 表单重置
+     */
     reset() {
       this.form = {
         platformType: 2, // 1运营 2货主
@@ -373,7 +390,9 @@ export default {
       };
       this.resetForm('form');
     },
-    // 表单赋值
+    /**
+     * 表单回填
+     */
     setForm(data) {
       this.form.platformType = 2; // 1运营 2货主
       this.form.code = data.ruleInfo.code;
@@ -385,33 +404,38 @@ export default {
       this.getLossList(data.lossList);
       // 回填增减项
       data.detailList.forEach(el => {
-        el.code = el.ruleItemCode;
         if (el.type === '1') {
           // 增项
           this.form.addItem.push(el);
-          this.$set(this.form.addItemObj, el.code, el.ruleValue);
+          this.fillFormItem(el, this.form.addItemObj);
         } else if (el.type === '2') {
           // 减项
           this.form.reduceItem.push(el);
-          this.$set(this.form.reduceItemObj, el.code, el.ruleValue);
+          this.fillFormItem(el, this.form.reduceItemObj);
         }
       });
     },
-    // 新增细项
+    /**
+     * 新增细项
+     */
     chooseItem(type) {
       this.chooseItemOpen = true;
       this.chooseItemType = type;
     },
-    // 将勾选的细项回显
+    /**
+     * 将勾选的细项回显
+     */
     setItem(type, arr) {
       if (type === 'add') {
         const itemList = JSON.parse(JSON.stringify(this.form.addItem));
         const itemObj = JSON.parse(JSON.stringify(this.form.addItemObj));
         this.form.addItem = arr;
         this.form.addItemObj = {};
+        // 新勾选的细项与已勾选的细项求交集
         for (let i = 0; i < this.form.addItem.length; i++) {
           this.$set(this.form.addItemObj, this.form.addItem[i].code, null);
           for (let j = 0; j < itemList.length; j++) {
+            // 如果新勾选的细项已经存在，则回填上之前存的值，避免已勾选的细项值被覆盖清空
             if (itemList[j].code === this.form.addItem[i].code) {
               this.form.addItem[i] = itemList[j];
               this.$set(this.form.addItemObj, this.form.addItem[i].code, itemObj[this.form.addItem[i].code]);
@@ -434,7 +458,9 @@ export default {
         }
       }
     },
-    // 删除细项
+    /**
+     * 删除细项
+     */
     deleteItem(type, code) {
       if (type === 'add') {
         this.form.addItem = this.form.addItem.filter(el => {
