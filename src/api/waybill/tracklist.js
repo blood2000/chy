@@ -39,7 +39,15 @@ export function cancel(data) {
 // 获取装货地址和卸货地址
 export function getAddress(orderGoodsCode) {
   return request({
-    url: '/transportation/order/getOrderGoodsAddress/' + orderGoodsCode,
+    url: '/transportation/orderAddress/getOrderGoodsAddress/' + orderGoodsCode,
+    method: 'get'
+  });
+}
+
+// 获取装货、卸货信息
+export function getInfoDetail(waybillNo) {
+  return request({
+    url: '/transportation/waybillAttachment/getByWaybillNo?waybillNo=' + waybillNo,
     method: 'get'
   });
 }

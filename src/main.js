@@ -15,7 +15,7 @@ import { download } from '@/utils/request';
 
 import './assets/icons'; // icon
 import './permission'; // permission control
-import { getDicts, listByDict,getDictsByType } from '@/api/system/dict/data';
+import { getDicts, listByDict, getDictsByType } from '@/api/system/dict/data';
 import { getConfigKey } from '@/api/system/config';
 import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree } from '@/utils/ddc';
 import Pagination from '@/components/Pagination';

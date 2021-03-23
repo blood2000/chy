@@ -1,6 +1,6 @@
 <template>
   <!-- 车辆装货对话框 -->
-  <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
+  <el-dialog :title="title" :visible="visible" width="800px" append-to-body destroy-on-close @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="130px">
       <el-form-item label="装货时间" prop="loadTime">
         <el-date-picker
@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { load, getAddress } from '@/api/waybill/tracklist';
+import { load, getAddress, getInfoDetail } from '@/api/waybill/tracklist';
 import UploadImage from '@/components/UploadImage/index';
 
 export default {
@@ -83,7 +83,8 @@ export default {
       // 日期格式
       Hours: '',
       Minutes: '',
-      Seconds: ''
+      Seconds: '',
+      time: ''
     };
   },
   computed: {
@@ -96,6 +97,15 @@ export default {
       }
     }
   },
+  watch: {
+    open(val) {
+      if (val) {
+        // this.reset();
+        // this.getAddress();
+        this.getDetail();
+      }
+    }
+  },
   created() {
     var Hours = new Date().getHours();
     this.Hours = Hours < 10 ? ('0' + Hours) : Hours;
@@ -103,18 +113,41 @@ export default {
     this.Minutes = Minutes < 10 ? ('0' + Minutes) : Minutes;
     var Seconds = new Date().getSeconds();
     this.Seconds = Seconds < 10 ? ('0' + Seconds) : Seconds;
+    this.time = new Date().toISOString().slice(0, 10) + ' ' + this.Hours + ':' + this.Minutes + ':' + this.Seconds;
   },
   methods: {
+    // 获取装货详情
+    getDetail() {
+      this.reset();
+      getInfoDetail(this.waybill.waybillNo).then(response => {
+        console.log(response);
+        const info = response.data;
+        const info1 = info.filter(item => {
+          return item.type === 1;
+        });
+        const info2 = info1[0];
+        console.log(info2);
+        if (info2) {
+          this.form.loadWeight = info2.loadWeight;
+          this.form.remark = info2.remark;
+          this.form.loadTime = info2.cargoTime;
+          // console.log(this.form);
+        } else {
+          this.reset();
+          this.getAddress();
+        }
+      });
+    },
     // 获取地址信息
-    getAddress(data) {
-      console.log(data);
-      getAddress(data.goodsCode).then(response => {
+    getAddress() {
+      // console.log(data);
+      getAddress(this.waybill.goodsCode).then(response => {
         const address = response.data;
         const address1 = address.filter(item => {
           return item.addressType === 1;
         });
         this.waybillAddressOptions = address1;
-        console.log(this.waybillAddressOptions);
+        // console.log(this.waybillAddressOptions);
       });
     },
     /** 提交按钮 */
@@ -149,20 +182,20 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        code: null,
-        loadTime: null,
+        code: this.waybill.code,
+        loadTime: this.time,
         loadWeight: null,
         picture: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
         remark: null,
         waybillAddress: {}
       };
+      this.waybillAddressOptions = [];
       this.resetForm('form');
-      this.form.loadTime = new Date().toISOString().slice(0, 10) + ' ' + this.Hours + ':' + this.Minutes + ':' + this.Seconds;
     },
-    // 表单赋值
+    // 获取信息
     setForm(data) {
       this.waybill = data;
-      this.form.code = data.code;
+      this.form.code = this.waybill.code;
     }
   }
 };
