@@ -1,5 +1,9 @@
 // ESlint 检查配置
 module.exports = {
+  'globals': {
+    'AMap': false,
+    'AMapUI': false
+  },
   'root': true,
   'parserOptions': {
     'parser': 'babel-eslint',
