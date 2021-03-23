@@ -42,24 +42,24 @@
       </h5>
       <el-divider />
       <el-row v-show="form.isLoss">
-        <el-form-item v-for="item in form.lossItem" :key="item.code" :label="item.cnName" :prop="item.code">
-          <el-input v-if="item.showType === 1" v-model="form.lossItemObj[item.code]" :placeholder="`请输入${item.cnName}`" class="width-small" clearable />
+        <el-form-item v-for="item in lossItem" :key="item.code" :label="item.cnName" :prop="item.code">
+          <el-input v-if="item.showType === 1" v-model="lossItemObj[item.code]" :placeholder="`请输入${item.cnName}`" class="width-small" clearable />
           <template v-if="item.showType === 2">
-            <el-input v-model="form.lossItemObj[item.code].start" placeholder="最小值" class="width-small" clearable />
+            <el-input v-model="lossItemObj[item.code].start" placeholder="最小值" class="width-small" clearable />
             -
-            <el-input v-model="form.lossItemObj[item.code].end" placeholder="最大值" class="width-small" clearable />
+            <el-input v-model="lossItemObj[item.code].end" placeholder="最大值" class="width-small" clearable />
           </template>
-          <el-select v-if="item.showType === 3" v-model="form.lossItemObj[item.code]" class="width-small" clearable>
+          <el-select v-if="item.showType === 3" v-model="lossItemObj[item.code]" class="width-small" clearable>
             <el-option
-              v-for="dict in form[item.dictCode]"
+              v-for="dict in options[item.dictCode]"
               :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
             />
           </el-select>
-          <el-radio-group v-if="item.showType === 4" v-model="form.lossItemObj[item.code]">
+          <el-radio-group v-if="item.showType === 4" v-model="lossItemObj[item.code]">
             <el-radio
-              v-for="dict in form[item.dictCode]"
+              v-for="dict in options[item.dictCode]"
               :key="dict.dictValue"
               :label="dict.dictValue"
             >{{ dict.dictLabel }}</el-radio>
@@ -82,7 +82,7 @@
           </template>
           <el-select v-if="item.showType === 3" v-model="form.reduceItemObj[item.code]" class="width-small mr3" clearable>
             <el-option
-              v-for="dict in form[item.dictCode]"
+              v-for="dict in options[item.dictCode]"
               :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
@@ -90,7 +90,7 @@
           </el-select>
           <el-radio-group v-if="item.showType === 4" v-model="form.reduceItemObj[item.code]">
             <el-radio
-              v-for="dict in form[item.dictCode]"
+              v-for="dict in options[item.dictCode]"
               :key="dict.dictValue"
               :label="dict.dictValue"
               class="mr3"
@@ -115,7 +115,7 @@
           </template>
           <el-select v-if="item.showType === 3" v-model="form.addItemObj[item.code]" class="width-small mr3" clearable>
             <el-option
-              v-for="dict in form[item.dictCode]"
+              v-for="dict in options[item.dictCode]"
               :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
@@ -123,7 +123,7 @@
           </el-select>
           <el-radio-group v-if="item.showType === 4" v-model="form.addItemObj[item.code]">
             <el-radio
-              v-for="dict in form[item.dictCode]"
+              v-for="dict in options[item.dictCode]"
               :key="dict.dictValue"
               :label="dict.dictValue"
               class="mr3"
@@ -156,6 +156,7 @@
       :add-checked-item="form.addItem"
       :reduce-checked-item="form.reduceItem"
       @refresh="setItem"
+      @getOptionsByCode="getOptionsByCode"
     />
   </el-dialog>
 </template>
@@ -188,10 +189,13 @@ export default {
         addItem: [],
         addItemObj: {},
         reduceItem: [],
-        reduceItemObj: {},
-        lossItem: [],
-        lossItemObj: {}
+        reduceItemObj: {}
       },
+      // 路耗
+      lossItem: [],
+      lossItemObj: {},
+      // 字典管理
+      options: {},
       // 表单校验
       rules: {
         name: [
@@ -216,7 +220,7 @@ export default {
       }
     }
   },
-  created() {
+  mounted() {
     this.getAllDicList();
   },
   methods: {
@@ -232,29 +236,27 @@ export default {
       this.getDicts('M0').then((response) => {
         this.m0DictValueOptions = response.data;
       });
-    },
-    /**
-     * 获取路耗表单
-     */
-    getLossList(lossList) {
+      // 获取路耗表单
       getRuleItemList({ ruleType: 1 }).then(response => {
-        this.form.lossItem = response.data.list;
-        this.setLossList(this.form.lossItem, lossList);
+        this.lossItem = response.data.list;
+        this.lossItem.forEach(el => {
+          if (el.dictCode) {
+            this.getOptionsByCode(el.dictCode);
+          }
+        });
+        this.setLossList();
       });
     },
     /**
      * 生成路耗表单
      */
-    setLossList(itemList, lossList) {
-      itemList.forEach(el => {
-        if (el.dictCode) {
-          this.getOptionsByCode(el.dictCode);
-        }
-        this.fillFormItem(el, this.form.lossItemObj);
+    setLossList(lossList) {
+      this.lossItem.forEach(el => {
+        this.fillFormItem(el, this.lossItemObj);
       });
       if (lossList) {
         lossList.forEach(el => {
-          this.fillFormItem(el, this.form.lossItemObj);
+          this.fillFormItem(el, this.lossItemObj);
         });
       }
     },
@@ -263,8 +265,7 @@ export default {
      */
     getOptionsByCode(dictCode) {
       this.getDicts(dictCode).then((response) => {
-        this.form[dictCode] = response.data;
-        this.$forceUpdate();
+        this.options[dictCode] = response.data;
       });
     },
     /**
@@ -295,7 +296,7 @@ export default {
           detailList: []
         };
         if (this.form.isLoss) {
-          this.setParams(this.form.lossItem, this.form.lossItemObj, params);
+          this.setParams(this.lossItem, this.lossItemObj, params);
         }
         this.setParams(this.form.addItem, this.form.addItemObj, params, 1);
         this.setParams(this.form.reduceItem, this.form.reduceItemObj, params, 2);
@@ -385,8 +386,6 @@ export default {
         addItemObj: {},
         reduceItem: [],
         reduceItemObj: {},
-        lossItem: [],
-        lossItemObj: {},
         m0DictValue: null
       };
       this.resetForm('form');
@@ -402,7 +401,7 @@ export default {
       this.form.isLoss = data.lossList.length > 0;
       this.form.m0DictValue = data.ruleInfo.m0DictValue;
       // 回填路耗
-      this.getLossList(data.lossList);
+      this.setLossList(data.lossList);
       // 回填增减项
       data.detailList.forEach(el => {
         if (el.type === '1') {

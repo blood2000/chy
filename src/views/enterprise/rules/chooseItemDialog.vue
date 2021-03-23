@@ -60,7 +60,7 @@ export default {
       this.setForm();
     }
   },
-  created() {
+  mounted() {
     this.getList();
   },
   methods: {
@@ -69,6 +69,9 @@ export default {
         this.formGroup = response.data.list;
         this.formGroup.forEach(el => {
           el.disabled = false;
+          if (el.dictCode) {
+            this.$emit('getOptionsByCode', el.dictCode);
+          }
         });
       });
     },

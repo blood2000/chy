@@ -158,7 +158,7 @@ export default {
       this.$refs.RulesDialog.reset();
       this.open = true;
       this.title = '添加';
-      this.$refs.RulesDialog.getLossList();
+      this.$refs.RulesDialog.setLossList();
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
