@@ -128,12 +128,12 @@
       <el-table-column label="更新人" align="center" prop="updateCode" /> -->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="200" fixed="right">
         <template slot-scope="scope">
-          <el-button
+          <!-- <el-button
             size="mini"
             type="text"
             icon="el-icon-map-location"
             @click="handleMapView(scope.row)"
-          >查看地图</el-button>
+          >查看地图</el-button> -->
           <!-- <el-button
             size="mini"
             type="text"
