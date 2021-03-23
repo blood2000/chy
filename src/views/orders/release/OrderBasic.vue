@@ -281,14 +281,24 @@ export default {
 
         const { goodsBigType, goodsType } = orderGoodsList[0];
 
-        this.formData.tin2 = goodsBigType;
+        this.tin2Option.forEach(e => {
+          if (goodsBigType === e.dictCode) {
+            this.formData.tin2 = e.dictValue;
+          }
+        });
 
-        this.handletin2();
+
+        await this.handletin2();
+
 
         if (this.isMultiGoods) {
           // 多商品这里处理
         } else {
-          this.formData.tin2_2 = goodsType;
+          this.tin2_Option.forEach(e => {
+            if (goodsType === e.dictCode) {
+              this.formData.tin2_2 = e.dictValue;
+            }
+          });
         }
 
         this.orderSpecifiedList = orderSpecifiedList;
@@ -389,6 +399,7 @@ export default {
         dictPid: this._zhaovalue(this.tin2Option, this.formData.tin2).dictCode,
         dictType: 'goodsType'
       });
+
 
       this.tin2_Option = data;
 
@@ -499,10 +510,10 @@ export default {
                   //   }
                   // ],
                   // 'balanceRuleCode': '',
-                  goodsBigType: this.formData.tin2,
+                  goodsBigType: this._zhaovalue(this.tin2Option, this.formData.tin2).dictCode,
                   goodsType: this.isMultiGoods
-                    ? this.formData.tin2_1
-                    : this.formData.tin2_2
+                    ? this._zhaovalue(this.tin2_Option, this.formData.tin2_1).dictCode
+                    : this._zhaovalue(this.tin2_Option, this.formData.tin2_2).dictCode
                   // 'goodsUnit': '',
                   // 'isModifyFinish': true,
                   // 'isOneselfLoad': true,
@@ -515,18 +526,7 @@ export default {
                   // 'vehicleLength': '',
                   // 'vehicleType': '',
                   // 'weight': 0,
-                  // orderFreightBoList: [
-                  //   {
-                  //     // 'balanceRuleCode': '',
-                  //     goodsBigType: this.formData.tin2,
-                  //     goodsType: this.isMultiGoods
-                  //       ? this.formData.tin2_1
-                  //       : this.formData.tin2_2
-                  //     // 'orderGoodsCode': '',
-                  //     // 'ruleItemValue': '',
-                  //     // 'type': 0
-                  //   }
-                  // ]
+
                 }
 
               ],
@@ -534,6 +534,7 @@ export default {
               projectCode: this.formData.tin3 === '0' ? '' : this.formData.tin3,
               pubilshCode: this.pubilshCode,
               remark: this.formData.remark
+              // ruleInfoShipmentCode: ''
             });
           } else {
             return false;

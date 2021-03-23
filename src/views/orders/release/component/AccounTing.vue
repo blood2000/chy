@@ -105,7 +105,7 @@ export default {
       required: true
     },
     cbData: {
-      type: Array,
+      type: Object,
       default: null
     }
   },
@@ -143,14 +143,15 @@ export default {
       this.initData();
     },
     cbData: {
-      handler(value) {
+      async handler(value) {
         if (!value) return;
 
-        const { ruleCode } = value[0];
+        const { detailList, lossList } = value;
 
-        this.formData.ruleItemId = ruleCode;
+        await this.initData();
+        this.formData.ruleItemId = detailList[0].ruleCode || '无';
 
-        this.handleRuleItemId();
+        this.setData(detailList, lossList);
       },
       immediate: true
     }
@@ -173,17 +174,19 @@ export default {
     // 交互
     // 选择规格
     async handleRuleItemId() {
-      // console.log(this.formData.ruleItemId); // ==> 通过这个code去请求列表
-
       this.lossList = [];
       this.zichuList = [];
       this.shouruList = [];
-      const quer = {
+
+      const { detailList, lossList } = (await getRuleItem({
         code: this.formData.ruleItemId
-      };
+      })).data;
 
-      const { detailList, lossList } = (await getRuleItem(quer)).data; // 没错
+      this.setData(detailList, lossList);
+    },
 
+    // 赋值
+    setData(detailList, lossList) {
       this.lossList = lossList;
 
       detailList.forEach(e => {
@@ -218,7 +221,6 @@ export default {
         });
       });
     },
-    // 工具
 
     // 根据value匹配数组中的一项
     _zhaovalue(arr, value) {

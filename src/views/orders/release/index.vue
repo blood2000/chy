@@ -18,9 +18,9 @@
       :label-position="'left'"
     >
       <div class="content">
-        <div class="header mb8">代发货主信息</div>
+        <div v-if="isCreated" class="header mb8">代发货主信息</div>
 
-        <el-form-item label="代发货主" prop="tin1">
+        <el-form-item v-if="isCreated" label="代发货主" prop="tin1">
           <el-select
             v-model="formData.tin1"
             filterable
@@ -59,8 +59,7 @@
                 v-for="dict in [
                   { dictValue: '1', dictLabel: '一装一卸' },
                   { dictValue: '2', dictLabel: '多装一卸' },
-                  { dictValue: '3', dictLabel: '一装多卸' },
-                  { dictValue: '4', dictLabel: '多装多卸' },
+                  { dictValue: '3', dictLabel: '一装多卸' }
                 ]"
                 :key="dict.dictValue"
                 :label="dict.dictValue"
@@ -208,7 +207,7 @@ import { listShipment } from '@/api/assets/shipment.js';
 // 获取货集码列表 ? 要在什么时机调用?
 // import { listStockcode } from '@/api/enterprise/stockcode';
 
-import { orderPubilsh } from '@/api/order/release';
+import { orderPubilsh, getOrderByCode, orderFreight } from '@/api/order/release';
 
 export default {
   components: {
@@ -262,6 +261,12 @@ export default {
   computed: {
     isTin1() {
       return !!this.formData.tin1;
+    },
+    isEdit() {
+      return this.$route.query.t === '1';
+    },
+    isCreated() {
+      return !this.$route.query.t && !this.$route.query.id;
     }
   },
   watch: {
@@ -286,8 +291,10 @@ export default {
           const data = await this.submAllData();
 
           orderPubilsh(data).then((response) => {
-            console.log(response);
             this.msgSuccess('新增成功');
+            setTimeout(() => {
+              this.$router.push({ name: 'Manage' });
+            }, 1000);
           });
         } else {
           return false;
@@ -311,32 +318,28 @@ export default {
       // console.log([...addr_xie, ...addr_add]); // 装卸货地址集合
 
       const goodsAccounting = await this.$refs.goodsAccounting._submitForm();
-      console.log(goodsAccounting, 'goodsAccounting------------');
+      // console.log(goodsAccounting, 'goodsAccounting------------');
 
       // 规则
-      console.log(this.$refs.accounTing);
-
       const accounTing = await this.$refs.accounTing._submitForm();
       // console.log(accounTing, 'accounTing 是个数组有详细的每一个细的规则------------');
-
-      console.log(OrderBasic, '拼接前');
-
       // 下面开始拼接
       const { orderGoodsList } = OrderBasic;
-
+      // 1-  默认一装一卸
       OrderBasic.loadType = this.formData.tin7;
+      OrderBasic.ruleInfoShipmentCode = accounTing[0].ruleCode;
+      // 2- 装卸货数据
+      OrderBasic.addressList = [...addr_xie, ...addr_add].map(ee => {
+        return {
+          ...ee,
+          orderFreightBoList: accounTing // 把规则地址里面
+        };
+      });
+
+      // 3- 其他是在OrderBsic.vue中配置了
       OrderBasic.orderGoodsList = orderGoodsList.map(e => {
-        e.orderFreightBoList = accounTing.map(rule => {
-          return {
-            // goodsBigType: e.goodsBigType,
-            // goodsType: e.goodsType,
-            ...rule
-          };
-        });
         return {
           ...e,
-          addressList: [...addr_xie, ...addr_add],
-
           // 'balanceRuleCode': '', // 货主核算规则表CODE
           'goodsUnit': goodsAccounting.goodsUnit,
           // 'isModifyFinish': true, // 平台是否完成调价??
@@ -357,28 +360,6 @@ export default {
       console.log(OrderBasic, '拼接后-----');
 
       return OrderBasic;
-
-      // const data = {
-
-      //   classList: [
-      //     {
-      //       classCode: '' // 货集码
-      //     }
-      //   ],
-      //   isPublic: '', // 是否公开货源 0.非公开 1.公开
-      //   isSpecified: '', // 是否指定接单人 0否 1是
-      //   loadType: '', // loadType	装卸类型 1.一装一卸 2.多装一卸 3.一装多卸 4.多装多卸
-
-      //   // orderFreightBoList,
-      //   // orderGoodsList,
-      //   // orderSpecifiedList,
-
-      //   projectCode: '', // 项目编码
-      //   pubilshCode: this.formData.tin1,
-      //   remark:
-      // }
-
-      // console.log(data);
     },
 
     // 1. 远程搜索
@@ -399,160 +380,391 @@ export default {
 
     // 回填获取数据
     async getCbdata(id) {
-      // const { data } = await apiapiapi({code: id})
+      // console.log(getOrderByCode);
+
+      let { data: data1 } = await getOrderByCode(id);
+      console.log(data1);
 
       // 假数据
-      const data = {
-        classList: [
+      data1 = {
+        'code': '9085f700cc304f949335231000d7eed6', // code
+        'mainOrderNumber': '2103231004220621',
+        'projectCode': '658b38b1bdc2478e849b57617c1a0e69', // 项目编码
+        'isSpecified': true, // 是否指定接班人
+        'remark': '这是放回的备注信息', // 备注
+        'classCode': null,
+        'isPublic': false, // 是否公开源
+        'pubilshCode': 'c0e8fdb5e44942d3a10907dc97768847', // ???? 这个这么没了
+        'loadType': null, // ?? 这个这么没了
+        'redisOrderClassGoodsVoList': [
           {
-            classCode: ''
+            'code': 'cb872d4d99da49d79fc397546e83f66d',
+            'classCode': '',
+            'orderCode': '9085f700cc304f949335231000d7eed6',
+            'createCode': 'c0e8fdb5e44942d3a10907dc97768847',
+            'createTime': '2021-03-23 10:04:22.744',
+            'updateCode': null,
+            'updateTime': null
           }
         ],
-        isPublic: false,
-        isSpecified: true,
-        loadType: '1',
-        orderGoodsList: [
+        'redisOrderGoodsVoList': [
           {
-            addressList: [
-              {
-                'adcode': '350103',
-                'district': '台江区',
-                'addressAlias': '案发地上',
-                'addressType': '1',
-                'city': '福州市',
-                'citycode': '3501',
-                'contact': '123456',
-                'contactPhone': '12345678910',
-                'detail': '富邦总部大楼',
-                'location': [
-                  119.358265,
-                  26.045794
-                ],
-                'province': '福建省',
-                'provinceCode': '35',
-                'street': '',
-                'formattedAddress': '福建省福州市台江区富邦总部大楼'
-              },
-              {
-                'adcode': '350104',
-                'district': '仓山区',
-                'addressAlias': '1212',
-                'addressType': '2',
-                'city': '福州市',
-                'citycode': '3501',
-                'contact': '12123',
-                'contactPhone': '12345678910',
-                'detail': '富邦针织',
-                'location': [
-                  119.57298,
-                  25.827639
-                ],
-                'province': '福建省',
-                'provinceCode': '35',
-                'street': '',
-                'formattedAddress': '福建省福州市仓山区富邦针织'
-              }
-            ],
-            orderFreightBoList: [
-              {
-                'goodsBigType': '0100',
-                'goodsType': '010001',
-                'ruleCode': '085bce03d2084defa828f673996fb768',
-                'ruleDetailShipmentCode': '0ec0db55f39b4a6b9839d45086e9e6b7',
-                'ruleItemCode': '1',
-                'ruleValue': 'DL',
-                'type': null
-              },
-              {
-                'goodsBigType': '0100',
-                'goodsType': '010001',
-                'ruleCode': '085bce03d2084defa828f673996fb768',
-                'ruleDetailShipmentCode': 'aae8c7760ec84be39300d9220dcb0a8c',
-                'ruleItemCode': '2',
-                'ruleValue': '[-5,5]',
-                'type': null
-              },
-              {
-                'goodsBigType': '0100',
-                'goodsType': '010001',
-                'ruleCode': '085bce03d2084defa828f673996fb768',
-                'ruleDetailShipmentCode': 'd87420ada8024be48bba3981d1b6126d',
-                'ruleItemCode': '3',
-                'ruleValue': '1',
-                'type': null
-              },
-              {
-                'goodsBigType': '0100',
-                'goodsType': '010001',
-                'ruleCode': '085bce03d2084defa828f673996fb768',
-                'ruleDetailShipmentCode': '565f1aeabbd0494eafb1aa25d52c4d39',
-                'ruleItemCode': '11',
-                'ruleValue': 800,
-                'type': '1'
-              },
-              {
-                'goodsBigType': '0100',
-                'goodsType': '010001',
-                'ruleCode': '085bce03d2084defa828f673996fb768',
-                'ruleDetailShipmentCode': '44e8751b0cd8461aa9b41de7502799dc',
-                'ruleItemCode': '12',
-                'ruleValue': 600,
-                'type': '1'
-              },
-              {
-                'goodsBigType': '0100',
-                'goodsType': '010001',
-                'ruleCode': '085bce03d2084defa828f673996fb768',
-                'ruleDetailShipmentCode': '3e4ae497286e40f4a637a4cb65c2793c',
-                'ruleItemCode': '14',
-                'ruleValue': 300,
-                'type': '2'
-              },
-              {
-                'goodsBigType': '0100',
-                'goodsType': '010001',
-                'ruleCode': '085bce03d2084defa828f673996fb768',
-                'ruleDetailShipmentCode': 'c7b159d2e3634e4e97df8b9f376d3fdc',
-                'ruleItemCode': '13',
-                'ruleValue': 500,
-                'type': '2'
-              }
-            ],
-            'goodsBigType': '0100',
-            'goodsType': '010001',
+            'code': '67fe2206fbad4c669ffcae0219fd457c',
+            'orderCode': '9085f700cc304f949335231000d7eed6',
+            'goodsBigType': 376,
+            'totalType': null,
+            'goodsType': 769,
             'goodsUnit': '0',
-            'goodsPrice': '5000',
-            'isOneselfLoad': false,
-            'isOneselfUnload': false,
+            'weight': null,
             'perWeight': 412,
             'shipmentPrice': 424,
-            'totalType': '1',
-            'vehicleLength': '0008,0007,0006',
+            'goodsPrice': null,
             'vehicleType': 'G11',
-            'weight': ''
+            'vehicleLength': '0008,0007,0006',
+            'limitWastage': null,
+            'priceWastage': null,
+            'isOneselfLoad': null,
+            'isModifyFinish': null,
+            'isOneselfUnload': null,
+            'balanceRuleCode': null
           }
         ],
-        orderSpecifiedList: [
+        'redisOrderSpecifiedVoList': [
           {
-            'driverInfoCode': '4059ee53bb7e4474b2395d7481aa4d27',
+            'code': 'e954fc39145e4515a137e9f06a27a610',
+            'orderCode': null,
+            'userType': 2,
             'teamInfoCode': '',
-            'userType': 2
+            'driverInfoCode': '4059ee53bb7e4474b2395d7481aa4d27'
           },
           {
-            'driverInfoCode': '483ed050c4144caaba662ef4204b52ca',
+            'code': '26365f1b29464c21a165128c102b5367',
+            'orderCode': null,
+            'userType': 2,
             'teamInfoCode': '',
-            'userType': 2
+            'driverInfoCode': '483ed050c4144caaba662ef4204b52ca'
           }
         ],
-        projectCode: '658b38b1bdc2478e849b57617c1a0e69', // 项目code
-        pubilshCode: 'c0e8fdb5e44942d3a10907dc97768847', // 当前用户的code
-        remark: '这是放回的备注信息'
+        'redisAddressList': [
+          {
+            'id': null,
+            'code': 'd6f7c5dad3e143188f8287f0a82313e0',
+            'orderCode': '9085f700cc304f949335231000d7eed6',
+            'addressType': 2,
+            'country': '中国',
+            'province': '福建省',
+            'city': '福州市',
+            'citycode': '3501',
+            'district': '仓山区',
+            'street': '',
+            'adcode': '350104',
+            'location': [
+              119.358265,
+              26.045794
+            ],
+            'level': null,
+            'detail': '富邦针织',
+            'contact': '12123',
+            'contactPhone': '12345678910',
+            'addressAlias': '1212',
+            'provinceCode': '35', // 没返回
+            'redisOrderFreightVoList': [
+              {
+                'orderCode': '9085f700cc304f949335231000d7eed6',
+                'orderGoodsCode': null,
+                'ruleDetailShipmentCode': '2d0141894ccb4542a7af469d3154caab',
+                'ruleItemCode': '1',
+                'ruleValue': 'DE',
+                'type': null,
+                'createCode': 'c0e8fdb5e44942d3a10907dc97768847',
+                'createTime': '2021-03-23 10:04:22.835',
+                'updateCode': null,
+                'updateTime': null,
+                'isDel': false
+              },
+              {
+                'orderCode': '9085f700cc304f949335231000d7eed6',
+                'orderGoodsCode': null,
+                'ruleDetailShipmentCode': '5f8e26d37aec4e28b1060044dd1f37a2',
+                'ruleItemCode': '14',
+                'ruleValue': '50',
+                'type': 1,
+                'createCode': 'c0e8fdb5e44942d3a10907dc97768847',
+                'createTime': '2021-03-23 10:04:22.845',
+                'updateCode': null,
+                'updateTime': null,
+                'isDel': false
+              },
+              {
+                'orderCode': '9085f700cc304f949335231000d7eed6',
+                'orderGoodsCode': null,
+                'ruleDetailShipmentCode': '75e1aafd564a4e5cba032919f0e0d8ff',
+                'ruleItemCode': '15',
+                'ruleValue': '100',
+                'type': 1,
+                'createCode': 'c0e8fdb5e44942d3a10907dc97768847',
+                'createTime': '2021-03-23 10:04:22.857',
+                'updateCode': null,
+                'updateTime': null,
+                'isDel': false
+              },
+              {
+                'orderCode': '9085f700cc304f949335231000d7eed6',
+                'orderGoodsCode': null,
+                'ruleDetailShipmentCode': '06a474570a21484db43d9ce737f31eea',
+                'ruleItemCode': '12',
+                'ruleValue': '1000',
+                'type': 2,
+                'createCode': 'c0e8fdb5e44942d3a10907dc97768847',
+                'createTime': '2021-03-23 10:04:22.864',
+                'updateCode': null,
+                'updateTime': null,
+                'isDel': false
+              },
+              {
+                'orderCode': '9085f700cc304f949335231000d7eed6',
+                'orderGoodsCode': null,
+                'ruleDetailShipmentCode': '43045d7b3ae6474db28c922ddc0d685b',
+                'ruleItemCode': '13',
+                'ruleValue': '500',
+                'type': 2,
+                'createCode': 'c0e8fdb5e44942d3a10907dc97768847',
+                'createTime': '2021-03-23 10:04:22.872',
+                'updateCode': null,
+                'updateTime': null,
+                'isDel': false
+              }
+            ]
+          },
+          {
+            'id': null,
+            'code': 'd30b05af28a843028ea29f7f6c61465f',
+            'orderCode': '9085f700cc304f949335231000d7eed6',
+            'addressType': 1,
+            'country': '中国',
+            'province': '福建省',
+            'city': '福州市',
+            'citycode': '3501',
+            'district': '台江区',
+            'street': '',
+            'adcode': '350103',
+            'location': [
+              119.358265,
+              26.045794
+            ],
+            'level': null,
+            'detail': '富邦总部大楼',
+            'contact': '123456',
+            'contactPhone': '12345678910',
+            'addressAlias': '案发地上',
+            'provinceCode': '35',
+            'redisOrderFreightVoList': [
+              {
+                'orderCode': '9085f700cc304f949335231000d7eed6',
+                'orderGoodsCode': null,
+                'ruleDetailShipmentCode': '2d0141894ccb4542a7af469d3154caab',
+                'ruleItemCode': '1',
+                'ruleValue': 'DE',
+                'type': null,
+                'createCode': 'c0e8fdb5e44942d3a10907dc97768847',
+                'createTime': '2021-03-23 10:04:22.895',
+                'updateCode': null,
+                'updateTime': null,
+                'isDel': false
+              },
+              {
+                'orderCode': '9085f700cc304f949335231000d7eed6',
+                'orderGoodsCode': null,
+                'ruleDetailShipmentCode': '5f8e26d37aec4e28b1060044dd1f37a2',
+                'ruleItemCode': '14',
+                'ruleValue': '50',
+                'type': 1,
+                'createCode': 'c0e8fdb5e44942d3a10907dc97768847',
+                'createTime': '2021-03-23 10:04:22.908',
+                'updateCode': null,
+                'updateTime': null,
+                'isDel': false
+              },
+              {
+                'orderCode': '9085f700cc304f949335231000d7eed6',
+                'orderGoodsCode': null,
+                'ruleDetailShipmentCode': '75e1aafd564a4e5cba032919f0e0d8ff',
+                'ruleItemCode': '15',
+                'ruleValue': '100',
+                'type': 1,
+                'createCode': 'c0e8fdb5e44942d3a10907dc97768847',
+                'createTime': '2021-03-23 10:04:22.919',
+                'updateCode': null,
+                'updateTime': null,
+                'isDel': false
+              },
+              {
+                'orderCode': '9085f700cc304f949335231000d7eed6',
+                'orderGoodsCode': null,
+                'ruleDetailShipmentCode': '06a474570a21484db43d9ce737f31eea',
+                'ruleItemCode': '12',
+                'ruleValue': '1000',
+                'type': 2,
+                'createCode': 'c0e8fdb5e44942d3a10907dc97768847',
+                'createTime': '2021-03-23 10:04:22.934',
+                'updateCode': null,
+                'updateTime': null,
+                'isDel': false
+              },
+              {
+                'orderCode': '9085f700cc304f949335231000d7eed6',
+                'orderGoodsCode': null,
+                'ruleDetailShipmentCode': '43045d7b3ae6474db28c922ddc0d685b',
+                'ruleItemCode': '13',
+                'ruleValue': '500',
+                'type': 2,
+                'createCode': 'c0e8fdb5e44942d3a10907dc97768847',
+                'createTime': '2021-03-23 10:04:22.945',
+                'updateCode': null,
+                'updateTime': null,
+                'isDel': false
+              }
+            ]
+          }
+        ]
+      };
+      // ----------转成想要的数据-----------
+
+      const { code: orderCode, isPublic, isSpecified, loadType, projectCode, pubilshCode, remark, redisOrderClassGoodsVoList, redisOrderGoodsVoList, redisAddressList, redisOrderSpecifiedVoList } = data1;
+
+      const classList = redisOrderClassGoodsVoList.map(e => {
+        return {
+          classCode: e.classCode
+        };
+      });
+
+      const { goodsBigType, goodsType, goodsUnit, goodsPrice, isOneselfLoad, isOneselfUnload, perWeight, shipmentPrice, totalType, vehicleLength, vehicleType, weight } = redisOrderGoodsVoList[0];
+
+      const freight = await orderFreight({
+        orderCode,
+        orderAddressCode: redisAddressList[0].code
+      });
+      console.log(freight, '获取货源运费信息');
+
+      // 规则假数据
+      // freight = {
+      //   'detailList': [
+      //     {
+      //       'id': 140,
+      //       'code': '06a474570a21484db43d9ce737f31eea',
+      //       'ruleCode': '8c844a2e7ac340359c2bb41e7bd645b1',
+      //       'ruleItemCode': '12',
+      //       'ruleValue': '1000',
+      //       'type': '2',
+      //       'cnName': '卸车费',
+      //       'enName': 'xcf',
+      //       'showType': 1,
+      //       'dictCode': null,
+      //       'ruleType': 0,
+      //       'dictLabel': null,
+      //       'unit': null
+      //     },
+      //     {
+      //       'id': 139,
+      //       'code': '43045d7b3ae6474db28c922ddc0d685b',
+      //       'ruleCode': '8c844a2e7ac340359c2bb41e7bd645b1',
+      //       'ruleItemCode': '13',
+      //       'ruleValue': '500',
+      //       'type': '2',
+      //       'cnName': '油费',
+      //       'enName': 'yf',
+      //       'showType': 1,
+      //       'dictCode': null,
+      //       'ruleType': 0,
+      //       'dictLabel': null,
+      //       'unit': null
+      //     },
+      //     {
+      //       'id': 138,
+      //       'code': '5f8e26d37aec4e28b1060044dd1f37a2',
+      //       'ruleCode': '8c844a2e7ac340359c2bb41e7bd645b1',
+      //       'ruleItemCode': '14',
+      //       'ruleValue': '50',
+      //       'type': '1',
+      //       'cnName': 'ETC费',
+      //       'enName': 'etc',
+      //       'showType': 1,
+      //       'dictCode': null,
+      //       'ruleType': 0,
+      //       'dictLabel': null,
+      //       'unit': null
+      //     },
+      //     {
+      //       'id': 137,
+      //       'code': '75e1aafd564a4e5cba032919f0e0d8ff',
+      //       'ruleCode': '8c844a2e7ac340359c2bb41e7bd645b1',
+      //       'ruleItemCode': '15',
+      //       'ruleValue': '100',
+      //       'type': '1',
+      //       'cnName': '超时费',
+      //       'enName': 'csf',
+      //       'showType': 1,
+      //       'dictCode': null,
+      //       'ruleType': 0,
+      //       'dictLabel': null,
+      //       'unit': null
+      //     }
+      //   ],
+      //   'lossList': [
+      //     {
+      //       'id': 136,
+      //       'code': '2d0141894ccb4542a7af469d3154caab',
+      //       'ruleCode': '8c844a2e7ac340359c2bb41e7bd645b1',
+      //       'ruleItemCode': '1',
+      //       'ruleValue': 'DE',
+      //       'type': null,
+      //       'cnName': '路耗 计算方式',
+      //       'enName': 'lhjsfs',
+      //       'showType': 4,
+      //       'dictCode': 'lossPlan',
+      //       'ruleType': 1,
+      //       'dictLabel': null,
+      //       'unit': null
+      //     }
+      //   ]
+      // };
+
+      const addressList = redisAddressList; // 地址
+
+      const data = {
+        classList: classList,
+        isPublic: isPublic,
+        isSpecified: isSpecified,
+        loadType: loadType || '1',
+        orderGoodsList: [
+          {
+            addressList: addressList,
+            'goodsBigType': goodsBigType,
+            'goodsType': goodsType,
+            'goodsUnit': goodsUnit,
+            'goodsPrice': goodsPrice,
+            'isOneselfLoad': !!isOneselfLoad,
+            'isOneselfUnload': !!isOneselfUnload,
+            'perWeight': perWeight,
+            'shipmentPrice': shipmentPrice,
+            'totalType': totalType || '1',
+            'vehicleLength': vehicleLength,
+            'vehicleType': vehicleType,
+            'weight': weight
+          }
+        ],
+        orderSpecifiedList: redisOrderSpecifiedVoList,
+        projectCode: projectCode, // 项目code
+        pubilshCode: pubilshCode, // 当前用户的code
+        remark: remark
       };
 
-      const { pubilshCode, orderGoodsList } = data;
+      // 处理数据
+
+      const { orderGoodsList } = data;
       this.formData.tin1 = pubilshCode;
 
-      this.cbData = data;
+      this.cbData = data; // 去其他页面
 
       orderGoodsList[0].addressList.forEach((e) => {
         if ((e.addressType - 0) === 1) {
@@ -565,7 +777,7 @@ export default {
       });
 
       this.cbGoodsAccounting = orderGoodsList[0];
-      this.orderFreightBoList = orderGoodsList[0].orderFreightBoList;
+      this.orderFreightBoList = freight.data;
     },
 
     // 1. 添加一个地址

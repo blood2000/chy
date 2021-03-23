@@ -87,7 +87,7 @@
               <el-form-item label="货源单号" prop="tin7">
                 <el-input
                   v-model="queryParams.tin7"
-                  placeholder="目的地/收货电话/收货人"
+                  placeholder="请输入货源单号"
                   clearable
                   size="small"
                   @keyup.enter.native="handleQuery"
@@ -559,6 +559,9 @@ export default {
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
+      console.log(row);
+
+      this.$router.push({ name: 'Release', query: { id: row.mainOrderNumber, t: '1' }});
       // this.reset();
       // const testId = row.testId || this.ids;
       // getTest(testId).then(response => {
@@ -569,7 +572,7 @@ export default {
     },
     /** 查看详情操作 */
     handleInfo(row) {
-      this.$router.push({ name: 'Release', query: { id: row.id }});
+      this.$router.push({ name: 'Release', query: { id: row.mainOrderNumber, t: '0' }});
       // this.reset();
       // const testId = row.testId || this.ids;
       // getTest(testId).then(response => {
