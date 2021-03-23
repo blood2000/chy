@@ -10,7 +10,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item> -->
-      <el-form-item label="网点编码" prop="branchCode">
+      <!-- <el-form-item label="网点编码" prop="branchCode">
         <el-input
           v-model="queryParams.branchCode"
           placeholder="请输入网点编码"
@@ -18,7 +18,7 @@
           size="small"
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="车队名称" prop="name">
         <el-input
           v-model="queryParams.name"
@@ -55,6 +55,24 @@
             :value="dict.dictValue"
           />
         </el-select>
+      </el-form-item>
+      <el-form-item label="司机姓名" prop="driverName">
+        <el-input
+          v-model="queryParams.driverName"
+          placeholder="请输入司机姓名"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="车牌号码" prop="licenseNumber">
+        <el-input
+          v-model="queryParams.licenseNumber"
+          placeholder="请输入车牌号码"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
       </el-form-item>
       <!-- <el-form-item label="创建人" prop="createCode">
         <el-input
@@ -232,7 +250,9 @@ export default {
         branchCode: null,
         name: null,
         teamLeader: null,
-        status: null
+        status: null,
+        driverName: null,
+        licenseNumber: null
       },
       // 表单参数
       form: {},
