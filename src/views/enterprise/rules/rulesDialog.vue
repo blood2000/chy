@@ -8,9 +8,9 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="计算公式" prop="ruleDictType">
+          <el-form-item label="计算公式" prop="ruleDictValue">
             <el-select
-              v-model="form.ruleDictType"
+              v-model="form.ruleDictValue"
               placeholder="请选择计算公式"
               class="width-small mr3"
               clearable
@@ -201,7 +201,7 @@ export default {
         name: [
           { required: true, message: '规则名称不能为空', trigger: 'blur' }
         ],
-        ruleDictType: [
+        ruleDictValue: [
           { required: true, message: '计算公式不能为空', trigger: 'blur' }
         ]
       },
@@ -291,7 +291,7 @@ export default {
         // 构造参数
         const params = {
           name: this.form.name,
-          ruleDictType: this.form.ruleDictType,
+          ruleDictValue: this.form.ruleDictValue,
           m0DictValue: this.form.m0DictValue,
           detailList: []
         };
@@ -380,7 +380,7 @@ export default {
         platformType: 2, // 1运营 2货主
         code: null,
         name: null,
-        ruleDictType: null,
+        ruleDictValue: null,
         isLoss: true,
         addItem: [],
         addItemObj: {},
@@ -397,7 +397,7 @@ export default {
       this.form.platformType = 2; // 1运营 2货主
       this.form.code = data.ruleInfo.code;
       this.form.name = data.ruleInfo.name;
-      this.form.ruleDictType = data.ruleInfo.ruleDictType;
+      this.form.ruleDictValue = data.ruleInfo.ruleDictValue;
       this.form.isLoss = data.lossList.length > 0;
       this.form.m0DictValue = data.ruleInfo.m0DictValue;
       // 回填路耗

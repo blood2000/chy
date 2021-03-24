@@ -422,7 +422,7 @@ export default {
       // this['tableColumnsConfig' + this.activeName] = this.getLocalStorage(this.lcokey) || this.tableColumnsConfig;
       this.queryParams.statusList[0] = tab.name;
       this.queryParams.page = 1;
-      console.log(this.queryParams);
+      // console.log(this.queryParams);
       this.getList();
     },
 

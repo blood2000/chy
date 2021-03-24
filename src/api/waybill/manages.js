@@ -12,33 +12,34 @@ export function listManages(query) {
 // 查询运单详细
 export function getDetail(code) {
   return request({
-    url: '/transportation/waybill/getWayBillByCode?code=' + code,
+    url: `/transportation/waybill/getWayBillByCode?code=${code}`,
     method: 'get'
   });
 }
 
-// 新增运单
-export function addManages(data) {
+// 标记异常
+export function waybillAbnormal(data) {
   return request({
-    url: '/waybill/manages',
+    url: '/transportation/waybillAbnormal/add',
     method: 'post',
     data: data
   });
 }
 
-// 修改运单
-export function updateManages(data) {
+// 运单作废
+export function waybillInvalid(code) {
   return request({
-    url: '/waybill/manages',
-    method: 'put',
+    url: `/transportation/waybillOper/invalid?wayBillInCode=${code}`,
+    method: 'get'
+  });
+}
+
+// 货主备注运单
+export function waybillRemark(data) {
+  return request({
+    url: '/transportation/waybillOper/shipperRemark',
+    method: 'post',
     data: data
   });
 }
 
-// 删除运单
-export function delManages(id) {
-  return request({
-    url: '/waybill/manages/' + id,
-    method: 'delete'
-  });
-}

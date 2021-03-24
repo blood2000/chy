@@ -246,8 +246,7 @@ export default {
         this.form.isDefault = false;
       }
       if (this.form.longitude && this.form.latitude) {
-        this.marker.position = [this.form.longitude, this.form.latitude];
-        this.center = [this.form.longitude, this.form.latitude];
+        this.getMapData(this.form.longitude, this.form.latitude);
       }
     },
     // 点击地图，获取点位信息
@@ -273,10 +272,14 @@ export default {
     onSearchResult(pois) {
       // console.log(pois[0]);
       if (pois.length > 0) {
-        const { lng, lat, name, address } = pois[0];
-        const formattedAddress = address + name;
-        this.getMapData(lng, lat);
-        this.getFormData(lng, lat, name, formattedAddress);
+        const { lng, lat } = pois[0];
+        // 模拟点击事件
+        this.mapClick({
+          lnglat: {
+            lng: lng,
+            lat: lat
+          }
+        });
       }
     },
     // 同步地图数据
@@ -294,8 +297,8 @@ export default {
     // 截取省市区code
     getAreaCode(code) {
       this.form.provinceCode = code.slice(0, 2);
-      this.form.cityCode = code.slice(2, 4);
-      this.form.countyCode = code.slice(4, 6);
+      this.form.cityCode = code.slice(0, 4);
+      this.form.countyCode = code.slice(0, 6);
     }
   }
 };
