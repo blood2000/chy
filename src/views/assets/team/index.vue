@@ -198,7 +198,7 @@
     <team-dialog ref="TeamDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
 
     <!-- 管理 对话框 -->
-    <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :teamcode="teamcode" />
+    <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :team-code="teamCode" />
   </div>
 </template>
 
@@ -259,7 +259,7 @@ export default {
       // 表单是否禁用
       formDisable: false,
       // 调度者code
-      teamcode: null
+      teamCode: null
     };
   },
   created() {
@@ -359,7 +359,7 @@ export default {
     },
     /** 管理按钮操作 */
     handleManage(row) {
-      this.teamcode = row.code;
+      this.teamCode = row.code;
       this.manageDialogOpen = true;
     }
   }

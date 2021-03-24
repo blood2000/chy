@@ -133,7 +133,7 @@
           <span v-show="scope.row.authStatus === 3" class="g-color-success">审核通过</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="teamcode" label="协议号" align="center" prop="agreementNo">
+      <el-table-column v-if="teamCode" label="协议号" align="center" prop="agreementNo">
         <template slot-scope="scope">
           <el-button type="text no-padding" @click="downloadAgreement(scope.row)">{{ scope.row.agreementNo }}</el-button>
         </template>
@@ -227,7 +227,7 @@
     <!-- 批量导入 对话框 -->
     <import-dialog ref="ImportDialog" :title="title" :open.sync="openImport" @refresh="getList" />
     <!-- 管理车辆 对话框 -->
-    <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :drivercode="drivercode" />
+    <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :driver-code="driverCode" />
     <!-- 协议 对话框 -->
     <agreement-dialog ref="agreementDialog" :open.sync="agreementDialogOpen" :agreement-html="agreementHtml" />
   </div>
@@ -249,7 +249,7 @@ export default {
     AgreementDialog
   },
   props: {
-    teamcode: {
+    teamCode: {
       type: String,
       default: null
     }
@@ -312,13 +312,12 @@ export default {
         telphone: undefined,
         fixedPhone: undefined,
         identificationNumber: undefined,
-        authStatus: undefined,
-        teamCode: this.teamcode
+        authStatus: undefined
       },
       // 表单是否禁用
       formDisable: false,
       // 司机code
-      drivercode: null,
+      driverCode: null,
       // 下载的协议号内容
       agreementHtml: ''
     };
@@ -371,6 +370,9 @@ export default {
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
+      if (this.teamCode) {
+        this.queryParams.teamCode = this.teamCode;
+      }
       this.getList();
     },
     /** 重置按钮操作 */
@@ -444,14 +446,14 @@ export default {
     },
     /** 管理按钮操作 */
     handleManage(row) {
-      this.drivercode = row.code;
+      this.driverCode = row.code;
       this.manageDialogOpen = true;
     },
     /** 下载协议 */
     downloadAgreement(row) {
       getAgreementWord({
         driverCode: row.code,
-        teamCode: this.teamcode
+        teamCode: this.teamCode
       }).then(response => {
         this.agreementHtml = response.data;
         this.agreementDialogOpen = true;
