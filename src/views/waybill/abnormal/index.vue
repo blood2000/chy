@@ -102,7 +102,7 @@
 
     <!-- 运单详情 对话框 -->
     <detail-dialog ref="DetailDialog" :current-id="currentId" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
-    <!-- 运单详情 对话框 -->
+    <!-- 运单异常 对话框 -->
     <abnormal-dialog ref="AbnormalDialog" :title="title" :open.sync="openAbnormal" :disable="formDisable" @refresh="getList" />
   </div>
 </template>
