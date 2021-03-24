@@ -1,45 +1,51 @@
 <template>
   <div class="app-container">
-    <el-form
-      v-show="showSearch"
-      ref="queryForm"
-      :model="queryParams"
-      :inline="true"
-      label-width="68px"
-    >
-      <el-form-item label="货源编号" prop="orderCode">
-        <el-input
-          v-model="queryParams.orderCode"
-          placeholder="请输入货源编号"
+    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+      <el-form-item label="下单客户" prop="orderClient">
+        <el-input v-model="queryParams.orderClient" placeholder="请输入下单客户" clearable size="small" @keyup.enter.native="handleQuery" />
+      </el-form-item>
+      <el-form-item label="货物类型" prop="goodsBigType">
+        <el-select
+          v-model="queryParams.goodsBigType"
+          placeholder="请选择货物类型"
           clearable
           size="small"
-          @keyup.enter.native="handleQuery"
-        />
+        >
+          <el-option
+            v-for="dict in goodsBigTypeOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
       </el-form-item>
-      <el-form-item label="接单时间" prop="receiveTime">
+      <el-form-item label="货源单号" prop="mainOrderNumber">
+        <el-input v-model="queryParams.mainOrderNumber" placeholder="请输入货源单号" clearable size="small" @keyup.enter.native="handleQuery" />
+      </el-form-item>
+      <el-form-item label="接单日期" prop="startReceiveTime">
         <el-date-picker
-          v-model="queryParams.receiveTime"
+          v-model="queryParams.startReceiveTime"
           clearable
           size="small"
           style="width: 215px"
           type="date"
           value-format="yyyy-MM-dd"
-          placeholder="选择接单时间"
+          placeholder="请选择接单日期"
         />
       </el-form-item>
-      <el-form-item label="车牌号" prop="vehicleCode">
+      <el-form-item label="车牌号" prop="licenseNumber">
         <el-input
-          v-model="queryParams.vehicleCode"
-          placeholder="请输入实际承运车辆CODE"
+          v-model="queryParams.licenseNumber"
+          placeholder="请输入车牌号"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="司机姓名" prop="drvierCode">
+      <el-form-item label="司机姓名" prop="driverName">
         <el-input
-          v-model="queryParams.drvierCode"
-          placeholder="请输入实际承运人CODE"
+          v-model="queryParams.driverName"
+          placeholder="请输入司机姓名"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -57,7 +63,7 @@
       <el-form-item label="运单状态" prop="status">
         <el-select
           v-model="queryParams.status"
-          placeholder="请选择运单状态 0未接单/1已接单/2已签收/3已回单/4已结算/5已打款"
+          placeholder="请选择运单状态"
           clearable
           size="small"
         >
@@ -84,158 +90,6 @@
           />
         </el-select>
       </el-form-item>
-      <!-- <el-form-item label="code" prop="code">
-        <el-input
-          v-model="queryParams.code"
-          placeholder="请输入code"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="商品编码" prop="goodsCode">
-        <el-input
-          v-model="queryParams.goodsCode"
-          placeholder="请输入商品编码"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="调度单号" prop="dispatchOrderCode">
-        <el-input
-          v-model="queryParams.dispatchOrderCode"
-          placeholder="请输入调度单号"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="装货时间" prop="fillTime">
-        <el-date-picker
-          v-model="queryParams.fillTime"
-          clearable
-          size="small"
-          style="width: 200px"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="选择装货时间"
-        />
-      </el-form-item>
-      <el-form-item label="签收时间" prop="signTime">
-        <el-date-picker
-          v-model="queryParams.signTime"
-          clearable
-          size="small"
-          style="width: 200px"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="选择签收时间"
-        />
-      </el-form-item>
-      <el-form-item label="结算时间" prop="settleTime">
-        <el-date-picker
-          v-model="queryParams.settleTime"
-          clearable
-          size="small"
-          style="width: 200px"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="选择结算时间"
-        />
-      </el-form-item>
-      <el-form-item label="回单确认时间" prop="returnRemarkTime">
-        <el-date-picker
-          v-model="queryParams.returnRemarkTime"
-          clearable
-          size="small"
-          style="width: 200px"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="选择回单确认时间"
-        />
-      </el-form-item>
-      <el-form-item label="与司机结账时间" prop="payTime">
-        <el-date-picker
-          v-model="queryParams.payTime"
-          clearable
-          size="small"
-          style="width: 200px"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="选择与司机结账时间"
-        />
-      </el-form-item>
-      <el-form-item label="标记打款状态 0未打款/1已打款/2打款处理中" prop="isMarkStatus">
-        <el-select v-model="queryParams.isMarkStatus" placeholder="请选择标记打款状态 0未打款/1已打款/2打款处理中" clearable size="small">
-          <el-option
-            v-for="dict in isMarkStatusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="标记打款时间" prop="markTime">
-        <el-date-picker
-          v-model="queryParams.markTime"
-          clearable
-          size="small"
-          style="width: 200px"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="选择标记打款时间"
-        />
-      </el-form-item>
-      <el-form-item label="打印时间" prop="prinTime">
-        <el-date-picker
-          v-model="queryParams.prinTime"
-          clearable
-          size="small"
-          style="width: 200px"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="选择打印时间"
-        />
-      </el-form-item>
-      <el-form-item label="月结订单结算状态 0-未结算 1-已结算" prop="monthlySettlementStatus">
-        <el-select v-model="queryParams.monthlySettlementStatus" placeholder="请选择月结订单结算状态 0-未结算 1-已结算" clearable size="small">
-          <el-option
-            v-for="dict in monthlySettlementStatusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="创建人" prop="createCode">
-        <el-input
-          v-model="queryParams.createCode"
-          placeholder="请输入创建人"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="修改人" prop="updateCode">
-        <el-input
-          v-model="queryParams.updateCode"
-          placeholder="请输入修改人"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="司机取消订单  0-》正常，1-》司机撤单申请 2-》货主同意撤销 3-》货主拒绝撤销" prop="cancelStatus">
-        <el-select v-model="queryParams.cancelStatus" placeholder="请选择司机取消订单  0-》正常，1-》司机撤单申请 2-》货主同意撤销 3-》货主拒绝撤销" clearable size="small">
-          <el-option
-            v-for="dict in cancelStatusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item> -->
       <el-form-item>
         <el-button
           type="cyan"
@@ -252,204 +106,57 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <!-- <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['system:info:add']"
-          type="primary"
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-        >新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['system:info:edit']"
-          type="success"
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-        >修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['system:info:remove']"
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-        >删除</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['system:info:export']"
-          type="warning"
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-        >导出</el-button>
-      </el-col> -->
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table
-      v-loading="loading"
-      :data="infoList"
-      @selection-change="handleSelectionChange"
-    >
+    <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <el-table-column
-        label="回单确认状态"
-        align="center"
-        prop="isReturn"
-        width="130"
-        :formatter="isReturnFormat"
-      />
-      <el-table-column
-        label="货源编号"
-        align="center"
-        prop="orderCode"
-        width="130"
-      />
-      <el-table-column
-        label="创建人"
-        align="center"
-        prop="createCode"
-        width="130"
-      />
-      <el-table-column
-        label="运输单号"
-        align="center"
-        prop="waybillNo"
-        width="130"
-      />
-      <el-table-column
-        label="调度单号"
-        align="center"
-        prop="dispatchOrderCode"
-        width="130"
-      />
-      <el-table-column
-        label="实际承运人"
-        align="center"
-        prop="drvierCode"
-        width="130"
-      />
-      <el-table-column
-        label="货物重量"
-        align="center"
-        prop="weight"
-        width="130"
-      />
-      <el-table-column
-        label="实际承运车辆"
-        align="center"
-        prop="vehicleCode"
-        width="130"
-      />
-      <el-table-column
-        label="装车重量"
-        align="center"
-        prop="loadWeight"
-        width="130"
-      />
-      <el-table-column
-        label="卸车重量"
-        align="center"
-        prop="unloadWeight"
-        width="130"
-      />
-      <el-table-column
-        label="货物损耗"
-        align="center"
-        prop="wastage"
-        width="130"
-      />
-      <el-table-column
-        label="给货主结算的和展示的每车总费"
-        align="center"
-        prop="shipperDeliveryFee"
-        width="210"
-      />
-      <el-table-column
-        label="运单状态"
-        align="center"
-        prop="status"
-        width="130"
-        :formatter="statusFormat"
-      />
-      <el-table-column
-        label="装货时间"
-        align="center"
-        prop="fillTime"
-        width="130"
-      >
+      <el-table-column label="纸质回单状态" align="center" prop="isReturn" width="100" :formatter="isReturnFormat" />
+      <el-table-column label="货源单号" align="center" prop="mainOrderNumber" width="150" />
+      <el-table-column label="下单客户" align="center" prop="orderClient" width="150" />
+      <el-table-column label="运输单号" align="center" prop="waybillNo" width="150" />
+      <el-table-column label="承运调度" align="center" prop="teamName" width="130" />
+      <el-table-column label="承运人" align="center" prop="driverName" width="80" />
+      <el-table-column label="联系方式" align="center" prop="driverPhone" width="130" />
+      <el-table-column label="货物类型" align="center" prop="goodsBigType" width="130" />
+      <el-table-column label="货物类型分类" align="center" prop="goodsType" width="130" />
+      <el-table-column label="货源商品备注" align="center" prop="goodsRemark" width="130" />
+      <el-table-column label="重量（吨）" align="center" prop="weight" width="100" />
+      <el-table-column label="车牌号" align="center" prop="licenseNumber" width="130" />
+      <el-table-column label="装车重量" align="center" prop="loadWeight" width="100" />
+      <el-table-column label="卸车重量" align="center" prop="unloadWeight" width="100" />
+      <el-table-column label="数量（车）" align="center" prop="carNum" width="100" />
+      <el-table-column label="公里数" align="center" prop="mileage" width="100" />
+      <el-table-column label="用车类型" align="center" prop="carType" width="130" />
+      <el-table-column label="货物单价（元/吨）" align="center" prop="goodsPrice" width="130" />
+      <el-table-column label="运费（元）" align="center" prop="freightPrice" width="100" />
+      <el-table-column label="货主保证金" align="center" prop="cashDeposit" width="100" />
+      <el-table-column label="不含税价" align="center" prop="noTaxFee" width="100" />
+      <el-table-column label="含税价" align="center" prop="taxFee" width="100" />
+      <el-table-column label="异常说明" align="center" prop="description" width="130" />
+      <el-table-column label="装货地址" align="center" prop="loadAddress" width="130" />
+      <el-table-column label="卸货地址" align="center" prop="unloadAddress" width="130" />
+      <el-table-column label="状态" align="center" prop="status" width="100" :formatter="statusFormat" />
+      <el-table-column label="装货截止时间" align="center" prop="lastLoadingTime" width="130">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.fillTime, "{y}-{m}-{d}") }}</span>
+          <span>{{ parseTime(new Date(scope.row.lastLoadingTime)).slice(0, 10) }}</span>
         </template>
       </el-table-column>
-      <el-table-column
-        label="接单时间"
-        align="center"
-        prop="receiveTime"
-        width="130"
-      >
+      <el-table-column label="发布货源时间" align="center" prop="orderTime" width="130">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.receiveTime, "{y}-{m}-{d}") }}</span>
+          <span>{{ parseTime(new Date(scope.row.orderTime)).slice(0, 10) }}</span>
         </template>
       </el-table-column>
-      <!-- <el-table-column label="code" align="center" prop="code" :formatter="codeFormat" />
-      <el-table-column label="商品编码" align="center" prop="goodsCode" :formatter="goodsCodeFormat" />
-      <el-table-column label="是否接单  0-否  1-是" align="center" prop="isReceive" :formatter="isReceiveFormat" />
-      <el-table-column label="是否装货  0-否  1-是" align="center" prop="isFill" :formatter="isFillFormat" />
-      <el-table-column label="是否签收 0-否  1-是" align="center" prop="isSign" :formatter="isSignFormat" />
-      <el-table-column label="签收时间" align="center" prop="signTime" width="180">
+      <el-table-column label="接单时间" align="center" prop="receiveTime" width="130">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.signTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(new Date(scope.row.receiveTime)).slice(0, 10) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="是否结算 0未结算，1已结算" align="center" prop="isSettle" :formatter="isSettleFormat" />
-      <el-table-column label="结算时间" align="center" prop="settleTime" width="180">
+      <el-table-column label="最后操作时间" align="center" prop="wayBillUpdateTime" width="130">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.settleTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(new Date(scope.row.wayBillUpdateTime)).slice(0, 10) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="回单确认时间" align="center" prop="returnRemarkTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.returnRemarkTime, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="回单确认备注" align="center" prop="returnRemark" :formatter="returnRemarkFormat" />
-      <el-table-column label="支付给司机运费状态 0-未支付 1-已支付" align="center" prop="isPay" :formatter="isPayFormat" />
-      <el-table-column label="与司机结账时间" align="center" prop="payTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.payTime, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="标记打款状态 0未打款/1已打款/2打款处理中" align="center" prop="isMarkStatus" :formatter="isMarkStatusFormat" />
-      <el-table-column label="标记打款时间" align="center" prop="markTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.markTime, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="运单是否已打印 0-否  1-是" align="center" prop="isPrintOrder" :formatter="isPrintOrderFormat" />
-      <el-table-column label="打印时间" align="center" prop="prinTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.prinTime, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="是否批量接单订单 0-否  1-是" align="center" prop="isMultiOrder" :formatter="isMultiOrderFormat" />
-      <el-table-column label="是否使用保证金 0-否  1-是" align="center" prop="isCash" :formatter="isCashFormat" />
-      <el-table-column label="保证金" align="center" prop="cashDeposit" :formatter="cashDepositFormat" />
-      <el-table-column label="月结订单结算状态 0-未结算 1-已结算" align="center" prop="monthlySettlementStatus" :formatter="monthlySettlementStatusFormat" />
-      <el-table-column label="是否子单 0不是 " align="center" prop="isChild" :formatter="isChildFormat" />
-      <el-table-column label="给超载的子单排序用 1车辆核载装货重量的子单，2其余重量子单" align="center" prop="childSort" :formatter="childSortFormat" />
-      <el-table-column label="是否删除 0-正常 1-删除" align="center" prop="isDel" :formatter="isDelFormat" />
-      <el-table-column label="修改人" align="center" prop="updateCode" :formatter="updateCodeFormat" />
-      <el-table-column label="司机取消订单  0-》正常，1-》司机撤单申请 2-》货主同意撤销 3-》货主拒绝撤销" align="center" prop="cancelStatus" :formatter="cancelStatusFormat" />
-      <el-table-column label="司机取消理由" align="center" prop="driverApplyRemark" :formatter="driverApplyRemarkFormat" />
-      <el-table-column label="货主处理司机申请取消备注" align="center" prop="shipperDealRemark" :formatter="shipperDealRemarkFormat" /> -->
       <el-table-column
         label="操作"
         align="center"
@@ -487,32 +194,18 @@
     />
 
     <!-- 详情 对话框 -->
-    <detail-dialog
-      ref="DetailDialog"
-      :title="title"
-      :open.sync="open"
-      :disable="formDisable"
-      @refresh="getList"
-    />
+    <detail-dialog ref="DetailDialog" :title="title" :open.sync="open" :disable="formDisable" :current-id="currentId" @refresh="getList" />
+
     <!-- 扣押金 对话框 -->
-    <deduction-dialog
-      :title="title"
-      :open.sync="openDeduction"
-      :current-id="currentId"
-      @refresh="getList"
-    />
+    <deduction-dialog :title="title" :open.sync="openDeduction" :current-id="currentId" @refresh="getList" />
+
     <!-- 退押金 对话框 -->
-    <return-dialog
-      :title="title"
-      :open.sync="openReturn"
-      :current-id="currentId"
-      @refresh="getList"
-    />
+    <return-dialog :title="title" :open.sync="openReturn" :current-id="currentId" @refresh="getList" />
   </div>
 </template>
 
 <script>
-import { listInfo, getInfo } from '@/api/waybill/receipt';
+import { listInfo } from '@/api/waybill/receipt';
 import DetailDialog from '../components/detailDialog';
 import DeductionDialog from './deductionDialog';
 import ReturnDialog from './returnDialog';
@@ -545,106 +238,50 @@ export default {
       open: false,
       openDeduction: false,
       openReturn: false,
-      // 是否结算字典
-      'isOptions': [
+      // 是否字典
+      isOptions: [
         { 'dictLabel': '否', 'dictValue': 0 },
         { 'dictLabel': '是', 'dictValue': 1 }
       ],
-      // 是否结算 0未结算，1已结算字典
-      isSettleOptions: [
-        { 'dictLabel': '未结算', 'dictValue': 0 },
-        { 'dictLabel': '已结算', 'dictValue': 1 }
-      ],
       // 回单确认状态 0未标记回单，1-已标记回单字典
       isReturnOptions: [
-        { 'dictLabel': '未标记回单', 'dictValue': 0 },
-        { 'dictLabel': '已标记回单', 'dictValue': 1 }
-      ],
-      // 支付给司机运费状态 0-未支付 1-已支付字典
-      isPayOptions: [
-        { 'dictLabel': '未支付', 'dictValue': 0 },
-        { 'dictLabel': '已支付', 'dictValue': 1 }
-      ],
-      // 标记打款状态 0未打款/1已打款/2打款处理中字典
-      isMarkStatusOptions: [
-        { 'dictLabel': '未打款', 'dictValue': 0 },
-        { 'dictLabel': '已打款', 'dictValue': 1 },
-        { 'dictLabel': '打款处理中', 'dictValue': 2 }
-      ],
-      // 月结订单结算状态 0-未结算 1-已结算字典
-      monthlySettlementStatusOptions: [
-        { 'dictLabel': '未结算', 'dictValue': 0 },
-        { 'dictLabel': '已结算', 'dictValue': 1 }
-      ],
-      // 给超载的子单排序用 1车辆核载装货重量的子单，2其余重量子单字典
-      childSortOptions: [
-        { 'dictLabel': '车辆核载装货重量的子单', 'dictValue': 1 },
-        { 'dictLabel': '其余重量子单字典', 'dictValue': 2 }
+        { 'dictLabel': '未标记回单', 'dictValue': false },
+        { 'dictLabel': '已标记回单', 'dictValue': true }
       ],
       // 运单状态 0未接单/1已接单/2已签收/3已回单/4已结算/5已打款字典
       statusOptions: [
         { 'dictLabel': '未接单', 'dictValue': 0 },
         { 'dictLabel': '已接单', 'dictValue': 1 },
-        { 'dictLabel': '已签收', 'dictValue': 2 },
-        { 'dictLabel': '已回单', 'dictValue': 3 },
-        { 'dictLabel': '已结算', 'dictValue': 4 },
-        { 'dictLabel': '已打款', 'dictValue': 5 }
+        { 'dictLabel': '已装货', 'dictValue': 2 },
+        { 'dictLabel': '已签收', 'dictValue': 3 },
+        { 'dictLabel': '已回单', 'dictValue': 4 },
+        { 'dictLabel': '已结算', 'dictValue': 5 },
+        { 'dictLabel': '已申请打款', 'dictValue': 6 },
+        { 'dictLabel': '已打款', 'dictValue': 7 },
+        { 'dictLabel': '已申请开票', 'dictValue': 8 },
+        { 'dictLabel': '已开票', 'dictValue': 9 }
       ],
+      // 货物类型字典
+      goodsBigTypeOptions: [],
       // 货物重量字典
       weightOptions: [],
-      // 司机取消订单  0-》正常，1-》司机撤单申请 2-》货主同意撤销 3-》货主拒绝撤销字典
-      cancelStatusOptions: [
-        { 'dictLabel': '正常', 'dictValue': 0 },
-        { 'dictLabel': '司机撤单申请', 'dictValue': 1 },
-        { 'dictLabel': '货主同意撤销', 'dictValue': 2 },
-        { 'dictLabel': '货主拒绝撤销', 'dictValue': 3 }
-      ],
       // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        orderCode: null,
-        receiveTime: null,
-        vehicleCode: null,
-        drvierCode: null,
-        waybillNo: null,
-        status: null,
-        isReturn: null,
-        code: null,
-        goodsCode: null,
-        dispatchOrderCode: null,
-        loadWeight: null,
-        unloadWeight: null,
-        wastage: null,
-        isReceive: null,
+        driverName: null,
+        driverPhone: null,
+        endReceiveTime: null,
+        goodsBigType: null,
+        goodsType: null,
         isFill: null,
-        fillTime: null,
-        isSign: null,
-        signTime: null,
-        isSettle: null,
-        settleTime: null,
-        returnRemarkTime: null,
-        returnRemark: null,
-        isPay: null,
-        payTime: null,
-        isMarkStatus: null,
-        markTime: null,
-        isPrintOrder: null,
-        prinTime: null,
-        isMultiOrder: null,
-        isCash: null,
-        cashDeposit: null,
-        shipperDeliveryFee: null,
-        monthlySettlementStatus: null,
-        isChild: null,
-        childSort: null,
-        isDel: null,
-        createCode: null,
-        updateCode: null,
-        weight: null,
-        cancelStatus: null,
-        driverApplyRemark: null,
-        shipperDealRemark: null
+        isReturn: null,
+        licenseNumber: null,
+        mainOrderNumber: null,
+        orderClient: null,
+        startReceiveTime: null,
+        status: null,
+        waybillNo: null
       },
       // 表单参数
       form: {},
@@ -652,14 +289,19 @@ export default {
       rules: {},
       formDisable: false,
       // 当前选中的运单id
-      'currentId': null
+      currentId: null,
+      // 大类字典类型
+      goodsBigType: {
+        'dictPid': '0',
+        'dictType': 'goodsType'
+      }
     };
   },
   created() {
     this.getList();
-    // this.getDicts('${column.dictType}').then(response => {
-    //   this.idOptions = response.data;
-    // });
+    this.listByDict(this.goodsBigType).then(response => {
+      this.goodsBigTypeOptions = response.data;
+    });
   },
   methods: {
     /** 查询纸质回单列表 */
@@ -671,68 +313,17 @@ export default {
         this.loading = false;
       });
     },
-    // 是否接单  0-否  1-是字典翻译
-    isReceiveFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isReceive);
-    },
-    // 是否装货  0-否  1-是字典翻译
-    isFillFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isFill);
-    },
-    // 是否签收 0-否  1-是字典翻译
-    isSignFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isSign);
-    },
-    // 是否结算 0未结算，1已结算字典翻译
-    isSettleFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isSettle);
-    },
     // 回单确认状态 0未标记回单，1-已标记回单字典翻译
     isReturnFormat(row, column) {
       return this.selectDictLabel(this.isReturnOptions, row.isReturn);
     },
-    // 支付给司机运费状态 0-未支付 1-已支付字典翻译
-    isPayFormat(row, column) {
-      return this.selectDictLabel(this.isPayOptions, row.isPay);
-    },
-    // 标记打款状态 0未打款/1已打款/2打款处理中字典翻译
-    isMarkStatusFormat(row, column) {
-      return this.selectDictLabel(this.isMarkStatusOptions, row.isMarkStatus);
-    },
-    // 运单是否已打印 0-否  1-是字典翻译
-    isPrintOrderFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isPrintOrder);
-    },
-    // 是否批量接单订单 0-否  1-是字典翻译
-    isMultiOrderFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isMultiOrder);
-    },
-    // 是否使用保证金 0-否  1-是字典翻译
-    isCashFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isCash);
-    },
-    // 月结订单结算状态 0-未结算 1-已结算字典翻译
-    monthlySettlementStatusFormat(row, column) {
-      return this.selectDictLabel(
-        this.monthlySettlementStatusOptions,
-        row.monthlySettlementStatus
-      );
-    },
-    // 是否子单 0不是 字典翻译
-    isChildFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isChild);
-    },
-    // 给超载的子单排序用 1车辆核载装货重量的子单，2其余重量子单字典翻译
-    childSortFormat(row, column) {
-      return this.selectDictLabel(this.childSortOptions, row.childSort);
-    },
-    // 运单状态 0未接单/1已接单/2已签收/3已回单/4已结算/5已打款字典翻译
+    // 货物类型大类字典翻译
+    // goodsBigTypeFormat(row, column) {
+    //   return this.selectDictLabel(this.goodsBigTypeOptions, row.goodsBigType);
+    // },
+    // 运单状态字典翻译
     statusFormat(row, column) {
       return this.selectDictLabel(this.statusOptions, row.status);
-    },
-    // 司机取消订单  0-》正常，1-》司机撤单申请 2-》货主同意撤销 3-》货主拒绝撤销字典翻译
-    cancelStatusFormat(row, column) {
-      return this.selectDictLabel(this.cancelStatusOptions, row.cancelStatus);
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -753,13 +344,11 @@ export default {
     /** 详情按钮操作 */
     handleDEtail(row) {
       this.$refs.DetailDialog.reset();
-      const id = row.id || this.ids;
-      getInfo(id).then((response) => {
-        this.$refs.DetailDialog.setForm(response.data);
-        this.open = true;
-        this.title = '详情';
-        this.formDisable = true;
-      });
+      this.currentId = row.wayBillCode;
+      console.log(row);
+      this.open = true;
+      this.title = '运输单信息';
+      this.formDisable = true;
     },
     /** 扣押金按钮操作 */
     handleDedution(row) {

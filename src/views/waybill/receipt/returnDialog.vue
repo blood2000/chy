@@ -21,8 +21,8 @@ export default {
       default: ''
     },
     currentId: {
-      type: Number,
-      default: NaN
+      type: String,
+      default: ''
     },
     open: Boolean
   },

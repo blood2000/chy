@@ -3,7 +3,7 @@ import request from '@/utils/request';
 // 查询纸质回单列表
 export function listInfo(query) {
   return request({
-    url: '/system/config/list',
+    url: '/transportation/waybill/receiptList',
     method: 'get',
     params: query
   });

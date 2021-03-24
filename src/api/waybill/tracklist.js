@@ -79,3 +79,22 @@ export function addComplaint(data) {
   });
 }
 
+// 获取车辆轨迹
+export function trackLocation(data) {
+  return request({
+    url: '/iot/jimiDevice/getTrackList',
+    method: 'post',
+    data: data
+  });
+}
+
+// 获取车辆轨迹
+export function location(data) {
+  return request({
+    url: '/iot/jimiDevice/location',
+    method: 'post',
+    data: data
+  });
+}
+
+
