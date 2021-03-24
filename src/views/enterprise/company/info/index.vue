@@ -20,8 +20,9 @@
         <el-col :span="18">
           <el-form ref="form" :model="form" :rules="rules" label-width="140px" :label-position="'left'">
             <el-form-item label="企业名称" prop="companyName">
-              <el-input v-model="form.companyName" placeholder="请输入企业名称" readonly class="input-width mr20" clearable />
-              <span v-if="form.org_auth_status" class="g-color-success mr20">
+              {{form.companyName}}
+             <!-- <el-input v-model="form.companyName" placeholder="请输入企业名称" readonly class="input-width mr20" clearable />-->
+              <span v-if="form.orgAuthStatus =='3'" class="g-color-success mr20">
                 <i class="el-icon-circle-check" />
                 已认证
               </span>
@@ -32,10 +33,12 @@
               <el-button type="text no-padding" @click="handleCertification">修改</el-button>
             </el-form-item>
             <el-form-item label="统一社会信用代码" prop="organizationCodeNo">
-              <el-input v-model="form.organizationCodeNo" class="input-width" clearable />
+              {{form.organizationCodeNo}}
+            <!--  <el-input v-model="form.organizationCodeNo" class="input-width" clearable />-->
             </el-form-item>
             <el-form-item label="营业执照号" prop="businessLicenseNo">
-              <el-input v-model="form.businessLicenseNo" class="input-width" clearable />
+              {{form.businessLicenseNo}}
+              <!--<el-input v-model="form.businessLicenseNo" class="input-width" clearable />-->
             </el-form-item>
             <el-form-item label="营业执照照" prop="businessLicenseImg">
               <el-row>
@@ -59,9 +62,9 @@
             <el-form-item label="公司介绍" prop="name">
               <el-input v-model="form.name" type="textarea" placeholder="请输入公司介绍" class="input-width-large" clearable />
             </el-form-item> -->
-            <el-form-item>
+          <!--  <el-form-item>
               <el-button type="primary" @click="handleSubmit">保存</el-button>
-            </el-form-item>
+            </el-form-item>-->
           </el-form>
         </el-col>
       </el-row>
