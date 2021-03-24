@@ -232,7 +232,6 @@
       <el-table-column label="保证金" align="center" prop="cashDeposit" />
       <el-table-column label="给货主结算的和展示的每车总费" align="center" prop="shipperDeliveryFee" />
       <el-table-column label="月结订单结算状态" align="center" prop="monthlySettlementStatus" :formatter="monthlySettlementStatusFormat" />
-      <el-table-column label="是否子单" align="center" prop="isChild" :formatter="isChildFormat" />
       <el-table-column label="给超载的子单排序用" align="center" prop="childSort" :formatter="childSortFormat" />
       <el-table-column label="创建人" align="center" prop="createCode" />
       <el-table-column label="修改人" align="center" prop="updateCode" />
