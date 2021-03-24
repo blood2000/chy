@@ -4,8 +4,8 @@ import request from '@/utils/request';
 export function listAddress(query) {
   return request({
     url: '/assets/shipment/address/list',
-    method: 'get',
-    params: query
+    method: 'post',
+    data: query
   });
 }
 
