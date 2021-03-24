@@ -1,7 +1,11 @@
 <template>
   <!-- 车辆装货对话框 -->
-  <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
-    <el-amap vid="amapDemo" :zoom="zoom" :center="center" />
+  <el-dialog :title="title" :visible="visible" width="1200px" append-to-body @close="cancel">
+    <div style="height:600px;">
+      <el-amap vid="amapDemo" :zoom="zoom" :center="center">
+        <el-amap-marker v-for="(marker, index) in markers" :key="index" :position="marker.position" :icon="marker.icon" :label="marker.label" />
+      </el-amap>
+    </div>
   </el-dialog>
 </template>
 
@@ -24,6 +28,23 @@ export default {
   },
   data() {
     return {
+      zoom: 16,
+      center: [116.478928, 39.997761],
+      markers: [{
+        icon: 'https://ddcwl.com/static/img/admin/sys/cc.png',
+        position: [116.478928, 39.997761],
+        label: {
+          content: '辽NC2589',
+          offset: [-10, -34]
+        }
+      }, {
+        icon: 'https://ddcwl.com/static/img/admin/sys/cc.png',
+        position: [119.358274, 26.045704],
+        label: {
+          content: '闽A88888',
+          offset: [-10, -34]
+        }
+      }],
       // 表单参数
       form: {
         wayBillInCode: null,
@@ -102,5 +123,9 @@ export default {
 }
 .el-rate{
   margin-top: 8px;
+}
+.amap-icon img{
+  max-width: 40px !important;
+  max-height: 30px !important;
 }
 </style>

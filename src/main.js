@@ -15,7 +15,7 @@ import { download } from '@/utils/request';
 
 import './assets/icons'; // icon
 import './permission'; // permission control
-import { getDicts, listByDict,getDictsByType } from '@/api/system/dict/data';
+import { getDicts, listByDict, getDictsByType } from '@/api/system/dict/data';
 import { getConfigKey } from '@/api/system/config';
 import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree } from '@/utils/ddc';
 import Pagination from '@/components/Pagination';
@@ -36,7 +36,7 @@ import VueAMap from 'vue-amap';
 Vue.use(VueAMap);
 VueAMap.initAMapApiLoader({
   key: '8176702ab4a0886a159684727fd7fb12', // TODO要换成公司的
-  plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PolyEditor', 'AMap.CircleEditor'],
+  plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PolyEditor', 'AMap.CircleEditor', 'AMap.Geocoder'],
   v: '1.4.4'
 });
 // e=

@@ -118,9 +118,9 @@
       </el-table-column>
       <el-table-column label="地址别名" align="center" prop="addressOtherName" />
       <el-table-column label="地址详情" align="center" prop="addressDetail" />
-      <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" />
-      <el-table-column label="联系人" align="center" prop="contactName" />
       <el-table-column label="手机号码" align="center" prop="contactTelphone" />
+      <el-table-column label="联系人" align="center" prop="contactName" />
+      <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" />
       <!-- <el-table-column label="经度" align="center" prop="latitude" />
       <el-table-column label="维度" align="center" prop="longitude" />
       <el-table-column label="备注" align="center" prop="remark" />
@@ -128,12 +128,12 @@
       <el-table-column label="更新人" align="center" prop="updateCode" /> -->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="200" fixed="right">
         <template slot-scope="scope">
-          <el-button
+          <!-- <el-button
             size="mini"
             type="text"
             icon="el-icon-map-location"
             @click="handleMapView(scope.row)"
-          >查看地图</el-button>
+          >查看地图</el-button> -->
           <!-- <el-button
             size="mini"
             type="text"

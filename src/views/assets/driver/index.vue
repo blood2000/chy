@@ -133,6 +133,11 @@
           <span v-show="scope.row.authStatus === 3" class="g-color-success">审核通过</span>
         </template>
       </el-table-column>
+      <el-table-column v-if="teamCode" label="协议号" align="center" prop="agreementNo">
+        <template slot-scope="scope">
+          <el-button type="text no-padding" @click="downloadAgreement(scope.row)">{{ scope.row.agreementNo }}</el-button>
+        </template>
+      </el-table-column>
       <el-table-column label="手机" align="center" prop="telphone" />
       <el-table-column label="固话" align="center" prop="fixedPhone" />
       <el-table-column label="工作单位" align="center" prop="workCompany" />
@@ -222,25 +227,29 @@
     <!-- 批量导入 对话框 -->
     <import-dialog ref="ImportDialog" :title="title" :open.sync="openImport" @refresh="getList" />
     <!-- 管理车辆 对话框 -->
-    <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :drivercode="drivercode" />
+    <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :driver-code="driverCode" />
+    <!-- 协议 对话框 -->
+    <agreement-dialog ref="agreementDialog" :open.sync="agreementDialogOpen" :agreement-html="agreementHtml" />
   </div>
 </template>
 
 <script>
-import { listDriver, getDriver, delDriver } from '@/api/assets/driver';
+import { listDriver, getDriver, delDriver, getAgreementWord } from '@/api/assets/driver';
 import DriverDialog from './driverDialog';
 import ImportDialog from './importDialog';
 import ManageDialog from './manageDialog';
+import AgreementDialog from './agreementDialog';
 
 export default {
   name: 'Driver',
   components: {
     DriverDialog,
     ImportDialog,
-    ManageDialog
+    ManageDialog,
+    AgreementDialog
   },
   props: {
-    teamcode: {
+    teamCode: {
       type: String,
       default: null
     }
@@ -293,6 +302,7 @@ export default {
       open: false,
       openImport: false,
       manageDialogOpen: false,
+      agreementDialogOpen: false,
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -302,13 +312,14 @@ export default {
         telphone: undefined,
         fixedPhone: undefined,
         identificationNumber: undefined,
-        authStatus: undefined,
-        teamCode: this.teamcode
+        authStatus: undefined
       },
       // 表单是否禁用
       formDisable: false,
       // 司机code
-      drivercode: null
+      driverCode: null,
+      // 下载的协议号内容
+      agreementHtml: ''
     };
   },
   created() {
@@ -359,6 +370,9 @@ export default {
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
+      if (this.teamCode) {
+        this.queryParams.teamCode = this.teamCode;
+      }
       this.getList();
     },
     /** 重置按钮操作 */
@@ -432,8 +446,18 @@ export default {
     },
     /** 管理按钮操作 */
     handleManage(row) {
-      this.drivercode = row.code;
+      this.driverCode = row.code;
       this.manageDialogOpen = true;
+    },
+    /** 下载协议 */
+    downloadAgreement(row) {
+      getAgreementWord({
+        driverCode: row.code,
+        teamCode: this.teamCode
+      }).then(response => {
+        this.agreementHtml = response.data;
+        this.agreementDialogOpen = true;
+      });
     }
   }
 };
