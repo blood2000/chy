@@ -1,5 +1,5 @@
 <template>
-  <!-- 车辆装货对话框 -->
+  <!-- 车辆定位对话框 -->
   <el-dialog :title="title" :visible="visible" width="1200px" append-to-body @close="cancel">
     <div style="height:600px;">
       <el-amap vid="amapDemo" :zoom="zoom" :center="center">
@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { cancel } from '@/api/waybill/tracklist';
+import { location } from '@/api/waybill/tracklist';
 // import UploadImage from '@/components/UploadImage/index';
 
 export default {
@@ -45,10 +45,10 @@ export default {
           offset: [-10, -34]
         }
       }],
-      // 表单参数
-      form: {
-        wayBillInCode: null,
-        driverApplyRemark: null
+      // 查询参数 map_type:GOOGOLE或BAIDU
+      queryParams: {
+        imeis: '867567047562525',
+        map_type: 'GOOGLE'
       },
       // 表单校验
       rules: {
@@ -69,18 +69,13 @@ export default {
     }
   },
   created() {
+    this.getLocation();
   },
   methods: {
     /** 提交按钮 */
-    submitForm() {
-      this.$refs['form'].validate(valid => {
-        if (valid) {
-          cancel(this.form).then(response => {
-            this.msgSuccess('申请取消运单成功');
-            this.close();
-            this.$emit('refresh');
-          });
-        }
+    getLocation() {
+      location(this.queryParams).then(response => {
+        console.log(response);
       });
     },
     /** 取消按钮 */

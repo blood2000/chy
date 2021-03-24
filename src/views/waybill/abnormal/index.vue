@@ -197,7 +197,7 @@ export default {
     /** 查看运单按钮操作 */
     handleWaybill(row) {
       this.$refs.DetailDialog.reset();
-      this.currentId = row.waybillNo;
+      this.currentId = row.waybillCode;
       this.open = true;
       this.title = '运输单信息';
       this.formDisable = true;
