@@ -1,8 +1,8 @@
 <template>
   <el-dialog :title="title" :visible="visible" width="500px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-      <el-form-item label="货主备注" prop="shipperDealRemark">
-        <el-input v-model="form.shipperDealRemark" type="textarea" placeholder="" />
+      <el-form-item label="货主备注" prop="shipperRemark">
+        <el-input v-model="form.shipperRemark" type="textarea" />
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { getDetail } from '@/api/waybill/manages';
+import { getDetail, waybillRemark } from '@/api/waybill/manages';
 export default {
   props: {
     title: {
@@ -22,7 +22,7 @@ export default {
     },
     open: Boolean,
     currentId: {
-      type: Number,
+      type: String,
       default: null
     }
   },
@@ -59,16 +59,19 @@ export default {
     // 获取详情
     getDetail() {
       getDetail(this.currentId).then(response => {
-        this.form = response.data;
+        this.form.shipperRemark = response.data.shipperRemark;
+        this.form.wayBillInCode = this.currentId;
       });
     },
     // 提交按钮
     submitForm: function() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          this.msgSuccess('修改成功');
-          this.close();
-          this.$emit('refresh');
+          waybillRemark(this.form).then(response => {
+            this.msgSuccess('保存成功');
+            this.close();
+            this.$emit('refresh');
+          });
         }
       });
     },
@@ -84,7 +87,8 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        shipperDealRemark: null
+        shipperRemark: null,
+        wayBillInCode: null
       };
       this.resetForm('form');
     }

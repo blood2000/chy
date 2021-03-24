@@ -35,7 +35,7 @@
       <el-table-column
         label="计算公式"
         align="center"
-        prop="ruleDictType"
+        prop="ruleDictValue"
         :formatter="ruleTypeFormat"
       />
       <el-table-column label="扣费项目" align="center" prop="deduction" />
@@ -135,7 +135,7 @@ export default {
     },
     // 计算公式字典翻译
     ruleTypeFormat(row, column) {
-      return this.selectDictLabel(this.ruleTypeOptions, row.ruleDictType);
+      return this.selectDictLabel(this.ruleTypeOptions, row.ruleDictValue);
     },
     /** 搜索按钮操作 */
     handleQuery() {

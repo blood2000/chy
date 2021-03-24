@@ -12,7 +12,7 @@ export default {
     },
     open: Boolean,
     currentId: {
-      type: Number,
+      type: String,
       default: null
     }
   },

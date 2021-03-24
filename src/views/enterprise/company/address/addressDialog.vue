@@ -246,8 +246,7 @@ export default {
         this.form.isDefault = false;
       }
       if (this.form.longitude && this.form.latitude) {
-        this.marker.position = [this.form.longitude, this.form.latitude];
-        this.center = [this.form.longitude, this.form.latitude];
+        this.getMapData(this.form.longitude, this.form.latitude);
       }
     },
     // 点击地图，获取点位信息

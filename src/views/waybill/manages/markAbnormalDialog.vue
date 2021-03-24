@@ -2,10 +2,10 @@
   <el-dialog :title="title" :visible="visible" width="500px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="80px">
       <el-form-item label="运输单号" prop="waybillNo">
-        <el-input v-model="form.waybillNo" />
+        <el-input v-model="form.waybillNo" readonly />
       </el-form-item>
-      <el-form-item label="异常原因" prop="abnormalReason">
-        <el-input v-model="form.abnormalReason" type="textarea" placeholder="请输入异常原因" />
+      <el-form-item label="异常原因" prop="description">
+        <el-input v-model="form.description" type="textarea" placeholder="请输入异常原因" />
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { getDetail } from '@/api/waybill/manages';
+import { getDetail, waybillAbnormal } from '@/api/waybill/manages';
 export default {
   props: {
     title: {
@@ -25,7 +25,7 @@ export default {
     },
     open: Boolean,
     currentId: {
-      type: Number,
+      type: String,
       default: null
     }
   },
@@ -62,16 +62,23 @@ export default {
     // 获取详情
     getDetail() {
       getDetail(this.currentId).then(response => {
-        this.form = response.data;
+        this.form.waybillNo = response.data.waybillNo;
+        this.form.description = '';
       });
     },
     // 提交按钮
     submitForm: function() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          this.msgSuccess('修改成功');
-          this.close();
-          this.$emit('refresh');
+          waybillAbnormal({
+            waybillCode: this.currentId,
+            isWarning: 1,
+            description: this.form.description
+          }).then(response => {
+            this.msgSuccess('标记成功');
+            this.close();
+            this.$emit('refresh');
+          });
         }
       });
     },
@@ -88,7 +95,7 @@ export default {
     reset() {
       this.form = {
         waybillNo: null,
-        abnormalReason: null
+        description: null
       };
       this.resetForm('form');
     }
