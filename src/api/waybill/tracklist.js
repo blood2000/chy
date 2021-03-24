@@ -18,6 +18,15 @@ export function load(data) {
   });
 }
 
+// 车辆补装货凭证
+export function loadCredentials(data) {
+  return request({
+    url: '/transportation/waybillOper/loadCredentials',
+    method: 'post',
+    data: data
+  });
+}
+
 // 车辆卸货
 export function unload(data) {
   return request({
@@ -44,11 +53,29 @@ export function getAddress(orderGoodsCode) {
   });
 }
 
-// 获取装货、卸货信息
-export function getInfoDetail(waybillNo) {
+// 获取车辆列表
+export function getVehicle(query) {
   return request({
-    url: '/transportation/waybillAttachment/getByWaybillNo?waybillNo=' + waybillNo,
+    url: '/assets/vehicle/list',
+    method: 'get',
+    params: query
+  });
+}
+
+// 获取装货、卸货信息
+export function getInfoDetail(type, waybillNo) {
+  return request({
+    url: '/transportation/waybillAttachment/getByWaybillNo?type=' + type + '&waybillNo=' + waybillNo,
     method: 'get'
+  });
+}
+
+// 新增司机投诉货主
+export function addComplaint(data) {
+  return request({
+    url: '/transportation/driverComplaint/add',
+    method: 'post',
+    data: data
   });
 }
 

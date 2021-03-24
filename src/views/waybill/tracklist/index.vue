@@ -199,9 +199,12 @@
     </el-tabs>
 
     <RefactorTable :loading="loading" :data="tracklist" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
-      <!-- <template #isPay="{row}">
-                    <span>{{ selectDictLabel(isPayOptions, row.isPay) }}</span>
-                </template> -->
+      <template #cancelStatus="{row}">
+        <span>{{ selectDictLabel(cancelStatusOptions, row.cancelStatus) }}</span>
+      </template>
+      <template #goodsBigType="{row}">
+        <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
+      </template>
 
       <template #edit="{row}">
         <el-button
@@ -289,9 +292,9 @@
 
 
     <!-- 车辆装货 / 补装货凭证 -->
-    <dialog-a ref="DialogA" :open.sync="dialoga" :title="title" @refresh="getList" />
+    <dialog-a ref="DialogA" :open.sync="dialoga" :title="title" :disable="formDisable" @refresh="getList" />
     <!-- 车辆卸货 / 补卸货凭证 -->
-    <dialog-c ref="DialogC" :open.sync="dialogc" :title="title" @refresh="getList" />
+    <dialog-c ref="DialogC" :open.sync="dialogc" :title="title" :disable="formDisable" @refresh="getList" />
     <!-- 投诉 -->
     <dialog-b ref="DialogB" :open.sync="dialogb" :title="title" @refresh="getList" />
     <!-- 取消订单 -->
@@ -362,7 +365,7 @@ export default {
         'driverName': undefined,
         'driverPhone': undefined,
         'waybillNo': undefined,
-        'status': 1
+        'statusList': ['1']
       },
       // 弹框 内容
       visible: false,
@@ -375,12 +378,23 @@ export default {
       trackdialog: false,
       locationdialog: false,
       title: '',
-      dialogWidth: '800px'
-      // ne 0 司机 1 货主
-    //   driverOrShipmentOptions: [
-    //     { 'dictLabel': '司机', 'dictValue': '0' },
-    //     { 'dictLabel': '货主', 'dictValue': '1' }
-    //   ],
+      dialogWidth: '800px',
+      // 表单是否禁用
+      formDisable: false,
+      // 商品类别编码字典
+      commodityCategoryCodeOptions: [],
+      // 大类字典类型
+      commodityCategory: {
+        'dictPid': '0',
+        'dictType': 'goodsType'
+      },
+      // 取消状态
+      cancelStatusOptions: [
+        { 'dictLabel': '正常', 'dictValue': '0' },
+        { 'dictLabel': '司机撤单申请', 'dictValue': '1' },
+        { 'dictLabel': '货主同意撤销 ', 'dictValue': '2' },
+        { 'dictLabel': '货主拒绝撤销 ', 'dictValue': '3' }
+      ]
     //   // <!-- isPay	支付给司机运费状态 0-未支付 1-已支付 -->
     //   isPayOptions: [
     //     { 'dictLabel': '未支付', 'dictValue': '0' },
@@ -398,14 +412,17 @@ export default {
     this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || this.tableColumnsConfig;
     // this.queryParams.status = tab.name;
     this.getList();
+    this.listByDict(this.commodityCategory).then(response => {
+      this.commodityCategoryCodeOptions = response.data;
+    });
   },
   'methods': {
     /** handleClick */
     handleClick(tab) {
       // this['tableColumnsConfig' + this.activeName] = this.getLocalStorage(this.lcokey) || this.tableColumnsConfig;
-      this.queryParams.status = tab.name;
+      this.queryParams.statusList[0] = tab.name;
       this.queryParams.page = 1;
-      // console.log(this.queryParams);
+      console.log(this.queryParams);
       this.getList();
     },
 
@@ -458,6 +475,7 @@ export default {
         case 4:
           // this.$refs.DialogA.reset();
           this.dialoga = true;
+          this.formDisable = true;
           this.title = '补装货凭证';
           this.$refs.DialogA.setForm(row);
           // this.$refs.DialogA.getAddress(row);
@@ -465,6 +483,7 @@ export default {
         case 5:
           // this.$refs.DialogC.reset();
           this.dialogc = true;
+          this.formDisable = true;
           this.title = '补卸货凭证';
           this.$refs.DialogC.setForm(row);
           // this.$refs.DialogC.getAddress(row);
