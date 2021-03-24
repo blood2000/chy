@@ -20,8 +20,8 @@
         <el-col :span="18">
           <el-form ref="form" :model="form" :rules="rules" label-width="140px" :label-position="'left'">
             <el-form-item label="企业名称" prop="companyName">
-              {{form.companyName}}
-             <!-- <el-input v-model="form.companyName" placeholder="请输入企业名称" readonly class="input-width mr20" clearable />-->
+              {{ form.companyName }}
+              <!-- <el-input v-model="form.companyName" placeholder="请输入企业名称" readonly class="input-width mr20" clearable />-->
               <span v-if="form.orgAuthStatus =='3'" class="g-color-success mr20">
                 <i class="el-icon-circle-check" />
                 已认证
@@ -33,11 +33,11 @@
               <el-button type="text no-padding" @click="handleCertification">修改</el-button>
             </el-form-item>
             <el-form-item label="统一社会信用代码" prop="organizationCodeNo">
-              {{form.organizationCodeNo}}
+              {{ form.organizationCodeNo }}
             <!--  <el-input v-model="form.organizationCodeNo" class="input-width" clearable />-->
             </el-form-item>
             <el-form-item label="营业执照号" prop="businessLicenseNo">
-              {{form.businessLicenseNo}}
+              {{ form.businessLicenseNo }}
               <!--<el-input v-model="form.businessLicenseNo" class="input-width" clearable />-->
             </el-form-item>
             <el-form-item label="营业执照照" prop="businessLicenseImg">
