@@ -224,6 +224,7 @@
 
 <script>
 import { listShipment, getShipment, delShipment } from '@/api/assets/shipment';
+import { setUserRoleInfoRedis } from '@/api/system/role';
 import ShipmentDialog from './shipmentDialog';
 
 export default {
@@ -454,7 +455,16 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
-        return delShipment(ids);
+         delShipment(ids).then(response => {
+           console.log(response);
+           this.msgSuccess(response.msg);
+           if(response.msg){
+             response.msg.split(',').forEach( e =>{
+               setUserRoleInfoRedis(e);
+             });
+           }
+         });
+         return;
       }).then(() => {
         this.getList();
         this.msgSuccess('删除成功');

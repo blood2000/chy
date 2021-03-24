@@ -4,8 +4,8 @@ import request from '@/utils/request';
 export function getCompanyInfo(data) {
   return request({
     url: `/assets/shipment/getShipmentAndEnterprise`,
-    method: 'post',
-    data: data
+    method: 'get',
+    params: data
   });
 }
 

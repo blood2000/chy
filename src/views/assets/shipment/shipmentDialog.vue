@@ -274,6 +274,7 @@
 
 <script>
 import { addShipment, updateShipment, authRead, examine } from '@/api/assets/shipment';
+import { setUserRoleInfoRedis } from '@/api/system/role';
 import UploadImage from '@/components/UploadImage/index';
 import ProvinceCityCounty from '@/components/ProvinceCityCounty';
 
@@ -328,6 +329,9 @@ export default {
       form: {},
       // 表单校验
       rules: {
+        password: [
+          { required: true, message: '密码不能为空', trigger: 'blur'}
+        ],
         telphone: [
           { validator: this.formValidate.telphone }
         ],
@@ -398,13 +402,17 @@ export default {
           }
           if (shipmentInfo.id !== undefined) {
             updateShipment(shipmentInfo).then(response => {
+              console.log(response);
               this.msgSuccess('修改成功');
+              setUserRoleInfoRedis(response.data);
               this.close();
               this.$emit('refresh');
             });
           } else {
             addShipment(shipmentInfo).then(response => {
-              this.msgSuccess('新增成功');
+              console.log(response);
+              this.msgSuccess('修改成功');
+              setUserRoleInfoRedis(response.data);
               this.close();
               this.$emit('refresh');
             });

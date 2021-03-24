@@ -22,11 +22,11 @@
             <el-form-item label="企业名称" prop="companyName">
               {{form.companyName}}
              <!-- <el-input v-model="form.companyName" placeholder="请输入企业名称" readonly class="input-width mr20" clearable />-->
-              <span v-if="form.orgAuthStatus =='3'" class="g-color-success mr20">
+              <span v-if="form.authStatus =='3' && form.companyCode" class="g-color-success mr20">
                 <i class="el-icon-circle-check" />
                 已认证
               </span>
-              <span v-else class="g-color-error mr20">
+              <span v-else-if="form.companyCode" class="g-color-error mr20">
                 <i class="el-icon-circle-close" />
                 未认证
               </span>
