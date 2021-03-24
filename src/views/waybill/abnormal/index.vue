@@ -174,7 +174,7 @@ export default {
       listAbnormal(this.queryParams).then(response => {
         this.abnormalList = response.data;
         this.total = response.data.length;
-        console.log(this.total);
+        console.log(this.abnormalList);
         this.loading = false;
       });
     },
@@ -205,10 +205,10 @@ export default {
     /** 查看日志按钮操作 */
     handleLog(row) {
       this.$refs.AbnormalDialog.reset();
-      const id = row.id;
-      getAbnormal(id).then((response) => {
+      getAbnormal(row.code).then((response) => {
+        console.log(response);
         this.$refs.AbnormalDialog.setForm(response.data);
-        this.open = true;
+        this.openAbnormal = true;
         this.title = '查看日志';
         this.formDisable = true;
       });
