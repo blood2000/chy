@@ -298,8 +298,8 @@ export default {
     // 截取省市区code
     getAreaCode(code) {
       this.form.provinceCode = code.slice(0, 2);
-      this.form.cityCode = code.slice(2, 4);
-      this.form.countyCode = code.slice(4, 6);
+      this.form.cityCode = code.slice(0, 4);
+      this.form.countyCode = code.slice(0, 6);
     }
   }
 };
