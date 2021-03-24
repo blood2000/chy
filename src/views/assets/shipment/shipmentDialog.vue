@@ -150,7 +150,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="是否核算" prop="isAccount">
+      <el-form-item label="是否独立核算" prop="isAccount">
         <el-select
           v-model="form.isAccount"
           clearable
@@ -468,13 +468,13 @@ export default {
         provinceCode: null,
         cityCode: null,
         countyCode: null,
-        isAccount: null,
+        isAccount: 1, // 是否独立核算，默认是
         accountType: null,
         isWipe: null,
         area: null,
         wipeType: null,
         isMonthly: null,
-        isPrepaid: null,
+        isPrepaid: 1, // 是否预付运费，默认是
         isConsumption: null,
         consumptionUnit: null,
         consumptionMin: null,
@@ -483,7 +483,7 @@ export default {
         creditAmount: null,
         ticketType: null,
         serviceRatio: null,
-        supplyIsAuth: null
+        supplyIsAuth: 0 // 是否审核货源，默认否
       };
       this.resetForm('form');
     },
