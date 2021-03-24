@@ -69,3 +69,12 @@ export function importData(data) {
     data: data
   });
 }
+
+// 下载协议号
+export function getAgreementWord(query) {
+  return request({
+    url: '/assets/driver/agreement/getAgreementWord',
+    method: 'get',
+    params: query
+  });
+}

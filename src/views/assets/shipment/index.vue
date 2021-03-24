@@ -88,7 +88,7 @@
           size="small"
           type="date"
           value-format="yyyy-MM-dd"
-          style="width: 240px"
+          style="width: 152px"
           placeholder="请选择"
         /> -
         <el-date-picker
@@ -97,11 +97,30 @@
           size="small"
           type="date"
           value-format="yyyy-MM-dd"
-          style="width: 240px"
+          style="width: 152px"
           placeholder="请选择"
         />
       </el-form-item>
-
+      <el-form-item label="注册时间">
+        <el-date-picker
+          v-model="queryParams.beginTime"
+          clearable
+          size="small"
+          type="date"
+          value-format="yyyy-MM-dd"
+          style="width: 152px"
+          placeholder="请选择"
+        /> -
+        <el-date-picker
+          v-model="queryParams.endTime"
+          clearable
+          size="small"
+          type="date"
+          value-format="yyyy-MM-dd"
+          style="width: 152px"
+          placeholder="请选择"
+        />
+      </el-form-item>
       <el-form-item>
         <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -128,6 +147,15 @@
           @click="handleDelete"
         >批量删除</el-button>
       </el-col>
+      <el-col :span="1.5">
+        <el-button
+          v-hasPermi="['assets:shipment:export']"
+          type="warning"
+          icon="el-icon-download"
+          size="mini"
+          @click="handleExport"
+        >导出</el-button>
+      </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
@@ -152,6 +180,7 @@
       <el-table-column label="是否冻结" align="center" prop="isFreezone" :formatter="isFreezoneFormat" />
       <el-table-column label="票制类别" align="center" prop="ticketType" :formatter="ticketTypeFormat" />
       <el-table-column label="服务费比例" align="center" prop="serviceRatio" />
+      <el-table-column label="是否独立核算" align="center" prop="isAccount" :formatter="isAccountFormat" />
       <el-table-column label="货源是否审核" align="center" prop="supplyIsAuth" :formatter="supplyIsAuthFormat" />
       <el-table-column label="是否预付运费" align="center" prop="isPrepaid" :formatter="isPrepaidFormat" />
       <el-table-column label="授信金额" align="center" prop="creditAmount" />
@@ -160,7 +189,6 @@
       <el-table-column label="县/区" align="center" prop="countyCode" :formatter="countyCodeFormat" />
       <el-table-column label="是否抹零" align="center" prop="isWipe" :formatter="isWipeFormat" />
       <el-table-column label="详细地址" align="center" prop="area" />
-      <el-table-column label="是否核算" align="center" prop="isAccount" :formatter="isAccountFormat" />
       <el-table-column label="核算方式" align="center" prop="accountType" :formatter="accountTypeFormat" />
       <el-table-column label="抹零方式" align="center" prop="wipeType" :formatter="wipeTypeFormat" />
       <el-table-column label="是否月结" align="center" prop="isMonthly" :formatter="isMonthlyFormat" />
@@ -292,11 +320,11 @@ export default {
         pageNum: 1,
         pageSize: 10,
         adminName: undefined,
-        telphone: undefined,
         isAccount: undefined,
         accountType: undefined,
         authStatus: undefined,
         companyName: undefined,
+        telphone: undefined,
         beginTime: undefined,
         endTime: undefined
       },
@@ -459,6 +487,10 @@ export default {
         this.getList();
         this.msgSuccess('删除成功');
       });
+    },
+    /** 导出按钮操作 */
+    handleExport() {
+      this.download('assets/shipment/export', {}, `shipment_${new Date().getTime()}.xlsx`, 'application/json');
     }
   }
 };

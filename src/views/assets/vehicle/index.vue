@@ -566,11 +566,11 @@ export default {
     VehicleDialog
   },
   props: {
-    teamcode: {
+    teamCode: {
       type: String,
       default: null
     },
-    drivercode: {
+    driverCode: {
       type: String,
       default: null
     }
@@ -640,9 +640,7 @@ export default {
         vehicleEnergyType: undefined,
         annualVerificationDate: undefined,
         authStatus: undefined,
-        isFreeze: undefined,
-        teamCode: this.teamcode,
-        driverCode: this.drivercode
+        isFreeze: undefined
       },
       // 表单是否禁用
       formDisable: false
@@ -755,6 +753,12 @@ export default {
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
+      if (this.teamCode) {
+        this.queryParams.teamCode = this.teamCode;
+      }
+      if (this.driverCode) {
+        this.queryParams.driverCode = this.driverCode;
+      }
       this.getList();
     },
     /** 重置按钮操作 */
