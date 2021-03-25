@@ -288,9 +288,6 @@
       @pagination="getList"
     />
 
-
-
-
     <!-- 车辆装货 / 补装货凭证 -->
     <dialog-a ref="DialogA" :open.sync="dialoga" :title="title" :disable="formDisable" @refresh="getList" />
     <!-- 车辆卸货 / 补卸货凭证 -->

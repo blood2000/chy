@@ -129,7 +129,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .mr3 {
   margin-right: 3%;
 }
