@@ -62,6 +62,14 @@ export function getVehicle(query) {
   });
 }
 
+// 根据CODE获取车辆
+export function getVehicleInfo(code) {
+  return request({
+    url: '/assets/vehicle/getByCode?code=' + code,
+    method: 'get'
+  });
+}
+
 // 获取装货、卸货信息
 export function getInfoDetail(type, waybillNo) {
   return request({

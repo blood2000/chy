@@ -1,7 +1,7 @@
 <template>
   <!-- 车辆跟踪对话框 -->
-  <el-dialog :title="title" :visible="visible" width="1200px" append-to-body @close="cancel">
-    <div style="height:600px;">
+  <el-dialog :title="title" :visible="visible" width="1400px" append-to-body @close="cancel">
+    <div style="height:750px;">
       <el-amap vid="amapDemo1" :zoom="zoom" :center="center">
         <el-amap-polyline :path="polyline.path" :stroke-weight="8" :stroke-opacity="0.8" :stroke-color="'#0091ea'" />
         <el-amap-marker v-for="(marker, index) in markers" :key="index" :position="marker.position" :icon="marker.icon" />
@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { trackLocation } from '@/api/waybill/tracklist';
+import { trackLocation, getVehicleInfo } from '@/api/waybill/tracklist';
 // import UploadImage from '@/components/UploadImage/index';
 
 export default {
@@ -29,27 +29,27 @@ export default {
   },
   data() {
     return {
-      zoom: 16,
-      center: [116.478928, 39.997761],
+      zoom: 12,
+      center: [],
       graspRoad: '',
       polyline: {
         path: [
-          [116.478928, 39.997761],
-          [116.478907, 39.998422],
-          [116.479384, 39.998546],
-          [116.481053, 39.998204],
-          [116.481793, 39.997868],
-          [116.482898, 39.998217],
-          [116.483789, 39.999063],
-          [116.484674, 39.999844]
+          // [116.478928, 39.997761],
+          // [116.478907, 39.998422],
+          // [116.479384, 39.998546],
+          // [116.481053, 39.998204],
+          // [116.481793, 39.997868],
+          // [116.482898, 39.998217],
+          // [116.483789, 39.999063],
+          // [116.484674, 39.999844]
         ]
       },
       markers: [{
         icon: 'https://webapi.amap.com/theme/v1.3/markers/n/start.png',
-        position: [116.478928, 39.997761]
+        position: []
       }, {
         icon: 'https://webapi.amap.com/theme/v1.3/markers/n/end.png',
-        position: [116.484674, 39.999844]
+        position: []
       }],
       // 查询参数 map_type:GOOGOLE或BAIDU
       queryParams: {
@@ -58,7 +58,17 @@ export default {
         imeis: '867567047562525',
         map_type: 'GOOGLE'
       },
-      tracklist: []
+      // 定位轨迹列表
+      tracklist: [],
+      // 运单信息
+      wayBillInfo: {},
+      // 车辆信息
+      vehicleInfo: {},
+      // 日期格式
+      Hours: '',
+      Minutes: '',
+      Seconds: '',
+      time: ''
     };
   },
   computed: {
@@ -78,14 +88,22 @@ export default {
     /** 获取轨迹 */
     getTrackLocation() {
       trackLocation(this.queryParams).then(response => {
-        console.log(response);
-        this.tracklist = response.data.result;
+        // console.log(response.data.result);
+        this.tracklist = response.data.result.map(function(response) {
+          return [response.lng, response.lat];
+        });
+        this.polyline.path = this.tracklist;
+        // 地图中心点
+        this.center = this.tracklist[0];
+        // 起点地址
+        this.markers[0].position = this.tracklist[0];
+        // 终点地址
+        this.markers[1].position = this.tracklist[this.tracklist.length - 1];
       });
     },
     /** 取消按钮 */
     cancel() {
       this.close();
-      this.reset();
     },
     // 关闭弹窗
     close() {
@@ -93,7 +111,19 @@ export default {
     },
     // 表单赋值
     setForm(data) {
-      this.form.wayBillInCode = data.code;
+      this.wayBillInfo = data;
+      this.time = this.parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}');
+      // this.queryParams.begin_time = data.fillTime;
+      // if (data.signTime) {
+      //   this.queryParams.end_time = data.signTime;
+      // } else {
+      //   this.queryParams.end_time = this.time;
+      // }
+      getVehicleInfo(data.vehicleCode).then(response => {
+        this.vehicleInfo = response.data;
+        console.log(this.vehicleInfo);
+      });
+      console.log(this.wayBillInfo);
     }
   }
 };

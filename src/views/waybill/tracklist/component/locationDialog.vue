@@ -1,9 +1,50 @@
 <template>
   <!-- 车辆定位对话框 -->
-  <el-dialog :title="title" :visible="visible" width="1200px" append-to-body @close="cancel">
-    <div style="height:600px;">
+  <el-dialog :title="title" :visible="visible" width="1400px" append-to-body @close="cancel">
+    <div style="height:750px;">
       <el-amap vid="amapDemo" :zoom="zoom" :center="center">
-        <el-amap-marker v-for="(marker, index) in markers" :key="index" :position="marker.position" :icon="marker.icon" :label="marker.label" />
+        <el-amap-marker v-for="(marker, index) in markers" :key="index" :events="marker.events" :position="marker.position" :icon="marker.icon" :label="marker.label" />
+        <el-amap-info-window :position="window.position" :visible="window.visible" :offset="window.offset" :auto-move="true">
+          <div style="width: 300px;">
+            <el-row type="flex" class="row-bg">
+              <el-col :span="24">
+                <div style="font-weight: bold; font-size: 16px">{{ windowContent.status }}</div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" style="margin-top: 15px">
+              <el-col :span="6">
+                <div style="text-align: right;">司机名称：</div>
+              </el-col>
+              <el-col :span="18">
+                <div>{{ windowContent.driverName }}</div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" style="margin-top: 5px">
+              <el-col :span="6">
+                <div style="text-align: right;">车牌号：</div>
+              </el-col>
+              <el-col :span="18">
+                <div>{{ windowContent.licenseNumber }}</div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" style="margin-top: 5px">
+              <el-col :span="6">
+                <div style="text-align: right;">设备号：</div>
+              </el-col>
+              <el-col :span="18">
+                <div>{{ windowContent.imeis }}</div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" style="margin-top: 5px">
+              <el-col :span="6">
+                <div style="text-align: right;">定位时间：</div>
+              </el-col>
+              <el-col :span="18">
+                <div>{{ windowContent.gpsTime }}</div>
+              </el-col>
+            </el-row>
+          </div>
+        </el-amap-info-window>
       </el-amap>
     </div>
   </el-dialog>
@@ -28,23 +69,41 @@ export default {
   },
   data() {
     return {
+      // 缩放级别
       zoom: 16,
-      center: [116.478928, 39.997761],
+      // 中心点坐标
+      center: [],
+      // 标记点列表
       markers: [{
         icon: 'https://ddcwl.com/static/img/admin/sys/cc.png',
-        position: [116.478928, 39.997761],
+        position: [],
         label: {
           content: '辽NC2589',
           offset: [-10, -34]
-        }
-      }, {
-        icon: 'https://ddcwl.com/static/img/admin/sys/cc.png',
-        position: [119.358274, 26.045704],
-        label: {
-          content: '闽A88888',
-          offset: [-10, -34]
+        },
+        events: {
+          click: () => {
+            this.window.visible = !this.window.visible;
+            // this.window.position = this.markers[0].position;
+            // alert('click marker');
+          }
         }
       }],
+      // 信息窗体
+      window: {
+        position: [],
+        events: {},
+        visible: false,
+        offset: [0, -70]
+      },
+      // 信息窗体内容
+      windowContent: {
+        status: '',
+        driverName: '',
+        licenseNumber: '',
+        imeis: '',
+        gpsTime: ''
+      },
       // 查询参数 map_type:GOOGOLE或BAIDU
       queryParams: {
         imeis: '867567047562525',
@@ -55,7 +114,10 @@ export default {
         driverApplyRemark: [
           { required: true, message: '取消理由不能为空', trigger: 'blur' }
         ]
-      }
+      },
+      // 获取到的定位
+      location: [],
+      wayBillInfo: []
     };
   },
   computed: {
@@ -75,29 +137,36 @@ export default {
     /** 提交按钮 */
     getLocation() {
       location(this.queryParams).then(response => {
-        console.log(response);
+        // console.log(response);
+        this.windowContent.gpsTime = response.data.result[0].gpsTime;
+        this.windowContent.imeis = response.data.result[0].imei;
+        this.location = response.data.result.map(function(response) {
+          return [response.lng, response.lat];
+        });
+        this.center = this.location[0];
+        this.markers[0].position = this.location[0];
+        this.window.position = this.location[0];
       });
     },
     /** 取消按钮 */
     cancel() {
       this.close();
-      this.reset();
     },
     // 关闭弹窗
     close() {
       this.$emit('update:open', false);
     },
-    // 表单重置
-    reset() {
-      this.form = {
-        wayBillInCode: null,
-        driverApplyRemark: null
-      };
-      this.resetForm('form');
-    },
     // 表单赋值
     setForm(data) {
-      this.form.wayBillInCode = data.code;
+      this.wayBillInfo = data;
+      if (data.status === 2) {
+        this.windowContent.status = '负载中';
+      } else {
+        this.windowContent.status = '空车';
+      }
+      this.windowContent.licenseNumber = data.licenseNumber;
+      this.windowContent.driverName = data.driverName;
+      console.log(this.wayBillInfo);
     }
   }
 };

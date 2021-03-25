@@ -114,7 +114,7 @@
       <el-table-column label="纸质回单状态" align="center" prop="isReturn" width="100" :formatter="isReturnFormat" />
       <el-table-column label="货源单号" align="center" prop="mainOrderNumber" width="150" />
       <el-table-column label="下单客户" align="center" prop="orderClient" width="150" />
-      <el-table-column label="运输单号" align="center" prop="waybillNo" width="150" />
+      <el-table-column label="运输单号" align="center" prop="waybillNo" width="180" />
       <el-table-column label="承运调度" align="center" prop="teamName" width="130" />
       <el-table-column label="承运人" align="center" prop="driverName" width="80" />
       <el-table-column label="联系方式" align="center" prop="driverPhone" width="130" />
@@ -137,24 +137,24 @@
       <el-table-column label="装货地址" align="center" prop="loadAddress" width="130" />
       <el-table-column label="卸货地址" align="center" prop="unloadAddress" width="130" />
       <el-table-column label="状态" align="center" prop="status" width="100" :formatter="statusFormat" />
-      <el-table-column label="装货截止时间" align="center" prop="lastLoadingTime" width="130">
+      <el-table-column label="装货截止时间" align="center" prop="lastLoadingTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.lastLoadingTime)).slice(0, 10) }}</span>
+          <span>{{ parseTime(scope.row.lastLoadingTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="发布货源时间" align="center" prop="orderTime" width="130">
+      <el-table-column label="发布货源时间" align="center" prop="orderTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.orderTime)).slice(0, 10) }}</span>
+          <span>{{ parseTime(scope.row.orderTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="接单时间" align="center" prop="receiveTime" width="130">
+      <el-table-column label="接单时间" align="center" prop="receiveTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.receiveTime)).slice(0, 10) }}</span>
+          <span>{{ parseTime(scope.row.receiveTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="最后操作时间" align="center" prop="wayBillUpdateTime" width="130">
+      <el-table-column label="最后操作时间" align="center" prop="wayBillUpdateTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.wayBillUpdateTime)).slice(0, 10) }}</span>
+          <span>{{ parseTime(scope.row.wayBillUpdateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
       </el-table-column>
       <el-table-column
