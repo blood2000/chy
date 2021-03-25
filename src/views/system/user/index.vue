@@ -209,11 +209,13 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="归属组织" prop="orgCode">
-              <treeselect v-model="form.orgCode"
-                          :options="deptOptions"
-                          :normalizer="normalizer"
-                          :show-count="true"
-                          placeholder="请选择归属组织" />
+              <treeselect
+                v-model="form.orgCode"
+                :options="deptOptions"
+                :normalizer="normalizer"
+                :show-count="true"
+                placeholder="请选择归属组织"
+              />
             </el-form-item>
           </el-col>
         </el-row>
@@ -370,8 +372,8 @@ export default {
       // 弹出层标题
       title: '',
       // 部门树选项
-      deptOptions:undefined,
-      //部门树键值转换
+      deptOptions: undefined,
+      // 部门树键值转换
       normalizer(node) {
         return {
           id: node.code, // 键名转换，方法默认是label和children进行树状渲染
@@ -462,12 +464,12 @@ export default {
   created() {
     this.getList();
     this.getTreeselect();
-    /**状态*/
-    this.getDictsByType({dictType:'sys_normal_disable',dictPid:'0'}).then(response => {
+    /** 状态*/
+    this.getDictsByType({ dictType: 'sys_normal_disable', dictPid: '0' }).then(response => {
       this.statusOptions = response.data;
     });
-    /**性别**/
-    this.getDictsByType({dictType:'sys_user_sex',dictPid:'0'}).then(response => {
+    /** 性别**/
+    this.getDictsByType({ dictType: 'sys_user_sex', dictPid: '0' }).then(response => {
       this.sexOptions = response.data;
     });
     this.getConfigKey('sys.user.initPassword').then(response => {

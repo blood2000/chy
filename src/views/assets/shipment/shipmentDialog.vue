@@ -345,9 +345,6 @@ export default {
       form: {},
       // 表单校验
       rules: {
-        password: [
-          { required: true, message: '密码不能为空', trigger: 'blur' }
-        ],
         telphone: [
           { validator: this.formValidate.telphone }
         ],
@@ -406,9 +403,10 @@ export default {
       });
     },
     /** 提交按钮 */
-    submitForm: function() {
+    submitForm() {
       const flag = this.$refs.ChooseArea.submit();
       this.$refs['form'].validate(valid => {
+        console.log(valid);
         if (valid && flag) {
           const shipmentInfo = this.form;
           if (shipmentInfo.identificationEffective) {
@@ -462,7 +460,7 @@ export default {
         adminName: null,
         adminCode: null,
         telphone: null,
-        password: this.initialPassword,
+        password: null,
         companyCode: null,
         companyName: null,
         shipperType: 0,
@@ -515,9 +513,6 @@ export default {
         this.form.identificationEffective = true;
       } else {
         this.form.identificationEffective = false;
-      }
-      if (data.password === null || data.password === undefined || data.password === '') {
-        this.form.password = this.initialPassword;
       }
     },
     // 已读
