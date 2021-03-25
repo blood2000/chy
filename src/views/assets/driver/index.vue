@@ -216,21 +216,21 @@
             size="mini"
             type="text"
             icon="el-icon-document"
-            @click="handleDEtail(scope.row)"
+            @click="handleDetail(scope.row, 'detail')"
           >详情</el-button>
           <el-button
             v-hasPermi="['system:config:edit']"
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleDEtail(scope.row, 'edit')"
+            @click="handleDetail(scope.row, 'edit')"
           >修改</el-button>
           <el-button
             v-show="scope.row.authStatus === 0 || scope.row.authStatus === 1"
             size="mini"
             type="text"
             icon="el-icon-document-checked"
-            @click="handleDEtail(scope.row, 'review')"
+            @click="handleDetail(scope.row, 'review')"
           >审核</el-button>
           <el-button
             v-hasPermi="['system:config:remove']"
@@ -437,7 +437,7 @@ export default {
       this.multiple = !selection.length;
     },
     /** 编辑/详情按钮操作 */
-    handleDEtail(row, flag) {
+    handleDetail(row, flag) {
       this.$refs.DriverDialog.reset();
       const id = row.id || this.ids;
       getDriver(id).then(response => {

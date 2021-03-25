@@ -1,27 +1,132 @@
 <template>
-  <el-dialog :title="title" :visible="visible" width="1000px" append-to-body @close="cancel">
+  <el-dialog class="waybill-detail-dialog" :title="title" :visible="visible" width="1200px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="160px">
-      <el-row class="width90">
-        <el-col :span="12">
-          <el-form-item label="货源编号" prop="orderCode">
-            <el-input v-model="form.orderCode" placeholder="" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="商品编码" prop="goodsCode">
-            <el-input v-model="form.goodsCode" placeholder="" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="商品编码" prop="goodsCode">
-            <el-input v-model="form.goodsCode" placeholder="" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
+      <el-tabs v-model="activeTab">
+        <!-- 运单 -->
+        <el-tab-pane label="运单" name="1">
+          <el-divider content-position="left" class="m40">
+            <h5 class="g-title-medium">运单</h5>
+          </el-divider>
           <el-form-item label="运输单号" prop="waybillNo">
-            <el-input v-model="form.waybillNo" placeholder="" />
+            <el-input v-model="form.waybillNo" placeholder="" class="input-width" />
           </el-form-item>
-        </el-col>
+          <el-form-item label="运单状态">
+            <el-radio-group v-model="form.status">
+              <el-radio
+                v-for="dict in statusOptions"
+                :key="dict.dictValue"
+                :label="dict.dictValue"
+              >{{ dict.dictLabel }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="装车重量" prop="loadWeight">
+            <el-input v-model="form.loadWeight" placeholder="" class="input-width" />
+          </el-form-item>
+          <!-- <el-form-item label="货品类别" prop="goodsBigType">
+            <el-input v-model="form.goodsBigType" placeholder="" />
+          </el-form-item> -->
+          <el-form-item label="装货时间" prop="fillTime">
+            <el-date-picker
+              v-model="form.fillTime"
+              class="input-width"
+              clearable
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder=""
+            />
+          </el-form-item>
+          <el-form-item label="签收时间" prop="signTime">
+            <el-date-picker
+              v-model="form.signTime"
+              class="input-width"
+              clearable
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder=""
+            />
+          </el-form-item>
+          <el-form-item label="货主备注" prop="shipperRemark">
+            <el-input v-model="form.shipperRemark" placeholder="" class="input-width" />
+          </el-form-item>
+          <el-divider content-position="left" class="m40">
+            <h5 class="g-title-medium">地址</h5>
+          </el-divider>
+          <el-form-item label="装货地址" prop="loadAddress">
+            <el-input v-model="form.loadAddress" placeholder="" class="input-width" />
+          </el-form-item>
+          <el-form-item label="卸货地址" prop="unloadAddress">
+            <el-input v-model="form.unloadAddress" placeholder="" class="input-width" />
+          </el-form-item>
+          <el-divider content-position="left" class="m40">
+            <h5 class="g-title-medium">费用</h5>
+          </el-divider>
+          <el-form-item label="运费单价" prop="freightPrice">
+            <el-input v-model="form.freightPrice" placeholder="" class="input-width" />
+          </el-form-item>
+        </el-tab-pane>
+        <!-- 回单 -->
+        <el-tab-pane label="回单" name="2">
+          <el-divider content-position="left" class="m40">
+            <h5 class="g-title-medium">装货单</h5>
+          </el-divider>
+          <el-form-item label="回单确认状态" prop="isSplit">
+            <el-select
+              v-model="form.isReturn"
+              class="input-width"
+              placeholder=""
+              clearable
+            >
+              <el-option
+                v-for="dict in isReturnOptions"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="回单确认时间" prop="returnRemarkTime">
+            <el-date-picker
+              v-model="form.returnRemarkTime"
+              class="input-width"
+              clearable
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder=""
+            />
+          </el-form-item>
+          <el-form-item label="回单确认备注" prop="returnRemark">
+            <el-input v-model="form.returnRemark" type="textarea" placeholder="" class="input-width" />
+          </el-form-item>
+          <el-form-item label="回单照片" prop="receiptImg">
+            <img src="" style="width: 200px; height: 200px">
+          </el-form-item>
+          <el-divider content-position="left" class="m40">
+            <h5 class="g-title-medium">卸货单</h5>
+          </el-divider>
+        </el-tab-pane>
+        <!-- 轨迹 -->
+        <el-tab-pane label="轨迹" name="3">
+          <el-divider content-position="left" class="m40">
+            <h5 class="g-title-medium">运单轨迹</h5>
+          </el-divider>
+        </el-tab-pane>
+        <!-- 评价 -->
+        <el-tab-pane label="评价" name="4">
+          <el-divider content-position="left" class="m40">
+            <h5 class="g-title-medium">评价</h5>
+          </el-divider>
+          <el-row>
+            <el-col :span="12">
+              司机评价货主
+            </el-col>
+            <el-col :span="12">
+              货主评价司机
+            </el-col>
+          </el-row>
+        </el-tab-pane>
+      </el-tabs>
+
+      <!-- <el-row>
         <el-col :span="12">
           <el-form-item label="调度单号" prop="dispatchOrderCode">
             <el-input v-model="form.dispatchOrderCode" placeholder="" />
@@ -42,34 +147,6 @@
             <el-date-picker
               v-model="form.receiveTime"
               clearable
-              size="small"
-              style="width: 100%"
-              type="date"
-              value-format="yyyy-MM-dd"
-              placeholder=""
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="装货时间" prop="fillTime">
-            <el-date-picker
-              v-model="form.fillTime"
-              clearable
-              size="small"
-              style="width: 100%"
-              type="date"
-              value-format="yyyy-MM-dd"
-              placeholder=""
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="签收时间" prop="signTime">
-            <el-date-picker
-              v-model="form.signTime"
-              clearable
-              size="small"
-              style="width: 100%"
               type="date"
               value-format="yyyy-MM-dd"
               placeholder=""
@@ -81,39 +158,18 @@
             <el-date-picker
               v-model="form.settleTime"
               clearable
-              size="small"
-              style="width: 100%"
               type="date"
               value-format="yyyy-MM-dd"
               placeholder=""
             />
           </el-form-item>
         </el-col>
-        <el-col :span="12">
-          <el-form-item label="回单确认时间" prop="returnRemarkTime">
-            <el-date-picker
-              v-model="form.returnRemarkTime"
-              clearable
-              size="small"
-              style="width: 100%"
-              type="date"
-              value-format="yyyy-MM-dd"
-              placeholder=""
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="24">
-          <el-form-item label="回单确认备注" prop="returnRemark">
-            <el-input v-model="form.returnRemark" type="textarea" placeholder="" />
-          </el-form-item>
-        </el-col>
+
         <el-col :span="12">
           <el-form-item label="与司机结账时间" prop="payTime">
             <el-date-picker
               v-model="form.payTime"
               clearable
-              size="small"
-              style="width: 100%"
               type="date"
               value-format="yyyy-MM-dd"
               placeholder=""
@@ -125,8 +181,6 @@
             <el-date-picker
               v-model="form.markTime"
               clearable
-              size="small"
-              style="width: 100%"
               type="date"
               value-format="yyyy-MM-dd"
               placeholder=""
@@ -156,37 +210,14 @@
           </el-form-item>
         </el-col>
         <el-col :span="24">
-          <el-form-item label="运单状态">
-            <el-radio-group v-model="form.status">
-              <el-radio
-                v-for="dict in statusOptions"
-                :key="dict.dictValue"
-                :label="dict.dictValue"
-              >{{ dict.dictLabel }}</el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </el-col>
-        <el-col :span="24">
           <el-form-item label="打印时间" prop="prinTime">
             <el-date-picker
               v-model="form.prinTime"
               clearable
-              size="small"
-              style="width: 100%"
               type="date"
               value-format="yyyy-MM-dd"
               placeholder=""
             />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="创建人" prop="createCode">
-            <el-input v-model="form.createCode" placeholder="" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="修改人" prop="updateCode">
-            <el-input v-model="form.updateCode" placeholder="" />
           </el-form-item>
         </el-col>
         <el-col :span="24">
@@ -210,7 +241,7 @@
             <el-input v-model="form.shipperDealRemark" type="textarea" placeholder="" />
           </el-form-item>
         </el-col>
-      </el-row>
+      </el-row> -->
     </el-form>
   </el-dialog>
 </template>
@@ -232,6 +263,7 @@ export default {
   },
   data() {
     return {
+      activeTab: '1',
       // 是否字典
       isOptions: [
         { dictLabel: '否', dictValue: 0 },
@@ -451,17 +483,24 @@ export default {
 };
 </script>
 
+<style lang="scss">
+.waybill-detail-dialog{
+  .el-dialog__body{
+    padding: 10px 20px 30px !important;
+  }
+}
+</style>
 <style lang="scss" scoped>
 .mr3{
   margin-right: 3%;
 }
+.input-width{
+  width: 60%;
+}
 .mb{
   margin-bottom: 22px;
 }
-.width90{
-  width: 90%;
-}
-.width28{
-  width: 28%;
+.m40{
+  margin: 40px 0;
 }
 </style>>

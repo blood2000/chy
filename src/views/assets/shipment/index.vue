@@ -212,21 +212,21 @@
             size="mini"
             type="text"
             icon="el-icon-document"
-            @click="handleDEtail(scope.row, 'detail')"
+            @click="handleDetail(scope.row, 'detail')"
           >详情</el-button>
           <el-button
             v-hasPermi="['assets:shipment:edit']"
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleDEtail(scope.row, 'edit')"
+            @click="handleDetail(scope.row, 'edit')"
           >修改</el-button>
           <el-button
             v-show="scope.row.authStatus === 0 || scope.row.authStatus === 1"
             size="mini"
             type="text"
             icon="el-icon-document-checked"
-            @click="handleDEtail(scope.row, 'review')"
+            @click="handleDetail(scope.row, 'review')"
           >审核</el-button>
           <el-button
             v-hasPermi="['assets:shipment:remove']"
@@ -463,7 +463,7 @@ export default {
       this.formDisable = false;
     },
     /** 修改/详情按钮操作 */
-    handleDEtail(row, flag) {
+    handleDetail(row, flag) {
       this.$refs.ShipmentDialog.reset();
       const id = row.id;
       getShipment(id).then(response => {

@@ -116,7 +116,7 @@
             size="mini"
             type="text"
             icon="el-icon-document"
-            @click="handleDEtail(scope.row)"
+            @click="handleDetail(scope.row)"
           >详情</el-button>
           <el-button
             v-hasPermi="['assets:team:edit']"
@@ -273,7 +273,7 @@ export default {
       });
     },
     /** 详情按钮操作 */
-    handleDEtail(row) {
+    handleDetail(row) {
       this.$refs.TeamDialog.reset();
       const id = row.id || this.ids;
       getInfo(id).then(response => {
