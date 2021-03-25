@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="74px">
+    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
       <el-form-item label="司机类别" prop="driverType">
-        <el-select v-model="queryParams.driverType" placeholder="请选择司机类别" clearable size="small" style="width: 240px">
+        <el-select v-model="queryParams.driverType" placeholder="请选择司机类别" clearable size="small" class="input-width">
           <el-option
             v-for="dict in driverTypeOptions"
             :key="dict.dictValue"
@@ -11,35 +11,55 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="名字" prop="name">
+      <el-form-item label="用户名称" prop="name">
         <el-input
           v-model="queryParams.name"
-          placeholder="请输入名字"
+          placeholder="请输入用户名称"
           clearable
           size="small"
-          style="width: 240px"
+          class="input-width"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="手机" prop="telphone">
+      <el-form-item label="手机号" prop="telphone">
         <el-input
           v-model="queryParams.telphone"
-          placeholder="请输入手机"
+          placeholder="请输入手机号"
           clearable
           size="small"
-          style="width: 240px"
+          class="input-width"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="固话" prop="fixedPhone">
+      <el-form-item label="车牌号" prop="licenseNumber">
         <el-input
-          v-model="queryParams.fixedPhone"
-          placeholder="请输入固话"
+          v-model="queryParams.licenseNumber"
+          placeholder="请输入车牌号"
           clearable
           size="small"
-          style="width: 240px"
+          class="input-width"
           @keyup.enter.native="handleQuery"
         />
+      </el-form-item>
+      <el-form-item label="所属调度" prop="teamCode">
+        <el-select
+          v-model="queryParams.teamCode"
+          filterable
+          remote
+          reserve-keyword
+          placeholder="请输入调度名称"
+          :remote-method="teamRemoteMethod"
+          :loading="teamLoading"
+          clearable
+          class="input-width"
+        >
+          <el-option
+            v-for="item in teamOptions"
+            :key="item.code"
+            :label="item.name"
+            :value="item.code"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="身份证号" prop="identificationNumber">
         <el-input
@@ -47,12 +67,22 @@
           placeholder="请输入身份证号"
           clearable
           size="small"
-          style="width: 240px"
+          class="input-width"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="驾驶证类型" prop="driverLicenseType">
+        <el-select v-model="queryParams.driverLicenseType" clearable size="small" class="input-width">
+          <el-option
+            v-for="dict in driverLicenseTypeOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="parseInt(dict.dictValue)"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="审核状态" prop="authStatus">
-        <el-select v-model="queryParams.authStatus" placeholder="请选择审核状态" clearable size="small" style="width: 240px">
+        <el-select v-model="queryParams.authStatus" placeholder="请选择审核状态" clearable size="small" class="input-width">
           <el-option
             v-for="dict in statusOptions"
             :key="dict.dictValue"
@@ -120,9 +150,8 @@
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table v-loading="loading" :data="driverList" type="expand" @selection-change="handleSelectionChange" @expand-change="handleExpand">
+    <el-table v-loading="loading" :data="driverList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <!-- <el-table-column type="expand" /> -->
       <el-table-column label="司机类别" align="center" prop="driverType" :formatter="driverTypeFormat" />
       <el-table-column label="名字" align="center" prop="name" />
       <el-table-column label="审核状态" align="center" prop="authStatus" sortable width="100">
@@ -155,7 +184,7 @@
           <span>{{ parseTime(scope.row.validPeriodTo, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="驾驶证类型" align="center" prop="driverLicenseType" />
+      <el-table-column label="驾驶证类型" align="center" prop="driverLicenseType" :formatter="driverLicenseTypeFormat" />
       <el-table-column label="上岗证" align="center" prop="workLicense" />
       <el-table-column label="从业资格证到期日期" align="center" prop="workLicenseDueDate" width="180">
         <template slot-scope="scope">
@@ -235,6 +264,7 @@
 
 <script>
 import { listDriver, getDriver, delDriver, getAgreementWord } from '@/api/assets/driver';
+import { listInfo } from '@/api/assets/team';
 import DriverDialog from './driverDialog';
 import ImportDialog from './importDialog';
 import ManageDialog from './manageDialog';
@@ -310,16 +340,21 @@ export default {
         driverType: undefined,
         name: undefined,
         telphone: undefined,
-        fixedPhone: undefined,
         identificationNumber: undefined,
-        authStatus: undefined
+        authStatus: undefined,
+        licenseNumber: undefined,
+        driverLicenseType: undefined,
+        teamCode: undefined
       },
       // 表单是否禁用
       formDisable: false,
       // 司机code
       driverCode: null,
       // 下载的协议号内容
-      agreementHtml: ''
+      agreementHtml: '',
+      // 车队列表
+      teamLoading: false,
+      teamOptions: []
     };
   },
   created() {
@@ -440,10 +475,6 @@ export default {
     handleImportTemplateDriver() {
       this.download('assets/driver/importTemplate', {}, `driver_template_${new Date().getTime()}.xlsx`);
     },
-    /** 展开车辆列表 */
-    handleExpand(row) {
-      console.log(row);
-    },
     /** 管理按钮操作 */
     handleManage(row) {
       this.driverCode = row.code;
@@ -458,7 +489,25 @@ export default {
         this.agreementHtml = response.data;
         this.agreementDialogOpen = true;
       });
+    },
+    // 查询车队列表
+    teamRemoteMethod(query) {
+      if (query !== '') {
+        this.loading = true;
+        listInfo({ name: query }).then(response => {
+          this.loading = false;
+          this.teamOptions = response.rows;
+        });
+      } else {
+        this.teamOptions = [];
+      }
     }
   }
 };
 </script>
+
+<style scoped>
+.input-width{
+  width: 240px;
+}
+</style>

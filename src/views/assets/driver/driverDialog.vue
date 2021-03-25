@@ -12,12 +12,22 @@
         </el-select>
       </el-form-item>
       <el-form-item label="所属调度" prop="teamCode" :required="form.driverType===2">
-        <el-select v-model="form.teamCode" class="width90" clearable>
+        <el-select
+          v-model="form.teamCode"
+          filterable
+          remote
+          reserve-keyword
+          placeholder="请输入调度名称"
+          :remote-method="teamRemoteMethod"
+          :loading="loading"
+          clearable
+          class="width90"
+        >
           <el-option
-            v-for="dict in driverTypeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="parseInt(dict.dictValue)"
+            v-for="item in teamOptions"
+            :key="item.code"
+            :label="item.name"
+            :value="item.code"
           />
         </el-select>
       </el-form-item>
@@ -34,7 +44,29 @@
         <el-input v-model="form.password" type="password" placeholder="请输入密码" class="width59 mr3" clearable />
         <span class="g-color-blue">(初始密码为{{ initialPassword }})</span>
       </el-form-item>
-
+      <el-form-item label="身份证号" prop="identificationNumber">
+        <el-input v-model="form.identificationNumber" placeholder="支持自动识别" class="width90" clearable />
+      </el-form-item>
+      <el-form-item label="身份证有效期" prop="identificationEndTime">
+        <el-date-picker
+          v-model="form.identificationBeginTime"
+          clearable
+          class="width28"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择"
+        />
+        至
+        <el-date-picker
+          v-model="form.identificationEndTime"
+          clearable
+          class="width28 mr3"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择"
+        />
+        <el-checkbox v-model="form.identificationEffective">长期有效</el-checkbox>
+      </el-form-item>
       <!-- 选择省/市/区 -->
       <province-city-county
         ref="ChooseArea"
@@ -49,31 +81,17 @@
           form.countyCode = data.countyCode;
         }"
       />
-
       <el-form-item label="详细地址" prop="homeAddress">
         <el-input v-model="form.homeAddress" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
       <!-- <el-form-item label="司机城市名称" prop="driverCity">
         <el-input v-model="form.driverCity" placeholder="请输入司机城市名称" class="width90" clearable />
       </el-form-item> -->
-      <el-form-item label="身份证号" prop="identificationNumber">
-        <el-input v-model="form.identificationNumber" placeholder="支持自动识别" class="width90" clearable />
-      </el-form-item>
-      <el-form-item label="驾驶证类型" prop="driverLicenseType">
-        <el-select v-model="form.driverLicenseType" class="width90" placeholder="支持自动识别" clearable>
-          <el-option
-            v-for="dict in driverLicenseTypeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="parseInt(dict.dictValue)"
-          />
-        </el-select>
-      </el-form-item>
       <el-form-item label="驾驶证号" prop="driverLicense">
         <el-input v-model="form.driverLicense" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
       <el-form-item label="驾驶证发证机关" prop="issuingOrganizations">
-        <el-input v-model="form.issuingOrganizations" placeholder="请输入驾驶证发证机关" class="width90" clearable />
+        <el-input v-model="form.issuingOrganizations" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
       <el-form-item label="驾驶证有效期" prop="validPeriodTo">
         <el-date-picker
@@ -95,6 +113,17 @@
         />
         <el-checkbox v-model="form.validPeriodAlways">长期有效</el-checkbox>
       </el-form-item>
+      <el-form-item label="驾驶证类型" prop="driverLicenseType">
+        <el-select v-model="form.driverLicenseType" class="width90" placeholder="支持自动识别" clearable>
+          <el-option
+            v-for="dict in driverLicenseTypeOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="parseInt(dict.dictValue)"
+          />
+        </el-select>
+      </el-form-item>
+      <!-- ================================================================= -->
       <el-form-item label="工作单位" prop="workCompany">
         <el-input v-model="form.workCompany" placeholder="请输入工作单位" class="width90" clearable />
       </el-form-item>
@@ -127,10 +156,6 @@
             :value="dict.provinceCode"
           />
         </el-select>
-      </el-form-item>
-      <!-- ================================================================= -->
-      <el-form-item label="网点编码" prop="branchCode">
-        <el-input v-model="form.branchCode" placeholder="请输入网点编码" class="width90" clearable />
       </el-form-item>
       <el-form-item label="营业执照号" prop="businessLicenseImgNo">
         <el-input v-model="form.businessLicenseImgNo" placeholder="请输入营业执照号" class="width90" clearable />
@@ -263,10 +288,10 @@
     </el-form>
 
     <el-form ref="vehicleForm" :model="vehicleForm" :rules="vehicleRules" :disabled="disable" label-width="140px">
-      <el-form-item label="车辆归属类型" prop="vehicleAscriptionType">
-        <el-select v-model="vehicleForm.vehicleAscriptionType" class="width90" clearable>
+      <el-form-item label="车牌颜色" prop="vehicleLicenseColorCode">
+        <el-select v-model="vehicleForm.vehicleLicenseColorCode" class="width90" clearable>
           <el-option
-            v-for="dict in vehicleAscriptionTypeOptions"
+            v-for="dict in vehicleLicenseColorCodeOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="parseInt(dict.dictValue)"
@@ -283,20 +308,20 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="车牌颜色" prop="vehicleLicenseColorCode">
-        <el-select v-model="vehicleForm.vehicleLicenseColorCode" class="width90" clearable>
+      <el-form-item label="车身颜色" prop="vehicleColorCode">
+        <el-select v-model="vehicleForm.vehicleColorCode" class="width90" clearable>
           <el-option
-            v-for="dict in vehicleLicenseColorCodeOptions"
+            v-for="dict in vehicleColorCodeOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="parseInt(dict.dictValue)"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="车身颜色" prop="vehicleColorCode">
-        <el-select v-model="vehicleForm.vehicleColorCode" class="width90" clearable>
+      <el-form-item label="车辆归属类型" prop="vehicleAscriptionType">
+        <el-select v-model="vehicleForm.vehicleAscriptionType" class="width90" clearable>
           <el-option
-            v-for="dict in vehicleColorCodeOptions"
+            v-for="dict in vehicleAscriptionTypeOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="parseInt(dict.dictValue)"
@@ -381,6 +406,7 @@
 <script>
 import { addDriver, updateDriver, authRead, examine } from '@/api/assets/driver';
 import { getProvinceList } from '@/api/system/area';
+import { listInfo } from '@/api/assets/team';
 import UploadImage from '@/components/UploadImage/index';
 import ProvinceCityCounty from '@/components/ProvinceCityCounty';
 
@@ -453,6 +479,9 @@ export default {
       vehicleColorCodeOptions: [],
       // 车辆能源类型字典
       vehicleEnergyTypeOptions: [],
+      // 车队列表
+      loading: false,
+      teamOptions: [],
       // 表单参数
       form: {},
       vehicleForm: {},
@@ -469,6 +498,10 @@ export default {
         identificationNumber: [
           { required: true, message: '身份证号不能为空', trigger: 'blur' },
           { validator: this.formValidate.idCard }
+        ],
+        identificationEndTime: [
+          { required: true, message: '身份证有效期不能为空', trigger: 'blur' },
+          { validator: this.formValidate.isExpired }
         ],
         issuingOrganizations: [
           { required: true, message: '驾驶证发证机关不能为空', trigger: 'blur' }
@@ -532,6 +565,11 @@ export default {
         if (valid && flag) {
           const driver = this.form;
           driver.vehicleInfo = this.vehicleForm;
+          if (driver.identificationEffective) {
+            driver.identificationEffective = 1;
+          } else {
+            driver.identificationEffective = 0;
+          }
           if (driver.validPeriodAlways) {
             driver.validPeriodAlways = 1;
           } else {
@@ -555,6 +593,11 @@ export default {
     },
     /** 已读 */
     authRead(data) {
+      if (data.identificationEffective) {
+        data.identificationEffective = 1;
+      } else {
+        data.identificationEffective = 0;
+      }
       if (data.validPeriodAlways) {
         data.validPeriodAlways = 1;
       } else {
@@ -567,6 +610,11 @@ export default {
     /** 审核通过/未通过按钮 */
     reviewForm(key) {
       this.form.authStatus = key;
+      if (this.form.identificationEffective) {
+        this.form.identificationEffective = 1;
+      } else {
+        this.form.identificationEffective = 0;
+      }
       if (this.form.validPeriodAlways) {
         this.form.validPeriodAlways = 1;
       } else {
@@ -607,6 +655,9 @@ export default {
         driverCity: null,
         homeAddress: null,
         identificationNumber: null,
+        identificationBeginTime: null,
+        identificationEndTime: null,
+        identificationEffective: null,
         driverLicense: null,
         validPeriodFrom: null,
         validPeriodTo: null,
@@ -672,10 +723,27 @@ export default {
     setForm(data) {
       this.form = data;
       this.vehicleForm = data.vehicleInfo || {};
+      if (this.form.identificationEffective) {
+        this.form.identificationEffective = true;
+      } else {
+        this.form.identificationEffective = false;
+      }
       if (this.form.validPeriodAlways) {
         this.form.validPeriodAlways = true;
       } else {
         this.form.validPeriodAlways = false;
+      }
+    },
+    // 查询车队列表
+    teamRemoteMethod(query) {
+      if (query !== '') {
+        this.loading = true;
+        listInfo({ name: query }).then(response => {
+          this.loading = false;
+          this.teamOptions = response.rows;
+        });
+      } else {
+        this.teamOptions = [];
       }
     }
   }
