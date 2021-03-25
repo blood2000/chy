@@ -7,7 +7,7 @@
           placeholder="请输入货主姓名"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 272px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -17,12 +17,12 @@
           placeholder="请输入电话号码"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 272px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <el-form-item label="是否核算" prop="isAccount">
-        <el-select v-model="queryParams.isAccount" placeholder="请选择核算方式" clearable size="small" style="width: 240px">
+        <el-select v-model="queryParams.isAccount" placeholder="请选择核算方式" clearable size="small" style="width: 272px">
           <el-option
             v-for="dict in isOptions"
             :key="dict.dictValue"
@@ -32,7 +32,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="核算方式" prop="accountType">
-        <el-select v-model="queryParams.accountType" placeholder="请选择核算方式" clearable size="small" style="width: 240px">
+        <el-select v-model="queryParams.accountType" placeholder="请选择核算方式" clearable size="small" style="width: 272px">
           <el-option
             v-for="dict in accountTypeOptions"
             :key="dict.dictValue"
@@ -46,7 +46,7 @@
           v-model="queryParams.authStatus"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 272px"
         >
           <el-option
             v-for="dict in statusOptions"
@@ -62,7 +62,7 @@
           placeholder="请输入公司名称"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 272px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -71,7 +71,7 @@
           v-model="queryParams.shipperType"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 272px"
         >
           <el-option
             v-for="dict in typeOptions"
@@ -88,7 +88,7 @@
           size="small"
           type="date"
           value-format="yyyy-MM-dd"
-          style="width: 152px"
+          style="width: 130px"
           placeholder="请选择"
         /> -
         <el-date-picker
@@ -97,7 +97,7 @@
           size="small"
           type="date"
           value-format="yyyy-MM-dd"
-          style="width: 152px"
+          style="width: 130px"
           placeholder="请选择"
         />
       </el-form-item>
@@ -108,7 +108,7 @@
           size="small"
           type="date"
           value-format="yyyy-MM-dd"
-          style="width: 152px"
+          style="width: 130px"
           placeholder="请选择"
         /> -
         <el-date-picker
@@ -117,7 +117,7 @@
           size="small"
           type="date"
           value-format="yyyy-MM-dd"
-          style="width: 152px"
+          style="width: 130px"
           placeholder="请选择"
         />
       </el-form-item>

@@ -1,6 +1,7 @@
 <template>
   <div class="page-company-info">
-    <div class="app-container">
+    <!-- 企业信息 -->
+    <div v-if="form.shipperType === 1" class="app-container">
       <h3 class="g-title-medium mb20">企业信息</h3>
       <el-row>
         <!-- <el-col :span="4">
@@ -18,10 +19,9 @@
           </div>
         </el-col> -->
         <el-col :span="18">
-          <el-form ref="form" :model="form" :rules="rules" label-width="140px" :label-position="'left'">
-            <el-form-item label="企业名称" prop="companyName">
+          <el-form ref="form" :model="form" :rules="rules" label-width="150px" :label-position="'left'">
+            <el-form-item label="企业名称：" prop="companyName">
               {{ form.companyName }}
-              <!-- <el-input v-model="form.companyName" placeholder="请输入企业名称" readonly class="input-width mr20" clearable />-->
               <span v-if="form.orgAuthStatus =='3' && form.companyCode" class="g-color-success mr20">
                 <i class="el-icon-circle-check" />
                 已认证
@@ -30,46 +30,57 @@
                 <i class="el-icon-circle-close" />
                 未认证
               </span>
-              <el-button type="text no-padding" v-if="form.shipperType == 1" @click="handleCertification">修改</el-button>
+              <el-button type="text no-padding" @click="handleCertification">修改</el-button>
             </el-form-item>
-            <el-form-item label="统一社会信用代码" prop="organizationCodeNo">
+            <el-form-item label="统一社会信用代码：" prop="organizationCodeNo">
               {{ form.organizationCodeNo }}
-            <!--  <el-input v-model="form.organizationCodeNo" class="input-width" clearable />-->
             </el-form-item>
-            <el-form-item label="营业执照号" prop="businessLicenseNo">
+            <el-form-item label="营业执照号：" prop="businessLicenseNo">
               {{ form.businessLicenseNo }}
-              <!--<el-input v-model="form.businessLicenseNo" class="input-width" clearable />-->
             </el-form-item>
-            <el-form-item label="营业执照照" prop="businessLicenseImg">
+            <el-form-item label="营业执照照：" prop="businessLicenseImg">
               <el-row>
                 <el-col :span="7">
                   <upload-image :value="form.businessLicenseImg" />
                 </el-col>
               </el-row>
             </el-form-item>
-            <!-- <el-form-item label="主营业务" prop="name">
-              <el-input v-model="form.name" placeholder="请输入主营业务" class="input-width" clearable />
-            </el-form-item>
-            <el-form-item label="业务城市" prop="name">
+            <!-- <el-form-item label="业务城市" prop="name">
               <add-city-tag :prop-citys="form.citys" @refresh="(val) => form.citys=val" />
-            </el-form-item>
-            <el-form-item label="联系人" prop="name">
-              <el-input v-model="form.name" placeholder="请输入联系人" class="input-width" clearable />
-            </el-form-item>
-            <el-form-item label="联系电话" prop="telphone">
-              <el-input v-model="form.telphone" placeholder="请输入联系电话" class="input-width" clearable />
-            </el-form-item>
-            <el-form-item label="公司介绍" prop="name">
-              <el-input v-model="form.name" type="textarea" placeholder="请输入公司介绍" class="input-width-large" clearable />
             </el-form-item> -->
-          <!--  <el-form-item>
-              <el-button type="primary" @click="handleSubmit">保存</el-button>
-            </el-form-item>-->
           </el-form>
         </el-col>
       </el-row>
     </div>
 
+    <!-- 个人信息 -->
+    <div v-if="form.shipperType === 0" class="app-container">
+      <h3 class="g-title-medium mb20">个人信息</h3>
+      <el-row>
+        <el-form ref="form" :model="form" :rules="rules" label-width="100px" :label-position="'left'">
+          <el-form-item label="姓名：" prop="adminName">
+            {{ form.adminName }}
+            <span v-if="form.orgAuthStatus =='3' && form.companyCode" class="g-color-success mr20">
+              <i class="el-icon-circle-check" />
+              已认证
+            </span>
+            <span v-else-if="form.companyCode" class="g-color-error mr20">
+              <i class="el-icon-circle-close" />
+              未认证
+            </span>
+            <el-button type="text no-padding" @click="handleCertification">修改</el-button>
+          </el-form-item>
+          <el-form-item label="身份证号：" prop="identificationNumber">
+            {{ form.identificationNumber }}
+          </el-form-item>
+          <el-form-item label="手机号码：" prop="telphone">
+            {{ form.telphone }}
+          </el-form-item>
+        </el-form>
+      </el-row>
+    </div>
+
+    <!-- 管理员信息 -->
     <div class="app-container">
       <h3 class="g-title-medium mb10">管理员信息</h3>
       <el-row>
@@ -81,10 +92,7 @@
           <label>身份证号：</label>
           {{ form.identificationNumber }}
         </el-col>
-        <!-- <el-col :span="7">
-          <label>手机号：</label>
-        </el-col>
-        <el-col :span="8">
+        <!-- <el-col :span="8">
           <label>认证状态：</label>
           <span class="g-color-error mr20">
             <i class="el-icon-warning-outline" />
@@ -97,19 +105,22 @@
     </div>
 
     <!-- 货主/企业认证 对话框 -->
-    <certification-dialog ref="detailDialog" :open.sync="open" :info="form" @refresh="getCompanyInfo" />
+    <!-- <certification-dialog ref="detailDialog" :open.sync="open" :info="form" @refresh="getCompanyInfo" /> -->
+    <shipment-dialog ref="ShipmentDialog" :title="'货主/企业认证'" :open.sync="open" :disable="false" @refresh="getCompanyInfo" />
   </div>
 </template>
 
 <script>
-import { getCompanyInfo, saveCompanyInfo } from '@/api/enterprise/company/info';
-import CertificationDialog from './CertificationDialog.vue';
+import { getCompanyInfo } from '@/api/enterprise/company/info';
+// import CertificationDialog from './CertificationDialog.vue';
+import ShipmentDialog from '../../../assets/shipment/shipmentDialog';
 import UploadImage from '@/components/UploadImage/index';
 // import AddCityTag from '@/components/AddCityTag';
 
 export default {
   components: {
-    CertificationDialog,
+    // CertificationDialog,
+    ShipmentDialog,
     UploadImage
     // AddCityTag
   },
@@ -160,22 +171,11 @@ export default {
         // this.$forceUpdate();
       });
     },
-    // 保存
-    handleSubmit() {
-      this.$refs['form'].validate(valid => {
-        if (valid) {
-          saveCompanyInfo(this.form).then(response => {
-            this.msgSuccess('修改成功');
-            this.close();
-            this.$emit('refresh');
-          });
-        }
-      });
-    },
     // 企业认证
     handleCertification() {
+      this.$refs.ShipmentDialog.reset();
+      this.$refs.ShipmentDialog.setForm(this.form);
       this.open = true;
-      this.$refs.detailDialog.setForm();
     },
     // 安全升级
     securityUpgrade() {}

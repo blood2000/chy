@@ -177,68 +177,30 @@
       <el-table-column label="货物类型分类" align="center" prop="goodsType" />
       <el-table-column label="装车重量" align="center" prop="loadWeight" />
       <el-table-column label="卸车重量" align="center" prop="unloadWeight" />
+      <el-table-column label="数量(车)" align="center" prop="carNum" />
       <el-table-column label="用车类型" align="center" prop="carType" />
-      <el-table-column label="运费单价" align="center" prop="freightPrice" />
       <el-table-column label="货物单价" align="center" prop="goodsPrice" />
+      <el-table-column label="运费单价" align="center" prop="freightPrice" />
+      <el-table-column label="公里数" align="center" prop="mileage" />
+      <el-table-column label="含税价" align="center" prop="taxFee" />
+      <el-table-column label="不含税价" align="center" prop="noTaxFee" />
+      <el-table-column label="装货地" align="center" prop="loadAddress" />
+      <el-table-column label="卸货地" align="center" prop="unloadAddress" />
+      <el-table-column label="发布货源时间" align="center" prop="orderTime" width="180">
+        <template slot-scope="scope">
+          <span>{{ parseTime(new Date(scope.row.orderTime), '{y}-{m}-{d}') }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="接单时间" align="center" prop="receiveTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(new Date(scope.row.receiveTime), '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="装货时间" align="center" prop="fillTime" width="180">
+      <el-table-column label="最后操作时间" align="center" prop="wayBillUpdateTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.fillTime), '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(new Date(scope.row.wayBillUpdateTime), '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="是否签收" align="center" prop="isSign" :formatter="isSignFormat" />
-      <el-table-column label="签收时间" align="center" prop="signTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.signTime), '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="是否结算" align="center" prop="isSettle" :formatter="isSettleFormat" />
-      <el-table-column label="结算时间" align="center" prop="settleTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.settleTime), '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="回单确认状态" align="center" prop="isReturn" :formatter="isReturnFormat" />
-      <el-table-column label="回单确认时间" align="center" prop="returnRemarkTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.returnRemarkTime), '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="回单确认备注" align="center" prop="returnRemark" />
-      <el-table-column label="支付给司机运费状态" align="center" prop="isPay" :formatter="isPayFormat" />
-      <el-table-column label="与司机结账时间" align="center" prop="payTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.payTime), '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="标记打款状态" align="center" prop="isMarkStatus" :formatter="isMarkStatusFormat" />
-      <el-table-column label="标记打款时间" align="center" prop="markTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.markTime), '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="运单是否已打印" align="center" prop="isPrintOrder" :formatter="isPrintOrderFormat" />
-      <el-table-column label="打印时间" align="center" prop="prinTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.prinTime), '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="是否批量接单订单" align="center" prop="isMultiOrder" :formatter="isMultiOrderFormat" />
-      <el-table-column label="是否使用保证金" align="center" prop="isCash" :formatter="isCashFormat" />
-      <el-table-column label="保证金" align="center" prop="cashDeposit" />
-      <el-table-column label="给货主结算的和展示的每车总费" align="center" prop="shipperDeliveryFee" />
-      <el-table-column label="月结订单结算状态" align="center" prop="monthlySettlementStatus" :formatter="monthlySettlementStatusFormat" />
-      <el-table-column label="给超载的子单排序用" align="center" prop="childSort" :formatter="childSortFormat" />
-      <el-table-column label="创建人" align="center" prop="createCode" />
-      <el-table-column label="修改人" align="center" prop="updateCode" />
-      <el-table-column label="货物重量" align="center" prop="weight" />
-      <el-table-column label="司机取消订单" align="center" prop="cancelStatus" :formatter="cancelStatusFormat" />
-      <el-table-column label="司机取消理由" align="center" prop="driverApplyRemark" />
-      <el-table-column label="货主处理司机申请取消备注" align="center" prop="shipperDealRemark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="240">
         <template slot-scope="scope">
           <el-button
