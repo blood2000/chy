@@ -119,7 +119,7 @@
             v-for="dict in driverLicenseTypeOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
-            :value="parseInt(dict.dictValue)"
+            :value="dict.dictValue"
           />
         </el-select>
       </el-form-item>
@@ -556,6 +556,10 @@ export default {
       // 省
       getProvinceList().then((response) => {
         this.provinceCodeOptions = response.rows;
+      });
+      // 驾驶证类型
+      this.getDicts('driver_license_type').then(response => {
+        this.driverLicenseTypeOptions = response.data;
       });
     },
     /** 提交按钮 */

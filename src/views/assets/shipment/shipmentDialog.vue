@@ -150,8 +150,14 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="服务费比例" prop="serviceRatio">
-          <el-input v-model="form.serviceRatio" placeholder="请输入服务费比例" class="width90" clearable />
+        <el-form-item label="服务费税率(%)" prop="serviceRate">
+          <el-input-number v-model="form.serviceRate" :precision="2" placeholder="请输入服务费税率" :step="1" :min="0" :max="100" class="width90" clearable />
+        </el-form-item>
+        <el-form-item label="服务费比例(%)" prop="serviceRatio">
+          <el-input-number v-model="form.serviceRatio" :precision="2" placeholder="请输入服务费比例" :step="1" :min="0" :max="100" class="width90" clearable />
+        </el-form-item>
+        <el-form-item label="税点(%)" prop="texPoint">
+          <el-input-number v-model="form.texPoint" :precision="2" placeholder="请输入税点" :step="1" :min="0" :max="100" class="width90" clearable />
         </el-form-item>
         <el-form-item label="货源是否审核" prop="supplyIsAuth">
           <el-select
@@ -246,7 +252,7 @@
           至
           <el-input v-model="form.consumptionMax" placeholder="最大值" class="width12" />
         </el-form-item>
-        <el-form-item label="是否月结" prop="isMonthly">
+        <el-form-item label="是否月结" prop="creditAmount">
           <el-select
             v-model="form.isMonthly"
             clearable
@@ -365,6 +371,9 @@ export default {
         identificationEndTime: [
           { required: true, message: '身份证有效期不能为空', trigger: 'blur' },
           { validator: this.formValidate.isExpired }
+        ],
+        creditAmount: [
+          { validator: this.formValidate.number }
         ]
       }
     };
@@ -502,6 +511,7 @@ export default {
         creditAmount: null,
         ticketType: null,
         serviceRatio: null,
+        serviceRate: null,
         supplyIsAuth: 0 // 是否审核货源，默认否
       };
       this.resetForm('form');
