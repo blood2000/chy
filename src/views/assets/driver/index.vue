@@ -77,7 +77,7 @@
             v-for="dict in driverLicenseTypeOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
-            :value="parseInt(dict.dictValue)"
+            :value="dict.dictValue"
           />
         </el-select>
       </el-form-item>
@@ -358,9 +358,17 @@ export default {
     };
   },
   created() {
+    this.getDictsOptions();
     this.getList();
   },
   methods: {
+    /** 查询字典 */
+    getDictsOptions() {
+      // 驾驶证类型
+      this.getDicts('driver_license_type').then(response => {
+        this.driverLicenseTypeOptions = response.data;
+      });
+    },
     // 司机类别字典翻译
     driverTypeFormat(row, column) {
       return this.selectDictLabel(this.driverTypeOptions, row.driverType);

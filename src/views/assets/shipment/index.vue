@@ -179,7 +179,9 @@
       <el-table-column label="法人身份证" align="center" prop="artificialIdentificationNumber" /> -->
       <el-table-column label="是否冻结" align="center" prop="isFreezone" :formatter="isFreezoneFormat" />
       <el-table-column label="票制类别" align="center" prop="ticketType" :formatter="ticketTypeFormat" />
+      <el-table-column label="服务费税率" align="center" prop="serviceRate" />
       <el-table-column label="服务费比例" align="center" prop="serviceRatio" />
+      <el-table-column label="税点" align="center" prop="texPoint" />
       <el-table-column label="是否独立核算" align="center" prop="isAccount" :formatter="isAccountFormat" />
       <el-table-column label="货源是否审核" align="center" prop="supplyIsAuth" :formatter="supplyIsAuthFormat" />
       <el-table-column label="是否预付运费" align="center" prop="isPrepaid" :formatter="isPrepaidFormat" />

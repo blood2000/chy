@@ -132,17 +132,6 @@
           <el-button type="danger" plain icon="el-icon-delete" size="mini" circle @click="deleteItem('add', item.code)" />
         </el-form-item>
       </el-row>
-      <!-- 抹零规则 -->
-      <el-form-item label="抹零规则" prop="m0DictValue">
-        <el-select v-model="form.m0DictValue" placeholder="请选择抹零规则" class="width-small" clearable>
-          <el-option
-            v-for="dict in m0DictValueOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -180,8 +169,6 @@ export default {
     return {
       // 计算公式字典
       ruleTypeOptions: [],
-      // 抹零规则字典
-      m0DictValueOptions: [],
       // 表单参数
       form: {
         platformType: 2, // 1运营 2货主
@@ -231,10 +218,6 @@ export default {
       // 计算公式
       this.getDicts('ruleFormula').then((response) => {
         this.ruleTypeOptions = response.data;
-      });
-      // 抹零规则
-      this.getDicts('M0').then((response) => {
-        this.m0DictValueOptions = response.data;
       });
       // 获取路耗表单
       getRuleItemList({ ruleType: 1 }).then(response => {
@@ -292,7 +275,6 @@ export default {
         const params = {
           name: this.form.name,
           ruleDictValue: this.form.ruleDictValue,
-          m0DictValue: this.form.m0DictValue,
           detailList: []
         };
         if (this.form.isLoss) {
@@ -385,8 +367,7 @@ export default {
         addItem: [],
         addItemObj: {},
         reduceItem: [],
-        reduceItemObj: {},
-        m0DictValue: null
+        reduceItemObj: {}
       };
       this.resetForm('form');
     },
@@ -399,7 +380,6 @@ export default {
       this.form.name = data.ruleInfo.name;
       this.form.ruleDictValue = data.ruleInfo.ruleDictValue;
       this.form.isLoss = data.lossList.length > 0;
-      this.form.m0DictValue = data.ruleInfo.m0DictValue;
       // 回填路耗
       this.setLossList(data.lossList);
       // 回填增减项
