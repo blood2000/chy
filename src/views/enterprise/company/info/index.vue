@@ -19,7 +19,7 @@
           </div>
         </el-col> -->
         <el-col :span="18">
-          <el-form ref="form" :model="form" :rules="rules" label-width="150px" :label-position="'left'">
+          <el-form ref="queryForm" :model="form" :rules="rules" label-width="150px" :label-position="'left'">
             <el-form-item label="企业名称：" prop="companyName">
               {{ form.companyName }}
               <span v-if="form.orgAuthStatus =='3' && form.companyCode" class="g-color-success mr20">
@@ -57,7 +57,7 @@
     <div v-if="form.shipperType === 0" class="app-container">
       <h3 class="g-title-medium mb20">个人信息</h3>
       <el-row>
-        <el-form ref="form" :model="form" :rules="rules" label-width="100px" :label-position="'left'">
+        <el-form ref="queryForm" :model="form" :rules="rules" label-width="100px" :label-position="'left'">
           <el-form-item label="姓名：" prop="adminName">
             {{ form.adminName }}
             <span v-if="form.orgAuthStatus =='3' && form.companyCode" class="g-color-success mr20">

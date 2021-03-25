@@ -4,8 +4,8 @@ import request from '@/utils/request';
 export function listDriver(query) {
   return request({
     url: '/assets/driver/list',
-    method: 'get',
-    params: query
+    method: 'post',
+    data: query
   });
 }
 

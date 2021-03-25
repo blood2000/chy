@@ -4,8 +4,8 @@ import request from '@/utils/request';
 export function listInfo(query) {
   return request({
     url: '/assets/team/list',
-    method: 'get',
-    params: query
+    method: 'post',
+    data: query
   });
 }
 
