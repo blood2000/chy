@@ -12,8 +12,8 @@
           size="small"
         >
           <el-option
-            v-for="dict in goodsBigTypeOptions"
-            :key="dict.dictValue"
+            v-for="(dict, index) in goodsBigTypeOptions"
+            :key="index"
             :label="dict.dictLabel"
             :value="dict.dictValue"
           />
@@ -68,8 +68,8 @@
           size="small"
         >
           <el-option
-            v-for="dict in statusOptions"
-            :key="dict.dictValue"
+            v-for="(dict, index) in statusOptions"
+            :key="index"
             :label="dict.dictLabel"
             :value="dict.dictValue"
           />
@@ -83,8 +83,8 @@
           size="small"
         >
           <el-option
-            v-for="dict in isReturnOptions"
-            :key="dict.dictValue"
+            v-for="(dict, index) in isReturnOptions"
+            :key="index"
             :label="dict.dictLabel"
             :value="dict.dictValue"
           />
