@@ -147,19 +147,19 @@
       <el-table-column label="驾驶证" align="center" prop="driverLicense" />
       <el-table-column label="驾驶证有效期自" align="center" prop="validPeriodFrom" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.validPeriodFrom), '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.validPeriodFrom, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="驾驶证有效期至" align="center" prop="validPeriodTo" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.validPeriodTo), '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.validPeriodTo, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="驾驶证类型" align="center" prop="driverLicenseType" />
       <el-table-column label="上岗证" align="center" prop="workLicense" />
       <el-table-column label="从业资格证到期日期" align="center" prop="workLicenseDueDate" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.workLicenseDueDate), '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.workLicenseDueDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="营业执照号" align="center" prop="businessLicenseImgNo" />
@@ -172,7 +172,7 @@
       <el-table-column label="修改人" align="center" prop="updateCode" />
       <el-table-column label="创建时间" align="center" prop="createTime" sortable width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.createTime)) }}</span>
+          <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="180">

@@ -201,7 +201,7 @@
       <el-table-column label="修改人" align="center" prop="updateCode" /> -->
       <el-table-column label="审核时间" align="center" prop="authTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.authTime), '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.authTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="180">

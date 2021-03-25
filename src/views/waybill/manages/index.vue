@@ -188,17 +188,17 @@
       <el-table-column label="卸货地" align="center" prop="unloadAddress" />
       <el-table-column label="发布货源时间" align="center" prop="orderTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.orderTime), '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.orderTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="接单时间" align="center" prop="receiveTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.receiveTime), '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.receiveTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="最后操作时间" align="center" prop="wayBillUpdateTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.wayBillUpdateTime), '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.wayBillUpdateTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="240">

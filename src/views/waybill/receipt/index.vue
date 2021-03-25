@@ -139,22 +139,22 @@
       <el-table-column label="状态" align="center" prop="status" width="100" :formatter="statusFormat" />
       <el-table-column label="装货截止时间" align="center" prop="lastLoadingTime" width="130">
         <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.lastLoadingTime)).slice(0, 10) }}</span>
+          <span>{{ parseTime(scope.row.lastLoadingTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="发布货源时间" align="center" prop="orderTime" width="130">
         <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.orderTime)).slice(0, 10) }}</span>
+          <span>{{ parseTime(scope.row.orderTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="接单时间" align="center" prop="receiveTime" width="130">
         <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.receiveTime)).slice(0, 10) }}</span>
+          <span>{{ parseTime(scope.row.receiveTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="最后操作时间" align="center" prop="wayBillUpdateTime" width="130">
         <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.wayBillUpdateTime)).slice(0, 10) }}</span>
+          <span>{{ parseTime(scope.row.wayBillUpdateTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column
