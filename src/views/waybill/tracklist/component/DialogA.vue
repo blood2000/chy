@@ -171,7 +171,7 @@ export default {
     getVehicle() {
       getVehicle({ driverCode: this.waybill.driverCode }).then(response => {
         this.vehicleCodeOptions = response.rows;
-        // console.log(this.vehicleCodeOptions);
+        console.log(this.vehicleCodeOptions);
       });
     },
     /** 提交按钮 */

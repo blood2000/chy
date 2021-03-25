@@ -36,6 +36,15 @@ export function unload(data) {
   });
 }
 
+// 车辆补卸货凭证
+export function unloadCredentials(data) {
+  return request({
+    url: '/transportation/waybillOper/unloadCredentials',
+    method: 'post',
+    data: data
+  });
+}
+
 // 取消运单
 export function cancel(data) {
   return request({

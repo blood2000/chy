@@ -33,8 +33,8 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="卸货凭证" prop="picture">
-        <uploadImage v-model="form.picture" />
+      <el-form-item label="卸货凭证" prop="attachmentCode">
+        <uploadImage v-model="form.attachmentCode" />
       </el-form-item>
       <el-form-item label="卸货备注" prop="remark">
         <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" :disabled="disable" placeholder="请输入装货备注信息" style="width:90%;" />
@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { unload, getAddress, getInfoDetail } from '@/api/waybill/tracklist';
+import { unload, getAddress, getInfoDetail, unloadCredentials } from '@/api/waybill/tracklist';
 import UploadImage from '@/components/UploadImage/index';
 
 export default {
@@ -149,9 +149,9 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          if (this.form.unloadTime != null) {
-            unload(this.form).then(response => {
-              this.msgSuccess('修改成功');
+          if (this.unloadinfo) {
+            unloadCredentials(this.form).then(response => {
+              this.msgSuccess('补卸货凭证成功');
               this.close();
               this.$emit('refresh');
             });
@@ -180,7 +180,7 @@ export default {
         code: this.waybill.code,
         unloadTime: this.parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}'),
         unloadWeight: null,
-        picture: null,
+        attachmentCode: null,
         remark: null,
         waybillAddress: null
       };
