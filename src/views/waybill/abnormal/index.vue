@@ -60,7 +60,7 @@
       <el-table-column label="异常标记状态" align="center" prop="isWarning" :formatter="isWarningFormat" />
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="创建人" align="center" prop="createName" />
@@ -68,7 +68,7 @@
       <!-- <el-table-column label="是否删除 0.正常 1.删除" align="center" prop="isDel" :formatter="isDelFormat" /> -->
       <el-table-column label="处理时间" align="center" prop="updateTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.updateTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.updateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="处理人" align="center" prop="updateName" />

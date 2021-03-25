@@ -111,13 +111,6 @@ export default {
     }
   },
   created() {
-    var Hours = new Date().getHours();
-    this.Hours = Hours < 10 ? ('0' + Hours) : Hours;
-    var Minutes = new Date().getMinutes();
-    this.Minutes = Minutes < 10 ? ('0' + Minutes) : Minutes;
-    var Seconds = new Date().getSeconds();
-    this.Seconds = Seconds < 10 ? ('0' + Seconds) : Seconds;
-    this.time = new Date().toISOString().slice(0, 10) + ' ' + this.Hours + ':' + this.Minutes + ':' + this.Seconds;
   },
   methods: {
     // 获取卸货详情
@@ -185,7 +178,7 @@ export default {
     reset() {
       this.form = {
         code: this.waybill.code,
-        unloadTime: this.time,
+        unloadTime: this.parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}'),
         unloadWeight: null,
         picture: null,
         remark: null,

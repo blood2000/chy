@@ -131,13 +131,6 @@ export default {
     }
   },
   created() {
-    var Hours = new Date().getHours();
-    this.Hours = Hours < 10 ? ('0' + Hours) : Hours;
-    var Minutes = new Date().getMinutes();
-    this.Minutes = Minutes < 10 ? ('0' + Minutes) : Minutes;
-    var Seconds = new Date().getSeconds();
-    this.Seconds = Seconds < 10 ? ('0' + Seconds) : Seconds;
-    this.time = new Date().toISOString().slice(0, 10) + ' ' + this.Hours + ':' + this.Minutes + ':' + this.Seconds;
   },
   methods: {
     // 获取装货详情
@@ -214,10 +207,11 @@ export default {
     reset() {
       this.form = {
         code: this.waybill.code,
-        loadTime: this.time,
+        loadTime: this.parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}'),
         loadWeight: null,
         attachmentCode: null,
         // 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+        oneself: false,
         remark: null,
         vehicleCode: null,
         waybillAddress: null

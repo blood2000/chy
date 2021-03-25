@@ -491,10 +491,12 @@ export default {
         case 6:
           this.title = '车辆跟踪';
           this.trackdialog = true;
+          this.$refs.TrackDialog.setForm(row);
           break;
         case 7:
           this.title = '定位';
           this.locationdialog = true;
+          this.$refs.LocationDialog.setForm(row);
           break;
         case 8:
           this.$refs.DialogB.reset();
