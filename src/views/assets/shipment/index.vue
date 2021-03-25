@@ -7,7 +7,7 @@
           placeholder="请输入货主姓名"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 272px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -17,12 +17,12 @@
           placeholder="请输入电话号码"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 272px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <el-form-item label="是否核算" prop="isAccount">
-        <el-select v-model="queryParams.isAccount" placeholder="请选择核算方式" clearable size="small" style="width: 240px">
+        <el-select v-model="queryParams.isAccount" placeholder="请选择核算方式" clearable size="small" style="width: 272px">
           <el-option
             v-for="dict in isOptions"
             :key="dict.dictValue"
@@ -32,7 +32,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="核算方式" prop="accountType">
-        <el-select v-model="queryParams.accountType" placeholder="请选择核算方式" clearable size="small" style="width: 240px">
+        <el-select v-model="queryParams.accountType" placeholder="请选择核算方式" clearable size="small" style="width: 272px">
           <el-option
             v-for="dict in accountTypeOptions"
             :key="dict.dictValue"
@@ -46,7 +46,7 @@
           v-model="queryParams.authStatus"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 272px"
         >
           <el-option
             v-for="dict in statusOptions"
@@ -62,7 +62,7 @@
           placeholder="请输入公司名称"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 272px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -71,7 +71,7 @@
           v-model="queryParams.shipperType"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 272px"
         >
           <el-option
             v-for="dict in typeOptions"
@@ -83,41 +83,41 @@
       </el-form-item>
       <el-form-item label="审核时间">
         <el-date-picker
-          v-model="queryParams.beginTime"
+          v-model="queryParams.authTimeBegin"
           clearable
           size="small"
           type="date"
           value-format="yyyy-MM-dd"
-          style="width: 152px"
+          style="width: 130px"
           placeholder="请选择"
         /> -
         <el-date-picker
-          v-model="queryParams.endTime"
+          v-model="queryParams.authTimeEnd"
           clearable
           size="small"
           type="date"
           value-format="yyyy-MM-dd"
-          style="width: 152px"
+          style="width: 130px"
           placeholder="请选择"
         />
       </el-form-item>
       <el-form-item label="注册时间">
         <el-date-picker
-          v-model="queryParams.beginTime"
+          v-model="queryParams.createTimeBegin"
           clearable
           size="small"
           type="date"
           value-format="yyyy-MM-dd"
-          style="width: 152px"
+          style="width: 130px"
           placeholder="请选择"
         /> -
         <el-date-picker
-          v-model="queryParams.endTime"
+          v-model="queryParams.createTimeEnd"
           clearable
           size="small"
           type="date"
           value-format="yyyy-MM-dd"
-          style="width: 152px"
+          style="width: 130px"
           placeholder="请选择"
         />
       </el-form-item>
@@ -201,7 +201,7 @@
       <el-table-column label="修改人" align="center" prop="updateCode" /> -->
       <el-table-column label="审核时间" align="center" prop="authTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.authTime), '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.authTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="180">
@@ -325,8 +325,10 @@ export default {
         authStatus: undefined,
         companyName: undefined,
         telphone: undefined,
-        beginTime: undefined,
-        endTime: undefined
+        authTimeBegin: undefined,
+        authTimeEnd: undefined,
+        createTimeBegin: undefined,
+        createTimeEnd: undefined
       },
       // 表单详情
       form: {},
@@ -438,6 +440,10 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.queryParams.authTimeBegin = undefined;
+      this.queryParams.authTimeEnd = undefined;
+      this.queryParams.createTimeBegin = undefined;
+      this.queryParams.createTimeEnd = undefined;
       this.resetForm('queryForm');
       this.handleQuery();
     },

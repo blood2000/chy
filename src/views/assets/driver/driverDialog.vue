@@ -599,7 +599,7 @@ export default {
         provinceCode: null,
         cityCode: null,
         countyCode: null,
-        password: this.initialPassword,
+        password: null,
         name: null,
         telphone: null,
         fixedPhone: null,

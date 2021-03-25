@@ -479,7 +479,7 @@
         sortable
       >
         <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.annualVerificationDate), '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.annualVerificationDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="运输介子" align="center" prop="transportMeson" />

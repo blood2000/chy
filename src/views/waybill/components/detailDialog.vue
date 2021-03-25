@@ -226,7 +226,7 @@ export default {
     open: Boolean,
     currentId: {
       type: String,
-      default: ''
+      default: null
     },
     disable: Boolean
   },
