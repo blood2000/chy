@@ -96,7 +96,7 @@
             <upload-image :value="form.identificationInhandImg" />
           </el-col>
           <el-col :span="7">
-            <p class="upload-image-label">营业执照照</p>
+            <p class="upload-image-label">营业执照</p>
             <upload-image :value="form.businessLicenseImg" />
           </el-col>
           <el-col :span="7">
@@ -274,7 +274,6 @@
 
 <script>
 import { addShipment, updateShipment, authRead, examine } from '@/api/assets/shipment';
-import { setUserRoleInfoRedis } from '@/api/system/role';
 import UploadImage from '@/components/UploadImage/index';
 import ProvinceCityCounty from '@/components/ProvinceCityCounty';
 
@@ -402,9 +401,7 @@ export default {
           }
           if (shipmentInfo.id !== undefined) {
             updateShipment(shipmentInfo).then(response => {
-              console.log(response);
               this.msgSuccess('修改成功');
-              setUserRoleInfoRedis(response.data);
               this.close();
               this.$emit('refresh');
             });
@@ -412,7 +409,6 @@ export default {
             addShipment(shipmentInfo).then(response => {
               console.log(response);
               this.msgSuccess('修改成功');
-              setUserRoleInfoRedis(response.data);
               this.close();
               this.$emit('refresh');
             });

@@ -30,7 +30,7 @@
                 <i class="el-icon-circle-close" />
                 未认证
               </span>
-              <el-button type="text no-padding" @click="handleCertification">修改</el-button>
+              <el-button type="text no-padding" v-if="form.shipperType == 1" @click="handleCertification">修改</el-button>
             </el-form-item>
             <el-form-item label="统一社会信用代码" prop="organizationCodeNo">
               {{ form.organizationCodeNo }}
