@@ -43,3 +43,11 @@ export function waybillRemark(data) {
   });
 }
 
+// 查询分单列表
+export function waybillChild(query) {
+  return request({
+    url: '/transportation/waybill/childList',
+    method: 'get',
+    params: query
+  });
+}

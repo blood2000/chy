@@ -221,6 +221,7 @@
             标记异常
           </el-button>
           <el-button
+            v-if="scope.row.isChild === 2"
             size="mini"
             type="text"
             icon="el-icon-date"
@@ -297,8 +298,8 @@ import SeperateListDialog from './seperateListDialog';
 import RemarkDialog from './remarkDialog';
 
 export default {
-  'name': 'Manages',
-  'components': {
+  name: 'Manages',
+  components: {
     DetailDialog,
     MarkAbnormalDialog,
     SeperateListDialog,
