@@ -390,6 +390,7 @@ export default {
         'pageSize': 10,
         'isInvalid': 0, // 0正常 1作废
         'isAbnormal': 0, // 0正常 1异常
+        'isChildList': '0,2', // 是否子单 0不是 1是 2超载的主单
         'code': null,
         'orderCode': null,
         'goodsCode': null,

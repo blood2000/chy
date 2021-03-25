@@ -83,7 +83,7 @@
       </el-form-item>
       <el-form-item label="审核时间">
         <el-date-picker
-          v-model="queryParams.beginTime"
+          v-model="queryParams.authTimeBegin"
           clearable
           size="small"
           type="date"
@@ -92,7 +92,7 @@
           placeholder="请选择"
         /> -
         <el-date-picker
-          v-model="queryParams.endTime"
+          v-model="queryParams.authTimeEnd"
           clearable
           size="small"
           type="date"
@@ -103,7 +103,7 @@
       </el-form-item>
       <el-form-item label="注册时间">
         <el-date-picker
-          v-model="queryParams.beginTime"
+          v-model="queryParams.createTimeBegin"
           clearable
           size="small"
           type="date"
@@ -112,7 +112,7 @@
           placeholder="请选择"
         /> -
         <el-date-picker
-          v-model="queryParams.endTime"
+          v-model="queryParams.createTimeEnd"
           clearable
           size="small"
           type="date"
@@ -325,8 +325,10 @@ export default {
         authStatus: undefined,
         companyName: undefined,
         telphone: undefined,
-        beginTime: undefined,
-        endTime: undefined
+        authTimeBegin: undefined,
+        authTimeEnd: undefined,
+        createTimeBegin: undefined,
+        createTimeEnd: undefined
       },
       // 表单详情
       form: {},
@@ -438,6 +440,10 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.queryParams.authTimeBegin = undefined;
+      this.queryParams.authTimeEnd = undefined;
+      this.queryParams.createTimeBegin = undefined;
+      this.queryParams.createTimeEnd = undefined;
       this.resetForm('queryForm');
       this.handleQuery();
     },
