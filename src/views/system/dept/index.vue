@@ -11,7 +11,7 @@
         />
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="组织状态" clearable size="small">
+        <el-select v-model="queryParams.status" placeholder="组织状态" clearable filterable size="small">
           <el-option
             v-for="dict in statusOptions"
             :key="dict.dictValue"
@@ -174,7 +174,8 @@ export default {
   },
   created() {
     this.getList();
-    this.getDicts('sys_normal_disable').then(response => {
+    /** 状态*/
+    this.getDictsByType({ dictType: 'sys_normal_disable', dictPid: '0' }).then(response => {
       this.statusOptions = response.data;
     });
   },
@@ -212,11 +213,11 @@ export default {
       this.form = {
         id: undefined,
         code: undefined,
-        parentId: undefined,
+        parentId: 0,
         orgName: undefined,
         orderNum: undefined,
         leader: undefined,
-        status: 0
+        status: '0'
       };
       this.resetForm('form');
     },

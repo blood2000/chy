@@ -22,7 +22,7 @@
         />
       </el-form-item>
       <el-form-item label="系统内置" prop="configType">
-        <el-select v-model="queryParams.configType" placeholder="系统内置" clearable size="small">
+        <el-select v-model="queryParams.configType" placeholder="系统内置" clearable filterable size="small">
           <el-option
             v-for="dict in typeOptions"
             :key="dict.dictValue"

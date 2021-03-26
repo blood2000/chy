@@ -5,7 +5,6 @@
         <el-select
           v-model="form.shipperType"
           class="width90"
-          clearable
         >
           <el-option
             v-for="dict in typeOptions"
@@ -15,15 +14,15 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="姓名" prop="adminName">
+        <el-input v-model="form.adminName" placeholder="支持自动识别" class="width90" clearable />
+      </el-form-item>
       <el-form-item label="手机号码" prop="telphone">
         <el-input v-model="form.telphone" placeholder="请输入手机号" class="width90" clearable />
       </el-form-item>
       <el-form-item label="密码" prop="password">
         <el-input v-model="form.password" type="password" placeholder="请输入密码" class="width60 mr3" clearable />
         <span class="g-color-blue">(初始密码为{{ initialPassword }})</span>
-      </el-form-item>
-      <el-form-item label="姓名" prop="adminName">
-        <el-input v-model="form.adminName" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
       <el-form-item label="身份证号" prop="identificationNumber">
         <el-input v-model="form.identificationNumber" placeholder="支持自动识别" class="width90" clearable />
@@ -52,11 +51,19 @@
         <el-form-item label="公司名称" prop="companyName">
           <el-input v-model="form.companyName" placeholder="请输入公司名称" class="width90" clearable />
         </el-form-item>
+        <el-form-item label="法人姓名" prop="artificialName">
+          <el-input v-model="form.artificialName" placeholder="请输入法人姓名" class="width90" clearable />
+        </el-form-item>
+        <el-form-item label="法人身份证" prop="artificialIdentificationNumber">
+          <el-input v-model="form.artificialIdentificationNumber" placeholder="请输入法人身份证" class="width90" clearable />
+        </el-form-item>
         <el-form-item label="统一社会信用代码" prop="organizationCodeNo">
           <el-input v-model="form.organizationCodeNo" placeholder="请输入统一社会信用代码" class="width90" clearable />
         </el-form-item>
+        <el-form-item label="营业执照号" prop="businessLicenseNo">
+          <el-input v-model="form.businessLicenseNo" placeholder="请输入营业执照号" class="width90" clearable />
+        </el-form-item>
       </template>
-
       <!-- 选择省/市/区 -->
       <province-city-county
         ref="ChooseArea"
@@ -71,44 +78,48 @@
           form.countyCode = data.countyCode;
         }"
       />
-
       <el-form-item label="详细地址" prop="area">
         <el-input v-model="form.area" clearable placeholder="支持自动识别" class="width90" />
       </el-form-item>
-      <!-- <el-form-item label="营业执照号" prop="businessLicenseNo">
-        <el-input v-model="form.businessLicenseNo" placeholder="请输入营业执照号" class="width90" clearable />
-      </el-form-item>
-      <el-form-item label="法人身份证" prop="artificialIdentificationNumber">
-        <el-input v-model="form.artificialIdentificationNumber" placeholder="请输入法人身份证" class="width90" clearable />
-      </el-form-item> -->
       <el-form-item>
         <el-row>
-          <el-col :span="7" class="mb">
+          <el-col :span="7">
             <p class="upload-image-label">管理员身份证正面照</p>
             <upload-image :value="form.identificationImg" />
           </el-col>
-          <el-col :span="7" class="mb">
+          <el-col :span="7">
             <p class="upload-image-label">管理员身份证背面照</p>
             <upload-image :value="form.identificationBackImg" />
           </el-col>
-          <el-col :span="7" class="mb">
+          <el-col :span="7">
             <p class="upload-image-label">手持身份证照</p>
             <upload-image :value="form.identificationInhandImg" />
           </el-col>
-          <el-col :span="7">
-            <p class="upload-image-label">营业执照照</p>
-            <upload-image :value="form.businessLicenseImg" />
-          </el-col>
-          <el-col :span="7">
-            <p class="upload-image-label">法人身份证正面照</p>
-            <upload-image :value="form.artificialIdentificationImg" />
-          </el-col>
+          <template v-if="form.shipperType === 1">
+            <el-col :span="7" class="mt">
+              <p class="upload-image-label">法人身份证正面照</p>
+              <upload-image :value="form.artificialIdentificationImg" />
+            </el-col>
+            <el-col :span="7" class="mt">
+              <p class="upload-image-label">法人身份证背面照</p>
+              <upload-image :value="form.artificialIdentificationBackImg" />
+            </el-col>
+            <el-col :span="7" class="mt">
+              <p class="upload-image-label">法人手持身份证照</p>
+              <upload-image :value="form.artificialIdentificationInhandImg" />
+            </el-col>
+            <el-col :span="7" class="mt">
+              <p class="upload-image-label">营业执照照</p>
+              <upload-image :value="form.businessLicenseImg" />
+            </el-col>
+          </template>
         </el-row>
       </el-form-item>
       <el-form-item label="是否冻结" prop="isFreezone">
         <el-select
           v-model="form.isFreezone"
           clearable
+          filterable
           class="width90"
         >
           <el-option
@@ -122,6 +133,7 @@
       <el-form-item label="票制类别" prop="ticketType">
         <el-select
           v-model="form.ticketType"
+          filterable
           clearable
           class="width90"
         >
@@ -133,13 +145,20 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="服务费比例" prop="serviceRatio">
-        <el-input v-model="form.serviceRatio" placeholder="请输入服务费比例" class="width90" clearable />
+      <el-form-item label="服务费税率(%)" prop="serviceRate">
+        <el-input-number v-model="form.serviceRate" :precision="2" placeholder="请输入服务费税率" :step="1" :min="0" :max="100" class="width90" clearable />
+      </el-form-item>
+      <el-form-item label="服务费比例(%)" prop="serviceRatio">
+        <el-input-number v-model="form.serviceRatio" :precision="2" placeholder="请输入服务费比例" :step="1" :min="0" :max="100" class="width90" clearable />
+      </el-form-item>
+      <el-form-item label="税点(%)" prop="texPoint">
+        <el-input-number v-model="form.texPoint" :precision="2" placeholder="请输入税点" :step="1" :min="0" :max="100" class="width90" clearable />
       </el-form-item>
       <el-form-item label="货源是否审核" prop="supplyIsAuth">
         <el-select
           v-model="form.supplyIsAuth"
           clearable
+          filterable
           class="width90"
         >
           <el-option
@@ -150,10 +169,11 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="是否核算" prop="isAccount">
+      <el-form-item label="是否独立核算" prop="isAccount">
         <el-select
           v-model="form.isAccount"
           clearable
+          filterable
           class="width90"
         >
           <el-option
@@ -165,7 +185,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="核算方式" prop="accountType">
-        <el-select v-model="form.accountType" placeholder="请选择核算方式" clearable class="width90">
+        <el-select v-model="form.accountType" placeholder="请选择核算方式" filterable clearable class="width90">
           <el-option
             v-for="dict in accountTypeOptions"
             :key="dict.dictValue"
@@ -181,6 +201,7 @@
         <el-select
           v-model="form.isWipe"
           clearable
+          filterable
           class="width28 mr3"
         >
           <el-option
@@ -190,7 +211,7 @@
             :value="dict.dictValue"
           />
         </el-select>
-        <el-select v-model="form.wipeType" placeholder="请选择抹零方式" clearable class="width28">
+        <el-select v-model="form.wipeType" placeholder="请选择抹零方式" filterable clearable class="width28">
           <el-option
             v-for="dict in wipeTypeOptions"
             :key="dict.dictValue"
@@ -199,11 +220,11 @@
           />
         </el-select>
       </el-form-item>
-
       <el-form-item label="是否开启合理路耗">
         <el-select
           v-model="form.isConsumption"
           clearable
+          filterable
           class="width28 mr3"
         >
           <el-option
@@ -215,6 +236,7 @@
         </el-select>
         <el-select
           v-model="form.consumptionUnit"
+          filterable
           clearable
           class="width28 mr3"
           placeholder="路耗单位"
@@ -230,10 +252,11 @@
         至
         <el-input v-model="form.consumptionMax" placeholder="最大值" class="width12" />
       </el-form-item>
-      <el-form-item label="是否月结" prop="isMonthly">
+      <el-form-item label="是否月结" prop="creditAmount">
         <el-select
           v-model="form.isMonthly"
           clearable
+          filterable
           class="width28 mr3"
         >
           <el-option
@@ -249,6 +272,7 @@
         <el-select
           v-model="form.isPrepaid"
           clearable
+          filterable
           class="width90"
         >
           <el-option
@@ -329,15 +353,15 @@ export default {
       // 表单校验
       rules: {
         telphone: [
-          { validator: this.formValidate.telphone }
+          { validator: this.formValidate.telphone, trigger: 'blur' }
         ],
         adminName: [
           { required: true, message: '姓名不能为空', trigger: 'blur' },
-          { validator: this.formValidate.name }
+          { validator: this.formValidate.name, trigger: 'blur' }
         ],
         identificationNumber: [
           { required: true, message: '身份证号不能为空', trigger: 'blur' },
-          { validator: this.formValidate.idCard }
+          { validator: this.formValidate.idCard, trigger: 'blur' }
         ],
         companyName: [
           { required: true, message: '公司名称不能为空', trigger: 'blur' }
@@ -348,6 +372,9 @@ export default {
         identificationEndTime: [
           { required: true, message: '身份证有效期不能为空', trigger: 'blur' },
           { validator: this.formValidate.isExpired }
+        ],
+        creditAmount: [
+          { validator: this.formValidate.number, trigger: 'blur' }
         ]
       }
     };
@@ -386,9 +413,10 @@ export default {
       });
     },
     /** 提交按钮 */
-    submitForm: function() {
+    submitForm() {
       const flag = this.$refs.ChooseArea.submit();
       this.$refs['form'].validate(valid => {
+        console.log(valid);
         if (valid && flag) {
           const shipmentInfo = this.form;
           if (shipmentInfo.identificationEffective) {
@@ -404,7 +432,8 @@ export default {
             });
           } else {
             addShipment(shipmentInfo).then(response => {
-              this.msgSuccess('新增成功');
+              console.log(response);
+              this.msgSuccess('修改成功');
               this.close();
               this.$emit('refresh');
             });
@@ -441,10 +470,10 @@ export default {
         adminName: null,
         adminCode: null,
         telphone: null,
-        password: this.initialPassword,
+        password: null,
         companyCode: null,
         companyName: null,
-        shipperType: null,
+        shipperType: 0,
         identificationNumber: null,
         identificationBeginTime: null,
         identificationEndTime: null,
@@ -468,13 +497,13 @@ export default {
         provinceCode: null,
         cityCode: null,
         countyCode: null,
-        isAccount: null,
+        isAccount: 1, // 是否独立核算，默认是
         accountType: null,
         isWipe: null,
         area: null,
         wipeType: null,
         isMonthly: null,
-        isPrepaid: null,
+        isPrepaid: 1, // 是否预付运费，默认是
         isConsumption: null,
         consumptionUnit: null,
         consumptionMin: null,
@@ -483,7 +512,8 @@ export default {
         creditAmount: null,
         ticketType: null,
         serviceRatio: null,
-        supplyIsAuth: null
+        serviceRate: null,
+        supplyIsAuth: 0 // 是否审核货源，默认否
       };
       this.resetForm('form');
     },
@@ -494,9 +524,6 @@ export default {
         this.form.identificationEffective = true;
       } else {
         this.form.identificationEffective = false;
-      }
-      if (data.password === null || data.password === undefined || data.password === '') {
-        this.form.password = this.initialPassword;
       }
     },
     // 已读
@@ -518,8 +545,8 @@ export default {
 .mr3{
   margin-right: 3%;
 }
-.mb{
-  margin-bottom: 22px;
+.mt{
+  margin-top: 22px;
 }
 .width90{
   width: 90%;

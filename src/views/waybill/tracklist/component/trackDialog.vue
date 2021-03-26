@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { cancel } from '@/api/waybill/tracklist';
+import { trackLocation, getVehicleInfo } from '@/api/waybill/tracklist';
 // import UploadImage from '@/components/UploadImage/index';
 
 export default {
@@ -38,7 +38,32 @@ export default {
         driverApplyRemark: [
           { required: true, message: '取消理由不能为空', trigger: 'blur' }
         ]
-      }
+      },
+      markers: [{
+        icon: 'https://webapi.amap.com/theme/v1.3/markers/n/start.png',
+        position: []
+      }, {
+        icon: 'https://webapi.amap.com/theme/v1.3/markers/n/end.png',
+        position: []
+      }],
+      // 查询参数 map_type:GOOGOLE或BAIDU
+      queryParams: {
+        begin_time: '2021-03-22 08:00:00',
+        end_time: '2021-03-22 09:00:00',
+        imeis: '867567047562525',
+        map_type: 'GOOGLE'
+      },
+      // 定位轨迹列表
+      tracklist: [],
+      // 运单信息
+      wayBillInfo: {},
+      // 车辆信息
+      vehicleInfo: {},
+      // 日期格式
+      Hours: '',
+      Minutes: '',
+      Seconds: '',
+      time: ''
     };
   },
   computed: {
@@ -52,46 +77,54 @@ export default {
     }
   },
   created() {
+    this.getTrackLocation();
   },
   methods: {
-    /** 提交按钮 */
-    submitForm() {
-      this.$refs['form'].validate(valid => {
-        if (valid) {
-          cancel(this.form).then(response => {
-            this.msgSuccess('申请取消运单成功');
-            this.close();
-            this.$emit('refresh');
-          });
-        }
+    /** 获取轨迹 */
+    getTrackLocation() {
+      trackLocation(this.queryParams).then(response => {
+        // console.log(response.data.result);
+        this.tracklist = response.data.result.map(function(response) {
+          return [response.lng, response.lat];
+        });
+        this.polyline.path = this.tracklist;
+        // 地图中心点
+        this.center = this.tracklist[0];
+        // 起点地址
+        this.markers[0].position = this.tracklist[0];
+        // 终点地址
+        this.markers[1].position = this.tracklist[this.tracklist.length - 1];
       });
     },
     /** 取消按钮 */
     cancel() {
       this.close();
-      this.reset();
     },
     // 关闭弹窗
     close() {
       this.$emit('update:open', false);
     },
-    // 表单重置
-    reset() {
-      this.form = {
-        wayBillInCode: null,
-        driverApplyRemark: null
-      };
-      this.resetForm('form');
-    },
     // 表单赋值
     setForm(data) {
-      this.form.wayBillInCode = data.code;
+      this.wayBillInfo = data;
+      this.time = this.parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}');
+      // this.queryParams.begin_time = data.fillTime;
+      // if (data.signTime) {
+      //   this.queryParams.end_time = data.signTime;
+      // } else {
+      //   this.queryParams.end_time = this.time;
+      // }
+      getVehicleInfo(data.vehicleCode).then(response => {
+        this.vehicleInfo = response.data;
+        console.log(this.vehicleInfo);
+      });
+      console.log(this.wayBillInfo);
     }
   }
 };
 </script>
 
-<style>
+<style scoped>
 .mr3 {
   margin-right: 3%;
 }

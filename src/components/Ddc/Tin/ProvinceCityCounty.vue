@@ -14,6 +14,7 @@
           v-model="form.province"
           placeholder="请选择省份"
           clearable
+          filterable
           @change="changeProvince"
         >
           <el-option
@@ -29,6 +30,7 @@
           v-model="form.city"
           placeholder="请选择城市"
           clearable
+          filterable
           @change="changeCity"
         >
           <el-option

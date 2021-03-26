@@ -33,6 +33,7 @@
           v-model="queryParams.commodityCategoryCode"
           placeholder="请选择商品类别"
           clearable
+          filterable
           size="small"
         >
           <el-option

@@ -58,7 +58,7 @@
               </el-form-item>
 
               <el-form-item label="货物类型大类" prop="tin4">
-                <el-select v-model="queryParams.tin4" placeholder="----请选择----" style="width: 215px">
+                <el-select v-model="queryParams.tin4" placeholder="----请选择----" style="width: 215px" clearable filterable>
                   <el-option label="区域一" value="shanghai" />
                   <el-option label="区域二" value="beijing" />
                 </el-select>
@@ -105,7 +105,7 @@
               </el-form-item> -->
 
               <el-form-item label="货源状态" prop="tin8">
-                <el-select v-model="queryParams.tin8" placeholder="----请选择----" style="width: 215px">
+                <el-select v-model="queryParams.tin8" placeholder="----请选择----" style="width: 215px" clearable filterable>
                   <el-option
                     v-for="dict in statusOptions"
                     :key="dict.dictValue"

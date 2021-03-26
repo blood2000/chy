@@ -4,8 +4,8 @@ import request from '@/utils/request';
 export function listDriver(query) {
   return request({
     url: '/assets/driver/list',
-    method: 'get',
-    params: query
+    method: 'post',
+    data: query
   });
 }
 
@@ -67,5 +67,14 @@ export function importData(data) {
     url: '/assets/driver/importData',
     method: 'post',
     data: data
+  });
+}
+
+// 下载协议号
+export function getAgreementWord(query) {
+  return request({
+    url: '/assets/driver/agreement/getAgreementWord',
+    method: 'get',
+    params: query
   });
 }

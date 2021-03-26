@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="74px">
+    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
       <el-form-item label="司机类别" prop="driverType">
-        <el-select v-model="queryParams.driverType" placeholder="请选择司机类别" clearable size="small" style="width: 240px">
+        <el-select v-model="queryParams.driverType" placeholder="请选择司机类别" filterable clearable size="small" class="input-width">
           <el-option
             v-for="dict in driverTypeOptions"
             :key="dict.dictValue"
@@ -11,35 +11,56 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="名字" prop="name">
+      <el-form-item label="用户名称" prop="name">
         <el-input
           v-model="queryParams.name"
-          placeholder="请输入名字"
+          placeholder="请输入用户名称"
           clearable
           size="small"
-          style="width: 240px"
+          class="input-width"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="手机" prop="telphone">
+      <el-form-item label="手机号" prop="telphone">
         <el-input
           v-model="queryParams.telphone"
-          placeholder="请输入手机"
+          placeholder="请输入手机号"
           clearable
           size="small"
-          style="width: 240px"
+          class="input-width"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="固话" prop="fixedPhone">
+      <el-form-item label="车牌号" prop="licenseNumber">
         <el-input
-          v-model="queryParams.fixedPhone"
-          placeholder="请输入固话"
+          v-model="queryParams.licenseNumber"
+          placeholder="请输入车牌号"
           clearable
           size="small"
-          style="width: 240px"
+          class="input-width"
           @keyup.enter.native="handleQuery"
         />
+      </el-form-item>
+      <el-form-item label="所属调度" prop="teamCode">
+        <el-select
+          v-model="queryParams.teamCode"
+          filterable
+          remote
+          reserve-keyword
+          placeholder="请输入调度名称"
+          :remote-method="teamRemoteMethod"
+          :loading="teamLoading"
+          clearable
+          class="input-width"
+          size="small"
+        >
+          <el-option
+            v-for="item in teamOptions"
+            :key="item.code"
+            :label="item.name"
+            :value="item.code"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="身份证号" prop="identificationNumber">
         <el-input
@@ -47,12 +68,22 @@
           placeholder="请输入身份证号"
           clearable
           size="small"
-          style="width: 240px"
+          class="input-width"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="驾驶证类型" prop="driverLicenseType">
+        <el-select v-model="queryParams.driverLicenseType" filterable clearable size="small" class="input-width">
+          <el-option
+            v-for="dict in driverLicenseTypeOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="审核状态" prop="authStatus">
-        <el-select v-model="queryParams.authStatus" placeholder="请选择审核状态" clearable size="small" style="width: 240px">
+        <el-select v-model="queryParams.authStatus" placeholder="请选择审核状态" filterable clearable size="small" class="input-width">
           <el-option
             v-for="dict in statusOptions"
             :key="dict.dictValue"
@@ -89,7 +120,7 @@
       <el-col :span="1.5">
         <el-button
           type="warning"
-          icon="el-icon-upload2"
+          icon="el-icon-download"
           size="mini"
           @click="handleExport"
         >导出</el-button>
@@ -120,9 +151,8 @@
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table v-loading="loading" :data="driverList" type="expand" @selection-change="handleSelectionChange" @expand-change="handleExpand">
+    <el-table v-loading="loading" :data="driverList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <!-- <el-table-column type="expand" /> -->
       <el-table-column label="司机类别" align="center" prop="driverType" :formatter="driverTypeFormat" />
       <el-table-column label="名字" align="center" prop="name" />
       <el-table-column label="审核状态" align="center" prop="authStatus" sortable width="100">
@@ -131,6 +161,11 @@
           <span v-show="scope.row.authStatus === 1" class="g-color-blue">审核中</span>
           <span v-show="scope.row.authStatus === 2" class="g-color-error">审核未通过</span>
           <span v-show="scope.row.authStatus === 3" class="g-color-success">审核通过</span>
+        </template>
+      </el-table-column>
+      <el-table-column v-if="teamCode" label="协议号" align="center" prop="agreementNo">
+        <template slot-scope="scope">
+          <el-button type="text no-padding" @click="downloadAgreement(scope.row)">{{ scope.row.agreementNo }}</el-button>
         </template>
       </el-table-column>
       <el-table-column label="手机" align="center" prop="telphone" />
@@ -142,19 +177,19 @@
       <el-table-column label="驾驶证" align="center" prop="driverLicense" />
       <el-table-column label="驾驶证有效期自" align="center" prop="validPeriodFrom" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.validPeriodFrom), '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.validPeriodFrom, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="驾驶证有效期至" align="center" prop="validPeriodTo" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.validPeriodTo), '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.validPeriodTo, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="驾驶证类型" align="center" prop="driverLicenseType" />
+      <el-table-column label="驾驶证类型" align="center" prop="driverLicenseType" :formatter="driverLicenseTypeFormat" />
       <el-table-column label="上岗证" align="center" prop="workLicense" />
       <el-table-column label="从业资格证到期日期" align="center" prop="workLicenseDueDate" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.workLicenseDueDate), '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.workLicenseDueDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="营业执照号" align="center" prop="businessLicenseImgNo" />
@@ -167,7 +202,7 @@
       <el-table-column label="修改人" align="center" prop="updateCode" />
       <el-table-column label="创建时间" align="center" prop="createTime" sortable width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.createTime)) }}</span>
+          <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="180">
@@ -182,21 +217,21 @@
             size="mini"
             type="text"
             icon="el-icon-document"
-            @click="handleDEtail(scope.row)"
+            @click="handleDetail(scope.row, 'detail')"
           >详情</el-button>
           <el-button
             v-hasPermi="['system:config:edit']"
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleDEtail(scope.row, 'edit')"
+            @click="handleDetail(scope.row, 'edit')"
           >修改</el-button>
           <el-button
             v-show="scope.row.authStatus === 0 || scope.row.authStatus === 1"
             size="mini"
             type="text"
             icon="el-icon-document-checked"
-            @click="handleDEtail(scope.row, 'review')"
+            @click="handleDetail(scope.row, 'review')"
           >审核</el-button>
           <el-button
             v-hasPermi="['system:config:remove']"
@@ -222,25 +257,30 @@
     <!-- 批量导入 对话框 -->
     <import-dialog ref="ImportDialog" :title="title" :open.sync="openImport" @refresh="getList" />
     <!-- 管理车辆 对话框 -->
-    <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :drivercode="drivercode" />
+    <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :driver-code="driverCode" />
+    <!-- 协议 对话框 -->
+    <agreement-dialog ref="agreementDialog" :open.sync="agreementDialogOpen" :agreement-html="agreementHtml" />
   </div>
 </template>
 
 <script>
-import { listDriver, getDriver, delDriver } from '@/api/assets/driver';
+import { listDriver, getDriver, delDriver, getAgreementWord } from '@/api/assets/driver';
+import { listInfo } from '@/api/assets/team';
 import DriverDialog from './driverDialog';
 import ImportDialog from './importDialog';
 import ManageDialog from './manageDialog';
+import AgreementDialog from './agreementDialog';
 
 export default {
   name: 'Driver',
   components: {
     DriverDialog,
     ImportDialog,
-    ManageDialog
+    ManageDialog,
+    AgreementDialog
   },
   props: {
-    teamcode: {
+    teamCode: {
       type: String,
       default: null
     }
@@ -293,6 +333,7 @@ export default {
       open: false,
       openImport: false,
       manageDialogOpen: false,
+      agreementDialogOpen: false,
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -300,21 +341,35 @@ export default {
         driverType: undefined,
         name: undefined,
         telphone: undefined,
-        fixedPhone: undefined,
         identificationNumber: undefined,
         authStatus: undefined,
-        teamCode: this.teamcode
+        licenseNumber: undefined,
+        driverLicenseType: undefined,
+        teamCode: undefined
       },
       // 表单是否禁用
       formDisable: false,
       // 司机code
-      drivercode: null
+      driverCode: null,
+      // 下载的协议号内容
+      agreementHtml: '',
+      // 车队列表
+      teamLoading: false,
+      teamOptions: []
     };
   },
   created() {
+    this.getDictsOptions();
     this.getList();
   },
   methods: {
+    /** 查询字典 */
+    getDictsOptions() {
+      // 驾驶证类型
+      this.getDicts('driver_license_type').then(response => {
+        this.driverLicenseTypeOptions = response.data;
+      });
+    },
     // 司机类别字典翻译
     driverTypeFormat(row, column) {
       return this.selectDictLabel(this.driverTypeOptions, row.driverType);
@@ -359,6 +414,9 @@ export default {
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
+      if (this.teamCode) {
+        this.queryParams.teamCode = this.teamCode;
+      }
       this.getList();
     },
     /** 重置按钮操作 */
@@ -380,7 +438,7 @@ export default {
       this.multiple = !selection.length;
     },
     /** 编辑/详情按钮操作 */
-    handleDEtail(row, flag) {
+    handleDetail(row, flag) {
       this.$refs.DriverDialog.reset();
       const id = row.id || this.ids;
       getDriver(id).then(response => {
@@ -426,15 +484,39 @@ export default {
     handleImportTemplateDriver() {
       this.download('assets/driver/importTemplate', {}, `driver_template_${new Date().getTime()}.xlsx`);
     },
-    /** 展开车辆列表 */
-    handleExpand(row) {
-      console.log(row);
-    },
     /** 管理按钮操作 */
     handleManage(row) {
-      this.drivercode = row.code;
+      this.driverCode = row.code;
       this.manageDialogOpen = true;
+    },
+    /** 下载协议 */
+    downloadAgreement(row) {
+      getAgreementWord({
+        driverCode: row.code,
+        teamCode: this.teamCode
+      }).then(response => {
+        this.agreementHtml = response.data;
+        this.agreementDialogOpen = true;
+      });
+    },
+    // 查询车队列表
+    teamRemoteMethod(query) {
+      if (query !== '') {
+        this.loading = true;
+        listInfo({ name: query }).then(response => {
+          this.loading = false;
+          this.teamOptions = response.rows;
+        });
+      } else {
+        this.teamOptions = [];
+      }
     }
   }
 };
 </script>
+
+<style scoped>
+.input-width{
+  width: 240px;
+}
+</style>

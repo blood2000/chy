@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
       <el-form-item label="地址类型" prop="addressType">
-        <el-select v-model="queryParams.addressType" placeholder="请选择地址类型" clearable size="small">
+        <el-select v-model="queryParams.addressType" placeholder="请选择地址类型" clearable filterable size="small">
           <el-option
             v-for="dict in addressTypeOptions"
             :key="dict.dictValue"
@@ -12,7 +12,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable size="small">
+        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable filterable size="small">
           <el-option
             v-for="dict in statusOptions"
             :key="dict.dictValue"
@@ -118,9 +118,9 @@
       </el-table-column>
       <el-table-column label="地址别名" align="center" prop="addressOtherName" />
       <el-table-column label="地址详情" align="center" prop="addressDetail" />
-      <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" />
-      <el-table-column label="联系人" align="center" prop="contactName" />
       <el-table-column label="手机号码" align="center" prop="contactTelphone" />
+      <el-table-column label="联系人" align="center" prop="contactName" />
+      <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" />
       <!-- <el-table-column label="经度" align="center" prop="latitude" />
       <el-table-column label="维度" align="center" prop="longitude" />
       <el-table-column label="备注" align="center" prop="remark" />
@@ -128,18 +128,18 @@
       <el-table-column label="更新人" align="center" prop="updateCode" /> -->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="200" fixed="right">
         <template slot-scope="scope">
-          <el-button
+          <!-- <el-button
             size="mini"
             type="text"
             icon="el-icon-map-location"
             @click="handleMapView(scope.row)"
-          >查看地图</el-button>
-          <el-button
+          >查看地图</el-button> -->
+          <!-- <el-button
             size="mini"
             type="text"
             icon="el-icon-setting"
             @click="handleSetDefault(scope.row)"
-          >设为默认地址</el-button>
+          >设为默认地址</el-button> -->
           <el-button
             v-hasPermi="['enterprise:company:address:edit']"
             size="mini"

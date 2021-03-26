@@ -8,12 +8,13 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="计算公式" prop="ruleDictType">
+          <el-form-item label="计算公式" prop="ruleDictValue">
             <el-select
-              v-model="form.ruleDictType"
+              v-model="form.ruleDictValue"
               placeholder="请选择计算公式"
               class="width-small mr3"
               clearable
+              filterable
             >
               <el-option
                 v-for="dict in ruleTypeOptions"
@@ -42,24 +43,24 @@
       </h5>
       <el-divider />
       <el-row v-show="form.isLoss">
-        <el-form-item v-for="item in form.lossItem" :key="item.code" :label="item.cnName" :prop="item.code">
-          <el-input v-if="item.showType === 1" v-model="form.lossItemObj[item.code]" :placeholder="`请输入${item.cnName}`" class="width-small" clearable />
+        <el-form-item v-for="item in lossItem" :key="item.code" :label="item.cnName" :prop="item.code">
+          <el-input v-if="item.showType === 1" v-model="lossItemObj[item.code]" :placeholder="`请输入${item.cnName}`" class="width-small" clearable />
           <template v-if="item.showType === 2">
-            <el-input v-model="form.lossItemObj[item.code].start" placeholder="最小值" class="width-small" clearable />
+            <el-input v-model="lossItemObj[item.code].start" placeholder="最小值" class="width-small" clearable />
             -
-            <el-input v-model="form.lossItemObj[item.code].end" placeholder="最大值" class="width-small" clearable />
+            <el-input v-model="lossItemObj[item.code].end" placeholder="最大值" class="width-small" clearable />
           </template>
-          <el-select v-if="item.showType === 3" v-model="form.lossItemObj[item.code]" class="width-small" clearable>
+          <el-select v-if="item.showType === 3" v-model="lossItemObj[item.code]" class="width-small" clearable filterable>
             <el-option
-              v-for="dict in form[item.dictCode]"
+              v-for="dict in options[item.dictCode]"
               :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
             />
           </el-select>
-          <el-radio-group v-if="item.showType === 4" v-model="form.lossItemObj[item.code]">
+          <el-radio-group v-if="item.showType === 4" v-model="lossItemObj[item.code]">
             <el-radio
-              v-for="dict in form[item.dictCode]"
+              v-for="dict in options[item.dictCode]"
               :key="dict.dictValue"
               :label="dict.dictValue"
             >{{ dict.dictLabel }}</el-radio>
@@ -80,9 +81,9 @@
             -
             <el-input v-model="form.reduceItemObj[item.code].end" placeholder="最大值" class="width-small mr3" clearable />
           </template>
-          <el-select v-if="item.showType === 3" v-model="form.reduceItemObj[item.code]" class="width-small mr3" clearable>
+          <el-select v-if="item.showType === 3" v-model="form.reduceItemObj[item.code]" class="width-small mr3" clearable filterable>
             <el-option
-              v-for="dict in form[item.dictCode]"
+              v-for="dict in options[item.dictCode]"
               :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
@@ -90,7 +91,7 @@
           </el-select>
           <el-radio-group v-if="item.showType === 4" v-model="form.reduceItemObj[item.code]">
             <el-radio
-              v-for="dict in form[item.dictCode]"
+              v-for="dict in options[item.dictCode]"
               :key="dict.dictValue"
               :label="dict.dictValue"
               class="mr3"
@@ -113,9 +114,9 @@
             -
             <el-input v-model="form.addItemObj[item.code].end" placeholder="最大值" class="width-small mr3" clearable />
           </template>
-          <el-select v-if="item.showType === 3" v-model="form.addItemObj[item.code]" class="width-small mr3" clearable>
+          <el-select v-if="item.showType === 3" v-model="form.addItemObj[item.code]" class="width-small mr3" clearable filterable>
             <el-option
-              v-for="dict in form[item.dictCode]"
+              v-for="dict in options[item.dictCode]"
               :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
@@ -123,7 +124,7 @@
           </el-select>
           <el-radio-group v-if="item.showType === 4" v-model="form.addItemObj[item.code]">
             <el-radio
-              v-for="dict in form[item.dictCode]"
+              v-for="dict in options[item.dictCode]"
               :key="dict.dictValue"
               :label="dict.dictValue"
               class="mr3"
@@ -132,17 +133,6 @@
           <el-button type="danger" plain icon="el-icon-delete" size="mini" circle @click="deleteItem('add', item.code)" />
         </el-form-item>
       </el-row>
-      <!-- 抹零规则 -->
-      <el-form-item label="抹零规则" prop="m0DictValue">
-        <el-select v-model="form.m0DictValue" placeholder="请选择抹零规则" class="width-small" clearable>
-          <el-option
-            v-for="dict in m0DictValueOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -156,6 +146,7 @@
       :add-checked-item="form.addItem"
       :reduce-checked-item="form.reduceItem"
       @refresh="setItem"
+      @getOptionsByCode="getOptionsByCode"
     />
   </el-dialog>
 </template>
@@ -179,23 +170,26 @@ export default {
     return {
       // 计算公式字典
       ruleTypeOptions: [],
-      // 抹零规则字典
-      m0DictValueOptions: [],
       // 表单参数
       form: {
+        platformType: 2, // 1运营 2货主
+        shipperCode: null, // 角色为货主时要传
         addItem: [],
         addItemObj: {},
         reduceItem: [],
-        reduceItemObj: {},
-        lossItem: [],
-        lossItemObj: {}
+        reduceItemObj: {}
       },
+      // 路耗
+      lossItem: [],
+      lossItemObj: {},
+      // 字典管理
+      options: {},
       // 表单校验
       rules: {
         name: [
           { required: true, message: '规则名称不能为空', trigger: 'blur' }
         ],
-        ruleDictType: [
+        ruleDictValue: [
           { required: true, message: '计算公式不能为空', trigger: 'blur' }
         ]
       },
@@ -214,76 +208,91 @@ export default {
       }
     }
   },
-  created() {
+  mounted() {
     this.getAllDicList();
   },
   methods: {
-    // 获取字典
+    /**
+     * 获取字典
+     */
     getAllDicList() {
       // 计算公式
       this.getDicts('ruleFormula').then((response) => {
         this.ruleTypeOptions = response.data;
       });
-      // 抹零规则
-      this.getDicts('M0').then((response) => {
-        this.m0DictValueOptions = response.data;
-      });
-    },
-    // 新增的时候获取路耗表单list
-    getLossList() {
+      // 获取路耗表单
       getRuleItemList({ ruleType: 1 }).then(response => {
-        this.form.lossItem = response.data.list;
-        this.setLossList(this.form.lossItem);
+        this.lossItem = response.data.list;
+        this.lossItem.forEach(el => {
+          if (el.dictCode) {
+            this.getOptionsByCode(el.dictCode);
+          }
+        });
+        this.setLossList();
       });
     },
-    // 路耗表单回填
-    setLossList(itemList) {
-      itemList.forEach(el => {
-        // select或radio类型的表单需要获取option字典
-        if (el.dictCode) {
-          this.getDicts(el.dictCode).then((response) => {
-            this.form[el.dictCode] = response.data;
-            this.$forceUpdate();
-          });
-        }
-        // 填范围区域的值要特殊处理
-        if (el.showType === 2) {
-          this.$set(this.form.lossItemObj, el.code, {});
-          this.$set(this.form.lossItemObj[el.code], 'start', el.ruleValue ? JSON.parse(el.ruleValue)[0] : '');
-          this.$set(this.form.lossItemObj[el.code], 'end', el.ruleValue ? JSON.parse(el.ruleValue)[1] : '');
-        } else {
-          this.$set(this.form.lossItemObj, el.code, el.ruleValue ? el.ruleValue : null);
-        }
+    /**
+     * 生成路耗表单
+     */
+    setLossList(lossList) {
+      this.lossItem.forEach(el => {
+        this.fillFormItem(el, this.lossItemObj);
+      });
+      if (lossList) {
+        lossList.forEach(el => {
+          this.fillFormItem(el, this.lossItemObj);
+        });
+      }
+    },
+    /**
+     * 根据dictCode获取select或radio类型表单的字典
+     */
+    getOptionsByCode(dictCode) {
+      this.getDicts(dictCode).then((response) => {
+        this.options[dictCode] = response.data;
       });
     },
-    // 提交按钮
+    /**
+     * 回填表单的值(路耗/增项/减项通用)
+     */
+    fillFormItem(el, obj) {
+      if (el.ruleItemCode) {
+        el.code = el.ruleItemCode;
+      }
+      if (el.showType === 2) { // 回填范围区域，2个值
+        this.$set(obj, el.code, {});
+        this.$set(obj[el.code], 'start', el.ruleValue ? JSON.parse(el.ruleValue)[0] : '');
+        this.$set(obj[el.code], 'end', el.ruleValue ? JSON.parse(el.ruleValue)[1] : '');
+      } else { // 回填单个值
+        this.$set(obj, el.code, el.ruleValue ? el.ruleValue : null);
+      }
+    },
+    /**
+     * 提交按钮
+     */
     submitForm() {
       this.$refs['form'].validate(valid => {
         // 构造参数
         const params = {
           name: this.form.name,
-          ruleDictType: this.form.ruleDictType,
-          shipperCode: this.form.shipperCode,
-          m0DictValue: this.form.m0DictValue,
+          ruleDictValue: this.form.ruleDictValue,
           detailList: []
         };
-        if (this.form.code) {
-          params.code = this.form.code;
-        }
         if (this.form.isLoss) {
-          this.setParams(this.form.lossItem, this.form.lossItemObj, params);
+          this.setParams(this.lossItem, this.lossItemObj, params);
         }
         this.setParams(this.form.addItem, this.form.addItemObj, params, 1);
         this.setParams(this.form.reduceItem, this.form.reduceItemObj, params, 2);
-        // console.log(params);
         if (valid) {
           if (this.form.code) {
+            params.code = this.form.code;
             updateRules(params).then(response => {
               this.msgSuccess('修改成功');
               this.close();
               this.$emit('refresh');
             });
           } else {
+            params.platformType = this.form.platformType;
             addRules(params).then(response => {
               this.msgSuccess('新增成功');
               this.close();
@@ -293,12 +302,16 @@ export default {
         }
       });
     },
-    // 构造参数
+    /**
+     * 构造提交按钮的请求参数
+     */
     setParams(list, obj, params, type) {
       list.forEach(el => {
-        // 判断是不是范围区间
+        // 范围区间,2个值
         if (el.showType === 2) {
-          // 判断是不是增项或减项,路耗不用传type
+          // 忽略值为空的项
+          if (obj[el.code].start === '' && obj[el.code].end === '') return;
+          // 判断是不是增项或减项,增项或减项要传type,路耗不用传type
           if (type) {
             params.detailList.push({
               ruleItemCode: el.code,
@@ -311,7 +324,7 @@ export default {
               ruleValue: JSON.stringify([obj[el.code].start, obj[el.code].end])
             });
           }
-        } else {
+        } else { // 单个值
           if (obj[el.code] !== '' && obj[el.code] !== undefined && obj[el.code] !== null) {
             if (type) {
               params.detailList.push({
@@ -329,71 +342,81 @@ export default {
         }
       });
     },
-    // 取消按钮
+    /**
+     * 取消按钮
+     */
     cancel() {
       this.close();
       this.reset();
     },
-    // 关闭弹窗
+    /**
+     * 关闭弹窗
+     */
     close() {
       this.$emit('update:open', false);
     },
-    // 表单重置
+    /**
+     * 表单重置
+     */
     reset() {
       this.form = {
+        platformType: 2, // 1运营 2货主
         code: null,
-        shipperCode: '8b3f41f598c64fd9a7922a5611a7ed8f',
         name: null,
-        ruleDictType: null,
+        ruleDictValue: null,
         isLoss: true,
         addItem: [],
         addItemObj: {},
         reduceItem: [],
-        reduceItemObj: {},
-        lossItem: [],
-        lossItemObj: {},
-        m0DictValue: null
+        reduceItemObj: {}
       };
       this.resetForm('form');
     },
-    // 表单赋值
+    /**
+     * 表单回填
+     */
     setForm(data) {
+      this.form.platformType = 2; // 1运营 2货主
       this.form.code = data.ruleInfo.code;
-      this.form.shipperCode = data.ruleInfo.shipperCode;
       this.form.name = data.ruleInfo.name;
-      this.form.ruleDictType = data.ruleInfo.ruleDictType;
-      this.form.isLoss = !!data.lossList;
-      this.form.m0DictValue = data.ruleInfo.m0DictValue;
+      this.form.ruleDictValue = data.ruleInfo.ruleDictValue;
+      this.form.isLoss = data.lossList.length > 0;
       // 回填路耗
       this.setLossList(data.lossList);
       // 回填增减项
       data.detailList.forEach(el => {
-        if (el.type === 1) {
+        if (el.type === '1') {
           // 增项
           this.form.addItem.push(el);
-          this.$set(this.form.addItemObj, el.code, el.ruleValue);
-        } else if (el.type === 2) {
+          this.fillFormItem(el, this.form.addItemObj);
+        } else if (el.type === '2') {
           // 减项
           this.form.reduceItem.push(el);
-          this.$set(this.form.reduceItemObj, el.code, el.ruleValue);
+          this.fillFormItem(el, this.form.reduceItemObj);
         }
       });
-      console.log(this.form);
     },
-    // 增减费用项目选择
+    /**
+     * 新增细项
+     */
     chooseItem(type) {
       this.chooseItemOpen = true;
       this.chooseItemType = type;
     },
+    /**
+     * 将勾选的细项回显
+     */
     setItem(type, arr) {
       if (type === 'add') {
         const itemList = JSON.parse(JSON.stringify(this.form.addItem));
         const itemObj = JSON.parse(JSON.stringify(this.form.addItemObj));
         this.form.addItem = arr;
         this.form.addItemObj = {};
+        // 新勾选的细项与已勾选的细项求交集
         for (let i = 0; i < this.form.addItem.length; i++) {
           this.$set(this.form.addItemObj, this.form.addItem[i].code, null);
           for (let j = 0; j < itemList.length; j++) {
+            // 如果新勾选的细项已经存在，则回填上之前存的值，避免已勾选的细项值被覆盖清空
             if (itemList[j].code === this.form.addItem[i].code) {
               this.form.addItem[i] = itemList[j];
               this.$set(this.form.addItemObj, this.form.addItem[i].code, itemObj[this.form.addItem[i].code]);
@@ -416,6 +439,9 @@ export default {
         }
       }
     },
+    /**
+     * 删除细项
+     */
     deleteItem(type, code) {
       if (type === 'add') {
         this.form.addItem = this.form.addItem.filter(el => {

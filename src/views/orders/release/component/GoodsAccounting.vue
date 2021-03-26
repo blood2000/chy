@@ -133,6 +133,7 @@
           multiple
           :multiple-limit="1"
           clearable
+          filterable
           :style="{ width: '100%' }"
         >
           <el-option
@@ -150,6 +151,7 @@
           :multiple-limit="3"
           multiple
           clearable
+          filterable
           :style="{ width: '100%' }"
         >
           <el-option

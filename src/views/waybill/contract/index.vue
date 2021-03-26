@@ -39,8 +39,9 @@
       >
         <el-select
           v-model="queryParams.driverOrShipment"
-          placeholder="请选择标记打款状态"
+          placeholder="请选择标合同类型"
           clearable
+          filterable
           size="small"
           style="width: 240px"
         >
@@ -95,326 +96,9 @@
       />
     </el-row>
 
-    <!-- table -->
-    <!-- <el-table v-loading="loading" :data="contractList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <el-table-column
-        label="货源编号"
-        align="center"
-        prop="orderCode"
-      />
-      <el-table-column
-        label="商品编码"
-        align="center"
-        prop="goodsCode"
-      />
-      <el-table-column
-        label="运输单号"
-        align="center"
-        prop="waybillNo"
-      />
-      <el-table-column
-        label="调度单号"
-        align="center"
-        prop="dispatchOrderCode"
-      />
-      <el-table-column
-        label="实际承运人"
-        align="center"
-        prop="drvierCode"
-      />
-      <el-table-column
-        label="实际承运车辆"
-        align="center"
-        prop="vehicleCode"
-      />
-      <el-table-column
-        label="装车重量"
-        align="center"
-        prop="loadWeight"
-      />
-      <el-table-column
-        label="卸车重量"
-        align="center"
-        prop="unloadWeight"
-      />
-      <el-table-column
-        label="货物损耗"
-        align="center"
-        prop="wastage"
-      />
-      <el-table-column
-        label="是否接单"
-        align="center"
-        prop="isReceive"
-        :formatter="isReceiveFormat"
-      />
-      <el-table-column
-        label="接单时间"
-        align="center"
-        prop="receiveTime"
-        width="180"
-      >
-        <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.receiveTime), '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="是否装货"
-        align="center"
-        prop="isFill"
-        :formatter="isFillFormat"
-      />
-      <el-table-column
-        label="装货时间"
-        align="center"
-        prop="fillTime"
-        width="180"
-      >
-        <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.fillTime), '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="是否签收"
-        align="center"
-        prop="isSign"
-        :formatter="isSignFormat"
-      />
-      <el-table-column
-        label="签收时间"
-        align="center"
-        prop="signTime"
-        width="180"
-      >
-        <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.signTime), '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="是否结算"
-        align="center"
-        prop="isSettle"
-        :formatter="isSettleFormat"
-      />
-      <el-table-column
-        label="结算时间"
-        align="center"
-        prop="settleTime"
-        width="180"
-      >
-        <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.settleTime), '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="回单确认状态"
-        align="center"
-        prop="isReturn"
-        :formatter="isReturnFormat"
-      />
-      <el-table-column
-        label="回单确认时间"
-        align="center"
-        prop="returnRemarkTime"
-        width="180"
-      >
-        <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.returnRemarkTime), '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="回单确认备注"
-        align="center"
-        prop="returnRemark"
-      />
-      <el-table-column
-        label="支付给司机运费状态"
-        align="center"
-        prop="isPay"
-        :formatter="isPayFormat"
-      />
-      <el-table-column
-        label="与司机结账时间"
-        align="center"
-        prop="payTime"
-        width="180"
-      >
-        <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.payTime), '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="标记打款状态"
-        align="center"
-        prop="isMarkStatus"
-        :formatter="isMarkStatusFormat"
-      />
-      <el-table-column
-        label="标记打款时间"
-        align="center"
-        prop="markTime"
-        width="180"
-      >
-        <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.markTime), '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="运单是否已打印"
-        align="center"
-        prop="isPrintOrder"
-        :formatter="isPrintOrderFormat"
-      />
-      <el-table-column
-        label="打印时间"
-        align="center"
-        prop="prinTime"
-        width="180"
-      >
-        <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.prinTime), '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="是否批量接单订单"
-        align="center"
-        prop="isMultiOrder"
-        :formatter="isMultiOrderFormat"
-      />
-      <el-table-column
-        label="是否使用保证金"
-        align="center"
-        prop="isCash"
-        :formatter="isCashFormat"
-      />
-      <el-table-column
-        label="保证金"
-        align="center"
-        prop="cashDeposit"
-      />
-      <el-table-column
-        label="给货主结算的和展示的每车总费"
-        align="center"
-        prop="shipperDeliveryFee"
-      />
-      <el-table-column
-        label="月结订单结算状态"
-        align="center"
-        prop="monthlySettlementStatus"
-        :formatter="monthlySettlementStatusFormat"
-      />
-      <el-table-column
-        label="是否子单"
-        align="center"
-        prop="isChild"
-        :formatter="isChildFormat"
-      />
-      <el-table-column
-        label="给超载的子单排序用"
-        align="center"
-        prop="childSort"
-        :formatter="childSortFormat"
-      />
-      <el-table-column
-        label="是否删除"
-        align="center"
-        prop="isDel"
-        :formatter="isDelFormat"
-      />
-      <el-table-column
-        label="运单状态"
-        align="center"
-        prop="status"
-        :formatter="statusFormat"
-      />
-      <el-table-column
-        label="创建人"
-        align="center"
-        prop="createCode"
-      />
-      <el-table-column
-        label="修改人"
-        align="center"
-        prop="updateCode"
-      />
-      <el-table-column
-        label="货物重量"
-        align="center"
-        prop="weight"
-      />
-      <el-table-column
-        label="司机取消订单"
-        align="center"
-        prop="cancelStatus"
-        :formatter="cancelStatusFormat"
-      />
-      <el-table-column
-        label="司机取消理由"
-        align="center"
-        prop="driverApplyRemark"
-      />
-      <el-table-column
-        label="货主处理司机申请取消备注"
-        align="center"
-        prop="shipperDealRemark"
-      />
-      <el-table-column
-        label="操作"
-        align="center"
-        class-name="small-padding fixed-width"
-        fixed="right"
-        width="240"
-      >
-        <template slot-scope="scope">
-          <el-button
-            v-hasPermi="['waybill:manages:detail']"
-            size="mini"
-            type="text"
-            icon="el-icon-document"
-            @click="handleUpdate(scope.row)"
-          >
-            详情
-          </el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-lock"
-            @click="handleMark(scope.row)"
-          >
-            标记异常
-          </el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-date"
-            @click="handleSeperate(scope.row)"
-          >
-            分单列表
-          </el-button>
-          <el-button
-            v-hasPermi="['waybill:manages:remove']"
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-          >
-            作废运单
-          </el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit-outline"
-            @click="handleRemarks(scope.row)"
-          >
-            备注
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table> -->
     <RefactorTable :loading="loading" :data="contractList" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
-      <template #isPay="{row}">
-        <span>{{ selectDictLabel(isPayOptions, row.isPay) }}</span>
+      <template #driverOrShipment="{row}">
+        <span>{{ selectDictLabel(driverOrShipmentOptions, row.driverOrShipment) }}</span>
       </template>
 
       <template #edit="{row}">
@@ -422,7 +106,7 @@
           v-hasPermi="['system:menu:edit']"
           size="mini"
           type="text"
-          icon="el-icon-edit"
+          icon="el-icon-printer"
           @click="handleInfo(row)"
         >打印</el-button>
       </template>
@@ -478,13 +162,8 @@ export default {
       title: '',
       // ne 0 司机 1 货主
       driverOrShipmentOptions: [
-        { 'dictLabel': '司机', 'dictValue': '0' },
-        { 'dictLabel': '货主', 'dictValue': '1' }
-      ],
-      // <!-- isPay	支付给司机运费状态 0-未支付 1-已支付 -->
-      isPayOptions: [
-        { 'dictLabel': '未支付', 'dictValue': '0' },
-        { 'dictLabel': '已支付', 'dictValue': '1' }
+        { 'dictLabel': '司机合同', 'dictValue': '0' },
+        { 'dictLabel': '货主合同', 'dictValue': '1' }
       ]
     };
   },

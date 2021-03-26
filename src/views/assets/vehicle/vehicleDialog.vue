@@ -12,7 +12,7 @@
         <el-input v-model="form.vehicleOwnerCode" placeholder="请输入车主编码" class="width90" clearable />
       </el-form-item>
       <el-form-item label="车辆归属类型" prop="vehicleAscriptionType">
-        <el-select v-model="form.vehicleAscriptionType" placeholder="请选择车辆归属类型 0.自有 1.加盟" class="width90" clearable>
+        <el-select v-model="form.vehicleAscriptionType" placeholder="请选择车辆归属类型" class="width90" clearable filterable>
           <el-option
             v-for="dict in vehicleAscriptionTypeOptions"
             :key="dict.dictValue"
@@ -31,7 +31,7 @@
         <el-input v-model="form.vehicleColorCode" placeholder="请输入车身颜色代码" class="width90" clearable />
       </el-form-item>
       <el-form-item label="车辆类型代码" prop="vehicleTypeCode">
-        <el-select v-model="form.vehicleTypeCode" placeholder="请选择车辆类型代码" class="width90" clearable>
+        <el-select v-model="form.vehicleTypeCode" placeholder="请选择车辆类型代码" class="width90" clearable filterable>
           <el-option
             v-for="dict in vehicleTypeOptions"
             :key="dict.dictValue"
@@ -42,7 +42,7 @@
         <!-- <el-input v-model="form.vehicleTypeCode" placeholder="请输入车辆类型代码" class="width90" clearable /> -->
       </el-form-item>
       <el-form-item label="车辆能源类型" prop="vehicleEnergyType">
-        <el-select v-model="form.vehicleEnergyType" placeholder="请选择车辆能源类型" class="width90" clearable>
+        <el-select v-model="form.vehicleEnergyType" placeholder="请选择车辆能源类型" class="width90" clearable filterable>
           <el-option
             v-for="dict in vehicleEnergyTypeOptions"
             :key="dict.dictValue"
@@ -52,7 +52,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="车长代码" prop="vehicleLength">
-        <el-select v-model="form.vehicleLength" placeholder="请选择车长代码" class="width90" clearable>
+        <el-select v-model="form.vehicleLength" placeholder="请选择车长代码" class="width90" clearable filterable>
           <el-option
             v-for="dict in vehicleLengthOptions"
             :key="dict.dictValue"
@@ -63,7 +63,7 @@
         <!-- <el-input v-model="form.vehicleLength" placeholder="请输入车长代码" class="width90" clearable /> -->
       </el-form-item>
       <el-form-item label="车宽代码" prop="vehicleWidth">
-        <el-select v-model="form.vehicleWidth" placeholder="请选择车宽代码" class="width90" clearable>
+        <el-select v-model="form.vehicleWidth" placeholder="请选择车宽代码" class="width90" clearable filterable>
           <el-option
             v-for="dict in vehicleWidthOptions"
             :key="dict.dictValue"
@@ -74,7 +74,7 @@
         <!-- <el-input v-model="form.vehicleWidth" placeholder="请输入车宽代码" class="width90" clearable /> -->
       </el-form-item>
       <el-form-item label="车高代码" prop="vehicleHeight">
-        <el-select v-model="form.vehicleHeight" placeholder="请选择车高代码" class="width90" clearable>
+        <el-select v-model="form.vehicleHeight" placeholder="请选择车高代码" class="width90" clearable filterable>
           <el-option
             v-for="dict in vehicleHeightOptions"
             :key="dict.dictValue"
@@ -85,7 +85,7 @@
         <!-- <el-input v-model="form.vehicleHeight" placeholder="请输入车高代码" class="width90" clearable /> -->
       </el-form-item>
       <el-form-item label="车辆总重量" prop="vehicleTotalWeight">
-        <el-select v-model="form.vehicleTotalWeight" placeholder="请选择车辆总重量" class="width90" clearable>
+        <el-select v-model="form.vehicleTotalWeight" placeholder="请选择车辆总重量" class="width90" clearable filterable>
           <el-option
             v-for="dict in vehicleTonnageOptions"
             :key="dict.dictValue"
@@ -96,7 +96,7 @@
         <!-- <el-input v-model="form.vehicleLoadWeight" placeholder="请输入车辆可载重量" class="width90" clearable /> -->
       </el-form-item>
       <el-form-item label="车辆可载重量" prop="vehicleLoadWeight">
-        <el-select v-model="form.vehicleLoadWeight" placeholder="请选择车辆可载重量" class="width90" clearable>
+        <el-select v-model="form.vehicleLoadWeight" placeholder="请选择车辆可载重量" class="width90" clearable filterable>
           <el-option
             v-for="dict in vehicleTonnageOptions"
             :key="dict.dictValue"
@@ -110,7 +110,7 @@
         <el-input v-model="form.vehicleLoadVolume" placeholder="请输入车辆可载平方" class="width90" clearable />
       </el-form-item>
       <el-form-item label="车辆可载立方" prop="vehicleRemainingLoadVolume">
-        <el-select v-model="form.vehicleRemainingLoadVolume" placeholder="请选择车辆可载立方" class="width90" clearable>
+        <el-select v-model="form.vehicleRemainingLoadVolume" placeholder="请选择车辆可载立方" class="width90" clearable filterable>
           <el-option
             v-for="dict in vehicleCubeOptions"
             :key="dict.dictValue"
@@ -121,7 +121,7 @@
         <!-- <el-input v-model="form.vehicleRemainingLoadVolume" placeholder="请输入车辆可载立方" class="width90" clearable /> -->
       </el-form-item>
       <el-form-item label="车身自重" prop="selfRespect">
-        <el-select v-model="form.selfRespect" placeholder="请选择车身自重" class="width90" clearable>
+        <el-select v-model="form.selfRespect" placeholder="请选择车身自重" class="width90" clearable filterable>
           <el-option
             v-for="dict in vehicleTonnageOptions"
             :key="dict.dictValue"
@@ -144,7 +144,7 @@
         <el-input v-model="form.vehiclePower" placeholder="请输入功率" class="width90" clearable />
       </el-form-item>
       <el-form-item label="轴数" prop="axesNumber">
-        <el-select v-model="form.axesNumber" placeholder="请选择轴数" class="width90" clearable>
+        <el-select v-model="form.axesNumber" placeholder="请选择轴数" class="width90" clearable filterable>
           <el-option
             v-for="dict in vehicleZhoushuOptions"
             :key="dict.dictValue"
@@ -178,7 +178,7 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="是否冻结" prop="isFreeze">
-        <el-select v-model="form.isFreeze" placeholder="请选择是否冻结 0.正常 1.冻结" class="width90" clearable>
+        <el-select v-model="form.isFreeze" placeholder="请选择是否冻结 0.正常 1.冻结" class="width90" clearable filterable>
           <el-option
             v-for="dict in isFreezeOptions"
             :key="dict.dictValue"
@@ -383,7 +383,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 	.mr3{
 	  margin-right: 3%;
 	}

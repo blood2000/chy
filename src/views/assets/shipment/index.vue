@@ -7,7 +7,7 @@
           placeholder="请输入货主姓名"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 272px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -17,12 +17,12 @@
           placeholder="请输入电话号码"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 272px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <el-form-item label="是否核算" prop="isAccount">
-        <el-select v-model="queryParams.isAccount" placeholder="请选择核算方式" clearable size="small" style="width: 240px">
+        <el-select v-model="queryParams.isAccount" placeholder="请选择核算方式" filterable clearable size="small" style="width: 272px">
           <el-option
             v-for="dict in isOptions"
             :key="dict.dictValue"
@@ -32,7 +32,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="核算方式" prop="accountType">
-        <el-select v-model="queryParams.accountType" placeholder="请选择核算方式" clearable size="small" style="width: 240px">
+        <el-select v-model="queryParams.accountType" placeholder="请选择核算方式" filterable clearable size="small" style="width: 272px">
           <el-option
             v-for="dict in accountTypeOptions"
             :key="dict.dictValue"
@@ -44,9 +44,10 @@
       <el-form-item label="审核状态" prop="authStatus">
         <el-select
           v-model="queryParams.authStatus"
+          filterable
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 272px"
         >
           <el-option
             v-for="dict in statusOptions"
@@ -62,16 +63,17 @@
           placeholder="请输入公司名称"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 272px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <el-form-item label="货主类别" prop="shipperType">
         <el-select
           v-model="queryParams.shipperType"
+          filterable
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 272px"
         >
           <el-option
             v-for="dict in typeOptions"
@@ -83,25 +85,44 @@
       </el-form-item>
       <el-form-item label="审核时间">
         <el-date-picker
-          v-model="queryParams.beginTime"
+          v-model="queryParams.authTimeBegin"
           clearable
           size="small"
           type="date"
           value-format="yyyy-MM-dd"
-          style="width: 240px"
+          style="width: 130px"
           placeholder="请选择"
         /> -
         <el-date-picker
-          v-model="queryParams.endTime"
+          v-model="queryParams.authTimeEnd"
           clearable
           size="small"
           type="date"
           value-format="yyyy-MM-dd"
-          style="width: 240px"
+          style="width: 130px"
           placeholder="请选择"
         />
       </el-form-item>
-
+      <el-form-item label="注册时间">
+        <el-date-picker
+          v-model="queryParams.createTimeBegin"
+          clearable
+          size="small"
+          type="date"
+          value-format="yyyy-MM-dd"
+          style="width: 130px"
+          placeholder="请选择"
+        /> -
+        <el-date-picker
+          v-model="queryParams.createTimeEnd"
+          clearable
+          size="small"
+          type="date"
+          value-format="yyyy-MM-dd"
+          style="width: 130px"
+          placeholder="请选择"
+        />
+      </el-form-item>
       <el-form-item>
         <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -128,6 +149,15 @@
           @click="handleDelete"
         >批量删除</el-button>
       </el-col>
+      <el-col :span="1.5">
+        <el-button
+          v-hasPermi="['assets:shipment:export']"
+          type="warning"
+          icon="el-icon-download"
+          size="mini"
+          @click="handleExport"
+        >导出</el-button>
+      </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
@@ -151,7 +181,10 @@
       <el-table-column label="法人身份证" align="center" prop="artificialIdentificationNumber" /> -->
       <el-table-column label="是否冻结" align="center" prop="isFreezone" :formatter="isFreezoneFormat" />
       <el-table-column label="票制类别" align="center" prop="ticketType" :formatter="ticketTypeFormat" />
+      <el-table-column label="服务费税率" align="center" prop="serviceRate" />
       <el-table-column label="服务费比例" align="center" prop="serviceRatio" />
+      <el-table-column label="税点" align="center" prop="texPoint" />
+      <el-table-column label="是否独立核算" align="center" prop="isAccount" :formatter="isAccountFormat" />
       <el-table-column label="货源是否审核" align="center" prop="supplyIsAuth" :formatter="supplyIsAuthFormat" />
       <el-table-column label="是否预付运费" align="center" prop="isPrepaid" :formatter="isPrepaidFormat" />
       <el-table-column label="授信金额" align="center" prop="creditAmount" />
@@ -160,7 +193,6 @@
       <el-table-column label="县/区" align="center" prop="countyCode" :formatter="countyCodeFormat" />
       <el-table-column label="是否抹零" align="center" prop="isWipe" :formatter="isWipeFormat" />
       <el-table-column label="详细地址" align="center" prop="area" />
-      <el-table-column label="是否核算" align="center" prop="isAccount" :formatter="isAccountFormat" />
       <el-table-column label="核算方式" align="center" prop="accountType" :formatter="accountTypeFormat" />
       <el-table-column label="抹零方式" align="center" prop="wipeType" :formatter="wipeTypeFormat" />
       <el-table-column label="是否月结" align="center" prop="isMonthly" :formatter="isMonthlyFormat" />
@@ -173,7 +205,7 @@
       <el-table-column label="修改人" align="center" prop="updateCode" /> -->
       <el-table-column label="审核时间" align="center" prop="authTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.authTime), '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.authTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="180">
@@ -182,21 +214,21 @@
             size="mini"
             type="text"
             icon="el-icon-document"
-            @click="handleDEtail(scope.row, 'detail')"
+            @click="handleDetail(scope.row, 'detail')"
           >详情</el-button>
           <el-button
             v-hasPermi="['assets:shipment:edit']"
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleDEtail(scope.row, 'edit')"
+            @click="handleDetail(scope.row, 'edit')"
           >修改</el-button>
           <el-button
             v-show="scope.row.authStatus === 0 || scope.row.authStatus === 1"
             size="mini"
             type="text"
             icon="el-icon-document-checked"
-            @click="handleDEtail(scope.row, 'review')"
+            @click="handleDetail(scope.row, 'review')"
           >审核</el-button>
           <el-button
             v-hasPermi="['assets:shipment:remove']"
@@ -292,13 +324,15 @@ export default {
         pageNum: 1,
         pageSize: 10,
         adminName: undefined,
-        telphone: undefined,
         isAccount: undefined,
         accountType: undefined,
         authStatus: undefined,
         companyName: undefined,
-        beginTime: undefined,
-        endTime: undefined
+        telphone: undefined,
+        authTimeBegin: undefined,
+        authTimeEnd: undefined,
+        createTimeBegin: undefined,
+        createTimeEnd: undefined
       },
       // 表单详情
       form: {},
@@ -410,6 +444,10 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.queryParams.authTimeBegin = undefined;
+      this.queryParams.authTimeEnd = undefined;
+      this.queryParams.createTimeBegin = undefined;
+      this.queryParams.createTimeEnd = undefined;
       this.resetForm('queryForm');
       this.handleQuery();
     },
@@ -427,7 +465,7 @@ export default {
       this.formDisable = false;
     },
     /** 修改/详情按钮操作 */
-    handleDEtail(row, flag) {
+    handleDetail(row, flag) {
       this.$refs.ShipmentDialog.reset();
       const id = row.id;
       getShipment(id).then(response => {
@@ -459,6 +497,10 @@ export default {
         this.getList();
         this.msgSuccess('删除成功');
       });
+    },
+    /** 导出按钮操作 */
+    handleExport() {
+      this.download('assets/shipment/export', {}, `shipment_${new Date().getTime()}.xlsx`, 'application/json');
     }
   }
 };

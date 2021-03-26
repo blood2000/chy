@@ -6,6 +6,7 @@
           <el-select
             v-model="form.provinceCode"
             clearable
+            filterable
             class="input-width"
             placeholder="省(支持自动识别)"
             @change="changeProvince"
@@ -24,6 +25,7 @@
           <el-select
             v-model="form.cityCode"
             clearable
+            filterable
             class="input-width"
             placeholder="市(支持自动识别)"
             @change="changeCity"
@@ -42,6 +44,7 @@
           <el-select
             v-model="form.countyCode"
             clearable
+            filterable
             class="input-width"
             placeholder="县/区(支持自动识别)"
             @change="changeCounty"

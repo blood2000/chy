@@ -74,3 +74,12 @@ export function producelist(query) {
   });
 }
 
+// 设置缓存
+export function setUserRoleInfoRedis(query) {
+  return request({
+    url: '/system/role/setUserRoleInfoRedis',
+    method: 'post',
+    data: query
+  });
+}
+

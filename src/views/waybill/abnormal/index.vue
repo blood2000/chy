@@ -24,6 +24,7 @@
           v-model="queryParams.status"
           placeholder="请选择异常标记状态"
           clearable
+          filterable
           size="small"
         >
           <el-option
@@ -60,7 +61,7 @@
       <el-table-column label="异常标记状态" align="center" prop="isWarning" :formatter="isWarningFormat" />
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.createTime)).slice(0, 10) }}</span>
+          <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="创建人" align="center" prop="createName" />
@@ -68,7 +69,7 @@
       <!-- <el-table-column label="是否删除 0.正常 1.删除" align="center" prop="isDel" :formatter="isDelFormat" /> -->
       <el-table-column label="处理时间" align="center" prop="updateTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(new Date(scope.row.updateTime)).slice(0, 10) }}</span>
+          <span>{{ parseTime(scope.row.updateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="处理人" align="center" prop="updateName" />
@@ -101,14 +102,14 @@
     />
 
     <!-- 运单详情 对话框 -->
-    <detail-dialog ref="DetailDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
-    <!-- 运单详情 对话框 -->
+    <detail-dialog ref="DetailDialog" :current-id="currentId" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
+    <!-- 运单异常 对话框 -->
     <abnormal-dialog ref="AbnormalDialog" :title="title" :open.sync="openAbnormal" :disable="formDisable" @refresh="getList" />
   </div>
 </template>
 
 <script>
-import { listAbnormal, getAbnormal, getWaybill } from '@/api/waybill/abnormal';
+import { listAbnormal, getAbnormal } from '@/api/waybill/abnormal';
 import DetailDialog from '../components/detailDialog';
 import AbnormalDialog from './abnormalDialog';
 
@@ -155,7 +156,9 @@ export default {
         orderCode: null
       },
       // 表单是否禁用
-      formDisable: false
+      formDisable: false,
+      // 当前选中的运单id
+      currentId: null
     };
   },
   created() {
@@ -172,7 +175,7 @@ export default {
       listAbnormal(this.queryParams).then(response => {
         this.abnormalList = response.data;
         this.total = response.data.length;
-        console.log(this.total);
+        console.log(this.abnormalList);
         this.loading = false;
       });
     },
@@ -195,21 +198,18 @@ export default {
     /** 查看运单按钮操作 */
     handleWaybill(row) {
       this.$refs.DetailDialog.reset();
-      const id = row.waybillCode;
-      getWaybill(id).then((response) => {
-        this.$refs.DetailDialog.setForm(response.data);
-        this.open = true;
-        this.title = '运输单信息';
-        this.formDisable = true;
-      });
+      this.currentId = row.waybillCode;
+      this.open = true;
+      this.title = '运输单信息';
+      this.formDisable = true;
     },
     /** 查看日志按钮操作 */
     handleLog(row) {
       this.$refs.AbnormalDialog.reset();
-      const id = row.id;
-      getAbnormal(id).then((response) => {
+      getAbnormal(row.code).then((response) => {
+        console.log(response);
         this.$refs.AbnormalDialog.setForm(response.data);
-        this.open = true;
+        this.openAbnormal = true;
         this.title = '查看日志';
         this.formDisable = true;
       });

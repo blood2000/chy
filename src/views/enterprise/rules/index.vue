@@ -35,7 +35,7 @@
       <el-table-column
         label="计算公式"
         align="center"
-        prop="ruleDictType"
+        prop="ruleDictValue"
         :formatter="ruleTypeFormat"
       />
       <el-table-column label="扣费项目" align="center" prop="deduction" />
@@ -108,7 +108,6 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        shipperCode: '8b3f41f598c64fd9a7922a5611a7ed8f',
         name: null
       }
     };
@@ -136,7 +135,7 @@ export default {
     },
     // 计算公式字典翻译
     ruleTypeFormat(row, column) {
-      return this.selectDictLabel(this.ruleTypeOptions, row.ruleDictType);
+      return this.selectDictLabel(this.ruleTypeOptions, row.ruleDictValue);
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -159,7 +158,7 @@ export default {
       this.$refs.RulesDialog.reset();
       this.open = true;
       this.title = '添加';
-      this.$refs.RulesDialog.getLossList();
+      this.$refs.RulesDialog.setLossList();
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -168,7 +167,6 @@ export default {
       getRules({ code: code }).then(response => {
         this.open = true;
         this.title = '修改';
-        this.$refs.RulesDialog.getLossList();
         this.$refs.RulesDialog.setForm(response.data);
       });
     },

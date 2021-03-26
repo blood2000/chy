@@ -53,6 +53,7 @@
               v-model="queryParams.status"
               placeholder="用户状态"
               clearable
+              filterable
               size="small"
               style="width: 240px"
             >
@@ -138,7 +139,7 @@
           <el-table-column label="用户编号" align="center" prop="userId" />
           <el-table-column label="用户名称" align="center" prop="userName" :show-overflow-tooltip="true" />
           <el-table-column label="用户昵称" align="center" prop="nickName" :show-overflow-tooltip="true" />
-          <el-table-column label="组织" align="center" prop="org.orgName" :show-overflow-tooltip="true" />
+          <el-table-column label="组织" align="center" prop="orgName" :show-overflow-tooltip="true" />
           <el-table-column label="手机号码" align="center" prop="phonenumber" width="120" />
           <el-table-column label="状态" align="center">
             <template slot-scope="scope">
@@ -209,7 +210,13 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="归属组织" prop="orgCode">
-              <treeselect v-model="form.orgCode" :options="deptOptions" :show-count="true" placeholder="请选择归属组织" />
+              <treeselect
+                v-model="form.orgCode"
+                :options="deptOptions"
+                :normalizer="normalizer"
+                :show-count="true"
+                placeholder="请选择归属组织"
+              />
             </el-form-item>
           </el-col>
         </el-row>
@@ -240,7 +247,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="用户性别">
-              <el-select v-model="form.sex" placeholder="请选择">
+              <el-select v-model="form.sex" placeholder="请选择" clearable filterable>
                 <el-option
                   v-for="dict in sexOptions"
                   :key="dict.dictValue"
@@ -265,7 +272,7 @@
         <el-row>
           <!--  <el-col :span="12">
             <el-form-item label="岗位">
-              <el-select v-model="form.postIds" multiple placeholder="请选择">
+              <el-select v-model="form.postIds" multiple placeholder="请选择" clearable filterable>
                 <el-option
                   v-for="item in postOptions"
                   :key="item.postId"
@@ -278,7 +285,7 @@
           </el-col>-->
           <el-col :span="12">
             <el-form-item label="角色">
-              <el-select v-model="form.roleCodes" multiple placeholder="请选择">
+              <el-select v-model="form.roleCodes" multiple placeholder="请选择" clearable filterable>
                 <el-option
                   v-for="item in roleOptions"
                   :key="item.roleCode"
@@ -367,6 +374,14 @@ export default {
       title: '',
       // 部门树选项
       deptOptions: undefined,
+      // 部门树键值转换
+      normalizer(node) {
+        return {
+          id: node.code, // 键名转换，方法默认是label和children进行树状渲染
+          label: node.label,
+          children: node.children
+        };
+      },
       // 是否显示弹出层
       open: false,
       // 部门名称
@@ -424,19 +439,15 @@ export default {
         password: [
           { required: true, message: '用户密码不能为空', trigger: 'blur' }
         ],
-        email: [
-          {
-            type: 'email',
-            message: "'请输入正确的邮箱地址",
-            trigger: ['blur', 'change']
-          }
+        orgCode: [
+          { required: true, message: '归属组织不能为空', trigger: 'blur' }
         ],
         phonenumber: [
-          {
-            pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
-            message: '请输入正确的手机号码',
-            trigger: 'blur'
-          }
+          { required: true, message: '手机号不能为空', trigger: 'blur' },
+          { validator: this.formValidate.telphone, trigger: 'blur' }
+        ],
+        email: [
+          { validator: this.formValidate.email, trigger: 'blur' }
         ]
       }
     };
@@ -450,10 +461,12 @@ export default {
   created() {
     this.getList();
     this.getTreeselect();
-    this.getDicts('sys_normal_disable').then(response => {
+    /** 状态*/
+    this.getDictsByType({ dictType: 'sys_normal_disable', dictPid: '0' }).then(response => {
       this.statusOptions = response.data;
     });
-    this.getDicts('sys_user_sex').then(response => {
+    /** 性别**/
+    this.getDictsByType({ dictType: 'sys_user_sex', dictPid: '0' }).then(response => {
       this.sexOptions = response.data;
     });
     this.getConfigKey('sys.user.initPassword').then(response => {

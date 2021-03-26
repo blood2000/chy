@@ -16,6 +16,8 @@
               v-model="localActiveData.tagIcon"
               placeholder="请选择组件类型"
               :style="{width: '100%'}"
+              clearable
+              filterable
               @change="tagChange"
             >
               <el-option-group v-for="group in tagList" :key="group.label" :label="group.label">
@@ -62,7 +64,7 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item v-if="localActiveData.justify!==undefined&&localActiveData.type==='flex'" label="水平排列">
-            <el-select v-model="localActiveData.justify" placeholder="请选择水平排列" :style="{width: '100%'}">
+            <el-select v-model="localActiveData.justify" placeholder="请选择水平排列" :style="{width: '100%'}" clearable filterable>
               <el-option
                 v-for="(item, index) in justifyOptions"
                 :key="index"
@@ -193,6 +195,8 @@
               v-model="localActiveData.type"
               placeholder="请选择时间类型"
               :style="{ width: '100%' }"
+              clearable
+              filterable
               @change="dateTypeChange"
             >
               <el-option
@@ -212,6 +216,7 @@
               placeholder="请选择文件类型"
               :style="{ width: '100%' }"
               clearable
+              filterable
             >
               <el-option label="图片" value="image/*" />
               <el-option label="视频" value="video/*" />
@@ -224,7 +229,7 @@
           </el-form-item>
           <el-form-item v-if="localActiveData.fileSize !== undefined" label="文件大小">
             <el-input v-model.number="localActiveData.fileSize" placeholder="请输入文件大小">
-              <el-select slot="append" v-model="localActiveData.sizeUnit" :style="{ width: '66px' }">
+              <el-select slot="append" v-model="localActiveData.sizeUnit" :style="{ width: '66px' }" clearable filterable>
                 <el-option label="KB" value="KB" />
                 <el-option label="MB" value="MB" />
                 <el-option label="GB" value="GB" />
@@ -396,6 +401,8 @@
               v-model="localActiveData['color-format']"
               placeholder="请选择颜色格式"
               :style="{ width: '100%' }"
+              clearable
+              filterable
               @change="colorFormatChange"
             >
               <el-option

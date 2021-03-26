@@ -10,10 +10,10 @@
   >
     <el-tabs v-model="activeName">
       <el-tab-pane label="司机管理" name="driver">
-        <driver-page ref="DriverPage" :teamcode="teamcode" />
+        <driver-page ref="DriverPage" :team-code="teamCode" />
       </el-tab-pane>
       <el-tab-pane label="车辆管理" name="vehicle">
-        <vehicle-page ref="VehiclePage" :teamcode="teamcode" />
+        <vehicle-page ref="VehiclePage" :team-code="teamCode" />
       </el-tab-pane>
     </el-tabs>
   </el-dialog>
@@ -31,7 +31,7 @@ export default {
   },
   props: {
     open: Boolean,
-    teamcode: {
+    teamCode: {
       type: String,
       default: null
     }

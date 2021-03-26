@@ -1,15 +1,15 @@
 <template>
-  <!-- 添加或修改调度者对话框 -->
+  <!-- 添加司机投诉货主对话框 -->
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="130px">
-      <el-form-item label="运输单号" prop="tin1">
-        <el-input v-model="form.tin1" class="width90" disabled />
+    <el-form ref="form" :model="form" :rules="rules" label-width="130px">
+      <el-form-item label="运输单号" prop="wayBillNo">
+        <el-input v-model="form.wayBillNo" class="width90" disabled />
       </el-form-item>
       <!-- 多图框 -->
-      <el-form-item label="照片" prop="tin2">
+      <el-form-item label="照片" prop="sceneImg">
         <div class="ly-flex">
           <div
-            v-for="(item, index) in form.tin2"
+            v-for="(item, index) in form.sceneImg"
             :key="index"
             class="mr5 ml5"
           >
@@ -17,9 +17,9 @@
           </div>
         </div>
       </el-form-item>
-      <el-form-item label="投诉说明" prop="tin3">
+      <el-form-item label="投诉说明" prop="description">
         <el-input
-          v-model="form.tin3"
+          v-model="form.description"
           class="width90"
           type="textarea"
           :rows="2"
@@ -37,7 +37,7 @@
 </template>
 
 <script>
-// import { addInfo, updateInfo } from '@/api/assets/team';
+import { addComplaint } from '@/api/waybill/tracklist';
 import UploadImage from '@/components/UploadImage/index';
 
 export default {
@@ -50,38 +50,23 @@ export default {
       type: String,
       default: ''
     },
-    open: Boolean,
-    disable: Boolean
+    open: Boolean
   },
   data() {
     return {
       // 表单参数
       form: {
-        tin1: undefined,
-        tin2: [
+        description: undefined,
+        sceneImg: [
           { url: '' }
         ],
-        tin3: undefined,
-
-        tin4: undefined,
-        tin5: undefined,
-        tin6: undefined,
-        tin7: undefined,
-        tin8: undefined,
-        tin9: undefined,
-        tin10: undefined
+        wayBillCode: undefined,
+        wayBillNo: undefined
       },
       // 表单校验
       rules: {
-
-        tin3: [
+        description: [
           { required: true, message: '请输入投诉说明内容', trigger: 'blur' }
-        ],
-        tin9: [
-          { required: true, message: '请输入异常内容', trigger: 'blur' }
-        ],
-        tin10: [
-          { required: true, message: '请输入评价内容', trigger: 'blur' }
         ]
       }
     };
@@ -104,21 +89,11 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          console.log(this.form);
-
-          // if (this.form.id != null) {
-          //   updateInfo(this.form).then(response => {
-          //     this.msgSuccess('修改成功');
-          //     this.close();
-          //     this.$emit('refresh');
-          //   });
-          // } else {
-          //   addInfo(this.form).then(response => {
-          //     this.msgSuccess('新增成功');
-          //     this.close();
-          //     this.$emit('refresh');
-          //   });
-          // }
+          addComplaint(this.form).then(response => {
+            this.msgSuccess('新增成功');
+            this.close();
+            this.$emit('refresh');
+          });
         }
       });
     },
@@ -137,7 +112,11 @@ export default {
     },
     // 表单赋值
     setForm(data) {
-      this.form = data;
+      this.waybill = data;
+      console.log(this.waybill);
+      this.form.wayBillCode = this.waybill.code;
+      this.form.wayBillNo = this.waybill.waybillNo;
+      console.log(this.form);
     },
 
     // 图片上传成功会掉
@@ -148,7 +127,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .mr3 {
   margin-right: 3%;
 }

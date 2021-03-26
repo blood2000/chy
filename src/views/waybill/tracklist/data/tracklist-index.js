@@ -6,7 +6,7 @@ export default [
     label: '运输单号'
   },
   {
-    prop: 'status',
+    prop: 'cancelStatus',
     isShow: true,
     label: '取消状态'
   },

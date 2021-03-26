@@ -37,7 +37,8 @@
       <el-form-item label="归属类型" prop="vehicleAscriptionType">
         <el-select
           v-model="queryParams.vehicleAscriptionType"
-          placeholder="请选择车辆归属类型 0.自有 1.加盟"
+          placeholder="请选择车辆归属类型"
+          filterable
           clearable
           size="small"
         >
@@ -89,6 +90,7 @@
         <el-select
           v-model="queryParams.vehicleEnergyType"
           placeholder="请选择车辆能源类型"
+          filterable
           clearable
           size="small"
         >
@@ -241,6 +243,7 @@
         <el-select
           v-model="queryParams.authStatus"
           placeholder="请选择审核状态"
+          filterable
           clearable
           size="small"
         >
@@ -257,6 +260,7 @@
           v-model="queryParams.isFreeze"
           placeholder="请选择是否冻结"
           clearable
+          filterable
           size="small"
         >
           <el-option
@@ -479,9 +483,7 @@
         sortable
       >
         <template slot-scope="scope">
-          <span>{{
-            parseTime(new Date(scope.row.annualVerificationDate)).slice(0, 10)
-          }}</span>
+          <span>{{ parseTime(scope.row.annualVerificationDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="运输介子" align="center" prop="transportMeson" />
@@ -566,11 +568,11 @@ export default {
     VehicleDialog
   },
   props: {
-    teamcode: {
+    teamCode: {
       type: String,
       default: null
     },
-    drivercode: {
+    driverCode: {
       type: String,
       default: null
     }
@@ -640,9 +642,7 @@ export default {
         vehicleEnergyType: undefined,
         annualVerificationDate: undefined,
         authStatus: undefined,
-        isFreeze: undefined,
-        teamCode: this.teamcode,
-        driverCode: this.drivercode
+        isFreeze: undefined
       },
       // 表单是否禁用
       formDisable: false
@@ -755,6 +755,12 @@ export default {
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
+      if (this.teamCode) {
+        this.queryParams.teamCode = this.teamCode;
+      }
+      if (this.driverCode) {
+        this.queryParams.driverCode = this.driverCode;
+      }
       this.getList();
     },
     /** 重置按钮操作 */

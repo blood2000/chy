@@ -1,7 +1,7 @@
 <template>
   <!-- 车辆卸货对话框 -->
-  <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="130px">
+  <el-dialog :title="title" :visible="visible" width="800px" append-to-body destroy-on-close @close="cancel">
+    <el-form ref="form" :model="form" :rules="rules" label-width="130px">
       <el-form-item label="卸货时间" prop="unloadTime">
         <el-date-picker
           v-model="form.unloadTime"
@@ -10,18 +10,21 @@
           placeholder="选择日期时间"
           :default-value="new Date()"
           value-format="yyyy-MM-dd HH:mm:ss"
+          :disabled="disable"
         />
       </el-form-item>
       <el-form-item label="卸货重量" prop="unloadWeight">
-        <el-input-number v-model="form.unloadWeight" placeholder="请输入卸货过磅重量" controls-position="right" :min="0" style="width:90%;" />
+        <el-input-number v-model="form.unloadWeight" placeholder="请输入卸货过磅重量" :disabled="disable" controls-position="right" :min="0" style="width:90%;" />
       </el-form-item>
       <el-form-item label="卸货地址" prop="waybillAddress">
         <el-select
           v-model="form.waybillAddress"
           placeholder="请选择车辆卸货地址"
           clearable
+          filterable
           size="small"
           style="width:90%;"
+          :disabled="disable"
         >
           <el-option
             v-for="dict in waybillAddressOptions"
@@ -31,11 +34,11 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="卸货凭证" prop="picture">
-        <uploadImage v-model="form.picture" />
+      <el-form-item label="卸货凭证" prop="attachmentCode">
+        <uploadImage v-model="form.attachmentCode" />
       </el-form-item>
       <el-form-item label="卸货备注" prop="remark">
-        <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入装货备注信息" style="width:90%;" />
+        <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" :disabled="disable" placeholder="请输入装货备注信息" style="width:90%;" />
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -46,7 +49,7 @@
 </template>
 
 <script>
-import { unload, getAddress } from '@/api/waybill/tracklist';
+import { unload, getAddress, getInfoDetail, unloadCredentials } from '@/api/waybill/tracklist';
 import UploadImage from '@/components/UploadImage/index';
 
 export default {
@@ -71,16 +74,22 @@ export default {
       },
       // 运单信息
       waybill: {},
+      // 卸货信息
+      unloadinfo: {},
       // 表单校验
       rules: {
-        tin1: [
-          { required: false, message: '网点编码不能为空', trigger: 'blur' }
+        unloadTime: [
+          { required: true, message: '卸货时间不能为空', trigger: 'blur' }
+        ],
+        unloadWeight: [
+          { required: true, message: '卸货重量不能为空', trigger: 'blur' }
         ]
       },
       // 日期格式
       Hours: '',
       Minutes: '',
-      Seconds: ''
+      Seconds: '',
+      time: ''
     };
   },
   computed: {
@@ -93,18 +102,42 @@ export default {
       }
     }
   },
+  watch: {
+    open(val) {
+      if (val) {
+        // this.reset();
+        this.getAddress();
+        this.getDetail();
+      }
+    }
+  },
   created() {
-    var Hours = new Date().getHours();
-    this.Hours = Hours < 10 ? ('0' + Hours) : Hours;
-    var Minutes = new Date().getMinutes();
-    this.Minutes = Minutes < 10 ? ('0' + Minutes) : Minutes;
-    var Seconds = new Date().getSeconds();
-    this.Seconds = Seconds < 10 ? ('0' + Seconds) : Seconds;
   },
   methods: {
+    // 获取卸货详情
+    getDetail() {
+      this.reset();
+      getInfoDetail(2, this.waybill.waybillNo).then(response => {
+        console.log(response);
+        const info = response.data[0];
+        this.unloadinfo = info;
+        console.log(info);
+        if (info) {
+          this.form.unloadWeight = info.unloadWeight;
+          this.form.unloadTime = info.cargoTime;
+          this.form.remark = info.remark;
+          this.form.waybillAddress = info.waybillAddressList[0].orderAddressCode;
+          this.form.attachmentCode = info.attachmentCode;
+          console.log(this.form);
+        } else {
+          this.reset();
+          console.log(this.form);
+        }
+      });
+    },
     // 获取地址信息
-    getAddress(data) {
-      getAddress(data.goodsCode).then(response => {
+    getAddress() {
+      getAddress(this.waybill.goodsCode).then(response => {
         const address = response.data;
         const address1 = address.filter(item => {
           return item.addressType === 2;
@@ -117,9 +150,9 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          if (this.form.unloadTime != null) {
-            unload(this.form).then(response => {
-              this.msgSuccess('修改成功');
+          if (this.unloadinfo) {
+            unloadCredentials(this.form).then(response => {
+              this.msgSuccess('补卸货凭证成功');
               this.close();
               this.$emit('refresh');
             });
@@ -145,26 +178,26 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        code: null,
-        unloadTime: null,
+        code: this.waybill.code,
+        unloadTime: this.parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}'),
         unloadWeight: null,
-        picture: null,
+        attachmentCode: null,
         remark: null,
-        waybillAddress: {}
+        waybillAddress: null
       };
+      // this.waybillAddressOptions = [];
       this.resetForm('form');
-      this.form.unloadTime = new Date().toISOString().slice(0, 10) + ' ' + this.Hours + ':' + this.Minutes + ':' + this.Seconds;
     },
     // 表单赋值
     setForm(data) {
       this.waybill = data;
-      this.form.code = data.code;
+      this.form.code = this.waybill.code;
     }
   }
 };
 </script>
 
-<style>
+<style scoped>
 .mr3 {
   margin-right: 3%;
 }

@@ -1,24 +1,6 @@
 <template>
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-      <!-- <el-form-item label="编码" prop="code">
-        <el-input
-          v-model="queryParams.code"
-          placeholder="请输入编码"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
-      <el-form-item label="网点编码" prop="branchCode">
-        <el-input
-          v-model="queryParams.branchCode"
-          placeholder="请输入网点编码"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
       <el-form-item label="车队名称" prop="name">
         <el-input
           v-model="queryParams.name"
@@ -37,17 +19,8 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <!-- <el-form-item label="是否删除" prop="isDel">
-        <el-input
-          v-model="queryParams.isDel"
-          placeholder="请输入是否删除"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
       <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable size="small">
+        <el-select v-model="queryParams.status" placeholder="请选择状态" filterable clearable size="small">
           <el-option
             v-for="dict in statusOptions"
             :key="dict.dictValue"
@@ -56,24 +29,24 @@
           />
         </el-select>
       </el-form-item>
-      <!-- <el-form-item label="创建人" prop="createCode">
+      <el-form-item label="司机姓名" prop="driverName">
         <el-input
-          v-model="queryParams.createCode"
-          placeholder="请输入创建人"
+          v-model="queryParams.driverName"
+          placeholder="请输入司机姓名"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="修改人" prop="updateCode">
+      <el-form-item label="车牌号码" prop="licenseNumber">
         <el-input
-          v-model="queryParams.updateCode"
-          placeholder="请输入修改人"
+          v-model="queryParams.licenseNumber"
+          placeholder="请输入车牌号码"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item> -->
+      </el-form-item>
       <el-form-item>
         <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -124,18 +97,13 @@
 
     <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <!-- <el-table-column label="编码" align="center" prop="code" /> -->
-      <el-table-column label="网点编码" align="center" prop="branchCode" sortable />
       <el-table-column label="车队名称" align="center" prop="name" sortable />
+      <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" sortable />
       <el-table-column label="车队管理者" align="center" prop="teamLeader" sortable />
-      <!-- <el-table-column label="是否删除" align="center" prop="isDel" /> -->
-      <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" />
-      <!-- <el-table-column label="创建人" align="center" prop="createCode" />
-      <el-table-column label="修改人" align="center" prop="updateCode" /> -->
-      <el-table-column label="营业执照" align="center" prop="businessLicenseImg" />
-      <el-table-column label="道路运输经营许可证照" align="center" prop="transportPermitImage" />
-      <el-table-column label="身份证正面照片" align="center" prop="identificationImage" />
-      <el-table-column label="身份证国徽面" align="center" prop="identificationBackImage" />
+      <el-table-column label="手机号" align="center" prop="telphone" />
+      <el-table-column label="身份证号" align="center" prop="identificationNumber" />
+      <el-table-column label="是否清分" align="center" prop="isDistribution" :formatter="isDistributionFormat" />
+      <el-table-column label="清分百分比" align="center" prop="distributionPercent" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="180">
         <template slot-scope="scope">
           <el-button
@@ -148,7 +116,7 @@
             size="mini"
             type="text"
             icon="el-icon-document"
-            @click="handleDEtail(scope.row)"
+            @click="handleDetail(scope.row)"
           >详情</el-button>
           <el-button
             v-hasPermi="['assets:team:edit']"
@@ -180,7 +148,7 @@
     <team-dialog ref="TeamDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
 
     <!-- 管理 对话框 -->
-    <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :teamcode="teamcode" />
+    <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :team-code="teamCode" />
   </div>
 </template>
 
@@ -216,14 +184,14 @@ export default {
       // 是否显示弹出层
       open: false,
       manageDialogOpen: false,
-      // 车队名称字典
-      // nameOptions: [],
-      // 车队管理者字典
-      // teamLeaderOptions: [],
       // 状态字典
       statusOptions: [
         { dictLabel: '启用', dictValue: '0' },
         { dictLabel: '禁用', dictValue: '1' }
+      ],
+      isOptions: [
+        { dictLabel: '否', dictValue: 0 },
+        { dictLabel: '是', dictValue: 1 }
       ],
       // 查询参数
       queryParams: {
@@ -232,14 +200,16 @@ export default {
         branchCode: null,
         name: null,
         teamLeader: null,
-        status: null
+        status: null,
+        driverName: null,
+        licenseNumber: null
       },
       // 表单参数
       form: {},
       // 表单是否禁用
       formDisable: false,
       // 调度者code
-      teamcode: null
+      teamCode: null
     };
   },
   created() {
@@ -255,17 +225,13 @@ export default {
         this.loading = false;
       });
     },
-    // 车队名称字典翻译
-    // nameFormat(row, column) {
-    //   return this.selectDictLabel(this.nameOptions, row.name);
-    // },
-    // 车队管理者字典翻译
-    // teamLeaderFormat(row, column) {
-    //   return this.selectDictLabel(this.teamLeaderOptions, row.teamLeader);
-    // },
     // 状态字典翻译
     statusFormat(row, column) {
       return this.selectDictLabel(this.statusOptions, row.status);
+    },
+    // 是否清分字典翻译
+    isDistributionFormat(row, column) {
+      return this.selectDictLabel(this.isOptions, row.isDistribution);
     },
     // 取消按钮
     cancel() {
@@ -307,7 +273,7 @@ export default {
       });
     },
     /** 详情按钮操作 */
-    handleDEtail(row) {
+    handleDetail(row) {
       this.$refs.TeamDialog.reset();
       const id = row.id || this.ids;
       getInfo(id).then(response => {
@@ -339,7 +305,7 @@ export default {
     },
     /** 管理按钮操作 */
     handleManage(row) {
-      this.teamcode = row.code;
+      this.teamCode = row.code;
       this.manageDialogOpen = true;
     }
   }

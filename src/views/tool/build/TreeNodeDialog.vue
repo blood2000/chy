@@ -42,6 +42,8 @@
                   slot="append"
                   v-model="dataType"
                   :style="{width: '100px'}"
+                  clearable
+                  filterable
                 >
                   <el-option
                     v-for="(item, index) in dataTypeOptions"

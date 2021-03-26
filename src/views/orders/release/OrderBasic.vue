@@ -16,6 +16,7 @@
           v-model="formData.tin3"
           placeholder="请选择项目"
           clearable
+          filterable
           :style="{ width: '100%' }"
           @change="handleTin3"
         >
@@ -127,7 +128,6 @@
             <div class="ml0">司机: {{ formData.tin6_2.length }} 人</div>
           </div>
         </el-form-item>
-
 
       </template>
 

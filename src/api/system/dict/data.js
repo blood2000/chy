@@ -34,6 +34,13 @@ export function getDicts(dictType) {
   });
 }
 
+export function getDictsByType(data) {
+  return request({
+    url: '/system/dict/data/listDataByDict',
+    method: 'post',
+    data: data
+  });
+}
 // 新增字典数据
 export function addData(data) {
   return request({
@@ -62,7 +69,7 @@ export function delData(dictCode) {
 // 查询字典类
 export function listByDict(data) {
   return request({
-    url: '/system/dict/data/listByDict',
+    url: '/system/dict/data/listDataByDict',
     method: 'post',
     data: data
   });

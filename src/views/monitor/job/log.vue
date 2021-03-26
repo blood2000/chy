@@ -16,6 +16,7 @@
           v-model="queryParams.jobGroup"
           placeholder="请任务组名"
           clearable
+          filterable
           size="small"
           style="width: 240px"
         >
@@ -32,6 +33,7 @@
           v-model="queryParams.status"
           placeholder="请选择执行状态"
           clearable
+          filterable
           size="small"
           style="width: 240px"
         >
