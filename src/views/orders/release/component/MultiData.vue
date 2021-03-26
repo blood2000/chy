@@ -1,149 +1,27 @@
 <template>
   <div>
-    <el-form
-      :ref="`formData`"
-      :model="formData"
-      :rules="rules"
-      :size="formConfig.size"
-      :label-width="formConfig.labelWidth"
-      :label-position="formConfig.labelPosition"
-    >
-      <el-form-item label="运输单价" prop="shipmentPrice">
-        <el-input-number
-          v-model="formData.shipmentPrice"
-          :controls="false"
-          placeholder="运输单价"
-          step-strictly
-          controls-position="right"
-          :style="{ width: '50%' }"
-        />
-        <span class="pl-5">车/吨(不含税)</span>
-      </el-form-item>
+    <el-tabs v-model="activeName">
+      <el-tab-pane
+        v-for="item in tabs"
+        :key="item.value"
+        :label="item.label"
+        :name="item.value"
+      />
+    </el-tabs>
 
-      <el-form-item label="货物单价" prop="goodsPrice">
-        <el-input-number
-          v-model="formData.goodsPrice"
-          :controls="false"
-          placeholder="货物单价"
-          step-strictly
-          controls-position="right"
-          :style="{ width: '50%' }"
-        />
-        <span class="pl-5">元/吨</span>
-      </el-form-item>
+    <div v-for="item in tabs" v-show="activeName === item.value" :key="item.value">
+      <AccounTing :ref="'accounTing'+item.value" :pubilsh-code="pubilshCode" />
+    </div>
 
-      <el-form-item label="车型" prop="vehicleType">
-        <el-select
-          v-model="formData.vehicleType"
-          placeholder="选择车型"
-          clearable
-          :style="{ width: '100%' }"
-        >
-          <el-option
-            v-for="dict in [
-              { dictValue: '0', dictLabel: '车型1' },
-              { dictValue: '1', dictLabel: '车型2' },
-            ]"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-
-      <el-form-item label="车长" prop="vehicleLength">
-        <el-select
-          v-model="formData.vehicleLength"
-          placeholder="选择车长"
-          clearable
-          :style="{ width: '100%' }"
-        >
-          <el-option
-            v-for="dict in [
-              { dictValue: '0', dictLabel: '车长1' },
-              { dictValue: '1', dictLabel: '车长2' },
-            ]"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-
-      <!-- 规则 -->
-      <el-form-item label="核算规则" prop="ruleItemId">
-        <el-select
-          v-model="formData.ruleItemId"
-          placeholder="煤炭专用规则"
-          clearable
-          :style="{ width: '100%' }"
-        >
-          <el-option
-            v-for="dict in [
-              { dictValue: '0', dictLabel: '煤炭专用规则' },
-              { dictValue: '1', dictLabel: '规则2' },
-            ]"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-
-      <el-form-item
-        label="过路费补贴(ETC)"
-        prop="roadSubsidies"
-        label-width="130px"
-      >
-        <span class="pl-5 pr-5">+</span>
-        <el-input-number
-          v-model="formData.roadSubsidies"
-          :controls="false"
-          placeholder="请输入过路费补贴金额"
-          step-strictly
-          controls-position="right"
-          :style="{ width: '120px' }"
-        />
-        <span class="pl-5 pr-5">元</span>
-      </el-form-item>
-      <el-form-item
-        label="装车费补贴"
-        prop="loadCartSubsidies"
-        label-width="130px"
-      >
-        <span class="pl-5 pr-5">+</span>
-        <el-input-number
-          v-model="formData.loadCartSubsidies"
-          :controls="false"
-          placeholder="请输入装车费补贴金额"
-          step-strictly
-          controls-position="right"
-          :style="{ width: '120px' }"
-        />
-        <span class="pl-5 pr-5">元</span>
-      </el-form-item>
-      <el-form-item
-        label="卸车费补贴"
-        prop="unloadCartSubsidies"
-        label-width="130px"
-      >
-        <span class="pl-5 pr-5">+</span>
-        <el-input-number
-          v-model="formData.unloadCartSubsidies"
-          :controls="false"
-          placeholder="请输入卸车费补贴金额"
-          step-strictly
-          controls-position="right"
-          :style="{ width: '120px' }"
-        />
-        <span class="pl-5 pr-5">元</span>
-      </el-form-item>
-    </el-form>
+    <el-button @click="_submitForm">测试获取</el-button>
   </div>
 </template>
 
 <script>
+import AccounTing from './AccounTing';
 export default {
+  name: 'MultiData',
+  components: { AccounTing },
   props: {
     formConfig: {
       type: Object,
@@ -154,37 +32,59 @@ export default {
           labelPosition: 'left'
         };
       }
+    },
+    pubilshCode: {
+      type: String,
+      default: ''
+    },
+
+    address: {
+      type: Array,
+      default: () => []
+    },
+    // true = 装货, false = 卸货
+    nowType: {
+      type: Boolean,
+      default: true
     }
   },
 
   data() {
     return {
-      formData: {
-        shipmentPrice: undefined,
-        goodsPrice: undefined,
-        vehicleType: undefined,
-        vehicleLength: undefined,
-        ruleItemId: undefined,
-        roadSubsidies: undefined,
-        loadCartSubsidies: undefined,
-        unloadCartSubsidies: undefined
-      },
-      rules: {
-        // goodsUnit: [{ required: true,  message: '请选择货物计量单位',  trigger: 'change' }],
-      }
+      orderFreightBoList: null,
+      activeName: '0',
+      tabs: []
+
     };
+  },
+  computed: {
+    isNamw() {
+      return this.nowType ? 'add' : 'xie';
+    }
+  },
+
+  watch: {
+    address: {
+      handler(value) {
+        this.tabs = value.map((e, index) => {
+          return {
+            refName: e.refName,
+            label: e.refName.includes('xie') ? '卸载地址' + (index + 1) : '装货地址' + (index + 1),
+            value: index + ''
+          };
+        });
+      },
+      immediate: true,
+      deep: true
+    }
   },
 
   methods: {
     _submitForm() {
-      return new Promise((resolve, reject) => {
-        this.$refs['formData'].validate((valid) => {
-          if (valid) {
-            resolve(this.formData);
-          } else {
-            return false;
-          }
-        });
+      return this.tabs.map(async e => {
+        return {
+          [this.isNamw + '_' + e.value]: await this.$refs['accounTing' + e.value][0]._submitForm()
+        };
       });
     }
   }

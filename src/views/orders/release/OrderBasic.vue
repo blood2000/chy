@@ -8,6 +8,9 @@
       label-width="110px"
       :label-position="'left'"
     >
+      <el-divider />
+      <div class="header mb8">基本信息</div>
+
       <el-form-item label="选择所属项目" prop="tin3">
         <el-select
           v-model="formData.tin3"
@@ -64,7 +67,12 @@
         </el-form-item>
       </template>
 
-      <el-form-item label="发布位置" prop="tin4">
+      <el-divider />
+
+      <div class="header mb8">发布集其他信息</div>
+
+
+      <el-form-item label="发布至" prop="tin4">
         <el-radio-group
           v-model="formData.tin4"
           size="medium"
@@ -79,39 +87,48 @@
       </el-form-item>
 
       <template v-if="formData.tin4 === '0'">
-        <el-form-item label="指定接单人" prop="tin5">
-          <el-radio-group v-model="formData.tin5" size="medium">
-            <el-radio
-              v-for="dict in tin5Option"
-              :key="dict.dictValue"
-              :label="dict.dictValue"
-            >{{ dict.dictLabel }}</el-radio>
-          </el-radio-group>
-        </el-form-item>
+
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="指定联系人" prop="tin5">
+              <el-radio-group v-model="formData.tin5" size="medium">
+                <el-radio
+                  v-for="dict in tin5Option"
+                  :key="dict.dictValue"
+                  :label="dict.dictValue"
+                >{{ dict.dictLabel }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="关联货源码" prop="tin6">
+              <el-select
+                v-model="formData.tin6"
+                placeholder="选择货集码"
+                clearable
+                :style="{ width: '100%' }"
+              >
+                <el-option
+                  v-for="dict in tin6Option"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
 
         <el-form-item v-if="formData.tin5 === '1'" label=" ">
           <div class="ly-flex">
-            <el-button type="primary" @click="open1">指定接单人</el-button>
+            <el-button type="primary" @click="open1">请选择</el-button>
             <div class="ml0">调度者: {{ formData.tin6_1.length }} 人</div>
             <div class="ml0">司机: {{ formData.tin6_2.length }} 人</div>
           </div>
         </el-form-item>
 
-        <el-form-item label="货集码" prop="tin6">
-          <el-select
-            v-model="formData.tin6"
-            placeholder="选择货集码"
-            clearable
-            :style="{ width: '100%' }"
-          >
-            <el-option
-              v-for="dict in tin6Option"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-        </el-form-item>
+
       </template>
 
       <el-form-item label="备注信息" prop="remark">
@@ -123,6 +140,8 @@
           :style="{ width: '100%' }"
         />
       </el-form-item>
+
+      <el-divider />
     </el-form>
 
     <el-dialog
@@ -214,7 +233,7 @@ export default {
       tin2Option: [], // 大类
       tin2_Option: [], // 小类
       tin4Option: [
-        { dictValue: '1', dictLabel: '公开货源(所有人可接)' },
+        { dictValue: '1', dictLabel: '货源大厅(所有人可接)' },
         { dictValue: '0', dictLabel: '非公开货源(私密货源)' }
       ],
       tin5Option: [
@@ -266,10 +285,14 @@ export default {
         await this.api_dictInit();
         // 获取
         await this.api_tin3Optin();
+        // 货集码
+        await this.handleTin4();
 
         if (!this.cbData) return;
 
-        const { projectCode, isPublic, orderGoodsList, isSpecified, remark, orderSpecifiedList } = this.cbData;
+
+        // goodsType 是包装成数组 [code1, code2]
+        const { projectCode, isPublic, isSpecified, remark, orderSpecifiedList, goodsBigType, goodsType, classList } = this.cbData;
 
 
         this.formData.tin3 = projectCode;
@@ -278,24 +301,19 @@ export default {
         this.formData.tin5 = isSpecified ? '1' : '0';
         this.formData.remark = remark;
 
-
-        const { goodsBigType, goodsType } = orderGoodsList[0];
-
         this.tin2Option.forEach(e => {
           if (goodsBigType === e.dictCode) {
             this.formData.tin2 = e.dictValue;
           }
         });
 
-
         await this.handletin2();
 
-
         if (this.isMultiGoods) {
-          // 多商品这里处理
+          this.formData.tin2_1 = this._handlreMultiGoodsType(goodsType, this.tin2_Option);
         } else {
           this.tin2_Option.forEach(e => {
-            if (goodsType === e.dictCode) {
+            if (goodsType[0] === e.dictCode) {
               this.formData.tin2_2 = e.dictValue;
             }
           });
@@ -313,9 +331,26 @@ export default {
           this.actionIndex = e.userType + '';
           this.formData['tin6_' + e.userType] = this.orderSpecifiedList;
         });
+
+        this.formData.tin6 = classList[0].classCode;
         // console.log(this.formData['tin6_' + 2]);
         // console.log(this.formData['tin6_' + actionIndex]);
         // console.log(this.actionIndex);
+      },
+      immediate: true
+    },
+    'formData.tin2_1': {
+      handler(arr) {
+        const goods = arr.map(e => {
+          return this._zhaovalue(this.tin2_Option, e);
+        });
+        this.$emit('goods', goods);
+      },
+      immediate: true
+    },
+    'formData.tin2_2': {
+      handler(value) {
+        this.$emit('goods', [this._zhaovalue(this.tin2_Option, value)]);
       },
       immediate: true
     }
@@ -395,6 +430,7 @@ export default {
     async handletin2(tin3item) {
       this.$emit('input', this.isMultiGoods);
 
+
       const { data } = await this.listByDict({
         dictPid: this._zhaovalue(this.tin2Option, this.formData.tin2).dictCode,
         dictType: 'goodsType'
@@ -407,6 +443,7 @@ export default {
 
       if (this.isMultiGoods) {
         this.formData.tin2_1 = tin3item.commoditySubclassCodes.split(',');
+
         this.formData.tin2_2 = '';
       } else {
         this.formData.tin2_1 = [];
@@ -430,7 +467,6 @@ export default {
         } else {
           this.actionIndex = '1';
         }
-
 
         if (this.formData.tin6_1.length > 1) {
           this.msgInfo('调度者只能选择一个');
@@ -478,6 +514,23 @@ export default {
                 userType: 2
               };
             });
+
+            let orderGoodsList = [];
+            if (this.isMultiGoods) {
+              orderGoodsList = this.formData.tin2_1.map(e => {
+                return {
+                  goodsBigType: this._zhaovalue(this.tin2Option, this.formData.tin2).dictCode,
+                  goodsType: this._zhaovalue(this.tin2_Option, e).dictCode
+                };
+              });
+            } else {
+              orderGoodsList = [{
+                goodsBigType: this._zhaovalue(this.tin2Option, this.formData.tin2).dictCode,
+                goodsType: this._zhaovalue(this.tin2_Option, this.formData.tin2_2).dictCode
+              }];
+            }
+
+
             resolve({
               classList: [
                 {
@@ -487,49 +540,7 @@ export default {
               isPublic: this.formData.tin4 === '1', //	是否公开货源 0.非公开 1.公开,
               isSpecified: this.formData.tin5 === '1', // 是否指定接单人 0否 1是		false
               // 'loadType': 0,
-              orderGoodsList: [
-                {
-                  // 'addressList': [
-                  //   {
-                  //     'adcode': '',
-                  //     'addressAlias': '',
-                  //     'addressType': 0,
-                  //     'city': '',
-                  //     'citycode': '',
-                  //     'contact': '',
-                  //     'contactPhone': '',
-                  //     'country': '',
-                  //     'detail': '',
-                  //     'district': '',
-                  //     'formattedAddress': '',
-                  //     'level': '',
-                  //     'location': [],
-                  //     'province': '',
-                  //     'provinceCode': '',
-                  //     'street': ''
-                  //   }
-                  // ],
-                  // 'balanceRuleCode': '',
-                  goodsBigType: this._zhaovalue(this.tin2Option, this.formData.tin2).dictCode,
-                  goodsType: this.isMultiGoods
-                    ? this._zhaovalue(this.tin2_Option, this.formData.tin2_1).dictCode
-                    : this._zhaovalue(this.tin2_Option, this.formData.tin2_2).dictCode
-                  // 'goodsUnit': '',
-                  // 'isModifyFinish': true,
-                  // 'isOneselfLoad': true,
-                  // 'isOneselfUnload': true,
-                  // 'limitWastage': '',
-                  // 'perWeight': 0,
-                  // 'priceWastage': 0,
-                  // 'shipmentPrice': 0,
-                  // 'totalType': '',
-                  // 'vehicleLength': '',
-                  // 'vehicleType': '',
-                  // 'weight': 0,
-
-                }
-
-              ],
+              orderGoodsList,
               orderSpecifiedList: tin6_1.concat(tin6_2),
               projectCode: this.formData.tin3 === '0' ? '' : this.formData.tin3,
               pubilshCode: this.pubilshCode,
@@ -543,7 +554,31 @@ export default {
       });
     },
 
-    // 工具
+
+    // 处理小类多类型的
+    _handleGoodsType(arr) {
+      // 获取子类的code数组
+      const tae1 = arr.map(e => {
+        return this._zhaovalue(this.tin2_Option, e).dictCode;
+      });
+      // 把子类转出字符串逗号隔开
+
+      return tae1.join(',');
+    },
+
+    // 回填多商品处理code
+    _handlreMultiGoodsType(arr1, options) {
+      const arr2 = [];
+      arr1.forEach(e => {
+        options.forEach(ee => {
+          if (ee.dictCode + '' === e + '') {
+            arr2.push(ee.dictValue);
+          }
+        });
+      });
+      return arr2;
+    },
+
     // 根据value匹配数组中的一项
     _zhaovalue(arr, value) {
       return arr.filter((e) => {
@@ -567,6 +602,20 @@ export default {
 
 <style lang="scss" scoped>
 .radio_item {
-  padding: 5px 10px 5px 0;
+  padding: 0 10px 10px 0;
+}
+.header {
+  padding-bottom: 10px;
+  position: relative;
+  font-weight: 700;
+  &::before {
+    content: "";
+    position: absolute;
+    width: 3px;
+    height: 20px;
+    left: -15px;
+    top: 1px;
+    background-color: #1890ff;
+  }
 }
 </style>

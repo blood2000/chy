@@ -2,6 +2,7 @@
   <div>
     <el-form
       :ref="`formData`"
+      :inline="true"
       :model="formData"
       :rules="rules"
       :size="formConfig.size"
@@ -10,8 +11,15 @@
     >
 
       <!-- 文本框 -->
-      <div v-for="(item,index) in resettingData" :key="index">
-        <el-form-item v-if="item.showType === '1'" :prop="item.myName" :label="item.cnName">
+      <div v-for="(item,index) in resettingData" :key="index" class="ly-flex">
+        <el-form-item
+          v-if="item.showType === '1'"
+          :prop="item.myName"
+          :label="item.cnName"
+          :rules="[
+            { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+          ]"
+        >
           <el-input-number
             v-model="formData[item.myName]"
             :controls="false"
@@ -22,7 +30,14 @@
           />
         </el-form-item>
         <!-- 下拉框 -->
-        <el-form-item v-if="item.showType === '3'" :prop="item.myName" :label="item.cnName">
+        <el-form-item
+          v-if="item.showType === '3'"
+          :prop="item.myName"
+          :label="item.cnName"
+          :rules="[
+            { required: true, message: '请输入邮箱地址', trigger: 'change' },
+          ]"
+        >
           <el-select v-model="formData[item.myName]" clearable :placeholder="`请输入${item.cnName}`" @change="change()">
             <el-option
               v-for="dict in item.Option"
@@ -35,7 +50,14 @@
 
         <!-- 单选 -->
         <el-form-item v-if="item.showType === '4'" :prop="item.myName" :label="item.cnName">
-          <el-radio-group v-model="formData[item.myName]" size="medium" @change="change()">
+          <el-radio-group
+            v-model="formData[item.myName]"
+            size="medium"
+            :rules="[
+              { required: true, message: '请输入邮箱地址', trigger: 'change' },
+            ]"
+            @change="change()"
+          >
             <el-radio
               v-for="dict in item.Option"
               :key="dict.dictValue"
@@ -47,7 +69,13 @@
         <!-- 区间 -->
         <div v-if="item.showType === '2'" class="ly-flex ly-flex-pack-justify ly-flex-align-center">
 
-          <el-form-item :prop="item.myName+'_0'" :label="item.cnName">
+          <el-form-item
+            :prop="item.myName+'_0'"
+            :label="item.cnName"
+            :rules="[
+              { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+            ]"
+          >
             <el-input-number
               v-model="formData[item.myName+'_0']"
               :controls="false"
@@ -58,7 +86,13 @@
             />
           </el-form-item>
           <div style="margin-bottom: 22px;">~</div>
-          <el-form-item :prop="item.myName+'_1'" label-width="0">
+          <el-form-item
+            :prop="item.myName+'_1'"
+            label-width="0"
+            :rules="[
+              { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+            ]"
+          >
             <el-input-number
               v-model="formData[item.myName+'_1']"
               :controls="false"

@@ -17,6 +17,7 @@
       label-width="110px"
       :label-position="'left'"
     >
+      <!-- 第一步 基本信息 -->
       <div class="content">
         <div v-if="isCreated" class="header mb8">代发货主信息</div>
 
@@ -45,51 +46,53 @@
           ref="OrderBasic"
           v-model="isMultiGoods"
           :pubilsh-code="formData.tin1"
-          :cb-data="cbData"
+          :cb-data="cbOrderBasic"
+          @goods="(data)=> goods = data"
         />
+
+        <el-button v-if="formData.tin1 && active < 2" @click="nextTo(2)">下一步</el-button>
       </div>
-      <el-divider />
 
-      <div v-if="formData.tin1" class="content">
-        <div class="header mb8">装卸货地址配置(第二步)</div>
-        <template v-if="isMultiGoods">
-          <el-form-item label="装货类型" prop="tin7">
-            <el-radio-group v-model="formData.tin7" size="medium">
-              <el-radio
-                v-for="dict in [
-                  { dictValue: '1', dictLabel: '一装一卸' },
-                  { dictValue: '2', dictLabel: '多装一卸' },
-                  { dictValue: '3', dictLabel: '一装多卸' }
-                ]"
-                :key="dict.dictValue"
-                :label="dict.dictValue"
-              >{{ dict.dictLabel }}</el-radio>
-            </el-radio-group>
-          </el-form-item>
+      <!-- 第二步 地址的填写 -->
+      <div v-if="formData.tin1 && active >= 2" class="content">
+        <div class="header mb8">地址信息</div>
+        <el-form-item label="装卸类型" prop="tin7">
+          <el-radio-group v-model="formData.tin7" size="medium">
+            <el-radio
+              v-for="dict in (isMultiGoods?[
+                { dictValue: '1', dictLabel: '一装一卸' },
+                { dictValue: '2', dictLabel: '多装一卸' },
+                { dictValue: '3', dictLabel: '一装多卸' }
+              ]:[{ dictValue: '1', dictLabel: '一装一卸' }])"
+              :key="dict.dictValue"
+              :label="dict.dictValue"
+            >{{ dict.dictLabel }}</el-radio>
+          </el-radio-group>
+        </el-form-item>
 
-          <el-form-item v-if="formData.tin7 !== '1'" label="允许自卸/自装">
-            <div class="ly-flex">
-              <el-form-item
-                v-if="formData.tin7 === '2' || formData.tin7 === '4'"
-                prop="tin8"
-              >
-                <el-checkbox v-model="formData.tin8">允许自装</el-checkbox>
-              </el-form-item>
-              <el-form-item
-                v-if="formData.tin7 === '3' || formData.tin7 === '4'"
-                :label-width="formData.tin7 === '4' ? '30px' : null"
-                prop="tin9"
-              >
-                <el-checkbox v-model="formData.tin9">允许自卸</el-checkbox>
-              </el-form-item>
-            </div>
-          </el-form-item>
-        </template>
+        <el-form-item v-if="formData.tin7 !== '1'" label="允许自卸/自装">
+          <div class="ly-flex">
+            <el-form-item
+              v-if="formData.tin7 === '2' || formData.tin7 === '4'"
+              prop="tin8"
+            >
+              <el-checkbox v-model="formData.tin8">允许自装</el-checkbox>
+            </el-form-item>
+            <el-form-item
+              v-if="formData.tin7 === '3' || formData.tin7 === '4'"
+              :label-width="formData.tin7 === '4' ? '30px' : null"
+              prop="tin9"
+            >
+              <el-checkbox v-model="formData.tin9">允许自卸</el-checkbox>
+            </el-form-item>
+          </div>
+        </el-form-item>
 
         <el-divider />
 
+
         <div class="header mb8 m-flex">
-          货源地址
+          装货信息
           <el-button
             v-if="formData.tin7 === '2' || formData.tin7 === '4'"
             type="primary"
@@ -104,6 +107,7 @@
           class="oneAddress_item"
         >
           <OneAddress :ref="address.refName" type="1" :cb-data="address.cbData" />
+
           <el-button
             v-if="address_add.length >= 2"
             type="danger"
@@ -114,7 +118,7 @@
         <el-divider />
 
         <div class="header mb8 m-flex">
-          卸货地址
+          卸货信息
           <el-button
             v-if="formData.tin7 === '3' || formData.tin7 === '4'"
             type="primary"
@@ -129,6 +133,7 @@
           class="oneAddress_item"
         >
           <OneAddress :ref="address.refName" type="2" :cb-data="address.cbData" />
+
           <el-button
             v-if="address_xie.length >= 2"
             type="danger"
@@ -136,58 +141,19 @@
           >删除地址</el-button>
         </div>
 
+        <el-button v-if="active < 3" @click="nextSe(3)">下一步</el-button>
         <el-divider />
-
-        <template v-if="!isMultiGoods">
-          <div class="content">
-            <div class="header mb8">配载信息(第三步)</div>
-
-            <GoodsAccounting ref="goodsAccounting" :cb-data="cbGoodsAccounting" />
-
-            <el-divider />
-            <div class="header mb8">其他规则</div>
-
-            <AccounTing ref="accounTing" :pubilsh-code="formData.tin1" :cb-data="orderFreightBoList" />
-
-          </div>
-
-
-
-          <div v-if="false" class="content">
-            <div class="header mb8">预估运费</div>
-
-            <div class="footer-box">
-              <div>
-                <span>预估运费(不含税):</span> <span>￥</span><span>8566.00</span>
-              </div>
-              <div>
-                <span>(含税):</span> <span>￥</span><span>8566.00</span>
-              </div>
-            </div>
-          </div>
-        </template>
-
-        <template v-else>
-          <div class="content">
-            <div class="header mb8">货物/核算</div>
-
-            <el-tabs v-model="tin2_1tabs_activeName">
-              <el-tab-pane
-                v-for="item in tin2_1tabs"
-                :key="item.value"
-                :label="item.label"
-                :name="item.value"
-              >
-                <!-- v-model="item.data" 如果自接传在去修改会警告, 倒不如处理完返回再赋值 -->
-                <MultiData :ref="item.value" />
-              </el-tab-pane>
-            </el-tabs>
-          </div>
-        </template>
       </div>
+
+      <!-- 第三步 货源信息 -->
+      <div v-if="formData.tin1 && active >= 3" class="content">
+        <div class="header mb8">货源信息</div>
+        <goods-info ref="goodsInfo" :goods="goods" :goods-big-type="goodsBigType" :addr-add="addr_add" :addr-xie="addr_xie" :pubilsh-code="formData.tin1" :cb-goods-accounting="cbGoodsAccounting" />
+      </div>
+
     </el-form>
 
-    <div>
+    <div v-if="active >= 3">
       <el-button type="primary" @click="onSubmit('elForm')">立即发布</el-button>
       <el-button>取消</el-button>
     </div>
@@ -197,6 +163,7 @@
 <script>
 import OrderBasic from './OrderBasic';
 import OneAddress from './component/OneAddress';
+import GoodsInfo from './GoodsInfo';
 
 import GoodsAccounting from './component/GoodsAccounting';
 import AccounTing from './component/AccounTing';
@@ -216,10 +183,25 @@ export default {
     MultiData,
     //
     OrderBasic,
-    OneAddress
+    OneAddress,
+    GoodsInfo
   },
   data() {
     return {
+      basicInfor: null, // 创建货源的基本信息
+      goodsBigType: '', // 获取出大类
+
+
+      active: 1, // 步骤
+      goods: [], // 商品
+      // 地址数组形式
+      address_add: [{ refName: 'address_add' + Date.now() }], // 装
+      address_xie: [{ refName: 'address_xie' + Date.now() }], // 卸
+      addr_add: [], // 装传进去
+      addr_xie: [], // 卸传进去
+
+      cbOrderBasic: null, // 传给OrderBasic组件的数据
+
       cbData: null,
       cbGoodsAccounting: null,
       orderFreightBoList: null,
@@ -228,9 +210,6 @@ export default {
       // 多商品对应各自的规格
       tin2_1tabs: [],
       tin2_1tabs_activeName: '0',
-      // 地址数组形式
-      address_add: [{ refName: 'add_' + Date.now() }], // 装
-      address_xie: [{ refName: 'xie_' + Date.now() }], // 卸
       formData: {
         tin1: '', // 发布人Code
         tin7: '1', // 装卸类型 1.一装一卸 2.多装一卸 3.一装多卸 4.多装多卸
@@ -259,6 +238,7 @@ export default {
   },
 
   computed: {
+
     isTin1() {
       return !!this.formData.tin1;
     },
@@ -267,7 +247,33 @@ export default {
     },
     isCreated() {
       return !this.$route.query.t && !this.$route.query.id;
+    },
+    isShowMulti() {
+      return this.address_add.length >= 2 || this.address_xie.length >= 2;
+    },
+    addressTab() {
+      let arr = [];
+
+      if (this.isShowMulti) {
+        if (this.address_add.length >= 2) {
+          arr = [...arr, ...this.address_add];
+        }
+        if (this.address_xie.length >= 2) {
+          arr = [...arr, ...this.address_xie];
+        }
+      }
+      return arr;
+    },
+    nowType() {
+      let bool = true;
+      if (this.formData.tin7 === '2') {
+        bool = true;
+      } else if (this.formData.tin7 === '3') {
+        bool = false;
+      }
+      return bool;
     }
+
   },
   watch: {
     isMultiGoods() {
@@ -282,9 +288,273 @@ export default {
     if (this.$route.query.id) {
       this.getCbdata(this.$route.query.id);
     }
+
+
+
+    // 测试
   },
 
   methods: {
+    async nextTo(active) {
+      this.basicInfor = await this.handlerPromise('OrderBasic', false);
+      this.basicInfor.loadType = this.formData.tin7;
+      this.goodsBigType = this.basicInfor.orderGoodsList[0].goodsBigType;
+      console.log(this.goodsBigType);
+
+      this.active = active; // 走第2步
+
+      this.handlercbAddress([
+        {
+          'id': null,
+          'code': 'd6f7c5dad3e143188f8287f0a82313e0',
+          'orderCode': '9085f700cc304f949335231000d7eed6',
+          'addressType': 2,
+          'country': '中国',
+          'province': '福建省',
+          'city': '福州市',
+          'citycode': '3501',
+          'district': '仓山区',
+          'street': '',
+          'adcode': '350104',
+          'location': [
+            119.358265,
+            26.045794
+          ],
+          'level': null,
+          'detail': '富邦针织',
+          'contact': '12123',
+          'contactPhone': '12345678910',
+          'addressAlias': '1212',
+          'provinceCode': '35' // 没返回
+
+        },
+        {
+          'id': null,
+          'code': 'd30b05af28a843028ea29f7f6c61465f',
+          'orderCode': '9085f700cc304f949335231000d7eed6',
+          'addressType': 1,
+          'country': '中国',
+          'province': '福建省',
+          'city': '福州市',
+          'citycode': '3501',
+          'district': '台江区',
+          'street': '',
+          'adcode': '350103',
+          'location': [
+            119.358265,
+            26.045794
+          ],
+          'level': null,
+          'detail': '富邦总部大楼',
+          'contact': '123456',
+          'contactPhone': '12345678910',
+          'addressAlias': '案发地上',
+          'provinceCode': '35',
+          // m0DictValue: null, //
+          // ruleDictValue: null,
+          ruleInfoShipmentCode: '25bbb90b43be45b7aebc01d4ee1c2265'
+          // 'orderFreightBoList': [
+          //   {
+          //     'orderCode': '9085f700cc304f949335231000d7eed6',
+          //     'orderGoodsCode': null,
+          //     'ruleDetailShipmentCode': '2d0141894ccb4542a7af469d3154caab',
+          //     'ruleItemCode': '1',
+          //     'ruleValue': 'DE',
+          //     'type': null,
+          //     'createCode': 'c0e8fdb5e44942d3a10907dc97768847',
+          //     'createTime': '2021-03-23 10:04:22.895',
+          //     'updateCode': null,
+          //     'updateTime': null,
+          //     'isDel': false
+          //   },
+          //   {
+          //     'orderCode': '9085f700cc304f949335231000d7eed6',
+          //     'orderGoodsCode': null,
+          //     'ruleDetailShipmentCode': '5f8e26d37aec4e28b1060044dd1f37a2',
+          //     'ruleItemCode': '14',
+          //     'ruleValue': '50',
+          //     'type': 1,
+          //     'createCode': 'c0e8fdb5e44942d3a10907dc97768847',
+          //     'createTime': '2021-03-23 10:04:22.908',
+          //     'updateCode': null,
+          //     'updateTime': null,
+          //     'isDel': false
+          //   },
+          //   {
+          //     'orderCode': '9085f700cc304f949335231000d7eed6',
+          //     'orderGoodsCode': null,
+          //     'ruleDetailShipmentCode': '75e1aafd564a4e5cba032919f0e0d8ff',
+          //     'ruleItemCode': '15',
+          //     'ruleValue': '100',
+          //     'type': 1,
+          //     'createCode': 'c0e8fdb5e44942d3a10907dc97768847',
+          //     'createTime': '2021-03-23 10:04:22.919',
+          //     'updateCode': null,
+          //     'updateTime': null,
+          //     'isDel': false
+          //   },
+          //   {
+          //     'orderCode': '9085f700cc304f949335231000d7eed6',
+          //     'orderGoodsCode': null,
+          //     'ruleDetailShipmentCode': '06a474570a21484db43d9ce737f31eea',
+          //     'ruleItemCode': '12',
+          //     'ruleValue': '1000',
+          //     'type': 2,
+          //     'createCode': 'c0e8fdb5e44942d3a10907dc97768847',
+          //     'createTime': '2021-03-23 10:04:22.934',
+          //     'updateCode': null,
+          //     'updateTime': null,
+          //     'isDel': false
+          //   },
+          //   {
+          //     'orderCode': '9085f700cc304f949335231000d7eed6',
+          //     'orderGoodsCode': null,
+          //     'ruleDetailShipmentCode': '43045d7b3ae6474db28c922ddc0d685b',
+          //     'ruleItemCode': '13',
+          //     'ruleValue': '500',
+          //     'type': 2,
+          //     'createCode': 'c0e8fdb5e44942d3a10907dc97768847',
+          //     'createTime': '2021-03-23 10:04:22.945',
+          //     'updateCode': null,
+          //     'updateTime': null,
+          //     'isDel': false
+          //   }
+          // ],
+          // freight: {
+          //   'detailList': [
+          //     {
+          //       'id': 140,
+          //       'code': '06a474570a21484db43d9ce737f31eea',
+          //       'ruleCode': '8c844a2e7ac340359c2bb41e7bd645b1',
+          //       'ruleItemCode': '12',
+          //       'ruleValue': '1000',
+          //       'type': '2',
+          //       'cnName': '卸车费',
+          //       'enName': 'xcf',
+          //       'showType': 1,
+          //       'dictCode': null,
+          //       'ruleType': 0,
+          //       'dictLabel': null,
+          //       'unit': null
+          //     },
+          //     {
+          //       'id': 139,
+          //       'code': '43045d7b3ae6474db28c922ddc0d685b',
+          //       'ruleCode': '8c844a2e7ac340359c2bb41e7bd645b1',
+          //       'ruleItemCode': '13',
+          //       'ruleValue': '500',
+          //       'type': '2',
+          //       'cnName': '油费',
+          //       'enName': 'yf',
+          //       'showType': 1,
+          //       'dictCode': null,
+          //       'ruleType': 0,
+          //       'dictLabel': null,
+          //       'unit': null
+          //     },
+          //     {
+          //       'id': 138,
+          //       'code': '5f8e26d37aec4e28b1060044dd1f37a2',
+          //       'ruleCode': '8c844a2e7ac340359c2bb41e7bd645b1',
+          //       'ruleItemCode': '14',
+          //       'ruleValue': '50',
+          //       'type': '1',
+          //       'cnName': 'ETC费',
+          //       'enName': 'etc',
+          //       'showType': 1,
+          //       'dictCode': null,
+          //       'ruleType': 0,
+          //       'dictLabel': null,
+          //       'unit': null
+          //     },
+          //     {
+          //       'id': 137,
+          //       'code': '75e1aafd564a4e5cba032919f0e0d8ff',
+          //       'ruleCode': '8c844a2e7ac340359c2bb41e7bd645b1',
+          //       'ruleItemCode': '15',
+          //       'ruleValue': '100',
+          //       'type': '1',
+          //       'cnName': '超时费',
+          //       'enName': 'csf',
+          //       'showType': 1,
+          //       'dictCode': null,
+          //       'ruleType': 0,
+          //       'dictLabel': null,
+          //       'unit': null
+          //     }
+          //   ],
+          //   'lossList': [
+          //     {
+          //       'id': 136,
+          //       'code': '2d0141894ccb4542a7af469d3154caab',
+          //       'ruleCode': '8c844a2e7ac340359c2bb41e7bd645b1',
+          //       'ruleItemCode': '1',
+          //       'ruleValue': 'DE',
+          //       'type': null,
+          //       'cnName': '路耗 计算方式',
+          //       'enName': 'lhjsfs',
+          //       'showType': 4,
+          //       'dictCode': 'lossPlan',
+          //       'ruleType': 1,
+          //       'dictLabel': null,
+          //       'unit': null
+          //     }
+          //   ]
+          // }
+        }
+      ]);
+    },
+    async nextSe(active) {
+      // 返回装货地址
+      const address_add = this.address_add.map(async(e) => {
+        return {
+          ...e,
+          ...e.cbData,
+          ...(await this.$refs[e.refName][0]._submitForm())
+        };
+      });
+      const address_xie = this.address_xie.map(async(e) => {
+        return {
+          ...e,
+          ...e.cbData,
+          ...(await this.$refs[e.refName][0]._submitForm())
+        };
+      });
+
+      this.addr_add = await Promise.all(address_add);
+      this.addr_xie = await Promise.all(address_xie);
+
+
+
+      this.active = active; // 3
+    },
+
+    // 下一步
+    async next(active) {
+      if ((active + '') === '2') {
+        // this.active = active + '';
+      }
+      if ((active + '') === '3') {
+        // 返回装货地址
+        const address_add = this.address_add.map(async(e) => {
+          return await this.$refs[e.refName][0]._submitForm();
+        });
+        // 返回卸货地址
+        const address_xie = this.address_xie.map(async(e) => {
+          return await this.$refs[e.refName][0]._submitForm();
+        });
+
+        this.addr_add = await Promise.all(address_add);
+        this.addr_xie = await Promise.all(address_xie);
+
+        console.log(this.addr_add);
+        console.log(this.addr_xie);
+
+        // 这里是获取到装货地址和卸货地址
+      }
+
+      this.active = active + '';
+    },
     onSubmit(form) {
       this.$refs[form].validate(async(valid) => {
         if (valid) {
@@ -292,6 +562,7 @@ export default {
 
           orderPubilsh(data).then((response) => {
             this.msgSuccess('新增成功');
+
             setTimeout(() => {
               this.$router.push({ name: 'Manage' });
             }, 1000);
@@ -304,62 +575,43 @@ export default {
 
     // 3.
     async submAllData() {
-      const OrderBasic = await this.$refs.OrderBasic._submitForm();
+      const { orderGoodsList, orderAddressPublishBoList } = await this.handlerAddress();
 
-      const address_add = this.address_add.map(async(e) => {
-        return await this.$refs[e.refName][0]._submitForm();
-      });
-      const address_xie = this.address_xie.map(async(e) => {
-        return await this.$refs[e.refName][0]._submitForm();
-      });
+      const orderBasic = this.basicInfor;
 
-      const addr_add = await Promise.all(address_add);
-      const addr_xie = await Promise.all(address_xie);
-      // console.log([...addr_xie, ...addr_add]); // 装卸货地址集合
-
-      const goodsAccounting = await this.$refs.goodsAccounting._submitForm();
-      // console.log(goodsAccounting, 'goodsAccounting------------');
-
-      // 规则
-      const accounTing = await this.$refs.accounTing._submitForm();
-      // console.log(accounTing, 'accounTing 是个数组有详细的每一个细的规则------------');
-      // 下面开始拼接
-      const { orderGoodsList } = OrderBasic;
-      // 1-  默认一装一卸
-      OrderBasic.loadType = this.formData.tin7;
-      OrderBasic.ruleInfoShipmentCode = accounTing[0].ruleCode;
-      // 2- 装卸货数据
-      OrderBasic.addressList = [...addr_xie, ...addr_add].map(ee => {
+      orderBasic.orderGoodsList = orderGoodsList.map(e => {
         return {
-          ...ee,
-          orderFreightBoList: accounTing // 把规则地址里面
-        };
-      });
-
-      // 3- 其他是在OrderBsic.vue中配置了
-      OrderBasic.orderGoodsList = orderGoodsList.map(e => {
-        return {
-          ...e,
-          // 'balanceRuleCode': '', // 货主核算规则表CODE
-          'goodsUnit': goodsAccounting.goodsUnit,
-          // 'isModifyFinish': true, // 平台是否完成调价??
+          goodsBigType: orderBasic.orderGoodsList[0].goodsBigType, // 大类code
+          goodsType: e.dictCode, // 小类code
+          businessType: e.businessType, // 业务类型
+          'goodsPrice': e.goodsPrice, // 货物单价
+          number: e.number ? e.number - 0 : 0, // 车
+          'vehicleMaxWeight': e.vehicleMaxWeight, // 最高配载
+          'stowageStatus': e.stowageStatus, // 配载方式
           'isOneselfLoad': this.formData.tin8,
           'isOneselfUnload': this.formData.tin9,
+          'totalType': e.totalType, // 配载总量类型 1.不限（长期货源）2.定量货源
+          'vehicleLength': e.vehicleLength,
+          'vehicleType': e.vehicleType,
+          'weight': e.weight ? e.weight : '' // 货品吨数
+
+          // "goodsUnit": "", // 货物单位 0：吨 1：立方米 无
+          // 'isModifyFinish': true, // 平台是否完成调价??
           // 'limitWastage': '', // 货物损耗 格式： 0/1(0-定额kg/车，1-定率千分之几/车)-1
-          'perWeight': goodsAccounting.perWeight,
-          'goodsPrice': goodsAccounting.goodsPrice,
+          // "perWeight": 0, // 每车载重量（吨） ??
           // 'priceWastage': 0, // 路耗超出范围 赔偿单价 （元/吨）
-          'shipmentPrice': goodsAccounting.shipmentPrice,
-          'totalType': goodsAccounting.weightType,
-          'vehicleLength': goodsAccounting.vehicleLength,
-          'vehicleType': goodsAccounting.vehicleType,
-          'weight': goodsAccounting.weight ? goodsAccounting.weight : ''
+
         };
       });
 
-      console.log(OrderBasic, '拼接后-----');
 
-      return OrderBasic;
+      orderBasic.orderAddressPublishBoList = orderAddressPublishBoList;
+
+
+      console.log(orderBasic, '最后数据');
+
+
+      return orderBasic;
     },
 
     // 1. 远程搜索
@@ -382,11 +634,12 @@ export default {
     async getCbdata(id) {
       // console.log(getOrderByCode);
 
-      let { data: data1 } = await getOrderByCode(id);
-      console.log(data1);
+      const { data: data2 } = await getOrderByCode(id);
+      console.log(data2);
+
 
       // 假数据
-      data1 = {
+      const data1 = {
         'code': '9085f700cc304f949335231000d7eed6', // code
         'mainOrderNumber': '2103231004220621',
         'projectCode': '658b38b1bdc2478e849b57617c1a0e69', // 项目编码
@@ -416,7 +669,7 @@ export default {
             'goodsType': 769,
             'goodsUnit': '0',
             'weight': null,
-            'perWeight': 412,
+            'vehicleMaxWeight': 412,
             'shipmentPrice': 424,
             'goodsPrice': null,
             'vehicleType': 'G11',
@@ -467,74 +720,8 @@ export default {
             'contact': '12123',
             'contactPhone': '12345678910',
             'addressAlias': '1212',
-            'provinceCode': '35', // 没返回
-            'redisOrderFreightVoList': [
-              {
-                'orderCode': '9085f700cc304f949335231000d7eed6',
-                'orderGoodsCode': null,
-                'ruleDetailShipmentCode': '2d0141894ccb4542a7af469d3154caab',
-                'ruleItemCode': '1',
-                'ruleValue': 'DE',
-                'type': null,
-                'createCode': 'c0e8fdb5e44942d3a10907dc97768847',
-                'createTime': '2021-03-23 10:04:22.835',
-                'updateCode': null,
-                'updateTime': null,
-                'isDel': false
-              },
-              {
-                'orderCode': '9085f700cc304f949335231000d7eed6',
-                'orderGoodsCode': null,
-                'ruleDetailShipmentCode': '5f8e26d37aec4e28b1060044dd1f37a2',
-                'ruleItemCode': '14',
-                'ruleValue': '50',
-                'type': 1,
-                'createCode': 'c0e8fdb5e44942d3a10907dc97768847',
-                'createTime': '2021-03-23 10:04:22.845',
-                'updateCode': null,
-                'updateTime': null,
-                'isDel': false
-              },
-              {
-                'orderCode': '9085f700cc304f949335231000d7eed6',
-                'orderGoodsCode': null,
-                'ruleDetailShipmentCode': '75e1aafd564a4e5cba032919f0e0d8ff',
-                'ruleItemCode': '15',
-                'ruleValue': '100',
-                'type': 1,
-                'createCode': 'c0e8fdb5e44942d3a10907dc97768847',
-                'createTime': '2021-03-23 10:04:22.857',
-                'updateCode': null,
-                'updateTime': null,
-                'isDel': false
-              },
-              {
-                'orderCode': '9085f700cc304f949335231000d7eed6',
-                'orderGoodsCode': null,
-                'ruleDetailShipmentCode': '06a474570a21484db43d9ce737f31eea',
-                'ruleItemCode': '12',
-                'ruleValue': '1000',
-                'type': 2,
-                'createCode': 'c0e8fdb5e44942d3a10907dc97768847',
-                'createTime': '2021-03-23 10:04:22.864',
-                'updateCode': null,
-                'updateTime': null,
-                'isDel': false
-              },
-              {
-                'orderCode': '9085f700cc304f949335231000d7eed6',
-                'orderGoodsCode': null,
-                'ruleDetailShipmentCode': '43045d7b3ae6474db28c922ddc0d685b',
-                'ruleItemCode': '13',
-                'ruleValue': '500',
-                'type': 2,
-                'createCode': 'c0e8fdb5e44942d3a10907dc97768847',
-                'createTime': '2021-03-23 10:04:22.872',
-                'updateCode': null,
-                'updateTime': null,
-                'isDel': false
-              }
-            ]
+            'provinceCode': '35' // 没返回
+
           },
           {
             'id': null,
@@ -558,6 +745,9 @@ export default {
             'contactPhone': '12345678910',
             'addressAlias': '案发地上',
             'provinceCode': '35',
+            // m0DictValue: null, //
+            // ruleDictValue: null,
+            ruleInfoShipmentCode: '25bbb90b43be45b7aebc01d4ee1c2265',
             'redisOrderFreightVoList': [
               {
                 'orderCode': '9085f700cc304f949335231000d7eed6',
@@ -624,166 +814,196 @@ export default {
                 'updateTime': null,
                 'isDel': false
               }
-            ]
+            ],
+            freight: {
+              'detailList': [
+                {
+                  'id': 140,
+                  'code': '06a474570a21484db43d9ce737f31eea',
+                  'ruleCode': '8c844a2e7ac340359c2bb41e7bd645b1',
+                  'ruleItemCode': '12',
+                  'ruleValue': '1000',
+                  'type': '2',
+                  'cnName': '卸车费',
+                  'enName': 'xcf',
+                  'showType': 1,
+                  'dictCode': null,
+                  'ruleType': 0,
+                  'dictLabel': null,
+                  'unit': null
+                },
+                {
+                  'id': 139,
+                  'code': '43045d7b3ae6474db28c922ddc0d685b',
+                  'ruleCode': '8c844a2e7ac340359c2bb41e7bd645b1',
+                  'ruleItemCode': '13',
+                  'ruleValue': '500',
+                  'type': '2',
+                  'cnName': '油费',
+                  'enName': 'yf',
+                  'showType': 1,
+                  'dictCode': null,
+                  'ruleType': 0,
+                  'dictLabel': null,
+                  'unit': null
+                },
+                {
+                  'id': 138,
+                  'code': '5f8e26d37aec4e28b1060044dd1f37a2',
+                  'ruleCode': '8c844a2e7ac340359c2bb41e7bd645b1',
+                  'ruleItemCode': '14',
+                  'ruleValue': '50',
+                  'type': '1',
+                  'cnName': 'ETC费',
+                  'enName': 'etc',
+                  'showType': 1,
+                  'dictCode': null,
+                  'ruleType': 0,
+                  'dictLabel': null,
+                  'unit': null
+                },
+                {
+                  'id': 137,
+                  'code': '75e1aafd564a4e5cba032919f0e0d8ff',
+                  'ruleCode': '8c844a2e7ac340359c2bb41e7bd645b1',
+                  'ruleItemCode': '15',
+                  'ruleValue': '100',
+                  'type': '1',
+                  'cnName': '超时费',
+                  'enName': 'csf',
+                  'showType': 1,
+                  'dictCode': null,
+                  'ruleType': 0,
+                  'dictLabel': null,
+                  'unit': null
+                }
+              ],
+              'lossList': [
+                {
+                  'id': 136,
+                  'code': '2d0141894ccb4542a7af469d3154caab',
+                  'ruleCode': '8c844a2e7ac340359c2bb41e7bd645b1',
+                  'ruleItemCode': '1',
+                  'ruleValue': 'DE',
+                  'type': null,
+                  'cnName': '路耗 计算方式',
+                  'enName': 'lhjsfs',
+                  'showType': 4,
+                  'dictCode': 'lossPlan',
+                  'ruleType': 1,
+                  'dictLabel': null,
+                  'unit': null
+                }
+              ]
+            }
           }
         ]
       };
-      // ----------转成想要的数据-----------
+
+      // console.log(123);
+
 
       const { code: orderCode, isPublic, isSpecified, loadType, projectCode, pubilshCode, remark, redisOrderClassGoodsVoList, redisOrderGoodsVoList, redisAddressList, redisOrderSpecifiedVoList } = data1;
 
-      const classList = redisOrderClassGoodsVoList.map(e => {
+      // 处理1
+      this.formData.tin1 = pubilshCode;
+      this.formData.tin7 = loadType || '1';
+      // 处理2 OrderBasic 组件
+
+      this.cbOrderBasic = {
+        projectCode,
+        isPublic,
+        goodsBigType: redisOrderGoodsVoList[0].goodsBigType,
+        goodsType: redisOrderGoodsVoList.map(e => {
+          return e.goodsType;
+        }),
+        isSpecified,
+        remark,
+        orderSpecifiedList: redisOrderSpecifiedVoList,
+        classList: redisOrderClassGoodsVoList.map(e => {
+          return {
+            classCode: e.classCode
+          };
+        })
+      };
+
+      // 处理OneAddress地址的 和 处理规则
+      await this.handlercbAddress(redisAddressList);
+
+      // 处理商品
+      this.cbGoodsAccounting = redisOrderGoodsVoList;
+
+      this.active = '';
+      console.log(this.address_add);
+    },
+
+    // 数据
+    async handlerPromise(refname, bool) {
+      if (bool) {
+        return await Promise.all(this.$refs[refname]._submitForm());
+      } else {
+        return await this.$refs[refname]._submitForm();
+      }
+    },
+
+    // 处理地址 和 商品
+    async handlerAddress() {
+      const goodsInfo = await this.$refs.goodsInfo._submitForm();
+      const orderGoodsList = goodsInfo.map(e => {
         return {
-          classCode: e.classCode
+          ...e.orderGood,
+          goodsType: e.dictCode
+
         };
       });
 
-      const { goodsBigType, goodsType, goodsUnit, goodsPrice, isOneselfLoad, isOneselfUnload, perWeight, shipmentPrice, totalType, vehicleLength, vehicleType, weight } = redisOrderGoodsVoList[0];
+      let arr = [];
+      for (const e of goodsInfo) {
+        arr = [...arr, ...e.newRedis];
+      }
 
-      const freight = await orderFreight({
-        orderCode,
-        orderAddressCode: redisAddressList[0].code
-      });
-      console.log(freight, '获取货源运费信息');
+      if (this.formData.tin7 === '3') {
+        this.addr_xie = arr;
+      } else {
+        this.addr_add = arr;
+      }
 
-      // 规则假数据
-      // freight = {
-      //   'detailList': [
-      //     {
-      //       'id': 140,
-      //       'code': '06a474570a21484db43d9ce737f31eea',
-      //       'ruleCode': '8c844a2e7ac340359c2bb41e7bd645b1',
-      //       'ruleItemCode': '12',
-      //       'ruleValue': '1000',
-      //       'type': '2',
-      //       'cnName': '卸车费',
-      //       'enName': 'xcf',
-      //       'showType': 1,
-      //       'dictCode': null,
-      //       'ruleType': 0,
-      //       'dictLabel': null,
-      //       'unit': null
-      //     },
-      //     {
-      //       'id': 139,
-      //       'code': '43045d7b3ae6474db28c922ddc0d685b',
-      //       'ruleCode': '8c844a2e7ac340359c2bb41e7bd645b1',
-      //       'ruleItemCode': '13',
-      //       'ruleValue': '500',
-      //       'type': '2',
-      //       'cnName': '油费',
-      //       'enName': 'yf',
-      //       'showType': 1,
-      //       'dictCode': null,
-      //       'ruleType': 0,
-      //       'dictLabel': null,
-      //       'unit': null
-      //     },
-      //     {
-      //       'id': 138,
-      //       'code': '5f8e26d37aec4e28b1060044dd1f37a2',
-      //       'ruleCode': '8c844a2e7ac340359c2bb41e7bd645b1',
-      //       'ruleItemCode': '14',
-      //       'ruleValue': '50',
-      //       'type': '1',
-      //       'cnName': 'ETC费',
-      //       'enName': 'etc',
-      //       'showType': 1,
-      //       'dictCode': null,
-      //       'ruleType': 0,
-      //       'dictLabel': null,
-      //       'unit': null
-      //     },
-      //     {
-      //       'id': 137,
-      //       'code': '75e1aafd564a4e5cba032919f0e0d8ff',
-      //       'ruleCode': '8c844a2e7ac340359c2bb41e7bd645b1',
-      //       'ruleItemCode': '15',
-      //       'ruleValue': '100',
-      //       'type': '1',
-      //       'cnName': '超时费',
-      //       'enName': 'csf',
-      //       'showType': 1,
-      //       'dictCode': null,
-      //       'ruleType': 0,
-      //       'dictLabel': null,
-      //       'unit': null
-      //     }
-      //   ],
-      //   'lossList': [
-      //     {
-      //       'id': 136,
-      //       'code': '2d0141894ccb4542a7af469d3154caab',
-      //       'ruleCode': '8c844a2e7ac340359c2bb41e7bd645b1',
-      //       'ruleItemCode': '1',
-      //       'ruleValue': 'DE',
-      //       'type': null,
-      //       'cnName': '路耗 计算方式',
-      //       'enName': 'lhjsfs',
-      //       'showType': 4,
-      //       'dictCode': 'lossPlan',
-      //       'ruleType': 1,
-      //       'dictLabel': null,
-      //       'unit': null
-      //     }
-      //   ]
-      // };
 
-      const addressList = redisAddressList; // 地址
 
-      const data = {
-        classList: classList,
-        isPublic: isPublic,
-        isSpecified: isSpecified,
-        loadType: loadType || '1',
-        orderGoodsList: [
-          {
-            addressList: addressList,
-            'goodsBigType': goodsBigType,
-            'goodsType': goodsType,
-            'goodsUnit': goodsUnit,
-            'goodsPrice': goodsPrice,
-            'isOneselfLoad': !!isOneselfLoad,
-            'isOneselfUnload': !!isOneselfUnload,
-            'perWeight': perWeight,
-            'shipmentPrice': shipmentPrice,
-            'totalType': totalType || '1',
-            'vehicleLength': vehicleLength,
-            'vehicleType': vehicleType,
-            'weight': weight
-          }
-        ],
-        orderSpecifiedList: redisOrderSpecifiedVoList,
-        projectCode: projectCode, // 项目code
-        pubilshCode: pubilshCode, // 当前用户的code
-        remark: remark
-      };
+      return { orderGoodsList, orderAddressPublishBoList: [...this.addr_add, ...this.addr_xie] };
+    },
 
-      // 处理数据
+    // 处理地址回填
+    handlercbAddress(addressList) {
+      this.address_add = [];
+      this.address_xie = [];
 
-      const { orderGoodsList } = data;
-      this.formData.tin1 = pubilshCode;
-
-      this.cbData = data; // 去其他页面
-
-      orderGoodsList[0].addressList.forEach((e) => {
+      addressList.forEach((e, index) => {
         if ((e.addressType - 0) === 1) {
           // 装
-          this.address_add[0].cbData = e;
+          this.address_add.push({
+            refName: 'address_add' + Date.now() + index,
+            cbData: e
+          });
         } else {
           // 卸
-          this.address_xie[0].cbData = e;
+          this.address_xie.push({
+            refName: 'address_xie' + Date.now() + index,
+            cbData: e
+          });
         }
       });
-
-      this.cbGoodsAccounting = orderGoodsList[0];
-      this.orderFreightBoList = freight.data;
     },
+
+    // // 处理规则
+    // handlerRedisOrderFreight(addressList){
+
+    // },
 
     // 1. 添加一个地址
     _addAddress(name) {
       this[name].push({
-        refName: 'add_' + Date.now()
+        refName: name + Date.now()
       });
     },
     // 2. 删一个地址
