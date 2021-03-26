@@ -87,7 +87,7 @@
           @click="handleDelete"
         >批量删除</el-button>
       </el-col> -->
-      <el-col :span="1.5" style="marginTop:-5px">
+      <el-col :span="1.5" style="float: right;">
         <tablec-cascader v-model="tableColumnsConfig" />
       </el-col>
       <right-toolbar
