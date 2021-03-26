@@ -114,4 +114,12 @@ export function location(data) {
   });
 }
 
+// 新增评价
+export function waybillComment(data) {
+  return request({
+    url: '/transportation/waybillComment/add',
+    method: 'post',
+    data: data
+  });
+}
 

@@ -16,9 +16,9 @@
       <el-form-item label="装货重量" prop="loadWeight">
         <el-input-number v-model="form.loadWeight" placeholder="请输入装货过磅重量" :disabled="disable" controls-position="right" :min="0" style="width:90%;" />
       </el-form-item>
-      <el-form-item label="装货地址" prop="waybillAddress">
+      <el-form-item label="装货地址" prop="loadAddress">
         <el-select
-          v-model="form.waybillAddress"
+          v-model="form.loadAddress"
           placeholder="请选择车辆装货地址"
           clearable
           filterable
@@ -27,7 +27,25 @@
           :disabled="disable"
         >
           <el-option
-            v-for="dict in waybillAddressOptions"
+            v-for="dict in loadAddressOptions"
+            :key="dict.code"
+            :label="dict.formattedAddress"
+            :value="dict.code"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="卸货地址" prop="unloadAddress">
+        <el-select
+          v-model="form.unloadAddress"
+          placeholder="请选择车辆卸货地址"
+          clearable
+          filterable
+          size="small"
+          style="width:90%;"
+          :disabled="disable"
+        >
+          <el-option
+            v-for="dict in unloadAddressOptions"
             :key="dict.code"
             :label="dict.formattedAddress"
             :value="dict.code"
@@ -85,8 +103,10 @@ export default {
   },
   data() {
     return {
-      // 地址选择
-      waybillAddressOptions: [],
+      // 装货地址选择
+      loadAddressOptions: [],
+      // 卸货地址选择
+      unloadAddressOptions: [],
       // 实际承运车辆
       vehicleCodeOptions: [],
       // 表单参数
@@ -147,7 +167,8 @@ export default {
           this.form.loadWeight = info.loadWeight;
           this.form.remark = info.remark;
           this.form.loadTime = info.cargoTime;
-          this.form.waybillAddress = info.waybillAddressList[0].orderAddressCode;
+          this.form.loadAddress = info.waybillAddressList[0].orderAddressCode;
+          this.form.unloadAddress = info.waybillAddressList[0].orderAddressCode;
           this.form.attachmentCode = info.attachmentCode;
           this.form.vehicleCode = info.vehicleCode;
           console.log(this.form);
@@ -166,7 +187,11 @@ export default {
         const address1 = address.filter(item => {
           return item.addressType === 1;
         });
-        this.waybillAddressOptions = address1;
+        this.loadAddressOptions = address1;
+        const address2 = address.filter(item => {
+          return item.addressType === 2;
+        });
+        this.unloadAddressOptions = address2;
       });
     },
     // 获取车辆列表
@@ -216,7 +241,8 @@ export default {
         oneself: false,
         remark: null,
         vehicleCode: null,
-        waybillAddress: null
+        loadAddress: null,
+        unloadAddress: null
       };
       // this.waybillAddressOptions = [];
       this.resetForm('form');

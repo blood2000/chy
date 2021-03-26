@@ -1,7 +1,7 @@
 <template>
   <!-- 车辆定位对话框 -->
   <el-dialog :title="title" :visible="visible" width="1400px" append-to-body @close="cancel">
-    <div style="height:750px;">
+    <div class="map-content">
       <el-amap vid="amapDemo" :zoom="zoom" :center="center">
         <el-amap-marker v-for="(marker, index) in markers" :key="index" :events="marker.events" :position="marker.position" :icon="marker.icon" :label="marker.label" />
         <el-amap-info-window :position="window.position" :visible="window.visible" :offset="window.offset" :auto-move="true">
@@ -172,7 +172,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .mr3 {
   margin-right: 3%;
 }
@@ -188,8 +188,12 @@ export default {
 .el-rate{
   margin-top: 8px;
 }
-.amap-icon img{
+.map-content{
+  height:750px;
+  ::v-deep.amap-icon img{
   max-width: 40px !important;
   max-height: 30px !important;
 }
+}
+
 </style>
