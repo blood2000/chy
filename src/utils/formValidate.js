@@ -34,7 +34,7 @@ const organizationReg = /(^(?:(?![IOZSV])[\dA-Z]){2}\d{6}(?:(?![IOZSV])[\dA-Z]){
 export const formValidate = {
   // 数字验证
   number: function(rule, value, callback) {
-    if (!value) {
+    if (value === undefined || value === null || value === '') {
       callback();
     }
     if (!numberReg.test(value)) {
@@ -45,7 +45,7 @@ export const formValidate = {
   },
   // 中文验证
   cn: function(rule, value, callback) {
-    if (!value) {
+    if (value === undefined || value === null || value === '') {
       callback();
     }
     if (!cnReg.test(value)) {
@@ -56,7 +56,7 @@ export const formValidate = {
   },
   // 姓名验证
   name: function(rule, value, callback) {
-    if (!value) {
+    if (value === undefined || value === null || value === '') {
       callback();
     }
     if (!nameReg.test(value)) {
@@ -67,7 +67,7 @@ export const formValidate = {
   },
   // 邮箱验证
   email: function(rule, value, callback) {
-    if (!value) {
+    if (value === undefined || value === null || value === '') {
       callback();
     }
     if (!emailReg.test(value)) {
@@ -78,7 +78,7 @@ export const formValidate = {
   },
   // 手机验证
   telphone: function(rule, value, callback) {
-    if (!value) {
+    if (value === undefined || value === null || value === '') {
       callback();
     }
     if (!phoneReg.test(value)) {
@@ -89,7 +89,7 @@ export const formValidate = {
   },
   // 身份证验证
   idCard: function(rule, value, callback) {
-    if (!value) {
+    if (value === undefined || value === null || value === '') {
       callback();
     }
     if (!idCardReg.test(value)) {
@@ -112,7 +112,7 @@ export const formValidate = {
   },
   // 车牌号
   plateNo: function(rule, value, callback) {
-    if (!value) {
+    if (value === undefined || value === null || value === '') {
       callback();
     }
     if (!plateNoReg.test(value)) {
@@ -123,7 +123,7 @@ export const formValidate = {
   },
   // 银行卡
   bankCard: function(rule, value, callback) {
-    if (!value) {
+    if (value === undefined || value === null || value === '') {
       callback();
     }
     if (!bankCardReg.test(value)) {
@@ -134,7 +134,7 @@ export const formValidate = {
   },
   // 驾驶证
   driverCard: function(rule, value, callback) {
-    if (!value) {
+    if (value === undefined || value === null || value === '') {
       callback();
     }
     if (!driverCardReg.test(value)) {
@@ -145,7 +145,7 @@ export const formValidate = {
   },
   // 统一社会信用代码
   organizationCode: function(rule, value, callback) {
-    if (!value) {
+    if (value === undefined || value === null || value === '') {
       callback();
     }
     if (!organizationReg.test(value)) {

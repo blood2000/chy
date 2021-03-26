@@ -49,9 +49,6 @@
       <el-form-item label="详细地址" prop="addressDetail">
         <el-input v-model="form.addressDetail" placeholder="地图选择点位时，自动填入" class="width100" clearable />
       </el-form-item>
-      <el-form-item label="设为默认地址" prop="isDefault">
-        <el-switch v-model="form.isDefault" />
-      </el-form-item>
       <el-form-item label="备注" prop="remark">
         <el-input v-model="form.remark" type="textarea" placeholder="请输入备注" class="width100" />
       </el-form-item>
@@ -102,8 +99,9 @@ export default {
     return {
       // 地址类型字典
       addressTypeOptions: [
-        { 'dictLabel': '装货地址', 'dictValue': 1 },
-        { 'dictLabel': '卸货地址', 'dictValue': 2 }
+        { 'dictLabel': '默认装货地址', 'dictValue': 1 },
+        { 'dictLabel': '默认卸货地址', 'dictValue': 2 },
+        { 'dictLabel': '默认装卸货地址', 'dictValue': 3 }
       ],
       // 状态字典
       statusOptions: [
@@ -179,11 +177,6 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          if (this.form.isDefault) {
-            this.form.isDefault = 1;
-          } else {
-            this.form.isDefault = 0;
-          }
           if (this.form.code != null) {
             updateAddress(this.form).then(response => {
               this.msgSuccess('修改成功');
@@ -240,11 +233,6 @@ export default {
     // 表单赋值
     setForm(data) {
       this.form = data;
-      if (this.form.isDefault) {
-        this.form.isDefault = true;
-      } else {
-        this.form.isDefault = false;
-      }
       if (this.form.longitude && this.form.latitude) {
         this.getMapData(this.form.longitude, this.form.latitude);
       }
