@@ -148,7 +148,6 @@ import draggable from 'vuedraggable';
 import { saveAs } from 'file-saver';
 import beautifier from 'js-beautify';
 import ClipboardJS from 'clipboard';
-import render from '@/utils/generator/render';
 import RightPanel from './RightPanel';
 import {
   inputComponents,
@@ -157,7 +156,7 @@ import {
   formConf
 } from '@/utils/generator/config';
 import {
-  exportDefault, beautifierConf, isNumberStr, titleCase
+  beautifierConf, titleCase
 } from '@/utils/index';
 import {
   makeUpHtml, vueTemplate, vueScript, cssStyle
@@ -169,7 +168,6 @@ import logo from '@/assets/logo/logo2.svg';
 import CodeTypeDialog from './CodeTypeDialog';
 import DraggableItem from './DraggableItem';
 
-const emptyActiveData = { style: {}, autosize: {}};
 let oldActiveId;
 let tempActiveData;
 

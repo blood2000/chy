@@ -353,6 +353,7 @@ export default {
       // 表单校验
       rules: {
         telphone: [
+          { required: true, message: '手机号码不能为空', trigger: 'blur' },
           { validator: this.formValidate.telphone, trigger: 'blur' }
         ],
         adminName: [

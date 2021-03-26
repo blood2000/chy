@@ -9,14 +9,6 @@ export function listManages(query) {
   });
 }
 
-// 查询运单详细
-export function getDetail(code) {
-  return request({
-    url: `/transportation/waybill/getWayBillByCode?code=${code}`,
-    method: 'get'
-  });
-}
-
 // 标记异常
 export function waybillAbnormal(data) {
   return request({
@@ -49,5 +41,29 @@ export function waybillChild(query) {
     url: '/transportation/waybill/childList',
     method: 'get',
     params: query
+  });
+}
+
+// 查询运单详情-运单(根据运单CODE获取运单详情)
+export function getWayBill(code) {
+  return request({
+    url: `/transportation/waybill/getWayBillByCode?code=${code}`,
+    method: 'get'
+  });
+}
+
+// 查询运单详情-回单(根据运单CODE获取运单装货-卸货信息)
+export function getWaybillAttachment(code, type) {
+  return request({
+    url: `/transportation/waybillAttachment/getByWayBillCode?waybillCode=${code}&type=${type}`,
+    method: 'get'
+  });
+}
+
+// 查询运单详情-评价(根据运单CODE获取评价)
+export function getWaybillComment(code, type) {
+  return request({
+    url: `/transportation/waybillComment/getByWayBillCode?wayBillCode=${code}&type=${type}`,
+    method: 'get'
   });
 }

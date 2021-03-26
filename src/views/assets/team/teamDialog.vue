@@ -126,8 +126,9 @@ export default {
       form: {},
       // 表单校验
       rules: {
-        branchCode: [
-          { required: true, message: '网点编码不能为空', trigger: 'blur' }
+        telphone: [
+          { required: true, message: '手机号不能为空', trigger: 'blur' },
+          { validator: this.formValidate.telphone, trigger: 'blur' }
         ],
         name: [
           { required: true, message: '车队名称不能为空', trigger: 'blur' }
