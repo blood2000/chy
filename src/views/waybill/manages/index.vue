@@ -177,6 +177,7 @@
       <el-table-column label="司机电话" align="center" prop="driverPhone" />
       <el-table-column label="货物类型" align="center" prop="goodsBigType" />
       <el-table-column label="货物类型分类" align="center" prop="goodsType" />
+      <el-table-column label="车牌号" align="center" prop="licenseNumber" />
       <el-table-column label="装车重量" align="center" prop="loadWeight" />
       <el-table-column label="卸车重量" align="center" prop="unloadWeight" />
       <el-table-column label="数量(车)" align="center" prop="carNum" />

@@ -3,15 +3,8 @@
     <el-form ref="form" :model="form" :rules="rules" label-width="140px" class="address-dialog">
       <el-row>
         <el-col :span="12">
-          <el-form-item label="地址类型" prop="addressType">
-            <el-select v-model="form.addressType" placeholder="请选择地址类型" class="width100">
-              <el-option
-                v-for="dict in addressTypeOptions"
-                :key="dict.dictValue"
-                :label="dict.dictLabel"
-                :value="parseInt(dict.dictValue)"
-              />
-            </el-select>
+          <el-form-item label="地址名称" prop="addressName">
+            <el-input v-model="form.addressName" placeholder="请输入地址名称" class="width100" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -20,8 +13,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="地址名称" prop="addressName">
-            <el-input v-model="form.addressName" placeholder="请输入地址名称" class="width100" clearable />
+          <el-form-item label="地址别名" prop="addressOtherName">
+            <el-input v-model="form.addressOtherName" placeholder="请输入地址别名" class="width100" clearable />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -29,25 +22,22 @@
             <el-input v-model="form.contactTelphone" placeholder="请输入手机号码" class="width100" clearable />
           </el-form-item>
         </el-col>
-        <el-col :span="12">
-          <el-form-item label="地址别名" prop="addressOtherName">
-            <el-input v-model="form.addressOtherName" placeholder="请输入地址别名" class="width100" clearable />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="地址状态" prop="status">
-            <el-radio-group v-model="form.status">
-              <el-radio
-                v-for="dict in statusOptions"
-                :key="dict.dictValue"
-                :label="parseInt(dict.dictValue)"
-              >{{ dict.dictLabel }}</el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </el-col>
       </el-row>
       <el-form-item label="详细地址" prop="addressDetail">
         <el-input v-model="form.addressDetail" placeholder="地图选择点位时，自动填入" class="width100" clearable />
+      </el-form-item>
+      <el-form-item label="是否默认地址">
+        <el-switch v-model="form.defaultPut" active-text="默认装货地址" class="mr5" />
+        <el-switch v-model="form.defaultPush" active-text="默认卸货地址" />
+      </el-form-item>
+      <el-form-item label="地址状态" prop="status">
+        <el-radio-group v-model="form.status">
+          <el-radio
+            v-for="dict in statusOptions"
+            :key="dict.dictValue"
+            :label="parseInt(dict.dictValue)"
+          >{{ dict.dictLabel }}</el-radio>
+        </el-radio-group>
       </el-form-item>
       <el-form-item label="备注" prop="remark">
         <el-input v-model="form.remark" type="textarea" placeholder="请输入备注" class="width100" />
@@ -97,12 +87,6 @@ export default {
   },
   data() {
     return {
-      // 地址类型字典
-      addressTypeOptions: [
-        { 'dictLabel': '默认装货地址', 'dictValue': 1 },
-        { 'dictLabel': '默认卸货地址', 'dictValue': 2 },
-        { 'dictLabel': '默认装卸货地址', 'dictValue': 3 }
-      ],
       // 状态字典
       statusOptions: [
         { 'dictLabel': '启用', 'dictValue': 1 },
@@ -112,9 +96,6 @@ export default {
       form: {},
       // 表单校验
       rules: {
-        addressType: [
-          { required: true, message: '请选择地址类型', trigger: 'change' }
-        ],
         addressName: [
           { required: true, message: '地址名称不能为空', trigger: 'blur' }
         ],
@@ -165,10 +146,6 @@ export default {
 
   },
   methods: {
-    // 地址类型字典翻译
-    addressTypeFormat(row, column) {
-      return this.selectDictLabel(this.addressTypeOptions, row.addressType);
-    },
     // 状态字典翻译
     statusFormat(row, column) {
       return this.selectDictLabel(this.statusOptions, row.status);
@@ -177,6 +154,16 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
+          if (this.form.defaultPut) {
+            this.form.defaultPut = 1;
+          } else {
+            this.form.defaultPut = 0;
+          }
+          if (this.form.defaultPush) {
+            this.form.defaultPush = 1;
+          } else {
+            this.form.defaultPush = 0;
+          }
           if (this.form.code != null) {
             updateAddress(this.form).then(response => {
               this.msgSuccess('修改成功');
@@ -207,7 +194,6 @@ export default {
       this.form = {
         code: null,
         shipmentCode: null,
-        addressType: null,
         status: 1,
         createCode: null,
         createTime: null,
@@ -220,7 +206,9 @@ export default {
         addressDetail: null,
         contactName: null,
         contactTelphone: null,
-        remark: null
+        remark: null,
+        defaultPut: null, // 是否默认装货地址
+        defaultPush: null // 是否默认卸货地址
       };
       this.resetForm('form');
       // 地图重置
@@ -233,6 +221,16 @@ export default {
     // 表单赋值
     setForm(data) {
       this.form = data;
+      if (this.form.defaultPut) {
+        this.form.defaultPut = true;
+      } else {
+        this.form.defaultPut = false;
+      }
+      if (this.form.defaultPush) {
+        this.form.defaultPush = true;
+      } else {
+        this.form.defaultPush = false;
+      }
       if (this.form.longitude && this.form.latitude) {
         this.getMapData(this.form.longitude, this.form.latitude);
       }
@@ -298,6 +296,9 @@ export default {
 }
 .width100{
   width: 100%;
+}
+.mr5{
+  margin-right: 5%;
 }
 .map-content{
   position: relative;
