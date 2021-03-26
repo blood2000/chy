@@ -36,7 +36,7 @@ export function getDicts(dictType) {
 
 export function getDictsByType(data) {
   return request({
-    url: '/system/dict/data/listByDict',
+    url: '/system/dict/data/listDataByDict',
     method: 'post',
     data: data
   });
@@ -69,7 +69,7 @@ export function delData(dictCode) {
 // 查询字典类
 export function listByDict(data) {
   return request({
-    url: '/system/dict/data/listByDict',
+    url: '/system/dict/data/listDataByDict',
     method: 'post',
     data: data
   });
