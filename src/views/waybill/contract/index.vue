@@ -78,16 +78,7 @@
       :gutter="10"
       class="mb8"
     >
-      <!-- <el-col :span="1.5">
-        <el-button
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-        >批量删除</el-button>
-      </el-col> -->
-      <el-col :span="1.5" style="marginTop:-5px">
+      <el-col :span="1.5" style="float: right;">
         <tablec-cascader v-model="tableColumnsConfig" />
       </el-col>
       <right-toolbar
