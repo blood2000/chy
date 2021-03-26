@@ -34,7 +34,9 @@ const organizationReg = /(^(?:(?![IOZSV])[\dA-Z]){2}\d{6}(?:(?![IOZSV])[\dA-Z]){
 export const formValidate = {
   // 数字验证
   number: function(rule, value, callback) {
-    if (!value) return;
+    if (value === undefined || value === null || value === '') {
+      callback();
+    }
     if (!numberReg.test(value)) {
       callback(new Error('请输入数字'));
     } else {
@@ -43,7 +45,9 @@ export const formValidate = {
   },
   // 中文验证
   cn: function(rule, value, callback) {
-    if (!value) return;
+    if (value === undefined || value === null || value === '') {
+      callback();
+    }
     if (!cnReg.test(value)) {
       callback(new Error('请输入中文'));
     } else {
@@ -52,7 +56,9 @@ export const formValidate = {
   },
   // 姓名验证
   name: function(rule, value, callback) {
-    if (!value) return;
+    if (value === undefined || value === null || value === '') {
+      callback();
+    }
     if (!nameReg.test(value)) {
       callback(new Error('请输入正确的姓名'));
     } else {
@@ -61,7 +67,9 @@ export const formValidate = {
   },
   // 邮箱验证
   email: function(rule, value, callback) {
-    if (!value) return;
+    if (value === undefined || value === null || value === '') {
+      callback();
+    }
     if (!emailReg.test(value)) {
       callback(new Error('请输入正确的邮箱'));
     } else {
@@ -70,7 +78,9 @@ export const formValidate = {
   },
   // 手机验证
   telphone: function(rule, value, callback) {
-    if (!value) return;
+    if (value === undefined || value === null || value === '') {
+      callback();
+    }
     if (!phoneReg.test(value)) {
       callback(new Error('请输入正确的手机号码'));
     } else {
@@ -79,7 +89,9 @@ export const formValidate = {
   },
   // 身份证验证
   idCard: function(rule, value, callback) {
-    if (!value) return;
+    if (value === undefined || value === null || value === '') {
+      callback();
+    }
     if (!idCardReg.test(value)) {
       callback(new Error('请输入正确的身份证号'));
     } else {
@@ -89,7 +101,7 @@ export const formValidate = {
   // 证件是否过期
   isExpired(rule, value, callback) {
     if (value === undefined || value === null || value === '') {
-      return;
+      callback();
     }
     if (compareTime(value)) {
       const msg = '该证件已过期，请更新证件';
@@ -100,7 +112,9 @@ export const formValidate = {
   },
   // 车牌号
   plateNo: function(rule, value, callback) {
-    if (!value) return;
+    if (value === undefined || value === null || value === '') {
+      callback();
+    }
     if (!plateNoReg.test(value)) {
       callback(new Error('请输入正确的车牌号'));
     } else {
@@ -109,7 +123,9 @@ export const formValidate = {
   },
   // 银行卡
   bankCard: function(rule, value, callback) {
-    if (!value) return;
+    if (value === undefined || value === null || value === '') {
+      callback();
+    }
     if (!bankCardReg.test(value)) {
       callback(new Error('请输入正确的银行卡号'));
     } else {
@@ -118,7 +134,9 @@ export const formValidate = {
   },
   // 驾驶证
   driverCard: function(rule, value, callback) {
-    if (!value) return;
+    if (value === undefined || value === null || value === '') {
+      callback();
+    }
     if (!driverCardReg.test(value)) {
       callback(new Error('请输入正确的驾驶证号'));
     } else {
@@ -127,7 +145,9 @@ export const formValidate = {
   },
   // 统一社会信用代码
   organizationCode: function(rule, value, callback) {
-    if (!value) return;
+    if (value === undefined || value === null || value === '') {
+      callback();
+    }
     if (!organizationReg.test(value)) {
       callback(new Error('请输入正确的统一社会信用代码'));
     } else {
