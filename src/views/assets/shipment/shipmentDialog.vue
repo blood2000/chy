@@ -1,7 +1,7 @@
 <template>
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
-      <el-form-item v-if="title !== '货主/企业认证'" label="发货人/发货企业" prop="shipperType">
+      <el-form-item label="发货人/发货企业" prop="shipperType">
         <el-select
           v-model="form.shipperType"
           class="width90"
@@ -15,11 +15,6 @@
           />
         </el-select>
       </el-form-item>
-      <template v-if="title === '货主/企业认证' && form.shipperType === 1">
-        <el-form-item label="企业名称" prop="companyName">
-          <el-input v-model="form.companyName" class="width90" clearable />
-        </el-form-item>
-      </template>
       <el-form-item label="姓名" prop="adminName">
         <el-input v-model="form.adminName" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
@@ -121,170 +116,168 @@
           </template>
         </el-row>
       </el-form-item>
-      <template v-if="title !== '货主/企业认证'">
-        <el-form-item label="是否冻结" prop="isFreezone">
-          <el-select
-            v-model="form.isFreezone"
-            clearable
-            class="width90"
-          >
-            <el-option
-              v-for="dict in isFreezoneOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="票制类别" prop="ticketType">
-          <el-select
-            v-model="form.ticketType"
-            clearable
-            class="width90"
-          >
-            <el-option
-              v-for="dict in ticketTypeOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="服务费税率(%)" prop="serviceRate">
-          <el-input-number v-model="form.serviceRate" :precision="2" placeholder="请输入服务费税率" :step="1" :min="0" :max="100" class="width90" clearable />
-        </el-form-item>
-        <el-form-item label="服务费比例(%)" prop="serviceRatio">
-          <el-input-number v-model="form.serviceRatio" :precision="2" placeholder="请输入服务费比例" :step="1" :min="0" :max="100" class="width90" clearable />
-        </el-form-item>
-        <el-form-item label="税点(%)" prop="texPoint">
-          <el-input-number v-model="form.texPoint" :precision="2" placeholder="请输入税点" :step="1" :min="0" :max="100" class="width90" clearable />
-        </el-form-item>
-        <el-form-item label="货源是否审核" prop="supplyIsAuth">
-          <el-select
-            v-model="form.supplyIsAuth"
-            clearable
-            class="width90"
-          >
-            <el-option
-              v-for="dict in isOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="是否独立核算" prop="isAccount">
-          <el-select
-            v-model="form.isAccount"
-            clearable
-            class="width90"
-          >
-            <el-option
-              v-for="dict in isOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="核算方式" prop="accountType">
-          <el-select v-model="form.accountType" placeholder="请选择核算方式" clearable class="width90">
-            <el-option
-              v-for="dict in accountTypeOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="调度费点数" prop="dispatchPoints">
-          <el-input v-model="form.dispatchPoints" placeholder="请输入调度费点数" clearable class="width90" />
-        </el-form-item>
-        <el-form-item label="是否抹零" prop="isWipe">
-          <el-select
-            v-model="form.isWipe"
-            clearable
-            class="width28 mr3"
-          >
-            <el-option
-              v-for="dict in isOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-          <el-select v-model="form.wipeType" placeholder="请选择抹零方式" clearable class="width28">
-            <el-option
-              v-for="dict in wipeTypeOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="是否开启合理路耗">
-          <el-select
-            v-model="form.isConsumption"
-            clearable
-            class="width28 mr3"
-          >
-            <el-option
-              v-for="dict in isOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-          <el-select
-            v-model="form.consumptionUnit"
-            clearable
-            class="width28 mr3"
-            placeholder="路耗单位"
-          >
-            <el-option
-              v-for="dict in consumptionUnitOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-          <el-input v-model="form.consumptionMin" placeholder="最小值" class="width12" />
-          至
-          <el-input v-model="form.consumptionMax" placeholder="最大值" class="width12" />
-        </el-form-item>
-        <el-form-item label="是否月结" prop="creditAmount">
-          <el-select
-            v-model="form.isMonthly"
-            clearable
-            class="width28 mr3"
-          >
-            <el-option
-              v-for="dict in isOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-          <el-input v-model="form.creditAmount" placeholder="授信金额(保留两位小数)" class="width28" />
-        </el-form-item>
-        <el-form-item label="是否预付运费" prop="isPrepaid">
-          <el-select
-            v-model="form.isPrepaid"
-            clearable
-            class="width90"
-          >
-            <el-option
-              v-for="dict in isOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-        </el-form-item>
-      </template>
+      <el-form-item label="是否冻结" prop="isFreezone">
+        <el-select
+          v-model="form.isFreezone"
+          clearable
+          class="width90"
+        >
+          <el-option
+            v-for="dict in isFreezoneOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="票制类别" prop="ticketType">
+        <el-select
+          v-model="form.ticketType"
+          clearable
+          class="width90"
+        >
+          <el-option
+            v-for="dict in ticketTypeOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="服务费税率(%)" prop="serviceRate">
+        <el-input-number v-model="form.serviceRate" :precision="2" placeholder="请输入服务费税率" :step="1" :min="0" :max="100" class="width90" clearable />
+      </el-form-item>
+      <el-form-item label="服务费比例(%)" prop="serviceRatio">
+        <el-input-number v-model="form.serviceRatio" :precision="2" placeholder="请输入服务费比例" :step="1" :min="0" :max="100" class="width90" clearable />
+      </el-form-item>
+      <el-form-item label="税点(%)" prop="texPoint">
+        <el-input-number v-model="form.texPoint" :precision="2" placeholder="请输入税点" :step="1" :min="0" :max="100" class="width90" clearable />
+      </el-form-item>
+      <el-form-item label="货源是否审核" prop="supplyIsAuth">
+        <el-select
+          v-model="form.supplyIsAuth"
+          clearable
+          class="width90"
+        >
+          <el-option
+            v-for="dict in isOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="是否独立核算" prop="isAccount">
+        <el-select
+          v-model="form.isAccount"
+          clearable
+          class="width90"
+        >
+          <el-option
+            v-for="dict in isOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="核算方式" prop="accountType">
+        <el-select v-model="form.accountType" placeholder="请选择核算方式" clearable class="width90">
+          <el-option
+            v-for="dict in accountTypeOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="调度费点数" prop="dispatchPoints">
+        <el-input v-model="form.dispatchPoints" placeholder="请输入调度费点数" clearable class="width90" />
+      </el-form-item>
+      <el-form-item label="是否抹零" prop="isWipe">
+        <el-select
+          v-model="form.isWipe"
+          clearable
+          class="width28 mr3"
+        >
+          <el-option
+            v-for="dict in isOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+        <el-select v-model="form.wipeType" placeholder="请选择抹零方式" clearable class="width28">
+          <el-option
+            v-for="dict in wipeTypeOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="是否开启合理路耗">
+        <el-select
+          v-model="form.isConsumption"
+          clearable
+          class="width28 mr3"
+        >
+          <el-option
+            v-for="dict in isOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+        <el-select
+          v-model="form.consumptionUnit"
+          clearable
+          class="width28 mr3"
+          placeholder="路耗单位"
+        >
+          <el-option
+            v-for="dict in consumptionUnitOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+        <el-input v-model="form.consumptionMin" placeholder="最小值" class="width12" />
+        至
+        <el-input v-model="form.consumptionMax" placeholder="最大值" class="width12" />
+      </el-form-item>
+      <el-form-item label="是否月结" prop="creditAmount">
+        <el-select
+          v-model="form.isMonthly"
+          clearable
+          class="width28 mr3"
+        >
+          <el-option
+            v-for="dict in isOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+        <el-input v-model="form.creditAmount" placeholder="授信金额(保留两位小数)" class="width28" />
+      </el-form-item>
+      <el-form-item label="是否预付运费" prop="isPrepaid">
+        <el-select
+          v-model="form.isPrepaid"
+          clearable
+          class="width90"
+        >
+          <el-option
+            v-for="dict in isOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
     </el-form>
 
-    <div v-if="title === '新增' || title === '编辑' || title === '货主/企业认证'" slot="footer" class="dialog-footer">
+    <div v-if="title === '新增' || title === '编辑'" slot="footer" class="dialog-footer">
       <el-button type="primary" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
     </div>

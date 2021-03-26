@@ -68,13 +68,10 @@
               <i class="el-icon-circle-close" />
               未认证
             </span>
-            <el-button type="text no-padding" @click="handleCertification">修改</el-button>
+            <el-button type="text no-padding" @click="handleCertification">认证</el-button>
           </el-form-item>
           <el-form-item label="身份证号：" prop="identificationNumber">
             {{ form.identificationNumber }}
-          </el-form-item>
-          <el-form-item label="手机号码：" prop="telphone">
-            {{ form.telphone }}
           </el-form-item>
         </el-form>
       </el-row>
@@ -105,22 +102,18 @@
     </div>
 
     <!-- 货主/企业认证 对话框 -->
-    <!-- <certification-dialog ref="detailDialog" :open.sync="open" :info="form" @refresh="getCompanyInfo" /> -->
-    <shipment-dialog ref="ShipmentDialog" :title="'货主/企业认证'" :open.sync="open" :disable="false" @refresh="getCompanyInfo" />
+    <certification-dialog ref="detailDialog" :open.sync="open" :info="form" @refresh="getCompanyInfo" />
   </div>
 </template>
 
 <script>
 import { getCompanyInfo } from '@/api/enterprise/company/info';
-// import CertificationDialog from './CertificationDialog.vue';
-import ShipmentDialog from '../../../assets/shipment/shipmentDialog';
+import CertificationDialog from './CertificationDialog.vue';
 import UploadImage from '@/components/UploadImage/index';
-// import AddCityTag from '@/components/AddCityTag';
 
 export default {
   components: {
-    // CertificationDialog,
-    ShipmentDialog,
+    CertificationDialog,
     UploadImage
     // AddCityTag
   },
@@ -173,8 +166,8 @@ export default {
     },
     // 企业认证
     handleCertification() {
-      this.$refs.ShipmentDialog.reset();
-      this.$refs.ShipmentDialog.setForm(this.form);
+      this.$refs.detailDialog.reset();
+      this.$refs.detailDialog.setForm(this.form);
       this.open = true;
     },
     // 安全升级
