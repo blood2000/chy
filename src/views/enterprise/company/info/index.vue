@@ -143,7 +143,7 @@ export default {
   methods: {
     getCompanyInfo() {
       getCompanyInfo().then(response => {
-        this.form = response.data;
+        this.form = response.data || {};
         // this.$set(this.form, 'citys', [
         //   {
         //     cityCode: '3501',

@@ -48,7 +48,7 @@
         <el-checkbox v-model="form.identificationEffective">长期有效</el-checkbox>
       </el-form-item>
       <template v-if="form.shipperType === 1">
-        <el-form-item label="公司名称" prop="companyName">
+        <el-form-item label="公司名称" prop="companyName" :rules="[{ required: true, message: '公司名称不能为空', trigger: 'blur' }]">
           <el-input v-model="form.companyName" placeholder="请输入公司名称" class="width90" clearable />
         </el-form-item>
         <el-form-item label="法人姓名" prop="artificialName">
@@ -57,7 +57,7 @@
         <el-form-item label="法人身份证" prop="artificialIdentificationNumber">
           <el-input v-model="form.artificialIdentificationNumber" placeholder="请输入法人身份证" class="width90" clearable />
         </el-form-item>
-        <el-form-item label="统一社会信用代码" prop="organizationCodeNo">
+        <el-form-item label="统一社会信用代码" prop="organizationCodeNo" :rules="[{ required: true, message: '统一社会信用代码不能为空', trigger: 'blur' }]">
           <el-input v-model="form.organizationCodeNo" placeholder="请输入统一社会信用代码" class="width90" clearable />
         </el-form-item>
         <el-form-item label="营业执照号" prop="businessLicenseNo">
@@ -363,12 +363,6 @@ export default {
           { required: true, message: '身份证号不能为空', trigger: 'blur' },
           { validator: this.formValidate.idCard, trigger: 'blur' }
         ],
-        companyName: [
-          { required: true, message: '公司名称不能为空', trigger: 'blur' }
-        ],
-        organizationCodeNo: [
-          { required: true, message: '统一社会信用代码不能为空', trigger: 'blur' }
-        ],
         identificationEndTime: [
           { required: true, message: '身份证有效期不能为空', trigger: 'blur' },
           { validator: this.formValidate.isExpired }
@@ -416,13 +410,24 @@ export default {
     submitForm() {
       const flag = this.$refs.ChooseArea.submit();
       this.$refs['form'].validate(valid => {
-        console.log(valid);
         if (valid && flag) {
           const shipmentInfo = this.form;
           if (shipmentInfo.identificationEffective) {
             shipmentInfo.identificationEffective = 1;
           } else {
             shipmentInfo.identificationEffective = 0;
+          }
+          // 类型为发货人的时候，企业相关字段不能传
+          if (this.form.shipperType === 0) {
+            this.form.companyName = null;
+            this.form.artificialName = null;
+            this.form.artificialIdentificationNumber = null;
+            this.form.organizationCodeNo = null;
+            this.form.businessLicenseNo = null;
+            this.form.artificialIdentificationImg = null;
+            this.form.artificialIdentificationBackImg = null;
+            this.form.artificialIdentificationInhandImg = null;
+            this.form.businessLicenseImg = null;
           }
           if (shipmentInfo.id !== undefined) {
             updateShipment(shipmentInfo).then(response => {
