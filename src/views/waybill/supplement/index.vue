@@ -6,18 +6,18 @@
           <el-divider content-position="left"><span class="supplement-title">货源信息</span></el-divider>
           <el-row>
             <el-col :span="8">
-              <el-form-item label="货源单号" prop="waybillCode">
-                <el-input v-model="form.waybillCode" placeholder="请输入货源单号" class="width90" />
+              <el-form-item label="货源单号" prop="orderCode">
+                <el-input v-model="form.orderCode" placeholder="请输入货源单号" class="width90" @change="getOrderDetail" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="货物名称" prop="waybillCode">
-                <el-input v-model="form.waybillCode" :readonly="true" class="width90" />
+              <el-form-item label="货物名称" prop="goodsBigType">
+                <el-input v-model="form.goodsBigType" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="运费单价" prop="waybillCode">
-                <el-input v-model="form.waybillCode" :readonly="true" class="width90" />
+              <el-form-item label="运费单价" prop="shipmentPrice">
+                <el-input v-model="form.shipmentPrice" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -259,10 +259,15 @@ export default {
       console.log('点击了下载模板按钮');
     //   this.download('assets/driver/importTemplate', {}, `driver_${new Date().getTime()}.xlsx`);
     },
+    // 根据货原单号查询信息
+    getOrderDetail(e) {
+      console.log(e);
+    },
     // 查询输出车辆信息
     handleVehicle(e) {
       console.log(e);
     }
+
   }
 };
 </script>

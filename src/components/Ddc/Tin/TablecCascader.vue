@@ -1,6 +1,8 @@
 <template>
   <div>
-    <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate">表头排序</el-button>
+    <el-tooltip class="item" effect="dark" content="字段排序" placement="top">
+      <el-button size="mini" circle icon="el-icon-sort" @click="handleUpdate" />
+    </el-tooltip>
 
     <el-dialog title="拖拽排序" :visible.sync="open" append-to-body destroy-on-close width="80%">
 
