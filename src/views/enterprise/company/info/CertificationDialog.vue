@@ -141,11 +141,11 @@ export default {
         ],
         adminName: [
           { required: true, message: '姓名不能为空', trigger: 'blur' },
-          { validator: this.formValidate.name }
+          { validator: this.formValidate.name, trigger: 'blur' }
         ],
         identificationNumber: [
           { required: true, message: '身份证号不能为空', trigger: 'blur' },
-          { validator: this.formValidate.idCard }
+          { validator: this.formValidate.idCard, trigger: 'blur' }
         ],
         identificationEndTime: [
           { required: true, message: '身份证有效期不能为空', trigger: 'blur' },

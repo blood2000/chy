@@ -37,6 +37,7 @@
           v-model="formData.vehicleType"
           placeholder="选择车型"
           clearable
+          filterable
           :style="{ width: '100%' }"
         >
           <el-option
@@ -56,6 +57,7 @@
           v-model="formData.vehicleLength"
           placeholder="选择车长"
           clearable
+          filterable
           :style="{ width: '100%' }"
         >
           <el-option
@@ -76,6 +78,7 @@
           v-model="formData.ruleItemId"
           placeholder="煤炭专用规则"
           clearable
+          filterable
           :style="{ width: '100%' }"
         >
           <el-option

@@ -33,7 +33,7 @@
                 inactive-color="#ff4949"
               /></el-col>
               <el-col :span="4">
-                <el-select v-model="th.fixed" placeholder="请选择">
+                <el-select v-model="th.fixed" placeholder="请选择" filterable clearable>
                   <el-option label="自由" value="" />
                   <el-option label="固定左边" value="left" />
                   <el-option label="固定右边" value="right" />

@@ -18,6 +18,7 @@
         >
           <el-select
             v-model="formData.tin1"
+            clearable
             filterable
             remote
             reserve-keyword

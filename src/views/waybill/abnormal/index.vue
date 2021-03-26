@@ -24,6 +24,7 @@
           v-model="queryParams.status"
           placeholder="请选择异常标记状态"
           clearable
+          filterable
           size="small"
         >
           <el-option

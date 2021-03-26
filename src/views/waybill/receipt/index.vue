@@ -9,6 +9,7 @@
           v-model="queryParams.goodsBigType"
           placeholder="请选择货物类型"
           clearable
+          filterable
           size="small"
         >
           <el-option
@@ -65,6 +66,7 @@
           v-model="queryParams.status"
           placeholder="请选择运单状态"
           clearable
+          filterable
           size="small"
         >
           <el-option
@@ -80,6 +82,7 @@
           v-model="queryParams.isReturn"
           placeholder="请选择纸质回单状态"
           clearable
+          filterable
           size="small"
         >
           <el-option

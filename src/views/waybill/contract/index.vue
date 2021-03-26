@@ -41,6 +41,7 @@
           v-model="queryParams.driverOrShipment"
           placeholder="请选择标合同类型"
           clearable
+          filterable
           size="small"
           style="width: 240px"
         >

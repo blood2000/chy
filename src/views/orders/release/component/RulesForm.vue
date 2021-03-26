@@ -23,7 +23,7 @@
         </el-form-item>
         <!-- 下拉框 -->
         <el-form-item v-if="item.showType === '3'" :prop="item.myName" :label="item.cnName">
-          <el-select v-model="formData[item.myName]" clearable :placeholder="`请输入${item.cnName}`">
+          <el-select v-model="formData[item.myName]" clearable filterable :placeholder="`请输入${item.cnName}`">
             <el-option
               v-for="dict in item.Option"
               :key="dict.dictValue"

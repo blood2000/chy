@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
       <el-form-item label="司机类别" prop="driverType">
-        <el-select v-model="queryParams.driverType" placeholder="请选择司机类别" clearable size="small" class="input-width">
+        <el-select v-model="queryParams.driverType" placeholder="请选择司机类别" filterable clearable size="small" class="input-width">
           <el-option
             v-for="dict in driverTypeOptions"
             :key="dict.dictValue"
@@ -52,6 +52,7 @@
           :loading="teamLoading"
           clearable
           class="input-width"
+          size="small"
         >
           <el-option
             v-for="item in teamOptions"
@@ -72,7 +73,7 @@
         />
       </el-form-item>
       <el-form-item label="驾驶证类型" prop="driverLicenseType">
-        <el-select v-model="queryParams.driverLicenseType" clearable size="small" class="input-width">
+        <el-select v-model="queryParams.driverLicenseType" filterable clearable size="small" class="input-width">
           <el-option
             v-for="dict in driverLicenseTypeOptions"
             :key="dict.dictValue"
@@ -82,7 +83,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="审核状态" prop="authStatus">
-        <el-select v-model="queryParams.authStatus" placeholder="请选择审核状态" clearable size="small" class="input-width">
+        <el-select v-model="queryParams.authStatus" placeholder="请选择审核状态" filterable clearable size="small" class="input-width">
           <el-option
             v-for="dict in statusOptions"
             :key="dict.dictValue"

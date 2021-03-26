@@ -21,6 +21,7 @@
           v-model="form.waybillAddress"
           placeholder="请选择车辆装货地址"
           clearable
+          filterable
           size="small"
           style="width:90%;"
           :disabled="disable"
@@ -38,6 +39,7 @@
           v-model="form.vehicleCode"
           placeholder="请选择实际承运车辆"
           clearable
+          filterable
           size="small"
           style="width:90%;"
           :disabled="disable"

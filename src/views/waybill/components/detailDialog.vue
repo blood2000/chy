@@ -75,6 +75,7 @@
               class="input-width"
               placeholder=""
               clearable
+              filterable
             >
               <el-option
                 v-for="dict in isReturnOptions"

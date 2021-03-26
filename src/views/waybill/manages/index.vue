@@ -115,6 +115,7 @@
           v-model="queryParams.status"
           placeholder="请选择运单状态"
           clearable
+          filterable
           size="small"
           style="width: 278px"
         >
@@ -131,6 +132,7 @@
           v-model="queryParams.isSplit"
           placeholder="请选择是否分单"
           clearable
+          filterable
           size="small"
           style="width: 278px"
         >

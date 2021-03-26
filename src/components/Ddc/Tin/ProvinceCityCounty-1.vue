@@ -13,6 +13,7 @@
         <el-select
           v-model="form.province"
           placeholder="请选择省份"
+          filterable
           clearable
           @change="changeProvince"
         >
@@ -28,6 +29,7 @@
         <el-select
           v-model="form.city"
           placeholder="请选择城市"
+          filterable
           clearable
           @change="changeCity"
         >
@@ -40,7 +42,7 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="county" label="县/区:">
-        <el-select v-model="form.county" placeholder="请选择县/区" clearable>
+        <el-select v-model="form.county" placeholder="请选择县/区" clearable filterable>
           <el-option
             v-for="dict in countyOption"
             :key="dict.dictValue"

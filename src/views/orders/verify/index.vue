@@ -48,7 +48,7 @@
               </el-form-item>
 
               <el-form-item label="货物类型" prop="tin3">
-                <el-select v-model="queryParams.tin3" placeholder="----请选择----" style="width: 215px">
+                <el-select v-model="queryParams.tin3" placeholder="----请选择----" style="width: 215px" clearable filterable>
                   <el-option label="区域一" value="shanghai" />
                   <el-option label="区域二" value="beijing" />
                 </el-select>
@@ -75,7 +75,7 @@
               </el-form-item>
 
               <el-form-item label="订单状态" prop="tin5">
-                <el-select v-model="queryParams.tin5" placeholder="----请选择----" style="width: 215px">
+                <el-select v-model="queryParams.tin5" placeholder="----请选择----" style="width: 215px" clearable filterable>
                   <el-option label="区域一" value="shanghai" />
                   <el-option label="区域二" value="beijing" />
                 </el-select>

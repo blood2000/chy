@@ -21,6 +21,7 @@
           v-model="form.waybillAddress"
           placeholder="请选择车辆卸货地址"
           clearable
+          filterable
           size="small"
           style="width:90%;"
           :disabled="disable"

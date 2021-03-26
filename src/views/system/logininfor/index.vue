@@ -26,6 +26,7 @@
           v-model="queryParams.status"
           placeholder="登录状态"
           clearable
+          filterable
           size="small"
           style="width: 240px"
         >

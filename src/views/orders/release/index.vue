@@ -24,6 +24,7 @@
           <el-select
             v-model="formData.tin1"
             filterable
+            clearable
             remote
             reserve-keyword
             placeholder="请输入关键词"

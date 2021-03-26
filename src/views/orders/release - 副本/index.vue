@@ -22,6 +22,7 @@
         <el-form-item label="代发货主" prop="tin1">
           <el-select
             v-model="formData.tin1"
+            clearable
             filterable
             remote
             reserve-keyword
@@ -52,6 +53,7 @@
               v-model="formData.tin3"
               placeholder="请选择项目"
               clearable
+              filterable
               :style="{ width: '100%' }"
               @change="handleTin3"
             >
@@ -146,6 +148,7 @@
                 v-model="formData.tin6"
                 placeholder="选择货集码"
                 clearable
+                filterable
                 :style="{ width: '100%' }"
               >
                 <el-option

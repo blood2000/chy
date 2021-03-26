@@ -5,7 +5,6 @@
         <el-select
           v-model="form.shipperType"
           class="width90"
-          clearable
         >
           <el-option
             v-for="dict in typeOptions"
@@ -120,6 +119,7 @@
         <el-select
           v-model="form.isFreezone"
           clearable
+          filterable
           class="width90"
         >
           <el-option
@@ -133,6 +133,7 @@
       <el-form-item label="票制类别" prop="ticketType">
         <el-select
           v-model="form.ticketType"
+          filterable
           clearable
           class="width90"
         >
@@ -157,6 +158,7 @@
         <el-select
           v-model="form.supplyIsAuth"
           clearable
+          filterable
           class="width90"
         >
           <el-option
@@ -171,6 +173,7 @@
         <el-select
           v-model="form.isAccount"
           clearable
+          filterable
           class="width90"
         >
           <el-option
@@ -182,7 +185,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="核算方式" prop="accountType">
-        <el-select v-model="form.accountType" placeholder="请选择核算方式" clearable class="width90">
+        <el-select v-model="form.accountType" placeholder="请选择核算方式" filterable clearable class="width90">
           <el-option
             v-for="dict in accountTypeOptions"
             :key="dict.dictValue"
@@ -198,6 +201,7 @@
         <el-select
           v-model="form.isWipe"
           clearable
+          filterable
           class="width28 mr3"
         >
           <el-option
@@ -207,7 +211,7 @@
             :value="dict.dictValue"
           />
         </el-select>
-        <el-select v-model="form.wipeType" placeholder="请选择抹零方式" clearable class="width28">
+        <el-select v-model="form.wipeType" placeholder="请选择抹零方式" filterable clearable class="width28">
           <el-option
             v-for="dict in wipeTypeOptions"
             :key="dict.dictValue"
@@ -220,6 +224,7 @@
         <el-select
           v-model="form.isConsumption"
           clearable
+          filterable
           class="width28 mr3"
         >
           <el-option
@@ -231,6 +236,7 @@
         </el-select>
         <el-select
           v-model="form.consumptionUnit"
+          filterable
           clearable
           class="width28 mr3"
           placeholder="路耗单位"
@@ -250,6 +256,7 @@
         <el-select
           v-model="form.isMonthly"
           clearable
+          filterable
           class="width28 mr3"
         >
           <el-option
@@ -265,6 +272,7 @@
         <el-select
           v-model="form.isPrepaid"
           clearable
+          filterable
           class="width90"
         >
           <el-option
@@ -345,15 +353,15 @@ export default {
       // 表单校验
       rules: {
         telphone: [
-          { validator: this.formValidate.telphone }
+          { validator: this.formValidate.telphone, trigger: 'blur' }
         ],
         adminName: [
           { required: true, message: '姓名不能为空', trigger: 'blur' },
-          { validator: this.formValidate.name }
+          { validator: this.formValidate.name, trigger: 'blur' }
         ],
         identificationNumber: [
           { required: true, message: '身份证号不能为空', trigger: 'blur' },
-          { validator: this.formValidate.idCard }
+          { validator: this.formValidate.idCard, trigger: 'blur' }
         ],
         companyName: [
           { required: true, message: '公司名称不能为空', trigger: 'blur' }
@@ -366,7 +374,7 @@ export default {
           { validator: this.formValidate.isExpired }
         ],
         creditAmount: [
-          { validator: this.formValidate.number }
+          { validator: this.formValidate.number, trigger: 'blur' }
         ]
       }
     };

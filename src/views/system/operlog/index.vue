@@ -26,6 +26,7 @@
           v-model="queryParams.businessType"
           placeholder="操作类型"
           clearable
+          filterable
           size="small"
           style="width: 240px"
         >
@@ -42,6 +43,7 @@
           v-model="queryParams.status"
           placeholder="操作状态"
           clearable
+          filterable
           size="small"
           style="width: 240px"
         >

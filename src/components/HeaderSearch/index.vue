@@ -6,6 +6,7 @@
       v-model="search"
       :remote-method="querySearch"
       filterable
+      clearable
       default-first-option
       remote
       placeholder="Search"

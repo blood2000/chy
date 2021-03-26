@@ -11,7 +11,7 @@
         />
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="组织状态" clearable size="small">
+        <el-select v-model="queryParams.status" placeholder="组织状态" clearable filterable size="small">
           <el-option
             v-for="dict in statusOptions"
             :key="dict.dictValue"
@@ -160,9 +160,9 @@ export default {
       form: {},
       // 表单校验
       rules: {
-        /*parentId: [
+        parentId: [
           { required: true, message: '上级组织不能为空', trigger: 'blur' }
-        ],*/
+        ],
         orgName: [
           { required: true, message: '组织名称不能为空', trigger: 'blur' }
         ],
@@ -174,8 +174,8 @@ export default {
   },
   created() {
     this.getList();
-    /**状态*/
-    this.getDictsByType({dictType:'sys_normal_disable',dictPid:'0'}).then(response => {
+    /** 状态*/
+    this.getDictsByType({ dictType: 'sys_normal_disable', dictPid: '0' }).then(response => {
       this.statusOptions = response.data;
     });
   },

@@ -53,6 +53,7 @@
               v-model="queryParams.status"
               placeholder="用户状态"
               clearable
+              filterable
               size="small"
               style="width: 240px"
             >
@@ -246,7 +247,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="用户性别">
-              <el-select v-model="form.sex" placeholder="请选择">
+              <el-select v-model="form.sex" placeholder="请选择" clearable filterable>
                 <el-option
                   v-for="dict in sexOptions"
                   :key="dict.dictValue"
@@ -271,7 +272,7 @@
         <el-row>
           <!--  <el-col :span="12">
             <el-form-item label="岗位">
-              <el-select v-model="form.postIds" multiple placeholder="请选择">
+              <el-select v-model="form.postIds" multiple placeholder="请选择" clearable filterable>
                 <el-option
                   v-for="item in postOptions"
                   :key="item.postId"
@@ -284,7 +285,7 @@
           </el-col>-->
           <el-col :span="12">
             <el-form-item label="角色">
-              <el-select v-model="form.roleCodes" multiple placeholder="请选择">
+              <el-select v-model="form.roleCodes" multiple placeholder="请选择" clearable filterable>
                 <el-option
                   v-for="item in roleOptions"
                   :key="item.roleCode"
@@ -438,19 +439,15 @@ export default {
         password: [
           { required: true, message: '用户密码不能为空', trigger: 'blur' }
         ],
-        email: [
-          {
-            type: 'email',
-            message: "'请输入正确的邮箱地址",
-            trigger: ['blur', 'change']
-          }
+        orgCode: [
+          { required: true, message: '归属组织不能为空', trigger: 'blur' }
         ],
         phonenumber: [
-          {
-            pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
-            message: '请输入正确的手机号码',
-            trigger: 'blur'
-          }
+          { required: true, message: '手机号不能为空', trigger: 'blur' },
+          { validator: this.formValidate.telphone, trigger: 'blur' }
+        ],
+        email: [
+          { validator: this.formValidate.email, trigger: 'blur' }
         ]
       }
     };

@@ -45,6 +45,7 @@
           >
             <el-select
               v-model="address.my_detail"
+              clearable
               filterable
               remote
               reserve-keyword

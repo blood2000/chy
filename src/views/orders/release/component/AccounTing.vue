@@ -12,6 +12,7 @@
         v-model="formData.ruleItemId"
         placeholder="煤炭专用规则"
         clearable
+        filterable
         :style="{ width: '100%' }"
         @change="handleRuleItemId"
       >
@@ -59,7 +60,7 @@
           </el-form-item>
           <!-- 下拉框 -->
           <el-form-item v-if="item.showType === '3'" prop="tin3" :label="item.cnName">
-            <el-select v-model="formData[item.enName]" clearable :placeholder="`请输入${item.cnName}`">
+            <el-select v-model="formData[item.enName]" clearable filterable :placeholder="`请输入${item.cnName}`">
               <el-option
                 v-for="dict in []"
                 :key="dict.dictValue"

@@ -75,26 +75,26 @@ export default {
         ],
         registrationTelphone: [
           { required: true, message: '注册电话不能为空', trigger: 'blur' },
-          { validator: this.formValidate.telphone }
+          { validator: this.formValidate.telphone, trigger: 'blur' }
         ],
         openBankName: [
           { required: true, message: '开户行不能为空', trigger: 'blur' }
         ],
         openBankNumber: [
           { required: true, message: '账号不能为空', trigger: 'blur' },
-          { validator: this.formValidate.bankCard }
+          { validator: this.formValidate.bankCard, trigger: 'blur' }
         ],
         payeeName: [
           { required: true, message: '收票人姓名不能为空', trigger: 'blur' },
-          { validator: this.formValidate.name }
+          { validator: this.formValidate.name, trigger: 'blur' }
         ],
         payeeTelphone: [
           { required: true, message: '收票人联系电话不能为空', trigger: 'blur' },
-          { validator: this.formValidate.telphone }
+          { validator: this.formValidate.telphone, trigger: 'blur' }
         ],
         payeeEmail: [
           { required: true, message: '收票人电子邮箱不能为空', trigger: 'blur' },
-          { validator: this.formValidate.email }
+          { validator: this.formValidate.email, trigger: 'blur' }
         ],
         payeeAddress: [
           { required: true, message: '收票地址不能为空', trigger: 'blur' }

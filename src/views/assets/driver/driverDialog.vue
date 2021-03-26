@@ -114,7 +114,7 @@
         <el-checkbox v-model="form.validPeriodAlways">长期有效</el-checkbox>
       </el-form-item>
       <el-form-item label="驾驶证类型" prop="driverLicenseType">
-        <el-select v-model="form.driverLicenseType" class="width90" placeholder="支持自动识别" clearable>
+        <el-select v-model="form.driverLicenseType" class="width90" placeholder="支持自动识别" filterable clearable>
           <el-option
             v-for="dict in driverLicenseTypeOptions"
             :key="dict.dictValue"
@@ -146,6 +146,7 @@
       <el-form-item label="从业证办理省份名称" prop="workLicenseProvinceCode">
         <el-select
           v-model="form.workLicenseProvinceCode"
+          filterable
           clearable
           class="width90"
         >
@@ -161,7 +162,7 @@
         <el-input v-model="form.businessLicenseImgNo" placeholder="请输入营业执照号" class="width90" clearable />
       </el-form-item>
       <el-form-item label="是否上传人员信用信息" prop="isReportPerson">
-        <el-select v-model="form.isReportPerson" class="width90" clearable>
+        <el-select v-model="form.isReportPerson" class="width90" clearable filterable>
           <el-option
             v-for="dict in isOption"
             :key="dict.dictValue"
@@ -181,7 +182,7 @@
         />
       </el-form-item>
       <el-form-item label="是否上传企业" prop="isReportEnterprise">
-        <el-select v-model="form.isReportEnterprise" class="width90" clearable>
+        <el-select v-model="form.isReportEnterprise" class="width90" clearable filterable>
           <el-option
             v-for="dict in isOption"
             :key="dict.dictValue"
@@ -204,6 +205,7 @@
         <el-select
           v-model="form.isFreeze"
           clearable
+          filterable
           class="width90"
         >
           <el-option
@@ -218,6 +220,7 @@
         <el-select
           v-model="form.driverSettlementType"
           clearable
+          filterable
           class="width90"
         >
           <el-option
@@ -232,6 +235,7 @@
         <el-select
           v-model="form.driverLocationSource"
           clearable
+          filterable
           class="width90"
         >
           <el-option
@@ -289,7 +293,7 @@
 
     <el-form ref="vehicleForm" :model="vehicleForm" :rules="vehicleRules" :disabled="disable" label-width="140px">
       <el-form-item label="车牌颜色" prop="vehicleLicenseColorCode">
-        <el-select v-model="vehicleForm.vehicleLicenseColorCode" class="width90" clearable>
+        <el-select v-model="vehicleForm.vehicleLicenseColorCode" class="width90" filterable clearable>
           <el-option
             v-for="dict in vehicleLicenseColorCodeOptions"
             :key="dict.dictValue"
@@ -299,7 +303,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="车牌类型" prop="classificationCode">
-        <el-select v-model="vehicleForm.classificationCode" class="width90" clearable>
+        <el-select v-model="vehicleForm.classificationCode" class="width90" filterable clearable>
           <el-option
             v-for="dict in classificationCodeOptions"
             :key="dict.dictValue"
@@ -309,7 +313,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="车身颜色" prop="vehicleColorCode">
-        <el-select v-model="vehicleForm.vehicleColorCode" class="width90" clearable>
+        <el-select v-model="vehicleForm.vehicleColorCode" class="width90" filterable clearable>
           <el-option
             v-for="dict in vehicleColorCodeOptions"
             :key="dict.dictValue"
@@ -319,7 +323,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="车辆归属类型" prop="vehicleAscriptionType">
-        <el-select v-model="vehicleForm.vehicleAscriptionType" class="width90" clearable>
+        <el-select v-model="vehicleForm.vehicleAscriptionType" class="width90" filterable clearable>
           <el-option
             v-for="dict in vehicleAscriptionTypeOptions"
             :key="dict.dictValue"
@@ -329,7 +333,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="车辆能源类型" prop="vehicleEnergyType">
-        <el-select v-model="vehicleForm.vehicleEnergyType" class="width90" clearable>
+        <el-select v-model="vehicleForm.vehicleEnergyType" class="width90" filterable clearable>
           <el-option
             v-for="dict in vehicleEnergyTypeOptions"
             :key="dict.dictValue"
@@ -489,15 +493,15 @@ export default {
       rules: {
         name: [
           { required: true, message: '姓名不能为空', trigger: 'blur' },
-          { validator: this.formValidate.name }
+          { validator: this.formValidate.name, trigger: 'blur' }
         ],
         telphone: [
           { required: true, message: '手机号码不能为空', trigger: 'blur' },
-          { validator: this.formValidate.telphone }
+          { validator: this.formValidate.telphone, trigger: 'blur' }
         ],
         identificationNumber: [
           { required: true, message: '身份证号不能为空', trigger: 'blur' },
-          { validator: this.formValidate.idCard }
+          { validator: this.formValidate.idCard, trigger: 'blur' }
         ],
         identificationEndTime: [
           { required: true, message: '身份证有效期不能为空', trigger: 'blur' },
@@ -517,7 +521,7 @@ export default {
           { required: true, message: '道路运输经营许可证号不能为空', trigger: 'blur' }
         ],
         licenseNumber: [
-          { validator: this.formValidate.plateNo }
+          { validator: this.formValidate.plateNo, trigger: 'blur' }
         ]
       },
       vehicleRules: {

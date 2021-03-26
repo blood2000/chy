@@ -26,6 +26,7 @@
           v-model="queryParams.status"
           placeholder="角色状态"
           clearable
+          filterable
           size="small"
           style="width: 240px"
         >
@@ -158,7 +159,7 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="所属产品" prop="produceCode">
-          <el-select v-model="form.produceCode" clearable placeholder="请选择所属产品" style="width: 380px">
+          <el-select v-model="form.produceCode" clearable filterable placeholder="请选择所属产品" style="width: 380px">
             <el-option
               v-for="item in produceList"
               :key="item.produceCode"
@@ -220,7 +221,7 @@
           <el-input v-model="form.roleKey" :disabled="true" />
         </el-form-item>
         <el-form-item label="权限范围">
-          <el-select v-model="form.dataScope">
+          <el-select v-model="form.dataScope" clearable filterable>
             <el-option
               v-for="item in dataScopeOptions"
               :key="item.value"

@@ -14,6 +14,7 @@
               placeholder="请选择计算公式"
               class="width-small mr3"
               clearable
+              filterable
             >
               <el-option
                 v-for="dict in ruleTypeOptions"
@@ -49,7 +50,7 @@
             -
             <el-input v-model="lossItemObj[item.code].end" placeholder="最大值" class="width-small" clearable />
           </template>
-          <el-select v-if="item.showType === 3" v-model="lossItemObj[item.code]" class="width-small" clearable>
+          <el-select v-if="item.showType === 3" v-model="lossItemObj[item.code]" class="width-small" clearable filterable>
             <el-option
               v-for="dict in options[item.dictCode]"
               :key="dict.dictValue"
@@ -80,7 +81,7 @@
             -
             <el-input v-model="form.reduceItemObj[item.code].end" placeholder="最大值" class="width-small mr3" clearable />
           </template>
-          <el-select v-if="item.showType === 3" v-model="form.reduceItemObj[item.code]" class="width-small mr3" clearable>
+          <el-select v-if="item.showType === 3" v-model="form.reduceItemObj[item.code]" class="width-small mr3" clearable filterable>
             <el-option
               v-for="dict in options[item.dictCode]"
               :key="dict.dictValue"
@@ -113,7 +114,7 @@
             -
             <el-input v-model="form.addItemObj[item.code].end" placeholder="最大值" class="width-small mr3" clearable />
           </template>
-          <el-select v-if="item.showType === 3" v-model="form.addItemObj[item.code]" class="width-small mr3" clearable>
+          <el-select v-if="item.showType === 3" v-model="form.addItemObj[item.code]" class="width-small mr3" clearable filterable>
             <el-option
               v-for="dict in options[item.dictCode]"
               :key="dict.dictValue"

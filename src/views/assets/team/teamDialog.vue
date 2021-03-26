@@ -51,6 +51,7 @@
         <el-select
           v-model="form.isDistribution"
           clearable
+          filterable
           class="width90"
         >
           <el-option

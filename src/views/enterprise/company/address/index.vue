@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
       <el-form-item label="地址类型" prop="addressType">
-        <el-select v-model="queryParams.addressType" placeholder="请选择地址类型" clearable size="small">
+        <el-select v-model="queryParams.addressType" placeholder="请选择地址类型" clearable filterable size="small">
           <el-option
             v-for="dict in addressTypeOptions"
             :key="dict.dictValue"
@@ -12,7 +12,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable size="small">
+        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable filterable size="small">
           <el-option
             v-for="dict in statusOptions"
             :key="dict.dictValue"

@@ -22,7 +22,7 @@
         />
       </el-form-item>
       <el-form-item label="是否核算" prop="isAccount">
-        <el-select v-model="queryParams.isAccount" placeholder="请选择核算方式" clearable size="small" style="width: 272px">
+        <el-select v-model="queryParams.isAccount" placeholder="请选择核算方式" filterable clearable size="small" style="width: 272px">
           <el-option
             v-for="dict in isOptions"
             :key="dict.dictValue"
@@ -32,7 +32,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="核算方式" prop="accountType">
-        <el-select v-model="queryParams.accountType" placeholder="请选择核算方式" clearable size="small" style="width: 272px">
+        <el-select v-model="queryParams.accountType" placeholder="请选择核算方式" filterable clearable size="small" style="width: 272px">
           <el-option
             v-for="dict in accountTypeOptions"
             :key="dict.dictValue"
@@ -44,6 +44,7 @@
       <el-form-item label="审核状态" prop="authStatus">
         <el-select
           v-model="queryParams.authStatus"
+          filterable
           clearable
           size="small"
           style="width: 272px"
@@ -69,6 +70,7 @@
       <el-form-item label="货主类别" prop="shipperType">
         <el-select
           v-model="queryParams.shipperType"
+          filterable
           clearable
           size="small"
           style="width: 272px"

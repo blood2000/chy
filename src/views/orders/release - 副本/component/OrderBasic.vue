@@ -13,6 +13,7 @@
           v-model="formData.tin3"
           placeholder="请选择项目"
           clearable
+          filterable
           :style="{ width: '100%' }"
           @change="handleTin3"
         >
@@ -100,6 +101,7 @@
             v-model="formData.tin6"
             placeholder="选择货集码"
             clearable
+            filterable
             :style="{ width: '100%' }"
           >
             <el-option

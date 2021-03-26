@@ -4,7 +4,7 @@
       <el-col :span="12">
         <el-form-item prop="tplCategory">
           <span slot="label">生成模板</span>
-          <el-select v-model="form.tplCategory">
+          <el-select v-model="form.tplCategory" clearable filterable>
             <el-option label="单表（增删改查）" value="crud" />
             <el-option label="树表（增删改查）" value="tree" />
           </el-select>
@@ -124,7 +124,7 @@
               <i class="el-icon-question" />
             </el-tooltip>
           </span>
-          <el-select v-model="form.treeCode" placeholder="请选择">
+          <el-select v-model="form.treeCode" placeholder="请选择" clearable filterable>
             <el-option
               v-for="column in form.columns"
               :key="column.columnName"
@@ -142,7 +142,7 @@
               <i class="el-icon-question" />
             </el-tooltip>
           </span>
-          <el-select v-model="form.treeParentCode" placeholder="请选择">
+          <el-select v-model="form.treeParentCode" placeholder="请选择" clearable filterable>
             <el-option
               v-for="column in form.columns"
               :key="column.columnName"
@@ -160,7 +160,7 @@
               <i class="el-icon-question" />
             </el-tooltip>
           </span>
-          <el-select v-model="form.treeName" placeholder="请选择">
+          <el-select v-model="form.treeName" placeholder="请选择" clearable filterable>
             <el-option
               v-for="column in form.columns"
               :key="column.columnName"

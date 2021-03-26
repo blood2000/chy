@@ -11,7 +11,7 @@
         />
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="菜单状态" clearable size="small">
+        <el-select v-model="queryParams.status" placeholder="菜单状态" clearable filterable size="small">
           <el-option
             v-for="dict in statusOptions"
             :key="dict.dictValue"
@@ -109,6 +109,8 @@
               <el-select
                 v-model="form.produceCode"
                 placeholder="请选择产品"
+                clearable
+                filterable
                 @change="changeProduce"
               >
                 <el-option
@@ -126,6 +128,8 @@
               <el-select
                 v-model="form.appCode"
                 placeholder="请选择应用"
+                clearable
+                filterable
                 @change="changeApplication"
               >
                 <el-option
@@ -140,7 +144,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="版本">
-              <el-select v-model="form.versionCode" placeholder="请选择版本">
+              <el-select v-model="form.versionCode" placeholder="请选择版本" clearable filterable>
                 <el-option
                   v-for="item in appVersionList"
                   :key="item.appVersionCode"

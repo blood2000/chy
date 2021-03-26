@@ -37,7 +37,8 @@
       <el-form-item label="归属类型" prop="vehicleAscriptionType">
         <el-select
           v-model="queryParams.vehicleAscriptionType"
-          placeholder="请选择车辆归属类型 0.自有 1.加盟"
+          placeholder="请选择车辆归属类型"
+          filterable
           clearable
           size="small"
         >
@@ -89,6 +90,7 @@
         <el-select
           v-model="queryParams.vehicleEnergyType"
           placeholder="请选择车辆能源类型"
+          filterable
           clearable
           size="small"
         >
@@ -241,6 +243,7 @@
         <el-select
           v-model="queryParams.authStatus"
           placeholder="请选择审核状态"
+          filterable
           clearable
           size="small"
         >
@@ -257,6 +260,7 @@
           v-model="queryParams.isFreeze"
           placeholder="请选择是否冻结"
           clearable
+          filterable
           size="small"
         >
           <el-option

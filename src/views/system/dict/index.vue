@@ -26,6 +26,7 @@
           v-model="queryParams.status"
           placeholder="字典状态"
           clearable
+          filterable
           size="small"
           style="width: 240px"
         >
