@@ -9,13 +9,6 @@
       <el-form-item label="姓名" prop="adminName">
         <el-input v-model="form.adminName" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="手机号码" prop="telphone">
-        <el-input v-model="form.telphone" placeholder="请输入手机号" class="width90" clearable />
-      </el-form-item>
-      <el-form-item label="密码" prop="password">
-        <el-input v-model="form.password" type="password" placeholder="请输入密码" class="width60 mr3" clearable />
-        <span class="g-color-blue">(初始密码为{{ initialPassword }})</span>
-      </el-form-item>
       <el-form-item label="身份证号" prop="identificationNumber">
         <el-input v-model="form.identificationNumber" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
@@ -133,36 +126,31 @@ export default {
   },
   data() {
     return {
-      // 初始密码
-      initialPassword: 'abcd1234@',
       // 表单参数
       form: {},
       // 表单校验
       rules: {
-        // organizationCodeNo: [
-        //   { required: true, trigger: 'blur', message: '统一社会信用代码不能为空' }
-        // ],
-        // businessLicenseNo: [
-        //   { required: true, trigger: 'blur', message: '营业执照号不能为空' }
-        // ],
-        // companyName: [
-        //   { required: true, trigger: 'blur', message: '公司名称不能为空' }
-        // ],
-        // telphone: [
-        //   { validator: this.formValidate.telphone }
-        // ],
-        // adminName: [
-        //   { required: true, message: '姓名不能为空', trigger: 'blur' },
-        //   { validator: this.formValidate.name }
-        // ],
-        // identificationNumber: [
-        //   { required: true, message: '身份证号不能为空', trigger: 'blur' },
-        //   { validator: this.formValidate.idCard }
-        // ],
-        // identificationEndTime: [
-        //   { required: true, message: '身份证有效期不能为空', trigger: 'blur' },
-        //   { validator: this.formValidate.isExpired }
-        // ]
+        organizationCodeNo: [
+          { required: true, trigger: 'blur', message: '统一社会信用代码不能为空' }
+        ],
+        businessLicenseNo: [
+          { required: true, trigger: 'blur', message: '营业执照号不能为空' }
+        ],
+        companyName: [
+          { required: true, trigger: 'blur', message: '公司名称不能为空' }
+        ],
+        adminName: [
+          { required: true, message: '姓名不能为空', trigger: 'blur' },
+          { validator: this.formValidate.name }
+        ],
+        identificationNumber: [
+          { required: true, message: '身份证号不能为空', trigger: 'blur' },
+          { validator: this.formValidate.idCard }
+        ],
+        identificationEndTime: [
+          { required: true, message: '身份证有效期不能为空', trigger: 'blur' },
+          { validator: this.formValidate.isExpired }
+        ]
       }
     };
   },
