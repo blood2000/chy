@@ -100,8 +100,8 @@
       <el-table-column label="地址名称" align="center" prop="addressName">
         <template slot-scope="scope">
           {{ scope.row.addressName }}
-          <el-tag v-if="scope.row.defaultPut === 1" type="success">默认装货地址</el-tag>
-          <el-tag v-if="scope.row.defaultPush === 1" type="warning">默认卸货地址</el-tag>
+          <el-tag v-if="scope.row.defaultPut === 1 && scope.row.defaultPush === 0" type="success">默认装货地址</el-tag>
+          <el-tag v-if="scope.row.defaultPush === 1 && scope.row.defaultPut === 0" type="warning">默认卸货地址</el-tag>
           <el-tag v-if="scope.row.defaultPut === 1 && scope.row.defaultPush === 1">默认装卸货地址</el-tag>
         </template>
       </el-table-column>

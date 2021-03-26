@@ -7,32 +7,32 @@
           <h5 class="g-title-medium">运单</h5>
         </el-divider>
         <el-row>
-          <el-col :span="12">
-            <label>运单单号</label>
+          <el-col :span="12" class="text-row">
+            <label>运单单号：</label>
             {{ form.waybillNo }}
           </el-col>
-          <el-col :span="12">
-            <label>运单状态</label>
+          <el-col :span="12" class="text-row">
+            <label>运单状态：</label>
             {{ form.status }}
           </el-col>
-          <el-col :span="12">
-            <label>装货重量(吨)</label>
+          <el-col :span="12" class="text-row">
+            <label>装货重量(吨)：</label>
             {{ form.loadWeight }}
           </el-col>
-          <el-col :span="12">
-            <label>货品类别</label>
+          <el-col :span="12" class="text-row">
+            <label>货品类别：</label>
             {{ form.goodsBigType }}
           </el-col>
-          <el-col :span="12">
-            <label>装货日期</label>
+          <el-col :span="12" class="text-row">
+            <label>装货日期：</label>
             {{ form.fillTime }}
           </el-col>
-          <el-col :span="12">
-            <label>卸货日期</label>
+          <el-col :span="12" class="text-row">
+            <label>卸货日期：</label>
             {{ form.signTime }}
           </el-col>
-          <el-col :span="12">
-            <label>货主备注</label>
+          <el-col :span="12" class="text-row">
+            <label>货主备注：</label>
             {{ form.shipperRemark }}
           </el-col>
         </el-row>
@@ -40,55 +40,55 @@
           <h5 class="g-title-medium">地址</h5>
         </el-divider>
         <el-row>
-          <el-col :span="12">
-            <label>装货地址</label>
+          <el-col :span="12" class="text-row">
+            <label>装货地址：</label>
             {{ form.loadAddress?form.loadAddress.formattedAddress:'' }}
             {{ form.loadAddress?form.loadAddress.contact:'' }}
             {{ form.loadAddress?form.loadAddress.contactPhone:'' }}
           </el-col>
-          <el-col :span="12">
-            <label>卸货地址</label>
+          <el-col :span="12" class="text-row">
+            <label>卸货地址：</label>
             {{ form.unloadAddress?form.unloadAddress.formattedAddress:'' }}
             {{ form.loadAddress?form.unloadAddress.contact:'' }}
             {{ form.loadAddress?form.unloadAddress.contactPhone:'' }}
           </el-col>
-          <el-col :span="12">
-            <label>上传装货位置</label>
+          <el-col :span="12" class="text-row">
+            <label>上传装货位置：</label>
           </el-col>
-          <el-col :span="12">
-            <label>上传卸货位置</label>
+          <el-col :span="12" class="text-row">
+            <label>上传卸货位置：</label>
           </el-col>
         </el-row>
         <el-divider content-position="left" class="m40">
           <h5 class="g-title-medium">费用</h5>
         </el-divider>
         <el-row>
-          <el-col :span="12">
-            <label>实收现金（元）</label>
+          <el-col :span="12" class="text-row">
+            <label>实收现金（元）：</label>
             {{ form.balanceVo.deliveryCashFee }}
           </el-col>
-          <el-col :span="12">
-            <label>应收运费（元）</label>
+          <el-col :span="12" class="text-row">
+            <label>应收运费（元）：</label>
             {{ form.balanceVo.deliveryFeeDeserved }}
           </el-col>
-          <el-col :span="12">
-            <label>实收运费（元）</label>
+          <el-col :span="12" class="text-row">
+            <label>实收运费（元）：</label>
             {{ form.balanceVo.deliveryFeePractical }}
           </el-col>
-          <el-col :span="12">
-            <label>服务费</label>
+          <el-col :span="12" class="text-row">
+            <label>服务费：</label>
             {{ form.balanceVo.serviceFee }}
           </el-col>
-          <el-col :span="12">
-            <label>服务税费</label>
+          <el-col :span="12" class="text-row">
+            <label>服务税费：</label>
             {{ form.balanceVo.serviceTaxFee }}
           </el-col>
-          <el-col :span="12">
-            <label>不含税价</label>
+          <el-col :span="12" class="text-row">
+            <label>不含税价：</label>
             {{ form.balanceVo.taxFreeFee }}
           </el-col>
-          <el-col :span="12">
-            <label>纳税金额</label>
+          <el-col :span="12" class="text-row">
+            <label>纳税金额：</label>
             {{ form.balanceVo.taxPayment }}
           </el-col>
         </el-row>
@@ -99,34 +99,34 @@
           <h5 class="g-title-medium">装货单</h5>
         </el-divider>
         <el-row>
-          <el-col :span="12">
-            <label>装货签到时间</label>
-            {{ formAttachment.cargoTime }}
+          <el-col :span="12" class="text-row">
+            <label>装货签到时间：</label>
+            {{ formAttachment?formAttachment.cargoTime:'' }}
           </el-col>
-          <el-col :span="12">
-            <label>装货重量（吨）</label>
-            {{ formAttachment.loadWeight }}
+          <el-col :span="12" class="text-row">
+            <label>装货重量（吨）：</label>
+            {{ formAttachment?formAttachment.loadWeight:'' }}
           </el-col>
-          <el-col :span="12">
-            <label>装货签照片</label>
-            <img src="" style="width: 200px; height: 200px">
+          <el-col :span="12" class="text-row">
+            <label>装货签照片：</label>
+            <img src="" class="img-box">
           </el-col>
         </el-row>
         <el-divider content-position="left" class="m40">
           <h5 class="g-title-medium">卸货单</h5>
         </el-divider>
         <el-row>
-          <el-col :span="12">
-            <label>卸货签到时间</label>
-            {{ formAttachmentUp.cargoTime }}
+          <el-col :span="12" class="text-row">
+            <label>卸货签到时间：</label>
+            {{ formAttachmentUp?formAttachmentUp.cargoTime:'' }}
           </el-col>
-          <el-col :span="12">
-            <label>卸货重量（吨）</label>
-            {{ formAttachmentUp.loadWeight }}
+          <el-col :span="12" class="text-row">
+            <label>卸货重量（吨）：</label>
+            {{ formAttachmentUp?formAttachmentUp.loadWeight:'' }}
           </el-col>
-          <el-col :span="12">
-            <label>卸货签照片</label>
-            <img src="" style="width: 200px; height: 200px">
+          <el-col :span="12" class="text-row">
+            <label>卸货签照片：</label>
+            <img src="" class="img-box">
           </el-col>
         </el-row>
       </el-tab-pane>
@@ -142,13 +142,13 @@
           <h5 class="g-title-medium">评价</h5>
         </el-divider>
         <el-row>
-          <el-col :span="12">
-            <label>司机评价货主</label>
-            {{ formCommentDriver.content }}
+          <el-col :span="12" class="text-row">
+            <label>司机评价货主：</label>
+            {{ formCommentDriver?formCommentDriver.content:'' }}
           </el-col>
-          <el-col :span="12">
-            <label>货主评价司机</label>
-            {{ formCommentShipment.content }}
+          <el-col :span="12" class="text-row">
+            <label>货主评价司机：</label>
+            {{ formCommentShipment?formCommentShipment.content:'' }}
           </el-col>
         </el-row>
       </el-tab-pane>
@@ -337,19 +337,19 @@ export default {
       });
       // 回单-装货
       getWaybillAttachment(this.currentId, 1).then(response => {
-        this.formAttachment = response.data ? response.data[0] : {};
+        this.formAttachment = response.data ? response.data[0] : null;
       });
       // 回单-卸货
       getWaybillAttachment(this.currentId, 2).then(response => {
-        this.formAttachmentUp = response.data ? response.data[0] : {};
+        this.formAttachmentUp = response.data ? response.data[0] : null;
       });
       // 评价-司机
       getWaybillComment(this.currentId, 1).then(response => {
-        this.formCommentDriver = response.data ? response.data[0] : {};
+        this.formCommentDriver = response.data ? response.data[0] : null;
       });
       // 评价-货主
       getWaybillComment(this.currentId, 0).then(response => {
-        this.formCommentShipment = response.data ? response.data[0] : {};
+        this.formCommentShipment = response.data ? response.data[0] : null;
       });
     },
     // 取消按钮
@@ -381,6 +381,7 @@ export default {
 .waybill-detail-dialog{
   .el-dialog__body{
     padding: 10px 20px 30px !important;
+    min-height: 70vh;
   }
 }
 </style>
@@ -395,6 +396,14 @@ export default {
   margin-bottom: 22px;
 }
 .m40{
-  margin: 40px 0;
+  margin: 30px 0 40px;
+}
+.text-row{
+  margin-bottom: 22px;
+}
+.img-box{
+  width: 200px;
+  height: 200px;
+  vertical-align: top;
 }
 </style>>
