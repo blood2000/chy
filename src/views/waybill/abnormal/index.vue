@@ -51,47 +51,37 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
+      <el-col :span="1.5" style="float: right;">
+        <tablec-cascader v-model="tableColumnsConfig" />
+      </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table v-loading="loading" :data="abnormalList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="运单编号" align="center" prop="waybillNo" />
-      <el-table-column label="运输司机" align="center" prop="driverName" />
-      <el-table-column label="异常标记状态" align="center" prop="isWarning" :formatter="isWarningFormat" />
-      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="创建人" align="center" prop="createName" />
-      <el-table-column label="异常说明" align="center" prop="description" />
-      <!-- <el-table-column label="是否删除 0.正常 1.删除" align="center" prop="isDel" :formatter="isDelFormat" /> -->
-      <el-table-column label="处理时间" align="center" prop="updateTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.updateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="处理人" align="center" prop="updateName" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button
-            v-hasPermi="['waybill:abnormal:edit']"
-            size="mini"
-            type="text"
-            icon="el-icon-document"
-            @click="handleWaybill(scope.row)"
-          >查看运单</el-button>
-          <el-button
-            v-hasPermi="['waybill:abnormal:remove']"
-            size="mini"
-            type="text"
-            icon="el-icon-tickets"
-            @click="handleLog(scope.row)"
-          >查看日志</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <RefactorTable :loading="loading" :data="abnormalList" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
+      <template #isWarning="{row}">
+        <span>{{ selectDictLabel(isWarningOptions, row.isWarning) }}</span>
+      </template>
+      <template #createTime="{row}">
+        <span>{{ parseTime(row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+      </template>
+      <template #updateTime="{row}">
+        <span>{{ parseTime(row.updateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+      </template>
+      <template #edit="{row}">
+        <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-document"
+          @click="handleWaybill(row)"
+        >查看运单</el-button>
+        <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-tickets"
+          @click="handleLog(row)"
+        >查看日志</el-button>
+      </template>
+    </RefactorTable>
 
     <pagination
       v-show="total>0"
@@ -112,6 +102,7 @@
 import { listAbnormal, getAbnormal } from '@/api/waybill/abnormal';
 import DetailDialog from '../components/detailDialog';
 import AbnormalDialog from './abnormalDialog';
+import tableColumnsConfig from './config';
 
 export default {
   name: 'Abnormal',
@@ -121,6 +112,7 @@ export default {
   },
   data() {
     return {
+      tableColumnsConfig,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -162,6 +154,7 @@ export default {
     };
   },
   created() {
+    this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || this.tableColumnsConfig;
     this.getList();
   },
   methods: {
