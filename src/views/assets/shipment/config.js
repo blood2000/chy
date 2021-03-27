@@ -2,7 +2,6 @@ export default [
   {
     prop: 'adminName',
     isShow: true,
-    width: 180,
     label: '货主姓名'
   },
   {

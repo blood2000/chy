@@ -92,49 +92,48 @@
           @click="handleExport"
         >导出</el-button>
       </el-col>
+      <el-col :span="1.5" class="fr">
+        <tablec-cascader v-model="tableColumnsConfig" />
+      </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <el-table-column label="调度者名称" align="center" prop="name" sortable />
-      <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" sortable />
-      <el-table-column label="管理者名称" align="center" prop="teamLeader" sortable />
-      <el-table-column label="手机号" align="center" prop="telphone" />
-      <el-table-column label="身份证号" align="center" prop="identificationNumber" />
-      <el-table-column label="是否清分" align="center" prop="isDistribution" :formatter="isDistributionFormat" />
-      <el-table-column label="清分百分比" align="center" prop="distributionPercent" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="180">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-setting"
-            @click="handleManage(scope.row)"
-          >管理</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-document"
-            @click="handleDetail(scope.row)"
-          >详情</el-button>
-          <el-button
-            v-hasPermi="['assets:team:edit']"
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-          >修改</el-button>
-          <el-button
-            v-hasPermi="['assets:team:remove']"
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-          >删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <RefactorTable :loading="loading" :data="infoList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <template #status="{row}">
+        <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
+      </template>
+      <template #isDistribution="{row}">
+        <span>{{ selectDictLabel(isOptions, row.isDistribution) }}</span>
+      </template>
+      <template #edit="{row}">
+        <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-setting"
+          @click="handleManage(row)"
+        >管理</el-button>
+        <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-document"
+          @click="handleDetail(row)"
+        >详情</el-button>
+        <el-button
+          v-hasPermi="['assets:team:edit']"
+          size="mini"
+          type="text"
+          icon="el-icon-edit"
+          @click="handleUpdate(row)"
+        >修改</el-button>
+        <el-button
+          v-hasPermi="['assets:team:remove']"
+          size="mini"
+          type="text"
+          icon="el-icon-delete"
+          @click="handleDelete(row)"
+        >删除</el-button>
+      </template>
+    </RefactorTable>
 
     <pagination
       v-show="total>0"
@@ -156,6 +155,7 @@
 import { listInfo, getInfo, delInfo } from '@/api/assets/team';
 import TeamDialog from './teamDialog';
 import ManageDialog from './manageDialog.vue';
+import tableColumnsConfig from './config.js';
 
 export default {
   name: 'Team',
@@ -165,6 +165,7 @@ export default {
   },
   data() {
     return {
+      tableColumnsConfig,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -213,9 +214,14 @@ export default {
     };
   },
   created() {
+    this.tableHeaderConfig();
     this.getList();
   },
   methods: {
+    /** 配置表头 */
+    tableHeaderConfig() {
+      this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || this.tableColumnsConfig;
+    },
     /** 查询调度者列表 */
     getList() {
       this.loading = true;
@@ -224,14 +230,6 @@ export default {
         this.total = response.total;
         this.loading = false;
       });
-    },
-    // 状态字典翻译
-    statusFormat(row, column) {
-      return this.selectDictLabel(this.statusOptions, row.status);
-    },
-    // 是否清分字典翻译
-    isDistributionFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isDistribution);
     },
     // 取消按钮
     cancel() {
