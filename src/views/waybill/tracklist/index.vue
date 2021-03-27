@@ -78,23 +78,13 @@
         prop="receiveTime"
       >
         <el-date-picker
-          v-model="queryParams.orderStartTime"
-          size="small"
-          style="width: 113px"
-          value-format="yyyy-MM-dd"
-          type="date"
-          placeholder="开始日期"
-          :clearable="false"
-        />
-        -
-        <el-date-picker
-          v-model="queryParams.orderEndTime"
-          size="small"
-          style="width: 113px"
-          value-format="yyyy-MM-dd"
-          type="date"
-          placeholder="结束日期"
-          :clearable="false"
+          v-model="receiveTime"
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          style="width: 240px"
+          @change="datechoose"
         />
       </el-form-item>
       <el-form-item
@@ -364,6 +354,7 @@ export default {
         'waybillNo': undefined,
         'statusList': ['1']
       },
+      receiveTime: [],
       // 弹框 内容
       visible: false,
 
@@ -414,6 +405,10 @@ export default {
     });
   },
   'methods': {
+    datechoose(date) {
+      this.queryParams.orderEndTime = this.parseTime(date[0], '{y}-{m}-{d}');
+      this.queryParams.orderStartTime = this.parseTime(date[1], '{y}-{m}-{d}');
+    },
     /** handleClick */
     handleClick(tab) {
       // this['tableColumnsConfig' + this.activeName] = this.getLocalStorage(this.lcokey) || this.tableColumnsConfig;

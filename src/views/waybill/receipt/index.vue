@@ -222,16 +222,16 @@ export default {
       ],
       // 运单状态 0未接单/1已接单/2已签收/3已回单/4已结算/5已打款字典
       statusOptions: [
-        { 'dictLabel': '未接单', 'dictValue': 0 },
-        { 'dictLabel': '已接单', 'dictValue': 1 },
-        { 'dictLabel': '已装货', 'dictValue': 2 },
-        { 'dictLabel': '已签收', 'dictValue': 3 },
-        { 'dictLabel': '已回单', 'dictValue': 4 },
-        { 'dictLabel': '已结算', 'dictValue': 5 },
-        { 'dictLabel': '已申请打款', 'dictValue': 6 },
-        { 'dictLabel': '已打款', 'dictValue': 7 },
-        { 'dictLabel': '已申请开票', 'dictValue': 8 },
-        { 'dictLabel': '已开票', 'dictValue': 9 }
+        { 'dictLabel': '未接单', 'dictValue': '0' },
+        { 'dictLabel': '已接单', 'dictValue': '1' },
+        { 'dictLabel': '已装货', 'dictValue': '2' },
+        { 'dictLabel': '已签收', 'dictValue': '3' },
+        { 'dictLabel': '已回单', 'dictValue': '4' },
+        { 'dictLabel': '已结算', 'dictValue': '5' },
+        { 'dictLabel': '已申请打款', 'dictValue': '6' },
+        { 'dictLabel': '已打款', 'dictValue': '7' },
+        { 'dictLabel': '已申请开票', 'dictValue': '8' },
+        { 'dictLabel': '已开票', 'dictValue': '9' }
       ],
       // 货物类型字典
       goodsBigTypeOptions: [],

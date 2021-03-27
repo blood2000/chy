@@ -1,27 +1,20 @@
 import request from '@/utils/request';
 
-// 查询运输异常列表
-export function listAbnormal(query) {
+// 查询作废运单列表
+export function listNullify(query) {
   return request({
-    url: '/transportation/waybillAbnormal/getOrderException',
+    url: '/transportation/waybill/manageList',
     method: 'get',
     params: query
   });
 }
 
-// 查询运输异常详细
-export function getAbnormal(code) {
+// 驳回运单详细
+export function invalidRejected(wayBillCode) {
   return request({
-    url: '/transportation/waybillAbnormal/findByCode?code=' + code,
-    method: 'post'
-  });
-}
-
-// 查询运单详细
-export function getWaybill(code) {
-  return request({
-    url: '/transportation/waybillAbnormal/getOrderExceptionDetail?' + code,
+    url: '/transportation/waybillOper/invalidRejected?wayBillCode=' + wayBillCode,
     method: 'get'
   });
 }
+
 

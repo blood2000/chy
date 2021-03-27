@@ -1,27 +1,20 @@
 import request from '@/utils/request';
 
-// 查询运输异常列表
-export function listAbnormal(query) {
+// 查询司机投诉列表
+export function listComplaint(query) {
   return request({
-    url: '/transportation/waybillAbnormal/getOrderException',
+    url: '/transportation/driverComplaint/list',
     method: 'get',
     params: query
   });
 }
 
-// 查询运输异常详细
-export function getAbnormal(code) {
+// 处理投诉
+export function handleComplaint(data) {
   return request({
-    url: '/transportation/waybillAbnormal/findByCode?code=' + code,
-    method: 'post'
-  });
-}
-
-// 查询运单详细
-export function getWaybill(code) {
-  return request({
-    url: '/transportation/waybillAbnormal/getOrderExceptionDetail?' + code,
-    method: 'get'
+    url: '/transportation/driverComplaint/handle',
+    method: 'post',
+    data: data
   });
 }
 

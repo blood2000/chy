@@ -10,18 +10,18 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="运单编号" prop="waybillNo">
+      <el-form-item label="运输单号" prop="waybillNo">
         <el-input
           v-model="queryParams.waybillNo"
-          placeholder="请输入运单编号"
+          placeholder="请输入运输单号"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="异常状态" prop="status">
+      <el-form-item label="异常状态" prop="isWarning">
         <el-select
-          v-model="queryParams.status"
+          v-model="queryParams.isWarning"
           placeholder="请选择异常标记状态"
           clearable
           filterable
