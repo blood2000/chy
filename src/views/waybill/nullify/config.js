@@ -143,7 +143,7 @@ export default [
   {
     prop: 'freightPrice',
     isShow: true,
-    width: 100,
+    width: 120,
     label: '运费单价（元）'
   },
   {

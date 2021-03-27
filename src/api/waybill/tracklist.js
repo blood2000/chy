@@ -80,9 +80,9 @@ export function getVehicleInfo(code) {
 }
 
 // 获取装货、卸货信息
-export function getInfoDetail(type, waybillNo) {
+export function getInfoDetail(waybillNo) {
   return request({
-    url: '/transportation/waybillAttachment/getByWaybillNo?type=' + type + '&waybillNo=' + waybillNo,
+    url: '/transportation/waybillAttachment/getByWaybillNo?waybillNo=' + waybillNo,
     method: 'get'
   });
 }

@@ -23,7 +23,7 @@
         <el-input v-model="form.description" placeholder="请输入异常说明" />
       </el-form-item>
     </el-form>
-    <div slot="footer" class="dialog-footer">
+    <div slot="footer" class="dialog-footer" :class=" disable === true ?'display':''">
       <el-button type="primary" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
     </div>
@@ -137,5 +137,8 @@ export default {
 	}
   .el-radio{
     line-height: 36px !important;
+  }
+  .display{
+    display: none;
   }
 </style>
