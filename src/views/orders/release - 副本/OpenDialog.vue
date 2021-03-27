@@ -295,14 +295,14 @@ const tableColumnsConfig_listInfo = [
   {
     prop: 'name',
     isShow: true,
-    label: '车队名称'
+    label: '调度者名称'
     // width: 180,
     // fixed: 'right'
   },
   {
     prop: 'teamLeader',
     isShow: true,
-    label: '车队管理者'
+    label: '管理者名称'
     // width: 180,
     // fixed: 'right'
   },

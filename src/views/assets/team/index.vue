@@ -1,19 +1,19 @@
 <template>
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-      <el-form-item label="车队名称" prop="name">
+      <el-form-item label="调度者名称" prop="name">
         <el-input
           v-model="queryParams.name"
-          placeholder="请输入车队名称"
+          placeholder="请输入调度者名称"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="管理者" prop="teamLeader">
+      <el-form-item label="管理者名称" prop="teamLeader">
         <el-input
           v-model="queryParams.teamLeader"
-          placeholder="请输入车队管理者"
+          placeholder="请输入管理者名称"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -97,9 +97,9 @@
 
     <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <el-table-column label="车队名称" align="center" prop="name" sortable />
+      <el-table-column label="调度者名称" align="center" prop="name" sortable />
       <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" sortable />
-      <el-table-column label="车队管理者" align="center" prop="teamLeader" sortable />
+      <el-table-column label="管理者名称" align="center" prop="teamLeader" sortable />
       <el-table-column label="手机号" align="center" prop="telphone" />
       <el-table-column label="身份证号" align="center" prop="identificationNumber" />
       <el-table-column label="是否清分" align="center" prop="isDistribution" :formatter="isDistributionFormat" />
