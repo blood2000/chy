@@ -238,8 +238,8 @@
 
 <script>
 import { listShipment, getShipment, delShipment } from '@/api/assets/shipment';
+import { tableHeadList } from '@/api/system/table';
 import ShipmentDialog from './shipmentDialog';
-import tableColumnsConfig from './config.js';
 
 export default {
   name: 'Shipment',
@@ -248,7 +248,7 @@ export default {
   },
   data() {
     return {
-      tableColumnsConfig,
+      tableColumnsConfig: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -332,7 +332,27 @@ export default {
   methods: {
     /** 配置表头 */
     tableHeaderConfig() {
-      this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || this.tableColumnsConfig;
+      if (this.getLocalStorage(this.$route.name)) {
+        this.tableColumnsConfig = this.getLocalStorage(this.$route.name);
+      } else {
+        tableHeadList('/assets/shipment/list').then(response => {
+          response.data.forEach(el => {
+            this.tableColumnsConfig.push({
+              label: el.comment,
+              prop: el.fieldName,
+              isShow: el.isShow
+            });
+          });
+          this.tableColumnsConfig.push({
+            prop: 'edit',
+            isShow: true,
+            label: '操作',
+            width: 180,
+            fixed: 'right'
+          });
+          this.setLocalStorage(this.$route.name, this.tableColumnsConfig);
+        });
+      }
     },
     /** 查询字典 */
     getDictsOptions() {
