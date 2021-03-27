@@ -310,6 +310,13 @@
                   icon="el-icon-delete"
                   @click="handleReadjustPrices(row)"
                 >调价</el-button>
+                <el-button
+                  v-hasPermi="['system:menu:remove']"
+                  size="mini"
+                  type="text"
+                  icon="el-icon-delete"
+                  @click="handleShenhe(row)"
+                >审核</el-button>
               </template>
             </RefactorTable>
 
@@ -663,6 +670,11 @@ export default {
     },
     /** 派单对话 */
     handleDispatch(row) {
+      this.openDispatch = true;
+      this.dispatch = row;
+    },
+    /** 审核 */
+    handleShenhe(row) {
       this.openDispatch = true;
       this.dispatch = row;
     }

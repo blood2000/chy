@@ -22,7 +22,6 @@
       </div>
     </div>
 
-    <el-button @click="_submitForm">测试</el-button>
   </div>
 </template>
 
@@ -33,6 +32,7 @@ export default {
   components: { GoodsAccounting, AccounTing },
   props: {
     goods: { type: Array, default: () => [] },
+    // price: { type: Array, default: () => [] },
     addrAdd: { type: Array, default: () => [] },
     addrXie: { type: Array, default: () => [] },
     pubilshCode: { type: String, default: '' },
@@ -48,13 +48,13 @@ export default {
     };
   },
 
-  created() {
-    console.log(this.goods);
-    console.log(this.addrAdd);
-    console.log(this.addrXie);
-    console.log(this.pubilshCode);
-    console.log(this.cbGoodsAccounting); // 创建的时候 null
+  watch: {
+    goods(value) {
+      this.init();
+    }
+  },
 
+  created() {
     this.init();
   },
 
@@ -74,12 +74,14 @@ export default {
     async getAccounTing() {
       this.tabs = await this.getGoodsAccounting(); // 结构就是 this.tabs
 
+      // 只能用 for of 遍历
       for (const e of this.tabs) {
         const lists = e.redis.map(async(ee, i) => {
+          // 只能调一次
           const accounTing = (await this.$refs['AccounTing' + i][0]._submitForm());
           return {
             ...ee,
-            orderFreightBoList: (await this.$refs['AccounTing' + i][0]._submitForm()).orderFreightBoList,
+            orderFreightBoList: accounTing.orderFreightBoList,
             goodsType: e.goodsType,
             goodsBigType: this.goodsBigType,
             ruleDictValue: accounTing.ruleDictValue,
@@ -88,40 +90,24 @@ export default {
         });
         e.newRedis = await Promise.all(lists);
       }
-
-
-      //   this.tabs.forEach(async e => {
-      //     const lists = e.redis.map(async(ee, i) => {
-      //       const accounTing = (await this.$refs['AccounTing' + i][0]._submitForm());
-
-      //       return {
-      //         ...ee,
-      //         orderFreightBoList: (await this.$refs['AccounTing' + i][0]._submitForm()).orderFreightBoList,
-      //         goodsType: e.goodsType,
-      //         goodsBigType: this.goodsBigType,
-      //         ruleInfoShipmentCode: accounTing.orderFreightBoList[0].ruleCode
-      //       };
-      //     });
-
-      //     console.log(lists);
-
-
-      //     e.newRedis = await Promise.all(lists);
-      //   });
-
-    //   return this.tabs; // 返回处理后的this.tabs
     },
     // 返回数据
     async _submitForm() {
       await this.getAccounTing();
-      console.log(this.tabs);
-
 
       return this.tabs;
     },
 
     // 数据初始化(created的时候)
     init() {
+      if (!this.goods || (this.goods && !this.goods[0])) return;
+
+      console.log(this.goods, '商品');
+      console.log(this.addrAdd);
+      console.log(this.addrXie);
+      console.log(this.pubilshCode);
+      console.log(this.cbGoodsAccounting, '-----'); // 创建的时候 null
+      // console.log(this.price, ''); // 创建的时候 null
       this.tabs = this.goods.map((e, index) => {
         // 回填有值的时候
         if (this.cbGoodsAccounting) {
@@ -131,19 +117,35 @@ export default {
             }
           });
         }
-
+        // 改版
+        // if (this.price && this.price.length) {
+        //   this.price.forEach(ee => {
+        //     if (e.dictCode === ee.goodsType) {
+        //       e.redis = ee.goodsFreightList.map(item => {
+        //         return {
+        //           orderFreightVo: item.orderFreightVo,
+        //           tin_name: item.tin_name
+        //         };
+        //       });
+        //     }
+        //     console.log(e);
+        //   });
+        // }
         return {
         //   ...e, 先存这三个
+          goodsAccounting: e.goodsAccounting,
+          // price: this.handlerPrice(e.price),
           dictLabel: e.dictLabel,
           dictCode: e.dictCode,
           goodsType: e.dictCode,
           redis: this.addressInit(), // 规则
+          // redis: e.redis, // 规则
           activeName: index + ''
         };
       });
       this.activeName = '0';
 
-      console.log(this.tabs);
+      console.log(this.tabs, ' 最后---');
     },
 
     // 判断规则是多装还是多卸, 并处理装地址--卸地址
@@ -166,7 +168,12 @@ export default {
         });
       }
 
+      console.log(arr);
+
       return arr;
+    },
+    handlerPrice() {
+
     }
   }
 };

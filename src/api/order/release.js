@@ -19,12 +19,19 @@ export function update(data) {
 }
 
 // 获取详情
-export function getOrderByCode(mainOrderCode) {
+export function getOrderByCode(code) {
   return request({
-    url: '/transportation/orderInfoSearch/getOrderDetail/' + mainOrderCode,
+    url: '/transportation/orderInfoSearch/getOrderDetailBycode/' + code,
     method: 'get'
   });
 }
+// // 获取详情
+// export function getOrderByCode(mainOrderCode) {
+//   return request({
+//     url: '/transportation/orderInfoSearch/getOrderDetail/' + mainOrderCode,
+//     method: 'get'
+//   });
+// }
 
 // 获取货源运费信息
 export function orderFreight(query) {

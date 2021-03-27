@@ -8,7 +8,7 @@
       label-width="110px"
       :label-position="'left'"
     >
-      <ProvinceCityCounty ref="pccFef" :cb-data="cbData" @getCity="getCity" />
+      <ProvinceCityCounty ref="pccFef" :cb-data="cbData" :isrules="isrules" @getCity="getCity" />
 
       <div class="ly-flex">
         <el-form-item
@@ -105,13 +105,19 @@ export default {
       type: [String, Number],
       default: ''
     },
+    isRules: {
+      type: Boolean,
+      default: false
+    },
     cbData: {
       type: Object,
       default: null
     }
+
   },
   data() {
     return {
+      isrules: true,
       loading: false,
       searchOption: {
         city: '全国',
@@ -130,9 +136,9 @@ export default {
         tin1: [{ required: true, message: '选择所属项目', trigger: 'change' }],
         tin2: [{ required: true, message: '选择所属项目', trigger: 'change' }],
         tin3: [{ required: true, message: '选择所属项目', trigger: 'blur' }],
-        contact: [{ required: true, message: '选择所属项目', trigger: 'blur' }],
+        contact: [{ required: true, message: '请输入联系人', trigger: 'blur' }],
         contactPhone: [
-          { required: true, message: '选择所属项目', trigger: 'blue' }
+          { required: true, message: '请输入联系电话', trigger: 'blue' }
         ]
       },
 
@@ -167,6 +173,20 @@ export default {
         };
       },
       immediate: true
+    },
+
+    isRules(value) {
+      this.isrules = !value;
+
+      this.rules = {
+        tin1: [{ required: !value, message: '选择所属项目', trigger: 'change' }],
+        tin2: [{ required: !value, message: '选择所属项目', trigger: 'change' }],
+        tin3: [{ required: !value, message: '选择所属项目', trigger: 'blur' }],
+        contact: [{ required: !value, message: '请输入联系人', trigger: 'blur' }],
+        contactPhone: [
+          { required: !value, message: '请输入联系电话', trigger: 'blue' }
+        ]
+      };
     }
   },
 
@@ -186,7 +206,11 @@ export default {
     },
 
     // 2. 下拉选择地址
-    handlechengDetail() {
+    handlechengDetail(value) {
+      if (!value && this.isRules) {
+        this.selected = '';
+      }
+
       this.selected = this._zhaovalue(this.detailOptin, this.formData.tin1);
     },
 
@@ -197,11 +221,11 @@ export default {
 
     async _submitForm() {
       // 获取省市区
-      const { city, county, province } = await this.$refs.pccFef._submitForm();
+      const { city = {}, county = {}, province = {}} = await this.$refs.pccFef._submitForm();
       // 获取当前
       const { tin2, tin3, contact, contactPhone } = this.formData;
       // 获取详情及经纬度
-      const { name, lat, lng } = this.selected;
+      const { name = '', lat = '', lng = '' } = this.selected;
 
       return new Promise((resolve, reject) => {
         this.$refs['elForm'].validate((valid) => {

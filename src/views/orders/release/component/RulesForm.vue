@@ -26,7 +26,7 @@
             :placeholder="`请输入${item.cnName}`"
             step-strictly
             controls-position="right"
-            :style="{ width: '120px' }"
+            :style="{ width: '200px' }"
           />
         </el-form-item>
         <!-- 下拉框 -->
@@ -38,7 +38,7 @@
             { required: true, message: '请输入邮箱地址', trigger: 'change' },
           ]"
         >
-          <el-select v-model="formData[item.myName]" clearable :placeholder="`请输入${item.cnName}`" @change="change()">
+          <el-select v-model="formData[item.myName]" clearable :placeholder="`请输入${item.cnName}`" :style="{ width: '200px' }" @change="change()">
             <el-option
               v-for="dict in item.Option"
               :key="dict.dictValue"
@@ -99,7 +99,7 @@
               :placeholder="`请输入${item.cnName}`"
               step-strictly
               controls-position="right"
-              :style="{ width: '100%' }"
+              :style="{ width: '200px' }"
             />
           </el-form-item>
         </div>

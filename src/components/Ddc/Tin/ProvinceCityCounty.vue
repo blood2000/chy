@@ -133,6 +133,18 @@ export default {
       },
       // 代表在wacth里声明了firstName这个方法之后立即先去执行handler方法
       immediate: true
+    },
+    isrules: {
+      handler(value) {
+        this.rules = {
+          province: [
+            { required: value, message: '请选择省份', trigger: 'change' }
+          ],
+          city: [{ required: value, message: '请选择城市', trigger: 'change' }],
+          county: [{ required: value, message: '请选择县/区', trigger: 'change' }]
+        };
+      },
+      immediate: true
     }
   },
 

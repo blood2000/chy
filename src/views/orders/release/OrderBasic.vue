@@ -121,7 +121,7 @@
         </el-row>
 
 
-        <el-form-item v-if="formData.tin5 === '1'" label=" ">
+        <el-form-item v-if="formData.tin5 === '1'" label=" " prop="tin6_1">
           <div class="ly-flex">
             <el-button type="primary" @click="open1">请选择</el-button>
             <div class="ml0">调度者: {{ formData.tin6_1.length }} 人</div>
@@ -170,31 +170,32 @@ export default {
       type: String,
       required: true
     },
+    // 回填信息
     cbData: {
       type: Object,
       default: null
     },
-
+    // 使用v-model
     value: [Boolean]
   },
   data() {
-    const tin5_validator = (rule, value, callback) => {
-      // 通过 callback(); // 不过 callback(new Error('请输入密码'));
-      if (
-        this.formData.tin5 === '1' &&
-        (!this.formData.tin6_1.length || !this.formData.tin6_2.length)
-      ) {
-        // callback(new Error('请选择调度者/或司机'));
-        callback();
-      } else {
-        callback();
-      }
-    };
+    // const tin5_validator = (rule, value, callback) => {
+    //   // 通过 callback(); // 不过 callback(new Error('请输入密码'));
+    //   if (
+    //     this.formData.tin5 === '1' &&
+    //     (!this.formData.tin6_1.length || !this.formData.tin6_2.length)
+    //   ) {
+    //     callback(new Error('请选择调度者/或司机'));
+    //     // callback();
+    //   } else {
+    //     callback();
+    //   }
+    // };
     return {
-      orderSpecifiedList: null,
-      actionIndex: '2',
-
+      orderSpecifiedList: null, // 调度者信息
+      actionIndex: '2', // 控制弹框显示谁
       open: false,
+
       formData: {
         tin3: '0', // 选择所属项目 0表示没有
         tin2: '', // 货物类别(大类)
@@ -210,19 +211,19 @@ export default {
       },
       rules: {
         tin3: [{ required: true, message: '选择所属项目', trigger: 'change' }],
-        tin2: [{ required: true, message: '选择所属项目', trigger: 'change' }],
+        tin2: [{ required: true, message: '选择货物类别', trigger: 'change' }],
         tin2_1: [
-          { required: true, message: '选择所属项目', trigger: 'change' }
+          { required: true, message: '选择货物类型', trigger: 'change' }
         ],
         tin2_2: [
-          { required: true, message: '选择所属项目', trigger: 'change' }
+          { required: true, message: '选择货物类型', trigger: 'change' }
         ],
-        tin4: [{ required: true, message: '选择所属项目', trigger: 'change' }],
+        tin4: [{ required: true, message: '选择是否公开货源', trigger: 'change' }],
         tin5: [
-          { required: true, message: '选择所属项目', trigger: 'change' },
-          { validator: tin5_validator, trigger: 'change' }
+          { required: true, message: '选择指定接单人', trigger: 'change' }
         ],
         tin6: [{ required: false, message: '选择所属项目', trigger: 'change' }],
+        // tin6_1: [{ validator: tin5_validator, trigger: 'change' }],
         remark: [
           { required: false, message: '选择所属项目', trigger: 'change' }
         ]
@@ -245,6 +246,7 @@ export default {
   },
 
   computed: {
+    // 多商品计算(根据大类中的isCheckbox判断) true=>多 false=>单
     isMultiGoods() {
       const tin2Obj = this._zhaovalue(this.tin2Option, this.formData.tin2);
       let bool = false;
@@ -260,6 +262,7 @@ export default {
   },
 
   watch: {
+    // 监听外面 pubilshCode 变化则 全部要跟着初始化
     pubilshCode(value) {
       this.$refs['elForm'] && this.$refs['elForm'].resetFields();
       this.tin3Optin = [{ dictValue: '0', dictLabel: '无所属项目' }]; // 货主项目
@@ -278,9 +281,10 @@ export default {
       !this.tin2Option.length && this.api_tin3Optin();
       this.api_dictInit();
     },
+
+    // 回填数据
     cbData: {
       async handler() {
-        // console.log(this.cbData);
         // 获取字典
         await this.api_dictInit();
         // 获取
@@ -290,25 +294,24 @@ export default {
 
         if (!this.cbData) return;
 
-
         // goodsType 是包装成数组 [code1, code2]
         const { projectCode, isPublic, isSpecified, remark, orderSpecifiedList, goodsBigType, goodsType, classList } = this.cbData;
 
-
-        this.formData.tin3 = projectCode;
-
+        // 1.基本的赋值
+        this.formData.tin3 = projectCode || '0';
         this.formData.tin4 = isPublic ? '1' : '0';
         this.formData.tin5 = isSpecified ? '1' : '0';
         this.formData.remark = remark;
-
         this.tin2Option.forEach(e => {
           if (goodsBigType === e.dictCode) {
             this.formData.tin2 = e.dictValue;
           }
         });
 
+        // 2.去根据大类去请求下数据
         await this.handletin2();
 
+        // 3.回填 小类(商品)
         if (this.isMultiGoods) {
           this.formData.tin2_1 = this._handlreMultiGoodsType(goodsType, this.tin2_Option);
         } else {
@@ -319,9 +322,8 @@ export default {
           });
         }
 
+        // 4.处理调度者
         this.orderSpecifiedList = orderSpecifiedList;
-
-
         this.orderSpecifiedList.forEach(e => {
           if (e.userType + '' === '1') {
             e.code = e.teamInfoCode;
@@ -332,10 +334,8 @@ export default {
           this.formData['tin6_' + e.userType] = this.orderSpecifiedList;
         });
 
+        // 5.货集码只做单选处理
         this.formData.tin6 = classList[0].classCode;
-        // console.log(this.formData['tin6_' + 2]);
-        // console.log(this.formData['tin6_' + actionIndex]);
-        // console.log(this.actionIndex);
       },
       immediate: true
     },
@@ -385,25 +385,6 @@ export default {
         shipmentCode: this.pubilshCode
       };
       const { rows } = await listInfo(query);
-
-
-      // 假数据
-      // const rows = [
-      //   {
-      //     code: '123142', // 项目编码	query	false
-      //     commodityCategoryCode: '112121', // 商品类别编码	query	false
-      //     commoditySubclassCodes: '1,3,4', // 商品小类code,多个以,分割	query	false
-      //     projectName: '煤矿哈哈多', // 项目名称	query	false
-      //     projectRemark: '' // 备注	query	false
-      //   },
-      //   {
-      //     code: '99987', // 项目编码	query	false
-      //     commodityCategoryCode: '11782121', // 商品类别编码	query	false
-      //     commoditySubclassCodes: '1', // 商品小类code,多个以,分割	query	false
-      //     projectName: '煤矿哈哈单', // 项目名称	query	false
-      //     projectRemark: '' // 备注	query	false
-      //   }
-      // ];
 
       this.tin3Optin = this.tin3Optin.concat(
         this._baozhuan(rows, 'code', 'projectName')
@@ -555,7 +536,7 @@ export default {
     },
 
 
-    // 处理小类多类型的
+    // 处理小类传入[1,2] =>
     _handleGoodsType(arr) {
       // 获取子类的code数组
       const tae1 = arr.map(e => {
