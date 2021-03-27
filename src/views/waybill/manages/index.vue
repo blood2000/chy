@@ -160,98 +160,75 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
+      <el-col :span="1.5" class="fr">
+        <tablec-cascader v-model="tableColumnsConfig" />
+      </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
     <!-- table -->
-    <el-table v-loading="loading" :data="managesList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <el-table-column label="货源单号" align="center" prop="mainOrderNumber" />
-      <el-table-column label="发货企业" align="center" prop="shipperFactory" />
-      <el-table-column label="下单客户" align="center" prop="orderClient" />
-      <el-table-column label="运输单号" align="center" prop="waybillNo" />
-      <el-table-column label="运单状态" align="center" prop="status" :formatter="statusFormat" />
-      <el-table-column label="是否分单" align="center" prop="isSplit" :formatter="isSplitFormat" />
-      <el-table-column label="承运调度" align="center" prop="teamName" />
-      <el-table-column label="承运人" align="center" prop="driverName" />
-      <el-table-column label="司机电话" align="center" prop="driverPhone" />
-      <el-table-column label="货物类型" align="center" prop="goodsBigType" />
-      <el-table-column label="货物类型分类" align="center" prop="goodsType" />
-      <el-table-column label="车牌号" align="center" prop="licenseNumber" />
-      <el-table-column label="装车重量" align="center" prop="loadWeight" />
-      <el-table-column label="卸车重量" align="center" prop="unloadWeight" />
-      <el-table-column label="数量(车)" align="center" prop="carNum" />
-      <el-table-column label="用车类型" align="center" prop="carType" />
-      <el-table-column label="货物单价" align="center" prop="goodsPrice" />
-      <el-table-column label="运费单价" align="center" prop="freightPrice" />
-      <el-table-column label="公里数" align="center" prop="mileage" />
-      <el-table-column label="含税价" align="center" prop="taxFee" />
-      <el-table-column label="不含税价" align="center" prop="noTaxFee" />
-      <el-table-column label="装货地" align="center" prop="loadAddress" />
-      <el-table-column label="卸货地" align="center" prop="unloadAddress" />
-      <el-table-column label="发布货源时间" align="center" prop="orderTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.orderTime, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="接单时间" align="center" prop="receiveTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.receiveTime, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="最后操作时间" align="center" prop="wayBillUpdateTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.wayBillUpdateTime, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="240">
-        <template slot-scope="scope">
-          <el-button
-            v-hasPermi="['waybill:manages:detail']"
-            size="mini"
-            type="text"
-            icon="el-icon-document"
-            @click="handleUpdate(scope.row)"
-          >
-            详情
-          </el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-lock"
-            @click="handleMark(scope.row)"
-          >
-            标记异常
-          </el-button>
-          <el-button
-            v-if="scope.row.isChild === 2"
-            size="mini"
-            type="text"
-            icon="el-icon-date"
-            @click="handleSeperate(scope.row)"
-          >
-            分单列表
-          </el-button>
-          <el-button
-            v-hasPermi="['waybill:manages:remove']"
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-          >
-            作废运单
-          </el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit-outline"
-            @click="handleRemarks(scope.row)"
-          >
-            备注
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <RefactorTable :loading="loading" :data="managesList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <template #status="{row}">
+        <span>{{ selectDictLabel(statusOptions, row.isMarkStatus) }}</span>
+      </template>
+      <template #isSplit="{row}">
+        <span>{{ selectDictLabel(isOptions, row.isSplit) }}</span>
+      </template>
+      <template #orderTime="{row}">
+        <span>{{ parseTime(row.orderTime, '{y}-{m}-{d}') }}</span>
+      </template>
+      <template #receiveTime="{row}">
+        <span>{{ parseTime(row.receiveTime, '{y}-{m}-{d}') }}</span>
+      </template>
+      <template #wayBillUpdateTime="{row}">
+        <span>{{ parseTime(row.wayBillUpdateTime, '{y}-{m}-{d}') }}</span>
+      </template>
+      <template #edit="{row}">
+        <el-button
+          v-hasPermi="['waybill:manages:detail']"
+          size="mini"
+          type="text"
+          icon="el-icon-document"
+          @click="handleUpdate(row)"
+        >
+          详情
+        </el-button>
+        <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-lock"
+          @click="handleMark(row)"
+        >
+          标记异常
+        </el-button>
+        <el-button
+          v-if="row.isChild === 2"
+          size="mini"
+          type="text"
+          icon="el-icon-date"
+          @click="handleSeperate(row)"
+        >
+          分单列表
+        </el-button>
+        <el-button
+          v-hasPermi="['waybill:manages:remove']"
+          size="mini"
+          type="text"
+          icon="el-icon-delete"
+          @click="handleDelete(row)"
+        >
+          作废运单
+        </el-button>
+        <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-edit-outline"
+          @click="handleRemarks(row)"
+        >
+          备注
+        </el-button>
+      </template>
+    </RefactorTable>
 
     <pagination
       v-show="total>0"
@@ -299,6 +276,7 @@ import DetailDialog from '../components/detailDialog';
 import MarkAbnormalDialog from './markAbnormalDialog';
 import SeperateListDialog from './seperateListDialog';
 import RemarkDialog from './remarkDialog';
+import tableColumnsConfig from './config.js';
 
 export default {
   name: 'Manages',
@@ -310,6 +288,7 @@ export default {
   },
   data() {
     return {
+      tableColumnsConfig,
       // 遮罩层
       'loading': true,
       // 选中数组
@@ -448,9 +427,14 @@ export default {
     };
   },
   created() {
+    this.tableHeaderConfig();
     this.getList();
   },
-  'methods': {
+  methods: {
+    /** 配置表头 */
+    tableHeaderConfig() {
+      this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || this.tableColumnsConfig;
+    },
     /** 查询列表 */
     getList() {
       this.loading = true;
@@ -504,10 +488,6 @@ export default {
     monthlySettlementStatusFormat(row, column) {
       return this.selectDictLabel(this.monthlySettlementStatusOptions, row.monthlySettlementStatus);
     },
-    // 是否分单字典翻译
-    isSplitFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isSplit);
-    },
     // 给超载的子单排序用字典翻译
     childSortFormat(row, column) {
       return this.selectDictLabel(this.childSortOptions, row.childSort);
@@ -515,10 +495,6 @@ export default {
     // 是否删除字典翻译
     isDelFormat(row, column) {
       return this.selectDictLabel(this.isDelOptions, row.isDel);
-    },
-    // 运单状态字典翻译
-    statusFormat(row, column) {
-      return this.selectDictLabel(this.statusOptions, row.status);
     },
     // 司机取消订单字典翻译
     cancelStatusFormat(row, column) {

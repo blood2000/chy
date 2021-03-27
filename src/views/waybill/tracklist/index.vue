@@ -173,7 +173,7 @@
           @click="handleDelete"
         >批量删除</el-button>
       </el-col> -->
-      <el-col :span="1.5" style="float: right;">
+      <el-col :span="1.5" class="fr">
         <tablec-cascader v-model="tableColumnsConfig" />
       </el-col>
       <right-toolbar

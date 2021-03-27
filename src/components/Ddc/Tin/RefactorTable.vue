@@ -1,7 +1,6 @@
 <template>
   <el-table v-loading="loading" :data="data" @selection-change="handleSelectionChange">
-
-    <el-table-column v-if="!!_events['selection-change']" type="selection" width="55" align="center" />
+    <el-table-column v-if="!!_events['selection-change']" type="selection" width="55" align="center" fixed="left" />
     <template v-for="(th, key) in tableColumnsConfig">
       <el-table-column
         v-if="th.isShow"
@@ -10,8 +9,9 @@
         :prop="th.prop"
         :label="th.label"
         :width="th.width"
-        :fixed="th.fixed"
+        :fixed="th.fixed==='' ? null : th.fixed"
         :show-overflow-tooltip="th.tooltip || false"
+        :sortable="th.sortable || false"
       >
         <!-- :formatter="th.formatter" -->
         <template slot-scope="scope">

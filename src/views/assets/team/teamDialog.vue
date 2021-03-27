@@ -2,8 +2,8 @@
   <!-- 添加或修改调度者对话框 -->
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
-      <el-form-item label="车队名称" prop="name">
-        <el-input v-model="form.name" placeholder="请输入车队名称" class="width90" clearable />
+      <el-form-item label="调度者名称" prop="name">
+        <el-input v-model="form.name" placeholder="请输入调度者名称" class="width90" clearable />
       </el-form-item>
       <el-form-item label="状态">
         <el-radio-group v-model="form.status">
@@ -14,8 +14,8 @@
           >{{ dict.dictLabel }}</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="管理者" prop="teamLeader">
-        <el-input v-model="form.teamLeader" placeholder="请输入车队管理者" class="width90" clearable />
+      <el-form-item label="管理者名称" prop="teamLeader">
+        <el-input v-model="form.teamLeader" placeholder="请输入管理者名称" class="width90" clearable />
       </el-form-item>
       <el-form-item label="手机号" prop="telphone">
         <el-input v-model="form.telphone" placeholder="请输入手机号" class="width90" clearable />
@@ -131,10 +131,10 @@ export default {
           { validator: this.formValidate.telphone, trigger: 'blur' }
         ],
         name: [
-          { required: true, message: '车队名称不能为空', trigger: 'blur' }
+          { required: true, message: '调度者名称不能为空', trigger: 'blur' }
         ],
         teamLeader: [
-          { required: true, message: '车队管理者不能为空', trigger: 'blur' }
+          { required: true, message: '管理者名称不能为空', trigger: 'blur' }
         ],
         identificationEndTime: [
           { validator: this.formValidate.isExpired }

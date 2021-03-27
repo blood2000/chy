@@ -148,101 +148,85 @@
           @click="handleImportTemplateDriver"
         >下载模板</el-button>
       </el-col>
+      <el-col :span="1.5" class="fr">
+        <tablec-cascader v-model="tableColumnsConfig" />
+      </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table v-loading="loading" :data="driverList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <el-table-column label="司机类别" align="center" prop="driverType" :formatter="driverTypeFormat" />
-      <el-table-column label="名字" align="center" prop="name" />
-      <el-table-column label="审核状态" align="center" prop="authStatus" sortable width="100">
-        <template slot-scope="scope">
-          <span v-show="scope.row.authStatus === 0" class="g-color-gray">未审核</span>
-          <span v-show="scope.row.authStatus === 1" class="g-color-blue">审核中</span>
-          <span v-show="scope.row.authStatus === 2" class="g-color-error">审核未通过</span>
-          <span v-show="scope.row.authStatus === 3" class="g-color-success">审核通过</span>
-        </template>
-      </el-table-column>
-      <el-table-column v-if="teamCode" label="协议号" align="center" prop="agreementNo">
-        <template slot-scope="scope">
-          <el-button type="text no-padding" @click="downloadAgreement(scope.row)">{{ scope.row.agreementNo }}</el-button>
-        </template>
-      </el-table-column>
-      <el-table-column label="手机" align="center" prop="telphone" />
-      <el-table-column label="固话" align="center" prop="fixedPhone" />
-      <el-table-column label="工作单位" align="center" prop="workCompany" />
-      <el-table-column label="司机城市名称" align="center" prop="driverCity" />
-      <el-table-column label="地址" align="center" prop="homeAddress" />
-      <el-table-column label="身份证号" align="center" prop="identificationNumber" />
-      <el-table-column label="驾驶证" align="center" prop="driverLicense" />
-      <el-table-column label="驾驶证有效期自" align="center" prop="validPeriodFrom" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.validPeriodFrom, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="驾驶证有效期至" align="center" prop="validPeriodTo" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.validPeriodTo, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="驾驶证类型" align="center" prop="driverLicenseType" :formatter="driverLicenseTypeFormat" />
-      <el-table-column label="上岗证" align="center" prop="workLicense" />
-      <el-table-column label="从业资格证到期日期" align="center" prop="workLicenseDueDate" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.workLicenseDueDate, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="营业执照号" align="center" prop="businessLicenseImgNo" />
-      <el-table-column label="是否上传人员信用信息" align="center" prop="isReportPerson" :formatter="isReportPersonFormat" />
-      <el-table-column label="驾驶证发证机关" align="center" prop="issuingOrganizations" />
-      <el-table-column label="是否上传企业" align="center" prop="isReportEnterprise" :formatter="isReportEnterpriseFormat" />
-      <el-table-column label="从业资格证办理省份名称" align="center" prop="workLicenseProvinceName" />
-      <el-table-column label="是否冻结" align="center" prop="isFreeze" :formatter="isFreezeFormat" />
-      <el-table-column label="创建人" align="center" prop="createCode" />
-      <el-table-column label="修改人" align="center" prop="updateCode" />
-      <el-table-column label="创建时间" align="center" prop="createTime" sortable width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="180">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-setting"
-            @click="handleManage(scope.row)"
-          >管理</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-document"
-            @click="handleDetail(scope.row, 'detail')"
-          >详情</el-button>
-          <el-button
-            v-hasPermi="['system:config:edit']"
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleDetail(scope.row, 'edit')"
-          >修改</el-button>
-          <el-button
-            v-show="scope.row.authStatus === 0 || scope.row.authStatus === 1"
-            size="mini"
-            type="text"
-            icon="el-icon-document-checked"
-            @click="handleDetail(scope.row, 'review')"
-          >审核</el-button>
-          <el-button
-            v-hasPermi="['system:config:remove']"
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-          >删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <RefactorTable :loading="loading" :data="driverList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <template #driverType="{row}">
+        <span>{{ selectDictLabel(driverTypeOptions, row.driverType) }}</span>
+      </template>
+      <template #authStatus="{row}">
+        <span v-show="row.authStatus === 0" class="g-color-gray">未审核</span>
+        <span v-show="row.authStatus === 1" class="g-color-blue">审核中</span>
+        <span v-show="row.authStatus === 2" class="g-color-error">审核未通过</span>
+        <span v-show="row.authStatus === 3" class="g-color-success">审核通过</span>
+      </template>
+      <template v-if="teamCode" #agreementNo="{row}">
+        <el-button type="text no-padding" @click="downloadAgreement(row)">{{ row.agreementNo }}</el-button>
+      </template>
+      <template #validPeriodFrom="{row}">
+        <span>{{ parseTime(row.validPeriodFrom, '{y}-{m}-{d}') }}</span>
+      </template>
+      <template #validPeriodTo="{row}">
+        <span>{{ parseTime(row.validPeriodTo, '{y}-{m}-{d}') }}</span>
+      </template>
+      <template #driverLicenseType="{row}">
+        <span>{{ selectDictLabel(driverLicenseTypeOptions, row.driverLicenseType) }}</span>
+      </template>
+      <template #workLicenseDueDate="{row}">
+        <span>{{ parseTime(row.workLicenseDueDate, '{y}-{m}-{d}') }}</span>
+      </template>
+      <template #isReportPerson="{row}">
+        <span>{{ selectDictLabel(isOption, row.isReportPerson) }}</span>
+      </template>
+      <template #isReportEnterprise="{row}">
+        <span>{{ selectDictLabel(isOption, row.isReportEnterprise) }}</span>
+      </template>
+      <template #isFreeze="{row}">
+        <span>{{ selectDictLabel(isFreezoneOptions, row.isFreeze) }}</span>
+      </template>
+      <template #createTime="{row}">
+        <span>{{ parseTime(row.createTime, '{y}-{m}-{d}') }}</span>
+      </template>
+      <template #edit="{row}">
+        <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-setting"
+          @click="handleManage(row)"
+        >管理</el-button>
+        <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-document"
+          @click="handleDetail(row, 'detail')"
+        >详情</el-button>
+        <el-button
+          v-hasPermi="['system:config:edit']"
+          size="mini"
+          type="text"
+          icon="el-icon-edit"
+          @click="handleDetail(row, 'edit')"
+        >修改</el-button>
+        <el-button
+          v-show="row.authStatus === 0 || row.authStatus === 1"
+          size="mini"
+          type="text"
+          icon="el-icon-document-checked"
+          @click="handleDetail(row, 'review')"
+        >审核</el-button>
+        <el-button
+          v-hasPermi="['system:config:remove']"
+          size="mini"
+          type="text"
+          icon="el-icon-delete"
+          @click="handleDelete(row)"
+        >删除</el-button>
+      </template>
+    </RefactorTable>
 
     <pagination
       v-show="total>0"
@@ -270,6 +254,7 @@ import DriverDialog from './driverDialog';
 import ImportDialog from './importDialog';
 import ManageDialog from './manageDialog';
 import AgreementDialog from './agreementDialog';
+import tableColumnsConfig from './config.js';
 
 export default {
   name: 'Driver',
@@ -287,6 +272,7 @@ export default {
   },
   data() {
     return {
+      tableColumnsConfig,
       // 司机类别字典
       driverTypeOptions: [
         { dictLabel: '独立司机', dictValue: 1 },
@@ -359,10 +345,15 @@ export default {
     };
   },
   created() {
+    this.tableHeaderConfig();
     this.getDictsOptions();
     this.getList();
   },
   methods: {
+    /** 配置表头 */
+    tableHeaderConfig() {
+      this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || this.tableColumnsConfig;
+    },
     /** 查询字典 */
     getDictsOptions() {
       // 驾驶证类型
@@ -370,17 +361,9 @@ export default {
         this.driverLicenseTypeOptions = response.data;
       });
     },
-    // 司机类别字典翻译
-    driverTypeFormat(row, column) {
-      return this.selectDictLabel(this.driverTypeOptions, row.driverType);
-    },
     // 司机城市名称字典翻译
     driverCityFormat(row, column) {
       return this.selectDictLabel(this.driverCityOptions, row.driverCity);
-    },
-    // 驾驶证类型字典翻译
-    driverLicenseTypeFormat(row, column) {
-      return this.selectDictLabel(this.driverLicenseTypeOptions, row.driverLicenseType);
     },
     // 从业资格证办理省份名称字典翻译
     workLicenseProvinceNameFormat(row, column) {
@@ -389,18 +372,6 @@ export default {
     // 审核状态字典翻译
     authStatusFormat(row, column) {
       return this.selectDictLabel(this.statusOptions, row.authStatus);
-    },
-    // 是否冻结字典翻译
-    isFreezeFormat(row, column) {
-      return this.selectDictLabel(this.isFreezoneOptions, row.isFreeze);
-    },
-    // 是否上传人员信用信息字典翻译
-    isReportPersonFormat(row, column) {
-      return this.selectDictLabel(this.isOption, row.isReportPerson);
-    },
-    // 是否上传企业字典翻译
-    isReportEnterpriseFormat(row, column) {
-      return this.selectDictLabel(this.isOption, row.isReportEnterprise);
     },
     /** 查询参数列表 */
     getList() {
