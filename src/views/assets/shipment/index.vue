@@ -332,12 +332,13 @@ export default {
   methods: {
     /** 配置表头 */
     tableHeaderConfig() {
-      if (this.getLocalStorage(this.$route.name)) {
-        this.tableColumnsConfig = this.getLocalStorage(this.$route.name);
+      const localKey = '/assets/shipment/list';
+      if (this.getLocalStorage(localKey)) {
+        this.tableColumnsConfig = this.getLocalStorage(localKey);
       } else {
-        tableHeadList('/assets/shipment/list').then(response => {
+        tableHeadList(localKey).then(response => {
           response.data.forEach(el => {
-            this.tableColumnsConfig.push({
+            this.tableColumnsConfig.unshift({
               label: el.comment,
               prop: el.fieldName,
               isShow: el.isShow
@@ -350,7 +351,7 @@ export default {
             width: 180,
             fixed: 'right'
           });
-          this.setLocalStorage(this.$route.name, this.tableColumnsConfig);
+          this.setLocalStorage(localKey, this.tableColumnsConfig);
         });
       }
     },
