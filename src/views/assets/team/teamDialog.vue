@@ -14,7 +14,7 @@
           >{{ dict.dictLabel }}</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="请输入管理者名称" prop="teamLeader">
+      <el-form-item label="管理者名称" prop="teamLeader">
         <el-input v-model="form.teamLeader" placeholder="请输入管理者名称" class="width90" clearable />
       </el-form-item>
       <el-form-item label="手机号" prop="telphone">
