@@ -115,7 +115,7 @@ export default {
     generateCode() {
       generateCode({ id: this.form.id }).then(response => {
         this.msgSuccess(response.msg);
-        this.form.cargoCodeQR = response.data.msg;
+        this.form.cargoCodeQR = response.data.data;
         this.$forceUpdate();
       });
     }
