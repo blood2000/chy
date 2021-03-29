@@ -64,6 +64,12 @@
 import { addBilling, updateBilling, getBilling } from '@/api/enterprise/company/billing';
 
 export default {
+  props: {
+    shipmentCode: {
+      type: String,
+      default: null
+    }
+  },
   data() {
     return {
       form: {},

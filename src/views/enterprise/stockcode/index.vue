@@ -104,6 +104,12 @@ export default {
   components: {
     StockcodeDialog
   },
+  props: {
+    shipmentCode: {
+      type: String,
+      default: null
+    }
+  },
   data() {
     return {
       // 遮罩层

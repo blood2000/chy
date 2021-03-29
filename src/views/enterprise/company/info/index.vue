@@ -117,6 +117,12 @@ export default {
     UploadImage
     // AddCityTag
   },
+  props: {
+    shipmentCode: {
+      type: String,
+      default: null
+    }
+  },
   data() {
     return {
       open: false,

@@ -185,6 +185,12 @@ export default {
   components: {
     ProjectDialog
   },
+  props: {
+    shipmentCode: {
+      type: String,
+      default: null
+    }
+  },
   data() {
     return {
       // 遮罩层

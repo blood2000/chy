@@ -183,6 +183,12 @@
       <template #isPrepaid="{row}">
         <span>{{ selectDictLabel(isOptions, row.isPrepaid) }}</span>
       </template>
+      <template #createTime="{row}">
+        <span>{{ parseTime(row.createTime, '{y}-{m}-{d}') }}</span>
+      </template>
+      <template #updateTime="{row}">
+        <span>{{ parseTime(row.updateTime, '{y}-{m}-{d}') }}</span>
+      </template>
       <template #authTime="{row}">
         <span>{{ parseTime(row.authTime, '{y}-{m}-{d}') }}</span>
       </template>
@@ -193,6 +199,12 @@
         <span v-show="row.authStatus === 3" class="g-color-success">审核通过</span>
       </template>
       <template #edit="{row}">
+        <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-setting"
+          @click="handleManage(row)"
+        >管理</el-button>
         <el-button
           size="mini"
           type="text"
@@ -233,17 +245,21 @@
 
     <!-- 新增/修改/详情/审核 对话框 -->
     <shipment-dialog ref="ShipmentDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
+    <!-- 管理 对话框 -->
+    <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :shipment-code="shipmentCode" />
   </div>
 </template>
 
 <script>
 import { listShipmentApi, listShipment, getShipment, delShipment } from '@/api/assets/shipment';
 import ShipmentDialog from './shipmentDialog';
+import ManageDialog from './manageDialog.vue';
 
 export default {
   name: 'Shipment',
   components: {
-    ShipmentDialog
+    ShipmentDialog,
+    ManageDialog
   },
   data() {
     return {
@@ -266,6 +282,7 @@ export default {
       title: '',
       // 是否显示弹出层
       open: false,
+      manageDialogOpen: false,
       // 货主类型数据字典
       typeOptions: [
         { dictLabel: '发货人', dictValue: 0 },
@@ -320,7 +337,9 @@ export default {
       // 表单详情
       form: {},
       // 表单是否禁用
-      formDisable: false
+      formDisable: false,
+      // 货主code
+      shipmentCode: null
     };
   },
   created() {
@@ -474,6 +493,11 @@ export default {
     /** 导出按钮操作 */
     handleExport() {
       this.download('assets/shipment/export', {}, `shipment_${new Date().getTime()}.xlsx`, 'application/json');
+    },
+    /** 管理按钮操作 */
+    handleManage(row) {
+      this.shipmentCode = row.code;
+      this.manageDialogOpen = true;
     }
   }
 };

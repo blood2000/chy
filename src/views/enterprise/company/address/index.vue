@@ -152,6 +152,12 @@ export default {
   components: {
     AddressDialog
   },
+  props: {
+    shipmentCode: {
+      type: String,
+      default: null
+    }
+  },
   data() {
     return {
       // 遮罩层
