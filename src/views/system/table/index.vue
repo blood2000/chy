@@ -151,7 +151,7 @@
 </template>
 
 <script>
-import { listConfig, getConfig, delConfig, addConfig, updateConfig, syncConfig } from '@/api/system/table';
+import { listConfig, getConfig, delConfig, delAllConfig, addConfig, updateConfig, syncConfig } from '@/api/system/table';
 
 export default {
   name: 'TableConfig',
@@ -291,13 +291,17 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const code = row.code || this.ids;
-      this.$confirm('是否确认删除字段名为"' + row.fieldName + '"的数据项?', '警告', {
+      const _this = this;
+      this.$confirm('是否确认删除选中的数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
-        return delConfig(code);
+        if (row.code) {
+          return delConfig(row.code);
+        } else {
+          return delAllConfig(_this.ids);
+        }
       }).then(() => {
         this.getList();
         this.msgSuccess('删除成功');
