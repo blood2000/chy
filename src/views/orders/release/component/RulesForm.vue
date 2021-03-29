@@ -8,6 +8,7 @@
       :size="formConfig.size"
       :label-width="formConfig.labelWidth"
       :label-position="formConfig.labelPosition"
+      :disabled="myisdisabled"
     >
 
       <!-- 文本框 -->
@@ -121,6 +122,10 @@ export default {
           labelPosition: 'left'
         };
       }
+    },
+    myisdisabled: {
+      type: Boolean,
+      default: false
     },
 
     dataList: {

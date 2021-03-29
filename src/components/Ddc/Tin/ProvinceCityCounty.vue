@@ -7,6 +7,7 @@
     :size="config.size"
     :label-width="config.labelWidth"
     :label-position="config.labelPosition"
+    :disabled="disabled"
   >
     <div class="pcc_form">
       <el-form-item prop="province" label="省:">
@@ -92,6 +93,10 @@ export default {
     isrules: {
       type: Boolean,
       default: true
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     },
     cbData: {
       type: Object,

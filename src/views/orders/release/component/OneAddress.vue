@@ -7,8 +7,19 @@
       size="medium"
       label-width="110px"
       :label-position="'left'"
+      :disabled="myisdisabled"
     >
-      <ProvinceCityCounty ref="pccFef" :cb-data="cbData" :isrules="isrules" @getCity="getCity" />
+
+      <!-- <el-form-item
+        v-if="formData.tin7 === '2' || formData.tin7 === '4'"
+        prop="tin8"
+      >
+        <el-checkbox v-model="formData.tin8">允许自装</el-checkbox>
+      </el-form-item> -->
+
+      <ProvinceCityCounty ref="pccFef" :cb-data="cbData" :isrules="isrules" :disabled="myisdisabled" @getCity="getCity" />
+
+
 
       <div class="ly-flex">
         <el-form-item
@@ -112,6 +123,10 @@ export default {
     cbData: {
       type: Object,
       default: null
+    },
+    myisdisabled: {
+      type: Boolean,
+      default: false
     }
 
   },
@@ -168,8 +183,8 @@ export default {
 
         this.selected = {
           name: detail,
-          lat: location[1],
-          lng: location[0]
+          lat: location ? location[1] : '1',
+          lng: location ? location[0] : '1'
         };
       },
       immediate: true

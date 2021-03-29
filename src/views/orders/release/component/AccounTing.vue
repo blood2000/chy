@@ -6,6 +6,7 @@
     :size="formConfig.size"
     :label-width="formConfig.labelWidth"
     :label-position="formConfig.labelPosition"
+    :disabled="myisdisabled"
   >
 
     <div class="header mb8 mt8">费用信息</div>
@@ -83,10 +84,10 @@
 
 
         <div class="header mb8">路耗:</div>
-        <RulesForm v-if="lossList.length" ref="lossList" :data-list="lossList" />
+        <RulesForm v-if="lossList.length" ref="lossList" :data-list="lossList" :myisdisabled="myisdisabled" />
 
         <div class="header mb8">补贴项目:</div>
-        <RulesForm v-if="shouruList.length" ref="shouruList" :data-list="shouruList" />
+        <RulesForm v-if="shouruList.length" ref="shouruList" :data-list="shouruList" :myisdisabled="myisdisabled" />
 
         <div class="header mb8">扣费项目:</div>
 
@@ -112,7 +113,7 @@
           </el-select>
         </el-form-item> -->
 
-        <RulesForm v-if="zichuList.length" ref="zichuList" :data-list="zichuList" />
+        <RulesForm v-if="zichuList.length" ref="zichuList" :data-list="zichuList" :myisdisabled="myisdisabled" />
 
       </div>
     </template>
@@ -151,6 +152,10 @@ export default {
     goodsUnitName: {
       type: String,
       required: true
+    },
+    myisdisabled: {
+      type: Boolean,
+      default: false
     }
 
   },
@@ -194,8 +199,6 @@ export default {
     },
     redis: {
       handler(value) {
-        console.log(value);
-
         if (!value || !value.orderFreightVo) return;
 
         this.lossList = [];
@@ -211,6 +214,7 @@ export default {
         this.ruleFreightPrice = detailList.filter(e => {
           return e.enName === 'FREIGHT_COST';
         });
+
 
         this.formData.freightPrice = this.ruleFreightPrice[0].ruleValue;
         this.setData(detailList, lossList);
@@ -233,30 +237,10 @@ export default {
     async initData() {
       if (!this.pubilshCode) return;
 
-      // const dd = [{
-      //   'code': '8c844a2e7ac340359c2bb41e7bd645b1',
-      //   'createCode': '',
-      //   'createTime': '',
-      //   'deduction': '',
-      //   'id': 0,
-      //   'isDel': true,
-      //   'name': '平台通用规则',
-      //   'platformType': 0,
-      //   'ruleDictValue': '',
-      //   'shipperCode': '',
-      //   'subsidies': '',
-      //   'updateCode': '',
-      //   'updateTime': ''
-      // }];
-
       const data = (await getListRules({ shipperCode: this.pubilshCode })).data;
 
 
       this.ruleItemIdOption = this._baozhuan(data, 'code', 'name');
-
-      // 回填有值情况
-
-      // this.formData.ruleItemId = this.redis ? this.redis.ruleInfoShipmentCode : '';
     },
 
     // 交互
@@ -382,11 +366,10 @@ export default {
     },
 
     async _submitForm() {
-      this.ruleFreightPrice[0].ruleValue = this.formData.freightPrice;
-
       return new Promise((resolve, reject) => {
         this.$refs['formData'].validate(async(valid) => {
           if (valid) {
+            this.ruleFreightPrice[0].ruleValue = this.formData.freightPrice;
             const lossList = await this.$refs.lossList._submitForm();
             const shouruList = await this.$refs.shouruList._submitForm();
             const zichuList = await this.$refs.zichuList._submitForm();

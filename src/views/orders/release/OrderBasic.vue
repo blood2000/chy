@@ -2,6 +2,7 @@
   <div v-if="pubilshCode">
     <el-form
       ref="elForm"
+      :disabled="myisdisabled"
       :model="formData"
       :rules="rules"
       size="medium"
@@ -32,6 +33,7 @@
       <el-form-item label="选择货物类别" prop="tin2">
         <el-radio-group
           v-model="formData.tin2"
+          dislabe
           size="medium"
           @change="handletin2(false)"
         >
@@ -176,7 +178,15 @@ export default {
       default: null
     },
     // 使用v-model
-    value: [Boolean]
+    value: [Boolean],
+    myisdisabled: {
+      type: Boolean,
+      default: false
+    }
+    // active: {
+    //   type: Number,
+    //   default: 0
+    // }
   },
   data() {
     // const tin5_validator = (rule, value, callback) => {
@@ -192,6 +202,7 @@ export default {
     //   }
     // };
     return {
+      // myisdisabled: false,
       orderSpecifiedList: null, // 调度者信息
       actionIndex: '2', // 控制弹框显示谁
       open: false,
@@ -256,6 +267,12 @@ export default {
 
       return bool;
     }
+
+    // isdisabled(value) {
+    //   console.log(value);
+
+    //   return this.active === 4;
+    // }
     // InfoCodes() {
     //   return this.formData.tin6_1.concat(this.formData.tin6_2);
     // }
@@ -281,6 +298,9 @@ export default {
       !this.tin2Option.length && this.api_tin3Optin();
       this.api_dictInit();
     },
+    // isdisabled(value) {
+    //   console.log(value);
+    // },
 
     // 回填数据
     cbData: {

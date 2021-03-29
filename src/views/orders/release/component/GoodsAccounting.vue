@@ -7,6 +7,7 @@
       :size="formConfig.size"
       :label-width="formConfig.labelWidth"
       :label-position="formConfig.labelPosition"
+      :disabled="myisdisabled"
     >
 
       <el-form-item label="业务类型" prop="businessType">
@@ -205,6 +206,10 @@ export default {
     cbData: {
       type: Object,
       default: null
+    },
+    myisdisabled: {
+      type: Boolean,
+      default: false
     }
   },
 

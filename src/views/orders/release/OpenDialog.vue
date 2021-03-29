@@ -108,6 +108,8 @@
 
     </el-radio-group>
 
+    <el-button type="primary" style="marginTop:30px" @click="handlerClick">确定</el-button>
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -125,7 +127,7 @@ import { listAddress } from '@/api/enterprise/company/address';
 export default {
   data() {
     return {
-      radio: 18,
+      radio: '',
       // 遮罩层
       loading: true,
       // 选中数组
@@ -173,7 +175,10 @@ export default {
         addressDetail: null,
         contactName: null,
         contactTelphone: null
-      }
+      },
+
+      // 选中
+      isSelected: {}
     };
   },
   created() {
@@ -223,7 +228,12 @@ export default {
       const arr = this.addressList.filter(e => {
         return e.id - 0 === value - 0;
       });
-      console.log(arr[0]);
+      // console.log(arr[0]);
+      this.isSelected = arr[0];
+    },
+
+    handlerClick() {
+      this.$emit('radioSelection', this.isSelected);
     }
   }
 };

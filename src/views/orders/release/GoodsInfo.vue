@@ -10,13 +10,13 @@
     </el-tabs>
     <div v-for="(good,index) in tabs" :key="index">
       <div v-show="good.activeName === activeName">
-        <GoodsAccounting :ref="'GoodsAccounting'+ good.activeName" :cb-data="good.goodsAccounting" @getGoodsUnitName="(data)=> goodsUnitName = data" />
+        <GoodsAccounting :ref="'GoodsAccounting'+ good.activeName" :cb-data="good.goodsAccounting" :myisdisabled="myisdisabled" @getGoodsUnitName="(data)=> goodsUnitName = data" />
         <!--规则又是根据地址-->
         <el-divider />
 
         <div v-for="(redi,i) in good.redis" :key="i">
 
-          <AccounTing :ref="'AccounTing'+i" :pubilsh-code="pubilshCode" :redis="redi" :goods-unit-name="goodsUnitName" />
+          <AccounTing :ref="'AccounTing'+i" :pubilsh-code="pubilshCode" :redis="redi" :goods-unit-name="goodsUnitName" :myisdisabled="myisdisabled" />
         </div>
 
       </div>
@@ -32,10 +32,11 @@ export default {
   components: { GoodsAccounting, AccounTing },
   props: {
     goods: { type: Array, default: () => [] },
-    // price: { type: Array, default: () => [] },
+    cbOrderFreight: { type: Array, default: () => [] },
     addrAdd: { type: Array, default: () => [] },
     addrXie: { type: Array, default: () => [] },
     pubilshCode: { type: String, default: '' },
+    myisdisabled: { type: Boolean, default: false },
     goodsBigType: { type: [String, Number], default: '' },
     cbGoodsAccounting: { type: Array, default: () => [] }
   },
@@ -49,13 +50,20 @@ export default {
   },
 
   watch: {
-    goods(value) {
-      this.init();
+    goods: {
+      handler() {
+        this.init();
+      },
+      immediate: true,
+      deep: true
+    },
+    addrAdd: {
+      handler() {
+        this.init();
+      },
+      deep: true
     }
-  },
 
-  created() {
-    this.init();
   },
 
   methods: {
@@ -107,7 +115,7 @@ export default {
       console.log(this.addrXie);
       console.log(this.pubilshCode);
       console.log(this.cbGoodsAccounting, '-----'); // 创建的时候 null
-      // console.log(this.price, ''); // 创建的时候 null
+      console.log(this.cbOrderFreight, '+++++++++++++'); // 创建的时候 null
       this.tabs = this.goods.map((e, index) => {
         // 回填有值的时候
         if (this.cbGoodsAccounting) {
@@ -117,20 +125,15 @@ export default {
             }
           });
         }
-        // 改版
-        // if (this.price && this.price.length) {
-        //   this.price.forEach(ee => {
-        //     if (e.dictCode === ee.goodsType) {
-        //       e.redis = ee.goodsFreightList.map(item => {
-        //         return {
-        //           orderFreightVo: item.orderFreightVo,
-        //           tin_name: item.tin_name
-        //         };
-        //       });
-        //     }
-        //     console.log(e);
-        //   });
-        // }
+        // 规则
+        if (this.cbOrderFreight && this.cbOrderFreight.length) {
+          this.cbOrderFreight.forEach(ee => {
+            if (ee.goodsCode === e.goodsAccounting.code) {
+              e.redis = this.handlerPrice(ee.redisOrderAddressInfoVoList);
+            }
+          });
+        }
+
         return {
         //   ...e, 先存这三个
           goodsAccounting: e.goodsAccounting,
@@ -138,14 +141,14 @@ export default {
           dictLabel: e.dictLabel,
           dictCode: e.dictCode,
           goodsType: e.dictCode,
-          redis: this.addressInit(), // 规则
-          // redis: e.redis, // 规则
+          // redis: this.addressInit(), // 规则
+          redis: e.redis || this.addressInit(), // 规则
           activeName: index + ''
         };
       });
       this.activeName = '0';
 
-      console.log(this.tabs, ' 最后---');
+      // console.log(this.tabs, ' 最后---');
     },
 
     // 判断规则是多装还是多卸, 并处理装地址--卸地址
@@ -156,25 +159,36 @@ export default {
         arr = this.addrXie.map(e => {
           return {
             ...e,
-            tin_name: this.addrAdd[0].detail + '--' + e.detail
+            tin_name: (this.addrAdd[0] && this.addrAdd[0].detail || '自装') + '--' + (e.detail || '')
           };
         });
       } else {
         arr = this.addrAdd.map(e => {
           return {
             ...e,
-            tin_name: e.detail + '--' + this.addrXie[0].detail
+            tin_name: (e.detail || '') + '--' + (this.addrXie[0] && this.addrXie[0].detail || '自卸')
           };
         });
       }
 
-      console.log(arr);
+      // console.log(arr);
 
       return arr;
     },
-    handlerPrice() {
+    handlerPrice(addressIdentification) { // identification
+      const redis = this.addressInit().map(e => {
+        addressIdentification.forEach(ee => {
+          if ((e.code + '') === (ee.addressCode + '')) {
+            e.orderFreightVo = ee.orderFreightVo;
+          }
+        });
 
+        return e;
+      });
+      console.log(redis);
+      return redis;
     }
+
   }
 };
 </script>
