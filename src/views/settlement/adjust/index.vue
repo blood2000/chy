@@ -6,34 +6,8 @@
       ref="queryForm"
       :model="queryParams"
       :inline="true"
-      label-width="130px"
+      label-width="80px"
     >
-      <el-form-item
-        label="下单客户"
-        prop="orderClient"
-      >
-        <el-input
-          v-model="queryParams.orderClient"
-          placeholder="请输入下单客户"
-          clearable
-          size="small"
-          style="width: 240px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item
-        label="发货企业"
-        prop="deliveryCompany"
-      >
-        <el-input
-          v-model="queryParams.deliveryCompany"
-          placeholder="请输入发货企业"
-          clearable
-          size="small"
-          style="width: 240px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
       <el-form-item
         label="装货信息"
         prop="loadInfo"
@@ -43,7 +17,7 @@
           placeholder="请输入装货信息"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -56,9 +30,26 @@
           placeholder="请输入收货信息"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
+      </el-form-item>
+      <el-form-item label="货物类型" prop="goodsBigType">
+        <el-select
+          v-model="queryParams.goodsBigType"
+          placeholder="请选择货物类型"
+          filterable
+          clearable
+          style="width: 230px"
+          size="small"
+        >
+          <el-option
+            v-for="dict in commodityCategoryCodeOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item
         label="货源单号"
@@ -69,21 +60,21 @@
           placeholder="请输入货源单号"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <el-form-item
-        label="接单日期"
-        prop="receiveTime"
+        label="创建日期"
+        prop="createTime"
       >
         <el-date-picker
-          v-model="receiveTime"
+          v-model="createTime"
           type="daterange"
           range-separator="-"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
-          style="width: 240px"
+          style="width: 230px"
           @change="datechoose"
         />
       </el-form-item>
@@ -96,7 +87,7 @@
           placeholder="请输入车牌号"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -109,20 +100,7 @@
           placeholder="请输入司机姓名"
           clearable
           size="small"
-          style="width: 240px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item
-        label="司机电话"
-        prop="driverPhone"
-      >
-        <el-input
-          v-model="queryParams.driverPhone"
-          placeholder="请输入司机电话"
-          clearable
-          size="small"
-          style="width: 240px"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -135,12 +113,70 @@
           placeholder="请输入运输单号"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-
-
+      <el-form-item
+        label="下单客户"
+        prop="orderClient"
+      >
+        <el-input
+          v-model="queryParams.orderClient"
+          placeholder="请输入下单客户"
+          clearable
+          size="small"
+          style="width: 230px"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item
+        label="发货企业"
+        prop="deliveryCompany"
+      >
+        <el-input
+          v-model="queryParams.deliveryCompany"
+          placeholder="请输入发货企业"
+          clearable
+          size="small"
+          style="width: 230px"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="纸质回单" prop="isReturn">
+        <el-select
+          v-model="queryParams.isReturn"
+          placeholder="请选择纸质回单"
+          filterable
+          clearable
+          size="small"
+          style="width: 230px"
+        >
+          <el-option
+            v-for="dict in isReturnOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="分单" prop="isChild">
+        <el-select
+          v-model="queryParams.isChild"
+          placeholder="请选择分单"
+          filterable
+          clearable
+          size="small"
+          style="width: 230px"
+        >
+          <el-option
+            v-for="dict in isChildOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <el-button
           type="cyan"
@@ -164,15 +200,35 @@
       :gutter="10"
       class="mb8"
     >
-      <!-- <el-col :span="1.5">
+      <el-col v-if="activeName == '1'" :span="1.5">
         <el-button
-          type="danger"
-          icon="el-icon-delete"
+          v-hasPermi="['assets:vehicle:edit']"
+          type="success"
+          icon="el-icon-document-checked"
+          size="mini"
+          :disabled="single"
+          @click="handleUpdate"
+        >批量核算</el-button>
+      </el-col>
+      <el-col v-if="activeName == '2'" :span="1.5">
+        <el-button
+          v-hasPermi="['assets:vehicle:remove']"
+          type="success"
+          icon="el-icon-wallet"
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-        >批量删除</el-button>
-      </el-col> -->
+        >批量申请</el-button>
+      </el-col>
+      <el-col v-if="activeName == '3'" :span="1.5">
+        <el-button
+          v-hasPermi="['assets:vehicle:export']"
+          type="success"
+          icon="el-icon-chat-dot-square"
+          size="mini"
+          @click="handleExport"
+        >批量评价</el-button>
+      </el-col>
       <el-col :span="1.5" class="fr">
         <tablec-cascader v-model="tableColumnsConfig" />
       </el-col>
@@ -183,12 +239,12 @@
     </el-row>
 
     <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="待运输" name="1" />
-      <el-tab-pane label="运输中" name="2" />
-      <el-tab-pane label="已卸货" name="3" />
+      <el-tab-pane label="已复核" name="1" />
+      <el-tab-pane label="已结算" name="2" />
+      <el-tab-pane label="已打款" name="3" />
     </el-tabs>
 
-    <RefactorTable :loading="loading" :data="tracklist" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
+    <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
       <template #cancelStatus="{row}">
         <span>{{ selectDictLabel(cancelStatusOptions, row.cancelStatus) }}</span>
       </template>
@@ -198,75 +254,58 @@
 
       <template #edit="{row}">
         <el-button
+          v-if="activeName != '3'"
+          v-hasPermi="['system:menu:edit']"
+          size="mini"
+          type="text"
+          icon="el-icon-warning-outline"
+          @click="handleTableBtn(row, 1)"
+        >驳回提示</el-button>
+        <el-button
           v-if="activeName == '1'"
           v-hasPermi="['system:menu:edit']"
           size="mini"
           type="text"
-          icon="el-icon-truck"
-          @click="handleTableBtn(row, 1)"
-        >车辆装货</el-button>
+          icon="el-icon-document-remove"
+          @click="handleTableBtn(row, 2)"
+        >驳回</el-button>
+        <el-button
+          v-if="activeName == '1'"
+          v-hasPermi="['system:menu:edit']"
+          size="mini"
+          type="text"
+          icon="el-icon-document-checked"
+          @click="handleTableBtn(row, 3)"
+        >核算</el-button>
         <el-button
           v-if="activeName == '2'"
           v-hasPermi="['system:menu:edit']"
           size="mini"
           type="text"
-          icon="el-icon-takeaway-box"
-          @click="handleTableBtn(row, 2)"
-        >车辆卸货</el-button>
-        <el-button
-          v-if="activeName == '1'"
-          v-hasPermi="['system:menu:edit']"
-          size="mini"
-          type="text"
-          icon="el-icon-circle-close"
-          @click="handleTableBtn(row, 3)"
-        >取消订单</el-button>
-        <el-button
-          v-if="activeName != '1'"
-          v-hasPermi="['system:menu:edit']"
-          size="mini"
-          type="text"
-          icon="el-icon-notebook-1"
+          icon="el-icon-wallet"
           @click="handleTableBtn(row, 4)"
-        >补装货凭证</el-button>
-        <el-button
-          v-if="activeName == '3'"
-          v-hasPermi="['system:menu:edit']"
-          size="mini"
-          type="text"
-          icon="el-icon-notebook-2"
-          @click="handleTableBtn(row, 5)"
-        >补卸货凭证</el-button>
-        <el-button
-          v-if="activeName != '1'"
-          v-hasPermi="['system:menu:edit']"
-          size="mini"
-          type="text"
-          icon="el-icon-aim"
-          @click="handleTableBtn(row, 6)"
-        >车辆跟踪</el-button>
-        <el-button
-          v-hasPermi="['system:menu:edit']"
-          size="mini"
-          type="text"
-          icon="el-icon-location-outline"
-          @click="handleTableBtn(row, 7)"
-        >定位</el-button>
-        <el-button
-          v-hasPermi="['system:menu:edit']"
-          size="mini"
-          type="text"
-          icon="el-icon-edit-outline"
-          @click="handleTableBtn(row, 8)"
-        >投诉</el-button>
+        >申请打款</el-button>
         <el-button
           v-if="activeName == '3'"
           v-hasPermi="['system:menu:edit']"
           size="mini"
           type="text"
           icon="el-icon-chat-dot-square"
-          @click="handleTableBtn(row, 9)"
+          @click="handleTableBtn(row, 5)"
         >评价</el-button>
+        <el-button
+          v-hasPermi="['system:menu:edit']"
+          size="mini"
+          type="text"
+          icon="el-icon-document-copy"
+          @click="handleTableBtn(row, 6)"
+        >分单列表</el-button>
+        <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-document"
+          @click="handleTableBtn(row, 7)"
+        >详情</el-button>
       </template>
     </RefactorTable>
 
@@ -279,48 +318,24 @@
     />
 
     <!-- 车辆装货 / 补装货凭证 -->
-    <dialog-a ref="DialogA" :open.sync="dialoga" :title="title" :disable="formDisable" @refresh="getList" />
-    <!-- 车辆卸货 / 补卸货凭证 -->
-    <dialog-c ref="DialogC" :open.sync="dialogc" :title="title" :disable="formDisable" @refresh="getList" />
-    <!-- 投诉 -->
-    <dialog-b ref="DialogB" :open.sync="dialogb" :title="title" @refresh="getList" />
-    <!-- 取消订单 -->
-    <cancel-dialog ref="CancelDialog" :open.sync="canceldialog" :title="title" @refresh="getList" />
-    <!-- 评价 -->
-    <rate-dialog ref="RateDialog" :open.sync="ratedialog" :title="title" @refresh="getList" />
-    <!-- 车辆跟踪 -->
-    <track-dialog ref="TrackDialog" :open.sync="trackdialog" :title="title" @refresh="getList" />
-    <!-- 定位 -->
-    <location-dialog ref="LocationDialog" :open.sync="locationdialog" :title="title" @refresh="getList" />
-
-    <!-- <el-dialog :title="title" :visible.sync="visible" :width="dialogWidth" append-to-body>
-      <div>{{ activeName }}</div>
-    </el-dialog> -->
+    <reject-dialog ref="RejectDialog" :open.sync="rejectdialog" :title="title" :disable="formDisable" @refresh="getList" />
+    <!-- 运单详情 对话框 -->
+    <detail-dialog ref="DetailDialog" :current-id="currentId" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
 
   </div>
 </template>
 
 <script>
-// import tableColumnsConfig from './data/tracklist-index';
-import { trackList, trackListApi } from '@/api/waybill/tracklist';
-// 车辆装货弹窗
-import DialogA from './component/DialogA';
-// 投诉弹窗
-import DialogB from './component/DialogB';
-// 车辆卸货弹窗
-import DialogC from './component/DialogC';
-// 取消订单弹窗
-import CancelDialog from './component/cancelDialog';
-// 评价弹窗
-import RateDialog from './component/rateDialog';
-// 车辆跟踪弹窗
-import TrackDialog from './component/trackDialog';
-// 定位弹窗
-import LocationDialog from './component/locationDialog';
+import { adjustList, adjustListApi } from '@/api/settlement/adjust';
+// 驳回弹窗
+import RejectDialog from './dialog/rejectDialog';
+// 运单详情弹窗
+import DetailDialog from '../../waybill/components/detailDialog';
+
 
 export default {
-  'name': 'Tracklist',
-  components: { DialogA, DialogB, DialogC, CancelDialog, RateDialog, TrackDialog, LocationDialog },
+  'name': 'AdjustList',
+  components: { RejectDialog, DetailDialog },
   data() {
     return {
       tableColumnsConfig: [],
@@ -335,38 +350,37 @@ export default {
       // 总条数
       'total': 0,
       // 表格数据
-      'tracklist': [],
+      'adjustlist': [],
 
       // 查询参数
       'queryParams': {
         'pageNum': 1,
         'pageSize': 10,
-        'orderClient': undefined,
-        'deliveryCompany': undefined,
         'loadInfo': undefined,
         'receivedInfo': undefined,
+        'goodsBigType': undefined,
         'mainOrderNumber': undefined,
         'orderEndTime': undefined,
         'orderStartTime': undefined,
         'licenseNumber': undefined,
         'driverName': undefined,
-        'driverPhone': undefined,
         'waybillNo': undefined,
+        'orderClient': undefined,
+        'deliveryCompany': undefined,
+        'isReturn': undefined,
+        'isChild': undefined,
         'statusList': ['1']
       },
       receiveTime: [],
       // 弹框 内容
       visible: false,
-
-      dialoga: false,
-      dialogb: false,
-      dialogc: false,
-      canceldialog: false,
-      ratedialog: false,
-      trackdialog: false,
+      open: false,
+      rejectdialog: false,
       locationdialog: false,
       title: '',
       dialogWidth: '800px',
+      // 当前选中的运单id
+      currentId: null,
       // 表单是否禁用
       formDisable: false,
       // 商品类别编码字典
@@ -376,18 +390,17 @@ export default {
         'dictPid': '0',
         'dictType': 'goodsType'
       },
-      // 取消状态
-      cancelStatusOptions: [
-        { 'dictLabel': '正常', 'dictValue': '0' },
-        { 'dictLabel': '司机撤单申请', 'dictValue': '1' },
-        { 'dictLabel': '货主同意撤销 ', 'dictValue': '2' },
-        { 'dictLabel': '货主拒绝撤销 ', 'dictValue': '3' }
+      // 纸质回单字典
+      isReturnOptions: [
+        { 'dictLabel': '未标记回单', 'dictValue': '0' },
+        { 'dictLabel': '已标记回单', 'dictValue': '1' }
+      ],
+      // 是否子单字典
+      isChildOptions: [
+        { 'dictLabel': '正常单', 'dictValue': '0' },
+        { 'dictLabel': '子单', 'dictValue': '1' },
+        { 'dictLabel': '超载的主单', 'dictValue': '2' }
       ]
-    //   // <!-- isPay	支付给司机运费状态 0-未支付 1-已支付 -->
-    //   isPayOptions: [
-    //     { 'dictLabel': '未支付', 'dictValue': '0' },
-    //     { 'dictLabel': '已支付', 'dictValue': '1' }
-    //   ]
     };
   },
   computed: {
@@ -396,12 +409,11 @@ export default {
     }
   },
   created() {
-    // this['tableColumnsConfig' + this.activeName] = this.getLocalStorage(this.lcokey) || this.tableColumnsConfig;
-    this.tableHeaderConfig(this.tableColumnsConfig, trackListApi, {
+    this.tableHeaderConfig(this.tableColumnsConfig, adjustListApi, {
       prop: 'edit',
       isShow: true,
       label: '操作',
-      width: 280,
+      width: 240,
       fixed: 'right'
     });
     this.getList();
@@ -416,19 +428,19 @@ export default {
     },
     /** handleClick */
     handleClick(tab) {
-      // this['tableColumnsConfig' + this.activeName] = this.getLocalStorage(this.lcokey) || this.tableColumnsConfig;
       this.queryParams.statusList[0] = tab.name;
       this.queryParams.pageNum = 1;
-      // console.log(this.queryParams);
       this.getList();
     },
-
+    // 多选框选中数据
+    handleSelectionChange(selection) {
+      this.ids = selection.map((item) => item.id);
+    },
     /** 查询【请填写功能名称】列表 */
     getList() {
-      // console.log(this.queryParams);
       this.loading = true;
-      trackList(this.queryParams).then(response => {
-        this.tracklist = response.rows;
+      adjustList(this.queryParams).then(response => {
+        this.adjustlist = response.rows;
         this.total = response.total;
         this.loading = false;
       });
@@ -450,42 +462,29 @@ export default {
       this.visible = true;
       switch (index) {
         case 1:
-          if (row.cancelStatus === 1) {
-            this.msgError('司机撤单申请中，无法操作装货！');
-          } else if (row.cancelStatus === 2) {
-            this.msgError('货主已同意撤单，无法操作装货！');
-          } else {
-            // this.$refs.DialogA.reset();
-            this.dialoga = true;
-            this.title = '车辆装货';
-            this.$refs.DialogA.setForm(row);
-            // this.$refs.DialogA.getAddress(row);
-          }
+          // this.$refs.DialogA.reset();
+          this.dialoga = true;
+          this.title = '驳回提示';
+          this.$refs.DialogA.setForm(row);
+          // this.$refs.DialogA.getAddress(row);
           break;
         case 2:
-          // this.$refs.DialogC.reset();
-          this.dialogc = true;
-          this.title = '车辆卸货';
-          this.$refs.DialogC.setForm(row);
-          // this.$refs.DialogC.getAddress(row);
+          this.$refs.RejectDialog.reset();
+          this.rejectdialog = true;
+          this.title = '驳回运输核算单';
+          this.$refs.RejectDialog.setForm(row);
           break;
         case 3:
-          if (row.cancelStatus === 1) {
-            this.msgError('司机撤单申请中，无法再次取消订单！');
-          } else if (row.cancelStatus === 2) {
-            this.msgError('货主已同意撤单，无法取消订单！');
-          } else {
-            this.$refs.CancelDialog.reset();
-            this.canceldialog = true;
-            this.title = '取消运单';
-            this.$refs.CancelDialog.setForm(row);
-          }
+          this.$refs.AdjustDialog.reset();
+          this.adjustdialog = true;
+          this.title = '结算审核';
+          this.$refs.AdjustDialog.setForm(row);
           break;
         case 4:
           // this.$refs.DialogA.reset();
           this.dialoga = true;
           this.formDisable = true;
-          this.title = '补装货凭证';
+          this.title = '申请打款';
           this.$refs.DialogA.setForm(row);
           // this.$refs.DialogA.getAddress(row);
           break;
@@ -493,31 +492,21 @@ export default {
           // this.$refs.DialogC.reset();
           this.dialogc = true;
           this.formDisable = true;
-          this.title = '补卸货凭证';
+          this.title = '评价';
           this.$refs.DialogC.setForm(row);
           // this.$refs.DialogC.getAddress(row);
           break;
         case 6:
-          this.title = '车辆跟踪';
+          this.title = '分单列表';
           this.trackdialog = true;
           this.$refs.TrackDialog.setForm(row);
           break;
         case 7:
-          this.title = '定位';
-          this.locationdialog = true;
-          this.$refs.LocationDialog.setForm(row);
-          break;
-        case 8:
-          this.$refs.DialogB.reset();
-          this.dialogb = true;
-          this.title = '投诉';
-          this.$refs.DialogB.setForm(row);
-          break;
-        case 9:
-          this.$refs.RateDialog.reset();
-          this.ratedialog = true;
-          this.title = '评价';
-          this.$refs.RateDialog.setForm(row);
+          this.$refs.DetailDialog.reset();
+          this.currentId = row.wayBillCode;
+          this.open = true;
+          this.title = '运输单信息';
+          this.formDisable = true;
           break;
         default:
           break;
