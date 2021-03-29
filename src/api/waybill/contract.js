@@ -1,6 +1,7 @@
 import request from '@/utils/request';
 
 // 查询合同列表列表
+export const listContractApi = '/transportation/orderContract/list';
 export function listContract(query) {
   return request({
     url: '/transportation/orderContract/list',

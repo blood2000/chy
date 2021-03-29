@@ -203,7 +203,7 @@
 </template>
 
 <script>
-import { listNullify, invalidRejected } from '@/api/waybill/nullify';
+import { listNullify, invalidRejected, listNullifyApi } from '@/api/waybill/nullify';
 import DetailDialog from '../components/detailDialog';
 import tableColumnsConfig from './config';
 
@@ -289,7 +289,13 @@ export default {
     };
   },
   created() {
-    this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || this.tableColumnsConfig;
+    this.tableHeaderConfig(this.tableColumnsConfig, listNullifyApi, {
+      prop: 'edit',
+      isShow: true,
+      label: '操作',
+      width: 180,
+      fixed: 'right'
+    });
     this.getList();
   },
   methods: {

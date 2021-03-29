@@ -106,9 +106,9 @@
 </template>
 
 <script>
-import { listComplaint } from '@/api/waybill/complaint';
+import { listComplaint, listComplaintApi } from '@/api/waybill/complaint';
 import ComplaintDialog from './complaintDialog';
-import tableColumnsConfig from './config';
+// import tableColumnsConfig from './config';
 
 export default {
   name: 'Complaint',
@@ -117,7 +117,7 @@ export default {
   },
   data() {
     return {
-      tableColumnsConfig,
+      tableColumnsConfig: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -159,7 +159,13 @@ export default {
     };
   },
   created() {
-    this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || this.tableColumnsConfig;
+    this.tableHeaderConfig(this.tableColumnsConfig, listComplaintApi, {
+      prop: 'edit',
+      isShow: true,
+      label: '操作',
+      width: 180,
+      fixed: 'right'
+    });
     this.getList();
   },
   methods: {

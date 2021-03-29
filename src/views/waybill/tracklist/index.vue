@@ -301,8 +301,8 @@
 </template>
 
 <script>
-import tableColumnsConfig from './data/tracklist-index';
-import { trackList } from '@/api/waybill/tracklist';
+// import tableColumnsConfig from './data/tracklist-index';
+import { trackList, trackListApi } from '@/api/waybill/tracklist';
 // 车辆装货弹窗
 import DialogA from './component/DialogA';
 // 投诉弹窗
@@ -323,7 +323,7 @@ export default {
   components: { DialogA, DialogB, DialogC, CancelDialog, RateDialog, TrackDialog, LocationDialog },
   data() {
     return {
-      tableColumnsConfig,
+      tableColumnsConfig: [],
       activeName: '1',
 
       // 遮罩层
@@ -397,8 +397,13 @@ export default {
   },
   created() {
     // this['tableColumnsConfig' + this.activeName] = this.getLocalStorage(this.lcokey) || this.tableColumnsConfig;
-    this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || this.tableColumnsConfig;
-    // this.queryParams.status = tab.name;
+    this.tableHeaderConfig(this.tableColumnsConfig, trackListApi, {
+      prop: 'edit',
+      isShow: true,
+      label: '操作',
+      width: 280,
+      fixed: 'right'
+    });
     this.getList();
     this.listByDict(this.commodityCategory).then(response => {
       this.commodityCategoryCodeOptions = response.data;

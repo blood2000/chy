@@ -99,10 +99,10 @@
 </template>
 
 <script>
-import { listAbnormal, getAbnormal } from '@/api/waybill/abnormal';
+import { listAbnormal, getAbnormal, listAbnormalApi } from '@/api/waybill/abnormal';
 import DetailDialog from '../components/detailDialog';
 import AbnormalDialog from './abnormalDialog';
-import tableColumnsConfig from './config';
+// import tableColumnsConfig from './config';
 
 export default {
   name: 'Abnormal',
@@ -112,7 +112,7 @@ export default {
   },
   data() {
     return {
-      tableColumnsConfig,
+      tableColumnsConfig: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -154,7 +154,13 @@ export default {
     };
   },
   created() {
-    this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || this.tableColumnsConfig;
+    this.tableHeaderConfig(this.tableColumnsConfig, listAbnormalApi, {
+      prop: 'edit',
+      isShow: true,
+      label: '操作',
+      width: 180,
+      fixed: 'right'
+    });
     this.getList();
   },
   methods: {
