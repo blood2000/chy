@@ -148,7 +148,8 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          if (this.unloadinfo) {
+          console.log(this.form);
+          if (this.disable) {
             unloadCredentials(this.form).then(response => {
               this.msgSuccess('补卸货凭证成功');
               this.close();

@@ -46,7 +46,7 @@ export default {
   watch: {},
   methods: {
     handleUploadSuccess(res) {
-      this.$emit('input', res.data.url);
+      this.$emit('input', res.data.path);
       this.loading.close();
     },
     handleBeforeUpload() {

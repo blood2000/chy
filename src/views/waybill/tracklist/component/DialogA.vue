@@ -202,7 +202,7 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          if (this.loadinfo) {
+          if (this.disable) {
             loadCredentials(this.form).then(response => {
               this.msgSuccess('补装货凭证成功');
               this.close();
