@@ -148,9 +148,7 @@ export default {
   },
   methods: {
     getCompanyInfo() {
-      getCompanyInfo({
-        shipmentCode: this.shipmentCode
-      }).then(response => {
+      getCompanyInfo(this.shipmentCode).then(response => {
         this.form = response.data || {};
         // this.$set(this.form, 'citys', [
         //   {
