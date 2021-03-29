@@ -10,6 +10,16 @@ export function adjustList(query) {
   });
 }
 
+// 查询运单子单列表
+export const childListApi = '/transportation/waybill/childList';
+export function childList(query) {
+  return request({
+    url: '/transportation/waybill/childList',
+    method: 'get',
+    params: query
+  });
+}
+
 // 车辆装货
 export function load(data) {
   return request({

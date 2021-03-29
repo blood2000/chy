@@ -245,11 +245,14 @@
     </el-tabs>
 
     <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
-      <template #cancelStatus="{row}">
-        <span>{{ selectDictLabel(cancelStatusOptions, row.cancelStatus) }}</span>
-      </template>
       <template #goodsBigType="{row}">
         <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
+      </template>
+      <template #isReturn="{row}">
+        <span>{{ selectDictLabel(isReturnOptions, row.isReturn) }}</span>
+      </template>
+      <template #isChild="{row}">
+        <span>{{ selectDictLabel(isChildOptions, row.isChild) }}</span>
       </template>
 
       <template #edit="{row}">
@@ -317,8 +320,10 @@
       @pagination="getList"
     />
 
-    <!-- 车辆装货 / 补装货凭证 -->
+    <!-- 驳回弹窗 -->
     <reject-dialog ref="RejectDialog" :open.sync="rejectdialog" :title="title" :disable="formDisable" @refresh="getList" />
+    <!-- 子单弹窗 -->
+    <child-dialog ref="ChildDialog" :open.sync="childdialog" :title="title" :disable="formDisable" @refresh="getList" />
     <!-- 运单详情 对话框 -->
     <detail-dialog ref="DetailDialog" :current-id="currentId" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
 
@@ -329,18 +334,20 @@
 import { adjustList, adjustListApi } from '@/api/settlement/adjust';
 // 驳回弹窗
 import RejectDialog from './dialog/rejectDialog';
+// 子单弹窗
+import ChildDialog from './dialog/childDialog';
 // 运单详情弹窗
 import DetailDialog from '../../waybill/components/detailDialog';
 
 
 export default {
   'name': 'AdjustList',
-  components: { RejectDialog, DetailDialog },
+  components: { RejectDialog, DetailDialog, ChildDialog },
   data() {
     return {
       tableColumnsConfig: [],
       activeName: '1',
-
+      createTime: '',
       // 遮罩层
       'loading': false,
       // 选中数组
@@ -376,7 +383,7 @@ export default {
       visible: false,
       open: false,
       rejectdialog: false,
-      locationdialog: false,
+      childdialog: false,
       title: '',
       dialogWidth: '800px',
       // 当前选中的运单id
@@ -497,9 +504,9 @@ export default {
           // this.$refs.DialogC.getAddress(row);
           break;
         case 6:
-          this.title = '分单列表';
-          this.trackdialog = true;
-          this.$refs.TrackDialog.setForm(row);
+          this.title = '子单列表';
+          this.childdialog = true;
+          this.$refs.ChildDialog.setForm(row);
           break;
         case 7:
           this.$refs.DetailDialog.reset();

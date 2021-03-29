@@ -173,7 +173,7 @@ export default {
     isWarningFormat(row, column) {
       return this.selectDictLabel(this.isWarningOptions, row.isWarning);
     },
-    /** 查询运输异常列表 */
+    /** 查询投诉列表 */
     getList() {
       this.loading = true;
       listComplaint(this.queryParams).then(response => {
