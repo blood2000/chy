@@ -18,9 +18,10 @@
         <!-- <el-form-item label="发票编码" prop="code">
           <el-input v-model="form.code" placeholder="请输入发票编码" class="input-width" clearable />
         </el-form-item>
-        <el-form-item label="货主编码" prop="shipmentCode">
-          <el-input v-model="form.shipmentCode" placeholder="请输入货主编码" class="input-width" clearable />
-        </el-form-item> -->
+         -->
+        <el-form-item label="公司名称" prop="companyName">
+          <el-input v-model="form.companyName" placeholder="请输入公司名称" class="input-width" clearable />
+        </el-form-item>
         <el-form-item label="纳税人识别号" prop="taxRegistration">
           <el-input v-model="form.taxRegistration" placeholder="请输入纳税人识别号" class="input-width" clearable />
         </el-form-item>
@@ -67,6 +68,9 @@ export default {
     return {
       form: {},
       rules: {
+        companyName: [
+          { required: true, message: '公司名称不能为空', trigger: 'blur' }
+        ],
         taxRegistration: [
           { required: true, message: '纳税人识别号不能为空', trigger: 'blur' }
         ],

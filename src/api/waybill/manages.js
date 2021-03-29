@@ -1,9 +1,10 @@
 import request from '@/utils/request';
 
 // 查询运单列表
+export const listManagesApi = '/transportation/waybill/manageList';
 export function listManages(query) {
   return request({
-    url: '/transportation/waybill/manageList',
+    url: listManagesApi,
     method: 'get',
     params: query
   });
