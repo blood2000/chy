@@ -81,8 +81,14 @@ export default {
       }
     }
   },
+  watch: {
+    open(val) {
+      if (val) {
+        this.getTrackLocation();
+      }
+    }
+  },
   created() {
-    this.getTrackLocation();
   },
   methods: {
     /** 获取轨迹 */

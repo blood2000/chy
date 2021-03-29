@@ -445,11 +445,17 @@ export default {
       this.visible = true;
       switch (index) {
         case 1:
-          // this.$refs.DialogA.reset();
-          this.dialoga = true;
-          this.title = '车辆装货';
-          this.$refs.DialogA.setForm(row);
-          // this.$refs.DialogA.getAddress(row);
+          if (row.cancelStatus === 1) {
+            this.msgError('司机撤单申请中，无法操作装货！');
+          } else if (row.cancelStatus === 2) {
+            this.msgError('货主已同意撤单，无法操作装货！');
+          } else {
+            // this.$refs.DialogA.reset();
+            this.dialoga = true;
+            this.title = '车辆装货';
+            this.$refs.DialogA.setForm(row);
+            // this.$refs.DialogA.getAddress(row);
+          }
           break;
         case 2:
           // this.$refs.DialogC.reset();
@@ -459,10 +465,16 @@ export default {
           // this.$refs.DialogC.getAddress(row);
           break;
         case 3:
-          this.$refs.CancelDialog.reset();
-          this.canceldialog = true;
-          this.title = '取消运单';
-          this.$refs.CancelDialog.setForm(row);
+          if (row.cancelStatus === 1) {
+            this.msgError('司机撤单申请中，无法再次取消订单！');
+          } else if (row.cancelStatus === 2) {
+            this.msgError('货主已同意撤单，无法取消订单！');
+          } else {
+            this.$refs.CancelDialog.reset();
+            this.canceldialog = true;
+            this.title = '取消运单';
+            this.$refs.CancelDialog.setForm(row);
+          }
           break;
         case 4:
           // this.$refs.DialogA.reset();

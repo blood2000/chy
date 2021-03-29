@@ -16,7 +16,7 @@
       <el-form-item label="卸货重量" prop="unloadWeight">
         <el-input-number v-model="form.unloadWeight" placeholder="请输入卸货过磅重量" :disabled="disable" controls-position="right" :min="0" style="width:90%;" />
       </el-form-item>
-      <el-form-item label="卸货地址" prop="waybillAddress">
+      <!-- <el-form-item label="卸货地址" prop="waybillAddress">
         <el-select
           v-model="form.waybillAddress"
           placeholder="请选择车辆卸货地址"
@@ -33,7 +33,7 @@
             :value="dict.code"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="卸货凭证" prop="attachmentCode">
         <uploadImage v-model="form.attachmentCode" />
       </el-form-item>
@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { unload, getAddress, getInfoDetail, unloadCredentials } from '@/api/waybill/tracklist';
+import { unload, getInfoDetail, unloadCredentials } from '@/api/waybill/tracklist';
 import UploadImage from '@/components/UploadImage/index';
 
 export default {
@@ -106,8 +106,12 @@ export default {
     open(val) {
       if (val) {
         // this.reset();
-        this.getAddress();
-        this.getDetail();
+        // this.getAddress();
+        if (this.disable) {
+          this.getDetail();
+        } else {
+          this.reset();
+        }
       }
     }
   },
@@ -122,30 +126,24 @@ export default {
         const info = response.data[0];
         this.unloadinfo = info;
         console.log(info);
-        if (info) {
-          this.form.unloadWeight = info.unloadWeight;
-          this.form.unloadTime = info.cargoTime;
-          this.form.remark = info.remark;
-          this.form.waybillAddress = info.waybillAddressList[0].orderAddressCode;
-          this.form.attachmentCode = info.attachmentCode;
-          console.log(this.form);
-        } else {
-          this.reset();
-          console.log(this.form);
-        }
+        this.form.unloadWeight = info.unloadWeight;
+        this.form.unloadTime = info.cargoTime;
+        this.form.remark = info.remark;
+        // this.form.waybillAddress = info.waybillAddressList[0].orderAddressCode;
+        this.form.attachmentCode = info.attachmentCode;
       });
     },
     // 获取地址信息
-    getAddress() {
-      getAddress(this.waybill.goodsCode).then(response => {
-        const address = response.data;
-        const address1 = address.filter(item => {
-          return item.addressType === 2;
-        });
-        this.waybillAddressOptions = address1;
-        console.log(this.waybillAddressOptions);
-      });
-    },
+    // getAddress() {
+    //   getAddress(this.waybill.goodsCode).then(response => {
+    //     const address = response.data;
+    //     const address1 = address.filter(item => {
+    //       return item.addressType === 2;
+    //     });
+    //     this.waybillAddressOptions = address1;
+    //     console.log(this.waybillAddressOptions);
+    //   });
+    // },
     /** 提交按钮 */
     submitForm() {
       this.$refs['form'].validate(valid => {
@@ -182,8 +180,8 @@ export default {
         unloadTime: this.parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}'),
         unloadWeight: null,
         attachmentCode: null,
-        remark: null,
-        waybillAddress: null
+        remark: null
+        // waybillAddress: null
       };
       // this.waybillAddressOptions = [];
       this.resetForm('form');
