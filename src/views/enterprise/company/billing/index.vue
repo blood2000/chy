@@ -117,13 +117,16 @@ export default {
   },
   methods: {
     getBilling() {
-      getBilling().then(response => {
+      getBilling({ shipmentCode: this.shipmentCode }).then(response => {
         this.form = response.data || {};
       });
     },
     handleSubmit() {
       this.$refs['form'].validate(valid => {
         if (valid) {
+          if (this.shipmentCode) {
+            this.form.shipmentCode = this.shipmentCode;
+          }
           if (this.form.id != null) {
             updateBilling(this.form).then(response => {
               this.msgSuccess('修改成功');

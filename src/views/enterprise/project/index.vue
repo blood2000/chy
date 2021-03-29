@@ -1,24 +1,6 @@
 <template>
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-      <!-- <el-form-item label="编码" prop="code">
-        <el-input
-          v-model="queryParams.code"
-          placeholder="请输入编码"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
-      <!-- <el-form-item label="货主编码" prop="shipmentCode">
-        <el-input
-          v-model="queryParams.shipmentCode"
-          placeholder="请输入货主编码"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
       <el-form-item label="项目名称" prop="projectName">
         <el-input
           v-model="queryParams.projectName"
@@ -57,24 +39,6 @@
         <el-input
           v-model="queryParams.projectRemark"
           placeholder="请输入备注"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
-      <!-- <el-form-item label="创建人" prop="createCode">
-        <el-input
-          v-model="queryParams.createCode"
-          placeholder="请输入创建人"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="更新人" prop="updateCode">
-        <el-input
-          v-model="queryParams.updateCode"
-          placeholder="请输入更新人"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -130,8 +94,6 @@
 
     <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <!-- <el-table-column label="编码" align="center" prop="code" :formatter="codeFormat" /> -->
-      <!-- <el-table-column label="货主编码" align="center" prop="shipmentCode" :formatter="shipmentCodeFormat" /> -->
       <el-table-column label="项目名称" align="center" prop="projectName" />
       <el-table-column label="商品类别" align="center" prop="commodityCategoryCode" :formatter="commodityCategoryCodeFormat" />
       <el-table-column label="商品小类" align="center" prop="commoditySubclassNames" />
@@ -171,6 +133,7 @@
       ref="ProjectDialog"
       :title="title"
       :open.sync="open"
+      :shipment-code="shipmentCode"
       @refresh="getList"
     />
   </div>
@@ -259,6 +222,9 @@ export default {
     /** 查询项目列表 */
     getList() {
       this.loading = true;
+      if (this.shipmentCode) {
+        this.queryParams.shipmentCode = this.shipmentCode;
+      }
       listInfo(this.queryParams).then(response => {
         this.infoList = response.rows;
         this.total = response.total;

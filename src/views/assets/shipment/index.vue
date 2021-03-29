@@ -246,7 +246,7 @@
     <!-- 新增/修改/详情/审核 对话框 -->
     <shipment-dialog ref="ShipmentDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
     <!-- 管理 对话框 -->
-    <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :shipment-code="shipmentCode" />
+    <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :shipment-code="shipmentCode" :company-code="companyCode" />
   </div>
 </template>
 
@@ -338,8 +338,9 @@ export default {
       form: {},
       // 表单是否禁用
       formDisable: false,
-      // 货主code
-      shipmentCode: null
+      // 货主管理
+      shipmentCode: null,
+      companyCode: null
     };
   },
   created() {
@@ -497,6 +498,7 @@ export default {
     /** 管理按钮操作 */
     handleManage(row) {
       this.shipmentCode = row.code;
+      this.companyCode = row.companyCode;
       this.manageDialogOpen = true;
     }
   }

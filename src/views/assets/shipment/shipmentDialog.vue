@@ -555,6 +555,12 @@ export default {
       } else {
         this.form.identificationEffective = false;
       }
+      if (this.form.branchCode && this.form.branchName) {
+        this.branchOptions = [{
+          code: this.form.branchCode,
+          name: this.form.branchName
+        }];
+      }
     },
     // 已读
     authRead(data) {

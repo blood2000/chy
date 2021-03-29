@@ -27,15 +27,17 @@
       <el-tab-pane label="常用地址管理" name="address">
         <address-page v-if="activeName === 'address'" :shipment-code="shipmentCode" />
       </el-tab-pane>
-      <el-tab-pane label="公司成员管理" name="member">
-        1
-      </el-tab-pane>
-      <el-tab-pane label="公司组织管理" name="dep">
-        1
-      </el-tab-pane>
-      <el-tab-pane label="公司角色管理" name="role">
-        1
-      </el-tab-pane>
+      <template v-if="companyCode">
+        <el-tab-pane label="公司成员管理" name="member">
+          <user-page v-if="activeName === 'member'" :company-code="companyCode" />
+        </el-tab-pane>
+        <el-tab-pane label="公司组织管理" name="dep">
+          <dept-page v-if="activeName === 'dep'" :company-code="companyCode" />
+        </el-tab-pane>
+        <el-tab-pane label="公司角色管理" name="role">
+          <role-page v-if="activeName === 'role'" :company-code="companyCode" />
+        </el-tab-pane>
+      </template>
     </el-tabs>
   </el-dialog>
 </template>
@@ -47,6 +49,9 @@ import RulePage from '../../enterprise/rules';
 import StockPage from '../../enterprise/stockcode';
 import ProjectPage from '../../enterprise/project';
 import AddressPage from '../../enterprise/company/address';
+import UserPage from '../../system/user';
+import DeptPage from '../../system/dept';
+import RolePage from '../../system/role';
 
 export default {
   name: 'ShipmentManageDialog',
@@ -56,11 +61,18 @@ export default {
     RulePage,
     StockPage,
     ProjectPage,
-    AddressPage
+    AddressPage,
+    UserPage,
+    DeptPage,
+    RolePage
   },
   props: {
     open: Boolean,
     shipmentCode: {
+      type: String,
+      default: null
+    },
+    companyCode: {
       type: String,
       default: null
     }

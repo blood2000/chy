@@ -122,6 +122,10 @@ export default {
       default: function() {
         return {};
       }
+    },
+    shipmentCode: {
+      type: String,
+      default: null
     }
   },
   data() {
@@ -178,6 +182,9 @@ export default {
             this.form.identificationEffective = 1;
           } else {
             this.form.identificationEffective = 0;
+          }
+          if (this.shipmentCode) {
+            this.form.shipmentCode = this.shipmentCode;
           }
           saveCompanyInfo(this.form).then(response => {
             this.msgSuccess('修改成功');

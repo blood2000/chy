@@ -164,7 +164,11 @@ export default {
       type: String,
       default: ''
     },
-    open: Boolean
+    open: Boolean,
+    shipmentCode: {
+      type: String,
+      default: null
+    }
   },
   data() {
     return {
@@ -286,6 +290,9 @@ export default {
         if (valid) {
           if (this.form.code) {
             params.code = this.form.code;
+            if (this.shipmentCode) {
+              params.shipmentCode = this.shipmentCode;
+            }
             updateRules(params).then(response => {
               this.msgSuccess('修改成功');
               this.close();

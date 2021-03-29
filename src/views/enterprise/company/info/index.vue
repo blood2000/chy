@@ -102,7 +102,7 @@
     </div>
 
     <!-- 货主/企业认证 对话框 -->
-    <certification-dialog ref="detailDialog" :open.sync="open" :info="form" @refresh="getCompanyInfo" />
+    <certification-dialog ref="detailDialog" :open.sync="open" :info="form" :shipment-code="shipmentCode" @refresh="getCompanyInfo" />
   </div>
 </template>
 
@@ -148,7 +148,9 @@ export default {
   },
   methods: {
     getCompanyInfo() {
-      getCompanyInfo().then(response => {
+      getCompanyInfo({
+        shipmentCode: this.shipmentCode
+      }).then(response => {
         this.form = response.data || {};
         // this.$set(this.form, 'citys', [
         //   {

@@ -262,6 +262,12 @@ import { treeselect as deptTreeselect, roleDeptTreeselect } from '@/api/system/d
 
 export default {
   name: 'Role',
+  props: {
+    companyCode: {
+      type: String,
+      default: null
+    }
+  },
   data() {
     return {
       // 遮罩层
@@ -367,6 +373,9 @@ export default {
     /** 查询角色列表 */
     getList() {
       this.loading = true;
+      if (this.companyCode) {
+        this.queryParams.orgCode = this.companyCode;
+      }
       listRole(this.addDateRange(this.queryParams, this.dateRange)).then(
         response => {
           this.roleList = response.rows;
