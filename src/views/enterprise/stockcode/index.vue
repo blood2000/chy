@@ -91,7 +91,7 @@
     />
 
     <!-- 添加或修改对话框 -->
-    <stockcode-dialog ref="StockcodeDialog" :title="title" :open.sync="open" @refresh="getList" />
+    <stockcode-dialog ref="StockcodeDialog" :title="title" :open.sync="open" :shipment-code="shipmentCode" @refresh="getList" />
   </div>
 </template>
 
@@ -103,6 +103,12 @@ export default {
   name: 'Stockcode',
   components: {
     StockcodeDialog
+  },
+  props: {
+    shipmentCode: {
+      type: String,
+      default: null
+    }
   },
   data() {
     return {
@@ -143,6 +149,9 @@ export default {
     /** 查询货集码列表 */
     getList() {
       this.loading = true;
+      if (this.shipmentCode) {
+        this.queryParams.shipmentCode = this.shipmentCode;
+      }
       listStockcode(this.queryParams).then(response => {
         this.stockcodeList = response.rows;
         this.total = response.total;

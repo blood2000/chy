@@ -135,6 +135,12 @@ import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 export default {
   name: 'Dept',
   components: { Treeselect },
+  props: {
+    companyCode: {
+      type: String,
+      default: null
+    }
+  },
   data() {
     return {
       // 遮罩层
@@ -183,6 +189,9 @@ export default {
     /** 查询部门列表 */
     getList() {
       this.loading = true;
+      if (this.companyCode) {
+        this.queryParams.orgCode = this.companyCode;
+      }
       listDept(this.queryParams).then(response => {
         this.deptList = this.handleTree(response.data, 'id');
         this.loading = false;
@@ -239,7 +248,7 @@ export default {
       this.open = true;
       this.title = '添加组织';
       listDept().then(response => {
-	        this.deptOptions = this.handleTree(response.data, 'id');
+	      this.deptOptions = this.handleTree(response.data, 'id');
       });
     },
     /** 修改按钮操作 */

@@ -139,7 +139,7 @@
     />
 
     <!-- 新增/编辑对话框 -->
-    <address-dialog ref="AddressDialog" :title="title" :open.sync="open" @refresh="getList" />
+    <address-dialog ref="AddressDialog" :title="title" :open.sync="open" :shipment-code="shipmentCode" @refresh="getList" />
   </div>
 </template>
 
@@ -151,6 +151,12 @@ export default {
   name: 'Address',
   components: {
     AddressDialog
+  },
+  props: {
+    shipmentCode: {
+      type: String,
+      default: null
+    }
   },
   data() {
     return {
@@ -205,6 +211,9 @@ export default {
     /** 查询常用地址列表 */
     getList() {
       this.loading = true;
+      if (this.shipmentCode) {
+        this.queryParams.shipmentCode = this.shipmentCode;
+      }
       listAddress(this.queryParams).then(response => {
         this.addressList = response.rows;
         this.total = response.total;

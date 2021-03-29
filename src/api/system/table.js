@@ -43,6 +43,18 @@ export function delConfig(code) {
   });
 }
 
+// 批量删除
+export function delAllConfig(data) {
+  return request({
+    url: `/system/tableHead/deleteByCodes`,
+    method: 'delete',
+    data: data,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+}
+
 // 同步
 export function syncConfig(data) {
   return request({

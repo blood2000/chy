@@ -19,9 +19,10 @@ export function updateBilling(data) {
 }
 
 // 获取开票信息
-export function getBilling() {
+export function getBilling(query) {
   return request({
     url: `/assets/shipment/invoice`,
-    method: 'get'
+    method: 'get',
+    params: query
   });
 }

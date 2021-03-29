@@ -164,7 +164,11 @@ export default {
       type: String,
       default: ''
     },
-    open: Boolean
+    open: Boolean,
+    shipmentCode: {
+      type: String,
+      default: null
+    }
   },
   data() {
     return {
@@ -173,7 +177,7 @@ export default {
       // 表单参数
       form: {
         platformType: 2, // 1运营 2货主
-        shipperCode: null, // 角色为货主时要传
+        shipperCode: null, // 角色为1时要传
         addItem: [],
         addItemObj: {},
         reduceItem: [],
@@ -292,7 +296,12 @@ export default {
               this.$emit('refresh');
             });
           } else {
-            params.platformType = this.form.platformType;
+            if (this.shipmentCode) {
+              params.shipperCode = this.shipmentCode;
+              params.platformType = 1;
+            } else {
+              params.platformType = this.form.platformType;
+            }
             addRules(params).then(response => {
               this.msgSuccess('新增成功');
               this.close();

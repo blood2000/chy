@@ -47,6 +47,25 @@
         />
         <el-checkbox v-model="form.identificationEffective">长期有效</el-checkbox>
       </el-form-item>
+      <el-form-item label="网点" prop="branchCode">
+        <el-select
+          v-model="form.branchCode"
+          filterable
+          remote
+          reserve-keyword
+          placeholder="请输入网点"
+          class="width90"
+          :remote-method="getBranchOptions"
+          :loading="loading"
+        >
+          <el-option
+            v-for="item in branchOptions"
+            :key="item.code"
+            :label="item.name"
+            :value="item.code"
+          />
+        </el-select>
+      </el-form-item>
       <template v-if="form.shipperType === 1">
         <el-form-item label="公司名称" prop="companyName" :rules="[{ required: true, message: '公司名称不能为空', trigger: 'blur' }]">
           <el-input v-model="form.companyName" placeholder="请输入公司名称" class="width90" clearable />
@@ -85,32 +104,32 @@
         <el-row>
           <el-col :span="7">
             <p class="upload-image-label">管理员身份证正面照</p>
-            <upload-image :value="form.identificationImg" />
+            <upload-image v-model="form.identificationImg" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">管理员身份证背面照</p>
-            <upload-image :value="form.identificationBackImg" />
+            <upload-image v-model="form.identificationBackImg" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">手持身份证照</p>
-            <upload-image :value="form.identificationInhandImg" />
+            <upload-image v-model="form.identificationInhandImg" />
           </el-col>
           <template v-if="form.shipperType === 1">
             <el-col :span="7" class="mt">
               <p class="upload-image-label">法人身份证正面照</p>
-              <upload-image :value="form.artificialIdentificationImg" />
+              <upload-image v-model="form.artificialIdentificationImg" />
             </el-col>
             <el-col :span="7" class="mt">
               <p class="upload-image-label">法人身份证背面照</p>
-              <upload-image :value="form.artificialIdentificationBackImg" />
+              <upload-image v-model="form.artificialIdentificationBackImg" />
             </el-col>
             <el-col :span="7" class="mt">
               <p class="upload-image-label">法人手持身份证照</p>
-              <upload-image :value="form.artificialIdentificationInhandImg" />
+              <upload-image v-model="form.artificialIdentificationInhandImg" />
             </el-col>
             <el-col :span="7" class="mt">
               <p class="upload-image-label">营业执照照</p>
-              <upload-image :value="form.businessLicenseImg" />
+              <upload-image v-model="form.businessLicenseImg" />
             </el-col>
           </template>
         </el-row>
@@ -298,6 +317,7 @@
 
 <script>
 import { addShipment, updateShipment, authRead, examine } from '@/api/assets/shipment';
+import { getBranchList } from '@/api/system/branch';
 import UploadImage from '@/components/UploadImage/index';
 import ProvinceCityCounty from '@/components/ProvinceCityCounty';
 
@@ -371,7 +391,10 @@ export default {
         creditAmount: [
           { validator: this.formValidate.number, trigger: 'blur' }
         ]
-      }
+      },
+      // 网点查询
+      loading: false,
+      branchOptions: []
     };
   },
   computed: {
@@ -519,7 +542,8 @@ export default {
         ticketType: null,
         serviceRatio: null,
         serviceRate: null,
-        supplyIsAuth: 0 // 是否审核货源，默认否
+        supplyIsAuth: 0, // 是否审核货源，默认否
+        branchCode: null
       };
       this.resetForm('form');
     },
@@ -530,6 +554,12 @@ export default {
         this.form.identificationEffective = true;
       } else {
         this.form.identificationEffective = false;
+      }
+      if (this.form.branchCode && this.form.branchName) {
+        this.branchOptions = [{
+          code: this.form.branchCode,
+          name: this.form.branchName
+        }];
       }
     },
     // 已读
@@ -542,6 +572,20 @@ export default {
       authRead(data).then(response => {
         this.$emit('refresh');
       });
+    },
+    // 查询网点列表
+    getBranchOptions(query) {
+      if (query !== '') {
+        this.loading = true;
+        getBranchList({
+          name: query
+        }).then(response => {
+          this.loading = false;
+          this.branchOptions = response.data;
+        });
+      } else {
+        this.branchOptions = [];
+      }
     }
   }
 };

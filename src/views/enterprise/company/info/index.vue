@@ -41,7 +41,7 @@
             <el-form-item label="营业执照照：" prop="businessLicenseImg">
               <el-row>
                 <el-col :span="7">
-                  <upload-image :value="form.businessLicenseImg" />
+                  <upload-image v-model="form.businessLicenseImg" />
                 </el-col>
               </el-row>
             </el-form-item>
@@ -102,7 +102,7 @@
     </div>
 
     <!-- 货主/企业认证 对话框 -->
-    <certification-dialog ref="detailDialog" :open.sync="open" :info="form" @refresh="getCompanyInfo" />
+    <certification-dialog ref="detailDialog" :open.sync="open" :info="form" :shipment-code="shipmentCode" @refresh="getCompanyInfo" />
   </div>
 </template>
 
@@ -116,6 +116,12 @@ export default {
     CertificationDialog,
     UploadImage
     // AddCityTag
+  },
+  props: {
+    shipmentCode: {
+      type: String,
+      default: null
+    }
   },
   data() {
     return {
@@ -142,7 +148,9 @@ export default {
   },
   methods: {
     getCompanyInfo() {
-      getCompanyInfo().then(response => {
+      getCompanyInfo({
+        shipmentCode: this.shipmentCode
+      }).then(response => {
         this.form = response.data || {};
         // this.$set(this.form, 'citys', [
         //   {
