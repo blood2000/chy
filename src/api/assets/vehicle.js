@@ -1,9 +1,10 @@
 import request from '@/utils/request';
 
 // 查询车辆列表
+export const listVehicleApi = '/assets/vehicle/list';
 export function listInfo(query) {
   return request({
-    url: '/assets/vehicle/list',
+    url: listVehicleApi,
     method: 'get',
     params: query
   });

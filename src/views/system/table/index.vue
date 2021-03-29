@@ -309,6 +309,7 @@ export default {
       this.openSync = true;
       this.title = '同步';
     },
+    /** 同步提交按钮 */
     submitFormSync() {
       this.$refs['formSync'].validate(valid => {
         if (valid) {
@@ -318,14 +319,18 @@ export default {
             this.msgSuccess('同步成功');
             this.openSync = false;
             this.getList();
+          }).catch(() => {
+            this.loadingSync = false;
           });
         }
       });
     },
+    /** 取消同步按钮 */
     cancelSync() {
       this.openSync = false;
       this.resetSync();
     },
+    /** 同步重置按钮 */
     resetSync() {
       this.formSync = {
         className: null,

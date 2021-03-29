@@ -237,8 +237,7 @@
 </template>
 
 <script>
-import { listShipment, getShipment, delShipment } from '@/api/assets/shipment';
-import { tableHeadList } from '@/api/system/table';
+import { listShipmentApi, listShipment, getShipment, delShipment } from '@/api/assets/shipment';
 import ShipmentDialog from './shipmentDialog';
 
 export default {
@@ -325,35 +324,17 @@ export default {
     };
   },
   created() {
-    this.tableHeaderConfig();
+    this.tableHeaderConfig(this.tableColumnsConfig, listShipmentApi, {
+      prop: 'edit',
+      isShow: true,
+      label: '操作',
+      width: 180,
+      fixed: 'right'
+    });
     this.getDictsOptions();
     this.getList();
   },
   methods: {
-    /** 配置表头 */
-    tableHeaderConfig() {
-      if (this.getLocalStorage(this.$route.name)) {
-        this.tableColumnsConfig = this.getLocalStorage(this.$route.name);
-      } else {
-        tableHeadList('/assets/shipment/list').then(response => {
-          response.data.forEach(el => {
-            this.tableColumnsConfig.push({
-              label: el.comment,
-              prop: el.fieldName,
-              isShow: el.isShow
-            });
-          });
-          this.tableColumnsConfig.push({
-            prop: 'edit',
-            isShow: true,
-            label: '操作',
-            width: 180,
-            fixed: 'right'
-          });
-          this.setLocalStorage(this.$route.name, this.tableColumnsConfig);
-        });
-      }
-    },
     /** 查询字典 */
     getDictsOptions() {
       // 核算规则
@@ -426,6 +407,7 @@ export default {
     handleQuery() {
       this.queryParams.pageNum = 1;
       this.getList();
+      console.log(this.tableColumnsConfig);
     },
     /** 重置按钮操作 */
     resetQuery() {

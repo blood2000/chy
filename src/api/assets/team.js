@@ -1,9 +1,10 @@
 import request from '@/utils/request';
 
 // 查询调度者列表
+export const listTeamApi = '/assets/team/list';
 export function listInfo(query) {
   return request({
-    url: '/assets/team/list',
+    url: listTeamApi,
     method: 'post',
     data: query
   });
