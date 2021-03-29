@@ -438,15 +438,21 @@ export default {
       getShipment(id).then(response => {
         this.$refs.ShipmentDialog.setForm(response.data);
         this.open = true;
-        if (flag === 'detail') {
-          this.title = '详情';
-        } else if (flag === 'edit') {
-          this.title = '编辑';
-        } else if (flag === 'review') {
-          this.title = '审核';
-          if (row.authStatus === 0) {
-            this.$refs.ShipmentDialog.authRead(response.data);
-          }
+        switch (flag) {
+          case 'detail':
+            this.title = '详情';
+            break;
+          case 'edit':
+            this.title = '编辑';
+            break;
+          case 'review':
+            this.title = '审核';
+            if (row.authStatus === 0) {
+              this.$refs.ShipmentDialog.authRead(response.data);
+            }
+            break;
+          default:
+            break;
         }
         this.formDisable = flag !== 'edit';
       });
