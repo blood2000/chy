@@ -17,7 +17,7 @@ import './assets/icons'; // icon
 import './permission'; // permission control
 import { getDicts, listByDict, getDictsByType } from '@/api/system/dict/data';
 import { getConfigKey } from '@/api/system/config';
-import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree } from '@/utils/ddc';
+import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree, tableHeaderConfig } from '@/utils/ddc';
 import Pagination from '@/components/Pagination';
 // 自定义表格工具扩展
 import RightToolbar from '@/components/RightToolbar';
@@ -53,6 +53,7 @@ Vue.prototype.selectDictLabel = selectDictLabel;
 Vue.prototype.selectDictLabels = selectDictLabels;
 Vue.prototype.download = download;
 Vue.prototype.handleTree = handleTree;
+Vue.prototype.tableHeaderConfig = tableHeaderConfig;
 Vue.prototype.setLocalStorage = setLocalStorage;
 Vue.prototype.getLocalStorage = getLocalStorage;
 Vue.prototype.removeLocalStorage = removeLocalStorage;

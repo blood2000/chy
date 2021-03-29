@@ -248,13 +248,12 @@
 </template>
 
 <script>
-import { listDriver, getDriver, delDriver, getAgreementWord } from '@/api/assets/driver';
+import { listDriverApi, listDriver, getDriver, delDriver, getAgreementWord } from '@/api/assets/driver';
 import { listInfo } from '@/api/assets/team';
 import DriverDialog from './driverDialog';
 import ImportDialog from './importDialog';
 import ManageDialog from './manageDialog';
 import AgreementDialog from './agreementDialog';
-import tableColumnsConfig from './config.js';
 
 export default {
   name: 'Driver',
@@ -272,7 +271,7 @@ export default {
   },
   data() {
     return {
-      tableColumnsConfig,
+      tableColumnsConfig: [],
       // 司机类别字典
       driverTypeOptions: [
         { dictLabel: '独立司机', dictValue: 1 },
@@ -345,15 +344,17 @@ export default {
     };
   },
   created() {
-    this.tableHeaderConfig();
+    this.tableHeaderConfig(this.tableColumnsConfig, listDriverApi, {
+      prop: 'edit',
+      isShow: true,
+      label: '操作',
+      width: 180,
+      fixed: 'right'
+    });
     this.getDictsOptions();
     this.getList();
   },
   methods: {
-    /** 配置表头 */
-    tableHeaderConfig() {
-      this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || this.tableColumnsConfig;
-    },
     /** 查询字典 */
     getDictsOptions() {
       // 驾驶证类型

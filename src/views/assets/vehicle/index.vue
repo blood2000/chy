@@ -394,9 +394,8 @@
 </template>
 
 <script>
-import { listInfo, getInfo, delInfo } from '@/api/assets/vehicle';
+import { listVehicleApi, listInfo, getInfo, delInfo } from '@/api/assets/vehicle';
 import VehicleDialog from './vehicleDialog';
-import tableColumnsConfig from './config.js';
 
 export default {
   name: 'Vehicle',
@@ -415,7 +414,7 @@ export default {
   },
   data() {
     return {
-      tableColumnsConfig,
+      tableColumnsConfig: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -472,19 +471,25 @@ export default {
     };
   },
   created() {
-    this.tableHeaderConfig();
+    this.tableHeaderConfig(this.tableColumnsConfig, listVehicleApi, {
+      prop: 'edit',
+      isShow: true,
+      label: '操作',
+      width: 180,
+      fixed: 'right'
+    });
     this.getList();
-    this.getDicts('energyTypes').then((response) => {
-      this.vehicleEnergyTypeOptions = response.data;
-    });
-    this.getDicts('vehicleType').then((response) => {
-      this.vehicleTypeOptions = response.data;
-    });
+    this.getDictsList();
   },
   methods: {
-    /** 配置表头 */
-    tableHeaderConfig() {
-      this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || this.tableColumnsConfig;
+    /** 查询字典 */
+    getDictsList() {
+      this.getDicts('energyTypes').then((response) => {
+        this.vehicleEnergyTypeOptions = response.data;
+      });
+      this.getDicts('vehicleType').then((response) => {
+        this.vehicleTypeOptions = response.data;
+      });
     },
     /** 查询车辆列表 */
     getList() {
