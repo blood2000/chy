@@ -130,8 +130,14 @@ export default {
       }
     }
   },
+  watch: {
+    open(val) {
+      if (val) {
+        this.getLocation();
+      }
+    }
+  },
   created() {
-    this.getLocation();
   },
   methods: {
     /** 提交按钮 */

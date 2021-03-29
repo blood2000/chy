@@ -4,6 +4,7 @@
  */
 
 const baseURL = process.env.VUE_APP_BASE_API;
+import { setLocalStorage, getLocalStorage } from '@/utils/auth';
 
 // 日期格式化
 export function parseTime(time, pattern) {
@@ -167,4 +168,33 @@ export function tansParams(params) {
     }
   });
   return result;
+}
+
+/**
+ * 配置表头
+ * @param {*} list 表头数组
+ * @param {*} url 接口地址
+ * @param {*} editColumn 操作列
+ */
+import { tableHeadList } from '@/api/system/table';
+export function tableHeaderConfig(list, url, editColumn) {
+  if (getLocalStorage(url)) {
+    getLocalStorage(url).forEach(el => {
+      list.push(el);
+    });
+  } else {
+    tableHeadList(url).then(response => {
+      response.data.forEach(el => {
+        list.unshift({
+          label: el.comment,
+          prop: el.fieldName,
+          isShow: el.isShow
+        });
+      });
+      if (editColumn) {
+        list.push(editColumn);
+      }
+      setLocalStorage(url, list);
+    });
+  }
 }

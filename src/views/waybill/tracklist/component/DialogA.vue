@@ -148,7 +148,11 @@ export default {
         // this.reset();
         this.getAddress();
         // this.getVehicle();
-        this.getDetail();
+        if (this.disable) {
+          this.getDetail();
+        } else {
+          this.reset();
+        }
       }
     }
   },
@@ -163,20 +167,13 @@ export default {
         const info = response.data[0];
         this.loadinfo = info;
         console.log(this.loadinfo);
-        if (info) {
-          this.form.loadWeight = info.loadWeight;
-          this.form.remark = info.remark;
-          this.form.loadTime = info.cargoTime;
-          // this.form.loadAddress = info.waybillAddressList[0].orderAddressCode;
-          this.form.unloadAddress = info.waybillAddressList[0].orderAddressCode;
-          this.form.attachmentCode = info.attachmentCode;
-          // this.form.vehicleCode = info.vehicleCode;
-          console.log(this.form);
-        } else {
-          this.reset();
-          // this.getAddress();
-          // this.getVehicle();
-        }
+        this.form.loadWeight = info.loadWeight;
+        this.form.remark = info.remark;
+        this.form.loadTime = info.cargoTime;
+        // this.form.loadAddress = info.waybillAddressList[0].code;
+        this.form.unloadAddressCode = info.waybillAddressList[1].code;
+        this.form.attachmentCode = info.attachmentCode;
+        // this.form.vehicleCode = info.vehicleCode;
       });
     },
     // 获取地址信息
@@ -229,6 +226,7 @@ export default {
     // 关闭弹窗
     close() {
       this.$emit('update:open', false);
+      this.unloadAddressOptions = [];
     },
     // 表单重置
     reset() {
