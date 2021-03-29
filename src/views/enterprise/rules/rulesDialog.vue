@@ -291,7 +291,7 @@ export default {
           if (this.form.code) {
             params.code = this.form.code;
             if (this.shipmentCode) {
-              params.shipmentCode = this.shipmentCode;
+              params.shipperCode = this.shipmentCode;
             }
             updateRules(params).then(response => {
               this.msgSuccess('修改成功');

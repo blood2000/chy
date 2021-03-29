@@ -86,7 +86,7 @@
     <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row>
-          <el-col v-if="form.parentId !== 0" :span="24">
+          <el-col v-if="form.parentId !== 1" :span="24">
             <el-form-item label="上级组织" prop="parentId">
               <treeselect v-model="form.parentId" :options="deptOptions" :normalizer="normalizer" placeholder="选择上级组织" />
             </el-form-item>
@@ -247,7 +247,10 @@ export default {
       }
       this.open = true;
       this.title = '添加组织';
-      listDept().then(response => {
+      if (this.companyCode) {
+        this.queryParams.orgCode = this.companyCode;
+      }
+      listDept(this.queryParams).then(response => {
 	      this.deptOptions = this.handleTree(response.data, 'id');
       });
     },
