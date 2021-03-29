@@ -126,6 +126,12 @@
           @click="handleUpdate(row)"
         >修改</el-button>
         <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-document-add"
+          @click="handleAddDriver(row)"
+        >添加司机</el-button>
+        <el-button
           v-hasPermi="['assets:team:remove']"
           size="mini"
           type="text"
@@ -145,9 +151,10 @@
 
     <!-- 新增/修改/详情 对话框 -->
     <team-dialog ref="TeamDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
-
     <!-- 管理 对话框 -->
     <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :team-code="teamCode" />
+    <!-- 添加司机 对话框 -->
+    <add-driver-dialog :open.sync="addDriverDialogOpen" />
   </div>
 </template>
 
@@ -155,12 +162,14 @@
 import { listTeamApi, listInfo, getInfo, delInfo } from '@/api/assets/team';
 import TeamDialog from './teamDialog';
 import ManageDialog from './manageDialog.vue';
+import AddDriverDialog from './addDriverDialog.vue';
 
 export default {
   name: 'Team',
   components: {
 	  TeamDialog,
-    ManageDialog
+    ManageDialog,
+    AddDriverDialog
   },
   data() {
     return {
@@ -184,6 +193,7 @@ export default {
       // 是否显示弹出层
       open: false,
       manageDialogOpen: false,
+      addDriverDialogOpen: false,
       // 状态字典
       statusOptions: [
         { dictLabel: '启用', dictValue: '0' },
@@ -306,6 +316,10 @@ export default {
     handleManage(row) {
       this.teamCode = row.code;
       this.manageDialogOpen = true;
+    },
+    // 添加司机
+    handleAddDriver(row) {
+      this.addDriverDialogOpen = true;
     }
   }
 };

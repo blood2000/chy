@@ -59,9 +59,6 @@ export default {
       }
     }
   },
-  create() {
-
-  },
   methods: {
     // 提交按钮
     submitForm() {

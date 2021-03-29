@@ -36,9 +36,6 @@ export default {
       }
     }
   },
-  create() {
-
-  },
   methods: {
     // 取消按钮
     cancel() {

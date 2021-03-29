@@ -136,9 +136,6 @@ export default {
       }
     }
   },
-  create() {
-
-  },
   methods: {
     // 运单状态字典翻译
     statusFormat(row, column) {

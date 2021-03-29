@@ -261,9 +261,6 @@ export default {
       }
     }
   },
-  create() {
-
-  },
   methods: {
     // 是否接单字典翻译
     isReceiveFormat(row, column) {
