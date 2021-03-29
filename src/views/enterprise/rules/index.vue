@@ -134,7 +134,7 @@ export default {
     getList() {
       this.loading = true;
       if (this.shipmentCode) {
-        this.queryParams.shipmentCode = this.shipmentCode;
+        this.queryParams.shipperCode = this.shipmentCode;
       }
       listRules(this.queryParams).then(response => {
         this.rulesList = response.data.list;

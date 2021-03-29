@@ -219,6 +219,12 @@
           @click="handleDetail(row, 'review')"
         >审核</el-button>
         <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-document-add"
+          @click="handleAddTeam(row)"
+        >加入调度</el-button>
+        <el-button
           v-hasPermi="['system:config:remove']"
           size="mini"
           type="text"
@@ -244,6 +250,8 @@
     <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :driver-code="driverCode" />
     <!-- 协议 对话框 -->
     <agreement-dialog ref="agreementDialog" :open.sync="agreementDialogOpen" :agreement-html="agreementHtml" />
+    <!-- 加入调度 对话框 -->
+    <add-team-dialog :open.sync="addTeamDialogOpen" />
   </div>
 </template>
 
@@ -254,6 +262,7 @@ import DriverDialog from './driverDialog';
 import ImportDialog from './importDialog';
 import ManageDialog from './manageDialog';
 import AgreementDialog from './agreementDialog';
+import AddTeamDialog from './addTeamDialog.vue';
 
 export default {
   name: 'Driver',
@@ -261,7 +270,8 @@ export default {
     DriverDialog,
     ImportDialog,
     ManageDialog,
-    AgreementDialog
+    AgreementDialog,
+    AddTeamDialog
   },
   props: {
     teamCode: {
@@ -319,6 +329,7 @@ export default {
       openImport: false,
       manageDialogOpen: false,
       agreementDialogOpen: false,
+      addTeamDialogOpen: false,
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -482,6 +493,10 @@ export default {
       } else {
         this.teamOptions = [];
       }
+    },
+    // 申请加入调度
+    handleAddTeam(row) {
+      this.addTeamDialogOpen = true;
     }
   }
 };

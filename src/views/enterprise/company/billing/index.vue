@@ -117,7 +117,7 @@ export default {
   },
   methods: {
     getBilling() {
-      getBilling({ shipmentCode: this.shipmentCode }).then(response => {
+      getBilling(this.shipmentCode).then(response => {
         this.form = response.data || {};
       });
     },
