@@ -1,6 +1,7 @@
 import request from '@/utils/request';
 
 // 查询作废运单列表
+export const listNullifyApi = '/transportation/waybill/manageList';
 export function listNullify(query) {
   return request({
     url: '/transportation/waybill/manageList',

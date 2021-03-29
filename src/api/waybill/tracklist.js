@@ -1,6 +1,7 @@
 import request from '@/utils/request';
 
 // 查询跟踪单列表
+export const trackListApi = '/transportation/waybill/trackingList';
 export function trackList(query) {
   return request({
     url: '/transportation/waybill/trackingList',

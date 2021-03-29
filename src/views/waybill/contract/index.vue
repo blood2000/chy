@@ -120,15 +120,15 @@
 </template>
 
 <script>
-import tableColumnsConfig from './config';
+// import tableColumnsConfig from './config';
 
-import { listContract, getContract } from '@/api/waybill/contract';
+import { listContract, getContract, listContractApi } from '@/api/waybill/contract';
 
 export default {
   'name': 'Contract',
   data() {
     return {
-      tableColumnsConfig,
+      tableColumnsConfig: [],
       // 遮罩层
       'loading': true,
       // 选中数组
@@ -159,7 +159,13 @@ export default {
     };
   },
   created() {
-    this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || this.tableColumnsConfig;
+    this.tableHeaderConfig(this.tableColumnsConfig, listContractApi, {
+      prop: 'edit',
+      isShow: true,
+      label: '操作',
+      width: 180,
+      fixed: 'right'
+    });
     this.getList();
   },
   'methods': {

@@ -21,7 +21,7 @@
         <el-input v-model="form.shipperPhone" placeholder="请输入货主手机" :disabled="formDisable" class="width90" />
       </el-form-item>
 
-      <el-divider content-position="left"><span class="supplement-title">照片</span></el-divider>
+      <el-divider v-if=" form.attachmentCodes " content-position="left"><span class="supplement-title">照片</span></el-divider>
 
       <el-form-item prop="attachmentCodes">
         <uploadImage v-model="form.attachmentCodes" :disabled="formDisable" />

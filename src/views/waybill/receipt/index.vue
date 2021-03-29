@@ -175,11 +175,11 @@
 </template>
 
 <script>
-import { listInfo } from '@/api/waybill/receipt';
+import { listInfo, listInfoApi } from '@/api/waybill/receipt';
 import DetailDialog from '../components/detailDialog';
 import DeductionDialog from './deductionDialog';
 import ReturnDialog from './returnDialog';
-import tableColumnsConfig from './config';
+// import tableColumnsConfig from './config';
 export default {
   name: 'Receipt',
   components: {
@@ -189,7 +189,7 @@ export default {
   },
   data() {
     return {
-      tableColumnsConfig,
+      tableColumnsConfig: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -270,7 +270,13 @@ export default {
     };
   },
   created() {
-    this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || this.tableColumnsConfig;
+    this.tableHeaderConfig(this.tableColumnsConfig, listInfoApi, {
+      prop: 'edit',
+      isShow: true,
+      label: '操作',
+      width: 180,
+      fixed: 'right'
+    });
     this.getList();
     this.listByDict(this.goodsBigType).then(response => {
       this.goodsBigTypeOptions = response.data;
