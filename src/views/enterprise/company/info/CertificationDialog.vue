@@ -66,32 +66,32 @@
         <el-row>
           <el-col :span="7">
             <p class="upload-image-label">身份证正面照</p>
-            <upload-image :value="form.identificationImg" />
+            <upload-image v-model="form.identificationImg" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">身份证反面照</p>
-            <upload-image :value="form.identificationBackImg" />
+            <upload-image v-model="form.identificationBackImg" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">本人手持身份证正面</p>
-            <upload-image :value="form.identificationInhandImg" />
+            <upload-image v-model="form.identificationInhandImg" />
           </el-col>
           <template v-if="form.shipperType === 1">
             <el-col :span="7" class="mt">
               <p class="upload-image-label">法人身份证正面照</p>
-              <upload-image :value="form.artificialIdentificationImg" />
+              <upload-image v-model="form.artificialIdentificationImg" />
             </el-col>
             <el-col :span="7" class="mt">
               <p class="upload-image-label">法人身份证背面照</p>
-              <upload-image :value="form.artificialIdentificationBackImg" />
+              <upload-image v-model="form.artificialIdentificationBackImg" />
             </el-col>
             <el-col :span="7" class="mt">
               <p class="upload-image-label">法人手持身份证照</p>
-              <upload-image :value="form.artificialIdentificationInhandImg" />
+              <upload-image v-model="form.artificialIdentificationInhandImg" />
             </el-col>
             <el-col :span="7" class="mt">
               <p class="upload-image-label">营业执照照</p>
-              <upload-image :value="form.businessLicenseImg" />
+              <upload-image v-model="form.businessLicenseImg" />
             </el-col>
           </template>
         </el-row>

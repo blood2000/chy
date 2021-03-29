@@ -41,7 +41,7 @@
             <el-form-item label="营业执照照：" prop="businessLicenseImg">
               <el-row>
                 <el-col :span="7">
-                  <upload-image :value="form.businessLicenseImg" />
+                  <upload-image v-model="form.businessLicenseImg" />
                 </el-col>
               </el-row>
             </el-form-item>
