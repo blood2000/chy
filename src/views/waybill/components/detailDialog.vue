@@ -137,8 +137,35 @@
         </el-divider>
         <el-row v-if="activeTab === '3'" :gutter="20">
           <el-col :span="18">
-            <div style="height: 600px">
+            <div class="map-content">
               <el-amap vid="amapDemo" :zoom="zoom" :center="center" style="height:600px">
+                <div class="waybill-detail-card">
+                  <h5>
+                    {{ currentRow?currentRow.driverName:'' }}
+                    <span>{{ currentRow?currentRow.driverPhone:'' }}</span>
+                    <span class="license">{{ currentRow?currentRow.licenseNumber:'' }}</span>
+                  </h5>
+                  <p>
+                    <label>货物类型：</label>
+                    {{ currentRow?currentRow.goodsBigType:'' }}
+                  </p>
+                  <p>
+                    <label>运单号：</label>
+                    {{ currentRow?currentRow.waybillNo:'' }}
+                  </p>
+                  <p>
+                    <label>接单时间：</label>
+                    {{ currentRow?parseTime(currentRow.receiveTime):'' }}
+                  </p>
+                  <p>
+                    <label>装货地：</label>
+                    {{ currentRow?currentRow.loadAddress:'' }}
+                  </p>
+                  <p>
+                    <label>卸货地：</label>
+                    {{ currentRow?currentRow.unloadAddress:'' }}
+                  </p>
+                </div>
                 <el-amap-polyline :path="polyline.path" :stroke-weight="8" :stroke-opacity="0.8" :stroke-color="'#0091ea'" />
                 <el-amap-marker v-for="(marker, index) in markers" :key="index" :position="marker.position" :icon="marker.icon" />
               </el-amap>
@@ -189,7 +216,13 @@ export default {
       type: String,
       default: null
     },
-    disable: Boolean
+    disable: Boolean,
+    currentRow: {
+      type: Object,
+      default: function() {
+        return {};
+      }
+    }
   },
   data() {
     return {
@@ -466,7 +499,44 @@ export default {
   height: 200px;
   vertical-align: top;
 }
-// 时间线
+// 轨迹-运单详情卡片
+.map-content{
+  position: relative;
+  height: 600px;
+  .waybill-detail-card{
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 240px;
+    background: #fff;
+    padding: 15px;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.15);
+    >h5{
+      line-height: 30px;
+      border-bottom: 1px solid #d2d4da;
+      margin-bottom: 5px;
+      font-size: 14px;
+      >span{
+        font-size: 13px;
+        &.license{
+          background: #ffba00;
+          padding: 3px 4px 1px;
+          margin-left: 6px;
+          border-radius: 4px;
+          border: 1px solid gray;
+        }
+      }
+    }
+    >p{
+      line-height: 28px;
+      >label{
+        font-weight: normal;
+        color: gray;
+      }
+    }
+  }
+}
+// 轨迹-时间线
 .time-line-content{
   >li{
     position: relative;

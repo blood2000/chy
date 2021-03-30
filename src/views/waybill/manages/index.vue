@@ -244,6 +244,7 @@
       :open.sync="open"
       :current-id="currentId"
       :disable="formDisable"
+      :current-row="currentRow"
       @refresh="getList"
     />
     <!-- 标记异常对话框 -->
@@ -422,7 +423,8 @@ export default {
       'rules': {},
       'formDisable': false,
       // 当前选中的运单id
-      'currentId': null
+      'currentId': null,
+      'currentRow': null
     };
   },
   created() {
@@ -520,6 +522,7 @@ export default {
     /** 详情按钮操作 */
     handleUpdate(row) {
       this.currentId = row.wayBillCode;
+      this.currentRow = row;
       this.open = true;
       this.title = '查看运单详情';
       this.formDisable = true;
