@@ -1,8 +1,8 @@
 <template>
-  <!-- 驳回理由对话框 -->
+  <!-- 子单对话框 -->
   <el-dialog :title="title" :visible="visible" width="1400px" append-to-body @close="cancel">
-    <RefactorTable :loading="loading" :data="childList" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
-      <template #lastLoadingTime="{row}">
+    <RefactorTable :loading="loading" :data="childlist" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
+      <!-- <template #lastLoadingTime="{row}">
         <span>{{ parseTime(row.lastLoadingTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
       </template>
       <template #orderTime="{row}">
@@ -13,7 +13,7 @@
       </template>
       <template #wayBillUpdateTime="{row}">
         <span>{{ parseTime(row.wayBillUpdateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-      </template>
+      </template> -->
 
       <template #edit="{row}">
         <el-button
@@ -41,11 +41,13 @@
 <script>
 import { childListApi, childList } from '@/api/settlement/adjust';
 // import UploadImage from '@/components/UploadImage/index';
-
+// 运单详情弹窗
+import DetailDialog from '@/views/waybill/components/detailDialog';
 
 export default {
   name: 'ChildDialog',
   components: {
+    DetailDialog
     // UploadImage
   },
   props: {
@@ -70,7 +72,7 @@ export default {
       // 总条数
       total: 0,
       // 子单列表
-      childList: {
+      childlist: {
       },
       // 查询参数
       queryParams: {
@@ -91,16 +93,22 @@ export default {
     }
   },
   created() {
+    this.tableHeaderConfig(this.tableColumnsConfig, childListApi, {
+      prop: 'edit',
+      isShow: true,
+      label: '操作',
+      width: 100,
+      fixed: 'right'
+    });
   },
   methods: {
-    /** 查询运输异常列表 */
+    /** 查询子单列表 */
     getList() {
       this.loading = true;
       childList(this.queryParams).then(response => {
-        this.childList = response.rows;
+        this.childlist = response.rows;
         this.total = response.total;
         this.loading = false;
-        console.log(this.childList);
       });
     },
     /** 取消按钮 */
@@ -114,14 +122,7 @@ export default {
     // 获取列表
     setForm(data) {
       console.log(data);
-      // this.queryParams.wayBillCode = data.code;
-      this.tableHeaderConfig(this.tableColumnsConfig, childListApi, {
-        prop: 'edit',
-        isShow: true,
-        label: '操作',
-        width: 100,
-        fixed: 'right'
-      });
+      this.queryParams.wayBillCode = data.code;
       this.getList();
     },
     // 查看运单详情

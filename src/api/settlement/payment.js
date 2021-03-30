@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 
-// 查询运单核算列表
+// 查询财务打款列表
 export const adjustListApi = '/transportation/waybill/trackingList';
 export function adjustList(query) {
   return request({

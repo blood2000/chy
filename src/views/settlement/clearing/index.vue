@@ -6,91 +6,8 @@
       ref="queryForm"
       :model="queryParams"
       :inline="true"
-      label-width="80px"
+      label-width="90px"
     >
-      <el-form-item
-        label="装货信息"
-        prop="loadInfo"
-      >
-        <el-input
-          v-model="queryParams.loadInfo"
-          placeholder="请输入装货信息"
-          clearable
-          size="small"
-          style="width: 230px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item
-        label="收货信息"
-        prop="receivedInfo"
-      >
-        <el-input
-          v-model="queryParams.receivedInfo"
-          placeholder="请输入收货信息"
-          clearable
-          size="small"
-          style="width: 230px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="货物类型" prop="goodsBigType">
-        <el-select
-          v-model="queryParams.goodsBigType"
-          placeholder="请选择货物类型"
-          filterable
-          clearable
-          style="width: 230px"
-          size="small"
-        >
-          <el-option
-            v-for="dict in commodityCategoryCodeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item
-        label="货源单号"
-        prop="mainOrderNumber"
-      >
-        <el-input
-          v-model="queryParams.mainOrderNumber"
-          placeholder="请输入货源单号"
-          clearable
-          size="small"
-          style="width: 230px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item
-        label="创建日期"
-        prop="createTime"
-      >
-        <el-date-picker
-          v-model="createTime"
-          type="daterange"
-          range-separator="-"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          style="width: 230px"
-          @change="datechoose"
-        />
-      </el-form-item>
-      <el-form-item
-        label="车牌号"
-        prop="licenseNumber"
-      >
-        <el-input
-          v-model="queryParams.licenseNumber"
-          placeholder="请输入车牌号"
-          clearable
-          size="small"
-          style="width: 230px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
       <el-form-item
         label="司机姓名"
         prop="driverName"
@@ -98,6 +15,19 @@
         <el-input
           v-model="queryParams.driverName"
           placeholder="请输入司机姓名"
+          clearable
+          size="small"
+          style="width: 230px"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item
+        label="司机电话"
+        prop="driverPhone"
+      >
+        <el-input
+          v-model="queryParams.driverPhone"
+          placeholder="请输入司机电话"
           clearable
           size="small"
           style="width: 230px"
@@ -118,12 +48,12 @@
         />
       </el-form-item>
       <el-form-item
-        label="下单客户"
-        prop="orderClient"
+        label="调度名称"
+        prop="driverName"
       >
         <el-input
-          v-model="queryParams.orderClient"
-          placeholder="请输入下单客户"
+          v-model="queryParams.driverName"
+          placeholder="请输入调度名称"
           clearable
           size="small"
           style="width: 230px"
@@ -131,22 +61,74 @@
         />
       </el-form-item>
       <el-form-item
-        label="发货企业"
-        prop="deliveryCompany"
+        label="调度电话"
+        prop="driverPhone"
       >
         <el-input
-          v-model="queryParams.deliveryCompany"
-          placeholder="请输入发货企业"
+          v-model="queryParams.driverPhone"
+          placeholder="请输入调度电话"
           clearable
           size="small"
           style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="纸质回单" prop="isReturn">
+      <el-form-item
+        label="关联企业"
+        prop="driverPhone"
+      >
+        <el-input
+          v-model="queryParams.driverPhone"
+          placeholder="请输入运单关联企业"
+          clearable
+          size="small"
+          style="width: 230px"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item
+        label="货主电话"
+        prop="loadInfo"
+      >
+        <el-input
+          v-model="queryParams.loadInfo"
+          placeholder="请输入货主电话"
+          clearable
+          size="small"
+          style="width: 230px"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item
+        label="清分订单号"
+        prop="orderClient"
+      >
+        <el-input
+          v-model="queryParams.orderClient"
+          placeholder="请输入清分订单号"
+          clearable
+          size="small"
+          style="width: 230px"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item
+        label="清分批次号"
+        prop="orderClient"
+      >
+        <el-input
+          v-model="queryParams.orderClient"
+          placeholder="请输入清分批次号"
+          clearable
+          size="small"
+          style="width: 230px"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="清分状态" prop="isReturn">
         <el-select
           v-model="queryParams.isReturn"
-          placeholder="请选择纸质回单"
+          placeholder="请选择清分状态"
           filterable
           clearable
           size="small"
@@ -154,23 +136,6 @@
         >
           <el-option
             v-for="dict in isReturnOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="分单" prop="isChild">
-        <el-select
-          v-model="queryParams.isChild"
-          placeholder="请选择分单"
-          filterable
-          clearable
-          size="small"
-          style="width: 230px"
-        >
-          <el-option
-            v-for="dict in isChildOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
@@ -200,32 +165,28 @@
       :gutter="10"
       class="mb8"
     >
-      <el-col v-if="activeName == '1'" :span="1.5">
+      <el-col :span="1.5">
+        <el-button
+          v-hasPermi="['assets:vehicle:edit']"
+          type="info"
+          icon="el-icon-upload2"
+          size="mini"
+          @click="handleExport"
+        >导出</el-button>
+        <el-button
+          v-hasPermi="['assets:vehicle:edit']"
+          type="primary"
+          icon="el-icon-document-remove"
+          size="mini"
+          @click="handleClearing"
+        >运单清分</el-button>
         <el-button
           v-hasPermi="['assets:vehicle:edit']"
           type="success"
-          icon="el-icon-document-checked"
+          icon="el-icon-edit"
           size="mini"
-          @click="handleAdjust"
-        >批量核算</el-button>
-      </el-col>
-      <el-col v-if="activeName == '2'" :span="1.5">
-        <el-button
-          v-hasPermi="['assets:vehicle:remove']"
-          type="success"
-          icon="el-icon-wallet"
-          size="mini"
-          @click="handleApply"
-        >批量申请</el-button>
-      </el-col>
-      <el-col v-if="activeName == '3'" :span="1.5">
-        <el-button
-          v-hasPermi="['assets:vehicle:export']"
-          type="success"
-          icon="el-icon-chat-dot-square"
-          size="mini"
-          @click="handleAssess"
-        >批量评价</el-button>
+          @click="handleUpdate"
+        >更新清分状态</el-button>
       </el-col>
       <el-col :span="1.5" class="fr">
         <tablec-cascader v-model="tableColumnsConfig" />
@@ -235,12 +196,6 @@
         @queryTable="getList"
       />
     </el-row>
-
-    <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="已复核" name="1" />
-      <el-tab-pane label="已结算" name="2" />
-      <el-tab-pane label="已打款" name="3" />
-    </el-tabs>
 
     <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
       <template #goodsBigType="{row}">
@@ -255,56 +210,29 @@
 
       <template #edit="{row}">
         <el-button
-          v-if="activeName != '3'"
-          v-hasPermi="['system:menu:edit']"
-          size="mini"
-          type="text"
-          icon="el-icon-warning-outline"
-          @click="handleTableBtn(row, 1)"
-        >驳回提示</el-button>
-        <el-button
-          v-if="activeName == '1'"
           v-hasPermi="['system:menu:edit']"
           size="mini"
           type="text"
           icon="el-icon-document-remove"
-          @click="handleTableBtn(row, 2)"
+          @click="handleTableBtn(row, 1)"
         >驳回</el-button>
         <el-button
-          v-if="activeName == '1'"
-          v-hasPermi="['system:menu:edit']"
-          size="mini"
-          type="text"
-          icon="el-icon-document-checked"
-          @click="handleTableBtn(row, 3)"
-        >核算</el-button>
-        <el-button
-          v-if="activeName == '2'"
-          v-hasPermi="['system:menu:edit']"
           size="mini"
           type="text"
           icon="el-icon-wallet"
-          @click="handleTableBtn(row, 4)"
-        >申请打款</el-button>
-        <el-button
-          v-if="activeName == '3'"
-          v-hasPermi="['system:menu:edit']"
-          size="mini"
-          type="text"
-          icon="el-icon-chat-dot-square"
-          @click="handleTableBtn(row, 5)"
-        >评价</el-button>
+          @click="handleTableBtn(row, 2)"
+        >网商打款</el-button>
         <el-button
           size="mini"
           type="text"
           icon="el-icon-document-copy"
-          @click="handleTableBtn(row, 6)"
+          @click="handleTableBtn(row, 3)"
         >分单列表</el-button>
         <el-button
           size="mini"
           type="text"
           icon="el-icon-document"
-          @click="handleTableBtn(row, 7)"
+          @click="handleTableBtn(row, 4)"
         >详情</el-button>
       </template>
     </RefactorTable>
@@ -343,7 +271,6 @@ export default {
   data() {
     return {
       tableColumnsConfig: [],
-      activeName: '1',
       createTime: '',
       // 遮罩层
       'loading': false,
@@ -369,11 +296,7 @@ export default {
         'licenseNumber': undefined,
         'driverName': undefined,
         'waybillNo': undefined,
-        'orderClient': undefined,
-        'deliveryCompany': undefined,
-        'isReturn': undefined,
-        'isChild': undefined,
-        'statusList': ['1']
+        'orderClient': undefined
       },
       receiveTime: [],
       // 弹框 内容
@@ -408,16 +331,13 @@ export default {
     };
   },
   computed: {
-    lcokey() {
-      return this.$route.name + this.activeName;
-    }
   },
   created() {
     this.tableHeaderConfig(this.tableColumnsConfig, adjustListApi, {
       prop: 'edit',
       isShow: true,
       label: '操作',
-      width: 240,
+      width: 180,
       fixed: 'right'
     });
     this.getList();
@@ -429,12 +349,6 @@ export default {
     datechoose(date) {
       this.queryParams.orderEndTime = this.parseTime(date[0], '{y}-{m}-{d}');
       this.queryParams.orderStartTime = this.parseTime(date[1], '{y}-{m}-{d}');
-    },
-    /** handleClick */
-    handleClick(tab) {
-      this.queryParams.statusList[0] = tab.name;
-      this.queryParams.pageNum = 1;
-      this.getList();
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
@@ -459,14 +373,14 @@ export default {
       this.resetForm('queryForm');
       this.handleQuery();
     },
-    // 批量核算
-    handleAdjust() {
+    // 导出
+    handleExport() {
     },
-    // 批量申请
-    handleApply() {
+    // 运单清分
+    handleClearing() {
     },
-    // 批量评价
-    handleAssess() {
+    // 更新清分状态
+    handleUpdate() {
     },
 
     handleTableBtn(row, index) {
@@ -475,47 +389,21 @@ export default {
       this.visible = true;
       switch (index) {
         case 1:
-          // this.$refs.DialogA.reset();
-          this.dialoga = true;
-          this.title = '驳回提示';
-          this.$refs.DialogA.setForm(row);
-          // this.$refs.DialogA.getAddress(row);
-          break;
-        case 2:
           this.$refs.RejectDialog.reset();
           this.rejectdialog = true;
           this.title = '驳回运输核算单';
           this.$refs.RejectDialog.setForm(row);
           console.log(row);
           break;
+        case 2:
+          this.title = '网商打款';
+          break;
         case 3:
-          this.$refs.AdjustDialog.reset();
-          this.adjustdialog = true;
-          this.title = '结算审核';
-          this.$refs.AdjustDialog.setForm(row);
-          break;
-        case 4:
-          // this.$refs.DialogA.reset();
-          this.dialoga = true;
-          this.formDisable = true;
-          this.title = '申请打款';
-          this.$refs.DialogA.setForm(row);
-          // this.$refs.DialogA.getAddress(row);
-          break;
-        case 5:
-          // this.$refs.DialogC.reset();
-          this.dialogc = true;
-          this.formDisable = true;
-          this.title = '评价';
-          this.$refs.DialogC.setForm(row);
-          // this.$refs.DialogC.getAddress(row);
-          break;
-        case 6:
           this.title = '子单列表';
           this.childdialog = true;
           this.$refs.ChildDialog.setForm(row);
           break;
-        case 7:
+        case 4:
           this.$refs.DetailDialog.reset();
           this.currentId = row.wayBillCode;
           this.open = true;
