@@ -83,6 +83,25 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="所属网点" prop="branchCode">
+        <el-select
+          v-model="queryParams.branchCode"
+          filterable
+          remote
+          reserve-keyword
+          placeholder="请输入网点"
+          style="width: 272px"
+          :remote-method="getBranchOptions"
+          :loading="loading"
+        >
+          <el-option
+            v-for="item in branchOptions"
+            :key="item.code"
+            :label="item.name"
+            :value="item.code"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="审核时间">
         <el-date-picker
           v-model="queryParams.authTimeBegin"
@@ -252,6 +271,7 @@
 
 <script>
 import { listShipmentApi, listShipment, getShipment, delShipment } from '@/api/assets/shipment';
+import { getBranchList } from '@/api/system/branch';
 import ShipmentDialog from './shipmentDialog';
 import ManageDialog from './manageDialog.vue';
 
@@ -305,6 +325,8 @@ export default {
         { dictLabel: '否', dictValue: 0 },
         { dictLabel: '是', dictValue: 1 }
       ],
+      // 网点字典
+      branchOptions: [],
       // 票制类别字典
       ticketTypeOptions: [],
       // 省编码字典
@@ -332,7 +354,8 @@ export default {
         authTimeBegin: undefined,
         authTimeEnd: undefined,
         createTimeBegin: undefined,
-        createTimeEnd: undefined
+        createTimeEnd: undefined,
+        branchCode: undefined
       },
       // 表单详情
       form: {},
@@ -500,6 +523,20 @@ export default {
       this.shipmentCode = row.code;
       this.companyCode = row.companyCode;
       this.manageDialogOpen = true;
+    },
+    /** 查询网点列表 */
+    getBranchOptions(query) {
+      if (query !== '') {
+        this.loading = true;
+        getBranchList({
+          name: query
+        }).then(response => {
+          this.loading = false;
+          this.branchOptions = response.data;
+        });
+      } else {
+        this.branchOptions = [];
+      }
     }
   }
 };

@@ -68,3 +68,11 @@ export function getWaybillComment(code, type) {
     method: 'get'
   });
 }
+
+// 查询运单详情-轨迹(根据运单CODE获取运单轨迹)
+export function getWaybillTrace(code) {
+  return request({
+    url: `/transportation/waybillTrace/getByWayBillCode?waybillCode=${code}`,
+    method: 'get'
+  });
+}

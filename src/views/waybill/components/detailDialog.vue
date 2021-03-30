@@ -135,6 +135,52 @@
         <el-divider content-position="left" class="m40">
           <h5 class="g-title-medium">运单轨迹</h5>
         </el-divider>
+        <el-row v-if="activeTab === '3'" :gutter="20">
+          <el-col :span="18">
+            <div class="map-content">
+              <el-amap vid="amapDemo" :zoom="zoom" :center="center" style="height:600px">
+                <div class="waybill-detail-card">
+                  <h5>
+                    {{ currentRow?currentRow.driverName:'' }}
+                    <span>{{ currentRow?currentRow.driverPhone:'' }}</span>
+                    <span class="license">{{ currentRow?currentRow.licenseNumber:'' }}</span>
+                  </h5>
+                  <p>
+                    <label>货物类型：</label>
+                    {{ currentRow?currentRow.goodsBigType:'' }}
+                  </p>
+                  <p>
+                    <label>运单号：</label>
+                    {{ currentRow?currentRow.waybillNo:'' }}
+                  </p>
+                  <p>
+                    <label>接单时间：</label>
+                    {{ currentRow?parseTime(currentRow.receiveTime):'' }}
+                  </p>
+                  <p>
+                    <label>装货地：</label>
+                    {{ currentRow?currentRow.loadAddress:'' }}
+                  </p>
+                  <p>
+                    <label>卸货地：</label>
+                    {{ currentRow?currentRow.unloadAddress:'' }}
+                  </p>
+                </div>
+                <el-amap-polyline :path="polyline.path" :stroke-weight="8" :stroke-opacity="0.8" :stroke-color="'#0091ea'" />
+                <el-amap-marker v-for="(marker, index) in markers" :key="index" :position="marker.position" :icon="marker.icon" />
+              </el-amap>
+            </div>
+          </el-col>
+          <el-col :span="6">
+            <ul class="time-line-content">
+              <li v-for="(item, index) in timeLineList" :key="item.id" :class="index===0?'light':''">
+                <p class="g-strong g-text">{{ parseTime(item.createTime, '{y}-{m}-{d} {h}:{i}') }}</p>
+                <p class="g-color-gray g-text">{{ item.content }}</p>
+                <!-- <p class="g-color-warning g-text">状态</p> -->
+              </li>
+            </ul>
+          </el-col>
+        </el-row>
       </el-tab-pane>
       <!-- 评价 -->
       <el-tab-pane label="评价" name="4">
@@ -157,7 +203,8 @@
 </template>
 
 <script>
-import { getWayBill, getWaybillAttachment, getWaybillComment } from '@/api/waybill/manages';
+import { getWayBill, getWaybillAttachment, getWaybillComment, getWaybillTrace } from '@/api/waybill/manages';
+import { trackLocation } from '@/api/waybill/tracklist';
 export default {
   props: {
     title: {
@@ -169,7 +216,13 @@ export default {
       type: String,
       default: null
     },
-    disable: Boolean
+    disable: Boolean,
+    currentRow: {
+      type: Object,
+      default: function() {
+        return {};
+      }
+    }
   },
   data() {
     return {
@@ -240,7 +293,27 @@ export default {
       formAttachment: {},
       formAttachmentUp: {},
       formCommentDriver: {},
-      formCommentShipment: {}
+      formCommentShipment: {},
+      timeLineList: [],
+      // 地图
+      queryParams: {
+        begin_time: '2021-03-22 08:00:00',
+        end_time: '2021-03-22 09:00:00',
+        imeis: '867567047562525',
+        map_type: 'GOOGLE' // GOOGOLE或BAIDU
+      },
+      zoom: 16,
+      center: [116.478928, 39.997761],
+      polyline: {
+        path: []
+      },
+      markers: [{
+        icon: 'https://webapi.amap.com/theme/v1.3/markers/n/start.png',
+        position: []
+      }, {
+        icon: 'https://webapi.amap.com/theme/v1.3/markers/n/end.png',
+        position: []
+      }]
     };
   },
   computed: {
@@ -331,6 +404,9 @@ export default {
       // 运单
       getWayBill(this.currentId).then(response => {
         this.form = response.data || {};
+        this.form.loadAddress = response.data.loadAddress || {};
+        this.form.unloadAddress = response.data.unloadAddress || {};
+        this.form.balanceVo = response.data.balanceVo || {};
       });
       // 回单-装货
       getWaybillAttachment(this.currentId, 1).then(response => {
@@ -348,6 +424,24 @@ export default {
       getWaybillComment(this.currentId, 0).then(response => {
         this.formCommentShipment = response.data ? response.data[0] : null;
       });
+      // 轨迹
+      trackLocation(this.queryParams).then(response => {
+        const tracklist = response.data.result.map(function(response) {
+          return [response.lng, response.lat];
+        });
+        this.polyline.path = tracklist || [];
+        if (tracklist.length > 0) {
+          this.center = tracklist[0];
+          this.markers[0].position = tracklist[0];
+          this.markers[1].position = tracklist[tracklist.length - 1];
+        }
+      });
+      // 轨迹时间线
+      getWaybillTrace(this.currentId).then(response => {
+        response.data.forEach(el => {
+          this.timeLineList.unshift(el);
+        });
+      });
     },
     // 取消按钮
     cancel() {
@@ -360,6 +454,7 @@ export default {
     },
     // 表单重置
     reset() {
+      this.activeTab = '1';
       this.form = {
         loadAddress: {},
         unloadAddress: {},
@@ -369,6 +464,7 @@ export default {
       this.formAttachmentUp = {};
       this.formCommentDriver = {};
       this.formCommentShipment = {};
+      this.timeLineList = [];
     }
   }
 };
@@ -402,5 +498,66 @@ export default {
   width: 200px;
   height: 200px;
   vertical-align: top;
+}
+// 轨迹-运单详情卡片
+.map-content{
+  position: relative;
+  height: 600px;
+  .waybill-detail-card{
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 240px;
+    background: #fff;
+    padding: 15px;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.15);
+    >h5{
+      line-height: 30px;
+      border-bottom: 1px solid #d2d4da;
+      margin-bottom: 5px;
+      font-size: 14px;
+      >span{
+        font-size: 13px;
+        &.license{
+          background: #ffba00;
+          padding: 3px 4px 1px;
+          margin-left: 6px;
+          border-radius: 4px;
+          border: 1px solid gray;
+        }
+      }
+    }
+    >p{
+      line-height: 28px;
+      >label{
+        font-weight: normal;
+        color: gray;
+      }
+    }
+  }
+}
+// 轨迹-时间线
+.time-line-content{
+  >li{
+    position: relative;
+    padding: 0 0 20px 20px;
+    border-left: 1px solid #d2d4da;
+    &::before{
+      content: '';
+      position: absolute;
+      top: 5px;
+      left: -6px;
+      width: 11px;
+      height: 11px;
+      border-radius: 100%;
+      background: #d2d4da;
+    }
+    &.light{
+      &::before{
+        content: '';
+        background: #00bd93;
+      }
+    }
+  }
 }
 </style>>

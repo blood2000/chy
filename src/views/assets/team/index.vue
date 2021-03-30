@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
-      <el-form-item label="调度者名称" prop="name">
+      <el-form-item label="调度者" prop="name">
         <el-input
           v-model="queryParams.name"
           placeholder="请输入调度者名称"
@@ -10,7 +10,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="管理者名称" prop="teamLeader">
+      <el-form-item label="管理者" prop="teamLeader">
         <el-input
           v-model="queryParams.teamLeader"
           placeholder="请输入管理者名称"
@@ -154,7 +154,7 @@
     <!-- 管理 对话框 -->
     <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :team-code="teamCode" />
     <!-- 添加司机 对话框 -->
-    <add-driver-dialog :open.sync="addDriverDialogOpen" />
+    <add-driver-dialog :open.sync="addDriverDialogOpen" :team-code="teamCode" />
   </div>
 </template>
 
@@ -207,7 +207,6 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        branchCode: null,
         name: null,
         teamLeader: null,
         status: null,
@@ -319,6 +318,7 @@ export default {
     },
     // 添加司机
     handleAddDriver(row) {
+      this.teamCode = row.code;
       this.addDriverDialogOpen = true;
     }
   }

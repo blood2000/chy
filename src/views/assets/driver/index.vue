@@ -251,7 +251,7 @@
     <!-- 协议 对话框 -->
     <agreement-dialog ref="agreementDialog" :open.sync="agreementDialogOpen" :agreement-html="agreementHtml" />
     <!-- 加入调度 对话框 -->
-    <add-team-dialog :open.sync="addTeamDialogOpen" />
+    <add-team-dialog :open.sync="addTeamDialogOpen" :driver-code="driverCode" />
   </div>
 </template>
 
@@ -496,6 +496,7 @@ export default {
     },
     // 申请加入调度
     handleAddTeam(row) {
+      this.driverCode = row.code;
       this.addTeamDialogOpen = true;
     }
   }

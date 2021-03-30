@@ -7,6 +7,58 @@
     append-to-body
     @close="cancel"
   >
+    <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="80px">
+      <el-form-item label="调度者" prop="name">
+        <el-input
+          v-model="queryParams.name"
+          placeholder="请输入调度者名称"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="管理者" prop="teamLeader">
+        <el-input
+          v-model="queryParams.teamLeader"
+          placeholder="请输入管理者名称"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="状态" prop="status">
+        <el-select v-model="queryParams.status" placeholder="请选择状态" filterable clearable size="small">
+          <el-option
+            v-for="dict in statusOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="司机姓名" prop="driverName">
+        <el-input
+          v-model="queryParams.driverName"
+          placeholder="请输入司机姓名"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="车牌号码" prop="licenseNumber">
+        <el-input
+          v-model="queryParams.licenseNumber"
+          placeholder="请输入车牌号码"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+      </el-form-item>
+    </el-form>
     <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <!-- <el-table-column label="网点编码" align="center" prop="branchCode" /> -->
@@ -41,11 +93,16 @@
 
 <script>
 import { listInfo } from '@/api/assets/team';
+import { applyJoinTeam } from '@/api/assets/driver';
 
 export default {
   name: 'TeamManageDialog',
   props: {
-    open: Boolean
+    open: Boolean,
+    driverCode: {
+      type: String,
+      default: null
+    }
   },
   data() {
     return {
@@ -73,7 +130,6 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        branchCode: null,
         name: null,
         teamLeader: null,
         status: null,
@@ -107,12 +163,22 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id);
+      this.ids = selection.map(item => item.code);
       this.multiple = !selection.length;
+    },
+    // 搜索按钮操作
+    handleQuery() {
+      this.queryParams.pageNum = 1;
+      this.getList();
+    },
+    // 重置按钮操作
+    resetQuery() {
+      this.reset();
+      this.handleQuery();
     },
     // 表单重置
     reset() {
-
+      this.resetForm('queryForm');
     },
     // 取消按钮
     cancel() {
@@ -125,7 +191,13 @@ export default {
     },
     // 提交按钮
     submitForm() {
-      console.log(this.ids);
+      applyJoinTeam({
+        driverCode: this.driverCode,
+        teamCodes: this.ids
+      }).then(response => {
+        this.msgSuccess('操作成功');
+        this.close();
+      });
     }
   }
 };

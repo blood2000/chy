@@ -7,6 +7,82 @@
     append-to-body
     @close="cancel"
   >
+    <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
+      <el-form-item label="司机类别" prop="driverType">
+        <el-select v-model="queryParams.driverType" placeholder="请选择司机类别" filterable clearable size="small" class="input-width">
+          <el-option
+            v-for="dict in driverTypeOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="用户名称" prop="name">
+        <el-input
+          v-model="queryParams.name"
+          placeholder="请输入用户名称"
+          clearable
+          size="small"
+          class="input-width"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="手机号" prop="telphone">
+        <el-input
+          v-model="queryParams.telphone"
+          placeholder="请输入手机号"
+          clearable
+          size="small"
+          class="input-width"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="车牌号" prop="licenseNumber">
+        <el-input
+          v-model="queryParams.licenseNumber"
+          placeholder="请输入车牌号"
+          clearable
+          size="small"
+          class="input-width"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="身份证号" prop="identificationNumber">
+        <el-input
+          v-model="queryParams.identificationNumber"
+          placeholder="请输入身份证号"
+          clearable
+          size="small"
+          class="input-width"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="驾驶证类型" prop="driverLicenseType">
+        <el-select v-model="queryParams.driverLicenseType" filterable clearable size="small" class="input-width">
+          <el-option
+            v-for="dict in driverLicenseTypeOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="审核状态" prop="authStatus">
+        <el-select v-model="queryParams.authStatus" placeholder="请选择审核状态" filterable clearable size="small" class="input-width">
+          <el-option
+            v-for="dict in statusOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+      </el-form-item>
+    </el-form>
     <el-table v-loading="loading" :data="driverList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
       <el-table-column label="司机类别" align="center" prop="driverType">
@@ -94,11 +170,16 @@
 
 <script>
 import { listDriver } from '@/api/assets/driver';
+import { applyDriver } from '@/api/assets/team';
 
 export default {
   name: 'TeamManageDialog',
   props: {
-    open: Boolean
+    open: Boolean,
+    teamCode: {
+      type: String,
+      default: null
+    }
   },
   data() {
     return {
@@ -186,12 +267,22 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id);
+      this.ids = selection.map(item => item.code);
       this.multiple = !selection.length;
+    },
+    // 搜索按钮操作
+    handleQuery() {
+      this.queryParams.pageNum = 1;
+      this.getList();
+    },
+    // 重置按钮操作
+    resetQuery() {
+      this.reset();
+      this.handleQuery();
     },
     // 表单重置
     reset() {
-
+      this.resetForm('queryForm');
     },
     // 取消按钮
     cancel() {
@@ -204,7 +295,13 @@ export default {
     },
     // 提交按钮
     submitForm() {
-      console.log(this.ids);
+      applyDriver({
+        teamCode: this.teamCode,
+        driverCodes: this.ids
+      }).then(response => {
+        this.msgSuccess('操作成功');
+        this.close();
+      });
     }
   }
 };

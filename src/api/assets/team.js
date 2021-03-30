@@ -43,3 +43,12 @@ export function delInfo(id) {
     method: 'delete'
   });
 }
+
+// 邀请司机
+export function applyDriver(data) {
+  return request({
+    url: '/assets/apply/invitation',
+    method: 'post',
+    data: data
+  });
+}

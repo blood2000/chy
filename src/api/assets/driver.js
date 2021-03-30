@@ -79,3 +79,13 @@ export function getAgreementWord(query) {
     params: query
   });
 }
+
+// 申请加入调度者
+export function applyJoinTeam(data) {
+  return request({
+    url: '/assets/apply/join',
+    method: 'post',
+    data: data
+  });
+}
+
