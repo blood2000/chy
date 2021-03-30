@@ -1,0 +1,145 @@
+<template>
+  <!-- 平台账户余额 -->
+  <div class="app-container">
+    <el-row :gutter="10" class="mb8">
+      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+    </el-row>
+    <el-table v-loading="loading" :data="dataList">
+      <el-table-column label="序号" type="index" min-width="5%" />
+      <el-table-column label="姓名" align="center" prop="" />
+      <el-table-column label="网商汇款账号" align="center" prop="" />
+      <el-table-column label="角色" align="center" prop="" />
+      <el-table-column label="平台账号余额" align="center" prop="" />
+      <el-table-column label="余额变动时间" align="center" prop="" />
+      <el-table-column label="公户银行账户" align="center" prop="" />
+      <el-table-column label="开户银行" align="center" prop="" />
+      <el-table-column label="银行预留手机号" align="center" prop="" />
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="200" fixed="right">
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-document"
+            @click="handleChangeDetail(scope.row)"
+          >变动明细</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-wallet"
+            @click="handleRecharge(scope.row)"
+          >划拨充值</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-coin"
+            @click="handleReflect(scope.row)"
+          >平台提现</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-discount"
+            @click="handleMember(scope.row)"
+          >开通网商会员</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-bank-card"
+            @click="handleBindBank(scope.row)"
+          >绑定银行卡</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-money"
+            @click="handleBalance(scope.row)"
+          >查询网商余额</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="queryParams.pageNum"
+      :limit.sync="queryParams.pageSize"
+      @pagination="getList"
+    />
+
+  </div>
+</template>
+
+<script>
+import { balanceList } from '@/api/capital/abalance';
+
+export default {
+  data() {
+    return {
+      // 遮罩层
+      loading: true,
+      // 显示搜索条件
+      showSearch: true,
+      // 总条数
+      total: 0,
+      // 表格数据
+      dataList: [],
+      // 弹出层标题
+      title: '',
+      // 是否显示弹出层
+      changeDetailOpen: false,
+      rechargeOpen: false,
+      reflectOpen: false,
+      memberOpen: false,
+      bindBankOpen: false,
+      balanceOpen: false,
+      // 查询参数
+      queryParams: {
+        pageNum: 1,
+        pageSize: 10
+      }
+    };
+  },
+  created() {
+    this.getList();
+  },
+  methods: {
+    /** 查询列表 */
+    getList() {
+      this.loading = true;
+      balanceList(this.queryParams).then(response => {
+        this.dataList = response.rows;
+        this.total = response.total;
+        this.loading = false;
+      });
+    },
+    /** 变动明细 */
+    handleChangeDetail(row) {
+      this.title = '变动明细';
+      this.changeDetailOpen = true;
+    },
+    /** 划拨充值 */
+    handleRecharge(row) {
+      this.title = '划拨充值';
+      this.rechargeOpen = true;
+    },
+    /** 平台提现 */
+    handleReflect(row) {
+      this.title = '平台提现';
+      this.reflectOpen = true;
+    },
+    /** 开通网商会员 */
+    handleMember(row) {
+      this.title = '开通网商会员';
+      this.memberOpen = true;
+    },
+    /** 绑定银行卡 */
+    handleBindBank(row) {
+      this.title = '绑定银行卡';
+      this.bindBankOpen = true;
+    },
+    /** 查询网商余额 */
+    handleBalance(row) {
+      this.title = '查询网商余额';
+      this.balanceOpen = true;
+    }
+  }
+};
+</script>
