@@ -78,6 +78,12 @@ export default {
         this.msearchOption = value;
       },
       deep: true
+    },
+    value: {
+      handler(value) {
+        this.keyValue = value;
+      },
+      deep: true
     }
   },
 
@@ -89,10 +95,14 @@ export default {
   methods: {
     // 1. 监听输入框
     remoteMethod(que) {
-      this.loading = true;
-      const vdom = this.$refs.amap;
-      vdom.keyword = que;
-      vdom.search();
+      if (que !== '') {
+        this.loading = true;
+        const vdom = this.$refs.amap;
+        vdom.keyword = que;
+        vdom.search();
+      } else {
+        this.detailOptin = [];
+      }
     },
     onSearchResult(res) {
       this.detailOptin = this._baozhuan(res, 'id', 'name');
