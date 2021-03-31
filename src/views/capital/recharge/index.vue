@@ -126,6 +126,7 @@
 import { rechargelist } from '@/api/capital/recharge';
 
 export default {
+  name: 'Recharge',
   data() {
     return {
       // 遮罩层

@@ -130,7 +130,14 @@
           type="text"
           icon="el-icon-document-add"
           @click="handleAddDriver(row)"
-        >添加司机</el-button>
+        >邀请司机</el-button>
+        <el-button
+          v-show="row.apply"
+          size="mini"
+          type="text"
+          icon="el-icon-document-checked"
+          @click="handleDeal(row)"
+        >处理申请</el-button>
         <el-button
           v-hasPermi="['assets:team:remove']"
           size="mini"
@@ -153,23 +160,27 @@
     <team-dialog ref="TeamDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
     <!-- 管理 对话框 -->
     <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :team-code="teamCode" />
-    <!-- 添加司机 对话框 -->
+    <!-- 邀请司机 对话框 -->
     <add-driver-dialog :open.sync="addDriverDialogOpen" :team-code="teamCode" />
+    <!-- 处理申请 对话框 -->
+    <apply-driver-dialog :open.sync="applyDriverDialogOpen" :team-code="teamCode" />
   </div>
 </template>
 
 <script>
 import { listTeamApi, listInfo, getInfo, delInfo } from '@/api/assets/team';
 import TeamDialog from './teamDialog';
-import ManageDialog from './manageDialog.vue';
-import AddDriverDialog from './addDriverDialog.vue';
+import ManageDialog from './manageDialog';
+import AddDriverDialog from './addDriverDialog';
+import applyDriverDialog from './applyDriverDialog';
 
 export default {
   name: 'Team',
   components: {
 	  TeamDialog,
     ManageDialog,
-    AddDriverDialog
+    AddDriverDialog,
+    applyDriverDialog
   },
   data() {
     return {
@@ -194,6 +205,7 @@ export default {
       open: false,
       manageDialogOpen: false,
       addDriverDialogOpen: false,
+      applyDriverDialogOpen: false,
       // 状态字典
       statusOptions: [
         { dictLabel: '启用', dictValue: '0' },
@@ -320,6 +332,11 @@ export default {
     handleAddDriver(row) {
       this.teamCode = row.code;
       this.addDriverDialogOpen = true;
+    },
+    // 处理申请
+    handleDeal(row) {
+      this.driverCode = row.code;
+      this.applyDriverDialogOpen = true;
     }
   }
 };

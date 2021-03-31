@@ -64,13 +64,36 @@
       @pagination="getList"
     />
 
+    <!-- 绑定银行卡 对话框 -->
+    <bank-dialog ref="bankDialogRef" :open.sync="bindBankOpen" :title="title" @refresh="getList" />
+    <!-- 变动明细 对话框 -->
+    <change-detail-dialog :open.sync="changeDetailOpen" :title="title" />
+    <!-- 查询网商余额 对话框 -->
+    <check-balance-dialog :open.sync="balanceOpen" :title="title" />
+    <!-- 划拨充值 对话框 -->
+    <recharge-dialog :open.sync="rechargeOpen" :title="title" />
+    <!-- 平台提现 -->
+    <reflect-dialog :open.sync="reflectOpen" :title="title" />
   </div>
 </template>
 
 <script>
 import { balanceList } from '@/api/capital/abalance';
+import BankDialog from './bankDialog';
+import ChangeDetailDialog from '../components/changeDetailDialog';
+import CheckBalanceDialog from '../components/checkBalanceDialog';
+import RechargeDialog from './rechargeDialog';
+import ReflectDialog from './reflectDialog';
 
 export default {
+  name: 'Abalance',
+  components: {
+    BankDialog,
+    ChangeDetailDialog,
+    CheckBalanceDialog,
+    RechargeDialog,
+    ReflectDialog
+  },
   data() {
     return {
       // 遮罩层
@@ -87,7 +110,6 @@ export default {
       changeDetailOpen: false,
       rechargeOpen: false,
       reflectOpen: false,
-      memberOpen: false,
       bindBankOpen: false,
       balanceOpen: false,
       // 查询参数
@@ -127,11 +149,22 @@ export default {
     },
     /** 开通网商会员 */
     handleMember(row) {
-      this.title = '开通网商会员';
-      this.memberOpen = true;
+      this.$confirm('请确认是否开通网商会员?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+
+      }).then(() => {
+        this.getList();
+        this.msgSuccess('开通成功');
+      });
     },
     /** 绑定银行卡 */
     handleBindBank(row) {
+      this.$refs.bankDialogRef.reset();
+      // 这里需要调获取详情接口
+      this.$refs.bankDialogRef.setForm({});
       this.title = '绑定银行卡';
       this.bindBankOpen = true;
     },

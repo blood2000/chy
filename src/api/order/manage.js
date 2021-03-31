@@ -34,3 +34,12 @@ export function loadAndUnloadingGoods(data) {
     data: data
   });
 }
+
+// 货源调价修改
+export function adjustPrice(data) {
+  return request({
+    url: '/transportation/order/adjustPrice',
+    method: 'post',
+    data: data
+  });
+}

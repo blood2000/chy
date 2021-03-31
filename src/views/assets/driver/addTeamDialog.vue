@@ -54,16 +54,32 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="处理状态" prop="applyStatus">
+        <el-select v-model="queryParams.applyStatus" placeholder="请选择状态" filterable clearable size="small">
+          <el-option
+            v-for="dict in applyStatusOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
     <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
+      <el-table-column type="selection" :selectable="checkboxSelectable" width="55" align="center" />
       <!-- <el-table-column label="网点编码" align="center" prop="branchCode" /> -->
-      <el-table-column label="车队名称" align="center" prop="name" />
-      <el-table-column label="车队管理者" align="center" prop="teamLeader" />
+      <el-table-column label="加入情况" align="center" prop="applyStatus">
+        <template slot-scope="scope">
+          <span v-if="scope.row.applyStatus">{{ selectDictLabel(applyStatusOptions, scope.row.applyStatus) }}</span>
+          <span v-else>无</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="调度者名称" align="center" prop="name" />
+      <!-- <el-table-column label="管理者" align="center" prop="teamLeader" />-->
       <el-table-column label="身份证号" align="center" prop="identificationNumber" />
       <el-table-column label="是否清分" align="center" prop="isDistribution">
         <template slot-scope="scope">
@@ -120,9 +136,16 @@ export default {
         { dictLabel: '启用', dictValue: '0' },
         { dictLabel: '禁用', dictValue: '1' }
       ],
+      // 是否字典
       isOptions: [
         { dictLabel: '否', dictValue: 0 },
         { dictLabel: '是', dictValue: 1 }
+      ],
+      // 处理状态字典
+      applyStatusOptions: [
+        { dictLabel: '未处理', dictValue: 0 },
+        { dictLabel: '已加入', dictValue: 1 },
+        { dictLabel: '已拒绝', dictValue: 2 }
       ],
       // 参数表格数据
       infoList: [],
@@ -134,7 +157,8 @@ export default {
         teamLeader: null,
         status: null,
         driverName: null,
-        licenseNumber: null
+        licenseNumber: null,
+        applyStatus: null
       }
     };
   },
@@ -198,6 +222,14 @@ export default {
         this.msgSuccess('操作成功');
         this.close();
       });
+    },
+    // 状态为未处理/已加入的checkbox不可选
+    checkboxSelectable(row) {
+      if (row.applyStatus === 0 || row.applyStatus === 1) {
+        return false;
+      } else {
+        return true;
+      }
     }
   }
 };

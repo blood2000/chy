@@ -344,6 +344,12 @@
       <template #annualVerificationDate="{row}">
         <span>{{ parseTime(row.annualVerificationDate, '{y}-{m}-{d}') }}</span>
       </template>
+      <template #createTime="{row}">
+        <span>{{ parseTime(row.createTime, '{y}-{m}-{d}') }}</span>
+      </template>
+      <template #updateTime="{row}">
+        <span>{{ parseTime(row.updateTime, '{y}-{m}-{d}') }}</span>
+      </template>
       <template #authStatus="{row}">
         <span v-show="row.authStatus === 0" class="g-color-gray">未审核</span>
         <span v-show="row.authStatus === 1" class="g-color-blue">审核中</span>

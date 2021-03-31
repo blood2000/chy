@@ -107,13 +107,24 @@
       @pagination="getList"
     />
 
+    <!-- 变动明细 对话框 -->
+    <change-detail-dialog :open.sync="detailOpen" :title="title" />
+    <!-- 查询网商余额 对话框 -->
+    <check-balance-dialog :open.sync="balanceOpen" :title="title" />
   </div>
 </template>
 
 <script>
 import { balanceList } from '@/api/capital/ubalance';
+import ChangeDetailDialog from '../components/changeDetailDialog';
+import CheckBalanceDialog from '../components/checkBalanceDialog';
 
 export default {
+  name: 'Ubalance',
+  components: {
+    ChangeDetailDialog,
+    CheckBalanceDialog
+  },
   data() {
     return {
       // 遮罩层

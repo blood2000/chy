@@ -154,7 +154,7 @@
 import { listConfig, getConfig, delConfig, delAllConfig, addConfig, updateConfig, syncConfig } from '@/api/system/table';
 
 export default {
-  name: 'TableConfig',
+  name: 'Table',
   data() {
     return {
       // 遮罩层

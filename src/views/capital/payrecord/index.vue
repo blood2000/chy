@@ -243,13 +243,20 @@
       @pagination="getList"
     />
 
+    <!-- 编辑支付批次号 -->
+    <modify-batch-dialog :open.sync="modifyBatchOpen" :title="title" />
   </div>
 </template>
 
 <script>
 import { payRecordlist } from '@/api/capital/payrecord';
+import modifyBatchDialog from './modifyBatchDialog';
 
 export default {
+  name: 'Payrecord',
+  components: {
+    modifyBatchDialog
+  },
   data() {
     return {
       // 遮罩层
@@ -269,7 +276,7 @@ export default {
       // 弹出层标题
       title: '',
       // 是否显示弹出层
-      open: false,
+      modifyBatchOpen: false,
       // 转帐结果字典
       resultOptions: [],
       // 流水上报字典
@@ -319,11 +326,21 @@ export default {
     },
     /** 上报流水 */
     handleReport(row) {
+      this.$confirm('请确认是否要发送资金流水到部无车承运人监测平台?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
 
+      }).then(() => {
+        this.getList();
+        this.msgSuccess('上报成功');
+      });
     },
     /** 修改批次号 */
     handleUpdate(row) {
-
+      this.title = '编辑支付批次号';
+      this.modifyBatchOpen = true;
     },
     /** 导出按钮操作 */
     handleExport() {

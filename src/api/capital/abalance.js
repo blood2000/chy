@@ -8,3 +8,12 @@ export function balanceList(query) {
     params: query
   });
 }
+
+// 获取变动明细列表
+export function changeDetailList(query) {
+  return request({
+    url: '/system/config/list',
+    method: 'get',
+    params: query
+  });
+}
