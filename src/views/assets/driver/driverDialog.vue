@@ -11,7 +11,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="所属调度" prop="teamCode" :required="form.driverType===2">
+      <el-form-item label="所属调度" prop="teamCode" v-if="form.driverType == 2" :required="form.driverType===2">
         <el-select
           v-model="form.teamCode"
           filterable
