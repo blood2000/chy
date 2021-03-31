@@ -5,7 +5,7 @@
       :model="formData"
       :rules="rules"
       size="medium"
-      label-width="110px"
+      label-width="80px"
       :label-position="'left'"
       :disabled="myisdisabled"
     >
@@ -36,7 +36,7 @@
             placeholder="请输入关键词"
             :remote-method="remoteMethod"
             :loading="loading"
-            :style="{ width: '100%' }"
+            :style="{ width: '90%' }"
             @change="handlechengDetail"
           >
             <el-option
@@ -87,7 +87,7 @@
               v-model="formData.contact"
               placeholder="请输入联系人"
               clearable
-              :style="{ width: '100%' }"
+              :style="{ width: '90%' }"
             />
           </el-form-item>
         </el-col>
@@ -183,8 +183,8 @@ export default {
 
         this.selected = {
           name: detail,
-          lat: location ? location[1] : '1',
-          lng: location ? location[0] : '1'
+          lat: location ? location[1] - 0 : 0,
+          lng: location ? location[0] - 0 : 0
         };
       },
       immediate: true

@@ -206,6 +206,8 @@ export default {
       orderSpecifiedList: null, // 调度者信息
       actionIndex: '2', // 控制弹框显示谁
       open: false,
+      classList: null, // 修改的时候
+      InfoCode: null, // 修改临时存放code
 
       formData: {
         tin3: '0', // 选择所属项目 0表示没有
@@ -315,7 +317,7 @@ export default {
         if (!this.cbData) return;
 
         // goodsType 是包装成数组 [code1, code2]
-        const { projectCode, isPublic, isSpecified, remark, orderSpecifiedList, goodsBigType, goodsType, classList } = this.cbData;
+        const { code, projectCode, isPublic, isSpecified, remark, orderSpecifiedList, goodsBigType, goodsType, classList } = this.cbData;
 
         // 1.基本的赋值
         this.formData.tin3 = projectCode || '0';
@@ -323,24 +325,31 @@ export default {
         this.formData.tin5 = isSpecified ? '1' : '0';
         this.formData.remark = remark;
         this.tin2Option.forEach(e => {
-          if (goodsBigType === e.dictCode) {
+          if (goodsBigType === e.dictValue) {
             this.formData.tin2 = e.dictValue;
           }
         });
+
+        console.log(this.formData.tin2);
+
 
         // 2.去根据大类去请求下数据
         await this.handletin2();
 
         // 3.回填 小类(商品)
         if (this.isMultiGoods) {
-          this.formData.tin2_1 = this._handlreMultiGoodsType(goodsType, this.tin2_Option);
+          this.formData.tin2_1 = goodsType;
         } else {
           this.tin2_Option.forEach(e => {
-            if (goodsType[0] === e.dictCode) {
+            if (goodsType[0] === e.dictValue) {
               this.formData.tin2_2 = e.dictValue;
             }
           });
         }
+
+        console.log(this.formData.tin2_1);
+        console.log(this.formData.tin2_2);
+
 
         // 4.处理调度者
         this.orderSpecifiedList = orderSpecifiedList;
@@ -356,20 +365,25 @@ export default {
 
         // 5.货集码只做单选处理
         this.formData.tin6 = classList[0].classCode;
+        this.classList = classList;
+        this.InfoCode = code;
       },
       immediate: true
     },
     'formData.tin2_1': {
       handler(arr) {
+        if (!arr.length) return;
         const goods = arr.map(e => {
           return this._zhaovalue(this.tin2_Option, e);
         });
+
         this.$emit('goods', goods);
       },
       immediate: true
     },
     'formData.tin2_2': {
       handler(value) {
+        if (!value) return;
         this.$emit('goods', [this._zhaovalue(this.tin2_Option, value)]);
       },
       immediate: true
@@ -520,20 +534,31 @@ export default {
             if (this.isMultiGoods) {
               orderGoodsList = this.formData.tin2_1.map(e => {
                 return {
-                  goodsBigType: this._zhaovalue(this.tin2Option, this.formData.tin2).dictCode,
-                  goodsType: this._zhaovalue(this.tin2_Option, e).dictCode
+                  goodsBigType: this.formData.tin2,
+                  goodsType: e
                 };
               });
             } else {
               orderGoodsList = [{
-                goodsBigType: this._zhaovalue(this.tin2Option, this.formData.tin2).dictCode,
-                goodsType: this._zhaovalue(this.tin2_Option, this.formData.tin2_2).dictCode
+                goodsBigType: this.formData.tin2,
+                goodsType: this.formData.tin2_2
               }];
             }
 
 
+            if (this.classList) {
+              this.classList = this.classList.map(e => {
+                return {
+                  ...e,
+                  classCode: this.formData.tin6
+                };
+              });
+            }
+
+
             resolve({
-              classList: [
+              InfoCode: this.InfoCode,
+              classList: this.classList ? this.classList : [
                 {
                   classCode: this.formData.tin6
                 }
@@ -569,6 +594,8 @@ export default {
 
     // 回填多商品处理code
     _handlreMultiGoodsType(arr1, options) {
+      console.log(arr1);
+
       const arr2 = [];
       arr1.forEach(e => {
         options.forEach(ee => {

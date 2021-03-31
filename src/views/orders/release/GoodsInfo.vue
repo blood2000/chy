@@ -10,13 +10,28 @@
     </el-tabs>
     <div v-for="(good,index) in tabs" :key="index">
       <div v-show="good.activeName === activeName">
-        <GoodsAccounting :ref="'GoodsAccounting'+ good.activeName" :cb-data="good.goodsAccounting" :myisdisabled="myisdisabled" @getGoodsUnitName="(data)=> goodsUnitName = data" />
+        <GoodsAccounting
+          :ref="'GoodsAccounting'+ good.activeName"
+          :cb-data="good.goodsAccounting"
+          :myisdisabled="myisdisabled"
+          @getGoodsUnitName="(data)=> goodsUnitName = data"
+          @totalTypeValue="(data)=> totalTypeValue = data"
+        />
         <!--规则又是根据地址-->
         <el-divider />
 
         <div v-for="(redi,i) in good.redis" :key="i">
 
-          <AccounTing :ref="'AccounTing'+i" :pubilsh-code="pubilshCode" :redis="redi" :goods-unit-name="goodsUnitName" :myisdisabled="myisdisabled" />
+          <AccounTing
+            :ref="'AccounTing'+i"
+            :pubilsh-code="pubilshCode"
+            :redis="redi"
+            :goods-unit-name="goodsUnitName"
+            :total-type-value="totalTypeValue"
+            :myisdisabled="myisdisabled"
+            :good="good"
+            :goods-submit-form="getGoodsAccounting"
+          />
         </div>
 
       </div>
@@ -45,7 +60,8 @@ export default {
     return {
       activeName: '0',
       tabs: [],
-      goodsUnitName: '吨'
+      goodsUnitName: '吨',
+      totalTypeValue: '1'
     };
   },
 
@@ -103,24 +119,25 @@ export default {
     async _submitForm() {
       await this.getAccounTing();
 
+      // console.log(this.tabs, '_submitForm');
+
       return this.tabs;
     },
 
     // 数据初始化(created的时候)
     init() {
       if (!this.goods || (this.goods && !this.goods[0])) return;
-
-      console.log(this.goods, '商品');
-      console.log(this.addrAdd);
-      console.log(this.addrXie);
-      console.log(this.pubilshCode);
-      console.log(this.cbGoodsAccounting, '-----'); // 创建的时候 null
-      console.log(this.cbOrderFreight, '+++++++++++++'); // 创建的时候 null
+      // console.log(this.goods, '商品');
+      // console.log(this.addrAdd);
+      // console.log(this.addrXie);
+      // console.log(this.pubilshCode);
+      // console.log(this.cbGoodsAccounting, '-----'); // 创建的时候 null
+      // console.log(this.cbOrderFreight, '+++++++++++++'); // 创建的时候 null
       this.tabs = this.goods.map((e, index) => {
         // 回填有值的时候
         if (this.cbGoodsAccounting) {
           this.cbGoodsAccounting.forEach(ee => {
-            if (e.dictCode === ee.goodsType) {
+            if (e.dictValue === ee.goodsType) {
               e.goodsAccounting = ee;
             }
           });
@@ -136,11 +153,12 @@ export default {
 
         return {
         //   ...e, 先存这三个
+          code: e.goodsAccounting ? e.goodsAccounting.code : undefined,
           goodsAccounting: e.goodsAccounting,
           // price: this.handlerPrice(e.price),
           dictLabel: e.dictLabel,
           dictCode: e.dictCode,
-          goodsType: e.dictCode,
+          goodsType: e.dictValue,
           // redis: this.addressInit(), // 规则
           redis: e.redis || this.addressInit(), // 规则
           activeName: index + ''
@@ -148,7 +166,7 @@ export default {
       });
       this.activeName = '0';
 
-      // console.log(this.tabs, ' 最后---');
+      console.log(this.tabs, ' 最后---');
     },
 
     // 判断规则是多装还是多卸, 并处理装地址--卸地址
@@ -178,14 +196,16 @@ export default {
     handlerPrice(addressIdentification) { // identification
       const redis = this.addressInit().map(e => {
         addressIdentification.forEach(ee => {
-          if ((e.code + '') === (ee.addressCode + '')) {
+          const addressCodeArr = ee.addressCode.split(':');
+
+          if ((e.code + '') === (addressCodeArr[0] + '') || (e.code + '') === (addressCodeArr[1] + '')) {
             e.orderFreightVo = ee.orderFreightVo;
           }
         });
 
         return e;
       });
-      console.log(redis);
+
       return redis;
     }
 

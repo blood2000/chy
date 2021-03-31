@@ -55,75 +55,85 @@
 
 
 
-      <template v-if="formData.stowageStatus !== '2'">
-        <el-form-item label="重量/体积" prop="totalType">
-          <el-radio-group v-model="formData.totalType" size="medium">
-            <el-radio label="1">不限(长期货源)</el-radio>
 
-            <el-radio label="2">
-              <el-form-item
-                prop="weight"
-                style="display: inline-block"
-                :rules="[
-                  {
-                    required: formData.totalType === '2',
-                    message: '请输入货物重量(吨)',
-                    trigger: 'blur',
-                  },
-                ]"
-              >
-                <span class="pr-5">共</span>
-                <el-input-number
-                  v-model="formData.weight"
-                  :disabled="formData.totalType === '1'"
-                  :controls="false"
-                  :placeholder="`请输入重量(${goodsUnitName})`"
-                  step-strictly
-                  controls-position="right"
-                  :style="{ width: '120px' }"
-                />
-                <span class="pl-5">{{ goodsUnitName }}</span>
-              </el-form-item>
-            </el-radio>
-          </el-radio-group>
-        </el-form-item>
+      <el-form-item v-if="formData.stowageStatus !== '2'" label="重量/体积" prop="totalType">
+        <el-radio-group v-model="formData.totalType" size="medium">
+          <el-radio label="1">不限(长期货源)</el-radio>
 
-        <el-form-item label="最高配载" prop="vehicleMaxWeight">
-          <el-input-number
-            v-model="formData.vehicleMaxWeight"
-            :controls="false"
-            placeholder="请输入最高配载"
-            step-strictly
-            controls-position="right"
-            :style="{ width: '50%' }"
-          />
-          <span class="pl-5">{{ goodsUnitName }}</span>
-        </el-form-item>
-      </template>
-
-      <el-form-item v-else label="承运次数" prop="number">
-        <el-input-number
-          v-model="formData.number"
-          :controls="false"
-          placeholder="请输入承运次数"
-          step-strictly
-          controls-position="right"
-        />
+          <el-radio label="2">
+            <el-form-item
+              prop="weight"
+              style="display: inline-block"
+              :rules="[
+                {
+                  required: formData.totalType === '2',
+                  message: '请输入货物重量(吨)',
+                  trigger: 'blur',
+                },
+              ]"
+            >
+              <span class="pr-5">共</span>
+              <el-input-number
+                v-model="formData.weight"
+                :disabled="formData.totalType === '1'"
+                :controls="false"
+                :placeholder="`请输入重量(${goodsUnitName})`"
+                step-strictly
+                controls-position="right"
+                :style="{ width: '120px' }"
+              />
+              <span class="pl-5">{{ goodsUnitName }}</span>
+            </el-form-item>
+          </el-radio>
+        </el-radio-group>
       </el-form-item>
 
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item v-if="formData.stowageStatus !== '2'" label="最高配载" prop="vehicleMaxWeight">
+            <el-input-number
+              v-model="formData.vehicleMaxWeight"
+              :controls="false"
+              placeholder="请输入最高配载"
+              step-strictly
+              controls-position="right"
+              :style="{ width: '80%' }"
+            />
+            <span class="pl-5">{{ goodsUnitName }}</span>
+          </el-form-item>
+
+          <el-form-item v-else label="承运次数" prop="number">
+            <el-input-number
+              v-model="formData.number"
+              :controls="false"
+              placeholder="请输入承运次数"
+              step-strictly
+              controls-position="right"
+              :style="{ width: '80%' }"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="货物单价" prop="goodsPrice">
+            <el-input-number
+              v-model="formData.goodsPrice"
+              :controls="false"
+              placeholder="货物单价"
+              step-strictly
+              controls-position="right"
+              :style="{ width: '80%' }"
+            />
+            <span class="pl-5">元/{{ goodsUnitName }}</span>
+          </el-form-item>
+        </el-col>
+      </el-row>
 
 
-      <el-form-item label="货物单价" prop="goodsPrice">
-        <el-input-number
-          v-model="formData.goodsPrice"
-          :controls="false"
-          placeholder="货物单价"
-          step-strictly
-          controls-position="right"
-          :style="{ width: '50%' }"
-        />
-        <span class="pl-5">元/{{ goodsUnitName }}</span>
-      </el-form-item>
+
+
+
+
+
 
 
 
@@ -317,6 +327,12 @@ export default {
         };
       },
       immediate: true
+    },
+    'formData.totalType'(value) {
+      if (value === '1') {
+        this.formData.weight = undefined;
+      }
+      this.$emit('totalTypeValue', value);
     }
   },
 

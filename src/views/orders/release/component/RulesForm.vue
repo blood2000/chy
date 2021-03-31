@@ -68,13 +68,13 @@
         </el-form-item>
 
         <!-- 区间 -->
-        <div v-if="item.showType === '2'" class="ly-flex ly-flex-pack-justify ly-flex-align-center">
+        <div v-if="item.showType === '2'" class="ly-flex-align-center">
 
           <el-form-item
             :prop="item.myName+'_0'"
             :label="item.cnName"
             :rules="[
-              { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+              { required: true, message: '请输入起始值', trigger: 'blur' },
             ]"
           >
             <el-input-number
@@ -83,15 +83,15 @@
               :placeholder="`请输入${item.cnName}`"
               step-strictly
               controls-position="right"
-              :style="{ width: '100%' }"
+              :style="{ width: '85px' }"
             />
           </el-form-item>
-          <div style="margin-bottom: 22px;">~</div>
+          <div class="mr10" style="margin-bottom: 22px;">~</div>
           <el-form-item
             :prop="item.myName+'_1'"
             label-width="0"
             :rules="[
-              { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+              { required: true, message: '请输入结束值', trigger: 'blur' },
             ]"
           >
             <el-input-number
@@ -100,7 +100,7 @@
               :placeholder="`请输入${item.cnName}`"
               step-strictly
               controls-position="right"
-              :style="{ width: '200px' }"
+              :style="{ width: '85px' }"
             />
           </el-form-item>
         </div>
@@ -178,14 +178,15 @@ export default {
       return arr.map(async e => {
         if (e.dictCode && (e.showType === '3' || e.showType === '4')) {
           // 新
-          const { data } = await this.listByDict({
-            dictPid: '0',
-            dictType: e.dictCode
-          });
+          // const { data } = await this.listByDict({
+          //   dictPid: '0',
+          //   dictType: e.dictCode
+          // });
           // 旧
-          // const { data } = await this.getDicts(e.dictCode);
+          const { data } = await this.getDicts(e.dictCode);
           e.Option = data;
         }
+
 
         return e;
       });

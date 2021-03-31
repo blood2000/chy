@@ -13,6 +13,7 @@
     <el-form-item label="运费单价: " prop="freightPrice" label-width="90px">
       <el-row>
         <el-col :span="16" class="ly-flex">
+
           <div style="marginRight:20px;">{{ redis.tin_name }}</div>
 
           <el-input-number
@@ -21,10 +22,14 @@
             :placeholder="'请输入运费单价'"
             step-strictly
             controls-position="right"
-            :style="{ width: '50%' }"
+            :style="{ width: '100px' }"
           />
 
-          <span class="ml0"> 元 / {{ goodsUnitName }}</span>
+          <span class="ml0 mr10"> 元 / {{ goodsUnitName }}</span>
+
+          <div class="ml0 mr10 t_color_c t_m_pac">
+            司机实收单价:  47.5 元
+          </div>
         </el-col>
         <el-col :span="8">
           <el-form-item
@@ -56,66 +61,102 @@
 
     <template v-if="formData.ruleItemId">
 
+      <el-row :gutter="20">
+        <el-col :span="14">
+          <div class="t_box_item">
+
+            <el-form-item
+              label="计算方式"
+              prop="ruleDictValue"
+              :rules="[
+                { required: true, message: '选择计算方式', trigger: 'change' },
+              ]"
+            >
+              <el-select
+                v-model="formData.ruleDictValue"
+                placeholder="选择抹计算方式"
+                clearable
+                :style="{ width: '200px' }"
+              >
+                <el-option
+                  v-for="(dict, index1) in ruleFormulaOption"
+                  :key="index1"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+            </el-form-item>
 
 
-      <div class="t_box_item">
+            <div class="header mb8">路耗:</div>
+            <RulesForm v-if="lossList.length" ref="lossList" :data-list="lossList" :myisdisabled="myisdisabled" />
 
-        <el-form-item
-          label="计算方式"
-          prop="ruleDictValue"
-          :rules="[
-            { required: true, message: '选择计算方式', trigger: 'change' },
-          ]"
-        >
-          <el-select
-            v-model="formData.ruleDictValue"
-            placeholder="选择抹计算方式"
-            clearable
-            :style="{ width: '200px' }"
-          >
-            <el-option
-              v-for="(dict, index1) in ruleFormulaOption"
-              :key="index1"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-        </el-form-item>
+            <div class="header mb8">补贴项目:</div>
+            <RulesForm v-if="shouruList.length" ref="shouruList" :data-list="shouruList" :myisdisabled="myisdisabled" />
 
+            <div class="header mb8">扣费项目:</div>
 
-        <div class="header mb8">路耗:</div>
-        <RulesForm v-if="lossList.length" ref="lossList" :data-list="lossList" :myisdisabled="myisdisabled" />
+            <!-- <el-form-item
+              label="抹零"
+              prop="m0DictValue"
+              :rules="[
+                { required: true, message: '选择抹零方式', trigger: 'change' },
+              ]"
+            >
+              <el-select
+                v-model="formData.m0DictValue"
+                placeholder="选择抹零方式"
+                clearable
+                :style="{ width: '120px' }"
+              >
+                <el-option
+                  v-for="(dict, index1) in M0Option"
+                  :key="index1"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+            </el-form-item> -->
 
-        <div class="header mb8">补贴项目:</div>
-        <RulesForm v-if="shouruList.length" ref="shouruList" :data-list="shouruList" :myisdisabled="myisdisabled" />
+            <RulesForm v-if="zichuList.length" ref="zichuList" :data-list="zichuList" :myisdisabled="myisdisabled" />
 
-        <div class="header mb8">扣费项目:</div>
+          </div>
+        </el-col>
+        <el-col :span="10">
+          <div class="t_box_item">
+            <template v-if="isTotalTypeValue">
 
-        <!-- <el-form-item
-          label="抹零"
-          prop="m0DictValue"
-          :rules="[
-            { required: true, message: '选择抹零方式', trigger: 'change' },
-          ]"
-        >
-          <el-select
-            v-model="formData.m0DictValue"
-            placeholder="选择抹零方式"
-            clearable
-            :style="{ width: '120px' }"
-          >
-            <el-option
-              v-for="(dict, index1) in M0Option"
-              :key="index1"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-        </el-form-item> -->
+              <div class="header mb8">总费用估</div>
+              <el-row>
+                <el-col :span="16">
+                  <div class="mb10">货主实付金额 (总费用估): </div>
+                  <div class="mb10 t_color_c">司机实收金额 (总费用估): </div>
+                  <div class="mb10 t_color_c">平台服务费 (总费用估): </div>
+                </el-col>
+                <el-col :span="8">
+                  <div class="mb10">230000 元</div>
+                  <div class="mb10 t_color_c">23525 元</div>
+                  <div class="mb10 t_color_c">1475 元</div>
+                </el-col>
+              </el-row>
+            </template>
+            <div class="header mb8">单笔运费估</div>
+            <el-row>
+              <el-col :span="16">
+                <div class="mb10">货主实付金额 (单笔运费估): </div>
+                <div class="mb10 t_color_c">司机实收金额 (单笔运费估): </div>
+                <div class="mb10 t_color_c">平台服务费 (单笔运费估): </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="mb10">230000 元</div>
+                <div class="mb10 t_color_c">23525 元</div>
+                <div class="mb10 t_color_c">1475 元</div>
+              </el-col>
+            </el-row>
+          </div>
+        </el-col>
+      </el-row>
 
-        <RulesForm v-if="zichuList.length" ref="zichuList" :data-list="zichuList" :myisdisabled="myisdisabled" />
-
-      </div>
     </template>
 
   </el-form>
@@ -123,6 +164,7 @@
 
 <script>
 import { getListRules, getRuleItem } from '@/api/enterprise/rules';
+import { estimateCost } from '@/api/order/release.js';
 
 import RulesForm from './RulesForm';
 
@@ -153,9 +195,21 @@ export default {
       type: String,
       required: true
     },
+    totalTypeValue: {
+      type: String,
+      required: true
+    },
     myisdisabled: {
       type: Boolean,
       default: false
+    },
+    goodsSubmitForm: {
+      type: Function,
+      default: () => {}
+    },
+    good: {
+      type: Object,
+      default: null
     }
 
   },
@@ -167,7 +221,6 @@ export default {
         ruleItemId: '',
 
         freightPrice: undefined, // 运输单价
-        m0DictValue: '', // 摸零
         ruleDictValue: '' // 计算公式
 
       },
@@ -191,6 +244,14 @@ export default {
       shouruList: [],
       allRules: []
     };
+  },
+
+  computed: {
+    isTotalTypeValue() {
+      console.log(this.totalTypeValue);
+
+      return this.totalTypeValue !== '1';
+    }
   },
 
   watch: {
@@ -253,6 +314,14 @@ export default {
       const { detailList, lossList, ruleInfo } = (await getRuleItem({
         code: this.formData.ruleItemId
       })).data;
+
+      // 这里处理预估值
+      // 计算公式的值 ruleInfo.ruleDictValue
+
+      this.handlerEstimateCost({ detailList, lossList, ruleInfo });
+
+
+
 
       /* 假数据
       const detailList = [
@@ -377,7 +446,8 @@ export default {
             const obj = {
               orderFreightBoList: await [...this.ruleFreightPrice, ...lossList, ...shouruList, ...zichuList].map(e => {
                 return {
-                  'ruleCode': e.ruleCode,
+                  'code': e.code,
+                  'ruleCode': e.ruleCode || undefined,
                   'ruleDetailShipmentCode': e.code,
                   'ruleItemCode': e.ruleItemCode,
                   'ruleValue': e.ruleValue,
@@ -393,6 +463,50 @@ export default {
           }
         });
       });
+    },
+
+    // 处理预估值
+    async handlerEstimateCost({ detailList, lossList }) {
+      return;
+      const orderFreightBoList = [...detailList, ...lossList].map(e => {
+        return {
+          code: e.code,
+          ruleCode: e.ruleCode,
+          ruleItemCode: e.ruleItemCode,
+          ruleValue: e.ruleValue,
+          type: e.type
+          // ruleDetailShipmentCode: ''
+        };
+      });
+
+      const arrdata = await this.goodsSubmitForm();
+
+      const goodsItem = arrdata.filter(e => {
+        return e.dictCode === this.good.dictCode;
+      });
+
+      console.log(goodsItem[0]);
+
+
+      const { orderGood } = goodsItem[0];
+      console.log(this.good);
+
+      /* TODO 商品的code 没有? 地址的code没有   ruleDetailShipmentCode 是什么??*/
+      const qData = {
+        orderFreightBoList,
+        // 重商品Info中拿
+        number: orderGood.number || undefined,
+        // orderAddressCode: '',
+        orderGoodsCode: this.goods ? this.goods.code : undefined,
+        stowageStatus: orderGood.stowageStatus,
+        userCode: this.pubilshCode,
+        vehicleMaxWeight: orderGood.vehicleMaxWeight,
+        weight: orderGood.weight
+      };
+
+      const data = await estimateCost(qData);
+
+      console.log(data);
     },
 
 
@@ -451,6 +565,13 @@ export default {
 }
 .t_box_item{
   padding: 15px 0 15px 15px;
+  background-color: #f2f2f2;
+}
+.t_color_c{
+  color:#aaaaaa;
+}
+.t_m_pac{
+  padding: 0 15px;
   background-color: #f2f2f2;
 }
 </style>

@@ -53,7 +53,7 @@
           :pubilsh-code="formData.tin1"
           :cb-data="cbOrderBasic"
           :myisdisabled="myisdisabled"
-          @goods="(data)=> goods = data"
+          @goods="handlerGoos"
         />
 
         <el-button v-if="!myisdisabled && (formData.tin1 && active < 2)" @click="nextTo(2)">下一步</el-button>
@@ -101,7 +101,7 @@
           <div>
             装货信息
 
-            <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '2' || formData.tin7 === '4')" v-model="formData.tin8" :disabled="myisdisabled" style="marginLeft:30px;">允许自装</el-checkbox>
+            <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '2' || formData.tin7 === '4')" v-model="formData.tin8" :disabled="myisdisabled" style="marginLeft:30px;" @change="handlerCheck('add')">允许自装</el-checkbox>
           </div>
 
           <el-button
@@ -119,18 +119,19 @@
           class="oneAddress_item"
         >
           <OneAddress :ref="address.refName" type="1" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
-
-          <el-button
-            v-if="!myisdisabled && (address_add.length >= 2 || formData.tin8)"
-            type="danger"
-            @click="_delAddress('address_add', address.refName)"
-          >删除地址</el-button>
-          <el-button
-            v-if="!myisdisabled"
-            type="primary"
-            style="margin-top: -12px"
-            @click="selectAddress('address_add', address.refName)"
-          >常用地址</el-button>
+          <div class="ly-t-right">
+            <el-button
+              v-if="!myisdisabled && (address_add.length >= 2 || formData.tin8)"
+              type="danger"
+              @click="_delAddress('address_add', address.refName)"
+            >删除地址</el-button>
+            <el-button
+              v-if="!myisdisabled"
+              type="primary"
+              style="margin-top: -12px"
+              @click="selectAddress('address_add', address.refName)"
+            >常用地址</el-button>
+          </div>
         </div>
 
         <el-divider />
@@ -155,23 +156,28 @@
         >
           <OneAddress :ref="address.refName" type="2" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
 
-          <el-button
-            v-if="!myisdisabled && (address_xie.length >= 2 || formData.tin9)"
-            type="danger"
-            @click="_delAddress('address_xie', address.refName)"
-          >删除地址</el-button>
-          <el-button
-            v-if="!myisdisabled"
-            type="primary"
-            style="margin-top: -12px"
-            @click="selectAddress('address_xie', address.refName)"
-          >常用地址</el-button>
+          <div class="ly-t-right">
+
+            <el-button
+              v-if="!myisdisabled && (address_xie.length >= 2 || formData.tin9)"
+              type="danger"
+              @click="_delAddress('address_xie', address.refName)"
+            >删除地址</el-button>
+            <el-button
+              v-if="!myisdisabled"
+              type="primary"
+              style="margin-top: -12px"
+              @click="selectAddress('address_xie', address.refName)"
+            >常用地址</el-button>
+          </div>
         </div>
 
         <el-divider />
         <template v-if="!myisdisabled">
-          <el-button v-if="active < 3" @click="nextSe(1)">上一步</el-button>
-          <el-button v-if="active < 3" @click="nextSe(3)">下一步</el-button>
+          <div class="ly-t-center">
+            <el-button v-if="active < 3" @click="nextSe(1)">上一步</el-button>
+            <el-button v-if="active < 3" @click="nextSe(3)">下一步</el-button>
+          </div>
         </template>
 
       </div>
@@ -193,17 +199,20 @@
         <el-divider />
 
         <template v-if="!myisdisabled">
-          <el-button v-if="active < 4" @click="nextFe(2)">上一步</el-button>
-          <el-button v-if="active < 4" @click="nextFe(4)">下一步</el-button>
+          <div class="ly-t-right">
+            <el-button v-if="active < 4" @click="nextFe(2)">上一步</el-button>
+            <el-button v-if="active < 4" @click="nextFe(4)">下一步</el-button>
+          </div>
         </template>
+
       </div>
 
     </el-form>
-
-    <div v-if="active >= 4">
+    <div v-if="active >= 4" class="ly-t-right">
       <el-button @click="nextFe(3)">上一步</el-button>
-      <el-button type="primary" @click="onPubilsh">立即发布</el-button>
+      <el-button type="primary" @click="onPubilsh">{{ isCreated?'立即发布':'立即修改' }}</el-button>
     </div>
+
 
     <!-- 打开弹框 -->
     <el-dialog
@@ -234,7 +243,7 @@ import OpenDialog from './OpenDialog';
 // import { listStockcode } from '@/api/enterprise/stockcode';
 
 import { listShipment } from '@/api/assets/shipment.js';
-import { orderPubilsh, getOrderByCode, orderFreight } from '@/api/order/release';
+import { orderPubilsh, getOrderByCode, orderFreight, update } from '@/api/order/release';
 
 export default {
   components: {
@@ -312,6 +321,10 @@ export default {
     // 创建/编辑 true=>创建 false=>编辑
     isCreated() {
       return !this.$route.query.t && !this.$route.query.id;
+    },
+
+    idCode() {
+      return this.$route.query.id;
     }
     // 是否有多地址 true=>多 false=>少
     // isShowMulti() {
@@ -352,12 +365,17 @@ export default {
       this.formData.tin8 = false;
       this.formData.tin9 = false;
     }
+    // 'formData.tin8'(value) {
+    //   console.log(value);
+    // }
+
+
   },
 
   created() {
     // 判断地址栏有没有id- true=>有说明编辑/详情 false=>创建-什么都不做
-    if (this.$route.query.id) {
-      this.getCbdata(this.$route.query.id);
+    if (this.idCode) {
+      this.getCbdata(this.idCode);
     }
   },
 
@@ -529,22 +547,35 @@ export default {
       }
     },
 
+    // 发布按钮触发(1.发布接口2.成功1秒后跳转)
     onPubilsh() {
       if (this.lastData) {
         this.loading = true;
-        orderPubilsh(this.lastData).then((response) => {
-          this.msgSuccess('新增成功');
-          this.loading = false;
-          setTimeout(() => {
-            this.$router.push({ name: 'Manage' });
-          }, 1000);
-        }).catch(() => {
-          this.loading = false;
-        });
+
+        if (!this.isCreated) {
+          update(this.lastData).then(res => {
+            this.msgSuccess('修改成功');
+            this.loading = false;
+            setTimeout(() => {
+              // this.$router.push({ name: 'Manage' });
+            }, 1000);
+          }).catch(() => {
+            this.loading = false;
+          });
+        } else {
+          orderPubilsh(this.lastData).then((response) => {
+            this.msgSuccess('新增成功');
+            this.loading = false;
+            setTimeout(() => {
+              this.$router.push({ name: 'Manage' });
+            }, 1000);
+          }).catch(() => {
+            this.loading = false;
+          });
+        }
       }
     },
 
-    // 发布按钮触发(1.发布接口2.成功1秒后跳转)
     onSubmit(form) {
       this.$refs[form].validate(async(valid) => {
         if (valid) {
@@ -562,10 +593,8 @@ export default {
     async submAllData() {
       if (!this.basicInfor) {
         this.basicInfor = await this.handlerPromise('OrderBasic', false);
-        this.goodsBigType = this.basicInfor.orderGoodsList[0].goodsBigType;
       }
-
-
+      this.goodsBigType = this.basicInfor.orderGoodsList[0].goodsBigType;
       const {
         classList,
         isPublic,
@@ -573,7 +602,8 @@ export default {
         orderSpecifiedList,
         projectCode,
         pubilshCode,
-        remark
+        remark,
+        InfoCode
       } = this.basicInfor; // 货源基本结构和信息
 
       // 处理商品信息和地址相关的规则
@@ -582,6 +612,7 @@ export default {
       const orderBasic = {
         classList,
         orderInfoBo: {
+          code: InfoCode || undefined,
           // branchCode:'',
           // createCode:'',
           isPublic,
@@ -596,8 +627,10 @@ export default {
 
 
       // 商品处理对象-按多个商品处理
+
       orderBasic.orderGoodsList = orderGoodsList.map(e => {
         return {
+          code: e.code || undefined,
           goodsBigType: this.goodsBigType, // 大类code
           goodsType: e.goodsType, // 小类code
           identification: e.goodsType, // 约定好的
@@ -634,18 +667,21 @@ export default {
       // 获取商品基本信息(1.商品info 2.地址及地址下对应的规则)
       const goodsInfo = await this.$refs.goodsInfo._submitForm();
 
+
+
       // 1.商品info
+      console.log(goodsInfo);
+
       const orderGoodsList = goodsInfo.map(e => {
         return {
+          code: e.code || undefined,
           ...e.orderGood,
-          goodsType: e.dictCode,
-          identification: e.dictCode
+          goodsType: e.goodsType,
+          identification: e.goodsType
         };
       });
 
       // 2. 地址及地址下对应的规则(注意: arr不包括一卸或者一装)
-
-      // console.log(orderGoodsList);
 
       // 规则-找出来
       const orderFreightInfoBoList = goodsInfo.map(e => {
@@ -657,9 +693,11 @@ export default {
               orderFreightBoList: ee.orderFreightBoList
             };
           }),
-          goodsIdentification: e.dictCode
+          goodsIdentification: e.goodsType
         };
       });
+
+
 
       let arr = [];
       for (const e of goodsInfo) {
@@ -676,6 +714,9 @@ export default {
 
       let addr_add = JSON.parse(JSON.stringify(this.addr_add));
       let addr_xie = JSON.parse(JSON.stringify(this.addr_xie));
+
+      console.log(addr_add);
+
 
       addr_add = addr_add.map(e => {
         e.identification = e.identification || 0;
@@ -754,9 +795,11 @@ export default {
 
     // 编辑和详情-回填获取数据
     async getCbdata(id) {
-      const tsetid = '7338dbf3a9fd439284782677dda6f678'; // 测试-替换id
+      this.loading = true;
+      // const tsetid = 'a9d84d1fc4e74d8f97e56219441c7313'; // 测试-替换id
 
-      const { data } = await getOrderByCode(tsetid);
+      const { data } = await getOrderByCode(id);
+      this.loading = false;
 
       // if (!data) return;
       console.log(data);
@@ -785,13 +828,14 @@ export default {
 
     // 1.处理 cbOrderBasic 要的数据
     handlerOrderBasic(data) {
-      const { isPublic, isSpecified, loadType, projectCode, pubilshCode, remark, redisOrderClassGoodsVoList, redisOrderGoodsVoList, redisOrderSpecifiedVoList } = data;
+      const { code, isPublic, isSpecified, loadType, projectCode, pubilshCode, remark, redisOrderClassGoodsVoList, redisOrderGoodsVoList, redisOrderSpecifiedVoList } = data;
 
       // 基本
       this.formData.tin1 = pubilshCode; // 货主的code(重要,根据这个展示所有)
       this.formData.tin7 = loadType ? loadType + '' : '1'; // 无则默认 '1'
       // 处理2 OrderBasic 组件
       this.cbOrderBasic = {
+        code,
         projectCode,
         isPublic,
         goodsBigType: redisOrderGoodsVoList[0].goodsBigType,
@@ -803,10 +847,13 @@ export default {
         orderSpecifiedList: redisOrderSpecifiedVoList,
         classList: redisOrderClassGoodsVoList.map(e => {
           return {
+            code: e.code,
             classCode: e.classCode
           };
         })
       };
+
+      console.log(this.cbOrderBasic);
     },
 
     // 2. 处理 OneAddress 地址要的数据
@@ -837,8 +884,8 @@ export default {
         }
       });
 
-      console.log(this.address_add);
-      console.log(this.address_xie);
+      // console.log(this.address_add);
+      // console.log(this.address_xie);
     },
 
     // 3. 处理回填的数据(1.是要获取地址中的规则 2.要获取装地址到卸地址)
@@ -853,28 +900,52 @@ export default {
     },
 
     zhuangOrxiechange(value) {
-      if (this.qianValue !== this.formData.tin7) {
-        if (this.formData.tin7 === '1' && (this.address_add.length >= 2 || this.address_xie.length >= 2)) {
-          if (this.address_add.length >= 2) {
-            this.msgError('装货地址只能填一个');
-            this.formData.tin7 = '';
-          } else {
-            this.msgError('卸货地址只能填一个');
-            this.formData.tin7 = '';
-          }
-          return;
-        }
-        if (this.formData.tin7 === '2' && this.address_xie.length >= 2) {
-          this.msgError('卸货地址只能填一个');
-          this.formData.tin7 = '';
-          return;
-        }
-        if (this.formData.tin7 === '3' && this.address_add.length >= 2) {
-          this.msgError('装货地址只能填一个');
-          this.formData.tin7 = '';
-          return;
-        }
+      if (this.formData.tin7 === '1' && (this.address_add.length >= 2 || this.address_add.length <= 0)) {
+        this.msgError('装货地址只能填一个');
+        this.formData.tin7 = '2';
+        return;
       }
+      if (this.formData.tin7 === '1' && (this.address_xie.length >= 2 || this.address_xie.length <= 0)) {
+        this.msgError('卸货地址只能填一个');
+        this.formData.tin7 = '3';
+        return;
+      }
+      if (this.formData.tin7 === '2' && (this.address_xie.length >= 2 || this.address_xie.length <= 0)) {
+        this.msgError('卸货地址只能填一个');
+        this.formData.tin7 = '3';
+        return;
+      }
+      if (this.formData.tin7 === '3' && (this.address_add.length >= 2 || this.address_add.length <= 0)) {
+        this.msgError('装货地址只能填一个');
+        this.formData.tin7 = '2';
+        return;
+      }
+
+      if (this.formData.tin7 !== '1') {
+        this.formData.tin8 = false;
+        this.formData.tin9 = false;
+        return;
+      }
+      if (this.formData.tin7 !== '2') {
+        this.formData.tin8 = false;
+        return;
+      }
+      if (this.formData.tin7 !== '3') {
+        this.formData.tin9 = false;
+        return;
+      }
+    },
+
+    handlerCheck(type) {
+      if (type === 'add' && !this.formData.tin8 && this.address_add.length <= 0) {
+        this.msgError('装货地址至少填一个');
+        this.formData.tin8 = true;
+      }
+    },
+
+    // 处理选中的小类
+    handlerGoos(data) {
+      this.goods = data;
     },
 
     /* 方法和其他------------------------------------------- */
@@ -994,7 +1065,7 @@ export default {
   }
 }
 .content {
-  width: 80%;
+  width: 95%;
 }
 
 .vih {
