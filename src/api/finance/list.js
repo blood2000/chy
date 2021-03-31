@@ -1,8 +1,8 @@
 import request from '@/utils/request';
 
-// 查询运单清分列表
-export const adjustListApi = '/transportation/waybill/trackingList';
-export function adjustList(query) {
+// 查询发票列表
+export const billListApi = '/transportation/waybill/trackingList';
+export function billList(query) {
   return request({
     url: '/transportation/waybill/trackingList',
     method: 'get',
@@ -10,7 +10,7 @@ export function adjustList(query) {
   });
 }
 
-// 查询运单子单列表
+// 查询弹窗发票列表
 export const childListApi = '/transportation/waybill/childList';
 export function childList(query) {
   return request({

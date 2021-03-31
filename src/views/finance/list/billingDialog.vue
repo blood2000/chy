@@ -31,12 +31,12 @@
 </template>
 
 <script>
-import { childListApi, childList } from '@/api/settlement/adjust';
+import { billList, billListApi } from '@/api/finance/list';
 import { reject } from '@/api/waybill/tracklist';
 import UploadImage from '@/components/UploadImage/index';
 
 export default {
-  name: 'RejectDialog',
+  name: 'BillingDialog',
   components: {
     UploadImage
   },
@@ -61,8 +61,8 @@ export default {
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 10,
-        wayBillCode: null
+        pageSize: 10
+        // wayBillCode: null
       },
       // 审核结果字典
       auditResultOptions: [
@@ -93,7 +93,7 @@ export default {
     }
   },
   created() {
-    this.tableHeaderConfig(this.tableColumnsConfig, childListApi, {
+    this.tableHeaderConfig(this.tableColumnsConfig, billListApi, {
       prop: 'edit',
       isShow: true,
       label: '操作',
@@ -105,8 +105,8 @@ export default {
     /** 查询发票列表 */
     getList() {
       this.loading = true;
-      childList(this.queryParams).then(response => {
-        this.childlist = response.rows;
+      billList(this.queryParams).then(response => {
+        this.billlist = response.rows;
         this.total = response.total;
         this.loading = false;
       });
@@ -142,7 +142,8 @@ export default {
     },
     // 表单赋值
     setForm(data) {
-      this.queryParams.wayBillCode = data.code;
+      // this.queryParams.wayBillCode = data.code;
+      console.log(data);
       this.getList();
     }
   }

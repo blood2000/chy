@@ -7,15 +7,7 @@
       </el-form-item>
       <!-- 多图框 -->
       <el-form-item label="照片" prop="sceneImg">
-        <div class="ly-flex">
-          <div
-            v-for="(item, index) in form.sceneImg"
-            :key="index"
-            class="mr5 ml5"
-          >
-            <uploadImage v-model="item.url" @input="handleUploadSuccess" />
-          </div>
-        </div>
+        <uploadImage v-model="form.attachmentCode" @input="handleUploadSuccess" />
       </el-form-item>
       <el-form-item label="投诉说明" prop="description">
         <el-input
@@ -38,7 +30,7 @@
 
 <script>
 import { addComplaint } from '@/api/waybill/tracklist';
-import UploadImage from '@/components/UploadImage/index';
+import UploadImage from '@/components/UploadImage/moreImg';
 
 export default {
   name: 'DialogA',
@@ -57,7 +49,7 @@ export default {
       // 表单参数
       form: {
         description: undefined,
-        sceneImg: [
+        attachmentCode: [
           { url: '' }
         ],
         wayBillCode: undefined,

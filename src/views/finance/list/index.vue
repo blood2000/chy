@@ -129,7 +129,7 @@
       <el-tab-pane label="已开票" name="3" />
     </el-tabs>
 
-    <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+    <RefactorTable :loading="loading" :data="billlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
       <template #goodsBigType="{row}">
         <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
       </template>
@@ -179,7 +179,7 @@
 </template>
 
 <script>
-import { adjustList, adjustListApi } from '@/api/settlement/adjust';
+import { billList, billListApi } from '@/api/finance/list';
 // 审核弹窗
 import VerifyDialog from './verifyDialog';
 // 子单弹窗
@@ -189,7 +189,7 @@ import BillingDialog from './billingDialog';
 
 
 export default {
-  'name': 'AdjustList',
+  'name': 'BillList',
   components: { VerifyDialog, BillingDialog },
   data() {
     return {
@@ -207,7 +207,7 @@ export default {
       // 总条数
       'total': 0,
       // 表格数据
-      'adjustlist': [],
+      'billlist': [],
 
       // 查询参数
       'queryParams': {
@@ -251,7 +251,7 @@ export default {
     }
   },
   created() {
-    this.tableHeaderConfig(this.tableColumnsConfig, adjustListApi, {
+    this.tableHeaderConfig(this.tableColumnsConfig, billListApi, {
       prop: 'edit',
       isShow: true,
       label: '操作',
@@ -283,8 +283,8 @@ export default {
     /** 查询【请填写功能名称】列表 */
     getList() {
       this.loading = true;
-      adjustList(this.queryParams).then(response => {
-        this.adjustlist = response.rows;
+      billList(this.queryParams).then(response => {
+        this.billlist = response.rows;
         this.total = response.total;
         this.loading = false;
       });
