@@ -14,8 +14,10 @@
           :ref="'GoodsAccounting'+ good.activeName"
           :cb-data="good.goodsAccounting"
           :myisdisabled="myisdisabled"
+          :now-goods="good"
           @getGoodsUnitName="(data)=> goodsUnitName = data"
           @totalTypeValue="(data)=> totalTypeValue = data"
+          @validatePass="validatePass"
         />
         <!--规则又是根据地址-->
         <el-divider />
@@ -127,12 +129,12 @@ export default {
     // 数据初始化(created的时候)
     init() {
       if (!this.goods || (this.goods && !this.goods[0])) return;
-      // console.log(this.goods, '商品');
-      // console.log(this.addrAdd);
-      // console.log(this.addrXie);
-      // console.log(this.pubilshCode);
-      // console.log(this.cbGoodsAccounting, '-----'); // 创建的时候 null
-      // console.log(this.cbOrderFreight, '+++++++++++++'); // 创建的时候 null
+      console.log(this.goods, '商品');
+      console.log(this.addrAdd);
+      console.log(this.addrXie);
+      console.log(this.pubilshCode);
+      console.log(this.cbGoodsAccounting, '-----'); // 创建的时候 null
+      console.log(this.cbOrderFreight, '+++++++++++++'); // 创建的时候 null
       this.tabs = this.goods.map((e, index) => {
         // 回填有值的时候
         if (this.cbGoodsAccounting) {
@@ -207,6 +209,37 @@ export default {
       });
 
       return redis;
+    },
+
+    validatePass(data) {
+      console.log(data);
+      if (data === this.activeName) return;
+
+      if (data === '0') return;
+
+
+      this.activeName = data;
+
+
+
+
+      // this.activeName = data;
+      // console.log(data);
+      // if (data === '0') {
+      //   this.activeName = '0';
+      // } else {
+      //   this.activeName = data;
+      // }
+
+      // if (data === '1') {
+      // }
+      // if (data !== this.activeName) {
+      //   this.activeName = data;
+      // }
+      // if (isGo) return;
+      // 当前页 且 isGo 值是false
+      // if (data === this.activeName && !isGo) return;
+      // this.activeName = data;
     }
 
   }

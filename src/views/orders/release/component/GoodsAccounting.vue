@@ -220,10 +220,31 @@ export default {
     myisdisabled: {
       type: Boolean,
       default: false
+    },
+    nowGoods: {
+      type: Object,
+      default: null
     }
   },
 
   data() {
+    var validatePass = (rule, value, callback) => {
+      handlerValidate(value, '请输入货物单价', callback);
+    };
+    var validatePass2 = (rule, value, callback) => {
+      handlerValidate(value, '请输入最高配载', callback);
+    };
+
+    var handlerValidate = (value, smg, callback) => {
+      if (!value) {
+        this.$emit('validatePass', this.nowGoods.activeName);
+        callback(new Error('请输入货物单价'));
+      } else {
+        callback();
+      }
+    };
+
+
     return {
       formData: {
         businessType: '', // 业务类型
@@ -258,10 +279,13 @@ export default {
         //   { required: true, message: '请输入运输单价', trigger: 'blur' }
         // ],
         goodsPrice: [
-          { required: true, message: '请输入货物单价', trigger: 'blur' }
+          // { required: true, message: '请输入货物单价', trigger: 'blur' },
+          { validator: validatePass, required: true, trigger: 'blur' }
         ],
         vehicleMaxWeight: [
-          { required: true, message: '请输入货物单价', trigger: 'blur' }
+          // { required: true, message: '请输入货物单价', trigger: 'blur' }
+          { validator: validatePass2, required: true, trigger: 'blur' }
+
         ]
 
       },
