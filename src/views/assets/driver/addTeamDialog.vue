@@ -54,6 +54,16 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="处理状态" prop="applyStatus">
+        <el-select v-model="queryParams.applyStatus" placeholder="请选择状态" filterable clearable size="small">
+          <el-option
+            v-for="dict in applyStatusOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
