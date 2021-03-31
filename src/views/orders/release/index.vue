@@ -609,26 +609,26 @@ export default {
       // 处理商品信息和地址相关的规则
       const { orderGoodsList, orderAddressPublishBoList, orderFreightInfoBoList } = await this.handlerAddress();
 
-      const orderBasic = {
-        classList,
-        orderInfoBo: {
-          code: InfoCode || undefined,
-          // branchCode:'',
-          // createCode:'',
-          isPublic,
-          isSpecified,
-          loadType: this.formData.tin7 - 0,
-          projectCode,
-          pubilshCode,
-          remark
-        },
-        orderSpecifiedList
+      const orderInfoBo = {
+        code: InfoCode || undefined,
+        // branchCode:'',
+        // createCode:'',
+        isPublic: isPublic ? 1 : 0,
+        isSpecified: isSpecified ? 1 : 0,
+        loadType: this.formData.tin7 - 0,
+        projectCode,
+        pubilshCode,
+        remark
       };
+
+
+      const orderBasic = {};
+
 
 
       // 商品处理对象-按多个商品处理
 
-      orderBasic.orderGoodsList = orderGoodsList.map(e => {
+      const orderGoodsListArr = orderGoodsList.map(e => {
         return {
           code: e.code || undefined,
           goodsBigType: this.goodsBigType, // 大类code
@@ -639,8 +639,8 @@ export default {
           number: e.number ? e.number - 0 : 0, // 车
           'vehicleMaxWeight': e.vehicleMaxWeight, // 最高配载
           'stowageStatus': e.stowageStatus, // 配载方式
-          'isOneselfLoad': this.formData.tin8,
-          'isOneselfUnload': this.formData.tin9,
+          'isOneselfLoad': this.formData.tin8 ? 1 : 0,
+          'isOneselfUnload': this.formData.tin9 ? 1 : 0,
           'totalType': e.totalType, // 配载总量类型 1.不限（长期货源）2.定量货源
           'vehicleLength': e.vehicleLength,
           'vehicleType': e.vehicleType,
@@ -654,9 +654,22 @@ export default {
 
         };
       });
+      if (this.isCreated) {
+        orderBasic.classList = classList;
+        orderBasic.orderSpecifiedList = orderSpecifiedList;
+        orderBasic.orderInfoBo = orderInfoBo;
+        orderBasic.orderGoodsList = orderGoodsListArr;
+        orderBasic.orderAddressPublishBoList = orderAddressPublishBoList;
+        orderBasic.orderFreightInfoBoList = orderFreightInfoBoList;
+      } else {
+        orderBasic.classUpdateBoList = classList;
+        orderBasic.orderInfoUpdateBo = orderInfoBo;
+        orderBasic.orderSpecifiedUpdateBoList = orderSpecifiedList;
+        orderBasic.orderGoodsUpdateBoList = orderGoodsListArr;
+        orderBasic.orderAddressInfoUpdateBoList = orderAddressPublishBoList;
+        orderBasic.orderFreightInfoUpdateBoList = orderFreightInfoBoList;
+      }
 
-      orderBasic.orderAddressPublishBoList = orderAddressPublishBoList;
-      orderBasic.orderFreightInfoBoList = orderFreightInfoBoList;
 
       // console.log(orderBasic, '最后数据');
       return orderBasic;
@@ -698,12 +711,13 @@ export default {
       });
 
 
-
+      // 重复的问题
       let arr = [];
       for (const e of goodsInfo) {
         arr = [...arr, ...e.newRedis];
       }
 
+      arr = this.distinct1(arr, 'identification');
 
       // 这一步是必要的
       if (this.formData.tin7 === '3') {
@@ -1041,7 +1055,21 @@ export default {
 
       this.openSelectaddress = false;
       this.isRadioSelection = null;
+    },
+
+    // 去重
+
+    distinct1(arr, key) {
+      var newobj = {}; var newArr = [];
+      for (var i = 0; i < arr.length; i++) {
+        var item = arr[i];
+    	if (!newobj[item[key]]) {
+          newobj[item[key]] = newArr.push(item);
+    	}
+      }
+      return newArr;
     }
+
   }
 };
 </script>

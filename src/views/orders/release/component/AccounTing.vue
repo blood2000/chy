@@ -9,7 +9,7 @@
     :disabled="myisdisabled"
   >
 
-    <div class="header mb8 mt8">费用信息</div>
+    <div v-if="!showbudget" class="header mb8 mt8">费用信息</div>
     <el-form-item label="运费单价: " prop="freightPrice" label-width="90px">
       <el-row>
         <el-col :span="16" class="ly-flex">
@@ -27,7 +27,7 @@
 
           <span class="ml0 mr10"> 元 / {{ goodsUnitName }}</span>
 
-          <div class="ml0 mr10 t_color_c t_m_pac">
+          <div v-if="!showbudget" class="ml0 mr10 t_color_c t_m_pac">
             司机实收单价:  47.5 元
           </div>
         </el-col>
@@ -62,7 +62,7 @@
     <template v-if="formData.ruleItemId">
 
       <el-row :gutter="20">
-        <el-col :span="14">
+        <el-col :span="!showbudget? 14: 24">
           <div class="t_box_item">
 
             <el-form-item
@@ -122,7 +122,7 @@
 
           </div>
         </el-col>
-        <el-col :span="10">
+        <el-col v-if="!showbudget" :span="10">
           <div class="t_box_item">
             <template v-if="isTotalTypeValue">
 
@@ -210,6 +210,10 @@ export default {
     good: {
       type: Object,
       default: null
+    },
+    showbudget: {
+      type: Boolean,
+      default: false
     }
 
   },
@@ -275,6 +279,7 @@ export default {
         this.ruleFreightPrice = detailList.filter(e => {
           return e.enName === 'FREIGHT_COST';
         });
+        console.log(this.ruleFreightPrice);
 
 
         this.formData.freightPrice = this.ruleFreightPrice[0].ruleValue;

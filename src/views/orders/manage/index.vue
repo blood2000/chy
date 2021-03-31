@@ -341,7 +341,7 @@
     </el-dialog>
 
     <!-- 价格调整 -->
-    <el-dialog :title="'价格调整'" :visible.sync="openPriceAdjustment" width="80%" append-to-body>
+    <el-dialog :title="'费用调价'" :visible.sync="openPriceAdjustment" width="900px" append-to-body>
       <price-adjustment />
     </el-dialog>
   </div>

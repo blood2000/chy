@@ -66,17 +66,32 @@
 
     <!-- 绑定银行卡 对话框 -->
     <bank-dialog ref="bankDialogRef" :open.sync="bindBankOpen" :title="title" @refresh="getList" />
-
+    <!-- 变动明细 对话框 -->
+    <change-detail-dialog :open.sync="changeDetailOpen" :title="title" />
+    <!-- 查询网商余额 对话框 -->
+    <check-balance-dialog :open.sync="balanceOpen" :title="title" />
+    <!-- 划拨充值 对话框 -->
+    <recharge-dialog :open.sync="rechargeOpen" :title="title" />
+    <!-- 平台提现 -->
+    <reflect-dialog :open.sync="reflectOpen" :title="title" />
   </div>
 </template>
 
 <script>
 import { balanceList } from '@/api/capital/abalance';
 import BankDialog from './bankDialog';
+import ChangeDetailDialog from '../components/changeDetailDialog';
+import CheckBalanceDialog from '../components/checkBalanceDialog';
+import RechargeDialog from './rechargeDialog';
+import ReflectDialog from './reflectDialog';
 
 export default {
   components: {
-    BankDialog
+    BankDialog,
+    ChangeDetailDialog,
+    CheckBalanceDialog,
+    RechargeDialog,
+    ReflectDialog
   },
   data() {
     return {
