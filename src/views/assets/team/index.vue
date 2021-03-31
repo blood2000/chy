@@ -132,7 +132,7 @@
           @click="handleAddDriver(row)"
         >邀请司机</el-button>
         <el-button
-          v-show="row.applyType === 1 && row.applyStatus === 0"
+          v-show="row.apply === true"
           size="mini"
           type="text"
           icon="el-icon-document-checked"

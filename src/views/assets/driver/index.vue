@@ -225,7 +225,7 @@
           @click="handleAddTeam(row)"
         >加入调度</el-button>
         <el-button
-          v-show="row.applyType == 2 && row.applyStatus == 0"
+          v-show="row.apply === true"
           size="mini"
           type="text"
           icon="el-icon-document-checked"
