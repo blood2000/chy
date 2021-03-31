@@ -1,11 +1,14 @@
 <template>
   <!-- 进行改造 -->
-  <div class="app-container">
-    <el-steps v-if="false" :active="1" finish-status="success">
+  <div v-loading="loading" class="app-container">
+    <el-steps v-if="true" :active="active" finish-status="success">
       <el-step title="基本信息" />
       <el-step title="装卸货地址" />
+      <el-step title="货源信息" />
       <el-step title="预览" />
     </el-steps>
+
+    <el-divider />
 
     <!-- 转货信息 -->
 
@@ -16,11 +19,13 @@
       size="medium"
       label-width="110px"
       :label-position="'left'"
+      :disabled="myisdisabled"
     >
-      <div class="content">
-        <div class="header mb8">代发货主信息</div>
+      <!-- 第一步 基本信息 -->
+      <div v-show="active ==1 || myisdisabled" class="content">
+        <div v-if="isCreated" class="header mb8">代发货主信息</div>
 
-        <el-form-item label="代发货主" prop="tin1">
+        <el-form-item v-if="isCreated" label="代发货主" prop="tin1">
           <el-select
             v-model="formData.tin1"
             filterable
@@ -40,61 +45,72 @@
           </el-select>
         </el-form-item>
 
+
         <OrderBasic
+          v-if="formData.tin1"
           ref="OrderBasic"
           v-model="isMultiGoods"
           :pubilsh-code="formData.tin1"
+          :cb-data="cbOrderBasic"
+          :myisdisabled="myisdisabled"
+          @goods="handlerGoos"
         />
+
+        <el-button v-if="!myisdisabled && (formData.tin1 && active < 2)" @click="nextTo(2)">下一步</el-button>
       </div>
-      <el-divider />
 
-      <div class="content">
-        <div class="header mb8">装卸货地址配置(第二步)</div>
-        <template v-if="isMultiGoods">
-          <el-form-item label="装货类型" prop="tin7">
-            <el-radio-group v-model="formData.tin7" size="medium">
-              <el-radio
-                v-for="dict in [
-                  { dictValue: '1', dictLabel: '一装一卸' },
-                  { dictValue: '2', dictLabel: '多装一卸' },
-                  { dictValue: '3', dictLabel: '一装多卸' },
-                  { dictValue: '4', dictLabel: '多装多卸' },
-                ]"
-                :key="dict.dictValue"
-                :label="dict.dictValue"
-              >{{ dict.dictLabel }}</el-radio>
-            </el-radio-group>
-          </el-form-item>
+      <!-- 第二步 地址的填写 -->
+      <div v-show="(formData.tin1 && active === 2) || myisdisabled" class="content">
+        <div class="header mb8">地址信息</div>
+        <el-form-item label="装卸类型" prop="tin7">
+          <el-radio-group v-model="formData.tin7" size="medium" @change="zhuangOrxiechange">
+            <el-radio
+              v-for="dict in (isMultiGoods?[
+                { dictValue: '1', dictLabel: '一装一卸' },
+                { dictValue: '2', dictLabel: '多装一卸' },
+                { dictValue: '3', dictLabel: '一装多卸' }
+              ]:[{ dictValue: '1', dictLabel: '一装一卸' }])"
+              :key="dict.dictValue"
+              :label="dict.dictValue"
+            >{{ dict.dictLabel }}</el-radio>
+          </el-radio-group>
+        </el-form-item>
 
-          <el-form-item v-if="formData.tin7 !== '1'" label="允许自卸/自装">
-            <div class="ly-flex">
-              <el-form-item
-                v-if="formData.tin7 === '2' || formData.tin7 === '4'"
-                prop="tin8"
-              >
-                <el-checkbox v-model="formData.tin8">允许自装</el-checkbox>
-              </el-form-item>
-              <el-form-item
-                v-if="formData.tin7 === '3' || formData.tin7 === '4'"
-                :label-width="formData.tin7 === '4' ? '30px' : null"
-                prop="tin9"
-              >
-                <el-checkbox v-model="formData.tin9">允许自卸</el-checkbox>
-              </el-form-item>
-            </div>
-          </el-form-item>
-        </template>
+        <!-- <el-form-item v-if="formData.tin7 !== '1'" label="允许自卸/自装">
+          <div class="ly-flex">
+            <el-form-item
+              v-if="formData.tin7 === '2' || formData.tin7 === '4'"
+              prop="tin8"
+            >
+              <el-checkbox v-model="formData.tin8">允许自装</el-checkbox>
+            </el-form-item>
+            <el-form-item
+              v-if="formData.tin7 === '3' || formData.tin7 === '4'"
+              :label-width="formData.tin7 === '4' ? '30px' : null"
+              prop="tin9"
+            >
+              <el-checkbox v-model="formData.tin9">允许自卸</el-checkbox>
+            </el-form-item>
+          </div>
+        </el-form-item> -->
 
         <el-divider />
 
+
         <div class="header mb8 m-flex">
-          货源地址
+          <div>
+            装货信息
+
+            <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '2' || formData.tin7 === '4')" v-model="formData.tin8" :disabled="myisdisabled" style="marginLeft:30px;" @change="handlerCheck('add')">允许自装</el-checkbox>
+          </div>
+
           <el-button
-            v-if="formData.tin7 === '2' || formData.tin7 === '4'"
+            v-if="!myisdisabled && (formData.tin7 === '2' || formData.tin7 === '4')"
             type="primary"
             style="margin-top: -12px"
             @click="_addAddress('address_add')"
           >添加地址</el-button>
+
         </div>
 
         <div
@@ -102,20 +118,31 @@
           :key="address.refName"
           class="oneAddress_item"
         >
-          <OneAddress :ref="address.refName" type="1" />
-          <el-button
-            v-if="address_add.length >= 2"
-            type="danger"
-            @click="_delAddress('address_add', address.refName)"
-          >删除地址</el-button>
+          <OneAddress :ref="address.refName" type="1" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
+          <div class="ly-t-right">
+            <el-button
+              v-if="!myisdisabled && (address_add.length >= 2 || formData.tin8)"
+              type="danger"
+              @click="_delAddress('address_add', address.refName)"
+            >删除地址</el-button>
+            <el-button
+              v-if="!myisdisabled"
+              type="primary"
+              style="margin-top: -12px"
+              @click="selectAddress('address_add', address.refName)"
+            >常用地址</el-button>
+          </div>
         </div>
 
         <el-divider />
 
         <div class="header mb8 m-flex">
-          卸货地址
+          <div>
+            卸货信息
+            <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '3' || formData.tin7 === '4')" v-model="formData.tin9" :disabled="myisdisabled" style="marginLeft:30px;">允许自装</el-checkbox>
+          </div>
           <el-button
-            v-if="formData.tin7 === '3' || formData.tin7 === '4'"
+            v-if="!myisdisabled && (formData.tin7 === '3' || formData.tin7 === '4')"
             type="primary"
             style="margin-top: -12px"
             @click="_addAddress('address_xie')"
@@ -127,105 +154,135 @@
           :key="address.refName"
           class="oneAddress_item"
         >
-          <OneAddress :ref="address.refName" type="2" />
-          <el-button
-            v-if="address_xie.length >= 2"
-            type="danger"
-            @click="_delAddress('address_xie', address.refName)"
-          >删除地址</el-button>
+          <OneAddress :ref="address.refName" type="2" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
+
+          <div class="ly-t-right">
+
+            <el-button
+              v-if="!myisdisabled && (address_xie.length >= 2 || formData.tin9)"
+              type="danger"
+              @click="_delAddress('address_xie', address.refName)"
+            >删除地址</el-button>
+            <el-button
+              v-if="!myisdisabled"
+              type="primary"
+              style="margin-top: -12px"
+              @click="selectAddress('address_xie', address.refName)"
+            >常用地址</el-button>
+          </div>
         </div>
 
         <el-divider />
-
-        <template v-if="!isMultiGoods">
-          <div class="content">
-            <div class="header mb8">配载信息(第三步)</div>
-
-            <GoodsAccounting ref="goodsAccounting" />
-
-            <el-divider />
-            <div class="header mb8">其他规则</div>
-
-            <AccounTing ref="accounTing" :pubilsh-code="formData.tin1" />
-
-          </div>
-
-
-
-          <div v-if="false" class="content">
-            <div class="header mb8">预估运费</div>
-
-            <div class="footer-box">
-              <div>
-                <span>预估运费(不含税):</span> <span>￥</span><span>8566.00</span>
-              </div>
-              <div>
-                <span>(含税):</span> <span>￥</span><span>8566.00</span>
-              </div>
-            </div>
+        <template v-if="!myisdisabled">
+          <div class="ly-t-center">
+            <el-button v-if="active < 3" @click="nextSe(1)">上一步</el-button>
+            <el-button v-if="active < 3" @click="nextSe(3)">下一步</el-button>
           </div>
         </template>
 
-        <template v-else>
-          <div class="content">
-            <div class="header mb8">货物/核算</div>
-
-            <el-tabs v-model="tin2_1tabs_activeName">
-              <el-tab-pane
-                v-for="item in tin2_1tabs"
-                :key="item.value"
-                :label="item.label"
-                :name="item.value"
-              >
-                <!-- v-model="item.data" 如果自接传在去修改会警告, 倒不如处理完返回再赋值 -->
-                <MultiData :ref="item.value" />
-              </el-tab-pane>
-            </el-tabs>
-          </div>
-        </template>
       </div>
-    </el-form>
 
-    <div>
-      <el-button type="primary" @click="onSubmit('elForm')">立即发布</el-button>
-      <el-button>取消</el-button>
+      <!-- 第三步 货源信息 -->
+      <div v-show="(formData.tin1 && active === 3) || myisdisabled" class="content">
+        <div class="header mb8">货源信息</div>
+        <goods-info
+          ref="goodsInfo"
+          :goods="goods"
+          :goods-big-type="goodsBigType"
+          :addr-add="addr_add"
+          :addr-xie="addr_xie"
+          :pubilsh-code="formData.tin1"
+          :cb-goods-accounting="cbGoodsAccounting"
+          :cb-order-freight="cbOrderFreight"
+          :myisdisabled="myisdisabled"
+        />
+        <el-divider />
+
+        <template v-if="!myisdisabled">
+          <div class="ly-t-right">
+            <el-button v-if="active < 4" @click="nextFe(2)">上一步</el-button>
+            <el-button v-if="active < 4" @click="nextFe(4)">下一步</el-button>
+          </div>
+        </template>
+
+      </div>
+
+    </el-form>
+    <div v-if="active >= 4" class="ly-t-right">
+      <el-button @click="nextFe(3)">上一步</el-button>
+      <el-button type="primary" @click="onPubilsh">{{ isCreated?'立即发布':'立即修改' }}</el-button>
     </div>
+
+
+    <!-- 打开弹框 -->
+    <el-dialog
+      title="提示"
+      :visible.sync="openSelectaddress"
+      width="80%"
+    >
+      <div>
+        <OpenDialog @radioSelection="radioSelection" />
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import OrderBasic from './OrderBasic';
 import OneAddress from './component/OneAddress';
+import GoodsInfo from './GoodsInfo';
 
-import GoodsAccounting from './component/GoodsAccounting';
-import AccounTing from './component/AccounTing';
-import MultiData from './component/MultiData';
+import OpenDialog from './OpenDialog';
 
-import { listShipment } from '@/api/assets/shipment.js';
+// import GoodsAccounting from './component/GoodsAccounting';
+// import AccounTing from './component/AccounTing';
+// import MultiData from './component/MultiData';
+
 
 // 获取货集码列表 ? 要在什么时机调用?
 // import { listStockcode } from '@/api/enterprise/stockcode';
 
-import { orderPubilsh } from '@/api/order/release';
+import { listShipment } from '@/api/assets/shipment.js';
+import { orderPubilsh, getOrderByCode, orderFreight, update } from '@/api/order/release';
 
 export default {
   components: {
-    GoodsAccounting,
-    AccounTing,
-    MultiData,
-    //
     OrderBasic,
-    OneAddress
+    OneAddress,
+    GoodsInfo,
+    OpenDialog
   },
   data() {
     return {
-      loading: false,
-      // 多商品对应各自的规格
-      tin2_1tabs: [],
-      tin2_1tabs_activeName: '0',
+      lastData: null, // 最终结构
+      isQianValue: true, // 开关
+      qianValue: '', // 保存上一个值
+      isRadioSelection: null, // 选中的常用地址的唯一name
+      cbOrderFreight: null, // 规则回填数据
+      openSelectaddress: false, // 打开选择常用地址
+      basicInfor: null, // 货源的基本信息-创建的时候搜集
+      goodsBigType: '', // 获取出大类-其他组件要使用
+
+
+      active: 1, // 步骤
+      goods: [], // 商品-记入单商品还是多商品
       // 地址数组形式
-      address_add: [{ refName: 'add_' + Date.now() }], // 装
-      address_xie: [{ refName: 'xie_' + Date.now() }], // 卸
+      address_add: [{ refName: 'address_add' + Date.now() }], // 装-地址组件使用
+      address_xie: [{ refName: 'address_xie' + Date.now() }], // 卸-地址组件使用
+      addr_add: [], // 装-传递数据使用
+      addr_xie: [], // 卸-传递数据使用
+
+      cbOrderBasic: null, // 传给OrderBasic组件的数据-回填
+      cbGoodsAccounting: null, // 传给组件的数据-回填
+
+      // cbData: null,
+      // orderFreightBoList: null,
+
+      loading: false,
+
+      // 多商品对应各自的规格
+      // tin2_1tabs: [],
+      // tin2_1tabs_activeName: '0',
       formData: {
         tin1: '', // 发布人Code
         tin7: '1', // 装卸类型 1.一装一卸 2.多装一卸 3.一装多卸 4.多装多卸
@@ -234,147 +291,96 @@ export default {
       },
       rules: {
         tin1: [
-          { required: true, message: '请选择货物类型', trigger: 'change' }
+          { required: true, message: '请选择代发布人', trigger: 'change' }
         ],
         tin7: [
-          { required: true, message: '请选择货物类型', trigger: 'change' }
+          { required: true, message: '请选择装卸类型', trigger: 'change' }
         ]
       },
 
-      shipmentList: [],
-      // 选中的名
-      activeName: 'first',
-      // 是否显示弹出层
-      open: false,
-      // 弹框title
-      title: '',
-      // 用来判断多商品还是单商品
-      isMultiGoods: false
+      // 字典
+      shipmentList: [], // 发布人下拉列表
+
+      // 其他
+      isMultiGoods: false // 用来判断多商品还是单商品
     };
   },
 
   computed: {
-    isTin1() {
-      return !!this.formData.tin1;
+
+    myisdisabled() {
+      return this.active === 4;
+    },
+
+    // isTin1() {
+    //   return !!this.formData.tin1;
+    // },
+    // isEdit() {
+    //   return this.$route.query.t === '1';
+    // },
+    // 创建/编辑 true=>创建 false=>编辑
+    isCreated() {
+      return !this.$route.query.t && !this.$route.query.id;
+    },
+
+    idCode() {
+      return this.$route.query.id;
     }
+    // 是否有多地址 true=>多 false=>少
+    // isShowMulti() {
+    //   return this.address_add.length >= 2 || this.address_xie.length >= 2;
+    // },
+    // // addressTab() {
+    //   let arr = [];
+
+    //   if (this.isShowMulti) {
+    //     if (this.address_add.length >= 2) {
+    //       arr = [...arr, ...this.address_add];
+    //     }
+    //     if (this.address_xie.length >= 2) {
+    //       arr = [...arr, ...this.address_xie];
+    //     }
+    //   }
+    //   return arr;
+    // },
+    // nowType() {
+    //   let bool = true;
+    //   if (this.formData.tin7 === '2') {
+    //     bool = true;
+    //   } else if (this.formData.tin7 === '3') {
+    //     bool = false;
+    //   }
+    //   return bool;
+    // }
+
   },
   watch: {
+    // 切换商品 false=> 单 true=>多
     isMultiGoods() {
+      // if (this.active >= 3) {
+      //   this.active = 2;
+      // }
       if (this.isMultiGoods) return;
-      this.tin7 = '1';
-      this.tin8 = false;
-      this.tin9 = false;
+      this.formData.tin7 = '1';
+      this.formData.tin8 = false;
+      this.formData.tin9 = false;
+    }
+    // 'formData.tin8'(value) {
+    //   console.log(value);
+    // }
+
+
+  },
+
+  created() {
+    // 判断地址栏有没有id- true=>有说明编辑/详情 false=>创建-什么都不做
+    if (this.idCode) {
+      this.getCbdata(this.idCode);
     }
   },
 
-  async created() {},
-
   methods: {
-    onSubmit(form) {
-      this.$refs[form].validate(async(valid) => {
-        if (valid) {
-          const data = await this.submAllData();
-          console.log(data);
-
-
-          orderPubilsh(data).then((response) => {
-            console.log(response);
-            this.msgSuccess('新增成功');
-          });
-        } else {
-          return false;
-        }
-      });
-    },
-
-    // 3.
-    async submAllData() {
-      const OrderBasic = await this.$refs.OrderBasic._submitForm();
-
-      const address_add = this.address_add.map(async(e) => {
-        return await this.$refs[e.refName][0]._submitForm();
-      });
-      const address_xie = this.address_xie.map(async(e) => {
-        return await this.$refs[e.refName][0]._submitForm();
-      });
-
-      const addr_add = await Promise.all(address_add);
-      const addr_xie = await Promise.all(address_xie);
-      // console.log([...addr_xie, ...addr_add]); // 装卸货地址集合
-
-      const goodsAccounting = await this.$refs.goodsAccounting._submitForm();
-      // console.log(goodsAccounting, 'goodsAccounting------------');
-
-      // 规则
-      console.log(this.$refs.accounTing);
-
-      const accounTing = await this.$refs.accounTing._submitForm();
-      // console.log(accounTing, 'accounTing 是个数组有详细的每一个细的规则------------');
-
-      console.log(OrderBasic, '拼接前');
-
-      // 下面开始拼接
-      const { orderGoodsList } = OrderBasic;
-
-      OrderBasic.loadType = this.formData.tin7;
-      OrderBasic.orderGoodsList = orderGoodsList.map(e => {
-        e.orderFreightBoList = accounTing.map(rule => {
-          return {
-            goodsBigType: this.formData.tin2,
-            goodsType: this.isMultiGoods
-              ? this.formData.tin2_1
-              : this.formData.tin2_2,
-            ...rule
-          };
-        });
-        return {
-          ...e,
-          addressList: [...addr_xie, ...addr_add],
-
-          // 'balanceRuleCode': '', // 货主核算规则表CODE
-          'goodsUnit': goodsAccounting.goodsUnit,
-          // 'isModifyFinish': true, // 平台是否完成调价??
-          'isOneselfLoad': this.formData.tin8,
-          'isOneselfUnload': this.formData.tin9,
-          // 'limitWastage': '', // 货物损耗 格式： 0/1(0-定额kg/车，1-定率千分之几/车)-1
-          'perWeight': goodsAccounting.perWeight,
-          // 'priceWastage': 0, // 路耗超出范围 赔偿单价 （元/吨）
-          'shipmentPrice': goodsAccounting.shipmentPrice,
-          'totalType': goodsAccounting.weightType,
-          'vehicleLength': goodsAccounting.vehicleLength,
-          'vehicleType': goodsAccounting.vehicleType,
-          'weight': goodsAccounting.weight ? goodsAccounting.weight : ''
-        };
-      });
-
-      console.log(OrderBasic, '拼接后-----');
-
-      return OrderBasic;
-
-      // const data = {
-
-      //   classList: [
-      //     {
-      //       classCode: '' // 货集码
-      //     }
-      //   ],
-      //   isPublic: '', // 是否公开货源 0.非公开 1.公开
-      //   isSpecified: '', // 是否指定接单人 0否 1是
-      //   loadType: '', // loadType	装卸类型 1.一装一卸 2.多装一卸 3.一装多卸 4.多装多卸
-
-      //   // orderFreightBoList,
-      //   // orderGoodsList,
-      //   // orderSpecifiedList,
-
-      //   projectCode: '', // 项目编码
-      //   pubilshCode: this.formData.tin1,
-      //   remark:
-      // }
-
-      // console.log(data);
-    },
-
-    // 1. 远程搜索
+    // 触发远程搜索
     remoteMethod(query) {
       if (query !== '') {
         this.loading = true;
@@ -384,16 +390,575 @@ export default {
             this.shipmentList = res.rows;
             this.loading = false;
           }
-        );
+        ).catch(() => {
+          this.loading = false;
+        });
       } else {
         this.shipmentList = [];
       }
     },
 
+    // 下一步 active =2
+    async nextTo(active, cb) {
+      if (!cb) {
+        this.basicInfor = await this.handlerPromise('OrderBasic', false);
+        this.basicInfor.loadType = this.formData.tin7;
+        this.goodsBigType = this.basicInfor.orderGoodsList[0].goodsBigType;
+      }
+
+      this.active = active;
+
+      // 测数据用
+      this.handlercbAddress([
+        {
+          'addressType': 2,
+          'country': '中国',
+          'province': '福建省',
+          'city': '福州市',
+          'citycode': '3501',
+          'district': '仓山区',
+          'street': '',
+          'adcode': '350104',
+          'location': [
+            119.358265,
+            26.045794
+          ],
+          'detail': '富邦针织',
+          'contact': '12123',
+          'contactPhone': '12345678910',
+          'addressAlias': '1212',
+          'provinceCode': '35' // 没返回
+
+        },
+        {
+          'addressType': 1,
+          'country': '中国',
+          'province': '福建省',
+          'city': '福州市',
+          'citycode': '3501',
+          'district': '台江区',
+          'street': '',
+          'adcode': '350103',
+          'location': [
+            119.358265,
+            26.045794
+          ],
+          'level': null,
+          'detail': '富邦总部大楼',
+          'contact': '123456',
+          'contactPhone': '12345678910',
+          'addressAlias': '案发地上',
+          'provinceCode': '35'
+        }
+      ]);
+    },
+
+    // 下一步 active =3
+    async nextSe(active, cb) {
+      if (active === 1) {
+        this.active = 1;
+        return;
+      }
+      if (!this.formData.tin7) {
+        this.msgError('请选择类型');
+        return;
+      }
+
+      if (!this.formData.tin8 && this.formData.tin7 - 0 === 2 && this.address_add.length < 2) {
+        this.msgError('多装一卸, 必须多地址');
+        return;
+      } else if (!this.formData.tin9 && this.formData.tin7 - 0 === 3 && this.address_xie.length < 2) {
+        this.msgError('一装装卸, 必须多地址');
+        return;
+      }
+
+      // this.address_add 是初始状态
+      const address_add = this.address_add.map(async(e) => {
+        return {
+          ...e,
+          ...e.cbData, // cb回填通过这个传递
+          ...(await this.$refs[e.refName][0]._submitForm()) // 获取装货地址信息
+        };
+      });
+      const address_xie = this.address_xie.map(async(e) => {
+        return {
+          ...e,
+          ...e.cbData,
+          ...(await this.$refs[e.refName][0]._submitForm()) // 获取卸货地址信息
+        };
+      });
+
+      this.addr_add = await Promise.all(address_add);
+      this.addr_xie = await Promise.all(address_xie);
+
+
+      if (this.formData.tin8) {
+        this.addr_add.push(
+          {
+            cbData: {
+              addressType: '3',
+              detail: ''
+            },
+            addressType: '3',
+            detail: '自装',
+            type: 'tin8',
+            refName: 'address_add' + Date.now()
+          }
+        );
+      } else {
+        this.addr_add = this.addr_add.filter(e => {
+          return (!e.type || e.type !== 'tin8');
+        });
+      }
+
+      if (this.formData.tin9) {
+        this.addr_xie.push(
+          {
+            cbData: {
+              addressType: '4',
+              detail: ''
+            },
+            addressType: '4',
+            detail: '自卸',
+            type: 'tin9',
+            refName: 'address_xie' + Date.now()
+          }
+        );
+      } else {
+        this.addr_xie = this.addr_xie.filter(e => {
+          return (!e.type || e.type !== 'tin9');
+        });
+      }
+
+      // console.log(this.addr_add, this.addr_xie);
+
+      this.active = active; // 3
+    },
+
+    // 下一步 active =4
+    nextFe(active) {
+      if (active === 4) {
+        // console.log('4');
+        this.onSubmit('elForm');
+      } else if (active === 2) {
+        this.active = 2;
+      } else if (active === 3) {
+        this.active = 3;
+      }
+    },
+
+    // 发布按钮触发(1.发布接口2.成功1秒后跳转)
+    onPubilsh() {
+      if (this.lastData) {
+        this.loading = true;
+
+        if (!this.isCreated) {
+          update(this.lastData).then(res => {
+            this.msgSuccess('修改成功');
+            this.loading = false;
+            setTimeout(() => {
+              // this.$router.push({ name: 'Manage' });
+            }, 1000);
+          }).catch(() => {
+            this.loading = false;
+          });
+        } else {
+          orderPubilsh(this.lastData).then((response) => {
+            this.msgSuccess('新增成功');
+            this.loading = false;
+            setTimeout(() => {
+              this.$router.push({ name: 'Manage' });
+            }, 1000);
+          }).catch(() => {
+            this.loading = false;
+          });
+        }
+      }
+    },
+
+    onSubmit(form) {
+      this.$refs[form].validate(async(valid) => {
+        if (valid) {
+          this.lastData = await this.submAllData();
+          console.log(this.lastData);
+
+          this.active = 4;
+        } else {
+          return false;
+        }
+      });
+    },
+
+    // 整理出符合发布的数据格式
+    async submAllData() {
+      if (!this.basicInfor) {
+        this.basicInfor = await this.handlerPromise('OrderBasic', false);
+      }
+      this.goodsBigType = this.basicInfor.orderGoodsList[0].goodsBigType;
+      const {
+        classList,
+        isPublic,
+        isSpecified,
+        orderSpecifiedList,
+        projectCode,
+        pubilshCode,
+        remark,
+        InfoCode
+      } = this.basicInfor; // 货源基本结构和信息
+
+      // 处理商品信息和地址相关的规则
+      const { orderGoodsList, orderAddressPublishBoList, orderFreightInfoBoList } = await this.handlerAddress();
+
+      const orderBasic = {
+        classList,
+        orderInfoBo: {
+          code: InfoCode || undefined,
+          // branchCode:'',
+          // createCode:'',
+          isPublic,
+          isSpecified,
+          loadType: this.formData.tin7 - 0,
+          projectCode,
+          pubilshCode,
+          remark
+        },
+        orderSpecifiedList
+      };
+
+
+      // 商品处理对象-按多个商品处理
+
+      orderBasic.orderGoodsList = orderGoodsList.map(e => {
+        return {
+          code: e.code || undefined,
+          goodsBigType: this.goodsBigType, // 大类code
+          goodsType: e.goodsType, // 小类code
+          identification: e.goodsType, // 约定好的
+          businessType: e.businessType, // 业务类型
+          'goodsPrice': e.goodsPrice, // 货物单价
+          number: e.number ? e.number - 0 : 0, // 车
+          'vehicleMaxWeight': e.vehicleMaxWeight, // 最高配载
+          'stowageStatus': e.stowageStatus, // 配载方式
+          'isOneselfLoad': this.formData.tin8,
+          'isOneselfUnload': this.formData.tin9,
+          'totalType': e.totalType, // 配载总量类型 1.不限（长期货源）2.定量货源
+          'vehicleLength': e.vehicleLength,
+          'vehicleType': e.vehicleType,
+          'weight': e.weight ? e.weight : '' // 货品吨数
+
+          // "goodsUnit": "", // 货物单位 0：吨 1：立方米 无
+          // 'isModifyFinish': true, // 平台是否完成调价??
+          // 'limitWastage': '', // 货物损耗 格式： 0/1(0-定额kg/车，1-定率千分之几/车)-1
+          // "perWeight": 0, // 每车载重量（吨） ??
+          // 'priceWastage': 0, // 路耗超出范围 赔偿单价 （元/吨）
+
+        };
+      });
+
+      orderBasic.orderAddressPublishBoList = orderAddressPublishBoList;
+      orderBasic.orderFreightInfoBoList = orderFreightInfoBoList;
+
+      // console.log(orderBasic, '最后数据');
+      return orderBasic;
+    },
+
+    // 处理地址 和 商品
+    async handlerAddress() {
+      // 获取商品基本信息(1.商品info 2.地址及地址下对应的规则)
+      const goodsInfo = await this.$refs.goodsInfo._submitForm();
+
+
+
+      // 1.商品info
+      console.log(goodsInfo);
+
+      const orderGoodsList = goodsInfo.map(e => {
+        return {
+          code: e.code || undefined,
+          ...e.orderGood,
+          goodsType: e.goodsType,
+          identification: e.goodsType
+        };
+      });
+
+      // 2. 地址及地址下对应的规则(注意: arr不包括一卸或者一装)
+
+      // 规则-找出来
+      const orderFreightInfoBoList = goodsInfo.map(e => {
+        return {
+          orderAddressBoList: e.newRedis.map((ee, index) => {
+            ee.identification = index + 1;
+            return {
+              addressIdentification: (ee.addressType - 0) === 1 ? (index + 1) + ':0' : '0:' + (index + 1),
+              orderFreightBoList: ee.orderFreightBoList
+            };
+          }),
+          goodsIdentification: e.goodsType
+        };
+      });
+
+
+
+      let arr = [];
+      for (const e of goodsInfo) {
+        arr = [...arr, ...e.newRedis];
+      }
+
+
+      // 这一步是必要的
+      if (this.formData.tin7 === '3') {
+        this.addr_xie = arr;
+      } else {
+        this.addr_add = arr;
+      }
+
+      let addr_add = JSON.parse(JSON.stringify(this.addr_add));
+      let addr_xie = JSON.parse(JSON.stringify(this.addr_xie));
+
+      console.log(addr_add);
+
+
+      addr_add = addr_add.map(e => {
+        e.identification = e.identification || 0;
+        // 自装地址处理
+        if (e.type && e.type === 'tin8') {
+          e = {
+            adcode: '',
+            addressAlias: '',
+            addressType: '3',
+            city: '',
+            citycode: '',
+            contact: '',
+            contactPhone: '',
+            country: '',
+            detail: '',
+            district: '',
+            formattedAddress: '',
+            goodsBigType: e.goodsBigType || '',
+            goodsType: e.goodsType || '',
+            identification: e.identification || '',
+            level: e.level || null,
+            location: [],
+            orderFreightBoList: e.orderFreightBoList || '',
+            province: '',
+            provinceCode: '',
+            refName: '',
+            ruleDictValue: e.ruleDictValue || '',
+            ruleInfoShipmentCode: e.ruleInfoShipmentCode || '',
+            street: ''
+          };
+        }
+
+        return e;
+      });
+
+      addr_xie = addr_xie.map(e => {
+        e.identification = e.identification || 0;
+        if (e.type && e.type === 'tin9') {
+          e = {
+            adcode: '',
+            addressAlias: '',
+            addressType: '4',
+            city: '',
+            citycode: '',
+            contact: '',
+            contactPhone: '',
+            country: '',
+            detail: '',
+            district: '',
+            formattedAddress: '',
+            goodsBigType: e.goodsBigType || '',
+            goodsType: e.goodsType || '',
+            identification: e.identification || '',
+            level: e.level || null,
+            location: [],
+            orderFreightBoList: e.orderFreightBoList || '',
+            province: '',
+            provinceCode: '',
+            refName: '',
+            ruleDictValue: e.ruleDictValue || '',
+            ruleInfoShipmentCode: e.ruleInfoShipmentCode || '',
+            street: ''
+          };
+        }
+        return e;
+      });
+
+
+
+      return { orderGoodsList, orderFreightInfoBoList, orderAddressPublishBoList: [...addr_add, ...addr_xie] };
+    },
+
+
+
+    /* 回填-------------------------------------------- */
+
+    // 编辑和详情-回填获取数据
+    async getCbdata(id) {
+      this.loading = true;
+      // const tsetid = 'a9d84d1fc4e74d8f97e56219441c7313'; // 测试-替换id
+
+      const { data } = await getOrderByCode(id);
+      this.loading = false;
+
+      // if (!data) return;
+      console.log(data);
+
+      this.active = 3; // 自接全展示
+
+      // const { redisOrderGoodsVoList, redisAddressList } = data1;
+      const { redisOrderInfoVo, redisOrderClassGoodsVoList, redisOrderSpecifiedVoList, redisOrderFreightInfoVoList, redisOrderGoodsVoList, redisAddressList } = data;
+
+      // 1
+      this.handlerOrderBasic({ ...redisOrderInfoVo, redisOrderClassGoodsVoList, redisOrderSpecifiedVoList, redisOrderGoodsVoList });
+
+      // 2
+      this.handlercbAddress(redisAddressList);
+
+      // 3
+      this.handerRedisOrder(redisAddressList);
+
+      // 4. 处理商品
+      this.cbGoodsAccounting = redisOrderGoodsVoList;
+
+      // 5. 处理规则
+
+      this.cbOrderFreight = redisOrderFreightInfoVoList;
+    },
+
+    // 1.处理 cbOrderBasic 要的数据
+    handlerOrderBasic(data) {
+      const { code, isPublic, isSpecified, loadType, projectCode, pubilshCode, remark, redisOrderClassGoodsVoList, redisOrderGoodsVoList, redisOrderSpecifiedVoList } = data;
+
+      // 基本
+      this.formData.tin1 = pubilshCode; // 货主的code(重要,根据这个展示所有)
+      this.formData.tin7 = loadType ? loadType + '' : '1'; // 无则默认 '1'
+      // 处理2 OrderBasic 组件
+      this.cbOrderBasic = {
+        code,
+        projectCode,
+        isPublic,
+        goodsBigType: redisOrderGoodsVoList[0].goodsBigType,
+        goodsType: redisOrderGoodsVoList.map(e => {
+          return e.goodsType;
+        }),
+        isSpecified,
+        remark,
+        orderSpecifiedList: redisOrderSpecifiedVoList,
+        classList: redisOrderClassGoodsVoList.map(e => {
+          return {
+            code: e.code,
+            classCode: e.classCode
+          };
+        })
+      };
+
+      console.log(this.cbOrderBasic);
+    },
+
+    // 2. 处理 OneAddress 地址要的数据
+    handlercbAddress(addressList) {
+      this.address_add = [];
+      this.address_xie = [];
+
+      addressList.forEach((e, index) => {
+        if ((e.addressType - 0) === 3) {
+          this.formData.tin8 = true;
+        } else if ((e.addressType - 0) === 4) {
+          this.formData.tin9 = true;
+        }
+
+
+        if ((e.addressType - 0) === 1 || (e.addressType - 0) === 3) {
+          // 装
+          this.address_add.push({
+            refName: 'address_add' + Date.now() + index,
+            cbData: e // 主要是这个
+          });
+        } else if ((e.addressType - 0) === 2 || (e.addressType - 0) === 4) {
+          // 卸
+          this.address_xie.push({
+            refName: 'address_xie' + Date.now() + index,
+            cbData: e
+          });
+        }
+      });
+
+      // console.log(this.address_add);
+      // console.log(this.address_xie);
+    },
+
+    // 3. 处理回填的数据(1.是要获取地址中的规则 2.要获取装地址到卸地址)
+    handerRedisOrder(addressList) {
+      addressList.forEach(e => {
+        if (e.addressType === 1) {
+          this.addr_add.push(e);
+        } else {
+          this.addr_xie.push(e);
+        }
+      });
+    },
+
+    zhuangOrxiechange(value) {
+      if (this.formData.tin7 === '1' && (this.address_add.length >= 2 || this.address_add.length <= 0)) {
+        this.msgError('装货地址只能填一个');
+        this.formData.tin7 = '2';
+        return;
+      }
+      if (this.formData.tin7 === '1' && (this.address_xie.length >= 2 || this.address_xie.length <= 0)) {
+        this.msgError('卸货地址只能填一个');
+        this.formData.tin7 = '3';
+        return;
+      }
+      if (this.formData.tin7 === '2' && (this.address_xie.length >= 2 || this.address_xie.length <= 0)) {
+        this.msgError('卸货地址只能填一个');
+        this.formData.tin7 = '3';
+        return;
+      }
+      if (this.formData.tin7 === '3' && (this.address_add.length >= 2 || this.address_add.length <= 0)) {
+        this.msgError('装货地址只能填一个');
+        this.formData.tin7 = '2';
+        return;
+      }
+
+      if (this.formData.tin7 !== '1') {
+        this.formData.tin8 = false;
+        this.formData.tin9 = false;
+        return;
+      }
+      if (this.formData.tin7 !== '2') {
+        this.formData.tin8 = false;
+        return;
+      }
+      if (this.formData.tin7 !== '3') {
+        this.formData.tin9 = false;
+        return;
+      }
+    },
+
+    handlerCheck(type) {
+      if (type === 'add' && !this.formData.tin8 && this.address_add.length <= 0) {
+        this.msgError('装货地址至少填一个');
+        this.formData.tin8 = true;
+      }
+    },
+
+    // 处理选中的小类
+    handlerGoos(data) {
+      this.goods = data;
+    },
+
+    /* 方法和其他------------------------------------------- */
+
     // 1. 添加一个地址
     _addAddress(name) {
+      // 处理到第三步后, 又点击返回
+      if (this.active >= 3) {
+        this.active = 2;
+      }
+
       this[name].push({
-        refName: 'add_' + Date.now()
+        refName: name + Date.now()
       });
     },
     // 2. 删一个地址
@@ -401,6 +966,81 @@ export default {
       this[name] = this[name].filter((e) => {
         return e.refName !== refName;
       });
+    },
+
+    // 打开多选地址的弹框
+    selectAddress(name, type) {
+      this.isRadioSelection = { name, type };
+      this.openSelectaddress = true;
+    },
+
+    // 本来是想封装一下处理的数据
+    async handlerPromise(refname, bool) {
+      return await this.$refs[refname]._submitForm();
+    },
+
+    radioSelection(data) {
+      if (JSON.stringify(data) === '{}') return;
+
+      if (this.isRadioSelection) {
+        const { name, type } = this.isRadioSelection;
+        this[name].forEach(e => {
+          if (e.refName === type) {
+            e.cbData = {
+              adcode: data.countyCode,
+              addressAlias: data.addressOtherName,
+              addressType: e.addressType,
+              city: data.cityName,
+              citycode: data.cityCode,
+              contact: data.contactName,
+              contactPhone: data.contactTelphone,
+              country: data.cityName || '中国',
+              detail: data.addressName,
+              district: data.countyName,
+              level: null,
+              location: [data.longitude, data.latitude],
+              province: data.provinceName,
+              provinceCode: data.provinceCode,
+              street: data.street || ''
+            };
+            /*
+              // addressDetail: "福建省福州市鼓楼区鼓东街道福州第十九中学"
+              // addressName: "福州第十九中学"
+              // addressOtherName: "十九中"
+
+              // cityCode: "3501"
+              // cityName: "福州市"
+              // code: "d3a91a301f05444badad167d1fc21339"
+
+              // contactName: "小町"
+              // contactTelphone: "18859164261"
+
+              // countyCode: "350102"
+
+              // countyName: "鼓楼区"
+
+              // createCode: null
+              // createTime: "2021-03-19T10:27:20.791+08:00"
+              // defaultPush: 1
+              // defaultPut: 0
+              // houseNumber: null
+              // id: 26
+              // latitude: "26.089438"
+              // longitude: "119.306125"
+              // provinceCode: "35"
+              // provinceName: "福建省"
+              // remark: ""
+              // shipmentCode: "c0e8fdb5e44942d3a10907dc97768847"
+              // status: 1
+              // updateCo/de: "ca8b3f3528a34365b41ad4cdb2074f67"
+              // updateTime: "2021-03-26T18:13:26.692+08:00"
+            */
+          }
+        });
+      }
+
+      this.openSelectaddress = false;
+      this.isRadioSelection = null;
     }
   }
 };
@@ -425,7 +1065,7 @@ export default {
   }
 }
 .content {
-  width: 80%;
+  width: 95%;
 }
 
 .vih {

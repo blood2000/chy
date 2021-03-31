@@ -1,11 +1,8 @@
 <template>
   <!-- 车辆跟踪对话框 -->
-  <el-dialog :title="title" :visible="visible" width="1400px" append-to-body @close="cancel">
-    <div style="height:750px;">
-      <el-amap vid="amapDemo1" :zoom="zoom" :center="center">
-        <el-amap-polyline :path="polyline.path" :stroke-weight="8" :stroke-opacity="0.8" :stroke-color="'#0091ea'" />
-        <el-amap-marker v-for="(marker, index) in markers" :key="index" :position="marker.position" :icon="marker.icon" />
-      </el-amap>
+  <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
+    <div style="width:100%; height: 500px;">
+      <el-amap v-if="visible" vid="amapDemo" :center="center" :zoom="zoom" />
     </div>
   </el-dialog>
 </template>
@@ -29,19 +26,17 @@ export default {
   },
   data() {
     return {
-      zoom: 12,
-      center: [],
-      graspRoad: '',
-      polyline: {
-        path: [
-          // [116.478928, 39.997761],
-          // [116.478907, 39.998422],
-          // [116.479384, 39.998546],
-          // [116.481053, 39.998204],
-          // [116.481793, 39.997868],
-          // [116.482898, 39.998217],
-          // [116.483789, 39.999063],
-          // [116.484674, 39.999844]
+      zoom: 16,
+      center: [121.59996, 31.197646],
+      // 表单参数
+      form: {
+        wayBillInCode: null,
+        driverApplyRemark: null
+      },
+      // 表单校验
+      rules: {
+        driverApplyRemark: [
+          { required: true, message: '取消理由不能为空', trigger: 'blur' }
         ]
       },
       markers: [{

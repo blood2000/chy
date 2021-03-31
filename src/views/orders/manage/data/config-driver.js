@@ -184,197 +184,197 @@ export default [
     isShow: false,
     label: '从业资格证办理省份名称'
   },
-  {
-    prop: 'vehicleInfo.authStatus',
-    isShow: false,
-    label: '审核状态(0.未审核.1审核中2审核未通过3审核通过)'
-  },
+  // {
+  //   prop: 'vehicleInfo.authStatus',
+  //   isShow: false,
+  //   label: '审核状态(0.未审核.1审核中2审核未通过3审核通过)'
+  // },
 
-  {
-    prop: 'vehicleInfo.axesNumber',
-    isShow: false,
-    label: '轴数'
-  },
+  // {
+  //   prop: 'vehicleInfo.axesNumber',
+  //   isShow: false,
+  //   label: '轴数'
+  // },
 
-  {
-    prop: 'vehicleInfo.chassisNumber',
-    isShow: false,
-    label: '车架号'
-  },
+  // {
+  //   prop: 'vehicleInfo.chassisNumber',
+  //   isShow: false,
+  //   label: '车架号'
+  // },
 
-  {
-    prop: 'vehicleInfo.classificationCode',
-    isShow: true,
-    label: '车牌类型代码'
-  },
+  // {
+  //   prop: 'vehicleInfo.classificationCode',
+  //   isShow: true,
+  //   label: '车牌类型代码'
+  // },
 
-  {
-    prop: 'vehicleInfo.code',
-    isShow: false,
-    label: '编码'
-  },
+  // {
+  //   prop: 'vehicleInfo.code',
+  //   isShow: false,
+  //   label: '编码'
+  // },
 
-  {
-    prop: 'vehicleInfo.createCode',
-    isShow: false,
-    label: '创建人'
-  },
+  // {
+  //   prop: 'vehicleInfo.createCode',
+  //   isShow: false,
+  //   label: '创建人'
+  // },
 
-  {
-    prop: 'vehicleInfo.createTime',
-    isShow: false,
-    label: '创建时间'
-  },
+  // {
+  //   prop: 'vehicleInfo.createTime',
+  //   isShow: false,
+  //   label: '创建时间'
+  // },
 
-  {
-    prop: 'vehicleInfo.delFlag',
-    isShow: false,
-    label: '是否删除(0正常1删除)'
-  },
+  // {
+  //   prop: 'vehicleInfo.delFlag',
+  //   isShow: false,
+  //   label: '是否删除(0正常1删除)'
+  // },
 
-  {
-    prop: 'vehicleInfo.engineNumber',
-    isShow: false,
-    label: '发动机号'
-  },
+  // {
+  //   prop: 'vehicleInfo.engineNumber',
+  //   isShow: false,
+  //   label: '发动机号'
+  // },
 
-  {
-    prop: 'vehicleInfo.id',
-    isShow: true,
-    label: '主键'
-  },
+  // {
+  //   prop: 'vehicleInfo.id',
+  //   isShow: true,
+  //   label: '主键'
+  // },
 
-  {
-    prop: 'vehicleInfo.isFreeze',
-    isShow: false,
-    label: '是否冻结(0正常1冻结)'
-  },
+  // {
+  //   prop: 'vehicleInfo.isFreeze',
+  //   isShow: false,
+  //   label: '是否冻结(0正常1冻结)'
+  // },
 
-  {
-    prop: 'vehicleInfo.licenseNumber',
-    isShow: false,
-    label: '名称（车牌号）'
-  },
+  // {
+  //   prop: 'vehicleInfo.licenseNumber',
+  //   isShow: false,
+  //   label: '名称（车牌号）'
+  // },
 
-  {
-    prop: 'vehicleInfo.selfRespect',
-    isShow: false,
-    label: '车身自重'
-  },
+  // {
+  //   prop: 'vehicleInfo.selfRespect',
+  //   isShow: false,
+  //   label: '车身自重'
+  // },
 
-  {
-    prop: 'vehicleInfo.transportMeson',
-    isShow: false,
-    label: '运输介子'
-  },
+  // {
+  //   prop: 'vehicleInfo.transportMeson',
+  //   isShow: false,
+  //   label: '运输介子'
+  // },
 
-  {
-    prop: 'vehicleInfo.updateCode',
-    isShow: false,
-    label: '更新人'
-  },
+  // {
+  //   prop: 'vehicleInfo.updateCode',
+  //   isShow: false,
+  //   label: '更新人'
+  // },
 
-  {
-    prop: 'vehicleInfo.updateTime',
-    isShow: false,
-    label: '更新时间'
-  },
+  // {
+  //   prop: 'vehicleInfo.updateTime',
+  //   isShow: false,
+  //   label: '更新时间'
+  // },
 
-  {
-    prop: 'vehicleInfo.vehicleAscriptionType',
-    isShow: false,
-    label: '车辆归属类型 0.自有 1.加盟'
-  },
+  // {
+  //   prop: 'vehicleInfo.vehicleAscriptionType',
+  //   isShow: false,
+  //   label: '车辆归属类型 0.自有 1.加盟'
+  // },
 
-  {
-    prop: 'vehicleInfo.vehicleChassisNumber',
-    isShow: false,
-    label: '底盘号'
-  },
+  // {
+  //   prop: 'vehicleInfo.vehicleChassisNumber',
+  //   isShow: false,
+  //   label: '底盘号'
+  // },
 
-  {
-    prop: 'vehicleInfo.vehicleColorCode',
-    isShow: false,
-    label: '车身颜色代码'
-  },
+  // {
+  //   prop: 'vehicleInfo.vehicleColorCode',
+  //   isShow: false,
+  //   label: '车身颜色代码'
+  // },
 
-  {
-    prop: 'vehicleInfo.vehicleEnergyType',
-    isShow: false,
-    label: '车辆能源类型'
-  },
+  // {
+  //   prop: 'vehicleInfo.vehicleEnergyType',
+  //   isShow: false,
+  //   label: '车辆能源类型'
+  // },
 
-  {
-    prop: 'vehicleInfo.vehicleHeight',
-    isShow: false,
-    label: '车高代码'
-  },
+  // {
+  //   prop: 'vehicleInfo.vehicleHeight',
+  //   isShow: false,
+  //   label: '车高代码'
+  // },
 
-  {
-    prop: 'vehicleInfo.vehicleImage',
-    isShow: false,
-    label: '车头正面照'
-  },
+  // {
+  //   prop: 'vehicleInfo.vehicleImage',
+  //   isShow: false,
+  //   label: '车头正面照'
+  // },
 
-  {
-    prop: 'vehicleInfo.vehicleLength',
-    isShow: false,
-    label: '车长代码'
-  },
+  // {
+  //   prop: 'vehicleInfo.vehicleLength',
+  //   isShow: false,
+  //   label: '车长代码'
+  // },
 
-  {
-    prop: 'vehicleInfo.vehicleLicenseColorCode',
-    isShow: false,
-    label: '车牌颜色代码'
-  },
+  // {
+  //   prop: 'vehicleInfo.vehicleLicenseColorCode',
+  //   isShow: false,
+  //   label: '车牌颜色代码'
+  // },
 
-  {
-    prop: 'vehicleInfo.vehicleLoadVolume',
-    isShow: false,
-    label: '车辆可载平方'
-  },
+  // {
+  //   prop: 'vehicleInfo.vehicleLoadVolume',
+  //   isShow: false,
+  //   label: '车辆可载平方'
+  // },
 
-  {
-    prop: 'vehicleInfo.vehicleLoadWeight',
-    isShow: false,
-    label: '车辆可载重量'
-  },
+  // {
+  //   prop: 'vehicleInfo.vehicleLoadWeight',
+  //   isShow: false,
+  //   label: '车辆可载重量'
+  // },
 
-  {
-    prop: 'vehicleInfo.vehicleOwnerCode',
-    isShow: false,
-    label: '车主编码'
-  },
+  // {
+  //   prop: 'vehicleInfo.vehicleOwnerCode',
+  //   isShow: false,
+  //   label: '车主编码'
+  // },
 
-  {
-    prop: 'vehicleInfo.vehiclePower',
-    isShow: false,
-    label: '功率'
-  },
+  // {
+  //   prop: 'vehicleInfo.vehiclePower',
+  //   isShow: false,
+  //   label: '功率'
+  // },
 
-  {
-    prop: 'vehicleInfo.vehicleRemainingLoadVolume',
-    isShow: false,
-    label: '车辆可载立方'
-  },
+  // {
+  //   prop: 'vehicleInfo.vehicleRemainingLoadVolume',
+  //   isShow: false,
+  //   label: '车辆可载立方'
+  // },
 
-  {
-    prop: 'vehicleInfo.vehicleTotalWeight',
-    isShow: false,
-    label: '车辆总重量'
-  },
+  // {
+  //   prop: 'vehicleInfo.vehicleTotalWeight',
+  //   isShow: false,
+  //   label: '车辆总重量'
+  // },
 
-  {
-    prop: 'vehicleInfo.vehicleTypeCode',
-    isShow: false,
-    label: '车身颜色代码'
-  },
+  // {
+  //   prop: 'vehicleInfo.vehicleTypeCode',
+  //   isShow: false,
+  //   label: '车身颜色代码'
+  // },
 
-  {
-    prop: 'vehicleInfo.vehicleWidth',
-    isShow: false,
-    label: '车宽代码'
-  },
+  // {
+  //   prop: 'vehicleInfo.vehicleWidth',
+  //   isShow: false,
+  //   label: '车宽代码'
+  // },
 
 
   {

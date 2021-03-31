@@ -2,28 +2,44 @@
   <div>
     <el-form
       :ref="`formData`"
+      :inline="true"
       :model="formData"
       :rules="rules"
       :size="formConfig.size"
       :label-width="formConfig.labelWidth"
       :label-position="formConfig.labelPosition"
+      :disabled="myisdisabled"
     >
 
       <!-- 文本框 -->
-      <div v-for="(item,index) in resettingData" :key="index">
-        <el-form-item v-if="item.showType === '1'" :prop="item.myName" :label="item.cnName">
+      <div v-for="(item,index) in resettingData" :key="index" class="ly-flex">
+        <el-form-item
+          v-if="item.showType === '1'"
+          :prop="item.myName"
+          :label="item.cnName"
+          :rules="[
+            { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+          ]"
+        >
           <el-input-number
             v-model="formData[item.myName]"
             :controls="false"
             :placeholder="`请输入${item.cnName}`"
             step-strictly
             controls-position="right"
-            :style="{ width: '120px' }"
+            :style="{ width: '200px' }"
           />
         </el-form-item>
         <!-- 下拉框 -->
-        <el-form-item v-if="item.showType === '3'" :prop="item.myName" :label="item.cnName">
-          <el-select v-model="formData[item.myName]" clearable filterable :placeholder="`请输入${item.cnName}`">
+        <el-form-item
+          v-if="item.showType === '3'"
+          :prop="item.myName"
+          :label="item.cnName"
+          :rules="[
+            { required: true, message: '请输入邮箱地址', trigger: 'change' },
+          ]"
+        >
+          <el-select v-model="formData[item.myName]" clearable :placeholder="`请输入${item.cnName}`" :style="{ width: '200px' }" @change="change()">
             <el-option
               v-for="dict in item.Option"
               :key="dict.dictValue"
@@ -35,7 +51,14 @@
 
         <!-- 单选 -->
         <el-form-item v-if="item.showType === '4'" :prop="item.myName" :label="item.cnName">
-          <el-radio-group v-model="formData[item.myName]" size="medium">
+          <el-radio-group
+            v-model="formData[item.myName]"
+            size="medium"
+            :rules="[
+              { required: true, message: '请输入邮箱地址', trigger: 'change' },
+            ]"
+            @change="change()"
+          >
             <el-radio
               v-for="dict in item.Option"
               :key="dict.dictValue"
@@ -45,27 +68,39 @@
         </el-form-item>
 
         <!-- 区间 -->
-        <div v-if="item.showType === '2'" class="ly-flex ly-flex-pack-justify ly-flex-align-center">
+        <div v-if="item.showType === '2'" class="ly-flex-align-center">
 
-          <el-form-item :prop="item.myName+'_0'" :label="item.cnName">
+          <el-form-item
+            :prop="item.myName+'_0'"
+            :label="item.cnName"
+            :rules="[
+              { required: true, message: '请输入起始值', trigger: 'blur' },
+            ]"
+          >
             <el-input-number
               v-model="formData[item.myName+'_0']"
               :controls="false"
               :placeholder="`请输入${item.cnName}`"
               step-strictly
               controls-position="right"
-              :style="{ width: '100%' }"
+              :style="{ width: '85px' }"
             />
           </el-form-item>
-          <div style="margin-bottom: 22px;">~</div>
-          <el-form-item :prop="item.myName+'_1'" label-width="0">
+          <div class="mr10" style="margin-bottom: 22px;">~</div>
+          <el-form-item
+            :prop="item.myName+'_1'"
+            label-width="0"
+            :rules="[
+              { required: true, message: '请输入结束值', trigger: 'blur' },
+            ]"
+          >
             <el-input-number
               v-model="formData[item.myName+'_1']"
               :controls="false"
               :placeholder="`请输入${item.cnName}`"
               step-strictly
               controls-position="right"
-              :style="{ width: '100%' }"
+              :style="{ width: '85px' }"
             />
           </el-form-item>
         </div>
@@ -87,6 +122,10 @@ export default {
           labelPosition: 'left'
         };
       }
+    },
+    myisdisabled: {
+      type: Boolean,
+      default: false
     },
 
     dataList: {
@@ -139,14 +178,15 @@ export default {
       return arr.map(async e => {
         if (e.dictCode && (e.showType === '3' || e.showType === '4')) {
           // 新
-          //   const { data } = await this.listByDict({
-          //     dictPid: '0',
-          //     dictType: e.dictCode
-          //   });
+          // const { data } = await this.listByDict({
+          //   dictPid: '0',
+          //   dictType: e.dictCode
+          // });
           // 旧
           const { data } = await this.getDicts(e.dictCode);
           e.Option = data;
         }
+
 
         return e;
       });
@@ -178,6 +218,11 @@ export default {
           }
         });
       });
+    },
+
+    //
+    change() {
+      this.$forceUpdate();
     }
   }
 

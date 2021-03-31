@@ -1,6 +1,7 @@
 <template>
-  <el-table v-loading="loading" :data="data" @selection-change="handleSelectionChange">
-    <el-table-column v-if="!!_events['selection-change']" type="selection" width="55" align="center" fixed="left" />
+  <el-table :ref="refName" v-loading="loading" :data="data" @selection-change="handleSelectionChange">
+
+    <el-table-column v-if="!!_events['selection-change']" type="selection" width="55" align="center" />
     <template v-for="(th, key) in tableColumnsConfig">
       <el-table-column
         v-if="th.isShow"
@@ -72,12 +73,57 @@ export default {
       default: function() {
         return [];
       }
+    },
+    refName: {
+      type: String,
+      default: 'multipleTable'
+    },
+    cbData: {
+      type: Array,
+      default: null
     }
+  },
+  data() {
+    return {
+      multipleSelection: [],
+      time: null
+    };
+  },
+
+  watch: {
+    cbData: {
+      handler(value) {
+        if (!value) return;
+
+        this.m2ToggleSelection(value);
+      },
+      immediate: true
+    }
+  },
+
+  beforeDestroy() {
+    clearTimeout(this.time);
   },
   methods: {
     handleSelectionChange(selection) {
       this.$emit('selection-change', selection);
+    },
+
+    m2ToggleSelection(rows) {
+      if (rows) {
+        this.$nextTick(() => {
+          this.time = setTimeout(() => {
+            rows.forEach(row => {
+              this.$refs[this.refName].toggleRowSelection(this.data[row], true);
+            });
+          }, 100);
+        });
+      } else {
+        this.$refs[this.refName].clearSelection();
+      }
     }
+
+
   }
 };
 </script>

@@ -2,12 +2,16 @@
   <div v-if="pubilshCode">
     <el-form
       ref="elForm"
+      :disabled="myisdisabled"
       :model="formData"
       :rules="rules"
       size="medium"
       label-width="110px"
       :label-position="'left'"
     >
+      <el-divider />
+      <div class="header mb8">基本信息</div>
+
       <el-form-item label="选择所属项目" prop="tin3">
         <el-select
           v-model="formData.tin3"
@@ -29,6 +33,7 @@
       <el-form-item label="选择货物类别" prop="tin2">
         <el-radio-group
           v-model="formData.tin2"
+          dislabe
           size="medium"
           @change="handletin2(false)"
         >
@@ -65,7 +70,12 @@
         </el-form-item>
       </template>
 
-      <el-form-item label="发布位置" prop="tin4">
+      <el-divider />
+
+      <div class="header mb8">发布集其他信息</div>
+
+
+      <el-form-item label="发布至" prop="tin4">
         <el-radio-group
           v-model="formData.tin4"
           size="medium"
@@ -80,40 +90,47 @@
       </el-form-item>
 
       <template v-if="formData.tin4 === '0'">
-        <el-form-item label="指定接单人" prop="tin5">
-          <el-radio-group v-model="formData.tin5" size="medium">
-            <el-radio
-              v-for="dict in tin5Option"
-              :key="dict.dictValue"
-              :label="dict.dictValue"
-            >{{ dict.dictLabel }}</el-radio>
-          </el-radio-group>
-        </el-form-item>
 
-        <el-form-item v-if="formData.tin5 === '1'" label=" ">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="指定联系人" prop="tin5">
+              <el-radio-group v-model="formData.tin5" size="medium">
+                <el-radio
+                  v-for="dict in tin5Option"
+                  :key="dict.dictValue"
+                  :label="dict.dictValue"
+                >{{ dict.dictLabel }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="关联货源码" prop="tin6">
+              <el-select
+                v-model="formData.tin6"
+                placeholder="选择货集码"
+                clearable
+                :style="{ width: '100%' }"
+              >
+                <el-option
+                  v-for="dict in tin6Option"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+
+        <el-form-item v-if="formData.tin5 === '1'" label=" " prop="tin6_1">
           <div class="ly-flex">
-            <el-button type="primary" @click="open1">指定接单人</el-button>
+            <el-button type="primary" @click="open1">请选择</el-button>
             <div class="ml0">调度者: {{ formData.tin6_1.length }} 人</div>
             <div class="ml0">司机: {{ formData.tin6_2.length }} 人</div>
           </div>
         </el-form-item>
 
-        <el-form-item label="货集码" prop="tin6">
-          <el-select
-            v-model="formData.tin6"
-            placeholder="选择货集码"
-            clearable
-            filterable
-            :style="{ width: '100%' }"
-          >
-            <el-option
-              v-for="dict in tin6Option"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-        </el-form-item>
       </template>
 
       <el-form-item label="备注信息" prop="remark">
@@ -125,6 +142,8 @@
           :style="{ width: '100%' }"
         />
       </el-form-item>
+
+      <el-divider />
     </el-form>
 
     <el-dialog
@@ -133,7 +152,7 @@
       width="80%"
       append-to-body
     >
-      <open-dialog v-if="open" @handleSelectionChange="handleSelectionChange" />
+      <open-dialog v-if="open" :cb-data="formData['tin6_' + actionIndex]" :action-index="actionIndex" @handleSelectionChange="handleSelectionChange" />
     </el-dialog>
   </div>
 </template>
@@ -153,24 +172,43 @@ export default {
       type: String,
       required: true
     },
-
-    value: [Boolean]
+    // 回填信息
+    cbData: {
+      type: Object,
+      default: null
+    },
+    // 使用v-model
+    value: [Boolean],
+    myisdisabled: {
+      type: Boolean,
+      default: false
+    }
+    // active: {
+    //   type: Number,
+    //   default: 0
+    // }
   },
   data() {
-    const tin5_validator = (rule, value, callback) => {
-      // 通过 callback(); // 不过 callback(new Error('请输入密码'));
-      if (
-        this.formData.tin5 === '1' &&
-        (!this.formData.tin6_1.length || !this.formData.tin6_2.length)
-      ) {
-        // callback(new Error('请选择调度者/或司机'));
-        callback();
-      } else {
-        callback();
-      }
-    };
+    // const tin5_validator = (rule, value, callback) => {
+    //   // 通过 callback(); // 不过 callback(new Error('请输入密码'));
+    //   if (
+    //     this.formData.tin5 === '1' &&
+    //     (!this.formData.tin6_1.length || !this.formData.tin6_2.length)
+    //   ) {
+    //     callback(new Error('请选择调度者/或司机'));
+    //     // callback();
+    //   } else {
+    //     callback();
+    //   }
+    // };
     return {
+      // myisdisabled: false,
+      orderSpecifiedList: null, // 调度者信息
+      actionIndex: '2', // 控制弹框显示谁
       open: false,
+      classList: null, // 修改的时候
+      InfoCode: null, // 修改临时存放code
+
       formData: {
         tin3: '0', // 选择所属项目 0表示没有
         tin2: '', // 货物类别(大类)
@@ -186,19 +224,19 @@ export default {
       },
       rules: {
         tin3: [{ required: true, message: '选择所属项目', trigger: 'change' }],
-        tin2: [{ required: true, message: '选择所属项目', trigger: 'change' }],
+        tin2: [{ required: true, message: '选择货物类别', trigger: 'change' }],
         tin2_1: [
-          { required: true, message: '选择所属项目', trigger: 'change' }
+          { required: true, message: '选择货物类型', trigger: 'change' }
         ],
         tin2_2: [
-          { required: true, message: '选择所属项目', trigger: 'change' }
+          { required: true, message: '选择货物类型', trigger: 'change' }
         ],
-        tin4: [{ required: true, message: '选择所属项目', trigger: 'change' }],
+        tin4: [{ required: true, message: '选择是否公开货源', trigger: 'change' }],
         tin5: [
-          { required: true, message: '选择所属项目', trigger: 'change' },
-          { validator: tin5_validator, trigger: 'change' }
+          { required: true, message: '选择指定接单人', trigger: 'change' }
         ],
         tin6: [{ required: false, message: '选择所属项目', trigger: 'change' }],
+        // tin6_1: [{ validator: tin5_validator, trigger: 'change' }],
         remark: [
           { required: false, message: '选择所属项目', trigger: 'change' }
         ]
@@ -209,7 +247,7 @@ export default {
       tin2Option: [], // 大类
       tin2_Option: [], // 小类
       tin4Option: [
-        { dictValue: '1', dictLabel: '公开货源(所有人可接)' },
+        { dictValue: '1', dictLabel: '货源大厅(所有人可接)' },
         { dictValue: '0', dictLabel: '非公开货源(私密货源)' }
       ],
       tin5Option: [
@@ -221,18 +259,29 @@ export default {
   },
 
   computed: {
+    // 多商品计算(根据大类中的isCheckbox判断) true=>多 false=>单
     isMultiGoods() {
       const tin2Obj = this._zhaovalue(this.tin2Option, this.formData.tin2);
       let bool = false;
-      if (tin2Obj.isCheckbox) {
+      if (tin2Obj && tin2Obj.isCheckbox) {
         bool = tin2Obj.isCheckbox === '1';
       }
 
       return bool;
     }
+
+    // isdisabled(value) {
+    //   console.log(value);
+
+    //   return this.active === 4;
+    // }
+    // InfoCodes() {
+    //   return this.formData.tin6_1.concat(this.formData.tin6_2);
+    // }
   },
 
   watch: {
+    // 监听外面 pubilshCode 变化则 全部要跟着初始化
     pubilshCode(value) {
       this.$refs['elForm'] && this.$refs['elForm'].resetFields();
       this.tin3Optin = [{ dictValue: '0', dictLabel: '无所属项目' }]; // 货主项目
@@ -250,13 +299,98 @@ export default {
 
       !this.tin2Option.length && this.api_tin3Optin();
       this.api_dictInit();
+    },
+    // isdisabled(value) {
+    //   console.log(value);
+    // },
+
+    // 回填数据
+    cbData: {
+      async handler() {
+        // 获取字典
+        await this.api_dictInit();
+        // 获取
+        await this.api_tin3Optin();
+        // 货集码
+        await this.handleTin4();
+
+        if (!this.cbData) return;
+
+        // goodsType 是包装成数组 [code1, code2]
+        const { code, projectCode, isPublic, isSpecified, remark, orderSpecifiedList, goodsBigType, goodsType, classList } = this.cbData;
+
+        // 1.基本的赋值
+        this.formData.tin3 = projectCode || '0';
+        this.formData.tin4 = isPublic ? '1' : '0';
+        this.formData.tin5 = isSpecified ? '1' : '0';
+        this.formData.remark = remark;
+        this.tin2Option.forEach(e => {
+          if (goodsBigType === e.dictValue) {
+            this.formData.tin2 = e.dictValue;
+          }
+        });
+
+        console.log(this.formData.tin2);
+
+
+        // 2.去根据大类去请求下数据
+        await this.handletin2();
+
+        // 3.回填 小类(商品)
+        if (this.isMultiGoods) {
+          this.formData.tin2_1 = goodsType;
+        } else {
+          this.tin2_Option.forEach(e => {
+            if (goodsType[0] === e.dictValue) {
+              this.formData.tin2_2 = e.dictValue;
+            }
+          });
+        }
+
+        console.log(this.formData.tin2_1);
+        console.log(this.formData.tin2_2);
+
+
+        // 4.处理调度者
+        this.orderSpecifiedList = orderSpecifiedList;
+        this.orderSpecifiedList.forEach(e => {
+          if (e.userType + '' === '1') {
+            e.code = e.teamInfoCode;
+          } else {
+            e.code = e.driverInfoCode;
+          }
+          this.actionIndex = e.userType + '';
+          this.formData['tin6_' + e.userType] = this.orderSpecifiedList;
+        });
+
+        // 5.货集码只做单选处理
+        this.formData.tin6 = classList[0].classCode;
+        this.classList = classList;
+        this.InfoCode = code;
+      },
+      immediate: true
+    },
+    'formData.tin2_1': {
+      handler(arr) {
+        if (!arr.length) return;
+        const goods = arr.map(e => {
+          return this._zhaovalue(this.tin2_Option, e);
+        });
+
+        this.$emit('goods', goods);
+      },
+      immediate: true
+    },
+    'formData.tin2_2': {
+      handler(value) {
+        if (!value) return;
+        this.$emit('goods', [this._zhaovalue(this.tin2_Option, value)]);
+      },
+      immediate: true
     }
   },
   created() {
-    // 获取字典
-    this.api_dictInit();
-    // 获取
-    this.api_tin3Optin();
+
   },
 
   methods: {
@@ -273,6 +407,8 @@ export default {
       //   { dictValue: '11782121', dictLabel: '矿', isCheckbox: '2' }
       // ];
 
+
+
       this.tin2Option = data;
     },
     // 1. 获取项目
@@ -283,24 +419,6 @@ export default {
         shipmentCode: this.pubilshCode
       };
       const { rows } = await listInfo(query);
-
-      // 假数据
-      // const rows = [
-      //   {
-      //     code: '123142', // 项目编码	query	false
-      //     commodityCategoryCode: '112121', // 商品类别编码	query	false
-      //     commoditySubclassCodes: '1,3,4', // 商品小类code,多个以,分割	query	false
-      //     projectName: '煤矿哈哈多', // 项目名称	query	false
-      //     projectRemark: '' // 备注	query	false
-      //   },
-      //   {
-      //     code: '99987', // 项目编码	query	false
-      //     commodityCategoryCode: '11782121', // 商品类别编码	query	false
-      //     commoditySubclassCodes: '1', // 商品小类code,多个以,分割	query	false
-      //     projectName: '煤矿哈哈单', // 项目名称	query	false
-      //     projectRemark: '' // 备注	query	false
-      //   }
-      // ];
 
       this.tin3Optin = this.tin3Optin.concat(
         this._baozhuan(rows, 'code', 'projectName')
@@ -327,23 +445,20 @@ export default {
     async handletin2(tin3item) {
       this.$emit('input', this.isMultiGoods);
 
+
       const { data } = await this.listByDict({
         dictPid: this._zhaovalue(this.tin2Option, this.formData.tin2).dictCode,
         dictType: 'goodsType'
       });
 
-      // 假数据
-      // const data = [
-      //   { dictValue: '1', dictLabel: '傻子' },
-      //   { dictValue: '2', dictLabel: '疯子' },
-      //   { dictValue: '3', dictLabel: '多疯子' }
-      // ];
+
       this.tin2_Option = data;
 
       if (!tin3item) return;
 
       if (this.isMultiGoods) {
         this.formData.tin2_1 = tin3item.commoditySubclassCodes.split(',');
+
         this.formData.tin2_2 = '';
       } else {
         this.formData.tin2_1 = [];
@@ -361,6 +476,12 @@ export default {
       if (bool) {
         this.formData.tin6_1 = obj['listInfo'] || [];
         this.formData.tin6_2 = obj['listDriver'] || [];
+
+        if (this.formData.tin6_2.length > 0) {
+          this.actionIndex = '2';
+        } else {
+          this.actionIndex = '1';
+        }
 
         if (this.formData.tin6_1.length > 1) {
           this.msgInfo('调度者只能选择一个');
@@ -385,20 +506,6 @@ export default {
         };
         const { rows } = await listStockcode(query);
 
-        // 假数据
-        // const rows = [
-        //   {
-        //     cargoCodeName: '货源码名称', // 货源码名称
-        //     cargoCodeQR: 'deqdq434', // 货源码
-        //     code: '123'
-        //   },
-        //   {
-        //     cargoCodeName: '货源码名称2', // 货源码名称
-        //     cargoCodeQR: 'de455434', // 货源码
-        //     code: '1245'
-        //   }
-        // ];
-
         this.tin6Option = this._baozhuan(rows, 'cargoCodeQR', 'cargoCodeName');
       }
     },
@@ -422,8 +529,36 @@ export default {
                 userType: 2
               };
             });
+
+            let orderGoodsList = [];
+            if (this.isMultiGoods) {
+              orderGoodsList = this.formData.tin2_1.map(e => {
+                return {
+                  goodsBigType: this.formData.tin2,
+                  goodsType: e
+                };
+              });
+            } else {
+              orderGoodsList = [{
+                goodsBigType: this.formData.tin2,
+                goodsType: this.formData.tin2_2
+              }];
+            }
+
+
+            if (this.classList) {
+              this.classList = this.classList.map(e => {
+                return {
+                  ...e,
+                  classCode: this.formData.tin6
+                };
+              });
+            }
+
+
             resolve({
-              classList: [
+              InfoCode: this.InfoCode,
+              classList: this.classList ? this.classList : [
                 {
                   classCode: this.formData.tin6
                 }
@@ -431,64 +566,12 @@ export default {
               isPublic: this.formData.tin4 === '1', //	是否公开货源 0.非公开 1.公开,
               isSpecified: this.formData.tin5 === '1', // 是否指定接单人 0否 1是		false
               // 'loadType': 0,
-              orderGoodsList: [
-                {
-                  // 'addressList': [
-                  //   {
-                  //     'adcode': '',
-                  //     'addressAlias': '',
-                  //     'addressType': 0,
-                  //     'city': '',
-                  //     'citycode': '',
-                  //     'contact': '',
-                  //     'contactPhone': '',
-                  //     'country': '',
-                  //     'detail': '',
-                  //     'district': '',
-                  //     'formattedAddress': '',
-                  //     'level': '',
-                  //     'location': [],
-                  //     'province': '',
-                  //     'provinceCode': '',
-                  //     'street': ''
-                  //   }
-                  // ],
-                  // 'balanceRuleCode': '',
-                  goodsBigType: this.formData.tin2,
-                  goodsType: this.isMultiGoods
-                    ? this.formData.tin2_1
-                    : this.formData.tin2_2
-                  // 'goodsUnit': '',
-                  // 'isModifyFinish': true,
-                  // 'isOneselfLoad': true,
-                  // 'isOneselfUnload': true,
-                  // 'limitWastage': '',
-                  // 'perWeight': 0,
-                  // 'priceWastage': 0,
-                  // 'shipmentPrice': 0,
-                  // 'totalType': '',
-                  // 'vehicleLength': '',
-                  // 'vehicleType': '',
-                  // 'weight': 0,
-                  // orderFreightBoList: [
-                  //   {
-                  //     // 'balanceRuleCode': '',
-                  //     goodsBigType: this.formData.tin2,
-                  //     goodsType: this.isMultiGoods
-                  //       ? this.formData.tin2_1
-                  //       : this.formData.tin2_2
-                  //     // 'orderGoodsCode': '',
-                  //     // 'ruleItemValue': '',
-                  //     // 'type': 0
-                  //   }
-                  // ]
-                }
-
-              ],
+              orderGoodsList,
               orderSpecifiedList: tin6_1.concat(tin6_2),
               projectCode: this.formData.tin3 === '0' ? '' : this.formData.tin3,
               pubilshCode: this.pubilshCode,
               remark: this.formData.remark
+              // ruleInfoShipmentCode: ''
             });
           } else {
             return false;
@@ -497,7 +580,33 @@ export default {
       });
     },
 
-    // 工具
+
+    // 处理小类传入[1,2] =>
+    _handleGoodsType(arr) {
+      // 获取子类的code数组
+      const tae1 = arr.map(e => {
+        return this._zhaovalue(this.tin2_Option, e).dictCode;
+      });
+      // 把子类转出字符串逗号隔开
+
+      return tae1.join(',');
+    },
+
+    // 回填多商品处理code
+    _handlreMultiGoodsType(arr1, options) {
+      console.log(arr1);
+
+      const arr2 = [];
+      arr1.forEach(e => {
+        options.forEach(ee => {
+          if (ee.dictCode + '' === e + '') {
+            arr2.push(ee.dictValue);
+          }
+        });
+      });
+      return arr2;
+    },
+
     // 根据value匹配数组中的一项
     _zhaovalue(arr, value) {
       return arr.filter((e) => {
@@ -521,6 +630,20 @@ export default {
 
 <style lang="scss" scoped>
 .radio_item {
-  padding: 5px 10px 5px 0;
+  padding: 0 10px 10px 0;
+}
+.header {
+  padding-bottom: 10px;
+  position: relative;
+  font-weight: 700;
+  &::before {
+    content: "";
+    position: absolute;
+    width: 3px;
+    height: 20px;
+    left: -15px;
+    top: 1px;
+    background-color: #1890ff;
+  }
 }
 </style>
