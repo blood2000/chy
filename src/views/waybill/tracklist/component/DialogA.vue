@@ -205,6 +205,7 @@ export default {
           return item.addressType === 1;
         });
         this.loadAddressOptions = address1;
+        console.log(response);
         // const address2 = address.filter(item => {
         //   return item.addressType === 2;
         // });

@@ -1,10 +1,11 @@
 import request from '@/utils/request';
 
 // 查询项目列表
+export const listInfoApi = '/assets/shipment/project/list';
 export function listInfo(query) {
   return request({
     url: '/assets/shipment/project/list',
-    method: 'get',
+    method: 'post',
     params: query
   });
 }

@@ -205,7 +205,7 @@
 <script>
 import { listNullify, invalidRejected, listNullifyApi } from '@/api/waybill/nullify';
 import DetailDialog from '../components/detailDialog';
-import tableColumnsConfig from './config';
+// import tableColumnsConfig from './config';
 
 export default {
   name: 'Nullify',
@@ -214,7 +214,7 @@ export default {
   },
   data() {
     return {
-      tableColumnsConfig,
+      tableColumnsConfig: [],
       // 遮罩层
       loading: true,
       // 选中数组
