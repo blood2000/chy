@@ -1,25 +1,6 @@
 <template>
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
-      <el-form-item label="选择人员" prop="name">
-        <el-select
-          v-model="form.name"
-          filterable
-          remote
-          reserve-keyword
-          placeholder="通过手机号进行查询"
-          class="width90"
-          :remote-method="getPersonOptions"
-          :loading="personLoading"
-        >
-          <el-option
-            v-for="item in personOptions"
-            :key="item.code"
-            :label="item.name"
-            :value="item.code"
-          />
-        </el-select>
-      </el-form-item>
+    <el-form ref="form" :model="form" :rules="rules" label-width="140px">
       <el-form-item label="开户姓名" prop="name">
         <el-input v-model="form.name" placeholder="请输入开户姓名" class="width90" clearable />
       </el-form-item>
@@ -66,7 +47,6 @@
         ref="ChooseArea"
         :label-name="'开户城市'"
         :visible="visible"
-        :disabled="disable"
         :prop-province-code="form.provinceCode"
         :prop-city-code="form.cityCode"
         :no-county="true"
@@ -84,8 +64,8 @@
           >{{ dict.dictLabel }}</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="是否默认" prop="isDefault">
-        <el-switch v-model="form.isDefault" />
+      <el-form-item label="银行支行号" prop="name">
+        <el-input v-model="form.name" placeholder="请输入银行支行号" class="width90" clearable />
       </el-form-item>
     </el-form>
 
@@ -110,8 +90,7 @@ export default {
       type: String,
       default: ''
     },
-    open: Boolean,
-    disable: Boolean
+    open: Boolean
   },
   data() {
     return {
@@ -146,9 +125,6 @@ export default {
           { validator: this.formValidate.number, trigger: 'blur' }
         ]
       },
-      // 选择人员
-      personLoading: false,
-      personOptions: [],
       // 网点查询
       loading: false,
       branchOptions: []
@@ -214,20 +190,6 @@ export default {
     // 表单赋值
     setForm(data) {
       this.form = data;
-    },
-    // 选择人员
-    getPersonOptions(query) {
-      if (query !== '') {
-        this.personLoading = true;
-        getBranchList({
-          name: query
-        }).then(response => {
-          this.personLoading = false;
-          this.personOptions = response.data;
-        });
-      } else {
-        this.personOptions = [];
-      }
     },
     // 查询网点列表
     getBranchOptions(query) {

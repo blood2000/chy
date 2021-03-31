@@ -64,13 +64,20 @@
       @pagination="getList"
     />
 
+    <!-- 绑定银行卡 对话框 -->
+    <bank-dialog ref="bankDialogRef" :open.sync="bindBankOpen" :title="title" @refresh="getList" />
+
   </div>
 </template>
 
 <script>
 import { balanceList } from '@/api/capital/abalance';
+import BankDialog from './bankDialog';
 
 export default {
+  components: {
+    BankDialog
+  },
   data() {
     return {
       // 遮罩层
@@ -139,6 +146,9 @@ export default {
     },
     /** 绑定银行卡 */
     handleBindBank(row) {
+      this.$refs.bankDialogRef.reset();
+      // 这里需要调获取详情接口
+      this.$refs.bankDialogRef.setForm({});
       this.title = '绑定银行卡';
       this.bindBankOpen = true;
     },

@@ -8,7 +8,7 @@
             clearable
             filterable
             class="input-width"
-            placeholder="省(支持自动识别)"
+            placeholder="请选择省"
             @change="changeProvince"
           >
             <el-option
@@ -27,7 +27,7 @@
             clearable
             filterable
             class="input-width"
-            placeholder="市(支持自动识别)"
+            placeholder="请选择市"
             @change="changeCity"
           >
             <el-option
@@ -46,7 +46,7 @@
             clearable
             filterable
             class="input-width"
-            placeholder="县/区(支持自动识别)"
+            placeholder="请选择县/区"
             @change="changeCounty"
           >
             <el-option
