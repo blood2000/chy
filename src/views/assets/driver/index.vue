@@ -191,6 +191,12 @@
       <template #createTime="{row}">
         <span>{{ parseTime(row.createTime, '{y}-{m}-{d}') }}</span>
       </template>
+      <template #updateTime="{row}">
+        <span>{{ parseTime(row.updateTime, '{y}-{m}-{d}') }}</span>
+      </template>
+      <template #isReportPersonDate="{row}">
+        <span>{{ parseTime(row.isReportPersonDate, '{y}-{m}-{d}') }}</span>
+      </template>
       <template #edit="{row}">
         <el-button
           size="mini"

@@ -11,7 +11,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="所属调度" prop="teamCode" v-if="form.driverType == 2" :required="form.driverType===2">
+      <el-form-item v-if="form.driverType == 2" label="所属调度" prop="teamCode" :required="form.driverType===2">
         <el-select
           v-model="form.teamCode"
           filterable
@@ -571,31 +571,35 @@ export default {
       const flag = this.$refs.ChooseArea.submit();
       this.$refs['form'].validate(valid => {
         if (valid && flag) {
-          const driver = this.form;
-          driver.vehicleInfo = this.vehicleForm;
-          if (driver.identificationEffective) {
-            driver.identificationEffective = 1;
-          } else {
-            driver.identificationEffective = 0;
-          }
-          if (driver.validPeriodAlways) {
-            driver.validPeriodAlways = 1;
-          } else {
-            driver.validPeriodAlways = 0;
-          }
-          if (this.form.id !== undefined) {
-            updateDriver(driver).then(response => {
-              this.msgSuccess('修改成功');
-              this.close();
-              this.$emit('refresh');
-            });
-          } else {
-            addDriver(driver).then(response => {
-              this.msgSuccess('新增成功');
-              this.close();
-              this.$emit('refresh');
-            });
-          }
+          this.$refs['vehicleForm'].validate(valid => {
+            if (valid) {
+              const driver = this.form;
+              driver.vehicleInfo = this.vehicleForm;
+              if (driver.identificationEffective) {
+                driver.identificationEffective = 1;
+              } else {
+                driver.identificationEffective = 0;
+              }
+              if (driver.validPeriodAlways) {
+                driver.validPeriodAlways = 1;
+              } else {
+                driver.validPeriodAlways = 0;
+              }
+              if (this.form.id !== undefined) {
+                updateDriver(driver).then(response => {
+                  this.msgSuccess('修改成功');
+                  this.close();
+                  this.$emit('refresh');
+                });
+              } else {
+                addDriver(driver).then(response => {
+                  this.msgSuccess('新增成功');
+                  this.close();
+                  this.$emit('refresh');
+                });
+              }
+            }
+          });
         }
       });
     },
