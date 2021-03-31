@@ -3,7 +3,7 @@ import request from '@/utils/request';
 // 查询货源管理列表列表
 export function getOrderInfoList(query) {
   return request({
-    url: '/transportation/order/getOrderInfoList',
+    url: '/transportation/orderInfoSearch/getOrderInfoList',
     method: 'get',
     params: query
   });

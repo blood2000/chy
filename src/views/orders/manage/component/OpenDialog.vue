@@ -47,7 +47,7 @@
       <el-tab-pane label="调度" name="listInfo" />
     </el-tabs>
 
-    <refactor-table :loading="loading" :data="list" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange" />
+    <refactor-table :loading="loading" :data="list" :table-columns-config="tableColumnsConfig" :cb-data="myTo" @selection-change="handleSelectionChange" />
 
     <pagination
       v-show="total>0"
@@ -86,11 +86,21 @@ export default {
     dispatch: {
       type: Object,
       default: null
+    },
+    cbData: {
+      type: Array,
+      default: null
+    },
+    actionIndex: {
+      type: String,
+      default: null
     }
   },
 
   data() {
     return {
+      myTo_listDriver: null,
+      myTo_listInfo: null,
       // tab
       activeName: 'listDriver',
       // 遮罩层
@@ -98,7 +108,8 @@ export default {
       // 多选
       ids: [],
       // 发布货源的时候调用
-      selections: [],
+      selections_listDriver: [],
+      selections_listInfo: [],
       // 总条数
       total_listDriver: 0,
       total_listInfo: 0,
@@ -131,6 +142,26 @@ export default {
     },
     total() {
       return this['total_' + this.activeName];
+    },
+    myTo() {
+      return this['myTo_' + this.activeName];
+    },
+    selections() {
+      return this['selections_' + this.activeName];
+    }
+  },
+
+  watch: {
+
+    actionIndex: {
+      handler(value) {
+        console.log(value);
+
+        if (!value) return;
+        this.activeName = value === '2' ? 'listDriver' : 'listInfo';
+        this.getList();
+      },
+      immediate: true
     }
   },
   created() {
@@ -146,6 +177,20 @@ export default {
         this['list_' + this.activeName] = response.rows;
         this['total_' + this.activeName] = response.total;
         this.loading = false;
+
+        if (this.cbData) {
+          const arr = [];
+
+          this.cbData.forEach(ee => {
+            this.list.forEach((e, index) => {
+              if (e.code === ee.code) {
+                arr.push(index);
+              }
+            });
+          });
+
+          this['myTo_' + this.activeName] = arr;
+        }
       }).catch(() => {
         this.loading = false;
       });
@@ -167,14 +212,21 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.code);
-      this.selections = selection;
+      this['selections_' + this.activeName] = selection;
     },
 
     _ok(bool) {
       // 判断是那个地方调用这个组件了
       if (!this.dispatch) {
+        if (this.activeName === 'listDriver') {
+          this['selections_listInfo'] = [];
+        } else {
+          this['selections_listDriver'] = [];
+        }
+
         this.$emit('handleSelectionChange', { [this.activeName]: this.selections }, bool);
       } else {
+        // dispatch 有值是manage组件调用的
         if (bool) {
           const orderSpecifiedList = this.ids.map(e => {
             if (this.activeName === 'listDriver') {
@@ -207,6 +259,19 @@ export default {
         }
       }
     }
+
+    // 回填 rows 为数组
+    // toggleSelection(rows) {
+    //   console.log(this.$refs.multipleTable.toggleRowSelection());
+
+    //   if (rows) {
+    //     rows.forEach(row => {
+    //       this.$refs.multipleTable.toggleRowSelection(row, true);
+    //     });
+    //   } else {
+    //     this.$refs.multipleTable.clearSelection();
+    //   }
+    // }
 
 
   }

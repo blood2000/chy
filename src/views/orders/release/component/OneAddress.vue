@@ -5,10 +5,21 @@
       :model="formData"
       :rules="rules"
       size="medium"
-      label-width="110px"
+      label-width="80px"
       :label-position="'left'"
+      :disabled="myisdisabled"
     >
-      <ProvinceCityCounty ref="pccFef" @getCity="getCity" />
+
+      <!-- <el-form-item
+        v-if="formData.tin7 === '2' || formData.tin7 === '4'"
+        prop="tin8"
+      >
+        <el-checkbox v-model="formData.tin8">允许自装</el-checkbox>
+      </el-form-item> -->
+
+      <ProvinceCityCounty ref="pccFef" :cb-data="cbData" :isrules="isrules" :disabled="myisdisabled" @getCity="getCity" />
+
+
 
       <div class="ly-flex">
         <el-form-item
@@ -25,7 +36,7 @@
             placeholder="请输入关键词"
             :remote-method="remoteMethod"
             :loading="loading"
-            :style="{ width: '100%' }"
+            :style="{ width: '90%' }"
             @change="handlechengDetail"
           >
             <el-option
@@ -76,7 +87,7 @@
               v-model="formData.contact"
               placeholder="请输入联系人"
               clearable
-              :style="{ width: '100%' }"
+              :style="{ width: '90%' }"
             />
           </el-form-item>
         </el-col>
@@ -96,15 +107,32 @@
 </template>
 
 <script>
-import ProvinceCityCounty from '@/components/Ddc/Tin/ProvinceCityCounty-1';
+import ProvinceCityCounty from '@/components/Ddc/Tin/ProvinceCityCounty';
 export default {
   components: { ProvinceCityCounty },
 
   props: {
-    type: [String, Number]
+    type: {
+      type: [String, Number],
+      default: ''
+    },
+    isRules: {
+      type: Boolean,
+      default: false
+    },
+    cbData: {
+      type: Object,
+      default: null
+    },
+    myisdisabled: {
+      type: Boolean,
+      default: false
+    }
+
   },
   data() {
     return {
+      isrules: true,
       loading: false,
       searchOption: {
         city: '全国',
@@ -123,15 +151,58 @@ export default {
         tin1: [{ required: true, message: '选择所属项目', trigger: 'change' }],
         tin2: [{ required: true, message: '选择所属项目', trigger: 'change' }],
         tin3: [{ required: true, message: '选择所属项目', trigger: 'blur' }],
-        contact: [{ required: true, message: '选择所属项目', trigger: 'blur' }],
+        contact: [{ required: true, message: '请输入联系人', trigger: 'blur' }],
         contactPhone: [
-          { required: true, message: '选择所属项目', trigger: 'blue' }
+          { required: true, message: '请输入联系电话', trigger: 'blue' }
         ]
       },
 
       // 字典集合
       detailOptin: []
     };
+  },
+  watch: {
+    cbData: {
+      handler(value) {
+        if (!value) return;
+
+        const {
+          detail,
+          street,
+          addressAlias,
+          contact,
+          contactPhone,
+          location
+        } = value;
+
+        this.formData.tin1 = detail;
+        this.formData.tin2 = street;
+        this.formData.tin3 = addressAlias;
+        this.formData.contact = contact;
+        this.formData.contactPhone = contactPhone;
+
+        this.selected = {
+          name: detail,
+          lat: location ? location[1] - 0 : 0,
+          lng: location ? location[0] - 0 : 0
+        };
+      },
+      immediate: true
+    },
+
+    isRules(value) {
+      this.isrules = !value;
+
+      this.rules = {
+        tin1: [{ required: !value, message: '选择所属项目', trigger: 'change' }],
+        tin2: [{ required: !value, message: '选择所属项目', trigger: 'change' }],
+        tin3: [{ required: !value, message: '选择所属项目', trigger: 'blur' }],
+        contact: [{ required: !value, message: '请输入联系人', trigger: 'blur' }],
+        contactPhone: [
+          { required: !value, message: '请输入联系电话', trigger: 'blue' }
+        ]
+      };
+    }
   },
 
   methods: {
@@ -150,7 +221,11 @@ export default {
     },
 
     // 2. 下拉选择地址
-    handlechengDetail() {
+    handlechengDetail(value) {
+      if (!value && this.isRules) {
+        this.selected = '';
+      }
+
       this.selected = this._zhaovalue(this.detailOptin, this.formData.tin1);
     },
 
@@ -161,11 +236,11 @@ export default {
 
     async _submitForm() {
       // 获取省市区
-      const { city, county, province } = await this.$refs.pccFef._submitForm();
+      const { city = {}, county = {}, province = {}} = await this.$refs.pccFef._submitForm();
       // 获取当前
       const { tin2, tin3, contact, contactPhone } = this.formData;
       // 获取详情及经纬度
-      const { name, lat, lng } = this.selected;
+      const { name = '', lat = '', lng = '' } = this.selected;
 
       return new Promise((resolve, reject) => {
         this.$refs['elForm'].validate((valid) => {

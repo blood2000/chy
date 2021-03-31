@@ -1,62 +1,114 @@
 <template>
-  <div>
-    <!-- <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="100px" class="clearfix">
-      <el-form-item label="转货地址" prop="testName">
+  <div class="app-container">
+    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+      <el-form-item label="地址类型" prop="addressType">
+        <el-select v-model="queryParams.addressType" placeholder="请选择地址类型" clearable filterable size="small">
+          <el-option
+            v-for="dict in addressTypeOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="状态" prop="status">
+        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable filterable size="small">
+          <el-option
+            v-for="dict in statusOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="地址名称" prop="addressName">
         <el-input
-          v-model="queryParams.testName"
-          placeholder="请输入公司名称/客户姓名/手机号"
+          v-model="queryParams.addressName"
+          placeholder="请输入地址名称"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-
-      <el-form-item label="转货电话" prop="testName1">
+      <el-form-item label="地址别名" prop="addressOtherName">
         <el-input
-          v-model="queryParams.testName1"
-          placeholder="装货地/装货电话/装货人"
+          v-model="queryParams.addressOtherName"
+          placeholder="请输入地址别名"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-
-      <el-form-item label="发货人" prop="testName2">
+      <el-form-item label="地址详情" prop="addressDetail">
         <el-input
-          v-model="queryParams.testName2"
-          placeholder="目的地/收货电话/收货人"
+          v-model="queryParams.addressDetail"
+          placeholder="请输入地址详情"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-
-
-      <el-form-item class="fr">
+      <!-- <el-form-item label="联系人" prop="contactName">
+        <el-input
+          v-model="queryParams.contactName"
+          placeholder="请输入联系人"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="手机号码" prop="contactTelphone">
+        <el-input
+          v-model="queryParams.contactTelphone"
+          placeholder="请输入手机号码"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item> -->
+      <el-form-item>
         <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-
       </el-form-item>
-    </el-form> -->
+    </el-form>
 
-    <!-- <div class="mb8">
-      <tablec-cascader v-model="tableColumnsConfig" :options="options" />
-    </div> -->
-    <el-tabs v-model="activeName" type="card" @tab-click="getList()">
-      <el-tab-pane label="司机" name="listDriver" />
-      <el-tab-pane label="调度" name="listInfo" />
-    </el-tabs>
+    <el-row :gutter="10" class="mb8">
+      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+    </el-row>
 
-    <RefactorTable :loading="loading" :data="list" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
-      <template #edit="{row}">
-        <el-button
-          size="mini"
-          type="text"
-          icon="el-icon-edit"
-          @click="handleUpdate(row)"
-        >选择</el-button>
-      </template>
-    </RefactorTable>
+    <el-radio-group v-model="radio" style="width:100%" @change="handlerChange">
+
+
+
+      <el-table v-loading="loading" :data="addressList">
+        <!-- <el-table-column type="selection" width="55" align="center" fixed="left" /> -->
+
+        <el-table-column label="" align="center" width="50">
+          <template slot-scope="scope">
+            <el-radio :label="scope.row.id">
+              <div v-show="false" />
+            </el-radio>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="地址名称" align="center" prop="addressName">
+          <template slot-scope="scope">
+            {{ scope.row.addressName }}
+            <el-tag v-if="scope.row.isDefault === 1 && scope.row.addressType === 1">装货默认地址</el-tag>
+            <el-tag v-if="scope.row.isDefault === 1 && scope.row.addressType === 2" type="warning">卸货默认地址</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="地址别名" align="center" prop="addressOtherName" />
+        <el-table-column label="地址详情" align="center" prop="addressDetail" />
+        <el-table-column label="手机号码" align="center" prop="contactTelphone" />
+        <el-table-column label="联系人" align="center" prop="contactName" />
+        <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" />
+
+      </el-table>
+
+    </el-radio-group>
+
+    <el-button type="primary" style="marginTop:30px" @click="handlerClick">确定</el-button>
 
     <pagination
       v-show="total>0"
@@ -66,439 +118,123 @@
       @pagination="getList"
     />
 
-    <div>
-      <el-button type="cyan" :disabled="!(ids.length>0)" icon="el-icon-search" size="mini" @click="_ok(true)">确定</el-button>
-      <el-button icon="el-icon-refresh" size="mini" @click="_ok(false)">取消</el-button>
-    </div>
   </div>
 </template>
 
 <script>
-
-import { listDriver } from '@/api/assets/driver';
-import { listInfo } from '@/api/assets/team';
-import { dispatchOrder } from '@/api/order/manage';
-
-// import { listShipment, getShipment, delShipment } from '@/api/assets/shipment';
-
-const apiFn = {
-  listDriver, listInfo
-};
-
-const tableColumnsConfig_listDriver = [
-  {
-    prop: 'driverType',
-    isShow: true,
-    label: '司机类别'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'provinceCodedit',
-    isShow: false,
-    label: '省'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'cityCodedit',
-    isShow: false,
-    label: '市'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'countyCodedit',
-    isShow: false,
-    label: '县'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'namet',
-    isShow: false,
-    label: '名字'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'telphonet',
-    isShow: false,
-    label: '手机'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'fixedPhonet',
-    isShow: false,
-    label: '固话'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'workCompany',
-    isShow: false,
-    label: '工作单位'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'driverCity',
-    isShow: false,
-    label: '司机城市名称'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'homeAddresst',
-    isShow: false,
-    label: '地址'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'identificationNumber',
-    isShow: true,
-    label: '身份证号'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'driverLicense',
-    isShow: false,
-    label: '驾驶证'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'validPeriodFrom',
-    isShow: false,
-    label: '驾驶证有效期自'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'validPeriodTo',
-    isShow: false,
-    label: '驾驶证有效期至'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'driverLicenseType',
-    isShow: false,
-    label: '驾驶证类型'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'workLicense',
-    isShow: false,
-    label: '上岗证'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'workLicenseDueDate',
-    isShow: false,
-    label: '从业资格证到期日期'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'businessLicenseImgNo',
-    isShow: false,
-    label: '营业执照号'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'isReportPerson',
-    isShow: false,
-    label: '是否上传人员信用信息'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'issuingOrganizations',
-    isShow: false,
-    label: '驾驶证发证机关'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'isReportEnterprise',
-    isShow: false,
-    label: '是否上传企业'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'workLicenseProvinceName',
-    isShow: false,
-    label: '从业资格证办理省份名称'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'authStatus',
-    isShow: false,
-    label: '审核状态'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'isFreeze',
-    isShow: false,
-    label: '是否冻结'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'createCode',
-    isShow: false,
-    label: '创建人'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'updateCode',
-    isShow: false,
-    label: '修改人'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'createTime',
-    isShow: false,
-    label: '创建时间'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'edit',
-    isShow: false,
-    label: '操作',
-    width: 180,
-    fixed: 'right'
-  }
-];
-
-const tableColumnsConfig_listInfo = [
-  {
-    prop: 'branchCode',
-    isShow: true,
-    label: '网点编码'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'name',
-    isShow: true,
-    label: '调度者名称'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'teamLeader',
-    isShow: true,
-    label: '管理者名称'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'isDel',
-    isShow: true,
-    label: '是否删除'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'status',
-    isShow: true,
-    label: '状态'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'createCode',
-    isShow: false,
-    label: '创建人'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'updateCode',
-    isShow: false,
-    label: '修改人'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'businessLicenseImg',
-    isShow: false,
-    label: '营业执照'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'transportPermitImage',
-    isShow: false,
-    label: '道路运输经营许可证照'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'identificationImage',
-    isShow: false,
-    label: '身份证正面照片'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'identificationBackImage',
-    isShow: false,
-    label: '身份证国徽面'
-    // width: 180,
-    // fixed: 'right'
-  },
-  {
-    prop: 'edit',
-    isShow: false,
-    label: '操作',
-    width: 180,
-    fixed: 'right'
-  }
-];
-
+import { listAddress } from '@/api/enterprise/company/address';
 
 export default {
-  name: 'OpenDialog',
-
-  props: {
-    dispatch: {
-      type: Object,
-      required: true
-    }
-  },
-
   data() {
     return {
-      // tab
-      activeName: 'listDriver',
+      radio: '',
       // 遮罩层
-      loading: false,
-      // 多选
+      loading: true,
+      // 选中数组
       ids: [],
+      // 非单个禁用
+      single: true,
+      // 非多个禁用
+      multiple: true,
+      // 显示搜索条件
+      showSearch: true,
       // 总条数
-      total_listDriver: 0,
-      total_listInfo: 0,
-      // 查询参数
+      total: 0,
       // 表格数据
-      list_listDriver: [],
-      queryParams_listDriver: {
+      addressList: [],
+      // 弹出层标题
+      title: '',
+      // 是否显示弹出层
+      open: false,
+      // 地址类型字典
+      addressTypeOptions: [
+        { 'dictLabel': '装货地址', 'dictValue': 1 },
+        { 'dictLabel': '卸货地址', 'dictValue': 2 }
+      ],
+      // 状态字典
+      statusOptions: [
+        { 'dictLabel': '启用', 'dictValue': 1 },
+        { 'dictLabel': '禁用', 'dictValue': 2 }
+      ],
+      // 查询参数
+      queryParams: {
         pageNum: 1,
-        pageSize: 10
+        pageSize: 10,
+        isAsc: 'asc',
+        orderByColumn: 'id',
+        code: null,
+        shipmentCode: null,
+        addressType: null,
+        status: null,
+        createCode: null,
+        updateCode: null,
+        addressName: null,
+        addressOtherName: null,
+        latitude: null,
+        longitude: null,
+        addressDetail: null,
+        contactName: null,
+        contactTelphone: null
       },
-      list_listInfo: [],
-      queryParams_listInfo: {
-        pageNum: 1,
-        pageSize: 10
-      },
-      // 表头动态值
-      tableColumnsConfig_listDriver,
-      tableColumnsConfig_listInfo
+
+      // 选中
+      isSelected: {}
     };
-  },
-  computed: {
-    list() {
-      return this['list_' + this.activeName];
-    },
-    queryParams() {
-      return this['queryParams_' + this.activeName];
-    },
-    tableColumnsConfig() {
-      return this['tableColumnsConfig_' + this.activeName];
-    },
-    total() {
-      return this['total_' + this.activeName];
-    }
   },
   created() {
     this.getList();
   },
-
   methods: {
-    /** 查询【请填写功能名称】列表 */
+    /** 查询常用地址列表 */
     getList() {
       this.loading = true;
-
-      apiFn[this.activeName](this.queryParams).then(response => {
-        this['list_' + this.activeName] = response.rows;
-        this['total_' + this.activeName] = response.total;
-        this.loading = false;
-      }).catch(() => {
+      listAddress(this.queryParams).then(response => {
+        this.addressList = response.rows;
+        this.total = response.total;
         this.loading = false;
       });
     },
+    // 地址类型字典翻译
+    addressTypeFormat(row, column) {
+      return this.selectDictLabel(this.addressTypeOptions, row.addressType);
+    },
+    // 状态字典翻译
+    statusFormat(row, column) {
+      return this.selectDictLabel(this.statusOptions, row.status);
+    },
     /** 搜索按钮操作 */
     handleQuery() {
-      // this.queryParams.pageNum = 1;
+      this.queryParams.pageNum = 1;
+      this.getList();
     },
     /** 重置按钮操作 */
     resetQuery() {
-      // this.resetForm('queryForm');
-      // this.handleQuery();
+      this.resetForm('queryForm');
+      this.handleQuery();
     },
-
-    handleUpdate() {
-
-    },
-
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.code);
+      if (selection.length >= 2) {
+        this.msgSuccess('只能选择一条');
+        return;
+      } else {
+        console.log(selection);
+      }
+      // this.ids = selection.map(item => item.id);
+      // this.single = selection.length !== 1;
+      // this.multiple = !selection.length;
+    },
+    handlerChange(value) {
+      const arr = this.addressList.filter(e => {
+        return e.id - 0 === value - 0;
+      });
+      // console.log(arr[0]);
+      this.isSelected = arr[0];
     },
 
-    _ok(bool) {
-      if (bool) {
-        const orderSpecifiedList = this.ids.map(e => {
-          if (this.activeName === 'listDriver') {
-            return {
-              'driverInfoCode': e,
-              'teamInfoCode': '',
-              'userType': 2
-            };
-          } else {
-            return {
-              'driverInfoCode': '',
-              'teamInfoCode': e,
-              'userType': 1
-            };
-          }
-        });
-
-        const data = {
-          'oderCode': this.dispatch.code,
-          orderSpecifiedList
-        };
-
-
-        dispatchOrder(data).then(res => {
-          console.log(res);
-          this.msgSuccess('派发成功!');
-          this.$emit('_ok', false);
-        });
-      } else {
-        this.$emit('_ok', false);
-      }
+    handlerClick() {
+      this.$emit('radioSelection', this.isSelected);
     }
-
-
   }
 };
 </script>
-
-<style>
-
-</style>

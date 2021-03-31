@@ -7,14 +7,42 @@
       :size="formConfig.size"
       :label-width="formConfig.labelWidth"
       :label-position="formConfig.labelPosition"
+      :disabled="myisdisabled"
     >
-      <el-form-item label="货物计量单位" prop="goodsUnit">
+
+      <el-form-item label="业务类型" prop="businessType">
+        <el-select
+          v-model="formData.businessType"
+          placeholder="请选择业务类型"
+          clearable
+        >
+          <el-option
+            v-for="dict in formDataList.businessTypeOption"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="配载方式" prop="stowageStatus">
+        <el-radio-group v-model="formData.stowageStatus" size="medium">
+          <el-radio
+            v-for="dict in [
+              { dictValue: '0', dictLabel: '吨数配载' },
+              { dictValue: '1', dictLabel: '方数配载' },
+              { dictValue: '2', dictLabel: '车数配载' }]"
+            :key="dict.dictValue"
+            :label="dict.dictValue"
+          >{{ dict.dictLabel }}</el-radio>
+        </el-radio-group>
+      </el-form-item>
+
+      <!-- <el-form-item v-if="false" label="货物计量单位" prop="goodsUnit">
         <el-select
           v-model="formData.goodsUnit"
           placeholder="请选择货物计量单位"
           clearable
-          filterable
-          :style="{ width: '100%' }"
         >
           <el-option
             v-for="dict in formDataList.measurementType"
@@ -23,9 +51,13 @@
             :value="dict.dictValue"
           />
         </el-select>
-      </el-form-item>
-      <el-form-item label="配载(货物)总量" prop="weightType">
-        <el-radio-group v-model="formData.weightType" size="medium">
+      </el-form-item> -->
+
+
+
+
+      <el-form-item v-if="formData.stowageStatus !== '2'" label="重量/体积" prop="totalType">
+        <el-radio-group v-model="formData.totalType" size="medium">
           <el-radio label="1">不限(长期货源)</el-radio>
 
           <el-radio label="2">
@@ -34,7 +66,7 @@
               style="display: inline-block"
               :rules="[
                 {
-                  required: formData.weightType === '2',
+                  required: formData.totalType === '2',
                   message: '请输入货物重量(吨)',
                   trigger: 'blur',
                 },
@@ -43,6 +75,7 @@
               <span class="pr-5">共</span>
               <el-input-number
                 v-model="formData.weight"
+                :disabled="formData.totalType === '1'"
                 :controls="false"
                 :placeholder="`请输入重量(${goodsUnitName})`"
                 step-strictly
@@ -55,41 +88,54 @@
         </el-radio-group>
       </el-form-item>
 
-      <el-form-item label="最高配载" prop="perWeight">
-        <el-input-number
-          v-model="formData.perWeight"
-          :controls="false"
-          placeholder="请输入最高配载"
-          step-strictly
-          controls-position="right"
-          :style="{ width: '50%' }"
-        />
-        <span class="pl-5">{{ goodsUnitName }}</span>
-      </el-form-item>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item v-if="formData.stowageStatus !== '2'" label="最高配载" prop="vehicleMaxWeight">
+            <el-input-number
+              v-model="formData.vehicleMaxWeight"
+              :controls="false"
+              placeholder="请输入最高配载"
+              step-strictly
+              controls-position="right"
+              :style="{ width: '80%' }"
+            />
+            <span class="pl-5">{{ goodsUnitName }}</span>
+          </el-form-item>
 
-      <el-form-item label="运输单价" prop="shipmentPrice">
-        <el-input-number
-          v-model="formData.shipmentPrice"
-          :controls="false"
-          placeholder="运输单价"
-          step-strictly
-          controls-position="right"
-          :style="{ width: '50%' }"
-        />
-        <span class="pl-5">元/{{ goodsUnitName }}(不含税)</span>
-      </el-form-item>
+          <el-form-item v-else label="承运次数" prop="number">
+            <el-input-number
+              v-model="formData.number"
+              :controls="false"
+              placeholder="请输入承运次数"
+              step-strictly
+              controls-position="right"
+              :style="{ width: '80%' }"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="货物单价" prop="goodsPrice">
+            <el-input-number
+              v-model="formData.goodsPrice"
+              :controls="false"
+              placeholder="货物单价"
+              step-strictly
+              controls-position="right"
+              :style="{ width: '80%' }"
+            />
+            <span class="pl-5">元/{{ goodsUnitName }}</span>
+          </el-form-item>
+        </el-col>
+      </el-row>
 
-      <el-form-item label="货物单价" prop="goodsPrice">
-        <el-input-number
-          v-model="formData.goodsPrice"
-          :controls="false"
-          placeholder="货物单价"
-          step-strictly
-          controls-position="right"
-          :style="{ width: '50%' }"
-        />
-        <span class="pl-5">元/{{ goodsUnitName }}</span>
-      </el-form-item>
+
+
+
+
+
+
+
+
 
       <el-form-item label="车型" prop="vehicleType">
         <el-select
@@ -109,7 +155,6 @@
           />
         </el-select>
       </el-form-item>
-
       <el-form-item label="车长" prop="vehicleLength">
         <el-select
           v-model="formData.vehicleLength"
@@ -128,6 +173,29 @@
           />
         </el-select>
       </el-form-item>
+      <!-- <el-row :gutter="100">
+        <el-col :span="12">
+        </el-col>
+        <el-col :span="12">
+        </el-col>
+      </el-row> -->
+
+
+
+
+      <!-- <el-form-item v-if="false" label="运输单价" prop="shipmentPrice">
+        <el-input-number
+          v-model="formData.shipmentPrice"
+          :controls="false"
+          placeholder="运输单价"
+          step-strictly
+          controls-position="right"
+          :style="{ width: '50%' }"
+        />
+        <span class="pl-5">元/{{ goodsUnitName }}(不含税)</span>
+      </el-form-item> -->
+
+
     </el-form>
   </div>
 </template>
@@ -141,46 +209,65 @@ export default {
         return {
           size: 'medium',
           labelWidth: '120px',
-          labelPosition: 'left'
+          labelPosition: 'right'
         };
       }
+    },
+    cbData: {
+      type: Object,
+      default: null
+    },
+    myisdisabled: {
+      type: Boolean,
+      default: false
     }
   },
 
   data() {
     return {
       formData: {
-        goodsUnit: '0', // 货物计量单位 0=>吨; 1=>立方米
-        weightType: '1', // 货物总量类型 是不限
-        weight: undefined, // 货物重量
-        perWeight: undefined, // 最高配载
-        shipmentPrice: undefined, // 运输单价
+        businessType: '', // 业务类型
+        stowageStatus: '0', // 配载方式
+        number: undefined, // 车数
+        // goodsUnit: '0', // 货物计量单位 0=>吨; 1=>立方米
+        totalType: '1', // 货物总量类型 1是不限 2是要填具体的值
+        weight: undefined, // 货物重量 当totalType = 2 时 ==> 才有值存在
+        vehicleMaxWeight: undefined, // 最高配载
+        // shipmentPrice: undefined, // 运输单价
         goodsPrice: undefined, // 货物单价
         vehicleType: [], // 车型->查字典
         vehicleLength: [] // 车长->查字典
       },
       rules: {
-        goodsUnit: [
-          { required: true, message: '请选择货物计量单位', trigger: 'change' }
+        businessType: [
+          { required: false, message: '', trigger: 'change' }
         ],
-        shipmentPrice: [
-          { required: true, message: '请输入运输单价', trigger: 'blur' }
+        stowageStatus: [
+          { required: true, message: '', trigger: 'change' }
         ],
+        totalType: [
+          { required: true, message: '', trigger: 'change' }
+        ],
+        // goodsUnit: [
+        //   { required: true, message: '请选择货物计量单位', trigger: 'change' }
+        // ],
+        number: [
+          { required: true, message: '请输入车数', trigger: 'blur' }
+        ],
+        // shipmentPrice: [
+        //   { required: true, message: '请输入运输单价', trigger: 'blur' }
+        // ],
         goodsPrice: [
           { required: true, message: '请输入货物单价', trigger: 'blur' }
         ],
-
-        weightType: [
-          { required: true, message: '请输入货物单价', trigger: 'blur' }
-        ],
-        perWeight: [
+        vehicleMaxWeight: [
           { required: true, message: '请输入货物单价', trigger: 'blur' }
         ]
 
       },
       // 字典类放这里
       formDataList: {
-        measurementType: [],
+        businessTypeOption: [],
         vehicleClassification: [],
         vehicleLength: []
       }
@@ -188,23 +275,71 @@ export default {
   },
 
   computed: {
+    // 计算显示的单位
     goodsUnitName() {
-      let name = '';
-      this.formDataList.measurementType.forEach(e => {
-        if (e.dictValue === this.formData.goodsUnit) {
-          name = e.dictLabel;
-        }
-      });
-      console.log(name);
-
+      let name = '吨';
+      switch (this.formData.stowageStatus) {
+        case '0':
+          name = '吨';
+          break;
+        case '1':
+          name = '立方';
+          break;
+        case '2':
+          name = '车';
+          break;
+      }
+      this.$emit('getGoodsUnitName', name);
       return name;
+    }
+  },
+
+  watch: {
+    cbData: {
+      handler(value) {
+        if (!value) return;
+
+        console.log(value);
+
+        const {
+          businessType,
+          stowageStatus,
+          // goodsUnit,
+          totalType,
+          weight,
+          vehicleMaxWeight,
+          shipmentPrice,
+          goodsPrice,
+          vehicleType,
+          vehicleLength } = value;
+
+        this.formData = {
+          businessType,
+          stowageStatus: stowageStatus || '0',
+          // goodsUnit,
+          totalType: totalType ? '2' : '1',
+          weight,
+          vehicleMaxWeight,
+          shipmentPrice,
+          goodsPrice,
+          vehicleType: vehicleType ? vehicleType.split(',') : undefined, // 车型->查字典
+          vehicleLength: vehicleLength ? vehicleLength.split(',') : undefined // 车长->查字典
+        };
+      },
+      immediate: true
+    },
+    'formData.totalType'(value) {
+      if (value === '1') {
+        this.formData.weight = undefined;
+      }
+      this.$emit('totalTypeValue', value);
     }
   },
 
   created() {
     // 获取字典型
-    this.getDicts('measurementType').then((response) => {
-      this.formDataList.measurementType = response.data;
+    this.getDicts('businessType').then((response) => {
+      this.formDataList.businessTypeOption = response.data;
     });
     this.getDicts('vehicleClassification').then((response) => {
       this.formDataList.vehicleClassification = response.data;
