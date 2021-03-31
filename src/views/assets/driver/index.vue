@@ -225,6 +225,13 @@
           @click="handleAddTeam(row)"
         >加入调度</el-button>
         <el-button
+          v-show="row.applyType == 2 && row.applyStatus == 0"
+          size="mini"
+          type="text"
+          icon="el-icon-document-checked"
+          @click="handleDeal(row)"
+        >处理邀请</el-button>
+        <el-button
           v-hasPermi="['system:config:remove']"
           size="mini"
           type="text"
@@ -498,6 +505,10 @@ export default {
     handleAddTeam(row) {
       this.driverCode = row.code;
       this.addTeamDialogOpen = true;
+    },
+    // 处理邀请
+    handleDeal(row) {
+
     }
   }
 };

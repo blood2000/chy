@@ -130,7 +130,14 @@
           type="text"
           icon="el-icon-document-add"
           @click="handleAddDriver(row)"
-        >添加司机</el-button>
+        >邀请司机</el-button>
+        <el-button
+          v-show="row.applyType === 1 && row.applyStatus === 0"
+          size="mini"
+          type="text"
+          icon="el-icon-document-checked"
+          @click="handleDeal(row)"
+        >处理申请</el-button>
         <el-button
           v-hasPermi="['assets:team:remove']"
           size="mini"
@@ -320,6 +327,10 @@ export default {
     handleAddDriver(row) {
       this.teamCode = row.code;
       this.addDriverDialogOpen = true;
+    },
+    // 处理申请
+    handleDeal(row) {
+
     }
   }
 };

@@ -85,6 +85,11 @@
     </el-form>
     <el-table v-loading="loading" :data="driverList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
+      <el-table-column label="邀请情况" align="center" prop="applyStatus">
+        <template slot-scope="scope">
+          <span>{{ selectDictLabel(applyStatusOptions, scope.row.applyStatus) }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="司机类别" align="center" prop="driverType">
         <template slot-scope="scope">
           <span>{{ selectDictLabel(driverTypeOptions, scope.row.driverType) }}</span>
@@ -213,6 +218,11 @@ export default {
       isOption: [
         { dictLabel: '否', dictValue: 0 },
         { dictLabel: '是', dictValue: 1 }
+      ],
+      applyStatusOptions: [
+        { dictLabel: '未处理', dictValue: '0' },
+        { dictLabel: '已加入', dictValue: '1' },
+        { dictLabel: '已拒绝', dictValue: '2' }
       ],
       // 网点编码字典
       branchCodeOptions: [],
