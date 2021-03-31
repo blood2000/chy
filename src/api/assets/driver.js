@@ -89,3 +89,19 @@ export function applyJoinTeam(data) {
   });
 }
 
+// 获取司机要处理的邀请列表
+export function listApply(driverCode) {
+  return request({
+    url: `/assets/apply/driver/${driverCode}`,
+    method: 'post'
+  });
+}
+
+// 处理邀请
+export function dealApply(data) {
+  return request({
+    url: `/assets/apply/invitation/deal`,
+    method: 'put',
+    data: data
+  });
+}

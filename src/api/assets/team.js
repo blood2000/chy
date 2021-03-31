@@ -52,3 +52,21 @@ export function applyDriver(data) {
     data: data
   });
 }
+
+// 获取调度者要处理的司机列表
+export function listApply(teamCode) {
+  return request({
+    url: `/assets/apply/team/${teamCode}`,
+    method: 'post'
+  });
+}
+
+// 处理申请
+export function dealApply(data) {
+  return request({
+    url: `/assets/apply/join/deal`,
+    method: 'put',
+    data: data
+  });
+}
+

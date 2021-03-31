@@ -241,20 +241,20 @@
 }
 
 /* 表单禁用样式覆盖 */
-.el-input.is-disabled .el-input__inner,
-.el-radio__input.is-disabled .el-radio__inner,
-.el-radio__input.is-disabled + span.el-radio__label,
-.el-checkbox__input.is-disabled .el-checkbox__inner,
-.el-checkbox__input.is-disabled + span.el-checkbox__label,
-.el-select .el-input.is-disabled .el-input__inner,
-.el-textarea.is-disabled .el-textarea__inner{
-	background: transparent;
-	color: #666;
-	cursor: default;
-}
-.el-radio__input.is-disabled.is-checked .el-radio__inner::after{
-	background: #1890ff;
-}
-.el-radio__input.is-disabled.is-checked .el-radio__inner{
-	border-color: #1890ff;
-}
+// .el-input.is-disabled .el-input__inner,
+// .el-radio__input.is-disabled .el-radio__inner,
+// .el-radio__input.is-disabled + span.el-radio__label,
+// .el-checkbox__input.is-disabled .el-checkbox__inner,
+// .el-checkbox__input.is-disabled + span.el-checkbox__label,
+// .el-select .el-input.is-disabled .el-input__inner,
+// .el-textarea.is-disabled .el-textarea__inner{
+// 	background: transparent;
+// 	color: #666;
+// 	cursor: default;
+// }
+// .el-radio__input.is-disabled.is-checked .el-radio__inner::after{
+// 	background: #1890ff;
+// }
+// .el-radio__input.is-disabled.is-checked .el-radio__inner{
+// 	border-color: #1890ff;
+// }

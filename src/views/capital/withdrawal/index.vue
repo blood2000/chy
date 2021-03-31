@@ -129,6 +129,7 @@
           type="info"
           icon="el-icon-upload2"
           size="mini"
+          :disabled="multiple"
           @click="handleImport"
         >网商批量提现</el-button>
       </el-col>
@@ -137,6 +138,7 @@
           type="success"
           icon="el-icon-download"
           size="mini"
+          :disabled="multiple"
           @click="handleRefreshStatus"
         >更新网商提现状态</el-button>
       </el-col>

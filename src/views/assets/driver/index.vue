@@ -225,7 +225,7 @@
           @click="handleAddTeam(row)"
         >加入调度</el-button>
         <el-button
-          v-show="row.apply === true"
+          v-show="row.apply"
           size="mini"
           type="text"
           icon="el-icon-document-checked"
@@ -259,6 +259,8 @@
     <agreement-dialog ref="agreementDialog" :open.sync="agreementDialogOpen" :agreement-html="agreementHtml" />
     <!-- 加入调度 对话框 -->
     <add-team-dialog :open.sync="addTeamDialogOpen" :driver-code="driverCode" />
+    <!-- 处理邀请 对话框 -->
+    <apply-team-dialog :open.sync="applyTeamDialogOpen" :driver-code="driverCode" />
   </div>
 </template>
 
@@ -269,7 +271,8 @@ import DriverDialog from './driverDialog';
 import ImportDialog from './importDialog';
 import ManageDialog from './manageDialog';
 import AgreementDialog from './agreementDialog';
-import AddTeamDialog from './addTeamDialog.vue';
+import AddTeamDialog from './addTeamDialog';
+import applyTeamDialog from './applyTeamDialog';
 
 export default {
   name: 'Driver',
@@ -278,7 +281,8 @@ export default {
     ImportDialog,
     ManageDialog,
     AgreementDialog,
-    AddTeamDialog
+    AddTeamDialog,
+    applyTeamDialog
   },
   props: {
     teamCode: {
@@ -337,6 +341,7 @@ export default {
       manageDialogOpen: false,
       agreementDialogOpen: false,
       addTeamDialogOpen: false,
+      applyTeamDialogOpen: false,
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -508,7 +513,8 @@ export default {
     },
     // 处理邀请
     handleDeal(row) {
-
+      this.driverCode = row.code;
+      this.applyTeamDialogOpen = true;
     }
   }
 };

@@ -94,10 +94,11 @@
       </el-form-item>
     </el-form>
     <el-table v-loading="loading" :data="driverList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" fixed="left" />
+      <el-table-column type="selection" :selectable="checkboxSelectable" width="55" align="center" fixed="left" />
       <el-table-column label="邀请情况" align="center" prop="applyStatus">
         <template slot-scope="scope">
-          <span>{{ selectDictLabel(applyStatusOptions, scope.row.applyStatus) }}</span>
+          <span v-if="scope.row.applyStatus">{{ selectDictLabel(applyStatusOptions, scope.row.applyStatus) }}</span>
+          <span v-else>无</span>
         </template>
       </el-table-column>
       <el-table-column label="司机类别" align="center" prop="driverType">
@@ -224,15 +225,16 @@ export default {
         { dictLabel: '正常', dictValue: 0 },
         { dictLabel: '冻结', dictValue: 1 }
       ],
-      // 是否
+      // 是否字典
       isOption: [
         { dictLabel: '否', dictValue: 0 },
         { dictLabel: '是', dictValue: 1 }
       ],
+      // 处理状态字典
       applyStatusOptions: [
-        { dictLabel: '未处理', dictValue: '0' },
-        { dictLabel: '已加入', dictValue: '1' },
-        { dictLabel: '已拒绝', dictValue: '2' }
+        { dictLabel: '未处理', dictValue: 0 },
+        { dictLabel: '已加入', dictValue: 1 },
+        { dictLabel: '已拒绝', dictValue: 2 }
       ],
       // 网点编码字典
       branchCodeOptions: [],
@@ -250,7 +252,8 @@ export default {
         identificationNumber: undefined,
         authStatus: undefined,
         licenseNumber: undefined,
-        driverLicenseType: undefined
+        driverLicenseType: undefined,
+        applyStatus: undefined
       }
     };
   },
@@ -322,6 +325,14 @@ export default {
         this.msgSuccess('操作成功');
         this.close();
       });
+    },
+    // 状态为未处理/已加入的checkbox不可选
+    checkboxSelectable(row) {
+      if (row.applyStatus === 0 || row.applyStatus === 1) {
+        return false;
+      } else {
+        return true;
+      }
     }
   }
 };
