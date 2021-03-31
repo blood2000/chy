@@ -253,6 +253,7 @@ import { payRecordlist } from '@/api/capital/payrecord';
 import modifyBatchDialog from './modifyBatchDialog';
 
 export default {
+  name: 'Payrecord',
   components: {
     modifyBatchDialog
   },

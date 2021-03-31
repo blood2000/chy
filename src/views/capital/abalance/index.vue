@@ -86,6 +86,7 @@ import RechargeDialog from './rechargeDialog';
 import ReflectDialog from './reflectDialog';
 
 export default {
+  name: 'Abalance',
   components: {
     BankDialog,
     ChangeDetailDialog,
