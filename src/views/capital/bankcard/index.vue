@@ -147,13 +147,20 @@
       @pagination="getList"
     />
 
+    <!-- 新增/编辑/详情 对话框 -->
+    <bank-dialog ref="bankDialogRef" :open.sync="open" :title="title" :disable="disable" @refresh="getList" />
+
   </div>
 </template>
 
 <script>
 import { banklist, delBank, getBankDetail } from '@/api/capital/bankcard';
+import BankDialog from './bankDialog';
 
 export default {
+  components: {
+    BankDialog
+  },
   data() {
     return {
       // 遮罩层
@@ -168,6 +175,8 @@ export default {
       title: '',
       // 是否显示弹出层
       open: false,
+      // 弹出层是否禁用
+      disable: false,
       // 状态字典
       roleOptions: [],
       // 查询参数
@@ -206,26 +215,27 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd() {
-      this.$refs.BankDialog.reset();
+      this.$refs.bankDialogRef.reset();
       this.open = true;
+      this.disable = false;
       this.title = '新增银行卡';
     },
     /** 修改按钮操作 */
     handleUpdate(row, type) {
-      this.$refs.BankDialog.reset();
-      const id = row.id;
-      getBankDetail(id).then(response => {
-        this.$refs.BankDialog.setForm(response.data);
-        switch (type) {
-          case 'detail':
-            this.title = '编辑银行卡信息';
-            break;
-          case 'edit':
-            this.title = '查看银行卡信息';
-            break;
-        }
-        this.open = true;
-      });
+      this.$refs.bankDialogRef.reset();
+      // 这里需要调获取详情接口
+      this.$refs.bankDialogRef.setForm({});
+      switch (type) {
+        case 'detail':
+          this.disable = false;
+          this.title = '查看银行卡信息';
+          break;
+        case 'edit':
+          this.disable = true;
+          this.title = '编辑银行卡信息';
+          break;
+      }
+      this.open = true;
     },
     /** 删除按钮操作 */
     handleDelete(row) {

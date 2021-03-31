@@ -165,13 +165,13 @@
         </el-select>
       </el-form-item>
       <el-form-item label="服务费税率(%)" prop="serviceRate">
-        <el-input-number v-model="form.serviceRate" :precision="2" placeholder="请输入服务费税率" :step="1" :min="0" :max="100" class="width90" clearable />
+        <el-input-number v-model="form.serviceRate" controls-position="right" :precision="2" placeholder="请输入服务费税率" :step="1" :min="0" :max="100" class="width90" clearable />
       </el-form-item>
       <el-form-item label="服务费比例(%)" prop="serviceRatio">
-        <el-input-number v-model="form.serviceRatio" :precision="2" placeholder="请输入服务费比例" :step="1" :min="0" :max="100" class="width90" clearable />
+        <el-input-number v-model="form.serviceRatio" controls-position="right" :precision="2" placeholder="请输入服务费比例" :step="1" :min="0" :max="100" class="width90" clearable />
       </el-form-item>
       <el-form-item label="税点(%)" prop="texPoint">
-        <el-input-number v-model="form.texPoint" :precision="2" placeholder="请输入税点" :step="1" :min="0" :max="100" class="width90" clearable />
+        <el-input-number v-model="form.texPoint" controls-position="right" :precision="2" placeholder="请输入税点" :step="1" :min="0" :max="100" class="width90" clearable />
       </el-form-item>
       <el-form-item label="货源是否审核" prop="supplyIsAuth">
         <el-select

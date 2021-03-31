@@ -319,7 +319,16 @@ export default {
     },
     /** 上报流水 */
     handleReport(row) {
+      this.$confirm('请确认是否要发送资金流水到部无车承运人监测平台?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
 
+      }).then(() => {
+        this.getList();
+        this.msgSuccess('上报成功');
+      });
     },
     /** 修改批次号 */
     handleUpdate(row) {

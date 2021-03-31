@@ -2,7 +2,7 @@
   <el-form ref="form" :model="form" :rules="required ? rules : {}" :label-width="labelWidth" :disabled="disabled">
     <el-row class="component-change-area">
       <el-col :span="10">
-        <el-form-item label="所在区域" prop="provinceCode">
+        <el-form-item :label="labelName" prop="provinceCode">
           <el-select
             v-model="form.provinceCode"
             clearable
@@ -39,7 +39,7 @@
           </el-select>
         </el-form-item>
       </el-col>
-      <el-col :span="6">
+      <el-col v-if="!noCounty" :span="6">
         <el-form-item class="no-label" prop="countyCode">
           <el-select
             v-model="form.countyCode"
@@ -67,6 +67,7 @@
   使用示例:
     <province-city-county
       ref="ChooseArea"
+      :label-name="'所在地区'"
       :label-width="'140px'"
       :visible="visible"
       :required="true"
@@ -87,6 +88,10 @@
 import { getProvinceList, getCityList, geCountyList } from '@/api/system/area';
 export default {
   props: {
+    labelName: {
+      type: String,
+      default: '所在地区'
+    },
     labelWidth: {
       type: String,
       default: '140px'
@@ -111,6 +116,10 @@ export default {
     propCountyCode: {
       type: String,
       default: null
+    },
+    noCounty: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

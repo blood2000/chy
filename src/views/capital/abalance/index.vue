@@ -87,7 +87,6 @@ export default {
       changeDetailOpen: false,
       rechargeOpen: false,
       reflectOpen: false,
-      memberOpen: false,
       bindBankOpen: false,
       balanceOpen: false,
       // 查询参数
@@ -127,8 +126,16 @@ export default {
     },
     /** 开通网商会员 */
     handleMember(row) {
-      this.title = '开通网商会员';
-      this.memberOpen = true;
+      this.$confirm('请确认是否开通网商会员?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+
+      }).then(() => {
+        this.getList();
+        this.msgSuccess('开通成功');
+      });
     },
     /** 绑定银行卡 */
     handleBindBank(row) {
