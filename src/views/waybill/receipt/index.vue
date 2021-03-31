@@ -109,84 +109,51 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
+      <el-col :span="1.5" style="float: right;">
+        <tablec-cascader v-model="tableColumnsConfig" />
+      </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <el-table-column label="纸质回单状态" align="center" prop="isReturn" width="100" :formatter="isReturnFormat" />
-      <el-table-column label="货源单号" align="center" prop="mainOrderNumber" width="150" />
-      <el-table-column label="下单客户" align="center" prop="orderClient" width="150" />
-      <el-table-column label="运输单号" align="center" prop="waybillNo" width="180" />
-      <el-table-column label="承运调度" align="center" prop="teamName" width="130" />
-      <el-table-column label="承运人" align="center" prop="driverName" width="80" />
-      <el-table-column label="联系方式" align="center" prop="driverPhone" width="130" />
-      <el-table-column label="货物类型" align="center" prop="goodsBigType" width="130" />
-      <el-table-column label="货物类型分类" align="center" prop="goodsType" width="130" />
-      <el-table-column label="货源商品备注" align="center" prop="goodsRemark" width="130" />
-      <el-table-column label="重量（吨）" align="center" prop="weight" width="100" />
-      <el-table-column label="车牌号" align="center" prop="licenseNumber" width="130" />
-      <el-table-column label="装车重量" align="center" prop="loadWeight" width="100" />
-      <el-table-column label="卸车重量" align="center" prop="unloadWeight" width="100" />
-      <el-table-column label="数量（车）" align="center" prop="carNum" width="100" />
-      <el-table-column label="公里数" align="center" prop="mileage" width="100" />
-      <el-table-column label="用车类型" align="center" prop="carType" width="130" />
-      <el-table-column label="货物单价（元/吨）" align="center" prop="goodsPrice" width="130" />
-      <el-table-column label="运费（元）" align="center" prop="freightPrice" width="100" />
-      <el-table-column label="货主保证金" align="center" prop="cashDeposit" width="100" />
-      <el-table-column label="不含税价" align="center" prop="noTaxFee" width="100" />
-      <el-table-column label="含税价" align="center" prop="taxFee" width="100" />
-      <el-table-column label="异常说明" align="center" prop="description" width="130" />
-      <el-table-column label="装货地址" align="center" prop="loadAddress" width="130" />
-      <el-table-column label="卸货地址" align="center" prop="unloadAddress" width="130" />
-      <el-table-column label="状态" align="center" prop="status" width="100" :formatter="statusFormat" />
-      <el-table-column label="装货截止时间" align="center" prop="lastLoadingTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.lastLoadingTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="发布货源时间" align="center" prop="orderTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.orderTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="接单时间" align="center" prop="receiveTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.receiveTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="最后操作时间" align="center" prop="wayBillUpdateTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.wayBillUpdateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="操作"
-        align="center"
-        fixed="right"
-        width="180"
-        class-name="small-padding fixed-width"
-      >
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleDEtail(scope.row)"
-          >详情</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            @click="handleReturn(scope.row)"
-          >退押金</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            @click="handleDedution(scope.row)"
-          >扣押金</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <RefactorTable :loading="loading" :data="infoList" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
+      <template #isReturn="{row}">
+        <span>{{ selectDictLabel(isReturnOptions, row.isReturn) }}</span>
+      </template>
+      <template #status="{row}">
+        <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
+      </template>
+      <template #lastLoadingTime="{row}">
+        <span>{{ parseTime(row.lastLoadingTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+      </template>
+      <template #orderTime="{row}">
+        <span>{{ parseTime(row.orderTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+      </template>
+      <template #receiveTime="{row}">
+        <span>{{ parseTime(row.receiveTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+      </template>
+      <template #wayBillUpdateTime="{row}">
+        <span>{{ parseTime(row.wayBillUpdateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+      </template>
+
+      <template #edit="{row}">
+        <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-edit"
+          @click="handleDEtail(row)"
+        >详情</el-button>
+        <el-button
+          size="mini"
+          type="text"
+          @click="handleReturn(row)"
+        >退押金</el-button>
+        <el-button
+          size="mini"
+          type="text"
+          @click="handleDedution(row)"
+        >扣押金</el-button>
+      </template>
+    </RefactorTable>
 
     <pagination
       v-show="total > 0"
@@ -208,10 +175,11 @@
 </template>
 
 <script>
-import { listInfo } from '@/api/waybill/receipt';
+import { listInfo, listInfoApi } from '@/api/waybill/receipt';
 import DetailDialog from '../components/detailDialog';
 import DeductionDialog from './deductionDialog';
 import ReturnDialog from './returnDialog';
+// import tableColumnsConfig from './config';
 export default {
   name: 'Receipt',
   components: {
@@ -221,6 +189,7 @@ export default {
   },
   data() {
     return {
+      tableColumnsConfig: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -253,16 +222,16 @@ export default {
       ],
       // 运单状态 0未接单/1已接单/2已签收/3已回单/4已结算/5已打款字典
       statusOptions: [
-        { 'dictLabel': '未接单', 'dictValue': 0 },
-        { 'dictLabel': '已接单', 'dictValue': 1 },
-        { 'dictLabel': '已装货', 'dictValue': 2 },
-        { 'dictLabel': '已签收', 'dictValue': 3 },
-        { 'dictLabel': '已回单', 'dictValue': 4 },
-        { 'dictLabel': '已结算', 'dictValue': 5 },
-        { 'dictLabel': '已申请打款', 'dictValue': 6 },
-        { 'dictLabel': '已打款', 'dictValue': 7 },
-        { 'dictLabel': '已申请开票', 'dictValue': 8 },
-        { 'dictLabel': '已开票', 'dictValue': 9 }
+        { 'dictLabel': '未接单', 'dictValue': '0' },
+        { 'dictLabel': '已接单', 'dictValue': '1' },
+        { 'dictLabel': '已装货', 'dictValue': '2' },
+        { 'dictLabel': '已签收', 'dictValue': '3' },
+        { 'dictLabel': '已回单', 'dictValue': '4' },
+        { 'dictLabel': '已结算', 'dictValue': '5' },
+        { 'dictLabel': '已申请打款', 'dictValue': '6' },
+        { 'dictLabel': '已打款', 'dictValue': '7' },
+        { 'dictLabel': '已申请开票', 'dictValue': '8' },
+        { 'dictLabel': '已开票', 'dictValue': '9' }
       ],
       // 货物类型字典
       goodsBigTypeOptions: [],
@@ -301,6 +270,13 @@ export default {
     };
   },
   created() {
+    this.tableHeaderConfig(this.tableColumnsConfig, listInfoApi, {
+      prop: 'edit',
+      isShow: true,
+      label: '操作',
+      width: 180,
+      fixed: 'right'
+    });
     this.getList();
     this.listByDict(this.goodsBigType).then(response => {
       this.goodsBigTypeOptions = response.data;

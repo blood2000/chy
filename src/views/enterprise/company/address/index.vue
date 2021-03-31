@@ -1,26 +1,6 @@
 <template>
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-      <el-form-item label="地址类型" prop="addressType">
-        <el-select v-model="queryParams.addressType" placeholder="请选择地址类型" clearable filterable size="small">
-          <el-option
-            v-for="dict in addressTypeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable filterable size="small">
-          <el-option
-            v-for="dict in statusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
       <el-form-item label="地址名称" prop="addressName">
         <el-input
           v-model="queryParams.addressName"
@@ -47,6 +27,16 @@
           size="small"
           @keyup.enter.native="handleQuery"
         />
+      </el-form-item>
+      <el-form-item label="状态" prop="status">
+        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable filterable size="small">
+          <el-option
+            v-for="dict in statusOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
       </el-form-item>
       <!-- <el-form-item label="联系人" prop="contactName">
         <el-input
@@ -107,13 +97,12 @@
 
     <el-table v-loading="loading" :data="addressList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <!-- <el-table-column label="货主编码" align="center" prop="shipmentCode" /> -->
-      <!-- <el-table-column label="地址类型" align="center" prop="addressType" :formatter="addressTypeFormat" /> -->
       <el-table-column label="地址名称" align="center" prop="addressName">
         <template slot-scope="scope">
           {{ scope.row.addressName }}
-          <el-tag v-if="scope.row.isDefault === 1 && scope.row.addressType === 1">装货默认地址</el-tag>
-          <el-tag v-if="scope.row.isDefault === 1 && scope.row.addressType === 2" type="warning">卸货默认地址</el-tag>
+          <el-tag v-if="scope.row.defaultPut === 1 && scope.row.defaultPush === 0" type="success">默认装货地址</el-tag>
+          <el-tag v-if="scope.row.defaultPush === 1 && scope.row.defaultPut === 0" type="warning">默认卸货地址</el-tag>
+          <el-tag v-if="scope.row.defaultPut === 1 && scope.row.defaultPush === 1">默认装卸货地址</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="地址别名" align="center" prop="addressOtherName" />
@@ -121,25 +110,8 @@
       <el-table-column label="手机号码" align="center" prop="contactTelphone" />
       <el-table-column label="联系人" align="center" prop="contactName" />
       <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" />
-      <!-- <el-table-column label="经度" align="center" prop="latitude" />
-      <el-table-column label="维度" align="center" prop="longitude" />
-      <el-table-column label="备注" align="center" prop="remark" />
-      <el-table-column label="创建人" align="center" prop="createCode" />
-      <el-table-column label="更新人" align="center" prop="updateCode" /> -->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="200" fixed="right">
         <template slot-scope="scope">
-          <!-- <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-map-location"
-            @click="handleMapView(scope.row)"
-          >查看地图</el-button> -->
-          <!-- <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-setting"
-            @click="handleSetDefault(scope.row)"
-          >设为默认地址</el-button> -->
           <el-button
             v-hasPermi="['enterprise:company:address:edit']"
             size="mini"
@@ -167,18 +139,24 @@
     />
 
     <!-- 新增/编辑对话框 -->
-    <address-dialog ref="AddressDialog" :title="title" :open.sync="open" @refresh="getList" />
+    <address-dialog ref="AddressDialog" :title="title" :open.sync="open" :shipment-code="shipmentCode" @refresh="getList" />
   </div>
 </template>
 
 <script>
-import { listAddress, getAddress, delAddress, defaultAddress } from '@/api/enterprise/company/address';
+import { listAddress, getAddress, delAddress } from '@/api/enterprise/company/address';
 import AddressDialog from './addressDialog.vue';
 
 export default {
   name: 'Address',
   components: {
     AddressDialog
+  },
+  props: {
+    shipmentCode: {
+      type: String,
+      default: null
+    }
   },
   data() {
     return {
@@ -200,11 +178,6 @@ export default {
       title: '',
       // 是否显示弹出层
       open: false,
-      // 地址类型字典
-      addressTypeOptions: [
-        { 'dictLabel': '装货地址', 'dictValue': 1 },
-        { 'dictLabel': '卸货地址', 'dictValue': 2 }
-      ],
       // 状态字典
       statusOptions: [
         { 'dictLabel': '启用', 'dictValue': 1 },
@@ -218,7 +191,6 @@ export default {
         orderByColumn: 'id',
         code: null,
         shipmentCode: null,
-        addressType: null,
         status: null,
         createCode: null,
         updateCode: null,
@@ -239,15 +211,14 @@ export default {
     /** 查询常用地址列表 */
     getList() {
       this.loading = true;
+      if (this.shipmentCode) {
+        this.queryParams.shipmentCode = this.shipmentCode;
+      }
       listAddress(this.queryParams).then(response => {
         this.addressList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
-    },
-    // 地址类型字典翻译
-    addressTypeFormat(row, column) {
-      return this.selectDictLabel(this.addressTypeOptions, row.addressType);
     },
     // 状态字典翻译
     statusFormat(row, column) {
@@ -297,21 +268,6 @@ export default {
       }).then(() => {
         this.getList();
         this.msgSuccess('删除成功');
-      });
-    },
-    /** 查看地图按钮操作 */
-    handleMapView(row) {
-
-    },
-    /** 设为默认地址 */
-    handleSetDefault(row) {
-      defaultAddress({
-        code: row.code,
-        shipmentCode: row.shipmentCode,
-        addressType: row.addressType
-      }).then(response => {
-        this.msgSuccess('设置成功');
-        this.getList();
       });
     }
   }

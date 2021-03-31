@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-      <el-form-item label="车队名称" prop="name">
+    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
+      <el-form-item label="调度者" prop="name">
         <el-input
           v-model="queryParams.name"
-          placeholder="请输入车队名称"
+          placeholder="请输入调度者名称"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -13,7 +13,7 @@
       <el-form-item label="管理者" prop="teamLeader">
         <el-input
           v-model="queryParams.teamLeader"
-          placeholder="请输入车队管理者"
+          placeholder="请输入管理者名称"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -92,49 +92,54 @@
           @click="handleExport"
         >导出</el-button>
       </el-col>
+      <el-col :span="1.5" class="fr">
+        <tablec-cascader v-model="tableColumnsConfig" />
+      </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <el-table-column label="车队名称" align="center" prop="name" sortable />
-      <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" sortable />
-      <el-table-column label="车队管理者" align="center" prop="teamLeader" sortable />
-      <el-table-column label="手机号" align="center" prop="telphone" />
-      <el-table-column label="身份证号" align="center" prop="identificationNumber" />
-      <el-table-column label="是否清分" align="center" prop="isDistribution" :formatter="isDistributionFormat" />
-      <el-table-column label="清分百分比" align="center" prop="distributionPercent" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="180">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-setting"
-            @click="handleManage(scope.row)"
-          >管理</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-document"
-            @click="handleDetail(scope.row)"
-          >详情</el-button>
-          <el-button
-            v-hasPermi="['assets:team:edit']"
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-          >修改</el-button>
-          <el-button
-            v-hasPermi="['assets:team:remove']"
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-          >删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <RefactorTable :loading="loading" :data="infoList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <template #status="{row}">
+        <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
+      </template>
+      <template #isDistribution="{row}">
+        <span>{{ selectDictLabel(isOptions, row.isDistribution) }}</span>
+      </template>
+      <template #edit="{row}">
+        <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-setting"
+          @click="handleManage(row)"
+        >管理</el-button>
+        <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-document"
+          @click="handleDetail(row)"
+        >详情</el-button>
+        <el-button
+          v-hasPermi="['assets:team:edit']"
+          size="mini"
+          type="text"
+          icon="el-icon-edit"
+          @click="handleUpdate(row)"
+        >修改</el-button>
+        <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-document-add"
+          @click="handleAddDriver(row)"
+        >添加司机</el-button>
+        <el-button
+          v-hasPermi="['assets:team:remove']"
+          size="mini"
+          type="text"
+          icon="el-icon-delete"
+          @click="handleDelete(row)"
+        >删除</el-button>
+      </template>
+    </RefactorTable>
 
     <pagination
       v-show="total>0"
@@ -146,25 +151,29 @@
 
     <!-- 新增/修改/详情 对话框 -->
     <team-dialog ref="TeamDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
-
     <!-- 管理 对话框 -->
     <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :team-code="teamCode" />
+    <!-- 添加司机 对话框 -->
+    <add-driver-dialog :open.sync="addDriverDialogOpen" :team-code="teamCode" />
   </div>
 </template>
 
 <script>
-import { listInfo, getInfo, delInfo } from '@/api/assets/team';
+import { listTeamApi, listInfo, getInfo, delInfo } from '@/api/assets/team';
 import TeamDialog from './teamDialog';
 import ManageDialog from './manageDialog.vue';
+import AddDriverDialog from './addDriverDialog.vue';
 
 export default {
   name: 'Team',
   components: {
 	  TeamDialog,
-    ManageDialog
+    ManageDialog,
+    AddDriverDialog
   },
   data() {
     return {
+      tableColumnsConfig: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -184,6 +193,7 @@ export default {
       // 是否显示弹出层
       open: false,
       manageDialogOpen: false,
+      addDriverDialogOpen: false,
       // 状态字典
       statusOptions: [
         { dictLabel: '启用', dictValue: '0' },
@@ -197,7 +207,6 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        branchCode: null,
         name: null,
         teamLeader: null,
         status: null,
@@ -213,6 +222,13 @@ export default {
     };
   },
   created() {
+    this.tableHeaderConfig(this.tableColumnsConfig, listTeamApi, {
+      prop: 'edit',
+      isShow: true,
+      label: '操作',
+      width: 180,
+      fixed: 'right'
+    });
     this.getList();
   },
   methods: {
@@ -224,14 +240,6 @@ export default {
         this.total = response.total;
         this.loading = false;
       });
-    },
-    // 状态字典翻译
-    statusFormat(row, column) {
-      return this.selectDictLabel(this.statusOptions, row.status);
-    },
-    // 是否清分字典翻译
-    isDistributionFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isDistribution);
     },
     // 取消按钮
     cancel() {
@@ -307,6 +315,11 @@ export default {
     handleManage(row) {
       this.teamCode = row.code;
       this.manageDialogOpen = true;
+    },
+    // 添加司机
+    handleAddDriver(row) {
+      this.teamCode = row.code;
+      this.addDriverDialogOpen = true;
     }
   }
 };

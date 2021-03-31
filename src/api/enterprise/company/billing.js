@@ -1,5 +1,5 @@
 import request from '@/utils/request';
-
+import { praseStrEmpty } from '@/utils/ddc';
 // 新增开票信息
 export function addBilling(data) {
   return request({
@@ -19,9 +19,9 @@ export function updateBilling(data) {
 }
 
 // 获取开票信息
-export function getBilling() {
+export function getBilling(query) {
   return request({
-    url: `/assets/shipment/invoice`,
+    url: `/assets/shipment/invoice/` + praseStrEmpty(query),
     method: 'get'
   });
 }

@@ -69,7 +69,7 @@
     />
 
     <!-- 添加或修改 对话框 -->
-    <rules-dialog ref="RulesDialog" :title="title" :open.sync="open" @refresh="getList" />
+    <rules-dialog ref="RulesDialog" :title="title" :open.sync="open" :shipment-code="shipmentCode" @refresh="getList" />
   </div>
 </template>
 
@@ -81,6 +81,12 @@ export default {
   name: 'Rules',
   components: {
     RulesDialog
+  },
+  props: {
+    shipmentCode: {
+      type: String,
+      default: null
+    }
   },
   data() {
     return {
@@ -127,6 +133,9 @@ export default {
     /** 查询列表 */
     getList() {
       this.loading = true;
+      if (this.shipmentCode) {
+        this.queryParams.shipperCode = this.shipmentCode;
+      }
       listRules(this.queryParams).then(response => {
         this.rulesList = response.data.list;
         this.total = response.data.total;

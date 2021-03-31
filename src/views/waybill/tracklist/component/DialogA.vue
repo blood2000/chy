@@ -16,9 +16,9 @@
       <el-form-item label="装货重量" prop="loadWeight">
         <el-input-number v-model="form.loadWeight" placeholder="请输入装货过磅重量" :disabled="disable" controls-position="right" :min="0" style="width:90%;" />
       </el-form-item>
-      <el-form-item label="装货地址" prop="waybillAddress">
+      <!-- <el-form-item label="装货地址" prop="loadAddress">
         <el-select
-          v-model="form.waybillAddress"
+          v-model="form.loadAddress"
           placeholder="请选择车辆装货地址"
           clearable
           filterable
@@ -27,14 +27,32 @@
           :disabled="disable"
         >
           <el-option
-            v-for="dict in waybillAddressOptions"
+            v-for="dict in loadAddressOptions"
+            :key="dict.code"
+            :label="dict.formattedAddress"
+            :value="dict.code"
+          />
+        </el-select>
+      </el-form-item> -->
+      <el-form-item label="卸货地址" prop="unloadAddressCode">
+        <el-select
+          v-model="form.unloadAddressCode"
+          placeholder="请选择车辆卸货地址"
+          clearable
+          filterable
+          size="small"
+          style="width:90%;"
+          :disabled="disable"
+        >
+          <el-option
+            v-for="dict in unloadAddressOptions"
             :key="dict.code"
             :label="dict.formattedAddress"
             :value="dict.code"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="实际承运车辆" prop="vehicleCode">
+      <!-- <el-form-item label="实际承运车辆" prop="vehicleCode">
         <el-select
           v-model="form.vehicleCode"
           placeholder="请选择实际承运车辆"
@@ -51,7 +69,7 @@
             :value="dict.code"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="装货单据" prop="attachmentCode">
         <uploadImage v-model="form.attachmentCode" />
       </el-form-item>
@@ -67,7 +85,7 @@
 </template>
 
 <script>
-import { load, getAddress, getInfoDetail, getVehicle, loadCredentials } from '@/api/waybill/tracklist';
+import { load, getAddress, getInfoDetail, loadCredentials } from '@/api/waybill/tracklist';
 import UploadImage from '@/components/UploadImage/index';
 
 export default {
@@ -85,10 +103,12 @@ export default {
   },
   data() {
     return {
-      // 地址选择
-      waybillAddressOptions: [],
+      // 装货地址选择
+      // loadAddressOptions: [],
+      // 卸货地址选择
+      unloadAddressOptions: [],
       // 实际承运车辆
-      vehicleCodeOptions: [],
+      // vehicleCodeOptions: [],
       // 表单参数
       form: {
       },
@@ -127,8 +147,12 @@ export default {
       if (val) {
         // this.reset();
         this.getAddress();
-        this.getVehicle();
-        this.getDetail();
+        // this.getVehicle();
+        if (this.disable) {
+          this.getDetail();
+        } else {
+          this.reset();
+        }
       }
     }
   },
@@ -138,24 +162,18 @@ export default {
     // 获取装货详情
     getDetail() {
       this.reset();
-      getInfoDetail(1, this.waybill.waybillNo).then(response => {
+      getInfoDetail(this.waybill.waybillNo).then(response => {
         console.log(response);
         const info = response.data[0];
         this.loadinfo = info;
         console.log(this.loadinfo);
-        if (info) {
-          this.form.loadWeight = info.loadWeight;
-          this.form.remark = info.remark;
-          this.form.loadTime = info.cargoTime;
-          this.form.waybillAddress = info.waybillAddressList[0].orderAddressCode;
-          this.form.attachmentCode = info.attachmentCode;
-          this.form.vehicleCode = info.vehicleCode;
-          console.log(this.form);
-        } else {
-          this.reset();
-          // this.getAddress();
-          // this.getVehicle();
-        }
+        this.form.loadWeight = info.loadWeight;
+        this.form.remark = info.remark;
+        this.form.loadTime = info.cargoTime;
+        // this.form.loadAddress = info.waybillAddressList[0].code;
+        this.form.unloadAddressCode = info.waybillAddressList[1].code;
+        this.form.attachmentCode = info.attachmentCode;
+        // this.form.vehicleCode = info.vehicleCode;
       });
     },
     // 获取地址信息
@@ -163,24 +181,28 @@ export default {
       // console.log(data);
       getAddress(this.waybill.goodsCode).then(response => {
         const address = response.data;
-        const address1 = address.filter(item => {
-          return item.addressType === 1;
+        // const address1 = address.filter(item => {
+        //   return item.addressType === 1;
+        // });
+        // this.loadAddressOptions = address1;
+        const address2 = address.filter(item => {
+          return item.addressType === 2;
         });
-        this.waybillAddressOptions = address1;
+        this.unloadAddressOptions = address2;
       });
     },
     // 获取车辆列表
-    getVehicle() {
-      getVehicle({ driverCode: this.waybill.driverCode }).then(response => {
-        this.vehicleCodeOptions = response.rows;
-        console.log(this.vehicleCodeOptions);
-      });
-    },
+    // getVehicle() {
+    //   getVehicle({ driverCode: this.waybill.driverCode }).then(response => {
+    //     this.vehicleCodeOptions = response.rows;
+    //     console.log(this.vehicleCodeOptions);
+    //   });
+    // },
     /** 提交按钮 */
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          if (this.loadinfo) {
+          if (this.disable) {
             loadCredentials(this.form).then(response => {
               this.msgSuccess('补装货凭证成功');
               this.close();
@@ -204,6 +226,7 @@ export default {
     // 关闭弹窗
     close() {
       this.$emit('update:open', false);
+      this.unloadAddressOptions = [];
     },
     // 表单重置
     reset() {
@@ -213,10 +236,11 @@ export default {
         loadWeight: null,
         attachmentCode: null,
         // 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-        oneself: false,
+        // oneself: false,
         remark: null,
-        vehicleCode: null,
-        waybillAddress: null
+        // vehicleCode: null,
+        // loadAddress: null,
+        unloadAddressCode: null
       };
       // this.waybillAddressOptions = [];
       this.resetForm('form');

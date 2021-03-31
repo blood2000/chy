@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" :visible="visible" width="1300px" append-to-body @close="cancel">
+  <el-dialog :title="title" :visible="visible" width="1300px" append-to-body class="waybill-seperate-list-dialog" @close="cancel">
     <el-table v-loading="loading" :data="childList">
       <el-table-column label="序号" type="index" width="50" />
       <el-table-column label="货源单号" align="center" prop="mainOrderNumber" />
@@ -136,9 +136,6 @@ export default {
       }
     }
   },
-  create() {
-
-  },
   methods: {
     // 运单状态字典翻译
     statusFormat(row, column) {
@@ -169,3 +166,11 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+.waybill-seperate-list-dialog{
+  .el-dialog__body{
+    min-height: 70vh;
+  }
+}
+</style>

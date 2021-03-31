@@ -86,7 +86,7 @@
     <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row>
-          <el-col v-if="form.parentId !== 0" :span="24">
+          <el-col v-if="form.parentId !== 1" :span="24">
             <el-form-item label="上级组织" prop="parentId">
               <treeselect v-model="form.parentId" :options="deptOptions" :normalizer="normalizer" placeholder="选择上级组织" />
             </el-form-item>
@@ -135,6 +135,12 @@ import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 export default {
   name: 'Dept',
   components: { Treeselect },
+  props: {
+    companyCode: {
+      type: String,
+      default: null
+    }
+  },
   data() {
     return {
       // 遮罩层
@@ -183,6 +189,9 @@ export default {
     /** 查询部门列表 */
     getList() {
       this.loading = true;
+      if (this.companyCode) {
+        this.queryParams.orgCode = this.companyCode;
+      }
       listDept(this.queryParams).then(response => {
         this.deptList = this.handleTree(response.data, 'id');
         this.loading = false;
@@ -238,8 +247,11 @@ export default {
       }
       this.open = true;
       this.title = '添加组织';
-      listDept().then(response => {
-	        this.deptOptions = this.handleTree(response.data, 'id');
+      if (this.companyCode) {
+        this.queryParams.orgCode = this.companyCode;
+      }
+      listDept(this.queryParams).then(response => {
+	      this.deptOptions = this.handleTree(response.data, 'id');
       });
     },
     /** 修改按钮操作 */

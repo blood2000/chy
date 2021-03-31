@@ -78,23 +78,13 @@
         prop="receiveTime"
       >
         <el-date-picker
-          v-model="queryParams.orderStartTime"
-          size="small"
-          style="width: 113px"
-          value-format="yyyy-MM-dd"
-          type="date"
-          placeholder="开始日期"
-          :clearable="false"
-        />
-        -
-        <el-date-picker
-          v-model="queryParams.orderEndTime"
-          size="small"
-          style="width: 113px"
-          value-format="yyyy-MM-dd"
-          type="date"
-          placeholder="结束日期"
-          :clearable="false"
+          v-model="receiveTime"
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          style="width: 240px"
+          @change="datechoose"
         />
       </el-form-item>
       <el-form-item
@@ -183,7 +173,7 @@
           @click="handleDelete"
         >批量删除</el-button>
       </el-col> -->
-      <el-col :span="1.5" style="marginTop:-5px">
+      <el-col :span="1.5" class="fr">
         <tablec-cascader v-model="tableColumnsConfig" />
       </el-col>
       <right-toolbar
@@ -283,7 +273,7 @@
     <pagination
       v-show="total>0"
       :total="total"
-      :page.sync="queryParams.page"
+      :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
@@ -311,8 +301,8 @@
 </template>
 
 <script>
-import tableColumnsConfig from './data/tracklist-index';
-import { trackList } from '@/api/waybill/tracklist';
+// import tableColumnsConfig from './data/tracklist-index';
+import { trackList, trackListApi } from '@/api/waybill/tracklist';
 // 车辆装货弹窗
 import DialogA from './component/DialogA';
 // 投诉弹窗
@@ -333,7 +323,7 @@ export default {
   components: { DialogA, DialogB, DialogC, CancelDialog, RateDialog, TrackDialog, LocationDialog },
   data() {
     return {
-      tableColumnsConfig,
+      tableColumnsConfig: [],
       activeName: '1',
 
       // 遮罩层
@@ -349,7 +339,7 @@ export default {
 
       // 查询参数
       'queryParams': {
-        'page': 1,
+        'pageNum': 1,
         'pageSize': 10,
         'orderClient': undefined,
         'deliveryCompany': undefined,
@@ -364,6 +354,7 @@ export default {
         'waybillNo': undefined,
         'statusList': ['1']
       },
+      receiveTime: [],
       // 弹框 内容
       visible: false,
 
@@ -406,19 +397,28 @@ export default {
   },
   created() {
     // this['tableColumnsConfig' + this.activeName] = this.getLocalStorage(this.lcokey) || this.tableColumnsConfig;
-    this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || this.tableColumnsConfig;
-    // this.queryParams.status = tab.name;
+    this.tableHeaderConfig(this.tableColumnsConfig, trackListApi, {
+      prop: 'edit',
+      isShow: true,
+      label: '操作',
+      width: 280,
+      fixed: 'right'
+    });
     this.getList();
     this.listByDict(this.commodityCategory).then(response => {
       this.commodityCategoryCodeOptions = response.data;
     });
   },
   'methods': {
+    datechoose(date) {
+      this.queryParams.orderEndTime = this.parseTime(date[0], '{y}-{m}-{d}');
+      this.queryParams.orderStartTime = this.parseTime(date[1], '{y}-{m}-{d}');
+    },
     /** handleClick */
     handleClick(tab) {
       // this['tableColumnsConfig' + this.activeName] = this.getLocalStorage(this.lcokey) || this.tableColumnsConfig;
       this.queryParams.statusList[0] = tab.name;
-      this.queryParams.page = 1;
+      this.queryParams.pageNum = 1;
       // console.log(this.queryParams);
       this.getList();
     },
@@ -435,7 +435,7 @@ export default {
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.page = 1;
+      this.queryParams.pageNum = 1;
       this.getList();
     },
     /** 重置按钮操作 */
@@ -450,11 +450,17 @@ export default {
       this.visible = true;
       switch (index) {
         case 1:
-          // this.$refs.DialogA.reset();
-          this.dialoga = true;
-          this.title = '车辆装货';
-          this.$refs.DialogA.setForm(row);
-          // this.$refs.DialogA.getAddress(row);
+          if (row.cancelStatus === 1) {
+            this.msgError('司机撤单申请中，无法操作装货！');
+          } else if (row.cancelStatus === 2) {
+            this.msgError('货主已同意撤单，无法操作装货！');
+          } else {
+            // this.$refs.DialogA.reset();
+            this.dialoga = true;
+            this.title = '车辆装货';
+            this.$refs.DialogA.setForm(row);
+            // this.$refs.DialogA.getAddress(row);
+          }
           break;
         case 2:
           // this.$refs.DialogC.reset();
@@ -464,10 +470,16 @@ export default {
           // this.$refs.DialogC.getAddress(row);
           break;
         case 3:
-          this.$refs.CancelDialog.reset();
-          this.canceldialog = true;
-          this.title = '取消运单';
-          this.$refs.CancelDialog.setForm(row);
+          if (row.cancelStatus === 1) {
+            this.msgError('司机撤单申请中，无法再次取消订单！');
+          } else if (row.cancelStatus === 2) {
+            this.msgError('货主已同意撤单，无法取消订单！');
+          } else {
+            this.$refs.CancelDialog.reset();
+            this.canceldialog = true;
+            this.title = '取消运单';
+            this.$refs.CancelDialog.setForm(row);
+          }
           break;
         case 4:
           // this.$refs.DialogA.reset();

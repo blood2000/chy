@@ -30,7 +30,7 @@
                 <i class="el-icon-circle-close" />
                 未认证
               </span>
-              <el-button type="text no-padding" @click="handleCertification">修改</el-button>
+              <el-button type="text no-padding" @click="handleCertification">认证</el-button>
             </el-form-item>
             <el-form-item label="统一社会信用代码：" prop="organizationCodeNo">
               {{ form.organizationCodeNo }}
@@ -41,7 +41,7 @@
             <el-form-item label="营业执照照：" prop="businessLicenseImg">
               <el-row>
                 <el-col :span="7">
-                  <upload-image :value="form.businessLicenseImg" />
+                  <upload-image v-model="form.businessLicenseImg" />
                 </el-col>
               </el-row>
             </el-form-item>
@@ -102,7 +102,7 @@
     </div>
 
     <!-- 货主/企业认证 对话框 -->
-    <certification-dialog ref="detailDialog" :open.sync="open" :info="form" @refresh="getCompanyInfo" />
+    <certification-dialog ref="detailDialog" :open.sync="open" :info="form" :shipment-code="shipmentCode" @refresh="getCompanyInfo" />
   </div>
 </template>
 
@@ -116,6 +116,12 @@ export default {
     CertificationDialog,
     UploadImage
     // AddCityTag
+  },
+  props: {
+    shipmentCode: {
+      type: String,
+      default: null
+    }
   },
   data() {
     return {
@@ -142,8 +148,8 @@ export default {
   },
   methods: {
     getCompanyInfo() {
-      getCompanyInfo().then(response => {
-        this.form = response.data;
+      getCompanyInfo(this.shipmentCode).then(response => {
+        this.form = response.data || {};
         // this.$set(this.form, 'citys', [
         //   {
         //     cityCode: '3501',

@@ -19,7 +19,6 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
-          v-hasPermi="['enterprise:stockcode:add']"
           type="primary"
           icon="el-icon-plus"
           size="mini"
@@ -49,11 +48,6 @@
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-tag type="warning" class="mb10" style="width:100%">
-      企业账号已使用货源码个数：4；
-      剩余：6
-    </el-tag>
-
     <el-table v-loading="loading" :data="stockcodeList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
       <el-table-column label="货源码名称" align="center" prop="cargoCodeName" />
@@ -72,19 +66,18 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
           <el-button
-            v-hasPermi="['enterprise:stockcode:edit']"
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
           >修改</el-button>
           <el-button
-            v-hasPermi="['enterprise:stockcode:remove']"
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
           >删除</el-button>
+        <!--  v-hasPermi="['enterprise:stockcode:remove']"-->
         </template>
       </el-table-column>
     </el-table>
@@ -98,7 +91,7 @@
     />
 
     <!-- 添加或修改对话框 -->
-    <stockcode-dialog ref="StockcodeDialog" :title="title" :open.sync="open" @refresh="getList" />
+    <stockcode-dialog ref="StockcodeDialog" :title="title" :open.sync="open" :shipment-code="shipmentCode" @refresh="getList" />
   </div>
 </template>
 
@@ -110,6 +103,12 @@ export default {
   name: 'Stockcode',
   components: {
     StockcodeDialog
+  },
+  props: {
+    shipmentCode: {
+      type: String,
+      default: null
+    }
   },
   data() {
     return {
@@ -150,6 +149,9 @@ export default {
     /** 查询货集码列表 */
     getList() {
       this.loading = true;
+      if (this.shipmentCode) {
+        this.queryParams.shipmentCode = this.shipmentCode;
+      }
       listStockcode(this.queryParams).then(response => {
         this.stockcodeList = response.rows;
         this.total = response.total;

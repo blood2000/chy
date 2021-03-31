@@ -1,9 +1,10 @@
 import request from '@/utils/request';
 
 // 查询司机列表
+export const listDriverApi = '/assets/driver/list';
 export function listDriver(query) {
   return request({
-    url: '/assets/driver/list',
+    url: listDriverApi,
     method: 'post',
     data: query
   });
@@ -78,3 +79,13 @@ export function getAgreementWord(query) {
     params: query
   });
 }
+
+// 申请加入调度者
+export function applyJoinTeam(data) {
+  return request({
+    url: '/assets/apply/join',
+    method: 'post',
+    data: data
+  });
+}
+

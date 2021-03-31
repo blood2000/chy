@@ -354,6 +354,12 @@ import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 export default {
   name: 'User',
   components: { Treeselect },
+  props: {
+    companyCode: {
+      type: String,
+      default: null
+    }
+  },
   data() {
     return {
       // 遮罩层
@@ -477,6 +483,9 @@ export default {
     /** 查询用户列表 */
     getList() {
       this.loading = true;
+      if (this.companyCode) {
+        this.queryParams.orgCode = this.companyCode;
+      }
       listUser(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
         this.userList = response.rows;
         this.total = response.total;
@@ -486,7 +495,8 @@ export default {
     },
     /** 查询部门下拉树结构 */
     getTreeselect() {
-      treeselect().then(response => {
+      console.log(this.companyCode);
+      treeselect({ orgCode: this.companyCode }).then(response => {
         this.deptOptions = response.data;
       });
     },

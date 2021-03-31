@@ -55,9 +55,6 @@ export default {
       }
     }
   },
-  create() {
-
-  },
   methods: {
     // 获取详情
     getDetail() {

@@ -8,6 +8,7 @@ export default [
   {
     prop: 'cancelStatus',
     isShow: true,
+    width: 130,
     label: '取消状态'
   },
   {

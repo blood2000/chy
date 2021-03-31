@@ -1,11 +1,11 @@
 import request from '@/utils/request';
 
 // 查询部门列表
-export function listDept(query) {
+export function listDept(data) {
   return request({
     url: '/system/dept/list',
-    method: 'get',
-    params: query
+    method: 'post',
+    data: data
   });
 }
 
@@ -26,10 +26,11 @@ export function getDept(orgId) {
 }
 
 // 查询部门下拉树结构
-export function treeselect() {
+export function treeselect(data) {
   return request({
     url: '/system/dept/treeselect',
-    method: 'get'
+    method: 'post',
+    data: data
   });
 }
 

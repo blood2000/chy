@@ -92,12 +92,12 @@ export default [
   {
     prop: 'isReportEnterprise',
     isShow: false,
-    label: '是否上传企业（车队）信用信息'
+    label: '是否上传企业（调度者）信用信息'
   },
   {
     prop: 'isReportEnterpriseDate',
     isShow: false,
-    label: '上传企业（车队）信用信息时间'
+    label: '上传企业（调度者）信用信息时间'
   },
   {
     prop: 'isReportPerson',

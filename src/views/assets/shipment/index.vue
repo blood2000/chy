@@ -83,6 +83,25 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="所属网点" prop="branchCode">
+        <el-select
+          v-model="queryParams.branchCode"
+          filterable
+          remote
+          reserve-keyword
+          placeholder="请输入网点"
+          style="width: 272px"
+          :remote-method="getBranchOptions"
+          :loading="loading"
+        >
+          <el-option
+            v-for="item in branchOptions"
+            :key="item.code"
+            :label="item.name"
+            :value="item.code"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="审核时间">
         <el-date-picker
           v-model="queryParams.authTimeBegin"
@@ -158,88 +177,82 @@
           @click="handleExport"
         >导出</el-button>
       </el-col>
+      <el-col :span="1.5" class="fr">
+        <tablec-cascader v-model="tableColumnsConfig" />
+      </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table v-loading="loading" :data="shipmentList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <el-table-column label="货主姓名" align="center" prop="adminName" />
-      <el-table-column label="审核状态" align="center" prop="authStatus" sortable width="100">
-        <template slot-scope="scope">
-          <span v-show="scope.row.authStatus === 0" class="g-color-gray">未审核</span>
-          <span v-show="scope.row.authStatus === 1" class="g-color-blue">审核中</span>
-          <span v-show="scope.row.authStatus === 2" class="g-color-error">审核未通过</span>
-          <span v-show="scope.row.authStatus === 3" class="g-color-success">审核通过</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="公司名称" align="center" prop="companyName" sortable />
-      <el-table-column label="货主类别" align="center" prop="shipperType" :formatter="shipperTypeFormat" />
-      <el-table-column label="电话号码" align="center" prop="telphone" sortable />
-      <!-- <el-table-column label="货主身份证" align="center" prop="identificationNumber" />
-      <el-table-column label="营业执照号" align="center" prop="businessLicenseNo" />
-      <el-table-column label="统一社会信用代码代码" align="center" prop="organizationCodeNo" />
-      <el-table-column label="法人身份证" align="center" prop="artificialIdentificationNumber" /> -->
-      <el-table-column label="是否冻结" align="center" prop="isFreezone" :formatter="isFreezoneFormat" />
-      <el-table-column label="票制类别" align="center" prop="ticketType" :formatter="ticketTypeFormat" />
-      <el-table-column label="服务费税率" align="center" prop="serviceRate" />
-      <el-table-column label="服务费比例" align="center" prop="serviceRatio" />
-      <el-table-column label="税点" align="center" prop="texPoint" />
-      <el-table-column label="是否独立核算" align="center" prop="isAccount" :formatter="isAccountFormat" />
-      <el-table-column label="货源是否审核" align="center" prop="supplyIsAuth" :formatter="supplyIsAuthFormat" />
-      <el-table-column label="是否预付运费" align="center" prop="isPrepaid" :formatter="isPrepaidFormat" />
-      <el-table-column label="授信金额" align="center" prop="creditAmount" />
-      <!-- <el-table-column label="省" align="center" prop="provinceCode" :formatter="provinceCodeFormat" />
-      <el-table-column label="市" align="center" prop="cityCode" :formatter="cityCodeFormat" />
-      <el-table-column label="县/区" align="center" prop="countyCode" :formatter="countyCodeFormat" />
-      <el-table-column label="是否抹零" align="center" prop="isWipe" :formatter="isWipeFormat" />
-      <el-table-column label="详细地址" align="center" prop="area" />
-      <el-table-column label="核算方式" align="center" prop="accountType" :formatter="accountTypeFormat" />
-      <el-table-column label="抹零方式" align="center" prop="wipeType" :formatter="wipeTypeFormat" />
-      <el-table-column label="是否月结" align="center" prop="isMonthly" :formatter="isMonthlyFormat" />
-      <el-table-column label="是否开启合理路耗" align="center" prop="isConsumption" :formatter="isConsumptionFormat" />
-      <el-table-column label="路耗单位" align="center" prop="consumptionUnit" :formatter="consumptionUnitFormat" />
-      <el-table-column label="路耗最小值" align="center" prop="consumptionMin" />
-      <el-table-column label="路耗最大值" align="center" prop="consumptionMax" />
-      <el-table-column label="调度费点数" align="center" prop="dispatchPoints" />
-      <el-table-column label="创建人" align="center" prop="createCode" />
-      <el-table-column label="修改人" align="center" prop="updateCode" /> -->
-      <el-table-column label="审核时间" align="center" prop="authTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.authTime, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="180">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-document"
-            @click="handleDetail(scope.row, 'detail')"
-          >详情</el-button>
-          <el-button
-            v-hasPermi="['assets:shipment:edit']"
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleDetail(scope.row, 'edit')"
-          >修改</el-button>
-          <el-button
-            v-show="scope.row.authStatus === 0 || scope.row.authStatus === 1"
-            size="mini"
-            type="text"
-            icon="el-icon-document-checked"
-            @click="handleDetail(scope.row, 'review')"
-          >审核</el-button>
-          <el-button
-            v-hasPermi="['assets:shipment:remove']"
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-          >删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <RefactorTable :loading="loading" :data="shipmentList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <template #shipperType="{row}">
+        <span>{{ selectDictLabel(typeOptions, row.shipperType) }}</span>
+      </template>
+      <template #isFreezone="{row}">
+        <span>{{ selectDictLabel(isFreezoneOptions, row.isFreezone) }}</span>
+      </template>
+      <template #ticketType="{row}">
+        <span>{{ selectDictLabel(ticketTypeOptions, row.ticketType) }}</span>
+      </template>
+      <template #isAccount="{row}">
+        <span>{{ selectDictLabel(isOptions, row.isAccount) }}</span>
+      </template>
+      <template #supplyIsAuth="{row}">
+        <span>{{ selectDictLabel(isOptions, row.supplyIsAuth) }}</span>
+      </template>
+      <template #isPrepaid="{row}">
+        <span>{{ selectDictLabel(isOptions, row.isPrepaid) }}</span>
+      </template>
+      <template #createTime="{row}">
+        <span>{{ parseTime(row.createTime, '{y}-{m}-{d}') }}</span>
+      </template>
+      <template #updateTime="{row}">
+        <span>{{ parseTime(row.updateTime, '{y}-{m}-{d}') }}</span>
+      </template>
+      <template #authTime="{row}">
+        <span>{{ parseTime(row.authTime, '{y}-{m}-{d}') }}</span>
+      </template>
+      <template #authStatus="{row}">
+        <span v-show="row.authStatus === 0" class="g-color-gray">未审核</span>
+        <span v-show="row.authStatus === 1" class="g-color-blue">审核中</span>
+        <span v-show="row.authStatus === 2" class="g-color-error">审核未通过</span>
+        <span v-show="row.authStatus === 3" class="g-color-success">审核通过</span>
+      </template>
+      <template #edit="{row}">
+        <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-setting"
+          @click="handleManage(row)"
+        >管理</el-button>
+        <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-document"
+          @click="handleDetail(row, 'detail')"
+        >详情</el-button>
+        <el-button
+          v-hasPermi="['assets:shipment:edit']"
+          size="mini"
+          type="text"
+          icon="el-icon-edit"
+          @click="handleDetail(row, 'edit')"
+        >修改</el-button>
+        <el-button
+          v-show="row.authStatus === 0 || row.authStatus === 1"
+          size="mini"
+          type="text"
+          icon="el-icon-document-checked"
+          @click="handleDetail(row, 'review')"
+        >审核</el-button>
+        <el-button
+          v-hasPermi="['assets:shipment:remove']"
+          size="mini"
+          type="text"
+          icon="el-icon-delete"
+          @click="handleDelete(row)"
+        >删除</el-button>
+      </template>
+    </RefactorTable>
 
     <pagination
       v-show="total>0"
@@ -251,20 +264,26 @@
 
     <!-- 新增/修改/详情/审核 对话框 -->
     <shipment-dialog ref="ShipmentDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
+    <!-- 管理 对话框 -->
+    <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :shipment-code="shipmentCode" :company-code="companyCode" />
   </div>
 </template>
 
 <script>
-import { listShipment, getShipment, delShipment } from '@/api/assets/shipment';
+import { listShipmentApi, listShipment, getShipment, delShipment } from '@/api/assets/shipment';
+import { getBranchList } from '@/api/system/branch';
 import ShipmentDialog from './shipmentDialog';
+import ManageDialog from './manageDialog.vue';
 
 export default {
   name: 'Shipment',
   components: {
-    ShipmentDialog
+    ShipmentDialog,
+    ManageDialog
   },
   data() {
     return {
+      tableColumnsConfig: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -283,6 +302,7 @@ export default {
       title: '',
       // 是否显示弹出层
       open: false,
+      manageDialogOpen: false,
       // 货主类型数据字典
       typeOptions: [
         { dictLabel: '发货人', dictValue: 0 },
@@ -305,6 +325,8 @@ export default {
         { dictLabel: '否', dictValue: 0 },
         { dictLabel: '是', dictValue: 1 }
       ],
+      // 网点字典
+      branchOptions: [],
       // 票制类别字典
       ticketTypeOptions: [],
       // 省编码字典
@@ -332,15 +354,26 @@ export default {
         authTimeBegin: undefined,
         authTimeEnd: undefined,
         createTimeBegin: undefined,
-        createTimeEnd: undefined
+        createTimeEnd: undefined,
+        branchCode: undefined
       },
       // 表单详情
       form: {},
       // 表单是否禁用
-      formDisable: false
+      formDisable: false,
+      // 货主管理
+      shipmentCode: null,
+      companyCode: null
     };
   },
   created() {
+    this.tableHeaderConfig(this.tableColumnsConfig, listShipmentApi, {
+      prop: 'edit',
+      isShow: true,
+      label: '操作',
+      width: 180,
+      fixed: 'right'
+    });
     this.getDictsOptions();
     this.getList();
   },
@@ -373,25 +406,9 @@ export default {
         this.loading = false;
       });
     },
-    // 货主类别字典翻译
-    shipperTypeFormat(row) {
-      return this.selectDictLabel(this.typeOptions, row.shipperType);
-    },
     // 审核状态字典翻译
     authStatusFormat(row) {
       return this.selectDictLabel(this.statusOptions, row.authStatus);
-    },
-    // 是否冻结字典翻译
-    isFreezoneFormat(row) {
-      return this.selectDictLabel(this.isFreezoneOptions, row.isFreezone);
-    },
-    // 票制类别字典翻译
-    ticketTypeFormat(row) {
-      return this.selectDictLabel(this.ticketTypeOptions, row.ticketType);
-    },
-    // 货源是否审核字典翻译
-    supplyIsAuthFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.supplyIsAuth);
     },
     // 省编码字典翻译
     provinceCodeFormat(row, column) {
@@ -404,10 +421,6 @@ export default {
     // 县/区编码字典翻译
     countyCodeFormat(row, column) {
       return this.selectDictLabel(this.countyCodeOptions, row.countyCode);
-    },
-    // 是否核算字典翻译
-    isAccountFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isAccount);
     },
     // 核算方式字典翻译
     accountTypeFormat(row, column) {
@@ -425,10 +438,6 @@ export default {
     isMonthlyFormat(row, column) {
       return this.selectDictLabel(this.isOptions, row.isMonthly);
     },
-    // 是否预付运费字典翻译
-    isPrepaidFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isPrepaid);
-    },
     // 是否开启合理路耗字典翻译
     isConsumptionFormat(row, column) {
       return this.selectDictLabel(this.isOptions, row.isConsumption);
@@ -441,6 +450,7 @@ export default {
     handleQuery() {
       this.queryParams.pageNum = 1;
       this.getList();
+      console.log(this.tableColumnsConfig);
     },
     /** 重置按钮操作 */
     resetQuery() {
@@ -471,15 +481,21 @@ export default {
       getShipment(id).then(response => {
         this.$refs.ShipmentDialog.setForm(response.data);
         this.open = true;
-        if (flag === 'detail') {
-          this.title = '详情';
-        } else if (flag === 'edit') {
-          this.title = '编辑';
-        } else if (flag === 'review') {
-          this.title = '审核';
-          if (row.authStatus === 0) {
-            this.$refs.ShipmentDialog.authRead(response.data);
-          }
+        switch (flag) {
+          case 'detail':
+            this.title = '详情';
+            break;
+          case 'edit':
+            this.title = '编辑';
+            break;
+          case 'review':
+            this.title = '审核';
+            if (row.authStatus === 0) {
+              this.$refs.ShipmentDialog.authRead(response.data);
+            }
+            break;
+          default:
+            break;
         }
         this.formDisable = flag !== 'edit';
       });
@@ -501,6 +517,26 @@ export default {
     /** 导出按钮操作 */
     handleExport() {
       this.download('assets/shipment/export', {}, `shipment_${new Date().getTime()}.xlsx`, 'application/json');
+    },
+    /** 管理按钮操作 */
+    handleManage(row) {
+      this.shipmentCode = row.code;
+      this.companyCode = row.companyCode;
+      this.manageDialogOpen = true;
+    },
+    /** 查询网点列表 */
+    getBranchOptions(query) {
+      if (query !== '') {
+        this.loading = true;
+        getBranchList({
+          name: query
+        }).then(response => {
+          this.loading = false;
+          this.branchOptions = response.data;
+        });
+      } else {
+        this.branchOptions = [];
+      }
     }
   }
 };

@@ -31,7 +31,7 @@ export default {
   },
   data() {
     return {
-      uploadImgUrl: process.env.VUE_APP_BASE_API + '/file/uploadToAli', // 上传的图片服务器地址
+      uploadImgUrl: process.env.VUE_APP_BASE_API + '/assets/upload/uploadToAli', // 上传的图片服务器地址
       headers: {
         'Authorization': 'Bearer ' + getToken(),
         'Produce-Code': '776ca8e240574192b6e0f69b417163df',
@@ -46,7 +46,7 @@ export default {
   watch: {},
   methods: {
     handleUploadSuccess(res) {
-      this.$emit('input', res.data.url);
+      this.$emit('input', res.data.path);
       this.loading.close();
     },
     handleBeforeUpload() {

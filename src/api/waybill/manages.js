@@ -1,19 +1,12 @@
 import request from '@/utils/request';
 
 // 查询运单列表
+export const listManagesApi = '/transportation/waybill/manageList';
 export function listManages(query) {
   return request({
-    url: '/transportation/waybill/manageList',
+    url: listManagesApi,
     method: 'get',
     params: query
-  });
-}
-
-// 查询运单详细
-export function getDetail(code) {
-  return request({
-    url: `/transportation/waybill/getWayBillByCode?code=${code}`,
-    method: 'get'
   });
 }
 
@@ -49,5 +42,37 @@ export function waybillChild(query) {
     url: '/transportation/waybill/childList',
     method: 'get',
     params: query
+  });
+}
+
+// 查询运单详情-运单(根据运单CODE获取运单详情)
+export function getWayBill(code) {
+  return request({
+    url: `/transportation/waybill/getWayBillByCode?code=${code}`,
+    method: 'get'
+  });
+}
+
+// 查询运单详情-回单(根据运单CODE获取运单装货-卸货信息)
+export function getWaybillAttachment(code, type) {
+  return request({
+    url: `/transportation/waybillAttachment/getByWayBillCode?waybillCode=${code}&type=${type}`,
+    method: 'get'
+  });
+}
+
+// 查询运单详情-评价(根据运单CODE获取评价)
+export function getWaybillComment(code, type) {
+  return request({
+    url: `/transportation/waybillComment/getByWayBillCode?wayBillCode=${code}&type=${type}`,
+    method: 'get'
+  });
+}
+
+// 查询运单详情-轨迹(根据运单CODE获取运单轨迹)
+export function getWaybillTrace(code) {
+  return request({
+    url: `/transportation/waybillTrace/getByWayBillCode?waybillCode=${code}`,
+    method: 'get'
   });
 }

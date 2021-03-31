@@ -78,16 +78,7 @@
       :gutter="10"
       class="mb8"
     >
-      <!-- <el-col :span="1.5">
-        <el-button
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-        >批量删除</el-button>
-      </el-col> -->
-      <el-col :span="1.5" style="marginTop:-5px">
+      <el-col :span="1.5" style="float: right;">
         <tablec-cascader v-model="tableColumnsConfig" />
       </el-col>
       <right-toolbar
@@ -115,7 +106,7 @@
     <pagination
       v-show="total>0"
       :total="total"
-      :page.sync="queryParams.page"
+      :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
@@ -129,15 +120,15 @@
 </template>
 
 <script>
-import tableColumnsConfig from './config';
+// import tableColumnsConfig from './config';
 
-import { listContract, getContract } from '@/api/waybill/contract';
+import { listContract, getContract, listContractApi } from '@/api/waybill/contract';
 
 export default {
   'name': 'Contract',
   data() {
     return {
-      tableColumnsConfig,
+      tableColumnsConfig: [],
       // 遮罩层
       'loading': true,
       // 选中数组
@@ -151,7 +142,7 @@ export default {
 
       // 查询参数
       'queryParams': {
-        'page': 1,
+        'pageNum': 1,
         'pageSize': 10,
         contractNo: undefined,
         driverInfo: undefined,
@@ -168,7 +159,13 @@ export default {
     };
   },
   created() {
-    this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || this.tableColumnsConfig;
+    this.tableHeaderConfig(this.tableColumnsConfig, listContractApi, {
+      prop: 'edit',
+      isShow: true,
+      label: '操作',
+      width: 180,
+      fixed: 'right'
+    });
     this.getList();
   },
   'methods': {
@@ -184,7 +181,7 @@ export default {
 
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.page = 1;
+      this.queryParams.pageNum = 1;
       this.getList();
     },
     /** 重置按钮操作 */

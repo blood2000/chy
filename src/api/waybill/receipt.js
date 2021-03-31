@@ -1,6 +1,7 @@
 import request from '@/utils/request';
 
 // 查询纸质回单列表
+export const listInfoApi = '/transportation/waybill/receiptList';
 export function listInfo(query) {
   return request({
     url: '/transportation/waybill/receiptList',

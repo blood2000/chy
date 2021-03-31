@@ -32,8 +32,8 @@ export default {
       default: ''
     },
     open: Boolean,
-    currentId: {
-      type: Number,
+    shipmentCode: {
+      type: String,
       default: null
     }
   },
@@ -59,14 +59,14 @@ export default {
       }
     }
   },
-  create() {
-
-  },
   methods: {
     // 提交按钮
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
+          if (this.shipmentCode) {
+            this.form.shipmentCode = this.shipmentCode;
+          }
           if (this.form.id != null) {
             updateStockcode(this.form).then(response => {
               this.msgSuccess('修改成功');
@@ -115,7 +115,7 @@ export default {
     generateCode() {
       generateCode({ id: this.form.id }).then(response => {
         this.msgSuccess(response.msg);
-        this.form.cargoCodeQR = response.data.msg;
+        this.form.cargoCodeQR = response.data;
         this.$forceUpdate();
       });
     }

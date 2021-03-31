@@ -10,8 +10,9 @@
         :prop="th.prop"
         :label="th.label"
         :width="th.width"
-        :fixed="th.fixed"
+        :fixed="th.fixed==='' ? null : th.fixed"
         :show-overflow-tooltip="th.tooltip || false"
+        :sortable="th.sortable || false"
       >
         <!-- :formatter="th.formatter" -->
         <template slot-scope="scope">

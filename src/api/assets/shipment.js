@@ -1,9 +1,10 @@
 import request from '@/utils/request';
 
 // 查询货主列表
+export const listShipmentApi = '/assets/shipment/list';
 export function listShipment(query) {
   return request({
-    url: '/assets/shipment/list',
+    url: listShipmentApi,
     method: 'post',
     data: query
   });
