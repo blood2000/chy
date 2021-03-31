@@ -243,13 +243,19 @@
       @pagination="getList"
     />
 
+    <!-- 编辑支付批次号 -->
+    <modify-batch-dialog :open.sync="modifyBatchOpen" :title="title" />
   </div>
 </template>
 
 <script>
 import { payRecordlist } from '@/api/capital/payrecord';
+import modifyBatchDialog from './modifyBatchDialog';
 
 export default {
+  components: {
+    modifyBatchDialog
+  },
   data() {
     return {
       // 遮罩层
@@ -269,7 +275,7 @@ export default {
       // 弹出层标题
       title: '',
       // 是否显示弹出层
-      open: false,
+      modifyBatchOpen: false,
       // 转帐结果字典
       resultOptions: [],
       // 流水上报字典
@@ -332,7 +338,8 @@ export default {
     },
     /** 修改批次号 */
     handleUpdate(row) {
-
+      this.title = '编辑支付批次号';
+      this.modifyBatchOpen = true;
     },
     /** 导出按钮操作 */
     handleExport() {
