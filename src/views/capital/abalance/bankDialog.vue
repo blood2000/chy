@@ -105,24 +105,9 @@ export default {
       form: {},
       // 表单校验
       rules: {
-        telphone: [
-          { required: true, message: '手机号码不能为空', trigger: 'blur' },
-          { validator: this.formValidate.telphone, trigger: 'blur' }
-        ],
-        adminName: [
-          { required: true, message: '姓名不能为空', trigger: 'blur' },
-          { validator: this.formValidate.name, trigger: 'blur' }
-        ],
-        identificationNumber: [
-          { required: true, message: '身份证号不能为空', trigger: 'blur' },
-          { validator: this.formValidate.idCard, trigger: 'blur' }
-        ],
-        identificationEndTime: [
-          { required: true, message: '身份证有效期不能为空', trigger: 'blur' },
-          { validator: this.formValidate.isExpired }
-        ],
-        creditAmount: [
-          { validator: this.formValidate.number, trigger: 'blur' }
+        name: [
+          { required: true, message: '绑定手机号不能为空', trigger: 'blur' },
+          { validator: this.formValidate.telephone, trigger: 'blur' }
         ]
       },
       // 网点查询
@@ -182,8 +167,7 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        name: null,
-        isDefault: false
+        name: null
       };
       this.resetForm('form');
     },
