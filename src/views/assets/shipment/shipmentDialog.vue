@@ -48,6 +48,14 @@
         <el-checkbox v-model="form.identificationEffective">长期有效</el-checkbox>
       </el-form-item>
       <el-form-item label="网点" prop="branchCode">
+       <!-- <el-select v-model="form.branchCode"  style="width: 90%" filterable placeholder="请选择">
+          <el-option
+            v-for="item in branchOptions"
+            :key="item.code"
+            :label="item.name"
+            :value="item.code">
+          </el-option>
+        </el-select>-->
         <el-select
           v-model="form.branchCode"
           filterable
@@ -68,7 +76,22 @@
       </el-form-item>
       <template v-if="form.shipperType === 1">
         <el-form-item label="公司名称" prop="companyName" :rules="[{ required: true, message: '公司名称不能为空', trigger: 'blur' }]">
-          <el-input v-model="form.companyName" placeholder="请输入公司名称" class="width90" clearable />
+          <!--<el-input v-model="form.companyName" placeholder="请输入公司名称" class="width90" clearable />-->
+          <el-select
+            style="width: 90%"
+            v-model="form.companyName"
+            filterable
+            allow-create
+            default-first-option
+            @change="changeCompany"
+            placeholder="请选择公司">
+            <el-option
+              v-for="item in companyList"
+              :key="item.orgName"
+              :label="item.orgName"
+              :value="item">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="法人姓名" prop="artificialName">
           <el-input v-model="form.artificialName" placeholder="请输入法人姓名" class="width90" clearable />
@@ -316,7 +339,8 @@
 </template>
 
 <script>
-import { addShipment, updateShipment, authRead, examine } from '@/api/assets/shipment';
+import { addShipment, updateShipment, authRead, examine, getShipmentEnterprise } from '@/api/assets/shipment';
+import { listDeptAll } from '@/api/system/dept';
 import { getBranchList } from '@/api/system/branch';
 import UploadImage from '@/components/UploadImage/index';
 import ProvinceCityCounty from '@/components/ProvinceCityCounty';
@@ -394,7 +418,8 @@ export default {
       },
       // 网点查询
       loading: false,
-      branchOptions: []
+      branchOptions: [],
+      companyList: []
     };
   },
   computed: {
@@ -409,8 +434,31 @@ export default {
   },
   created() {
     this.getDictsOptions();
+    this.getCompanyList();
   },
   methods: {
+    changeCompany(item) {
+      if (item.orgCode) {
+        this.form.companyCode = item.orgCode;
+        this.getCompany(item.orgCode);
+      } else {
+        this.form.companyName = item;
+      }
+      if (item.orgName) {
+        this.form.companyName = item.orgName;
+      }
+    },
+    getCompanyList() {
+      listDeptAll().then((response) => {
+        this.companyList = response.data;
+      });
+    },
+    getCompany(companyCode) {
+      getShipmentEnterprise(companyCode).then((response) => {
+        this.form = Object.assign(this.form, response.data);
+        console.log(this.form);
+      });
+    },
     /** 查询字典 */
     getDictsOptions() {
       // 核算规则

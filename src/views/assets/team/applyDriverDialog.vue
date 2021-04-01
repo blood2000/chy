@@ -104,6 +104,7 @@ export default {
       loading: true,
       // 选中数组
       ids: [],
+      driverCodes: [],
       // 非多个禁用
       multiple: true,
       // 司机类别字典
@@ -122,7 +123,9 @@ export default {
         { dictLabel: '是', dictValue: 1 }
       ],
       // 参数表格数据
-      infoList: []
+      infoList: [],
+      // 驾驶证类型字典
+      driverLicenseTypeOptions: []
     };
   },
   computed: {
@@ -139,6 +142,10 @@ export default {
     open(val) {
       if (val) {
         this.getList();
+        // 驾驶证类型
+        this.getDicts('driver_license_type').then(response => {
+          this.driverLicenseTypeOptions = response.data;
+        });
       }
     }
   },
@@ -146,6 +153,7 @@ export default {
     // 获取调度者要处理的司机列表
     getList() {
       this.loading = true;
+      console.log(this.teamCode);
       listApply(this.teamCode).then(response => {
         this.infoList = response.data;
         this.loading = false;
@@ -153,7 +161,8 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.code);
+      this.ids = selection.map(item => item.id);
+      this.driverCodes = selection.map(item => item.code);
       this.multiple = !selection.length;
     },
     // 表单重置
@@ -173,7 +182,8 @@ export default {
     handleAgree(status) {
       dealApply({
         teamCode: this.teamCode,
-        driverCodes: this.ids,
+        ids: this.ids,
+        driverCodes: this.driverCodes,
         status: status
       }).then(response => {
         this.msgSuccess('操作成功');

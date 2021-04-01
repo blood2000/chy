@@ -8,7 +8,13 @@ export function listDept(data) {
     data: data
   });
 }
-
+// 查询部门列表
+export function listDeptAll() {
+  return request({
+    url: '/system/dept/listAll',
+    method: 'get'
+  });
+}
 // 查询部门列表（排除节点）
 export function listDeptExcludeChild(deptId) {
   return request({
