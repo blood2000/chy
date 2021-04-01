@@ -16,7 +16,7 @@
       <el-form-item label="装货重量" prop="loadWeight">
         <el-input-number v-model="form.loadWeight" placeholder="请输入装货过磅重量" :disabled="disable" controls-position="right" :min="0" style="width:90%;" />
       </el-form-item>
-      <!-- <el-form-item label="装货地址" prop="loadAddress">
+      <el-form-item label="装货地址" prop="loadAddress">
         <el-select
           v-model="form.loadAddress"
           placeholder="请选择车辆装货地址"
@@ -33,8 +33,26 @@
             :value="dict.code"
           />
         </el-select>
+      </el-form-item>
+      <!-- <el-form-item label="货物" prop="goodsCode">
+        <el-select
+          v-model="form.goodsCode"
+          placeholder="请选择货物"
+          clearable
+          filterable
+          size="small"
+          style="width:90%;"
+          :disabled="disable"
+        >
+          <el-option
+            v-for="dict in goodsCodeOptions"
+            :key="dict.code"
+            :label="dict.formattedAddress"
+            :value="dict.code"
+          />
+        </el-select>
       </el-form-item> -->
-      <el-form-item label="卸货地址" prop="unloadAddressCode">
+      <!-- <el-form-item label="卸货地址" prop="unloadAddressCode">
         <el-select
           v-model="form.unloadAddressCode"
           placeholder="请选择车辆卸货地址"
@@ -51,7 +69,7 @@
             :value="dict.code"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <!-- <el-form-item label="实际承运车辆" prop="vehicleCode">
         <el-select
           v-model="form.vehicleCode"
@@ -104,9 +122,11 @@ export default {
   data() {
     return {
       // 装货地址选择
-      // loadAddressOptions: [],
+      loadAddressOptions: [],
+      // 商品选择
+      goodsCodeOptions: [],
       // 卸货地址选择
-      unloadAddressOptions: [],
+      // unloadAddressOptions: [],
       // 实际承运车辆
       // vehicleCodeOptions: [],
       // 表单参数
@@ -170,8 +190,8 @@ export default {
         this.form.loadWeight = info.loadWeight;
         this.form.remark = info.remark;
         this.form.loadTime = info.cargoTime;
-        // this.form.loadAddress = info.waybillAddressList[0].code;
-        this.form.unloadAddressCode = info.waybillAddressList[1].code;
+        this.form.loadAddressCode = info.waybillAddressList[0].code;
+        // this.form.unloadAddressCode = info.waybillAddressList[1].code;
         this.form.attachmentCode = info.attachmentCode;
         // this.form.vehicleCode = info.vehicleCode;
       });
@@ -181,14 +201,15 @@ export default {
       // console.log(data);
       getAddress(this.waybill.goodsCode).then(response => {
         const address = response.data;
-        // const address1 = address.filter(item => {
-        //   return item.addressType === 1;
-        // });
-        // this.loadAddressOptions = address1;
-        const address2 = address.filter(item => {
-          return item.addressType === 2;
+        const address1 = address.filter(item => {
+          return item.addressType === 1;
         });
-        this.unloadAddressOptions = address2;
+        this.loadAddressOptions = address1;
+        console.log(response);
+        // const address2 = address.filter(item => {
+        //   return item.addressType === 2;
+        // });
+        // this.unloadAddressOptions = address2;
       });
     },
     // 获取车辆列表
@@ -226,7 +247,8 @@ export default {
     // 关闭弹窗
     close() {
       this.$emit('update:open', false);
-      this.unloadAddressOptions = [];
+      // this.unloadAddressOptions = [];
+      this.loadAddressOptions = [];
     },
     // 表单重置
     reset() {
@@ -239,10 +261,10 @@ export default {
         // oneself: false,
         remark: null,
         // vehicleCode: null,
-        // loadAddress: null,
-        unloadAddressCode: null
+        loadAddressCode: null,
+        goodsCode: null
+        // unloadAddressCode: null
       };
-      // this.waybillAddressOptions = [];
       this.resetForm('form');
     },
     // 获取信息

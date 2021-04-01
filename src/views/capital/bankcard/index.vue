@@ -154,10 +154,11 @@
 </template>
 
 <script>
-import { banklist, delBank, getBankDetail } from '@/api/capital/bankcard';
+import { banklist, delBank } from '@/api/capital/bankcard';
 import BankDialog from './bankDialog';
 
 export default {
+  name: 'Bankcard',
   components: {
     BankDialog
   },

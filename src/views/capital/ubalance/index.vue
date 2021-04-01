@@ -120,6 +120,7 @@ import ChangeDetailDialog from '../components/changeDetailDialog';
 import CheckBalanceDialog from '../components/checkBalanceDialog';
 
 export default {
+  name: 'Ubalance',
   components: {
     ChangeDetailDialog,
     CheckBalanceDialog

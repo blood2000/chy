@@ -475,11 +475,9 @@ export default {
       this.visible = true;
       switch (index) {
         case 1:
-          // this.$refs.DialogA.reset();
           this.dialoga = true;
           this.title = '驳回提示';
           this.$refs.DialogA.setForm(row);
-          // this.$refs.DialogA.getAddress(row);
           break;
         case 2:
           this.$refs.RejectDialog.reset();
@@ -495,20 +493,16 @@ export default {
           this.$refs.AdjustDialog.setForm(row);
           break;
         case 4:
-          // this.$refs.DialogA.reset();
           this.dialoga = true;
           this.formDisable = true;
           this.title = '申请打款';
           this.$refs.DialogA.setForm(row);
-          // this.$refs.DialogA.getAddress(row);
           break;
         case 5:
-          // this.$refs.DialogC.reset();
           this.dialogc = true;
           this.formDisable = true;
           this.title = '评价';
           this.$refs.DialogC.setForm(row);
-          // this.$refs.DialogC.getAddress(row);
           break;
         case 6:
           this.title = '子单列表';

@@ -26,24 +26,6 @@
           />
         </el-select>
       </el-form-item>
-      <!-- <el-form-item label="商品小类" prop="commoditySubclassCodes">
-        <el-input
-          v-model="queryParams.commoditySubclassCodes"
-          placeholder="请输入商品小类"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
-      <!-- <el-form-item label="备注" prop="projectRemark">
-        <el-input
-          v-model="queryParams.projectRemark"
-          placeholder="请输入备注"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
       <el-form-item>
         <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -89,36 +71,34 @@
           @click="handleExport"
         >导出</el-button>
       </el-col>
+      <el-col :span="1.5" style="float: right;">
+        <tablec-cascader v-model="tableColumnsConfig" />
+      </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <el-table-column label="项目名称" align="center" prop="projectName" />
-      <el-table-column label="商品类别" align="center" prop="commodityCategoryCode" :formatter="commodityCategoryCodeFormat" />
-      <el-table-column label="商品小类" align="center" prop="commoditySubclassNames" />
-      <el-table-column label="备注" align="center" prop="projectRemark" />
-      <!-- <el-table-column label="创建人" align="center" prop="createCode" :formatter="createCodeFormat" />
-      <el-table-column label="更新人" align="center" prop="updateCode" :formatter="updateCodeFormat" /> -->
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button
-            v-hasPermi="['enterprise:project:edit']"
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-          >修改</el-button>
-          <el-button
-            v-hasPermi="['enterprise:project:remove']"
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-          >删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <RefactorTable :loading="loading" :data="infoList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <template #commodityCategoryCode="{row}">
+        <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.commodityCategoryCode) }}</span>
+      </template>
+
+      <template #edit="{row}">
+        <el-button
+          v-hasPermi="['enterprise:project:edit']"
+          size="mini"
+          type="text"
+          icon="el-icon-edit"
+          @click="handleUpdate(row)"
+        >修改</el-button>
+        <el-button
+          v-hasPermi="['enterprise:project:remove']"
+          size="mini"
+          type="text"
+          icon="el-icon-delete"
+          @click="handleDelete(row)"
+        >删除</el-button>
+      </template>
+    </RefactorTable>
 
     <pagination
       v-show="total>0"
@@ -140,7 +120,7 @@
 </template>
 
 <script>
-import { listInfo, getInfo, delInfo } from '@/api/enterprise/project';
+import { listInfo, getInfo, delInfo, listInfoApi } from '@/api/enterprise/project';
 import ProjectDialog from './projectDialog';
 
 export default {
@@ -156,6 +136,7 @@ export default {
   },
   data() {
     return {
+      tableColumnsConfig: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -185,7 +166,7 @@ export default {
         pageNum: 1,
         pageSize: 10,
         // code: null,
-        shipmentCode: null,
+        // shipmentCode: null,
         projectName: null,
         commodityCategoryCode: null
         // commoditySubclassCodes: null,
@@ -213,6 +194,13 @@ export default {
     };
   },
   created() {
+    this.tableHeaderConfig(this.tableColumnsConfig, listInfoApi, {
+      prop: 'edit',
+      isShow: true,
+      label: '操作',
+      width: 180,
+      fixed: 'right'
+    });
     this.getList();
     this.listByDict(this.commodityCategory).then(response => {
       this.commodityCategoryCodeOptions = response.data;

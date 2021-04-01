@@ -189,6 +189,7 @@
 import { getWithDrawalList } from '@/api/capital/withdrawal';
 
 export default {
+  name: 'Withdrawal',
   data() {
     return {
       // 遮罩层
