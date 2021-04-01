@@ -62,3 +62,11 @@ export function examine(data) {
   });
 }
 
+// 获取企业信息
+export function getShipmentEnterprise(companyCode) {
+  return request({
+    url: '/assets/shipment/getEnterpriseByOrg/' + companyCode,
+    method: 'get'
+  });
+}
+
