@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-      <el-form-item label="地址名称" prop="addressName">
+      <!-- <el-form-item label="地址名称" prop="addressName">
         <el-input
           v-model="queryParams.addressName"
           placeholder="请输入地址名称"
@@ -9,20 +9,20 @@
           size="small"
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
-      <el-form-item label="地址别名" prop="addressOtherName">
+      </el-form-item> -->
+      <el-form-item label="地址别名" prop="addressAlias">
         <el-input
-          v-model="queryParams.addressOtherName"
+          v-model="queryParams.addressAlias"
           placeholder="请输入地址别名"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="地址详情" prop="addressDetail">
+      <el-form-item label="地址" prop="addressName">
         <el-input
-          v-model="queryParams.addressDetail"
-          placeholder="请输入地址详情"
+          v-model="queryParams.addressName"
+          placeholder="请输入地址"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -38,18 +38,18 @@
           />
         </el-select>
       </el-form-item>
-      <!-- <el-form-item label="联系人" prop="contactName">
+      <!-- <el-form-item label="联系人" prop="contact">
         <el-input
-          v-model="queryParams.contactName"
+          v-model="queryParams.contact"
           placeholder="请输入联系人"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="手机号码" prop="contactTelphone">
+      <el-form-item label="手机号码" prop="contactPhone">
         <el-input
-          v-model="queryParams.contactTelphone"
+          v-model="queryParams.contactPhone"
           placeholder="请输入手机号码"
           clearable
           size="small"
@@ -97,7 +97,7 @@
 
     <el-table v-loading="loading" :data="addressList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <el-table-column label="地址名称" align="center" prop="addressName">
+      <el-table-column label="地址" align="center" prop="addressName">
         <template slot-scope="scope">
           {{ scope.row.addressName }}
           <el-tag v-if="scope.row.defaultPut === 1 && scope.row.defaultPush === 0" type="success">默认装货地址</el-tag>
@@ -105,10 +105,9 @@
           <el-tag v-if="scope.row.defaultPut === 1 && scope.row.defaultPush === 1">默认装卸货地址</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="地址别名" align="center" prop="addressOtherName" />
-      <el-table-column label="地址详情" align="center" prop="addressDetail" />
-      <el-table-column label="手机号码" align="center" prop="contactTelphone" />
-      <el-table-column label="联系人" align="center" prop="contactName" />
+      <el-table-column label="地址别名" align="center" prop="addressAlias" />
+      <el-table-column label="手机号码" align="center" prop="contactPhone" />
+      <el-table-column label="联系人" align="center" prop="contact" />
       <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="200" fixed="right">
         <template slot-scope="scope">
@@ -189,18 +188,11 @@ export default {
         pageSize: 10,
         isAsc: 'asc',
         orderByColumn: 'id',
-        code: null,
-        shipmentCode: null,
-        status: null,
-        createCode: null,
-        updateCode: null,
+        addressAlias: null,
         addressName: null,
-        addressOtherName: null,
-        latitude: null,
-        longitude: null,
-        addressDetail: null,
-        contactName: null,
-        contactTelphone: null
+        status: null
+        // contact: null,
+        // contactPhone: null
       }
     };
   },
