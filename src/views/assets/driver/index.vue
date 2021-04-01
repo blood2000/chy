@@ -92,6 +92,16 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="处理状态" prop="applyStatus">
+        <el-select v-model="queryParams.applyStatus" placeholder="请选择状态" filterable clearable size="small">
+          <el-option
+            v-for="dict in applyStatusOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -304,6 +314,12 @@ export default {
         { dictLabel: '审核中', dictValue: 1 },
         { dictLabel: '审核未通过', dictValue: 2 },
         { dictLabel: '审核通过', dictValue: 3 }
+      ],
+      // 处理状态字典
+      applyStatusOptions: [
+        { dictLabel: '未处理', dictValue: 0 },
+        { dictLabel: '已加入', dictValue: 1 },
+        { dictLabel: '已拒绝', dictValue: 2 }
       ],
       // 是否冻结字典
       isFreezoneOptions: [

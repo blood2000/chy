@@ -1,5 +1,5 @@
 import request from '@/utils/request';
-
+import { praseStrEmpty } from '@/utils/ddc';
 // 查询司机列表
 export const listDriverApi = '/assets/driver/list';
 export function listDriver(query) {
@@ -92,7 +92,7 @@ export function applyJoinTeam(data) {
 // 获取司机要处理的邀请列表
 export function listApply(driverCode) {
   return request({
-    url: `/assets/apply/driver/${driverCode}`,
+    url: `/assets/apply/driver/` + praseStrEmpty(driverCode),
     method: 'post'
   });
 }
