@@ -7,7 +7,11 @@ const user = {
     name: '',
     avatar: '',
     roles: [],
-    permissions: []
+    permissions: [],
+    isAdmin: false, // 是否是管理员
+    isShipment: false, // 是否是货主
+    isDriver: false,// 是否是司机
+    isDispatcher: false// 是否是调度者
   },
 
   mutations: {
@@ -28,6 +32,18 @@ const user = {
     },
     SET_PERMISSIONS: (state, permissions) => {
       state.permissions = permissions;
+    },
+    SET_ADMIN: (state, isAdmin) => {
+      state.isAdmin = isAdmin;
+    },
+    SET_SHIPMENT: (state, isShipment) => {
+      state.isShipment = isShipment;
+    },
+    SET_DRIVER: (state, isDriver) => {
+      state.isDriver = isDriver;
+    },
+    SET_DISPATCHER: (state, isDispatcher) => {
+      state.isDispatcher = isDispatcher;
     }
   },
 
@@ -66,6 +82,10 @@ const user = {
           }
           commit('SET_NAME', user.userName);
           commit('SET_AVATAR', avatar);
+          commit('SET_ADMIN', res.isAdmin);
+          commit('SET_SHIPMENT', res.isShipment);
+          commit('SET_DRIVER', res.isDriver);
+          commit('SET_DISPATCHER', res.isDispatcher);
           resolve(res);
         }).catch(error => {
           reject(error);

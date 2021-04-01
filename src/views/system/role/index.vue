@@ -336,7 +336,9 @@ export default {
         status: undefined
       },
       // 表单参数
-      form: {},
+      form: {
+        dataScope: '4'
+      },
       defaultProps: {
         children: 'children',
         label: 'label'
@@ -363,6 +365,22 @@ export default {
     this.getDicts('sys_normal_disable').then(response => {
       this.statusOptions = response.data;
     });
+    if (!this.$store.getters.isAdmin) {
+      this.dataScopeOptions = [
+        {
+          value: '3',
+          label: '本部门数据权限'
+        },
+        {
+          value: '4',
+          label: '本部门及以下数据权限'
+        },
+        {
+          value: '5',
+          label: '仅本人数据权限'
+        }];
+    }
+    this.form.dataScope = '4';
   },
   methods: {
     getProduceList() {
