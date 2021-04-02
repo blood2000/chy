@@ -164,14 +164,14 @@
       :gutter="10"
       class="mb8"
     >
-      <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button
           type="danger"
           icon="el-icon-delete"
           size="mini"
           @click="handleDelete"
         >批量删除</el-button>
-      </el-col>
+      </el-col> -->
       <el-col :span="1.5" class="fr">
         <tablec-cascader v-model="tableColumnsConfig" />
       </el-col>

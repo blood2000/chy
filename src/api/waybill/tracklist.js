@@ -55,6 +55,14 @@ export function cancel(data) {
   });
 }
 
+// 获取货源所有商品
+export function getGoods(orderCode) {
+  return request({
+    url: '/transportation/orderInfoSearch/getOrderInfoGoodsTypeList/' + orderCode,
+    method: 'get'
+  });
+}
+
 // 获取装货地址和卸货地址
 export function getAddress(orderGoodsCode) {
   return request({

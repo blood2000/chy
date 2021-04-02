@@ -16,6 +16,25 @@
       <el-form-item label="装货重量" prop="loadWeight">
         <el-input-number v-model="form.loadWeight" placeholder="请输入装货过磅重量" :disabled="disable" controls-position="right" :min="0" style="width:90%;" />
       </el-form-item>
+      <el-form-item label="货物" prop="goodsCode">
+        <el-select
+          v-model="form.goodsCode"
+          placeholder="请选择货物"
+          clearable
+          filterable
+          size="small"
+          style="width:90%;"
+          :disabled="disable"
+          @change="chooseGoods"
+        >
+          <el-option
+            v-for="dict in goodsCodeOptions"
+            :key="dict.code"
+            :label="dict.goodsType"
+            :value="dict.code"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="装货地址" prop="loadAddress">
         <el-select
           v-model="form.loadAddress"
@@ -34,24 +53,6 @@
           />
         </el-select>
       </el-form-item>
-      <!-- <el-form-item label="货物" prop="goodsCode">
-        <el-select
-          v-model="form.goodsCode"
-          placeholder="请选择货物"
-          clearable
-          filterable
-          size="small"
-          style="width:90%;"
-          :disabled="disable"
-        >
-          <el-option
-            v-for="dict in goodsCodeOptions"
-            :key="dict.code"
-            :label="dict.formattedAddress"
-            :value="dict.code"
-          />
-        </el-select>
-      </el-form-item> -->
       <!-- <el-form-item label="卸货地址" prop="unloadAddressCode">
         <el-select
           v-model="form.unloadAddressCode"
@@ -103,7 +104,7 @@
 </template>
 
 <script>
-import { load, getAddress, getInfoDetail, loadCredentials } from '@/api/waybill/tracklist';
+import { load, getAddress, getInfoDetail, loadCredentials, getGoods } from '@/api/waybill/tracklist';
 import UploadImage from '@/components/UploadImage/index';
 
 export default {
@@ -149,7 +150,9 @@ export default {
       Hours: '',
       Minutes: '',
       Seconds: '',
-      time: ''
+      time: '',
+      // 商品code
+      goodsCode: ''
     };
   },
   computed: {
@@ -166,7 +169,7 @@ export default {
     open(val) {
       if (val) {
         // this.reset();
-        this.getAddress();
+        this.getGoods();
         // this.getVehicle();
         if (this.disable) {
           this.getDetail();
@@ -190,22 +193,37 @@ export default {
         this.form.loadWeight = info.loadWeight;
         this.form.remark = info.remark;
         this.form.loadTime = info.cargoTime;
-        this.form.loadAddressCode = info.waybillAddressList[0].code;
+        this.form.goodsCode = info.goodsCode;
+        // this.form.loadAddressCode = info.waybillAddressList[0].code;
         // this.form.unloadAddressCode = info.waybillAddressList[1].code;
         this.form.attachmentCode = info.attachmentCode;
         // this.form.vehicleCode = info.vehicleCode;
       });
     },
+    // 获取商品列表
+    getGoods() {
+      getGoods(this.waybill.orderCode).then(response => {
+        console.log(response);
+        this.goodsCodeOptions = response.data;
+      });
+    },
+    // 选择商品事件
+    chooseGoods(e) {
+      this.goodsCode = e;
+      this.getAddress();
+    },
     // 获取地址信息
     getAddress() {
       // console.log(data);
-      getAddress(this.waybill.goodsCode).then(response => {
-        const address = response.data;
-        const address1 = address.filter(item => {
-          return item.addressType === 1;
-        });
-        this.loadAddressOptions = address1;
+      getAddress(this.goodsCode).then(response => {
         console.log(response);
+        const address = response.data;
+        if (address) {
+          const address1 = address.filter(item => {
+            return item.addressType === 1;
+          });
+          this.loadAddressOptions = address1;
+        }
         // const address2 = address.filter(item => {
         //   return item.addressType === 2;
         // });
@@ -271,7 +289,7 @@ export default {
     setForm(data) {
       this.waybill = data;
       this.form.code = this.waybill.code;
-      // console.log(this.waybill);
+      console.log(this.waybill);
     }
   }
 };
