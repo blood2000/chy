@@ -15,7 +15,7 @@
         v-for="dict in detailOptin"
         :key="dict.dictValue"
         :label="dict.dictLabel"
-        :value="dict.dictValue"
+        :value="dict.dictLabel"
       >
         <div class="option-item">
           <div class="option-item_name">{{ dict.dictLabel }}</div>
@@ -116,7 +116,7 @@ export default {
 
     _zhaovalue(arr, value) {
       return arr.filter((e) => {
-        return e.dictValue === value;
+        return e.dictLabel === value;
       })[0];
     },
 

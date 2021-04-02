@@ -11,6 +11,10 @@ const getters = {
   roles: state => state.user.roles,
   permissions: state => state.user.permissions,
   permission_routes: state => state.permission.routes,
-  sidebarRouters: state => state.permission.sidebarRouters
+  sidebarRouters: state => state.permission.sidebarRouters,
+  isAdmin: state => state.user.isAdmin,
+  isShipment: state => state.user.isShipment,
+  isDriver: state => state.user.isDriver,
+  isDispatcher: state => state.user.isDispatcher
 };
 export default getters;
