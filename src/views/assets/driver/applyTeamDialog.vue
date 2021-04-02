@@ -17,9 +17,9 @@
         </template>
       </el-table-column>
       <el-table-column label="清分百分比" align="center" prop="distributionPercent" />
-      <el-table-column label="状态" align="center" prop="status">
+      <el-table-column label="状态" align="center" prop="teamStatus">
         <template slot-scope="scope">
-          <span>{{ selectDictLabel(statusOptions, scope.row.status) }}</span>
+          <span>{{ selectDictLabel(statusOptions, scope.row.teamStatus) }}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -49,6 +49,7 @@ export default {
       loading: true,
       // 选中数组
       ids: [],
+      teamCodes: [],
       // 非多个禁用
       multiple: true,
       // 状态字典
@@ -92,7 +93,8 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.code);
+      this.ids = selection.map(item => item.id);
+      this.teamCodes = selection.map(item => item.code);
       this.multiple = !selection.length;
     },
     // 表单重置
@@ -112,7 +114,8 @@ export default {
     handleAgree(status) {
       dealApply({
         driverCode: this.driverCode,
-        teamCodes: this.ids,
+        ids: this.ids,
+        teamCodes: this.teamCodes,
         status: status
       }).then(response => {
         this.msgSuccess('操作成功');

@@ -83,30 +83,30 @@
     </el-table>
 
     <!-- 添加或修改部门对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+    <el-dialog :title="title" :visible.sync="open" width="80%" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="150px">
         <el-row>
           <el-col v-if="form.parentId !== 1" :span="24">
             <el-form-item label="上级组织" prop="parentId">
               <treeselect v-model="form.parentId" :options="deptOptions" :normalizer="normalizer" placeholder="选择上级组织" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="11">
             <el-form-item label="组织名称" prop="orgName">
               <el-input v-model="form.orgName" placeholder="请输入组织名称" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="6">
             <el-form-item label="显示排序" prop="orderNum">
               <el-input-number v-model="form.orderNum" controls-position="right" :min="0" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <!--  <el-col :span="12">
             <el-form-item label="负责人" prop="leader">
               <el-input v-model="form.leader" placeholder="请输入负责人" maxlength="20" />
             </el-form-item>
-          </el-col>
-          <el-col :span="12">
+          </el-col>-->
+          <el-col :span="6">
             <el-form-item label="组织状态">
               <el-radio-group v-model="form.status">
                 <el-radio
@@ -115,6 +115,244 @@
                   :label="dict.dictValue"
                 >{{ dict.dictLabel }}</el-radio>
               </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="法人姓名" prop="artificialName">
+              <el-input v-model="form.artificialName" placeholder="请输入法人姓名" class="width90" clearable />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="法人身份证" prop="artificialIdentificationNumber">
+              <el-input v-model="form.artificialIdentificationNumber" placeholder="请输入法人身份证" class="width90" clearable />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="统一社会信用代码" prop="organizationCodeNo" :rules="[{ required: true, message: '统一社会信用代码不能为空', trigger: 'blur' }]">
+              <el-input v-model="form.organizationCodeNo" placeholder="请输入统一社会信用代码" class="width90" clearable />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="营业执照号" prop="businessLicenseNo">
+              <el-input v-model="form.businessLicenseNo" placeholder="请输入营业执照号" class="width90" clearable />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="6" class="mt">
+            <p class="upload-image-label">法人身份证正面照</p>
+            <upload-image v-model="form.artificialIdentificationImg" />
+          </el-col>
+          <el-col :span="6" class="mt">
+            <p class="upload-image-label">法人身份证背面照</p>
+            <upload-image v-model="form.artificialIdentificationBackImg" />
+          </el-col>
+          <el-col :span="6" class="mt">
+            <p class="upload-image-label">法人手持身份证照</p>
+            <upload-image v-model="form.artificialIdentificationInhandImg" />
+          </el-col>
+          <el-col :span="6" class="mt">
+            <p class="upload-image-label">营业执照照</p>
+            <upload-image v-model="form.businessLicenseImg" />
+          </el-col>
+        </el-row>
+        <el-row style="margin-top: 10px">
+          <el-col :span="12">
+            <el-form-item label="是否冻结" prop="isFreezone">
+              <el-select
+                v-model="form.isFreezone"
+                clearable
+                filterable
+                class="width90"
+              >
+                <el-option
+                  v-for="dict in isFreezoneOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="票制类别" prop="ticketType">
+              <el-select
+                v-model="form.ticketType"
+                filterable
+                clearable
+                class="width90"
+              >
+                <el-option
+                  v-for="dict in ticketTypeOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="服务费税率(%)" prop="serviceRate">
+              <el-input-number v-model="form.serviceRate" controls-position="right" :precision="2" placeholder="请输入服务费税率" :step="1" :min="0" :max="100" class="width90" clearable />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="服务费比例(%)" prop="serviceRatio">
+              <el-input-number v-model="form.serviceRatio" controls-position="right" :precision="2" placeholder="请输入服务费比例" :step="1" :min="0" :max="100" class="width90" clearable />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="税点(%)" prop="texPoint">
+              <el-input-number v-model="form.texPoint" controls-position="right" :precision="2" placeholder="请输入税点" :step="1" :min="0" :max="100" class="width90" clearable />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="货源是否审核" prop="supplyIsAuth">
+              <el-select
+                v-model="form.supplyIsAuth"
+                clearable
+                filterable
+                class="width90"
+              >
+                <el-option
+                  v-for="dict in isOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="是否独立核算" prop="isAccount">
+              <el-select
+                v-model="form.isAccount"
+                clearable
+                filterable
+                class="width90"
+              >
+                <el-option
+                  v-for="dict in isOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="核算方式" prop="accountType">
+              <el-select v-model="form.accountType" placeholder="请选择核算方式" filterable clearable class="width90">
+                <el-option
+                  v-for="dict in accountTypeOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="调度费点数" prop="dispatchPoints">
+              <el-input v-model="form.dispatchPoints" placeholder="请输入调度费点数" clearable class="width90" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="是否抹零" prop="isWipe">
+              <el-select
+                v-model="form.isWipe"
+                clearable
+                filterable
+                class="width60 mr3"
+              >
+                <el-option
+                  v-for="dict in isOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="请选择抹零方式">
+              <el-select v-model="form.wipeType" placeholder="请选择抹零方式" filterable clearable class="width90">
+                <el-option
+                  v-for="dict in wipeTypeOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="是否开启合理路耗">
+              <el-select
+                v-model="form.isConsumption"
+                clearable
+                filterable
+                class="width28 mr3"
+              >
+                <el-option
+                  v-for="dict in isOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+              <el-select
+                v-model="form.consumptionUnit"
+                filterable
+                clearable
+                class="width28 mr3"
+                placeholder="路耗单位"
+              >
+                <el-option
+                  v-for="dict in consumptionUnitOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+              <el-input v-model="form.consumptionMin" placeholder="最小值" class="width12" />
+              至
+              <el-input v-model="form.consumptionMax" placeholder="最大值" class="width12" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="是否月结" prop="creditAmount">
+              <el-select
+                v-model="form.isMonthly"
+                clearable
+                filterable
+                class="width28 mr3"
+              >
+                <el-option
+                  v-for="dict in isOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+              <el-input v-model="form.creditAmount" placeholder="授信金额(保留两位小数)" class="width28" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="是否预付运费" prop="isPrepaid">
+              <el-select
+                v-model="form.isPrepaid"
+                clearable
+                filterable
+                class="width90"
+              >
+                <el-option
+                  v-for="dict in isOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -131,10 +369,11 @@
 import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild } from '@/api/system/dept';
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
+import UploadImage from '@/components/UploadImage/index';
 
 export default {
   name: 'Dept',
-  components: { Treeselect },
+  components: { Treeselect, UploadImage },
   props: {
     companyCode: {
       type: String,
@@ -162,6 +401,24 @@ export default {
         orgName: undefined,
         status: undefined
       },
+      // 是否冻结字典
+      isFreezoneOptions: [
+        { dictLabel: '正常', dictValue: 0 },
+        { dictLabel: '冻结', dictValue: 1 }
+      ],
+      // 票制类别字典
+      ticketTypeOptions: [],
+      // 是否字典
+      isOptions: [
+        { dictLabel: '否', dictValue: 0 },
+        { dictLabel: '是', dictValue: 1 }
+      ],
+      // 核算方式字典
+      accountTypeOptions: [],
+      // 抹零方式字典
+      wipeTypeOptions: [],
+      // 路耗单位字典
+      consumptionUnitOptions: [],
       // 表单参数
       form: {},
       // 表单校验
@@ -180,12 +437,31 @@ export default {
   },
   created() {
     this.getList();
-    /** 状态*/
-    this.getDictsByType({ dictType: 'sys_normal_disable', dictPid: '0' }).then(response => {
-      this.statusOptions = response.data;
-    });
+    this.getDictsOptions();
   },
   methods: {
+    /** 查询字典 */
+    getDictsOptions() {
+      // 核算规则
+      this.getDicts('balance_rule').then((response) => {
+        this.accountTypeOptions = response.data;
+      });
+      // 票制类别
+      this.getDicts('assets_ticket_type').then((response) => {
+        this.ticketTypeOptions = response.data;
+      });
+      // 合理路耗计量单位
+      this.getDicts('consumption_unit').then((response) => {
+        this.consumptionUnitOptions = response.data;
+      });
+      // 抹零方式
+      this.getDicts('wipe_type').then((response) => {
+        this.wipeTypeOptions = response.data;
+      });
+      this.getDictsByType({ dictType: 'sys_normal_disable', dictPid: '0' }).then(response => {
+        this.statusOptions = response.data;
+      });
+    },
     /** 查询部门列表 */
     getList() {
       this.loading = true;
@@ -302,3 +578,35 @@ export default {
   }
 };
 </script>
+<style scoped>
+  .mr3{
+    margin-right: 3%;
+  }
+  .mt{
+    margin-top: 22px;
+  }
+  .width90{
+    width: 90%;
+  }
+  .width70{
+    width: 70%;
+  }
+  .width60{
+    width: 60%;
+  }
+  .width28{
+    width: 28%;
+  }
+  .width12{
+    width: 12%;
+  }
+  /* 计数器样式 */
+  .el-input-number ::v-deep.el-input__inner{
+    text-align: left;
+  }
+  /* 上传图片文字样式 */
+  .upload-image-label{
+    margin: 0;
+    line-height: 24px;
+  }
+</style>

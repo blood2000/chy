@@ -174,10 +174,10 @@ export default {
       const flag = this.$refs.ChooseArea.submit();
       this.$refs['form'].validate(valid => {
         if (valid && flag) {
-          if (this.form.shipperType === 1 && (!this.form.businessLicenseImg || this.form.businessLicenseImg === '')) {
+          /* if (this.form.shipperType === 1 && (!this.form.businessLicenseImg || this.form.businessLicenseImg === '')) {
             this.$message({ showClose: true, message: '请上传营业执照照', type: 'warning' });
             return;
-          }
+          }*/
           if (this.form.identificationEffective) {
             this.form.identificationEffective = 1;
           } else {

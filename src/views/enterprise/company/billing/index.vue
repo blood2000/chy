@@ -130,10 +130,12 @@ export default {
           if (this.form.id != null) {
             updateBilling(this.form).then(response => {
               this.msgSuccess('修改成功');
+              this.getBilling();
             });
           } else {
             addBilling(this.form).then(response => {
               this.msgSuccess('新增成功');
+              this.getBilling();
             });
           }
         }

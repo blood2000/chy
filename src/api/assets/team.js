@@ -1,5 +1,5 @@
 import request from '@/utils/request';
-
+import { praseStrEmpty } from '@/utils/ddc';
 // 查询调度者列表
 export const listTeamApi = '/assets/team/list';
 export function listInfo(query) {
@@ -56,7 +56,7 @@ export function applyDriver(data) {
 // 获取调度者要处理的司机列表
 export function listApply(teamCode) {
   return request({
-    url: `/assets/apply/team/${teamCode}`,
+    url: `/assets/apply/team/` + praseStrEmpty(teamCode),
     method: 'post'
   });
 }

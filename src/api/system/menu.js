@@ -58,3 +58,12 @@ export function delMenu(menuId) {
     method: 'delete'
   });
 }
+
+// 产品应用版本树
+export function versionTreeList(data) {
+  return request({
+    url: '/system/version/treeselect',
+    method: 'post',
+    data: data
+  });
+}
