@@ -65,7 +65,7 @@ export function delRole(roleId) {
   });
 }
 
-// 查询参数列表
+// 查询产品列表
 export function producelist(query) {
   return request({
     url: '/system/produce/list',

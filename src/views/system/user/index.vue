@@ -10,7 +10,7 @@
             clearable
             size="small"
             prefix-icon="el-icon-search"
-            style="margin-bottom: 20px"
+            class="mb20"
           />
         </div>
         <div class="head-container">
@@ -461,6 +461,7 @@ export default {
   watch: {
     // 根据名称筛选部门树
     deptName(val) {
+      console.log(val);
       this.$refs.tree.filter(val);
     }
   },
