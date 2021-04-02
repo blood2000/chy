@@ -10,7 +10,7 @@ const user = {
     permissions: [],
     isAdmin: false, // 是否是管理员
     isShipment: false, // 是否是货主
-    isDriver: false,// 是否是司机
+    isDriver: false, // 是否是司机
     isDispatcher: false// 是否是调度者
   },
 
@@ -73,7 +73,7 @@ const user = {
       return new Promise((resolve, reject) => {
         getInfo(state.token).then(res => {
           const user = res.user;
-          const avatar = user.avatar == '' ? require('@/assets/images/profile.jpg') : user.avatar;
+          const avatar = user.avatar === '' ? require('@/assets/images/profile.jpg') : user.avatar;
           if (res.roles && res.roles.length > 0) { // 验证返回的roles是否是一个非空数组
             commit('SET_ROLES', res.roles);
             commit('SET_PERMISSIONS', res.permissions);

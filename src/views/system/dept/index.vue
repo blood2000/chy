@@ -101,7 +101,7 @@
               <el-input-number v-model="form.orderNum" controls-position="right" :min="0" />
             </el-form-item>
           </el-col>
-        <!--  <el-col :span="12">
+          <!--  <el-col :span="12">
             <el-form-item label="负责人" prop="leader">
               <el-input v-model="form.leader" placeholder="请输入负责人" maxlength="20" />
             </el-form-item>
@@ -275,7 +275,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-              <el-form-item label="请选择抹零方式">
+            <el-form-item label="请选择抹零方式">
               <el-select v-model="form.wipeType" placeholder="请选择抹零方式" filterable clearable class="width90">
                 <el-option
                   v-for="dict in wipeTypeOptions"
@@ -287,56 +287,56 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-          <el-form-item label="是否开启合理路耗">
-            <el-select
-              v-model="form.isConsumption"
-              clearable
-              filterable
-              class="width28 mr3"
-            >
-              <el-option
-                v-for="dict in isOptions"
-                :key="dict.dictValue"
-                :label="dict.dictLabel"
-                :value="dict.dictValue"
-              />
-            </el-select>
-            <el-select
-              v-model="form.consumptionUnit"
-              filterable
-              clearable
-              class="width28 mr3"
-              placeholder="路耗单位"
-            >
-              <el-option
-                v-for="dict in consumptionUnitOptions"
-                :key="dict.dictValue"
-                :label="dict.dictLabel"
-                :value="dict.dictValue"
-              />
-            </el-select>
-            <el-input v-model="form.consumptionMin" placeholder="最小值" class="width12" />
-            至
-            <el-input v-model="form.consumptionMax" placeholder="最大值" class="width12" />
-          </el-form-item>
+            <el-form-item label="是否开启合理路耗">
+              <el-select
+                v-model="form.isConsumption"
+                clearable
+                filterable
+                class="width28 mr3"
+              >
+                <el-option
+                  v-for="dict in isOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+              <el-select
+                v-model="form.consumptionUnit"
+                filterable
+                clearable
+                class="width28 mr3"
+                placeholder="路耗单位"
+              >
+                <el-option
+                  v-for="dict in consumptionUnitOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+              <el-input v-model="form.consumptionMin" placeholder="最小值" class="width12" />
+              至
+              <el-input v-model="form.consumptionMax" placeholder="最大值" class="width12" />
+            </el-form-item>
           </el-col>
           <el-col :span="24">
-          <el-form-item label="是否月结" prop="creditAmount">
-            <el-select
-              v-model="form.isMonthly"
-              clearable
-              filterable
-              class="width28 mr3"
-            >
-              <el-option
-                v-for="dict in isOptions"
-                :key="dict.dictValue"
-                :label="dict.dictLabel"
-                :value="dict.dictValue"
-              />
-            </el-select>
-            <el-input v-model="form.creditAmount" placeholder="授信金额(保留两位小数)" class="width28" />
-          </el-form-item>
+            <el-form-item label="是否月结" prop="creditAmount">
+              <el-select
+                v-model="form.isMonthly"
+                clearable
+                filterable
+                class="width28 mr3"
+              >
+                <el-option
+                  v-for="dict in isOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+              <el-input v-model="form.creditAmount" placeholder="授信金额(保留两位小数)" class="width28" />
+            </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="是否预付运费" prop="isPrepaid">
@@ -373,7 +373,7 @@ import UploadImage from '@/components/UploadImage/index';
 
 export default {
   name: 'Dept',
-  components: { Treeselect,UploadImage },
+  components: { Treeselect, UploadImage },
   props: {
     companyCode: {
       type: String,

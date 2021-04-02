@@ -48,7 +48,7 @@
         <el-checkbox v-model="form.identificationEffective">长期有效</el-checkbox>
       </el-form-item>
       <el-form-item label="网点" prop="branchCode">
-       <!-- <el-select v-model="form.branchCode"  style="width: 90%" filterable placeholder="请选择">
+        <!-- <el-select v-model="form.branchCode"  style="width: 90%" filterable placeholder="请选择">
           <el-option
             v-for="item in branchOptions"
             :key="item.code"
@@ -78,19 +78,20 @@
         <el-form-item label="公司名称" prop="companyName" :rules="[{ required: true, message: '公司名称不能为空', trigger: 'blur' }]">
           <!--<el-input v-model="form.companyName" placeholder="请输入公司名称" class="width90" clearable />-->
           <el-select
-            style="width: 90%"
             v-model="form.companyName"
+            style="width: 90%"
             filterable
             allow-create
             default-first-option
+            placeholder="请选择公司"
             @change="changeCompany"
-            placeholder="请选择公司">
+          >
             <el-option
               v-for="item in companyList"
               :key="item.orgName"
               :label="item.orgName"
-              :value="item">
-            </el-option>
+              :value="item"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="法人姓名" prop="artificialName">
