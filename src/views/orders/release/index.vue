@@ -23,9 +23,9 @@
     >
       <!-- 第一步 基本信息 -->
       <div v-show="active ==1 || myisdisabled" class="content">
-        <div v-if="isCreated" class="header mb8">代发货主信息</div>
+        <div v-if="!isShipment && isCreated" class="header mb8">代发货主信息</div>
 
-        <el-form-item v-if="isCreated" label="代发货主" prop="tin1">
+        <el-form-item v-if="!isShipment && isCreated" label="代发货主" prop="tin1">
           <el-select
             v-model="formData.tin1"
             filterable
@@ -35,6 +35,7 @@
             placeholder="请输入关键词"
             :remote-method="remoteMethod"
             :loading="loading"
+            @change="handlerchange"
           >
             <el-option
               v-for="(item, index1) in shipmentList"
@@ -45,7 +46,6 @@
           </el-select>
         </el-form-item>
 
-
         <OrderBasic
           v-if="formData.tin1"
           ref="OrderBasic"
@@ -55,8 +55,10 @@
           :myisdisabled="myisdisabled"
           @goods="handlerGoos"
         />
+        <div class="ly-t-center">
 
-        <el-button v-if="!myisdisabled && (formData.tin1 && active < 2)" @click="nextTo(2)">下一步</el-button>
+          <el-button v-if="!myisdisabled && (formData.tin1 && active < 2)" @click="nextTo(2)">下一步</el-button>
+        </div>
       </div>
 
       <!-- 第二步 地址的填写 -->
@@ -199,18 +201,22 @@
         <el-divider />
 
         <template v-if="!myisdisabled">
-          <div class="ly-t-right">
-            <el-button v-if="active < 4" @click="nextFe(2)">上一步</el-button>
-            <el-button v-if="active < 4" @click="nextFe(4)">下一步</el-button>
+          <div v-if="active < 4" class="ly-t-center">
+            <el-button @click="nextFe(2)">上一步</el-button>
+            <el-button type="primary" @click="onSubmit('elForm',3)">{{ isCreated?'立即发布':'保存' }}</el-button>
+            <el-button @click="nextFe(4)">预  览</el-button>
           </div>
         </template>
 
       </div>
 
     </el-form>
-    <div v-if="active >= 4" class="ly-t-right">
+    <div v-if="active >= 4 && !isT" class="ly-t-center">
       <el-button @click="nextFe(3)">上一步</el-button>
-      <el-button type="primary" @click="onPubilsh">{{ isCreated?'立即发布':'立即修改' }}</el-button>
+      <el-button type="primary" @click="onPubilsh">{{ isCreated?'立即发布':'保存' }}</el-button>
+    </div>
+    <div v-if="isT" class="ly-t-center">
+      <el-button @click="backPge">返 回</el-button>
     </div>
 
 
@@ -221,7 +227,7 @@
       width="80%"
     >
       <div>
-        <OpenDialog @radioSelection="radioSelection" />
+        <OpenDialog :shipment-code="formData.tin1" @radioSelection="radioSelection" />
       </div>
     </el-dialog>
   </div>
@@ -241,6 +247,7 @@ import OpenDialog from './OpenDialog';
 
 // 获取货集码列表 ? 要在什么时机调用?
 // import { listStockcode } from '@/api/enterprise/stockcode';
+import { getUserInfo } from '@/utils/auth';
 
 import { listShipment } from '@/api/assets/shipment.js';
 import { orderPubilsh, getOrderByCode, orderFreight, update } from '@/api/order/release';
@@ -254,6 +261,9 @@ export default {
   },
   data() {
     return {
+      isT: false, //
+      orgCode: '', // 接口需要
+      isShipment: false, // 默认是平台
       lastData: null, // 最终结构
       isQianValue: true, // 开关
       qianValue: '', // 保存上一个值
@@ -312,67 +322,41 @@ export default {
       return this.active === 4;
     },
 
-    // isTin1() {
-    //   return !!this.formData.tin1;
-    // },
-    // isEdit() {
-    //   return this.$route.query.t === '1';
-    // },
     // 创建/编辑 true=>创建 false=>编辑
     isCreated() {
-      return !this.$route.query.t && !this.$route.query.id;
+      return !this.$route.query.id;
     },
 
     idCode() {
       return this.$route.query.id;
     }
-    // 是否有多地址 true=>多 false=>少
-    // isShowMulti() {
-    //   return this.address_add.length >= 2 || this.address_xie.length >= 2;
-    // },
-    // // addressTab() {
-    //   let arr = [];
-
-    //   if (this.isShowMulti) {
-    //     if (this.address_add.length >= 2) {
-    //       arr = [...arr, ...this.address_add];
-    //     }
-    //     if (this.address_xie.length >= 2) {
-    //       arr = [...arr, ...this.address_xie];
-    //     }
-    //   }
-    //   return arr;
-    // },
-    // nowType() {
-    //   let bool = true;
-    //   if (this.formData.tin7 === '2') {
-    //     bool = true;
-    //   } else if (this.formData.tin7 === '3') {
-    //     bool = false;
-    //   }
-    //   return bool;
-    // }
-
   },
   watch: {
     // 切换商品 false=> 单 true=>多
     isMultiGoods() {
-      // if (this.active >= 3) {
-      //   this.active = 2;
-      // }
       if (this.isMultiGoods) return;
       this.formData.tin7 = '1';
       this.formData.tin8 = false;
       this.formData.tin9 = false;
+    },
+    '$route.query.t': {
+      handler(value) {
+        if (value === '0') {
+          this.isT = true;
+          console.log(this.active);
+          console.log('详情---');
+        }
+      },
+      immediate: true
     }
-    // 'formData.tin8'(value) {
-    //   console.log(value);
-    // }
-
-
   },
 
   created() {
+    // 判断用户
+    const { isShipment = false, user = {}} = getUserInfo() || {};
+    this.isShipment = isShipment;
+    this.isShipment && (this.formData.tin1 = user.userCode);
+
     // 判断地址栏有没有id- true=>有说明编辑/详情 false=>创建-什么都不做
     if (this.idCode) {
       this.getCbdata(this.idCode);
@@ -398,6 +382,16 @@ export default {
       }
     },
 
+
+    // 获取orgCode
+    handlerchange(value) {
+      this.shipmentList.forEach(e => {
+        if (e.code === value) {
+          this.orgCode = e.orgCode || '';
+        }
+      });
+    },
+
     // 下一步 active =2
     async nextTo(active, cb) {
       if (!cb) {
@@ -405,25 +399,24 @@ export default {
         this.basicInfor.loadType = this.formData.tin7;
         this.goodsBigType = this.basicInfor.orderGoodsList[0].goodsBigType;
       }
-
       this.active = active;
-
       // 测数据用
-      this.handlercbAddress([
+      false && this.handlercbAddress([
         {
           'addressType': 2,
           'country': '中国',
           'province': '福建省',
           'city': '福州市',
-          'citycode': '3501',
+          'cityCode': '3501',
           'district': '仓山区',
           'street': '',
-          'adcode': '350104',
+          'districtCode': '350104',
           'location': [
             119.358265,
             26.045794
           ],
-          'detail': '富邦针织',
+          'addressName': '富邦针织',
+          'detail': '120号',
           'contact': '12123',
           'contactPhone': '12345678910',
           'addressAlias': '1212',
@@ -435,16 +428,17 @@ export default {
           'country': '中国',
           'province': '福建省',
           'city': '福州市',
-          'citycode': '3501',
+          'cityCode': '3501',
           'district': '台江区',
           'street': '',
-          'adcode': '350103',
+          'districtCode': '350103',
           'location': [
             119.358265,
             26.045794
           ],
           'level': null,
-          'detail': '富邦总部大楼',
+          'addressName': '富邦总部大楼',
+          'detail': '1004',
           'contact': '123456',
           'contactPhone': '12345678910',
           'addressAlias': '案发地上',
@@ -497,10 +491,10 @@ export default {
           {
             cbData: {
               addressType: '3',
-              detail: ''
+              addressName: ''
             },
             addressType: '3',
-            detail: '自装',
+            addressName: '自装',
             type: 'tin8',
             refName: 'address_add' + Date.now()
           }
@@ -516,10 +510,10 @@ export default {
           {
             cbData: {
               addressType: '4',
-              detail: ''
+              addressName: ''
             },
             addressType: '4',
-            detail: '自卸',
+            addressName: '自卸',
             type: 'tin9',
             refName: 'address_xie' + Date.now()
           }
@@ -530,13 +524,14 @@ export default {
         });
       }
 
-      // console.log(this.addr_add, this.addr_xie);
+      console.log(this.addr_add, this.addr_xie, '88888888888888888888888');
 
       this.active = active; // 3
     },
 
     // 下一步 active =4
     nextFe(active) {
+      this.loading = true;
       if (active === 4) {
         // console.log('4');
         this.onSubmit('elForm');
@@ -545,6 +540,7 @@ export default {
       } else if (active === 3) {
         this.active = 3;
       }
+      this.loading = false;
     },
 
     // 发布按钮触发(1.发布接口2.成功1秒后跳转)
@@ -557,7 +553,7 @@ export default {
             this.msgSuccess('修改成功');
             this.loading = false;
             setTimeout(() => {
-              // this.$router.push({ name: 'Manage' });
+              this.$router.push({ name: 'Manage' });
             }, 1000);
           }).catch(() => {
             this.loading = false;
@@ -576,13 +572,17 @@ export default {
       }
     },
 
-    onSubmit(form) {
+    onSubmit(form, active) {
       this.$refs[form].validate(async(valid) => {
         if (valid) {
           this.lastData = await this.submAllData();
           console.log(this.lastData);
 
-          this.active = 4;
+          if (active && active === 3) {
+            this.onPubilsh();
+          } else {
+            this.active = 4;
+          }
         } else {
           return false;
         }
@@ -617,6 +617,7 @@ export default {
         isSpecified: isSpecified ? 1 : 0,
         loadType: this.formData.tin7 - 0,
         projectCode,
+        orgCode: this.orgCode,
         pubilshCode,
         remark
       };
@@ -630,7 +631,7 @@ export default {
 
       const orderGoodsListArr = orderGoodsList.map(e => {
         return {
-          code: e.code || undefined,
+          // code: e.code || undefined,
           goodsBigType: this.goodsBigType, // 大类code
           goodsType: e.goodsType, // 小类code
           identification: e.goodsType, // 约定好的
@@ -698,14 +699,22 @@ export default {
 
       // 规则-找出来
       const orderFreightInfoBoList = goodsInfo.map(e => {
+        console.log(e.newRedis);
+
+        const orderAddressBoList = e.newRedis.map((ee, index) => {
+          ee.identification = index + 1;
+
+          return {
+            addressIdentification: (ee.addressType - 0) === 1 ? (index + 1) + ':0' : '0:' + (index + 1),
+            ruleDictValue: ee.ruleDictValue,
+            ruleInfoShipmentCode: ee.ruleInfoShipmentCode,
+            orderFreightBoList: this.isCreated ? ee.orderFreightBoList : undefined,
+            orderFreightUpdateBoList: !this.isCreated ? ee.orderFreightBoList : undefined
+          };
+        });
         return {
-          orderAddressBoList: e.newRedis.map((ee, index) => {
-            ee.identification = index + 1;
-            return {
-              addressIdentification: (ee.addressType - 0) === 1 ? (index + 1) + ':0' : '0:' + (index + 1),
-              orderFreightBoList: ee.orderFreightBoList
-            };
-          }),
+          orderAddressBoList: this.isCreated ? orderAddressBoList : undefined, // 发布
+          orderAddressUpdateBoList: !this.isCreated ? orderAddressBoList : undefined, // 编辑
           goodsIdentification: e.goodsType
         };
       });
@@ -729,38 +738,11 @@ export default {
       let addr_add = JSON.parse(JSON.stringify(this.addr_add));
       let addr_xie = JSON.parse(JSON.stringify(this.addr_xie));
 
-      console.log(addr_add);
-
-
       addr_add = addr_add.map(e => {
         e.identification = e.identification || 0;
         // 自装地址处理
         if (e.type && e.type === 'tin8') {
-          e = {
-            adcode: '',
-            addressAlias: '',
-            addressType: '3',
-            city: '',
-            citycode: '',
-            contact: '',
-            contactPhone: '',
-            country: '',
-            detail: '',
-            district: '',
-            formattedAddress: '',
-            goodsBigType: e.goodsBigType || '',
-            goodsType: e.goodsType || '',
-            identification: e.identification || '',
-            level: e.level || null,
-            location: [],
-            orderFreightBoList: e.orderFreightBoList || '',
-            province: '',
-            provinceCode: '',
-            refName: '',
-            ruleDictValue: e.ruleDictValue || '',
-            ruleInfoShipmentCode: e.ruleInfoShipmentCode || '',
-            street: ''
-          };
+          e = this.addressItem(e, '3');
         }
 
         return e;
@@ -769,31 +751,7 @@ export default {
       addr_xie = addr_xie.map(e => {
         e.identification = e.identification || 0;
         if (e.type && e.type === 'tin9') {
-          e = {
-            adcode: '',
-            addressAlias: '',
-            addressType: '4',
-            city: '',
-            citycode: '',
-            contact: '',
-            contactPhone: '',
-            country: '',
-            detail: '',
-            district: '',
-            formattedAddress: '',
-            goodsBigType: e.goodsBigType || '',
-            goodsType: e.goodsType || '',
-            identification: e.identification || '',
-            level: e.level || null,
-            location: [],
-            orderFreightBoList: e.orderFreightBoList || '',
-            province: '',
-            provinceCode: '',
-            refName: '',
-            ruleDictValue: e.ruleDictValue || '',
-            ruleInfoShipmentCode: e.ruleInfoShipmentCode || '',
-            street: ''
-          };
+          e = this.addressItem(e, '4');
         }
         return e;
       });
@@ -803,6 +761,31 @@ export default {
       return { orderGoodsList, orderFreightInfoBoList, orderAddressPublishBoList: [...addr_add, ...addr_xie] };
     },
 
+    addressItem(e, type) {
+      return {
+        districtCode: '', // (区的code) 必填的
+        district: '', // (区)
+        addressAlias: '',
+        addressType: type,
+        city: '',
+        cityCode: '',
+        contact: '',
+        contactPhone: '',
+        detail: '', // 手填的
+        addressName: '', // 地址名称(高德手选)
+        location: [],
+        province: '',
+        provinceCode: '',
+        goodsBigType: e.goodsBigType || '',
+        goodsType: e.goodsType || '',
+        identification: e.identification || '',
+        level: e.level || null,
+        orderFreightBoList: e.orderFreightBoList || '',
+        ruleDictValue: e.ruleDictValue || '',
+        ruleInfoShipmentCode: e.ruleInfoShipmentCode || ''
+      };
+    },
+
 
 
     /* 回填-------------------------------------------- */
@@ -810,34 +793,33 @@ export default {
     // 编辑和详情-回填获取数据
     async getCbdata(id) {
       this.loading = true;
-      // const tsetid = 'a9d84d1fc4e74d8f97e56219441c7313'; // 测试-替换id
+      try {
+        const { data } = await getOrderByCode(id);
 
-      const { data } = await getOrderByCode(id);
-      this.loading = false;
+        const { redisOrderInfoVo, redisOrderClassGoodsVoList, redisOrderSpecifiedVoList, redisOrderFreightInfoVoList, redisOrderGoodsVoList, redisAddressList } = data;
 
-      // if (!data) return;
-      console.log(data);
+        // 1
+        this.handlerOrderBasic({ ...redisOrderInfoVo, redisOrderClassGoodsVoList, redisOrderSpecifiedVoList, redisOrderGoodsVoList });
 
-      this.active = 3; // 自接全展示
+        // 2
+        this.handlercbAddress(redisAddressList);
 
-      // const { redisOrderGoodsVoList, redisAddressList } = data1;
-      const { redisOrderInfoVo, redisOrderClassGoodsVoList, redisOrderSpecifiedVoList, redisOrderFreightInfoVoList, redisOrderGoodsVoList, redisAddressList } = data;
+        // 3
+        this.handerRedisOrder(redisAddressList);
 
-      // 1
-      this.handlerOrderBasic({ ...redisOrderInfoVo, redisOrderClassGoodsVoList, redisOrderSpecifiedVoList, redisOrderGoodsVoList });
+        // 4. 处理商品
+        this.cbGoodsAccounting = redisOrderGoodsVoList;
 
-      // 2
-      this.handlercbAddress(redisAddressList);
+        // 5. 处理规则
 
-      // 3
-      this.handerRedisOrder(redisAddressList);
+        this.cbOrderFreight = redisOrderFreightInfoVoList;
 
-      // 4. 处理商品
-      this.cbGoodsAccounting = redisOrderGoodsVoList;
+        this.active = this.isT ? 4 : 3; // 自接全展示
 
-      // 5. 处理规则
-
-      this.cbOrderFreight = redisOrderFreightInfoVoList;
+        this.loading = false;
+      } catch (error) {
+        this.loading = false;
+      }
     },
 
     // 1.处理 cbOrderBasic 要的数据
@@ -861,7 +843,7 @@ export default {
         orderSpecifiedList: redisOrderSpecifiedVoList,
         classList: redisOrderClassGoodsVoList.map(e => {
           return {
-            code: e.code,
+            // code: e.code,
             classCode: e.classCode
           };
         })
@@ -897,15 +879,14 @@ export default {
           });
         }
       });
-
-      // console.log(this.address_add);
-      // console.log(this.address_xie);
     },
 
     // 3. 处理回填的数据(1.是要获取地址中的规则 2.要获取装地址到卸地址)
     handerRedisOrder(addressList) {
+      console.log();
+
       addressList.forEach(e => {
-        if (e.addressType === 1) {
+        if ((e.addressType - 0) === 1 || (e.addressType - 0) === 3) {
           this.addr_add.push(e);
         } else {
           this.addr_xie.push(e);
@@ -962,6 +943,11 @@ export default {
       this.goods = data;
     },
 
+    // 返回
+    backPge() {
+      this.$router.back();
+    },
+
     /* 方法和其他------------------------------------------- */
 
     // 1. 添加一个地址
@@ -1001,54 +987,9 @@ export default {
         this[name].forEach(e => {
           if (e.refName === type) {
             e.cbData = {
-              adcode: data.countyCode,
-              addressAlias: data.addressOtherName,
-              addressType: e.addressType,
-              city: data.cityName,
-              citycode: data.cityCode,
-              contact: data.contactName,
-              contactPhone: data.contactTelphone,
-              country: data.cityName || '中国',
-              detail: data.addressName,
-              district: data.countyName,
-              level: null,
-              location: [data.longitude, data.latitude],
-              province: data.provinceName,
-              provinceCode: data.provinceCode,
-              street: data.street || ''
+              ...data,
+              location: [data.longitude, data.latitude]
             };
-            /*
-              // addressDetail: "福建省福州市鼓楼区鼓东街道福州第十九中学"
-              // addressName: "福州第十九中学"
-              // addressOtherName: "十九中"
-
-              // cityCode: "3501"
-              // cityName: "福州市"
-              // code: "d3a91a301f05444badad167d1fc21339"
-
-              // contactName: "小町"
-              // contactTelphone: "18859164261"
-
-              // countyCode: "350102"
-
-              // countyName: "鼓楼区"
-
-              // createCode: null
-              // createTime: "2021-03-19T10:27:20.791+08:00"
-              // defaultPush: 1
-              // defaultPut: 0
-              // houseNumber: null
-              // id: 26
-              // latitude: "26.089438"
-              // longitude: "119.306125"
-              // provinceCode: "35"
-              // provinceName: "福建省"
-              // remark: ""
-              // shipmentCode: "c0e8fdb5e44942d3a10907dc97768847"
-              // status: 1
-              // updateCo/de: "ca8b3f3528a34365b41ad4cdb2074f67"
-              // updateTime: "2021-03-26T18:13:26.692+08:00"
-            */
           }
         });
       }

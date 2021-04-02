@@ -25,10 +25,10 @@
         <el-form-item
           label="详细地址"
           style="margin-right: 10px; width: 50%"
-          prop="tin1"
+          prop="addressName"
         >
           <el-select
-            v-model="formData.tin1"
+            v-model="formData.addressName"
             clearable
             filterable
             remote
@@ -62,8 +62,7 @@
 
         <el-form-item label="门牌号" :style="{ width: '50%' }">
           <el-input
-            v-model="formData.tin2"
-            :disabled="true"
+            v-model="formData.detail"
             clearable
             placeholder="请输入门牌号"
             :style="{ width: '100%' }"
@@ -73,7 +72,7 @@
 
       <el-form-item label="地址别名">
         <el-input
-          v-model="formData.tin3"
+          v-model="formData.addressAlias"
           clearable
           placeholder="优先展示, 最多输入10个字"
           :style="{ width: '100%' }"
@@ -140,17 +139,17 @@ export default {
       },
       selected: null,
       formData: {
-        tin1: '',
-        tin2: '',
-        tin3: '',
+        addressName: '',
+        detail: '',
+        addressAlias: '',
         contact: '',
         contactPhone: ''
       },
 
       rules: {
-        tin1: [{ required: true, message: '选择所属项目', trigger: 'change' }],
-        tin2: [{ required: true, message: '选择所属项目', trigger: 'change' }],
-        tin3: [{ required: true, message: '选择所属项目', trigger: 'blur' }],
+        addressName: [{ required: true, message: '选择所属项目', trigger: 'change' }],
+        detail: [{ required: true, message: '选择所属项目', trigger: 'change' }],
+        addressAlias: [{ required: true, message: '选择所属项目', trigger: 'blur' }],
         contact: [{ required: true, message: '请输入联系人', trigger: 'blur' }],
         contactPhone: [
           { required: true, message: '请输入联系电话', trigger: 'blue' }
@@ -168,21 +167,22 @@ export default {
 
         const {
           detail,
-          street,
+          addressName,
+          // street,
           addressAlias,
           contact,
           contactPhone,
           location
         } = value;
 
-        this.formData.tin1 = detail;
-        this.formData.tin2 = street;
-        this.formData.tin3 = addressAlias;
+        this.formData.addressName = addressName;
+        this.formData.detail = detail;
+        this.formData.addressAlias = addressAlias;
         this.formData.contact = contact;
         this.formData.contactPhone = contactPhone;
 
         this.selected = {
-          name: detail,
+          name: addressName,
           lat: location ? location[1] - 0 : 0,
           lng: location ? location[0] - 0 : 0
         };
@@ -194,9 +194,9 @@ export default {
       this.isrules = !value;
 
       this.rules = {
-        tin1: [{ required: !value, message: '选择所属项目', trigger: 'change' }],
-        tin2: [{ required: !value, message: '选择所属项目', trigger: 'change' }],
-        tin3: [{ required: !value, message: '选择所属项目', trigger: 'blur' }],
+        addressName: [{ required: !value, message: '选择所属项目', trigger: 'change' }],
+        detail: [{ required: !value, message: '选择所属项目', trigger: 'change' }],
+        addressAlias: [{ required: !value, message: '选择所属项目', trigger: 'blur' }],
         contact: [{ required: !value, message: '请输入联系人', trigger: 'blur' }],
         contactPhone: [
           { required: !value, message: '请输入联系电话', trigger: 'blue' }
@@ -226,7 +226,7 @@ export default {
         this.selected = '';
       }
 
-      this.selected = this._zhaovalue(this.detailOptin, this.formData.tin1);
+      this.selected = this._zhaovalue(this.detailOptin, this.formData.addressName);
     },
 
     // 3. 选择了什么城市
@@ -238,7 +238,7 @@ export default {
       // 获取省市区
       const { city = {}, county = {}, province = {}} = await this.$refs.pccFef._submitForm();
       // 获取当前
-      const { tin2, tin3, contact, contactPhone } = this.formData;
+      const { detail, addressAlias, contact, contactPhone } = this.formData;
       // 获取详情及经纬度
       const { name = '', lat = '', lng = '' } = this.selected;
 
@@ -246,28 +246,36 @@ export default {
         this.$refs['elForm'].validate((valid) => {
           if (valid) {
             resolve({
-              adcode: county.countyCode, // (区的code)
+              districtCode: county.countyCode, // (区的code) 必填的
               district: county.countyName, // (区)
-              addressAlias: tin3,
+              addressAlias: addressAlias,
               addressType: this.type,
               city: city.cityName,
-              citycode: city.cityCode,
+              cityCode: city.cityCode,
               contact: contact,
               contactPhone: contactPhone,
-              // country: ee.country, // 这个不知道是什么值 国家
-              detail: name, // 搜索返回的地址
-              // level: ee.level, // 这个不知道是什么值
+              detail: detail, // 手填的
+              addressName: name, // 地址名称(高德手选)
               location: [lng, lat],
               province: province.provinceName,
-              provinceCode: province.provinceCode,
-              street: tin2, // (暂时保存为具体门牌号)
-              formattedAddress:
-                province.provinceName +
-                city.cityName +
-                county.countyName +
-                name +
-                tin2
+              provinceCode: province.provinceCode
             });
+
+            // console.log({
+            //   districtCode: county.countyCode, // (区的code) 必填的
+            //   district: county.countyName, // (区)
+            //   addressAlias: addressAlias,
+            //   addressType: this.type,
+            //   city: city.cityName,
+            //   cityCode: city.cityCode,
+            //   contact: contact,
+            //   contactPhone: contactPhone,
+            //   detail: detail, // 手填的
+            //   addressName: name, // 地址名称(高德手选)
+            //   location: [lng, lat],
+            //   province: province.provinceName,
+            //   provinceCode: province.provinceCode
+            // }, '具体的地址');
           } else {
             return false;
           }

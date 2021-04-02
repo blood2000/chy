@@ -323,7 +323,7 @@ export default {
       handler(value) {
         if (!value) return;
 
-        console.log(value);
+        console.log(value, '回填基本信息');
 
         const {
           businessType,
@@ -334,6 +334,7 @@ export default {
           vehicleMaxWeight,
           shipmentPrice,
           goodsPrice,
+          number,
           vehicleType,
           vehicleLength } = value;
 
@@ -341,6 +342,7 @@ export default {
           businessType,
           stowageStatus: stowageStatus || '0',
           // goodsUnit,
+          number,
           totalType: totalType ? '2' : '1',
           weight,
           vehicleMaxWeight,

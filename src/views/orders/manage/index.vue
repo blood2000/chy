@@ -264,7 +264,7 @@
                   v-hasPermi="['system:menu:edit']"
                   size="mini"
                   type="text"
-                  icon="el-icon-edit"
+                  icon="el-icon-document"
                   @click="handleInfo(row)"
                 >详情</el-button>
                 <el-button
@@ -300,21 +300,21 @@
                   v-hasPermi="['system:menu:remove']"
                   size="mini"
                   type="text"
-                  icon="el-icon-delete"
+                  icon="el-icon-close"
                   @click="handleClose(row)"
                 >关闭</el-button>
                 <el-button
                   v-hasPermi="['system:menu:remove']"
                   size="mini"
                   type="text"
-                  icon="el-icon-delete"
+                  icon="el-icon-bank-card"
                   @click="handleReadjustPrices(row)"
                 >调价</el-button>
                 <el-button
                   v-hasPermi="['system:menu:remove']"
                   size="mini"
                   type="text"
-                  icon="el-icon-delete"
+                  icon="el-icon-document"
                   @click="handleShenhe(row)"
                 >审核</el-button>
               </template>
@@ -511,7 +511,9 @@ export default {
         { dictLabel: '现金', dictValue: '0' },
         { dictLabel: '打卡', dictValue: '1' },
         { dictLabel: '现金+油卡', dictValue: '2' }
-      ]
+      ],
+
+      goodsTypeOption: []
 
     };
   },
@@ -540,8 +542,19 @@ export default {
   created() {
     this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || this.tableColumnsConfig;
     this.getList();
+
+    this.getDict();
   },
   methods: {
+    /** 获取首页字典值 */
+    getDict(dictType, dictPid) {
+      this.listByDict({
+        dictPid: '0',
+        dictType: 'goodsType'
+      }).then(res => {
+        this.goodsTypeOption = res.data;
+      });
+    },
     /** 查询货源列表 */
     getList() {
       this.loading = true;
@@ -568,7 +581,7 @@ export default {
     handleUpdate(row) {
       console.log(row);
 
-      this.$router.push({ name: 'Release', query: { id: row.mainOrderNumber, t: '1' }});
+      this.$router.push({ name: 'Release', query: { id: row.code, t: '1' }});
       // this.reset();
       // const testId = row.testId || this.ids;
       // getTest(testId).then(response => {
@@ -579,7 +592,7 @@ export default {
     },
     /** 查看详情操作 */
     handleInfo(row) {
-      this.$router.push({ name: 'Release', query: { id: row.mainOrderNumber, t: '0' }});
+      this.$router.push({ name: 'Release', query: { id: row.code, t: '0' }});
       // this.reset();
       // const testId = row.testId || this.ids;
       // getTest(testId).then(response => {

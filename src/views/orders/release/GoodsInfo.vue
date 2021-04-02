@@ -100,28 +100,38 @@ export default {
     async getAccounTing() {
       this.tabs = await this.getGoodsAccounting(); // 结构就是 this.tabs
 
+      console.log(this.tabs);
+
+
       // 只能用 for of 遍历
       for (const e of this.tabs) {
         const lists = e.redis.map(async(ee, i) => {
           // 只能调一次
           const accounTing = (await this.$refs['AccounTing' + i][0]._submitForm());
+
+          // console.log(accounTing);
+          // console.log(ee, '---------------------------');
+
+
           return {
             ...ee,
             orderFreightBoList: accounTing.orderFreightBoList,
             goodsType: e.goodsType,
-            goodsBigType: this.goodsBigType,
-            ruleDictValue: accounTing.ruleDictValue,
-            ruleInfoShipmentCode: accounTing.orderFreightBoList[0].ruleCode
+            goodsBigType: this.goodsBigType
+            // ruleDictValue: accounTing.ruleDictValue,
+            // ruleInfoShipmentCode: accounTing.orderFreightBoList[0].ruleCode
           };
         });
+
         e.newRedis = await Promise.all(lists);
+        console.log(e);
       }
     },
     // 返回数据
     async _submitForm() {
       await this.getAccounTing();
 
-      // console.log(this.tabs, '_submitForm');
+      console.log(this.tabs, '_submitForm');
 
       return this.tabs;
     },
@@ -155,7 +165,7 @@ export default {
 
         return {
         //   ...e, 先存这三个
-          code: e.goodsAccounting ? e.goodsAccounting.code : undefined,
+          // code: e.goodsAccounting ? e.goodsAccounting.code : undefined,
           goodsAccounting: e.goodsAccounting,
           // price: this.handlerPrice(e.price),
           dictLabel: e.dictLabel,
@@ -174,39 +184,50 @@ export default {
     // 判断规则是多装还是多卸, 并处理装地址--卸地址
     addressInit() {
       let arr = [];
+      console.log(this.addrXie, this.addrAdd);
+
 
       if (this.addrXie.length >= 2) {
         arr = this.addrXie.map(e => {
           return {
             ...e,
-            tin_name: (this.addrAdd[0] && this.addrAdd[0].detail || '自装') + '--' + (e.detail || '')
+            tin_name: (this.addrAdd[0] && this.addrAdd[0].addressName || '自装') + '--' + (e.addressName || '')
           };
         });
       } else {
         arr = this.addrAdd.map(e => {
           return {
             ...e,
-            tin_name: (e.detail || '') + '--' + (this.addrXie[0] && this.addrXie[0].detail || '自卸')
+            tin_name: (e.addressName || '') + '--' + (this.addrXie[0] && this.addrXie[0].addressName || '自卸')
           };
         });
       }
 
-      // console.log(arr);
+      console.log(arr, '处理一下地址');
 
       return arr;
     },
     handlerPrice(addressIdentification) { // identification
       const redis = this.addressInit().map(e => {
+        console.log(e);
+
         addressIdentification.forEach(ee => {
           const addressCodeArr = ee.addressCode.split(':');
 
+          console.log(ee);
+
           if ((e.code + '') === (addressCodeArr[0] + '') || (e.code + '') === (addressCodeArr[1] + '')) {
             e.orderFreightVo = ee.orderFreightVo;
+            e.redisOrderFreightVoList = ee.redisOrderFreightVoList;
+            e.ruleCode = ee.ruleCode;
           }
         });
 
         return e;
       });
+
+      console.log(redis, '226');
+
 
       return redis;
     },

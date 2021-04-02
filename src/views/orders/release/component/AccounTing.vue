@@ -220,6 +220,7 @@ export default {
   data() {
     return {
       ruleFreightPrice: [], // 运费单价(单独提取出来)
+      claculationFormula: [], // 计算规则(单独提取出来)
       formData: {
 
         ruleItemId: '',
@@ -264,26 +265,43 @@ export default {
     },
     redis: {
       handler(value) {
+        console.log(value);
         if (!value || !value.orderFreightVo) return;
-
+        // 清空
         this.lossList = [];
         this.zichuList = [];
         this.shouruList = [];
 
         const { detailList, lossList } = value.orderFreightVo;
-        this.formData.ruleDictValue = value.ruleDictValue || 0;
-        this.formData.ruleItemId = value.ruleInfoShipmentCode || 11;
+        console.log(value.ruleCode);
+
+        this.formData.ruleItemId = value.ruleCode;
+
 
         // 运费单价
+        const filterDetailList = [];
 
-        this.ruleFreightPrice = detailList.filter(e => {
-          return e.enName === 'FREIGHT_COST';
+        detailList.forEach(e => {
+          if (e.enName === 'FREIGHT_COST') {
+            this.ruleFreightPrice = [e];
+            this.formData.freightPrice = e.ruleValue;
+            // this.formData.ruleItemId = e.
+          } else if (e.enName === 'CALCULATION_FORMULA') {
+            this.claculationFormula = [e];
+            this.formData.ruleDictValue = e.ruleValue;
+          } else {
+            filterDetailList.push(e);
+          }
         });
-        console.log(this.ruleFreightPrice);
+
+        // this.ruleFreightPrice = detailList.filter(e => {
+        //   return e.enName === 'FREIGHT_COST';
+        // });
+        // console.log(this.ruleFreightPrice);
 
 
-        this.formData.freightPrice = this.ruleFreightPrice[0].ruleValue;
-        this.setData(detailList, lossList);
+        // this.formData.freightPrice = this.ruleFreightPrice[0].ruleValue;
+        this.setData(filterDetailList, lossList);
       },
       immediate: true
 
@@ -410,25 +428,35 @@ export default {
       ];*/
 
 
-      this.formData.ruleDictValue = ruleInfo.ruleDictValue;
+      // this.formData.ruleDictValue = ruleInfo.ruleDictValue;
 
       // 运费单价
 
-      this.ruleFreightPrice = detailList.filter(e => {
-        return e.enName === 'FREIGHT_COST';
+      // this.ruleFreightPrice = detailList.filter(e => {
+      //   return e.enName === 'FREIGHT_COST';
+      // });
+
+      const filterDetailList = [];
+
+      detailList.forEach(e => {
+        if (e.enName === 'FREIGHT_COST') {
+          this.ruleFreightPrice = [e];
+          this.formData.freightPrice = e.ruleValue;
+        } else if (e.enName === 'CALCULATION_FORMULA') {
+          this.claculationFormula = [e];
+          this.formData.ruleDictValue = e.ruleValue;
+        } else {
+          filterDetailList.push(e);
+        }
       });
 
-      this.formData.freightPrice = this.ruleFreightPrice[0].ruleValue;
-      this.setData(detailList, lossList);
+      this.setData(filterDetailList, lossList);
     },
 
     // 赋值
     setData(detailList, lossList) {
       this.lossList = lossList;
 
-      detailList = detailList.filter(e => {
-        return e.enName !== 'FREIGHT_COST';
-      });
 
       detailList.forEach(e => {
         if (e.type + '' === '2') {
@@ -444,15 +472,16 @@ export default {
         this.$refs['formData'].validate(async(valid) => {
           if (valid) {
             this.ruleFreightPrice[0].ruleValue = this.formData.freightPrice;
+            this.claculationFormula[0].ruleValue = this.formData.ruleDictValue;
             const lossList = await this.$refs.lossList._submitForm();
             const shouruList = await this.$refs.shouruList._submitForm();
             const zichuList = await this.$refs.zichuList._submitForm();
 
             const obj = {
-              orderFreightBoList: await [...this.ruleFreightPrice, ...lossList, ...shouruList, ...zichuList].map(e => {
+              orderFreightBoList: await [...this.ruleFreightPrice, ...lossList, ...shouruList, ...zichuList, ...this.claculationFormula].map(e => {
                 return {
                   'code': e.code,
-                  'ruleCode': e.ruleCode || undefined,
+                  'ruleCode': e.ruleCode,
                   'ruleDetailShipmentCode': e.code,
                   'ruleItemCode': e.ruleItemCode,
                   'ruleValue': e.ruleValue,
@@ -461,6 +490,8 @@ export default {
                 };
               })
             };
+
+
 
             resolve({ ...obj, ruleDictValue: this.formData.ruleDictValue });
           } else {
