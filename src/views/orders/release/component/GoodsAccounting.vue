@@ -367,6 +367,7 @@ export default {
     this.getDicts('businessType').then((response) => {
       this.formDataList.businessTypeOption = response.data;
     });
+
     this.getDicts('vehicleClassification').then((response) => {
       this.formDataList.vehicleClassification = response.data;
     });

@@ -1,6 +1,8 @@
 import request from '@/utils/request';
 
 // 查询货源管理列表列表
+export const listManagesApi = '/transportation/orderInfoSearch/getOrderInfoList';
+
 export function getOrderInfoList(query) {
   return request({
     url: '/transportation/orderInfoSearch/getOrderInfoList',

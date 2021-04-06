@@ -85,6 +85,7 @@
               controls-position="right"
               :style="{ width: '85px' }"
             />
+            <span class="ml0 mr10">{{ item.unit }}</span>
           </el-form-item>
           <div class="mr10" style="margin-bottom: 22px;">~</div>
           <el-form-item
@@ -102,6 +103,7 @@
               controls-position="right"
               :style="{ width: '85px' }"
             />
+            <span class="ml0 mr10">{{ item.unit }}</span>
           </el-form-item>
         </div>
 

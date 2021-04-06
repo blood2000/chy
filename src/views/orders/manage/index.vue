@@ -30,7 +30,7 @@
               <el-form-item label="下单客户" prop="tin1">
                 <el-input
                   v-model="queryParams.tin1"
-                  placeholder="请输入公司名称/客户姓名/手机号"
+                  placeholder="请输入下单客户"
                   clearable
                   size="small"
                   @keyup.enter.native="handleQuery"
@@ -40,7 +40,7 @@
               <el-form-item label="装货信息" prop="tin2">
                 <el-input
                   v-model="queryParams.tin2"
-                  placeholder="装货地/装货电话/装货人"
+                  placeholder="请输入装货信息"
                   clearable
                   size="small"
                   @keyup.enter.native="handleQuery"
@@ -50,7 +50,7 @@
               <el-form-item label="收货信息" prop="tin3">
                 <el-input
                   v-model="queryParams.tin3"
-                  placeholder="目的地/收货电话/收货人"
+                  placeholder="请输入收货信息"
                   clearable
                   size="small"
                   @keyup.enter.native="handleQuery"
@@ -59,15 +59,20 @@
 
               <el-form-item label="货物类型大类" prop="tin4">
                 <el-select v-model="queryParams.tin4" placeholder="----请选择----" style="width: 215px" clearable filterable>
-                  <el-option label="区域一" value="shanghai" />
-                  <el-option label="区域二" value="beijing" />
+                  <!-- goodsTypeOption -->
+                  <el-option
+                    v-for="dict in goodsTypeOption"
+                    :key="dict.dictValue"
+                    :label="dict.dictLabel"
+                    :value="dict.dictValue"
+                  />
                 </el-select>
               </el-form-item>
 
               <el-form-item label="货物描述" prop="tin5">
                 <el-input
                   v-model="queryParams.tin5"
-                  placeholder="目的地/收货电话/收货人"
+                  placeholder="请输入货物描述"
                   clearable
                   size="small"
                   @keyup.enter.native="handleQuery"
@@ -77,7 +82,7 @@
               <el-form-item label="货主编码" prop="tin6">
                 <el-input
                   v-model="queryParams.tin6"
-                  placeholder="目的地/收货电话/收货人"
+                  placeholder="请输入货主编码"
                   clearable
                   size="small"
                   @keyup.enter.native="handleQuery"
@@ -168,13 +173,16 @@
                 >导出</el-button>
               </el-col>
 
-              <el-col :span="1.5" style="marginTop:-5px">
+              <el-col :span="1.5" class="fr">
                 <tablec-cascader v-model="tableColumnsConfig" />
               </el-col>
               <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
             </el-row>
 
             <RefactorTable :loading="loading" :data="list" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
+              <template #landAddress="{row}">
+                <span>{{ row.landAddress }}</span>
+              </template>
               <!-- billingType	发运方式 0->汽运一票制，1->对付，2->代收代付 -->
               <template #billingType="{row}">
                 <span>{{ selectDictLabel(billingTypeOptions, row.billingType) }}</span>
@@ -268,19 +276,20 @@
                   @click="handleInfo(row)"
                 >详情</el-button>
                 <el-button
+                  v-if="false"
                   v-hasPermi="['system:menu:add']"
                   size="mini"
                   type="text"
                   icon="el-icon-edit-outline"
                   @click="loadAndUnloading(row)"
-                >{{ row.status==='0'?'禁用':'启用' }}</el-button>
+                >{{ row.status==='0'?'下架':'上架' }}</el-button>
                 <el-button
                   v-hasPermi="['system:menu:remove']"
                   size="mini"
                   type="text"
                   icon="el-icon-s-promotion"
                   @click="handleDispatch(row)"
-                >派单</el-button>
+                >指派</el-button>
 
                 <el-button
                   v-hasPermi="['system:menu:edit']"
@@ -311,12 +320,20 @@
                   @click="handleReadjustPrices(row)"
                 >调价</el-button>
                 <el-button
+                  v-if="false"
                   v-hasPermi="['system:menu:remove']"
                   size="mini"
                   type="text"
                   icon="el-icon-document"
                   @click="handleShenhe(row)"
                 >审核</el-button>
+                <el-button
+                  v-hasPermi="['system:menu:remove']"
+                  size="mini"
+                  type="text"
+                  icon="el-icon-document"
+                  @click="handleclone(row)"
+                >复制</el-button>
               </template>
             </RefactorTable>
 
@@ -342,15 +359,17 @@
 
     <!-- 价格调整 -->
     <el-dialog :title="'费用调价'" :visible.sync="openPriceAdjustment" width="900px" append-to-body>
-      <price-adjustment />
+      <price-adjustment :mytabs="tabs" :order-code="orderCode" @submitRes="submitRes" />
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { getOrderInfoList, delOrder, loadAndUnloadingGoods, exportOrder } from '@/api/order/manage';
+import { listManagesApi, getOrderInfoList, delOrder, loadAndUnloadingGoods, exportOrder } from '@/api/order/manage';
+import { getOrderByCode } from '@/api/order/release';
+
 import OpenDialog from './component/OpenDialog';
-import tableColumnsConfig from './data/config-index';
+// import tableColumnsConfig from './data/config-index';
 
 import PriceAdjustment from './component/PriceAdjustment';
 export default {
@@ -359,7 +378,8 @@ export default {
   data() {
     return {
       openPriceAdjustment: false,
-
+      tabs: [],
+      orderCode: '',
       // 树形数据
       data: [],
 
@@ -376,7 +396,7 @@ export default {
       // 总条数
       total: 0,
       // 表格数据
-      list: [{ id: 1 }],
+      list: [],
       // 是否显示弹出层-派送
       openDispatch: false,
       dispatch: null,
@@ -405,7 +425,7 @@ export default {
       // 弹框title
       title: '',
       // 表头动态值
-      tableColumnsConfig,
+      tableColumnsConfig: [],
       // 订单状态字典
       statusOptions: [
         { dictLabel: '启用', dictValue: '0' },
@@ -527,7 +547,7 @@ export default {
         destinationAndPhoneAndMember: this.queryParams.tin3, //	收货信息	query	false
         driverId: undefined, //	(司机id)查询自己公司的货源	query	false
         endTime: this.queryParams.tin10[1], //	结束时间	query	false
-        goodsBigType: this.queryParams.tin4, //	货物类型大类	query	false
+        goodsType: this.queryParams.tin4, //	货物类型大类	query	false
         goodsName: this.queryParams.tin5, //	货物描述(名称)	query	false
         isShare: this.queryParams.tin9, //	是否拼单	query	false
         mainOrderNumber: this.queryParams.tin7, //	货源单号	query	false
@@ -537,17 +557,32 @@ export default {
         pageSize: this.queryParams.pageSize //	pageSize,示例值(10)	query	false
       };
     }
+
+    // loading	装货信息电话联系人等	query	false
+
+    // projectCode	项目code	query	false
+
+    // receiving	收货信息电话联系人等	query	false
+
+    // remark	备注	query	false
+
   },
 
   created() {
-    this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || this.tableColumnsConfig;
-    this.getList();
-
+    this.tableHeaderConfig(this.tableColumnsConfig, listManagesApi, {
+      prop: 'edit',
+      isShow: true,
+      label: '操作',
+      width: 180,
+      fixed: 'right'
+    });
+    // this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || this.tableColumnsConfig;
     this.getDict();
+    this.getList();
   },
   methods: {
     /** 获取首页字典值 */
-    getDict(dictType, dictPid) {
+    getDict() {
       this.listByDict({
         dictPid: '0',
         dictType: 'goodsType'
@@ -603,7 +638,7 @@ export default {
     },
     /** 上下架货源 */
     loadAndUnloading(row) {
-      const msg = row.status === '1' ? '启用' : '禁用';
+      const msg = row.status === '1' ? '上架' : '下架';
       const data = {
         'orderCode': row.code,
         'status': row.status === '0' ? 1 : 0
@@ -649,29 +684,367 @@ export default {
     },
     /** 关闭按钮操作 */
     handleClose(row) {
-      const testIds = row.code;
+      // const testIds = row.code;
       // 操作关闭按钮，规则：货单状态改为【下架】并且无法新建运单，且原运单状态不变。
 
       // 选择提示“是否确认关闭该货源单，关闭后无法司机无法再继续接单。但运输中的运单则继续进行”；
 
       const msg = '是否确认关闭该货源单，关闭后无法司机无法再继续接单。但运输中的运单则继续进行';
+
+      // const msg = row.status === '1' ? '上架' : '下架';
+      const data = {
+        'orderCode': row.code,
+        'status': '1'
+      };
       this.$confirm(msg, '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
         // 关闭接口
-        console.log('关闭');
-
-        return delOrder(testIds);
+        // console.log('关闭');
+        return loadAndUnloadingGoods(data);
       }).then(() => {
         this.getList();
-        this.msgSuccess('删除成功');
+        this.msgSuccess('关闭成功');
       });
     },
     /** 调价操作 */
-    handleReadjustPrices(row) {
-      const testIds = row.code;
+    async handleReadjustPrices(row) {
+      // console.log(row);
+
+      // const testIds = row.code;
+
+      // 1 在这里获取详情
+
+      // const { data } = await getOrderByCode(row.code);
+      // console.log(data);
+
+      const data = {
+        'redisOrderInfoVo': {
+          'code': '077acc62236f438eab5e93f88a6c1e88',
+          'branchCode': null,
+          'mainOrderNumber': '2104061658561871',
+          'shipperFactoryCode': null,
+          'projectCode': '',
+          'isReturn': null,
+          'isReturnMoney': 0,
+          'loadingTime': null,
+          'isPay': 0,
+          'paymentCode': null,
+          'isTop': 0,
+          'isTrunk': 0,
+          'isShare': 0,
+          'isShipperConfirm': 0,
+          'isInsure': null,
+          'effectiveHour': null,
+          'cashDeposit': null,
+          'goodsPrice': null,
+          'billingType': null,
+          'importType': '0',
+          'orderType': null,
+          'isDel': 0,
+          'status': 0,
+          'createCode': 'ca8b3f3528a34365b41ad4cdb2074f67',
+          'createTime': '2021-04-06 16:58:56.567',
+          'updateCode': null,
+          'updateTime': null,
+          'isSpecified': 0,
+          'remark': '13123',
+          'pubilshCode': '80ceee84f9d34ed69a8467b2970f1c2b',
+          'classCode': null,
+          'isPublic': 1,
+          'loadType': '1',
+          'businessType': null
+        },
+        'redisOrderClassGoodsVoList': [
+          {
+            'code': 'f4107022c7c543919684d026a59d5321',
+            'classCode': '',
+            'orderCode': '077acc62236f438eab5e93f88a6c1e88',
+            'createCode': '80ceee84f9d34ed69a8467b2970f1c2b',
+            'createTime': '2021-04-06 16:58:56.58',
+            'updateCode': null,
+            'updateTime': null,
+            'isDel': 0
+          }
+        ],
+        'redisOrderGoodsVoList': [
+          {
+            'code': '9e29282dac9f4e67b29ed4ca80a0533c',
+            'orderCode': '077acc62236f438eab5e93f88a6c1e88',
+            'goodsBigType': '0100',
+            'totalType': null,
+            'goodsType': '010001',
+            'goodsName': '煤炭',
+            'goodsUnit': null,
+            'weight': null,
+            'perWeight': null,
+            'shipmentPrice': null,
+            'goodsPrice': 1000,
+            'vehicleType': '',
+            'vehicleLength': '',
+            'priceWastage': null,
+            'isOneselfLoad': null,
+            'isModifyFinish': null,
+            'isOneselfUnload': null,
+            'balanceRuleCode': null,
+            'vehicleMaxWeight': 110000,
+            'number': 0,
+            'businessType': null,
+            'isDel': null,
+            'stowageStatus': '0'
+          }
+        ],
+        'redisOrderSpecifiedVoList': [],
+        'redisAddressList': [
+          {
+            'id': null,
+            'code': 'a0d5b7286f3948ea93a5fd10f4c14324',
+            'orderCode': '077acc62236f438eab5e93f88a6c1e88',
+            'addressType': '1',
+            'country': '中国',
+            'province': '福建省',
+            'city': '福州市',
+            'cityCode': '3501',
+            'district': '台江区',
+            'street': null,
+            'districtCode': '350103',
+            'location': [
+              '119.358265',
+              '26.045794'
+            ],
+            'localtionOld': '(119.358265,26.045794)',
+            'detail': '120',
+            'contact': '小红',
+            'contactPhone': '18650451524',
+            'addressAlias': '富',
+            'provinceCode': '35',
+            'addressName': '富邦总部大楼',
+            'redisOrderFreightVoList': null,
+            'orderFreightVo': null,
+            'isDel': 0
+          },
+          {
+            'id': null,
+            'code': 'e9127cf979a94b1e946a413a5d6b9bd3',
+            'orderCode': '077acc62236f438eab5e93f88a6c1e88',
+            'addressType': '2',
+            'country': '中国',
+            'province': '天津市',
+            'city': '天津市',
+            'cityCode': '1201',
+            'district': '滨海新区',
+            'street': null,
+            'districtCode': '120116',
+            'location': [
+              '117.818263',
+              '39.000665'
+            ],
+            'localtionOld': '(117.818263,39.000665)',
+            'detail': null,
+            'contact': '1213',
+            'contactPhone': '18588888888',
+            'addressAlias': null,
+            'provinceCode': '12',
+            'addressName': '富俊发超市',
+            'redisOrderFreightVoList': null,
+            'orderFreightVo': null,
+            'isDel': 0
+          }
+        ],
+        'redisOrderFreightInfoVoList': [
+          {
+            'goodsCode': '9e29282dac9f4e67b29ed4ca80a0533c',
+            'redisOrderAddressInfoVoList': [
+              {
+                'addressCode': 'a0d5b7286f3948ea93a5fd10f4c14324:e9127cf979a94b1e946a413a5d6b9bd3',
+                'redisOrderFreightVoList': [
+                  {
+                    'code': 'e6f8af83c7e54e6d923fa589b4069ca7',
+                    'orderCode': '077acc62236f438eab5e93f88a6c1e88',
+                    'orderGoodsCode': '9e29282dac9f4e67b29ed4ca80a0533c',
+                    'ruleDetailShipmentCode': null,
+                    'ruleItemCode': '17',
+                    'ruleValue': '200',
+                    'type': null,
+                    'createCode': '80ceee84f9d34ed69a8467b2970f1c2b',
+                    'createTime': '2021-04-06 16:58:56.709',
+                    'updateCode': null,
+                    'updateTime': null,
+                    'isDel': 0,
+                    'orderAddressCode': 'a0d5b7286f3948ea93a5fd10f4c14324',
+                    'addressUnloadingCode': 'e9127cf979a94b1e946a413a5d6b9bd3',
+                    'ruleCode': '1'
+                  },
+                  {
+                    'code': 'f4ea59fb37ef458c8f700eb08f33d125',
+                    'orderCode': '077acc62236f438eab5e93f88a6c1e88',
+                    'orderGoodsCode': '9e29282dac9f4e67b29ed4ca80a0533c',
+                    'ruleDetailShipmentCode': '6fb20504191e4e9e8a5a4cd7b5a791db',
+                    'ruleItemCode': '18',
+                    'ruleValue': '1',
+                    'type': 2,
+                    'createCode': '80ceee84f9d34ed69a8467b2970f1c2b',
+                    'createTime': '2021-04-06 16:58:56.72',
+                    'updateCode': null,
+                    'updateTime': null,
+                    'isDel': 0,
+                    'orderAddressCode': 'a0d5b7286f3948ea93a5fd10f4c14324',
+                    'addressUnloadingCode': 'e9127cf979a94b1e946a413a5d6b9bd3',
+                    'ruleCode': '1'
+                  },
+                  {
+                    'code': '97d997d0498f4039ada2020e07a24d65',
+                    'orderCode': '077acc62236f438eab5e93f88a6c1e88',
+                    'orderGoodsCode': '9e29282dac9f4e67b29ed4ca80a0533c',
+                    'ruleDetailShipmentCode': 'bdb85178c91046279a72f4d6cd9c8b8c',
+                    'ruleItemCode': '2',
+                    'ruleValue': '[-300,300]',
+                    'type': null,
+                    'createCode': '80ceee84f9d34ed69a8467b2970f1c2b',
+                    'createTime': '2021-04-06 16:58:56.736',
+                    'updateCode': null,
+                    'updateTime': null,
+                    'isDel': 0,
+                    'orderAddressCode': 'a0d5b7286f3948ea93a5fd10f4c14324',
+                    'addressUnloadingCode': 'e9127cf979a94b1e946a413a5d6b9bd3',
+                    'ruleCode': '1'
+                  }
+                ],
+                'orderFreightVo': {
+                  'lossList': [
+                    {
+                      'id': 2422,
+                      'code': '97d997d0498f4039ada2020e07a24d65',
+                      'orderCode': '077acc62236f438eab5e93f88a6c1e88',
+                      'orderGoodsCode': '9e29282dac9f4e67b29ed4ca80a0533c',
+                      'ruleItemCode': '2',
+                      'orderAddressCode': 'a0d5b7286f3948ea93a5fd10f4c14324',
+                      'ruleValue': '[-300,300]',
+                      'type': null,
+                      'cnName': '路耗 容忍值',
+                      'enName': 'LOSS_TOLERANCE',
+                      'showType': 2,
+                      'dictCode': null,
+                      'ruleType': 1,
+                      'dictLabel': null,
+                      'unit': null,
+                      'ruleCode': '1'
+                    }
+                  ],
+                  'detailList': [
+                    {
+                      'id': 2421,
+                      'code': 'f4ea59fb37ef458c8f700eb08f33d125',
+                      'orderCode': '077acc62236f438eab5e93f88a6c1e88',
+                      'orderGoodsCode': '9e29282dac9f4e67b29ed4ca80a0533c',
+                      'ruleItemCode': '18',
+                      'orderAddressCode': 'a0d5b7286f3948ea93a5fd10f4c14324',
+                      'ruleValue': '1',
+                      'type': '2',
+                      'cnName': '抹零规则',
+                      'enName': 'M0',
+                      'showType': 3,
+                      'dictCode': 'M0',
+                      'ruleType': 0,
+                      'dictLabel': null,
+                      'unit': null,
+                      'ruleCode': '1'
+                    },
+                    {
+                      'id': 2420,
+                      'code': 'e6f8af83c7e54e6d923fa589b4069ca7',
+                      'orderCode': '077acc62236f438eab5e93f88a6c1e88',
+                      'orderGoodsCode': '9e29282dac9f4e67b29ed4ca80a0533c',
+                      'ruleItemCode': '17',
+                      'orderAddressCode': 'a0d5b7286f3948ea93a5fd10f4c14324',
+                      'ruleValue': '200',
+                      'type': null,
+                      'cnName': '运费单价',
+                      'enName': 'FREIGHT_COST',
+                      'showType': 1,
+                      'dictCode': null,
+                      'ruleType': 2,
+                      'dictLabel': null,
+                      'unit': null,
+                      'ruleCode': '1'
+                    }
+                  ]
+                },
+                'ruleCode': '1'
+              }
+            ]
+          }
+        ]
+      };
+
+      // 2 包装成需要的数据
+
+      // 2-1 如何获取 商品的名称??
+      // 2-2 如何获取 地址a到b
+      const { redisOrderFreightInfoVoList, redisOrderGoodsVoList, redisAddressList } = data;
+      const tabs = redisOrderFreightInfoVoList.map((e, index) => {
+        redisOrderGoodsVoList.forEach(ee => {
+          if (ee.code === e.goodsCode) {
+            e.goodsCode = ee.code;
+            e.goodsType = ee.goodsType;
+            e.goodsName = ee.goodsName;
+            e.goodsPrice = ee.goodsPrice;
+          }
+        });
+
+        const redis = e.redisOrderAddressInfoVoList.map(eee => {
+          const tin_names = [];
+          const addresscodes = eee.addressCode.split(':');
+
+
+          redisAddressList.forEach(address => {
+            if (address.code === addresscodes[0]) {
+              tin_names.unshift(address.addressName);
+            }
+            if (address.code === addresscodes[1]) {
+              tin_names.push(address.addressName);
+            }
+          });
+
+          return {
+            addressIdentification: eee.addressCode,
+            tin_name: tin_names.join('--'), // 地址a到b 显示
+            ruleCode: eee.ruleCode, // 下拉规则的的值(会改)
+            ruleDictValue: '1', // 计算规则的值
+            orderFreightVo: eee.orderFreightVo
+          };
+        });
+
+        // console.log(redis, '规格处理----');
+        return {
+          dictLabel: e.goodsName, // 展示tab
+          activeName: index + '', // 切换tab
+          goodsPrice: e.goodsPrice, // 商品价格??
+          goodsType: e.goodsType, // 商品divtValue
+          goodsCode: e.goodsCode,
+          redis,
+          // [{ // 地址1 对应的其他的规则
+          //   tin_name: 'A--B', // 地址a到b 显示
+          //   ruleCode: '1', // 下拉规则的的值(会改)
+          //   ruleDictValue: '1', // 计算规则的值
+          //   orderFreightVo: { // 显示具体规则的值
+          //     'lossList': [
+          //     ],
+          //     'detailList': [
+          //     ]
+          //   }}],
+          newRedis: [] // 这个是封装返回的时候使用
+        };
+      });
+
+      console.log(tabs, '封装好的tab');
+      // 3 传入组件
+      this.tabs = tabs;
+      this.orderCode = row.code;
+
+
       // 打开调价框
       this.openPriceAdjustment = true;
     },
@@ -690,6 +1063,16 @@ export default {
     handleShenhe(row) {
       this.openDispatch = true;
       this.dispatch = row;
+    },
+    /** 复制 */
+    handleclone(row) {
+      // this.openDispatch = true;
+      // this.dispatch = row;
+      console.log('这个是复制啥?? ', row);
+    },
+    /** 关闭 */
+    submitRes(res) {
+      this.openPriceAdjustment = false;
     }
   }
 };

@@ -1,17 +1,17 @@
 <template>
   <div>
-    <!-- <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="100px" class="clearfix">
-      <el-form-item label="转货地址" prop="testName">
+    <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="100px" class="clearfix" @submit.native.prevent>
+      <el-form-item label="关键字" prop="keywords">
         <el-input
-          v-model="queryParams.testName"
-          placeholder="请输入公司名称/客户姓名/手机号"
+          v-model="queryParams.keywords"
+          placeholder="请输入关键字"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
 
-      <el-form-item label="转货电话" prop="testName1">
+      <!-- <el-form-item label="转货电话" prop="testName1">
         <el-input
           v-model="queryParams.testName1"
           placeholder="装货地/装货电话/装货人"
@@ -29,7 +29,7 @@
           size="small"
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
 
 
       <el-form-item class="fr">
@@ -37,7 +37,7 @@
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
 
       </el-form-item>
-    </el-form> -->
+    </el-form>
 
     <!-- <div class="mb8">
       <tablec-cascader v-model="tableColumnsConfig" :options="options" />
@@ -143,11 +143,13 @@ export default {
       // 表格数据
       list_listDriver: [],
       queryParams_listDriver: {
+        keywords: undefined,
         pageNum: 1,
         pageSize: 10
       },
       list_listInfo: [],
       queryParams_listInfo: {
+        keywords: undefined,
         pageNum: 1,
         pageSize: 10
       },
@@ -181,6 +183,7 @@ export default {
     actionIndex: {
       handler(value) {
         if (!value) return;
+
         this.activeName = value === '2' ? 'listDriver' : 'listInfo';
       },
       immediate: true
@@ -188,6 +191,7 @@ export default {
   },
   created() {
     this.getList();
+    console.log(this.dispatch);
   },
 
   methods: {
@@ -231,17 +235,20 @@ export default {
 
     /** 切换操作 */
     handleClick(value) {
+      // console.log(this.activeName);
+
       !this.list_listDriver.length && this.getList();
       !this.list_listInfo.length && this.getList();
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      // this.queryParams.pageNum = 1;
+      this.queryParams.pageNum = 1;
+      this.getList();
     },
     /** 重置按钮操作 */
     resetQuery() {
-      // this.resetForm('queryForm');
-      // this.handleQuery();
+      this.resetForm('queryForm');
+      this.handleQuery();
     },
 
     handleUpdate() {
@@ -278,7 +285,14 @@ export default {
       } else {
         // dispatch 有值是manage组件调用的
         if (bool) {
-          const orderSpecifiedList = this.ids.map(e => {
+          let arr = [];
+          if (this.activeName === 'listDriver') {
+            arr = this.ids;
+          } else {
+            arr = (this.list_listInfo.filter(e => e.id === this.radio)).map(e => e.code);
+          }
+
+          const orderSpecifiedList = arr.map(e => {
             if (this.activeName === 'listDriver') {
               return {
                 'driverInfoCode': e,
