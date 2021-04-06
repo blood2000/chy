@@ -220,39 +220,39 @@
         <el-row>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">驾驶证</p>
-            <upload-image v-model="form.driverLicenseImage" />
+            <upload-image v-model="form.driverLicenseImage" :disabled="disable" />
           </el-col>
           <el-col v-show="form.driverType===1" :span="7" class="mb">
             <p class="upload-image-label">行驶证</p>
-            <upload-image v-model="form.driverOtherLicenseImage" />
+            <upload-image v-model="form.driverOtherLicenseImage" :disabled="disable" />
           </el-col>
           <el-col v-show="form.driverType===1" :span="7" class="mb">
             <p class="upload-image-label">行驶证副页</p>
-            <upload-image v-model="form.driverOtherLicenseBackImage" />
+            <upload-image v-model="form.driverOtherLicenseBackImage" :disabled="disable" />
           </el-col>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">身份证正面照</p>
-            <upload-image v-model="form.identificationImage" />
+            <upload-image v-model="form.identificationImage" :disabled="disable" />
           </el-col>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">身份证反面照</p>
-            <upload-image v-model="form.identificationBackImage" />
+            <upload-image v-model="form.identificationBackImage" :disabled="disable" />
           </el-col>
           <el-col v-show="form.driverType===1" :span="7" class="mb">
             <p class="upload-image-label">道路运输许可证</p>
-            <upload-image v-model="form.transportPermitImage" />
+            <upload-image v-model="form.transportPermitImage" :disabled="disable" />
           </el-col>
           <el-col v-show="form.driverType===1" :span="7">
             <p class="upload-image-label">车头正面照</p>
-            <upload-image v-model="vehicleForm.vehicleImage" />
+            <upload-image v-model="vehicleForm.vehicleImage" :disabled="disable" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">司机照片</p>
-            <upload-image v-model="form.peopleImage" />
+            <upload-image v-model="form.peopleImage" :disabled="disable" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">从业资格证</p>
-            <upload-image v-model="form.workLicenseImage" />
+            <upload-image v-model="form.workLicenseImage" :disabled="disable" />
           </el-col>
         </el-row>
       </el-form-item>

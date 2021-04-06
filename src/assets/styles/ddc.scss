@@ -243,6 +243,11 @@
 	margin-right: 5px;
 }
 
+/* 查看图片样式 */
+.viewer-container{
+	z-index: 9999 !important;
+}
+
 /* 表单禁用样式覆盖 */
 // .el-input.is-disabled .el-input__inner,
 // .el-radio__input.is-disabled .el-radio__inner,

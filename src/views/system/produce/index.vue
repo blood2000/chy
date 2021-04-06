@@ -46,7 +46,7 @@
           @click="handleUpdate"
         >修改</el-button>
       </el-col>
-     <!-- <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button
           v-hasPermi="['system:produce:remove']"
           type="danger"
@@ -63,7 +63,7 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="产品名称" align="center" prop="cnName" />
       <el-table-column label="英文名" align="center" prop="enName" />
-      <el-table-column label="状态" align="center" prop="delFlag" >
+      <el-table-column label="状态" align="center" prop="delFlag">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.delFlag"

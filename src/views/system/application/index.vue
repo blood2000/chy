@@ -90,7 +90,7 @@
       <el-table-column label="应用名称" align="center" prop="cnName" />
       <el-table-column label="英文名称" align="center" prop="enName" />
       <el-table-column label="产品名称" align="center" prop="produceEnName" />
-      <el-table-column label="状态" align="center" prop="delFlag" >
+      <el-table-column label="状态" align="center" prop="delFlag">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.delFlag"

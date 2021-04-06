@@ -12,7 +12,10 @@
       :headers="headers"
       style="display: inline-block; vertical-align: top"
     >
-      <img v-if="value" :src="attachUrl" class="avatar">
+      <img v-if="value && !disabled" :src="attachUrl" class="avatar">
+      <viewer v-else-if="value && disabled" class="avatar">
+        <img :src="attachUrl" class="avatar">
+      </viewer>
       <i v-else class="el-icon-plus avatar-uploader-icon" />
     </el-upload>
   </div>
@@ -28,6 +31,10 @@ export default {
     value: {
       type: String,
       default: ''
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

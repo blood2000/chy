@@ -80,7 +80,7 @@
           @click="handleUpdate"
         >修改</el-button>
       </el-col>
-     <!-- <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button
           v-hasPermi="['system:post:remove']"
           type="danger"
@@ -108,7 +108,7 @@
       <el-table-column label="产品名称" align="center" prop="produceName" />
       <el-table-column label="应用名称" align="center" prop="appName" />
       <el-table-column label="更新说明" align="center" prop="updateRemark" />
-      <el-table-column label="状态" align="center" prop="delFlag" >
+      <el-table-column label="状态" align="center" prop="delFlag">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.delFlag"
@@ -118,7 +118,7 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="是否更新" align="center" prop="isForce" >
+      <el-table-column label="是否更新" align="center" prop="isForce">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.isForce"
@@ -128,7 +128,7 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="强制更新" align="center" prop="isUpdate" >
+      <el-table-column label="强制更新" align="center" prop="isUpdate">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.isUpdate"
