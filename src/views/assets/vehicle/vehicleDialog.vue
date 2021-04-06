@@ -2,9 +2,6 @@
   <!-- 添加或修改车辆对话框 -->
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
-      <!-- <el-form-item label="编码" prop="code">
-		    <el-input v-model="form.code" placeholder="请输入编码" />
-		  </el-form-item> -->
       <el-form-item label="名称" prop="licenseNumber">
         <el-input v-model="form.licenseNumber" placeholder="请输入名称" class="width90" clearable />
       </el-form-item>
@@ -188,20 +185,8 @@
         </el-select>
       </el-form-item>
       <el-form-item label="车头正面照">
-        <uploadImage v-model="form.vehicleImage" />
+        <upload-image v-model="form.vehicleImage" :disabled="disable" />
       </el-form-item>
-      <!-- <el-form-item label="创建人" prop="createCode">
-		    <el-input v-model="form.createCode" placeholder="请输入创建人" />
-		  </el-form-item> -->
-      <!-- <el-form-item label="更新人" prop="updateCode">
-		    <el-input v-model="form.updateCode" placeholder="请输入更新人" />
-		  </el-form-item>
-		  <el-form-item label="是否删除" prop="delFlag">
-		    <el-input v-model="form.delFlag" placeholder="请输入是否删除(0正常1删除)" />
-		  </el-form-item> -->
-      <!-- <el-form-item label="主键" prop="id">
-		    <el-input v-model="form.id" placeholder="请输入主键" />
-		  </el-form-item> -->
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" @click="submitForm">确 定</el-button>
