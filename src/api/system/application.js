@@ -7,7 +7,13 @@ export function listApplication(query) {
     params: query
   });
 }
-
+export function listAll(query) {
+  return request({
+    url: '/system/application/listAll',
+    method: 'get',
+    params: query
+  });
+}
 export function list(query) {
   return request({
     url: '/system/application/list',

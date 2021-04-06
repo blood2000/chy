@@ -256,7 +256,7 @@
                 show-checkbox
                 node-key="code"
                 :check-strictly="!form.menuCheckStrictly"
-                empty-text="加载中，请稍后"
+                empty-text="暂无数据"
                 :props="defaultProps"
               />
             </el-col>
@@ -303,7 +303,7 @@
             default-expand-all
             node-key="code"
             :check-strictly="!form.deptCheckStrictly"
-            empty-text="加载中，请稍后"
+            empty-text="暂无数据"
             :props="defaultProps"
           />
         </el-form-item>
@@ -518,8 +518,8 @@ export default {
       return checkedKeys;
     },
     /** 根据角色ID查询菜单树结构 */
-    getRoleMenuTreeselect(data) {
-      return roleMenuTreeselect(data).then(response => {
+    getRoleMenuTreeselect(roleId, data) {
+      return roleMenuTreeselect(roleId, data).then(response => {
         this.menuOptions = response.menus;
         return response;
       });
@@ -642,14 +642,13 @@ export default {
       this.reset();
       this.getVersionTreeselect();
       const roleId = row.roleId || this.ids;
-      const roleMenu = this.getRoleMenuTreeselect({ roleId: roleId });
+      const roleMenu = this.getRoleMenuTreeselect(roleId, null);
       this.getProduceList();
       getRole(roleId).then(response => {
         this.form = response.data;
         this.open = true;
         this.$nextTick(() => {
           roleMenu.then(res => {
-            console.log(res.checkedKeys);
             this.$refs.menu.setCheckedKeys(res.checkedKeys);
           });
         });
@@ -756,8 +755,7 @@ export default {
         params.versionCode = data.code;
       }
       if (this.form.roleId !== undefined) {
-        params.roleId = this.form.roleId;
-        const roleMenu = this.getRoleMenuTreeselect(params);
+        const roleMenu = this.getRoleMenuTreeselect(this.form.roleId, params);
         roleMenu.then(res => {
           this.$refs.menu.setCheckedKeys(res.checkedKeys);
         });

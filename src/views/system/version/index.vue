@@ -176,7 +176,7 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="120px">
         <el-form-item label="应用名称" prop="appCode">
           <el-select
-            v-model="queryParams.appCode"
+            v-model="form.appCode"
             placeholder="应用名称"
             clearable
             filterable
@@ -236,7 +236,7 @@
 <script>
 import { list, getVersion, addVersion, updateVersion, changeStatus, changeForce, changeUpdate } from '@/api/system/appVersion';
 import { listProduce } from '@/api/system/produce';
-import { listApplication } from '@/api/system/application';
+import { listAll } from '@/api/system/application';
 
 export default {
   name: 'Post',
@@ -300,6 +300,8 @@ export default {
   },
   created() {
     this.getList();
+    this.getProduceList();
+    this.getApplicationList();
   },
   methods: {
     /** 产品列表 */
@@ -310,7 +312,7 @@ export default {
     },
     /** 应用列表 **/
     getApplicationList(data) {
-      listApplication(data).then(response => {
+      listAll(data).then(response => {
         this.appList = response.data;
       });
     },
@@ -411,7 +413,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
-        return changeStatus(row.appVersionCode, row.isUpdate);
+        return changeUpdate(row.appVersionCode, row.isUpdate);
       }).then(() => {
         this.msgSuccess(text + '成功');
       }).catch(function() {
@@ -425,7 +427,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
-        return changeStatus(row.appVersionCode, row.isForce);
+        return changeForce(row.appVersionCode, row.isForce);
       }).then(() => {
         this.msgSuccess(text + '成功');
       }).catch(function() {
