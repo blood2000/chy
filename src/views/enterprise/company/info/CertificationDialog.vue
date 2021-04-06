@@ -76,24 +76,22 @@
             <p class="upload-image-label">本人手持身份证正面</p>
             <upload-image v-model="form.identificationInhandImg" />
           </el-col>
-          <template v-if="form.shipperType === 1">
-            <el-col :span="7" class="mt">
-              <p class="upload-image-label">法人身份证正面照</p>
-              <upload-image v-model="form.artificialIdentificationImg" />
-            </el-col>
-            <el-col :span="7" class="mt">
-              <p class="upload-image-label">法人身份证背面照</p>
-              <upload-image v-model="form.artificialIdentificationBackImg" />
-            </el-col>
-            <el-col :span="7" class="mt">
-              <p class="upload-image-label">法人手持身份证照</p>
-              <upload-image v-model="form.artificialIdentificationInhandImg" />
-            </el-col>
-            <el-col :span="7" class="mt">
-              <p class="upload-image-label">营业执照照</p>
-              <upload-image v-model="form.businessLicenseImg" />
-            </el-col>
-          </template>
+          <el-col v-show="form.shipperType === 1" :span="7" class="mt">
+            <p class="upload-image-label">法人身份证正面照</p>
+            <upload-image v-model="form.artificialIdentificationImg" />
+          </el-col>
+          <el-col v-show="form.shipperType === 1" :span="7" class="mt">
+            <p class="upload-image-label">法人身份证背面照</p>
+            <upload-image v-model="form.artificialIdentificationBackImg" />
+          </el-col>
+          <el-col v-show="form.shipperType === 1" :span="7" class="mt">
+            <p class="upload-image-label">法人手持身份证照</p>
+            <upload-image v-model="form.artificialIdentificationInhandImg" />
+          </el-col>
+          <el-col v-show="form.shipperType === 1" :span="7" class="mt">
+            <p class="upload-image-label">营业执照照</p>
+            <upload-image v-model="form.businessLicenseImg" />
+          </el-col>
         </el-row>
       </el-form-item>
     </el-form>
@@ -175,7 +173,7 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid && flag) {
           /* if (this.form.shipperType === 1 && (!this.form.businessLicenseImg || this.form.businessLicenseImg === '')) {
-            this.$message({ showClose: true, message: '请上传营业执照照', type: 'warning' });
+            this.msgWarning('请上传营业执照照');
             return;
           }*/
           if (this.form.identificationEffective) {

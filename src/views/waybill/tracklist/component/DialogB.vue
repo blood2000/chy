@@ -6,8 +6,8 @@
         <el-input v-model="form.wayBillNo" class="width90" disabled />
       </el-form-item>
       <!-- 多图框 -->
-      <el-form-item label="照片" prop="sceneImg">
-        <uploadImage v-model="form.attachmentCode" @input="handleUploadSuccess" />
+      <el-form-item label="照片" prop="attachmentCode">
+        <uploadImage v-model="form.attachmentCode" @chooseImg="handleUploadSuccess" />
       </el-form-item>
       <el-form-item label="投诉说明" prop="description">
         <el-input
@@ -49,9 +49,7 @@ export default {
       // 表单参数
       form: {
         description: undefined,
-        attachmentCode: [
-          { url: '' }
-        ],
+        attachmentCode: undefined,
         wayBillCode: undefined,
         wayBillNo: undefined
       },
@@ -113,7 +111,7 @@ export default {
 
     // 图片上传成功会掉
     handleUploadSuccess() {
-      console.log('添加图片成功 动态加一项');
+      // console.log('添加图片成功 动态加一项');
     }
   }
 };

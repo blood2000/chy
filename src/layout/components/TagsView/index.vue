@@ -1,6 +1,6 @@
 <template>
   <div id="tags-view-container" ref="TagsViewContainer" class="tags-view-container">
-    <div class="tags-view-wrapper">
+    <scroll-pane ref="scrollPane" class="tags-view-wrapper" @scroll="handleScroll">
       <router-link
         v-for="tag in visitedViews"
         ref="tag"
@@ -16,9 +16,9 @@
         {{ tag.title }}
         <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
       </router-link>
-    </div>
+    </scroll-pane>
 
-    <el-dropdown ref="TagsDerpDown" class="btn-arrow-container" trigger="click">
+    <!-- <el-dropdown ref="TagsDerpDown" class="btn-arrow-container" trigger="click">
       <div class="btn-arrow el-icon-arrow-down" />
       <el-dropdown-menu slot="dropdown" class="tags-dropdown">
         <router-link
@@ -36,7 +36,7 @@
         </router-link>
         <el-dropdown-item v-show="overflowTagsList.length==0" disabled>暂无更多</el-dropdown-item>
       </el-dropdown-menu>
-    </el-dropdown>
+    </el-dropdown> -->
 
     <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
       <li @click="refreshSelectedTag(selectedTag)">刷新页面</li>
@@ -49,8 +49,10 @@
 
 <script>
 import path from 'path';
-import { ThrottleFun } from '@/utils/index.js';
+import ScrollPane from './ScrollPane';
+// import { ThrottleFun } from '@/utils/index.js';
 export default {
+  components: { ScrollPane },
   data() {
     return {
       visible: false,
@@ -76,9 +78,9 @@ export default {
     $route() {
       this.addTags();
       this.moveToCurrentTag();
-      this.$nextTick(() => {
-        this.tagsOverflow();
-      });
+      // this.$nextTick(() => {
+      //   this.tagsOverflow();
+      // });
     },
     visible(value) {
       if (value) {
@@ -91,18 +93,18 @@ export default {
   mounted() {
     this.initTags();
     this.addTags();
-    this.$nextTick(() => {
-      this.tagsOverflow();
-    });
-    const throttle = ThrottleFun(this.tagsOverflow, 300);
-    window.onresize = () => {
-      this.$refs.TagsDerpDown.hide();
-      throttle();
-    };
+    // this.$nextTick(() => {
+    //   this.tagsOverflow();
+    // });
+    // const throttle = ThrottleFun(this.tagsOverflow, 300);
+    // window.onresize = () => {
+    //   this.$refs.TagsDerpDown.hide();
+    //   throttle();
+    // };
   },
-  beforeDestroy() {
-    window.onresize = null;
-  },
+  // beforeDestroy() {
+  //   window.onresize = null;
+  // },
   methods: {
     isActive(route) {
       return route.path === this.$route.path;
@@ -159,6 +161,7 @@ export default {
       this.$nextTick(() => {
         for (const tag of tags) {
           if (tag.to.path === this.$route.path) {
+            this.$refs.scrollPane.moveToTarget(tag);
             // when query is different then update
             if (tag.to.fullPath !== this.$route.fullPath) {
               this.$store.dispatch('tagsView/updateVisitedView', this.$route);
@@ -184,12 +187,12 @@ export default {
           this.toLastView(visitedViews, view);
         }
       });
-      this.$nextTick(() => {
-        this.tagsOverflow();
-        if (this.overflowTagsList.length === 0) {
-          this.$refs.TagsDerpDown.hide();
-        }
-      });
+      // this.$nextTick(() => {
+      //   this.tagsOverflow();
+      //   if (this.overflowTagsList.length === 0) {
+      //     this.$refs.TagsDerpDown.hide();
+      //   }
+      // });
     },
     closeOthersTags() {
       this.$router.push(this.selectedTag);
@@ -268,60 +271,44 @@ export default {
 
 <style lang="scss" scoped>
 .tags-view-container {
-  float: left;
-  height: 40px;
-  width: calc(100% - 600px);
-  min-width: 650px;
-  margin-top: 20px;
+  height: 34px;
+  width: 100%;
   background: #fff;
-  border-radius: 8px 8px 0px 0px;
+  border-bottom: 1px solid #d8dce5;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
   .tags-view-wrapper {
-    overflow: hidden;
-    float: left;
-    position: relative;
-    max-width: calc(100% - 44px);
     .tags-view-item {
       display: inline-block;
       position: relative;
       cursor: pointer;
-      height: 40px;
-      line-height: 40px;
-      color: #666666;
+      height: 26px;
+      line-height: 26px;
+      border: 1px solid #d8dce5;
+      color: #495060;
       background: #fff;
-      padding: 0 10px 0 14px;
-      font-size: 14px;
-      border-radius: 8px 8px 0px 0px;
-      &:not(:first-child){
-        &::before{
-          content: '|';
-          position: absolute;
-          left: -1px;
-          top: -1px;
-          color: #CCCCCC;
-          font-size: 14px;
-        }
+      padding: 0 8px;
+      font-size: 12px;
+      margin-left: 5px;
+      margin-top: 4px;
+      &:first-of-type {
+        margin-left: 15px;
       }
-      &:last-child{
-        &::after{
-          content: '|';
-          position: absolute;
-          right: -1px;
-          top: -1px;
-          color: #CCCCCC;
-          font-size: 14px;
-        }
+      &:last-of-type {
+        margin-right: 15px;
       }
       &.active {
         background-color: #42b983;
         color: #fff;
         border-color: #42b983;
-        &::before, &::after{
-          opacity: 0;
-        }
-        &+span{
-          &::before{
-            opacity: 0;
-          }
+        &::before {
+          content: '';
+          background: #fff;
+          display: inline-block;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          position: relative;
+          margin-right: 2px;
         }
       }
     }
@@ -374,15 +361,15 @@ export default {
 @mixin tag-icon-close {
   width: 16px;
   height: 16px;
-  vertical-align: 1px;
+  vertical-align: 2px;
   border-radius: 50%;
   text-align: center;
   transition: all .3s cubic-bezier(.645, .045, .355, 1);
   transform-origin: 100% 50%;
   &:before {
-    transform: scale(.8);
+    transform: scale(.6);
     display: inline-block;
-    vertical-align: -1px;
+    vertical-align: -3px;
   }
   &:hover {
     background-color: #b4bccc;
@@ -397,28 +384,28 @@ export default {
     }
   }
 }
-.tags-dropdown {
-  .tags-dropdown-item-active {
-    position: relative;
-    .el-dropdown-menu__item {
-      color: #409eff;
-      background: rgba(64, 158, 255, 0.1);
-    }
-    // &::after {
-    //   position: absolute;
-    //   top: 0;
-    //   left: 0;
-    //   right: 0;
-    //   bottom: 0;
-    //   content: '';
-    //   pointer-events: none;
-    //   background: $theme;
-    //   opacity: 0.1;
-    // }
-  }
-  .el-icon-close {
-    margin-left: 6px;
-    @include tag-icon-close
-  }
-}
+// .tags-dropdown {
+//   .tags-dropdown-item-active {
+//     position: relative;
+//     .el-dropdown-menu__item {
+//       color: #409eff;
+//       background: rgba(64, 158, 255, 0.1);
+//     }
+//     // &::after {
+//     //   position: absolute;
+//     //   top: 0;
+//     //   left: 0;
+//     //   right: 0;
+//     //   bottom: 0;
+//     //   content: '';
+//     //   pointer-events: none;
+//     //   background: $theme;
+//     //   opacity: 0.1;
+//     // }
+//   }
+//   .el-icon-close {
+//     margin-left: 6px;
+//     @include tag-icon-close
+//   }
+// }
 </style>

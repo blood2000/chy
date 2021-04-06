@@ -19,6 +19,9 @@
 .mr5 {
 	margin-right: 5px;
 }
+.mb0{
+	margin-bottom: 0;
+}
 .mb5 {
 	margin-bottom: 5px;
 }
@@ -238,6 +241,11 @@
 	position: relative;
 	float: right;
 	margin-right: 5px;
+}
+
+/* 查看图片样式 */
+.viewer-container{
+	z-index: 9999 !important;
 }
 
 /* 表单禁用样式覆盖 */

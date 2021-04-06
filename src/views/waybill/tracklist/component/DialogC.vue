@@ -35,7 +35,7 @@
         </el-select>
       </el-form-item> -->
       <el-form-item label="卸货凭证" prop="attachmentCode">
-        <uploadImage v-model="form.attachmentCode" />
+        <uploadImage v-model="form.attachmentCode" :fresh="fresh" :limit="1" @chooseImg="handleUploadSuccess" />
       </el-form-item>
       <el-form-item label="卸货备注" prop="remark">
         <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" :disabled="disable" placeholder="请输入装货备注信息" style="width:90%;" />
@@ -50,7 +50,7 @@
 
 <script>
 import { unload, getInfoDetail, unloadCredentials } from '@/api/waybill/tracklist';
-import UploadImage from '@/components/UploadImage/index';
+import UploadImage from '@/components/UploadImage/moreImg';
 
 export default {
   name: 'DialogC',
@@ -67,6 +67,8 @@ export default {
   },
   data() {
     return {
+      // 图片
+      fresh: false,
       // 地址选择
       waybillAddressOptions: [],
       // 表单参数
@@ -121,7 +123,7 @@ export default {
     // 获取卸货详情
     getDetail() {
       this.reset();
-      getInfoDetail(2, this.waybill.waybillNo).then(response => {
+      getInfoDetail(this.waybill.waybillNo, 2).then(response => {
         console.log(response);
         const info = response.data[0];
         this.unloadinfo = info;
@@ -131,6 +133,7 @@ export default {
         this.form.remark = info.remark;
         // this.form.waybillAddress = info.waybillAddressList[0].orderAddressCode;
         this.form.attachmentCode = info.attachmentCode;
+        this.fresh = true;
       });
     },
     // 获取地址信息
@@ -169,6 +172,7 @@ export default {
     cancel() {
       this.close();
       this.reset();
+      this.fresh = false;
     },
     // 关闭弹窗
     close() {

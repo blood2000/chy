@@ -3,11 +3,11 @@
     <el-upload
       :action="uploadImgUrl"
       accept="image/*"
-      :multiple="true"
       list-type="picture-card"
       :file-list="imageList"
       :headers="headers"
       :limit="limit"
+      :on-exceed="handleExceed"
       :on-preview="handlePictureCardPreview"
       :on-remove="handleRemove"
       :on-success="handleUploadSuccess"
@@ -24,14 +24,20 @@
 
 <script>
 import { getToken } from '@/utils/auth';
+import { getFile } from '@/api/system/image';
 
 export default {
   components: {},
   props: {
-    // value: {
-    //   type: String,
-    //   default: ''
-    // }
+    value: {
+      type: String,
+      default: ''
+    },
+    limit: {
+      type: Number,
+      default: NaN
+    },
+    fresh: Boolean
   },
   data() {
     return {
@@ -48,21 +54,41 @@ export default {
       dialogImageUrl: '',
       dialogVisible: false,
       disabled: false,
-      imageList: [{ name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }, { name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }],
-      limit: 3
+      imageList: [],
+      images: ''
     };
   },
-  watch: {},
+  watch: {
+    fresh(val) {
+      if (val) {
+        console.log(this.value);
+        getFile(this.value).then(response => {
+          console.log(response);
+          this.imageList.push({ url: response.data.attachUrl, code: response.data.code });
+          console.log(this.imageList);
+        });
+      }
+    }
+  },
   created() {
-    console.log(this.imageList);
   },
   methods: {
+    // 赋值
+    inputInfo() {
+      this.images = this.imageList.map(function(response) {
+        return [response.code];
+      });
+      this.images = this.images.join(',');
+      this.$emit('input', this.images);
+      console.log(this.images);
+    },
     /** 取消按钮 */
     cancel() {
       this.dialogVisible = false;
     },
     handleRemove(images, imageList) {
       this.imageList = imageList;
+      this.inputInfo();
     },
     handlePictureCardPreview(images) {
       console.log(images);
@@ -70,25 +96,31 @@ export default {
       this.dialogVisible = true;
     },
     handleUploadSuccess(res, images, imageList) {
-      this.imageList.push({ url: res.data.path, id: res.uid });
-      // this.$emit('input', res.data.path);
-      this.loading.close();
       console.log(res);
-      console.log(this.imageList);
+      this.imageList.push({ url: res.data.path, code: res.data.code });
+      this.inputInfo();
+      // this.loading.close();
     },
     handleBeforeUpload() {
-      this.loading = this.$loading({
-        lock: true,
-        text: '上传中',
-        background: 'rgba(0, 0, 0, 0.7)'
-      });
+      // this.loading = this.$loading({
+      //   lock: true,
+      //   text: '上传中',
+      //   background: 'rgba(0, 0, 0, 0.7)'
+      // });
     },
     handleUploadError() {
       this.$message({
         type: 'error',
         message: '上传失败'
       });
-      this.loading.close();
+      // this.loading.close();
+    },
+    handleExceed() {
+      this.$message({
+        type: 'error',
+        message: '超出上传图片数量，请删除后，再选择图片上传！'
+      });
+      // this.loading.close();
     }
   }
 };

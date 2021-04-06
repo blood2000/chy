@@ -2,7 +2,7 @@
   <div class="navbar">
     <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
-    <tags-view v-if="needTagsView" />
+    <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
 
     <div class="right-menu">
       <template v-if="device!=='mobile'">
@@ -42,9 +42,8 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import { mapGetters } from 'vuex';
-import TagsView from './TagsView/index';
+import Breadcrumb from '@/components/Breadcrumb';
 import Hamburger from '@/components/Hamburger';
 import Screenfull from '@/components/Screenfull';
 import SizeSelect from '@/components/SizeSelect';
@@ -53,7 +52,7 @@ import DdcYiDoc from '@/components/Ddc/Doc';
 
 export default {
   components: {
-    TagsView,
+    Breadcrumb,
     Hamburger,
     Screenfull,
     SizeSelect,
@@ -61,9 +60,6 @@ export default {
     DdcYiDoc
   },
   computed: {
-    ...mapState({
-      needTagsView: state => state.settings.tagsView
-    }),
     ...mapGetters([
       'sidebar',
       'avatar',
@@ -102,14 +98,14 @@ export default {
 
 <style lang="scss" scoped>
 .navbar {
-  height: 60px;
+  height: 50px;
   overflow: hidden;
   position: relative;
-  background: rgb(48, 65, 86);
+  background: #fff;
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
 
   .hamburger-container {
-    line-height: 58px;
+    line-height: 46px;
     height: 100%;
     float: left;
     cursor: pointer;
@@ -121,6 +117,11 @@ export default {
     }
   }
 
+  .breadcrumb-container {
+    float: left;
+  }
+
+
   .errLog-container {
     display: inline-block;
     vertical-align: top;
@@ -129,11 +130,7 @@ export default {
   .right-menu {
     float: right;
     height: 100%;
-    line-height: 60px;
-
-    ::v-deep .svg-icon {
-      fill: #fff;
-    }
+    line-height: 50px;
 
     &:focus {
       outline: none;
@@ -161,7 +158,7 @@ export default {
       margin-right: 30px;
 
       .avatar-wrapper {
-        margin-top: 10px;
+        margin-top: 5px;
         position: relative;
 
         .user-avatar {

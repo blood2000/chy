@@ -164,14 +164,14 @@
       :gutter="10"
       class="mb8"
     >
-      <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button
           type="danger"
           icon="el-icon-delete"
           size="mini"
           @click="handleDelete"
         >批量删除</el-button>
-      </el-col>
+      </el-col> -->
       <el-col :span="1.5" class="fr">
         <tablec-cascader v-model="tableColumnsConfig" />
       </el-col>
@@ -461,6 +461,7 @@ export default {
             // this.$refs.DialogA.reset();
             this.dialoga = true;
             this.title = '车辆装货';
+            this.formDisable = false;
             this.$refs.DialogA.setForm(row);
             // this.$refs.DialogA.getAddress(row);
           }
@@ -469,6 +470,7 @@ export default {
           // this.$refs.DialogC.reset();
           this.dialogc = true;
           this.title = '车辆卸货';
+          this.formDisable = false;
           this.$refs.DialogC.setForm(row);
           // this.$refs.DialogC.getAddress(row);
           break;
