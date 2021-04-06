@@ -42,15 +42,15 @@
         <el-row>
           <el-col :span="12" class="text-row">
             <label>装货地址：</label>
-            {{ form.loadAddress?form.loadAddress.formattedAddress:'' }}
-            {{ form.loadAddress?form.loadAddress.contact:'' }}
-            {{ form.loadAddress?form.loadAddress.contactPhone:'' }}
+            {{ form.waybillAddress?form.waybillAddress.loadFormattedAddress:'' }}
+            {{ form.waybillAddress?form.waybillAddress.loadContact:'' }}
+            {{ form.waybillAddress?form.waybillAddress.loadContactPhone:'' }}
           </el-col>
           <el-col :span="12" class="text-row">
             <label>卸货地址：</label>
-            {{ form.unloadAddress?form.unloadAddress.formattedAddress:'' }}
-            {{ form.loadAddress?form.unloadAddress.contact:'' }}
-            {{ form.loadAddress?form.unloadAddress.contactPhone:'' }}
+            {{ form.waybillAddress?form.waybillAddress.unloadFormattedAddress:'' }}
+            {{ form.waybillAddress?form.waybillAddress.unloadContact:'' }}
+            {{ form.waybillAddress?form.waybillAddress.unloadContactPhone:'' }}
           </el-col>
           <el-col :span="12" class="text-row">
             <label>上传装货位置：</label>
@@ -286,8 +286,8 @@ export default {
       ],
       // 表单参数
       form: {
-        loadAddress: {},
-        unloadAddress: {},
+        waybillAddress: {},
+        // unloadAddress: {},
         balanceVo: {}
       },
       formAttachment: {},
@@ -404,13 +404,15 @@ export default {
       // 运单
       getWayBill(this.currentId).then(response => {
         this.form = response.data || {};
-        this.form.loadAddress = response.data.loadAddress || {};
-        this.form.unloadAddress = response.data.unloadAddress || {};
+        this.form.waybillAddress = response.data.waybillAddress || {};
+        // this.form.unloadAddress = response.data.waybillAddress || {};
         this.form.balanceVo = response.data.balanceVo || {};
+        console.log(response);
       });
       // 回单-装货
       getWaybillAttachment(this.currentId, 1).then(response => {
         this.formAttachment = response.data ? response.data[0] : null;
+        console.log(this.formAttachment);
       });
       // 回单-卸货
       getWaybillAttachment(this.currentId, 2).then(response => {
