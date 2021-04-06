@@ -461,6 +461,7 @@ export default {
             // this.$refs.DialogA.reset();
             this.dialoga = true;
             this.title = '车辆装货';
+            this.formDisable = false;
             this.$refs.DialogA.setForm(row);
             // this.$refs.DialogA.getAddress(row);
           }
@@ -469,6 +470,7 @@ export default {
           // this.$refs.DialogC.reset();
           this.dialogc = true;
           this.title = '车辆卸货';
+          this.formDisable = false;
           this.$refs.DialogC.setForm(row);
           // this.$refs.DialogC.getAddress(row);
           break;

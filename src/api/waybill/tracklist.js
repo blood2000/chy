@@ -64,9 +64,9 @@ export function getGoods(orderCode) {
 }
 
 // 获取装货地址和卸货地址
-export function getAddress(orderGoodsCode) {
+export function getAddress(orderCode) {
   return request({
-    url: '/transportation/orderAddress/getOrderGoodsAddress/' + orderGoodsCode,
+    url: '/transportation/orderAddress/getOrderAddress/' + orderCode,
     method: 'get'
   });
 }
@@ -89,7 +89,15 @@ export function getVehicleInfo(code) {
 }
 
 // 获取装货、卸货信息
-export function getInfoDetail(waybillNo) {
+export function getInfoDetail(waybillNo, type) {
+  return request({
+    url: '/transportation/waybillAttachment/getByWaybillNo?waybillNo=' + waybillNo + '&type=' + type,
+    method: 'get'
+  });
+}
+
+// 获取装货、卸货信息
+export function getloadDetail(waybillNo) {
   return request({
     url: '/transportation/waybillAttachment/getByWaybillNo?waybillNo=' + waybillNo,
     method: 'get'

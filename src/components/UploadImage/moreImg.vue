@@ -7,6 +7,7 @@
       :file-list="imageList"
       :headers="headers"
       :limit="limit"
+      :on-exceed="handleExceed"
       :on-preview="handlePictureCardPreview"
       :on-remove="handleRemove"
       :on-success="handleUploadSuccess"
@@ -31,7 +32,12 @@ export default {
     value: {
       type: String,
       default: ''
-    }
+    },
+    limit: {
+      type: Number,
+      default: NaN
+    },
+    fresh: Boolean
   },
   data() {
     return {
@@ -49,16 +55,22 @@ export default {
       dialogVisible: false,
       disabled: false,
       imageList: [],
-      images: '',
-      limit: 3
+      images: ''
     };
   },
-  watch: {},
+  watch: {
+    fresh(val) {
+      if (val) {
+        console.log(this.value);
+        getFile(this.value).then(response => {
+          console.log(response);
+          this.imageList.push({ url: response.data.attachUrl, code: response.data.code });
+          console.log(this.imageList);
+        });
+      }
+    }
+  },
   created() {
-    console.log(this.value);
-    getFile(this.value).then(response => {
-      console.log(response);
-    });
   },
   methods: {
     // 赋值
@@ -67,7 +79,7 @@ export default {
         return [response.code];
       });
       this.images = this.images.join(',');
-      this.$emit('chooseImg', this.images);
+      this.$emit('input', this.images);
       console.log(this.images);
     },
     /** 取消按钮 */
@@ -100,6 +112,13 @@ export default {
       this.$message({
         type: 'error',
         message: '上传失败'
+      });
+      // this.loading.close();
+    },
+    handleExceed() {
+      this.$message({
+        type: 'error',
+        message: '超出上传图片数量，请删除后，再选择图片上传！'
       });
       // this.loading.close();
     }

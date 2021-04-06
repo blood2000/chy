@@ -30,14 +30,14 @@
           <el-option
             v-for="dict in goodsCodeOptions"
             :key="dict.code"
-            :label="dict.goodsType"
+            :label="dict.goodsType || dict.goodsName"
             :value="dict.code"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="装货地址" prop="loadAddress">
+      <el-form-item label="装货地址" prop="loadAddressCode">
         <el-select
-          v-model="form.loadAddress"
+          v-model="form.loadAddressCode"
           placeholder="请选择车辆装货地址"
           clearable
           filterable
@@ -53,7 +53,7 @@
           />
         </el-select>
       </el-form-item>
-      <!-- <el-form-item label="卸货地址" prop="unloadAddressCode">
+      <el-form-item label="卸货地址" prop="unloadAddressCode">
         <el-select
           v-model="form.unloadAddressCode"
           placeholder="请选择车辆卸货地址"
@@ -70,7 +70,7 @@
             :value="dict.code"
           />
         </el-select>
-      </el-form-item> -->
+      </el-form-item>
       <!-- <el-form-item label="实际承运车辆" prop="vehicleCode">
         <el-select
           v-model="form.vehicleCode"
@@ -90,7 +90,7 @@
         </el-select>
       </el-form-item> -->
       <el-form-item label="装货单据" prop="attachmentCode">
-        <uploadImage v-model="form.attachmentCode" />
+        <uploadImage v-model="form.attachmentCode" :fresh="fresh" :limit="1" @chooseImg="handleUploadSuccess" />
       </el-form-item>
       <el-form-item label="装货备注" prop="remark">
         <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" :disabled="disable" placeholder="请输入装货备注信息" style="width:90%;" />
@@ -105,7 +105,7 @@
 
 <script>
 import { load, getAddress, getInfoDetail, loadCredentials, getGoods } from '@/api/waybill/tracklist';
-import UploadImage from '@/components/UploadImage/index';
+import UploadImage from '@/components/UploadImage/moreImg';
 
 export default {
   name: 'DialogA',
@@ -122,12 +122,14 @@ export default {
   },
   data() {
     return {
+      // 图片
+      fresh: false,
       // 装货地址选择
       loadAddressOptions: [],
       // 商品选择
       goodsCodeOptions: [],
       // 卸货地址选择
-      // unloadAddressOptions: [],
+      unloadAddressOptions: [],
       // 实际承运车辆
       // vehicleCodeOptions: [],
       // 表单参数
@@ -170,6 +172,7 @@ export default {
       if (val) {
         // this.reset();
         this.getGoods();
+        this.getAddress();
         // this.getVehicle();
         if (this.disable) {
           this.getDetail();
@@ -185,18 +188,19 @@ export default {
     // 获取装货详情
     getDetail() {
       this.reset();
-      getInfoDetail(this.waybill.waybillNo).then(response => {
+      getInfoDetail(this.waybill.waybillNo, 1).then(response => {
         console.log(response);
         const info = response.data[0];
         this.loadinfo = info;
         console.log(this.loadinfo);
         this.form.loadWeight = info.loadWeight;
         this.form.remark = info.remark;
-        this.form.loadTime = info.cargoTime;
+        this.form.loadTime = info.loadTime;
         this.form.goodsCode = info.goodsCode;
-        // this.form.loadAddressCode = info.waybillAddressList[0].code;
-        // this.form.unloadAddressCode = info.waybillAddressList[1].code;
+        this.form.loadAddressCode = info.waybillAddres.loadOrderAddressCode;
+        this.form.unloadAddressCode = info.waybillAddres.unloadOrderAddressCode;
         this.form.attachmentCode = info.attachmentCode;
+        this.fresh = true;
         // this.form.vehicleCode = info.vehicleCode;
       });
     },
@@ -210,24 +214,27 @@ export default {
     // 选择商品事件
     chooseGoods(e) {
       this.goodsCode = e;
-      this.getAddress();
     },
     // 获取地址信息
     getAddress() {
       // console.log(data);
-      getAddress(this.goodsCode).then(response => {
+      getAddress(this.waybill.orderCode).then(response => {
         console.log(response);
         const address = response.data;
         if (address) {
+          // 装货地址
           const address1 = address.filter(item => {
-            return item.addressType === 1;
+            return item.addressType === '1';
           });
           this.loadAddressOptions = address1;
+          // this.form.loadAddressCode = address1[0].code;
+          // 卸货地址
+          const address2 = address.filter(item => {
+            return item.addressType === '2';
+          });
+          this.unloadAddressOptions = address2;
+          // this.form.unloadAddressCode = address2[0].code;
         }
-        // const address2 = address.filter(item => {
-        //   return item.addressType === 2;
-        // });
-        // this.unloadAddressOptions = address2;
       });
     },
     // 获取车辆列表
@@ -261,11 +268,12 @@ export default {
     cancel() {
       this.close();
       this.reset();
+      this.fresh = false;
     },
     // 关闭弹窗
     close() {
       this.$emit('update:open', false);
-      // this.unloadAddressOptions = [];
+      this.unloadAddressOptions = [];
       this.loadAddressOptions = [];
     },
     // 表单重置
@@ -280,8 +288,8 @@ export default {
         remark: null,
         // vehicleCode: null,
         loadAddressCode: null,
-        goodsCode: null
-        // unloadAddressCode: null
+        goodsCode: null,
+        unloadAddressCode: null
       };
       this.resetForm('form');
     },
@@ -290,6 +298,10 @@ export default {
       this.waybill = data;
       this.form.code = this.waybill.code;
       console.log(this.waybill);
+    },
+    // 图片上传成功会掉
+    handleUploadSuccess() {
+      // console.log('添加图片成功 动态加一项');
     }
   }
 };
