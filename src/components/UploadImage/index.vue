@@ -13,9 +13,9 @@
       style="display: inline-block; vertical-align: top"
     >
       <img v-if="value && !disabled" :src="attachUrl" class="avatar">
-      <viewer v-else-if="value && disabled" class="avatar">
+      <div v-else-if="value && disabled" v-viewer class="avatar">
         <img :src="attachUrl" class="avatar">
-      </viewer>
+      </div>
       <i v-else class="el-icon-plus avatar-uploader-icon" />
     </el-upload>
   </div>
