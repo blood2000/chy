@@ -116,7 +116,7 @@ export default {
     // 删除按钮
     handleDelete(row, index) {
       if (this.infoList.length <= 1) {
-        this.$message({ showClose: true, message: '请保留至少一条信息', type: 'warning' });
+        this.msgWarning('请保留至少一条信息');
         return;
       }
       this.infoList.splice(index, 1);

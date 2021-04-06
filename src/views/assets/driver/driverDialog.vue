@@ -216,47 +216,17 @@
           />
         </el-select>
       </el-form-item>
-      <!-- <el-form-item label="结算方式" prop="driverSettlementType">
-        <el-select
-          v-model="form.driverSettlementType"
-          clearable
-          filterable
-          class="width90"
-        >
-          <el-option
-            v-for="dict in settlementTypeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item> -->
-      <!-- <el-form-item label="定位来源" prop="driverLocationSource">
-        <el-select
-          v-model="form.driverLocationSource"
-          clearable
-          filterable
-          class="width90"
-        >
-          <el-option
-            v-for="dict in locationSourceOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item> -->
       <el-form-item>
         <el-row>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">驾驶证</p>
             <upload-image v-model="form.driverLicenseImage" />
           </el-col>
-          <el-col v-if="form.driverType===1" :span="7" class="mb">
+          <el-col v-show="form.driverType===1" :span="7" class="mb">
             <p class="upload-image-label">行驶证</p>
             <upload-image v-model="form.driverOtherLicenseImage" />
           </el-col>
-          <el-col v-if="form.driverType===1" :span="7" class="mb">
+          <el-col v-show="form.driverType===1" :span="7" class="mb">
             <p class="upload-image-label">行驶证副页</p>
             <upload-image v-model="form.driverOtherLicenseBackImage" />
           </el-col>
@@ -268,13 +238,13 @@
             <p class="upload-image-label">身份证反面照</p>
             <upload-image v-model="form.identificationBackImage" />
           </el-col>
-          <el-col v-if="form.driverType===1" :span="7" class="mb">
+          <el-col v-show="form.driverType===1" :span="7" class="mb">
             <p class="upload-image-label">道路运输许可证</p>
             <upload-image v-model="form.transportPermitImage" />
           </el-col>
-          <el-col v-if="form.driverType===1" :span="7">
+          <el-col v-show="form.driverType===1" :span="7">
             <p class="upload-image-label">车头正面照</p>
-            <upload-image v-model="form.vehicleImage" />
+            <upload-image v-model="vehicleForm.vehicleImage" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">司机照片</p>
@@ -459,17 +429,6 @@ export default {
       provinceCodeOptions: [],
       // 驾驶证类型字典
       driverLicenseTypeOptions: [],
-      // 结算方式字典
-      // settlementTypeOptions: [
-      //   {dictLabel: '次结', dictValue: '次结'},
-      //   {dictLabel: '月结', dictValue:'月结'}
-      // ],
-      // 定位来源字典
-      // locationSourceOptions: [
-      //   {dictLabel: '中交兴路', dictValue: '中交兴路'},
-      //   {dictLabel: 'APP端', dictValue:'APP端'},
-      //   {dictLabel: 'GPS硬件', dictValue:'GPS硬件'}
-      // ],
       // 车辆归属类型字典
       vehicleAscriptionTypeOptions: [
         { dictLabel: '自有', dictValue: 0 },
@@ -585,6 +544,13 @@ export default {
               } else {
                 driver.validPeriodAlways = 0;
               }
+              // 类型不为独立司机的时候，相关字段不能传
+              if (this.form.driverType !== 1) {
+                this.form.driverOtherLicenseImage = null;
+                this.form.driverOtherLicenseBackImage = null;
+                this.form.transportPermitImage = null;
+                this.vehicleForm.vehicleImage = null;
+              }
               if (this.form.id !== undefined) {
                 updateDriver(driver).then(response => {
                   this.msgSuccess('修改成功');
@@ -598,8 +564,12 @@ export default {
                   this.$emit('refresh');
                 });
               }
+            } else {
+              this.msgWarning('必填项不能为空');
             }
           });
+        } else {
+          this.msgWarning('必填项不能为空');
         }
       });
     },
@@ -693,7 +663,15 @@ export default {
         isDel: null,
         licenseNumber: null,
         transportPermitNo: null,
-        validPeriodAlways: null
+        validPeriodAlways: null,
+        driverLicenseImage: null,
+        driverOtherLicenseImage: null,
+        driverOtherLicenseBackImage: null,
+        identificationImage: null,
+        identificationBackImage: null,
+        transportPermitImage: null,
+        peopleImage: null,
+        workLicenseImage: null
       };
       this.vehicleForm = {
         id: null,
@@ -726,7 +704,8 @@ export default {
         createTime: null,
         updateCode: null,
         updateTime: null,
-        delFlag: null
+        delFlag: null,
+        vehicleImage: null
       };
       this.resetForm('form');
       this.resetForm('vehicleForm');

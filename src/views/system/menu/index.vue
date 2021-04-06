@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row :gutter="20">
-      <!--部门数据-->
+      <!--产品应用版本树-->
       <el-col :span="4" :xs="24">
         <div class="head-container">
           <el-input
@@ -119,6 +119,18 @@
     <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row>
+          <el-col :span="24">
+            <el-form-item label="产品版本">
+              <treeselect
+                v-model="form.versionCode"
+                :options="produceOptions"
+                :normalizer="produceNormalizer"
+                :show-count="true"
+                placeholder="选择产品版本"
+                @select="handleProduceNodeClick"
+              />
+            </el-form-item>
+          </el-col>
           <el-col :span="24">
             <el-form-item label="上级菜单">
               <treeselect
@@ -365,7 +377,7 @@ export default {
     }
   },
   created() {
-    this.getDeptTreeselect();
+    this.getVersionTreeselect();
     this.getList();
     this.getDictOption();
     this.getProduceList();
@@ -428,8 +440,8 @@ export default {
       };
     },
     /** 查询菜单下拉树结构 */
-    getTreeselect() {
-      listMenu().then(response => {
+    getTreeselect(data = {}) {
+      listMenu(data).then(response => {
         this.menuOptions = [];
         const menu = { menuId: 0, menuName: '主类目', children: [] };
         menu.children = this.handleTree(response.data, 'menuId');
@@ -539,7 +551,7 @@ export default {
       });
     },
     /** 产品应用版本树 */
-    getDeptTreeselect() {
+    getVersionTreeselect() {
       versionTreeList({ orgCode: this.companyCode }).then(response => {
         this.produceOptions = response.data;
       });
@@ -565,6 +577,29 @@ export default {
         this.queryParams.appCode = null;
       }
       this.getList();
+    },
+    // 转换产品数据结构
+    produceNormalizer(node) {
+      if (node.children && !node.children.length) {
+        delete node.children;
+      }
+      return {
+        id: node.code,
+        label: node.cnName,
+        children: node.children
+      };
+    },
+    // 产品树与上级菜单树联动
+    handleProduceNodeClick(data) {
+      const params = {};
+      if (data.type === 'produce') {
+        params.produceCode = data.code;
+      } else if (data.type === 'application') {
+        params.appCode = data.code;
+      } else if (data.type === 'version') {
+        params.versionCode = data.code;
+      }
+      this.getTreeselect(params);
     }
   }
 };
