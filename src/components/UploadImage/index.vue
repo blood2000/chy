@@ -12,7 +12,7 @@
       :headers="headers"
       style="display: inline-block; vertical-align: top"
     >
-      <img v-if="value" :src="value" class="avatar">
+      <img v-if="value" :src="attachUrl" class="avatar">
       <i v-else class="el-icon-plus avatar-uploader-icon" />
     </el-upload>
   </div>
@@ -20,6 +20,7 @@
 
 <script>
 import { getToken } from '@/utils/auth';
+import { getFile } from '@/api/system/image.js';
 
 export default {
   components: {},
@@ -39,15 +40,30 @@ export default {
         'App-Version': '2.0',
         'Terminal-Type': 'web'
       },
-      uploadData: {
-      }
+      uploadData: {},
+      attachUrl: ''
     };
   },
-  watch: {},
+  watch: {
+    value(val) {
+      if (val) {
+        this.handleGetFile(val);
+      }
+    }
+  },
+  mounted() {
+    this.handleGetFile(this.value);
+  },
   methods: {
     handleUploadSuccess(res) {
-      this.$emit('input', res.data.path);
+      this.$emit('input', res.data.code);
       this.loading.close();
+      this.handleGetFile(res.data.code);
+    },
+    handleGetFile(code) {
+      getFile(code).then(response => {
+        this.attachUrl = response.data ? response.data.attachUrl : '';
+      });
     },
     handleBeforeUpload() {
       this.loading = this.$loading({

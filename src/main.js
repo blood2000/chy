@@ -71,6 +71,10 @@ Vue.prototype.msgInfo = function(msg) {
   this.$message.info(msg);
 };
 
+Vue.prototype.msgWarning = function(msg) {
+  this.$message({ showClose: true, message: msg, type: 'warning' });
+};
+
 // 全局组件挂载
 Vue.component('Pagination', Pagination);
 Vue.component('RightToolbar', RightToolbar);
