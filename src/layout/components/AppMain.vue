@@ -29,20 +29,21 @@ export default {
   width: 100%;
   position: relative;
   overflow: hidden;
+  padding-top: 15px;
 }
 
 .fixed-header+.app-main {
   padding-top: 50px;
 }
 
-.hasBreadcrumb {
+.hasTagsView {
   .app-main {
-    /* 130 = navbar + tags-view = 60 + 70 */
-    min-height: calc(100vh - 130px);
+    /* 84 = navbar + tags-view = 50 + 34 */
+    min-height: calc(100vh - 84px);
   }
 
   .fixed-header+.app-main {
-    padding-top: 130px;
+    padding-top: 84px;
   }
 }
 </style>
