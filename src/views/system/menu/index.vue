@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row :gutter="20">
-      <!--部门数据-->
+      <!--产品应用版本树-->
       <el-col :span="4" :xs="24">
         <div class="head-container">
           <el-input
@@ -365,7 +365,7 @@ export default {
     }
   },
   created() {
-    this.getDeptTreeselect();
+    this.getVersionTreeselect();
     this.getList();
     this.getDictOption();
     this.getProduceList();
@@ -539,7 +539,7 @@ export default {
       });
     },
     /** 产品应用版本树 */
-    getDeptTreeselect() {
+    getVersionTreeselect() {
       versionTreeList({ orgCode: this.companyCode }).then(response => {
         this.produceOptions = response.data;
       });

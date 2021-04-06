@@ -19,7 +19,6 @@
             :data="deptTreeOptions"
             :props="defaultTreeProps"
             :expand-on-click-node="false"
-            :filter-node-method="filterNode"
             default-expand-all
             @node-click="handleNodeClick"
           />
@@ -232,20 +231,36 @@
             >{{ dict.dictLabel }}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="菜单权限">
+        <el-form-item label="菜单权限" class="mb0">
           <el-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand($event, 'menu')">展开/折叠</el-checkbox>
           <el-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event, 'menu')">全选/全不选</el-checkbox>
           <el-checkbox v-model="form.menuCheckStrictly" @change="handleCheckedTreeConnect($event, 'menu')">父子联动</el-checkbox>
-          <el-tree
-            ref="menu"
-            class="tree-border"
-            :data="menuOptions"
-            show-checkbox
-            node-key="code"
-            :check-strictly="!form.menuCheckStrictly"
-            empty-text="加载中，请稍后"
-            :props="defaultProps"
-          />
+          <el-row :gutter="12" class="mb20">
+            <el-col :span="10">
+              <el-tree
+                ref="versionTree"
+                class="tree-border"
+                :data="produceOptions"
+                :props="produceDefaultProps"
+                :expand-on-click-node="false"
+                :filter-node-method="filterNode"
+                default-expand-all
+                @node-click="handleVersionNodeClick"
+              />
+            </el-col>
+            <el-col :span="14">
+              <el-tree
+                ref="menu"
+                class="tree-border"
+                :data="menuOptions"
+                show-checkbox
+                node-key="code"
+                :check-strictly="!form.menuCheckStrictly"
+                empty-text="加载中，请稍后"
+                :props="defaultProps"
+              />
+            </el-col>
+          </el-row>
         </el-form-item>
         <el-form-item label="备注">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
@@ -303,7 +318,7 @@
 
 <script>
 import { listRole, getRole, delRole, addRole, updateRole, dataScope, changeRoleStatus, producelist } from '@/api/system/role';
-import { treeselect as menuTreeselect, roleMenuTreeselect } from '@/api/system/menu';
+import { treeselect as menuTreeselect, roleMenuTreeselect, versionTreeList } from '@/api/system/menu';
 import { treeselect as deptTreeselect, roleDeptTreeselect } from '@/api/system/dept';
 
 export default {
@@ -413,6 +428,12 @@ export default {
       defaultTreeProps: {
         children: 'children',
         label: 'label'
+      },
+      // 产品应用版本树选项
+      produceOptions: undefined,
+      produceDefaultProps: {
+        children: 'children',
+        label: 'cnName'
       }
     };
   },
@@ -467,8 +488,8 @@ export default {
       );
     },
     /** 查询菜单树结构 */
-    getMenuTreeselect() {
-      menuTreeselect().then(response => {
+    getMenuTreeselect(data = {}) {
+      menuTreeselect(data).then(response => {
         this.menuOptions = response.data;
       });
     },
@@ -610,6 +631,7 @@ export default {
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
+      this.getVersionTreeselect();
       this.getMenuTreeselect();
       this.getProduceList();
       this.open = true;
@@ -618,6 +640,7 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
+      this.getVersionTreeselect();
       const roleId = row.roleId || this.ids;
       const roleMenu = this.getRoleMenuTreeselect(roleId);
       this.getProduceList();
@@ -715,6 +738,31 @@ export default {
     handleNodeClick(data) {
       this.queryParams.orgCode = data.code;
       this.getList();
+    },
+    // 产品应用版本树
+    getVersionTreeselect() {
+      versionTreeList({ orgCode: this.companyCode }).then(response => {
+        this.produceOptions = response.data;
+      });
+    },
+    // 版本树节点单击事件
+    handleVersionNodeClick(data) {
+      const params = {};
+      if (data.type === 'produce') {
+        params.produceCode = data.code;
+      } else if (data.type === 'application') {
+        params.appCode = data.code;
+      } else if (data.type === 'version') {
+        params.versionCode = data.code;
+      }
+      if (this.form.roleId !== undefined) {
+        const roleMenu = this.getRoleMenuTreeselect(this.form.roleId);
+        roleMenu.then(res => {
+          this.$refs.menu.setCheckedKeys(res.checkedKeys);
+        });
+      } else {
+        this.getMenuTreeselect(params);
+      }
     }
   }
 };
