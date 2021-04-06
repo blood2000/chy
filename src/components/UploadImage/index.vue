@@ -52,7 +52,9 @@ export default {
     }
   },
   mounted() {
-    this.handleGetFile(this.value);
+    if (this.value) {
+      this.handleGetFile(this.value);
+    }
   },
   methods: {
     handleUploadSuccess(res) {
