@@ -26,10 +26,11 @@ export function treeselect() {
 }
 
 // 根据角色ID查询菜单下拉树结构
-export function roleMenuTreeselect(roleId) {
+export function roleMenuTreeselect(query) {
   return request({
-    url: '/system/menu/roleMenuTreeselect/' + roleId,
-    method: 'get'
+    url: '/system/menu/roleMenuTreeselect',
+    method: 'get',
+    params: query
   });
 }
 

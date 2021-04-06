@@ -518,8 +518,8 @@ export default {
       return checkedKeys;
     },
     /** 根据角色ID查询菜单树结构 */
-    getRoleMenuTreeselect(roleId) {
-      return roleMenuTreeselect(roleId).then(response => {
+    getRoleMenuTreeselect(data) {
+      return roleMenuTreeselect(data).then(response => {
         this.menuOptions = response.menus;
         return response;
       });
@@ -642,7 +642,7 @@ export default {
       this.reset();
       this.getVersionTreeselect();
       const roleId = row.roleId || this.ids;
-      const roleMenu = this.getRoleMenuTreeselect(roleId);
+      const roleMenu = this.getRoleMenuTreeselect({ roleId: roleId });
       this.getProduceList();
       getRole(roleId).then(response => {
         this.form = response.data;
@@ -756,7 +756,8 @@ export default {
         params.versionCode = data.code;
       }
       if (this.form.roleId !== undefined) {
-        const roleMenu = this.getRoleMenuTreeselect(this.form.roleId);
+        params.roleId = this.form.roleId;
+        const roleMenu = this.getRoleMenuTreeselect(params);
         roleMenu.then(res => {
           this.$refs.menu.setCheckedKeys(res.checkedKeys);
         });
