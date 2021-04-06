@@ -1,5 +1,5 @@
 import { login, logout, getInfo, refreshToken } from '@/api/login';
-import { getToken, setToken, setExpiresIn, removeToken } from '@/utils/auth';
+import { getToken, setToken, setExpiresIn, removeToken, setUserInfo, removeUserInfo } from '@/utils/auth';
 
 const user = {
   state: {
@@ -82,6 +82,15 @@ const user = {
           }
           commit('SET_NAME', user.userName);
           commit('SET_AVATAR', avatar);
+
+          // 保存一下用户信息
+          setUserInfo({
+            isShipment: res.isShipment,
+            user: {
+              userCode: res.user.userCode
+            }
+          });
+
           commit('SET_ADMIN', res.isAdmin);
           commit('SET_SHIPMENT', res.isShipment);
           commit('SET_DRIVER', res.isDriver);
@@ -114,6 +123,7 @@ const user = {
           commit('SET_ROLES', []);
           commit('SET_PERMISSIONS', []);
           removeToken();
+          removeUserInfo();
           resolve();
         }).catch(error => {
           reject(error);

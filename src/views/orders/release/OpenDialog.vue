@@ -30,36 +30,36 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="地址别名" prop="addressOtherName">
+      <el-form-item label="地址别名" prop="addressAlias">
         <el-input
-          v-model="queryParams.addressOtherName"
+          v-model="queryParams.addressAlias"
           placeholder="请输入地址别名"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="地址详情" prop="addressDetail">
+      <el-form-item label="地址详情" prop="detail">
         <el-input
-          v-model="queryParams.addressDetail"
+          v-model="queryParams.detail"
           placeholder="请输入地址详情"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <!-- <el-form-item label="联系人" prop="contactName">
+      <!-- <el-form-item label="联系人" prop="contact">
         <el-input
-          v-model="queryParams.contactName"
+          v-model="queryParams.contact"
           placeholder="请输入联系人"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="手机号码" prop="contactTelphone">
+      <el-form-item label="手机号码" prop="contactPhone">
         <el-input
-          v-model="queryParams.contactTelphone"
+          v-model="queryParams.contactPhone"
           placeholder="请输入手机号码"
           clearable
           size="small"
@@ -91,17 +91,18 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="地址名称" align="center" prop="addressName">
+        <el-table-column label="地址详情" align="center" prop="addressName">
           <template slot-scope="scope">
             {{ scope.row.addressName }}
-            <el-tag v-if="scope.row.isDefault === 1 && scope.row.addressType === 1">装货默认地址</el-tag>
-            <el-tag v-if="scope.row.isDefault === 1 && scope.row.addressType === 2" type="warning">卸货默认地址</el-tag>
+            <el-tag v-if="scope.row.defaultPut === 1 && scope.row.defaultPush === 0" type="success">默认装货地址</el-tag>
+            <el-tag v-if="scope.row.defaultPush === 1 && scope.row.defaultPut === 0" type="warning">默认卸货地址</el-tag>
+            <el-tag v-if="scope.row.defaultPut === 1 && scope.row.defaultPush === 1">默认装卸货地址</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="地址别名" align="center" prop="addressOtherName" />
-        <el-table-column label="地址详情" align="center" prop="addressDetail" />
-        <el-table-column label="手机号码" align="center" prop="contactTelphone" />
-        <el-table-column label="联系人" align="center" prop="contactName" />
+        <el-table-column label="地址别名" align="center" prop="addressAlias" />
+        <el-table-column label="地址门牌" align="center" prop="detail" />
+        <el-table-column label="手机号码" align="center" prop="contactPhone" />
+        <el-table-column label="联系人" align="center" prop="contact" />
         <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" />
 
       </el-table>
@@ -125,6 +126,9 @@
 import { listAddress } from '@/api/enterprise/company/address';
 
 export default {
+  props: {
+    shipmentCode: { type: String, default: '' }
+  },
   data() {
     return {
       radio: '',
@@ -169,12 +173,12 @@ export default {
         createCode: null,
         updateCode: null,
         addressName: null,
-        addressOtherName: null,
+        addressAlias: null,
         latitude: null,
         longitude: null,
-        addressDetail: null,
-        contactName: null,
-        contactTelphone: null
+        detail: null,
+        contact: null,
+        contactPhone: null
       },
 
       // 选中
@@ -182,6 +186,7 @@ export default {
     };
   },
   created() {
+    this.queryParams.shipmentCode = this.shipmentCode;
     this.getList();
   },
   methods: {
@@ -193,6 +198,9 @@ export default {
         this.total = response.total;
         this.loading = false;
       });
+
+      // 测试数据
+      this.loading = false;
     },
     // 地址类型字典翻译
     addressTypeFormat(row, column) {
@@ -212,23 +220,11 @@ export default {
       this.resetForm('queryForm');
       this.handleQuery();
     },
-    // 多选框选中数据
-    handleSelectionChange(selection) {
-      if (selection.length >= 2) {
-        this.msgSuccess('只能选择一条');
-        return;
-      } else {
-        console.log(selection);
-      }
-      // this.ids = selection.map(item => item.id);
-      // this.single = selection.length !== 1;
-      // this.multiple = !selection.length;
-    },
+
     handlerChange(value) {
       const arr = this.addressList.filter(e => {
         return e.id - 0 === value - 0;
       });
-      // console.log(arr[0]);
       this.isSelected = arr[0];
     },
 

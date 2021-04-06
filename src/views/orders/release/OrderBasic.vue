@@ -9,18 +9,17 @@
       label-width="110px"
       :label-position="'left'"
     >
-      <el-divider />
       <div class="header mb8">基本信息</div>
 
       <el-form-item label="选择所属项目" prop="tin3">
         <el-select
           v-model="formData.tin3"
           placeholder="请选择项目"
-          clearable
           filterable
           :style="{ width: '100%' }"
           @change="handleTin3"
         >
+          <!-- clearable -->
           <el-option
             v-for="dict in tin3Optin"
             :key="dict.dictValue"
@@ -285,7 +284,7 @@ export default {
     pubilshCode(value) {
       this.$refs['elForm'] && this.$refs['elForm'].resetFields();
       this.tin3Optin = [{ dictValue: '0', dictLabel: '无所属项目' }]; // 货主项目
-      this.tin2Option = []; // 大类
+      // this.tin2Option = []; // 大类
       this.tin2_Option = []; // 小类
       this.tin4Option = [
         { dictValue: '1', dictLabel: '公开货源(所有人可接)' },
@@ -298,7 +297,7 @@ export default {
       this.tin6Option = [];
 
       !this.tin2Option.length && this.api_tin3Optin();
-      this.api_dictInit();
+      // this.api_dictInit();
     },
     // isdisabled(value) {
     //   console.log(value);
@@ -364,6 +363,8 @@ export default {
         });
 
         // 5.货集码只做单选处理
+
+        this.handleTin4();
         this.formData.tin6 = classList[0].classCode;
         this.classList = classList;
         this.InfoCode = code;
@@ -506,7 +507,7 @@ export default {
         };
         const { rows } = await listStockcode(query);
 
-        this.tin6Option = this._baozhuan(rows, 'cargoCodeQR', 'cargoCodeName');
+        this.tin6Option = this._baozhuan(rows, 'code', 'cargoCodeName');
       }
     },
 
@@ -546,19 +547,18 @@ export default {
             }
 
 
-            if (this.classList) {
-              this.classList = this.classList.map(e => {
-                return {
-                  ...e,
-                  classCode: this.formData.tin6
-                };
-              });
-            }
+            // if (this.classList) {
+            //   this.classList = this.classList.map(e => {
+            //     return {
+            //       classCode: this.formData.tin6
+            //     };
+            //   });
+            // }
 
 
             resolve({
               InfoCode: this.InfoCode,
-              classList: this.classList ? this.classList : [
+              classList: [
                 {
                   classCode: this.formData.tin6
                 }

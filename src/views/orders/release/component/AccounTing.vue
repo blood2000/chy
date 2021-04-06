@@ -39,7 +39,7 @@
           >
             <el-select
               v-model="formData.ruleItemId"
-              placeholder="煤炭专用规则"
+              placeholder="请选择规则"
               clearable
               :style="{ width: '200px' }"
               @change="handleRuleItemId"
@@ -65,7 +65,7 @@
         <el-col :span="!showbudget? 14: 24">
           <div class="t_box_item">
 
-            <el-form-item
+            <!-- <el-form-item
               label="计算方式"
               prop="ruleDictValue"
               :rules="[
@@ -85,40 +85,18 @@
                   :value="dict.dictValue"
                 />
               </el-select>
-            </el-form-item>
-
-
-            <div class="header mb8">路耗:</div>
-            <RulesForm v-if="lossList.length" ref="lossList" :data-list="lossList" :myisdisabled="myisdisabled" />
-
-            <div class="header mb8">补贴项目:</div>
-            <RulesForm v-if="shouruList.length" ref="shouruList" :data-list="shouruList" :myisdisabled="myisdisabled" />
-
-            <div class="header mb8">扣费项目:</div>
-
-            <!-- <el-form-item
-              label="抹零"
-              prop="m0DictValue"
-              :rules="[
-                { required: true, message: '选择抹零方式', trigger: 'change' },
-              ]"
-            >
-              <el-select
-                v-model="formData.m0DictValue"
-                placeholder="选择抹零方式"
-                clearable
-                :style="{ width: '120px' }"
-              >
-                <el-option
-                  v-for="(dict, index1) in M0Option"
-                  :key="index1"
-                  :label="dict.dictLabel"
-                  :value="dict.dictValue"
-                />
-              </el-select>
             </el-form-item> -->
 
+
+            <!-- <div class="header mb8">路耗:</div>
+            <RulesForm v-if="lossList.length" ref="lossList" :data-list="lossList" :myisdisabled="myisdisabled" /> -->
+
+            <div v-if="zichuList.length" class="header mb8">扣费项目:</div>
             <RulesForm v-if="zichuList.length" ref="zichuList" :data-list="zichuList" :myisdisabled="myisdisabled" />
+
+            <div v-if="shouruList.length" class="header mb8">补贴项目:</div>
+            <RulesForm v-if="shouruList.length" ref="shouruList" :data-list="shouruList" :myisdisabled="myisdisabled" />
+
 
           </div>
         </el-col>
@@ -219,7 +197,18 @@ export default {
   },
   data() {
     return {
-      ruleFreightPrice: [], // 运费单价(单独提取出来)
+      ruleFreightPrice: [
+        {
+          'code': undefined,
+          'ruleCode': undefined,
+          'ruleDetailShipmentCode': undefined,
+          'ruleItemCode': '17',
+          'ruleValue': undefined,
+          'type': null
+
+        }
+      ], // 运费单价(单独提取出来)
+      claculationFormula: [], // 计算规则(单独提取出来)
       formData: {
 
         ruleItemId: '',
@@ -240,7 +229,7 @@ export default {
       // 字典
       ruleItemIdOption: [],
       M0Option: [],
-      ruleFormulaOption: [],
+      // ruleFormulaOption: [],
 
       // allRules
       lossList: [],
@@ -264,26 +253,43 @@ export default {
     },
     redis: {
       handler(value) {
+        console.log(value);
         if (!value || !value.orderFreightVo) return;
-
+        // 清空
         this.lossList = [];
         this.zichuList = [];
         this.shouruList = [];
 
         const { detailList, lossList } = value.orderFreightVo;
-        this.formData.ruleDictValue = value.ruleDictValue || 0;
-        this.formData.ruleItemId = value.ruleInfoShipmentCode || 11;
+        console.log(value.ruleCode);
+
+        this.formData.ruleItemId = value.ruleCode;
+
 
         // 运费单价
+        const filterDetailList = [];
 
-        this.ruleFreightPrice = detailList.filter(e => {
-          return e.enName === 'FREIGHT_COST';
+        detailList.forEach(e => {
+          if (e.enName === 'FREIGHT_COST') {
+            this.ruleFreightPrice = [e];
+            this.formData.freightPrice = e.ruleValue;
+            // this.formData.ruleItemId = e.
+          } else if (e.enName === 'CALCULATION_FORMULA') {
+            this.claculationFormula = [e];
+            this.formData.ruleDictValue = e.ruleValue;
+          } else {
+            filterDetailList.push(e);
+          }
         });
-        console.log(this.ruleFreightPrice);
+
+        // this.ruleFreightPrice = detailList.filter(e => {
+        //   return e.enName === 'FREIGHT_COST';
+        // });
+        // console.log(this.ruleFreightPrice);
 
 
-        this.formData.freightPrice = this.ruleFreightPrice[0].ruleValue;
-        this.setData(detailList, lossList);
+        // this.formData.freightPrice = this.ruleFreightPrice[0].ruleValue;
+        this.setData(filterDetailList, lossList);
       },
       immediate: true
 
@@ -409,32 +415,56 @@ export default {
         }
       ];*/
 
+      console.log(detailList, lossList);
 
-      this.formData.ruleDictValue = ruleInfo.ruleDictValue;
+
+
+      // this.formData.ruleDictValue = ruleInfo.ruleDictValue;
 
       // 运费单价
 
-      this.ruleFreightPrice = detailList.filter(e => {
-        return e.enName === 'FREIGHT_COST';
+      // this.ruleFreightPrice = detailList.filter(e => {
+      //   return e.enName === 'FREIGHT_COST';
+      // });
+
+      // const filterDetailList = [];
+
+      // detailList.forEach(e => {
+      //   if (e.enName === 'FREIGHT_COST') {
+      //     this.ruleFreightPrice = [e];
+      //     this.formData.freightPrice = e.ruleValue;
+      //   } else if (e.enName === 'CALCULATION_FORMULA') {
+      //     this.claculationFormula = [e];
+      //     this.formData.ruleDictValue = e.ruleValue;
+      //   } else {
+      //     filterDetailList.push(e);
+      //   }
+      // });
+
+      // console.log(filterDetailList);
+
+      const filterDetailList = detailList.filter(e => {
+        const bool = (e.enName === 'LOSS_PLAN' || e.enName === 'LOSS_RULE' || e.enName === 'CALCULATION_FORMULA');
+
+        return !bool;
       });
 
-      this.formData.freightPrice = this.ruleFreightPrice[0].ruleValue;
-      this.setData(detailList, lossList);
+      console.log(filterDetailList);
+
+
+      this.setData(filterDetailList, lossList);
     },
 
     // 赋值
     setData(detailList, lossList) {
       this.lossList = lossList;
 
-      detailList = detailList.filter(e => {
-        return e.enName !== 'FREIGHT_COST';
-      });
 
       detailList.forEach(e => {
-        if (e.type + '' === '2') {
-          this.zichuList.push(e);
-        } else {
+        if (e.type + '' === '1') {
           this.shouruList.push(e);
+        } else {
+          this.zichuList.push(e);
         }
       });
     },
@@ -443,16 +473,19 @@ export default {
       return new Promise((resolve, reject) => {
         this.$refs['formData'].validate(async(valid) => {
           if (valid) {
-            this.ruleFreightPrice[0].ruleValue = this.formData.freightPrice;
-            const lossList = await this.$refs.lossList._submitForm();
-            const shouruList = await this.$refs.shouruList._submitForm();
-            const zichuList = await this.$refs.zichuList._submitForm();
+            // 报ruleValue undefined 说明 单价或计算公式未放到细则里面
+            this.ruleFreightPrice[0] && (this.ruleFreightPrice[0].ruleValue = this.formData.freightPrice);
+            this.ruleFreightPrice[0] && (this.ruleFreightPrice[0].ruleCode = this.formData.ruleItemId);
+            // this.claculationFormula[0] && (this.claculationFormula[0].ruleValue = this.formData.ruleDictValue);
+            // const lossList = await this.$refs.lossList._submitForm();
+            const shouruList = this.$refs.shouruList ? (await this.$refs.shouruList._submitForm()) : [];
+            const zichuList = this.$refs.zichuList ? (await this.$refs.zichuList._submitForm()) : [];
 
             const obj = {
-              orderFreightBoList: await [...this.ruleFreightPrice, ...lossList, ...shouruList, ...zichuList].map(e => {
+              orderFreightBoList: await [...this.ruleFreightPrice, ...shouruList, ...zichuList, ...this.claculationFormula].map(e => {
                 return {
                   'code': e.code,
-                  'ruleCode': e.ruleCode || undefined,
+                  'ruleCode': e.ruleCode,
                   'ruleDetailShipmentCode': e.code,
                   'ruleItemCode': e.ruleItemCode,
                   'ruleValue': e.ruleValue,
@@ -461,6 +494,8 @@ export default {
                 };
               })
             };
+
+
 
             resolve({ ...obj, ruleDictValue: this.formData.ruleDictValue });
           } else {
@@ -518,7 +553,7 @@ export default {
 
     // 获取字典
     getDict() {
-      const dictName = ['M0', 'ruleFormula'];
+      const dictName = ['M0'];
 
       dictName.forEach(e => {
         this.getDicts(e).then(res => {

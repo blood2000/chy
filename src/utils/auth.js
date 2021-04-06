@@ -4,6 +4,8 @@ const TokenKey = 'Admin-Token';
 
 const ExpiresInKey = 'Admin-Expires-In';
 
+const USERINFO = 'Admin-info';
+
 export function getToken() {
   return Cookies.get(TokenKey);
 }
@@ -39,3 +41,15 @@ export function removeLocalStorage(key) {
   return window.localStorage.removeItem(key);
 }
 
+// 设置本地存储
+export function setUserInfo(userInfo) {
+  window.sessionStorage.setItem(USERINFO, JSON.stringify(userInfo));
+}
+
+// 获取本地存储
+export function getUserInfo() {
+  return JSON.parse(window.sessionStorage.getItem(USERINFO));
+}
+export function removeUserInfo() {
+  return window.sessionStorage.removeItem(USERINFO);
+}

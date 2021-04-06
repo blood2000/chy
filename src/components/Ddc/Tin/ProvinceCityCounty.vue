@@ -128,13 +128,13 @@ export default {
     cbData: {
       async handler(newName, oldName) {
         if (!this.cbData) return;
-        const { provinceCode, citycode, adcode } = this.cbData;
+        const { provinceCode, cityCode, districtCode } = this.cbData;
 
         this.form.province = provinceCode;
         await this.changeProvince(provinceCode);
-        this.form.city = citycode;
-        await this.changeCity(citycode);
-        this.form.county = adcode;
+        this.form.city = cityCode;
+        await this.changeCity(cityCode);
+        this.form.county = districtCode;
       },
       // 代表在wacth里声明了firstName这个方法之后立即先去执行handler方法
       immediate: true

@@ -60,6 +60,15 @@ import { adjustPrice } from '@/api/order/manage';
 import AccounTing from '@/views/orders/release/component/AccounTing';
 export default {
   components: { AccounTing },
+
+  props: {
+    mytabs: {
+      type: Array,
+      default: () => []
+    },
+    orderCode: { type: String, default: '' }
+  },
+
   data() {
     return {
       activeName: '0',
@@ -70,7 +79,7 @@ export default {
           goodsType: '0001', // 商品divtValue
           redis: [{ // 地址1 对应的其他的规则
             tin_name: 'A--B', // 地址a到b 显示
-            ruleInfoShipmentCode: '1', // 下拉规则的的值(会改)
+            ruleCode: '1', // 下拉规则的的值(会改)
             ruleDictValue: '1', // 计算规则的值
             orderFreightVo: { // 显示具体规则的值
               'lossList': [
@@ -233,49 +242,57 @@ export default {
     }
   },
 
+  created() {
+    this.tabs = JSON.parse(JSON.stringify(this.mytabs));
+  },
+
   methods: {
     getGoodsAccounting() {},
 
     // 确认
     async submit(bool) {
       if (bool) {
-        this.getdata();
-
-        console.log(this.tabs, '修改后的tabs');
+        await this.getdata();
 
 
-        this.tabs.forEach(e => {
-          // 问题是多商品 一个商品请求一次?
-          // 每个商品的id 是从列表中获取到
-
-
-          const req = {
-            'goodsPrice': e.goodsPrice, // 货物单价
-            'id': 0, // 商品id? 还是 code??
-            'oderCode': '', // 货源编码??
-            'orderFreightBoList': [ // 这里是规则细项了?? 多个细则怎么传??
-              {
-                'code': '',
-                'ruleCode': '',
-                'ruleDetailShipmentCode': '',
-                'ruleItemCode': '',
-                'ruleValue': '',
-                'type': 0
-              }
-            ],
-            'shipmentPrice': 0 // 运输单价
+        const orderFreightBoList = this.tabs.map(e => {
+          const orderAddressBoList = e.newRedis.map(ee => {
+            return {
+              addressIdentification: ee.addressIdentification,
+              orderFreightBoList: ee.orderFreightBoList
+            };
+          });
+          return {
+            goodsCode: e.goodsCode,
+            goodsPrice: e.goodsPrice,
+            orderAddressBoList
           };
-
-          // const data = await adjustPrice(req);
-          // // 在这里去请求修改的接口
-          // console.log(data);
         });
+
+        // console.log(orderFreightBoList, '想要的结构-----');
+
+        // 提交需要这样的结构
+        // 1-1 订单号直接传
+        // 1-2 商品code 需要
+        // 1-3 地址装--卸code 需要
+        const req = {
+          'orderCode': this.orderCode,
+          orderFreightBoList
+        };
+
+        // 请求接口
+
+        const data = await adjustPrice(req);
+
+        console.log(data);
 
 
         // 全部保存完毕在回调
 
 
         this.$emit('submitRes', 'success');
+      } else {
+        this.$emit('submitRes', false);
       }
     },
 
