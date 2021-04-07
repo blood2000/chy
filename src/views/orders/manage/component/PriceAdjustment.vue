@@ -1,13 +1,29 @@
 <template>
   <div class="priceAdjustment">
-    <el-tabs v-model="activeName">
-      <el-tab-pane
-        v-for="(dict,index) in tabs"
-        :key="index"
-        :label="dict.dictLabel"
-        :name="dict.activeName"
-      />
-    </el-tabs>
+    <div class="ly-flex-pack-justify">
+      <el-tabs v-model="activeName">
+        <el-tab-pane
+          v-for="(dict,index) in tabs"
+          :key="index"
+          :label="dict.dictLabel"
+          :name="dict.activeName"
+        />
+      </el-tabs>
+
+      <div>
+        <el-form label-position="left" inline>
+          <el-form-item label="生效时间">
+            <el-date-picker
+              v-model="entry"
+              type="datetime"
+              placeholder="选择日期时间"
+              default-time="12:00:00"
+            />
+          </el-form-item>
+        </el-form>
+
+      </div>
+    </div>
 
     <div v-for="goods in tabs" :key="goods.activeName">
       <div v-show="activeName === goods.activeName">
@@ -71,6 +87,7 @@ export default {
 
   data() {
     return {
+      entry: '', // 生效时间
       activeName: '0',
       tabs: [
         { dictLabel: '无烟煤', // 展示tab

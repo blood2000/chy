@@ -337,6 +337,62 @@
               </template>
             </RefactorTable>
 
+
+            <el-table
+              :data="tableData"
+              style="width: 100%;margin-bottom: 20px;"
+              row-key="id"
+              border
+              default-expand-all
+              :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+            >
+              <el-table-column
+                prop="date"
+                label="货源单号"
+                sortable
+                width="200"
+              />
+              <el-table-column
+                prop="name"
+                label="企业名称"
+                sortable
+                width="180"
+              />
+              <el-table-column
+                prop="address1"
+                label="货物类型"
+              />
+              <el-table-column
+                prop="address2"
+                label="装货地"
+              />
+              <el-table-column
+                prop="address3"
+                label="卸货地"
+              />
+              <el-table-column
+                prop="address4"
+                label="运输要求"
+              />
+              <el-table-column
+                prop="address5"
+                label="运输单价"
+              />
+              <el-table-column
+                prop="address6"
+                label="成交单价"
+              />
+              <el-table-column
+                prop="address7"
+                label="承运单价"
+              />
+              <el-table-column
+                prop="edit"
+                label="编辑"
+              />
+
+            </el-table>
+
             <pagination
               v-show="total>0"
               :total="total"
@@ -371,12 +427,54 @@ import { getOrderByCode } from '@/api/order/release';
 import OpenDialog from './component/OpenDialog';
 // import tableColumnsConfig from './data/config-index';
 
+const tableData = [{
+  id: 3,
+  date: '2104021027035450',
+  name: '福建省融谷',
+  address: '福建省融谷',
+  address1: '无烟煤',
+  address2: '七里香',
+  address3: '九连环',
+  address4: 'bababa',
+  children: [{
+    id: 31,
+    date: '2104021027035450',
+    name: '福建省融谷',
+    address: '福建省融谷',
+    address1: '无烟煤',
+    address2: '七里香',
+    address3: '八里庄',
+    address4: ''
+  }, {
+    id: 32,
+    date: '2104021027035450',
+    name: '福建省融谷',
+    address: '福建省融谷',
+    address1: '精煤',
+    address2: '七里香',
+    address3: '九连环',
+    address4: ''
+  }, {
+    id: 33,
+    date: '2104021027035450',
+    name: '福建省融谷',
+    address: '福建省融谷',
+    address1: '精煤',
+    address2: '七里香',
+    address3: '八里庄',
+    address4: ''
+  }]
+}];
+
 import PriceAdjustment from './component/PriceAdjustment';
 export default {
   name: 'Testlog',
   components: { OpenDialog, PriceAdjustment },
   data() {
     return {
+      tableData,
+      // 测试数据上
+
       openPriceAdjustment: false,
       tabs: [],
       orderCode: '',

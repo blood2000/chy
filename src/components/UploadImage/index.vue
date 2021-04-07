@@ -71,7 +71,11 @@ export default {
     },
     handleGetFile(code) {
       getFile(code).then(response => {
-        this.attachUrl = response.data ? response.data.attachUrl : '';
+        if (response.data && response.data.length > 0) {
+          this.attachUrl = response.data[0].attachUrl;
+        } else {
+          this.attachUrl = '';
+        }
       });
     },
     handleBeforeUpload() {

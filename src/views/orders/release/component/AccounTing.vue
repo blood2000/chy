@@ -19,11 +19,13 @@
           <el-input-number
             v-model="formData.freightPrice"
             :controls="false"
+            :precision="2"
+            :step="0.01"
             :placeholder="'请输入运费单价'"
-            step-strictly
             controls-position="right"
             :style="{ width: '100px' }"
           />
+          <!-- step-strictly -->
 
           <span class="ml0 mr10"> 元 / {{ goodsUnitName }}</span>
 
@@ -100,7 +102,7 @@
 
           </div>
         </el-col>
-        <el-col v-if="!showbudget" :span="10">
+        <el-col v-if="myisdisabled && !showbudget" :span="10">
           <div class="t_box_item">
             <template v-if="isTotalTypeValue">
 
@@ -248,6 +250,13 @@ export default {
   },
 
   watch: {
+    myisdisabled(value) {
+      console.log(value);
+      if (value) {
+        this.handlerEstimateCost();
+        // this.handlerEstimateCost({ detailList, lossList, ruleInfo });
+      }
+    },
     pubilshCode(value) {
       this.initData();
     },
@@ -318,6 +327,7 @@ export default {
     // 交互
     // 选择规格
     async handleRuleItemId() {
+      if (!this.formData.ruleItemId) return;
       this.lossList = [];
       this.zichuList = [];
       this.shouruList = [];
@@ -329,7 +339,7 @@ export default {
       // 这里处理预估值
       // 计算公式的值 ruleInfo.ruleDictValue
 
-      this.handlerEstimateCost({ detailList, lossList, ruleInfo });
+
 
 
 
@@ -415,7 +425,7 @@ export default {
         }
       ];*/
 
-      console.log(detailList, lossList);
+      // console.log(detailList, lossList);
 
 
 
@@ -457,7 +467,7 @@ export default {
 
     // 赋值
     setData(detailList, lossList) {
-      this.lossList = lossList;
+      // this.lossList = lossList;
 
 
       detailList.forEach(e => {
@@ -506,9 +516,8 @@ export default {
     },
 
     // 处理预估值
-    async handlerEstimateCost({ detailList, lossList }) {
-      return;
-      const orderFreightBoList = [...detailList, ...lossList].map(e => {
+    async handlerEstimateCost() {
+      const orderFreightBoList = [...this.zichuList, ...this.shouruList].map(e => {
         return {
           code: e.code,
           ruleCode: e.ruleCode,
@@ -519,30 +528,67 @@ export default {
         };
       });
 
+      // console.log(orderFreightBoList, '获取规则细项---');
+
+      // 获取商品上的数据
+      // 1- 如果最高配载 和 货物单价 未选中的情况?
       const arrdata = await this.goodsSubmitForm();
+
+      // console.log(arrdata, '获取商品info....');
+
+      // 还要知道当前是那个商品下面的规则
+
+      // console.log(this.good, '当前是那个商品下');
+
 
       const goodsItem = arrdata.filter(e => {
         return e.dictCode === this.good.dictCode;
       });
 
-      console.log(goodsItem[0]);
+      // console.log(goodsItem[0], '当前商品');
+
+      // console.log(this.redis, '当前的规则');
+
 
 
       const { orderGood } = goodsItem[0];
-      console.log(this.good);
 
       /* TODO 商品的code 没有? 地址的code没有   ruleDetailShipmentCode 是什么??*/
+
+      // {
+      //   "number": 0,
+      //   "orderAddressCode": "",
+      //   "orderFreightBoList": [
+      //     {
+      //       "code": "",
+      //       "ruleCode": "",
+      //       "ruleDetailShipmentCode": "",
+      //       "ruleItemCode": "",
+      //       "ruleValue": "",
+      //       "type": 0
+      //     }
+      //   ],
+      //   "orderGoodsCode": "",
+      //   "stowageStatus": "",
+      //   "totalType": 0,
+      //   "userCode": "",
+      //   "vehicleMaxWeight": 0,
+      //   "weight": 0
+      // }
+
       const qData = {
-        orderFreightBoList,
-        // 重商品Info中拿
-        number: orderGood.number || undefined,
-        // orderAddressCode: '',
-        orderGoodsCode: this.goods ? this.goods.code : undefined,
-        stowageStatus: orderGood.stowageStatus,
+        number: orderGood.number || undefined, // 车次
+        orderFreightBoList, // 细项
+        orderAddressCode: this.redis.tin_name, // 地址
+        orderGoodsCode: this.goods ? this.goods.code : this.good.goodsType,
+        stowageStatus: orderGood.stowageStatus || undefined,
+        totalType: orderGood.totalType,
         userCode: this.pubilshCode,
-        vehicleMaxWeight: orderGood.vehicleMaxWeight,
-        weight: orderGood.weight
+        vehicleMaxWeight: orderGood.vehicleMaxWeight || undefined,
+        weight: orderGood.weight || undefined
       };
+
+
 
       const data = await estimateCost(qData);
 
