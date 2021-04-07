@@ -1038,7 +1038,7 @@ export default {
   }
 }
 .content {
-  width: 95%;
+  max-width: 1000px;
 }
 
 .vih {

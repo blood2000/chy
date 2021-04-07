@@ -339,51 +339,61 @@
 
 
             <el-table
+              :loading="loading"
               :data="tableData"
               style="width: 100%;margin-bottom: 20px;"
               row-key="id"
               border
+              stripe
               default-expand-all
               :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
             >
+
               <el-table-column
-                prop="date"
+                show-overflow-tooltip
+                prop="code"
                 label="货源单号"
-                sortable
-                width="200"
-              />
-              <el-table-column
-                prop="name"
-                label="企业名称"
                 sortable
                 width="180"
               />
               <el-table-column
-                prop="address1"
+                show-overflow-tooltip
+                prop="companyName"
+                label="企业名称"
+              />
+              <el-table-column
+                prop="goodsTypeName"
                 label="货物类型"
               />
               <el-table-column
-                prop="address2"
+                show-overflow-tooltip
+                prop="addressName1"
                 label="装货地"
               />
               <el-table-column
-                prop="address3"
+                show-overflow-tooltip
+                prop="addressName2"
                 label="卸货地"
               />
               <el-table-column
-                prop="address4"
+                prop="remark"
                 label="运输要求"
+                width="200"
               />
               <el-table-column
-                prop="address5"
+                prop="goodsPrice"
+                label="货物单价"
+              />
+              <el-table-column
+                prop="shipmentPrice"
                 label="运输单价"
               />
               <el-table-column
-                prop="address6"
+                prop="transactionPrice"
                 label="成交单价"
               />
               <el-table-column
-                prop="address7"
+                prop="unitPrice"
                 label="承运单价"
               />
               <el-table-column
@@ -467,6 +477,10 @@ const tableData = [{
 }];
 
 import PriceAdjustment from './component/PriceAdjustment';
+
+import lists from './data/data.json';
+console.log(lists);
+
 export default {
   name: 'Testlog',
   components: { OpenDialog, PriceAdjustment },
@@ -698,7 +712,110 @@ export default {
       }).catch(() => {
         this.loading = false;
       });
+
+      // 测试数据
+
+
+      console.log(this.handlerList(lists.list));
+      this.tableData = this.handlerList(lists.list);
     },
+
+    // 基本格式(即表头定义)
+    baseData(e) {
+      return {
+        'id': this.genID(5),
+        'remark': e.remark,
+        'code': e.code, // 订单号
+        'companyName': e.companyName, // 企业名称
+        'goodsTypeName': e.goodsTypeName, // 货物类型名称
+        'addressName1': e.addressName1, // 装货地
+        'addressName2': e.addressName2, // 卸货地
+        'goodsPrice': e.goodsPrice, // 货源价格
+        'shipmentPrice': e.shipmentPrice, // 运输单价
+        'transactionPrice': e.transactionPrice, // 成交单价
+        'unitPrice': e.unitPrice // 承运单价
+        // 'branchCode': e.branchCode,
+        // 'mainOrderNumber': e.mainOrderNumber,
+        // 'shipperFactoryCode': e.shipperFactoryCode,
+        // 'projectCode': e.projectCode,
+        // 'status': e.status,
+        // 'createCode': e.createCode,
+        // 'createTime': e.createTime,
+        // 'updateCode': e.updateCode,
+        // 'updateTime': e.updateTime,
+        // 'isSpecified': e.isSpecified,
+        // 'pubilshCode': e.pubilshCode,
+        // 'classCode': e.classCode,
+        // 'isPublic': e.isPublic,
+        // 'loadType': e.loadType,
+        // 'businessType': e.businessType,
+        // 'isDel': e.isDel
+      };
+    },
+
+    // 处理返回的列表
+    handlerList(lists) {
+      return lists.map(e => {
+        // 先判断几个商品
+        const mgoods = [];
+        e.redisOrderFreightInfoVoList.forEach((redis, index) => {
+          // 获取商品信息到这里获取
+
+          e.redisOrderGoodsVoList.forEach(goods => {
+            if (goods.code === redis.goodsCode) {
+              e.goodsPrice = goods.goodsPrice;
+              e.goodsTypeName = goods.goodsTypeName || '商品' + index;
+            }
+          });
+
+          // 对应的
+          redis.redisOrderAddressInfoVoList.forEach(address => {
+            const addresCodes = address.addressCode.split(':');
+            // 地址信息的到这里获取
+            e.redisAddressList.forEach(addr => {
+              // 装货地
+              if (addr.code === addresCodes[0]) {
+                e.addressName1 = addr.addressName;
+              // 卸货地
+              } else if (addr.code === addresCodes[1]) {
+                e.addressName2 = addr.addressName;
+              }
+            });
+
+            // 具体规则到这里获取
+            address.redisOrderFreightVoList.forEach(freight => {
+              // 运输单价
+              if (freight.ruleItemCode === '17') {
+                e.shipmentPrice = freight.ruleValue;
+              }
+              // 成交单价
+              if (freight.ruleItemCode === '20') {
+                e.transactionPrice = freight.ruleValue;
+                e.unitPrice = freight.ruleValue;
+              }
+            });
+
+            mgoods.push({
+              ...this.baseData(e)
+            });
+          });
+        });
+        console.log(mgoods);
+
+
+
+        return {
+          ...mgoods.shift(),
+          children: mgoods.length ? mgoods : null
+        };
+      });
+    },
+
+    // 生成随机id
+    genID(length) {
+      return Number(Math.random().toString().substr(3, length) + Date.now()).toString(36);
+    },
+
 
     /** 搜索按钮操作 */
     handleQuery() {

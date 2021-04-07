@@ -47,8 +47,8 @@
               @change="handleRuleItemId"
             >
               <el-option
-                v-for="dict in ruleItemIdOption"
-                :key="dict.dictValue"
+                v-for="(dict, index) in ruleItemIdOption"
+                :key="index"
                 :label="dict.dictLabel"
                 :value="dict.dictValue"
               />
@@ -318,10 +318,12 @@ export default {
     async initData() {
       if (!this.pubilshCode) return;
 
-      const data = (await getListRules({ shipperCode: this.pubilshCode })).data;
-
-
-      this.ruleItemIdOption = this._baozhuan(data, 'code', 'name');
+      try {
+        const data = (await getListRules({ shipperCode: this.pubilshCode })).data;
+        this.ruleItemIdOption = this._baozhuan(data, 'code', 'name');
+      } catch (error) {
+        this.initData();
+      }
     },
 
     // 交互
@@ -588,8 +590,6 @@ export default {
         weight: orderGood.weight || undefined
       };
 
-
-
       const data = await estimateCost(qData);
 
       console.log(data);
@@ -603,7 +603,9 @@ export default {
 
       dictName.forEach(e => {
         this.getDicts(e).then(res => {
-          this[e + 'Option'] = res.data;
+          this[e + 'Option'] = res.data || [];
+        }).catch(() => {
+          this[e + 'Option'] = [];
         });
       });
     },
