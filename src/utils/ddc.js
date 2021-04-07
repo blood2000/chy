@@ -189,7 +189,7 @@ export function tableHeaderConfig(list, url, editColumn) {
           label: el.comment,
           prop: el.fieldName,
           isShow: el.isShow,
-          width: el.width || '120px',
+          width: el.width || '120',
           tooltip: true
         });
       });
