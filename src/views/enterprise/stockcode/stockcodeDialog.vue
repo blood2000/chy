@@ -6,6 +6,7 @@
         <span class="g-color-gray">(货源码名称可自定义,如线路名称等)</span>
       </el-form-item>
       <el-form-item label="货源二维码">
+        <!-- 编辑的时候不能修改二维码 -->
         <template v-if="form.id == null || form.id == undefined || form.id == ''">
           <el-button type="primary" @click="generateCode">生成货源码</el-button>
           <br>
@@ -64,17 +65,22 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
+          const params = {
+            cargoCodeName: this.form.cargoCodeName
+          };
           if (this.shipmentCode) {
-            this.form.shipmentCode = this.shipmentCode;
+            params.shipmentCode = this.shipmentCode;
           }
           if (this.form.id != null) {
-            updateStockcode(this.form).then(response => {
+            params.code = this.form.code;
+            updateStockcode(params).then(response => {
               this.msgSuccess('修改成功');
               this.close();
               this.$emit('refresh');
             });
           } else {
-            addStockcode(this.form).then(response => {
+            params.cargoCodeQR = this.form.cargoCodeQR;
+            addStockcode(params).then(response => {
               this.msgSuccess('新增成功');
               this.close();
               this.$emit('refresh');
