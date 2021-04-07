@@ -1,6 +1,7 @@
 <template>
   <div class="component-upload-image">
     <el-upload
+      ref="upload"
       :action="uploadImgUrl"
       accept="image/*"
       list-type="picture-card"
@@ -55,18 +56,24 @@ export default {
       dialogVisible: false,
       disabled: false,
       imageList: [],
+      imageOldList: [],
       images: ''
     };
   },
   watch: {
     fresh(val) {
+      console.log(val);
       if (val) {
-        console.log(this.value);
         getFile(this.value).then(response => {
           console.log(response);
-          this.imageList.push({ url: response.data.attachUrl, code: response.data.code });
+          this.imageList = response.data.map(function(res) {
+            return { url: res.attachUrl, code: res.code };
+          });
+          this.imageOldList = this.imageList;
           console.log(this.imageList);
+          // this.imageList.push({ url: response.data.attachUrl, code: response.data.code });
         });
+        this.images = this.value;
       }
     }
   },
@@ -75,7 +82,7 @@ export default {
   methods: {
     // 赋值
     inputInfo() {
-      this.images = this.imageList.map(function(response) {
+      this.images = this.imageOldList.map(function(response) {
         return [response.code];
       });
       this.images = this.images.join(',');
@@ -96,8 +103,14 @@ export default {
       this.dialogVisible = true;
     },
     handleUploadSuccess(res, images, imageList) {
-      console.log(res);
-      this.imageList.push({ url: res.data.path, code: res.data.code });
+      // console.log(res);
+      // if (this.images === '') {
+      //   this.images = res.data.code;
+      // } else {
+      //   this.images = this.images + ',' + res.data.code;
+      // }
+      // console.log(this.images);
+      this.imageOldList.push({ url: res.data.path, code: res.data.code });
       this.inputInfo();
       // this.loading.close();
     },

@@ -1,6 +1,6 @@
 <template>
   <!-- 添加或修改运输异常对话框 -->
-  <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
+  <el-dialog :title="title" :visible="visible" width="800px" append-to-body destroy-on-close @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="130px">
       <el-form-item label="货源单号" prop="mainOrderNumber">
         <el-input v-model="form.mainOrderNumber" placeholder="请输入货源单号" :disabled="formDisable" class="width90" />
@@ -24,7 +24,15 @@
       <el-divider v-if=" form.attachmentCodes " content-position="left"><span class="supplement-title">照片</span></el-divider>
 
       <el-form-item prop="attachmentCodes">
-        <uploadImage v-model="form.attachmentCodes" :disabled="formDisable" />
+        <el-row :gutter="20">
+          <el-col v-for="(images, index) in imageList" :key="index" :span="6">
+            <el-image
+              style="width: 150px; height: 150px"
+              :src="images.url"
+              :fit="cover"
+            />
+          </el-col>
+        </el-row>
       </el-form-item>
       <el-form-item label="投诉说明" prop="description">
         <el-input v-model="form.description" type="textarea" :autosize="{ minRows: 3, maxRows: 4}" placeholder="请输入投诉说明" :disabled="formDisable" class="width90" />
@@ -46,6 +54,7 @@
 
 <script>
 import { handleComplaint } from '@/api/waybill/complaint';
+import { getFile } from '@/api/system/image';
 
 export default {
   components: {
@@ -60,6 +69,7 @@ export default {
   },
   data() {
     return {
+      imageList: [],
       formDisable: true,
       // 表单参数
       form: {
@@ -118,6 +128,7 @@ export default {
         penalty: null,
         handleResult: null
       };
+      this.imageList = [];
       this.resetForm('form');
     },
     // 关闭弹窗
@@ -128,6 +139,11 @@ export default {
     // 表单赋值
     setForm(data) {
 	    this.form = data;
+      getFile(this.form.attachmentCodes).then(response => {
+        this.imageList = response.data.map(function(res) {
+          return { url: res.attachUrl, code: res.code };
+        });
+      });
     }
   }
 };

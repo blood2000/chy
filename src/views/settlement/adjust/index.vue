@@ -416,6 +416,7 @@ export default {
     this.tableHeaderConfig(this.tableColumnsConfig, adjustListApi, {
       prop: 'edit',
       isShow: true,
+      tooltip: false,
       label: '操作',
       width: 240,
       fixed: 'right'
@@ -475,9 +476,11 @@ export default {
       this.visible = true;
       switch (index) {
         case 1:
-          this.dialoga = true;
-          this.title = '驳回提示';
-          this.$refs.DialogA.setForm(row);
+          this.$alert('这里是提示内容', '驳回提示', {
+            confirmButtonText: '确定',
+            type: 'warning'
+          }).then(() => {
+          });
           break;
         case 2:
           this.$refs.RejectDialog.reset();

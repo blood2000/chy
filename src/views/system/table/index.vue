@@ -70,6 +70,7 @@
       <el-table-column label="字段名" align="center" prop="fieldName" />
       <el-table-column label="接口地址" align="center" prop="route" />
       <el-table-column label="字段描述" align="center" prop="comment" />
+      <el-table-column label="列宽" align="center" prop="width" />
       <el-table-column label="是否显示" align="center" prop="isShow">
         <template slot-scope="scope">
           <span v-if="scope.row.isShow" class="g-color-success">是</span>
@@ -118,6 +119,9 @@
         </el-form-item>
         <el-form-item label="字段描述" prop="comment">
           <el-input v-model="form.comment" placeholder="请输入字段描述" clearable />
+        </el-form-item>
+        <el-form-item label="列宽" prop="width">
+          <el-input v-model="form.width" placeholder="请输入列宽" clearable />
         </el-form-item>
         <el-form-item label="是否显示" prop="isShow">
           <el-switch v-model="form.isShow" />
@@ -233,6 +237,7 @@ export default {
         fieldName: null,
         route: null,
         comment: null,
+        width: null,
         isShow: true
       };
       this.resetForm('form');

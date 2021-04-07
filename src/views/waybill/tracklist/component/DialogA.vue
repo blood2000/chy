@@ -90,7 +90,7 @@
         </el-select>
       </el-form-item> -->
       <el-form-item label="装货单据" prop="attachmentCode">
-        <uploadImage v-model="form.attachmentCode" :fresh="fresh" :limit="1" @chooseImg="handleUploadSuccess" />
+        <uploadImage v-model="form.attachmentCode" :fresh="fresh" :limit="1" />
       </el-form-item>
       <el-form-item label="装货备注" prop="remark">
         <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" :disabled="disable" placeholder="请输入装货备注信息" style="width:90%;" />
@@ -122,8 +122,6 @@ export default {
   },
   data() {
     return {
-      // 图片
-      fresh: false,
       // 装货地址选择
       loadAddressOptions: [],
       // 商品选择
@@ -154,7 +152,8 @@ export default {
       Seconds: '',
       time: '',
       // 商品code
-      goodsCode: ''
+      goodsCode: '',
+      fresh: false
     };
   },
   computed: {
@@ -298,11 +297,11 @@ export default {
       this.waybill = data;
       this.form.code = this.waybill.code;
       console.log(this.waybill);
-    },
-    // 图片上传成功会掉
-    handleUploadSuccess() {
-      // console.log('添加图片成功 动态加一项');
     }
+    // 图片上传成功会掉
+    // handleUploadSuccess() {
+    //   console.log('添加图片成功 动态加一项');
+    // }
   }
 };
 </script>

@@ -188,7 +188,9 @@ export function tableHeaderConfig(list, url, editColumn) {
         list.unshift({
           label: el.comment,
           prop: el.fieldName,
-          isShow: el.isShow
+          isShow: el.isShow,
+          width: el.width,
+          tooltip: true
         });
       });
       if (editColumn) {
