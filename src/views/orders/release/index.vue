@@ -204,7 +204,7 @@
           <div v-if="active < 4" class="ly-t-center">
             <el-button @click="nextFe(2)">上一步</el-button>
             <el-button type="primary" @click="onSubmit('elForm',3)">{{ isCreated?'立即发布':'保存' }}</el-button>
-            <el-button @click="nextFe(4)">预  览</el-button>
+            <el-button @click="nextFe(4)">预览(查看预估价格)</el-button>
           </div>
         </template>
 
@@ -369,7 +369,7 @@ export default {
       if (query !== '') {
         this.loading = true;
         // 获取代理用户表
-        listShipment({ adminName: query, pageNum: 1, pageSize: 10 }).then(
+        listShipment({ keywords: query, pageNum: 1, pageSize: 10 }).then(
           (res) => {
             this.shipmentList = res.rows;
             this.loading = false;
@@ -533,8 +533,12 @@ export default {
     nextFe(active) {
       this.loading = true;
       if (active === 4) {
-        // console.log('4');
         this.onSubmit('elForm');
+
+
+        // 2. 请求数据预估数据
+        // 1. 单active到4的时候去显示预估价格
+        // 3. 传到组件中
       } else if (active === 2) {
         this.active = 2;
       } else if (active === 3) {
