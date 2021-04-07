@@ -2,8 +2,8 @@
   <!-- 平台用户余额 -->
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-      <el-form-item label="平台角色" prop="name">
-        <el-select v-model="queryParams.name" placeholder="请选择平台角色" clearable filterable size="small">
+      <el-form-item label="平台角色" prop="roleName">
+        <el-select v-model="queryParams.roleName" placeholder="请选择平台角色" clearable filterable size="small">
           <el-option
             v-for="dict in roleOptions"
             :key="dict.dictValue"
@@ -12,50 +12,56 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="企业名称" prop="name">
+      <el-form-item label="企业名称" prop="orgName">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.orgName"
           placeholder="请输入企业名称"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="用户姓名" prop="name">
+      <el-form-item label="用户姓名" prop="nickName">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.nickName"
           placeholder="请输入用户姓名"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="手机号码" prop="name">
+      <el-form-item label="手机号码" prop="phonenumber">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.phonenumber"
           placeholder="请输入手机号码"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="余额区间" prop="name">
-        <el-input
-          v-model="queryParams.name"
+      <el-form-item label="余额区间">
+        <el-input-number
+          v-model="queryParams.minAmount"
+          controls-position="right"
+          :precision="2"
           placeholder="最小值"
+          :step="1"
+          :min="0"
+          :max="100"
           clearable
           size="small"
-          style="width: 96px"
-          @keyup.enter.native="handleQuery"
         />
         至
-        <el-input
-          v-model="queryParams.name"
+        <el-input-number
+          v-model="queryParams.maxAmount"
+          controls-position="right"
+          :precision="2"
           placeholder="最大值"
+          :step="1"
+          :min="0"
+          :max="100"
           clearable
           size="small"
-          style="width: 96px"
-          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <el-form-item>
@@ -70,18 +76,18 @@
 
     <el-table v-loading="loading" :data="dataList">
       <el-table-column label="序号" type="index" min-width="5%" />
-      <el-table-column label="平台角色" align="center" prop="" :formatter="roleFormat" />
-      <el-table-column label="企业名称" align="center" prop="" />
-      <el-table-column label="姓名" align="center" prop="" />
-      <el-table-column label="电话" align="center" prop="" />
-      <el-table-column label="账号金额" align="center" prop="" />
-      <el-table-column label="保证金" align="center" prop="" />
-      <el-table-column label="最近金额变动时间" align="center" prop="time">
+      <el-table-column label="平台角色" align="center" prop="roleName" />
+      <el-table-column label="企业名称" align="center" prop="orgName" />
+      <el-table-column label="姓名" align="center" prop="nickName" />
+      <el-table-column label="电话" align="center" prop="phonenumber" />
+      <el-table-column label="账号金额" align="center" prop="amount" />
+      <el-table-column label="保证金" align="center" prop="freezeAmount" />
+      <el-table-column label="最近金额变动时间" align="center" prop="updateTime">
         <template slot-scope="scope">
-          {{ parseTime(scope.row.time) }}
+          {{ parseTime(scope.row.updateTime) }}
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="200" fixed="right">
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="180" fixed="right">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -141,11 +147,17 @@ export default {
       balanceOpen: false,
       detailOpen: false,
       // 平台角色字典
-      roleOptions: [],
+      roleOptions: [
+        { dictLabel: '货主', dictValue: 0 },
+        { dictLabel: '调度者', dictValue: 1 },
+        { dictLabel: '司机', dictValue: 2 }
+      ],
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 10
+        pageSize: 10,
+        isAsc: 'asc',
+        orderByColumn: 'nickName'
       }
     };
   },
@@ -157,8 +169,8 @@ export default {
     getList() {
       this.loading = true;
       balanceList(this.queryParams).then(response => {
-        this.dataList = response.rows;
-        this.total = response.total;
+        this.dataList = response.data.rows;
+        this.total = response.data.total;
         this.loading = false;
       });
     },
