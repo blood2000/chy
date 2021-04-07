@@ -70,7 +70,12 @@
       <el-table-column label="字段名" align="center" prop="fieldName" />
       <el-table-column label="接口地址" align="center" prop="route" />
       <el-table-column label="字段描述" align="center" prop="comment" />
-      <el-table-column label="列宽" align="center" prop="width" />
+      <el-table-column label="列宽" align="center" prop="width">
+        <template slot-scope="scope">
+          <span v-if="scope.row.width">{{ scope.row.width }}</span>
+          <span v-else>自适应</span>
+        </template>
+      </el-table-column>
       <el-table-column label="是否显示" align="center" prop="isShow">
         <template slot-scope="scope">
           <span v-if="scope.row.isShow" class="g-color-success">是</span>
