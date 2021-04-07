@@ -60,7 +60,15 @@
           >下载</el-button>
         </template>
       </el-table-column>
-      <el-table-column label="关联的货源数" align="center" prop="relationOrderNum" />
+      <el-table-column label="关联的货源数" align="center" prop="relationOrderNum">
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleOrderList(scope.row)"
+          >{{ scope.row.relationOrderNum }}</el-button>
+        </template>
+      </el-table-column>
       <!-- <el-table-column label="创建人" align="center" prop="createCode" />
       <el-table-column label="更新人" align="center" prop="updateCode" /> -->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
@@ -92,17 +100,21 @@
 
     <!-- 添加或修改对话框 -->
     <stockcode-dialog ref="StockcodeDialog" :title="title" :open.sync="open" :shipment-code="shipmentCode" @refresh="getList" />
+    <!-- 货源码下的货源列表对话框 -->
+    <order-list-dialog :title="title" :open.sync="orderListOpen" :code="classCode" />
   </div>
 </template>
 
 <script>
 import { listStockcode, getStockcode, delStockcode } from '@/api/enterprise/stockcode';
 import StockcodeDialog from './stockcodeDialog.vue';
+import orderListDialog from './orderListDialog.vue';
 
 export default {
   name: 'Stockcode',
   components: {
-    StockcodeDialog
+    StockcodeDialog,
+    orderListDialog
   },
   props: {
     shipmentCode: {
@@ -130,16 +142,17 @@ export default {
       title: '',
       // 是否显示弹出层
       open: false,
+      orderListOpen: false,
       // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
         code: null,
         cargoCodeName: null,
-        cargoCodeQr: null,
-        createCode: null,
-        updateCode: null
-      }
+        cargoCodeQr: null
+      },
+      // 选中code
+      classCode: ''
     };
   },
   created() {
@@ -221,6 +234,12 @@ export default {
         a.click();
         window.URL.revokeObjectURL(url);
       }));
+    },
+    /** 获取货源码下的货源列表 */
+    handleOrderList(row) {
+      this.classCode = row.code;
+      this.orderListOpen = true;
+      this.title = '关联的货源列表';
     }
   }
 };
