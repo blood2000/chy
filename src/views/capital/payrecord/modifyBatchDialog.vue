@@ -13,7 +13,7 @@
       @click="handleAdd"
     >新增</el-button>
     <el-table :data="infoList">
-      <el-table-column label="序号" type="index" min-width="5%" />
+      <el-table-column label="序号" align="center" type="index" min-width="5%" />
       <el-table-column label="支付批次号" align="center" prop="name">
         <template scope="scope">
           <el-input v-model="scope.row.name" size="small" clearable />

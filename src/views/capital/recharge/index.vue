@@ -88,11 +88,13 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
+      <el-col :span="1.5" class="fr">
+        <tablec-cascader v-model="tableColumnsConfig" />
+      </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
     <el-table v-loading="loading" :data="rechargeList">
-      <el-table-column label="序号" type="index" min-width="5%" />
       <el-table-column label="平台角色" align="center" prop="" :formatter="roleFormat" />
       <el-table-column label="姓名" align="center" prop="" />
       <el-table-column label="手机号" align="center" prop="" />
@@ -123,12 +125,13 @@
 </template>
 
 <script>
-import { rechargelist } from '@/api/capital/recharge';
+import { rechargelistApi, rechargelist } from '@/api/capital/recharge';
 
 export default {
   name: 'Recharge',
   data() {
     return {
+      tableColumnsConfig: [],
       // 遮罩层
       loading: true,
       // 显示搜索条件
@@ -157,6 +160,7 @@ export default {
     };
   },
   created() {
+    this.tableHeaderConfig(this.tableColumnsConfig, rechargelistApi);
     this.getList();
   },
   methods: {

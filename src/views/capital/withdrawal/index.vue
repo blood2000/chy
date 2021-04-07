@@ -142,12 +142,14 @@
           @click="handleRefreshStatus"
         >更新网商提现状态</el-button>
       </el-col>
+      <el-col :span="1.5" class="fr">
+        <tablec-cascader v-model="tableColumnsConfig" />
+      </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
     <el-table v-loading="loading" :data="withdrawalList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <el-table-column label="序号" type="index" min-width="5%" />
       <el-table-column label="申请状态" align="center" prop="" />
       <el-table-column label="支付批次号" align="center" prop="" />
       <el-table-column label="申请人" align="center" prop="" />
@@ -186,12 +188,13 @@
 </template>
 
 <script>
-import { getWithDrawalList } from '@/api/capital/withdrawal';
+import { withDrawalListApi, getWithDrawalList } from '@/api/capital/withdrawal';
 
 export default {
   name: 'Withdrawal',
   data() {
     return {
+      tableColumnsConfig: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -222,6 +225,13 @@ export default {
     };
   },
   created() {
+    this.tableHeaderConfig(this.tableColumnsConfig, withDrawalListApi, {
+      prop: 'edit',
+      isShow: true,
+      label: '操作',
+      width: 180,
+      fixed: 'right'
+    });
     this.getList();
   },
   methods: {

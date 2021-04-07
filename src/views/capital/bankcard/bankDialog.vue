@@ -20,15 +20,24 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="账户类型" prop="bankType">
+        <el-radio-group v-model="form.bankType">
+          <el-radio
+            v-for="dict in bankTypeOptions"
+            :key="dict.dictValue"
+            :label="dict.dictValue"
+          >{{ dict.dictLabel }}</el-radio>
+        </el-radio-group>
+      </el-form-item>
       <el-form-item label="开户姓名" prop="name">
         <el-input v-model="form.name" placeholder="请输入开户姓名" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="银行卡号" prop="name">
-        <el-input v-model="form.name" placeholder="请输入银行卡号" class="width90" clearable />
+      <el-form-item label="银行卡号" prop="account">
+        <el-input v-model="form.account" placeholder="请输入银行卡号" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="开户银行" prop="name">
+      <el-form-item label="开户银行" prop="bankName">
         <el-select
-          v-model="form.name"
+          v-model="form.bankName"
           class="width90"
         >
           <el-option
@@ -39,12 +48,12 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="绑定手机号" prop="name">
-        <el-input v-model="form.name" placeholder="请输入绑定手机号" class="width90" clearable />
+      <el-form-item label="绑定手机号" prop="mobile">
+        <el-input v-model="form.mobile" placeholder="请输入绑定手机号" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="网点" prop="branchCode">
+      <el-form-item label="网点" prop="bankBranch">
         <el-select
-          v-model="form.branchCode"
+          v-model="form.bankBranch"
           filterable
           remote
           reserve-keyword
@@ -67,23 +76,14 @@
         :label-name="'开户城市'"
         :visible="visible"
         :disabled="disable"
-        :prop-province-code="form.provinceCode"
-        :prop-city-code="form.cityCode"
+        :prop-province-code="form.province"
+        :prop-city-code="form.city"
         :no-county="true"
         @refresh="(data) => {
-          form.provinceCode = data.provinceCode;
-          form.cityCode = data.cityCode;
+          form.province = data.provinceCode;
+          form.city = data.cityCode;
         }"
       />
-      <el-form-item label="账户类型" prop="name">
-        <el-radio-group v-model="form.name">
-          <el-radio
-            v-for="dict in typeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictValue"
-          >{{ dict.dictLabel }}</el-radio>
-        </el-radio-group>
-      </el-form-item>
       <el-form-item label="是否默认" prop="isDefault">
         <el-switch v-model="form.isDefault" />
       </el-form-item>
@@ -118,7 +118,7 @@ export default {
       // 开户银行数据字典
       bankOptions: [],
       // 账户类型字典
-      typeOptions: [
+      bankTypeOptions: [
         { dictLabel: '个人账户', dictValue: 1 },
         { dictLabel: '企业账户', dictValue: 2 }
       ],

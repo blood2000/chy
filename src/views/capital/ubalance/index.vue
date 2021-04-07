@@ -71,39 +71,31 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
+      <el-col :span="1.5" class="fr">
+        <tablec-cascader v-model="tableColumnsConfig" />
+      </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table v-loading="loading" :data="dataList">
-      <el-table-column label="序号" type="index" min-width="5%" />
-      <el-table-column label="平台角色" align="center" prop="roleName" />
-      <el-table-column label="企业名称" align="center" prop="orgName" />
-      <el-table-column label="姓名" align="center" prop="nickName" />
-      <el-table-column label="电话" align="center" prop="phonenumber" />
-      <el-table-column label="账号金额" align="center" prop="amount" />
-      <el-table-column label="保证金" align="center" prop="freezeAmount" />
-      <el-table-column label="最近金额变动时间" align="center" prop="updateTime">
-        <template slot-scope="scope">
-          {{ parseTime(scope.row.updateTime) }}
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="180" fixed="right">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-coin"
-            @click="handleBalance(scope.row)"
-          >网商余额</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-document"
-            @click="handleDetail(scope.row)"
-          >明细</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <RefactorTable :loading="loading" :data="dataList" :table-columns-config="tableColumnsConfig">
+      <template #updateTime="{row}">
+        <span>{{ parseTime(row.updateTime, '{y}-{m}-{d}') }}</span>
+      </template>
+      <template #edit="{row}">
+        <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-coin"
+          @click="handleBalance(row)"
+        >网商余额</el-button>
+        <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-document"
+          @click="handleDetail(row)"
+        >明细</el-button>
+      </template>
+    </RefactorTable>
 
     <pagination
       v-show="total>0"
@@ -121,7 +113,7 @@
 </template>
 
 <script>
-import { balanceList } from '@/api/capital/ubalance';
+import { balanceListApi, balanceList } from '@/api/capital/ubalance';
 import ChangeDetailDialog from '../components/changeDetailDialog';
 import CheckBalanceDialog from '../components/checkBalanceDialog';
 
@@ -133,6 +125,7 @@ export default {
   },
   data() {
     return {
+      tableColumnsConfig: [],
       // 遮罩层
       loading: true,
       // 显示搜索条件
@@ -162,6 +155,13 @@ export default {
     };
   },
   created() {
+    this.tableHeaderConfig(this.tableColumnsConfig, balanceListApi, {
+      prop: 'edit',
+      isShow: true,
+      label: '操作',
+      width: 180,
+      fixed: 'right'
+    });
     this.getList();
   },
   methods: {
@@ -173,10 +173,6 @@ export default {
         this.total = response.data.total;
         this.loading = false;
       });
-    },
-    /** 平台角色字典翻译 */
-    roleFormat(row, column) {
-      return this.selectDictLabel(this.roleOptions, row.status);
     },
     /** 搜索按钮操作 */
     handleQuery() {
