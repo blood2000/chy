@@ -9,7 +9,7 @@
         :align="th.align || 'center'"
         :prop="th.prop"
         :label="th.label"
-        :width="th.width"
+        :min-width="th.width"
         :fixed="th.fixed==='' ? null : th.fixed"
         :show-overflow-tooltip="th.tooltip || false"
         :sortable="th.sortable || false"
