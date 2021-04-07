@@ -7,7 +7,11 @@
     append-to-body
     @close="cancel"
   >
-    <div v-html="agreementHtml" />
+    <div ref="AgreementHtml" v-html="agreementHtml" />
+    <div slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="submitForm">打 印</el-button>
+      <el-button @click="cancel">取 消</el-button>
+    </div>
   </el-dialog>
 </template>
 
@@ -37,6 +41,25 @@ export default {
     }
   },
   methods: {
+    // 打印按钮
+    submitForm() {
+      const content = this.$refs.AgreementHtml.innerHTML;
+      var printDiv = document.createElement('div');
+      printDiv.innerHTML = content;
+      printDiv.style.position = 'fixed';
+      printDiv.style.left = '0';
+      printDiv.style.top = '0';
+      printDiv.style.right = '0';
+      printDiv.style.bottom = '0';
+      printDiv.style.width = '100%';
+      printDiv.style.height = '100%';
+      printDiv.style.zIndex = '100000';
+      printDiv.style.background = '#fff';
+      printDiv.style.overflow = 'auto';
+      document.body.appendChild(printDiv);
+      window.print();
+      document.body.removeChild(printDiv);
+    },
     // 取消按钮
     cancel() {
       this.close();

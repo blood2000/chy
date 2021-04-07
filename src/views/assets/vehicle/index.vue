@@ -7,25 +7,16 @@
       :inline="true"
       label-width="68px"
     >
-      <!-- <el-form-item label="编码" prop="code">
-        <el-input
-          v-model="queryParams.code"
-          placeholder="请输入编码"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
-      <el-form-item label="名称" prop="licenseNumber">
+      <el-form-item label="车牌号" prop="licenseNumber">
         <el-input
           v-model="queryParams.licenseNumber"
-          placeholder="请输入名称"
+          placeholder="请输入车牌号"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="车主编码" prop="vehicleOwnerCode">
+      <!-- <el-form-item label="车主编码" prop="vehicleOwnerCode">
         <el-input
           v-model="queryParams.vehicleOwnerCode"
           placeholder="请输入车主编码"
@@ -33,7 +24,7 @@
           size="small"
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="归属类型" prop="vehicleAscriptionType">
         <el-select
           v-model="queryParams.vehicleAscriptionType"
@@ -50,42 +41,6 @@
           />
         </el-select>
       </el-form-item>
-      <!-- <el-form-item label="车牌类型代码" prop="classificationCode">
-        <el-input
-          v-model="queryParams.classificationCode"
-          placeholder="请输入车牌类型代码"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
-      <!-- <el-form-item label="车牌颜色代码" prop="vehicleLicenseColorCode">
-        <el-input
-          v-model="queryParams.vehicleLicenseColorCode"
-          placeholder="请输入车牌颜色代码"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
-      <!-- <el-form-item label="车身颜色代码" prop="vehicleColorCode">
-        <el-input
-          v-model="queryParams.vehicleColorCode"
-          placeholder="请输入车身颜色代码"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
-      <!-- <el-form-item label="车身颜色代码" prop="vehicleTypeCode">
-        <el-input
-          v-model="queryParams.vehicleTypeCode"
-          placeholder="请输入车身颜色代码"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
       <el-form-item label="能源类型" prop="vehicleEnergyType">
         <el-select
           v-model="queryParams.vehicleEnergyType"
@@ -95,130 +50,13 @@
           size="small"
         >
           <el-option
-            v-for="dict in vehicleEnergyTypeOptions"
+            v-for="dict in energyTypesOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
           />
         </el-select>
       </el-form-item>
-      <!-- <el-form-item label="车长代码" prop="vehicleLength">
-        <el-input
-          v-model="queryParams.vehicleLength"
-          placeholder="请输入车长代码"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
-      <!-- <el-form-item label="车宽代码" prop="vehicleWidth">
-        <el-input
-          v-model="queryParams.vehicleWidth"
-          placeholder="请输入车宽代码"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
-      <!-- <el-form-item label="车高代码" prop="vehicleHeight">
-        <el-input
-          v-model="queryParams.vehicleHeight"
-          placeholder="请输入车高代码"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
-      <!-- <el-form-item label="车辆总重量" prop="vehicleTotalWeight">
-        <el-input
-          v-model="queryParams.vehicleTotalWeight"
-          placeholder="请输入车辆总重量"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
-      <!-- <el-form-item label="可载重量" prop="vehicleLoadWeight">
-        <el-input
-          v-model="queryParams.vehicleLoadWeight"
-          placeholder="请输入车辆可载重量"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="可载平方" prop="vehicleLoadVolume">
-        <el-input
-          v-model="queryParams.vehicleLoadVolume"
-          placeholder="请输入车辆可载平方"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="可载立方" prop="vehicleRemainingLoadVolume">
-        <el-input
-          v-model="queryParams.vehicleRemainingLoadVolume"
-          placeholder="请输入车辆可载立方"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
-      <!-- <el-form-item label="车身自重" prop="selfRespect">
-        <el-input
-          v-model="queryParams.selfRespect"
-          placeholder="请输入车身自重"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
-      <!-- <el-form-item label="车架号" prop="chassisNumber">
-        <el-input
-          v-model="queryParams.chassisNumber"
-          placeholder="请输入车架号"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
-      <!-- <el-form-item label="发动机号" prop="engineNumber">
-        <el-input
-          v-model="queryParams.engineNumber"
-          placeholder="请输入发动机号"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
-      <!-- <el-form-item label="底盘号" prop="vehicleChassisNumber">
-        <el-input
-          v-model="queryParams.vehicleChassisNumber"
-          placeholder="请输入底盘号"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
-      <!-- <el-form-item label="功率" prop="vehiclePower">
-        <el-input
-          v-model="queryParams.vehiclePower"
-          placeholder="请输入功率"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
-      <!-- <el-form-item label="轴数" prop="axesNumber">
-        <el-input
-          v-model="queryParams.axesNumber"
-          placeholder="请输入轴数"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
       <el-form-item label="年审时间" prop="annualVerificationDate">
         <el-date-picker
           v-model="queryParams.annualVerificationDate"
@@ -332,14 +170,49 @@
     </el-row>
 
     <RefactorTable :loading="loading" :data="vehicleList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
-      <template #vehicleAscriptionType="{row}">
-        <span>{{ selectDictLabel( vehicleAscriptionTypeOptions, row.vehicleAscriptionType ) }}</span>
+      <!-- 车牌类型 -->
+      <template #classificationCode="{row}">
+        <span>{{ selectDictLabel( licensePlateTypeOptions, row.classificationCode ) }}</span>
       </template>
+      <!-- 车牌颜色 -->
+      <template #vehicleLicenseColorCode="{row}">
+        <span>{{ selectDictLabel( licenseColorOptions, row.vehicleLicenseColorCode ) }}</span>
+      </template>
+      <!-- 车身颜色 -->
+      <template #vehicleColorCode="{row}">
+        <span>{{ selectDictLabel( carBodyColorOptions, row.vehicleColorCode ) }}</span>
+      </template>
+      <!-- 车辆类型 -->
       <template #vehicleTypeCode="{row}">
         <span>{{ selectDictLabel(vehicleTypeOptions, row.vehicleTypeCode) }}</span>
       </template>
+      <!-- 能源类型 -->
       <template #vehicleEnergyType="{row}">
-        <span>{{ selectDictLabel(vehicleEnergyTypeOptions, row.vehicleEnergyType) }}</span>
+        <span>{{ selectDictLabel(energyTypesOptions, row.vehicleEnergyType) }}</span>
+      </template>
+      <!-- 车长 -->
+      <template #vehicleLength="{row}">
+        <span>{{ selectDictLabel(vehicleLengthOptions, row.vehicleLength) }}</span>
+      </template>
+      <!-- 车宽 -->
+      <template #vehicleWidth="{row}">
+        <span>{{ selectDictLabel(vehicleWidthOptions, row.vehicleWidth) }}</span>
+      </template>
+      <!-- 车高 -->
+      <template #vehicleHeight="{row}">
+        <span>{{ selectDictLabel(vehicleHeightOptions, row.vehicleHeight) }}</span>
+      </template>
+      <!-- 轴数 -->
+      <template #axesNumber="{row}">
+        <span>{{ selectDictLabel(axisTypeOptions, row.axesNumber) }}</span>
+      </template>
+      <!-- 车辆归属类型 -->
+      <template #vehicleAscriptionType="{row}">
+        <span>{{ selectDictLabel( vehicleAscriptionTypeOptions, row.vehicleAscriptionType ) }}</span>
+      </template>
+      <!-- 是否冻结 -->
+      <template #isFreeze="{row}">
+        <span>{{ selectDictLabel( isFreezeOptions, row.isFreeze ) }}</span>
       </template>
       <template #annualVerificationDate="{row}">
         <span>{{ parseTime(row.annualVerificationDate, '{y}-{m}-{d}') }}</span>
@@ -439,10 +312,24 @@ export default {
       title: '',
       // 是否显示弹出层
       open: false,
+      // 车牌类型字典
+      licensePlateTypeOptions: [],
+      // 车牌颜色字典
+      licenseColorOptions: [],
+      // 车身颜色字典
+      carBodyColorOptions: [],
       // 车辆类型字典
-      vehicleTypeOptions: [],
-      // 车辆能源类型字典
-      vehicleEnergyTypeOptions: [],
+  	  vehicleTypeOptions: [],
+      // 能源类型字典
+  	  energyTypesOptions: [],
+  	  // 车长字典
+  	  vehicleLengthOptions: [],
+  	  // 车宽字典
+  	  vehicleWidthOptions: [],
+  	  // 车高字典
+  	  vehicleHeightOptions: [],
+  	  // 轴数字典
+  	  axisTypeOptions: [],
       // 车辆归属类型字典
       vehicleAscriptionTypeOptions: [
         { dictLabel: '自有', dictValue: '0' },
@@ -490,11 +377,41 @@ export default {
   methods: {
     /** 查询字典 */
     getDictsList() {
-      this.getDicts('energyTypes').then((response) => {
-        this.vehicleEnergyTypeOptions = response.data;
+      // 车牌类型
+      this.getDicts('licensePlateType').then(response => {
+        this.licensePlateTypeOptions = response.data;
       });
-      this.getDicts('vehicleType').then((response) => {
+      // 车牌颜色
+      this.getDicts('licenseColor').then(response => {
+        this.licenseColorOptions = response.data;
+      });
+      // 车身颜色
+      this.getDicts('CarBodyColor').then(response => {
+        this.carBodyColorOptions = response.data;
+      });
+      // 车辆类型
+      this.getDicts('vehicleType').then(response => {
         this.vehicleTypeOptions = response.data;
+      });
+      // 能源类型
+      this.getDicts('energyTypes').then(response => {
+        this.energyTypesOptions = response.data;
+      });
+      // 车长
+      this.getDicts('vehicleLength').then(response => {
+        this.vehicleLengthOptions = response.data;
+      });
+      // 车宽
+      this.getDicts('vehicleWidth').then(response => {
+        this.vehicleWidthOptions = response.data;
+      });
+      // 车高
+      this.getDicts('vehicleHeight').then(response => {
+        this.vehicleHeightOptions = response.data;
+      });
+      // 轴数
+      this.getDicts('axis_type').then(response => {
+        this.axisTypeOptions = response.data;
       });
     },
     /** 查询车辆列表 */
@@ -565,14 +482,12 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      })
-        .then(function() {
-          return delInfo(ids);
-        })
-        .then(() => {
-          this.getList();
-          this.msgSuccess('删除成功');
-        });
+      }).then(function() {
+        return delInfo(ids);
+      }).then(() => {
+        this.getList();
+        this.msgSuccess('删除成功');
+      });
     },
     /** 导出按钮操作 */
     handleExport() {

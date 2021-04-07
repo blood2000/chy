@@ -191,9 +191,9 @@
       <template #cancelStatus="{row}">
         <span>{{ selectDictLabel(cancelStatusOptions, row.cancelStatus) }}</span>
       </template>
-      <template #goodsBigType="{row}">
+      <!-- <template #goodsBigType="{row}">
         <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
-      </template>
+      </template> -->
 
       <template #edit="{row}">
         <el-button

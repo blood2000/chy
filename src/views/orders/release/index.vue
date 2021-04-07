@@ -353,9 +353,9 @@ export default {
 
   created() {
     // 判断用户
-    const { isShipment = false, user = {}} = getUserInfo() || {};
+    const { isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
     this.isShipment = isShipment;
-    this.isShipment && (this.formData.tin1 = user.userCode);
+    this.isShipment && (this.formData.tin1 = shipment.info.code);
 
     // 判断地址栏有没有id- true=>有说明编辑/详情 false=>创建-什么都不做
     if (this.idCode) {
