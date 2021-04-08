@@ -1,9 +1,7 @@
 <template>
   <div class="app-container">
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-      <el-form-item label="货主" prop="searchValue">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
-      <el-form-item label="货主姓名" prop="adminName">
+      <el-form-item label="货主" prop="searchValue">
         <el-input
           v-model="queryParams.searchValue"
           placeholder="公司名称/客户名称/手机号"
