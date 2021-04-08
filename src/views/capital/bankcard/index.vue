@@ -240,7 +240,6 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row, type) {
       this.$refs.bankDialogRef.reset();
-      // 这里需要调获取详情接口
       getBankDetail(row.id).then(response => {
         this.$refs.bankDialogRef.setForm(response.data);
         switch (type) {
