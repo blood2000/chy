@@ -179,7 +179,15 @@
               <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
             </el-row>
 
-            <RefactorTable :loading="loading" :data="list" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
+            <RefactorTable
+              :loading="loading"
+              :data="list"
+              row-key="id"
+              stripe
+              default-expand-all
+              :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+              :table-columns-config="tableColumnsConfig"
+            ><!-- @selection-change="handleSelectionChange" -->
               <template #landAddress="{row}">
                 <span>{{ row.landAddress }}</span>
               </template>
@@ -337,62 +345,6 @@
               </template>
             </RefactorTable>
 
-
-            <el-table
-              :data="tableData"
-              style="width: 100%;margin-bottom: 20px;"
-              row-key="id"
-              border
-              default-expand-all
-              :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
-            >
-              <el-table-column
-                prop="date"
-                label="货源单号"
-                sortable
-                width="200"
-              />
-              <el-table-column
-                prop="name"
-                label="企业名称"
-                sortable
-                width="180"
-              />
-              <el-table-column
-                prop="address1"
-                label="货物类型"
-              />
-              <el-table-column
-                prop="address2"
-                label="装货地"
-              />
-              <el-table-column
-                prop="address3"
-                label="卸货地"
-              />
-              <el-table-column
-                prop="address4"
-                label="运输要求"
-              />
-              <el-table-column
-                prop="address5"
-                label="运输单价"
-              />
-              <el-table-column
-                prop="address6"
-                label="成交单价"
-              />
-              <el-table-column
-                prop="address7"
-                label="承运单价"
-              />
-              <el-table-column
-                prop="edit"
-                label="编辑"
-              />
-
-            </el-table>
-
             <pagination
               v-show="total>0"
               :total="total"
@@ -425,7 +377,7 @@ import { listManagesApi, getOrderInfoList, delOrder, loadAndUnloadingGoods, expo
 import { getOrderByCode } from '@/api/order/release';
 
 import OpenDialog from './component/OpenDialog';
-// import tableColumnsConfig from './data/config-index';
+import tableColumnsConfig from './data/config-index';
 
 const tableData = [{
   id: 3,
@@ -467,6 +419,7 @@ const tableData = [{
 }];
 
 import PriceAdjustment from './component/PriceAdjustment';
+
 export default {
   name: 'Testlog',
   components: { OpenDialog, PriceAdjustment },
@@ -667,14 +620,14 @@ export default {
   },
 
   created() {
-    this.tableHeaderConfig(this.tableColumnsConfig, listManagesApi, {
-      prop: 'edit',
-      isShow: true,
-      label: '操作',
-      width: 180,
-      fixed: 'right'
-    });
-    // this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || this.tableColumnsConfig;
+    // this.tableHeaderConfig(this.tableColumnsConfig, listManagesApi, {
+    //   prop: 'edit',
+    //   isShow: true,
+    //   label: '操作',
+    //   width: 180,
+    //   fixed: 'right'
+    // });
+    this.tableColumnsConfig = tableColumnsConfig;
     this.getDict();
     this.getList();
   },
@@ -692,13 +645,110 @@ export default {
     getList() {
       this.loading = true;
       getOrderInfoList(this.newQueryParams).then(response => {
-        this.list = response.data.list;
+        this.list = this.handlerList(response.data.list);
         this.total = response.data.total - 0;
         this.loading = false;
       }).catch(() => {
         this.loading = false;
       });
     },
+
+    // 基本格式(即表头定义)
+    baseData(e) {
+      return {
+        'id': this.genID(5),
+        'remark': e.remark,
+        'code': e.code, // 订单号
+        'companyName': e.companyName, // 企业名称
+        'goodsTypeName': e.goodsTypeName, // 货物类型名称
+        'addressName1': e.addressName1, // 装货地
+        'addressName2': e.addressName2, // 卸货地
+        'goodsPrice': e.goodsPrice, // 货源价格
+        'shipmentPrice': e.shipmentPrice, // 运输单价
+        'transactionPrice': e.transactionPrice, // 成交单价
+        'unitPrice': e.unitPrice // 承运单价
+        // 'branchCode': e.branchCode,
+        // 'mainOrderNumber': e.mainOrderNumber,
+        // 'shipperFactoryCode': e.shipperFactoryCode,
+        // 'projectCode': e.projectCode,
+        // 'status': e.status,
+        // 'createCode': e.createCode,
+        // 'createTime': e.createTime,
+        // 'updateCode': e.updateCode,
+        // 'updateTime': e.updateTime,
+        // 'isSpecified': e.isSpecified,
+        // 'pubilshCode': e.pubilshCode,
+        // 'classCode': e.classCode,
+        // 'isPublic': e.isPublic,
+        // 'loadType': e.loadType,
+        // 'businessType': e.businessType,
+        // 'isDel': e.isDel
+      };
+    },
+
+    // 处理返回的列表
+    handlerList(lists) {
+      return lists.map(e => {
+        // 先判断几个商品
+        const mgoods = [];
+        e.redisOrderFreightInfoVoList.forEach((redis, index) => {
+          // 获取商品信息到这里获取
+
+          e.redisOrderGoodsVoList.forEach(goods => {
+            if (goods.code === redis.goodsCode) {
+              e.goodsPrice = goods.goodsPrice;
+              e.goodsTypeName = goods.goodsTypeName || '商品' + index;
+            }
+          });
+
+          // 对应的
+          redis.redisOrderAddressInfoVoList.forEach(address => {
+            const addresCodes = address.addressCode.split(':');
+            // 地址信息的到这里获取
+            e.redisAddressList.forEach(addr => {
+              // 装货地
+              if (addr.code === addresCodes[0]) {
+                e.addressName1 = addr.addressName;
+              // 卸货地
+              } else if (addr.code === addresCodes[1]) {
+                e.addressName2 = addr.addressName;
+              }
+            });
+
+            // 具体规则到这里获取
+            address.redisOrderFreightVoList.forEach(freight => {
+              // 运输单价
+              if (freight.ruleItemCode === '17') {
+                e.shipmentPrice = freight.ruleValue;
+              }
+              // 成交单价
+              if (freight.ruleItemCode === '20') {
+                e.transactionPrice = freight.ruleValue;
+                e.unitPrice = freight.ruleValue;
+              }
+            });
+
+            mgoods.push({
+              ...this.baseData(e)
+            });
+          });
+        });
+        console.log(mgoods);
+
+
+
+        return {
+          ...mgoods.shift(),
+          children: mgoods.length ? mgoods : null
+        };
+      });
+    },
+
+    // 生成随机id
+    genID(length) {
+      return Number(Math.random().toString().substr(3, length) + Date.now()).toString(36);
+    },
+
 
     /** 搜索按钮操作 */
     handleQuery() {

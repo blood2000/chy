@@ -78,7 +78,6 @@
                 :disabled="formData.totalType === '1'"
                 :controls="false"
                 :placeholder="`请输入重量(${goodsUnitName})`"
-                step-strictly
                 controls-position="right"
                 :style="{ width: '120px' }"
               />
@@ -95,7 +94,7 @@
               v-model="formData.vehicleMaxWeight"
               :controls="false"
               placeholder="请输入最高配载"
-              step-strictly
+
               controls-position="right"
               :style="{ width: '80%' }"
             />
@@ -119,7 +118,8 @@
               v-model="formData.goodsPrice"
               :controls="false"
               placeholder="货物单价"
-              step-strictly
+              :precision="2"
+              :step="0.01"
               controls-position="right"
               :style="{ width: '80%' }"
             />
@@ -127,15 +127,6 @@
           </el-form-item>
         </el-col>
       </el-row>
-
-
-
-
-
-
-
-
-
 
       <el-form-item label="车型" prop="vehicleType">
         <el-select
@@ -269,21 +260,13 @@ export default {
         totalType: [
           { required: true, message: '', trigger: 'change' }
         ],
-        // goodsUnit: [
-        //   { required: true, message: '请选择货物计量单位', trigger: 'change' }
-        // ],
         number: [
           { required: true, message: '请输入车数', trigger: 'blur' }
         ],
-        // shipmentPrice: [
-        //   { required: true, message: '请输入运输单价', trigger: 'blur' }
-        // ],
         goodsPrice: [
-          // { required: true, message: '请输入货物单价', trigger: 'blur' },
           { validator: validatePass, required: true, trigger: 'blur' }
         ],
         vehicleMaxWeight: [
-          // { required: true, message: '请输入货物单价', trigger: 'blur' }
           { validator: validatePass2, required: true, trigger: 'blur' }
 
         ]
@@ -322,9 +305,6 @@ export default {
     cbData: {
       handler(value) {
         if (!value) return;
-
-        console.log(value, '回填基本信息');
-
         const {
           businessType,
           stowageStatus,
