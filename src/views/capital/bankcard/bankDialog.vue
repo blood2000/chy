@@ -1,9 +1,9 @@
 <template>
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
-      <el-form-item label="选择人员" prop="name">
+      <el-form-item label="选择人员" prop="userCode">
         <el-select
-          v-model="form.name"
+          v-model="form.userCode"
           filterable
           remote
           reserve-keyword
@@ -20,15 +20,6 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="账户类型" prop="bankType">
-        <el-radio-group v-model="form.bankType">
-          <el-radio
-            v-for="dict in bankTypeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictValue"
-          >{{ dict.dictLabel }}</el-radio>
-        </el-radio-group>
-      </el-form-item>
       <el-form-item label="开户姓名" prop="name">
         <el-input v-model="form.name" placeholder="请输入开户姓名" class="width90" clearable />
       </el-form-item>
@@ -39,6 +30,9 @@
         <el-select
           v-model="form.bankName"
           class="width90"
+          placeholder="请选择开户银行"
+          filterable
+          clearable
         >
           <el-option
             v-for="dict in bankOptions"
@@ -84,6 +78,26 @@
           form.city = data.cityCode;
         }"
       />
+      <el-form-item label="账户类型" prop="bankType">
+        <el-radio-group v-model="form.bankType">
+          <el-radio
+            v-for="dict in bankTypeOptions"
+            :key="dict.dictValue"
+            :label="dict.dictValue"
+          >{{ dict.dictLabel }}</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <!-- 企业账户必填 -->
+      <el-form-item
+        v-if="form.bankType === 2"
+        label="银行支行号"
+        prop="bankLineNo"
+        :rules="[
+          { required: true, message: '银行支行号不能为空', trigger: 'blur' },
+        ]"
+      >
+        <el-input v-model="form.bankLineNo" placeholder="请输入银行支行号" class="width90" clearable />
+      </el-form-item>
       <el-form-item label="是否默认" prop="isDefault">
         <el-switch v-model="form.isDefault" />
       </el-form-item>
@@ -97,9 +111,10 @@
 </template>
 
 <script>
-import { addShipment, updateShipment } from '@/api/assets/shipment';
+import { addBank, updateBank } from '@/api/capital/bankcard';
 import { getBranchList } from '@/api/system/branch';
 import ProvinceCityCounty from '@/components/ProvinceCityCounty';
+import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
 
 export default {
   components: {
@@ -115,7 +130,7 @@ export default {
   },
   data() {
     return {
-      // 开户银行数据字典
+      // 开户银行字典
       bankOptions: [],
       // 账户类型字典
       bankTypeOptions: [
@@ -126,9 +141,24 @@ export default {
       form: {},
       // 表单校验
       rules: {
+        userCode: [
+          { required: true, message: '请选择人员', trigger: 'change' }
+        ],
         name: [
+          { required: true, message: '开户姓名不能为空', trigger: 'blur' }
+        ],
+        account: [
+          { required: true, message: '银行卡号不能为空', trigger: 'blur' }
+        ],
+        bankName: [
+          { required: true, message: '开户银行不能为空', trigger: ['blur', 'change'] }
+        ],
+        mobile: [
           { required: true, message: '绑定手机号不能为空', trigger: 'blur' },
           { validator: this.formValidate.telephone, trigger: 'blur' }
+        ],
+        bankType: [
+          { required: true, message: '账户类型不能为空', trigger: 'change' }
         ]
       },
       // 选择人员
@@ -155,23 +185,28 @@ export default {
   methods: {
     /** 查询字典 */
     getDictsOptions() {
-
+      this.getDicts('bank').then(response => {
+        this.bankOptions = response.data;
+      });
     },
     /** 提交按钮 */
     submitForm() {
       const flag = this.$refs.ChooseArea.submit();
       this.$refs['form'].validate(valid => {
         if (valid && flag) {
+          const params = {
+            ...this.form,
+            isDefault: praseBooleanToNum(this.form.isDefault)
+          };
           if (this.form.id !== undefined) {
-            updateShipment(this.form).then(response => {
+            updateBank(params).then(response => {
               this.msgSuccess('修改成功');
               this.close();
               this.$emit('refresh');
             });
           } else {
-            addShipment(this.form).then(response => {
-              console.log(response);
-              this.msgSuccess('修改成功');
+            addBank(params).then(response => {
+              this.msgSuccess('新增成功');
               this.close();
               this.$emit('refresh');
             });
@@ -191,7 +226,17 @@ export default {
     // 表单重置
     reset() {
       this.form = {
+        id: null,
+        userCode: null,
         name: null,
+        account: null,
+        bankName: null,
+        mobile: null,
+        bankBranch: null,
+        province: null,
+        city: null,
+        bankType: 1,
+        bankLineNo: null,
         isDefault: false
       };
       this.resetForm('form');
@@ -199,6 +244,7 @@ export default {
     // 表单赋值
     setForm(data) {
       this.form = data;
+      this.form.isDefault = praseNumToBoolean(this.form.isDefault);
     },
     // 选择人员
     getPersonOptions(query) {

@@ -40,28 +40,22 @@
         />
       </el-form-item>
       <el-form-item label="余额区间">
-        <el-input-number
+        <el-input
           v-model="queryParams.minAmount"
-          controls-position="right"
-          :precision="2"
           placeholder="最小值"
-          :step="1"
-          :min="0"
-          :max="100"
           clearable
           size="small"
+          style="width: 96px"
+          @keyup.enter.native="handleQuery"
         />
         至
-        <el-input-number
+        <el-input
           v-model="queryParams.maxAmount"
-          controls-position="right"
-          :precision="2"
           placeholder="最大值"
-          :step="1"
-          :min="0"
-          :max="100"
           clearable
           size="small"
+          style="width: 96px"
+          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <el-form-item>
