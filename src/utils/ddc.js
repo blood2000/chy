@@ -128,6 +128,20 @@ export function praseStrEmpty(str) {
   return str;
 }
 
+// 0转为false, 1转为true
+export function praseNumToBoolean(num) {
+  if (num === 0) return false;
+  if (num === 1) return true;
+  return num;
+}
+
+// false转为0, true转为1
+export function praseBooleanToNum(boolean) {
+  if (!boolean) return 0;
+  if (boolean) return 1;
+  return boolean;
+}
+
 /**
  * 构造树型结构数据
  * @param {*} data 数据源

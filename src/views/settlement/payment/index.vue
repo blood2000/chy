@@ -17,7 +17,7 @@
           placeholder="请输入装货信息"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 225px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -30,7 +30,7 @@
           placeholder="请输入收货信息"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 225px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -43,7 +43,7 @@
           placeholder="请输入车牌号"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 225px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -56,7 +56,7 @@
           placeholder="请输入司机姓名"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 225px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -66,7 +66,7 @@
           placeholder="请选择货物类型"
           filterable
           clearable
-          style="width: 230px"
+          style="width: 225px"
           size="small"
         >
           <el-option
@@ -86,7 +86,7 @@
           placeholder="请输入支付批次号"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 225px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -99,7 +99,7 @@
           placeholder="请输入货源单号"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 225px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -112,7 +112,7 @@
           placeholder="请输入运输单号"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 225px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -126,7 +126,7 @@
           range-separator="-"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
-          style="width: 230px"
+          style="width: 225px"
           @change="datechoose"
         />
       </el-form-item>
@@ -218,6 +218,7 @@
           @click="handleTableBtn(row, 2)"
         >网商打款</el-button>
         <el-button
+          v-if="row.isChild == '2'"
           size="mini"
           type="text"
           icon="el-icon-document-copy"
@@ -332,7 +333,7 @@ export default {
       prop: 'edit',
       isShow: true,
       label: '操作',
-      width: 180,
+      width: 275,
       fixed: 'right'
     });
     this.getList();

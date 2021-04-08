@@ -1,7 +1,7 @@
 <template>
-  <!-- 子单对话框 -->
+  <!-- 评价对话框 -->
   <el-dialog :title="title" :visible="visible" width="1400px" append-to-body @close="cancel">
-    <RefactorTable :loading="loading" :data="childlist" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
+    <RefactorTable :loading="loading" :data="commentlist" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
       <!-- <template #lastLoadingTime="{row}">
         <span>{{ parseTime(row.lastLoadingTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
       </template>
@@ -15,13 +15,11 @@
         <span>{{ parseTime(row.wayBillUpdateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
       </template> -->
 
-      <template #edit="{row}">
-        <el-button
-          size="mini"
-          type="text"
-          icon="el-icon-document"
-          @click="handleWaybill(row)"
-        >详情</el-button>
+      <template #comment="{row}">
+        <el-input v-model="row.comment" placeholder="请输入评价内容" clearable />
+      </template>
+      <template #score="{row}">
+        <el-rate v-model="row.score" show-score allow-half text-color="#ff9900" />
       </template>
     </RefactorTable>
 
@@ -32,22 +30,20 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-
-    <!-- 运单详情 对话框 -->
-    <detail-dialog ref="DetailDialog" :current-id="currentId" :title="detailtitle" :open.sync="opendetail" :disable="formDisable" @refresh="getList" />
+    <div slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="submitForm">立即评价</el-button>
+      <el-button @click="cancel">返回</el-button>
+    </div>
   </el-dialog>
 </template>
 
 <script>
 import { childListApi, childList } from '@/api/settlement/adjust';
 // import UploadImage from '@/components/UploadImage/index';
-// 运单详情弹窗
-import DetailDialog from '@/views/waybill/components/detailDialog';
 
 export default {
   name: 'ChildDialog',
   components: {
-    DetailDialog
     // UploadImage
   },
   props: {
@@ -60,19 +56,13 @@ export default {
   },
   data() {
     return {
-      // 弹框 内容
-      detailvisible: false,
-      opendetail: false,
-      detailtitle: '',
-      currentId: '',
-      formDisable: false,
       tableColumnsConfig: [],
       // 遮罩层
       loading: false,
       // 总条数
       total: 0,
-      // 子单列表
-      childlist: [],
+      // 评价列表
+      commentlist: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -93,20 +83,26 @@ export default {
   },
   created() {
     this.tableHeaderConfig(this.tableColumnsConfig, childListApi, {
-      prop: 'edit',
+      prop: 'comment',
       isShow: true,
-      label: '操作',
-      width: 100,
+      label: '评价内容',
+      width: 240,
+      fixed: 'right'
+    }, {
+      prop: 'score',
+      isShow: true,
+      label: '评分星级',
+      width: 150,
       fixed: 'right'
     });
   },
   methods: {
-    /** 查询子单列表 */
+    /** 查询评价列表 */
     getList() {
       this.loading = true;
       childList(this.queryParams).then(response => {
         console.log(response);
-        this.childlist = response.rows;
+        this.commentlist = response.rows;
         this.total = response.total;
         this.loading = false;
       });
@@ -114,10 +110,19 @@ export default {
     /** 取消按钮 */
     cancel() {
       this.close();
+      this.reset();
     },
     // 关闭弹窗
     close() {
       this.$emit('update:open', false);
+    },
+    // 表单重置
+    reset() {
+      this.form = {
+        waybillCode: null,
+        rebutRemark: null
+      };
+      this.resetForm('form');
     },
     // 获取列表
     setForm(data) {

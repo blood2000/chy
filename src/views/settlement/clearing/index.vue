@@ -17,7 +17,7 @@
           placeholder="请输入司机姓名"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 225px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -30,7 +30,7 @@
           placeholder="请输入司机电话"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 225px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -43,7 +43,7 @@
           placeholder="请输入运输单号"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 225px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -56,7 +56,7 @@
           placeholder="请输入调度名称"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 225px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -69,7 +69,7 @@
           placeholder="请输入调度电话"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 225px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -82,7 +82,7 @@
           placeholder="请输入运单关联企业"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 225px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -95,7 +95,7 @@
           placeholder="请输入货主电话"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 225px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -108,7 +108,7 @@
           placeholder="请输入清分订单号"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 225px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -121,7 +121,7 @@
           placeholder="请输入清分批次号"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 225px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -132,7 +132,7 @@
           filterable
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 225px"
         >
           <el-option
             v-for="dict in isReturnOptions"

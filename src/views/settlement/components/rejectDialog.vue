@@ -2,8 +2,8 @@
   <!-- 驳回理由对话框 -->
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="130px">
-      <el-form-item label="驳回理由" prop="driverApplyRemark">
-        <el-input v-model="form.driverApplyRemark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入驳回理由" style="width:90%;" clearable />
+      <el-form-item label="驳回原因" prop="rebutRemark">
+        <el-input v-model="form.rebutRemark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入驳回理由" style="width:90%;" clearable />
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { reject } from '@/api/waybill/tracklist';
+import { rejectUnload } from '@/api/settlement/adjust';
 // import UploadImage from '@/components/UploadImage/index';
 
 export default {
@@ -34,13 +34,11 @@ export default {
     return {
       // 表单参数
       form: {
-        wayBillInCode: null,
-        driverApplyRemark: null
       },
       // 表单校验
       rules: {
-        driverApplyRemark: [
-          { required: true, message: '取消理由不能为空', trigger: 'blur' }
+        rebutRemark: [
+          { required: true, message: '驳回原因不能为空', trigger: 'blur' }
         ]
       }
     };
@@ -62,7 +60,7 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          reject(this.form).then(response => {
+          rejectUnload(this.form).then(response => {
             this.msgSuccess('申请取消运单成功');
             this.close();
             this.$emit('refresh');
@@ -82,14 +80,15 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        wayBillInCode: null,
-        driverApplyRemark: null
+        waybillCode: null,
+        rebutRemark: null
       };
       this.resetForm('form');
     },
     // 表单赋值
     setForm(data) {
-      this.form.wayBillInCode = data.code;
+      this.form.waybillCode = data.wayBillCode;
+      console.log(this.form);
     }
   }
 };
