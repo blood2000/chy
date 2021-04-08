@@ -175,9 +175,10 @@ export function tansParams(params) {
  * @param {*} list 表头数组
  * @param {*} url 接口地址
  * @param {*} editColumn 操作列
+ * @param {*} myColumen 自定义的表头 数组
  */
 import { tableHeadList } from '@/api/system/table';
-export function tableHeaderConfig(list, url, editColumn) {
+export function tableHeaderConfig(list, url, editColumn, myColumen) {
   if (getLocalStorage(url)) {
     getLocalStorage(url).forEach(el => {
       list.push(el);
@@ -195,6 +196,9 @@ export function tableHeaderConfig(list, url, editColumn) {
       });
       if (editColumn) {
         list.push(editColumn);
+      }
+      if (myColumen && myColumen.length) {
+        list.push(...myColumen);
       }
       setLocalStorage(url, list);
     });

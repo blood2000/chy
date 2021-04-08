@@ -179,12 +179,12 @@
               <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
             </el-row>
 
+            <!-- default-expand-all -->
             <RefactorTable
               :loading="loading"
               :data="list"
               row-key="id"
               stripe
-              default-expand-all
               :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
               :table-columns-config="tableColumnsConfig"
             ><!-- @selection-change="handleSelectionChange" -->
@@ -367,7 +367,7 @@
 
     <!-- 价格调整 -->
     <el-dialog :title="'费用调价'" :visible.sync="openPriceAdjustment" width="900px" append-to-body>
-      <price-adjustment :mytabs="tabs" :order-code="orderCode" @submitRes="submitRes" />
+      <price-adjustment v-if="openPriceAdjustment" :mytabs="tabs" :order-code="orderCode" :pubilsh-code="pubilshCode" @submitRes="submitRes" />
     </el-dialog>
   </div>
 </template>
@@ -379,44 +379,6 @@ import { getOrderByCode } from '@/api/order/release';
 import OpenDialog from './component/OpenDialog';
 import tableColumnsConfig from './data/config-index';
 
-const tableData = [{
-  id: 3,
-  date: '2104021027035450',
-  name: '福建省融谷',
-  address: '福建省融谷',
-  address1: '无烟煤',
-  address2: '七里香',
-  address3: '九连环',
-  address4: 'bababa',
-  children: [{
-    id: 31,
-    date: '2104021027035450',
-    name: '福建省融谷',
-    address: '福建省融谷',
-    address1: '无烟煤',
-    address2: '七里香',
-    address3: '八里庄',
-    address4: ''
-  }, {
-    id: 32,
-    date: '2104021027035450',
-    name: '福建省融谷',
-    address: '福建省融谷',
-    address1: '精煤',
-    address2: '七里香',
-    address3: '九连环',
-    address4: ''
-  }, {
-    id: 33,
-    date: '2104021027035450',
-    name: '福建省融谷',
-    address: '福建省融谷',
-    address1: '精煤',
-    address2: '七里香',
-    address3: '八里庄',
-    address4: ''
-  }]
-}];
 
 import PriceAdjustment from './component/PriceAdjustment';
 
@@ -425,7 +387,7 @@ export default {
   components: { OpenDialog, PriceAdjustment },
   data() {
     return {
-      tableData,
+      pubilshCode: '', // 当前货主code
       // 测试数据上
 
       openPriceAdjustment: false,
@@ -620,14 +582,14 @@ export default {
   },
 
   created() {
-    // this.tableHeaderConfig(this.tableColumnsConfig, listManagesApi, {
-    //   prop: 'edit',
-    //   isShow: true,
-    //   label: '操作',
-    //   width: 180,
-    //   fixed: 'right'
-    // });
-    this.tableColumnsConfig = tableColumnsConfig;
+    // 要配置好才能用
+    this.tableHeaderConfig(this.tableColumnsConfig, listManagesApi, {
+      prop: 'edit',
+      isShow: true,
+      label: '操作',
+      width: 180,
+      fixed: 'right'
+    }, tableColumnsConfig);
     this.getDict();
     this.getList();
   },
@@ -656,9 +618,10 @@ export default {
     // 基本格式(即表头定义)
     baseData(e) {
       return {
+        ...e,
         'id': this.genID(5),
         'remark': e.remark,
-        'code': e.code, // 订单号
+        'code': e.code, // 编号
         'companyName': e.companyName, // 企业名称
         'goodsTypeName': e.goodsTypeName, // 货物类型名称
         'addressName1': e.addressName1, // 装货地
@@ -666,7 +629,9 @@ export default {
         'goodsPrice': e.goodsPrice, // 货源价格
         'shipmentPrice': e.shipmentPrice, // 运输单价
         'transactionPrice': e.transactionPrice, // 成交单价
-        'unitPrice': e.unitPrice // 承运单价
+        'unitPrice': e.unitPrice, // 承运单价
+        'mainOrderNumber': e.mainOrderNumber, // 货源单号
+        'source': e
         // 'branchCode': e.branchCode,
         // 'mainOrderNumber': e.mainOrderNumber,
         // 'shipperFactoryCode': e.shipperFactoryCode,
@@ -733,7 +698,7 @@ export default {
             });
           });
         });
-        console.log(mgoods);
+        console.log(mgoods, '每一个');
 
 
 
@@ -859,7 +824,7 @@ export default {
     },
     /** 调价操作 */
     async handleReadjustPrices(row) {
-      // console.log(row);
+      console.log(row);
 
       // const testIds = row.code;
 
@@ -1131,13 +1096,13 @@ export default {
 
       // 2-1 如何获取 商品的名称??
       // 2-2 如何获取 地址a到b
-      const { redisOrderFreightInfoVoList, redisOrderGoodsVoList, redisAddressList } = data;
+      const { redisOrderFreightInfoVoList, redisOrderGoodsVoList, redisAddressList, redisOrderInfoVo } = row.source;
       const tabs = redisOrderFreightInfoVoList.map((e, index) => {
         redisOrderGoodsVoList.forEach(ee => {
           if (ee.code === e.goodsCode) {
             e.goodsCode = ee.code;
             e.goodsType = ee.goodsType;
-            e.goodsName = ee.goodsName;
+            e.goodsName = ee.goodsName || '商品名' + index;
             e.goodsPrice = ee.goodsPrice;
           }
         });
@@ -1190,6 +1155,9 @@ export default {
       console.log(tabs, '封装好的tab');
       // 3 传入组件
       this.tabs = tabs;
+      this.pubilshCode = redisOrderInfoVo ? redisOrderInfoVo.pubilshCode : row.source.pubilshCode;
+      console.log(this.pubilshCode);
+
       this.orderCode = row.code;
 
 
@@ -1220,6 +1188,9 @@ export default {
     },
     /** 关闭 */
     submitRes(res) {
+      this.tabs = [];
+      this.orderCode = '';
+      this.pubilshCode = '';
       this.openPriceAdjustment = false;
     }
   }
