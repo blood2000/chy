@@ -1,6 +1,4 @@
-import { getToken } from '@/utils/auth';
-
-export const authorization = 'Bearer ' + getToken();
+export const authorPre = 'Bearer ';
 export const produceCode = '776ca8e240574192b6e0f69b417163df';// 产品编码
 export const appCode = '3f78fbfc13b14fa4b3d78665124ef4bb';// 应用编码
 export const appVersion = '2.0';// 应用版本

@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { authorization, produceCode, appCode, appVersion, terminalType } from '@/headers';
+import { getToken } from '@/utils/auth';
+import { authorPre, produceCode, appCode, appVersion, terminalType } from '@/headers';
 
 const mimeMap = {
   xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -14,7 +15,7 @@ export function downLoadZip(str, filename) {
     url: url,
     responseType: 'blob',
     headers: {
-      'Authorization': authorization,
+      'Authorization': authorPre + getToken(),
       'Produce-Code': produceCode,
       'App-Code': appCode,
       'App-Version': appVersion,
