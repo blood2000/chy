@@ -11,10 +11,10 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="用户名称" prop="name">
+      <el-form-item label="司机姓名" prop="name">
         <el-input
           v-model="queryParams.name"
-          placeholder="请输入用户名称"
+          placeholder="请输入司机姓名"
           clearable
           size="small"
           class="input-width"
@@ -93,7 +93,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="处理状态" prop="applyStatus">
-        <el-select v-model="queryParams.applyStatus" placeholder="请选择状态" filterable clearable size="small">
+        <el-select v-model="queryParams.applyStatus" placeholder="请选择状态" filterable clearable size="small" class="input-width">
           <el-option
             v-for="dict in applyStatusOptions"
             :key="dict.dictValue"

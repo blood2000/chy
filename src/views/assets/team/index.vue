@@ -80,7 +80,7 @@
           icon="el-icon-edit"
           size="mini"
           :disabled="single"
-          @click="handleUpdate"
+          @click="handleDetail({}, 'edit')"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -115,6 +115,12 @@
       <template #isDistribution="{row}">
         <span>{{ selectDictLabel(isOptions, row.isDistribution) }}</span>
       </template>
+      <template #authStatus="{row}">
+        <span v-show="row.authStatus === 0" class="g-color-gray">未审核</span>
+        <span v-show="row.authStatus === 1" class="g-color-blue">审核中</span>
+        <span v-show="row.authStatus === 2" class="g-color-error">审核未通过</span>
+        <span v-show="row.authStatus === 3" class="g-color-success">审核通过</span>
+      </template>
       <template #edit="{row}">
         <el-button
           v-hasPermi="['assets:team:manage']"
@@ -128,15 +134,22 @@
           size="mini"
           type="text"
           icon="el-icon-document"
-          @click="handleDetail(row)"
+          @click="handleDetail(row, 'detail')"
         >详情</el-button>
         <el-button
           v-hasPermi="['assets:team:edit']"
           size="mini"
           type="text"
           icon="el-icon-edit"
-          @click="handleUpdate(row)"
+          @click="handleDetail(row, 'edit')"
         >修改</el-button>
+        <el-button
+          v-show="row.authStatus === 0 || row.authStatus === 1"
+          size="mini"
+          type="text"
+          icon="el-icon-document-checked"
+          @click="handleDetail(row, 'review')"
+        >审核</el-button>
         <el-button
           v-hasPermi="['assets:team:invitation']"
           size="mini"
@@ -145,8 +158,8 @@
           @click="handleAddDriver(row)"
         >邀请司机</el-button>
         <el-button
-          v-hasPermi="['assets:team:deal']"
           v-show="row.apply"
+          v-hasPermi="['assets:team:deal']"
           size="mini"
           type="text"
           icon="el-icon-document-checked"
@@ -293,29 +306,33 @@ export default {
     handleAdd() {
       this.$refs.TeamDialog.reset();
       this.open = true;
-      this.title = '添加调度者';
+      this.title = '新增';
 	    this.formDisable = false;
     },
-    /** 修改按钮操作 */
-    handleUpdate(row) {
+    /** 修改/详情/审核按钮操作 */
+    handleDetail(row, flag) {
       this.$refs.TeamDialog.reset();
       const id = row.id || this.ids;
       getInfo(id).then(response => {
         this.$refs.TeamDialog.setForm(response.data);
         this.open = true;
-        this.title = '修改调度者';
-        this.formDisable = false;
-      });
-    },
-    /** 详情按钮操作 */
-    handleDetail(row) {
-      this.$refs.TeamDialog.reset();
-      const id = row.id || this.ids;
-      getInfo(id).then(response => {
-        this.$refs.TeamDialog.setForm(response.data);
-        this.open = true;
-        this.title = '详情';
-        this.formDisable = true;
+        switch (flag) {
+          case 'detail':
+            this.title = '详情';
+            break;
+          case 'edit':
+            this.title = '编辑';
+            break;
+          case 'review':
+            this.title = '审核';
+            if (row.authStatus === 0) {
+              this.$refs.TeamDialog.authRead(response.data);
+            }
+            break;
+          default:
+            break;
+        }
+        this.formDisable = flag !== 'edit';
       });
     },
     /** 删除按钮操作 */

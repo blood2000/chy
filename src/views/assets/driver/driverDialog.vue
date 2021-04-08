@@ -11,13 +11,20 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item v-if="form.driverType == 2" label="所属调度" prop="teamCode" :required="form.driverType===2">
+      <el-form-item
+        v-if="form.driverType == 2"
+        label="所属调度"
+        prop="teamCode"
+        :rules="[
+          { required: true, message: '所属调度不能为空', trigger: 'blur' },
+        ]"
+      >
         <el-select
           v-model="form.teamCode"
           filterable
           remote
           reserve-keyword
-          placeholder="请输入调度名称"
+          placeholder="请输入调度名称搜索"
           :remote-method="teamRemoteMethod"
           :loading="loading"
           clearable
@@ -265,7 +272,7 @@
       <el-form-item label="车牌颜色" prop="vehicleLicenseColorCode">
         <el-select v-model="vehicleForm.vehicleLicenseColorCode" class="width90" filterable clearable>
           <el-option
-            v-for="dict in vehicleLicenseColorCodeOptions"
+            v-for="dict in licenseColorOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="parseInt(dict.dictValue)"
@@ -275,7 +282,7 @@
       <el-form-item label="车牌类型" prop="classificationCode">
         <el-select v-model="vehicleForm.classificationCode" class="width90" filterable clearable>
           <el-option
-            v-for="dict in classificationCodeOptions"
+            v-for="dict in licensePlateTypeOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="parseInt(dict.dictValue)"
@@ -285,7 +292,7 @@
       <el-form-item label="车身颜色" prop="vehicleColorCode">
         <el-select v-model="vehicleForm.vehicleColorCode" class="width90" filterable clearable>
           <el-option
-            v-for="dict in vehicleColorCodeOptions"
+            v-for="dict in carBodyColorOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="parseInt(dict.dictValue)"
@@ -302,10 +309,20 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="车辆类型" prop="vehicleTypeCode">
+        <el-select v-model="vehicleForm.vehicleTypeCode" placeholder="请选择车辆类型" class="width90" clearable filterable>
+          <el-option
+            v-for="dict in vehicleTypeOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="车辆能源类型" prop="vehicleEnergyType">
         <el-select v-model="vehicleForm.vehicleEnergyType" class="width90" filterable clearable>
           <el-option
-            v-for="dict in vehicleEnergyTypeOptions"
+            v-for="dict in energyTypesOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
@@ -313,13 +330,34 @@
         </el-select>
       </el-form-item>
       <el-form-item label="车长" prop="vehicleLength">
-        <el-input v-model="vehicleForm.vehicleLength" placeholder="请输入车长" class="width90" clearable />
+        <el-select v-model="vehicleForm.vehicleLength" placeholder="请选择车长" class="width90" clearable filterable>
+          <el-option
+            v-for="dict in vehicleLengthOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="车宽" prop="vehicleWidth">
-        <el-input v-model="vehicleForm.vehicleWidth" placeholder="请输入车宽" class="width90" clearable />
+        <el-select v-model="vehicleForm.vehicleWidth" placeholder="请选择车宽" class="width90" clearable filterable>
+          <el-option
+            v-for="dict in vehicleWidthOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="车高" prop="vehicleHeight">
-        <el-input v-model="vehicleForm.vehicleHeight" placeholder="请输入车高" class="width90" clearable />
+        <el-select v-model="vehicleForm.vehicleHeight" placeholder="请选择车高" class="width90" clearable filterable>
+          <el-option
+            v-for="dict in vehicleHeightOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="车辆总重量" prop="vehicleTotalWeight">
         <el-input v-model="vehicleForm.vehicleTotalWeight" placeholder="请输入车辆总重量" class="width90" clearable />
@@ -349,7 +387,14 @@
         <el-input v-model="vehicleForm.vehiclePower" placeholder="请输入功率" class="width90" clearable />
       </el-form-item>
       <el-form-item label="轴数" prop="axesNumber">
-        <el-input v-model="vehicleForm.axesNumber" placeholder="请输入轴数" class="width90" clearable />
+        <el-select v-model="vehicleForm.axesNumber" placeholder="请选择轴数" class="width90" clearable filterable>
+          <el-option
+            v-for="dict in axisTypeOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="年审时间" prop="annualVerificationDate">
         <el-date-picker
@@ -383,6 +428,7 @@ import { getProvinceList } from '@/api/system/area';
 import { listInfo } from '@/api/assets/team';
 import UploadImage from '@/components/UploadImage/index';
 import ProvinceCityCounty from '@/components/ProvinceCityCounty';
+import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
 
 export default {
   components: {
@@ -429,19 +475,29 @@ export default {
       provinceCodeOptions: [],
       // 驾驶证类型字典
       driverLicenseTypeOptions: [],
-      // 车辆归属类型字典
-      vehicleAscriptionTypeOptions: [
-        { dictLabel: '自有', dictValue: 0 },
-        { dictLabel: '加盟', dictValue: 1 }
-      ],
-      // 车牌类型代码字典
-      classificationCodeOptions: [],
-      // 车牌颜色代码字典
-      vehicleLicenseColorCodeOptions: [],
-      // 车身颜色代码字典
-      vehicleColorCodeOptions: [],
-      // 车辆能源类型字典
-      vehicleEnergyTypeOptions: [],
+      // 车牌类型字典
+      licensePlateTypeOptions: [],
+      // 车牌颜色字典
+      licenseColorOptions: [],
+      // 车身颜色字典
+      carBodyColorOptions: [],
+      // 车辆类型字典
+  	  vehicleTypeOptions: [],
+      // 能源类型字典
+  	  energyTypesOptions: [],
+  	  // 车长字典
+  	  vehicleLengthOptions: [],
+  	  // 车宽字典
+  	  vehicleWidthOptions: [],
+  	  // 车高字典
+  	  vehicleHeightOptions: [],
+  	  // 轴数字典
+  	  axisTypeOptions: [],
+  	  // 车辆归属类型字典
+  	  vehicleAscriptionTypeOptions: [
+  	    { dictLabel: '自有', dictValue: '0' },
+  	    { dictLabel: '加盟', dictValue: '1' }
+  	  ],
       // 车队列表
       loading: false,
       teamOptions: [],
@@ -512,10 +568,6 @@ export default {
   methods: {
     /** 查询字典 */
     getDictsOptions() {
-      // 车辆能源类型
-      this.getDicts('energyTypes').then(response => {
-        this.vehicleEnergyTypeOptions = response.data;
-      });
       // 省
       getProvinceList().then((response) => {
         this.provinceCodeOptions = response.rows;
@@ -523,6 +575,42 @@ export default {
       // 驾驶证类型
       this.getDicts('driver_license_type').then(response => {
         this.driverLicenseTypeOptions = response.data;
+      });
+      // 车牌类型
+      this.getDicts('licensePlateType').then(response => {
+        this.licensePlateTypeOptions = response.data;
+      });
+      // 车牌颜色
+      this.getDicts('licenseColor').then(response => {
+        this.licenseColorOptions = response.data;
+      });
+      // 车身颜色
+      this.getDicts('CarBodyColor').then(response => {
+        this.carBodyColorOptions = response.data;
+      });
+      // 车辆类型
+      this.getDicts('vehicleType').then(response => {
+        this.vehicleTypeOptions = response.data;
+      });
+      // 能源类型
+      this.getDicts('energyTypes').then(response => {
+        this.energyTypesOptions = response.data;
+      });
+      // 车长
+      this.getDicts('vehicleLength').then(response => {
+        this.vehicleLengthOptions = response.data;
+      });
+      // 车宽
+      this.getDicts('vehicleWidth').then(response => {
+        this.vehicleWidthOptions = response.data;
+      });
+      // 车高
+      this.getDicts('vehicleHeight').then(response => {
+        this.vehicleHeightOptions = response.data;
+      });
+      // 轴数
+      this.getDicts('axis_type').then(response => {
+        this.axisTypeOptions = response.data;
       });
     },
     /** 提交按钮 */
@@ -532,26 +620,20 @@ export default {
         if (valid && flag) {
           this.$refs['vehicleForm'].validate(valid => {
             if (valid) {
-              const driver = this.form;
-              driver.vehicleInfo = this.vehicleForm;
-              if (driver.identificationEffective) {
-                driver.identificationEffective = 1;
-              } else {
-                driver.identificationEffective = 0;
-              }
-              if (driver.validPeriodAlways) {
-                driver.validPeriodAlways = 1;
-              } else {
-                driver.validPeriodAlways = 0;
-              }
+              const driver = {
+                ...this.form,
+                vehicleInfo: this.vehicleForm
+              };
+              driver.identificationEffective = praseBooleanToNum(driver.identificationEffective);
+              driver.validPeriodAlways = praseBooleanToNum(driver.validPeriodAlways);
               // 类型不为独立司机的时候，相关字段不能传
-              if (this.form.driverType !== 1) {
-                this.form.driverOtherLicenseImage = null;
-                this.form.driverOtherLicenseBackImage = null;
-                this.form.transportPermitImage = null;
-                this.vehicleForm.vehicleImage = null;
+              if (driver.driverType !== 1) {
+                driver.driverOtherLicenseImage = null;
+                driver.driverOtherLicenseBackImage = null;
+                driver.transportPermitImage = null;
+                driver.vehicleInfo.vehicleImage = null;
               }
-              if (this.form.id !== undefined) {
+              if (driver.id !== undefined) {
                 updateDriver(driver).then(response => {
                   this.msgSuccess('修改成功');
                   this.close();
@@ -575,16 +657,8 @@ export default {
     },
     /** 已读 */
     authRead(data) {
-      if (data.identificationEffective) {
-        data.identificationEffective = 1;
-      } else {
-        data.identificationEffective = 0;
-      }
-      if (data.validPeriodAlways) {
-        data.validPeriodAlways = 1;
-      } else {
-        data.validPeriodAlways = 0;
-      }
+      data.identificationEffective = praseBooleanToNum(data.identificationEffective);
+      data.validPeriodAlways = praseBooleanToNum(data.validPeriodAlways);
       authRead(data).then(response => {
         this.$emit('refresh');
       });
@@ -592,16 +666,8 @@ export default {
     /** 审核通过/未通过按钮 */
     reviewForm(key) {
       this.form.authStatus = key;
-      if (this.form.identificationEffective) {
-        this.form.identificationEffective = 1;
-      } else {
-        this.form.identificationEffective = 0;
-      }
-      if (this.form.validPeriodAlways) {
-        this.form.validPeriodAlways = 1;
-      } else {
-        this.form.validPeriodAlways = 0;
-      }
+      this.form.identificationEffective = praseBooleanToNum(this.form.identificationEffective);
+      this.form.validPeriodAlways = praseBooleanToNum(this.form.validPeriodAlways);
       examine(this.form).then(response => {
         this.msgSuccess('操作成功');
         this.close();
@@ -714,15 +780,13 @@ export default {
     setForm(data) {
       this.form = data;
       this.vehicleForm = data.vehicleInfo || {};
-      if (this.form.identificationEffective) {
-        this.form.identificationEffective = true;
-      } else {
-        this.form.identificationEffective = false;
-      }
-      if (this.form.validPeriodAlways) {
-        this.form.validPeriodAlways = true;
-      } else {
-        this.form.validPeriodAlways = false;
+      this.form.identificationEffective = praseNumToBoolean(this.form.identificationEffective);
+      this.form.validPeriodAlways = praseNumToBoolean(this.form.validPeriodAlways);
+      if (this.form.teamCode && this.form.teamName) {
+        this.teamOptions = [{
+          code: this.form.teamCode,
+          name: this.form.teamName
+        }];
       }
     },
     // 查询车队列表

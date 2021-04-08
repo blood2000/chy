@@ -141,7 +141,7 @@
           icon="el-icon-edit"
           size="mini"
           :disabled="single"
-          @click="handleUpdate"
+          @click="handleDetail({}, 'edit')"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -241,15 +241,22 @@
           size="mini"
           type="text"
           icon="el-icon-document"
-          @click="handleDEtail(row)"
+          @click="handleDetail(row, 'detail')"
         >详情</el-button>
         <el-button
           v-hasPermi="['assets:vehicle:edit']"
           size="mini"
           type="text"
           icon="el-icon-edit"
-          @click="handleUpdate(row)"
+          @click="handleDetail(row, 'edit')"
         >修改</el-button>
+        <el-button
+          v-show="row.authStatus === 0 || row.authStatus === 1"
+          size="mini"
+          type="text"
+          icon="el-icon-document-checked"
+          @click="handleDetail(row, 'review')"
+        >审核</el-button>
         <el-button
           v-hasPermi="['assets:vehicle:remove']"
           size="mini"
@@ -376,7 +383,7 @@ export default {
       prop: 'edit',
       isShow: true,
       label: '操作',
-      width: 180,
+      width: 280,
       fixed: 'right'
     });
     this.getList();
@@ -457,29 +464,33 @@ export default {
     handleAdd() {
       this.$refs.VehicleDialog.reset();
       this.open = true;
-      this.title = '添加车辆';
+      this.title = '新增';
       this.formDisable = false;
     },
-    /** 修改按钮操作 */
-    handleUpdate(row) {
+    /** 修改/详情/审核按钮操作 */
+    handleDetail(row, flag) {
       this.$refs.VehicleDialog.reset();
       const id = row.id || this.ids;
       getInfo(id).then((response) => {
         this.$refs.VehicleDialog.setForm(response.data);
         this.open = true;
-        this.title = '修改车辆';
-        this.formDisable = false;
-      });
-    },
-    /** 详情按钮操作 */
-    handleDEtail(row) {
-      this.$refs.VehicleDialog.reset();
-      const id = row.id || this.ids;
-      getInfo(id).then((response) => {
-        this.$refs.VehicleDialog.setForm(response.data);
-        this.open = true;
-        this.title = '详情';
-        this.formDisable = true;
+        switch (flag) {
+          case 'detail':
+            this.title = '详情';
+            break;
+          case 'edit':
+            this.title = '编辑';
+            break;
+          case 'review':
+            this.title = '审核';
+            if (row.authStatus === 0) {
+              this.$refs.VehicleDialog.authRead(response.data);
+            }
+            break;
+          default:
+            break;
+        }
+        this.formDisable = flag !== 'edit';
       });
     },
 

@@ -478,7 +478,7 @@ export default {
       this.title = '新增';
       this.formDisable = false;
     },
-    /** 修改/详情按钮操作 */
+    /** 修改/详情/审核按钮操作 */
     handleDetail(row, flag) {
       this.$refs.ShipmentDialog.reset();
       const id = row.id;
