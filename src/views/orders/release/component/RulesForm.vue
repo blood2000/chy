@@ -18,14 +18,13 @@
           :prop="item.myName"
           :label="item.cnName"
           :rules="[
-            { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+            { required: true, message: `请输入${item.cnName}`, trigger: 'blur' },
           ]"
         >
           <el-input-number
             v-model="formData[item.myName]"
             :controls="false"
             :placeholder="`请输入${item.cnName}`"
-            step-strictly
             controls-position="right"
             :style="{ width: '200px' }"
           />
@@ -36,7 +35,7 @@
           :prop="item.myName"
           :label="item.cnName"
           :rules="[
-            { required: true, message: '请输入邮箱地址', trigger: 'change' },
+            { required: true, message: `请输入${item.cnName}`, trigger: 'change' },
           ]"
         >
           <el-select v-model="formData[item.myName]" clearable :placeholder="`请输入${item.cnName}`" :style="{ width: '200px' }" @change="change()">
@@ -55,7 +54,7 @@
             v-model="formData[item.myName]"
             size="medium"
             :rules="[
-              { required: true, message: '请输入邮箱地址', trigger: 'change' },
+              { required: true, message: `请输入${item.cnName}`, trigger: 'change' },
             ]"
             @change="change()"
           >
@@ -151,7 +150,6 @@ export default {
         this.resettingData = [];
         this.initData();
       },
-      // 代表在wacth里声明了firstName这个方法之后立即先去执行handler方法，如果设置了false，那么效果和上边例子一样
       immediate: true,
       deep: true
     }

@@ -2,25 +2,7 @@
   <!-- 用户银行卡 -->
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-      <el-form-item label="操作用户" prop="name">
-        <el-input
-          v-model="queryParams.name"
-          placeholder="请输入操作用户"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="用户电话" prop="name">
-        <el-input
-          v-model="queryParams.name"
-          placeholder="请输入用户电话"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="姓名" prop="name">
+      <el-form-item label="开户姓名" prop="name">
         <el-input
           v-model="queryParams.name"
           placeholder="请输入姓名"
@@ -29,37 +11,62 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="车牌号" prop="name">
+      <el-form-item label="开户电话" prop="mobile">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.mobile"
+          placeholder="请输入开户电话"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="车牌号" prop="licenseNumber">
+        <el-input
+          v-model="queryParams.licenseNumber"
           placeholder="请输入车牌号"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="手机号" prop="name">
-        <el-input
-          v-model="queryParams.name"
-          placeholder="请输入手机号"
+      <el-form-item label="开户银行" prop="bankName">
+        <el-select
+          v-model="queryParams.bankName"
+          placeholder="请选择开户银行"
+          filterable
           clearable
           size="small"
-          @keyup.enter.native="handleQuery"
-        />
+        >
+          <el-option
+            v-for="dict in bankOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictLabel"
+          />
+        </el-select>
       </el-form-item>
-      <el-form-item label="开户银行" prop="name">
+      <el-form-item label="银行账户" prop="account">
         <el-input
-          v-model="queryParams.name"
-          placeholder="请输入开户银行"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="银行账户" prop="name">
-        <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.account"
           placeholder="请输入银行账户"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="用户姓名" prop="userName">
+        <el-input
+          v-model="queryParams.userName"
+          placeholder="请输入用户姓名"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="用户电话" prop="userPhone">
+        <el-input
+          v-model="queryParams.userPhone"
+          placeholder="请输入用户电话"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -88,56 +95,47 @@
           @click="handleExport"
         >导出</el-button>
       </el-col>
+      <el-col :span="1.5" class="fr">
+        <tablec-cascader v-model="tableColumnsConfig" />
+      </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table v-loading="loading" :data="dataList">
-      <el-table-column label="序号" type="index" min-width="5%" />
-      <el-table-column label="平台角色" align="center" prop="" :formatter="roleFormat" />
-      <el-table-column label="默认" align="center" prop="" />
-      <el-table-column label="用户" align="center" prop="" />
-      <el-table-column label="车牌号" align="center" prop="" />
-      <el-table-column label="用户电话" align="center" prop="" />
-      <el-table-column label="姓名" align="center" prop="" />
-      <el-table-column label="银行绑定手机号" align="center" prop="" />
-      <el-table-column label="开户银行" align="center" prop="" />
-      <el-table-column label="银行账户" align="center" prop="" />
-      <el-table-column label="用户类型" align="center" prop="" />
-      <el-table-column label="网点" align="center" prop="" />
-      <el-table-column label="开户城市" align="center" prop="" />
-      <el-table-column label="创建时间" align="center" prop="time">
-        <template slot-scope="scope">
-          {{ parseTime(scope.row.time) }}
-        </template>
-      </el-table-column>
-      <el-table-column label="修改时间" align="center" prop="time">
-        <template slot-scope="scope">
-          {{ parseTime(scope.row.time) }}
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="200" fixed="right">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-document"
-            @click="handleUpdate(scope.row, 'detail')"
-          >详情</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row, 'edit')"
-          >修改</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-          >删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <RefactorTable :loading="loading" :data="dataList" :table-columns-config="tableColumnsConfig">
+      <template #isDefault="{row}">
+        <span v-show="row.isDefault === 0" class="g-color-error">否</span>
+        <span v-show="row.isDefault === 1" class="g-color-success">是</span>
+      </template>
+      <template #bankType="{row}">
+        <span>{{ selectDictLabel(bankTypeOptions, row.bankType) }}</span>
+      </template>
+      <template #createTime="{row}">
+        <span>{{ parseTime(row.createTime, '{y}-{m}-{d}') }}</span>
+      </template>
+      <template #updateTime="{row}">
+        <span>{{ parseTime(row.updateTime, '{y}-{m}-{d}') }}</span>
+      </template>
+      <template #edit="{row}">
+        <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-document"
+          @click="handleUpdate(row, 'detail')"
+        >详情</el-button>
+        <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-edit"
+          @click="handleUpdate(row, 'edit')"
+        >修改</el-button>
+        <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-delete"
+          @click="handleDelete(row)"
+        >删除</el-button>
+      </template>
+    </RefactorTable>
 
     <pagination
       v-show="total>0"
@@ -154,7 +152,7 @@
 </template>
 
 <script>
-import { banklist, delBank } from '@/api/capital/bankcard';
+import { bankListApi, banklist, getBankDetail, delBank } from '@/api/capital/bankcard';
 import BankDialog from './bankDialog';
 
 export default {
@@ -164,6 +162,7 @@ export default {
   },
   data() {
     return {
+      tableColumnsConfig: [],
       // 遮罩层
       loading: true,
       // 显示搜索条件
@@ -178,31 +177,48 @@ export default {
       open: false,
       // 弹出层是否禁用
       disable: false,
-      // 状态字典
-      roleOptions: [],
+      // 用户类型字典
+      bankTypeOptions: [
+        { dictLabel: '个人账户', dictValue: 1 },
+        { dictLabel: '企业账户', dictValue: 2 }
+      ],
+      // 开户银行字典
+      bankOptions: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 10
+        pageSize: 10,
+        isAsc: 'asc',
+        orderByColumn: 'name'
       }
     };
   },
   created() {
+    this.tableHeaderConfig(this.tableColumnsConfig, bankListApi, {
+      prop: 'edit',
+      isShow: true,
+      label: '操作',
+      width: 200,
+      fixed: 'right'
+    });
+    this.getDictsOptions();
     this.getList();
   },
   methods: {
+    /** 查询字典 */
+    getDictsOptions() {
+      this.getDicts('bank').then(response => {
+        this.bankOptions = response.data;
+      });
+    },
     /** 查询列表 */
     getList() {
       this.loading = true;
       banklist(this.queryParams).then(response => {
-        this.dataList = response.rows;
-        this.total = response.total;
+        this.dataList = response.data.rows;
+        this.total = response.data.total;
         this.loading = false;
       });
-    },
-    /** 平台角色字典翻译 */
-    roleFormat(row, column) {
-      return this.selectDictLabel(this.roleOptions, row.status);
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -225,18 +241,20 @@ export default {
     handleUpdate(row, type) {
       this.$refs.bankDialogRef.reset();
       // 这里需要调获取详情接口
-      this.$refs.bankDialogRef.setForm({});
-      switch (type) {
-        case 'detail':
-          this.disable = false;
-          this.title = '查看银行卡信息';
-          break;
-        case 'edit':
-          this.disable = true;
-          this.title = '编辑银行卡信息';
-          break;
-      }
-      this.open = true;
+      getBankDetail(row.id).then(response => {
+        this.$refs.bankDialogRef.setForm(response.data);
+        switch (type) {
+          case 'detail':
+            this.disable = true;
+            this.title = '查看银行卡信息';
+            break;
+          case 'edit':
+            this.disable = false;
+            this.title = '编辑银行卡信息';
+            break;
+        }
+        this.open = true;
+      });
     },
     /** 删除按钮操作 */
     handleDelete(row) {

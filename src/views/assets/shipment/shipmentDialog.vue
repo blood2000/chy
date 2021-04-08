@@ -509,7 +509,7 @@ export default {
           } else {
             addShipment(shipmentInfo).then(response => {
               console.log(response);
-              this.msgSuccess('修改成功');
+              this.msgSuccess('新增成功');
               this.close();
               this.$emit('refresh');
             });

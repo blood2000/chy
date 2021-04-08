@@ -125,6 +125,8 @@
 import { getProvinceList, getCityList, geCountyList } from '@/api/system/area';
 import { addAddress, updateAddress } from '@/api/enterprise/company/address';
 import AmapSearch from '@/components/Ddc/Tin/AmapSearch';
+import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
+
 const geocoder = new AMap.Geocoder({
   radius: 1000,
   extensions: 'all'
@@ -221,16 +223,8 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          if (this.form.defaultPut) {
-            this.form.defaultPut = 1;
-          } else {
-            this.form.defaultPut = 0;
-          }
-          if (this.form.defaultPush) {
-            this.form.defaultPush = 1;
-          } else {
-            this.form.defaultPush = 0;
-          }
+          this.form.defaultPut = praseBooleanToNum(this.form.defaultPut);
+          this.form.defaultPush = praseBooleanToNum(this.form.defaultPush);
           if (this.shipmentCode) {
             this.form.shipmentCode = this.shipmentCode;
           }
@@ -292,16 +286,8 @@ export default {
     // 表单赋值
     setForm(data) {
       this.form = data;
-      if (this.form.defaultPut) {
-        this.form.defaultPut = true;
-      } else {
-        this.form.defaultPut = false;
-      }
-      if (this.form.defaultPush) {
-        this.form.defaultPush = true;
-      } else {
-        this.form.defaultPush = false;
-      }
+      this.form.defaultPut = praseNumToBoolean(this.form.defaultPut);
+      this.form.defaultPush = praseNumToBoolean(this.form.defaultPush);
       if (this.form.longitude && this.form.latitude) {
         this.getMapData(this.form.longitude, this.form.latitude);
       }

@@ -55,7 +55,7 @@
       </el-form-item>
     </el-form>
     <el-table v-loading="loading" :data="infoList">
-      <el-table-column label="序号" type="index" min-width="5%" />
+      <el-table-column label="序号" align="center" type="index" min-width="5%" />
       <el-table-column label="客户名称" align="center" prop="" />
       <el-table-column label="变动金额" align="center" prop="" />
       <el-table-column label="变动类型" align="center" prop="" />
