@@ -2,11 +2,11 @@ import request from '@/utils/request';
 import { praseStrEmpty } from '@/utils/ddc';
 // 查询司机列表
 export const listDriverApi = '/assets/driver/list';
-export function listDriver(query) {
+export function listDriver(data) {
   return request({
     url: listDriverApi,
     method: 'post',
-    data: query
+    data: data
   });
 }
 
@@ -103,5 +103,13 @@ export function dealApply(data) {
     url: `/assets/apply/invitation/deal`,
     method: 'put',
     data: data
+  });
+}
+
+// 查询司机归属调度列表
+export function listDriverBelongTeam(driverCode) {
+  return request({
+    url: `/assets/driver/teamList?driverCode=${driverCode}`,
+    method: 'post'
   });
 }

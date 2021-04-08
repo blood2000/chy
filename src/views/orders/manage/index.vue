@@ -27,7 +27,7 @@
           <!-- 右边 -->
           <div>
             <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="100px" class="clearfix">
-              <el-form-item label="下单客户" prop="tin1">
+              <el-form-item label="下单客户" prop="tin1" v-show="!isShipment">
                 <el-input
                   v-model="queryParams.tin1"
                   placeholder="请输入下单客户"
@@ -79,14 +79,22 @@
                 />
               </el-form-item>
 
-              <el-form-item label="货主编码" prop="tin6">
-                <el-input
+              <el-form-item label="货主" prop="tin6" v-show="!isShipment">
+                <el-select v-model="queryParams.tin6" filterable clearable placeholder="请选择货主">
+                  <el-option
+                    v-for="item in shipmentList"
+                    :key="item.code"
+                    :label="item.adminName + ' ' +(item.companyName || '')"
+                    :value="item.code">
+                  </el-option>
+                </el-select>
+              <!--  <el-input
                   v-model="queryParams.tin6"
                   placeholder="请输入货主编码"
                   clearable
                   size="small"
                   @keyup.enter.native="handleQuery"
-                />
+                />-->
               </el-form-item>
 
               <el-form-item label="货源单号" prop="tin7">
@@ -375,7 +383,8 @@
 <script>
 import { listManagesApi, getOrderInfoList, delOrder, loadAndUnloadingGoods, exportOrder } from '@/api/order/manage';
 import { getOrderByCode } from '@/api/order/release';
-
+import { listShipment } from '@/api/assets/shipment';
+import { getUserInfo } from '@/utils/auth';
 import OpenDialog from './component/OpenDialog';
 import tableColumnsConfig from './data/config-index';
 
@@ -546,8 +555,9 @@ export default {
         { dictLabel: '现金+油卡', dictValue: '2' }
       ],
 
-      goodsTypeOption: []
-
+      goodsTypeOption: [],
+      isShipment: false,
+      shipmentList: [] // 货主列表
     };
   },
 
@@ -582,6 +592,8 @@ export default {
   },
 
   created() {
+    const { isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
+    this.isShipment = isShipment;
     // 要配置好才能用
     this.tableHeaderConfig(this.tableColumnsConfig, listManagesApi, {
       prop: 'edit',
@@ -592,8 +604,14 @@ export default {
     }, tableColumnsConfig);
     this.getDict();
     this.getList();
+    this.listShipment();
   },
   methods: {
+    listShipment() {
+      listShipment().then(response => {
+        this.shipmentList = response.rows;
+      });
+    },
     /** 获取首页字典值 */
     getDict() {
       this.listByDict({

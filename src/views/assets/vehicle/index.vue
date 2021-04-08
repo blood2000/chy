@@ -5,7 +5,7 @@
       ref="queryForm"
       :model="queryParams"
       :inline="true"
-      label-width="68px"
+      label-width="100px"
     >
       <el-form-item label="车牌号" prop="licenseNumber">
         <el-input
@@ -231,6 +231,13 @@
       </template>
       <template #edit="{row}">
         <el-button
+          v-hasPermi="['assets:vehicle:get']"
+          size="mini"
+          type="text"
+          icon="el-icon-setting"
+          @click="handleManage(row)"
+        >管理</el-button>
+        <el-button
           size="mini"
           type="text"
           icon="el-icon-document"
@@ -262,24 +269,22 @@
     />
 
     <!-- 新增/修改/详情 对话框 -->
-    <vehicle-dialog
-      ref="VehicleDialog"
-      :title="title"
-      :open.sync="open"
-      :disable="formDisable"
-      @refresh="getList"
-    />
+    <vehicle-dialog ref="VehicleDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
+    <!-- 管理归属司机/归属调度 对话框 -->
+    <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :vehicle-code="vehicleCode" />
   </div>
 </template>
 
 <script>
 import { listVehicleApi, listInfo, getInfo, delInfo } from '@/api/assets/vehicle';
 import VehicleDialog from './vehicleDialog';
+import ManageDialog from './manageDialog';
 
 export default {
   name: 'Vehicle',
   components: {
-    VehicleDialog
+    VehicleDialog,
+    ManageDialog
   },
   props: {
     teamCode: {
@@ -312,6 +317,7 @@ export default {
       title: '',
       // 是否显示弹出层
       open: false,
+      manageDialogOpen: false,
       // 车牌类型字典
       licensePlateTypeOptions: [],
       // 车牌颜色字典
@@ -360,7 +366,9 @@ export default {
         isFreeze: undefined
       },
       // 表单是否禁用
-      formDisable: false
+      formDisable: false,
+      // 车辆code
+      vehicleCode: null
     };
   },
   created() {
@@ -498,6 +506,11 @@ export default {
         },
         `vehicle_${new Date().getTime()}.xlsx`
       );
+    },
+    /** 管理按钮操作 */
+    handleManage(row) {
+      this.vehicleCode = row.code;
+      this.manageDialogOpen = true;
     }
   }
 };

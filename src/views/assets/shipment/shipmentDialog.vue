@@ -17,8 +17,8 @@
       <el-form-item label="姓名" prop="adminName">
         <el-input v-model="form.adminName" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="手机号码" prop="telphone">
-        <el-input v-model="form.telphone" placeholder="请输入手机号" class="width90" clearable />
+      <el-form-item label="手机号/账号" prop="telphone">
+        <el-input v-model="form.telphone" placeholder="请输入手机号/账号" class="width90" clearable />
       </el-form-item>
       <el-form-item label="密码" prop="password">
         <el-input v-model="form.password" type="password" placeholder="请输入密码" class="width60 mr3" clearable />
@@ -47,15 +47,7 @@
         />
         <el-checkbox v-model="form.identificationEffective">长期有效</el-checkbox>
       </el-form-item>
-      <el-form-item label="网点" prop="branchCode">
-        <!-- <el-select v-model="form.branchCode"  style="width: 90%" filterable placeholder="请选择">
-          <el-option
-            v-for="item in branchOptions"
-            :key="item.code"
-            :label="item.name"
-            :value="item.code">
-          </el-option>
-        </el-select>-->
+      <!-- <el-form-item label="网点" prop="branchCode">
         <el-select
           v-model="form.branchCode"
           filterable
@@ -73,7 +65,7 @@
             :value="item.code"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <template v-if="form.shipperType === 1">
         <el-form-item label="公司名称" prop="companyName" :rules="[{ required: true, message: '公司名称不能为空', trigger: 'blur' }]">
           <!--<el-input v-model="form.companyName" placeholder="请输入公司名称" class="width90" clearable />-->
@@ -396,7 +388,7 @@ export default {
       // 表单校验
       rules: {
         telphone: [
-          { required: true, message: '手机号码不能为空', trigger: 'blur' },
+          { required: true, message: '手机号/账号不能为空', trigger: 'blur' },
           { validator: this.formValidate.telphone, trigger: 'blur' }
         ],
         adminName: [
@@ -591,8 +583,8 @@ export default {
         ticketType: null,
         serviceRatio: null,
         serviceRate: null,
-        supplyIsAuth: 0, // 是否审核货源，默认否
-        branchCode: null
+        supplyIsAuth: 0 // 是否审核货源，默认否
+        // branchCode: null
       };
       this.resetForm('form');
     },

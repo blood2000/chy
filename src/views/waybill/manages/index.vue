@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="78px">
-      <el-form-item label="下单客户" prop="orderClient">
+      <el-form-item v-show="!isShipment" label="下单客户" prop="orderClient">
         <el-input
           v-model="queryParams.orderClient"
           placeholder="请输入下单客户"
@@ -11,7 +11,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="发货企业" prop="deliveryCompany">
+      <el-form-item v-show="!isShipment" label="发货企业" prop="deliveryCompany">
         <el-input
           v-model="queryParams.deliveryCompany"
           placeholder="请输入发货企业"
@@ -276,6 +276,7 @@ import DetailDialog from '../components/detailDialog';
 import MarkAbnormalDialog from './markAbnormalDialog';
 import SeperateListDialog from './seperateListDialog';
 import RemarkDialog from './remarkDialog';
+import { getUserInfo } from '@/utils/auth';
 
 export default {
   name: 'Manages',
@@ -384,6 +385,8 @@ export default {
     };
   },
   created() {
+    const { isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
+    this.isShipment = isShipment;
     this.tableHeaderConfig(this.tableColumnsConfig, listManagesApi, {
       prop: 'edit',
       isShow: true,
