@@ -320,11 +320,13 @@
 
     <!-- 驳回弹窗 -->
     <reject-dialog ref="RejectDialog" :open.sync="rejectdialog" :title="title" :disable="formDisable" @refresh="getList" />
+    <!-- 核算弹窗 -->
+    <adjust-dialog ref="AdjustDialog" :open.sync="adjustdialog" :title="title" @refresh="getList" />
     <!-- 子单弹窗 -->
     <child-dialog ref="ChildDialog" :open.sync="childdialog" :title="title" @refresh="getList" />
     <!-- 运单详情 对话框 -->
     <detail-dialog ref="DetailDialog" :current-id="currentId" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
-    <!-- 批量评价弹窗 -->
+    <!-- 评价弹窗 -->
     <comment-dialog ref="CommentDialog" :open.sync="commentdialog" :title="title" @refresh="getList" />
 
   </div>
@@ -334,17 +336,19 @@
 import { adjustList, adjustListApi } from '@/api/settlement/adjust';
 // 驳回弹窗
 import RejectDialog from '../components/rejectDialog';
+// 核算弹窗
+import AdjustDialog from './adjustDialog';
 // 子单弹窗
 import ChildDialog from '../components/childDialog';
 // 运单详情弹窗
 import DetailDialog from '@/views/waybill/components/detailDialog';
-// 批量评价弹窗
+// 评价弹窗
 import CommentDialog from './commentDialog';
 
 
 export default {
   'name': 'AdjustList',
-  components: { RejectDialog, DetailDialog, ChildDialog, CommentDialog },
+  components: { RejectDialog, AdjustDialog, DetailDialog, ChildDialog, CommentDialog },
   data() {
     return {
       tableColumnsConfig: [],
@@ -385,6 +389,7 @@ export default {
       visible: false,
       open: false,
       rejectdialog: false,
+      adjustdialog: false,
       childdialog: false,
       commentdialog: false,
       title: '',
@@ -434,8 +439,8 @@ export default {
   },
   'methods': {
     datechoose(date) {
-      this.queryParams.orderEndTime = this.parseTime(date[0], '{y}-{m}-{d}');
-      this.queryParams.orderStartTime = this.parseTime(date[1], '{y}-{m}-{d}');
+      this.queryParams.orderStartTime = this.parseTime(date[0], '{y}-{m}-{d}');
+      this.queryParams.orderEndTime = this.parseTime(date[1], '{y}-{m}-{d}');
     },
     /** handleClick */
     handleClick(tab) {
@@ -496,10 +501,11 @@ export default {
           this.$refs.RejectDialog.setForm(row);
           break;
         case 3:
-          this.$refs.AdjustDialog.reset();
           this.adjustdialog = true;
           this.title = '结算审核';
-          this.$refs.AdjustDialog.setForm(row);
+          this.ids = [];
+          this.ids.push(row.wayBillCode);
+          this.$refs.AdjustDialog.setForm(this.ids);
           break;
         case 4:
           this.dialoga = true;

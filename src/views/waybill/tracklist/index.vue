@@ -197,12 +197,20 @@
 
       <template #edit="{row}">
         <el-button
+          v-if="activeName == '3' && row.isAccountBack == '1'"
+          v-hasPermi="['system:menu:edit']"
+          size="mini"
+          type="text"
+          icon="el-icon-warning-outline"
+          @click="handleTableBtn(row, 1)"
+        >驳回提示</el-button>
+        <el-button
           v-if="activeName == '1'"
           v-hasPermi="['system:menu:edit']"
           size="mini"
           type="text"
           icon="el-icon-truck"
-          @click="handleTableBtn(row, 1)"
+          @click="handleTableBtn(row, 2)"
         >车辆装货</el-button>
         <el-button
           v-if="activeName == '2'"
@@ -210,7 +218,7 @@
           size="mini"
           type="text"
           icon="el-icon-takeaway-box"
-          @click="handleTableBtn(row, 2)"
+          @click="handleTableBtn(row, 3)"
         >车辆卸货</el-button>
         <el-button
           v-if="activeName == '1'"
@@ -218,7 +226,7 @@
           size="mini"
           type="text"
           icon="el-icon-circle-close"
-          @click="handleTableBtn(row, 3)"
+          @click="handleTableBtn(row, 4)"
         >取消订单</el-button>
         <el-button
           v-if="activeName != '1'"
@@ -226,7 +234,7 @@
           size="mini"
           type="text"
           icon="el-icon-notebook-1"
-          @click="handleTableBtn(row, 4)"
+          @click="handleTableBtn(row, 5)"
         >补装货凭证</el-button>
         <el-button
           v-if="activeName == '3'"
@@ -234,7 +242,7 @@
           size="mini"
           type="text"
           icon="el-icon-notebook-2"
-          @click="handleTableBtn(row, 5)"
+          @click="handleTableBtn(row, 6)"
         >补卸货凭证</el-button>
         <el-button
           v-if="activeName != '1'"
@@ -242,21 +250,21 @@
           size="mini"
           type="text"
           icon="el-icon-aim"
-          @click="handleTableBtn(row, 6)"
+          @click="handleTableBtn(row, 7)"
         >车辆跟踪</el-button>
         <el-button
           v-hasPermi="['system:menu:edit']"
           size="mini"
           type="text"
           icon="el-icon-location-outline"
-          @click="handleTableBtn(row, 7)"
+          @click="handleTableBtn(row, 8)"
         >定位</el-button>
         <el-button
           v-hasPermi="['system:menu:edit']"
           size="mini"
           type="text"
           icon="el-icon-edit-outline"
-          @click="handleTableBtn(row, 8)"
+          @click="handleTableBtn(row, 9)"
         >投诉</el-button>
         <el-button
           v-if="activeName == '3'"
@@ -264,7 +272,7 @@
           size="mini"
           type="text"
           icon="el-icon-chat-dot-square"
-          @click="handleTableBtn(row, 9)"
+          @click="handleTableBtn(row, 10)"
         >评价</el-button>
       </template>
     </RefactorTable>
@@ -410,8 +418,8 @@ export default {
   },
   'methods': {
     datechoose(date) {
-      this.queryParams.orderEndTime = this.parseTime(date[0], '{y}-{m}-{d}');
-      this.queryParams.orderStartTime = this.parseTime(date[1], '{y}-{m}-{d}');
+      this.queryParams.orderStartTime = this.parseTime(date[0], '{y}-{m}-{d}');
+      this.queryParams.orderEndTime = this.parseTime(date[1], '{y}-{m}-{d}');
     },
     /** handleClick */
     handleClick(tab) {
@@ -453,6 +461,13 @@ export default {
       this.visible = true;
       switch (index) {
         case 1:
+          this.$alert(row.accountBackRemark, '驳回提示', {
+            confirmButtonText: '确定',
+            type: 'warning'
+          }).then(() => {
+          });
+          break;
+        case 2:
           if (row.cancelStatus === 1) {
             this.msgError('司机撤单申请中，无法操作装货！');
           } else if (row.cancelStatus === 2) {
@@ -466,7 +481,7 @@ export default {
             // this.$refs.DialogA.getAddress(row);
           }
           break;
-        case 2:
+        case 3:
           // this.$refs.DialogC.reset();
           this.dialogc = true;
           this.title = '车辆卸货';
@@ -474,7 +489,7 @@ export default {
           this.$refs.DialogC.setForm(row);
           // this.$refs.DialogC.getAddress(row);
           break;
-        case 3:
+        case 4:
           if (row.cancelStatus === 1) {
             this.msgError('司机撤单申请中，无法再次取消订单！');
           } else if (row.cancelStatus === 2) {
@@ -486,7 +501,7 @@ export default {
             this.$refs.CancelDialog.setForm(row);
           }
           break;
-        case 4:
+        case 5:
           // this.$refs.DialogA.reset();
           this.dialoga = true;
           this.formDisable = true;
@@ -494,7 +509,7 @@ export default {
           this.$refs.DialogA.setForm(row);
           // this.$refs.DialogA.getAddress(row);
           break;
-        case 5:
+        case 6:
           // this.$refs.DialogC.reset();
           this.dialogc = true;
           this.formDisable = true;
@@ -502,23 +517,23 @@ export default {
           this.$refs.DialogC.setForm(row);
           // this.$refs.DialogC.getAddress(row);
           break;
-        case 6:
+        case 7:
           this.title = '车辆跟踪';
           this.trackdialog = true;
           this.$refs.TrackDialog.setForm(row);
           break;
-        case 7:
+        case 8:
           this.title = '定位';
           this.locationdialog = true;
           this.$refs.LocationDialog.setForm(row);
           break;
-        case 8:
+        case 9:
           this.$refs.DialogB.reset();
           this.dialogb = true;
           this.title = '投诉';
           this.$refs.DialogB.setForm(row);
           break;
-        case 9:
+        case 10:
           this.$refs.RateDialog.reset();
           this.ratedialog = true;
           this.title = '评价';
