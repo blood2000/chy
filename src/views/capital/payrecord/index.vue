@@ -177,12 +177,14 @@
         >下载模板</el-button>
       </el-col>
       <el-tag type="warning" class="mb10">提示: 已打款、打款成功的运输单才能上报流水</el-tag>
+      <el-col :span="1.5" class="fr">
+        <tablec-cascader v-model="tableColumnsConfig" />
+      </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
     <el-table v-loading="loading" :data="addressList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <el-table-column label="序号" type="index" min-width="5%" />
       <el-table-column label="是否超载" align="center" prop="" />
       <el-table-column label="是否分单" align="center" prop="" />
       <el-table-column label="是否异常" align="center" prop="" />
@@ -249,7 +251,7 @@
 </template>
 
 <script>
-import { payRecordlist } from '@/api/capital/payrecord';
+import { payRecordlistApi, payRecordlist } from '@/api/capital/payrecord';
 import modifyBatchDialog from './modifyBatchDialog';
 
 export default {
@@ -259,6 +261,7 @@ export default {
   },
   data() {
     return {
+      tableColumnsConfig: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -298,6 +301,13 @@ export default {
     };
   },
   created() {
+    this.tableHeaderConfig(this.tableColumnsConfig, payRecordlistApi, {
+      prop: 'edit',
+      isShow: true,
+      label: '操作',
+      width: 200,
+      fixed: 'right'
+    });
     this.getList();
   },
   methods: {

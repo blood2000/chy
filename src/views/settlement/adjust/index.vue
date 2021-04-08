@@ -237,9 +237,9 @@
     </el-row>
 
     <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="已复核" name="1" />
-      <el-tab-pane label="已结算" name="2" />
-      <el-tab-pane label="已打款" name="3" />
+      <el-tab-pane label="已复核" name="4" />
+      <el-tab-pane label="已结算" name="5" />
+      <el-tab-pane label="已打款" name="7" />
     </el-tabs>
 
     <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
@@ -373,7 +373,7 @@ export default {
         'deliveryCompany': undefined,
         'isReturn': undefined,
         'isChild': undefined,
-        'statusList': ['1']
+        'statusList': ['4']
       },
       receiveTime: [],
       // 弹框 内容
@@ -433,7 +433,7 @@ export default {
     },
     /** handleClick */
     handleClick(tab) {
-      this.queryParams.statusList[0] = tab.name;
+      this.queryParams.status = tab.name;
       this.queryParams.pageNum = 1;
       this.getList();
     },

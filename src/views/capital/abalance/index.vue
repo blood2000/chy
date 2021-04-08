@@ -2,10 +2,12 @@
   <!-- 平台账户余额 -->
   <div class="app-container">
     <el-row :gutter="10" class="mb8">
+      <el-col :span="1.5" class="fr">
+        <tablec-cascader v-model="tableColumnsConfig" />
+      </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
     <el-table v-loading="loading" :data="dataList">
-      <el-table-column label="序号" type="index" min-width="5%" />
       <el-table-column label="姓名" align="center" prop="" />
       <el-table-column label="网商汇款账号" align="center" prop="" />
       <el-table-column label="角色" align="center" prop="" />
@@ -14,7 +16,7 @@
       <el-table-column label="公户银行账户" align="center" prop="" />
       <el-table-column label="开户银行" align="center" prop="" />
       <el-table-column label="银行预留手机号" align="center" prop="" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="200" fixed="right">
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="310" fixed="right">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -78,7 +80,7 @@
 </template>
 
 <script>
-import { balanceList } from '@/api/capital/abalance';
+import { balanceListApi, balanceList } from '@/api/capital/abalance';
 import BankDialog from './bankDialog';
 import ChangeDetailDialog from '../components/changeDetailDialog';
 import CheckBalanceDialog from '../components/checkBalanceDialog';
@@ -96,6 +98,7 @@ export default {
   },
   data() {
     return {
+      tableColumnsConfig: [],
       // 遮罩层
       loading: true,
       // 显示搜索条件
@@ -120,6 +123,13 @@ export default {
     };
   },
   created() {
+    this.tableHeaderConfig(this.tableColumnsConfig, balanceListApi, {
+      prop: 'edit',
+      isShow: true,
+      label: '操作',
+      width: 310,
+      fixed: 'right'
+    });
     this.getList();
   },
   methods: {

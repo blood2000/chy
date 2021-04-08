@@ -1,7 +1,8 @@
 <template>
-  <el-table :ref="refName" v-loading="loading" border :data="data" v-bind="$attrs" @selection-change="handleSelectionChange">
+  <el-table :ref="refName" v-loading="loading" border stripe :data="data" v-bind="$attrs" @selection-change="handleSelectionChange">
 
     <el-table-column v-if="!!_events['selection-change']" type="selection" width="55" align="center" />
+    <el-table-column label="序号" align="center" type="index" min-width="5%" />
     <template v-for="(th, key) in tableColumnsConfig">
       <el-table-column
         v-if="th.isShow"
@@ -9,7 +10,7 @@
         :align="th.align || 'center'"
         :prop="th.prop"
         :label="th.label"
-        :width="th.width"
+        :min-width="th.width"
         :fixed="th.fixed==='' ? null : th.fixed"
         :show-overflow-tooltip="th.tooltip || false"
         :sortable="th.sortable || false"
