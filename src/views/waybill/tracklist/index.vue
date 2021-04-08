@@ -74,7 +74,7 @@
         />
       </el-form-item>
       <el-form-item
-        label="接单日期"
+        label="创建日期"
         prop="receiveTime"
       >
         <el-date-picker
@@ -448,6 +448,9 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.resetForm('queryForm');
+      this.receiveTime = [];
+      this.queryParams.orderStartTime = null;
+      this.queryParams.orderEndTime = null;
       this.handleQuery();
     },
     handleDelete() {

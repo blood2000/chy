@@ -56,23 +56,13 @@
         prop="receiveTime"
       >
         <el-date-picker
-          v-model="queryParams.startReceiveTime"
-          size="small"
-          style="width: 113px"
-          value-format="yyyy-MM-dd"
-          type="date"
-          placeholder="开始日期"
-          :clearable="false"
-        />
-        -
-        <el-date-picker
-          v-model="queryParams.endReceiveTime"
-          size="small"
-          style="width: 113px"
-          value-format="yyyy-MM-dd"
-          type="date"
-          placeholder="结束日期"
-          :clearable="false"
+          v-model="receiveTime"
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          style="width: 240px"
+          @change="datechoose"
         />
       </el-form-item>
       <el-form-item label="车牌号" prop="licenseNumber">
@@ -282,6 +272,7 @@ export default {
         waybillNo: null,
         status: null
       },
+      receiveTime: [],
       // 表单是否禁用
       formDisable: false,
       // 当前选中的运单id
@@ -299,6 +290,10 @@ export default {
     this.getList();
   },
   methods: {
+    datechoose(date) {
+      this.queryParams.startReceiveTime = this.parseTime(date[0], '{y}-{m}-{d}');
+      this.queryParams.endReceiveTime = this.parseTime(date[1], '{y}-{m}-{d}');
+    },
     /** 查询作废运单列表 */
     getList() {
       this.loading = true;
@@ -317,6 +312,9 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.resetForm('queryForm');
+      this.receiveTime = [];
+      this.queryParams.startReceiveTime = null;
+      this.queryParams.endReceiveTime = null;
       this.handleQuery();
     },
     // 多选框选中数据
