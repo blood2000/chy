@@ -10,16 +10,7 @@
       :disabled="myisdisabled"
     >
 
-      <!-- <el-form-item
-        v-if="formData.tin7 === '2' || formData.tin7 === '4'"
-        prop="tin8"
-      >
-        <el-checkbox v-model="formData.tin8">允许自装</el-checkbox>
-      </el-form-item> -->
-
       <ProvinceCityCounty ref="pccFef" :cb-data="cbData" :isrules="isrules" :disabled="myisdisabled" @getCity="getCity" />
-
-
 
       <div class="ly-flex">
         <el-form-item
@@ -168,7 +159,6 @@ export default {
         const {
           detail,
           addressName,
-          // street,
           addressAlias,
           contact,
           contactPhone,
@@ -260,22 +250,6 @@ export default {
               province: province.provinceName,
               provinceCode: province.provinceCode
             });
-
-            // console.log({
-            //   districtCode: county.countyCode, // (区的code) 必填的
-            //   district: county.countyName, // (区)
-            //   addressAlias: addressAlias,
-            //   addressType: this.type,
-            //   city: city.cityName,
-            //   cityCode: city.cityCode,
-            //   contact: contact,
-            //   contactPhone: contactPhone,
-            //   detail: detail, // 手填的
-            //   addressName: name, // 地址名称(高德手选)
-            //   location: [lng, lat],
-            //   province: province.provinceName,
-            //   provinceCode: province.provinceCode
-            // }, '具体的地址');
           } else {
             return false;
           }
@@ -283,7 +257,6 @@ export default {
       });
     },
 
-    // 工具
     // 根据value匹配数组中的一项
     _zhaovalue(arr, value) {
       return arr.filter((e) => {

@@ -179,7 +179,15 @@
               <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
             </el-row>
 
-            <RefactorTable :loading="loading" :data="list" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
+            <RefactorTable
+              :loading="loading"
+              :data="list"
+              row-key="id"
+              stripe
+              default-expand-all
+              :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+              :table-columns-config="tableColumnsConfig"
+            ><!-- @selection-change="handleSelectionChange" -->
               <template #landAddress="{row}">
                 <span>{{ row.landAddress }}</span>
               </template>
@@ -337,72 +345,6 @@
               </template>
             </RefactorTable>
 
-
-            <el-table
-              :loading="loading"
-              :data="tableData"
-              style="width: 100%;margin-bottom: 20px;"
-              row-key="id"
-              border
-              stripe
-              default-expand-all
-              :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
-            >
-
-              <el-table-column
-                show-overflow-tooltip
-                prop="code"
-                label="货源单号"
-                sortable
-                width="180"
-              />
-              <el-table-column
-                show-overflow-tooltip
-                prop="companyName"
-                label="企业名称"
-              />
-              <el-table-column
-                prop="goodsTypeName"
-                label="货物类型"
-              />
-              <el-table-column
-                show-overflow-tooltip
-                prop="addressName1"
-                label="装货地"
-              />
-              <el-table-column
-                show-overflow-tooltip
-                prop="addressName2"
-                label="卸货地"
-              />
-              <el-table-column
-                prop="remark"
-                label="运输要求"
-                width="200"
-              />
-              <el-table-column
-                prop="goodsPrice"
-                label="货物单价"
-              />
-              <el-table-column
-                prop="shipmentPrice"
-                label="运输单价"
-              />
-              <el-table-column
-                prop="transactionPrice"
-                label="成交单价"
-              />
-              <el-table-column
-                prop="unitPrice"
-                label="承运单价"
-              />
-              <el-table-column
-                prop="edit"
-                label="编辑"
-              />
-
-            </el-table>
-
             <pagination
               v-show="total>0"
               :total="total"
@@ -435,7 +377,7 @@ import { listManagesApi, getOrderInfoList, delOrder, loadAndUnloadingGoods, expo
 import { getOrderByCode } from '@/api/order/release';
 
 import OpenDialog from './component/OpenDialog';
-// import tableColumnsConfig from './data/config-index';
+import tableColumnsConfig from './data/config-index';
 
 const tableData = [{
   id: 3,
@@ -477,9 +419,6 @@ const tableData = [{
 }];
 
 import PriceAdjustment from './component/PriceAdjustment';
-
-import lists from './data/data.json';
-console.log(lists);
 
 export default {
   name: 'Testlog',
@@ -681,14 +620,14 @@ export default {
   },
 
   created() {
-    this.tableHeaderConfig(this.tableColumnsConfig, listManagesApi, {
-      prop: 'edit',
-      isShow: true,
-      label: '操作',
-      width: 180,
-      fixed: 'right'
-    });
-    // this.tableColumnsConfig = this.getLocalStorage(this.$route.name) || this.tableColumnsConfig;
+    // this.tableHeaderConfig(this.tableColumnsConfig, listManagesApi, {
+    //   prop: 'edit',
+    //   isShow: true,
+    //   label: '操作',
+    //   width: 180,
+    //   fixed: 'right'
+    // });
+    this.tableColumnsConfig = tableColumnsConfig;
     this.getDict();
     this.getList();
   },
@@ -706,18 +645,12 @@ export default {
     getList() {
       this.loading = true;
       getOrderInfoList(this.newQueryParams).then(response => {
-        this.list = response.data.list;
+        this.list = this.handlerList(response.data.list);
         this.total = response.data.total - 0;
         this.loading = false;
       }).catch(() => {
         this.loading = false;
       });
-
-      // 测试数据
-
-
-      console.log(this.handlerList(lists.list));
-      this.tableData = this.handlerList(lists.list);
     },
 
     // 基本格式(即表头定义)

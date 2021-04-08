@@ -25,8 +25,6 @@
             controls-position="right"
             :style="{ width: '100px' }"
           />
-          <!-- step-strictly -->
-
           <span class="ml0 mr10"> 元 / {{ goodsUnitName }}</span>
 
           <div v-if="!showbudget" class="ml0 mr10 t_color_c t_m_pac">
@@ -231,9 +229,7 @@ export default {
       // 字典
       ruleItemIdOption: [],
       M0Option: [],
-      // ruleFormulaOption: [],
 
-      // allRules
       lossList: [],
       zichuList: [],
       shouruList: [],
@@ -243,18 +239,14 @@ export default {
 
   computed: {
     isTotalTypeValue() {
-      console.log(this.totalTypeValue);
-
       return this.totalTypeValue !== '1';
     }
   },
 
   watch: {
     myisdisabled(value) {
-      console.log(value);
       if (value) {
         this.handlerEstimateCost();
-        // this.handlerEstimateCost({ detailList, lossList, ruleInfo });
       }
     },
     pubilshCode(value) {
@@ -262,7 +254,6 @@ export default {
     },
     redis: {
       handler(value) {
-        console.log(value);
         if (!value || !value.orderFreightVo) return;
         // 清空
         this.lossList = [];
@@ -270,34 +261,19 @@ export default {
         this.shouruList = [];
 
         const { detailList, lossList } = value.orderFreightVo;
-        console.log(value.ruleCode);
 
         this.formData.ruleItemId = value.ruleCode;
 
-
-        // 运费单价
-        const filterDetailList = [];
-
-        detailList.forEach(e => {
+        const filterDetailList = detailList.filter(e => {
           if (e.enName === 'FREIGHT_COST') {
-            this.ruleFreightPrice = [e];
             this.formData.freightPrice = e.ruleValue;
-            // this.formData.ruleItemId = e.
-          } else if (e.enName === 'CALCULATION_FORMULA') {
-            this.claculationFormula = [e];
-            this.formData.ruleDictValue = e.ruleValue;
-          } else {
-            filterDetailList.push(e);
           }
+
+          const bool = (e.enName === 'LOSS_PLAN' || e.enName === 'LOSS_RULE' || e.enName === 'CALCULATION_FORMULA' || e.enName === 'FREIGHT_COST');
+
+          return !bool;
         });
 
-        // this.ruleFreightPrice = detailList.filter(e => {
-        //   return e.enName === 'FREIGHT_COST';
-        // });
-        // console.log(this.ruleFreightPrice);
-
-
-        // this.formData.freightPrice = this.ruleFreightPrice[0].ruleValue;
         this.setData(filterDetailList, lossList);
       },
       immediate: true
@@ -309,7 +285,6 @@ export default {
   created() {
     this.initData();
     // 获取抹零规则的字典
-
     this.getDict();
   },
 
@@ -337,6 +312,9 @@ export default {
       const { detailList, lossList, ruleInfo } = (await getRuleItem({
         code: this.formData.ruleItemId
       })).data;
+
+
+
 
       // 这里处理预估值
       // 计算公式的值 ruleInfo.ruleDictValue
@@ -461,7 +439,7 @@ export default {
         return !bool;
       });
 
-      console.log(filterDetailList);
+      console.log(filterDetailList, '处理完的规则');
 
 
       this.setData(filterDetailList, lossList);
@@ -486,8 +464,8 @@ export default {
         this.$refs['formData'].validate(async(valid) => {
           if (valid) {
             // 报ruleValue undefined 说明 单价或计算公式未放到细则里面
-            this.ruleFreightPrice[0] && (this.ruleFreightPrice[0].ruleValue = this.formData.freightPrice);
-            this.ruleFreightPrice[0] && (this.ruleFreightPrice[0].ruleCode = this.formData.ruleItemId);
+            (this.ruleFreightPrice[0].ruleValue = this.formData.freightPrice);
+            (this.ruleFreightPrice[0].ruleCode = this.formData.ruleItemId);
             // this.claculationFormula[0] && (this.claculationFormula[0].ruleValue = this.formData.ruleDictValue);
             // const lossList = await this.$refs.lossList._submitForm();
             const shouruList = this.$refs.shouruList ? (await this.$refs.shouruList._submitForm()) : [];
@@ -506,8 +484,6 @@ export default {
                 };
               })
             };
-
-
 
             resolve({ ...obj, ruleDictValue: this.formData.ruleDictValue });
           } else {
@@ -530,53 +506,17 @@ export default {
         };
       });
 
-      // console.log(orderFreightBoList, '获取规则细项---');
-
       // 获取商品上的数据
       // 1- 如果最高配载 和 货物单价 未选中的情况?
       const arrdata = await this.goodsSubmitForm();
 
-      // console.log(arrdata, '获取商品info....');
-
       // 还要知道当前是那个商品下面的规则
-
-      // console.log(this.good, '当前是那个商品下');
-
 
       const goodsItem = arrdata.filter(e => {
         return e.dictCode === this.good.dictCode;
       });
 
-      // console.log(goodsItem[0], '当前商品');
-
-      // console.log(this.redis, '当前的规则');
-
-
-
       const { orderGood } = goodsItem[0];
-
-      /* TODO 商品的code 没有? 地址的code没有   ruleDetailShipmentCode 是什么??*/
-
-      // {
-      //   "number": 0,
-      //   "orderAddressCode": "",
-      //   "orderFreightBoList": [
-      //     {
-      //       "code": "",
-      //       "ruleCode": "",
-      //       "ruleDetailShipmentCode": "",
-      //       "ruleItemCode": "",
-      //       "ruleValue": "",
-      //       "type": 0
-      //     }
-      //   ],
-      //   "orderGoodsCode": "",
-      //   "stowageStatus": "",
-      //   "totalType": 0,
-      //   "userCode": "",
-      //   "vehicleMaxWeight": 0,
-      //   "weight": 0
-      // }
 
       const qData = {
         number: orderGood.number || undefined, // 车次

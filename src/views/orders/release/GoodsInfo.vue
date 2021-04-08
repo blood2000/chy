@@ -25,7 +25,7 @@
         <div v-for="(redi,i) in good.redis" :key="i">
 
           <AccounTing
-            :ref="'AccounTing'+i"
+            :ref="'AccounTing' +good.activeName +i"
             :pubilsh-code="pubilshCode"
             :redis="redi"
             :goods-unit-name="goodsUnitName"
@@ -99,19 +99,11 @@ export default {
     // 获取规格
     async getAccounTing() {
       this.tabs = await this.getGoodsAccounting(); // 结构就是 this.tabs
-
-      console.log(this.tabs);
-
-
       // 只能用 for of 遍历
       for (const e of this.tabs) {
         const lists = e.redis.map(async(ee, i) => {
           // 只能调一次
-          const accounTing = (await this.$refs['AccounTing' + i][0]._submitForm());
-
-          // console.log(accounTing);
-          // console.log(ee, '---------------------------');
-
+          const accounTing = (await this.$refs['AccounTing' + e.activeName + i][0]._submitForm());
 
           return {
             ...ee,
@@ -124,27 +116,23 @@ export default {
         });
 
         e.newRedis = await Promise.all(lists);
-        console.log(e);
       }
     },
     // 返回数据
     async _submitForm() {
       await this.getAccounTing();
-
-      console.log(this.tabs, '_submitForm');
-
       return this.tabs;
     },
 
     // 数据初始化(created的时候)
     init() {
       if (!this.goods || (this.goods && !this.goods[0])) return;
-      console.log(this.goods, '商品');
-      console.log(this.addrAdd);
-      console.log(this.addrXie);
-      console.log(this.pubilshCode);
-      console.log(this.cbGoodsAccounting, '-----'); // 创建的时候 null
-      console.log(this.cbOrderFreight, '+++++++++++++'); // 创建的时候 null
+      // console.log(this.goods, '商品');
+      // console.log(this.addrAdd);
+      // console.log(this.addrXie);
+      // console.log(this.pubilshCode);
+      // console.log(this.cbGoodsAccounting, '-----'); // 创建的时候 null
+      // console.log(this.cbOrderFreight, '+++++++++++++'); // 创建的时候 null
       this.tabs = this.goods.map((e, index) => {
         // 回填有值的时候
         if (this.cbGoodsAccounting) {
@@ -177,16 +165,11 @@ export default {
         };
       });
       this.activeName = '0';
-
-      console.log(this.tabs, ' 最后---');
     },
 
     // 判断规则是多装还是多卸, 并处理装地址--卸地址
     addressInit() {
       let arr = [];
-      console.log(this.addrXie, this.addrAdd);
-
-
       if (this.addrXie.length >= 2) {
         arr = this.addrXie.map(e => {
           return {
@@ -202,19 +185,12 @@ export default {
           };
         });
       }
-
-      console.log(arr, '处理一下地址');
-
       return arr;
     },
     handlerPrice(addressIdentification) { // identification
       const redis = this.addressInit().map(e => {
-        console.log(e);
-
         addressIdentification.forEach(ee => {
           const addressCodeArr = ee.addressCode.split(':');
-
-          console.log(ee);
 
           if ((e.code + '') === (addressCodeArr[0] + '') || (e.code + '') === (addressCodeArr[1] + '')) {
             e.orderFreightVo = ee.orderFreightVo;
@@ -226,41 +202,12 @@ export default {
         return e;
       });
 
-      console.log(redis, '226');
-
-
       return redis;
     },
 
     validatePass(data) {
-      console.log(data);
-      if (data === this.activeName) return;
-
-      if (data === '0') return;
-
-
+      if (data === this.activeName || data === '0') return;
       this.activeName = data;
-
-
-
-
-      // this.activeName = data;
-      // console.log(data);
-      // if (data === '0') {
-      //   this.activeName = '0';
-      // } else {
-      //   this.activeName = data;
-      // }
-
-      // if (data === '1') {
-      // }
-      // if (data !== this.activeName) {
-      //   this.activeName = data;
-      // }
-      // if (isGo) return;
-      // 当前页 且 isGo 值是false
-      // if (data === this.activeName && !isGo) return;
-      // this.activeName = data;
     }
 
   }

@@ -237,18 +237,9 @@
 import OrderBasic from './OrderBasic';
 import OneAddress from './component/OneAddress';
 import GoodsInfo from './GoodsInfo';
-
 import OpenDialog from './OpenDialog';
 
-// import GoodsAccounting from './component/GoodsAccounting';
-// import AccounTing from './component/AccounTing';
-// import MultiData from './component/MultiData';
-
-
-// 获取货集码列表 ? 要在什么时机调用?
-// import { listStockcode } from '@/api/enterprise/stockcode';
 import { getUserInfo } from '@/utils/auth';
-
 import { listShipment } from '@/api/assets/shipment.js';
 import { orderPubilsh, getOrderByCode, orderFreight, update } from '@/api/order/release';
 
@@ -285,14 +276,8 @@ export default {
       cbOrderBasic: null, // 传给OrderBasic组件的数据-回填
       cbGoodsAccounting: null, // 传给组件的数据-回填
 
-      // cbData: null,
-      // orderFreightBoList: null,
-
       loading: false,
 
-      // 多商品对应各自的规格
-      // tin2_1tabs: [],
-      // tin2_1tabs_activeName: '0',
       formData: {
         tin1: '', // 发布人Code
         tin7: '1', // 装卸类型 1.一装一卸 2.多装一卸 3.一装多卸 4.多装多卸
@@ -310,7 +295,6 @@ export default {
 
       // 字典
       shipmentList: [], // 发布人下拉列表
-
       // 其他
       isMultiGoods: false // 用来判断多商品还是单商品
     };
@@ -343,8 +327,6 @@ export default {
       handler(value) {
         if (value === '0') {
           this.isT = true;
-          console.log(this.active);
-          console.log('详情---');
         }
       },
       immediate: true
@@ -354,6 +336,8 @@ export default {
   created() {
     // 判断用户
     const { isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
+    console.log(isShipment, user, shipment);
+
     this.isShipment = isShipment;
     this.isShipment && (this.formData.tin1 = shipment.info.code);
 
@@ -580,7 +564,6 @@ export default {
       this.$refs[form].validate(async(valid) => {
         if (valid) {
           this.lastData = await this.submAllData();
-          console.log(this.lastData);
 
           if (active && active === 3) {
             this.onPubilsh();
@@ -676,7 +659,7 @@ export default {
       }
 
 
-      // console.log(orderBasic, '最后数据');
+      console.log(orderBasic, '最后数据');
       return orderBasic;
     },
 
@@ -685,11 +668,7 @@ export default {
       // 获取商品基本信息(1.商品info 2.地址及地址下对应的规则)
       const goodsInfo = await this.$refs.goodsInfo._submitForm();
 
-
-
       // 1.商品info
-      console.log(goodsInfo);
-
       const orderGoodsList = goodsInfo.map(e => {
         return {
           code: e.code || undefined,
@@ -698,13 +677,10 @@ export default {
           identification: e.goodsType
         };
       });
-
       // 2. 地址及地址下对应的规则(注意: arr不包括一卸或者一装)
 
       // 规则-找出来
       const orderFreightInfoBoList = goodsInfo.map(e => {
-        console.log(e.newRedis);
-
         const orderAddressBoList = e.newRedis.map((ee, index) => {
           ee.identification = index + 1;
 
@@ -852,8 +828,6 @@ export default {
           };
         })
       };
-
-      console.log(this.cbOrderBasic);
     },
 
     // 2. 处理 OneAddress 地址要的数据
@@ -887,8 +861,6 @@ export default {
 
     // 3. 处理回填的数据(1.是要获取地址中的规则 2.要获取装地址到卸地址)
     handerRedisOrder(addressList) {
-      console.log();
-
       addressList.forEach(e => {
         if ((e.addressType - 0) === 1 || (e.addressType - 0) === 3) {
           this.addr_add.push(e);
