@@ -11,6 +11,7 @@
       <el-form-item
         label="下单客户"
         prop="orderClient"
+        v-show="!isShipment"
       >
         <el-input
           v-model="queryParams.orderClient"
@@ -24,6 +25,7 @@
       <el-form-item
         label="发货企业"
         prop="deliveryCompany"
+        v-show="!isShipment"
       >
         <el-input
           v-model="queryParams.deliveryCompany"
@@ -302,6 +304,7 @@
 <script>
 // import tableColumnsConfig from './data/tracklist-index';
 import { trackList, trackListApi } from '@/api/waybill/tracklist';
+import { getUserInfo } from '@/utils/auth';
 // 车辆装货弹窗
 import DialogA from './component/DialogA';
 // 投诉弹窗
@@ -381,7 +384,8 @@ export default {
         { 'dictLabel': '司机撤单申请', 'dictValue': '1' },
         { 'dictLabel': '货主同意撤销 ', 'dictValue': '2' },
         { 'dictLabel': '货主拒绝撤销 ', 'dictValue': '3' }
-      ]
+      ],
+      isShipment: false
     //   // <!-- isPay	支付给司机运费状态 0-未支付 1-已支付 -->
     //   isPayOptions: [
     //     { 'dictLabel': '未支付', 'dictValue': '0' },
@@ -395,6 +399,8 @@ export default {
     }
   },
   created() {
+    const { isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
+    this.isShipment = isShipment;
     // this['tableColumnsConfig' + this.activeName] = this.getLocalStorage(this.lcokey) || this.tableColumnsConfig;
     this.tableHeaderConfig(this.tableColumnsConfig, trackListApi, {
       prop: 'edit',

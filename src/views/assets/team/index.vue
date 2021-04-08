@@ -117,12 +117,14 @@
       </template>
       <template #edit="{row}">
         <el-button
+          v-hasPermi="['assets:team:manage']"
           size="mini"
           type="text"
           icon="el-icon-setting"
           @click="handleManage(row)"
         >管理</el-button>
         <el-button
+          v-hasPermi="['assets:team:get']"
           size="mini"
           type="text"
           icon="el-icon-document"
@@ -136,12 +138,14 @@
           @click="handleUpdate(row)"
         >修改</el-button>
         <el-button
+          v-hasPermi="['assets:team:invitation']"
           size="mini"
           type="text"
           icon="el-icon-document-add"
           @click="handleAddDriver(row)"
         >邀请司机</el-button>
         <el-button
+          v-hasPermi="['assets:team:deal']"
           v-show="row.apply"
           size="mini"
           type="text"

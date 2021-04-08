@@ -1,17 +1,17 @@
 <template>
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-      <el-form-item label="货主姓名" prop="adminName">
+      <el-form-item label="货主" prop="searchValue">
         <el-input
-          v-model="queryParams.adminName"
-          placeholder="请输入货主姓名"
+          v-model="queryParams.searchValue"
+          placeholder="公司名称/客户名称/手机号"
           clearable
           size="small"
           style="width: 272px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="电话号码" prop="telphone">
+      <!--<el-form-item label="电话号码" prop="telphone">
         <el-input
           v-model="queryParams.telphone"
           placeholder="请输入电话号码"
@@ -20,7 +20,7 @@
           style="width: 272px"
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item label="是否核算" prop="isAccount">
         <el-select v-model="queryParams.isAccount" placeholder="请选择核算方式" filterable clearable size="small" style="width: 272px">
           <el-option
@@ -219,12 +219,14 @@
       </template>
       <template #edit="{row}">
         <el-button
+          v-hasPermi="['assets:shipment:manage']"
           size="mini"
           type="text"
           icon="el-icon-setting"
           @click="handleManage(row)"
         >管理</el-button>
         <el-button
+          v-hasPermi="['assets:shipment:query']"
           size="mini"
           type="text"
           icon="el-icon-document"
@@ -238,6 +240,7 @@
           @click="handleDetail(row, 'edit')"
         >修改</el-button>
         <el-button
+          v-hasPermi="['assets:shipment:examine']"
           v-show="row.authStatus === 0 || row.authStatus === 1"
           size="mini"
           type="text"
@@ -345,7 +348,7 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        adminName: undefined,
+        searchValue: undefined,
         isAccount: undefined,
         accountType: undefined,
         authStatus: undefined,
