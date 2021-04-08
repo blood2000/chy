@@ -44,7 +44,7 @@
             size="mini"
             type="text"
             icon="el-icon-document"
-            @click="handleDEtail(scope.row)"
+            @click="handleDetail(scope.row)"
           >
             详情
           </el-button>
@@ -159,7 +159,7 @@ export default {
       this.$emit('update:open', false);
     },
     // 查看运单详情
-    handleDEtail(row) {
+    handleDetail(row) {
       this.detailCurrentId = row.wayBillCode;
       this.detailOpen = true;
     }

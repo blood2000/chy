@@ -173,7 +173,7 @@ export default {
     // 企业认证
     handleCertification() {
       this.$refs.detailDialog.reset();
-      this.$refs.detailDialog.setForm(this.form);
+      this.$refs.detailDialog.setForm();
       this.open = true;
     },
     // 安全升级

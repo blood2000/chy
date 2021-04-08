@@ -140,7 +140,7 @@
           size="mini"
           type="text"
           icon="el-icon-edit"
-          @click="handleDEtail(row)"
+          @click="handleDetail(row)"
         >详情</el-button>
         <el-button
           size="mini"
@@ -321,7 +321,7 @@ export default {
       this.multiple = !selection.length;
     },
     /** 详情按钮操作 */
-    handleDEtail(row) {
+    handleDetail(row) {
       this.$refs.DetailDialog.reset();
       this.currentId = row.wayBillCode;
       console.log(row);

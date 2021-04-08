@@ -107,6 +107,7 @@
 import { saveCompanyInfo } from '@/api/enterprise/company/info';
 import UploadImage from '@/components/UploadImage/index';
 import ProvinceCityCounty from '@/components/ProvinceCityCounty';
+import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
 
 export default {
   components: {
@@ -176,11 +177,7 @@ export default {
             this.msgWarning('请上传营业执照照');
             return;
           }*/
-          if (this.form.identificationEffective) {
-            this.form.identificationEffective = 1;
-          } else {
-            this.form.identificationEffective = 0;
-          }
+          this.form.identificationEffective = praseBooleanToNum(this.form.identificationEffective);
           if (this.shipmentCode) {
             this.form.shipmentCode = this.shipmentCode;
           }
@@ -208,6 +205,7 @@ export default {
     },
     setForm() {
       this.form = this.info;
+      this.form.identificationEffective = praseNumToBoolean(this.form.identificationEffective);
     }
   }
 };
