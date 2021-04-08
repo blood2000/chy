@@ -43,3 +43,20 @@ export function delInfo(id) {
     method: 'delete'
   });
 }
+
+// 查询车辆归属调度列表
+export function listVehicleBelongTeam(vehicleCode) {
+  return request({
+    url: `/assets/vehicle/teamList?vehicleCode=${vehicleCode}`,
+    method: 'post'
+  });
+}
+
+// 查询车辆归属司机列表
+export function listVehicleBelongDriver(vehicleCode) {
+  return request({
+    url: `/assets/vehicle/driverList?vehicleCode=${vehicleCode}`,
+    method: 'post'
+  });
+}
+

@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
       <el-form-item label="货主姓名" prop="adminName">
         <el-input
           v-model="queryParams.adminName"
@@ -11,10 +11,10 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="电话号码" prop="telphone">
+      <el-form-item label="手机号/账号" prop="telphone">
         <el-input
           v-model="queryParams.telphone"
-          placeholder="请输入电话号码"
+          placeholder="请输入手机号/账号"
           clearable
           size="small"
           style="width: 272px"
@@ -91,6 +91,7 @@
           reserve-keyword
           placeholder="请输入网点"
           style="width: 272px"
+          size="small"
           :remote-method="getBranchOptions"
           :loading="loading"
         >
