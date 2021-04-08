@@ -97,6 +97,10 @@ export default {
     });
   },
   methods: {
+    /** 提交按钮 */
+    submitForm() {
+      console.log('点击');
+    },
     /** 查询评价列表 */
     getList() {
       this.loading = true;

@@ -29,4 +29,12 @@ export function childList(query) {
   });
 }
 
+// 批量核算详情
+export function adjustDetail(data) {
+  return request({
+    url: '/transportation/waybillBalanceInfo/batchDetail',
+    method: 'post',
+    data: data
+  });
+}
 

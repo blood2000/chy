@@ -347,7 +347,8 @@
 <script>
 import { listUser, getUser, delUser, addUser, updateUser, resetUserPwd, changeUserStatus } from '@/api/system/user';
 import { treeselect } from '@/api/system/dept';
-import { authorization } from '@/headers';
+import { getToken } from '@/utils/auth';
+import { authorPre } from '@/headers';
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 
@@ -421,7 +422,7 @@ export default {
         // 是否更新已经存在的用户数据
         updateSupport: 0,
         // 设置上传的请求头部
-        headers: { Authorization: authorization },
+        headers: { Authorization: authorPre + getToken() },
         // 上传的地址
         url: process.env.VUE_APP_BASE_API + '/system/user/importData'
       },

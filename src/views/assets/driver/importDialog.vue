@@ -60,7 +60,8 @@
 
 <script>
 import { importData } from '@/api/assets/driver';
-import { authorization, produceCode, appCode, appVersion, terminalType } from '@/headers';
+import { getToken } from '@/utils/auth';
+import { authorPre, produceCode, appCode, appVersion, terminalType } from '@/headers';
 
 export default {
   components: {
@@ -96,7 +97,7 @@ export default {
       fileData: '',
       // 请求头数据
       importHeader: {
-        'Authorization': authorization,
+        'Authorization': authorPre + getToken(),
         'Produce-Code': produceCode,
         'App-Code': appCode,
         'App-Version': appVersion,

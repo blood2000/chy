@@ -2,6 +2,8 @@
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
       <el-form-item label="货主" prop="searchValue">
+    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
+      <el-form-item label="货主姓名" prop="adminName">
         <el-input
           v-model="queryParams.searchValue"
           placeholder="公司名称/客户名称/手机号"
@@ -83,7 +85,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="所属网点" prop="branchCode">
+      <!-- <el-form-item label="所属网点" prop="branchCode">
         <el-select
           v-model="queryParams.branchCode"
           filterable
@@ -91,6 +93,7 @@
           reserve-keyword
           placeholder="请输入网点"
           style="width: 272px"
+          size="small"
           :remote-method="getBranchOptions"
           :loading="loading"
         >
@@ -101,7 +104,7 @@
             :value="item.code"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="审核时间">
         <el-date-picker
           v-model="queryParams.authTimeBegin"

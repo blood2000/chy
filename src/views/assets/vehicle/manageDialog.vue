@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    class="page-driver-manage-dialog"
+    class="page-vehicle-manage-dialog"
     :visible="visible"
     :fullscreen="isfullscreen"
     width="1300px"
@@ -9,33 +9,28 @@
     @close="cancel"
   >
     <el-tabs v-model="activeName">
-      <el-tab-pane label="车辆管理" name="vehicle">
-        <vehicle-page ref="VehiclePage" :team-code="teamCode" :driver-code="driverCode" />
+      <el-tab-pane label="归属司机" name="driver">
+        <driver-list-page ref="DriverListPage" :vehicle-code="vehicleCode" />
       </el-tab-pane>
       <el-tab-pane label="归属调度" name="team">
-        <team-list-page ref="TeamListPage" :driver-code="driverCode" />
+        <team-list-page ref="TeamListPage" :vehicle-code="vehicleCode" />
       </el-tab-pane>
     </el-tabs>
   </el-dialog>
 </template>
 
 <script>
-import VehiclePage from '../vehicle/index.vue';
+import DriverListPage from '../components/driverList';
 import TeamListPage from '../components/teamList';
-
 export default {
-  name: 'TeamManageDialog',
+  name: 'VehicleManageDialog',
   components: {
-    VehiclePage,
+    DriverListPage,
     TeamListPage
   },
   props: {
     open: Boolean,
-    teamCode: {
-      type: String,
-      default: null
-    },
-    driverCode: {
+    vehicleCode: {
       type: String,
       default: null
     }
@@ -43,7 +38,7 @@ export default {
   data() {
     return {
       isfullscreen: false,
-      activeName: 'vehicle'
+      activeName: 'driver'
     };
   },
   computed: {
@@ -60,8 +55,8 @@ export default {
     open(val) {
       if (val) {
         this.$nextTick(() => {
-          this.$refs.VehiclePage.handleQuery();
           this.$refs.TeamListPage.getList();
+          this.$refs.DriverListPage.getList();
         });
       }
     }
@@ -80,7 +75,7 @@ export default {
 </script>
 
 <style lang="scss">
-.page-driver-manage-dialog{
+.page-vehicle-manage-dialog{
   .el-dialog{
     height: 90vh;
     .el-dialog__body{
