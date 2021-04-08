@@ -24,8 +24,9 @@
 </template>
 
 <script>
-import { getToken } from '@/utils/auth';
 import { getFile } from '@/api/system/image';
+import { getToken } from '@/utils/auth';
+import { authorPre, produceCode, appCode, appVersion, terminalType } from '@/headers';
 
 export default {
   components: {},
@@ -44,11 +45,11 @@ export default {
     return {
       uploadImgUrl: process.env.VUE_APP_BASE_API + '/assets/upload/uploadToAli', // 上传的图片服务器地址
       headers: {
-        'Authorization': 'Bearer ' + getToken(),
-        'Produce-Code': '776ca8e240574192b6e0f69b417163df',
-        'App-Code': '3f78fbfc13b14fa4b3d78665124ef4bb',
-        'App-Version': '2.0',
-        'Terminal-Type': 'web'
+        'Authorization': authorPre + getToken(),
+        'Produce-Code': produceCode,
+        'App-Code': appCode,
+        'App-Version': appVersion,
+        'Terminal-Type': terminalType
       },
       uploadData: {
       },

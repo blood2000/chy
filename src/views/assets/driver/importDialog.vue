@@ -59,8 +59,9 @@
 </template>
 
 <script>
-import { getToken } from '@/utils/auth';
 import { importData } from '@/api/assets/driver';
+import { getToken } from '@/utils/auth';
+import { authorPre, produceCode, appCode, appVersion, terminalType } from '@/headers';
 
 export default {
   components: {
@@ -96,11 +97,11 @@ export default {
       fileData: '',
       // 请求头数据
       importHeader: {
-        'Authorization': 'Bearer ' + getToken(),
-        'Produce-Code': '776ca8e240574192b6e0f69b417163df',
-        'App-Code': '3f78fbfc13b14fa4b3d78665124ef4bb',
-        'App-Version': '2.0',
-        'Terminal-Type': 'web'
+        'Authorization': authorPre + getToken(),
+        'Produce-Code': produceCode,
+        'App-Code': appCode,
+        'App-Version': appVersion,
+        'Terminal-Type': terminalType
       }
     };
   },

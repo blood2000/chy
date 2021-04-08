@@ -4,6 +4,17 @@ import store from '@/store';
 import { getToken } from '@/utils/auth';
 import errorCode from '@/utils/errorCode';
 import { tansParams } from '@/utils/ddc';
+import {
+  authorPre,
+  produceCode,
+  appCode,
+  appVersion,
+  terminalType,
+  terminalDeviceBrand,
+  terminalSystemModel,
+  terminalSystemVersion,
+  terminalIMEI
+} from '@/headers';
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8';
 // 创建axios实例
@@ -15,14 +26,6 @@ const service = axios.create({
 });
 
 // const contentType='application/json';
-const produceCode = '776ca8e240574192b6e0f69b417163df';// 产品编码
-const appCode = '3f78fbfc13b14fa4b3d78665124ef4bb';// 应用编码
-const appVersion = '2.0';// 应用版本
-const terminalType = 'web';// 终端类别（0其它 1:app 2:web 3:微信小程序）
-const terminalDeviceBrand = '1';// 手机厂商-app
-const terminalSystemModel = '2';// 手机型号-app
-const terminalSystemVersion = '3';// 系统版本号-app
-const terminalIMEI = '4';// MEI（国际移动设备识别码）-app
 
 // request拦截器
 service.interceptors.request.use(config => {
@@ -48,7 +51,7 @@ service.interceptors.request.use(config => {
   config.headers['Terminal-IMEI'] = terminalIMEI;
 
   if (getToken() && !isToken) {
-    config.headers['Authorization'] = 'Bearer ' + getToken(); // 让每个请求携带自定义token 请根据实际情况自行修改
+    config.headers['Authorization'] = authorPre + getToken(); // 让每个请求携带自定义token 请根据实际情况自行修改
   }
   // get请求映射params参数
   if (config.method === 'get' && config.params) {

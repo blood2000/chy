@@ -4,6 +4,12 @@ export default [
     prop: 'code',
     isShow: true,
     tooltip: true,
+    label: '编号'
+  },
+  {
+    prop: 'mainOrderNumber',
+    isShow: true,
+    tooltip: true,
     label: '货源单号'
   },
   {
@@ -59,12 +65,12 @@ export default [
     isShow: true,
     tooltip: true,
     label: '承运单价'
-  },
-  {
-    prop: 'edit',
-    isShow: true,
-    label: '操作',
-    width: 240,
-    fixed: 'right'
   }
+  // {
+  //   prop: 'edit',
+  //   isShow: true,
+  //   label: '操作',
+  //   width: 240,
+  //   fixed: 'right'
+  // }
 ];

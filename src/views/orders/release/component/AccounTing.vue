@@ -479,8 +479,8 @@ export default {
                   'ruleDetailShipmentCode': e.code,
                   'ruleItemCode': e.ruleItemCode,
                   'ruleValue': e.ruleValue,
-                  'type': e.type
-
+                  'type': e.type,
+                  'unit': e.unit || undefined
                 };
               })
             };
