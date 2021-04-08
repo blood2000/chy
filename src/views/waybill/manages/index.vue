@@ -381,12 +381,17 @@ export default {
       'formDisable': false,
       // 当前选中的运单id
       'currentId': null,
-      'currentRow': null
+      'currentRow': null,
+      isShipment: false,
+      user: {},
+      shipment: {}
     };
   },
   created() {
     const { isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
     this.isShipment = isShipment;
+    this.user = user;
+    this.shipment = shipment;
     this.tableHeaderConfig(this.tableColumnsConfig, listManagesApi, {
       prop: 'edit',
       isShow: true,
