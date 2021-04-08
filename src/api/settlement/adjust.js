@@ -10,6 +10,15 @@ export function adjustList(query) {
   });
 }
 
+// 货主驳回卸货凭证
+export function rejectUnload(data) {
+  return request({
+    url: '/transportation/waybillBalanceInfo/shipperRebutUnloading',
+    method: 'post',
+    data: data
+  });
+}
+
 // 查询运单子单列表
 export const childListApi = '/transportation/waybill/childList';
 export function childList(query) {

@@ -200,7 +200,7 @@
       :gutter="10"
       class="mb8"
     >
-      <el-col v-if="activeName == '1'" :span="1.5">
+      <el-col v-if="activeName == '4'" :span="1.5">
         <el-button
           v-hasPermi="['assets:vehicle:edit']"
           type="success"
@@ -209,7 +209,7 @@
           @click="handleAdjust"
         >批量核算</el-button>
       </el-col>
-      <el-col v-if="activeName == '2'" :span="1.5">
+      <el-col v-if="activeName == '5'" :span="1.5">
         <el-button
           v-hasPermi="['assets:vehicle:remove']"
           type="success"
@@ -218,7 +218,7 @@
           @click="handleApply"
         >批量申请</el-button>
       </el-col>
-      <el-col v-if="activeName == '3'" :span="1.5">
+      <el-col v-if="activeName == '7'" :span="1.5">
         <el-button
           v-hasPermi="['assets:vehicle:export']"
           type="success"
@@ -255,7 +255,7 @@
 
       <template #edit="{row}">
         <el-button
-          v-if="activeName != '3'"
+          v-if="activeName == '5'"
           v-hasPermi="['system:menu:edit']"
           size="mini"
           type="text"
@@ -263,7 +263,7 @@
           @click="handleTableBtn(row, 1)"
         >驳回提示</el-button>
         <el-button
-          v-if="activeName == '1'"
+          v-if="activeName == '4'"
           v-hasPermi="['system:menu:edit']"
           size="mini"
           type="text"
@@ -271,7 +271,7 @@
           @click="handleTableBtn(row, 2)"
         >驳回</el-button>
         <el-button
-          v-if="activeName == '1'"
+          v-if="activeName == '4'"
           v-hasPermi="['system:menu:edit']"
           size="mini"
           type="text"
@@ -279,7 +279,7 @@
           @click="handleTableBtn(row, 3)"
         >核算</el-button>
         <el-button
-          v-if="activeName == '2'"
+          v-if="activeName == '5'"
           v-hasPermi="['system:menu:edit']"
           size="mini"
           type="text"
@@ -287,7 +287,7 @@
           @click="handleTableBtn(row, 4)"
         >申请打款</el-button>
         <el-button
-          v-if="activeName == '3'"
+          v-if="activeName == '7'"
           v-hasPermi="['system:menu:edit']"
           size="mini"
           type="text"
@@ -295,6 +295,7 @@
           @click="handleTableBtn(row, 5)"
         >评价</el-button>
         <el-button
+          v-if="row.isChild == '2'"
           size="mini"
           type="text"
           icon="el-icon-document-copy"
@@ -323,6 +324,8 @@
     <child-dialog ref="ChildDialog" :open.sync="childdialog" :title="title" @refresh="getList" />
     <!-- 运单详情 对话框 -->
     <detail-dialog ref="DetailDialog" :current-id="currentId" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
+    <!-- 批量评价弹窗 -->
+    <comment-dialog ref="CommentDialog" :open.sync="commentdialog" :title="title" @refresh="getList" />
 
   </div>
 </template>
@@ -335,20 +338,22 @@ import RejectDialog from '../components/rejectDialog';
 import ChildDialog from '../components/childDialog';
 // 运单详情弹窗
 import DetailDialog from '@/views/waybill/components/detailDialog';
+// 批量评价弹窗
+import CommentDialog from './commentDialog';
 
 
 export default {
   'name': 'AdjustList',
-  components: { RejectDialog, DetailDialog, ChildDialog },
+  components: { RejectDialog, DetailDialog, ChildDialog, CommentDialog },
   data() {
     return {
       tableColumnsConfig: [],
-      activeName: '1',
+      activeName: '4',
       createTime: '',
       // 遮罩层
       'loading': false,
       // 选中数组
-      //   'ids': [],
+      'ids': [],
       // 显示搜索条件
       'showSearch': true,
       // 总条数
@@ -373,7 +378,7 @@ export default {
         'deliveryCompany': undefined,
         'isReturn': undefined,
         'isChild': undefined,
-        'statusList': ['4']
+        'status': '4'
       },
       receiveTime: [],
       // 弹框 内容
@@ -381,6 +386,7 @@ export default {
       open: false,
       rejectdialog: false,
       childdialog: false,
+      commentdialog: false,
       title: '',
       dialogWidth: '800px',
       // 当前选中的运单id
@@ -418,7 +424,7 @@ export default {
       isShow: true,
       tooltip: false,
       label: '操作',
-      width: 240,
+      width: 260,
       fixed: 'right'
     });
     this.getList();
@@ -439,7 +445,8 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map((item) => item.id);
+      this.ids = selection.map((item) => item.wayBillCode);
+      console.log(this.ids);
     },
     /** 查询【请填写功能名称】列表 */
     getList() {
@@ -487,7 +494,6 @@ export default {
           this.rejectdialog = true;
           this.title = '驳回运输核算单';
           this.$refs.RejectDialog.setForm(row);
-          console.log(row);
           break;
         case 3:
           this.$refs.AdjustDialog.reset();
@@ -502,10 +508,9 @@ export default {
           this.$refs.DialogA.setForm(row);
           break;
         case 5:
-          this.dialogc = true;
-          this.formDisable = true;
-          this.title = '评价';
-          this.$refs.DialogC.setForm(row);
+          this.commentdialog = true;
+          this.title = '用户评价';
+          this.$refs.CommentDialog.setForm(row);
           break;
         case 6:
           this.title = '子单列表';
