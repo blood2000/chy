@@ -13,7 +13,7 @@
           </el-col>
           <el-col :span="12" class="text-row">
             <label>运单状态：</label>
-            {{ form.status }}
+            {{ form.statusName }}
           </el-col>
           <el-col :span="12" class="text-row">
             <label>装货重量(吨)：</label>
@@ -109,7 +109,7 @@
           </el-col>
           <el-col :span="12" class="text-row">
             <label>装货签照片：</label>
-            <img src="" class="img-box">
+            <img v-viewer :src="formAttachment?formAttachment.attachUrls:''" class="img-box">
           </el-col>
         </el-row>
         <el-divider content-position="left" class="m40">
@@ -118,15 +118,15 @@
         <el-row>
           <el-col :span="12" class="text-row">
             <label>卸货签到时间：</label>
-            {{ formAttachmentUp?formAttachmentUp.cargoTime:'' }}
+            {{ formAttachmentUp?formAttachmentUp.unloadTime:'' }}
           </el-col>
           <el-col :span="12" class="text-row">
             <label>卸货重量（吨）：</label>
-            {{ formAttachmentUp?formAttachmentUp.loadWeight:'' }}
+            {{ formAttachmentUp?formAttachmentUp.unloadWeight:'' }}
           </el-col>
           <el-col :span="12" class="text-row">
             <label>卸货签照片：</label>
-            <img src="" class="img-box">
+            <img v-viewer :src="formAttachmentUp?formAttachmentUp.attachUrls:''" class="img-box">
           </el-col>
         </el-row>
       </el-tab-pane>
@@ -227,63 +227,6 @@ export default {
   data() {
     return {
       activeTab: '1',
-      // 是否字典
-      isOptions: [
-        { dictLabel: '否', dictValue: 0 },
-        { dictLabel: '是', dictValue: 1 }
-      ],
-      // 是否结算字典
-      isSettleOptions: [
-        { dictLabel: '未结算', dictValue: 0 },
-        { dictLabel: '已结算', dictValue: 1 }
-      ],
-      // 回单确认状态字典
-      isReturnOptions: [
-        { dictLabel: '未标记回单', dictValue: 0 },
-        { dictLabel: '已标记回单', dictValue: 1 }
-      ],
-      // 支付给司机运费状态字典
-      isPayOptions: [
-        { dictLabel: '未支付', dictValue: 0 },
-        { dictLabel: '已支付字典', dictValue: 1 }
-      ],
-      // 标记打款状态字典
-      isMarkStatusOptions: [
-        { dictLabel: '未打款', dictValue: 0 },
-        { dictLabel: '已打款', dictValue: 1 },
-        { dictLabel: '打款处理中', dictValue: 2 }
-      ],
-      // 月结订单结算状态字典
-      monthlySettlementStatusOptions: [
-        { dictLabel: '未结算', dictValue: 0 },
-        { dictLabel: '已结算', dictValue: 1 }
-      ],
-      // 给超载的子单排序用字典
-      childSortOptions: [
-        { dictLabel: '车辆核载装货重量的子单', dictValue: 1 },
-        { dictLabel: '其余重量子单', dictValue: 2 }
-      ],
-      // 是否删除字典
-      isDelOptions: [
-        { dictLabel: '正常', dictValue: 0 },
-        { dictLabel: '删除', dictValue: 1 }
-      ],
-      // 运单状态字典
-      statusOptions: [
-        { dictLabel: '未接单', dictValue: 0 },
-        { dictLabel: '已接单', dictValue: 1 },
-        { dictLabel: '已签收', dictValue: 2 },
-        { dictLabel: '已回单', dictValue: 3 },
-        { dictLabel: '已结算', dictValue: 4 },
-        { dictLabel: '已打款', dictValue: 5 }
-      ],
-      // 司机取消订单字典
-      cancelStatusOptions: [
-        { dictLabel: '正常', dictValue: 0 },
-        { dictLabel: '司机撤单申请', dictValue: 1 },
-        { dictLabel: '货主同意撤销', dictValue: 2 },
-        { dictLabel: '货主拒绝撤销', dictValue: 3 }
-      ],
       // 表单参数
       form: {
         waybillAddress: {},
@@ -335,70 +278,6 @@ export default {
     }
   },
   methods: {
-    // 是否接单字典翻译
-    isReceiveFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isReceive);
-    },
-    // 是否装货字典翻译
-    isFillFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isFill);
-    },
-    // 是否签收字典翻译
-    isSignFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isSign);
-    },
-    // 是否结算字典翻译
-    isSettleFormat(row, column) {
-      return this.selectDictLabel(this.isSettleOptions, row.isSettle);
-    },
-    // 回单确认状态字典翻译
-    isReturnFormat(row, column) {
-      return this.selectDictLabel(this.isReturnOptions, row.isReturn);
-    },
-    // 支付给司机运费状态字典翻译
-    isPayFormat(row, column) {
-      return this.selectDictLabel(this.isPayOptions, row.isPay);
-    },
-    // 标记打款状态字典翻译
-    isMarkStatusFormat(row, column) {
-      return this.selectDictLabel(this.isMarkStatusOptions, row.isMarkStatus);
-    },
-    // 运单是否已打印字典翻译
-    isPrintOrderFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isPrintOrder);
-    },
-    // 是否批量接单订单字典翻译
-    isMultiOrderFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isMultiOrder);
-    },
-    // 是否使用保证金字典翻译
-    isCashFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isCash);
-    },
-    // 月结订单结算状态字典翻译
-    monthlySettlementStatusFormat(row, column) {
-      return this.selectDictLabel(this.monthlySettlementStatusOptions, row.monthlySettlementStatus);
-    },
-    // 是否子单字典翻译
-    isChildFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isChild);
-    },
-    // 给超载的子单排序用字典翻译
-    childSortFormat(row, column) {
-      return this.selectDictLabel(this.childSortOptions, row.childSort);
-    },
-    // 是否删除字典翻译
-    isDelFormat(row, column) {
-      return this.selectDictLabel(this.isDelOptions, row.isDel);
-    },
-    // 运单状态字典翻译
-    statusFormat(row, column) {
-      return this.selectDictLabel(this.statusOptions, row.status);
-    },
-    // 司机取消订单字典翻译
-    cancelStatusFormat(row, column) {
-      return this.selectDictLabel(this.cancelStatusOptions, row.cancelStatus);
-    },
     // 获取运单详情
     getDetail() {
       // 运单
@@ -417,6 +296,7 @@ export default {
       // 回单-卸货
       getWaybillAttachment(this.currentId, 2).then(response => {
         this.formAttachmentUp = response.data ? response.data[0] : null;
+        console.log(this.formAttachmentUp);
       });
       // 评价-司机
       getWaybillComment(this.currentId, 1).then(response => {

@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="78px">
-      <el-form-item label="下单客户" prop="orderClient">
+      <el-form-item v-show="!isShipment" label="下单客户" prop="orderClient">
         <el-input
           v-model="queryParams.orderClient"
           placeholder="请输入下单客户"
@@ -11,7 +11,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="发货企业" prop="deliveryCompany">
+      <el-form-item v-show="!isShipment" label="发货企业" prop="deliveryCompany">
         <el-input
           v-model="queryParams.deliveryCompany"
           placeholder="请输入发货企业"
@@ -41,23 +41,18 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="接单时间">
+      <el-form-item
+        label="接单日期"
+        prop="receiveTime"
+      >
         <el-date-picker
-          v-model="queryParams.startReceiveTime"
-          size="small"
-          style="width: 128px"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择"
-        />
-        至
-        <el-date-picker
-          v-model="queryParams.endReceiveTime"
-          size="small"
-          style="width: 128px"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择"
+          v-model="receiveTime"
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          style="width: 278px"
+          @change="datechoose"
         />
       </el-form-item>
       <el-form-item label="货源单号" prop="mainOrderNumber">
@@ -127,17 +122,17 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="是否分单" prop="isSplit">
+      <el-form-item label="是否子单" prop="isChildList">
         <el-select
-          v-model="queryParams.isSplit"
-          placeholder="请选择是否分单"
+          v-model="queryParams.isChildList"
+          placeholder="请选择是否子单"
           clearable
           filterable
           size="small"
           style="width: 278px"
         >
           <el-option
-            v-for="dict in isOptions"
+            v-for="dict in isChildOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
@@ -169,10 +164,13 @@
     <!-- table -->
     <RefactorTable :loading="loading" :data="managesList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
       <template #status="{row}">
-        <span>{{ selectDictLabel(statusOptions, row.isMarkStatus) }}</span>
+        <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
       </template>
-      <template #isSplit="{row}">
-        <span>{{ selectDictLabel(isOptions, row.isSplit) }}</span>
+      <template #isChild="{row}">
+        <span>{{ selectDictLabel(isChildOptions, row.isChild) }}</span>
+      </template>
+      <template #isWarning="{row}">
+        <span>{{ selectDictLabel(isWarningOptions, row.isWarning) }}</span>
       </template>
       <template #orderTime="{row}">
         <span>{{ parseTime(row.orderTime, '{y}-{m}-{d}') }}</span>
@@ -249,6 +247,7 @@
     />
     <!-- 标记异常对话框 -->
     <mark-abnormal-dialog
+      ref="MarkAbnormalDialog"
       :title="title"
       :open.sync="openMarkAbanormal"
       :current-id="currentId"
@@ -277,6 +276,7 @@ import DetailDialog from '../components/detailDialog';
 import MarkAbnormalDialog from './markAbnormalDialog';
 import SeperateListDialog from './seperateListDialog';
 import RemarkDialog from './remarkDialog';
+import { getUserInfo } from '@/utils/auth';
 
 export default {
   name: 'Manages',
@@ -288,6 +288,7 @@ export default {
   },
   data() {
     return {
+      receiveTime: [],
       tableColumnsConfig: [],
       // 遮罩层
       'loading': true,
@@ -311,41 +312,27 @@ export default {
         { 'dictLabel': '否', 'dictValue': 0 },
         { 'dictLabel': '是', 'dictValue': 1 }
       ],
-      // 是否结算字典
-      'isSettleOptions': [
-        { 'dictLabel': '未结算', 'dictValue': 0 },
-        { 'dictLabel': '已结算', 'dictValue': 1 }
-      ],
       // 回单确认状态字典
       'isReturnOptions': [
         { 'dictLabel': '未标记回单', 'dictValue': 0 },
         { 'dictLabel': '已标记回单', 'dictValue': 1 }
       ],
-      // 支付给司机运费状态字典
-      'isPayOptions': [
-        { 'dictLabel': '未支付', 'dictValue': 0 },
-        { 'dictLabel': '已支付字典', 'dictValue': 1 }
+      // 异常标记状态字典
+      'isWarningOptions': [
+        { 'dictLabel': '正常', 'dictValue': 0 },
+        { 'dictLabel': '异常', 'dictValue': 1 },
+        { 'dictLabel': '取消', 'dictValue': 2 }
       ],
-      // 标记打款状态字典
-      'isMarkStatusOptions': [
-        { 'dictLabel': '未打款', 'dictValue': 0 },
-        { 'dictLabel': '已打款', 'dictValue': 1 },
-        { 'dictLabel': '打款处理中', 'dictValue': 2 }
-      ],
-      // 月结订单结算状态字典
-      'monthlySettlementStatusOptions': [
-        { 'dictLabel': '未结算', 'dictValue': 0 },
-        { 'dictLabel': '已结算', 'dictValue': 1 }
+      // 是否子单字典
+      'isChildOptions': [
+        { 'dictLabel': '正常单', 'dictValue': 0 },
+        // { 'dictLabel': '子单', 'dictValue': 1 },
+        { 'dictLabel': '超载的主单', 'dictValue': 2 }
       ],
       // 给超载的子单排序用字典
       'childSortOptions': [
         { 'dictLabel': '车辆核载装货重量的子单', 'dictValue': 1 },
         { 'dictLabel': '其余重量子单', 'dictValue': 2 }
-      ],
-      // 是否删除字典
-      'isDelOptions': [
-        { 'dictLabel': '正常', 'dictValue': 0 },
-        { 'dictLabel': '删除', 'dictValue': 1 }
       ],
       // 运单状态字典
       'statusOptions': [
@@ -371,51 +358,21 @@ export default {
       'queryParams': {
         'pageNum': 1,
         'pageSize': 10,
-        'isInvalid': 0, // 0正常 1作废
-        'isAbnormal': 0, // 0正常 1异常
-        'isChildList': '0,2', // 是否子单 0不是 1是 2超载的主单
-        'code': null,
-        'orderCode': null,
-        'goodsCode': null,
+        'isAbnormal': 0,
+        'isInvalid': 0,
+        'isChildList': [0, 2],
+        'orderClient': null,
+        'deliveryCompany': null,
+        'loadInfo': null,
+        'receivedInfo': null,
+        'startReceiveTime': null,
+        'endReceiveTime': null,
+        'mainOrderNumber': null,
         'waybillNo': null,
-        'dispatchOrderCode': null,
-        'drvierCode': null,
-        'vehicleCode': null,
-        'loadWeight': null,
-        'unloadWeight': null,
-        'wastage': null,
-        'isReceive': null,
-        'receiveTime': null,
-        'isFill': null,
-        'fillTime': null,
-        'isSign': null,
-        'signTime': null,
-        'isSettle': null,
-        'settleTime': null,
-        'isReturn': null,
-        'returnRemarkTime': null,
-        'returnRemark': null,
-        'isPay': null,
-        'payTime': null,
-        'isMarkStatus': null,
-        'markTime': null,
-        'isPrintOrder': null,
-        'prinTime': null,
-        'isMultiOrder': null,
-        'isCash': null,
-        'cashDeposit': null,
-        'shipperDeliveryFee': null,
-        'monthlySettlementStatus': null,
-        'isChild': null,
-        'childSort': null,
-        'isDel': null,
-        'status': null,
-        'createCode': null,
-        'updateCode': null,
-        'weight': null,
-        'cancelStatus': null,
-        'driverApplyRemark': null,
-        'shipperDealRemark': null
+        'licenseNumber': null,
+        'driverName': null,
+        'driverPhone': null,
+        'status': null
       },
       // 表单参数
       'form': {},
@@ -428,16 +385,22 @@ export default {
     };
   },
   created() {
+    const { isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
+    this.isShipment = isShipment;
     this.tableHeaderConfig(this.tableColumnsConfig, listManagesApi, {
       prop: 'edit',
       isShow: true,
       label: '操作',
-      width: 180,
+      width: 285,
       fixed: 'right'
     });
     this.getList();
   },
   methods: {
+    datechoose(date) {
+      this.queryParams.startReceiveTime = this.parseTime(date[0], '{y}-{m}-{d}');
+      this.queryParams.endReceiveTime = this.parseTime(date[1], '{y}-{m}-{d}');
+    },
     /** 查询列表 */
     getList() {
       this.loading = true;
@@ -447,62 +410,6 @@ export default {
         this.loading = false;
       });
     },
-    // 是否接单字典翻译
-    isReceiveFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isReceive);
-    },
-    // 是否装货字典翻译
-    isFillFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isFill);
-    },
-    // 是否签收字典翻译
-    isSignFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isSign);
-    },
-    // 是否结算字典翻译
-    isSettleFormat(row, column) {
-      return this.selectDictLabel(this.isSettleOptions, row.isSettle);
-    },
-    // 回单确认状态字典翻译
-    isReturnFormat(row, column) {
-      return this.selectDictLabel(this.isReturnOptions, row.isReturn);
-    },
-    // 支付给司机运费状态字典翻译
-    isPayFormat(row, column) {
-      return this.selectDictLabel(this.isPayOptions, row.isPay);
-    },
-    // 标记打款状态字典翻译
-    isMarkStatusFormat(row, column) {
-      return this.selectDictLabel(this.isMarkStatusOptions, row.isMarkStatus);
-    },
-    // 运单是否已打印字典翻译
-    isPrintOrderFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isPrintOrder);
-    },
-    // 是否批量接单订单字典翻译
-    isMultiOrderFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isMultiOrder);
-    },
-    // 是否使用保证金字典翻译
-    isCashFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isCash);
-    },
-    // 月结订单结算状态字典翻译
-    monthlySettlementStatusFormat(row, column) {
-      return this.selectDictLabel(this.monthlySettlementStatusOptions, row.monthlySettlementStatus);
-    },
-    // 给超载的子单排序用字典翻译
-    childSortFormat(row, column) {
-      return this.selectDictLabel(this.childSortOptions, row.childSort);
-    },
-    // 是否删除字典翻译
-    isDelFormat(row, column) {
-      return this.selectDictLabel(this.isDelOptions, row.isDel);
-    },
-    // 司机取消订单字典翻译
-    cancelStatusFormat(row, column) {
-      return this.selectDictLabel(this.cancelStatusOptions, row.cancelStatus);
-    },
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
@@ -511,6 +418,9 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.resetForm('queryForm');
+      this.receiveTime = [];
+      this.queryParams.startReceiveTime = null;
+      this.queryParams.endReceiveTime = null;
       this.handleQuery();
     },
     // 多选框选中数据
@@ -529,9 +439,11 @@ export default {
     },
     /** 标记异常按钮操作 */
     handleMark(row) {
-      this.currentId = row.wayBillCode;
+      this.$refs.MarkAbnormalDialog.reset();
+      // this.currentId = row.wayBillCode;
       this.openMarkAbanormal = true;
       this.title = '标记异常';
+      this.$refs.MarkAbnormalDialog.setForm(row);
     },
     /** 分单列表按钮操作 */
     handleSeperate(row) {

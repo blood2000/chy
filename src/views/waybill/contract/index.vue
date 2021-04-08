@@ -91,6 +91,9 @@
       <template #driverOrShipment="{row}">
         <span>{{ selectDictLabel(driverOrShipmentOptions, row.driverOrShipment) }}</span>
       </template>
+      <template #isDzqzContract="{row}">
+        <span>{{ selectDictLabel(isDzqzContractOptions, row.isDzqzContract) }}</span>
+      </template>
 
       <template #edit="{row}">
         <el-button
@@ -155,6 +158,12 @@ export default {
       driverOrShipmentOptions: [
         { 'dictLabel': '司机合同', 'dictValue': '0' },
         { 'dictLabel': '货主合同', 'dictValue': '1' }
+      ],
+      // 是否已经生成电子签章合同 0否 1是，2,正在生成''
+      isDzqzContractOptions: [
+        { 'dictLabel': '否', 'dictValue': '0' },
+        { 'dictLabel': '是', 'dictValue': '1' },
+        { 'dictLabel': '正在生成', 'dictValue': '2' }
       ]
     };
   },

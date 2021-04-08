@@ -231,6 +231,7 @@
       </template>
       <template #edit="{row}">
         <el-button
+          v-hasPermi="['assets:vehicle:get']"
           size="mini"
           type="text"
           icon="el-icon-setting"

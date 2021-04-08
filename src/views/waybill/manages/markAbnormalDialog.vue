@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { getDetail, waybillAbnormal } from '@/api/waybill/manages';
+import { waybillAbnormal } from '@/api/waybill/manages';
 export default {
   props: {
     title: {
@@ -47,22 +47,15 @@ export default {
       }
     }
   },
-  watch: {
-    open(val) {
-      if (val) {
-        this.reset();
-        this.getDetail();
-      }
-    }
-  },
   methods: {
     // 获取详情
-    getDetail() {
-      getDetail(this.currentId).then(response => {
-        this.form.waybillNo = response.data.waybillNo;
-        this.form.description = '';
-      });
-    },
+    // getDetail() {
+    //   getDetail(this.currentId).then(response => {
+    //     console.log(response);
+    //     this.form.waybillNo = response.data.waybillNo;
+    //     this.form.description = '';
+    //   });
+    // },
     // 提交按钮
     submitForm: function() {
       this.$refs['form'].validate(valid => {
@@ -91,10 +84,20 @@ export default {
     // 表单重置
     reset() {
       this.form = {
+        waybillCode: null,
         waybillNo: null,
+        isWarning: null,
         description: null
       };
       this.resetForm('form');
+    },
+    // 表单赋值
+    setForm(data) {
+      console.log(data);
+      this.form.waybillCode = data.wayBillCode;
+      this.form.waybillNo = data.waybillNo;
+      this.form.isWarning = data.isWarning;
+      console.log(this.form);
     }
   }
 };

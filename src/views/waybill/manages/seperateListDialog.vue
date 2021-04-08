@@ -1,17 +1,17 @@
 <template>
   <el-dialog :title="title" :visible="visible" width="1300px" append-to-body class="waybill-seperate-list-dialog" @close="cancel">
-    <el-table v-loading="loading" :data="childList">
+    <el-table v-loading="loading" border stripe :data="childList">
       <el-table-column label="序号" align="center" type="index" width="50" />
-      <el-table-column label="货源单号" align="center" prop="mainOrderNumber" />
-      <el-table-column label="发货企业" align="center" prop="shipperFactory" />
-      <el-table-column label="下单客户" align="center" prop="orderClient" />
-      <el-table-column label="运输单号" align="center" prop="waybillNo" />
-      <el-table-column label="运单状态" align="center" prop="status" :formatter="statusFormat" />
+      <el-table-column label="货源单号" align="center" prop="mainOrderNumber" width="150" />
+      <el-table-column label="发货企业" align="center" prop="shipperFactory" width="150" />
+      <el-table-column label="下单客户" align="center" prop="orderClient" width="160" />
+      <el-table-column label="运输单号" align="center" prop="waybillNo" width="160" />
+      <!-- <el-table-column label="运单状态" align="center" prop="status" :formatter="statusFormat" /> -->
       <el-table-column label="承运调度" align="center" prop="teamName" />
       <el-table-column label="承运人" align="center" prop="driverName" />
-      <el-table-column label="司机电话" align="center" prop="driverPhone" />
+      <el-table-column label="司机电话" align="center" prop="driverPhone" width="150" />
       <el-table-column label="货物类型" align="center" prop="goodsBigType" />
-      <el-table-column label="货物类型分类" align="center" prop="goodsType" />
+      <el-table-column label="货物类型分类" align="center" prop="goodsType" width="150" />
       <el-table-column label="装车重量" align="center" prop="loadWeight" />
       <el-table-column label="卸车重量" align="center" prop="unloadWeight" />
       <el-table-column label="数量(车)" align="center" prop="carNum" />
@@ -21,19 +21,19 @@
       <el-table-column label="公里数" align="center" prop="mileage" />
       <el-table-column label="含税价" align="center" prop="taxFee" />
       <el-table-column label="不含税价" align="center" prop="noTaxFee" />
-      <el-table-column label="装货地" align="center" prop="loadAddress" />
-      <el-table-column label="卸货地" align="center" prop="unloadAddress" />
-      <el-table-column label="发布货源时间" align="center" prop="orderTime" width="180">
+      <el-table-column label="装货地" align="center" prop="loadAddress" width="180" />
+      <el-table-column label="卸货地" align="center" prop="unloadAddress" width="180" />
+      <el-table-column label="发布货源时间" align="center" prop="orderTime" width="150">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.orderTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="接单时间" align="center" prop="receiveTime" width="180">
+      <el-table-column label="接单时间" align="center" prop="receiveTime" width="150">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.receiveTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="装货截止时间" align="center" prop="lastLoadingTime" width="180">
+      <el-table-column label="装货截止时间" align="center" prop="lastLoadingTime" width="150">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.lastLoadingTime, '{y}-{m}-{d}') }}</span>
         </template>
