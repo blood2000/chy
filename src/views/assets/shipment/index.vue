@@ -83,7 +83,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="所属网点" prop="branchCode">
+      <!-- <el-form-item label="所属网点" prop="branchCode">
         <el-select
           v-model="queryParams.branchCode"
           filterable
@@ -102,7 +102,7 @@
             :value="item.code"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="审核时间">
         <el-date-picker
           v-model="queryParams.authTimeBegin"
