@@ -40,9 +40,12 @@
             <el-option
               v-for="(item, index1) in shipmentList"
               :key="index1"
-              :label="item.adminName"
               :value="item.code"
-            />
+              :label="item.adminName"
+            >
+              <!-- :label="item.adminName" -->
+              <div class="ly-flex-pack-justify"><span>{{ item.adminName }}</span><span>{{ item.telphone }}</span></div>
+            </el-option>
           </el-select>
         </el-form-item>
 
@@ -141,7 +144,7 @@
         <div class="header mb8 m-flex">
           <div>
             卸货信息
-            <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '3' || formData.tin7 === '4')" v-model="formData.tin9" :disabled="myisdisabled" style="marginLeft:30px;">允许自装</el-checkbox>
+            <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '3' || formData.tin7 === '4')" v-model="formData.tin9" :disabled="myisdisabled" style="marginLeft:30px;">允许自卸</el-checkbox>
           </div>
           <el-button
             v-if="!myisdisabled && (formData.tin7 === '3' || formData.tin7 === '4')"
@@ -893,6 +896,7 @@ export default {
       this.address_xie = [];
 
       addressList.forEach((e, index) => {
+        // 这说明是允许自装或自卸了
         if ((e.addressType - 0) === 3) {
           this.formData.tin8 = true;
         } else if ((e.addressType - 0) === 4) {
@@ -900,13 +904,13 @@ export default {
         }
 
 
-        if ((e.addressType - 0) === 1 || (e.addressType - 0) === 3) {
+        if ((e.addressType - 0) === 1) {
           // 装
           this.address_add.push({
             refName: 'address_add' + Date.now() + index,
             cbData: e // 主要是这个
           });
-        } else if ((e.addressType - 0) === 2 || (e.addressType - 0) === 4) {
+        } else if ((e.addressType - 0) === 2) {
           // 卸
           this.address_xie.push({
             refName: 'address_xie' + Date.now() + index,

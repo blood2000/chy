@@ -17,27 +17,27 @@
       </el-col>
     </el-row>
     <el-table v-loading="loading" :data="adjustlist">
-      <el-table-column label="运输单号" align="center" prop="waybillNo" />
-      <el-table-column label="装车重量" align="center" prop="loadWeight" />
-      <el-table-column label="卸车重量" align="center" prop="unloadWeight" />
-      <el-table-column label="路耗（吨）" align="center" prop="loss" />
-      <el-table-column label="路耗允许范围" align="center" prop="lossAllowScope" />
-      <el-table-column label="司机姓名" align="center" prop="driverName" />
-      <el-table-column label="司机电话" align="center" prop="driverPhone" />
-      <el-table-column label="车牌号" align="center" prop="licenseNumber" />
-      <el-table-column label="司机应收运费" align="center" prop="deliveryFeeDeserved" />
-      <el-table-column label="司机实收运费" align="center" prop="deliveryFeePractical" />
-      <el-table-column label="司机减项费用" align="center" prop="driverReductionFee" />
-      <el-table-column label="司机增项费用" align="center" prop="driverAddFee" />
-      <el-table-column label="货物单价" align="center" prop="goodsPrice" />
-      <el-table-column label="运费单价" align="center" prop="freightPrice" />
-      <el-table-column label="亏涨扣费" align="center" prop="deduction" />
-      <el-table-column label="抹零金额" align="center" prop="m0Amount" />
+      <el-table-column width="120" label="运输单号" align="center" prop="waybillNo" />
+      <el-table-column width="120" label="装车重量" align="center" prop="loadWeight" />
+      <el-table-column width="120" label="卸车重量" align="center" prop="unloadWeight" />
+      <el-table-column width="120" label="路耗（吨）" align="center" prop="loss" />
+      <el-table-column width="120" label="路耗允许范围" align="center" prop="lossAllowScope" />
+      <el-table-column width="120" label="司机姓名" align="center" prop="driverName" />
+      <el-table-column width="120" label="司机电话" align="center" prop="driverPhone" />
+      <el-table-column width="120" label="车牌号" align="center" prop="licenseNumber" />
+      <el-table-column width="120" label="司机应收运费" align="center" prop="deliveryFeeDeserved" />
+      <el-table-column width="120" label="司机实收运费" align="center" prop="deliveryFeePractical" />
+      <el-table-column width="120" label="司机减项费用" align="center" prop="driverReductionFee" />
+      <el-table-column width="120" label="司机增项费用" align="center" prop="driverAddFee" />
+      <el-table-column width="120" label="货物单价" align="center" prop="goodsPrice" />
+      <el-table-column width="120" label="运费单价" align="center" prop="freightPrice" />
+      <el-table-column width="120" label="亏涨扣费" align="center" prop="deduction" />
+      <el-table-column width="120" label="抹零金额" align="center" prop="m0Amount" />
 
-      <el-table-column label="服务费" align="center" prop="serviceFee" fixed="right" />
-      <el-table-column label="司机实收现金" align="center" prop="deliveryCashFee" fixed="right" />
-      <el-table-column label="要扣的货主金额" align="center" prop="deductShipmentAmount" fixed="right" />
-      <el-table-column label="核算规则" align="center" prop="freightList.enName" fixed="right" />
+      <el-table-column width="120" label="服务费" align="center" prop="serviceFee" fixed="right" />
+      <el-table-column width="120" label="司机实收现金" align="center" prop="deliveryCashFee" fixed="right" />
+      <el-table-column width="120" label="要扣的货主金额" align="center" prop="deductShipmentAmount" fixed="right" />
+      <el-table-column width="120" label="核算规则" align="center" prop="freightList.enName" fixed="right" />
     </el-table>
 
     <div slot="footer" class="dialog-footer">
