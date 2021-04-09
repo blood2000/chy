@@ -414,7 +414,10 @@ export default {
       fixed: 'right'
     });
     this.getDictsOptions();
-    this.getList();
+    if (!this.teamCode) {
+      // 如果这个页面是以组件形式展示在调度者管理弹窗里面，则这里不加载列表
+      this.getList();
+    }
   },
   methods: {
     /** 查询字典 */
