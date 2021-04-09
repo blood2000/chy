@@ -280,6 +280,7 @@ export default {
   data() {
     return {
       tableColumnsConfig: [],
+      api: askforListApi,
       // 遮罩层
       'loading': false,
       // 选中数组

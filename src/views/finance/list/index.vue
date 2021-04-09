@@ -194,6 +194,7 @@ export default {
   data() {
     return {
       tableColumnsConfig: [],
+      api: billListApi,
       activeName: '1',
       createTime: '',
       // 遮罩层

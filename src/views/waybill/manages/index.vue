@@ -290,6 +290,7 @@ export default {
     return {
       receiveTime: [],
       tableColumnsConfig: [],
+      api: listManagesApi,
       // 遮罩层
       'loading': true,
       // 选中数组

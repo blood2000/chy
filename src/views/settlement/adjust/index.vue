@@ -352,6 +352,7 @@ export default {
   data() {
     return {
       tableColumnsConfig: [],
+      api: adjustListApi,
       activeName: '4',
       createTime: '',
       // 遮罩层

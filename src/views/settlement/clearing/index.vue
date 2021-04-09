@@ -256,6 +256,7 @@ export default {
   data() {
     return {
       tableColumnsConfig: [],
+      api: adjustListApi,
       createTime: '',
       // 遮罩层
       'loading': false,

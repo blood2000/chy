@@ -334,6 +334,7 @@ export default {
   data() {
     return {
       tableColumnsConfig: [],
+      api: trackListApi,
       activeName: '1',
 
       // 遮罩层

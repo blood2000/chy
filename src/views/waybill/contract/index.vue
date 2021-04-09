@@ -132,6 +132,7 @@ export default {
   data() {
     return {
       tableColumnsConfig: [],
+      api: listContractApi,
       // 遮罩层
       'loading': true,
       // 选中数组

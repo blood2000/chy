@@ -190,6 +190,7 @@ export default {
   data() {
     return {
       tableColumnsConfig: [],
+      api: listInfoApi,
       // 遮罩层
       loading: true,
       // 选中数组
