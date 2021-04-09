@@ -55,6 +55,7 @@ export default {
     open(val) {
       if (val) {
         this.$nextTick(() => {
+          this.activeName = 'driver';
           this.$refs.TeamListPage.getList();
           this.$refs.DriverListPage.getList();
         });

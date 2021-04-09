@@ -103,7 +103,7 @@
         >导出</el-button>
       </el-col>
       <el-col :span="1.5" class="fr">
-        <tablec-cascader v-model="tableColumnsConfig" />
+        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
       </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
@@ -190,7 +190,7 @@
     <!-- 邀请司机 对话框 -->
     <add-driver-dialog :open.sync="addDriverDialogOpen" :team-code="teamCode" />
     <!-- 处理申请 对话框 -->
-    <apply-driver-dialog :open.sync="applyDriverDialogOpen" :team-code="teamCode" />
+    <apply-driver-dialog :open.sync="applyDriverDialogOpen" :team-code="teamCode" @refresh="getList" />
   </div>
 </template>
 
@@ -212,6 +212,7 @@ export default {
   data() {
     return {
       tableColumnsConfig: [],
+      api: listTeamApi,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -326,7 +327,7 @@ export default {
           case 'review':
             this.title = '审核';
             if (row.authStatus === 0) {
-              this.$refs.TeamDialog.authRead(response.data);
+              this.$refs.TeamDialog.authRead();
             }
             break;
           default:

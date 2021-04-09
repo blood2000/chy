@@ -96,7 +96,7 @@
         >导出</el-button>
       </el-col>
       <el-col :span="1.5" class="fr">
-        <tablec-cascader v-model="tableColumnsConfig" />
+        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
       </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
@@ -163,6 +163,7 @@ export default {
   data() {
     return {
       tableColumnsConfig: [],
+      api: bankListApi,
       // 遮罩层
       loading: true,
       // 显示搜索条件
@@ -187,9 +188,7 @@ export default {
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 10,
-        isAsc: 'asc',
-        orderByColumn: 'id'
+        pageSize: 10
       }
     };
   },

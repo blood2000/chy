@@ -2,11 +2,11 @@ import request from '@/utils/request';
 
 // 查询货主列表
 export const listShipmentApi = '/assets/shipment/list';
-export function listShipment(query) {
+export function listShipment(data) {
   return request({
     url: listShipmentApi,
     method: 'post',
-    data: query
+    data: Object.assign({}, data, { isAsc: 'asc', orderByColumn: 'id' })
   });
 }
 

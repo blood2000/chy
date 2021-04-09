@@ -72,7 +72,7 @@
         >导出</el-button>
       </el-col>-->
       <el-col :span="1.5" style="float: right;">
-        <tablec-cascader v-model="tableColumnsConfig" />
+        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
       </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
@@ -137,6 +137,7 @@ export default {
   data() {
     return {
       tableColumnsConfig: [],
+      api: listInfoApi,
       // 遮罩层
       loading: true,
       // 选中数组

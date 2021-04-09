@@ -1,11 +1,11 @@
 import request from '@/utils/request';
 
 // 提现申请-查询列表
-export const withDrawalListApi = '/system/config/list';
-export function getWithDrawalList(query) {
+export const withDrawalListApi = '/payment/transferApply/list';
+export function getWithDrawalList(data) {
   return request({
     url: withDrawalListApi,
-    method: 'get',
-    params: query
+    method: 'post',
+    data: Object.assign({}, data, { isAsc: 'asc', orderByColumn: 'id' })
   });
 }

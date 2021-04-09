@@ -44,6 +44,7 @@
       <el-form-item label="所属调度" prop="teamCode">
         <el-select
           v-model="queryParams.teamCode"
+          v-el-select-loadmore="loadmore"
           filterable
           remote
           reserve-keyword
@@ -164,7 +165,7 @@
         >下载模板</el-button>
       </el-col>
       <el-col :span="1.5" class="fr">
-        <tablec-cascader v-model="tableColumnsConfig" />
+        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
       </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
@@ -285,7 +286,7 @@
     <!-- 加入调度 对话框 -->
     <add-team-dialog :open.sync="addTeamDialogOpen" :driver-code="driverCode" />
     <!-- 处理邀请 对话框 -->
-    <apply-team-dialog :open.sync="applyTeamDialogOpen" :driver-code="driverCode" />
+    <apply-team-dialog :open.sync="applyTeamDialogOpen" :driver-code="driverCode" @refresh="getList" />
   </div>
 </template>
 
@@ -318,6 +319,7 @@ export default {
   data() {
     return {
       tableColumnsConfig: [],
+      api: listDriverApi,
       // 司机类别字典
       driverTypeOptions: [
         { dictLabel: '独立司机', dictValue: 1 },
@@ -394,7 +396,13 @@ export default {
       agreementHtml: '',
       // 车队列表
       teamLoading: false,
-      teamOptions: []
+      teamOptions: [],
+      // 远程搜索调度者分页
+      teamParams: {
+        pageNum: 1,
+        pageSize: 10,
+        name: null
+      }
     };
   },
   created() {
@@ -406,7 +414,10 @@ export default {
       fixed: 'right'
     });
     this.getDictsOptions();
-    this.getList();
+    if (!this.teamCode) {
+      // 如果这个页面是以组件形式展示在调度者管理弹窗里面，则这里不加载列表
+      this.getList();
+    }
   },
   methods: {
     /** 查询字典 */
@@ -525,17 +536,29 @@ export default {
         this.agreementDialogOpen = true;
       });
     },
-    // 查询车队列表
+    // 远程搜索
     teamRemoteMethod(query) {
       if (query !== '') {
-        this.loading = true;
-        listInfo({ name: query }).then(response => {
-          this.loading = false;
-          this.teamOptions = response.rows;
-        });
+        this.teamLoading = true;
+        this.teamParams.name = query;
+        this.teamParams.pageNum = 1;
+        this.teamOptions = [];
+        this.getTeamList();
       } else {
         this.teamOptions = [];
       }
+    },
+    // 查询调度者列表
+    getTeamList() {
+      listInfo(this.teamParams).then(response => {
+        this.teamLoading = false;
+        this.teamOptions = [...this.teamOptions, ...response.rows];
+      });
+    },
+    // 远程搜索列表触底事件
+    loadmore() {
+      this.teamParams.pageNum++;
+      this.getTeamList();
     },
     // 申请加入调度
     handleAddTeam(row) {

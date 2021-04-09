@@ -2,8 +2,8 @@
   <!-- 提现申请 -->
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
-      <el-form-item label="平台角色" prop="name">
-        <el-select v-model="queryParams.name" placeholder="请选择平台角色" clearable filterable size="small">
+      <el-form-item label="平台角色" prop="roleName">
+        <el-select v-model="queryParams.roleName" placeholder="请选择平台角色" clearable filterable size="small">
           <el-option
             v-for="dict in roleOptions"
             :key="dict.dictValue"
@@ -12,64 +12,64 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="申请人" prop="name">
+      <el-form-item label="申请人" prop="nickname">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.nickname"
           placeholder="请输入申请人"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="收款人姓名" prop="name">
+      <el-form-item label="收款人姓名" prop="bankAcountName">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.bankAcountName"
           placeholder="请输入收款人姓名"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="手机号码" prop="name">
+      <el-form-item label="手机号码" prop="userPhone">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.userPhone"
           placeholder="请输入手机号码"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="银行卡号" prop="name">
+      <el-form-item label="银行卡号" prop="bankNumber">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.bankNumber"
           placeholder="请输入银行卡号"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="车牌号" prop="name">
+      <el-form-item label="车牌号" prop="licenseNumber">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.licenseNumber"
           placeholder="请输入车牌号"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="转账结果" prop="name">
-        <el-select v-model="queryParams.name" placeholder="请选择" clearable filterable size="small">
+      <el-form-item label="转账结果" prop="status">
+        <el-select v-model="queryParams.status" placeholder="请选择" clearable filterable size="small">
           <el-option
-            v-for="dict in resultOptions"
+            v-for="dict in statusOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="转账日期" prop="name">
+      <el-form-item label="转账日期">
         <el-date-picker
-          v-model="queryParams.name"
+          v-model="queryParams.transferTimeBegin"
           clearable
           type="date"
           size="small"
@@ -79,7 +79,7 @@
         />
         至
         <el-date-picker
-          v-model="queryParams.name"
+          v-model="queryParams.transferTimeEnd"
           clearable
           type="date"
           size="small"
@@ -88,9 +88,9 @@
           placeholder="请选择"
         />
       </el-form-item>
-      <el-form-item label="申请日期" prop="name">
+      <el-form-item label="申请日期">
         <el-date-picker
-          v-model="queryParams.name"
+          v-model="queryParams.applyTimeBegin"
           clearable
           type="date"
           size="small"
@@ -100,7 +100,7 @@
         />
         至
         <el-date-picker
-          v-model="queryParams.name"
+          v-model="queryParams.applyTimeEnd"
           clearable
           type="date"
           size="small"
@@ -143,38 +143,23 @@
         >更新网商提现状态</el-button>
       </el-col>
       <el-col :span="1.5" class="fr">
-        <tablec-cascader v-model="tableColumnsConfig" />
+        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
       </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table v-loading="loading" :data="withdrawalList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <el-table-column label="申请状态" align="center" prop="" />
-      <el-table-column label="支付批次号" align="center" prop="" />
-      <el-table-column label="申请人" align="center" prop="" />
-      <el-table-column label="平台角色" align="center" prop="" :formatter="roleFormat" />
-      <el-table-column label="车牌号" align="center" prop="" />
-      <el-table-column label="手机号" align="center" prop="" />
-      <el-table-column label="银行名称" align="center" prop="" />
-      <el-table-column label="收款人姓名" align="center" prop="" />
-      <el-table-column label="卡号" align="center" prop="" />
-      <el-table-column label="金额" align="center" prop="" />
-      <el-table-column label="预留手机号" align="center" prop="" />
-      <el-table-column label="申请时间" align="center" prop="">
-        <template slot-scope="scope">
-          {{ parseTime(scope.row.time) }}
-        </template>
-      </el-table-column>
-      <el-table-column label="转账时间" align="center" prop="">
-        <template slot-scope="scope">
-          {{ parseTime(scope.row.time) }}
-        </template>
-      </el-table-column>
-      <el-table-column label="失败原因" align="center" prop="" />
-      <el-table-column label="备注" align="center" prop="" />
-      <el-table-column label="转账渠道" align="center" prop="" />
-    </el-table>
+    <RefactorTable :loading="loading" :data="withdrawalList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <!-- 转账渠道 -->
+      <template #payStatus="{row}">
+        <span>{{ selectDictLabel(payStatusOption, row.payStatus) }}</span>
+      </template>
+      <template #transferTime="{row}">
+        <span>{{ parseTime(row.transferTime) }}</span>
+      </template>
+      <template #applyDate="{row}">
+        <span>{{ parseTime(row.applyDate) }}</span>
+      </template>
+    </RefactorTable>
 
     <pagination
       v-show="total>0"
@@ -195,6 +180,7 @@ export default {
   data() {
     return {
       tableColumnsConfig: [],
+      api: withDrawalListApi,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -214,9 +200,18 @@ export default {
       // 是否显示弹出层
       open: false,
       // 平台角色字典
-      roleOptions: [],
+      roleOptions: [
+        { dictLabel: '货主', dictValue: 0 },
+        { dictLabel: '调度者', dictValue: 1 },
+        { dictLabel: '司机', dictValue: 2 }
+      ],
       // 转帐结果字典
-      resultOptions: [],
+      statusOptions: [],
+      // 转账渠道字典
+      payStatusOption: [
+        { dictLabel: '线下', dictValue: 0 },
+        { dictLabel: '线上', dictValue: 1 }
+      ],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -225,13 +220,7 @@ export default {
     };
   },
   created() {
-    this.tableHeaderConfig(this.tableColumnsConfig, withDrawalListApi, {
-      prop: 'edit',
-      isShow: true,
-      label: '操作',
-      width: 180,
-      fixed: 'right'
-    });
+    this.tableHeaderConfig(this.tableColumnsConfig, withDrawalListApi);
     this.getList();
   },
   methods: {
@@ -239,14 +228,10 @@ export default {
     getList() {
       this.loading = true;
       getWithDrawalList(this.queryParams).then(response => {
-        this.withdrawalList = response.rows;
-        this.total = response.total;
+        this.withdrawalList = response.data.rows;
+        this.total = response.data.total;
         this.loading = false;
       });
-    },
-    // 平台角色字典翻译
-    roleFormat(row, column) {
-      return this.selectDictLabel(this.roleOptions, row.status);
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -255,6 +240,10 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.queryParams.transferTimeBegin = null;
+      this.queryParams.transferTimeEnd = null;
+      this.queryParams.applyTimeBegin = null;
+      this.queryParams.applyTimeEnd = null;
       this.resetForm('queryForm');
       this.handleQuery();
     },

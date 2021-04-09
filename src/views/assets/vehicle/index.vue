@@ -164,7 +164,7 @@
         >导出</el-button>
       </el-col>
       <el-col :span="1.5" class="fr">
-        <tablec-cascader v-model="tableColumnsConfig" />
+        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
       </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
@@ -306,6 +306,7 @@ export default {
   data() {
     return {
       tableColumnsConfig: [],
+      api: listVehicleApi,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -386,8 +387,11 @@ export default {
       width: 280,
       fixed: 'right'
     });
-    this.getList();
     this.getDictsList();
+    if (!this.teamCode && !this.driverCode) {
+      // 如果这个页面是以组件形式展示在调度者管理弹窗或司机管理弹窗里面，则这里不加载列表
+      this.getList();
+    }
   },
   methods: {
     /** 查询字典 */
@@ -484,7 +488,7 @@ export default {
           case 'review':
             this.title = '审核';
             if (row.authStatus === 0) {
-              this.$refs.VehicleDialog.authRead(response.data);
+              this.$refs.VehicleDialog.authRead();
             }
             break;
           default:
