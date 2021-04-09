@@ -56,6 +56,7 @@ export default {
     open(val) {
       if (val) {
         this.$nextTick(() => {
+          this.activeName = 'driver';
           this.$refs.DriverPage.handleQuery();
           this.$refs.VehiclePage.handleQuery();
         });

@@ -69,6 +69,7 @@
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
+
     <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" :selectable="checkboxSelectable" width="55" align="center" />
       <!-- <el-table-column label="网点编码" align="center" prop="branchCode" /> -->
@@ -93,6 +94,7 @@
         </template>
       </el-table-column>
     </el-table>
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -100,6 +102,7 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
+
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" :disabled="multiple" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
@@ -172,8 +175,12 @@ export default {
       }
     }
   },
-  created() {
-    this.getList();
+  watch: {
+    open(val) {
+      if (val) {
+        this.handleQuery();
+      }
+    }
   },
   methods: {
     // 获取调度者列表

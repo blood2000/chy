@@ -98,7 +98,7 @@
 </template>
 
 <script>
-import { addInfo, updateInfo } from '@/api/assets/team';
+import { addInfo, updateInfo, authRead, examine } from '@/api/assets/team';
 import UploadImage from '@/components/UploadImage/index';
 import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
 
@@ -226,21 +226,24 @@ export default {
       this.form.identificationEffective = praseNumToBoolean(this.form.identificationEffective);
     },
     // 已读
-    authRead(data) {
-      data.identificationEffective = praseBooleanToNum(data.identificationEffective);
-      // authRead(data).then(response => {
-      //   this.$emit('refresh');
-      // });
+    authRead() {
+      authRead({
+        authStatus: 1,
+        code: this.form.code
+      }).then(response => {
+        this.$emit('refresh');
+      });
     },
     /** 审核通过/未通过按钮 */
     reviewForm(key) {
-      this.form.authStatus = key;
-      this.form.identificationEffective = praseBooleanToNum(this.form.identificationEffective);
-      // examine(this.form).then(response => {
-      //   this.msgSuccess('操作成功');
-      //   this.close();
-      //   this.$emit('refresh');
-      // });
+      examine({
+        authStatus: key,
+        code: this.form.code
+      }).then(response => {
+        this.msgSuccess('操作成功');
+        this.close();
+        this.$emit('refresh');
+      });
     }
   }
 };

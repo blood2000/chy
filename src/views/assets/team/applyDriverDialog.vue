@@ -142,14 +142,20 @@ export default {
     open(val) {
       if (val) {
         this.getList();
-        // 驾驶证类型
-        this.getDicts('driver_license_type').then(response => {
-          this.driverLicenseTypeOptions = response.data;
-        });
       }
     }
   },
+  created() {
+    this.getDictsOptions();
+  },
   methods: {
+    /** 查询字典 */
+    getDictsOptions() {
+      // 驾驶证类型
+      this.getDicts('driver_license_type').then(response => {
+        this.driverLicenseTypeOptions = response.data;
+      });
+    },
     // 获取调度者要处理的司机列表
     getList() {
       this.loading = true;
@@ -188,6 +194,7 @@ export default {
       }).then(response => {
         this.msgSuccess('操作成功');
         this.close();
+        this.$emit('refresh');
       });
     }
   }

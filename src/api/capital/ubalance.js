@@ -6,6 +6,6 @@ export function balanceList(data) {
   return request({
     url: balanceListApi,
     method: 'post',
-    data: data
+    data: Object.assign({}, data, { isAsc: 'asc', orderByColumn: 'nickName' })
   });
 }

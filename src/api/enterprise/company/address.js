@@ -1,11 +1,11 @@
 import request from '@/utils/request';
 
 // 查询常用地址列表
-export function listAddress(query) {
+export function listAddress(data) {
   return request({
     url: '/assets/shipment/address/list',
     method: 'post',
-    data: query
+    data: Object.assign({}, data, { isAsc: 'asc', orderByColumn: 'id' })
   });
 }
 

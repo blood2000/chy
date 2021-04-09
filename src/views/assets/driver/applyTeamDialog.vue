@@ -120,6 +120,7 @@ export default {
       }).then(response => {
         this.msgSuccess('操作成功');
         this.close();
+        this.$emit('refresh');
       });
     }
   }
