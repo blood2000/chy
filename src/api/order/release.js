@@ -68,3 +68,16 @@ export function estimateCost(data) {
   });
 }
 
+// 获取司机成交单价
+/**
+    price	货主发布的单价	query	false	number
+    shipperCode	货主Code，不填取当前登录的货主	query	false	string
+*/
+export function getDriverPrice(data) {
+  return request({
+    url: '/transportation/calculateFee/getDriverPrice',
+    method: 'post',
+    data: data
+  });
+}
+

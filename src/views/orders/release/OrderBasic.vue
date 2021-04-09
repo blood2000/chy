@@ -536,15 +536,21 @@ export default {
               orderGoodsList = this.formData.tin2_1.map(e => {
                 return {
                   goodsBigType: this.formData.tin2,
-                  goodsType: e
+                  goodsBigTypeName: this._zhaovalue(this.tin2Option, this.formData.tin2).dictLabel,
+                  goodsType: e,
+                  goodsTypeName: this._zhaovalue(this.tin2_Option, e).dictLabel
                 };
               });
             } else {
               orderGoodsList = [{
                 goodsBigType: this.formData.tin2,
-                goodsType: this.formData.tin2_2
+                goodsBigTypeName: this._zhaovalue(this.tin2Option, this.formData.tin2).dictLabel,
+                goodsType: this.formData.tin2_2,
+                goodsTypeName: this._zhaovalue(this.tin2_Option, this.formData.tin2_2).dictLabel
               }];
             }
+
+
 
 
             // if (this.classList) {

@@ -85,6 +85,14 @@ export default {
   },
 
   methods: {
+    handlerTotalTypeValue(good, data) {
+      this.form['totalTypeValue' + good.activeName] = data;
+    },
+    // 获取
+    handlerGoodsUnitName(good, data) {
+      this.form['goodsUnitName' + good.activeName] = data;
+    },
+
     async getGoodsAccounting() {
       // 这里是获取商品的信息
       const arr = this.tabs.map(async e => {

@@ -174,7 +174,7 @@
               </el-col>
 
               <el-col :span="1.5" class="fr">
-                <tablec-cascader v-model="tableColumnsConfig" />
+                <tablec-cascader v-model="tableColumnsConfig" :lcokey="listManagesApi" />
               </el-col>
               <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
             </el-row>
@@ -276,72 +276,72 @@
                 <span>{{ row.accessTime }}</span>
               </template>
               <template #edit="{row}">
-                <el-button
-                  v-hasPermi="['system:menu:edit']"
-                  size="mini"
-                  type="text"
-                  icon="el-icon-document"
-                  @click="handleInfo(row)"
-                >详情</el-button>
-                <el-button
-                  v-if="false"
-                  v-hasPermi="['system:menu:add']"
-                  size="mini"
-                  type="text"
-                  icon="el-icon-edit-outline"
-                  @click="loadAndUnloading(row)"
-                >{{ row.status==='0'?'下架':'上架' }}</el-button>
-                <el-button
-                  v-hasPermi="['system:menu:remove']"
-                  size="mini"
-                  type="text"
-                  icon="el-icon-s-promotion"
-                  @click="handleDispatch(row)"
-                >指派</el-button>
+                <template v-if="row.isShowEdit">
+                  <el-button
+                    v-hasPermi="['system:menu:edit']"
+                    size="mini"
+                    type="text"
+                    icon="el-icon-document"
+                    @click="handleInfo(row)"
+                  >详情</el-button>
 
-                <el-button
-                  v-hasPermi="['system:menu:edit']"
-                  size="mini"
-                  type="text"
-                  icon="el-icon-edit"
-                  @click="handleUpdate(row)"
-                >编辑</el-button>
-                <el-button
-                  v-hasPermi="['system:menu:remove']"
-                  size="mini"
-                  type="text"
-                  icon="el-icon-delete"
-                  @click="handleDelete(row)"
-                >删除</el-button>
-                <el-button
-                  v-hasPermi="['system:menu:remove']"
-                  size="mini"
-                  type="text"
-                  icon="el-icon-close"
-                  @click="handleClose(row)"
-                >关闭</el-button>
-                <el-button
-                  v-hasPermi="['system:menu:remove']"
-                  size="mini"
-                  type="text"
-                  icon="el-icon-bank-card"
-                  @click="handleReadjustPrices(row)"
-                >调价</el-button>
-                <el-button
-                  v-if="false"
-                  v-hasPermi="['system:menu:remove']"
-                  size="mini"
-                  type="text"
-                  icon="el-icon-document"
-                  @click="handleShenhe(row)"
-                >审核</el-button>
-                <el-button
-                  v-hasPermi="['system:menu:remove']"
-                  size="mini"
-                  type="text"
-                  icon="el-icon-document"
-                  @click="handleclone(row)"
-                >复制</el-button>
+                  <el-button
+                    v-if="row.status+''==='0'"
+                    v-hasPermi="['system:menu:remove']"
+                    size="mini"
+                    type="text"
+                    icon="el-icon-s-promotion"
+                    @click="handleDispatch(row)"
+                  >指派</el-button>
+
+                  <el-button
+                    v-if="row.status+''==='0'"
+                    v-hasPermi="['system:menu:edit']"
+                    size="mini"
+                    type="text"
+                    icon="el-icon-edit"
+                    @click="handleUpdate(row)"
+                  >编辑</el-button>
+                  <el-button
+                    v-hasPermi="['system:menu:remove']"
+                    size="mini"
+                    type="text"
+                    icon="el-icon-delete"
+                    @click="handleDelete(row)"
+                  >删除</el-button>
+                  <el-button
+                    v-hasPermi="['system:menu:remove']"
+                    size="mini"
+                    type="text"
+                    icon="el-icon-close"
+                    :style="{color: row.status+''==='0'?'red': ''}"
+                    @click="handleClose(row)"
+                  >{{ row.status+''==='0'?'禁用':'启用' }}</el-button>
+                  <el-button
+                    v-if="row.status+''==='0'"
+                    v-hasPermi="['system:menu:remove']"
+                    size="mini"
+                    type="text"
+                    icon="el-icon-bank-card"
+                    @click="handleReadjustPrices(row)"
+                  >调价</el-button>
+                  <el-button
+                    v-if="false"
+                    v-hasPermi="['system:menu:remove']"
+                    size="mini"
+                    type="text"
+                    icon="el-icon-document"
+                    @click="handleShenhe(row)"
+                  >审核</el-button>
+                  <el-button
+                    v-if="false && row.status+''==='0'"
+                    v-hasPermi="['system:menu:remove']"
+                    size="mini"
+                    type="text"
+                    icon="el-icon-document"
+                    @click="handleclone(row)"
+                  >复制</el-button>
+                </template>
               </template>
             </RefactorTable>
 
@@ -362,7 +362,7 @@
 
     <!-- 派送订单 -->
     <el-dialog :title="title" :visible.sync="openDispatch" width="80%" append-to-body>
-      <open-dialog v-if="openDispatch" :dispatch="dispatch" @_ok="(bool)=>{openDispatch = bool; getList()}" />
+      <open-dialog v-if="openDispatch" :dispatch="dispatch" @_ok="(bool)=>{openDispatch = false;bool ==='success' && getList()}" />
     </el-dialog>
 
     <!-- 价格调整 -->
@@ -387,6 +387,7 @@ export default {
   components: { OpenDialog, PriceAdjustment },
   data() {
     return {
+      listManagesApi, // 表头存的key
       pubilshCode: '', // 当前货主code
       // 测试数据上
 
@@ -662,7 +663,7 @@ export default {
           e.redisOrderGoodsVoList.forEach(goods => {
             if (goods.code === redis.goodsCode) {
               e.goodsPrice = goods.goodsPrice;
-              e.goodsTypeName = goods.goodsTypeName || '商品' + index;
+              e.goodsTypeName = goods.goodsTypeName;
             }
           });
 
@@ -698,8 +699,7 @@ export default {
             });
           });
         });
-        console.log(mgoods, '每一个');
-
+        mgoods[0].isShowEdit = true; // 用来控制显示编辑内容(子就不用了)
 
 
         return {
@@ -807,7 +807,7 @@ export default {
       // const msg = row.status === '1' ? '上架' : '下架';
       const data = {
         'orderCode': row.code,
-        'status': '1'
+        'status': row.status + '' === '1' ? '0' : '1'
       };
       this.$confirm(msg, '警告', {
         confirmButtonText: '确定',
@@ -819,19 +819,12 @@ export default {
         return loadAndUnloadingGoods(data);
       }).then(() => {
         this.getList();
-        this.msgSuccess('关闭成功');
+        this.msgSuccess(row.status + '' === '0' ? '禁用成功' : '启用成功');
       });
     },
     /** 调价操作 */
     async handleReadjustPrices(row) {
       console.log(row);
-
-      // const testIds = row.code;
-
-      // 1 在这里获取详情
-
-      // const { data } = await getOrderByCode(row.code);
-      // console.log(data);
 
       const data = {
         'redisOrderInfoVo': {
@@ -1102,7 +1095,7 @@ export default {
           if (ee.code === e.goodsCode) {
             e.goodsCode = ee.code;
             e.goodsType = ee.goodsType;
-            e.goodsName = ee.goodsName || '商品名' + index;
+            e.goodsTypeName = ee.goodsTypeName;
             e.goodsPrice = ee.goodsPrice;
           }
         });
@@ -1125,14 +1118,14 @@ export default {
             addressIdentification: eee.addressCode,
             tin_name: tin_names.join('--'), // 地址a到b 显示
             ruleCode: eee.ruleCode, // 下拉规则的的值(会改)
-            ruleDictValue: '1', // 计算规则的值
-            orderFreightVo: eee.orderFreightVo
+            // ruleDictValue: '1', // 计算规则的值
+            orderFreightVo: eee.orderFreightVo // 细则
           };
         });
 
         // console.log(redis, '规格处理----');
         return {
-          dictLabel: e.goodsName, // 展示tab
+          dictLabel: e.goodsTypeName, // 展示tab
           activeName: index + '', // 切换tab
           goodsPrice: e.goodsPrice, // 商品价格??
           goodsType: e.goodsType, // 商品divtValue
@@ -1156,7 +1149,6 @@ export default {
       // 3 传入组件
       this.tabs = tabs;
       this.pubilshCode = redisOrderInfoVo ? redisOrderInfoVo.pubilshCode : row.source.pubilshCode;
-      console.log(this.pubilshCode);
 
       this.orderCode = row.code;
 
@@ -1172,6 +1164,7 @@ export default {
     },
     /** 派单对话 */
     handleDispatch(row) {
+      this.title = '派单';
       this.openDispatch = true;
       this.dispatch = row;
     },
@@ -1188,6 +1181,10 @@ export default {
     },
     /** 关闭 */
     submitRes(res) {
+      if (res === 'success') {
+        this.getList();
+      }
+
       this.tabs = [];
       this.orderCode = '';
       this.pubilshCode = '';

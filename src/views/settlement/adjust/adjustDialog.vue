@@ -33,6 +33,7 @@
       <el-table-column label="运费单价" align="center" prop="freightPrice" />
       <el-table-column label="亏涨扣费" align="center" prop="deduction" />
       <el-table-column label="抹零金额" align="center" prop="m0Amount" />
+
       <el-table-column label="服务费" align="center" prop="serviceFee" fixed="right" />
       <el-table-column label="司机实收现金" align="center" prop="deliveryCashFee" fixed="right" />
       <el-table-column label="要扣的货主金额" align="center" prop="deductShipmentAmount" fixed="right" />
@@ -65,13 +66,13 @@ export default {
   },
   data() {
     return {
-      tableColumnsConfig: [],
+      // tableColumnsConfig: [],
       // 遮罩层
       loading: false,
       // 总条数
       total: 0,
       // 评价列表
-      adjustlist: [],
+      adjustlist: [{ waybillNo: 123 }],
       // 查询参数
       queryParams: {
         waybillCodeList: []
@@ -97,13 +98,13 @@ export default {
     },
     /** 查询核算列表 */
     getList() {
-      this.loading = true;
-      adjustDetail(this.queryParams).then(response => {
-        console.log(response);
-        this.adjustlist = response.rows;
-        this.total = response.total;
-        this.loading = false;
-      });
+      // this.loading = true;
+      // adjustDetail(this.queryParams).then(response => {
+      //   console.log(response);
+      //   this.adjustlist = response.rows;
+      //   this.total = response.total;
+      //   this.loading = false;
+      // });
     },
     /** 取消按钮 */
     cancel() {

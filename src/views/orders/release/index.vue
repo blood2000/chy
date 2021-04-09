@@ -241,7 +241,7 @@ import OpenDialog from './OpenDialog';
 
 import { getUserInfo } from '@/utils/auth';
 import { listShipment } from '@/api/assets/shipment.js';
-import { orderPubilsh, getOrderByCode, orderFreight, update } from '@/api/order/release';
+import { orderPubilsh, getOrderByCode, orderFreight, update, estimateCost } from '@/api/order/release';
 
 export default {
   components: {
@@ -324,7 +324,13 @@ export default {
       this.formData.tin9 = false;
     },
     '$route.query.t': {
-      handler(value) {
+      handler(value, odvalue) {
+        if ((odvalue === '0' || odvalue === '1') && !value) {
+          // 初次使用
+          this.$router.replace({
+            path: '/refresh'
+          });
+        }
         if (value === '0') {
           this.isT = true;
         }
@@ -336,7 +342,7 @@ export default {
   created() {
     // 判断用户
     const { isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
-    console.log(isShipment, user, shipment);
+    // console.log(isShipment, user, shipment);
 
     this.isShipment = isShipment;
     this.isShipment && (this.formData.tin1 = shipment.info.code);
@@ -385,7 +391,7 @@ export default {
       }
       this.active = active;
       // 测数据用
-      false && this.handlercbAddress([
+      this.handlercbAddress([
         {
           'addressType': 2,
           'country': '中国',
@@ -519,7 +525,6 @@ export default {
       if (active === 4) {
         this.onSubmit('elForm');
 
-
         // 2. 请求数据预估数据
         // 1. 单active到4的时候去显示预估价格
         // 3. 传到组件中
@@ -529,6 +534,48 @@ export default {
         this.active = 3;
       }
       this.loading = false;
+    },
+
+    // 处理预估
+    async handlerEstimateCost(lastData) {
+      console.log(lastData, '处理预估的时机');
+
+      // 注意编辑的时候是有加update的, 要重新处理一下
+      const { orderFreightInfoBoList, orderGoodsList, orderFreightInfoUpdateBoList, orderGoodsUpdateBoList } = lastData;
+
+      const orderEstimateCostBoList = (orderFreightInfoBoList || orderFreightInfoUpdateBoList).map(e => {
+        (orderGoodsList || orderGoodsUpdateBoList).forEach(goods => {
+          if (goods.identification === e.goodsIdentification) {
+            e.number = goods.number;
+            e.stowageStatus = goods.stowageStatus;
+            e.totalType = goods.totalType;
+            e.vehicleMaxWeight = goods.vehicleMaxWeight;
+            e.weight = goods.weight;
+          }
+        });
+        if (!e.orderAddressBoList) {
+          e.orderAddressBoList = e.orderAddressUpdateBoList.map(e => {
+            e.orderFreightBoList = e.orderFreightUpdateBoList;
+            e.orderFreightUpdateBoList = undefined;
+
+            return e;
+          });
+
+          e.orderAddressUpdateBoList = undefined;
+        }
+        return e;
+      });
+
+
+      const qData = {
+        orderEstimateCostBoList,
+        'userCode': this.formData.tin1
+      };
+
+      console.log(qData);
+      const res = await estimateCost(qData);
+
+      this.$store.dispatch('orders/store_getEst', res.data);
     },
 
     // 发布按钮触发(1.发布接口2.成功1秒后跳转)
@@ -568,6 +615,7 @@ export default {
           if (active && active === 3) {
             this.onPubilsh();
           } else {
+            this.handlerEstimateCost(this.lastData);
             this.active = 4;
           }
         } else {
@@ -582,6 +630,7 @@ export default {
         this.basicInfor = await this.handlerPromise('OrderBasic', false);
       }
       this.goodsBigType = this.basicInfor.orderGoodsList[0].goodsBigType;
+      this.goodsBigTypeName = this.basicInfor.orderGoodsList[0].goodsBigTypeName;
       const {
         classList,
         isPublic,
@@ -617,10 +666,18 @@ export default {
       // 商品处理对象-按多个商品处理
 
       const orderGoodsListArr = orderGoodsList.map(e => {
+        this.basicInfor.orderGoodsList.forEach(itemGoods => {
+          if (itemGoods.goodsType === e.goodsType) {
+            e.goodsTypeName = itemGoods.goodsTypeName;
+          }
+        });
+
         return {
           // code: e.code || undefined,
           goodsBigType: this.goodsBigType, // 大类code
+          goodsBigTypeName: this.goodsBigTypeName, // 大类code
           goodsType: e.goodsType, // 小类code
+          goodsTypeName: e.goodsTypeName, // 小类名称
           identification: e.goodsType, // 约定好的
           businessType: e.businessType, // 业务类型
           'goodsPrice': e.goodsPrice, // 货物单价

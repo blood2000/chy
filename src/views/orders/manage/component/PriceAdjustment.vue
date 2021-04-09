@@ -1,5 +1,5 @@
 <template>
-  <div class="priceAdjustment">
+  <div v-loading="loading" class="priceAdjustment">
     <div class="ly-flex-pack-justify">
       <el-tabs v-model="activeName">
         <el-tab-pane
@@ -10,18 +10,20 @@
         />
       </el-tabs>
 
-      <div>
+      <div v-if="false">
         <el-form label-position="left" inline>
           <el-form-item label="生效时间">
             <el-date-picker
               v-model="entry"
               type="datetime"
               placeholder="选择日期时间"
-              default-time="12:00:00"
+              clearable
+              class="width28"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              default-time="00:00:00"
             />
           </el-form-item>
         </el-form>
-
       </div>
     </div>
 
@@ -33,7 +35,8 @@
               v-model="goods.goodsPrice"
               :controls="false"
               placeholder="货物单价"
-              step-strictly
+              :precision="2"
+              :step="0.01"
               controls-position="right"
               :style="{ width: '200px' }"
             />
@@ -88,6 +91,7 @@ export default {
 
   data() {
     return {
+      loading: false, // 加载
       entry: '', // 生效时间
       activeName: '0',
       tabs: [],
@@ -101,53 +105,6 @@ export default {
       //       ruleCode: '1', // 下拉规则的的值(会改)
       //       ruleDictValue: '1', // 计算规则的值
       //       orderFreightVo: { // 显示具体规则的值
-      //         'lossList': [
-      //           {
-      //             'id': 190,
-      //             'code': '2e5720b4661b4c87b2b45acf76433841',
-      //             'ruleCode': 'd553a41ff0b5474caa46111ae95a50a4',
-      //             'ruleItemCode': '1',
-      //             'ruleValue': 'DE',
-      //             'type': null,
-      //             'cnName': '路耗 亏吨方案',
-      //             'enName': 'LOSS_PLAN',
-      //             'showType': 4,
-      //             'dictCode': 'lossPlan',
-      //             'ruleType': 1,
-      //             'dictLabel': null,
-      //             'unit': null
-      //           },
-      //           {
-      //             'id': 189,
-      //             'code': '42bfd8472c63464f9e162a948b377d8d',
-      //             'ruleCode': 'd553a41ff0b5474caa46111ae95a50a4',
-      //             'ruleItemCode': '2',
-      //             'ruleValue': '["-1","5"]',
-      //             'type': null,
-      //             'cnName': '路耗 容忍值',
-      //             'enName': 'LOSS_TOLERANCE',
-      //             'showType': 2,
-      //             'dictCode': null,
-      //             'ruleType': 1,
-      //             'dictLabel': null,
-      //             'unit': null
-      //           },
-      //           {
-      //             'id': 188,
-      //             'code': 'd5215e2add7948629f3d9d366223a0f1',
-      //             'ruleCode': 'd553a41ff0b5474caa46111ae95a50a4',
-      //             'ruleItemCode': '3',
-      //             'ruleValue': '1',
-      //             'type': null,
-      //             'cnName': '路耗 规则',
-      //             'enName': 'LOSS_RULE',
-      //             'showType': 3,
-      //             'dictCode': 'lossRule',
-      //             'ruleType': 1,
-      //             'dictLabel': null,
-      //             'unit': null
-      //           }
-      //         ],
       //         'detailList': [
       //           {
       //             'id': 196,
@@ -165,21 +122,6 @@ export default {
       //             'unit': null
       //           },
       //           {
-      //             'id': 195,
-      //             'code': '741481324965450fa09bde1ce22c22a1',
-      //             'ruleCode': 'd553a41ff0b5474caa46111ae95a50a4',
-      //             'ruleItemCode': '15',
-      //             'ruleValue': '50',
-      //             'type': '2',
-      //             'cnName': '超时费',
-      //             'enName': 'OVERTIME_FEE',
-      //             'showType': 1,
-      //             'dictCode': null,
-      //             'ruleType': 0,
-      //             'dictLabel': null,
-      //             'unit': null
-      //           },
-      //           {
       //             'id': 194,
       //             'code': '280fbb2214f14fffa655211777199135',
       //             'ruleCode': 'd553a41ff0b5474caa46111ae95a50a4',
@@ -188,51 +130,6 @@ export default {
       //             'type': '2',
       //             'cnName': '运费单价',
       //             'enName': 'FREIGHT_COST',
-      //             'showType': 1,
-      //             'dictCode': null,
-      //             'ruleType': 0,
-      //             'dictLabel': null,
-      //             'unit': null
-      //           },
-      //           {
-      //             'id': 193,
-      //             'code': '390662ca170844fb8e3e7b5000163585',
-      //             'ruleCode': 'd553a41ff0b5474caa46111ae95a50a4',
-      //             'ruleItemCode': '18',
-      //             'ruleValue': '5',
-      //             'type': '2',
-      //             'cnName': '抹零规则',
-      //             'enName': 'M0',
-      //             'showType': 3,
-      //             'dictCode': 'M0',
-      //             'ruleType': 0,
-      //             'dictLabel': null,
-      //             'unit': null
-      //           },
-      //           {
-      //             'id': 192,
-      //             'code': '2245728e235741cc87463ae2ac2159ca',
-      //             'ruleCode': 'd553a41ff0b5474caa46111ae95a50a4',
-      //             'ruleItemCode': '11',
-      //             'ruleValue': '400',
-      //             'type': '1',
-      //             'cnName': '装车费',
-      //             'enName': 'LOADING_FEE',
-      //             'showType': 1,
-      //             'dictCode': null,
-      //             'ruleType': 0,
-      //             'dictLabel': null,
-      //             'unit': null
-      //           },
-      //           {
-      //             'id': 191,
-      //             'code': '5951d29fe33141f88734eb08557df368',
-      //             'ruleCode': 'd553a41ff0b5474caa46111ae95a50a4',
-      //             'ruleItemCode': '16',
-      //             'ruleValue': '50',
-      //             'type': '1',
-      //             'cnName': '扣回单费',
-      //             'enName': 'RECEIPT_FEE',
       //             'showType': 1,
       //             'dictCode': null,
       //             'ruleType': 0,
@@ -243,114 +140,6 @@ export default {
       //       }}],
       //     newRedis: [] // 这个是封装返回的时候使用
       //   },
-      //   { dictLabel: '垃圾煤', // 展示tab
-      //     activeName: '1', // 切换tab
-      //     goodsPrice: 800, // 商品价格
-      //     goodsType: '0002', // 商品divtValue
-      //     redis: [{ // 地址1 对应的其他的规则
-      //       tin_name: 'C--B', // 地址a到b 显示
-      //       ruleCode: '1', // 下拉规则的的值(会改)
-      //       ruleDictValue: '1', // 计算规则的值
-      //       orderFreightVo: { // 显示具体规则的值
-      //         'lossList': [],
-      //         'detailList': [
-      //           {
-      //             'id': 196,
-      //             'code': 'da84a113618749e6b72a3ebe4d96b60c',
-      //             'ruleCode': 'd553a41ff0b5474caa46111ae95a50a4',
-      //             'ruleItemCode': '12',
-      //             'ruleValue': '120',
-      //             'type': '2',
-      //             'cnName': '卸车费',
-      //             'enName': 'DISCHARGE_FARE',
-      //             'showType': 1,
-      //             'dictCode': null,
-      //             'ruleType': 0,
-      //             'dictLabel': null,
-      //             'unit': null
-      //           },
-      //           {
-      //             'id': 195,
-      //             'code': '741481324965450fa09bde1ce22c22a1',
-      //             'ruleCode': 'd553a41ff0b5474caa46111ae95a50a4',
-      //             'ruleItemCode': '15',
-      //             'ruleValue': '50',
-      //             'type': '2',
-      //             'cnName': '超时费',
-      //             'enName': 'OVERTIME_FEE',
-      //             'showType': 1,
-      //             'dictCode': null,
-      //             'ruleType': 0,
-      //             'dictLabel': null,
-      //             'unit': null
-      //           },
-      //           {
-      //             'id': 194,
-      //             'code': '280fbb2214f14fffa655211777199135',
-      //             'ruleCode': 'd553a41ff0b5474caa46111ae95a50a4',
-      //             'ruleItemCode': '17',
-      //             'ruleValue': '100',
-      //             'type': '2',
-      //             'cnName': '运费单价',
-      //             'enName': 'FREIGHT_COST',
-      //             'showType': 1,
-      //             'dictCode': null,
-      //             'ruleType': 0,
-      //             'dictLabel': null,
-      //             'unit': null
-      //           },
-      //           {
-      //             'id': 193,
-      //             'code': '390662ca170844fb8e3e7b5000163585',
-      //             'ruleCode': 'd553a41ff0b5474caa46111ae95a50a4',
-      //             'ruleItemCode': '18',
-      //             'ruleValue': '5',
-      //             'type': '2',
-      //             'cnName': '抹零规则',
-      //             'enName': 'M0',
-      //             'showType': 3,
-      //             'dictCode': 'M0',
-      //             'ruleType': 0,
-      //             'dictLabel': null,
-      //             'unit': null
-      //           },
-      //           {
-      //             'id': 192,
-      //             'code': '2245728e235741cc87463ae2ac2159ca',
-      //             'ruleCode': 'd553a41ff0b5474caa46111ae95a50a4',
-      //             'ruleItemCode': '11',
-      //             'ruleValue': '400',
-      //             'type': '1',
-      //             'cnName': '装车费',
-      //             'enName': 'LOADING_FEE',
-      //             'showType': 1,
-      //             'dictCode': null,
-      //             'ruleType': 0,
-      //             'dictLabel': null,
-      //             'unit': null
-      //           },
-      //           {
-      //             'id': 191,
-      //             'code': '5951d29fe33141f88734eb08557df368',
-      //             'ruleCode': 'd553a41ff0b5474caa46111ae95a50a4',
-      //             'ruleItemCode': '16',
-      //             'ruleValue': '50',
-      //             'type': '1',
-      //             'cnName': '扣回单费',
-      //             'enName': 'RECEIPT_FEE',
-      //             'showType': 1,
-      //             'dictCode': null,
-      //             'ruleType': 0,
-      //             'dictLabel': null,
-      //             'unit': null
-      //           }
-      //         ]
-      //       }}],
-      //     newRedis: [] // 这个是封装返回的时候使用
-      //   }
-      //   // { dictLabel: '精美', activeName: '1', redis: [], goodsPrice: 600 },
-      //   // { dictLabel: '垃圾煤', activeName: '2', redis: [], goodsPrice: 700 }
-      // ],
       totalTypeValue: '', // ??
       myisdisabled: false // 是否预览(组件内要使用)
     };
@@ -372,6 +161,7 @@ export default {
     // 确认
     async submit(bool) {
       if (bool) {
+        this.loading = true;
         await this.getdata();
 
         const orderFreightBoList = this.tabs.map(e => {
@@ -389,6 +179,8 @@ export default {
         });
 
         console.log(orderFreightBoList, '想要的结构-----');
+        console.log(this.entry, '时间----');
+
 
         // 提交需要这样的结构
         // 1-1 订单号直接传
@@ -396,18 +188,18 @@ export default {
         // 1-3 地址装--卸code 需要
         const req = {
           'orderCode': this.orderCode,
-          orderFreightBoList
+          orderFreightBoList,
+          time: this.entry || undefined
         };
 
         // 请求接口
 
         const data = await adjustPrice(req);
-
         console.log(data);
 
-
+        this.loading = false;
+        this.msgSuccess(data.msg);
         // 全部保存完毕在回调
-
 
         this.$emit('submitRes', 'success');
       } else {
