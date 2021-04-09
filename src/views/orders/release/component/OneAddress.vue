@@ -181,6 +181,8 @@ export default {
     },
 
     isRules(value) {
+      console.log(value);
+
       this.isrules = !value;
 
       this.rules = {

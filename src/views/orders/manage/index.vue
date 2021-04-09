@@ -27,7 +27,7 @@
           <!-- 右边 -->
           <div>
             <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="100px" class="clearfix">
-              <el-form-item label="下单客户" prop="tin1" v-show="!isShipment">
+              <el-form-item v-show="!isShipment" label="下单客户" prop="tin1">
                 <el-input
                   v-model="queryParams.tin1"
                   placeholder="请输入下单客户"
@@ -79,14 +79,14 @@
                 />
               </el-form-item>
 
-              <el-form-item label="货主" prop="tin6" v-show="!isShipment">
+              <el-form-item v-show="!isShipment" label="货主" prop="tin6">
                 <el-select v-model="queryParams.tin6" filterable clearable placeholder="请选择货主">
                   <el-option
                     v-for="item in shipmentList"
                     :key="item.code"
                     :label="item.adminName + ' ' +(item.companyName || '')"
-                    :value="item.code">
-                  </el-option>
+                    :value="item.code"
+                  />
                 </el-select>
               <!--  <el-input
                   v-model="queryParams.tin6"
@@ -189,6 +189,7 @@
 
             <!-- default-expand-all -->
             <RefactorTable
+              is-show-index
               :loading="loading"
               :data="list"
               row-key="id"
@@ -674,6 +675,8 @@ export default {
     handlerList(lists) {
       return lists.map(e => {
         // 先判断几个商品
+
+        e = e.redisOrderInfoListVoList[0];
         const mgoods = [];
         e.redisOrderFreightInfoVoList.forEach((redis, index) => {
           // 获取商品信息到这里获取
@@ -745,7 +748,7 @@ export default {
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      console.log(row);
+      // console.log(row);
 
       this.$router.push({ name: 'Release', query: { id: row.code, t: '1' }});
       // this.reset();
