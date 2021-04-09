@@ -484,7 +484,7 @@ export default {
           case 'review':
             this.title = '审核';
             if (row.authStatus === 0) {
-              this.$refs.VehicleDialog.authRead(response.data);
+              this.$refs.VehicleDialog.authRead();
             }
             break;
           default:

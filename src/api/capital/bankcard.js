@@ -6,7 +6,7 @@ export function banklist(data) {
   return request({
     url: bankListApi,
     method: 'post',
-    data: data
+    data: Object.assign({}, data, { isAsc: 'asc', orderByColumn: 'id' })
   });
 }
 

@@ -2,11 +2,11 @@ import request from '@/utils/request';
 
 // 查询车辆列表
 export const listVehicleApi = '/assets/vehicle/list';
-export function listInfo(query) {
+export function listInfo(data) {
   return request({
     url: listVehicleApi,
     method: 'get',
-    params: query
+    params: Object.assign({}, data, { isAsc: 'asc', orderByColumn: 'id' })
   });
 }
 
@@ -60,3 +60,20 @@ export function listVehicleBelongDriver(vehicleCode) {
   });
 }
 
+// 已读
+export function authRead(data) {
+  return request({
+    url: '/assets/vehicle/authRead',
+    method: 'post',
+    data: data
+  });
+}
+
+// 审核
+export function examine(data) {
+  return request({
+    url: '/assets/vehicle/examine',
+    method: 'post',
+    data: data
+  });
+}

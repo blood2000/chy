@@ -175,7 +175,7 @@
 </template>
 
 <script>
-import { addInfo, updateInfo } from '@/api/assets/vehicle';
+import { addInfo, updateInfo, authRead, examine } from '@/api/assets/vehicle';
 import UploadImage from '@/components/UploadImage/index';
 
 export default {
@@ -355,19 +355,24 @@ export default {
 	    this.form = data;
     },
     // 已读
-    authRead(data) {
-      // authRead(data).then(response => {
-      //   this.$emit('refresh');
-      // });
+    authRead() {
+      authRead({
+        authStatus: 1,
+        code: this.form.code
+      }).then(response => {
+        this.$emit('refresh');
+      });
     },
     /** 审核通过/未通过按钮 */
     reviewForm(key) {
-      // this.form.authStatus = key;
-      // examine(this.form).then(response => {
-      //   this.msgSuccess('操作成功');
-      //   this.close();
-      //   this.$emit('refresh');
-      // });
+      examine({
+        authStatus: key,
+        code: this.form.code
+      }).then(response => {
+        this.msgSuccess('操作成功');
+        this.close();
+        this.$emit('refresh');
+      });
     }
   }
 };

@@ -555,8 +555,6 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        isAsc: 'asc',
-        orderByColumn: 'id',
         name: null
       }
     };

@@ -142,9 +142,7 @@ export default {
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 10,
-        isAsc: 'asc',
-        orderByColumn: 'nickName'
+        pageSize: 10
       }
     };
   },

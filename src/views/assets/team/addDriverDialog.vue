@@ -93,6 +93,7 @@
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
+
     <el-table v-loading="loading" :data="driverList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" :selectable="checkboxSelectable" width="55" align="center" fixed="left" />
       <el-table-column label="邀请情况" align="center" prop="applyStatus">
@@ -170,6 +171,7 @@
         </template>
       </el-table-column> -->
     </el-table>
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -177,6 +179,7 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
+
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" :disabled="multiple" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
@@ -267,9 +270,15 @@ export default {
       }
     }
   },
+  watch: {
+    open(val) {
+      if (val) {
+        this.handleQuery();
+      }
+    }
+  },
   created() {
     this.getDictsOptions();
-    this.getList();
   },
   methods: {
     /** 查询字典 */

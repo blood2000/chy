@@ -190,7 +190,7 @@
     <!-- 邀请司机 对话框 -->
     <add-driver-dialog :open.sync="addDriverDialogOpen" :team-code="teamCode" />
     <!-- 处理申请 对话框 -->
-    <apply-driver-dialog :open.sync="applyDriverDialogOpen" :team-code="teamCode" />
+    <apply-driver-dialog :open.sync="applyDriverDialogOpen" :team-code="teamCode" @refresh="getList" />
   </div>
 </template>
 
@@ -326,7 +326,7 @@ export default {
           case 'review':
             this.title = '审核';
             if (row.authStatus === 0) {
-              this.$refs.TeamDialog.authRead(response.data);
+              this.$refs.TeamDialog.authRead();
             }
             break;
           default:
