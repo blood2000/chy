@@ -28,6 +28,7 @@
         <el-form-item v-if="!isShipment && isCreated" label="代发货主" prop="tin1">
           <el-select
             v-model="formData.tin1"
+            v-el-select-loadmore="loadmore"
             filterable
             clearable
             remote
@@ -255,6 +256,12 @@ export default {
   },
   data() {
     return {
+      queryParams: {
+        pageNum: 1,
+        keywords: '',
+        pageSize: 10
+      },
+      dataOver: false, // 是否请求完了
       isT: false, //
       orgCode: '', // 接口需要
       isShipment: false, // 默认是平台
@@ -361,18 +368,31 @@ export default {
     remoteMethod(query) {
       if (query !== '') {
         this.loading = true;
-        // 获取代理用户表
-        listShipment({ keywords: query, pageNum: 1, pageSize: 10 }).then(
-          (res) => {
-            this.shipmentList = res.rows;
-            this.loading = false;
-          }
-        ).catch(() => {
-          this.loading = false;
-        });
+        this.queryParams.pageNum = 1;
+        this.dataOver = false;
+        this.queryParams.keywords = query;
+        this.getTeamList();
       } else {
         this.shipmentList = [];
       }
+    },
+    // 远程搜索列表触底事件
+    loadmore() {
+      if (this.dataOver) return;
+      this.queryParams.pageNum++;
+      this.getTeamList();
+    },
+    getTeamList() {
+      // 获取代理用户表
+      listShipment(this.queryParams).then(
+        (res) => {
+          this.dataOver = !res.rows.length;
+          this.shipmentList = this.shipmentList.concat(res.rows);
+          this.loading = false;
+        }
+      ).catch(() => {
+        this.loading = false;
+      });
     },
 
 

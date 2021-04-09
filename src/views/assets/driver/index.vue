@@ -235,8 +235,8 @@
           @click="handleDetail(row, 'edit')"
         >修改</el-button>
         <el-button
-          v-hasPermi="['assets:driver:examine']"
           v-show="row.authStatus === 0 || row.authStatus === 1"
+          v-hasPermi="['assets:driver:examine']"
           size="mini"
           type="text"
           icon="el-icon-document-checked"
