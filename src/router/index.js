@@ -43,6 +43,15 @@ export const constantRoutes = [
     component: (resolve) => require(['@/views/login'], resolve),
     hidden: true
   },
+  /*
+    添加一个空白页面, 用于当前页面刷新使用
+    调用方法 this.$router.replace({path:'/refresh'})
+  */
+  {
+    path: '/refresh',
+    component: (resolve) => require(['@/views/refresh'], resolve),
+    hidden: true
+  },
   {
     path: '/404',
     component: (resolve) => require(['@/views/error/404'], resolve),

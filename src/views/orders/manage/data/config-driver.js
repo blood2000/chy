@@ -5,15 +5,25 @@ export default [
     isShow: true,
     label: '姓名'
   },
-
   {
-    prop: 'tin11',
+    prop: 'licenseNumber',
     isShow: true,
-    label: '公司名称'
+    label: '车牌号'
   },
 
   {
-    prop: 'tin11',
+    prop: 'workCompany',
+    isShow: true,
+    label: '工作单位'
+  },
+  {
+    prop: 'teamCode',
+    isShow: true,
+    label: '所属车队'
+  },
+
+  {
+    prop: 'tin12',
     isShow: true,
     label: '承运类型'
   },

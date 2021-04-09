@@ -49,13 +49,18 @@
 
     <!-- 司机 -->
     <div v-show="activeName === 'listDriver'">
-      <refactor-table :loading="loading" :data="list_listDriver" :table-columns-config="tableColumnsConfig" :cb-data="myTo" @selection-change="handleSelectionChange" />
+      <refactor-table :loading="loading" :data="list_listDriver" :table-columns-config="tableColumnsConfig" :cb-data="myTo" @selection-change="handleSelectionChange">
+
+        <template #tin12="{row}">
+          <span v-if="row">司机</span>
+        </template>
+      </refactor-table>
     </div>
 
     <!-- 调度者 -->
     <div v-show="activeName === 'listInfo'">
       <el-radio-group v-model="radio" style="width:100%" @change="handlerChange">
-        <el-table v-loading="loading" :data="list_listInfo">
+        <el-table v-loading="loading" :data="list_listInfo" border stripe>
           <el-table-column label="" align="center" width="50">
             <template slot-scope="scope">
               <el-radio :label="scope.row.id">
@@ -64,10 +69,15 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="姓名" align="center" prop="name" />
-          <el-table-column label="公司名称" align="center" prop="teamLeader" />
-          <el-table-column label="承运人类型" align="center" prop="contactPhone" />
-          <el-table-column label="电话" align="center" prop="contact" />
+          <el-table-column label="姓名" align="left" prop="name" show-overflow-tooltip />
+          <el-table-column label="身份证" align="left" prop="identificationNumber" show-overflow-tooltip />
+          <el-table-column label="车队名称" align="left" prop="name" show-overflow-tooltip />
+          <el-table-column label="承运人类型" align="left" prop="contactPhone" show-overflow-tooltip>
+            <template v-if="scope" slot-scope="scope">
+              调度者
+            </template>
+          </el-table-column>
+          <el-table-column label="电话" align="left" prop="telphone" show-overflow-tooltip />
 
         </el-table>
       </el-radio-group>
@@ -81,10 +91,10 @@
       @pagination="getList"
     />
 
-    <div>
-      <el-button v-show="activeName === 'listDriver'" type="cyan" :disabled="!(ids.length>0)" icon="el-icon-search" size="mini" @click="_ok('listDriver')">确定</el-button>
-      <el-button v-show="activeName === 'listInfo'" type="cyan" :disabled="!radio" icon="el-icon-search" size="mini" @click="_ok('listInfo')">确定</el-button>
-      <el-button icon="el-icon-refresh" size="mini" @click="_ok(false)">取消</el-button>
+    <div class="ly-t-right mt20">
+      <el-button v-show="activeName === 'listDriver'" type="primary" :disabled="!(ids.length>0)" size="mini" @click="_ok('listDriver')">确定</el-button>
+      <el-button v-show="activeName === 'listInfo'" type="primary" :disabled="!radio" size="mini" @click="_ok('listInfo')">确定</el-button>
+      <el-button size="mini" @click="_ok(false)">取消</el-button>
     </div>
   </div>
 </template>
@@ -316,7 +326,7 @@ export default {
 
           dispatchOrder(data).then(res => {
             this.msgSuccess('派发成功!');
-            this.$emit('_ok', false);
+            this.$emit('_ok', 'success');
           });
         } else {
           this.radio = '';

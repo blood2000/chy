@@ -24,11 +24,12 @@
             :placeholder="'请输入运费单价'"
             controls-position="right"
             :style="{ width: '100px' }"
+            @change="handlerChange"
           />
-          <span class="ml0 mr10"> 元 / {{ goodsUnitName }}</span>
+          <span class="ml0 mr10"> 元 / {{ mygoodsUnitName }}</span>
 
           <div v-if="!showbudget" class="ml0 mr10 t_color_c t_m_pac">
-            司机实收单价:  47.5 元
+            司机实收单价:  {{ totalTransportationCost }} 元
           </div>
         </el-col>
         <el-col :span="8">
@@ -100,7 +101,7 @@
 
           </div>
         </el-col>
-        <el-col v-if="myisdisabled && !showbudget" :span="10">
+        <el-col v-if="myisdisabled && !showbudget && predictData" :span="10">
           <div class="t_box_item">
             <template v-if="isTotalTypeValue">
 
@@ -112,9 +113,9 @@
                   <div class="mb10 t_color_c">平台服务费 (总费用估): </div>
                 </el-col>
                 <el-col :span="8">
-                  <div class="mb10">230000 元</div>
-                  <div class="mb10 t_color_c">23525 元</div>
-                  <div class="mb10 t_color_c">1475 元</div>
+                  <div class="mb10">{{ predictData.totalEstimateMoney || 0 }} 元</div>
+                  <div class="mb10 t_color_c">{{ predictData.totalTransportationCost || 0 }} 元</div>
+                  <div class="mb10 t_color_c">{{ predictData.totalServiceFee || 0 }} 元</div>
                 </el-col>
               </el-row>
             </template>
@@ -126,9 +127,9 @@
                 <div class="mb10 t_color_c">平台服务费 (单笔运费估): </div>
               </el-col>
               <el-col :span="8">
-                <div class="mb10">230000 元</div>
-                <div class="mb10 t_color_c">23525 元</div>
-                <div class="mb10 t_color_c">1475 元</div>
+                <div class="mb10">{{ predictData.singleAllCost || 0 }} 元</div>
+                <div class="mb10 t_color_c">{{ predictData.singleDriverCashReceived || 0 }} 元</div>
+                <div class="mb10 t_color_c">{{ predictData.singleServiceFee || 0 }} 元</div>
               </el-col>
             </el-row>
           </div>
@@ -142,7 +143,7 @@
 
 <script>
 import { getListRules, getRuleItem } from '@/api/enterprise/rules';
-import { estimateCost } from '@/api/order/release.js';
+import { getDriverPrice } from '@/api/order/release.js';
 
 import RulesForm from './RulesForm';
 
@@ -197,6 +198,10 @@ export default {
   },
   data() {
     return {
+      mygoodsUnitName: '', // 单位
+      mytotalTypeValue: '', // 配载方式
+      predictData: null, // 预估价格
+      totalTransportationCost: '-', // 司机实收单价
       ruleFreightPrice: [
         {
           'code': undefined,
@@ -208,7 +213,17 @@ export default {
 
         }
       ], // 运费单价(单独提取出来)
-      claculationFormula: [], // 计算规则(单独提取出来)
+      claculationFormula: [
+        {
+          'code': undefined,
+          'ruleCode': undefined,
+          'ruleDetailShipmentCode': undefined,
+          'ruleItemCode': '20',
+          'ruleValue': undefined,
+          'type': null
+
+        }
+      ], // 司机实收单价
       formData: {
 
         ruleItemId: '',
@@ -239,16 +254,32 @@ export default {
 
   computed: {
     isTotalTypeValue() {
-      return this.totalTypeValue !== '1';
+      return this.mytotalTypeValue !== '1';
     }
+
   },
 
   watch: {
-    myisdisabled(value) {
-      if (value) {
-        this.handlerEstimateCost();
-      }
+    goodsUnitName: {
+      handler(value) {
+        this.mygoodsUnitName = value;
+      },
+      immediate: true
     },
+    totalTypeValue: {
+      handler(value) {
+        this.mytotalTypeValue = value;
+      },
+      immediate: true
+    },
+
+    '$store.state.orders.estimateCostData': {
+      handler(value) {
+        this.handlerEstimateCost(value);
+      },
+      deep: true
+    },
+
     pubilshCode(value) {
       this.initData();
     },
@@ -265,11 +296,15 @@ export default {
         this.formData.ruleItemId = value.ruleCode;
 
         const filterDetailList = detailList.filter(e => {
+          if (e.enName === 'DRIVER_ACTUAL_PRICE') {
+            this.totalTransportationCost = e.ruleValue;
+          }
+
           if (e.enName === 'FREIGHT_COST') {
             this.formData.freightPrice = e.ruleValue;
           }
 
-          const bool = (e.enName === 'LOSS_PLAN' || e.enName === 'LOSS_RULE' || e.enName === 'CALCULATION_FORMULA' || e.enName === 'FREIGHT_COST');
+          const bool = (e.enName === 'LOSS_PLAN' || e.enName === 'LOSS_RULE' || e.enName === 'CALCULATION_FORMULA' || e.enName === 'FREIGHT_COST' || e.enName === 'DRIVER_ACTUAL_PRICE');
 
           return !bool;
         });
@@ -289,6 +324,19 @@ export default {
   },
 
   methods: {
+    // 获取司机成交单价
+    async handlerChange() {
+      try {
+        const data = await getDriverPrice({
+          shipperCode: this.pubilshCode,
+          price: this.formData.freightPrice
+        });
+        this.totalTransportationCost = data.data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
     // 获取
     async initData() {
       if (!this.pubilshCode) return;
@@ -309,129 +357,9 @@ export default {
       this.zichuList = [];
       this.shouruList = [];
 
-      const { detailList, lossList, ruleInfo } = (await getRuleItem({
+      const { detailList, lossList } = (await getRuleItem({
         code: this.formData.ruleItemId
       })).data;
-
-
-
-
-      // 这里处理预估值
-      // 计算公式的值 ruleInfo.ruleDictValue
-
-
-
-
-
-
-      /* 假数据
-      const detailList = [
-        {
-          'id': 140,
-          'code': '06a474570a21484db43d9ce737f31eea',
-          'ruleCode': '8c844a2e7ac340359c2bb41e7bd645b1',
-          'ruleItemCode': '12',
-          'ruleValue': '1000',
-          'type': '2',
-          'cnName': '卸车费',
-          'enName': 'xcf',
-          'showType': 1,
-          'dictCode': null,
-          'ruleType': 0,
-          'dictLabel': null,
-          'unit': null
-        },
-        {
-          'id': 139,
-          'code': '43045d7b3ae6474db28c922ddc0d685b',
-          'ruleCode': '8c844a2e7ac340359c2bb41e7bd645b1',
-          'ruleItemCode': '13',
-          'ruleValue': '500',
-          'type': '2',
-          'cnName': '油费',
-          'enName': 'yf',
-          'showType': 1,
-          'dictCode': null,
-          'ruleType': 0,
-          'dictLabel': null,
-          'unit': null
-        },
-        {
-          'id': 138,
-          'code': '5f8e26d37aec4e28b1060044dd1f37a2',
-          'ruleCode': '8c844a2e7ac340359c2bb41e7bd645b1',
-          'ruleItemCode': '14',
-          'ruleValue': '50',
-          'type': '1',
-          'cnName': 'ETC费',
-          'enName': 'etc',
-          'showType': 1,
-          'dictCode': null,
-          'ruleType': 0,
-          'dictLabel': null,
-          'unit': null
-        },
-        {
-          'id': 137,
-          'code': '75e1aafd564a4e5cba032919f0e0d8ff',
-          'ruleCode': '8c844a2e7ac340359c2bb41e7bd645b1',
-          'ruleItemCode': '15',
-          'ruleValue': '100',
-          'type': '1',
-          'cnName': '超时费',
-          'enName': 'csf',
-          'showType': 1,
-          'dictCode': null,
-          'ruleType': 0,
-          'dictLabel': null,
-          'unit': null
-        }
-      ];
-      const lossList = [
-        {
-          'id': 136,
-          'code': '2d0141894ccb4542a7af469d3154caab',
-          'ruleCode': '8c844a2e7ac340359c2bb41e7bd645b1',
-          'ruleItemCode': '1',
-          'ruleValue': 'DE',
-          'type': null,
-          'cnName': '路耗 计算方式',
-          'enName': 'lhjsfs',
-          'showType': 4,
-          'dictCode': 'lossPlan',
-          'ruleType': 1,
-          'dictLabel': null,
-          'unit': null
-        }
-      ];*/
-
-      // console.log(detailList, lossList);
-
-
-
-      // this.formData.ruleDictValue = ruleInfo.ruleDictValue;
-
-      // 运费单价
-
-      // this.ruleFreightPrice = detailList.filter(e => {
-      //   return e.enName === 'FREIGHT_COST';
-      // });
-
-      // const filterDetailList = [];
-
-      // detailList.forEach(e => {
-      //   if (e.enName === 'FREIGHT_COST') {
-      //     this.ruleFreightPrice = [e];
-      //     this.formData.freightPrice = e.ruleValue;
-      //   } else if (e.enName === 'CALCULATION_FORMULA') {
-      //     this.claculationFormula = [e];
-      //     this.formData.ruleDictValue = e.ruleValue;
-      //   } else {
-      //     filterDetailList.push(e);
-      //   }
-      // });
-
-      // console.log(filterDetailList);
 
       const filterDetailList = detailList.filter(e => {
         const bool = (e.enName === 'LOSS_PLAN' || e.enName === 'LOSS_RULE' || e.enName === 'CALCULATION_FORMULA');
@@ -466,8 +394,9 @@ export default {
             // 报ruleValue undefined 说明 单价或计算公式未放到细则里面
             (this.ruleFreightPrice[0].ruleValue = this.formData.freightPrice);
             (this.ruleFreightPrice[0].ruleCode = this.formData.ruleItemId);
-            // this.claculationFormula[0] && (this.claculationFormula[0].ruleValue = this.formData.ruleDictValue);
-            // const lossList = await this.$refs.lossList._submitForm();
+            (this.claculationFormula[0].ruleValue = this.totalTransportationCost);
+            (this.claculationFormula[0].ruleCode = this.formData.ruleItemId);
+
             const shouruList = this.$refs.shouruList ? (await this.$refs.shouruList._submitForm()) : [];
             const zichuList = this.$refs.zichuList ? (await this.$refs.zichuList._submitForm()) : [];
 
@@ -494,45 +423,26 @@ export default {
     },
 
     // 处理预估值
-    async handlerEstimateCost() {
-      const orderFreightBoList = [...this.zichuList, ...this.shouruList].map(e => {
-        return {
-          code: e.code,
-          ruleCode: e.ruleCode,
-          ruleItemCode: e.ruleItemCode,
-          ruleValue: e.ruleValue,
-          type: e.type
-          // ruleDetailShipmentCode: ''
-        };
+    async handlerEstimateCost(data) {
+      // console.log(this.good);
+
+      const { orderEstimateCostBoList } = data;
+
+      orderEstimateCostBoList.forEach(e => {
+        if (e.goodsIdentification === this.good.goodsType) {
+          e.orderAddressBoList.forEach(ee => {
+            const addresCodes = ee.addressIdentification.split(':');
+
+            this.good.redis.forEach(redi => {
+              if (addresCodes[0] === redi.identification + '' || addresCodes[1] === redi.identification + '') {
+                // console.log(ee, '找到当前的这一项了');
+
+                this.predictData = ee;
+              }
+            });
+          });
+        }
       });
-
-      // 获取商品上的数据
-      // 1- 如果最高配载 和 货物单价 未选中的情况?
-      const arrdata = await this.goodsSubmitForm();
-
-      // 还要知道当前是那个商品下面的规则
-
-      const goodsItem = arrdata.filter(e => {
-        return e.dictCode === this.good.dictCode;
-      });
-
-      const { orderGood } = goodsItem[0];
-
-      const qData = {
-        number: orderGood.number || undefined, // 车次
-        orderFreightBoList, // 细项
-        orderAddressCode: this.redis.tin_name, // 地址
-        orderGoodsCode: this.goods ? this.goods.code : this.good.goodsType,
-        stowageStatus: orderGood.stowageStatus || undefined,
-        totalType: orderGood.totalType,
-        userCode: this.pubilshCode,
-        vehicleMaxWeight: orderGood.vehicleMaxWeight || undefined,
-        weight: orderGood.weight || undefined
-      };
-
-      const data = await estimateCost(qData);
-
-      console.log(data);
     },
 
 
