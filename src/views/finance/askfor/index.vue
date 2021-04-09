@@ -42,7 +42,7 @@
       :rules="rules"
       label-width="90px"
     >
-      <el-form-item label="货主" prop="shipmentCode">
+      <el-form-item v-show="!isShipment" label="货主" prop="shipmentCode">
         <el-select
           v-model="queryParams.shipmentCode"
           placeholder="请选择货主"
@@ -266,6 +266,7 @@
 
 <script>
 import { askforList, askforListApi, shipmentList } from '@/api/finance/askfor';
+import { getUserInfo } from '@/utils/auth';
 // 驳回弹窗
 // import RejectDialog from '../components/rejectDialog';
 // 子单弹窗
@@ -290,7 +291,7 @@ export default {
       // 总条数
       'total': 0,
       // 表格数据
-      'askforlist': [],
+      askforlist: [],
       shipmentlist: [],
       // 查询参数
       'queryParams': {
@@ -306,7 +307,7 @@ export default {
         'orderNo': undefined,
         'receiveDateBegin': undefined,
         'receiveDateEnd': undefined,
-        'shipmentCode': undefined,
+        'shipmentCode': 'a6485db163d748f2bd33a1412053bf42',
         'waybillNo': undefined
       },
       loadTime: [],
@@ -359,12 +360,26 @@ export default {
         shipmentCode: [
           { required: true, message: '请选择货主', trigger: 'blur' }
         ]
+      },
+      isShipment: false,
+      user: {},
+      shipment: {},
+      feeinfo: {
+        waybillNum: '',
+        deliveryFee: '',
+        serviceFee: '',
+        // serviceFee: '',
+        taxPayment: ''
       }
     };
   },
   computed: {
   },
   created() {
+    const { isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
+    this.isShipment = isShipment;
+    this.user = user;
+    this.shipment = shipment;
     this.tableHeaderConfig(this.tableColumnsConfig, askforListApi, {
       prop: 'edit',
       isShow: true,
@@ -391,14 +406,15 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
+      console.log(selection);
       this.ids = selection.map((item) => item.id);
     },
     /** 查询【请填写功能名称】列表 */
     getList() {
       this.loading = true;
       askforList(this.queryParams).then(response => {
-        this.askforlist = response.rows;
-        this.total = response.total;
+        this.askforlist = response.data.rows;
+        this.total = response.data.total;
         this.loading = false;
       });
     },
