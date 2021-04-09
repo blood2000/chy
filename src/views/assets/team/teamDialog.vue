@@ -17,8 +17,8 @@
       <el-form-item label="管理者名称" prop="teamLeader">
         <el-input v-model="form.teamLeader" placeholder="请输入管理者名称" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="手机号" prop="telphone">
-        <el-input v-model="form.telphone" placeholder="请输入手机号" class="width90" clearable />
+      <el-form-item label="手机号/账号" prop="telphone">
+        <el-input v-model="form.telphone" placeholder="请输入手机号/账号" class="width90" clearable />
       </el-form-item>
       <el-form-item label="密码" prop="password">
         <el-input v-model="form.password" type="password" placeholder="请输入密码" class="width60 mr3" clearable />
@@ -86,9 +86,13 @@
         </el-row>
       </el-form-item>
     </el-form>
-    <div slot="footer" class="dialog-footer">
+    <div v-if="title === '新增' || title === '编辑'" slot="footer" class="dialog-footer">
       <el-button type="primary" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
+    </div>
+    <div v-if="title === '审核'" slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="reviewForm(3)">审核通过</el-button>
+      <el-button type="danger" @click="reviewForm(2)">审核不通过</el-button>
     </div>
   </el-dialog>
 </template>
@@ -96,6 +100,7 @@
 <script>
 import { addInfo, updateInfo } from '@/api/assets/team';
 import UploadImage from '@/components/UploadImage/index';
+import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
 
 export default {
   components: {
@@ -127,7 +132,7 @@ export default {
       // 表单校验
       rules: {
         telphone: [
-          { required: true, message: '手机号不能为空', trigger: 'blur' },
+          { required: true, message: '手机号/账号不能为空', trigger: 'blur' },
           { validator: this.formValidate.telphone, trigger: 'blur' }
         ],
         name: [
@@ -160,11 +165,7 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          if (this.form.identificationEffective) {
-            this.form.identificationEffective = 1;
-          } else {
-            this.form.identificationEffective = 0;
-          }
+          this.form.identificationEffective = praseBooleanToNum(this.form.identificationEffective);
           if (this.form.id != null) {
             updateInfo(this.form).then(response => {
               this.msgSuccess('修改成功');
@@ -222,11 +223,24 @@ export default {
     // 表单赋值
     setForm(data) {
       this.form = data;
-      if (this.form.identificationEffective) {
-        this.form.identificationEffective = true;
-      } else {
-        this.form.identificationEffective = false;
-      }
+      this.form.identificationEffective = praseNumToBoolean(this.form.identificationEffective);
+    },
+    // 已读
+    authRead(data) {
+      data.identificationEffective = praseBooleanToNum(data.identificationEffective);
+      // authRead(data).then(response => {
+      //   this.$emit('refresh');
+      // });
+    },
+    /** 审核通过/未通过按钮 */
+    reviewForm(key) {
+      this.form.authStatus = key;
+      this.form.identificationEffective = praseBooleanToNum(this.form.identificationEffective);
+      // examine(this.form).then(response => {
+      //   this.msgSuccess('操作成功');
+      //   this.close();
+      //   this.$emit('refresh');
+      // });
     }
   }
 };

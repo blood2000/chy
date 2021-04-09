@@ -17,8 +17,8 @@
       <el-form-item label="姓名" prop="adminName">
         <el-input v-model="form.adminName" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="手机号码" prop="telphone">
-        <el-input v-model="form.telphone" placeholder="请输入手机号" class="width90" clearable />
+      <el-form-item label="手机号/账号" prop="telphone">
+        <el-input v-model="form.telphone" placeholder="请输入手机号/账号" class="width90" clearable />
       </el-form-item>
       <el-form-item label="密码" prop="password">
         <el-input v-model="form.password" type="password" placeholder="请输入密码" class="width60 mr3" clearable />
@@ -47,15 +47,7 @@
         />
         <el-checkbox v-model="form.identificationEffective">长期有效</el-checkbox>
       </el-form-item>
-      <el-form-item label="网点" prop="branchCode">
-        <!-- <el-select v-model="form.branchCode"  style="width: 90%" filterable placeholder="请选择">
-          <el-option
-            v-for="item in branchOptions"
-            :key="item.code"
-            :label="item.name"
-            :value="item.code">
-          </el-option>
-        </el-select>-->
+      <!-- <el-form-item label="网点" prop="branchCode">
         <el-select
           v-model="form.branchCode"
           filterable
@@ -73,7 +65,7 @@
             :value="item.code"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <template v-if="form.shipperType === 1">
         <el-form-item label="公司名称" prop="companyName" :rules="[{ required: true, message: '公司名称不能为空', trigger: 'blur' }]">
           <!--<el-input v-model="form.companyName" placeholder="请输入公司名称" class="width90" clearable />-->
@@ -343,6 +335,7 @@ import { listDeptAll } from '@/api/system/dept';
 import { getBranchList } from '@/api/system/branch';
 import UploadImage from '@/components/UploadImage/index';
 import ProvinceCityCounty from '@/components/ProvinceCityCounty';
+import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
 
 export default {
   components: {
@@ -365,13 +358,6 @@ export default {
       typeOptions: [
         { dictLabel: '发货人', dictValue: 0 },
         { dictLabel: '发货企业', dictValue: 1 }
-      ],
-      // 审核状态字典
-      statusOptions: [
-        { dictLabel: '未审核', dictValue: 0 },
-        { dictLabel: '审核中', dictValue: 1 },
-        { dictLabel: '审核未通过', dictValue: 2 },
-        { dictLabel: '审核通过', dictValue: 3 }
       ],
       // 是否冻结字典
       isFreezoneOptions: [
@@ -396,7 +382,7 @@ export default {
       // 表单校验
       rules: {
         telphone: [
-          { required: true, message: '手机号码不能为空', trigger: 'blur' },
+          { required: true, message: '手机号/账号不能为空', trigger: 'blur' },
           { validator: this.formValidate.telphone, trigger: 'blur' }
         ],
         adminName: [
@@ -482,12 +468,6 @@ export default {
       const flag = this.$refs.ChooseArea.submit();
       this.$refs['form'].validate(valid => {
         if (valid && flag) {
-          const shipmentInfo = this.form;
-          if (shipmentInfo.identificationEffective) {
-            shipmentInfo.identificationEffective = 1;
-          } else {
-            shipmentInfo.identificationEffective = 0;
-          }
           // 类型为发货人的时候，企业相关字段不能传
           if (this.form.shipperType === 0) {
             this.form.companyName = null;
@@ -500,15 +480,15 @@ export default {
             this.form.artificialIdentificationInhandImg = null;
             this.form.businessLicenseImg = null;
           }
-          if (shipmentInfo.id !== undefined) {
-            updateShipment(shipmentInfo).then(response => {
+          this.form.identificationEffective = praseBooleanToNum(this.form.identificationEffective);
+          if (this.form.id !== undefined) {
+            updateShipment(this.form).then(response => {
               this.msgSuccess('修改成功');
               this.close();
               this.$emit('refresh');
             });
           } else {
-            addShipment(shipmentInfo).then(response => {
-              console.log(response);
+            addShipment(this.form).then(response => {
               this.msgSuccess('新增成功');
               this.close();
               this.$emit('refresh');
@@ -527,11 +507,7 @@ export default {
     /** 审核通过/未通过按钮 */
     reviewForm(key) {
       this.form.authStatus = key;
-      if (this.form.identificationEffective) {
-        this.form.identificationEffective = 1;
-      } else {
-        this.form.identificationEffective = 0;
-      }
+      this.form.identificationEffective = praseNumToBoolean(this.form.identificationEffective);
       examine(this.form).then(response => {
         this.msgSuccess('操作成功');
         this.close();
@@ -591,19 +567,15 @@ export default {
         ticketType: null,
         serviceRatio: null,
         serviceRate: null,
-        supplyIsAuth: 0, // 是否审核货源，默认否
-        branchCode: null
+        supplyIsAuth: 0 // 是否审核货源，默认否
+        // branchCode: null
       };
       this.resetForm('form');
     },
     // 表单赋值
     setForm(data) {
       this.form = data;
-      if (this.form.identificationEffective) {
-        this.form.identificationEffective = true;
-      } else {
-        this.form.identificationEffective = false;
-      }
+      this.form.identificationEffective = praseNumToBoolean(this.form.identificationEffective);
       if (this.form.branchCode && this.form.branchName) {
         this.branchOptions = [{
           code: this.form.branchCode,
@@ -613,11 +585,7 @@ export default {
     },
     // 已读
     authRead(data) {
-      if (data.identificationEffective) {
-        data.identificationEffective = 1;
-      } else {
-        data.identificationEffective = 0;
-      }
+      data.identificationEffective = praseBooleanToNum(data.identificationEffective);
       authRead(data).then(response => {
         this.$emit('refresh');
       });

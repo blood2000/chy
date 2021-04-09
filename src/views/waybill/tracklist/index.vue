@@ -9,6 +9,7 @@
       label-width="130px"
     >
       <el-form-item
+        v-show="!isShipment"
         label="下单客户"
         prop="orderClient"
       >
@@ -22,6 +23,7 @@
         />
       </el-form-item>
       <el-form-item
+        v-show="!isShipment"
         label="发货企业"
         prop="deliveryCompany"
       >
@@ -74,7 +76,7 @@
         />
       </el-form-item>
       <el-form-item
-        label="接单日期"
+        label="创建日期"
         prop="receiveTime"
       >
         <el-date-picker
@@ -310,6 +312,7 @@
 <script>
 // import tableColumnsConfig from './data/tracklist-index';
 import { trackList, trackListApi } from '@/api/waybill/tracklist';
+import { getUserInfo } from '@/utils/auth';
 // 车辆装货弹窗
 import DialogA from './component/DialogA';
 // 投诉弹窗
@@ -389,7 +392,10 @@ export default {
         { 'dictLabel': '司机撤单申请', 'dictValue': '1' },
         { 'dictLabel': '货主同意撤销 ', 'dictValue': '2' },
         { 'dictLabel': '货主拒绝撤销 ', 'dictValue': '3' }
-      ]
+      ],
+      isShipment: false,
+      user: {},
+      shipment: {}
     //   // <!-- isPay	支付给司机运费状态 0-未支付 1-已支付 -->
     //   isPayOptions: [
     //     { 'dictLabel': '未支付', 'dictValue': '0' },
@@ -403,6 +409,10 @@ export default {
     }
   },
   created() {
+    const { isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
+    this.isShipment = isShipment;
+    this.user = user;
+    this.shipment = shipment;
     // this['tableColumnsConfig' + this.activeName] = this.getLocalStorage(this.lcokey) || this.tableColumnsConfig;
     this.tableHeaderConfig(this.tableColumnsConfig, trackListApi, {
       prop: 'edit',
@@ -448,6 +458,9 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.resetForm('queryForm');
+      this.receiveTime = [];
+      this.queryParams.orderStartTime = null;
+      this.queryParams.orderEndTime = null;
       this.handleQuery();
     },
     handleDelete() {

@@ -149,15 +149,6 @@
       <el-form-item label="运输介子" prop="transportMeson">
         <el-input v-model="form.transportMeson" placeholder="请输入运输介子" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="审核状态">
-        <el-radio-group v-model="form.authStatus">
-          <el-radio
-            v-for="dict in authStatusOptions"
-            :key="dict.dictValue"
-            :label="parseInt(dict.dictValue)"
-          >{{ dict.dictLabel }}</el-radio>
-        </el-radio-group>
-      </el-form-item>
       <el-form-item label="是否冻结" prop="isFreeze">
         <el-select v-model="form.isFreeze" placeholder="请选择是否冻结" class="width90" clearable filterable>
           <el-option
@@ -172,9 +163,13 @@
         <upload-image v-model="form.vehicleImage" :disabled="disable" />
       </el-form-item>
     </el-form>
-    <div slot="footer" class="dialog-footer">
+    <div v-if="title === '新增' || title === '编辑'" slot="footer" class="dialog-footer">
       <el-button type="primary" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
+    </div>
+    <div v-if="title === '审核'" slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="reviewForm(3)">审核通过</el-button>
+      <el-button type="danger" @click="reviewForm(2)">审核不通过</el-button>
     </div>
   </el-dialog>
 </template>
@@ -219,13 +214,6 @@ export default {
   	  vehicleAscriptionTypeOptions: [
   	    { dictLabel: '自有', dictValue: '0' },
   	    { dictLabel: '加盟', dictValue: '1' }
-  	  ],
-  	  // 审核状态字典
-  	  authStatusOptions: [
-  	    { dictLabel: '未审核', dictValue: '0' },
-  	    { dictLabel: '审核中', dictValue: '1' },
-  	    { dictLabel: '审核未通过', dictValue: '2' },
-  	    { dictLabel: '审核通过', dictValue: '3' }
   	  ],
   	  // 是否冻结字典
   	  isFreezeOptions: [
@@ -297,74 +285,89 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
-	  this.$refs['form'].validate(valid => {
-	    if (valid) {
-	      if (this.form.id != null) {
-	        updateInfo(this.form).then(response => {
-	          this.msgSuccess('修改成功');
-	          this.close();
-	          this.$emit('refresh');
-	        });
-	      } else {
-	        addInfo(this.form).then(response => {
-	          this.msgSuccess('新增成功');
-	          this.close();
-	          this.$emit('refresh');
-	        });
-	      }
-	    }
-	  });
+      this.$refs['form'].validate(valid => {
+        if (valid) {
+          if (this.form.id != null) {
+            updateInfo(this.form).then(response => {
+              this.msgSuccess('修改成功');
+              this.close();
+              this.$emit('refresh');
+            });
+          } else {
+            addInfo(this.form).then(response => {
+              this.msgSuccess('新增成功');
+              this.close();
+              this.$emit('refresh');
+            });
+          }
+        }
+      });
     },
     /** 取消按钮 */
     cancel() {
-	  this.close();
-	  this.reset();
+      this.close();
+      this.reset();
     },
     // 关闭弹窗
     close() {
-	  this.$emit('update:open', false);
+	    this.$emit('update:open', false);
     },
     // 表单重置
     reset() {
-	  this.form = {
-	    id: null,
-	    code: null,
-	    licenseNumber: null,
-	    vehicleOwnerCode: null,
-	    vehicleAscriptionType: null,
-	    classificationCode: null,
-	    vehicleLicenseColorCode: null,
-	    vehicleColorCode: null,
-	    vehicleTypeCode: null,
-	    vehicleEnergyType: null,
-	    vehicleLength: null,
-	    vehicleWidth: null,
-	    vehicleHeight: null,
-	    vehicleTotalWeight: null,
-	    vehicleLoadWeight: null,
-	    vehicleLoadVolume: null,
-	    vehicleRemainingLoadVolume: null,
-	    selfRespect: null,
-	    chassisNumber: null,
-	    engineNumber: null,
-	    vehicleChassisNumber: null,
-	    vehiclePower: null,
-	    axesNumber: null,
-	    annualVerificationDate: null,
-	    transportMeson: null,
-	    authStatus: 0,
-	    isFreeze: null,
-	    createCode: null,
-	    createTime: null,
-	    updateCode: null,
-	    updateTime: null,
-	    delFlag: null
-	  };
-	  this.resetForm('form');
+      this.form = {
+        id: null,
+        code: null,
+        licenseNumber: null,
+        vehicleOwnerCode: null,
+        vehicleAscriptionType: null,
+        classificationCode: null,
+        vehicleLicenseColorCode: null,
+        vehicleColorCode: null,
+        vehicleTypeCode: null,
+        vehicleEnergyType: null,
+        vehicleLength: null,
+        vehicleWidth: null,
+        vehicleHeight: null,
+        vehicleTotalWeight: null,
+        vehicleLoadWeight: null,
+        vehicleLoadVolume: null,
+        vehicleRemainingLoadVolume: null,
+        selfRespect: null,
+        chassisNumber: null,
+        engineNumber: null,
+        vehicleChassisNumber: null,
+        vehiclePower: null,
+        axesNumber: null,
+        annualVerificationDate: null,
+        transportMeson: null,
+        authStatus: 0,
+        isFreeze: null,
+        createCode: null,
+        createTime: null,
+        updateCode: null,
+        updateTime: null,
+        delFlag: null
+      };
+      this.resetForm('form');
     },
     // 表单赋值
     setForm(data) {
-	  this.form = data;
+	    this.form = data;
+    },
+    // 已读
+    authRead(data) {
+      // authRead(data).then(response => {
+      //   this.$emit('refresh');
+      // });
+    },
+    /** 审核通过/未通过按钮 */
+    reviewForm(key) {
+      // this.form.authStatus = key;
+      // examine(this.form).then(response => {
+      //   this.msgSuccess('操作成功');
+      //   this.close();
+      //   this.$emit('refresh');
+      // });
     }
   }
 };

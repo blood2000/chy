@@ -358,6 +358,7 @@ export default {
       'loading': false,
       // 选中数组
       'ids': [],
+      wayBillCodeList: [],
       // 显示搜索条件
       'showSearch': true,
       // 总条数
@@ -474,6 +475,9 @@ export default {
     },
     // 批量核算
     handleAdjust() {
+      this.adjustdialog = true;
+      this.title = '结算审核';
+      this.$refs.AdjustDialog.setForm(this.ids);
     },
     // 批量申请
     handleApply() {
@@ -503,9 +507,9 @@ export default {
         case 3:
           this.adjustdialog = true;
           this.title = '结算审核';
-          this.ids = [];
-          this.ids.push(row.wayBillCode);
-          this.$refs.AdjustDialog.setForm(this.ids);
+          this.wayBillCodeList = [];
+          this.wayBillCodeList.push(row.wayBillCode);
+          this.$refs.AdjustDialog.setForm(this.wayBillCodeList);
           break;
         case 4:
           this.dialoga = true;

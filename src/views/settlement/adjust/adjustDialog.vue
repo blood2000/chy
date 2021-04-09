@@ -4,8 +4,8 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="10">
         <span class="mr3">司机实收金额</span>
+        <!-- v-model="adjustlist.deliveryCashFee" -->
         <el-input
-          v-model="adjustlist.deliveryCashFee"
           placeholder="请输入司机实收金额"
           clearable
           size="small"

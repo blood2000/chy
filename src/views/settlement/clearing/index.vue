@@ -183,7 +183,7 @@
         <el-button
           v-hasPermi="['assets:vehicle:edit']"
           type="success"
-          icon="el-icon-edit"
+          icon="el-icon-refresh-right"
           size="mini"
           @click="handleUpdate"
         >更新清分状态</el-button>
@@ -210,29 +210,22 @@
 
       <template #edit="{row}">
         <el-button
-          v-hasPermi="['system:menu:edit']"
           size="mini"
           type="text"
           icon="el-icon-document-remove"
           @click="handleTableBtn(row, 1)"
-        >驳回</el-button>
+        >运单清分</el-button>
         <el-button
           size="mini"
           type="text"
-          icon="el-icon-wallet"
+          icon="el-icon-refresh-right"
           @click="handleTableBtn(row, 2)"
-        >网商打款</el-button>
-        <el-button
-          size="mini"
-          type="text"
-          icon="el-icon-document-copy"
-          @click="handleTableBtn(row, 3)"
-        >分单列表</el-button>
+        >更新清分状态</el-button>
         <el-button
           size="mini"
           type="text"
           icon="el-icon-document"
-          @click="handleTableBtn(row, 4)"
+          @click="handleTableBtn(row, 3)"
         >详情</el-button>
       </template>
     </RefactorTable>
@@ -245,10 +238,6 @@
       @pagination="getList"
     />
 
-    <!-- 驳回弹窗 -->
-    <reject-dialog ref="RejectDialog" :open.sync="rejectdialog" :title="title" :disable="formDisable" @refresh="getList" />
-    <!-- 子单弹窗 -->
-    <child-dialog ref="ChildDialog" :open.sync="childdialog" :title="title" @refresh="getList" />
     <!-- 运单详情 对话框 -->
     <detail-dialog ref="DetailDialog" :current-id="currentId" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
 
@@ -257,17 +246,13 @@
 
 <script>
 import { adjustList, adjustListApi } from '@/api/settlement/adjust';
-// 驳回弹窗
-import RejectDialog from '../components/rejectDialog';
-// 子单弹窗
-import ChildDialog from '../components/childDialog';
 // 运单详情弹窗
 import DetailDialog from '@/views/waybill/components/detailDialog';
 
 
 export default {
   'name': 'AdjustList',
-  components: { RejectDialog, DetailDialog, ChildDialog },
+  components: { DetailDialog },
   data() {
     return {
       tableColumnsConfig: [],
@@ -389,21 +374,12 @@ export default {
       this.visible = true;
       switch (index) {
         case 1:
-          this.$refs.RejectDialog.reset();
-          this.rejectdialog = true;
-          this.title = '驳回运输核算单';
-          this.$refs.RejectDialog.setForm(row);
-          console.log(row);
+          this.title = '运单清分';
           break;
         case 2:
-          this.title = '网商打款';
+          this.title = '更新清分状态';
           break;
         case 3:
-          this.title = '子单列表';
-          this.childdialog = true;
-          this.$refs.ChildDialog.setForm(row);
-          break;
-        case 4:
           this.$refs.DetailDialog.reset();
           this.currentId = row.wayBillCode;
           this.open = true;

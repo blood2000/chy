@@ -11,20 +11,20 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="用户名称" prop="name">
+      <el-form-item label="司机姓名" prop="name">
         <el-input
           v-model="queryParams.name"
-          placeholder="请输入用户名称"
+          placeholder="请输入司机姓名"
           clearable
           size="small"
           class="input-width"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="手机号" prop="telphone">
+      <el-form-item label="手机号/账号" prop="telphone">
         <el-input
           v-model="queryParams.telphone"
-          placeholder="请输入手机号"
+          placeholder="请输入手机号/账号"
           clearable
           size="small"
           class="input-width"
@@ -93,7 +93,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="处理状态" prop="applyStatus">
-        <el-select v-model="queryParams.applyStatus" placeholder="请选择状态" filterable clearable size="small">
+        <el-select v-model="queryParams.applyStatus" placeholder="请选择状态" filterable clearable size="small" class="input-width">
           <el-option
             v-for="dict in applyStatusOptions"
             :key="dict.dictValue"
@@ -111,7 +111,7 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
-          v-hasPermi="['system:driver:add']"
+          v-hasPermi="['assets:driver:add']"
           type="primary"
           icon="el-icon-plus"
           size="mini"
@@ -120,6 +120,7 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
+          v-hasPermi="['assets:driver:remove']"
           type="danger"
           icon="el-icon-delete"
           size="mini"
@@ -129,6 +130,7 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
+          v-hasPermi="['assets:driver:export']"
           type="warning"
           icon="el-icon-download"
           size="mini"
@@ -137,6 +139,7 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
+          v-hasPermi="['assets:driver:import']"
           type="info"
           icon="el-icon-upload2"
           size="mini"
@@ -145,6 +148,7 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
+          v-hasPermi="['assets:driver:report']"
           type="warning"
           icon="el-icon-upload2"
           size="mini"
@@ -152,6 +156,7 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
+          v-hasPermi="['assets:driver:down']"
           type="success"
           icon="el-icon-download"
           size="mini"
@@ -209,25 +214,28 @@
       </template>
       <template #edit="{row}">
         <el-button
+          v-hasPermi="['assets:driver:manage']"
           size="mini"
           type="text"
           icon="el-icon-setting"
           @click="handleManage(row)"
         >管理</el-button>
         <el-button
+          v-hasPermi="['assets:driver:get']"
           size="mini"
           type="text"
           icon="el-icon-document"
           @click="handleDetail(row, 'detail')"
         >详情</el-button>
         <el-button
-          v-hasPermi="['system:config:edit']"
+          v-hasPermi="['assets:config:edit']"
           size="mini"
           type="text"
           icon="el-icon-edit"
           @click="handleDetail(row, 'edit')"
         >修改</el-button>
         <el-button
+          v-hasPermi="['assets:driver:examine']"
           v-show="row.authStatus === 0 || row.authStatus === 1"
           size="mini"
           type="text"
@@ -235,6 +243,7 @@
           @click="handleDetail(row, 'review')"
         >审核</el-button>
         <el-button
+          v-hasPermi="['assets:driver:join']"
           size="mini"
           type="text"
           icon="el-icon-document-add"
@@ -248,7 +257,7 @@
           @click="handleDeal(row)"
         >处理邀请</el-button>
         <el-button
-          v-hasPermi="['system:config:remove']"
+          v-hasPermi="['assets:driver:remove']"
           size="mini"
           type="text"
           icon="el-icon-delete"
