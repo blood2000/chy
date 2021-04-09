@@ -7,7 +7,11 @@ import '@/assets/styles/ddc.scss'; // ddc css
 import App from './App';
 import store from './store';
 import router from './router';
+
+// 自定义指令
 import permission from './directive/permission';
+import elementDirective from './directive/element';
+
 import { download } from '@/utils/request';
 import './assets/icons'; // icon
 import './permission'; // permission control
@@ -83,6 +87,7 @@ Vue.component('RightToolbar', RightToolbar);
 Vue.component('RefactorTable', RefactorTable);
 Vue.component('TablecCascader', TablecCascader);
 Vue.use(permission);
+Vue.use(elementDirective);
 Vue.use(hljs.vuePlugin);
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium' // set element-ui default size

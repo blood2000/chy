@@ -249,9 +249,9 @@
       <template #isReturn="{row}">
         <span>{{ selectDictLabel(isReturnOptions, row.isReturn) }}</span>
       </template>
-      <template #isChild="{row}">
+      <!-- <template #isChild="{row}">
         <span>{{ selectDictLabel(isChildOptions, row.isChild) }}</span>
-      </template>
+      </template> -->
 
       <template #edit="{row}">
         <el-button
@@ -413,9 +413,9 @@ export default {
       ],
       // 是否子单字典
       isChildOptions: [
-        { 'dictLabel': '正常单', 'dictValue': '0' },
-        { 'dictLabel': '子单', 'dictValue': '1' },
-        { 'dictLabel': '超载的主单', 'dictValue': '2' }
+        { 'dictLabel': '否', 'dictValue': '0' },
+        // { 'dictLabel': '子单', 'dictValue': '1' },
+        { 'dictLabel': '是', 'dictValue': '2' }
       ]
     };
   },

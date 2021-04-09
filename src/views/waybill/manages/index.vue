@@ -122,10 +122,10 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="是否子单" prop="isChildList">
+      <el-form-item label="分单" prop="isChildList">
         <el-select
           v-model="queryParams.isChildList"
-          placeholder="请选择是否子单"
+          placeholder="请选择是否分单"
           clearable
           filterable
           size="small"
@@ -166,9 +166,9 @@
       <template #status="{row}">
         <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
       </template>
-      <template #isChild="{row}">
+      <!-- <template #isChild="{row}">
         <span>{{ selectDictLabel(isChildOptions, row.isChild) }}</span>
-      </template>
+      </template> -->
       <template #isWarning="{row}">
         <span>{{ selectDictLabel(isWarningOptions, row.isWarning) }}</span>
       </template>
@@ -325,9 +325,9 @@ export default {
       ],
       // 是否子单字典
       'isChildOptions': [
-        { 'dictLabel': '正常单', 'dictValue': 0 },
+        { 'dictLabel': '否', 'dictValue': 0 },
         // { 'dictLabel': '子单', 'dictValue': 1 },
-        { 'dictLabel': '超载的主单', 'dictValue': 2 }
+        { 'dictLabel': '是', 'dictValue': 2 }
       ],
       // 给超载的子单排序用字典
       'childSortOptions': [
