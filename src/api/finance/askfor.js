@@ -1,10 +1,19 @@
 import request from '@/utils/request';
 
-// 查询运单清分列表
-export const adjustListApi = '/transportation/waybill/trackingList';
-export function adjustList(query) {
+// 查询发票索取列表
+export const askforListApi = '/transportation/invoice/listWayBill';
+export function askforList(data) {
   return request({
-    url: '/transportation/waybill/trackingList',
+    url: '/transportation/invoice/listWayBill',
+    method: 'post',
+    data: data
+  });
+}
+
+// 查询货主信息列表
+export function shipmentList(query) {
+  return request({
+    url: '/assets/shipment/list',
     method: 'get',
     params: query
   });
