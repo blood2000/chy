@@ -2,7 +2,7 @@ export default [
 
   {
     prop: 'code',
-    isShow: true,
+    isShow: false,
     tooltip: true,
     width: 120,
     label: '编号'
@@ -77,11 +77,4 @@ export default [
     tooltip: true,
     label: '承运单价'
   }
-  // {
-  //   prop: 'edit',
-  //   isShow: true,
-  //   label: '操作',
-  //   width: 240,
-  //   fixed: 'right'
-  // }
 ];

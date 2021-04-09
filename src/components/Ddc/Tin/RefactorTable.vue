@@ -2,7 +2,7 @@
   <el-table :ref="refName" v-loading="loading" border stripe :data="data" v-bind="$attrs" @selection-change="handleSelectionChange">
 
     <el-table-column v-if="!!_events['selection-change']" type="selection" width="55" align="center" />
-    <el-table-column label="序号" align="center" type="index" min-width="5%" />
+    <el-table-column v-if="!isShowIndex" label="序号" align="center" type="index" min-width="5%" />
     <template v-for="(th, key) in tableColumnsConfig">
       <el-table-column
         v-if="th.isShow"
@@ -41,6 +41,10 @@
 export default {
   name: 'RefactorTable',
   props: {
+    isShowIndex: {
+      type: Boolean,
+      default: false
+    },
     /**
              * list  渲染所需数据
              * 如：[{infoId:1,ipaddr:'abc'},{infoId:2,ipaddr:'def'}]
