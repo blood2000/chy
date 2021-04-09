@@ -387,8 +387,11 @@ export default {
       width: 280,
       fixed: 'right'
     });
-    this.getList();
     this.getDictsList();
+    if (!this.teamCode && !this.driverCode) {
+      // 如果这个页面是以组件形式展示在调度者管理弹窗或司机管理弹窗里面，则这里不加载列表
+      this.getList();
+    }
   },
   methods: {
     /** 查询字典 */
