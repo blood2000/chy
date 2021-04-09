@@ -21,6 +21,7 @@
       >
         <el-select
           v-model="form.teamCode"
+          v-el-select-loadmore="loadmore"
           filterable
           remote
           reserve-keyword
@@ -549,6 +550,14 @@ export default {
         chassisNumber: [
           { required: true, message: '车架号不能为空', trigger: 'blur' }
         ]
+      },
+      // 远程搜索调度者分页
+      queryParams: {
+        pageNum: 1,
+        pageSize: 10,
+        isAsc: 'asc',
+        orderByColumn: 'id',
+        name: null
       }
     };
   },
@@ -789,17 +798,29 @@ export default {
         }];
       }
     },
-    // 查询车队列表
+    // 远程搜索
     teamRemoteMethod(query) {
       if (query !== '') {
         this.loading = true;
-        listInfo({ name: query }).then(response => {
-          this.loading = false;
-          this.teamOptions = response.rows;
-        });
+        this.queryParams.name = query;
+        this.queryParams.pageNum = 1;
+        this.teamOptions = [];
+        this.getTeamList();
       } else {
         this.teamOptions = [];
       }
+    },
+    // 查询调度者列表
+    getTeamList() {
+      listInfo(this.queryParams).then(response => {
+        this.loading = false;
+        this.teamOptions = [...this.teamOptions, ...response.rows];
+      });
+    },
+    // 远程搜索列表触底事件
+    loadmore() {
+      this.queryParams.pageNum++;
+      this.getTeamList();
     }
   }
 };
