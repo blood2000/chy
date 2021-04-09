@@ -19,7 +19,7 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
-          v-hasPermi="['enterprise:rules:add']"
+          v-hasPermi="['transport:ruleInfoShipment:add']"
           type="primary"
           icon="el-icon-plus"
           size="mini"
@@ -43,14 +43,14 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
           <el-button
-            v-hasPermi="['enterprise:rules:edit']"
+            v-hasPermi="['transport:ruleInfoShipment:edit']"
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
           >修改</el-button>
           <el-button
-            v-hasPermi="['enterprise:rules:remove']"
+            v-hasPermi="['transport:ruleInfoShipment:remove']"
             size="mini"
             type="text"
             icon="el-icon-delete"

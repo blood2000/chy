@@ -19,6 +19,7 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
+          v-hasPermi="['assets:shipment:cargocode:add']"
           type="primary"
           icon="el-icon-plus"
           size="mini"
@@ -27,7 +28,7 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
-          v-hasPermi="['enterprise:stockcode:edit']"
+          v-hasPermi="['assets:shipment:cargocode:edit']"
           type="success"
           icon="el-icon-edit"
           size="mini"
@@ -37,7 +38,7 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
-          v-hasPermi="['enterprise:stockcode:remove']"
+          v-hasPermi="['assets:shipment:cargocode:remove']"
           type="danger"
           icon="el-icon-delete"
           size="mini"
@@ -63,6 +64,7 @@
       <el-table-column label="关联的货源数" align="center" prop="relationOrderNum">
         <template slot-scope="scope">
           <el-button
+            v-hasPermi="['assets:shipment:cargocode:orders']"
             size="mini"
             type="text"
             @click="handleOrderList(scope.row)"
@@ -74,12 +76,14 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
           <el-button
+            v-hasPermi="['assets:shipment:cargocode:edit']"
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
           >修改</el-button>
           <el-button
+            v-hasPermi="['assets:shipment:cargocode:remove']"
             size="mini"
             type="text"
             icon="el-icon-delete"
