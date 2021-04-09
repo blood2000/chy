@@ -60,6 +60,7 @@ export default {
     open(val) {
       if (val) {
         this.$nextTick(() => {
+          this.activeName = 'vehicle';
           this.$refs.VehiclePage.handleQuery();
           this.$refs.TeamListPage.getList();
         });

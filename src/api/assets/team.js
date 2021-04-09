@@ -2,11 +2,11 @@ import request from '@/utils/request';
 import { praseStrEmpty } from '@/utils/ddc';
 // 查询调度者列表
 export const listTeamApi = '/assets/team/list';
-export function listInfo(query) {
+export function listInfo(data) {
   return request({
     url: listTeamApi,
     method: 'post',
-    data: query
+    data: Object.assign({}, data, { isAsc: 'asc', orderByColumn: 'id' })
   });
 }
 
@@ -70,3 +70,20 @@ export function dealApply(data) {
   });
 }
 
+// 已读
+export function authRead(data) {
+  return request({
+    url: '/assets/team/authRead',
+    method: 'post',
+    data: data
+  });
+}
+
+// 审核
+export function examine(data) {
+  return request({
+    url: '/assets/team/examine',
+    method: 'post',
+    data: data
+  });
+}
