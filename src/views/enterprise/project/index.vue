@@ -35,6 +35,7 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
+          v-hasPermi="['assets:shipment:project:add']"
           type="primary"
           icon="el-icon-plus"
           size="mini"
@@ -43,6 +44,7 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
+          v-hasPermi="['assets:shipment:project:edit']"
           type="success"
           icon="el-icon-edit"
           size="mini"
@@ -52,6 +54,7 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
+          v-hasPermi="['assets:shipment:project:remove']"
           type="danger"
           icon="el-icon-delete"
           size="mini"
@@ -59,7 +62,7 @@
           @click="handleDelete"
         >删除</el-button>
       </el-col>
-      <el-col :span="1.5">
+     <!-- <el-col :span="1.5">
         <el-button
           v-hasPermi="['enterprise:project:export']"
           type="warning"
@@ -67,7 +70,7 @@
           size="mini"
           @click="handleExport"
         >导出</el-button>
-      </el-col>
+      </el-col>-->
       <el-col :span="1.5" style="float: right;">
         <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
       </el-col>
@@ -81,14 +84,14 @@
 
       <template #edit="{row}">
         <el-button
-          v-hasPermi="['enterprise:project:edit']"
+          v-hasPermi="['assets:shipment:project:edit']"
           size="mini"
           type="text"
           icon="el-icon-edit"
           @click="handleUpdate(row)"
         >修改</el-button>
         <el-button
-          v-hasPermi="['enterprise:project:remove']"
+          v-hasPermi="['assets:shipment:project:remove']"
           size="mini"
           type="text"
           icon="el-icon-delete"
