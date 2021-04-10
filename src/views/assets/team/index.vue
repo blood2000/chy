@@ -253,11 +253,12 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        name: null,
-        teamLeader: null,
-        status: null,
-        driverName: null,
-        licenseNumber: null
+        name: undefined,
+        teamLeader: undefined,
+        status: undefined,
+        driverName: undefined,
+        licenseNumber: undefined,
+        applyStatus: undefined
       },
       // 表单参数
       form: {},
