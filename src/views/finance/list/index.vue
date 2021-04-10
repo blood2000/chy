@@ -9,10 +9,10 @@
     >
       <el-form-item
         label="发票抬头"
-        prop="loadInfo"
+        prop="invoiceTitle"
       >
         <el-input
-          v-model="queryParams.loadInfo"
+          v-model="queryParams.invoiceTitle"
           placeholder="请输入发票抬头"
           clearable
           size="small"
@@ -20,7 +20,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="发票类型" prop="goodsBigType">
+      <!-- <el-form-item label="发票类型" prop="goodsBigType">
         <el-select
           v-model="queryParams.goodsBigType"
           placeholder="请选择发票类型"
@@ -36,13 +36,13 @@
             :value="dict.dictValue"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item
         label="发票编号"
-        prop="receivedInfo"
+        prop="askForNo"
       >
         <el-input
-          v-model="queryParams.receivedInfo"
+          v-model="queryParams.askForNo"
           placeholder="请输入发票编号"
           clearable
           size="small"
@@ -52,10 +52,10 @@
       </el-form-item>
       <el-form-item
         label="申请日期"
-        prop="createTime"
+        prop="invoiceApplyTime"
       >
         <el-date-picker
-          v-model="createTime"
+          v-model="invoiceApplyTime"
           type="daterange"
           range-separator="-"
           start-placeholder="开始日期"
@@ -125,13 +125,19 @@
 
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="已申请" name="1" />
-      <el-tab-pane label="已审核" name="2" />
-      <el-tab-pane label="已开票" name="3" />
+      <el-tab-pane label="已审核" name="2,3,4" />
+      <el-tab-pane label="已开票" name="5" />
     </el-tabs>
 
     <RefactorTable :loading="loading" :data="billlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
-      <template #goodsBigType="{row}">
-        <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
+      <template #invoiceStatus="{row}">
+        <span>{{ selectDictLabel(invoiceStatusOptions, row.invoiceStatus) }}</span>
+      </template>
+      <template #invoiceFrom="{row}">
+        <span>{{ selectDictLabel(invoiceFromOptions, row.invoiceFrom) }}</span>
+      </template>
+      <template #invoiceApplyTime="{row}">
+        <span>{{ parseTime(row.invoiceApplyTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
       </template>
 
       <template #edit="{row}">
@@ -144,7 +150,7 @@
           @click="handleTableBtn(row, 1)"
         >审核</el-button>
         <el-button
-          v-if="activeName == '2'"
+          v-if="row.invoiceStatus == '4'"
           v-hasPermi="['system:menu:edit']"
           size="mini"
           type="text"
@@ -170,10 +176,10 @@
 
     <!-- 审核弹窗 -->
     <verify-dialog ref="VerifyDialog" :open.sync="verifydialog" :title="title" :disable="formDisable" @refresh="getList" />
-    <!-- 子单弹窗 -->
-    <billing-dialog ref="BillingDialog" :open.sync="billingdialog" title="title" :disable="formDisable" @refresh="getList" />
-    <!-- 运单详情 对话框 -->
-    <!-- <detail-dialog ref="DetailDialog" :current-id="currentId" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" /> -->
+    <!-- 开票弹窗 -->
+    <billing-dialog ref="BillingDialog" :open.sync="billingdialog" :title="title" :disable="formDisable" @refresh="getList" />
+    <!-- 详情弹窗 -->
+    <!-- <detail-dialog ref="DetailDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" /> -->
 
   </div>
 </template>
@@ -182,10 +188,10 @@
 import { billList, billListApi } from '@/api/finance/list';
 // 审核弹窗
 import VerifyDialog from './verifyDialog';
-// 子单弹窗
+// 开票弹窗
 import BillingDialog from './billingDialog';
-// 运单详情弹窗
-// import DetailDialog from '@/views/waybill/components/detailDialog';
+// 详情弹窗
+// import DetailDialog from './detail';
 
 
 export default {
@@ -200,7 +206,7 @@ export default {
       // 遮罩层
       'loading': false,
       // 选中数组
-      'ids': [],
+      'ids': null,
       // 选中数量
       'selectlenght': '',
       // 显示搜索条件
@@ -214,13 +220,13 @@ export default {
       'queryParams': {
         'pageNum': 1,
         'pageSize': 10,
-        'receivedInfo': undefined,
-        'goodsBigType': undefined,
-        'mainOrderNumber': undefined,
-        'orderEndTime': undefined,
-        'orderStartTime': undefined
+        'askForNo': undefined,
+        'invoiceTitle': undefined,
+        'invoiceApplyTimeBegin': undefined,
+        'invoiceApplyTimeEnd': undefined,
+        'invoiceStatus': '1'
       },
-      receiveTime: [],
+      invoiceApplyTime: [],
       // 弹框 内容
       visible: false,
       open: false,
@@ -232,17 +238,19 @@ export default {
       currentId: null,
       // 表单是否禁用
       formDisable: false,
-      // 商品类别编码字典
-      commodityCategoryCodeOptions: [],
-      // 大类字典类型
-      commodityCategory: {
-        'dictPid': '0',
-        'dictType': 'goodsType'
-      },
-      // 发票类型字典
-      billTypeOptions: [
-        { 'dictLabel': '运费发票', 'dictValue': '0' },
-        { 'dictLabel': '服务费发票', 'dictValue': '1' }
+      // 发票状态字典
+      invoiceStatusOptions: [
+        { 'dictLabel': '未开票', 'dictValue': '0' },
+        { 'dictLabel': '已申请', 'dictValue': '1' },
+        { 'dictLabel': '已取消', 'dictValue': '2' },
+        { 'dictLabel': '已拒绝', 'dictValue': '3' },
+        { 'dictLabel': '已通过', 'dictValue': '4' },
+        { 'dictLabel': '已开票', 'dictValue': '5' }
+      ],
+      // 发票来源字典
+      invoiceFromOptions: [
+        { 'dictLabel': '货主向平台索取', 'dictValue': '0' },
+        { 'dictLabel': '货主向承运商索取', 'dictValue': '1' }
       ]
     };
   },
@@ -256,22 +264,19 @@ export default {
       prop: 'edit',
       isShow: true,
       label: '操作',
-      width: 240,
+      width: 180,
       fixed: 'right'
     });
     this.getList();
-    this.listByDict(this.commodityCategory).then(response => {
-      this.commodityCategoryCodeOptions = response.data;
-    });
   },
   'methods': {
     datechoose(date) {
-      this.queryParams.orderEndTime = this.parseTime(date[0], '{y}-{m}-{d}');
-      this.queryParams.orderStartTime = this.parseTime(date[1], '{y}-{m}-{d}');
+      this.queryParams.invoiceApplyTimeBegin = this.parseTime(date[0], '{y}-{m}-{d}');
+      this.queryParams.invoiceApplyTimeEnd = this.parseTime(date[1], '{y}-{m}-{d}');
     },
     /** handleClick */
     handleClick(tab) {
-      this.queryParams.statusList[0] = tab.name;
+      this.queryParams.invoiceStatus = tab.name;
       this.queryParams.pageNum = 1;
       this.getList();
     },
@@ -279,14 +284,14 @@ export default {
     handleSelectionChange(selection) {
       console.log(selection);
       this.selectlenght = selection.length;
-      this.ids = selection.map((item) => item.id);
+      this.ids = selection.map((item) => item.code).join(',');
     },
     /** 查询【请填写功能名称】列表 */
     getList() {
       this.loading = true;
       billList(this.queryParams).then(response => {
-        this.billlist = response.rows;
-        this.total = response.total;
+        this.billlist = response.data.rows;
+        this.total = response.data.total;
         this.loading = false;
       });
     },
@@ -298,17 +303,20 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.resetForm('queryForm');
+      this.invoiceApplyTime = [];
+      this.queryParams.invoiceApplyTimeBegin = null;
+      this.queryParams.invoiceApplyTimeEnd = null;
       this.handleQuery();
     },
     // 批量审核
     handleVerify() {
       if (this.ids) {
-        const id = this.ids;
         this.formDisable = true;
         this.$refs.VerifyDialog.reset();
         this.verifydialog = true;
         this.title = '批量审核';
-        this.$refs.VerifyDialog.setForm(id);
+        this.$refs.VerifyDialog.setForm(this.ids);
+        this.$refs.VerifyDialog.setNum(this.selectlenght);
       } else {
         this.msgError('请先选择数据!');
       }
@@ -327,6 +335,7 @@ export default {
           this.$refs.VerifyDialog.reset();
           this.verifydialog = true;
           this.title = '审核';
+          this.$refs.VerifyDialog.setForm(row.code);
           break;
         case 2:
           this.$refs.BillingDialog.reset();
@@ -336,11 +345,12 @@ export default {
           this.$refs.BillingDialog.setForm(row);
           break;
         case 3:
-          this.$refs.BillingDialog.reset();
-          this.billingdialog = true;
-          this.formDisable = true;
-          this.title = '开票详情';
-          this.$refs.BillingDialog.setForm(row);
+          this.$router.push({ name: 'Statement', query: { id: row.code }});
+          // this.$refs.DetailDialog.reset();
+          // this.open = true;
+          // this.formDisable = true;
+          // this.title = '发票结算单';
+          // this.$refs.DetailDialog.setForm(row);
           break;
         default:
           break;
