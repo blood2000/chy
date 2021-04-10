@@ -143,7 +143,13 @@ export default {
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 10
+        pageSize: 10,
+        roleName: undefined,
+        orgName: undefined,
+        nickName: undefined,
+        phonenumber: undefined,
+        minAmount: undefined,
+        maxAmount: undefined
       }
     };
   },

@@ -188,7 +188,14 @@ export default {
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 10
+        pageSize: 10,
+        name: undefined,
+        mobile: undefined,
+        licenseNumber: undefined,
+        bankName: undefined,
+        account: undefined,
+        userName: undefined,
+        userPhone: undefined
       }
     };
   },
