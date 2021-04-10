@@ -73,7 +73,7 @@
 
     <RefactorTable :loading="loading" :data="dataList" :table-columns-config="tableColumnsConfig">
       <template #updateTime="{row}">
-        <span>{{ parseTime(row.updateTime, '{y}-{m}-{d}') }}</span>
+        <span>{{ parseTime(row.updateTime) }}</span>
       </template>
       <template #edit="{row}">
         <el-button
