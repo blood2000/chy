@@ -2,91 +2,109 @@
   <!-- 司机打款记录 -->
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
-      <el-form-item label="支付批次号" prop="name">
+      <el-form-item label="支付批次号" prop="bizNo">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.bizNo"
           placeholder="请输入支付批次号"
           clearable
           size="small"
+          class="input-width"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="支付订单号" prop="name">
+      <el-form-item label="支付订单号" prop="orderId">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.orderId"
           placeholder="请输入支付订单号"
           clearable
           size="small"
+          class="input-width"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="货源单号" prop="name">
+      <el-form-item label="货源单号" prop="goodId">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.goodId"
           placeholder="请输入货源单号"
           clearable
           size="small"
+          class="input-width"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="运输单号" prop="name">
+      <el-form-item label="运输单号" prop="tranId">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.tranId"
           placeholder="请输入运输单号"
           clearable
           size="small"
+          class="input-width"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="接单时间" prop="name">
+      <el-form-item label="接单时间">
         <el-date-picker
-          v-model="queryParams.name"
+          v-model="queryParams.tranBeginTime"
           clearable
           type="date"
           size="small"
-          style="width: 215px"
+          style="width: 130px"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择"
+        />
+        至
+        <el-date-picker
+          v-model="queryParams.tranEndTime"
+          clearable
+          type="date"
+          size="small"
+          style="width: 130px"
           value-format="yyyy-MM-dd"
           placeholder="请选择"
         />
       </el-form-item>
-      <el-form-item label="车牌号" prop="name">
+      <el-form-item label="车牌号" prop="licenseNumber">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.licenseNumber"
           placeholder="请输入车牌号"
           clearable
           size="small"
+          class="input-width"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="收款方姓名" prop="name">
+      <el-form-item label="收款方姓名" prop="payeeName">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.payeeName"
           placeholder="请输入收款方姓名"
           clearable
           size="small"
+          class="input-width"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="运单关联企业" prop="name">
+      <el-form-item label="运单关联企业" prop="campanyName">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.campanyName"
           placeholder="请输入运单关联企业"
           clearable
           size="small"
+          class="input-width"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="收款人电话" prop="name">
+      <el-form-item label="收款人电话" prop="payeeMobile">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.payeeMobile"
           placeholder="请输入收款人电话"
           clearable
           size="small"
+          class="input-width"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="转账结果" prop="name">
-        <el-select v-model="queryParams.name" placeholder="请选择" clearable filterable size="small">
+      <el-form-item label="转账结果" prop="responseStatus">
+        <el-select v-model="queryParams.responseStatus" placeholder="请选择" clearable filterable size="small" class="input-width">
           <el-option
             v-for="dict in resultOptions"
             :key="dict.dictValue"
@@ -95,8 +113,8 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="流水上报" prop="name">
-        <el-select v-model="queryParams.name" placeholder="请选择" clearable filterable size="small">
+      <el-form-item label="流水上报" prop="upRecordStatus">
+        <el-select v-model="queryParams.upRecordStatus" placeholder="请选择" clearable filterable size="small" class="input-width">
           <el-option
             v-for="dict in reportOptions"
             :key="dict.dictValue"
@@ -105,8 +123,8 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="打款方式" prop="name">
-        <el-select v-model="queryParams.name" placeholder="请选择" clearable filterable size="small">
+      <el-form-item label="打款方式" prop="payByType">
+        <el-select v-model="queryParams.payByType" placeholder="请选择" clearable filterable size="small" class="input-width">
           <el-option
             v-for="dict in payTypeOptions"
             :key="dict.dictValue"
@@ -115,18 +133,18 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="电子路单上报" prop="name">
-        <el-select v-model="queryParams.name" placeholder="请选择" clearable filterable size="small">
+      <el-form-item label="电子路单上报" prop="upWaybillStatus">
+        <el-select v-model="queryParams.upWaybillStatus" placeholder="请选择" clearable filterable size="small" class="input-width">
           <el-option
-            v-for="dict in orderReportStatusOptions"
+            v-for="dict in reportOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="是否分单" prop="name">
-        <el-select v-model="queryParams.name" placeholder="请选择" clearable filterable size="small">
+      <el-form-item label="是否分单" prop="isSplit">
+        <el-select v-model="queryParams.isSplit" placeholder="请选择" clearable filterable size="small" class="input-width">
           <el-option
             v-for="dict in isOptions"
             :key="dict.dictValue"
@@ -135,8 +153,8 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="是否异常" prop="name">
-        <el-select v-model="queryParams.name" placeholder="请选择" clearable filterable size="small">
+      <el-form-item label="是否异常" prop="abnormal">
+        <el-select v-model="queryParams.abnormal" placeholder="请选择" clearable filterable size="small" class="input-width">
           <el-option
             v-for="dict in isOptions"
             :key="dict.dictValue"
@@ -282,13 +300,23 @@ export default {
       // 是否显示弹出层
       modifyBatchOpen: false,
       // 转帐结果字典
-      resultOptions: [],
-      // 流水上报字典
-      reportOptions: [],
+      resultOptions: [
+        { dictLabel: '处理中', dictValue: 0 },
+        { dictLabel: '成功', dictValue: 1 },
+        { dictLabel: '失败', dictValue: 2 },
+        { dictLabel: '异常', dictValue: 3 }
+      ],
+      // 流水/电子路单上报字典
+      reportOptions: [
+        { dictLabel: '未上报', dictValue: 0 },
+        { dictLabel: '成功', dictValue: 1 },
+        { dictLabel: '失败', dictValue: 2 }
+      ],
       // 打款方式字典
-      payTypeOptions: [],
-      // 电子路单上报字典
-      orderReportStatusOptions: [],
+      payTypeOptions: [
+        { dictLabel: '现金支付', dictValue: 0 },
+        { dictLabel: '在线支付', dictValue: 1 }
+      ],
       // 是否字典
       isOptions: [
         { dictLabel: '否', dictValue: 0 },
@@ -297,7 +325,23 @@ export default {
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 10
+        pageSize: 10,
+        bizNo: undefined,
+        orderId: undefined,
+        goodId: undefined,
+        tranId: undefined,
+        tranBeginTime: undefined,
+        tranEndTime: undefined,
+        licenseNumber: undefined,
+        payeeName: undefined,
+        campanyName: undefined,
+        payeeMobile: undefined,
+        responseStatus: undefined,
+        upRecordStatus: undefined,
+        payByType: undefined,
+        upWaybillStatus: undefined,
+        isSplit: undefined,
+        abnormal: undefined
       }
     };
   },
@@ -332,6 +376,8 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.queryParams.tranBeginTime = undefined;
+      this.queryParams.tranEndTime = undefined;
       this.resetForm('queryForm');
       this.handleQuery();
     },
@@ -374,3 +420,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.input-width{
+  width: 282px;
+}
+</style>
