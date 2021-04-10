@@ -17,7 +17,7 @@
           <el-option
             v-for="item in personOptions"
             :key="item.userCode"
-            :label="`${item.userName}(${item.phonenumber})`"
+            :label="`${item.nickName}(${item.phonenumber})`"
             :value="item.userCode"
           />
         </el-select>
@@ -255,6 +255,13 @@ export default {
     setForm(data) {
       this.form = data;
       this.form.isDefault = praseNumToBoolean(this.form.isDefault);
+      if (this.form.userCode && this.form.name) {
+        this.personOptions = [{
+          userCode: this.form.userCode,
+          nickName: this.form.name,
+          phonenumber: this.form.mobile
+        }];
+      }
     },
     // 人员远程搜索
     userRemoteMethod(query) {
@@ -285,7 +292,7 @@ export default {
       console.log(code);
       this.personOptions.forEach(el => {
         if (el.userCode === code) {
-          this.form.name = el.userName;
+          this.form.name = el.nickName;
           this.form.mobile = el.phonenumber;
         }
       });
