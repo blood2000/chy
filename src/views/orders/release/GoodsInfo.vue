@@ -106,9 +106,11 @@ export default {
     },
     // 获取规格
     async getAccounTing() {
-      this.tabs = await this.getGoodsAccounting(); // 结构就是 this.tabs
+      const newArr = await this.getGoodsAccounting(); // 结构就是 this.tabs
       // 只能用 for of 遍历
-      for (const e of this.tabs) {
+      const arrarr = [];
+
+      for (const e of newArr) {
         const lists = e.redis.map(async(ee, i) => {
           // 只能调一次
           const accounTing = (await this.$refs['AccounTing' + e.activeName + i][0]._submitForm());
@@ -124,11 +126,16 @@ export default {
         });
 
         e.newRedis = await Promise.all(lists);
+
+        arrarr.push(e);
       }
+
+      this.tabs = arrarr;
     },
     // 返回数据
     async _submitForm() {
       await this.getAccounTing();
+
       return this.tabs;
     },
 
@@ -141,6 +148,7 @@ export default {
       // console.log(this.pubilshCode);
       // console.log(this.cbGoodsAccounting, '-----'); // 创建的时候 null
       // console.log(this.cbOrderFreight, '+++++++++++++'); // 创建的时候 null
+
       this.tabs = this.goods.map((e, index) => {
         // 回填有值的时候
         if (this.cbGoodsAccounting) {
@@ -153,7 +161,7 @@ export default {
         // 规则
         if (this.cbOrderFreight && this.cbOrderFreight.length) {
           this.cbOrderFreight.forEach(ee => {
-            if (ee.goodsCode === e.goodsAccounting.code) {
+            if (ee.goodsCode === (e.goodsAccounting && e.goodsAccounting.code)) {
               e.redis = this.handlerPrice(ee.redisOrderAddressInfoVoList);
             }
           });
@@ -162,13 +170,13 @@ export default {
         return {
         //   ...e, 先存这三个
           // code: e.goodsAccounting ? e.goodsAccounting.code : undefined,
-          goodsAccounting: e.goodsAccounting,
+          goodsAccounting: e.goodsAccounting || {},
           // price: this.handlerPrice(e.price),
           dictLabel: e.dictLabel,
           dictCode: e.dictCode,
           goodsType: e.dictValue,
           // redis: this.addressInit(), // 规则
-          redis: e.redis || this.addressInit(), // 规则
+          redis: e.redis || this.addressInit() || [], // 规则
           activeName: index + ''
         };
       });
