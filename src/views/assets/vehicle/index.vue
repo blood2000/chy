@@ -16,15 +16,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <!-- <el-form-item label="车主编码" prop="vehicleOwnerCode">
-        <el-input
-          v-model="queryParams.vehicleOwnerCode"
-          placeholder="请输入车主编码"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
       <el-form-item label="归属类型" prop="vehicleAscriptionType">
         <el-select
           v-model="queryParams.vehicleAscriptionType"
@@ -68,15 +59,6 @@
           placeholder="选择年审时间"
         />
       </el-form-item>
-      <!-- <el-form-item label="运输介子" prop="transportMeson">
-        <el-input
-          v-model="queryParams.transportMeson"
-          placeholder="请输入运输介子"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
       <el-form-item label="审核状态" prop="authStatus">
         <el-select
           v-model="queryParams.authStatus"
@@ -164,7 +146,7 @@
         >导出</el-button>
       </el-col>
       <el-col :span="1.5" class="fr">
-        <tablec-cascader v-model="tableColumnsConfig" />
+        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
       </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
@@ -306,6 +288,7 @@ export default {
   data() {
     return {
       tableColumnsConfig: [],
+      api: listVehicleApi,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -386,8 +369,11 @@ export default {
       width: 280,
       fixed: 'right'
     });
-    this.getList();
     this.getDictsList();
+    if (!this.teamCode && !this.driverCode) {
+      // 如果这个页面是以组件形式展示在调度者管理弹窗或司机管理弹窗里面，则这里不加载列表
+      this.getList();
+    }
   },
   methods: {
     /** 查询字典 */

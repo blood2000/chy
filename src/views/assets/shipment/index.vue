@@ -11,16 +11,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <!--<el-form-item label="电话号码" prop="telphone">
-        <el-input
-          v-model="queryParams.telphone"
-          placeholder="请输入电话号码"
-          clearable
-          size="small"
-          style="width: 272px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>-->
       <el-form-item label="是否核算" prop="isAccount">
         <el-select v-model="queryParams.isAccount" placeholder="请选择核算方式" filterable clearable size="small" style="width: 272px">
           <el-option
@@ -179,7 +169,7 @@
         >导出</el-button>
       </el-col>
       <el-col :span="1.5" class="fr">
-        <tablec-cascader v-model="tableColumnsConfig" />
+        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
       </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
@@ -241,8 +231,8 @@
           @click="handleDetail(row, 'edit')"
         >修改</el-button>
         <el-button
-          v-hasPermi="['assets:shipment:examine']"
           v-show="row.authStatus === 0 || row.authStatus === 1"
+          v-hasPermi="['assets:shipment:examine']"
           size="mini"
           type="text"
           icon="el-icon-document-checked"
@@ -288,6 +278,7 @@ export default {
   data() {
     return {
       tableColumnsConfig: [],
+      api: listShipmentApi,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -353,6 +344,7 @@ export default {
         isAccount: undefined,
         accountType: undefined,
         authStatus: undefined,
+        shipperType: undefined,
         companyName: undefined,
         telphone: undefined,
         authTimeBegin: undefined,
@@ -454,7 +446,6 @@ export default {
     handleQuery() {
       this.queryParams.pageNum = 1;
       this.getList();
-      console.log(this.tableColumnsConfig);
     },
     /** 重置按钮操作 */
     resetQuery() {

@@ -156,7 +156,7 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5" class="fr">
-        <tablec-cascader v-model="tableColumnsConfig" />
+        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
       </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
@@ -290,6 +290,7 @@ export default {
     return {
       receiveTime: [],
       tableColumnsConfig: [],
+      api: listManagesApi,
       // 遮罩层
       'loading': true,
       // 选中数组

@@ -178,7 +178,7 @@
       </el-col>
       <el-tag type="warning" class="mb10">提示: 已打款、打款成功的运输单才能上报流水</el-tag>
       <el-col :span="1.5" class="fr">
-        <tablec-cascader v-model="tableColumnsConfig" />
+        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
       </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
@@ -262,6 +262,7 @@ export default {
   data() {
     return {
       tableColumnsConfig: [],
+      api: payRecordlistApi,
       // 遮罩层
       loading: true,
       // 选中数组

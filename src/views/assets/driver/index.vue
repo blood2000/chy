@@ -165,7 +165,7 @@
         >下载模板</el-button>
       </el-col>
       <el-col :span="1.5" class="fr">
-        <tablec-cascader v-model="tableColumnsConfig" />
+        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
       </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
@@ -319,6 +319,7 @@ export default {
   data() {
     return {
       tableColumnsConfig: [],
+      api: listDriverApi,
       // 司机类别字典
       driverTypeOptions: [
         { dictLabel: '独立司机', dictValue: 1 },
@@ -385,7 +386,8 @@ export default {
         authStatus: undefined,
         licenseNumber: undefined,
         driverLicenseType: undefined,
-        teamCode: undefined
+        teamCode: undefined,
+        applyStatus: undefined
       },
       // 表单是否禁用
       formDisable: false,
@@ -413,7 +415,10 @@ export default {
       fixed: 'right'
     });
     this.getDictsOptions();
-    this.getList();
+    if (!this.teamCode) {
+      // 如果这个页面是以组件形式展示在调度者管理弹窗里面，则这里不加载列表
+      this.getList();
+    }
   },
   methods: {
     /** 查询字典 */

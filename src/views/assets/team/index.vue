@@ -103,7 +103,7 @@
         >导出</el-button>
       </el-col>
       <el-col :span="1.5" class="fr">
-        <tablec-cascader v-model="tableColumnsConfig" />
+        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
       </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
@@ -212,6 +212,7 @@ export default {
   data() {
     return {
       tableColumnsConfig: [],
+      api: listTeamApi,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -252,11 +253,12 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        name: null,
-        teamLeader: null,
-        status: null,
-        driverName: null,
-        licenseNumber: null
+        name: undefined,
+        teamLeader: undefined,
+        status: undefined,
+        driverName: undefined,
+        licenseNumber: undefined,
+        applyStatus: undefined
       },
       // 表单参数
       form: {},

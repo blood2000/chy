@@ -54,7 +54,7 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="handleSubmit">保存</el-button>
+          <el-button v-hasPermi="['assets:shipment:invoice:save']" type="primary" @click="handleSubmit">保存</el-button>
         </el-form-item>
       </el-form>
     </div>

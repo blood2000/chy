@@ -4,19 +4,21 @@
       <el-form-item label="选择人员" prop="userCode">
         <el-select
           v-model="form.userCode"
+          v-el-select-loadmore="loadmore"
           filterable
           remote
           reserve-keyword
           placeholder="通过手机号进行查询"
           class="width90"
-          :remote-method="getPersonOptions"
+          :remote-method="userRemoteMethod"
           :loading="personLoading"
+          @change="userChange"
         >
           <el-option
             v-for="item in personOptions"
-            :key="item.code"
-            :label="item.name"
-            :value="item.code"
+            :key="item.userCode"
+            :label="`${item.nickName}(${item.phonenumber})`"
+            :value="item.userCode"
           />
         </el-select>
       </el-form-item>
@@ -26,13 +28,14 @@
       <el-form-item label="银行卡号" prop="account">
         <el-input v-model="form.account" placeholder="请输入银行卡号" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="开户银行" prop="bankName">
+      <el-form-item label="开户银行" prop="bankCode">
         <el-select
-          v-model="form.bankName"
+          v-model="form.bankCode"
           class="width90"
           placeholder="请选择开户银行"
           filterable
           clearable
+          @change="changeBanK"
         >
           <el-option
             v-for="dict in bankOptions"
@@ -112,6 +115,7 @@
 
 <script>
 import { addBank, updateBank } from '@/api/capital/bankcard';
+import { listUser } from '@/api/system/user';
 import { getBranchList } from '@/api/system/branch';
 import ProvinceCityCounty from '@/components/ProvinceCityCounty';
 import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
@@ -150,7 +154,7 @@ export default {
         account: [
           { required: true, message: '银行卡号不能为空', trigger: 'blur' }
         ],
-        bankName: [
+        bankCode: [
           { required: true, message: '开户银行不能为空', trigger: ['blur', 'change'] }
         ],
         mobile: [
@@ -164,6 +168,11 @@ export default {
       // 选择人员
       personLoading: false,
       personOptions: [],
+      queryParams: {
+        pageNum: 1,
+        pageSize: 10,
+        phonenumber: null
+      },
       // 网点查询
       loading: false,
       branchOptions: []
@@ -230,6 +239,7 @@ export default {
         userCode: null,
         name: null,
         account: null,
+        bankCode: null,
         bankName: null,
         mobile: null,
         bankBranch: null,
@@ -245,20 +255,47 @@ export default {
     setForm(data) {
       this.form = data;
       this.form.isDefault = praseNumToBoolean(this.form.isDefault);
+      if (this.form.userCode && this.form.name) {
+        this.personOptions = [{
+          userCode: this.form.userCode,
+          nickName: this.form.name,
+          phonenumber: this.form.mobile
+        }];
+      }
     },
-    // 选择人员
-    getPersonOptions(query) {
+    // 人员远程搜索
+    userRemoteMethod(query) {
       if (query !== '') {
         this.personLoading = true;
-        getBranchList({
-          name: query
-        }).then(response => {
-          this.personLoading = false;
-          this.personOptions = response.data;
-        });
+        this.queryParams.phonenumber = query;
+        this.queryParams.pageNum = 1;
+        this.personOptions = [];
+        this.getUserList();
       } else {
         this.personOptions = [];
       }
+    },
+    // 查询人员列表
+    getUserList() {
+      listUser(this.queryParams).then(response => {
+        this.personLoading = false;
+        this.personOptions = [...this.personOptions, ...response.rows];
+      });
+    },
+    // 选择人员远程搜索列表触底事件
+    loadmore() {
+      this.queryParams.pageNum++;
+      this.getUserList();
+    },
+    // 获取选中的人员回填
+    userChange(code) {
+      console.log(code);
+      this.personOptions.forEach(el => {
+        if (el.userCode === code) {
+          this.form.name = el.nickName;
+          this.form.mobile = el.phonenumber;
+        }
+      });
     },
     // 查询网点列表
     getBranchOptions(query) {
@@ -273,6 +310,14 @@ export default {
       } else {
         this.branchOptions = [];
       }
+    },
+    // 获取选中银行卡的名称
+    changeBanK(code) {
+      this.bankOptions.forEach(el => {
+        if (el.dictValue === code) {
+          this.form.bankName = el.dictLabel;
+        }
+      });
     }
   }
 };

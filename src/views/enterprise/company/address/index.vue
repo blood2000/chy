@@ -65,6 +65,7 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
+          v-hasPermi="['assets:shipment:address:add']"
           type="primary"
           icon="el-icon-plus"
           size="mini"
@@ -73,6 +74,7 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
+          v-hasPermi="['assets:shipment:address:edit']"
           type="success"
           icon="el-icon-edit"
           size="mini"
@@ -82,6 +84,7 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
+          v-hasPermi="['assets:shipment:address:remove']"
           type="danger"
           icon="el-icon-delete"
           size="mini"
@@ -109,14 +112,14 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="200" fixed="right">
         <template slot-scope="scope">
           <el-button
-            v-hasPermi="['enterprise:company:address:edit']"
+            v-hasPermi="['assets:shipment:address:edit']"
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
           >修改</el-button>
           <el-button
-            v-hasPermi="['enterprise:company:address:remove']"
+            v-hasPermi="['assets:shipment:address:remove']"
             size="mini"
             type="text"
             icon="el-icon-delete"
@@ -183,11 +186,9 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        addressAlias: null,
-        addressName: null,
-        status: null
-        // contact: null,
-        // contactPhone: null
+        addressAlias: undefined,
+        addressName: undefined,
+        status: undefined
       }
     };
   },

@@ -175,7 +175,7 @@
         >批量删除</el-button>
       </el-col> -->
       <el-col :span="1.5" class="fr">
-        <tablec-cascader v-model="tableColumnsConfig" />
+        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
       </el-col>
       <right-toolbar
         :show-search.sync="showSearch"
@@ -334,6 +334,7 @@ export default {
   data() {
     return {
       tableColumnsConfig: [],
+      api: trackListApi,
       activeName: '1',
 
       // 遮罩层

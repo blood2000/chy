@@ -66,14 +66,14 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5" class="fr">
-        <tablec-cascader v-model="tableColumnsConfig" />
+        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
       </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
     <RefactorTable :loading="loading" :data="dataList" :table-columns-config="tableColumnsConfig">
       <template #updateTime="{row}">
-        <span>{{ parseTime(row.updateTime, '{y}-{m}-{d}') }}</span>
+        <span>{{ parseTime(row.updateTime) }}</span>
       </template>
       <template #edit="{row}">
         <el-button
@@ -120,6 +120,7 @@ export default {
   data() {
     return {
       tableColumnsConfig: [],
+      api: balanceListApi,
       // 遮罩层
       loading: true,
       // 显示搜索条件
@@ -142,7 +143,13 @@ export default {
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 10
+        pageSize: 10,
+        roleName: undefined,
+        orgName: undefined,
+        nickName: undefined,
+        phonenumber: undefined,
+        minAmount: undefined,
+        maxAmount: undefined
       }
     };
   },

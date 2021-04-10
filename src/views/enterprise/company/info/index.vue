@@ -68,7 +68,7 @@
               <i class="el-icon-circle-close" />
               未认证
             </span>
-            <el-button type="text no-padding" @click="handleCertification">认证</el-button>
+            <el-button v-hasPermi="['assets:shipment:enterprise:save']" type="text no-padding" @click="handleCertification">认证</el-button>
           </el-form-item>
           <el-form-item label="身份证号：" prop="identificationNumber">
             {{ form.identificationNumber }}

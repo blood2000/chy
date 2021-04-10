@@ -74,7 +74,6 @@ export default {
         return [];
       }
     },
-
     lcokey: {
       type: String,
       default: ''
@@ -86,12 +85,10 @@ export default {
       banner_list: []
     };
   },
-
   methods: {
-
     submitForm() {
       this.$emit('input', this.banner_list);
-      setLocalStorage(this.lcokey || this.$route.name, this.banner_list);
+      setLocalStorage(this.lcokey, this.banner_list);
       this.open = false;
     },
     cancel() {
