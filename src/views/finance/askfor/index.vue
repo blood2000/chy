@@ -1,6 +1,7 @@
 <template>
-  <div class="app-container">
-    <!-- <el-row :gutter="20" style="padding-bottom:30px">
+  <div>
+    <div class="app-container">
+      <!-- <el-row :gutter="20" style="padding-bottom:30px">
       <el-col :span="2">
         <el-row type="flex" :gutter="20" justify="center" style="margin-bottom:10px">
           <i class="el-icon-office-building" style="font-size: 1.5em" />
@@ -34,250 +35,243 @@
         </el-row>
       </el-col>
     </el-row> -->
-    <el-form
-      v-show="showSearch"
-      ref="queryForm"
-      :model="queryParams"
-      :inline="true"
-      :rules="rules"
-      label-width="90px"
-    >
-      <el-form-item v-show="!isShipment" label="货主" prop="shipmentCode">
-        <el-select
-          v-model="queryParams.shipmentCode"
-          placeholder="请选择货主"
-          filterable
-          clearable
-          style="width: 230px"
-          size="small"
+      <el-form
+        v-show="showSearch"
+        ref="queryForm"
+        :model="queryParams"
+        :inline="true"
+        :rules="rules"
+        label-width="90px"
+      >
+        <el-form-item v-show="!isShipment" label="货主" prop="shipmentCode">
+          <el-select
+            v-model="queryParams.shipmentCode"
+            placeholder="请选择货主"
+            filterable
+            clearable
+            style="width: 230px"
+            size="small"
+          >
+            <el-option
+              v-for="dict in shipmentlist"
+              :key="dict.code"
+              :label="dict.adminName"
+              :value="dict.code"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="货源单号"
+          prop="orderNo"
         >
-          <el-option
-            v-for="dict in shipmentlist"
-            :key="dict.code"
-            :label="dict.adminName"
-            :value="dict.code"
+          <el-input
+            v-model="queryParams.orderNo"
+            placeholder="请输入货源单号"
+            clearable
+            size="small"
+            style="width: 230px"
+            @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item
-        label="货源单号"
-        prop="orderNo"
-      >
-        <el-input
-          v-model="queryParams.orderNo"
-          placeholder="请输入货源单号"
-          clearable
-          size="small"
-          style="width: 230px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="货物类型" prop="goodsBigType">
-        <el-select
-          v-model="queryParams.goodsBigType"
-          placeholder="请选择货物类型"
-          filterable
-          clearable
-          style="width: 230px"
-          size="small"
+        </el-form-item>
+        <el-form-item label="货物类型" prop="goodsBigType">
+          <el-select
+            v-model="queryParams.goodsBigType"
+            placeholder="请选择货物类型"
+            filterable
+            clearable
+            style="width: 230px"
+            size="small"
+          >
+            <el-option
+              v-for="dict in commodityCategoryCodeOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="装货信息"
+          prop="loading"
         >
-          <el-option
-            v-for="dict in commodityCategoryCodeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+          <el-input
+            v-model="queryParams.loading"
+            placeholder="请输入装货地/装货电话/装货人"
+            clearable
+            size="small"
+            style="width: 230px"
+            @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item
-        label="装货信息"
-        prop="loading"
-      >
-        <el-input
-          v-model="queryParams.loading"
-          placeholder="请输入装货地/装货电话/装货人"
-          clearable
-          size="small"
-          style="width: 230px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item
-        label="收获信息"
-        prop="receiving"
-      >
-        <el-input
-          v-model="queryParams.receiving"
-          placeholder="请输入目的地/收货电话/收货人"
-          clearable
-          size="small"
-          style="width: 230px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item
-        label="运输单号"
-        prop="waybillNo"
-      >
-        <el-input
-          v-model="queryParams.waybillNo"
-          placeholder="请输入运输单号"
-          clearable
-          size="small"
-          style="width: 230px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item
-        label="装货日期"
-        prop="loadTime"
-      >
-        <el-date-picker
-          v-model="loadTime"
-          type="daterange"
-          range-separator="-"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          style="width: 230px"
-          @change="datechoose1"
-        />
-      </el-form-item>
-      <el-form-item
-        label="卸货日期"
-        prop="unloadTime"
-      >
-        <el-date-picker
-          v-model="unloadTime"
-          type="daterange"
-          range-separator="-"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          style="width: 230px"
-          @change="datechoose2"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button
-          type="cyan"
-          icon="el-icon-search"
-          size="mini"
-          @click="handleQuery"
+        </el-form-item>
+        <el-form-item
+          label="收获信息"
+          prop="receiving"
         >
-          搜索
-        </el-button>
-        <el-button
-          icon="el-icon-refresh"
-          size="mini"
-          @click="resetQuery"
+          <el-input
+            v-model="queryParams.receiving"
+            placeholder="请输入目的地/收货电话/收货人"
+            clearable
+            size="small"
+            style="width: 230px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item
+          label="运输单号"
+          prop="waybillNo"
         >
-          重置
-        </el-button>
-      </el-form-item>
-    </el-form>
+          <el-input
+            v-model="queryParams.waybillNo"
+            placeholder="请输入运输单号"
+            clearable
+            size="small"
+            style="width: 230px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item
+          label="装货日期"
+          prop="loadTime"
+        >
+          <el-date-picker
+            v-model="loadTime"
+            type="daterange"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 230px"
+            @change="datechoose1"
+          />
+        </el-form-item>
+        <el-form-item
+          label="卸货日期"
+          prop="unloadTime"
+        >
+          <el-date-picker
+            v-model="unloadTime"
+            type="daterange"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 230px"
+            @change="datechoose2"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="cyan"
+            icon="el-icon-search"
+            size="mini"
+            @click="handleQuery"
+          >
+            搜索
+          </el-button>
+          <el-button
+            icon="el-icon-refresh"
+            size="mini"
+            @click="resetQuery"
+          >
+            重置
+          </el-button>
+        </el-form-item>
+      </el-form>
 
-    <el-row
-      :gutter="10"
-      class="mb8"
-    >
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['assets:vehicle:edit']"
-          type="success"
-          icon="el-icon-document-checked"
-          size="mini"
-          @click="handleAskfor"
-        >批量索票</el-button>
-        <el-button
-          v-hasPermi="['assets:vehicle:edit']"
-          type="info"
-          icon="el-icon-upload2"
-          size="mini"
-          @click="handleExport"
-        >导出</el-button>
-      </el-col>
-      <el-col :span="1.5" class="fr">
-        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
-      </el-col>
-      <right-toolbar
-        :show-search.sync="showSearch"
-        @queryTable="getList"
+      <el-row
+        :gutter="10"
+        class="mb8"
+      >
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['assets:vehicle:edit']"
+            type="success"
+            icon="el-icon-document-checked"
+            size="mini"
+            @click="handleAskfor"
+          >批量索票</el-button>
+          <el-button
+            v-hasPermi="['assets:vehicle:edit']"
+            type="info"
+            icon="el-icon-upload2"
+            size="mini"
+            @click="handleExport"
+          >导出</el-button>
+        </el-col>
+        <el-col :span="1.5" class="fr">
+          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
+        </el-col>
+        <right-toolbar
+          :show-search.sync="showSearch"
+          @queryTable="getList"
+        />
+      </el-row>
+
+      <RefactorTable :loading="loading" :data="askforlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+        <template #stowageStatus="{row}">
+          <span>{{ selectDictLabel(stowageStatusOptions, row.stowageStatus) }}</span>
+        </template>
+        <template #status="{row}">
+          <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
+        </template>
+        <template #isChild="{row}">
+          <span>{{ selectDictLabel(isChildOptions, row.isChild) }}</span>
+        </template>
+
+        <template #edit="{row}">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-document"
+            @click="handleTableBtn(row, 1)"
+          >详情</el-button>
+        </template>
+      </RefactorTable>
+
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
       />
-    </el-row>
 
+      <!-- 运单详情 对话框 -->
+      <detail-dialog ref="DetailDialog" :current-id="currentId" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
+
+    </div>
     <el-row
       :gutter="10"
-      class="mb8"
+      class="feeinfo"
     >
       <el-col :span="3">
-        <span>运单数量：1321</span>
+        <span>运单数量：{{ feeinfo.waybillNum }}</span>
       </el-col>
       <el-col :span="3">
-        <span>运费金额：1321</span>
+        <span>运费金额：{{ feeinfo.deliveryFee }}</span>
       </el-col>
       <el-col :span="3">
-        <span>运费税额：1321</span>
+        <span>运费税额：{{ feeinfo.taxPayment }}</span>
       </el-col>
       <el-col :span="3">
-        <span>服务费金额：1321</span>
+        <span>服务费金额：{{ feeinfo.serviceFee }}</span>
       </el-col>
       <el-col :span="3">
-        <span>服务费税额：1321</span>
+        <span>服务费税额：{{ feeinfo.serviceTaxFee }}</span>
       </el-col>
     </el-row>
-
-    <RefactorTable :loading="loading" :data="askforlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
-      <template #stowageStatus="{row}">
-        <span>{{ selectDictLabel(stowageStatusOptions, row.stowageStatus) }}</span>
-      </template>
-      <template #status="{row}">
-        <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
-      </template>
-      <template #isChild="{row}">
-        <span>{{ selectDictLabel(isChildOptions, row.isChild) }}</span>
-      </template>
-
-      <template #edit="{row}">
-        <el-button
-          size="mini"
-          type="text"
-          icon="el-icon-document"
-          @click="handleTableBtn(row, 1)"
-        >详情</el-button>
-      </template>
-    </RefactorTable>
-
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
-
-    <!-- 驳回弹窗 -->
-    <!-- <reject-dialog ref="RejectDialog" :open.sync="rejectdialog" :title="title" :disable="formDisable" @refresh="getList" /> -->
-    <!-- 子单弹窗 -->
-    <!-- <child-dialog ref="ChildDialog" :open.sync="childdialog" :title="title" @refresh="getList" /> -->
-    <!-- 运单详情 对话框 -->
-    <!-- <detail-dialog ref="DetailDialog" :current-id="currentId" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" /> -->
-
   </div>
 </template>
 
 <script>
-import { askforList, askforListApi, shipmentList } from '@/api/finance/askfor';
+import { askforList, askforListApi, shipmentList, askInvoice } from '@/api/finance/askfor';
 import { getUserInfo } from '@/utils/auth';
-// 驳回弹窗
-// import RejectDialog from '../components/rejectDialog';
-// 子单弹窗
 // import ChildDialog from '../components/childDialog';
 // 运单详情弹窗
-// import DetailDialog from '@/views/waybill/components/detailDialog';
+import DetailDialog from '@/views/waybill/components/detailDialog';
 
 
 export default {
   'name': 'AskforList',
-  components: { },
+  components: { DetailDialog },
   data() {
     return {
       tableColumnsConfig: [],
@@ -285,7 +279,7 @@ export default {
       // 遮罩层
       'loading': false,
       // 选中数组
-      'ids': [],
+      'ids': null,
       // 显示搜索条件
       'showSearch': true,
       // 总条数
@@ -307,7 +301,7 @@ export default {
         'orderNo': undefined,
         'receiveDateBegin': undefined,
         'receiveDateEnd': undefined,
-        'shipmentCode': 'a6485db163d748f2bd33a1412053bf42',
+        'shipmentCode': undefined,
         'waybillNo': undefined
       },
       loadTime: [],
@@ -361,15 +355,17 @@ export default {
           { required: true, message: '请选择货主', trigger: 'blur' }
         ]
       },
+      // 账号信息
       isShipment: false,
       user: {},
       shipment: {},
+      // 数据统计
       feeinfo: {
-        waybillNum: '',
-        deliveryFee: '',
-        serviceFee: '',
-        // serviceFee: '',
-        taxPayment: ''
+        waybillNum: 0,
+        deliveryFee: 0,
+        taxPayment: 0,
+        serviceFee: 0,
+        serviceTaxFee: 0
       }
     };
   },
@@ -396,6 +392,7 @@ export default {
     });
   },
   'methods': {
+    // 搜索时间选择
     datechoose1(date) {
       this.queryParams.loadTimeBegin = this.parseTime(date[0], '{y}-{m}-{d}');
       this.queryParams.loadTimeEnd = this.parseTime(date[1], '{y}-{m}-{d}');
@@ -407,7 +404,19 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       console.log(selection);
-      this.ids = selection.map((item) => item.id);
+      this.feeinfo = {
+        waybillNum: selection.length,
+        deliveryFee: 0,
+        taxPayment: 0,
+        serviceFee: 0,
+        serviceTaxFee: 0
+      };
+      selection.map((item) => { this.feeinfo.deliveryFee += item.deliveryFeePractical; });
+      selection.map((item) => { this.feeinfo.taxPayment += item.taxPayment; });
+      selection.map((item) => { this.feeinfo.serviceFee += item.serviceFee; });
+      selection.map((item) => { this.feeinfo.serviceTaxFee += item.serviceTaxFee; });
+      this.ids = selection.map((item) => item.code).join(',');
+      console.log(this.ids);
     },
     /** 查询【请填写功能名称】列表 */
     getList() {
@@ -428,6 +437,10 @@ export default {
       this.resetForm('queryForm');
       this.loadTime = [];
       this.unloadTime = [];
+      this.queryParams.loadTimeBegin = null;
+      this.queryParams.loadTimeEnd = null;
+      this.queryParams.receiveDateBegin = null;
+      this.queryParams.receiveDateEnd = null;
       this.handleQuery();
     },
     // 导出
@@ -435,6 +448,12 @@ export default {
     },
     // 批量索票
     handleAskfor() {
+      if (this.ids) {
+        askInvoice({ shipmentCode: this.queryParams.shipmentCode, waybillCodes: this.ids }).then(response => {});
+        this.getList();
+      } else {
+        this.msgError('请先选择数据!');
+      }
     },
     handleTableBtn(row, index) {
       // console.log(row, index);
@@ -442,11 +461,11 @@ export default {
       this.visible = true;
       switch (index) {
         case 1:
-          this.$refs.RejectDialog.reset();
-          this.rejectdialog = true;
-          this.title = '详情';
-          this.$refs.RejectDialog.setForm(row);
-          console.log(row);
+          this.$refs.DetailDialog.reset();
+          this.currentId = row.wayBillCode;
+          this.open = true;
+          this.title = '运输单信息';
+          this.formDisable = true;
           break;
         default:
           break;
@@ -458,4 +477,14 @@ export default {
 
 <style lang="scss" scoped>
 .dropdown-menu::-webkit-scrollbar {display:none}
+
+.feeinfo{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  padding: 15px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
 </style>

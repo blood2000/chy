@@ -5,7 +5,7 @@ export const listManagesApi = '/transportation/orderInfoSearch/getOrderInfoList'
 
 export function getOrderInfoList(query) {
   return request({
-    url: '/transportation/orderInfoSearch/getOrderInfoList',
+    url: listManagesApi,
     method: 'get',
     params: query
   });

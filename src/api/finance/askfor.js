@@ -19,6 +19,15 @@ export function shipmentList(query) {
   });
 }
 
+// 索取发票
+export function askInvoice(data) {
+  return request({
+    url: '/transportation/invoice/askInvoice',
+    method: 'post',
+    data: data
+  });
+}
+
 // 查询运单子单列表
 export const childListApi = '/transportation/waybill/childList';
 export function childList(query) {

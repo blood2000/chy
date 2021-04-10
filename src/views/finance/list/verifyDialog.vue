@@ -2,12 +2,13 @@
   <!-- 审核对话框 -->
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="130px">
-      <el-form-item v-if="disable" label="审核数量" prop="loadInfo">
-        <el-input v-model="form.loadInfo" disabled placeholder="请输入审核数量" clearable size="small" style="width:90%;" />
+      <el-form-item v-if="form.num" label="审核数量" prop="num">
+        <span>{{ form.num }}</span>
+        <!-- <el-input v-model="form.num" disabled placeholder="请输入审核数量" clearable size="small" style="width:90%;" /> -->
       </el-form-item>
-      <el-form-item label="审核结果" prop="goodsBigType">
+      <el-form-item label="审核结果" prop="invoiceStatus">
         <el-select
-          v-model="form.goodsBigType"
+          v-model="form.invoiceStatus"
           placeholder="请选择审核结果"
           filterable
           clearable
@@ -15,15 +16,15 @@
           size="small"
         >
           <el-option
-            v-for="dict in auditResultOptions"
+            v-for="dict in invoiceStatusOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="审核备注" prop="driverApplyRemark">
-        <el-input v-model="form.driverApplyRemark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入审核备注" style="width:90%;" clearable />
+      <el-form-item label="审核备注" prop="remake">
+        <el-input v-model="form.remake" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入审核备注" style="width:90%;" clearable />
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -34,11 +35,11 @@
 </template>
 
 <script>
-import { reject } from '@/api/waybill/tracklist';
+import { passCheck } from '@/api/finance/list';
 // import UploadImage from '@/components/UploadImage/index';
 
 export default {
-  name: 'RejectDialog',
+  name: 'VerifyDialog',
   components: {
     // UploadImage
   },
@@ -53,21 +54,24 @@ export default {
   data() {
     return {
       // 审核结果字典
-      auditResultOptions: [
-        { 'dictLabel': '审核通过', 'dictValue': '0' },
-        { 'dictLabel': '审核不通过', 'dictValue': '1' }
+      invoiceStatusOptions: [
+        { 'dictLabel': '审核通过', 'dictValue': '4' },
+        { 'dictLabel': '审核不通过', 'dictValue': '3' },
+        { 'dictLabel': '审核取消', 'dictValue': '2' }
       ],
       // 表单参数
       form: {
-        wayBillInCode: null,
-        driverApplyRemark: null
+        num: null,
+        invoiceApplyCode: null,
+        invoiceStatus: null,
+        remake: null
       },
       // 表单校验
       rules: {
-        goodsBigType: [
+        invoiceStatus: [
           { required: true, message: '请选择审核结果', trigger: 'blur' }
         ],
-        driverApplyRemark: [
+        remake: [
           { required: true, message: '审核备注不能为空', trigger: 'blur' }
         ]
       }
@@ -90,8 +94,8 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          reject(this.form).then(response => {
-            this.msgSuccess('申请取消运单成功');
+          passCheck(this.form).then(response => {
+            this.msgSuccess('审核成功');
             this.close();
             this.$emit('refresh');
           });
@@ -110,14 +114,20 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        wayBillInCode: null,
-        driverApplyRemark: null
+        num: null,
+        invoiceApplyCode: null,
+        invoiceStatus: null,
+        remake: null
       };
       this.resetForm('form');
     },
     // 表单赋值
     setForm(data) {
-      this.form.wayBillInCode = data.code;
+      this.form.invoiceApplyCode = data;
+    },
+    // 获取数量
+    setNum(data) {
+      this.form.num = data;
     }
   }
 };

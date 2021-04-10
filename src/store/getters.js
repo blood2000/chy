@@ -16,6 +16,7 @@ const getters = {
   isShipment: state => state.user.isShipment,
   isDriver: state => state.user.isDriver,
   isDispatcher: state => state.user.isDispatcher,
-  shipment: state => state.user.shipment
+  shipment: state => state.user.shipment,
+  provinceList: state => state.orders.provinceList
 };
 export default getters;

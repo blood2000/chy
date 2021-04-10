@@ -5,15 +5,19 @@
       <el-col :span="10">
         <span class="mr3">司机实收金额</span>
         <!-- v-model="adjustlist.deliveryCashFee" -->
-        <el-input
+        <el-input-number
+          v-model="deliveryCashFee"
           placeholder="请输入司机实收金额"
-          clearable
+          :controls="false"
+          :precision="2"
           size="small"
           style="width: 180px"
           class="mr3"
-          @keyup.enter.native="handleQuery"
+          @keyup.enter.native="handleChange"
         />
-        <el-button type="primary">批量修改</el-button>
+
+
+        <el-button type="primary" @click="handleChange">批量修改</el-button>
       </el-col>
     </el-row>
     <el-table v-loading="loading" :data="adjustlist" border stripe>
@@ -53,59 +57,59 @@
         </template>
       </el-table-column> -->
 
-      <el-table-column width="120" label="企业名称" show-overflow-tooltip align="center" prop="name" />
-      <el-table-column width="120" label="运输单号" show-overflow-tooltip align="center" prop="waybillNo" />
-      <el-table-column width="120" label="装车重量(吨)" align="center" prop="loadWeight">
+
+      <el-table-column width="160" label="运输单号" show-overflow-tooltip align="center" prop="waybillNo" />
+
+      <el-table-column width="160" label="路耗" align="center" prop="loss" />
+      <el-table-column width="160" label="货物单价" align="center" prop="goodsPrice" />
+      <el-table-column width="160" label="司机应收运费" align="center" prop="deliveryFeeDeserved" />
+      <el-table-column width="160" label="亏涨扣费" align="center" prop="deduction" />
+
+      <el-table-column width="160" label="司机实收运费" align="center" prop="deliveryFeePractical" />
+
+      <el-table-column width="120" label="路耗允许范围" align="center" prop="lossAllowScope" />
+      <el-table-column width="120" label="司机姓名" align="center" prop="driverName" />
+      <el-table-column width="120" label="司机电话" align="center" prop="driverPhone" />
+      <el-table-column width="120" label="车牌号" align="center" prop="licenseNumber" />
+      <el-table-column width="120" label="运费单价" align="center" prop="freightPrice" />
+      <el-table-column width="120" label="抹零金额" align="center" prop="m0Amount" />
+
+      <el-table-column width="160" label="装车重量" align="center" prop="loadWeight">
         <template slot-scope="scope">
-          <el-input v-model="scope.row.loadWeight" placeholder="请输入装车重量" style="width:100%;" />
+          <el-input-number v-model="scope.row.loadWeight" :controls="false" placeholder="请输入装车重量" style="width:100%;" size="mini" @blur="handlerInput(scope.row, scope.row.loadWeight)" />
         </template>
       </el-table-column>
-      <el-table-column width="120" label="卸车重量(吨)" align="center" prop="unloadWeight">
+      <el-table-column width="160" label="卸车重量" align="center" prop="unloadWeight">
         <template slot-scope="scope">
-          <el-input v-model="scope.row.unloadWeight" placeholder="请输入卸车重量" style="width:100%;" />
+          <el-input-number v-model="scope.row.unloadWeight" :controls="false" placeholder="请输入卸车重量" style="width:100%;" size="mini" />
         </template>
       </el-table-column>
-      <el-table-column width="120" label="实际承运重量（吨）" align="center" prop="tttttt" />
-      <el-table-column width="120" label="路耗（吨）" align="center" prop="loss" />
-      <el-table-column width="120" label="货物单价" align="center" prop="goodsPrice" />
-      <el-table-column width="120" label="司机成交单价(元/吨)" align="center" prop="deliveryFeeDeserved" />
-      <el-table-column width="120" label="亏涨吨费用(元)" align="center" prop="deduction" />
-
-      <el-table-column width="120" label="司机实收抹零(元)" align="center" prop="deliveryFeePractical" />
-
-      <!-- <el-table-column width="120" label="路耗允许范围" align="center" prop="lossAllowScope" /> -->
-      <!-- <el-table-column width="120" label="司机姓名" align="center" prop="driverName" /> -->
-      <!-- <el-table-column width="120" label="司机电话" align="center" prop="driverPhone" /> -->
-      <!-- <el-table-column width="120" label="车牌号" align="center" prop="licenseNumber" /> -->
-      <!-- <el-table-column width="120" label="司机减项费用" align="center" prop="driverReductionFee" /> -->
-      <!-- <el-table-column width="120" label="司机增项费用" align="center" prop="driverAddFee" /> -->
-      <!-- <el-table-column width="120" label="运费单价" align="center" prop="freightPrice" /> -->
-      <!-- <el-table-column width="120" label="抹零金额" align="center" prop="m0Amount" /> -->
-
-      <el-table-column align="center" width="300" label="补贴项目">
+      <!-- 补贴项目 -->
+      <el-table-column align="center" width="400" label="补贴项目">
         <template slot-scope="scope">
           <el-form :inline="true" label-position="right" size="mini" class="ly-flex">
             <div v-for="(freight, index) in scope.row.subsidiesFreightList" :key="index">
               <el-form-item :label="freight.cnName">
                 <!-- <span>{{ freight.ruleValue }}</span> -->
-                <el-input v-model="freight.ruleValue" :placeholder="`请输入${freight.cnName}`" style="width:60px;" />
+                <el-input-number v-model="freight.ruleValue" :controls="false" :precision="2" :placeholder="`请输入${freight.cnName}`" style="width:60px;" />
               </el-form-item>
             </div>
           </el-form>
         </template>
       </el-table-column>
-
-      <el-table-column align="center" width="300" label="扣费项目">
+      <!-- 扣费项目 -->
+      <el-table-column align="center" width="450">
         <template slot="header">
-          <span>扣费项目</span>
+          <span>扣费项目 <el-button type="text" @click="submitForm">立即核算</el-button></span>
+
         </template>
 
         <template slot-scope="scope">
           <el-form :inline="true" label-position="right" size="mini" class="ly-flex">
-            <div v-for="(freight, index) in scope.row.deductionFreightList" :key="index">
+            <div v-for="(freight, index) in scope.row.deductionFreightList" :key="index" class="ly-flex-1">
               <el-form-item :label="freight.cnName">
                 <!-- <span v-show="!freight.isEdit">{{ freight.ruleValue }}</span> -->
-                <el-input v-model="freight.ruleValue" :placeholder="`请输入${freight.cnName}`" style="width:60px;" />
+                <el-input-number v-model="freight.ruleValue" :controls="false" :precision="2" :placeholder="`请输入${freight.cnName}`" style="width:60px;" />
               </el-form-item>
             </div>
           </el-form>
@@ -115,10 +119,16 @@
       <el-table-column width="120" label="服务费" align="center" prop="serviceFee" />
       <el-table-column width="120" label="司机实收现金" align="center" prop="deliveryCashFee">
         <template slot-scope="scope">
-          <el-input v-model="scope.row.deliveryCashFee" placeholder="请输入司机实收现金" style="width:100%;" />
+          <el-input-number v-model="scope.row.deliveryCashFee" :controls="false" :precision="2" placeholder="请输入司机实收现金" style="width:100%;" size="mini" />
         </template>
       </el-table-column>
       <el-table-column width="120" label="要扣的货主金额" align="center" prop="deductShipmentAmount" />
+
+      <el-table-column width="120" label="司机增项费用" align="center" prop="driverAddFee" />
+
+      <el-table-column width="120" label="司机减项费用" align="center" prop="driverReductionFee" />
+
+
       <el-table-column width="120" label="核算规则" align="center" prop="freightList.enName" />
     </el-table>
 
@@ -148,11 +158,12 @@ export default {
   },
   data() {
     return {
+      deliveryCashFee: undefined,
       // tableColumnsConfig: [],
       // 遮罩层
       loading: false,
       // 总条数
-      total: 0,
+      // total: 0,
       // 评价列表
       adjustlist: [],
       // 查询参数
@@ -174,9 +185,25 @@ export default {
   created() {
   },
   methods: {
+    // 单项修改
+    handlerInput(row, value) {
+      console.log(row);
+      console.log(value);
+      row.serviceFee = value;
+    },
+
+    // 批量修改
+    handleChange() {
+      console.log(this.deliveryCashFee);
+      this.adjustlist.forEach(e => {
+        e.deliveryCashFee = this.deliveryCashFee;
+        // this.$set(e, 'deliveryCashFee', this.deliveryCashFee);
+      });
+    },
     /** 提交按钮 */
     submitForm() {
       console.log('点击');
+      console.log(this.adjustlist);
     },
     /** 查询核算列表 */
     getList() {
@@ -332,7 +359,7 @@ export default {
           ]
         },
         {
-          'waybillCode': '155cc017f06b4f9c9ce678060ff299a0',
+          'waybillCode': '155cc017f06b4f9c9ce678060ff29922',
           'waybillNo': '2103221739334454',
           'loadWeight': 55,
           'unloadWeight': 1,
@@ -369,7 +396,7 @@ export default {
             'dictCode': null,
             'ruleType': 0,
             'unit': null,
-            'waybillCode': '155cc017f06b4f9c9ce678060ff299a0'
+            'waybillCode': '155cc017f06b4f9c9ce678060ff29922'
           }],
           'deductionFreightList': [{
             'id': 184658,
@@ -383,7 +410,7 @@ export default {
             'dictCode': null,
             'ruleType': 0,
             'unit': null,
-            'waybillCode': '155cc017f06b4f9c9ce678060ff299a0'
+            'waybillCode': '155cc017f06b4f9c9ce678060ff29922'
           },
           {
             'id': 184659,
@@ -397,7 +424,7 @@ export default {
             'dictCode': null,
             'ruleType': 0,
             'unit': null,
-            'waybillCode': '155cc017f06b4f9c9ce678060ff299a0'
+            'waybillCode': '155cc017f06b4f9c9ce678060ff29922'
           },
           {
             'id': 184660,
@@ -411,7 +438,7 @@ export default {
             'dictCode': null,
             'ruleType': 0,
             'unit': null,
-            'waybillCode': '155cc017f06b4f9c9ce678060ff299a0'
+            'waybillCode': '155cc017f06b4f9c9ce678060ff29922'
           }],
           'freightList': [
             {
@@ -426,7 +453,7 @@ export default {
               'dictCode': null,
               'ruleType': 0,
               'unit': null,
-              'waybillCode': '155cc017f06b4f9c9ce678060ff299a0'
+              'waybillCode': '155cc017f06b4f9c9ce678060ff29922'
             },
             {
               'id': 184658,
@@ -440,7 +467,7 @@ export default {
               'dictCode': null,
               'ruleType': 0,
               'unit': null,
-              'waybillCode': '155cc017f06b4f9c9ce678060ff299a0'
+              'waybillCode': '155cc017f06b4f9c9ce678060ff29922'
             },
             {
               'id': 184659,
@@ -454,7 +481,7 @@ export default {
               'dictCode': null,
               'ruleType': 0,
               'unit': null,
-              'waybillCode': '155cc017f06b4f9c9ce678060ff299a0'
+              'waybillCode': '155cc017f06b4f9c9ce678060ff29922'
             },
             {
               'id': 184660,
@@ -468,13 +495,13 @@ export default {
               'dictCode': null,
               'ruleType': 0,
               'unit': null,
-              'waybillCode': '155cc017f06b4f9c9ce678060ff299a0'
+              'waybillCode': '155cc017f06b4f9c9ce678060ff29922'
             }
           ]
         }
       ];
 
-      this.adjustlist = data;
+      this.adjustlist = JSON.parse(JSON.stringify(data));
       // .map(e => {
       //   e.addfreightList = [];
       //   e.cutfreightList = [];
@@ -511,7 +538,8 @@ export default {
 };
 </script>
 
-<style>
+
+<style scoped>
 .mr3 {
   margin-right: 3%;
 }
@@ -520,6 +548,9 @@ export default {
 }
 .width28 {
   width: 28%;
+}
+.el-form-item{
+  margin-bottom: 0;
 }
 .el-input-number ::v-deep.el-input__inner {
   text-align: left;

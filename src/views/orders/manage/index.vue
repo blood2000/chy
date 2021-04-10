@@ -26,13 +26,14 @@
           </div>
           <!-- 右边 -->
           <div>
-            <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="100px" class="clearfix">
+            <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="100px" class="clearfix" @submit.native.prevent>
               <el-form-item v-show="!isShipment" label="下单客户" prop="tin1">
                 <el-input
                   v-model="queryParams.tin1"
-                  placeholder="请输入下单客户"
+                  placeholder="公司名称/客户姓名/手机号"
                   clearable
                   size="small"
+                  style="width: 150px"
                   @keyup.enter.native="handleQuery"
                 />
               </el-form-item>
@@ -40,9 +41,10 @@
               <el-form-item label="装货信息" prop="tin2">
                 <el-input
                   v-model="queryParams.tin2"
-                  placeholder="请输入装货信息"
+                  placeholder="装货地/装货电话/装货人"
                   clearable
                   size="small"
+                  style="width: 150px"
                   @keyup.enter.native="handleQuery"
                 />
               </el-form-item>
@@ -50,51 +52,62 @@
               <el-form-item label="收货信息" prop="tin3">
                 <el-input
                   v-model="queryParams.tin3"
-                  placeholder="请输入收货信息"
+                  placeholder="目的地/收货电话/收货人"
                   clearable
                   size="small"
+                  style="width: 150px"
                   @keyup.enter.native="handleQuery"
                 />
               </el-form-item>
 
-              <el-form-item label="货物类型大类" prop="tin4">
-                <el-select v-model="queryParams.tin4" placeholder="----请选择----" style="width: 215px" clearable filterable>
+              <el-form-item label="货物类型" prop="tin4">
+                <el-select v-model="queryParams.tin4" placeholder="----请选择----" clearable filterable style="width: 150px">
                   <!-- goodsTypeOption -->
                   <el-option
-                    v-for="dict in goodsTypeOption"
-                    :key="dict.dictValue"
+                    v-for="(dict,index) in goodsTypeOption"
+                    :key="index"
                     :label="dict.dictLabel"
                     :value="dict.dictValue"
                   />
                 </el-select>
               </el-form-item>
 
-              <el-form-item label="货物描述" prop="tin5">
+              <el-form-item v-if="false" label="货物描述" prop="tin5">
                 <el-input
                   v-model="queryParams.tin5"
                   placeholder="请输入货物描述"
                   clearable
                   size="small"
+                  style="width: 150px"
                   @keyup.enter.native="handleQuery"
                 />
               </el-form-item>
 
-              <el-form-item v-show="!isShipment" label="货主" prop="tin6">
-                <el-select v-model="queryParams.tin6" filterable clearable placeholder="请选择货主">
-                  <el-option
-                    v-for="item in shipmentList"
-                    :key="item.code"
-                    :label="item.adminName + ' ' +(item.companyName || '')"
-                    :value="item.code"
-                  />
-                </el-select>
-              <!--  <el-input
+              <!-- 做远程的 -->
+              <el-form-item v-show="!isShipment" label="货主" prop="tin6" size="small">
+                <el-select
                   v-model="queryParams.tin6"
-                  placeholder="请输入货主编码"
+                  v-el-select-loadmore="loadmore"
+                  filterable
                   clearable
-                  size="small"
+                  remote
+                  reserve-keyword
+                  placeholder="请输入关键词"
+                  :remote-method="remoteMethod"
+                  :loading="loading"
+                  style="width: 150px"
                   @keyup.enter.native="handleQuery"
-                />-->
+                >
+                  <el-option
+                    v-for="(item, index1) in shipmentList"
+                    :key="index1"
+                    :value="item.code"
+                    :label="item.adminName"
+                  >
+                    <!-- :label="item.adminName" -->
+                    <div class="ly-flex-pack-justify"><span>{{ item.adminName }}</span><span>{{ item.telphone }}</span></div>
+                  </el-option>
+                </el-select>
               </el-form-item>
 
               <el-form-item label="货源单号" prop="tin7">
@@ -103,6 +116,7 @@
                   placeholder="请输入货源单号"
                   clearable
                   size="small"
+                  style="width: 150px"
                   @keyup.enter.native="handleQuery"
                 />
               </el-form-item>
@@ -117,11 +131,35 @@
                 />
               </el-form-item> -->
 
-              <el-form-item label="货源状态" prop="tin8">
-                <el-select v-model="queryParams.tin8" placeholder="----请选择----" style="width: 215px" clearable filterable>
+              <el-form-item v-if="false" label="货源状态" prop="tin8">
+                <el-select v-model="queryParams.tin8" placeholder="----请选择----" style="width: 150px" clearable filterable>
                   <el-option
-                    v-for="dict in statusOptions"
-                    :key="dict.dictValue"
+                    v-for="(dict,index) in statusOptions"
+                    :key="index"
+                    :label="dict.dictLabel"
+                    :value="dict.dictValue"
+                    @keyup.enter.native="handleQuery"
+                  />
+                </el-select>
+              </el-form-item>
+
+              <el-form-item label="发布方式" prop="tin11">
+                <el-select v-model="queryParams.tin11" placeholder="----请选择----" style="width: 150px" clearable filterable>
+                  <el-option
+                    v-for="(dict,index) in isPublicTypeOptions"
+                    :key="index"
+                    :label="dict.dictLabel"
+                    :value="dict.dictValue"
+                    @keyup.enter.native="handleQuery"
+                  />
+                </el-select>
+              </el-form-item>
+
+              <el-form-item v-show="(queryParams.tin8+'') ==='1'" label="下架状态" prop="isManual">
+                <el-select v-model="queryParams.isManual" placeholder="----请选择----" clearable filterable style="width: 150px">
+                  <el-option
+                    v-for="(dict,index) in dicts['isManual_option']"
+                    :key="index"
                     :label="dict.dictLabel"
                     :value="dict.dictValue"
                   />
@@ -140,11 +178,11 @@
                 </el-select>
               </el-form-item> -->
 
-              <el-form-item label="创建时间" prop="tin10">
+              <el-form-item label="发布时间" prop="tin10">
                 <el-date-picker
                   v-model="queryParams.tin10"
                   size="small"
-                  style="width: 215px"
+                  style="width: 150px"
                   value-format="yyyy-MM-dd"
                   type="daterange"
                   range-separator="-"
@@ -154,10 +192,10 @@
               </el-form-item>
 
 
-              <el-form-item class="fr">
+              <!-- <el-form-item class="fr">
                 <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
                 <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-              </el-form-item>
+              </el-form-item> -->
             </el-form>
 
             <el-row :gutter="10" class="mb8">
@@ -172,7 +210,19 @@
                 >删除</el-button>
               </el-col> -->
               <el-col :span="1.5">
+                <!-- <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+                  <el-tab-pane label="已发布" name="0" />
+                  <el-tab-pane label="已关闭" name="1" />
+                </el-tabs> -->
+                <el-radio-group v-model="activeName" size="small" @change="handleClick">
+                  <el-radio-button label="0">已发布</el-radio-button>
+                  <el-radio-button label="1">已关闭</el-radio-button>
+                </el-radio-group>
+              </el-col>
+
+              <el-col :span="1.5">
                 <el-button
+                  v-if="false"
                   v-hasPermi="['system:test:export']"
                   type="warning"
                   icon="el-icon-download"
@@ -185,9 +235,14 @@
                 <tablec-cascader v-model="tableColumnsConfig" :lcokey="listManagesApi" />
               </el-col>
               <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+              <el-col v-show="showSearch" :span="1.5" class="fr">
+                <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+                <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+              </el-col>
             </el-row>
 
             <!-- default-expand-all -->
+            <!-- height="400" -->
             <RefactorTable
               is-show-index
               :loading="loading"
@@ -197,21 +252,29 @@
               :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
               :table-columns-config="tableColumnsConfig"
             ><!-- @selection-change="handleSelectionChange" -->
+              <!-- 装货地 -->
+              <template #addressName1="{row}">
+                <span>{{ row.addressAlias1 || row.addressName1 }}</span>
+              </template>
+              <!-- 装货地 -->
+              <template #addressName2="{row}">
+                <span>{{ row.addressAlias2 || row.addressName2 }}</span>
+              </template>
               <template #landAddress="{row}">
                 <span>{{ row.landAddress }}</span>
               </template>
               <!-- billingType	发运方式 0->汽运一票制，1->对付，2->代收代付 -->
-              <template #billingType="{row}">
+              <!-- <template #billingType="{row}">
                 <span>{{ selectDictLabel(billingTypeOptions, row.billingType) }}</span>
-              </template>
+              </template> -->
               <!-- status	状态 0.启用 1.禁用 -->
               <template #status="{row}">
-                <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
+                <span>{{ selectDictLabel(statusOptions, (row.status +'')) }}</span>
               </template>
               <!-- importType	是否导入货源 0-正常发布货源，1-货源单导入，2-运输单导入 -->
-              <template #importType="{row}">
+              <!-- <template #importType="{row}">
                 <span>{{ selectDictLabel(importTypeOptions, row.importType) }}</span>
-              </template>
+              </template> -->
 
               <template #isClass="{row}">
                 <span>{{ selectDictLabel(isClassOptions, row.isClass) }}</span>
@@ -221,65 +284,69 @@
                 <span>{{ selectDictLabel(isDelTypeOptions, row.isDel) }}</span>
               </template>
 
-              <template #isDispatch="{row}">
+              <template #businessType="{row}">
+                <span>{{ selectDictLabel(dicts['businessType'], row.businessType) || '-' }}</span>
+              </template>
+
+              <!-- <template #isDispatch="{row}">
                 <span>{{ selectDictLabel(isDispatchTypeOptions, row.isDispatch) }}</span>
-              </template>
+              </template> -->
 
-              <template #isInsure="{row}">
+              <!-- <template #isInsure="{row}">
                 <span>{{ selectDictLabel(isInsureTypeOptions, row.isInsure) }}</span>
-              </template>
+              </template> -->
 
-              <template #isMonthlyOrder="{row}">
+              <!-- <template #isMonthlyOrder="{row}">
                 <span>{{ selectDictLabel(isMonthlyOrderTypeOptions, row.isMonthlyOrder) }}</span>
-              </template>
+              </template> -->
 
-              <template #isPay="{row}">
+              <!-- <template #isPay="{row}">
                 <span>{{ selectDictLabel(isPayTypeOptions, row.isPay) }}</span>
-              </template>
+              </template> -->
 
               <template #isPublic="{row}">
                 <span>{{ selectDictLabel(isPublicTypeOptions, row.isPublic) }}</span>
               </template>
 
-              <template #isReturnMoney="{row}">
+              <!-- <template #isReturnMoney="{row}">
                 <span>{{ selectDictLabel(isReturnMoneyTypeOptions, row.isReturnMoney) }}</span>
-              </template>
+              </template> -->
 
-              <template #isShare="{row}">
+              <!-- <template #isShare="{row}">
                 <span>{{ selectDictLabel(isShareTypeOptions, row.isShare) }}</span>
-              </template>
+              </template> -->
 
-              <template #isShipperConfirm="{row}">
+              <!-- <template #isShipperConfirm="{row}">
                 <span>{{ selectDictLabel(isShipperConfirmTypeOptions, row.isShipperConfirm) }}</span>
-              </template>
+              </template> -->
 
               <template #isSpecified="{row}">
                 <span>{{ selectDictLabel(isSpecifiedTypeOptions, row.isSpecified) }}</span>
               </template>
 
-              <template #isSplit="{row}">
+              <!-- <template #isSplit="{row}">
                 <span>{{ selectDictLabel(isSplitTypeOptions, row.isSplit) }}</span>
-              </template>
+              </template> -->
 
-              <template #isTop="{row}">
+              <!-- <template #isTop="{row}">
                 <span>{{ selectDictLabel(isTopTypeOptions, row.isTop) }}</span>
-              </template>
+              </template> -->
 
-              <template #isTrunk="{row}">
+              <!-- <template #isTrunk="{row}">
                 <span>{{ selectDictLabel(isTrunkTypeOptions, row.isTrunk) }}</span>
+              </template> -->
+
+              <template #loadType="{row}">
+                <span>{{ selectDictLabel(loadTypeOptions, row.loadType) }}</span>
               </template>
 
-              <template #loadTypeType="{row}">
-                <span>{{ selectDictLabel(loadTypeTypeOptions, row.loadTypeType) }}</span>
-              </template>
-
-              <template #orderTypeType="{row}">
+              <!-- <template #orderTypeType="{row}">
                 <span>{{ selectDictLabel(orderTypeTypeOptions, row.orderTypeType) }}</span>
-              </template>
+              </template> -->
 
-              <template #paymentCodeType="{row}">
+              <!-- <template #paymentCodeType="{row}">
                 <span>{{ selectDictLabel(paymentCodeTypeOptions, row.paymentCodeType) }}</span>
-              </template>
+              </template> -->
 
               <template #accessTime="{row}">
                 <span>{{ row.accessTime }}</span>
@@ -312,6 +379,7 @@
                     @click="handleUpdate(row)"
                   >编辑</el-button>
                   <el-button
+                    v-if="!row.haveWaybill"
                     v-hasPermi="['system:menu:remove']"
                     size="mini"
                     type="text"
@@ -343,7 +411,7 @@
                     @click="handleShenhe(row)"
                   >审核</el-button>
                   <el-button
-                    v-if="false && row.status+''==='0'"
+                    v-if="row.status+''==='0'"
                     v-hasPermi="['system:menu:remove']"
                     size="mini"
                     type="text"
@@ -397,6 +465,7 @@ export default {
   components: { OpenDialog, PriceAdjustment },
   data() {
     return {
+      activeName: '0', // 做tab切换
       listManagesApi, // 表头存的key
       pubilshCode: '', // 当前货主code
       // 测试数据上
@@ -442,7 +511,9 @@ export default {
         tin5: '',
         tin6: '',
         tin7: '',
-        tin8: '',
+        tin8: '0',
+        tin11: '',
+        isManual: '',
         tin9: '',
         tin10: []
       },
@@ -450,134 +521,150 @@ export default {
       title: '',
       // 表头动态值
       tableColumnsConfig: [],
-      // 订单状态字典
+      // 订单状态字典 	状态 0.启用 1.禁用
       statusOptions: [
         { dictLabel: '启用', dictValue: '0' },
         { dictLabel: '禁用', dictValue: '1' }
       ],
       // 发运方式字典
-      billingTypeOptions: [
-        { dictLabel: '汽运一票制', dictValue: '0' },
-        { dictLabel: '对付', dictValue: '1' },
-        { dictLabel: '代收代付', dictValue: '2' }
-      ],
+      // billingTypeOptions: [
+      //   { dictLabel: '汽运一票制', dictValue: '0' },
+      //   { dictLabel: '对付', dictValue: '1' },
+      //   { dictLabel: '代收代付', dictValue: '2' }
+      // ],
       // 是否导入货源字典
-      importTypeOptions: [
-        { dictLabel: '正常发布货源', dictValue: '0' },
-        { dictLabel: '货源单导入', dictValue: '1' },
-        { dictLabel: '运输单导入', dictValue: '2' }
-      ],
+      // importTypeOptions: [
+      //   { dictLabel: '正常发布货源', dictValue: '0' },
+      //   { dictLabel: '货源单导入', dictValue: '1' },
+      //   { dictLabel: '运输单导入', dictValue: '2' }
+      // ],
       // isClass	是否加入货源码 0否 1是
       isClassOptions: [
-        { dictLabel: '否', dictValue: false },
-        { dictLabel: '是', dictValue: true }
+        { dictLabel: '否', dictValue: 0 },
+        { dictLabel: '是', dictValue: 1 }
       ],
       // isDel	是否删除 0.正常 1.删除	boolean
       isDelTypeOptions: [
-        { dictLabel: '正常', dictValue: false },
-        { dictLabel: '删除', dictValue: true }
+        { dictLabel: '正常', dictValue: 0 },
+        { dictLabel: '删除', dictValue: 1 }
       ],
       // isDispatch	是否已受理 0未受理，1已受理	boolean
-      isDispatchTypeOptions: [
-        { dictLabel: '未受理', dictValue: false },
-        { dictLabel: '已受理', dictValue: true }
-      ],
+      // isDispatchTypeOptions: [
+      //   { dictLabel: '未受理', dictValue: false },
+      //   { dictLabel: '已受理', dictValue: true }
+      // ],
       // isInsure	投保类别 0否 1是	boolean
-      isInsureTypeOptions: [
-        { dictLabel: '否', dictValue: false },
-        { dictLabel: '是', dictValue: true }
-      ],
+      // isInsureTypeOptions: [
+      //   { dictLabel: '否', dictValue: false },
+      //   { dictLabel: '是', dictValue: true }
+      // ],
       // isMonthlyOrder	是否月结订单 0否 1 是	boolean
-      isMonthlyOrderTypeOptions: [
-        { dictLabel: '否', dictValue: false },
-        { dictLabel: '是', dictValue: true }
-      ],
+      // isMonthlyOrderTypeOptions: [
+      //   { dictLabel: '否', dictValue: false },
+      //   { dictLabel: '是', dictValue: true }
+      // ],
       // isPay	是否已经支付 0 未支付 1 已经支付	boolean
-      isPayTypeOptions: [
-        { dictLabel: '未支付', dictValue: false },
-        { dictLabel: '已经支付', dictValue: true }
-      ],
+      // isPayTypeOptions: [
+      //   { dictLabel: '未支付', dictValue: false },
+      //   { dictLabel: '已经支付', dictValue: true }
+      // ],
       // isPublic	是否公开货源 0.非公开 1.公开
       isPublicTypeOptions: [
-        { dictLabel: '非公开', dictValue: false },
-        { dictLabel: '公开', dictValue: true }
+        { dictLabel: '非公开', dictValue: 0 },
+        { dictLabel: '公开', dictValue: 1 }
       ],
       // isReturnMoney	标记货主是否结算 0 否 1-是	boolean
-      isReturnMoneyTypeOptions: [
-        { dictLabel: '否', dictValue: false },
-        { dictLabel: '是', dictValue: true }
-      ],
+      // isReturnMoneyTypeOptions: [
+      //   { dictLabel: '否', dictValue: false },
+      //   { dictLabel: '是', dictValue: true }
+      // ],
       // isShare	是否拼单 0-否，1-是	boolean
-      isShareTypeOptions: [
-        { dictLabel: '否', dictValue: false },
-        { dictLabel: '是', dictValue: true }
-      ],
+      // isShareTypeOptions: [
+      //   { dictLabel: '否', dictValue: false },
+      //   { dictLabel: '是', dictValue: true }
+      // ],
       // isShipperConfirm	是否货主确认装货 0否，1是	boolean
-      isShipperConfirmTypeOptions: [
-        { dictLabel: '否', dictValue: false },
-        { dictLabel: '是', dictValue: true }
-      ],
+      // isShipperConfirmTypeOptions: [
+      //   { dictLabel: '否', dictValue: false },
+      //   { dictLabel: '是', dictValue: true }
+      // ],
       // isSpecified	是否指定接单人 0否 1是	boolean
       isSpecifiedTypeOptions: [
-        { dictLabel: '否', dictValue: false },
-        { dictLabel: '是', dictValue: true }
+        { dictLabel: '否', dictValue: 0 },
+        { dictLabel: '是', dictValue: 1 }
       ],
       // isSplit	是否允许拆单 0-不允许，1-允许	boolean
-      isSplitTypeOptions: [
-        { dictLabel: '不允许', dictValue: false },
-        { dictLabel: '允许', dictValue: true }
-      ],
+      // isSplitTypeOptions: [
+      //   { dictLabel: '不允许', dictValue: false },
+      //   { dictLabel: '允许', dictValue: true }
+      // ],
       // isTop	是否置顶 0否 1是	boolean
-      isTopTypeOptions: [
-        { dictLabel: '否', dictValue: false },
-        { dictLabel: '是', dictValue: true }
-      ],
+      // isTopTypeOptions: [
+      //   { dictLabel: '否', dictValue: false },
+      //   { dictLabel: '是', dictValue: true }
+      // ],
       // isTrunk	订单类型 0-整车大宗，1-零散多货	boolean
-      isTrunkTypeOptions: [
-        { dictLabel: '整车大宗', dictValue: '0' },
-        { dictLabel: '零散多货', dictValue: '1' }
-      ],
+      // isTrunkTypeOptions: [
+      //   { dictLabel: '整车大宗', dictValue: '0' },
+      //   { dictLabel: '零散多货', dictValue: '1' }
+      // ],
       // loadType	装卸类型 1.一装一卸 2.多装一卸 3.一装多卸 4.多装多卸
-      loadTypeTypeOptions: [
+      loadTypeOptions: [
         { dictLabel: '', dictValue: '0' },
         { dictLabel: '一装一卸', dictValue: '1' },
         { dictLabel: '多装一卸', dictValue: '2' },
-        { dictLabel: '一装多卸', dictValue: '3' },
-        { dictLabel: '多装多卸', dictValue: '4' }
+        { dictLabel: '一装多卸', dictValue: '3' }
+        // { dictLabel: '多装多卸', dictValue: '4' }
       ],
+
       // orderType	运输类型 0-汽运，1-船运	string
-      orderTypeTypeOptions: [
-        { dictLabel: '汽运', dictValue: '0' },
-        { dictLabel: '船运', dictValue: '1' }
-      ],
+      // orderTypeTypeOptions: [
+      //   { dictLabel: '汽运', dictValue: '0' },
+      //   { dictLabel: '船运', dictValue: '1' }
+      // ],
       // paymentCode	支付方式 0-现金，1-打卡，2现金+油卡 (字典表CODE)
-      paymentCodeTypeOptions: [
-        { dictLabel: '现金', dictValue: '0' },
-        { dictLabel: '打卡', dictValue: '1' },
-        { dictLabel: '现金+油卡', dictValue: '2' }
-      ],
+      // paymentCodeTypeOptions: [
+      //   { dictLabel: '现金', dictValue: '0' },
+      //   { dictLabel: '打卡', dictValue: '1' },
+      //   { dictLabel: '现金+油卡', dictValue: '2' }
+      // ],
 
       goodsTypeOption: [],
       isShipment: false,
-      shipmentList: [] // 货主列表
+
+      dicts: {
+        isManual_option: [{ dictLabel: '自动', dictValue: 2 }, { dictLabel: '手动', dictValue: 1 }]
+      }, // 字典集合
+      shipmentList: [], // 货主列表
+      shipmentreq: {
+        pageNum: 1,
+        keywords: '',
+        pageSize: 10
+      }
     };
   },
 
   computed: {
     newQueryParams() {
       return {
-        addressAndPhoneAndMember: this.queryParams.tin2, //	装货信息	query	false
         beginTime: this.queryParams.tin10[0], //	开始时间	query	false
-        companyAndCustomerAndPhone: this.queryParams.tin1, //	下单客户	query	false
-        destinationAndPhoneAndMember: this.queryParams.tin3, //	收货信息	query	false
-        driverId: undefined, //	(司机id)查询自己公司的货源	query	false
         endTime: this.queryParams.tin10[1], //	结束时间	query	false
-        goodsType: this.queryParams.tin4, //	货物类型大类	query	false
+        companyAndCustomerAndPhone: this.queryParams.tin1, //	下单客户	query	false
         goodsName: this.queryParams.tin5, //	货物描述(名称)	query	false
+        goodsBigType: this.queryParams.tin4, //	货物类型大类	query	false
+        goodsType: undefined, // 小类
+        isPublic: this.queryParams.tin11, //	发布状态	query	false
+        landInfo: this.queryParams.tin3, //	收货信息	query	false
+        loadInfo: this.queryParams.tin2, //	装货信息	query	false
+        driverId: undefined, //	(司机id)查询自己公司的货源	query	false
         isShare: this.queryParams.tin9, //	是否拼单	query	false
         mainOrderNumber: this.queryParams.tin7, //	货源单号	query	false
+
         pubilshCode: this.queryParams.tin6, //	货主编码	query	false
+
         status: this.queryParams.tin8, //	订单状态（字典表）	query	false
+        isManual: this.queryParams.isManual, // 下架状态
+
         pageNum: this.queryParams.pageNum, //	pageNum,示例值(1)	query	false
         pageSize: this.queryParams.pageSize //	pageSize,示例值(10)	query	false
       };
@@ -597,23 +684,48 @@ export default {
     const { isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
     this.isShipment = isShipment;
     // 要配置好才能用
-    this.tableHeaderConfig(this.tableColumnsConfig, listManagesApi, {
-      prop: 'edit',
-      isShow: true,
-      label: '操作',
-      width: 180,
-      fixed: 'right'
-    }, tableColumnsConfig);
+    this.tableHeaderConfig(this.tableColumnsConfig, listManagesApi, null, tableColumnsConfig);
     this.getDict();
     this.getList();
-    this.listShipment();
+    // this.listShipment();
   },
   methods: {
-    listShipment() {
-      listShipment().then(response => {
-        this.shipmentList = response.rows;
+    // tab切换
+    handleClick() {
+      // console.log(this.activeName);
+      this.queryParams.tin8 = this.activeName;
+      this.handleQuery();
+    },
+
+    // 触发远程搜索
+    remoteMethod(query) {
+      if (query !== '') {
+        this.shipmentreq.pageNum = 1;
+        this.shipmentreq.keywords = query;
+        this.getTeamList();
+      } else {
+        this.shipmentList = [];
+      }
+    },
+    // 远程搜索列表触底事件
+    loadmore() {
+      if (this.dataOver) return;
+      this.shipmentreq.pageNum++;
+      this.getTeamList();
+    },
+    getTeamList() {
+      // 获取代理用户表
+      listShipment(this.shipmentreq).then(
+        (res) => {
+          this.dataOver = !res.rows.length;
+          this.shipmentList = this.shipmentList.concat(res.rows);
+          this.loading = false;
+        }
+      ).catch(() => {
+        this.loading = false;
       });
     },
+
     /** 获取首页字典值 */
     getDict() {
       this.listByDict({
@@ -622,13 +734,19 @@ export default {
       }).then(res => {
         this.goodsTypeOption = res.data;
       });
+
+      ['businessType'].forEach(e => {
+        this.getDicts(e).then(response => {
+          this.dicts[e] = response.data;
+        });
+      });
     },
     /** 查询货源列表 */
     getList() {
       this.loading = true;
       getOrderInfoList(this.newQueryParams).then(response => {
-        this.list = this.handlerList(response.data.list);
         this.total = response.data.total - 0;
+        this.handlerList(response.data.list);
         this.loading = false;
       }).catch(() => {
         this.loading = false;
@@ -639,52 +757,44 @@ export default {
     baseData(e) {
       return {
         ...e,
-        'id': this.genID(5),
-        'remark': e.remark,
-        'code': e.code, // 编号
-        'companyName': e.companyName, // 企业名称
-        'goodsTypeName': e.goodsTypeName, // 货物类型名称
-        'addressName1': e.addressName1, // 装货地
-        'addressName2': e.addressName2, // 卸货地
-        'goodsPrice': e.goodsPrice, // 货源价格
-        'shipmentPrice': e.shipmentPrice, // 运输单价
-        'transactionPrice': e.transactionPrice, // 成交单价
-        'unitPrice': e.unitPrice, // 承运单价
-        'mainOrderNumber': e.mainOrderNumber, // 货源单号
-        'source': e
-        // 'branchCode': e.branchCode,
-        // 'mainOrderNumber': e.mainOrderNumber,
-        // 'shipperFactoryCode': e.shipperFactoryCode,
-        // 'projectCode': e.projectCode,
-        // 'status': e.status,
-        // 'createCode': e.createCode,
-        // 'createTime': e.createTime,
-        // 'updateCode': e.updateCode,
-        // 'updateTime': e.updateTime,
-        // 'isSpecified': e.isSpecified,
-        // 'pubilshCode': e.pubilshCode,
-        // 'classCode': e.classCode,
-        // 'isPublic': e.isPublic,
-        // 'loadType': e.loadType,
-        // 'businessType': e.businessType,
-        // 'isDel': e.isDel
+        'id': this.genID(5), // 标识用,防止重复
+        'source': e // 调价时候用
       };
     },
 
     // 处理返回的列表
     handlerList(lists) {
-      return lists.map(e => {
+      this.list = lists.map(e => {
         // 先判断几个商品
-
         e = e.redisOrderInfoListVoList[0];
+
+        // 货集码
+        e.redisOrderClassGoodsVoList.forEach(orderClass => {
+          e.cargoCodeQr = orderClass.cargoCodeQr || '-';
+        });
+
         const mgoods = [];
-        e.redisOrderFreightInfoVoList.forEach((redis, index) => {
+        if (!e.redisOrderFreightInfoVoList.length) {
+          e.goodsPrice = '';
+          e.goodsTypeName = '';
+          e.goodsBigTypeName = '';
+          e.addressName1 = '';
+          e.addressName2 = '';
+          e.shipmentPrice = '';
+          e.transactionPrice = '';
+          e.unitPrice = '';
+          mgoods.push({
+            ...this.baseData(e)
+          });
+        }
+        e.redisOrderFreightInfoVoList.length && e.redisOrderFreightInfoVoList.forEach((redis, index) => {
           // 获取商品信息到这里获取
 
           e.redisOrderGoodsVoList.forEach(goods => {
             if (goods.code === redis.goodsCode) {
               e.goodsPrice = goods.goodsPrice;
               e.goodsTypeName = goods.goodsTypeName;
+              e.goodsBigTypeName = goods.goodsBigTypeName;
             }
           });
 
@@ -694,11 +804,24 @@ export default {
             // 地址信息的到这里获取
             e.redisAddressList.forEach(addr => {
               // 装货地
+
               if (addr.code === addresCodes[0]) {
-                e.addressName1 = addr.addressName;
+                if (addr.addressType === '3') {
+                  e.addressName1 = '自装';
+                  e.addressAlias1 = '自装';
+                } else {
+                  e.addressName1 = addr.formattedAddress;
+                  e.addressAlias1 = addr.addressAlias;
+                }
               // 卸货地
               } else if (addr.code === addresCodes[1]) {
-                e.addressName2 = addr.addressName;
+                if (addr.addressType === '4') {
+                  e.addressName2 = '自卸';
+                  e.addressAlias2 = '自卸';
+                } else {
+                  e.addressName2 = addr.formattedAddress;
+                  e.addressAlias2 = addr.addressAlias;
+                }
               }
             });
 
@@ -714,6 +837,9 @@ export default {
                 e.unitPrice = freight.ruleValue;
               }
             });
+
+            // 货集码地址
+
 
             mgoods.push({
               ...this.baseData(e)
@@ -748,27 +874,11 @@ export default {
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      // console.log(row);
-
       this.$router.push({ name: 'Release', query: { id: row.code, t: '1' }});
-      // this.reset();
-      // const testId = row.testId || this.ids;
-      // getTest(testId).then(response => {
-      //   this.form = response.data;
-      //   this.open = true;
-      //   this.title = '修改货源';
-      // });
     },
     /** 查看详情操作 */
     handleInfo(row) {
       this.$router.push({ name: 'Release', query: { id: row.code, t: '0' }});
-      // this.reset();
-      // const testId = row.testId || this.ids;
-      // getTest(testId).then(response => {
-      //   this.form = response.data;
-      //   this.open = true;
-      //   this.title = '修改货源';
-      // });
     },
     /** 上下架货源 */
     loadAndUnloading(row) {
@@ -845,267 +955,6 @@ export default {
     },
     /** 调价操作 */
     async handleReadjustPrices(row) {
-      console.log(row);
-
-      const data = {
-        'redisOrderInfoVo': {
-          'code': '077acc62236f438eab5e93f88a6c1e88',
-          'branchCode': null,
-          'mainOrderNumber': '2104061658561871',
-          'shipperFactoryCode': null,
-          'projectCode': '',
-          'isReturn': null,
-          'isReturnMoney': 0,
-          'loadingTime': null,
-          'isPay': 0,
-          'paymentCode': null,
-          'isTop': 0,
-          'isTrunk': 0,
-          'isShare': 0,
-          'isShipperConfirm': 0,
-          'isInsure': null,
-          'effectiveHour': null,
-          'cashDeposit': null,
-          'goodsPrice': null,
-          'billingType': null,
-          'importType': '0',
-          'orderType': null,
-          'isDel': 0,
-          'status': 0,
-          'createCode': 'ca8b3f3528a34365b41ad4cdb2074f67',
-          'createTime': '2021-04-06 16:58:56.567',
-          'updateCode': null,
-          'updateTime': null,
-          'isSpecified': 0,
-          'remark': '13123',
-          'pubilshCode': '80ceee84f9d34ed69a8467b2970f1c2b',
-          'classCode': null,
-          'isPublic': 1,
-          'loadType': '1',
-          'businessType': null
-        },
-        'redisOrderClassGoodsVoList': [
-          {
-            'code': 'f4107022c7c543919684d026a59d5321',
-            'classCode': '',
-            'orderCode': '077acc62236f438eab5e93f88a6c1e88',
-            'createCode': '80ceee84f9d34ed69a8467b2970f1c2b',
-            'createTime': '2021-04-06 16:58:56.58',
-            'updateCode': null,
-            'updateTime': null,
-            'isDel': 0
-          }
-        ],
-        'redisOrderGoodsVoList': [
-          {
-            'code': '9e29282dac9f4e67b29ed4ca80a0533c',
-            'orderCode': '077acc62236f438eab5e93f88a6c1e88',
-            'goodsBigType': '0100',
-            'totalType': null,
-            'goodsType': '010001',
-            'goodsName': '煤炭',
-            'goodsUnit': null,
-            'weight': null,
-            'perWeight': null,
-            'shipmentPrice': null,
-            'goodsPrice': 1000,
-            'vehicleType': '',
-            'vehicleLength': '',
-            'priceWastage': null,
-            'isOneselfLoad': null,
-            'isModifyFinish': null,
-            'isOneselfUnload': null,
-            'balanceRuleCode': null,
-            'vehicleMaxWeight': 110000,
-            'number': 0,
-            'businessType': null,
-            'isDel': null,
-            'stowageStatus': '0'
-          }
-        ],
-        'redisOrderSpecifiedVoList': [],
-        'redisAddressList': [
-          {
-            'id': null,
-            'code': 'a0d5b7286f3948ea93a5fd10f4c14324',
-            'orderCode': '077acc62236f438eab5e93f88a6c1e88',
-            'addressType': '1',
-            'country': '中国',
-            'province': '福建省',
-            'city': '福州市',
-            'cityCode': '3501',
-            'district': '台江区',
-            'street': null,
-            'districtCode': '350103',
-            'location': [
-              '119.358265',
-              '26.045794'
-            ],
-            'localtionOld': '(119.358265,26.045794)',
-            'detail': '120',
-            'contact': '小红',
-            'contactPhone': '18650451524',
-            'addressAlias': '富',
-            'provinceCode': '35',
-            'addressName': '富邦总部大楼',
-            'redisOrderFreightVoList': null,
-            'orderFreightVo': null,
-            'isDel': 0
-          },
-          {
-            'id': null,
-            'code': 'e9127cf979a94b1e946a413a5d6b9bd3',
-            'orderCode': '077acc62236f438eab5e93f88a6c1e88',
-            'addressType': '2',
-            'country': '中国',
-            'province': '天津市',
-            'city': '天津市',
-            'cityCode': '1201',
-            'district': '滨海新区',
-            'street': null,
-            'districtCode': '120116',
-            'location': [
-              '117.818263',
-              '39.000665'
-            ],
-            'localtionOld': '(117.818263,39.000665)',
-            'detail': null,
-            'contact': '1213',
-            'contactPhone': '18588888888',
-            'addressAlias': null,
-            'provinceCode': '12',
-            'addressName': '富俊发超市',
-            'redisOrderFreightVoList': null,
-            'orderFreightVo': null,
-            'isDel': 0
-          }
-        ],
-        'redisOrderFreightInfoVoList': [
-          {
-            'goodsCode': '9e29282dac9f4e67b29ed4ca80a0533c',
-            'redisOrderAddressInfoVoList': [
-              {
-                'addressCode': 'a0d5b7286f3948ea93a5fd10f4c14324:e9127cf979a94b1e946a413a5d6b9bd3',
-                'redisOrderFreightVoList': [
-                  {
-                    'code': 'e6f8af83c7e54e6d923fa589b4069ca7',
-                    'orderCode': '077acc62236f438eab5e93f88a6c1e88',
-                    'orderGoodsCode': '9e29282dac9f4e67b29ed4ca80a0533c',
-                    'ruleDetailShipmentCode': null,
-                    'ruleItemCode': '17',
-                    'ruleValue': '200',
-                    'type': null,
-                    'createCode': '80ceee84f9d34ed69a8467b2970f1c2b',
-                    'createTime': '2021-04-06 16:58:56.709',
-                    'updateCode': null,
-                    'updateTime': null,
-                    'isDel': 0,
-                    'orderAddressCode': 'a0d5b7286f3948ea93a5fd10f4c14324',
-                    'addressUnloadingCode': 'e9127cf979a94b1e946a413a5d6b9bd3',
-                    'ruleCode': '1'
-                  },
-                  {
-                    'code': 'f4ea59fb37ef458c8f700eb08f33d125',
-                    'orderCode': '077acc62236f438eab5e93f88a6c1e88',
-                    'orderGoodsCode': '9e29282dac9f4e67b29ed4ca80a0533c',
-                    'ruleDetailShipmentCode': '6fb20504191e4e9e8a5a4cd7b5a791db',
-                    'ruleItemCode': '18',
-                    'ruleValue': '1',
-                    'type': 2,
-                    'createCode': '80ceee84f9d34ed69a8467b2970f1c2b',
-                    'createTime': '2021-04-06 16:58:56.72',
-                    'updateCode': null,
-                    'updateTime': null,
-                    'isDel': 0,
-                    'orderAddressCode': 'a0d5b7286f3948ea93a5fd10f4c14324',
-                    'addressUnloadingCode': 'e9127cf979a94b1e946a413a5d6b9bd3',
-                    'ruleCode': '1'
-                  },
-                  {
-                    'code': '97d997d0498f4039ada2020e07a24d65',
-                    'orderCode': '077acc62236f438eab5e93f88a6c1e88',
-                    'orderGoodsCode': '9e29282dac9f4e67b29ed4ca80a0533c',
-                    'ruleDetailShipmentCode': 'bdb85178c91046279a72f4d6cd9c8b8c',
-                    'ruleItemCode': '2',
-                    'ruleValue': '[-300,300]',
-                    'type': null,
-                    'createCode': '80ceee84f9d34ed69a8467b2970f1c2b',
-                    'createTime': '2021-04-06 16:58:56.736',
-                    'updateCode': null,
-                    'updateTime': null,
-                    'isDel': 0,
-                    'orderAddressCode': 'a0d5b7286f3948ea93a5fd10f4c14324',
-                    'addressUnloadingCode': 'e9127cf979a94b1e946a413a5d6b9bd3',
-                    'ruleCode': '1'
-                  }
-                ],
-                'orderFreightVo': {
-                  'lossList': [
-                    {
-                      'id': 2422,
-                      'code': '97d997d0498f4039ada2020e07a24d65',
-                      'orderCode': '077acc62236f438eab5e93f88a6c1e88',
-                      'orderGoodsCode': '9e29282dac9f4e67b29ed4ca80a0533c',
-                      'ruleItemCode': '2',
-                      'orderAddressCode': 'a0d5b7286f3948ea93a5fd10f4c14324',
-                      'ruleValue': '[-300,300]',
-                      'type': null,
-                      'cnName': '路耗 容忍值',
-                      'enName': 'LOSS_TOLERANCE',
-                      'showType': 2,
-                      'dictCode': null,
-                      'ruleType': 1,
-                      'dictLabel': null,
-                      'unit': null,
-                      'ruleCode': '1'
-                    }
-                  ],
-                  'detailList': [
-                    {
-                      'id': 2421,
-                      'code': 'f4ea59fb37ef458c8f700eb08f33d125',
-                      'orderCode': '077acc62236f438eab5e93f88a6c1e88',
-                      'orderGoodsCode': '9e29282dac9f4e67b29ed4ca80a0533c',
-                      'ruleItemCode': '18',
-                      'orderAddressCode': 'a0d5b7286f3948ea93a5fd10f4c14324',
-                      'ruleValue': '1',
-                      'type': '2',
-                      'cnName': '抹零规则',
-                      'enName': 'M0',
-                      'showType': 3,
-                      'dictCode': 'M0',
-                      'ruleType': 0,
-                      'dictLabel': null,
-                      'unit': null,
-                      'ruleCode': '1'
-                    },
-                    {
-                      'id': 2420,
-                      'code': 'e6f8af83c7e54e6d923fa589b4069ca7',
-                      'orderCode': '077acc62236f438eab5e93f88a6c1e88',
-                      'orderGoodsCode': '9e29282dac9f4e67b29ed4ca80a0533c',
-                      'ruleItemCode': '17',
-                      'orderAddressCode': 'a0d5b7286f3948ea93a5fd10f4c14324',
-                      'ruleValue': '200',
-                      'type': null,
-                      'cnName': '运费单价',
-                      'enName': 'FREIGHT_COST',
-                      'showType': 1,
-                      'dictCode': null,
-                      'ruleType': 2,
-                      'dictLabel': null,
-                      'unit': null,
-                      'ruleCode': '1'
-                    }
-                  ]
-                },
-                'ruleCode': '1'
-              }
-            ]
-          }
-        ]
-      };
-
       // 2 包装成需要的数据
 
       // 2-1 如何获取 商品的名称??
@@ -1166,7 +1015,7 @@ export default {
         };
       });
 
-      console.log(tabs, '封装好的tab');
+      // console.log(tabs, '封装好的tab');
       // 3 传入组件
       this.tabs = tabs;
       this.pubilshCode = redisOrderInfoVo ? redisOrderInfoVo.pubilshCode : row.source.pubilshCode;
@@ -1196,9 +1045,7 @@ export default {
     },
     /** 复制 */
     handleclone(row) {
-      // this.openDispatch = true;
-      // this.dispatch = row;
-      console.log('这个是复制啥?? ', row);
+      this.$router.push({ name: 'Release', query: { id: row.code, t: '3' }});
     },
     /** 关闭 */
     submitRes(res) {
@@ -1220,7 +1067,7 @@ export default {
   position: relative;
   margin: 0 15px 15px;
   overflow-y: auto;
-  height: calc(100vh - 145px);
+  height: calc(100vh - 120px);
 }
 .card-left{
   position: relative;
