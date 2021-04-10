@@ -114,7 +114,7 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        name: null
+        name: undefined
       }
     };
   },

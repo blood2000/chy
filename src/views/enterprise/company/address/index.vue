@@ -186,11 +186,9 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        addressAlias: null,
-        addressName: null,
-        status: null
-        // contact: null,
-        // contactPhone: null
+        addressAlias: undefined,
+        addressName: undefined,
+        status: undefined
       }
     };
   },

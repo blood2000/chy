@@ -11,16 +11,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <!--<el-form-item label="电话号码" prop="telphone">
-        <el-input
-          v-model="queryParams.telphone"
-          placeholder="请输入电话号码"
-          clearable
-          size="small"
-          style="width: 272px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>-->
       <el-form-item label="是否核算" prop="isAccount">
         <el-select v-model="queryParams.isAccount" placeholder="请选择核算方式" filterable clearable size="small" style="width: 272px">
           <el-option
@@ -354,6 +344,7 @@ export default {
         isAccount: undefined,
         accountType: undefined,
         authStatus: undefined,
+        shipperType: undefined,
         companyName: undefined,
         telphone: undefined,
         authTimeBegin: undefined,

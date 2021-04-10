@@ -12,9 +12,9 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="申请人" prop="nickname">
+      <el-form-item label="申请人" prop="applyerName">
         <el-input
-          v-model="queryParams.nickname"
+          v-model="queryParams.applyerName"
           placeholder="请输入申请人"
           clearable
           size="small"
@@ -153,6 +153,10 @@
       <template #payStatus="{row}">
         <span>{{ selectDictLabel(payStatusOption, row.payStatus) }}</span>
       </template>
+      <!-- 申请状态 -->
+      <template #status="{row}">
+        <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
+      </template>
       <template #transferTime="{row}">
         <span>{{ parseTime(row.transferTime) }}</span>
       </template>
@@ -206,7 +210,14 @@ export default {
         { dictLabel: '司机', dictValue: 2 }
       ],
       // 转帐结果字典
-      statusOptions: [],
+      statusOptions: [
+        { dictLabel: '提现申请', dictValue: 0 },
+        { dictLabel: '提交成功', dictValue: 1 },
+        { dictLabel: '转账成功', dictValue: 2 },
+        { dictLabel: '转账失败', dictValue: 3 },
+        { dictLabel: '处理中', dictValue: 4 },
+        { dictLabel: '驳回', dictValue: 5 }
+      ],
       // 转账渠道字典
       payStatusOption: [
         { dictLabel: '线下', dictValue: 0 },
@@ -215,7 +226,18 @@ export default {
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 10
+        pageSize: 10,
+        roleName: undefined,
+        applyerName: undefined,
+        bankAcountName: undefined,
+        userPhone: undefined,
+        bankNumber: undefined,
+        licenseNumber: undefined,
+        status: undefined,
+        transferTimeBegin: undefined,
+        transferTimeEnd: undefined,
+        applyTimeBegin: undefined,
+        applyTimeEnd: undefined
       }
     };
   },

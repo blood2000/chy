@@ -2,8 +2,8 @@
   <!-- 充值记录 -->
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-      <el-form-item label="平台角色" prop="name">
-        <el-select v-model="queryParams.name" placeholder="请选择平台角色" clearable filterable size="small">
+      <el-form-item label="平台角色" prop="roleName">
+        <el-select v-model="queryParams.roleName" placeholder="请选择平台角色" clearable filterable size="small">
           <el-option
             v-for="dict in roleOptions"
             :key="dict.dictValue"
@@ -12,26 +12,26 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="用户名称" prop="name">
+      <el-form-item label="用户名称" prop="userName">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.userName"
           placeholder="请输入用户名称"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="手机号" prop="name">
+      <el-form-item label="手机号码" prop="userPhone">
         <el-input
-          v-model="queryParams.name"
-          placeholder="请输入手机号"
+          v-model="queryParams.userPhone"
+          placeholder="请输入手机号码"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="收支类型" prop="name">
-        <el-select v-model="queryParams.name" placeholder="请选择收支类型" clearable filterable size="small">
+      <el-form-item label="收支类型" prop="paidFeeType">
+        <el-select v-model="queryParams.paidFeeType" placeholder="请选择收支类型" clearable filterable size="small">
           <el-option
             v-for="dict in incomeTypeOptions"
             :key="dict.dictValue"
@@ -40,18 +40,18 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="支付类型" prop="name">
-        <el-select v-model="queryParams.name" placeholder="请选择支付类型" clearable filterable size="small">
+      <el-form-item label="支付类型" prop="paidLineType">
+        <el-select v-model="queryParams.paidLineType" placeholder="请选择支付类型" clearable filterable size="small">
           <el-option
-            v-for="dict in payTypeOptions"
+            v-for="dict in paidLineTypeOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="消费项目" prop="name">
-        <el-select v-model="queryParams.name" placeholder="请选择消费项目" clearable filterable size="small">
+      <el-form-item label="消费项目" prop="paidItem">
+        <el-select v-model="queryParams.paidItem" placeholder="请选择消费项目" clearable filterable size="small">
           <el-option
             v-for="dict in consumeOptions"
             :key="dict.dictValue"
@@ -60,9 +60,9 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="变动日期" prop="name">
+      <el-form-item label="变动日期">
         <el-date-picker
-          v-model="queryParams.name"
+          v-model="queryParams.updateTimeBegin"
           clearable
           type="date"
           size="small"
@@ -72,7 +72,7 @@
         />
         至
         <el-date-picker
-          v-model="queryParams.name"
+          v-model="queryParams.updateTimeEnd"
           clearable
           type="date"
           size="small"
@@ -94,24 +94,39 @@
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table v-loading="loading" :data="rechargeList">
-      <el-table-column label="平台角色" align="center" prop="" :formatter="roleFormat" />
-      <el-table-column label="姓名" align="center" prop="" />
-      <el-table-column label="手机号" align="center" prop="" />
-      <el-table-column label="角色" align="center" prop="" />
-      <el-table-column label="收支类型" align="center" prop="" />
-      <el-table-column label="支付类型" align="center" prop="" />
-      <el-table-column label="消费项目" align="center" prop="" />
-      <el-table-column label="变动金额" align="center" prop="" />
-      <el-table-column label="变动金额" align="center" prop="" />
-      <el-table-column label="备注" align="center" prop="" />
-      <el-table-column label="操作人" align="center" prop="" />
-      <el-table-column label="变动时间" align="center" prop="time">
-        <template slot-scope="scope">
-          {{ parseTime(scope.row.time) }}
-        </template>
-      </el-table-column>
-    </el-table>
+    <RefactorTable :loading="loading" :data="rechargeList" :table-columns-config="tableColumnsConfig">
+      <!-- 支付类型 -->
+      <template #paidLineType="{row}">
+        <span>{{ selectDictLabel(paidLineTypeOptions, row.paidLineType) }}</span>
+      </template>
+      <!-- 消费项目 -->
+      <template #paidItem="{row}">
+        <span>{{ selectDictLabel(consumeOptions, row.paidItem) }}</span>
+      </template>
+      <!-- 支付状态 -->
+      <template #payStatus="{row}">
+        <span>{{ selectDictLabel(payStatusOptions, row.payStatus) }}</span>
+      </template>
+      <!-- 交易类型 -->
+      <template #payType="{row}">
+        <span>{{ selectDictLabel(payTypeOptions, row.payType) }}</span>
+      </template>
+      <!-- 收支类型 -->
+      <template #paidFeeType="{row}">
+        <span v-if="row.paidFeeType === '0'" class="g-color-success">+收入</span>
+        <span v-if="row.paidFeeType === '1'" class="g-clolor-error">-支出</span>
+      </template>
+      <!-- 变动金额 -->
+      <template #paidAmount="{row}">
+        <span class="g-color-blue">{{ row.paidAmount }}</span>
+      </template>
+      <template #createTime="{row}">
+        <span>{{ parseTime(row.createTime) }}</span>
+      </template>
+      <template #updateTime="{row}">
+        <span>{{ parseTime(row.updateTime) }}</span>
+      </template>
+    </RefactorTable>
 
     <pagination
       v-show="total>0"
@@ -146,17 +161,57 @@ export default {
       // 是否显示弹出层
       open: false,
       // 收支类型字典
-      incomeTypeOptions: [],
+      incomeTypeOptions: [
+        { dictLabel: '收入', dictValue: 0 },
+        { dictLabel: '支出', dictValue: 1 }
+      ],
       // 支付类型字典
-      payTypeOptions: [],
+      paidLineTypeOptions: [
+        { dictLabel: '在线支付', dictValue: 0 },
+        { dictLabel: '现金支付', dictValue: 1 }
+      ],
       // 消费项目字典
-      consumeOptions: [],
+      consumeOptions: [
+        { dictLabel: '充值', dictValue: 0 },
+        { dictLabel: '保证金', dictValue: 1 },
+        { dictLabel: '运费', dictValue: 2 },
+        { dictLabel: '保费', dictValue: 3 },
+        { dictLabel: '罚款', dictValue: 4 },
+        { dictLabel: '提现', dictValue: 5 },
+        { dictLabel: '信息费', dictValue: 6 }
+      ],
       // 平台角色字典
-      roleOptions: [],
+      roleOptions: [
+        { dictLabel: '货主', dictValue: 0 },
+        { dictLabel: '调度者', dictValue: 1 },
+        { dictLabel: '司机', dictValue: 2 }
+      ],
+      // 交易类型
+      payTypeOptions: [
+        { dictLabel: '现金', dictValue: 0 },
+        { dictLabel: '油点', dictValue: 1 },
+        { dictLabel: '汽点', dictValue: 2 },
+        { dictLabel: '宝付', dictValue: 3 }
+      ],
+      // 支付状态
+      payStatusOptions: [
+        { dictLabel: '支付中', dictValue: 1 },
+        { dictLabel: '支付失败', dictValue: 2 },
+        { dictLabel: '已完成', dictValue: 3 },
+        { dictLabel: '无此交易', dictValue: 4 }
+      ],
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 10
+        pageSize: 10,
+        roleName: undefined,
+        userName: undefined,
+        userPhone: undefined,
+        paidFeeType: undefined,
+        paidLineType: undefined,
+        paidItem: undefined,
+        updateTimeBegin: undefined,
+        updateTimeEnd: undefined
       }
     };
   },
@@ -169,8 +224,8 @@ export default {
     getList() {
       this.loading = true;
       rechargelist(this.queryParams).then(response => {
-        this.rechargeList = response.rows;
-        this.total = response.total;
+        this.rechargeList = response.data.rows;
+        this.total = response.data.total;
         this.loading = false;
       });
     },
@@ -185,6 +240,8 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.queryParams.updateTimeBegin = null;
+      this.queryParams.updateTimeEnd = null;
       this.resetForm('queryForm');
       this.handleQuery();
     }

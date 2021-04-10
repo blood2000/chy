@@ -73,7 +73,7 @@
 
     <RefactorTable :loading="loading" :data="dataList" :table-columns-config="tableColumnsConfig">
       <template #updateTime="{row}">
-        <span>{{ parseTime(row.updateTime, '{y}-{m}-{d}') }}</span>
+        <span>{{ parseTime(row.updateTime) }}</span>
       </template>
       <template #edit="{row}">
         <el-button
@@ -143,7 +143,13 @@ export default {
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 10
+        pageSize: 10,
+        roleName: undefined,
+        orgName: undefined,
+        nickName: undefined,
+        phonenumber: undefined,
+        minAmount: undefined,
+        maxAmount: undefined
       }
     };
   },

@@ -16,15 +16,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <!-- <el-form-item label="车主编码" prop="vehicleOwnerCode">
-        <el-input
-          v-model="queryParams.vehicleOwnerCode"
-          placeholder="请输入车主编码"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
       <el-form-item label="归属类型" prop="vehicleAscriptionType">
         <el-select
           v-model="queryParams.vehicleAscriptionType"
@@ -68,15 +59,6 @@
           placeholder="选择年审时间"
         />
       </el-form-item>
-      <!-- <el-form-item label="运输介子" prop="transportMeson">
-        <el-input
-          v-model="queryParams.transportMeson"
-          placeholder="请输入运输介子"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
       <el-form-item label="审核状态" prop="authStatus">
         <el-select
           v-model="queryParams.authStatus"

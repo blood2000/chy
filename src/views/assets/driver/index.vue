@@ -386,7 +386,8 @@ export default {
         authStatus: undefined,
         licenseNumber: undefined,
         driverLicenseType: undefined,
-        teamCode: undefined
+        teamCode: undefined,
+        applyStatus: undefined
       },
       // 表单是否禁用
       formDisable: false,

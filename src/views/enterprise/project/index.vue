@@ -62,7 +62,7 @@
           @click="handleDelete"
         >删除</el-button>
       </el-col>
-     <!-- <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button
           v-hasPermi="['enterprise:project:export']"
           type="warning"
@@ -166,14 +166,8 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        // code: null,
-        // shipmentCode: null,
-        projectName: null,
-        commodityCategoryCode: null
-        // commoditySubclassCodes: null,
-        // projectRemark: null,
-        // createCode: null,
-        // updateCode: null
+        projectName: undefined,
+        commodityCategoryCode: undefined
       },
       // 表单参数
       form: {},
