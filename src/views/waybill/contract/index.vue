@@ -97,7 +97,7 @@
 
       <template #edit="{row}">
         <el-button
-          v-hasPermi="['system:menu:edit']"
+          v-hasPermi="['transportation:orderContract:generate']"
           size="mini"
           type="text"
           icon="el-icon-printer"

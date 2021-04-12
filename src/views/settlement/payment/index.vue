@@ -155,7 +155,6 @@
     >
       <el-col :span="1.5">
         <el-button
-          v-hasPermi="['assets:vehicle:edit']"
           type="success"
           icon="el-icon-wallet"
           size="mini"
@@ -205,7 +204,6 @@
 
       <template #edit="{row}">
         <el-button
-          v-hasPermi="['system:menu:edit']"
           size="mini"
           type="text"
           icon="el-icon-document-remove"
