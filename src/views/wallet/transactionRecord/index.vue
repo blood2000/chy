@@ -76,7 +76,7 @@
 import { balanceListApi, balanceList } from '@/api/capital/ubalance';
 
 export default {
-  name: 'AccountDetails',
+  name: 'TransactionRecord',
   data() {
     return {
       tableColumnsConfig: [],

@@ -142,6 +142,7 @@ export default {
       loading: true,
       // 选中数组
       ids: [],
+      names: [],
       // 非单个禁用
       single: true,
       // 非多个禁用
