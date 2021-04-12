@@ -27,3 +27,27 @@ export function getDetail(invoiceApplyCode) {
   });
 }
 
+// 查看这张发票下的所有运单
+export function getInvoiceWaybill(invoiceCode) {
+  return request({
+    url: '/transportation/invoice/getWayBillByInvoice/' + invoiceCode,
+    method: 'post'
+  });
+}
+
+// 查看这张申请记录的所有运单
+export function getApplyWaybill(applyCode) {
+  return request({
+    url: '/transportation/invoiceApply/getWayBillByApply/' + applyCode,
+    method: 'post'
+  });
+}
+
+// 开票
+export function openInvoice(data) {
+  return request({
+    url: '/transportation/invoiceApply/openInvoice',
+    method: 'post',
+    data: data
+  });
+}
