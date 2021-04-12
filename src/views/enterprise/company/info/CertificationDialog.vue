@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="货主/企业认证" :visible="visible" width="800px" append-to-body @close="cancel">
+  <el-dialog title="货主/企业认证" :visible="visible" width="800px" append-to-body :close-on-click-modal="false" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="140px">
       <template v-if="form.shipperType === 1">
         <el-form-item label="企业名称" prop="companyName">

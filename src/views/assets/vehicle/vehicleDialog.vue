@@ -1,6 +1,6 @@
 <template>
   <!-- 添加或修改车辆对话框 -->
-  <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
+  <el-dialog :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
       <el-form-item label="车牌号" prop="licenseNumber">
         <el-input v-model="form.licenseNumber" placeholder="请输入车牌号" class="width90" clearable />

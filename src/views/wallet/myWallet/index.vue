@@ -40,7 +40,7 @@ import { getWalletInfo } from '@/api/wallet/wallet';
 import withdrawDialog from './withdrawDialog';
 
 export default {
-  name: 'TransactionRecord',
+  name: 'MyWallet',
   components: {
     withdrawDialog
   },
