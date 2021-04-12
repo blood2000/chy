@@ -217,6 +217,7 @@ export default {
       loading: true,
       // 选中数组
       ids: [],
+      teamNames: [],
       // 非单个禁用
       single: true,
       // 非多个禁用
@@ -301,6 +302,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id);
+      this.teamNames = selection.map(item => item.name);
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
     },
@@ -340,7 +342,8 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$confirm('是否确认删除调度者编号为"' + ids + '"的数据项?', '警告', {
+      const teamNames = row.name || this.teamNames;
+      this.$confirm('是否确认删除调度者名称为"' + teamNames + '"的数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
