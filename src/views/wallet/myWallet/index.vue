@@ -16,8 +16,8 @@
       <el-button type="text" @click="handleJumpPage('rechargeDescription')">充值说明</el-button>
       <el-button type="text" @click="handleJumpPage('accountDetails')">账户明细</el-button>
       <el-button type="text" @click="handleJumpPage('withdrawalsRecord')">提现记录</el-button>
-      <el-button type="text" @click="handleJumpPage('paymentDetails')">付款明细</el-button>
-      <el-button type="text" @click="handleJumpPage('freezeDetails')">冻结明细</el-button>
+      <el-button type="text" @click="handleJumpPage('transactionRecord')">付款明细</el-button>
+      <el-button type="text" @click="handleJumpPage('transactionRecord')">冻结明细</el-button>
     </div>
 
     <div class="app-container">
@@ -32,20 +32,21 @@
 
     <!-- 账户提现弹窗 -->
     <withdraw-dialog :open.sync="withdrawOpen" />
+    <!-- 修改密码弹窗 -->
+    <change-password-dialog :open.sync="changePasswordOpen" :type="passType" />
   </div>
 </template>
 <script>
 import { getUserInfo } from '@/utils/auth';
 import { getWalletInfo } from '@/api/wallet/wallet';
 import withdrawDialog from './withdrawDialog';
+import ChangePasswordDialog from './changePasswordDialog.vue';
 
 export default {
   name: 'MyWallet',
   components: {
-    withdrawDialog
-  },
-  props: {
-
+    withdrawDialog,
+    ChangePasswordDialog
   },
   data() {
     return {
@@ -54,7 +55,7 @@ export default {
       // 提现
       withdrawOpen: false,
       // 密码
-      changePassWordOpen: false
+      changePasswordOpen: false
     };
   },
   created() {
@@ -75,7 +76,7 @@ export default {
     },
     // 修改密码按钮
     handleChangePassword() {
-
+      this.changePasswordOpen = true;
     },
     // 忘记密码按钮
     handleForgotPassword() {

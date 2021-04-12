@@ -175,6 +175,7 @@ export default {
     },
 
     getOption(arr) {
+      const M0_option = this.$store.state.orders.M0_option;
       return arr.map(async e => {
         if (e.dictCode && (e.showType === '3' || e.showType === '4')) {
           // 新
@@ -183,8 +184,17 @@ export default {
           //   dictType: e.dictCode
           // });
           // 旧
-          const { data } = await this.getDicts(e.dictCode);
-          e.Option = data;
+          if (e.dictCode === 'M0') {
+            if (M0_option && M0_option.length) {
+              e.Option = M0_option;
+            } else {
+              const { data } = await this.getDicts(e.dictCode);
+              e.Option = data;
+            }
+          } else {
+            const { data } = await this.getDicts(e.dictCode);
+            e.Option = data;
+          }
         }
 
 

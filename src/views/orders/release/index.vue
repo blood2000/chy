@@ -23,9 +23,9 @@
     >
       <!-- 第一步 基本信息 -->
       <div v-show="active ==1 || myisdisabled" class="content">
-        <div v-if="!isShipment && isCreated" class="header mb8">代发货主信息</div>
+        <div v-if="!isClone && (!isShipment && isCreated)" class="header mb8">代发货主信息</div>
 
-        <el-form-item v-if="!isShipment && isCreated" label="代发货主" prop="tin1">
+        <el-form-item v-if="!isClone && (!isShipment && isCreated)" label="代发货主" prop="tin1">
           <el-select
             v-model="formData.tin1"
             v-el-select-loadmore="loadmore"
@@ -205,7 +205,7 @@
         <el-divider />
 
         <template v-if="!myisdisabled">
-          <div v-if="active < 4" class="ly-t-center">
+          <div v-if="!loading && active < 4" class="ly-t-center">
             <el-button @click="nextFe(2)">上一步</el-button>
             <el-button type="primary" @click="onSubmit('elForm',3)">{{ isCreated?'立即发布':'保存' }}</el-button>
             <el-button @click="nextFe(4)">预览(查看预估价格)</el-button>
@@ -246,6 +246,8 @@ import OpenDialog from './OpenDialog';
 import { getUserInfo } from '@/utils/auth';
 import { listShipment } from '@/api/assets/shipment.js';
 import { orderPubilsh, getOrderByCode, orderFreight, update, estimateCost } from '@/api/order/release';
+import { getProvinceList } from '@/api/system/area';
+
 
 export default {
   components: {
@@ -256,6 +258,7 @@ export default {
   },
   data() {
     return {
+      isClone: false,
       queryParams: {
         pageNum: 1,
         keywords: '',
@@ -318,7 +321,7 @@ export default {
 
     // 创建/编辑 true=>创建 false=>编辑
     isCreated() {
-      return !this.$route.query.id;
+      return this.isClone || !this.$route.query.id;
     },
 
     idCode() {
@@ -335,7 +338,7 @@ export default {
     },
     '$route.query.t': {
       handler(value, odvalue) {
-        if ((odvalue === '0' || odvalue === '1') && !value) {
+        if ((odvalue === '0' || odvalue === '1' || odvalue === '3') && !value) {
           // 初次使用
           this.$router.replace({
             path: '/refresh'
@@ -343,13 +346,15 @@ export default {
         }
         if (value === '0') {
           this.isT = true;
+        } else if (value === '3') {
+          this.isClone = true;
         }
       },
       immediate: true
     }
   },
 
-  created() {
+  async created() {
     // 判断用户
     const { isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
     // console.log(isShipment, user, shipment);
@@ -361,6 +366,14 @@ export default {
     if (this.idCode) {
       this.getCbdata(this.idCode);
     }
+
+    // 缓存mo的吧
+
+    this.getDicts('M0').then(res => {
+      this.$store.dispatch('orders/store_getM0_option', res.data);
+    });
+    const { rows } = await getProvinceList();
+    this.$store.dispatch('orders/store_getProvinceList', rows);
   },
 
   methods: {
@@ -414,7 +427,7 @@ export default {
       }
       this.active = active;
       // 测数据用
-      this.handlercbAddress([
+      false && this.handlercbAddress([
         {
           'addressType': 2,
           'country': '中国',
@@ -537,7 +550,7 @@ export default {
         });
       }
 
-      console.log(this.addr_add, this.addr_xie, '88888888888888888888888');
+      // console.log(this.addr_add, this.addr_xie, '88888888888888888888888');
 
       this.active = active; // 3
     },
@@ -561,10 +574,11 @@ export default {
 
     // 处理预估
     async handlerEstimateCost(lastData) {
-      console.log(lastData, '处理预估的时机');
+      // console.log(lastData, '处理预估的时机');
+
 
       // 注意编辑的时候是有加update的, 要重新处理一下
-      const { orderFreightInfoBoList, orderGoodsList, orderFreightInfoUpdateBoList, orderGoodsUpdateBoList } = lastData;
+      const { orderFreightInfoBoList, orderGoodsList, orderFreightInfoUpdateBoList, orderGoodsUpdateBoList } = JSON.parse(JSON.stringify(lastData));
 
       const orderEstimateCostBoList = (orderFreightInfoBoList || orderFreightInfoUpdateBoList).map(e => {
         (orderGoodsList || orderGoodsUpdateBoList).forEach(goods => {
@@ -577,11 +591,11 @@ export default {
           }
         });
         if (!e.orderAddressBoList) {
-          e.orderAddressBoList = e.orderAddressUpdateBoList.map(e => {
-            e.orderFreightBoList = e.orderFreightUpdateBoList;
-            e.orderFreightUpdateBoList = undefined;
+          e.orderAddressBoList = e.orderAddressUpdateBoList.map(ee => {
+            ee.orderFreightBoList = ee.orderFreightUpdateBoList;
+            ee.orderFreightUpdateBoList = undefined;
 
-            return e;
+            return ee;
           });
 
           e.orderAddressUpdateBoList = undefined;
@@ -595,7 +609,6 @@ export default {
         'userCode': this.formData.tin1
       };
 
-      console.log(qData);
       const res = await estimateCost(qData);
 
       this.$store.dispatch('orders/store_getEst', res.data);
@@ -688,6 +701,8 @@ export default {
 
       // 商品处理对象-按多个商品处理
 
+
+
       const orderGoodsListArr = orderGoodsList.map(e => {
         this.basicInfor.orderGoodsList.forEach(itemGoods => {
           if (itemGoods.goodsType === e.goodsType) {
@@ -738,8 +753,6 @@ export default {
         orderBasic.orderFreightInfoUpdateBoList = orderFreightInfoBoList;
       }
 
-
-      console.log(orderBasic, '最后数据');
       return orderBasic;
     },
 
@@ -747,6 +760,7 @@ export default {
     async handlerAddress() {
       // 获取商品基本信息(1.商品info 2.地址及地址下对应的规则)
       const goodsInfo = await this.$refs.goodsInfo._submitForm();
+
 
       // 1.商品info
       const orderGoodsList = goodsInfo.map(e => {
@@ -758,6 +772,8 @@ export default {
         };
       });
       // 2. 地址及地址下对应的规则(注意: arr不包括一卸或者一装)
+
+
 
       // 规则-找出来
       const orderFreightInfoBoList = goodsInfo.map(e => {
@@ -816,8 +832,6 @@ export default {
         return e;
       });
 
-
-
       return { orderGoodsList, orderFreightInfoBoList, orderAddressPublishBoList: [...addr_add, ...addr_xie] };
     },
 
@@ -874,12 +888,81 @@ export default {
 
         this.cbOrderFreight = redisOrderFreightInfoVoList;
 
+
         this.active = this.isT ? 4 : 3; // 自接全展示
 
-        this.loading = false;
+        this.isT && this.isTEstimateCost(data);
+
+        this.$nextTick(() => {
+          this.loading = false;
+        });
       } catch (error) {
         this.loading = false;
       }
+    },
+
+    // 查看详情处理预估
+    async isTEstimateCost(lastData) {
+      // console.log(lastData, '处理预估的时机');
+
+      // 注意编辑的时候是有加update的, 要重新处理一下
+      const { redisOrderGoodsVoList, redisOrderFreightInfoVoList } = lastData;
+
+      const orderEstimateCostBoList = redisOrderFreightInfoVoList.map(e => {
+        let number = '';
+        let stowageStatus = '';
+        let totalType = '';
+        let vehicleMaxWeight = '';
+        let weight = '';
+        let orderAddressBoList = [];
+        let goodsIdentification = '';
+
+
+        redisOrderGoodsVoList.forEach(goods => {
+          // console.log(goods.code === e.goodsCode);
+
+          if (goods.code === e.goodsCode) {
+            goodsIdentification = goods.goodsType;
+            number = goods.number;
+            stowageStatus = goods.stowageStatus;
+            totalType = goods.totalType;
+            vehicleMaxWeight = goods.vehicleMaxWeight;
+            weight = goods.weight;
+          }
+        });
+
+
+        if (!e.orderAddressBoList) {
+          orderAddressBoList = e.redisOrderAddressInfoVoList.map(ee => {
+            return {
+              addressIdentification: ee.addressCode,
+              orderFreightBoList: ee.redisOrderFreightVoList
+            };
+          });
+
+          // e.redisOrderAddressInfoVoList = undefined;
+        }
+        return {
+          goodsIdentification,
+          number,
+          stowageStatus,
+          totalType,
+          vehicleMaxWeight,
+          weight,
+          orderAddressBoList: e.orderAddressBoList ? e.orderAddressBoList : orderAddressBoList
+        };
+      });
+
+
+      const qData = {
+        orderEstimateCostBoList,
+        'userCode': this.formData.tin1
+      };
+
+      const res = await estimateCost(qData);
+      this.$nextTick(() => {
+        this.$store.dispatch('orders/store_getEst', res.data);
+      });
     },
 
     // 1.处理 cbOrderBasic 要的数据
@@ -904,7 +987,7 @@ export default {
         classList: redisOrderClassGoodsVoList.map(e => {
           return {
             // code: e.code,
-            classCode: e.classCode
+            classCode: e ? e.classCode : ''
           };
         })
       };

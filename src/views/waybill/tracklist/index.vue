@@ -200,7 +200,7 @@
       <template #edit="{row}">
         <el-button
           v-if="activeName == '3' && row.isAccountBack == '1'"
-          v-hasPermi="['system:menu:edit']"
+          v-hasPermi="['transportation:waybillOper:accountBackRemark']"
           size="mini"
           type="text"
           icon="el-icon-warning-outline"
@@ -208,7 +208,7 @@
         >驳回提示</el-button>
         <el-button
           v-if="activeName == '1'"
-          v-hasPermi="['system:menu:edit']"
+          v-hasPermi="['transportation:waybillOper:load']"
           size="mini"
           type="text"
           icon="el-icon-truck"
@@ -216,7 +216,7 @@
         >车辆装货</el-button>
         <el-button
           v-if="activeName == '2'"
-          v-hasPermi="['system:menu:edit']"
+          v-hasPermi="['transportation:waybillOper:unload']"
           size="mini"
           type="text"
           icon="el-icon-takeaway-box"
@@ -224,7 +224,7 @@
         >车辆卸货</el-button>
         <el-button
           v-if="activeName == '1'"
-          v-hasPermi="['system:menu:edit']"
+          v-hasPermi="['transportation:waybillOper:cancel']"
           size="mini"
           type="text"
           icon="el-icon-circle-close"
@@ -232,7 +232,7 @@
         >取消订单</el-button>
         <el-button
           v-if="activeName != '1'"
-          v-hasPermi="['system:menu:edit']"
+          v-hasPermi="['transportation:waybillOper:loadCredentials']"
           size="mini"
           type="text"
           icon="el-icon-notebook-1"
@@ -240,7 +240,7 @@
         >补装货凭证</el-button>
         <el-button
           v-if="activeName == '3'"
-          v-hasPermi="['system:menu:edit']"
+          v-hasPermi="['transportation:waybillOper:unloadCredentials']"
           size="mini"
           type="text"
           icon="el-icon-notebook-2"
@@ -248,21 +248,21 @@
         >补卸货凭证</el-button>
         <el-button
           v-if="activeName != '1'"
-          v-hasPermi="['system:menu:edit']"
+          v-hasPermi="['iot:jimiDevice:getTrackList']"
           size="mini"
           type="text"
           icon="el-icon-aim"
           @click="handleTableBtn(row, 7)"
         >车辆跟踪</el-button>
         <el-button
-          v-hasPermi="['system:menu:edit']"
+          v-hasPermi="['iot:jimiDevice:location']"
           size="mini"
           type="text"
           icon="el-icon-location-outline"
           @click="handleTableBtn(row, 8)"
         >定位</el-button>
         <el-button
-          v-hasPermi="['system:menu:edit']"
+          v-hasPermi="['transportation:driverComplaint:add']"
           size="mini"
           type="text"
           icon="el-icon-edit-outline"
@@ -270,7 +270,7 @@
         >投诉</el-button>
         <el-button
           v-if="activeName == '3'"
-          v-hasPermi="['system:menu:edit']"
+          v-hasPermi="['transportation:waybillComment:add']"
           size="mini"
           type="text"
           icon="el-icon-chat-dot-square"

@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
+  <el-dialog :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
       <el-form-item label="发货人/发货企业" prop="shipperType">
         <el-select
@@ -23,6 +23,38 @@
       <el-form-item label="密码" prop="password">
         <el-input v-model="form.password" type="password" placeholder="请输入密码" class="width60 mr3" clearable />
         <span class="g-color-blue">(初始密码为{{ initialPassword }})</span>
+      </el-form-item>
+      <el-form-item>
+        <el-row>
+          <el-col :span="7">
+            <p class="upload-image-label">管理员身份证正面照</p>
+            <upload-image v-model="form.identificationImg" :disabled="disable" />
+          </el-col>
+          <el-col :span="7">
+            <p class="upload-image-label">管理员身份证背面照</p>
+            <upload-image v-model="form.identificationBackImg" :disabled="disable" />
+          </el-col>
+          <el-col :span="7">
+            <p class="upload-image-label">手持身份证照</p>
+            <upload-image v-model="form.identificationInhandImg" :disabled="disable" />
+          </el-col>
+          <el-col v-show="form.shipperType === 1" :span="7" class="mt">
+            <p class="upload-image-label">法人身份证正面照</p>
+            <upload-image v-model="form.artificialIdentificationImg" :disabled="disable" />
+          </el-col>
+          <el-col v-show="form.shipperType === 1" :span="7" class="mt">
+            <p class="upload-image-label">法人身份证背面照</p>
+            <upload-image v-model="form.artificialIdentificationBackImg" :disabled="disable" />
+          </el-col>
+          <el-col v-show="form.shipperType === 1" :span="7" class="mt">
+            <p class="upload-image-label">法人手持身份证照</p>
+            <upload-image v-model="form.artificialIdentificationInhandImg" :disabled="disable" />
+          </el-col>
+          <el-col v-show="form.shipperType === 1" :span="7" class="mt">
+            <p class="upload-image-label">营业执照照</p>
+            <upload-image v-model="form.businessLicenseImg" :disabled="disable" />
+          </el-col>
+        </el-row>
       </el-form-item>
       <el-form-item label="身份证号" prop="identificationNumber">
         <el-input v-model="form.identificationNumber" placeholder="支持自动识别" class="width90" clearable />
@@ -115,38 +147,6 @@
       />
       <el-form-item label="详细地址" prop="area">
         <el-input v-model="form.area" clearable placeholder="支持自动识别" class="width90" />
-      </el-form-item>
-      <el-form-item>
-        <el-row>
-          <el-col :span="7">
-            <p class="upload-image-label">管理员身份证正面照</p>
-            <upload-image v-model="form.identificationImg" :disabled="disable" />
-          </el-col>
-          <el-col :span="7">
-            <p class="upload-image-label">管理员身份证背面照</p>
-            <upload-image v-model="form.identificationBackImg" :disabled="disable" />
-          </el-col>
-          <el-col :span="7">
-            <p class="upload-image-label">手持身份证照</p>
-            <upload-image v-model="form.identificationInhandImg" :disabled="disable" />
-          </el-col>
-          <el-col v-show="form.shipperType === 1" :span="7" class="mt">
-            <p class="upload-image-label">法人身份证正面照</p>
-            <upload-image v-model="form.artificialIdentificationImg" :disabled="disable" />
-          </el-col>
-          <el-col v-show="form.shipperType === 1" :span="7" class="mt">
-            <p class="upload-image-label">法人身份证背面照</p>
-            <upload-image v-model="form.artificialIdentificationBackImg" :disabled="disable" />
-          </el-col>
-          <el-col v-show="form.shipperType === 1" :span="7" class="mt">
-            <p class="upload-image-label">法人手持身份证照</p>
-            <upload-image v-model="form.artificialIdentificationInhandImg" :disabled="disable" />
-          </el-col>
-          <el-col v-show="form.shipperType === 1" :span="7" class="mt">
-            <p class="upload-image-label">营业执照照</p>
-            <upload-image v-model="form.businessLicenseImg" :disabled="disable" />
-          </el-col>
-        </el-row>
       </el-form-item>
       <el-form-item label="是否冻结" prop="isFreezone">
         <el-select
@@ -395,7 +395,16 @@ export default {
         ],
         identificationEndTime: [
           { required: true, message: '身份证有效期不能为空', trigger: 'blur' },
-          { validator: this.formValidate.isExpired }
+          { validator: this.formValidate.isExpired },
+          { validator: (rules, value, callback) => {
+            const { identificationBeginTime } = this.form;
+            if (!value || !identificationBeginTime) {
+              return callback(new Error('身份证有效期不能为空'));
+            }
+            return callback();
+          },
+          trigger: 'change'
+          }
         ],
         creditAmount: [
           { validator: this.formValidate.number, trigger: 'blur' }

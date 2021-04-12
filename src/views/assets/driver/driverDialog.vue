@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
+  <el-dialog :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
       <el-form-item label="司机类别" prop="driverType">
         <el-select v-model="form.driverType" class="width90">
@@ -521,7 +521,16 @@ export default {
         ],
         identificationEndTime: [
           { required: true, message: '身份证有效期不能为空', trigger: 'blur' },
-          { validator: this.formValidate.isExpired }
+          { validator: this.formValidate.isExpired },
+          { validator: (rules, value, callback) => {
+            const { identificationBeginTime } = this.form;
+            if (!value || !identificationBeginTime) {
+              return callback(new Error('身份证有效期不能为空'));
+            }
+            return callback();
+          },
+          trigger: 'change'
+          }
         ],
         issuingOrganizations: [
           { required: true, message: '驾驶证发证机关不能为空', trigger: 'blur' }

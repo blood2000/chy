@@ -10,6 +10,7 @@
       name="file"
       :show-file-list="false"
       :headers="headers"
+      :disabled="disabled"
       style="display: inline-block; vertical-align: top"
     >
       <img v-if="value && !disabled" :src="attachUrl" class="avatar">
@@ -22,7 +23,7 @@
 </template>
 
 <script>
-import { getFile } from '@/api/system/image.js';
+import { uploadImgApi, getFile } from '@/api/system/image.js';
 import { getToken } from '@/utils/auth';
 import { authorPre, produceCode, appCode, appVersion, terminalType } from '@/headers';
 
@@ -40,7 +41,7 @@ export default {
   },
   data() {
     return {
-      uploadImgUrl: process.env.VUE_APP_BASE_API + '/assets/upload/uploadToAli', // 上传的图片服务器地址
+      uploadImgUrl: process.env.VUE_APP_BASE_API + uploadImgApi, // 上传的图片服务器地址
       headers: {
         'Authorization': authorPre + getToken(),
         'Produce-Code': produceCode,

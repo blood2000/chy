@@ -38,17 +38,34 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
+      <el-button type="text">近三月</el-button>
+      <el-button type="text">近半年</el-button>
+      <el-button type="text">近一年</el-button>
       <el-col :span="1.5" class="fr">
         <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
       </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <RefactorTable :loading="loading" :data="dataList" :table-columns-config="tableColumnsConfig">
+    <!-- <RefactorTable :loading="loading" :data="dataList" :table-columns-config="tableColumnsConfig">
       <template #updateTime="{row}">
         <span>{{ parseTime(row.updateTime) }}</span>
       </template>
-    </RefactorTable>
+    </RefactorTable> -->
+    <el-table v-loading="loading" :data="dataList">
+      <el-table-column label="平台角色" align="center" prop="" />
+      <el-table-column label="操作员" align="center" prop="" />
+      <el-table-column label="手机号" align="center" prop="" />
+      <el-table-column label="收支类型" align="center" prop="" />
+      <el-table-column label="支付类型" align="center" prop="" />
+      <el-table-column label="交易类型" align="center" prop="" />
+      <el-table-column label="变动金额（元）" align="center" prop="">
+        <span class="g-color-blue" />
+      </el-table-column>
+      <el-table-column label="账户余额（元）" align="center" prop="" />
+      <el-table-column label="备注" align="center" prop="" />
+      <el-table-column label="变动时间" align="center" prop="" />
+    </el-table>
 
     <pagination
       v-show="total>0"

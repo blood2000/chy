@@ -329,7 +329,6 @@ export default {
           }
         });
 
-        console.log(this.formData.tin2);
 
 
         // 2.去根据大类去请求下数据
@@ -345,9 +344,6 @@ export default {
             }
           });
         }
-
-        console.log(this.formData.tin2_1);
-        console.log(this.formData.tin2_2);
 
 
         // 4.处理调度者
@@ -365,7 +361,7 @@ export default {
         // 5.货集码只做单选处理
 
         this.handleTin4();
-        this.formData.tin6 = classList[0].classCode;
+        this.formData.tin6 = classList[0] ? classList[0].classCode : '';
         this.classList = classList;
         this.InfoCode = code;
       },
@@ -428,6 +424,9 @@ export default {
 
     // 4. 选择所属项目
     handleTin3() {
+      // 如果是复制或者编辑的话 提示一下
+      // console.log(this.$store.getters.isClone);
+
       if (this.formData.tin3 === '0') {
         this.formData.tin2 = '';
         this.formData.tin2_2 = '';
@@ -435,6 +434,7 @@ export default {
         this.tin2_Option = [];
         return;
       }
+
 
       const tin3item = this._zhaovalue(this.tin3Optin, this.formData.tin3);
 
@@ -444,18 +444,23 @@ export default {
 
     // 3. 获取小类列表
     async handletin2(tin3item) {
+      this.formData.tin3 = '0';
       this.$emit('input', this.isMultiGoods);
-
 
       const { data } = await this.listByDict({
         dictPid: this._zhaovalue(this.tin2Option, this.formData.tin2).dictCode,
         dictType: 'goodsType'
       });
 
-
       this.tin2_Option = data;
+      if (!this.isMultiGoods) {
+        this.formData.tin2_2 = this.tin2_Option[0].dictValue;
+      }
 
       if (!tin3item) return;
+
+
+      this.formData.tin3 = tin3item.dictValue;
 
       if (this.isMultiGoods) {
         this.formData.tin2_1 = tin3item.commoditySubclassCodes.split(',');
@@ -600,7 +605,7 @@ export default {
 
     // 回填多商品处理code
     _handlreMultiGoodsType(arr1, options) {
-      console.log(arr1);
+      // console.log(arr1);
 
       const arr2 = [];
       arr1.forEach(e => {

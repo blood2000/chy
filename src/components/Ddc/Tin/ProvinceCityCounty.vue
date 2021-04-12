@@ -166,13 +166,23 @@ export default {
   methods: {
     // 初始获取省
     async init() {
-      const { rows } = await getProvinceList();
-      // 假数据
-      this.provinceOption = this._baozhuan(
-        rows,
-        'provinceCode',
-        'provinceName'
-      );
+      const provinceOption = this.$store.getters.provinceList;
+
+      if (provinceOption && provinceOption.length) {
+        this.provinceOption = this._baozhuan(
+          provinceOption,
+          'provinceCode',
+          'provinceName'
+        );
+      } else {
+        const { rows } = await getProvinceList();
+        // 假数据
+        this.provinceOption = this._baozhuan(
+          rows,
+          'provinceCode',
+          'provinceName'
+        );
+      }
     },
     // 省份切换
     async changeProvince(data) {
