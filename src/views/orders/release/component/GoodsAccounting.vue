@@ -133,7 +133,7 @@
           v-model="formData.vehicleType"
           placeholder="选择车型"
           multiple
-          :multiple-limit="1"
+          :multiple-limit="3"
           clearable
           filterable
           :style="{ width: '100%' }"

@@ -124,7 +124,7 @@
           :key="address.refName"
           class="oneAddress_item"
         >
-          <OneAddress :ref="address.refName" type="1" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
+          <OneAddress v-if="isShowAddress" :ref="address.refName" type="1" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
           <div class="ly-t-right">
             <el-button
               v-if="!myisdisabled && (address_add.length >= 2 || formData.tin8)"
@@ -160,7 +160,7 @@
           :key="address.refName"
           class="oneAddress_item"
         >
-          <OneAddress :ref="address.refName" type="2" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
+          <OneAddress v-if="isShowAddress" :ref="address.refName" type="2" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
 
           <div class="ly-t-right">
 
@@ -326,6 +326,10 @@ export default {
 
     idCode() {
       return this.$route.query.id;
+    },
+
+    isShowAddress() {
+      return !!this.$store.getters.provinceList;
     }
   },
   watch: {

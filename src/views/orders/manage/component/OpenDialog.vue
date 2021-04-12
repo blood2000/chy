@@ -319,7 +319,7 @@ export default {
           });
 
           const data = {
-            'oderCode': this.dispatch.code,
+            'orderCode': this.dispatch.code,
             orderSpecifiedList
           };
 

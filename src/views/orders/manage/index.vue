@@ -362,7 +362,7 @@
                   >详情</el-button>
 
                   <el-button
-                    v-if="row.status+''==='0'"
+                    v-if="false && row.status+''==='0'"
                     v-hasPermi="['system:menu:remove']"
                     size="mini"
                     type="text"
@@ -651,7 +651,7 @@ export default {
         endTime: this.queryParams.tin10[1], //	结束时间	query	false
         companyAndCustomerAndPhone: this.queryParams.tin1, //	下单客户	query	false
         goodsName: this.queryParams.tin5, //	货物描述(名称)	query	false
-        goodsBigType: this.queryParams.tin4, //	货物类型大类	query	false
+        goodsBigType: this.queryParams.tin4 ? [this.queryParams.tin4] : undefined, //	货物类型大类	query	false
         goodsType: undefined, // 小类
         isPublic: this.queryParams.tin11, //	发布状态	query	false
         landInfo: this.queryParams.tin3, //	收货信息	query	false
