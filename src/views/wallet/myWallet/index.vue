@@ -16,8 +16,8 @@
       <el-button type="text" @click="handleJumpPage('rechargeDescription')">充值说明</el-button>
       <el-button type="text" @click="handleJumpPage('accountDetails')">账户明细</el-button>
       <el-button type="text" @click="handleJumpPage('withdrawalsRecord')">提现记录</el-button>
-      <el-button type="text" @click="handleJumpPage('paymentDetails')">付款明细</el-button>
-      <el-button type="text" @click="handleJumpPage('freezeDetails')">冻结明细</el-button>
+      <el-button type="text" @click="handleJumpPage('transactionRecord')">付款明细</el-button>
+      <el-button type="text" @click="handleJumpPage('transactionRecord')">冻结明细</el-button>
     </div>
 
     <div class="app-container">
@@ -40,7 +40,7 @@ import { getWalletInfo } from '@/api/wallet/wallet';
 import withdrawDialog from './withdrawDialog';
 
 export default {
-  name: 'MyWallet',
+  name: 'TransactionRecord',
   components: {
     withdrawDialog
   },
