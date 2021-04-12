@@ -66,3 +66,12 @@ export function batchCheck(data) {
   });
 }
 
+// 批量申请打款
+export function batchApply(data) {
+  return request({
+    url: '/transportation/waybillBalanceInfo/batchApply',
+    method: 'post',
+    data: data
+  });
+}
+
