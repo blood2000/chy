@@ -79,10 +79,10 @@
       </el-form-item>
       <el-form-item
         label="支付批次号"
-        prop="orderClient"
+        prop="bizNo"
       >
         <el-input
-          v-model="queryParams.orderClient"
+          v-model="queryParams.bizNo"
           placeholder="请输入支付批次号"
           clearable
           size="small"
@@ -175,32 +175,41 @@
       class="mb8"
     >
       <el-col :span="3">
-        <span>运单数量：1321</span>
+        <span>运单数量：{{ statistical.waybillCount }}</span>
       </el-col>
       <el-col :span="3">
-        <span>运费金额：1321</span>
+        <span>运费金额：{{ statistical.waybillAmount }}</span>
       </el-col>
       <el-col :span="3">
-        <span>运费税额：1321</span>
+        <span>运费税额：{{ statistical.taxPayment }}</span>
       </el-col>
       <el-col :span="3">
-        <span>服务费金额：1321</span>
+        <span>服务费金额：{{ statistical.serviceFee }}</span>
       </el-col>
       <el-col :span="3">
-        <span>服务费税额：1321</span>
+        <span>服务费税额：{{ statistical.serviceTaxFee }}</span>
       </el-col>
     </el-row>
 
-    <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
-      <template #goodsBigType="{row}">
-        <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
+    <RefactorTable :loading="loading" :data="paymentlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <template #status="{row}">
+        <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
       </template>
-      <template #isReturn="{row}">
-        <span>{{ selectDictLabel(isReturnOptions, row.isReturn) }}</span>
+      <template #applyTime="{row}">
+        <span>{{ parseTime(row.applyTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
       </template>
-      <!-- <template #isChild="{row}">
-        <span>{{ selectDictLabel(isChildOptions, row.isChild) }}</span>
-      </template> -->
+      <template #wayBillUpdateTime="{row}">
+        <span>{{ parseTime(row.wayBillUpdateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+      </template>
+      <template #receiveTime="{row}">
+        <span>{{ parseTime(row.receiveTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+      </template>
+      <template #orderTime="{row}">
+        <span>{{ parseTime(row.orderTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+      </template>
+      <template #lastLoadingTime="{row}">
+        <span>{{ parseTime(row.lastLoadingTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+      </template>
 
       <template #edit="{row}">
         <el-button
@@ -250,9 +259,9 @@
 </template>
 
 <script>
-import { adjustList, adjustListApi } from '@/api/settlement/adjust';
+import { paymentList, paymentListApi, statistical } from '@/api/settlement/payment';
 // 驳回弹窗
-import RejectDialog from '../components/rejectDialog';
+import RejectDialog from './rejectDialog';
 // 子单弹窗
 import ChildDialog from '../components/childDialog';
 // 运单详情弹窗
@@ -260,12 +269,12 @@ import DetailDialog from '@/views/waybill/components/detailDialog';
 
 
 export default {
-  'name': 'AdjustList',
+  'name': 'PaymentList',
   components: { RejectDialog, DetailDialog, ChildDialog },
   data() {
     return {
       tableColumnsConfig: [],
-      api: adjustListApi,
+      api: paymentListApi,
       createTime: '',
       // 遮罩层
       'loading': false,
@@ -276,8 +285,15 @@ export default {
       // 总条数
       'total': 0,
       // 表格数据
-      'adjustlist': [],
-
+      'paymentlist': [],
+      // 统计数据
+      statistical: {
+	      serviceFee: 0,
+	      serviceTaxFee: 0,
+	      taxPayment: 0,
+	      waybillAmount: 0,
+	      waybillCount: 0
+      },
       // 查询参数
       'queryParams': {
         'pageNum': 1,
@@ -285,13 +301,13 @@ export default {
         'loadInfo': undefined,
         'receivedInfo': undefined,
         'goodsBigType': undefined,
+        'bizNo': undefined,
         'mainOrderNumber': undefined,
-        'orderEndTime': undefined,
-        'orderStartTime': undefined,
+        'endTime': undefined,
+        'startTime': undefined,
         'licenseNumber': undefined,
         'driverName': undefined,
-        'waybillNo': undefined,
-        'orderClient': undefined
+        'waybillNo': undefined
       },
       receiveTime: [],
       // 弹框 内容
@@ -312,23 +328,25 @@ export default {
         'dictPid': '0',
         'dictType': 'goodsType'
       },
-      // 纸质回单字典
-      isReturnOptions: [
-        { 'dictLabel': '未标记回单', 'dictValue': '0' },
-        { 'dictLabel': '已标记回单', 'dictValue': '1' }
-      ],
-      // 是否子单字典
-      isChildOptions: [
-        { 'dictLabel': '否', 'dictValue': '0' },
-        // { 'dictLabel': '子单', 'dictValue': '1' },
-        { 'dictLabel': '是', 'dictValue': '2' }
+      // 运单状态字典
+      statusOptions: [
+        { 'dictLabel': '未接单', 'dictValue': '0' },
+        { 'dictLabel': '已接单', 'dictValue': '1' },
+        { 'dictLabel': '已装货', 'dictValue': '2' },
+        { 'dictLabel': '已签收(已卸货)', 'dictValue': '3' },
+        { 'dictLabel': '已回单(收单复核)', 'dictValue': '4' },
+        { 'dictLabel': '已结算', 'dictValue': '5' },
+        { 'dictLabel': '已申请(打款)', 'dictValue': '6' },
+        { 'dictLabel': '已打款', 'dictValue': '7' },
+        { 'dictLabel': '已申请开票', 'dictValue': '8' },
+        { 'dictLabel': '已开票', 'dictValue': '9' }
       ]
     };
   },
   computed: {
   },
   created() {
-    this.tableHeaderConfig(this.tableColumnsConfig, adjustListApi, {
+    this.tableHeaderConfig(this.tableColumnsConfig, paymentListApi, {
       prop: 'edit',
       isShow: true,
       label: '操作',
@@ -342,8 +360,8 @@ export default {
   },
   'methods': {
     datechoose(date) {
-      this.queryParams.orderStartTime = this.parseTime(date[0], '{y}-{m}-{d}');
-      this.queryParams.orderEndTime = this.parseTime(date[1], '{y}-{m}-{d}');
+      this.queryParams.startTime = this.parseTime(date[0], '{y}-{m}-{d}');
+      this.queryParams.endTime = this.parseTime(date[1], '{y}-{m}-{d}');
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
@@ -352,10 +370,15 @@ export default {
     /** 查询【请填写功能名称】列表 */
     getList() {
       this.loading = true;
-      adjustList(this.queryParams).then(response => {
-        this.adjustlist = response.rows;
+      paymentList(this.queryParams).then(response => {
+        this.paymentlist = response.rows;
         this.total = response.total;
         this.loading = false;
+      });
+      statistical(this.queryParams).then(response => {
+        if (response.data) {
+          this.statistical = response.data;
+        }
       });
     },
     /** 搜索按钮操作 */
@@ -366,6 +389,9 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.resetForm('queryForm');
+      this.receiveTime = [];
+      this.queryParams.startTime = null;
+      this.queryParams.endTime = null;
       this.handleQuery();
     },
     // 批量打款
@@ -380,9 +406,8 @@ export default {
         case 1:
           this.$refs.RejectDialog.reset();
           this.rejectdialog = true;
-          this.title = '驳回运输核算单';
+          this.title = '驳回财务打款申请';
           this.$refs.RejectDialog.setForm(row);
-          console.log(row);
           break;
         case 2:
           this.title = '网商打款';

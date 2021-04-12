@@ -182,6 +182,7 @@ export default {
           'provinceCode',
           'provinceName'
         );
+        this.$store.dispatch('orders/store_getProvinceList', rows);
       }
     },
     // 省份切换

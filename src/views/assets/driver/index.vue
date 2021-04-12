@@ -48,7 +48,7 @@
           filterable
           remote
           reserve-keyword
-          placeholder="请输入调度名称"
+          placeholder="请输入调度名称搜索"
           :remote-method="teamRemoteMethod"
           :loading="teamLoading"
           clearable

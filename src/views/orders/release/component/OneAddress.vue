@@ -143,7 +143,8 @@ export default {
         addressAlias: [{ required: true, message: '选择所属项目', trigger: 'blur' }],
         contact: [{ required: true, message: '请输入联系人', trigger: 'blur' }],
         contactPhone: [
-          { required: true, message: '请输入联系电话', trigger: 'blue' }
+          { required: true, message: '请输入联系电话', trigger: 'blue' },
+          { validator: this.formValidate.telphone, trigger: 'blur' }
         ]
       },
 

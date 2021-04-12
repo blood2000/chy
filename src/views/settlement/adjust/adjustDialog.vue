@@ -60,47 +60,69 @@
 
       <el-table-column width="160" label="运输单号" show-overflow-tooltip align="center" prop="waybillNo" />
 
-      <el-table-column width="160" label="路耗" align="center" prop="loss" />
-      <el-table-column width="160" label="货物单价" align="center" prop="goodsPrice" />
-      <el-table-column width="160" label="司机应收运费" align="center" prop="deliveryFeeDeserved" />
-      <el-table-column width="160" label="亏涨扣费" align="center" prop="deduction" />
-
-      <el-table-column width="160" label="司机实收运费" align="center" prop="deliveryFeePractical" />
-
-      <el-table-column width="120" label="路耗允许范围" align="center" prop="lossAllowScope" />
       <el-table-column width="120" label="司机姓名" align="center" prop="driverName" />
       <el-table-column width="120" label="司机电话" align="center" prop="driverPhone" />
       <el-table-column width="120" label="车牌号" align="center" prop="licenseNumber" />
-      <el-table-column width="120" label="运费单价" align="center" prop="freightPrice" />
-      <el-table-column width="120" label="抹零金额" align="center" prop="m0Amount" />
 
       <el-table-column width="160" label="装车重量" align="center" prop="loadWeight">
         <template slot-scope="scope">
-          <el-input-number v-model="scope.row.loadWeight" :controls="false" placeholder="请输入装车重量" style="width:100%;" size="mini" @blur="handlerInput(scope.row, scope.row.loadWeight)" />
+          <el-input-number v-model="scope.row.loadWeight" :controls="false" placeholder="请输入装车重量" style="width:100%;" size="mini" @blur="handlerBlur(scope.row, scope.row.loadWeight, 'loadWeight' )" />
         </template>
       </el-table-column>
       <el-table-column width="160" label="卸车重量" align="center" prop="unloadWeight">
         <template slot-scope="scope">
-          <el-input-number v-model="scope.row.unloadWeight" :controls="false" placeholder="请输入卸车重量" style="width:100%;" size="mini" />
+          <el-input-number v-model="scope.row.unloadWeight" :controls="false" placeholder="请输入卸车重量" style="width:100%;" size="mini" @blur="handlerBlur(scope.row, scope.row.unloadWeight, 'unloadWeight' )" />
         </template>
       </el-table-column>
+
+      <el-table-column width="160" label="实际承运重量??" align="center" prop="tin11111111" />
+
+      <el-table-column width="160" label="路耗" align="center" prop="loss" />
+
+      <el-table-column width="160" label="路耗允许范围" align="center" prop="lossAllowScope" />
+
+      <el-table-column width="160" label="货物单价" align="center" prop="goodsPrice" />
+
+      <el-table-column width="160" label="运费单价" align="center" prop="freightPrice" />
+
+      <el-table-column width="160" label="司机成交单价" align="center" prop="freightPriceDriver" />
+      <el-table-column width="160" label="亏涨扣费" align="center" prop="deduction" />
+
+
+      <el-table-column width="120" label="抹零金额" align="center" prop="m0Amount" />
+
+      <el-table-column width="160" label="司机应收运费" align="center" prop="deliveryFeeDeserved" />
+      <el-table-column width="160" label="司机实收运费" align="center" prop="deliveryFeePractical" />
+      <el-table-column width="160" label="司机实收抹零??" align="center" prop="tin11111111" />
+
+
+
       <!-- 补贴项目 -->
-      <el-table-column align="center" width="400" label="补贴项目">
+      <el-table-column align="center" width="500" label="补贴项目">
+        <template slot="header">
+          <span>扣费项目 <el-button type="text" @click="isEdit2 = !isEdit2"><i class="el-icon-edit" /></el-button></span>
+
+        </template>
         <template slot-scope="scope">
           <el-form :inline="true" label-position="right" size="mini" class="ly-flex">
             <div v-for="(freight, index) in scope.row.subsidiesFreightList" :key="index">
               <el-form-item :label="freight.cnName">
-                <!-- <span>{{ freight.ruleValue }}</span> -->
-                <el-input-number v-model="freight.ruleValue" :controls="false" :precision="2" :placeholder="`请输入${freight.cnName}`" style="width:60px;" />
+                <span v-show="!isEdit2">{{ freight.ruleValue }}</span>
+                <el-input-number v-show="isEdit2" v-model="freight.ruleValue" :controls="false" :precision="2" :placeholder="`请输入${freight.cnName}`" style="width:90px;" @blur="handlerChange(scope.row,freight.ruleValue,'add')" />
               </el-form-item>
             </div>
+
+            <el-form-item label="其他补贴" class="ly-flex-1">
+              <span v-show="!isEdit2">{{ scope.row.otherSubsidies }}</span>
+              <el-input-number v-show="isEdit2" v-model="scope.row.otherSubsidies" :controls="false" :precision="2" :placeholder="`请输入其他扣款`" style="width:90px;" @blur="handlerChange(scope.row,scope.row.otherSubsidies, 'add')" />
+            </el-form-item>
           </el-form>
         </template>
       </el-table-column>
       <!-- 扣费项目 -->
-      <el-table-column align="center" width="450">
+      <el-table-column align="center" width="500">
         <template slot="header">
-          <span>扣费项目 <el-button type="text" @click="submitForm">立即核算</el-button></span>
+          <span>扣费项目 <el-button type="text" @click="isEdit = !isEdit"><i class="el-icon-edit" /></el-button></span>
 
         </template>
 
@@ -108,28 +130,39 @@
           <el-form :inline="true" label-position="right" size="mini" class="ly-flex">
             <div v-for="(freight, index) in scope.row.deductionFreightList" :key="index" class="ly-flex-1">
               <el-form-item :label="freight.cnName">
-                <!-- <span v-show="!freight.isEdit">{{ freight.ruleValue }}</span> -->
-                <el-input-number v-model="freight.ruleValue" :controls="false" :precision="2" :placeholder="`请输入${freight.cnName}`" style="width:60px;" />
+                <span v-show="!isEdit">{{ freight.ruleValue }}</span>
+                <el-input-number v-show="isEdit" v-model="freight.ruleValue" :controls="false" :precision="2" :placeholder="`请输入${freight.cnName}`" style="width:90px;" @blur="handlerChange(scope.row,freight.ruleValue,'')" />
               </el-form-item>
             </div>
+
+            <el-form-item label="其他扣款" class="ly-flex-1">
+              <span v-show="!isEdit">{{ scope.row.otherCharges }}</span>
+              <el-input-number v-show="isEdit" v-model="scope.row.otherCharges" :controls="false" :precision="2" :placeholder="`请输入其他扣款`" style="width:90px;" @blur="handlerChange(scope.row,scope.row.otherCharges, '')" />
+            </el-form-item>
           </el-form>
         </template>
       </el-table-column>
 
-      <el-table-column width="120" label="服务费" align="center" prop="serviceFee" />
-      <el-table-column width="120" label="司机实收现金" align="center" prop="deliveryCashFee">
+
+
+      <el-table-column width="120" label="纳税金额" align="center" prop="taxPayment" fixed="right" />
+      <el-table-column width="120" label="服务费" align="center" prop="serviceFee" fixed="right" />
+      <el-table-column width="120" label="司机实收现金" align="center" prop="deliveryCashFee" fixed="right">
         <template slot-scope="scope">
-          <el-input-number v-model="scope.row.deliveryCashFee" :controls="false" :precision="2" placeholder="请输入司机实收现金" style="width:100%;" size="mini" />
+          <el-input-number v-model="scope.row.deliveryCashFee" :controls="false" :precision="2" placeholder="请输入司机实收现金" style="width:100%;" size="mini" @blur="handlerInput(scope.row,scope.row.deliveryCashFee, 'deliveryCashFee')" />
         </template>
       </el-table-column>
-      <el-table-column width="120" label="要扣的货主金额" align="center" prop="deductShipmentAmount" />
 
-      <el-table-column width="120" label="司机增项费用" align="center" prop="driverAddFee" />
+      <el-table-column width="120" label="货主实付金额" align="center" prop="shipperRealPay" fixed="right" />
 
-      <el-table-column width="120" label="司机减项费用" align="center" prop="driverReductionFee" />
+      <!-- <el-table-column width="120" label="要扣的货主金额" align="center" prop="deductShipmentAmount" /> -->
+
+      <!-- <el-table-column width="120" label="司机增项费用" align="center" prop="driverAddFee" />
+
+      <el-table-column width="120" label="司机减项费用" align="center" prop="driverReductionFee" /> -->
 
 
-      <el-table-column width="120" label="核算规则" align="center" prop="freightList.enName" />
+      <!-- <el-table-column width="120" label="核算规则" align="center" prop="freightList.enName" /> -->
     </el-table>
 
     <div slot="footer" class="dialog-footer">
@@ -140,14 +173,11 @@
 </template>
 
 <script>
-import { adjustDetail } from '@/api/settlement/adjust';
-// import UploadImage from '@/components/UploadImage/index';
+import { adjustDetail, calculateFee, deliveryCashFee, batchCheck } from '@/api/settlement/adjust';
 
 export default {
   name: 'AdjustDialog',
-  components: {
-    // UploadImage
-  },
+  components: {},
   props: {
     title: {
       type: String,
@@ -158,12 +188,16 @@ export default {
   },
   data() {
     return {
+      isEdit2: false,
+      isEdit: false,
       deliveryCashFee: undefined,
       // tableColumnsConfig: [],
       // 遮罩层
       loading: false,
       // 总条数
       // total: 0,
+      // 旧的数据
+      oldList: [],
       // 评价列表
       adjustlist: [],
       // 查询参数
@@ -185,339 +219,146 @@ export default {
   created() {
   },
   methods: {
+    // 修改了增项
+    handlerChange(row, value, key) {
+      if (key === 'add') {
+        row.deliveryCashFee += value;
+      } else {
+        row.deliveryCashFee -= value;
+      }
+
+      this.getDeliveryCashFee(row, row.deliveryCashFee);
+    },
+
+    // 司机实收现金, 改变会出发其他的扣费,和
+    handlerInput(row, value, key) {
+      const filterRow = this.filterRow(row);
+
+      if (filterRow.deliveryCashFee > row.deliveryCashFee) {
+        row.otherCharges = filterRow.deliveryCashFee - row.deliveryCashFee;
+        filterRow.otherCharges = row.otherCharges;
+      } else {
+        row.otherSubsidies = row.deliveryCashFee - filterRow.deliveryCashFee;
+        filterRow.otherSubsidies = row.otherSubsidies;
+      }
+
+      this.getDeliveryCashFee(row, value);
+    },
+
+    // 获取数据
+    async getDeliveryCashFee(row, value) {
+      const { data } = await deliveryCashFee({
+        deliveryCashFee: value, //	司机实收现金		false
+        shipperCode: row.shipperCode //	货主Code		false
+      });
+
+      row.serviceFee = data.serviceFee;
+      row.shipperRealPay = data.shipperRealPay;
+    },
+
+    // 过滤当前
+    filterRow(row) {
+      return (this.oldList.filter(e => {
+        return e.waybillCode === row.waybillCode;
+      }))[0];
+    },
+
     // 单项修改
-    handlerInput(row, value) {
-      console.log(row);
-      console.log(value);
-      row.serviceFee = value;
+    async handlerBlur(row, value, key) {
+      const parame = {
+        driverReductionFee: row.driverReductionFee,
+        m0DictValue: row.m0DictValue,
+        freightPrice: row.freightPrice,
+        ruleFormulaDictValue: row.ruleFormulaDictValue,
+        shipperCode: row.shipperCode,
+        stowageStatus: row.stowageStatus,
+        driverAddFee: row.driverAddFee,
+        loadWeight: row.loadWeight,
+        unloadWeight: row.unloadWeight
+      };
+
+      const { data } = await calculateFee(parame);
+
+      // deliveryFeeDeserved	司机应收运费	number
+      // driverRealFee	司机实收金额	number
+      // serviceFee	平台服务费费用	number
+      // serviceTaxFee	服务税费	number
+      // shipperCopeFee	货主应付金额	number
+      // shipperRealPay	货主实付金额	number
+      // taxFreeFee	不含税价	number
+      // taxPayment	纳税金额	number
+
+
+
+      row.deliveryFeeDeserved = data.deliveryFeeDeserved;
+      row.deliveryCashFee = data.driverRealFee; // ?
+      row.serviceFee = data.serviceFee;
+      row.serviceTaxFee = data.serviceTaxFee; // ?
+      row.shipperCopeFee = data.shipperCopeFee;
+      row.shipperRealPay = data.shipperRealPay;
+      row.taxFreeFee = data.taxFreeFee; // ?
+      row.taxPayment = data.taxPayment;
     },
 
     // 批量修改
     handleChange() {
-      console.log(this.deliveryCashFee);
       this.adjustlist.forEach(e => {
         e.deliveryCashFee = this.deliveryCashFee;
         // this.$set(e, 'deliveryCashFee', this.deliveryCashFee);
+        this.handlerInput(e, this.deliveryCashFee);
       });
     },
     /** 提交按钮 */
-    submitForm() {
-      console.log('点击');
-      console.log(this.adjustlist);
+    async submitForm() {
+      const boList = this.adjustlist.map(e => {
+        return {
+          'deduction': e.deduction,
+          'deliveryCashFee': e.deliveryCashFee,
+          'deliveryFeeDeserved': e.deliveryFeeDeserved,
+          'deliveryFeePractical': e.deliveryFeePractical,
+          'driverAddFee': e.driverAddFee,
+          'driverReductionFee': e.driverReductionFee,
+          'freightList': e.deductionFreightList.concat(e.subsidiesFreightList),
+          'freightPrice': e.freightPrice,
+          'goodsPrice': e.goodsPrice,
+          'loadWeight': e.loadWeight,
+          'lossDeductionFee': e.lossDeductionFee,
+          'm0Amount': e.m0Amount,
+          'm0Fee': e.m0Fee,
+          'otherCharges': e.otherCharges,
+          'otherSubsidies': e.otherSubsidies,
+          'serviceFee': e.serviceFee,
+          'shipperCopeFee': e.shipperCopeFee,
+          'shipperRealPay': e.shipperRealPay,
+          'unloadWeight': e.unloadWeight,
+          'waybillCode': e.waybillCode
+        };
+      });
+
+
+      this.$confirm('确定要立即审核?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return batchCheck({ boList });
+      }).then(() => {
+        // this.getList();
+        this.msgSuccess('审核成功');
+        this.visible = false;
+        this.$emit('refresh');
+      });
     },
     /** 查询核算列表 */
     getList() {
       // this.loading = true;
       adjustDetail(this.queryParams).then(response => {
-        console.log(response.rows);
-        // this.adjustlist = response.rows;
-        // this.total = response.total;
+        console.log(response, '查询核算列表');
+        this.oldList = response.data;
+        this.adjustlist = JSON.parse(JSON.stringify(response.data));
+        this.total = response.total;
         this.loading = false;
       });
-
-
-      const data = [
-        {
-          'waybillCode': '155cc017f06b4f9c9ce678060ff299a0',
-          'waybillNo': '2103221739334454',
-          'loadWeight': 55,
-          'unloadWeight': 1,
-          'loss': 54,
-          'deliveryFeeDeserved': 660,
-          'deliveryFeePractical': 0,
-          'deliveryCashFee': 0,
-          'deduction': null,
-          'm0Amount': null,
-          'goodsPrice': 180,
-          'freightPrice': 12,
-          'serviceFee': 0,
-          'lossAllowScope': null,
-          'licenseNumber': '辽N3368E',
-          'driverName': '师彩明',
-          'driverPhone': '17642168716',
-          'deductShipmentAmount': null,
-          'goodsCode': '84b8fe1a9ec34c67a5f9800d23dbf8a7',
-          'driverAddFee': 0,
-          'driverReductionFee': 0,
-          'lossDeductionFee': 0,
-          'm0Fee': 0,
-          'shipperCopeFee': 0,
-          'shipperRealPay': 0,
-          'subsidiesFreightList': [{
-            'id': 184657,
-            'code': '745d673607d94cc894949f108337c697',
-            'ruleItemCode': '11',
-            'ruleValue': '0',
-            'type': '2',
-            'cnName': '装车费',
-            'enName': 'LOADING_FEE',
-            'showType': 1,
-            'dictCode': null,
-            'ruleType': 0,
-            'unit': null,
-            'waybillCode': '155cc017f06b4f9c9ce678060ff299a0'
-          }],
-          'deductionFreightList': [{
-            'id': 184658,
-            'code': '801beaf817324ba483d926edb6e6a2f4',
-            'ruleItemCode': '12',
-            'ruleValue': '0',
-            'type': '21',
-            'cnName': '卸车费',
-            'enName': 'DISCHARGE_FARE',
-            'showType': 1,
-            'dictCode': null,
-            'ruleType': 0,
-            'unit': null,
-            'waybillCode': '155cc017f06b4f9c9ce678060ff299a0'
-          },
-          {
-            'id': 184659,
-            'code': '519132a0e08742e79dc7e17b4dc430fd',
-            'ruleItemCode': '15',
-            'ruleValue': '0',
-            'type': '1',
-            'cnName': '超时费',
-            'enName': 'OVERTIME_FEE',
-            'showType': 1,
-            'dictCode': null,
-            'ruleType': 0,
-            'unit': null,
-            'waybillCode': '155cc017f06b4f9c9ce678060ff299a0'
-          },
-          {
-            'id': 184660,
-            'code': '8958d41b839648c2bd11ebde634cc63a',
-            'ruleItemCode': '16',
-            'ruleValue': '0',
-            'type': '1',
-            'cnName': '扣回单费',
-            'enName': 'RECEIPT_FEE',
-            'showType': 1,
-            'dictCode': null,
-            'ruleType': 0,
-            'unit': null,
-            'waybillCode': '155cc017f06b4f9c9ce678060ff299a0'
-          }],
-          'freightList': [
-            {
-              'id': 184657,
-              'code': '745d673607d94cc894949f108337c697',
-              'ruleItemCode': '11',
-              'ruleValue': '0',
-              'type': '2',
-              'cnName': '装车费',
-              'enName': 'LOADING_FEE',
-              'showType': 1,
-              'dictCode': null,
-              'ruleType': 0,
-              'unit': null,
-              'waybillCode': '155cc017f06b4f9c9ce678060ff299a0'
-            },
-            {
-              'id': 184658,
-              'code': '801beaf817324ba483d926edb6e6a2f4',
-              'ruleItemCode': '12',
-              'ruleValue': '0',
-              'type': '2',
-              'cnName': '卸车费',
-              'enName': 'DISCHARGE_FARE',
-              'showType': 1,
-              'dictCode': null,
-              'ruleType': 0,
-              'unit': null,
-              'waybillCode': '155cc017f06b4f9c9ce678060ff299a0'
-            },
-            {
-              'id': 184659,
-              'code': '519132a0e08742e79dc7e17b4dc430fd',
-              'ruleItemCode': '15',
-              'ruleValue': '0',
-              'type': '2',
-              'cnName': '超时费',
-              'enName': 'OVERTIME_FEE',
-              'showType': 1,
-              'dictCode': null,
-              'ruleType': 0,
-              'unit': null,
-              'waybillCode': '155cc017f06b4f9c9ce678060ff299a0'
-            },
-            {
-              'id': 184660,
-              'code': '8958d41b839648c2bd11ebde634cc63a',
-              'ruleItemCode': '16',
-              'ruleValue': '0',
-              'type': '2',
-              'cnName': '扣回单费',
-              'enName': 'RECEIPT_FEE',
-              'showType': 1,
-              'dictCode': null,
-              'ruleType': 0,
-              'unit': null,
-              'waybillCode': '155cc017f06b4f9c9ce678060ff299a0'
-            }
-          ]
-        },
-        {
-          'waybillCode': '155cc017f06b4f9c9ce678060ff29922',
-          'waybillNo': '2103221739334454',
-          'loadWeight': 55,
-          'unloadWeight': 1,
-          'loss': 54,
-          'deliveryFeeDeserved': 660,
-          'deliveryFeePractical': 0,
-          'deliveryCashFee': 0,
-          'deduction': null,
-          'm0Amount': null,
-          'goodsPrice': 180,
-          'freightPrice': 12,
-          'serviceFee': 0,
-          'lossAllowScope': null,
-          'licenseNumber': '辽N3368E',
-          'driverName': '师彩明',
-          'driverPhone': '17642168716',
-          'deductShipmentAmount': null,
-          'goodsCode': '84b8fe1a9ec34c67a5f9800d23dbf8a7',
-          'driverAddFee': 0,
-          'driverReductionFee': 0,
-          'lossDeductionFee': 0,
-          'm0Fee': 0,
-          'shipperCopeFee': 0,
-          'shipperRealPay': 0,
-          'subsidiesFreightList': [{
-            'id': 184657,
-            'code': '745d673607d94cc894949f108337c697',
-            'ruleItemCode': '11',
-            'ruleValue': '0',
-            'type': '2',
-            'cnName': '装车费',
-            'enName': 'LOADING_FEE',
-            'showType': 1,
-            'dictCode': null,
-            'ruleType': 0,
-            'unit': null,
-            'waybillCode': '155cc017f06b4f9c9ce678060ff29922'
-          }],
-          'deductionFreightList': [{
-            'id': 184658,
-            'code': '801beaf817324ba483d926edb6e6a2f4',
-            'ruleItemCode': '12',
-            'ruleValue': '0',
-            'type': '21',
-            'cnName': '卸车费',
-            'enName': 'DISCHARGE_FARE',
-            'showType': 1,
-            'dictCode': null,
-            'ruleType': 0,
-            'unit': null,
-            'waybillCode': '155cc017f06b4f9c9ce678060ff29922'
-          },
-          {
-            'id': 184659,
-            'code': '519132a0e08742e79dc7e17b4dc430fd',
-            'ruleItemCode': '15',
-            'ruleValue': '0',
-            'type': '1',
-            'cnName': '超时费',
-            'enName': 'OVERTIME_FEE',
-            'showType': 1,
-            'dictCode': null,
-            'ruleType': 0,
-            'unit': null,
-            'waybillCode': '155cc017f06b4f9c9ce678060ff29922'
-          },
-          {
-            'id': 184660,
-            'code': '8958d41b839648c2bd11ebde634cc63a',
-            'ruleItemCode': '16',
-            'ruleValue': '0',
-            'type': '1',
-            'cnName': '扣回单费',
-            'enName': 'RECEIPT_FEE',
-            'showType': 1,
-            'dictCode': null,
-            'ruleType': 0,
-            'unit': null,
-            'waybillCode': '155cc017f06b4f9c9ce678060ff29922'
-          }],
-          'freightList': [
-            {
-              'id': 184657,
-              'code': '745d673607d94cc894949f108337c697',
-              'ruleItemCode': '11',
-              'ruleValue': '0',
-              'type': '2',
-              'cnName': '装车费',
-              'enName': 'LOADING_FEE',
-              'showType': 1,
-              'dictCode': null,
-              'ruleType': 0,
-              'unit': null,
-              'waybillCode': '155cc017f06b4f9c9ce678060ff29922'
-            },
-            {
-              'id': 184658,
-              'code': '801beaf817324ba483d926edb6e6a2f4',
-              'ruleItemCode': '12',
-              'ruleValue': '0',
-              'type': '2',
-              'cnName': '卸车费',
-              'enName': 'DISCHARGE_FARE',
-              'showType': 1,
-              'dictCode': null,
-              'ruleType': 0,
-              'unit': null,
-              'waybillCode': '155cc017f06b4f9c9ce678060ff29922'
-            },
-            {
-              'id': 184659,
-              'code': '519132a0e08742e79dc7e17b4dc430fd',
-              'ruleItemCode': '15',
-              'ruleValue': '0',
-              'type': '2',
-              'cnName': '超时费',
-              'enName': 'OVERTIME_FEE',
-              'showType': 1,
-              'dictCode': null,
-              'ruleType': 0,
-              'unit': null,
-              'waybillCode': '155cc017f06b4f9c9ce678060ff29922'
-            },
-            {
-              'id': 184660,
-              'code': '8958d41b839648c2bd11ebde634cc63a',
-              'ruleItemCode': '16',
-              'ruleValue': '0',
-              'type': '2',
-              'cnName': '扣回单费',
-              'enName': 'RECEIPT_FEE',
-              'showType': 1,
-              'dictCode': null,
-              'ruleType': 0,
-              'unit': null,
-              'waybillCode': '155cc017f06b4f9c9ce678060ff29922'
-            }
-          ]
-        }
-      ];
-
-      this.adjustlist = JSON.parse(JSON.stringify(data));
-      // .map(e => {
-      //   e.addfreightList = [];
-      //   e.cutfreightList = [];
-
-      //   e.freightList.forEach(ee => {
-      //     ee.isEdit = false;
-      //     if (ee.type === '1') {
-      //       e.addfreightList.push(ee);
-      //     } else {
-      //       e.cutfreightList.push(ee);
-      //     }
-      //   });
-
-      //   return e;
-      // });
-      console.log(this.adjustlist);
     },
     /** 取消按钮 */
     cancel() {
@@ -530,10 +371,12 @@ export default {
     },
     // 获取列表
     setForm(data) {
-      console.log(data);
+      // console.log(data);
+      this.deliveryCashFee = undefined;
       this.queryParams.waybillCodeList = data;
       this.getList();
     }
+
   }
 };
 </script>

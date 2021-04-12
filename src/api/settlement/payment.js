@@ -1,23 +1,30 @@
 import request from '@/utils/request';
 
 // 查询财务打款列表
-export const adjustListApi = '/transportation/waybill/trackingList';
-export function adjustList(query) {
+export const paymentListApi = '/transportation/waybillSettlement/findList';
+export function paymentList(query) {
   return request({
-    url: '/transportation/waybill/trackingList',
+    url: '/transportation/waybillSettlement/findList',
     method: 'get',
     params: query
   });
 }
 
-// 查询运单子单列表
-export const childListApi = '/transportation/waybill/childList';
-export function childList(query) {
+// 查询财务打款列表-统计
+export function statistical(query) {
   return request({
-    url: '/transportation/waybill/childList',
+    url: '/transportation/waybillSettlement/statistical',
     method: 'get',
     params: query
   });
 }
 
+// 查询财务打款驳回
+export function rejected(data) {
+  return request({
+    url: '/transportation/waybillSettlement/rejected',
+    method: 'post',
+    data: data
+  });
+}
 

@@ -38,3 +38,40 @@ export function adjustDetail(data) {
   });
 }
 
+// 计算费用
+export function calculateFee(data) {
+  return request({
+    url: '/transportation/calculateFee/calculate',
+    method: 'post',
+    data: data
+  });
+}
+
+
+// 根据司机实收金额计算
+export function deliveryCashFee(data) {
+  return request({
+    url: '/transportation/calculateFee/deliveryCashFee',
+    method: 'post',
+    data: data
+  });
+}
+
+// 批量核算
+export function batchCheck(data) {
+  return request({
+    url: '/transportation/waybillBalanceInfo/batchCheck',
+    method: 'post',
+    data: data
+  });
+}
+
+// 批量申请打款
+export function batchApply(data) {
+  return request({
+    url: '/transportation/waybillBalanceInfo/batchApply',
+    method: 'post',
+    data: data
+  });
+}
+

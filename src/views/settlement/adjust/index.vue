@@ -253,8 +253,8 @@
 
       <template #edit="{row}">
         <el-button
-          v-has-permi="['transportation:waybillBalanceInfo:warning']"
           v-if="activeName == '5'"
+          v-has-permi="['transportation:waybillBalanceInfo:warning']"
           size="mini"
           type="text"
           icon="el-icon-warning-outline"
@@ -291,8 +291,8 @@
           @click="handleTableBtn(row, 5)"
         >评价</el-button>
         <el-button
-          v-has-permi="['transportation:waybill:childList']"
           v-if="row.isChild == '2'"
+          v-has-permi="['transportation:waybill:childList']"
           size="mini"
           type="text"
           icon="el-icon-document-copy"
@@ -471,6 +471,8 @@ export default {
     resetQuery() {
       this.resetForm('queryForm');
       this.receiveTime = [];
+      this.queryParams.orderStartTime = null;
+      this.queryParams.orderEndTime = null;
       this.handleQuery();
     },
     // 批量核算

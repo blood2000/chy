@@ -124,7 +124,7 @@
           :key="address.refName"
           class="oneAddress_item"
         >
-          <OneAddress :ref="address.refName" type="1" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
+          <OneAddress v-if="isShowAddress" :ref="address.refName" type="1" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
           <div class="ly-t-right">
             <el-button
               v-if="!myisdisabled && (address_add.length >= 2 || formData.tin8)"
@@ -160,7 +160,7 @@
           :key="address.refName"
           class="oneAddress_item"
         >
-          <OneAddress :ref="address.refName" type="2" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
+          <OneAddress v-if="isShowAddress" :ref="address.refName" type="2" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
 
           <div class="ly-t-right">
 
@@ -245,7 +245,7 @@ import OpenDialog from './OpenDialog';
 
 import { getUserInfo } from '@/utils/auth';
 import { listShipment } from '@/api/assets/shipment.js';
-import { orderPubilsh, getOrderByCode, orderFreight, update, estimateCost } from '@/api/order/release';
+import { orderPubilsh, getOrderByCode, update, estimateCost } from '@/api/order/release';
 import { getProvinceList } from '@/api/system/area';
 
 
@@ -326,6 +326,10 @@ export default {
 
     idCode() {
       return this.$route.query.id;
+    },
+
+    isShowAddress() {
+      return !!this.$store.getters.provinceList;
     }
   },
   watch: {
@@ -356,11 +360,11 @@ export default {
 
   async created() {
     // 判断用户
-    const { isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
+    const { isShipment = false, shipment = {}} = getUserInfo() || {};
     // console.log(isShipment, user, shipment);
 
     this.isShipment = isShipment;
-    this.isShipment && (this.formData.tin1 = shipment.info.code);
+    this.isShipment && (this.formData.tin1 = shipment.info.adminCode);
 
     // 判断地址栏有没有id- true=>有说明编辑/详情 false=>创建-什么都不做
     if (this.idCode) {

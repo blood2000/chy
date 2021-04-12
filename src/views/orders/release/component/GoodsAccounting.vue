@@ -133,7 +133,7 @@
           v-model="formData.vehicleType"
           placeholder="选择车型"
           multiple
-          :multiple-limit="1"
+          :multiple-limit="3"
           clearable
           filterable
           :style="{ width: '100%' }"
@@ -323,7 +323,7 @@ export default {
           stowageStatus: stowageStatus || '0',
           // goodsUnit,
           number,
-          totalType: totalType ? '2' : '1',
+          totalType: totalType,
           weight,
           vehicleMaxWeight,
           shipmentPrice,
