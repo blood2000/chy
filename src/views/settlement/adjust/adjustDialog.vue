@@ -78,10 +78,12 @@
       <el-table-column width="160" label="实际承运重量??" align="center" prop="tin11111111" />
 
       <el-table-column width="160" label="路耗" align="center" prop="loss" />
-      <!-- <el-table-column width="120" label="路耗允许范围" align="center" prop="lossAllowScope" /> -->
+
+      <el-table-column width="160" label="路耗允许范围" align="center" prop="lossAllowScope" />
+
       <el-table-column width="160" label="货物单价" align="center" prop="goodsPrice" />
 
-      <el-table-column width="120" label="运费单价" align="center" prop="freightPrice" />
+      <el-table-column width="160" label="运费单价" align="center" prop="freightPrice" />
 
       <el-table-column width="160" label="司机成交单价" align="center" prop="freightPriceDriver" />
       <el-table-column width="160" label="亏涨扣费" align="center" prop="deduction" />
@@ -308,9 +310,44 @@ export default {
     },
     /** 提交按钮 */
     async submitForm() {
-      const res = await batchCheck({ boList: this.adjustlist });
+      const boList = this.adjustlist.map(e => {
+        return {
+          'deduction': e.deduction,
+          'deliveryCashFee': e.deliveryCashFee,
+          'deliveryFeeDeserved': e.deliveryFeeDeserved,
+          'deliveryFeePractical': e.deliveryFeePractical,
+          'driverAddFee': e.driverAddFee,
+          'driverReductionFee': e.driverReductionFee,
+          'freightList': e.deductionFreightList.concat(e.subsidiesFreightList),
+          'freightPrice': e.freightPrice,
+          'goodsPrice': e.goodsPrice,
+          'loadWeight': e.loadWeight,
+          'lossDeductionFee': e.lossDeductionFee,
+          'm0Amount': e.m0Amount,
+          'm0Fee': e.m0Fee,
+          'otherCharges': e.otherCharges,
+          'otherSubsidies': e.otherSubsidies,
+          'serviceFee': e.serviceFee,
+          'shipperCopeFee': e.shipperCopeFee,
+          'shipperRealPay': e.shipperRealPay,
+          'unloadWeight': e.unloadWeight,
+          'waybillCode': e.waybillCode
+        };
+      });
 
-      console.log(res);
+
+      this.$confirm('确定要立即审核?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return batchCheck({ boList });
+      }).then(() => {
+        // this.getList();
+        this.msgSuccess('审核成功');
+        this.visible = false;
+        this.$emit('refresh');
+      });
     },
     /** 查询核算列表 */
     getList() {
@@ -338,15 +375,8 @@ export default {
       this.deliveryCashFee = undefined;
       this.queryParams.waybillCodeList = data;
       this.getList();
-    },
-
-    // 规则
-    // ---货主应付运费（四舍五入保留两位小数）= 货主成交单价 * 承运重量；
-    rule_1() {
-      // const shipperCopeFee = 0
-      // return 货主成交单价 * 承运重量
     }
-    // ---司机应收运费（四舍五入保留两位小数）= 货主成交单价 /（1 + 税率比例） * 承运重量；
+
   }
 };
 </script>

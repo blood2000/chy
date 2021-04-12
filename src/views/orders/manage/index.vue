@@ -450,8 +450,7 @@
 </template>
 
 <script>
-import { listManagesApi, getOrderInfoList, delOrder, loadAndUnloadingGoods, exportOrder } from '@/api/order/manage';
-import { getOrderByCode } from '@/api/order/release';
+import { listManagesApi, getOrderInfoList, delOrder, loadAndUnloadingGoods } from '@/api/order/manage';
 import { listShipment } from '@/api/assets/shipment';
 import { getUserInfo } from '@/utils/auth';
 import OpenDialog from './component/OpenDialog';
@@ -681,8 +680,14 @@ export default {
   },
 
   created() {
-    const { isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
+    const { isShipment = false, user = {}} = getUserInfo() || {};
+
+    // console.log(user.userCode);
+
+
+    // 判断当前是什么角色登入的 true 是运营
     this.isShipment = isShipment;
+    this.isShipment && (this.queryParams.tin6 = user.userCode);
     // 要配置好才能用
     this.tableHeaderConfig(this.tableColumnsConfig, listManagesApi, null, tableColumnsConfig);
     this.getDict();
@@ -839,15 +844,12 @@ export default {
             });
 
             // 货集码地址
-
-
             mgoods.push({
               ...this.baseData(e)
             });
           });
         });
         mgoods[0].isShowEdit = true; // 用来控制显示编辑内容(子就不用了)
-
 
         return {
           ...mgoods.shift(),
@@ -860,7 +862,6 @@ export default {
     genID(length) {
       return Number(Math.random().toString().substr(3, length) + Date.now()).toString(36);
     },
-
 
     /** 搜索按钮操作 */
     handleQuery() {
@@ -928,14 +929,7 @@ export default {
     },
     /** 关闭按钮操作 */
     handleClose(row) {
-      // const testIds = row.code;
-      // 操作关闭按钮，规则：货单状态改为【下架】并且无法新建运单，且原运单状态不变。
-
-      // 选择提示“是否确认关闭该货源单，关闭后无法司机无法再继续接单。但运输中的运单则继续进行”；
-
       const msg = '是否确认关闭该货源单，关闭后无法司机无法再继续接单。但运输中的运单则继续进行';
-
-      // const msg = row.status === '1' ? '上架' : '下架';
       const data = {
         'orderCode': row.code,
         'status': row.status + '' === '1' ? '0' : '1'
@@ -946,7 +940,6 @@ export default {
         type: 'warning'
       }).then(function() {
         // 关闭接口
-        // console.log('关闭');
         return loadAndUnloadingGoods(data);
       }).then(() => {
         this.getList();
@@ -955,10 +948,6 @@ export default {
     },
     /** 调价操作 */
     async handleReadjustPrices(row) {
-      // 2 包装成需要的数据
-
-      // 2-1 如何获取 商品的名称??
-      // 2-2 如何获取 地址a到b
       const { redisOrderFreightInfoVoList, redisOrderGoodsVoList, redisAddressList, redisOrderInfoVo } = row.source;
       const tabs = redisOrderFreightInfoVoList.map((e, index) => {
         redisOrderGoodsVoList.forEach(ee => {
@@ -993,7 +982,6 @@ export default {
           };
         });
 
-        // console.log(redis, '规格处理----');
         return {
           dictLabel: e.goodsTypeName, // 展示tab
           activeName: index + '', // 切换tab
@@ -1001,27 +989,15 @@ export default {
           goodsType: e.goodsType, // 商品divtValue
           goodsCode: e.goodsCode,
           redis,
-          // [{ // 地址1 对应的其他的规则
-          //   tin_name: 'A--B', // 地址a到b 显示
-          //   ruleCode: '1', // 下拉规则的的值(会改)
-          //   ruleDictValue: '1', // 计算规则的值
-          //   orderFreightVo: { // 显示具体规则的值
-          //     'lossList': [
-          //     ],
-          //     'detailList': [
-          //     ]
-          //   }}],
           newRedis: [] // 这个是封装返回的时候使用
         };
       });
 
-      // console.log(tabs, '封装好的tab');
       // 3 传入组件
       this.tabs = tabs;
       this.pubilshCode = redisOrderInfoVo ? redisOrderInfoVo.pubilshCode : row.source.pubilshCode;
 
       this.orderCode = row.code;
-
 
       // 打开调价框
       this.openPriceAdjustment = true;
