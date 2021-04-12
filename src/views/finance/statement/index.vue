@@ -1,126 +1,210 @@
 <template>
-  <el-form ref="form" :model="form" :rules="rules" label-width="130px">
-    <el-row :gutter="20" class="container">
-      <el-col :span="6" class="bg">
-        <el-form-item label="索票批次号" prop="num">
-          <el-input v-model="form.num" disabled placeholder="请输入索票批次号" clearable size="small" style="width:90%;" />
+  <el-form ref="form" :model="form" label-width="130px">
+    <el-row :gutter="30" class="container">
+      <el-col :span="6" class="bg" style="height: 100%">
+        <el-form-item label="索票批次号" prop="askForNo">
+          <el-input v-model="form.askForNo" disabled placeholder="暂无" clearable size="small" style="width:90%;" />
         </el-form-item>
-        <el-form-item label="总开具票务数" prop="num">
-          <el-input v-model="form.num" disabled placeholder="请输入总开具票务数" clearable size="small" style="width:90%;" />
+        <el-form-item label="总开具票务数" prop="invoiceCount">
+          <el-input v-model="form.invoiceCount" disabled placeholder="暂无" clearable size="small" style="width:90%;" />
         </el-form-item>
-        <el-form-item label="总运单结算金额" prop="num">
-          <el-input v-model="form.num" disabled placeholder="请输入总运单结算金额" clearable size="small" style="width:90%;" />
+        <el-form-item label="总运单结算金额" prop="totalDeliveryFeeDeserved">
+          <el-input v-model="form.totalDeliveryFeeDeserved" disabled placeholder="暂无" clearable size="small" style="width:90%;" />
         </el-form-item>
-        <el-form-item label="服务费结算金额" prop="num">
-          <el-input v-model="form.num" disabled placeholder="请输入服务费结算金额" clearable size="small" style="width:90%;" />
+        <el-form-item label="服务费结算金额" prop="totalServiceFee">
+          <el-input v-model="form.totalServiceFee" disabled placeholder="暂无" clearable size="small" style="width:90%;" />
         </el-form-item>
-        <img v-viewer :src="form.attachUrls" class="img-box">
+        <img v-viewer :src="form.invoiceInfoGroupVos[0].invoiceImg" class="img-box">
+        <el-row :gutter="10">
+          <el-col :span="1.5">
+            <el-button
+              v-hasPermi="['assets:vehicle:edit']"
+              type="primary"
+              icon="el-icon-document-checked"
+              size="mini"
+              @click="handleExportFreight"
+            >导出运费明细</el-button>
+          </el-col>
+          <el-col :span="1.5">
+            <el-button
+              v-hasPermi="['assets:vehicle:remove']"
+              type="primary"
+              icon="el-icon-upload2"
+              size="mini"
+              @click="handleExportService"
+            >导出服务费明细</el-button>
+          </el-col>
+        </el-row>
       </el-col>
       <el-col :span="18">
-        <dev class="bg">
-          hh
-        </dev>
+        <el-row :gutter="10" class="bg" style="margin: 0 !important">
+          <el-col :span="8">
+            <el-form-item label="托运方：" prop="invoiceTitle" style="margin-bottom: 0">
+              <span>{{ form.invoiceTitle }}</span>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="承运方：" prop="invoiceTitle" style="margin-bottom: 0">
+              <span>福建大道成物流科技有限公司</span>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="结算时间:" prop="invoiceApplyTime" style="margin-bottom: 0">
+              <span>{{ parseTime(form.invoiceApplyTime, '{y}-{m}-{d}') }}</span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <div class="bg-info">
+          <div class="header">开票信息</div>
+          <div style="margin-top: 20px">
+            <el-row :gutter="10">
+              <el-col :span="8">
+                <el-form-item label="纳税人识别号" prop="taxRegistration">
+                  <el-input v-model="form.shipmentInvoiceInfoVo.taxRegistration" disabled placeholder="暂无" clearable size="small" style="width: 230px" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="注册地址" prop="registrationAddrtion">
+                  <el-input v-model="form.shipmentInvoiceInfoVo.registrationAddrtion" disabled placeholder="暂无" clearable size="small" style="width: 230px" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="注册电话" prop="registrationTelphone">
+                  <el-input v-model="form.shipmentInvoiceInfoVo.registrationTelphone" disabled placeholder="暂无" clearable size="small" style="width: 230px" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row :gutter="10">
+              <el-col :span="8">
+                <el-form-item label="开户行" prop="openBankName">
+                  <el-input v-model="form.shipmentInvoiceInfoVo.openBankName" disabled placeholder="暂无" clearable size="small" style="width: 230px" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="账号" prop="openBankNumber">
+                  <el-input v-model="form.shipmentInvoiceInfoVo.openBankNumber" disabled placeholder="暂无" clearable size="small" style="width: 230px" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </div>
+        </div>
+
+        <div class="bg-info">
+          <div class="header">结算信息</div>
+          <div style="padding:20px">
+            <el-table v-loading="loading" :data="invoicelist" border stripe>
+              <el-table-column width="120" label="装货地" align="center" prop="loadFormattedAddress" />
+              <el-table-column width="120" label="卸货地" align="center" prop="unloadFormattedAddress" />
+              <el-table-column width="120" label="货品类型" align="center" prop="goodsName" />
+              <el-table-column width="120" label="装车数量" align="center" prop="wayBillCount" />
+              <el-table-column width="120" label="实发吨数（吨）" align="center" prop="loadWeight" />
+              <el-table-column width="120" label="结算吨数（吨）" align="center" prop="unloadWeight" />
+              <el-table-column width="120" label="结算运价（含税）" align="center" prop="goodsPrice" />
+              <el-table-column width="120" label="运费结算金额（含税）" align="center" prop="totalServiceFee" />
+              <el-table-column width="120" label="服务费结算金额（含税）" align="center" prop="totalDeliveryFeePractical" />
+              <el-table-column fixed="right" label="运单明细" align="center" width="100">
+                <template #default="scope">
+                  <el-button type="text" size="small" icon="el-icon-document-checked" @click="handleClick(scope.row)">详情</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+        </div>
+
       </el-col>
     </el-row>
+    <!-- 运单详情 对话框 -->
+    <waybill-dialog ref="WaybillDialog" :current-id="currentId" :title="title" :open.sync="open" />
   </el-form>
 </template>
 
 <script>
 import { getDetail } from '@/api/finance/list';
-// import UploadImage from '@/components/UploadImage/index';
+// 运单详情弹窗
+import WaybillDialog from './waybillDialog';
 
 export default {
   name: 'Statement',
   components: {
-    // UploadImage
-  },
-  props: {
-    id: {
-      type: String,
-      default: ''
-    }
+    WaybillDialog
   },
   data() {
     return {
-      // 审核结果字典
-      invoiceStatusOptions: [
-        { 'dictLabel': '审核通过', 'dictValue': '4' },
-        { 'dictLabel': '审核不通过', 'dictValue': '3' },
-        { 'dictLabel': '审核取消', 'dictValue': '2' }
-      ],
+      // 遮罩层
+      loading: false,
+      // 弹框 内容
+      visible: false,
+      open: false,
+      title: '',
+      // 当前选中的运单id
+      currentId: null,
       // 表单参数
       form: {
-        num: null,
-        invoiceApplyCode: null,
-        invoiceStatus: null,
-        remake: null
-      },
-      // 表单校验
-      rules: {
-        invoiceStatus: [
-          { required: true, message: '请选择审核结果', trigger: 'blur' }
+        invoiceInfoGroupVos: [
+          {
+            invoiceImg: null
+          }
         ],
-        remake: [
-          { required: true, message: '审核备注不能为空', trigger: 'blur' }
-        ]
-      }
+        shipmentInvoiceInfoVo: {}
+      },
+      // 结算列表
+      invoicelist: [],
+      id: ''
     };
   },
   computed: {
-    visible: {
-      get() {
-        return this.open;
-      },
-      set(v) {
-        this.$emit('update:open', v);
+    idCode() {
+      return this.$route.query.id;
+    }
+  },
+  watch: {
+    idCode(val) {
+      if (val) {
+        this.getDetail(val);
       }
     }
   },
   created() {
-    getDetail(this.id).then(response => {
-      console.log(response);
-    });
+    this.getDetail(this.idCode);
   },
   methods: {
-    /** 提交按钮 */
-    // submitForm() {
-    //   this.$refs['form'].validate(valid => {
-    //     if (valid) {
-    //       passCheck(this.form).then(response => {
-    //         this.msgSuccess('审核成功');
-    //         this.close();
-    //         this.$emit('refresh');
-    //       });
-    //     }
-    //   });
-    // },
-    /** 取消按钮 */
-    cancel() {
-      this.close();
-      this.reset();
+    // 获取内容信息
+    getDetail(val) {
+      this.loading = true;
+      const that = this;
+      getDetail(val).then(response => {
+        that.form = response.data;
+        Object.keys(response.data.invoiceGroup).forEach(function(key) {
+          that.invoicelist = response.data.invoiceGroup[key].map(item => item.invoiceInfoStatisticsVo);
+        });
+        console.log(that.form);
+        that.loading = false;
+      });
     },
     // 关闭弹窗
     close() {
       this.$emit('update:open', false);
     },
-    // 表单重置
-    reset() {
-      this.form = {
-        invoiceApplyCode: null,
-        invoiceStatus: null,
-        remake: null
-      };
-      this.resetForm('form');
+    // 导出运费明细
+    handleExportFreight() {
+
     },
-    // 表单赋值
-    setForm(data) {
-      // this.form.invoiceApplyCode = data;
+    // 导出运费明细
+    handleExportService() {
+
+    },
+    // 查看发票里的运单
+    handleClick(row) {
+      this.currentId = row.invoiceCode;
+      this.open = true;
+      this.title = '运单明细';
     }
   }
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
 .mr3 {
   margin-right: 3%;
 }
@@ -136,7 +220,14 @@ export default {
 .bg{
   background: #fff;
   padding: 15px;
+  border-radius: 4px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+.bg-info{
+  margin-top:15px;
+  background: #fff;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
 }
 .container{
   margin: 0 15px 15px !important;
@@ -144,5 +235,20 @@ export default {
 .img-box{
   height: 240px;
   width: 100%;
+}
+.header {
+  padding: 10px 20px;
+  position: relative;
+  font-weight: 700;
+  border-bottom: 0.5px solid #dcdfe6;
+  &::before {
+    content: "";
+    position: absolute;
+    width: 2px;
+    height: 20px;
+    left: 10px;
+    // top: 1px;
+    background-color: #1890ff;
+  }
 }
 </style>
