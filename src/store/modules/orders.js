@@ -10,7 +10,6 @@ const mutations = {
   SET_EST: (state, device) => { state.estimateCostData = device; },
   SET_MO: (state, device) => { state.M0_option = device; },
   SET_PROVINCE: (state, device) => {
-    console.log(device);
     state.provinceList = device;
   }
 
