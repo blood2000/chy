@@ -39,11 +39,7 @@
               {{ form.businessLicenseNo }}
             </el-form-item>
             <el-form-item label="营业执照照：" prop="businessLicenseImg">
-              <el-row>
-                <el-col :span="7">
-                  <upload-image v-model="form.businessLicenseImg" />
-                </el-col>
-              </el-row>
+              <upload-image v-show="form.businessLicenseImg" v-model="form.businessLicenseImg" :disabled="true" />
             </el-form-item>
             <!-- <el-form-item label="业务城市" prop="name">
               <add-city-tag :prop-citys="form.citys" @refresh="(val) => form.citys=val" />

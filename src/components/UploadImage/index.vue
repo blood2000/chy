@@ -10,6 +10,7 @@
       name="file"
       :show-file-list="false"
       :headers="headers"
+      :disabled="disabled"
       style="display: inline-block; vertical-align: top"
     >
       <img v-if="value && !disabled" :src="attachUrl" class="avatar">
