@@ -202,7 +202,7 @@
     >
       <el-col v-if="activeName == '4'" :span="1.5">
         <el-button
-          v-hasPermi="['assets:vehicle:edit']"
+          v-hasPermi="['transportation:waybillBalanceInfo:batchDetail']"
           type="success"
           icon="el-icon-document-checked"
           size="mini"
@@ -211,7 +211,6 @@
       </el-col>
       <el-col v-if="activeName == '5'" :span="1.5">
         <el-button
-          v-hasPermi="['assets:vehicle:remove']"
           type="success"
           icon="el-icon-wallet"
           size="mini"
@@ -220,7 +219,6 @@
       </el-col>
       <el-col v-if="activeName == '7'" :span="1.5">
         <el-button
-          v-hasPermi="['assets:vehicle:export']"
           type="success"
           icon="el-icon-chat-dot-square"
           size="mini"
@@ -255,8 +253,8 @@
 
       <template #edit="{row}">
         <el-button
+          v-has-permi="['transportation:waybillBalanceInfo:warning']"
           v-if="activeName == '5'"
-          v-hasPermi="['system:menu:edit']"
           size="mini"
           type="text"
           icon="el-icon-warning-outline"
@@ -264,7 +262,7 @@
         >驳回提示</el-button>
         <el-button
           v-if="activeName == '4'"
-          v-hasPermi="['system:menu:edit']"
+          v-hasPermi="['transportation:waybillBalanceInfo:shipperRebutUnloading']"
           size="mini"
           type="text"
           icon="el-icon-document-remove"
@@ -272,7 +270,7 @@
         >驳回</el-button>
         <el-button
           v-if="activeName == '4'"
-          v-hasPermi="['system:menu:edit']"
+          v-hasPermi="['transportation:waybillBalanceInfo:batchDetail']"
           size="mini"
           type="text"
           icon="el-icon-document-checked"
@@ -280,7 +278,6 @@
         >核算</el-button>
         <el-button
           v-if="activeName == '5'"
-          v-hasPermi="['system:menu:edit']"
           size="mini"
           type="text"
           icon="el-icon-wallet"
@@ -288,13 +285,13 @@
         >申请打款</el-button>
         <el-button
           v-if="activeName == '7'"
-          v-hasPermi="['system:menu:edit']"
           size="mini"
           type="text"
           icon="el-icon-chat-dot-square"
           @click="handleTableBtn(row, 5)"
         >评价</el-button>
         <el-button
+          v-has-permi="['transportation:waybill:childList']"
           v-if="row.isChild == '2'"
           size="mini"
           type="text"
@@ -302,6 +299,7 @@
           @click="handleTableBtn(row, 6)"
         >分单列表</el-button>
         <el-button
+          v-has-permi="['transportation:waybill:getWayBillByCode']"
           size="mini"
           type="text"
           icon="el-icon-document"
