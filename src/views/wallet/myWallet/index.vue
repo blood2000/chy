@@ -32,20 +32,21 @@
 
     <!-- 账户提现弹窗 -->
     <withdraw-dialog :open.sync="withdrawOpen" />
+    <!-- 修改密码弹窗 -->
+    <change-password-dialog :open.sync="changePasswordOpen" :type="passType" />
   </div>
 </template>
 <script>
 import { getUserInfo } from '@/utils/auth';
 import { getWalletInfo } from '@/api/wallet/wallet';
 import withdrawDialog from './withdrawDialog';
+import ChangePasswordDialog from './changePasswordDialog.vue';
 
 export default {
   name: 'MyWallet',
   components: {
-    withdrawDialog
-  },
-  props: {
-
+    withdrawDialog,
+    ChangePasswordDialog
   },
   data() {
     return {
@@ -54,7 +55,7 @@ export default {
       // 提现
       withdrawOpen: false,
       // 密码
-      changePassWordOpen: false
+      changePasswordOpen: false
     };
   },
   created() {
@@ -75,7 +76,7 @@ export default {
     },
     // 修改密码按钮
     handleChangePassword() {
-
+      this.changePasswordOpen = true;
     },
     // 忘记密码按钮
     handleForgotPassword() {
