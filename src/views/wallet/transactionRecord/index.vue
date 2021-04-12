@@ -1,17 +1,7 @@
 <template>
-  <!-- 提现记录 -->
+  <!-- 交易记录(冻结&付款) -->
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="80px">
-      <el-form-item label="交易类型" prop="name">
-        <el-select v-model="queryParams.name" placeholder="请选择交易类型" clearable filterable size="small">
-          <el-option
-            v-for="dict in typeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
       <el-form-item label="交易日期">
         <el-date-picker
           v-model="queryParams.name"
@@ -47,26 +37,29 @@
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
+    <el-tabs v-model="activeTab" @tab-click="handleTabClick">
+      <el-tab-pane label="冻结记录" name="dj" />
+      <el-tab-pane label="付款记录" name="fk" />
+    </el-tabs>
+
     <!-- <RefactorTable :loading="loading" :data="dataList" :table-columns-config="tableColumnsConfig">
       <template #updateTime="{row}">
         <span>{{ parseTime(row.updateTime) }}</span>
       </template>
     </RefactorTable> -->
     <el-table v-loading="loading" :data="dataList">
-      <el-table-column label="平台角色" align="center" prop="" />
-      <el-table-column label="操作员" align="center" prop="" />
-      <el-table-column label="手机号" align="center" prop="" />
-      <el-table-column label="收支类型" align="center" prop="" />
-      <el-table-column label="支付类型" align="center" prop="" />
-      <el-table-column label="银行卡类型" align="center" prop="" />
-      <el-table-column label="银行卡号" align="center" prop="" />
+      <el-table-column label="运单号" align="center" prop="" />
+      <el-table-column label="装货地" align="center" prop="" />
+      <el-table-column label="卸货地" align="center" prop="" />
+      <el-table-column label="货物类型" align="center" prop="" />
+      <el-table-column label="承运司机" align="center" prop="" />
+      <el-table-column label="承运车辆" align="center" prop="" />
+      <el-table-column label="所属调度者" align="center" prop="" />
       <el-table-column label="交易类型" align="center" prop="" />
-      <el-table-column label="变动金额（元）" align="center" prop="">
-        <span class="g-color-blue" />
-      </el-table-column>
-      <el-table-column label="账户余额（元）" align="center" prop="" />
-      <el-table-column label="备注" align="center" prop="" />
-      <el-table-column label="变动时间" align="center" prop="" />
+      <el-table-column label="单价（元）" align="center" prop="" />
+      <el-table-column label="重量（吨）" align="center" prop="" />
+      <el-table-column label="总额（元）" align="center" prop="" />
+      <el-table-column label="操作时间" align="center" prop="" />
     </el-table>
 
     <pagination
@@ -88,6 +81,8 @@ export default {
     return {
       tableColumnsConfig: [],
       api: balanceListApi,
+      // 选中tab
+      activeTab: 'dj', // dj冻结 fk付款
       // 遮罩层
       loading: true,
       // 显示搜索条件
@@ -112,6 +107,9 @@ export default {
     this.getList();
   },
   methods: {
+    handleTabClick() {
+      console.log(this.activeTab);
+    },
     /** 查询列表 */
     getList() {
       this.loading = true;
