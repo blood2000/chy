@@ -152,7 +152,16 @@ export default {
         ],
         identificationEndTime: [
           { required: true, message: '身份证有效期不能为空', trigger: 'blur' },
-          { validator: this.formValidate.isExpired }
+          { validator: this.formValidate.isExpired },
+          { validator: (rules, value, callback) => {
+            const { identificationBeginTime } = this.form;
+            if (!value || !identificationBeginTime) {
+              return callback(new Error('身份证有效期不能为空'));
+            }
+            return callback();
+          },
+          trigger: 'change'
+          }
         ]
       }
     };
