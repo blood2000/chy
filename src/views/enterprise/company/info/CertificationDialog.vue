@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="货主/企业认证" :visible="visible" width="800px" append-to-body @close="cancel">
+  <el-dialog title="货主/企业认证" :visible="visible" width="800px" append-to-body :close-on-click-modal="false" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="140px">
       <template v-if="form.shipperType === 1">
         <el-form-item label="企业名称" prop="companyName">
@@ -152,7 +152,16 @@ export default {
         ],
         identificationEndTime: [
           { required: true, message: '身份证有效期不能为空', trigger: 'blur' },
-          { validator: this.formValidate.isExpired }
+          { validator: this.formValidate.isExpired },
+          { validator: (rules, value, callback) => {
+            const { identificationBeginTime } = this.form;
+            if (!value || !identificationBeginTime) {
+              return callback(new Error('身份证有效期不能为空'));
+            }
+            return callback();
+          },
+          trigger: 'change'
+          }
         ]
       }
     };

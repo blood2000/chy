@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
+  <el-dialog :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
       <el-form-item label="发货人/发货企业" prop="shipperType">
         <el-select
@@ -395,7 +395,16 @@ export default {
         ],
         identificationEndTime: [
           { required: true, message: '身份证有效期不能为空', trigger: 'blur' },
-          { validator: this.formValidate.isExpired }
+          { validator: this.formValidate.isExpired },
+          { validator: (rules, value, callback) => {
+            const { identificationBeginTime } = this.form;
+            if (!value || !identificationBeginTime) {
+              return callback(new Error('身份证有效期不能为空'));
+            }
+            return callback();
+          },
+          trigger: 'change'
+          }
         ],
         creditAmount: [
           { validator: this.formValidate.number, trigger: 'blur' }

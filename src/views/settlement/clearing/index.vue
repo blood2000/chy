@@ -167,21 +167,18 @@
     >
       <el-col :span="1.5">
         <el-button
-          v-hasPermi="['assets:vehicle:edit']"
           type="info"
           icon="el-icon-upload2"
           size="mini"
           @click="handleExport"
         >导出</el-button>
         <el-button
-          v-hasPermi="['assets:vehicle:edit']"
           type="primary"
           icon="el-icon-document-remove"
           size="mini"
           @click="handleClearing"
         >运单清分</el-button>
         <el-button
-          v-hasPermi="['assets:vehicle:edit']"
           type="success"
           icon="el-icon-refresh-right"
           size="mini"

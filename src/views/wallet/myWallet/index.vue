@@ -4,11 +4,17 @@
       <h3 class="g-title-medium mb10">我的账户</h3>
       <el-row class="mb20">
         <el-col :span="8">
-          <p class="g-text">{{ walletInfo.crediAmount ? walletInfo.crediAmount : '' }}</p>
+          <p class="g-text mb10">
+            <span class="g-text-20 g-strong mr5">{{ walletInfo.crediAmount ? walletInfo.crediAmount : '---' }}</span>
+            元
+          </p>
           <p class="g-text">可用余额</p>
         </el-col>
         <el-col :span="8">
-          <p class="g-text">{{ walletInfo.freezeAmount ? walletInfo.freezeAmount : '' }}</p>
+          <p class="g-text mb10">
+            <span class="g-text-20 g-strong mr5">{{ walletInfo.freezeAmount ? walletInfo.freezeAmount : '---' }}</span>
+            元
+          </p>
           <p class="g-text">冻结金额</p>
         </el-col>
       </el-row>
@@ -32,20 +38,21 @@
 
     <!-- 账户提现弹窗 -->
     <withdraw-dialog :open.sync="withdrawOpen" />
+    <!-- 修改密码弹窗 -->
+    <change-password-dialog :open.sync="changePasswordOpen" :type="passType" />
   </div>
 </template>
 <script>
 import { getUserInfo } from '@/utils/auth';
 import { getWalletInfo } from '@/api/wallet/wallet';
 import withdrawDialog from './withdrawDialog';
+import ChangePasswordDialog from './changePasswordDialog.vue';
 
 export default {
-  name: 'TransactionRecord',
+  name: 'MyWallet',
   components: {
-    withdrawDialog
-  },
-  props: {
-
+    withdrawDialog,
+    ChangePasswordDialog
   },
   data() {
     return {
@@ -54,7 +61,7 @@ export default {
       // 提现
       withdrawOpen: false,
       // 密码
-      changePassWordOpen: false
+      changePasswordOpen: false
     };
   },
   created() {
@@ -75,7 +82,7 @@ export default {
     },
     // 修改密码按钮
     handleChangePassword() {
-
+      this.changePasswordOpen = true;
     },
     // 忘记密码按钮
     handleForgotPassword() {

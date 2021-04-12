@@ -183,7 +183,7 @@
       </template>
       <template #edit="{row}">
         <el-button
-          v-hasPermi="['waybill:manages:detail']"
+          v-hasPermi="['transportation:waybill:getWayBillByCode']"
           size="mini"
           type="text"
           icon="el-icon-document"
@@ -192,6 +192,7 @@
           详情
         </el-button>
         <el-button
+          v-has-permi="['transportation:waybillAbnormal:add']"
           size="mini"
           type="text"
           icon="el-icon-lock"
@@ -209,7 +210,7 @@
           分单列表
         </el-button>
         <el-button
-          v-hasPermi="['waybill:manages:remove']"
+          v-hasPermi="['transportation:waybillOper:invalid']"
           size="mini"
           type="text"
           icon="el-icon-delete"
@@ -218,6 +219,7 @@
           作废运单
         </el-button>
         <el-button
+          v-has-permi="['transportation:waybillOper:shipperRemark']"
           size="mini"
           type="text"
           icon="el-icon-edit-outline"

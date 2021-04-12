@@ -283,6 +283,7 @@ export default {
       loading: true,
       // 选中数组
       ids: [],
+      adminNames: [],
       // 非单个禁用
       single: true,
       // 非多个禁用
@@ -459,6 +460,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id);
+      this.adminNames = selection.map(item => item.adminName);
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
     },
@@ -498,7 +500,8 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$confirm('是否确认删除编号为"' + ids + '"的数据项?', '警告', {
+      const adminNames = row.adminName || this.adminNames;
+      this.$confirm('是否确认删除货主姓名为"' + adminNames + '"的数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

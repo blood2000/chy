@@ -177,7 +177,7 @@
     <!-- 审核弹窗 -->
     <verify-dialog ref="VerifyDialog" :open.sync="verifydialog" :title="title" :disable="formDisable" @refresh="getList" />
     <!-- 开票弹窗 -->
-    <billing-dialog ref="BillingDialog" :open.sync="billingdialog" :title="title" :disable="formDisable" @refresh="getList" />
+    <billing-dialog ref="BillingDialog" :open.sync="billingdialog" :title="title" @refresh="getList" />
     <!-- 详情弹窗 -->
     <!-- <detail-dialog ref="DetailDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" /> -->
 
@@ -340,17 +340,12 @@ export default {
         case 2:
           this.$refs.BillingDialog.reset();
           this.billingdialog = true;
-          this.title = '开票';
+          this.title = '开发票';
           this.formDisable = false;
           this.$refs.BillingDialog.setForm(row);
           break;
         case 3:
           this.$router.push({ name: 'Statement', query: { id: row.code }});
-          // this.$refs.DetailDialog.reset();
-          // this.open = true;
-          // this.formDisable = true;
-          // this.title = '发票结算单';
-          // this.$refs.DetailDialog.setForm(row);
           break;
         default:
           break;

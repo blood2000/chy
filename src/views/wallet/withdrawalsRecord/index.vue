@@ -83,7 +83,7 @@
 import { balanceListApi, balanceList } from '@/api/capital/ubalance';
 
 export default {
-  name: 'AccountDetails',
+  name: 'WithdrawalsRecord',
   data() {
     return {
       tableColumnsConfig: [],
