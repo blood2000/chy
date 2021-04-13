@@ -9,6 +9,7 @@
   >
     <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
+
       <el-table-column label="司机类别" align="center" prop="driverType">
         <template slot-scope="scope">
           <span>{{ selectDictLabel(driverTypeOptions, scope.row.driverType) }}</span>
@@ -49,7 +50,7 @@
           <span>{{ parseTime(scope.row.workLicenseDueDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="营业执照号" align="center" prop="businessLicenseImgNo" />
+      <!--<el-table-column label="营业执照号" align="center" prop="businessLicenseImgNo" />-->
       <!-- <el-table-column label="是否上传人员信用信息" align="center" prop="isReportPerson">
         <template slot-scope="scope">
           <span>{{ selectDictLabel(isOption, scope.row.isReportPerson) }}</span>

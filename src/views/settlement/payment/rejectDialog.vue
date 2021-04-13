@@ -87,6 +87,7 @@ export default {
     },
     // 表单赋值
     setForm(data) {
+      console.log(data);
       this.form.wayBillSettlementCode = data.wayBillSettlementCode;
       console.log(this.form);
     }
