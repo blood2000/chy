@@ -304,7 +304,9 @@ export default {
   watch: {
     cbData: {
       handler(value) {
-        if (!value) return;
+        console.log(!value || JSON.stringify(value) === '{}');
+
+        if (!value || JSON.stringify(value) === '{}') return;
         const {
           businessType,
           stowageStatus,
