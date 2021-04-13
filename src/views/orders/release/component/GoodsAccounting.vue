@@ -323,7 +323,7 @@ export default {
           stowageStatus: stowageStatus || '0',
           // goodsUnit,
           number,
-          totalType: totalType ? '2' : '1',
+          totalType: totalType,
           weight,
           vehicleMaxWeight,
           shipmentPrice,

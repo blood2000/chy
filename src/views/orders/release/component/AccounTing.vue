@@ -198,6 +198,7 @@ export default {
   },
   data() {
     return {
+      jisuanRule: {}, // 计算的规则
       mygoodsUnitName: '', // 单位
       mytotalTypeValue: '', // 配载方式
       predictData: null, // 预估价格
@@ -304,6 +305,10 @@ export default {
             this.formData.freightPrice = e.ruleValue;
           }
 
+          if (e.enName === 'CALCULATION_FORMULA') {
+            this.jisuanRule = e;
+          }
+
           const bool = (e.enName === 'LOSS_PLAN' || e.enName === 'LOSS_RULE' || e.enName === 'CALCULATION_FORMULA' || e.enName === 'FREIGHT_COST' || e.enName === 'DRIVER_ACTUAL_PRICE');
 
           return !bool;
@@ -364,7 +369,12 @@ export default {
         code: this.formData.ruleItemId
       })).data;
 
+
+
       const filterDetailList = detailList.filter(e => {
+        if (e.enName === 'CALCULATION_FORMULA') {
+          this.jisuanRule = e;
+        }
         const bool = (e.enName === 'LOSS_PLAN' || e.enName === 'LOSS_RULE' || e.enName === 'CALCULATION_FORMULA');
 
         return !bool;
@@ -404,7 +414,7 @@ export default {
             const zichuList = this.$refs.zichuList ? (await this.$refs.zichuList._submitForm()) : [];
 
             const obj = {
-              orderFreightBoList: await [...this.ruleFreightPrice, ...shouruList, ...zichuList, ...this.claculationFormula].map(e => {
+              orderFreightBoList: await [...this.ruleFreightPrice, ...shouruList, ...zichuList, ...this.claculationFormula, ...[this.jisuanRule]].map(e => {
                 return {
                   'code': e.code,
                   'ruleCode': e.ruleCode,
