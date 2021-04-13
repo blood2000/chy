@@ -331,7 +331,7 @@
 </template>
 
 <script>
-import { adjustList, adjustListApi } from '@/api/settlement/adjust';
+import { adjustList, adjustListApi, batchApply } from '@/api/settlement/adjust';
 // 驳回弹窗
 import RejectDialog from '../components/rejectDialog';
 // 核算弹窗
@@ -357,7 +357,10 @@ export default {
       'loading': false,
       // 选中数组
       'ids': [],
-      wayBillCodeList: [],
+      waybillCodeList: [],
+      'bodyParams': {
+        waybillCodeList: []
+      },
       // 显示搜索条件
       'showSearch': true,
       // 总条数
@@ -451,7 +454,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map((item) => item.wayBillCode);
-      console.log(this.ids);
+      this.bodyParams.waybillCodeList = this.ids;
     },
     /** 查询【请填写功能名称】列表 */
     getList() {
@@ -477,15 +480,44 @@ export default {
     },
     // 批量核算
     handleAdjust() {
-      this.adjustdialog = true;
-      this.title = '结算审核';
-      this.$refs.AdjustDialog.setForm(this.ids);
+      console.log(this.ids);
+      if (this.ids.length === 0) {
+        this.$message({ type: 'warning', message: '请先选择数据！' });
+      } else {
+        this.adjustdialog = true;
+        this.title = '结算审核';
+        this.$refs.AdjustDialog.setForm(this.ids);
+      }
     },
-    // 批量申请
+    // 批量申请打款
     handleApply() {
+      if (this.ids.length === 0) {
+        this.$message({ type: 'warning', message: '请先选择数据！' });
+      } else {
+        this.$confirm('是否确认批量申请打款?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          batchApply(this.bodyParams).then(response => {
+            this.$message({ type: 'success', message: '申请打款成功！' });
+            this.getList();
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });
+        });
+      }
     },
     // 批量评价
     handleAssess() {
+      if (this.ids.length === 0) {
+        this.$message({ type: 'warning', message: '请先选择数据！' });
+      } else {
+        console.log(this.ids);
+      }
     },
 
     handleTableBtn(row, index) {
@@ -509,15 +541,28 @@ export default {
         case 3:
           this.adjustdialog = true;
           this.title = '结算审核';
-          this.wayBillCodeList = [];
-          this.wayBillCodeList.push(row.wayBillCode);
-          this.$refs.AdjustDialog.setForm(this.wayBillCodeList);
+          this.waybillCodeList = [];
+          this.waybillCodeList.push(row.wayBillCode);
+          this.$refs.AdjustDialog.setForm(this.waybillCodeList);
           break;
         case 4:
-          this.dialoga = true;
-          this.formDisable = true;
-          this.title = '申请打款';
-          this.$refs.DialogA.setForm(row);
+          this.$confirm('是否确认申请打款?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.bodyParams.waybillCodeList = [];
+            this.bodyParams.waybillCodeList.push(row.wayBillCode);
+            batchApply(this.bodyParams).then(response => {
+              this.$message({ type: 'success', message: '申请打款成功！' });
+              this.getList();
+            });
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消'
+            });
+          });
           break;
         case 5:
           this.commentdialog = true;
