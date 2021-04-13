@@ -14,9 +14,6 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="姓名" prop="adminName">
-        <el-input v-model="form.adminName" placeholder="支持自动识别" class="width90" clearable />
-      </el-form-item>
       <el-form-item label="手机号/账号" prop="telphone">
         <el-input v-model="form.telphone" placeholder="请输入手机号/账号" class="width90" clearable />
       </el-form-item>
@@ -55,6 +52,9 @@
             <upload-image v-model="form.businessLicenseImg" :disabled="disable" />
           </el-col>
         </el-row>
+      </el-form-item>
+      <el-form-item label="姓名" prop="adminName">
+        <el-input v-model="form.adminName" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
       <el-form-item label="身份证号" prop="identificationNumber">
         <el-input v-model="form.identificationNumber" placeholder="支持自动识别" class="width90" clearable />
