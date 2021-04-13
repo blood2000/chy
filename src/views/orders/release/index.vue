@@ -215,6 +215,7 @@
       </div>
 
     </el-form>
+
     <div v-if="active >= 4 && !isT" class="ly-t-center">
       <el-button @click="nextFe(3)">上一步</el-button>
       <el-button type="primary" @click="onPubilsh">{{ isCreated?'立即发布':'保存' }}</el-button>
@@ -376,6 +377,9 @@ export default {
     this.getDicts('M0').then(res => {
       this.$store.dispatch('orders/store_getM0_option', res.data);
     });
+
+    const provinceOption = this.$store.getters.provinceList;
+    if (provinceOption) return;
     const { rows } = await getProvinceList();
     this.$store.dispatch('orders/store_getProvinceList', rows);
   },

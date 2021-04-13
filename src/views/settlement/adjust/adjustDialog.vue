@@ -234,6 +234,8 @@ export default {
     handlerInput(row, value, key) {
       const filterRow = this.filterRow(row);
 
+      if (filterRow[key] === value) return;
+
       if (filterRow.deliveryCashFee > row.deliveryCashFee) {
         row.otherCharges = filterRow.deliveryCashFee - row.deliveryCashFee;
         filterRow.otherCharges = row.otherCharges;
@@ -265,6 +267,10 @@ export default {
 
     // 单项修改
     async handlerBlur(row, value, key) {
+      const filterRow = this.filterRow(row);
+
+      if (filterRow[key] === value) return;
+
       const parame = {
         driverReductionFee: row.driverReductionFee,
         m0DictValue: row.m0DictValue,

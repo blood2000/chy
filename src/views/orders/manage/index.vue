@@ -733,12 +733,19 @@ export default {
 
     /** 获取首页字典值 */
     getDict() {
-      this.listByDict({
-        dictPid: '0',
-        dictType: 'goodsType'
-      }).then(res => {
-        this.goodsTypeOption = res.data;
-      });
+      const goodsBigType_option = this.$store.getters.goodsBigType_option;
+
+      if (!goodsBigType_option) {
+        this.listByDict({
+          dictPid: '0',
+          dictType: 'goodsType'
+        }).then(res => {
+          this.goodsTypeOption = res.data;
+          this.$store.dispatch('orders/store_goodsBigType_option', res.data);
+        });
+      } else {
+        this.goodsTypeOption = goodsBigType_option;
+      }
 
       ['businessType'].forEach(e => {
         this.getDicts(e).then(response => {

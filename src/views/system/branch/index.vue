@@ -51,7 +51,7 @@
 
     <el-table v-loading="loading" :data="branchList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="岗位名称" align="center" prop="name" />
+      <el-table-column label="网点名称" align="center" prop="name" />
       <el-table-column label="组织" align="center" prop="orgName" />
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
