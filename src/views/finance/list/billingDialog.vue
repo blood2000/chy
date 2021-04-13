@@ -41,7 +41,7 @@
 
 <script>
 import { openInvoice } from '@/api/finance/list';
-import UploadImage from '@/components/UploadImage/index';
+import UploadImage from '@/components/UploadImage/moreImg';
 
 export default {
   name: 'BillingDialog',
@@ -78,6 +78,7 @@ export default {
         //   { required: true, message: '请选择审核结果', trigger: 'blur' }
         // ]
       }
+      // fresh: false
     };
   },
   computed: {
@@ -107,7 +108,7 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid) {
           openInvoice(this.form).then(response => {
-            this.msgSuccess('申请取消运单成功');
+            this.msgSuccess('开票成功');
             this.close();
             this.$emit('refresh');
           });
@@ -137,9 +138,17 @@ export default {
     },
     // 表单赋值
     setForm(data) {
-      this.form.invoiceApplyCode = data.code;
-      this.form.askForNo = data.askForNo;
-      console.log(data);
+      this.form = {
+        askForNo: data.askForNo,
+        images: null,
+        invoiceApplyCode: data.code,
+        receiveAddress: data.invoiceReceiverAddress,
+        receiveName: data.receiver,
+        receivePhone: data.receiverPhone
+      };
+      // this.form.invoiceApplyCode = data.code;
+      // this.form.askForNo = data.askForNo;
+      console.log(this.form);
       // this.getList();
     }
   }
