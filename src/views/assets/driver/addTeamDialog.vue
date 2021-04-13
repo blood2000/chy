@@ -75,7 +75,7 @@
       <!-- <el-table-column label="网点编码" align="center" prop="branchCode" /> -->
       <el-table-column label="加入情况" align="center" prop="applyStatus">
         <template slot-scope="scope">
-          <span v-if="scope.row.applyStatus">{{ selectDictLabel(applyStatusOptions, scope.row.applyStatus) }}</span>
+          <span v-if="scope.row.applyStatus !=null && scope.row.applyStatus>=0">{{ selectDictLabel(applyStatusOptions, scope.row.applyStatus) }}</span>
           <span v-else>无</span>
         </template>
       </el-table-column>
@@ -232,7 +232,7 @@ export default {
     },
     // 状态为未处理/已加入的checkbox不可选
     checkboxSelectable(row) {
-      if (row.applyStatus === 0 || row.applyStatus === 1) {
+      if ((row.applyStatus === 0 || row.applyStatus === 1) || row.apply) {
         return false;
       } else {
         return true;

@@ -121,6 +121,12 @@
         <span v-show="row.authStatus === 2" class="g-color-error">审核未通过</span>
         <span v-show="row.authStatus === 3" class="g-color-success">审核通过</span>
       </template>
+      <template #authTime="{row}">
+        <span>{{ parseTime(row.authTime, '{y}-{m}-{d}') }}</span>
+      </template>
+      <template #createTime="{row}">
+        <span>{{ parseTime(row.createTime, '{y}-{m}-{d}') }}</span>
+      </template>
       <template #edit="{row}">
         <el-button
           v-hasPermi="['assets:team:manage']"
