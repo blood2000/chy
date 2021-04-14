@@ -219,17 +219,21 @@
     <div v-if="active >= 4 && !isT" class="ly-t-center">
       <el-button @click="nextFe(3)">上一步</el-button>
       <el-button type="primary" @click="onPubilsh">{{ isCreated?'立即发布':'保存' }}</el-button>
+
+      <div class="release_warning">
+        <el-alert
+          title="司机在接单的时候会相应的扣除余额中的运输费用，请及时充值，以免招成司机接单不成功的情况。"
+          type="info"
+          effect="dark"
+          :closable="false"
+        />
+      </div>
     </div>
     <div v-if="isT" class="ly-t-center">
       <el-button @click="backPge">返 回</el-button>
     </div>
 
-    <div v-if="!myisdisabled && !loading && active < 4">
-      <el-alert
-        title="司机在接单的时候会相应的扣除余额中的运输费用，请及时充值，以免招成司机接单不成功的情况。"
-        type="warning"
-      />
-    </div>
+
 
 
     <!-- 打开弹框 -->
@@ -1216,5 +1220,10 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.release_warning{
+  width: 500px;
+  margin: 20px auto 0;
+  text-align: left;
 }
 </style>

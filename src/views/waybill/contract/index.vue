@@ -264,53 +264,52 @@ export default {
     // }
     /* 打印 */
     async handleInfo(row) {
-      this.visible = true;
       this.title = '电子合同';
       this.driverOrShipment = row.driverOrShipment;
 
-      const res = await getContractByCode(row.code);
-      console.log(res);
+      const { data } = await getContractByCode(row.code);
 
-      const res1 = {
-        'contractNo': 'DADAOCHENG2104061658484980', // 合同编号
-        'createTime': '2021-04-12 17:16:39',
+      // const res1 = {
+      //   'contractNo': 'DADAOCHENG2104061658484980', // 合同编号
+      //   'createTime': '2021-04-12 17:16:39',
 
-        'branchName': '福建大道成物流科技有限公司', // 公司名称
-        'branchOrganizationCodeNo': '913713000673687316', // 公司的-统一社会信用代码代码
-        'branchArea': '福建省福州市福清市万达 写字楼A2-901', // 公司的地址 网点-住所
-        'branchArtificialName': '施联文', // (司机合同则是)甲方 网点-法定代表人
-        'branchPhone': '400-8270-535', // 公司的-电话
+      //   'branchName': '福建大道成物流科技有限公司', // 公司名称
+      //   'branchOrganizationCodeNo': '913713000673687316', // 公司的-统一社会信用代码代码
+      //   'branchArea': '福建省福州市福清市万达 写字楼A2-901', // 公司的地址 网点-住所
+      //   'branchArtificialName': '施联文', // (司机合同则是)甲方 网点-法定代表人
+      //   'branchPhone': '400-8270-535', // 公司的-电话
 
-        // 如果是司机合同 则这些值有的时候是显示空的
-        'shipmentCompanyName': '包头市闽鹿飞商贸有限责任公司', // 货主公司名称(货主合同的时候是 甲方)
-        'shipmentName': '罗闽春', // 货主名称
-        'shipmentPhone': null, // 货主电话
-        'shipmentArea': '福建省福州市台江区台江万达',
-        'shipmentOrganizationCodeNo': null, // 货主统一社会信用代码代码
+      //   // 如果是司机合同 则这些值有的时候是显示空的
+      //   'shipmentCompanyName': '包头市闽鹿飞商贸有限责任公司', // 货主公司名称(货主合同的时候是 甲方)
+      //   'shipmentName': '罗闽春', // 货主名称
+      //   'shipmentPhone': null, // 货主电话
+      //   'shipmentArea': '福建省福州市台江区台江万达',
+      //   'shipmentOrganizationCodeNo': null, // 货主统一社会信用代码代码
 
-        'startAddress': '123', // 出发地
-        'endAddress': '214124', // 目的地
+      //   'startAddress': '123', // 出发地
+      //   'endAddress': '214124', // 目的地
 
-        'consignor': '发货人', // 发货人-名称
-        'consignorPhone': '18147824577', // 发货人电话
-        'consignee': '收货', // 收货人-名称
-        'consigneePhone': '18147824577', // 收货人电话
+      //   'consignor': '发货人', // 发货人-名称
+      //   'consignorPhone': '18147824577', // 发货人电话
+      //   'consignee': '收货', // 收货人-名称
+      //   'consigneePhone': '18147824577', // 收货人电话
 
-        'driverName': '王敏', // 实际承运人（司机）-名称
-        'driverPhone': '15947175530', // 司机电话
-        'driverLicense': '150221198012026219', // 驾驶证号码
-        'driverIdentificationNumber': '150221198012026219', // 司机的-身份证号
-        'licenseNumber': '蒙KH8928', // 车牌号
+      //   'driverName': '王敏', // 实际承运人（司机）-名称
+      //   'driverPhone': '15947175530', // 司机电话
+      //   'driverLicense': '150221198012026219', // 驾驶证号码
+      //   'driverIdentificationNumber': '150221198012026219', // 司机的-身份证号
+      //   'licenseNumber': '蒙KH8928', // 车牌号
 
-        'goodsTypeName': null, // 货物小类 -中文名称
-        'goodsBigTypeName': '0300', // 货物大类 -中文名称
-        'loadWeight': 10, // 装货重量
-        'goodsName': '', // 货物描述
-        'goodsAmount': 10, // 货物价值 价格
-        'driverOrShipment': 0 // 合同类型 0 司机 1 货主  (用这个判断甲方和乙方)
-      };
+      //   'goodsTypeName': null, // 货物小类 -中文名称
+      //   'goodsBigTypeName': '0300', // 货物大类 -中文名称
+      //   'loadWeight': 10, // 装货重量
+      //   'goodsName': '', // 货物描述
+      //   'goodsAmount': 10, // 货物价值 价格
+      //   'driverOrShipment': 0 // 合同类型 0 司机 1 货主  (用这个判断甲方和乙方)
+      // };
 
-      this.dialogData = res1;
+      this.dialogData = data;
+      this.visible = true;
     },
 
     /** 生成电子章合同 */

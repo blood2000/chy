@@ -1,6 +1,7 @@
 <template>
   <div v-if="obj" class="Whole" style="position: relative;">
     <el-button
+      v-print="printObj"
       size="mini"
       type="primary"
       icon="el-icon-printer"
@@ -10,8 +11,8 @@
 
     <div id="wholecont" class="wholecont-div">
 
-      <h3 id="plat_hetong_title">福建大道成物流科技有限公司无车承运平台运输电子合同</h3>
-      <div class="seria">合同编号：<span id="contract_no">{{ obj.contractNo || 'DADAOCHENG202104121716381452' }}</span></div>
+      <h3 id="plat_hetong_title" style="text-indent: 4em;">福建大道成物流科技有限公司无车承运平台运输电子合同</h3>
+      <div class="seria" style="margin-top: 30px;">合同编号：<span id="contract_no">{{ obj.contractNo || 'DADAOCHENG202104121716381452' }}</span></div>
       <!-- <div class="seria">签约地：<span id="contract_no"></span></div> -->
       <!--  -->
       <div class="seria">签约时间：<span id="acreate_time">{{ obj.createTime || '2021-04-12 17:16:39' }}</span></div>
