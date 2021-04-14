@@ -526,7 +526,7 @@ export default {
             this.form.businessLicenseImg = null;
           }
           this.form.identificationEffective = praseBooleanToNum(this.form.identificationEffective);
-          if (this.form.id !== undefined) {
+          if (this.form.id) {
             updateShipment(this.form).then(response => {
               this.msgSuccess('修改成功');
               this.close();

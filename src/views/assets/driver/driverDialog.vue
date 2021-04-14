@@ -649,7 +649,7 @@ export default {
                 driver.transportPermitImage = null;
                 driver.vehicleInfo.vehicleImage = null;
               }
-              if (driver.id !== undefined) {
+              if (driver.id) {
                 updateDriver(driver).then(response => {
                   this.msgSuccess('修改成功');
                   this.close();

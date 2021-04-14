@@ -138,7 +138,7 @@ export default {
       const flag = this.$refs.ChooseArea.submit();
       this.$refs['form'].validate(valid => {
         if (valid && flag) {
-          if (this.form.id !== undefined) {
+          if (this.form.id) {
             updateShipment(this.form).then(response => {
               this.msgSuccess('修改成功');
               this.close();

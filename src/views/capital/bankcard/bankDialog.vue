@@ -207,7 +207,7 @@ export default {
             ...this.form,
             isDefault: praseBooleanToNum(this.form.isDefault)
           };
-          if (this.form.id !== undefined) {
+          if (this.form.id) {
             updateBank(params).then(response => {
               this.msgSuccess('修改成功');
               this.close();

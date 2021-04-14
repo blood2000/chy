@@ -166,7 +166,7 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid) {
           this.form.identificationEffective = praseBooleanToNum(this.form.identificationEffective);
-          if (this.form.id != null) {
+          if (this.form.id) {
             updateInfo(this.form).then(response => {
               this.msgSuccess('修改成功');
               this.close();
