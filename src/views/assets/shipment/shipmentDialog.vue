@@ -101,7 +101,7 @@
       <template v-if="form.shipperType === 1">
         <el-form-item label="公司名称" prop="companyName" :rules="[{ required: true, message: '公司名称不能为空', trigger: 'blur' }]">
           <el-input v-model="form.companyName" placeholder="请输入公司名称" class="width90" clearable />
-         <!-- <el-select
+          <!-- <el-select
             v-model="form.companyName"
             style="width: 90%"
             filterable
@@ -151,10 +151,10 @@
       <el-form-item label="票制类别" prop="ticketType">
         <el-select
           v-model="form.ticketType"
-          @change="changeTicketType"
           filterable
           clearable
           class="width90"
+          @change="changeTicketType"
         >
           <el-option
             v-for="dict in ticketTypeOptions"
@@ -165,17 +165,17 @@
         </el-select>
       </el-form-item>
       <template v-if="form.ticketType == '2'">
-        <el-form-item label="服务费税率(%)" prop="serviceRate"  :rules="[{ required: true, message: '服务费税率不能为空', trigger: 'blur' }]" >
+        <el-form-item label="服务费税率(%)" prop="serviceRate" :rules="[{ required: true, message: '服务费税率不能为空', trigger: 'blur' }]">
           <el-input-number v-model="form.serviceRate" controls-position="right" :precision="2" placeholder="请输入服务费税率" :step="1" :min="0" :max="100" class="width90" clearable />
         </el-form-item>
-       <!-- <el-form-item label="服务费比例(%)" prop="serviceRatio"  :rules="[{ required: true, message: '服务费比例不能为空', trigger: 'blur' }]" >
+        <!-- <el-form-item label="服务费比例(%)" prop="serviceRatio"  :rules="[{ required: true, message: '服务费比例不能为空', trigger: 'blur' }]" >
           <el-input-number v-model="form.serviceRatio" controls-position="right" :precision="2" placeholder="请输入服务费比例" :step="1" :min="0" :max="100" class="width90" clearable />
         </el-form-item>-->
       </template>
       <el-row :gutter="20">
         <el-col :span="12">
-          <el-form-item label="税点(%)" prop="texPoint" >
-            <el-input-number  v-model="form.texPoint" @input="changeTextPoint" controls-position="right" :precision="2" placeholder="请输入税点" :step="1" :min="0" :max="100" clearable />
+          <el-form-item label="税点(%)" prop="texPoint">
+            <el-input-number v-model="form.texPoint" controls-position="right" :precision="2" placeholder="请输入税点" :step="1" :min="0" :max="100" clearable @input="changeTextPoint" />
           </el-form-item>
         </el-col>
         <el-col :span="10">
@@ -229,7 +229,7 @@
           />
         </el-select>
       </el-form-item>
-     <!-- <el-form-item label="核算方式" prop="accountType">
+      <!-- <el-form-item label="核算方式" prop="accountType">
         <el-select v-model="form.accountType" placeholder="请选择核算方式" filterable clearable class="width90">
           <el-option
             v-for="dict in accountTypeOptions"
@@ -239,7 +239,7 @@
           />
         </el-select>
       </el-form-item>-->
-     <!-- <el-form-item label="是否抹零" prop="isWipe">
+      <!-- <el-form-item label="是否抹零" prop="isWipe">
         <el-select
           v-model="form.isWipe"
           clearable
@@ -262,7 +262,7 @@
           />
         </el-select>
       </el-form-item>-->
-     <!-- <el-form-item label="是否开启合理路耗">
+      <!-- <el-form-item label="是否开启合理路耗">
         <el-select
           v-model="form.isConsumption"
           clearable
