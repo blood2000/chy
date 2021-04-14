@@ -116,8 +116,10 @@
 
     <!-- 生成电子合同 -->
     <el-dialog :title="title" :visible.sync="visible" width="1200px" append-to-body>
-      <driver-contract v-if="false" />
-      <company-contract />
+      <div v-if="visible">
+        <driver-contract v-if="driverOrShipment === 0" :obj="dialogData" />
+        <shipment-contract v-else :obj="dialogData" />
+      </div>
     </el-dialog>
 
   </div>
@@ -126,15 +128,21 @@
 <script>
 // import tableColumnsConfig from './config';
 import DriverContract from './DriverContract';
-import CompanyContract from './CompanyContract';
+import ShipmentContract from './ShipmentContract';
 
-import { listContract, getContract, listContractApi } from '@/api/waybill/contract';
+import { listContract, getContractByCode, listContractApi } from '@/api/waybill/contract';
 
 export default {
   'name': 'Contract',
-  components: { DriverContract, CompanyContract },
+  components: { DriverContract, ShipmentContract },
   data() {
     return {
+      // 弹框 内容
+      visible: false,
+      title: '',
+      dialogData: null, // 弹框数据
+      driverOrShipment: 0, // 合同类型 0 司机 1 货主
+
       tableColumnsConfig: [],
       api: listContractApi,
       // 遮罩层
@@ -156,9 +164,7 @@ export default {
         driverInfo: undefined,
         driverOrShipment: undefined
       },
-      // 弹框 内容
-      visible: false,
-      title: '',
+
       // ne 0 司机 1 货主
       driverOrShipmentOptions: [
         { 'dictLabel': '司机合同', 'dictValue': '0' },
@@ -249,14 +255,120 @@ export default {
     //   this.title = '编辑货主运单备注';
     // }
     /* 打印 */
-    handleInfo(row) {
+    async handleInfo(row) {
       this.visible = true;
       this.title = '电子合同';
-      console.log(row.id);
+      this.driverOrShipment = row.driverOrShipment;
 
-      getContract(row.id).then(res => {
-        console.log(res);
-      });
+      const res = await getContractByCode(row.code);
+      console.log(res);
+
+      const res1 = {
+        'contractNo': 'DADAOCHENG2104061658484980', // 合同编号
+        'createTime': '2021-04-12 17:16:39',
+
+        'branchName': '福建大道成物流科技有限公司', // 公司名称
+        'branchOrganizationCodeNo': '913713000673687316', // 公司的-统一社会信用代码代码
+        'branchArea': '福建省福州市福清市万达 写字楼A2-901', // 公司的地址 网点-住所
+        'branchArtificialName': '施联文', // (司机合同则是)甲方 网点-法定代表人
+        'branchPhone': '400-8270-535', // 公司的-电话
+
+        // 如果是司机合同 则这些值有的时候是显示空的
+        'shipmentCompanyName': '包头市闽鹿飞商贸有限责任公司', // 货主公司名称(货主合同的时候是 甲方)
+        'shipmentName': '罗闽春', // 货主名称
+        'shipmentPhone': null, // 货主电话
+        'shipmentArea': '福建省福州市台江区台江万达',
+        'shipmentOrganizationCodeNo': null, // 货主统一社会信用代码代码
+
+        'startAddress': '123', // 出发地
+        'endAddress': '214124', // 目的地
+
+        'consignor': '发货人', // 发货人-名称
+        'consignorPhone': '18147824577', // 发货人电话
+        'consignee': '收货', // 收货人-名称
+        'consigneePhone': '18147824577', // 收货人电话
+
+        'driverName': '王敏', // 实际承运人（司机）-名称
+        'driverPhone': '15947175530', // 司机电话
+        'driverLicense': '150221198012026219', // 驾驶证号码
+        'driverIdentificationNumber': '150221198012026219', // 司机的-身份证号
+        'licenseNumber': '蒙KH8928', // 车牌号
+
+        'goodsTypeName': null, // 货物小类 -中文名称
+        'goodsBigTypeName': '0300', // 货物大类 -中文名称
+        'loadWeight': 10, // 装货重量
+        'goodsName': '', // 货物描述
+        'goodsAmount': 10, // 货物价值 价格
+        'driverOrShipment': 0 // 合同类型 0 司机 1 货主  (用这个判断甲方和乙方)
+      };
+
+      console.log(res1);
+
+
+
+      const obj = {
+        'id': 29563,
+        'code': 'c836b52f91a04c82b40fa9835b815833',
+        'branch_code': '27adb23841d547b8ae6f0c11481b4cfd',
+        'branch_name': '福建大道成物流科技有限公司',
+        'electronic_signature_stype': 0,
+        'order_detail_code': '9a086df8b1a843ca96b7e975b267a4ea',
+        'contract_no': 'DADAOCHENG202104121716381452',
+        'start_address': '福建省福州市仓山区',
+        'end_address': '福建省福州市台江区',
+        'amount': 150.00,
+        'weight': 50.00,
+        'goods_type': '鲜活农产品',
+        'mobile': '15859109862',
+        'create_code': 'beccf358d5424ccfac3372c488d09da3',
+        'contract_path': '',
+        'create_time': '2021-04-12 17:16:39',
+        'driver_or_shipment': 0,
+        'is_dzqz_contract': 0,
+        'dzqz_contract_msg': '',
+        'name': '小强师傅',
+        'urs_driver_name': '小强师傅',
+        'driver_user_code': 'beccf358d5424ccfac3372c488d09da3',
+        'driver_phone': '15859109862',
+        'order_code': '2104121716389884',
+        'last_loading_time': '2021-04-13 16:00:24',
+        'coal_type_name': '鲜活农产品',
+        'goods_total': 0.00,
+        'shipper_name': 'lan测试',
+        'shipper_phone': '13559169013',
+        'shipper_address': '福建省福州市仓山区',
+        'consignee_name': '李四',
+        'consignee_phone': '13290895602',
+        'consignee_address': '福建省福州市台江区',
+        'shipment_user_code': '350f832f93aa4286995c56eb5f4b9e4e',
+        'shipment_company_code': '00ba6e35dbf2408c8014f1a51867aa8e',
+        'shipment_name': '大道成测试货主公司',
+        'staff_type': 1,
+        'business_license_img_no': '20210412000001',
+        'user_role': 'shipment_company',
+        'shipment_user_name': 'lan测试',
+        'shipment_user_phone': '13559169013',
+        'shipment_company_phone': '13559169013',
+        'order_status': 3,
+        'driver_identification_number': '350123198908263919',
+        'shipment_identification_number': '350103198909084236',
+        'driver_name': '小强师傅',
+        'license_number': '浙B8U39T',
+        'identification_number': '350123198908263919',
+        'driver_license': '',
+        'first': '福建大道成物流科技有限公司',
+        'second': '小强师傅',
+        'dzqzUserCode': 'beccf358d5424ccfac3372c488d09da3',
+        'branchName': '福建大道成物流科技有限公司'
+      };
+
+      this.dialogData = res1;
+      // row.driverOrShipment
+
+
+      // getContractByCode(row.id).then(res => {
+      //   console.log(res);
+      // });
     }
   }
 };

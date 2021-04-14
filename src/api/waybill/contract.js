@@ -41,3 +41,11 @@ export function addTest(data) {
     data: data
   });
 }
+
+// 根据code获取运单合同详情
+export function getContractByCode(code) {
+  return request({
+    url: '/transportation/orderContract/' + code,
+    method: 'get'
+  });
+}
