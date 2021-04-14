@@ -115,8 +115,9 @@
     />
 
     <!-- 生成电子合同 -->
-    <el-dialog :title="title" :visible.sync="visible" width="800px" append-to-body>
-      <div>123</div>
+    <el-dialog :title="title" :visible.sync="visible" width="1200px" append-to-body>
+      <driver-contract v-if="false" />
+      <company-contract />
     </el-dialog>
 
   </div>
@@ -124,11 +125,14 @@
 
 <script>
 // import tableColumnsConfig from './config';
+import DriverContract from './DriverContract';
+import CompanyContract from './CompanyContract';
 
 import { listContract, getContract, listContractApi } from '@/api/waybill/contract';
 
 export default {
   'name': 'Contract',
+  components: { DriverContract, CompanyContract },
   data() {
     return {
       tableColumnsConfig: [],

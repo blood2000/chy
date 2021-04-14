@@ -675,6 +675,9 @@ export default {
       }
       this.goodsBigType = this.basicInfor.orderGoodsList[0].goodsBigType;
       this.goodsBigTypeName = this.basicInfor.orderGoodsList[0].goodsBigTypeName;
+
+      console.log(this.basicInfor);
+
       const {
         classList,
         isPublic,
@@ -779,6 +782,7 @@ export default {
           identification: e.goodsType
         };
       });
+
       // 2. 地址及地址下对应的规则(注意: arr不包括一卸或者一装)
 
 
