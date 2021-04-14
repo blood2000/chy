@@ -1,6 +1,7 @@
 .Whole {
     position: relative;
-    width: 700px;
+    width: 800px;
+    min-width: 800px;
     font-size: 14px;
     margin: 0 auto;
     padding-bottom: 20px;
@@ -16,7 +17,6 @@
     padding-left: 40px;
     padding-right: 25px;
     padding-top: 25px;
-    border-top: 1px solid #DCDFE6;
 }
 .wholecont-print{
     position: absolute;
@@ -24,6 +24,7 @@
     right: -50px;
 }
 .Whole h3 {
+    width: 100%;
     font-size: 24px;
     margin: 0 auto;
     text-align: center;
