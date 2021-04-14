@@ -437,8 +437,6 @@ export default {
 
     // 处理预估值
     async handlerEstimateCost(data) {
-      // console.log(this.good);
-
       const { orderEstimateCostBoList } = data;
 
       orderEstimateCostBoList.forEach(e => {
@@ -448,8 +446,6 @@ export default {
 
             this.good.redis.forEach(redi => {
               if (addresCodes[0] === redi.identification + '' || addresCodes[1] === redi.identification + '' || addresCodes[0] === redi.code || addresCodes[1] === redi.code) {
-                // console.log(ee, '找到当前的这一项了');
-
                 this.predictData = ee;
               }
             });
@@ -464,25 +460,6 @@ export default {
     getDict() {
       this['M0Option'] = this.$store.state.orders.M0_option;
       return;
-      // const dictName = ['M0'];
-      // const M0_option = this.$store.state.orders.M0_option;
-
-      // dictName.forEach(e => {
-      //   if (M0_option && M0_option.length) {
-      //     this[e + 'Option'] = M0_option;
-      //   } else {
-      //     this.getDicts(e).then(res => {
-      //       this[e + 'Option'] = res.data || [];
-      //       if (e === 'M0') {
-      //         console.log(res.data);
-
-      //         this.$store.dispatch('orders/store_getM0_option', res.data);
-      //       }
-      //     }).catch(() => {
-      //       this[e + 'Option'] = [];
-      //     });
-      //   }
-      // });
     },
 
     // 根据value匹配数组中的一项

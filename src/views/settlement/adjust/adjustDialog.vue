@@ -75,7 +75,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="160" label="实际承运重量??" align="center" prop="tin11111111" />
+      <!-- <el-table-column width="160" label="实际承运重量??" align="center" prop="tin11111111" /> -->
 
       <el-table-column width="160" label="路耗" align="center" prop="loss" />
 
@@ -89,11 +89,11 @@
       <el-table-column width="160" label="亏涨扣费" align="center" prop="deduction" />
 
 
-      <el-table-column width="120" label="抹零金额" align="center" prop="m0Amount" />
+      <el-table-column width="120" label="抹零金额" align="center" prop="m0Fee" />
 
       <el-table-column width="160" label="司机应收运费" align="center" prop="deliveryFeeDeserved" />
       <el-table-column width="160" label="司机实收运费" align="center" prop="deliveryFeePractical" />
-      <el-table-column width="160" label="司机实收抹零??" align="center" prop="tin11111111" />
+      <!-- <el-table-column width="160" label="司机实收抹零??" align="center" prop="tin11111111" /> -->
 
 
 

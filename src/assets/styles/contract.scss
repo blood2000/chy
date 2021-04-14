@@ -1,0 +1,132 @@
+.Whole {
+    position: relative;
+    width: 800px;
+    min-width: 800px;
+    font-size: 14px;
+    margin: 0 auto;
+    padding-bottom: 20px;
+}
+.Whole .wholecont-div {
+    position: relative;
+    z-index: 4;
+}
+.wholecont-div {
+    margin-left: 25px;
+    margin-right: 40px;
+    margin-top: 25px;
+    padding-left: 40px;
+    padding-right: 25px;
+    padding-top: 25px;
+}
+.wholecont-print{
+    position: absolute;
+    top: 0px;
+    right: -50px;
+}
+.Whole h3 {
+    width: 100%;
+    font-size: 24px;
+    margin: 0 auto;
+    text-align: center;
+    line-height: 50px;
+    margin-top: 30px;
+    
+    font-weight: normal;
+}
+.seria {
+    text-align: right;
+    margin-bottom: 20px;
+    font-size: 13px;
+}
+.same-div h4 {
+    font-size: 16px;
+    line-height: 2em;
+}
+.same-div p {
+    line-height: 1.8em;
+    text-indent: 2em;
+}
+.seria span {
+    text-decoration: underline;
+}
+.t_num1 {
+    line-height: 25px;
+    font-size: 16px;
+}
+.Paragraph {
+    text-indent: 2em;
+    margin-top: 30px;
+    line-height: 25px;
+    font-size: 13px;
+}
+.same-div table {
+    border-collapse: collapse;
+    margin-top: 10px;
+    border-top: 1px solid #000;
+    border-left: 1px solid #000;
+}
+.Whole table td {
+    white-space: normal;
+    word-break: break-all;
+    text-align: center;
+}
+
+.same-div table td {
+    padding: 8px;
+}
+.companys-box {
+    margin-top: 20px;
+}
+.companys-box .company-info {
+    width: 40%;
+    float: left;
+    font-size: 18px;
+}
+.companys-box .company-info .row {
+    min-height: 60px;
+}
+.companys-box .company-info .row {
+    min-height: 60px;
+}
+.companys-box .company-info {
+    width: 40%;
+    float: left;
+    font-size: 18px;
+}
+
+
+.clear {
+    clear: both;
+    padding: 0;
+    margin: 0;
+    width: 0;
+    height: 0;
+    zoom: 1;
+}
+
+table {
+    border-spacing: 0;
+}
+tbody {
+    vertical-align: middle;
+    border-color: inherit;
+}
+tr {
+    display: table-row;
+    vertical-align: inherit;
+}
+table th, table td {
+    border-bottom: 1px solid #000;
+    border-right: 1px solid #000;
+    font-weight: normal;
+}
+h4 {
+    display: block;
+    margin-block-start: 1.33em;
+    margin-block-end: 1.33em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+}
+b {
+    font-weight: normal;
+}
