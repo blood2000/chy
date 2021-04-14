@@ -1,6 +1,5 @@
 <template>
   <el-table :ref="refName" v-loading="loading" border stripe :data="data" v-bind="$attrs" @selection-change="handleSelectionChange">
-
     <el-table-column v-if="!!_events['selection-change']" type="selection" width="55" align="center" />
     <el-table-column v-if="!isShowIndex" label="序号" align="center" type="index" min-width="5%" />
     <template v-for="(th, key) in tableColumnsConfig">
@@ -21,7 +20,6 @@
         </template>
       </el-table-column>
     </template>
-
   </el-table>
 </template>
 
@@ -46,33 +44,31 @@ export default {
       default: false
     },
     /**
-             * list  渲染所需数据
-             * 如：[{infoId:1,ipaddr:'abc'},{infoId:2,ipaddr:'def'}]
-             */
+     * list  渲染所需数据
+     * 如：[{infoId:1,ipaddr:'abc'},{infoId:2,ipaddr:'def'}]
+     */
     data: {
       type: Array,
       default: function() {
         return [];
       }
     },
-
     /** 设置table 加载icon */
     loading: {
       type: Boolean,
       default: false
     },
-
     /**
-             * tableColumnsConfig  表头动态配置数据
-             * 如： {
-                        prop: 'ipaddr',
-                        label: '地址',
-                        width: 130,
-                        tooltip: true  默认false
-                        align: 'center' 默认居中
-                        fixed:'right' 固定
-                    }
-             */
+     * tableColumnsConfig  表头动态配置数据
+     * 如：{
+          prop: 'ipaddr',
+          label: '地址',
+          width: 130,
+          tooltip: true  默认false
+          align: 'center' 默认居中
+          fixed:'right' 固定
+        }
+     */
     tableColumnsConfig: {
       type: Array,
       default: function() {
@@ -94,7 +90,6 @@ export default {
       time: null
     };
   },
-
   watch: {
     cbData: {
       handler(value) {
@@ -105,7 +100,6 @@ export default {
       immediate: true
     }
   },
-
   beforeDestroy() {
     clearTimeout(this.time);
   },
@@ -113,7 +107,6 @@ export default {
     handleSelectionChange(selection) {
       this.$emit('selection-change', selection);
     },
-
     m2ToggleSelection(rows) {
       if (rows) {
         this.$nextTick(() => {
@@ -127,12 +120,6 @@ export default {
         this.$refs[this.refName].clearSelection();
       }
     }
-
-
   }
 };
 </script>
-
-<style>
-
-</style>

@@ -7,8 +7,8 @@
     append-to-body
     @close="cancel"
   >
-    <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="80px">
-      <el-form-item label="调度者" prop="name">
+    <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
+      <el-form-item label="调度者名称" prop="name">
         <el-input
           v-model="queryParams.name"
           placeholder="请输入调度者名称"
@@ -17,7 +17,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="管理者" prop="teamLeader">
+      <!-- <el-form-item label="管理者名称" prop="teamLeader">
         <el-input
           v-model="queryParams.teamLeader"
           placeholder="请输入管理者名称"
@@ -25,7 +25,7 @@
           size="small"
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择状态" filterable clearable size="small">
           <el-option
@@ -36,7 +36,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="司机姓名" prop="driverName">
+      <!-- <el-form-item label="司机姓名" prop="driverName">
         <el-input
           v-model="queryParams.driverName"
           placeholder="请输入司机姓名"
@@ -53,7 +53,7 @@
           size="small"
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="处理状态" prop="applyStatus">
         <el-select v-model="queryParams.applyStatus" placeholder="请选择状态" filterable clearable size="small">
           <el-option
@@ -73,7 +73,7 @@
     <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" :selectable="checkboxSelectable" width="55" align="center" />
       <!-- <el-table-column label="网点编码" align="center" prop="branchCode" /> -->
-      <el-table-column label="加入情况" align="center" prop="applyStatus">
+      <el-table-column label="处理状态" align="center" prop="applyStatus">
         <template slot-scope="scope">
           <span v-if="scope.row.applyStatus !=null && scope.row.applyStatus>=0">{{ selectDictLabel(applyStatusOptions, scope.row.applyStatus) }}</span>
           <span v-else>无</span>

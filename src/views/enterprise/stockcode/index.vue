@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
-      <el-form-item label="货源码名称" prop="cargoCodeName">
+      <el-form-item label="货集码名称" prop="cargoCodeName">
         <el-input
           v-model="queryParams.cargoCodeName"
-          placeholder="请输入货源码名称"
+          placeholder="请输入货集码名称"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -24,7 +24,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-        >新增货源码</el-button>
+        >新增货集码</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -51,8 +51,8 @@
 
     <el-table v-loading="loading" :data="stockcodeList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <el-table-column label="货源码名称" align="center" prop="cargoCodeName" />
-      <el-table-column label="货源码" align="center" prop="cargoCodeQr">
+      <el-table-column label="货集码名称" align="center" prop="cargoCodeName" />
+      <el-table-column label="货集码" align="center" prop="cargoCodeQr">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -104,7 +104,7 @@
 
     <!-- 添加或修改对话框 -->
     <stockcode-dialog ref="StockcodeDialog" :title="title" :open.sync="open" :shipment-code="shipmentCode" @refresh="getList" />
-    <!-- 货源码下的货源列表对话框 -->
+    <!-- 货集码下的货源列表对话框 -->
     <order-list-dialog :title="title" :open.sync="orderListOpen" :code="classCode" />
   </div>
 </template>
@@ -219,7 +219,7 @@ export default {
     handleDelete(row) {
       const ids = row.id || this.ids;
       const stockCodeNames = row.cargoCodeName || this.stockCodeNames;
-      this.$confirm('是否确认货源码名称为"' + stockCodeNames + '"的数据项?', '警告', {
+      this.$confirm('是否确认货集码名称为"' + stockCodeNames + '"的数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -230,19 +230,19 @@ export default {
         this.msgSuccess('删除成功');
       });
     },
-    /** 下载货源码 */
+    /** 下载货集码 */
     handleDownloadCode(row) {
       fetch(row.cargoCodeQR).then(res => res.blob().then(blob => {
         var a = document.createElement('a');
         var url = window.URL.createObjectURL(blob);
-        var filename = `货源码_${new Date().getTime()}.jpg`;
+        var filename = `货集码_${new Date().getTime()}.jpg`;
         a.href = url;
         a.download = filename;
         a.click();
         window.URL.revokeObjectURL(url);
       }));
     },
-    /** 获取货源码下的货源列表 */
+    /** 获取货集码下的货源列表 */
     handleOrderList(row) {
       this.classCode = row.code;
       this.orderListOpen = true;

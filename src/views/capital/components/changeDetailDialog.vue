@@ -1,4 +1,5 @@
 <template>
+  <!-- 变动明细表 -->
   <el-dialog
     :visible="visible"
     :fullscreen="isfullscreen"

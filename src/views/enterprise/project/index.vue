@@ -81,7 +81,12 @@
       <template #commodityCategoryCode="{row}">
         <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.commodityCategoryCode) }}</span>
       </template>
-
+      <template #createTime="{row}">
+        <span>{{ parseTime(row.createTime, '{y}-{m}-{d}') }}</span>
+      </template>
+      <template #updateTime="{row}">
+        <span>{{ parseTime(row.updateTime, '{y}-{m}-{d}') }}</span>
+      </template>
       <template #edit="{row}">
         <el-button
           v-hasPermi="['assets:shipment:project:edit']"

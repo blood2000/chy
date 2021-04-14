@@ -126,6 +126,7 @@ export default {
     /** 取消按钮 */
     cancel() {
 	    this.close();
+      this.reset();
     },
     // 关闭弹窗
     close() {
@@ -170,6 +171,9 @@ export default {
     /** 下载模板 */
     handleImportTemplateDriver() {
       this.download('assets/driver/importTemplate', {}, `driver_${new Date().getTime()}.xlsx`);
+    },
+    reset() {
+      this.fileList = []; // 清除上传文件
     }
   }
 };
