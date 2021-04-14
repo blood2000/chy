@@ -433,7 +433,7 @@ import { getProvinceList } from '@/api/system/area';
 import { listInfo } from '@/api/assets/team';
 import UploadImage from '@/components/UploadImage/index';
 import ProvinceCityCounty from '@/components/ProvinceCityCounty';
-import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
+import { praseBooleanToNum, praseNumToBoolean, compareTime } from '@/utils/ddc';
 
 export default {
   components: {
@@ -531,6 +531,8 @@ export default {
               return callback(new Error('身份证有效期起始时间不能为空'));
             } else if (!identificationEffective && !value) {
               return callback(new Error('身份证有效期截止时间不能为空'));
+            } else if (!compareTime(identificationBeginTime, value)) {
+              return callback(new Error('身份证有效期截止时间不能小于起始时间'));
             }
             return callback();
           },
@@ -548,6 +550,8 @@ export default {
               return callback(new Error('驾驶证有效期起始时间不能为空'));
             } else if (!validPeriodAlways && !value) {
               return callback(new Error('驾驶证有效期截止时间不能为空'));
+            } else if (!compareTime(validPeriodFrom, value)) {
+              return callback(new Error('驾驶证有效期截止时间不能小于起始时间'));
             }
             return callback();
           },

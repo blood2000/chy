@@ -99,7 +99,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="车辆总重量" prop="vehicleTotalWeight">
-        <el-input v-model="form.vehicleLoadWeight" placeholder="请输入车辆总重量" class="width90" clearable />
+        <el-input v-model="form.vehicleTotalWeight" placeholder="请输入车辆总重量" class="width90" clearable />
       </el-form-item>
       <el-form-item label="车辆可载重量" prop="vehicleLoadWeight">
         <el-input v-model="form.vehicleLoadWeight" placeholder="请输入车辆可载重量" class="width90" clearable />
@@ -225,7 +225,7 @@ export default {
       // 表单校验
       rules: {
         licenseNumber: [
-          { required: true, message: '名称不能为空', trigger: 'blur' }
+          { required: true, message: '车牌号不能为空', trigger: 'blur' }
         ]
       }
     };
