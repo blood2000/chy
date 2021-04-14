@@ -229,6 +229,16 @@ export default {
       type: Object,
       required: true
     }
+  },
+  data() {
+    return {
+      printObj: {
+        id: 'wholecont',
+        popTitle: '福建大道成物流科技有限公司',
+        extraCss: '',
+        extraHead: '<meta http-equiv="Content-Language" content="zh-cn"/>'
+      }
+    };
   }
 };
 </script>

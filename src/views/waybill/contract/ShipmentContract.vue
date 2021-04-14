@@ -1,7 +1,7 @@
 <template>
   <div v-if="obj" class="Whole" style="position: relative;">
     <el-button
-      v-print="'#wholecont'"
+      v-print="printObj"
       size="mini"
       type="primary"
       icon="el-icon-printer"
@@ -233,6 +233,16 @@ export default {
       type: Object,
       required: true
     }
+  },
+  data() {
+    return {
+      printObj: {
+        id: 'wholecont',
+        popTitle: '福建大道成物流科技有限公司',
+        extraCss: '',
+        extraHead: '<meta http-equiv="Content-Language" content="zh-cn"/>'
+      }
+    };
   }
 };
 </script>

@@ -104,6 +104,7 @@
           @click="handleInfo(row)"
         >打印</el-button>
         <el-button
+          v-if="row.isDzqzContract+'' === '0'"
           v-hasPermi="['transportation:orderContract:generate']"
           size="mini"
           type="text"
@@ -123,7 +124,7 @@
 
     <!-- 生成电子合同 -->
     <el-dialog :title="title" :visible.sync="visible" width="1200px" append-to-body>
-      <div v-if="visible">
+      <div v-if="dialogData && visible">
         <driver-contract v-if="driverOrShipment === 0" :obj="dialogData" />
         <shipment-contract v-else :obj="dialogData" />
       </div>
@@ -309,73 +310,7 @@ export default {
         'driverOrShipment': 0 // 合同类型 0 司机 1 货主  (用这个判断甲方和乙方)
       };
 
-      console.log(res1);
-
-
-
-      const obj = {
-        'id': 29563,
-        'code': 'c836b52f91a04c82b40fa9835b815833',
-        'branch_code': '27adb23841d547b8ae6f0c11481b4cfd',
-        'branch_name': '福建大道成物流科技有限公司',
-        'electronic_signature_stype': 0,
-        'order_detail_code': '9a086df8b1a843ca96b7e975b267a4ea',
-        'contract_no': 'DADAOCHENG202104121716381452',
-        'start_address': '福建省福州市仓山区',
-        'end_address': '福建省福州市台江区',
-        'amount': 150.00,
-        'weight': 50.00,
-        'goods_type': '鲜活农产品',
-        'mobile': '15859109862',
-        'create_code': 'beccf358d5424ccfac3372c488d09da3',
-        'contract_path': '',
-        'create_time': '2021-04-12 17:16:39',
-        'driver_or_shipment': 0,
-        'is_dzqz_contract': 0,
-        'dzqz_contract_msg': '',
-        'name': '小强师傅',
-        'urs_driver_name': '小强师傅',
-        'driver_user_code': 'beccf358d5424ccfac3372c488d09da3',
-        'driver_phone': '15859109862',
-        'order_code': '2104121716389884',
-        'last_loading_time': '2021-04-13 16:00:24',
-        'coal_type_name': '鲜活农产品',
-        'goods_total': 0.00,
-        'shipper_name': 'lan测试',
-        'shipper_phone': '13559169013',
-        'shipper_address': '福建省福州市仓山区',
-        'consignee_name': '李四',
-        'consignee_phone': '13290895602',
-        'consignee_address': '福建省福州市台江区',
-        'shipment_user_code': '350f832f93aa4286995c56eb5f4b9e4e',
-        'shipment_company_code': '00ba6e35dbf2408c8014f1a51867aa8e',
-        'shipment_name': '大道成测试货主公司',
-        'staff_type': 1,
-        'business_license_img_no': '20210412000001',
-        'user_role': 'shipment_company',
-        'shipment_user_name': 'lan测试',
-        'shipment_user_phone': '13559169013',
-        'shipment_company_phone': '13559169013',
-        'order_status': 3,
-        'driver_identification_number': '350123198908263919',
-        'shipment_identification_number': '350103198909084236',
-        'driver_name': '小强师傅',
-        'license_number': '浙B8U39T',
-        'identification_number': '350123198908263919',
-        'driver_license': '',
-        'first': '福建大道成物流科技有限公司',
-        'second': '小强师傅',
-        'dzqzUserCode': 'beccf358d5424ccfac3372c488d09da3',
-        'branchName': '福建大道成物流科技有限公司'
-      };
-
       this.dialogData = res1;
-      // row.driverOrShipment
-
-
-      // getContractByCode(row.id).then(res => {
-      //   console.log(res);
-      // });
     },
 
     /** 生成电子章合同 */

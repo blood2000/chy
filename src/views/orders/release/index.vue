@@ -224,6 +224,13 @@
       <el-button @click="backPge">返 回</el-button>
     </div>
 
+    <div v-if="!myisdisabled && !loading && active < 4">
+      <el-alert
+        title="司机在接单的时候会相应的扣除余额中的运输费用，请及时充值，以免招成司机接单不成功的情况。"
+        type="warning"
+      />
+    </div>
+
 
     <!-- 打开弹框 -->
     <el-dialog
