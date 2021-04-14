@@ -706,7 +706,6 @@ export default {
       const box1 = this.$el.offsetHeight;
       const box2 = this.$refs.queryFormBox.offsetHeight;
       this.theight = box1 - box2 - 200;
-      console.log(this.theight);
     });
   },
   methods: {
