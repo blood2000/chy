@@ -248,6 +248,25 @@
 	z-index: 9999 !important;
 }
 
+// 滚动条样式
+::-webkit-scrollbar {
+	width: 6px;     /*高宽分别对应横竖滚动条的尺寸*/
+	height: 6px;
+}
+::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+	border-radius: 6px;
+	background: rgba(0, 0, 0, 0.2);
+}
+::-webkit-scrollbar-track { /*滚动条里面轨道*/
+	// box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+	// -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+	border-radius: 0;
+	background: transparent;
+}
+::-webkit-scrollbar-thumb:hover {
+	background:rgba(0, 0, 0, 0.3);
+}
+
 /* 表单禁用样式覆盖 */
 // .el-input.is-disabled .el-input__inner,
 // .el-radio__input.is-disabled .el-radio__inner,
