@@ -32,6 +32,9 @@ import RightToolbar from '@/components/RightToolbar';
 // 代码高亮插件
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github-gist.css';
+// 打印
+import Print from 'vue-print-nb';
+Vue.use(Print);
 
 // 图片查看插件
 import Viewer from 'v-viewer';

@@ -1,6 +1,7 @@
 <template>
   <div v-if="obj" class="Whole" style="position: relative;">
     <el-button
+      v-print="'#wholecont'"
       size="mini"
       type="primary"
       icon="el-icon-printer"

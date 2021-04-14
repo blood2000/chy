@@ -103,6 +103,13 @@
           icon="el-icon-printer"
           @click="handleInfo(row)"
         >打印</el-button>
+        <el-button
+          v-hasPermi="['transportation:orderContract:generate']"
+          size="mini"
+          type="text"
+          icon="el-icon-magic-stick"
+          @click="handleElectron(row)"
+        >生成电子章</el-button>
       </template>
     </RefactorTable>
 
@@ -130,7 +137,7 @@
 import DriverContract from './DriverContract';
 import ShipmentContract from './ShipmentContract';
 
-import { listContract, getContractByCode, listContractApi } from '@/api/waybill/contract';
+import { listContract, getContractByCode, listContractApi, getContract } from '@/api/waybill/contract';
 
 export default {
   'name': 'Contract',
@@ -369,6 +376,20 @@ export default {
       // getContractByCode(row.id).then(res => {
       //   console.log(res);
       // });
+    },
+
+    /** 生成电子章合同 */
+    async handleElectron(row) {
+      this.$confirm('生成电子签章合同? 大概用时20秒才可生成电子签章合同', '警告', {
+        'confirmButtonText': '确定',
+        'cancelButtonText': '取消',
+        'type': 'warning'
+      }).then(function() {
+        return getContract(row.code);
+      }).then(() => {
+        this.getList();
+        this.msgSuccess('请求成功');
+      });
     }
   }
 };
