@@ -17,6 +17,14 @@ export function getOrder(mainOrderCode) {
   });
 }
 
+// 生成运单号
+export function getWayBillNo() {
+  return request({
+    url: '/transportation/waybill/getWayBillNo',
+    method: 'get'
+  });
+}
+
 // 获取货源所有商品
 export function getGoods(orderCode) {
   return request({
@@ -30,6 +38,24 @@ export function getAddress(orderCode) {
   return request({
     url: '/transportation/orderAddress/getOrderAddress/' + orderCode,
     method: 'get'
+  });
+}
+
+// 获取单个商品的运费单价
+export function getOrderGoodsProce(data) {
+  return request({
+    url: '/transportation/orderInfoSearch/getOrderGoodsProce',
+    method: 'post',
+    data: data
+  });
+}
+
+// 获取运单总价
+export function calculate(data) {
+  return request({
+    url: '/transportation/calculateFee/calculate',
+    method: 'post',
+    data: data
   });
 }
 
@@ -48,5 +74,13 @@ export function vehicle(data) {
     url: '/assets/vehicle/list',
     method: 'post',
     data: data
+  });
+}
+
+// 获取车辆信息
+export function vehicleInfo(Code) {
+  return request({
+    url: '/assets/vehicle/getByCode?code=' + Code,
+    method: 'get'
   });
 }
