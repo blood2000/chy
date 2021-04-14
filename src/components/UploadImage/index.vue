@@ -80,7 +80,14 @@ export default {
         }
       });
     },
-    handleBeforeUpload() {
+    handleBeforeUpload(file) {
+      const isLt1M = file.size / 1024 / 1024 < 1;
+      if (!isLt1M) {
+        this.$message({
+          message: '上传文件大小不能超过1MB!',
+          type: 'warning'
+        });
+      }
       this.loading = this.$loading({
         lock: true,
         text: '上传中',
