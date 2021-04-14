@@ -30,7 +30,7 @@
           <el-option
             v-for="dict in goodsCodeOptions"
             :key="dict.code"
-            :label="dict.goodsTypeName || dict.goodsBigTypeName"
+            :label="dict.goodsTypeName || dict.goodsBigTypeName || dict.goodsBigType"
             :value="dict.code"
           />
         </el-select>

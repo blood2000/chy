@@ -11,8 +11,24 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="货物名称" prop="goodsBigType">
-                <el-input v-model="form.goodsBigType" :readonly="true" class="width90" />
+              <el-form-item label="货物名称" prop="goodsCode">
+                <el-select
+                  v-model="form.goodsCode"
+                  placeholder="请选择货物"
+                  no-data-text="请先输入货源单号"
+                  clearable
+                  filterable
+                  size="small"
+                  class="width90"
+                  @change="goodsChoose"
+                >
+                  <el-option
+                    v-for="dict in goodsCodeOptions"
+                    :key="dict.code"
+                    :label="dict.goodsTypeName || dict.goodsBigTypeName || dict.goodsBigType"
+                    :value="dict.code"
+                  />
+                </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -23,18 +39,51 @@
           </el-row>
           <el-row>
             <el-col :span="8">
-              <el-form-item label="剩余车数" prop="waybillCode">
-                <el-input v-model="form.waybillCode" :readonly="true" class="width90" />
+              <el-form-item label="装货地址" prop="loadAddressCode">
+                <el-select
+                  v-model="form.loadAddressCode"
+                  placeholder="请选择车辆装货地址"
+                  no-data-text="请先输入货源单号"
+                  clearable
+                  filterable
+                  size="small"
+                  class="width90"
+                >
+                  <el-option
+                    v-for="dict in loadAddressOptions"
+                    :key="dict.code"
+                    :label="dict.formattedAddress"
+                    :value="dict.code"
+                  />
+                </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="装货地址" prop="waybillCode">
-                <el-input v-model="form.waybillCode" :readonly="true" class="width90" />
+              <el-form-item label="卸货地址" prop="unloadAddressCode">
+                <el-select
+                  v-model="form.unloadAddressCode"
+                  placeholder="请选择车辆卸货地址"
+                  no-data-text="请先输入货源单号"
+                  clearable
+                  filterable
+                  size="small"
+                  class="width90"
+                >
+                  <el-option
+                    v-for="dict in unloadAddressOptions"
+                    :key="dict.code"
+                    :label="dict.formattedAddress"
+                    :value="dict.code"
+                  />
+                </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="卸货地址" prop="waybillCode">
-                <el-input v-model="form.waybillCode" :readonly="true" class="width90" />
+              <el-form-item v-if="!stowage" label="剩余车数" prop="remainingNumber">
+                <el-input v-model="form.remainingNumber" :readonly="true" class="width90" />
+              </el-form-item>
+              <el-form-item v-if="stowage" label="剩余吨数/立方数" prop="remainingWeight">
+                <el-input v-model="form.remainingWeight" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -42,8 +91,49 @@
           <el-divider content-position="left"><span class="supplement-title">承运车辆</span></el-divider>
           <el-row>
             <el-col :span="8">
-              <el-form-item label="车牌号" prop="licenseNumber">
-                <el-input v-model="form.licenseNumber" placeholder="请输入车牌号" class="width90" @change="handleVehicle" />
+              <el-form-item label="承运司机" prop="driverCode">
+                <el-select
+                  v-model="form.driverCode"
+                  v-el-select-loadmore="loadmore"
+                  filterable
+                  clearable
+                  remote
+                  reserve-keyword
+                  placeholder="请输入关键词"
+                  :remote-method="remoteMethod"
+                  :loading="loading"
+                  size="small"
+                  class="width90"
+                  @change="driverChoose"
+                >
+                  <el-option
+                    v-for="dict in driverOptions"
+                    :key="dict.code"
+                    :label="dict.name"
+                    :value="dict.code"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="承运车辆" prop="vehicleCode">
+                <el-select
+                  v-model="form.vehicleCode"
+                  placeholder="请选择承运车辆"
+                  no-data-text="请先选择承运司机"
+                  clearable
+                  filterable
+                  size="small"
+                  class="width90"
+                  @change="vehicleChoose"
+                >
+                  <el-option
+                    v-for="dict in vehicleOptions"
+                    :key="dict.code"
+                    :label="dict.formattedAddress"
+                    :value="dict.code"
+                  />
+                </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -51,16 +141,16 @@
                 <el-input v-model="form.chassisNumber" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item label="车辆载重" prop="vehicleLoadWeight">
-                <el-input v-model="form.vehicleLoadWeight" :readonly="true" class="width90" />
-              </el-form-item>
-            </el-col>
           </el-row>
           <el-row>
             <el-col :span="8">
               <el-form-item label="车辆代码" prop="code">
                 <el-input v-model="form.code" :readonly="true" class="width90" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="车辆载重" prop="vehicleLoadWeight">
+                <el-input v-model="form.vehicleLoadWeight" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -171,7 +261,7 @@
 </template>
 
 <script>
-import { updateAbnormal, addAbnormal } from '@/api/waybill/abnormal';
+import { extra, getOrder, getGoods, getAddress, driver, vehicle } from '@/api/waybill/supplement';
 import UploadImage from '@/components/UploadImage/index';
 import WaybillimportDialog from './waybillimportDialog';
 import PictureimportDialog from './pictureimportDialog';
@@ -184,8 +274,26 @@ export default {
   },
   data() {
     return {
+      // 装货地址选择
+      loadAddressOptions: [],
+      // 商品选择
+      goodsCodeOptions: [],
+      // 卸货地址选择
+      unloadAddressOptions: [],
+      // 实际承运司机选择
+      driverOptions: [],
+      driverInfoQuery: {
+        'pageNum': 1,
+        'pageSize': 10,
+        'name': null
+      },
+      loading: false,
+      dataOver: false, // 是否请求完了
+      // 实际承运车辆选择
+      vehicleOptions: [],
       // 弹出层标题
       title: '',
+      stowage: false,
       // 是否显示弹出层
       open: false,
       openImport: false,
@@ -203,40 +311,47 @@ export default {
   computed: {
   },
   created() {
+    this.getDriver();
   },
   methods: {
+    // 获取司机列表
+    getDriver() {
+      driver(this.driverInfoQuery).then(response => {
+        console.log(response);
+        this.driverOptions = response.rows;
+      });
+    },
     /** 提交按钮 */
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          if (this.form.waybillCode != null) {
-            updateAbnormal(this.form).then(response => {
-              this.msgSuccess('修改成功');
-              this.close();
-              this.getList();
-            });
-          } else {
-            addAbnormal(this.form).then(response => {
-              this.msgSuccess('新增成功');
-              this.close();
-              this.getList();
-            });
-          }
+          extra(this.form).then(response => {
+            this.msgSuccess('运单补录成功');
+            this.close();
+          });
         }
       });
     },
     // 表单重置
     reset() {
       this.form = {
-        waybillCode: null,
-        isWarning: null,
-        warningTime: null,
-        isDel: null,
-        createCode: null,
-        createTime: null,
-        updateCode: null,
-        updateTime: null,
-        description: null
+        'driverCode': null,
+        'goodsCode': null,
+        'loadAddressCode': null,
+        'loadAttachmentCode': null,
+        'loadTime': null,
+        'loadWeight': 0,
+        'remark': null,
+        'sourceType': 4,
+        'unloadAddressCode': null,
+        'unloadAttachmentCode': null,
+        'unloadTime': null,
+        'unloadWeight': 0,
+        'vehicleCode': null,
+        'wayBillCode': null,
+        'remainingNumber': null,
+        'remainingWeight': null,
+        'shipmentPrice': null
       };
       this.resetForm('form');
     },
@@ -261,6 +376,71 @@ export default {
     },
     // 根据货原单号查询信息
     getOrderDetail(e) {
+      getOrder(e).then(response => {
+        console.log(response);
+        // 获取货源底下的商品列表
+        getGoods(response.data.redisOrderInfoVo.code).then(response => {
+          console.log(response);
+          this.goodsCodeOptions = response.data;
+        });
+        // 获取货源底下的装卸货地
+        getAddress(response.data.redisOrderInfoVo.code).then(response => {
+          console.log(response);
+          const address = response.data;
+          if (address) {
+          // 装货地址
+            const address1 = address.filter(item => {
+              return item.addressType === '1';
+            });
+            this.loadAddressOptions = address1;
+            // 卸货地址
+            const address2 = address.filter(item => {
+              return item.addressType === '2';
+            });
+            this.unloadAddressOptions = address2;
+          }
+        });
+      });
+    },
+    // 根据选择的商品查询对应信息
+    goodsChoose(e) {
+      const result = this.goodsCodeOptions.find((item) => {
+        return item.code === e;
+      });
+      if (result.stowageStatus === '2') {
+        this.stowage = false;
+      } else {
+        this.stowage = true;
+      }
+      this.form.remainingNumber = result.remainingNumber;
+      this.form.remainingWeight = result.remainingWeight;
+      this.form.shipmentPrice = result.shipmentPrice;
+      console.log(result);
+    },
+    // 根据选择的司机查询司机拥有的车辆
+    driverChoose(e) {
+      console.log(e);
+    },
+    // 触发司机远程搜索
+    remoteMethod(query) {
+      if (query !== '') {
+        this.loading = true;
+        this.driverInfoQuery.pageNum = 1;
+        this.dataOver = false;
+        this.driverInfoQuery.name = query;
+        this.getDriver();
+      } else {
+        this.driverOptions = [];
+      }
+    },
+    // 司机远程搜索列表触底事件
+    loadmore() {
+      if (this.dataOver) return;
+      this.driverInfoQuery.pageNum++;
+      this.getDriver();
+    },
+    // 根据选择的车辆获取信息
+    vehicleChoose(e) {
       console.log(e);
     },
     // 查询输出车辆信息
