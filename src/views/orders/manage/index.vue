@@ -537,7 +537,7 @@ export default {
       //   { dictLabel: '货源单导入', dictValue: '1' },
       //   { dictLabel: '运输单导入', dictValue: '2' }
       // ],
-      // isClass	是否加入货源码 0否 1是
+      // isClass	是否加入货集码
       isClassOptions: [
         { dictLabel: '否', dictValue: 0 },
         { dictLabel: '是', dictValue: 1 }

@@ -61,7 +61,7 @@ export default {
     }
   },
   methods: {
-    // 获取货源码下的货源列表
+    // 获取货集码下的货源列表
     getList() {
       this.loading = true;
       getOrderList(this.code).then(response => {
