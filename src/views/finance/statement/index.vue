@@ -15,6 +15,7 @@
           <el-input v-model="form.totalServiceFee" disabled placeholder="暂无" clearable size="small" style="width:90%;" />
         </el-form-item>
         <img v-viewer :src="form.invoiceInfoGroupVos[0].invoiceImg" class="img-box">
+        <!-- <img v-for="(img, index) in form.invoiceInfoGroupVos[0].invoiceImg" :key="index" v-viewer :src="img" class="img-box"> -->
         <el-row :gutter="10">
           <el-col :span="1.5">
             <el-button

@@ -394,19 +394,18 @@ export default {
     // api相关
     // 2. 获取初始的字典值
     async api_dictInit() {
-      const { data } = await this.listByDict({
-        dictPid: '0',
-        dictType: 'goodsType'
-      });
-      // 假数据
-      // const data = [
-      //   { dictValue: '112121', dictLabel: '煤', isCheckbox: '1' },
-      //   { dictValue: '11782121', dictLabel: '矿', isCheckbox: '2' }
-      // ];
+      const goodsBigType_option = this.$store.getters.goodsBigType_option;
+      if (goodsBigType_option) {
+        this.tin2Option = goodsBigType_option;
+      } else {
+        const { data } = await this.listByDict({
+          dictPid: '0',
+          dictType: 'goodsType'
+        });
 
-
-
-      this.tin2Option = data;
+        this.tin2Option = data;
+        this.$store.dispatch('orders/store_goodsBigType_option', data);
+      }
     },
     // 1. 获取项目
     async api_tin3Optin() {

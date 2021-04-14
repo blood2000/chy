@@ -102,7 +102,7 @@
     <!-- 变动明细 对话框 -->
     <change-detail-dialog :open.sync="detailOpen" :title="title" />
     <!-- 查询网商余额 对话框 -->
-    <check-balance-dialog :open.sync="balanceOpen" :title="title" />
+    <check-balance-dialog :open.sync="balanceOpen" :title="title" :user-code="userCode" />
   </div>
 </template>
 
@@ -150,7 +150,9 @@ export default {
         phonenumber: undefined,
         minAmount: undefined,
         maxAmount: undefined
-      }
+      },
+      // 选中的用户
+      userCode: null
     };
   },
   created() {
@@ -187,6 +189,7 @@ export default {
     handleBalance(row) {
       this.title = '查询网商余额';
       this.balanceOpen = true;
+      this.userCode = row.userCode;
     },
     /** 明细按钮 */
     handleDetail(row) {
