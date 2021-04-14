@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
-      <el-form-item label="调度者" prop="name">
+      <el-form-item label="调度者名称" prop="name">
         <el-input
           v-model="queryParams.name"
           placeholder="请输入调度者名称"
@@ -10,7 +10,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="管理者" prop="teamLeader">
+      <el-form-item label="管理者名称" prop="teamLeader">
         <el-input
           v-model="queryParams.teamLeader"
           placeholder="请输入管理者名称"

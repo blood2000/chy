@@ -445,7 +445,8 @@ export default {
           { required: true, message: '用户昵称不能为空', trigger: 'blur' }
         ],
         password: [
-          { required: true, message: '用户密码不能为空', trigger: 'blur' }
+          { required: true, message: '用户密码不能为空', trigger: 'blur' },
+          { validator: this.formValidate.passWord, trigger: 'blur' }
         ],
         orgCode: [
           { required: true, message: '归属组织不能为空', trigger: 'blur' }

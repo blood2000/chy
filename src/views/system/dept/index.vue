@@ -171,7 +171,7 @@
               <upload-image v-model="form.artificialIdentificationInhandImg" />
             </el-col>
             <el-col :span="6" class="mt">
-              <p class="upload-image-label">营业执照照</p>
+              <p class="upload-image-label">营业执照</p>
               <upload-image v-model="form.businessLicenseImg" />
             </el-col>
           </el-row>

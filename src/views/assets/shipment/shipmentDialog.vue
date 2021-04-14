@@ -48,7 +48,7 @@
             <upload-image v-model="form.artificialIdentificationInhandImg" :disabled="disable" />
           </el-col>
           <el-col v-show="form.shipperType === 1" :span="7" class="mt">
-            <p class="upload-image-label">营业执照照</p>
+            <p class="upload-image-label">营业执照</p>
             <upload-image v-model="form.businessLicenseImg" :disabled="disable" />
           </el-col>
         </el-row>
@@ -59,7 +59,8 @@
       <el-form-item label="身份证号" prop="identificationNumber">
         <el-input v-model="form.identificationNumber" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="身份证有效期" prop="identificationEndTime">
+      <el-form-item prop="identificationEndTime">
+        <label slot="label"><span style="color: #ff4949">* </span>身份证有效期</label>
         <el-date-picker
           v-model="form.identificationBeginTime"
           clearable
@@ -76,8 +77,9 @@
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="请选择"
+          :readonly="form.identificationEffective"
         />
-        <el-checkbox v-model="form.identificationEffective">长期有效</el-checkbox>
+        <el-checkbox v-model="form.identificationEffective" @change="handleCheckChange">长期有效</el-checkbox>
       </el-form-item>
       <!-- <el-form-item label="网点" prop="branchCode">
         <el-select
@@ -403,16 +405,17 @@ export default {
           { validator: this.formValidate.idCard, trigger: 'blur' }
         ],
         identificationEndTime: [
-          { required: true, message: '身份证有效期不能为空', trigger: 'blur' },
-          { validator: this.formValidate.isExpired },
+          { validator: this.formValidate.isExpired, trigger: 'change' },
           { validator: (rules, value, callback) => {
-            const { identificationBeginTime } = this.form;
-            if (!value || !identificationBeginTime) {
-              return callback(new Error('身份证有效期不能为空'));
+            const { identificationBeginTime, identificationEffective } = this.form;
+            if (!identificationBeginTime) {
+              return callback(new Error('身份证有效期起始时间不能为空'));
+            } else if (!identificationEffective && !value) {
+              return callback(new Error('身份证有效期截止时间不能为空'));
             }
             return callback();
           },
-          trigger: 'change'
+          trigger: ['change', 'blur']
           }
         ],
         creditAmount: [
@@ -423,6 +426,9 @@ export default {
         ],
         texPoint: [
           { required: true, message: '税点不能为空', trigger: 'blur' }
+        ],
+        password: [
+          { validator: this.formValidate.passWord, trigger: 'blur' }
         ]
       },
       // 网点查询
@@ -647,6 +653,12 @@ export default {
         });
       } else {
         this.branchOptions = [];
+      }
+    },
+    // 身份证是否长期有效选中事件
+    handleCheckChange(val) {
+      if (val) {
+        this.form.identificationEndTime = null;
       }
     }
   }

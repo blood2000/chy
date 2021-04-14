@@ -124,7 +124,7 @@ export default {
           if (this.shipmentCode) {
             this.form.shipmentCode = this.shipmentCode;
           }
-          if (this.form.id != null) {
+          if (this.form.id) {
             updateInfo(this.form).then(response => {
               this.msgSuccess('修改成功');
               this.close();
