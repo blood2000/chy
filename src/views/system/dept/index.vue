@@ -46,7 +46,12 @@
       default-expand-all
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
-      <el-table-column prop="orgName" label="组织名称" width="260" />
+      <el-table-column prop="orgName" label="组织名称" width="400" />
+      <el-table-column prop="orgType" label="类型" width="100" >
+        <template slot-scope="scope">
+          <span>{{ selectDictLabel(orgTypeOptions, scope.row.orgType) }}</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="orderNum" label="排序" width="200" />
       <el-table-column prop="status" label="状态" :formatter="statusFormat" width="100" />
       <el-table-column label="创建时间" align="center" prop="createTime" width="200">
@@ -84,21 +89,16 @@
 
     <!-- 添加或修改部门对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="80%" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="150px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
           <el-col v-if="form.parentId !== 1" :span="24">
             <el-form-item label="上级组织" prop="parentId">
               <treeselect v-model="form.parentId" :options="deptOptions" :normalizer="normalizer" placeholder="选择上级组织" />
             </el-form-item>
           </el-col>
-          <el-col :span="11">
+          <el-col :span="7">
             <el-form-item label="组织名称" prop="orgName">
               <el-input v-model="form.orgName" placeholder="请输入组织名称" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="显示排序" prop="orderNum">
-              <el-input-number v-model="form.orderNum" controls-position="right" :min="0" />
             </el-form-item>
           </el-col>
           <!--  <el-col :span="12">
@@ -106,7 +106,18 @@
               <el-input v-model="form.leader" placeholder="请输入负责人" maxlength="20" />
             </el-form-item>
           </el-col>-->
-          <el-col :span="6">
+          <el-col :span="7">
+            <el-form-item label="组织类型">
+              <el-radio-group v-model="form.orgType">
+                <el-radio
+                  v-for="dict in orgTypeOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictValue"
+                >{{ dict.dictLabel }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="5">
             <el-form-item label="组织状态">
               <el-radio-group v-model="form.status">
                 <el-radio
@@ -117,27 +128,35 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="法人姓名" prop="artificialName">
-              <el-input v-model="form.artificialName" placeholder="请输入法人姓名" class="width90" clearable />
+          <el-col :span="2">
+            <el-form-item label="显示排序" prop="orderNum">
+              <el-input-number v-model="form.orderNum" controls-position="right" :min="0" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="法人身份证" prop="artificialIdentificationNumber">
-              <el-input v-model="form.artificialIdentificationNumber" placeholder="请输入法人身份证" class="width90" clearable />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="统一社会信用代码" prop="organizationCodeNo" :rules="[{ required: true, message: '统一社会信用代码不能为空', trigger: 'blur' }]">
-              <el-input v-model="form.organizationCodeNo" placeholder="请输入统一社会信用代码" class="width90" clearable />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="营业执照号" prop="businessLicenseNo">
-              <el-input v-model="form.businessLicenseNo" placeholder="请输入营业执照号" class="width90" clearable />
-            </el-form-item>
-          </el-col>
+          <template v-if="form.orgType == '1'">
+            <el-col :span="12">
+              <el-form-item label="法人姓名" prop="artificialName">
+                <el-input v-model="form.artificialName" placeholder="请输入法人姓名" class="width90" clearable />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="法人身份证" prop="artificialIdentificationNumber">
+                <el-input v-model="form.artificialIdentificationNumber" placeholder="请输入法人身份证" class="width90" clearable />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="统一社会信用代码" prop="organizationCodeNo" :rules="[{ required: true, message: '统一社会信用代码不能为空', trigger: 'blur' }]">
+                <el-input v-model="form.organizationCodeNo" placeholder="请输入统一社会信用代码" class="width90" clearable />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="营业执照号" prop="businessLicenseNo">
+                <el-input v-model="form.businessLicenseNo" placeholder="请输入营业执照号" class="width90" clearable />
+              </el-form-item>
+            </el-col>
+          </template>
         </el-row>
+        <template v-if="form.orgType == '1'">
         <el-row>
           <el-col :span="6" class="mt">
             <p class="upload-image-label">法人身份证正面照</p>
@@ -174,38 +193,26 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="票制类别" prop="ticketType">
-              <el-select
-                v-model="form.ticketType"
-                filterable
-                clearable
-                class="width90"
-              >
-                <el-option
-                  v-for="dict in ticketTypeOptions"
-                  :key="dict.dictValue"
-                  :label="dict.dictLabel"
-                  :value="dict.dictValue"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="服务费税率(%)" prop="serviceRate">
+          <template v-if="form.ticketType == '2'">
+            <el-form-item label="服务费税率(%)" prop="serviceRate"  :rules="[{ required: true, message: '服务费税率不能为空', trigger: 'blur' }]" >
               <el-input-number v-model="form.serviceRate" controls-position="right" :precision="2" placeholder="请输入服务费税率" :step="1" :min="0" :max="100" class="width90" clearable />
             </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="服务费比例(%)" prop="serviceRatio">
-              <el-input-number v-model="form.serviceRatio" controls-position="right" :precision="2" placeholder="请输入服务费比例" :step="1" :min="0" :max="100" class="width90" clearable />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="税点(%)" prop="texPoint">
-              <el-input-number v-model="form.texPoint" controls-position="right" :precision="2" placeholder="请输入税点" :step="1" :min="0" :max="100" class="width90" clearable />
-            </el-form-item>
-          </el-col>
+            <!-- <el-form-item label="服务费比例(%)" prop="serviceRatio"  :rules="[{ required: true, message: '服务费比例不能为空', trigger: 'blur' }]" >
+               <el-input-number v-model="form.serviceRatio" controls-position="right" :precision="2" placeholder="请输入服务费比例" :step="1" :min="0" :max="100" class="width90" clearable />
+             </el-form-item>-->
+          </template>
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <el-form-item label="税点(%)" prop="texPoint" >
+                <el-input-number  v-model="form.texPoint" @input="changeTextPoint" controls-position="right" :precision="2" placeholder="请输入税点" :step="1" :min="0" :max="100" clearable />
+              </el-form-item>
+            </el-col>
+            <el-col :span="10">
+              <el-form-item label="调度费点数(%)" prop="dispatchPoints">
+                <el-input v-model="form.dispatchPoints" disabled placeholder="请输入调度费点数" clearable />
+              </el-form-item>
+            </el-col>
+          </el-row>
           <el-col :span="12">
             <el-form-item label="货源是否审核" prop="supplyIsAuth">
               <el-select
@@ -240,7 +247,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+         <!-- <el-col :span="12">
             <el-form-item label="核算方式" prop="accountType">
               <el-select v-model="form.accountType" placeholder="请选择核算方式" filterable clearable class="width90">
                 <el-option
@@ -251,13 +258,13 @@
                 />
               </el-select>
             </el-form-item>
-          </el-col>
+          </el-col>-->
           <el-col :span="12">
             <el-form-item label="调度费点数" prop="dispatchPoints">
               <el-input v-model="form.dispatchPoints" placeholder="请输入调度费点数" clearable class="width90" />
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+         <!-- <el-col :span="6">
             <el-form-item label="是否抹零" prop="isWipe">
               <el-select
                 v-model="form.isWipe"
@@ -273,7 +280,7 @@
                 />
               </el-select>
             </el-form-item>
-          </el-col>
+          </el-col>-->
           <el-col :span="6">
             <el-form-item label="请选择抹零方式">
               <el-select v-model="form.wipeType" placeholder="请选择抹零方式" filterable clearable class="width90">
@@ -286,7 +293,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="24">
+          <!--<el-col :span="24">
             <el-form-item label="是否开启合理路耗">
               <el-select
                 v-model="form.isConsumption"
@@ -319,7 +326,7 @@
               至
               <el-input v-model="form.consumptionMax" placeholder="最大值" class="width12" />
             </el-form-item>
-          </el-col>
+          </el-col>-->
           <el-col :span="24">
             <el-form-item label="是否月结" prop="creditAmount">
               <el-select
@@ -356,6 +363,7 @@
             </el-form-item>
           </el-col>
         </el-row>
+        </template>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -413,12 +421,20 @@ export default {
         { dictLabel: '否', dictValue: 0 },
         { dictLabel: '是', dictValue: 1 }
       ],
+      orgTypeOptions: [
+        { dictLabel: '普通组织', dictValue: 2 },
+        { dictLabel: '发货企业', dictValue: 1 }
+      ],
       // 核算方式字典
       accountTypeOptions: [],
       // 抹零方式字典
       wipeTypeOptions: [],
       // 路耗单位字典
       consumptionUnitOptions: [],
+      orgTypeOptions: [
+        { dictLabel: '普通组织', dictValue: 2 },
+        { dictLabel: '发货企业', dictValue: 1 }
+      ],
       // 表单参数
       form: {},
       // 表单校验
@@ -440,24 +456,44 @@ export default {
     this.getDictsOptions();
   },
   methods: {
+    changeTextPoint(value) {
+      if (this.form.ticketType === '1') { // 一票制：调度费点数=原来的『税点(%) 』备注：运单结算使用的比例
+        this.$set(this.form, 'dispatchPoints', value);
+      } else if (this.form.ticketType === '2') { // 二票制：服务费税率(%)、调度费点数=原来的『服务费比例』备注：运单结算使用的比例
+        this.$set(this.form, 'dispatchPoints', value);
+        this.$set(this.form, 'serviceRatio', value);
+      } else if (this.form.ticketType === '3') { // 非一票制：调度费点数=原来的『税点(%) 』备注：运单结算使用的比例是「合同税点/（1-合同税点）」
+        this.$set(this.form, 'dispatchPoints', ((value / (100 - value)) * 100).toFixed(2));
+      }
+    },
+    changeTicketType(value) {
+      if (value === '1') { // 一票制：调度费点数=原来的『税点(%) 』备注：运单结算使用的比例
+        this.$set(this.form, 'dispatchPoints', this.form.texPoint);
+      } else if (value === '2') { // 二票制：服务费税率(%)、调度费点数=原来的『服务费比例』备注：运单结算使用的比例
+        this.$set(this.form, 'dispatchPoints', this.form.texPoint);
+        this.$set(this.form, 'serviceRatio', this.form.texPoint);
+      } else if (value === '3') { // 非一票制：调度费点数=原来的『税点(%) 』备注：运单结算使用的比例是「合同税点/（1-合同税点）」
+        this.$set(this.form, 'dispatchPoints', ((this.form.texPoint / (100 - this.form.texPoint)) * 100).toFixed(2));
+      }
+    },
     /** 查询字典 */
     getDictsOptions() {
       // 核算规则
-      this.getDicts('balance_rule').then((response) => {
+      /* this.getDicts('balance_rule').then((response) => {
         this.accountTypeOptions = response.data;
-      });
+      }); */
       // 票制类别
       this.getDicts('assets_ticket_type').then((response) => {
         this.ticketTypeOptions = response.data;
       });
       // 合理路耗计量单位
-      this.getDicts('consumption_unit').then((response) => {
+      /* this.getDicts('consumption_unit').then((response) => {
         this.consumptionUnitOptions = response.data;
-      });
+      }); */
       // 抹零方式
-      this.getDicts('wipe_type').then((response) => {
+      /* this.getDicts('wipe_type').then((response) => {
         this.wipeTypeOptions = response.data;
-      });
+      });*/
       this.getDictsByType({ dictType: 'sys_normal_disable', dictPid: '0' }).then(response => {
         this.statusOptions = response.data;
       });
