@@ -79,10 +79,8 @@ export default {
 <style lang="scss">
 .page-team-manage-dialog{
   .el-dialog{
-    height: 90vh;
     .el-dialog__body{
-      padding: 0 20px 20px;
-      background: #fff;
+      padding-top: 10px;
       .app-container{
         box-shadow: none;
         margin: 0;

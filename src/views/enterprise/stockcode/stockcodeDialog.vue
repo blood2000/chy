@@ -1,14 +1,14 @@
 <template>
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="120px">
-      <el-form-item label="货源码名称" prop="cargoCodeName">
-        <el-input v-model="form.cargoCodeName" placeholder="请输入货源码名称" class="width50 mr3" clearable />
-        <span class="g-color-gray">(货源码名称可自定义,如线路名称等)</span>
+      <el-form-item label="货集码名称" prop="cargoCodeName">
+        <el-input v-model="form.cargoCodeName" placeholder="请输入货集码名称" class="width50 mr3" clearable />
+        <span class="g-color-gray">(货集码名称可自定义,如线路名称等)</span>
       </el-form-item>
       <el-form-item label="货源二维码">
         <!-- 编辑的时候不能修改二维码 -->
         <template v-if="form.id == null || form.id == undefined || form.id == ''">
-          <el-button type="primary" @click="generateCode">生成货源码</el-button>
+          <el-button type="primary" @click="generateCode">生成货集码</el-button>
           <br>
           <img v-if="form.cargoCodeQR" class="cargo-code ml24" :src="form.cargoCodeQR">
         </template>
@@ -45,7 +45,7 @@ export default {
       // 表单校验
       rules: {
         cargoCodeName: [
-          { required: true, message: '货源码名称不能为空', trigger: 'blur' }
+          { required: true, message: '货集码名称不能为空', trigger: 'blur' }
         ]
       }
     };
@@ -117,7 +117,7 @@ export default {
     setForm(data) {
 	    this.form = data;
     },
-    // 生成货源码
+    // 生成货集码
     generateCode() {
       generateCode({ id: this.form.id }).then(response => {
         this.msgSuccess(response.msg);

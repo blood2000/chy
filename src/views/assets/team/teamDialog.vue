@@ -27,7 +27,8 @@
       <el-form-item label="身份证号" prop="identificationNumber">
         <el-input v-model="form.identificationNumber" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="身份证有效期" prop="identificationEndTime">
+      <el-form-item prop="identificationEndTime">
+        <label slot="label"><span style="color: #ff4949">* </span>身份证有效期</label>
         <el-date-picker
           v-model="form.identificationBeginTime"
           clearable
@@ -44,8 +45,9 @@
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="请选择"
+          :readonly="form.identificationEffective"
         />
-        <el-checkbox v-model="form.identificationEffective">长期有效</el-checkbox>
+        <el-checkbox v-model="form.identificationEffective" @change="handleCheckChange">长期有效</el-checkbox>
       </el-form-item>
       <el-form-item label="是否清分" prop="isDistribution">
         <el-select
@@ -142,7 +144,21 @@ export default {
           { required: true, message: '管理者名称不能为空', trigger: 'blur' }
         ],
         identificationEndTime: [
-          { validator: this.formValidate.isExpired }
+          { validator: this.formValidate.isExpired, trigger: 'change' },
+          { validator: (rules, value, callback) => {
+            const { identificationBeginTime, identificationEffective } = this.form;
+            if (!identificationBeginTime) {
+              return callback(new Error('身份证有效期起始时间不能为空'));
+            } else if (!identificationEffective && !value) {
+              return callback(new Error('身份证有效期截止时间不能为空'));
+            }
+            return callback();
+          },
+          trigger: ['change', 'blur']
+          }
+        ],
+        password: [
+          { validator: this.formValidate.passWord, trigger: 'blur' }
         ]
       }
     };
@@ -157,16 +173,13 @@ export default {
       }
     }
   },
-  created() {
-
-  },
   methods: {
     /** 提交按钮 */
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
           this.form.identificationEffective = praseBooleanToNum(this.form.identificationEffective);
-          if (this.form.id != null) {
+          if (this.form.id) {
             updateInfo(this.form).then(response => {
               this.msgSuccess('修改成功');
               this.close();
@@ -244,6 +257,12 @@ export default {
         this.close();
         this.$emit('refresh');
       });
+    },
+    // 身份证是否长期有效选中事件
+    handleCheckChange(val) {
+      if (val) {
+        this.form.identificationEndTime = null;
+      }
     }
   }
 };

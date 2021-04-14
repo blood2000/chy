@@ -14,7 +14,8 @@ const idCardReg = /^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1
 function compareTime(time) {
   const _new = Date.parse(new Date());
   const lastTime = Date.parse(new Date(time));
-  if (_new > lastTime) {
+  // 8.64e7 为一天的毫秒数
+  if (_new > lastTime + 8.64e7) {
     return true;
   }
 }
@@ -152,6 +153,31 @@ export const formValidate = {
       callback(new Error('请输入正确的统一社会信用代码'));
     } else {
       callback();
+    }
+  },
+  // 密码校验
+  passWord: function(rule, value, callback) {
+    if (value === undefined || value === null || value === '') {
+      callback();
+    }
+    // 是否包含数字
+    var ptr_digit = /^.*[0-9]+.*$/;
+    // 是否包含大小写字母
+    var ptr_lowcase = /^.*[a-zA-Z]+.*$/;
+    // 是否包含特殊字符（非数字、字母的字符）
+    var ptr_special = /((?=[\x21-\x7e]+)[^A-Za-z0-9])/;
+    // var ptr_special = /^.*[~`!@#$%^&*()_+|<>,.?/:;'\\[\\]{}\"]+.*$/;
+    // 是否长度为8-16位数
+    var ptr_length = /^.{8,16}$/;
+    if (!ptr_length.test(value)) {
+      callback(new Error('密码长度应为8-16位'));
+    } else if ((ptr_digit.test(value) && ptr_lowcase.test(value) && ptr_special.test(value)) ||
+              (!ptr_digit.test(value) && ptr_lowcase.test(value) && ptr_special.test(value)) ||
+              (ptr_digit.test(value) && !ptr_lowcase.test(value) && ptr_special.test(value)) ||
+              (ptr_digit.test(value) && ptr_lowcase.test(value) && !ptr_special.test(value))) {
+      callback();
+    } else {
+      callback(new Error('密码中至少包含字母、数字、特殊字符中的两种'));
     }
   }
 };

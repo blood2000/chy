@@ -51,7 +51,7 @@ export function generateCode(data) {
   });
 }
 
-// 获取货源码下的货源列表
+// 获取货集码下的货源列表
 export function getOrderList(classCode, query) {
   return request({
     url: `/assets/shipment/cargocode/getOrderListByClassCode/${classCode}`,

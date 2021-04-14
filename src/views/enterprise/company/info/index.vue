@@ -38,7 +38,7 @@
             <el-form-item label="营业执照号：" prop="businessLicenseNo">
               {{ form.businessLicenseNo }}
             </el-form-item>
-            <el-form-item label="营业执照照：" prop="businessLicenseImg">
+            <el-form-item label="营业执照：" prop="businessLicenseImg">
               <upload-image v-show="form.businessLicenseImg" v-model="form.businessLicenseImg" :disabled="true" />
             </el-form-item>
             <!-- <el-form-item label="业务城市" prop="name">
@@ -134,7 +134,7 @@ export default {
           { required: true, trigger: 'blur', message: '公司名称不能为空' }
         ],
         businessLicenseImg: [
-          { required: true, trigger: 'blur', message: '营业执照照不能为空' }
+          { required: true, trigger: 'blur', message: '营业执照不能为空' }
         ]
       }
     };

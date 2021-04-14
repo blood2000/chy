@@ -9,3 +9,11 @@ export function balanceList(data) {
     data: Object.assign({}, data, { isAsc: 'asc', orderByColumn: 'nickName' })
   });
 }
+
+// 查询网商余额
+export function getBalance(userCode) {
+  return request({
+    url: `/payment/bk/member/balance?userCode=${userCode}`,
+    method: 'post'
+  });
+}

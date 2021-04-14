@@ -103,7 +103,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="关联货源码" prop="tin6">
+            <el-form-item label="关联货集码" prop="tin6">
               <el-select
                 v-model="formData.tin6"
                 placeholder="选择货集码"

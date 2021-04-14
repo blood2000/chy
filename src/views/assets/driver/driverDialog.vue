@@ -55,7 +55,8 @@
       <el-form-item label="身份证号" prop="identificationNumber">
         <el-input v-model="form.identificationNumber" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="身份证有效期" prop="identificationEndTime">
+      <el-form-item prop="identificationEndTime">
+        <label slot="label"><span style="color: #ff4949">* </span>身份证有效期</label>
         <el-date-picker
           v-model="form.identificationBeginTime"
           clearable
@@ -72,8 +73,9 @@
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="请选择"
+          :readonly="form.identificationEffective"
         />
-        <el-checkbox v-model="form.identificationEffective">长期有效</el-checkbox>
+        <el-checkbox v-model="form.identificationEffective" @change="handleCheckChange">长期有效</el-checkbox>
       </el-form-item>
       <!-- 选择省/市/区 -->
       <province-city-county
@@ -101,7 +103,8 @@
       <el-form-item label="驾驶证发证机关" prop="issuingOrganizations">
         <el-input v-model="form.issuingOrganizations" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="驾驶证有效期" prop="validPeriodTo">
+      <el-form-item prop="validPeriodTo">
+        <label slot="label"><span style="color: #ff4949">* </span>驾驶证有效期</label>
         <el-date-picker
           v-model="form.validPeriodFrom"
           clearable
@@ -118,8 +121,9 @@
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="支持自动识别"
+          :readonly="form.validPeriodAlways"
         />
-        <el-checkbox v-model="form.validPeriodAlways">长期有效</el-checkbox>
+        <el-checkbox v-model="form.validPeriodAlways" @change="handlePeriodCheckChange">长期有效</el-checkbox>
       </el-form-item>
       <el-form-item label="驾驶证类型" prop="driverLicenseType">
         <el-select v-model="form.driverLicenseType" class="width90" placeholder="支持自动识别" filterable clearable>
@@ -520,24 +524,35 @@ export default {
           { validator: this.formValidate.idCard, trigger: 'blur' }
         ],
         identificationEndTime: [
-          { required: true, message: '身份证有效期不能为空', trigger: 'blur' },
-          { validator: this.formValidate.isExpired },
+          { validator: this.formValidate.isExpired, trigger: 'change' },
           { validator: (rules, value, callback) => {
-            const { identificationBeginTime } = this.form;
-            if (!value || !identificationBeginTime) {
-              return callback(new Error('身份证有效期不能为空'));
+            const { identificationBeginTime, identificationEffective } = this.form;
+            if (!identificationBeginTime) {
+              return callback(new Error('身份证有效期起始时间不能为空'));
+            } else if (!identificationEffective && !value) {
+              return callback(new Error('身份证有效期截止时间不能为空'));
             }
             return callback();
           },
-          trigger: 'change'
+          trigger: ['change', 'blur']
           }
         ],
         issuingOrganizations: [
           { required: true, message: '驾驶证发证机关不能为空', trigger: 'blur' }
         ],
         validPeriodTo: [
-          { required: true, message: '驾驶证有效期不能为空', trigger: 'blur' },
-          { validator: this.formValidate.isExpired }
+          { validator: this.formValidate.isExpired, trigger: 'change' },
+          { validator: (rules, value, callback) => {
+            const { validPeriodFrom, validPeriodAlways } = this.form;
+            if (!validPeriodFrom) {
+              return callback(new Error('驾驶证有效期起始时间不能为空'));
+            } else if (!validPeriodAlways && !value) {
+              return callback(new Error('驾驶证有效期截止时间不能为空'));
+            }
+            return callback();
+          },
+          trigger: ['change', 'blur']
+          }
         ],
         workCompany: [
           { required: true, message: '工作单位不能为空', trigger: 'blur' }
@@ -547,6 +562,9 @@ export default {
         ],
         licenseNumber: [
           { validator: this.formValidate.plateNo, trigger: 'blur' }
+        ],
+        password: [
+          { validator: this.formValidate.passWord, trigger: 'blur' }
         ]
       },
       vehicleRules: {
@@ -649,7 +667,7 @@ export default {
                 driver.transportPermitImage = null;
                 driver.vehicleInfo.vehicleImage = null;
               }
-              if (driver.id !== undefined) {
+              if (driver.id) {
                 updateDriver(driver).then(response => {
                   this.msgSuccess('修改成功');
                   this.close();
@@ -828,6 +846,18 @@ export default {
     loadmore() {
       this.queryParams.pageNum++;
       this.getTeamList();
+    },
+    // 身份证是否长期有效选中事件
+    handleCheckChange(val) {
+      if (val) {
+        this.form.identificationEndTime = null;
+      }
+    },
+    // 驾驶证是否长期有效选中事件
+    handlePeriodCheckChange(val) {
+      if (val) {
+        this.form.validPeriodTo = null;
+      }
     }
   }
 };
