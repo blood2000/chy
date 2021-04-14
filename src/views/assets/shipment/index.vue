@@ -4,7 +4,7 @@
       <el-form-item label="货主" prop="searchValue">
         <el-input
           v-model="queryParams.searchValue"
-          placeholder="公司名称/客户名称/手机号"
+          placeholder="公司名称/货主姓名/手机号"
           clearable
           size="small"
           style="width: 272px"
