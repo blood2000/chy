@@ -106,7 +106,7 @@
       <el-form-item label="转账结果" prop="responseStatus">
         <el-select v-model="queryParams.responseStatus" placeholder="请选择" clearable filterable size="small" class="input-width">
           <el-option
-            v-for="dict in resultOptions"
+            v-for="dict in responseStatusOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
@@ -126,7 +126,7 @@
       <el-form-item label="打款方式" prop="payByType">
         <el-select v-model="queryParams.payByType" placeholder="请选择" clearable filterable size="small" class="input-width">
           <el-option
-            v-for="dict in payTypeOptions"
+            v-for="dict in payByTypeOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
@@ -201,8 +201,34 @@
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table v-loading="loading" :data="addressList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" fixed="left" />
+    <RefactorTable :loading="loading" :data="recordList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <!-- 到账时间 -->
+      <template #finishDate="{row}">
+        <span>{{ parseTime(row.finishDate) }}</span>
+      </template>
+      <template #createTime="{row}">
+        <span>{{ parseTime(row.createTime) }}</span>
+      </template>
+      <template #updateTime="{row}">
+        <span>{{ parseTime(row.updateTime) }}</span>
+      </template>
+      <template #edit="{row}">
+        <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-sell"
+          @click="handleReport(row)"
+        >上报流水</el-button>
+        <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-edit"
+          @click="handleUpdate(row)"
+        >修改批次号</el-button>
+      </template>
+    </RefactorTable>
+
+    <!-- <el-table v-loading="loading" :data="recordList" @selection-change="handleSelectionChange">
       <el-table-column label="是否超载" align="center" prop="" />
       <el-table-column label="是否分单" align="center" prop="" />
       <el-table-column label="是否异常" align="center" prop="" />
@@ -226,34 +252,13 @@
       <el-table-column label="流水上报" align="center" prop="" />
       <el-table-column label="电子路单上报状态" align="center" prop="" />
       <el-table-column label="货源单号" align="center" prop="" />
+      <el-table-column label="最后操作人" align="center" prop="" />
       <el-table-column label="接单时间" align="center" prop="time">
         <template slot-scope="scope">
           {{ parseTime(scope.row.time) }}
         </template>
       </el-table-column>
-      <el-table-column label="到账时间" align="center" prop="time">
-        <template slot-scope="scope">
-          {{ parseTime(scope.row.time) }}
-        </template>
-      </el-table-column>
-      <el-table-column label="最后操作人" align="center" prop="" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="200" fixed="right">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-sell"
-            @click="handleReport(scope.row)"
-          >上报流水</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-          >修改批次号</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    </el-table> -->
 
     <pagination
       v-show="total>0"
@@ -294,13 +299,13 @@ export default {
       // 总条数
       total: 0,
       // 表格数据
-      addressList: [],
+      recordList: [],
       // 弹出层标题
       title: '',
       // 是否显示弹出层
       modifyBatchOpen: false,
       // 转帐结果字典
-      resultOptions: [
+      responseStatusOptions: [
         { dictLabel: '处理中', dictValue: 0 },
         { dictLabel: '成功', dictValue: 1 },
         { dictLabel: '失败', dictValue: 2 },
@@ -313,7 +318,7 @@ export default {
         { dictLabel: '失败', dictValue: 2 }
       ],
       // 打款方式字典
-      payTypeOptions: [
+      payByTypeOptions: [
         { dictLabel: '现金支付', dictValue: 0 },
         { dictLabel: '在线支付', dictValue: 1 }
       ],
@@ -321,6 +326,37 @@ export default {
       isOptions: [
         { dictLabel: '否', dictValue: 0 },
         { dictLabel: '是', dictValue: 1 }
+      ],
+      // 付款类型字典
+      payTypeOptions: [
+        { dictLabel: '付款到银行', dictValue: 1 },
+        { dictLabel: '付款到新生账户', dictValue: 2 }
+      ],
+      // 处理状态字典
+      statusOptions: [
+        { dictLabel: '提交失败', dictValue: 0 },
+        { dictLabel: '提交成功', dictValue: 1 }
+      ],
+      // 是否进行过回调处理字典
+      isHandleOptions: [
+        { dictLabel: '未处理', dictValue: 0 },
+        { dictLabel: '已处理', dictValue: 1 }
+      ],
+      // 付款方式字典
+      payByOptions: [
+        { dictLabel: '现金支付', dictValue: 0 },
+        { dictLabel: '京东支付', dictValue: 1 },
+        { dictLabel: '交通银行', dictValue: 2 },
+        { dictLabel: '新生支付', dictValue: 3 },
+        { dictLabel: '工商银行', dictValue: 4 },
+        { dictLabel: '传化支付', dictValue: 5 },
+        { dictLabel: '建行支付', dictValue: 6 },
+        { dictLabel: '环迅', dictValue: 7 }
+      ],
+      // 收款方类型
+      payeeTypeOptions: [
+        { dictLabel: '个人', dictValue: 1 },
+        { dictLabel: '企业', dictValue: 2 }
       ],
       // 查询参数
       queryParams: {
@@ -350,7 +386,7 @@ export default {
       prop: 'edit',
       isShow: true,
       label: '操作',
-      width: 200,
+      width: 180,
       fixed: 'right'
     });
     this.getList();
@@ -360,14 +396,10 @@ export default {
     getList() {
       this.loading = true;
       payRecordlist(this.queryParams).then(response => {
-        this.addressList = response.data.rows;
+        this.recordList = response.data.rows;
         this.total = response.data.total;
         this.loading = false;
       });
-    },
-    // 字典翻译
-    statusFormat(row, column) {
-      return this.selectDictLabel(this.resultOptions, row.status);
     },
     /** 搜索按钮操作 */
     handleQuery() {
