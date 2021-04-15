@@ -259,7 +259,7 @@
 </template>
 
 <script>
-import { paymentList, paymentListApi, statistical } from '@/api/settlement/payment';
+import { paymentList, paymentListApi, statistical, batch } from '@/api/settlement/payment';
 // 驳回弹窗
 import RejectDialog from './rejectDialog';
 // 子单弹窗
@@ -279,7 +279,7 @@ export default {
       // 遮罩层
       'loading': false,
       // 选中数组
-      //   'ids': [],
+      'ids': [],
       // 显示搜索条件
       'showSearch': true,
       // 总条数
@@ -308,6 +308,9 @@ export default {
         'licenseNumber': undefined,
         'driverName': undefined,
         'waybillNo': undefined
+      },
+      bodyParams: {
+        wayBillSettlementCodeList: []
       },
       receiveTime: [],
       // 弹框 内容
@@ -396,6 +399,22 @@ export default {
     },
     // 批量打款
     handlePayment() {
+      if (this.ids.length === 0) {
+        this.$message({ type: 'warning', message: '请先选择数据！' });
+      } else {
+        this.$confirm('是否确认批量打款？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          batch(this.bodyParams).then(response => {
+            this.$message({ type: 'success', message: '批量打款成功！' });
+            this.getList();
+          });
+        }).catch(() => {
+          this.$message({ type: 'info', message: '已取消' });
+        });
+      }
     },
 
     handleTableBtn(row, index) {
@@ -410,7 +429,20 @@ export default {
           this.$refs.RejectDialog.setForm(row);
           break;
         case 2:
-          this.title = '网商打款';
+          this.$confirm('是否确认打款？', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.bodyParams.wayBillSettlementCodeList = [];
+            this.bodyParams.wayBillSettlementCodeList.push(row.wayBillSettlementCode);
+            batch(this.bodyParams).then(response => {
+              this.$message({ type: 'success', message: '打款成功！' });
+              this.getList();
+            });
+          }).catch(() => {
+            this.$message({ type: 'info', message: '已取消' });
+          });
           break;
         case 3:
           this.title = '子单列表';

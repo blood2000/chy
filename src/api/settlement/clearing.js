@@ -1,23 +1,30 @@
 import request from '@/utils/request';
 
 // 查询运单清分列表
-export const adjustListApi = '/transportation/waybill/trackingList';
-export function adjustList(query) {
+export const clarifyListApi = '/transportation/waybillSettlementClarify/clarifyList';
+export function clarifyList(query) {
   return request({
-    url: '/transportation/waybill/trackingList',
+    url: '/transportation/waybillSettlementClarify/clarifyList',
     method: 'get',
     params: query
   });
 }
 
-// 查询运单子单列表
-export const childListApi = '/transportation/waybill/childList';
-export function childList(query) {
+// 批量清分
+export function batch(data) {
   return request({
-    url: '/transportation/waybill/childList',
-    method: 'get',
-    params: query
+    url: '/transportation/waybillSettlementClarify/batch',
+    method: 'post',
+    data: data
   });
 }
 
+// 批量更新清分状态
+export function batchStatus(data) {
+  return request({
+    url: '/transportation/waybillSettlementClarify/batchStatus',
+    method: 'post',
+    data: data
+  });
+}
 

@@ -247,9 +247,9 @@
       <template #isReturn="{row}">
         <span>{{ selectDictLabel(isReturnOptions, row.isReturn) }}</span>
       </template>
-      <!-- <template #isChild="{row}">
-        <span>{{ selectDictLabel(isChildOptions, row.isChild) }}</span>
-      </template> -->
+      <template #lastLoadingTime="{row}">
+        <span>{{ parseTime(row.lastLoadingTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+      </template>
 
       <template #edit="{row}">
         <el-button
@@ -367,7 +367,8 @@ export default {
       'total': 0,
       // 表格数据
       'adjustlist': [],
-
+      // 弹窗表格
+      commentlist: [],
       // 查询参数
       'queryParams': {
         'pageNum': 1,
@@ -453,6 +454,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
+      this.commentlist = selection;
       this.ids = selection.map((item) => item.wayBillCode);
       this.bodyParams.waybillCodeList = this.ids;
     },
@@ -516,7 +518,9 @@ export default {
       if (this.ids.length === 0) {
         this.$message({ type: 'warning', message: '请先选择数据！' });
       } else {
-        console.log(this.ids);
+        this.commentdialog = true;
+        this.title = '用户评价';
+        this.$refs.CommentDialog.setForm(this.commentlist);
       }
     },
 
@@ -567,7 +571,9 @@ export default {
         case 5:
           this.commentdialog = true;
           this.title = '用户评价';
-          this.$refs.CommentDialog.setForm(row);
+          this.commentlist = [];
+          this.commentlist.push(row);
+          this.$refs.CommentDialog.setForm(this.commentlist);
           break;
         case 6:
           this.title = '子单列表';
