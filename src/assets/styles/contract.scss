@@ -104,29 +104,29 @@
     zoom: 1;
 }
 
-table {
+.Whole table {
     border-spacing: 0;
 }
-tbody {
+.Whole tbody {
     vertical-align: middle;
     border-color: inherit;
 }
-tr {
+.Whole tr {
     display: table-row;
     vertical-align: inherit;
 }
-table th, table td {
+.Whole table th, .Whole table td {
     border-bottom: 1px solid #000;
     border-right: 1px solid #000;
     font-weight: normal;
 }
-h4 {
+.Whole h4 {
     display: block;
     margin-block-start: 1.33em;
     margin-block-end: 1.33em;
     margin-inline-start: 0px;
     margin-inline-end: 0px;
 }
-b {
+.Whole b {
     font-weight: normal;
 }

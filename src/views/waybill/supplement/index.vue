@@ -206,12 +206,12 @@
           <el-row>
             <el-col :span="8">
               <el-form-item label="装货单据">
-                <uploadImage v-model="form.identificationBackImage" />
+                <uploadImage v-model="form.loadAttachmentCode" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="卸货单据/回执单">
-                <uploadImage v-model="form.identificationBackImage" />
+                <uploadImage v-model="form.unloadAttachmentCode" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -444,8 +444,23 @@ export default {
         };
         getOrderGoodsProce(orderGoodsFindPriceBo).then(response => {
           console.log(response);
-          this.form.shipmentPrice = response.data.ruleValue;
+          // 获取运费单价
+          const freightCost = response.data.find((item) => {
+            return item.ruleItemCode === '17';
+          });
+          this.form.shipmentPrice = freightCost.ruleValue;
+          // 获取抹零规则字典值
+          const m0 = response.data.find((item) => {
+            return item.ruleItemCode === '18';
+          });
+          this.form.m0DictValue = m0.ruleValue;
+          // 获取计算公式
+          const caculation = response.data.find((item) => {
+            return item.ruleItemCode === '19';
+          });
+          this.form.ruleFormulaDictValue = caculation.ruleValue;
         });
+        this.calculate();
       }
     },
     // 获取运单总价
@@ -464,7 +479,7 @@ export default {
         };
         calculate(calculateBo).then(response => {
           console.log(response);
-          // this.form.wayBillPrice = response.data.ruleValue;
+          this.form.wayBillPrice = response.data.shipperRealPay;
         });
       }
     },
@@ -479,8 +494,9 @@ export default {
       } else {
         this.stowage = true;
       }
-      this.form.remainingNumber = result.remainingNumber;
-      this.form.remainingWeight = result.remainingWeight;
+      console.log(result);
+      this.form.remainingNumber = result.remainingNumber || '不限';
+      this.form.remainingWeight = result.remainingWeight || '不限';
       this.getOrderGoodsProce();
     },
     loadChoose() {
@@ -527,6 +543,7 @@ export default {
     // 赋值卸货重量
     inputWeight(e) {
       this.form.unloadWeight = e;
+      this.calculate();
     }
 
   }
