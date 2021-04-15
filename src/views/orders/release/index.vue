@@ -21,232 +21,246 @@
     <el-divider />
 
     <!-- 转货信息 -->
+    <div v-if="authStatus">
 
-    <el-form
-      v-if="authStatus"
-      ref="elForm"
-      :model="formData"
-      :rules="rules"
-      size="medium"
-      label-width="110px"
-      :label-position="'left'"
-      :disabled="myisdisabled"
-    >
-      <!-- 第一步 基本信息 -->
-      <div v-show="active ==1 || myisdisabled" class="content">
-        <div v-if="!isClone && (!isShipment && isCreated)" class="header mb8">代发货主信息</div>
-
-        <el-form-item v-if="!isClone && (!isShipment && isCreated)" label="代发货主" prop="tin1">
-          <el-select
-            v-model="formData.tin1"
-            v-el-select-loadmore="loadmore"
-            filterable
-            clearable
-            remote
-            reserve-keyword
-            placeholder="请输入关键词"
-            :remote-method="remoteMethod"
-            :loading="loading"
-            @change="handlerchange"
-          >
-            <el-option
-              v-for="(item, index1) in shipmentList"
-              :key="index1"
-              :value="item.code"
-              :label="item.adminName"
-            >
-              <!-- :label="item.adminName" -->
-              <div class="ly-flex-pack-justify"><span>{{ item.adminName }}</span><span>{{ item.telphone }}</span></div>
-            </el-option>
-          </el-select>
-        </el-form-item>
-
-        <OrderBasic
-          v-if="formData.tin1"
-          ref="OrderBasic"
-          v-model="isMultiGoods"
-          :pubilsh-code="formData.tin1"
-          :cb-data="cbOrderBasic"
-          :myisdisabled="myisdisabled"
-          @goods="handlerGoos"
-        />
-        <div class="ly-t-center">
-
-          <el-button v-if="!myisdisabled && (formData.tin1 && active < 2)" @click="nextTo(2)">下一步</el-button>
-        </div>
+      <div v-if="isT" class="mb20">
+        <el-radio-group v-model="orderInfo" size="small">
+          <el-radio-button label="0">货源信息</el-radio-button>
+          <el-radio-button label="1">运单信息</el-radio-button>
+        </el-radio-group>
       </div>
 
-      <!-- 第二步 地址的填写 -->
-      <div v-show="(formData.tin1 && active === 2) || myisdisabled" class="content">
-        <div class="header mb8">地址信息</div>
-        <el-form-item label="装卸类型" prop="tin7">
-          <el-radio-group v-model="formData.tin7" size="medium" @change="zhuangOrxiechange">
-            <el-radio
-              v-for="dict in (isMultiGoods?[
-                { dictValue: '1', dictLabel: '一装一卸' },
-                { dictValue: '2', dictLabel: '多装一卸' },
-                { dictValue: '3', dictLabel: '一装多卸' }
-              ]:[{ dictValue: '1', dictLabel: '一装一卸' }])"
-              :key="dict.dictValue"
-              :label="dict.dictValue"
-            >{{ dict.dictLabel }}</el-radio>
-          </el-radio-group>
-        </el-form-item>
+      <!-- 查看详情-运单信息 -->
+      <div v-show="orderInfo==='1'">
+        <WaybillInfo v-if="isT && waybillData" :waybill-data="waybillData" />
+      </div>
 
-        <!-- <el-form-item v-if="formData.tin7 !== '1'" label="允许自卸/自装">
-          <div class="ly-flex">
-            <el-form-item
-              v-if="formData.tin7 === '2' || formData.tin7 === '4'"
-              prop="tin8"
-            >
-              <el-checkbox v-model="formData.tin8">允许自装</el-checkbox>
-            </el-form-item>
-            <el-form-item
-              v-if="formData.tin7 === '3' || formData.tin7 === '4'"
-              :label-width="formData.tin7 === '4' ? '30px' : null"
-              prop="tin9"
-            >
-              <el-checkbox v-model="formData.tin9">允许自卸</el-checkbox>
-            </el-form-item>
-          </div>
-        </el-form-item> -->
-
-        <el-divider />
-
-
-        <div class="header mb8 m-flex">
-          <div>
-            装货信息
-
-            <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '2' || formData.tin7 === '4')" v-model="formData.tin8" :disabled="myisdisabled" style="marginLeft:30px;" @change="handlerCheck('add')">允许自装</el-checkbox>
-          </div>
-
-          <el-button
-            v-if="!myisdisabled && (formData.tin7 === '2' || formData.tin7 === '4')"
-            type="primary"
-            style="margin-top: -12px"
-            @click="_addAddress('address_add')"
-          >添加地址</el-button>
-
-        </div>
-
-        <div
-          v-for="address in address_add"
-          :key="address.refName"
-          class="oneAddress_item"
+      <!-- 正常 -->
+      <div v-show="orderInfo==='0'">
+        <el-form
+          ref="elForm"
+          :model="formData"
+          :rules="rules"
+          size="medium"
+          label-width="110px"
+          :label-position="'left'"
+          :disabled="myisdisabled"
         >
-          <OneAddress v-if="isShowAddress" :ref="address.refName" type="1" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
-          <div class="ly-t-right">
-            <el-button
-              v-if="!myisdisabled && (address_add.length >= 2 || formData.tin8)"
-              type="danger"
-              @click="_delAddress('address_add', address.refName)"
-            >删除地址</el-button>
-            <el-button
-              v-if="!myisdisabled"
-              type="primary"
-              style="margin-top: -12px"
-              @click="selectAddress('address_add', address.refName)"
-            >常用地址</el-button>
+          <!-- 第一步 基本信息 -->
+          <div v-show="active ==1 || myisdisabled" class="content">
+            <div v-if="!isClone && (!isShipment && isCreated)" class="header mb8">代发货主信息</div>
+
+            <el-form-item v-if="!isClone && (!isShipment && isCreated)" label="代发货主" prop="tin1">
+              <el-select
+                v-model="formData.tin1"
+                v-el-select-loadmore="loadmore"
+                filterable
+                clearable
+                remote
+                reserve-keyword
+                placeholder="请输入关键词"
+                :remote-method="remoteMethod"
+                :loading="loading"
+                @change="handlerchange"
+              >
+                <el-option
+                  v-for="(item, index1) in shipmentList"
+                  :key="index1"
+                  :value="item.code"
+                  :label="item.adminName"
+                >
+                  <!-- :label="item.adminName" -->
+                  <div class="ly-flex-pack-justify"><span>{{ item.adminName }}</span><span>{{ item.telphone }}</span></div>
+                </el-option>
+              </el-select>
+            </el-form-item>
+
+            <OrderBasic
+              v-if="formData.tin1"
+              ref="OrderBasic"
+              v-model="isMultiGoods"
+              :pubilsh-code="formData.tin1"
+              :cb-data="cbOrderBasic"
+              :myisdisabled="myisdisabled"
+              @goods="handlerGoos"
+            />
+            <div class="ly-t-center">
+
+              <el-button v-if="!myisdisabled && (formData.tin1 && active < 2)" @click="nextTo(2)">下一步</el-button>
+            </div>
+          </div>
+
+          <!-- 第二步 地址的填写 -->
+          <div v-show="(formData.tin1 && active === 2) || myisdisabled" class="content">
+            <div class="header mb8">地址信息</div>
+            <el-form-item label="装卸类型" prop="tin7">
+              <el-radio-group v-model="formData.tin7" size="medium" @change="zhuangOrxiechange">
+                <el-radio
+                  v-for="dict in (isMultiGoods?[
+                    { dictValue: '1', dictLabel: '一装一卸' },
+                    { dictValue: '2', dictLabel: '多装一卸' },
+                    { dictValue: '3', dictLabel: '一装多卸' }
+                  ]:[{ dictValue: '1', dictLabel: '一装一卸' }])"
+                  :key="dict.dictValue"
+                  :label="dict.dictValue"
+                >{{ dict.dictLabel }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+
+            <!-- <el-form-item v-if="formData.tin7 !== '1'" label="允许自卸/自装">
+              <div class="ly-flex">
+                <el-form-item
+                  v-if="formData.tin7 === '2' || formData.tin7 === '4'"
+                  prop="tin8"
+                >
+                  <el-checkbox v-model="formData.tin8">允许自装</el-checkbox>
+                </el-form-item>
+                <el-form-item
+                  v-if="formData.tin7 === '3' || formData.tin7 === '4'"
+                  :label-width="formData.tin7 === '4' ? '30px' : null"
+                  prop="tin9"
+                >
+                  <el-checkbox v-model="formData.tin9">允许自卸</el-checkbox>
+                </el-form-item>
+              </div>
+            </el-form-item> -->
+
+            <el-divider />
+
+
+            <div class="header mb8 m-flex">
+              <div>
+                装货信息
+
+                <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '2' || formData.tin7 === '4')" v-model="formData.tin8" :disabled="myisdisabled" style="marginLeft:30px;" @change="handlerCheck('add')">允许自装</el-checkbox>
+              </div>
+
+              <el-button
+                v-if="!myisdisabled && (formData.tin7 === '2' || formData.tin7 === '4')"
+                type="primary"
+                style="margin-top: -12px"
+                @click="_addAddress('address_add')"
+              >添加地址</el-button>
+
+            </div>
+
+            <div
+              v-for="address in address_add"
+              :key="address.refName"
+              class="oneAddress_item"
+            >
+              <OneAddress v-if="isShowAddress" :ref="address.refName" type="1" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
+              <div class="ly-t-right">
+                <el-button
+                  v-if="!myisdisabled && (address_add.length >= 2 || formData.tin8)"
+                  type="danger"
+                  @click="_delAddress('address_add', address.refName)"
+                >删除地址</el-button>
+                <el-button
+                  v-if="!myisdisabled"
+                  type="primary"
+                  style="margin-top: -12px"
+                  @click="selectAddress('address_add', address.refName)"
+                >常用地址</el-button>
+              </div>
+            </div>
+
+            <el-divider />
+
+            <div class="header mb8 m-flex">
+              <div>
+                卸货信息
+                <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '3' || formData.tin7 === '4')" v-model="formData.tin9" :disabled="myisdisabled" style="marginLeft:30px;">允许自卸</el-checkbox>
+              </div>
+              <el-button
+                v-if="!myisdisabled && (formData.tin7 === '3' || formData.tin7 === '4')"
+                type="primary"
+                style="margin-top: -12px"
+                @click="_addAddress('address_xie')"
+              >添加地址</el-button>
+            </div>
+
+            <div
+              v-for="address in address_xie"
+              :key="address.refName"
+              class="oneAddress_item"
+            >
+              <OneAddress v-if="isShowAddress" :ref="address.refName" type="2" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
+
+              <div class="ly-t-right">
+
+                <el-button
+                  v-if="!myisdisabled && (address_xie.length >= 2 || formData.tin9)"
+                  type="danger"
+                  @click="_delAddress('address_xie', address.refName)"
+                >删除地址</el-button>
+                <el-button
+                  v-if="!myisdisabled"
+                  type="primary"
+                  style="margin-top: -12px"
+                  @click="selectAddress('address_xie', address.refName)"
+                >常用地址</el-button>
+              </div>
+            </div>
+
+            <el-divider />
+            <template v-if="!myisdisabled">
+              <div class="ly-t-center">
+                <el-button v-if="active < 3" @click="nextSe(1)">上一步</el-button>
+                <el-button v-if="active < 3" @click="nextSe(3)">下一步</el-button>
+              </div>
+            </template>
+
+          </div>
+
+          <!-- 第三步 货源信息 -->
+          <div v-show="(formData.tin1 && active === 3) || myisdisabled" class="content">
+            <div class="header mb8">货源信息</div>
+            <goods-info
+              ref="goodsInfo"
+              :goods="goods"
+              :goods-big-type="goodsBigType"
+              :addr-add="addr_add"
+              :addr-xie="addr_xie"
+              :pubilsh-code="formData.tin1"
+              :cb-goods-accounting="cbGoodsAccounting"
+              :cb-order-freight="cbOrderFreight"
+              :myisdisabled="myisdisabled"
+            />
+            <el-divider />
+
+            <template v-if="!myisdisabled">
+              <div v-if="!loading && active === 3" class="ly-t-center">
+                <el-button @click="nextFe(2)">上一步</el-button>
+                <el-button type="primary" @click="onSubmit('elForm',3)">{{ isCreated?'立即发布':'保存' }}</el-button>
+                <el-button @click="nextFe(4)">预览(查看预估价格)</el-button>
+              </div>
+            </template>
+
+          </div>
+
+        </el-form>
+
+        <div v-if="active >= 4 && !isT" class="ly-t-center">
+          <el-button @click="nextFe(3)">上一步</el-button>
+          <el-button type="primary" @click="onPubilsh">{{ isCreated?'立即发布':'保存' }}</el-button>
+
+          <div class="release_warning">
+            <el-alert
+              title="司机在接单的时候会相应的扣除余额中的运输费用，请及时充值，以免招成司机接单不成功的情况。"
+              type="info"
+              effect="dark"
+              :closable="false"
+              show-icon
+            />
           </div>
         </div>
-
-        <el-divider />
-
-        <div class="header mb8 m-flex">
-          <div>
-            卸货信息
-            <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '3' || formData.tin7 === '4')" v-model="formData.tin9" :disabled="myisdisabled" style="marginLeft:30px;">允许自卸</el-checkbox>
-          </div>
-          <el-button
-            v-if="!myisdisabled && (formData.tin7 === '3' || formData.tin7 === '4')"
-            type="primary"
-            style="margin-top: -12px"
-            @click="_addAddress('address_xie')"
-          >添加地址</el-button>
+        <div v-if="isT" class="ly-t-center">
+          <el-button @click="backPge">返 回</el-button>
         </div>
-
-        <div
-          v-for="address in address_xie"
-          :key="address.refName"
-          class="oneAddress_item"
-        >
-          <OneAddress v-if="isShowAddress" :ref="address.refName" type="2" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
-
-          <div class="ly-t-right">
-
-            <el-button
-              v-if="!myisdisabled && (address_xie.length >= 2 || formData.tin9)"
-              type="danger"
-              @click="_delAddress('address_xie', address.refName)"
-            >删除地址</el-button>
-            <el-button
-              v-if="!myisdisabled"
-              type="primary"
-              style="margin-top: -12px"
-              @click="selectAddress('address_xie', address.refName)"
-            >常用地址</el-button>
-          </div>
-        </div>
-
-        <el-divider />
-        <template v-if="!myisdisabled">
-          <div class="ly-t-center">
-            <el-button v-if="active < 3" @click="nextSe(1)">上一步</el-button>
-            <el-button v-if="active < 3" @click="nextSe(3)">下一步</el-button>
-          </div>
-        </template>
-
       </div>
 
-      <!-- 第三步 货源信息 -->
-      <div v-show="(formData.tin1 && active === 3) || myisdisabled" class="content">
-        <div class="header mb8">货源信息</div>
-        <goods-info
-          ref="goodsInfo"
-          :goods="goods"
-          :goods-big-type="goodsBigType"
-          :addr-add="addr_add"
-          :addr-xie="addr_xie"
-          :pubilsh-code="formData.tin1"
-          :cb-goods-accounting="cbGoodsAccounting"
-          :cb-order-freight="cbOrderFreight"
-          :myisdisabled="myisdisabled"
-        />
-        <el-divider />
-
-        <template v-if="!myisdisabled">
-          <div v-if="!loading && active === 3" class="ly-t-center">
-            <el-button @click="nextFe(2)">上一步</el-button>
-            <el-button type="primary" @click="onSubmit('elForm',3)">{{ isCreated?'立即发布':'保存' }}</el-button>
-            <el-button @click="nextFe(4)">预览(查看预估价格)</el-button>
-          </div>
-        </template>
-
-      </div>
-
-    </el-form>
-
-    <div v-if="active >= 4 && !isT" class="ly-t-center">
-      <el-button @click="nextFe(3)">上一步</el-button>
-      <el-button type="primary" @click="onPubilsh">{{ isCreated?'立即发布':'保存' }}</el-button>
-
-      <div class="release_warning">
-        <el-alert
-          title="司机在接单的时候会相应的扣除余额中的运输费用，请及时充值，以免招成司机接单不成功的情况。"
-          type="info"
-          effect="dark"
-          :closable="false"
-          show-icon
-        />
-      </div>
     </div>
-    <div v-if="isT" class="ly-t-center">
-      <el-button @click="backPge">返 回</el-button>
-    </div>
-
-
-
 
     <!-- 打开弹框 -->
     <el-dialog
@@ -267,6 +281,8 @@ import OneAddress from './component/OneAddress';
 import GoodsInfo from './GoodsInfo';
 import OpenDialog from './OpenDialog';
 
+import WaybillInfo from './WaybillInfo';
+
 import { getUserInfo } from '@/utils/auth';
 import { listShipment } from '@/api/assets/shipment.js';
 import { orderPubilsh, getOrderByCode, update, estimateCost } from '@/api/order/release';
@@ -278,10 +294,13 @@ export default {
     OrderBasic,
     OneAddress,
     GoodsInfo,
-    OpenDialog
+    OpenDialog,
+    WaybillInfo
   },
   data() {
     return {
+      orderInfo: '0', // 详情的时候切换查看
+      waybillData: null, // 货源-运单详情
       authStatus: true, // 默认ok展示
       isClone: false,
       queryParams: {
@@ -1034,6 +1053,12 @@ export default {
             classCode: e ? e.classCode : ''
           };
         })
+      };
+
+      // WaybillInfo组件要的数据
+      this.waybillData = {
+        code,
+        classList: redisOrderClassGoodsVoList
       };
     },
 
