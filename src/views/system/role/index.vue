@@ -154,6 +154,7 @@
                 v-model="scope.row.status"
                 active-value="0"
                 inactive-value="1"
+                :disabled="isOperate(scope.row.roleCode)"
                 @change="handleStatusChange(scope.row)"
               />
             </template>
@@ -170,6 +171,7 @@
                 size="mini"
                 type="text"
                 icon="el-icon-edit"
+                :disabled="isOperate(scope.row.roleCode)"
                 @click="handleUpdate(scope.row)"
               >修改</el-button>
               <el-button
@@ -177,6 +179,7 @@
                 size="mini"
                 type="text"
                 icon="el-icon-circle-check"
+                :disabled="isOperate(scope.row.roleCode)"
                 @click="handleDataScope(scope.row)"
               >数据权限</el-button>
               <el-button
@@ -184,6 +187,7 @@
                 size="mini"
                 type="text"
                 icon="el-icon-delete"
+                :disabled="isOperate(scope.row.roleCode)"
                 @click="handleDelete(scope.row)"
               >删除</el-button>
             </template>
@@ -222,7 +226,7 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="角色顺序" prop="roleSort">
-              <el-input-number v-model="form.roleSort"  style="width: 90%;" controls-position="right" :min="0" />
+              <el-input-number v-model="form.roleSort" style="width: 90%;" controls-position="right" :min="0" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -352,6 +356,7 @@
 import { listRole, getRole, delRole, addRole, updateRole, dataScope, changeRoleStatus, producelist } from '@/api/system/role';
 import { treeselect as menuTreeselect, roleMenuTreeselect, versionTreeList } from '@/api/system/menu';
 import { treeselect as deptTreeselect, roleDeptTreeselect } from '@/api/system/dept';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'Role',
@@ -476,6 +481,9 @@ export default {
       }
     };
   },
+  computed: {
+    ...mapGetters(['isAdmin', 'defaultRoleCode'])
+  },
   watch: {
     // 根据名称筛选部门树
     deptName(val) {
@@ -489,7 +497,7 @@ export default {
     this.getDicts('sys_normal_disable').then(response => {
       this.statusOptions = response.data;
     });
-    if (!this.$store.getters.isAdmin) {
+    if (!this.isAdmin) {
       this.dataScopeOptions = [
         {
           value: '3',
@@ -804,6 +812,17 @@ export default {
         });
       } else {
         this.getMenuTreeselect(params);
+      }
+    },
+    // 判断操作是否禁用
+    isOperate(roleCode) {
+      const some = this.defaultRoleCode.split(',').some(el => {
+        return el === roleCode;
+      });
+      if (!this.isAdmin && some) {
+        return true;
+      } else {
+        return false;
       }
     }
   }
