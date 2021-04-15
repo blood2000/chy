@@ -13,13 +13,13 @@
     <div id="wholecont" class="wholecont-div">
 
       <h3 id="plat_hetong_title" style="text-indent: 4em;">福建大道成物流科技有限公司无车承运平台运输电子合同</h3>
-      <div class="seria" style="margin-top: 30px;">合同编号：<span id="contract_no">{{ obj.contractNo || 'DADAOCHENG202104121716380203' }}</span></div>
+      <div class="seria" style="margin-top: 30px;">合同编号：<span id="contract_no">{{ obj.contractNo }}</span></div>
       <!-- <div class="seria">签约地：<span id="contract_no"></span></div> -->
-      <div class="seria">签约时间：<span id="acreate_time">{{ obj.createTime || '2021-04-12 17:16:39' }}</span></div>
-      <div id="first" class="t_num1">托运方(简称甲方)：{{ obj.shipmentCompanyName || '大道成测试货主公司' }}</div>
-      <div id="business_license_img_no" class="t_num1">统一社会信用代码：{{ obj.shipmentOrganizationCodeNo || '20210412000001' }}</div>
-      <div id="address" class="t_num1">住所：{{ obj.shipmentArea || '福建省福州市台江区台江万达' }}</div>
-      <div id="faren" class="t_num1">法定代表人：{{ obj.shipmentName || 'lan测试' }}</div>
+      <div class="seria">签约时间：<span id="acreate_time">{{ obj.createTime }}</span></div>
+      <div id="first" class="t_num1">托运方(简称甲方)：{{ obj.shipmentCompanyName }}</div>
+      <div id="business_license_img_no" class="t_num1">统一社会信用代码：{{ obj.shipmentOrganizationCodeNo }}</div>
+      <div id="address" class="t_num1">住所：{{ obj.shipmentArea }}</div>
+      <div id="faren" class="t_num1">法定代表人：{{ obj.shipmentName }}</div>
       <!-- <div class="companys-box">
 					<div class="company-info company1">
 						<p class="row row1" id="cdfirst">法定代表人： </p>
@@ -30,10 +30,10 @@
 					<div class="clear"></div>
 				</div> -->
       <br>
-      <div id="second" class="t_num1">承运方(简称乙方)：{{ obj.branchName || '福建大道成物流科技有限公司' }}</div>
-      <div class="t_num1">统一社会信用代码：{{ obj.branchOrganizationCodeNo || '913713000673687316' }}</div>
-      <div class="t_num1">住所：{{ obj.branchArea || '福建省福州市福清市万达 写字楼A2-901' }}</div>
-      <div class="t_num1">法定代表人：{{ obj.branchArtificialName || '施联文' }}</div>
+      <div id="second" class="t_num1">承运方(简称乙方)：{{ obj.branchName }}</div>
+      <div class="t_num1">统一社会信用代码：{{ obj.branchOrganizationCodeNo }}</div>
+      <div class="t_num1">住所：{{ obj.branchArea }}</div>
+      <div class="t_num1">法定代表人：{{ obj.branchArtificialName }}</div>
       <!-- 	<div class="companys-box">
 					<div class="company-info company1">
 						<p class="row row1" id="ddfirst">法定代表人： </p>
@@ -49,45 +49,45 @@
         <table width="93%" border="1" bordercolor="#404040" cellspacing="0" cellpadding="0" style="padding: 25px">
           <tbody><tr>
                    <td width="14%"><b>起运地</b></td>
-                   <td id="start_address" width="16%">{{ obj.startAddress || '福建省福州市仓山区' }}</td>
+                   <td id="start_address" width="16%">{{ obj.startAddress }}</td>
                    <td width="17%"><b>发货人</b></td>
-                   <td id="shipper_name" width="17%">{{ obj.consignor || 'lan测试' }}</td>
+                   <td id="shipper_name" width="17%">{{ obj.consignor }}</td>
                    <td width="15%"><b>手机</b></td>
-                   <td id="shipper_phone" width="17%">{{ obj.consignorPhone || '13559169013' }}</td>
+                   <td id="shipper_phone" width="17%">{{ obj.consignorPhone }}</td>
                  </tr>
             <tr>
               <td><b>目的地</b></td>
-              <td id="end_address">{{ obj.endAddress || '福建省福州市台江区' }}</td>
+              <td id="end_address">{{ obj.endAddress }}</td>
               <td><b>收货人</b></td>
-              <td id="consignee_name">{{ obj.consignee || '李四' }}</td>
+              <td id="consignee_name">{{ obj.consignee }}</td>
               <td><b>手机</b></td>
-              <td id="consignee_phone">{{ obj.consigneePhone || '13290895602' }}</td>
+              <td id="consignee_phone">{{ obj.consigneePhone }}</td>
             </tr>
             <tr>
               <td><b>实际承运方</b></td>
-              <td id="name">{{ obj.driverName || '小强师傅' }}</td>
+              <td id="name">{{ obj.driverName }}</td>
               <td><b>联系电话</b></td>
-              <td id="mobile">{{ obj.driverPhone || '15859109862' }}</td>
+              <td id="mobile">{{ obj.driverPhone }}</td>
               <td><b>货物名称</b></td>
-              <td id="coal_type_name">{{ obj.goodsTypeName || obj.goodsBigTypeName || '鲜活农产品' }}</td>
+              <td id="coal_type_name">{{ obj.goodsTypeName || obj.goodsBigTypeName }}</td>
             </tr>
             <tr>
               <td><b>计划数量</b></td>
-              <td id="weight">{{ obj.loadWeight || '50' }}
+              <td id="weight">{{ obj.loadWeight }}
                 吨
               </td>
               <td><b>货物描述</b></td>
-              <td id="goods_type">{{ obj.goodsName || '鲜活农产品' }}</td>
+              <td id="goods_type">{{ obj.goodsName }}</td>
               <td><b>货值（元）</b></td>
-              <td id="goods_total">{{ obj.goodsAmount || '0' }}</td>
+              <td id="goods_total">{{ obj.goodsAmount }}</td>
             </tr>
             <tr>
               <td><b>运费金额（元）</b></td>
-              <td id="amount">￥{{ obj.shipperCopeFee || '150' }}</td>
+              <td id="amount">￥{{ obj.shipperCopeFee }}</td>
               <td><b>合同签订时间</b></td>
-              <td id="create_time">{{ obj.createTime || '2021-04-12 17:16:39' }}</td>
+              <td id="create_time">{{ obj.createTime }}</td>
               <td><b>货物装车截止时间</b></td>
-              <td id="last_loading_time">{{ obj.lastLoadingTime || '2021-04-13 16:00:24' }}</td>
+              <td id="last_loading_time">{{ obj.lastLoadingTime }}</td>
             </tr>
             <tr>
               <td><b>是否开票</b></td>
@@ -203,14 +203,14 @@
       <div class="companys-box">
         <div class="company-info company1">
           <font id="jiafangspan" style="color:#FFF;font-size:10px">{{ obj.aaaaaaaaaaaaa || '' }}</font>
-          <p id="dfirst" class="row row1">甲方： {{ obj.shipmentCompanyName || '大道成测试货主公司' }}</p>
+          <p id="dfirst" class="row row1">甲方： {{ obj.shipmentCompanyName }}</p>
           <p class="row row1">法定代表人或授权代表(签名)：</p>
           <font id="jiafangspan" style="color:#FFF;font-size:10px">&nbsp;</font>
           <p class="row row2">甲方(盖章)：</p>
         </div>
         <div class="company-info company2" style="margin-left: 5%">
           <font id="yifangspan" style="color:#FFF;font-size:10px;bottom: 50px;">{{ obj.aaaaaaaaaaaaa || '' }}</font>
-          <p id="dsecond" class="row row1">乙方： {{ obj.branchName || '福建大道成物流科技有限公司' }}</p>
+          <p id="dsecond" class="row row1">乙方： {{ obj.branchName }}</p>
           <p class="row row1">法定代表人或授权代表(签名)：</p>
           <font id="yifangspan" style="color:#FFF;font-size:10px">&nbsp;</font>
           <p class="row row2">乙方(盖章)：</p>
