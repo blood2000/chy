@@ -219,17 +219,49 @@
         <el-form-item label="权限字符" prop="roleKey">
           <el-input v-model="form.roleKey" placeholder="请输入权限字符" />
         </el-form-item>
-        <el-form-item label="角色顺序" prop="roleSort">
-          <el-input-number v-model="form.roleSort" controls-position="right" :min="0" />
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="角色顺序" prop="roleSort">
+              <el-input-number v-model="form.roleSort"  style="width: 90%;" controls-position="right" :min="0" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="状态">
+              <el-radio-group v-model="form.status">
+                <el-radio
+                  v-for="dict in statusOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictValue"
+                >{{ dict.dictLabel }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-form-item label="权限范围" prop="dataScope">
+          <el-select v-model="form.dataScope" clearable filterable style="width: 100%">
+            <el-option
+              v-for="item in dataScopeOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
         </el-form-item>
-        <el-form-item label="状态">
-          <el-radio-group v-model="form.status">
-            <el-radio
-              v-for="dict in statusOptions"
-              :key="dict.dictValue"
-              :label="dict.dictValue"
-            >{{ dict.dictLabel }}</el-radio>
-          </el-radio-group>
+        <el-form-item v-show="form.dataScope == 2" label="数据权限">
+          <el-checkbox v-model="deptExpand" @change="handleCheckedTreeExpand($event, 'dept')">展开/折叠</el-checkbox>
+          <el-checkbox v-model="deptNodeAll" @change="handleCheckedTreeNodeAll($event, 'dept')">全选/全不选</el-checkbox>
+          <el-checkbox v-model="form.deptCheckStrictly" @change="handleCheckedTreeConnect($event, 'dept')">父子联动</el-checkbox>
+          <el-tree
+            ref="dept"
+            class="tree-border"
+            :data="deptOptions"
+            show-checkbox
+            default-expand-all
+            node-key="code"
+            :check-strictly="!form.deptCheckStrictly"
+            empty-text="暂无数据"
+            :props="defaultProps"
+          />
         </el-form-item>
         <el-form-item label="菜单权限" class="mb0">
           <el-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand($event, 'menu')">展开/折叠</el-checkbox>
@@ -380,6 +412,10 @@ export default {
         {
           value: '5',
           label: '仅本人数据权限'
+        },
+        {
+          value: '6',
+          label: '本部门网点及以下数据权限'
         }
       ],
       // 菜单列表
@@ -400,7 +436,7 @@ export default {
       },
       // 表单参数
       form: {
-        dataScope: '4'
+        dataScope: '6'
       },
       defaultProps: {
         children: 'children',
@@ -419,6 +455,9 @@ export default {
         ],
         roleSort: [
           { required: true, message: '角色顺序不能为空', trigger: 'blur' }
+        ],
+        dataScope: [
+          { required: true, message: '数据权限不能为空', trigger: 'blur' }
         ]
       },
       // 部门名称
@@ -463,6 +502,10 @@ export default {
         {
           value: '5',
           label: '仅本人数据权限'
+        },
+        {
+          value: '6',
+          label: '本部门网点及以下数据权限'
         }];
     }
     this.form.dataScope = '4';
