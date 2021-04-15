@@ -15,7 +15,7 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="姓名" prop="teamLeaderName">
-        <el-input v-model="form.teamLeaderName" placeholder="请输入姓名" class="width90" clearable />
+        <el-input v-model="form.teamLeaderName" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
       <el-form-item label="手机号/账号" prop="telphone">
         <el-input v-model="form.telphone" placeholder="请输入手机号/账号" class="width90" clearable />
@@ -35,7 +35,7 @@
           class="width28"
           type="date"
           value-format="yyyy-MM-dd"
-          placeholder="请选择"
+          placeholder="支持自动识别"
         />
         至
         <el-date-picker
@@ -44,8 +44,8 @@
           class="width28 mr3"
           type="date"
           value-format="yyyy-MM-dd"
-          placeholder="请选择"
-          :readonly="form.identificationEffective"
+          placeholder="支持自动识别"
+          :readonly="!!form.identificationEffective"
         />
         <el-checkbox v-model="form.identificationEffective" @change="handleCheckChange">长期有效</el-checkbox>
       </el-form-item>
@@ -71,15 +71,15 @@
         <el-row>
           <el-col :span="7">
             <p class="upload-image-label">身份证正面照</p>
-            <uploadImage v-model="form.identificationImage" :disabled="disable" />
+            <uploadImage v-model="form.identificationImage" :disabled="disable" image-type="id-card" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">身份证反面照</p>
-            <uploadImage v-model="form.identificationBackImage" :disabled="disable" />
+            <uploadImage v-model="form.identificationBackImage" :disabled="disable" image-type="id-card" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">营业执照</p>
-            <uploadImage v-model="form.businessLicenseImg" :disabled="disable" />
+            <uploadImage v-model="form.businessLicenseImg" :disabled="disable" image-type="business-license" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">道路运输经营许可证照</p>
@@ -264,6 +264,21 @@ export default {
     handleCheckChange(val) {
       if (val) {
         this.form.identificationEndTime = null;
+      }
+    },
+    // 图片识别后回填
+    fillForm(type, data) {
+      switch (type) {
+        case 'id-card':
+          if (data.name) this.form.teamLeaderName = data.name;
+          if (data.number) this.form.identificationNumber = data.number;
+          if (data.valid_from) this.form.identificationBeginTime = data.valid_from;
+          if (data.valid_to) this.form.identificationEndTime = data.valid_to;
+          break;
+        case 'business-license':
+          break;
+        default:
+          break;
       }
     }
   }

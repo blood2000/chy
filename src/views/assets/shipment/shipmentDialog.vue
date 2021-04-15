@@ -25,11 +25,11 @@
         <el-row>
           <el-col :span="7">
             <p class="upload-image-label">管理员身份证正面照</p>
-            <upload-image v-model="form.identificationImg" :disabled="disable" />
+            <upload-image v-model="form.identificationImg" :disabled="disable" image-type="id-card" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">管理员身份证背面照</p>
-            <upload-image v-model="form.identificationBackImg" :disabled="disable" />
+            <upload-image v-model="form.identificationBackImg" :disabled="disable" image-type="id-card" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">手持身份证照</p>
@@ -49,7 +49,7 @@
           </el-col>
           <el-col v-show="form.shipperType === 1" :span="7" class="mt">
             <p class="upload-image-label">营业执照</p>
-            <upload-image v-model="form.businessLicenseImg" :disabled="disable" />
+            <upload-image v-model="form.businessLicenseImg" :disabled="disable" image-type="business-license" @fillForm="fillForm" />
           </el-col>
         </el-row>
       </el-form-item>
@@ -67,7 +67,7 @@
           class="width28"
           type="date"
           value-format="yyyy-MM-dd"
-          placeholder="请选择"
+          placeholder="支持自动识别"
         />
         至
         <el-date-picker
@@ -76,8 +76,8 @@
           class="width28 mr3"
           type="date"
           value-format="yyyy-MM-dd"
-          placeholder="请选择"
-          :readonly="form.identificationEffective"
+          placeholder="支持自动识别"
+          :readonly="!!form.identificationEffective"
         />
         <el-checkbox v-model="form.identificationEffective" @change="handleCheckChange">长期有效</el-checkbox>
       </el-form-item>
@@ -661,6 +661,22 @@ export default {
     handleCheckChange(val) {
       if (val) {
         this.form.identificationEndTime = null;
+      }
+    },
+    // 图片识别后回填
+    fillForm(type, data) {
+      switch (type) {
+        case 'id-card':
+          if (data.name) this.form.adminName = data.name;
+          if (data.number) this.form.identificationNumber = data.number;
+          if (data.address) this.form.area = data.address;
+          if (data.valid_from) this.form.identificationBeginTime = data.valid_from;
+          if (data.valid_to) this.form.identificationEndTime = data.valid_to;
+          break;
+        case 'business-license':
+          break;
+        default:
+          break;
       }
     }
   }

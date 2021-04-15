@@ -10,3 +10,12 @@ export function getFile(code) {
     method: 'post'
   });
 }
+
+// 自动识别
+export function uploadOcr(data) {
+  return request({
+    url: '/assets/upload/ocr',
+    method: 'post',
+    data: data
+  });
+}
