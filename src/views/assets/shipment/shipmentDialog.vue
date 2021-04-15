@@ -166,14 +166,6 @@
           />
         </el-select>
       </el-form-item>
-      <template v-if="form.ticketType == '2'">
-        <el-form-item label="服务费税率(%)" prop="serviceRate" :rules="[{ required: true, message: '服务费税率不能为空', trigger: 'blur' }]">
-          <el-input-number v-model="form.serviceRate" controls-position="right" :precision="2" placeholder="请输入服务费税率" :step="1" :min="0" :max="100" class="width90" clearable />
-        </el-form-item>
-        <!-- <el-form-item label="服务费比例(%)" prop="serviceRatio"  :rules="[{ required: true, message: '服务费比例不能为空', trigger: 'blur' }]" >
-          <el-input-number v-model="form.serviceRatio" controls-position="right" :precision="2" placeholder="请输入服务费比例" :step="1" :min="0" :max="100" class="width90" clearable />
-        </el-form-item>-->
-      </template>
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item label="税点(%)" prop="texPoint">
@@ -186,7 +178,15 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-form-item label="是否冻结" prop="isFreezone">
+      <template v-if="form.ticketType == '2'">
+        <el-form-item label="服务费税率(%)" prop="serviceRate" :rules="[{ required: true, message: '服务费税率不能为空', trigger: 'blur' }]">
+          <el-input-number v-model="form.serviceRate" controls-position="right" :precision="2" placeholder="请输入服务费税率" :step="1" :min="0" :max="100" class="width90" clearable />
+        </el-form-item>
+        <!-- <el-form-item label="服务费比例(%)" prop="serviceRatio"  :rules="[{ required: true, message: '服务费比例不能为空', trigger: 'blur' }]" >
+          <el-input-number v-model="form.serviceRatio" controls-position="right" :precision="2" placeholder="请输入服务费比例" :step="1" :min="0" :max="100" class="width90" clearable />
+        </el-form-item>-->
+      </template>
+      <!-- <el-form-item label="是否冻结" prop="isFreezone">
         <el-select
           v-model="form.isFreezone"
           clearable
@@ -200,7 +200,7 @@
             :value="dict.dictValue"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="货源是否审核" prop="supplyIsAuth">
         <el-select
           v-model="form.supplyIsAuth"

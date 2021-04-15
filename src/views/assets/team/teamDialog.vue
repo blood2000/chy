@@ -143,6 +143,10 @@ export default {
         teamLeader: [
           { required: true, message: '管理者名称不能为空', trigger: 'blur' }
         ],
+        identificationNumber: [
+          { required: true, message: '身份证号不能为空', trigger: 'blur' },
+          { validator: this.formValidate.idCard, trigger: 'blur' }
+        ],
         identificationEndTime: [
           { validator: this.formValidate.isExpired, trigger: 'change' },
           { validator: (rules, value, callback) => {

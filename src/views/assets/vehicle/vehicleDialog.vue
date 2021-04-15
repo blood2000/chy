@@ -212,13 +212,13 @@ export default {
   	  axisTypeOptions: [],
   	  // 车辆归属类型字典
   	  vehicleAscriptionTypeOptions: [
-  	    { dictLabel: '自有', dictValue: '0' },
-  	    { dictLabel: '加盟', dictValue: '1' }
+  	    { dictLabel: '自有', dictValue: 0 },
+  	    { dictLabel: '加盟', dictValue: 1 }
   	  ],
   	  // 是否冻结字典
   	  isFreezeOptions: [
-  	    { dictLabel: '正常', dictValue: '0' },
-  	    { dictLabel: '冻结', dictValue: '1' }
+  	    { dictLabel: '正常', dictValue: 0 },
+  	    { dictLabel: '冻结', dictValue: 1 }
   	  ],
       // 表单参数
       form: {},
