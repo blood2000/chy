@@ -143,7 +143,7 @@ export default {
     // 数据初始化(created的时候)
     init() {
       if (!this.goods || (this.goods && !this.goods[0])) return;
-      // console.log(this.goods, '商品');
+      console.log(this.goods, '商品');
       // console.log(this.addrAdd);
       // console.log(this.addrXie);
       // console.log(this.pubilshCode);

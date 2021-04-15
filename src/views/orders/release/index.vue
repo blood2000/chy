@@ -205,7 +205,7 @@
         <el-divider />
 
         <template v-if="!myisdisabled">
-          <div v-if="!loading && active < 4" class="ly-t-center">
+          <div v-if="!loading && active === 3" class="ly-t-center">
             <el-button @click="nextFe(2)">上一步</el-button>
             <el-button type="primary" @click="onSubmit('elForm',3)">{{ isCreated?'立即发布':'保存' }}</el-button>
             <el-button @click="nextFe(4)">预览(查看预估价格)</el-button>
