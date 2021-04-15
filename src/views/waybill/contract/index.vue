@@ -103,6 +103,14 @@
           icon="el-icon-printer"
           @click="handleInfo(row)"
         >打印</el-button>
+        <el-button
+          v-if="row.isDzqzContract+'' === '0'"
+          v-hasPermi="['transportation:orderContract:generate']"
+          size="mini"
+          type="text"
+          icon="el-icon-magic-stick"
+          @click="handleElectron(row)"
+        >生成电子章</el-button>
       </template>
     </RefactorTable>
 
@@ -115,8 +123,11 @@
     />
 
     <!-- 生成电子合同 -->
-    <el-dialog :title="title" :visible.sync="visible" width="800px" append-to-body>
-      <div>123</div>
+    <el-dialog :title="title" :visible.sync="visible" width="1200px" append-to-body>
+      <div v-if="dialogData && visible">
+        <driver-contract v-if="driverOrShipment === 0" :obj="dialogData" />
+        <shipment-contract v-else :obj="dialogData" />
+      </div>
     </el-dialog>
 
   </div>
@@ -124,13 +135,22 @@
 
 <script>
 // import tableColumnsConfig from './config';
+import DriverContract from './DriverContract';
+import ShipmentContract from './ShipmentContract';
 
-import { listContract, getContract, listContractApi } from '@/api/waybill/contract';
+import { listContract, getContractByCode, listContractApi, getContract } from '@/api/waybill/contract';
 
 export default {
   'name': 'Contract',
+  components: { DriverContract, ShipmentContract },
   data() {
     return {
+      // 弹框 内容
+      visible: false,
+      title: '',
+      dialogData: null, // 弹框数据
+      driverOrShipment: 0, // 合同类型 0 司机 1 货主
+
       tableColumnsConfig: [],
       api: listContractApi,
       // 遮罩层
@@ -152,9 +172,7 @@ export default {
         driverInfo: undefined,
         driverOrShipment: undefined
       },
-      // 弹框 内容
-      visible: false,
-      title: '',
+
       // ne 0 司机 1 货主
       driverOrShipmentOptions: [
         { 'dictLabel': '司机合同', 'dictValue': '0' },
@@ -245,13 +263,66 @@ export default {
     //   this.title = '编辑货主运单备注';
     // }
     /* 打印 */
-    handleInfo(row) {
-      this.visible = true;
+    async handleInfo(row) {
       this.title = '电子合同';
-      console.log(row.id);
+      this.driverOrShipment = row.driverOrShipment;
 
-      getContract(row.id).then(res => {
-        console.log(res);
+      const { data } = await getContractByCode(row.code);
+
+      // const res1 = {
+      //   'contractNo': 'DADAOCHENG2104061658484980', // 合同编号
+      //   'createTime': '2021-04-12 17:16:39',
+
+      //   'branchName': '福建大道成物流科技有限公司', // 公司名称
+      //   'branchOrganizationCodeNo': '913713000673687316', // 公司的-统一社会信用代码代码
+      //   'branchArea': '福建省福州市福清市万达 写字楼A2-901', // 公司的地址 网点-住所
+      //   'branchArtificialName': '施联文', // (司机合同则是)甲方 网点-法定代表人
+      //   'branchPhone': '400-8270-535', // 公司的-电话
+
+      //   // 如果是司机合同 则这些值有的时候是显示空的
+      //   'shipmentCompanyName': '包头市闽鹿飞商贸有限责任公司', // 货主公司名称(货主合同的时候是 甲方)
+      //   'shipmentName': '罗闽春', // 货主名称
+      //   'shipmentPhone': null, // 货主电话
+      //   'shipmentArea': '福建省福州市台江区台江万达',
+      //   'shipmentOrganizationCodeNo': null, // 货主统一社会信用代码代码
+
+      //   'startAddress': '123', // 出发地
+      //   'endAddress': '214124', // 目的地
+
+      //   'consignor': '发货人', // 发货人-名称
+      //   'consignorPhone': '18147824577', // 发货人电话
+      //   'consignee': '收货', // 收货人-名称
+      //   'consigneePhone': '18147824577', // 收货人电话
+
+      //   'driverName': '王敏', // 实际承运人（司机）-名称
+      //   'driverPhone': '15947175530', // 司机电话
+      //   'driverLicense': '150221198012026219', // 驾驶证号码
+      //   'driverIdentificationNumber': '150221198012026219', // 司机的-身份证号
+      //   'licenseNumber': '蒙KH8928', // 车牌号
+
+      //   'goodsTypeName': null, // 货物小类 -中文名称
+      //   'goodsBigTypeName': '0300', // 货物大类 -中文名称
+      //   'loadWeight': 10, // 装货重量
+      //   'goodsName': '', // 货物描述
+      //   'goodsAmount': 10, // 货物价值 价格
+      //   'driverOrShipment': 0 // 合同类型 0 司机 1 货主  (用这个判断甲方和乙方)
+      // };
+
+      this.dialogData = data;
+      this.visible = true;
+    },
+
+    /** 生成电子章合同 */
+    async handleElectron(row) {
+      this.$confirm('生成电子签章合同? 大概用时20秒才可生成电子签章合同', '警告', {
+        'confirmButtonText': '确定',
+        'cancelButtonText': '取消',
+        'type': 'warning'
+      }).then(function() {
+        return getContract(row.code);
+      }).then(() => {
+        this.getList();
+        this.msgSuccess('请求成功');
       });
     }
   }

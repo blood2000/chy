@@ -17,8 +17,8 @@
           clearable
         >
           <el-option
-            v-for="dict in formDataList.businessTypeOption"
-            :key="dict.dictValue"
+            v-for="(dict,index) in formDataList.businessTypeOption"
+            :key="index"
             :label="dict.dictLabel"
             :value="dict.dictValue"
           />
@@ -304,8 +304,6 @@ export default {
   watch: {
     cbData: {
       handler(value) {
-        console.log(!value || JSON.stringify(value) === '{}');
-
         if (!value || JSON.stringify(value) === '{}') return;
         const {
           businessType,
@@ -346,7 +344,7 @@ export default {
 
   created() {
     // 获取字典型
-    this.getDicts('businessType').then((response) => {
+    this.getDicts('businessTypes').then((response) => {
       this.formDataList.businessTypeOption = response.data;
     });
 

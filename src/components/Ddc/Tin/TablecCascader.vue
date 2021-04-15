@@ -4,12 +4,7 @@
       <el-button size="mini" circle icon="el-icon-sort" @click="handleUpdate" />
     </el-tooltip>
 
-    <el-dialog title="拖拽排序" :visible.sync="open" append-to-body destroy-on-close width="80%">
-
-      <div class="mb10">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
+    <el-dialog title="拖拽排序" :visible.sync="open" append-to-body destroy-on-close width="80%" class="table-cascader-dialog">
       <ul class="t-thead">
         <draggable
           v-model="banner_list"
@@ -106,5 +101,11 @@ export default {
 <style scoped>
 .t-thead li {
   border-bottom: 1px solid #ccc;
+}
+</style>
+
+<style>
+.table-cascader-dialog .el-dialog__body{
+  padding-top: 10px;
 }
 </style>

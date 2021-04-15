@@ -218,3 +218,20 @@ export function tableHeaderConfig(list, url, editColumn, myColumen) {
     });
   }
 }
+
+/**
+ * 比较日期大小
+ * 用于比较时间段，结束时间不能大于开始时间
+ * @param {*} beginTime 开始时间
+ * @param {*} endTime 结束时间
+ */
+export function compareTime(beginTime, endTime) {
+  const _begin = Date.parse(new Date(beginTime));
+  const _end = Date.parse(new Date(endTime));
+  // 8.64e7 为一天的毫秒数
+  if (_end + 8.64e7 > _begin) {
+    return true;
+  } else {
+    return false;
+  }
+}

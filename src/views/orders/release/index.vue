@@ -1,6 +1,16 @@
 <template>
   <!-- 进行改造 -->
   <div v-loading="loading" class="app-container">
+
+    <div v-if="!authStatus" class="mb20">
+      <el-alert
+        title="审核通过才能发布货源, 请联系客服确认当前审核进度~!"
+        type="info"
+        effect="dark"
+        show-icon
+      />
+    </div>
+
     <el-steps v-if="true" :active="active" finish-status="success">
       <el-step title="基本信息" />
       <el-step title="装卸货地址" />
@@ -13,6 +23,7 @@
     <!-- 转货信息 -->
 
     <el-form
+      v-if="authStatus"
       ref="elForm"
       :model="formData"
       :rules="rules"
@@ -205,7 +216,7 @@
         <el-divider />
 
         <template v-if="!myisdisabled">
-          <div v-if="!loading && active < 4" class="ly-t-center">
+          <div v-if="!loading && active === 3" class="ly-t-center">
             <el-button @click="nextFe(2)">上一步</el-button>
             <el-button type="primary" @click="onSubmit('elForm',3)">{{ isCreated?'立即发布':'保存' }}</el-button>
             <el-button @click="nextFe(4)">预览(查看预估价格)</el-button>
@@ -219,10 +230,22 @@
     <div v-if="active >= 4 && !isT" class="ly-t-center">
       <el-button @click="nextFe(3)">上一步</el-button>
       <el-button type="primary" @click="onPubilsh">{{ isCreated?'立即发布':'保存' }}</el-button>
+
+      <div class="release_warning">
+        <el-alert
+          title="司机在接单的时候会相应的扣除余额中的运输费用，请及时充值，以免招成司机接单不成功的情况。"
+          type="info"
+          effect="dark"
+          :closable="false"
+          show-icon
+        />
+      </div>
     </div>
     <div v-if="isT" class="ly-t-center">
       <el-button @click="backPge">返 回</el-button>
     </div>
+
+
 
 
     <!-- 打开弹框 -->
@@ -259,10 +282,12 @@ export default {
   },
   data() {
     return {
+      authStatus: true, // 默认ok展示
       isClone: false,
       queryParams: {
         pageNum: 1,
         keywords: '',
+        authStatus: 3, // 审核状态（0.未审核.1审核中2审核未通过3审核通过）
         pageSize: 10
       },
       dataOver: false, // 是否请求完了
@@ -362,10 +387,17 @@ export default {
   async created() {
     // 判断用户
     const { isShipment = false, shipment = {}} = getUserInfo() || {};
-    // console.log(isShipment, user, shipment);
 
-    this.isShipment = isShipment;
-    this.isShipment && (this.formData.tin1 = shipment.info.adminCode);
+    if (isShipment) {
+      if (shipment.info.authStatus !== 3) {
+        this.authStatus = false;
+        this.msgWarning('审核通过才能发布货源~!');
+
+        return;
+      }
+      this.isShipment = isShipment;
+      this.isShipment && (this.formData.tin1 = shipment.info.adminCode);
+    }
 
     // 判断地址栏有没有id- true=>有说明编辑/详情 false=>创建-什么都不做
     if (this.idCode) {
@@ -675,6 +707,9 @@ export default {
       }
       this.goodsBigType = this.basicInfor.orderGoodsList[0].goodsBigType;
       this.goodsBigTypeName = this.basicInfor.orderGoodsList[0].goodsBigTypeName;
+
+      console.log(this.basicInfor);
+
       const {
         classList,
         isPublic,
@@ -779,6 +814,7 @@ export default {
           identification: e.goodsType
         };
       });
+
       // 2. 地址及地址下对应的规则(注意: arr不包括一卸或者一装)
 
 
@@ -1205,5 +1241,10 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.release_warning{
+  width: 500px;
+  margin: 20px auto 0;
+  text-align: left;
 }
 </style>

@@ -260,6 +260,7 @@ export default {
 .pcc_form,
 .pcc_form /deep/ .el-form-item {
   display: flex;
+  margin-bottom: 10px;
 }
 .pcc_form /deep/ .el-form-item__label {
   flex-shrink: 0;

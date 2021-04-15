@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div style="margin: 0 15px">
     <el-row :gutter="20">
       <el-col :span="6" :xs="24">
         <el-card class="box-card">

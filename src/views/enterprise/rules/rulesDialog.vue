@@ -37,13 +37,19 @@
         </el-col>
       </el-row>
       <!-- 计算路耗 -->
+      <!-- 备注：开启路耗之后，路耗的所有项都必填 -->
       <h5 class="g-title-small g-strong g-color-blue mt10">
         | 关于计算路耗
         <el-switch v-model="form.isLoss" class="isLoss-switch" />
       </h5>
       <el-divider />
-      <el-row v-show="form.isLoss">
-        <el-form-item v-for="item in lossItem" :key="item.code" :label="item.cnName" :prop="item.code">
+      <el-row v-if="form.isLoss">
+        <el-form-item
+          v-for="item in lossItem"
+          :key="item.code"
+          :prop="item.code"
+        >
+          <label slot="label"><span style="color: #ff4949">* </span>{{ item.cnName }}</label>
           <el-input v-if="item.showType === 1" v-model="lossItemObj[item.code]" :placeholder="`请输入${item.cnName}`" class="width-small" clearable />
           <template v-if="item.showType === 2">
             <el-input v-model="lossItemObj[item.code].start" placeholder="最小值" class="width-small" clearable />
@@ -68,6 +74,7 @@
         </el-form-item>
       </el-row>
       <!-- 减项 -->
+      <!-- 备注：没有填值的减项不会被提交 -->
       <h5 class="g-title-small g-strong g-color-blue mt10">
         | 扣费项目
         <el-button class="fr" icon="el-icon-plus" type="primary" plain circle size="mini" @click="chooseItem('reduce')" />
@@ -101,6 +108,7 @@
         </el-form-item>
       </el-row>
       <!-- 增项 -->
+      <!-- 备注：没有填值的增项不会被提交 -->
       <h5 class="g-title-small g-strong g-color-blue mt10">
         | 补贴项目
         <el-button class="fr" icon="el-icon-plus" type="primary" plain circle size="mini" @click="chooseItem('add')" />
@@ -194,7 +202,7 @@ export default {
           { required: true, message: '规则名称不能为空', trigger: 'blur' }
         ],
         ruleDictValue: [
-          { required: true, message: '计算公式不能为空', trigger: 'blur' }
+          { required: true, message: '计算公式不能为空', trigger: 'change' }
         ]
       },
       // 增减费用项目选择弹出层显示
@@ -283,6 +291,10 @@ export default {
           detailList: []
         };
         if (this.form.isLoss) {
+          // 开启路耗，所有项都要必填
+          if (!this.isLossFill()) {
+            return;
+          }
           this.setParams(this.lossItem, this.lossItemObj, params);
         }
         this.setParams(this.form.addItem, this.form.addItemObj, params, 1);
@@ -350,6 +362,26 @@ export default {
           }
         }
       });
+    },
+    /**
+     * 验证路耗必填
+     */
+    isLossFill() {
+      const _this = this;
+      const flag = _this.lossItem.some(function(el) {
+        if (el.showType === 2) {
+          if (_this.lossItemObj[el.code].start === '' || _this.lossItemObj[el.code].end === '') {
+            _this.msgWarning(`“${el.cnName}”项不能为空`);
+            return true;
+          }
+        } else {
+          if (_this.lossItemObj[el.code] === '' || _this.lossItemObj[el.code] === undefined || _this.lossItemObj[el.code] === null) {
+            _this.msgWarning(`“${el.cnName}”项不能为空`);
+            return true;
+          }
+        }
+      });
+      return !flag;
     },
     /**
      * 取消按钮

@@ -67,9 +67,11 @@ export default {
   },
   methods: {
     handleUploadSuccess(res) {
-      this.$emit('input', res.data.code);
-      this.loading.close();
-      this.handleGetFile(res.data.code);
+      if (res.code === 200) {
+        this.$emit('input', res.data.code);
+        this.loading.close();
+        this.handleGetFile(res.data.code);
+      }
     },
     handleGetFile(code) {
       getFile(code).then(response => {
@@ -80,7 +82,12 @@ export default {
         }
       });
     },
-    handleBeforeUpload() {
+    handleBeforeUpload(file) {
+      const isLt1M = file.size / 1024 / 1024 < 1;
+      if (!isLt1M) {
+        this.msgWarning('上传文件大小不能超过1MB');
+        return;
+      }
       this.loading = this.$loading({
         lock: true,
         text: '上传中',

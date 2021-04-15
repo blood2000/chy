@@ -103,7 +103,7 @@ export default [
     isShow: true,
     width: 120,
     tooltip: true,
-    label: '货源码地址'
+    label: '货集码地址'
   },
 
   {
