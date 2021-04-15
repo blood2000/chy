@@ -192,7 +192,7 @@
     <!-- 新增/修改/详情 对话框 -->
     <team-dialog ref="TeamDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
     <!-- 管理 对话框 -->
-    <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :team-code="teamCode" />
+    <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :team-code="teamCode" :team-name="teamName" />
     <!-- 邀请司机 对话框 -->
     <add-driver-dialog :open.sync="addDriverDialogOpen" :team-code="teamCode" />
     <!-- 处理申请 对话框 -->
@@ -272,7 +272,8 @@ export default {
       // 表单是否禁用
       formDisable: false,
       // 调度者code
-      teamCode: null
+      teamCode: null,
+      teamName: null
     };
   },
   created() {
@@ -369,6 +370,7 @@ export default {
     /** 管理按钮操作 */
     handleManage(row) {
       this.teamCode = row.code;
+      this.teamName = row.name;
       this.manageDialogOpen = true;
     },
     // 添加司机

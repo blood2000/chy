@@ -1,35 +1,27 @@
 <template>
   <!-- 评价对话框 -->
   <el-dialog :title="title" :visible="visible" width="1400px" append-to-body @close="cancel">
-    <RefactorTable :loading="loading" :data="commentlist" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
-      <!-- <template #lastLoadingTime="{row}">
-        <span>{{ parseTime(row.lastLoadingTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-      </template>
-      <template #orderTime="{row}">
-        <span>{{ parseTime(row.orderTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-      </template>
-      <template #receiveTime="{row}">
-        <span>{{ parseTime(row.receiveTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-      </template>
-      <template #wayBillUpdateTime="{row}">
-        <span>{{ parseTime(row.wayBillUpdateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-      </template> -->
-
-      <template #comment="{row}">
-        <el-input v-model="row.comment" placeholder="请输入评价内容" clearable />
-      </template>
-      <template #score="{row}">
-        <el-rate v-model="row.score" show-score allow-half text-color="#ff9900" />
-      </template>
-    </RefactorTable>
-
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
+    <el-table v-loading="loading" :data="commentlist" border stripe>
+      <el-table-column type="index" label="序号" width="50" />
+      <el-table-column width="150" label="运输单号" align="center" prop="waybillNo" />
+      <el-table-column width="120" label="车牌号" align="center" prop="licenseNumber" />
+      <el-table-column width="100" label="司机" align="center" prop="driverName" />
+      <el-table-column width="120" label="司机电话" align="center" prop="driverPhone" />
+      <el-table-column width="180" label="装货地" align="center" prop="loadAddress" show-overflow-tooltip />
+      <el-table-column width="180" label="卸货地" align="center" prop="unloadAddress" show-overflow-tooltip />
+      <el-table-column width="100" label="装货重量" align="center" prop="loadWeight" />
+      <el-table-column width="100" label="卸货重量" align="center" prop="unloadWeight" />
+      <el-table-column width="280" label="评价内容" align="center" fixed="right" prop="content">
+        <template #default="scope">
+          <el-input v-model="scope.row.content" placeholder="请输入评价内容" clearable />
+        </template>
+      </el-table-column>
+      <el-table-column width="180" label="评分" align="center" fixed="right" prop="score">
+        <template #default="scope">
+          <el-rate v-model="scope.row.score" show-score allow-half text-color="#ff9900" />
+        </template>
+      </el-table-column>
+    </el-table>
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" @click="submitForm">立即评价</el-button>
       <el-button @click="cancel">返回</el-button>
@@ -38,11 +30,11 @@
 </template>
 
 <script>
-import { childListApi, childList } from '@/api/settlement/adjust';
+import { batchAdd } from '@/api/settlement/adjust';
 // import UploadImage from '@/components/UploadImage/index';
 
 export default {
-  name: 'ChildDialog',
+  name: 'CommentDialog',
   components: {
     // UploadImage
   },
@@ -56,18 +48,14 @@ export default {
   },
   data() {
     return {
-      tableColumnsConfig: [],
       // 遮罩层
       loading: false,
       // 总条数
       total: 0,
       // 评价列表
       commentlist: [],
-      // 查询参数
-      queryParams: {
-        pageNum: 1,
-        pageSize: 10,
-        wayBillCode: null
+      batchBo: {
+        batchList: []
       }
     };
   },
@@ -82,33 +70,18 @@ export default {
     }
   },
   created() {
-    this.tableHeaderConfig(this.tableColumnsConfig, childListApi, {
-      prop: 'comment',
-      isShow: true,
-      label: '评价内容',
-      width: 240,
-      fixed: 'right'
-    }, {
-      prop: 'score',
-      isShow: true,
-      label: '评分星级',
-      width: 150,
-      fixed: 'right'
-    });
   },
   methods: {
     /** 提交按钮 */
     submitForm() {
-      console.log('点击');
-    },
-    /** 查询评价列表 */
-    getList() {
-      this.loading = true;
-      childList(this.queryParams).then(response => {
-        console.log(response);
-        this.commentlist = response.rows;
-        this.total = response.total;
-        this.loading = false;
+      this.batchBo.batchList = this.commentlist.map(function(res) {
+        return { content: res.content, score: res.score, waybillCode: res.wayBillCode };
+      });
+      console.log(this.batchBo);
+      batchAdd(this.batchBo).then(response => {
+        this.$message({ type: 'success', message: '批量评价成功！' });
+        this.close();
+        this.$emit('refresh');
       });
     },
     /** 取消按钮 */
@@ -131,16 +104,7 @@ export default {
     // 获取列表
     setForm(data) {
       console.log(data);
-      this.queryParams.wayBillCode = data.wayBillCode;
-      this.getList();
-    },
-    // 查看运单详情
-    handleWaybill(row) {
-      this.$refs.DetailDialog.reset();
-      this.currentId = row.wayBillCode;
-      this.opendetail = true;
-      this.detailtitle = '运输单信息';
-      this.formDisable = true;
+      this.commentlist = data;
     }
   }
 };

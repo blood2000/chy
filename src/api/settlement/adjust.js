@@ -75,3 +75,13 @@ export function batchApply(data) {
   });
 }
 
+// 批量评价
+export function batchAdd(data) {
+  return request({
+    url: '/transportation/waybillComment/batchAdd',
+    method: 'post',
+    data: data
+  });
+}
+
+

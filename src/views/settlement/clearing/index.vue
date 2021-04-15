@@ -49,10 +49,10 @@
       </el-form-item>
       <el-form-item
         label="调度名称"
-        prop="driverName"
+        prop="teamName"
       >
         <el-input
-          v-model="queryParams.driverName"
+          v-model="queryParams.teamName"
           placeholder="请输入调度名称"
           clearable
           size="small"
@@ -62,10 +62,10 @@
       </el-form-item>
       <el-form-item
         label="调度电话"
-        prop="driverPhone"
+        prop="teamLeaderPhone"
       >
         <el-input
-          v-model="queryParams.driverPhone"
+          v-model="queryParams.teamLeaderPhone"
           placeholder="请输入调度电话"
           clearable
           size="small"
@@ -75,10 +75,10 @@
       </el-form-item>
       <el-form-item
         label="关联企业"
-        prop="driverPhone"
+        prop="companyName"
       >
         <el-input
-          v-model="queryParams.driverPhone"
+          v-model="queryParams.companyName"
           placeholder="请输入运单关联企业"
           clearable
           size="small"
@@ -88,10 +88,10 @@
       </el-form-item>
       <el-form-item
         label="货主电话"
-        prop="loadInfo"
+        prop="shipmentPhone"
       >
         <el-input
-          v-model="queryParams.loadInfo"
+          v-model="queryParams.shipmentPhone"
           placeholder="请输入货主电话"
           clearable
           size="small"
@@ -101,10 +101,10 @@
       </el-form-item>
       <el-form-item
         label="清分订单号"
-        prop="orderClient"
+        prop="teamTransferNo"
       >
         <el-input
-          v-model="queryParams.orderClient"
+          v-model="queryParams.teamTransferNo"
           placeholder="请输入清分订单号"
           clearable
           size="small"
@@ -114,10 +114,10 @@
       </el-form-item>
       <el-form-item
         label="清分批次号"
-        prop="orderClient"
+        prop="teamBizNo"
       >
         <el-input
-          v-model="queryParams.orderClient"
+          v-model="queryParams.teamBizNo"
           placeholder="请输入清分批次号"
           clearable
           size="small"
@@ -125,9 +125,9 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="清分状态" prop="isReturn">
+      <el-form-item label="清分状态" prop="clarifyStatus">
         <el-select
-          v-model="queryParams.isReturn"
+          v-model="queryParams.clarifyStatus"
           placeholder="请选择清分状态"
           filterable
           clearable
@@ -135,7 +135,7 @@
           style="width: 225px"
         >
           <el-option
-            v-for="dict in isReturnOptions"
+            v-for="dict in clarifyStatusOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
@@ -194,13 +194,13 @@
       />
     </el-row>
 
-    <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
-      <template #goodsBigType="{row}">
+    <RefactorTable :loading="loading" :data="clarifylist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <!-- <template #goodsBigType="{row}">
         <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
       </template>
       <template #isReturn="{row}">
         <span>{{ selectDictLabel(isReturnOptions, row.isReturn) }}</span>
-      </template>
+      </template> -->
       <!-- <template #isChild="{row}">
         <span>{{ selectDictLabel(isChildOptions, row.isChild) }}</span>
       </template> -->
@@ -242,81 +242,71 @@
 </template>
 
 <script>
-import { adjustList, adjustListApi } from '@/api/settlement/adjust';
+import { clarifyList, clarifyListApi, batch, batchStatus } from '@/api/settlement/clearing';
 // 运单详情弹窗
 import DetailDialog from '@/views/waybill/components/detailDialog';
 
 
 export default {
-  'name': 'AdjustList',
+  'name': 'ClarifyList',
   components: { DetailDialog },
   data() {
     return {
       tableColumnsConfig: [],
-      api: adjustListApi,
+      api: clarifyListApi,
       createTime: '',
       // 遮罩层
       'loading': false,
       // 选中数组
-      //   'ids': [],
+      'ids': [],
       // 显示搜索条件
       'showSearch': true,
       // 总条数
       'total': 0,
       // 表格数据
-      'adjustlist': [],
+      'clarifylist': [],
 
       // 查询参数
       'queryParams': {
         'pageNum': 1,
         'pageSize': 10,
-        'loadInfo': undefined,
-        'receivedInfo': undefined,
-        'goodsBigType': undefined,
-        'mainOrderNumber': undefined,
-        'orderEndTime': undefined,
-        'orderStartTime': undefined,
-        'licenseNumber': undefined,
+        'clarifyStatus': undefined,
+        'companyName': undefined,
         'driverName': undefined,
-        'waybillNo': undefined,
-        'orderClient': undefined
+        'driverPhone': undefined,
+        'shipmentPhone': undefined,
+        'teamBizNo': undefined,
+        'teamLeaderPhone': undefined,
+        'teamName': undefined,
+        'teamTransferNo': undefined,
+        'waybillNo': undefined
+      },
+      bodyParams: {
+        wayBillSettlementCodeList: []
       },
       receiveTime: [],
       // 弹框 内容
       visible: false,
       open: false,
-      rejectdialog: false,
-      childdialog: false,
       title: '',
       dialogWidth: '800px',
       // 当前选中的运单id
       currentId: null,
       // 表单是否禁用
       formDisable: false,
-      // 商品类别编码字典
-      commodityCategoryCodeOptions: [],
-      // 大类字典类型
-      commodityCategory: {
-        'dictPid': '0',
-        'dictType': 'goodsType'
-      },
-      // 纸质回单字典
-      isReturnOptions: [
-        { 'dictLabel': '未标记回单', 'dictValue': '0' },
-        { 'dictLabel': '已标记回单', 'dictValue': '1' }
-      ],
-      // 是否子单字典
-      isChildOptions: [
-        { 'dictLabel': '否', 'dictValue': '0' },
-        // { 'dictLabel': '子单', 'dictValue': '1' },
-        { 'dictLabel': '是', 'dictValue': '2' }
+      // 清分状态字典
+      clarifyStatusOptions: [
+        { 'dictLabel': '待清分', 'dictValue': '0' },
+        { 'dictLabel': '清分中', 'dictValue': '1' },
+        { 'dictLabel': '清分成功', 'dictValue': '2' },
+        { 'dictLabel': '清分失败', 'dictValue': '3' }
       ]
     };
   },
   computed: {
   },
   created() {
-    this.tableHeaderConfig(this.tableColumnsConfig, adjustListApi, {
+    this.tableHeaderConfig(this.tableColumnsConfig, clarifyListApi, {
       prop: 'edit',
       isShow: true,
       label: '操作',
@@ -324,9 +314,6 @@ export default {
       fixed: 'right'
     });
     this.getList();
-    this.listByDict(this.commodityCategory).then(response => {
-      this.commodityCategoryCodeOptions = response.data;
-    });
   },
   'methods': {
     datechoose(date) {
@@ -335,13 +322,14 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map((item) => item.id);
+      this.ids = selection.map((item) => item.wayBillSettlementCode);
+      this.bodyParams.wayBillSettlementCodeList = this.ids;
     },
     /** 查询【请填写功能名称】列表 */
     getList() {
       this.loading = true;
-      adjustList(this.queryParams).then(response => {
-        this.adjustlist = response.rows;
+      clarifyList(this.queryParams).then(response => {
+        this.clarifylist = response.rows;
         this.total = response.total;
         this.loading = false;
       });
@@ -358,12 +346,51 @@ export default {
     },
     // 导出
     handleExport() {
+      this.download(
+        '/transportation/waybillSettlementClarify/export',
+        {
+          ...this.queryParams
+        },
+        `clearing_${new Date().getTime()}.xlsx`
+      );
     },
     // 运单清分
     handleClearing() {
+      if (this.ids.length === 0) {
+        this.$message({ type: 'warning', message: '请先选择数据！' });
+      } else {
+        this.$confirm('是否确认批量清分？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          batch(this.bodyParams).then(response => {
+            this.$message({ type: 'success', message: '批量运单清分成功！' });
+            this.getList();
+          });
+        }).catch(() => {
+          this.$message({ type: 'info', message: '已取消' });
+        });
+      }
     },
     // 更新清分状态
     handleUpdate() {
+      if (this.ids.length === 0) {
+        this.$message({ type: 'warning', message: '请先选择数据！' });
+      } else {
+        this.$confirm('是否确认批量更新清分状态？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          batchStatus(this.bodyParams).then(response => {
+            this.$message({ type: 'success', message: '批量更新清分状态成功！' });
+            this.getList();
+          });
+        }).catch(() => {
+          this.$message({ type: 'info', message: '已取消' });
+        });
+      }
     },
 
     handleTableBtn(row, index) {
@@ -372,10 +399,42 @@ export default {
       this.visible = true;
       switch (index) {
         case 1:
-          this.title = '运单清分';
+          this.$confirm('是否确认运单清分?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.bodyParams.wayBillSettlementCodeList = [];
+            this.bodyParams.wayBillSettlementCodeList.push(row.wayBillSettlementCode);
+            batch(this.bodyParams).then(response => {
+              this.$message({ type: 'success', message: '运单清分成功！' });
+              this.getList();
+            });
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消'
+            });
+          });
           break;
         case 2:
-          this.title = '更新清分状态';
+          this.$confirm('是否确认更新清分状态?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.bodyParams.wayBillSettlementCodeList = [];
+            this.bodyParams.wayBillSettlementCodeList.push(row.wayBillSettlementCode);
+            batchStatus(this.bodyParams).then(response => {
+              this.$message({ type: 'success', message: '更新清分状态成功！' });
+              this.getList();
+            });
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消'
+            });
+          });
           break;
         case 3:
           this.$refs.DetailDialog.reset();

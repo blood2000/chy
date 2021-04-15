@@ -28,3 +28,12 @@ export function rejected(data) {
   });
 }
 
+// 批量打款
+export function batch(data) {
+  return request({
+    url: '/transportation/waybillSettlement/batch',
+    method: 'post',
+    data: data
+  });
+}
+
