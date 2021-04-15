@@ -427,7 +427,7 @@ export default {
           { required: true, message: '票制类别不能为空', trigger: 'blur' }
         ],
         texPoint: [
-          { required: true, message: '税点不能为空', trigger: 'blur' }
+          { required: true, message: '税点不能为空', trigger: ['change', 'blur'] }
         ],
         password: [
           { validator: this.formValidate.passWord, trigger: 'blur' }

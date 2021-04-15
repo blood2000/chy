@@ -141,6 +141,7 @@
           <el-table-column label="用户昵称" align="center" prop="nickName" :show-overflow-tooltip="true" />
           <el-table-column label="组织" align="center" prop="orgName" :show-overflow-tooltip="true" />
           <el-table-column label="手机号码" align="center" prop="phonenumber" width="120" />
+          <el-table-column label="角色" align="center" prop="roleNames" :show-overflow-tooltip="true" />
           <el-table-column label="状态" align="center">
             <template slot-scope="scope">
               <el-switch
