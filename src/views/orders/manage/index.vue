@@ -469,7 +469,7 @@ export default {
   components: { OpenDialog, PriceAdjustment },
   data() {
     return {
-      theight: 20, // 高度
+      theight: 100, // 高度
 
       activeName: '0', // 做tab切换
       listManagesApi, // 表头存的key
@@ -702,11 +702,6 @@ export default {
     this.getDict();
     this.getList();
     // this.listShipment();
-    this.$nextTick(() => {
-      const box1 = this.$el.offsetHeight;
-      const box2 = this.$refs.queryFormBox.offsetHeight;
-      this.theight = box1 - box2 - 200;
-    });
   },
   methods: {
     // tab切换
@@ -773,7 +768,6 @@ export default {
       getOrderInfoList(this.newQueryParams).then(response => {
         this.total = response.data.total - 0;
         this.handlerList(response.data.list);
-        this.loading = false;
       }).catch(() => {
         this.loading = false;
       });
@@ -875,6 +869,13 @@ export default {
           children: mgoods.length ? mgoods : null
         };
       });
+
+      this.list.length >= 10 && this.$nextTick(() => {
+        const box1 = this.$el.offsetHeight;
+        const box2 = this.$refs.queryFormBox.offsetHeight;
+        this.theight = box1 - box2 - 200;
+      });
+      this.loading = false;
     },
 
     // 生成随机id
