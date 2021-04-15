@@ -370,7 +370,7 @@ export default {
     /** 管理按钮操作 */
     handleManage(row) {
       this.teamCode = row.code;
-      this.teamName = row.code;
+      this.teamName = row.name;
       this.manageDialogOpen = true;
     },
     // 添加司机
