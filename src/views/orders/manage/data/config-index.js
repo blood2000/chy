@@ -1,13 +1,6 @@
 export default [
 
   {
-    prop: 'code',
-    isShow: false,
-    tooltip: true,
-    width: 120,
-    label: '编号'
-  },
-  {
     prop: 'mainOrderNumber',
     isShow: true,
     width: 200,
@@ -45,14 +38,14 @@ export default [
   {
     prop: 'addressName1',
     isShow: true,
-    width: 120,
+    width: 200,
     tooltip: true,
     label: '装货地'
   },
   {
     prop: 'addressName2',
     isShow: true,
-    width: 120,
+    width: 200,
     tooltip: true,
     label: '卸货地'
   },
@@ -194,8 +187,8 @@ export default [
     prop: 'edit',
     isShow: true,
     label: '操作',
-    width: 500
-    // fixed: 'right'
+    width: 250,
+    fixed: 'right'
   }
 ];
 

@@ -118,7 +118,7 @@
     <!-- 添加或修改菜单对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-         <!-- <el-col :span="24">
+        <!-- <el-col :span="24">
             <el-form-item label="产品版本">
               <treeselect
                 v-model="form.versionCode"
@@ -130,66 +130,67 @@
               />
             </el-form-item>
           </el-col>-->
-          <el-row>
-            <el-col :span="8">
-              <el-form-item label="产品">
-                <el-select
-                  style="width: 100%;"
-                  v-model="form.produceCode"
-                  placeholder="产品"
-                  clearable
-                  filterable
-                  @change="changeProduce"
-                >
-                  <el-option
-                    v-for="item in produceList"
-                    :key="item.produceCode"
-                    :label="item.cnName"
-                    :value="item.produceCode"
-                    :disabled="item.disabled"
-                  />
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="应用">
-                <el-select
-                  style="width: 100%;"
-                  v-model="form.appCode"
-                  placeholder="应用"
-                  clearable
-                  filterable
-                  @change="changeApplication"
-                >
-                  <el-option
-                    v-for="item in appList"
-                    :key="item.appCode"
-                    :label="item.cnName"
-                    :value="item.appCode"
-                    :disabled="item.disabled"
-                  />
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="版本">
-                <el-select
-                  style="width: 100%;"
-                  v-model="form.versionCode"
-                  placeholder="版本"
-                  clearable
-                  filterable>
-                  <el-option
-                    v-for="item in appVersionList"
-                    :key="item.appVersionCode"
-                    :label="item.version"
-                    :value="item.appVersionCode"
-                    :disabled="item.disabled"
-                  />
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="产品">
+              <el-select
+                v-model="form.produceCode"
+                style="width: 100%;"
+                placeholder="产品"
+                clearable
+                filterable
+                @change="changeProduce"
+              >
+                <el-option
+                  v-for="item in produceList"
+                  :key="item.produceCode"
+                  :label="item.cnName"
+                  :value="item.produceCode"
+                  :disabled="item.disabled"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="应用">
+              <el-select
+                v-model="form.appCode"
+                style="width: 100%;"
+                placeholder="应用"
+                clearable
+                filterable
+                @change="changeApplication"
+              >
+                <el-option
+                  v-for="item in appList"
+                  :key="item.appCode"
+                  :label="item.cnName"
+                  :value="item.appCode"
+                  :disabled="item.disabled"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="版本">
+              <el-select
+                v-model="form.versionCode"
+                style="width: 100%;"
+                placeholder="版本"
+                clearable
+                filterable
+              >
+                <el-option
+                  v-for="item in appVersionList"
+                  :key="item.appVersionCode"
+                  :label="item.version"
+                  :value="item.appVersionCode"
+                  :disabled="item.disabled"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-row>
           <el-col :span="24">
             <el-form-item label="上级菜单">

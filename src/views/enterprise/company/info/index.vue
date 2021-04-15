@@ -21,14 +21,18 @@
         <el-col :span="18">
           <el-form ref="queryForm" :model="form" :rules="rules" label-width="150px" :label-position="'left'">
             <el-form-item label="企业名称：" prop="companyName">
-              {{ form.companyName }}
-              <span v-if="form.orgAuthStatus =='3' && form.companyCode" class="g-color-success mr20">
-                <i class="el-icon-circle-check" />
-                已认证
+              <span class="mr20">{{ form.companyName }}</span>
+              <span v-if="form.authStatus === 0" class="g-color-gray mr20">
+                <i class="el-icon-warning-outline" />未认证
               </span>
-              <span v-else-if="form.companyCode" class="g-color-error mr20">
-                <i class="el-icon-circle-close" />
-                未认证
+              <span v-else-if="form.authStatus === 1" class="g-color-warning mr20">
+                <i class="el-icon-warning-outline" />认证中
+              </span>
+              <span v-else-if="form.authStatus === 2" class="g-color-error mr20">
+                <i class="el-icon-circle-close" />认证未通过
+              </span>
+              <span v-else-if="form.authStatus === 3" class="g-color-success mr20">
+                <i class="el-icon-circle-check" />已认证
               </span>
               <el-button type="text no-padding" @click="handleCertification">认证</el-button>
             </el-form-item>
@@ -55,14 +59,18 @@
       <el-row>
         <el-form ref="queryForm" :model="form" :rules="rules" label-width="100px" :label-position="'left'">
           <el-form-item label="姓名：" prop="adminName">
-            {{ form.adminName }}
-            <span v-if="form.orgAuthStatus =='3' && form.companyCode" class="g-color-success mr20">
-              <i class="el-icon-circle-check" />
-              已认证
+            <span class="mr20">{{ form.adminName }}</span>
+            <span v-if="form.authStatus === 0" class="g-color-gray mr20">
+              <i class="el-icon-warning-outline" />未认证
             </span>
-            <span v-else-if="form.companyCode" class="g-color-error mr20">
-              <i class="el-icon-circle-close" />
-              未认证
+            <span v-else-if="form.authStatus === 1" class="g-color-warning mr20">
+              <i class="el-icon-warning-outline" />认证中
+            </span>
+            <span v-else-if="form.authStatus === 2" class="g-color-error mr20">
+              <i class="el-icon-circle-close" />认证未通过
+            </span>
+            <span v-else-if="form.authStatus === 3" class="g-color-success mr20">
+              <i class="el-icon-circle-check" />已认证
             </span>
             <el-button v-hasPermi="['assets:shipment:enterprise:save']" type="text no-padding" @click="handleCertification">认证</el-button>
           </el-form-item>

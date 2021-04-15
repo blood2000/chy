@@ -12,7 +12,8 @@ const user = {
     isShipment: false, // 是否是货主
     isDriver: false, // 是否是司机
     isDispatcher: false, // 是否是调度者
-    shipment: [] // 货主信息
+    shipment: [], // 货主信息
+    defaultRoleCode: ''
   },
 
   mutations: {
@@ -37,6 +38,9 @@ const user = {
     SET_IS_ADMIN: (state, isAdmin) => {
       state.isAdmin = isAdmin;
     },
+    SET_DEFAULT_ROLE_CODE: (state, defaultRoleCode) => {
+      state.defaultRoleCode = defaultRoleCode;
+    },
     SET_IS_SHIPMENT: (state, isShipment) => {
       state.isShipment = isShipment;
     },
@@ -59,7 +63,7 @@ const user = {
       const code = userInfo.code;
       const uuid = userInfo.uuid;
       return new Promise((resolve, reject) => {
-        login(username, password, code, uuid).then(res => {
+        login(username, btoa(password), code, uuid).then(res => {
           const data = res.data;
           setToken(data.access_token);
           commit('SET_TOKEN', data.access_token);
@@ -101,6 +105,7 @@ const user = {
           commit('SET_IS_DRIVER', res.isDriver);
           commit('SET_IS_DISPATCHER', res.isDispatcher);
           commit('SET_SHIPMENT', res.shipment);
+          commit('SET_DEFAULT_ROLE_CODE', res.defaultRoleCode);
           resolve(res);
         }).catch(error => {
           reject(error);

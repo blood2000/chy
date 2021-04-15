@@ -9,7 +9,7 @@
     @close="cancel"
   >
     <el-tabs v-model="activeName">
-      <el-tab-pane label="公司资料" name="info">
+      <el-tab-pane label="企业资料" name="info">
         <company-info-page v-if="activeName === 'info'" :shipment-code="shipmentCode" />
       </el-tab-pane>
       <el-tab-pane label="开票信息管理" name="bill">
@@ -28,13 +28,13 @@
         <address-page v-if="activeName === 'address'" :shipment-code="shipmentCode" />
       </el-tab-pane>
       <template v-if="companyCode">
-        <el-tab-pane label="公司成员管理" name="member">
+        <el-tab-pane label="企业成员管理" name="member">
           <user-page v-if="activeName === 'member'" :company-code="companyCode" />
         </el-tab-pane>
-        <el-tab-pane label="公司组织管理" name="dep">
+        <el-tab-pane label="企业组织管理" name="dep">
           <dept-page v-if="activeName === 'dep'" :company-code="companyCode" />
         </el-tab-pane>
-        <el-tab-pane label="公司角色管理" name="role">
+        <el-tab-pane label="企业角色管理" name="role">
           <role-page v-if="activeName === 'role'" :company-code="companyCode" />
         </el-tab-pane>
       </template>

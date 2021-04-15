@@ -213,10 +213,6 @@
                 >删除</el-button>
               </el-col> -->
               <el-col :span="1.5">
-                <!-- <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-                  <el-tab-pane label="已发布" name="0" />
-                  <el-tab-pane label="已关闭" name="1" />
-                </el-tabs> -->
                 <el-radio-group v-model="activeName" size="small" @change="handleClick">
                   <el-radio-button label="0">已发布</el-radio-button>
                   <el-radio-button label="1">已关闭</el-radio-button>
@@ -254,6 +250,7 @@
               highlight-current-row
               row-key="id"
               stripe
+              :row-class-name="tableRowClassName"
               :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
               :table-columns-config="tableColumnsConfig"
             ><!-- @selection-change="handleSelectionChange" -->
@@ -469,7 +466,7 @@ export default {
   components: { OpenDialog, PriceAdjustment },
   data() {
     return {
-      theight: 20, // 高度
+      theight: 100, // 高度
 
       activeName: '0', // 做tab切换
       listManagesApi, // 表头存的key
@@ -702,12 +699,6 @@ export default {
     this.getDict();
     this.getList();
     // this.listShipment();
-    this.$nextTick(() => {
-      const box1 = this.$el.offsetHeight;
-      const box2 = this.$refs.queryFormBox.offsetHeight;
-      this.theight = box1 - box2 - 200;
-      console.log(this.theight);
-    });
   },
   methods: {
     // tab切换
@@ -774,8 +765,8 @@ export default {
       getOrderInfoList(this.newQueryParams).then(response => {
         this.total = response.data.total - 0;
         this.handlerList(response.data.list);
-        this.loading = false;
       }).catch(() => {
+        this.theight = 100;
         this.loading = false;
       });
     },
@@ -876,6 +867,15 @@ export default {
           children: mgoods.length ? mgoods : null
         };
       });
+
+      this.theight = 100;
+
+      this.list.length >= 10 && this.$nextTick(() => {
+        const box1 = this.$el.offsetHeight;
+        const box2 = this.$refs.queryFormBox.offsetHeight;
+        this.theight = box1 - box2 - 200;
+      });
+      this.loading = false;
     },
 
     // 生成随机id
@@ -1053,6 +1053,17 @@ export default {
       this.orderCode = '';
       this.pubilshCode = '';
       this.openPriceAdjustment = false;
+    },
+
+    // 有子类的高亮
+    tableRowClassName({ row, rowIndex }) {
+      if (row.children) {
+        return 'warning-row';
+      }
+      if (!row.isShowEdit) {
+        return 'red-row';
+      }
+      return '';
     }
   }
 };
@@ -1085,4 +1096,14 @@ export default {
     justify-content: space-between;
 }
 
+</style>
+<style>
+
+  .el-table .warning-row,.el-table--striped .el-table__body tr.el-table__row--striped.warning-row td {
+    background: oldlace;
+  }
+
+  .el-table .red-row,.el-table--striped .el-table__body tr.el-table__row--striped.red-row td {
+    background: #e1f3d8;
+  }
 </style>

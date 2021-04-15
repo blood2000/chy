@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { uploadImgApi, getFile } from '@/api/system/image.js';
+import { uploadImgApi, getFile, uploadOcr } from '@/api/system/image.js';
 import { getToken } from '@/utils/auth';
 import { authorPre, produceCode, appCode, appVersion, terminalType } from '@/headers';
 
@@ -37,6 +37,10 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    imageType: {
+      type: String,
+      default: null
     }
   },
   data() {
@@ -50,12 +54,14 @@ export default {
         'Terminal-Type': terminalType
       },
       uploadData: {},
-      attachUrl: ''
+      attachUrl: '',
+      flag: false
     };
   },
   watch: {
     value(val) {
       if (val) {
+        if (this.flag) return;
         this.handleGetFile(val);
       }
     }
@@ -66,25 +72,56 @@ export default {
     }
   },
   methods: {
-    handleUploadSuccess(res) {
-      this.$emit('input', res.data.code);
-      this.loading.close();
-      this.handleGetFile(res.data.code);
+    handleBeforeUpload(file) {
+      const isLt1M = file.size / 1024 / 1024 < 1;
+      if (!isLt1M) {
+        this.msgWarning('上传文件大小不能超过1MB');
+        return;
+      }
+      this.loading = this.$loading({
+        lock: true,
+        text: '上传中',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
     },
-    handleGetFile(code) {
+    handleUploadSuccess(res) {
+      if (res.code === 200) {
+        this.$emit('input', res.data.code);
+        this.loading.close();
+        this.handleGetFile(res.data.code, true);
+      }
+    },
+    // 根据code获取url
+    handleGetFile(code, flag) {
+      this.flag = true;
       getFile(code).then(response => {
+        this.flag = false;
         if (response.data && response.data.length > 0) {
           this.attachUrl = response.data[0].attachUrl;
+          if (!flag) return;
+          this.handleOrc(this.attachUrl);
         } else {
           this.attachUrl = '';
         }
       });
     },
-    handleBeforeUpload() {
-      this.loading = this.$loading({
-        lock: true,
-        text: '上传中',
-        background: 'rgba(0, 0, 0, 0.7)'
+    // 图片识别
+    handleOrc(url) {
+      const formData = new FormData();
+      if (this.imageType) {
+        formData.append('type', this.imageType);
+      } else {
+        return;
+      }
+      if (url) {
+        formData.append('url', url);
+      } else {
+        return;
+      }
+      uploadOcr(formData).then(response => {
+        if (response.data && !response.data.msg) {
+          this.$emit('fillForm', this.imageType, response.data);
+        }
       });
     },
     handleUploadError() {

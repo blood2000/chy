@@ -314,6 +314,10 @@ export default {
     teamCode: {
       type: String,
       default: null
+    },
+    teamName: {
+      type: String,
+      default: null
     }
   },
   data() {
@@ -455,6 +459,12 @@ export default {
       this.queryParams.pageNum = 1;
       if (this.teamCode) {
         this.queryParams.teamCode = this.teamCode;
+        if (this.teamName) {
+          this.teamOptions = [{
+            code: this.teamCode,
+            name: this.teamName
+          }];
+        }
       }
       this.getList();
     },

@@ -73,7 +73,7 @@
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="请选择"
-          :readonly="form.identificationEffective"
+          :readonly="!!form.identificationEffective"
         />
         <el-checkbox v-model="form.identificationEffective" @change="handleCheckChange">长期有效</el-checkbox>
       </el-form-item>
@@ -121,7 +121,7 @@
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="支持自动识别"
-          :readonly="form.validPeriodAlways"
+          :readonly="!!form.validPeriodAlways"
         />
         <el-checkbox v-model="form.validPeriodAlways" @change="handlePeriodCheckChange">长期有效</el-checkbox>
       </el-form-item>
@@ -232,23 +232,23 @@
         <el-row>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">驾驶证</p>
-            <upload-image v-model="form.driverLicenseImage" :disabled="disable" />
+            <upload-image v-model="form.driverLicenseImage" :disabled="disable" image-type="driver-license" @fillForm="fillForm" />
           </el-col>
           <el-col v-show="form.driverType===1" :span="7" class="mb">
             <p class="upload-image-label">行驶证</p>
-            <upload-image v-model="form.driverOtherLicenseImage" :disabled="disable" />
+            <upload-image v-model="form.driverOtherLicenseImage" :disabled="disable" image-type="vehicle-license" @fillForm="fillForm" />
           </el-col>
           <el-col v-show="form.driverType===1" :span="7" class="mb">
             <p class="upload-image-label">行驶证副页</p>
-            <upload-image v-model="form.driverOtherLicenseBackImage" :disabled="disable" />
+            <upload-image v-model="form.driverOtherLicenseBackImage" :disabled="disable" image-type="vehicle-license" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">身份证正面照</p>
-            <upload-image v-model="form.identificationImage" :disabled="disable" />
+            <upload-image v-model="form.identificationImage" :disabled="disable" image-type="id-card" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">身份证反面照</p>
-            <upload-image v-model="form.identificationBackImage" :disabled="disable" />
+            <upload-image v-model="form.identificationBackImage" :disabled="disable" image-type="id-card" @fillForm="fillForm" />
           </el-col>
           <el-col v-show="form.driverType===1" :span="7" class="mb">
             <p class="upload-image-label">道路运输许可证</p>
@@ -269,7 +269,7 @@
         </el-row>
       </el-form-item>
       <el-form-item label="车牌号" prop="licenseNumber">
-        <el-input v-model="form.licenseNumber" placeholder="请输入车牌号" class="width90" clearable />
+        <el-input v-model="form.licenseNumber" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
     </el-form>
 
@@ -383,7 +383,7 @@
         <el-input v-model="vehicleForm.chassisNumber" placeholder="请输入车架号" class="width90" clearable />
       </el-form-item>
       <el-form-item label="发动机号" prop="engineNumber">
-        <el-input v-model="vehicleForm.engineNumber" placeholder="请输入发动机号" class="width90" clearable />
+        <el-input v-model="vehicleForm.engineNumber" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
       <el-form-item label="底盘号" prop="vehicleChassisNumber">
         <el-input v-model="vehicleForm.vehicleChassisNumber" placeholder="请输入底盘号" class="width90" clearable />
@@ -861,6 +861,31 @@ export default {
     handlePeriodCheckChange(val) {
       if (val) {
         this.form.validPeriodTo = null;
+      }
+    },
+    // 图片识别后回填
+    fillForm(type, data) {
+      switch (type) {
+        case 'id-card':
+          if (data.name) this.form.name = data.name;
+          if (data.number) this.form.identificationNumber = data.number;
+          if (data.address) this.form.homeAddress = data.address;
+          if (data.valid_from) this.form.identificationBeginTime = data.valid_from;
+          if (data.valid_to) this.form.identificationEndTime = data.valid_to;
+          break;
+        case 'driver-license':
+          if (data.number) this.form.driverLicense = data.number;
+          if (data.issuing_authority) this.form.issuingOrganizations = data.issuing_authority;
+          if (data.valid_from) this.form.validPeriodFrom = data.valid_from;
+          if (data.valid_to) this.form.validPeriodTo = data.valid_to;
+          if (data.class) this.form.driverLicenseType = data.class;
+          break;
+        case 'vehicle-license':
+          if (data.number) this.form.licenseNumber = data.number;
+          if (data.engine_no) this.form.driverLicense = data.engine_no;
+          break;
+        default:
+          break;
       }
     }
   }

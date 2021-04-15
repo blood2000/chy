@@ -25,11 +25,11 @@
         <el-row>
           <el-col :span="7">
             <p class="upload-image-label">管理员身份证正面照</p>
-            <upload-image v-model="form.identificationImg" :disabled="disable" />
+            <upload-image v-model="form.identificationImg" :disabled="disable" image-type="id-card" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">管理员身份证背面照</p>
-            <upload-image v-model="form.identificationBackImg" :disabled="disable" />
+            <upload-image v-model="form.identificationBackImg" :disabled="disable" image-type="id-card" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">手持身份证照</p>
@@ -49,7 +49,7 @@
           </el-col>
           <el-col v-show="form.shipperType === 1" :span="7" class="mt">
             <p class="upload-image-label">营业执照</p>
-            <upload-image v-model="form.businessLicenseImg" :disabled="disable" />
+            <upload-image v-model="form.businessLicenseImg" :disabled="disable" image-type="business-license" @fillForm="fillForm" />
           </el-col>
         </el-row>
       </el-form-item>
@@ -67,7 +67,7 @@
           class="width28"
           type="date"
           value-format="yyyy-MM-dd"
-          placeholder="请选择"
+          placeholder="支持自动识别"
         />
         至
         <el-date-picker
@@ -76,8 +76,8 @@
           class="width28 mr3"
           type="date"
           value-format="yyyy-MM-dd"
-          placeholder="请选择"
-          :readonly="form.identificationEffective"
+          placeholder="支持自动识别"
+          :readonly="!!form.identificationEffective"
         />
         <el-checkbox v-model="form.identificationEffective" @change="handleCheckChange">长期有效</el-checkbox>
       </el-form-item>
@@ -166,14 +166,6 @@
           />
         </el-select>
       </el-form-item>
-      <template v-if="form.ticketType == '2'">
-        <el-form-item label="服务费税率(%)" prop="serviceRate" :rules="[{ required: true, message: '服务费税率不能为空', trigger: 'blur' }]">
-          <el-input-number v-model="form.serviceRate" controls-position="right" :precision="2" placeholder="请输入服务费税率" :step="1" :min="0" :max="100" class="width90" clearable />
-        </el-form-item>
-        <!-- <el-form-item label="服务费比例(%)" prop="serviceRatio"  :rules="[{ required: true, message: '服务费比例不能为空', trigger: 'blur' }]" >
-          <el-input-number v-model="form.serviceRatio" controls-position="right" :precision="2" placeholder="请输入服务费比例" :step="1" :min="0" :max="100" class="width90" clearable />
-        </el-form-item>-->
-      </template>
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item label="税点(%)" prop="texPoint">
@@ -186,7 +178,15 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-form-item label="是否冻结" prop="isFreezone">
+      <template v-if="form.ticketType == '2'">
+        <el-form-item label="服务费税率(%)" prop="serviceRate" :rules="[{ required: true, message: '服务费税率不能为空', trigger: 'blur' }]">
+          <el-input-number v-model="form.serviceRate" controls-position="right" :precision="2" placeholder="请输入服务费税率" :step="1" :min="0" :max="100" class="width90" clearable />
+        </el-form-item>
+        <!-- <el-form-item label="服务费比例(%)" prop="serviceRatio"  :rules="[{ required: true, message: '服务费比例不能为空', trigger: 'blur' }]" >
+          <el-input-number v-model="form.serviceRatio" controls-position="right" :precision="2" placeholder="请输入服务费比例" :step="1" :min="0" :max="100" class="width90" clearable />
+        </el-form-item>-->
+      </template>
+      <!-- <el-form-item label="是否冻结" prop="isFreezone">
         <el-select
           v-model="form.isFreezone"
           clearable
@@ -200,7 +200,7 @@
             :value="dict.dictValue"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="货源是否审核" prop="supplyIsAuth">
         <el-select
           v-model="form.supplyIsAuth"
@@ -427,7 +427,7 @@ export default {
           { required: true, message: '票制类别不能为空', trigger: 'blur' }
         ],
         texPoint: [
-          { required: true, message: '税点不能为空', trigger: 'blur' }
+          { required: true, message: '税点不能为空', trigger: ['change', 'blur'] }
         ],
         password: [
           { validator: this.formValidate.passWord, trigger: 'blur' }
@@ -661,6 +661,22 @@ export default {
     handleCheckChange(val) {
       if (val) {
         this.form.identificationEndTime = null;
+      }
+    },
+    // 图片识别后回填
+    fillForm(type, data) {
+      switch (type) {
+        case 'id-card':
+          if (data.name) this.form.adminName = data.name;
+          if (data.number) this.form.identificationNumber = data.number;
+          if (data.address) this.form.area = data.address;
+          if (data.valid_from) this.form.identificationBeginTime = data.valid_from;
+          if (data.valid_to) this.form.identificationEndTime = data.valid_to;
+          break;
+        case 'business-license':
+          break;
+        default:
+          break;
       }
     }
   }
