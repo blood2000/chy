@@ -202,9 +202,41 @@
     </el-row>
 
     <RefactorTable :loading="loading" :data="recordList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <!-- 付款类型 -->
+      <template #payType="{row}">
+        <span>{{ selectDictLabel(payTypeOptions, row.payType) }}</span>
+      </template>
+      <!-- 收款方类型 -->
+      <template #payeeType="{row}">
+        <span>{{ selectDictLabel(payeeTypeOptions, row.payeeType) }}</span>
+      </template>
+      <!-- 处理状态 -->
+      <template #status="{row}">
+        <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
+      </template>
+      <!-- 是否进行过回调处理 -->
+      <template #isHandle="{row}">
+        <span>{{ selectDictLabel(isHandleOptions, row.isHandle) }}</span>
+      </template>
+      <!-- 转账回调状态 -->
+      <template #responseStatus="{row}">
+        <span>{{ selectDictLabel(responseStatusOptions, row.responseStatus) }}</span>
+      </template>
+      <!-- 付款方式 -->
+      <template #payBy="{row}">
+        <span>{{ selectDictLabel(payByOptions, row.payBy) }}</span>
+      </template>
+      <!-- 打款时间 -->
+      <template #payTime="{row}">
+        <span>{{ parseTime(row.payTime) }}</span>
+      </template>
       <!-- 到账时间 -->
       <template #finishDate="{row}">
         <span>{{ parseTime(row.finishDate) }}</span>
+      </template>
+      <!-- 预付网商支付时间 -->
+      <template #payMybankTime="{row}">
+        <span>{{ parseTime(row.payMybankTime) }}</span>
       </template>
       <template #createTime="{row}">
         <span>{{ parseTime(row.createTime) }}</span>
