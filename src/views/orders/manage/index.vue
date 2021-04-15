@@ -766,6 +766,7 @@ export default {
         this.total = response.data.total - 0;
         this.handlerList(response.data.list);
       }).catch(() => {
+        this.theight = 100;
         this.loading = false;
       });
     },
@@ -866,6 +867,8 @@ export default {
           children: mgoods.length ? mgoods : null
         };
       });
+
+      this.theight = 100;
 
       this.list.length >= 10 && this.$nextTick(() => {
         const box1 = this.$el.offsetHeight;
@@ -1057,6 +1060,9 @@ export default {
       if (row.children) {
         return 'warning-row';
       }
+      if (!row.isShowEdit) {
+        return 'red-row';
+      }
       return '';
     }
   }
@@ -1092,10 +1098,12 @@ export default {
 
 </style>
 <style>
-  .el-table .warning-row {
+
+  .el-table .warning-row,.el-table--striped .el-table__body tr.el-table__row--striped.warning-row td {
     background: oldlace;
   }
-  .el-table--striped .el-table__body tr.el-table__row--striped.warning-row td {
-    background: oldlace;
+
+  .el-table .red-row,.el-table--striped .el-table__body tr.el-table__row--striped.red-row td {
+    background: #e1f3d8;
   }
 </style>
