@@ -10,9 +10,9 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="管理者名称" prop="teamLeader">
+      <el-form-item label="管理者名称" prop="teamLeaderName">
         <el-input
-          v-model="queryParams.teamLeader"
+          v-model="queryParams.teamLeaderName"
           placeholder="请输入管理者名称"
           clearable
           size="small"
@@ -261,7 +261,7 @@ export default {
         pageNum: 1,
         pageSize: 10,
         name: undefined,
-        teamLeader: undefined,
+        teamLeaderName: undefined,
         status: undefined,
         driverName: undefined,
         licenseNumber: undefined,
