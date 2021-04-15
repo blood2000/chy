@@ -1,59 +1,34 @@
 <template>
   <!-- 归属司机列表 -->
   <div class="app-container">
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5" class="fr">
-        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
-      </el-col>
-    </el-row>
-
-    <RefactorTable :loading="loading" :data="infoList" :table-columns-config="tableColumnsConfig">
-      <template #driverType="{row}">
-        <span>{{ selectDictLabel(driverTypeOptions, row.driverType) }}</span>
-      </template>
-      <template #authStatus="{row}">
-        <span v-show="row.authStatus === 0" class="g-color-gray">未审核</span>
-        <span v-show="row.authStatus === 1" class="g-color-blue">审核中</span>
-        <span v-show="row.authStatus === 2" class="g-color-error">审核未通过</span>
-        <span v-show="row.authStatus === 3" class="g-color-success">审核通过</span>
-      </template>
-      <template #validPeriodFrom="{row}">
-        <span>{{ parseTime(row.validPeriodFrom, '{y}-{m}-{d}') }}</span>
-      </template>
-      <template #validPeriodTo="{row}">
-        <span>{{ parseTime(row.validPeriodTo, '{y}-{m}-{d}') }}</span>
-      </template>
-      <template #driverLicenseType="{row}">
-        <span>{{ selectDictLabel(driverLicenseTypeOptions, row.driverLicenseType) }}</span>
-      </template>
-      <template #workLicenseDueDate="{row}">
-        <span>{{ parseTime(row.workLicenseDueDate, '{y}-{m}-{d}') }}</span>
-      </template>
-      <template #isReportPerson="{row}">
-        <span>{{ selectDictLabel(isOption, row.isReportPerson) }}</span>
-      </template>
-      <template #isReportEnterprise="{row}">
-        <span>{{ selectDictLabel(isOption, row.isReportEnterprise) }}</span>
-      </template>
-      <template #isFreeze="{row}">
-        <span>{{ selectDictLabel(isFreezoneOptions, row.isFreeze) }}</span>
-      </template>
-      <template #createTime="{row}">
-        <span>{{ parseTime(row.createTime, '{y}-{m}-{d}') }}</span>
-      </template>
-      <template #updateTime="{row}">
-        <span>{{ parseTime(row.updateTime, '{y}-{m}-{d}') }}</span>
-      </template>
-      <template #isReportPersonDate="{row}">
-        <span>{{ parseTime(row.isReportPersonDate, '{y}-{m}-{d}') }}</span>
-      </template>
-    </RefactorTable>
-
+    <el-table v-loading="loading" border stripe :data="infoList">
+      <el-table-column label="司机姓名" align="center" prop="name" />
+      <el-table-column label="司机类别" align="center" prop="driverType">
+        <template slot-scope="scope">
+          <span>{{ selectDictLabel(driverTypeOptions, scope.row.driverType) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="审核状态" align="center" prop="authStatus">
+        <template slot-scope="scope">
+          <span v-show="scope.row.authStatus === 0" class="g-color-gray">未审核</span>
+          <span v-show="scope.row.authStatus === 1" class="g-color-blue">审核中</span>
+          <span v-show="scope.row.authStatus === 2" class="g-color-error">审核未通过</span>
+          <span v-show="scope.row.authStatus === 3" class="g-color-success">审核通过</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="手机号" align="center" prop="telphone" />
+      <el-table-column label="身份证号" align="center" prop="identificationNumber" />
+      <el-table-column label="驾驶证类型" align="center" prop="driverLicenseType">
+        <template slot-scope="scope">
+          <span>{{ selectDictLabel(driverLicenseTypeOptions, scope.row.driverLicenseType) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="工作单位" align="center" prop="workCompany" />
+    </el-table>
   </div>
 </template>
 
 <script>
-import { listDriverApi } from '@/api/assets/driver';
 import { listVehicleBelongDriver } from '@/api/assets/vehicle';
 
 export default {
@@ -65,8 +40,6 @@ export default {
   },
   data() {
     return {
-      tableColumnsConfig: [],
-      api: listDriverApi,
       // 遮罩层
       loading: true,
       // 调度者表格数据
@@ -107,7 +80,6 @@ export default {
   },
   created() {
     this.getDictsOptions();
-    this.tableHeaderConfig(this.tableColumnsConfig, listDriverApi);
   },
   methods: {
     /** 查询字典 */
