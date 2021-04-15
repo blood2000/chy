@@ -14,8 +14,6 @@
       <el-row>
         <el-col :span="16" class="ly-flex">
 
-          <div style="marginRight:20px;">{{ redis.tin_name }}</div>
-
           <el-input-number
             v-model="formData.freightPrice"
             :controls="false"
@@ -23,7 +21,7 @@
             :step="0.01"
             :placeholder="'请输入运费单价'"
             controls-position="right"
-            :style="{ width: '100px' }"
+            :style="{ width: '200px' }"
             @change="handlerChange"
           />
           <span class="ml0 mr10"> 元 / {{ mygoodsUnitName }}</span>
@@ -55,7 +53,9 @@
           </el-form-item>
         </el-col>
       </el-row>
-
+    </el-form-item>
+    <el-form-item label="装--卸：" label-width="90px">
+      <div>{{ redis.tin_name }}</div>
     </el-form-item>
 
 

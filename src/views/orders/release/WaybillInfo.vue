@@ -39,6 +39,14 @@
       </template>
     </RefactorTable>
 
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="queryParams.pageNum"
+      :limit.sync="queryParams.pageSize"
+      @pagination="getList"
+    />
+
     <!-- 运单详情 对话框 -->
     <detail-dialog ref="DetailDialog" :current-id="currentId" :title="title" :open.sync="open" :disable="formDisable" />
 
@@ -66,6 +74,10 @@ export default {
       // 表
       loading: false,
       list: [],
+      queryParams: {
+        pageNum: 1,
+        pageSize: 10
+      },
 
       // {
       //     waybillNo: 123, // waybillCode	运输单CODE	string
@@ -182,14 +194,15 @@ export default {
     async getList() {
       this.loading = true;
       try {
-        const res = await getByOrderCode({ orderCode: this.orderCode });
+        const res = await getByOrderCode({ orderCode: this.orderCode, ...this.queryParams });
+        this.total = res.total - 0;
         this.list = res.rows;
         this.loading = false;
-        console.log(res);
       } catch (error) {
         this.loading = false;
       }
     },
+    // 分页
     handleInfo(row) {
       this.$refs.DetailDialog.reset();
       this.currentId = row.wayBillCode;
