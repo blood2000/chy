@@ -52,9 +52,9 @@
           <label slot="label"><span style="color: #ff4949">* </span>{{ item.cnName }}</label>
           <el-input v-if="item.showType === 1" v-model="lossItemObj[item.code]" :placeholder="`请输入${item.cnName}`" class="width-small" clearable />
           <template v-if="item.showType === 2">
-            <el-input v-model="lossItemObj[item.code].start" placeholder="最小值" class="width-small" clearable />
+            <el-input-number v-model="lossItemObj[item.code].start" :controls="false" placeholder="最小值" class="width-small" clearable />
             -
-            <el-input v-model="lossItemObj[item.code].end" placeholder="最大值" class="width-small" clearable />
+            <el-input-number v-model="lossItemObj[item.code].end" :controls="false" placeholder="最大值" class="width-small" clearable />
           </template>
           <el-select v-if="item.showType === 3" v-model="lossItemObj[item.code]" class="width-small" clearable filterable>
             <el-option
@@ -82,11 +82,11 @@
       <el-divider />
       <el-row>
         <el-form-item v-for="item in form.reduceItem" :key="item.code" :label="item.cnName" :prop="item.code">
-          <el-input v-if="item.showType === 1" v-model="form.reduceItemObj[item.code]" :placeholder="`请输入${item.cnName}`" class="width-small mr3" clearable />
+          <el-input-number v-if="item.showType === 1" v-model="form.reduceItemObj[item.code]" :min="0" :controls="false" :placeholder="`请输入${item.cnName}`" class="width-small mr3" clearable />
           <template v-if="item.showType === 2">
-            <el-input v-model="form.reduceItemObj[item.code].start" placeholder="最小值" class="width-small mr3" clearable />
+            <el-input-number v-model="form.reduceItemObj[item.code].start" :controls="false" placeholder="最小值" class="width-small mr3" clearable />
             -
-            <el-input v-model="form.reduceItemObj[item.code].end" placeholder="最大值" class="width-small mr3" clearable />
+            <el-input-number v-model="form.reduceItemObj[item.code].end" :controls="false" placeholder="最大值" class="width-small mr3" clearable />
           </template>
           <el-select v-if="item.showType === 3" v-model="form.reduceItemObj[item.code]" class="width-small mr3" clearable filterable>
             <el-option
@@ -116,11 +116,11 @@
       <el-divider />
       <el-row>
         <el-form-item v-for="item in form.addItem" :key="item.code" :label="item.cnName" :prop="item.code">
-          <el-input v-if="item.showType === 1" v-model="form.addItemObj[item.code]" :placeholder="`请输入${item.cnName}`" class="width-small mr3" clearable />
+          <el-input-number v-if="item.showType === 1" v-model="form.addItemObj[item.code]" :min="0" :controls="false" :placeholder="`请输入${item.cnName}`" class="width-small mr3" clearable />
           <template v-if="item.showType === 2">
-            <el-input v-model="form.addItemObj[item.code].start" placeholder="最小值" class="width-small mr3" clearable />
+            <el-input-number v-model="form.addItemObj[item.code].start" :controls="false" placeholder="最小值" class="width-small mr3" clearable />
             -
-            <el-input v-model="form.addItemObj[item.code].end" placeholder="最大值" class="width-small mr3" clearable />
+            <el-input-number v-model="form.addItemObj[item.code].end" :controls="false" placeholder="最大值" class="width-small mr3" clearable />
           </template>
           <el-select v-if="item.showType === 3" v-model="form.addItemObj[item.code]" class="width-small mr3" clearable filterable>
             <el-option
@@ -332,6 +332,8 @@ export default {
         if (el.showType === 2) {
           // 忽略值为空的项
           if (obj[el.code].start === '' && obj[el.code].end === '') return;
+          if (obj[el.code].start === null && obj[el.code].end === null) return;
+          if (obj[el.code].start === undefined && obj[el.code].end === undefined) return;
           // 判断是不是增项或减项,增项或减项要传type,路耗不用传type
           if (type) {
             params.detailList.push({
@@ -370,7 +372,13 @@ export default {
       const _this = this;
       const flag = _this.lossItem.some(function(el) {
         if (el.showType === 2) {
-          if (_this.lossItemObj[el.code].start === '' || _this.lossItemObj[el.code].end === '') {
+          if (_this.lossItemObj[el.code].start === '' ||
+              _this.lossItemObj[el.code].end === '' ||
+              _this.lossItemObj[el.code].start === null ||
+              _this.lossItemObj[el.code].end === null ||
+              _this.lossItemObj[el.code].start === undefined ||
+              _this.lossItemObj[el.code].end === undefined
+          ) {
             _this.msgWarning(`“${el.cnName}”项不能为空`);
             return true;
           }
@@ -516,6 +524,10 @@ export default {
   }
   .el-divider{
     margin: 10px 0 20px;
+  }
+  /* 计数器样式 */
+  .el-input-number ::v-deep.el-input__inner{
+    text-align: left;
   }
 }
 </style>>

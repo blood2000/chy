@@ -48,17 +48,6 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="年审时间" prop="annualVerificationDate">
-        <el-date-picker
-          v-model="queryParams.annualVerificationDate"
-          clearable
-          size="small"
-          style="width: 215px"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="选择年审时间"
-        />
-      </el-form-item>
       <el-form-item label="审核状态" prop="authStatus">
         <el-select
           v-model="queryParams.authStatus"
@@ -90,6 +79,27 @@
             :value="dict.dictValue"
           />
         </el-select>
+      </el-form-item>
+      <el-form-item label="年审时间">
+        <el-date-picker
+          v-model="queryParams.annualVerificationBeginDate"
+          clearable
+          size="small"
+          style="width: 130px"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择"
+        />
+        至
+        <el-date-picker
+          v-model="queryParams.annualVerificationEndDate"
+          clearable
+          size="small"
+          style="width: 130px"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择"
+        />
       </el-form-item>
       <el-form-item>
         <el-button
@@ -352,7 +362,8 @@ export default {
         vehicleOwnerCode: undefined,
         vehicleAscriptionType: undefined,
         vehicleEnergyType: undefined,
-        annualVerificationDate: undefined,
+        annualVerificationBeginDate: undefined,
+        annualVerificationEndDate: undefined,
         authStatus: undefined,
         isFreeze: undefined
       },
@@ -438,6 +449,8 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.queryParams.annualVerificationBeginDate = undefined;
+      this.queryParams.annualVerificationEndDate = undefined;
       this.resetForm('queryForm');
       this.handleQuery();
     },
