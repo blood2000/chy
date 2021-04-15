@@ -78,15 +78,15 @@
     </el-row>
 
     <RefactorTable :loading="loading" :data="infoList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
-      <template #commodityCategoryCode="{row}">
+      <!-- <template #commodityCategoryCode="{row}">
         <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.commodityCategoryCode) }}</span>
-      </template>
-      <template #createTime="{row}">
+      </template> -->
+      <!-- <template #createTime="{row}">
         <span>{{ parseTime(row.createTime, '{y}-{m}-{d}') }}</span>
       </template>
       <template #updateTime="{row}">
         <span>{{ parseTime(row.updateTime, '{y}-{m}-{d}') }}</span>
-      </template>
+      </template> -->
       <template #edit="{row}">
         <el-button
           v-hasPermi="['assets:shipment:project:edit']"
@@ -172,6 +172,8 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
+        orderByColumn: 't0.id',
+        isAsc: 'desc',
         projectName: undefined,
         commodityCategoryCode: undefined
       },
@@ -219,10 +221,6 @@ export default {
         this.total = response.total;
         this.loading = false;
       });
-    },
-    // 商品类别编码字典翻译
-    commodityCategoryCodeFormat(row, column) {
-      return this.selectDictLabel(this.commodityCategoryCodeOptions, row.commodityCategoryCode);
     },
     /** 搜索按钮操作 */
     handleQuery() {
