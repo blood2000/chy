@@ -45,7 +45,7 @@
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="支持自动识别"
-          :readonly="!!form.identificationEffective"
+          :disabled="!!form.identificationEffective"
         />
         <el-checkbox v-model="form.identificationEffective" @change="handleCheckChange">长期有效</el-checkbox>
       </el-form-item>
@@ -243,6 +243,7 @@ export default {
     setForm(data) {
       this.form = data;
       this.form.identificationEffective = praseNumToBoolean(this.form.identificationEffective);
+      this.handleCheckChange(this.form.identificationEffective);
     },
     // 已读
     authRead() {
@@ -277,7 +278,7 @@ export default {
           if (data.name) this.form.teamLeaderName = data.name;
           if (data.number) this.form.identificationNumber = data.number;
           if (data.valid_from) this.form.identificationBeginTime = data.valid_from;
-          if (data.valid_to) this.form.identificationEndTime = data.valid_to;
+          if (data.valid_to && !this.form.identificationEffective) this.form.identificationEndTime = data.valid_to;
           break;
         case 'business-license':
           break;
