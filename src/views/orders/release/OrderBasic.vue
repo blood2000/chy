@@ -381,7 +381,9 @@ export default {
     'formData.tin2_2': {
       handler(value) {
         if (!value) return;
-        this.$emit('goods', [this._zhaovalue(this.tin2_Option, value)]);
+        const obj = this._zhaovalue(this.tin2_Option, value);
+
+        this.$emit('goods', [obj || this._zhaovalue(this.tin2Option, value)]);
       },
       immediate: true
     }
@@ -453,7 +455,9 @@ export default {
 
       this.tin2_Option = data;
       if (!this.isMultiGoods) {
-        this.formData.tin2_2 = this.tin2_Option[0].dictValue;
+        this.formData.tin2_2 = this.tin2_Option[0] ? this.tin2_Option[0].dictValue : this.formData.tin2;
+
+        console.log(this.formData.tin2_2);
       }
 
       if (!tin3item) return;
@@ -538,19 +542,23 @@ export default {
             let orderGoodsList = [];
             if (this.isMultiGoods) {
               orderGoodsList = this.formData.tin2_1.map(e => {
+                const obj = this._zhaovalue(this.tin2_Option, e);
+                const obj2 = this._zhaovalue(this.tin2Option, this.formData.tin2);
                 return {
                   goodsBigType: this.formData.tin2,
-                  goodsBigTypeName: this._zhaovalue(this.tin2Option, this.formData.tin2).dictLabel,
+                  goodsBigTypeName: obj2.dictLabel,
                   goodsType: e,
-                  goodsTypeName: this._zhaovalue(this.tin2_Option, e).dictLabel
+                  goodsTypeName: obj ? obj.dictLabel : obj2.dictLabel
                 };
               });
             } else {
+              const obj = this._zhaovalue(this.tin2_Option, this.formData.tin2_2);
+              const obj2 = this._zhaovalue(this.tin2Option, this.formData.tin2);
               orderGoodsList = [{
                 goodsBigType: this.formData.tin2,
-                goodsBigTypeName: this._zhaovalue(this.tin2Option, this.formData.tin2).dictLabel,
+                goodsBigTypeName: obj2.dictLabel,
                 goodsType: this.formData.tin2_2,
-                goodsTypeName: this._zhaovalue(this.tin2_Option, this.formData.tin2_2).dictLabel
+                goodsTypeName: obj ? obj.dictLabel : obj2.dictLabel
               }];
             }
 
