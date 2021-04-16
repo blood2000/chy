@@ -6,7 +6,7 @@ export function listDriver(data) {
   return request({
     url: listDriverApi,
     method: 'post',
-    data: Object.assign({}, data, { isAsc: 'asc', orderByColumn: 'id' })
+    data: Object.assign({}, data, { isAsc: 'desc', orderByColumn: 'create_time' })
   });
 }
 

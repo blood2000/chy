@@ -532,7 +532,7 @@ export default {
       const params = Object.assign({}, this.queryParams);
       params.pageSize = undefined;
       params.pageNum = undefined;
-      this.download('assets/driver/export', params, `司机信息_${new Date().getTime()}.xlsx`, 'application/json');
+      this.download('assets/driver/export', params, `司机信息_${new Date().getTime()}.xlsx`);
     },
     /** 批量导入按钮操作 */
     handleImportDriver() {
