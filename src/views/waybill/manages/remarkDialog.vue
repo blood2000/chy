@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { getDetail, waybillRemark } from '@/api/waybill/manages';
+import { waybillRemark } from '@/api/waybill/manages';
 export default {
   props: {
     title: {
@@ -44,22 +44,14 @@ export default {
       }
     }
   },
-  watch: {
-    open(val) {
-      if (val) {
-        this.reset();
-        this.getDetail();
-      }
-    }
-  },
   methods: {
     // 获取详情
-    getDetail() {
-      getDetail(this.currentId).then(response => {
-        this.form.shipperRemark = response.data.shipperRemark;
-        this.form.wayBillInCode = this.currentId;
-      });
-    },
+    // getDetail() {
+    //   getDetail(this.currentId).then(response => {
+    //     this.form.shipperRemark = response.data.shipperRemark;
+    //     this.form.wayBillInCode = this.currentId;
+    //   });
+    // },
     // 提交按钮
     submitForm: function() {
       this.$refs['form'].validate(valid => {
@@ -88,6 +80,11 @@ export default {
         wayBillInCode: null
       };
       this.resetForm('form');
+    },
+    // 表单赋值
+    setForm(data) {
+      this.form.wayBillInCode = data.wayBillCode;
+      this.form.shipperRemark = data.shipperRemark;
     }
   }
 };

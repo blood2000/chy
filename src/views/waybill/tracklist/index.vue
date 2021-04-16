@@ -229,7 +229,7 @@
           type="text"
           icon="el-icon-circle-close"
           @click="handleTableBtn(row, 4)"
-        >取消订单</el-button>
+        >作废运单</el-button>
         <el-button
           v-if="activeName != '1'"
           v-hasPermi="['transportation:waybillOper:loadCredentials']"
@@ -311,7 +311,7 @@
 
 <script>
 // import tableColumnsConfig from './data/tracklist-index';
-import { trackList, trackListApi } from '@/api/waybill/tracklist';
+import { trackList, trackListApi, waybillInvalid } from '@/api/waybill/tracklist';
 import { getUserInfo } from '@/utils/auth';
 // 车辆装货弹窗
 import DialogA from './component/DialogA';
@@ -482,18 +482,12 @@ export default {
           });
           break;
         case 2:
-          if (row.cancelStatus === 1) {
-            this.msgError('司机撤单申请中，无法操作装货！');
-          } else if (row.cancelStatus === 2) {
-            this.msgError('货主已同意撤单，无法操作装货！');
-          } else {
-            // this.$refs.DialogA.reset();
-            this.dialoga = true;
-            this.title = '车辆装货';
-            this.formDisable = false;
-            this.$refs.DialogA.setForm(row);
-            // this.$refs.DialogA.getAddress(row);
-          }
+          // this.$refs.DialogA.reset();
+          this.dialoga = true;
+          this.title = '车辆装货';
+          this.formDisable = false;
+          this.$refs.DialogA.setForm(row);
+          // this.$refs.DialogA.getAddress(row);
           break;
         case 3:
           // this.$refs.DialogC.reset();
@@ -504,16 +498,26 @@ export default {
           // this.$refs.DialogC.getAddress(row);
           break;
         case 4:
-          if (row.cancelStatus === 1) {
-            this.msgError('司机撤单申请中，无法再次取消订单！');
-          } else if (row.cancelStatus === 2) {
-            this.msgError('货主已同意撤单，无法取消订单！');
-          } else {
-            this.$refs.CancelDialog.reset();
-            this.canceldialog = true;
-            this.title = '取消运单';
-            this.$refs.CancelDialog.setForm(row);
-          }
+          this.$confirm('是否确认作废编号为"' + row.code + '"的运单?', '警告', {
+            'confirmButtonText': '确定',
+            'cancelButtonText': '取消',
+            'type': 'warning'
+          }).then(function() {
+            return waybillInvalid(row.code);
+          }).then(() => {
+            this.getList();
+            this.msgSuccess('操作成功');
+          });
+          // if (row.cancelStatus === 1) {
+          //   this.msgError('司机撤单申请中，无法再次取消订单！');
+          // } else if (row.cancelStatus === 2) {
+          //   this.msgError('货主已同意撤单，无法取消订单！');
+          // } else {
+          //   this.$refs.CancelDialog.reset();
+          //   this.canceldialog = true;
+          //   this.title = '取消运单';
+          //   this.$refs.CancelDialog.setForm(row);
+          // }
           break;
         case 5:
           // this.$refs.DialogA.reset();
