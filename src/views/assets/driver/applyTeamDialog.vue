@@ -34,7 +34,7 @@
 import { listApply, dealApply } from '@/api/assets/driver';
 
 export default {
-  name: 'TeamManageDialog',
+  name: 'ApplyTeamDialog',
   props: {
     open: Boolean,
     driverCode: {

@@ -115,7 +115,7 @@ import { listInfo } from '@/api/assets/team';
 import { applyJoinTeam } from '@/api/assets/driver';
 
 export default {
-  name: 'TeamManageDialog',
+  name: 'AddTeamDialog',
   props: {
     open: Boolean,
     driverCode: {
