@@ -116,7 +116,7 @@
       </el-form-item>
     </el-form>
 
-    <el-row :gutter="10" class="mb8">
+    <el-row v-show="!teamCode && !driverCode" :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
           v-hasPermi="['assets:vehicle:add']"
@@ -223,6 +223,7 @@
       </template>
       <template #edit="{row}">
         <el-button
+          v-show="!teamCode && !driverCode"
           v-hasPermi="['assets:vehicle:get']"
           size="mini"
           type="text"
@@ -235,27 +236,29 @@
           icon="el-icon-document"
           @click="handleDetail(row, 'detail')"
         >详情</el-button>
-        <el-button
-          v-hasPermi="['assets:vehicle:edit']"
-          size="mini"
-          type="text"
-          icon="el-icon-edit"
-          @click="handleDetail(row, 'edit')"
-        >修改</el-button>
-        <el-button
-          v-show="row.authStatus === 0 || row.authStatus === 1"
-          size="mini"
-          type="text"
-          icon="el-icon-document-checked"
-          @click="handleDetail(row, 'review')"
-        >审核</el-button>
-        <el-button
-          v-hasPermi="['assets:vehicle:remove']"
-          size="mini"
-          type="text"
-          icon="el-icon-delete"
-          @click="handleDelete(row)"
-        >删除</el-button>
+        <template v-if="!teamCode && !driverCode">
+          <el-button
+            v-hasPermi="['assets:vehicle:edit']"
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleDetail(row, 'edit')"
+          >修改</el-button>
+          <el-button
+            v-show="row.authStatus === 0 || row.authStatus === 1"
+            size="mini"
+            type="text"
+            icon="el-icon-document-checked"
+            @click="handleDetail(row, 'review')"
+          >审核</el-button>
+          <el-button
+            v-hasPermi="['assets:vehicle:remove']"
+            size="mini"
+            type="text"
+            icon="el-icon-delete"
+            @click="handleDelete(row)"
+          >删除</el-button>
+        </template>
       </template>
     </RefactorTable>
 

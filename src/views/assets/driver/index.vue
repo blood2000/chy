@@ -109,7 +109,7 @@
       </el-form-item>
     </el-form>
 
-    <el-row :gutter="10" class="mb8">
+    <el-row v-show="!teamCode" :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
           v-hasPermi="['assets:driver:add']"
@@ -215,6 +215,7 @@
       </template>
       <template #edit="{row}">
         <el-button
+          v-show="!teamCode"
           v-hasPermi="['assets:driver:manage']"
           size="mini"
           type="text"
@@ -228,42 +229,44 @@
           icon="el-icon-document"
           @click="handleDetail(row, 'detail')"
         >详情</el-button>
-        <el-button
-          v-hasPermi="['assets:config:edit']"
-          size="mini"
-          type="text"
-          icon="el-icon-edit"
-          @click="handleDetail(row, 'edit')"
-        >修改</el-button>
-        <el-button
-          v-show="row.authStatus != 3"
-          v-hasPermi="['assets:driver:examine']"
-          size="mini"
-          type="text"
-          icon="el-icon-document-checked"
-          @click="handleDetail(row, 'review')"
-        >审核</el-button>
-        <el-button
-          v-hasPermi="['assets:driver:join']"
-          size="mini"
-          type="text"
-          icon="el-icon-document-add"
-          @click="handleAddTeam(row)"
-        >加入调度</el-button>
-        <el-button
-          v-show="row.apply"
-          size="mini"
-          type="text"
-          icon="el-icon-document-checked"
-          @click="handleDeal(row)"
-        >处理邀请</el-button>
-        <el-button
-          v-hasPermi="['assets:driver:remove']"
-          size="mini"
-          type="text"
-          icon="el-icon-delete"
-          @click="handleDelete(row)"
-        >删除</el-button>
+        <template v-if="!teamCode">
+          <el-button
+            v-hasPermi="['assets:config:edit']"
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleDetail(row, 'edit')"
+          >修改</el-button>
+          <el-button
+            v-show="row.authStatus != 3"
+            v-hasPermi="['assets:driver:examine']"
+            size="mini"
+            type="text"
+            icon="el-icon-document-checked"
+            @click="handleDetail(row, 'review')"
+          >审核</el-button>
+          <el-button
+            v-hasPermi="['assets:driver:join']"
+            size="mini"
+            type="text"
+            icon="el-icon-document-add"
+            @click="handleAddTeam(row)"
+          >加入调度</el-button>
+          <el-button
+            v-show="row.apply"
+            size="mini"
+            type="text"
+            icon="el-icon-document-checked"
+            @click="handleDeal(row)"
+          >处理邀请</el-button>
+          <el-button
+            v-hasPermi="['assets:driver:remove']"
+            size="mini"
+            type="text"
+            icon="el-icon-delete"
+            @click="handleDelete(row)"
+          >删除</el-button>
+        </template>
       </template>
     </RefactorTable>
 
