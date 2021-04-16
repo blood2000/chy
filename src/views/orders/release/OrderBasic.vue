@@ -138,6 +138,8 @@
           type="textarea"
           placeholder="请输入任何您想说的话..."
           :autosize="{ minRows: 4, maxRows: 4 }"
+          maxlength="100"
+          show-word-limit
           :style="{ width: '100%' }"
         />
       </el-form-item>
@@ -296,7 +298,7 @@ export default {
       ];
       this.tin6Option = [];
 
-      !this.tin2Option.length && this.api_tin3Optin();
+      this.api_tin3Optin();
       // this.api_dictInit();
     },
     // isdisabled(value) {
@@ -388,9 +390,7 @@ export default {
       immediate: true
     }
   },
-  created() {
-
-  },
+  created() {},
 
   methods: {
     // api相关

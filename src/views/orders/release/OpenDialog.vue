@@ -185,10 +185,18 @@ export default {
       isSelected: {}
     };
   },
-  created() {
-    this.queryParams.shipmentCode = this.shipmentCode;
-    this.getList();
+
+  watch: {
+    shipmentCode: {
+      handler(shipmentCode) {
+        this.queryParams.shipmentCode = this.shipmentCode;
+        this.getList();
+      },
+      immediate: true
+    }
   },
+
+  created() {},
   methods: {
     /** 查询常用地址列表 */
     getList() {

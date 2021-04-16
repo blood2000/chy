@@ -187,6 +187,9 @@ export default {
     },
     // 省份切换
     async changeProvince(data) {
+      const province = this._zhaovalue(this.provinceOption, this.form.province);
+      this.$emit('getProvince', province ? province.provinceName : '');
+
       this.form.city = '';
       this.form.county = '';
       this.cityOption = [];
