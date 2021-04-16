@@ -244,11 +244,11 @@
           </el-col>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">身份证正面照</p>
-            <upload-image v-model="form.identificationImage" :disabled="disable" image-type="id-card" @fillForm="fillForm" />
+            <upload-image v-model="form.identificationImage" :disabled="disable" image-type="id-card" side="front" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">身份证反面照</p>
-            <upload-image v-model="form.identificationBackImage" :disabled="disable" image-type="id-card" @fillForm="fillForm" />
+            <upload-image v-model="form.identificationBackImage" :disabled="disable" image-type="id-card" side="back" @fillForm="fillForm" />
           </el-col>
           <el-col v-show="form.driverType===1" :span="7" class="mb">
             <p class="upload-image-label">道路运输许可证</p>
