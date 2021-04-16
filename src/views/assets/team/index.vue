@@ -365,9 +365,10 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('assets/team/export', {
-        ...this.queryParams
-      }, `team_${new Date().getTime()}.xlsx`);
+      const params = Object.assign({}, this.queryParams);
+      params.pageSize = undefined;
+      params.pageNum = undefined;
+      this.download('assets/team/export', params, `调度者信息_${new Date().getTime()}.xlsx`);
     },
     /** 管理按钮操作 */
     handleManage(row) {
