@@ -70,8 +70,9 @@
       </el-form-item>
     </el-form>
 
-    <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="infoList" border stripe @selection-change="handleSelectionChange">
       <el-table-column type="selection" :selectable="checkboxSelectable" width="55" align="center" />
+      <el-table-column label="序号" align="center" type="index" min-width="5%" />
       <!-- <el-table-column label="网点编码" align="center" prop="branchCode" /> -->
       <el-table-column label="处理状态" align="center" prop="applyStatus">
         <template slot-scope="scope">
@@ -80,6 +81,14 @@
         </template>
       </el-table-column>
       <el-table-column label="调度者名称" align="center" prop="name" />
+      <el-table-column label="审核状态" align="center" prop="authStatus">
+        <template slot-scope="scope">
+          <span v-show="scope.row.authStatus === 0" class="g-color-gray">未审核</span>
+          <span v-show="scope.row.authStatus === 1" class="g-color-blue">审核中</span>
+          <span v-show="scope.row.authStatus === 2" class="g-color-error">审核未通过</span>
+          <span v-show="scope.row.authStatus === 3" class="g-color-success">审核通过</span>
+        </template>
+      </el-table-column>
       <!-- <el-table-column label="管理者" align="center" prop="teamLeader" />-->
       <el-table-column label="身份证号" align="center" prop="identificationNumber" />
       <el-table-column label="是否清分" align="center" prop="isDistribution">
@@ -115,7 +124,7 @@ import { listInfo } from '@/api/assets/team';
 import { applyJoinTeam } from '@/api/assets/driver';
 
 export default {
-  name: 'TeamManageDialog',
+  name: 'AddTeamDialog',
   props: {
     open: Boolean,
     driverCode: {
@@ -148,7 +157,8 @@ export default {
       applyStatusOptions: [
         { dictLabel: '未处理', dictValue: 0 },
         { dictLabel: '已加入', dictValue: 1 },
-        { dictLabel: '已拒绝', dictValue: 2 }
+        { dictLabel: '已拒绝', dictValue: 2 },
+        { dictLabel: '待加入', dictValue: 3 }
       ],
       // 参数表格数据
       infoList: [],
@@ -156,12 +166,13 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        name: null,
-        teamLeader: null,
-        status: null,
-        driverName: null,
-        licenseNumber: null,
-        applyStatus: null
+        name: undefined,
+        teamLeader: undefined,
+        status: undefined,
+        driverName: undefined,
+        licenseNumber: undefined,
+        applyStatus: undefined,
+        authStatus: 3
       }
     };
   },
@@ -230,9 +241,9 @@ export default {
         this.close();
       });
     },
-    // 状态为未处理/已加入的checkbox不可选
+    // 状态为已加入的checkbox不可选
     checkboxSelectable(row) {
-      if ((row.applyStatus === 0 || row.applyStatus === 1) || row.apply) {
+      if (row.applyStatus === 1) {
         return false;
       } else {
         return true;

@@ -389,9 +389,7 @@ export default {
   created() {
     const { isAdmin = false, user = {}, shipment = {}} = getUserInfo() || {};
     this.isAdmin = isAdmin;
-    console.log(this.isAdmin);
     this.user = user;
-    console.log(user);
     this.shipment = shipment;
     if (this.isShipment) {
       this.queryParams.shipmentCode = shipment.info.code;

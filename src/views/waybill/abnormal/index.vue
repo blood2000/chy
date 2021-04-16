@@ -1,12 +1,13 @@
 <template>
   <div class="app-container">
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
       <el-form-item label="货源单号" prop="orderCode">
         <el-input
           v-model="queryParams.orderCode"
           placeholder="请输入货源单号"
           clearable
           size="small"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -16,6 +17,7 @@
           placeholder="请输入运输单号"
           clearable
           size="small"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -26,6 +28,7 @@
           clearable
           filterable
           size="small"
+          style="width: 230px"
         >
           <el-option
             v-for="dict in isWarningOptions"
@@ -41,6 +44,7 @@
           placeholder="请输入运输司机"
           clearable
           size="small"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>

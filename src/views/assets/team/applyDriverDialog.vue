@@ -7,9 +7,9 @@
     append-to-body
     @close="cancel"
   >
-    <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="infoList" border stripe @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
-
+      <el-table-column label="序号" align="center" type="index" min-width="5%" />
       <el-table-column label="司机类别" align="center" prop="driverType">
         <template slot-scope="scope">
           <span>{{ selectDictLabel(driverTypeOptions, scope.row.driverType) }}</span>
@@ -90,7 +90,7 @@
 import { listApply, dealApply } from '@/api/assets/team';
 
 export default {
-  name: 'TeamManageDialog',
+  name: 'ApplyDriverDialog',
   props: {
     open: Boolean,
     teamCode: {

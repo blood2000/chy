@@ -62,12 +62,6 @@ export default {
       isOptions: [
         { dictLabel: '否', dictValue: 0 },
         { dictLabel: '是', dictValue: 1 }
-      ],
-      // 处理状态字典
-      applyStatusOptions: [
-        { dictLabel: '未处理', dictValue: 0 },
-        { dictLabel: '已加入', dictValue: 1 },
-        { dictLabel: '已拒绝', dictValue: 2 }
       ]
     };
   },

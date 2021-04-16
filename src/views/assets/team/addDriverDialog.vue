@@ -7,7 +7,7 @@
     append-to-body
     @close="cancel"
   >
-    <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
+    <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="86px">
       <el-form-item label="司机类别" prop="driverType">
         <el-select v-model="queryParams.driverType" placeholder="请选择司机类别" filterable clearable size="small" class="input-width">
           <el-option
@@ -68,16 +68,6 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="审核状态" prop="authStatus">
-        <el-select v-model="queryParams.authStatus" placeholder="请选择审核状态" filterable clearable size="small" class="input-width">
-          <el-option
-            v-for="dict in statusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
       <el-form-item label="处理状态" prop="applyStatus">
         <el-select v-model="queryParams.applyStatus" placeholder="请选择状态" filterable clearable size="small">
           <el-option
@@ -94,8 +84,9 @@
       </el-form-item>
     </el-form>
 
-    <el-table v-loading="loading" :data="driverList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="driverList" border stripe @selection-change="handleSelectionChange">
       <el-table-column type="selection" :selectable="checkboxSelectable" width="55" align="center" fixed="left" />
+      <el-table-column label="序号" align="center" type="index" min-width="5%" />
       <el-table-column label="处理状态" align="center" prop="applyStatus">
         <template slot-scope="scope">
           <span v-if="scope.row.applyStatus !=null && scope.row.applyStatus>=0">{{ selectDictLabel(applyStatusOptions, scope.row.applyStatus) }}</span>
@@ -192,7 +183,7 @@ import { listDriver } from '@/api/assets/driver';
 import { applyDriver } from '@/api/assets/team';
 
 export default {
-  name: 'TeamManageDialog',
+  name: 'AddDriverDialog',
   props: {
     open: Boolean,
     teamCode: {
@@ -216,13 +207,6 @@ export default {
         { dictLabel: '独立司机', dictValue: 1 },
         { dictLabel: '聘用司机', dictValue: 2 }
       ],
-      // 审核状态字典
-      statusOptions: [
-        { dictLabel: '未审核', dictValue: 0 },
-        { dictLabel: '审核中', dictValue: 1 },
-        { dictLabel: '审核未通过', dictValue: 2 },
-        { dictLabel: '审核通过', dictValue: 3 }
-      ],
       // 是否冻结字典
       isFreezoneOptions: [
         { dictLabel: '正常', dictValue: 0 },
@@ -237,7 +221,8 @@ export default {
       applyStatusOptions: [
         { dictLabel: '未处理', dictValue: 0 },
         { dictLabel: '已加入', dictValue: 1 },
-        { dictLabel: '已拒绝', dictValue: 2 }
+        { dictLabel: '已拒绝', dictValue: 2 },
+        { dictLabel: '待加入', dictValue: 3 }
       ],
       // 网点编码字典
       branchCodeOptions: [],
@@ -253,7 +238,7 @@ export default {
         name: undefined,
         telphone: undefined,
         identificationNumber: undefined,
-        authStatus: undefined,
+        authStatus: 3,
         licenseNumber: undefined,
         driverLicenseType: undefined,
         applyStatus: undefined
@@ -335,9 +320,9 @@ export default {
         this.close();
       });
     },
-    // 状态为未处理/已加入的checkbox不可选
+    // 状态为已加入的checkbox不可选
     checkboxSelectable(row) {
-      if (row.applyStatus === 0 || row.applyStatus === 1) {
+      if (row.applyStatus === 1) {
         return false;
       } else {
         return true;

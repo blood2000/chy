@@ -1,23 +1,23 @@
 <template>
   <div class="app-container">
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="130px">
-      <el-form-item label="下单客户" prop="orderClient">
+    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
+      <el-form-item v-show="isAdmin" label="下单客户" prop="orderClient">
         <el-input
           v-model="queryParams.orderClient"
           placeholder="请输入下单客户"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="发货企业" prop="deliveryCompany">
+      <el-form-item v-show="isAdmin" label="发货企业" prop="deliveryCompany">
         <el-input
           v-model="queryParams.deliveryCompany"
           placeholder="请输入发货企业"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -27,7 +27,7 @@
           placeholder="装货地/装货电话/发货人"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -37,7 +37,7 @@
           placeholder="目的地/收货电话/收货人"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -47,7 +47,7 @@
           placeholder="请输入货源单号"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -61,7 +61,7 @@
           range-separator="-"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
-          style="width: 240px"
+          style="width: 230px"
           @change="datechoose"
         />
       </el-form-item>
@@ -71,7 +71,7 @@
           placeholder="请输入车牌号"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -81,7 +81,7 @@
           placeholder="请输入司机姓名"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -91,7 +91,7 @@
           placeholder="请输入司机电话"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -101,7 +101,7 @@
           placeholder="请输入运输单号"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -112,7 +112,7 @@
           clearable
           filterable
           size="small"
-          style="width: 240px"
+          style="width: 230px"
         >
           <el-option
             v-for="dict in statusOptions"
@@ -195,6 +195,7 @@
 <script>
 import { listNullify, invalidRejected, listNullifyApi } from '@/api/waybill/nullify';
 import DetailDialog from '../components/detailDialog';
+import { getUserInfo } from '@/utils/auth';
 // import tableColumnsConfig from './config';
 
 export default {
@@ -277,10 +278,17 @@ export default {
       // 表单是否禁用
       formDisable: false,
       // 当前选中的运单id
-      currentId: null
+      currentId: null,
+      isAdmin: false,
+      user: {},
+      shipment: {}
     };
   },
   created() {
+    const { isAdmin = false, user = {}, shipment = {}} = getUserInfo() || {};
+    this.isAdmin = isAdmin;
+    this.user = user;
+    this.shipment = shipment;
     this.tableHeaderConfig(this.tableColumnsConfig, listNullifyApi, {
       prop: 'edit',
       isShow: true,

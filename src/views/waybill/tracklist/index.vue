@@ -6,10 +6,10 @@
       ref="queryForm"
       :model="queryParams"
       :inline="true"
-      label-width="130px"
+      label-width="90px"
     >
       <el-form-item
-        v-show="!isShipment"
+        v-show="isAdmin"
         label="下单客户"
         prop="orderClient"
       >
@@ -18,12 +18,12 @@
           placeholder="请输入下单客户"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <el-form-item
-        v-show="!isShipment"
+        v-show="isAdmin"
         label="发货企业"
         prop="deliveryCompany"
       >
@@ -32,7 +32,7 @@
           placeholder="请输入发货企业"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -45,7 +45,7 @@
           placeholder="请输入装货信息"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -58,7 +58,7 @@
           placeholder="请输入收货信息"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -71,7 +71,7 @@
           placeholder="请输入货源单号"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -85,7 +85,7 @@
           range-separator="-"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
-          style="width: 240px"
+          style="width: 230px"
           @change="datechoose"
         />
       </el-form-item>
@@ -98,7 +98,7 @@
           placeholder="请输入车牌号"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -111,7 +111,7 @@
           placeholder="请输入司机姓名"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -124,7 +124,7 @@
           placeholder="请输入司机电话"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -137,7 +137,7 @@
           placeholder="请输入运输单号"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -394,7 +394,7 @@ export default {
         { 'dictLabel': '货主同意撤销 ', 'dictValue': '2' },
         { 'dictLabel': '货主拒绝撤销 ', 'dictValue': '3' }
       ],
-      isShipment: false,
+      isAdmin: false,
       user: {},
       shipment: {}
     //   // <!-- isPay	支付给司机运费状态 0-未支付 1-已支付 -->
@@ -410,8 +410,8 @@ export default {
     }
   },
   created() {
-    const { isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
-    this.isShipment = isShipment;
+    const { isAdmin = false, user = {}, shipment = {}} = getUserInfo() || {};
+    this.isAdmin = isAdmin;
     this.user = user;
     this.shipment = shipment;
     // this['tableColumnsConfig' + this.activeName] = this.getLocalStorage(this.lcokey) || this.tableColumnsConfig;

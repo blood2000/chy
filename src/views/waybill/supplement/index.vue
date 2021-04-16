@@ -381,12 +381,12 @@ export default {
     /** 运输单批量导入按钮操作 */
     handleWaybillImport() {
       this.openImport = true;
-      this.title = '运输单批量导入';
+      this.title = '运输单批量导入(未完成，请勿操作)';
     },
     /** 装/卸货图片导入按钮操作 */
     handlePictureImport() {
       this.open = true;
-      this.title = '装/卸货图片导入';
+      this.title = '装/卸货图片导入(未完成，请勿操作)';
     },
     /** 下载模板 */
     handleDownload() {

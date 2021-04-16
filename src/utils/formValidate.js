@@ -6,9 +6,10 @@ const cnReg = /^[\u4e00-\u9fa5]+$/;
 const nameReg = /^[\u4e00-\u9fa5]{2,}$/;
 // 邮箱
 const emailReg = /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/;
-// 手机号&&座机号
-const phoneReg01 = /^(0|86|17951)?(13[0-9]|15[012356789]|17[01678]|18[0-9]|14[57])[0-9]{8}$/;
-const phoneReg02 = /^(0[0-9]{2,3}\-)([2-9][0-9]{6,7})+(\-[0-9]{1,4})?$/;
+// 手机号
+const phoneReg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
+// const phoneReg01 = /^(0|86|17951)?(13[0-9]|15[012356789]|17[01678]|18[0-9]|14[57])[0-9]{8}$/;
+// const phoneReg02 = /^(0[0-9]{2,3}\-)([2-9][0-9]{6,7})+(\-[0-9]{1,4})?$/;
 // 身份证
 const idCardReg = /^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)$/;
 // 判断传入日期是否小于当前日期
@@ -83,8 +84,8 @@ export const formValidate = {
     if (value === undefined || value === null || value === '') {
       callback();
     }
-    if (!phoneReg01.test(value) && !phoneReg02.test(value)) {
-      callback(new Error('请输入正确的号码'));
+    if (!phoneReg.test(value)) {
+      callback(new Error('请输入正确的手机号码'));
     } else {
       callback();
     }
