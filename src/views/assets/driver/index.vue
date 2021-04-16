@@ -343,7 +343,8 @@ export default {
       applyStatusOptions: [
         { dictLabel: '未处理', dictValue: 0 },
         { dictLabel: '已加入', dictValue: 1 },
-        { dictLabel: '已拒绝', dictValue: 2 }
+        { dictLabel: '已拒绝', dictValue: 2 },
+        { dictLabel: '待加入', dictValue: 3 }
       ],
       // 是否冻结字典
       isFreezoneOptions: [

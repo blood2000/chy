@@ -201,7 +201,6 @@ export default {
   },
   created() {
     this.getList();
-    console.log(this.dispatch);
   },
 
   methods: {
@@ -290,7 +289,7 @@ export default {
           this['selections_listInfo'] = this.list_listInfo.filter(e => e.id === this.radio);
 
 
-          this.$emit('handleSelectionChange', { [this.activeName]: this.selections }, bool);
+          this.$emit('handleSelectionChange', { [this.activeName]: this.selections, info: this['selections_listInfo'][0] }, bool);
         }
       } else {
         // dispatch 有值是manage组件调用的

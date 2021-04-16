@@ -136,7 +136,7 @@
         <el-input
           v-model="formData.remark"
           type="textarea"
-          placeholder="请输入任何您想说的话..."
+          placeholder="请输入备注信息"
           :autosize="{ minRows: 4, maxRows: 4 }"
           maxlength="100"
           show-word-limit
@@ -457,7 +457,7 @@ export default {
       if (!this.isMultiGoods) {
         this.formData.tin2_2 = this.tin2_Option[0] ? this.tin2_Option[0].dictValue : this.formData.tin2;
 
-        console.log(this.formData.tin2_2);
+        // console.log(this.formData.tin2_2);
       }
 
       if (!tin3item) return;
@@ -482,6 +482,8 @@ export default {
 
     // 6. 选取后回调
     handleSelectionChange(obj, bool) {
+      console.log(obj);
+
       if (bool) {
         this.formData.tin6_1 = obj['listInfo'] || [];
         this.formData.tin6_2 = obj['listDriver'] || [];

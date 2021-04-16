@@ -686,13 +686,13 @@ export default {
 
 
   created() {
-    const { isShipment = false, user = {}} = getUserInfo() || {};
+    const { isAdmin = true, user = {}} = getUserInfo() || {};
 
     // console.log(user.userCode);
 
 
     // 判断当前是什么角色登入的 true 是运营
-    this.isShipment = isShipment;
+    this.isShipment = !isAdmin;
     this.isShipment && (this.queryParams.tin6 = user.userCode);
     // 要配置好才能用
     this.tableHeaderConfig(this.tableColumnsConfig, listManagesApi, null, tableColumnsConfig);

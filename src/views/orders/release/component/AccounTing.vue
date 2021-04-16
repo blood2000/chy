@@ -103,7 +103,7 @@
         </el-col>
         <el-col v-if="myisdisabled && !showbudget && predictData" :span="10">
           <div class="t_box_item">
-            <template v-if="isTotalTypeValue">
+            <template v-if="predictData.totalEstimateMoney || predictData.totalTransportationCost || predictData.totalServiceFee">
 
               <div class="header mb8">总费用估</div>
               <el-row>
@@ -202,7 +202,7 @@ export default {
       mygoodsUnitName: '', // 单位
       mytotalTypeValue: '', // 配载方式
       predictData: null, // 预估价格
-      totalTransportationCost: '-', // 司机实收单价
+      totalTransportationCost: '', // 司机实收单价
       ruleFreightPrice: [
         {
           'code': undefined,
@@ -282,9 +282,7 @@ export default {
     },
     good: {
       handler(value) {
-        console.log(value);
-
-        if (!value && !value.goodsAccounting) return;
+        if (!value || !value.goodsAccounting.totalType) return;
         this.mytotalTypeValue = value.goodsAccounting.totalType;
       },
       immediate: true
@@ -355,7 +353,7 @@ export default {
         });
         this.totalTransportationCost = data.data;
       } catch (error) {
-        console.log(error);
+        this.msgError('司机实收单价获取失败, 请重新输入运费单价');
       }
     },
 
@@ -367,7 +365,7 @@ export default {
         const data = (await getListRules({ shipperCode: this.pubilshCode })).data;
         this.ruleItemIdOption = this._baozhuan(data, 'code', 'name');
       } catch (error) {
-        this.initData();
+        // this.initData();
       }
     },
 
@@ -457,7 +455,9 @@ export default {
         if (e.goodsIdentification === this.good.goodsType) {
           e.orderAddressBoList.forEach(ee => {
             const addresCodes = ee.addressIdentification.split(':');
-            this.good.newRedis.forEach(redi => {
+            const arr = this.good.newRedis || this.good.redis;
+
+            arr.forEach(redi => {
               if (addresCodes[0] === redi.identification + '' || addresCodes[1] === redi.identification + '' || addresCodes[0] === redi.code || addresCodes[1] === redi.code) {
                 this.predictData = ee;
               }

@@ -254,7 +254,8 @@ export default {
       applyStatusOptions: [
         { dictLabel: '未处理', dictValue: 0 },
         { dictLabel: '已加入', dictValue: 1 },
-        { dictLabel: '已拒绝', dictValue: 2 }
+        { dictLabel: '已拒绝', dictValue: 2 },
+        { dictLabel: '待加入', dictValue: 3 }
       ],
       // 查询参数
       queryParams: {
@@ -365,7 +366,7 @@ export default {
     handleExport() {
       this.download('assets/team/export', {
         ...this.queryParams
-      }, `assets_${new Date().getTime()}.xlsx`);
+      }, `team_${new Date().getTime()}.xlsx`);
     },
     /** 管理按钮操作 */
     handleManage(row) {
