@@ -150,7 +150,8 @@
           @click="handleDetail(row, 'edit')"
         >修改</el-button>
         <el-button
-          v-show="row.authStatus === 0 || row.authStatus === 1"
+          v-show="row.authStatus != 3"
+          v-has-permi="['assets:team:examine']"
           size="mini"
           type="text"
           icon="el-icon-document-checked"

@@ -176,6 +176,7 @@ export default {
         Object.keys(response.data.invoiceGroup).forEach(function(key) {
           that.invoicelist = response.data.invoiceGroup[key].map(item => item.invoiceInfoStatisticsVo);
         });
+        console.log(that.invoicelist);
         console.log(that.form);
         that.loading = false;
       });

@@ -206,6 +206,7 @@
           type="success"
           icon="el-icon-document-checked"
           size="mini"
+          :disabled="multiple"
           @click="handleAdjust"
         >批量核算</el-button>
       </el-col>
@@ -214,6 +215,7 @@
           type="success"
           icon="el-icon-wallet"
           size="mini"
+          :disabled="multiple"
           @click="handleApply"
         >批量申请</el-button>
       </el-col>
@@ -222,6 +224,7 @@
           type="success"
           icon="el-icon-chat-dot-square"
           size="mini"
+          :disabled="multiple"
           @click="handleAssess"
         >批量评价</el-button>
       </el-col>
@@ -357,6 +360,8 @@ export default {
       'loading': false,
       // 选中数组
       'ids': [],
+      // 非多个禁用
+      multiple: true,
       waybillCodeList: [],
       'bodyParams': {
         waybillCodeList: []
@@ -457,6 +462,7 @@ export default {
       this.commentlist = selection;
       this.ids = selection.map((item) => item.wayBillCode);
       this.bodyParams.waybillCodeList = this.ids;
+      this.multiple = !selection.length;
     },
     /** 查询【请填写功能名称】列表 */
     getList() {
@@ -482,46 +488,33 @@ export default {
     },
     // 批量核算
     handleAdjust() {
-      console.log(this.ids);
-      if (this.ids.length === 0) {
-        this.$message({ type: 'warning', message: '请先选择数据！' });
-      } else {
-        this.adjustdialog = true;
-        this.title = '结算审核';
-        this.$refs.AdjustDialog.setForm(this.ids);
-      }
+      this.adjustdialog = true;
+      this.title = '结算审核';
+      this.$refs.AdjustDialog.setForm(this.ids);
     },
     // 批量申请打款
     handleApply() {
-      if (this.ids.length === 0) {
-        this.$message({ type: 'warning', message: '请先选择数据！' });
-      } else {
-        this.$confirm('是否确认批量申请打款?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          batchApply(this.bodyParams).then(response => {
-            this.$message({ type: 'success', message: '申请打款成功！' });
-            this.getList();
-          });
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消'
-          });
+      this.$confirm('是否确认批量申请打款?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        batchApply(this.bodyParams).then(response => {
+          this.$message({ type: 'success', message: '申请打款成功！' });
+          this.getList();
         });
-      }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        });
+      });
     },
     // 批量评价
     handleAssess() {
-      if (this.ids.length === 0) {
-        this.$message({ type: 'warning', message: '请先选择数据！' });
-      } else {
-        this.commentdialog = true;
-        this.title = '用户评价';
-        this.$refs.CommentDialog.setForm(this.commentlist);
-      }
+      this.commentdialog = true;
+      this.title = '用户评价';
+      this.$refs.CommentDialog.setForm(this.commentlist);
     },
 
     handleTableBtn(row, index) {

@@ -158,6 +158,7 @@
           type="success"
           icon="el-icon-wallet"
           size="mini"
+          :disabled="multiple"
           @click="handlePayment"
         >批量打款</el-button>
       </el-col>
@@ -280,6 +281,8 @@ export default {
       'loading': false,
       // 选中数组
       'ids': [],
+      // 非多个禁用
+      multiple: true,
       // 显示搜索条件
       'showSearch': true,
       // 总条数
@@ -368,7 +371,9 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map((item) => item.id);
+      this.ids = selection.map((item) => item.wayBillSettlementCode);
+      this.bodyParams.wayBillSettlementCodeList = this.ids;
+      this.multiple = !selection.length;
     },
     /** 查询【请填写功能名称】列表 */
     getList() {
@@ -399,22 +404,18 @@ export default {
     },
     // 批量打款
     handlePayment() {
-      if (this.ids.length === 0) {
-        this.$message({ type: 'warning', message: '请先选择数据！' });
-      } else {
-        this.$confirm('是否确认批量打款？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          batch(this.bodyParams).then(response => {
-            this.$message({ type: 'success', message: '批量打款成功！' });
-            this.getList();
-          });
-        }).catch(() => {
-          this.$message({ type: 'info', message: '已取消' });
+      this.$confirm('是否确认批量打款？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        batch(this.bodyParams).then(response => {
+          this.$message({ type: 'success', message: '批量打款成功！' });
+          this.getList();
         });
-      }
+      }).catch(() => {
+        this.$message({ type: 'info', message: '已取消' });
+      });
     },
 
     handleTableBtn(row, index) {
