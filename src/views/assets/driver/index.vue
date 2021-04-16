@@ -135,6 +135,7 @@
           type="warning"
           icon="el-icon-download"
           size="mini"
+          :loading="exportLoading"
           @click="handleExport"
         >导出</el-button>
       </el-col>
@@ -246,8 +247,8 @@
             @click="handleDetail(row, 'review')"
           >审核</el-button>
           <el-button
-            v-hasPermi="['assets:driver:join']"
             v-show="row.authStatus == 3"
+            v-hasPermi="['assets:driver:join']"
             size="mini"
             type="text"
             icon="el-icon-document-add"
@@ -413,7 +414,9 @@ export default {
         pageNum: 1,
         pageSize: 10,
         name: null
-      }
+      },
+      // 导出
+      exportLoading: false
     };
   },
   created() {
@@ -529,10 +532,13 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
+      this.exportLoading = true;
       const params = Object.assign({}, this.queryParams);
       params.pageSize = undefined;
       params.pageNum = undefined;
-      this.download('assets/driver/export', params, `司机信息_${new Date().getTime()}.xlsx`, 'application/json');
+      this.download('assets/driver/export', params, `司机信息_${new Date().getTime()}.xlsx`, 'application/json').then(() => {
+        this.exportLoading = false;
+      });
     },
     /** 批量导入按钮操作 */
     handleImportDriver() {
