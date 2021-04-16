@@ -343,6 +343,19 @@
         <el-button @click="upload.open = false">取 消</el-button>
       </div>
     </el-dialog>
+
+    <!-- 重置密码弹窗 -->
+    <el-dialog :title="pwTitle" :visible.sync="pwOpen" width="500px" append-to-body @close="pwReset">
+      <el-form ref="pwForm" :model="pwForm" :rules="pwRules" label-width="0px">
+        <el-form-item prop="password">
+          <el-input v-model="pwForm.password" placeholder="请输入密码" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitResetPwd">确 定</el-button>
+        <el-button @click="pwOpen = false">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -458,6 +471,19 @@ export default {
         ],
         email: [
           { validator: this.formValidate.email, trigger: 'blur' }
+        ]
+      },
+      // 重置密码
+      pwTitle: '',
+      pwOpen: false,
+      userId: null,
+      pwForm: {
+        password: undefined
+      },
+      pwRules: {
+        password: [
+          { required: true, message: '密码不能为空', trigger: 'blur' },
+          { validator: this.formValidate.passWord, trigger: 'blur' }
         ]
       }
     };
@@ -599,14 +625,27 @@ export default {
     },
     /** 重置密码按钮操作 */
     handleResetPwd(row) {
-      this.$prompt('请输入"' + row.userName + '"的新密码', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消'
-      }).then(({ value }) => {
-        resetUserPwd(row.userId, value).then(response => {
-          this.msgSuccess('修改成功，新密码是：' + value);
-        });
-      }).catch(() => {});
+      this.pwTitle = '请输入"' + row.userName + '"的新密码';
+      this.userId = row.userId;
+      this.pwOpen = true;
+    },
+    // 密码表单重置
+    pwReset() {
+      this.pwOpen = false;
+      this.pwForm = {
+        password: undefined
+      };
+      this.resetForm('pwForm');
+    },
+    submitResetPwd() {
+      this.$refs['pwForm'].validate(valid => {
+        if (valid) {
+          resetUserPwd(this.userId, this.pwForm.password).then(response => {
+            this.msgSuccess('修改成功，新密码是：' + this.pwForm.password);
+            this.pwReset();
+          });
+        }
+      });
     },
     /** 提交按钮 */
     submitForm: function() {

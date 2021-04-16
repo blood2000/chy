@@ -24,7 +24,7 @@ import VehiclePage from '../vehicle/index.vue';
 import TeamListPage from '../components/teamList';
 
 export default {
-  name: 'TeamManageDialog',
+  name: 'DriverManageDialog',
   components: {
     VehiclePage,
     TeamListPage
