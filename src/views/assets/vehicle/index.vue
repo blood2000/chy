@@ -152,6 +152,7 @@
           type="warning"
           icon="el-icon-download"
           size="mini"
+          :loading="exportLoading"
           @click="handleExport"
         >导出</el-button>
       </el-col>
@@ -373,7 +374,9 @@ export default {
       // 表单是否禁用
       formDisable: false,
       // 车辆code
-      vehicleCode: null
+      vehicleCode: null,
+      // 导出
+      exportLoading: false
     };
   },
   created() {
@@ -515,10 +518,13 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
+      this.exportLoading = true;
       const params = Object.assign({}, this.queryParams);
       params.pageSize = undefined;
       params.pageNum = undefined;
-      this.download('assets/vehicle/export', params, `车辆信息_${new Date().getTime()}.xlsx`);
+      this.download('assets/vehicle/export', params, `车辆信息_${new Date().getTime()}.xlsx`).then(() => {
+        this.exportLoading = false;
+      });
     },
     /** 管理按钮操作 */
     handleManage(row) {
