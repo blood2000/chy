@@ -47,7 +47,7 @@
           placeholder="支持自动识别"
           :disabled="!!form.identificationEffective"
         />
-        <el-checkbox v-model="form.identificationEffective" @change="handleCheckChange">长期有效</el-checkbox>
+        <el-checkbox v-model="form.identificationEffective">长期有效</el-checkbox>
       </el-form-item>
       <el-form-item label="是否清分" prop="isDistribution">
         <el-select
@@ -102,7 +102,7 @@
 <script>
 import { addInfo, updateInfo, authRead, examine } from '@/api/assets/team';
 import UploadImage from '@/components/UploadImage/index';
-import { praseBooleanToNum, praseNumToBoolean, compareTime } from '@/utils/ddc';
+import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
 
 export default {
   components: {
@@ -148,20 +148,8 @@ export default {
           { validator: this.formValidate.idCard, trigger: 'blur' }
         ],
         identificationEndTime: [
-          { validator: this.formValidate.isExpired, trigger: 'change' },
-          { validator: (rules, value, callback) => {
-            const { identificationBeginTime, identificationEffective } = this.form;
-            if (!identificationBeginTime) {
-              return callback(new Error('身份证有效期起始时间不能为空'));
-            } else if (!identificationEffective && !value) {
-              return callback(new Error('身份证有效期截止时间不能为空'));
-            } else if (!compareTime(identificationBeginTime, value)) {
-              return callback(new Error('身份证有效期截止时间不能小于起始时间'));
-            }
-            return callback();
-          },
-          trigger: ['change', 'blur']
-          }
+          { validator: (rules, value, callback) => this.formValidate.idCardValidate(rules, value, callback, this.form.identificationBeginTime, this.form.identificationEffective), trigger: ['change', 'blur'] },
+          { validator: (rules, value, callback) => this.formValidate.isExpired(rules, value, callback, this.form.identificationEffective), trigger: 'change' }
         ],
         password: [
           { validator: this.formValidate.passWord, trigger: 'blur' }
@@ -243,7 +231,6 @@ export default {
     setForm(data) {
       this.form = data;
       this.form.identificationEffective = praseNumToBoolean(this.form.identificationEffective);
-      this.handleCheckChange(this.form.identificationEffective);
     },
     // 已读
     authRead() {
@@ -265,12 +252,6 @@ export default {
         this.$emit('refresh');
       });
     },
-    // 身份证是否长期有效选中事件
-    handleCheckChange(val) {
-      if (val) {
-        this.form.identificationEndTime = null;
-      }
-    },
     // 图片识别后回填
     fillForm(type, data) {
       switch (type) {
@@ -278,7 +259,7 @@ export default {
           if (data.name) this.form.teamLeaderName = data.name;
           if (data.number) this.form.identificationNumber = data.number;
           if (data.valid_from) this.form.identificationBeginTime = data.valid_from;
-          if (data.valid_to && !this.form.identificationEffective) this.form.identificationEndTime = data.valid_to;
+          if (data.valid_to) this.form.identificationEndTime = data.valid_to;
           break;
         case 'business-license':
           break;

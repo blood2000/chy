@@ -1,3 +1,4 @@
+import { compareBeginEndTime } from '@/utils/ddc';
 // 数字
 const numberReg = /^\d+$|^\d+[.]?\d+$/;
 // 中文
@@ -102,8 +103,9 @@ export const formValidate = {
     }
   },
   // 证件是否过期
-  isExpired(rule, value, callback) {
-    if (value === undefined || value === null || value === '') {
+  // effective: 长期有效的时候不做校验
+  isExpired(rule, value, callback, effective) {
+    if (value === undefined || value === null || value === '' || effective) {
       callback();
     }
     if (compareTime(value)) {
@@ -112,6 +114,17 @@ export const formValidate = {
     } else {
       callback();
     }
+  },
+  // 证件验证: 起始时间必填; 长期有效的时候截止时间可以不填,否则必填; 起始时间大于截止时间;
+  idCardValidate: function(rule, value, callback, beginTime, effective, text = '身份证') {
+    if (!beginTime) {
+      return callback(new Error(`${text}有效期起始时间不能为空`));
+    } else if (!effective && !value) {
+      return callback(new Error(`${text}有效期截止时间不能为空`));
+    } else if (!compareBeginEndTime(beginTime, value)) {
+      return callback(new Error(`${text}有效期截止时间不能小于起始时间`));
+    }
+    return callback();
   },
   // 车牌号
   plateNo: function(rule, value, callback) {
