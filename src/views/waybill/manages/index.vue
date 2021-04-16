@@ -1,23 +1,23 @@
 <template>
   <div class="app-container">
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="78px">
-      <el-form-item v-show="!isShipment" label="下单客户" prop="orderClient">
+    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
+      <el-form-item v-show="isAdmin" label="下单客户" prop="orderClient">
         <el-input
           v-model="queryParams.orderClient"
           placeholder="请输入下单客户"
           clearable
           size="small"
-          style="width: 278px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item v-show="!isShipment" label="发货企业" prop="deliveryCompany">
+      <el-form-item v-show="isAdmin" label="发货企业" prop="deliveryCompany">
         <el-input
           v-model="queryParams.deliveryCompany"
           placeholder="请输入发货企业"
           clearable
           size="small"
-          style="width: 278px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -27,7 +27,7 @@
           placeholder="装货地/装货电话/发货人"
           clearable
           size="small"
-          style="width: 278px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -37,7 +37,7 @@
           placeholder="目的地/收货电话/收货人"
           clearable
           size="small"
-          style="width: 278px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -51,7 +51,7 @@
           range-separator="-"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
-          style="width: 278px"
+          style="width: 228px"
           @change="datechoose"
         />
       </el-form-item>
@@ -61,7 +61,7 @@
           placeholder="请输入货源单号"
           clearable
           size="small"
-          style="width: 278px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -71,7 +71,7 @@
           placeholder="请输入运输单号"
           clearable
           size="small"
-          style="width: 278px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -81,7 +81,7 @@
           placeholder="请输入车牌号"
           clearable
           size="small"
-          style="width: 278px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -91,7 +91,7 @@
           placeholder="请输入司机姓名"
           clearable
           size="small"
-          style="width: 278px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -101,7 +101,7 @@
           placeholder="请输入司机电话"
           clearable
           size="small"
-          style="width: 278px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -112,7 +112,7 @@
           clearable
           filterable
           size="small"
-          style="width: 278px"
+          style="width: 228px"
         >
           <el-option
             v-for="dict in statusOptions"
@@ -129,7 +129,7 @@
           clearable
           filterable
           size="small"
-          style="width: 278px"
+          style="width: 228px"
         >
           <el-option
             v-for="dict in isChildOptions"
@@ -385,14 +385,14 @@ export default {
       // 当前选中的运单id
       'currentId': null,
       'currentRow': null,
-      isShipment: false,
+      isAdmin: false,
       user: {},
       shipment: {}
     };
   },
   created() {
-    const { isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
-    this.isShipment = isShipment;
+    const { isAdmin = false, user = {}, shipment = {}} = getUserInfo() || {};
+    this.isAdmin = isAdmin;
     this.user = user;
     this.shipment = shipment;
     this.tableHeaderConfig(this.tableColumnsConfig, listManagesApi, {
