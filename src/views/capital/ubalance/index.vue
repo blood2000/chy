@@ -72,6 +72,12 @@
     </el-row>
 
     <RefactorTable :loading="loading" :data="dataList" :table-columns-config="tableColumnsConfig">
+      <template #amount="{row}">
+        <span>{{ row.amount }}</span>
+      </template>
+      <template #freezeAmount="{row}">
+        <span>{{ row.freezeAmount }}</span>
+      </template>
       <template #updateTime="{row}">
         <span>{{ parseTime(row.updateTime) }}</span>
       </template>
