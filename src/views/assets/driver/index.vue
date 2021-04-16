@@ -529,7 +529,7 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('assets/driver/export', {}, `driver_${new Date().getTime()}.xlsx`, 'application/json');
+      this.download('assets/driver/export', {}, `司机信息_${new Date().getTime()}.xlsx`, 'application/json');
     },
     /** 批量导入按钮操作 */
     handleImportDriver() {
