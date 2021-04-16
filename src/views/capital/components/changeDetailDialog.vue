@@ -9,8 +9,8 @@
     @close="cancel"
   >
     <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="80px">
-      <el-form-item label="消费项目" prop="name">
-        <el-select v-model="queryParams.name" placeholder="请选择消费项目" filterable clearable size="small" class="input-width">
+      <el-form-item label="变动原因" prop="paidItem">
+        <el-select v-model="queryParams.paidItem" placeholder="请选择变动原因" filterable clearable size="small" class="input-width">
           <el-option
             v-for="dict in consumeOptions"
             :key="dict.dictValue"
@@ -19,8 +19,8 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="交易类型" prop="name">
-        <el-select v-model="queryParams.name" placeholder="请选择交易类型" filterable clearable size="small" class="input-width">
+      <el-form-item label="变动类型" prop="paidFeeType">
+        <el-select v-model="queryParams.paidFeeType" placeholder="请选择变动类型" filterable clearable size="small" class="input-width">
           <el-option
             v-for="dict in typeOptions"
             :key="dict.dictValue"
@@ -29,9 +29,9 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="变动日期" prop="name">
+      <el-form-item label="变动日期">
         <el-date-picker
-          v-model="queryParams.name"
+          v-model="queryParams.updateTimeBegin"
           clearable
           size="small"
           class="input-width"
@@ -41,7 +41,7 @@
         />
         至
         <el-date-picker
-          v-model="queryParams.name"
+          v-model="queryParams.updateTimeEnd"
           clearable
           size="small"
           class="input-width"
@@ -57,18 +57,27 @@
     </el-form>
     <el-table v-loading="loading" :data="infoList">
       <el-table-column label="序号" align="center" type="index" min-width="5%" />
-      <el-table-column label="客户名称" align="center" prop="" />
-      <el-table-column label="变动金额" align="center" prop="" />
-      <el-table-column label="变动类型" align="center" prop="" />
-      <el-table-column label="变动原因" align="center" prop="" />
-      <el-table-column label="账户余额" align="center" prop="" />
-      <el-table-column label="操作人" align="center" prop="" />
-      <el-table-column label="变动时间" align="center" prop="">
+      <el-table-column label="客户名称" align="center" prop="userName" />
+      <el-table-column label="变动金额" align="center" prop="paidAmount" />
+      <el-table-column label="变动类型" align="center" prop="paidFeeType">
         <template slot-scope="scope">
-          {{ parseTime(scope.row.time) }}
+          <span v-if="scope.row.paidFeeType === '0'" class="g-color-success">+收入</span>
+          <span v-if="scope.row.paidFeeType === '1'" class="g-clolor-error">-支出</span>
         </template>
       </el-table-column>
-      <el-table-column label="备注" align="center" prop="" />
+      <el-table-column label="变动原因" align="center" prop="paidItem">
+        <template slot-scope="scope">
+          <span>{{ selectDictLabel(consumeOptions, scope.row.paidItem) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="账户余额" align="center" prop="accountAmount" />
+      <el-table-column label="操作人" align="center" prop="updateName" />
+      <el-table-column label="变动时间" align="center" prop="updateTime" min-width="180">
+        <template slot-scope="scope">
+          {{ parseTime(scope.row.updateTime) }}
+        </template>
+      </el-table-column>
+      <el-table-column label="备注" align="center" prop="remark" min-width="180" />
     </el-table>
     <pagination
       v-show="total>0"
@@ -81,12 +90,16 @@
 </template>
 
 <script>
-import { changeDetailList } from '@/api/capital/abalance';
+// 变动明细用的是充值记录的接口
+import { rechargelist } from '@/api/capital/recharge';
 
 export default {
-  name: 'TeamManageDialog',
   props: {
-    open: Boolean
+    open: Boolean,
+    userCode: {
+      type: String,
+      default: null
+    }
   },
   data() {
     return {
@@ -96,15 +109,30 @@ export default {
       // 总条数
       total: 0,
       // 消费项目字典
-      consumeOptions: [],
+      consumeOptions: [
+        { dictLabel: '充值', dictValue: 0 },
+        { dictLabel: '保证金', dictValue: 1 },
+        { dictLabel: '运费', dictValue: 2 },
+        { dictLabel: '保费', dictValue: 3 },
+        { dictLabel: '罚款', dictValue: 4 },
+        { dictLabel: '提现', dictValue: 5 },
+        { dictLabel: '信息费', dictValue: 6 }
+      ],
       // 交易类型字典
-      typeOptions: [],
+      typeOptions: [
+        { dictLabel: '收入', dictValue: 0 },
+        { dictLabel: '支出', dictValue: 1 }
+      ],
       // 参数表格数据
       infoList: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 10
+        pageSize: 10,
+        paidItem: undefined,
+        paidFeeType: undefined,
+        updateTimeBegin: undefined,
+        updateTimeEnd: undefined
       }
     };
   },
@@ -129,9 +157,10 @@ export default {
     // 获取变动明细列表
     getList() {
       this.loading = true;
-      changeDetailList(this.queryParams).then(response => {
-        this.infoList = response.rows;
-        this.total = response.total;
+      this.queryParams.userCode = this.userCode;
+      rechargelist(this.queryParams).then(response => {
+        this.infoList = response.data.rows;
+        this.total = response.data.total;
         this.loading = false;
       });
     },
@@ -147,6 +176,8 @@ export default {
     },
     // 表单重置
     reset() {
+      this.queryParams.updateTimeBegin = undefined;
+      this.queryParams.updateTimeEnd = undefined;
       this.resetForm('queryForm');
     },
     // 取消按钮
