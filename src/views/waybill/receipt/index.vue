@@ -1,8 +1,15 @@
 <template>
   <div class="app-container">
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-      <el-form-item label="下单客户" prop="orderClient">
-        <el-input v-model="queryParams.orderClient" placeholder="请输入下单客户" clearable size="small" @keyup.enter.native="handleQuery" />
+    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
+      <el-form-item v-show="isAdmin" label="下单客户" prop="orderClient">
+        <el-input
+          v-model="queryParams.orderClient"
+          placeholder="请输入下单客户"
+          clearable
+          size="small"
+          style="width: 230px"
+          @keyup.enter.native="handleQuery"
+        />
       </el-form-item>
       <el-form-item label="货物类型" prop="goodsBigType">
         <el-select
@@ -11,6 +18,7 @@
           clearable
           filterable
           size="small"
+          style="width: 230px"
         >
           <el-option
             v-for="(dict, index) in goodsBigTypeOptions"
@@ -21,14 +29,21 @@
         </el-select>
       </el-form-item>
       <el-form-item label="货源单号" prop="mainOrderNumber">
-        <el-input v-model="queryParams.mainOrderNumber" placeholder="请输入货源单号" clearable size="small" @keyup.enter.native="handleQuery" />
+        <el-input
+          v-model="queryParams.mainOrderNumber"
+          placeholder="请输入货源单号"
+          clearable
+          size="small"
+          style="width: 230px"
+          @keyup.enter.native="handleQuery"
+        />
       </el-form-item>
       <el-form-item label="接单日期" prop="startReceiveTime">
         <el-date-picker
           v-model="queryParams.startReceiveTime"
           clearable
           size="small"
-          style="width: 215px"
+          style="width: 230px"
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="请选择接单日期"
@@ -40,6 +55,7 @@
           placeholder="请输入车牌号"
           clearable
           size="small"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -49,6 +65,7 @@
           placeholder="请输入司机姓名"
           clearable
           size="small"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -58,6 +75,7 @@
           placeholder="请输入运输单号"
           clearable
           size="small"
+          style="width: 230px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -68,6 +86,7 @@
           clearable
           filterable
           size="small"
+          style="width: 230px"
         >
           <el-option
             v-for="(dict, index) in statusOptions"
@@ -84,6 +103,7 @@
           clearable
           filterable
           size="small"
+          style="width: 230px"
         >
           <el-option
             v-for="(dict, index) in isReturnOptions"
@@ -179,6 +199,7 @@ import { listInfo, listInfoApi } from '@/api/waybill/receipt';
 import DetailDialog from '../components/detailDialog';
 import DeductionDialog from './deductionDialog';
 import ReturnDialog from './returnDialog';
+import { getUserInfo } from '@/utils/auth';
 // import tableColumnsConfig from './config';
 export default {
   name: 'Receipt',
@@ -267,10 +288,17 @@ export default {
       goodsBigType: {
         'dictPid': '0',
         'dictType': 'goodsType'
-      }
+      },
+      isAdmin: false,
+      user: {},
+      shipment: {}
     };
   },
   created() {
+    const { isAdmin = false, user = {}, shipment = {}} = getUserInfo() || {};
+    this.isAdmin = isAdmin;
+    this.user = user;
+    this.shipment = shipment;
     this.tableHeaderConfig(this.tableColumnsConfig, listInfoApi, {
       prop: 'edit',
       isShow: true,
