@@ -60,11 +60,7 @@ export default {
     submitForm: function() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          waybillAbnormal({
-            waybillCode: this.currentId,
-            isWarning: 1,
-            description: this.form.description
-          }).then(response => {
+          waybillAbnormal(this.form).then(response => {
             this.msgSuccess('标记成功');
             this.close();
             this.$emit('refresh');
@@ -96,7 +92,7 @@ export default {
       console.log(data);
       this.form.waybillCode = data.wayBillCode;
       this.form.waybillNo = data.waybillNo;
-      this.form.isWarning = data.isWarning;
+      this.form.isWarning = 1;
       console.log(this.form);
     }
   }
