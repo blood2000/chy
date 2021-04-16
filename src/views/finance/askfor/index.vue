@@ -193,6 +193,7 @@
             type="success"
             icon="el-icon-document-checked"
             size="mini"
+            :disabled="multiple"
             @click="handleAskfor"
           >批量索票</el-button>
           <el-button
@@ -287,6 +288,8 @@ export default {
       'loading': false,
       // 选中数组
       'ids': null,
+      // 非多个禁用
+      multiple: true,
       // 显示搜索条件
       'showSearch': true,
       // 总条数
@@ -412,7 +415,10 @@ export default {
     // 获取货主列表
     getShipment() {
       shipmentList(this.shipmentInfoQuery).then(response => {
-        this.shipmentlist = response.rows;
+        this.dataOver = !response.rows.length;
+        this.shipmentlist = this.shipmentlist.concat(response.rows);
+        this.shipmentloading = false;
+      }).catch(() => {
         this.shipmentloading = false;
       });
     },
@@ -423,6 +429,7 @@ export default {
         this.shipmentInfoQuery.pageNum = 1;
         this.dataOver = false;
         this.shipmentInfoQuery.adminName = query;
+        this.shipmentlist = [];
         this.getShipment();
       } else {
         this.shipmentlist = [];
@@ -458,6 +465,7 @@ export default {
       selection.map((item) => { this.feeinfo.serviceFee += item.serviceFee; });
       selection.map((item) => { this.feeinfo.serviceTaxFee += item.serviceTaxFee; });
       this.ids = selection.map((item) => item.code).join(',');
+      this.multiple = !selection.length;
       console.log(this.ids);
     },
     /** 查询【请填写功能名称】列表 */
@@ -493,12 +501,8 @@ export default {
     },
     // 批量索票
     handleAskfor() {
-      if (this.ids) {
-        askInvoice({ shipmentCode: this.queryParams.shipmentCode, waybillCodes: this.ids }).then(response => {});
-        this.getList();
-      } else {
-        this.msgError('请先选择数据!');
-      }
+      askInvoice({ shipmentCode: this.queryParams.shipmentCode, waybillCodes: this.ids }).then(response => {});
+      this.getList();
     },
     handleTableBtn(row, index) {
       // console.log(row, index);

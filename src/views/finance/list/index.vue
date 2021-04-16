@@ -93,6 +93,7 @@
           type="success"
           icon="el-icon-document-checked"
           size="mini"
+          :disabled="multiple"
           @click="handleVerify"
         >批量审核</el-button>
       </el-col>
@@ -207,6 +208,8 @@ export default {
       'loading': false,
       // 选中数组
       'ids': null,
+      // 非多个禁用
+      multiple: true,
       // 选中数量
       'selectlenght': '',
       // 显示搜索条件
@@ -285,6 +288,7 @@ export default {
       console.log(selection);
       this.selectlenght = selection.length;
       this.ids = selection.map((item) => item.code).join(',');
+      this.multiple = !selection.length;
     },
     /** 查询【请填写功能名称】列表 */
     getList() {
@@ -310,16 +314,12 @@ export default {
     },
     // 批量审核
     handleVerify() {
-      if (this.ids) {
-        this.formDisable = true;
-        this.$refs.VerifyDialog.reset();
-        this.verifydialog = true;
-        this.title = '批量审核';
-        this.$refs.VerifyDialog.setForm(this.ids);
-        this.$refs.VerifyDialog.setNum(this.selectlenght);
-      } else {
-        this.msgError('请先选择数据!');
-      }
+      this.formDisable = true;
+      this.$refs.VerifyDialog.reset();
+      this.verifydialog = true;
+      this.title = '批量审核';
+      this.$refs.VerifyDialog.setForm(this.ids);
+      this.$refs.VerifyDialog.setNum(this.selectlenght);
     },
     // 导出运费明细
     handleExportFreight() {

@@ -287,11 +287,15 @@ export default {
       driverInfoQuery: {
         'pageNum': 1,
         'pageSize': 10,
+        'authStatus': 3,
+        'isFreeze': 0,
         'name': null
       },
       vehicleInfoQuery: {
         'pageNum': 1,
         'pageSize': 10,
+        'authStatus': 3,
+        'isFreeze': 0,
         'driverCode': null
       },
       loading: false,
@@ -322,11 +326,33 @@ export default {
     // this.getDriver();
   },
   methods: {
+    // 触发司机远程搜索
+    remoteMethod(query) {
+      if (query !== '') {
+        this.loading = true;
+        this.driverInfoQuery.pageNum = 1;
+        this.dataOver = false;
+        this.driverInfoQuery.name = query;
+        this.driverOptions = [];
+        this.getDriver();
+      } else {
+        this.driverOptions = [];
+      }
+    },
+    // 司机远程搜索列表触底事件
+    loadmore() {
+      if (this.dataOver) return;
+      this.driverInfoQuery.pageNum++;
+      this.getDriver();
+    },
     // 获取司机列表
     getDriver() {
       driver(this.driverInfoQuery).then(response => {
-        this.driverOptions = response.rows;
+        this.dataOver = !response.rows.length;
+        this.driverOptions = this.driverOptions.concat(response.rows);
         console.log(this.driverOptions);
+        this.loading = false;
+      }).catch(() => {
         this.loading = false;
       });
     },
@@ -512,24 +538,6 @@ export default {
       vehicle(this.vehicleInfoQuery).then(response => {
         this.vehicleOptions = response.rows;
       });
-    },
-    // 触发司机远程搜索
-    remoteMethod(query) {
-      if (query !== '') {
-        this.loading = true;
-        this.driverInfoQuery.pageNum = 1;
-        this.dataOver = false;
-        this.driverInfoQuery.name = query;
-        this.getDriver();
-      } else {
-        this.driverOptions = [];
-      }
-    },
-    // 司机远程搜索列表触底事件
-    loadmore() {
-      if (this.dataOver) return;
-      this.driverInfoQuery.pageNum++;
-      this.getDriver();
     },
     // 根据选择的车辆获取信息
     vehicleChoose(e) {
