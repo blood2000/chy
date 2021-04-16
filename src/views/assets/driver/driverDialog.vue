@@ -75,7 +75,7 @@
           placeholder="请选择"
           :disabled="!!form.identificationEffective"
         />
-        <el-checkbox v-model="form.identificationEffective" @change="handleCheckChange">长期有效</el-checkbox>
+        <el-checkbox v-model="form.identificationEffective">长期有效</el-checkbox>
       </el-form-item>
       <!-- 选择省/市/区 -->
       <province-city-county
@@ -123,7 +123,7 @@
           placeholder="支持自动识别"
           :disabled="!!form.validPeriodAlways"
         />
-        <el-checkbox v-model="form.validPeriodAlways" @change="handlePeriodCheckChange">长期有效</el-checkbox>
+        <el-checkbox v-model="form.validPeriodAlways">长期有效</el-checkbox>
       </el-form-item>
       <el-form-item label="驾驶证类型" prop="driverLicenseType">
         <el-select v-model="form.driverLicenseType" class="width90" placeholder="支持自动识别" filterable clearable>
@@ -433,7 +433,7 @@ import { getProvinceList } from '@/api/system/area';
 import { listInfo } from '@/api/assets/team';
 import UploadImage from '@/components/UploadImage/index';
 import ProvinceCityCounty from '@/components/ProvinceCityCounty';
-import { praseBooleanToNum, praseNumToBoolean, compareTime } from '@/utils/ddc';
+import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
 
 export default {
   components: {
@@ -524,39 +524,15 @@ export default {
           { validator: this.formValidate.idCard, trigger: 'blur' }
         ],
         identificationEndTime: [
-          { validator: this.formValidate.isExpired, trigger: 'change' },
-          { validator: (rules, value, callback) => {
-            const { identificationBeginTime, identificationEffective } = this.form;
-            if (!identificationBeginTime) {
-              return callback(new Error('身份证有效期起始时间不能为空'));
-            } else if (!identificationEffective && !value) {
-              return callback(new Error('身份证有效期截止时间不能为空'));
-            } else if (!compareTime(identificationBeginTime, value)) {
-              return callback(new Error('身份证有效期截止时间不能小于起始时间'));
-            }
-            return callback();
-          },
-          trigger: ['change', 'blur']
-          }
+          { validator: (rules, value, callback) => this.formValidate.isExpired(rules, value, callback, this.form.identificationEffective), trigger: 'change' },
+          { validator: (rules, value, callback) => this.formValidate.idCardValidate(rules, value, callback, this.form.identificationBeginTime, this.form.identificationEffective), trigger: ['change', 'blur'] }
         ],
         issuingOrganizations: [
           { required: true, message: '驾驶证发证机关不能为空', trigger: 'blur' }
         ],
         validPeriodTo: [
-          { validator: this.formValidate.isExpired, trigger: 'change' },
-          { validator: (rules, value, callback) => {
-            const { validPeriodFrom, validPeriodAlways } = this.form;
-            if (!validPeriodFrom) {
-              return callback(new Error('驾驶证有效期起始时间不能为空'));
-            } else if (!validPeriodAlways && !value) {
-              return callback(new Error('驾驶证有效期截止时间不能为空'));
-            } else if (!compareTime(validPeriodFrom, value)) {
-              return callback(new Error('驾驶证有效期截止时间不能小于起始时间'));
-            }
-            return callback();
-          },
-          trigger: ['change', 'blur']
-          }
+          { validator: (rules, value, callback) => this.formValidate.isExpired(rules, value, callback, this.form.validPeriodAlways), trigger: 'change' },
+          { validator: (rules, value, callback) => this.formValidate.idCardValidate(rules, value, callback, this.form.validPeriodFrom, this.form.validPeriodAlways, '驾驶证'), trigger: ['change', 'blur'] }
         ],
         workCompany: [
           { required: true, message: '工作单位不能为空', trigger: 'blur' }
@@ -820,8 +796,6 @@ export default {
       this.vehicleForm = data.vehicleInfo || {};
       this.form.identificationEffective = praseNumToBoolean(this.form.identificationEffective);
       this.form.validPeriodAlways = praseNumToBoolean(this.form.validPeriodAlways);
-      this.handleCheckChange(this.form.identificationEffective);
-      this.handlePeriodCheckChange(this.form.validPeriodAlways);
       if (this.form.teamCode && this.form.teamName) {
         this.teamOptions = [{
           code: this.form.teamCode,
@@ -853,18 +827,6 @@ export default {
       this.queryParams.pageNum++;
       this.getTeamList();
     },
-    // 身份证是否长期有效选中事件
-    handleCheckChange(val) {
-      if (val) {
-        this.form.identificationEndTime = null;
-      }
-    },
-    // 驾驶证是否长期有效选中事件
-    handlePeriodCheckChange(val) {
-      if (val) {
-        this.form.validPeriodTo = null;
-      }
-    },
     // 图片识别后回填
     fillForm(type, data) {
       switch (type) {
@@ -873,13 +835,13 @@ export default {
           if (data.number) this.form.identificationNumber = data.number;
           if (data.address) this.form.homeAddress = data.address;
           if (data.valid_from) this.form.identificationBeginTime = data.valid_from;
-          if (data.valid_to && !this.form.identificationEffective) this.form.identificationEndTime = data.valid_to;
+          if (data.valid_to) this.form.identificationEndTime = data.valid_to;
           break;
         case 'driver-license':
           if (data.number) this.form.driverLicense = data.number;
           if (data.issuing_authority) this.form.issuingOrganizations = data.issuing_authority;
           if (data.valid_from) this.form.validPeriodFrom = data.valid_from;
-          if (data.valid_to && !this.form.validPeriodAlways) this.form.validPeriodTo = data.valid_to;
+          if (data.valid_to) this.form.validPeriodTo = data.valid_to;
           if (data.class) this.form.driverLicenseType = data.class;
           break;
         case 'vehicle-license':
