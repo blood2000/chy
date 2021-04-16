@@ -407,14 +407,14 @@ export default {
     // 判断用户
     const { isAdmin = false, shipment = {}} = getUserInfo() || {};
 
-    if (isAdmin) {
+    if (!isAdmin) {
       if (shipment.info.authStatus !== 3) {
         this.authStatus = false;
         this.msgWarning('审核通过才能发布货源~!');
 
         return;
       }
-      this.isAdmin = isAdmin;
+      this.isAdmin = !isAdmin;
       this.isAdmin && (this.formData.tin1 = shipment.info.adminCode);
     }
 
