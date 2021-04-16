@@ -514,7 +514,7 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('assets/shipment/export', {}, `shipment_${new Date().getTime()}.xlsx`, 'application/json');
+      this.download('assets/shipment/export', {}, `货主信息_${new Date().getTime()}.xlsx`, 'application/json');
     },
     /** 管理按钮操作 */
     handleManage(row) {

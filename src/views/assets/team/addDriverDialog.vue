@@ -90,7 +90,7 @@
       <el-table-column label="处理状态" align="center" prop="applyStatus">
         <template slot-scope="scope">
           <span v-if="scope.row.applyStatus !=null && scope.row.applyStatus>=0">{{ selectDictLabel(applyStatusOptions, scope.row.applyStatus) }}</span>
-          <span v-else>无</span>
+          <span v-else>待加入</span>
         </template>
       </el-table-column>
       <el-table-column label="司机类别" align="center" prop="driverType">
