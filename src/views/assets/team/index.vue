@@ -47,6 +47,22 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="审核状态" prop="authStatus">
+        <el-select
+          v-model="queryParams.authStatus"
+          filterable
+          clearable
+          size="small"
+          style="width: 272px"
+        >
+          <el-option
+            v-for="dict in authStatusOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="处理状态" prop="applyStatus">
         <el-select v-model="queryParams.applyStatus" placeholder="请选择状态" filterable clearable size="small">
           <el-option
@@ -159,13 +175,14 @@
         >审核</el-button>
         <el-button
           v-hasPermi="['assets:team:invitation']"
+          v-show="row.status == 0 && row.authStatus == 3"
           size="mini"
           type="text"
           icon="el-icon-document-add"
           @click="handleAddDriver(row)"
         >邀请司机</el-button>
         <el-button
-          v-show="row.apply"
+          v-show="row.apply && row.status == 0 && row.authStatus == 3"
           v-hasPermi="['assets:team:deal']"
           size="mini"
           type="text"
@@ -246,6 +263,13 @@ export default {
       statusOptions: [
         { dictLabel: '启用', dictValue: '0' },
         { dictLabel: '禁用', dictValue: '1' }
+      ],
+      // 审核状态字典
+      authStatusOptions: [
+        { dictLabel: '未审核', dictValue: 0 },
+        { dictLabel: '审核中', dictValue: 1 },
+        { dictLabel: '审核未通过', dictValue: 2 },
+        { dictLabel: '审核通过', dictValue: 3 }
       ],
       isOptions: [
         { dictLabel: '否', dictValue: 0 },

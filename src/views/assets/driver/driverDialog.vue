@@ -49,7 +49,7 @@
         <el-input v-model="form.fixedPhone" placeholder="请输入固话" class="width90" clearable />
       </el-form-item> -->
       <el-form-item label="密码" prop="password">
-        <el-input v-model="form.password" type="password" placeholder="请输入密码" class="width59 mr3" clearable />
+        <el-input v-model="form.password" type="password" :placeholder="form.id?'密码未修改可不填写':'请输入密码'" class="width59 mr3" clearable />
         <span class="g-color-blue">(初始密码为{{ initialPassword }})</span>
       </el-form-item>
       <el-form-item label="身份证号" prop="identificationNumber">
