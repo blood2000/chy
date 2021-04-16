@@ -54,6 +54,9 @@
         <template #tin12="{row}">
           <span v-if="row">司机</span>
         </template>
+        <template #driverType="{row}">
+          <span>{{ row.driverType === 1? '独立': '聘用' }}</span>
+        </template>
       </refactor-table>
     </div>
 
@@ -208,7 +211,23 @@ export default {
     getList() {
       this.loading = true;
 
-      apiFn[this.activeName](this.queryParams).then(response => {
+      let quer = this.queryParams;
+      if (this.activeName === 'listDriver') {
+        quer = {
+          ...this.queryParams,
+          authStatus: 3,
+          isFreeze: 0
+
+        };
+      } else {
+        quer = {
+          ...this.queryParams,
+          status: 0,
+          authStatus: 3
+        };
+      }
+
+      apiFn[this.activeName](quer).then(response => {
         this['list_' + this.activeName] = response.rows;
         this['total_' + this.activeName] = response.total;
         this.loading = false;
@@ -271,7 +290,7 @@ export default {
     },
     // 单选
     handlerChange(value) {
-      console.log(value);
+      // console.log(value);
     },
 
     _ok(bool) {
@@ -289,7 +308,7 @@ export default {
           this['selections_listInfo'] = this.list_listInfo.filter(e => e.id === this.radio);
 
 
-          this.$emit('handleSelectionChange', { [this.activeName]: this.selections, info: this['selections_listInfo'][0] }, bool);
+          this.$emit('handleSelectionChange', { [this.activeName]: this.selections }, bool);
         }
       } else {
         // dispatch 有值是manage组件调用的

@@ -43,11 +43,39 @@ export default [
     label: '装货地'
   },
   {
+    prop: 'contact1',
+    isShow: true,
+    width: 200,
+    tooltip: true,
+    label: '装货地联系人'
+  },
+  {
+    prop: 'contactPhone1',
+    isShow: true,
+    width: 200,
+    tooltip: true,
+    label: '装货地联系电话'
+  },
+  {
     prop: 'addressName2',
     isShow: true,
     width: 200,
     tooltip: true,
     label: '卸货地'
+  },
+  {
+    prop: 'contact2',
+    isShow: true,
+    width: 200,
+    tooltip: true,
+    label: '卸货地联系人'
+  },
+  {
+    prop: 'contactPhone2',
+    isShow: true,
+    width: 200,
+    tooltip: true,
+    label: '卸货地联系电话'
   },
   {
     prop: 'remark',
