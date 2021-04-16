@@ -529,7 +529,10 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('assets/driver/export', {}, `司机信息_${new Date().getTime()}.xlsx`, 'application/json');
+      const params = Object.assign({}, this.queryParams);
+      params.pageSize = undefined;
+      params.pageNum = undefined;
+      this.download('assets/driver/export', params, `司机信息_${new Date().getTime()}.xlsx`, 'application/json');
     },
     /** 批量导入按钮操作 */
     handleImportDriver() {

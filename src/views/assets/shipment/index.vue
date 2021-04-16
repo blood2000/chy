@@ -514,7 +514,10 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('assets/shipment/export', {}, `货主信息_${new Date().getTime()}.xlsx`, 'application/json');
+      const params = Object.assign({}, this.queryParams);
+      params.pageSize = undefined;
+      params.pageNum = undefined;
+      this.download('assets/shipment/export', params, `货主信息_${new Date().getTime()}.xlsx`, 'application/json');
     },
     /** 管理按钮操作 */
     handleManage(row) {
