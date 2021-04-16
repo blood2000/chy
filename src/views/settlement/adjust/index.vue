@@ -256,7 +256,7 @@
 
       <template #edit="{row}">
         <el-button
-          v-if="activeName == '5'"
+          v-if="activeName == '5' && row.isApplyMoneyBack == 1"
           v-has-permi="['transportation:waybillBalanceInfo:warning']"
           size="mini"
           type="text"
@@ -523,7 +523,7 @@ export default {
       this.visible = true;
       switch (index) {
         case 1:
-          this.$alert('这里是提示内容', '驳回提示', {
+          this.$alert(row.applyMoneyBackRemark, '驳回提示', {
             confirmButtonText: '确定',
             type: 'warning'
           }).then(() => {
