@@ -165,6 +165,7 @@
           type="warning"
           icon="el-icon-download"
           size="mini"
+          :loading="exportLoading"
           @click="handleExport"
         >导出</el-button>
       </el-col>
@@ -360,7 +361,9 @@ export default {
       formDisable: false,
       // 货主管理
       shipmentCode: null,
-      companyCode: null
+      companyCode: null,
+      // 导出
+      exportLoading: false
     };
   },
   created() {
@@ -514,7 +517,13 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('assets/shipment/export', {}, `shipment_${new Date().getTime()}.xlsx`, 'application/json');
+      this.exportLoading = true;
+      const params = Object.assign({}, this.queryParams);
+      params.pageSize = undefined;
+      params.pageNum = undefined;
+      this.download('assets/shipment/export', params, `货主信息_${new Date().getTime()}.xlsx`, 'application/json').then(() => {
+        this.exportLoading = false;
+      });
     },
     /** 管理按钮操作 */
     handleManage(row) {

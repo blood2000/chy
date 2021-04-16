@@ -225,7 +225,7 @@ export function tableHeaderConfig(list, url, editColumn, myColumen) {
  * @param {*} beginTime 开始时间
  * @param {*} endTime 结束时间
  */
-export function compareTime(beginTime, endTime) {
+export function compareBeginEndTime(beginTime, endTime) {
   if (endTime === '' || endTime === undefined || endTime === null) return true;
   const _begin = Date.parse(new Date(beginTime));
   const _end = Date.parse(new Date(endTime));

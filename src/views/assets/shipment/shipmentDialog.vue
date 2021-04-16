@@ -18,7 +18,7 @@
         <el-input v-model="form.telphone" placeholder="请输入手机号/账号" class="width90" clearable />
       </el-form-item>
       <el-form-item label="密码" prop="password">
-        <el-input v-model="form.password" type="password" placeholder="请输入密码" class="width60 mr3" clearable />
+        <el-input v-model="form.password" type="password" :placeholder="form.id?'密码未修改可不填写':'请输入密码'" class="width60 mr3" clearable />
         <span class="g-color-blue">(初始密码为{{ initialPassword }})</span>
       </el-form-item>
       <el-form-item>
@@ -79,7 +79,7 @@
           placeholder="支持自动识别"
           :disabled="!!form.identificationEffective"
         />
-        <el-checkbox v-model="form.identificationEffective" @change="handleCheckChange">长期有效</el-checkbox>
+        <el-checkbox v-model="form.identificationEffective">长期有效</el-checkbox>
       </el-form-item>
       <!-- <el-form-item label="网点" prop="branchCode">
         <el-select
@@ -346,7 +346,7 @@ import { listDeptAll } from '@/api/system/dept';
 import { getBranchList } from '@/api/system/branch';
 import UploadImage from '@/components/UploadImage/index';
 import ProvinceCityCounty from '@/components/ProvinceCityCounty';
-import { praseBooleanToNum, praseNumToBoolean, compareTime } from '@/utils/ddc';
+import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
 
 export default {
   components: {
@@ -405,20 +405,8 @@ export default {
           { validator: this.formValidate.idCard, trigger: 'blur' }
         ],
         identificationEndTime: [
-          { validator: this.formValidate.isExpired, trigger: 'change' },
-          { validator: (rules, value, callback) => {
-            const { identificationBeginTime, identificationEffective } = this.form;
-            if (!identificationBeginTime) {
-              return callback(new Error('身份证有效期起始时间不能为空'));
-            } else if (!identificationEffective && !value) {
-              return callback(new Error('身份证有效期截止时间不能为空'));
-            } else if (!compareTime(identificationBeginTime, value)) {
-              return callback(new Error('身份证有效期截止时间不能小于起始时间'));
-            }
-            return callback();
-          },
-          trigger: ['change', 'blur']
-          }
+          { validator: (rules, value, callback) => this.formValidate.idCardValidate(rules, value, callback, this.form.identificationBeginTime, this.form.identificationEffective), trigger: ['change', 'blur'] },
+          { validator: (rules, value, callback) => this.formValidate.isExpired(rules, value, callback, this.form.identificationEffective), trigger: 'change' }
         ],
         creditAmount: [
           { validator: this.formValidate.number, trigger: 'blur' }
@@ -629,7 +617,6 @@ export default {
     setForm(data) {
       this.form = data;
       this.form.identificationEffective = praseNumToBoolean(this.form.identificationEffective);
-      this.handleCheckChange(this.form.identificationEffective);
       if (this.form.branchCode && this.form.branchName) {
         this.branchOptions = [{
           code: this.form.branchCode,
@@ -658,12 +645,6 @@ export default {
         this.branchOptions = [];
       }
     },
-    // 身份证是否长期有效选中事件
-    handleCheckChange(val) {
-      if (val) {
-        this.form.identificationEndTime = null;
-      }
-    },
     // 图片识别后回填
     fillForm(type, data) {
       switch (type) {
@@ -672,7 +653,7 @@ export default {
           if (data.number) this.form.identificationNumber = data.number;
           if (data.address) this.form.area = data.address;
           if (data.valid_from) this.form.identificationBeginTime = data.valid_from;
-          if (data.valid_to && !this.form.identificationEffective) this.form.identificationEndTime = data.valid_to;
+          if (data.valid_to) this.form.identificationEndTime = data.valid_to;
           break;
         case 'business-license':
           break;
