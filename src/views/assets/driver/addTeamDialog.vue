@@ -80,6 +80,14 @@
         </template>
       </el-table-column>
       <el-table-column label="调度者名称" align="center" prop="name" />
+      <el-table-column label="审核状态" align="center" prop="authStatus">
+        <template slot-scope="scope">
+          <span v-show="scope.row.authStatus === 0" class="g-color-gray">未审核</span>
+          <span v-show="scope.row.authStatus === 1" class="g-color-blue">审核中</span>
+          <span v-show="scope.row.authStatus === 2" class="g-color-error">审核未通过</span>
+          <span v-show="scope.row.authStatus === 3" class="g-color-success">审核通过</span>
+        </template>
+      </el-table-column>
       <!-- <el-table-column label="管理者" align="center" prop="teamLeader" />-->
       <el-table-column label="身份证号" align="center" prop="identificationNumber" />
       <el-table-column label="是否清分" align="center" prop="isDistribution">
@@ -156,12 +164,13 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        name: null,
-        teamLeader: null,
-        status: null,
-        driverName: null,
-        licenseNumber: null,
-        applyStatus: null
+        name: undefined,
+        teamLeader: undefined,
+        status: undefined,
+        driverName: undefined,
+        licenseNumber: undefined,
+        applyStatus: undefined,
+        authStatus: 3
       }
     };
   },

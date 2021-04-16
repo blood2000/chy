@@ -365,7 +365,7 @@ export default {
     handleExport() {
       this.download('assets/team/export', {
         ...this.queryParams
-      }, `assets_${new Date().getTime()}.xlsx`);
+      }, `team_${new Date().getTime()}.xlsx`);
     },
     /** 管理按钮操作 */
     handleManage(row) {

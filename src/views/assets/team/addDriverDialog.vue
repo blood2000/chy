@@ -7,7 +7,7 @@
     append-to-body
     @close="cancel"
   >
-    <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
+    <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="86px">
       <el-form-item label="司机类别" prop="driverType">
         <el-select v-model="queryParams.driverType" placeholder="请选择司机类别" filterable clearable size="small" class="input-width">
           <el-option
@@ -62,16 +62,6 @@
         <el-select v-model="queryParams.driverLicenseType" filterable clearable size="small" class="input-width">
           <el-option
             v-for="dict in driverLicenseTypeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="审核状态" prop="authStatus">
-        <el-select v-model="queryParams.authStatus" placeholder="请选择审核状态" filterable clearable size="small" class="input-width">
-          <el-option
-            v-for="dict in statusOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
@@ -216,13 +206,6 @@ export default {
         { dictLabel: '独立司机', dictValue: 1 },
         { dictLabel: '聘用司机', dictValue: 2 }
       ],
-      // 审核状态字典
-      statusOptions: [
-        { dictLabel: '未审核', dictValue: 0 },
-        { dictLabel: '审核中', dictValue: 1 },
-        { dictLabel: '审核未通过', dictValue: 2 },
-        { dictLabel: '审核通过', dictValue: 3 }
-      ],
       // 是否冻结字典
       isFreezoneOptions: [
         { dictLabel: '正常', dictValue: 0 },
@@ -253,7 +236,7 @@ export default {
         name: undefined,
         telphone: undefined,
         identificationNumber: undefined,
-        authStatus: undefined,
+        authStatus: 3,
         licenseNumber: undefined,
         driverLicenseType: undefined,
         applyStatus: undefined
