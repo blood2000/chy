@@ -18,7 +18,7 @@
         <el-input v-model="form.telphone" placeholder="请输入手机号/账号" class="width90" clearable />
       </el-form-item>
       <el-form-item label="密码" prop="password">
-        <el-input v-model="form.password" type="password" placeholder="请输入密码" class="width60 mr3" clearable />
+        <el-input v-model="form.password" type="password" :placeholder="form.id?'密码未修改可不填写':'请输入密码'" class="width60 mr3" clearable />
         <span class="g-color-blue">(初始密码为{{ initialPassword }})</span>
       </el-form-item>
       <el-form-item>

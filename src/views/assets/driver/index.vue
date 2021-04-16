@@ -231,7 +231,7 @@
         >详情</el-button>
         <template v-if="!teamCode">
           <el-button
-            v-hasPermi="['assets:config:edit']"
+            v-hasPermi="['assets:driver:edit']"
             size="mini"
             type="text"
             icon="el-icon-edit"
@@ -247,13 +247,14 @@
           >审核</el-button>
           <el-button
             v-hasPermi="['assets:driver:join']"
+            v-show="row.authStatus == 3"
             size="mini"
             type="text"
             icon="el-icon-document-add"
             @click="handleAddTeam(row)"
           >加入调度</el-button>
           <el-button
-            v-show="row.apply"
+            v-show="row.apply && row.authStatus == 3"
             size="mini"
             type="text"
             icon="el-icon-document-checked"
