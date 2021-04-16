@@ -106,7 +106,7 @@
     />
 
     <!-- 变动明细 对话框 -->
-    <change-detail-dialog :open.sync="detailOpen" :title="title" />
+    <change-detail-dialog :open.sync="detailOpen" :title="title" :user-code="userCode" />
     <!-- 查询网商余额 对话框 -->
     <check-balance-dialog :open.sync="balanceOpen" :title="title" :user-code="userCode" />
   </div>
@@ -194,12 +194,13 @@ export default {
     /** 网商余额按钮 */
     handleBalance(row) {
       this.title = '查询网商余额';
-      this.balanceOpen = true;
       this.userCode = row.userCode;
+      this.balanceOpen = true;
     },
     /** 明细按钮 */
     handleDetail(row) {
       this.title = '明细';
+      this.userCode = row.userCode;
       this.detailOpen = true;
     }
   }

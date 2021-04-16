@@ -229,7 +229,7 @@ export default {
     var handlerValidate = (value, smg, callback) => {
       if (!value) {
         this.$emit('validatePass', this.nowGoods.activeName);
-        callback(new Error('请输入货物单价'));
+        callback(new Error(smg));
       } else {
         callback();
       }
@@ -334,11 +334,14 @@ export default {
       },
       immediate: true
     },
-    'formData.totalType'(value) {
-      if (value === '1') {
-        this.formData.weight = undefined;
-      }
-      this.$emit('totalTypeValue', value);
+    'formData.totalType': {
+      handler(value) {
+        if (value === '1') {
+          this.formData.weight = undefined;
+        }
+        this.$emit('totalTypeValue', value);
+      },
+      immediate: true
     }
   },
 
