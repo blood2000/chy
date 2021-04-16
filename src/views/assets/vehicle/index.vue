@@ -48,17 +48,6 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="年审时间" prop="annualVerificationDate">
-        <el-date-picker
-          v-model="queryParams.annualVerificationDate"
-          clearable
-          size="small"
-          style="width: 215px"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="选择年审时间"
-        />
-      </el-form-item>
       <el-form-item label="审核状态" prop="authStatus">
         <el-select
           v-model="queryParams.authStatus"
@@ -91,6 +80,27 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="年审时间">
+        <el-date-picker
+          v-model="queryParams.annualVerificationBeginDate"
+          clearable
+          size="small"
+          style="width: 130px"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择"
+        />
+        至
+        <el-date-picker
+          v-model="queryParams.annualVerificationEndDate"
+          clearable
+          size="small"
+          style="width: 130px"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择"
+        />
+      </el-form-item>
       <el-form-item>
         <el-button
           type="cyan"
@@ -106,7 +116,7 @@
       </el-form-item>
     </el-form>
 
-    <el-row :gutter="10" class="mb8">
+    <el-row v-show="!teamCode && !driverCode" :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
           v-hasPermi="['assets:vehicle:add']"
@@ -213,6 +223,7 @@
       </template>
       <template #edit="{row}">
         <el-button
+          v-show="!teamCode && !driverCode"
           v-hasPermi="['assets:vehicle:get']"
           size="mini"
           type="text"
@@ -225,27 +236,29 @@
           icon="el-icon-document"
           @click="handleDetail(row, 'detail')"
         >详情</el-button>
-        <el-button
-          v-hasPermi="['assets:vehicle:edit']"
-          size="mini"
-          type="text"
-          icon="el-icon-edit"
-          @click="handleDetail(row, 'edit')"
-        >修改</el-button>
-        <el-button
-          v-show="row.authStatus === 0 || row.authStatus === 1"
-          size="mini"
-          type="text"
-          icon="el-icon-document-checked"
-          @click="handleDetail(row, 'review')"
-        >审核</el-button>
-        <el-button
-          v-hasPermi="['assets:vehicle:remove']"
-          size="mini"
-          type="text"
-          icon="el-icon-delete"
-          @click="handleDelete(row)"
-        >删除</el-button>
+        <template v-if="!teamCode && !driverCode">
+          <el-button
+            v-hasPermi="['assets:vehicle:edit']"
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleDetail(row, 'edit')"
+          >修改</el-button>
+          <el-button
+            v-show="row.authStatus === 0 || row.authStatus === 1"
+            size="mini"
+            type="text"
+            icon="el-icon-document-checked"
+            @click="handleDetail(row, 'review')"
+          >审核</el-button>
+          <el-button
+            v-hasPermi="['assets:vehicle:remove']"
+            size="mini"
+            type="text"
+            icon="el-icon-delete"
+            @click="handleDelete(row)"
+          >删除</el-button>
+        </template>
       </template>
     </RefactorTable>
 
@@ -352,7 +365,8 @@ export default {
         vehicleOwnerCode: undefined,
         vehicleAscriptionType: undefined,
         vehicleEnergyType: undefined,
-        annualVerificationDate: undefined,
+        annualVerificationBeginDate: undefined,
+        annualVerificationEndDate: undefined,
         authStatus: undefined,
         isFreeze: undefined
       },
@@ -438,6 +452,8 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.queryParams.annualVerificationBeginDate = undefined;
+      this.queryParams.annualVerificationEndDate = undefined;
       this.resetForm('queryForm');
       this.handleQuery();
     },

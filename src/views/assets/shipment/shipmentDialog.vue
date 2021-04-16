@@ -25,11 +25,11 @@
         <el-row>
           <el-col :span="7">
             <p class="upload-image-label">管理员身份证正面照</p>
-            <upload-image v-model="form.identificationImg" :disabled="disable" image-type="id-card" @fillForm="fillForm" />
+            <upload-image v-model="form.identificationImg" :disabled="disable" image-type="id-card" side="front" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">管理员身份证背面照</p>
-            <upload-image v-model="form.identificationBackImg" :disabled="disable" image-type="id-card" @fillForm="fillForm" />
+            <upload-image v-model="form.identificationBackImg" :disabled="disable" image-type="id-card" side="back" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">手持身份证照</p>
@@ -77,7 +77,7 @@
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="支持自动识别"
-          :readonly="!!form.identificationEffective"
+          :disabled="!!form.identificationEffective"
         />
         <el-checkbox v-model="form.identificationEffective" @change="handleCheckChange">长期有效</el-checkbox>
       </el-form-item>
@@ -629,6 +629,7 @@ export default {
     setForm(data) {
       this.form = data;
       this.form.identificationEffective = praseNumToBoolean(this.form.identificationEffective);
+      this.handleCheckChange(this.form.identificationEffective);
       if (this.form.branchCode && this.form.branchName) {
         this.branchOptions = [{
           code: this.form.branchCode,
@@ -671,7 +672,7 @@ export default {
           if (data.number) this.form.identificationNumber = data.number;
           if (data.address) this.form.area = data.address;
           if (data.valid_from) this.form.identificationBeginTime = data.valid_from;
-          if (data.valid_to) this.form.identificationEndTime = data.valid_to;
+          if (data.valid_to && !this.form.identificationEffective) this.form.identificationEndTime = data.valid_to;
           break;
         case 'business-license':
           break;

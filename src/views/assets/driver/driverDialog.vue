@@ -73,7 +73,7 @@
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="请选择"
-          :readonly="!!form.identificationEffective"
+          :disabled="!!form.identificationEffective"
         />
         <el-checkbox v-model="form.identificationEffective" @change="handleCheckChange">长期有效</el-checkbox>
       </el-form-item>
@@ -121,7 +121,7 @@
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="支持自动识别"
-          :readonly="!!form.validPeriodAlways"
+          :disabled="!!form.validPeriodAlways"
         />
         <el-checkbox v-model="form.validPeriodAlways" @change="handlePeriodCheckChange">长期有效</el-checkbox>
       </el-form-item>
@@ -244,11 +244,11 @@
           </el-col>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">身份证正面照</p>
-            <upload-image v-model="form.identificationImage" :disabled="disable" image-type="id-card" @fillForm="fillForm" />
+            <upload-image v-model="form.identificationImage" :disabled="disable" image-type="id-card" side="front" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">身份证反面照</p>
-            <upload-image v-model="form.identificationBackImage" :disabled="disable" image-type="id-card" @fillForm="fillForm" />
+            <upload-image v-model="form.identificationBackImage" :disabled="disable" image-type="id-card" side="back" @fillForm="fillForm" />
           </el-col>
           <el-col v-show="form.driverType===1" :span="7" class="mb">
             <p class="upload-image-label">道路运输许可证</p>
@@ -500,8 +500,8 @@ export default {
   	  axisTypeOptions: [],
   	  // 车辆归属类型字典
   	  vehicleAscriptionTypeOptions: [
-  	    { dictLabel: '自有', dictValue: '0' },
-  	    { dictLabel: '加盟', dictValue: '1' }
+  	    { dictLabel: '自有', dictValue: 0 },
+  	    { dictLabel: '加盟', dictValue: 1 }
   	  ],
       // 车队列表
       loading: false,
@@ -820,6 +820,8 @@ export default {
       this.vehicleForm = data.vehicleInfo || {};
       this.form.identificationEffective = praseNumToBoolean(this.form.identificationEffective);
       this.form.validPeriodAlways = praseNumToBoolean(this.form.validPeriodAlways);
+      this.handleCheckChange(this.form.identificationEffective);
+      this.handlePeriodCheckChange(this.form.validPeriodAlways);
       if (this.form.teamCode && this.form.teamName) {
         this.teamOptions = [{
           code: this.form.teamCode,
@@ -871,13 +873,13 @@ export default {
           if (data.number) this.form.identificationNumber = data.number;
           if (data.address) this.form.homeAddress = data.address;
           if (data.valid_from) this.form.identificationBeginTime = data.valid_from;
-          if (data.valid_to) this.form.identificationEndTime = data.valid_to;
+          if (data.valid_to && !this.form.identificationEffective) this.form.identificationEndTime = data.valid_to;
           break;
         case 'driver-license':
           if (data.number) this.form.driverLicense = data.number;
           if (data.issuing_authority) this.form.issuingOrganizations = data.issuing_authority;
           if (data.valid_from) this.form.validPeriodFrom = data.valid_from;
-          if (data.valid_to) this.form.validPeriodTo = data.valid_to;
+          if (data.valid_to && !this.form.validPeriodAlways) this.form.validPeriodTo = data.valid_to;
           if (data.class) this.form.driverLicenseType = data.class;
           break;
         case 'vehicle-license':

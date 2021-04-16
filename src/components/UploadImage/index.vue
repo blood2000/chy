@@ -11,6 +11,7 @@
       :show-file-list="false"
       :headers="headers"
       :disabled="disabled"
+      accept=".jpg,.png,.jpeg"
       style="display: inline-block; vertical-align: top"
     >
       <img v-if="value && !disabled" :src="attachUrl" class="avatar">
@@ -39,6 +40,10 @@ export default {
       default: false
     },
     imageType: {
+      type: String,
+      default: null
+    },
+    side: {
       type: String,
       default: null
     }
@@ -117,6 +122,9 @@ export default {
         formData.append('url', url);
       } else {
         return;
+      }
+      if (this.side) {
+        formData.append('side', this.side);
       }
       uploadOcr(formData).then(response => {
         if (response.data && !response.data.msg) {

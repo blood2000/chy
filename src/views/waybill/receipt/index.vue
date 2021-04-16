@@ -218,8 +218,8 @@ export default {
       ],
       // 回单确认状态 0未标记回单，1-已标记回单字典
       isReturnOptions: [
-        { 'dictLabel': '未标记回单', 'dictValue': false },
-        { 'dictLabel': '已标记回单', 'dictValue': true }
+        { 'dictLabel': '未标记回单', 'dictValue': 0 },
+        { 'dictLabel': '已标记回单', 'dictValue': 1 }
       ],
       // 运单状态 0未接单/1已接单/2已签收/3已回单/4已结算/5已打款字典
       statusOptions: [

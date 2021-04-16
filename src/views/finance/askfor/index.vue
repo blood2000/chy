@@ -43,14 +43,21 @@
         :rules="rules"
         label-width="90px"
       >
-        <el-form-item v-show="!isShipment" label="货主" prop="shipmentCode">
+        <el-form-item v-show="isAdmin" label="货主" prop="shipmentCode">
+          <!-- filterable开启可搜索 remote远程搜索 reserve-keyword 保存搜索关键词 -->
           <el-select
             v-model="queryParams.shipmentCode"
-            placeholder="请选择货主"
+            v-el-select-loadmore="loadmore"
             filterable
             clearable
+            remote
+            reserve-keyword
+            placeholder="请先搜索选择货主"
+            :remote-method="remoteMethod"
+            :loading="shipmentloading"
             style="width: 230px"
             size="small"
+            @change="chooseShipment"
           >
             <el-option
               v-for="dict in shipmentlist"
@@ -356,7 +363,7 @@ export default {
         ]
       },
       // 账号信息
-      isShipment: false,
+      isAdmin: false,
       user: {},
       shipment: {},
       // 数据统计
@@ -366,16 +373,30 @@ export default {
         taxPayment: 0,
         serviceFee: 0,
         serviceTaxFee: 0
-      }
+      },
+      shipmentInfoQuery: {
+        pageNum: 1,
+        pageSize: 10,
+        authStatus: 3,
+        adminName: null
+      },
+      shipmentloading: false,
+      dataOver: false // 是否请求完了
     };
   },
   computed: {
   },
   created() {
-    const { isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
-    this.isShipment = isShipment;
+    const { isAdmin = false, user = {}, shipment = {}} = getUserInfo() || {};
+    this.isAdmin = isAdmin;
+    console.log(this.isAdmin);
     this.user = user;
+    console.log(user);
     this.shipment = shipment;
+    if (this.isShipment) {
+      this.queryParams.shipmentCode = shipment.info.code;
+      this.getList();
+    }
     this.tableHeaderConfig(this.tableColumnsConfig, askforListApi, {
       prop: 'edit',
       isShow: true,
@@ -383,15 +404,38 @@ export default {
       width: 180,
       fixed: 'right'
     });
-    shipmentList({ authStatus: 3 }).then(response => {
-      this.shipmentlist = response.rows;
-    });
-    // this.getList();
+    // this.getShipment();
     this.listByDict(this.commodityCategory).then(response => {
       this.commodityCategoryCodeOptions = response.data;
     });
+    // this.getList();
   },
   'methods': {
+    // 获取货主列表
+    getShipment() {
+      shipmentList(this.shipmentInfoQuery).then(response => {
+        this.shipmentlist = response.rows;
+        this.shipmentloading = false;
+      });
+    },
+    // 触发货主远程搜索
+    remoteMethod(query) {
+      if (query !== '') {
+        this.shipmentloading = true;
+        this.shipmentInfoQuery.pageNum = 1;
+        this.dataOver = false;
+        this.shipmentInfoQuery.adminName = query;
+        this.getShipment();
+      } else {
+        this.shipmentlist = [];
+      }
+    },
+    // 货主列表触底事件
+    loadmore() {
+      if (this.dataOver) return;
+      this.shipmentInfoQuery.pageNum++;
+      this.getShipment();
+    },
     // 搜索时间选择
     datechoose1(date) {
       this.queryParams.loadTimeBegin = this.parseTime(date[0], '{y}-{m}-{d}');
@@ -426,6 +470,9 @@ export default {
         this.total = response.data.total;
         this.loading = false;
       });
+    },
+    chooseShipment() {
+      this.handleQuery();
     },
     /** 搜索按钮操作 */
     handleQuery() {

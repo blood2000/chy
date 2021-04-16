@@ -2,8 +2,8 @@
   <!-- 查询网商余额 -->
   <el-dialog :title="title" :visible="visible" width="600px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" label-width="100px">
-      <el-form-item label="可用余额" prop="balanceCount">
-        <el-input v-model="form.balanceCount" readonly class="width90" clearable />
+      <el-form-item label="可用余额" prop="WSBK">
+        <el-input v-model="form.WSBK" readonly class="width90" clearable />
       </el-form-item>
     </el-form>
   </el-dialog>
@@ -27,7 +27,9 @@ export default {
   data() {
     return {
       // 表单参数
-      form: {}
+      form: {
+        WSBK: null
+      }
     };
   },
   computed: {
@@ -51,7 +53,14 @@ export default {
     /** 查询网商余额 */
     getBalance() {
       getBalance(this.userCode).then(response => {
-        this.form = response.data || { balanceCount: '' };
+        const { bklist } = response.data;
+        if (bklist) {
+          bklist.forEach(el => {
+            if (Object.keys(el)[0] === 'WSBK') {
+              this.form.WSBK = el['WSBK'];
+            }
+          });
+        }
       });
     },
     /** 取消按钮 */
@@ -66,7 +75,7 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        name: null
+        WSBK: null
       };
       this.resetForm('form');
     }

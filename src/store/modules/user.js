@@ -93,6 +93,7 @@ const user = {
 
           // 保存一下用户信息
           setUserInfo({
+            isAdmin: res.isAdmin,
             isShipment: res.isShipment,
             shipment: res.shipment,
             user: {
