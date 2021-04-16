@@ -60,7 +60,7 @@
                 reserve-keyword
                 placeholder="请输入关键词"
                 :remote-method="remoteMethod"
-                :loading="loading"
+                :loading="loading1"
                 @change="handlerchange"
               >
                 <el-option
@@ -229,7 +229,7 @@
             />
             <el-divider />
 
-            <template v-if="!myisdisabled">
+            <template v-if="!loading && !myisdisabled">
               <div v-if="!loading && active === 3" class="ly-t-center">
                 <el-button @click="nextFe(2)">上一步</el-button>
                 <el-button type="primary" @click="onSubmit('elForm',3)">{{ isCreated?'立即发布':'保存' }}</el-button>
@@ -335,6 +335,7 @@ export default {
       cbGoodsAccounting: null, // 传给组件的数据-回填
 
       loading: false,
+      loading1: false,
 
       formData: {
         tin1: '', // 发布人Code
@@ -405,7 +406,7 @@ export default {
 
   async created() {
     // 判断用户
-    const { isAdmin = false, shipment = {}} = getUserInfo() || {};
+    const { isAdmin = true, shipment = {}} = getUserInfo() || {};
 
     if (!isAdmin) {
       if (shipment.info.authStatus !== 3) {
@@ -439,10 +440,11 @@ export default {
     // 触发远程搜索
     remoteMethod(query) {
       if (query !== '') {
-        this.loading = true;
+        this.loading1 = true;
         this.queryParams.pageNum = 1;
         this.dataOver = false;
         this.queryParams.keywords = query;
+        this.shipmentList = [];
         this.getTeamList();
       } else {
         this.shipmentList = [];
@@ -460,10 +462,10 @@ export default {
         (res) => {
           this.dataOver = !res.rows.length;
           this.shipmentList = this.shipmentList.concat(res.rows);
-          this.loading = false;
+          this.loading1 = false;
         }
       ).catch(() => {
-        this.loading = false;
+        this.loading1 = false;
       });
     },
 
@@ -634,7 +636,6 @@ export default {
     // 处理预估
     async handlerEstimateCost(lastData) {
       // console.log(lastData, '处理预估的时机');
-
 
       // 注意编辑的时候是有加update的, 要重新处理一下
       const { orderFreightInfoBoList, orderGoodsList, orderFreightInfoUpdateBoList, orderGoodsUpdateBoList } = JSON.parse(JSON.stringify(lastData));
@@ -960,7 +961,7 @@ export default {
           this.loading = false;
         });
       } catch (error) {
-        this.loading = false;
+        // this.loading = false;
       }
     },
 

@@ -51,7 +51,7 @@
           />
         </el-form-item>
 
-        <el-form-item label="门牌号" :style="{ width: '50%' }">
+        <el-form-item v-if="false" label="门牌号" :style="{ width: '50%' }">
           <el-input
             v-model="formData.detail"
             clearable
@@ -59,16 +59,17 @@
             :style="{ width: '100%' }"
           />
         </el-form-item>
+        <el-form-item label="地址别名" :style="{ width: '50%' }">
+          <el-input
+            v-model="formData.addressAlias"
+            clearable
+            placeholder="优先展示, 最多输入10个字"
+            maxlength="10"
+            :style="{ width: '100%' }"
+          />
+        </el-form-item>
       </div>
 
-      <el-form-item label="地址别名">
-        <el-input
-          v-model="formData.addressAlias"
-          clearable
-          placeholder="优先展示, 最多输入10个字"
-          :style="{ width: '100%' }"
-        />
-      </el-form-item>
 
       <el-row :gutter="15">
         <el-col :span="12">
@@ -208,6 +209,8 @@ export default {
 
     // 1. 搜索地址回调
     onSearchResult(res) {
+      // console.log(res);
+
       this.detailOptin = this._baozhuan(res, 'id', 'name');
       this.loading = false;
     },
