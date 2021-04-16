@@ -11,6 +11,7 @@
       :show-file-list="false"
       :headers="headers"
       :disabled="disabled"
+      accept=".jpg,.png,.jpeg"
       style="display: inline-block; vertical-align: top"
     >
       <img v-if="value && !disabled" :src="attachUrl" class="avatar">
