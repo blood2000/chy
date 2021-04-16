@@ -109,7 +109,7 @@
 import { saveCompanyInfo } from '@/api/enterprise/company/info';
 import UploadImage from '@/components/UploadImage/index';
 import ProvinceCityCounty from '@/components/ProvinceCityCounty';
-import { praseBooleanToNum, praseNumToBoolean, compareTime } from '@/utils/ddc';
+import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
 
 export default {
   components: {
@@ -153,8 +153,8 @@ export default {
           { validator: this.formValidate.idCard, trigger: 'blur' }
         ],
         identificationEndTime: [
-          { validator: (rules, value, callback) => this.formValidate.isExpired(rules, value, callback, this.form.identificationEffective), trigger: 'change' },
-          { validator: (rules, value, callback) => this.formValidate.idCardValidate(rules, value, callback, this.form.identificationBeginTime, this.form.identificationEffective), trigger: ['change', 'blur'] }
+          { validator: (rules, value, callback) => this.formValidate.idCardValidate(rules, value, callback, this.form.identificationBeginTime, this.form.identificationEffective), trigger: ['change', 'blur'] },
+          { validator: (rules, value, callback) => this.formValidate.isExpired(rules, value, callback, this.form.identificationEffective), trigger: 'change' }
         ]
       }
     };
