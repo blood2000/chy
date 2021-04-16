@@ -54,6 +54,9 @@
         <template #tin12="{row}">
           <span v-if="row">司机</span>
         </template>
+        <template #driverType="{row}">
+          <span>{{ row.driverType === 1? '独立': '聘用' }}</span>
+        </template>
       </refactor-table>
     </div>
 
@@ -201,7 +204,6 @@ export default {
   },
   created() {
     this.getList();
-    console.log(this.dispatch);
   },
 
   methods: {
@@ -209,7 +211,23 @@ export default {
     getList() {
       this.loading = true;
 
-      apiFn[this.activeName](this.queryParams).then(response => {
+      let quer = this.queryParams;
+      if (this.activeName === 'listDriver') {
+        quer = {
+          ...this.queryParams,
+          authStatus: 3,
+          isFreeze: 0
+
+        };
+      } else {
+        quer = {
+          ...this.queryParams,
+          status: 0,
+          authStatus: 3
+        };
+      }
+
+      apiFn[this.activeName](quer).then(response => {
         this['list_' + this.activeName] = response.rows;
         this['total_' + this.activeName] = response.total;
         this.loading = false;
@@ -272,7 +290,7 @@ export default {
     },
     // 单选
     handlerChange(value) {
-      console.log(value);
+      // console.log(value);
     },
 
     _ok(bool) {

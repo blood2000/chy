@@ -1,7 +1,7 @@
 <template>
   <!-- 添加或修改项目对话框 -->
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+    <el-form ref="form" :model="form" :rules="rules" label-width="120px">
       <el-form-item label="项目名称" prop="projectName">
         <el-input v-model="form.projectName" placeholder="请输入项目名称" />
       </el-form-item>
@@ -85,6 +85,9 @@ export default {
         ],
         commodityCategoryCode: [
           { required: true, message: '请选择货物类型', trigger: 'blur' }
+        ],
+        commoditySubclassCodes: [
+          { required: true, message: '请选择货物类型分类', trigger: 'blur' }
         ]
       },
       // 是否多选
@@ -185,6 +188,7 @@ export default {
     // 单选商品大类
     handlecommodityCategoryChange(selection) {
       this.handleChange(selection);
+      this.form.commoditySubclassCodes = null;
       this.commoditySubclassCodes = [];
     },
     // 单选商品大类后联动数据事件

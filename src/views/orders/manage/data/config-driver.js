@@ -17,9 +17,14 @@ export default [
     label: '工作单位'
   },
   {
-    prop: 'teamCode',
+    prop: 'teamName',
     isShow: true,
     label: '所属车队'
+  },
+  {
+    prop: 'driverType',
+    isShow: true,
+    label: '司机类别'
   },
 
   {

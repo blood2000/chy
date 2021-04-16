@@ -10,6 +10,14 @@ export function trackList(query) {
   });
 }
 
+// 运单作废
+export function waybillInvalid(code) {
+  return request({
+    url: `/transportation/waybillOper/invalid?wayBillInCode=${code}`,
+    method: 'get'
+  });
+}
+
 // 车辆装货
 export function load(data) {
   return request({

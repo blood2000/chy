@@ -264,6 +264,7 @@
     />
     <!-- 备注对话框 -->
     <remark-dialog
+      ref="RemarkDialog"
       :title="title"
       :open.sync="openRemark"
       :current-id="currentId"
@@ -475,9 +476,11 @@ export default {
     },
     /** 备注按钮操作 */
     handleRemarks(row) {
-      this.currentId = row.wayBillCode;
+      this.$refs.RemarkDialog.reset();
+      // this.currentId = row.wayBillCode;
       this.openRemark = true;
       this.title = '编辑货主运单备注';
+      this.$refs.RemarkDialog.setForm(row);
     }
   }
 };

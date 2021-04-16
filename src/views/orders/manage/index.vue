@@ -686,13 +686,13 @@ export default {
 
 
   created() {
-    const { isShipment = false, user = {}} = getUserInfo() || {};
+    const { isAdmin = true, user = {}} = getUserInfo() || {};
 
     // console.log(user.userCode);
 
 
     // 判断当前是什么角色登入的 true 是运营
-    this.isShipment = isShipment;
+    this.isShipment = !isAdmin;
     this.isShipment && (this.queryParams.tin6 = user.userCode);
     // 要配置好才能用
     this.tableHeaderConfig(this.tableColumnsConfig, listManagesApi, null, tableColumnsConfig);
@@ -713,6 +713,7 @@ export default {
       if (query !== '') {
         this.shipmentreq.pageNum = 1;
         this.shipmentreq.keywords = query;
+        this.shipmentList = [];
         this.getTeamList();
       } else {
         this.shipmentList = [];
@@ -832,9 +833,16 @@ export default {
                 } else if (addr.addressType === '1') {
                   e.addressName1 = addr.formattedAddress;
                   e.addressAlias1 = addr.addressAlias;
+                  // 装货人
+                  e.contact1 = addr.contact;
+                  e.contactPhone1 = addr.contactPhone;
                 } else if (addr.addressType === '2') {
                   e.addressName2 = addr.formattedAddress;
                   e.addressAlias2 = addr.addressAlias;
+
+                  // 卸货人
+                  e.contact2 = addr.contact;
+                  e.contactPhone2 = addr.contactPhone;
                 } else if (addr.addressType === '4') {
                   e.addressName2 = '自卸';
                   e.addressAlias2 = '自卸';
