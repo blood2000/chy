@@ -84,8 +84,9 @@
       </el-form-item>
     </el-form>
 
-    <el-table v-loading="loading" :data="driverList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="driverList" border stripe @selection-change="handleSelectionChange">
       <el-table-column type="selection" :selectable="checkboxSelectable" width="55" align="center" fixed="left" />
+      <el-table-column label="序号" align="center" type="index" min-width="5%" />
       <el-table-column label="处理状态" align="center" prop="applyStatus">
         <template slot-scope="scope">
           <span v-if="scope.row.applyStatus !=null && scope.row.applyStatus>=0">{{ selectDictLabel(applyStatusOptions, scope.row.applyStatus) }}</span>
@@ -220,7 +221,8 @@ export default {
       applyStatusOptions: [
         { dictLabel: '未处理', dictValue: 0 },
         { dictLabel: '已加入', dictValue: 1 },
-        { dictLabel: '已拒绝', dictValue: 2 }
+        { dictLabel: '已拒绝', dictValue: 2 },
+        { dictLabel: '待加入', dictValue: 3 }
       ],
       // 网点编码字典
       branchCodeOptions: [],
@@ -318,9 +320,9 @@ export default {
         this.close();
       });
     },
-    // 状态为未处理/已加入的checkbox不可选
+    // 状态为已加入的checkbox不可选
     checkboxSelectable(row) {
-      if (row.applyStatus === 0 || row.applyStatus === 1) {
+      if (row.applyStatus === 1) {
         return false;
       } else {
         return true;
