@@ -48,9 +48,9 @@
         >
           <!-- 第一步 基本信息 -->
           <div v-show="active ==1 || myisdisabled" class="content">
-            <div v-if="!isClone && (!isShipment && isCreated)" class="header mb8">代发货主信息</div>
+            <div v-if="!isClone && (!isAdmin && isCreated)" class="header mb8">代发货主信息</div>
 
-            <el-form-item v-if="!isClone && (!isShipment && isCreated)" label="代发货主" prop="tin1">
+            <el-form-item v-if="!isClone && (!isAdmin && isCreated)" label="代发货主" prop="tin1">
               <el-select
                 v-model="formData.tin1"
                 v-el-select-loadmore="loadmore"
@@ -312,7 +312,7 @@ export default {
       dataOver: false, // 是否请求完了
       isT: false, //
       orgCode: '', // 接口需要
-      isShipment: false, // 默认是平台
+      isAdmin: false, // 默认是平台
       lastData: null, // 最终结构
       isQianValue: true, // 开关
       qianValue: '', // 保存上一个值
@@ -405,17 +405,17 @@ export default {
 
   async created() {
     // 判断用户
-    const { isShipment = false, shipment = {}} = getUserInfo() || {};
+    const { isAdmin = false, shipment = {}} = getUserInfo() || {};
 
-    if (isShipment) {
+    if (isAdmin) {
       if (shipment.info.authStatus !== 3) {
         this.authStatus = false;
         this.msgWarning('审核通过才能发布货源~!');
 
         return;
       }
-      this.isShipment = isShipment;
-      this.isShipment && (this.formData.tin1 = shipment.info.adminCode);
+      this.isAdmin = isAdmin;
+      this.isAdmin && (this.formData.tin1 = shipment.info.adminCode);
     }
 
     // 判断地址栏有没有id- true=>有说明编辑/详情 false=>创建-什么都不做
@@ -547,7 +547,7 @@ export default {
         this.msgError('多装一卸, 必须多地址');
         return;
       } else if (!this.formData.tin9 && this.formData.tin7 - 0 === 3 && this.address_xie.length < 2) {
-        this.msgError('一装装卸, 必须多地址');
+        this.msgError('一装多卸, 必须多地址');
         return;
       }
 

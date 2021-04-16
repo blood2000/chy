@@ -27,7 +27,7 @@
           <span class="ml0 mr10"> 元 / {{ mygoodsUnitName }}</span>
 
           <div v-if="!showbudget" class="ml0 mr10 t_color_c t_m_pac">
-            司机实收单价:  {{ totalTransportationCost }} 元
+            司机实收单价:  {{ totalTransportationCost || 0 }} 元
           </div>
         </el-col>
         <el-col :span="8">
@@ -64,7 +64,7 @@
 
       <el-row :gutter="20">
         <el-col :span="!showbudget? 14: 24">
-          <div class="t_box_item">
+          <div v-if="zichuList.length || shouruList.length" class="t_box_item">
 
             <!-- <el-form-item
               label="计算方式"
@@ -280,6 +280,15 @@ export default {
       },
       deep: true
     },
+    good: {
+      handler(value) {
+        console.log(value);
+
+        if (!value && !value.goodsAccounting) return;
+        this.mytotalTypeValue = value.goodsAccounting.totalType;
+      },
+      immediate: true
+    },
 
     pubilshCode(value) {
       this.initData();
@@ -287,6 +296,9 @@ export default {
     redis: {
       handler(value) {
         if (!value || !value.orderFreightVo) return;
+
+        console.log(value);
+
         // 清空
         this.lossList = [];
         this.zichuList = [];
@@ -334,6 +346,8 @@ export default {
   methods: {
     // 获取司机成交单价
     async handlerChange() {
+      if (!(this.formData.freightPrice || this.formData.freightPrice === 0)) return;
+
       try {
         const data = await getDriverPrice({
           shipperCode: this.pubilshCode,
@@ -443,8 +457,7 @@ export default {
         if (e.goodsIdentification === this.good.goodsType) {
           e.orderAddressBoList.forEach(ee => {
             const addresCodes = ee.addressIdentification.split(':');
-
-            this.good.redis.forEach(redi => {
+            this.good.newRedis.forEach(redi => {
               if (addresCodes[0] === redi.identification + '' || addresCodes[1] === redi.identification + '' || addresCodes[0] === redi.code || addresCodes[1] === redi.code) {
                 this.predictData = ee;
               }

@@ -287,7 +287,7 @@
               </template>
 
               <template #businessType="{row}">
-                <span>{{ selectDictLabel(dicts['businessType'], row.businessType) || '-' }}</span>
+                <span>{{ selectDictLabel(dicts['businessTypes'], row.businessType) }}</span>
               </template>
 
               <!-- <template #isDispatch="{row}">
@@ -753,7 +753,7 @@ export default {
         this.goodsTypeOption = goodsBigType_option;
       }
 
-      ['businessType'].forEach(e => {
+      ['businessTypes'].forEach(e => {
         this.getDicts(e).then(response => {
           this.dicts[e] = response.data;
         });
@@ -801,6 +801,7 @@ export default {
           e.shipmentPrice = '';
           e.transactionPrice = '';
           e.unitPrice = '';
+          e.businessType = '';
           mgoods.push({
             ...this.baseData(e)
           });
@@ -813,6 +814,7 @@ export default {
               e.goodsPrice = goods.goodsPrice;
               e.goodsTypeName = goods.goodsTypeName;
               e.goodsBigTypeName = goods.goodsBigTypeName;
+              e.businessType = goods.businessType;
             }
           });
 
@@ -871,9 +873,11 @@ export default {
       this.theight = 100;
 
       this.list.length >= 10 && this.$nextTick(() => {
-        const box1 = this.$el.offsetHeight;
-        const box2 = this.$refs.queryFormBox.offsetHeight;
-        this.theight = box1 - box2 - 200;
+        if (this.$el && this.$refs.queryFormBox) {
+          const box1 = this.$el.offsetHeight;
+          const box2 = this.$refs.queryFormBox.offsetHeight;
+          this.theight = box1 - box2 - 200;
+        }
       });
       this.loading = false;
     },

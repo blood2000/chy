@@ -10,7 +10,7 @@
       :disabled="myisdisabled"
     >
 
-      <ProvinceCityCounty ref="pccFef" :cb-data="cbData" :isrules="isrules" :disabled="myisdisabled" @getCity="getCity" />
+      <ProvinceCityCounty ref="pccFef" :cb-data="cbData" :isrules="isrules" :disabled="myisdisabled" @getCity="getCity" @getProvince="getProvince" />
 
       <div class="ly-flex">
         <el-form-item
@@ -166,12 +166,13 @@ export default {
           location
         } = value;
 
-        this.formData.addressName = addressName;
         this.formData.detail = detail;
         this.formData.addressAlias = addressAlias;
         this.formData.contact = contact;
         this.formData.contactPhone = contactPhone;
-
+        this.$nextTick(_ => {
+          this.formData.addressName = addressName;
+        });
         this.selected = {
           name: addressName,
           lat: location ? location[1] - 0 : 0,
@@ -182,8 +183,6 @@ export default {
     },
 
     isRules(value) {
-      console.log(value);
-
       this.isrules = !value;
 
       this.rules = {
@@ -225,6 +224,16 @@ export default {
     // 3. 选择了什么城市
     getCity(city) {
       this.searchOption.city = city || '全国';
+      if (!city) {
+        this.formData.addressName = '';
+        this.detailOptin = [];
+      }
+    },
+    getProvince(province) {
+      if (!province) {
+        this.formData.addressName = '';
+        this.detailOptin = [];
+      }
     },
 
     async _submitForm() {
