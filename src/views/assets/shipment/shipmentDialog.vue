@@ -25,11 +25,11 @@
         <el-row>
           <el-col :span="7">
             <p class="upload-image-label">管理员身份证正面照</p>
-            <upload-image v-model="form.identificationImg" :disabled="disable" image-type="id-card" @fillForm="fillForm" />
+            <upload-image v-model="form.identificationImg" :disabled="disable" image-type="id-card" side="front" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">管理员身份证背面照</p>
-            <upload-image v-model="form.identificationBackImg" :disabled="disable" image-type="id-card" @fillForm="fillForm" />
+            <upload-image v-model="form.identificationBackImg" :disabled="disable" image-type="id-card" side="back" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">手持身份证照</p>

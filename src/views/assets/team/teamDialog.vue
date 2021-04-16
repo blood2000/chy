@@ -71,11 +71,11 @@
         <el-row>
           <el-col :span="7">
             <p class="upload-image-label">身份证正面照</p>
-            <uploadImage v-model="form.identificationImage" :disabled="disable" image-type="id-card" @fillForm="fillForm" />
+            <uploadImage v-model="form.identificationImage" :disabled="disable" image-type="id-card" side="front" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">身份证反面照</p>
-            <uploadImage v-model="form.identificationBackImage" :disabled="disable" image-type="id-card" @fillForm="fillForm" />
+            <uploadImage v-model="form.identificationBackImage" :disabled="disable" image-type="id-card" side="back" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">营业执照</p>

@@ -42,6 +42,10 @@ export default {
     imageType: {
       type: String,
       default: null
+    },
+    side: {
+      type: String,
+      default: null
     }
   },
   data() {
@@ -118,6 +122,9 @@ export default {
         formData.append('url', url);
       } else {
         return;
+      }
+      if (this.side) {
+        formData.append('side', this.side);
       }
       uploadOcr(formData).then(response => {
         if (response.data && !response.data.msg) {
