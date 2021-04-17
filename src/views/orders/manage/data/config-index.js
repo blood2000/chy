@@ -164,14 +164,14 @@ export default [
   },
   {
     prop: 'nickName',
-    isShow: true,
+    isShow: false,
     width: 120,
     tooltip: true,
     label: '昵称'
   },
   {
     prop: 'phonenumber',
-    isShow: true,
+    isShow: false,
     width: 120,
     tooltip: true,
     label: '手机号码'
@@ -197,13 +197,7 @@ export default [
     tooltip: true,
     label: '修改时间'
   },
-  {
-    prop: 'userName',
-    isShow: true,
-    width: 120,
-    tooltip: true,
-    label: '账号名称'
-  },
+
   {
     prop: 'opNickName',
     isShow: true,

@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-row :gutter="20">
       <!--产品应用版本树-->
-      <el-col :span="4" :xs="24">
+      <el-col :lg="5" :md="6" :sm="7" :xs="24">
         <div class="head-container">
           <el-input
             v-model="produceName"
@@ -25,7 +25,7 @@
           />
         </div>
       </el-col>
-      <el-col :span="20" :xs="24">
+      <el-col :lg="19" :md="18" :sm="17" :xs="24">
         <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true">
           <el-form-item label="菜单名称" prop="menuName">
             <el-input

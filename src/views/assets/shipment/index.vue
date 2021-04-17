@@ -4,14 +4,14 @@
       <el-form-item label="货主" prop="searchValue">
         <el-input
           v-model="queryParams.searchValue"
-          placeholder="公司名称/货主姓名/手机号"
+          placeholder="企业名称/货主姓名/手机号"
           clearable
           size="small"
           style="width: 272px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="是否核算" prop="isAccount">
+      <!-- <el-form-item label="是否核算" prop="isAccount">
         <el-select v-model="queryParams.isAccount" placeholder="请选择核算方式" filterable clearable size="small" style="width: 272px">
           <el-option
             v-for="dict in isOptions"
@@ -25,6 +25,16 @@
         <el-select v-model="queryParams.accountType" placeholder="请选择核算方式" filterable clearable size="small" style="width: 272px">
           <el-option
             v-for="dict in accountTypeOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item> -->
+      <el-form-item label="票制类别" prop="ticketType">
+        <el-select v-model="queryParams.ticketType" placeholder="请选择票制类别" filterable clearable size="small" style="width: 272px">
+          <el-option
+            v-for="dict in ticketTypeOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
@@ -47,10 +57,10 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="公司名称" prop="companyName">
+      <el-form-item label="企业名称" prop="companyName">
         <el-input
           v-model="queryParams.companyName"
-          placeholder="请输入公司名称"
+          placeholder="请输入企业名称"
           clearable
           size="small"
           style="width: 272px"
@@ -343,8 +353,9 @@ export default {
         pageNum: 1,
         pageSize: 10,
         searchValue: undefined,
-        isAccount: undefined,
-        accountType: undefined,
+        // isAccount: undefined,
+        // accountType: undefined,
+        ticketType: undefined,
         authStatus: undefined,
         shipperType: undefined,
         companyName: undefined,
@@ -380,10 +391,10 @@ export default {
   methods: {
     /** 查询字典 */
     getDictsOptions() {
-      // 核算规则
-      this.getDicts('balance_rule').then((response) => {
-        this.accountTypeOptions = response.data;
-      });
+      // // 核算规则
+      // this.getDicts('balance_rule').then((response) => {
+      //   this.accountTypeOptions = response.data;
+      // });
       // 票制类别
       this.getDicts('assets_ticket_type').then((response) => {
         this.ticketTypeOptions = response.data;
@@ -521,7 +532,7 @@ export default {
       const params = Object.assign({}, this.queryParams);
       params.pageSize = undefined;
       params.pageNum = undefined;
-      this.download('assets/shipment/export', params, `货主信息_${new Date().getTime()}.xlsx`, 'application/json').then(() => {
+      this.download('assets/shipment/export', params, `货主信息_${new Date().getTime()}.xlsx`).then(() => {
         this.exportLoading = false;
       });
     },

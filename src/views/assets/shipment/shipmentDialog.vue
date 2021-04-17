@@ -101,15 +101,15 @@
         </el-select>
       </el-form-item> -->
       <template v-if="form.shipperType === 1">
-        <el-form-item label="公司名称" prop="companyName" :rules="[{ required: true, message: '公司名称不能为空', trigger: 'blur' }]">
-          <el-input v-model="form.companyName" placeholder="请输入公司名称" class="width90" clearable />
+        <el-form-item label="企业名称" prop="companyName" :rules="[{ required: true, message: '企业名称不能为空', trigger: 'blur' }]">
+          <el-input v-model="form.companyName" placeholder="请输入企业名称" class="width90" clearable />
           <!-- <el-select
             v-model="form.companyName"
             style="width: 90%"
             filterable
             allow-create
             default-first-option
-            placeholder="请选择公司"
+            placeholder="请选择企业"
             @change="changeCompany"
           >
             <el-option
@@ -167,12 +167,12 @@
         </el-select>
       </el-form-item>
       <el-row :gutter="20">
-        <el-col :span="12">
+        <el-col :span="11">
           <el-form-item label="税点(%)" prop="texPoint">
             <el-input-number v-model="form.texPoint" controls-position="right" :precision="2" placeholder="请输入税点" :step="1" :min="0" :max="100" clearable @input="changeTextPoint" />
           </el-form-item>
         </el-col>
-        <el-col :span="10">
+        <el-col :span="11">
           <el-form-item label="调度费点数(%)" prop="dispatchPoints">
             <el-input v-model="form.dispatchPoints" disabled placeholder="请输入调度费点数" clearable />
           </el-form-item>
@@ -292,26 +292,33 @@
             :value="dict.dictValue"
           />
         </el-select>
-        <el-input v-model="form.consumptionMin" placeholder="最小值" class="width12" />
+        <el-input-number v-model="form.consumptionMin" :controls="false" placeholder="最小值" class="width12" />
         至
-        <el-input v-model="form.consumptionMax" placeholder="最大值" class="width12" />
+        <el-input-number v-model="form.consumptionMax" :controls="false" placeholder="最大值" class="width12" />
       </el-form-item>-->
-      <el-form-item label="是否月结" prop="creditAmount">
-        <el-select
-          v-model="form.isMonthly"
-          clearable
-          filterable
-          class="width28 mr3"
-        >
-          <el-option
-            v-for="dict in isOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-        <el-input v-model="form.creditAmount" placeholder="授信金额(保留两位小数)" class="width28" />
-      </el-form-item>
+      <el-row :gutter="20">
+        <el-col :span="11">
+          <el-form-item label="是否月结" prop="isMonthly">
+            <el-select
+              v-model="form.isMonthly"
+              clearable
+              filterable
+            >
+              <el-option
+                v-for="dict in isOptions"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col v-if="form.isMonthly" :span="11">
+          <el-form-item label="授信金额" prop="creditAmount">
+            <el-input-number v-model="form.creditAmount" :precision="2" :controls="false" placeholder="保留两位小数" />
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-form-item label="是否预付运费" prop="isPrepaid">
         <el-select
           v-model="form.isPrepaid"
@@ -446,21 +453,32 @@ export default {
     changeTextPoint(value) {
       if (this.form.ticketType === '1') { // 一票制：调度费点数=原来的『税点(%) 』备注：运单结算使用的比例
         this.$set(this.form, 'dispatchPoints', value);
+        this.$set(this.form, 'serviceRatio', '');// 服务费比例
+        this.$set(this.form, 'serviceRate', '');// 服务费税率
       } else if (this.form.ticketType === '2') { // 二票制：服务费税率(%)、调度费点数=原来的『服务费比例』备注：运单结算使用的比例
         this.$set(this.form, 'dispatchPoints', value);
         this.$set(this.form, 'serviceRatio', value);
+        this.$set(this.form, 'serviceRatio', '');// 服务费比例
       } else if (this.form.ticketType === '3') { // 非一票制：调度费点数=原来的『税点(%) 』备注：运单结算使用的比例是「合同税点/（1-合同税点）」
         this.$set(this.form, 'dispatchPoints', ((value / (100 - value)) * 100).toFixed(2));
+        this.$set(this.form, 'serviceRatio', '');// 服务费比例
+        this.$set(this.form, 'serviceRate', '');// 服务费税率
       }
     },
     changeTicketType(value) {
       if (value === '1') { // 一票制：调度费点数=原来的『税点(%) 』备注：运单结算使用的比例
         this.$set(this.form, 'dispatchPoints', this.form.texPoint);
+        this.$set(this.form, 'serviceRatio', '');// 服务费比例
+        this.$set(this.form, 'serviceRate', '');// 服务费税率
       } else if (value === '2') { // 二票制：服务费税率(%)、调度费点数=原来的『服务费比例』备注：运单结算使用的比例
         this.$set(this.form, 'dispatchPoints', this.form.texPoint);
         this.$set(this.form, 'serviceRatio', this.form.texPoint);
+        this.$set(this.form, 'serviceRatio', '');// 服务费比例
       } else if (value === '3') { // 非一票制：调度费点数=原来的『税点(%) 』备注：运单结算使用的比例是「合同税点/（1-合同税点）」
+        if (this.form.texPoint === '' || this.form.texPoint === undefined || this.form.texPoint === null) return;
         this.$set(this.form, 'dispatchPoints', ((this.form.texPoint / (100 - this.form.texPoint)) * 100).toFixed(2));
+        this.$set(this.form, 'serviceRatio', '');// 服务费比例
+        this.$set(this.form, 'serviceRate', '');// 服务费税率
       }
     },
     changeCompany(item) {
@@ -521,7 +539,23 @@ export default {
             this.form.artificialIdentificationInhandImg = null;
             this.form.businessLicenseImg = null;
           }
+          if (!this.form.isMonthly) {
+            this.form.creditAmount = null;
+          }
           this.form.identificationEffective = praseBooleanToNum(this.form.identificationEffective);
+          if (this.form.ticketType === '1') { // 一票制：调度费点数=原来的『税点(%) 』备注：运单结算使用的比例
+            this.$set(this.form, 'dispatchPoints', this.form.texPoint);
+            this.$set(this.form, 'serviceRatio', '');// 服务费比例
+            this.$set(this.form, 'serviceRate', '');// 服务费税率
+          } else if (this.form.ticketType === '2') { // 二票制：服务费税率(%)、调度费点数=原来的『服务费比例』备注：运单结算使用的比例
+            this.$set(this.form, 'dispatchPoints', this.form.texPoint);
+            this.$set(this.form, 'serviceRatio', this.form.texPoint);
+            this.$set(this.form, 'serviceRatio', '');// 服务费比例
+          } else if (this.form.ticketType === '3') { // 非一票制：调度费点数=原来的『税点(%) 』备注：运单结算使用的比例是「合同税点/（1-合同税点）」
+            this.$set(this.form, 'dispatchPoints', ((this.form.texPoint / (100 - this.form.texPoint)) * 100).toFixed(2));
+            this.$set(this.form, 'serviceRatio', '');// 服务费比例
+            this.$set(this.form, 'serviceRate', '');// 服务费税率
+          }
           if (this.form.id) {
             updateShipment(this.form).then(response => {
               this.msgSuccess('修改成功');

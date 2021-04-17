@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-row :gutter="20">
       <!--部门数据-->
-      <el-col :span="4" :xs="24">
+      <el-col :lg="5" :md="6" :sm="7" :xs="24">
         <div class="head-container">
           <el-input
             v-model="deptName"
@@ -26,7 +26,7 @@
         </div>
       </el-col>
       <!--用户数据-->
-      <el-col :span="20" :xs="24">
+      <el-col :lg="19" :md="18" :sm="17" :xs="24">
         <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
           <el-form-item label="用户名称" prop="userName">
             <el-input

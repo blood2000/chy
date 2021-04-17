@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-row :gutter="20">
       <!--部门数据-->
-      <el-col :span="4" :xs="24">
+      <el-col :lg="5" :md="6" :sm="7" :xs="24">
         <div class="head-container">
           <el-input
             v-model="deptName"
@@ -24,7 +24,7 @@
           />
         </div>
       </el-col>
-      <el-col :span="20" :xs="24">
+      <el-col :lg="19" :md="18" :sm="17" :xs="24">
         <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="80px">
           <el-form-item label="角色名称" prop="roleName">
             <el-input
@@ -143,7 +143,6 @@
 
         <el-table v-loading="loading" :data="roleList" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55" align="center" />
-          <!--  <el-table-column label="角色编号" prop="roleId" width="120" />-->
           <el-table-column label="所属产品" prop="produceName" width="120" />
           <el-table-column label="角色名称" prop="roleName" :show-overflow-tooltip="true" width="150" />
           <el-table-column label="权限字符" prop="roleKey" :show-overflow-tooltip="true" width="150" />
@@ -207,6 +206,20 @@
     <!-- 添加或修改角色配置对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <el-row :gutter="24" class="mb20">
+          <el-col :span="24">
+            <el-form-item v-model="form.orgCode" label="所属组织" prop="orgCode" v-show="!form.roleId" :rules="[{ required: true, message: '所属组织不能为空', trigger: 'blur' }]" >
+              <el-tree
+                class="tree-border"
+                ref="tree"
+                :data="deptTreeOptions"
+                :props="defaultTreeProps"
+                :expand-on-click-node="false"
+                @node-click="handleOrgClick"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-form-item label="所属产品" prop="produceCode">
           <el-select v-model="form.produceCode" clearable filterable placeholder="请选择所属产品" style="width: 380px">
             <el-option
@@ -788,6 +801,9 @@ export default {
     handleNodeClick(data) {
       this.queryParams.orgCode = data.code;
       this.getList();
+    },
+    handleOrgClick(data){
+      this.form.orgCode = data.code;
     },
     // 产品应用版本树
     getVersionTreeselect() {
