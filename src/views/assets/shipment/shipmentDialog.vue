@@ -313,7 +313,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="11">
+        <el-col v-if="form.isMonthly" :span="11">
           <el-form-item label="授信金额" prop="creditAmount">
             <el-input-number v-model="form.creditAmount" :precision="2" :controls="false" placeholder="保留两位小数" />
           </el-form-item>
@@ -539,8 +539,10 @@ export default {
             this.form.artificialIdentificationInhandImg = null;
             this.form.businessLicenseImg = null;
           }
+          if (!this.form.isMonthly) {
+            this.form.creditAmount = null;
+          }
           this.form.identificationEffective = praseBooleanToNum(this.form.identificationEffective);
-
           if (this.form.ticketType === '1') { // 一票制：调度费点数=原来的『税点(%) 』备注：运单结算使用的比例
             this.$set(this.form, 'dispatchPoints', this.form.texPoint);
             this.$set(this.form, 'serviceRatio', '');// 服务费比例
