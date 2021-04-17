@@ -9,3 +9,12 @@ export function payRecordlist(data) {
     data: Object.assign({}, data, { isAsc: 'asc', orderByColumn: 'id' })
   });
 }
+
+// 修改批次号
+export function editBzno(data) {
+  return request({
+    url: '/payment/pay/editBzno',
+    method: 'post',
+    data: data
+  });
+}
