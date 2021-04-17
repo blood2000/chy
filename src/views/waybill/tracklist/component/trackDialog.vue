@@ -116,14 +116,14 @@ export default {
       });
       const that = this;
       this.$nextTick(() => {
-        console.log(that.$refs.map.$$getInstance());
+        console.log(that.getChildInstance('DDCmap'));
         const truckdriving = new AMap.TruckDriving({
           // 驾车路线规划策略，(1:尽量躲避拥堵而规划路径, 2:不走高速, 3:尽可能规划收费较低甚至免费的路径, 4:尽量躲避拥堵，并且不走高速 5:尽量不走高速，并且尽量规划收费较低甚至免费的路径结果
           // 6:尽量的躲避拥堵，并且规划收费较低甚至免费的路径结果, 7:尽量躲避拥堵，规划收费较低甚至免费的路径结果，并且尽量不走高速路, 8:会优先选择高速路, 9:会优先考虑高速路，并且会考虑路况躲避拥堵
           // 10:不考虑路况，返回速度优先的路线，此路线不一定距离最短, 11:躲避拥堵，速度优先以及费用优先；500Km规划以内会返回多条结果，500Km以外会返回单条结果)
           policy: 11,
           // map 指定将路线规划方案绘制到对应的AMap.Map对象上
-          map: that.$refs.map.$$getInstance()
+          map: that.getChildInstance('DDCmap')
         });
 
         const startLngLat = [119.358267, 26.04577];
