@@ -142,7 +142,7 @@ export default {
           { required: true, trigger: 'blur', message: '营业执照号不能为空' }
         ],
         companyName: [
-          { required: true, trigger: 'blur', message: '公司名称不能为空' }
+          { required: true, trigger: 'blur', message: '企业名称不能为空' }
         ],
         adminName: [
           { required: true, message: '姓名不能为空', trigger: 'blur' },

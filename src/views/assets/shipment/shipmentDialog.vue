@@ -101,15 +101,15 @@
         </el-select>
       </el-form-item> -->
       <template v-if="form.shipperType === 1">
-        <el-form-item label="公司名称" prop="companyName" :rules="[{ required: true, message: '公司名称不能为空', trigger: 'blur' }]">
-          <el-input v-model="form.companyName" placeholder="请输入公司名称" class="width90" clearable />
+        <el-form-item label="企业名称" prop="companyName" :rules="[{ required: true, message: '企业名称不能为空', trigger: 'blur' }]">
+          <el-input v-model="form.companyName" placeholder="请输入企业名称" class="width90" clearable />
           <!-- <el-select
             v-model="form.companyName"
             style="width: 90%"
             filterable
             allow-create
             default-first-option
-            placeholder="请选择公司"
+            placeholder="请选择企业"
             @change="changeCompany"
           >
             <el-option
