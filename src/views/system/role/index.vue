@@ -208,10 +208,10 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row :gutter="24" class="mb20">
           <el-col :span="24">
-            <el-form-item v-model="form.orgCode" label="所属组织" prop="orgCode" v-show="!form.roleId" :rules="[{ required: true, message: '所属组织不能为空', trigger: 'blur' }]" >
+            <el-form-item v-show="!form.roleId" v-model="form.orgCode" label="所属组织" prop="orgCode" :rules="[{ required: true, message: '所属组织不能为空', trigger: 'blur' }]">
               <el-tree
-                class="tree-border"
                 ref="tree"
+                class="tree-border"
                 :data="deptTreeOptions"
                 :props="defaultTreeProps"
                 :expand-on-click-node="false"
@@ -802,7 +802,7 @@ export default {
       this.queryParams.orgCode = data.code;
       this.getList();
     },
-    handleOrgClick(data){
+    handleOrgClick(data) {
       this.form.orgCode = data.code;
     },
     // 产品应用版本树
