@@ -309,7 +309,7 @@ export default {
       prop: 'edit',
       isShow: true,
       label: '操作',
-      width: 240,
+      width: 300,
       fixed: 'right'
     });
     this.getList();
