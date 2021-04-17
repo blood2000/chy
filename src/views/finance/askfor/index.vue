@@ -498,6 +498,7 @@ export default {
     },
     // 导出
     handleExport() {
+      this.download('/transportation/invoice/listWayBill', { ...this.queryParams }, `askfor_${new Date().getTime()}.xlsx`);
     },
     // 批量索票
     handleAskfor() {

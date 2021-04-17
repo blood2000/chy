@@ -1,8 +1,12 @@
 <template>
   <!-- 车辆跟踪对话框 -->
-  <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
-    <div style="width:100%; height: 500px;">
-      <el-amap v-if="visible" vid="amapDemo" :center="center" :zoom="zoom" />
+  <el-dialog :title="title" :visible="visible" width="1400px" append-to-body @close="cancel">
+    <div style="width:100%; height: 750px;">
+      <el-amap ref="map" vid="DDCamap" :zoom="zoom" :center="center">
+        <el-amap-polyline :path="polyline.path" :stroke-weight="8" :stroke-opacity="0.8" :stroke-color="'#0091ea'" />
+        <!-- <el-amap-polyline :path="polyline1.path" :stroke-weight="8" :stroke-opacity="0.8" :stroke-color="'#0091ea'" /> -->
+        <el-amap-marker v-for="(marker, index) in markers" :key="index" :position="marker.position" :icon="marker.icon" />
+      </el-amap>
     </div>
   </el-dialog>
 </template>
@@ -27,7 +31,14 @@ export default {
   data() {
     return {
       zoom: 16,
-      center: [121.59996, 31.197646],
+      center: [119.358267, 26.04577],
+      graspRoad: '',
+      polyline: {
+        path: []
+      },
+      polyline1: {
+        path: []
+      },
       // 表单参数
       form: {
         wayBillInCode: null,
@@ -40,11 +51,11 @@ export default {
         ]
       },
       markers: [{
-        icon: 'https://webapi.amap.com/theme/v1.3/markers/n/start.png',
-        position: []
+        icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/load.png',
+        position: [119.358267, 26.04577]
       }, {
-        icon: 'https://webapi.amap.com/theme/v1.3/markers/n/end.png',
-        position: []
+        icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/unload.png',
+        position: [119.358267, 26.04577]
       }],
       // 查询参数 map_type:GOOGOLE或BAIDU
       queryParams: {
@@ -94,12 +105,39 @@ export default {
           return [response.lng, response.lat];
         });
         this.polyline.path = this.tracklist;
+        console.log(this.polyline);
         // 地图中心点
         this.center = this.tracklist[0];
         // 起点地址
         this.markers[0].position = this.tracklist[0];
         // 终点地址
         this.markers[1].position = this.tracklist[this.tracklist.length - 1];
+        console.log(this.markers);
+      });
+      const that = this;
+      this.$nextTick(() => {
+        console.log(that.$refs.map.$$getInstance());
+        const truckdriving = new AMap.TruckDriving({
+          // 驾车路线规划策略，(1:尽量躲避拥堵而规划路径, 2:不走高速, 3:尽可能规划收费较低甚至免费的路径, 4:尽量躲避拥堵，并且不走高速 5:尽量不走高速，并且尽量规划收费较低甚至免费的路径结果
+          // 6:尽量的躲避拥堵，并且规划收费较低甚至免费的路径结果, 7:尽量躲避拥堵，规划收费较低甚至免费的路径结果，并且尽量不走高速路, 8:会优先选择高速路, 9:会优先考虑高速路，并且会考虑路况躲避拥堵
+          // 10:不考虑路况，返回速度优先的路线，此路线不一定距离最短, 11:躲避拥堵，速度优先以及费用优先；500Km规划以内会返回多条结果，500Km以外会返回单条结果)
+          policy: 11,
+          // map 指定将路线规划方案绘制到对应的AMap.Map对象上
+          map: that.$refs.map.$$getInstance()
+        });
+
+        const startLngLat = [119.358267, 26.04577];
+        const endLngLat = [119.3444347318802, 25.72105270393117];
+
+        truckdriving.search(startLngLat, endLngLat, function(status, result) {
+          console.log(result);
+          if (status === 'complete') {
+            this.$success('绘制驾车路线完成');
+          } else {
+            this.$error('获取驾车数据失败：' + result);
+          }
+          // 未出错时，result即是对应的路线规划方案
+        });
       });
     },
     /** 取消按钮 */

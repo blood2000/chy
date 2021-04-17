@@ -140,8 +140,7 @@
               </el-table-column>
               <el-table-column width="120" label="发票类型" align="center" prop="invoiceType" :formatter="invoiceTypeFormatter" />
               <el-table-column width="150" label="结算运价（含税）" align="center" prop="invoiceInfoStatisticsVo.goodsPrice" />
-              <el-table-column width="150" label="运费金额（含税）" align="center" prop="invoiceInfoStatisticsVo.totalServiceFee" />
-              <el-table-column width="150" label="服务费金额（含税）" align="center" prop="invoiceInfoStatisticsVo.totalDeliveryFeePractical" />
+              <el-table-column width="150" label="发票金额（含税）" align="center" prop="amount" />
               <el-table-column fixed="right" label="运单明细" align="center" width="100">
                 <template #default="scope">
                   <el-button type="text" size="small" icon="el-icon-document-checked" @click="handleClick(scope.row)">详情</el-button>

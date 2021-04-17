@@ -72,11 +72,12 @@ export default {
       // 缩放级别
       zoom: 16,
       // 中心点坐标
-      center: [],
+      center: [119.358267, 26.04577],
       // 标记点列表
       markers: [{
-        icon: 'https://ddcwl.com/static/img/admin/sys/cc.png',
-        position: [],
+        // icon: 'https://ddcwl.com/static/img/admin/sys/cc.png',
+        icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/cart.png',
+        position: [119.358267, 26.04577],
         label: {
           content: '辽NC2589',
           offset: [-10, -34]
@@ -91,7 +92,7 @@ export default {
       }],
       // 信息窗体
       window: {
-        position: [],
+        position: [119.358267, 26.04577],
         events: {},
         visible: false,
         offset: [0, -70]
@@ -140,7 +141,7 @@ export default {
   created() {
   },
   methods: {
-    /** 提交按钮 */
+    /** 获取定位 */
     getLocation() {
       location(this.queryParams).then(response => {
         // console.log(response);
@@ -149,6 +150,7 @@ export default {
         this.location = response.data.result.map(function(response) {
           return [response.lng, response.lat];
         });
+        console.log(this.location);
         this.center = this.location[0];
         this.markers[0].position = this.location[0];
         this.window.position = this.location[0];
