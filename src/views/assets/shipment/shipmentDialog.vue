@@ -294,7 +294,7 @@
         </el-select>
         <el-input-number v-model="form.consumptionMin" :controls="false" placeholder="最小值" class="width12" />
         至
-        <el-input-number v-model="form.consumptionMax" :controls="false" :precision="2" placeholder="最大值" class="width12" />
+        <el-input-number v-model="form.consumptionMax" :controls="false" placeholder="最大值" class="width12" />
       </el-form-item>-->
       <el-row :gutter="20">
         <el-col :span="11">
@@ -315,7 +315,7 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="授信金额" prop="creditAmount">
-            <el-input-number v-model="form.creditAmount" :controls="false" placeholder="保留两位小数" />
+            <el-input-number v-model="form.creditAmount" :precision="2" :controls="false" placeholder="保留两位小数" />
           </el-form-item>
         </el-col>
       </el-row>
