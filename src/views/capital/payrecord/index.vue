@@ -301,7 +301,7 @@
     />
 
     <!-- 编辑支付批次号 -->
-    <modify-batch-dialog :open.sync="modifyBatchOpen" :title="title" />
+    <modify-batch-dialog ref="modifyBatchRef" :open.sync="modifyBatchOpen" :title="title" @refresh="getList" />
   </div>
 </template>
 
@@ -462,6 +462,7 @@ export default {
     handleUpdate(row) {
       this.title = '编辑支付批次号';
       this.modifyBatchOpen = true;
+      this.$refs.modifyBatchRef.setForm(row);
     },
     /** 导出按钮操作 */
     handleExport() {
