@@ -10,7 +10,7 @@
       :disabled="myisdisabled"
     >
 
-      <ProvinceCityCounty ref="pccFef" :cb-data="cbData" :isrules="isrules" :disabled="myisdisabled" @getCity="getCity" @getProvince="getProvince" />
+      <ProvinceCityCounty ref="pccFef" :cb-data="pccCode" :isrules="isrules" :disabled="myisdisabled" @getCity="getCity" @getProvince="getProvince" />
 
       <div class="ly-flex">
         <el-form-item
@@ -99,6 +99,10 @@
 
 <script>
 import ProvinceCityCounty from '@/components/Ddc/Tin/ProvinceCityCounty';
+const geocoder = new AMap.Geocoder({
+  radius: 1000,
+  extensions: 'all'
+});
 export default {
   components: { ProvinceCityCounty },
 
@@ -123,6 +127,7 @@ export default {
   },
   data() {
     return {
+      pccCode: null, // 主要搜集金纬度
       isrules: true,
       loading: false,
       searchOption: {
@@ -179,6 +184,8 @@ export default {
           lat: location ? location[1] - 0 : 0,
           lng: location ? location[0] - 0 : 0
         };
+
+        this.pccCode = value;
       },
       immediate: true
     },
@@ -211,6 +218,7 @@ export default {
     onSearchResult(res) {
       // console.log(res);
 
+      this.detailOptin = [];
       this.detailOptin = this._baozhuan(res, 'id', 'name');
       this.loading = false;
     },
@@ -222,7 +230,34 @@ export default {
       }
 
       this.selected = this._zhaovalue(this.detailOptin, this.formData.addressName);
+
+
+      var lnglat = [this.selected.lng, this.selected.lat];
+      this.getaddress(lnglat);
     },
+
+    // 逆解码函数
+    getaddress: function(lnglat) {
+      const self = this;
+
+      geocoder.getAddress(lnglat, function(status, result) {
+        if (status === 'complete' && result.info === 'OK') {
+          const { adcode } = result.regeocode.addressComponent;
+          // result为对应的地理位置详细信息
+          self.getAreaCode(adcode);
+        }
+      });
+    },
+
+    // 截取省市区code
+    getAreaCode(code) {
+      const provinceCode = code.slice(0, 2);
+      const cityCode = code.slice(0, 4);
+      const districtCode = code.slice(0, 6);
+
+      this.pccCode = { provinceCode, cityCode, districtCode };
+    },
+
 
     // 3. 选择了什么城市
     getCity(city) {

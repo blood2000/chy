@@ -412,6 +412,8 @@ export default {
     // 判断用户
     const { isAdmin = true, shipment = {}} = getUserInfo() || {};
 
+
+    this.isAdmin = !isAdmin;
     if (!isAdmin) {
       if (shipment.info.authStatus !== 3) {
         this.authStatus = false;
@@ -419,7 +421,7 @@ export default {
 
         return;
       }
-      this.isAdmin = !isAdmin;
+
       this.isAdmin && (this.formData.tin1 = shipment.info.adminCode);
     }
 
