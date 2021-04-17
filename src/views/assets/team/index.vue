@@ -53,7 +53,6 @@
           filterable
           clearable
           size="small"
-          style="width: 272px"
         >
           <el-option
             v-for="dict in authStatusOptions"

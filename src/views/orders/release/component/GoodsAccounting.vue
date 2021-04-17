@@ -238,7 +238,7 @@ export default {
 
     return {
       formData: {
-        businessType: '', // 业务类型
+        businessType: '1002996', // 业务类型
         stowageStatus: '0', // 配载方式
         number: undefined, // 车数
         // goodsUnit: '0', // 货物计量单位 0=>吨; 1=>立方米

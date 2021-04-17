@@ -215,10 +215,6 @@ export default {
     });
   },
   methods: {
-    // 状态字典翻译
-    statusFormat(row, column) {
-      return this.selectDictLabel(this.statusOptions, row.status);
-    },
     /** 提交按钮 */
     submitForm() {
       this.$refs['form'].validate(valid => {
