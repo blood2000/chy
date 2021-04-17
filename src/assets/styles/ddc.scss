@@ -296,3 +296,18 @@
 .el-textarea.is-disabled .el-textarea__inner{
 	color: #666;
 }
+
+// el-tree 文字超出容器显示横向滚动条
+.el-tree-scroll-container{
+  width: 100%;
+  max-height: 78vh;
+  /*设置纵向滚动条、横向滚动条要配合下面的.el-tree-node的样式才能实现*/
+  overflow: scroll;
+  >.el-tree{
+    >.el-tree-node{
+      /*设置横向滚动条*/
+      min-width: 100%;
+      display: inline-block;
+    }
+  }
+}
