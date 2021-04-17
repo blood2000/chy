@@ -298,9 +298,9 @@
     <!-- 评价 -->
     <rate-dialog ref="RateDialog" :open.sync="ratedialog" :title="title" @refresh="getList" />
     <!-- 车辆跟踪 -->
-    <track-dialog ref="TrackDialog" :open.sync="trackdialog" :title="title" @refresh="getList" />
+    <track-dialog ref="TrackDialog" :open.sync="trackdialog" :title="title" />
     <!-- 定位 -->
-    <location-dialog ref="LocationDialog" :open.sync="locationdialog" :title="title" @refresh="getList" />
+    <location-dialog ref="LocationDialog" :open.sync="locationdialog" :title="title" />
 
     <!-- <el-dialog :title="title" :visible.sync="visible" :width="dialogWidth" append-to-body>
       <div>{{ activeName }}</div>
