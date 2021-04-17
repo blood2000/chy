@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-row :gutter="20">
       <!--部门数据-->
-      <el-col :span="4" :xs="24">
+      <el-col :lg="5" :md="6" :sm="7" :xs="24">
         <div class="head-container">
           <el-input
             v-model="deptName"
@@ -24,7 +24,7 @@
           />
         </div>
       </el-col>
-      <el-col :span="20" :xs="24">
+      <el-col :lg="19" :md="18" :sm="17" :xs="24">
         <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="80px">
           <el-form-item label="角色名称" prop="roleName">
             <el-input
@@ -143,7 +143,6 @@
 
         <el-table v-loading="loading" :data="roleList" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55" align="center" />
-          <!--  <el-table-column label="角色编号" prop="roleId" width="120" />-->
           <el-table-column label="所属产品" prop="produceName" width="120" />
           <el-table-column label="角色名称" prop="roleName" :show-overflow-tooltip="true" width="150" />
           <el-table-column label="权限字符" prop="roleKey" :show-overflow-tooltip="true" width="150" />

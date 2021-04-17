@@ -167,12 +167,12 @@
         </el-select>
       </el-form-item>
       <el-row :gutter="20">
-        <el-col :span="12">
+        <el-col :span="11">
           <el-form-item label="税点(%)" prop="texPoint">
             <el-input-number v-model="form.texPoint" controls-position="right" :precision="2" placeholder="请输入税点" :step="1" :min="0" :max="100" clearable @input="changeTextPoint" />
           </el-form-item>
         </el-col>
-        <el-col :span="10">
+        <el-col :span="11">
           <el-form-item label="调度费点数(%)" prop="dispatchPoints">
             <el-input v-model="form.dispatchPoints" disabled placeholder="请输入调度费点数" clearable />
           </el-form-item>
@@ -292,26 +292,33 @@
             :value="dict.dictValue"
           />
         </el-select>
-        <el-input v-model="form.consumptionMin" placeholder="最小值" class="width12" />
+        <el-input-number v-model="form.consumptionMin" :controls="false" placeholder="最小值" class="width12" />
         至
-        <el-input v-model="form.consumptionMax" placeholder="最大值" class="width12" />
+        <el-input-number v-model="form.consumptionMax" :controls="false" :precision="2" placeholder="最大值" class="width12" />
       </el-form-item>-->
-      <el-form-item label="是否月结" prop="creditAmount">
-        <el-select
-          v-model="form.isMonthly"
-          clearable
-          filterable
-          class="width28 mr3"
-        >
-          <el-option
-            v-for="dict in isOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-        <el-input v-model="form.creditAmount" placeholder="授信金额(保留两位小数)" class="width28" />
-      </el-form-item>
+      <el-row :gutter="20">
+        <el-col :span="11">
+          <el-form-item label="是否月结" prop="isMonthly">
+            <el-select
+              v-model="form.isMonthly"
+              clearable
+              filterable
+            >
+              <el-option
+                v-for="dict in isOptions"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item label="授信金额" prop="creditAmount">
+            <el-input-number v-model="form.creditAmount" :controls="false" placeholder="保留两位小数" />
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-form-item label="是否预付运费" prop="isPrepaid">
         <el-select
           v-model="form.isPrepaid"

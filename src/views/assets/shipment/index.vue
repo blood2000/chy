@@ -11,7 +11,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="是否核算" prop="isAccount">
+      <!-- <el-form-item label="是否核算" prop="isAccount">
         <el-select v-model="queryParams.isAccount" placeholder="请选择核算方式" filterable clearable size="small" style="width: 272px">
           <el-option
             v-for="dict in isOptions"
@@ -25,6 +25,16 @@
         <el-select v-model="queryParams.accountType" placeholder="请选择核算方式" filterable clearable size="small" style="width: 272px">
           <el-option
             v-for="dict in accountTypeOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item> -->
+      <el-form-item label="票制类别" prop="ticketType">
+        <el-select v-model="queryParams.ticketType" placeholder="请选择票制类别" filterable clearable size="small" style="width: 272px">
+          <el-option
+            v-for="dict in ticketTypeOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
@@ -343,8 +353,9 @@ export default {
         pageNum: 1,
         pageSize: 10,
         searchValue: undefined,
-        isAccount: undefined,
-        accountType: undefined,
+        // isAccount: undefined,
+        // accountType: undefined,
+        ticketType: undefined,
         authStatus: undefined,
         shipperType: undefined,
         companyName: undefined,
@@ -380,10 +391,10 @@ export default {
   methods: {
     /** 查询字典 */
     getDictsOptions() {
-      // 核算规则
-      this.getDicts('balance_rule').then((response) => {
-        this.accountTypeOptions = response.data;
-      });
+      // // 核算规则
+      // this.getDicts('balance_rule').then((response) => {
+      //   this.accountTypeOptions = response.data;
+      // });
       // 票制类别
       this.getDicts('assets_ticket_type').then((response) => {
         this.ticketTypeOptions = response.data;
