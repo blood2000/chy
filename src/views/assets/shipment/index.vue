@@ -4,7 +4,7 @@
       <el-form-item label="货主" prop="searchValue">
         <el-input
           v-model="queryParams.searchValue"
-          placeholder="公司名称/货主姓名/手机号"
+          placeholder="企业名称/货主姓名/手机号"
           clearable
           size="small"
           style="width: 272px"
@@ -47,10 +47,10 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="公司名称" prop="companyName">
+      <el-form-item label="企业名称" prop="companyName">
         <el-input
           v-model="queryParams.companyName"
-          placeholder="请输入公司名称"
+          placeholder="请输入企业名称"
           clearable
           size="small"
           style="width: 272px"

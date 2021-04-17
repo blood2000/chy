@@ -2,12 +2,16 @@
   <div class="page-billing">
     <div class="app-container">
       <h3 class="g-title-medium mb10">说明</h3>
-      <p class="g-text">
+      <!-- <p class="g-text">
         增值税发票信息提交后，我们将在一个工作日内完成审核工作。如有疑问，请点击右下角联系在线客服。
       </p>
       <p class="g-text g-color-blue">
         <i class="el-icon-info" />
         在开票信息通过审核前，暂时无法申请开具发票。
+      </p> -->
+      <p class="g-text g-color-blue">
+        <i class="el-icon-info" />
+        请仔细核对以下开票信息内容，确保无误。超好运将不承担因增值税发票开票信息填写错误导致的后续责任。
       </p>
     </div>
 
@@ -19,8 +23,8 @@
           <el-input v-model="form.code" placeholder="请输入发票编码" class="input-width" clearable />
         </el-form-item>
          -->
-        <el-form-item label="公司名称" prop="companyName">
-          <el-input v-model="form.companyName" placeholder="请输入公司名称" class="input-width" clearable />
+        <el-form-item label="企业名称" prop="companyName">
+          <el-input v-model="form.companyName" placeholder="请输入企业名称" class="input-width" clearable />
         </el-form-item>
         <el-form-item label="纳税人识别号" prop="taxRegistration">
           <el-input v-model="form.taxRegistration" placeholder="请输入纳税人识别号" class="input-width" clearable />
@@ -75,7 +79,7 @@ export default {
       form: {},
       rules: {
         companyName: [
-          { required: true, message: '公司名称不能为空', trigger: 'blur' }
+          { required: true, message: '企业名称不能为空', trigger: 'blur' }
         ],
         taxRegistration: [
           { required: true, message: '纳税人识别号不能为空', trigger: 'blur' }

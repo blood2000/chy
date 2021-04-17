@@ -268,152 +268,154 @@
           </el-col>
         </el-row>
       </el-form-item>
-      <el-form-item label="车牌号" prop="licenseNumber">
+      <el-form-item v-show="form.driverType == 1" label="车牌号" prop="licenseNumber">
         <el-input v-model="form.licenseNumber" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
     </el-form>
 
     <el-form ref="vehicleForm" :model="vehicleForm" :rules="vehicleRules" :disabled="disable" label-width="140px">
-      <el-form-item label="车牌颜色" prop="vehicleLicenseColorCode">
-        <el-select v-model="vehicleForm.vehicleLicenseColorCode" class="width90" filterable clearable>
-          <el-option
-            v-for="dict in licenseColorOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="parseInt(dict.dictValue)"
+      <template v-if="form.driverType == 1">
+        <el-form-item label="车牌颜色" prop="vehicleLicenseColorCode">
+          <el-select v-model="vehicleForm.vehicleLicenseColorCode" class="width90" filterable clearable>
+            <el-option
+              v-for="dict in licenseColorOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="parseInt(dict.dictValue)"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="车牌类型" prop="classificationCode">
+          <el-select v-model="vehicleForm.classificationCode" class="width90" filterable clearable>
+            <el-option
+              v-for="dict in licensePlateTypeOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="parseInt(dict.dictValue)"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="车身颜色" prop="vehicleColorCode">
+          <el-select v-model="vehicleForm.vehicleColorCode" class="width90" filterable clearable>
+            <el-option
+              v-for="dict in carBodyColorOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="parseInt(dict.dictValue)"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="车辆归属类型" prop="vehicleAscriptionType">
+          <el-select v-model="vehicleForm.vehicleAscriptionType" class="width90" filterable clearable>
+            <el-option
+              v-for="dict in vehicleAscriptionTypeOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="parseInt(dict.dictValue)"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="车辆类型" prop="vehicleTypeCode">
+          <el-select v-model="vehicleForm.vehicleTypeCode" placeholder="请选择车辆类型" class="width90" clearable filterable>
+            <el-option
+              v-for="dict in vehicleTypeOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="车辆能源类型" prop="vehicleEnergyType">
+          <el-select v-model="vehicleForm.vehicleEnergyType" class="width90" filterable clearable>
+            <el-option
+              v-for="dict in energyTypesOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="车长" prop="vehicleLength">
+          <el-select v-model="vehicleForm.vehicleLength" placeholder="请选择车长" class="width90" clearable filterable>
+            <el-option
+              v-for="dict in vehicleLengthOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="车宽" prop="vehicleWidth">
+          <el-select v-model="vehicleForm.vehicleWidth" placeholder="请选择车宽" class="width90" clearable filterable>
+            <el-option
+              v-for="dict in vehicleWidthOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="车高" prop="vehicleHeight">
+          <el-select v-model="vehicleForm.vehicleHeight" placeholder="请选择车高" class="width90" clearable filterable>
+            <el-option
+              v-for="dict in vehicleHeightOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="车辆总重量" prop="vehicleTotalWeight" :rules="[{ required: true, message: '车辆总重量不能为空', trigger: 'blur' }]">
+          <el-input v-model="vehicleForm.vehicleTotalWeight" placeholder="请输入车辆总重量" class="width90" clearable />
+        </el-form-item>
+        <el-form-item label="车辆可载重量" prop="vehicleLoadWeight" :rules="[{ required: true, message: '车辆可载重量不能为空', trigger: 'blur' }]">
+          <el-input v-model="vehicleForm.vehicleLoadWeight" placeholder="请输入车辆可载重量" class="width90" clearable />
+        </el-form-item>
+        <el-form-item label="车辆可载平方" prop="vehicleLoadVolume">
+          <el-input v-model="vehicleForm.vehicleLoadVolume" placeholder="请输入车辆可载平方" class="width90" clearable />
+        </el-form-item>
+        <el-form-item label="车辆可载立方" prop="vehicleRemainingLoadVolume">
+          <el-input v-model="vehicleForm.vehicleRemainingLoadVolume" placeholder="请输入车辆可载立方" class="width90" clearable />
+        </el-form-item>
+        <el-form-item label="车身自重" prop="selfRespect">
+          <el-input v-model="vehicleForm.selfRespect" placeholder="请输入车身自重" class="width90" clearable />
+        </el-form-item>
+        <el-form-item label="车架号" prop="chassisNumber" :rules="[{ required: true, message: '车架号不能为空', trigger: 'blur' }]">
+          <el-input v-model="vehicleForm.chassisNumber" placeholder="请输入车架号" class="width90" clearable />
+        </el-form-item>
+        <el-form-item label="发动机号" prop="engineNumber">
+          <el-input v-model="vehicleForm.engineNumber" placeholder="支持自动识别" class="width90" clearable />
+        </el-form-item>
+        <el-form-item label="底盘号" prop="vehicleChassisNumber">
+          <el-input v-model="vehicleForm.vehicleChassisNumber" placeholder="请输入底盘号" class="width90" clearable />
+        </el-form-item>
+        <el-form-item label="功率" prop="vehiclePower">
+          <el-input v-model="vehicleForm.vehiclePower" placeholder="请输入功率" class="width90" clearable />
+        </el-form-item>
+        <el-form-item label="轴数" prop="axesNumber">
+          <el-select v-model="vehicleForm.axesNumber" placeholder="请选择轴数" class="width90" clearable filterable>
+            <el-option
+              v-for="dict in axisTypeOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="年审时间" prop="annualVerificationDate">
+          <el-date-picker
+            v-model="vehicleForm.annualVerificationDate"
+            clearable
+            type="date"
+            value-format="yyyy-MM-dd"
+            class="width90"
+            placeholder="选择年审时间"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="车牌类型" prop="classificationCode">
-        <el-select v-model="vehicleForm.classificationCode" class="width90" filterable clearable>
-          <el-option
-            v-for="dict in licensePlateTypeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="parseInt(dict.dictValue)"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="车身颜色" prop="vehicleColorCode">
-        <el-select v-model="vehicleForm.vehicleColorCode" class="width90" filterable clearable>
-          <el-option
-            v-for="dict in carBodyColorOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="parseInt(dict.dictValue)"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="车辆归属类型" prop="vehicleAscriptionType">
-        <el-select v-model="vehicleForm.vehicleAscriptionType" class="width90" filterable clearable>
-          <el-option
-            v-for="dict in vehicleAscriptionTypeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="parseInt(dict.dictValue)"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="车辆类型" prop="vehicleTypeCode">
-        <el-select v-model="vehicleForm.vehicleTypeCode" placeholder="请选择车辆类型" class="width90" clearable filterable>
-          <el-option
-            v-for="dict in vehicleTypeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="车辆能源类型" prop="vehicleEnergyType">
-        <el-select v-model="vehicleForm.vehicleEnergyType" class="width90" filterable clearable>
-          <el-option
-            v-for="dict in energyTypesOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="车长" prop="vehicleLength">
-        <el-select v-model="vehicleForm.vehicleLength" placeholder="请选择车长" class="width90" clearable filterable>
-          <el-option
-            v-for="dict in vehicleLengthOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="车宽" prop="vehicleWidth">
-        <el-select v-model="vehicleForm.vehicleWidth" placeholder="请选择车宽" class="width90" clearable filterable>
-          <el-option
-            v-for="dict in vehicleWidthOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="车高" prop="vehicleHeight">
-        <el-select v-model="vehicleForm.vehicleHeight" placeholder="请选择车高" class="width90" clearable filterable>
-          <el-option
-            v-for="dict in vehicleHeightOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="车辆总重量" prop="vehicleTotalWeight">
-        <el-input v-model="vehicleForm.vehicleTotalWeight" placeholder="请输入车辆总重量" class="width90" clearable />
-      </el-form-item>
-      <el-form-item label="车辆可载重量" prop="vehicleLoadWeight">
-        <el-input v-model="vehicleForm.vehicleLoadWeight" placeholder="请输入车辆可载重量" class="width90" clearable />
-      </el-form-item>
-      <el-form-item label="车辆可载平方" prop="vehicleLoadVolume">
-        <el-input v-model="vehicleForm.vehicleLoadVolume" placeholder="请输入车辆可载平方" class="width90" clearable />
-      </el-form-item>
-      <el-form-item label="车辆可载立方" prop="vehicleRemainingLoadVolume">
-        <el-input v-model="vehicleForm.vehicleRemainingLoadVolume" placeholder="请输入车辆可载立方" class="width90" clearable />
-      </el-form-item>
-      <el-form-item label="车身自重" prop="selfRespect">
-        <el-input v-model="vehicleForm.selfRespect" placeholder="请输入车身自重" class="width90" clearable />
-      </el-form-item>
-      <el-form-item label="车架号" prop="chassisNumber">
-        <el-input v-model="vehicleForm.chassisNumber" placeholder="请输入车架号" class="width90" clearable />
-      </el-form-item>
-      <el-form-item label="发动机号" prop="engineNumber">
-        <el-input v-model="vehicleForm.engineNumber" placeholder="支持自动识别" class="width90" clearable />
-      </el-form-item>
-      <el-form-item label="底盘号" prop="vehicleChassisNumber">
-        <el-input v-model="vehicleForm.vehicleChassisNumber" placeholder="请输入底盘号" class="width90" clearable />
-      </el-form-item>
-      <el-form-item label="功率" prop="vehiclePower">
-        <el-input v-model="vehicleForm.vehiclePower" placeholder="请输入功率" class="width90" clearable />
-      </el-form-item>
-      <el-form-item label="轴数" prop="axesNumber">
-        <el-select v-model="vehicleForm.axesNumber" placeholder="请选择轴数" class="width90" clearable filterable>
-          <el-option
-            v-for="dict in axisTypeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="年审时间" prop="annualVerificationDate">
-        <el-date-picker
-          v-model="vehicleForm.annualVerificationDate"
-          clearable
-          type="date"
-          value-format="yyyy-MM-dd"
-          class="width90"
-          placeholder="选择年审时间"
-        />
-      </el-form-item>
-      <el-form-item label="运输介子" prop="transportMeson">
-        <el-input v-model="vehicleForm.transportMeson" placeholder="请输入运输介子" class="width90" clearable />
-      </el-form-item>
+        </el-form-item>
+        <el-form-item label="运输介子" prop="transportMeson">
+          <el-input v-model="vehicleForm.transportMeson" placeholder="请输入运输介子" class="width90" clearable />
+        </el-form-item>
+      </template>
     </el-form>
 
     <div v-if="title === '新增' || title === '编辑'" slot="footer" class="dialog-footer">
@@ -547,17 +549,7 @@ export default {
           { validator: this.formValidate.passWord, trigger: 'blur' }
         ]
       },
-      vehicleRules: {
-        vehicleTotalWeight: [
-          { required: true, message: '车辆总重量不能为空', trigger: 'blur' }
-        ],
-        vehicleLoadWeight: [
-          { required: true, message: '车辆可载重量不能为空', trigger: 'blur' }
-        ],
-        chassisNumber: [
-          { required: true, message: '车架号不能为空', trigger: 'blur' }
-        ]
-      },
+      vehicleRules: {},
       // 远程搜索调度者分页
       queryParams: {
         pageNum: 1,
@@ -634,18 +626,19 @@ export default {
         if (valid && flag) {
           this.$refs['vehicleForm'].validate(valid => {
             if (valid) {
-              const driver = {
-                ...this.form,
-                vehicleInfo: this.vehicleForm
-              };
+              const driver = this.form;
               driver.identificationEffective = praseBooleanToNum(driver.identificationEffective);
               driver.validPeriodAlways = praseBooleanToNum(driver.validPeriodAlways);
-              // 类型不为独立司机的时候，相关字段不能传
-              if (driver.driverType !== 1) {
+              // 类型为独立司机的时候，才有填车辆
+              if (driver.driverType === 1) {
+                driver.vehicleInfo = this.vehicleForm;
+              }
+              // 类型为聘用司机的时候，相关字段不能传
+              if (driver.driverType === 2) {
                 driver.driverOtherLicenseImage = null;
                 driver.driverOtherLicenseBackImage = null;
                 driver.transportPermitImage = null;
-                driver.vehicleInfo.vehicleImage = null;
+                driver.licenseNumber = null;
               }
               if (driver.id) {
                 updateDriver(driver).then(response => {
