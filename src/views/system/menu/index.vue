@@ -13,7 +13,7 @@
             class="mb20"
           />
         </div>
-        <div class="head-container">
+        <div class="head-container el-tree-scroll-container">
           <el-tree
             ref="tree"
             :data="produceOptions"
