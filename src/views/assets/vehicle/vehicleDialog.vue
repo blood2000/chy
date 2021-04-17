@@ -5,9 +5,9 @@
       <el-form-item label="车牌号" prop="licenseNumber">
         <el-input v-model="form.licenseNumber" placeholder="请输入车牌号" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="车主编码" prop="vehicleOwnerCode">
+      <!-- <el-form-item label="车主编码" prop="vehicleOwnerCode">
         <el-input v-model="form.vehicleOwnerCode" placeholder="请输入车主编码" class="width90" clearable />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="车辆归属类型" prop="vehicleAscriptionType">
         <el-select v-model="form.vehicleAscriptionType" placeholder="请选择车辆归属类型" class="width90" clearable filterable>
           <el-option
@@ -318,7 +318,7 @@ export default {
         id: null,
         code: null,
         licenseNumber: null,
-        vehicleOwnerCode: null,
+        // vehicleOwnerCode: null,
         vehicleAscriptionType: null,
         classificationCode: null,
         vehicleLicenseColorCode: null,

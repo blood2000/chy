@@ -77,7 +77,7 @@
       <el-table-column label="处理状态" align="center" prop="applyStatus">
         <template slot-scope="scope">
           <span v-if="scope.row.applyStatus !=null && scope.row.applyStatus>=0">{{ selectDictLabel(applyStatusOptions, scope.row.applyStatus) }}</span>
-          <span v-else>无</span>
+          <span v-else>待加入</span>
         </template>
       </el-table-column>
       <el-table-column label="调度者名称" align="center" prop="name" />
@@ -241,9 +241,9 @@ export default {
         this.close();
       });
     },
-    // 状态为已加入的checkbox不可选
+    // 状态为未处理/已加入的checkbox不可选
     checkboxSelectable(row) {
-      if (row.applyStatus === 1) {
+      if (row.applyStatus === 0 || row.applyStatus === 1 || row.apply) {
         return false;
       } else {
         return true;
