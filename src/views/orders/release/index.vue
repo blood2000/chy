@@ -147,21 +147,23 @@
             <div
               v-for="address in address_add"
               :key="address.refName"
-              class="oneAddress_item"
             >
-              <OneAddress v-if="isShowAddress" :ref="address.refName" type="1" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
-              <div class="ly-t-right">
-                <el-button
-                  v-if="!myisdisabled && (address_add.length >= 2 || formData.tin8)"
-                  type="danger"
-                  @click="_delAddress('address_add', address.refName)"
-                >删除地址</el-button>
-                <el-button
-                  v-if="!myisdisabled"
-                  type="primary"
-                  style="margin-top: -12px"
-                  @click="selectAddress('address_add', address.refName)"
-                >常用地址</el-button>
+              <div v-if="address.addressType !=='3'" class="oneAddress_item">
+
+                <OneAddress v-if="isShowAddress" :ref="address.refName" type="1" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
+                <div class="ly-t-right">
+                  <el-button
+                    v-if="!myisdisabled && (address_add.length >= 2 || formData.tin8)"
+                    type="danger"
+                    @click="_delAddress('address_add', address.refName)"
+                  >删除地址</el-button>
+                  <el-button
+                    v-if="!myisdisabled"
+                    type="primary"
+                    style="margin-top: -12px"
+                    @click="selectAddress('address_add', address.refName)"
+                  >常用地址</el-button>
+                </div>
               </div>
             </div>
 
@@ -170,7 +172,7 @@
             <div class="header mb8 m-flex">
               <div>
                 卸货信息
-                <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '3' || formData.tin7 === '4')" v-model="formData.tin9" :disabled="myisdisabled" style="marginLeft:30px;">允许自卸</el-checkbox>
+                <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '3' || formData.tin7 === '4')" v-model="formData.tin9" :disabled="myisdisabled" style="marginLeft:30px;" @change="handlerXie('xie')">允许自卸</el-checkbox>
               </div>
               <el-button
                 v-if="!myisdisabled && (formData.tin7 === '3' || formData.tin7 === '4')"
@@ -183,23 +185,25 @@
             <div
               v-for="address in address_xie"
               :key="address.refName"
-              class="oneAddress_item"
             >
-              <OneAddress v-if="isShowAddress" :ref="address.refName" type="2" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
+              <div v-if="address.addressType !=='4'" class="oneAddress_item">
 
-              <div class="ly-t-right">
+                <OneAddress v-if="isShowAddress" :ref="address.refName" type="2" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
 
-                <el-button
-                  v-if="!myisdisabled && (address_xie.length >= 2 || formData.tin9)"
-                  type="danger"
-                  @click="_delAddress('address_xie', address.refName)"
-                >删除地址</el-button>
-                <el-button
-                  v-if="!myisdisabled"
-                  type="primary"
-                  style="margin-top: -12px"
-                  @click="selectAddress('address_xie', address.refName)"
-                >常用地址</el-button>
+                <div class="ly-t-right">
+
+                  <el-button
+                    v-if="!myisdisabled && (address_xie.length >= 2 || formData.tin9)"
+                    type="danger"
+                    @click="_delAddress('address_xie', address.refName)"
+                  >删除地址</el-button>
+                  <el-button
+                    v-if="!myisdisabled"
+                    type="primary"
+                    style="margin-top: -12px"
+                    @click="selectAddress('address_xie', address.refName)"
+                  >常用地址</el-button>
+                </div>
               </div>
             </div>
 
@@ -326,8 +330,8 @@ export default {
       active: 1, // 步骤
       goods: [], // 商品-记入单商品还是多商品
       // 地址数组形式
-      address_add: [{ refName: 'address_add' + Date.now() }], // 装-地址组件使用
-      address_xie: [{ refName: 'address_xie' + Date.now() }], // 卸-地址组件使用
+      address_add: [{ refName: 'address_add' + Date.now(), addressType: '1' }], // 装-地址组件使用
+      address_xie: [{ refName: 'address_xie' + Date.now(), addressType: '2' }], // 卸-地址组件使用
       addr_add: [], // 装-传递数据使用
       addr_xie: [], // 卸-传递数据使用
 
@@ -553,7 +557,20 @@ export default {
         return;
       }
 
-      // this.address_add 是初始状态
+      // s= 回填的时候, 这个自装和自卸 是已经存在的了, 所以不走下面
+      const newAddress_add = this.address_add.filter(e => {
+        return e.addressType === '3';
+      });
+      const newAddress_xie = this.address_xie.filter(e => {
+        return e.addressType === '4';
+      });
+
+      if (newAddress_add.length || newAddress_xie.length) {
+        this.active = active;
+        return;
+      }
+      // e
+
       const address_add = this.address_add.map(async(e) => {
         return {
           ...e,
@@ -610,8 +627,6 @@ export default {
           return (!e.type || e.type !== 'tin9');
         });
       }
-
-      // console.log(this.addr_add, this.addr_xie, '88888888888888888888888');
 
       this.active = active; // 3
     },
@@ -727,8 +742,6 @@ export default {
       }
       this.goodsBigType = this.basicInfor.orderGoodsList[0].goodsBigType;
       this.goodsBigTypeName = this.basicInfor.orderGoodsList[0].goodsBigTypeName;
-
-      console.log(this.basicInfor);
 
       const {
         classList,
@@ -926,7 +939,7 @@ export default {
 
 
 
-    /* 回填-------------------------------------------- */
+    /* 回填------------------------------------------------------------------------------------------------------------------------ */
 
     // 编辑和详情-回填获取数据
     async getCbdata(id) {
@@ -1068,6 +1081,9 @@ export default {
       this.address_add = [];
       this.address_xie = [];
 
+      console.log(addressList);
+
+
       addressList.forEach((e, index) => {
         // 这说明是允许自装或自卸了
         if ((e.addressType - 0) === 3) {
@@ -1089,8 +1105,25 @@ export default {
             refName: 'address_xie' + Date.now() + index,
             cbData: e
           });
+        } else if ((e.addressType - 0) === 3) {
+          e.addressName = '自装';
+          this.address_add.push({
+            refName: 'address_add' + Date.now() + index,
+            addressType: e.addressType,
+            cbData: e // 主要是这个
+          });
+        } else if ((e.addressType - 0) === 4) {
+          e.addressName = '自卸';
+          this.address_xie.push({
+            refName: 'address_xie' + Date.now() + index,
+            addressType: e.addressType,
+            cbData: e
+          });
         }
       });
+
+      console.log(this.address_add);
+      console.log(this.address_xie);
     },
 
     // 3. 处理回填的数据(1.是要获取地址中的规则 2.要获取装地址到卸地址)
@@ -1142,9 +1175,18 @@ export default {
     },
 
     handlerCheck(type) {
+      if (!this.formData.tin8) {
+        this.address_add = this.address_add.filter(e => e.addressType !== '3');
+      }
+
       if (type === 'add' && !this.formData.tin8 && this.address_add.length <= 0) {
         this.msgError('装货地址至少填一个');
         this.formData.tin8 = true;
+      }
+    },
+    handlerXie() {
+      if (!this.formData.tin9) {
+        this.address_xie = this.address_xie.filter(e => e.addressType !== '4');
       }
     },
 
