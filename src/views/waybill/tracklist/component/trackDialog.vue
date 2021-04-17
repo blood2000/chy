@@ -3,7 +3,7 @@
   <el-dialog :title="title" :visible="visible" width="1400px" append-to-body @close="cancel">
     <div style="width:100%; height: 750px;">
       <el-amap ref="map" vid="DDCamap" :zoom="zoom" :center="center">
-        <el-amap-polyline :path="polyline.path" :stroke-weight="8" :stroke-opacity="0.8" :stroke-color="'#0091ea'" />
+        <el-amap-polyline :path="polyline.path" :stroke-weight="8" line-join="round" :stroke-opacity="0.8" :stroke-color="'#0091ea'" />
         <!-- <el-amap-polyline :path="polyline1.path" :stroke-weight="8" :stroke-opacity="0.8" :stroke-color="'#0091ea'" /> -->
         <el-amap-marker v-for="(marker, index) in markers" :key="index" :position="marker.position" :icon="marker.icon" />
       </el-amap>
@@ -34,7 +34,10 @@ export default {
       center: [119.358267, 26.04577],
       graspRoad: '',
       polyline: {
-        path: []
+        path: [[116.362209, 39.887487],
+          [116.422897, 39.878002],
+          [116.372105, 39.90651],
+          [116.428945, 39.89663]]
       },
       polyline1: {
         path: []
@@ -114,29 +117,30 @@ export default {
         this.markers[1].position = this.tracklist[this.tracklist.length - 1];
         console.log(this.markers);
       });
-      const that = this;
+      this.getguiji();
+    },
+    getguiji() {
       this.$nextTick(() => {
-        console.log(that.getChildInstance('DDCmap'));
-        const truckdriving = new AMap.TruckDriving({
-          // 驾车路线规划策略，(1:尽量躲避拥堵而规划路径, 2:不走高速, 3:尽可能规划收费较低甚至免费的路径, 4:尽量躲避拥堵，并且不走高速 5:尽量不走高速，并且尽量规划收费较低甚至免费的路径结果
-          // 6:尽量的躲避拥堵，并且规划收费较低甚至免费的路径结果, 7:尽量躲避拥堵，规划收费较低甚至免费的路径结果，并且尽量不走高速路, 8:会优先选择高速路, 9:会优先考虑高速路，并且会考虑路况躲避拥堵
-          // 10:不考虑路况，返回速度优先的路线，此路线不一定距离最短, 11:躲避拥堵，速度优先以及费用优先；500Km规划以内会返回多条结果，500Km以外会返回单条结果)
-          policy: 11,
+        const that = this;
+        const driving = new AMap.TruckDriving({
+        // 驾车路线规划策略，(1:尽量躲避拥堵而规划路径, 2:不走高速, 3:尽可能规划收费较低甚至免费的路径, 4:尽量躲避拥堵，并且不走高速 5:尽量不走高速，并且尽量规划收费较低甚至免费的路径结果
+        // 6:尽量的躲避拥堵，并且规划收费较低甚至免费的路径结果, 7:尽量躲避拥堵，规划收费较低甚至免费的路径结果，并且尽量不走高速路, 8:会优先选择高速路, 9:会优先考虑高速路，并且会考虑路况躲避拥堵
+        // 10:不考虑路况，返回速度优先的路线，此路线不一定距离最短, 11:躲避拥堵，速度优先以及费用优先；500Km规划以内会返回多条结果，500Km以外会返回单条结果)
+          policy: 9,
           // map 指定将路线规划方案绘制到对应的AMap.Map对象上
-          map: that.getChildInstance('DDCmap')
+          map: that.$refs.map.$$getInstance()
+          // panel: 'DDCmap'
         });
-
-        const startLngLat = [119.358267, 26.04577];
-        const endLngLat = [119.3444347318802, 25.72105270393117];
-
-        truckdriving.search(startLngLat, endLngLat, function(status, result) {
+        console.log(driving);
+        driving.search([119.358267, 26.04577], [119.3444347318802, 25.72105270393117], function(status, result) {
           console.log(result);
+          console.log(status);
           if (status === 'complete') {
             this.$success('绘制驾车路线完成');
           } else {
             this.$error('获取驾车数据失败：' + result);
           }
-          // 未出错时，result即是对应的路线规划方案
+        // 未出错时，result即是对应的路线规划方案
         });
       });
     },
