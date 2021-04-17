@@ -521,7 +521,7 @@ export default {
       const params = Object.assign({}, this.queryParams);
       params.pageSize = undefined;
       params.pageNum = undefined;
-      this.download('assets/shipment/export', params, `货主信息_${new Date().getTime()}.xlsx`, 'application/json').then(() => {
+      this.download('assets/shipment/export', params, `货主信息_${new Date().getTime()}.xlsx`).then(() => {
         this.exportLoading = false;
       });
     },

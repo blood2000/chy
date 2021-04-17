@@ -536,7 +536,7 @@ export default {
       const params = Object.assign({}, this.queryParams);
       params.pageSize = undefined;
       params.pageNum = undefined;
-      this.download('assets/driver/export', params, `司机信息_${new Date().getTime()}.xlsx`, 'application/json').then(() => {
+      this.download('assets/driver/export', params, `司机信息_${new Date().getTime()}.xlsx`).then(() => {
         this.exportLoading = false;
       });
     },
