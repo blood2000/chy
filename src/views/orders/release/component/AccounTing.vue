@@ -295,8 +295,6 @@ export default {
       handler(value) {
         if (!value || !value.orderFreightVo) return;
 
-        console.log(value);
-
         // 清空
         this.lossList = [];
         this.zichuList = [];

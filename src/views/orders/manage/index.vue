@@ -803,6 +803,8 @@ export default {
           e.transactionPrice = '';
           e.unitPrice = '';
           e.businessType = '';
+          e.contact2 = '';
+          e.contactPhone2 = '';
           mgoods.push({
             ...this.baseData(e)
           });
@@ -830,6 +832,8 @@ export default {
                 if (addr.addressType === '3') {
                   e.addressName1 = '自装';
                   e.addressAlias1 = '自装';
+                  e.contact1 = '-';
+                  e.contactPhone1 = '-';
                 } else if (addr.addressType === '1') {
                   e.addressName1 = addr.formattedAddress;
                   e.addressAlias1 = addr.addressAlias;
@@ -846,6 +850,9 @@ export default {
                 } else if (addr.addressType === '4') {
                   e.addressName2 = '自卸';
                   e.addressAlias2 = '自卸';
+
+                  e.contact2 = '-';
+                  e.contactPhone2 = '-';
                 }
               // 卸货地
               }
