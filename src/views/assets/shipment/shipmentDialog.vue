@@ -460,6 +460,7 @@ export default {
         this.$set(this.form, 'dispatchPoints', this.form.texPoint);
         this.$set(this.form, 'serviceRatio', this.form.texPoint);
       } else if (value === '3') { // 非一票制：调度费点数=原来的『税点(%) 』备注：运单结算使用的比例是「合同税点/（1-合同税点）」
+        if (this.form.texPoint === '' || this.form.texPoint === undefined || this.form.texPoint === null) return;
         this.$set(this.form, 'dispatchPoints', ((this.form.texPoint / (100 - this.form.texPoint)) * 100).toFixed(2));
       }
     },
