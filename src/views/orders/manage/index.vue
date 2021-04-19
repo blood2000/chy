@@ -35,7 +35,7 @@
                     placeholder="公司名称/客户姓名/手机号"
                     clearable
                     size="small"
-                    style="width: 200px"
+                    style="width: 250px"
                     @keyup.enter.native="handleQuery"
                   />
                 </el-form-item>
@@ -46,24 +46,24 @@
                     placeholder="装货地/装货电话/装货人"
                     clearable
                     size="small"
-                    style="width: 200px"
+                    style="width: 250px"
                     @keyup.enter.native="handleQuery"
                   />
                 </el-form-item>
 
-                <el-form-item label="收货信息" prop="tin3">
+                <el-form-item label="卸货信息" prop="tin3">
                   <el-input
                     v-model="queryParams.tin3"
                     placeholder="目的地/收货电话/收货人"
                     clearable
                     size="small"
-                    style="width: 200px"
+                    style="width: 250px"
                     @keyup.enter.native="handleQuery"
                   />
                 </el-form-item>
 
                 <el-form-item label="货物类型" prop="tin4">
-                  <el-select v-model="queryParams.tin4" placeholder="----请选择----" clearable filterable style="width: 200px">
+                  <el-select v-model="queryParams.tin4" placeholder="----请选择----" clearable filterable style="width: 250px">
                     <!-- goodsTypeOption -->
                     <el-option
                       v-for="(dict,index) in goodsTypeOption"
@@ -80,7 +80,7 @@
                     placeholder="请输入货物描述"
                     clearable
                     size="small"
-                    style="width: 200px"
+                    style="width: 250px"
                     @keyup.enter.native="handleQuery"
                   />
                 </el-form-item>
@@ -97,7 +97,7 @@
                     placeholder="请输入关键词"
                     :remote-method="remoteMethod"
                     :loading="loading"
-                    style="width: 200px"
+                    style="width: 250px"
                     @keyup.enter.native="handleQuery"
                   >
                     <el-option
@@ -117,7 +117,7 @@
                     placeholder="请输入货源单号"
                     clearable
                     size="small"
-                    style="width: 200px"
+                    style="width: 250px"
                     @keyup.enter.native="handleQuery"
                   />
                 </el-form-item>
@@ -133,7 +133,7 @@
               </el-form-item> -->
 
                 <el-form-item v-if="false" label="货源状态" prop="tin8">
-                  <el-select v-model="queryParams.tin8" placeholder="----请选择----" style="width: 200px" clearable filterable>
+                  <el-select v-model="queryParams.tin8" placeholder="----请选择----" style="width: 250px" clearable filterable>
                     <el-option
                       v-for="(dict,index) in statusOptions"
                       :key="index"
@@ -145,7 +145,7 @@
                 </el-form-item>
 
                 <el-form-item label="发布方式" prop="tin11">
-                  <el-select v-model="queryParams.tin11" placeholder="----请选择----" style="width: 200px" clearable filterable>
+                  <el-select v-model="queryParams.tin11" placeholder="----请选择----" style="width: 250px" clearable filterable>
                     <el-option
                       v-for="(dict,index) in isPublicTypeOptions"
                       :key="index"
@@ -157,7 +157,7 @@
                 </el-form-item>
 
                 <el-form-item v-show="(queryParams.tin8+'') ==='1'" label="下架状态" prop="isManual">
-                  <el-select v-model="queryParams.isManual" placeholder="----请选择----" clearable filterable style="width: 200px">
+                  <el-select v-model="queryParams.isManual" placeholder="----请选择----" clearable filterable style="width: 250px">
                     <el-option
                       v-for="(dict,index) in dicts['isManual_option']"
                       :key="index"
@@ -183,7 +183,7 @@
                   <el-date-picker
                     v-model="queryParams.tin10"
                     size="small"
-                    style="width: 200px"
+                    style="width: 250px"
                     value-format="yyyy-MM-dd"
                     type="daterange"
                     range-separator="-"

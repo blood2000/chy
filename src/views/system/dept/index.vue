@@ -193,7 +193,7 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <template v-if="form.ticketType == '2'">
+            <template v-if="form.ticketType == '1' || form.ticketType == '3'">
               <el-form-item label="服务费税率(%)" prop="serviceRate" :rules="[{ required: true, message: '服务费税率不能为空', trigger: 'blur' }]">
                 <el-input-number v-model="form.serviceRate" controls-position="right" :precision="2" placeholder="请输入服务费税率" :step="1" :min="0" :max="100" class="width90" clearable />
               </el-form-item>

@@ -1086,9 +1086,6 @@ export default {
       this.address_add = [];
       this.address_xie = [];
 
-      console.log(addressList);
-
-
       addressList.forEach((e, index) => {
         // 这说明是允许自装或自卸了
         if ((e.addressType - 0) === 3) {
@@ -1126,9 +1123,6 @@ export default {
           });
         }
       });
-
-      console.log(this.address_add);
-      console.log(this.address_xie);
     },
 
     // 3. 处理回填的数据(1.是要获取地址中的规则 2.要获取装地址到卸地址)

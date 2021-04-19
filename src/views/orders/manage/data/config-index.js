@@ -133,7 +133,7 @@ export default [
     isShow: true,
     width: 120,
     tooltip: true,
-    label: '创建时间'
+    label: '发布时间'
   },
   {
     prop: 'isDel',
