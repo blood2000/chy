@@ -204,7 +204,7 @@
           v-if="row.isChild === 2"
           size="mini"
           type="text"
-          icon="el-icon-date"
+          icon="el-icon-document-copy"
           @click="handleSeperate(row)"
         >
           分单列表

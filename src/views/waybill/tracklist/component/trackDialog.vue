@@ -2,10 +2,9 @@
   <!-- 车辆跟踪对话框 -->
   <el-dialog :title="title" :visible="visible" width="1400px" append-to-body @close="cancel">
     <div style="width:100%; height: 750px;">
-      <el-amap ref="map" vid="DDCamap" :zoom="zoom" :center="center">
-        <el-amap-polyline :path="polyline.path" :stroke-weight="8" line-join="round" :stroke-opacity="0.8" :stroke-color="'#0091ea'" />
-        <!-- <el-amap-polyline :path="polyline1.path" :stroke-weight="8" :stroke-opacity="0.8" :stroke-color="'#0091ea'" /> -->
-        <el-amap-marker v-for="(marker, index) in markers" :key="index" :position="marker.position" :icon="marker.icon" />
+      <el-amap ref="map" vid="DDCmap" :zoom="zoom" :center="center">
+        <!-- <el-amap-polyline :path="polyline.path" :stroke-weight="8" line-join="round" :stroke-opacity="0.8" :stroke-color="'#0091ea'" /> -->
+        <!-- <el-amap-marker v-for="(marker, index) in markers" :key="index" :position="marker.position" :icon="marker.icon" /> -->
       </el-amap>
     </div>
   </el-dialog>
@@ -34,12 +33,6 @@ export default {
       center: [119.358267, 26.04577],
       graspRoad: '',
       polyline: {
-        path: [[116.362209, 39.887487],
-          [116.422897, 39.878002],
-          [116.372105, 39.90651],
-          [116.428945, 39.89663]]
-      },
-      polyline1: {
         path: []
       },
       // 表单参数
@@ -98,6 +91,7 @@ export default {
     }
   },
   created() {
+    // this.getguiji();
   },
   methods: {
     /** 获取轨迹 */
@@ -107,42 +101,92 @@ export default {
         this.tracklist = response.data.result.map(function(response) {
           return [response.lng, response.lat];
         });
-        this.polyline.path = this.tracklist;
-        console.log(this.polyline);
+        // 绘制轨迹
+        this.drawPolyline(this.tracklist);
+        this.getMark(this.tracklist);
         // 地图中心点
-        this.center = this.tracklist[0];
+        // this.center = this.tracklist[0];
         // 起点地址
-        this.markers[0].position = this.tracklist[0];
+        // this.markers[0].position = this.tracklist[0];
         // 终点地址
-        this.markers[1].position = this.tracklist[this.tracklist.length - 1];
-        console.log(this.markers);
+        // this.markers[1].position = this.tracklist[this.tracklist.length - 1];
+        // console.log(this.markers);
       });
-      this.getguiji();
+      this.getRoutePlan();
     },
-    getguiji() {
+    // 获取高德地图路线规划
+    getRoutePlan() {
       this.$nextTick(() => {
         const that = this;
-        const driving = new AMap.TruckDriving({
-        // 驾车路线规划策略，(1:尽量躲避拥堵而规划路径, 2:不走高速, 3:尽可能规划收费较低甚至免费的路径, 4:尽量躲避拥堵，并且不走高速 5:尽量不走高速，并且尽量规划收费较低甚至免费的路径结果
-        // 6:尽量的躲避拥堵，并且规划收费较低甚至免费的路径结果, 7:尽量躲避拥堵，规划收费较低甚至免费的路径结果，并且尽量不走高速路, 8:会优先选择高速路, 9:会优先考虑高速路，并且会考虑路况躲避拥堵
-        // 10:不考虑路况，返回速度优先的路线，此路线不一定距离最短, 11:躲避拥堵，速度优先以及费用优先；500Km规划以内会返回多条结果，500Km以外会返回单条结果)
-          policy: 9,
+        const driving = new AMap.Driving({
+          policy: AMap.DrivingPolicy.LEAST_TIME
           // map 指定将路线规划方案绘制到对应的AMap.Map对象上
-          map: that.$refs.map.$$getInstance()
-          // panel: 'DDCmap'
+          // map: that.$refs.map.$$getInstance()
+          // panel: 'DDCmap',
+          // size: 1
         });
-        console.log(driving);
-        driving.search([119.358267, 26.04577], [119.3444347318802, 25.72105270393117], function(status, result) {
-          console.log(result);
-          console.log(status);
+        const startLngLat = [119.358267, 26.04577];
+        const endLngLat = [119.344435, 25.721053];
+        driving.search(startLngLat, endLngLat, function(status, result) {
           if (status === 'complete') {
-            this.$success('绘制驾车路线完成');
+            const { routes = [] } = result;
+            const { steps = [] } = routes[0];
+            const pathArr = [];
+            steps.map(i => {
+              pathArr.push(i.path);
+              return pathArr;
+            });
+            const path = [].concat.apply([], pathArr);
+            // 绘制轨迹
+            that.drawPolyline(path);
           } else {
-            this.$error('获取驾车数据失败：' + result);
+            console.log('获取驾车数据失败');
           }
         // 未出错时，result即是对应的路线规划方案
         });
       });
+    },
+    // 起点终点
+    getMark(path) {
+      const that = this;
+      // 装货地marker
+      const startPosition = path[0];
+      const startMark = new AMap.Marker({
+        position: startPosition,
+        icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/load.png',
+        autoFitView: true,
+        autoRotation: true
+        // offset: new Pixel(-14, -20),
+      });
+      startMark.setMap(that.$refs.map.$$getInstance());
+      // 卸货地marker
+      const endPosition = path[path.length - 1];
+      const endMark = new AMap.Marker({
+        position: endPosition,
+        icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/unload.png',
+        autoFitView: true,
+        autoRotation: true
+        // offset: new Pixel(-14, -20),
+      });
+      endMark.setMap(that.$refs.map.$$getInstance());
+      that.$refs.map.$$getInstance().setFitView([startMark, endMark]);
+    },
+    // 绘制轨迹
+    drawPolyline(path) {
+      const that = this;
+      const polyline = new window.AMap.Polyline({
+        map: that.$refs.map.$$getInstance(),
+        path,
+        showDir: true,
+        strokeColor: '#0083F9', // 线颜色
+        outlineColor: '#fff',
+        strokeOpacity: 0.8, // 线透明度
+        strokeWeight: 10, // 线宽
+        strokeStyle: 'solid', // 线样式
+        lineJoin: 'round', // 折线拐点的绘制样式
+        zIndex: 999
+      });
+      polyline.setMap(that.$refs.map.$$getInstance());
     },
     /** 取消按钮 */
     cancel() {

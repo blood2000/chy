@@ -34,7 +34,11 @@ export default {
       // 表单参数
       form: {},
       // 表单校验
-      rules: {}
+      rules: {
+        description: [
+          { required: true, message: '异常原因不能为空', trigger: 'blur' }
+        ]
+      }
     };
   },
   computed: {

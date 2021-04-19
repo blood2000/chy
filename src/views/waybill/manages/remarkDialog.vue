@@ -31,7 +31,11 @@ export default {
       // 表单参数
       form: {},
       // 表单校验
-      rules: {}
+      rules: {
+        shipperRemark: [
+          { required: true, message: '货主备注不能为空', trigger: 'blur' }
+        ]
+      }
     };
   },
   computed: {

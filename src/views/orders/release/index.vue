@@ -700,8 +700,6 @@ export default {
         if (!this.isCreated) {
           update(this.lastData).then(res => {
             this.msgSuccess('修改成功');
-            this.$route.query.id = undefined;
-            this.$route.query.t = 'creat';
             this.loading = false;
             var time1 = setTimeout(() => {
               clearTimeout(time1);
