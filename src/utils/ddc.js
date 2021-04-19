@@ -236,3 +236,14 @@ export function compareBeginEndTime(beginTime, endTime) {
     return false;
   }
 }
+
+/**
+ * md5加密
+ */
+import crypto from 'crypto';
+export function Md5Util(text) {
+  const md5 = crypto.createHash('md5');
+  md5.update(text);
+  const md5password = md5.digest('hex');
+  return md5password;
+}
