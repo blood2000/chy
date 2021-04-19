@@ -145,12 +145,12 @@ export default {
           { required: true, trigger: 'blur', message: '企业名称不能为空' }
         ],
         adminName: [
-          { required: true, message: '姓名不能为空', trigger: 'blur' },
-          { validator: this.formValidate.name, trigger: 'blur' }
+          { required: true, message: '姓名不能为空', trigger: ['blur', 'change'] },
+          { validator: this.formValidate.name, trigger: ['blur', 'change'] }
         ],
         identificationNumber: [
-          { required: true, message: '身份证号不能为空', trigger: 'blur' },
-          { validator: this.formValidate.idCard, trigger: 'blur' }
+          { required: true, message: '身份证号不能为空', trigger: ['blur', 'change'] },
+          { validator: this.formValidate.idCard, trigger: ['blur', 'change'] }
         ],
         identificationEndTime: [
           { validator: (rules, value, callback) => this.formValidate.idCardValidate(rules, value, callback, this.form.identificationBeginTime, this.form.identificationEffective), trigger: ['change', 'blur'] },

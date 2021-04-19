@@ -90,10 +90,12 @@ export default {
       });
     },
     handleUploadSuccess(res) {
+      this.loading.close();
       if (res.code === 200) {
         this.$emit('input', res.data.code);
-        this.loading.close();
         this.handleGetFile(res.data.code, true);
+      } else if (res.code === 500) {
+        this.msgError(res.msg);
       }
     },
     // 根据code获取url
