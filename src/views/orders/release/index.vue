@@ -294,6 +294,7 @@ import { getProvinceList } from '@/api/system/area';
 
 
 export default {
+
   components: {
     OrderBasic,
     OneAddress,
@@ -422,7 +423,7 @@ export default {
         return;
       }
 
-      this.isAdmin && (this.formData.tin1 = shipment.info.adminCode);
+      this.isAdmin && (this.formData.tin1 = shipment.info.code);
     }
 
     // 判断地址栏有没有id- true=>有说明编辑/详情 false=>创建-什么都不做
@@ -700,7 +701,9 @@ export default {
           update(this.lastData).then(res => {
             this.msgSuccess('修改成功');
             this.loading = false;
-            setTimeout(() => {
+            var time1 = setTimeout(() => {
+              clearTimeout(time1);
+              time1 = null;
               this.$router.push({ name: 'Manage' });
             }, 1000);
           }).catch(() => {

@@ -6,7 +6,7 @@ export function listInfo(data) {
   return request({
     url: listTeamApi,
     method: 'post',
-    data: Object.assign({}, data, { isAsc: 'desc', orderByColumn: 'create_time' })
+    data: Object.assign({}, { isAsc: 'desc', orderByColumn: 'create_time' }, data)
   });
 }
 

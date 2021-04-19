@@ -352,6 +352,8 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
+        isAsc: 'desc',
+        orderByColumn: 'create_time',
         searchValue: undefined,
         // isAccount: undefined,
         // accountType: undefined,

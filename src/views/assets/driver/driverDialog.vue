@@ -63,7 +63,7 @@
           class="width28"
           type="date"
           value-format="yyyy-MM-dd"
-          placeholder="请选择"
+          placeholder="支持自动识别"
         />
         至
         <el-date-picker
@@ -72,7 +72,7 @@
           class="width28 mr3"
           type="date"
           value-format="yyyy-MM-dd"
-          placeholder="请选择"
+          placeholder="支持自动识别"
           :disabled="!!form.identificationEffective"
         />
         <el-checkbox v-model="form.identificationEffective">长期有效</el-checkbox>
@@ -419,7 +419,7 @@
     </el-form>
 
     <div v-if="title === '新增' || title === '编辑'" slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="submitForm">确 定</el-button>
+      <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
     </div>
     <div v-if="title === '审核'" slot="footer" class="dialog-footer">
@@ -452,6 +452,7 @@ export default {
   },
   data() {
     return {
+      buttonLoading: false,
       // 初始密码
       initialPassword: 'abcd1234@',
       // 司机类别字典
@@ -514,23 +515,23 @@ export default {
       // 表单校验
       rules: {
         name: [
-          { required: true, message: '姓名不能为空', trigger: 'blur' },
-          { validator: this.formValidate.name, trigger: 'blur' }
+          { required: true, message: '姓名不能为空', trigger: ['blur', 'change'] },
+          { validator: this.formValidate.name, trigger: ['blur', 'change'] }
         ],
         telphone: [
           { required: true, message: '手机号/账号不能为空', trigger: 'blur' },
           { validator: this.formValidate.telphone, trigger: 'blur' }
         ],
         identificationNumber: [
-          { required: true, message: '身份证号不能为空', trigger: 'blur' },
-          { validator: this.formValidate.idCard, trigger: 'blur' }
+          { required: true, message: '身份证号不能为空', trigger: ['blur', 'change'] },
+          { validator: this.formValidate.idCard, trigger: ['blur', 'change'] }
         ],
         identificationEndTime: [
           { validator: (rules, value, callback) => this.formValidate.idCardValidate(rules, value, callback, this.form.identificationBeginTime, this.form.identificationEffective), trigger: ['change', 'blur'] },
           { validator: (rules, value, callback) => this.formValidate.isExpired(rules, value, callback, this.form.identificationEffective), trigger: 'change' }
         ],
         issuingOrganizations: [
-          { required: true, message: '驾驶证发证机关不能为空', trigger: 'blur' }
+          { required: true, message: '驾驶证发证机关不能为空', trigger: ['blur', 'change'] }
         ],
         validPeriodTo: [
           { validator: (rules, value, callback) => this.formValidate.idCardValidate(rules, value, callback, this.form.validPeriodFrom, this.form.validPeriodAlways, '驾驶证'), trigger: ['change', 'blur'] },
@@ -543,7 +544,7 @@ export default {
           { required: true, message: '道路运输经营许可证号不能为空', trigger: 'blur' }
         ],
         licenseNumber: [
-          { validator: this.formValidate.plateNo, trigger: 'blur' }
+          { validator: this.formValidate.plateNo, trigger: ['blur', 'change'] }
         ],
         password: [
           { validator: this.formValidate.passWord, trigger: 'blur' }
@@ -626,31 +627,39 @@ export default {
         if (valid && flag) {
           this.$refs['vehicleForm'].validate(valid => {
             if (valid) {
-              const driver = this.form;
+              this.buttonLoading = true;
+              const driver = { ...this.form };
+              driver.vehicleInfo = { ...this.vehicleForm };
               driver.identificationEffective = praseBooleanToNum(driver.identificationEffective);
               driver.validPeriodAlways = praseBooleanToNum(driver.validPeriodAlways);
               // 类型为独立司机的时候，才有填车辆
-              if (driver.driverType === 1) {
-                driver.vehicleInfo = this.vehicleForm;
-              }
+              // if (driver.driverType === 1) {
+              //   driver.vehicleInfo = this.vehicleForm;
+              // }
               // 类型为聘用司机的时候，相关字段不能传
-              if (driver.driverType === 2) {
-                driver.driverOtherLicenseImage = null;
-                driver.driverOtherLicenseBackImage = null;
-                driver.transportPermitImage = null;
-                driver.licenseNumber = null;
-              }
+              // if (driver.driverType === 2) {
+              //   driver.driverOtherLicenseImage = null;
+              //   driver.driverOtherLicenseBackImage = null;
+              //   driver.transportPermitImage = null;
+              //   driver.licenseNumber = null;
+              // }
               if (driver.id) {
                 updateDriver(driver).then(response => {
+                  this.buttonLoading = false;
                   this.msgSuccess('修改成功');
                   this.close();
                   this.$emit('refresh');
+                }).catch(() => {
+                  this.buttonLoading = false;
                 });
               } else {
                 addDriver(driver).then(response => {
+                  this.buttonLoading = false;
                   this.msgSuccess('新增成功');
                   this.close();
                   this.$emit('refresh');
+                }).catch(() => {
+                  this.buttonLoading = false;
                 });
               }
             } else {
@@ -692,6 +701,7 @@ export default {
     },
     // 表单重置
     reset() {
+      this.buttonLoading = false;
       this.form = {
         id: null,
         code: null,

@@ -164,7 +164,7 @@
       </el-form-item>
     </el-form>
     <div v-if="title === '新增' || title === '编辑'" slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="submitForm">确 定</el-button>
+      <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
     </div>
     <div v-if="title === '审核'" slot="footer" class="dialog-footer">
@@ -192,6 +192,7 @@ export default {
   },
   data() {
     return {
+      buttonLoading: false,
       // 车牌类型字典
       licensePlateTypeOptions: [],
       // 车牌颜色字典
@@ -287,17 +288,24 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
+          this.buttonLoading = true;
           if (this.form.id) {
             updateInfo(this.form).then(response => {
+              this.buttonLoading = false;
               this.msgSuccess('修改成功');
               this.close();
               this.$emit('refresh');
+            }).catch(() => {
+              this.buttonLoading = false;
             });
           } else {
             addInfo(this.form).then(response => {
+              this.buttonLoading = false;
               this.msgSuccess('新增成功');
               this.close();
               this.$emit('refresh');
+            }).catch(() => {
+              this.buttonLoading = false;
             });
           }
         }
@@ -314,6 +322,7 @@ export default {
     },
     // 表单重置
     reset() {
+      this.buttonLoading = false;
       this.form = {
         id: null,
         code: null,

@@ -106,7 +106,6 @@
                       :value="item.code"
                       :label="item.adminName"
                     >
-                      <!-- :label="item.adminName" -->
                       <div class="ly-flex-pack-justify"><span>{{ item.adminName }}</span><span>{{ item.telphone }}</span></div>
                     </el-option>
                   </el-select>
@@ -247,7 +246,6 @@
               :height="theight"
               :loading="loading"
               :data="list"
-              highlight-current-row
               row-key="id"
               stripe
               :row-class-name="tableRowClassName"
@@ -356,7 +354,6 @@
               <template #edit="{row}">
                 <template v-if="row.isShowEdit">
                   <el-button
-                    v-hasPermi="['system:menu:edit']"
                     size="mini"
                     type="text"
                     @click="handleInfo(row)"
@@ -365,7 +362,6 @@
 
                   <el-button
                     v-if="false && row.status+''==='0'"
-                    v-hasPermi="['system:menu:remove']"
                     size="mini"
                     type="text"
                     @click="handleDispatch(row)"
@@ -374,7 +370,7 @@
 
                   <el-button
                     v-if="row.status+''==='0'"
-                    v-hasPermi="['system:menu:edit']"
+                    v-hasPermi="['consigner-order-edit']"
                     size="mini"
                     type="text"
                     @click="handleUpdate(row)"
@@ -382,14 +378,14 @@
                   <!-- icon="el-icon-edit" -->
                   <el-button
                     v-if="!row.haveWaybill"
-                    v-hasPermi="['system:menu:remove']"
+                    v-hasPermi="['consigner-order-delete']"
                     size="mini"
                     type="text"
                     @click="handleDelete(row)"
                   >删除</el-button>
                   <!-- icon="el-icon-delete" -->
                   <el-button
-                    v-hasPermi="['system:menu:remove']"
+                    v-hasPermi="['consigner-order-open', 'consigner-order-close']"
                     size="mini"
                     type="text"
                     :style="{color: row.status+''==='0'?'red': ''}"
@@ -398,7 +394,7 @@
                   <!-- icon="el-icon-close" -->
                   <el-button
                     v-if="row.status+''==='0'"
-                    v-hasPermi="['system:menu:remove']"
+                    v-hasPermi="['consigner-order-adjust-price']"
                     size="mini"
                     type="text"
                     @click="handleReadjustPrices(row)"
@@ -406,7 +402,6 @@
                   <!-- icon="el-icon-bank-card" -->
                   <el-button
                     v-if="false"
-                    v-hasPermi="['system:menu:remove']"
                     size="mini"
                     type="text"
                     @click="handleShenhe(row)"
@@ -414,7 +409,6 @@
                   <!-- icon="el-icon-document" -->
                   <el-button
                     v-if="row.status+''==='0'"
-                    v-hasPermi="['system:menu:remove']"
                     size="mini"
                     type="text"
                     @click="handleclone(row)"
@@ -462,11 +456,11 @@ import tableColumnsConfig from './data/config-index';
 import PriceAdjustment from './component/PriceAdjustment';
 
 export default {
-  name: 'Testlog',
+  name: 'Manage',
   components: { OpenDialog, PriceAdjustment },
   data() {
     return {
-      theight: 100, // 高度
+      theight: null, // 高度
 
       activeName: '0', // 做tab切换
       listManagesApi, // 表头存的key
@@ -686,14 +680,12 @@ export default {
 
 
   created() {
-    const { isAdmin = true, user = {}} = getUserInfo() || {};
-
-    // console.log(user.userCode);
+    const { isAdmin = true, shipment = {}} = getUserInfo() || {};
 
 
     // 判断当前是什么角色登入的 true 是运营
     this.isShipment = !isAdmin;
-    this.isShipment && (this.queryParams.tin6 = user.userCode);
+    this.isShipment && (this.queryParams.tin6 = shipment.info.code);
     // 要配置好才能用
     this.tableHeaderConfig(this.tableColumnsConfig, listManagesApi, null, tableColumnsConfig);
     this.getDict();
@@ -767,7 +759,7 @@ export default {
         this.total = response.data.total - 0;
         this.handlerList(response.data.list);
       }).catch(() => {
-        this.theight = 100;
+        this.theight = null;
         this.loading = false;
       });
     },
@@ -885,15 +877,19 @@ export default {
         };
       });
 
-      this.theight = 100;
+      this.theight = null;
 
-      this.list.length >= 10 && this.$nextTick(() => {
-        if (this.$el && this.$refs.queryFormBox) {
-          const box1 = this.$el.offsetHeight;
-          const box2 = this.$refs.queryFormBox.offsetHeight;
-          this.theight = box1 - box2 - 200;
-        }
-      });
+      // if (this.list.length === 10) {
+      //   this.$nextTick(() => {
+      //     if (this.$el && this.$refs.queryFormBox) {
+      //       const box1 = this.$el.offsetHeight;
+      //       const box2 = this.$refs.queryFormBox.offsetHeight;
+      //       this.theight = box1 - box2 - 200;
+      //     }
+      //   });
+      // }
+
+
       this.loading = false;
     },
 

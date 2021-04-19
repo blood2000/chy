@@ -8,3 +8,12 @@ export function getWalletInfo(query) {
     params: query
   });
 }
+
+// 修改支付密码
+export function editAmountPassword(data) {
+  return request({
+    url: '/payment/wallet',
+    method: 'put',
+    data: data
+  });
+}

@@ -6,7 +6,7 @@ export function payRecordlist(data) {
   return request({
     url: payRecordlistApi,
     method: 'post',
-    data: Object.assign({}, data, { isAsc: 'asc', orderByColumn: 'id' })
+    data: Object.assign({}, { isAsc: 'asc', orderByColumn: 'id' }, data)
   });
 }
 

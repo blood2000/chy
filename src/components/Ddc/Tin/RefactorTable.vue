@@ -1,6 +1,6 @@
 <template>
   <el-table :ref="refName" v-loading="loading" border stripe :data="data" v-bind="$attrs" @selection-change="handleSelectionChange">
-    <el-table-column v-if="!!_events['selection-change']" type="selection" width="55" align="center" />
+    <el-table-column v-if="!!_events['selection-change']" type="selection" width="55" align="center" fixed />
     <el-table-column v-if="!isShowIndex" label="序号" align="center" type="index" min-width="5%" />
     <template v-for="(th, key) in tableColumnsConfig">
       <el-table-column

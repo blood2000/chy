@@ -33,6 +33,7 @@
             :myisdisabled="myisdisabled"
             :good="good"
             :goods-submit-form="getGoodsAccounting"
+            @showisweitian="showisweitian"
           />
         </div>
 
@@ -223,7 +224,11 @@ export default {
     },
 
     validatePass(data) {
-      if (data === this.activeName || data === '0') return;
+      // if (data === this.activeName || data === '0') return;
+      this.activeName = data;
+    },
+
+    showisweitian(data) {
       this.activeName = data;
     }
 
