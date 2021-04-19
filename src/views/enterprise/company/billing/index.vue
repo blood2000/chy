@@ -89,7 +89,7 @@ export default {
         ],
         registrationTelphone: [
           { required: true, message: '注册电话不能为空', trigger: 'blur' },
-          { validator: this.formValidate.telphone, trigger: 'blur' }
+          { validator: this.formValidate.phone, trigger: 'blur' }
         ],
         openBankName: [
           { required: true, message: '开户行不能为空', trigger: 'blur' }
@@ -104,7 +104,7 @@ export default {
         ],
         payeeTelphone: [
           { required: true, message: '收票人联系电话不能为空', trigger: 'blur' },
-          { validator: this.formValidate.telphone, trigger: 'blur' }
+          { validator: this.formValidate.phone, trigger: 'blur' }
         ],
         payeeEmail: [
           { required: true, message: '收票人电子邮箱不能为空', trigger: 'blur' },

@@ -238,6 +238,10 @@
       <template #payMybankTime="{row}">
         <span>{{ parseTime(row.payMybankTime) }}</span>
       </template>
+      <!-- 接单时间 -->
+      <template #receiveTime="{row}">
+        <span>{{ parseTime(row.receiveTime) }}</span>
+      </template>
       <template #createTime="{row}">
         <span>{{ parseTime(row.createTime) }}</span>
       </template>
@@ -264,32 +268,14 @@
       <el-table-column label="是否超载" align="center" prop="" />
       <el-table-column label="是否分单" align="center" prop="" />
       <el-table-column label="是否异常" align="center" prop="" />
-      <el-table-column label="支付批次号" align="center" prop="" />
-      <el-table-column label="支付订单号" align="center" prop="" />
-      <el-table-column label="运输单号" align="center" prop="" />
-      <el-table-column label="车牌号" align="center" prop="" />
-      <el-table-column label="调度" align="center" prop="" />
+      <el-table-column label="调度名称" align="center" prop="" />
       <el-table-column label="运单关联企业" align="center" prop="" />
-      <el-table-column label="收款方姓名" align="center" prop="" />
-      <el-table-column label="收款方账户" align="center" prop="" />
-      <el-table-column label="金额" align="center" prop="" />
       <el-table-column label="司机实际运费" align="center" prop="" />
       <el-table-column label="司机实收现金" align="center" prop="" />
       <el-table-column label="油气卡" align="center" prop="" />
-      <el-table-column label="手续费" align="center" prop="" />
-      <el-table-column label="收款方手机号" align="center" prop="" />
-      <el-table-column label="银行名称" align="center" prop="" />
       <el-table-column label="转账请求状态" align="center" prop="" />
-      <el-table-column label="转账结果" align="center" prop="" />
       <el-table-column label="流水上报" align="center" prop="" />
       <el-table-column label="电子路单上报状态" align="center" prop="" />
-      <el-table-column label="货源单号" align="center" prop="" />
-      <el-table-column label="最后操作人" align="center" prop="" />
-      <el-table-column label="接单时间" align="center" prop="time">
-        <template slot-scope="scope">
-          {{ parseTime(scope.row.time) }}
-        </template>
-      </el-table-column>
     </el-table> -->
 
     <pagination

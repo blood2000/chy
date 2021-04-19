@@ -626,20 +626,21 @@ export default {
         if (valid && flag) {
           this.$refs['vehicleForm'].validate(valid => {
             if (valid) {
-              const driver = this.form;
+              const driver = { ...this.form };
+              driver.vehicleInfo = { ...this.vehicleForm };
               driver.identificationEffective = praseBooleanToNum(driver.identificationEffective);
               driver.validPeriodAlways = praseBooleanToNum(driver.validPeriodAlways);
               // 类型为独立司机的时候，才有填车辆
-              if (driver.driverType === 1) {
-                driver.vehicleInfo = this.vehicleForm;
-              }
+              // if (driver.driverType === 1) {
+              //   driver.vehicleInfo = this.vehicleForm;
+              // }
               // 类型为聘用司机的时候，相关字段不能传
-              if (driver.driverType === 2) {
-                driver.driverOtherLicenseImage = null;
-                driver.driverOtherLicenseBackImage = null;
-                driver.transportPermitImage = null;
-                driver.licenseNumber = null;
-              }
+              // if (driver.driverType === 2) {
+              //   driver.driverOtherLicenseImage = null;
+              //   driver.driverOtherLicenseBackImage = null;
+              //   driver.transportPermitImage = null;
+              //   driver.licenseNumber = null;
+              // }
               if (driver.id) {
                 updateDriver(driver).then(response => {
                   this.msgSuccess('修改成功');

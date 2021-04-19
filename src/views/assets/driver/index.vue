@@ -390,6 +390,8 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
+        isAsc: 'desc',
+        orderByColumn: 'create_time',
         driverType: undefined,
         name: undefined,
         telphone: undefined,

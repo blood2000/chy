@@ -362,6 +362,8 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
+        isAsc: 'desc',
+        orderByColumn: 'create_time',
         licenseNumber: undefined,
         vehicleOwnerCode: undefined,
         vehicleAscriptionType: undefined,
