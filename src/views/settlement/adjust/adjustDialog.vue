@@ -342,7 +342,7 @@ export default {
       });
 
 
-      this.$confirm('确定要立即审核?', '警告', {
+      this.$confirm('确定要立即核算?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -350,7 +350,7 @@ export default {
         return batchCheck({ boList });
       }).then(() => {
         // this.getList();
-        this.msgSuccess('审核成功');
+        this.msgSuccess('核算成功');
         this.visible = false;
         this.$emit('refresh');
       });

@@ -32,7 +32,7 @@
       <el-form-item label="选择货物类别" prop="tin2">
         <el-radio-group
           v-model="formData.tin2"
-          dislabe
+          :disabled="formData.tin3 !== '0'"
           size="medium"
           @change="handletin2(false)"
         >
@@ -48,7 +48,7 @@
       <template v-if="formData.tin2">
         <!-- isMultiGoods true->多商品 ; false->单商品 -->
         <el-form-item v-if="isMultiGoods" label="货物类型(多)" prop="tin2_1">
-          <el-checkbox-group v-model="formData.tin2_1" size="medium">
+          <el-checkbox-group v-model="formData.tin2_1" size="medium" :disabled="formData.tin3 !== '0'">
             <el-checkbox
               v-for="dict in tin2_Option"
               :key="dict.dictValue"
@@ -58,7 +58,7 @@
           </el-checkbox-group>
         </el-form-item>
         <el-form-item v-else label="货物类型(单)" prop="tin2_2">
-          <el-radio-group v-model="formData.tin2_2" size="medium">
+          <el-radio-group v-model="formData.tin2_2" size="medium" :disabled="formData.tin3 !== '0'">
             <el-radio
               v-for="dict in tin2_Option"
               :key="dict.dictValue"
@@ -224,7 +224,7 @@ export default {
         remark: ''
       },
       rules: {
-        tin3: [{ required: true, message: '选择所属项目', trigger: 'change' }],
+        tin3: [{ required: false, message: '选择所属项目', trigger: 'change' }],
         tin2: [{ required: true, message: '选择货物类别', trigger: 'change' }],
         tin2_1: [
           { required: true, message: '选择货物类型', trigger: 'change' }
@@ -321,7 +321,7 @@ export default {
         const { code, projectCode, isPublic, isSpecified, remark, orderSpecifiedList, goodsBigType, goodsType, classList } = this.cbData;
 
         // 1.基本的赋值
-        this.formData.tin3 = projectCode || '0';
+
         this.formData.tin4 = isPublic ? '1' : '0';
         this.formData.tin5 = isSpecified ? '1' : '0';
         this.formData.remark = remark;
@@ -366,6 +366,8 @@ export default {
         this.formData.tin6 = classList[0] ? classList[0].classCode : '';
         this.classList = classList;
         this.InfoCode = code;
+
+        this.formData.tin3 = projectCode || '0';
       },
       immediate: true
     },
@@ -482,8 +484,6 @@ export default {
 
     // 6. 选取后回调
     handleSelectionChange(obj, bool) {
-      console.log(obj);
-
       if (bool) {
         this.formData.tin6_1 = obj['listInfo'] || [];
         this.formData.tin6_2 = obj['listDriver'] || [];

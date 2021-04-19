@@ -422,7 +422,7 @@ export default {
         return;
       }
 
-      this.isAdmin && (this.formData.tin1 = shipment.info.adminCode);
+      this.isAdmin && (this.formData.tin1 = shipment.info.code);
     }
 
     // 判断地址栏有没有id- true=>有说明编辑/详情 false=>创建-什么都不做
