@@ -6,7 +6,7 @@ export function listInfo(data) {
   return request({
     url: listVehicleApi,
     method: 'get',
-    params: Object.assign({}, data, { isAsc: 'desc', orderByColumn: 'create_time' })
+    params: Object.assign({}, { isAsc: 'desc', orderByColumn: 'create_time' }, data)
   });
 }
 
