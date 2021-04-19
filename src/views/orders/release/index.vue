@@ -294,6 +294,7 @@ import { getProvinceList } from '@/api/system/area';
 
 
 export default {
+
   components: {
     OrderBasic,
     OneAddress,
@@ -699,8 +700,12 @@ export default {
         if (!this.isCreated) {
           update(this.lastData).then(res => {
             this.msgSuccess('修改成功');
+            this.$route.query.id = undefined;
+            this.$route.query.t = 'creat';
             this.loading = false;
-            setTimeout(() => {
+            var time1 = setTimeout(() => {
+              clearTimeout(time1);
+              time1 = null;
               this.$router.push({ name: 'Manage' });
             }, 1000);
           }).catch(() => {
