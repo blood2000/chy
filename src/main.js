@@ -48,7 +48,7 @@ Viewer.setDefaults({
 import VueAMap from 'vue-amap';
 Vue.use(VueAMap);
 VueAMap.initAMapApiLoader({
-  key: 'fd9430939b98767748c4b5e00df949c0', // 高德企业key
+  key: '2066cb0dafaa492aee47fa1090227a38', // 高德企业key
   plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.Driving', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PolyEditor', 'AMap.CircleEditor', 'AMap.Geocoder', 'AMap.Marker'],
   v: '1.4.4'
 });
