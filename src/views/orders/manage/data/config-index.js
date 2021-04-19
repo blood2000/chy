@@ -5,6 +5,7 @@ export default [
     isShow: true,
     width: 200,
     tooltip: true,
+    fixed: 'left',
     label: '货源单号'
   },
   {
