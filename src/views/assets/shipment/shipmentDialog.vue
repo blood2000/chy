@@ -337,7 +337,7 @@
     </el-form>
 
     <div v-if="title === '新增' || title === '编辑'" slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="submitForm">确 定</el-button>
+      <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
     </div>
     <div v-if="title === '审核'" slot="footer" class="dialog-footer">
@@ -370,6 +370,7 @@ export default {
   },
   data() {
     return {
+      buttonLoading: false,
       // 初始密码
       initialPassword: 'abcd1234@',
       // 货主类型数据字典
@@ -404,12 +405,12 @@ export default {
           { validator: this.formValidate.telphone, trigger: 'blur' }
         ],
         adminName: [
-          { required: true, message: '姓名不能为空', trigger: 'blur' },
-          { validator: this.formValidate.name, trigger: 'blur' }
+          { required: true, message: '姓名不能为空', trigger: ['blur', 'change'] },
+          { validator: this.formValidate.name, trigger: ['blur', 'change'] }
         ],
         identificationNumber: [
-          { required: true, message: '身份证号不能为空', trigger: 'blur' },
-          { validator: this.formValidate.idCard, trigger: 'blur' }
+          { required: true, message: '身份证号不能为空', trigger: ['blur', 'change'] },
+          { validator: this.formValidate.idCard, trigger: ['blur', 'change'] }
         ],
         identificationEndTime: [
           { validator: (rules, value, callback) => this.formValidate.idCardValidate(rules, value, callback, this.form.identificationBeginTime, this.form.identificationEffective), trigger: ['change', 'blur'] },
@@ -527,6 +528,7 @@ export default {
       const flag = this.$refs.ChooseArea.submit();
       this.$refs['form'].validate(valid => {
         if (valid && flag) {
+          this.buttonLoading = true;
           // 类型为发货人的时候，企业相关字段不能传
           if (this.form.shipperType === 0) {
             this.form.companyName = null;
@@ -558,15 +560,21 @@ export default {
           }
           if (this.form.id) {
             updateShipment(this.form).then(response => {
+              this.buttonLoading = false;
               this.msgSuccess('修改成功');
               this.close();
               this.$emit('refresh');
+            }).catch(() => {
+              this.buttonLoading = false;
             });
           } else {
             addShipment(this.form).then(response => {
+              this.buttonLoading = false;
               this.msgSuccess('新增成功');
               this.close();
               this.$emit('refresh');
+            }).catch(() => {
+              this.buttonLoading = false;
             });
           }
         } else {
@@ -595,6 +603,7 @@ export default {
     },
     // 表单重置
     reset() {
+      this.buttonLoading = false;
       this.form = {
         adminName: null,
         adminCode: null,
