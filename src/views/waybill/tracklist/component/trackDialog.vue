@@ -104,15 +104,8 @@ export default {
         // 绘制轨迹
         this.drawPolyline(this.tracklist);
         this.getMark(this.tracklist);
-        // 地图中心点
-        // this.center = this.tracklist[0];
-        // 起点地址
-        // this.markers[0].position = this.tracklist[0];
-        // 终点地址
-        // this.markers[1].position = this.tracklist[this.tracklist.length - 1];
-        // console.log(this.markers);
       });
-      this.getRoutePlan();
+      // this.getRoutePlan();
     },
     // 获取高德地图路线规划
     getRoutePlan() {
@@ -123,7 +116,6 @@ export default {
           // map 指定将路线规划方案绘制到对应的AMap.Map对象上
           // map: that.$refs.map.$$getInstance()
           // panel: 'DDCmap',
-          // size: 1
         });
         const startLngLat = [119.358267, 26.04577];
         const endLngLat = [119.344435, 25.721053];
@@ -179,7 +171,8 @@ export default {
         path,
         showDir: true,
         strokeColor: '#0083F9', // 线颜色
-        outlineColor: '#fff',
+        isOutline: true, // 是否描边
+        outlineColor: '#fff', // 描边颜色
         strokeOpacity: 0.8, // 线透明度
         strokeWeight: 10, // 线宽
         strokeStyle: 'solid', // 线样式

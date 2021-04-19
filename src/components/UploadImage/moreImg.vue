@@ -3,7 +3,7 @@
     <el-upload
       ref="upload"
       :action="uploadImgUrl"
-      accept="image/*"
+      accept=".jpg,.png,.jpeg"
       list-type="picture-card"
       :file-list="imageList"
       :headers="headers"
@@ -115,7 +115,12 @@ export default {
       this.inputInfo();
       // this.loading.close();
     },
-    handleBeforeUpload() {
+    handleBeforeUpload(file) {
+      const isLt1M = file.size / 1024 / 1024 < 1;
+      if (!isLt1M) {
+        this.msgWarning('上传文件大小不能超过1MB');
+        return;
+      }
       // this.loading = this.$loading({
       //   lock: true,
       //   text: '上传中',
