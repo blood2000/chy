@@ -144,6 +144,18 @@ export default {
         ],
         loadWeight: [
           { required: true, message: '装货重量不能为空', trigger: 'blur' }
+        ],
+        goodsCode: [
+          { required: true, message: '请选择货物', trigger: 'blur' }
+        ],
+        loadAddressCode: [
+          { required: true, message: '请选择装货地址', trigger: 'blur' }
+        ],
+        unloadAddressCode: [
+          { required: true, message: '请选择卸货地址', trigger: 'blur' }
+        ],
+        attachmentCode: [
+          { required: true, message: '请上传装货单据', trigger: 'blur' }
         ]
       },
       // 日期格式

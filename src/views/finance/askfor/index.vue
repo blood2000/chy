@@ -43,7 +43,7 @@
         :rules="rules"
         label-width="90px"
       >
-        <el-form-item v-show="isAdmin" label="货主" prop="shipmentCode">
+        <el-form-item v-show="isAdmin" label="货主信息" prop="shipmentCode">
           <!-- filterable开启可搜索 remote远程搜索 reserve-keyword 保存搜索关键词 -->
           <el-select
             v-model="queryParams.shipmentCode"
@@ -480,12 +480,16 @@ export default {
     },
     /** 查询【请填写功能名称】列表 */
     getList() {
-      this.loading = true;
-      askforList(this.queryParams).then(response => {
-        this.askforlist = response.data.rows;
-        this.total = response.data.total;
-        this.loading = false;
-      });
+      if (this.queryParams.shipmentCode) {
+        this.loading = true;
+        askforList(this.queryParams).then(response => {
+          this.askforlist = response.data.rows;
+          this.total = response.data.total;
+          this.loading = false;
+        });
+      } else {
+        this.$message({ type: 'warning', message: '请选择货主查询列表！' });
+      }
     },
     chooseShipment() {
       this.handleQuery();
