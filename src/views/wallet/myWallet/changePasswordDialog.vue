@@ -2,7 +2,7 @@
   <el-dialog :title="'修改支付密码'" :visible="visible" width="600px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="120px">
       <el-form-item label="原密码" prop="passwordBefore">
-        <el-input v-model="form.passwordBefore" class="width90" placeholder="请输入原密码 ( 若第一次修改, 则初始密码为平台账户密码 )" type="password" />
+        <el-input v-model="form.passwordBefore" class="width90" placeholder="请输入原密码 ( 若第一次修改, 则原密码为平台账户密码 )" type="password" />
       </el-form-item>
       <el-form-item label="新密码" prop="password">
         <el-input v-model="form.password" class="width90" placeholder="请输入新密码" type="password" />

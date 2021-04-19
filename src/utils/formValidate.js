@@ -179,17 +179,18 @@ export const formValidate = {
     var ptr_digit = /^.*[0-9]+.*$/;
     // 是否包含大小写字母
     var ptr_lowcase = /^.*[a-zA-Z]+.*$/;
-    // 是否包含特殊字符（非数字、字母的字符）
+    // 是否包含特殊字符
     var ptr_special = /((?=[\x21-\x7e]+)[^A-Za-z0-9])/;
-    // var ptr_special = /^.*[~`!@#$%^&*()_+|<>,.?/:;'\\[\\]{}\"]+.*$/;
     // 是否长度为8-16位数
     var ptr_length = /^.{8,16}$/;
-    if (!ptr_length.test(value)) {
-      callback(new Error('密码长度应为8-16位'));
-    } else if ((ptr_digit.test(value) && ptr_lowcase.test(value) && ptr_special.test(value)) ||
-              (!ptr_digit.test(value) && ptr_lowcase.test(value) && ptr_special.test(value)) ||
-              (ptr_digit.test(value) && !ptr_lowcase.test(value) && ptr_special.test(value)) ||
-              (ptr_digit.test(value) && ptr_lowcase.test(value) && !ptr_special.test(value))) {
+    // 是否包含空格
+    var ptr_space = new RegExp('\\s');
+    if (value.match(ptr_space)) callback(new Error('密码中不能包含空格'));
+    if (!ptr_length.test(value)) callback(new Error('密码长度应为8-16位'));
+    if ((ptr_digit.test(value) && ptr_lowcase.test(value) && ptr_special.test(value)) ||
+       (!ptr_digit.test(value) && ptr_lowcase.test(value) && ptr_special.test(value)) ||
+       (ptr_digit.test(value) && !ptr_lowcase.test(value) && ptr_special.test(value)) ||
+       (ptr_digit.test(value) && ptr_lowcase.test(value) && !ptr_special.test(value))) {
       callback();
     } else {
       callback(new Error('密码中至少包含字母、数字、特殊字符中的两种'));
