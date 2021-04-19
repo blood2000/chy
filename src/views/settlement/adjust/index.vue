@@ -448,8 +448,13 @@ export default {
   },
   'methods': {
     datechoose(date) {
-      this.queryParams.orderStartTime = this.parseTime(date[0], '{y}-{m}-{d}');
-      this.queryParams.orderEndTime = this.parseTime(date[1], '{y}-{m}-{d}');
+      if (date) {
+        this.queryParams.orderStartTime = this.parseTime(date[0], '{y}-{m}-{d}');
+        this.queryParams.orderEndTime = this.parseTime(date[1], '{y}-{m}-{d}');
+      } else {
+        this.queryParams.orderStartTime = null;
+        this.queryParams.orderEndTime = null;
+      }
     },
     /** handleClick */
     handleClick(tab) {
