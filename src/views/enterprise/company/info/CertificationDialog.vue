@@ -206,7 +206,7 @@ export default {
       this.resetForm('form');
     },
     setForm() {
-      this.form = this.info;
+      this.form = { ...this.info };
       this.form.identificationEffective = praseNumToBoolean(this.form.identificationEffective);
     },
     // 图片识别后回填
