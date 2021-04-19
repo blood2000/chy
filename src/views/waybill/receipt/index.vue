@@ -1,13 +1,13 @@
 <template>
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
-      <el-form-item v-show="isAdmin" label="下单客户" prop="orderClient">
+      <el-form-item v-show="isAdmin" label="下单企业" prop="orderClient">
         <el-input
           v-model="queryParams.orderClient"
-          placeholder="请输入下单客户"
+          placeholder="请输入下单企业"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -18,7 +18,7 @@
           clearable
           filterable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
         >
           <el-option
             v-for="(dict, index) in goodsBigTypeOptions"
@@ -34,7 +34,7 @@
           placeholder="请输入货源单号"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -43,7 +43,7 @@
           v-model="queryParams.startReceiveTime"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="请选择接单日期"
@@ -55,7 +55,7 @@
           placeholder="请输入车牌号"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -65,7 +65,7 @@
           placeholder="请输入司机姓名"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -75,7 +75,7 @@
           placeholder="请输入运输单号"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -86,7 +86,7 @@
           clearable
           filterable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
         >
           <el-option
             v-for="(dict, index) in statusOptions"
@@ -103,7 +103,7 @@
           clearable
           filterable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
         >
           <el-option
             v-for="(dict, index) in isReturnOptions"
@@ -159,7 +159,7 @@
         <el-button
           size="mini"
           type="text"
-          icon="el-icon-edit"
+          icon="el-icon-document"
           @click="handleDetail(row)"
         >详情</el-button>
         <el-button
