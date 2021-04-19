@@ -149,7 +149,7 @@ export default {
           { required: true, message: '请选择人员', trigger: 'change' }
         ],
         name: [
-          { required: true, message: '开户姓名不能为空', trigger: 'blur' }
+          { required: true, message: '开户姓名不能为空', trigger: ['blur', 'change'] }
         ],
         account: [
           { required: true, message: '银行卡号不能为空', trigger: 'blur' }
@@ -158,8 +158,8 @@ export default {
           { required: true, message: '开户银行不能为空', trigger: ['blur', 'change'] }
         ],
         mobile: [
-          { required: true, message: '绑定手机号不能为空', trigger: 'blur' },
-          { validator: this.formValidate.telephone, trigger: 'blur' }
+          { required: true, message: '绑定手机号不能为空', trigger: ['blur', 'change'] },
+          { validator: this.formValidate.telephone, trigger: ['blur', 'change'] }
         ],
         bankType: [
           { required: true, message: '账户类型不能为空', trigger: 'change' }
@@ -289,7 +289,6 @@ export default {
     },
     // 获取选中的人员回填
     userChange(code) {
-      console.log(code);
       this.personOptions.forEach(el => {
         if (el.userCode === code) {
           this.form.name = el.nickName;
