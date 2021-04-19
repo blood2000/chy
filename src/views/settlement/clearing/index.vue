@@ -320,10 +320,6 @@ export default {
     this.getList();
   },
   'methods': {
-    datechoose(date) {
-      this.queryParams.orderStartTime = this.parseTime(date[0], '{y}-{m}-{d}');
-      this.queryParams.orderEndTime = this.parseTime(date[1], '{y}-{m}-{d}');
-    },
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map((item) => item.wayBillSettlementCode);

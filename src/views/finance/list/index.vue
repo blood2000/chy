@@ -274,8 +274,13 @@ export default {
   },
   'methods': {
     datechoose(date) {
-      this.queryParams.invoiceApplyTimeBegin = this.parseTime(date[0], '{y}-{m}-{d}');
-      this.queryParams.invoiceApplyTimeEnd = this.parseTime(date[1], '{y}-{m}-{d}');
+      if (date) {
+        this.queryParams.invoiceApplyTimeBegin = this.parseTime(date[0], '{y}-{m}-{d}');
+        this.queryParams.invoiceApplyTimeEnd = this.parseTime(date[1], '{y}-{m}-{d}');
+      } else {
+        this.queryParams.invoiceApplyTimeBegin = null;
+        this.queryParams.invoiceApplyTimeEnd = null;
+      }
     },
     /** handleClick */
     handleClick(tab) {

@@ -10,12 +10,12 @@
     >
       <el-form-item
         v-show="isAdmin"
-        label="下单客户"
+        label="下单企业"
         prop="orderClient"
       >
         <el-input
           v-model="queryParams.orderClient"
-          placeholder="请输入下单客户"
+          placeholder="请输入下单企业"
           clearable
           size="small"
           style="width: 230px"
@@ -184,8 +184,8 @@
     </el-row>
 
     <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="待运输" name="1" />
-      <el-tab-pane label="运输中" name="2" />
+      <el-tab-pane label="已接单" name="1" />
+      <el-tab-pane label="已装货" name="2" />
       <el-tab-pane label="已卸货" name="3" />
     </el-tabs>
 
@@ -227,7 +227,7 @@
           v-hasPermi="['transportation:waybillOper:cancel']"
           size="mini"
           type="text"
-          icon="el-icon-circle-close"
+          icon="el-icon-delete"
           @click="handleTableBtn(row, 4)"
         >作废运单</el-button>
         <el-button
@@ -429,8 +429,13 @@ export default {
   },
   'methods': {
     datechoose(date) {
-      this.queryParams.orderStartTime = this.parseTime(date[0], '{y}-{m}-{d}');
-      this.queryParams.orderEndTime = this.parseTime(date[1], '{y}-{m}-{d}');
+      if (date) {
+        this.queryParams.orderStartTime = this.parseTime(date[0], '{y}-{m}-{d}');
+        this.queryParams.orderEndTime = this.parseTime(date[1], '{y}-{m}-{d}');
+      } else {
+        this.queryParams.orderStartTime = null;
+        this.queryParams.orderEndTime = null;
+      }
     },
     /** handleClick */
     handleClick(tab) {

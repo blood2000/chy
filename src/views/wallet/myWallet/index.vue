@@ -29,17 +29,17 @@
     <div class="app-container">
       <h3 class="g-title-medium mb10">支付与安全</h3>
       <p class="g-text mb20">
-        <span class="g-color-blue">{{ passType === 1 ? '已设置' : '未设置' }}</span>
+        <span class="g-color-blue">已设置</span>
       </p>
       <p class="g-text mb20">保护账户财产安全，请设置一个与登录密码不同的支付密码</p>
-      <el-button type="primary" @click="handleChangePassword">{{ passType === 1 ? '修改支付密码' : '设置新密码' }}</el-button>
-      <el-button v-if="passType === 1 " @click="handleForgotPassword">忘记密码</el-button>
+      <el-button type="primary" @click="handleChangePassword">修改支付密码</el-button>
+      <el-button @click="handleForgotPassword">忘记密码</el-button>
     </div>
 
     <!-- 账户提现弹窗 -->
     <withdraw-dialog :open.sync="withdrawOpen" />
     <!-- 修改密码弹窗 -->
-    <change-password-dialog :open.sync="changePasswordOpen" :type="passType" />
+    <change-password-dialog :open.sync="changePasswordOpen" :amount-id="amountId" />
   </div>
 </template>
 <script>
@@ -56,12 +56,13 @@ export default {
   },
   data() {
     return {
-      passType: 1, // 假设0未设置密码， 1为已设置密码
       walletInfo: {},
       // 提现
       withdrawOpen: false,
       // 密码
-      changePasswordOpen: false
+      changePasswordOpen: false,
+      // 钱包id
+      amountId: null
     };
   },
   created() {
@@ -82,6 +83,7 @@ export default {
     },
     // 修改密码按钮
     handleChangePassword() {
+      this.amountId = this.walletInfo.id;
       this.changePasswordOpen = true;
     },
     // 忘记密码按钮

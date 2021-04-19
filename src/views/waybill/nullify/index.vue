@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
-      <el-form-item v-show="isAdmin" label="下单客户" prop="orderClient">
+      <el-form-item v-show="isAdmin" label="下单企业" prop="orderClient">
         <el-input
           v-model="queryParams.orderClient"
-          placeholder="请输入下单客户"
+          placeholder="请输入下单企业"
           clearable
           size="small"
           style="width: 230px"
@@ -300,8 +300,13 @@ export default {
   },
   methods: {
     datechoose(date) {
-      this.queryParams.startReceiveTime = this.parseTime(date[0], '{y}-{m}-{d}');
-      this.queryParams.endReceiveTime = this.parseTime(date[1], '{y}-{m}-{d}');
+      if (date) {
+        this.queryParams.startReceiveTime = this.parseTime(date[0], '{y}-{m}-{d}');
+        this.queryParams.endReceiveTime = this.parseTime(date[1], '{y}-{m}-{d}');
+      } else {
+        this.queryParams.startReceiveTime = null;
+        this.queryParams.endReceiveTime = null;
+      }
     },
     /** 查询作废运单列表 */
     getList() {

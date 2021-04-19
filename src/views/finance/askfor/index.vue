@@ -443,12 +443,22 @@ export default {
     },
     // 搜索时间选择
     datechoose1(date) {
-      this.queryParams.loadTimeBegin = this.parseTime(date[0], '{y}-{m}-{d}');
-      this.queryParams.loadTimeEnd = this.parseTime(date[1], '{y}-{m}-{d}');
+      if (date) {
+        this.queryParams.loadTimeBegin = this.parseTime(date[0], '{y}-{m}-{d}');
+        this.queryParams.loadTimeEnd = this.parseTime(date[1], '{y}-{m}-{d}');
+      } else {
+        this.queryParams.loadTimeBegin = null;
+        this.queryParams.loadTimeEnd = null;
+      }
     },
     datechoose2(date) {
-      this.queryParams.receiveDateBegin = this.parseTime(date[0], '{y}-{m}-{d}');
-      this.queryParams.receiveDateEnd = this.parseTime(date[1], '{y}-{m}-{d}');
+      if (date) {
+        this.queryParams.receiveDateBegin = this.parseTime(date[0], '{y}-{m}-{d}');
+        this.queryParams.receiveDateEnd = this.parseTime(date[1], '{y}-{m}-{d}');
+      } else {
+        this.queryParams.receiveDateBegin = null;
+        this.queryParams.receiveDateEnd = null;
+      }
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
