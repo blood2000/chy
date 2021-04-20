@@ -420,6 +420,7 @@ export default {
       };
       const { rows } = await listInfo(query);
 
+      this.tin3Optin = [{ dictValue: '0', dictLabel: '无所属项目' }];
       this.tin3Optin = this.tin3Optin.concat(
         this._baozhuan(rows, 'code', 'projectName')
       );

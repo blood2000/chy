@@ -304,7 +304,6 @@ export default {
     good: {
       handler(value) {
         if (!value || !value.goodsAccounting.totalType) return;
-        console.log(value);
 
         this.mytotalTypeValue = value.goodsAccounting.totalType;
       },
