@@ -28,14 +28,14 @@
           <div>
             <div ref="queryFormBox">
 
-              <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="100px" class="clearfix" @submit.native.prevent>
+              <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="90px" class="clearfix" @submit.native.prevent>
                 <el-form-item v-show="!isShipment" label="下单客户" prop="tin1">
                   <el-input
                     v-model="queryParams.tin1"
                     placeholder="公司名称/客户姓名/手机号"
                     clearable
                     size="small"
-                    style="width: 250px"
+                    style="width: 228px"
                     @keyup.enter.native="handleQuery"
                   />
                 </el-form-item>
@@ -46,7 +46,7 @@
                     placeholder="装货地/装货电话/装货人"
                     clearable
                     size="small"
-                    style="width: 250px"
+                    style="width: 228px"
                     @keyup.enter.native="handleQuery"
                   />
                 </el-form-item>
@@ -57,13 +57,13 @@
                     placeholder="目的地/收货电话/收货人"
                     clearable
                     size="small"
-                    style="width: 250px"
+                    style="width: 228px"
                     @keyup.enter.native="handleQuery"
                   />
                 </el-form-item>
 
                 <el-form-item label="货物类型" prop="tin4">
-                  <el-select v-model="queryParams.tin4" placeholder="----请选择----" clearable filterable style="width: 250px">
+                  <el-select v-model="queryParams.tin4" placeholder="----请选择----" clearable filterable style="width: 228px">
                     <!-- goodsTypeOption -->
                     <el-option
                       v-for="(dict,index) in goodsTypeOption"
@@ -80,36 +80,12 @@
                     placeholder="请输入货物描述"
                     clearable
                     size="small"
-                    style="width: 250px"
+                    style="width: 228px"
                     @keyup.enter.native="handleQuery"
                   />
                 </el-form-item>
 
-                <!-- 做远程的 -->
-                <el-form-item v-show="!isShipment" label="货主" prop="tin6" size="small">
-                  <el-select
-                    v-model="queryParams.tin6"
-                    v-el-select-loadmore="loadmore"
-                    filterable
-                    clearable
-                    remote
-                    reserve-keyword
-                    placeholder="请输入关键词"
-                    :remote-method="remoteMethod"
-                    :loading="loading"
-                    style="width: 250px"
-                    @keyup.enter.native="handleQuery"
-                  >
-                    <el-option
-                      v-for="(item, index1) in shipmentList"
-                      :key="index1"
-                      :value="item.code"
-                      :label="item.adminName"
-                    >
-                      <div class="ly-flex-pack-justify"><span>{{ item.adminName }}</span><span>{{ item.telphone }}</span></div>
-                    </el-option>
-                  </el-select>
-                </el-form-item>
+
 
                 <el-form-item label="货源单号" prop="tin7">
                   <el-input
@@ -117,7 +93,7 @@
                     placeholder="请输入货源单号"
                     clearable
                     size="small"
-                    style="width: 250px"
+                    style="width: 228px"
                     @keyup.enter.native="handleQuery"
                   />
                 </el-form-item>
@@ -133,7 +109,7 @@
               </el-form-item> -->
 
                 <el-form-item v-if="false" label="货源状态" prop="tin8">
-                  <el-select v-model="queryParams.tin8" placeholder="----请选择----" style="width: 250px" clearable filterable>
+                  <el-select v-model="queryParams.tin8" placeholder="----请选择----" style="width: 228px" clearable filterable>
                     <el-option
                       v-for="(dict,index) in statusOptions"
                       :key="index"
@@ -145,7 +121,7 @@
                 </el-form-item>
 
                 <el-form-item label="发布方式" prop="tin11">
-                  <el-select v-model="queryParams.tin11" placeholder="----请选择----" style="width: 250px" clearable filterable>
+                  <el-select v-model="queryParams.tin11" placeholder="----请选择----" style="width: 228px" clearable filterable>
                     <el-option
                       v-for="(dict,index) in isPublicTypeOptions"
                       :key="index"
@@ -157,7 +133,7 @@
                 </el-form-item>
 
                 <el-form-item v-show="(queryParams.tin8+'') ==='1'" label="下架状态" prop="isManual">
-                  <el-select v-model="queryParams.isManual" placeholder="----请选择----" clearable filterable style="width: 250px">
+                  <el-select v-model="queryParams.isManual" placeholder="----请选择----" clearable filterable style="width: 228px">
                     <el-option
                       v-for="(dict,index) in dicts['isManual_option']"
                       :key="index"
@@ -183,13 +159,39 @@
                   <el-date-picker
                     v-model="queryParams.tin10"
                     size="small"
-                    style="width: 250px"
+                    style="width: 228px"
                     value-format="yyyy-MM-dd"
                     type="daterange"
                     range-separator="-"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
                   />
+                </el-form-item>
+
+                <!-- 做远程的 -->
+                <el-form-item v-show="!isShipment" label="货主" prop="tin6" size="small">
+                  <el-select
+                    v-model="queryParams.tin6"
+                    v-el-select-loadmore="loadmore"
+                    filterable
+                    clearable
+                    remote
+                    reserve-keyword
+                    placeholder="请输入关键词"
+                    :remote-method="remoteMethod"
+                    :loading="loading"
+                    style="width: 228px"
+                    @keyup.enter.native="handleQuery"
+                  >
+                    <el-option
+                      v-for="(item, index1) in shipmentList"
+                      :key="index1"
+                      :value="item.code"
+                      :label="item.adminName"
+                    >
+                      <div class="ly-flex-pack-justify"><span>{{ item.adminName }}</span><span>{{ item.telphone }}</span></div>
+                    </el-option>
+                  </el-select>
                 </el-form-item>
 
 
@@ -233,7 +235,7 @@
                 <tablec-cascader v-model="tableColumnsConfig" :lcokey="listManagesApi" />
               </el-col>
               <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
-              <el-col v-show="showSearch" :span="1.5" class="fr">
+              <el-col v-show="showSearch" :span="1.5" class="fr mr20">
                 <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
                 <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
               </el-col>
