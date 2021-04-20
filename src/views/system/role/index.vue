@@ -208,7 +208,7 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row :gutter="24">
           <el-col :span="24">
-            <el-form-item v-show="!form.roleId" v-model="form.orgCode" label="所属组织" prop="orgCode" :rules="[{ required: true, message: '所属组织不能为空', trigger: 'blur' }]">
+            <el-form-item v-if="!form.roleId" v-model="form.orgCode" label="所属组织" prop="orgCode" :rules="[{ required: true, message: '所属组织不能为空', trigger: 'blur' }]">
               <el-tree
                 ref="tree"
                 class="tree-border"
