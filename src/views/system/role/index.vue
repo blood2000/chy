@@ -206,7 +206,7 @@
     <!-- 添加或修改角色配置对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-row :gutter="24" class="mb20">
+        <el-row :gutter="24">
           <el-col :span="24">
             <el-form-item v-show="!form.roleId" v-model="form.orgCode" label="所属组织" prop="orgCode" :rules="[{ required: true, message: '所属组织不能为空', trigger: 'blur' }]">
               <el-tree

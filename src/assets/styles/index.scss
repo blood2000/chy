@@ -9,6 +9,10 @@
 @import './font.scss';
 @import './flex.scss';
 
+html{
+  font-size: calc(100vw / 96);
+}
+
 body {
   height: 100%;
   -moz-osx-font-smoothing: grayscale;
