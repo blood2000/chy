@@ -55,7 +55,7 @@
           <span v-if="row">司机</span>
         </template>
         <template #driverType="{row}">
-          <span>{{ row.driverType === 1? '独立': '聘用' }}</span>
+          <span>{{ row.driverType === 1? '独立司机': '聘用司机' }}</span>
         </template>
       </refactor-table>
     </div>
@@ -72,9 +72,9 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="姓名" align="left" prop="name" show-overflow-tooltip />
+          <el-table-column label="调度者名称" align="left" prop="name" show-overflow-tooltip />
           <el-table-column label="身份证" align="left" prop="identificationNumber" show-overflow-tooltip />
-          <el-table-column label="车队名称" align="left" prop="name" show-overflow-tooltip />
+          <el-table-column label="管理者" align="left" prop="teamLeaderName" show-overflow-tooltip />
           <el-table-column label="承运人类型" align="left" prop="contactPhone" show-overflow-tooltip>
             <template v-if="scope" slot-scope="scope">
               调度者
@@ -215,8 +215,7 @@ export default {
       if (this.activeName === 'listDriver') {
         quer = {
           ...this.queryParams,
-          authStatus: 3,
-          isFreeze: 0
+          authStatus: 3
 
         };
       } else {
