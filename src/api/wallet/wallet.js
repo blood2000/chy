@@ -17,3 +17,12 @@ export function editAmountPassword(data) {
     data: data
   });
 }
+
+// 提现申请
+export function transferApply(data) {
+  return request({
+    url: '/payment/pay/transferApply',
+    method: 'post',
+    data: data
+  });
+}
