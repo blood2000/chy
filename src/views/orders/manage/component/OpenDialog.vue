@@ -49,7 +49,7 @@
 
     <!-- 司机 -->
     <div v-show="activeName === 'listDriver'">
-      <refactor-table :loading="loading" :data="list_listDriver" :table-columns-config="tableColumnsConfig" :cb-data="myTo" :row-key="getRowKeys" @selection-change="handleSelectionChange">
+      <refactor-table :loading="loading" :data="list_listDriver" :table-columns-config="tableColumnsConfig" :cb-data="myTo" :row-key="(row)=> row.id" reserve-selection @selection-change="handleSelectionChange">
 
         <template #tin12="{row}">
           <span v-if="row">司机</span>
@@ -358,7 +358,7 @@ export default {
           this.$emit('_ok', false);
         }
       }
-    },
+    }
 
     // 回填 rows 为数组
     // toggleSelection(rows) {
@@ -373,9 +373,6 @@ export default {
     //   }
     // }
 
-    getRowKeys(row) {
-      return row.id;
-    }
 
   }
 };

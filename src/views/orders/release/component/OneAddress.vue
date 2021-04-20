@@ -255,7 +255,10 @@ export default {
       const cityCode = code.slice(0, 4);
       const districtCode = code.slice(0, 6);
 
+
+
       this.pccCode = { provinceCode, cityCode, districtCode };
+      console.log(this.pccCode);
     },
 
 
