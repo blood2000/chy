@@ -49,7 +49,7 @@
 
     <!-- 司机 -->
     <div v-show="activeName === 'listDriver'">
-      <refactor-table :loading="loading" :data="list_listDriver" :table-columns-config="tableColumnsConfig" :cb-data="myTo" @selection-change="handleSelectionChange">
+      <refactor-table :loading="loading" :data="list_listDriver" :table-columns-config="tableColumnsConfig" :cb-data="myTo" :row-key="getRowKeys" @selection-change="handleSelectionChange">
 
         <template #tin12="{row}">
           <span v-if="row">司机</span>
@@ -137,6 +137,7 @@ export default {
 
   data() {
     return {
+      midBox: {}, // 临时存储
       radio: '', // 选择的id
       myTo_listDriver: null,
       myTo_listInfo: null,
@@ -232,7 +233,7 @@ export default {
         this.loading = false;
 
         if (this.cbData) {
-          console.log(this.cbData);
+          // console.log(this.cbData);
 
           if (this.activeName === 'listDriver') {
             const arr = [];
@@ -284,6 +285,13 @@ export default {
 
     // 多选框选中数据
     handleSelectionChange(selection) {
+      // console.log(selection);
+
+      // this.midBox['dri_' + this.queryParams_listDriver.pageNum] = selection;
+
+      // console.log(this.midBox);
+
+
       this.ids = selection.map(item => item.code);
       this['selections_' + this.activeName] = selection;
     },
@@ -350,7 +358,7 @@ export default {
           this.$emit('_ok', false);
         }
       }
-    }
+    },
 
     // 回填 rows 为数组
     // toggleSelection(rows) {
@@ -365,6 +373,9 @@ export default {
     //   }
     // }
 
+    getRowKeys(row) {
+      return row.id;
+    }
 
   }
 };
