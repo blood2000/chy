@@ -35,8 +35,8 @@ export default {
       // 表单校验
       rules: {
         password: [
-          { required: true, trigger: 'blur', message: '支付密码不能为空' },
-          { validator: this.formValidate.passWord, trigger: 'blur' }
+          { required: true, trigger: 'blur', message: '支付密码不能为空' }
+          // { validator: this.formValidate.passWord, trigger: 'blur' }
         ]
       }
     };
