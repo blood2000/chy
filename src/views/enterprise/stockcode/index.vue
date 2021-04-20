@@ -232,15 +232,34 @@ export default {
     },
     /** 下载货集码 */
     handleDownloadCode(row) {
-      fetch(row.cargoCodeQR).then(res => res.blob().then(blob => {
-        var a = document.createElement('a');
-        var url = window.URL.createObjectURL(blob);
-        var filename = `货集码_${new Date().getTime()}.jpg`;
-        a.href = url;
-        a.download = filename;
-        a.click();
-        window.URL.revokeObjectURL(url);
-      }));
+      const image = new Image();
+      image.setAttribute('crossOrigin', 'anonymous');
+      image.src = row.cargoCodeQR;
+      image.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = image.width;
+        canvas.height = image.height;
+        const context = canvas.getContext('2d');
+        context.drawImage(image, 0, 0, image.width, image.height);
+        canvas.toBlob((blob) => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.download = `货集码_${new Date().getTime()}`;
+          a.href = url;
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        });
+      };
+      // fetch(row.cargoCodeQR).then(res => res.blob().then(blob => {
+      //   var a = document.createElement('a');
+      //   var url = window.URL.createObjectURL(blob);
+      //   var filename = `货集码_${new Date().getTime()}.jpg`;
+      //   a.href = url;
+      //   a.download = filename;
+      //   a.click();
+      //   window.URL.revokeObjectURL(url);
+      // }));
     },
     /** 获取货集码下的货源列表 */
     handleOrderList(row) {

@@ -246,4 +246,9 @@ export default {
 
 <style lang="scss" scoped>
 @import url('../../../assets/styles/contract.scss');
+table th, table td {
+    border-bottom: 1px solid #000;
+    border-right: 1px solid #000;
+    font-weight: normal;
+}
 </style>

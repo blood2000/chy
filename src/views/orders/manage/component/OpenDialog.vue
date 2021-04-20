@@ -49,13 +49,13 @@
 
     <!-- 司机 -->
     <div v-show="activeName === 'listDriver'">
-      <refactor-table :loading="loading" :data="list_listDriver" :table-columns-config="tableColumnsConfig" :cb-data="myTo" @selection-change="handleSelectionChange">
+      <refactor-table :loading="loading" :data="list_listDriver" :table-columns-config="tableColumnsConfig" :cb-data="myTo" :row-key="(row)=> row.id" reserve-selection @selection-change="handleSelectionChange">
 
         <template #tin12="{row}">
           <span v-if="row">司机</span>
         </template>
         <template #driverType="{row}">
-          <span>{{ row.driverType === 1? '独立': '聘用' }}</span>
+          <span>{{ row.driverType === 1? '独立司机': '聘用司机' }}</span>
         </template>
       </refactor-table>
     </div>
@@ -72,9 +72,9 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="姓名" align="left" prop="name" show-overflow-tooltip />
+          <el-table-column label="调度者名称" align="left" prop="name" show-overflow-tooltip />
           <el-table-column label="身份证" align="left" prop="identificationNumber" show-overflow-tooltip />
-          <el-table-column label="车队名称" align="left" prop="name" show-overflow-tooltip />
+          <el-table-column label="管理者" align="left" prop="teamLeaderName" show-overflow-tooltip />
           <el-table-column label="承运人类型" align="left" prop="contactPhone" show-overflow-tooltip>
             <template v-if="scope" slot-scope="scope">
               调度者
@@ -137,6 +137,7 @@ export default {
 
   data() {
     return {
+      midBox: {}, // 临时存储
       radio: '', // 选择的id
       myTo_listDriver: null,
       myTo_listInfo: null,
@@ -215,8 +216,7 @@ export default {
       if (this.activeName === 'listDriver') {
         quer = {
           ...this.queryParams,
-          authStatus: 3,
-          isFreeze: 0
+          authStatus: 3
 
         };
       } else {
@@ -233,7 +233,7 @@ export default {
         this.loading = false;
 
         if (this.cbData) {
-          console.log(this.cbData);
+          // console.log(this.cbData);
 
           if (this.activeName === 'listDriver') {
             const arr = [];
@@ -285,6 +285,13 @@ export default {
 
     // 多选框选中数据
     handleSelectionChange(selection) {
+      // console.log(selection);
+
+      // this.midBox['dri_' + this.queryParams_listDriver.pageNum] = selection;
+
+      // console.log(this.midBox);
+
+
       this.ids = selection.map(item => item.code);
       this['selections_' + this.activeName] = selection;
     },
