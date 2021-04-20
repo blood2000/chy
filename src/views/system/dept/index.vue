@@ -92,7 +92,7 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="160px">
         <el-row>
           <el-col v-if="form.parentId !== 1" :span="22">
-            <el-form-item label="上级组织" prop="parentId">
+            <el-form-item label="上级组织" prop="parentId" :rules="[{ required: true, message: '上级组织不能为空', trigger: ['blur', 'change'] }]">
               <treeselect v-model="form.parentId" :options="deptOptions" :normalizer="normalizer" placeholder="选择上级组织" />
             </el-form-item>
           </el-col>
@@ -107,7 +107,7 @@
             </el-form-item>
           </el-col>-->
           <el-col :span="11">
-            <el-form-item label="组织类型">
+            <el-form-item label="组织类型" class="group-item">
               <el-radio-group v-model="form.orgType">
                 <el-radio
                   v-for="dict in orgTypeOptions"
@@ -118,7 +118,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="组织状态">
+            <el-form-item label="组织状态" class="group-item">
               <el-radio-group v-model="form.status">
                 <el-radio
                   v-for="dict in statusOptions"
@@ -128,31 +128,33 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
-          <el-col v-if="form.orgType == '1'" :span="11">
+          <el-col :span="11">
             <el-form-item label="显示排序" prop="orderNum">
               <el-input-number v-model="form.orderNum" controls-position="right" :min="0" class="width100" />
             </el-form-item>
           </el-col>
-          <el-col v-if="form.orgType == '1'" :span="11">
-            <el-form-item label="法人姓名" prop="artificialName">
-              <el-input v-model="form.artificialName" placeholder="请输入法人姓名" class="width100" clearable />
-            </el-form-item>
-          </el-col>
-          <el-col v-if="form.orgType == '1'" :span="11">
-            <el-form-item label="法人身份证" prop="artificialIdentificationNumber">
-              <el-input v-model="form.artificialIdentificationNumber" placeholder="请输入法人身份证" class="width100" clearable />
-            </el-form-item>
-          </el-col>
-          <el-col v-if="form.orgType == '1'" :span="11">
-            <el-form-item label="统一社会信用代码" prop="organizationCodeNo" :rules="[{ required: true, message: '统一社会信用代码不能为空', trigger: 'blur' }]">
-              <el-input v-model="form.organizationCodeNo" placeholder="请输入统一社会信用代码" class="width100" clearable />
-            </el-form-item>
-          </el-col>
-          <el-col v-if="form.orgType == '1'" :span="11">
-            <el-form-item label="营业执照号" prop="businessLicenseNo">
-              <el-input v-model="form.businessLicenseNo" placeholder="请输入营业执照号" class="width100" clearable />
-            </el-form-item>
-          </el-col>
+          <template v-if="form.orgType == '1'">
+            <el-col :span="11">
+              <el-form-item label="法人姓名" prop="artificialName">
+                <el-input v-model="form.artificialName" placeholder="请输入法人姓名" class="width100" clearable />
+              </el-form-item>
+            </el-col>
+            <el-col :span="11">
+              <el-form-item label="法人身份证" prop="artificialIdentificationNumber">
+                <el-input v-model="form.artificialIdentificationNumber" placeholder="请输入法人身份证" class="width100" clearable />
+              </el-form-item>
+            </el-col>
+            <el-col :span="11">
+              <el-form-item label="统一社会信用代码" prop="organizationCodeNo" :rules="[{ required: true, message: '统一社会信用代码不能为空', trigger: 'blur' }]">
+                <el-input v-model="form.organizationCodeNo" placeholder="请输入统一社会信用代码" class="width100" clearable />
+              </el-form-item>
+            </el-col>
+            <el-col :span="11">
+              <el-form-item label="营业执照号" prop="businessLicenseNo">
+                <el-input v-model="form.businessLicenseNo" placeholder="请输入营业执照号" class="width100" clearable />
+              </el-form-item>
+            </el-col>
+          </template>
         </el-row>
         <template v-if="form.orgType == '1'">
           <el-row class="mb20" style="margin-left: 160px">
@@ -439,9 +441,6 @@ export default {
       form: {},
       // 表单校验
       rules: {
-        parentId: [
-          { required: true, message: '上级组织不能为空', trigger: 'blur' }
-        ],
         orgName: [
           { required: true, message: '组织名称不能为空', trigger: 'blur' }
         ],
@@ -622,9 +621,6 @@ export default {
   .width100{
     width: 100%;
   }
-  .width70{
-    width: 70%;
-  }
   .width60{
     width: 60%;
   }
@@ -633,6 +629,9 @@ export default {
   }
   .width12{
     width: 12%;
+  }
+  .group-item{
+    line-height: 34px;
   }
   /* 计数器样式 */
   .el-input-number ::v-deep.el-input__inner{
