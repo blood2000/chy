@@ -7,7 +7,7 @@
           clearable
           filterable
           placeholder="请选择银行卡"
-          :class="addBankFlag ? 'width70 mr3' : 'width90'"
+          :class="addBankFlag ? 'width70 mr2' : 'width90'"
           @change="changeBank"
         >
           <el-option
@@ -17,7 +17,7 @@
             :value="dict.account"
           />
         </el-select>
-        <el-button v-if="addBankFlag" type="text" @click="addBank">添加银行卡</el-button>
+        <el-button v-if="addBankFlag" type="primary" @click="addBank">添加银行卡</el-button>
       </el-form-item>
       <el-form-item v-show="form.bankNumber" label="提现到">
         <div class="account-content">
@@ -198,8 +198,8 @@ export default {
 .width70{
   width: 70%;
 }
-.mr3{
-  margin-right: 3%;
+.mr2{
+  margin-right: 2%;
 }
 /* 计数器样式 */
 .el-input-number ::v-deep.el-input__inner{
