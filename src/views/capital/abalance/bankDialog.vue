@@ -107,7 +107,7 @@ export default {
       rules: {
         name: [
           { required: true, message: '绑定手机号不能为空', trigger: 'blur' },
-          { validator: this.formValidate.telephone, trigger: 'blur' }
+          { validator: this.formValidate.telphone, trigger: 'blur' }
         ]
       },
       // 网点查询

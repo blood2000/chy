@@ -5,14 +5,14 @@
       <el-row class="mb20">
         <el-col :span="8">
           <p class="g-text mb10">
-            <span class="g-text-20 g-strong mr5">{{ walletInfo.crediAmount ? walletInfo.crediAmount : '---' }}</span>
+            <span class="g-text-20 g-strong mr5">{{ walletInfo.crediAmount||walletInfo.crediAmount==0 ? walletInfo.crediAmount : '---' }}</span>
             元
           </p>
           <p class="g-text">可用余额</p>
         </el-col>
         <el-col :span="8">
           <p class="g-text mb10">
-            <span class="g-text-20 g-strong mr5">{{ walletInfo.freezeAmount ? walletInfo.freezeAmount : '---' }}</span>
+            <span class="g-text-20 g-strong mr5">{{ walletInfo.freezeAmount||walletInfo.freezeAmount==0 ? walletInfo.freezeAmount : '---' }}</span>
             元
           </p>
           <p class="g-text">冻结金额</p>
@@ -37,7 +37,7 @@
     </div>
 
     <!-- 账户提现弹窗 -->
-    <withdraw-dialog :open.sync="withdrawOpen" />
+    <withdraw-dialog :open.sync="withdrawOpen" :user-code="userCode" :credi-amount="crediAmount" @refresh="getWallet" />
     <!-- 修改密码弹窗 -->
     <change-password-dialog :open.sync="changePasswordOpen" :amount-id="amountId" />
   </div>
@@ -62,7 +62,9 @@ export default {
       // 密码
       changePasswordOpen: false,
       // 钱包id
-      amountId: null
+      amountId: null,
+      userCode: null,
+      crediAmount: null
     };
   },
   created() {
@@ -79,6 +81,8 @@ export default {
     },
     // 提现按钮
     handleWithdraw() {
+      this.userCode = this.walletInfo.userCode;
+      this.crediAmount = this.walletInfo.crediAmount;
       this.withdrawOpen = true;
     },
     // 修改密码按钮
