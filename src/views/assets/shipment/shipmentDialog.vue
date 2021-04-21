@@ -215,7 +215,7 @@
             :value="dict.dictValue"
           />
         </el-select>
-      </el-form-item> -->
+      </el-form-item>
       <el-form-item label="货源是否审核" prop="supplyIsAuth">
         <el-select
           v-model="form.supplyIsAuth"
@@ -230,7 +230,7 @@
             :value="dict.dictValue"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="是否独立核算" prop="isAccount">
         <el-select
           v-model="form.isAccount"
