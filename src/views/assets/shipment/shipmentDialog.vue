@@ -173,7 +173,22 @@
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="调度费点数(%)" prop="dispatchPoints">
+          <el-form-item prop="dispatchPoints">
+            <label slot="label">
+              <el-tooltip
+                class="item"
+                effect="light"
+                placement="right"
+              >
+                <i class="el-icon-question" />
+                <ul slot="content">
+                  <li class="g-text">一票制：调度费点数 = 税点(%)</li>
+                  <li class="g-text">二票制：调度费点数 = 税点(%)</li>
+                  <li class="g-text">非一票制：调度费点数 = [税点/(1-税点)]</li>
+                </ul>
+              </el-tooltip>
+              调度费点数(%)
+            </label>
             <el-input v-model="form.dispatchPoints" disabled placeholder="请输入调度费点数" clearable />
           </el-form-item>
         </el-col>
