@@ -581,7 +581,7 @@ export default {
             });
           }
         } else {
-          this.msgWarning('必填项不能为空');
+          this.msgWarning('填写的信息不完整或有误，请核对后重新提交');
         }
       });
     },
