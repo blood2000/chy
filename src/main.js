@@ -27,6 +27,7 @@ import Pagination from '@/components/Pagination';
 // 表头配置组件
 import TablecCascader from '@/components/Ddc/Tin/TablecCascader.vue';
 import RefactorTable from '@/components/Ddc/Tin/RefactorTable.vue';
+import TableDropdown from '@/components/Dropdown';
 // 自定义表格工具扩展
 import RightToolbar from '@/components/RightToolbar';
 // 代码高亮插件
@@ -89,6 +90,7 @@ Vue.component('Pagination', Pagination);
 Vue.component('RightToolbar', RightToolbar);
 Vue.component('RefactorTable', RefactorTable);
 Vue.component('TablecCascader', TablecCascader);
+Vue.component('TableDropdown', TableDropdown);
 Vue.use(permission);
 Vue.use(elementDirective);
 Vue.use(hljs.vuePlugin);
