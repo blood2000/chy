@@ -1,12 +1,6 @@
 <template>
   <!-- 评价对话框 -->
-  <el-dialog :title="title" :visible="visible" width="1400px" append-to-body @close="cancel">
-    <div slot="title" class="dialog-title">
-      <el-row :gutter="10">
-        <el-col :span="0.5"><img src="../../../../src/assets/images/icon/comment.png" alt=""></el-col>
-        <el-col :span="20"><div class="g-strong g-title-mini">{{ title }}</div></el-col>
-      </el-row>
-    </div>
+  <el-dialog class="i-comment" :title="title" :visible="visible" width="1400px" append-to-body @close="cancel">
     <el-table v-loading="loading" :data="commentlist" border stripe>
       <el-table-column type="index" label="序号" align="center" width="50" />
       <el-table-column width="150" label="运输单号" align="center" prop="waybillNo" />
