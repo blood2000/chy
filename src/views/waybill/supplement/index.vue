@@ -500,6 +500,12 @@ export default {
               this.unloadAddressOptions = address2;
             }
           });
+          this.form.goodsCode = null;
+          this.form.shipmentPrice = null;
+          this.form.loadAddressCode = null;
+          this.form.unloadAddressCode = null;
+          this.form.remainingNumber = null;
+          this.form.remainingWeight = null;
           // 获取运单号
           getWayBillNo().then(response => {
             console.log(response);
@@ -590,6 +596,10 @@ export default {
       vehicle(this.vehicleInfoQuery).then(response => {
         this.vehicleOptions = response.rows;
       });
+      this.form.vehicleCode = null;
+      this.form.roadTransportCertificateNumber = null;
+      this.form.classificationCode = null;
+      this.form.vehicleLoadWeight = null;
     },
     // 根据选择的车辆获取信息
     vehicleChoose(e) {
