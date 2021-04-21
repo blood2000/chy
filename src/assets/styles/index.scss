@@ -8,6 +8,7 @@
 @import './color.scss';
 @import './font.scss';
 @import './flex.scss';
+@import './element-rewrite/index.scss';
 
 html{
   font-size: calc(100vw / 96);

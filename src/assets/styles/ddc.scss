@@ -270,25 +270,6 @@
 	background:rgba(0, 0, 0, 0.3);
 }
 
-// el-dialog 弹窗样式
-.el-dialog{
-	max-height: 90vh;
-	overflow: hidden;
-}
-.el-dialog__header{
-	padding: 17px 20px 13px;
-	border-bottom: 1px solid #dcdfe6;
-}
-.el-dialog__body{
-	// head:54px  foot:66px
-	max-height: calc(90vh - 54px - 66px);
-	overflow: auto;
-}
-.el-dialog__footer{
-	padding: 15px 20px;
-	border-top: 1px solid #dcdfe6;
-}
-
 /* 表单禁用样式覆盖 */
 .el-input.is-disabled .el-input__inner,
 .el-radio__input.is-disabled .el-radio__inner,
