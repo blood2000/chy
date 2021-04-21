@@ -18,7 +18,7 @@
           placeholder="请输入下单企业"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -32,7 +32,7 @@
           placeholder="请输入发货企业"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -45,7 +45,7 @@
           placeholder="请输入装货信息"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -58,7 +58,7 @@
           placeholder="请输入收货信息"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -71,7 +71,7 @@
           placeholder="请输入货源单号"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -85,7 +85,7 @@
           range-separator="-"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
-          style="width: 230px"
+          style="width: 228px"
           @change="datechoose"
         />
       </el-form-item>
@@ -98,7 +98,7 @@
           placeholder="请输入车牌号"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -111,7 +111,7 @@
           placeholder="请输入司机姓名"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -124,7 +124,7 @@
           placeholder="请输入司机电话"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -137,7 +137,7 @@
           placeholder="请输入运输单号"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>

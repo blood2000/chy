@@ -75,6 +75,12 @@
         <el-button
           size="mini"
           type="text"
+          icon="el-icon-edit-outline"
+          @click="handleAbnormal(row)"
+        >处理异常</el-button>
+        <el-button
+          size="mini"
+          type="text"
           icon="el-icon-document"
           @click="handleWaybill(row)"
         >查看运单</el-button>
@@ -99,6 +105,8 @@
     <detail-dialog ref="DetailDialog" :current-id="currentId" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
     <!-- 运单异常 对话框 -->
     <abnormal-dialog ref="AbnormalDialog" :title="title" :open.sync="openAbnormal" :disable="formDisable" @refresh="getList" />
+    <!-- 处理异常 对话框 -->
+    <handle-dialog ref="HandleDialog" :title="title" :open.sync="openHandle" :disable="formDisable" @refresh="getList" />
   </div>
 </template>
 
@@ -106,13 +114,15 @@
 import { listAbnormal, getAbnormal, listAbnormalApi } from '@/api/waybill/abnormal';
 import DetailDialog from '../components/detailDialog';
 import AbnormalDialog from './abnormalDialog';
+import HandleDialog from './handleDialog';
 // import tableColumnsConfig from './config';
 
 export default {
   name: 'Abnormal',
   components: {
     DetailDialog,
-    AbnormalDialog
+    AbnormalDialog,
+    HandleDialog
   },
   data() {
     return {
@@ -137,6 +147,7 @@ export default {
       // 是否显示弹出层
       open: false,
       openAbnormal: false,
+      openHandle: false,
       // 异常标记状态  0正常，1异常，2取消字典
       isWarningOptions: [
         { 'dictLabel': '正常', 'dictValue': '0' },
@@ -198,6 +209,13 @@ export default {
       this.ids = selection.map(item => item.waybillCode);
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
+    },
+    /** 查看运单按钮操作 */
+    handleAbnormal(row) {
+      this.$refs.HandleDialog.reset();
+      this.openHandle = true;
+      this.title = '处理异常';
+      this.$refs.HandleDialog.setForm(row);
     },
     /** 查看运单按钮操作 */
     handleWaybill(row) {
