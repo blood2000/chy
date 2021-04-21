@@ -58,5 +58,8 @@
   // 评价
   &.i-money .el-dialog .el-dialog__header{
     background: url('~@/assets/images/icon/comment.png') no-repeat 20px 15px;
+  // 调价
+  &.i-price .el-dialog .el-dialog__header{
+    background: url('~@/assets/images/dialog/tiaojia.png') no-repeat 20px 15px;
   }
 }

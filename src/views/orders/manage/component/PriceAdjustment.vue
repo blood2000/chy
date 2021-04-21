@@ -54,7 +54,6 @@
             :goods-unit-name="goodsUnitName"
             :total-type-value="totalTypeValue"
             :myisdisabled="myisdisabled"
-            :good="goods"
             :goods-submit-form="getGoodsAccounting"
             :showbudget="true"
           />
@@ -153,6 +152,8 @@ export default {
 
   created() {
     this.tabs = JSON.parse(JSON.stringify(this.mytabs));
+
+    console.log(this.tabs);
   },
 
   methods: {
