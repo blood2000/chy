@@ -394,7 +394,6 @@ export default {
     '$route.query.t': {
 
       handler(value, odvalue) {
-        console.log(value);
         if ((odvalue === '0' || odvalue === '1' || odvalue === '3') && !value) {
           // 初次使用
           this.$router.replace({

@@ -357,7 +357,7 @@
                 <template v-if="row.isShowEdit">
 
 
-                  <div v-if="false">
+                  <!-- <div v-if="false">
                     <template
                       v-for="(item,index) in [
                         {
@@ -367,13 +367,8 @@
                           fn: (row)=>handleInfo(row)
                         },
                         {
-                          label:'指派',
-                          isShow: (row)=> false && row.status+''==='0',
-                          tag: 'zhipai',
-                        },
-                        {
                           label:'编辑',
-                          isShow: (row)=>row.status+''==='0',
+                          isShow: (row)=>row.status==='0',
                           tag: 'bianji',
                           fn: (row)=>handleUpdate(row),
                           hasPermi:['consigner-order-edit'],
@@ -384,10 +379,10 @@
                           tag: 'shanchu',
                         },
                         {
-                          label:(row)=> row.status+''==='0'?'禁用':'启用' ,
+                          label:(row)=> row.status==='0'?'禁用':'启用' ,
                           isShow: ()=> true,
                           tag: 'tiaojia',
-                          className: (row)=> row.status+''==='0' ? 'g-color-error' : undefined
+                          className: (row)=> row.status==='0' ? 'g-color-error' : undefined
                         }
                       ]"
                     >
@@ -402,39 +397,34 @@
                         @click="item['fn']? item['fn'](row) : handleInfo(row, item.tag)"
                       >{{ typeof item.label === "function" ? item.label(row) : item.label }}</el-button>
                     </template>
-                  </div>
+                  </div> -->
 
                   <!-- 方案1 -->
 
+                  <el-button
+                    size="mini"
+                    type="text"
+                    @click="handleInfo(row)"
+                  >详情</el-button>
 
+                  <el-button
+                    v-if="row.status+''==='0'"
+                    v-hasPermi="['consigner-order-edit']"
+                    size="mini"
+                    type="text"
+                    @click="handleUpdate(row)"
+                  >编辑</el-button>
 
-                  <el-dropdown v-if="true" style="width:100%;">
-                    <div class="g-single-row" style="100%;">
+                  <el-button
+                    v-hasPermi="['consigner-order-open', 'consigner-order-close']"
+                    size="mini"
+                    type="text"
+                    :class="row.status+''==='0'?'g-color-error': null"
+                    @click="handleClose(row)"
+                  >{{ row.status+''==='0'?'禁用':'启用' }}</el-button>
 
-                      <el-button
-                        size="mini"
-                        type="text"
-                        @click="handleInfo(row)"
-                      >详情</el-button>
-                      <!-- icon="el-icon-document" -->
-
-
-                      <el-button
-                        v-if="false && row.status+''==='0'"
-                        size="mini"
-                        type="text"
-                        @click="handleDispatch(row)"
-                      >指派</el-button>
-                      <!-- icon="el-icon-s-promotion" -->
-
-                      <el-button
-                        v-if="row.status+''==='0'"
-                        v-hasPermi="['consigner-order-edit']"
-                        size="mini"
-                        type="text"
-                        @click="handleUpdate(row)"
-                      >编辑</el-button>
-
+                  <TableDropdown>
+                    <el-dropdown-item>
                       <el-button
                         v-if="!row.haveWaybill"
                         v-hasPermi="['consigner-order-delete']"
@@ -442,15 +432,9 @@
                         type="text"
                         @click="handleDelete(row)"
                       >删除</el-button>
+                    </el-dropdown-item>
 
-                      <el-button
-                        v-hasPermi="['consigner-order-open', 'consigner-order-close']"
-                        size="mini"
-                        type="text"
-                        :style="{color: row.status+''==='0'?'red': ''}"
-                        @click="handleClose(row)"
-                      >{{ row.status+''==='0'?'禁用':'启用' }}</el-button>
-
+                    <el-dropdown-item>
                       <el-button
                         v-if="row.status+''==='0'"
                         v-hasPermi="['consigner-order-adjust-price']"
@@ -458,102 +442,26 @@
                         type="text"
                         @click="handleReadjustPrices(row)"
                       >调价</el-button>
+                    </el-dropdown-item>
 
+                    <el-dropdown-item>
                       <el-button
                         v-if="false"
                         size="mini"
                         type="text"
                         @click="handleShenhe(row)"
                       >审核</el-button>
-                      <!-- icon="el-icon-document" -->
+                    </el-dropdown-item>
 
+                    <el-dropdown-item>
                       <el-button
                         v-if="row.status+''==='0'"
                         size="mini"
                         type="text"
                         @click="handleclone(row)"
                       >复制</el-button>
-                      <!-- icon="el-icon-document" -->
-
-
-                    </div>
-
-                    <el-dropdown-menu slot="dropdown">
-                      <el-dropdown-item><el-button
-                        size="mini"
-                        type="text"
-                        @click="handleInfo(row)"
-                      >详情</el-button>
-                        <!-- icon="el-icon-document" -->
-
-
-                      </el-dropdown-item>
-                      <el-dropdown-item><el-button
-                        v-if="false && row.status+''==='0'"
-                        size="mini"
-                        type="text"
-                        @click="handleDispatch(row)"
-                      >指派</el-button>
-                        <!-- icon="el-icon-s-promotion" -->
-
-                      </el-dropdown-item>
-                      <el-dropdown-item><el-button
-                        v-if="row.status+''==='0'"
-                        v-hasPermi="['consigner-order-edit']"
-                        size="mini"
-                        type="text"
-                        @click="handleUpdate(row)"
-                      >编辑</el-button>
-
-                      </el-dropdown-item>
-                      <el-dropdown-item><el-button
-                        v-if="!row.haveWaybill"
-                        v-hasPermi="['consigner-order-delete']"
-                        size="mini"
-                        type="text"
-                        @click="handleDelete(row)"
-                      >删除</el-button>
-
-                      </el-dropdown-item>
-                      <el-dropdown-item><el-button
-                        v-hasPermi="['consigner-order-open', 'consigner-order-close']"
-                        size="mini"
-                        type="text"
-                        :style="{color: row.status+''==='0'?'red': ''}"
-                        @click="handleClose(row)"
-                      >{{ row.status+''==='0'?'禁用':'启用' }}</el-button>
-
-                      </el-dropdown-item>
-                      <el-dropdown-item><el-button
-                        v-if="row.status+''==='0'"
-                        v-hasPermi="['consigner-order-adjust-price']"
-                        size="mini"
-                        type="text"
-                        @click="handleReadjustPrices(row)"
-                      >调价</el-button>
-
-                      </el-dropdown-item>
-                      <el-dropdown-item><el-button
-                        v-if="false"
-                        size="mini"
-                        type="text"
-                        @click="handleShenhe(row)"
-                      >审核</el-button>
-                        <!-- icon="el-icon-document" -->
-
-                      </el-dropdown-item>
-                      <el-dropdown-item><el-button
-                        v-if="row.status+''==='0'"
-                        size="mini"
-                        type="text"
-                        @click="handleclone(row)"
-                      >复制</el-button>
-                        <!-- icon="el-icon-document" -->
-
-                      </el-dropdown-item>
-                    </el-dropdown-menu>
-
-                  </el-dropdown>
+                    </el-dropdown-item>
+                  </TableDropdown>
 
 
 
@@ -1094,13 +1002,13 @@ export default {
     handleDelete(row) {
       const testIds = row.code;
       // 操作删除按钮，判断货单是否产生运单。
-      const waybill = true;
+      const waybill = row.haveWaybill - 0 === 0;
 
       let msg = '';
       if (waybill) {
         msg = '该货源单下，暂无产生运单，确认是否删除';
       } else {
-        msg = `该货源单下，已产生??条运单，确认是否删除`;
+        msg = `该货源单下，已产生运单，确认是否删除`;
       }
 
       // 1、无，选择提示“该货源单下，暂无产生运单，确认是否删除”；
