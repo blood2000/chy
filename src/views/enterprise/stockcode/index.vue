@@ -49,7 +49,7 @@
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table v-loading="loading" :data="stockcodeList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="stockcodeList" border stripe @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
       <el-table-column label="货集码名称" align="center" prop="cargoCodeName" />
       <el-table-column label="货集码" align="center" prop="cargoCodeQr">
@@ -71,25 +71,20 @@
           >{{ scope.row.relationOrderNum }}</el-button>
         </template>
       </el-table-column>
-      <!-- <el-table-column label="创建人" align="center" prop="createCode" />
-      <el-table-column label="更新人" align="center" prop="updateCode" /> -->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
           <el-button
             v-hasPermi="['assets:shipment:cargocode:edit']"
             size="mini"
             type="text"
-            icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
           >修改</el-button>
           <el-button
             v-hasPermi="['assets:shipment:cargocode:remove']"
             size="mini"
             type="text"
-            icon="el-icon-delete"
             @click="handleDelete(scope.row)"
           >删除</el-button>
-        <!--  v-hasPermi="['enterprise:stockcode:remove']"-->
         </template>
       </el-table-column>
     </el-table>

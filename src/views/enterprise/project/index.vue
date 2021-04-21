@@ -92,14 +92,12 @@
           v-hasPermi="['assets:shipment:project:edit']"
           size="mini"
           type="text"
-          icon="el-icon-edit"
           @click="handleUpdate(row)"
         >修改</el-button>
         <el-button
           v-hasPermi="['assets:shipment:project:remove']"
           size="mini"
           type="text"
-          icon="el-icon-delete"
           @click="handleDelete(row)"
         >删除</el-button>
       </template>

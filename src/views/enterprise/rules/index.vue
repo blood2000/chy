@@ -29,7 +29,7 @@
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table v-loading="loading" :data="rulesList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="rulesList" stripe border @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
       <el-table-column label="规则名称" align="center" prop="name" />
       <el-table-column
@@ -46,14 +46,12 @@
             v-hasPermi="['transport:ruleInfoShipment:edit']"
             size="mini"
             type="text"
-            icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
           >修改</el-button>
           <el-button
             v-hasPermi="['transport:ruleInfoShipment:remove']"
             size="mini"
             type="text"
-            icon="el-icon-delete"
             @click="handleDelete(scope.row)"
           >删除</el-button>
         </template>
