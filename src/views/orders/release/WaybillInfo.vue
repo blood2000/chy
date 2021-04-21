@@ -74,6 +74,7 @@ export default {
       // 表
       loading: false,
       list: [],
+      total: 0,
       queryParams: {
         pageNum: 1,
         pageSize: 10
@@ -205,7 +206,7 @@ export default {
     // 分页
     handleInfo(row) {
       this.$refs.DetailDialog.reset();
-      this.currentId = row.wayBillCode;
+      this.currentId = row.waybillCode;
       this.open = true;
       this.title = '运输单信息';
       this.formDisable = true;
