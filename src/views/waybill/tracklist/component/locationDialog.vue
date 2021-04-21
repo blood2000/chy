@@ -199,8 +199,8 @@ export default {
 .map-content{
   height:750px;
   ::v-deep.amap-icon img{
-  max-width: 40px !important;
-  max-height: 30px !important;
+  max-width: 55px !important;
+  max-height: 28px !important;
 }
 }
 

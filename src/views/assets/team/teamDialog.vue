@@ -1,6 +1,6 @@
 <template>
   <!-- 添加或修改调度者对话框 -->
-  <el-dialog :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
+  <el-dialog :class="[{'i-add':title==='新增'},{'i-check':title==='审核'}]" :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
       <el-form-item label="调度者名称" prop="name">
         <el-input v-model="form.name" placeholder="请输入调度者名称" class="width90" clearable />
@@ -89,7 +89,7 @@
       </el-form-item>
     </el-form>
     <div v-if="title === '新增' || title === '编辑'" slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="submitForm">确 定</el-button>
+      <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
     </div>
     <div v-if="title === '审核'" slot="footer" class="dialog-footer">
@@ -118,6 +118,7 @@ export default {
   },
   data() {
     return {
+      buttonLoading: false,
       // 初始密码
       initialPassword: 'abcd1234@',
       // 状态字典
@@ -144,8 +145,8 @@ export default {
           { required: true, message: '管理者名称不能为空', trigger: 'blur' }
         ],
         identificationNumber: [
-          { required: true, message: '身份证号不能为空', trigger: 'blur' },
-          { validator: this.formValidate.idCard, trigger: 'blur' }
+          { required: true, message: '身份证号不能为空', trigger: ['blur', 'change'] },
+          { validator: this.formValidate.idCard, trigger: ['blur', 'change'] }
         ],
         identificationEndTime: [
           { validator: (rules, value, callback) => this.formValidate.idCardValidate(rules, value, callback, this.form.identificationBeginTime, this.form.identificationEffective), trigger: ['change', 'blur'] },
@@ -172,18 +173,25 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
+          this.buttonLoading = true;
           this.form.identificationEffective = praseBooleanToNum(this.form.identificationEffective);
           if (this.form.id) {
             updateInfo(this.form).then(response => {
+              this.buttonLoading = false;
               this.msgSuccess('修改成功');
               this.close();
               this.$emit('refresh');
+            }).catch(() => {
+              this.buttonLoading = false;
             });
           } else {
             addInfo(this.form).then(response => {
+              this.buttonLoading = false;
               this.msgSuccess('新增成功');
               this.close();
               this.$emit('refresh');
+            }).catch(() => {
+              this.buttonLoading = false;
             });
           }
         }
@@ -200,6 +208,7 @@ export default {
     },
     // 表单重置
     reset() {
+      this.buttonLoading = false;
       this.form = {
         id: null,
         code: null,

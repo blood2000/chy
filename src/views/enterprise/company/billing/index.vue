@@ -18,7 +18,7 @@
     <div class="app-container">
       <h3 class="g-title-medium mb10">开票信息</h3>
       <el-form ref="form" :model="form" :rules="rules" label-width="140px" :label-position="'left'">
-        <h5 class="g-title-small g-strong g-color-gray mb20">| 增值税发票开票信息</h5>
+        <h5 class="g-card-title mb20">增值税发票开票信息</h5>
         <!-- <el-form-item label="发票编码" prop="code">
           <el-input v-model="form.code" placeholder="请输入发票编码" class="input-width" clearable />
         </el-form-item>
@@ -43,7 +43,7 @@
         </el-form-item>
         <hr class="g-hr">
 
-        <h5 class="g-title-small g-strong g-color-gray mb20">| 发票收票地址</h5>
+        <h5 class="g-card-title mb20">发票收票地址</h5>
         <el-form-item label="收票人姓名" prop="payeeName">
           <el-input v-model="form.payeeName" placeholder="请输入收票人姓名" class="input-width" clearable />
         </el-form-item>
@@ -89,7 +89,7 @@ export default {
         ],
         registrationTelphone: [
           { required: true, message: '注册电话不能为空', trigger: 'blur' },
-          { validator: this.formValidate.telphone, trigger: 'blur' }
+          { validator: this.formValidate.phone, trigger: 'blur' }
         ],
         openBankName: [
           { required: true, message: '开户行不能为空', trigger: 'blur' }
@@ -104,7 +104,7 @@ export default {
         ],
         payeeTelphone: [
           { required: true, message: '收票人联系电话不能为空', trigger: 'blur' },
-          { validator: this.formValidate.telphone, trigger: 'blur' }
+          { validator: this.formValidate.phone, trigger: 'blur' }
         ],
         payeeEmail: [
           { required: true, message: '收票人电子邮箱不能为空', trigger: 'blur' },

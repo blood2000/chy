@@ -116,50 +116,64 @@
       </el-form-item>
     </el-form>
 
-    <el-row v-show="!teamCode && !driverCode" :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['assets:vehicle:add']"
-          type="primary"
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-        >新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['assets:vehicle:edit']"
-          type="success"
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleDetail({}, 'edit')"
-        >修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['assets:vehicle:remove']"
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-        >删除</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['assets:vehicle:export']"
-          type="warning"
-          icon="el-icon-download"
-          size="mini"
-          :loading="exportLoading"
-          @click="handleExport"
-        >导出</el-button>
-      </el-col>
-      <el-col :span="1.5" class="fr">
-        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
-      </el-col>
-      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+    <el-row :gutter="10" class="mb8">
+      <template v-if="!teamCode && !driverCode">
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['assets:vehicle:add']"
+            type="primary"
+            icon="el-icon-plus"
+            size="mini"
+            @click="handleAdd('add')"
+          >新增</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['assets:vehicle:edit']"
+            type="success"
+            icon="el-icon-edit"
+            size="mini"
+            :disabled="single"
+            @click="handleDetail({}, 'edit')"
+          >修改</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['assets:vehicle:remove']"
+            type="danger"
+            icon="el-icon-delete"
+            size="mini"
+            :disabled="multiple"
+            @click="handleDelete"
+          >删除</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['assets:vehicle:export']"
+            type="warning"
+            icon="el-icon-download"
+            size="mini"
+            :loading="exportLoading"
+            @click="handleExport"
+          >导出</el-button>
+        </el-col>
+        <el-col :span="1.5" class="fr">
+          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
+        </el-col>
+        <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+      </template>
+      <!-- 新增司机或调度者的名下车辆 -->
+      <!-- <template v-if="teamCode || driverCode">
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['assets:vehicle:add']"
+            type="primary"
+            icon="el-icon-plus"
+            size="mini"
+            @click="handleAdd('bind')"
+          >添加车辆</el-button>
+        </el-col>
+      </template> -->
     </el-row>
 
     <RefactorTable :loading="loading" :data="vehicleList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
@@ -228,13 +242,11 @@
           v-hasPermi="['assets:vehicle:get']"
           size="mini"
           type="text"
-          icon="el-icon-setting"
           @click="handleManage(row)"
         >管理</el-button>
         <el-button
           size="mini"
           type="text"
-          icon="el-icon-document"
           @click="handleDetail(row, 'detail')"
         >详情</el-button>
         <template v-if="!teamCode && !driverCode">
@@ -242,23 +254,26 @@
             v-hasPermi="['assets:vehicle:edit']"
             size="mini"
             type="text"
-            icon="el-icon-edit"
             @click="handleDetail(row, 'edit')"
           >修改</el-button>
-          <el-button
-            v-show="row.authStatus === 0 || row.authStatus === 1"
-            size="mini"
-            type="text"
-            icon="el-icon-document-checked"
-            @click="handleDetail(row, 'review')"
-          >审核</el-button>
-          <el-button
-            v-hasPermi="['assets:vehicle:remove']"
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(row)"
-          >删除</el-button>
+          <TableDropdown>
+            <el-dropdown-item>
+              <el-button
+                v-show="row.authStatus === 0 || row.authStatus === 1"
+                size="mini"
+                type="text"
+                @click="handleDetail(row, 'review')"
+              >审核</el-button>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <el-button
+                v-hasPermi="['assets:vehicle:remove']"
+                size="mini"
+                type="text"
+                @click="handleDelete(row)"
+              >删除</el-button>
+            </el-dropdown-item>
+          </TableDropdown>
         </template>
       </template>
     </RefactorTable>
@@ -272,7 +287,15 @@
     />
 
     <!-- 新增/修改/详情 对话框 -->
-    <vehicle-dialog ref="VehicleDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
+    <vehicle-dialog
+      ref="VehicleDialog"
+      :title="title"
+      :open.sync="open"
+      :disable="formDisable"
+      :team-code="teamCode"
+      :driver-code="driverCode"
+      @refresh="getList"
+    />
     <!-- 管理归属司机/归属调度 对话框 -->
     <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :vehicle-code="vehicleCode" />
   </div>
@@ -362,6 +385,8 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
+        isAsc: 'desc',
+        orderByColumn: 'create_time',
         licenseNumber: undefined,
         vehicleOwnerCode: undefined,
         vehicleAscriptionType: undefined,
@@ -384,7 +409,7 @@ export default {
       prop: 'edit',
       isShow: true,
       label: '操作',
-      width: 280,
+      width: 180,
       fixed: 'right'
     });
     this.getDictsList();
@@ -468,10 +493,19 @@ export default {
       this.multiple = !selection.length;
     },
     /** 新增按钮操作 */
-    handleAdd() {
+    handleAdd(flag) {
       this.$refs.VehicleDialog.reset();
       this.open = true;
-      this.title = '新增';
+      switch (flag) {
+        case 'add':
+          this.title = '新增';
+          break;
+        case 'bind':
+          this.title = '添加车辆';// 调度者/司机绑定车辆
+          break;
+        default:
+          break;
+      }
       this.formDisable = false;
     },
     /** 修改/详情/审核按钮操作 */

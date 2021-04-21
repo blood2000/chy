@@ -224,38 +224,39 @@
           v-hasPermi="['assets:shipment:manage']"
           size="mini"
           type="text"
-          icon="el-icon-setting"
           @click="handleManage(row)"
         >管理</el-button>
         <el-button
           v-hasPermi="['assets:shipment:query']"
           size="mini"
           type="text"
-          icon="el-icon-document"
           @click="handleDetail(row, 'detail')"
         >详情</el-button>
         <el-button
           v-hasPermi="['assets:shipment:edit']"
           size="mini"
           type="text"
-          icon="el-icon-edit"
           @click="handleDetail(row, 'edit')"
         >修改</el-button>
-        <el-button
-          v-show="row.authStatus != 3"
-          v-hasPermi="['assets:shipment:examine']"
-          size="mini"
-          type="text"
-          icon="el-icon-document-checked"
-          @click="handleDetail(row, 'review')"
-        >审核</el-button>
-        <el-button
-          v-hasPermi="['assets:shipment:remove']"
-          size="mini"
-          type="text"
-          icon="el-icon-delete"
-          @click="handleDelete(row)"
-        >删除</el-button>
+        <TableDropdown>
+          <el-dropdown-item>
+            <el-button
+              v-show="row.authStatus != 3"
+              v-hasPermi="['assets:shipment:examine']"
+              size="mini"
+              type="text"
+              @click="handleDetail(row, 'review')"
+            >审核</el-button>
+          </el-dropdown-item>
+          <el-dropdown-item>
+            <el-button
+              v-hasPermi="['assets:shipment:remove']"
+              size="mini"
+              type="text"
+              @click="handleDelete(row)"
+            >删除</el-button>
+          </el-dropdown-item>
+        </TableDropdown>
       </template>
     </RefactorTable>
 
@@ -352,6 +353,8 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
+        isAsc: 'desc',
+        orderByColumn: 'create_time',
         searchValue: undefined,
         // isAccount: undefined,
         // accountType: undefined,
@@ -382,7 +385,7 @@ export default {
       prop: 'edit',
       isShow: true,
       label: '操作',
-      width: 280,
+      width: 180,
       fixed: 'right'
     });
     this.getDictsOptions();

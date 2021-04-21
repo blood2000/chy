@@ -5,6 +5,7 @@ export default [
     isShow: true,
     width: 200,
     tooltip: true,
+    fixed: 'left',
     label: '货源单号'
   },
   {
@@ -132,7 +133,7 @@ export default [
     isShow: true,
     width: 120,
     tooltip: true,
-    label: '创建时间'
+    label: '发布时间'
   },
   {
     prop: 'isDel',
@@ -209,7 +210,7 @@ export default [
     prop: 'edit',
     isShow: true,
     label: '操作',
-    width: 250,
+    width: 180,
     fixed: 'right'
   }
 ];

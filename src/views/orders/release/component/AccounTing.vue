@@ -197,6 +197,24 @@ export default {
 
   },
   data() {
+    var freightPrice_validator = (rule, value, callback) => {
+      if (!value) {
+        this.msgError(this.good.dictLabel + '的运费单价是必填的');
+        this.$emit('showisweitian', this.good.activeName);
+        callback(new Error('请输入运费单价'));
+      } else {
+        callback();
+      }
+    };
+    var ruleItemId_validator = (rule, value, callback) => {
+      if (!value) {
+        this.msgError(this.good.dictLabel + '的核算规则是必填的');
+        this.$emit('showisweitian', this.good.activeName);
+        callback(new Error('请选择核算规则'));
+      } else {
+        callback();
+      }
+    };
     return {
       jisuanRule: {}, // 计算的规则
       mygoodsUnitName: '', // 单位
@@ -235,10 +253,13 @@ export default {
       },
       rules: {
         ruleItemId: [
-          { required: true, message: '请选择核算规则', trigger: 'change' }
+          // { required: true, message: '请选择核算规则', trigger: 'change' }
+          { validator: ruleItemId_validator, required: true, trigger: 'change' }
+
         ],
         freightPrice: [
-          { required: true, message: '请输入运费单价', trigger: 'blur' }
+          // { required: true, message: '请输入运费单价', trigger: 'blur' },
+          { validator: freightPrice_validator, required: true, trigger: 'blur' }
         ]
       },
 
@@ -283,6 +304,7 @@ export default {
     good: {
       handler(value) {
         if (!value || !value.goodsAccounting.totalType) return;
+
         this.mytotalTypeValue = value.goodsAccounting.totalType;
       },
       immediate: true

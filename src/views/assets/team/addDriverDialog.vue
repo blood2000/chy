@@ -107,33 +107,33 @@
           <span v-show="scope.row.authStatus === 3" class="g-color-success">审核通过</span>
         </template>
       </el-table-column>
-      <el-table-column label="手机" align="center" prop="telphone" />
-      <el-table-column label="工作单位" align="center" prop="workCompany" />
-      <el-table-column label="地址" align="center" prop="homeAddress" />
-      <el-table-column label="身份证号" align="center" prop="identificationNumber" />
-      <el-table-column label="驾驶证" align="center" prop="driverLicense" />
-      <!-- <el-table-column label="驾驶证有效期自" align="center" prop="validPeriodFrom" width="180">
+      <el-table-column label="手机" align="center" prop="telphone" width="120" />
+      <el-table-column label="工作单位" align="center" prop="workCompany" width="180" />
+      <el-table-column label="地址" align="center" prop="homeAddress" width="180" />
+      <el-table-column label="身份证号" align="center" prop="identificationNumber" width="180" />
+      <el-table-column label="驾驶证" align="center" prop="driverLicense" width="180" />
+      <!-- <el-table-column label="驾驶证有效期自" align="center" prop="validPeriodFrom" width="120">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.validPeriodFrom, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="驾驶证有效期至" align="center" prop="validPeriodTo" width="180">
+      <el-table-column label="驾驶证有效期至" align="center" prop="validPeriodTo" width="120">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.validPeriodTo, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column> -->
-      <el-table-column label="驾驶证类型" align="center" prop="driverLicenseType">
+      <el-table-column label="驾驶证类型" align="center" prop="driverLicenseType" width="180">
         <template slot-scope="scope">
           <span>{{ selectDictLabel(driverLicenseTypeOptions, scope.row.driverLicenseType) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="上岗证" align="center" prop="workLicense" />
+      <el-table-column label="上岗证" align="center" prop="workLicense" width="180" />
       <el-table-column label="从业资格证到期日期" align="center" prop="workLicenseDueDate" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.workLicenseDueDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="营业执照号" align="center" prop="businessLicenseImgNo" />
+      <el-table-column label="营业执照号" align="center" prop="businessLicenseImgNo" width="180" />
       <!-- <el-table-column label="是否上传人员信用信息" align="center" prop="isReportPerson">
         <template slot-scope="scope">
           <span>{{ selectDictLabel(isOption, scope.row.isReportPerson) }}</span>

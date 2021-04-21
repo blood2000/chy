@@ -169,6 +169,7 @@
                   type="datetime"
                   value-format="yyyy-MM-dd hh:mm:ss"
                   placeholder="选择装车时间"
+                  @change="loadTimeChoose"
                 />
               </el-form-item>
             </el-col>
@@ -182,6 +183,7 @@
                   type="datetime"
                   value-format="yyyy-MM-dd hh:mm:ss"
                   placeholder="选择卸车时间"
+                  @change="unloadTimeChoose"
                 />
               </el-form-item>
             </el-col>
@@ -205,12 +207,12 @@
           </el-row>
           <el-row>
             <el-col :span="8">
-              <el-form-item label="装货单据">
+              <el-form-item label="装货单据" prop="loadAttachmentCode">
                 <uploadImage v-model="form.loadAttachmentCode" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="卸货单据/回执单">
+              <el-form-item label="卸货单据/回执单" prop="unloadAttachmentCode">
                 <uploadImage v-model="form.unloadAttachmentCode" />
               </el-form-item>
             </el-col>
@@ -313,8 +315,38 @@ export default {
       },
       // 表单校验
       rules: {
-        description: [
-          { required: true, message: '异常说明不能为空', trigger: 'blur' }
+        mainOrderCode: [
+          { required: true, message: '货源单号不能为空', trigger: 'blur' }
+        ],
+        goodsCode: [
+          { required: true, message: '请选择货物类型', trigger: 'blur' }
+        ],
+        loadAddressCode: [
+          { required: true, message: '请选择装货地址', trigger: 'blur' }
+        ],
+        unloadAddressCode: [
+          { required: true, message: '请选择卸货地址', trigger: 'blur' }
+        ],
+        driverCode: [
+          { required: true, message: '请选择承运司机', trigger: 'blur' }
+        ],
+        vehicleCode: [
+          { required: true, message: '请选择承运车辆', trigger: 'blur' }
+        ],
+        loadTime: [
+          { required: true, message: '请选择装车时间', trigger: 'blur' }
+        ],
+        unloadTime: [
+          { required: true, message: '请选择卸车时间', trigger: 'blur' }
+        ],
+        loadWeight: [
+          { required: true, message: '运单重量必填', trigger: 'blur' }
+        ],
+        loadAttachmentCode: [
+          { required: true, message: '请上传装货单据', trigger: 'blur' }
+        ],
+        unloadAttachmentCode: [
+          { required: true, message: '请上传卸货单据', trigger: 'blur' }
         ]
       }
     };
@@ -326,6 +358,26 @@ export default {
     // this.getDriver();
   },
   methods: {
+    loadTimeChoose(e) {
+      if (this.form.unloadTime) {
+        const loadtime = new Date(e);
+        const unloadtime = new Date(this.form.unloadTime);
+        if (loadtime >= unloadtime) {
+          this.$message({ type: 'warning', message: '装车时间必须小于卸车时间！' });
+          this.form.loadTime = null;
+        }
+      }
+    },
+    unloadTimeChoose(e) {
+      if (this.form.loadTime) {
+        const unloadtime = new Date(e);
+        const loadtime = new Date(this.form.loadTime);
+        if (loadtime >= unloadtime) {
+          this.$message({ type: 'warning', message: '卸车时间必须大于装车时间！' });
+          this.form.unloadTime = null;
+        }
+      }
+    },
     // 触发司机远程搜索
     remoteMethod(query) {
       if (query !== '') {
@@ -448,6 +500,12 @@ export default {
               this.unloadAddressOptions = address2;
             }
           });
+          this.form.goodsCode = null;
+          this.form.shipmentPrice = null;
+          this.form.loadAddressCode = null;
+          this.form.unloadAddressCode = null;
+          this.form.remainingNumber = null;
+          this.form.remainingWeight = null;
           // 获取运单号
           getWayBillNo().then(response => {
             console.log(response);
@@ -538,6 +596,10 @@ export default {
       vehicle(this.vehicleInfoQuery).then(response => {
         this.vehicleOptions = response.rows;
       });
+      this.form.vehicleCode = null;
+      this.form.roadTransportCertificateNumber = null;
+      this.form.classificationCode = null;
+      this.form.vehicleLoadWeight = null;
     },
     // 根据选择的车辆获取信息
     vehicleChoose(e) {

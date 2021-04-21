@@ -39,6 +39,7 @@
       <div v-show="orderInfo==='0'">
         <el-form
           ref="elForm"
+          v-loading="loading"
           :model="formData"
           :rules="rules"
           size="medium"
@@ -391,6 +392,7 @@ export default {
       this.formData.tin9 = false;
     },
     '$route.query.t': {
+
       handler(value, odvalue) {
         if ((odvalue === '0' || odvalue === '1' || odvalue === '3') && !value) {
           // 初次使用
@@ -422,7 +424,7 @@ export default {
         return;
       }
 
-      this.isAdmin && (this.formData.tin1 = shipment.info.adminCode);
+      this.isAdmin && (this.formData.tin1 = shipment.info.code);
     }
 
     // 判断地址栏有没有id- true=>有说明编辑/详情 false=>创建-什么都不做
@@ -635,7 +637,7 @@ export default {
 
     // 下一步 active =4
     nextFe(active) {
-      this.loading = true;
+      // this.loading = true;
       if (active === 4) {
         this.onSubmit('elForm');
 
@@ -647,7 +649,7 @@ export default {
       } else if (active === 3) {
         this.active = 3;
       }
-      this.loading = false;
+      // this.loading = false;
     },
 
     // 处理预估
@@ -685,10 +687,9 @@ export default {
         orderEstimateCostBoList,
         'userCode': this.formData.tin1
       };
-
       const res = await estimateCost(qData);
-
       this.$store.dispatch('orders/store_getEst', res.data);
+      this.active = 4;
     },
 
     // 发布按钮触发(1.发布接口2.成功1秒后跳转)
@@ -699,20 +700,22 @@ export default {
         if (!this.isCreated) {
           update(this.lastData).then(res => {
             this.msgSuccess('修改成功');
-            this.loading = false;
-            setTimeout(() => {
-              this.$router.push({ name: 'Manage' });
-            }, 1000);
+            var time1 = setTimeout(() => {
+              clearTimeout(time1);
+              time1 = null;
+              this.loading = false;
+              this.$router.push({ name: 'Manage', query: { p: Date.now() }});
+            }, 700);
           }).catch(() => {
             this.loading = false;
           });
         } else {
           orderPubilsh(this.lastData).then((response) => {
             this.msgSuccess('新增成功');
-            this.loading = false;
             setTimeout(() => {
-              this.$router.push({ name: 'Manage' });
-            }, 1000);
+              this.loading = false;
+              this.$router.push({ name: 'Manage', query: { p: Date.now() }});
+            }, 700);
           }).catch(() => {
             this.loading = false;
           });
@@ -729,7 +732,6 @@ export default {
             this.onPubilsh();
           } else {
             this.handlerEstimateCost(this.lastData);
-            this.active = 4;
           }
         } else {
           return false;
@@ -1083,9 +1085,6 @@ export default {
       this.address_add = [];
       this.address_xie = [];
 
-      console.log(addressList);
-
-
       addressList.forEach((e, index) => {
         // 这说明是允许自装或自卸了
         if ((e.addressType - 0) === 3) {
@@ -1123,9 +1122,6 @@ export default {
           });
         }
       });
-
-      console.log(this.address_add);
-      console.log(this.address_xie);
     },
 
     // 3. 处理回填的数据(1.是要获取地址中的规则 2.要获取装地址到卸地址)

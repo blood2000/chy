@@ -1,13 +1,13 @@
 <template>
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
-      <el-form-item v-show="isAdmin" label="下单客户" prop="orderClient">
+      <el-form-item v-show="isAdmin" label="下单企业" prop="orderClient">
         <el-input
           v-model="queryParams.orderClient"
-          placeholder="请输入下单客户"
+          placeholder="请输入下单企业"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -18,7 +18,7 @@
           clearable
           filterable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
         >
           <el-option
             v-for="(dict, index) in goodsBigTypeOptions"
@@ -34,19 +34,22 @@
           placeholder="请输入货源单号"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="接单日期" prop="startReceiveTime">
+      <el-form-item
+        label="接单日期"
+        prop="receiveTime"
+      >
         <el-date-picker
-          v-model="queryParams.startReceiveTime"
-          clearable
-          size="small"
-          style="width: 230px"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择接单日期"
+          v-model="receiveTime"
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          style="width: 228px"
+          @change="datechoose"
         />
       </el-form-item>
       <el-form-item label="车牌号" prop="licenseNumber">
@@ -55,7 +58,7 @@
           placeholder="请输入车牌号"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -65,7 +68,7 @@
           placeholder="请输入司机姓名"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -75,7 +78,7 @@
           placeholder="请输入运输单号"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -86,7 +89,7 @@
           clearable
           filterable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
         >
           <el-option
             v-for="(dict, index) in statusOptions"
@@ -103,7 +106,7 @@
           clearable
           filterable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
         >
           <el-option
             v-for="(dict, index) in isReturnOptions"
@@ -159,7 +162,7 @@
         <el-button
           size="mini"
           type="text"
-          icon="el-icon-edit"
+          icon="el-icon-document"
           @click="handleDetail(row)"
         >详情</el-button>
         <el-button
@@ -277,6 +280,7 @@ export default {
         status: null,
         waybillNo: null
       },
+      receiveTime: [],
       // 表单参数
       form: {},
       // 表单校验
@@ -312,6 +316,15 @@ export default {
     });
   },
   methods: {
+    datechoose(date) {
+      if (date) {
+        this.queryParams.startReceiveTime = this.parseTime(date[0], '{y}-{m}-{d}');
+        this.queryParams.endReceiveTime = this.parseTime(date[1], '{y}-{m}-{d}');
+      } else {
+        this.queryParams.startReceiveTime = null;
+        this.queryParams.endReceiveTime = null;
+      }
+    },
     /** 查询纸质回单列表 */
     getList() {
       this.loading = true;

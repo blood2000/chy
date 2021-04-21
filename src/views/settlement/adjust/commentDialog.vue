@@ -1,8 +1,8 @@
 <template>
   <!-- 评价对话框 -->
-  <el-dialog :title="title" :visible="visible" width="1400px" append-to-body @close="cancel">
+  <el-dialog class="i-comment" :title="title" :visible="visible" width="1400px" append-to-body @close="cancel">
     <el-table v-loading="loading" :data="commentlist" border stripe>
-      <el-table-column type="index" label="序号" width="50" />
+      <el-table-column type="index" label="序号" align="center" width="50" />
       <el-table-column width="150" label="运输单号" align="center" prop="waybillNo" />
       <el-table-column width="120" label="车牌号" align="center" prop="licenseNumber" />
       <el-table-column width="100" label="司机" align="center" prop="driverName" />
@@ -18,12 +18,12 @@
       </el-table-column>
       <el-table-column width="180" label="评分" align="center" fixed="right" prop="score">
         <template #default="scope">
-          <el-rate v-model="scope.row.score" show-score allow-half text-color="#ff9900" />
+          <el-rate v-model="scope.row.score" show-score allow-half text-color="#FFBB00" />
         </template>
       </el-table-column>
     </el-table>
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="submitForm">立即评价</el-button>
+      <el-button type="primary" @click="submitForm">保存</el-button>
       <el-button @click="cancel">返回</el-button>
     </div>
   </el-dialog>

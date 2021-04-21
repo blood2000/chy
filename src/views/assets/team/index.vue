@@ -148,54 +148,57 @@
           v-hasPermi="['assets:team:manage']"
           size="mini"
           type="text"
-          icon="el-icon-setting"
           @click="handleManage(row)"
         >管理</el-button>
         <el-button
           v-hasPermi="['assets:team:get']"
           size="mini"
           type="text"
-          icon="el-icon-document"
           @click="handleDetail(row, 'detail')"
         >详情</el-button>
         <el-button
           v-hasPermi="['assets:team:edit']"
           size="mini"
           type="text"
-          icon="el-icon-edit"
           @click="handleDetail(row, 'edit')"
         >修改</el-button>
-        <el-button
-          v-show="row.authStatus != 3"
-          v-has-permi="['assets:team:examine']"
-          size="mini"
-          type="text"
-          icon="el-icon-document-checked"
-          @click="handleDetail(row, 'review')"
-        >审核</el-button>
-        <el-button
-          v-show="row.status == 0 && row.authStatus == 3"
-          v-hasPermi="['assets:team:invitation']"
-          size="mini"
-          type="text"
-          icon="el-icon-document-add"
-          @click="handleAddDriver(row)"
-        >邀请司机</el-button>
-        <el-button
-          v-show="row.apply && row.status == 0 && row.authStatus == 3"
-          v-hasPermi="['assets:team:deal']"
-          size="mini"
-          type="text"
-          icon="el-icon-document-checked"
-          @click="handleDeal(row)"
-        >处理申请</el-button>
-        <el-button
-          v-hasPermi="['assets:team:remove']"
-          size="mini"
-          type="text"
-          icon="el-icon-delete"
-          @click="handleDelete(row)"
-        >删除</el-button>
+        <TableDropdown>
+          <el-dropdown-item>
+            <el-button
+              v-show="row.authStatus != 3"
+              v-has-permi="['assets:team:examine']"
+              size="mini"
+              type="text"
+              @click="handleDetail(row, 'review')"
+            >审核</el-button>
+          </el-dropdown-item>
+          <el-dropdown-item>
+            <el-button
+              v-show="row.status == 0 && row.authStatus == 3"
+              v-hasPermi="['assets:team:invitation']"
+              size="mini"
+              type="text"
+              @click="handleAddDriver(row)"
+            >邀请司机</el-button>
+          </el-dropdown-item>
+          <el-dropdown-item>
+            <el-button
+              v-show="row.apply && row.status == 0 && row.authStatus == 3"
+              v-hasPermi="['assets:team:deal']"
+              size="mini"
+              type="text"
+              @click="handleDeal(row)"
+            >处理申请</el-button>
+          </el-dropdown-item>
+          <el-dropdown-item>
+            <el-button
+              v-hasPermi="['assets:team:remove']"
+              size="mini"
+              type="text"
+              @click="handleDelete(row)"
+            >删除</el-button>
+          </el-dropdown-item>
+        </TableDropdown>
       </template>
     </RefactorTable>
 
@@ -286,6 +289,8 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
+        isAsc: 'desc',
+        orderByColumn: 'create_time',
         name: undefined,
         teamLeaderName: undefined,
         status: undefined,
@@ -309,7 +314,7 @@ export default {
       prop: 'edit',
       isShow: true,
       label: '操作',
-      width: 300,
+      width: 180,
       fixed: 'right'
     });
     this.getList();

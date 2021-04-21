@@ -226,6 +226,14 @@
       <template #payBy="{row}">
         <span>{{ selectDictLabel(payByOptions, row.payBy) }}</span>
       </template>
+      <!-- 是否子单 -->
+      <template #isChild="{row}">
+        <span>{{ selectDictLabel(isChildOptions, row.isChild) }}</span>
+      </template>
+      <!-- 是否异常 -->
+      <template #isAbnormal="{row}">
+        <span>{{ selectDictLabel(isAbnormalOptions, row.isAbnormal) }}</span>
+      </template>
       <!-- 打款时间 -->
       <template #payTime="{row}">
         <span>{{ parseTime(row.payTime) }}</span>
@@ -238,6 +246,10 @@
       <template #payMybankTime="{row}">
         <span>{{ parseTime(row.payMybankTime) }}</span>
       </template>
+      <!-- 接单时间 -->
+      <template #receiveTime="{row}">
+        <span>{{ parseTime(row.receiveTime) }}</span>
+      </template>
       <template #createTime="{row}">
         <span>{{ parseTime(row.createTime) }}</span>
       </template>
@@ -248,48 +260,20 @@
         <el-button
           size="mini"
           type="text"
-          icon="el-icon-sell"
           @click="handleReport(row)"
         >上报流水</el-button>
         <el-button
           size="mini"
           type="text"
-          icon="el-icon-edit"
           @click="handleUpdate(row)"
         >修改批次号</el-button>
       </template>
     </RefactorTable>
 
+    <!-- 上报相关字段还没有 -->
     <!-- <el-table v-loading="loading" :data="recordList" @selection-change="handleSelectionChange">
-      <el-table-column label="是否超载" align="center" prop="" />
-      <el-table-column label="是否分单" align="center" prop="" />
-      <el-table-column label="是否异常" align="center" prop="" />
-      <el-table-column label="支付批次号" align="center" prop="" />
-      <el-table-column label="支付订单号" align="center" prop="" />
-      <el-table-column label="运输单号" align="center" prop="" />
-      <el-table-column label="车牌号" align="center" prop="" />
-      <el-table-column label="调度" align="center" prop="" />
-      <el-table-column label="运单关联企业" align="center" prop="" />
-      <el-table-column label="收款方姓名" align="center" prop="" />
-      <el-table-column label="收款方账户" align="center" prop="" />
-      <el-table-column label="金额" align="center" prop="" />
-      <el-table-column label="司机实际运费" align="center" prop="" />
-      <el-table-column label="司机实收现金" align="center" prop="" />
-      <el-table-column label="油气卡" align="center" prop="" />
-      <el-table-column label="手续费" align="center" prop="" />
-      <el-table-column label="收款方手机号" align="center" prop="" />
-      <el-table-column label="银行名称" align="center" prop="" />
-      <el-table-column label="转账请求状态" align="center" prop="" />
-      <el-table-column label="转账结果" align="center" prop="" />
       <el-table-column label="流水上报" align="center" prop="" />
       <el-table-column label="电子路单上报状态" align="center" prop="" />
-      <el-table-column label="货源单号" align="center" prop="" />
-      <el-table-column label="最后操作人" align="center" prop="" />
-      <el-table-column label="接单时间" align="center" prop="time">
-        <template slot-scope="scope">
-          {{ parseTime(scope.row.time) }}
-        </template>
-      </el-table-column>
     </el-table> -->
 
     <pagination
@@ -389,6 +373,17 @@ export default {
       payeeTypeOptions: [
         { dictLabel: '个人', dictValue: 1 },
         { dictLabel: '企业', dictValue: 2 }
+      ],
+      // 是否子单
+      isChildOptions: [
+        { dictLabel: '正常单', dictValue: 0 },
+        { dictLabel: '子单', dictValue: 1 },
+        { dictLabel: '超载的主单', dictValue: 1 }
+      ],
+      // 是否异常
+      isAbnormalOptions: [
+        { dictLabel: '正常', dictValue: 0 },
+        { dictLabel: '异常', dictValue: 1 }
       ],
       // 查询参数
       queryParams: {

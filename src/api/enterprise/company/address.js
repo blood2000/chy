@@ -5,7 +5,7 @@ export function listAddress(data) {
   return request({
     url: '/assets/shipment/address/list',
     method: 'post',
-    data: Object.assign({}, data, { isAsc: 'asc', orderByColumn: 'id' })
+    data: Object.assign({}, { isAsc: 'asc', orderByColumn: 'id' }, data)
   });
 }
 

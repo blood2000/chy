@@ -17,7 +17,7 @@
           placeholder="请输入装货信息"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -30,7 +30,7 @@
           placeholder="请输入收货信息"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -40,7 +40,7 @@
           placeholder="请选择货物类型"
           filterable
           clearable
-          style="width: 230px"
+          style="width: 228px"
           size="small"
         >
           <el-option
@@ -60,7 +60,7 @@
           placeholder="请输入货源单号"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -74,7 +74,7 @@
           range-separator="-"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
-          style="width: 230px"
+          style="width: 228px"
           @change="datechoose"
         />
       </el-form-item>
@@ -87,7 +87,7 @@
           placeholder="请输入车牌号"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -100,7 +100,7 @@
           placeholder="请输入司机姓名"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -113,7 +113,7 @@
           placeholder="请输入运输单号"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -126,7 +126,7 @@
           placeholder="请输入下单客户"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -139,7 +139,7 @@
           placeholder="请输入发货企业"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -150,7 +150,7 @@
           filterable
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
         >
           <el-option
             v-for="dict in isReturnOptions"
@@ -167,7 +167,7 @@
           filterable
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
         >
           <el-option
             v-for="dict in isChildOptions"
@@ -248,7 +248,11 @@
         <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
       </template>
       <template #isReturn="{row}">
-        <span>{{ selectDictLabel(isReturnOptions, row.isReturn) }}</span>
+        <span>
+          <i v-if="row.isReturn == 0" class="el-icon-error g-color-error"></i>
+          <i v-if="row.isReturn == 1" class="el-icon-success g-color-success"></i>
+          {{ selectDictLabel(isReturnOptions, row.isReturn) }}
+        </span>
       </template>
       <template #lastLoadingTime="{row}">
         <span>{{ parseTime(row.lastLoadingTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
@@ -416,8 +420,8 @@ export default {
       },
       // 纸质回单字典
       isReturnOptions: [
-        { 'dictLabel': '未标记回单', 'dictValue': '0' },
-        { 'dictLabel': '已标记回单', 'dictValue': '1' }
+        { 'dictLabel': '未回单', 'dictValue': '0' },
+        { 'dictLabel': '已回单', 'dictValue': '1' }
       ],
       // 是否子单字典
       isChildOptions: [
@@ -448,8 +452,13 @@ export default {
   },
   'methods': {
     datechoose(date) {
-      this.queryParams.orderStartTime = this.parseTime(date[0], '{y}-{m}-{d}');
-      this.queryParams.orderEndTime = this.parseTime(date[1], '{y}-{m}-{d}');
+      if (date) {
+        this.queryParams.orderStartTime = this.parseTime(date[0], '{y}-{m}-{d}');
+        this.queryParams.orderEndTime = this.parseTime(date[1], '{y}-{m}-{d}');
+      } else {
+        this.queryParams.orderStartTime = null;
+        this.queryParams.orderEndTime = null;
+      }
     },
     /** handleClick */
     handleClick(tab) {

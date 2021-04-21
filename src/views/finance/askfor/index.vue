@@ -43,7 +43,7 @@
         :rules="rules"
         label-width="90px"
       >
-        <el-form-item v-show="isAdmin" label="货主" prop="shipmentCode">
+        <el-form-item v-show="isAdmin" label="货主信息" prop="shipmentCode">
           <!-- filterable开启可搜索 remote远程搜索 reserve-keyword 保存搜索关键词 -->
           <el-select
             v-model="queryParams.shipmentCode"
@@ -250,20 +250,23 @@
       :gutter="10"
       class="feeinfo"
     >
-      <el-col :span="3">
-        <span>运单数量：{{ feeinfo.waybillNum }}</span>
+      <el-col :span="1">
+        <img src="../../../../src/assets/images/icon/total.png" alt="">
       </el-col>
       <el-col :span="3">
-        <span>运费金额：{{ feeinfo.deliveryFee }}</span>
+        <span style="line-height: 31px">运单数量：{{ feeinfo.waybillNum }}</span>
       </el-col>
       <el-col :span="3">
-        <span>运费税额：{{ feeinfo.taxPayment }}</span>
+        <span style="line-height: 31px">运费金额：{{ feeinfo.deliveryFee }}</span>
       </el-col>
       <el-col :span="3">
-        <span>服务费金额：{{ feeinfo.serviceFee }}</span>
+        <span style="line-height: 31px">运费税额：{{ feeinfo.taxPayment }}</span>
       </el-col>
       <el-col :span="3">
-        <span>服务费税额：{{ feeinfo.serviceTaxFee }}</span>
+        <span style="line-height: 31px">服务费金额：{{ feeinfo.serviceFee }}</span>
+      </el-col>
+      <el-col :span="3">
+        <span style="line-height: 31px">服务费税额：{{ feeinfo.serviceTaxFee }}</span>
       </el-col>
     </el-row>
   </div>
@@ -443,12 +446,22 @@ export default {
     },
     // 搜索时间选择
     datechoose1(date) {
-      this.queryParams.loadTimeBegin = this.parseTime(date[0], '{y}-{m}-{d}');
-      this.queryParams.loadTimeEnd = this.parseTime(date[1], '{y}-{m}-{d}');
+      if (date) {
+        this.queryParams.loadTimeBegin = this.parseTime(date[0], '{y}-{m}-{d}');
+        this.queryParams.loadTimeEnd = this.parseTime(date[1], '{y}-{m}-{d}');
+      } else {
+        this.queryParams.loadTimeBegin = null;
+        this.queryParams.loadTimeEnd = null;
+      }
     },
     datechoose2(date) {
-      this.queryParams.receiveDateBegin = this.parseTime(date[0], '{y}-{m}-{d}');
-      this.queryParams.receiveDateEnd = this.parseTime(date[1], '{y}-{m}-{d}');
+      if (date) {
+        this.queryParams.receiveDateBegin = this.parseTime(date[0], '{y}-{m}-{d}');
+        this.queryParams.receiveDateEnd = this.parseTime(date[1], '{y}-{m}-{d}');
+      } else {
+        this.queryParams.receiveDateBegin = null;
+        this.queryParams.receiveDateEnd = null;
+      }
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
@@ -470,12 +483,16 @@ export default {
     },
     /** 查询【请填写功能名称】列表 */
     getList() {
-      this.loading = true;
-      askforList(this.queryParams).then(response => {
-        this.askforlist = response.data.rows;
-        this.total = response.data.total;
-        this.loading = false;
-      });
+      if (this.queryParams.shipmentCode) {
+        this.loading = true;
+        askforList(this.queryParams).then(response => {
+          this.askforlist = response.data.rows;
+          this.total = response.data.total;
+          this.loading = false;
+        });
+      } else {
+        this.$message({ type: 'warning', message: '请选择货主查询列表！' });
+      }
     },
     chooseShipment() {
       this.handleQuery();

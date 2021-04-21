@@ -1,6 +1,6 @@
 <template>
   <el-table :ref="refName" v-loading="loading" border stripe :data="data" v-bind="$attrs" @selection-change="handleSelectionChange">
-    <el-table-column v-if="!!_events['selection-change']" type="selection" width="55" align="center" />
+    <el-table-column v-if="!!_events['selection-change']" type="selection" width="55" align="center" fixed :reserve-selection="reserveSelection" />
     <el-table-column v-if="!isShowIndex" label="序号" align="center" type="index" min-width="5%" />
     <template v-for="(th, key) in tableColumnsConfig">
       <el-table-column
@@ -35,6 +35,9 @@
           <span>{{ parseTime(row.accessTime) }}</span>
       </template>
     </refactor-table>
+
+    // element-ui中的table可分页多选功能-记住上一页勾选数据
+    <refactor-table :loading='loading' :data='list' :tableColumnsConfig='tableColumnsConfig' :row-key="(row)=> row.id" reserve-selection @selection-change="handleSelectionChange">
 */
 export default {
   name: 'RefactorTable',
@@ -82,6 +85,10 @@ export default {
     cbData: {
       type: Array,
       default: null
+    },
+    reserveSelection: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -123,3 +130,16 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+	.el-table__empty-block{
+	  text-align: left !important;
+    margin-left: 50% !important;
+    justify-content: left !important;
+	}
+  .el-table__empty-text{
+    width: auto;
+  }
+</style>
+
+

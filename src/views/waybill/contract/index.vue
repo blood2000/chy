@@ -5,7 +5,7 @@
       ref="queryForm"
       :model="queryParams"
       :inline="true"
-      label-width="130px"
+      label-width="90px"
     >
       <el-form-item
         label="合同编号"
@@ -16,7 +16,7 @@
           placeholder="请输入合同编号"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 260px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -29,7 +29,7 @@
           placeholder="请输入司机信息"
           clearable
           size="small"
-          style="width: 240px"
+          style="width: 260px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -43,7 +43,7 @@
           clearable
           filterable
           size="small"
-          style="width: 240px"
+          style="width: 260px"
         >
           <el-option
             v-for="dict in driverOrShipmentOptions"

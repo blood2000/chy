@@ -26,28 +26,11 @@ export function getWaybill(code) {
   });
 }
 
-// 新增运输异常
-export function addAbnormal(data) {
+// 处理运输异常
+export function handleAbnormal(data) {
   return request({
-    url: '/waybill/abnormal',
+    url: '/transportation/waybillAbnormal/handle',
     method: 'post',
     data: data
-  });
-}
-
-// 修改运输异常
-export function updateAbnormal(data) {
-  return request({
-    url: '/waybill/abnormal',
-    method: 'put',
-    data: data
-  });
-}
-
-// 删除运输异常
-export function delAbnormal(waybillCode) {
-  return request({
-    url: '/waybill/abnormal/' + waybillCode,
-    method: 'delete'
   });
 }

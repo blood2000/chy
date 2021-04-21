@@ -1,26 +1,45 @@
 <template>
-  <el-dialog title="账户提现" :visible="visible" width="800px" append-to-body @close="cancel">
-    <div class="account-content">
-      <p class="mb20">提现到:</p>
-      <p class="mb20">
-        <label>结算账户名:</label>
-        福建省XXXXXX有限公司
-      </p>
-      <p class="mb20">
-        <label>结算账户开户行:</label>
-        农业银行
-      </p>
-      <p>
-        <label>结算账户账号:</label>
-        13154165789165
-      </p>
-    </div>
+  <el-dialog title="账户提现" class="i-money" :visible="visible" width="800px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="140px">
-      <el-form-item label="可用余额">
-        4916.88 元
+      <el-form-item label="选择银行卡" prop="bankNumber">
+        <el-select
+          v-model="form.bankNumber"
+          clearable
+          filterable
+          placeholder="请选择银行卡"
+          :class="addBankFlag ? 'width70 mr2' : 'width90'"
+          @change="changeBank"
+        >
+          <el-option
+            v-for="dict in bankOptions"
+            :key="dict.account"
+            :label="`${dict.bankName}（${dict.account}）`"
+            :value="dict.account"
+          />
+        </el-select>
+        <el-button v-if="addBankFlag" type="primary" @click="addBank">添加银行卡</el-button>
       </el-form-item>
-      <el-form-item label="提现金额" prop="name">
-        <el-input v-model="form.name" placeholder="请输入提现金额" class="width90" clearable />
+      <el-form-item v-show="form.bankNumber" label="提现到">
+        <div class="account-content">
+          <p class="mb5">
+            <label>结算账户名: </label>
+            {{ form.bankAcountName ? form.bankAcountName : '-' }}
+          </p>
+          <p class="mb5">
+            <label>结算账户开户行: </label>
+            {{ form.bankName ? form.bankName : '-' }}
+          </p>
+          <p class="mb5">
+            <label>结算账户账号: </label>
+            {{ form.bankNumber ? form.bankNumber : '-' }}
+          </p>
+        </div>
+      </el-form-item>
+      <el-form-item label="可用余额">
+        {{ crediAmount ? crediAmount : 0 }} 元
+      </el-form-item>
+      <el-form-item label="提现金额" prop="money">
+        <el-input-number v-model="form.money" :min="0" :max="crediAmount?crediAmount:0" :precision="2" :controls="false" placeholder="请输入提现金额" class="width90" clearable />
       </el-form-item>
     </el-form>
 
@@ -28,25 +47,62 @@
       <el-button type="primary" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
     </div>
+
+    <!-- 确认密码 -->
+    <confirm-password-dialog :open.sync="confirmPasswordOpen" :info="form" @refresh="refresh" />
+    <!-- 新增银行卡 -->
+    <bank-dialog ref="bankDialogRef" :open.sync="addBankOpen" :title="'新增银行卡'" :disable="false" :user-code="userCode" @refresh="getBankList" />
   </el-dialog>
 </template>
 
 <script>
+import { banklist } from '@/api/capital/bankcard';
+import ConfirmPasswordDialog from './confirmPasswordDialog';
+import BankDialog from '../../capital/bankcard/bankDialog';
 
 export default {
+  components: {
+    ConfirmPasswordDialog,
+    BankDialog
+  },
   props: {
-    open: Boolean
+    open: Boolean,
+    userCode: {
+      type: String,
+      default: null
+    },
+    crediAmount: {
+      type: Number,
+      default: null
+    }
   },
   data() {
     return {
       // 表单参数
-      form: {},
+      form: {
+        applyerCode: null,
+        bankAcountName: null,
+        bankMobile: null,
+        bankName: null,
+        bankNumber: null,
+        money: null
+      },
       // 表单校验
       rules: {
-        name: [
+        bankNumber: [
+          { required: true, trigger: ['blur', 'change'], message: '银行卡不能为空' }
+        ],
+        money: [
           { required: true, trigger: 'blur', message: '提现金额不能为空' }
         ]
-      }
+      },
+      // 银行卡列表
+      bankOptions: [],
+      // 输入支付密码弹窗
+      confirmPasswordOpen: false,
+      // 新增银行卡
+      addBankFlag: false,
+      addBankOpen: false
     };
   },
   computed: {
@@ -59,14 +115,50 @@ export default {
       }
     }
   },
+  watch: {
+    open(val) {
+      if (val) {
+        this.getBankList();
+      }
+    }
+  },
   methods: {
+    // 查询用户银行卡
+    getBankList() {
+      this.loading = true;
+      banklist({
+        userCode: this.userCode
+      }).then(response => {
+        this.bankOptions = response.data.rows || [];
+        if (this.bankOptions.length > 0) {
+          this.addBankFlag = false;
+        } else {
+          this.addBankFlag = true;
+          this.msgWarning('请先添加银行卡');
+        }
+      });
+    },
+    // 选择银行
+    changeBank(data) {
+      const bank = this.bankOptions.filter(el => {
+        return el.account === data;
+      })[0];
+      this.form.bankAcountName = bank.name;
+      this.form.bankMobile = bank.mobile;
+      this.form.bankName = bank.bankName;
+    },
+    // 添加银行卡
+    addBank() {
+      this.$refs.bankDialogRef.reset();
+      this.$refs.bankDialogRef.getUserByCode();
+      this.addBankOpen = true;
+    },
     // 提交按钮
     submitForm: function() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          this.msgSuccess('操作成功');
-          this.close();
-          this.$emit('refresh');
+          this.form.applyerCode = this.userCode;
+          this.confirmPasswordOpen = true;
         }
       });
     },
@@ -83,6 +175,11 @@ export default {
     reset() {
       this.form = {};
       this.resetForm('form');
+    },
+    // 提现成功后更新
+    refresh() {
+      this.cancel();
+      this.$emit('refresh');
     }
   }
 };
@@ -90,12 +187,22 @@ export default {
 
 <style lang="scss" scoped>
 .account-content{
-  width: 80%;
-  margin: 0 auto 20px;
-  border: 1px solid gray;
-  padding: 20px;
+  width: 90%;
+  border: 1px solid rgba(220, 223, 230, 1);
+  padding: 10px 15px 0;
+  border-radius: 4px;
 }
 .width90{
   width: 90%;
+}
+.width70{
+  width: 70%;
+}
+.mr2{
+  margin-right: 2%;
+}
+/* 计数器样式 */
+.el-input-number ::v-deep.el-input__inner{
+  text-align: left;
 }
 </style>

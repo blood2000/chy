@@ -27,6 +27,7 @@ import Pagination from '@/components/Pagination';
 // 表头配置组件
 import TablecCascader from '@/components/Ddc/Tin/TablecCascader.vue';
 import RefactorTable from '@/components/Ddc/Tin/RefactorTable.vue';
+import TableDropdown from '@/components/Dropdown';
 // 自定义表格工具扩展
 import RightToolbar from '@/components/RightToolbar';
 // 代码高亮插件
@@ -48,8 +49,8 @@ Viewer.setDefaults({
 import VueAMap from 'vue-amap';
 Vue.use(VueAMap);
 VueAMap.initAMapApiLoader({
-  key: '8176702ab4a0886a159684727fd7fb12', // TODO要换成公司的
-  plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.TruckDriving', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PolyEditor', 'AMap.CircleEditor', 'AMap.Geocoder'],
+  key: '2066cb0dafaa492aee47fa1090227a38', // 高德企业key
+  plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.Driving', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PolyEditor', 'AMap.CircleEditor', 'AMap.Geocoder', 'AMap.Marker'],
   v: '1.4.4'
 });
 
@@ -89,6 +90,7 @@ Vue.component('Pagination', Pagination);
 Vue.component('RightToolbar', RightToolbar);
 Vue.component('RefactorTable', RefactorTable);
 Vue.component('TablecCascader', TablecCascader);
+Vue.component('TableDropdown', TableDropdown);
 Vue.use(permission);
 Vue.use(elementDirective);
 Vue.use(hljs.vuePlugin);

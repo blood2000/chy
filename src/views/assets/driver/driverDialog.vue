@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
+  <el-dialog :class="[{'i-add':title==='新增'},{'i-check':title==='审核'}]" :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
       <el-form-item label="司机类别" prop="driverType">
         <el-select v-model="form.driverType" class="width90">
@@ -63,7 +63,7 @@
           class="width28"
           type="date"
           value-format="yyyy-MM-dd"
-          placeholder="请选择"
+          placeholder="支持自动识别"
         />
         至
         <el-date-picker
@@ -72,7 +72,7 @@
           class="width28 mr3"
           type="date"
           value-format="yyyy-MM-dd"
-          placeholder="请选择"
+          placeholder="支持自动识别"
           :disabled="!!form.identificationEffective"
         />
         <el-checkbox v-model="form.identificationEffective">长期有效</el-checkbox>
@@ -366,10 +366,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label="车辆总重量" prop="vehicleTotalWeight" :rules="[{ required: true, message: '车辆总重量不能为空', trigger: 'blur' }]">
-          <el-input v-model="vehicleForm.vehicleTotalWeight" placeholder="请输入车辆总重量" class="width90" clearable />
+          <el-input-number v-model="vehicleForm.vehicleTotalWeight" :controls="false" :min="0" placeholder="请输入车辆总重量（吨）" class="width90" clearable />
         </el-form-item>
         <el-form-item label="车辆可载重量" prop="vehicleLoadWeight" :rules="[{ required: true, message: '车辆可载重量不能为空', trigger: 'blur' }]">
-          <el-input v-model="vehicleForm.vehicleLoadWeight" placeholder="请输入车辆可载重量" class="width90" clearable />
+          <el-input-number v-model="vehicleForm.vehicleLoadWeight" :controls="false" :min="0" placeholder="请输入车辆可载重量（吨）" class="width90" clearable />
         </el-form-item>
         <el-form-item label="车辆可载平方" prop="vehicleLoadVolume">
           <el-input v-model="vehicleForm.vehicleLoadVolume" placeholder="请输入车辆可载平方" class="width90" clearable />
@@ -419,7 +419,7 @@
     </el-form>
 
     <div v-if="title === '新增' || title === '编辑'" slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="submitForm">确 定</el-button>
+      <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
     </div>
     <div v-if="title === '审核'" slot="footer" class="dialog-footer">
@@ -452,6 +452,7 @@ export default {
   },
   data() {
     return {
+      buttonLoading: false,
       // 初始密码
       initialPassword: 'abcd1234@',
       // 司机类别字典
@@ -514,23 +515,23 @@ export default {
       // 表单校验
       rules: {
         name: [
-          { required: true, message: '姓名不能为空', trigger: 'blur' },
-          { validator: this.formValidate.name, trigger: 'blur' }
+          { required: true, message: '姓名不能为空', trigger: ['blur', 'change'] },
+          { validator: this.formValidate.name, trigger: ['blur', 'change'] }
         ],
         telphone: [
           { required: true, message: '手机号/账号不能为空', trigger: 'blur' },
           { validator: this.formValidate.telphone, trigger: 'blur' }
         ],
         identificationNumber: [
-          { required: true, message: '身份证号不能为空', trigger: 'blur' },
-          { validator: this.formValidate.idCard, trigger: 'blur' }
+          { required: true, message: '身份证号不能为空', trigger: ['blur', 'change'] },
+          { validator: this.formValidate.idCard, trigger: ['blur', 'change'] }
         ],
         identificationEndTime: [
           { validator: (rules, value, callback) => this.formValidate.idCardValidate(rules, value, callback, this.form.identificationBeginTime, this.form.identificationEffective), trigger: ['change', 'blur'] },
           { validator: (rules, value, callback) => this.formValidate.isExpired(rules, value, callback, this.form.identificationEffective), trigger: 'change' }
         ],
         issuingOrganizations: [
-          { required: true, message: '驾驶证发证机关不能为空', trigger: 'blur' }
+          { required: true, message: '驾驶证发证机关不能为空', trigger: ['blur', 'change'] }
         ],
         validPeriodTo: [
           { validator: (rules, value, callback) => this.formValidate.idCardValidate(rules, value, callback, this.form.validPeriodFrom, this.form.validPeriodAlways, '驾驶证'), trigger: ['change', 'blur'] },
@@ -543,7 +544,7 @@ export default {
           { required: true, message: '道路运输经营许可证号不能为空', trigger: 'blur' }
         ],
         licenseNumber: [
-          { validator: this.formValidate.plateNo, trigger: 'blur' }
+          { validator: this.formValidate.plateNo, trigger: ['blur', 'change'] }
         ],
         password: [
           { validator: this.formValidate.passWord, trigger: 'blur' }
@@ -626,39 +627,47 @@ export default {
         if (valid && flag) {
           this.$refs['vehicleForm'].validate(valid => {
             if (valid) {
-              const driver = this.form;
+              this.buttonLoading = true;
+              const driver = { ...this.form };
+              driver.vehicleInfo = { ...this.vehicleForm };
               driver.identificationEffective = praseBooleanToNum(driver.identificationEffective);
               driver.validPeriodAlways = praseBooleanToNum(driver.validPeriodAlways);
               // 类型为独立司机的时候，才有填车辆
-              if (driver.driverType === 1) {
-                driver.vehicleInfo = this.vehicleForm;
-              }
+              // if (driver.driverType === 1) {
+              //   driver.vehicleInfo = this.vehicleForm;
+              // }
               // 类型为聘用司机的时候，相关字段不能传
-              if (driver.driverType === 2) {
-                driver.driverOtherLicenseImage = null;
-                driver.driverOtherLicenseBackImage = null;
-                driver.transportPermitImage = null;
-                driver.licenseNumber = null;
-              }
+              // if (driver.driverType === 2) {
+              //   driver.driverOtherLicenseImage = null;
+              //   driver.driverOtherLicenseBackImage = null;
+              //   driver.transportPermitImage = null;
+              //   driver.licenseNumber = null;
+              // }
               if (driver.id) {
                 updateDriver(driver).then(response => {
+                  this.buttonLoading = false;
                   this.msgSuccess('修改成功');
                   this.close();
                   this.$emit('refresh');
+                }).catch(() => {
+                  this.buttonLoading = false;
                 });
               } else {
                 addDriver(driver).then(response => {
+                  this.buttonLoading = false;
                   this.msgSuccess('新增成功');
                   this.close();
                   this.$emit('refresh');
+                }).catch(() => {
+                  this.buttonLoading = false;
                 });
               }
             } else {
-              this.msgWarning('必填项不能为空');
+              this.msgWarning('填写的信息不完整或有误，请核对后重新提交');
             }
           });
         } else {
-          this.msgWarning('必填项不能为空');
+          this.msgWarning('填写的信息不完整或有误，请核对后重新提交');
         }
       });
     },
@@ -692,6 +701,7 @@ export default {
     },
     // 表单重置
     reset() {
+      this.buttonLoading = false;
       this.form = {
         id: null,
         code: null,

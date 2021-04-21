@@ -274,8 +274,13 @@ export default {
   },
   'methods': {
     datechoose(date) {
-      this.queryParams.invoiceApplyTimeBegin = this.parseTime(date[0], '{y}-{m}-{d}');
-      this.queryParams.invoiceApplyTimeEnd = this.parseTime(date[1], '{y}-{m}-{d}');
+      if (date) {
+        this.queryParams.invoiceApplyTimeBegin = this.parseTime(date[0], '{y}-{m}-{d}');
+        this.queryParams.invoiceApplyTimeEnd = this.parseTime(date[1], '{y}-{m}-{d}');
+      } else {
+        this.queryParams.invoiceApplyTimeBegin = null;
+        this.queryParams.invoiceApplyTimeEnd = null;
+      }
     },
     /** handleClick */
     handleClick(tab) {
@@ -317,7 +322,7 @@ export default {
       this.formDisable = true;
       this.$refs.VerifyDialog.reset();
       this.verifydialog = true;
-      this.title = '批量审核';
+      this.title = '批量审批';
       this.$refs.VerifyDialog.setForm(this.ids);
       this.$refs.VerifyDialog.setNum(this.selectlenght);
     },
@@ -334,7 +339,7 @@ export default {
         case 1:
           this.$refs.VerifyDialog.reset();
           this.verifydialog = true;
-          this.title = '审核';
+          this.title = '审批';
           this.$refs.VerifyDialog.setForm(row.code);
           break;
         case 2:

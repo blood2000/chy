@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-      <el-form-item label="地址类型" prop="addressType">
+      <!-- <el-form-item label="地址类型" prop="addressType">
         <el-select v-model="queryParams.addressType" placeholder="请选择地址类型" clearable filterable size="small">
           <el-option
             v-for="dict in addressTypeOptions"
@@ -10,7 +10,7 @@
             :value="dict.dictValue"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择状态" clearable filterable size="small">
           <el-option
@@ -21,7 +21,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="地址名称" prop="addressName">
+      <el-form-item label="地址" prop="addressName">
         <el-input
           v-model="queryParams.addressName"
           placeholder="请输入地址名称"
@@ -39,28 +39,10 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="地址详情" prop="detail">
+      <!-- <el-form-item label="地址详情" prop="detail">
         <el-input
           v-model="queryParams.detail"
           placeholder="请输入地址详情"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <!-- <el-form-item label="联系人" prop="contact">
-        <el-input
-          v-model="queryParams.contact"
-          placeholder="请输入联系人"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="手机号码" prop="contactPhone">
-        <el-input
-          v-model="queryParams.contactPhone"
-          placeholder="请输入手机号码"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -166,19 +148,19 @@ export default {
         pageSize: 10,
         isAsc: 'asc',
         orderByColumn: 'id',
-        code: null,
-        shipmentCode: null,
-        addressType: null,
-        status: null,
-        createCode: null,
-        updateCode: null,
-        addressName: null,
-        addressAlias: null,
-        latitude: null,
-        longitude: null,
-        detail: null,
-        contact: null,
-        contactPhone: null
+        code: undefined,
+        shipmentCode: undefined,
+        addressType: undefined,
+        status: undefined,
+        createCode: undefined,
+        updateCode: undefined,
+        addressName: undefined,
+        addressAlias: undefined,
+        latitude: undefined,
+        longitude: undefined,
+        detail: undefined,
+        contact: undefined,
+        contactPhone: undefined
       },
 
       // 选中

@@ -1,7 +1,7 @@
 <template>
-  <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
+  <el-dialog :title="title" :class="[{'i-add':title==='新增银行卡'}]" :visible="visible" width="800px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
-      <el-form-item label="选择人员" prop="userCode">
+      <el-form-item v-show="!userCode" label="选择人员" prop="userCode">
         <el-select
           v-model="form.userCode"
           v-el-select-loadmore="loadmore"
@@ -130,7 +130,11 @@ export default {
       default: ''
     },
     open: Boolean,
-    disable: Boolean
+    disable: Boolean,
+    userCode: {
+      type: String,
+      default: null
+    }
   },
   data() {
     return {
@@ -149,7 +153,7 @@ export default {
           { required: true, message: '请选择人员', trigger: 'change' }
         ],
         name: [
-          { required: true, message: '开户姓名不能为空', trigger: 'blur' }
+          { required: true, message: '开户姓名不能为空', trigger: ['blur', 'change'] }
         ],
         account: [
           { required: true, message: '银行卡号不能为空', trigger: 'blur' }
@@ -158,8 +162,8 @@ export default {
           { required: true, message: '开户银行不能为空', trigger: ['blur', 'change'] }
         ],
         mobile: [
-          { required: true, message: '绑定手机号不能为空', trigger: 'blur' },
-          { validator: this.formValidate.telephone, trigger: 'blur' }
+          { required: true, message: '绑定手机号不能为空', trigger: ['blur', 'change'] },
+          { validator: this.formValidate.telphone, trigger: ['blur', 'change'] }
         ],
         bankType: [
           { required: true, message: '账户类型不能为空', trigger: 'change' }
@@ -289,7 +293,6 @@ export default {
     },
     // 获取选中的人员回填
     userChange(code) {
-      console.log(code);
       this.personOptions.forEach(el => {
         if (el.userCode === code) {
           this.form.name = el.nickName;
@@ -316,6 +319,19 @@ export default {
       this.bankOptions.forEach(el => {
         if (el.dictValue === code) {
           this.form.bankName = el.dictLabel;
+        }
+      });
+    },
+    // 通过userCode查询用户并回填
+    getUserByCode() {
+      this.form.userCode = this.userCode;
+      listUser({
+        userCode: this.userCode
+      }).then(response => {
+        if (response.rows && response.rows.length > 0) {
+          const { nickName, phonenumber } = response.rows[0];
+          this.form.name = nickName;
+          this.form.mobile = phonenumber;
         }
       });
     }

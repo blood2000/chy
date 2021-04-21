@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
+  <el-dialog :title="title" :class="[{'i-add':title==='添加'}]" :visible="visible" width="800px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="120px">
       <el-form-item label="货集码名称" prop="cargoCodeName">
         <el-input v-model="form.cargoCodeName" placeholder="请输入货集码名称" class="width50 mr3" clearable />

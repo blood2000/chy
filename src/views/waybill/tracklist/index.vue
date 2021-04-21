@@ -10,15 +10,15 @@
     >
       <el-form-item
         v-show="isAdmin"
-        label="下单客户"
+        label="下单企业"
         prop="orderClient"
       >
         <el-input
           v-model="queryParams.orderClient"
-          placeholder="请输入下单客户"
+          placeholder="请输入下单企业"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -32,7 +32,7 @@
           placeholder="请输入发货企业"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -45,7 +45,7 @@
           placeholder="请输入装货信息"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -58,7 +58,7 @@
           placeholder="请输入收货信息"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -71,12 +71,12 @@
           placeholder="请输入货源单号"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <el-form-item
-        label="创建日期"
+        label="创建时间"
         prop="receiveTime"
       >
         <el-date-picker
@@ -85,7 +85,7 @@
           range-separator="-"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
-          style="width: 230px"
+          style="width: 228px"
           @change="datechoose"
         />
       </el-form-item>
@@ -98,7 +98,7 @@
           placeholder="请输入车牌号"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -111,7 +111,7 @@
           placeholder="请输入司机姓名"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -124,7 +124,7 @@
           placeholder="请输入司机电话"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -137,7 +137,7 @@
           placeholder="请输入运输单号"
           clearable
           size="small"
-          style="width: 230px"
+          style="width: 228px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -184,8 +184,8 @@
     </el-row>
 
     <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="待运输" name="1" />
-      <el-tab-pane label="运输中" name="2" />
+      <el-tab-pane label="已接单" name="1" />
+      <el-tab-pane label="已装货" name="2" />
       <el-tab-pane label="已卸货" name="3" />
     </el-tabs>
 
@@ -203,7 +203,6 @@
           v-hasPermi="['transportation:waybillOper:accountBackRemark']"
           size="mini"
           type="text"
-          icon="el-icon-warning-outline"
           @click="handleTableBtn(row, 1)"
         >驳回提示</el-button>
         <el-button
@@ -211,7 +210,6 @@
           v-hasPermi="['transportation:waybillOper:load']"
           size="mini"
           type="text"
-          icon="el-icon-truck"
           @click="handleTableBtn(row, 2)"
         >车辆装货</el-button>
         <el-button
@@ -219,7 +217,6 @@
           v-hasPermi="['transportation:waybillOper:unload']"
           size="mini"
           type="text"
-          icon="el-icon-takeaway-box"
           @click="handleTableBtn(row, 3)"
         >车辆卸货</el-button>
         <el-button
@@ -227,7 +224,6 @@
           v-hasPermi="['transportation:waybillOper:cancel']"
           size="mini"
           type="text"
-          icon="el-icon-circle-close"
           @click="handleTableBtn(row, 4)"
         >作废运单</el-button>
         <el-button
@@ -235,7 +231,6 @@
           v-hasPermi="['transportation:waybillOper:loadCredentials']"
           size="mini"
           type="text"
-          icon="el-icon-notebook-1"
           @click="handleTableBtn(row, 5)"
         >补装货凭证</el-button>
         <el-button
@@ -243,7 +238,6 @@
           v-hasPermi="['transportation:waybillOper:unloadCredentials']"
           size="mini"
           type="text"
-          icon="el-icon-notebook-2"
           @click="handleTableBtn(row, 6)"
         >补卸货凭证</el-button>
         <el-button
@@ -251,21 +245,18 @@
           v-hasPermi="['iot:jimiDevice:getTrackList']"
           size="mini"
           type="text"
-          icon="el-icon-aim"
           @click="handleTableBtn(row, 7)"
         >车辆跟踪</el-button>
         <el-button
           v-hasPermi="['iot:jimiDevice:location']"
           size="mini"
           type="text"
-          icon="el-icon-location-outline"
           @click="handleTableBtn(row, 8)"
         >定位</el-button>
         <el-button
           v-hasPermi="['transportation:driverComplaint:add']"
           size="mini"
           type="text"
-          icon="el-icon-edit-outline"
           @click="handleTableBtn(row, 9)"
         >投诉</el-button>
         <el-button
@@ -273,7 +264,6 @@
           v-hasPermi="['transportation:waybillComment:add']"
           size="mini"
           type="text"
-          icon="el-icon-chat-dot-square"
           @click="handleTableBtn(row, 10)"
         >评价</el-button>
       </template>
@@ -419,7 +409,7 @@ export default {
       prop: 'edit',
       isShow: true,
       label: '操作',
-      width: 280,
+      width: 240,
       fixed: 'right'
     });
     this.getList();
@@ -429,8 +419,13 @@ export default {
   },
   'methods': {
     datechoose(date) {
-      this.queryParams.orderStartTime = this.parseTime(date[0], '{y}-{m}-{d}');
-      this.queryParams.orderEndTime = this.parseTime(date[1], '{y}-{m}-{d}');
+      if (date) {
+        this.queryParams.orderStartTime = this.parseTime(date[0], '{y}-{m}-{d}');
+        this.queryParams.orderEndTime = this.parseTime(date[1], '{y}-{m}-{d}');
+      } else {
+        this.queryParams.orderStartTime = null;
+        this.queryParams.orderEndTime = null;
+      }
     },
     /** handleClick */
     handleClick(tab) {

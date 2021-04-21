@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
+  <el-dialog :title="title" :class="[{'i-add':title==='添加'}]" :visible="visible" width="800px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="120px" label-position="left">
       <el-row>
         <el-col :span="12">
@@ -38,8 +38,8 @@
       </el-row>
       <!-- 计算路耗 -->
       <!-- 备注：开启路耗之后，路耗的所有项都必填 -->
-      <h5 class="g-title-small g-strong g-color-blue mt10">
-        | 关于计算路耗
+      <h5 class="g-card-title g-strong mt10">
+        关于计算路耗
         <el-switch v-model="form.isLoss" class="isLoss-switch" />
       </h5>
       <el-divider />
@@ -75,8 +75,8 @@
       </el-row>
       <!-- 减项 -->
       <!-- 备注：没有填值的减项不会被提交 -->
-      <h5 class="g-title-small g-strong g-color-blue mt10">
-        | 扣费项目
+      <h5 class="g-card-title g-strong mt10">
+        扣费项目
         <el-button class="fr" icon="el-icon-plus" type="primary" plain circle size="mini" @click="chooseItem('reduce')" />
       </h5>
       <el-divider />
@@ -109,8 +109,8 @@
       </el-row>
       <!-- 增项 -->
       <!-- 备注：没有填值的增项不会被提交 -->
-      <h5 class="g-title-small g-strong g-color-blue mt10">
-        | 补贴项目
+      <h5 class="g-card-title g-strong mt10">
+        补贴项目
         <el-button class="fr" icon="el-icon-plus" type="primary" plain circle size="mini" @click="chooseItem('add')" />
       </h5>
       <el-divider />

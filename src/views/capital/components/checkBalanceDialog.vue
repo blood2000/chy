@@ -1,6 +1,6 @@
 <template>
   <!-- 查询网商余额 -->
-  <el-dialog :title="title" :visible="visible" width="600px" append-to-body @close="cancel">
+  <el-dialog :title="title" class="i-amount" :visible="visible" width="600px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" label-width="100px">
       <el-form-item label="可用余额" prop="WSBK">
         <el-input v-model="form.WSBK" readonly class="width90" clearable />

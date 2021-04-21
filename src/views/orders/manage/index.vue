@@ -28,14 +28,14 @@
           <div>
             <div ref="queryFormBox">
 
-              <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="100px" class="clearfix" @submit.native.prevent>
+              <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="90px" class="clearfix" @submit.native.prevent>
                 <el-form-item v-show="!isShipment" label="下单客户" prop="tin1">
                   <el-input
                     v-model="queryParams.tin1"
                     placeholder="公司名称/客户姓名/手机号"
                     clearable
                     size="small"
-                    style="width: 200px"
+                    style="width: 228px"
                     @keyup.enter.native="handleQuery"
                   />
                 </el-form-item>
@@ -46,24 +46,24 @@
                     placeholder="装货地/装货电话/装货人"
                     clearable
                     size="small"
-                    style="width: 200px"
+                    style="width: 228px"
                     @keyup.enter.native="handleQuery"
                   />
                 </el-form-item>
 
-                <el-form-item label="收货信息" prop="tin3">
+                <el-form-item label="卸货信息" prop="tin3">
                   <el-input
                     v-model="queryParams.tin3"
                     placeholder="目的地/收货电话/收货人"
                     clearable
                     size="small"
-                    style="width: 200px"
+                    style="width: 228px"
                     @keyup.enter.native="handleQuery"
                   />
                 </el-form-item>
 
                 <el-form-item label="货物类型" prop="tin4">
-                  <el-select v-model="queryParams.tin4" placeholder="----请选择----" clearable filterable style="width: 200px">
+                  <el-select v-model="queryParams.tin4" placeholder="----请选择----" clearable filterable style="width: 228px">
                     <!-- goodsTypeOption -->
                     <el-option
                       v-for="(dict,index) in goodsTypeOption"
@@ -80,37 +80,12 @@
                     placeholder="请输入货物描述"
                     clearable
                     size="small"
-                    style="width: 200px"
+                    style="width: 228px"
                     @keyup.enter.native="handleQuery"
                   />
                 </el-form-item>
 
-                <!-- 做远程的 -->
-                <el-form-item v-show="!isShipment" label="货主" prop="tin6" size="small">
-                  <el-select
-                    v-model="queryParams.tin6"
-                    v-el-select-loadmore="loadmore"
-                    filterable
-                    clearable
-                    remote
-                    reserve-keyword
-                    placeholder="请输入关键词"
-                    :remote-method="remoteMethod"
-                    :loading="loading"
-                    style="width: 200px"
-                    @keyup.enter.native="handleQuery"
-                  >
-                    <el-option
-                      v-for="(item, index1) in shipmentList"
-                      :key="index1"
-                      :value="item.code"
-                      :label="item.adminName"
-                    >
-                      <!-- :label="item.adminName" -->
-                      <div class="ly-flex-pack-justify"><span>{{ item.adminName }}</span><span>{{ item.telphone }}</span></div>
-                    </el-option>
-                  </el-select>
-                </el-form-item>
+
 
                 <el-form-item label="货源单号" prop="tin7">
                   <el-input
@@ -118,7 +93,7 @@
                     placeholder="请输入货源单号"
                     clearable
                     size="small"
-                    style="width: 200px"
+                    style="width: 228px"
                     @keyup.enter.native="handleQuery"
                   />
                 </el-form-item>
@@ -134,7 +109,7 @@
               </el-form-item> -->
 
                 <el-form-item v-if="false" label="货源状态" prop="tin8">
-                  <el-select v-model="queryParams.tin8" placeholder="----请选择----" style="width: 200px" clearable filterable>
+                  <el-select v-model="queryParams.tin8" placeholder="----请选择----" style="width: 228px" clearable filterable>
                     <el-option
                       v-for="(dict,index) in statusOptions"
                       :key="index"
@@ -146,7 +121,7 @@
                 </el-form-item>
 
                 <el-form-item label="发布方式" prop="tin11">
-                  <el-select v-model="queryParams.tin11" placeholder="----请选择----" style="width: 200px" clearable filterable>
+                  <el-select v-model="queryParams.tin11" placeholder="----请选择----" style="width: 228px" clearable filterable>
                     <el-option
                       v-for="(dict,index) in isPublicTypeOptions"
                       :key="index"
@@ -158,7 +133,7 @@
                 </el-form-item>
 
                 <el-form-item v-show="(queryParams.tin8+'') ==='1'" label="下架状态" prop="isManual">
-                  <el-select v-model="queryParams.isManual" placeholder="----请选择----" clearable filterable style="width: 200px">
+                  <el-select v-model="queryParams.isManual" placeholder="----请选择----" clearable filterable style="width: 228px">
                     <el-option
                       v-for="(dict,index) in dicts['isManual_option']"
                       :key="index"
@@ -184,13 +159,39 @@
                   <el-date-picker
                     v-model="queryParams.tin10"
                     size="small"
-                    style="width: 200px"
+                    style="width: 228px"
                     value-format="yyyy-MM-dd"
                     type="daterange"
                     range-separator="-"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
                   />
+                </el-form-item>
+
+                <!-- 做远程的 -->
+                <el-form-item v-show="!isShipment" label="货主" prop="tin6" size="small">
+                  <el-select
+                    v-model="queryParams.tin6"
+                    v-el-select-loadmore="loadmore"
+                    filterable
+                    clearable
+                    remote
+                    reserve-keyword
+                    placeholder="请输入关键词"
+                    :remote-method="remoteMethod"
+                    :loading="loading"
+                    style="width: 228px"
+                    @keyup.enter.native="handleQuery"
+                  >
+                    <el-option
+                      v-for="(item, index1) in shipmentList"
+                      :key="index1"
+                      :value="item.code"
+                      :label="item.adminName"
+                    >
+                      <div class="ly-flex-pack-justify"><span>{{ item.adminName }}</span><span>{{ item.telphone }}</span></div>
+                    </el-option>
+                  </el-select>
                 </el-form-item>
 
 
@@ -234,7 +235,7 @@
                 <tablec-cascader v-model="tableColumnsConfig" :lcokey="listManagesApi" />
               </el-col>
               <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
-              <el-col v-show="showSearch" :span="1.5" class="fr">
+              <el-col v-show="showSearch" :span="1.5" class="fr mr20">
                 <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
                 <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
               </el-col>
@@ -247,7 +248,6 @@
               :height="theight"
               :loading="loading"
               :data="list"
-              highlight-current-row
               row-key="id"
               stripe
               :row-class-name="tableRowClassName"
@@ -355,71 +355,116 @@
               </template>
               <template #edit="{row}">
                 <template v-if="row.isShowEdit">
+
+
+                  <!-- <div v-if="false">
+                    <template
+                      v-for="(item,index) in [
+                        {
+                          label:'详情',
+                          isShow: ()=> true,
+                          tag: 'xiangqing',
+                          fn: (row)=>handleInfo(row)
+                        },
+                        {
+                          label:'编辑',
+                          isShow: (row)=>row.status==='0',
+                          tag: 'bianji',
+                          fn: (row)=>handleUpdate(row),
+                          hasPermi:['consigner-order-edit'],
+                        },
+                        {
+                          label:'删除',
+                          isShow: (row)=>!row.haveWaybill,
+                          tag: 'shanchu',
+                        },
+                        {
+                          label:(row)=> row.status==='0'?'禁用':'启用' ,
+                          isShow: ()=> true,
+                          tag: 'tiaojia',
+                          className: (row)=> row.status==='0' ? 'g-color-error' : undefined
+                        }
+                      ]"
+                    >
+
+                      <el-button
+                        v-if="item.isShow(row)"
+                        :key="index"
+                        v-hasPermi="item.hasPermi || ['consigner-order-edit']"
+                        size="mini"
+                        type="text"
+                        :class="typeof item.className === 'function' ? item.className(row):item.className "
+                        @click="item['fn']? item['fn'](row) : handleInfo(row, item.tag)"
+                      >{{ typeof item.label === "function" ? item.label(row) : item.label }}</el-button>
+                    </template>
+                  </div> -->
+
+                  <!-- 方案1 -->
+
                   <el-button
-                    v-hasPermi="['system:menu:edit']"
                     size="mini"
                     type="text"
                     @click="handleInfo(row)"
                   >详情</el-button>
-                  <!-- icon="el-icon-document" -->
-
-                  <el-button
-                    v-if="false && row.status+''==='0'"
-                    v-hasPermi="['system:menu:remove']"
-                    size="mini"
-                    type="text"
-                    @click="handleDispatch(row)"
-                  >指派</el-button>
-                  <!-- icon="el-icon-s-promotion" -->
 
                   <el-button
                     v-if="row.status+''==='0'"
-                    v-hasPermi="['system:menu:edit']"
+                    v-hasPermi="['consigner-order-edit']"
                     size="mini"
                     type="text"
                     @click="handleUpdate(row)"
                   >编辑</el-button>
-                  <!-- icon="el-icon-edit" -->
+
                   <el-button
-                    v-if="!row.haveWaybill"
-                    v-hasPermi="['system:menu:remove']"
+                    v-hasPermi="['consigner-order-open', 'consigner-order-close']"
                     size="mini"
                     type="text"
-                    @click="handleDelete(row)"
-                  >删除</el-button>
-                  <!-- icon="el-icon-delete" -->
-                  <el-button
-                    v-hasPermi="['system:menu:remove']"
-                    size="mini"
-                    type="text"
-                    :style="{color: row.status+''==='0'?'red': ''}"
+                    :class="row.status+''==='0'?'g-color-error': null"
                     @click="handleClose(row)"
                   >{{ row.status+''==='0'?'禁用':'启用' }}</el-button>
-                  <!-- icon="el-icon-close" -->
-                  <el-button
-                    v-if="row.status+''==='0'"
-                    v-hasPermi="['system:menu:remove']"
-                    size="mini"
-                    type="text"
-                    @click="handleReadjustPrices(row)"
-                  >调价</el-button>
-                  <!-- icon="el-icon-bank-card" -->
-                  <el-button
-                    v-if="false"
-                    v-hasPermi="['system:menu:remove']"
-                    size="mini"
-                    type="text"
-                    @click="handleShenhe(row)"
-                  >审核</el-button>
-                  <!-- icon="el-icon-document" -->
-                  <el-button
-                    v-if="row.status+''==='0'"
-                    v-hasPermi="['system:menu:remove']"
-                    size="mini"
-                    type="text"
-                    @click="handleclone(row)"
-                  >复制</el-button>
-                  <!-- icon="el-icon-document" -->
+
+                  <TableDropdown>
+                    <el-dropdown-item>
+                      <el-button
+                        v-if="!row.haveWaybill"
+                        v-hasPermi="['consigner-order-delete']"
+                        size="mini"
+                        type="text"
+                        @click="handleDelete(row)"
+                      >删除</el-button>
+                    </el-dropdown-item>
+
+                    <el-dropdown-item>
+                      <el-button
+                        v-if="row.status+''==='0'"
+                        v-hasPermi="['consigner-order-adjust-price']"
+                        size="mini"
+                        type="text"
+                        @click="handleReadjustPrices(row)"
+                      >调价</el-button>
+                    </el-dropdown-item>
+
+                    <el-dropdown-item>
+                      <el-button
+                        v-if="false"
+                        size="mini"
+                        type="text"
+                        @click="handleShenhe(row)"
+                      >审核</el-button>
+                    </el-dropdown-item>
+
+                    <el-dropdown-item>
+                      <el-button
+                        v-if="row.status+''==='0'"
+                        size="mini"
+                        type="text"
+                        @click="handleclone(row)"
+                      >复制</el-button>
+                    </el-dropdown-item>
+                  </TableDropdown>
+
+
+
                 </template>
               </template>
             </RefactorTable>
@@ -445,7 +490,7 @@
     </el-dialog>
 
     <!-- 价格调整 -->
-    <el-dialog :title="'费用调价'" :visible.sync="openPriceAdjustment" width="900px" append-to-body>
+    <el-dialog :title="'费用调价'" class="i-price" :visible.sync="openPriceAdjustment" width="900px" append-to-body>
       <price-adjustment v-if="openPriceAdjustment" :mytabs="tabs" :order-code="orderCode" :pubilsh-code="pubilshCode" @submitRes="submitRes" />
     </el-dialog>
   </div>
@@ -462,11 +507,11 @@ import tableColumnsConfig from './data/config-index';
 import PriceAdjustment from './component/PriceAdjustment';
 
 export default {
-  name: 'Testlog',
+  name: 'Manage',
   components: { OpenDialog, PriceAdjustment },
   data() {
     return {
-      theight: 100, // 高度
+      theight: null, // 高度
 
       activeName: '0', // 做tab切换
       listManagesApi, // 表头存的key
@@ -684,16 +729,26 @@ export default {
 
   },
 
+  watch: {
+    '$route.query.p': {
+      handler(value, odvalue) {
+        if (!value) return;
+        this.queryParams.pageNum = 1;
+        this.getList();
+        this.$route.query.p = '';
+      },
+      immediate: true
+    }
+  },
+
 
   created() {
-    const { isAdmin = true, user = {}} = getUserInfo() || {};
-
-    // console.log(user.userCode);
+    const { isAdmin = true, shipment = {}} = getUserInfo() || {};
 
 
     // 判断当前是什么角色登入的 true 是运营
     this.isShipment = !isAdmin;
-    this.isShipment && (this.queryParams.tin6 = user.userCode);
+    this.isShipment && (this.queryParams.tin6 = shipment.info.code);
     // 要配置好才能用
     this.tableHeaderConfig(this.tableColumnsConfig, listManagesApi, null, tableColumnsConfig);
     this.getDict();
@@ -767,7 +822,7 @@ export default {
         this.total = response.data.total - 0;
         this.handlerList(response.data.list);
       }).catch(() => {
-        this.theight = 100;
+        this.theight = null;
         this.loading = false;
       });
     },
@@ -885,15 +940,19 @@ export default {
         };
       });
 
-      this.theight = 100;
+      this.theight = null;
 
-      this.list.length >= 10 && this.$nextTick(() => {
-        if (this.$el && this.$refs.queryFormBox) {
-          const box1 = this.$el.offsetHeight;
-          const box2 = this.$refs.queryFormBox.offsetHeight;
-          this.theight = box1 - box2 - 200;
-        }
-      });
+      // if (this.list.length === 10) {
+      //   this.$nextTick(() => {
+      //     if (this.$el && this.$refs.queryFormBox) {
+      //       const box1 = this.$el.offsetHeight;
+      //       const box2 = this.$refs.queryFormBox.offsetHeight;
+      //       this.theight = box1 - box2 - 200;
+      //     }
+      //   });
+      // }
+
+
       this.loading = false;
     },
 
@@ -943,13 +1002,13 @@ export default {
     handleDelete(row) {
       const testIds = row.code;
       // 操作删除按钮，判断货单是否产生运单。
-      const waybill = true;
+      const waybill = row.haveWaybill - 0 === 0;
 
       let msg = '';
       if (waybill) {
         msg = '该货源单下，暂无产生运单，确认是否删除';
       } else {
-        msg = `该货源单下，已产生??条运单，确认是否删除`;
+        msg = `该货源单下，已产生运单，确认是否删除`;
       }
 
       // 1、无，选择提示“该货源单下，暂无产生运单，确认是否删除”；
@@ -1125,4 +1184,6 @@ export default {
   .el-table .red-row,.el-table--striped .el-table__body tr.el-table__row--striped.red-row td {
     background: #e1f3d8;
   }
+
+
 </style>
