@@ -38,15 +38,18 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="接单日期" prop="startReceiveTime">
+      <el-form-item
+        label="接单日期"
+        prop="receiveTime"
+      >
         <el-date-picker
-          v-model="queryParams.startReceiveTime"
-          clearable
-          size="small"
+          v-model="receiveTime"
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
           style="width: 228px"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择接单日期"
+          @change="datechoose"
         />
       </el-form-item>
       <el-form-item label="车牌号" prop="licenseNumber">
@@ -277,6 +280,7 @@ export default {
         status: null,
         waybillNo: null
       },
+      receiveTime: [],
       // 表单参数
       form: {},
       // 表单校验
@@ -312,6 +316,15 @@ export default {
     });
   },
   methods: {
+    datechoose(date) {
+      if (date) {
+        this.queryParams.startReceiveTime = this.parseTime(date[0], '{y}-{m}-{d}');
+        this.queryParams.endReceiveTime = this.parseTime(date[1], '{y}-{m}-{d}');
+      } else {
+        this.queryParams.startReceiveTime = null;
+        this.queryParams.endReceiveTime = null;
+      }
+    },
     /** 查询纸质回单列表 */
     getList() {
       this.loading = true;
