@@ -2,12 +2,32 @@
   <!-- 添加或修改车辆对话框 -->
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
+      <!-- 调度者/司机选择车辆 -->
+      <el-form-item v-if="teamCode || driverCode" label="选择车辆" prop="licenseNumber">
+        <el-select
+          v-model="form.licenseNumber"
+          v-el-select-loadmore="loadmore"
+          filterable
+          remote
+          reserve-keyword
+          placeholder="通过车牌号码进行查询"
+          class="width90"
+          :remote-method="vehicleRemoteMethod"
+          :loading="vehicleLoading"
+          @change="vehicleChange"
+        >
+          <el-option
+            v-for="item in vehicleOptions"
+            :key="item.code"
+            :label="item.licenseNumber"
+            :value="item.code"
+          />
+        </el-select>
+      </el-form-item>
+      <!-- 车辆信息 -->
       <el-form-item label="车牌号" prop="licenseNumber">
         <el-input v-model="form.licenseNumber" placeholder="请输入车牌号" class="width90" clearable />
       </el-form-item>
-      <!-- <el-form-item label="车主编码" prop="vehicleOwnerCode">
-        <el-input v-model="form.vehicleOwnerCode" placeholder="请输入车主编码" class="width90" clearable />
-      </el-form-item> -->
       <el-form-item label="车辆归属类型" prop="vehicleAscriptionType">
         <el-select v-model="form.vehicleAscriptionType" placeholder="请选择车辆归属类型" class="width90" clearable filterable>
           <el-option
@@ -175,6 +195,7 @@
 </template>
 
 <script>
+import { listInfo } from '@/api/assets/vehicle';
 import { addInfo, updateInfo, authRead, examine } from '@/api/assets/vehicle';
 import UploadImage from '@/components/UploadImage/index';
 
@@ -188,7 +209,15 @@ export default {
       default: ''
     },
     open: Boolean,
-    disable: Boolean
+    disable: Boolean,
+    teamCode: {
+      type: String,
+      default: null
+    },
+    driverCode: {
+      type: String,
+      default: null
+    }
   },
   data() {
     return {
@@ -228,6 +257,14 @@ export default {
         licenseNumber: [
           { required: true, message: '车牌号不能为空', trigger: 'blur' }
         ]
+      },
+      // 选择车辆
+      vehicleLoading: false,
+      vehicleOptions: [],
+      queryParams: {
+        pageNum: 1,
+        pageSize: 10,
+        licenseNumber: null
       }
     };
   },
@@ -381,6 +418,38 @@ export default {
         this.msgSuccess('操作成功');
         this.close();
         this.$emit('refresh');
+      });
+    },
+    // 查询车辆列表
+    getVehicleList() {
+      listInfo(this.queryParams).then((response) => {
+        this.vehicleLoading = false;
+        this.vehicleOptions = [...this.vehicleOptions, ...response.rows];
+      });
+    },
+    // 车辆远程搜索
+    vehicleRemoteMethod(query) {
+      if (query !== '') {
+        this.vehicleLoading = true;
+        this.queryParams.licenseNumber = query;
+        this.queryParams.pageNum = 1;
+        this.vehicleOptions = [];
+        this.getVehicleList();
+      } else {
+        this.vehicleOptions = [];
+      }
+    },
+    // 选择车辆远程搜索列表触底事件
+    loadmore() {
+      this.queryParams.pageNum++;
+      this.getVehicleList();
+    },
+    // 获取选中的车辆回填
+    vehicleChange(code) {
+      this.vehicleOptions.forEach(el => {
+        if (el.code === code) {
+          this.form.licenseNumber = el.licenseNumber;
+        }
       });
     }
   }
