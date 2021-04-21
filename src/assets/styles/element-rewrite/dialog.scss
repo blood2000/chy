@@ -1,48 +1,58 @@
-.el-dialog{
-  max-height: 90vh;
-	overflow: hidden;
-  .el-dialog__header{
-    padding: 20px 20px 17px 64px;
-	  border-bottom: 1px solid #F3F3F3;
-    background: url('~@/assets/images/dialog/header_before_default.png') no-repeat 20px 15px;
-    .el-dialog__title{
-      color: #262626;
-      font-size: 16px;
-      font-weight: 700;
+.el-dialog__wrapper{
+  .el-dialog{
+    max-height: 90vh;
+    overflow: hidden;
+    .el-dialog__header{
+      padding: 20px 20px 17px 64px;
+      border-bottom: 1px solid #F3F3F3;
+      background: url('~@/assets/images/dialog/header_before_default.png') no-repeat 20px 15px;
+      .el-dialog__title{
+        color: #262626;
+        font-size: 16px;
+        font-weight: 700;
+      }
+      .el-dialog__headerbtn .el-dialog__close{
+        vertical-align: middle;
+        font-size: 20px;
+      }
     }
-    .el-dialog__headerbtn .el-dialog__close{
-      vertical-align: middle;
-      font-size: 20px;
+    .el-dialog__body{
+      max-height: calc(90vh - 62px - 66px); // head:62px  foot:66px
+      overflow: auto;
     }
-  }
-  .el-dialog__body{
-    max-height: calc(90vh - 62px - 66px); // head:62px  foot:66px
-    overflow: auto;
-  }
-  .el-dialog__footer{
-    padding: 15px 20px;
-    border-top: 1px solid #F3F3F3;
-    // text-align: center;
-    .el-button{
-      height: 32px;
-      padding: 7px 20px;
-      border-radius: 2px;
-      +.el-button{
-        // margin-left: 20px;
+    .el-dialog__footer{
+      padding: 15px 20px;
+      border-top: 1px solid #F3F3F3;
+      // text-align: center;
+      .el-button{
+        height: 32px;
+        padding: 7px 20px;
+        border-radius: 2px;
+        +.el-button{
+          // margin-left: 20px;
+        }
       }
     }
   }
   // header图标
-  &.i-add .el-dialog__header{
+  // 新增
+  &.i-add .el-dialog .el-dialog__header{
     background: url('~@/assets/images/dialog/before_add.png') no-repeat 20px 15px;
   }
-  &.i-detail .el-dialog__header{
+  // 编辑/详情
+  &.i-detail .el-dialog .el-dialog__header{
     background: url('~@/assets/images/dialog/before_detail.png') no-repeat 20px 15px;
   }
-  &.i-amount .el-dialog__header{
+  // 审核
+  &.i-check .el-dialog .el-dialog__header{
+    background: url('~@/assets/images/dialog/before_check.png') no-repeat 20px 15px;
+  }
+  // 余额
+  &.i-amount .el-dialog .el-dialog__header{
     background: url('~@/assets/images/dialog/before_amount.png') no-repeat 20px 15px;
   }
-  &.i-money .el-dialog__header{
+  // 资金
+  &.i-money .el-dialog .el-dialog__header{
     background: url('~@/assets/images/dialog/before_money.png') no-repeat 20px 15px;
   }
 }
