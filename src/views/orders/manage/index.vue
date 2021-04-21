@@ -490,7 +490,7 @@
     </el-dialog>
 
     <!-- 价格调整 -->
-    <el-dialog :title="'费用调价'" :visible.sync="openPriceAdjustment" width="900px" append-to-body>
+    <el-dialog :title="'费用调价'" class="i-price" :visible.sync="openPriceAdjustment" width="900px" append-to-body>
       <price-adjustment v-if="openPriceAdjustment" :mytabs="tabs" :order-code="orderCode" :pubilsh-code="pubilshCode" @submitRes="submitRes" />
     </el-dialog>
   </div>
