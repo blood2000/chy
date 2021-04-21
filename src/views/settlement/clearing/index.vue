@@ -167,21 +167,21 @@
     >
       <el-col :span="1.5">
         <el-button
-          type="info"
+          type="primary"
           icon="el-icon-upload2"
           size="mini"
           @click="handleExport"
         >导出</el-button>
         <el-button
           type="primary"
-          icon="el-icon-document-remove"
+          icon="el-icon-document"
           size="mini"
           :disabled="multiple"
           @click="handleClearing"
         >运单清分</el-button>
         <el-button
-          type="success"
-          icon="el-icon-refresh-right"
+          type="primary"
+          icon="el-icon-refresh"
           size="mini"
           :disabled="multiple"
           @click="handleUpdate"

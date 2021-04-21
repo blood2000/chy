@@ -90,7 +90,7 @@
       <el-col v-if="activeName == '1'" :span="1.5">
         <el-button
           v-hasPermi="['assets:vehicle:edit']"
-          type="success"
+          type="primary"
           icon="el-icon-document-checked"
           size="mini"
           :disabled="multiple"
@@ -100,7 +100,7 @@
       <el-col v-if="activeName == '3'" :span="1.5">
         <el-button
           v-hasPermi="['assets:vehicle:remove']"
-          type="info"
+          type="primary"
           icon="el-icon-upload2"
           size="mini"
           @click="handleExportFreight"
@@ -109,7 +109,7 @@
       <el-col v-if="activeName == '3'" :span="1.5">
         <el-button
           v-hasPermi="['assets:vehicle:export']"
-          type="info"
+          type="primary"
           icon="el-icon-upload2"
           size="mini"
           @click="handleExportService"

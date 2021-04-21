@@ -190,7 +190,7 @@
         <el-col :span="1.5">
           <el-button
             v-hasPermi="['assets:vehicle:edit']"
-            type="success"
+            type="primary"
             icon="el-icon-document-checked"
             size="mini"
             :disabled="multiple"
@@ -198,7 +198,7 @@
           >批量索票</el-button>
           <el-button
             v-hasPermi="['assets:vehicle:edit']"
-            type="info"
+            type="primary"
             icon="el-icon-upload2"
             size="mini"
             @click="handleExport"

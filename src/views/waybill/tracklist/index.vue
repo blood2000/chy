@@ -199,12 +199,12 @@
 
       <template #edit="{row}">
         <el-button
-          v-if="activeName == '3' && row.isAccountBack == '1'"
-          v-hasPermi="['transportation:waybillOper:accountBackRemark']"
+          v-if="activeName == '3'"
+          v-hasPermi="['transportation:waybillComment:add']"
           size="mini"
           type="text"
-          @click="handleTableBtn(row, 1)"
-        >驳回提示</el-button>
+          @click="handleTableBtn(row, 10)"
+        >评价</el-button>
         <el-button
           v-if="activeName == '1'"
           v-hasPermi="['transportation:waybillOper:load']"
@@ -228,20 +228,6 @@
         >作废运单</el-button>
         <el-button
           v-if="activeName != '1'"
-          v-hasPermi="['transportation:waybillOper:loadCredentials']"
-          size="mini"
-          type="text"
-          @click="handleTableBtn(row, 5)"
-        >补装货凭证</el-button>
-        <el-button
-          v-if="activeName == '3'"
-          v-hasPermi="['transportation:waybillOper:unloadCredentials']"
-          size="mini"
-          type="text"
-          @click="handleTableBtn(row, 6)"
-        >补卸货凭证</el-button>
-        <el-button
-          v-if="activeName != '1'"
           v-hasPermi="['iot:jimiDevice:getTrackList']"
           size="mini"
           type="text"
@@ -253,19 +239,45 @@
           type="text"
           @click="handleTableBtn(row, 8)"
         >定位</el-button>
-        <el-button
-          v-hasPermi="['transportation:driverComplaint:add']"
-          size="mini"
-          type="text"
-          @click="handleTableBtn(row, 9)"
-        >投诉</el-button>
-        <el-button
-          v-if="activeName == '3'"
-          v-hasPermi="['transportation:waybillComment:add']"
-          size="mini"
-          type="text"
-          @click="handleTableBtn(row, 10)"
-        >评价</el-button>
+        
+        
+        <TableDropdown>
+          <el-dropdown-item>
+            <el-button
+              v-if="activeName == '3' && row.isAccountBack == '1'"
+              v-hasPermi="['transportation:waybillOper:accountBackRemark']"
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 1)"
+            >驳回提示</el-button>
+          </el-dropdown-item>
+          <el-dropdown-item>
+            <el-button
+              v-if="activeName != '1'"
+              v-hasPermi="['transportation:waybillOper:loadCredentials']"
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 5)"
+            >补装货凭证</el-button>
+          </el-dropdown-item>
+          <el-dropdown-item>
+            <el-button
+              v-if="activeName == '3'"
+              v-hasPermi="['transportation:waybillOper:unloadCredentials']"
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 6)"
+            >补卸货凭证</el-button>
+          </el-dropdown-item>
+          <el-dropdown-item>
+            <el-button
+              v-hasPermi="['transportation:driverComplaint:add']"
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 9)"
+            >投诉</el-button>
+          </el-dropdown-item>
+        </TableDropdown>
       </template>
     </RefactorTable>
 

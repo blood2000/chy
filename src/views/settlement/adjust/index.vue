@@ -203,7 +203,7 @@
       <el-col v-if="activeName == '4'" :span="1.5">
         <el-button
           v-hasPermi="['transportation:waybillBalanceInfo:batchDetail']"
-          type="success"
+          type="primary"
           icon="el-icon-document-checked"
           size="mini"
           :disabled="multiple"
@@ -212,7 +212,7 @@
       </el-col>
       <el-col v-if="activeName == '5'" :span="1.5">
         <el-button
-          type="success"
+          type="primary"
           icon="el-icon-wallet"
           size="mini"
           :disabled="multiple"
@@ -221,7 +221,7 @@
       </el-col>
       <el-col v-if="activeName == '7'" :span="1.5">
         <el-button
-          type="success"
+          type="primary"
           icon="el-icon-chat-dot-square"
           size="mini"
           :disabled="multiple"

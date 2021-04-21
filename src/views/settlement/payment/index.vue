@@ -151,11 +151,35 @@
 
     <el-row
       :gutter="10"
+      class="total_bg"
+    >
+      <el-col :span="1">
+        <img src="../../../../src/assets/images/icon/total.png" alt="">
+      </el-col>
+      <el-col :span="3">
+        <span style="line-height: 31px">运单数量：{{ statistical.waybillCount }}</span>
+      </el-col>
+      <el-col :span="3">
+        <span style="line-height: 31px">运费金额：{{ statistical.waybillAmount }}</span>
+      </el-col>
+      <el-col :span="3">
+        <span style="line-height: 31px">运费税额：{{ statistical.taxPayment }}</span>
+      </el-col>
+      <el-col :span="3">
+        <span style="line-height: 31px">服务费金额：{{ statistical.serviceFee }}</span>
+      </el-col>
+      <el-col :span="3">
+        <span style="line-height: 31px">服务费税额：{{ statistical.serviceTaxFee }}</span>
+      </el-col>
+    </el-row>
+
+    <el-row
+      :gutter="10"
       class="mb8"
     >
       <el-col :span="1.5">
         <el-button
-          type="success"
+          type="primary"
           icon="el-icon-wallet"
           size="mini"
           :disabled="multiple"
@@ -169,27 +193,6 @@
         :show-search.sync="showSearch"
         @queryTable="getList"
       />
-    </el-row>
-
-    <el-row
-      :gutter="10"
-      class="mb8"
-    >
-      <el-col :span="3">
-        <span>运单数量：{{ statistical.waybillCount }}</span>
-      </el-col>
-      <el-col :span="3">
-        <span>运费金额：{{ statistical.waybillAmount }}</span>
-      </el-col>
-      <el-col :span="3">
-        <span>运费税额：{{ statistical.taxPayment }}</span>
-      </el-col>
-      <el-col :span="3">
-        <span>服务费金额：{{ statistical.serviceFee }}</span>
-      </el-col>
-      <el-col :span="3">
-        <span>服务费税额：{{ statistical.serviceTaxFee }}</span>
-      </el-col>
     </el-row>
 
     <RefactorTable :loading="loading" :data="paymentlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
@@ -469,3 +472,12 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+  .total_bg{
+    background: #F8F9FA;
+    border-radius: 4px;
+    padding: 16px 20px;
+    margin-bottom: 10px;
+  }
+</style>
