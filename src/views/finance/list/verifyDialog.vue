@@ -3,8 +3,8 @@
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
     <div slot="title" class="dialog-title">
       <el-row :gutter="10">
-        <el-col :span="0.5"><img style="margin-top: 4px" src="../../../../src/assets/images/icon/comment.png" alt=""></el-col>
-        <el-col :span="20"><div class="g-strong g-title-medium">{{ title }}</div></el-col>
+        <el-col :span="0.5"><img src="../../../../src/assets/images/icon/comment.png" alt=""></el-col>
+        <el-col :span="20"><div class="g-strong g-title-mini">{{ title }}</div></el-col>
       </el-row>
     </div>
     <el-form ref="form" :model="form" :rules="rules" label-width="130px">
