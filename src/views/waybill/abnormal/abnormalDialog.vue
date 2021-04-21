@@ -1,18 +1,18 @@
 <template>
   <!-- 添加或修改运输异常对话框 -->
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="80px">
+    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="130px">
       <!-- <el-form-item label="运单编号" prop="waybillCode">
           <el-input v-model="form.waybillCode" placeholder="请输入运单编号" />
         </el-form-item> -->
-      <!-- <el-form-item label="标记时间" prop="warningTime">
-          <el-date-picker clearable size="small" style="width: 200px"
+      <el-form-item label="标记时间" prop="warningTime">
+          <el-date-picker clearable size="small"
+            style="width: 90%"
             v-model="form.warningTime"
-            type="date"
-            value-format="yyyy-MM-dd"
+            type="datetime"
             placeholder="选择标记时间">
           </el-date-picker>
-        </el-form-item> -->
+        </el-form-item>
       <!-- <el-form-item label="创建人" prop="createCode">
           <el-input v-model="form.createCode" placeholder="请输入创建人" />
         </el-form-item>
@@ -20,7 +20,7 @@
           <el-input v-model="form.updateCode" placeholder="请输入修改人" />
         </el-form-item> -->
       <el-form-item label="异常说明" prop="description">
-        <el-input v-model="form.description" placeholder="请输入异常说明" />
+        <el-input v-model="form.description" style="width: 90%" autosize type="textarea" placeholder="请输入异常说明" />
       </el-form-item>
     </el-form>
     <div :class=" disable === true ?'display':''">
@@ -125,7 +125,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 	.mr3{
 	  margin-right: 3%;
 	}

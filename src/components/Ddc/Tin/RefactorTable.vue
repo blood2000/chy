@@ -130,3 +130,16 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+	.el-table__empty-block{
+	  text-align: left !important;
+    margin-left: 50% !important;
+    justify-content: left !important;
+	}
+  .el-table__empty-text{
+    width: auto;
+  }
+</style>
+
+
