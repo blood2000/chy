@@ -248,7 +248,11 @@
         <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
       </template>
       <template #isReturn="{row}">
-        <span>{{ selectDictLabel(isReturnOptions, row.isReturn) }}</span>
+        <span>
+          <i v-if="row.isReturn == 0" class="el-icon-error g-color-error"></i>
+          <i v-if="row.isReturn == 1" class="el-icon-success g-color-success"></i>
+          {{ selectDictLabel(isReturnOptions, row.isReturn) }}
+        </span>
       </template>
       <template #lastLoadingTime="{row}">
         <span>{{ parseTime(row.lastLoadingTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
@@ -416,8 +420,8 @@ export default {
       },
       // 纸质回单字典
       isReturnOptions: [
-        { 'dictLabel': '未标记回单', 'dictValue': '0' },
-        { 'dictLabel': '已标记回单', 'dictValue': '1' }
+        { 'dictLabel': '未回单', 'dictValue': '0' },
+        { 'dictLabel': '已回单', 'dictValue': '1' }
       ],
       // 是否子单字典
       isChildOptions: [

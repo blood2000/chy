@@ -322,7 +322,7 @@ export default {
       this.formDisable = true;
       this.$refs.VerifyDialog.reset();
       this.verifydialog = true;
-      this.title = '批量审核';
+      this.title = '批量审批';
       this.$refs.VerifyDialog.setForm(this.ids);
       this.$refs.VerifyDialog.setNum(this.selectlenght);
     },
@@ -339,7 +339,7 @@ export default {
         case 1:
           this.$refs.VerifyDialog.reset();
           this.verifydialog = true;
-          this.title = '审核';
+          this.title = '审批';
           this.$refs.VerifyDialog.setForm(row.code);
           break;
         case 2:

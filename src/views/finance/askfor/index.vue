@@ -250,20 +250,23 @@
       :gutter="10"
       class="feeinfo"
     >
-      <el-col :span="3">
-        <span>运单数量：{{ feeinfo.waybillNum }}</span>
+      <el-col :span="1">
+        <img src="../../../../src/assets/images/icon/total.png" alt="">
       </el-col>
       <el-col :span="3">
-        <span>运费金额：{{ feeinfo.deliveryFee }}</span>
+        <span style="line-height: 31px">运单数量：{{ feeinfo.waybillNum }}</span>
       </el-col>
       <el-col :span="3">
-        <span>运费税额：{{ feeinfo.taxPayment }}</span>
+        <span style="line-height: 31px">运费金额：{{ feeinfo.deliveryFee }}</span>
       </el-col>
       <el-col :span="3">
-        <span>服务费金额：{{ feeinfo.serviceFee }}</span>
+        <span style="line-height: 31px">运费税额：{{ feeinfo.taxPayment }}</span>
       </el-col>
       <el-col :span="3">
-        <span>服务费税额：{{ feeinfo.serviceTaxFee }}</span>
+        <span style="line-height: 31px">服务费金额：{{ feeinfo.serviceFee }}</span>
+      </el-col>
+      <el-col :span="3">
+        <span style="line-height: 31px">服务费税额：{{ feeinfo.serviceTaxFee }}</span>
       </el-col>
     </el-row>
   </div>

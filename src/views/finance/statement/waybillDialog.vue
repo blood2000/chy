@@ -1,6 +1,12 @@
 <template>
   <!-- 运单明细对话框 -->
   <el-dialog :title="title" :visible="visible" width="1200px" append-to-body @close="cancel">
+    <div slot="title" class="dialog-title">
+      <el-row :gutter="10">
+        <el-col :span="0.5"><img src="../../../../src/assets/images/icon/waybill.png" alt=""></el-col>
+        <el-col :span="20"><div class="g-strong g-title-mini">{{ title }}</div></el-col>
+      </el-row>
+    </div>
     <el-table v-loading="loading" :data="waybilllist" border stripe>
       <el-table-column type="index" label="序号" width="50" />
       <el-table-column width="170" label="运输单号" align="center" prop="waybillNo" />
