@@ -76,7 +76,7 @@
         />
       </el-form-item>
       <el-form-item
-        label="创建日期"
+        label="创建时间"
         prop="receiveTime"
       >
         <el-date-picker
@@ -203,7 +203,6 @@
           v-hasPermi="['transportation:waybillOper:accountBackRemark']"
           size="mini"
           type="text"
-          icon="el-icon-warning-outline"
           @click="handleTableBtn(row, 1)"
         >驳回提示</el-button>
         <el-button
@@ -211,7 +210,6 @@
           v-hasPermi="['transportation:waybillOper:load']"
           size="mini"
           type="text"
-          icon="el-icon-truck"
           @click="handleTableBtn(row, 2)"
         >车辆装货</el-button>
         <el-button
@@ -219,7 +217,6 @@
           v-hasPermi="['transportation:waybillOper:unload']"
           size="mini"
           type="text"
-          icon="el-icon-takeaway-box"
           @click="handleTableBtn(row, 3)"
         >车辆卸货</el-button>
         <el-button
@@ -227,7 +224,6 @@
           v-hasPermi="['transportation:waybillOper:cancel']"
           size="mini"
           type="text"
-          icon="el-icon-delete"
           @click="handleTableBtn(row, 4)"
         >作废运单</el-button>
         <el-button
@@ -235,7 +231,6 @@
           v-hasPermi="['transportation:waybillOper:loadCredentials']"
           size="mini"
           type="text"
-          icon="el-icon-notebook-1"
           @click="handleTableBtn(row, 5)"
         >补装货凭证</el-button>
         <el-button
@@ -243,7 +238,6 @@
           v-hasPermi="['transportation:waybillOper:unloadCredentials']"
           size="mini"
           type="text"
-          icon="el-icon-notebook-2"
           @click="handleTableBtn(row, 6)"
         >补卸货凭证</el-button>
         <el-button
@@ -251,21 +245,18 @@
           v-hasPermi="['iot:jimiDevice:getTrackList']"
           size="mini"
           type="text"
-          icon="el-icon-aim"
           @click="handleTableBtn(row, 7)"
         >车辆跟踪</el-button>
         <el-button
           v-hasPermi="['iot:jimiDevice:location']"
           size="mini"
           type="text"
-          icon="el-icon-location-outline"
           @click="handleTableBtn(row, 8)"
         >定位</el-button>
         <el-button
           v-hasPermi="['transportation:driverComplaint:add']"
           size="mini"
           type="text"
-          icon="el-icon-edit-outline"
           @click="handleTableBtn(row, 9)"
         >投诉</el-button>
         <el-button
@@ -273,7 +264,6 @@
           v-hasPermi="['transportation:waybillComment:add']"
           size="mini"
           type="text"
-          icon="el-icon-chat-dot-square"
           @click="handleTableBtn(row, 10)"
         >评价</el-button>
       </template>
@@ -419,7 +409,7 @@ export default {
       prop: 'edit',
       isShow: true,
       label: '操作',
-      width: 280,
+      width: 240,
       fixed: 'right'
     });
     this.getList();
