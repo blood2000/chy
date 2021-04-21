@@ -242,13 +242,11 @@
           v-hasPermi="['assets:vehicle:get']"
           size="mini"
           type="text"
-          icon="el-icon-setting"
           @click="handleManage(row)"
         >管理</el-button>
         <el-button
           size="mini"
           type="text"
-          icon="el-icon-document"
           @click="handleDetail(row, 'detail')"
         >详情</el-button>
         <template v-if="!teamCode && !driverCode">
@@ -256,23 +254,26 @@
             v-hasPermi="['assets:vehicle:edit']"
             size="mini"
             type="text"
-            icon="el-icon-edit"
             @click="handleDetail(row, 'edit')"
           >修改</el-button>
-          <el-button
-            v-show="row.authStatus === 0 || row.authStatus === 1"
-            size="mini"
-            type="text"
-            icon="el-icon-document-checked"
-            @click="handleDetail(row, 'review')"
-          >审核</el-button>
-          <el-button
-            v-hasPermi="['assets:vehicle:remove']"
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(row)"
-          >删除</el-button>
+          <TableDropdown>
+            <el-dropdown-item>
+              <el-button
+                v-show="row.authStatus === 0 || row.authStatus === 1"
+                size="mini"
+                type="text"
+                @click="handleDetail(row, 'review')"
+              >审核</el-button>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <el-button
+                v-hasPermi="['assets:vehicle:remove']"
+                size="mini"
+                type="text"
+                @click="handleDelete(row)"
+              >删除</el-button>
+            </el-dropdown-item>
+          </TableDropdown>
         </template>
       </template>
     </RefactorTable>
@@ -408,7 +409,7 @@ export default {
       prop: 'edit',
       isShow: true,
       label: '操作',
-      width: 280,
+      width: 180,
       fixed: 'right'
     });
     this.getDictsList();

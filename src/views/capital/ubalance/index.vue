@@ -85,13 +85,11 @@
         <el-button
           size="mini"
           type="text"
-          icon="el-icon-coin"
           @click="handleBalance(row)"
         >网商余额</el-button>
         <el-button
           size="mini"
           type="text"
-          icon="el-icon-document"
           @click="handleDetail(row)"
         >明细</el-button>
       </template>
@@ -166,7 +164,7 @@ export default {
       prop: 'edit',
       isShow: true,
       label: '操作',
-      width: 180,
+      width: 140,
       fixed: 'right'
     });
     this.getList();

@@ -1,6 +1,6 @@
 <template>
   <!-- 表格按钮超出显示...，hover后下拉展示 -->
-  <el-dropdown class="ml10" trigger="click" placement="bottom">
+  <el-dropdown class="ml10" trigger="hover" placement="bottom">
     <el-button type="text" class="dropdown-button">
       <span class="g-strong">···</span>
     </el-button>
