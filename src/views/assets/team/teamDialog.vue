@@ -1,6 +1,6 @@
 <template>
   <!-- 添加或修改调度者对话框 -->
-  <el-dialog :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
+  <el-dialog :class="[{'i-add':title==='新增'},{'i-check':title==='审核'}]" :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
       <el-form-item label="调度者名称" prop="name">
         <el-input v-model="form.name" placeholder="请输入调度者名称" class="width90" clearable />

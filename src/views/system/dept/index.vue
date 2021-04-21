@@ -215,7 +215,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-col :span="11">
+            <!-- <el-col :span="11">
               <el-form-item label="货源是否审核" prop="supplyIsAuth">
                 <el-select
                   v-model="form.supplyIsAuth"
@@ -231,7 +231,7 @@
                   />
                 </el-select>
               </el-form-item>
-            </el-col>
+            </el-col> -->
             <el-col :span="11">
               <el-form-item label="是否独立核算" prop="isAccount">
                 <el-select

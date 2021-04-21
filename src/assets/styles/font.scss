@@ -42,6 +42,40 @@
   line-height: 22px;
 }
 
+/* 默认标题样式 */
+.g-card-title {
+  font-size: 14px;
+  position: relative;
+  font-weight: 700;
+  color: #262626;
+  &::before {
+    content: "";
+    width: 2px;
+    height: 16px;
+    position: absolute;
+    left: -8px;
+    top: 50%;
+    margin-top: -8px;
+    background-color: #1990FF;
+    border-radius: 2px;
+  }
+}
+.g-card-header {
+  height: 44px;
+  line-height: 44px;
+  box-sizing: border-box;
+  position: relative;
+  &::after{
+    content: '';
+    height: 1px;
+    position: absolute;
+    left: -20px;
+    right: -20px;
+    bottom: 0;
+    background: #F3F3F3;
+  }
+}
+
 /* 文本样式 */
 .g-text-20{
   font-size: 20px;

@@ -1,6 +1,6 @@
 <template>
   <!-- 添加或修改车辆对话框 -->
-  <el-dialog :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
+  <el-dialog :class="[{'i-add':title==='新增'},{'i-check':title==='审核'}]" :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
       <!-- 调度者/司机选择车辆 -->
       <el-form-item v-if="teamCode || driverCode" label="选择车辆" prop="licenseNumber">

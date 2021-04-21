@@ -119,19 +119,16 @@
         <el-button
           size="mini"
           type="text"
-          icon="el-icon-document"
           @click="handleUpdate(row, 'detail')"
         >详情</el-button>
         <el-button
           size="mini"
           type="text"
-          icon="el-icon-edit"
           @click="handleUpdate(row, 'edit')"
         >修改</el-button>
         <el-button
           size="mini"
           type="text"
-          icon="el-icon-delete"
           @click="handleDelete(row)"
         >删除</el-button>
       </template>
@@ -204,7 +201,7 @@ export default {
       prop: 'edit',
       isShow: true,
       label: '操作',
-      width: 200,
+      width: 140,
       fixed: 'right'
     });
     this.getDictsOptions();

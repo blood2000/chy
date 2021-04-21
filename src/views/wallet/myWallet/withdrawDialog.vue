@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="账户提现" :visible="visible" width="800px" append-to-body @close="cancel">
+  <el-dialog title="账户提现" class="i-money" :visible="visible" width="800px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="140px">
       <el-form-item label="选择银行卡" prop="bankNumber">
         <el-select

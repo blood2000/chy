@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
+  <el-dialog :class="[{'i-add':title==='新增'},{'i-check':title==='审核'}]" :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
       <el-form-item label="发货人/发货企业" prop="shipperType">
         <el-select
@@ -215,7 +215,7 @@
             :value="dict.dictValue"
           />
         </el-select>
-      </el-form-item> -->
+      </el-form-item>
       <el-form-item label="货源是否审核" prop="supplyIsAuth">
         <el-select
           v-model="form.supplyIsAuth"
@@ -230,7 +230,7 @@
             :value="dict.dictValue"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="是否独立核算" prop="isAccount">
         <el-select
           v-model="form.isAccount"

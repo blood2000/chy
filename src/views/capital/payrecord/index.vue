@@ -260,13 +260,11 @@
         <el-button
           size="mini"
           type="text"
-          icon="el-icon-sell"
           @click="handleReport(row)"
         >上报流水</el-button>
         <el-button
           size="mini"
           type="text"
-          icon="el-icon-edit"
           @click="handleUpdate(row)"
         >修改批次号</el-button>
       </template>

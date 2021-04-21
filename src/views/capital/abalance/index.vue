@@ -7,7 +7,7 @@
       </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
-    <el-table v-loading="loading" :data="dataList">
+    <el-table v-loading="loading" stripe border :data="dataList">
       <el-table-column label="姓名" align="center" prop="" />
       <el-table-column label="网商汇款账号" align="center" prop="" />
       <el-table-column label="角色" align="center" prop="" />
@@ -16,44 +16,46 @@
       <el-table-column label="公户银行账户" align="center" prop="" />
       <el-table-column label="开户银行" align="center" prop="" />
       <el-table-column label="银行预留手机号" align="center" prop="" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="310" fixed="right">
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="240" fixed="right">
         <template slot-scope="scope">
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-document"
             @click="handleChangeDetail(scope.row)"
           >变动明细</el-button>
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-wallet"
             @click="handleRecharge(scope.row)"
           >划拨充值</el-button>
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-coin"
             @click="handleReflect(scope.row)"
           >平台提现</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-discount"
-            @click="handleMember(scope.row)"
-          >开通网商会员</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-bank-card"
-            @click="handleBindBank(scope.row)"
-          >绑定银行卡</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-money"
-            @click="handleBalance(scope.row)"
-          >查询网商余额</el-button>
+          <TableDropdown>
+            <el-dropdown-item>
+              <el-button
+                size="mini"
+                type="text"
+                @click="handleMember(scope.row)"
+              >开通网商会员</el-button>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <el-button
+                size="mini"
+                type="text"
+                @click="handleBindBank(scope.row)"
+              >绑定银行卡</el-button>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <el-button
+                size="mini"
+                type="text"
+                @click="handleBalance(scope.row)"
+              >查询网商余额</el-button>
+            </el-dropdown-item>
+          </TableDropdown>
         </template>
       </el-table-column>
     </el-table>

@@ -1,15 +1,6 @@
 <template>
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-      <!-- <el-form-item label="地址名称" prop="addressName">
-        <el-input
-          v-model="queryParams.addressName"
-          placeholder="请输入地址名称"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
       <el-form-item label="地址别名" prop="addressAlias">
         <el-input
           v-model="queryParams.addressAlias"
@@ -95,7 +86,7 @@
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table v-loading="loading" :data="addressList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="addressList" border stripe @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
       <el-table-column label="地址" align="center" prop="addressName">
         <template slot-scope="scope">
@@ -115,14 +106,12 @@
             v-hasPermi="['assets:shipment:address:edit']"
             size="mini"
             type="text"
-            icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
           >修改</el-button>
           <el-button
             v-hasPermi="['assets:shipment:address:remove']"
             size="mini"
             type="text"
-            icon="el-icon-delete"
             @click="handleDelete(scope.row)"
           >删除</el-button>
         </template>
