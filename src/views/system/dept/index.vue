@@ -193,7 +193,7 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col v-if="form.ticketType == '1' || form.ticketType == '3'" :span="11">
+            <el-col v-if="form.ticketType == '2'" :span="11">
               <el-form-item label="服务费税率(%)" prop="serviceRate" :rules="[{ required: true, message: '服务费税率不能为空', trigger: 'blur' }]">
                 <el-input-number v-model="form.serviceRate" controls-position="right" :precision="2" placeholder="请输入服务费税率" :step="1" :min="0" :max="100" class="width100" clearable />
               </el-form-item>
@@ -458,20 +458,22 @@ export default {
     changeTextPoint(value) {
       if (this.form.ticketType === '1') { // 一票制：调度费点数=原来的『税点(%) 』备注：运单结算使用的比例
         this.$set(this.form, 'dispatchPoints', value);
+        this.$set(this.form, 'serviceRate', '');// 服务费税率
       } else if (this.form.ticketType === '2') { // 二票制：服务费税率(%)、调度费点数=原来的『服务费比例』备注：运单结算使用的比例
         this.$set(this.form, 'dispatchPoints', value);
-        this.$set(this.form, 'serviceRate', '');// 服务费税率
       } else if (this.form.ticketType === '3') { // 非一票制：调度费点数=原来的『税点(%) 』备注：运单结算使用的比例是「合同税点/（1-合同税点）」
         this.$set(this.form, 'dispatchPoints', ((value / (100 - value)) * 100).toFixed(2));
+        this.$set(this.form, 'serviceRate', '');// 服务费税率
       }
     },
     changeTicketType(value) {
       if (value === '1') { // 一票制：调度费点数=原来的『税点(%) 』备注：运单结算使用的比例
         this.$set(this.form, 'dispatchPoints', this.form.texPoint);
+        this.$set(this.form, 'serviceRate', '');// 服务费税率
       } else if (value === '2') { // 二票制：服务费税率(%)、调度费点数=原来的『服务费比例』备注：运单结算使用的比例
         this.$set(this.form, 'dispatchPoints', this.form.texPoint);
-        this.$set(this.form, 'serviceRate', '');// 服务费税率
       } else if (value === '3') { // 非一票制：调度费点数=原来的『税点(%) 』备注：运单结算使用的比例是「合同税点/（1-合同税点）」
+        this.$set(this.form, 'serviceRate', '');// 服务费税率
         if (this.form.texPoint === '' || this.form.texPoint === undefined || this.form.texPoint === null) return;
         this.$set(this.form, 'dispatchPoints', ((this.form.texPoint / (100 - this.form.texPoint)) * 100).toFixed(2));
       }
