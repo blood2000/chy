@@ -635,7 +635,7 @@ export default {
 
     // 下一步 active =4
     nextFe(active) {
-      this.loading = true;
+      // this.loading = true;
       if (active === 4) {
         this.onSubmit('elForm');
 
@@ -647,7 +647,7 @@ export default {
       } else if (active === 3) {
         this.active = 3;
       }
-      this.loading = false;
+      // this.loading = false;
     },
 
     // 处理预估
@@ -685,10 +685,9 @@ export default {
         orderEstimateCostBoList,
         'userCode': this.formData.tin1
       };
-
       const res = await estimateCost(qData);
-
       this.$store.dispatch('orders/store_getEst', res.data);
+      this.active = 4;
     },
 
     // 发布按钮触发(1.发布接口2.成功1秒后跳转)
@@ -703,7 +702,7 @@ export default {
             var time1 = setTimeout(() => {
               clearTimeout(time1);
               time1 = null;
-              this.$router.push({ name: 'Manage' });
+              this.$router.push({ name: 'Manage', query: { t: Date.now() }});
             }, 1000);
           }).catch(() => {
             this.loading = false;
@@ -713,7 +712,7 @@ export default {
             this.msgSuccess('新增成功');
             this.loading = false;
             setTimeout(() => {
-              this.$router.push({ name: 'Manage' });
+              this.$router.push({ name: 'Manage', query: { t: Date.now() }});
             }, 1000);
           }).catch(() => {
             this.loading = false;
@@ -731,7 +730,6 @@ export default {
             this.onPubilsh();
           } else {
             this.handlerEstimateCost(this.lastData);
-            this.active = 4;
           }
         } else {
           return false;

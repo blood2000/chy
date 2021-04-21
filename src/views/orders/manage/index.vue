@@ -680,6 +680,21 @@ export default {
 
   },
 
+  watch: {
+    '$route.query.t': {
+      handler(value, odvalue) {
+        if (!value) return;
+
+        this.getList();
+        this.$route.query.t = '';
+        // this.$router.replace({
+        //   path: '/refresh'
+        // });
+      },
+      immediate: true
+    }
+  },
+
 
   created() {
     const { isAdmin = true, shipment = {}} = getUserInfo() || {};
