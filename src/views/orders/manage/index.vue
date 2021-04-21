@@ -822,15 +822,12 @@ export default {
   },
 
   watch: {
-    '$route.query.t': {
+    '$route.query.p': {
       handler(value, odvalue) {
         if (!value) return;
         this.queryParams.pageNum = 1;
         this.getList();
-        this.$route.query.t = '';
-        // this.$router.replace({
-        //   path: '/refresh'
-        // });
+        this.$route.query.p = '';
       },
       immediate: true
     }

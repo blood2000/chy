@@ -36,9 +36,10 @@
       </div>
 
       <!-- 正常 -->
-      <div v-show="orderInfo==='0'" v-loading="loading">
+      <div v-show="orderInfo==='0'">
         <el-form
           ref="elForm"
+          v-loading="loading"
           :model="formData"
           :rules="rules"
           size="medium"
@@ -391,7 +392,9 @@ export default {
       this.formData.tin9 = false;
     },
     '$route.query.t': {
+
       handler(value, odvalue) {
+        console.log(value);
         if ((odvalue === '0' || odvalue === '1' || odvalue === '3') && !value) {
           // 初次使用
           this.$router.replace({
@@ -702,7 +705,7 @@ export default {
               clearTimeout(time1);
               time1 = null;
               this.loading = false;
-              this.$router.push({ name: 'Manage', query: { t: Date.now() }});
+              this.$router.push({ name: 'Manage', query: { p: Date.now() }});
             }, 700);
           }).catch(() => {
             this.loading = false;
@@ -712,7 +715,7 @@ export default {
             this.msgSuccess('新增成功');
             setTimeout(() => {
               this.loading = false;
-              this.$router.push({ name: 'Manage', query: { t: Date.now() }});
+              this.$router.push({ name: 'Manage', query: { p: Date.now() }});
             }, 700);
           }).catch(() => {
             this.loading = false;
