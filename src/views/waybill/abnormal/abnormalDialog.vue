@@ -6,13 +6,15 @@
           <el-input v-model="form.waybillCode" placeholder="请输入运单编号" />
         </el-form-item> -->
       <el-form-item label="标记时间" prop="warningTime">
-          <el-date-picker clearable size="small"
-            style="width: 90%"
-            v-model="form.warningTime"
-            type="datetime"
-            placeholder="选择标记时间">
-          </el-date-picker>
-        </el-form-item>
+        <el-date-picker
+          v-model="form.warningTime"
+          clearable
+          size="small"
+          style="width: 90%"
+          type="datetime"
+          placeholder="选择标记时间"
+        />
+      </el-form-item>
       <!-- <el-form-item label="创建人" prop="createCode">
           <el-input v-model="form.createCode" placeholder="请输入创建人" />
         </el-form-item>

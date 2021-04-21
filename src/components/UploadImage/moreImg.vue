@@ -116,10 +116,15 @@ export default {
       // this.loading.close();
     },
     handleBeforeUpload(file) {
+      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg';
       const isLt1M = file.size / 1024 / 1024 < 1;
+      if (!isJPG) {
+        this.msgWarning('请上传png/jpg/jpeg格式的图片');
+        return false;
+      }
       if (!isLt1M) {
         this.msgWarning('上传文件大小不能超过1MB');
-        return;
+        return false;
       }
       // this.loading = this.$loading({
       //   lock: true,
