@@ -36,7 +36,7 @@
       </div>
 
       <!-- 正常 -->
-      <div v-show="orderInfo==='0'">
+      <div v-show="orderInfo==='0'" v-loading="loading">
         <el-form
           ref="elForm"
           :model="formData"
@@ -698,22 +698,22 @@ export default {
         if (!this.isCreated) {
           update(this.lastData).then(res => {
             this.msgSuccess('修改成功');
-            this.loading = false;
             var time1 = setTimeout(() => {
               clearTimeout(time1);
               time1 = null;
+              this.loading = false;
               this.$router.push({ name: 'Manage', query: { t: Date.now() }});
-            }, 1000);
+            }, 700);
           }).catch(() => {
             this.loading = false;
           });
         } else {
           orderPubilsh(this.lastData).then((response) => {
             this.msgSuccess('新增成功');
-            this.loading = false;
             setTimeout(() => {
+              this.loading = false;
               this.$router.push({ name: 'Manage', query: { t: Date.now() }});
-            }, 1000);
+            }, 700);
           }).catch(() => {
             this.loading = false;
           });

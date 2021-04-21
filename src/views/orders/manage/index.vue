@@ -355,67 +355,208 @@
               </template>
               <template #edit="{row}">
                 <template v-if="row.isShowEdit">
-                  <el-button
-                    size="mini"
-                    type="text"
-                    @click="handleInfo(row)"
-                  >详情</el-button>
-                  <!-- icon="el-icon-document" -->
 
-                  <el-button
-                    v-if="false && row.status+''==='0'"
-                    size="mini"
-                    type="text"
-                    @click="handleDispatch(row)"
-                  >指派</el-button>
-                  <!-- icon="el-icon-s-promotion" -->
 
-                  <el-button
-                    v-if="row.status+''==='0'"
-                    v-hasPermi="['consigner-order-edit']"
-                    size="mini"
-                    type="text"
-                    @click="handleUpdate(row)"
-                  >编辑</el-button>
-                  <!-- icon="el-icon-edit" -->
-                  <el-button
-                    v-if="!row.haveWaybill"
-                    v-hasPermi="['consigner-order-delete']"
-                    size="mini"
-                    type="text"
-                    @click="handleDelete(row)"
-                  >删除</el-button>
-                  <!-- icon="el-icon-delete" -->
-                  <el-button
-                    v-hasPermi="['consigner-order-open', 'consigner-order-close']"
-                    size="mini"
-                    type="text"
-                    :style="{color: row.status+''==='0'?'red': ''}"
-                    @click="handleClose(row)"
-                  >{{ row.status+''==='0'?'禁用':'启用' }}</el-button>
-                  <!-- icon="el-icon-close" -->
-                  <el-button
-                    v-if="row.status+''==='0'"
-                    v-hasPermi="['consigner-order-adjust-price']"
-                    size="mini"
-                    type="text"
-                    @click="handleReadjustPrices(row)"
-                  >调价</el-button>
-                  <!-- icon="el-icon-bank-card" -->
-                  <el-button
-                    v-if="false"
-                    size="mini"
-                    type="text"
-                    @click="handleShenhe(row)"
-                  >审核</el-button>
-                  <!-- icon="el-icon-document" -->
-                  <el-button
-                    v-if="row.status+''==='0'"
-                    size="mini"
-                    type="text"
-                    @click="handleclone(row)"
-                  >复制</el-button>
-                  <!-- icon="el-icon-document" -->
+                  <div v-if="false">
+                    <template
+                      v-for="(item,index) in [
+                        {
+                          label:'详情',
+                          isShow: ()=> true,
+                          tag: 'xiangqing',
+                          fn: (row)=>handleInfo(row)
+                        },
+                        {
+                          label:'指派',
+                          isShow: (row)=> false && row.status+''==='0',
+                          tag: 'zhipai',
+                        },
+                        {
+                          label:'编辑',
+                          isShow: (row)=>row.status+''==='0',
+                          tag: 'bianji',
+                          fn: (row)=>handleUpdate(row),
+                          hasPermi:['consigner-order-edit'],
+                        },
+                        {
+                          label:'删除',
+                          isShow: (row)=>!row.haveWaybill,
+                          tag: 'shanchu',
+                        },
+                        {
+                          label:(row)=> row.status+''==='0'?'禁用':'启用' ,
+                          isShow: ()=> true,
+                          tag: 'tiaojia',
+                          className: (row)=> row.status+''==='0' ? 'g-color-error' : undefined
+                        }
+                      ]"
+                    >
+
+                      <el-button
+                        v-if="item.isShow(row)"
+                        :key="index"
+                        v-hasPermi="item.hasPermi || ['consigner-order-edit']"
+                        size="mini"
+                        type="text"
+                        :class="typeof item.className === 'function' ? item.className(row):item.className "
+                        @click="item['fn']? item['fn'](row) : handleInfo(row, item.tag)"
+                      >{{ typeof item.label === "function" ? item.label(row) : item.label }}</el-button>
+                    </template>
+                  </div>
+
+                  <!-- 方案1 -->
+
+
+
+                  <el-dropdown v-if="true" style="width:100%;">
+                    <div class="g-single-row" style="100%;">
+
+                      <el-button
+                        size="mini"
+                        type="text"
+                        @click="handleInfo(row)"
+                      >详情</el-button>
+                      <!-- icon="el-icon-document" -->
+
+
+                      <el-button
+                        v-if="false && row.status+''==='0'"
+                        size="mini"
+                        type="text"
+                        @click="handleDispatch(row)"
+                      >指派</el-button>
+                      <!-- icon="el-icon-s-promotion" -->
+
+                      <el-button
+                        v-if="row.status+''==='0'"
+                        v-hasPermi="['consigner-order-edit']"
+                        size="mini"
+                        type="text"
+                        @click="handleUpdate(row)"
+                      >编辑</el-button>
+
+                      <el-button
+                        v-if="!row.haveWaybill"
+                        v-hasPermi="['consigner-order-delete']"
+                        size="mini"
+                        type="text"
+                        @click="handleDelete(row)"
+                      >删除</el-button>
+
+                      <el-button
+                        v-hasPermi="['consigner-order-open', 'consigner-order-close']"
+                        size="mini"
+                        type="text"
+                        :style="{color: row.status+''==='0'?'red': ''}"
+                        @click="handleClose(row)"
+                      >{{ row.status+''==='0'?'禁用':'启用' }}</el-button>
+
+                      <el-button
+                        v-if="row.status+''==='0'"
+                        v-hasPermi="['consigner-order-adjust-price']"
+                        size="mini"
+                        type="text"
+                        @click="handleReadjustPrices(row)"
+                      >调价</el-button>
+
+                      <el-button
+                        v-if="false"
+                        size="mini"
+                        type="text"
+                        @click="handleShenhe(row)"
+                      >审核</el-button>
+                      <!-- icon="el-icon-document" -->
+
+                      <el-button
+                        v-if="row.status+''==='0'"
+                        size="mini"
+                        type="text"
+                        @click="handleclone(row)"
+                      >复制</el-button>
+                      <!-- icon="el-icon-document" -->
+
+
+                    </div>
+
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item><el-button
+                        size="mini"
+                        type="text"
+                        @click="handleInfo(row)"
+                      >详情</el-button>
+                        <!-- icon="el-icon-document" -->
+
+
+                      </el-dropdown-item>
+                      <el-dropdown-item><el-button
+                        v-if="false && row.status+''==='0'"
+                        size="mini"
+                        type="text"
+                        @click="handleDispatch(row)"
+                      >指派</el-button>
+                        <!-- icon="el-icon-s-promotion" -->
+
+                      </el-dropdown-item>
+                      <el-dropdown-item><el-button
+                        v-if="row.status+''==='0'"
+                        v-hasPermi="['consigner-order-edit']"
+                        size="mini"
+                        type="text"
+                        @click="handleUpdate(row)"
+                      >编辑</el-button>
+
+                      </el-dropdown-item>
+                      <el-dropdown-item><el-button
+                        v-if="!row.haveWaybill"
+                        v-hasPermi="['consigner-order-delete']"
+                        size="mini"
+                        type="text"
+                        @click="handleDelete(row)"
+                      >删除</el-button>
+
+                      </el-dropdown-item>
+                      <el-dropdown-item><el-button
+                        v-hasPermi="['consigner-order-open', 'consigner-order-close']"
+                        size="mini"
+                        type="text"
+                        :style="{color: row.status+''==='0'?'red': ''}"
+                        @click="handleClose(row)"
+                      >{{ row.status+''==='0'?'禁用':'启用' }}</el-button>
+
+                      </el-dropdown-item>
+                      <el-dropdown-item><el-button
+                        v-if="row.status+''==='0'"
+                        v-hasPermi="['consigner-order-adjust-price']"
+                        size="mini"
+                        type="text"
+                        @click="handleReadjustPrices(row)"
+                      >调价</el-button>
+
+                      </el-dropdown-item>
+                      <el-dropdown-item><el-button
+                        v-if="false"
+                        size="mini"
+                        type="text"
+                        @click="handleShenhe(row)"
+                      >审核</el-button>
+                        <!-- icon="el-icon-document" -->
+
+                      </el-dropdown-item>
+                      <el-dropdown-item><el-button
+                        v-if="row.status+''==='0'"
+                        size="mini"
+                        type="text"
+                        @click="handleclone(row)"
+                      >复制</el-button>
+                        <!-- icon="el-icon-document" -->
+
+                      </el-dropdown-item>
+                    </el-dropdown-menu>
+
+                  </el-dropdown>
+
+
+
                 </template>
               </template>
             </RefactorTable>
@@ -684,7 +825,7 @@ export default {
     '$route.query.t': {
       handler(value, odvalue) {
         if (!value) return;
-
+        this.queryParams.pageNum = 1;
         this.getList();
         this.$route.query.t = '';
         // this.$router.replace({
@@ -1138,4 +1279,6 @@ export default {
   .el-table .red-row,.el-table--striped .el-table__body tr.el-table__row--striped.red-row td {
     background: #e1f3d8;
   }
+
+
 </style>
