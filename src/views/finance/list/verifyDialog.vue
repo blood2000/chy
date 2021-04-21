@@ -1,12 +1,6 @@
 <template>
   <!-- 审核对话框 -->
-  <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
-    <div slot="title" class="dialog-title">
-      <el-row :gutter="10">
-        <el-col :span="0.5"><img src="../../../../src/assets/images/icon/comment.png" alt=""></el-col>
-        <el-col :span="20"><div class="g-strong g-title-mini">{{ title }}</div></el-col>
-      </el-row>
-    </div>
+  <el-dialog class="i-verify" :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="130px">
       <el-form-item v-if="form.num" label="审核数量" prop="num">
         <span>{{ form.num }}</span>
