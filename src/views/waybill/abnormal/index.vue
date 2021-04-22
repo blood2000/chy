@@ -1,106 +1,108 @@
 <template>
-  <div class="app-container">
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
-      <el-form-item label="货源单号" prop="orderCode">
-        <el-input
-          v-model="queryParams.orderCode"
-          placeholder="请输入货源单号"
-          clearable
-          size="small"
-          style="width: 230px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="运输单号" prop="waybillNo">
-        <el-input
-          v-model="queryParams.waybillNo"
-          placeholder="请输入运输单号"
-          clearable
-          size="small"
-          style="width: 230px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="异常状态" prop="isWarning">
-        <el-select
-          v-model="queryParams.isWarning"
-          placeholder="请选择异常标记状态"
-          clearable
-          filterable
-          size="small"
-          style="width: 230px"
-        >
-          <el-option
-            v-for="dict in isWarningOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+  <div>
+    <div v-show="showSearch" class="app-container app-container--search">
+      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
+        <el-form-item label="货源单号" prop="orderCode">
+          <el-input
+            v-model="queryParams.orderCode"
+            placeholder="请输入货源单号"
+            clearable
+            size="small"
+            style="width: 230px"
+            @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="运输司机" prop="driverName">
-        <el-input
-          v-model="queryParams.driverName"
-          placeholder="请输入运输司机"
-          clearable
-          size="small"
-          style="width: 230px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
+        </el-form-item>
+        <el-form-item label="运输单号" prop="waybillNo">
+          <el-input
+            v-model="queryParams.waybillNo"
+            placeholder="请输入运输单号"
+            clearable
+            size="small"
+            style="width: 230px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="异常状态" prop="isWarning">
+          <el-select
+            v-model="queryParams.isWarning"
+            placeholder="请选择异常标记状态"
+            clearable
+            filterable
+            size="small"
+            style="width: 230px"
+          >
+            <el-option
+              v-for="dict in isWarningOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="运输司机" prop="driverName">
+          <el-input
+            v-model="queryParams.driverName"
+            placeholder="请输入运输司机"
+            clearable
+            size="small"
+            style="width: 230px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="app-container">
+      <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5" style="float: right;">
+          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
+        </el-col>
+        <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+      </el-row>
 
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5" style="float: right;">
-        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
-      </el-col>
-      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
-    </el-row>
+      <RefactorTable :loading="loading" :data="abnormalList" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
+        <template #isWarning="{row}">
+          <span>{{ selectDictLabel(isWarningOptions, row.isWarning) }}</span>
+        </template>
+        <template #createTime="{row}">
+          <span>{{ parseTime(row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+        </template>
+        <template #updateTime="{row}">
+          <span>{{ parseTime(row.updateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+        </template>
+        <template #edit="{row}">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit-outline"
+            @click="handleAbnormal(row)"
+          >处理异常</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-document"
+            @click="handleWaybill(row)"
+          >查看运单</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-tickets"
+            @click="handleLog(row)"
+          >查看日志</el-button>
+        </template>
+      </RefactorTable>
 
-    <RefactorTable :loading="loading" :data="abnormalList" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
-      <template #isWarning="{row}">
-        <span>{{ selectDictLabel(isWarningOptions, row.isWarning) }}</span>
-      </template>
-      <template #createTime="{row}">
-        <span>{{ parseTime(row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-      </template>
-      <template #updateTime="{row}">
-        <span>{{ parseTime(row.updateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-      </template>
-      <template #edit="{row}">
-        <el-button
-          size="mini"
-          type="text"
-          icon="el-icon-edit-outline"
-          @click="handleAbnormal(row)"
-        >处理异常</el-button>
-        <el-button
-          size="mini"
-          type="text"
-          icon="el-icon-document"
-          @click="handleWaybill(row)"
-        >查看运单</el-button>
-        <el-button
-          size="mini"
-          type="text"
-          icon="el-icon-tickets"
-          @click="handleLog(row)"
-        >查看日志</el-button>
-      </template>
-    </RefactorTable>
-
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
-
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
+    </div>
     <!-- 运单详情 对话框 -->
     <detail-dialog ref="DetailDialog" :current-id="currentId" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
     <!-- 运单异常 对话框 -->
