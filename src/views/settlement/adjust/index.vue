@@ -197,7 +197,7 @@
       </el-form>
     </div>
 
-    <div style="margin: 0 15px 15px;">
+    <div class="g-radio-group">
       <el-radio-group v-model="activeName" size="small" @change="handleClick">
         <el-radio-button label="4">已复核</el-radio-button>
         <el-radio-button label="5">已结算</el-radio-button>
@@ -268,7 +268,6 @@
             v-has-permi="['transportation:waybillBalanceInfo:warning']"
             size="mini"
             type="text"
-            icon="el-icon-warning-outline"
             @click="handleTableBtn(row, 1)"
           >驳回提示</el-button>
           <el-button
@@ -276,7 +275,6 @@
             v-hasPermi="['transportation:waybillBalanceInfo:shipperRebutUnloading']"
             size="mini"
             type="text"
-            icon="el-icon-document-remove"
             @click="handleTableBtn(row, 2)"
           >驳回</el-button>
           <el-button
@@ -284,21 +282,18 @@
             v-hasPermi="['transportation:waybillBalanceInfo:batchDetail']"
             size="mini"
             type="text"
-            icon="el-icon-document-checked"
             @click="handleTableBtn(row, 3)"
           >核算</el-button>
           <el-button
             v-if="activeName == '5'"
             size="mini"
             type="text"
-            icon="el-icon-wallet"
             @click="handleTableBtn(row, 4)"
           >申请打款</el-button>
           <el-button
             v-if="activeName == '7'"
             size="mini"
             type="text"
-            icon="el-icon-chat-dot-square"
             @click="handleTableBtn(row, 5)"
           >评价</el-button>
           <el-button
@@ -306,14 +301,12 @@
             v-has-permi="['transportation:waybill:childList']"
             size="mini"
             type="text"
-            icon="el-icon-document-copy"
             @click="handleTableBtn(row, 6)"
           >分单列表</el-button>
           <el-button
             v-has-permi="['transportation:waybill:getWayBillByCode']"
             size="mini"
             type="text"
-            icon="el-icon-document"
             @click="handleTableBtn(row, 7)"
           >详情</el-button>
         </template>
@@ -445,7 +438,7 @@ export default {
       isShow: true,
       tooltip: false,
       label: '操作',
-      width: 260,
+      width: 240,
       fixed: 'right'
     });
     this.getList();

@@ -165,7 +165,6 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-document"
             @click="handleDetail(row)"
           >详情</el-button>
           <el-button

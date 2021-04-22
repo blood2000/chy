@@ -206,19 +206,16 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-document-remove"
             @click="handleTableBtn(row, 1)"
           >运单清分</el-button>
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-refresh-right"
             @click="handleTableBtn(row, 2)"
           >更新清分状态</el-button>
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-document"
             @click="handleTableBtn(row, 3)"
           >详情</el-button>
         </template>

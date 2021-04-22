@@ -221,26 +221,22 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-document-remove"
             @click="handleTableBtn(row, 1)"
           >驳回</el-button>
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-wallet"
             @click="handleTableBtn(row, 2)"
           >网商打款</el-button>
           <el-button
             v-if="row.isChild == '2'"
             size="mini"
             type="text"
-            icon="el-icon-document-copy"
             @click="handleTableBtn(row, 3)"
           >分单列表</el-button>
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-document"
             @click="handleTableBtn(row, 4)"
           >详情</el-button>
         </template>
@@ -360,7 +356,7 @@ export default {
       prop: 'edit',
       isShow: true,
       label: '操作',
-      width: 275,
+      width: 240,
       fixed: 'right'
     });
     this.getList();

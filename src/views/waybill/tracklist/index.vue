@@ -160,8 +160,8 @@
         </el-form-item>
       </el-form>
     </div>
-    
-    <div style="margin: 0 15px 15px;">
+
+    <div class="g-radio-group">
       <el-radio-group v-model="activeName" size="small" @change="handleClick">
         <el-radio-button label="1">已接单</el-radio-button>
         <el-radio-button label="2">已装货</el-radio-button>

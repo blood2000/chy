@@ -90,7 +90,7 @@ export default {
     },
     // 表单赋值
     setForm(data) {
-	    this.form.code = data.waybillCode;
+	    this.form.code = data.code;
       this.form.isWarning = 0;
       this.form.waybillNo = data.waybillNo;
     }

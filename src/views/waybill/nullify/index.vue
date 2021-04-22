@@ -169,14 +169,12 @@
             v-hasPermi="['waybill:nullify:edit']"
             size="mini"
             type="text"
-            icon="el-icon-document"
             @click="handleWaybill(row)"
           >查看运单</el-button>
           <el-button
             v-hasPermi="['waybill:nullify:remove']"
             size="mini"
             type="text"
-            icon="el-icon-document-remove"
             @click="handleLog(row)"
           >驳回</el-button>
         </template>

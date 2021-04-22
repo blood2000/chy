@@ -77,19 +77,16 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit-outline"
             @click="handleAbnormal(row)"
           >处理异常</el-button>
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-document"
             @click="handleWaybill(row)"
           >查看运单</el-button>
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-tickets"
             @click="handleLog(row)"
           >查看日志</el-button>
         </template>
@@ -176,7 +173,7 @@ export default {
       prop: 'edit',
       isShow: true,
       label: '操作',
-      width: 180,
+      width: 240,
       fixed: 'right'
     });
     this.getList();

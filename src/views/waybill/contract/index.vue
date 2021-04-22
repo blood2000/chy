@@ -101,7 +101,6 @@
             v-hasPermi="['transportation:orderContract:generate']"
             size="mini"
             type="text"
-            icon="el-icon-printer"
             @click="handleInfo(row)"
           >打印</el-button>
           <el-button
@@ -109,7 +108,6 @@
             v-hasPermi="['transportation:orderContract:generate']"
             size="mini"
             type="text"
-            icon="el-icon-magic-stick"
             @click="handleElectron(row)"
           >生成电子章</el-button>
         </template>

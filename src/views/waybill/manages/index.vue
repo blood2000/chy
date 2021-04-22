@@ -189,7 +189,6 @@
             v-hasPermi="['transportation:waybill:getWayBillByCode']"
             size="mini"
             type="text"
-            icon="el-icon-document"
             @click="handleUpdate(row)"
           >
             详情
@@ -198,38 +197,40 @@
             v-has-permi="['transportation:waybillAbnormal:add']"
             size="mini"
             type="text"
-            icon="el-icon-lock"
             @click="handleMark(row)"
           >
             标记异常
           </el-button>
           <el-button
-            v-if="row.isChild === 2"
-            size="mini"
-            type="text"
-            icon="el-icon-document-copy"
-            @click="handleSeperate(row)"
-          >
-            分单列表
-          </el-button>
-          <el-button
-            v-hasPermi="['transportation:waybillOper:invalid']"
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(row)"
-          >
-            作废运单
-          </el-button>
-          <el-button
             v-has-permi="['transportation:waybillOper:shipperRemark']"
             size="mini"
             type="text"
-            icon="el-icon-edit-outline"
             @click="handleRemarks(row)"
           >
             备注
           </el-button>
+          <TableDropdown>
+            <el-dropdown-item>
+              <el-button
+                v-hasPermi="['transportation:waybillOper:invalid']"
+                size="mini"
+                type="text"
+                @click="handleDelete(row)"
+              >
+                作废运单
+              </el-button>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <el-button
+                v-if="row.isChild === 2"
+                size="mini"
+                type="text"
+                @click="handleSeperate(row)"
+              >
+                分单列表
+              </el-button>
+            </el-dropdown-item>
+          </TableDropdown>
         </template>
       </RefactorTable>
 
@@ -403,7 +404,7 @@ export default {
       prop: 'edit',
       isShow: true,
       label: '操作',
-      width: 285,
+      width: 180,
       fixed: 'right'
     });
     this.getList();

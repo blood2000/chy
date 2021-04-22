@@ -88,13 +88,11 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-document"
             @click="handleWaybill(row)"
           >详情</el-button>
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit-outline"
             @click="handleLog(row)"
           >处理投诉</el-button>
         </template>
