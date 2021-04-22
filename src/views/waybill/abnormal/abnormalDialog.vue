@@ -2,9 +2,6 @@
   <!-- 添加或修改运输异常对话框 -->
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="130px">
-      <!-- <el-form-item label="运单编号" prop="waybillCode">
-          <el-input v-model="form.waybillCode" placeholder="请输入运单编号" />
-        </el-form-item> -->
       <el-form-item label="标记时间" prop="warningTime">
         <el-date-picker
           v-model="form.warningTime"
@@ -15,14 +12,21 @@
           placeholder="选择标记时间"
         />
       </el-form-item>
-      <!-- <el-form-item label="创建人" prop="createCode">
-          <el-input v-model="form.createCode" placeholder="请输入创建人" />
-        </el-form-item>
-        <el-form-item label="修改人" prop="updateCode">
-          <el-input v-model="form.updateCode" placeholder="请输入修改人" />
-        </el-form-item> -->
       <el-form-item label="异常说明" prop="description">
         <el-input v-model="form.description" style="width: 90%" autosize type="textarea" placeholder="请输入异常说明" />
+      </el-form-item>
+      <el-form-item label="处理时间" prop="updateTime" v-if="form.isWarning === 0">
+        <el-date-picker
+          v-model="form.updateTime"
+          clearable
+          size="small"
+          style="width: 90%"
+          type="datetime"
+          placeholder="选择标记时间"
+        />
+      </el-form-item>
+      <el-form-item label="处理说明" prop="operDescription" v-if="form.isWarning === 0">
+        <el-input v-model="form.operDescription" style="width: 90%" autosize type="textarea" placeholder="请输入处理说明" />
       </el-form-item>
     </el-form>
     <div :class=" disable === true ?'display':''">
@@ -56,9 +60,9 @@ export default {
       },
       // 表单校验
       rules: {
-        description: [
-          { required: true, message: '异常说明不能为空', trigger: 'blur' }
-        ]
+        // description: [
+        //   { required: true, message: '异常说明不能为空', trigger: 'blur' }
+        // ]
       }
     };
   },
@@ -112,7 +116,8 @@ export default {
         createTime: null,
         updateCode: null,
         updateTime: null,
-        description: null
+        description: null,
+        operDescription: null
       };
       this.resetForm('form');
     },
@@ -123,6 +128,7 @@ export default {
     // 表单赋值
     setForm(data) {
 	    this.form = data;
+      console.log(this.form);
     }
   }
 };

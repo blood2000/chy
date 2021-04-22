@@ -1,6 +1,6 @@
 <template>
   <!-- 车辆跟踪对话框 -->
-  <el-dialog :title="title" :visible="visible" width="1400px" append-to-body @close="cancel">
+  <el-dialog :title="title" :visible="visible" width="1400px" append-to-body destroy-on-close @close="cancel">
     <div style="width:100%; height: 750px;">
       <el-amap ref="map" vid="DDCmap" :zoom="zoom" :center="center">
         <!-- <el-amap-polyline :path="polyline.path" :stroke-weight="8" line-join="round" :stroke-opacity="0.8" :stroke-color="'#0091ea'" /> -->
@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { trackLocation, getVehicleInfo } from '@/api/waybill/tracklist';
+import { trackLocation, getVehicleInfo, getInfoDetail } from '@/api/waybill/tracklist';
 // import UploadImage from '@/components/UploadImage/index';
 
 export default {
@@ -35,17 +35,6 @@ export default {
       polyline: {
         path: []
       },
-      // 表单参数
-      form: {
-        wayBillInCode: null,
-        driverApplyRemark: null
-      },
-      // 表单校验
-      rules: {
-        driverApplyRemark: [
-          { required: true, message: '取消理由不能为空', trigger: 'blur' }
-        ]
-      },
       markers: [{
         icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/load.png',
         position: [119.358267, 26.04577]
@@ -66,11 +55,11 @@ export default {
       wayBillInfo: {},
       // 车辆信息
       vehicleInfo: {},
-      // 日期格式
-      Hours: '',
-      Minutes: '',
-      Seconds: '',
-      time: ''
+      // 日期
+      time: '',
+      // 装卸货地经纬度
+      loadAddress: [],
+      unloadAddress: []
     };
   },
   computed: {
@@ -86,7 +75,7 @@ export default {
   watch: {
     open(val) {
       if (val) {
-        this.getTrackLocation();
+        this.getDetail();
       }
     }
   },
@@ -94,6 +83,27 @@ export default {
     // this.getguiji();
   },
   methods: {
+    // 获取装货详情
+    getDetail() {
+      getInfoDetail(this.wayBillInfo.waybillNo, 1).then(response => {
+        console.log(response);
+        const info = response.data[0];
+        if(info.waybillAddres.loadLocation){
+          this.loadAddress = info.waybillAddres.loadLocation.replace("(", "").replace(")", "").split(",");
+        }
+        if(info.waybillAddres.unloadLocation){
+          this.unloadAddress = info.waybillAddres.unloadLocation.replace("(", "").replace(")", "").split(",");
+        }
+        if(this.loadAddress.length === 0){
+          this.loadAddress = [119.358267, 26.04577];
+        }
+        if(this.unloadAddress.length === 0){
+           this.unloadAddress = [119.344435, 25.721053];
+        }
+        this.getTrackLocation();
+        this.getMark();
+      });
+    },
     /** 获取轨迹 */
     getTrackLocation() {
       trackLocation(this.queryParams).then(response => {
@@ -102,10 +112,10 @@ export default {
           return [response.lng, response.lat];
         });
         // 绘制轨迹
-        this.drawPolyline(this.tracklist);
-        this.getMark(this.tracklist);
+        // this.drawPolyline(this.tracklist);
+        // this.getMark(this.tracklist);
       });
-      // this.getRoutePlan();
+      this.getRoutePlan();
     },
     // 获取高德地图路线规划
     getRoutePlan() {
@@ -117,9 +127,7 @@ export default {
           // map: that.$refs.map.$$getInstance()
           // panel: 'DDCmap',
         });
-        const startLngLat = [119.358267, 26.04577];
-        const endLngLat = [119.344435, 25.721053];
-        driving.search(startLngLat, endLngLat, function(status, result) {
+        driving.search(that.loadAddress, that.unloadAddress, function(status, result) {
           if (status === 'complete') {
             const { routes = [] } = result;
             const { steps = [] } = routes[0];
@@ -129,6 +137,7 @@ export default {
               return pathArr;
             });
             const path = [].concat.apply([], pathArr);
+            console.log(path);
             // 绘制轨迹
             that.drawPolyline(path);
           } else {
@@ -139,10 +148,10 @@ export default {
       });
     },
     // 起点终点
-    getMark(path) {
+    getMark() {
       const that = this;
       // 装货地marker
-      const startPosition = path[0];
+      const startPosition = that.loadAddress;
       const startMark = new AMap.Marker({
         position: startPosition,
         icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/load.png',
@@ -152,7 +161,7 @@ export default {
       });
       startMark.setMap(that.$refs.map.$$getInstance());
       // 卸货地marker
-      const endPosition = path[path.length - 1];
+      const endPosition = that.unloadAddress;
       const endMark = new AMap.Marker({
         position: endPosition,
         icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/unload.png',
@@ -188,6 +197,9 @@ export default {
     // 关闭弹窗
     close() {
       this.$emit('update:open', false);
+      this.loadAddress = [];
+      this.unloadAddress = [];
+      this.tracklist = [];
     },
     // 表单赋值
     setForm(data) {
