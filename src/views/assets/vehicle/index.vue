@@ -161,18 +161,18 @@
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
-        <!-- 新增司机或调度者的名下车辆 -->
-        <!-- <template v-if="teamCode || driverCode">
-          <el-col :span="1.5">
-            <el-button
-              v-hasPermi="['assets:vehicle:add']"
-              type="primary"
-              icon="el-icon-plus"
-              size="mini"
-              @click="handleAdd('bind')"
-            >添加车辆</el-button>
-          </el-col>
-        </template> -->
+      </el-row>
+      <!-- 新增司机或调度者的名下车辆 -->
+      <el-row v-if="teamCode || driverCode" :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['assets:vehicle:add']"
+            type="primary"
+            icon="el-icon-plus"
+            size="mini"
+            @click="handleAdd('bind')"
+          >添加车辆</el-button>
+        </el-col>
       </el-row>
 
       <RefactorTable :loading="loading" :data="vehicleList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
