@@ -3,17 +3,17 @@ server {
     server_name localhost;
     charset 'utf-8';
     location / {
-        root   /var/nginx/html/#{JOB_BASE_NAME};
+        root   /usr/share/nginx/html/#{JOB_BASE_NAME};
         try_files $uri $uri/ /index.html;
         index  index.html index.htm;
     }
     location /prod-api/{
-	      proxy_set_header Host $http_host;
+        proxy_set_header Host $http_host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header REMOTE-HOST $remote_addr;
-	      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-	      proxy_pass #{proxy_host}:#{proxy_port};
-	  }
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass #{proxy_host}:#{proxy_port}/;
+    }
     error_page   500 502 503 504  /50x.html;
     location = /50x.html {
         root   html;

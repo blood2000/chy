@@ -87,3 +87,12 @@ export function examine(data) {
     data: data
   });
 }
+
+// 删除调度者与司机的关系
+export function delTeamReDriver(data) {
+  return request({
+    url: '/assets/team/delTeamReDriver',
+    method: 'delete',
+    params: data
+  });
+}
