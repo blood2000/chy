@@ -1,111 +1,109 @@
 <template>
-  <div class="app-container">
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
-      <el-form-item label="货集码名称" prop="cargoCodeName">
-        <el-input
-          v-model="queryParams.cargoCodeName"
-          placeholder="请输入货集码名称"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
-
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['assets:shipment:cargocode:add']"
-          type="primary"
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-        >新增货集码</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['assets:shipment:cargocode:edit']"
-          type="success"
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-        >修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['assets:shipment:cargocode:remove']"
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-        >删除</el-button>
-      </el-col>
-      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
-    </el-row>
-
-    <el-table v-loading="loading" :data="stockcodeList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <el-table-column label="货集码名称" align="center" prop="cargoCodeName" />
-      <el-table-column label="货集码" align="center" prop="cargoCodeQr">
-        <template slot-scope="scope">
+  <div>
+    <div v-show="showSearch" class="app-container app-container--search">
+      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
+        <el-form-item label="货集码名称" prop="cargoCodeName">
+          <el-input
+            v-model="queryParams.cargoCodeName"
+            placeholder="请输入货集码名称"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="app-container">
+      <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
           <el-button
+            v-hasPermi="['assets:shipment:cargocode:add']"
+            type="primary"
+            icon="el-icon-plus"
             size="mini"
-            type="text"
-            @click="handleDownloadCode(scope.row)"
-          >下载</el-button>
-        </template>
-      </el-table-column>
-      <el-table-column label="关联的货源数" align="center" prop="relationOrderNum">
-        <template slot-scope="scope">
-          <el-button
-            v-hasPermi="['assets:shipment:cargocode:orders']"
-            size="mini"
-            type="text"
-            @click="handleOrderList(scope.row)"
-          >{{ scope.row.relationOrderNum }}</el-button>
-        </template>
-      </el-table-column>
-      <!-- <el-table-column label="创建人" align="center" prop="createCode" />
-      <el-table-column label="更新人" align="center" prop="updateCode" /> -->
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
-        <template slot-scope="scope">
+            @click="handleAdd"
+          >新增货集码</el-button>
+        </el-col>
+        <el-col :span="1.5">
           <el-button
             v-hasPermi="['assets:shipment:cargocode:edit']"
-            size="mini"
-            type="text"
+            type="success"
             icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
+            size="mini"
+            :disabled="single"
+            @click="handleUpdate"
           >修改</el-button>
+        </el-col>
+        <el-col :span="1.5">
           <el-button
             v-hasPermi="['assets:shipment:cargocode:remove']"
-            size="mini"
-            type="text"
+            type="danger"
             icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
+            size="mini"
+            :disabled="multiple"
+            @click="handleDelete"
           >删除</el-button>
-        <!--  v-hasPermi="['enterprise:stockcode:remove']"-->
-        </template>
-      </el-table-column>
-    </el-table>
+        </el-col>
+        <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+      </el-row>
 
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
+      <el-table v-loading="loading" :data="stockcodeList" border stripe @selection-change="handleSelectionChange">
+        <el-table-column type="selection" width="55" align="center" fixed="left" />
+        <el-table-column label="货集码名称" align="center" prop="cargoCodeName" />
+        <el-table-column label="货集码" align="center" prop="cargoCodeQr">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              type="text"
+              @click="handleDownloadCode(scope.row)"
+            >下载</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column label="关联的货源数" align="center" prop="relationOrderNum">
+          <template slot-scope="scope">
+            <el-button
+              v-hasPermi="['assets:shipment:cargocode:orders']"
+              size="mini"
+              type="text"
+              @click="handleOrderList(scope.row)"
+            >{{ scope.row.relationOrderNum }}</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
+          <template slot-scope="scope">
+            <el-button
+              v-hasPermi="['assets:shipment:cargocode:edit']"
+              size="mini"
+              type="text"
+              @click="handleUpdate(scope.row)"
+            >修改</el-button>
+            <el-button
+              v-hasPermi="['assets:shipment:cargocode:remove']"
+              size="mini"
+              type="text"
+              @click="handleDelete(scope.row)"
+            >删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
 
-    <!-- 添加或修改对话框 -->
-    <stockcode-dialog ref="StockcodeDialog" :title="title" :open.sync="open" :shipment-code="shipmentCode" @refresh="getList" />
-    <!-- 货集码下的货源列表对话框 -->
-    <order-list-dialog :title="title" :open.sync="orderListOpen" :code="classCode" />
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
+
+      <!-- 添加或修改对话框 -->
+      <stockcode-dialog ref="StockcodeDialog" :title="title" :open.sync="open" :shipment-code="shipmentCode" @refresh="getList" />
+      <!-- 货集码下的货源列表对话框 -->
+      <order-list-dialog :title="title" :open.sync="orderListOpen" :code="classCode" />
+    </div>
   </div>
 </template>
 

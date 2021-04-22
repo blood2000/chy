@@ -1,245 +1,236 @@
 
 <template>
-  <div class="app-container">
-    <el-form
-      v-show="showSearch"
-      ref="queryForm"
-      :model="queryParams"
-      :inline="true"
-      label-width="90px"
-    >
-      <el-form-item
-        label="司机姓名"
-        prop="driverName"
+  <div>
+    <div v-show="showSearch" class="app-container app-container--search">
+      <el-form
+        ref="queryForm"
+        :model="queryParams"
+        :inline="true"
+        label-width="90px"
       >
-        <el-input
-          v-model="queryParams.driverName"
-          placeholder="请输入司机姓名"
-          clearable
-          size="small"
-          style="width: 225px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item
-        label="司机电话"
-        prop="driverPhone"
-      >
-        <el-input
-          v-model="queryParams.driverPhone"
-          placeholder="请输入司机电话"
-          clearable
-          size="small"
-          style="width: 225px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item
-        label="运输单号"
-        prop="waybillNo"
-      >
-        <el-input
-          v-model="queryParams.waybillNo"
-          placeholder="请输入运输单号"
-          clearable
-          size="small"
-          style="width: 225px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item
-        label="调度名称"
-        prop="teamName"
-      >
-        <el-input
-          v-model="queryParams.teamName"
-          placeholder="请输入调度名称"
-          clearable
-          size="small"
-          style="width: 225px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item
-        label="调度电话"
-        prop="teamLeaderPhone"
-      >
-        <el-input
-          v-model="queryParams.teamLeaderPhone"
-          placeholder="请输入调度电话"
-          clearable
-          size="small"
-          style="width: 225px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item
-        label="关联企业"
-        prop="companyName"
-      >
-        <el-input
-          v-model="queryParams.companyName"
-          placeholder="请输入运单关联企业"
-          clearable
-          size="small"
-          style="width: 225px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item
-        label="货主电话"
-        prop="shipmentPhone"
-      >
-        <el-input
-          v-model="queryParams.shipmentPhone"
-          placeholder="请输入货主电话"
-          clearable
-          size="small"
-          style="width: 225px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item
-        label="清分订单号"
-        prop="teamTransferNo"
-      >
-        <el-input
-          v-model="queryParams.teamTransferNo"
-          placeholder="请输入清分订单号"
-          clearable
-          size="small"
-          style="width: 225px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item
-        label="清分批次号"
-        prop="teamBizNo"
-      >
-        <el-input
-          v-model="queryParams.teamBizNo"
-          placeholder="请输入清分批次号"
-          clearable
-          size="small"
-          style="width: 225px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="清分状态" prop="clarifyStatus">
-        <el-select
-          v-model="queryParams.clarifyStatus"
-          placeholder="请选择清分状态"
-          filterable
-          clearable
-          size="small"
-          style="width: 225px"
+        <el-form-item
+          label="司机姓名"
+          prop="driverName"
         >
-          <el-option
-            v-for="dict in clarifyStatusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+          <el-input
+            v-model="queryParams.driverName"
+            placeholder="请输入司机姓名"
+            clearable
+            size="small"
+            style="width: 225px"
+            @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button
-          type="cyan"
-          icon="el-icon-search"
-          size="mini"
-          @click="handleQuery"
+        </el-form-item>
+        <el-form-item
+          label="司机电话"
+          prop="driverPhone"
         >
-          搜索
-        </el-button>
-        <el-button
-          icon="el-icon-refresh"
-          size="mini"
-          @click="resetQuery"
+          <el-input
+            v-model="queryParams.driverPhone"
+            placeholder="请输入司机电话"
+            clearable
+            size="small"
+            style="width: 225px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item
+          label="运输单号"
+          prop="waybillNo"
         >
-          重置
-        </el-button>
-      </el-form-item>
-    </el-form>
+          <el-input
+            v-model="queryParams.waybillNo"
+            placeholder="请输入运输单号"
+            clearable
+            size="small"
+            style="width: 225px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item
+          label="调度名称"
+          prop="teamName"
+        >
+          <el-input
+            v-model="queryParams.teamName"
+            placeholder="请输入调度名称"
+            clearable
+            size="small"
+            style="width: 225px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item
+          label="调度电话"
+          prop="teamLeaderPhone"
+        >
+          <el-input
+            v-model="queryParams.teamLeaderPhone"
+            placeholder="请输入调度电话"
+            clearable
+            size="small"
+            style="width: 225px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item
+          label="关联企业"
+          prop="companyName"
+        >
+          <el-input
+            v-model="queryParams.companyName"
+            placeholder="请输入运单关联企业"
+            clearable
+            size="small"
+            style="width: 225px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item
+          label="货主电话"
+          prop="shipmentPhone"
+        >
+          <el-input
+            v-model="queryParams.shipmentPhone"
+            placeholder="请输入货主电话"
+            clearable
+            size="small"
+            style="width: 225px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item
+          label="清分订单号"
+          prop="teamTransferNo"
+        >
+          <el-input
+            v-model="queryParams.teamTransferNo"
+            placeholder="请输入清分订单号"
+            clearable
+            size="small"
+            style="width: 225px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item
+          label="清分批次号"
+          prop="teamBizNo"
+        >
+          <el-input
+            v-model="queryParams.teamBizNo"
+            placeholder="请输入清分批次号"
+            clearable
+            size="small"
+            style="width: 225px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="清分状态" prop="clarifyStatus">
+          <el-select
+            v-model="queryParams.clarifyStatus"
+            placeholder="请选择清分状态"
+            filterable
+            clearable
+            size="small"
+            style="width: 225px"
+          >
+            <el-option
+              v-for="dict in clarifyStatusOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="cyan"
+            icon="el-icon-search"
+            size="mini"
+            @click="handleQuery"
+          >
+            搜索
+          </el-button>
+          <el-button
+            icon="el-icon-refresh"
+            size="mini"
+            @click="resetQuery"
+          >
+            重置
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="app-container">
+      <el-row
+        :gutter="10"
+        class="mb8"
+      >
+        <el-col :span="1.5">
+          <el-button
+            type="primary"
+            icon="el-icon-upload2"
+            size="mini"
+            @click="handleExport"
+          >导出</el-button>
+          <el-button
+            type="primary"
+            icon="el-icon-document"
+            size="mini"
+            :disabled="multiple"
+            @click="handleClearing"
+          >运单清分</el-button>
+          <el-button
+            type="primary"
+            icon="el-icon-refresh"
+            size="mini"
+            :disabled="multiple"
+            @click="handleUpdate"
+          >更新清分状态</el-button>
+        </el-col>
+        <el-col :span="1.5" class="fr">
+          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
+        </el-col>
+        <right-toolbar
+          :show-search.sync="showSearch"
+          @queryTable="getList"
+        />
+      </el-row>
 
-    <el-row
-      :gutter="10"
-      class="mb8"
-    >
-      <el-col :span="1.5">
-        <el-button
-          type="info"
-          icon="el-icon-upload2"
-          size="mini"
-          @click="handleExport"
-        >导出</el-button>
-        <el-button
-          type="primary"
-          icon="el-icon-document-remove"
-          size="mini"
-          :disabled="multiple"
-          @click="handleClearing"
-        >运单清分</el-button>
-        <el-button
-          type="success"
-          icon="el-icon-refresh-right"
-          size="mini"
-          :disabled="multiple"
-          @click="handleUpdate"
-        >更新清分状态</el-button>
-      </el-col>
-      <el-col :span="1.5" class="fr">
-        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
-      </el-col>
-      <right-toolbar
-        :show-search.sync="showSearch"
-        @queryTable="getList"
+      <RefactorTable :loading="loading" :data="clarifylist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+        <!-- <template #isChild="{row}">
+          <span>{{ selectDictLabel(isChildOptions, row.isChild) }}</span>
+        </template> -->
+
+        <template #edit="{row}">
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleTableBtn(row, 1)"
+          >运单清分</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleTableBtn(row, 2)"
+          >更新清分状态</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleTableBtn(row, 3)"
+          >详情</el-button>
+        </template>
+      </RefactorTable>
+
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
       />
-    </el-row>
-
-    <RefactorTable :loading="loading" :data="clarifylist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
-      <!-- <template #goodsBigType="{row}">
-        <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
-      </template>
-      <template #isReturn="{row}">
-        <span>{{ selectDictLabel(isReturnOptions, row.isReturn) }}</span>
-      </template> -->
-      <!-- <template #isChild="{row}">
-        <span>{{ selectDictLabel(isChildOptions, row.isChild) }}</span>
-      </template> -->
-
-      <template #edit="{row}">
-        <el-button
-          size="mini"
-          type="text"
-          icon="el-icon-document-remove"
-          @click="handleTableBtn(row, 1)"
-        >运单清分</el-button>
-        <el-button
-          size="mini"
-          type="text"
-          icon="el-icon-refresh-right"
-          @click="handleTableBtn(row, 2)"
-        >更新清分状态</el-button>
-        <el-button
-          size="mini"
-          type="text"
-          icon="el-icon-document"
-          @click="handleTableBtn(row, 3)"
-        >详情</el-button>
-      </template>
-    </RefactorTable>
-
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
-
+    </div>
     <!-- 运单详情 对话框 -->
     <detail-dialog ref="DetailDialog" :current-id="currentId" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
-
   </div>
 </template>
 

@@ -1,187 +1,174 @@
 <template>
-  <div class="app-container">
-    <el-form
-      v-show="showSearch"
-      ref="queryForm"
-      :model="queryParams"
-      :inline="true"
-      label-width="80px"
-    >
-      <el-form-item
-        label="发票抬头"
-        prop="invoiceTitle"
+  <div>
+    <div v-show="showSearch" class="app-container app-container--search">
+      <el-form
+        v-show="showSearch"
+        ref="queryForm"
+        :model="queryParams"
+        :inline="true"
+        label-width="80px"
       >
-        <el-input
-          v-model="queryParams.invoiceTitle"
-          placeholder="请输入发票抬头"
-          clearable
-          size="small"
-          style="width: 230px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <!-- <el-form-item label="发票类型" prop="goodsBigType">
-        <el-select
-          v-model="queryParams.goodsBigType"
-          placeholder="请选择发票类型"
-          filterable
-          clearable
-          style="width: 230px"
-          size="small"
+        <el-form-item
+          label="发票抬头"
+          prop="invoiceTitle"
         >
-          <el-option
-            v-for="dict in billTypeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+          <el-input
+            v-model="queryParams.invoiceTitle"
+            placeholder="请输入发票抬头"
+            clearable
+            size="small"
+            style="width: 230px"
+            @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item> -->
-      <el-form-item
-        label="发票编号"
-        prop="askForNo"
-      >
-        <el-input
-          v-model="queryParams.askForNo"
-          placeholder="请输入发票编号"
-          clearable
-          size="small"
-          style="width: 230px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item
-        label="申请日期"
-        prop="invoiceApplyTime"
-      >
-        <el-date-picker
-          v-model="invoiceApplyTime"
-          type="daterange"
-          range-separator="-"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          style="width: 230px"
-          @change="datechoose"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button
-          type="cyan"
-          icon="el-icon-search"
-          size="mini"
-          @click="handleQuery"
+        </el-form-item>
+        <el-form-item
+          label="发票编号"
+          prop="askForNo"
         >
-          搜索
-        </el-button>
-        <el-button
-          icon="el-icon-refresh"
-          size="mini"
-          @click="resetQuery"
+          <el-input
+            v-model="queryParams.askForNo"
+            placeholder="请输入发票编号"
+            clearable
+            size="small"
+            style="width: 230px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item
+          label="申请日期"
+          prop="invoiceApplyTime"
         >
-          重置
-        </el-button>
-      </el-form-item>
-    </el-form>
+          <el-date-picker
+            v-model="invoiceApplyTime"
+            type="daterange"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 230px"
+            @change="datechoose"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="cyan"
+            icon="el-icon-search"
+            size="mini"
+            @click="handleQuery"
+          >
+            搜索
+          </el-button>
+          <el-button
+            icon="el-icon-refresh"
+            size="mini"
+            @click="resetQuery"
+          >
+            重置
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </div>
 
-    <el-row
-      :gutter="10"
-      class="mb8"
-    >
-      <el-col v-if="activeName == '1'" :span="1.5">
-        <el-button
-          v-hasPermi="['assets:vehicle:edit']"
-          type="success"
-          icon="el-icon-document-checked"
-          size="mini"
-          :disabled="multiple"
-          @click="handleVerify"
-        >批量审核</el-button>
-      </el-col>
-      <el-col v-if="activeName == '3'" :span="1.5">
-        <el-button
-          v-hasPermi="['assets:vehicle:remove']"
-          type="info"
-          icon="el-icon-upload2"
-          size="mini"
-          @click="handleExportFreight"
-        >导出运费明细</el-button>
-      </el-col>
-      <el-col v-if="activeName == '3'" :span="1.5">
-        <el-button
-          v-hasPermi="['assets:vehicle:export']"
-          type="info"
-          icon="el-icon-upload2"
-          size="mini"
-          @click="handleExportService"
-        >导出服务费明细</el-button>
-      </el-col>
-      <el-col :span="1.5" class="fr">
-        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
-      </el-col>
-      <right-toolbar
-        :show-search.sync="showSearch"
-        @queryTable="getList"
+    <div class="g-radio-group">
+      <el-radio-group v-model="activeName" size="small" @change="handleClick">
+        <el-radio-button label="1">已申请</el-radio-button>
+        <el-radio-button label="2,3,4">已审核</el-radio-button>
+        <el-radio-button label="5">已开票</el-radio-button>
+      </el-radio-group>
+    </div>
+
+    <div class="app-container">
+      <el-row
+        :gutter="10"
+        class="mb8"
+      >
+        <el-col v-if="activeName == '1'" :span="1.5">
+          <el-button
+            v-hasPermi="['assets:vehicle:edit']"
+            type="primary"
+            icon="el-icon-document-checked"
+            size="mini"
+            :disabled="multiple"
+            @click="handleVerify"
+          >批量审核</el-button>
+        </el-col>
+        <el-col v-if="activeName == '3'" :span="1.5">
+          <el-button
+            v-hasPermi="['assets:vehicle:remove']"
+            type="primary"
+            icon="el-icon-upload2"
+            size="mini"
+            @click="handleExportFreight"
+          >导出运费明细</el-button>
+        </el-col>
+        <el-col v-if="activeName == '3'" :span="1.5">
+          <el-button
+            v-hasPermi="['assets:vehicle:export']"
+            type="primary"
+            icon="el-icon-upload2"
+            size="mini"
+            @click="handleExportService"
+          >导出服务费明细</el-button>
+        </el-col>
+        <el-col :span="1.5" class="fr">
+          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
+        </el-col>
+        <right-toolbar
+          :show-search.sync="showSearch"
+          @queryTable="getList"
+        />
+      </el-row>
+
+      <RefactorTable :loading="loading" :data="billlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+        <template #invoiceStatus="{row}">
+          <span>{{ selectDictLabel(invoiceStatusOptions, row.invoiceStatus) }}</span>
+        </template>
+        <template #invoiceFrom="{row}">
+          <span>{{ selectDictLabel(invoiceFromOptions, row.invoiceFrom) }}</span>
+        </template>
+        <template #invoiceApplyTime="{row}">
+          <span>{{ parseTime(row.invoiceApplyTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+        </template>
+
+        <template #edit="{row}">
+          <el-button
+            v-if="activeName == '1'"
+            v-hasPermi="['system:menu:edit']"
+            size="mini"
+            type="text"
+            icon="el-icon-document-checked"
+            @click="handleTableBtn(row, 1)"
+          >审核</el-button>
+          <el-button
+            v-if="row.invoiceStatus == '4'"
+            v-hasPermi="['system:menu:edit']"
+            size="mini"
+            type="text"
+            icon="el-icon-tickets"
+            @click="handleTableBtn(row, 2)"
+          >开票</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-document"
+            @click="handleTableBtn(row, 3)"
+          >详情</el-button>
+        </template>
+      </RefactorTable>
+
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
       />
-    </el-row>
-
-    <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="已申请" name="1" />
-      <el-tab-pane label="已审核" name="2,3,4" />
-      <el-tab-pane label="已开票" name="5" />
-    </el-tabs>
-
-    <RefactorTable :loading="loading" :data="billlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
-      <template #invoiceStatus="{row}">
-        <span>{{ selectDictLabel(invoiceStatusOptions, row.invoiceStatus) }}</span>
-      </template>
-      <template #invoiceFrom="{row}">
-        <span>{{ selectDictLabel(invoiceFromOptions, row.invoiceFrom) }}</span>
-      </template>
-      <template #invoiceApplyTime="{row}">
-        <span>{{ parseTime(row.invoiceApplyTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-      </template>
-
-      <template #edit="{row}">
-        <el-button
-          v-if="activeName == '1'"
-          v-hasPermi="['system:menu:edit']"
-          size="mini"
-          type="text"
-          icon="el-icon-document-checked"
-          @click="handleTableBtn(row, 1)"
-        >审核</el-button>
-        <el-button
-          v-if="row.invoiceStatus == '4'"
-          v-hasPermi="['system:menu:edit']"
-          size="mini"
-          type="text"
-          icon="el-icon-tickets"
-          @click="handleTableBtn(row, 2)"
-        >开票</el-button>
-        <el-button
-          size="mini"
-          type="text"
-          icon="el-icon-document"
-          @click="handleTableBtn(row, 3)"
-        >详情</el-button>
-      </template>
-    </RefactorTable>
-
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
-
+    </div>
     <!-- 审核弹窗 -->
     <verify-dialog ref="VerifyDialog" :open.sync="verifydialog" :title="title" :disable="formDisable" @refresh="getList" />
     <!-- 开票弹窗 -->
     <billing-dialog ref="BillingDialog" :open.sync="billingdialog" :title="title" @refresh="getList" />
     <!-- 详情弹窗 -->
     <!-- <detail-dialog ref="DetailDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" /> -->
-
   </div>
 </template>
 
@@ -284,7 +271,7 @@ export default {
     },
     /** handleClick */
     handleClick(tab) {
-      this.queryParams.invoiceStatus = tab.name;
+      this.queryParams.invoiceStatus = tab;
       this.queryParams.pageNum = 1;
       this.getList();
     },
@@ -322,7 +309,7 @@ export default {
       this.formDisable = true;
       this.$refs.VerifyDialog.reset();
       this.verifydialog = true;
-      this.title = '批量审核';
+      this.title = '批量审批';
       this.$refs.VerifyDialog.setForm(this.ids);
       this.$refs.VerifyDialog.setNum(this.selectlenght);
     },
@@ -339,7 +326,7 @@ export default {
         case 1:
           this.$refs.VerifyDialog.reset();
           this.verifydialog = true;
-          this.title = '审核';
+          this.title = '审批';
           this.$refs.VerifyDialog.setForm(row.code);
           break;
         case 2:

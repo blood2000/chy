@@ -1,220 +1,226 @@
 <template>
-  <div class="app-container">
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
-      <el-form-item label="调度者名称" prop="name">
-        <el-input
-          v-model="queryParams.name"
-          placeholder="请输入调度者名称"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="管理者名称" prop="teamLeaderName">
-        <el-input
-          v-model="queryParams.teamLeaderName"
-          placeholder="请输入管理者名称"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择状态" filterable clearable size="small">
-          <el-option
-            v-for="dict in statusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+  <div>
+    <div v-show="showSearch" class="app-container app-container--search">
+      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
+        <el-form-item label="调度者名称" prop="name">
+          <el-input
+            v-model="queryParams.name"
+            placeholder="请输入调度者名称"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="司机姓名" prop="driverName">
-        <el-input
-          v-model="queryParams.driverName"
-          placeholder="请输入司机姓名"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="车牌号码" prop="licenseNumber">
-        <el-input
-          v-model="queryParams.licenseNumber"
-          placeholder="请输入车牌号码"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="审核状态" prop="authStatus">
-        <el-select
-          v-model="queryParams.authStatus"
-          filterable
-          clearable
-          size="small"
-        >
-          <el-option
-            v-for="dict in authStatusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+        </el-form-item>
+        <el-form-item label="管理者名称" prop="teamLeaderName">
+          <el-input
+            v-model="queryParams.teamLeaderName"
+            placeholder="请输入管理者名称"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="处理状态" prop="applyStatus">
-        <el-select v-model="queryParams.applyStatus" placeholder="请选择状态" filterable clearable size="small">
-          <el-option
-            v-for="dict in applyStatusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+        </el-form-item>
+        <el-form-item label="状态" prop="status">
+          <el-select v-model="queryParams.status" placeholder="请选择状态" filterable clearable size="small">
+            <el-option
+              v-for="dict in statusOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="司机姓名" prop="driverName">
+          <el-input
+            v-model="queryParams.driverName"
+            placeholder="请输入司机姓名"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
+        </el-form-item>
+        <el-form-item label="车牌号码" prop="licenseNumber">
+          <el-input
+            v-model="queryParams.licenseNumber"
+            placeholder="请输入车牌号码"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="审核状态" prop="authStatus">
+          <el-select
+            v-model="queryParams.authStatus"
+            filterable
+            clearable
+            size="small"
+          >
+            <el-option
+              v-for="dict in authStatusOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="处理状态" prop="applyStatus">
+          <el-select v-model="queryParams.applyStatus" placeholder="请选择状态" filterable clearable size="small">
+            <el-option
+              v-for="dict in applyStatusOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="app-container">
+      <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['assets:team:add']"
+            type="primary"
+            icon="el-icon-plus"
+            size="mini"
+            @click="handleAdd"
+          >新增</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['assets:team:edit']"
+            type="success"
+            icon="el-icon-edit"
+            size="mini"
+            :disabled="single"
+            @click="handleDetail({}, 'edit')"
+          >修改</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['assets:team:remove']"
+            type="danger"
+            icon="el-icon-delete"
+            size="mini"
+            :disabled="multiple"
+            @click="handleDelete"
+          >删除</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['assets:team:export']"
+            type="warning"
+            icon="el-icon-download"
+            size="mini"
+            :loading="exportLoading"
+            @click="handleExport"
+          >导出</el-button>
+        </el-col>
+        <el-col :span="1.5" class="fr">
+          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
+        </el-col>
+        <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+      </el-row>
 
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['assets:team:add']"
-          type="primary"
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-        >新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['assets:team:edit']"
-          type="success"
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleDetail({}, 'edit')"
-        >修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['assets:team:remove']"
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-        >删除</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['assets:team:export']"
-          type="warning"
-          icon="el-icon-download"
-          size="mini"
-          :loading="exportLoading"
-          @click="handleExport"
-        >导出</el-button>
-      </el-col>
-      <el-col :span="1.5" class="fr">
-        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
-      </el-col>
-      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
-    </el-row>
+      <RefactorTable :loading="loading" :data="infoList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+        <template #status="{row}">
+          <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
+        </template>
+        <template #isDistribution="{row}">
+          <span>{{ selectDictLabel(isOptions, row.isDistribution) }}</span>
+        </template>
+        <template #authStatus="{row}">
+          <span v-show="row.authStatus === 0" class="g-color-gray">未审核</span>
+          <span v-show="row.authStatus === 1" class="g-color-blue">审核中</span>
+          <span v-show="row.authStatus === 2" class="g-color-error">审核未通过</span>
+          <span v-show="row.authStatus === 3" class="g-color-success">审核通过</span>
+        </template>
+        <template #authTime="{row}">
+          <span>{{ parseTime(row.authTime, '{y}-{m}-{d}') }}</span>
+        </template>
+        <template #createTime="{row}">
+          <span>{{ parseTime(row.createTime, '{y}-{m}-{d}') }}</span>
+        </template>
+        <template #edit="{row}">
+          <el-button
+            v-hasPermi="['assets:team:manage']"
+            size="mini"
+            type="text"
+            @click="handleManage(row)"
+          >管理</el-button>
+          <el-button
+            v-hasPermi="['assets:team:get']"
+            size="mini"
+            type="text"
+            @click="handleDetail(row, 'detail')"
+          >详情</el-button>
+          <el-button
+            v-hasPermi="['assets:team:edit']"
+            size="mini"
+            type="text"
+            @click="handleDetail(row, 'edit')"
+          >修改</el-button>
+          <TableDropdown>
+            <el-dropdown-item>
+              <el-button
+                v-show="row.authStatus != 3"
+                v-has-permi="['assets:team:examine']"
+                size="mini"
+                type="text"
+                @click="handleDetail(row, 'review')"
+              >审核</el-button>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <el-button
+                v-show="row.status == 0 && row.authStatus == 3"
+                v-hasPermi="['assets:team:invitation']"
+                size="mini"
+                type="text"
+                @click="handleAddDriver(row)"
+              >邀请司机</el-button>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <el-button
+                v-show="row.apply && row.status == 0 && row.authStatus == 3"
+                v-hasPermi="['assets:team:deal']"
+                size="mini"
+                type="text"
+                @click="handleDeal(row)"
+              >处理申请</el-button>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <el-button
+                v-hasPermi="['assets:team:remove']"
+                size="mini"
+                type="text"
+                @click="handleDelete(row)"
+              >删除</el-button>
+            </el-dropdown-item>
+          </TableDropdown>
+        </template>
+      </RefactorTable>
 
-    <RefactorTable :loading="loading" :data="infoList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
-      <template #status="{row}">
-        <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
-      </template>
-      <template #isDistribution="{row}">
-        <span>{{ selectDictLabel(isOptions, row.isDistribution) }}</span>
-      </template>
-      <template #authStatus="{row}">
-        <span v-show="row.authStatus === 0" class="g-color-gray">未审核</span>
-        <span v-show="row.authStatus === 1" class="g-color-blue">审核中</span>
-        <span v-show="row.authStatus === 2" class="g-color-error">审核未通过</span>
-        <span v-show="row.authStatus === 3" class="g-color-success">审核通过</span>
-      </template>
-      <template #authTime="{row}">
-        <span>{{ parseTime(row.authTime, '{y}-{m}-{d}') }}</span>
-      </template>
-      <template #createTime="{row}">
-        <span>{{ parseTime(row.createTime, '{y}-{m}-{d}') }}</span>
-      </template>
-      <template #edit="{row}">
-        <el-button
-          v-hasPermi="['assets:team:manage']"
-          size="mini"
-          type="text"
-          icon="el-icon-setting"
-          @click="handleManage(row)"
-        >管理</el-button>
-        <el-button
-          v-hasPermi="['assets:team:get']"
-          size="mini"
-          type="text"
-          icon="el-icon-document"
-          @click="handleDetail(row, 'detail')"
-        >详情</el-button>
-        <el-button
-          v-hasPermi="['assets:team:edit']"
-          size="mini"
-          type="text"
-          icon="el-icon-edit"
-          @click="handleDetail(row, 'edit')"
-        >修改</el-button>
-        <el-button
-          v-show="row.authStatus != 3"
-          v-has-permi="['assets:team:examine']"
-          size="mini"
-          type="text"
-          icon="el-icon-document-checked"
-          @click="handleDetail(row, 'review')"
-        >审核</el-button>
-        <el-button
-          v-show="row.status == 0 && row.authStatus == 3"
-          v-hasPermi="['assets:team:invitation']"
-          size="mini"
-          type="text"
-          icon="el-icon-document-add"
-          @click="handleAddDriver(row)"
-        >邀请司机</el-button>
-        <el-button
-          v-show="row.apply && row.status == 0 && row.authStatus == 3"
-          v-hasPermi="['assets:team:deal']"
-          size="mini"
-          type="text"
-          icon="el-icon-document-checked"
-          @click="handleDeal(row)"
-        >处理申请</el-button>
-        <el-button
-          v-hasPermi="['assets:team:remove']"
-          size="mini"
-          type="text"
-          icon="el-icon-delete"
-          @click="handleDelete(row)"
-        >删除</el-button>
-      </template>
-    </RefactorTable>
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
 
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
-
-    <!-- 新增/修改/详情 对话框 -->
-    <team-dialog ref="TeamDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
-    <!-- 管理 对话框 -->
-    <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :team-code="teamCode" :team-name="teamName" />
-    <!-- 邀请司机 对话框 -->
-    <add-driver-dialog :open.sync="addDriverDialogOpen" :team-code="teamCode" />
-    <!-- 处理申请 对话框 -->
-    <apply-driver-dialog :open.sync="applyDriverDialogOpen" :team-code="teamCode" @refresh="getList" />
+      <!-- 新增/修改/详情 对话框 -->
+      <team-dialog ref="TeamDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
+      <!-- 管理 对话框 -->
+      <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :team-code="teamCode" :team-name="teamName" />
+      <!-- 邀请司机 对话框 -->
+      <add-driver-dialog :open.sync="addDriverDialogOpen" :team-code="teamCode" />
+      <!-- 处理申请 对话框 -->
+      <apply-driver-dialog :open.sync="applyDriverDialogOpen" :team-code="teamCode" @refresh="getList" />
+    </div>
   </div>
 </template>
 
@@ -311,7 +317,7 @@ export default {
       prop: 'edit',
       isShow: true,
       label: '操作',
-      width: 300,
+      width: 180,
       fixed: 'right'
     });
     this.getList();

@@ -103,6 +103,7 @@ export default {
     // 表单重置
     reset() {
       this.form = {
+        code: null,
         waybillCode: null,
         isWarning: null,
         warningTime: null,

@@ -1,68 +1,70 @@
 <template>
-  <div class="app-container">
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-      <el-form-item label="项目名称" prop="projectName">
-        <el-input
-          v-model="queryParams.projectName"
-          placeholder="请输入项目名称"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="商品类别" prop="commodityCategoryCode">
-        <el-select
-          v-model="queryParams.commodityCategoryCode"
-          placeholder="请选择商品类别"
-          clearable
-          filterable
-          size="small"
-        >
-          <el-option
-            v-for="dict in commodityCategoryCodeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+  <div>
+    <div v-show="showSearch" class="app-container app-container--search">
+      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+        <el-form-item label="项目名称" prop="projectName">
+          <el-input
+            v-model="queryParams.projectName"
+            placeholder="请输入项目名称"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
-
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['assets:shipment:project:add']"
-          type="primary"
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-        >新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['assets:shipment:project:edit']"
-          type="success"
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-        >修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['assets:shipment:project:remove']"
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-        >删除</el-button>
-      </el-col>
-      <!-- <el-col :span="1.5">
+        </el-form-item>
+        <el-form-item label="商品类别" prop="commodityCategoryCode">
+          <el-select
+            v-model="queryParams.commodityCategoryCode"
+            placeholder="请选择商品类别"
+            clearable
+            filterable
+            size="small"
+          >
+            <el-option
+              v-for="dict in commodityCategoryCodeOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="app-container">
+      <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['assets:shipment:project:add']"
+            type="primary"
+            icon="el-icon-plus"
+            size="mini"
+            @click="handleAdd"
+          >新增</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['assets:shipment:project:edit']"
+            type="success"
+            icon="el-icon-edit"
+            size="mini"
+            :disabled="single"
+            @click="handleUpdate"
+          >修改</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['assets:shipment:project:remove']"
+            type="danger"
+            icon="el-icon-delete"
+            size="mini"
+            :disabled="multiple"
+            @click="handleDelete"
+          >删除</el-button>
+        </el-col>
+        <!-- <el-col :span="1.5">
         <el-button
           v-hasPermi="['enterprise:project:export']"
           type="warning"
@@ -71,56 +73,55 @@
           @click="handleExport"
         >导出</el-button>
       </el-col>-->
-      <el-col :span="1.5" style="float: right;">
-        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
-      </el-col>
-      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
-    </el-row>
+        <el-col :span="1.5" style="float: right;">
+          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
+        </el-col>
+        <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+      </el-row>
 
-    <RefactorTable :loading="loading" :data="infoList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
-      <!-- <template #commodityCategoryCode="{row}">
+      <RefactorTable :loading="loading" :data="infoList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+        <!-- <template #commodityCategoryCode="{row}">
         <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.commodityCategoryCode) }}</span>
       </template> -->
-      <!-- <template #createTime="{row}">
+        <!-- <template #createTime="{row}">
         <span>{{ parseTime(row.createTime, '{y}-{m}-{d}') }}</span>
       </template>
       <template #updateTime="{row}">
         <span>{{ parseTime(row.updateTime, '{y}-{m}-{d}') }}</span>
       </template> -->
-      <template #edit="{row}">
-        <el-button
-          v-hasPermi="['assets:shipment:project:edit']"
-          size="mini"
-          type="text"
-          icon="el-icon-edit"
-          @click="handleUpdate(row)"
-        >修改</el-button>
-        <el-button
-          v-hasPermi="['assets:shipment:project:remove']"
-          size="mini"
-          type="text"
-          icon="el-icon-delete"
-          @click="handleDelete(row)"
-        >删除</el-button>
-      </template>
-    </RefactorTable>
+        <template #edit="{row}">
+          <el-button
+            v-hasPermi="['assets:shipment:project:edit']"
+            size="mini"
+            type="text"
+            @click="handleUpdate(row)"
+          >修改</el-button>
+          <el-button
+            v-hasPermi="['assets:shipment:project:remove']"
+            size="mini"
+            type="text"
+            @click="handleDelete(row)"
+          >删除</el-button>
+        </template>
+      </RefactorTable>
 
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
 
-    <!-- 新增/修改/详情 对话框 -->
-    <project-dialog
-      ref="ProjectDialog"
-      :title="title"
-      :open.sync="open"
-      :shipment-code="shipmentCode"
-      @refresh="getList"
-    />
+      <!-- 新增/修改/详情 对话框 -->
+      <project-dialog
+        ref="ProjectDialog"
+        :title="title"
+        :open.sync="open"
+        :shipment-code="shipmentCode"
+        @refresh="getList"
+      />
+    </div>
   </div>
 </template>
 

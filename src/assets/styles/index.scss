@@ -8,6 +8,7 @@
 @import './color.scss';
 @import './font.scss';
 @import './flex.scss';
+@import './element-rewrite/index.scss';
 
 html{
   font-size: calc(100vw / 96);
@@ -140,6 +141,15 @@ aside {
   background: #fff;
   box-shadow: 0px 2px 3px 0px rgba(51, 153, 255, 0.1);
   border-radius: 3px;
+  &.app-container--card {
+    padding: 0 20px 20px;
+  }
+  &.app-container--search{
+    padding: 20px 20px 8px;
+  }
+  &.app-container--tree{
+    margin: 0 0 15px 15px;
+  }
 }
 
 .components-container {

@@ -1,195 +1,197 @@
 <template>
-  <div class="app-container">
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
-      <el-form-item v-show="isAdmin" label="下单企业" prop="orderClient">
-        <el-input
-          v-model="queryParams.orderClient"
-          placeholder="请输入下单企业"
-          clearable
-          size="small"
-          style="width: 230px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item v-show="isAdmin" label="发货企业" prop="deliveryCompany">
-        <el-input
-          v-model="queryParams.deliveryCompany"
-          placeholder="请输入发货企业"
-          clearable
-          size="small"
-          style="width: 230px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="装货信息" prop="loadInfo">
-        <el-input
-          v-model="queryParams.loadInfo"
-          placeholder="装货地/装货电话/发货人"
-          clearable
-          size="small"
-          style="width: 230px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="收货信息" prop="receivedInfo">
-        <el-input
-          v-model="queryParams.receivedInfo"
-          placeholder="目的地/收货电话/收货人"
-          clearable
-          size="small"
-          style="width: 230px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="货源单号" prop="orderCode">
-        <el-input
-          v-model="queryParams.orderCode"
-          placeholder="请输入货源单号"
-          clearable
-          size="small"
-          style="width: 230px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item
-        label="接单日期"
-        prop="receiveTime"
-      >
-        <el-date-picker
-          v-model="receiveTime"
-          type="daterange"
-          range-separator="-"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          style="width: 230px"
-          @change="datechoose"
-        />
-      </el-form-item>
-      <el-form-item label="车牌号" prop="licenseNumber">
-        <el-input
-          v-model="queryParams.licenseNumber"
-          placeholder="请输入车牌号"
-          clearable
-          size="small"
-          style="width: 230px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="司机姓名" prop="driverName">
-        <el-input
-          v-model="queryParams.driverName"
-          placeholder="请输入司机姓名"
-          clearable
-          size="small"
-          style="width: 230px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="司机电话" prop="driverPhone">
-        <el-input
-          v-model="queryParams.driverPhone"
-          placeholder="请输入司机电话"
-          clearable
-          size="small"
-          style="width: 230px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="运输单号" prop="waybillNo">
-        <el-input
-          v-model="queryParams.waybillNo"
-          placeholder="请输入运输单号"
-          clearable
-          size="small"
-          style="width: 230px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-select
-          v-model="queryParams.status"
-          placeholder="请选择状态"
-          clearable
-          filterable
-          size="small"
-          style="width: 230px"
-        >
-          <el-option
-            v-for="dict in statusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+  <div>
+    <div v-show="showSearch" class="app-container app-container--search">
+      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
+        <el-form-item v-show="isAdmin" label="下单企业" prop="orderClient">
+          <el-input
+            v-model="queryParams.orderClient"
+            placeholder="请输入下单企业"
+            clearable
+            size="small"
+            style="width: 230px"
+            @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
+        </el-form-item>
+        <el-form-item v-show="isAdmin" label="发货企业" prop="deliveryCompany">
+          <el-input
+            v-model="queryParams.deliveryCompany"
+            placeholder="请输入发货企业"
+            clearable
+            size="small"
+            style="width: 230px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="装货信息" prop="loadInfo">
+          <el-input
+            v-model="queryParams.loadInfo"
+            placeholder="装货地/装货电话/发货人"
+            clearable
+            size="small"
+            style="width: 230px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="收货信息" prop="receivedInfo">
+          <el-input
+            v-model="queryParams.receivedInfo"
+            placeholder="目的地/收货电话/收货人"
+            clearable
+            size="small"
+            style="width: 230px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="货源单号" prop="orderCode">
+          <el-input
+            v-model="queryParams.orderCode"
+            placeholder="请输入货源单号"
+            clearable
+            size="small"
+            style="width: 230px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item
+          label="接单日期"
+          prop="receiveTime"
+        >
+          <el-date-picker
+            v-model="receiveTime"
+            type="daterange"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 230px"
+            @change="datechoose"
+          />
+        </el-form-item>
+        <el-form-item label="车牌号" prop="licenseNumber">
+          <el-input
+            v-model="queryParams.licenseNumber"
+            placeholder="请输入车牌号"
+            clearable
+            size="small"
+            style="width: 230px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="司机姓名" prop="driverName">
+          <el-input
+            v-model="queryParams.driverName"
+            placeholder="请输入司机姓名"
+            clearable
+            size="small"
+            style="width: 230px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="司机电话" prop="driverPhone">
+          <el-input
+            v-model="queryParams.driverPhone"
+            placeholder="请输入司机电话"
+            clearable
+            size="small"
+            style="width: 230px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="运输单号" prop="waybillNo">
+          <el-input
+            v-model="queryParams.waybillNo"
+            placeholder="请输入运输单号"
+            clearable
+            size="small"
+            style="width: 230px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="状态" prop="status">
+          <el-select
+            v-model="queryParams.status"
+            placeholder="请选择状态"
+            clearable
+            filterable
+            size="small"
+            style="width: 230px"
+          >
+            <el-option
+              v-for="dict in statusOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
 
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5" style="float: right;">
-        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
-      </el-col>
-      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
-    </el-row>
+    <div class="app-container">
+      <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5" style="float: right;">
+          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
+        </el-col>
+        <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+      </el-row>
 
-    <RefactorTable :loading="loading" :data="nullifyList" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
-      <template #isWarning="{row}">
-        <span>{{ selectDictLabel(isWarningOptions, row.isWarning) }}</span>
-      </template>
-      <template #isChild="{row}">
-        <span>{{ selectDictLabel(isChildOptions, row.isChild) }}</span>
-      </template>
-      <template #isSplit="{row}">
-        <span>{{ selectDictLabel(isOptions, row.isSplit) }}</span>
-      </template>
-      <template #status="{row}">
-        <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
-      </template>
-      <template #lastLoadingTime="{row}">
-        <span>{{ parseTime(row.lastLoadingTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-      </template>
-      <template #orderTime="{row}">
-        <span>{{ parseTime(row.orderTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-      </template>
-      <template #receiveTime="{row}">
-        <span>{{ parseTime(row.receiveTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-      </template>
-      <template #wayBillUpdateTime="{row}">
-        <span>{{ parseTime(row.wayBillUpdateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-      </template>
+      <RefactorTable :loading="loading" :data="nullifyList" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
+        <template #isWarning="{row}">
+          <span>{{ selectDictLabel(isWarningOptions, row.isWarning) }}</span>
+        </template>
+        <template #isChild="{row}">
+          <span>{{ selectDictLabel(isChildOptions, row.isChild) }}</span>
+        </template>
+        <template #isSplit="{row}">
+          <span>{{ selectDictLabel(isOptions, row.isSplit) }}</span>
+        </template>
+        <template #status="{row}">
+          <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
+        </template>
+        <template #lastLoadingTime="{row}">
+          <span>{{ parseTime(row.lastLoadingTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+        </template>
+        <template #orderTime="{row}">
+          <span>{{ parseTime(row.orderTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+        </template>
+        <template #receiveTime="{row}">
+          <span>{{ parseTime(row.receiveTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+        </template>
+        <template #wayBillUpdateTime="{row}">
+          <span>{{ parseTime(row.wayBillUpdateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+        </template>
 
-      <template #edit="{row}">
-        <el-button
-          v-hasPermi="['waybill:nullify:edit']"
-          size="mini"
-          type="text"
-          icon="el-icon-document"
-          @click="handleWaybill(row)"
-        >查看运单</el-button>
-        <el-button
-          v-hasPermi="['waybill:nullify:remove']"
-          size="mini"
-          type="text"
-          icon="el-icon-document-remove"
-          @click="handleLog(row)"
-        >驳回</el-button>
-      </template>
-    </RefactorTable>
+        <template #edit="{row}">
+          <el-button
+            v-hasPermi="['waybill:nullify:edit']"
+            size="mini"
+            type="text"
+            @click="handleWaybill(row)"
+          >查看运单</el-button>
+          <el-button
+            v-hasPermi="['waybill:nullify:remove']"
+            size="mini"
+            type="text"
+            @click="handleLog(row)"
+          >驳回</el-button>
+        </template>
+      </RefactorTable>
 
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
-
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
+    </div>
     <!-- 运单详情 对话框 -->
     <detail-dialog ref="DetailDialog" :current-id="currentId" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
   </div>
+  
 </template>
 
 <script>

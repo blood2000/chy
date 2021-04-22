@@ -6,6 +6,7 @@
     width="1300px"
     title="变动明细"
     append-to-body
+    class="i-detail"
     @close="cancel"
   >
     <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="80px">

@@ -1,75 +1,71 @@
 <template>
-  <div class="app-container">
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
-      <el-form-item label="规则名称" prop="name">
-        <el-input
-          v-model="queryParams.name"
-          placeholder="请输入规则名称"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
+  <div>
+    <div v-show="showSearch" class="app-container app-container--search">
+      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
+        <el-form-item label="规则名称" prop="name">
+          <el-input
+            v-model="queryParams.name"
+            placeholder="请输入规则名称"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="app-container">
+      <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['transport:ruleInfoShipment:add']"
+            type="primary"
+            icon="el-icon-plus"
+            size="mini"
+            @click="handleAdd"
+          >新增</el-button>
+        </el-col>
+        <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+      </el-row>
 
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['transport:ruleInfoShipment:add']"
-          type="primary"
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-        >新增</el-button>
-      </el-col>
-      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
-    </el-row>
+      <el-table v-loading="loading" :data="rulesList" stripe border @selection-change="handleSelectionChange">
+        <el-table-column type="selection" width="55" align="center" fixed="left" />
+        <el-table-column label="规则名称" align="center" prop="name" />
+        <el-table-column label="计算公式" align="center" prop="ruleDictValue" :formatter="ruleTypeFormat" min-width="150" />
+        <el-table-column label="扣费项目" align="center" prop="deduction" min-width="150" />
+        <el-table-column label="补贴项目" align="center" prop="subsidies" min-width="150" />
+        <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
+          <template slot-scope="scope">
+            <el-button
+              v-hasPermi="['transport:ruleInfoShipment:edit']"
+              size="mini"
+              type="text"
+              @click="handleUpdate(scope.row)"
+            >修改</el-button>
+            <el-button
+              v-hasPermi="['transport:ruleInfoShipment:remove']"
+              size="mini"
+              type="text"
+              @click="handleDelete(scope.row)"
+            >删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
 
-    <el-table v-loading="loading" :data="rulesList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <el-table-column label="规则名称" align="center" prop="name" />
-      <el-table-column
-        label="计算公式"
-        align="center"
-        prop="ruleDictValue"
-        :formatter="ruleTypeFormat"
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
       />
-      <el-table-column label="扣费项目" align="center" prop="deduction" />
-      <el-table-column label="补贴项目" align="center" prop="subsidies" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
-        <template slot-scope="scope">
-          <el-button
-            v-hasPermi="['transport:ruleInfoShipment:edit']"
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-          >修改</el-button>
-          <el-button
-            v-hasPermi="['transport:ruleInfoShipment:remove']"
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-          >删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
 
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
-
-    <!-- 添加或修改 对话框 -->
-    <rules-dialog ref="RulesDialog" :title="title" :open.sync="open" :shipment-code="shipmentCode" @refresh="getList" />
+      <!-- 添加或修改 对话框 -->
+      <rules-dialog ref="RulesDialog" :title="title" :open.sync="open" :shipment-code="shipmentCode" @refresh="getList" />
+    </div>
   </div>
 </template>
 

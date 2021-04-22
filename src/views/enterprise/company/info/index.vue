@@ -1,8 +1,8 @@
 <template>
   <div class="page-company-info">
     <!-- 企业信息 -->
-    <div v-if="form.shipperType === 1" class="app-container">
-      <h3 class="g-title-medium mb20">企业信息</h3>
+    <div v-if="form.shipperType === 1" class="app-container app-container--card">
+      <h3 class="g-card-title g-card-header mb20">企业信息</h3>
       <el-row>
         <!-- <el-col :span="4">
           <div class="ly-flex ly-flex-pack-center">
@@ -19,7 +19,7 @@
           </div>
         </el-col> -->
         <el-col :span="18">
-          <el-form ref="queryForm" :model="form" :rules="rules" label-width="150px" :label-position="'left'">
+          <el-form ref="queryForm" :model="form" :rules="rules" label-width="140px" :label-position="'left'">
             <el-form-item label="企业名称：" prop="companyName">
               <span class="mr20">{{ form.companyName }}</span>
               <span v-if="form.authStatus === 0" class="g-color-gray mr20">
@@ -54,8 +54,8 @@
     </div>
 
     <!-- 个人信息 -->
-    <div v-if="form.shipperType === 0" class="app-container">
-      <h3 class="g-title-medium mb20">个人信息</h3>
+    <div v-if="form.shipperType === 0" class="app-container app-container--card">
+      <h3 class="g-card-title g-card-header mb20">个人信息</h3>
       <el-row>
         <el-form ref="queryForm" :model="form" :rules="rules" label-width="100px" :label-position="'left'">
           <el-form-item label="姓名：" prop="adminName">
@@ -82,8 +82,8 @@
     </div>
 
     <!-- 管理员信息 -->
-    <div class="app-container">
-      <h3 class="g-title-medium mb10">管理员信息</h3>
+    <div class="app-container app-container--card">
+      <h3 class="g-card-title g-card-header mb20">管理员信息</h3>
       <el-row>
         <el-col :span="8">
           <label>姓名：</label>
@@ -132,18 +132,18 @@ export default {
       open: false,
       form: {},
       rules: {
-        organizationCodeNo: [
-          { required: true, trigger: 'blur', message: '统一社会信用代码不能为空' }
-        ],
-        businessLicenseNo: [
-          { required: true, trigger: 'blur', message: '营业执照号不能为空' }
-        ],
-        companyName: [
-          { required: true, trigger: 'blur', message: '企业名称不能为空' }
-        ],
-        businessLicenseImg: [
-          { required: true, trigger: 'blur', message: '营业执照不能为空' }
-        ]
+        // organizationCodeNo: [
+        //   { required: true, trigger: 'blur', message: '统一社会信用代码不能为空' }
+        // ],
+        // businessLicenseNo: [
+        //   { required: true, trigger: 'blur', message: '营业执照号不能为空' }
+        // ],
+        // companyName: [
+        //   { required: true, trigger: 'blur', message: '企业名称不能为空' }
+        // ],
+        // businessLicenseImg: [
+        //   { required: true, trigger: 'blur', message: '营业执照不能为空' }
+        // ]
       }
     };
   },

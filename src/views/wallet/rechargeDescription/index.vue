@@ -1,7 +1,7 @@
 <template>
   <div class="page-wallet">
-    <div class="app-container">
-      <h3 class="g-title-medium mb10">充值说明</h3>
+    <div class="app-container app-container--card">
+      <h3 class="g-card-title g-card-header mb20">充值说明</h3>
       <p class="g-text mb20 text-before">如需对钱包账户中的可用余额进行充值，必须使用与下方展示的司机宝电子账户开户名一致的企业对公账户向电子账户进行转账</p>
       <p class="g-text mb20 text-before">当前账户电子托管账户开户信息如下：</p>
       <table class="table-style mb20">
@@ -28,8 +28,8 @@
       </table>
     </div>
 
-    <div class="app-container">
-      <h3 class="g-title-medium mb10">常见问题</h3>
+    <div class="app-container app-container--card">
+      <h3 class="g-card-title g-card-header mb10">常见问题</h3>
       <p class="g-text mb20 text-before">关于充值到账时间：</p>
       <table class="table-style mb20">
         <tr>

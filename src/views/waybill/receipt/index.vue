@@ -1,200 +1,201 @@
 <template>
-  <div class="app-container">
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
-      <el-form-item v-show="isAdmin" label="下单企业" prop="orderClient">
-        <el-input
-          v-model="queryParams.orderClient"
-          placeholder="请输入下单企业"
-          clearable
-          size="small"
-          style="width: 228px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="货物类型" prop="goodsBigType">
-        <el-select
-          v-model="queryParams.goodsBigType"
-          placeholder="请选择货物类型"
-          clearable
-          filterable
-          size="small"
-          style="width: 228px"
-        >
-          <el-option
-            v-for="(dict, index) in goodsBigTypeOptions"
-            :key="index"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+  <div>
+    <div v-show="showSearch" class="app-container app-container--search">
+      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
+        <el-form-item v-show="isAdmin" label="下单企业" prop="orderClient">
+          <el-input
+            v-model="queryParams.orderClient"
+            placeholder="请输入下单企业"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="货源单号" prop="mainOrderNumber">
-        <el-input
-          v-model="queryParams.mainOrderNumber"
-          placeholder="请输入货源单号"
-          clearable
-          size="small"
-          style="width: 228px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item
-        label="接单日期"
-        prop="receiveTime"
-      >
-        <el-date-picker
-          v-model="receiveTime"
-          type="daterange"
-          range-separator="-"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          style="width: 228px"
-          @change="datechoose"
-        />
-      </el-form-item>
-      <el-form-item label="车牌号" prop="licenseNumber">
-        <el-input
-          v-model="queryParams.licenseNumber"
-          placeholder="请输入车牌号"
-          clearable
-          size="small"
-          style="width: 228px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="司机姓名" prop="driverName">
-        <el-input
-          v-model="queryParams.driverName"
-          placeholder="请输入司机姓名"
-          clearable
-          size="small"
-          style="width: 228px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="运输单号" prop="waybillNo">
-        <el-input
-          v-model="queryParams.waybillNo"
-          placeholder="请输入运输单号"
-          clearable
-          size="small"
-          style="width: 228px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="运单状态" prop="status">
-        <el-select
-          v-model="queryParams.status"
-          placeholder="请选择运单状态"
-          clearable
-          filterable
-          size="small"
-          style="width: 228px"
-        >
-          <el-option
-            v-for="(dict, index) in statusOptions"
-            :key="index"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+        </el-form-item>
+        <el-form-item label="货物类型" prop="goodsBigType">
+          <el-select
+            v-model="queryParams.goodsBigType"
+            placeholder="请选择货物类型"
+            clearable
+            filterable
+            size="small"
+            style="width: 228px"
+          >
+            <el-option
+              v-for="(dict, index) in goodsBigTypeOptions"
+              :key="index"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="货源单号" prop="mainOrderNumber">
+          <el-input
+            v-model="queryParams.mainOrderNumber"
+            placeholder="请输入货源单号"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="纸质回单" prop="isReturn">
-        <el-select
-          v-model="queryParams.isReturn"
-          placeholder="请选择纸质回单状态"
-          clearable
-          filterable
-          size="small"
-          style="width: 228px"
+        </el-form-item>
+        <el-form-item
+          label="接单日期"
+          prop="receiveTime"
         >
-          <el-option
-            v-for="(dict, index) in isReturnOptions"
-            :key="index"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+          <el-date-picker
+            v-model="receiveTime"
+            type="daterange"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 228px"
+            @change="datechoose"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button
-          type="cyan"
-          icon="el-icon-search"
-          size="mini"
-          @click="handleQuery"
-        >搜索</el-button>
-        <el-button
-          icon="el-icon-refresh"
-          size="mini"
-          @click="resetQuery"
-        >重置</el-button>
-      </el-form-item>
-    </el-form>
+        </el-form-item>
+        <el-form-item label="车牌号" prop="licenseNumber">
+          <el-input
+            v-model="queryParams.licenseNumber"
+            placeholder="请输入车牌号"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="司机姓名" prop="driverName">
+          <el-input
+            v-model="queryParams.driverName"
+            placeholder="请输入司机姓名"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="运输单号" prop="waybillNo">
+          <el-input
+            v-model="queryParams.waybillNo"
+            placeholder="请输入运输单号"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="运单状态" prop="status">
+          <el-select
+            v-model="queryParams.status"
+            placeholder="请选择运单状态"
+            clearable
+            filterable
+            size="small"
+            style="width: 228px"
+          >
+            <el-option
+              v-for="(dict, index) in statusOptions"
+              :key="index"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="纸质回单" prop="isReturn">
+          <el-select
+            v-model="queryParams.isReturn"
+            placeholder="请选择纸质回单状态"
+            clearable
+            filterable
+            size="small"
+            style="width: 228px"
+          >
+            <el-option
+              v-for="(dict, index) in isReturnOptions"
+              :key="index"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="cyan"
+            icon="el-icon-search"
+            size="mini"
+            @click="handleQuery"
+          >搜索</el-button>
+          <el-button
+            icon="el-icon-refresh"
+            size="mini"
+            @click="resetQuery"
+          >重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
 
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5" style="float: right;">
-        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
-      </el-col>
-      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
-    </el-row>
+    <div class="app-container">
+      <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5" style="float: right;">
+          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
+        </el-col>
+        <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+      </el-row>
 
-    <RefactorTable :loading="loading" :data="infoList" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
-      <template #isReturn="{row}">
-        <span>{{ selectDictLabel(isReturnOptions, row.isReturn) }}</span>
-      </template>
-      <template #status="{row}">
-        <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
-      </template>
-      <template #lastLoadingTime="{row}">
-        <span>{{ parseTime(row.lastLoadingTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-      </template>
-      <template #orderTime="{row}">
-        <span>{{ parseTime(row.orderTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-      </template>
-      <template #receiveTime="{row}">
-        <span>{{ parseTime(row.receiveTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-      </template>
-      <template #wayBillUpdateTime="{row}">
-        <span>{{ parseTime(row.wayBillUpdateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-      </template>
+      <RefactorTable :loading="loading" :data="infoList" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
+        <template #isReturn="{row}">
+          <span>{{ selectDictLabel(isReturnOptions, row.isReturn) }}</span>
+        </template>
+        <template #status="{row}">
+          <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
+        </template>
+        <template #lastLoadingTime="{row}">
+          <span>{{ parseTime(row.lastLoadingTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+        </template>
+        <template #orderTime="{row}">
+          <span>{{ parseTime(row.orderTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+        </template>
+        <template #receiveTime="{row}">
+          <span>{{ parseTime(row.receiveTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+        </template>
+        <template #wayBillUpdateTime="{row}">
+          <span>{{ parseTime(row.wayBillUpdateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+        </template>
 
-      <template #edit="{row}">
-        <el-button
-          size="mini"
-          type="text"
-          icon="el-icon-document"
-          @click="handleDetail(row)"
-        >详情</el-button>
-        <el-button
-          size="mini"
-          type="text"
-          @click="handleReturn(row)"
-        >退押金</el-button>
-        <el-button
-          size="mini"
-          type="text"
-          @click="handleDedution(row)"
-        >扣押金</el-button>
-      </template>
-    </RefactorTable>
+        <template #edit="{row}">
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleDetail(row)"
+          >详情</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleReturn(row)"
+          >退押金</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleDedution(row)"
+          >扣押金</el-button>
+        </template>
+      </RefactorTable>
 
-    <pagination
-      v-show="total > 0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
-
+      <pagination
+        v-show="total > 0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
+    </div>
     <!-- 详情 对话框 -->
     <detail-dialog ref="DetailDialog" :title="title" :open.sync="open" :disable="formDisable" :current-id="currentId" @refresh="getList" />
-
     <!-- 扣押金 对话框 -->
     <deduction-dialog :title="title" :open.sync="openDeduction" :current-id="currentId" @refresh="getList" />
-
     <!-- 退押金 对话框 -->
     <return-dialog :title="title" :open.sync="openReturn" :current-id="currentId" @refresh="getList" />
   </div>
+  
 </template>
 
 <script>

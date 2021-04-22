@@ -54,7 +54,6 @@
             :goods-unit-name="goodsUnitName"
             :total-type-value="totalTypeValue"
             :myisdisabled="myisdisabled"
-            :good="goods"
             :goods-submit-form="getGoodsAccounting"
             :showbudget="true"
           />
@@ -64,7 +63,7 @@
 
 
     <div class="mt20 ly-t-center">
-      <el-button @click="submit(false)">取消</el-button>
+      <el-button type="primary" plain @click="submit(false)">取消</el-button>
       <el-button type="primary" @click="submit(true)">确认</el-button>
     </div>
 

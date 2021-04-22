@@ -1,7 +1,7 @@
 <template>
   <div class="page-wallet">
-    <div class="app-container">
-      <h3 class="g-title-medium mb10">我的账户</h3>
+    <div class="app-container app-container--card">
+      <h3 class="g-card-title g-card-header mb20">我的账户</h3>
       <el-row class="mb20">
         <el-col :span="8">
           <p class="g-text mb10">
@@ -26,8 +26,8 @@
       <el-button type="text" @click="handleJumpPage('transactionRecord')">冻结明细</el-button>
     </div>
 
-    <div class="app-container">
-      <h3 class="g-title-medium mb10">支付与安全</h3>
+    <div class="app-container app-container--card">
+      <h3 class="g-card-title g-card-header mb20">支付与安全</h3>
       <p class="g-text mb20">
         <span class="g-color-blue">已设置</span>
       </p>
