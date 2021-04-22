@@ -77,3 +77,21 @@ export function examine(data) {
     data: data
   });
 }
+
+// 添加车辆与司机的关系
+export function addDriverCar(data) {
+  return request({
+    url: '/assets/vehicle/addDriverCar',
+    method: 'post',
+    data: data
+  });
+}
+
+// 添加车辆与调度者的关系
+export function addTeamCar(data) {
+  return request({
+    url: '/assets/vehicle/addTeamCar',
+    method: 'post',
+    data: data
+  });
+}
