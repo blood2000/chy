@@ -1,42 +1,7 @@
 <template>
   <div>
-    <div class="app-container">
-      <!-- <el-row :gutter="20" style="padding-bottom:30px">
-      <el-col :span="2">
-        <el-row type="flex" :gutter="20" justify="center" style="margin-bottom:10px">
-          <i class="el-icon-office-building" style="font-size: 1.5em" />
-        </el-row>
-        <el-row type="flex" :gutter="20" justify="center">
-          <span class="">货主信息</span>
-        </el-row>
-      </el-col>
-      <el-col :span="22">
-        <el-row type="flex" :gutter="20" style="margin-bottom:10px">
-          <el-col :span="3">
-            <el-dropdown trigger="click" @command="handleCommand">
-              <span class="el-dropdown-link">
-                公司名称<i class="el-icon-caret-bottom el-icon--right" />
-              </span>
-              <template #dropdown>
-                <el-dropdown-menu class="dropdown-menu" style="height:250px; overflow-y: scroll;">
-                  <el-dropdown-item v-for="dict in shipmentlist" :key="dict.code" :command="dict.code">{{ dict.adminName }}</el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
-          </el-col>
-        </el-row>
-        <el-row type="flex" :gutter="20">
-          <el-col :span="2">
-            <span class=""><i class="el-icon-s-custom" />范荣凯</span>
-          </el-col>
-          <el-col :span="2">
-            <span class=""><i class="el-icon-phone" />15980277723</span>
-          </el-col>
-        </el-row>
-      </el-col>
-    </el-row> -->
+    <div v-show="showSearch" class="app-container app-container--search">
       <el-form
-        v-show="showSearch"
         ref="queryForm"
         :model="queryParams"
         :inline="true"
@@ -182,7 +147,9 @@
           </el-button>
         </el-form-item>
       </el-form>
+    </div>
 
+    <div class="app-container">
       <el-row
         :gutter="10"
         class="mb8"
