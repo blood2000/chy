@@ -38,11 +38,15 @@
         </el-form-item>
       </el-form>
     </div>
+    <div class="g-radio-group">
+      <el-radio-group v-model="activeName" size="small" @change="handleClick">
+        <el-radio-button label="近三月" />
+        <el-radio-button label="近半年" />
+        <el-radio-button label="近一年" />
+      </el-radio-group>
+    </div>
     <div class="app-container">
       <el-row :gutter="10" class="mb8">
-        <el-button type="text">近三月</el-button>
-        <el-button type="text">近半年</el-button>
-        <el-button type="text">近一年</el-button>
         <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
@@ -107,7 +111,8 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10
-      }
+      },
+      activeName: '近三月'
     };
   },
   created() {
@@ -133,6 +138,9 @@ export default {
     resetQuery() {
       this.resetForm('queryForm');
       this.handleQuery();
+    },
+    handleClick() {
+
     }
   }
 };
