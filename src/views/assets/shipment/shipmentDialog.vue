@@ -330,7 +330,7 @@
         </el-col>
         <el-col v-if="form.isMonthly" :span="11">
           <el-form-item label="授信金额" prop="creditAmount">
-            <el-input-number v-model="form.creditAmount" :precision="2" :controls="false" placeholder="保留两位小数" />
+            <el-input-number v-model="form.creditAmount" :precision="2" :min="0" :max="1000000000" :controls="false" placeholder="保留两位小数" />
           </el-form-item>
         </el-col>
       </el-row>
