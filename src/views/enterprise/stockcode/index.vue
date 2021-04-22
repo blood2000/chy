@@ -109,6 +109,7 @@
 
 <script>
 import { listStockcode, getStockcode, delStockcode } from '@/api/enterprise/stockcode';
+import { downImgApi } from '@/api/system/image';
 import StockcodeDialog from './stockcodeDialog.vue';
 import orderListDialog from './orderListDialog.vue';
 
@@ -230,25 +231,32 @@ export default {
     },
     /** 下载货集码 */
     handleDownloadCode(row) {
-      const image = new Image();
-      image.setAttribute('crossOrigin', 'anonymous');
-      image.src = row.cargoCodeQR;
-      image.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = image.width;
-        canvas.height = image.height;
-        const context = canvas.getContext('2d');
-        context.drawImage(image, 0, 0, image.width, image.height);
-        canvas.toBlob((blob) => {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.download = `货集码_${new Date().getTime()}`;
-          a.href = url;
-          a.click();
-          a.remove();
-          URL.revokeObjectURL(url);
-        });
+      const params = {
+        url: row.cargoCodeQR,
+        fileName: row.cargoCodeName
       };
+      this.download(downImgApi, params, `货集码_${row.cargoCodeName}.jpg`);
+      // 前端下载方法1
+      // const image = new Image();
+      // image.setAttribute('crossOrigin', 'anonymous');
+      // image.src = row.cargoCodeQR;
+      // image.onload = () => {
+      //   const canvas = document.createElement('canvas');
+      //   canvas.width = image.width;
+      //   canvas.height = image.height;
+      //   const context = canvas.getContext('2d');
+      //   context.drawImage(image, 0, 0, image.width, image.height);
+      //   canvas.toBlob((blob) => {
+      //     const url = URL.createObjectURL(blob);
+      //     const a = document.createElement('a');
+      //     a.download = `货集码_${new Date().getTime()}`;
+      //     a.href = url;
+      //     a.click();
+      //     a.remove();
+      //     URL.revokeObjectURL(url);
+      //   });
+      // };
+      // 前端下载方法2
       // fetch(row.cargoCodeQR).then(res => res.blob().then(blob => {
       //   var a = document.createElement('a');
       //   var url = window.URL.createObjectURL(blob);
