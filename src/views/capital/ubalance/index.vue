@@ -1,107 +1,110 @@
 <template>
   <!-- 平台用户余额 -->
-  <div class="app-container">
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-      <el-form-item label="平台角色" prop="roleName">
-        <el-select v-model="queryParams.roleName" placeholder="请选择平台角色" clearable filterable size="small">
-          <el-option
-            v-for="dict in roleOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+  <div>
+    <div v-show="showSearch" class="app-container app-container--search">
+      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+        <el-form-item label="平台角色" prop="roleName">
+          <el-select v-model="queryParams.roleName" placeholder="请选择平台角色" clearable filterable size="small">
+            <el-option
+              v-for="dict in roleOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="企业名称" prop="orgName">
+          <el-input
+            v-model="queryParams.orgName"
+            placeholder="请输入企业名称"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="企业名称" prop="orgName">
-        <el-input
-          v-model="queryParams.orgName"
-          placeholder="请输入企业名称"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="用户姓名" prop="nickName">
-        <el-input
-          v-model="queryParams.nickName"
-          placeholder="请输入用户姓名"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="手机号码" prop="phonenumber">
-        <el-input
-          v-model="queryParams.phonenumber"
-          placeholder="请输入手机号码"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="余额区间">
-        <el-input
-          v-model="queryParams.minAmount"
-          placeholder="最小值"
-          clearable
-          size="small"
-          style="width: 96px"
-          @keyup.enter.native="handleQuery"
-        />
-        至
-        <el-input
-          v-model="queryParams.maxAmount"
-          placeholder="最大值"
-          clearable
-          size="small"
-          style="width: 96px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
+        </el-form-item>
+        <el-form-item label="用户姓名" prop="nickName">
+          <el-input
+            v-model="queryParams.nickName"
+            placeholder="请输入用户姓名"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="手机号码" prop="phonenumber">
+          <el-input
+            v-model="queryParams.phonenumber"
+            placeholder="请输入手机号码"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="余额区间">
+          <el-input
+            v-model="queryParams.minAmount"
+            placeholder="最小值"
+            clearable
+            size="small"
+            style="width: 96px"
+            @keyup.enter.native="handleQuery"
+          />
+          至
+          <el-input
+            v-model="queryParams.maxAmount"
+            placeholder="最大值"
+            clearable
+            size="small"
+            style="width: 96px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="app-container">
+      <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5" class="fr">
+          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
+        </el-col>
+        <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+      </el-row>
 
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5" class="fr">
-        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
-      </el-col>
-      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
-    </el-row>
+      <RefactorTable :loading="loading" :data="dataList" :table-columns-config="tableColumnsConfig">
+        <template #amount="{row}">
+          <span>{{ row.amount }}</span>
+        </template>
+        <template #freezeAmount="{row}">
+          <span>{{ row.freezeAmount }}</span>
+        </template>
+        <template #updateTime="{row}">
+          <span>{{ parseTime(row.updateTime) }}</span>
+        </template>
+        <template #edit="{row}">
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleBalance(row)"
+          >网商余额</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleDetail(row)"
+          >明细</el-button>
+        </template>
+      </RefactorTable>
 
-    <RefactorTable :loading="loading" :data="dataList" :table-columns-config="tableColumnsConfig">
-      <template #amount="{row}">
-        <span>{{ row.amount }}</span>
-      </template>
-      <template #freezeAmount="{row}">
-        <span>{{ row.freezeAmount }}</span>
-      </template>
-      <template #updateTime="{row}">
-        <span>{{ parseTime(row.updateTime) }}</span>
-      </template>
-      <template #edit="{row}">
-        <el-button
-          size="mini"
-          type="text"
-          @click="handleBalance(row)"
-        >网商余额</el-button>
-        <el-button
-          size="mini"
-          type="text"
-          @click="handleDetail(row)"
-        >明细</el-button>
-      </template>
-    </RefactorTable>
-
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
+    </div>
 
     <!-- 变动明细 对话框 -->
     <change-detail-dialog :open.sync="detailOpen" :title="title" :user-code="userCode" />

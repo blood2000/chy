@@ -1,8 +1,8 @@
 <template>
   <div>
     <!-- 用户银行卡 -->
-    <div class="app-container app-container--search">
-      <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+    <div v-show="showSearch" class="app-container app-container--search">
+      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
         <el-form-item label="开户姓名" prop="name">
           <el-input
             v-model="queryParams.name"
