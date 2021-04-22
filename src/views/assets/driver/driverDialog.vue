@@ -837,14 +837,14 @@ export default {
           if (data.name) this.form.name = data.name;
           if (data.number) this.form.identificationNumber = data.number;
           if (data.address) this.form.homeAddress = data.address;
-          if (data.valid_from) this.form.identificationBeginTime = data.valid_from;
-          if (data.valid_to) this.form.identificationEndTime = data.valid_to;
+          if (data.valid_from) this.$set(this.form, 'identificationBeginTime', data.valid_from);
+          if (data.valid_to) this.$set(this.form, 'identificationEndTime', data.valid_to);
           break;
         case 'driver-license':
           if (data.number) this.form.driverLicense = data.number;
           if (data.issuing_authority) this.form.issuingOrganizations = data.issuing_authority;
-          if (data.valid_from) this.form.validPeriodFrom = data.valid_from;
-          if (data.valid_to) this.form.validPeriodTo = data.valid_to;
+          if (data.valid_from) this.$set(this.form, 'validPeriodFrom', data.valid_from);
+          if (data.valid_to) this.$set(this.form, 'validPeriodTo', data.valid_to);
           if (data.class) this.form.driverLicenseType = data.class;
           break;
         case 'vehicle-license':

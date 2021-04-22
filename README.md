@@ -51,3 +51,11 @@ npm run build:stage
 # 构建生产环境(互联网环境)
 npm run build:prod
 ```
+
+## 测试环境部署规范
+
+统一测试环境web部署位置
+
+```
+/var/nginx/html/{project}
+```
