@@ -172,6 +172,18 @@
         </el-col>
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
+      <el-row v-show="teamCode" :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['assets:driver:remove']"
+            type="danger"
+            icon="el-icon-delete"
+            size="mini"
+            :disabled="multiple"
+            @click="handleDelBind"
+          >解除绑定</el-button>
+        </el-col>
+      </el-row>
 
       <RefactorTable :loading="loading" :data="driverList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
         <template #driverType="{row}">
@@ -230,6 +242,13 @@
             type="text"
             @click="handleDetail(row, 'detail')"
           >详情</el-button>
+          <el-button
+            v-show="teamCode"
+            v-hasPermi="['assets:driver:remove']"
+            size="mini"
+            type="text"
+            @click="handleDelBind(row)"
+          >解除绑定</el-button>
           <template v-if="!teamCode">
             <el-button
               v-hasPermi="['assets:driver:edit']"
@@ -303,7 +322,7 @@
 
 <script>
 import { listDriverApi, listDriver, getDriver, delDriver, getAgreementWord } from '@/api/assets/driver';
-import { listInfo } from '@/api/assets/team';
+import { listInfo, delTeamReDriver } from '@/api/assets/team';
 import DriverDialog from './driverDialog';
 import ImportDialog from './importDialog';
 import ManageDialog from './manageDialog';
@@ -373,6 +392,7 @@ export default {
       // 选中数组
       ids: [],
       driverNames: [],
+      codes: [],
       // 非单个禁用
       single: true,
       // 非多个禁用
@@ -500,6 +520,7 @@ export default {
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id);
       this.driverNames = selection.map(item => item.name);
+      this.codes = selection.map(item => item.code);
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
     },
@@ -605,6 +626,27 @@ export default {
     handleDeal(row) {
       this.driverCode = row.code;
       this.applyTeamDialogOpen = true;
+    },
+    /** 解除调度者与司机的关联 */
+    handleDelBind(row) {
+      const _this = this;
+      const codes = row.code || this.codes.join(',');
+      const driverNames = row.name || this.driverNames;
+      this.$confirm('是否确认与司机"' + driverNames + '"解除绑定?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        if (_this.teamCode) {
+          return delTeamReDriver({
+            teamCode: _this.teamCode,
+            driverCodes: codes
+          });
+        }
+      }).then(() => {
+        this.getList();
+        this.msgSuccess('操作成功');
+      });
     }
   }
 };

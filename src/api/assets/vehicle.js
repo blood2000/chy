@@ -87,11 +87,29 @@ export function addDriverCar(data) {
   });
 }
 
+// 删除车辆与司机的关系
+export function delDriverCar(data) {
+  return request({
+    url: '/assets/driver/delVehicleReDriver',
+    method: 'delete',
+    params: data
+  });
+}
+
 // 添加车辆与调度者的关系
 export function addTeamCar(data) {
   return request({
     url: '/assets/vehicle/addTeamCar',
     method: 'post',
     data: data
+  });
+}
+
+// 删除车辆与调度者的关系
+export function delTeamCar(data) {
+  return request({
+    url: '/assets/team/delTeamReVehicle',
+    method: 'delete',
+    params: data
   });
 }

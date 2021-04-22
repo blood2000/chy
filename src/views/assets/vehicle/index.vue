@@ -173,6 +173,16 @@
             @click="handleAdd('bind')"
           >添加车辆</el-button>
         </el-col>
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['assets:vehicle:remove']"
+            type="danger"
+            icon="el-icon-delete"
+            size="mini"
+            :disabled="multiple"
+            @click="handleDelBind"
+          >解除绑定</el-button>
+        </el-col>
       </el-row>
 
       <RefactorTable :loading="loading" :data="vehicleList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
@@ -248,6 +258,13 @@
             type="text"
             @click="handleDetail(row, 'detail')"
           >详情</el-button>
+          <el-button
+            v-show="teamCode || driverCode"
+            v-hasPermi="['assets:vehicle:remove']"
+            size="mini"
+            type="text"
+            @click="handleDelBind(row)"
+          >解除绑定</el-button>
           <template v-if="!teamCode && !driverCode">
             <el-button
               v-hasPermi="['assets:vehicle:edit']"
@@ -302,7 +319,7 @@
 </template>
 
 <script>
-import { listVehicleApi, listInfo, getInfo, delInfo } from '@/api/assets/vehicle';
+import { listVehicleApi, listInfo, getInfo, delInfo, delDriverCar, delTeamCar } from '@/api/assets/vehicle';
 import VehicleDialog from './vehicleDialog';
 import ManageDialog from './manageDialog';
 
@@ -331,6 +348,7 @@ export default {
       // 选中数组
       ids: [],
       vehicleNames: [],
+      codes: [],
       // 非单个禁用
       single: true,
       // 非多个禁用
@@ -489,6 +507,7 @@ export default {
     handleSelectionChange(selection) {
       this.ids = selection.map((item) => item.id);
       this.vehicleNames = selection.map((item) => item.licenseNumber);
+      this.codes = selection.map((item) => item.code);
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
     },
@@ -564,6 +583,32 @@ export default {
     handleManage(row) {
       this.vehicleCode = row.code;
       this.manageDialogOpen = true;
+    },
+    /** 解除司机/调度者与车辆的关联 */
+    handleDelBind(row) {
+      const _this = this;
+      const codes = row.code || this.codes.join(',');
+      const vehicleNames = row.licenseNumber || this.vehicleNames;
+      this.$confirm('是否确认与车牌号为"' + vehicleNames + '"的车辆解除绑定?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        if (_this.driverCode) {
+          return delDriverCar({
+            driverCode: _this.driverCode,
+            vehicleCodes: codes
+          });
+        } else if (_this.teamCode) {
+          return delTeamCar({
+            teamCode: _this.teamCode,
+            vehicleCodes: codes
+          });
+        }
+      }).then(() => {
+        this.getList();
+        this.msgSuccess('操作成功');
+      });
     }
   }
 };
