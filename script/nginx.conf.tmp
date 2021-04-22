@@ -3,7 +3,7 @@ server {
     server_name localhost;
     charset 'utf-8';
     location / {
-        root   /var/nginx/html/#{JOB_BASE_NAME};
+        root   /usr/share/nginx/html/#{JOB_BASE_NAME};
         try_files $uri $uri/ /index.html;
         index  index.html index.htm;
     }
