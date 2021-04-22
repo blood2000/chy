@@ -13,7 +13,7 @@
           value-format="yyyy-MM-dd HH:mm:ss"
         />
       </el-form-item>
-      <el-form-item label="装货重量" prop="loadWeight">
+      <el-form-item label="装货重量(吨)" prop="loadWeight">
         <el-input-number v-model="form.loadWeight" placeholder="请输入装货过磅重量" :disabled="disable" controls-position="right" :min="0" style="width:90%;" />
       </el-form-item>
       <el-form-item label="货物" prop="goodsCode">
@@ -90,7 +90,7 @@
         </el-select>
       </el-form-item> -->
       <el-form-item label="装货单据" prop="attachmentCode">
-        <uploadImage v-model="form.attachmentCode" :fresh="fresh" :limit="1" />
+        <uploadImage v-model="form.attachmentCode" />
       </el-form-item>
       <el-form-item label="装货备注" prop="remark">
         <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" :disabled="disable" placeholder="请输入装货备注信息" style="width:90%;" />
@@ -105,7 +105,7 @@
 
 <script>
 import { load, getAddress, getInfoDetail, loadCredentials, getGoods } from '@/api/waybill/tracklist';
-import UploadImage from '@/components/UploadImage/moreImg';
+import UploadImage from '@/components/UploadImage/index';
 
 export default {
   name: 'DialogA',
