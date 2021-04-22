@@ -1,488 +1,379 @@
 <template>
   <div>
-    <el-row>
-      <el-col v-if="false" :span="4">
-        <el-card class="card-left">
-          <div slot="header">
-            <div class="left_v" />
-            <span>地区列表</span>
-          </div>
-          <!-- 树形结构 -->
-          <el-tree
-            :data="data"
-            show-checkbox
-            node-key="id"
-            :default-expanded-keys="[2, 3]"
-            :default-checked-keys="[5]"
-            :props="{children: 'children',label: 'label'}"
+
+    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="90px" class="clearfix app-container" @submit.native.prevent>
+      <el-form-item v-show="!isShipment" label="下单客户" prop="tin1">
+        <el-input
+          v-model="queryParams.tin1"
+          placeholder="公司名称/客户姓名/手机号"
+          clearable
+          size="small"
+          style="width: 228px"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+
+      <el-form-item label="装货信息" prop="tin2">
+        <el-input
+          v-model="queryParams.tin2"
+          placeholder="装货地/装货电话/装货人"
+          clearable
+          size="small"
+          style="width: 228px"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+
+      <el-form-item label="卸货信息" prop="tin3">
+        <el-input
+          v-model="queryParams.tin3"
+          placeholder="目的地/收货电话/收货人"
+          clearable
+          size="small"
+          style="width: 228px"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+
+      <el-form-item label="货物类型" prop="tin4">
+        <el-select v-model="queryParams.tin4" placeholder="----请选择----" clearable filterable style="width: 228px">
+          <el-option
+            v-for="(dict,index) in goodsTypeOption"
+            :key="index"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
           />
-        </el-card>
-      </el-col>
-      <el-col :span="24">
-        <el-card class="card-rigth">
-          <div v-if="false" slot="header">
-            <div class="left_v" />
-            <span>货源管理</span>
-          </div>
-          <!-- 右边 -->
-          <div>
-            <div ref="queryFormBox">
+        </el-select>
+      </el-form-item>
 
-              <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="90px" class="clearfix" @submit.native.prevent>
-                <el-form-item v-show="!isShipment" label="下单客户" prop="tin1">
-                  <el-input
-                    v-model="queryParams.tin1"
-                    placeholder="公司名称/客户姓名/手机号"
-                    clearable
-                    size="small"
-                    style="width: 228px"
-                    @keyup.enter.native="handleQuery"
-                  />
-                </el-form-item>
-
-                <el-form-item label="装货信息" prop="tin2">
-                  <el-input
-                    v-model="queryParams.tin2"
-                    placeholder="装货地/装货电话/装货人"
-                    clearable
-                    size="small"
-                    style="width: 228px"
-                    @keyup.enter.native="handleQuery"
-                  />
-                </el-form-item>
-
-                <el-form-item label="卸货信息" prop="tin3">
-                  <el-input
-                    v-model="queryParams.tin3"
-                    placeholder="目的地/收货电话/收货人"
-                    clearable
-                    size="small"
-                    style="width: 228px"
-                    @keyup.enter.native="handleQuery"
-                  />
-                </el-form-item>
-
-                <el-form-item label="货物类型" prop="tin4">
-                  <el-select v-model="queryParams.tin4" placeholder="----请选择----" clearable filterable style="width: 228px">
-                    <!-- goodsTypeOption -->
-                    <el-option
-                      v-for="(dict,index) in goodsTypeOption"
-                      :key="index"
-                      :label="dict.dictLabel"
-                      :value="dict.dictValue"
-                    />
-                  </el-select>
-                </el-form-item>
-
-                <el-form-item v-if="false" label="货物描述" prop="tin5">
-                  <el-input
-                    v-model="queryParams.tin5"
-                    placeholder="请输入货物描述"
-                    clearable
-                    size="small"
-                    style="width: 228px"
-                    @keyup.enter.native="handleQuery"
-                  />
-                </el-form-item>
+      <el-form-item v-if="false" label="货物描述" prop="tin5">
+        <el-input
+          v-model="queryParams.tin5"
+          placeholder="请输入货物描述"
+          clearable
+          size="small"
+          style="width: 228px"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
 
 
 
-                <el-form-item label="货源单号" prop="tin7">
-                  <el-input
-                    v-model="queryParams.tin7"
-                    placeholder="请输入货源单号"
-                    clearable
-                    size="small"
-                    style="width: 228px"
-                    @keyup.enter.native="handleQuery"
-                  />
-                </el-form-item>
+      <el-form-item label="货源单号" prop="tin7">
+        <el-input
+          v-model="queryParams.tin7"
+          placeholder="请输入货源单号"
+          clearable
+          size="small"
+          style="width: 228px"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
 
-                <!-- <el-form-item label="司机id" prop="driverId">
-                <el-input
-                  v-model="queryParams.driverId"
-                  placeholder="(司机id)查询自己公司的货源"
-                  clearable
-                  size="small"
-                  @keyup.enter.native="handleQuery"
-                />
-              </el-form-item> -->
+      <el-form-item v-if="false" label="货源状态" prop="tin8">
+        <el-select v-model="queryParams.tin8" placeholder="----请选择----" style="width: 228px" clearable filterable>
+          <el-option
+            v-for="(dict,index) in statusOptions"
+            :key="index"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-select>
+      </el-form-item>
 
-                <el-form-item v-if="false" label="货源状态" prop="tin8">
-                  <el-select v-model="queryParams.tin8" placeholder="----请选择----" style="width: 228px" clearable filterable>
-                    <el-option
-                      v-for="(dict,index) in statusOptions"
-                      :key="index"
-                      :label="dict.dictLabel"
-                      :value="dict.dictValue"
-                      @keyup.enter.native="handleQuery"
-                    />
-                  </el-select>
-                </el-form-item>
+      <el-form-item label="发布方式" prop="tin11">
+        <el-select v-model="queryParams.tin11" placeholder="----请选择----" style="width: 228px" clearable filterable>
+          <el-option
+            v-for="(dict,index) in isPublicTypeOptions"
+            :key="index"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-select>
+      </el-form-item>
 
-                <el-form-item label="发布方式" prop="tin11">
-                  <el-select v-model="queryParams.tin11" placeholder="----请选择----" style="width: 228px" clearable filterable>
-                    <el-option
-                      v-for="(dict,index) in isPublicTypeOptions"
-                      :key="index"
-                      :label="dict.dictLabel"
-                      :value="dict.dictValue"
-                      @keyup.enter.native="handleQuery"
-                    />
-                  </el-select>
-                </el-form-item>
+      <el-form-item v-show="(queryParams.tin8+'') ==='1'" label="下架状态" prop="isManual">
+        <el-select v-model="queryParams.isManual" placeholder="----请选择----" clearable filterable style="width: 228px">
+          <el-option
+            v-for="(dict,index) in dicts['isManual_option']"
+            :key="index"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
 
-                <el-form-item v-show="(queryParams.tin8+'') ==='1'" label="下架状态" prop="isManual">
-                  <el-select v-model="queryParams.isManual" placeholder="----请选择----" clearable filterable style="width: 228px">
-                    <el-option
-                      v-for="(dict,index) in dicts['isManual_option']"
-                      :key="index"
-                      :label="dict.dictLabel"
-                      :value="dict.dictValue"
-                    />
-                  </el-select>
-                </el-form-item>
+      <el-form-item label="发布时间" prop="tin10">
+        <el-date-picker
+          v-model="queryParams.tin10"
+          size="small"
+          style="width: 228px"
+          value-format="yyyy-MM-dd"
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        />
+      </el-form-item>
+
+      <!-- 做远程的 -->
+      <el-form-item v-show="!isShipment" label="货主" prop="tin6" size="small">
+        <el-select
+          v-model="queryParams.tin6"
+          v-el-select-loadmore="loadmore"
+          filterable
+          clearable
+          remote
+          reserve-keyword
+          placeholder="请输入关键词"
+          :remote-method="remoteMethod"
+          :loading="loading"
+          style="width: 228px"
+          @keyup.enter.native="handleQuery"
+        >
+          <el-option
+            v-for="(item, index1) in shipmentList"
+            :key="index1"
+            :value="item.code"
+            :label="item.adminName"
+          >
+            <div class="ly-flex-pack-justify"><span>{{ item.adminName }}</span><span>{{ item.telphone }}</span></div>
+          </el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5" class="fr">
+          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+          <el-button icon="el-icon-refresh" type="primary" plain size="mini" @click="resetQuery">重置</el-button>
+        </el-col>
+      </el-row>
+
+    </el-form>
+
+    <div class="app-container">
+
+      <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-radio-group v-model="activeName" size="small" @change="handleClick">
+            <el-radio-button label="0">已发布</el-radio-button>
+            <el-radio-button label="1">已关闭</el-radio-button>
+          </el-radio-group>
+        </el-col>
+
+        <el-col :span="1.5">
+          <el-button
+            v-if="false"
+            v-hasPermi="['system:test:export']"
+            type="warning"
+            icon="el-icon-download"
+            size="mini"
+            @click="handleExport"
+          >导出</el-button>
+        </el-col>
+
+        <el-col :span="1.5" class="fr">
+          <tablec-cascader v-model="tableColumnsConfig" :lcokey="listManagesApi" />
+        </el-col>
+        <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+        <!-- <el-col v-show="showSearch" :span="1.5" class="fr mr20">
+          <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        </el-col> -->
+      </el-row>
 
 
-                <!-- <el-form-item label="是否拼单" prop="tin9">
-                <el-select v-model="queryParams.tin9" placeholder="----请选择----" style="width: 215px">
-                  <el-option
-                    v-for="dict in isShareTypeOptions"
-                    :key="dict.dictValue"
-                    :label="dict.dictLabel"
-                    :value="dict.dictValue"
-                  />
-                </el-select>
-              </el-form-item> -->
-
-                <el-form-item label="发布时间" prop="tin10">
-                  <el-date-picker
-                    v-model="queryParams.tin10"
-                    size="small"
-                    style="width: 228px"
-                    value-format="yyyy-MM-dd"
-                    type="daterange"
-                    range-separator="-"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                  />
-                </el-form-item>
-
-                <!-- 做远程的 -->
-                <el-form-item v-show="!isShipment" label="货主" prop="tin6" size="small">
-                  <el-select
-                    v-model="queryParams.tin6"
-                    v-el-select-loadmore="loadmore"
-                    filterable
-                    clearable
-                    remote
-                    reserve-keyword
-                    placeholder="请输入关键词"
-                    :remote-method="remoteMethod"
-                    :loading="loading"
-                    style="width: 228px"
-                    @keyup.enter.native="handleQuery"
-                  >
-                    <el-option
-                      v-for="(item, index1) in shipmentList"
-                      :key="index1"
-                      :value="item.code"
-                      :label="item.adminName"
-                    >
-                      <div class="ly-flex-pack-justify"><span>{{ item.adminName }}</span><span>{{ item.telphone }}</span></div>
-                    </el-option>
-                  </el-select>
-                </el-form-item>
-
-
-              <!-- <el-form-item class="fr">
-                <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-                <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-              </el-form-item> -->
-              </el-form>
-            </div>
-
-            <el-row :gutter="10" class="mb8">
-              <!-- <el-col :span="1.5">
-                <el-button
-                  v-hasPermi="['system:test:remove']"
-                  type="danger"
-                  icon="el-icon-delete"
-                  size="mini"
-                  :disabled="multiple"
-                  @click="handleDelete"
-                >删除</el-button>
-              </el-col> -->
-              <el-col :span="1.5">
-                <el-radio-group v-model="activeName" size="small" @change="handleClick">
-                  <el-radio-button label="0">已发布</el-radio-button>
-                  <el-radio-button label="1">已关闭</el-radio-button>
-                </el-radio-group>
-              </el-col>
-
-              <el-col :span="1.5">
-                <el-button
-                  v-if="false"
-                  v-hasPermi="['system:test:export']"
-                  type="warning"
-                  icon="el-icon-download"
-                  size="mini"
-                  @click="handleExport"
-                >导出</el-button>
-              </el-col>
-
-              <el-col :span="1.5" class="fr">
-                <tablec-cascader v-model="tableColumnsConfig" :lcokey="listManagesApi" />
-              </el-col>
-              <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
-              <el-col v-show="showSearch" :span="1.5" class="fr mr20">
-                <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-                <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-              </el-col>
-            </el-row>
-
-            <!-- default-expand-all -->
-            <!-- height="400" -->
-            <RefactorTable
-              is-show-index
-              :height="theight"
-              :loading="loading"
-              :data="list"
-              row-key="id"
-              stripe
-              :row-class-name="tableRowClassName"
-              :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
-              :table-columns-config="tableColumnsConfig"
-            ><!-- @selection-change="handleSelectionChange" -->
-              <!-- 装货地 -->
-              <template #addressName1="{row}">
-                <span>{{ row.addressAlias1 || row.addressName1 }}</span>
-              </template>
-              <!-- 装货地 -->
-              <template #addressName2="{row}">
-                <span>{{ row.addressAlias2 || row.addressName2 }}</span>
-              </template>
-              <template #landAddress="{row}">
-                <span>{{ row.landAddress }}</span>
-              </template>
-              <!-- billingType	发运方式 0->汽运一票制，1->对付，2->代收代付 -->
-              <!-- <template #billingType="{row}">
+      <RefactorTable
+        is-show-index
+        :height="theight"
+        :loading="loading"
+        :data="list"
+        row-key="id"
+        stripe
+        :row-class-name="tableRowClassName"
+        :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+        :table-columns-config="tableColumnsConfig"
+      ><!-- @selection-change="handleSelectionChange" -->
+        <!-- 装货地 -->
+        <template #addressName1="{row}">
+          <span>{{ row.addressAlias1 || row.addressName1 }}</span>
+        </template>
+        <!-- 装货地 -->
+        <template #addressName2="{row}">
+          <span>{{ row.addressAlias2 || row.addressName2 }}</span>
+        </template>
+        <template #landAddress="{row}">
+          <span>{{ row.landAddress }}</span>
+        </template>
+        <!-- billingType	发运方式 0->汽运一票制，1->对付，2->代收代付 -->
+        <!-- <template #billingType="{row}">
                 <span>{{ selectDictLabel(billingTypeOptions, row.billingType) }}</span>
               </template> -->
-              <!-- status	状态 0.启用 1.禁用 -->
-              <template #status="{row}">
-                <span>{{ selectDictLabel(statusOptions, (row.status +'')) }}</span>
-              </template>
-              <!-- importType	是否导入货源 0-正常发布货源，1-货源单导入，2-运输单导入 -->
-              <!-- <template #importType="{row}">
+        <!-- status	状态 0.启用 1.禁用 -->
+        <template #status="{row}">
+          <span>{{ selectDictLabel(statusOptions, (row.status +'')) }}</span>
+        </template>
+        <!-- importType	是否导入货源 0-正常发布货源，1-货源单导入，2-运输单导入 -->
+        <!-- <template #importType="{row}">
                 <span>{{ selectDictLabel(importTypeOptions, row.importType) }}</span>
               </template> -->
 
-              <template #isClass="{row}">
-                <span>{{ selectDictLabel(isClassOptions, row.isClass) }}</span>
-              </template>
+        <template #isClass="{row}">
+          <span>{{ selectDictLabel(isClassOptions, row.isClass) }}</span>
+        </template>
 
-              <template #isDel="{row}">
-                <span>{{ selectDictLabel(isDelTypeOptions, row.isDel) }}</span>
-              </template>
+        <template #isDel="{row}">
+          <span>{{ selectDictLabel(isDelTypeOptions, row.isDel) }}</span>
+        </template>
 
-              <template #businessType="{row}">
-                <span>{{ selectDictLabel(dicts['businessTypes'], row.businessType) }}</span>
-              </template>
+        <template #businessType="{row}">
+          <span>{{ selectDictLabel(dicts['businessTypes'], row.businessType) }}</span>
+        </template>
 
-              <!-- <template #isDispatch="{row}">
+        <!-- <template #isDispatch="{row}">
                 <span>{{ selectDictLabel(isDispatchTypeOptions, row.isDispatch) }}</span>
               </template> -->
 
-              <!-- <template #isInsure="{row}">
+        <!-- <template #isInsure="{row}">
                 <span>{{ selectDictLabel(isInsureTypeOptions, row.isInsure) }}</span>
               </template> -->
 
-              <!-- <template #isMonthlyOrder="{row}">
+        <!-- <template #isMonthlyOrder="{row}">
                 <span>{{ selectDictLabel(isMonthlyOrderTypeOptions, row.isMonthlyOrder) }}</span>
               </template> -->
 
-              <!-- <template #isPay="{row}">
+        <!-- <template #isPay="{row}">
                 <span>{{ selectDictLabel(isPayTypeOptions, row.isPay) }}</span>
               </template> -->
 
-              <template #isPublic="{row}">
-                <span>{{ selectDictLabel(isPublicTypeOptions, row.isPublic) }}</span>
-              </template>
+        <template #isPublic="{row}">
+          <span>{{ selectDictLabel(isPublicTypeOptions, row.isPublic) }}</span>
+        </template>
 
-              <!-- <template #isReturnMoney="{row}">
+        <!-- <template #isReturnMoney="{row}">
                 <span>{{ selectDictLabel(isReturnMoneyTypeOptions, row.isReturnMoney) }}</span>
               </template> -->
 
-              <!-- <template #isShare="{row}">
+        <!-- <template #isShare="{row}">
                 <span>{{ selectDictLabel(isShareTypeOptions, row.isShare) }}</span>
               </template> -->
 
-              <!-- <template #isShipperConfirm="{row}">
+        <!-- <template #isShipperConfirm="{row}">
                 <span>{{ selectDictLabel(isShipperConfirmTypeOptions, row.isShipperConfirm) }}</span>
               </template> -->
 
-              <template #isSpecified="{row}">
-                <span>{{ selectDictLabel(isSpecifiedTypeOptions, row.isSpecified) }}</span>
-              </template>
+        <template #isSpecified="{row}">
+          <span>{{ selectDictLabel(isSpecifiedTypeOptions, row.isSpecified) }}</span>
+        </template>
 
-              <!-- <template #isSplit="{row}">
+        <!-- <template #isSplit="{row}">
                 <span>{{ selectDictLabel(isSplitTypeOptions, row.isSplit) }}</span>
               </template> -->
 
-              <!-- <template #isTop="{row}">
+        <!-- <template #isTop="{row}">
                 <span>{{ selectDictLabel(isTopTypeOptions, row.isTop) }}</span>
               </template> -->
 
-              <!-- <template #isTrunk="{row}">
+        <!-- <template #isTrunk="{row}">
                 <span>{{ selectDictLabel(isTrunkTypeOptions, row.isTrunk) }}</span>
               </template> -->
 
-              <template #loadType="{row}">
-                <span>{{ selectDictLabel(loadTypeOptions, row.loadType) }}</span>
-              </template>
+        <template #loadType="{row}">
+          <span>{{ selectDictLabel(loadTypeOptions, row.loadType) }}</span>
+        </template>
 
-              <!-- <template #orderTypeType="{row}">
+        <!-- <template #orderTypeType="{row}">
                 <span>{{ selectDictLabel(orderTypeTypeOptions, row.orderTypeType) }}</span>
               </template> -->
 
-              <!-- <template #paymentCodeType="{row}">
+        <!-- <template #paymentCodeType="{row}">
                 <span>{{ selectDictLabel(paymentCodeTypeOptions, row.paymentCodeType) }}</span>
               </template> -->
 
-              <template #accessTime="{row}">
-                <span>{{ row.accessTime }}</span>
-              </template>
-              <template #edit="{row}">
-                <template v-if="row.isShowEdit">
+        <template #accessTime="{row}">
+          <span>{{ row.accessTime }}</span>
+        </template>
+        <template #edit="{row}">
+          <template v-if="row.isShowEdit">
+            <el-button
+              size="mini"
+              type="text"
+              @click="handleInfo(row)"
+            >详情</el-button>
 
+            <el-button
+              v-if="row.status+''==='0'"
+              v-hasPermi="['consigner-order-edit']"
+              size="mini"
+              type="text"
+              @click="handleUpdate(row)"
+            >编辑</el-button>
 
-                  <!-- <div v-if="false">
-                    <template
-                      v-for="(item,index) in [
-                        {
-                          label:'详情',
-                          isShow: ()=> true,
-                          tag: 'xiangqing',
-                          fn: (row)=>handleInfo(row)
-                        },
-                        {
-                          label:'编辑',
-                          isShow: (row)=>row.status==='0',
-                          tag: 'bianji',
-                          fn: (row)=>handleUpdate(row),
-                          hasPermi:['consigner-order-edit'],
-                        },
-                        {
-                          label:'删除',
-                          isShow: (row)=>!row.haveWaybill,
-                          tag: 'shanchu',
-                        },
-                        {
-                          label:(row)=> row.status==='0'?'禁用':'启用' ,
-                          isShow: ()=> true,
-                          tag: 'tiaojia',
-                          className: (row)=> row.status==='0' ? 'g-color-error' : undefined
-                        }
-                      ]"
-                    >
+            <el-button
+              v-hasPermi="['consigner-order-open', 'consigner-order-close']"
+              size="mini"
+              type="text"
+              :class="row.status+''==='0'?'g-color-error': null"
+              @click="handleClose(row)"
+            >{{ row.status+''==='0'?'禁用':'启用' }}</el-button>
 
-                      <el-button
-                        v-if="item.isShow(row)"
-                        :key="index"
-                        v-hasPermi="item.hasPermi || ['consigner-order-edit']"
-                        size="mini"
-                        type="text"
-                        :class="typeof item.className === 'function' ? item.className(row):item.className "
-                        @click="item['fn']? item['fn'](row) : handleInfo(row, item.tag)"
-                      >{{ typeof item.label === "function" ? item.label(row) : item.label }}</el-button>
-                    </template>
-                  </div> -->
+            <TableDropdown>
+              <el-dropdown-item>
+                <el-button
+                  v-if="!row.haveWaybill"
+                  v-hasPermi="['consigner-order-delete']"
+                  size="mini"
+                  type="text"
+                  @click="handleDelete(row)"
+                >删除</el-button>
+              </el-dropdown-item>
 
-                  <!-- 方案1 -->
+              <el-dropdown-item>
+                <el-button
+                  v-if="row.status+''==='0'"
+                  v-hasPermi="['consigner-order-adjust-price']"
+                  size="mini"
+                  type="text"
+                  @click="handleReadjustPrices(row)"
+                >调价</el-button>
+              </el-dropdown-item>
 
-                  <el-button
-                    size="mini"
-                    type="text"
-                    @click="handleInfo(row)"
-                  >详情</el-button>
+              <el-dropdown-item>
+                <el-button
+                  v-if="false"
+                  size="mini"
+                  type="text"
+                  @click="handleShenhe(row)"
+                >审核</el-button>
+              </el-dropdown-item>
 
-                  <el-button
-                    v-if="row.status+''==='0'"
-                    v-hasPermi="['consigner-order-edit']"
-                    size="mini"
-                    type="text"
-                    @click="handleUpdate(row)"
-                  >编辑</el-button>
-
-                  <el-button
-                    v-hasPermi="['consigner-order-open', 'consigner-order-close']"
-                    size="mini"
-                    type="text"
-                    :class="row.status+''==='0'?'g-color-error': null"
-                    @click="handleClose(row)"
-                  >{{ row.status+''==='0'?'禁用':'启用' }}</el-button>
-
-                  <TableDropdown>
-                    <el-dropdown-item>
-                      <el-button
-                        v-if="!row.haveWaybill"
-                        v-hasPermi="['consigner-order-delete']"
-                        size="mini"
-                        type="text"
-                        @click="handleDelete(row)"
-                      >删除</el-button>
-                    </el-dropdown-item>
-
-                    <el-dropdown-item>
-                      <el-button
-                        v-if="row.status+''==='0'"
-                        v-hasPermi="['consigner-order-adjust-price']"
-                        size="mini"
-                        type="text"
-                        @click="handleReadjustPrices(row)"
-                      >调价</el-button>
-                    </el-dropdown-item>
-
-                    <el-dropdown-item>
-                      <el-button
-                        v-if="false"
-                        size="mini"
-                        type="text"
-                        @click="handleShenhe(row)"
-                      >审核</el-button>
-                    </el-dropdown-item>
-
-                    <el-dropdown-item>
-                      <el-button
-                        v-if="row.status+''==='0'"
-                        size="mini"
-                        type="text"
-                        @click="handleclone(row)"
-                      >复制</el-button>
-                    </el-dropdown-item>
-                  </TableDropdown>
+              <el-dropdown-item>
+                <el-button
+                  v-if="row.status+''==='0'"
+                  size="mini"
+                  type="text"
+                  @click="handleclone(row)"
+                >复制</el-button>
+              </el-dropdown-item>
+            </TableDropdown>
 
 
 
-                </template>
-              </template>
-            </RefactorTable>
+          </template>
+        </template>
+      </RefactorTable>
 
-            <pagination
-              v-show="total>0"
-              :total="total"
-              :page.sync="queryParams.pageNum"
-              :limit.sync="queryParams.pageSize"
-              @pagination="getList"
-            />
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
 
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
-
-
+    </div>
 
     <!-- 派送订单 -->
     <el-dialog :title="title" :visible.sync="openDispatch" width="80%" append-to-body>
@@ -1147,43 +1038,14 @@ export default {
 };
 </script>
 
-<style scoped lang='scss'>
-.card-rigth{
-  position: relative;
-  margin: 0 15px 15px;
-  overflow-y: auto;
-  height: calc(100vh - 120px);
-}
-.card-left{
-  position: relative;
-  margin-left: 15px;
-  margin-bottom: 15px;
-  height: calc(100vh - 145px);
-}
-.left_v{
-  position: absolute;
-  width: 3px;
-  height: 20px;
-  left: 0;
-  top: 14px;
-  background-color: #1890ff;
-}
-
-.flex_b{
-    display: flex;
-    justify-content: space-between;
-}
-
-</style>
 <style>
 
-  .el-table .warning-row,.el-table--striped .el-table__body tr.el-table__row--striped.warning-row td {
+.el-table .warning-row,.el-table--striped .el-table__body tr.el-table__row--striped.warning-row td {
     background: oldlace;
   }
 
-  .el-table .red-row,.el-table--striped .el-table__body tr.el-table__row--striped.red-row td {
-    background: #e1f3d8;
-  }
-
+.el-table .red-row,.el-table--striped .el-table__body tr.el-table__row--striped.red-row td {
+  background: #e1f3d8;
+}
 
 </style>

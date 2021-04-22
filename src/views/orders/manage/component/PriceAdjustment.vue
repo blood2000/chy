@@ -63,7 +63,7 @@
 
 
     <div class="mt20 ly-t-center">
-      <el-button @click="submit(false)">取消</el-button>
+      <el-button type="primary" plain @click="submit(false)">取消</el-button>
       <el-button type="primary" @click="submit(true)">确认</el-button>
     </div>
 
@@ -152,8 +152,6 @@ export default {
 
   created() {
     this.tabs = JSON.parse(JSON.stringify(this.mytabs));
-
-    console.log(this.tabs);
   },
 
   methods: {
