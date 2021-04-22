@@ -1,205 +1,210 @@
 <template>
-  <div class="app-container">
-    <el-row :gutter="20">
+  <div>
+    <el-row :gutter="companyCode?20:0">
       <!--部门数据-->
       <el-col :lg="5" :md="6" :sm="7" :xs="24">
-        <div class="head-container">
-          <el-input
-            v-model="deptName"
-            placeholder="请输入组织名称"
-            clearable
-            size="small"
-            prefix-icon="el-icon-search"
-            class="mb20"
-          />
-        </div>
-        <div class="head-container el-tree-scroll-container">
-          <el-tree
-            ref="tree"
-            :data="deptTreeOptions"
-            :props="defaultTreeProps"
-            :expand-on-click-node="false"
-            default-expand-all
-            @node-click="handleNodeClick"
-          />
+        <div class="app-container app-container--tree">
+          <div class="head-container">
+            <el-input
+              v-model="deptName"
+              placeholder="请输入组织名称"
+              clearable
+              size="small"
+              prefix-icon="el-icon-search"
+              class="mb20"
+            />
+          </div>
+          <div class="head-container el-tree-scroll-container">
+            <el-tree
+              ref="tree"
+              :data="deptTreeOptions"
+              :props="defaultTreeProps"
+              :expand-on-click-node="false"
+              default-expand-all
+              @node-click="handleNodeClick"
+            />
+          </div>
         </div>
       </el-col>
       <el-col :lg="19" :md="18" :sm="17" :xs="24">
-        <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="80px">
-          <el-form-item label="角色名称" prop="roleName">
-            <el-input
-              v-model="queryParams.roleName"
-              placeholder="请输入角色名称"
-              clearable
-              size="small"
-              style="width: 240px"
-              @keyup.enter.native="handleQuery"
-            />
-          </el-form-item>
-          <el-form-item label="权限字符" prop="roleKey">
-            <el-input
-              v-model="queryParams.roleKey"
-              placeholder="请输入权限字符"
-              clearable
-              size="small"
-              style="width: 240px"
-              @keyup.enter.native="handleQuery"
-            />
-          </el-form-item>
-          <el-form-item label="状态" prop="status">
-            <el-select
-              v-model="queryParams.status"
-              placeholder="角色状态"
-              clearable
-              filterable
-              size="small"
-              style="width: 240px"
-            >
-              <el-option
-                v-for="dict in statusOptions"
-                :key="dict.dictValue"
-                :label="dict.dictLabel"
-                :value="dict.dictValue"
+        <div class="app-container app-container--search">
+          <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="80px">
+            <el-form-item label="角色名称" prop="roleName">
+              <el-input
+                v-model="queryParams.roleName"
+                placeholder="请输入角色名称"
+                clearable
+                size="small"
+                style="width: 240px"
+                @keyup.enter.native="handleQuery"
               />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="产品" prop="produceCode">
-            <el-select
-              v-model="queryParams.produceCode"
-              placeholder="所属产品"
-              clearable
-              filterable
-              size="small"
-              style="width: 240px"
-            >
-              <el-option
-                v-for="item in produceList"
-                :key="item.produceCode"
-                :label="item.cnName"
-                :value="item.produceCode"
-                :disabled="item.disabled"
+            </el-form-item>
+            <el-form-item label="权限字符" prop="roleKey">
+              <el-input
+                v-model="queryParams.roleKey"
+                placeholder="请输入权限字符"
+                clearable
+                size="small"
+                style="width: 240px"
+                @keyup.enter.native="handleQuery"
               />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="创建时间" prop="dateRange">
-            <el-date-picker
-              v-model="dateRange"
-              size="small"
-              style="width: 240px"
-              value-format="yyyy-MM-dd"
-              type="daterange"
-              range-separator="-"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-            />
-          </el-form-item>
-          <el-form-item>
-            <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-          </el-form-item>
-        </el-form>
-
-        <el-row :gutter="10" class="mb8">
-          <el-col :span="1.5">
-            <el-button
-              v-hasPermi="['system:role:add']"
-              type="primary"
-              icon="el-icon-plus"
-              size="mini"
-              @click="handleAdd"
-            >新增</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button
-              v-hasPermi="['system:role:edit']"
-              type="success"
-              icon="el-icon-edit"
-              size="mini"
-              :disabled="single"
-              @click="handleUpdate"
-            >修改</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button
-              v-hasPermi="['system:role:remove']"
-              type="danger"
-              icon="el-icon-delete"
-              size="mini"
-              :disabled="multiple"
-              @click="handleDelete"
-            >删除</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button
-              v-hasPermi="['system:role:export']"
-              type="warning"
-              icon="el-icon-download"
-              size="mini"
-              @click="handleExport"
-            >导出</el-button>
-          </el-col>
-          <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
-        </el-row>
-
-        <el-table v-loading="loading" :data="roleList" @selection-change="handleSelectionChange">
-          <el-table-column type="selection" width="55" align="center" />
-          <el-table-column label="所属产品" prop="produceName" width="120" />
-          <el-table-column label="角色名称" prop="roleName" :show-overflow-tooltip="true" width="150" />
-          <el-table-column label="权限字符" prop="roleKey" :show-overflow-tooltip="true" width="150" />
-          <el-table-column label="显示顺序" prop="roleSort" width="100" />
-          <el-table-column label="状态" align="center" width="100">
-            <template slot-scope="scope">
-              <el-switch
-                v-model="scope.row.status"
-                active-value="0"
-                inactive-value="1"
-                :disabled="isOperate(scope.row.roleCode)"
-                @change="handleStatusChange(scope.row)"
+            </el-form-item>
+            <el-form-item label="状态" prop="status">
+              <el-select
+                v-model="queryParams.status"
+                placeholder="角色状态"
+                clearable
+                filterable
+                size="small"
+                style="width: 240px"
+              >
+                <el-option
+                  v-for="dict in statusOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="产品" prop="produceCode">
+              <el-select
+                v-model="queryParams.produceCode"
+                placeholder="所属产品"
+                clearable
+                filterable
+                size="small"
+                style="width: 240px"
+              >
+                <el-option
+                  v-for="item in produceList"
+                  :key="item.produceCode"
+                  :label="item.cnName"
+                  :value="item.produceCode"
+                  :disabled="item.disabled"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="创建时间" prop="dateRange">
+              <el-date-picker
+                v-model="dateRange"
+                size="small"
+                style="width: 240px"
+                value-format="yyyy-MM-dd"
+                type="daterange"
+                range-separator="-"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
               />
-            </template>
-          </el-table-column>
-          <el-table-column label="创建时间" align="center" prop="createTime" width="180">
-            <template slot-scope="scope">
-              <span>{{ parseTime(scope.row.createTime) }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-            <template slot-scope="scope">
+            </el-form-item>
+            <el-form-item>
+              <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+              <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+        <div class="app-container">
+          <el-row :gutter="10" class="mb8">
+            <el-col :span="1.5">
+              <el-button
+                v-hasPermi="['system:role:add']"
+                type="primary"
+                icon="el-icon-plus"
+                size="mini"
+                @click="handleAdd"
+              >新增</el-button>
+            </el-col>
+            <el-col :span="1.5">
               <el-button
                 v-hasPermi="['system:role:edit']"
-                size="mini"
-                type="text"
+                type="success"
                 icon="el-icon-edit"
-                :disabled="isOperate(scope.row.roleCode)"
-                @click="handleUpdate(scope.row)"
-              >修改</el-button>
-              <el-button
-                v-hasPermi="['system:role:edit']"
                 size="mini"
-                type="text"
-                icon="el-icon-circle-check"
-                :disabled="isOperate(scope.row.roleCode)"
-                @click="handleDataScope(scope.row)"
-              >数据权限</el-button>
+                :disabled="single"
+                @click="handleUpdate"
+              >修改</el-button>
+            </el-col>
+            <el-col :span="1.5">
               <el-button
                 v-hasPermi="['system:role:remove']"
-                size="mini"
-                type="text"
+                type="danger"
                 icon="el-icon-delete"
-                :disabled="isOperate(scope.row.roleCode)"
-                @click="handleDelete(scope.row)"
+                size="mini"
+                :disabled="multiple"
+                @click="handleDelete"
               >删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+            </el-col>
+            <el-col :span="1.5">
+              <el-button
+                v-hasPermi="['system:role:export']"
+                type="warning"
+                icon="el-icon-download"
+                size="mini"
+                @click="handleExport"
+              >导出</el-button>
+            </el-col>
+            <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+          </el-row>
 
-        <pagination
-          v-show="total>0"
-          :total="total"
-          :page.sync="queryParams.pageNum"
-          :limit.sync="queryParams.pageSize"
-          @pagination="getList"
-        />
+          <el-table v-loading="loading" :data="roleList" @selection-change="handleSelectionChange">
+            <el-table-column type="selection" width="55" align="center" />
+            <el-table-column label="所属产品" prop="produceName" width="120" />
+            <el-table-column label="角色名称" prop="roleName" :show-overflow-tooltip="true" width="150" />
+            <el-table-column label="权限字符" prop="roleKey" :show-overflow-tooltip="true" width="150" />
+            <el-table-column label="显示顺序" prop="roleSort" width="100" />
+            <el-table-column label="状态" align="center" width="100">
+              <template slot-scope="scope">
+                <el-switch
+                  v-model="scope.row.status"
+                  active-value="0"
+                  inactive-value="1"
+                  :disabled="isOperate(scope.row.roleCode)"
+                  @change="handleStatusChange(scope.row)"
+                />
+              </template>
+            </el-table-column>
+            <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+              <template slot-scope="scope">
+                <span>{{ parseTime(scope.row.createTime) }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+              <template slot-scope="scope">
+                <el-button
+                  v-hasPermi="['system:role:edit']"
+                  size="mini"
+                  type="text"
+                  icon="el-icon-edit"
+                  :disabled="isOperate(scope.row.roleCode)"
+                  @click="handleUpdate(scope.row)"
+                >修改</el-button>
+                <el-button
+                  v-hasPermi="['system:role:edit']"
+                  size="mini"
+                  type="text"
+                  icon="el-icon-circle-check"
+                  :disabled="isOperate(scope.row.roleCode)"
+                  @click="handleDataScope(scope.row)"
+                >数据权限</el-button>
+                <el-button
+                  v-hasPermi="['system:role:remove']"
+                  size="mini"
+                  type="text"
+                  icon="el-icon-delete"
+                  :disabled="isOperate(scope.row.roleCode)"
+                  @click="handleDelete(scope.row)"
+                >删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+
+          <pagination
+            v-show="total>0"
+            :total="total"
+            :page.sync="queryParams.pageNum"
+            :limit.sync="queryParams.pageSize"
+            @pagination="getList"
+          />
+        </div>
       </el-col>
     </el-row>
 
