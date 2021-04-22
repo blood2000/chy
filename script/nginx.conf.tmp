@@ -1,13 +1,13 @@
 server {
     listen      #{http_port};
-    server_name localhost;
+    server_name #{JOB_BASE_NAME};
     charset 'utf-8';
-    location / {
+    #{JOB_BASE_NAME} / {
         root   /var/nginx/html/#{JOB_BASE_NAME};
         try_files $uri $uri/ /index.html;
         index  index.html index.htm;
     }
-    location /prod-api/{
+    #{JOB_BASE_NAME} /prod-api/{
 	      proxy_set_header Host $http_host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header REMOTE-HOST $remote_addr;
