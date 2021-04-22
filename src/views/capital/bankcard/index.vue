@@ -1,150 +1,152 @@
 <template>
-  <!-- 用户银行卡 -->
-  <div class="app-container">
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-      <el-form-item label="开户姓名" prop="name">
-        <el-input
-          v-model="queryParams.name"
-          placeholder="请输入姓名"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="开户电话" prop="mobile">
-        <el-input
-          v-model="queryParams.mobile"
-          placeholder="请输入开户电话"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="车牌号" prop="licenseNumber">
-        <el-input
-          v-model="queryParams.licenseNumber"
-          placeholder="请输入车牌号"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="开户银行" prop="bankName">
-        <el-select
-          v-model="queryParams.bankName"
-          placeholder="请选择开户银行"
-          filterable
-          clearable
-          size="small"
-        >
-          <el-option
-            v-for="dict in bankOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictLabel"
+  <div>
+    <!-- 用户银行卡 -->
+    <div class="app-container app-container--search">
+      <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+        <el-form-item label="开户姓名" prop="name">
+          <el-input
+            v-model="queryParams.name"
+            placeholder="请输入姓名"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="银行账户" prop="account">
-        <el-input
-          v-model="queryParams.account"
-          placeholder="请输入银行账户"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="用户姓名" prop="userName">
-        <el-input
-          v-model="queryParams.userName"
-          placeholder="请输入用户姓名"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="用户电话" prop="userPhone">
-        <el-input
-          v-model="queryParams.userPhone"
-          placeholder="请输入用户电话"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
+        </el-form-item>
+        <el-form-item label="开户电话" prop="mobile">
+          <el-input
+            v-model="queryParams.mobile"
+            placeholder="请输入开户电话"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="车牌号" prop="licenseNumber">
+          <el-input
+            v-model="queryParams.licenseNumber"
+            placeholder="请输入车牌号"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="开户银行" prop="bankName">
+          <el-select
+            v-model="queryParams.bankName"
+            placeholder="请选择开户银行"
+            filterable
+            clearable
+            size="small"
+          >
+            <el-option
+              v-for="dict in bankOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictLabel"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="银行账户" prop="account">
+          <el-input
+            v-model="queryParams.account"
+            placeholder="请输入银行账户"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="用户姓名" prop="userName">
+          <el-input
+            v-model="queryParams.userName"
+            placeholder="请输入用户姓名"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="用户电话" prop="userPhone">
+          <el-input
+            v-model="queryParams.userPhone"
+            placeholder="请输入用户电话"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="app-container">
+      <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            type="primary"
+            icon="el-icon-plus"
+            size="mini"
+            @click="handleAdd"
+          >人工添加银行卡</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            type="warning"
+            icon="el-icon-download"
+            size="mini"
+            @click="handleExport"
+          >导出</el-button>
+        </el-col>
+        <el-col :span="1.5" class="fr">
+          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
+        </el-col>
+        <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+      </el-row>
 
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-        >人工添加银行卡</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="warning"
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-        >导出</el-button>
-      </el-col>
-      <el-col :span="1.5" class="fr">
-        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
-      </el-col>
-      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
-    </el-row>
+      <RefactorTable :loading="loading" :data="dataList" :table-columns-config="tableColumnsConfig">
+        <template #isDefault="{row}">
+          <span v-show="row.isDefault === 0" class="g-color-error">否</span>
+          <span v-show="row.isDefault === 1" class="g-color-success">是</span>
+        </template>
+        <template #bankType="{row}">
+          <span>{{ selectDictLabel(bankTypeOptions, row.bankType) }}</span>
+        </template>
+        <template #createTime="{row}">
+          <span>{{ parseTime(row.createTime, '{y}-{m}-{d}') }}</span>
+        </template>
+        <template #updateTime="{row}">
+          <span>{{ parseTime(row.updateTime, '{y}-{m}-{d}') }}</span>
+        </template>
+        <template #edit="{row}">
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleUpdate(row, 'detail')"
+          >详情</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleUpdate(row, 'edit')"
+          >修改</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleDelete(row)"
+          >删除</el-button>
+        </template>
+      </RefactorTable>
 
-    <RefactorTable :loading="loading" :data="dataList" :table-columns-config="tableColumnsConfig">
-      <template #isDefault="{row}">
-        <span v-show="row.isDefault === 0" class="g-color-error">否</span>
-        <span v-show="row.isDefault === 1" class="g-color-success">是</span>
-      </template>
-      <template #bankType="{row}">
-        <span>{{ selectDictLabel(bankTypeOptions, row.bankType) }}</span>
-      </template>
-      <template #createTime="{row}">
-        <span>{{ parseTime(row.createTime, '{y}-{m}-{d}') }}</span>
-      </template>
-      <template #updateTime="{row}">
-        <span>{{ parseTime(row.updateTime, '{y}-{m}-{d}') }}</span>
-      </template>
-      <template #edit="{row}">
-        <el-button
-          size="mini"
-          type="text"
-          @click="handleUpdate(row, 'detail')"
-        >详情</el-button>
-        <el-button
-          size="mini"
-          type="text"
-          @click="handleUpdate(row, 'edit')"
-        >修改</el-button>
-        <el-button
-          size="mini"
-          type="text"
-          @click="handleDelete(row)"
-        >删除</el-button>
-      </template>
-    </RefactorTable>
-
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
+    </div>
 
     <!-- 新增/编辑/详情 对话框 -->
     <bank-dialog ref="bankDialogRef" :open.sync="open" :title="title" :disable="disable" @refresh="getList" />
-
   </div>
 </template>
 
