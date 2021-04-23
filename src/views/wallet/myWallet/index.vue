@@ -21,9 +21,8 @@
       <el-button type="primary" @click="handleWithdraw">提现</el-button>
       <el-button type="text" @click="handleJumpPage('rechargeDescription')">充值说明</el-button>
       <el-button type="text" @click="handleJumpPage('accountDetails')">账户明细</el-button>
-      <el-button type="text" @click="handleJumpPage('withdrawalsRecord')">提现记录</el-button>
-      <el-button type="text" @click="handleJumpPage('transactionRecord')">付款明细</el-button>
-      <el-button type="text" @click="handleJumpPage('transactionRecord')">冻结明细</el-button>
+      <el-button type="text" @click="handleJumpPage('withdrawalsRecord')">出入账记录</el-button>
+      <el-button type="text" @click="handleJumpPage('transactionRecord')">交易记录</el-button>
     </div>
 
     <div class="app-container app-container--card">

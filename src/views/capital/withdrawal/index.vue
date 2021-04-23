@@ -111,8 +111,8 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+          <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -150,7 +150,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="withdrawalList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <RefactorTable ref="multipleTable" :loading="loading" :data="withdrawalList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
         <!-- 转账渠道 -->
         <template #payStatus="{row}">
           <span>{{ selectDictLabel(payStatusOption, row.payStatus) }}</span>
@@ -180,7 +180,7 @@
 </template>
 
 <script>
-import { withDrawalListApi, getWithDrawalList } from '@/api/capital/withdrawal';
+import { withDrawalListApi, getWithDrawalList, toCard } from '@/api/capital/withdrawal';
 
 export default {
   name: 'Withdrawal',
@@ -278,7 +278,10 @@ export default {
     },
     /** 网商批量提现 */
     handleImport() {
-
+      toCard(this.ids).then(response => {
+        this.msgSuccess('操作成功');
+        this.$refs.multipleTable.m2ToggleSelection();
+      });
     },
     /** 更新网商提现状态 */
     handleRefreshStatus() {

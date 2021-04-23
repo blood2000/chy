@@ -9,3 +9,11 @@ export function getWithDrawalList(data) {
     data: Object.assign({}, { isAsc: 'asc', orderByColumn: 'id' }, data)
   });
 }
+
+// 网商批量提现
+export function toCard(ids) {
+  return request({
+    url: `/payment/pay/toCard?ids=${ids}`,
+    method: 'post'
+  });
+}

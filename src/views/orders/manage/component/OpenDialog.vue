@@ -4,7 +4,7 @@
       <el-form-item label="关键字" prop="keywords">
         <el-input
           v-model="queryParams.keywords"
-          placeholder="请输入关键字"
+          placeholder="请输入电话号码或姓名"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -33,8 +33,8 @@
 
 
       <el-form-item class="fr">
-        <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+        <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
 
       </el-form-item>
     </el-form>
