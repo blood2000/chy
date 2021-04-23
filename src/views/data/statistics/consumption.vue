@@ -101,10 +101,10 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        driverName: null,
-        driverPhone: null,
-        queryStartTime: null,
-        queryEndTime: null
+        companyName: null,
+        shipmentPhone: null,
+        beginTime: null,
+        endTime: null
       }
     };
   },
@@ -116,11 +116,11 @@ export default {
     // 搜索时间选择
     datechoose(date) {
       if (date) {
-        this.queryParams.queryStartTime = this.parseTime(date[0], '{y}-{m}-{d}');
-        this.queryParams.queryEndTime = this.parseTime(date[1], '{y}-{m}-{d}');
+        this.queryParams.beginTime = this.parseTime(date[0], '{y}-{m}-{d}');
+        this.queryParams.endTime = this.parseTime(date[1], '{y}-{m}-{d}');
       } else {
-        this.queryParams.queryStartTime = null;
-        this.queryParams.queryEndTime = null;
+        this.queryParams.beginTime = null;
+        this.queryParams.endTime = null;
       }
     },
     /** 查询客户消费明细列表 */

@@ -50,7 +50,17 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="所属调度" prop="teamCode">
+        <el-form-item label="所属调度" prop="teamName">
+          <el-input
+            v-model="queryParams.teamName"
+            placeholder="请输入所属调度"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <!-- <el-form-item label="所属调度" prop="teamCode">
           <el-select
             v-model="queryParams.teamCode"
             v-el-seclect.loadmore="loadmore"
@@ -71,7 +81,7 @@
               :value="dict.code"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
           <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -137,8 +147,9 @@ export default {
       drivertoList: [],
       // 司机类别  0独立司机，1聘用司机字典
       driverTypeOptions: [
-        { 'dictLabel': '独立司机', 'dictValue': '0' },
-        { 'dictLabel': '聘用司机', 'dictValue': '1' }
+        { 'dictLabel': '独立司机', 'dictValue': '1' },
+        { 'dictLabel': '聘用司机', 'dictValue': '2' },
+        { 'dictLabel': '其他', 'dictValue': '3' }
       ],
       queryTime: [],
       // 查询参数
@@ -147,10 +158,10 @@ export default {
         pageSize: 10,
         driverName: null,
         driverPhone: null,
-        queryStartTime: null,
-        queryEndTime: null,
+        beginTime: null,
+        endTime: null,
         driverType: null,
-        teamCode: null
+        teamName: null
       },
       // 调度者列表
       teamlist: [],
@@ -171,11 +182,11 @@ export default {
     // 搜索时间选择
     datechoose(date) {
       if (date) {
-        this.queryParams.queryStartTime = this.parseTime(date[0], '{y}-{m}-{d}');
-        this.queryParams.queryEndTime = this.parseTime(date[1], '{y}-{m}-{d}');
+        this.queryParams.beginTime = this.parseTime(date[0], '{y}-{m}-{d}');
+        this.queryParams.endTime = this.parseTime(date[1], '{y}-{m}-{d}');
       } else {
-        this.queryParams.queryStartTime = null;
-        this.queryParams.queryEndTime = null;
+        this.queryParams.beginTime = null;
+        this.queryParams.endTime = null;
       }
     },
     // 获取调度者列表
