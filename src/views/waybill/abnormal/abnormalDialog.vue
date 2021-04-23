@@ -15,7 +15,7 @@
       <el-form-item label="异常说明" prop="description">
         <el-input v-model="form.description" style="width: 90%" autosize type="textarea" placeholder="请输入异常说明" />
       </el-form-item>
-      <el-form-item label="处理时间" prop="updateTime" v-if="form.isWarning === 0">
+      <el-form-item v-if="form.isWarning === 0" label="处理时间" prop="updateTime">
         <el-date-picker
           v-model="form.updateTime"
           clearable
@@ -25,7 +25,7 @@
           placeholder="选择标记时间"
         />
       </el-form-item>
-      <el-form-item label="处理说明" prop="operDescription" v-if="form.isWarning === 0">
+      <el-form-item v-if="form.isWarning === 0" label="处理说明" prop="operDescription">
         <el-input v-model="form.operDescription" style="width: 90%" autosize type="textarea" placeholder="请输入处理说明" />
       </el-form-item>
     </el-form>
