@@ -130,6 +130,9 @@
           <el-form-item label="列宽" prop="width">
             <el-input v-model="form.width" placeholder="请输入列宽" clearable />
           </el-form-item>
+          <el-form-item label="排序" prop="sortNum">
+            <el-input-number v-model="form.sortNum" controls-position="right" :min="0" :max="99" />
+          </el-form-item>
           <el-form-item label="是否显示" prop="isShow">
             <el-switch v-model="form.isShow" />
           </el-form-item>
@@ -246,7 +249,8 @@ export default {
         route: null,
         comment: null,
         width: null,
-        isShow: true
+        isShow: true,
+        sortNum: null
       };
       this.resetForm('form');
     },
