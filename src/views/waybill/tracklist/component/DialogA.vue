@@ -11,9 +11,10 @@
           :default-value="new Date()"
           :disabled="disable"
           value-format="yyyy-MM-dd HH:mm:ss"
+          @change="loadTimeChoose"
         />
       </el-form-item>
-      <el-form-item label="装货重量" prop="loadWeight">
+      <el-form-item label="装货重量(吨)" prop="loadWeight">
         <el-input-number v-model="form.loadWeight" placeholder="请输入装货过磅重量" :disabled="disable" controls-position="right" :min="0" style="width:90%;" />
       </el-form-item>
       <el-form-item label="货物" prop="goodsCode">
@@ -90,7 +91,7 @@
         </el-select>
       </el-form-item> -->
       <el-form-item label="装货单据" prop="attachmentCode">
-        <uploadImage v-model="form.attachmentCode" :fresh="fresh" :limit="1" />
+        <uploadImage v-model="form.attachmentCode" />
       </el-form-item>
       <el-form-item label="装货备注" prop="remark">
         <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" :disabled="disable" placeholder="请输入装货备注信息" style="width:90%;" />
@@ -105,7 +106,7 @@
 
 <script>
 import { load, getAddress, getInfoDetail, loadCredentials, getGoods } from '@/api/waybill/tracklist';
-import UploadImage from '@/components/UploadImage/moreImg';
+import UploadImage from '@/components/UploadImage/index';
 
 export default {
   name: 'DialogA',
@@ -153,15 +154,9 @@ export default {
         ],
         unloadAddressCode: [
           { required: true, message: '请选择卸货地址', trigger: 'blur' }
-        ],
-        attachmentCode: [
-          { required: true, message: '请上传装货单据', trigger: 'blur' }
         ]
       },
       // 日期格式
-      Hours: '',
-      Minutes: '',
-      Seconds: '',
       time: '',
       // 商品code
       goodsCode: '',
@@ -196,6 +191,18 @@ export default {
   created() {
   },
   methods: {
+    loadTimeChoose(e) {
+      const loadtime = new Date(e);
+      const receivetime = new Date(this.waybill.receiveTime);
+      if (loadtime < receivetime) {
+        this.$message({ type: 'warning', message: '装货时间必须大于等于接单时间：' + this.waybill.receiveTime });
+        this.form.loadTime = null;
+      }
+      if (loadtime > new Date()) {
+        this.$message({ type: 'warning', message: '装货时间必须小于等于当前时间！' });
+        this.form.loadTime = null;
+      }
+    },
     // 获取装货详情
     getDetail() {
       this.reset();

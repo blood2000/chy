@@ -5,7 +5,7 @@
         <el-input v-model="form.cargoCodeName" placeholder="请输入货集码名称" class="width50 mr3" clearable />
         <span class="g-color-gray">(货集码名称可自定义,如线路名称等)</span>
       </el-form-item>
-      <el-form-item label="货源二维码">
+      <el-form-item label="货集二维码">
         <!-- 编辑的时候不能修改二维码 -->
         <template v-if="form.id == null || form.id == undefined || form.id == ''">
           <el-button type="primary" @click="generateCode">生成货集码</el-button>

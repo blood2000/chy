@@ -8,6 +8,7 @@
 @import './color.scss';
 @import './font.scss';
 @import './flex.scss';
+@import './icon.scss';
 @import './element-rewrite/index.scss';
 
 html{
@@ -143,6 +144,12 @@ aside {
   border-radius: 3px;
   &.app-container--card {
     padding: 0 20px 20px;
+  }
+  &.app-container--search{
+    padding: 20px 20px 8px;
+  }
+  &.app-container--tree{
+    margin: 0 0 15px 15px;
   }
 }
 

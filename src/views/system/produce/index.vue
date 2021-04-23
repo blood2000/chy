@@ -1,52 +1,54 @@
 <template>
-  <div class="app-container">
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-      <el-form-item label="产品名称" prop="cnName">
-        <el-input
-          v-model="queryParams.cnName"
-          placeholder="请输入产品名称"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="状态" prop="delFlag">
-        <el-select v-model="queryParams.delFlag" placeholder="状态" clearable filterable size="small">
-          <el-option
-            v-for="dict in statusOptions"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
+  <div>
+    <div v-show="showSearch" class="app-container app-container--search">
+      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+        <el-form-item label="产品名称" prop="cnName">
+          <el-input
+            v-model="queryParams.cnName"
+            placeholder="请输入产品名称"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
-
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['system:produce:add']"
-          type="primary"
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-        >新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['system:produce:edit']"
-          type="success"
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-        >修改</el-button>
-      </el-col>
-      <!-- <el-col :span="1.5">
+        </el-form-item>
+        <el-form-item label="状态" prop="delFlag">
+          <el-select v-model="queryParams.delFlag" placeholder="状态" clearable filterable size="small">
+            <el-option
+              v-for="dict in statusOptions"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+          <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="app-container">
+      <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['system:produce:add']"
+            type="primary"
+            icon="el-icon-plus"
+            size="mini"
+            @click="handleAdd"
+          >新增</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['system:produce:edit']"
+            type="success"
+            icon="el-icon-edit"
+            size="mini"
+            :disabled="single"
+            @click="handleUpdate"
+          >修改</el-button>
+        </el-col>
+        <!-- <el-col :span="1.5">
         <el-button
           v-hasPermi="['system:produce:remove']"
           type="danger"
@@ -56,78 +58,79 @@
           @click="handleDelete"
         >删除</el-button>
       </el-col>-->
-      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
-    </el-row>
+        <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+      </el-row>
 
-    <el-table v-loading="loading" :data="produceList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="产品名称" align="center" prop="cnName" />
-      <el-table-column label="英文名" align="center" prop="enName" />
-      <el-table-column label="状态" align="center" prop="delFlag">
-        <template slot-scope="scope">
-          <el-switch
-            v-model="scope.row.delFlag"
-            active-value="0"
-            inactive-value="1"
-            @change="handleStatusChange(scope.row)"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button
-            v-hasPermi="['system:produce:edit']"
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-          >修改</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+      <el-table v-loading="loading" :data="produceList" @selection-change="handleSelectionChange">
+        <el-table-column type="selection" width="55" align="center" />
+        <el-table-column label="产品名称" align="center" prop="cnName" />
+        <el-table-column label="英文名" align="center" prop="enName" />
+        <el-table-column label="状态" align="center" prop="delFlag">
+          <template slot-scope="scope">
+            <el-switch
+              v-model="scope.row.delFlag"
+              active-value="0"
+              inactive-value="1"
+              @change="handleStatusChange(scope.row)"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+          <template slot-scope="scope">
+            <span>{{ parseTime(scope.row.createTime) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+          <template slot-scope="scope">
+            <el-button
+              v-hasPermi="['system:produce:edit']"
+              size="mini"
+              type="text"
+              icon="el-icon-edit"
+              @click="handleUpdate(scope.row)"
+            >修改</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
 
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
 
-    <!-- 添加或修改岗位对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="产品名称" prop="cnName">
-          <el-input v-model="form.cnName" placeholder="请输入产品名名称" />
-        </el-form-item>
-        <el-form-item label="英文名称" prop="enName">
-          <el-input v-model="form.enName" placeholder="请输入英文名称" />
-        </el-form-item>
-        <el-form-item label="状态" prop="delFlag">
-          <el-radio-group v-model="form.delFlag">
-            <el-radio
-              v-for="dict in statusOptions"
-              :key="dict.value"
-              :label="dict.value"
-            >{{ dict.label }}</el-radio>
-          </el-radio-group>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
+      <!-- 添加或修改岗位对话框 -->
+      <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+        <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+          <el-form-item label="产品名称" prop="cnName">
+            <el-input v-model="form.cnName" placeholder="请输入产品名名称" />
+          </el-form-item>
+          <el-form-item label="英文名称" prop="enName">
+            <el-input v-model="form.enName" placeholder="请输入英文名称" />
+          </el-form-item>
+          <el-form-item label="状态" prop="delFlag">
+            <el-radio-group v-model="form.delFlag">
+              <el-radio
+                v-for="dict in statusOptions"
+                :key="dict.value"
+                :label="dict.value"
+              >{{ dict.label }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="submitForm">确 定</el-button>
+          <el-button @click="cancel">取 消</el-button>
+        </div>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
 <script>
-import { list, addProduce, updateProduce, delProduce, getProduce, changeStatus } from '@/api/system/produce';
+import { list, addProduce, updateProduce, getProduce, changeStatus } from '@/api/system/produce';
 
 export default {
   name: 'Post',

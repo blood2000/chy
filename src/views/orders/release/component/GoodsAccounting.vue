@@ -78,8 +78,10 @@
                 :disabled="formData.totalType === '1'"
                 :controls="false"
                 :placeholder="`请输入重量(${goodsUnitName})`"
+                :max="999999"
+                :min="0"
                 controls-position="right"
-                :style="{ width: '120px' }"
+                :style="{ width: '150px' }"
               />
               <span class="pl-5">{{ goodsUnitName }}</span>
             </el-form-item>
@@ -94,7 +96,8 @@
               v-model="formData.vehicleMaxWeight"
               :controls="false"
               placeholder="请输入最高配载"
-
+              :max="999999"
+              :min="0"
               controls-position="right"
               :style="{ width: '80%' }"
             />
@@ -107,6 +110,8 @@
               :controls="false"
               placeholder="请输入承运次数"
               step-strictly
+              :max="999999"
+              :min="0"
               controls-position="right"
               :style="{ width: '80%' }"
             />
@@ -120,6 +125,8 @@
               placeholder="货物单价"
               :precision="2"
               :step="0.01"
+              :max="999999"
+              :min="0"
               controls-position="right"
               :style="{ width: '80%' }"
             />
@@ -268,7 +275,6 @@ export default {
         ],
         vehicleMaxWeight: [
           { validator: validatePass2, required: true, trigger: 'blur' }
-
         ]
 
       },
@@ -342,6 +348,13 @@ export default {
         this.$emit('totalTypeValue', value);
       },
       immediate: true
+    },
+    'formData.stowageStatus'(val) {
+      if (val + '' === '2') {
+        this.formData.vehicleMaxWeight = '0';
+      } else {
+        this.formData.number = undefined;
+      }
     }
   },
 

@@ -1,291 +1,298 @@
 <template>
-  <!-- 司机打款记录 -->
-  <div class="app-container">
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
-      <el-form-item label="支付批次号" prop="bizNo">
-        <el-input
-          v-model="queryParams.bizNo"
-          placeholder="请输入支付批次号"
-          clearable
-          size="small"
-          class="input-width"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="支付订单号" prop="orderId">
-        <el-input
-          v-model="queryParams.orderId"
-          placeholder="请输入支付订单号"
-          clearable
-          size="small"
-          class="input-width"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="货源单号" prop="goodId">
-        <el-input
-          v-model="queryParams.goodId"
-          placeholder="请输入货源单号"
-          clearable
-          size="small"
-          class="input-width"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="运输单号" prop="tranId">
-        <el-input
-          v-model="queryParams.tranId"
-          placeholder="请输入运输单号"
-          clearable
-          size="small"
-          class="input-width"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="接单时间">
-        <el-date-picker
-          v-model="queryParams.tranBeginTime"
-          clearable
-          type="date"
-          size="small"
-          style="width: 130px"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择"
-        />
-        至
-        <el-date-picker
-          v-model="queryParams.tranEndTime"
-          clearable
-          type="date"
-          size="small"
-          style="width: 130px"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择"
-        />
-      </el-form-item>
-      <el-form-item label="车牌号" prop="licenseNumber">
-        <el-input
-          v-model="queryParams.licenseNumber"
-          placeholder="请输入车牌号"
-          clearable
-          size="small"
-          class="input-width"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="收款方姓名" prop="payeeName">
-        <el-input
-          v-model="queryParams.payeeName"
-          placeholder="请输入收款方姓名"
-          clearable
-          size="small"
-          class="input-width"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="运单关联企业" prop="campanyName">
-        <el-input
-          v-model="queryParams.campanyName"
-          placeholder="请输入运单关联企业"
-          clearable
-          size="small"
-          class="input-width"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="收款人电话" prop="payeeMobile">
-        <el-input
-          v-model="queryParams.payeeMobile"
-          placeholder="请输入收款人电话"
-          clearable
-          size="small"
-          class="input-width"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="转账结果" prop="responseStatus">
-        <el-select v-model="queryParams.responseStatus" placeholder="请选择" clearable filterable size="small" class="input-width">
-          <el-option
-            v-for="dict in responseStatusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+  <div>
+    <!-- 司机打款记录 -->
+    <div v-show="showSearch" class="app-container app-container--search">
+      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
+        <el-form-item label="支付批次号" prop="bizNo">
+          <el-input
+            v-model="queryParams.bizNo"
+            placeholder="请输入支付批次号"
+            clearable
+            size="small"
+            class="input-width"
+            @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="流水上报" prop="upRecordStatus">
-        <el-select v-model="queryParams.upRecordStatus" placeholder="请选择" clearable filterable size="small" class="input-width">
-          <el-option
-            v-for="dict in reportOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+        </el-form-item>
+        <el-form-item label="支付订单号" prop="orderId">
+          <el-input
+            v-model="queryParams.orderId"
+            placeholder="请输入支付订单号"
+            clearable
+            size="small"
+            class="input-width"
+            @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="打款方式" prop="payByType">
-        <el-select v-model="queryParams.payByType" placeholder="请选择" clearable filterable size="small" class="input-width">
-          <el-option
-            v-for="dict in payByTypeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+        </el-form-item>
+        <el-form-item label="货源单号" prop="goodId">
+          <el-input
+            v-model="queryParams.goodId"
+            placeholder="请输入货源单号"
+            clearable
+            size="small"
+            class="input-width"
+            @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="电子路单上报" prop="upWaybillStatus">
-        <el-select v-model="queryParams.upWaybillStatus" placeholder="请选择" clearable filterable size="small" class="input-width">
-          <el-option
-            v-for="dict in reportOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+        </el-form-item>
+        <el-form-item label="运输单号" prop="tranId">
+          <el-input
+            v-model="queryParams.tranId"
+            placeholder="请输入运输单号"
+            clearable
+            size="small"
+            class="input-width"
+            @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="是否分单" prop="isSplit">
-        <el-select v-model="queryParams.isSplit" placeholder="请选择" clearable filterable size="small" class="input-width">
-          <el-option
-            v-for="dict in isOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+        </el-form-item>
+        <el-form-item label="接单时间">
+          <el-date-picker
+            v-model="queryParams.tranBeginTime"
+            clearable
+            type="date"
+            size="small"
+            style="width: 130px"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="是否异常" prop="abnormal">
-        <el-select v-model="queryParams.abnormal" placeholder="请选择" clearable filterable size="small" class="input-width">
-          <el-option
-            v-for="dict in isOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+          至
+          <el-date-picker
+            v-model="queryParams.tranEndTime"
+            clearable
+            type="date"
+            size="small"
+            style="width: 130px"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
+        </el-form-item>
+        <el-form-item label="车牌号" prop="licenseNumber">
+          <el-input
+            v-model="queryParams.licenseNumber"
+            placeholder="请输入车牌号"
+            clearable
+            size="small"
+            class="input-width"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="收款方姓名" prop="payeeName">
+          <el-input
+            v-model="queryParams.payeeName"
+            placeholder="请输入收款方姓名"
+            clearable
+            size="small"
+            class="input-width"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="运单关联企业" prop="campanyName">
+          <el-input
+            v-model="queryParams.campanyName"
+            placeholder="请输入运单关联企业"
+            clearable
+            size="small"
+            class="input-width"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="收款人电话" prop="payeeMobile">
+          <el-input
+            v-model="queryParams.payeeMobile"
+            placeholder="请输入收款人电话"
+            clearable
+            size="small"
+            class="input-width"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="转账结果" prop="responseStatus">
+          <el-select v-model="queryParams.responseStatus" placeholder="请选择" clearable filterable size="small" class="input-width">
+            <el-option
+              v-for="dict in responseStatusOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="流水上报" prop="upRecordStatus">
+          <el-select v-model="queryParams.upRecordStatus" placeholder="请选择" clearable filterable size="small" class="input-width">
+            <el-option
+              v-for="dict in reportOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="打款方式" prop="payByType">
+          <el-select v-model="queryParams.payByType" placeholder="请选择" clearable filterable size="small" class="input-width">
+            <el-option
+              v-for="dict in payByTypeOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="电子路单上报" prop="upWaybillStatus">
+          <el-select v-model="queryParams.upWaybillStatus" placeholder="请选择" clearable filterable size="small" class="input-width">
+            <el-option
+              v-for="dict in reportOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="是否分单" prop="isSplit">
+          <el-select v-model="queryParams.isSplit" placeholder="请选择" clearable filterable size="small" class="input-width">
+            <el-option
+              v-for="dict in isOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="是否异常" prop="abnormal">
+          <el-select v-model="queryParams.abnormal" placeholder="请选择" clearable filterable size="small" class="input-width">
+            <el-option
+              v-for="dict in isOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+          <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="app-container">
+      <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            type="warning"
+            icon="el-icon-download"
+            size="mini"
+            @click="handleExport"
+          >导出</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            type="info"
+            icon="el-icon-upload2"
+            size="mini"
+            @click="handleImport"
+          >流水批量导入</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            type="success"
+            icon="el-icon-download"
+            size="mini"
+            @click="handleImportTemplate"
+          >下载模板</el-button>
+        </el-col>
+        <el-tag type="warning" class="mb10">提示: 已打款、打款成功的运输单才能上报流水</el-tag>
+        <el-col :span="1.5" class="fr">
+          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
+        </el-col>
+        <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+      </el-row>
 
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          type="warning"
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-        >导出</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="info"
-          icon="el-icon-upload2"
-          size="mini"
-          @click="handleImport"
-        >流水批量导入</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          icon="el-icon-download"
-          size="mini"
-          @click="handleImportTemplate"
-        >下载模板</el-button>
-      </el-col>
-      <el-tag type="warning" class="mb10">提示: 已打款、打款成功的运输单才能上报流水</el-tag>
-      <el-col :span="1.5" class="fr">
-        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
-      </el-col>
-      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
-    </el-row>
+      <RefactorTable :loading="loading" :data="recordList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+        <!-- 付款类型 -->
+        <template #payType="{row}">
+          <span>{{ selectDictLabel(payTypeOptions, row.payType) }}</span>
+        </template>
+        <!-- 收款方类型 -->
+        <template #payeeType="{row}">
+          <span>{{ selectDictLabel(payeeTypeOptions, row.payeeType) }}</span>
+        </template>
+        <!-- 处理状态 -->
+        <template #status="{row}">
+          <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
+        </template>
+        <!-- 是否进行过回调处理 -->
+        <template #isHandle="{row}">
+          <span>{{ selectDictLabel(isHandleOptions, row.isHandle) }}</span>
+        </template>
+        <!-- 转账回调状态 -->
+        <template #responseStatus="{row}">
+          <i v-if="row.responseStatus === 0" class="g-icon-deal mr5" />
+          <i v-if="row.responseStatus === 1" class="el-icon-success g-color-success mr5" />
+          <i v-if="row.responseStatus === 2" class="el-icon-error g-color-error mr5" />
+          <i v-if="row.responseStatus === 3" class="el-icon-warning g-color-light-gray mr5" />
+          <span>{{ selectDictLabel(responseStatusOptions, row.responseStatus) }}</span>
+        </template>
+        <!-- 付款方式 -->
+        <template #payBy="{row}">
+          <span>{{ selectDictLabel(payByOptions, row.payBy) }}</span>
+        </template>
+        <!-- 是否子单 -->
+        <template #isChild="{row}">
+          <span>{{ selectDictLabel(isChildOptions, row.isChild) }}</span>
+        </template>
+        <!-- 是否异常 -->
+        <template #isAbnormal="{row}">
+          <span>{{ selectDictLabel(isAbnormalOptions, row.isAbnormal) }}</span>
+        </template>
+        <!-- 打款时间 -->
+        <template #payTime="{row}">
+          <span>{{ parseTime(row.payTime) }}</span>
+        </template>
+        <!-- 到账时间 -->
+        <template #finishDate="{row}">
+          <span>{{ parseTime(row.finishDate) }}</span>
+        </template>
+        <!-- 预付网商支付时间 -->
+        <template #payMybankTime="{row}">
+          <span>{{ parseTime(row.payMybankTime) }}</span>
+        </template>
+        <!-- 接单时间 -->
+        <template #receiveTime="{row}">
+          <span>{{ parseTime(row.receiveTime) }}</span>
+        </template>
+        <template #createTime="{row}">
+          <span>{{ parseTime(row.createTime) }}</span>
+        </template>
+        <template #updateTime="{row}">
+          <span>{{ parseTime(row.updateTime) }}</span>
+        </template>
+        <template #edit="{row}">
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleReport(row)"
+          >上报流水</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleUpdate(row)"
+          >修改批次号</el-button>
+        </template>
+      </RefactorTable>
 
-    <RefactorTable :loading="loading" :data="recordList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
-      <!-- 付款类型 -->
-      <template #payType="{row}">
-        <span>{{ selectDictLabel(payTypeOptions, row.payType) }}</span>
-      </template>
-      <!-- 收款方类型 -->
-      <template #payeeType="{row}">
-        <span>{{ selectDictLabel(payeeTypeOptions, row.payeeType) }}</span>
-      </template>
-      <!-- 处理状态 -->
-      <template #status="{row}">
-        <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
-      </template>
-      <!-- 是否进行过回调处理 -->
-      <template #isHandle="{row}">
-        <span>{{ selectDictLabel(isHandleOptions, row.isHandle) }}</span>
-      </template>
-      <!-- 转账回调状态 -->
-      <template #responseStatus="{row}">
-        <span>{{ selectDictLabel(responseStatusOptions, row.responseStatus) }}</span>
-      </template>
-      <!-- 付款方式 -->
-      <template #payBy="{row}">
-        <span>{{ selectDictLabel(payByOptions, row.payBy) }}</span>
-      </template>
-      <!-- 是否子单 -->
-      <template #isChild="{row}">
-        <span>{{ selectDictLabel(isChildOptions, row.isChild) }}</span>
-      </template>
-      <!-- 是否异常 -->
-      <template #isAbnormal="{row}">
-        <span>{{ selectDictLabel(isAbnormalOptions, row.isAbnormal) }}</span>
-      </template>
-      <!-- 打款时间 -->
-      <template #payTime="{row}">
-        <span>{{ parseTime(row.payTime) }}</span>
-      </template>
-      <!-- 到账时间 -->
-      <template #finishDate="{row}">
-        <span>{{ parseTime(row.finishDate) }}</span>
-      </template>
-      <!-- 预付网商支付时间 -->
-      <template #payMybankTime="{row}">
-        <span>{{ parseTime(row.payMybankTime) }}</span>
-      </template>
-      <!-- 接单时间 -->
-      <template #receiveTime="{row}">
-        <span>{{ parseTime(row.receiveTime) }}</span>
-      </template>
-      <template #createTime="{row}">
-        <span>{{ parseTime(row.createTime) }}</span>
-      </template>
-      <template #updateTime="{row}">
-        <span>{{ parseTime(row.updateTime) }}</span>
-      </template>
-      <template #edit="{row}">
-        <el-button
-          size="mini"
-          type="text"
-          @click="handleReport(row)"
-        >上报流水</el-button>
-        <el-button
-          size="mini"
-          type="text"
-          @click="handleUpdate(row)"
-        >修改批次号</el-button>
-      </template>
-    </RefactorTable>
-
-    <!-- 上报相关字段还没有 -->
-    <!-- <el-table v-loading="loading" :data="recordList" @selection-change="handleSelectionChange">
+      <!-- 上报相关字段还没有 -->
+      <!-- <el-table v-loading="loading" :data="recordList" @selection-change="handleSelectionChange">
       <el-table-column label="流水上报" align="center" prop="" />
       <el-table-column label="电子路单上报状态" align="center" prop="" />
     </el-table> -->
 
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
 
-    <!-- 编辑支付批次号 -->
-    <modify-batch-dialog ref="modifyBatchRef" :open.sync="modifyBatchOpen" :title="title" @refresh="getList" />
+      <!-- 编辑支付批次号 -->
+      <modify-batch-dialog ref="modifyBatchRef" :open.sync="modifyBatchOpen" :title="title" @refresh="getList" />
+    </div>
   </div>
 </template>
 
@@ -323,15 +330,15 @@ export default {
       // 转帐结果字典
       responseStatusOptions: [
         { dictLabel: '处理中', dictValue: 0 },
-        { dictLabel: '成功', dictValue: 1 },
-        { dictLabel: '失败', dictValue: 2 },
-        { dictLabel: '异常', dictValue: 3 }
+        { dictLabel: '转账成功', dictValue: 1 },
+        { dictLabel: '转账失败', dictValue: 2 },
+        { dictLabel: '转账异常', dictValue: 3 }
       ],
       // 流水/电子路单上报字典
       reportOptions: [
         { dictLabel: '未上报', dictValue: 0 },
-        { dictLabel: '成功', dictValue: 1 },
-        { dictLabel: '失败', dictValue: 2 }
+        { dictLabel: '上报成功', dictValue: 1 },
+        { dictLabel: '上报失败', dictValue: 2 }
       ],
       // 打款方式字典
       payByTypeOptions: [

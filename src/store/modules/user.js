@@ -96,9 +96,7 @@ const user = {
             isAdmin: res.isAdmin,
             isShipment: res.isShipment,
             shipment: res.shipment,
-            user: {
-              userCode: res.user.userCode
-            }
+            user: res.user
           });
 
           commit('SET_IS_ADMIN', res.isAdmin);

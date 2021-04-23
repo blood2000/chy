@@ -1,123 +1,125 @@
 <template>
-  <div class="app-container">
-    <el-form
-      v-show="showSearch"
-      ref="queryForm"
-      :model="queryParams"
-      :inline="true"
-      label-width="100px"
-    >
-      <el-form-item label="车牌号" prop="licenseNumber">
-        <el-input
-          v-model="queryParams.licenseNumber"
-          placeholder="请输入车牌号"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="归属类型" prop="vehicleAscriptionType">
-        <el-select
-          v-model="queryParams.vehicleAscriptionType"
-          placeholder="请选择车辆归属类型"
-          filterable
-          clearable
-          size="small"
-        >
-          <el-option
-            v-for="dict in vehicleAscriptionTypeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+  <div>
+    <div v-show="showSearch" class="app-container app-container--search">
+      <el-form
+        ref="queryForm"
+        :model="queryParams"
+        :inline="true"
+        label-width="100px"
+      >
+        <el-form-item label="车牌号" prop="licenseNumber">
+          <el-input
+            v-model="queryParams.licenseNumber"
+            placeholder="请输入车牌号"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="能源类型" prop="vehicleEnergyType">
-        <el-select
-          v-model="queryParams.vehicleEnergyType"
-          placeholder="请选择车辆能源类型"
-          filterable
-          clearable
-          size="small"
-        >
-          <el-option
-            v-for="dict in energyTypesOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+        </el-form-item>
+        <el-form-item label="归属类型" prop="vehicleAscriptionType">
+          <el-select
+            v-model="queryParams.vehicleAscriptionType"
+            placeholder="请选择车辆归属类型"
+            filterable
+            clearable
+            size="small"
+          >
+            <el-option
+              v-for="dict in vehicleAscriptionTypeOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="能源类型" prop="vehicleEnergyType">
+          <el-select
+            v-model="queryParams.vehicleEnergyType"
+            placeholder="请选择车辆能源类型"
+            filterable
+            clearable
+            size="small"
+          >
+            <el-option
+              v-for="dict in energyTypesOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="审核状态" prop="authStatus">
+          <el-select
+            v-model="queryParams.authStatus"
+            placeholder="请选择审核状态"
+            filterable
+            clearable
+            size="small"
+          >
+            <el-option
+              v-for="dict in authStatusOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="是否冻结" prop="isFreeze">
+          <el-select
+            v-model="queryParams.isFreeze"
+            placeholder="请选择是否冻结"
+            clearable
+            filterable
+            size="small"
+          >
+            <el-option
+              v-for="dict in isFreezeOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="年审时间">
+          <el-date-picker
+            v-model="queryParams.annualVerificationBeginDate"
+            clearable
+            size="small"
+            style="width: 130px"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="审核状态" prop="authStatus">
-        <el-select
-          v-model="queryParams.authStatus"
-          placeholder="请选择审核状态"
-          filterable
-          clearable
-          size="small"
-        >
-          <el-option
-            v-for="dict in authStatusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+          至
+          <el-date-picker
+            v-model="queryParams.annualVerificationEndDate"
+            clearable
+            size="small"
+            style="width: 130px"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="是否冻结" prop="isFreeze">
-        <el-select
-          v-model="queryParams.isFreeze"
-          placeholder="请选择是否冻结"
-          clearable
-          filterable
-          size="small"
-        >
-          <el-option
-            v-for="dict in isFreezeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="年审时间">
-        <el-date-picker
-          v-model="queryParams.annualVerificationBeginDate"
-          clearable
-          size="small"
-          style="width: 130px"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择"
-        />
-        至
-        <el-date-picker
-          v-model="queryParams.annualVerificationEndDate"
-          clearable
-          size="small"
-          style="width: 130px"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button
-          type="cyan"
-          icon="el-icon-search"
-          size="mini"
-          @click="handleQuery"
-        >搜索</el-button>
-        <el-button
-          icon="el-icon-refresh"
-          size="mini"
-          @click="resetQuery"
-        >重置</el-button>
-      </el-form-item>
-    </el-form>
-
-    <el-row :gutter="10" class="mb8">
-      <template v-if="!teamCode && !driverCode">
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            icon="el-icon-search"
+            size="mini"
+            @click="handleQuery"
+          >搜索</el-button>
+          <el-button
+            type="primary"
+            plain
+            icon="el-icon-refresh"
+            size="mini"
+            @click="resetQuery"
+          >重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="app-container">
+      <el-row v-show="!teamCode && !driverCode" :gutter="10" class="mb8">
         <el-col :span="1.5">
           <el-button
             v-hasPermi="['assets:vehicle:add']"
@@ -161,9 +163,9 @@
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
-      </template>
+      </el-row>
       <!-- 新增司机或调度者的名下车辆 -->
-      <!-- <template v-if="teamCode || driverCode">
+      <el-row v-if="teamCode || driverCode" :gutter="10" class="mb8">
         <el-col :span="1.5">
           <el-button
             v-hasPermi="['assets:vehicle:add']"
@@ -173,136 +175,154 @@
             @click="handleAdd('bind')"
           >添加车辆</el-button>
         </el-col>
-      </template> -->
-    </el-row>
-
-    <RefactorTable :loading="loading" :data="vehicleList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
-      <!-- 车牌类型 -->
-      <template #classificationCode="{row}">
-        <span>{{ selectDictLabel( licensePlateTypeOptions, row.classificationCode ) }}</span>
-      </template>
-      <!-- 车牌颜色 -->
-      <template #vehicleLicenseColorCode="{row}">
-        <span>{{ selectDictLabel( licenseColorOptions, row.vehicleLicenseColorCode ) }}</span>
-      </template>
-      <!-- 车身颜色 -->
-      <template #vehicleColorCode="{row}">
-        <span>{{ selectDictLabel( carBodyColorOptions, row.vehicleColorCode ) }}</span>
-      </template>
-      <!-- 车辆类型 -->
-      <template #vehicleTypeCode="{row}">
-        <span>{{ selectDictLabel(vehicleTypeOptions, row.vehicleTypeCode) }}</span>
-      </template>
-      <!-- 能源类型 -->
-      <template #vehicleEnergyType="{row}">
-        <span>{{ selectDictLabel(energyTypesOptions, row.vehicleEnergyType) }}</span>
-      </template>
-      <!-- 车长 -->
-      <template #vehicleLength="{row}">
-        <span>{{ selectDictLabel(vehicleLengthOptions, row.vehicleLength) }}</span>
-      </template>
-      <!-- 车宽 -->
-      <template #vehicleWidth="{row}">
-        <span>{{ selectDictLabel(vehicleWidthOptions, row.vehicleWidth) }}</span>
-      </template>
-      <!-- 车高 -->
-      <template #vehicleHeight="{row}">
-        <span>{{ selectDictLabel(vehicleHeightOptions, row.vehicleHeight) }}</span>
-      </template>
-      <!-- 轴数 -->
-      <template #axesNumber="{row}">
-        <span>{{ selectDictLabel(axisTypeOptions, row.axesNumber) }}</span>
-      </template>
-      <!-- 车辆归属类型 -->
-      <template #vehicleAscriptionType="{row}">
-        <span>{{ selectDictLabel( vehicleAscriptionTypeOptions, row.vehicleAscriptionType ) }}</span>
-      </template>
-      <!-- 是否冻结 -->
-      <template #isFreeze="{row}">
-        <span>{{ selectDictLabel( isFreezeOptions, row.isFreeze ) }}</span>
-      </template>
-      <template #annualVerificationDate="{row}">
-        <span>{{ parseTime(row.annualVerificationDate, '{y}-{m}-{d}') }}</span>
-      </template>
-      <template #createTime="{row}">
-        <span>{{ parseTime(row.createTime, '{y}-{m}-{d}') }}</span>
-      </template>
-      <template #updateTime="{row}">
-        <span>{{ parseTime(row.updateTime, '{y}-{m}-{d}') }}</span>
-      </template>
-      <template #authStatus="{row}">
-        <span v-show="row.authStatus === 0" class="g-color-gray">未审核</span>
-        <span v-show="row.authStatus === 1" class="g-color-blue">审核中</span>
-        <span v-show="row.authStatus === 2" class="g-color-error">审核未通过</span>
-        <span v-show="row.authStatus === 3" class="g-color-success">审核通过</span>
-      </template>
-      <template #edit="{row}">
-        <el-button
-          v-show="!teamCode && !driverCode"
-          v-hasPermi="['assets:vehicle:get']"
-          size="mini"
-          type="text"
-          @click="handleManage(row)"
-        >管理</el-button>
-        <el-button
-          size="mini"
-          type="text"
-          @click="handleDetail(row, 'detail')"
-        >详情</el-button>
-        <template v-if="!teamCode && !driverCode">
+        <el-col :span="1.5">
           <el-button
-            v-hasPermi="['assets:vehicle:edit']"
+            v-hasPermi="['assets:vehicle:remove']"
+            type="danger"
+            icon="el-icon-delete"
+            size="mini"
+            :disabled="multiple"
+            @click="handleDelBind"
+          >解除绑定</el-button>
+        </el-col>
+      </el-row>
+
+      <RefactorTable :loading="loading" :data="vehicleList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+        <!-- 车牌类型 -->
+        <template #classificationCode="{row}">
+          <span>{{ selectDictLabel( licensePlateTypeOptions, row.classificationCode ) }}</span>
+        </template>
+        <!-- 车牌颜色 -->
+        <template #vehicleLicenseColorCode="{row}">
+          <span>{{ selectDictLabel( licenseColorOptions, row.vehicleLicenseColorCode ) }}</span>
+        </template>
+        <!-- 车身颜色 -->
+        <template #vehicleColorCode="{row}">
+          <span>{{ selectDictLabel( carBodyColorOptions, row.vehicleColorCode ) }}</span>
+        </template>
+        <!-- 车辆类型 -->
+        <template #vehicleTypeCode="{row}">
+          <span>{{ selectDictLabel(vehicleTypeOptions, row.vehicleTypeCode) }}</span>
+        </template>
+        <!-- 能源类型 -->
+        <template #vehicleEnergyType="{row}">
+          <span>{{ selectDictLabel(energyTypesOptions, row.vehicleEnergyType) }}</span>
+        </template>
+        <!-- 车长 -->
+        <template #vehicleLength="{row}">
+          <span>{{ selectDictLabel(vehicleLengthOptions, row.vehicleLength) }}</span>
+        </template>
+        <!-- 车宽 -->
+        <template #vehicleWidth="{row}">
+          <span>{{ selectDictLabel(vehicleWidthOptions, row.vehicleWidth) }}</span>
+        </template>
+        <!-- 车高 -->
+        <template #vehicleHeight="{row}">
+          <span>{{ selectDictLabel(vehicleHeightOptions, row.vehicleHeight) }}</span>
+        </template>
+        <!-- 轴数 -->
+        <template #axesNumber="{row}">
+          <span>{{ selectDictLabel(axisTypeOptions, row.axesNumber) }}</span>
+        </template>
+        <!-- 车辆归属类型 -->
+        <template #vehicleAscriptionType="{row}">
+          <span>{{ selectDictLabel( vehicleAscriptionTypeOptions, row.vehicleAscriptionType ) }}</span>
+        </template>
+        <!-- 是否冻结 -->
+        <template #isFreeze="{row}">
+          <span>{{ selectDictLabel( isFreezeOptions, row.isFreeze ) }}</span>
+        </template>
+        <template #annualVerificationDate="{row}">
+          <span>{{ parseTime(row.annualVerificationDate, '{y}-{m}-{d}') }}</span>
+        </template>
+        <template #createTime="{row}">
+          <span>{{ parseTime(row.createTime, '{y}-{m}-{d}') }}</span>
+        </template>
+        <template #updateTime="{row}">
+          <span>{{ parseTime(row.updateTime, '{y}-{m}-{d}') }}</span>
+        </template>
+        <template #authStatus="{row}">
+          <i v-show="row.authStatus === 0" class="el-icon-warning g-color-light-gray mr5" />
+          <i v-show="row.authStatus === 1" class="g-icon-deal mr5" />
+          <i v-show="row.authStatus === 2" class="el-icon-error g-color-error mr5" />
+          <i v-show="row.authStatus === 3" class="el-icon-success g-color-success mr5" />
+          <span>{{ selectDictLabel(authStatusOptions, row.authStatus) }}</span>
+        </template>
+        <template #edit="{row}">
+          <el-button
+            v-show="!teamCode && !driverCode"
+            v-hasPermi="['assets:vehicle:get']"
             size="mini"
             type="text"
-            @click="handleDetail(row, 'edit')"
-          >修改</el-button>
-          <TableDropdown>
-            <el-dropdown-item>
-              <el-button
-                v-show="row.authStatus === 0 || row.authStatus === 1"
-                size="mini"
-                type="text"
-                @click="handleDetail(row, 'review')"
-              >审核</el-button>
-            </el-dropdown-item>
-            <el-dropdown-item>
-              <el-button
-                v-hasPermi="['assets:vehicle:remove']"
-                size="mini"
-                type="text"
-                @click="handleDelete(row)"
-              >删除</el-button>
-            </el-dropdown-item>
-          </TableDropdown>
+            @click="handleManage(row)"
+          >管理</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleDetail(row, 'detail')"
+          >详情</el-button>
+          <el-button
+            v-show="teamCode || driverCode"
+            v-hasPermi="['assets:vehicle:remove']"
+            size="mini"
+            type="text"
+            @click="handleDelBind(row)"
+          >解除绑定</el-button>
+          <template v-if="!teamCode && !driverCode">
+            <el-button
+              v-hasPermi="['assets:vehicle:edit']"
+              size="mini"
+              type="text"
+              @click="handleDetail(row, 'edit')"
+            >修改</el-button>
+            <TableDropdown>
+              <el-dropdown-item>
+                <el-button
+                  v-show="row.authStatus === 0 || row.authStatus === 1"
+                  size="mini"
+                  type="text"
+                  @click="handleDetail(row, 'review')"
+                >审核</el-button>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <el-button
+                  v-hasPermi="['assets:vehicle:remove']"
+                  size="mini"
+                  type="text"
+                  @click="handleDelete(row)"
+                >删除</el-button>
+              </el-dropdown-item>
+            </TableDropdown>
+          </template>
         </template>
-      </template>
-    </RefactorTable>
+      </RefactorTable>
 
-    <pagination
-      v-show="total > 0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
+      <pagination
+        v-show="total > 0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
 
-    <!-- 新增/修改/详情 对话框 -->
-    <vehicle-dialog
-      ref="VehicleDialog"
-      :title="title"
-      :open.sync="open"
-      :disable="formDisable"
-      :team-code="teamCode"
-      :driver-code="driverCode"
-      @refresh="getList"
-    />
-    <!-- 管理归属司机/归属调度 对话框 -->
-    <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :vehicle-code="vehicleCode" />
+      <!-- 新增/修改/详情 对话框 -->
+      <vehicle-dialog
+        ref="VehicleDialog"
+        :title="title"
+        :open.sync="open"
+        :disable="formDisable"
+        :team-code="teamCode"
+        :driver-code="driverCode"
+        @refresh="getList"
+      />
+      <!-- 管理归属司机/归属调度 对话框 -->
+      <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :vehicle-code="vehicleCode" />
+    </div>
   </div>
 </template>
 
 <script>
-import { listVehicleApi, listInfo, getInfo, delInfo } from '@/api/assets/vehicle';
+import { listVehicleApi, listInfo, getInfo, delInfo, delDriverCar, delTeamCar } from '@/api/assets/vehicle';
 import VehicleDialog from './vehicleDialog';
 import ManageDialog from './manageDialog';
 
@@ -331,6 +351,7 @@ export default {
       // 选中数组
       ids: [],
       vehicleNames: [],
+      codes: [],
       // 非单个禁用
       single: true,
       // 非多个禁用
@@ -489,6 +510,7 @@ export default {
     handleSelectionChange(selection) {
       this.ids = selection.map((item) => item.id);
       this.vehicleNames = selection.map((item) => item.licenseNumber);
+      this.codes = selection.map((item) => item.code);
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
     },
@@ -564,6 +586,32 @@ export default {
     handleManage(row) {
       this.vehicleCode = row.code;
       this.manageDialogOpen = true;
+    },
+    /** 解除司机/调度者与车辆的关联 */
+    handleDelBind(row) {
+      const _this = this;
+      const codes = row.code || this.codes.join(',');
+      const vehicleNames = row.licenseNumber || this.vehicleNames;
+      this.$confirm('是否确认与车牌号为"' + vehicleNames + '"的车辆解除绑定?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        if (_this.driverCode) {
+          return delDriverCar({
+            driverCode: _this.driverCode,
+            vehicleCodes: codes
+          });
+        } else if (_this.teamCode) {
+          return delTeamCar({
+            teamCode: _this.teamCode,
+            vehicleCodes: codes
+          });
+        }
+      }).then(() => {
+        this.getList();
+        this.msgSuccess('操作成功');
+      });
     }
   }
 };

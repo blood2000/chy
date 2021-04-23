@@ -1,183 +1,192 @@
 <template>
-  <!-- 提现申请 -->
-  <div class="app-container">
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
-      <el-form-item label="平台角色" prop="roleName">
-        <el-select v-model="queryParams.roleName" placeholder="请选择平台角色" clearable filterable size="small">
-          <el-option
-            v-for="dict in roleOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+  <div>
+    <!-- 提现申请 -->
+    <div v-show="showSearch" class="app-container app-container--search">
+      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
+        <el-form-item label="平台角色" prop="roleName">
+          <el-select v-model="queryParams.roleName" placeholder="请选择平台角色" clearable filterable size="small">
+            <el-option
+              v-for="dict in roleOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="申请人" prop="applyerName">
+          <el-input
+            v-model="queryParams.applyerName"
+            placeholder="请输入申请人"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="申请人" prop="applyerName">
-        <el-input
-          v-model="queryParams.applyerName"
-          placeholder="请输入申请人"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="收款人姓名" prop="bankAcountName">
-        <el-input
-          v-model="queryParams.bankAcountName"
-          placeholder="请输入收款人姓名"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="手机号码" prop="userPhone">
-        <el-input
-          v-model="queryParams.userPhone"
-          placeholder="请输入手机号码"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="银行卡号" prop="bankNumber">
-        <el-input
-          v-model="queryParams.bankNumber"
-          placeholder="请输入银行卡号"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="车牌号" prop="licenseNumber">
-        <el-input
-          v-model="queryParams.licenseNumber"
-          placeholder="请输入车牌号"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="转账结果" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择" clearable filterable size="small">
-          <el-option
-            v-for="dict in statusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+        </el-form-item>
+        <el-form-item label="收款人姓名" prop="bankAcountName">
+          <el-input
+            v-model="queryParams.bankAcountName"
+            placeholder="请输入收款人姓名"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="转账日期">
-        <el-date-picker
-          v-model="queryParams.transferTimeBegin"
-          clearable
-          type="date"
-          size="small"
-          style="width: 130px"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择"
-        />
-        至
-        <el-date-picker
-          v-model="queryParams.transferTimeEnd"
-          clearable
-          type="date"
-          size="small"
-          style="width: 130px"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择"
-        />
-      </el-form-item>
-      <el-form-item label="申请日期">
-        <el-date-picker
-          v-model="queryParams.applyTimeBegin"
-          clearable
-          type="date"
-          size="small"
-          style="width: 130px"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择"
-        />
-        至
-        <el-date-picker
-          v-model="queryParams.applyTimeEnd"
-          clearable
-          type="date"
-          size="small"
-          style="width: 130px"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
+        </el-form-item>
+        <el-form-item label="手机号码" prop="userPhone">
+          <el-input
+            v-model="queryParams.userPhone"
+            placeholder="请输入手机号码"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="银行卡号" prop="bankNumber">
+          <el-input
+            v-model="queryParams.bankNumber"
+            placeholder="请输入银行卡号"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="车牌号" prop="licenseNumber">
+          <el-input
+            v-model="queryParams.licenseNumber"
+            placeholder="请输入车牌号"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="转账结果" prop="status">
+          <el-select v-model="queryParams.status" placeholder="请选择" clearable filterable size="small">
+            <el-option
+              v-for="dict in statusOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="转账日期">
+          <el-date-picker
+            v-model="queryParams.transferTimeBegin"
+            clearable
+            type="date"
+            size="small"
+            style="width: 130px"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择"
+          />
+          至
+          <el-date-picker
+            v-model="queryParams.transferTimeEnd"
+            clearable
+            type="date"
+            size="small"
+            style="width: 130px"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择"
+          />
+        </el-form-item>
+        <el-form-item label="申请日期">
+          <el-date-picker
+            v-model="queryParams.applyTimeBegin"
+            clearable
+            type="date"
+            size="small"
+            style="width: 130px"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择"
+          />
+          至
+          <el-date-picker
+            v-model="queryParams.applyTimeEnd"
+            clearable
+            type="date"
+            size="small"
+            style="width: 130px"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+          <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="app-container">
+      <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            type="warning"
+            icon="el-icon-download"
+            size="mini"
+            @click="handleExport"
+          >导出</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            type="info"
+            icon="el-icon-upload2"
+            size="mini"
+            :disabled="multiple"
+            @click="handleImport"
+          >网商批量提现</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            type="success"
+            icon="el-icon-download"
+            size="mini"
+            :disabled="multiple"
+            @click="handleRefreshStatus"
+          >更新网商提现状态</el-button>
+        </el-col>
+        <el-col :span="1.5" class="fr">
+          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
+        </el-col>
+        <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+      </el-row>
 
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          type="warning"
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-        >导出</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="info"
-          icon="el-icon-upload2"
-          size="mini"
-          :disabled="multiple"
-          @click="handleImport"
-        >网商批量提现</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          icon="el-icon-download"
-          size="mini"
-          :disabled="multiple"
-          @click="handleRefreshStatus"
-        >更新网商提现状态</el-button>
-      </el-col>
-      <el-col :span="1.5" class="fr">
-        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
-      </el-col>
-      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
-    </el-row>
+      <RefactorTable ref="multipleTable" :loading="loading" :data="withdrawalList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+        <!-- 转账渠道 -->
+        <template #payStatus="{row}">
+          <span>{{ selectDictLabel(payStatusOption, row.payStatus) }}</span>
+        </template>
+        <!-- 申请状态 -->
+        <template #status="{row}">
+          <i v-if="row.status === 0" class="g-icon-money mr5" />
+          <i v-if="row.status === 1" class="g-icon-push mr5" />
+          <i v-if="row.status === 2" class="el-icon-success g-color-success mr5" />
+          <i v-if="row.status === 3" class="el-icon-error g-color-error mr5" />
+          <i v-if="row.status === 4" class="g-icon-deal mr5" />
+          <i v-if="row.status === 5" class="el-icon-remove g-color-light-gray mr5" />
+          <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
+        </template>
+        <template #transferTime="{row}">
+          <span>{{ parseTime(row.transferTime) }}</span>
+        </template>
+        <template #applyDate="{row}">
+          <span>{{ parseTime(row.applyDate) }}</span>
+        </template>
+      </RefactorTable>
 
-    <RefactorTable :loading="loading" :data="withdrawalList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
-      <!-- 转账渠道 -->
-      <template #payStatus="{row}">
-        <span>{{ selectDictLabel(payStatusOption, row.payStatus) }}</span>
-      </template>
-      <!-- 申请状态 -->
-      <template #status="{row}">
-        <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
-      </template>
-      <template #transferTime="{row}">
-        <span>{{ parseTime(row.transferTime) }}</span>
-      </template>
-      <template #applyDate="{row}">
-        <span>{{ parseTime(row.applyDate) }}</span>
-      </template>
-    </RefactorTable>
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
 
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
-
+    </div>
   </div>
 </template>
 
 <script>
-import { withDrawalListApi, getWithDrawalList } from '@/api/capital/withdrawal';
+import { withDrawalListApi, getWithDrawalList, toCard } from '@/api/capital/withdrawal';
 
 export default {
   name: 'Withdrawal',
@@ -275,7 +284,10 @@ export default {
     },
     /** 网商批量提现 */
     handleImport() {
-
+      toCard(this.ids).then(response => {
+        this.msgSuccess('操作成功');
+        this.$refs.multipleTable.m2ToggleSelection();
+      });
     },
     /** 更新网商提现状态 */
     handleRefreshStatus() {

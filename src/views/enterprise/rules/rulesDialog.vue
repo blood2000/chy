@@ -310,7 +310,7 @@ export default {
           } else {
             if (this.shipmentCode) {
               params.shipperCode = this.shipmentCode;
-              params.platformType = 1;
+              params.platformType = 2;
             } else {
               params.platformType = this.form.platformType;
             }

@@ -231,7 +231,7 @@
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
           <el-button
-            type="info"
+            type="primary"
             icon="el-icon-upload2"
             size="mini"
             @click="handleWaybillImport"
@@ -240,7 +240,7 @@
         <el-col :span="1.5">
           <el-button
             v-hasPermi="['waybill:abnormal:edit']"
-            type="warning"
+            type="primary"
             icon="el-icon-upload2"
             size="mini"
             @click="handlePictureImport"
@@ -248,7 +248,7 @@
         </el-col>
         <el-col :span="1.5">
           <el-button
-            type="success"
+            type="primary"
             icon="el-icon-download"
             size="mini"
             @click="handleDownload"
@@ -414,7 +414,7 @@ export default {
         if (valid) {
           extra(this.form).then(response => {
             this.msgSuccess('运单补录成功');
-            this.close();
+            this.reset();
           });
         }
       });

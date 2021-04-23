@@ -1,106 +1,108 @@
 <template>
-  <div class="app-container">
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-      <el-form-item label="登录地址" prop="ipaddr">
-        <el-input
-          v-model="queryParams.ipaddr"
-          placeholder="请输入登录地址"
-          clearable
-          style="width: 240px;"
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="用户名称" prop="userName">
-        <el-input
-          v-model="queryParams.userName"
-          placeholder="请输入用户名称"
-          clearable
-          style="width: 240px;"
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-select
-          v-model="queryParams.status"
-          placeholder="登录状态"
-          clearable
-          filterable
-          size="small"
-          style="width: 240px"
-        >
-          <el-option
-            v-for="dict in statusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+  <div>
+    <div v-show="showSearch" class="app-container app-container--search">
+      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+        <el-form-item label="登录地址" prop="ipaddr">
+          <el-input
+            v-model="queryParams.ipaddr"
+            placeholder="请输入登录地址"
+            clearable
+            style="width: 240px;"
+            size="small"
+            @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="登录时间">
-        <el-date-picker
-          v-model="dateRange"
-          size="small"
-          style="width: 240px"
-          value-format="yyyy-MM-dd"
-          type="daterange"
-          range-separator="-"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
+        </el-form-item>
+        <el-form-item label="用户名称" prop="userName">
+          <el-input
+            v-model="queryParams.userName"
+            placeholder="请输入用户名称"
+            clearable
+            style="width: 240px;"
+            size="small"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="状态" prop="status">
+          <el-select
+            v-model="queryParams.status"
+            placeholder="登录状态"
+            clearable
+            filterable
+            size="small"
+            style="width: 240px"
+          >
+            <el-option
+              v-for="dict in statusOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="登录时间">
+          <el-date-picker
+            v-model="dateRange"
+            size="small"
+            style="width: 240px"
+            value-format="yyyy-MM-dd"
+            type="daterange"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+          <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="app-container">
+      <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['system:logininfor:remove']"
+            type="danger"
+            icon="el-icon-delete"
+            size="mini"
+            :disabled="multiple"
+            @click="handleDelete"
+          >删除</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['system:logininfor:remove']"
+            type="danger"
+            icon="el-icon-delete"
+            size="mini"
+            @click="handleClean"
+          >清空</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['system:logininfor:export']"
+            type="warning"
+            icon="el-icon-download"
+            size="mini"
+            @click="handleExport"
+          >导出</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <tablec-cascader v-model="tableColumnsConfig" />
+        </el-col>
+        <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+      </el-row>
 
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['system:logininfor:remove']"
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-        >删除</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['system:logininfor:remove']"
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          @click="handleClean"
-        >清空</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['system:logininfor:export']"
-          type="warning"
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-        >导出</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <tablec-cascader v-model="tableColumnsConfig" />
-      </el-col>
-      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
-    </el-row>
+      <RefactorTable :loading="loading" :data="list" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+        <template #status="{row}">
+          <span>{{ statusFormat(row) }}</span>
+        </template>
+        <template #accessTime="{row}">
+          <span>{{ parseTime(row.accessTime) }}</span>
+        </template>
+      </RefactorTable>
 
-    <RefactorTable :loading="loading" :data="list" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
-      <template #status="{row}">
-        <span>{{ statusFormat(row) }}</span>
-      </template>
-      <template #accessTime="{row}">
-        <span>{{ parseTime(row.accessTime) }}</span>
-      </template>
-    </RefactorTable>
-
-    <!-- <el-table v-loading="loading" :data="list" @selection-change="handleSelectionChange">
+      <!-- <el-table v-loading="loading" :data="list" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="访问编号" align="center" prop="infoId" />
       <el-table-column label="用户名称" align="center" prop="userName" />
@@ -114,14 +116,15 @@
       </el-table-column>
     </el-table> -->
 
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
 
+    </div>
   </div>
 </template>
 

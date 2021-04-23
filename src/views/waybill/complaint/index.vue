@@ -1,113 +1,115 @@
 <template>
-  <div class="app-container">
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
-      <el-form-item label="货源单号" prop="mainOrderNumber">
-        <el-input
-          v-model="queryParams.mainOrderNumber"
-          placeholder="请输入货源单号"
-          clearable
-          size="small"
-          style="width: 230px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="运输单号" prop="waybillNo">
-        <el-input
-          v-model="queryParams.waybillNo"
-          placeholder="请输入运输单号"
-          clearable
-          size="small"
-          style="width: 230px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="司机姓名" prop="driverName">
-        <el-input
-          v-model="queryParams.driverName"
-          placeholder="请输入司机姓名"
-          clearable
-          size="small"
-          style="width: 230px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="司机电话" prop="driverPhone">
-        <el-input
-          v-model="queryParams.driverPhone"
-          placeholder="请输入司机电话"
-          clearable
-          size="small"
-          style="width: 230px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="处理状态" prop="status">
-        <el-select
-          v-model="queryParams.status"
-          placeholder="请选择处理状态"
-          clearable
-          filterable
-          size="small"
-          style="width: 230px"
-        >
-          <el-option
-            v-for="dict in statusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+  <div>
+    <div v-show="showSearch" class="app-container app-container--search">
+      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
+        <el-form-item label="货源单号" prop="mainOrderNumber">
+          <el-input
+            v-model="queryParams.mainOrderNumber"
+            placeholder="请输入货源单号"
+            clearable
+            size="small"
+            style="width: 230px"
+            @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
+        </el-form-item>
+        <el-form-item label="运输单号" prop="waybillNo">
+          <el-input
+            v-model="queryParams.waybillNo"
+            placeholder="请输入运输单号"
+            clearable
+            size="small"
+            style="width: 230px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="司机姓名" prop="driverName">
+          <el-input
+            v-model="queryParams.driverName"
+            placeholder="请输入司机姓名"
+            clearable
+            size="small"
+            style="width: 230px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="司机电话" prop="driverPhone">
+          <el-input
+            v-model="queryParams.driverPhone"
+            placeholder="请输入司机电话"
+            clearable
+            size="small"
+            style="width: 230px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="处理状态" prop="status">
+          <el-select
+            v-model="queryParams.status"
+            placeholder="请选择处理状态"
+            clearable
+            filterable
+            size="small"
+            style="width: 230px"
+          >
+            <el-option
+              v-for="dict in statusOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+          <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
 
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5" style="float: right;">
-        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
-      </el-col>
-      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
-    </el-row>
+    <div class="app-container">
+      <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5" style="float: right;">
+          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
+        </el-col>
+        <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+      </el-row>
 
-    <RefactorTable :loading="loading" :data="complaintList" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
-      <template #status="{row}">
-        <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
-      </template>
-      <template #createTime="{row}">
-        <span>{{ parseTime(row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-      </template>
-      <template #updateTime="{row}">
-        <span>{{ parseTime(row.updateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-      </template>
-      <template #edit="{row}">
-        <el-button
-          size="mini"
-          type="text"
-          icon="el-icon-document"
-          @click="handleWaybill(row)"
-        >详情</el-button>
-        <el-button
-          size="mini"
-          type="text"
-          icon="el-icon-edit-outline"
-          @click="handleLog(row)"
-        >处理投诉</el-button>
-      </template>
-    </RefactorTable>
+      <RefactorTable :loading="loading" :data="complaintList" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
+        <template #status="{row}">
+          <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
+        </template>
+        <template #createTime="{row}">
+          <span>{{ parseTime(row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+        </template>
+        <template #updateTime="{row}">
+          <span>{{ parseTime(row.updateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+        </template>
+        <template #edit="{row}">
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleWaybill(row)"
+          >详情</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleLog(row)"
+          >处理投诉</el-button>
+        </template>
+      </RefactorTable>
 
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
-
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
+    </div>
     <!-- 投诉处理 对话框 -->
     <complaint-dialog ref="ComplaintDialog" :title="title" :open.sync="openComplaint" :disable="formDisable" @refresh="getList" />
   </div>
+
 </template>
 
 <script>

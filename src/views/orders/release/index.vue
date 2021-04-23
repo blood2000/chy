@@ -269,7 +269,7 @@
 
     <!-- 打开弹框 -->
     <el-dialog
-      title="提示"
+      title="常用地址"
       :visible.sync="openSelectaddress"
       width="80%"
     >
@@ -412,7 +412,7 @@ export default {
 
   async created() {
     // 判断用户
-    const { isAdmin = true, shipment = {}} = getUserInfo() || {};
+    const { isAdmin = true, shipment = {}, user = {}} = getUserInfo() || {};
 
 
     this.isAdmin = !isAdmin;
@@ -425,6 +425,7 @@ export default {
       }
 
       this.isAdmin && (this.formData.tin1 = shipment.info.code);
+      this.orgCode = user.orgCode;
     }
 
     // 判断地址栏有没有id- true=>有说明编辑/详情 false=>创建-什么都不做
@@ -480,6 +481,8 @@ export default {
 
     // 获取orgCode
     handlerchange(value) {
+      // console.log(this.shipmentList);
+
       this.shipmentList.forEach(e => {
         if (e.code === value) {
           this.orgCode = e.orgCode || '';

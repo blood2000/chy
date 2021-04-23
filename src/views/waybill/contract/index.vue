@@ -1,127 +1,128 @@
 <template>
-  <div class="app-container">
-    <el-form
-      v-show="showSearch"
-      ref="queryForm"
-      :model="queryParams"
-      :inline="true"
-      label-width="90px"
-    >
-      <el-form-item
-        label="合同编号"
-        prop="contractNo"
+  <div>
+    <div v-show="showSearch" class="app-container app-container--search">
+      <el-form
+        ref="queryForm"
+        :model="queryParams"
+        :inline="true"
+        label-width="90px"
       >
-        <el-input
-          v-model="queryParams.contractNo"
-          placeholder="请输入合同编号"
-          clearable
-          size="small"
-          style="width: 260px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item
-        label="司机信息"
-        prop="driverInfo"
-      >
-        <el-input
-          v-model="queryParams.driverInfo"
-          placeholder="请输入司机信息"
-          clearable
-          size="small"
-          style="width: 260px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item
-        label="司机 / 货主"
-        prop="driverOrShipment"
-      >
-        <el-select
-          v-model="queryParams.driverOrShipment"
-          placeholder="请选择标合同类型"
-          clearable
-          filterable
-          size="small"
-          style="width: 260px"
+        <el-form-item
+          label="合同编号"
+          prop="contractNo"
         >
-          <el-option
-            v-for="dict in driverOrShipmentOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+          <el-input
+            v-model="queryParams.contractNo"
+            placeholder="请输入合同编号"
+            clearable
+            size="small"
+            style="width: 260px"
+            @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item>
-
-
-      <el-form-item>
-        <el-button
-          type="cyan"
-          icon="el-icon-search"
-          size="mini"
-          @click="handleQuery"
+        </el-form-item>
+        <el-form-item
+          label="司机信息"
+          prop="driverInfo"
         >
-          搜索
-        </el-button>
-        <el-button
-          icon="el-icon-refresh"
-          size="mini"
-          @click="resetQuery"
+          <el-input
+            v-model="queryParams.driverInfo"
+            placeholder="请输入司机信息"
+            clearable
+            size="small"
+            style="width: 260px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item
+          label="司机 / 货主"
+          prop="driverOrShipment"
         >
-          重置
-        </el-button>
-      </el-form-item>
-    </el-form>
+          <el-select
+            v-model="queryParams.driverOrShipment"
+            placeholder="请选择标合同类型"
+            clearable
+            filterable
+            size="small"
+            style="width: 260px"
+          >
+            <el-option
+              v-for="dict in driverOrShipmentOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
 
-    <el-row
-      :gutter="10"
-      class="mb8"
-    >
-      <el-col :span="1.5" style="float: right;">
-        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
-      </el-col>
-      <right-toolbar
-        :show-search.sync="showSearch"
-        @queryTable="getList"
+        <el-form-item>
+          <el-button
+            type="primary"
+            icon="el-icon-search"
+            size="mini"
+            @click="handleQuery"
+          >
+            搜索
+          </el-button>
+          <el-button
+            type="primary"
+            plain
+            icon="el-icon-refresh"
+            size="mini"
+            @click="resetQuery"
+          >
+            重置
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+
+    <div class="app-container">
+      <el-row
+        :gutter="10"
+        class="mb8"
+      >
+        <el-col :span="1.5" style="float: right;">
+          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
+        </el-col>
+        <right-toolbar
+          :show-search.sync="showSearch"
+          @queryTable="getList"
+        />
+      </el-row>
+
+      <RefactorTable :loading="loading" :data="contractList" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
+        <template #driverOrShipment="{row}">
+          <span>{{ selectDictLabel(driverOrShipmentOptions, row.driverOrShipment) }}</span>
+        </template>
+        <template #isDzqzContract="{row}">
+          <span>{{ selectDictLabel(isDzqzContractOptions, row.isDzqzContract) }}</span>
+        </template>
+
+        <template #edit="{row}">
+          <el-button
+            v-hasPermi="['transportation:orderContract:generate']"
+            size="mini"
+            type="text"
+            @click="handleInfo(row)"
+          >打印</el-button>
+          <el-button
+            v-if="row.isDzqzContract+'' === '0'"
+            v-hasPermi="['transportation:orderContract:generate']"
+            size="mini"
+            type="text"
+            @click="handleElectron(row)"
+          >生成电子章</el-button>
+        </template>
+      </RefactorTable>
+
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
       />
-    </el-row>
-
-    <RefactorTable :loading="loading" :data="contractList" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
-      <template #driverOrShipment="{row}">
-        <span>{{ selectDictLabel(driverOrShipmentOptions, row.driverOrShipment) }}</span>
-      </template>
-      <template #isDzqzContract="{row}">
-        <span>{{ selectDictLabel(isDzqzContractOptions, row.isDzqzContract) }}</span>
-      </template>
-
-      <template #edit="{row}">
-        <el-button
-          v-hasPermi="['transportation:orderContract:generate']"
-          size="mini"
-          type="text"
-          icon="el-icon-printer"
-          @click="handleInfo(row)"
-        >打印</el-button>
-        <el-button
-          v-if="row.isDzqzContract+'' === '0'"
-          v-hasPermi="['transportation:orderContract:generate']"
-          size="mini"
-          type="text"
-          icon="el-icon-magic-stick"
-          @click="handleElectron(row)"
-        >生成电子章</el-button>
-      </template>
-    </RefactorTable>
-
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
-
+    </div>
     <!-- 生成电子合同 -->
     <el-dialog :title="title" :visible.sync="visible" width="1200px" append-to-body>
       <div v-if="dialogData && visible">
@@ -129,7 +130,6 @@
         <shipment-contract v-else :obj="dialogData" />
       </div>
     </el-dialog>
-
   </div>
 </template>
 

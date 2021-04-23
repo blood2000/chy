@@ -1,17 +1,18 @@
 <template>
-  <div class="app-container">
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
-      <el-form-item label="货主" prop="searchValue">
-        <el-input
-          v-model="queryParams.searchValue"
-          placeholder="企业名称/货主姓名/手机号"
-          clearable
-          size="small"
-          style="width: 272px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <!-- <el-form-item label="是否核算" prop="isAccount">
+  <div>
+    <div v-show="showSearch" class="app-container app-container--search">
+      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
+        <el-form-item label="货主" prop="searchValue">
+          <el-input
+            v-model="queryParams.searchValue"
+            placeholder="企业名称/货主姓名/手机号"
+            clearable
+            size="small"
+            style="width: 272px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <!-- <el-form-item label="是否核算" prop="isAccount">
         <el-select v-model="queryParams.isAccount" placeholder="请选择核算方式" filterable clearable size="small" style="width: 272px">
           <el-option
             v-for="dict in isOptions"
@@ -31,59 +32,59 @@
           />
         </el-select>
       </el-form-item> -->
-      <el-form-item label="票制类别" prop="ticketType">
-        <el-select v-model="queryParams.ticketType" placeholder="请选择票制类别" filterable clearable size="small" style="width: 272px">
-          <el-option
-            v-for="dict in ticketTypeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+        <el-form-item label="票制类别" prop="ticketType">
+          <el-select v-model="queryParams.ticketType" placeholder="请选择票制类别" filterable clearable size="small" style="width: 272px">
+            <el-option
+              v-for="dict in ticketTypeOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="审核状态" prop="authStatus">
+          <el-select
+            v-model="queryParams.authStatus"
+            filterable
+            clearable
+            size="small"
+            style="width: 272px"
+          >
+            <el-option
+              v-for="dict in statusOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <!-- <el-form-item label="企业名称" prop="companyName">
+          <el-input
+            v-model="queryParams.companyName"
+            placeholder="请输入企业名称"
+            clearable
+            size="small"
+            style="width: 272px"
+            @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="审核状态" prop="authStatus">
-        <el-select
-          v-model="queryParams.authStatus"
-          filterable
-          clearable
-          size="small"
-          style="width: 272px"
-        >
-          <el-option
-            v-for="dict in statusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="企业名称" prop="companyName">
-        <el-input
-          v-model="queryParams.companyName"
-          placeholder="请输入企业名称"
-          clearable
-          size="small"
-          style="width: 272px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="货主类别" prop="shipperType">
-        <el-select
-          v-model="queryParams.shipperType"
-          filterable
-          clearable
-          size="small"
-          style="width: 272px"
-        >
-          <el-option
-            v-for="dict in typeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <!-- <el-form-item label="所属网点" prop="branchCode">
+        </el-form-item> -->
+        <el-form-item label="货主类别" prop="shipperType">
+          <el-select
+            v-model="queryParams.shipperType"
+            filterable
+            clearable
+            size="small"
+            style="width: 272px"
+          >
+            <el-option
+              v-for="dict in typeOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <!-- <el-form-item label="所属网点" prop="branchCode">
         <el-select
           v-model="queryParams.branchCode"
           filterable
@@ -103,175 +104,178 @@
           />
         </el-select>
       </el-form-item> -->
-      <el-form-item label="审核时间">
-        <el-date-picker
-          v-model="queryParams.authTimeBegin"
-          clearable
-          size="small"
-          type="date"
-          value-format="yyyy-MM-dd"
-          style="width: 130px"
-          placeholder="请选择"
-        /> -
-        <el-date-picker
-          v-model="queryParams.authTimeEnd"
-          clearable
-          size="small"
-          type="date"
-          value-format="yyyy-MM-dd"
-          style="width: 130px"
-          placeholder="请选择"
-        />
-      </el-form-item>
-      <el-form-item label="注册时间">
-        <el-date-picker
-          v-model="queryParams.createTimeBegin"
-          clearable
-          size="small"
-          type="date"
-          value-format="yyyy-MM-dd"
-          style="width: 130px"
-          placeholder="请选择"
-        /> -
-        <el-date-picker
-          v-model="queryParams.createTimeEnd"
-          clearable
-          size="small"
-          type="date"
-          value-format="yyyy-MM-dd"
-          style="width: 130px"
-          placeholder="请选择"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
+        <el-form-item label="审核时间">
+          <el-date-picker
+            v-model="queryParams.authTimeBegin"
+            clearable
+            size="small"
+            type="date"
+            value-format="yyyy-MM-dd"
+            style="width: 130px"
+            placeholder="请选择"
+          /> -
+          <el-date-picker
+            v-model="queryParams.authTimeEnd"
+            clearable
+            size="small"
+            type="date"
+            value-format="yyyy-MM-dd"
+            style="width: 130px"
+            placeholder="请选择"
+          />
+        </el-form-item>
+        <el-form-item label="注册时间">
+          <el-date-picker
+            v-model="queryParams.createTimeBegin"
+            clearable
+            size="small"
+            type="date"
+            value-format="yyyy-MM-dd"
+            style="width: 130px"
+            placeholder="请选择"
+          /> -
+          <el-date-picker
+            v-model="queryParams.createTimeEnd"
+            clearable
+            size="small"
+            type="date"
+            value-format="yyyy-MM-dd"
+            style="width: 130px"
+            placeholder="请选择"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+          <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="app-container">
+      <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['assets:shipment:add']"
+            type="primary"
+            icon="el-icon-plus"
+            size="mini"
+            @click="handleAdd"
+          >新增</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['assets:shipment:remove']"
+            type="danger"
+            icon="el-icon-delete"
+            size="mini"
+            :disabled="multiple"
+            @click="handleDelete"
+          >批量删除</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['assets:shipment:export']"
+            type="warning"
+            icon="el-icon-download"
+            size="mini"
+            :loading="exportLoading"
+            @click="handleExport"
+          >导出</el-button>
+        </el-col>
+        <el-col :span="1.5" class="fr">
+          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
+        </el-col>
+        <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+      </el-row>
 
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['assets:shipment:add']"
-          type="primary"
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-        >新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['assets:shipment:remove']"
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-        >批量删除</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['assets:shipment:export']"
-          type="warning"
-          icon="el-icon-download"
-          size="mini"
-          :loading="exportLoading"
-          @click="handleExport"
-        >导出</el-button>
-      </el-col>
-      <el-col :span="1.5" class="fr">
-        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
-      </el-col>
-      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
-    </el-row>
+      <RefactorTable :loading="loading" :data="shipmentList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+        <template #shipperType="{row}">
+          <span>{{ selectDictLabel(typeOptions, row.shipperType) }}</span>
+        </template>
+        <template #isFreezone="{row}">
+          <span>{{ selectDictLabel(isFreezoneOptions, row.isFreezone) }}</span>
+        </template>
+        <template #ticketType="{row}">
+          <span>{{ selectDictLabel(ticketTypeOptions, row.ticketType) }}</span>
+        </template>
+        <template #isAccount="{row}">
+          <span>{{ selectDictLabel(isOptions, row.isAccount) }}</span>
+        </template>
+        <template #supplyIsAuth="{row}">
+          <span>{{ selectDictLabel(isOptions, row.supplyIsAuth) }}</span>
+        </template>
+        <template #isPrepaid="{row}">
+          <span>{{ selectDictLabel(isOptions, row.isPrepaid) }}</span>
+        </template>
+        <template #createTime="{row}">
+          <span>{{ parseTime(row.createTime, '{y}-{m}-{d}') }}</span>
+        </template>
+        <template #updateTime="{row}">
+          <span>{{ parseTime(row.updateTime, '{y}-{m}-{d}') }}</span>
+        </template>
+        <template #authTime="{row}">
+          <span>{{ parseTime(row.authTime, '{y}-{m}-{d}') }}</span>
+        </template>
+        <template #authStatus="{row}">
+          <i v-show="row.authStatus === 0" class="el-icon-warning g-color-light-gray mr5" />
+          <i v-show="row.authStatus === 1" class="g-icon-deal mr5" />
+          <i v-show="row.authStatus === 2" class="el-icon-error g-color-error mr5" />
+          <i v-show="row.authStatus === 3" class="el-icon-success g-color-success mr5" />
+          <span>{{ selectDictLabel(statusOptions, row.authStatus) }}</span>
+        </template>
+        <template #edit="{row}">
+          <el-button
+            v-hasPermi="['assets:shipment:manage']"
+            size="mini"
+            type="text"
+            @click="handleManage(row)"
+          >管理</el-button>
+          <el-button
+            v-hasPermi="['assets:shipment:query']"
+            size="mini"
+            type="text"
+            @click="handleDetail(row, 'detail')"
+          >详情</el-button>
+          <el-button
+            v-hasPermi="['assets:shipment:edit']"
+            size="mini"
+            type="text"
+            @click="handleDetail(row, 'edit')"
+          >修改</el-button>
+          <TableDropdown>
+            <el-dropdown-item>
+              <el-button
+                v-show="row.authStatus != 3"
+                v-hasPermi="['assets:shipment:examine']"
+                size="mini"
+                type="text"
+                @click="handleDetail(row, 'review')"
+              >审核</el-button>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <el-button
+                v-hasPermi="['assets:shipment:remove']"
+                size="mini"
+                type="text"
+                @click="handleDelete(row)"
+              >删除</el-button>
+            </el-dropdown-item>
+          </TableDropdown>
+        </template>
+      </RefactorTable>
 
-    <RefactorTable :loading="loading" :data="shipmentList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
-      <template #shipperType="{row}">
-        <span>{{ selectDictLabel(typeOptions, row.shipperType) }}</span>
-      </template>
-      <template #isFreezone="{row}">
-        <span>{{ selectDictLabel(isFreezoneOptions, row.isFreezone) }}</span>
-      </template>
-      <template #ticketType="{row}">
-        <span>{{ selectDictLabel(ticketTypeOptions, row.ticketType) }}</span>
-      </template>
-      <template #isAccount="{row}">
-        <span>{{ selectDictLabel(isOptions, row.isAccount) }}</span>
-      </template>
-      <template #supplyIsAuth="{row}">
-        <span>{{ selectDictLabel(isOptions, row.supplyIsAuth) }}</span>
-      </template>
-      <template #isPrepaid="{row}">
-        <span>{{ selectDictLabel(isOptions, row.isPrepaid) }}</span>
-      </template>
-      <template #createTime="{row}">
-        <span>{{ parseTime(row.createTime, '{y}-{m}-{d}') }}</span>
-      </template>
-      <template #updateTime="{row}">
-        <span>{{ parseTime(row.updateTime, '{y}-{m}-{d}') }}</span>
-      </template>
-      <template #authTime="{row}">
-        <span>{{ parseTime(row.authTime, '{y}-{m}-{d}') }}</span>
-      </template>
-      <template #authStatus="{row}">
-        <span v-show="row.authStatus === 0" class="g-color-gray">未审核</span>
-        <span v-show="row.authStatus === 1" class="g-color-blue">审核中</span>
-        <span v-show="row.authStatus === 2" class="g-color-error">审核未通过</span>
-        <span v-show="row.authStatus === 3" class="g-color-success">审核通过</span>
-      </template>
-      <template #edit="{row}">
-        <el-button
-          v-hasPermi="['assets:shipment:manage']"
-          size="mini"
-          type="text"
-          @click="handleManage(row)"
-        >管理</el-button>
-        <el-button
-          v-hasPermi="['assets:shipment:query']"
-          size="mini"
-          type="text"
-          @click="handleDetail(row, 'detail')"
-        >详情</el-button>
-        <el-button
-          v-hasPermi="['assets:shipment:edit']"
-          size="mini"
-          type="text"
-          @click="handleDetail(row, 'edit')"
-        >修改</el-button>
-        <TableDropdown>
-          <el-dropdown-item>
-            <el-button
-              v-show="row.authStatus != 3"
-              v-hasPermi="['assets:shipment:examine']"
-              size="mini"
-              type="text"
-              @click="handleDetail(row, 'review')"
-            >审核</el-button>
-          </el-dropdown-item>
-          <el-dropdown-item>
-            <el-button
-              v-hasPermi="['assets:shipment:remove']"
-              size="mini"
-              type="text"
-              @click="handleDelete(row)"
-            >删除</el-button>
-          </el-dropdown-item>
-        </TableDropdown>
-      </template>
-    </RefactorTable>
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
 
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
-
-    <!-- 新增/修改/详情/审核 对话框 -->
-    <shipment-dialog ref="ShipmentDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
-    <!-- 管理 对话框 -->
-    <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :shipment-code="shipmentCode" :company-code="companyCode" />
+      <!-- 新增/修改/详情/审核 对话框 -->
+      <shipment-dialog ref="ShipmentDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
+      <!-- 管理 对话框 -->
+      <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :shipment-code="shipmentCode" :company-code="companyCode" />
+    </div>
   </div>
 </template>
 
@@ -419,46 +423,6 @@ export default {
         this.total = response.total;
         this.loading = false;
       });
-    },
-    // 审核状态字典翻译
-    authStatusFormat(row) {
-      return this.selectDictLabel(this.statusOptions, row.authStatus);
-    },
-    // 省编码字典翻译
-    provinceCodeFormat(row, column) {
-      return this.selectDictLabel(this.provinceCodeOptions, row.provinceCode);
-    },
-    // 市编码字典翻译
-    cityCodeFormat(row, column) {
-      return this.selectDictLabel(this.cityCodeOptions, row.cityCode);
-    },
-    // 县/区编码字典翻译
-    countyCodeFormat(row, column) {
-      return this.selectDictLabel(this.countyCodeOptions, row.countyCode);
-    },
-    // 核算方式字典翻译
-    accountTypeFormat(row, column) {
-      return this.selectDictLabel(this.accountTypeOptions, row.accountType);
-    },
-    // 是否抹零字典翻译
-    isWipeFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isWipe);
-    },
-    // 抹零方式字典翻译
-    wipeTypeFormat(row, column) {
-      return this.selectDictLabel(this.wipeTypeOptions, row.wipeType);
-    },
-    // 是否月结字典翻译
-    isMonthlyFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isMonthly);
-    },
-    // 是否开启合理路耗字典翻译
-    isConsumptionFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isConsumption);
-    },
-    // 路耗单位字典翻译
-    consumptionUnitFormat(row, column) {
-      return this.selectDictLabel(this.consumptionUnitOptions, row.consumptionUnit);
     },
     /** 搜索按钮操作 */
     handleQuery() {

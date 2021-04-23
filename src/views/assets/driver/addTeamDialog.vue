@@ -25,7 +25,7 @@
           size="small"
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item> -->
+      </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择状态" filterable clearable size="small">
           <el-option
@@ -36,7 +36,7 @@
           />
         </el-select>
       </el-form-item>
-      <!-- <el-form-item label="司机姓名" prop="driverName">
+      <el-form-item label="司机姓名" prop="driverName">
         <el-input
           v-model="queryParams.driverName"
           placeholder="请输入司机姓名"
@@ -65,8 +65,8 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+        <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
@@ -83,10 +83,11 @@
       <el-table-column label="调度者名称" align="center" prop="name" />
       <el-table-column label="审核状态" align="center" prop="authStatus">
         <template slot-scope="scope">
-          <span v-show="scope.row.authStatus === 0" class="g-color-gray">未审核</span>
-          <span v-show="scope.row.authStatus === 1" class="g-color-blue">审核中</span>
-          <span v-show="scope.row.authStatus === 2" class="g-color-error">审核未通过</span>
-          <span v-show="scope.row.authStatus === 3" class="g-color-success">审核通过</span>
+          <i v-show="scope.row.authStatus === 0" class="el-icon-warning g-color-light-gray mr5" />
+          <i v-show="scope.row.authStatus === 1" class="g-icon-deal mr5" />
+          <i v-show="scope.row.authStatus === 2" class="el-icon-error g-color-error mr5" />
+          <i v-show="scope.row.authStatus === 3" class="el-icon-success g-color-success mr5" />
+          <span>{{ selectDictLabel(authStatusOptions, scope.row.authStatus) }}</span>
         </template>
       </el-table-column>
       <!-- <el-table-column label="管理者" align="center" prop="teamLeader" />-->
@@ -145,8 +146,8 @@ export default {
       total: 0,
       // 状态字典
       statusOptions: [
-        { dictLabel: '启用', dictValue: '0' },
-        { dictLabel: '禁用', dictValue: '1' }
+        { dictLabel: '启用', dictValue: 0 },
+        { dictLabel: '禁用', dictValue: 1 }
       ],
       // 是否字典
       isOptions: [
@@ -160,6 +161,13 @@ export default {
         { dictLabel: '已拒绝', dictValue: 2 },
         { dictLabel: '待加入', dictValue: 3 }
       ],
+      // 审核状态字典
+      authStatusOptions: [
+        { dictLabel: '未审核', dictValue: 0 },
+        { dictLabel: '审核中', dictValue: 1 },
+        { dictLabel: '审核未通过', dictValue: 2 },
+        { dictLabel: '审核通过', dictValue: 3 }
+      ],
       // 参数表格数据
       infoList: [],
       // 查询参数
@@ -168,7 +176,7 @@ export default {
         pageSize: 10,
         name: undefined,
         teamLeader: undefined,
-        status: undefined,
+        status: 0,
         driverName: undefined,
         licenseNumber: undefined,
         applyStatus: undefined,

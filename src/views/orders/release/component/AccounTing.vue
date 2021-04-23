@@ -19,6 +19,8 @@
             :controls="false"
             :precision="2"
             :step="0.01"
+            :max="999999"
+            :min="0"
             :placeholder="'请输入运费单价'"
             controls-position="right"
             :style="{ width: '200px' }"
@@ -373,7 +375,14 @@ export default {
         });
         this.totalTransportationCost = data.data;
       } catch (error) {
-        this.msgError('司机实收单价获取失败, 请重新输入运费单价');
+        // this.msgError('司机实收单价获取失败, 请重新输入运费单价');
+        this.$confirm('请求超时, 点击确定重新获取', '警告', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.handlerChange();
+        });
       }
     },
 
@@ -385,7 +394,13 @@ export default {
         const data = (await getListRules({ shipperCode: this.pubilshCode })).data;
         this.ruleItemIdOption = this._baozhuan(data, 'code', 'name');
       } catch (error) {
-        // this.initData();
+        this.$confirm('请求超时, 点击确定重新获取', '警告', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.initData();
+        });
       }
     },
 

@@ -79,8 +79,8 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+        <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
@@ -99,12 +99,13 @@
         </template>
       </el-table-column>
       <el-table-column label="名字" align="center" prop="name" />
-      <el-table-column label="审核状态" align="center" prop="authStatus">
+      <el-table-column label="审核状态" align="center" prop="authStatus" width="120">
         <template slot-scope="scope">
-          <span v-show="scope.row.authStatus === 0" class="g-color-gray">未审核</span>
-          <span v-show="scope.row.authStatus === 1" class="g-color-blue">审核中</span>
-          <span v-show="scope.row.authStatus === 2" class="g-color-error">审核未通过</span>
-          <span v-show="scope.row.authStatus === 3" class="g-color-success">审核通过</span>
+          <i v-show="scope.row.authStatus === 0" class="el-icon-warning g-color-light-gray mr5" />
+          <i v-show="scope.row.authStatus === 1" class="g-icon-deal mr5" />
+          <i v-show="scope.row.authStatus === 2" class="el-icon-error g-color-error mr5" />
+          <i v-show="scope.row.authStatus === 3" class="el-icon-success g-color-success mr5" />
+          <span>{{ selectDictLabel(authStatusOptions, scope.row.authStatus) }}</span>
         </template>
       </el-table-column>
       <el-table-column label="手机" align="center" prop="telphone" width="120" />
@@ -223,6 +224,13 @@ export default {
         { dictLabel: '已加入', dictValue: 1 },
         { dictLabel: '已拒绝', dictValue: 2 },
         { dictLabel: '待加入', dictValue: 3 }
+      ],
+      // 审核状态字典
+      authStatusOptions: [
+        { dictLabel: '未审核', dictValue: 0 },
+        { dictLabel: '审核中', dictValue: 1 },
+        { dictLabel: '审核未通过', dictValue: 2 },
+        { dictLabel: '审核通过', dictValue: 3 }
       ],
       // 网点编码字典
       branchCodeOptions: [],

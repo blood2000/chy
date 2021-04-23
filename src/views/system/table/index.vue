@@ -1,161 +1,164 @@
 <template>
-  <div class="app-container">
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-      <el-form-item label="字段名" prop="fieldName">
-        <el-input
-          v-model="queryParams.fieldName"
-          placeholder="请输入字段名"
-          clearable
-          size="small"
-          style="width: 240px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="接口地址" prop="route">
-        <el-input
-          v-model="queryParams.route"
-          placeholder="请输入接口地址"
-          clearable
-          size="small"
-          style="width: 240px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
-
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-        >新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-        >修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-        >删除</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="warning"
-          icon="el-icon-success"
-          size="mini"
-          @click="handleSync"
-        >同步</el-button>
-      </el-col>
-      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
-    </el-row>
-
-    <el-table v-loading="loading" :data="configList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="字段名" align="center" prop="fieldName" />
-      <el-table-column label="接口地址" align="center" prop="route" />
-      <el-table-column label="字段描述" align="center" prop="comment" />
-      <el-table-column label="列宽" align="center" prop="width">
-        <template slot-scope="scope">
-          <span v-if="scope.row.width">{{ scope.row.width }}</span>
-          <span v-else>自适应</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="是否显示" align="center" prop="isShow">
-        <template slot-scope="scope">
-          <span v-if="scope.row.isShow" class="g-color-success">是</span>
-          <span v-else class="g-color-error">否</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-          >修改</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-          >删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
-
-    <!-- 添加或修改参数配置对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+  <div>
+    <div v-show="showSearch" class="app-container app-container--search">
+      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
         <el-form-item label="字段名" prop="fieldName">
-          <el-input v-model="form.fieldName" placeholder="请输入字段名" clearable />
+          <el-input
+            v-model="queryParams.fieldName"
+            placeholder="请输入字段名"
+            clearable
+            size="small"
+            style="width: 240px"
+            @keyup.enter.native="handleQuery"
+          />
         </el-form-item>
         <el-form-item label="接口地址" prop="route">
-          <el-input v-model="form.route" placeholder="请输入接口地址" clearable />
+          <el-input
+            v-model="queryParams.route"
+            placeholder="请输入接口地址"
+            clearable
+            size="small"
+            style="width: 240px"
+            @keyup.enter.native="handleQuery"
+          />
         </el-form-item>
-        <el-form-item label="字段描述" prop="comment">
-          <el-input v-model="form.comment" placeholder="请输入字段描述" clearable />
-        </el-form-item>
-        <el-form-item label="列宽" prop="width">
-          <el-input v-model="form.width" placeholder="请输入列宽" clearable />
-        </el-form-item>
-        <el-form-item label="是否显示" prop="isShow">
-          <el-switch v-model="form.isShow" />
+        <el-form-item>
+          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+          <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
+    </div>
+    <div class="app-container">
+      <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            type="primary"
+            icon="el-icon-plus"
+            size="mini"
+            @click="handleAdd"
+          >新增</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            type="success"
+            icon="el-icon-edit"
+            size="mini"
+            :disabled="single"
+            @click="handleUpdate"
+          >修改</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            type="danger"
+            icon="el-icon-delete"
+            size="mini"
+            :disabled="multiple"
+            @click="handleDelete"
+          >删除</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            type="warning"
+            icon="el-icon-success"
+            size="mini"
+            @click="handleSync"
+          >同步</el-button>
+        </el-col>
+        <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+      </el-row>
 
-    <!-- 同步对话框 -->
-    <el-dialog :title="title" :visible.sync="openSync" width="600px" append-to-body>
-      <el-form ref="formSync" :model="formSync" :rules="rulesSync" label-width="130px">
-        <el-form-item label="JAVA类绝对路径" prop="className">
-          <el-input v-model="formSync.className" placeholder="请输入JAVA类绝对路径" clearable />
-        </el-form-item>
-        <el-form-item label="接口地址" prop="route">
-          <el-input v-model="formSync.route" placeholder="请输入接口地址" clearable />
-        </el-form-item>
-        <el-form-item label="是否覆盖已有" prop="isCover">
-          <el-switch v-model="formSync.isCover" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" :loading="loadingSync" @click="submitFormSync">同 步</el-button>
-        <el-button @click="cancelSync">取 消</el-button>
-      </div>
-    </el-dialog>
+      <el-table v-loading="loading" :data="configList" @selection-change="handleSelectionChange">
+        <el-table-column type="selection" width="55" align="center" />
+        <el-table-column label="字段名" align="center" prop="fieldName" />
+        <el-table-column label="接口地址" align="center" prop="route" />
+        <el-table-column label="字段描述" align="center" prop="comment" />
+        <el-table-column label="列宽" align="center" prop="width">
+          <template slot-scope="scope">
+            <span v-if="scope.row.width">{{ scope.row.width }}</span>
+            <span v-else>自适应</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="是否显示" align="center" prop="isShow">
+          <template slot-scope="scope">
+            <span v-if="scope.row.isShow" class="g-color-success">是</span>
+            <span v-else class="g-color-error">否</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+          <template slot-scope="scope">
+            <span>{{ parseTime(scope.row.createTime) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              type="text"
+              icon="el-icon-edit"
+              @click="handleUpdate(scope.row)"
+            >修改</el-button>
+            <el-button
+              size="mini"
+              type="text"
+              icon="el-icon-delete"
+              @click="handleDelete(scope.row)"
+            >删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
+
+      <!-- 添加或修改参数配置对话框 -->
+      <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
+        <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+          <el-form-item label="字段名" prop="fieldName">
+            <el-input v-model="form.fieldName" placeholder="请输入字段名" clearable />
+          </el-form-item>
+          <el-form-item label="接口地址" prop="route">
+            <el-input v-model="form.route" placeholder="请输入接口地址" clearable />
+          </el-form-item>
+          <el-form-item label="字段描述" prop="comment">
+            <el-input v-model="form.comment" placeholder="请输入字段描述" clearable />
+          </el-form-item>
+          <el-form-item label="列宽" prop="width">
+            <el-input v-model="form.width" placeholder="请输入列宽" clearable />
+          </el-form-item>
+          <el-form-item label="是否显示" prop="isShow">
+            <el-switch v-model="form.isShow" />
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="submitForm">确 定</el-button>
+          <el-button @click="cancel">取 消</el-button>
+        </div>
+      </el-dialog>
+
+      <!-- 同步对话框 -->
+      <el-dialog :title="title" :visible.sync="openSync" width="600px" append-to-body>
+        <el-form ref="formSync" :model="formSync" :rules="rulesSync" label-width="130px">
+          <el-form-item label="JAVA类绝对路径" prop="className">
+            <el-input v-model="formSync.className" placeholder="请输入JAVA类绝对路径" clearable />
+          </el-form-item>
+          <el-form-item label="接口地址" prop="route">
+            <el-input v-model="formSync.route" placeholder="请输入接口地址" clearable />
+          </el-form-item>
+          <el-form-item label="是否覆盖已有" prop="isCover">
+            <el-switch v-model="formSync.isCover" />
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" :loading="loadingSync" @click="submitFormSync">同 步</el-button>
+          <el-button @click="cancelSync">取 消</el-button>
+        </div>
+      </el-dialog>
+    </div>
   </div>
 </template>
 

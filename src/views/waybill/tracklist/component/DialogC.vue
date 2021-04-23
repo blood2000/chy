@@ -11,9 +11,10 @@
           :default-value="new Date()"
           value-format="yyyy-MM-dd HH:mm:ss"
           :disabled="disable"
+          @change="unloadTimeChoose"
         />
       </el-form-item>
-      <el-form-item label="卸货重量" prop="unloadWeight">
+      <el-form-item label="卸货重量(吨)" prop="unloadWeight">
         <el-input-number v-model="form.unloadWeight" placeholder="请输入卸货过磅重量" :disabled="disable" controls-position="right" :min="0" style="width:90%;" />
       </el-form-item>
       <!-- <el-form-item label="卸货地址" prop="waybillAddress">
@@ -35,7 +36,7 @@
         </el-select>
       </el-form-item> -->
       <el-form-item label="卸货凭证" prop="attachmentCode">
-        <uploadImage v-model="form.attachmentCode" :fresh="fresh" :limit="1" />
+        <uploadImage v-model="form.attachmentCode" />
       </el-form-item>
       <el-form-item label="卸货备注" prop="remark">
         <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" :disabled="disable" placeholder="请输入装货备注信息" style="width:90%;" />
@@ -50,7 +51,7 @@
 
 <script>
 import { unload, getInfoDetail, unloadCredentials } from '@/api/waybill/tracklist';
-import UploadImage from '@/components/UploadImage/moreImg';
+import UploadImage from '@/components/UploadImage/index';
 
 export default {
   name: 'DialogC',
@@ -83,15 +84,9 @@ export default {
         ],
         unloadWeight: [
           { required: true, message: '卸货重量不能为空', trigger: 'blur' }
-        ],
-        attachmentCode: [
-          { required: true, message: '请上传卸货凭证', trigger: 'blur' }
         ]
       },
       // 日期格式
-      Hours: '',
-      Minutes: '',
-      Seconds: '',
       time: '',
       fresh: false
     };
@@ -122,6 +117,18 @@ export default {
   created() {
   },
   methods: {
+    unloadTimeChoose(e) {
+      const unloadtime = new Date(e);
+      const loadtime = new Date(this.waybill.fillTime);
+      if (unloadtime <= loadtime) {
+        this.$message({ type: 'warning', message: '卸货时间必须大于装货时间：' + this.waybill.fillTime });
+        this.form.unloadTime = null;
+      }
+      if (unloadtime > new Date()) {
+        this.$message({ type: 'warning', message: '卸货时间必须小于等于当前时间！' });
+        this.form.unloadTime = null;
+      }
+    },
     // 获取卸货详情
     getDetail() {
       this.reset();
@@ -197,6 +204,7 @@ export default {
     setForm(data) {
       this.waybill = data;
       this.form.code = this.waybill.code;
+      console.log(this.waybill);
     }
   }
 };

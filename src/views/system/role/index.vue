@@ -1,27 +1,29 @@
 <template>
-  <div class="app-container">
-    <el-row :gutter="20">
+  <div>
+    <el-row :gutter="companyCode?20:0">
       <!--部门数据-->
       <el-col :lg="5" :md="6" :sm="7" :xs="24">
-        <div class="head-container">
-          <el-input
-            v-model="deptName"
-            placeholder="请输入组织名称"
-            clearable
-            size="small"
-            prefix-icon="el-icon-search"
-            class="mb20"
-          />
-        </div>
-        <div class="head-container el-tree-scroll-container">
-          <el-tree
-            ref="tree"
-            :data="deptTreeOptions"
-            :props="defaultTreeProps"
-            :expand-on-click-node="false"
-            default-expand-all
-            @node-click="handleNodeClick"
-          />
+        <div class="app-container app-container--tree">
+          <div class="head-container">
+            <el-input
+              v-model="deptName"
+              placeholder="请输入组织名称"
+              clearable
+              size="small"
+              prefix-icon="el-icon-search"
+              class="mb20"
+            />
+          </div>
+          <div class="head-container el-tree-scroll-container">
+            <el-tree
+              ref="tree"
+              :data="deptTreeOptions"
+              :props="defaultTreeProps"
+              :expand-on-click-node="false"
+              default-expand-all
+              @node-click="handleNodeClick"
+            />
+          </div>
         </div>
       </el-col>
       <el-col :lg="19" :md="18" :sm="17" :xs="24">
@@ -182,13 +184,14 @@
           </el-table-column>
         </el-table>
 
-        <pagination
-          v-show="total>0"
-          :total="total"
-          :page.sync="queryParams.pageNum"
-          :limit.sync="queryParams.pageSize"
-          @pagination="getList"
-        />
+          <pagination
+            v-show="total>0"
+            :total="total"
+            :page.sync="queryParams.pageNum"
+            :limit.sync="queryParams.pageSize"
+            @pagination="getList"
+          />
+        </div>
       </el-col>
     </el-row>
 

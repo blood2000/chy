@@ -1,282 +1,296 @@
 
 <template>
-  <div class="app-container">
-    <el-form
-      v-show="showSearch"
-      ref="queryForm"
-      :model="queryParams"
-      :inline="true"
-      label-width="90px"
-    >
-      <el-form-item
-        v-show="isAdmin"
-        label="下单企业"
-        prop="orderClient"
+  <div>
+    <div v-show="showSearch" class="app-container app-container--search">
+      <el-form
+        ref="queryForm"
+        :model="queryParams"
+        :inline="true"
+        label-width="90px"
       >
-        <el-input
-          v-model="queryParams.orderClient"
-          placeholder="请输入下单企业"
-          clearable
-          size="small"
-          style="width: 228px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item
-        v-show="isAdmin"
-        label="发货企业"
-        prop="deliveryCompany"
-      >
-        <el-input
-          v-model="queryParams.deliveryCompany"
-          placeholder="请输入发货企业"
-          clearable
-          size="small"
-          style="width: 228px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item
-        label="装货信息"
-        prop="loadInfo"
-      >
-        <el-input
-          v-model="queryParams.loadInfo"
-          placeholder="请输入装货信息"
-          clearable
-          size="small"
-          style="width: 228px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item
-        label="收货信息"
-        prop="receivedInfo"
-      >
-        <el-input
-          v-model="queryParams.receivedInfo"
-          placeholder="请输入收货信息"
-          clearable
-          size="small"
-          style="width: 228px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item
-        label="货源单号"
-        prop="mainOrderNumber"
-      >
-        <el-input
-          v-model="queryParams.mainOrderNumber"
-          placeholder="请输入货源单号"
-          clearable
-          size="small"
-          style="width: 228px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item
-        label="创建时间"
-        prop="receiveTime"
-      >
-        <el-date-picker
-          v-model="receiveTime"
-          type="daterange"
-          range-separator="-"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          style="width: 228px"
-          @change="datechoose"
-        />
-      </el-form-item>
-      <el-form-item
-        label="车牌号"
-        prop="licenseNumber"
-      >
-        <el-input
-          v-model="queryParams.licenseNumber"
-          placeholder="请输入车牌号"
-          clearable
-          size="small"
-          style="width: 228px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item
-        label="司机姓名"
-        prop="driverName"
-      >
-        <el-input
-          v-model="queryParams.driverName"
-          placeholder="请输入司机姓名"
-          clearable
-          size="small"
-          style="width: 228px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item
-        label="司机电话"
-        prop="driverPhone"
-      >
-        <el-input
-          v-model="queryParams.driverPhone"
-          placeholder="请输入司机电话"
-          clearable
-          size="small"
-          style="width: 228px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item
-        label="运输单号"
-        prop="waybillNo"
-      >
-        <el-input
-          v-model="queryParams.waybillNo"
-          placeholder="请输入运输单号"
-          clearable
-          size="small"
-          style="width: 228px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-
-
-      <el-form-item>
-        <el-button
-          type="cyan"
-          icon="el-icon-search"
-          size="mini"
-          @click="handleQuery"
+        <el-form-item
+          v-show="isAdmin"
+          label="下单企业"
+          prop="orderClient"
         >
-          搜索
-        </el-button>
-        <el-button
-          icon="el-icon-refresh"
-          size="mini"
-          @click="resetQuery"
+          <el-input
+            v-model="queryParams.orderClient"
+            placeholder="请输入下单企业"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item
+          v-show="isAdmin"
+          label="发货企业"
+          prop="deliveryCompany"
         >
-          重置
-        </el-button>
-      </el-form-item>
-    </el-form>
+          <el-input
+            v-model="queryParams.deliveryCompany"
+            placeholder="请输入发货企业"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item
+          label="装货信息"
+          prop="loadInfo"
+        >
+          <el-input
+            v-model="queryParams.loadInfo"
+            placeholder="请输入装货信息"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item
+          label="收货信息"
+          prop="receivedInfo"
+        >
+          <el-input
+            v-model="queryParams.receivedInfo"
+            placeholder="请输入收货信息"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item
+          label="货源单号"
+          prop="mainOrderNumber"
+        >
+          <el-input
+            v-model="queryParams.mainOrderNumber"
+            placeholder="请输入货源单号"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item
+          label="创建时间"
+          prop="receiveTime"
+        >
+          <el-date-picker
+            v-model="receiveTime"
+            type="daterange"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 228px"
+            @change="datechoose"
+          />
+        </el-form-item>
+        <el-form-item
+          label="车牌号"
+          prop="licenseNumber"
+        >
+          <el-input
+            v-model="queryParams.licenseNumber"
+            placeholder="请输入车牌号"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item
+          label="司机姓名"
+          prop="driverName"
+        >
+          <el-input
+            v-model="queryParams.driverName"
+            placeholder="请输入司机姓名"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item
+          label="司机电话"
+          prop="driverPhone"
+        >
+          <el-input
+            v-model="queryParams.driverPhone"
+            placeholder="请输入司机电话"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item
+          label="运输单号"
+          prop="waybillNo"
+        >
+          <el-input
+            v-model="queryParams.waybillNo"
+            placeholder="请输入运输单号"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            icon="el-icon-search"
+            size="mini"
+            @click="handleQuery"
+          >
+            搜索
+          </el-button>
+          <el-button
+            type="primary"
+            plain
+            icon="el-icon-refresh"
+            size="mini"
+            @click="resetQuery"
+          >
+            重置
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </div>
 
-    <el-row
-      :gutter="10"
-      class="mb8"
-    >
-      <!-- <el-col :span="1.5">
-        <el-button
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          @click="handleDelete"
-        >批量删除</el-button>
-      </el-col> -->
-      <el-col :span="1.5" class="fr">
-        <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
-      </el-col>
-      <right-toolbar
-        :show-search.sync="showSearch"
-        @queryTable="getList"
+    <div class="g-radio-group">
+      <el-radio-group v-model="activeName" size="small" @change="handleClick">
+        <el-radio-button label="1">已接单</el-radio-button>
+        <el-radio-button label="2">已装货</el-radio-button>
+        <el-radio-button label="3">已卸货</el-radio-button>
+      </el-radio-group>
+    </div>
+
+    <div class="app-container">
+      <el-row
+        :gutter="10"
+        class="mb8"
+      >
+        <!-- <el-col :span="1.5">
+          <el-button
+            type="danger"
+            icon="el-icon-delete"
+            size="mini"
+            @click="handleDelete"
+          >批量删除</el-button>
+        </el-col> -->
+        <el-col :span="1.5" class="fr">
+          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
+        </el-col>
+        <right-toolbar
+          :show-search.sync="showSearch"
+          @queryTable="getList"
+        />
+      </el-row>
+
+      <RefactorTable :loading="loading" :data="tracklist" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
+        <template #cancelStatus="{row}">
+          <span>{{ selectDictLabel(cancelStatusOptions, row.cancelStatus) }}</span>
+        </template>
+        <!-- <template #goodsBigType="{row}">
+          <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
+        </template> -->
+
+        <template #edit="{row}">
+          <el-button
+            v-if="activeName == '3'"
+            v-hasPermi="['transportation:waybillComment:add']"
+            size="mini"
+            type="text"
+            @click="handleTableBtn(row, 10)"
+          >评价</el-button>
+          <el-button
+            v-if="activeName == '1'"
+            v-hasPermi="['transportation:waybillOper:load']"
+            size="mini"
+            type="text"
+            @click="handleTableBtn(row, 2)"
+          >车辆装货</el-button>
+          <el-button
+            v-if="activeName == '2'"
+            v-hasPermi="['transportation:waybillOper:unload']"
+            size="mini"
+            type="text"
+            @click="handleTableBtn(row, 3)"
+          >车辆卸货</el-button>
+          <el-button
+            v-if="activeName == '1'"
+            v-hasPermi="['transportation:waybillOper:cancel']"
+            size="mini"
+            type="text"
+            @click="handleTableBtn(row, 4)"
+          >作废运单</el-button>
+          <el-button
+            v-if="activeName != '1'"
+            v-hasPermi="['iot:jimiDevice:getTrackList']"
+            size="mini"
+            type="text"
+            @click="handleTableBtn(row, 7)"
+          >车辆跟踪</el-button>
+          <el-button
+            v-hasPermi="['iot:jimiDevice:location']"
+            size="mini"
+            type="text"
+            @click="handleTableBtn(row, 8)"
+          >定位</el-button>
+          <TableDropdown>
+            <el-dropdown-item>
+              <el-button
+                v-if="activeName == '3' && row.isAccountBack == '1'"
+                v-hasPermi="['transportation:waybillOper:accountBackRemark']"
+                size="mini"
+                type="text"
+                @click="handleTableBtn(row, 1)"
+              >驳回提示</el-button>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <el-button
+                v-if="activeName != '1'"
+                v-hasPermi="['transportation:waybillOper:loadCredentials']"
+                size="mini"
+                type="text"
+                @click="handleTableBtn(row, 5)"
+              >补装货凭证</el-button>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <el-button
+                v-if="activeName == '3'"
+                v-hasPermi="['transportation:waybillOper:unloadCredentials']"
+                size="mini"
+                type="text"
+                @click="handleTableBtn(row, 6)"
+              >补卸货凭证</el-button>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <el-button
+                v-hasPermi="['transportation:driverComplaint:add']"
+                size="mini"
+                type="text"
+                @click="handleTableBtn(row, 9)"
+              >投诉</el-button>
+            </el-dropdown-item>
+          </TableDropdown>
+        </template>
+      </RefactorTable>
+
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
       />
-    </el-row>
-
-    <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="已接单" name="1" />
-      <el-tab-pane label="已装货" name="2" />
-      <el-tab-pane label="已卸货" name="3" />
-    </el-tabs>
-
-    <RefactorTable :loading="loading" :data="tracklist" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
-      <template #cancelStatus="{row}">
-        <span>{{ selectDictLabel(cancelStatusOptions, row.cancelStatus) }}</span>
-      </template>
-      <!-- <template #goodsBigType="{row}">
-        <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
-      </template> -->
-
-      <template #edit="{row}">
-        <el-button
-          v-if="activeName == '3' && row.isAccountBack == '1'"
-          v-hasPermi="['transportation:waybillOper:accountBackRemark']"
-          size="mini"
-          type="text"
-          @click="handleTableBtn(row, 1)"
-        >驳回提示</el-button>
-        <el-button
-          v-if="activeName == '1'"
-          v-hasPermi="['transportation:waybillOper:load']"
-          size="mini"
-          type="text"
-          @click="handleTableBtn(row, 2)"
-        >车辆装货</el-button>
-        <el-button
-          v-if="activeName == '2'"
-          v-hasPermi="['transportation:waybillOper:unload']"
-          size="mini"
-          type="text"
-          @click="handleTableBtn(row, 3)"
-        >车辆卸货</el-button>
-        <el-button
-          v-if="activeName == '1'"
-          v-hasPermi="['transportation:waybillOper:cancel']"
-          size="mini"
-          type="text"
-          @click="handleTableBtn(row, 4)"
-        >作废运单</el-button>
-        <el-button
-          v-if="activeName != '1'"
-          v-hasPermi="['transportation:waybillOper:loadCredentials']"
-          size="mini"
-          type="text"
-          @click="handleTableBtn(row, 5)"
-        >补装货凭证</el-button>
-        <el-button
-          v-if="activeName == '3'"
-          v-hasPermi="['transportation:waybillOper:unloadCredentials']"
-          size="mini"
-          type="text"
-          @click="handleTableBtn(row, 6)"
-        >补卸货凭证</el-button>
-        <el-button
-          v-if="activeName != '1'"
-          v-hasPermi="['iot:jimiDevice:getTrackList']"
-          size="mini"
-          type="text"
-          @click="handleTableBtn(row, 7)"
-        >车辆跟踪</el-button>
-        <el-button
-          v-hasPermi="['iot:jimiDevice:location']"
-          size="mini"
-          type="text"
-          @click="handleTableBtn(row, 8)"
-        >定位</el-button>
-        <el-button
-          v-hasPermi="['transportation:driverComplaint:add']"
-          size="mini"
-          type="text"
-          @click="handleTableBtn(row, 9)"
-        >投诉</el-button>
-        <el-button
-          v-if="activeName == '3'"
-          v-hasPermi="['transportation:waybillComment:add']"
-          size="mini"
-          type="text"
-          @click="handleTableBtn(row, 10)"
-        >评价</el-button>
-      </template>
-    </RefactorTable>
-
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
-
+    </div>
     <!-- 车辆装货 / 补装货凭证 -->
     <dialog-a ref="DialogA" :open.sync="dialoga" :title="title" :disable="formDisable" @refresh="getList" />
     <!-- 车辆卸货 / 补卸货凭证 -->
@@ -291,11 +305,6 @@
     <track-dialog ref="TrackDialog" :open.sync="trackdialog" :title="title" />
     <!-- 定位 -->
     <location-dialog ref="LocationDialog" :open.sync="locationdialog" :title="title" />
-
-    <!-- <el-dialog :title="title" :visible.sync="visible" :width="dialogWidth" append-to-body>
-      <div>{{ activeName }}</div>
-    </el-dialog> -->
-
   </div>
 </template>
 
@@ -430,7 +439,7 @@ export default {
     /** handleClick */
     handleClick(tab) {
       // this['tableColumnsConfig' + this.activeName] = this.getLocalStorage(this.lcokey) || this.tableColumnsConfig;
-      this.queryParams.statusList[0] = tab.name;
+      this.queryParams.statusList[0] = tab;
       this.queryParams.pageNum = 1;
       // console.log(this.queryParams);
       this.getList();
@@ -503,16 +512,6 @@ export default {
             this.getList();
             this.msgSuccess('操作成功');
           });
-          // if (row.cancelStatus === 1) {
-          //   this.msgError('司机撤单申请中，无法再次取消订单！');
-          // } else if (row.cancelStatus === 2) {
-          //   this.msgError('货主已同意撤单，无法取消订单！');
-          // } else {
-          //   this.$refs.CancelDialog.reset();
-          //   this.canceldialog = true;
-          //   this.title = '取消运单';
-          //   this.$refs.CancelDialog.setForm(row);
-          // }
           break;
         case 5:
           // this.$refs.DialogA.reset();

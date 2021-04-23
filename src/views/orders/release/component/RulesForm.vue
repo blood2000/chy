@@ -24,6 +24,8 @@
           <el-input-number
             v-model="formData[item.myName]"
             :controls="false"
+            :max="999999"
+            :min="-999999"
             :placeholder="`请输入${item.cnName}`"
             controls-position="right"
             :style="{ width: '200px' }"
@@ -81,6 +83,8 @@
               :controls="false"
               :placeholder="`请输入${item.cnName}`"
               step-strictly
+              :max="999999"
+              :min="-999999"
               controls-position="right"
               :style="{ width: '85px' }"
             />
@@ -99,6 +103,8 @@
               :controls="false"
               :placeholder="`请输入${item.cnName}`"
               step-strictly
+              :max="999999"
+              :min="-999999"
               controls-position="right"
               :style="{ width: '85px' }"
             />

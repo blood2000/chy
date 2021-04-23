@@ -1,13 +1,14 @@
 <template>
   <!-- 添加或修改车辆对话框 -->
-  <el-dialog :class="[{'i-add':title==='新增'},{'i-check':title==='审核'}]" :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
+  <el-dialog :class="[{'i-add':title==='新增'||title==='添加车辆'},{'i-check':title==='审核'}]" :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
       <!-- 调度者/司机选择车辆 -->
-      <el-form-item v-if="teamCode || driverCode" label="选择车辆" prop="licenseNumber">
+      <el-form-item v-if="teamCode || driverCode" label="查询已有车辆" prop="licenseNumber">
         <el-select
           v-model="form.licenseNumber"
           v-el-select-loadmore="loadmore"
           filterable
+          clearable
           remote
           reserve-keyword
           placeholder="通过车牌号码进行查询"
@@ -183,7 +184,7 @@
         <upload-image v-model="form.vehicleImage" :disabled="disable" />
       </el-form-item>
     </el-form>
-    <div v-if="title === '新增' || title === '编辑'" slot="footer" class="dialog-footer">
+    <div v-if="title === '新增' || title === '编辑' || title === '添加车辆'" slot="footer" class="dialog-footer">
       <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
     </div>
@@ -196,7 +197,7 @@
 
 <script>
 import { listInfo } from '@/api/assets/vehicle';
-import { addInfo, updateInfo, authRead, examine } from '@/api/assets/vehicle';
+import { addInfo, updateInfo, authRead, examine, addDriverCar, addTeamCar } from '@/api/assets/vehicle';
 import UploadImage from '@/components/UploadImage/index';
 
 export default {
@@ -255,7 +256,8 @@ export default {
       // 表单校验
       rules: {
         licenseNumber: [
-          { required: true, message: '车牌号不能为空', trigger: 'blur' }
+          { required: true, message: '车牌号不能为空', trigger: 'blur' },
+          { validator: this.formValidate.plateNo, trigger: ['blur', 'change'] }
         ]
       },
       // 选择车辆
@@ -326,7 +328,25 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid) {
           this.buttonLoading = true;
-          if (this.form.id) {
+          if (this.driverCode) {
+            addDriverCar(Object.assign({}, this.form, { driverCode: this.driverCode })).then(response => {
+              this.buttonLoading = false;
+              this.msgSuccess('添加成功');
+              this.close();
+              this.$emit('refresh');
+            }).catch(() => {
+              this.buttonLoading = false;
+            });
+          } else if (this.teamCode) {
+            addTeamCar(Object.assign({}, this.form, { teamCode: this.teamCode })).then(response => {
+              this.buttonLoading = false;
+              this.msgSuccess('添加成功');
+              this.close();
+              this.$emit('refresh');
+            }).catch(() => {
+              this.buttonLoading = false;
+            });
+          } else if (this.form.id) {
             updateInfo(this.form).then(response => {
               this.buttonLoading = false;
               this.msgSuccess('修改成功');
@@ -446,9 +466,13 @@ export default {
     },
     // 获取选中的车辆回填
     vehicleChange(code) {
+      if (!code || code === '') {
+        this.reset();
+        return;
+      }
       this.vehicleOptions.forEach(el => {
         if (el.code === code) {
-          this.form.licenseNumber = el.licenseNumber;
+          this.form = { ...el };
         }
       });
     }
