@@ -216,10 +216,11 @@
           <span>{{ parseTime(row.authTime, '{y}-{m}-{d}') }}</span>
         </template>
         <template #authStatus="{row}">
-          <span v-show="row.authStatus === 0" class="g-color-gray">未审核</span>
-          <span v-show="row.authStatus === 1" class="g-color-blue">审核中</span>
-          <span v-show="row.authStatus === 2" class="g-color-error">审核未通过</span>
-          <span v-show="row.authStatus === 3" class="g-color-success">审核通过</span>
+          <i v-show="row.authStatus === 0" class="el-icon-warning g-color-light-gray mr5" />
+          <i v-show="row.authStatus === 1" class="g-icon-deal mr5" />
+          <i v-show="row.authStatus === 2" class="el-icon-error g-color-error mr5" />
+          <i v-show="row.authStatus === 3" class="el-icon-success g-color-success mr5" />
+          <span>{{ selectDictLabel(statusOptions, row.authStatus) }}</span>
         </template>
         <template #edit="{row}">
           <el-button
@@ -422,46 +423,6 @@ export default {
         this.total = response.total;
         this.loading = false;
       });
-    },
-    // 审核状态字典翻译
-    authStatusFormat(row) {
-      return this.selectDictLabel(this.statusOptions, row.authStatus);
-    },
-    // 省编码字典翻译
-    provinceCodeFormat(row, column) {
-      return this.selectDictLabel(this.provinceCodeOptions, row.provinceCode);
-    },
-    // 市编码字典翻译
-    cityCodeFormat(row, column) {
-      return this.selectDictLabel(this.cityCodeOptions, row.cityCode);
-    },
-    // 县/区编码字典翻译
-    countyCodeFormat(row, column) {
-      return this.selectDictLabel(this.countyCodeOptions, row.countyCode);
-    },
-    // 核算方式字典翻译
-    accountTypeFormat(row, column) {
-      return this.selectDictLabel(this.accountTypeOptions, row.accountType);
-    },
-    // 是否抹零字典翻译
-    isWipeFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isWipe);
-    },
-    // 抹零方式字典翻译
-    wipeTypeFormat(row, column) {
-      return this.selectDictLabel(this.wipeTypeOptions, row.wipeType);
-    },
-    // 是否月结字典翻译
-    isMonthlyFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isMonthly);
-    },
-    // 是否开启合理路耗字典翻译
-    isConsumptionFormat(row, column) {
-      return this.selectDictLabel(this.isOptions, row.isConsumption);
-    },
-    // 路耗单位字典翻译
-    consumptionUnitFormat(row, column) {
-      return this.selectDictLabel(this.consumptionUnitOptions, row.consumptionUnit);
     },
     /** 搜索按钮操作 */
     handleQuery() {

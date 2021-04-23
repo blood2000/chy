@@ -83,10 +83,11 @@
       <el-table-column label="调度者名称" align="center" prop="name" />
       <el-table-column label="审核状态" align="center" prop="authStatus">
         <template slot-scope="scope">
-          <span v-show="scope.row.authStatus === 0" class="g-color-gray">未审核</span>
-          <span v-show="scope.row.authStatus === 1" class="g-color-blue">审核中</span>
-          <span v-show="scope.row.authStatus === 2" class="g-color-error">审核未通过</span>
-          <span v-show="scope.row.authStatus === 3" class="g-color-success">审核通过</span>
+          <i v-show="scope.row.authStatus === 0" class="el-icon-warning g-color-light-gray mr5" />
+          <i v-show="scope.row.authStatus === 1" class="g-icon-deal mr5" />
+          <i v-show="scope.row.authStatus === 2" class="el-icon-error g-color-error mr5" />
+          <i v-show="scope.row.authStatus === 3" class="el-icon-success g-color-success mr5" />
+          <span>{{ selectDictLabel(authStatusOptions, scope.row.authStatus) }}</span>
         </template>
       </el-table-column>
       <!-- <el-table-column label="管理者" align="center" prop="teamLeader" />-->
@@ -159,6 +160,13 @@ export default {
         { dictLabel: '已加入', dictValue: 1 },
         { dictLabel: '已拒绝', dictValue: 2 },
         { dictLabel: '待加入', dictValue: 3 }
+      ],
+      // 审核状态字典
+      authStatusOptions: [
+        { dictLabel: '未审核', dictValue: 0 },
+        { dictLabel: '审核中', dictValue: 1 },
+        { dictLabel: '审核未通过', dictValue: 2 },
+        { dictLabel: '审核通过', dictValue: 3 }
       ],
       // 参数表格数据
       infoList: [],

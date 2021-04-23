@@ -93,6 +93,7 @@ export default {
 .width90{
   width: 90%;
 }
+/* 可用余额 */
 .amount-content{
   height: 126px;
   background: #FAFAFA;

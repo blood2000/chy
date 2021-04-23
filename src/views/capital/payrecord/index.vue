@@ -225,7 +225,7 @@
           <i v-if="row.responseStatus === 0" class="g-icon-deal mr5" />
           <i v-if="row.responseStatus === 1" class="el-icon-success g-color-success mr5" />
           <i v-if="row.responseStatus === 2" class="el-icon-error g-color-error mr5" />
-          <i v-if="row.responseStatus === 3" class="el-icon-warning g-color-gray mr5" />
+          <i v-if="row.responseStatus === 3" class="el-icon-warning g-color-light-gray mr5" />
           <span>{{ selectDictLabel(responseStatusOptions, row.responseStatus) }}</span>
         </template>
         <!-- 付款方式 -->

@@ -1,6 +1,6 @@
 <template>
   <el-dialog title="账户提现" class="i-money" :visible="visible" width="800px" append-to-body @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" label-width="140px">
+    <el-form ref="form" :model="form" :rules="rules" label-width="120px">
       <el-form-item label="选择银行卡" prop="bankNumber">
         <el-select
           v-model="form.bankNumber"
@@ -20,23 +20,29 @@
         <el-button v-if="addBankFlag" type="primary" @click="addBank">添加银行卡</el-button>
       </el-form-item>
       <el-form-item v-show="form.bankNumber" label="提现到">
-        <div class="account-content">
-          <p class="mb5">
-            <label>结算账户名: </label>
-            {{ form.bankAcountName ? form.bankAcountName : '-' }}
-          </p>
-          <p class="mb5">
-            <label>结算账户开户行: </label>
-            {{ form.bankName ? form.bankName : '-' }}
-          </p>
-          <p class="mb5">
-            <label>结算账户账号: </label>
-            {{ form.bankNumber ? form.bankNumber : '-' }}
-          </p>
+        <div class="amount-content ly-flex-align-center width90" style="padding: 0 20px">
+          <div>
+            <p class="mb5">
+              <label class="label">结算账户名：</label>
+              {{ form.bankAcountName ? form.bankAcountName : '-' }}
+            </p>
+            <p class="mb5">
+              <label class="label">结算账户开户行：</label>
+              {{ form.bankName ? form.bankName : '-' }}
+            </p>
+            <p class="mb5">
+              <label class="label">结算账户账号：</label>
+              {{ form.bankNumber ? form.bankNumber : '-' }}
+            </p>
+          </div>
         </div>
       </el-form-item>
       <el-form-item label="可用余额">
-        {{ crediAmount ? crediAmount : 0 }} 元
+        <div class="amount-content ly-flex-align-center ly-flex-pack-center width90" style="height: 60px">
+          <div>
+            <p class="text">{{ crediAmount || crediAmount === 0 ? crediAmount : '---' }}</p>
+          </div>
+        </div>
       </el-form-item>
       <el-form-item label="提现金额" prop="money">
         <el-input-number v-model="form.money" :min="0" :max="crediAmount?crediAmount:0" :precision="2" :controls="false" placeholder="请输入提现金额" class="width90" clearable />
@@ -186,12 +192,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.account-content{
-  width: 90%;
-  border: 1px solid rgba(220, 223, 230, 1);
-  padding: 10px 15px 0;
-  border-radius: 4px;
-}
 .width90{
   width: 90%;
 }
@@ -204,5 +204,28 @@ export default {
 /* 计数器样式 */
 .el-input-number ::v-deep.el-input__inner{
   text-align: left;
+}
+/* 可用余额 */
+.amount-content{
+  height: 126px;
+  background: #FAFAFA;
+  border: 1px dashed #D4D4D4;
+  border-radius: 2px;
+  .label{
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+    color: #20273A;
+    text-align: center;
+  }
+  .text{
+    font-size: 22px;
+    font-weight: bold;
+    line-height: 22px;
+    color: #20273A;
+    text-align: center;
+    padding-left: 24px;
+    background: url('~@/assets/images/payment/icon_amount.png') no-repeat 0px 1px;
+  }
 }
 </style>
