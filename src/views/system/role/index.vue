@@ -39,7 +39,7 @@
                 @keyup.enter.native="handleQuery"
               />
             </el-form-item>
-            <el-form-item label="权限字符" prop="roleKey">
+            <!-- <el-form-item label="权限字符" prop="roleKey">
               <el-input
                 v-model="queryParams.roleKey"
                 placeholder="请输入权限字符"
@@ -48,7 +48,7 @@
                 style="width: 240px"
                 @keyup.enter.native="handleQuery"
               />
-            </el-form-item>
+            </el-form-item>-->
             <el-form-item label="状态" prop="status">
               <el-select
                 v-model="queryParams.status"
@@ -149,7 +149,7 @@
             <el-table-column type="selection" width="55" align="center" />
             <el-table-column label="所属产品" prop="produceName" width="120" />
             <el-table-column label="角色名称" prop="roleName" :show-overflow-tooltip="true" width="150" />
-            <el-table-column label="权限字符" prop="roleKey" :show-overflow-tooltip="true" width="150" />
+            <!--   <el-table-column label="权限字符" prop="roleKey" :show-overflow-tooltip="true" width="150" />-->
             <el-table-column label="显示顺序" prop="roleSort" width="100" />
             <el-table-column label="状态" align="center" width="100">
               <template slot-scope="scope">
@@ -238,9 +238,9 @@
         <el-form-item label="角色名称" prop="roleName">
           <el-input v-model="form.roleName" placeholder="请输入角色名称" />
         </el-form-item>
-        <el-form-item label="权限字符" prop="roleKey">
+        <!--<el-form-item label="权限字符" prop="roleKey">
           <el-input v-model="form.roleKey" placeholder="请输入权限字符" />
-        </el-form-item>
+        </el-form-item>-->
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="角色顺序" prop="roleSort">
@@ -332,9 +332,9 @@
         <el-form-item label="角色名称">
           <el-input v-model="form.roleName" :disabled="true" />
         </el-form-item>
-        <el-form-item label="权限字符">
+        <!-- <el-form-item label="权限字符">
           <el-input v-model="form.roleKey" :disabled="true" />
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="权限范围">
           <el-select v-model="form.dataScope" clearable filterable>
             <el-option
@@ -406,7 +406,7 @@ export default {
       open: false,
       // 是否显示弹出层（数据权限）
       openDataScope: false,
-	    menuExpand: false,
+      menuExpand: false,
       menuNodeAll: false,
       deptExpand: true,
       deptNodeAll: false,
@@ -630,7 +630,7 @@ export default {
       if (this.$refs.menu !== undefined) {
         this.$refs.menu.setCheckedKeys([]);
       }
-	    this.menuExpand = false;
+      this.menuExpand = false;
       this.menuNodeAll = false;
       this.deptExpand = true;
       this.deptNodeAll = false;

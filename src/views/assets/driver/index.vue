@@ -418,7 +418,7 @@ export default {
         pageNum: 1,
         pageSize: 10,
         isAsc: 'desc',
-        orderByColumn: 'create_time',
+        orderByColumn: 't0.create_time',
         driverType: undefined,
         name: undefined,
         telphone: undefined,

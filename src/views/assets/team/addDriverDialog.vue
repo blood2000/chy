@@ -180,7 +180,7 @@
 </template>
 
 <script>
-import { listDriver } from '@/api/assets/driver';
+import { applyDriverList as listDriver } from '@/api/assets/driver';
 import { applyDriver } from '@/api/assets/team';
 
 export default {
@@ -298,6 +298,7 @@ export default {
     // 搜索按钮操作
     handleQuery() {
       this.queryParams.pageNum = 1;
+      this.queryParams.teamCode = this.teamCode;
       this.getList();
     },
     // 重置按钮操作
