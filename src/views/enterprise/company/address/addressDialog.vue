@@ -17,7 +17,7 @@
             <el-input v-model="form.contactPhone" placeholder="请输入手机号码" class="width100" clearable />
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col v-if="form.code" :span="12">
           <el-form-item label="地址状态" prop="status">
             <el-radio-group v-model="form.status">
               <el-radio
