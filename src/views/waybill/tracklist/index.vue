@@ -143,7 +143,7 @@
         </el-form-item>
         <el-form-item>
           <el-button
-            type="cyan"
+            type="primary"
             icon="el-icon-search"
             size="mini"
             @click="handleQuery"
@@ -151,6 +151,8 @@
             搜索
           </el-button>
           <el-button
+            type="primary"
+            plain
             icon="el-icon-refresh"
             size="mini"
             @click="resetQuery"
@@ -168,7 +170,7 @@
         <el-radio-button label="3">已卸货</el-radio-button>
       </el-radio-group>
     </div>
-    
+
     <div class="app-container">
       <el-row
         :gutter="10"
@@ -510,16 +512,6 @@ export default {
             this.getList();
             this.msgSuccess('操作成功');
           });
-          // if (row.cancelStatus === 1) {
-          //   this.msgError('司机撤单申请中，无法再次取消订单！');
-          // } else if (row.cancelStatus === 2) {
-          //   this.msgError('货主已同意撤单，无法取消订单！');
-          // } else {
-          //   this.$refs.CancelDialog.reset();
-          //   this.canceldialog = true;
-          //   this.title = '取消运单';
-          //   this.$refs.CancelDialog.setForm(row);
-          // }
           break;
         case 5:
           // this.$refs.DialogA.reset();

@@ -144,7 +144,7 @@
         </el-form-item>
         <el-form-item>
           <el-button
-            type="cyan"
+            type="primary"
             icon="el-icon-search"
             size="mini"
             @click="handleQuery"
@@ -152,6 +152,8 @@
             搜索
           </el-button>
           <el-button
+            type="primary"
+            plain
             icon="el-icon-refresh"
             size="mini"
             @click="resetQuery"

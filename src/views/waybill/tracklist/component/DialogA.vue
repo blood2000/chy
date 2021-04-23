@@ -153,9 +153,6 @@ export default {
         ],
         unloadAddressCode: [
           { required: true, message: '请选择卸货地址', trigger: 'blur' }
-        ],
-        attachmentCode: [
-          { required: true, message: '请上传装货单据', trigger: 'blur' }
         ]
       },
       // 日期格式

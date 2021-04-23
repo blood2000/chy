@@ -83,9 +83,6 @@ export default {
         ],
         unloadWeight: [
           { required: true, message: '卸货重量不能为空', trigger: 'blur' }
-        ],
-        attachmentCode: [
-          { required: true, message: '请上传卸货凭证', trigger: 'blur' }
         ]
       },
       // 日期格式

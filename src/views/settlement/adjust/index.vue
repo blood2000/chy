@@ -179,7 +179,7 @@
         </el-form-item>
         <el-form-item>
           <el-button
-            type="cyan"
+            type="primary"
             icon="el-icon-search"
             size="mini"
             @click="handleQuery"
@@ -187,6 +187,8 @@
             搜索
           </el-button>
           <el-button
+            type="primary"
+            plain
             icon="el-icon-refresh"
             size="mini"
             @click="resetQuery"
@@ -253,8 +255,8 @@
         </template>
         <template #isReturn="{row}">
           <span>
-            <i v-if="row.isReturn == 0" class="el-icon-error g-color-error"></i>
-            <i v-if="row.isReturn == 1" class="el-icon-success g-color-success"></i>
+            <i v-if="row.isReturn == 0" class="el-icon-error g-color-error" />
+            <i v-if="row.isReturn == 1" class="el-icon-success g-color-success" />
             {{ selectDictLabel(isReturnOptions, row.isReturn) }}
           </span>
         </template>
