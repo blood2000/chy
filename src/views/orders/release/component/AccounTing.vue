@@ -19,6 +19,8 @@
             :controls="false"
             :precision="2"
             :step="0.01"
+            :max="999999"
+            :min="0"
             :placeholder="'请输入运费单价'"
             controls-position="right"
             :style="{ width: '200px' }"

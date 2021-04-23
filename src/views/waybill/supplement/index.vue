@@ -414,7 +414,7 @@ export default {
         if (valid) {
           extra(this.form).then(response => {
             this.msgSuccess('运单补录成功');
-            this.close();
+            this.reset();
           });
         }
       });
