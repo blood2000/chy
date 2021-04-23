@@ -4,7 +4,7 @@
       <el-form-item label="关键字" prop="keywords">
         <el-input
           v-model="queryParams.keywords"
-          placeholder="请输入关键字"
+          placeholder="请输入电话号码或姓名"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"

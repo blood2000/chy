@@ -177,8 +177,8 @@ export default {
           };
         });
 
-        console.log(orderFreightBoList, '想要的结构-----');
-        console.log(this.entry, '时间----');
+        // console.log(orderFreightBoList, '想要的结构-----');
+        // console.log(this.entry, '时间----');
 
 
         // 提交需要这样的结构
@@ -194,7 +194,6 @@ export default {
         // 请求接口
 
         const data = await adjustPrice(req);
-        console.log(data);
 
         this.loading = false;
         this.msgSuccess(data.msg);
@@ -223,7 +222,7 @@ export default {
         e.newRedis = await Promise.all(lists);
       }
 
-      console.log(this.tabs, '处理后的this.tabs');
+      // console.log(this.tabs, '处理后的this.tabs');
     }
   }
 

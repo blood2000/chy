@@ -915,7 +915,10 @@ export default {
     },
     /** 关闭按钮操作 */
     handleClose(row) {
-      const msg = '是否确认关闭该货源单，关闭后无法司机无法再继续接单。但运输中的运单则继续进行';
+      const msg = row.status + '' === '0'
+        ? '是否确认关闭该货源单，关闭后无法司机无法再继续接单。但运输中的运单则继续进行'
+        : '是否确认启用该货源单';
+
       const data = {
         'orderCode': row.code,
         'status': row.status + '' === '1' ? '0' : '1'
@@ -944,6 +947,9 @@ export default {
             e.goodsPrice = ee.goodsPrice;
           }
         });
+
+        console.log(e.redisOrderAddressInfoVoList);
+
 
         const redis = e.redisOrderAddressInfoVoList.map(eee => {
           const tin_names = [];
