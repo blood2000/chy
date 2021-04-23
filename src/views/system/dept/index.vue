@@ -64,7 +64,6 @@
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
           <template slot-scope="scope">
             <el-button
-              v-if="scope.row.orgType != 1"
               v-hasPermi="['system:dept:edit']"
               size="mini"
               type="text"
@@ -94,7 +93,7 @@
       <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
         <el-form ref="form" :model="form" :rules="rules" label-width="80px">
           <el-row>
-            <el-col v-if="form.parentId != 0" :span="22">
+            <el-col v-if="form.parentId != 0 && deptOptions.length>0" :span="22">
               <el-form-item label="上级组织" prop="parentId" :rules="[{ required: true, message: '上级组织不能为空', trigger: ['blur', 'change'] }]">
                 <treeselect v-model="form.parentId" :options="deptOptions" :normalizer="normalizer" placeholder="选择上级组织" />
               </el-form-item>
