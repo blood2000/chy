@@ -88,17 +88,17 @@ export default {
       getInfoDetail(this.wayBillInfo.waybillNo, 1).then(response => {
         console.log(response);
         const info = response.data[0];
-        if(info.waybillAddres.loadLocation){
-          this.loadAddress = info.waybillAddres.loadLocation.replace("(", "").replace(")", "").split(",");
+        if (info.waybillAddres.loadLocation) {
+          this.loadAddress = info.waybillAddres.loadLocation.replace('(', '').replace(')', '').split(',');
         }
-        if(info.waybillAddres.unloadLocation){
-          this.unloadAddress = info.waybillAddres.unloadLocation.replace("(", "").replace(")", "").split(",");
+        if (info.waybillAddres.unloadLocation) {
+          this.unloadAddress = info.waybillAddres.unloadLocation.replace('(', '').replace(')', '').split(',');
         }
-        if(this.loadAddress.length === 0){
+        if (this.loadAddress.length === 0) {
           this.loadAddress = [119.358267, 26.04577];
         }
-        if(this.unloadAddress.length === 0){
-           this.unloadAddress = [119.344435, 25.721053];
+        if (this.unloadAddress.length === 0) {
+          this.unloadAddress = [119.344435, 25.721053];
         }
         this.getTrackLocation();
         this.getMark();

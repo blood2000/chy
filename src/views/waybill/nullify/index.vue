@@ -191,7 +191,7 @@
     <!-- 运单详情 对话框 -->
     <detail-dialog ref="DetailDialog" :current-id="currentId" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
   </div>
-  
+
 </template>
 
 <script>

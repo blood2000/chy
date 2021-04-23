@@ -109,7 +109,7 @@
     <!-- 投诉处理 对话框 -->
     <complaint-dialog ref="ComplaintDialog" :title="title" :open.sync="openComplaint" :disable="formDisable" @refresh="getList" />
   </div>
-  
+
 </template>
 
 <script>
