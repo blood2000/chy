@@ -303,16 +303,15 @@
               @click="handleInfo(row)"
             >详情</el-button>
 
+            <!-- v-hasPermi="['consigner-order-edit']" -->
             <el-button
               v-if="row.status+''==='0'"
-              v-hasPermi="['consigner-order-edit']"
               size="mini"
               type="text"
               @click="handleUpdate(row)"
             >编辑</el-button>
 
             <el-button
-              v-hasPermi="['consigner-order-open', 'consigner-order-close']"
               size="mini"
               type="text"
               :class="row.status+''==='0'?'g-color-error': null"
@@ -323,7 +322,6 @@
               <el-dropdown-item>
                 <el-button
                   v-if="!row.haveWaybill"
-                  v-hasPermi="['consigner-order-delete']"
                   size="mini"
                   type="text"
                   @click="handleDelete(row)"
@@ -333,7 +331,6 @@
               <el-dropdown-item>
                 <el-button
                   v-if="row.status+''==='0'"
-                  v-hasPermi="['consigner-order-adjust-price']"
                   size="mini"
                   type="text"
                   @click="handleReadjustPrices(row)"
