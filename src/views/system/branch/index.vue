@@ -55,6 +55,10 @@
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="网点名称" align="center" prop="name" />
         <el-table-column label="组织" align="center" prop="orgName" />
+        <el-table-column label="统一信用社会代码" align="center" prop="uniformSocialCreditCode" />
+        <el-table-column label="法人" align="center" prop="branchArtificialName" />
+        <el-table-column label="电话" align="center" prop="branchTel" />
+        <el-table-column label="地址" align="center" prop="branchAddress" />
         <el-table-column label="创建时间" align="center" prop="createTime" width="180">
           <template slot-scope="scope">
             <span>{{ parseTime(scope.row.createTime) }}</span>
@@ -89,10 +93,10 @@
       />
 
       <!-- 添加或修改岗位对话框 -->
-      <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-        <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+      <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
+        <el-form ref="form" :model="form" :rules="rules" label-width="130px">
           <el-form-item label="网点名称" prop="name">
-            <el-input v-model="form.name" placeholder="请输入网点名称" />
+            <el-input v-model="form.name" placeholder="请输入网点名称" clearable />
           </el-form-item>
           <el-form-item label="组织" prop="orgCode">
             <treeselect
@@ -101,7 +105,20 @@
               :normalizer="normalizer"
               :show-count="true"
               placeholder="请选择归属组织"
+              clearable
             />
+          </el-form-item>
+          <el-form-item label="统一信用社会代码" prop="uniformSocialCreditCode">
+            <el-input v-model="form.uniformSocialCreditCode" placeholder="请输入统一信用社会代码" clearable />
+          </el-form-item>
+          <el-form-item label="法人" prop="branchArtificialName">
+            <el-input v-model="form.branchArtificialName" placeholder="请输入法人姓名" clearable />
+          </el-form-item>
+          <el-form-item label="电话" prop="branchTel">
+            <el-input v-model="form.branchTel" placeholder="请输入电话号码" clearable />
+          </el-form-item>
+          <el-form-item label="地址" prop="branchAddress">
+            <el-input v-model="form.branchAddress" placeholder="请输入地址" clearable />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -168,6 +185,9 @@ export default {
       rules: {
         name: [
           { required: true, message: '名称不能为空', trigger: 'blur' }
+        ],
+        branchTel: [
+          { validator: this.formValidate.telphone, trigger: 'blur' }
         ]
       }
     };
@@ -194,7 +214,12 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        name: undefined
+        name: undefined,
+        branchAddress: undefined,
+        branchArtificialName: undefined,
+        branchTel: undefined,
+        orgCode: undefined,
+        uniformSocialCreditCode: undefined
       };
       this.resetForm('form');
     },

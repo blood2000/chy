@@ -1,10 +1,10 @@
 import request from '@/utils/request';
 
 // 查询司机往来明细列表
-export const listDrivertoApi = '/transportation/waybillAbnormal/getOrderException';
+export const listDrivertoApi = '/transportation/driverCountSearch/getDriverCommunicationList';
 export function listDriverto(query) {
   return request({
-    url: '/transportation/waybillAbnormal/getOrderException',
+    url: '/transportation/driverCountSearch/getDriverCommunicationList',
     method: 'get',
     params: query
   });
@@ -30,10 +30,10 @@ export function listCustomer(query) {
 }
 
 // 查询客户消费明细列表
-export const listConsumptionApi = '/transportation/waybillAbnormal/getOrderException';
+export const listConsumptionApi = '/transportation/customerCountSearch/getShipmentCountList';
 export function listConsumption(query) {
   return request({
-    url: '/transportation/waybillAbnormal/getOrderException',
+    url: '/transportation/customerCountSearch/getShipmentCountList',
     method: 'get',
     params: query
   });

@@ -200,7 +200,7 @@ export function tableHeaderConfig(list, url, editColumn, myColumen) {
   } else {
     tableHeadList(url).then(response => {
       response.data.forEach(el => {
-        list.unshift({
+        list.push({
           label: el.comment,
           prop: el.fieldName,
           isShow: el.isShow,
