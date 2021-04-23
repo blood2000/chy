@@ -11,6 +11,7 @@
           :default-value="new Date()"
           :disabled="disable"
           value-format="yyyy-MM-dd HH:mm:ss"
+          @change="loadTimeChoose"
         />
       </el-form-item>
       <el-form-item label="装货重量(吨)" prop="loadWeight">
@@ -156,9 +157,6 @@ export default {
         ]
       },
       // 日期格式
-      Hours: '',
-      Minutes: '',
-      Seconds: '',
       time: '',
       // 商品code
       goodsCode: '',
@@ -193,6 +191,18 @@ export default {
   created() {
   },
   methods: {
+    loadTimeChoose(e) {
+      const loadtime = new Date(e);
+      const receivetime = new Date(this.waybill.receiveTime);
+      if (loadtime < receivetime) {
+        this.$message({ type: 'warning', message: '装货时间必须大于等于接单时间：' + this.waybill.receiveTime });
+        this.form.loadTime = null;
+      }
+      if (loadtime > new Date()) {
+        this.$message({ type: 'warning', message: '装货时间必须小于等于当前时间！' });
+        this.form.loadTime = null;
+      }
+    },
     // 获取装货详情
     getDetail() {
       this.reset();

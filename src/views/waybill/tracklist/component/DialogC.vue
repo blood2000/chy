@@ -11,6 +11,7 @@
           :default-value="new Date()"
           value-format="yyyy-MM-dd HH:mm:ss"
           :disabled="disable"
+          @change="unloadTimeChoose"
         />
       </el-form-item>
       <el-form-item label="卸货重量(吨)" prop="unloadWeight">
@@ -86,9 +87,6 @@ export default {
         ]
       },
       // 日期格式
-      Hours: '',
-      Minutes: '',
-      Seconds: '',
       time: '',
       fresh: false
     };
@@ -119,6 +117,18 @@ export default {
   created() {
   },
   methods: {
+    unloadTimeChoose(e) {
+      const unloadtime = new Date(e);
+      const loadtime = new Date(this.waybill.fillTime);
+      if (unloadtime <= loadtime) {
+        this.$message({ type: 'warning', message: '卸货时间必须大于装货时间：' + this.waybill.fillTime });
+        this.form.unloadTime = null;
+      }
+      if (unloadtime > new Date()) {
+        this.$message({ type: 'warning', message: '卸货时间必须小于等于当前时间！' });
+        this.form.unloadTime = null;
+      }
+    },
     // 获取卸货详情
     getDetail() {
       this.reset();
@@ -194,6 +204,7 @@ export default {
     setForm(data) {
       this.waybill = data;
       this.form.code = this.waybill.code;
+      console.log(this.waybill);
     }
   }
 };
