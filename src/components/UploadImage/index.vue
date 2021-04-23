@@ -15,7 +15,7 @@
       style="display: inline-block; vertical-align: top"
     >
       <img v-if="value && !disabled" :src="attachUrl" class="avatar">
-      <div v-else-if="value && disabled" v-viewer class="avatar">
+      <div v-else-if="value && disabled" v-viewer class="avatar-box">
         <img :src="attachUrl" class="avatar">
       </div>
       <i v-else class="el-icon-plus avatar-uploader-icon" />
@@ -149,8 +149,13 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.avatar {
-  width: 100%;
-  height: 100%;
+::v-deep .el-upload--picture-card, .avatar-box{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .avatar {
+    max-width: 100%;
+    max-height: 100%;
+  }
 }
 </style>

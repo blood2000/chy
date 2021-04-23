@@ -179,8 +179,8 @@
         </el-col>
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
         <!-- <el-col v-show="showSearch" :span="1.5" class="fr mr20">
-          <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+          <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
         </el-col> -->
       </el-row>
 
