@@ -63,4 +63,8 @@
   &.i-price .el-dialog .el-dialog__header{
     background: url('~@/assets/images/dialog/tiaojia.png') no-repeat 20px 15px;
   }
+  // 核算
+  &.i-adjust .el-dialog .el-dialog__header{
+    background: url('~@/assets/images/dialog/before_adjust.png') no-repeat 20px 15px;
+  }
 }
