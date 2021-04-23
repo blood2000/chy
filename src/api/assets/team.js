@@ -88,6 +88,15 @@ export function examine(data) {
   });
 }
 
+// 申请加入调度列表
+export function applyTeamList(data) {
+  return request({
+    url: '/assets/team/applyTeamList',
+    method: 'post',
+    data: data
+  });
+}
+
 // 删除调度者与司机的关系
 export function delTeamReDriver(data) {
   return request({
