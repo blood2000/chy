@@ -222,6 +222,10 @@
         </template>
         <!-- 转账回调状态 -->
         <template #responseStatus="{row}">
+          <i v-if="row.responseStatus === 0" class="g-icon-deal mr5" />
+          <i v-if="row.responseStatus === 1" class="el-icon-success g-color-success mr5" />
+          <i v-if="row.responseStatus === 2" class="el-icon-error g-color-error mr5" />
+          <i v-if="row.responseStatus === 3" class="el-icon-warning g-color-gray mr5" />
           <span>{{ selectDictLabel(responseStatusOptions, row.responseStatus) }}</span>
         </template>
         <!-- 付款方式 -->
@@ -326,15 +330,15 @@ export default {
       // 转帐结果字典
       responseStatusOptions: [
         { dictLabel: '处理中', dictValue: 0 },
-        { dictLabel: '成功', dictValue: 1 },
-        { dictLabel: '失败', dictValue: 2 },
-        { dictLabel: '异常', dictValue: 3 }
+        { dictLabel: '转账成功', dictValue: 1 },
+        { dictLabel: '转账失败', dictValue: 2 },
+        { dictLabel: '转账异常', dictValue: 3 }
       ],
       // 流水/电子路单上报字典
       reportOptions: [
         { dictLabel: '未上报', dictValue: 0 },
-        { dictLabel: '成功', dictValue: 1 },
-        { dictLabel: '失败', dictValue: 2 }
+        { dictLabel: '上报成功', dictValue: 1 },
+        { dictLabel: '上报失败', dictValue: 2 }
       ],
       // 打款方式字典
       payByTypeOptions: [

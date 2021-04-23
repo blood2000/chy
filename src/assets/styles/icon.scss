@@ -1,0 +1,46 @@
+/*
+ * 小圆点
+ */
+ .g-pot{
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  vertical-align: middle;
+  margin: -3px 2px 0 0;
+  &.g-color-error{
+    background: #F56C6C;
+  }
+  &.g-color-success{
+    background: #67C23A;
+  }
+}
+
+/*
+ * 自定义图标
+ */
+@mixin g-icon{
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  vertical-align: middle;
+  margin-top: -3px;
+}
+
+.g-icon-deal{
+  @include g-icon;
+  background: url('~@/assets/images/icon/icon_deal.png') no-repeat;
+  background-size: 100% 100%;
+}
+
+.g-icon-money{
+  @include g-icon;
+  background: url('~@/assets/images/icon/icon_money.png') no-repeat;
+  background-size: 100% 100%;
+}
+
+.g-icon-push{
+  @include g-icon;
+  background: url('~@/assets/images/icon/icon_push.png') no-repeat;
+  background-size: 100% 100%;
+}
