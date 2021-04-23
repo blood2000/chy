@@ -190,10 +190,11 @@
           <span>{{ selectDictLabel(driverTypeOptions, row.driverType) }}</span>
         </template>
         <template #authStatus="{row}">
-          <span v-show="row.authStatus === 0" class="g-color-gray">未审核</span>
-          <span v-show="row.authStatus === 1" class="g-color-blue">审核中</span>
-          <span v-show="row.authStatus === 2" class="g-color-error">审核未通过</span>
-          <span v-show="row.authStatus === 3" class="g-color-success">审核通过</span>
+          <i v-show="row.authStatus === 0" class="el-icon-warning g-color-light-gray mr5" />
+          <i v-show="row.authStatus === 1" class="g-icon-deal mr5" />
+          <i v-show="row.authStatus === 2" class="el-icon-error g-color-error mr5" />
+          <i v-show="row.authStatus === 3" class="el-icon-success g-color-success mr5" />
+          <span>{{ selectDictLabel(statusOptions, row.authStatus) }}</span>
         </template>
         <template v-if="teamCode" #agreementNo="{row}">
           <el-button type="text no-padding" @click="downloadAgreement(row)">{{ row.agreementNo }}</el-button>
@@ -468,18 +469,6 @@ export default {
       this.getDicts('driver_license_type').then(response => {
         this.driverLicenseTypeOptions = response.data;
       });
-    },
-    // 司机城市名称字典翻译
-    driverCityFormat(row, column) {
-      return this.selectDictLabel(this.driverCityOptions, row.driverCity);
-    },
-    // 从业资格证办理省份名称字典翻译
-    workLicenseProvinceNameFormat(row, column) {
-      return this.selectDictLabel(this.workLicenseProvinceNameOptions, row.workLicenseProvinceName);
-    },
-    // 审核状态字典翻译
-    authStatusFormat(row, column) {
-      return this.selectDictLabel(this.statusOptions, row.authStatus);
     },
     /** 查询参数列表 */
     getList() {

@@ -162,7 +162,7 @@
           <i v-if="row.status === 2" class="el-icon-success g-color-success mr5" />
           <i v-if="row.status === 3" class="el-icon-error g-color-error mr5" />
           <i v-if="row.status === 4" class="g-icon-deal mr5" />
-          <i v-if="row.status === 5" class="el-icon-remove g-color-gray mr5" />
+          <i v-if="row.status === 5" class="el-icon-remove g-color-light-gray mr5" />
           <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
         </template>
         <template #transferTime="{row}">
