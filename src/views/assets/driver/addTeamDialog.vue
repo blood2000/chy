@@ -25,7 +25,7 @@
           size="small"
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item> -->
+      </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择状态" filterable clearable size="small">
           <el-option
@@ -36,7 +36,7 @@
           />
         </el-select>
       </el-form-item>
-      <!-- <el-form-item label="司机姓名" prop="driverName">
+      <el-form-item label="司机姓名" prop="driverName">
         <el-input
           v-model="queryParams.driverName"
           placeholder="请输入司机姓名"
@@ -145,8 +145,8 @@ export default {
       total: 0,
       // 状态字典
       statusOptions: [
-        { dictLabel: '启用', dictValue: '0' },
-        { dictLabel: '禁用', dictValue: '1' }
+        { dictLabel: '启用', dictValue: 0 },
+        { dictLabel: '禁用', dictValue: 1 }
       ],
       // 是否字典
       isOptions: [
@@ -168,7 +168,7 @@ export default {
         pageSize: 10,
         name: undefined,
         teamLeader: undefined,
-        status: undefined,
+        status: 0,
         driverName: undefined,
         licenseNumber: undefined,
         applyStatus: undefined,
