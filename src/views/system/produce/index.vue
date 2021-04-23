@@ -130,7 +130,7 @@
 </template>
 
 <script>
-import { list, addProduce, updateProduce, delProduce, getProduce, changeStatus } from '@/api/system/produce';
+import { list, addProduce, updateProduce, getProduce, changeStatus } from '@/api/system/produce';
 
 export default {
   name: 'Post',

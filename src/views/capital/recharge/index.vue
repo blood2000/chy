@@ -115,12 +115,26 @@
         </template>
         <!-- 收支类型 -->
         <template #paidFeeType="{row}">
-          <span v-if="row.paidFeeType === '0'" class="g-color-success">+收入</span>
-          <span v-if="row.paidFeeType === '1'" class="g-clolor-error">-支出</span>
+          <p v-if="row.paidFeeType === '0'">
+            <span class="g-color-success g-pot" />
+            收入
+          </p>
+          <p v-if="row.paidFeeType === '1'">
+            <span class="g-color-error g-pot" />
+            支出
+          </p>
         </template>
         <!-- 变动金额 -->
         <template #paidAmount="{row}">
-          <span class="g-color-blue">{{ row.paidAmount }}</span>
+          <p v-if="row.paidFeeType === '0'" class="g-color-success">
+            +{{ row.paidAmount }}
+          </p>
+          <p v-else-if="row.paidFeeType === '1'" class="g-color-error">
+            -{{ row.paidAmount }}
+          </p>
+          <p v-else>
+            {{ row.paidAmount }}
+          </p>
         </template>
         <template #createTime="{row}">
           <span>{{ parseTime(row.createTime) }}</span>
