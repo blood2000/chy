@@ -2,7 +2,7 @@
   <div>
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
-        <el-form-item label="承运方名称" prop="driverName">
+        <el-form-item label="客户名称" prop="driverName">
           <el-input
             v-model="queryParams.driverName"
             placeholder="请输入客户名称"
@@ -27,50 +27,11 @@
             v-model="queryTime"
             type="daterange"
             range-separator="-"
-            start-placeholde="开始日期"
-            end-placeholde="结束日期"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
             style="width: 228px"
             @change="datechoose"
           />
-        </el-form-item>
-        <el-form-item label="角色" prop="driverType">
-          <el-select
-            v-model="queryParams.driverType"
-            placeholder="请选择角色"
-            clearable
-            filterable
-            size="small"
-            style="width: 228px"
-          >
-            <el-option
-              v-for="dict in driverTypeOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="所属调度" prop="teamCode">
-          <el-select
-            v-model="queryParams.teamCode"
-            v-el-seclect.loadmore="loadmore"
-            filterable
-            clearable
-            remote
-            reserve-keyword
-            placeholder="请搜索选择所属调度"
-            :remote-method="remoteMethod"
-            :loading="teamloading"
-            style="width: 228px"
-            size="small"
-          >
-            <el-option
-              v-for=" dict in teamlist"
-              :key="dict.code"
-              :label="dict.adminName"
-              :value="dict.code"
-            />
-          </el-select>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -80,13 +41,22 @@
     </div>
     <div class="app-container">
       <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['assets:vehicle:edit']"
+            type="primary"
+            icon="el-icon-upload2"
+            size="mini"
+            @click="handleExport"
+          >导出</el-button>
+        </el-col>
         <el-col :span="1.5" style="float: right;">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="drivertoList" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
+      <RefactorTable :loading="loading" :summary="summary" :data="customerList" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
         <!-- <template #driverType="{row}">
           <span>{{ selectDictLabel(driverTypeOptions, row.driverType) }}</span>
         </template> -->
@@ -107,30 +77,25 @@
 </template>
 
 <script>
-import { listDrivertoApi, listDriverto, teamList } from '@/api/data/statistics';
+import { listCustomerApi, listCustomer } from '@/api/data/statistics';
 // import tableColumnsConfig from './config';
 
 export default {
-  name: 'Driverto',
+  name: 'Customer',
   components: {
   },
   data() {
     return {
       tableColumnsConfig: [],
-      api: listDrivertoApi,
+      api: listCustomerApi,
       // 遮罩层
       loading: true,
       // 显示搜索条件
       showSearch: true,
       // 总条数
       total: 0,
-      // 司机往来明细表格数据
-      drivertoList: [],
-      // 司机类别  0独立司机，1聘用司机字典
-      driverTypeOptions: [
-        { 'dictLabel': '独立司机', 'dictValue': '0' },
-        { 'dictLabel': '聘用司机', 'dictValue': '1' }
-      ],
+      // 客服统计报表表格数据
+      customerList: [],
       queryTime: [],
       // 查询参数
       queryParams: {
@@ -139,60 +104,32 @@ export default {
         driverName: null,
         driverPhone: null,
         queryStartTime: null,
-        queryEndTime: null,
-        driverType: null,
-        teamCode: null
+        queryEndTime: null
       },
-      // 调度者列表
-      teamlist: [],
-      teamQueryParams: {
-        pageNum: 1,
-        pageSize: 10,
-        name: null
-      },
-      teamloading: false,
-      dataOver: false // 是否请求完了
+      // 合计
+      summary: true
     };
   },
   created() {
-    this.tableHeaderConfig(this.tableColumnsConfig, listDrivertoApi, { });
+    this.tableHeaderConfig(this.tableColumnsConfig, listCustomerApi, { });
     this.getList();
   },
   methods: {
-    // 获取调度者列表
-    getTeam() {
-      teamList(this.teamQueryParams).then(response => {
-        this.dataOver = !response.rows.length;
-        this.teamlist = this.teamlist.concat(response.rows);
-        this.teamloading = false;
-      }).catch(() => {
-        this.teamloading = false;
-      });
-    },
-    // 触发调度者远程搜索
-    remoteMethod(query) {
-      if (query !== '') {
-        this.teamloading = true;
-        this.teamQueryParams.pageNum = 1;
-        this.dataOver = false;
-        this.teamQueryParams.name = query;
-        this.teamlist = [];
-        this.getTeam();
+    // 搜索时间选择
+    datechoose(date) {
+      if (date) {
+        this.queryParams.queryStartTime = this.parseTime(date[0], '{y}-{m}-{d}');
+        this.queryParams.queryEndTime = this.parseTime(date[1], '{y}-{m}-{d}');
       } else {
-        this.teamlist = [];
+        this.queryParams.queryStartTime = null;
+        this.queryParams.queryEndTime = null;
       }
     },
-    // 调度者列表触底加载
-    loadmore() {
-      if (this.dataOver) return;
-      this.teamQueryParams.pageNum++;
-      this.getTeam();
-    },
-    /** 查询司机往来明细列表 */
+    /** 查询客服统计报表列表 */
     getList() {
       this.loading = true;
-      listDriverto(this.queryParams).then(response => {
-        this.drivertoList = response.data;
+      listCustomer(this.queryParams).then(response => {
+        this.customerList = response.data;
         this.total = response.data.length;
         this.loading = false;
       });
@@ -206,6 +143,10 @@ export default {
     resetQuery() {
       this.resetForm('queryForm');
       this.handleQuery();
+    },
+    // 导出
+    handleExport() {
+      this.download('/transportation/invoice/listWayBill', { ...this.queryParams }, `askfor_${new Date().getTime()}.xlsx`);
     }
   }
 };
