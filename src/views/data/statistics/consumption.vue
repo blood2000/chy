@@ -56,7 +56,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="consumptionList" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
+      <RefactorTable :loading="loading" :summary="summary" :data="consumptionList" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
         <!-- <template #driverType="{row}">
           <span>{{ selectDictLabel(driverTypeOptions, row.driverType) }}</span>
         </template> -->
@@ -105,7 +105,8 @@ export default {
         shipmentPhone: null,
         beginTime: null,
         endTime: null
-      }
+      },
+      summary: true
     };
   },
   created() {

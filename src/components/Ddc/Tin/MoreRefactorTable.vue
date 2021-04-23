@@ -2,6 +2,19 @@
   <el-table :ref="refName" v-loading="loading" :show-summary="summary" border stripe :data="data" v-bind="$attrs" @selection-change="handleSelectionChange">
     <el-table-column v-if="!!_events['selection-change']" type="selection" width="55" align="center" fixed :reserve-selection="reserveSelection" />
     <el-table-column v-if="!isShowIndex" label="序号" align="center" type="index" width="50" />
+    <!--三级表头-->
+    <el-table-column v-for="(level1Item, index) in level1List" :key="index" align="center" :label="level1Item.level1Lable">
+      <el-table-column v-for="(level2Item, indexChild1) in level1List.level2List" :key="index+'-'+indexChild1" align="center" :label="level2Item.level2Lable">
+        <template slot-scope="scope">
+          <span>{{ scope.row[level2Item.level2Lable] || '' }}</span>
+        </template>
+        <el-table-column v-for="(level3Item, indexChild2) in level1List.level2List.level3List" :key="index+'-'+indexChild1+'-'+indexChild2" align="center" :label="level3Item.level3Lable">
+          <template slot-scope="scope">
+            <span>{{ scope.row[level3Item.level3Lable] || '' }}</span>
+          </template>
+        </el-table-column>
+      </el-table-column>
+    </el-table-column>
     <template v-for="(th, key) in tableColumnsConfig">
       <el-table-column
         v-if="th.isShow"
