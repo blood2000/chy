@@ -27,8 +27,8 @@
             v-model="queryTime"
             type="daterange"
             range-separator="-"
-            start-placeholde="开始日期"
-            end-placeholde="结束日期"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
             style="width: 228px"
             @change="datechoose"
           />
@@ -80,6 +80,15 @@
     </div>
     <div class="app-container">
       <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['assets:vehicle:edit']"
+            type="primary"
+            icon="el-icon-upload2"
+            size="mini"
+            @click="handleExport"
+          >导出</el-button>
+        </el-col>
         <el-col :span="1.5" style="float: right;">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
@@ -159,6 +168,16 @@ export default {
     this.getList();
   },
   methods: {
+    // 搜索时间选择
+    datechoose(date) {
+      if (date) {
+        this.queryParams.queryStartTime = this.parseTime(date[0], '{y}-{m}-{d}');
+        this.queryParams.queryEndTime = this.parseTime(date[1], '{y}-{m}-{d}');
+      } else {
+        this.queryParams.queryStartTime = null;
+        this.queryParams.queryEndTime = null;
+      }
+    },
     // 获取调度者列表
     getTeam() {
       teamList(this.teamQueryParams).then(response => {
@@ -206,6 +225,10 @@ export default {
     resetQuery() {
       this.resetForm('queryForm');
       this.handleQuery();
+    },
+    // 导出
+    handleExport() {
+      this.download('/transportation/invoice/listWayBill', { ...this.queryParams }, `askfor_${new Date().getTime()}.xlsx`);
     }
   }
 };

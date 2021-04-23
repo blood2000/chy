@@ -1,7 +1,7 @@
 <template>
-  <el-table :ref="refName" v-loading="loading" border stripe :data="data" v-bind="$attrs" @selection-change="handleSelectionChange">
+  <el-table :ref="refName" v-loading="loading" :show-summary="summary" border stripe :data="data" v-bind="$attrs" @selection-change="handleSelectionChange">
     <el-table-column v-if="!!_events['selection-change']" type="selection" width="55" align="center" fixed :reserve-selection="reserveSelection" />
-    <el-table-column v-if="!isShowIndex" label="序号" align="center" type="index" min-width="5%" />
+    <el-table-column v-if="!isShowIndex" label="序号" align="center" type="index" min-width="6%" />
     <template v-for="(th, key) in tableColumnsConfig">
       <el-table-column
         v-if="th.isShow"
@@ -26,7 +26,7 @@
 <script>
 /**
  * 调用示例
- * <refactor-table :loading='loading' :data='list' :tableColumnsConfig='tableColumnsConfig' @selection-change="handleSelectionChange">
+ * <refactor-table :loading='loading' :summary='summary' :data='list' :tableColumnsConfig='tableColumnsConfig' @selection-change="handleSelectionChange">
  *    对一些特殊的进一步处理
       <template #status="{row}">
           <span>{{statusFormat(row)}}</span>
@@ -42,6 +42,11 @@
 export default {
   name: 'RefactorTable',
   props: {
+    // 合计
+    summary: {
+      type: Boolean,
+      default: false
+    },
     isShowIndex: {
       type: Boolean,
       default: false

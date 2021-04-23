@@ -18,3 +18,23 @@ export function teamList(data) {
     data: data
   });
 }
+
+// 查询客服统计报表列表
+export const listCustomerApi = '/transportation/waybillAbnormal/getOrderException';
+export function listCustomer(query) {
+  return request({
+    url: '/transportation/waybillAbnormal/getOrderException',
+    method: 'get',
+    params: query
+  });
+}
+
+// 查询客户消费明细列表
+export const listConsumptionApi = '/transportation/waybillAbnormal/getOrderException';
+export function listConsumption(query) {
+  return request({
+    url: '/transportation/waybillAbnormal/getOrderException',
+    method: 'get',
+    params: query
+  });
+}
