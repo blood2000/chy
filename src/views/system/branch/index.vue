@@ -55,10 +55,10 @@
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="网点名称" align="center" prop="name" />
         <el-table-column label="组织" align="center" prop="orgName" />
-        <!-- <el-table-column label="统一信用社会代码" align="center" prop="uniformSocialCreditCode" />
+        <el-table-column label="统一信用社会代码" align="center" prop="uniformSocialCreditCode" />
         <el-table-column label="法人" align="center" prop="branchArtificialName" />
         <el-table-column label="电话" align="center" prop="branchTel" />
-        <el-table-column label="地址" align="center" prop="branchAddress" /> -->
+        <el-table-column label="地址" align="center" prop="branchAddress" />
         <el-table-column label="创建时间" align="center" prop="createTime" width="180">
           <template slot-scope="scope">
             <span>{{ parseTime(scope.row.createTime) }}</span>
