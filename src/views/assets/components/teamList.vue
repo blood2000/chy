@@ -30,6 +30,16 @@
           <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
+      <el-table-column v-if="driverCode" label="操作" align="center" prop="edit">
+        <template slot-scope="scope">
+          <!-- v-hasPermi -->
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleDelBind(scope.row)"
+          >解除绑定</el-button>
+        </template>
+      </el-table-column>
     </el-table>
   </div>
 </template>
@@ -37,6 +47,7 @@
 <script>
 import { listDriverBelongTeam } from '@/api/assets/driver';
 import { listVehicleBelongTeam } from '@/api/assets/vehicle';
+import { delTeamReDriver } from '@/api/assets/team';
 
 export default {
   props: {
@@ -89,6 +100,23 @@ export default {
           this.loading = false;
         });
       }
+    },
+    /** 解除调度者与司机的关联 */
+    handleDelBind(row) {
+      const _this = this;
+      this.$confirm('是否确认与调度"' + row.name + '"解除绑定?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return delTeamReDriver({
+          teamCode: row.code,
+          driverCodes: _this.driverCode
+        });
+      }).then(() => {
+        this.getList();
+        this.msgSuccess('操作成功');
+      });
     }
   }
 };
