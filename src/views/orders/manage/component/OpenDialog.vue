@@ -216,14 +216,16 @@ export default {
       if (this.activeName === 'listDriver') {
         quer = {
           ...this.queryParams,
-          authStatus: 3
+          // authStatus: 3,
+          isOK: 0
 
         };
       } else {
         quer = {
           ...this.queryParams,
-          status: 0,
-          authStatus: 3
+          // status: 0,
+          // authStatus: 3,
+          isOK: 0
         };
       }
 

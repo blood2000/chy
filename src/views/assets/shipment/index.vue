@@ -58,7 +58,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="企业名称" prop="companyName">
+        <!-- <el-form-item label="企业名称" prop="companyName">
           <el-input
             v-model="queryParams.companyName"
             placeholder="请输入企业名称"
@@ -67,7 +67,7 @@
             style="width: 272px"
             @keyup.enter.native="handleQuery"
           />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="货主类别" prop="shipperType">
           <el-select
             v-model="queryParams.shipperType"
