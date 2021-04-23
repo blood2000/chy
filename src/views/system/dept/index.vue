@@ -64,6 +64,7 @@
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
           <template slot-scope="scope">
             <el-button
+              v-if="scope.row.orgType != 1"
               v-hasPermi="['system:dept:edit']"
               size="mini"
               type="text"
@@ -78,7 +79,7 @@
               @click="handleAdd(scope.row)"
             >新增</el-button>
             <el-button
-              v-if="scope.row.parentId != 0"
+              v-if="scope.row.parentId != 0 && scope.row.orgType != 1"
               v-hasPermi="['system:dept:remove']"
               size="mini"
               type="text"
