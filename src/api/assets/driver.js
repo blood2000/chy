@@ -113,3 +113,12 @@ export function listDriverBelongTeam(driverCode) {
     method: 'post'
   });
 }
+
+// 邀请司机列表
+export function applyDriverList(data) {
+  return request({
+    url: '/assets/driver/applyDriverList',
+    method: 'post',
+    data: data
+  });
+}

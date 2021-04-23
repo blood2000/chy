@@ -120,7 +120,7 @@
 </template>
 
 <script>
-import { listInfo } from '@/api/assets/team';
+import { applyTeamList as listInfo } from '@/api/assets/team';
 import { applyJoinTeam } from '@/api/assets/driver';
 
 export default {
@@ -211,6 +211,7 @@ export default {
     // 搜索按钮操作
     handleQuery() {
       this.queryParams.pageNum = 1;
+      this.queryParams.driverCode = this.driverCode;
       this.getList();
     },
     // 重置按钮操作

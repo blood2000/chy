@@ -87,3 +87,12 @@ export function examine(data) {
     data: data
   });
 }
+
+// 申请加入调度列表
+export function applyTeamList(data) {
+  return request({
+    url: '/assets/team/applyTeamList',
+    method: 'post',
+    data: data
+  });
+}

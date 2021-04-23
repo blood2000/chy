@@ -10,7 +10,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="状态" prop="status">
+    <!--  <el-form-item label="状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="组织状态" clearable filterable size="small">
           <el-option
             v-for="dict in statusOptions"
@@ -19,7 +19,7 @@
             :value="dict.dictValue"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item>
         <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -88,7 +88,43 @@
     </el-table>
 
     <!-- 添加或修改部门对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="1200px" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+        <el-row>
+          <el-col v-if="form.parentId !== 1" :span="24">
+            <el-form-item label="上级组织" prop="parentId" :rules="[{ required: true, message: '上级组织不能为空', trigger: ['blur', 'change'] }]">
+              <treeselect v-model="form.parentId" :options="deptOptions" :normalizer="normalizer" placeholder="选择上级组织" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="组织名称" prop="orgName">
+              <el-input v-model="form.orgName" placeholder="请输入组织名称" />
+            </el-form-item>
+          </el-col>
+         <!-- <el-col :span="11">
+            <el-form-item label="组织状态" class="group-item">
+              <el-radio-group v-model="form.status">
+                <el-radio
+                  v-for="dict in statusOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictValue"
+                >{{ dict.dictLabel }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>-->
+          <el-col :span="12">
+            <el-form-item label="显示排序" prop="orderNum">
+              <el-input-number v-model="form.orderNum" controls-position="right" :min="0" class="width100" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
+   <!-- <el-dialog :title="title" :visible.sync="open" width="1200px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="160px">
         <el-row>
           <el-col v-if="form.parentId !== 1" :span="22">
@@ -101,11 +137,6 @@
               <el-input v-model="form.orgName" placeholder="请输入组织名称" />
             </el-form-item>
           </el-col>
-          <!--  <el-col :span="12">
-            <el-form-item label="负责人" prop="leader">
-              <el-input v-model="form.leader" placeholder="请输入负责人" maxlength="20" />
-            </el-form-item>
-          </el-col>-->
           <el-col :span="11">
             <el-form-item label="组织类型" class="group-item">
               <el-radio-group v-model="form.orgType">
@@ -198,11 +229,6 @@
                 <el-input-number v-model="form.serviceRate" controls-position="right" :precision="2" placeholder="请输入服务费税率" :step="1" :min="0" :max="100" class="width100" clearable />
               </el-form-item>
             </el-col>
-            <!-- <el-col>
-              <el-form-item label="服务费比例(%)" prop="serviceRatio" :rules="[{ required: true, message: '服务费比例不能为空', trigger: 'blur' }]">
-                <el-input-number v-model="form.serviceRatio" controls-position="right" :precision="2" placeholder="请输入服务费比例" :step="1" :min="0" :max="100" class="width100" clearable />
-              </el-form-item>
-            </el-col> -->
             <el-row>
               <el-col :span="11">
                 <el-form-item label="税点(%)" prop="texPoint">
@@ -215,23 +241,6 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <!-- <el-col :span="11">
-              <el-form-item label="货源是否审核" prop="supplyIsAuth">
-                <el-select
-                  v-model="form.supplyIsAuth"
-                  clearable
-                  filterable
-                  class="width100"
-                >
-                  <el-option
-                    v-for="dict in isOptions"
-                    :key="dict.dictValue"
-                    :label="dict.dictLabel"
-                    :value="dict.dictValue"
-                  />
-                </el-select>
-              </el-form-item>
-            </el-col> -->
             <el-col :span="11">
               <el-form-item label="是否独立核算" prop="isAccount">
                 <el-select
@@ -249,86 +258,6 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <!-- <el-col :span="11">
-              <el-form-item label="核算方式" prop="accountType">
-                <el-select v-model="form.accountType" placeholder="请选择核算方式" filterable clearable class="width100">
-                  <el-option
-                    v-for="dict in accountTypeOptions"
-                    :key="dict.dictValue"
-                    :label="dict.dictLabel"
-                    :value="dict.dictValue"
-                  />
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="11">
-              <el-form-item label="调度费点数" prop="dispatchPoints">
-                <el-input v-model="form.dispatchPoints" placeholder="请输入调度费点数" clearable class="width100" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="是否抹零" prop="isWipe">
-                <el-select
-                  v-model="form.isWipe"
-                  clearable
-                  filterable
-                  class="width60 mr3"
-                >
-                  <el-option
-                    v-for="dict in isOptions"
-                    :key="dict.dictValue"
-                    :label="dict.dictLabel"
-                    :value="dict.dictValue"
-                  />
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="11">
-              <el-form-item label="请选择抹零方式">
-                <el-select v-model="form.wipeType" placeholder="请选择抹零方式" filterable clearable class="width100">
-                  <el-option
-                    v-for="dict in wipeTypeOptions"
-                    :key="dict.dictValue"
-                    :label="dict.dictLabel"
-                    :value="dict.dictValue"
-                  />
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="11">
-            <el-form-item label="是否开启合理路耗">
-              <el-select
-                v-model="form.isConsumption"
-                clearable
-                filterable
-                class="width28 mr3"
-              >
-                <el-option
-                  v-for="dict in isOptions"
-                  :key="dict.dictValue"
-                  :label="dict.dictLabel"
-                  :value="dict.dictValue"
-                />
-              </el-select>
-              <el-select
-                v-model="form.consumptionUnit"
-                filterable
-                clearable
-                class="width28 mr3"
-                placeholder="路耗单位"
-              >
-                <el-option
-                  v-for="dict in consumptionUnitOptions"
-                  :key="dict.dictValue"
-                  :label="dict.dictLabel"
-                  :value="dict.dictValue"
-                />
-              </el-select>
-              <el-input v-model="form.consumptionMin" placeholder="最小值" class="width12" />
-              至
-              <el-input v-model="form.consumptionMax" placeholder="最大值" class="width12" />
-            </el-form-item>
-          </el-col>-->
             <el-col :span="11">
               <el-form-item label="是否月结" prop="isMonthly">
                 <el-select
@@ -375,7 +304,7 @@
         <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
-    </el-dialog>
+    </el-dialog>-->
   </div>
 </template>
 
@@ -383,11 +312,11 @@
 import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild } from '@/api/system/dept';
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
-import UploadImage from '@/components/UploadImage/index';
+// import UploadImage from '@/components/UploadImage/index';
 
 export default {
   name: 'Dept',
-  components: { Treeselect, UploadImage },
+  components: { Treeselect },
   props: {
     companyCode: {
       type: String,
