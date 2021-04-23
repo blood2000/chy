@@ -256,7 +256,8 @@ export default {
       // 表单校验
       rules: {
         licenseNumber: [
-          { required: true, message: '车牌号不能为空', trigger: 'blur' }
+          { required: true, message: '车牌号不能为空', trigger: 'blur' },
+          { validator: this.formValidate.plateNo, trigger: ['blur', 'change'] }
         ]
       },
       // 选择车辆
