@@ -105,8 +105,8 @@
 
       <RefactorTable :loading="loading" :data="dataList" :table-columns-config="tableColumnsConfig">
         <template #isDefault="{row}">
-          <span v-show="row.isDefault === 0" class="g-color-error">否</span>
-          <span v-show="row.isDefault === 1" class="g-color-success">是</span>
+          <i v-if="row.isDefault === 1" class="el-icon-success g-color-blue" />
+          <i v-else class="el-icon-error g-color-gray" />
         </template>
         <template #bankType="{row}">
           <span>{{ selectDictLabel(bankTypeOptions, row.bankType) }}</span>

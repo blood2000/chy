@@ -59,11 +59,29 @@
     <el-table v-loading="loading" :data="infoList">
       <el-table-column label="序号" align="center" type="index" min-width="5%" />
       <el-table-column label="客户名称" align="center" prop="userName" />
-      <el-table-column label="变动金额" align="center" prop="paidAmount" />
+      <el-table-column label="变动金额" align="center" prop="paidAmount">
+        <template slot-scope="scope">
+          <p v-if="scope.row.paidFeeType === '0'" class="g-color-success">
+            +{{ scope.row.paidAmount }}
+          </p>
+          <p v-else-if="scope.row.paidFeeType === '1'" class="g-color-error">
+            -{{ scope.row.paidAmount }}
+          </p>
+          <p v-else>
+            {{ scope.row.paidAmount }}
+          </p>
+        </template>
+      </el-table-column>
       <el-table-column label="变动类型" align="center" prop="paidFeeType">
         <template slot-scope="scope">
-          <span v-if="scope.row.paidFeeType === '0'" class="g-color-success">+收入</span>
-          <span v-if="scope.row.paidFeeType === '1'" class="g-clolor-error">-支出</span>
+          <p v-if="scope.row.paidFeeType === '0'">
+            <span class="g-color-success g-pot" />
+            收入
+          </p>
+          <p v-if="scope.row.paidFeeType === '1'">
+            <span class="g-color-error g-pot" />
+            支出
+          </p>
         </template>
       </el-table-column>
       <el-table-column label="变动原因" align="center" prop="paidItem">
