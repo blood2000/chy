@@ -45,6 +45,7 @@
           size="small"
           style="width:90%;"
           :disabled="disable"
+          @change="chooseAddress"
         >
           <el-option
             v-for="dict in loadAddressOptions"
@@ -63,6 +64,7 @@
           size="small"
           style="width:90%;"
           :disabled="disable"
+          @change="chooseAddress"
         >
           <el-option
             v-for="dict in unloadAddressOptions"
@@ -147,13 +149,13 @@ export default {
           { required: true, message: '装货重量不能为空', trigger: 'blur' }
         ],
         goodsCode: [
-          { required: true, message: '请选择货物', trigger: 'blur' }
+          { required: true, message: '请选择货物', trigger: 'change' }
         ],
         loadAddressCode: [
-          { required: true, message: '请选择装货地址', trigger: 'blur' }
+          { required: true, message: '请选择装货地址', trigger: 'change' }
         ],
         unloadAddressCode: [
-          { required: true, message: '请选择卸货地址', trigger: 'blur' }
+          { required: true, message: '请选择卸货地址', trigger: 'change' }
         ]
       },
       // 日期格式
@@ -232,6 +234,10 @@ export default {
     // 选择商品事件
     chooseGoods(e) {
       this.goodsCode = e;
+      this.$forceUpdate(); // 视图强制更新
+    },
+    chooseAddress() {
+      this.$forceUpdate(); // 视图强制更新
     },
     // 获取地址信息
     getAddress() {
@@ -266,18 +272,22 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          if (this.disable) {
-            loadCredentials(this.form).then(response => {
-              this.msgSuccess('补装货凭证成功');
-              this.close();
-              this.$emit('refresh');
-            });
+          if (this.form.loadWeight > 0) {
+            if (this.disable) {
+              loadCredentials(this.form).then(response => {
+                this.msgSuccess('补装货凭证成功');
+                this.close();
+                this.$emit('refresh');
+              });
+            } else {
+              load(this.form).then(response => {
+                this.msgSuccess('车辆装货成功');
+                this.close();
+                this.$emit('refresh');
+              });
+            }
           } else {
-            load(this.form).then(response => {
-              this.msgSuccess('车辆装货成功');
-              this.close();
-              this.$emit('refresh');
-            });
+            this.msgWarning('装货重量必须大于0！');
           }
         }
       });

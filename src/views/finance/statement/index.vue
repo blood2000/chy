@@ -98,7 +98,7 @@
               <el-table-column width="180" label="装货地" align="center" prop="invoiceInfoStatisticsVo.loadFormattedAddress" show-overflow-tooltip />
               <el-table-column width="180" label="卸货地" align="center" prop="invoiceInfoStatisticsVo.unloadFormattedAddress" show-overflow-tooltip />
               <el-table-column width="120" label="货品类型" align="center" prop="invoiceInfoStatisticsVo.goodsName" />
-              <el-table-column width="120" label="装车数量" align="center" prop="invoiceInfoStatisticsVo.wayBillCount" />
+              <el-table-column width="120" label="装货数量" align="center" prop="invoiceInfoStatisticsVo.wayBillCount" />
               <el-table-column width="120" label="配载方式" align="center" prop="invoiceInfoStatisticsVo.stowageStatus">
                 <template #default="scope">
                   <span v-show="scope.row.invoiceInfoStatisticsVo.stowageStatus === '0'">

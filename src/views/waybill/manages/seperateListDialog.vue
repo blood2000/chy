@@ -12,8 +12,8 @@
       <el-table-column label="司机电话" align="center" prop="driverPhone" width="150" />
       <el-table-column label="货物类型" align="center" prop="goodsBigType" />
       <el-table-column label="货物类型分类" align="center" prop="goodsType" width="150" />
-      <el-table-column label="装车重量" align="center" prop="loadWeight" />
-      <el-table-column label="卸车重量" align="center" prop="unloadWeight" />
+      <el-table-column label="装货重量" align="center" prop="loadWeight" />
+      <el-table-column label="卸货重量" align="center" prop="unloadWeight" />
       <el-table-column label="数量(车)" align="center" prop="carNum" />
       <el-table-column label="用车类型" align="center" prop="carType" />
       <el-table-column label="货物单价" align="center" prop="goodsPrice" />

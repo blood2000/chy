@@ -160,7 +160,7 @@
           <el-divider content-position="left"><span class="supplement-title">运单信息</span></el-divider>
           <el-row>
             <el-col :span="8">
-              <el-form-item label="装车时间" prop="loadTime">
+              <el-form-item label="装货时间" prop="loadTime">
                 <el-date-picker
                   v-model="form.loadTime"
                   clearable
@@ -168,13 +168,13 @@
                   class="width90"
                   type="datetime"
                   value-format="yyyy-MM-dd hh:mm:ss"
-                  placeholder="选择装车时间"
+                  placeholder="选择装货时间"
                   @change="loadTimeChoose"
                 />
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="卸车时间" prop="unloadTime">
+              <el-form-item label="卸货时间" prop="unloadTime">
                 <el-date-picker
                   v-model="form.unloadTime"
                   clearable
@@ -182,7 +182,7 @@
                   class="width90"
                   type="datetime"
                   value-format="yyyy-MM-dd hh:mm:ss"
-                  placeholder="选择卸车时间"
+                  placeholder="选择卸货时间"
                   @change="unloadTimeChoose"
                 />
               </el-form-item>
@@ -213,7 +213,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="卸货单据/回执单" prop="unloadAttachmentCode">
-                <uploadImage v-model="form.unloadAttachmentCode" />
+                <uploadImage v-model="form.unloadAttachmentCode" @change="chooseImg" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -319,34 +319,34 @@ export default {
           { required: true, message: '货源单号不能为空', trigger: 'blur' }
         ],
         goodsCode: [
-          { required: true, message: '请选择货物类型', trigger: 'blur' }
+          { required: true, message: '请选择货物类型', trigger: 'change' }
         ],
         loadAddressCode: [
-          { required: true, message: '请选择装货地址', trigger: 'blur' }
+          { required: true, message: '请选择装货地址', trigger: 'change' }
         ],
         unloadAddressCode: [
-          { required: true, message: '请选择卸货地址', trigger: 'blur' }
+          { required: true, message: '请选择卸货地址', trigger: 'change' }
         ],
         driverCode: [
-          { required: true, message: '请选择承运司机', trigger: 'blur' }
+          { required: true, message: '请选择承运司机', trigger: 'change' }
         ],
         vehicleCode: [
-          { required: true, message: '请选择承运车辆', trigger: 'blur' }
+          { required: true, message: '请选择承运车辆', trigger: 'change' }
         ],
         loadTime: [
-          { required: true, message: '请选择装车时间', trigger: 'blur' }
+          { required: true, message: '请选择装货时间', trigger: 'blur' }
         ],
         unloadTime: [
-          { required: true, message: '请选择卸车时间', trigger: 'blur' }
+          { required: true, message: '请选择卸货时间', trigger: 'blur' }
         ],
         loadWeight: [
           { required: true, message: '运单重量必填', trigger: 'blur' }
         ],
         loadAttachmentCode: [
-          { required: true, message: '请上传装货单据', trigger: 'blur' }
+          { required: true, message: '请上传装货单据', trigger: 'change' }
         ],
         unloadAttachmentCode: [
-          { required: true, message: '请上传卸货单据', trigger: 'blur' }
+          { required: true, message: '请上传卸货单据', trigger: 'change' }
         ]
       }
     };
@@ -363,7 +363,7 @@ export default {
         const loadtime = new Date(e);
         const unloadtime = new Date(this.form.unloadTime);
         if (loadtime >= unloadtime) {
-          this.$message({ type: 'warning', message: '装车时间必须小于卸车时间！' });
+          this.$message({ type: 'warning', message: '装货时间必须小于卸货时间！' });
           this.form.loadTime = null;
         }
       }
@@ -373,7 +373,7 @@ export default {
         const unloadtime = new Date(e);
         const loadtime = new Date(this.form.loadTime);
         if (loadtime >= unloadtime) {
-          this.$message({ type: 'warning', message: '卸车时间必须大于装车时间！' });
+          this.$message({ type: 'warning', message: '卸货时间必须大于装货时间！' });
           this.form.unloadTime = null;
         }
       }
@@ -412,10 +412,14 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          extra(this.form).then(response => {
-            this.msgSuccess('运单补录成功');
-            this.reset();
-          });
+          if (this.form.loadWeight > 0) {
+            extra(this.form).then(response => {
+              this.msgSuccess('运单补录成功');
+              this.reset();
+            });
+          } else {
+            this.msgWarning('运单重量必须大于0！');
+          }
         }
       });
     },
@@ -582,13 +586,16 @@ export default {
       this.form.remainingNumber = result.remainingNumber || '不限';
       this.form.remainingWeight = result.remainingWeight || '不限';
       this.getOrderGoodsProce();
+      this.$forceUpdate(); // 视图强制更新
     },
     loadChoose() {
       this.getOrderGoodsProce();
+      this.$forceUpdate(); // 视图强制更新
     },
     lendChoose() {
       console.log(this.form);
       this.getOrderGoodsProce();
+      this.$forceUpdate(); // 视图强制更新
     },
     // 根据选择的司机查询司机拥有的车辆
     driverChoose(e) {
@@ -609,13 +616,16 @@ export default {
         this.form.vehicleLoadWeight = response.data.vehicleLoadWeight;
         this.form.classificationCode = response.data.classificationCode;
       });
+      this.$forceUpdate(); // 视图强制更新
     },
     // 赋值卸货重量
     inputWeight(e) {
       this.form.unloadWeight = e;
       this.calculate();
+    },
+    chooseImg() {
+      this.$forceUpdate(); // 视图强制更新
     }
-
   }
 };
 </script>

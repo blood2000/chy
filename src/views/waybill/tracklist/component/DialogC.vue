@@ -160,19 +160,22 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          console.log(this.form);
-          if (this.disable) {
-            unloadCredentials(this.form).then(response => {
-              this.msgSuccess('补卸货凭证成功');
-              this.close();
-              this.$emit('refresh');
-            });
+          if (this.form.unloadWeight > 0) {
+            if (this.disable) {
+              unloadCredentials(this.form).then(response => {
+                this.msgSuccess('补卸货凭证成功');
+                this.close();
+                this.$emit('refresh');
+              });
+            } else {
+              unload(this.form).then(response => {
+                this.msgSuccess('车辆卸货成功');
+                this.close();
+                this.$emit('refresh');
+              });
+            }
           } else {
-            unload(this.form).then(response => {
-              this.msgSuccess('车辆卸货成功');
-              this.close();
-              this.$emit('refresh');
-            });
+            this.msgWarning('卸货重量必须大于0！');
           }
         }
       });
