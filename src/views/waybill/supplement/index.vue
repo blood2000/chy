@@ -410,6 +410,12 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
+      const loading = this.$loading({
+        lock: true,
+        text: '提交中',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
       this.$refs['form'].validate(valid => {
         if (valid) {
           if (this.form.loadWeight > 0) {
@@ -421,6 +427,7 @@ export default {
             this.msgWarning('运单重量必须大于0！');
           }
         }
+        loading.close();
       });
     },
     // 表单重置
