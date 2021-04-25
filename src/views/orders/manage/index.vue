@@ -27,7 +27,7 @@
       <el-form-item label="卸货信息" prop="tin3">
         <el-input
           v-model="queryParams.tin3"
-          placeholder="目的地/收货电话/收货人"
+          placeholder="卸货地/卸货电话/卸货人"
           clearable
           size="small"
           style="width: 228px"
