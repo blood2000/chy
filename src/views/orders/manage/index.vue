@@ -231,10 +231,22 @@
         <template #businessType="{row}">
           <span>{{ selectDictLabel(dicts['businessTypes'], row.businessType) }}</span>
         </template>
+        <!-- 已抢单量 -->
+        <template #number_remainingNumber="{row}">
+          <span>{{ (row.number - 0) - (row.remainingNumber - 0) }}</span>
+        </template>
+        <!-- 重量/体积/车 -->
+        <template #tin_weight="{row}">
+          <span v-if="row.stowageStatus == 0">{{ (row.remainingWeight - 0) + ' 吨' }}</span>
+          <span v-if="row.stowageStatus == 1">{{ (row.remainingWeight - 0) + ' 立方' }}</span>
+          <span v-if="row.stowageStatus == 2">{{ (row.number - 0) + ' 车' }}</span>
+        </template>
 
-        <!-- <template #isDispatch="{row}">
-                <span>{{ selectDictLabel(isDispatchTypeOptions, row.isDispatch) }}</span>
-              </template> -->
+        <template #stowageStatus="{row}">
+          <span v-if="row.stowageStatus == 0">吨</span>
+          <span v-if="row.stowageStatus == 1">立方</span>
+          <span v-if="row.stowageStatus == 2">车</span>
+        </template>
 
         <!-- <template #isInsure="{row}">
                 <span>{{ selectDictLabel(isInsureTypeOptions, row.isInsure) }}</span>
@@ -761,6 +773,11 @@ export default {
               e.goodsTypeName = goods.goodsTypeName;
               e.goodsBigTypeName = goods.goodsBigTypeName;
               e.businessType = goods.businessType;
+
+              e = {
+                ...e,
+                ...goods
+              };
             }
           });
 
@@ -827,6 +844,10 @@ export default {
           children: mgoods.length ? mgoods : null
         };
       });
+
+
+      console.log(this.list, '最后封装好的列表数据');
+
 
       this.theight = null;
 

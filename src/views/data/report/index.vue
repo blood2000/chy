@@ -75,10 +75,10 @@
       </el-form-item>
 
       <!-- 下拉框 -->
-      <el-form-item label="流水上报" prop="bill">
-        <el-select v-model="queryParams.bill" placeholder="----请选择----" clearable filterable style="width: 150px">
+      <el-form-item label="流水上报" prop="billSendStatus">
+        <el-select v-model="queryParams.billSendStatus" placeholder="----请选择----" clearable filterable style="width: 150px">
           <el-option
-            v-for="(dict,index) in dicts['bill_option'] || []"
+            v-for="(dict,index) in dicts['billSendStatus_option'] || []"
             :key="index"
             :label="dict.dictLabel"
             :value="dict.dictValue"
@@ -95,20 +95,20 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="装货上报" prop="load">
-        <el-select v-model="queryParams.load" placeholder="----请选择----" clearable filterable style="width: 150px">
+      <el-form-item label="装货上报" prop="loadSendStatus">
+        <el-select v-model="queryParams.loadSendStatus" placeholder="----请选择----" clearable filterable style="width: 150px">
           <el-option
-            v-for="(dict,index) in dicts['load_option'] || []"
+            v-for="(dict,index) in dicts['loadSendStatus_option'] || []"
             :key="index"
             :label="dict.dictLabel"
             :value="dict.dictValue"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="卸货上报" prop="unload">
-        <el-select v-model="queryParams.unload" placeholder="----请选择----" clearable filterable style="width: 150px">
+      <el-form-item label="卸货上报" prop="unloadSendStatus">
+        <el-select v-model="queryParams.unloadSendStatus" placeholder="----请选择----" clearable filterable style="width: 150px">
           <el-option
-            v-for="(dict,index) in dicts['unload_option'] || []"
+            v-for="(dict,index) in dicts['unloadSendStatus_option'] || []"
             :key="index"
             :label="dict.dictLabel"
             :value="dict.dictValue"
@@ -125,10 +125,10 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="运单上报" prop="waybill">
-        <el-select v-model="queryParams.waybill" placeholder="----请选择----" clearable filterable style="width: 150px">
+      <el-form-item label="运单上报" prop="waybillSendStatus">
+        <el-select v-model="queryParams.waybillSendStatus" placeholder="----请选择----" clearable filterable style="width: 150px">
           <el-option
-            v-for="(dict,index) in dicts['waybill_option'] || []"
+            v-for="(dict,index) in dicts['waybillSendStatus_option'] || []"
             :key="index"
             :label="dict.dictLabel"
             :value="dict.dictValue"
@@ -256,32 +256,40 @@
         <!-- :height="theight" -->
         <!-- :row-class-name="tableRowClassName" -->
         <!-- 装货地 -->
-        <template #vehicleReport="{row}">
-          <span :class="row.vehicleReport == '1'?'g-color-success':'g-color-error'">{{ selectDictLabel(dicts['vehicleReport_option'], (row.vehicleReport? row.vehicleReport: 0)) }}</span>
-        </template>
-        <template #driverReport="{row}">
-          <span :class="row.driverReport == '1'?'g-color-success':'g-color-error'">{{ selectDictLabel(dicts['driverReport_option'], (row.driverReport? row.driverReport: 0)) }}</span>
-        </template>
+
         <template #isAbnormal="{row}">
           <span :class="row.isAbnormal == '1'?'g-color-success':'g-color-error'">{{ selectDictLabel(dicts['isAbnormal_option'], (row.isAbnormal? row.isAbnormal: 0)) }}</span>
         </template>
-        <template #waybill="{row}">
-          <span :class="row.waybill === 1? 'g-color-success':'g-color-error'">{{ row.waybill === 1?'已上报':'未上报' }}</span>
-        </template>
-        <template #load="{row}">
-          <span :class="row.load === 1? 'g-color-success':'g-color-error'">{{ row.load === 1?'已上报':'未上报' }}</span>
-        </template>
-        <template #unload="{row}">
-          <span :class="row.unload === 1? 'g-color-success':'g-color-error'">{{ row.unload === 1?'已上报':'未上报' }}</span>
-        </template>
-        <template #bill="{row}">
-          <span :class="row.bill === 1? 'g-color-success':'g-color-error'">{{ row.bill === 1?'已上报':'未上报' }}</span>
-        </template>
 
-        <template #isChild="{row}">
-          <span v-if="row.waybillStatus == '0'" class="g-color-error">{{ selectDictLabel(dicts['isChild_option'], 0) }}</span>
-          <span v-if="row.waybillStatus == '1'" class="g-color-success">{{ selectDictLabel(dicts['isChild_option'], 1) }}</span>
-          <span v-if="row.waybillStatus == '2'" class="g-color-warning">{{ selectDictLabel(dicts['isChild_option'], 2) }}</span>
+        <template #vehicleReport="{row}">
+          <span v-if="row.vehicleReport == '0'" class="g-color-error">未上报</span>
+          <span v-if="row.vehicleReport == '1'" class="g-color-success">上报成功</span>
+          <span v-if="row.vehicleReport == '2'" class="g-color-warning">上报失败</span>
+        </template>
+        <template #driverReport="{row}">
+          <span v-if="row.driverReport == '0'" class="g-color-error">未上报</span>
+          <span v-if="row.driverReport == '1'" class="g-color-success">上报成功</span>
+          <span v-if="row.driverReport == '2'" class="g-color-warning">上报失败</span>
+        </template>
+        <template #waybillSendStatus="{row}">
+          <span v-if="row.waybillSendStatus == '0'" class="g-color-error">未上报</span>
+          <span v-if="row.waybillSendStatus == '1'" class="g-color-success">上报成功</span>
+          <span v-if="row.waybillSendStatus == '2'" class="g-color-warning">上报失败</span>
+        </template>
+        <template #loadSendStatus="{row}">
+          <span v-if="row.loadSendStatus == '0'" class="g-color-error">未上报</span>
+          <span v-if="row.loadSendStatus == '1'" class="g-color-success">上报成功</span>
+          <span v-if="row.loadSendStatus == '2'" class="g-color-warning">上报失败</span>
+        </template>
+        <template #unloadSendStatus="{row}">
+          <span v-if="row.unloadSendStatus == '0'" class="g-color-error">未上报</span>
+          <span v-if="row.unloadSendStatus == '1'" class="g-color-success">上报成功</span>
+          <span v-if="row.unloadSendStatus == '2'" class="g-color-warning">上报失败</span>
+        </template>
+        <template #billSendStatus="{row}">
+          <span v-if="row.unloadSendStatus == '0'" class="g-color-error">未上报</span>
+          <span v-if="row.unloadSendStatus == '1'" class="g-color-success">上报成功</span>
+          <span v-if="row.unloadSendStatus == '2'" class="g-color-warning">上报失败</span>
         </template>
 
         <template #waybillStatus="{row}">
@@ -310,6 +318,7 @@
             >详情</el-button>
 
             <el-button
+              v-if="row.isChild == 2"
               v-hasPermi="['data:report:seperate']"
               size="mini"
               type="text"
@@ -317,7 +326,7 @@
             >分单列表</el-button>
 
             <el-button
-              v-if="false"
+              v-if="true"
               v-hasPermi="['data:report:report']"
               size="mini"
               type="text"
@@ -360,11 +369,16 @@
 
 
     <!-- 弹框使用  class类 i-price 是使用图片了 -->
+    <!-- 弹框内的组件 -->
     <el-dialog :title="'查看校验结果'" class="i-price" :visible.sync="open" width="70%" append-to-body>
-      <!-- 弹框内的组件 -->
       <!-- <price-adjustment v-if="openPriceAdjustment" :mytabs="tabs" :order-code="orderCode" :pubilsh-code="pubilshCode" @submitRes="submitRes" /> -->
-      <check-result />
+      <check-result v-if="open" :prop-data="openData" />
     </el-dialog>
+
+    <!-- 分单列表 -->
+    <child-dialog ref="ChildDialog" :open.sync="childdialog" :title="'子单列表'" />
+    <!-- 运单详情 对话框 -->
+    <detail-dialog ref="DetailDialog" :current-id="currentId" :title="'运输单信息'" :open.sync="open1" :disable="formDisable" />
   </div>
 </template>
 
@@ -374,24 +388,24 @@ import tableColumnsConfig from './data-index';
 import { listApi, waybillReport } from '@/api/data/report';
 
 import CheckResult from './components/CheckResult';
+import ChildDialog from '@/views/settlement/components/childDialog';
+import DetailDialog from '@/views/waybill/components/detailDialog';
+
+const dictsData1 = [{ dictLabel: '未上报', dictValue: 0 }, { dictLabel: '上报成功', dictValue: 1 }, { dictLabel: '上报失败', dictValue: 2 }];
+
 export default {
   name: 'Manage', // 页面缓存需要name
-  components: { CheckResult },
+  components: { CheckResult, ChildDialog, DetailDialog },
   data() {
     return {
       /* 模板参数必须 */
       loading: false, // 加载
-
       showSearch: true, // 显示搜索条件
-
-      open: false, // 打开弹框
-
-      active: '0', // 做tab切换
+      // active: '0', // 做tab切换
 
       /* 表格参数 */
-      // theight: undefined, // 列表高度(无)
-      total: 10, // 总条数
-      list: [{ projectName: 1231313 }], // 表格数据
+      total: 0, // 总条数
+      list: [], // 表格数据
       listApi, // 表头存的key
       tableColumnsConfig: [], // 表头动态值
 
@@ -401,12 +415,12 @@ export default {
         pageSize: 10,
         // status: '0'
 
-        bill: undefined, //	流水上报 1是 0否
+        billSendStatus: undefined, //	流水上报 1是 0否
         driverReport: undefined, //	司机是否上报 1是 0否
-        load: undefined, //	装货位置上报 1是 0否
-        unload: undefined, //	卸货位置上报 1是 0否
+        loadSendStatus: undefined, //	装货位置上报 1是 0否
+        unloadSendStatus: undefined, //	卸货位置上报 1是 0否
         vehicleReport: undefined, //	车辆是否上报 1是 0否
-        waybill: undefined, //	运单是否上报 1是 0否
+        waybillSendStatus: undefined, //	运单是否上报 1是 0否
 
         bizNo: undefined, //	支付批次号
         companyName: undefined, //	发货企业
@@ -418,13 +432,14 @@ export default {
       },
 
       /* 字典集合 取名规则 ***_option */
+
       dicts: {
-        driverReport_option: [{ dictLabel: '已上报', dictValue: 1 }, { dictLabel: '未上报', dictValue: 0 }],
-        vehicleReport_option: [{ dictLabel: '已上报', dictValue: 1 }, { dictLabel: '未上报', dictValue: 0 }],
-        bill_option: [{ dictLabel: '已上报', dictValue: 1 }, { dictLabel: '未上报', dictValue: 0 }],
-        load_option: [{ dictLabel: '已上报', dictValue: 1 }, { dictLabel: '未上报', dictValue: 0 }],
-        unload_option: [{ dictLabel: '已上报', dictValue: 1 }, { dictLabel: '未上报', dictValue: 0 }],
-        waybill_option: [{ dictLabel: '已上报', dictValue: 1 }, { dictLabel: '未上报否', dictValue: 0 }],
+        driverReport_option: dictsData1,
+        vehicleReport_option: dictsData1,
+        billSendStatus_option: dictsData1,
+        loadSendStatus_option: dictsData1,
+        unloadSendStatus_option: dictsData1,
+        waybillSendStatus_option: dictsData1,
         isAbnormal_option: [{ dictLabel: '是', dictValue: 1 }, { dictLabel: '否', dictValue: 0 }], // 是否异常
         isChild_option: [{ dictLabel: '超载的主单', dictValue: 2 }, { dictLabel: '是（子单）', dictValue: 1 }, { dictLabel: '不是 （正常单）', dictValue: 0 }], // 是否子单
         // reportTypeList_option: [
@@ -446,10 +461,18 @@ export default {
           { dictLabel: '已申请开票', dictValue: 8 },
           { dictLabel: '已开票', dictValue: 9 }
         ]
-      }
+      },
 
+      /* 弹框参数1- 详情 */
+      open1: false,
+      currentId: '',
+      formDisable: true,
+      /* 弹框参数2- 分单列表弹框*/
+      childdialog: false, // 分单列表弹框
 
-
+      /* 弹框参数 */
+      open: false, // 打开弹框
+      openData: null // 类型对象
 
       /* 其他额外参数 */
       // shipmentList: [], // 远程搜索的时候使用
@@ -458,6 +481,8 @@ export default {
       //   keywords: '',
       //   pageSize: 10
       // }
+
+
     };
   },
 
@@ -531,28 +556,7 @@ export default {
       }
       this.loading = false;
 
-      this.list = response.rows.map(e => {
-        // 追加数据 type 类型 1.运单  2.装货位置 3.卸货位置 4.流水
-        // 上报状态  0-待上报，1-上报成功，2-上传失败 (说明: 展示只显示已上报(1)和未上报(0, 2))
-        if (e.waybillReportList && e.waybillReportList.length) {
-          e.waybillReportList.forEach(ee => {
-            ee.type === 1 && (e.waybill = ee.sendStatus);
-            ee.type === 2 && (e.load = ee.sendStatus);
-            ee.type === 3 && (e.unload = ee.sendStatus);
-            ee.type === 4 && (e.bill = ee.sendStatus);
-          });
-        } else {
-          e.waybill = 0;
-          e.load = 0;
-          e.unload = 0;
-          e.bill = 0;
-        }
-
-        return e;
-      });
-
-      // console.log(this.list);
-
+      this.list = response.rows;
 
       this.total = response.total - 0;
     },
@@ -594,11 +598,29 @@ export default {
     handleEdit(row, type) {
       switch (type) {
         case 'detail':
-          console.log(row);
+          this.$refs.DetailDialog.reset();
+          this.open1 = true;
+          this.currentId = row.waybillCode;
+          this.formDisable = true;
+          // this.openData = row;
+          break;
+        case 'seperate':
+          this.childdialog = true;
+          this.$refs.ChildDialog.setForm({ wayBillCode: row.waybillCode });
+          break;
+        case 'report':
+          this._waybillReport(row);
+          break;
+        case 'check':
           this.open = true;
-
+          this.openData = row;
           break;
       }
+    },
+
+    /* 上报接口 */
+    _waybillReport(row) {
+      console.log(row);
     }
 
     /** 触发远程搜索 */

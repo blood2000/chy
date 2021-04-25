@@ -1,8 +1,13 @@
 <template>
   <div>
-    <el-radio-group v-model="active" size="small" @change="handleActive">
-      <el-radio-button v-for="(tab, index) in tabData" :key="index + tab.value" :class="!tab.isOk?'m_red': null" :label="tab.value">{{ tab.label }}</el-radio-button>
-    </el-radio-group>
+
+    <el-row :gutter="10" class="mb8">
+
+      <!-- 做切换使用 -->
+      <el-radio-group v-model="active" size="small" @change="handleActive">
+        <el-radio-button v-for="(tab, index) in tabData" :key="index + tab.value" :class="!tab.isOk?'m_red': null" :label="tab.value">{{ tab.label }}</el-radio-button>
+      </el-radio-group>
+    </el-row>
 
 
     <RefactorTable
@@ -16,6 +21,12 @@
 
 <script>
 export default {
+  props: {
+    propData: {
+      type: Object,
+      default: null
+    }
+  },
   data() {
     return {
       active: '0',
@@ -55,9 +66,63 @@ export default {
 
       /* 表格 */
       loading: false,
-      list: [],
-      tableColumnsConfig: []
+      list: [{ ttttttt1: 1 }],
+      tableColumnsConfig: [
+        {
+          prop: 'ttttttt1',
+          isShow: true,
+          label: '监管平台字段'
+          // width: 100,
+          // fixed: 'left'
+        },
+        {
+          prop: 'ttttttt1',
+          isShow: true,
+          label: '超好运字段'
+          // width: 100,
+          // fixed: 'left'
+        },
+        {
+          prop: 'ttttttt1',
+          isShow: true,
+          label: '是否必填'
+          // width: 100,
+          // fixed: 'left'
+        },
+        {
+          prop: 'ttttttt1',
+          isShow: true,
+          label: '上传值'
+          // width: 100,
+          // fixed: 'left'
+        },
+        {
+          prop: 'ttttttt1',
+          isShow: true,
+          label: '本地校验'
+          // width: 100,
+          // fixed: 'left'
+        },
+        {
+          prop: 'ttttttt1',
+          isShow: true,
+          label: '错误内容'
+          // width: 100,
+          // fixed: 'left'
+        },
+        {
+          prop: 'ttttttt1',
+          isShow: true,
+          label: '标记'
+          // width: 100,
+          // fixed: 'left'
+        }
+      ]
     };
+  },
+
+  created() {
+    console.log(213, this.propData);
   },
 
   methods: {
