@@ -7,8 +7,8 @@
       <el-table-column width="120" label="商品信息" align="center" prop="goodsName" />
       <el-table-column width="180" label="装货地址" align="center" show-overflow-tooltip prop="loadFormattedAddress" />
       <el-table-column width="180" label="卸货地址" align="center" show-overflow-tooltip prop="unloadFormattedAddress" />
-      <el-table-column width="100" label="装车重量" align="center" prop="loadWeight" />
-      <el-table-column width="100" label="卸车重量" align="center" prop="unloadWeight" />
+      <el-table-column width="100" label="装货重量" align="center" prop="loadWeight" />
+      <el-table-column width="100" label="卸货重量" align="center" prop="unloadWeight" />
       <el-table-column width="120" label="货物损耗（kg）" align="center" prop="wastage" />
       <el-table-column width="100" label="实收运费" align="center" prop="deliveryFeePractical" />
       <el-table-column width="100" label="纳税金额" align="center" prop="taxPayment" />

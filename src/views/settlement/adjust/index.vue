@@ -14,7 +14,7 @@
         >
           <el-input
             v-model="queryParams.loadInfo"
-            placeholder="请输入装货信息"
+            placeholder="装货地/装货电话/发货人"
             clearable
             size="small"
             style="width: 228px"
@@ -22,12 +22,12 @@
           />
         </el-form-item>
         <el-form-item
-          label="收货信息"
+          label="卸货信息"
           prop="receivedInfo"
         >
           <el-input
             v-model="queryParams.receivedInfo"
-            placeholder="请输入收货信息"
+            placeholder="目的地/卸货电话/卸货人"
             clearable
             size="small"
             style="width: 228px"
