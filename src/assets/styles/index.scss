@@ -11,10 +11,6 @@
 @import './icon.scss';
 @import './element-rewrite/index.scss';
 
-html{
-  font-size: calc(100vw / 96);
-}
-
 body {
   height: 100%;
   -moz-osx-font-smoothing: grayscale;
