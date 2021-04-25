@@ -11,27 +11,6 @@
         />
       </el-form-item>
 
-      <!-- <el-form-item label="转货电话" prop="testName1">
-        <el-input
-          v-model="queryParams.testName1"
-          placeholder="装货地/装货电话/装货人"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-
-      <el-form-item label="发货人" prop="testName2">
-        <el-input
-          v-model="queryParams.testName2"
-          placeholder="目的地/收货电话/收货人"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
-
-
       <el-form-item class="fr">
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -39,9 +18,6 @@
       </el-form-item>
     </el-form>
 
-    <!-- <div class="mb8">
-      <tablec-cascader v-model="tableColumnsConfig" :options="options" />
-    </div> -->
     <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
       <el-tab-pane label="司机" name="listDriver" />
       <el-tab-pane label="调度" name="listInfo" />

@@ -37,7 +37,7 @@
                 />
               </el-form-item>
 
-              <el-form-item label="收货信息" prop="tin2">
+              <el-form-item label="装货信息" prop="tin2">
                 <el-input
                   v-model="queryParams.tin2"
                   placeholder="装货地/装货电话/装货人"
@@ -53,16 +53,6 @@
                   <el-option label="区域二" value="beijing" />
                 </el-select>
               </el-form-item>
-
-              <!-- <el-form-item label="货物描述" prop="testName2">
-                        <el-input
-                            v-model="queryParams.testName4"
-                            placeholder="目的地/收货电话/收货人"
-                            clearable
-                            size="small"
-                            @keyup.enter.native="handleQuery"
-                        />
-                    </el-form-item> -->
 
               <el-form-item label="货源单号" prop="tin4">
                 <el-input

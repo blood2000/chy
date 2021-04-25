@@ -1,5 +1,54 @@
 export default [
   {
+    prop: 'driverReport',
+    isShow: true,
+    label: '司机信息上报',
+    // width: 100,
+    fixed: 'left'
+  },
+  {
+    prop: 'vehicleReport',
+    isShow: true,
+    label: '车辆信息上报',
+    // width: 100,
+    fixed: 'left'
+  },
+  {
+    prop: 'waybill',
+    isShow: true,
+    label: '运单上报',
+    // width: 100,
+    fixed: 'left'
+  },
+  {
+    prop: 'load',
+    isShow: true,
+    label: '装货位置上报',
+    // width: 100,
+    fixed: 'left'
+  },
+  {
+    prop: 'unload',
+    isShow: true,
+    label: '卸货位置上报',
+    // width: 100,
+    fixed: 'left'
+  },
+  {
+    prop: 'bill',
+    isShow: true,
+    label: '流水上报',
+    // width: 100,
+    fixed: 'left'
+  },
+  {
+    prop: 'waybillNo',
+    isShow: true,
+    label: '运输单号',
+    width: 160,
+    fixed: 'left'
+  },
+  {
     prop: 'edit',
     isShow: true,
     label: '操作',
