@@ -117,11 +117,11 @@
           />
         </el-form-item>
         <el-form-item
-          label="创建日期"
-          prop="createTime"
+          label="接单日期"
+          prop="receiveTime"
         >
           <el-date-picker
-            v-model="createTime"
+            v-model="receiveTime"
             type="daterange"
             range-separator="-"
             start-placeholder="开始日期"
