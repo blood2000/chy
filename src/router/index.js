@@ -127,6 +127,11 @@ export const constantRoutes = [
         meta: { title: '修改生成配置' }
       }
     ]
+  },
+  {
+    path: '/statistic',
+    component: (resolve) => require(['@/views/statistic/index'], resolve),
+    hidden: true
   }
 ];
 

@@ -11,12 +11,20 @@
 @import './icon.scss';
 @import './element-rewrite/index.scss';
 
+html {
+  // 设1rem = 20px
+  // 160 = 3200 / 20
+  // 96 = 1920 / 20
+  font-size: calc(100vw / 160);
+}
+
 body {
   height: 100%;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+  font-size: 14px;
 }
 
 label {
