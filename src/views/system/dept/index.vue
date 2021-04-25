@@ -38,7 +38,7 @@
             @click="handleAdd"
           >新增</el-button>
         </el-col>
-       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+        <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
       <el-table
