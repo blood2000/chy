@@ -100,7 +100,7 @@
       <!-- 补贴项目 -->
       <el-table-column align="center" width="500" label="补贴项目">
         <template slot="header">
-          <span>扣费项目 <el-button type="text" @click="isEdit2 = !isEdit2"><i class="el-icon-edit" /></el-button></span>
+          <span>补贴项目 <el-button type="text" @click="isEdit2 = !isEdit2"><i class="el-icon-edit" /></el-button></span>
 
         </template>
         <template slot-scope="scope">
