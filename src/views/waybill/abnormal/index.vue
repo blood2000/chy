@@ -210,11 +210,12 @@ export default {
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
     },
-    /** 查看运单按钮操作 */
+    /** 处理异常按钮操作 */
     handleAbnormal(row) {
       this.$refs.HandleDialog.reset();
       this.openHandle = true;
       this.title = '处理异常';
+      this.formDisable = false;
       this.$refs.HandleDialog.setForm(row);
     },
     /** 查看运单按钮操作 */

@@ -1,7 +1,7 @@
 <template>
   <!-- 处理运输异常对话框 -->
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="80px">
       <el-form-item label="运输单号" prop="waybillNo">
         <el-input v-model="form.waybillNo" placeholder="请输入运输单号" readonly />
       </el-form-item>
@@ -28,7 +28,8 @@ export default {
       type: String,
       default: ''
     },
-    open: Boolean
+    open: Boolean,
+    disable: Boolean
   },
   data() {
     return {
