@@ -8,14 +8,20 @@
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
     <el-table v-loading="loading" stripe border :data="dataList">
-      <el-table-column label="姓名" align="center" prop="" />
+      <!-- <el-table-column label="姓名" align="center" prop="" />
       <el-table-column label="网商汇款账号" align="center" prop="" />
       <el-table-column label="角色" align="center" prop="" />
       <el-table-column label="平台账号余额" align="center" prop="" />
       <el-table-column label="余额变动时间" align="center" prop="" />
       <el-table-column label="公户银行账户" align="center" prop="" />
       <el-table-column label="开户银行" align="center" prop="" />
-      <el-table-column label="银行预留手机号" align="center" prop="" />
+      <el-table-column label="银行预留手机号" align="center" prop="" /> -->
+      <el-table-column label="联行号" align="center" prop="bankLineNo" />
+      <el-table-column label="平台账号名称" align="center" prop="orgName" />
+      <el-table-column label="平台账号余额" align="center" prop="amount" />
+      <el-table-column label="开户银行" align="center" prop="account" />
+      <el-table-column label="公户银行账户" align="center" prop="bankLineNo" />
+      <el-table-column label="银行预留手机号" align="center" prop="mobile" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="240" fixed="right">
         <template slot-scope="scope">
           <el-button
@@ -140,8 +146,8 @@ export default {
     getList() {
       this.loading = true;
       balanceList(this.queryParams).then(response => {
-        this.dataList = response.rows;
-        this.total = response.total;
+        this.dataList = response.data.rows;
+        this.total = response.data.total;
         this.loading = false;
       });
     },
