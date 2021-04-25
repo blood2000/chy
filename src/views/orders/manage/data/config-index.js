@@ -192,6 +192,34 @@ export default [
     label: '状态'
   },
   {
+    prop: 'remainingNumber',
+    isShow: true,
+    width: 120,
+    tooltip: true,
+    label: '可抢单量'
+  },
+  {
+    prop: 'number_remainingNumber',
+    isShow: true,
+    width: 120,
+    tooltip: true,
+    label: '已抢单量'
+  },
+  {
+    prop: 'tin_weight',
+    isShow: true,
+    width: 120,
+    tooltip: true,
+    label: '重量/体积/车数'
+  },
+  {
+    prop: 'stowageStatus',
+    isShow: true,
+    width: 120,
+    tooltip: true,
+    label: '配载方式'
+  },
+  {
     prop: 'updateTime',
     isShow: true,
     width: 120,
