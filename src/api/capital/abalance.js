@@ -1,11 +1,11 @@
 import request from '@/utils/request';
 
 // 平台账户余额-查询列表
-export const balanceListApi = '/system/config/list';
-export function balanceList(query) {
+export const balanceListApi = '/payment/wallet/company/list';
+export function balanceList(data) {
   return request({
     url: balanceListApi,
-    method: 'get',
-    params: query
+    method: 'post',
+    data: data
   });
 }
