@@ -2,9 +2,9 @@
   <!-- 平台账户余额 -->
   <div class="app-container">
     <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5" class="fr">
+      <!-- <el-col :span="1.5" class="fr">
         <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
-      </el-col>
+      </el-col> -->
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
     <el-table v-loading="loading" stripe border :data="dataList">
