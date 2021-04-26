@@ -223,7 +223,9 @@ export default {
         if (this['t_cbData_' + this.activeName]) {
           if (this.activeName === 'listDriver') {
             const arr = [];
+
             const data1 = this.t_data1['page_' + this.queryParams_listDriver.pageNum];
+
             // data1 当前页选中的值(初始值为空)
             (data1 || this['t_cbData_' + this.activeName]).forEach(ee => {
               this.list.forEach((e, index) => {
@@ -273,18 +275,12 @@ export default {
 
     // 多选框选中数据
     handleSelectionChange(selection) {
-      // 记录当前页的选中的
-      console.log(selection);
+      this.t_data1['page_' + this.queryParams_listDriver.pageNum] = selection;
+
+      // 去重
 
       this.ids = selection.map(item => item.code);
       this['selections_' + this.activeName] = selection;
-
-
-      if (data1) {
-        console.log(data1);
-      }
-      let data1 = this.t_data1['page_' + this.queryParams_listDriver.pageNum];
-      data1 = selection;
     },
     // 单选
     handlerChange(value) {
