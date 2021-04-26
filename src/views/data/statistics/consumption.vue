@@ -56,14 +56,14 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <RefactorTable :loading="loading" :summary="summary" :data="consumptionList" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
+      <MoreRefactorTable :loading="loading" :summary="summary" :data="consumptionList" :table-columns-config="tableColumnsConfig" :morelist="morelist" :sums="getSummaries()">
         <!-- <template #driverType="{row}">
           <span>{{ selectDictLabel(driverTypeOptions, row.driverType) }}</span>
         </template> -->
         <!-- <template #updateTime="{row}">
           <span>{{ parseTime(row.updateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template> -->
-      </RefactorTable>
+      </MoreRefactorTable>
 
       <pagination
         v-show="total>0"
@@ -106,14 +106,85 @@ export default {
         beginTime: null,
         endTime: null
       },
-      summary: true
+      summary: true,
+      morelist: []
     };
   },
   created() {
     this.tableHeaderConfig(this.tableColumnsConfig, listConsumptionApi, { });
+    console.log(this.tableColumnsConfig);
+    this.morelist = [{
+      label: '本期客户消费',
+      children: [{
+        label: '运费',
+        prop: 'freightAmount'
+      }, {
+        label: '服务费',
+        prop: 'serviceAmount'
+      }, {
+        label: '运费',
+        children: [{
+          label: '已开票',
+          prop: 'freightInvoiceAmount'
+        }, {
+          label: '未开票',
+          prop: 'freightUnbilledAmount'
+        }]
+      }, {
+        label: '服务费',
+        children: [{
+          label: '已开票',
+          prop: 'serviceInvoiceAmount'
+        }, {
+          label: '未开票',
+          prop: 'serviceUnbilledAmount'
+        }]
+      }, {
+        label: '消费合计',
+        prop: 'transferAmount'
+      }]
+    }];
     this.getList();
   },
   methods: {
+    // 表尾合计行
+    getSummaries(param) {
+      const { columns, data } = param;
+      const sums = [];
+      columns.forEach((column, index) => {
+        if (index === 0) {
+          sums[index] = '合计';
+          return;
+        }
+        switch (column.property) {
+          case 'freightAmount':
+            sums[index] = '100元';
+            break;
+          case 'freightInvoiceAmount':
+            sums[index] = '200元';
+            break;
+          case 'freightUnbilledAmount':
+            sums[index] = '120元';
+            break;
+          case 'serviceAmount':
+            sums[index] = '130元';
+            break;
+          case 'serviceInvoiceAmount':
+            sums[index] = '400元';
+            break;
+          case 'serviceUnbilledAmount':
+            sums[index] = '500元';
+            break;
+          case 'waybillCount':
+            sums[index] = '600元';
+            break;
+          default:
+            break;
+        }
+      });
+      console.log(sums);
+      return sums;
+    },
     // 搜索时间选择
     datechoose(date) {
       if (date) {
