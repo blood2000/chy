@@ -1,5 +1,5 @@
 <template>
-  <el-table :ref="refName" v-loading="loading" :show-summary="summary" border stripe :data="data" v-bind="$attrs" :summary-method="sums" @selection-change="handleSelectionChange">
+  <el-table :ref="refName" v-loading="loading" :show-summary="summary" border stripe :data="data" v-bind="$attrs" @selection-change="handleSelectionChange">
     <el-table-column v-if="!!_events['selection-change']" type="selection" width="55" align="center" fixed :reserve-selection="reserveSelection" />
     <el-table-column v-if="!isShowIndex" label="序号" align="center" type="index" width="50" />
     <!--三级表头-->
@@ -108,12 +108,6 @@ export default {
         return [];
       }
     },
-    sums: {
-      type: Array,
-      default: function() {
-        return [];
-      }
-    },
     refName: {
       type: String,
       default: 'multipleTable'
@@ -144,7 +138,7 @@ export default {
     }
   },
   created() {
-    console.log(this.morelist);
+    // console.log(this.morelist);
   },
   beforeDestroy() {
     clearTimeout(this.time);
