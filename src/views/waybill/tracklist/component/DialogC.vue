@@ -118,13 +118,20 @@ export default {
   },
   methods: {
     unloadTimeChoose(e) {
+      // var currentDateLong = new Date(currentdate.replace(new RegExp("-","gm"),"/")).getTime()
       const unloadtime = new Date(e);
       const loadtime = new Date(this.waybill.fillTime);
+      const unloadtimeLong = new Date(e.replace(new RegExp('-', 'gm'), '/')).getTime();
+      const loadtimeLong = new Date(this.waybill.fillTime.replace(new RegExp('-', 'gm'), '/')).getTime();
+      const timeDifference = (unloadtimeLong - loadtimeLong) / (60 * 1000);
+      console.log(timeDifference);
       if (unloadtime <= loadtime) {
         this.$message({ type: 'warning', message: '卸货时间必须大于装货时间：' + this.waybill.fillTime });
         this.form.unloadTime = null;
-      }
-      if (unloadtime > new Date()) {
+      } else if (timeDifference < 5) {
+        this.$message({ type: 'warning', message: '装卸货间隔时间过短，请重新选择卸货时间！' });
+        this.form.unloadTime = null;
+      } else if (unloadtime > new Date()) {
         this.$message({ type: 'warning', message: '卸货时间必须小于等于当前时间！' });
         this.form.unloadTime = null;
       }
