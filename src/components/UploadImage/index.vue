@@ -149,6 +149,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.avatar-box{
+  width: 100%;
+  height: 100%;
+}
 ::v-deep .el-upload--picture-card, .avatar-box{
   display: flex;
   justify-content: center;
