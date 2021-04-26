@@ -48,7 +48,7 @@
                   </template>
                   <!-- radio -->
                   <template v-else-if="formItem.paramFormType === '5'">
-                    <el-radio-group v-model="formItem.paramValue" disabled>
+                    <el-radio-group v-model="formItem.paramValue" disabled class="input-width">
                       <el-radio
                         v-for="dict in formItem.paramDicts"
                         :key="dict.dictValue"
@@ -58,11 +58,11 @@
                   </template>
                   <!-- checkbox -->
                   <template v-else-if="formItem.paramFormType === '6'">
-                    <el-checkbox v-model="formItem.paramValue" disabled label="是否勾选" />
+                    <el-checkbox v-model="formItem.paramValue" disabled label="是否勾选" class="input-width" />
                   </template>
                   <!-- switch -->
                   <template v-else-if="formItem.paramFormType === '7'">
-                    <el-switch v-model="formItem.paramValue" disabled />
+                    <el-switch v-model="formItem.paramValue" disabled class="input-width" />
                   </template>
                   <!-- input -->
                   <template v-else>
