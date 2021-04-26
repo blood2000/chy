@@ -121,6 +121,31 @@
         :limit.sync="queryParams.pageSize"
         @pagination="getList"
       />
+      <el-row type="flex" :gutter="10" class="g-statistics-bg">
+        <el-col :span="1">
+          <img src="../../../../src/assets/images/icon/total.png" alt="">
+        </el-col>
+        <el-col :span="3">
+          <div class="g-statistics-tag">运单数量：</div>
+          <div class="g-statistics-num">100</div>
+        </el-col>
+        <el-col :span="3">
+          <div class="g-statistics-tag">运单数量：</div>
+          <div class="g-statistics-num">100</div>
+        </el-col>
+        <el-col :span="3">
+          <div class="g-statistics-tag">运单数量：</div>
+          <div class="g-statistics-num">100</div>
+        </el-col>
+        <el-col :span="3">
+          <div class="g-statistics-tag">运单数量：</div>
+          <div class="g-statistics-num">100</div>
+        </el-col>
+        <el-col :span="3">
+          <div class="g-statistics-tag">运单数量：</div>
+          <div class="g-statistics-num">100</div>
+        </el-col>
+      </el-row>
     </div>
   </div>
 </template>

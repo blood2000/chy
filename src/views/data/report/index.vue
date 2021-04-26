@@ -206,15 +206,16 @@
           >导出</el-button>
           <el-button
             v-hasPermi="['data:report:report']"
+            :disabled="!ids.length"
             type="info"
-            icon="el-icon-download"
+            icon="el-icon-s-order"
             size="mini"
             @click="handleReport"
           >批量上报</el-button>
           <el-button
             v-hasPermi="['data:report:import']"
             type="info"
-            icon="el-icon-download"
+            icon="el-icon-upload2"
             size="mini"
             @click="handleImport"
           >批量导入</el-button>
@@ -228,7 +229,7 @@
           <el-button
             v-hasPermi="['data:report:update']"
             type="success"
-            icon="el-icon-download"
+            icon="el-icon-s-open"
             size="mini"
             @click="handleUpdate"
           >更新网商打款状态</el-button>
@@ -248,6 +249,9 @@
         :loading="loading"
         :data="list"
         :table-columns-config="tableColumnsConfig"
+        :row-key="(row)=> row.waybillNo"
+        reserve-selection
+        @selection-change="handleSelectionChange"
       >
         <!-- stripe -->
         <!-- row-key="id" -->
@@ -306,55 +310,51 @@
         </template>
 
         <template #edit="{row}">
-          <template v-if="true">
+          <!-- 前3个的放这里 -->
+          <el-button
+            v-hasPermi="['data:report:detail']"
+            size="mini"
+            type="text"
+            @click="handleEdit(row, 'detail')"
+          >详情</el-button>
 
-            <!-- 前3个的放这里 -->
+          <el-button
+            v-if="row.isChild == 2"
+            v-hasPermi="['data:report:seperate']"
+            size="mini"
+            type="text"
+            @click="handleEdit(row, 'seperate')"
+          >分单列表</el-button>
 
-            <el-button
-              v-hasPermi="['data:report:detail']"
-              size="mini"
-              type="text"
-              @click="handleEdit(row, 'detail')"
-            >详情</el-button>
+          <el-button
+            v-if="false"
+            v-hasPermi="['data:report:report']"
+            size="mini"
+            type="text"
+            @click="handleEdit(row, 'report')"
+          >上报</el-button>
 
-            <el-button
-              v-if="row.isChild == 2"
-              v-hasPermi="['data:report:seperate']"
-              size="mini"
-              type="text"
-              @click="handleEdit(row, 'seperate')"
-            >分单列表</el-button>
-
-            <el-button
-              v-if="true"
-              v-hasPermi="['data:report:report']"
-              size="mini"
-              type="text"
-              @click="handleEdit(row, 'report')"
-            >上报</el-button>
-
-            <el-button
-              v-else
-              v-hasPermi="['data:report:check']"
-              size="mini"
-              type="text"
-              @click="handleEdit(row, 'check')"
-            >查看校验</el-button>
+          <el-button
+            v-else
+            v-hasPermi="['data:report:check']"
+            size="mini"
+            type="text"
+            @click="handleEdit(row, 'check')"
+          >查看校验</el-button>
 
 
 
-            <!-- 大于3个按钮的使用这个... -->
-            <TableDropdown v-if="false">
-              <el-dropdown-item>
-                <el-button
-                  v-hasPermi="['consigner-order-delete']"
-                  size="mini"
-                  type="text"
-                  @click="handleDelete(row)"
-                >删除</el-button>
-              </el-dropdown-item>
-            </TableDropdown>
-          </template>
+          <!-- 大于3个按钮的使用这个... -->
+          <TableDropdown v-if="false">
+            <el-dropdown-item>
+              <el-button
+                v-hasPermi="['consigner-order-delete']"
+                size="mini"
+                type="text"
+                @click="handleDelete(row)"
+              >删除</el-button>
+            </el-dropdown-item>
+          </TableDropdown>
         </template>
       </RefactorTable>
 
@@ -365,37 +365,49 @@
         :limit.sync="queryParams.pageSize"
         @pagination="getList"
       />
+      <!-- :page-sizes="[2,10,20]" -->
     </div>
 
 
     <!-- 弹框使用  class类 i-price 是使用图片了 -->
     <!-- 弹框内的组件 -->
     <el-dialog :title="'查看校验结果'" class="i-price" :visible.sync="open" width="70%" append-to-body>
-      <!-- <price-adjustment v-if="openPriceAdjustment" :mytabs="tabs" :order-code="orderCode" :pubilsh-code="pubilshCode" @submitRes="submitRes" /> -->
-      <check-result v-if="open" :prop-data="openData" />
+      <check-result v-if="open" :prop-data="openData" @refresh="(bool)=>{open = false; bool && getList()}" />
     </el-dialog>
 
     <!-- 分单列表 -->
-    <child-dialog ref="ChildDialog" :open.sync="childdialog" :title="'子单列表'" />
+    <child-dialog ref="ChildDialog" :open.sync="childdialog" :title="'子单列表'" @refresh="getList" />
     <!-- 运单详情 对话框 -->
-    <detail-dialog ref="DetailDialog" :current-id="currentId" :title="'运输单信息'" :open.sync="open1" :disable="formDisable" />
+    <detail-dialog ref="DetailDialog" :current-id="currentId" :title="'运输单信息'" :open.sync="open1" :disable="formDisable" @refresh="getList" />
+    <!-- 批量导入 对话框 -->
+    <import-dialog ref="ImportDialog" :title="'司机批量导入'" :open.sync="openImport" @refresh="getList" />
   </div>
 </template>
 
 <script>
 import tableColumnsConfig from './data-index';
 
-import { listApi, waybillReport } from '@/api/data/report';
+import { listApi,
+  waybillReport,
+  waybillReportDriver,
+  waybillReportVehicle,
+  waybillReportWaybill,
+  waybillReportLoad,
+  waybillReportUnload,
+  waybillReportBill
+} from '@/api/data/report';
+
 
 import CheckResult from './components/CheckResult';
 import ChildDialog from '@/views/settlement/components/childDialog';
 import DetailDialog from '@/views/waybill/components/detailDialog';
+import importDialog from './components/importDialog';
 
 const dictsData1 = [{ dictLabel: '未上报', dictValue: 0 }, { dictLabel: '上报成功', dictValue: 1 }, { dictLabel: '上报失败', dictValue: 2 }];
 
 export default {
   name: 'Manage', // 页面缓存需要name
-  components: { CheckResult, ChildDialog, DetailDialog },
+  components: { CheckResult, ChildDialog, DetailDialog, importDialog },
   data() {
     return {
       /* 模板参数必须 */
@@ -408,6 +420,7 @@ export default {
       list: [], // 表格数据
       listApi, // 表头存的key
       tableColumnsConfig: [], // 表头动态值
+      ids: [],
 
       /* 筛选参数 */
       queryParams: { // 查询参数
@@ -472,7 +485,10 @@ export default {
 
       /* 弹框参数 */
       open: false, // 打开弹框
-      openData: null // 类型对象
+      openData: null, // 类型对象
+
+      /* 弹框2- 批量导入 */
+      openImport: false
 
       /* 其他额外参数 */
       // shipmentList: [], // 远程搜索的时候使用
@@ -545,13 +561,13 @@ export default {
       try {
         response = await waybillReport(this.queryParams);
       } catch (error) {
-        this.$confirm('请求超时,确定刷新页面?', '警告', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.getList();
-        });
+        // this.$confirm('请求超时,确定刷新页面?', '警告', {
+        //   confirmButtonText: '确定',
+        //   cancelButtonText: '取消',
+        //   type: 'warning'
+        // }).then(() => {
+        //   this.getList();
+        // });
         return;
       }
       this.loading = false;
@@ -580,14 +596,23 @@ export default {
 
     /** 导出作 */
     handleExport() {
-      this.download('/transportation/order/export', {
+      this.download('/transportation/waybillReport/export', {
         ...this.queryParams
-      }, `order_export.xlsx`);
+      }, `waybillReport_${Date.now()}.xlsx`);
     },
     /** 批量上报 */
-    handleReport() {},
+    handleReport() {
+      console.log(this.ids);
+
+      this.ids.forEach(row => {
+        this._waybillReport(row);
+      });
+    },
     /** 批量导入 */
-    handleImport() {},
+    handleImport() {
+      this.openImport = true;
+      // this.title = '司机批量导入';
+    },
     /** 下载模板 */
     handleDownload() {},
     /** 更新网商打款状态 */
@@ -619,8 +644,26 @@ export default {
     },
 
     /* 上报接口 */
-    _waybillReport(row) {
+    async _waybillReport(row) {
       console.log(row);
+      const res_driver = await waybillReportDriver(row.driverCode);
+      const res_vehicle = await waybillReportVehicle(row.vehicleCode);
+      const res_waybill = await waybillReportWaybill(row.waybillCode);
+      const res_load = await waybillReportLoad(row.waybillReportCode);
+      const res_unload = await waybillReportUnload(row.waybillReportCode);
+      const res_bill = await waybillReportBill(row.waybillReportCode);
+      console.log(res_driver);
+      console.log(res_vehicle);
+      console.log(res_waybill);
+      console.log(res_load);
+      console.log(res_unload);
+      console.log(res_bill);
+    },
+
+    /* 多选 */
+    handleSelectionChange(selecked) {
+      // console.log(selecked);
+      this.ids = selecked;
     }
 
     /** 触发远程搜索 */

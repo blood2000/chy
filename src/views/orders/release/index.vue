@@ -237,7 +237,7 @@
             <template v-if="!loading && !myisdisabled">
               <div v-if="!loading && active === 3" class="ly-t-center">
                 <el-button @click="nextFe(2)">上一步</el-button>
-                <el-button type="primary" @click="onSubmit('elForm',3)">{{ isCreated?'立即发布':'保存' }}</el-button>
+                <el-button v-hasPermi="['transportation:order:pubilsh']" type="primary" @click="onSubmit('elForm',3)">{{ isCreated?'立即发布':'保存' }}</el-button>
                 <el-button @click="nextFe(4)">预览(查看预估价格)</el-button>
               </div>
             </template>
@@ -248,7 +248,7 @@
 
         <div v-if="active >= 4 && !isT" class="ly-t-center">
           <el-button @click="nextFe(3)">上一步</el-button>
-          <el-button type="primary" @click="onPubilsh">{{ isCreated?'立即发布':'保存' }}</el-button>
+          <el-button v-hasPermi="['transportation:order:pubilsh']" type="primary" @click="onPubilsh">{{ isCreated?'立即发布':'保存' }}</el-button>
 
           <div class="release_warning">
             <el-alert
@@ -318,6 +318,7 @@ export default {
       isT: false, //
       orgCode: '', // 接口需要
       isAdmin: false, // 默认是平台
+      isShipment: false,
       lastData: null, // 最终结构
       isQianValue: true, // 开关
       qianValue: '', // 保存上一个值
@@ -412,9 +413,10 @@ export default {
 
   async created() {
     // 判断用户
-    const { isAdmin = true, shipment = {}, user = {}} = getUserInfo() || {};
+    const { isAdmin = true, isShipment = true, shipment = {}, user = {}} = getUserInfo() || {};
 
-
+    this.isShipment = isShipment;
+    console.log(this.isShipment);
     this.isAdmin = !isAdmin;
     if (!isAdmin) {
       if (shipment.info.authStatus !== 3) {

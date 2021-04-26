@@ -116,6 +116,11 @@ export default {
 
   data() {
     return {
+      /* 额外数据 */
+      t_cbData_listDriver: null,
+      t_cbData_listInfo: null,
+      t_data1: {},
+
       midBox: {}, // 临时存储
       radio: '', // 选择的id
       myTo_listDriver: null,
@@ -181,8 +186,10 @@ export default {
       },
       immediate: true
     }
+
   },
   created() {
+    this['t_cbData_' + this.activeName] = JSON.parse(JSON.stringify(this.cbData)) || [];
     this.getList();
   },
 
@@ -213,12 +220,14 @@ export default {
         this['total_' + this.activeName] = response.total;
         this.loading = false;
 
-        if (this.cbData) {
-          // console.log(this.cbData);
-
+        if (this['t_cbData_' + this.activeName]) {
           if (this.activeName === 'listDriver') {
             const arr = [];
-            this.cbData.forEach(ee => {
+
+            const data1 = this.t_data1['page_' + this.queryParams_listDriver.pageNum];
+
+            // data1 当前页选中的值(初始值为空)
+            (data1 || this['t_cbData_' + this.activeName]).forEach(ee => {
               this.list.forEach((e, index) => {
                 if (e.code === ee.code) {
                   arr.push(index);
@@ -228,7 +237,7 @@ export default {
 
             this['myTo_' + this.activeName] = arr;
           } else {
-            this.cbData.forEach(ee => {
+            this['t_cbData_' + this.activeName].forEach(ee => {
               this.list.forEach((e, index) => {
                 if (e.code === ee.code) {
                   this.radio = e.id;
@@ -266,12 +275,9 @@ export default {
 
     // 多选框选中数据
     handleSelectionChange(selection) {
-      // console.log(selection);
+      this.t_data1['page_' + this.queryParams_listDriver.pageNum] = selection;
 
-      // this.midBox['dri_' + this.queryParams_listDriver.pageNum] = selection;
-
-      // console.log(this.midBox);
-
+      // 去重
 
       this.ids = selection.map(item => item.code);
       this['selections_' + this.activeName] = selection;

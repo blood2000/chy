@@ -56,7 +56,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <MoreRefactorTable :loading="loading" :summary="summary" :data="consumptionList" :table-columns-config="tableColumnsConfig" :morelist="morelist" :sums="getSummaries()">
+      <MoreRefactorTable :loading="loading" :summary="summary" :data="consumptionList" :table-columns-config="tableColumnsConfig" :morelist="morelist" :summary-method="getSummaries">
         <!-- <template #driverType="{row}">
           <span>{{ selectDictLabel(driverTypeOptions, row.driverType) }}</span>
         </template> -->
@@ -112,7 +112,7 @@ export default {
   },
   created() {
     this.tableHeaderConfig(this.tableColumnsConfig, listConsumptionApi, { });
-    console.log(this.tableColumnsConfig);
+    // console.log(this.tableColumnsConfig);
     this.morelist = [{
       label: '本期客户消费',
       children: [{
@@ -149,6 +149,7 @@ export default {
   methods: {
     // 表尾合计行
     getSummaries(param) {
+      // console.log(param);
       const { columns, data } = param;
       const sums = [];
       console.log(data);
@@ -183,7 +184,7 @@ export default {
             break;
         }
       });
-      console.log(sums);
+      // console.log(sums);
       return sums;
     },
     // 搜索时间选择

@@ -315,15 +315,17 @@
               @click="handleInfo(row)"
             >详情</el-button>
 
-            <!-- v-hasPermi="['consigner-order-edit']" -->
+            <!-- v-hasPermi="['transportation:order:pubilsh']" -->
             <el-button
               v-if="row.status+''==='0'"
+              v-hasPermi="['transportation:order:modify']"
               size="mini"
               type="text"
               @click="handleUpdate(row)"
             >编辑</el-button>
 
             <el-button
+              v-hasPermi="['transportation:order:loadAndUnloadingGoods']"
               size="mini"
               type="text"
               :class="row.status+''==='0'?'g-color-error': null"
@@ -334,6 +336,7 @@
               <el-dropdown-item>
                 <el-button
                   v-if="!row.haveWaybill"
+                  v-hasPermi="['transportation:order:delete']"
                   size="mini"
                   type="text"
                   @click="handleDelete(row)"
@@ -343,6 +346,7 @@
               <el-dropdown-item>
                 <el-button
                   v-if="row.status+''==='0'"
+                  v-hasPermi="['transportation:order:adjustPrice']"
                   size="mini"
                   type="text"
                   @click="handleReadjustPrices(row)"
@@ -882,20 +886,20 @@ export default {
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      this.$router.push({ name: 'Release', query: { id: row.code, t: '1' }});
+      this.$router.push({ name: 'Release', query: { id: row.orderCode, t: '1' }});
     },
     /** 查看详情操作 */
     handleInfo(row) {
-      this.$router.push({ name: 'Release', query: { id: row.code, t: '0' }});
+      this.$router.push({ name: 'Release', query: { id: row.orderCode, t: '0' }});
     },
     /** 上下架货源 */
     loadAndUnloading(row) {
       const msg = row.status === '1' ? '上架' : '下架';
       const data = {
-        'orderCode': row.code,
+        'orderCode': row.orderCode,
         'status': row.status === '0' ? 1 : 0
       };
-      this.$confirm('是否确认操作货源编号为"' + row.code + '"的数据项?', '警告', {
+      this.$confirm('是否确认操作货源编号为"' + row.orderCode + '"的数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -909,7 +913,7 @@ export default {
 
     /** 删除按钮操作 */
     handleDelete(row) {
-      const testIds = row.code;
+      const testIds = row.orderCode;
       // 操作删除按钮，判断货单是否产生运单。
       const waybill = row.haveWaybill - 0 === 0;
 
@@ -941,7 +945,7 @@ export default {
         : '是否确认启用该货源单';
 
       const data = {
-        'orderCode': row.code,
+        'orderCode': row.orderCode,
         'status': row.status + '' === '1' ? '0' : '1'
       };
       this.$confirm(msg, '警告', {
@@ -1010,7 +1014,7 @@ export default {
       this.tabs = tabs;
       this.pubilshCode = redisOrderInfoVo ? redisOrderInfoVo.pubilshCode : row.source.pubilshCode;
 
-      this.orderCode = row.code;
+      this.orderCode = row.orderCode;
 
       // 打开调价框
       this.openPriceAdjustment = true;
@@ -1034,7 +1038,7 @@ export default {
     },
     /** 复制 */
     handleclone(row) {
-      this.$router.push({ name: 'Release', query: { id: row.code, t: '3' }});
+      this.$router.push({ name: 'Release', query: { id: row.orderCode, t: '3' }});
     },
     /** 关闭 */
     submitRes(res) {
