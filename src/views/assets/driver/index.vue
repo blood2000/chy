@@ -175,7 +175,7 @@
       <el-row v-show="teamCode" :gutter="10" class="mb8">
         <el-col :span="1.5">
           <el-button
-            v-hasPermi="['assets:driver:remove']"
+            v-hasPermi="['assets:team:driver:del']"
             type="danger"
             icon="el-icon-delete"
             size="mini"
@@ -245,7 +245,7 @@
           >详情</el-button>
           <el-button
             v-show="teamCode"
-            v-hasPermi="['assets:driver:remove']"
+            v-hasPermi="['assets:team:driver:del']"
             size="mini"
             type="text"
             @click="handleDelBind(row)"

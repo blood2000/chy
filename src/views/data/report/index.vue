@@ -376,26 +376,38 @@
     </el-dialog>
 
     <!-- 分单列表 -->
-    <child-dialog ref="ChildDialog" :open.sync="childdialog" :title="'子单列表'" />
+    <child-dialog ref="ChildDialog" :open.sync="childdialog" :title="'子单列表'" @refresh="getList" />
     <!-- 运单详情 对话框 -->
-    <detail-dialog ref="DetailDialog" :current-id="currentId" :title="'运输单信息'" :open.sync="open1" :disable="formDisable" />
+    <detail-dialog ref="DetailDialog" :current-id="currentId" :title="'运输单信息'" :open.sync="open1" :disable="formDisable" @refresh="getList" />
+    <!-- 批量导入 对话框 -->
+    <import-dialog ref="ImportDialog" :title="'司机批量导入'" :open.sync="openImport" @refresh="getList" />
   </div>
 </template>
 
 <script>
 import tableColumnsConfig from './data-index';
 
-import { listApi, waybillReport } from '@/api/data/report';
+import { listApi,
+  waybillReport,
+  waybillReportDriver,
+  waybillReportVehicle,
+  waybillReportWaybill,
+  waybillReportLoad,
+  waybillReportUnload,
+  waybillReportBill
+} from '@/api/data/report';
+
 
 import CheckResult from './components/CheckResult';
 import ChildDialog from '@/views/settlement/components/childDialog';
 import DetailDialog from '@/views/waybill/components/detailDialog';
+import importDialog from './components/importDialog';
 
 const dictsData1 = [{ dictLabel: '未上报', dictValue: 0 }, { dictLabel: '上报成功', dictValue: 1 }, { dictLabel: '上报失败', dictValue: 2 }];
 
 export default {
   name: 'Manage', // 页面缓存需要name
-  components: { CheckResult, ChildDialog, DetailDialog },
+  components: { CheckResult, ChildDialog, DetailDialog, importDialog },
   data() {
     return {
       /* 模板参数必须 */
@@ -472,7 +484,10 @@ export default {
 
       /* 弹框参数 */
       open: false, // 打开弹框
-      openData: null // 类型对象
+      openData: null, // 类型对象
+
+      /* 弹框2- 批量导入 */
+      openImport: false
 
       /* 其他额外参数 */
       // shipmentList: [], // 远程搜索的时候使用
@@ -580,14 +595,17 @@ export default {
 
     /** 导出作 */
     handleExport() {
-      this.download('/transportation/order/export', {
+      this.download('/transportation/waybillReport/export', {
         ...this.queryParams
-      }, `order_export.xlsx`);
+      }, `waybillReport_export.xlsx`);
     },
     /** 批量上报 */
     handleReport() {},
     /** 批量导入 */
-    handleImport() {},
+    handleImport() {
+      this.openImport = true;
+      // this.title = '司机批量导入';
+    },
     /** 下载模板 */
     handleDownload() {},
     /** 更新网商打款状态 */
@@ -619,8 +637,20 @@ export default {
     },
 
     /* 上报接口 */
-    _waybillReport(row) {
+    async _waybillReport(row) {
       console.log(row);
+      const res_driver = await waybillReportDriver(row.driverCode);
+      const res_vehicle = await waybillReportVehicle(row.vehicleCode);
+      const res_waybill = await waybillReportWaybill(row.waybillCode);
+      const res_load = await waybillReportLoad(row.waybillReportCode);
+      const res_unload = await waybillReportUnload(row.waybillReportCode);
+      const res_bill = await waybillReportBill(row.waybillReportCode);
+      console.log(res_driver);
+      console.log(res_vehicle);
+      console.log(res_waybill);
+      console.log(res_load);
+      console.log(res_unload);
+      console.log(res_bill);
     }
 
     /** 触发远程搜索 */
