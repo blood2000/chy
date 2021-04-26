@@ -5,6 +5,7 @@
   margin: 0 15px 15px;
 }
 
+// 统计样式
 .g-statistics-bg{
   position: absolute;
   bottom: 0;
@@ -23,3 +24,8 @@
   }
 }
 
+// 列表状态圆点
+.g-statusDot{
+  font-size: 10px;
+  margin-right: 10px;
+}

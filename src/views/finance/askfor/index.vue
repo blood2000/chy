@@ -187,11 +187,15 @@
           <span>{{ selectDictLabel(stowageStatusOptions, row.stowageStatus) }}</span>
         </template>
         <template #status="{row}">
-          <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
+          <span>
+            <span v-if="row.status == 5" class="g-statusDot g-color-success">●</span>
+            <span v-if="row.status == 7" class="g-statusDot g-color-blue">●</span>
+            {{ selectDictLabel(statusOptions, row.status) }}
+          </span>
         </template>
-        <template #isChild="{row}">
+        <!-- <template #isChild="{row}">
           <span>{{ selectDictLabel(isChildOptions, row.isChild) }}</span>
-        </template>
+        </template> -->
 
         <template #edit="{row}">
           <el-button
@@ -309,7 +313,7 @@ export default {
       stowageStatusOptions: [
         { 'dictLabel': '吨', 'dictValue': '0' },
         { 'dictLabel': '方', 'dictValue': '1' },
-        { 'dictLabel': '车数配载', 'dictValue': '1' }
+        { 'dictLabel': '车数配载', 'dictValue': '2' }
       ],
       // 运单状态字典
       statusOptions: [
