@@ -121,28 +121,29 @@
         :limit.sync="queryParams.pageSize"
         @pagination="getList"
       />
+
       <el-row type="flex" :gutter="10" class="g-statistics-bg">
         <el-col :span="1">
           <img src="../../../../src/assets/images/icon/total.png" alt="">
         </el-col>
-        <el-col :span="3">
-          <div class="g-statistics-tag">运单数量：</div>
+        <el-col :span="2">
+          <div class="g-statistics-tag">期初余额：</div>
+          <div class="g-statistics-num">1416195.86</div>
+        </el-col>
+        <el-col :span="2">
+          <div class="g-statistics-tag">本期收入：</div>
           <div class="g-statistics-num">100</div>
         </el-col>
-        <el-col :span="3">
-          <div class="g-statistics-tag">运单数量：</div>
+        <el-col :span="2">
+          <div class="g-statistics-tag">清分支出：</div>
           <div class="g-statistics-num">100</div>
         </el-col>
-        <el-col :span="3">
-          <div class="g-statistics-tag">运单数量：</div>
+        <el-col :span="2">
+          <div class="g-statistics-tag">本期提现：</div>
           <div class="g-statistics-num">100</div>
         </el-col>
-        <el-col :span="3">
-          <div class="g-statistics-tag">运单数量：</div>
-          <div class="g-statistics-num">100</div>
-        </el-col>
-        <el-col :span="3">
-          <div class="g-statistics-tag">运单数量：</div>
+        <el-col :span="2">
+          <div class="g-statistics-tag">期末余额：</div>
           <div class="g-statistics-num">100</div>
         </el-col>
       </el-row>

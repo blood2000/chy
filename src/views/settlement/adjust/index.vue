@@ -255,7 +255,7 @@
         </template>
         <template #isReturn="{row}">
           <span>
-            <i v-if="row.isReturn == 0" class="el-icon-error g-color-error" />
+            <i v-if="row.isReturn == 0" class="el-icon-error g-color-gray" />
             <i v-if="row.isReturn == 1" class="el-icon-success g-color-success" />
             {{ selectDictLabel(isReturnOptions, row.isReturn) }}
           </span>
