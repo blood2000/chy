@@ -203,6 +203,9 @@
         <template #status="{row}">
           <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
         </template>
+        <template #applyStatus="{row}">
+          <span>{{ selectDictLabel(applyStatusOptions, row.applyStatus) }}</span>
+        </template>
         <template #applyTime="{row}">
           <span>{{ parseTime(row.applyTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
@@ -221,11 +224,13 @@
 
         <template #edit="{row}">
           <el-button
+            v-if="row.applyStatus === 1 || row.applyStatus === 5"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 1)"
           >驳回</el-button>
           <el-button
+            v-if="row.applyStatus === 1 || row.applyStatus === 5"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 2)"
@@ -348,6 +353,15 @@ export default {
         { 'dictLabel': '已打款', 'dictValue': '7' },
         { 'dictLabel': '已申请开票', 'dictValue': '8' },
         { 'dictLabel': '已开票', 'dictValue': '9' }
+      ],
+      // 申请状态字典
+      applyStatusOptions: [
+        { 'dictLabel': '未申请', 'dictValue': '0' },
+        { 'dictLabel': '待打款', 'dictValue': '1' },
+        { 'dictLabel': '已驳回', 'dictValue': '2' },
+        { 'dictLabel': '打款中', 'dictValue': '3' },
+        { 'dictLabel': '打款成功', 'dictValue': '4' },
+        { 'dictLabel': '打款失败', 'dictValue': '5' }
       ]
     };
   },
