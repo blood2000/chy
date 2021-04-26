@@ -207,13 +207,13 @@
           </el-row>
           <el-row>
             <el-col :span="8">
-              <el-form-item label="装货单据" prop="loadAttachmentCode">
-                <uploadImage v-model="form.loadAttachmentCode" />
+              <el-form-item ref="loadAttachment" label="装货单据" prop="loadAttachmentCode">
+                <uploadImage v-model="form.loadAttachmentCode" @input="chooseImg" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="卸货单据/回执单" prop="unloadAttachmentCode">
-                <uploadImage v-model="form.unloadAttachmentCode" @change="chooseImg" />
+              <el-form-item ref="unloadAttachment" label="卸货单据/回执单" prop="unloadAttachmentCode">
+                <uploadImage v-model="form.unloadAttachmentCode" @input="chooseImg" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -650,7 +650,12 @@ export default {
       this.calculate();
     },
     chooseImg() {
-      this.$forceUpdate(); // 视图强制更新
+      if (this.form.loadAttachmentCode) {
+        this.$refs['loadAttachment'].clearValidate();
+      }
+      if (this.form.unloadAttachmentCode) {
+        this.$refs['unloadAttachment'].clearValidate();
+      }
     }
   }
 };
