@@ -70,7 +70,7 @@
                   </template>
                   <!-- button -->
                   <el-button type="text" class="ml10" @click="editParam(item, formItem)"><i class="el-icon-edit-outline" /></el-button>
-                  <el-button type="text" class="ml10" @click="deleteParam(formItem)"><i class="el-icon-delete" /></el-button>
+                  <el-button type="text" class="ml10" @click="deleteParam(item, formItem)"><i class="el-icon-delete" /></el-button>
                 </el-form-item>
               </el-form>
             </div>
@@ -202,7 +202,7 @@ export default {
       this.$refs.paramDialogRef.setEditForm(data, param);
       this.paramOpen = true;
     },
-    deleteParam(param) {
+    deleteParam(data, param) {
       this.$confirm('是否确认删除参数名称为"' + param.paramCnName + '"的数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -210,7 +210,7 @@ export default {
       }).then(function() {
         return delParam(param.code);
       }).then(() => {
-        this.getTree();
+        this.refreshParam(data.code);
         this.msgSuccess('删除成功');
       });
     },
