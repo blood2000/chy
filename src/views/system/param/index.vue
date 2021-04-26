@@ -133,9 +133,9 @@ export default {
         <span class='custom-tree-node'>
           <span class='custom-tree-text'>{node.label}</span>
           <span class='custom-tree-button'>
-            <el-button type='text' on-click={ () => this.appendTree(data) }><i class='el-icon-circle-plus-outline' /></el-button>
-            <el-button type='text' on-click={ () => this.editTree(node, data) }><i class='el-icon-edit-outline' /></el-button>
-            <el-button type='text' on-click={ () => this.removeTree(node, data) }><i class='el-icon-delete' /></el-button>
+            <el-button type='text' on-click={ (event) => this.appendTree(event, data) }><i class='el-icon-circle-plus-outline' /></el-button>
+            <el-button type='text' on-click={ (event) => this.editTree(event, node, data) }><i class='el-icon-edit-outline' /></el-button>
+            <el-button type='text' on-click={ (event) => this.removeTree(event, node, data) }><i class='el-icon-delete' /></el-button>
           </span>
         </span>);
     },
@@ -147,19 +147,21 @@ export default {
         }
       });
     },
-    appendTree(data) {
+    appendTree(event, data) {
       this.$refs.settingDialogRef.reset();
       this.title = '新增';
       this.$refs.settingDialogRef.setAddForm(data);
       this.settingOpen = true;
+      event.stopPropagation();
     },
-    editTree(node, data) {
+    editTree(event, node, data) {
       this.$refs.settingDialogRef.reset();
       this.title = '编辑';
       this.$refs.settingDialogRef.setEditForm(data);
       this.settingOpen = true;
+      event.stopPropagation();
     },
-    removeTree(node, data) {
+    removeTree(event, node, data) {
       this.$confirm('是否确认删除配置名称为"' + data.label + '"的数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -169,7 +171,10 @@ export default {
       }).then(() => {
         this.getTree();
         this.msgSuccess('删除成功');
+        // 如果有打开卡片，也要删掉卡片
+        this.closeCard(data);
       });
+      event.stopPropagation();
     },
     handleNodeClick(data) {
       // 父节点不可选中
