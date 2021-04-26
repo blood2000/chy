@@ -10,6 +10,36 @@ export function waybillReport(query) {
   });
 }
 
+// 上报 先  司机, 车辆，然后运单，装, 卸，资金
+
+
+
+// 上报司机信息
+export function waybillReportDriver(driverCode) {
+  return request({
+    url: '/transportation/waybillReport/driver/' + driverCode,
+    method: 'get'
+  });
+}
+
+// 上报车辆信息
+export function waybillReportVehicle(vehicleCode) {
+  return request({
+    url: '/transportation/waybillReport/vehicle/' + vehicleCode,
+    method: 'get'
+  });
+}
+
+// 上报运单
+export function waybillReportWaybill(waybillCode) {
+  return request({
+    url: '/transportation/waybillReport/waybill/' + waybillCode,
+    method: 'get'
+  });
+}
+
+
+
 // 查询调度列表
 // export function teamList(data) {
 //   return request({

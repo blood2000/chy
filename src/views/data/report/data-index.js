@@ -14,28 +14,28 @@ export default [
     fixed: 'left'
   },
   {
-    prop: 'waybill',
+    prop: 'waybillSendStatus',
     isShow: true,
     label: '运单上报',
     // width: 100,
     fixed: 'left'
   },
   {
-    prop: 'load',
+    prop: 'loadSendStatus',
     isShow: true,
     label: '装货位置上报',
     // width: 100,
     fixed: 'left'
   },
   {
-    prop: 'unload',
+    prop: 'unloadSendStatus',
     isShow: true,
     label: '卸货位置上报',
     // width: 100,
     fixed: 'left'
   },
   {
-    prop: 'bill',
+    prop: 'billSendStatus',
     isShow: true,
     label: '流水上报',
     // width: 100,
