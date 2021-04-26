@@ -274,10 +274,17 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       // 记录当前页的选中的
-      this.t_data1['page_' + this.queryParams_listDriver.pageNum] = selection;
+      console.log(selection);
 
       this.ids = selection.map(item => item.code);
       this['selections_' + this.activeName] = selection;
+
+
+      if (data1) {
+        console.log(data1);
+      }
+      let data1 = this.t_data1['page_' + this.queryParams_listDriver.pageNum];
+      data1 = selection;
     },
     // 单选
     handlerChange(value) {
