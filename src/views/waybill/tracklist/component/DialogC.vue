@@ -118,7 +118,7 @@ export default {
   },
   methods: {
     unloadTimeChoose(e) {
-      // var currentDateLong = new Date(currentdate.replace(new RegExp("-","gm"),"/")).getTime()
+      // var currentDateLong = new Date(currentdate.replace(new RegExp("-","gm"),"/")).getTime() // 格式化时间为long型
       const unloadtime = new Date(e);
       const loadtime = new Date(this.waybill.fillTime);
       const unloadtimeLong = new Date(e.replace(new RegExp('-', 'gm'), '/')).getTime();
