@@ -571,6 +571,9 @@ export default {
               this.buttonLoading = false;
             });
           } else {
+            if (!this.form.password && this.form.password !== undefined) {
+              this.form.password = this.initialPassword;
+            }
             addShipment(this.form).then(response => {
               this.buttonLoading = false;
               this.msgSuccess('新增成功');
