@@ -318,6 +318,7 @@ export default {
       isT: false, //
       orgCode: '', // 接口需要
       isAdmin: false, // 默认是平台
+      isShipment: false,
       lastData: null, // 最终结构
       isQianValue: true, // 开关
       qianValue: '', // 保存上一个值
@@ -412,9 +413,10 @@ export default {
 
   async created() {
     // 判断用户
-    const { isAdmin = true, shipment = {}, user = {}} = getUserInfo() || {};
+    const { isAdmin = true, isShipment = true, shipment = {}, user = {}} = getUserInfo() || {};
 
-
+    this.isShipment = isShipment;
+    console.log(this.isShipment);
     this.isAdmin = !isAdmin;
     if (!isAdmin) {
       if (shipment.info.authStatus !== 3) {

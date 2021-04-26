@@ -313,7 +313,7 @@
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button type="primary" :disabled="btnDisabled" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -357,7 +357,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitResetPwd">确 定</el-button>
+        <el-button type="primary" :disabled="btnDisabled" @click="submitResetPwd">确 定</el-button>
         <el-button @click="pwOpen = false">取 消</el-button>
       </div>
     </el-dialog>
@@ -385,6 +385,8 @@ export default {
     return {
       // 遮罩层
       loading: true,
+      // 按钮loading
+      btnDisabled: false,
       // 选中数组
       ids: [],
       // 非单个禁用
@@ -643,33 +645,41 @@ export default {
       this.resetForm('pwForm');
     },
     submitResetPwd() {
+      this.btnDisabled = true;
       this.$refs['pwForm'].validate(valid => {
         if (valid) {
           resetUserPwd(this.userId, this.pwForm.password).then(response => {
             this.msgSuccess('修改成功，新密码是：' + this.pwForm.password);
             this.pwReset();
+            this.btnDisabled = false;
           });
+        } else {
+          this.btnDisabled = false;
         }
       });
     },
     /** 提交按钮 */
     submitForm: function() {
+      this.btnDisabled = true;
       this.$refs['form'].validate(valid => {
         if (valid) {
           if (this.form.userId !== undefined) {
             updateUser(this.form).then(response => {
               this.msgSuccess('修改成功');
               this.open = false;
+              this.btnDisabled = false;
               this.getList();
             });
           } else {
-            console.log(this.form);
             addUser(this.form).then(response => {
               this.msgSuccess('新增成功');
               this.open = false;
+              this.btnDisabled = false;
               this.getList();
             });
           }
+        } else {
+          this.btnDisabled = false;
         }
       });
     },

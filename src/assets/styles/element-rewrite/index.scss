@@ -4,3 +4,22 @@
 .g-radio-group{
   margin: 0 15px 15px;
 }
+
+.g-statistics-bg{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  align-items: center;
+  width: 100%;
+  background: #fff;
+  padding: 15px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  .g-statistics-tag{
+    color: #B3AFAF;
+  }
+  .g-statistics-num{
+    color: #262626;
+    font-size: 18px;
+  }
+}
+
