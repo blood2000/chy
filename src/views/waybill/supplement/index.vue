@@ -358,22 +358,41 @@ export default {
     // this.getDriver();
   },
   methods: {
+    // 装卸货时间选择判断
     loadTimeChoose(e) {
-      if (this.form.unloadTime) {
-        const loadtime = new Date(e);
+      const loadtime = new Date(e);
+      const loadtimeLong = new Date(e.replace(new RegExp('-', 'gm'), '/')).getTime();
+      if (loadtime > new Date()) {
+        this.$message({ type: 'warning', message: '装货时间必须小于当前时间！' });
+        this.form.loadTime = null;
+      } else if (this.form.unloadTime) {
         const unloadtime = new Date(this.form.unloadTime);
+        const unloadtimeLong = new Date(this.form.unloadTime.replace(new RegExp('-', 'gm'), '/')).getTime();
+        const timeDifference = (unloadtimeLong - loadtimeLong) / (60 * 1000);
         if (loadtime >= unloadtime) {
           this.$message({ type: 'warning', message: '装货时间必须小于卸货时间！' });
+          this.form.loadTime = null;
+        } else if (timeDifference < 5) {
+          this.$message({ type: 'warning', message: '装卸货间隔时间过短，请重新选择装货时间！' });
           this.form.loadTime = null;
         }
       }
     },
     unloadTimeChoose(e) {
-      if (this.form.loadTime) {
-        const unloadtime = new Date(e);
+      const unloadtime = new Date(e);
+      const unloadtimeLong = new Date(e.replace(new RegExp('-', 'gm'), '/')).getTime();
+      if (unloadtime > new Date()) {
+        this.$message({ type: 'warning', message: '卸货时间必须小于当前时间！' });
+        this.form.unloadTime = null;
+      } else if (this.form.loadTime) {
         const loadtime = new Date(this.form.loadTime);
+        const loadtimeLong = new Date(this.form.loadTime.replace(new RegExp('-', 'gm'), '/')).getTime();
+        const timeDifference = (unloadtimeLong - loadtimeLong) / (60 * 1000);
         if (loadtime >= unloadtime) {
           this.$message({ type: 'warning', message: '卸货时间必须大于装货时间！' });
+          this.form.unloadTime = null;
+        } else if (timeDifference < 5) {
+          this.$message({ type: 'warning', message: '装卸货间隔时间过短，请重新选择卸货时间！' });
           this.form.unloadTime = null;
         }
       }

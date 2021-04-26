@@ -213,20 +213,27 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row :gutter="24">
           <el-col :span="24">
-            <el-form-item v-if="!form.roleId" v-model="form.orgCode" label="所属组织" prop="orgCode" :rules="[{ required: true, message: '所属组织不能为空', trigger: 'blur' }]">
-              <el-tree
+            <el-form-item v-if="!form.roleId" label="所属组织" prop="orgCode" :rules="[{ required: true, message: '所属组织不能为空', trigger: 'blur' }]">
+              <!-- <el-tree
                 ref="tree"
                 class="tree-border"
                 :data="deptTreeOptions"
                 :props="defaultTreeProps"
                 :expand-on-click-node="false"
                 @node-click="handleOrgClick"
+              /> -->
+              <treeselect
+                v-model="form.orgCode"
+                :options="deptTreeOptions"
+                :normalizer="normalizer"
+                :show-count="true"
+                placeholder="请选择所属组织"
               />
             </el-form-item>
           </el-col>
         </el-row>
         <el-form-item label="所属产品" prop="produceCode">
-          <el-select v-model="form.produceCode" clearable filterable placeholder="请选择所属产品" style="width: 380px">
+          <el-select v-model="form.produceCode" clearable filterable placeholder="请选择所属产品" style="width: 100%">
             <el-option
               v-for="item in produceList"
               :key="item.produceCode"
@@ -375,9 +382,14 @@ import { listRole, getRole, delRole, addRole, updateRole, dataScope, changeRoleS
 import { treeselect as menuTreeselect, roleMenuTreeselect, versionTreeList } from '@/api/system/menu';
 import { treeselect as deptTreeselect, roleDeptTreeselect } from '@/api/system/dept';
 import { mapGetters } from 'vuex';
+import Treeselect from '@riophae/vue-treeselect';
+import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 
 export default {
   name: 'Role',
+  components: {
+    Treeselect
+  },
   props: {
     companyCode: {
       type: String,
@@ -490,6 +502,14 @@ export default {
       defaultTreeProps: {
         children: 'children',
         label: 'label'
+      },
+      // 部门树键值转换
+      normalizer(node) {
+        return {
+          id: node.code, // 键名转换，方法默认是label和children进行树状渲染
+          label: node.label,
+          children: node.children
+        };
       },
       // 产品应用版本树选项
       produceOptions: undefined,
