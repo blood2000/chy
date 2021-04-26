@@ -18,6 +18,15 @@ export function editAmountPassword(data) {
   });
 }
 
+// 忘记密码
+export function forgetPassword(data) {
+  return request({
+    url: '/payment/wallet/forgetPassword',
+    method: 'put',
+    data: data
+  });
+}
+
 // 提现申请
 export function transferApply(data) {
   return request({
