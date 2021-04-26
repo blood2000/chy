@@ -35,7 +35,7 @@
         <el-form-item label="卸货信息" prop="receivedInfo">
           <el-input
             v-model="queryParams.receivedInfo"
-            placeholder="目的地/卸货电话/卸货人"
+            placeholder="卸货地/卸货电话/卸货人"
             clearable
             size="small"
             style="width: 228px"

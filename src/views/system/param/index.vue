@@ -72,10 +72,10 @@ export default {
       return (
         <span class='custom-tree-node'>
           <span>{node.label}</span>
-          <span class='fr'>
-            <el-button size='mini' type='text' on-click={ () => this.appendTree(data) }>新增</el-button>
-            <el-button size='mini' type='text' on-click={ () => this.editTree(node, data) }>编辑</el-button>
-            <el-button size='mini' type='text' on-click={ () => this.removeTree(node, data) }>删除</el-button>
+          <span class='custom-tree-button'>
+            <el-button type='text' on-click={ () => this.appendTree(data) }><i class='el-icon-circle-plus-outline' /></el-button>
+            <el-button type='text' on-click={ () => this.editTree(node, data) }><i class='el-icon-edit-outline' /></el-button>
+            <el-button type='text' on-click={ () => this.removeTree(node, data) }><i class='el-icon-delete' /></el-button>
           </span>
         </span>);
     },
@@ -106,8 +106,18 @@ export default {
 .page-param-tree{
   .el-tree-node__content .custom-tree-node{
     width: 100%;
-    .el-button--mini{
-      padding: 4px 0;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-right: 8px;
+    .custom-tree-button{
+      display: none;
+    }
+    &:hover{
+      .custom-tree-button{
+        display: block;
+      }
     }
   }
 }

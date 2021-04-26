@@ -11,27 +11,6 @@
         />
       </el-form-item>
 
-      <!-- <el-form-item label="转货电话" prop="testName1">
-        <el-input
-          v-model="queryParams.testName1"
-          placeholder="装货地/装货电话/装货人"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-
-      <el-form-item label="发货人" prop="testName2">
-        <el-input
-          v-model="queryParams.testName2"
-          placeholder="目的地/收货电话/收货人"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
-
-
       <el-form-item class="fr">
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -39,9 +18,6 @@
       </el-form-item>
     </el-form>
 
-    <!-- <div class="mb8">
-      <tablec-cascader v-model="tableColumnsConfig" :options="options" />
-    </div> -->
     <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
       <el-tab-pane label="司机" name="listDriver" />
       <el-tab-pane label="调度" name="listInfo" />
@@ -63,12 +39,15 @@
     <!-- 调度者 -->
     <div v-show="activeName === 'listInfo'">
       <el-radio-group v-model="radio" style="width:100%" @change="handlerChange">
+
         <el-table v-loading="loading" :data="list_listInfo" border stripe>
           <el-table-column label="" align="center" width="50">
             <template slot-scope="scope">
-              <el-radio :label="scope.row.id">
-                <div v-show="false" />
-              </el-radio>
+              <div @click.capture="handlerclick1($event, scope.row.id)">
+                <el-radio :label="scope.row.id">
+                  <div v-show="false" />
+                </el-radio>
+              </div>
             </template>
           </el-table-column>
 
@@ -300,6 +279,16 @@ export default {
     // 单选
     handlerChange(value) {
       // console.log(value);
+      // console.log(this.radio);
+    },
+    handlerclick1(e, value) {
+      if (value === this.radio) {
+        // console.log('点击了2次');
+        if (e && e.preventDefault) {
+          e.preventDefault();// 非IE浏览器
+        } else { window.event.returnValue = false; } // IE浏览器
+        this.radio = '';
+      }
     },
 
     _ok(bool) {

@@ -42,7 +42,7 @@
         >
           <el-input
             v-model="queryParams.loadInfo"
-            placeholder="装货地/装货电话/发货人"
+            placeholder="装货地/装货电话/装货人"
             clearable
             size="small"
             style="width: 228px"
@@ -55,7 +55,7 @@
         >
           <el-input
             v-model="queryParams.receivedInfo"
-            placeholder="目的地/卸货电话/卸货人"
+            placeholder="卸货地/卸货电话/卸货人"
             clearable
             size="small"
             style="width: 228px"

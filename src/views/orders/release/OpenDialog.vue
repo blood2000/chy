@@ -11,7 +11,7 @@
           />
         </el-select>
       </el-form-item> -->
-      <el-form-item label="状态" prop="status">
+      <el-form-item v-if="false" label="状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择状态" clearable filterable size="small">
           <el-option
             v-for="dict in statusOptions"
@@ -151,7 +151,7 @@ export default {
         code: undefined,
         shipmentCode: undefined,
         addressType: undefined,
-        status: undefined,
+        status: 1,
         createCode: undefined,
         updateCode: undefined,
         addressName: undefined,

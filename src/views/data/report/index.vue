@@ -9,7 +9,7 @@
           placeholder="请输入支付批次号"
           clearable
           size="small"
-          style="width: 228px"
+          style="width: 150px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -19,7 +19,7 @@
           placeholder="请输入发货企业"
           clearable
           size="small"
-          style="width: 228px"
+          style="width: 150px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -29,7 +29,7 @@
           placeholder="请输入司机"
           clearable
           size="small"
-          style="width: 228px"
+          style="width: 150px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -39,7 +39,7 @@
           placeholder="请输入车牌号"
           clearable
           size="small"
-          style="width: 228px"
+          style="width: 150px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -49,7 +49,7 @@
           placeholder="请输入货源单号"
           clearable
           size="small"
-          style="width: 228px"
+          style="width: 150px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -59,7 +59,7 @@
           placeholder="请输入车队名称"
           clearable
           size="small"
-          style="width: 228px"
+          style="width: 150px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -69,16 +69,16 @@
           placeholder="请输入运输单号"
           clearable
           size="small"
-          style="width: 228px"
+          style="width: 150px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
 
       <!-- 下拉框 -->
-      <el-form-item label="流水上报" prop="bill">
-        <el-select v-model="queryParams.bill" placeholder="----请选择----" clearable filterable style="width: 228px">
+      <el-form-item label="流水上报" prop="billSendStatus">
+        <el-select v-model="queryParams.billSendStatus" placeholder="----请选择----" clearable filterable style="width: 150px">
           <el-option
-            v-for="(dict,index) in dicts['bill_option'] || []"
+            v-for="(dict,index) in dicts['billSendStatus_option'] || []"
             :key="index"
             :label="dict.dictLabel"
             :value="dict.dictValue"
@@ -86,7 +86,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="司机上报" prop="driverReport">
-        <el-select v-model="queryParams.driverReport" placeholder="----请选择----" clearable filterable style="width: 228px">
+        <el-select v-model="queryParams.driverReport" placeholder="----请选择----" clearable filterable style="width: 150px">
           <el-option
             v-for="(dict,index) in dicts['driverReport_option'] || []"
             :key="index"
@@ -95,20 +95,20 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="装货上报" prop="load">
-        <el-select v-model="queryParams.load" placeholder="----请选择----" clearable filterable style="width: 228px">
+      <el-form-item label="装货上报" prop="loadSendStatus">
+        <el-select v-model="queryParams.loadSendStatus" placeholder="----请选择----" clearable filterable style="width: 150px">
           <el-option
-            v-for="(dict,index) in dicts['load_option'] || []"
+            v-for="(dict,index) in dicts['loadSendStatus_option'] || []"
             :key="index"
             :label="dict.dictLabel"
             :value="dict.dictValue"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="卸货上报" prop="unload">
-        <el-select v-model="queryParams.unload" placeholder="----请选择----" clearable filterable style="width: 228px">
+      <el-form-item label="卸货上报" prop="unloadSendStatus">
+        <el-select v-model="queryParams.unloadSendStatus" placeholder="----请选择----" clearable filterable style="width: 150px">
           <el-option
-            v-for="(dict,index) in dicts['unload_option'] || []"
+            v-for="(dict,index) in dicts['unloadSendStatus_option'] || []"
             :key="index"
             :label="dict.dictLabel"
             :value="dict.dictValue"
@@ -116,7 +116,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="车辆上报" prop="vehicleReport">
-        <el-select v-model="queryParams.vehicleReport" placeholder="----请选择----" clearable filterable style="width: 228px">
+        <el-select v-model="queryParams.vehicleReport" placeholder="----请选择----" clearable filterable style="width: 150px">
           <el-option
             v-for="(dict,index) in dicts['vehicleReport_option'] || []"
             :key="index"
@@ -125,10 +125,10 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="运单上报" prop="waybill">
-        <el-select v-model="queryParams.waybill" placeholder="----请选择----" clearable filterable style="width: 228px">
+      <el-form-item label="运单上报" prop="waybillSendStatus">
+        <el-select v-model="queryParams.waybillSendStatus" placeholder="----请选择----" clearable filterable style="width: 150px">
           <el-option
-            v-for="(dict,index) in dicts['waybill_option'] || []"
+            v-for="(dict,index) in dicts['waybillSendStatus_option'] || []"
             :key="index"
             :label="dict.dictLabel"
             :value="dict.dictValue"
@@ -141,7 +141,7 @@
         <el-date-picker
           v-model="queryParams.tin10"
           size="small"
-          style="width: 228px"
+          style="width: 150px"
           value-format="yyyy-MM-dd"
           type="daterange"
           range-separator="-"
@@ -162,7 +162,7 @@
           placeholder="请输入关键词"
           :remote-method="remoteMethod"
           :loading="loading"
-          style="width: 228px"
+          style="width: 150px"
           @keyup.enter.native="handleQuery"
         >
           <el-option
@@ -188,12 +188,12 @@
       <el-row :gutter="10" class="mb8">
 
         <!-- 做切换使用 -->
-        <el-col v-if="false" :span="1.5">
+        <!-- <el-col v-if="false" :span="1.5">
           <el-radio-group v-model="active" size="small" @change="handleClick">
             <el-radio-button label="0">已校验</el-radio-button>
             <el-radio-button label="1">未校验</el-radio-button>
           </el-radio-group>
-        </el-col>
+        </el-col> -->
 
         <!-- 做批量按钮使用 -->
         <el-col :span="1.5">
@@ -256,30 +256,53 @@
         <!-- :height="theight" -->
         <!-- :row-class-name="tableRowClassName" -->
         <!-- 装货地 -->
-        <template #vehicleReport="{row}">
-          <span :class="row.vehicleReport == '1'?'g-color-success':'g-color-error'">{{ selectDictLabel(dicts['vehicleReport_option'], (row.vehicleReport? row.vehicleReport: 0)) }}</span>
-        </template>
-        <template #driverReport="{row}">
-          <span :class="row.driverReport == '1'?'g-color-success':'g-color-error'">{{ selectDictLabel(dicts['driverReport_option'], (row.driverReport? row.driverReport: 0)) }}</span>
-        </template>
+
         <template #isAbnormal="{row}">
           <span :class="row.isAbnormal == '1'?'g-color-success':'g-color-error'">{{ selectDictLabel(dicts['isAbnormal_option'], (row.isAbnormal? row.isAbnormal: 0)) }}</span>
         </template>
-        <template #isChild="{row}">
-          <span :class="row.isChild === 0? 'g-color-warning':'g-color-blue'">{{ selectDictLabel(dicts['isChild_option'], (row.isChild? row.isChild: 0)) }}</span>
+
+        <template #vehicleReport="{row}">
+          <span v-if="row.vehicleReport == '0'" class="g-color-error">未上报</span>
+          <span v-if="row.vehicleReport == '1'" class="g-color-success">上报成功</span>
+          <span v-if="row.vehicleReport == '2'" class="g-color-warning">上报失败</span>
+        </template>
+        <template #driverReport="{row}">
+          <span v-if="row.driverReport == '0'" class="g-color-error">未上报</span>
+          <span v-if="row.driverReport == '1'" class="g-color-success">上报成功</span>
+          <span v-if="row.driverReport == '2'" class="g-color-warning">上报失败</span>
+        </template>
+        <template #waybillSendStatus="{row}">
+          <span v-if="row.waybillSendStatus == '0'" class="g-color-error">未上报</span>
+          <span v-if="row.waybillSendStatus == '1'" class="g-color-success">上报成功</span>
+          <span v-if="row.waybillSendStatus == '2'" class="g-color-warning">上报失败</span>
+        </template>
+        <template #loadSendStatus="{row}">
+          <span v-if="row.loadSendStatus == '0'" class="g-color-error">未上报</span>
+          <span v-if="row.loadSendStatus == '1'" class="g-color-success">上报成功</span>
+          <span v-if="row.loadSendStatus == '2'" class="g-color-warning">上报失败</span>
+        </template>
+        <template #unloadSendStatus="{row}">
+          <span v-if="row.unloadSendStatus == '0'" class="g-color-error">未上报</span>
+          <span v-if="row.unloadSendStatus == '1'" class="g-color-success">上报成功</span>
+          <span v-if="row.unloadSendStatus == '2'" class="g-color-warning">上报失败</span>
+        </template>
+        <template #billSendStatus="{row}">
+          <span v-if="row.unloadSendStatus == '0'" class="g-color-error">未上报</span>
+          <span v-if="row.unloadSendStatus == '1'" class="g-color-success">上报成功</span>
+          <span v-if="row.unloadSendStatus == '2'" class="g-color-warning">上报失败</span>
         </template>
 
         <template #waybillStatus="{row}">
           <span v-if="row.waybillStatus == '0'" class="g-color-error">未接单</span>
-          <span v-if="row.waybillStatus == '1'" class="g-color-gray">已接单</span>
-          <span v-if="row.waybillStatus == '2'" class="g-color-light-gray">已装货</span>
-          <span v-if="row.waybillStatus == '3'" class="g-color-blue">已签收(已卸货)</span>
+          <span v-if="row.waybillStatus == '1'" class="g-color-success">已接单</span>
+          <span v-if="row.waybillStatus == '2'" class="g-color-success">已装货</span>
+          <span v-if="row.waybillStatus == '3'" class="g-color-success">已签收(已卸货)</span>
           <span v-if="row.waybillStatus == '4'" class="g-color-success">已回单</span>
-          <span v-if="row.waybillStatus == '5'" class="g-color-warning">已核算</span>
-          <span v-if="row.waybillStatus == '6'" class="g-color-warning">已申请（打款）</span>
-          <span v-if="row.waybillStatus == '7'" class="g-color-warning">已打款</span>
-          <span v-if="row.waybillStatus == '8'" class="g-color-warning">已申请开票</span>
-          <span v-if="row.waybillStatus == '9'" class="g-color-warning">已开票</span>
+          <span v-if="row.waybillStatus == '5'" class="g-color-success">已核算</span>
+          <span v-if="row.waybillStatus == '6'" class="g-color-success">已申请（打款）</span>
+          <span v-if="row.waybillStatus == '7'" class="g-color-success">已打款</span>
+          <span v-if="row.waybillStatus == '8'" class="g-color-success">已申请开票</span>
+          <span v-if="row.waybillStatus == '9'" class="g-color-success">已开票</span>
         </template>
 
         <template #edit="{row}">
@@ -291,28 +314,31 @@
               v-hasPermi="['data:report:detail']"
               size="mini"
               type="text"
-              @click="handleUpdate(row)"
+              @click="handleEdit(row, 'detail')"
             >详情</el-button>
 
             <el-button
+              v-if="row.isChild == 2"
               v-hasPermi="['data:report:seperate']"
               size="mini"
               type="text"
-              @click="handleUpdate(row)"
+              @click="handleEdit(row, 'seperate')"
             >分单列表</el-button>
 
             <el-button
+              v-if="true"
               v-hasPermi="['data:report:report']"
               size="mini"
               type="text"
-              @click="handleUpdate(row)"
+              @click="handleEdit(row, 'report')"
             >上报</el-button>
 
             <el-button
+              v-else
               v-hasPermi="['data:report:check']"
               size="mini"
               type="text"
-              @click="handleInfo(row)"
+              @click="handleEdit(row, 'check')"
             >查看校验</el-button>
 
 
@@ -326,31 +352,6 @@
                   type="text"
                   @click="handleDelete(row)"
                 >删除</el-button>
-              </el-dropdown-item>
-
-              <el-dropdown-item>
-                <el-button
-                  v-hasPermi="['consigner-order-adjust-price']"
-                  size="mini"
-                  type="text"
-                  @click="handleReadjustPrices(row)"
-                >调价</el-button>
-              </el-dropdown-item>
-
-              <el-dropdown-item>
-                <el-button
-                  size="mini"
-                  type="text"
-                  @click="handleShenhe(row)"
-                >审核</el-button>
-              </el-dropdown-item>
-
-              <el-dropdown-item>
-                <el-button
-                  size="mini"
-                  type="text"
-                  @click="handleclone(row)"
-                >复制</el-button>
               </el-dropdown-item>
             </TableDropdown>
           </template>
@@ -368,11 +369,16 @@
 
 
     <!-- 弹框使用  class类 i-price 是使用图片了 -->
-    <el-dialog :title="'费用调价'" class="i-price" :visible.sync="open" width="900px" append-to-body>
-      <!-- 弹框内的组件 -->
-      <div>123</div>
+    <!-- 弹框内的组件 -->
+    <el-dialog :title="'查看校验结果'" class="i-price" :visible.sync="open" width="70%" append-to-body>
       <!-- <price-adjustment v-if="openPriceAdjustment" :mytabs="tabs" :order-code="orderCode" :pubilsh-code="pubilshCode" @submitRes="submitRes" /> -->
+      <check-result v-if="open" :prop-data="openData" />
     </el-dialog>
+
+    <!-- 分单列表 -->
+    <child-dialog ref="ChildDialog" :open.sync="childdialog" :title="'子单列表'" />
+    <!-- 运单详情 对话框 -->
+    <detail-dialog ref="DetailDialog" :current-id="currentId" :title="'运输单信息'" :open.sync="open1" :disable="formDisable" />
   </div>
 </template>
 
@@ -380,24 +386,26 @@
 import tableColumnsConfig from './data-index';
 
 import { listApi, waybillReport } from '@/api/data/report';
+
+import CheckResult from './components/CheckResult';
+import ChildDialog from '@/views/settlement/components/childDialog';
+import DetailDialog from '@/views/waybill/components/detailDialog';
+
+const dictsData1 = [{ dictLabel: '未上报', dictValue: 0 }, { dictLabel: '上报成功', dictValue: 1 }, { dictLabel: '上报失败', dictValue: 2 }];
+
 export default {
   name: 'Manage', // 页面缓存需要name
-  components: {},
+  components: { CheckResult, ChildDialog, DetailDialog },
   data() {
     return {
       /* 模板参数必须 */
       loading: false, // 加载
-
       showSearch: true, // 显示搜索条件
-
-      open: false, // 打开弹框
-
-      active: '0', // 做tab切换
+      // active: '0', // 做tab切换
 
       /* 表格参数 */
-      // theight: undefined, // 列表高度(无)
-      total: 10, // 总条数
-      list: [{ projectName: 1231313 }], // 表格数据
+      total: 0, // 总条数
+      list: [], // 表格数据
       listApi, // 表头存的key
       tableColumnsConfig: [], // 表头动态值
 
@@ -407,12 +415,12 @@ export default {
         pageSize: 10,
         // status: '0'
 
-        bill: undefined, //	流水上报 1是 0否
+        billSendStatus: undefined, //	流水上报 1是 0否
         driverReport: undefined, //	司机是否上报 1是 0否
-        load: undefined, //	装货位置上报 1是 0否
-        unload: undefined, //	卸货位置上报 1是 0否
+        loadSendStatus: undefined, //	装货位置上报 1是 0否
+        unloadSendStatus: undefined, //	卸货位置上报 1是 0否
         vehicleReport: undefined, //	车辆是否上报 1是 0否
-        waybill: undefined, //	运单是否上报 1是 0否
+        waybillSendStatus: undefined, //	运单是否上报 1是 0否
 
         bizNo: undefined, //	支付批次号
         companyName: undefined, //	发货企业
@@ -424,23 +432,24 @@ export default {
       },
 
       /* 字典集合 取名规则 ***_option */
+
       dicts: {
-        driverReport_option: [{ dictLabel: '是', dictValue: 1 }, { dictLabel: '否', dictValue: 0 }],
-        vehicleReport_option: [{ dictLabel: '是', dictValue: 1 }, { dictLabel: '否', dictValue: 0 }],
-        bill_option: [{ dictLabel: '是', dictValue: 1 }, { dictLabel: '否', dictValue: 0 }],
-        load_option: [{ dictLabel: '是', dictValue: 1 }, { dictLabel: '否', dictValue: 0 }],
-        unload_option: [{ dictLabel: '是', dictValue: 1 }, { dictLabel: '否', dictValue: 0 }],
-        waybill_option: [{ dictLabel: '是', dictValue: 1 }, { dictLabel: '否', dictValue: 0 }],
-        waybillNo_option: [{ dictLabel: '是', dictValue: 1 }, { dictLabel: '否', dictValue: 0 }],
-        isAbnormal_option: [{ dictLabel: '是', dictValue: 1 }, { dictLabel: '否', dictValue: 0 }],
-        isChild_option: [{ dictLabel: '超载的主单', dictValue: 2 }, { dictLabel: '是（子单）', dictValue: 1 }, { dictLabel: '不是 （正常单）', dictValue: 0 }],
-        reportTypeList_option: [
-          { dictLabel: '运单', dictValue: 1 },
-          { dictLabel: '装货位置', dictValue: 2 },
-          { dictLabel: '卸货位置', dictValue: 3 },
-          { dictLabel: '流水', dictValue: 4 }
-        ],
-        waybillStatus_option: [
+        driverReport_option: dictsData1,
+        vehicleReport_option: dictsData1,
+        billSendStatus_option: dictsData1,
+        loadSendStatus_option: dictsData1,
+        unloadSendStatus_option: dictsData1,
+        waybillSendStatus_option: dictsData1,
+        isAbnormal_option: [{ dictLabel: '是', dictValue: 1 }, { dictLabel: '否', dictValue: 0 }], // 是否异常
+        isChild_option: [{ dictLabel: '超载的主单', dictValue: 2 }, { dictLabel: '是（子单）', dictValue: 1 }, { dictLabel: '不是 （正常单）', dictValue: 0 }], // 是否子单
+        // reportTypeList_option: [
+        //   { dictLabel: '运单', dictValue: 1 },
+        //   { dictLabel: '装货位置', dictValue: 2 },
+        //   { dictLabel: '卸货位置', dictValue: 3 },
+        //   { dictLabel: '流水', dictValue: 4 }
+        // ],
+
+        waybillStatus_option: [ // 运输状态
           { dictLabel: '未接单', dictValue: 0 },
           { dictLabel: '已接单', dictValue: 1 },
           { dictLabel: '已装货', dictValue: 2 },
@@ -452,10 +461,18 @@ export default {
           { dictLabel: '已申请开票', dictValue: 8 },
           { dictLabel: '已开票', dictValue: 9 }
         ]
-      }
+      },
 
+      /* 弹框参数1- 详情 */
+      open1: false,
+      currentId: '',
+      formDisable: true,
+      /* 弹框参数2- 分单列表弹框*/
+      childdialog: false, // 分单列表弹框
 
-
+      /* 弹框参数 */
+      open: false, // 打开弹框
+      openData: null // 类型对象
 
       /* 其他额外参数 */
       // shipmentList: [], // 远程搜索的时候使用
@@ -464,28 +481,30 @@ export default {
       //   keywords: '',
       //   pageSize: 10
       // }
+
+
     };
   },
 
-  watch: {
-    // 页面刷新使用
-    '$route.query.p': {
-      handler(value, odvalue) {
-        if (!value) return;
-        this.queryParams.pageNum = 1;
-        this.getList();
-        this.$route.query.p = '';
-      },
-      immediate: true
-    }
-  },
+  // watch: {
+  //   // 页面刷新使用
+  //   '$route.query.p': {
+  //     handler(value, odvalue) {
+  //       if (!value) return;
+  //       this.queryParams.pageNum = 1;
+  //       this.getList();
+  //       this.$route.query.p = '';
+  //     },
+  //     immediate: true
+  //   }
+  // },
 
 
   created() {
     // 配置表头 listApi-> 请求的接口, null-> 编辑, tableColumnsConfig-> 外部的表头
     this.tableHeaderConfig(this.tableColumnsConfig, listApi, null, tableColumnsConfig);
 
-    console.log(this.tableColumnsConfig);
+    // console.log(this.tableColumnsConfig);
 
     // 需要字典的这里请求
     this.getDict();
@@ -559,43 +578,81 @@ export default {
       this.handleQuery();
     },
 
-    /** 导出按钮操作 */
+    /** 导出作 */
     handleExport() {
       this.download('/transportation/order/export', {
         ...this.queryParams
       }, `order_export.xlsx`);
     },
+    /** 批量上报 */
+    handleReport() {},
+    /** 批量导入 */
+    handleImport() {},
+    /** 下载模板 */
+    handleDownload() {},
+    /** 更新网商打款状态 */
+    handleUpdate() {},
 
-    /** 触发远程搜索 */
-    remoteMethod(query) {
-      if (query !== '') {
-        this.shipmentreq.pageNum = 1;
-        this.shipmentreq.keywords = query;
-        this.shipmentList = [];
-        this.getTeamList();
-      } else {
-        this.shipmentList = [];
+
+    /** 列表按钮 */
+    handleEdit(row, type) {
+      switch (type) {
+        case 'detail':
+          this.$refs.DetailDialog.reset();
+          this.open1 = true;
+          this.currentId = row.waybillCode;
+          this.formDisable = true;
+          // this.openData = row;
+          break;
+        case 'seperate':
+          this.childdialog = true;
+          this.$refs.ChildDialog.setForm({ wayBillCode: row.waybillCode });
+          break;
+        case 'report':
+          this._waybillReport(row);
+          break;
+        case 'check':
+          this.open = true;
+          this.openData = row;
+          break;
       }
     },
+
+    /* 上报接口 */
+    _waybillReport(row) {
+      console.log(row);
+    }
+
+    /** 触发远程搜索 */
+    // remoteMethod(query) {
+    //   if (query !== '') {
+    //     this.shipmentreq.pageNum = 1;
+    //     this.shipmentreq.keywords = query;
+    //     this.shipmentList = [];
+    //     this.getTeamList();
+    //   } else {
+    //     this.shipmentList = [];
+    //   }
+    // },
     /** 远程搜索列表触底事件 */
-    loadmore() {
-      if (this.dataOver) return;
-      this.shipmentreq.pageNum++;
-      this.getTeamList();
-    },
+    // loadmore() {
+    //   if (this.dataOver) return;
+    //   this.shipmentreq.pageNum++;
+    //   this.getTeamList();
+    // },
     /** 请求数据 */
-    getTeamList() {
-      // 请求数据
-      // listShipment(this.shipmentreq).then(
-      //   (res) => {
-      //     this.dataOver = !res.rows.length;
-      //     this.shipmentList = this.shipmentList.concat(res.rows);
-      //     this.loading = false;
-      //   }
-      // ).catch(() => {
-      //   this.loading = false;
-      // });
-    },
+    // getTeamList() {
+    //   // 请求数据
+    //   // listShipment(this.shipmentreq).then(
+    //   //   (res) => {
+    //   //     this.dataOver = !res.rows.length;
+    //   //     this.shipmentList = this.shipmentList.concat(res.rows);
+    //   //     this.loading = false;
+    //   //   }
+    //   // ).catch(() => {
+    //   //   this.loading = false;
+    //   // });
+    // },
 
 
     /** 复制 */
@@ -615,26 +672,22 @@ export default {
     // },
 
     /** 子类的高亮 */
-    tableRowClassName({ row, rowIndex }) {
-      if (row.children) {
-        return 'warning-row';
-      }
-      if (!row.isShowEdit) {
-        return 'red-row';
-      }
-      return '';
-    },
+    // tableRowClassName({ row, rowIndex }) {
+    //   if (row.children) {
+    //     return 'warning-row';
+    //   }
+    //   if (!row.isShowEdit) {
+    //     return 'red-row';
+    //   }
+    //   return '';
+    // },
 
     /** 生成随机id */
-    genID(length) {
-      return Number(Math.random().toString().substr(3, length) + Date.now()).toString(36);
-    },
+    // genID(length) {
+    //   return Number(Math.random().toString().substr(3, length) + Date.now()).toString(36);
+    // },
 
-    /* */
-    handleReport() {},
-    handleImport() {},
-    handleDownload() {},
-    handleUpdate() {}
+
   }
 };
 </script>
