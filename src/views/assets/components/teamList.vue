@@ -32,8 +32,8 @@
       </el-table-column>
       <el-table-column v-if="driverCode" label="操作" align="center" prop="edit">
         <template slot-scope="scope">
-          <!-- v-hasPermi -->
           <el-button
+            v-hasPermi="['assets:team:driver:del']"
             size="mini"
             type="text"
             @click="handleDelBind(scope.row)"

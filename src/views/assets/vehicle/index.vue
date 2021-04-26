@@ -168,7 +168,7 @@
       <el-row v-if="teamCode || driverCode" :gutter="10" class="mb8">
         <el-col :span="1.5">
           <el-button
-            v-hasPermi="['assets:vehicle:add']"
+            v-hasPermi="teamCode?['assets:vehicle:team:add']:['assets:vehicle:driver:add']"
             type="primary"
             icon="el-icon-plus"
             size="mini"
@@ -177,7 +177,7 @@
         </el-col>
         <el-col :span="1.5">
           <el-button
-            v-hasPermi="['assets:vehicle:remove']"
+            v-hasPermi="teamCode?['assets:team:vehicle:del']:['assets:driver:vehicle:del']"
             type="danger"
             icon="el-icon-delete"
             size="mini"
@@ -263,7 +263,7 @@
           >详情</el-button>
           <el-button
             v-show="teamCode || driverCode"
-            v-hasPermi="['assets:vehicle:remove']"
+            v-hasPermi="teamCode?['assets:team:vehicle:del']:['assets:driver:vehicle:del']"
             size="mini"
             type="text"
             @click="handleDelBind(row)"

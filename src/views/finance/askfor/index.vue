@@ -216,7 +216,7 @@
     </div>
     <el-row
       :gutter="10"
-      class="feeinfo"
+      class="g-statistics-bg"
     >
       <el-col :span="1">
         <img src="../../../../src/assets/images/icon/total.png" alt="">
@@ -512,14 +512,4 @@ export default {
 
 <style lang="scss" scoped>
 .dropdown-menu::-webkit-scrollbar {display:none}
-
-.feeinfo{
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: #fff;
-  padding: 15px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-}
 </style>

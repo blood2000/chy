@@ -49,23 +49,7 @@
         <el-input v-model="form.mobile" placeholder="请输入绑定手机号" class="width90" clearable />
       </el-form-item>
       <el-form-item label="网点" prop="bankBranch">
-        <el-select
-          v-model="form.bankBranch"
-          filterable
-          remote
-          reserve-keyword
-          placeholder="请输入网点"
-          class="width90"
-          :remote-method="getBranchOptions"
-          :loading="loading"
-        >
-          <el-option
-            v-for="item in branchOptions"
-            :key="item.code"
-            :label="item.name"
-            :value="item.code"
-          />
-        </el-select>
+        <el-input v-model="form.bankBranch" placeholder="请输入网点" class="width90" clearable />
       </el-form-item>
       <!-- 开户城市 -->
       <province-city-county
@@ -116,7 +100,6 @@
 <script>
 import { addBank, updateBank } from '@/api/capital/bankcard';
 import { listUser } from '@/api/system/user';
-import { getBranchList } from '@/api/system/branch';
 import ProvinceCityCounty from '@/components/ProvinceCityCounty';
 import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
 
@@ -176,10 +159,7 @@ export default {
         pageNum: 1,
         pageSize: 10,
         phonenumber: null
-      },
-      // 网点查询
-      loading: false,
-      branchOptions: []
+      }
     };
   },
   computed: {
@@ -299,20 +279,6 @@ export default {
           this.form.mobile = el.phonenumber;
         }
       });
-    },
-    // 查询网点列表
-    getBranchOptions(query) {
-      if (query !== '') {
-        this.loading = true;
-        getBranchList({
-          name: query
-        }).then(response => {
-          this.loading = false;
-          this.branchOptions = response.data;
-        });
-      } else {
-        this.branchOptions = [];
-      }
     },
     // 获取选中银行卡的名称
     changeBanK(code) {
