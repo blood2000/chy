@@ -41,7 +41,8 @@
             <el-radio
               v-for="dict in tin2Option"
               :key="dict.dictValue"
-              class="radio_item"
+              class="mb10 ml0"
+              border
               :label="dict.dictValue"
             >{{ dict.dictLabel }}</el-radio>
           </el-radio-group>
@@ -54,7 +55,8 @@
               <el-checkbox
                 v-for="dict in tin2_Option"
                 :key="dict.dictValue"
-                class="radio_item"
+                class="mb10 ml0"
+                border
                 :label="dict.dictValue"
               >{{ dict.dictLabel }}</el-checkbox>
             </el-checkbox-group>
@@ -64,7 +66,8 @@
               <el-radio
                 v-for="dict in tin2_Option"
                 :key="dict.dictValue"
-                class="radio_item"
+                class="mb10 ml0"
+                border
                 :label="dict.dictValue"
               >{{ dict.dictLabel }}</el-radio>
             </el-radio-group>
@@ -122,9 +125,21 @@
           </el-row>
 
 
-          <el-form-item v-if="formData.tin5 === '1'" label=" " prop="tin6_1">
-            <div class="ly-flex">
-              <el-button type="primary" @click="open1">请选择</el-button>
+          <el-form-item v-if="formData.tin5 === '1'" label="指定联系人" prop="tin6_1">
+            <div class="ly-flex-align-center">
+              <!-- <el-tag
+                v-for="(tag, index) in orderSpecifiedList"
+                :key="tag.name + index"
+                class="mr10"
+                :class="tag.userType === 1? 'team':'driver'"
+                closable
+                :disable-transitions="true"
+                :type="tag.type"
+                @close="closable(index)"
+              >
+                {{ tag.name }}
+              </el-tag> -->
+              <el-button type="primary" size="mini" @click="open1">请选择</el-button>
               <div class="ml0">调度者: {{ formData.tin6_1.length }} 人</div>
               <div class="ml0">司机: {{ formData.tin6_2.length }} 人</div>
             </div>
@@ -205,6 +220,7 @@ export default {
     //   }
     // };
     return {
+      // orderSpecifiedList1: [], // 指定联系人 { name: '调度者', type: 'info', userType: 1 }, { name: '司机2', type: 'info', userType: 2 }
       // myisdisabled: false,
       orderSpecifiedList: null, // 调度者信息
       actionIndex: '2', // 控制弹框显示谁
@@ -352,6 +368,9 @@ export default {
 
         // 4.处理调度者
         this.orderSpecifiedList = orderSpecifiedList;
+
+        // console.log(orderSpecifiedList);
+
         this.orderSpecifiedList.forEach(e => {
           if (e.userType + '' === '1') {
             e.code = e.teamInfoCode;
@@ -496,6 +515,27 @@ export default {
         } else {
           this.actionIndex = '1';
         }
+
+        const listDriver = (obj['listDriver'] || []).map(e => {
+          return {
+            ...e, // 需要其他再加
+            code: e.code,
+            name: e.name,
+            type: 'info',
+            userType: 2
+          };
+        });
+        const listInfo = (obj['listInfo'] || []).map(e => {
+          return {
+            ...e, // 需要其他再加
+            code: e.code,
+            name: e.name,
+            type: 'info',
+            userType: 1
+          };
+        });
+
+        this.orderSpecifiedList = [...listDriver, ...listInfo];
 
         if (this.formData.tin6_1.length > 1) {
           this.msgInfo('调度者只能选择一个');
@@ -668,5 +708,15 @@ export default {
     top: 1px;
     background-color: #1890ff;
   }
+}
+.el-tag.driver{
+  color: #000;
+  padding-left: 30px;
+  background: #EDF5FE url('~@/assets/images/order_siji.png') no-repeat 5px 3px;
+}
+.el-tag.team{
+  color: #000;
+  padding-left: 30px;
+  background: #FDF2E7 url('~@/assets/images/order_chedui.png') no-repeat 5px 3px;
 }
 </style>

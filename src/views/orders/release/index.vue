@@ -53,52 +53,53 @@
           <!-- 第一步 基本信息 -->
           <div v-show="active ==1 || myisdisabled">
 
-            <div class="ly-flex-pack-justify pr my_huozhu app-container">
+            <div v-if="!isClone && (!isAdmin && isCreated)" class="ly-flex-pack-justify pr my_huozhu app-container">
 
-              <div class="ly-flex-1 ly-flex-align-center">
+              <div v-if="shipmentInfo" class="ly-flex-1 ly-flex-align-center">
                 <i class="el-icon-office-building my-iocn" />
                 <div class="left-right-box m20">
                   <div class="dai-sytle mb10">代发货主信息:</div>
-                  <div v-if="shipmentInfo" class="ly-flex-align-center">
-                    <span class="huoz-style mr20">{{ shipmentInfo.companyName }}</span>
+                  <div class="ly-flex-align-center">
+                    <span class="huoz-style mr20">{{ shipmentInfo? shipmentInfo.companyName : '' }}</span>
                     <div class="ly-flex-align-center colorccc">
                       <i class="el-icon-s-custom" />
-                      <span class="name-style">{{ shipmentInfo.adminName }}</span>
+                      <span class="name-style">{{ shipmentInfo? shipmentInfo.adminName : '' }}</span>
                     </div>
                     <div class="ly-flex-align-center colorccc">
                       <i class="el-icon-phone" />
-                      <span class="name-style">{{ shipmentInfo.telphone }}</span>
+                      <span class="name-style">{{ shipmentInfo?shipmentInfo.telphone : '' }}</span>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div class="right-box ly-flex-align-center ">
-                <div class="mr20 btn" />
-                <el-form-item v-if="!isClone && (!isAdmin && isCreated)" label="代发货主" prop="tin1">
-                  <el-select
-                    v-model="formData.tin1"
-                    v-el-select-loadmore="loadmore"
-                    filterable
-                    clearable
-                    remote
-                    reserve-keyword
-                    placeholder="请输入关键词"
-                    :remote-method="remoteMethod"
-                    :loading="loading1"
-                    @change="handlerchange"
-                  >
-                    <el-option
-                      v-for="(item, index1) in shipmentList"
-                      :key="index1"
-                      :value="item.code"
-                      :label="item.adminName"
+                <div class="mr20 btn">
+                  <el-form-item v-if="!isClone && (!isAdmin && isCreated)" label="代发货主" prop="tin1">
+                    <el-select
+                      v-model="formData.tin1"
+                      v-el-select-loadmore="loadmore"
+                      filterable
+                      clearable
+                      remote
+                      reserve-keyword
+                      placeholder="请输入关键词"
+                      :remote-method="remoteMethod"
+                      :loading="loading1"
+                      @change="handlerchange"
                     >
-                      <!-- :label="item.adminName" -->
-                      <div class="ly-flex-pack-justify"><span>{{ item.adminName }}</span><span>{{ item.telphone }}</span></div>
-                    </el-option>
-                  </el-select>
-                </el-form-item>
+                      <el-option
+                        v-for="(item, index1) in shipmentList"
+                        :key="index1"
+                        :value="item.code"
+                        :label="item.adminName"
+                      >
+                        <!-- :label="item.adminName" -->
+                        <div class="ly-flex-pack-justify"><span>{{ item.adminName }}</span><span>{{ item.telphone }}</span></div>
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                </div>
               </div>
 
             </div>
@@ -121,7 +122,7 @@
           </div>
 
           <!-- 第二步 地址的填写 -->
-          <div v-show="(formData.tin1 && active === 2) || myisdisabled" class="content">
+          <div v-show="(formData.tin1 && active === 2) || myisdisabled" class="app-container">
             <div class="header mb8">地址信息</div>
             <el-form-item label="装卸类型" prop="tin7">
               <el-radio-group v-model="formData.tin7" size="medium" @change="zhuangOrxiechange">
@@ -240,15 +241,15 @@
             <el-divider />
             <template v-if="!myisdisabled">
               <div class="ly-t-center">
-                <el-button v-if="active < 3" @click="nextSe(1)">上一步</el-button>
-                <el-button v-if="active < 3" @click="nextSe(3)">下一步</el-button>
+                <el-button v-if="active < 3" type="primary" plain @click="nextSe(1)">上一步</el-button>
+                <el-button v-if="active < 3" type="primary" plain @click="nextSe(3)">下一步</el-button>
               </div>
             </template>
 
           </div>
 
           <!-- 第三步 货源信息 -->
-          <div v-show="(formData.tin1 && active === 3) || myisdisabled" class="content">
+          <div v-show="(formData.tin1 && active === 3) || myisdisabled" class="app-container">
             <div class="header mb8">货源信息</div>
             <goods-info
               ref="goodsInfo"
@@ -265,7 +266,7 @@
 
             <template v-if="!loading && !myisdisabled">
               <div v-if="!loading && active === 3" class="ly-t-center">
-                <el-button @click="nextFe(2)">上一步</el-button>
+                <el-button type="primary" plain @click="nextFe(2)">上一步</el-button>
                 <el-button v-hasPermi="['transportation:order:pubilsh']" type="primary" @click="onSubmit('elForm',3)">{{ isCreated?'立即发布':'保存' }}</el-button>
                 <el-button @click="nextFe(4)">预览(查看预估价格)</el-button>
               </div>
@@ -276,7 +277,7 @@
         </el-form>
 
         <div v-if="active >= 4 && !isT" class="ly-t-center">
-          <el-button @click="nextFe(3)">上一步</el-button>
+          <el-button type="primary" plain @click="nextFe(3)">上一步</el-button>
           <el-button v-hasPermi="['transportation:order:pubilsh']" type="primary" @click="onPubilsh">{{ isCreated?'立即发布':'保存' }}</el-button>
 
           <div class="release_warning">
@@ -1351,7 +1352,7 @@ export default {
 }
 
 .my_huozhu{
-  // background: #fff url('~@/assets/images/order-jiaoliu.png') no-repeat;
+  background: #fff url('~@/assets/images/order-jiaoliu.png') no-repeat;
   background-position: 99% 15px;
 }
 .my-iocn{
@@ -1372,6 +1373,11 @@ export default {
     margin-right: 10px;
     .name-style{
       margin-right: 5px;
+      color:#000;
     }
   }
+
+.btn{
+  padding-right: 70px;
+}
 </style>
