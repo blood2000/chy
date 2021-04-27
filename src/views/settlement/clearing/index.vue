@@ -170,12 +170,14 @@
       >
         <el-col :span="1.5">
           <el-button
+            v-hasPermi="['transportation:waybillSettlementClarify:export']"
             type="primary"
             icon="el-icon-upload2"
             size="mini"
             @click="handleExport"
           >导出</el-button>
           <el-button
+            v-hasPermi="['transportation:waybillSettlementClarify:batch']"
             type="primary"
             icon="el-icon-document"
             size="mini"
@@ -183,6 +185,7 @@
             @click="handleClearing"
           >运单清分</el-button>
           <el-button
+            v-hasPermi="['transportation:waybillSettlementClarify:batchStatu']"
             type="primary"
             icon="el-icon-refresh"
             size="mini"
@@ -212,11 +215,13 @@
 
         <template #edit="{row}">
           <el-button
+            v-hasPermi="['transportation:waybillSettlementClarify:batch']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 1)"
           >运单清分</el-button>
           <el-button
+            v-hasPermi="['transportation:waybillSettlementClarify:batchStatu']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 2)"

@@ -169,7 +169,7 @@
             type="text"
             @click="handleDetail(row)"
           >详情</el-button>
-          <el-button
+          <!-- <el-button
             size="mini"
             type="text"
             @click="handleReturn(row)"
@@ -178,7 +178,7 @@
             size="mini"
             type="text"
             @click="handleDedution(row)"
-          >扣押金</el-button>
+          >扣押金</el-button> -->
         </template>
       </RefactorTable>
 

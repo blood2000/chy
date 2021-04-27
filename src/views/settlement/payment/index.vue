@@ -183,6 +183,7 @@
       >
         <el-col :span="1.5">
           <el-button
+            v-hasPermi="['transportation:waybillSettlement:batch']"
             type="primary"
             icon="el-icon-wallet"
             size="mini"
@@ -225,12 +226,14 @@
         <template #edit="{row}">
           <el-button
             v-if="row.applyStatus === 1 || row.applyStatus === 5"
+            v-hasPermi="['transportation:waybillSettlement:rejected']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 1)"
           >驳回</el-button>
           <el-button
             v-if="row.applyStatus === 1 || row.applyStatus === 5"
+            v-hasPermi="['transportation:waybillSettlement:batch']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 2)"

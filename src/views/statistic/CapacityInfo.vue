@@ -10,8 +10,8 @@
         <p class="label">今日新增司机</p>
         <p class="text blod">
           0.211
-          <img src="@/assets/images/statistic/arow_up.png">
-          <span>12.6%</span>
+          <span class="arow_down" />
+          <span class="value_down">12.6%</span>
         </p>
       </div>
     </div>
@@ -24,8 +24,8 @@
         <p class="label">今日新增路线</p>
         <p class="text blod">
           0.211
-          <img src="@/assets/images/statistic/arow_up.png">
-          <span>12.6%</span>
+          <span class="arow_up" />
+          <span class="value_up">12.6%</span>
         </p>
       </div>
     </div>
@@ -38,8 +38,8 @@
         <p class="label">今日新增路线</p>
         <p class="text blod">
           0.211
-          <img src="@/assets/images/statistic/arow_up.png">
-          <span>12.6%</span>
+          <span class="arow_up" />
+          <span class="value_up">12.6%</span>
         </p>
       </div>
     </div>
@@ -52,8 +52,8 @@
         <p class="label">今日新增路线</p>
         <p class="text blod">
           0.211
-          <img src="@/assets/images/statistic/arow_up.png">
-          <span>12.6%</span>
+          <span class="arow_up" />
+          <span class="value_up">12.6%</span>
         </p>
       </div>
     </div>
@@ -66,8 +66,8 @@
         <p class="label">今日新增时长</p>
         <p class="text blod">
           0.211
-          <img src="@/assets/images/statistic/arow_up.png">
-          <span>12.6%</span>
+          <span class="arow_up" />
+          <span class="value_up">12.6%</span>
         </p>
       </div>
     </div>
@@ -80,8 +80,8 @@
         <p class="label">今日新增网点</p>
         <p class="text blod">
           0.211
-          <img src="@/assets/images/statistic/arow_up.png">
-          <span>12.6%</span>
+          <span class="arow_up" />
+          <span class="value_up">12.6%</span>
         </p>
       </div>
     </div>
@@ -100,12 +100,12 @@ export default {
   &__box{
     width: 16.66%;
     height: 100%;
-    padding-left: 1.59rem;
     position: relative;
-    &:not(:first-child)::before{
+    padding-left: 0.2rem;
+    &:not(:last-child)::before{
       content: '';
       position: absolute;
-      left: 0;
+      right: 1.59rem;
       top: 0;
       bottom: 0;
       width: 1px;
@@ -131,14 +131,31 @@ export default {
           font-weight: 700;
           opacity: 1;
         }
-        >img{
+        .arow_up{
+          display: inline-block;
           width: 0.9rem;
           height: 0.6rem;
+          background: url('~@/assets/images/statistic/arow_up.png') no-repeat;
+          background-size: 100% 100%;
+          margin-left: 0.3rem;
         }
-        >span{
+        .arow_down{
+          display: inline-block;
+          width: 0.9rem;
+          height: 0.6rem;
+          background: url('~@/assets/images/statistic/arow_down.png') no-repeat;
+          background-size: 100% 100%;
+          margin-left: 0.3rem;
+        }
+        .value_up{
           font-size: 0.6rem;
-          color: rgba(0, 210, 255, 1);
           vertical-align: top;
+          color: rgba(0, 210, 255, 1);
+        }
+        .value_down{
+          font-size: 0.6rem;
+          vertical-align: top;
+          color: rgba(52, 213, 192, 1);
         }
       }
     }

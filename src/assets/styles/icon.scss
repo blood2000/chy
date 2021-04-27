@@ -60,3 +60,21 @@
   background: url('~@/assets/images/icon/icon_push.png') no-repeat;
   background-size: 100% 100%;
 }
+
+.g-icon-driver{
+  @include g-icon;
+  background: url('~@/assets/images/icon/icon_driver.png') no-repeat;
+  background-size: 100% 100%;
+}
+
+.g-icon-team{
+  @include g-icon;
+  background: url('~@/assets/images/icon/icon_team.png') no-repeat;
+  background-size: 100% 100%;
+}
+
+.g-icon-teamdriver{
+  @include g-icon;
+  background: url('~@/assets/images/icon/icon_teamdriver.png') no-repeat;
+  background-size: 100% 100%;
+}
