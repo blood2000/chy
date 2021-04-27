@@ -35,7 +35,7 @@ export default {
         legend: {
           show: true,
           right: 0,
-          top: 2,
+          top: setfontSize(2),
           icon: 'rect',
           itemWidth: setfontSize(8),
           itemHeight: setfontSize(8),
@@ -43,6 +43,7 @@ export default {
             fontSize: setfontSize(12),
             color: '#B5CFDD'
           },
+          itemGap: setfontSize(36),
           data: [{
             name: '完成业绩'
           }, {
@@ -115,7 +116,7 @@ export default {
         series: [{
           name: '完成业绩',
           type: 'bar',
-          barWidth: 8, // 柱体宽度
+          barWidth: setfontSize(8), // 柱体宽度
           itemStyle: {
             normal: {
               // 柱体颜色渐变
@@ -138,7 +139,7 @@ export default {
         }, {
           name: '目标业绩',
           type: 'bar',
-          barWidth: 8, // 柱体宽度
+          barWidth: setfontSize(8), // 柱体宽度
           itemStyle: {
             normal: {
               // 柱体颜色渐变

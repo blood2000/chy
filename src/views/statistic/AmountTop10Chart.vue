@@ -39,12 +39,13 @@ export default {
             color: '#FFFFFF',
             fontWeight: 'normal',
             fontSize: setfontSize(16)
-          }
+          },
+          left: setfontSize(15)
         },
         legend: {
           show: true,
           right: 0,
-          top: 6,
+          top: setfontSize(6),
           icon: 'rect',
           itemWidth: setfontSize(10),
           itemHeight: setfontSize(8),
@@ -125,7 +126,7 @@ export default {
         series: [{
           name: '交易总额（省）',
           type: 'bar',
-          barWidth: 8, // 柱体宽度
+          barWidth: setfontSize(8), // 柱体宽度
           itemStyle: {
             normal: {
               // 柱体颜色渐变
@@ -148,7 +149,7 @@ export default {
         }, {
           name: '票务总额（省）',
           type: 'bar',
-          barWidth: 8, // 柱体宽度
+          barWidth: setfontSize(8), // 柱体宽度
           itemStyle: {
             normal: {
               // 柱体颜色渐变
@@ -171,7 +172,7 @@ export default {
         }, {
           name: '票总额（省）',
           type: 'bar',
-          barWidth: 8, // 柱体宽度
+          barWidth: setfontSize(8), // 柱体宽度
           itemStyle: {
             normal: {
               // 柱体颜色渐变

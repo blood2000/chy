@@ -126,7 +126,7 @@ export default {
 // 辅助线
 .ly-border {
   box-sizing: border-box;
-  border: 1px dashed rgb(255, 255, 255, 0.2);
+  // border: 1px dashed rgb(255, 255, 255, 0.2);
 }
 
 // 设计稿大小：3200*1080

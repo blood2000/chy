@@ -56,10 +56,10 @@ export default {
           icon: 'roundRect',
           itemWidth: setfontSize(8),
           itemHeight: setfontSize(8),
-          itemGap: 15, // 设置间距
+          itemGap: setfontSize(15), // 设置间距
           orient: 'vertical',
           top: '10%',
-          right: 10,
+          right: setfontSize(10),
           textStyle: {
             fontSize: setfontSize(12),
             color: '#D5EAFF'
