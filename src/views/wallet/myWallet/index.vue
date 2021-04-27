@@ -31,14 +31,14 @@
         <span class="g-color-blue">已设置</span>
       </p>
       <p class="g-text mb20">保护账户财产安全，请设置一个与登录密码不同的支付密码</p>
-      <el-button type="primary" @click="handleChangePassword">修改支付密码</el-button>
-      <el-button @click="handleForgotPassword">忘记密码</el-button>
+      <el-button type="primary" @click="handleChangePassword('edit')">修改支付密码</el-button>
+      <el-button @click="handleChangePassword('forget')">忘记密码</el-button>
     </div>
 
     <!-- 账户提现弹窗 -->
     <withdraw-dialog :open.sync="withdrawOpen" :user-code="userCode" :credi-amount="crediAmount" @refresh="getWallet" />
-    <!-- 修改密码弹窗 -->
-    <change-password-dialog :open.sync="changePasswordOpen" :amount-id="amountId" />
+    <!-- 修改/忘记密码弹窗 -->
+    <change-password-dialog :open.sync="changePasswordOpen" :amount-id="amountId" :title="title" :type="changePasswordType" />
   </div>
 </template>
 <script>
@@ -60,6 +60,8 @@ export default {
       withdrawOpen: false,
       // 密码
       changePasswordOpen: false,
+      changePasswordType: null,
+      title: null,
       // 钱包id
       amountId: null,
       userCode: null,
@@ -85,13 +87,15 @@ export default {
       this.withdrawOpen = true;
     },
     // 修改密码按钮
-    handleChangePassword() {
+    handleChangePassword(type) {
+      if (type === 'forget') {
+        this.title = '忘记密码';
+      } else if (type === 'edit') {
+        this.title = '修改支付密码';
+      }
+      this.changePasswordType = type;
       this.amountId = this.walletInfo.id;
       this.changePasswordOpen = true;
-    },
-    // 忘记密码按钮
-    handleForgotPassword() {
-
     },
     // 跳转页面
     handleJumpPage(url) {

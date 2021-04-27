@@ -200,9 +200,15 @@
       </el-row>
 
       <RefactorTable :loading="loading" :data="clarifylist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
-        <!-- <template #isChild="{row}">
-          <span>{{ selectDictLabel(isChildOptions, row.isChild) }}</span>
-        </template> -->
+        <template #clarifyStatus="{row}">
+          <span>
+            <i v-if="row.isReturn == 0" class="el-icon-info g-color-gray" />
+            <i v-if="row.isReturn == 1" class="g-icon-deal" />
+            <i v-if="row.isReturn == 2" class="el-icon-success g-color-success" />
+            <i v-if="row.isReturn == 3" class="el-icon-error g-color-error" />
+            {{ selectDictLabel(clarifyStatusOptions, row.clarifyStatus) }}
+          </span>
+        </template>
 
         <template #edit="{row}">
           <el-button
