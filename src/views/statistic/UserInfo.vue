@@ -10,8 +10,8 @@
         <p class="label">今日新增用户</p>
         <p class="text blod">
           0.211
-          <img src="@/assets/images/statistic/arow_up.png">
-          <span>12.6%</span>
+          <span class="arow_down" />
+          <span class="value_down">12.6%</span>
         </p>
       </div>
     </div>
@@ -24,8 +24,8 @@
         <p class="label">今日新增货主</p>
         <p class="text blod">
           0.211
-          <img src="@/assets/images/statistic/arow_up.png">
-          <span>12.6%</span>
+          <span class="arow_up" />
+          <span class="value_up">12.6%</span>
         </p>
       </div>
     </div>
@@ -38,8 +38,8 @@
         <p class="label">今日新增调度者</p>
         <p class="text blod">
           0.211
-          <img src="@/assets/images/statistic/arow_up.png">
-          <span>12.6%</span>
+          <span class="arow_up" />
+          <span class="value_up">12.6%</span>
         </p>
       </div>
     </div>
@@ -52,8 +52,8 @@
         <p class="label">今日新增司机</p>
         <p class="text blod">
           0.211
-          <img src="@/assets/images/statistic/arow_up.png">
-          <span>12.6%</span>
+          <span class="arow_up" />
+          <span class="value_up">12.6%</span>
         </p>
       </div>
     </div>
@@ -103,14 +103,31 @@ export default {
           font-weight: 700;
           opacity: 1;
         }
-        >img{
+        .arow_up{
+          display: inline-block;
           width: 0.9rem;
           height: 0.6rem;
+          background: url('~@/assets/images/statistic/arow_up.png') no-repeat;
+          background-size: 100% 100%;
+          margin-left: 0.3rem;
         }
-        >span{
+        .arow_down{
+          display: inline-block;
+          width: 0.9rem;
+          height: 0.6rem;
+          background: url('~@/assets/images/statistic/arow_down.png') no-repeat;
+          background-size: 100% 100%;
+          margin-left: 0.3rem;
+        }
+        .value_up{
           font-size: 0.6rem;
-          color: rgba(0, 210, 255, 1);
           vertical-align: top;
+          color: rgba(0, 210, 255, 1);
+        }
+        .value_down{
+          font-size: 0.6rem;
+          vertical-align: top;
+          color: rgba(52, 213, 192, 1);
         }
       }
     }
