@@ -29,7 +29,7 @@
             <AmountTop10Chart />
           </div>
           <div class="ly-left-bottom-right ly-border">
-            <ComponeyTop10List />
+            <CompanyTop10List />
           </div>
         </div>
       </div>
@@ -53,12 +53,12 @@
         </div>
       </div>
       <div class="ly-right-right ly-border">
-        <Title class="title_4" icon="7">总排名<span>Total number</span></Title>
+        <Title class="title_4 mb05rem" icon="7">总排名<span>Total number</span></Title>
         <div class="ly-right-right-top mb1rem ly-border">
-          右-右-上
+          <CompanyTop5List />
         </div>
         <div class="ly-right-right-bottom mb1rem ly-border">
-          右-右-下
+          <DriverTop5List />
         </div>
       </div>
     </div>
@@ -72,7 +72,10 @@ import UserInfo from './UserInfo';// 用户情况
 import CapacityInfo from './CapacityInfo';// 运力情况
 import PerformanceInfo from './PerformanceInfo';// 业绩数据
 import AmountTop10Chart from './AmountTop10Chart';// TOP10省份交易额排名
-import ComponeyTop10List from './ComponeyTop10List';// TOP10省内十大公司
+import CompanyTop10List from './CompanyTop10List';// TOP10省内十大公司
+
+import CompanyTop5List from './CompanyTop5List';// 总排名TOP5公司
+import DriverTop5List from './DriverTop5List';// 总排名TOP5司机
 
 export default {
   name: 'Statistic',
@@ -83,7 +86,10 @@ export default {
     CapacityInfo,
     PerformanceInfo,
     AmountTop10Chart,
-    ComponeyTop10List
+    CompanyTop10List,
+
+    CompanyTop5List,
+    DriverTop5List
   }
 };
 </script>
@@ -92,7 +98,7 @@ export default {
 // 辅助线
 .ly-border {
   box-sizing: border-box;
-  border: 1px dashed rgb(255, 255, 255, 0.2);
+  // border: 1px dashed rgb(255, 255, 255, 0.2);
 }
 
 // 设计稿大小：3200*1080
@@ -103,12 +109,14 @@ export default {
   $width_left: 53.8rem;
   $width_right: 48rem;
   $mb1rem: 1rem;
+  $mb05rem: 0.5rem;
 
   //base
   position: relative;
   color: #fff;
   font-size: 0.7rem;
   background-color: #011c5f;
+  box-sizing: border-box;
 
   //unSelect
   -webkit-user-select: none;
@@ -123,6 +131,9 @@ export default {
   overflow: hidden;
   .mb1rem{
     margin-bottom: $mb1rem;
+  }
+  .mb05rem{
+    margin-bottom: $mb05rem;
   }
   .ly-left {
     width: $width_left;
@@ -173,7 +184,7 @@ export default {
     .ly-right-right {
       width: 23rem;
       .ly-right-right-top, .ly-right-right-bottom {
-        height: calc(50% - #{$mb1rem} - 0.95rem);
+        height: calc(50% - 0.75rem - 0.95rem); //0.75 = [mb1 + mb0.5] / 2
       }
     }
   }

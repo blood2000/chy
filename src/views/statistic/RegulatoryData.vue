@@ -69,6 +69,7 @@ export default {
         font-size: 0.9rem;
         font-weight: 400;
         color: #FFFFFF;
+        vertical-align: middle;
       }
     }
   }
