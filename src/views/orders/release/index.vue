@@ -1,6 +1,6 @@
 <template>
   <!-- 进行改造 -->
-  <div v-loading="loading" class="m_app-container">
+  <div v-loading="loading" class="app-container">
 
     <div v-if="!authStatus" class="mb20">
       <el-alert
@@ -11,17 +11,14 @@
       />
     </div>
 
-    <div class="ly-flex-pack-center app-container">
-      <el-steps v-if="true" :active="active" finish-status="success" style="width: 50%">
-        <el-step title="基本信息" />
-        <el-step title="装卸货地址" />
-        <el-step title="货源信息" />
-        <el-step title="预览" />
-      </el-steps>
-    </div>
+    <el-steps v-if="true" :active="active" finish-status="success">
+      <el-step title="基本信息" />
+      <el-step title="装卸货地址" />
+      <el-step title="货源信息" />
+      <el-step title="预览" />
+    </el-steps>
 
-
-
+    <el-divider />
 
     <!-- 转货信息 -->
     <div v-if="authStatus">
@@ -51,58 +48,33 @@
           :disabled="myisdisabled"
         >
           <!-- 第一步 基本信息 -->
-          <div v-show="active ==1 || myisdisabled">
+          <div v-show="active ==1 || myisdisabled" class="content">
+            <div v-if="!isClone && (!isAdmin && isCreated)" class="header mb8">代发货主信息</div>
 
-            <div class="ly-flex-pack-justify pr my_huozhu app-container">
-
-              <div class="ly-flex-1 ly-flex-align-center">
-                <i class="el-icon-office-building my-iocn" />
-                <div class="left-right-box m20">
-                  <div class="dai-sytle mb10">代发货主信息:</div>
-                  <div v-if="shipmentInfo" class="ly-flex-align-center">
-                    <span class="huoz-style mr20">{{ shipmentInfo.companyName }}</span>
-                    <div class="ly-flex-align-center colorccc">
-                      <i class="el-icon-s-custom" />
-                      <span class="name-style">{{ shipmentInfo.adminName }}</span>
-                    </div>
-                    <div class="ly-flex-align-center colorccc">
-                      <i class="el-icon-phone" />
-                      <span class="name-style">{{ shipmentInfo.telphone }}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="right-box ly-flex-align-center ">
-                <div class="mr20 btn" />
-                <el-form-item v-if="!isClone && (!isAdmin && isCreated)" label="代发货主" prop="tin1">
-                  <el-select
-                    v-model="formData.tin1"
-                    v-el-select-loadmore="loadmore"
-                    filterable
-                    clearable
-                    remote
-                    reserve-keyword
-                    placeholder="请输入关键词"
-                    :remote-method="remoteMethod"
-                    :loading="loading1"
-                    @change="handlerchange"
-                  >
-                    <el-option
-                      v-for="(item, index1) in shipmentList"
-                      :key="index1"
-                      :value="item.code"
-                      :label="item.adminName"
-                    >
-                      <!-- :label="item.adminName" -->
-                      <div class="ly-flex-pack-justify"><span>{{ item.adminName }}</span><span>{{ item.telphone }}</span></div>
-                    </el-option>
-                  </el-select>
-                </el-form-item>
-              </div>
-
-            </div>
-
+            <el-form-item v-if="!isClone && (!isAdmin && isCreated)" label="代发货主" prop="tin1">
+              <el-select
+                v-model="formData.tin1"
+                v-el-select-loadmore="loadmore"
+                filterable
+                clearable
+                remote
+                reserve-keyword
+                placeholder="请输入关键词"
+                :remote-method="remoteMethod"
+                :loading="loading1"
+                @change="handlerchange"
+              >
+                <el-option
+                  v-for="(item, index1) in shipmentList"
+                  :key="index1"
+                  :value="item.code"
+                  :label="item.adminName"
+                >
+                  <!-- :label="item.adminName" -->
+                  <div class="ly-flex-pack-justify"><span>{{ item.adminName }}</span><span>{{ item.telphone }}</span></div>
+                </el-option>
+              </el-select>
+            </el-form-item>
 
             <OrderBasic
               v-if="formData.tin1"
@@ -113,10 +85,9 @@
               :myisdisabled="myisdisabled"
               @goods="handlerGoos"
             />
-
-
             <div class="ly-t-center">
-              <el-button v-if="!myisdisabled && (formData.tin1 && active < 2)" type="primary" plain @click="nextTo(2)">下一步</el-button>
+
+              <el-button v-if="!myisdisabled && (formData.tin1 && active < 2)" @click="nextTo(2)">下一步</el-button>
             </div>
           </div>
 
@@ -333,7 +304,6 @@ export default {
   },
   data() {
     return {
-      shipmentInfo: null, // 选中的货主信息
       orderInfo: '0', // 详情的时候切换查看
       waybillData: null, // 货源-运单详情
       authStatus: true, // 默认ok展示
@@ -446,7 +416,7 @@ export default {
     const { isAdmin = true, isShipment = true, shipment = {}, user = {}} = getUserInfo() || {};
 
     this.isShipment = isShipment;
-    // console.log(this.isShipment);
+    console.log(this.isShipment);
     this.isAdmin = !isAdmin;
     if (!isAdmin) {
       if (shipment.info.authStatus !== 3) {
@@ -518,7 +488,6 @@ export default {
       this.shipmentList.forEach(e => {
         if (e.code === value) {
           this.orgCode = e.orgCode || '';
-          this.shipmentInfo = e;
         }
       });
     },
@@ -1301,7 +1270,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.m_app-container {
+.app-container {
   overflow-y: auto;
   height: calc(100vh - 145px);
 }
@@ -1349,29 +1318,4 @@ export default {
   margin: 20px auto 0;
   text-align: left;
 }
-
-.my_huozhu{
-  // background: #fff url('~@/assets/images/order-jiaoliu.png') no-repeat;
-  background-position: 99% 15px;
-}
-.my-iocn{
-  font-size: 30px;
-  color: #C18633;
-}
-.btn{
-  padding-right: 70px;
-}
-.dai-sytle{
-    color: #ccc;
-  }
-  .huoz-style{
-    font-weight: 700;
-  }
-  .colorccc{
-    color: #ccc;
-    margin-right: 10px;
-    .name-style{
-      margin-right: 5px;
-    }
-  }
 </style>
