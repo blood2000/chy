@@ -60,14 +60,14 @@
                 <div class="left-right-box m20">
                   <div class="dai-sytle mb10">代发货主信息:</div>
                   <div v-if="shipmentInfo" class="ly-flex-align-center">
-                    <span class="huoz-style mr20">123</span>
+                    <span class="huoz-style mr20">{{ shipmentInfo.companyName }}</span>
                     <div class="ly-flex-align-center colorccc">
                       <i class="el-icon-s-custom" />
-                      <span class="name-style">456</span>
+                      <span class="name-style">{{ shipmentInfo.adminName }}</span>
                     </div>
                     <div class="ly-flex-align-center colorccc">
                       <i class="el-icon-phone" />
-                      <span class="name-style">789</span>
+                      <span class="name-style">{{ shipmentInfo.telphone }}</span>
                     </div>
                   </div>
                 </div>
@@ -116,7 +116,7 @@
 
 
             <div class="ly-t-center">
-              <el-button v-if="!myisdisabled && (formData.tin1 && active < 2)" @click="nextTo(2)">下一步</el-button>
+              <el-button v-if="!myisdisabled && (formData.tin1 && active < 2)" type="primary" plain @click="nextTo(2)">下一步</el-button>
             </div>
           </div>
 
@@ -333,6 +333,7 @@ export default {
   },
   data() {
     return {
+      shipmentInfo: null, // 选中的货主信息
       orderInfo: '0', // 详情的时候切换查看
       waybillData: null, // 货源-运单详情
       authStatus: true, // 默认ok展示
@@ -445,7 +446,7 @@ export default {
     const { isAdmin = true, isShipment = true, shipment = {}, user = {}} = getUserInfo() || {};
 
     this.isShipment = isShipment;
-    console.log(this.isShipment);
+    // console.log(this.isShipment);
     this.isAdmin = !isAdmin;
     if (!isAdmin) {
       if (shipment.info.authStatus !== 3) {
@@ -517,6 +518,7 @@ export default {
       this.shipmentList.forEach(e => {
         if (e.code === value) {
           this.orgCode = e.orgCode || '';
+          this.shipmentInfo = e;
         }
       });
     },
@@ -1352,4 +1354,24 @@ export default {
   // background: #fff url('~@/assets/images/order-jiaoliu.png') no-repeat;
   background-position: 99% 15px;
 }
+.my-iocn{
+  font-size: 30px;
+  color: #C18633;
+}
+.btn{
+  padding-right: 70px;
+}
+.dai-sytle{
+    color: #ccc;
+  }
+  .huoz-style{
+    font-weight: 700;
+  }
+  .colorccc{
+    color: #ccc;
+    margin-right: 10px;
+    .name-style{
+      margin-right: 5px;
+    }
+  }
 </style>
