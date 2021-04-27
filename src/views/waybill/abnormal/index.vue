@@ -76,6 +76,7 @@
         <template #edit="{row}">
           <el-button
             v-if="row.isWarning === '1'"
+            v-hasPermi="['transportation:waybillAbnormal:handle']"
             size="mini"
             type="text"
             @click="handleAbnormal(row)"
