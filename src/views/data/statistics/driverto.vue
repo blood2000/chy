@@ -60,28 +60,6 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <!-- <el-form-item label="所属调度" prop="teamCode">
-          <el-select
-            v-model="queryParams.teamCode"
-            v-el-seclect.loadmore="loadmore"
-            filterable
-            clearable
-            remote
-            reserve-keyword
-            placeholder="请搜索选择所属调度"
-            :remote-method="remoteMethod"
-            :loading="teamloading"
-            style="width: 228px"
-            size="small"
-          >
-            <el-option
-              v-for=" dict in teamlist"
-              :key="dict.code"
-              :label="dict.adminName"
-              :value="dict.code"
-            />
-          </el-select>
-        </el-form-item> -->
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
           <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -105,7 +83,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="drivertoList" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
+      <RefactorTable :loading="loading" :data="drivertoList" :table-columns-config="tableColumnsConfig" :summary="summary" :summary-method="getSummaries"><!-- @selection-change="handleSelectionChange" -->
         <!-- <template #driverType="{row}">
           <span>{{ selectDictLabel(driverTypeOptions, row.driverType) }}</span>
         </template> -->
@@ -197,7 +175,8 @@ export default {
         name: null
       },
       teamloading: false,
-      dataOver: false // 是否请求完了
+      dataOver: false, // 是否请求完了
+      summary: true
     };
   },
   created() {
@@ -205,6 +184,46 @@ export default {
     this.getList();
   },
   methods: {
+    // 表尾合计行
+    getSummaries(param) {
+      // console.log(param);
+      const { columns, data } = param;
+      const sums = [];
+      console.log(data);
+      columns.forEach((column, index) => {
+        if (index === 0) {
+          sums[index] = '合计';
+          return;
+        }
+        switch (column.property) {
+          case 'freightAmount':
+            sums[index] = '100元';
+            break;
+          case 'freightInvoiceAmount':
+            sums[index] = '200元';
+            break;
+          case 'freightUnbilledAmount':
+            sums[index] = '120元';
+            break;
+          case 'serviceAmount':
+            sums[index] = '130元';
+            break;
+          case 'serviceInvoiceAmount':
+            sums[index] = '400元';
+            break;
+          case 'serviceUnbilledAmount':
+            sums[index] = '500元';
+            break;
+          case 'waybillCount':
+            sums[index] = '600元';
+            break;
+          default:
+            break;
+        }
+      });
+      // console.log(sums);
+      return sums;
+    },
     // 搜索时间选择
     datechoose(date) {
       if (date) {
