@@ -84,9 +84,20 @@
       </el-row>
 
       <RefactorTable :loading="loading" :data="drivertoList" :table-columns-config="tableColumnsConfig" :summary="summary" :summary-method="getSummaries"><!-- @selection-change="handleSelectionChange" -->
-        <!-- <template #driverType="{row}">
-          <span>{{ selectDictLabel(driverTypeOptions, row.driverType) }}</span>
-        </template> -->
+        <template #driverType="{row}">
+          <span v-if="row.driverType === '1'" class="table-tag table-drivertag">
+            <i class="g-icon-driver" />
+            {{ selectDictLabel(driverTypeOptions, row.driverType) }}
+          </span>
+          <span v-if="row.driverType === '2'" class="table-tag">
+            <i class="g-icon-teamdriver" />
+            {{ selectDictLabel(driverTypeOptions, row.driverType) }}
+          </span>
+          <span v-if="row.driverType === '3'" class="table-tag table-teamtag">
+            <i class="g-icon-team" />
+            {{ selectDictLabel(driverTypeOptions, row.driverType) }}
+          </span>
+        </template>
         <!-- <template #updateTime="{row}">
           <span>{{ parseTime(row.updateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template> -->
@@ -99,38 +110,12 @@
         :limit.sync="queryParams.pageSize"
         @pagination="getList"
       />
-
-      <el-row type="flex" :gutter="10" class="g-statistics-bg">
-        <el-col :span="1">
-          <img src="../../../../src/assets/images/icon/total.png" alt="">
-        </el-col>
-        <el-col :span="2">
-          <div class="g-statistics-tag">期初余额：</div>
-          <div class="g-statistics-num">1416195.86</div>
-        </el-col>
-        <el-col :span="2">
-          <div class="g-statistics-tag">本期收入：</div>
-          <div class="g-statistics-num">100</div>
-        </el-col>
-        <el-col :span="2">
-          <div class="g-statistics-tag">清分支出：</div>
-          <div class="g-statistics-num">100</div>
-        </el-col>
-        <el-col :span="2">
-          <div class="g-statistics-tag">本期提现：</div>
-          <div class="g-statistics-num">100</div>
-        </el-col>
-        <el-col :span="2">
-          <div class="g-statistics-tag">期末余额：</div>
-          <div class="g-statistics-num">100</div>
-        </el-col>
-      </el-row>
     </div>
   </div>
 </template>
 
 <script>
-import { listDrivertoApi, listDriverto, teamList } from '@/api/data/statistics';
+import { listDrivertoApi, listDriverto } from '@/api/data/statistics';
 // import tableColumnsConfig from './config';
 
 export default {
@@ -152,8 +137,8 @@ export default {
       // 司机类别  0独立司机，1聘用司机字典
       driverTypeOptions: [
         { 'dictLabel': '独立司机', 'dictValue': '1' },
-        { 'dictLabel': '聘用司机', 'dictValue': '2' },
-        { 'dictLabel': '其他', 'dictValue': '3' }
+        { 'dictLabel': '调度司机', 'dictValue': '2' },
+        { 'dictLabel': '调度者', 'dictValue': '3' }
       ],
       queryTime: [],
       // 查询参数
@@ -196,26 +181,38 @@ export default {
           return;
         }
         switch (column.property) {
-          case 'freightAmount':
-            sums[index] = '100元';
+          case 'balanceAmount':
+            sums[index] = '100';
             break;
-          case 'freightInvoiceAmount':
-            sums[index] = '200元';
+          case 'issueIncome':
+            sums[index] = '200';
             break;
-          case 'freightUnbilledAmount':
-            sums[index] = '120元';
+          case 'distributionPay':
+            sums[index] = '120';
             break;
-          case 'serviceAmount':
-            sums[index] = '130元';
+          case 'issueWithdrawal':
+            sums[index] = '130';
             break;
-          case 'serviceInvoiceAmount':
-            sums[index] = '400元';
+          case 'drawMoney':
+            sums[index] = '400';
             break;
-          case 'serviceUnbilledAmount':
-            sums[index] = '500元';
+          case 'paidAmount':
+            sums[index] = '500';
+            break;
+          case 'invoiceAmount':
+            sums[index] = '600';
+            break;
+          case 'deductionsCount':
+            sums[index] = '600';
+            break;
+          case 'freightCount':
+            sums[index] = '600';
+            break;
+          case 'deliveryCount':
+            sums[index] = '600';
             break;
           case 'waybillCount':
-            sums[index] = '600元';
+            sums[index] = '600';
             break;
           default:
             break;
@@ -233,35 +230,6 @@ export default {
         this.queryParams.beginTime = null;
         this.queryParams.endTime = null;
       }
-    },
-    // 获取调度者列表
-    getTeam() {
-      teamList(this.teamQueryParams).then(response => {
-        this.dataOver = !response.rows.length;
-        this.teamlist = this.teamlist.concat(response.rows);
-        this.teamloading = false;
-      }).catch(() => {
-        this.teamloading = false;
-      });
-    },
-    // 触发调度者远程搜索
-    remoteMethod(query) {
-      if (query !== '') {
-        this.teamloading = true;
-        this.teamQueryParams.pageNum = 1;
-        this.dataOver = false;
-        this.teamQueryParams.name = query;
-        this.teamlist = [];
-        this.getTeam();
-      } else {
-        this.teamlist = [];
-      }
-    },
-    // 调度者列表触底加载
-    loadmore() {
-      if (this.dataOver) return;
-      this.teamQueryParams.pageNum++;
-      this.getTeam();
     },
     /** 查询司机往来明细列表 */
     getList() {
@@ -289,3 +257,21 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.table-tag{
+  height: 24px;
+  border-radius: 12px;
+  background: #EAFDE1;
+  color: #409EFF;
+  padding: 2px 10px;
+}
+.table-drivertag{
+  background: #FFFAEC;
+  color: #67C23A;
+}
+.table-teamtag{
+  background: #EBF4FD;
+  color: #FFBB00;
+}
+</style>
