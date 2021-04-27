@@ -165,6 +165,7 @@ export default {
     // },
     /** 提交按钮 */
     submitForm() {
+      this.unloadTimeChoose(this.form.unloadTime);
       this.$refs['form'].validate(valid => {
         if (valid) {
           if (this.form.unloadWeight > 0) {
