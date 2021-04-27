@@ -52,6 +52,7 @@ export default {
 
 <style lang="scss" scoped>
 .container{
+  padding-left: 0.2rem;
   &__box{
     width: 48%;
     height: 100%;

@@ -1,5 +1,10 @@
 <template>
   <div class="g-statistic">
+    <!-- title -->
+    <div class="header-box">
+      大道成物流科技大数据看板
+    </div>
+
     <!-- left -->
     <div class="ly-left ly-border">
       <div class="ly-left-top mb1rem ly-flex-pack-justify ly-border">
@@ -20,10 +25,11 @@
         <Title class="title_3" icon="4">业绩数据<span>Performance data</span></Title>
         <div class="ly-left-bottom-box ly-flex-pack-justify">
           <div class="ly-left-bottom-left ly-border">
-            左-下-左
+            <PerformanceInfo class="mb1rem" />
+            <AmountTop10Chart />
           </div>
           <div class="ly-left-bottom-right ly-border">
-            左-下-右
+            <ComponeyTop10List />
           </div>
         </div>
       </div>
@@ -61,16 +67,23 @@
 
 <script>
 import Title from './components/title';
-import RegulatoryData from './RegulatoryData';
-import UserInfo from './UserInfo';
-import CapacityInfo from './CapacityInfo';
+import RegulatoryData from './RegulatoryData';// 监管数据
+import UserInfo from './UserInfo';// 用户情况
+import CapacityInfo from './CapacityInfo';// 运力情况
+import PerformanceInfo from './PerformanceInfo';// 业绩数据
+import AmountTop10Chart from './AmountTop10Chart';// TOP10省份交易额排名
+import ComponeyTop10List from './ComponeyTop10List';// TOP10省内十大公司
+
 export default {
   name: 'Statistic',
   components: {
     Title,
     RegulatoryData,
     UserInfo,
-    CapacityInfo
+    CapacityInfo,
+    PerformanceInfo,
+    AmountTop10Chart,
+    ComponeyTop10List
   }
 };
 </script>
@@ -130,9 +143,11 @@ export default {
         height: calc(100% - 2.9rem);
         .ly-left-bottom-left {
           width: 28.4rem;
+          height: 100%;
         }
         .ly-left-bottom-right {
           width: 23.8rem;
+          height: 100%;
         }
       }
     }
@@ -163,9 +178,37 @@ export default {
     }
   }
 
-  // comment
-
   //style
+  .header-box {
+    display: inline-block;
+    position: absolute;
+    top: 1.6rem;
+    left: 45%;
+    font-size: 1.6rem;
+    font-family: PingFang-SC-Bold;
+    font-weight: bold;
+    color: #FFFFFF;
+    &::before {
+      content: '';
+      width: 6.1rem;
+      height: 2.1rem;
+      position: absolute;
+      top: 0.1rem;
+      left: -6.5rem;
+      background: url('~@/assets/images/statistic/header_left.png') no-repeat;
+      background-size: 100% 100%;
+    }
+    &::after {
+      content: '';
+      width: 6.1rem;
+      height: 2.1rem;
+      position: absolute;
+      top: 0.1rem;
+      right: -6.5rem;
+      background: url('~@/assets/images/statistic/header_right.png') no-repeat;
+      background-size: 100% 100%;
+    }
+  }
 
 }
 </style>

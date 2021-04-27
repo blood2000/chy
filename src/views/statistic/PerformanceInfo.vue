@@ -1,13 +1,13 @@
 <template>
-  <!-- 运力情况 -->
+  <!-- 业绩数据 -->
   <div class="container ly-flex-pack-justify">
     <div class="container__box ly-flex-pack-justify ly-flex-v">
       <div class="container__box__content">
-        <p class="label">总车辆(万)</p>
+        <p class="label">交易总额(亿)</p>
         <p class="text">0.211</p>
       </div>
       <div class="container__box__content">
-        <p class="label">今日新增司机</p>
+        <p class="label">今日新增交易</p>
         <p class="text blod">
           0.211
           <img src="@/assets/images/statistic/arow_up.png">
@@ -17,11 +17,11 @@
     </div>
     <div class="container__box ly-flex-pack-justify ly-flex-v">
       <div class="container__box__content">
-        <p class="label">总路线(条)</p>
+        <p class="label">交易总额(亿)</p>
         <p class="text">0.211</p>
       </div>
       <div class="container__box__content">
-        <p class="label">今日新增路线</p>
+        <p class="label">今日新增交易</p>
         <p class="text blod">
           0.211
           <img src="@/assets/images/statistic/arow_up.png">
@@ -31,53 +31,11 @@
     </div>
     <div class="container__box ly-flex-pack-justify ly-flex-v">
       <div class="container__box__content">
-        <p class="label">总运输总量(吨)</p>
+        <p class="label">运输总额(亿)</p>
         <p class="text">0.211</p>
       </div>
       <div class="container__box__content">
-        <p class="label">今日新增路线</p>
-        <p class="text blod">
-          0.211
-          <img src="@/assets/images/statistic/arow_up.png">
-          <span>12.6%</span>
-        </p>
-      </div>
-    </div>
-    <div class="container__box ly-flex-pack-justify ly-flex-v">
-      <div class="container__box__content">
-        <p class="label">行驶里程(公里)</p>
-        <p class="text">0.211</p>
-      </div>
-      <div class="container__box__content">
-        <p class="label">今日新增路线</p>
-        <p class="text blod">
-          0.211
-          <img src="@/assets/images/statistic/arow_up.png">
-          <span>12.6%</span>
-        </p>
-      </div>
-    </div>
-    <div class="container__box ly-flex-pack-justify ly-flex-v">
-      <div class="container__box__content">
-        <p class="label">行驶时长(天)</p>
-        <p class="text">0.211</p>
-      </div>
-      <div class="container__box__content">
-        <p class="label">今日新增时长</p>
-        <p class="text blod">
-          0.211
-          <img src="@/assets/images/statistic/arow_up.png">
-          <span>12.6%</span>
-        </p>
-      </div>
-    </div>
-    <div class="container__box ly-flex-pack-justify ly-flex-v">
-      <div class="container__box__content">
-        <p class="label">网点</p>
-        <p class="text">0.211</p>
-      </div>
-      <div class="container__box__content">
-        <p class="label">今日新增网点</p>
+        <p class="label">今日新增运费</p>
         <p class="text blod">
           0.211
           <img src="@/assets/images/statistic/arow_up.png">
@@ -96,9 +54,9 @@ export default {
 
 <style lang="scss" scoped>
 .container{
-  height: calc(100% - 2.9rem);
+  height: 26.5%;
   &__box{
-    width: 16.66%;
+    width: 33.33%;
     height: 100%;
     position: relative;
     padding-left: 0.2rem;
