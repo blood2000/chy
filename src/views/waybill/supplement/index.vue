@@ -167,7 +167,7 @@
                   size="small"
                   class="width90"
                   type="datetime"
-                  value-format="yyyy-MM-dd hh:mm:ss"
+                  value-format="yyyy-MM-dd HH:mm:ss"
                   placeholder="选择装货时间"
                   @change="loadTimeChoose"
                 />
@@ -181,7 +181,7 @@
                   size="small"
                   class="width90"
                   type="datetime"
-                  value-format="yyyy-MM-dd hh:mm:ss"
+                  value-format="yyyy-MM-dd HH:mm:ss"
                   placeholder="选择卸货时间"
                   @change="unloadTimeChoose"
                 />
