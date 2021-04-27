@@ -1,12 +1,13 @@
 <template>
   <!-- 总排名TOP5公司 -->
   <div class="container">
+    <span class="container__time">最近30天内</span>
     <span class="container__title">TOP 5 企业</span>
     <ul class="container__list">
       <li v-for="(item, index) in dataList" :key="index" class="container__list__item">
         <div class="container__list__item__title">
           <span :class="index === 0 ? 'first' : ''" class="index">{{ index + 1 }}</span>
-          <span class="text">福建省融谷供应链管理有限公司</span>
+          <span class="text">福建省融谷供应链管理有限公司福建省融谷供应链管理有限公司</span>
         </div>
         <div class="container__list__item__content ly-flex-pack-justify">
           <div class="content__box">
@@ -53,6 +54,16 @@ export default {
 .container{
   height: 100%;
   position: relative;
+  &__time{
+    position: absolute;
+    right: 0;
+    top: -1.6rem;
+    line-height: 0.8rem;
+    font-size: 0.5rem;
+    font-family: PingFang SC;
+    font-weight: 300;
+    color: #96CFD9;
+  }
   &__title{
     position: absolute;
     right: 0.7rem;
@@ -71,7 +82,7 @@ export default {
         .index{
           display: inline-block;
           vertical-align: middle;
-          margin: -0.3rem 0.4rem 0 0;
+          margin: 0 0.4rem 0 0;
           padding-right: 0.1rem;
           width: 1.4rem;
           height: 1.6rem;
@@ -90,11 +101,17 @@ export default {
           }
         }
         .text{
+          width: 15.5rem;
+          display: inline-block;
+          vertical-align: middle;
           line-height: 1.6rem;
           font-size: 0.8rem;
           font-family: PingFang SC;
           font-weight: 300;
           color: #7CFFF4;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
         }
       }
       &__content{

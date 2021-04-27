@@ -46,7 +46,7 @@ export default {
     color: #CDEDFF;
   }
   &__list{
-    height: calc(100% - 2.4rem);
+    height: calc(100% - 2.8rem);
     >ul{
       height: 100%;
       .container__list__item{

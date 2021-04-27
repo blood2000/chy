@@ -1,5 +1,5 @@
 <template>
-  <!-- TOP10省份交易额排名 -->
+  <!-- 目标达成情况 -->
   <div class="container" />
 </template>
 
@@ -32,32 +32,21 @@ export default {
     },
     setOption() {
       this.chart.setOption({
-        title: {
-          show: true,
-          text: 'TOP 10省份交易额排名',
-          textStyle: {
-            color: '#FFFFFF',
-            fontWeight: 'normal',
-            fontSize: setfontSize(16)
-          }
-        },
         legend: {
           show: true,
           right: 0,
-          top: 6,
+          top: 2,
           icon: 'rect',
-          itemWidth: setfontSize(10),
+          itemWidth: setfontSize(8),
           itemHeight: setfontSize(8),
           textStyle: {
             fontSize: setfontSize(12),
-            color: '#fff'
+            color: '#B5CFDD'
           },
           data: [{
-            name: '交易总额（省）'
+            name: '完成业绩'
           }, {
-            name: '票务总额（省）'
-          }, {
-            name: '票总额（省）'
+            name: '目标业绩'
           }]
         },
         grid: {
@@ -84,10 +73,10 @@ export default {
               color: '#3F5C84'
             }
           },
-          data: ['内蒙古', '内蒙古', '内蒙古', '内蒙古', '内蒙古', '内蒙古', '内蒙古', '内蒙古', '内蒙古', '内蒙古']
+          data: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
         },
         yAxis: {
-          name: '交易额(万）',
+          name: '业绩(亿)',
           nameTextStyle: {
             color: '#CDEDFF',
             fontSize: setfontSize(12),
@@ -121,9 +110,10 @@ export default {
           axisPointer: { // 坐标轴指示器，坐标轴触发有效
             type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
           }
+          // formatter: `{b0}月：<br />{a0}: {c0}<br />{a1}: {c1}`
         },
         series: [{
-          name: '交易总额（省）',
+          name: '完成业绩',
           type: 'bar',
           barWidth: 8, // 柱体宽度
           itemStyle: {
@@ -131,22 +121,22 @@ export default {
               // 柱体颜色渐变
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                 offset: 0,
-                color: 'rgba(0, 174, 255, 1)'
+                color: 'rgba(0, 156, 255, 1)'
               }, {
                 offset: 0.7,
-                color: 'rgba(61, 79, 165, 1)'
+                color: 'rgba(51, 54, 187, 1)'
               }, {
                 offset: 0.8,
-                color: 'rgba(61, 79, 165, 0.7)'
+                color: 'rgba(51, 54, 187, 0.7)'
               }, {
                 offset: 1,
-                color: 'rgba(61, 79, 165, 0)'
+                color: 'rgba(51, 54, 187, 0)'
               }])
             }
           },
-          data: [4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
+          data: [3, 3, 3, 2, 2, 3, 3, 3, 2, 2, 2, 2]
         }, {
-          name: '票务总额（省）',
+          name: '目标业绩',
           type: 'bar',
           barWidth: 8, // 柱体宽度
           itemStyle: {
@@ -154,43 +144,20 @@ export default {
               // 柱体颜色渐变
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                 offset: 0,
-                color: 'rgba(73, 234, 245, 1)'
+                color: 'rgba(0, 244, 255, 1)'
               }, {
                 offset: 0.7,
-                color: 'rgba(0, 112, 199, 1)'
+                color: 'rgba(23, 95, 203, 1)'
               }, {
                 offset: 0.8,
-                color: 'rgba(0, 112, 199, 0.7)'
+                color: 'rgba(23, 95, 203, 0.7)'
               }, {
                 offset: 1,
-                color: 'rgba(0, 112, 199, 0)'
+                color: 'rgba(23, 95, 203, 0)'
               }])
             }
           },
-          data: [3, 3, 3, 2, 2, 3, 3, 3, 2, 2]
-        }, {
-          name: '票总额（省）',
-          type: 'bar',
-          barWidth: 8, // 柱体宽度
-          itemStyle: {
-            normal: {
-              // 柱体颜色渐变
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                offset: 0,
-                color: 'rgba(125, 132, 255, 1)'
-              }, {
-                offset: 0.7,
-                color: 'rgba(79, 68, 179, 1)'
-              }, {
-                offset: 0.8,
-                color: 'rgba(79, 68, 179, 0.7)'
-              }, {
-                offset: 1,
-                color: 'rgba(79, 68, 179, 0)'
-              }])
-            }
-          },
-          data: [3, 3, 3, 2, 2, 3, 3, 3, 2, 2]
+          data: [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
         }]
       });
     },
@@ -204,6 +171,6 @@ export default {
 
 <style lang="scss" scoped>
 .container{
-  height: 72.5%;
+  height: calc(100% - 2.4rem);
 }
 </style>
