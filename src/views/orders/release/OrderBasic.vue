@@ -9,140 +9,142 @@
       label-width="110px"
       :label-position="'left'"
     >
-      <div class="header mb8">基本信息</div>
+      <div class="app-container">
 
-      <el-form-item label="选择所属项目" prop="tin3">
-        <el-select
-          v-model="formData.tin3"
-          placeholder="请选择项目"
-          filterable
-          :style="{ width: '100%' }"
-          @change="handleTin3"
-        >
-          <!-- clearable -->
-          <el-option
-            v-for="dict in tin3Optin"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
+        <div class="header mb8">基本信息</div>
 
-      <el-form-item label="选择货物类别" prop="tin2">
-        <el-radio-group
-          v-model="formData.tin2"
-          :disabled="formData.tin3 !== '0'"
-          size="medium"
-          @change="handletin2(false)"
-        >
-          <el-radio
-            v-for="dict in tin2Option"
-            :key="dict.dictValue"
-            class="radio_item"
-            :label="dict.dictValue"
-          >{{ dict.dictLabel }}</el-radio>
-        </el-radio-group>
-      </el-form-item>
-
-      <template v-if="formData.tin2">
-        <!-- isMultiGoods true->多商品 ; false->单商品 -->
-        <el-form-item v-if="isMultiGoods" label="货物类型(多)" prop="tin2_1">
-          <el-checkbox-group v-model="formData.tin2_1" size="medium" :disabled="formData.tin3 !== '0'">
-            <el-checkbox
-              v-for="dict in tin2_Option"
+        <el-form-item label="选择所属项目" prop="tin3">
+          <el-select
+            v-model="formData.tin3"
+            placeholder="请选择项目"
+            filterable
+            @change="handleTin3"
+          >
+            <!-- :style="{ width: '200px' }" -->
+            <!-- clearable -->
+            <el-option
+              v-for="dict in tin3Optin"
               :key="dict.dictValue"
-              class="radio_item"
-              :label="dict.dictValue"
-            >{{ dict.dictLabel }}</el-checkbox>
-          </el-checkbox-group>
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
         </el-form-item>
-        <el-form-item v-else label="货物类型(单)" prop="tin2_2">
-          <el-radio-group v-model="formData.tin2_2" size="medium" :disabled="formData.tin3 !== '0'">
+
+        <el-form-item label="选择货物类别" prop="tin2">
+          <el-radio-group
+            v-model="formData.tin2"
+            :disabled="formData.tin3 !== '0'"
+            size="medium"
+            @change="handletin2(false)"
+          >
             <el-radio
-              v-for="dict in tin2_Option"
+              v-for="dict in tin2Option"
               :key="dict.dictValue"
               class="radio_item"
               :label="dict.dictValue"
             >{{ dict.dictLabel }}</el-radio>
           </el-radio-group>
         </el-form-item>
-      </template>
 
-      <el-divider />
+        <template v-if="formData.tin2">
+          <!-- isMultiGoods true->多商品 ; false->单商品 -->
+          <el-form-item v-if="isMultiGoods" label="货物类型(多)" prop="tin2_1">
+            <el-checkbox-group v-model="formData.tin2_1" size="medium" :disabled="formData.tin3 !== '0'">
+              <el-checkbox
+                v-for="dict in tin2_Option"
+                :key="dict.dictValue"
+                class="radio_item"
+                :label="dict.dictValue"
+              >{{ dict.dictLabel }}</el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
+          <el-form-item v-else label="货物类型(单)" prop="tin2_2">
+            <el-radio-group v-model="formData.tin2_2" size="medium" :disabled="formData.tin3 !== '0'">
+              <el-radio
+                v-for="dict in tin2_Option"
+                :key="dict.dictValue"
+                class="radio_item"
+                :label="dict.dictValue"
+              >{{ dict.dictLabel }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </template>
+      </div>
 
-      <div class="header mb8">发布集其他信息</div>
-
-
-      <el-form-item label="发布至" prop="tin4">
-        <el-radio-group
-          v-model="formData.tin4"
-          size="medium"
-          @change="handleTin4"
-        >
-          <el-radio
-            v-for="dict in tin4Option"
-            :key="dict.dictValue"
-            :label="dict.dictValue"
-          >{{ dict.dictLabel }}</el-radio>
-        </el-radio-group>
-      </el-form-item>
-
-      <template v-if="formData.tin4 === '0'">
-
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="指定联系人" prop="tin5">
-              <el-radio-group v-model="formData.tin5" size="medium">
-                <el-radio
-                  v-for="dict in tin5Option"
-                  :key="dict.dictValue"
-                  :label="dict.dictValue"
-                >{{ dict.dictLabel }}</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="关联货集码" prop="tin6">
-              <el-select
-                v-model="formData.tin6"
-                placeholder="选择货集码"
-                clearable
-                :style="{ width: '100%' }"
-              >
-                <el-option
-                  v-for="dict in tin6Option"
-                  :key="dict.dictValue"
-                  :label="dict.dictLabel"
-                  :value="dict.dictValue"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-
-        <el-form-item v-if="formData.tin5 === '1'" label=" " prop="tin6_1">
-          <div class="ly-flex">
-            <el-button type="primary" @click="open1">请选择</el-button>
-            <div class="ml0">调度者: {{ formData.tin6_1.length }} 人</div>
-            <div class="ml0">司机: {{ formData.tin6_2.length }} 人</div>
-          </div>
+      <div class="app-container">
+        <div class="header mb8">发布集其他信息</div>
+        <el-form-item label="发布至" prop="tin4">
+          <el-radio-group
+            v-model="formData.tin4"
+            size="medium"
+            @change="handleTin4"
+          >
+            <el-radio
+              v-for="dict in tin4Option"
+              :key="dict.dictValue"
+              :label="dict.dictValue"
+            >{{ dict.dictLabel }}</el-radio>
+          </el-radio-group>
         </el-form-item>
 
-      </template>
+        <template v-if="formData.tin4 === '0'">
 
-      <el-form-item label="备注信息" prop="remark">
-        <el-input
-          v-model="formData.remark"
-          type="textarea"
-          placeholder="请输入备注信息"
-          :autosize="{ minRows: 4, maxRows: 4 }"
-          maxlength="100"
-          show-word-limit
-          :style="{ width: '100%' }"
-        />
-      </el-form-item>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="指定联系人" prop="tin5">
+                <el-radio-group v-model="formData.tin5" size="medium">
+                  <el-radio
+                    v-for="dict in tin5Option"
+                    :key="dict.dictValue"
+                    :label="dict.dictValue"
+                  >{{ dict.dictLabel }}</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="关联货集码" prop="tin6">
+                <el-select
+                  v-model="formData.tin6"
+                  placeholder="选择货集码"
+                  clearable
+                  :style="{ width: '100%' }"
+                >
+                  <el-option
+                    v-for="dict in tin6Option"
+                    :key="dict.dictValue"
+                    :label="dict.dictLabel"
+                    :value="dict.dictValue"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+
+          <el-form-item v-if="formData.tin5 === '1'" label=" " prop="tin6_1">
+            <div class="ly-flex">
+              <el-button type="primary" @click="open1">请选择</el-button>
+              <div class="ml0">调度者: {{ formData.tin6_1.length }} 人</div>
+              <div class="ml0">司机: {{ formData.tin6_2.length }} 人</div>
+            </div>
+          </el-form-item>
+
+        </template>
+
+        <el-form-item label="备注信息" prop="remark">
+          <el-input
+            v-model="formData.remark"
+            type="textarea"
+            placeholder="请输入备注信息"
+            :autosize="{ minRows: 4, maxRows: 4 }"
+            maxlength="100"
+            show-word-limit
+            :style="{ width: '100%' }"
+          />
+        </el-form-item>
+      </div>
+
 
       <el-divider />
     </el-form>
