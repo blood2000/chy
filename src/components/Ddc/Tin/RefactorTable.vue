@@ -145,6 +145,11 @@ export default {
   .el-table__empty-text{
     width: auto;
   }
+  .el-table__footer-wrapper tbody td {
+    background-color: #EBF4FD !important;
+    color: #409EFF !important;
+    font-weight: bold;
+  }
 </style>
 
 

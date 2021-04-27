@@ -214,7 +214,7 @@
       >
         <el-col v-if="activeName == '4'" :span="1.5">
           <el-button
-            v-hasPermi="['transportation:waybillBalanceInfo:batchDetail']"
+            v-hasPermi="['transportation:waybillBalanceInfo:batchCheck']"
             type="primary"
             icon="el-icon-document-checked"
             size="mini"
@@ -224,6 +224,7 @@
         </el-col>
         <el-col v-if="activeName == '5'" :span="1.5">
           <el-button
+            v-hasPermi="['transportation:waybillBalanceInfo:batchApply']"
             type="primary"
             icon="el-icon-wallet"
             size="mini"

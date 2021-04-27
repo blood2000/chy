@@ -190,11 +190,11 @@
         <el-row>
           <el-col :span="12" class="text-row">
             <label>司机评价货主：</label>
-            {{ formCommentDriver?formCommentDriver.content:'' }}
+            {{ formCommentDriver?formCommentDriver.content:'暂无任何评价~' }}
           </el-col>
           <el-col :span="12" class="text-row">
             <label>货主评价司机：</label>
-            {{ formCommentShipment?formCommentShipment.content:'' }}
+            {{ formCommentShipment?formCommentShipment.content:'暂无任何评价~' }}
           </el-col>
         </el-row>
       </el-tab-pane>
@@ -290,11 +290,13 @@ export default {
       });
       // 回单-装货
       getWaybillAttachment(this.currentId, 1).then(response => {
+        console.log(response);
         this.formAttachment = response.data ? response.data[0] : null;
         console.log(this.formAttachment);
       });
       // 回单-卸货
       getWaybillAttachment(this.currentId, 2).then(response => {
+        console.log(response);
         this.formAttachmentUp = response.data ? response.data[0] : null;
         console.log(this.formAttachmentUp);
       });
@@ -320,6 +322,7 @@ export default {
       });
       // 轨迹时间线
       getWaybillTrace(this.currentId).then(response => {
+        console.log(response);
         response.data.forEach(el => {
           this.timeLineList.unshift(el);
         });

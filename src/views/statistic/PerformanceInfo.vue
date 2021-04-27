@@ -1,13 +1,13 @@
 <template>
-  <!-- 用户情况 -->
+  <!-- 业绩数据 -->
   <div class="container ly-flex-pack-justify">
     <div class="container__box ly-flex-pack-justify ly-flex-v">
       <div class="container__box__content">
-        <p class="label">总用户数(万)</p>
+        <p class="label">交易总额(亿)</p>
         <p class="text">0.211</p>
       </div>
       <div class="container__box__content">
-        <p class="label">今日新增用户</p>
+        <p class="label">今日新增交易</p>
         <p class="text blod">
           0.211
           <span class="arow_down" />
@@ -17,11 +17,11 @@
     </div>
     <div class="container__box ly-flex-pack-justify ly-flex-v">
       <div class="container__box__content">
-        <p class="label">总货主数(万)</p>
+        <p class="label">交易总额(亿)</p>
         <p class="text">0.211</p>
       </div>
       <div class="container__box__content">
-        <p class="label">今日新增货主</p>
+        <p class="label">今日新增交易</p>
         <p class="text blod">
           0.211
           <span class="arow_up" />
@@ -31,25 +31,11 @@
     </div>
     <div class="container__box ly-flex-pack-justify ly-flex-v">
       <div class="container__box__content">
-        <p class="label">总调度者(万)</p>
+        <p class="label">运输总额(亿)</p>
         <p class="text">0.211</p>
       </div>
       <div class="container__box__content">
-        <p class="label">今日新增调度者</p>
-        <p class="text blod">
-          0.211
-          <span class="arow_up" />
-          <span class="value_up">12.6%</span>
-        </p>
-      </div>
-    </div>
-    <div class="container__box ly-flex-pack-justify ly-flex-v">
-      <div class="container__box__content">
-        <p class="label">总司机(万)</p>
-        <p class="text">0.211</p>
-      </div>
-      <div class="container__box__content">
-        <p class="label">今日新增司机</p>
+        <p class="label">今日新增运费</p>
         <p class="text blod">
           0.211
           <span class="arow_up" />
@@ -68,16 +54,16 @@ export default {
 
 <style lang="scss" scoped>
 .container{
-  height: calc(100% - 2.9rem);
+  height: 26.5%;
   &__box{
-    width: 25%;
+    width: 33.33%;
     height: 100%;
-    padding-left: 1.59rem;
     position: relative;
-    &::before{
+    padding-left: 0.2rem;
+    &:not(:last-child)::before{
       content: '';
       position: absolute;
-      left: 0;
+      right: 1.59rem;
       top: 0;
       bottom: 0;
       width: 1px;

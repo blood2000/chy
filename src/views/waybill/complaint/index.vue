@@ -91,6 +91,7 @@
             @click="handleWaybill(row)"
           >详情</el-button>
           <el-button
+            v-hasPermi="['transportation:driverComplaint:handle']"
             size="mini"
             type="text"
             @click="handleLog(row)"

@@ -52,6 +52,7 @@ export default {
 
 <style lang="scss" scoped>
 .container{
+  padding-left: 0.2rem;
   &__box{
     width: 48%;
     height: 100%;
@@ -68,6 +69,7 @@ export default {
         font-size: 0.9rem;
         font-weight: 400;
         color: #FFFFFF;
+        vertical-align: middle;
       }
     }
   }
