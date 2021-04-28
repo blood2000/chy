@@ -25,7 +25,7 @@
               <i class="el-icon-close g-color-gray fr" style="padding: 14px 5px; cursor: pointer" @click="closeCard(item)" />
             </h3>
             <div v-if="item.paramList.length > 0">
-              <el-form label-width="140px" label-position="left">
+              <el-form label-width="160px" label-position="left">
                 <el-form-item v-for="formItem in item.paramList" :key="formItem.code" :label="formItem.paramCnName" :prop="formItem.paramEnName">
                   <!-- input -->
                   <template v-if="formItem.paramFormType === '1'">
@@ -185,6 +185,11 @@ export default {
       });
       if (!flag) {
         getParam({ typeCode: data.code }).then(response => {
+          response.data.forEach(obj => {
+            if (obj.paramFormType === '6' || obj.paramFormType === '7') {
+              obj.paramValue = (obj.paramValue === 'true');
+            }
+          });
           data.paramList = [...(response.data || [])];
           this.formList.unshift(data);
         });
@@ -221,6 +226,11 @@ export default {
     },
     refreshParam(typeCode) {
       getParam({ typeCode: typeCode }).then(response => {
+        response.data.forEach(obj => {
+          if (obj.paramFormType === '6' || obj.paramFormType === '7') {
+            obj.paramValue = (obj.paramValue === 'true');
+          }
+        });
         this.formList.forEach((el, index) => {
           if (el.code === typeCode) {
             this.formList[index].paramList = [...(response.data || [])];
