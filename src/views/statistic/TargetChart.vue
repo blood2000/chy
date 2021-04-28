@@ -53,7 +53,7 @@ export default {
         grid: {
           left: '3%',
           right: '3%',
-          bottom: '6%',
+          bottom: '2%',
           top: '20%',
           containLabel: true
         },
