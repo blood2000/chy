@@ -70,7 +70,7 @@ export default {
   height: 4.05rem; //滚屏必须设的样式
   overflow: hidden; //滚屏必须设的样式
   margin: 0.4rem 0.8rem 0.8rem 0.6rem;
-  background: rgba(1, 18, 60, 0.2);
+  // background: rgba(1, 18, 60, 0.2);
   .content__list{
     .content__list__item{
       line-height: 1.35rem;

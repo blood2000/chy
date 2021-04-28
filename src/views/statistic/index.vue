@@ -38,7 +38,7 @@
     <!-- center -->
     <div class="ly-center ly-border ly-flex-v ly-flex-pack-justify">
       <TotalData class="ly-border" />
-      <Map class="ly-border" />
+      <Map ref="mapRef" class="ly-border" />
       <ScrollData class="ly-border" />
     </div>
 
@@ -125,6 +125,7 @@ export default {
       this.$refs.TargetChartRef.refreshChart();
       this.$refs.OrderChartRef.refreshChart();
       this.$refs.ComplaintChartRef.refreshChart();
+      this.$refs.mapRef.refreshChart();
     }
   }
 };
@@ -134,7 +135,7 @@ export default {
 // 辅助线
 .ly-border {
   box-sizing: border-box;
-  border: 1px dashed rgb(255, 255, 255, 0.2);
+  // border: 1px dashed rgb(255, 255, 255, 0.2);
 }
 
 // 设计稿大小：3200*1080
@@ -153,6 +154,8 @@ export default {
   font-size: 0.7rem;
   background-color: #011c5f;
   box-sizing: border-box;
+  // background: #011c5f url('~@/assets/images/statistic/map_bg.png') no-repeat;
+  background-size: 100% 100%;
 
   //unSelect
   -webkit-user-select: none;
