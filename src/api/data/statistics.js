@@ -20,10 +20,10 @@ export function teamList(data) {
 }
 
 // 查询客服统计报表列表
-export const listCustomerApi = '/transportation/waybillAbnormal/getOrderException';
+export const listCustomerApi = '/transportation/customerCountSearch/getShipmentCountList';
 export function listCustomer(query) {
   return request({
-    url: '/transportation/waybillAbnormal/getOrderException',
+    url: '/transportation/customerCountSearch/getShipmentCountList',
     method: 'get',
     params: query
   });
