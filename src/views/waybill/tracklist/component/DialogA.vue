@@ -201,7 +201,7 @@ export default {
         this.form.loadTime = null;
       }
       if (loadtime > new Date()) {
-        this.$message({ type: 'warning', message: '装货时间必须小于等于当前时间！' });
+        this.$message({ type: 'warning', message: '装货时间必须早于或等于当前时间！' });
         this.form.loadTime = null;
       }
     },

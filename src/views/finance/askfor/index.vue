@@ -1,14 +1,13 @@
 <template>
   <div>
-    <div v-show="showSearch" class="app-container app-container--search">
-      <el-form
-        ref="queryForm"
-        :model="queryParams"
-        :inline="true"
-        :rules="rules"
-        label-width="90px"
-      >
-        <el-form-item v-show="isAdmin" label="货主信息" prop="shipmentCode">
+    <el-form
+      ref="queryForm"
+      :model="queryParams"
+      :inline="true"
+      label-width="90px"
+    >
+      <div v-show="isAdmin" class="app-container" style="display: flex; align-items: center;">
+        <el-form-item label="货主信息" prop="shipmentCode" style="margin-bottom:0">
           <!-- filterable开启可搜索 remote远程搜索 reserve-keyword 保存搜索关键词 -->
           <el-select
             v-model="queryParams.shipmentCode"
@@ -17,7 +16,7 @@
             clearable
             remote
             reserve-keyword
-            placeholder="请先搜索选择货主"
+            placeholder="请选择货主企业"
             :remote-method="remoteMethod"
             :loading="shipmentloading"
             style="width: 230px"
@@ -29,9 +28,21 @@
               :key="dict.code"
               :label="dict.adminName"
               :value="dict.code"
-            />
+            >
+              <div class="ly-flex-pack-justify">
+                <span style="margin-right:10px">{{ dict.adminName }}</span>
+                <span>{{ dict.companyName }}</span>
+              </div>
+            </el-option>
           </el-select>
         </el-form-item>
+        <span v-if="!queryParams.shipmentCode" class="g-color-warning">
+          <i class="el-icon-warning" />
+          你还未选择企业
+        </span>
+      </div>
+
+      <div v-show="showSearch" class="app-container app-container--search">
         <el-form-item
           label="货源单号"
           prop="orderNo"
@@ -148,8 +159,9 @@
             重置
           </el-button>
         </el-form-item>
-      </el-form>
-    </div>
+
+      </div>
+    </el-form>
 
     <div class="app-container">
       <el-row
@@ -182,7 +194,7 @@
         />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="askforlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <RefactorTable :loading="loading" :data="askforlist" :table-columns-config="tableColumnsConfig" :max-height="isAdmin ? '400':'500'" @selection-change="handleSelectionChange">
         <template #stowageStatus="{row}">
           <span>{{ selectDictLabel(stowageStatusOptions, row.stowageStatus) }}</span>
         </template>
@@ -335,11 +347,11 @@ export default {
         { 'dictLabel': '超载的主单', 'dictValue': '2' }
       ],
       // 表单校验
-      rules: {
-        shipmentCode: [
-          { required: true, message: '请选择货主', trigger: 'blur' }
-        ]
-      },
+      // rules: {
+      //   shipmentCode: [
+      //     { required: true, message: '请选择货主', trigger: 'blur' }
+      //   ]
+      // },
       // 账号信息
       isAdmin: false,
       user: {},

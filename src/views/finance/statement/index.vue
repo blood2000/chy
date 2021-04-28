@@ -291,6 +291,7 @@ export default {
 .img-box{
   height: 240px;
   width: 100%;
+  object-fit: contain;
 }
 .header {
   padding: 10px 20px;

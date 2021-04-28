@@ -10,6 +10,15 @@ export function listDriverto(query) {
   });
 }
 
+// 查询司机往来明细合计
+export function getDriverCount(query) {
+  return request({
+    url: '/transportation/driverCountSearch/getDriverCount',
+    method: 'get',
+    params: query
+  });
+}
+
 // 查询调度列表
 export function teamList(data) {
   return request({
@@ -34,6 +43,15 @@ export const listConsumptionApi = '/transportation/customerCountSearch/getShipme
 export function listConsumption(query) {
   return request({
     url: '/transportation/customerCountSearch/getShipmentCountList',
+    method: 'get',
+    params: query
+  });
+}
+
+// 查询客户消费明细统计
+export function getShipmentMoneyCount(query) {
+  return request({
+    url: '/transportation/customerCountSearch/getShipmentMoneyCount',
     method: 'get',
     params: query
   });

@@ -115,7 +115,7 @@
 </template>
 
 <script>
-import { listDrivertoApi, listDriverto } from '@/api/data/statistics';
+import { listDrivertoApi, listDriverto, getDriverCount } from '@/api/data/statistics';
 // import tableColumnsConfig from './config';
 
 export default {
@@ -134,6 +134,8 @@ export default {
       total: 0,
       // 司机往来明细表格数据
       drivertoList: [],
+      // 司机列表合计
+      drivertoCount: {},
       // 司机类别  0独立司机，1聘用司机字典
       driverTypeOptions: [
         { 'dictLabel': '独立司机', 'dictValue': '1' },
@@ -150,7 +152,8 @@ export default {
         beginTime: null,
         endTime: null,
         driverType: null,
-        teamName: null
+        teamName: null,
+        haveCondition: false
       },
       // 调度者列表
       teamlist: [],
@@ -182,37 +185,19 @@ export default {
         }
         switch (column.property) {
           case 'balanceAmount':
-            sums[index] = '100';
+            sums[index] = this.drivertoCount.balanceStatisticsCount;
+            break;
+          case 'closingBalance':
+            sums[index] = this.drivertoCount.closingBalanceCount;
             break;
           case 'issueIncome':
-            sums[index] = '200';
+            sums[index] = this.drivertoCount.currentIncomeCount;
             break;
           case 'distributionPay':
-            sums[index] = '120';
+            sums[index] = this.drivertoCount.sortingOutExpensesCount;
             break;
           case 'issueWithdrawal':
-            sums[index] = '130';
-            break;
-          case 'drawMoney':
-            sums[index] = '400';
-            break;
-          case 'paidAmount':
-            sums[index] = '500';
-            break;
-          case 'invoiceAmount':
-            sums[index] = '600';
-            break;
-          case 'deductionsCount':
-            sums[index] = '600';
-            break;
-          case 'freightCount':
-            sums[index] = '600';
-            break;
-          case 'deliveryCount':
-            sums[index] = '600';
-            break;
-          case 'waybillCount':
-            sums[index] = '600';
+            sums[index] = this.drivertoCount.withdrawalCurrentPeriodCount;
             break;
           default:
             break;
@@ -234,10 +219,21 @@ export default {
     /** 查询司机往来明细列表 */
     getList() {
       this.loading = true;
+      // 查询列表
       listDriverto(this.queryParams).then(response => {
         this.drivertoList = response.data;
         this.total = response.data.length;
         this.loading = false;
+      });
+      // 查询合计
+      if (this.queryParams.driverName || this.queryParams.driverPhone || this.queryParams.beginTime || this.queryParams.driverType || this.queryParams.teamName) {
+        this.queryParams.haveCondition = true;
+      } else {
+        this.queryParams.haveCondition = false;
+      }
+      getDriverCount(this.queryParams).then(response => {
+        console.log(response);
+        this.drivertoCount = response.data;
       });
     },
     /** 搜索按钮操作 */

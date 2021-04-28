@@ -363,7 +363,7 @@ export default {
       const loadtime = new Date(e);
       const loadtimeLong = new Date(e.replace(new RegExp('-', 'gm'), '/')).getTime();
       if (loadtime > new Date()) {
-        this.$message({ type: 'warning', message: '装货时间必须小于当前时间！' });
+        this.$message({ type: 'warning', message: '装货时间必须早于或等于当前时间！' });
         this.form.loadTime = null;
       } else if (this.form.unloadTime) {
         const unloadtime = new Date(this.form.unloadTime);
@@ -382,7 +382,7 @@ export default {
       const unloadtime = new Date(e);
       const unloadtimeLong = new Date(e.replace(new RegExp('-', 'gm'), '/')).getTime();
       if (unloadtime > new Date()) {
-        this.$message({ type: 'warning', message: '卸货时间必须小于当前时间！' });
+        this.$message({ type: 'warning', message: '卸货时间必须早于或等于当前时间！' });
         this.form.unloadTime = null;
       } else if (this.form.loadTime) {
         const loadtime = new Date(this.form.loadTime);

@@ -383,6 +383,7 @@ export default {
   width: 200px;
   height: 200px;
   vertical-align: top;
+  object-fit: contain;
 }
 // 轨迹-运单详情卡片
 .map-content{
