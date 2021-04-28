@@ -380,7 +380,7 @@
     <!-- 运单详情 对话框 -->
     <detail-dialog ref="DetailDialog" :current-id="currentId" :title="'运输单信息'" :open.sync="open1" :disable="formDisable" @refresh="getList" />
     <!-- 批量导入 对话框 -->
-    <import-dialog ref="ImportDialog" :title="'司机批量导入'" :open.sync="openImport" @refresh="getList" />
+    <import-dialog ref="ImportDialog" :title="'批量导入'" :open.sync="openImport" @refresh="getList" />
   </div>
 </template>
 

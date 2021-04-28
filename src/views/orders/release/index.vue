@@ -1,6 +1,6 @@
 <template>
   <!-- 进行改造 -->
-  <div v-loading="loading" class="app-container">
+  <div v-loading="loading" class="m_app-container">
 
     <div v-if="!authStatus" class="mb20">
       <el-alert
@@ -11,19 +11,22 @@
       />
     </div>
 
-    <el-steps v-if="true" :active="active" finish-status="success">
-      <el-step title="基本信息" />
-      <el-step title="装卸货地址" />
-      <el-step title="货源信息" />
-      <el-step title="预览" />
-    </el-steps>
+    <div class="ly-flex-pack-center app-container">
+      <el-steps v-if="true" :active="active" finish-status="success" style="width: 50%">
+        <el-step title="基本信息" />
+        <el-step title="装卸货地址" />
+        <el-step title="货源信息" />
+        <el-step title="预览" />
+      </el-steps>
+    </div>
 
-    <el-divider />
+
+
 
     <!-- 转货信息 -->
     <div v-if="authStatus">
 
-      <div v-if="isT" class="mb20">
+      <div v-if="isT" class="mb20 app-container">
         <el-radio-group v-model="orderInfo" size="small">
           <el-radio-button label="0">货源信息</el-radio-button>
           <el-radio-button label="1">运单信息</el-radio-button>
@@ -48,33 +51,59 @@
           :disabled="myisdisabled"
         >
           <!-- 第一步 基本信息 -->
-          <div v-show="active ==1 || myisdisabled" class="content">
-            <div v-if="!isClone && (!isAdmin && isCreated)" class="header mb8">代发货主信息</div>
+          <div v-show="active ==1 || myisdisabled">
 
-            <el-form-item v-if="!isClone && (!isAdmin && isCreated)" label="代发货主" prop="tin1">
-              <el-select
-                v-model="formData.tin1"
-                v-el-select-loadmore="loadmore"
-                filterable
-                clearable
-                remote
-                reserve-keyword
-                placeholder="请输入关键词"
-                :remote-method="remoteMethod"
-                :loading="loading1"
-                @change="handlerchange"
-              >
-                <el-option
-                  v-for="(item, index1) in shipmentList"
-                  :key="index1"
-                  :value="item.code"
-                  :label="item.adminName"
-                >
-                  <!-- :label="item.adminName" -->
-                  <div class="ly-flex-pack-justify"><span>{{ item.adminName }}</span><span>{{ item.telphone }}</span></div>
-                </el-option>
-              </el-select>
-            </el-form-item>
+            <div v-if="!isClone && (!isAdmin && isCreated)" class="ly-flex-pack-justify pr my_huozhu app-container">
+
+              <div v-if="shipmentInfo" class="ly-flex-1 ly-flex-align-center">
+                <i class="el-icon-office-building my-iocn" />
+                <div class="left-right-box m20">
+                  <div class="dai-sytle mb10">代发货主信息:</div>
+                  <div class="ly-flex-align-center">
+                    <span class="huoz-style mr20">{{ shipmentInfo? shipmentInfo.companyName : '' }}</span>
+                    <div class="ly-flex-align-center colorccc">
+                      <i class="el-icon-s-custom" />
+                      <span class="name-style">{{ shipmentInfo? shipmentInfo.adminName : '' }}</span>
+                    </div>
+                    <div class="ly-flex-align-center colorccc">
+                      <i class="el-icon-phone" />
+                      <span class="name-style">{{ shipmentInfo?shipmentInfo.telphone : '' }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="right-box ly-flex-align-center ">
+                <div class="mr20 btn">
+                  <el-form-item v-if="!isClone && (!isAdmin && isCreated)" label="代发货主" prop="tin1">
+                    <el-select
+                      v-model="formData.tin1"
+                      v-el-select-loadmore="loadmore"
+                      filterable
+                      clearable
+                      remote
+                      reserve-keyword
+                      placeholder="请输入关键词"
+                      :remote-method="remoteMethod"
+                      :loading="loading1"
+                      @change="handlerchange"
+                    >
+                      <el-option
+                        v-for="(item, index1) in shipmentList"
+                        :key="index1"
+                        :value="item.code"
+                        :label="item.adminName"
+                      >
+                        <!-- :label="item.adminName" -->
+                        <div class="ly-flex-pack-justify"><span>{{ item.adminName }}</span><span>{{ item.telphone }}</span></div>
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                </div>
+              </div>
+
+            </div>
+
 
             <OrderBasic
               v-if="formData.tin1"
@@ -84,15 +113,18 @@
               :cb-data="cbOrderBasic"
               :myisdisabled="myisdisabled"
               @goods="handlerGoos"
-            />
-            <div class="ly-t-center">
+            >
 
-              <el-button v-if="!myisdisabled && (formData.tin1 && active < 2)" @click="nextTo(2)">下一步</el-button>
-            </div>
+              <div class="ly-t-center">
+                <el-button v-if="!myisdisabled && (formData.tin1 && active < 2)" type="primary" plain @click="nextTo(2)">下一步</el-button>
+              </div>
+            </OrderBasic>
+
+
           </div>
 
           <!-- 第二步 地址的填写 -->
-          <div v-show="(formData.tin1 && active === 2) || myisdisabled" class="content">
+          <div v-show="(formData.tin1 && active === 2) || myisdisabled" class="app-container">
             <div class="header mb8">地址信息</div>
             <el-form-item label="装卸类型" prop="tin7">
               <el-radio-group v-model="formData.tin7" size="medium" @change="zhuangOrxiechange">
@@ -211,15 +243,15 @@
             <el-divider />
             <template v-if="!myisdisabled">
               <div class="ly-t-center">
-                <el-button v-if="active < 3" @click="nextSe(1)">上一步</el-button>
-                <el-button v-if="active < 3" @click="nextSe(3)">下一步</el-button>
+                <el-button v-if="active < 3" type="primary" plain @click="nextSe(1)">上一步</el-button>
+                <el-button v-if="active < 3" type="primary" plain @click="nextSe(3)">下一步</el-button>
               </div>
             </template>
 
           </div>
 
           <!-- 第三步 货源信息 -->
-          <div v-show="(formData.tin1 && active === 3) || myisdisabled" class="content">
+          <div v-show="(formData.tin1 && active === 3) || myisdisabled" class="app-container">
             <div class="header mb8">货源信息</div>
             <goods-info
               ref="goodsInfo"
@@ -236,7 +268,7 @@
 
             <template v-if="!loading && !myisdisabled">
               <div v-if="!loading && active === 3" class="ly-t-center">
-                <el-button @click="nextFe(2)">上一步</el-button>
+                <el-button type="primary" plain @click="nextFe(2)">上一步</el-button>
                 <el-button v-hasPermi="['transportation:order:pubilsh']" type="primary" @click="onSubmit('elForm',3)">{{ isCreated?'立即发布':'保存' }}</el-button>
                 <el-button @click="nextFe(4)">预览(查看预估价格)</el-button>
               </div>
@@ -247,7 +279,7 @@
         </el-form>
 
         <div v-if="active >= 4 && !isT" class="ly-t-center">
-          <el-button @click="nextFe(3)">上一步</el-button>
+          <el-button type="primary" plain @click="nextFe(3)">上一步</el-button>
           <el-button v-hasPermi="['transportation:order:pubilsh']" type="primary" @click="onPubilsh">{{ isCreated?'立即发布':'保存' }}</el-button>
 
           <div class="release_warning">
@@ -273,7 +305,7 @@
       :visible.sync="openSelectaddress"
       width="80%"
     >
-      <div>
+      <div v-if="openSelectaddress">
         <OpenDialog :shipment-code="formData.tin1" @radioSelection="radioSelection" />
       </div>
     </el-dialog>
@@ -304,6 +336,7 @@ export default {
   },
   data() {
     return {
+      shipmentInfo: null, // 选中的货主信息
       orderInfo: '0', // 详情的时候切换查看
       waybillData: null, // 货源-运单详情
       authStatus: true, // 默认ok展示
@@ -416,7 +449,7 @@ export default {
     const { isAdmin = true, isShipment = true, shipment = {}, user = {}} = getUserInfo() || {};
 
     this.isShipment = isShipment;
-    console.log(this.isShipment);
+    // console.log(this.isShipment);
     this.isAdmin = !isAdmin;
     if (!isAdmin) {
       if (shipment.info.authStatus !== 3) {
@@ -488,6 +521,7 @@ export default {
       this.shipmentList.forEach(e => {
         if (e.code === value) {
           this.orgCode = e.orgCode || '';
+          this.shipmentInfo = e;
         }
       });
     },
@@ -1270,7 +1304,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.app-container {
+.m_app-container {
   overflow-y: auto;
   height: calc(100vh - 145px);
 }
@@ -1317,5 +1351,35 @@ export default {
   width: 500px;
   margin: 20px auto 0;
   text-align: left;
+}
+
+.my_huozhu{
+  background: #fff url('~@/assets/images/order-jiaoliu.png') no-repeat;
+  background-position: 99% 15px;
+}
+.my-iocn{
+  font-size: 30px;
+  color: #C18633;
+}
+.btn{
+  padding-right: 70px;
+}
+.dai-sytle{
+    color: #ccc;
+  }
+  .huoz-style{
+    font-weight: 700;
+  }
+  .colorccc{
+    color: #ccc;
+    margin-right: 10px;
+    .name-style{
+      margin-right: 5px;
+      color:#000;
+    }
+  }
+
+.btn{
+  padding-right: 70px;
 }
 </style>
