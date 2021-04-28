@@ -44,10 +44,6 @@ export default {
 
 <style lang="scss" scoped>
 .s-container{
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
   margin: 0 0.6rem;
   &__card{
     margin: 0 0.4rem;
@@ -99,7 +95,7 @@ export default {
       right: 0.8rem;
       width: 2.55rem;
       height: 0.15rem;
-      background: url('~@/assets/images/statistic/card_after.png') no-repeat;
+      background: url('~@/assets/images/statistic/card_after_small.png') no-repeat;
       background-size: 100% 100%;
     }
   }
