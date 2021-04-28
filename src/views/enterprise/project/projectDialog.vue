@@ -213,7 +213,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 	.mr3{
 	  margin-right: 3%;
 	}
@@ -227,6 +227,6 @@ export default {
 	  text-align: left;
 	}
   .el-radio{
-    line-height: 36px !important;
+    line-height: 36px;
   }
 </style>
