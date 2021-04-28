@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="app-container">
 
     <div class="mb20 mt20">
       <span class="mr20">承运码信息</span>

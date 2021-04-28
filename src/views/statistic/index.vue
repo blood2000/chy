@@ -26,7 +26,7 @@
         <div class="ly-left-bottom-box ly-flex-pack-justify">
           <div class="ly-left-bottom-left ly-border">
             <PerformanceInfo class="mb1rem" />
-            <AmountTop10Chart />
+            <AmountTop10Chart ref="AmountTop10ChartRef" />
           </div>
           <div class="ly-left-bottom-right ly-border">
             <CompanyTop10List />
@@ -44,12 +44,16 @@
     <div class="ly-right ly-flex-pack-justify ly-border">
       <div class="ly-right-left ly-border">
         <div class="ly-right-left-top mb1rem ly-border">
-          <Title class="title_4" icon="5">运营情况<span>Operation situation</span></Title>
-          右-左-上
+          <Title class="title_4 mb05rem" icon="5">运营情况<span>Operation situation</span></Title>
+          <div class="ly-right-left-top-box">
+            <OperationData />
+            <OrderChart ref="OrderChartRef" />
+            <ComplaintChart ref="ComplaintChartRef" />
+          </div>
         </div>
         <div class="ly-right-left-bottom ly-border">
-          <Title class="title_5" icon="6">目标达成情况<span>Achievement of Goals</span></Title>
-          右-左-下
+          <Title class="title_5 mb05rem" icon="6">目标达成情况<span>Achievement of Goals</span></Title>
+          <TargetChart ref="TargetChartRef" />
         </div>
       </div>
       <div class="ly-right-right ly-border">
@@ -66,6 +70,7 @@
 </template>
 
 <script>
+import { ThrottleFun } from '@/utils/index.js';
 import Title from './components/title';
 import RegulatoryData from './RegulatoryData';// 监管数据
 import UserInfo from './UserInfo';// 用户情况
@@ -73,7 +78,10 @@ import CapacityInfo from './CapacityInfo';// 运力情况
 import PerformanceInfo from './PerformanceInfo';// 业绩数据
 import AmountTop10Chart from './AmountTop10Chart';// TOP10省份交易额排名
 import CompanyTop10List from './CompanyTop10List';// TOP10省内十大公司
-
+import OperationData from './OperationData';// 运营情况
+import OrderChart from './OrderChart';// 订单统计
+import ComplaintChart from './ComplaintChart';// 投诉统计
+import TargetChart from './TargetChart';// 目标达成情况
 import CompanyTop5List from './CompanyTop5List';// 总排名TOP5公司
 import DriverTop5List from './DriverTop5List';// 总排名TOP5司机
 
@@ -87,9 +95,29 @@ export default {
     PerformanceInfo,
     AmountTop10Chart,
     CompanyTop10List,
-
+    OperationData,
+    OrderChart,
+    ComplaintChart,
+    TargetChart,
     CompanyTop5List,
     DriverTop5List
+  },
+  mounted() {
+    const throttle = ThrottleFun(this.refreshChart, 300);
+    window.onresize = () => {
+      throttle();
+    };
+  },
+  beforeDestroy() {
+    window.onresize = null;
+  },
+  methods: {
+    refreshChart() {
+      this.$refs.AmountTop10ChartRef.refreshChart();
+      this.$refs.TargetChartRef.refreshChart();
+      this.$refs.OrderChartRef.refreshChart();
+      this.$refs.ComplaintChartRef.refreshChart();
+    }
   }
 };
 </script>
@@ -151,7 +179,8 @@ export default {
     .ly-left-bottom {
       height: calc(100% - 21.87% * 2);
       .ly-left-bottom-box{
-        height: calc(100% - 2.9rem);
+        // 2.6 = titleHeight + mb1rem
+        height: calc(100% - 2.6rem);
         .ly-left-bottom-left {
           width: 28.4rem;
           height: 100%;
@@ -176,15 +205,20 @@ export default {
       width: 23.4rem;
       .ly-right-left-top {
         height: calc(100% - 26.5% - #{$mb1rem});
+        .ly-right-left-top-box{
+          height: calc(100% - #{$mb05rem} - 1.6rem);
+        }
       }
       .ly-right-left-bottom {
         height: 26.5%;
       }
     }
     .ly-right-right {
-      width: 23rem;
+      width: 22.6rem;
       .ly-right-right-top, .ly-right-right-bottom {
-        height: calc(50% - 0.75rem - 0.95rem); //0.75 = [mb1 + mb0.5] / 2
+        // 0.75 = [mb1 + mb0.5] / 2
+        // 0.95 = titleHeight / 2
+        height: calc(50% - 0.75rem - 0.8rem);
       }
     }
   }
