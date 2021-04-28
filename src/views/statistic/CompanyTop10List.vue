@@ -1,11 +1,11 @@
 <template>
   <!-- TOP10省内十大公司 -->
-  <div class="container">
-    <h5 class="container__title">TOP 10省内十大公司</h5>
-    <p class="container__legend">交易额(万)</p>
-    <div class="container__list">
+  <div class="s-container">
+    <h5 class="s-container__title">TOP 10省内十大公司</h5>
+    <p class="s-container__legend">交易额(万)</p>
+    <div class="s-container__list">
       <ul class="ly-flex-v ly-flex-pack-justify">
-        <li v-for="(item, index) in dataList" :key="index" class="container__list__item ly-flex-pack-start ly-flex-align-center">
+        <li v-for="(item, index) in dataList" :key="index" class="s-container__list__item ly-flex-pack-start ly-flex-align-center">
           <div class="index">{{ index + 1 }}</div>
           <div class="label">大道成技术有股份核心有限公司</div>
           <div class="line">
@@ -29,7 +29,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container{
+.s-container{
   height: 100%;
   &__title{
     height: 1.2rem;
@@ -49,7 +49,7 @@ export default {
     height: calc(100% - 2.8rem);
     >ul{
       height: 100%;
-      .container__list__item{
+      .s-container__list__item{
         >.index{
           width: 0.9rem;
           margin-right: 0.4rem;

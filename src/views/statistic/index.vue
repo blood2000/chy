@@ -37,7 +37,8 @@
 
     <!-- center -->
     <div class="ly-center ly-border">
-      中
+
+      <ScrollData />
     </div>
 
     <!-- right -->
@@ -84,6 +85,7 @@ import ComplaintChart from './ComplaintChart';// 投诉统计
 import TargetChart from './TargetChart';// 目标达成情况
 import CompanyTop5List from './CompanyTop5List';// 总排名TOP5公司
 import DriverTop5List from './DriverTop5List';// 总排名TOP5司机
+import ScrollData from './ScrollData';// 中间滚屏数据
 
 export default {
   name: 'Statistic',
@@ -100,7 +102,8 @@ export default {
     ComplaintChart,
     TargetChart,
     CompanyTop5List,
-    DriverTop5List
+    DriverTop5List,
+    ScrollData
   },
   mounted() {
     const throttle = ThrottleFun(this.refreshChart, 300);
@@ -193,6 +196,7 @@ export default {
     }
   }
   .ly-center {
+    position: relative;
     width: calc(100% - #{$width_left} - #{$width_right});
     height: 100%;
     float: left;

@@ -1,17 +1,17 @@
 <template>
   <!-- 总排名TOP5司机 -->
-  <div class="container">
-    <span class="container__title">TOP 5 司机</span>
-    <ul class="container__list">
-      <li v-for="(item, index) in dataList" :key="index" class="container__list__item">
-        <div class="container__list__item__title">
+  <div class="s-container">
+    <span class="s-container__title">TOP 5 司机</span>
+    <ul class="s-container__list">
+      <li v-for="(item, index) in dataList" :key="index" class="s-container__list__item">
+        <div class="s-container__list__item__title">
           <span :class="index === 0 ? 'first' : ''" class="index">{{ index + 1 }}</span>
           <span class="text">
             吴磊
             <span class="driver">司机</span>
           </span>
         </div>
-        <div class="container__list__item__content ly-flex-pack-justify">
+        <div class="s-container__list__item__content ly-flex-pack-justify">
           <div class="content__box">
             <p class="label">接单次数(万)</p>
             <p class="text">
@@ -45,7 +45,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container{
+.s-container{
   height: 100%;
   position: relative;
   &__title{

@@ -1,14 +1,14 @@
 <template>
   <!-- 投诉统计 -->
-  <div class="container ly-flex-pack-justify">
-    <div class="container__info">
-      <div class="container__info__box">
+  <div class="s-container ly-flex-pack-justify">
+    <div class="s-container__info">
+      <div class="s-container__info__box">
         <div class="content">
           <p class="label">总投诉量</p>
           <p class="text">100</p>
         </div>
       </div>
-      <div class="container__info__box ly-flex-pack-justify">
+      <div class="s-container__info__box ly-flex-pack-justify">
         <div class="content">
           <p class="label child">已解决投诉</p>
           <p class="text">60</p>
@@ -19,7 +19,7 @@
         </div>
       </div>
     </div>
-    <div ref="pie" class="container__pie" />
+    <div ref="pie" class="s-container__pie" />
   </div>
 </template>
 
@@ -137,7 +137,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container{
+.s-container{
   height: 23%;
   &__info{
     width: 45%;

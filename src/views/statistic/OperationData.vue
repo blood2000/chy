@@ -1,15 +1,15 @@
 <template>
   <!-- 运营情况 -->
-  <div class="container">
+  <div class="s-container">
     <!-- 货单 -->
-    <div class="container__box top ly-flex-v ly-flex-pack-justify">
-      <div class="container__box__content">
+    <div class="s-container__box top ly-flex-v ly-flex-pack-justify">
+      <div class="s-container__box__content">
         <div class="content">
           <p class="label">货单总数(万)</p>
           <p class="text">677</p>
         </div>
       </div>
-      <div class="container__box__content ly-flex-pack-start">
+      <div class="s-container__box__content ly-flex-pack-start">
         <div class="content">
           <p class="label">今日新增货单</p>
           <p class="text">
@@ -29,8 +29,8 @@
     </div>
 
     <!-- 运单 -->
-    <div class="container__box bottom ly-flex-v ly-flex-pack-justify">
-      <div class="container__box__content ly-flex-pack-start">
+    <div class="s-container__box bottom ly-flex-v ly-flex-pack-justify">
+      <div class="s-container__box__content ly-flex-pack-start">
         <div class="content">
           <p class="label">运单总数(万)</p>
           <p class="text">677</p>
@@ -51,7 +51,7 @@
           </div>
         </div>
       </div>
-      <div class="container__box__content ly-flex-pack-start">
+      <div class="s-container__box__content ly-flex-pack-start">
         <div class="content">
           <p class="label">今日新增运单</p>
           <p class="text">
@@ -87,7 +87,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container{
+.s-container{
   height: 46%;
   margin-left: 0.2rem;
   &__box{
@@ -165,7 +165,7 @@ export default {
     &.top{
       height: calc(50% - 0.5rem);
       padding-bottom: 1rem;
-      .container__box__content >.card-content .card{
+      .s-container__box__content >.card-content .card{
         width: 6.6rem;
         background: linear-gradient(to right, rgba(1, 227, 255, 0.05), rgba(1, 227, 255, 0.01));
       }
@@ -174,7 +174,7 @@ export default {
     &.bottom{
       height: calc(50% + 0.5rem);
       padding: 1rem 0;
-      .container__box__content >.card-content .card{
+      .s-container__box__content >.card-content .card{
         width: 4.4rem;
         background: linear-gradient(to right, rgba(1, 227, 255, 0.08), rgba(1, 227, 255, 0.015));
       }

@@ -1,12 +1,12 @@
 <template>
   <!-- 用户情况 -->
-  <div class="container ly-flex-pack-justify">
-    <div class="container__box ly-flex-pack-justify ly-flex-v">
-      <div class="container__box__content">
+  <div class="s-container ly-flex-pack-justify">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v">
+      <div class="s-container__box__content">
         <p class="label">总用户数(万)</p>
         <p class="text">0.211</p>
       </div>
-      <div class="container__box__content">
+      <div class="s-container__box__content">
         <p class="label">今日新增用户</p>
         <p class="text blod">
           0.211
@@ -15,12 +15,12 @@
         </p>
       </div>
     </div>
-    <div class="container__box ly-flex-pack-justify ly-flex-v">
-      <div class="container__box__content">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v">
+      <div class="s-container__box__content">
         <p class="label">总货主数(万)</p>
         <p class="text">0.211</p>
       </div>
-      <div class="container__box__content">
+      <div class="s-container__box__content">
         <p class="label">今日新增货主</p>
         <p class="text blod">
           0.211
@@ -29,12 +29,12 @@
         </p>
       </div>
     </div>
-    <div class="container__box ly-flex-pack-justify ly-flex-v">
-      <div class="container__box__content">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v">
+      <div class="s-container__box__content">
         <p class="label">总调度者(万)</p>
         <p class="text">0.211</p>
       </div>
-      <div class="container__box__content">
+      <div class="s-container__box__content">
         <p class="label">今日新增调度者</p>
         <p class="text blod">
           0.211
@@ -43,12 +43,12 @@
         </p>
       </div>
     </div>
-    <div class="container__box ly-flex-pack-justify ly-flex-v">
-      <div class="container__box__content">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v">
+      <div class="s-container__box__content">
         <p class="label">总司机(万)</p>
         <p class="text">0.211</p>
       </div>
-      <div class="container__box__content">
+      <div class="s-container__box__content">
         <p class="label">今日新增司机</p>
         <p class="text blod">
           0.211
@@ -67,7 +67,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container{
+.s-container{
   height: calc(100% - 2.9rem);
   &__box{
     width: 25%;
