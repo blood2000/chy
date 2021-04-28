@@ -157,7 +157,7 @@ export default {
 
 <style lang="scss" scoped>
 .container{
-  height: 32%;
+  height: 31%;
   position: relative;
   &::after{
     content: '';
