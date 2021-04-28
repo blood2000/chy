@@ -179,7 +179,8 @@ export default {
     .ly-left-bottom {
       height: calc(100% - 21.87% * 2);
       .ly-left-bottom-box{
-        height: calc(100% - 2.9rem);
+        // 2.6 = titleHeight + mb1rem
+        height: calc(100% - 2.6rem);
         .ly-left-bottom-left {
           width: 28.4rem;
           height: 100%;
@@ -205,7 +206,7 @@ export default {
       .ly-right-left-top {
         height: calc(100% - 26.5% - #{$mb1rem});
         .ly-right-left-top-box{
-          height: calc(100% - #{$mb05rem} - 1.9rem);
+          height: calc(100% - #{$mb05rem} - 1.6rem);
         }
       }
       .ly-right-left-bottom {
@@ -215,7 +216,9 @@ export default {
     .ly-right-right {
       width: 22.6rem;
       .ly-right-right-top, .ly-right-right-bottom {
-        height: calc(50% - 0.75rem - 0.95rem); //0.75 = [mb1 + mb0.5] / 2
+        // 0.75 = [mb1 + mb0.5] / 2
+        // 0.95 = titleHeight / 2
+        height: calc(50% - 0.75rem - 0.8rem);
       }
     }
   }

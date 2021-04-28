@@ -23,20 +23,20 @@ export default {
 
 <style lang="scss" scoped>
 .title{
-  height: 1.9rem;
+  height: 1.6rem;
   margin-bottom: 1rem;
   position: relative;
   >.before{
-    width: 1.9rem;
-    height: 1.9rem;
+    width: 1.6rem;
+    height: 1.6rem;
     >img{
       width: 1.4rem;
       height: 1.4rem;
-      margin: 0.2rem 0;
+      margin: 0.08rem 0;
     }
   }
   >.text{
-    line-height: 1.9rem;
+    line-height: 1.6rem;
     font-size: 0.9rem;
     font-weight: bold;
     color: #01e3ff;

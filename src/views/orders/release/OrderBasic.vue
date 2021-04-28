@@ -41,7 +41,7 @@
             <el-radio
               v-for="dict in tin2Option"
               :key="dict.dictValue"
-              class="mb10 ml0"
+              class="mb10 ml0 m_radio"
               border
               :label="dict.dictValue"
             >{{ dict.dictLabel }}</el-radio>
@@ -55,8 +55,7 @@
               <el-checkbox
                 v-for="dict in tin2_Option"
                 :key="dict.dictValue"
-                class="mb10 ml0"
-                border
+                class="ml0 mb10"
                 :label="dict.dictValue"
               >{{ dict.dictLabel }}</el-checkbox>
             </el-checkbox-group>
@@ -66,10 +65,10 @@
               <el-radio
                 v-for="dict in tin2_Option"
                 :key="dict.dictValue"
-                class="mb10 ml0"
-                border
+                class="ml0 mb10 mt10"
                 :label="dict.dictValue"
               >{{ dict.dictLabel }}</el-radio>
+
             </el-radio-group>
           </el-form-item>
         </template>
@@ -720,5 +719,26 @@ export default {
   color: #000;
   padding-left: 30px;
   background: #FDF2E7 url('~@/assets/images/order_chedui.png') no-repeat 5px 3px;
+}
+
+.m_radio{
+  ::v-deep .el-radio__input{
+      display: none;
+  }
+}
+
+.m_radio.is-checked{
+    background-color: #edf5fe;
+    position: relative;
+    &::after{
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      right: -1px;
+      bottom: -1px;
+      background: url('~@/assets/images/order_xiabiao.png') no-repeat;
+      background-size: 100% 100%;
+    }
 }
 </style>
