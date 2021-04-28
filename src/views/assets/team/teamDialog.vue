@@ -64,7 +64,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="清分百分比(%)" prop="distributionPercent">
+      <el-form-item v-if="form.isDistribution" label="清分百分比(%)" prop="distributionPercent">
         <el-input-number v-model="form.distributionPercent" controls-position="right" :precision="2" placeholder="请输入清分百分比" :step="1" :min="0" :max="100" class="width90" clearable />
       </el-form-item>
       <el-form-item>
@@ -175,6 +175,9 @@ export default {
         if (valid) {
           this.buttonLoading = true;
           this.form.identificationEffective = praseBooleanToNum(this.form.identificationEffective);
+          if (!this.form.isDistribution) {
+            this.form.distributionPercent = null;
+          }
           if (this.form.id) {
             updateInfo(this.form).then(response => {
               this.buttonLoading = false;

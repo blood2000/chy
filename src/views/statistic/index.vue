@@ -38,7 +38,7 @@
     <!-- center -->
     <div class="ly-center ly-border ly-flex-v ly-flex-pack-justify">
       <TotalData class="ly-border" />
-      <Map class="ly-border" />
+      <Map ref="mapRef" class="ly-border" />
       <ScrollData class="ly-border" />
     </div>
 
@@ -125,6 +125,7 @@ export default {
       this.$refs.TargetChartRef.refreshChart();
       this.$refs.OrderChartRef.refreshChart();
       this.$refs.ComplaintChartRef.refreshChart();
+      this.$refs.mapRef.refreshChart();
     }
   }
 };
@@ -134,7 +135,7 @@ export default {
 // 辅助线
 .ly-border {
   box-sizing: border-box;
-  border: 1px dashed rgb(255, 255, 255, 0.2);
+  // border: 1px dashed rgb(255, 255, 255, 0.2);
 }
 
 // 设计稿大小：3200*1080
@@ -153,6 +154,8 @@ export default {
   font-size: 0.7rem;
   background-color: #011c5f;
   box-sizing: border-box;
+  // background: #011c5f url('~@/assets/images/statistic/map_bg.png') no-repeat;
+  background-size: 100% 100%;
 
   //unSelect
   -webkit-user-select: none;
@@ -237,19 +240,22 @@ export default {
   .header-box {
     display: inline-block;
     position: absolute;
+    width: 26rem;
     top: 1.6rem;
-    left: 45%;
+    left: 50%;
+    margin-left: -13rem;
     font-size: 1.6rem;
     font-family: PingFang-SC-Bold;
     font-weight: bold;
     color: #FFFFFF;
+    text-align: center;
     &::before {
       content: '';
       width: 6.1rem;
       height: 2.1rem;
       position: absolute;
       top: 0.1rem;
-      left: -6.5rem;
+      left: -3.2rem;
       background: url('~@/assets/images/statistic/header_left.png') no-repeat;
       background-size: 100% 100%;
     }
@@ -259,7 +265,7 @@ export default {
       height: 2.1rem;
       position: absolute;
       top: 0.1rem;
-      right: -6.5rem;
+      right: -3.2rem;
       background: url('~@/assets/images/statistic/header_right.png') no-repeat;
       background-size: 100% 100%;
     }

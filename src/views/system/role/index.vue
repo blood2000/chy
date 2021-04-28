@@ -403,6 +403,7 @@ export default {
       btnDisabled: false,
       // 选中数组
       ids: [],
+      names: [],
       // 非单个禁用
       single: true,
       // 非多个禁用
@@ -685,6 +686,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.roleId);
+      this.names = selection.map(item => item.roleName);
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
     },
@@ -804,7 +806,8 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const roleIds = row.roleId || this.ids;
-      this.$confirm('是否确认删除角色编号为"' + roleIds + '"的数据项?', '警告', {
+      const names = row.roleName || this.names;
+      this.$confirm('是否确认删除角色名称为"' + names + '"的数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
