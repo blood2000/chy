@@ -78,7 +78,7 @@
               @click="handleAdd(scope.row)"
             >新增</el-button>
             <el-button
-              v-if="scope.row.parentId != 0 && scope.row.orgType != 1"
+              v-if="scope.row.parentId != 0"
               v-hasPermi="['system:dept:remove']"
               size="mini"
               type="text"
