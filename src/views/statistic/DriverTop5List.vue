@@ -135,11 +135,13 @@ export default {
               font-size: 0.6rem;
               vertical-align: top;
               color: rgba(1, 156, 255, 1);
+              margin-left: 0.15rem;
             }
             .value_down{
               font-size: 0.6rem;
               vertical-align: top;
               color: rgba(52, 163, 152, 1);
+              margin-left: 0.15rem;
             }
           }
         }
