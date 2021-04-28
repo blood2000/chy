@@ -608,6 +608,7 @@ export default {
     handleAdd() {
       this.reset();
       this.getTreeselect();
+      this.btnDisabled = false;
       getUser().then(response => {
         this.postOptions = response.posts;
         this.roleOptions = response.roles;

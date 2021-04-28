@@ -19,6 +19,7 @@ const getters = {
   shipment: state => state.user.shipment,
   defaultRoleCode: state => state.user.defaultRoleCode,
   provinceList: state => state.orders.provinceList,
-  goodsBigType_option: state => state.orders.goodsBigType_option
+  goodsBigType_option: state => state.orders.goodsBigType_option,
+  branch: state => state.user.branch
 };
 export default getters;
