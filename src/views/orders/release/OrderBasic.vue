@@ -158,6 +158,8 @@
             :style="{ width: '100%' }"
           />
         </el-form-item>
+
+        <slot />
       </div>
 
 

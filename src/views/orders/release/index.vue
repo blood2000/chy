@@ -113,12 +113,14 @@
               :cb-data="cbOrderBasic"
               :myisdisabled="myisdisabled"
               @goods="handlerGoos"
-            />
+            >
+
+              <div class="ly-t-center">
+                <el-button v-if="!myisdisabled && (formData.tin1 && active < 2)" type="primary" plain @click="nextTo(2)">下一步</el-button>
+              </div>
+            </OrderBasic>
 
 
-            <div class="ly-t-center">
-              <el-button v-if="!myisdisabled && (formData.tin1 && active < 2)" type="primary" plain @click="nextTo(2)">下一步</el-button>
-            </div>
           </div>
 
           <!-- 第二步 地址的填写 -->
