@@ -40,7 +40,7 @@
             { required: true, message: `请输入${item.cnName}`, trigger: 'change' },
           ]"
         >
-          <el-select v-model="formData[item.myName]" clearable :placeholder="`请输入${item.cnName}`" :style="{ width: '200px' }" @change="change()">
+          <el-select v-model="formData[item.myName]" :placeholder="`请输入${item.cnName}`" :style="{ width: '200px' }" @change="change()">
             <el-option
               v-for="dict in item.Option"
               :key="dict.dictValue"

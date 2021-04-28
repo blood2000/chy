@@ -13,7 +13,8 @@ const user = {
     isDriver: false, // 是否是司机
     isDispatcher: false, // 是否是调度者
     shipment: [], // 货主信息
-    defaultRoleCode: ''
+    defaultRoleCode: '',
+    branch: [] // 网点
   },
 
   mutations: {
@@ -52,6 +53,9 @@ const user = {
     },
     SET_SHIPMENT: (state, shipment) => {
       state.shipment = shipment;
+    },
+    SET_BRANCH: (state, branch) => {
+      state.branch = branch;
     }
   },
 
@@ -90,7 +94,10 @@ const user = {
           }
           commit('SET_NAME', user.userName);
           commit('SET_AVATAR', avatar);
-
+          console.log(user.branch);
+          if (user.branch) { // 网点
+            commit('SET_BRANCH', user.branch);
+          }
           // 保存一下用户信息
           setUserInfo({
             isAdmin: res.isAdmin,

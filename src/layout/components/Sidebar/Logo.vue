@@ -3,11 +3,11 @@
     <transition name="sidebarLogoFade">
       <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/">
         <img v-if="logo" :src="logo" class="sidebar-logo">
-        <h1 v-else class="sidebar-title" :style="{ color: sideTheme === 'theme-dark' ? variables.sidebarTitle : variables.sidebarLightTitle }">{{ title }} </h1>
+        <h1 v-else class="sidebar-title" :style="{ color: sideTheme === 'theme-dark' ? variables.sidebarTitle : variables.sidebarLightTitle }">{{ title || '综合服务管理平台'}} </h1>
       </router-link>
       <router-link v-else key="expand" class="sidebar-logo-link" to="/">
         <img v-if="logo" :src="logo" class="sidebar-logo">
-        <h1 class="sidebar-title" :style="{ color: sideTheme === 'theme-dark' ? variables.sidebarTitle : variables.sidebarLightTitle }">{{ title }} </h1>
+        <h1 class="sidebar-title" :style="{ color: sideTheme === 'theme-dark' ? variables.sidebarTitle : variables.sidebarLightTitle }">{{ title || '综合服务管理平台'}} </h1>
       </router-link>
     </transition>
   </div>
@@ -16,6 +16,7 @@
 <script>
 import logoImg from '@/assets/logo/logo.svg';
 import variables from '@/assets/styles/variables.scss';
+import {mapGetters} from "vuex";
 
 export default {
   name: 'SidebarLogo',
@@ -27,13 +28,16 @@ export default {
   },
   data() {
     return {
-      title: '综合服务管理平台',
+      // title: '综合服务管理平台',
       logo: logoImg
     };
   },
   computed: {
     variables() {
       return variables;
+    },
+    title() {
+      return this.$store.state.user.branch.name;
     },
     sideTheme() {
       return this.$store.state.settings.sideTheme;
@@ -69,7 +73,7 @@ export default {
       width: 32px;
       height: 32px;
       vertical-align: middle;
-      margin-right: 12px;
+      margin-right: 10px;
     }
 
     & .sidebar-title {
@@ -81,6 +85,10 @@ export default {
       font-size: 14px;
       font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
       vertical-align: middle;
+      width: 120px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
   }
 
