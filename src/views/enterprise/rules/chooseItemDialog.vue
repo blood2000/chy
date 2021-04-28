@@ -3,7 +3,7 @@
     <el-checkbox-group v-model="checkGroup" size="medium" class="ml20">
       <el-row>
         <el-col v-for="item in formGroup" :key="item.code" class="mb20">
-          <el-checkbox :label="item.cnName" :disabled="item.disabled" border />
+          <el-checkbox :label="item.cnName" :disabled="item.disabled || (itemType === 'add' && item.dictCode === 'M0')" border />
         </el-col>
       </el-row>
     </el-checkbox-group>

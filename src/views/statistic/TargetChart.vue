@@ -1,6 +1,6 @@
 <template>
   <!-- 目标达成情况 -->
-  <div class="container" />
+  <div class="s-container" />
 </template>
 
 <script>
@@ -171,7 +171,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container{
+.s-container{
   height: calc(100% - 2.4rem);
 }
 </style>

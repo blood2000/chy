@@ -42,16 +42,18 @@ export default {
         nickName: [
           { required: true, message: '用户昵称不能为空', trigger: 'blur' }
         ],
-        email: [
-          { required: true, message: '邮箱地址不能为空', trigger: 'blur' },
-          { validator: this.formValidate.email, trigger: 'blur' }
-        ],
         phonenumber: [
           { required: true, message: '手机号码不能为空', trigger: 'blur' },
           { validator: this.formValidate.telphone, trigger: 'blur' }
         ]
       }
     };
+  },
+  watch: {
+    user(val) {
+      this.form = val;
+      console.log(this.form);
+    }
   },
   methods: {
     submit() {

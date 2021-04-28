@@ -1,6 +1,6 @@
 <template>
   <!-- TOP10省份交易额排名 -->
-  <div class="container" />
+  <div class="s-container" />
 </template>
 
 <script>
@@ -204,7 +204,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container{
+.s-container{
   height: 72.5%;
 }
 </style>

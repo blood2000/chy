@@ -1,42 +1,42 @@
 <template>
   <!-- 监管数据 -->
-  <div class="container ly-flex-pack-justify">
-    <div class="container__box">
-      <p class="container__box__line">
+  <div class="s-container ly-flex-pack-justify">
+    <div class="s-container__box">
+      <p class="s-container__box__line">
         <label>已上报司机信息:</label>
         <span>1515</span>
       </p>
-      <p class="container__box__line">
+      <p class="s-container__box__line">
         <label>已上报车辆信息:</label>
         <span>1515</span>
       </p>
-      <p class="container__box__line">
+      <p class="s-container__box__line">
         <label>已上报运单信息:</label>
         <span>1515</span>
       </p>
-      <p class="container__box__line">
+      <p class="s-container__box__line">
         <label>已上报轨迹信息:</label>
         <span>1515</span>
       </p>
-      <p class="container__box__line">
+      <p class="s-container__box__line">
         <label>来自硬件的轨迹信息:</label>
         <span>1515</span>
       </p>
     </div>
-    <div class="container__box">
-      <p class="container__box__line">
+    <div class="s-container__box">
+      <p class="s-container__box__line">
         <label>已上报装货信息:</label>
         <span>1515</span>
       </p>
-      <p class="container__box__line">
+      <p class="s-container__box__line">
         <label>已上报卸货信息:</label>
         <span>1515</span>
       </p>
-      <p class="container__box__line">
+      <p class="s-container__box__line">
         <label>已上报资金信息:</label>
         <span>1515</span>
       </p>
-      <p class="container__box__line">
+      <p class="s-container__box__line">
         <label>来自APP的轨迹信息:</label>
         <span>1515</span>
       </p>
@@ -51,7 +51,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container{
+.s-container{
   padding-left: 0.2rem;
   &__box{
     width: 48%;

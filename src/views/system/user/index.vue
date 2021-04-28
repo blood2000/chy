@@ -117,7 +117,7 @@
                 @click="handleDelete"
               >删除</el-button>
             </el-col>
-          <!--  <el-col :span="1.5">
+            <!--  <el-col :span="1.5">
               <el-button
                 v-hasPermi="['system:user:import']"
                 type="info"
@@ -688,7 +688,8 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const userIds = row.userId || this.ids;
-      this.$confirm('是否确认删除用户编号为"' + userIds + '"的数据项?', '警告', {
+      const userNames = row.userName || this.userNames;
+      this.$confirm('是否确认删除用户名为"' + userNames + '"的数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

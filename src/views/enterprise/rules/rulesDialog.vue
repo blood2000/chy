@@ -53,8 +53,10 @@
           <el-input v-if="item.showType === 1" v-model="lossItemObj[item.code]" :placeholder="`请输入${item.cnName}`" class="width-small" clearable />
           <template v-if="item.showType === 2">
             <el-input-number v-model="lossItemObj[item.code].start" :controls="false" placeholder="最小值" class="width-small" clearable />
+            <span v-show="currentRadio && currentRadio !== ''" style="margin-left: 5px">{{ currentRadio === 'DE' ? 'kg' : '%' }}</span>
             -
             <el-input-number v-model="lossItemObj[item.code].end" :controls="false" placeholder="最大值" class="width-small" clearable />
+            <span v-show="currentRadio && currentRadio !== ''" style="margin-left: 5px">{{ currentRadio === 'DE' ? 'kg' : '%' }}</span>
           </template>
           <el-select v-if="item.showType === 3" v-model="lossItemObj[item.code]" class="width-small" clearable filterable>
             <el-option
@@ -64,7 +66,7 @@
               :value="dict.dictValue"
             />
           </el-select>
-          <el-radio-group v-if="item.showType === 4" v-model="lossItemObj[item.code]">
+          <el-radio-group v-if="item.showType === 4" v-model="lossItemObj[item.code]" @change="radioChange">
             <el-radio
               v-for="dict in options[item.dictCode]"
               :key="dict.dictValue"
@@ -207,7 +209,9 @@ export default {
       },
       // 增减费用项目选择弹出层显示
       chooseItemOpen: false,
-      chooseItemType: ''
+      chooseItemType: '',
+      // 储存选择的 定额/定率
+      currentRadio: undefined
     };
   },
   computed: {
@@ -253,6 +257,9 @@ export default {
       if (lossList) {
         lossList.forEach(el => {
           this.fillFormItem(el, this.lossItemObj);
+          if (el.ruleValue === 'DE' || el.ruleValue === 'DL') {
+            this.radioChange(el.ruleValue);
+          }
         });
       }
     },
@@ -408,6 +415,7 @@ export default {
      * 表单重置
      */
     reset() {
+      this.currentRadio = '';
       this.form = {
         platformType: 2, // 1运营 2货主
         code: null,
@@ -502,6 +510,12 @@ export default {
         });
       }
       this.$forceUpdate();
+    },
+    /**
+     * 选择亏吨方案
+     */
+    radioChange(data) {
+      this.currentRadio = data;
     }
   }
 };
