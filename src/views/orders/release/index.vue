@@ -53,7 +53,7 @@
           <!-- 第一步 基本信息 -->
           <div v-show="active ==1 || myisdisabled">
 
-            <div v-if="!isClone && (!isAdmin && isCreated)" class="ly-flex-pack-justify pr my_huozhu app-container">
+            <div v-if="!isClone && (!isShipment && isCreated)" class="ly-flex-pack-justify pr my_huozhu app-container">
 
               <div v-if="shipmentInfo" class="ly-flex-1 ly-flex-align-center">
                 <i class="el-icon-office-building my-iocn" />
@@ -75,7 +75,7 @@
 
               <div class="right-box ly-flex-align-center ">
                 <div class="mr20 btn">
-                  <el-form-item v-if="!isClone && (!isAdmin && isCreated)" label="代发货主" prop="tin1">
+                  <el-form-item v-if="!isClone && (!isShipment && isCreated)" label="代发货主" prop="tin1">
                     <el-select
                       v-model="formData.tin1"
                       v-el-select-loadmore="loadmore"
