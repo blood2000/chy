@@ -1,12 +1,12 @@
 <template>
   <!-- 业绩数据 -->
-  <div class="container ly-flex-pack-justify">
-    <div class="container__box ly-flex-pack-justify ly-flex-v">
-      <div class="container__box__content">
+  <div class="s-container ly-flex-pack-justify">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v">
+      <div class="s-container__box__content">
         <p class="label">交易总额(亿)</p>
         <p class="text">0.211</p>
       </div>
-      <div class="container__box__content">
+      <div class="s-container__box__content">
         <p class="label">今日新增交易</p>
         <p class="text blod">
           0.211
@@ -15,12 +15,12 @@
         </p>
       </div>
     </div>
-    <div class="container__box ly-flex-pack-justify ly-flex-v">
-      <div class="container__box__content">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v">
+      <div class="s-container__box__content">
         <p class="label">交易总额(亿)</p>
         <p class="text">0.211</p>
       </div>
-      <div class="container__box__content">
+      <div class="s-container__box__content">
         <p class="label">今日新增交易</p>
         <p class="text blod">
           0.211
@@ -29,12 +29,12 @@
         </p>
       </div>
     </div>
-    <div class="container__box ly-flex-pack-justify ly-flex-v">
-      <div class="container__box__content">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v">
+      <div class="s-container__box__content">
         <p class="label">运输总额(亿)</p>
         <p class="text">0.211</p>
       </div>
-      <div class="container__box__content">
+      <div class="s-container__box__content">
         <p class="label">今日新增运费</p>
         <p class="text blod">
           0.211
@@ -53,7 +53,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container{
+.s-container{
   height: 26.5%;
   &__box{
     width: 33.33%;

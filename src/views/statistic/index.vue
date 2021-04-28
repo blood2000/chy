@@ -36,8 +36,10 @@
     </div>
 
     <!-- center -->
-    <div class="ly-center ly-border">
-      中
+    <div class="ly-center ly-border ly-flex-v ly-flex-pack-justify">
+      <TotalData class="ly-border" />
+      <Map class="ly-border" />
+      <ScrollData class="ly-border" />
     </div>
 
     <!-- right -->
@@ -84,6 +86,9 @@ import ComplaintChart from './ComplaintChart';// 投诉统计
 import TargetChart from './TargetChart';// 目标达成情况
 import CompanyTop5List from './CompanyTop5List';// 总排名TOP5公司
 import DriverTop5List from './DriverTop5List';// 总排名TOP5司机
+import TotalData from './TotalData';// 中间总数统计
+import ScrollData from './ScrollData';// 中间滚屏数据
+import Map from './Map.vue';// 地图
 
 export default {
   name: 'Statistic',
@@ -100,7 +105,10 @@ export default {
     ComplaintChart,
     TargetChart,
     CompanyTop5List,
-    DriverTop5List
+    DriverTop5List,
+    TotalData,
+    ScrollData,
+    Map
   },
   mounted() {
     const throttle = ThrottleFun(this.refreshChart, 300);
@@ -126,7 +134,7 @@ export default {
 // 辅助线
 .ly-border {
   box-sizing: border-box;
-  // border: 1px dashed rgb(255, 255, 255, 0.2);
+  border: 1px dashed rgb(255, 255, 255, 0.2);
 }
 
 // 设计稿大小：3200*1080
@@ -193,9 +201,11 @@ export default {
     }
   }
   .ly-center {
+    position: relative;
     width: calc(100% - #{$width_left} - #{$width_right});
     height: 100%;
     float: left;
+    padding-top: 2.8rem;
   }
   .ly-right {
     width: $width_right;

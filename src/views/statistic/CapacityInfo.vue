@@ -1,12 +1,12 @@
 <template>
   <!-- 运力情况 -->
-  <div class="container ly-flex-pack-justify">
-    <div class="container__box ly-flex-pack-justify ly-flex-v">
-      <div class="container__box__content">
+  <div class="s-container ly-flex-pack-justify">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v">
+      <div class="s-container__box__content">
         <p class="label">总车辆(万)</p>
         <p class="text">0.211</p>
       </div>
-      <div class="container__box__content">
+      <div class="s-container__box__content">
         <p class="label">今日新增司机</p>
         <p class="text blod">
           0.211
@@ -15,12 +15,12 @@
         </p>
       </div>
     </div>
-    <div class="container__box ly-flex-pack-justify ly-flex-v">
-      <div class="container__box__content">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v">
+      <div class="s-container__box__content">
         <p class="label">总路线(条)</p>
         <p class="text">0.211</p>
       </div>
-      <div class="container__box__content">
+      <div class="s-container__box__content">
         <p class="label">今日新增路线</p>
         <p class="text blod">
           0.211
@@ -29,12 +29,12 @@
         </p>
       </div>
     </div>
-    <div class="container__box ly-flex-pack-justify ly-flex-v">
-      <div class="container__box__content">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v">
+      <div class="s-container__box__content">
         <p class="label">总运输总量(吨)</p>
         <p class="text">0.211</p>
       </div>
-      <div class="container__box__content">
+      <div class="s-container__box__content">
         <p class="label">今日新增路线</p>
         <p class="text blod">
           0.211
@@ -43,12 +43,12 @@
         </p>
       </div>
     </div>
-    <div class="container__box ly-flex-pack-justify ly-flex-v">
-      <div class="container__box__content">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v">
+      <div class="s-container__box__content">
         <p class="label">行驶里程(公里)</p>
         <p class="text">0.211</p>
       </div>
-      <div class="container__box__content">
+      <div class="s-container__box__content">
         <p class="label">今日新增路线</p>
         <p class="text blod">
           0.211
@@ -57,12 +57,12 @@
         </p>
       </div>
     </div>
-    <div class="container__box ly-flex-pack-justify ly-flex-v">
-      <div class="container__box__content">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v">
+      <div class="s-container__box__content">
         <p class="label">行驶时长(天)</p>
         <p class="text">0.211</p>
       </div>
-      <div class="container__box__content">
+      <div class="s-container__box__content">
         <p class="label">今日新增时长</p>
         <p class="text blod">
           0.211
@@ -71,12 +71,12 @@
         </p>
       </div>
     </div>
-    <div class="container__box ly-flex-pack-justify ly-flex-v">
-      <div class="container__box__content">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v">
+      <div class="s-container__box__content">
         <p class="label">网点</p>
         <p class="text">0.211</p>
       </div>
-      <div class="container__box__content">
+      <div class="s-container__box__content">
         <p class="label">今日新增网点</p>
         <p class="text blod">
           0.211
@@ -95,7 +95,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container{
+.s-container{
   height: calc(100% - 2.9rem);
   &__box{
     width: 16.66%;

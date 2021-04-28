@@ -1,6 +1,6 @@
 <template>
   <!-- 订单统计 -->
-  <div class="container" />
+  <div class="s-container" />
 </template>
 
 <script>
@@ -156,7 +156,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container{
+.s-container{
   height: 31%;
   position: relative;
   &::after{
