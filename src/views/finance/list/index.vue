@@ -122,7 +122,14 @@
 
       <RefactorTable :loading="loading" :data="billlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
         <template #invoiceStatus="{row}">
-          <span>{{ selectDictLabel(invoiceStatusOptions, row.invoiceStatus) }}</span>
+          <span>
+            <span v-if="row.invoiceStatus == 1" class="g-statusDot g-color-warning">●</span>
+            <span v-if="row.invoiceStatus == 2" class="g-statusDot g-color-gray">●</span>
+            <span v-if="row.invoiceStatus == 3" class="g-statusDot g-color-error">●</span>
+            <span v-if="row.invoiceStatus == 4" class="g-statusDot g-color-success">●</span>
+            <span v-if="row.invoiceStatus == 5" class="g-statusDot g-color-success">●</span>
+            {{ selectDictLabel(invoiceStatusOptions, row.invoiceStatus) }}
+          </span>
         </template>
         <template #invoiceFrom="{row}">
           <span>{{ selectDictLabel(invoiceFromOptions, row.invoiceFrom) }}</span>
@@ -230,10 +237,10 @@ export default {
       // 发票状态字典
       invoiceStatusOptions: [
         { 'dictLabel': '未开票', 'dictValue': '0' },
-        { 'dictLabel': '已申请', 'dictValue': '1' },
-        { 'dictLabel': '已取消', 'dictValue': '2' },
-        { 'dictLabel': '已拒绝', 'dictValue': '3' },
-        { 'dictLabel': '已通过', 'dictValue': '4' },
+        { 'dictLabel': '待审核', 'dictValue': '1' },
+        { 'dictLabel': '货主已取消', 'dictValue': '2' },
+        { 'dictLabel': '审核不通过', 'dictValue': '3' },
+        { 'dictLabel': '审核通过', 'dictValue': '4' },
         { 'dictLabel': '已开票', 'dictValue': '5' }
       ],
       // 发票来源字典
@@ -345,3 +352,6 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+</style>

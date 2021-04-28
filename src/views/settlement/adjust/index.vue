@@ -214,7 +214,7 @@
       >
         <el-col v-if="activeName == '4'" :span="1.5">
           <el-button
-            v-hasPermi="['transportation:waybillBalanceInfo:batchDetail']"
+            v-hasPermi="['transportation:waybillBalanceInfo:batchCheck']"
             type="primary"
             icon="el-icon-document-checked"
             size="mini"
@@ -224,6 +224,7 @@
         </el-col>
         <el-col v-if="activeName == '5'" :span="1.5">
           <el-button
+            v-hasPermi="['transportation:waybillBalanceInfo:batchApply']"
             type="primary"
             icon="el-icon-wallet"
             size="mini"
@@ -255,7 +256,7 @@
         </template>
         <template #isReturn="{row}">
           <span>
-            <i v-if="row.isReturn == 0" class="el-icon-error g-color-error" />
+            <i v-if="row.isReturn == 0" class="el-icon-error g-color-gray" />
             <i v-if="row.isReturn == 1" class="el-icon-success g-color-success" />
             {{ selectDictLabel(isReturnOptions, row.isReturn) }}
           </span>

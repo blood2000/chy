@@ -189,7 +189,15 @@ export default {
 
   },
   created() {
-    this['t_cbData_' + this.activeName] = JSON.parse(JSON.stringify(this.cbData)) || [];
+    // this['t_cbData_' + this.activeName] = JSON.parse(JSON.stringify(this.cbData)) || [];
+    const arr = JSON.parse(JSON.stringify(this.cbData)) || [];
+
+    this['t_cbData_' + this.activeName] = arr.map(e => {
+      return {
+        ...e,
+        tin_isOk: true
+      };
+    });
     this.getList();
   },
 
@@ -223,7 +231,9 @@ export default {
         if (this['t_cbData_' + this.activeName]) {
           if (this.activeName === 'listDriver') {
             const arr = [];
+
             const data1 = this.t_data1['page_' + this.queryParams_listDriver.pageNum];
+
             // data1 当前页选中的值(初始值为空)
             (data1 || this['t_cbData_' + this.activeName]).forEach(ee => {
               this.list.forEach((e, index) => {
@@ -273,18 +283,24 @@ export default {
 
     // 多选框选中数据
     handleSelectionChange(selection) {
-      // 记录当前页的选中的
-      console.log(selection);
+      // this.t_data1['page_' + this.queryParams_listDriver.pageNum] = selection;
 
-      this.ids = selection.map(item => item.code);
-      this['selections_' + this.activeName] = selection;
+      // // 去重
 
+      // this.ids = selection.map(item => item.code);
+      // this['selections_' + this.activeName] = selection;
+      const concatArr = this._deduplication([...this['list_' + this.activeName], ...this['t_cbData_' + this.activeName]], 'code'); // 当前页和其他页选中的数据
 
-      if (data1) {
-        console.log(data1);
-      }
-      let data1 = this.t_data1['page_' + this.queryParams_listDriver.pageNum];
-      data1 = selection;
+      // 过滤出其他页的数据
+      const weArr = concatArr.filter(e => {
+        return e.tin_isOk;
+      });
+
+      // 选中的拼接上其他页的数据
+      const newArr = this._deduplication([...selection, ...weArr], 'code');
+      this.ids = newArr.map(item => item.code);
+      this['selections_' + this.activeName] = newArr;
+      this['t_cbData_' + this.activeName] = newArr;
     },
     // 单选
     handlerChange(value) {
@@ -359,6 +375,20 @@ export default {
           this.$emit('_ok', false);
         }
       }
+    },
+    /* 数组对象去重 */
+    _deduplication(arr = [], key) {
+      var result = [];
+      var obj = {};
+
+      for (var i = 0; i < arr.length; i++) {
+        if (!obj[arr[i][key]]) {
+          result.push(arr[i]);
+          obj[arr[i][key]] = true;
+        }
+      }
+
+      return result;
     }
 
     // 回填 rows 为数组

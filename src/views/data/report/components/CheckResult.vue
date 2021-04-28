@@ -16,6 +16,11 @@
       :data="list"
       :table-columns-config="tableColumnsConfig"
     />
+
+    <div class="ly-t-center mt20 mb20">
+      <el-button type="primary" @click="_ok(true)">修 改</el-button>
+      <el-button type="primary" plain @click="_ok(false)">取 消</el-button>
+    </div>
   </div>
 </template>
 
@@ -34,39 +39,44 @@ export default {
         {
           label: '驾驶员基本信息',
           value: '0',
-          isOk: true
+          isOk: true,
+          list: [{ ttttttt1: 1 }]
         },
         {
           label: '车辆基本信息',
           value: '1',
-          isOk: true
+          isOk: true,
+          list: [{ ttttttt1: 333 }]
         },
         {
           label: '运单信息',
           value: '2',
-          isOk: true
+          isOk: true,
+          list: []
         },
         {
           label: '装货位置',
           value: '3',
-          isOk: true
+          isOk: true,
+          list: []
         },
         {
           label: '卸货位置',
           value: '4',
-          isOk: true
+          isOk: true,
+          list: []
         },
         {
           label: '资金流水信息',
           value: '5',
-          isOk: false
+          isOk: false,
+          list: []
         }
 
       ],
 
       /* 表格 */
       loading: false,
-      list: [{ ttttttt1: 1 }],
       tableColumnsConfig: [
         {
           prop: 'ttttttt1',
@@ -121,12 +131,25 @@ export default {
     };
   },
 
+  computed: {
+    list() {
+      return this.tabData[this.active - 0].list;
+    }
+  },
+
   created() {
+    // 1. 返回是个数组, 且每一个数组里面要一个判断是否合格
+
+    // 2. 列表 值?? 放在tabData里面
     console.log(213, this.propData);
   },
 
   methods: {
-    handleActive() {}
+    handleActive() {},
+
+    _ok(bool) {
+      this.$emit('refresh', bool);
+    }
   }
 };
 </script>

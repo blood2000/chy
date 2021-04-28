@@ -170,12 +170,14 @@
       >
         <el-col :span="1.5">
           <el-button
+            v-hasPermi="['transportation:waybillSettlementClarify:export']"
             type="primary"
             icon="el-icon-upload2"
             size="mini"
             @click="handleExport"
           >导出</el-button>
           <el-button
+            v-hasPermi="['transportation:waybillSettlementClarify:batch']"
             type="primary"
             icon="el-icon-document"
             size="mini"
@@ -183,6 +185,7 @@
             @click="handleClearing"
           >运单清分</el-button>
           <el-button
+            v-hasPermi="['transportation:waybillSettlementClarify:batchStatu']"
             type="primary"
             icon="el-icon-refresh"
             size="mini"
@@ -200,17 +203,25 @@
       </el-row>
 
       <RefactorTable :loading="loading" :data="clarifylist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
-        <!-- <template #isChild="{row}">
-          <span>{{ selectDictLabel(isChildOptions, row.isChild) }}</span>
-        </template> -->
+        <template #clarifyStatus="{row}">
+          <span>
+            <i v-if="row.isReturn == 0" class="el-icon-info g-color-gray" />
+            <i v-if="row.isReturn == 1" class="g-icon-deal" />
+            <i v-if="row.isReturn == 2" class="el-icon-success g-color-success" />
+            <i v-if="row.isReturn == 3" class="el-icon-error g-color-error" />
+            {{ selectDictLabel(clarifyStatusOptions, row.clarifyStatus) }}
+          </span>
+        </template>
 
         <template #edit="{row}">
           <el-button
+            v-hasPermi="['transportation:waybillSettlementClarify:batch']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 1)"
           >运单清分</el-button>
           <el-button
+            v-hasPermi="['transportation:waybillSettlementClarify:batchStatu']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 2)"

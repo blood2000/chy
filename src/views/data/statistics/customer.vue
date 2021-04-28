@@ -72,6 +72,7 @@
         :limit.sync="queryParams.pageSize"
         @pagination="getList"
       />
+
     </div>
   </div>
 </template>

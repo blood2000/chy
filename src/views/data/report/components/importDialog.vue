@@ -24,7 +24,7 @@
       <el-col :span="1.5">
         <el-button icon="el-icon-upload2" size="mini" type="primary" @click="submitUpload">立即上传</el-button>
       </el-col>
-      <el-col :span="1.5">
+      <el-col v-if="false" :span="1.5">
         <el-button
           type="success"
           icon="el-icon-download"
@@ -59,6 +59,8 @@
 </template>
 
 <script>
+
+// 上传地址替换
 import { importData } from '@/api/assets/driver';
 import { getToken } from '@/utils/auth';
 import { authorPre, produceCode, appCode, appVersion, terminalType } from '@/headers';

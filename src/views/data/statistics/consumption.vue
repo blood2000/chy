@@ -72,6 +72,33 @@
         :limit.sync="queryParams.pageSize"
         @pagination="getList"
       />
+
+      <!-- <el-row type="flex" :gutter="10" class="g-statistics-bg">
+        <el-col :span="1">
+          <img src="../../../../src/assets/images/icon/total.png" alt="">
+        </el-col>
+        <el-col :span="2">
+          <div class="g-statistics-tag">期初余额：</div>
+          <div class="g-statistics-num">1416195.86</div>
+        </el-col>
+        <el-col :span="2">
+          <div class="g-statistics-tag">本期收入：</div>
+          <div class="g-statistics-num">100</div>
+        </el-col>
+        <el-col :span="2">
+          <div class="g-statistics-tag">清分支出：</div>
+          <div class="g-statistics-num">100</div>
+        </el-col>
+        <el-col :span="2">
+          <div class="g-statistics-tag">本期提现：</div>
+          <div class="g-statistics-num">100</div>
+        </el-col>
+        <el-col :span="2">
+          <div class="g-statistics-tag">期末余额：</div>
+          <div class="g-statistics-num">100</div>
+        </el-col>
+      </el-row> -->
+
     </div>
   </div>
 </template>
@@ -119,26 +146,20 @@ export default {
         label: '运费',
         prop: 'freightAmount'
       }, {
+        label: '已开票运费',
+        prop: 'freightInvoiceAmount'
+      }, {
+        label: '未开票运费',
+        prop: 'freightUnbilledAmount'
+      }, {
         label: '服务费',
         prop: 'serviceAmount'
       }, {
-        label: '运费',
-        children: [{
-          label: '已开票',
-          prop: 'freightInvoiceAmount'
-        }, {
-          label: '未开票',
-          prop: 'freightUnbilledAmount'
-        }]
+        label: '已开票服务费',
+        prop: 'serviceInvoiceAmount'
       }, {
-        label: '服务费',
-        children: [{
-          label: '已开票',
-          prop: 'serviceInvoiceAmount'
-        }, {
-          label: '未开票',
-          prop: 'serviceUnbilledAmount'
-        }]
+        label: '未开票服务费',
+        prop: 'serviceUnbilledAmount'
       }, {
         label: '消费合计',
         prop: 'transferAmount'
