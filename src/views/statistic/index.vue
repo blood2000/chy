@@ -240,19 +240,22 @@ export default {
   .header-box {
     display: inline-block;
     position: absolute;
+    width: 26rem;
     top: 1.6rem;
-    left: 45%;
+    left: 50%;
+    margin-left: -13rem;
     font-size: 1.6rem;
     font-family: PingFang-SC-Bold;
     font-weight: bold;
     color: #FFFFFF;
+    text-align: center;
     &::before {
       content: '';
       width: 6.1rem;
       height: 2.1rem;
       position: absolute;
       top: 0.1rem;
-      left: -6.5rem;
+      left: -3.2rem;
       background: url('~@/assets/images/statistic/header_left.png') no-repeat;
       background-size: 100% 100%;
     }
@@ -262,7 +265,7 @@ export default {
       height: 2.1rem;
       position: absolute;
       top: 0.1rem;
-      right: -6.5rem;
+      right: -3.2rem;
       background: url('~@/assets/images/statistic/header_right.png') no-repeat;
       background-size: 100% 100%;
     }
