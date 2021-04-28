@@ -168,7 +168,7 @@
       </el-form-item>
       <el-row :gutter="20">
         <el-col :span="11">
-          <el-form-item label="税点" prop="texPoint">
+          <el-form-item label="税点(%)" prop="texPoint">
             <el-input-number v-model="form.texPoint" controls-position="right" :precision="2" placeholder="请输入税点" :step="1" :min="0" :max="100" clearable @input="changeTextPoint" />
           </el-form-item>
         </el-col>
@@ -187,7 +187,7 @@
                   <li class="g-text">非一票制：调度费点数 = [税点/(100-税点)]*100%</li>
                 </ul>
               </el-tooltip>
-              调度费点数
+              调度费点数(%)
             </label>
             <el-input v-model="form.dispatchPoints" disabled placeholder="请输入调度费点数" clearable />
           </el-form-item>

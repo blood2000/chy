@@ -57,7 +57,7 @@ export default {
   &__time{
     position: absolute;
     right: 0;
-    top: -1.6rem;
+    top: -1.45rem;
     line-height: 0.8rem;
     font-size: 0.5rem;
     font-family: PingFang SC;
@@ -149,11 +149,13 @@ export default {
               font-size: 0.6rem;
               vertical-align: top;
               color: rgba(1, 156, 255, 1);
+              margin-left: 0.15rem;
             }
             .value_down{
               font-size: 0.6rem;
               vertical-align: top;
               color: rgba(52, 163, 152, 1);
+              margin-left: 0.15rem;
             }
           }
         }

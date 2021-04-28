@@ -117,7 +117,7 @@
                 @click="handleDelete"
               >删除</el-button>
             </el-col>
-            <el-col :span="1.5">
+          <!--  <el-col :span="1.5">
               <el-button
                 v-hasPermi="['system:user:import']"
                 type="info"
@@ -125,7 +125,7 @@
                 size="mini"
                 @click="handleImport"
               >导入</el-button>
-            </el-col>
+            </el-col>-->
             <el-col :span="1.5">
               <el-button
                 v-hasPermi="['system:user:export']"
@@ -389,6 +389,7 @@ export default {
       btnDisabled: false,
       // 选中数组
       ids: [],
+      userNames: [],
       // 非单个禁用
       single: true,
       // 非多个禁用
@@ -599,6 +600,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.userId);
+      this.userNames = selection.map(item => item.userName);
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
     },

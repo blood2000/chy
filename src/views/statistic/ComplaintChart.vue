@@ -138,7 +138,7 @@ export default {
 
 <style lang="scss" scoped>
 .container{
-  height: 25%;
+  height: 23%;
   &__info{
     width: 45%;
     height: 100%;
