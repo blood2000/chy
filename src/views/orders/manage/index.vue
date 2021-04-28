@@ -725,9 +725,6 @@ export default {
       getOrderInfoList(this.newQueryParams).then(response => {
         this.total = response.data.total - 0;
         this.handlerList(response.data.list);
-      }).catch(() => {
-        this.theight = null;
-        this.loading = false;
       });
     },
 

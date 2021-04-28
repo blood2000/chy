@@ -26,7 +26,7 @@
     <!-- 转货信息 -->
     <div v-if="authStatus">
 
-      <div v-if="isT" class="mb20">
+      <div v-if="isT" class="mb20 app-container">
         <el-radio-group v-model="orderInfo" size="small">
           <el-radio-button label="0">货源信息</el-radio-button>
           <el-radio-button label="1">运单信息</el-radio-button>
@@ -303,7 +303,7 @@
       :visible.sync="openSelectaddress"
       width="80%"
     >
-      <div>
+      <div v-if="openSelectaddress">
         <OpenDialog :shipment-code="formData.tin1" @radioSelection="radioSelection" />
       </div>
     </el-dialog>
