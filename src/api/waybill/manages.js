@@ -64,7 +64,7 @@ export function getWaybillAttachment(code, type) {
 // 查询运单详情-评价(根据运单CODE获取评价)
 export function getWaybillComment(code, type) {
   return request({
-    url: `/transportation/waybillComment/getByWayBillCode?wayBillCode=${code}&type=${type}`,
+    url: `/transportation/waybillComment/getByWayBillCode?wayBillCode=${code}&commentObject=${type}`,
     method: 'get'
   });
 }

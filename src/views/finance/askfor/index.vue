@@ -499,7 +499,7 @@ export default {
     },
     // 导出
     handleExport() {
-      this.download('/transportation/invoice/listWayBill', { ...this.queryParams }, `askfor_${new Date().getTime()}.xlsx`);
+      this.download('/transportation/invoice/export', { ...this.queryParams }, `askfor_${new Date().getTime()}.xlsx`);
     },
     // 批量索票
     handleAskfor() {
@@ -513,7 +513,7 @@ export default {
       switch (index) {
         case 1:
           this.$refs.DetailDialog.reset();
-          this.currentId = row.wayBillCode;
+          this.currentId = row.code;
           this.open = true;
           this.title = '运输单信息';
           this.formDisable = true;
