@@ -53,7 +53,7 @@ export default {
     },
     refreshChart() {
       this.chart.resize();
-      this.setOption();
+      this.setFontOption();
     },
     setOption() {
       this.chart.setOption({
