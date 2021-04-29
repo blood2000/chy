@@ -29,6 +29,11 @@ export default {
     initChart() {
       this.chart = echarts.init(this.$el, 'macarons');
       this.setOption();
+      this.setFontOption();
+    },
+    refreshChart() {
+      this.chart.resize();
+      this.setFontOption();
     },
     setOption() {
       this.chart.setOption({
@@ -37,10 +42,7 @@ export default {
           right: 0,
           top: '10%',
           icon: 'circle',
-          itemWidth: setfontSize(8),
-          itemHeight: setfontSize(8),
           textStyle: {
-            fontSize: setfontSize(12),
             color: '#D5EAFF'
           },
           data: [{
@@ -62,8 +64,7 @@ export default {
           axisLabel: {
             show: true,
             textStyle: {
-              color: '#CDEDFF',
-              fontSize: setfontSize(12)
+              color: '#CDEDFF'
             }
           },
           // x轴颜色
@@ -78,7 +79,6 @@ export default {
           name: '订单数(万)',
           nameTextStyle: {
             color: '#CDEDFF',
-            fontSize: setfontSize(12),
             paddingLeft: '2%'
           },
           type: 'value',
@@ -92,8 +92,7 @@ export default {
           axisLabel: {
             show: true,
             textStyle: {
-              color: '#CDEDFF',
-              fontSize: setfontSize(12)
+              color: '#CDEDFF'
             }
           },
           // 网格样式
@@ -117,13 +116,11 @@ export default {
           data: [2, 4, 5, 8, 6, 2, 6, 2, 6, 2],
           type: 'line',
           symbol: 'circle',
-          symbolSize: setfontSize(8), // 拐点大小
           color: 'rgba(38, 123, 183, 1)', // 拐点颜色
           // 折线样式
           itemStyle: {
             normal: {
               lineStyle: {
-                width: setfontSize(2),
                 color: 'rgba(38, 123, 183, 1)'
               }
             }
@@ -133,13 +130,11 @@ export default {
           data: [5, 3, 4, 8, 5, 6, 5, 6],
           type: 'line',
           symbol: 'circle',
-          symbolSize: setfontSize(8), // 拐点大小
           color: 'rgba(255, 158, 44, 1)', // 拐点颜色
           // 折线样式
           itemStyle: {
             normal: {
               lineStyle: {
-                width: setfontSize(2),
                 color: 'rgba(255, 158, 44, 1)'
               }
             }
@@ -147,9 +142,52 @@ export default {
         }]
       });
     },
-    refreshChart() {
-      this.chart.resize();
-      this.setOption();
+    setFontOption() {
+      this.chart.setOption({
+        legend: {
+          itemWidth: setfontSize(8),
+          itemHeight: setfontSize(8),
+          textStyle: {
+            fontSize: setfontSize(12)
+          }
+        },
+        xAxis: {
+          axisLabel: {
+            textStyle: {
+              fontSize: setfontSize(12)
+            }
+          }
+        },
+        yAxis: {
+          nameTextStyle: {
+            fontSize: setfontSize(12)
+          },
+          axisLabel: {
+            textStyle: {
+              fontSize: setfontSize(12)
+            }
+          }
+        },
+        series: [{
+          symbolSize: setfontSize(8),
+          itemStyle: {
+            normal: {
+              lineStyle: {
+                width: setfontSize(2)
+              }
+            }
+          }
+        }, {
+          symbolSize: setfontSize(8),
+          itemStyle: {
+            normal: {
+              lineStyle: {
+                width: setfontSize(2)
+              }
+            }
+          }
+        }]
+      });
     }
   }
 };

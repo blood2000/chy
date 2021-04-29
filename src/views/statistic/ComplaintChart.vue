@@ -49,19 +49,19 @@ export default {
     initChart() {
       this.chart = echarts.init(this.$refs.pie, 'macarons');
       this.setOption();
+      this.setFontOption();
+    },
+    refreshChart() {
+      this.chart.resize();
+      this.setFontOption();
     },
     setOption() {
       this.chart.setOption({
         legend: {
           icon: 'roundRect',
-          itemWidth: setfontSize(8),
-          itemHeight: setfontSize(8),
-          itemGap: setfontSize(15), // 设置间距
           orient: 'vertical',
           top: '10%',
-          right: setfontSize(10),
           textStyle: {
-            fontSize: setfontSize(12),
             color: '#D5EAFF'
           },
           data: [{
@@ -128,9 +128,18 @@ export default {
         ]
       });
     },
-    refreshChart() {
-      this.chart.resize();
-      this.setOption();
+    setFontOption() {
+      this.chart.setOption({
+        legend: {
+          itemWidth: setfontSize(8),
+          itemHeight: setfontSize(8),
+          itemGap: setfontSize(15),
+          right: setfontSize(10),
+          textStyle: {
+            fontSize: setfontSize(12)
+          }
+        }
+      });
     }
   }
 };
