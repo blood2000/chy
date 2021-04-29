@@ -140,6 +140,12 @@ aside {
 }
 
 //main-container全局样式
+.app-card-box{
+  position: relative;
+  overflow-y: auto;
+  height: calc(100vh - 115px);
+}
+
 .app-container {
   padding: 20px;
   margin: 0 15px 15px;
@@ -153,9 +159,13 @@ aside {
     padding: 20px 20px 8px;
   }
   &.app-container--tree{
+    overflow-y: auto;
+    height: calc(100vh - 115px);
     margin: 0 0 15px 15px;
   }
 }
+
+
 
 .components-container {
   margin: 30px 50px;

@@ -315,7 +315,6 @@ export default {
 
 
       this.pccCode = { provinceCode, cityCode, districtCode };
-      console.log(this.pccCode);
     },
 
 

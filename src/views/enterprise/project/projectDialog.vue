@@ -124,9 +124,6 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          if (this.isMore === '1') {
-            this.form.commoditySubclassCodes = this.commoditySubclassCodes.join(',');
-          }
           if (this.shipmentCode) {
             this.form.shipmentCode = this.shipmentCode;
           }
@@ -159,17 +156,11 @@ export default {
     reset() {
       this.form = {
         id: null,
-        code: null,
         shipmentCode: null,
         projectName: null,
         commodityCategoryCode: null,
         commoditySubclassCodes: null,
-        projectRemark: null,
-        delFlag: null,
-        createCode: null,
-        createTime: null,
-        updateCode: null,
-        updateTime: null
+        projectRemark: null
       };
       this.resetForm('form');
       this.isMore = '2';
@@ -206,7 +197,7 @@ export default {
     },
     // 多选小类
     handleCheckedChange(selection) {
-      console.log(selection);
+      this.form.commoditySubclassCodes = selection.join(',');
       // this.commoditySubclassCodes = selection.map((item) => item.commoditySubclassCodesOptions);
     }
   }

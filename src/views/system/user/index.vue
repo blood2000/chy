@@ -655,7 +655,7 @@ export default {
             this.msgSuccess('修改成功，新密码是：' + this.pwForm.password);
             this.pwReset();
             this.btnDisabled = false;
-          });
+          }).catch(() => { this.btnDisabled = false; });
         } else {
           this.btnDisabled = false;
         }
@@ -672,14 +672,14 @@ export default {
               this.open = false;
               this.btnDisabled = false;
               this.getList();
-            });
+            }).catch(() => { this.btnDisabled = false; });
           } else {
             addUser(this.form).then(response => {
               this.msgSuccess('新增成功');
               this.open = false;
               this.btnDisabled = false;
               this.getList();
-            });
+            }).catch(() => { this.btnDisabled = false; });
           }
         } else {
           this.btnDisabled = false;
