@@ -243,7 +243,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 // 表单样式
 .input-width{
   width: 40%;
