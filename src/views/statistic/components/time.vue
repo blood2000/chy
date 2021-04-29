@@ -38,7 +38,7 @@ export default {
   line-height: 1.8rem;
   text-align: center;
   font-size: 0.6rem;
-  font-family: PingFang SC;
+  font-family: 'PingFang Medium';
   font-weight: 500;
   color: rgba(196, 238, 255, 0.8);
   &::after{

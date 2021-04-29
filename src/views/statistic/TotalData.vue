@@ -46,7 +46,7 @@ export default {
         border-right: 0.1rem solid rgba(3, 252, 255, 0.5);
         >p{
           font-size: 0.9rem;
-          font-family: PingFang SC;
+          font-family: 'PingFang Medium';
           font-weight: 500;
           color: #FFFFFF;
         }
@@ -57,7 +57,7 @@ export default {
         background: rgba(0, 45, 93, 0.4);
         >p{
           font-size: 1.6rem;
-          font-family: PingFang SC;
+          font-family: 'PingFang Medium';
           font-weight: bold;
           color: #01E3FF;
         }

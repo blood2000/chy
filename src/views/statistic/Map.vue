@@ -179,7 +179,7 @@ export default {
       height: 1.5rem;
       line-height: 1.5rem;
       font-size: 0.6rem;
-      font-family: PingFang SC;
+      font-family: 'PingFang Medium';
       font-weight: 500;
       color: #01E3FF;
       position: relative;
@@ -195,8 +195,8 @@ export default {
       &::after{
         content: '';
         position: absolute;
-        top: 0.6rem;
-        right: 0.6rem;
+        top: 0.55rem;
+        right: 0.8rem;
         width: 1.2rem;
         height: 0.35rem;
         background: url('~@/assets/images/statistic/legend_after.png') no-repeat;
@@ -215,7 +215,7 @@ export default {
         }
         .text{
           font-size: 0.5rem;
-          font-family: PingFang SC;
+          font-family: 'PingFang Medium';
           font-weight: 500;
           color: #DDF5FF;
         }

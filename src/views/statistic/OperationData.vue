@@ -12,7 +12,7 @@
       <div class="s-container__box__content ly-flex-pack-start">
         <div class="content">
           <p class="label">今日新增货单</p>
-          <p class="text">
+          <p class="text blod">
             126
             <span class="arow_down" />
             <span class="value_down">12.6%</span>
@@ -54,7 +54,7 @@
       <div class="s-container__box__content ly-flex-pack-start">
         <div class="content">
           <p class="label">今日新增运单</p>
-          <p class="text">
+          <p class="text blod">
             126
             <span class="arow_up" />
             <span class="value_up">12.6%</span>
@@ -106,9 +106,11 @@ export default {
         }
         .text{
           font-size: 1.1rem;
-          font-family: PingFang SC;
-          font-weight: 500;
+          // font-family: PingFang SC;
           color: #FFFFFF;
+          &.blod{
+            font-family: 'PingFang Bold';
+          }
           .arow_up{
             display: inline-block;
             width: 0.9rem;

@@ -61,7 +61,7 @@ export default {
         position: relative;
         height: 1.5rem;
         font-size: 0.6rem;
-        font-family: PingFang SC;
+        font-family: 'PingFang Medium';
         font-weight: 500;
         color: #01E3FF;
         &::before{
