@@ -31,7 +31,7 @@ export default {
       default: ''
     },
     open: Boolean,
-    currentId: {
+    currentid: {
       type: String,
       default: null
     }
@@ -69,7 +69,7 @@ export default {
     /** 查询发票列表 */
     getList() {
       this.loading = true;
-      getInvoiceWaybill(this.currentId).then(response => {
+      getInvoiceWaybill(this.currentid).then(response => {
         console.log(response);
         this.waybilllist = response.data;
         // this.total = response.data.length;

@@ -132,7 +132,7 @@
       </el-tab-pane>
       <!-- 轨迹 -->
       <el-tab-pane label="轨迹" name="3">
-        <el-divider content-position="left" class="m40">
+        <el-divider content-position="left">
           <h5 class="g-title-medium">运单轨迹</h5>
         </el-divider>
         <el-row v-if="activeTab === '3'" :gutter="20">
@@ -141,9 +141,9 @@
               <el-amap vid="amapDemo" :zoom="zoom" :center="center" style="height:600px">
                 <div class="waybill-detail-card">
                   <h5>
-                    {{ currentRow?currentRow.driverName:'' }}
-                    <span>{{ currentRow?currentRow.driverPhone:'' }}</span>
-                    <span class="license">{{ currentRow?currentRow.licenseNumber:'' }}</span>
+                    {{ form.driverName }}
+                    <span>{{ form.driverPhone }}</span>
+                    <span class="license">{{ form.licenseNumber }}</span>
                   </h5>
                   <p>
                     <label>货物类型：</label>
@@ -155,7 +155,7 @@
                   </p>
                   <p>
                     <label>接单时间：</label>
-                    {{ currentRow?parseTime(currentRow.receiveTime):'' }}
+                    {{ parseTime(form.receiveTime) }}
                   </p>
                   <p>
                     <label>装货地：</label>

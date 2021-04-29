@@ -153,7 +153,7 @@
       </el-col>
     </el-row>
     <!-- 运单详情 对话框 -->
-    <waybill-dialog ref="WaybillDialog" :current-id="currentId" :title="title" :open.sync="open" />
+    <waybill-dialog ref="WaybillDialog" :currentid="currentId" :title="title" :open.sync="open" />
   </el-form>
 </template>
 
@@ -252,7 +252,8 @@ export default {
     },
     // 查看发票里的运单
     handleClick(row) {
-      this.currentId = row.invoiceCode;
+      console.log(row);
+      this.currentId = row.code;
       this.open = true;
       this.title = '运单明细';
     }
