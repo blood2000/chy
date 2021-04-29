@@ -29,21 +29,21 @@ export default {
     initChart() {
       this.chart = echarts.init(this.$el, 'macarons');
       this.setOption();
+      this.setFontOption();
+    },
+    refreshChart() {
+      this.chart.resize();
+      this.setFontOption();
     },
     setOption() {
       this.chart.setOption({
         legend: {
           show: true,
           right: 0,
-          top: setfontSize(2),
           icon: 'rect',
-          itemWidth: setfontSize(8),
-          itemHeight: setfontSize(8),
           textStyle: {
-            fontSize: setfontSize(12),
-            color: '#B5CFDD'
+            color: '#D5EAFF'
           },
-          itemGap: setfontSize(36),
           data: [{
             name: '完成业绩'
           }, {
@@ -63,8 +63,7 @@ export default {
           axisLabel: {
             show: true,
             textStyle: {
-              color: '#CDEDFF',
-              fontSize: setfontSize(12)
+              color: '#CDEDFF'
             }
             // rotate: '30' // 字体倾斜角度
           },
@@ -80,7 +79,6 @@ export default {
           name: '业绩(亿)',
           nameTextStyle: {
             color: '#CDEDFF',
-            fontSize: setfontSize(12),
             paddingLeft: '2%'
           },
           type: 'value',
@@ -94,8 +92,7 @@ export default {
           axisLabel: {
             show: true,
             textStyle: {
-              color: '#CDEDFF',
-              fontSize: setfontSize(12)
+              color: '#CDEDFF'
             }
           },
           // 网格样式
@@ -116,7 +113,6 @@ export default {
         series: [{
           name: '完成业绩',
           type: 'bar',
-          barWidth: setfontSize(8), // 柱体宽度
           itemStyle: {
             normal: {
               // 柱体颜色渐变
@@ -139,7 +135,6 @@ export default {
         }, {
           name: '目标业绩',
           type: 'bar',
-          barWidth: setfontSize(8), // 柱体宽度
           itemStyle: {
             normal: {
               // 柱体颜色渐变
@@ -162,9 +157,40 @@ export default {
         }]
       });
     },
-    refreshChart() {
-      this.chart.resize();
-      this.setOption();
+    setFontOption() {
+      this.chart.setOption({
+        legend: {
+          top: setfontSize(2),
+          itemWidth: setfontSize(8),
+          itemHeight: setfontSize(8),
+          textStyle: {
+            fontSize: setfontSize(12)
+          },
+          itemGap: setfontSize(36)
+        },
+        xAxis: {
+          axisLabel: {
+            textStyle: {
+              fontSize: setfontSize(12)
+            }
+          }
+        },
+        yAxis: {
+          nameTextStyle: {
+            fontSize: setfontSize(12)
+          },
+          axisLabel: {
+            textStyle: {
+              fontSize: setfontSize(12)
+            }
+          }
+        },
+        series: [{
+          barWidth: setfontSize(8)
+        }, {
+          barWidth: setfontSize(8)
+        }]
+      });
     }
   }
 };
