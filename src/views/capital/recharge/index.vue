@@ -61,7 +61,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="变动日期">
+        <el-form-item label="变动时间">
           <el-date-picker
             v-model="queryParams.updateTimeBegin"
             clearable
