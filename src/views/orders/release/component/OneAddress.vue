@@ -10,72 +10,13 @@
       :disabled="myisdisabled"
     >
 
-      <el-row :gutter="10">
-        <el-col :span="14">
+      <el-row :gutter="30">
+        <el-col :span="24">
           <ProvinceCityCounty ref="pccFef" :cb-data="pccCode" :isrules="isrules" :disabled="myisdisabled" @getCity="getCity" @getProvince="getProvince" />
         </el-col>
       </el-row>
 
-
-      <!-- <div class="ly-flex">
-        <el-form-item
-          label="详细地址"
-          style="margin-right: 10px; width: 50%"
-          prop="addressName"
-        >
-          <el-select
-            v-model="formData.addressName"
-            clearable
-            filterable
-            remote
-            reserve-keyword
-            placeholder="请输入关键词"
-            :remote-method="remoteMethod"
-            :loading="loading"
-            :style="{ width: '300px' }"
-            @change="handlechengDetail"
-          >
-            <el-option
-              v-for="dict in detailOptin"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            >
-              <div class="option-item">
-                <div class="option-item_name">{{ dict.dictLabel }}</div>
-                <div class="option-item_address">{{ dict.address }}</div>
-              </div>
-            </el-option>
-          </el-select>
-          <el-amap-search-box
-            v-show="false"
-            :ref="`amap`"
-            class="search-box"
-            :search-option="searchOption"
-            :on-search-result="onSearchResult"
-          />
-        </el-form-item>
-
-        <el-form-item v-if="false" label="门牌号" :style="{ width: '50%' }">
-          <el-input
-            v-model="formData.detail"
-            clearable
-            placeholder="请输入门牌号"
-            :style="{ width: '300px' }"
-          />
-        </el-form-item>
-        <el-form-item label="地址别名" :style="{ width: '50%' }">
-          <el-input
-            v-model="formData.addressAlias"
-            clearable
-            placeholder="优先展示, 最多输入10个字"
-            maxlength="10"
-            :style="{width: '300px'}"
-          />
-        </el-form-item>
-      </div> -->
-
-      <el-row :gutter="30">
+      <el-row :gutter="50">
         <el-col :span="10">
           <el-form-item
             label="详细地址"
@@ -128,7 +69,7 @@
       </el-row>
 
 
-      <el-row :gutter="30">
+      <el-row :gutter="50">
         <el-col :span="10">
           <el-form-item label="联系人" prop="contact">
             <el-input

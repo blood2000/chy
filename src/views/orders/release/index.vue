@@ -1345,6 +1345,7 @@ export default {
   padding: 10px;
   margin-bottom: 10px;
   border: 1px solid #ccc;
+  width: 66%;
 }
 .m-flex {
   display: flex;
