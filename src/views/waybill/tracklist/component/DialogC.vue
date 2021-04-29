@@ -132,7 +132,7 @@ export default {
         this.$message({ type: 'warning', message: '装卸货间隔时间过短，请重新选择卸货时间！' });
         this.form.unloadTime = null;
       } else if (unloadtime > new Date()) {
-        this.$message({ type: 'warning', message: '卸货时间必须小于等于当前时间！' });
+        this.$message({ type: 'warning', message: '卸货时间必须早于或等于当前时间！' });
         this.form.unloadTime = null;
       }
     },

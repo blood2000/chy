@@ -98,7 +98,7 @@
           <span>{{ selectDictLabel(driverTypeOptions, scope.row.driverType) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="名字" align="center" prop="name" />
+      <el-table-column label="用户名称" align="center" prop="name" />
       <el-table-column label="审核状态" align="center" prop="authStatus" width="120">
         <template slot-scope="scope">
           <i v-show="scope.row.authStatus === 0" class="el-icon-warning g-color-light-gray mr5" />

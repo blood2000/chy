@@ -104,7 +104,7 @@
 </template>
 
 <script>
-import { listConsumptionApi, listConsumption } from '@/api/data/statistics';
+import { listConsumptionApi, listConsumption, getShipmentMoneyCount } from '@/api/data/statistics';
 // import tableColumnsConfig from './config';
 
 export default {
@@ -123,6 +123,8 @@ export default {
       total: 0,
       // 客户消费明细表格数据
       consumptionList: [],
+      // 客户消费统计
+      consumptionCount: {},
       queryTime: [],
       // 查询参数
       queryParams: {
@@ -131,7 +133,8 @@ export default {
         companyName: null,
         shipmentPhone: null,
         beginTime: null,
-        endTime: null
+        endTime: null,
+        haveCondition: false
       },
       summary: true,
       morelist: []
@@ -144,25 +147,32 @@ export default {
       label: '本期客户消费',
       children: [{
         label: '运费',
-        prop: 'freightAmount'
+        prop: 'freightAmount',
+        width: '100'
       }, {
         label: '已开票运费',
-        prop: 'freightInvoiceAmount'
+        prop: 'freightInvoiceAmount',
+        width: '100'
       }, {
         label: '未开票运费',
-        prop: 'freightUnbilledAmount'
+        prop: 'freightUnbilledAmount',
+        width: '100'
       }, {
         label: '服务费',
-        prop: 'serviceAmount'
+        prop: 'serviceAmount',
+        width: '100'
       }, {
         label: '已开票服务费',
-        prop: 'serviceInvoiceAmount'
+        prop: 'serviceInvoiceAmount',
+        width: '100'
       }, {
         label: '未开票服务费',
-        prop: 'serviceUnbilledAmount'
+        prop: 'serviceUnbilledAmount',
+        width: '100'
       }, {
         label: '消费合计',
-        prop: 'transferAmount'
+        prop: 'transferAmount',
+        width: '100'
       }]
     }];
     this.getList();
@@ -180,26 +190,41 @@ export default {
           return;
         }
         switch (column.property) {
+          case 'balanceAmount':
+            sums[index] = this.consumptionCount.balanceStatisticsCount;
+            break;
+          case 'closingBalance':
+            sums[index] = this.consumptionCount.closingBalanceCount;
+            break;
+          case 'paidAmount':
+            sums[index] = this.consumptionCount.currentRechargeCount;
+            break;
           case 'freightAmount':
-            sums[index] = '100元';
+            sums[index] = this.consumptionCount.freightCount;
             break;
           case 'freightInvoiceAmount':
-            sums[index] = '200元';
+            sums[index] = this.consumptionCount.freightInvoicedCount;
             break;
           case 'freightUnbilledAmount':
-            sums[index] = '120元';
+            sums[index] = this.consumptionCount.freightNotInvoicedCount;
+            break;
+          case 'rechargeNet':
+            sums[index] = this.consumptionCount.netRechargeCount;
             break;
           case 'serviceAmount':
-            sums[index] = '130元';
+            sums[index] = this.consumptionCount.serviceChargeCount;
             break;
           case 'serviceInvoiceAmount':
-            sums[index] = '400元';
+            sums[index] = this.consumptionCount.serviceChargeInvoicedCount;
             break;
           case 'serviceUnbilledAmount':
-            sums[index] = '500元';
+            sums[index] = this.consumptionCount.serviceChargeNotInvoicedCount;
             break;
-          case 'waybillCount':
-            sums[index] = '600元';
+          case 'transferAmount':
+            sums[index] = this.consumptionCount.totalConsumptionCount;
+            break;
+          case 'drawMoney':
+            sums[index] = this.consumptionCount.withdrawalAmountCount;
             break;
           default:
             break;
@@ -221,10 +246,21 @@ export default {
     /** 查询客户消费明细列表 */
     getList() {
       this.loading = true;
+      // 查询列表
       listConsumption(this.queryParams).then(response => {
         this.consumptionList = response.data;
         this.total = response.data.length;
         this.loading = false;
+      });
+      // 查询列表合计
+      if (this.queryParams.companyName || this.queryParams.shipmentPhone || this.queryParams.beginTime) {
+        this.queryParams.haveCondition = true;
+      } else {
+        this.queryParams.haveCondition = false;
+      }
+      getShipmentMoneyCount(this.queryParams).then(response => {
+        console.log(response);
+        this.consumptionCount = response.data;
       });
     },
     /** 搜索按钮操作 */
