@@ -5,14 +5,27 @@
       :model="formData"
       :rules="rules"
       size="medium"
-      label-width="80px"
+      label-width="100px"
       :label-position="'left'"
       :disabled="myisdisabled"
     >
 
       <el-row :gutter="30">
         <el-col :span="24">
-          <ProvinceCityCounty ref="pccFef" :cb-data="pccCode" :isrules="isrules" :disabled="myisdisabled" @getCity="getCity" @getProvince="getProvince" />
+          <ProvinceCityCounty
+            ref="pccFef"
+            :config="{
+              size:'medium',
+              labelWidth:'60px',
+              labelPosition:'left',
+              inputwidth:'200px'
+            }"
+            :cb-data="pccCode"
+            :isrules="isrules"
+            :disabled="myisdisabled"
+            @getCity="getCity"
+            @getProvince="getProvince"
+          />
         </el-col>
       </el-row>
 
@@ -31,7 +44,7 @@
               placeholder="请输入关键词"
               :remote-method="remoteMethod"
               :loading="loading"
-              :style="{ width: '100%' }"
+              :style="{ width: '250px' }"
               @change="handlechengDetail"
             >
               <el-option
@@ -62,7 +75,7 @@
               clearable
               placeholder="优先展示, 最多输入10个字"
               maxlength="10"
-              :style="{width: '100%'}"
+              :style="{width: '250px'}"
             />
           </el-form-item>
         </el-col>
@@ -76,7 +89,7 @@
               v-model="formData.contact"
               placeholder="请输入联系人"
               clearable
-              :style="{width: '100%' }"
+              :style="{width: '250px' }"
             />
           </el-form-item>
         </el-col>
@@ -86,7 +99,7 @@
               v-model="formData.contactPhone"
               placeholder="请输入联系电话"
               clearable
-              :style="{ width: '100%' }"
+              :style="{ width: '250px' }"
             />
           </el-form-item>
         </el-col>

@@ -140,29 +140,13 @@
               </el-radio-group>
             </el-form-item>
 
-            <!-- <el-form-item v-if="formData.tin7 !== '1'" label="允许自卸/自装">
-              <div class="ly-flex">
-                <el-form-item
-                  v-if="formData.tin7 === '2' || formData.tin7 === '4'"
-                  prop="tin8"
-                >
-                  <el-checkbox v-model="formData.tin8">允许自装</el-checkbox>
-                </el-form-item>
-                <el-form-item
-                  v-if="formData.tin7 === '3' || formData.tin7 === '4'"
-                  :label-width="formData.tin7 === '4' ? '30px' : null"
-                  prop="tin9"
-                >
-                  <el-checkbox v-model="formData.tin9">允许自卸</el-checkbox>
-                </el-form-item>
-              </div>
-            </el-form-item> -->
+
 
             <el-divider />
 
 
-            <div class="header mb8 m-flex">
-              <div>
+            <div class="mb8 m-flex" style="width:66%;">
+              <div class="m_zhuanghuo">
                 装货信息
 
                 <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '2' || formData.tin7 === '4')" v-model="formData.tin8" :disabled="myisdisabled" style="marginLeft:30px;" @change="handlerCheck('add')">允许自装</el-checkbox>
@@ -171,7 +155,7 @@
               <el-button
                 v-if="!myisdisabled && (formData.tin7 === '2' || formData.tin7 === '4')"
                 type="primary"
-                style="margin-top: -12px"
+                size="mini"
                 @click="_addAddress('address_add')"
               >添加地址</el-button>
 
@@ -181,18 +165,22 @@
               v-for="address in address_add"
               :key="address.refName"
             >
-              <div v-if="address.addressType !=='3'" class="oneAddress_item">
+              <div v-if="address.addressType !=='3'" class="oneAddress_item pr">
+                <div class="pa triangleR " />
+                <div class="pa m_pa">1</div>
 
                 <OneAddress v-if="isShowAddress" :ref="address.refName" type="1" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
                 <div class="ly-t-right">
                   <el-button
                     v-if="!myisdisabled && (address_add.length >= 2 || formData.tin8)"
                     type="danger"
+                    size="mini"
                     @click="_delAddress('address_add', address.refName)"
                   >删除地址</el-button>
                   <el-button
                     v-if="!myisdisabled"
                     type="primary"
+                    size="mini"
                     style="margin-top: -12px"
                     @click="selectAddress('address_add', address.refName)"
                   >常用地址</el-button>
@@ -202,14 +190,15 @@
 
             <el-divider />
 
-            <div class="header mb8 m-flex">
-              <div>
+            <div class="mb8 m-flex" style="width:66%">
+              <div class="m_xie">
                 卸货信息
                 <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '3' || formData.tin7 === '4')" v-model="formData.tin9" :disabled="myisdisabled" style="marginLeft:30px;" @change="handlerXie('xie')">允许自卸</el-checkbox>
               </div>
               <el-button
                 v-if="!myisdisabled && (formData.tin7 === '3' || formData.tin7 === '4')"
                 type="primary"
+                size="mini"
                 style="margin-top: -12px"
                 @click="_addAddress('address_xie')"
               >添加地址</el-button>
@@ -228,11 +217,13 @@
                   <el-button
                     v-if="!myisdisabled && (address_xie.length >= 2 || formData.tin9)"
                     type="danger"
+                    size="mini"
                     @click="_delAddress('address_xie', address.refName)"
                   >删除地址</el-button>
                   <el-button
                     v-if="!myisdisabled"
                     type="primary"
+                    size="mini"
                     style="margin-top: -12px"
                     @click="selectAddress('address_xie', address.refName)"
                   >常用地址</el-button>
@@ -278,11 +269,11 @@
 
         </el-form>
 
-        <div v-if="active >= 4 && !isT" class="ly-t-center">
+        <div v-if="active >= 4 && !isT" class="ly-t-center app-container pr">
           <el-button type="primary" plain @click="nextFe(3)">上一步</el-button>
           <el-button v-hasPermi="['transportation:order:pubilsh']" type="primary" @click="onPubilsh">{{ isCreated?'立即发布':'保存' }}</el-button>
 
-          <div class="release_warning">
+          <div class="release_warning pa">
             <el-alert
               title="司机在接单的时候会相应的扣除余额中的运输费用，请及时充值，以免招成司机接单不成功的情况。"
               type="info"
@@ -1346,6 +1337,7 @@ export default {
   margin-bottom: 10px;
   border: 1px solid #ccc;
   width: 66%;
+  min-width: 850px;
 }
 .m-flex {
   display: flex;
@@ -1354,14 +1346,30 @@ export default {
 }
 .release_warning{
   width: 500px;
-  margin: 20px auto 0;
+  // margin: 20px auto 0;
   text-align: left;
+  left: 20px;
+  top: 12px;
 }
 
 .my_huozhu{
   background: #fff url('~@/assets/images/order-jiaoliu.png') no-repeat;
   background-position: 99% 15px;
 }
+
+.m_zhuanghuo{
+    font-weight: 700;
+    padding-left: 30px;
+    background: url('~@/assets/images/order_zhuan.png') no-repeat 0px 0px;
+    background-size: 22px 19px;
+}
+.m_xie{
+    font-weight: 700;
+    padding-left: 30px;
+    background: url('~@/assets/images/order_xie.png') no-repeat 0px 0px;
+    background-size: 22px 19px;
+}
+
 .my-iocn{
   font-size: 30px;
   color: #C18633;
@@ -1387,4 +1395,30 @@ export default {
 .btn{
   padding-right: 70px;
 }
+
+.m_pa{
+  //  width: 40px;
+  //  height: 40px;
+  top: 0px;
+  left: 4px;
+  color: #fff;
+}
+
+.triangleR{
+    width: 40px;
+    height: 20px;
+    transform: rotate(45deg);
+    top: -28px;
+    left: -24px;
+}
+.triangleT,.triangleL,.triangleB,.triangleR{position:relative;}
+.triangleT::after,
+.triangleL::after,
+.triangleB::after,
+.triangleR::after
+{content:"";position:absolute;width:0;height:0;top:0;left:0;border-color:transparent;border-style:solid;}
+.triangleB::after{border-bottom-color: red;border-width:20px;}
+.triangleR::after{border-right-color: #409EFF;border-width:20px;}
+.triangleT::after{border-top-color: green;border-width:20px;}
+.triangleL::after{border-left-color: yellow;border-width:20px;}
 </style>

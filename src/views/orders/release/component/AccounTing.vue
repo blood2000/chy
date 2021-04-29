@@ -56,8 +56,12 @@
         </el-col>
       </el-row>
     </el-form-item>
-    <el-form-item label="装--卸：" label-width="90px">
-      <div>{{ redis.tin_name }}</div>
+    <el-form-item label="" label-width="90px">
+      <div class="m_zhuanxieadderss ly-flex-align-center">
+        <span class="m_text m_zhuanghuo">{{ addressName[0] }}</span>
+        <span class="m_style" />
+        <span class="m_text m_xie">{{ addressName[1] }}</span>
+      </div>
     </el-form-item>
 
 
@@ -276,7 +280,12 @@ export default {
     };
   },
 
+
+
   computed: {
+    addressName() {
+      return this.redis ? this.redis.tin_name.split('--') : [];
+    },
     isTotalTypeValue() {
       return this.mytotalTypeValue !== '1';
     }
@@ -562,4 +571,31 @@ export default {
   padding: 0 15px;
   background-color: #f2f2f2;
 }
+
+.m_zhuanxieadderss{
+  .m_text{
+
+  }
+  .m_style{
+    width: 28px;
+    height: 4px;
+    margin: 0 10px;
+    background: linear-gradient(270deg, #409EFF 0%, rgba(64, 158, 255, 0) 100%);
+    opacity: 1;
+    border-radius: 2px;
+  }
+  .m_zhuanghuo{
+    font-weight: 700;
+    padding-left: 30px;
+    background: url('~@/assets/images/order_zhuan.png') no-repeat 0px 9px;
+    background-size: 22px 19px;
+  }
+  .m_xie{
+      font-weight: 700;
+      padding-left: 30px;
+      background: url('~@/assets/images/order_xie.png') no-repeat 0px 9px;
+      background-size: 22px 19px;
+  }
+}
+
 </style>

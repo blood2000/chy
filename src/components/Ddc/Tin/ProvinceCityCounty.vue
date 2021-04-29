@@ -16,6 +16,7 @@
           placeholder="请选择省份"
           clearable
           filterable
+          :style="{ width: config.inputwidth }"
           @change="changeProvince"
         >
           <el-option
@@ -32,6 +33,7 @@
           placeholder="请选择城市"
           clearable
           filterable
+          :style="{ width: config.inputwidth }"
           @change="changeCity"
         >
           <el-option
@@ -49,6 +51,7 @@
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
+            :style="{ width: config.inputwidth }"
           />
         </el-select>
       </el-form-item>

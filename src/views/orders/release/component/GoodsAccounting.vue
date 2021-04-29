@@ -15,6 +15,7 @@
           v-model="formData.businessType"
           placeholder="请选择业务类型"
           clearable
+          :style="{ width: '150px' }"
         >
           <el-option
             v-for="(dict,index) in formDataList.businessTypeOption"
@@ -25,72 +26,60 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="配载方式" prop="stowageStatus">
-        <el-radio-group v-model="formData.stowageStatus" size="medium">
-          <el-radio
-            v-for="dict in [
-              { dictValue: '0', dictLabel: '吨数配载' },
-              { dictValue: '1', dictLabel: '方数配载' },
-              { dictValue: '2', dictLabel: '车数配载' }]"
-            :key="dict.dictValue"
-            :label="dict.dictValue"
-          >{{ dict.dictLabel }}</el-radio>
-        </el-radio-group>
-      </el-form-item>
+      <el-row :gutter="10">
+        <el-col :span="10">
+          <el-form-item label="配载方式" prop="stowageStatus" style="minWidth:500px;">
+            <el-radio-group v-model="formData.stowageStatus" size="medium">
+              <el-radio
+                v-for="dict in [
+                  { dictValue: '0', dictLabel: '吨数配载' },
+                  { dictValue: '1', dictLabel: '方数配载' },
+                  { dictValue: '2', dictLabel: '车数配载' }]"
+                :key="dict.dictValue"
+                :label="dict.dictValue"
+              >{{ dict.dictLabel }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+        <el-col :span="10">
+          <el-form-item v-if="formData.stowageStatus !== '2'" label="重量/体积" prop="totalType" style="minWidth:500px;">
+            <el-radio-group v-model="formData.totalType" size="medium">
+              <el-radio label="1">不限(长期货源)</el-radio>
 
-      <!-- <el-form-item v-if="false" label="货物计量单位" prop="goodsUnit">
-        <el-select
-          v-model="formData.goodsUnit"
-          placeholder="请选择货物计量单位"
-          clearable
-        >
-          <el-option
-            v-for="dict in formDataList.measurementType"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item> -->
+              <el-radio label="2">
+                <el-form-item
+                  prop="weight"
+                  style="display: inline-block"
+                  :rules="[
+                    {
+                      required: formData.totalType === '2',
+                      message: '请输入货物重量(吨)',
+                      trigger: 'blur',
+                    },
+                  ]"
+                >
+                  <span class="pr-5">共</span>
+                  <el-input-number
+                    v-model="formData.weight"
+                    :disabled="formData.totalType === '1'"
+                    :controls="false"
+                    :placeholder="`请输入重量(${goodsUnitName})`"
+                    :max="999999"
+                    :min="0"
+                    controls-position="right"
+                    :style="{ width: '150px' }"
+                  />
+                  <span class="pl-5">{{ goodsUnitName }}</span>
+                </el-form-item>
+              </el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
 
+      </el-row>
 
-
-
-      <el-form-item v-if="formData.stowageStatus !== '2'" label="重量/体积" prop="totalType">
-        <el-radio-group v-model="formData.totalType" size="medium">
-          <el-radio label="1">不限(长期货源)</el-radio>
-
-          <el-radio label="2">
-            <el-form-item
-              prop="weight"
-              style="display: inline-block"
-              :rules="[
-                {
-                  required: formData.totalType === '2',
-                  message: '请输入货物重量(吨)',
-                  trigger: 'blur',
-                },
-              ]"
-            >
-              <span class="pr-5">共</span>
-              <el-input-number
-                v-model="formData.weight"
-                :disabled="formData.totalType === '1'"
-                :controls="false"
-                :placeholder="`请输入重量(${goodsUnitName})`"
-                :max="999999"
-                :min="0"
-                controls-position="right"
-                :style="{ width: '150px' }"
-              />
-              <span class="pl-5">{{ goodsUnitName }}</span>
-            </el-form-item>
-          </el-radio>
-        </el-radio-group>
-      </el-form-item>
-
-      <el-row :gutter="20">
-        <el-col :span="12">
+      <el-row :gutter="10">
+        <el-col :span="10">
           <el-form-item v-if="formData.stowageStatus !== '2'" label="最高配载" prop="vehicleMaxWeight">
             <el-input-number
               v-model="formData.vehicleMaxWeight"
@@ -99,7 +88,7 @@
               :max="999999"
               :min="0"
               controls-position="right"
-              :style="{ width: '80%' }"
+              :style="{ width: '150px' }"
             />
             <span class="pl-5">{{ goodsUnitName }}</span>
           </el-form-item>
@@ -113,11 +102,11 @@
               :max="999999"
               :min="0"
               controls-position="right"
-              :style="{ width: '80%' }"
+              :style="{ width: '150px' }"
             />
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="10">
           <el-form-item label="货物单价" prop="goodsPrice">
             <el-input-number
               v-model="formData.goodsPrice"
@@ -128,71 +117,55 @@
               :max="999999"
               :min="0"
               controls-position="right"
-              :style="{ width: '80%' }"
+              :style="{ width: '150px' }"
             />
             <span class="pl-5">元/{{ goodsUnitName }}</span>
           </el-form-item>
         </el-col>
       </el-row>
 
-      <el-form-item label="车型" prop="vehicleType">
-        <el-select
-          v-model="formData.vehicleType"
-          placeholder="选择车型"
-          multiple
-          :multiple-limit="3"
-          clearable
-          filterable
-          :style="{ width: '100%' }"
-        >
-          <el-option
-            v-for="(item, index1) in formDataList.vehicleClassification"
-            :key="index1"
-            :label="item.dictLabel"
-            :value="item.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="车长" prop="vehicleLength">
-        <el-select
-          v-model="formData.vehicleLength"
-          placeholder="选择车长"
-          :multiple-limit="3"
-          multiple
-          clearable
-          filterable
-          :style="{ width: '100%' }"
-        >
-          <el-option
-            v-for="(item, index1) in formDataList.vehicleLength"
-            :key="index1"
-            :label="item.dictLabel"
-            :value="item.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <!-- <el-row :gutter="100">
-        <el-col :span="12">
+      <el-row :gutter="50">
+        <el-col :span="10">
+          <el-form-item label="车型" prop="vehicleType">
+            <el-select
+              v-model="formData.vehicleType"
+              placeholder="选择车型"
+              multiple
+              :multiple-limit="3"
+              clearable
+              filterable
+              :style="{ width: '100%' }"
+            >
+              <el-option
+                v-for="(item, index1) in formDataList.vehicleClassification"
+                :key="index1"
+                :label="item.dictLabel"
+                :value="item.dictValue"
+              />
+            </el-select>
+          </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="10">
+          <el-form-item label="车长" prop="vehicleLength" label-width="40px">
+            <el-select
+              v-model="formData.vehicleLength"
+              placeholder="选择车长"
+              :multiple-limit="3"
+              multiple
+              clearable
+              filterable
+              :style="{ width: '100%' }"
+            >
+              <el-option
+                v-for="(item, index1) in formDataList.vehicleLength"
+                :key="index1"
+                :label="item.dictLabel"
+                :value="item.dictValue"
+              />
+            </el-select>
+          </el-form-item>
         </el-col>
-      </el-row> -->
-
-
-
-
-      <!-- <el-form-item v-if="false" label="运输单价" prop="shipmentPrice">
-        <el-input-number
-          v-model="formData.shipmentPrice"
-          :controls="false"
-          placeholder="运输单价"
-          step-strictly
-          controls-position="right"
-          :style="{ width: '50%' }"
-        />
-        <span class="pl-5">元/{{ goodsUnitName }}(不含税)</span>
-      </el-form-item> -->
-
+      </el-row>
 
     </el-form>
   </div>
@@ -206,7 +179,7 @@ export default {
       default: () => {
         return {
           size: 'medium',
-          labelWidth: '120px',
+          labelWidth: '90px',
           labelPosition: 'right'
         };
       }
