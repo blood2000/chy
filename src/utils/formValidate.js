@@ -133,7 +133,7 @@ export const formValidate = {
       return callback(new Error(`${text}有效期起始时间不能为空`));
     } else if (!effective && !value) {
       return callback(new Error(`${text}有效期截止时间不能为空`));
-    } else if (!compareBeginEndTime(beginTime, value)) {
+    } else if (!effective && !compareBeginEndTime(beginTime, value)) {
       return callback(new Error(`${text}有效期截止时间不能小于起始时间`));
     }
     return callback();

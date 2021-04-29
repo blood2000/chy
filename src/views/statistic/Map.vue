@@ -46,11 +46,16 @@ export default {
   methods: {
     initChart() {
       this.chart = echarts.init(this.$refs.map);
+      echarts.registerMap('china', maps);
+      console.log(maps);
       this.setOption();
+      this.setFontOption();
+    },
+    refreshChart() {
+      this.chart.resize();
+      this.setFontOption();
     },
     setOption() {
-      console.log(maps);
-      echarts.registerMap('china', maps);
       this.chart.setOption({
         geo: {
           map: 'china',
@@ -62,7 +67,6 @@ export default {
           itemStyle: {
             normal: {
               borderColor: 'rgba(1, 227, 255, 1)',
-              borderWidth: setfontSize(1),
               areaColor: 'rgba(16, 48, 131, 1)'
             },
             emphasis: {
@@ -123,18 +127,31 @@ export default {
           itemStyle: {
             normal: {
               borderColor: 'rgba(1, 227, 255, 1)',
-              borderWidth: setfontSize(2),
               shadowColor: 'rgba(10, 187, 221, 1)',
-              shadowBlur: setfontSize(40),
               areaColor: 'rgba(16, 48, 131, 1)'
             }
           }
         }]
       });
     },
-    refreshChart() {
-      this.chart.resize();
-      this.setOption();
+    setFontOption() {
+      this.chart.setOption({
+        geo: {
+          itemStyle: {
+            normal: {
+              borderWidth: setfontSize(1)
+            }
+          }
+        },
+        series: [{
+          itemStyle: {
+            normal: {
+              borderWidth: setfontSize(2.5),
+              shadowBlur: setfontSize(30)
+            }
+          }
+        }]
+      });
     }
   }
 };
@@ -162,7 +179,7 @@ export default {
       height: 1.5rem;
       line-height: 1.5rem;
       font-size: 0.6rem;
-      font-family: PingFang SC;
+      font-family: 'PingFang Medium';
       font-weight: 500;
       color: #01E3FF;
       position: relative;
@@ -178,8 +195,8 @@ export default {
       &::after{
         content: '';
         position: absolute;
-        top: 0.6rem;
-        right: 0.6rem;
+        top: 0.55rem;
+        right: 0.8rem;
         width: 1.2rem;
         height: 0.35rem;
         background: url('~@/assets/images/statistic/legend_after.png') no-repeat;
@@ -198,7 +215,7 @@ export default {
         }
         .text{
           font-size: 0.5rem;
-          font-family: PingFang SC;
+          font-family: 'PingFang Medium';
           font-weight: 500;
           color: #DDF5FF;
         }

@@ -29,6 +29,11 @@ export default {
     initChart() {
       this.chart = echarts.init(this.$el, 'macarons');
       this.setOption();
+      this.setFontOption();
+    },
+    refreshChart() {
+      this.chart.resize();
+      this.setFontOption();
     },
     setOption() {
       this.chart.setOption({
@@ -37,20 +42,14 @@ export default {
           text: 'TOP 10省份交易额排名',
           textStyle: {
             color: '#FFFFFF',
-            fontWeight: 'normal',
-            fontSize: setfontSize(16)
-          },
-          left: setfontSize(15)
+            fontWeight: 'normal'
+          }
         },
         legend: {
           show: true,
           right: 0,
-          top: setfontSize(6),
           icon: 'rect',
-          itemWidth: setfontSize(10),
-          itemHeight: setfontSize(8),
           textStyle: {
-            fontSize: setfontSize(12),
             color: '#fff'
           },
           data: [{
@@ -58,7 +57,7 @@ export default {
           }, {
             name: '票务总额（省）'
           }, {
-            name: '票总额（省）'
+            name: '运费总额（省）'
           }]
         },
         grid: {
@@ -74,8 +73,7 @@ export default {
           axisLabel: {
             show: true,
             textStyle: {
-              color: '#CDEDFF',
-              fontSize: setfontSize(12)
+              color: '#CDEDFF'
             }
             // rotate: '30' // 字体倾斜角度
           },
@@ -91,7 +89,6 @@ export default {
           name: '交易额(万）',
           nameTextStyle: {
             color: '#CDEDFF',
-            fontSize: setfontSize(12),
             paddingLeft: '2%'
           },
           type: 'value',
@@ -105,8 +102,7 @@ export default {
           axisLabel: {
             show: true,
             textStyle: {
-              color: '#CDEDFF',
-              fontSize: setfontSize(12)
+              color: '#CDEDFF'
             }
           },
           // 网格样式
@@ -126,7 +122,6 @@ export default {
         series: [{
           name: '交易总额（省）',
           type: 'bar',
-          barWidth: setfontSize(8), // 柱体宽度
           itemStyle: {
             normal: {
               // 柱体颜色渐变
@@ -149,7 +144,6 @@ export default {
         }, {
           name: '票务总额（省）',
           type: 'bar',
-          barWidth: setfontSize(8), // 柱体宽度
           itemStyle: {
             normal: {
               // 柱体颜色渐变
@@ -170,9 +164,8 @@ export default {
           },
           data: [3, 3, 3, 2, 2, 3, 3, 3, 2, 2]
         }, {
-          name: '票总额（省）',
+          name: '运费总额（省）',
           type: 'bar',
-          barWidth: setfontSize(8), // 柱体宽度
           itemStyle: {
             normal: {
               // 柱体颜色渐变
@@ -195,9 +188,47 @@ export default {
         }]
       });
     },
-    refreshChart() {
-      this.chart.resize();
-      this.setOption();
+    setFontOption() {
+      this.chart.setOption({
+        title: {
+          textStyle: {
+            fontSize: setfontSize(16)
+          },
+          left: setfontSize(15)
+        },
+        legend: {
+          top: setfontSize(6),
+          itemWidth: setfontSize(10),
+          itemHeight: setfontSize(8),
+          textStyle: {
+            fontSize: setfontSize(12)
+          }
+        },
+        xAxis: {
+          axisLabel: {
+            textStyle: {
+              fontSize: setfontSize(12)
+            }
+          }
+        },
+        yAxis: {
+          nameTextStyle: {
+            fontSize: setfontSize(12)
+          },
+          axisLabel: {
+            textStyle: {
+              fontSize: setfontSize(12)
+            }
+          }
+        },
+        series: [{
+          barWidth: setfontSize(8)
+        }, {
+          barWidth: setfontSize(8)
+        }, {
+          barWidth: setfontSize(8)
+        }]
+      });
     }
   }
 };

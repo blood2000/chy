@@ -542,14 +542,14 @@ export default {
         ],
         identificationEndTime: [
           { validator: (rules, value, callback) => this.formValidate.idCardValidate(rules, value, callback, this.form.identificationBeginTime, this.form.identificationEffective), trigger: ['change', 'blur'] },
-          { validator: (rules, value, callback) => this.formValidate.isExpired(rules, value, callback, this.form.identificationEffective), trigger: 'change' }
+          { validator: (rules, value, callback) => this.formValidate.isExpired(rules, value, callback, this.form.identificationEffective), trigger: ['change', 'blur'] }
         ],
         issuingOrganizations: [
           { required: true, message: '驾驶证发证机关不能为空', trigger: ['blur', 'change'] }
         ],
         validPeriodTo: [
           { validator: (rules, value, callback) => this.formValidate.idCardValidate(rules, value, callback, this.form.validPeriodFrom, this.form.validPeriodAlways, '驾驶证'), trigger: ['change', 'blur'] },
-          { validator: (rules, value, callback) => this.formValidate.isExpired(rules, value, callback, this.form.validPeriodAlways), trigger: 'change' }
+          { validator: (rules, value, callback) => this.formValidate.isExpired(rules, value, callback, this.form.validPeriodAlways), trigger: ['change', 'blur'] }
         ],
         workCompany: [
           { required: true, message: '工作单位不能为空', trigger: 'blur' }

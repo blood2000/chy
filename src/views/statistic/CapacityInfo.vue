@@ -117,7 +117,7 @@ export default {
       >.label{
         font-size: 0.6rem;
         font-weight: 200;
-        color: #9CAFD0;
+        color: rgba(213, 234, 255, 1);
         line-height: 1rem;
         opacity: 0.7;
       }
@@ -128,7 +128,7 @@ export default {
         line-height: 1.3rem;
         opacity: 0.9;
         &.blod{
-          font-weight: 700;
+          font-family: 'PingFang Bold';
           opacity: 1;
         }
         .arow_up{

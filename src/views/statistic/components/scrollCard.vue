@@ -38,17 +38,17 @@ export default {
   },
   methods: {
     roll(t) {
-      var ul1 = this.$refs.comment1;
-      var ul2 = this.$refs.comment2;
-      var ulbox = this.$refs.box;
+      const ul1 = this.$refs.comment1;
+      const ul2 = this.$refs.comment2;
+      const ulbox = this.$refs.box;
       ul2.innerHTML = ul1.innerHTML;
       ulbox.scrollTop = 0;
       this.rollStart(t);
     },
     rollStart(t) {
       if (this.dataList.length < 4) return;
-      var ul1 = this.$refs.comment1;
-      var ulbox = this.$refs.box;
+      const ul1 = this.$refs.comment1;
+      const ulbox = this.$refs.box;
       this.rollStop();
       this.timer = setInterval(() => {
         // 当滚动高度大于列表内容高度时恢复为0
