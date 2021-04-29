@@ -146,6 +146,26 @@
           </el-row>
           <el-row>
             <el-col :span="8">
+              <el-form-item label="所属调度" prop="teamCode">
+                <el-select
+                  v-model="form.teamCode"
+                  placeholder="请选择所属调度"
+                  no-data-text="司机未加入车队"
+                  clearable
+                  filterable
+                  size="small"
+                  class="width90"
+                >
+                  <el-option
+                    v-for="dict in teamOptions"
+                    :key="dict.code"
+                    :label="dict.name"
+                    :value="dict.code"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
               <el-form-item label="车辆代码" prop="classificationCode">
                 <el-input v-model="form.classificationCode" :readonly="true" class="width90" />
               </el-form-item>
@@ -265,7 +285,7 @@
 </template>
 
 <script>
-import { extra, getOrder, getGoods, getAddress, driver, vehicle, vehicleInfo, getOrderGoodsProce, getWayBillNo, calculate } from '@/api/waybill/supplement';
+import { extra, getOrder, getGoods, getAddress, driver, vehicle, vehicleInfo, team, getOrderGoodsProce, getWayBillNo, calculate } from '@/api/waybill/supplement';
 import UploadImage from '@/components/UploadImage/index';
 import WaybillimportDialog from './waybillimportDialog';
 import PictureimportDialog from './pictureimportDialog';
@@ -294,8 +314,6 @@ export default {
         'name': null
       },
       vehicleInfoQuery: {
-        'pageNum': 1,
-        'pageSize': 10,
         'authStatus': 3,
         'isFreeze': 0,
         'driverCode': null
@@ -304,6 +322,8 @@ export default {
       dataOver: false, // 是否请求完了
       // 实际承运车辆选择
       vehicleOptions: [],
+      // 所属调度
+      teamOptions: [],
       // 弹出层标题
       title: '',
       stowage: false,
@@ -478,7 +498,8 @@ export default {
         'm0DictValue': null, // 抹零规则字典值
         'ruleFormulaDictValue': null, // 计算公式
         'shipperCode': null, // 货主Code
-        'stowageStatus': null // 配载方式
+        'stowageStatus': null, // 配载方式
+        'teamCode': null // 所属调度
       };
       this.resetForm('form');
     },
@@ -623,11 +644,14 @@ export default {
       this.getOrderGoodsProce();
       this.$forceUpdate(); // 视图强制更新
     },
-    // 根据选择的司机查询司机拥有的车辆
+    // 根据选择的司机查询司机拥有的车辆和所属调度
     driverChoose(e) {
       this.vehicleInfoQuery.driverCode = e;
       vehicle(this.vehicleInfoQuery).then(response => {
         this.vehicleOptions = response.rows;
+      });
+      team(this.vehicleInfoQuery).then(response => {
+        this.teamOptions = response.rows;
       });
       this.form.vehicleCode = null;
       this.form.roadTransportCertificateNumber = null;

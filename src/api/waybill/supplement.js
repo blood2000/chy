@@ -77,6 +77,15 @@ export function vehicle(data) {
   });
 }
 
+// 获取调度者列表
+export function team(data) {
+  return request({
+    url: '/assets/team/list',
+    method: 'post',
+    data: data
+  });
+}
+
 // 获取车辆信息
 export function vehicleInfo(Code) {
   return request({

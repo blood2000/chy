@@ -131,41 +131,68 @@ export default {
           return;
         }
         switch (column.property) {
-          case 'balanceAmount':
-            sums[index] = this.consumptionCount.balanceStatisticsCount;
+          case 'accConfirmedServiceFee':
+            sums[index] = this.customerCount.accConfirmedServiceFeeCount;
             break;
           case 'closingBalance':
-            sums[index] = this.consumptionCount.closingBalanceCount;
+            sums[index] = this.customerCount.accountBalanceCount;
             break;
-          case 'paidAmount':
-            sums[index] = this.consumptionCount.currentRechargeCount;
+          case 'arrearsAmount':
+            sums[index] = this.customerCount.arrearsAmountCount;
+            break;
+          case 'confirmFreight':
+            sums[index] = this.customerCount.confirmFreightCount;
+            break;
+          case 'conformService':
+            sums[index] = this.customerCount.conformServiceCount;
+            break;
+          case 'cumConfirmedFreight':
+            sums[index] = this.customerCount.cumConfirmedFreightCount;
+            break;
+          case 'cumEstimatedFreight':
+            sums[index] = this.customerCount.cumEstimatedFreightCount;
+            break;
+          case 'cumEstimatedService':
+            sums[index] = this.customerCount.cumEstimatedServiceCount;
+            break;
+          case 'dailyFreight':
+            sums[index] = this.customerCount.dailyFreightCount;
+            break;
+          case 'dayFreightInvoiceAmount':
+            sums[index] = this.customerCount.dayFreightInvoiceAmountCount;
+            break;
+          case 'deliveryCount':
+            sums[index] = this.customerCount.deliveryCountCount;
+            break;
+          case 'deliveryCountDay':
+            sums[index] = this.customerCount.deliveryCountDayCount;
+            break;
+          case 'driverCount':
+            sums[index] = this.customerCount.driverCountCount;
             break;
           case 'freightAmount':
-            sums[index] = this.consumptionCount.freightCount;
+            sums[index] = this.customerCount.freightAmountCount;
             break;
           case 'freightInvoiceAmount':
-            sums[index] = this.consumptionCount.freightInvoicedCount;
+            sums[index] = this.customerCount.freightInvoiceAmountCount;
             break;
-          case 'freightUnbilledAmount':
-            sums[index] = this.consumptionCount.freightNotInvoicedCount;
+          case 'paidAmount':
+            sums[index] = this.customerCount.paidAmountCount;
             break;
-          case 'rechargeNet':
-            sums[index] = this.consumptionCount.netRechargeCount;
+          case 'prepaidFreight':
+            sums[index] = this.customerCount.prepaidFreightCount;
+            break;
+          case 'prepaidService':
+            sums[index] = this.customerCount.prepaidServiceCount;
             break;
           case 'serviceAmount':
-            sums[index] = this.consumptionCount.serviceChargeCount;
+            sums[index] = this.customerCount.serviceAmountCount;
             break;
-          case 'serviceInvoiceAmount':
-            sums[index] = this.consumptionCount.serviceChargeInvoicedCount;
+          case 'totalRefund':
+            sums[index] = this.customerCount.totalRefundCount;
             break;
-          case 'serviceUnbilledAmount':
-            sums[index] = this.consumptionCount.serviceChargeNotInvoicedCount;
-            break;
-          case 'transferAmount':
-            sums[index] = this.consumptionCount.totalConsumptionCount;
-            break;
-          case 'drawMoney':
-            sums[index] = this.consumptionCount.withdrawalAmountCount;
+          case 'waybillCount':
+            sums[index] = this.customerCount.waybillCountCount;
             break;
           default:
             break;
@@ -188,8 +215,9 @@ export default {
     getList() {
       this.loading = true;
       listCustomer(this.queryParams).then(response => {
-        this.customerList = response.data;
-        this.total = response.data.length;
+        console.log(response);
+        this.customerList = response.data.list;
+        this.total = response.data.list.length;
         this.loading = false;
       });
       // 查询列表合计
@@ -199,6 +227,7 @@ export default {
         this.queryParams.haveCondition = false;
       }
       countCustomer(this.queryParams).then(response => {
+        console.log(response);
         this.customerCount = response.data;
       });
     },
