@@ -147,11 +147,11 @@
                   </h5>
                   <p>
                     <label>货物类型：</label>
-                    {{ currentRow?currentRow.goodsBigType:'' }}
+                    {{ form.goodsBigType }}
                   </p>
                   <p>
                     <label>运单号：</label>
-                    {{ currentRow?currentRow.waybillNo:'' }}
+                    {{ form.waybillNo }}
                   </p>
                   <p>
                     <label>接单时间：</label>
@@ -159,11 +159,11 @@
                   </p>
                   <p>
                     <label>装货地：</label>
-                    {{ currentRow?currentRow.loadAddress:'' }}
+                    {{ form.waybillAddress?form.waybillAddress.unloadFormattedAddress:'' }}
                   </p>
                   <p>
                     <label>卸货地：</label>
-                    {{ currentRow?currentRow.unloadAddress:'' }}
+                    {{ form.waybillAddress?form.waybillAddress.loadFormattedAddress:'' }}
                   </p>
                 </div>
                 <el-amap-polyline :path="polyline.path" :stroke-weight="8" :stroke-opacity="0.8" :stroke-color="'#0091ea'" />
@@ -286,17 +286,17 @@ export default {
         this.form.waybillAddress = response.data.waybillAddress || {};
         // this.form.unloadAddress = response.data.waybillAddress || {};
         this.form.balanceVo = response.data.balanceVo || {};
-        console.log(response);
+        // console.log(response);
       });
       // 回单-装货
       getWaybillAttachment(this.currentId, 1).then(response => {
-        console.log(response);
+        // console.log(response);
         this.formAttachment = response.data ? response.data[0] : null;
         console.log(this.formAttachment);
       });
       // 回单-卸货
       getWaybillAttachment(this.currentId, 2).then(response => {
-        console.log(response);
+        // console.log(response);
         this.formAttachmentUp = response.data ? response.data[0] : null;
         console.log(this.formAttachmentUp);
       });

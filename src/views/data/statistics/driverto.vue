@@ -244,6 +244,9 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.resetForm('queryForm');
+      this.queryTime = [];
+      this.queryParams.beginTime = null;
+      this.queryParams.endTime = null;
       this.handleQuery();
     },
     // 导出

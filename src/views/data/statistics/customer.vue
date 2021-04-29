@@ -2,9 +2,9 @@
   <div>
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
-        <el-form-item label="客户名称" prop="driverName">
+        <el-form-item label="客户名称" prop="companyName">
           <el-input
-            v-model="queryParams.driverName"
+            v-model="queryParams.companyName"
             placeholder="请输入客户名称"
             clearable
             size="small"
@@ -12,9 +12,9 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="手机号码" prop="driverPhone">
+        <el-form-item label="手机号码" prop="shipmentPhone">
           <el-input
-            v-model="queryParams.driverPhone"
+            v-model="queryParams.shipmentPhone"
             placeholder="请输入手机号码"
             clearable
             size="small"
@@ -56,7 +56,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <RefactorTable :loading="loading" :summary="summary" :data="customerList" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
+      <RefactorTable :loading="loading" :summary="summary" :data="customerList" :table-columns-config="tableColumnsConfig" :summary-method="getSummaries"><!-- @selection-change="handleSelectionChange" -->
         <!-- <template #driverType="{row}">
           <span>{{ selectDictLabel(driverTypeOptions, row.driverType) }}</span>
         </template> -->
@@ -78,7 +78,7 @@
 </template>
 
 <script>
-import { listCustomerApi, listCustomer } from '@/api/data/statistics';
+import { listCustomerApi, listCustomer, countCustomer } from '@/api/data/statistics';
 // import tableColumnsConfig from './config';
 
 export default {
@@ -97,15 +97,18 @@ export default {
       total: 0,
       // 客服统计报表表格数据
       customerList: [],
+      // 客服报表统计数据
+      customerCount: {},
       queryTime: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        driverName: null,
-        driverPhone: null,
-        queryStartTime: null,
-        queryEndTime: null
+        companyName: null,
+        shipmentPhone: null,
+        beginTime: null,
+        endTime: null,
+        haveCondition: false
       },
       // 合计
       summary: true
@@ -116,14 +119,69 @@ export default {
     this.getList();
   },
   methods: {
+    // 表尾合计行
+    getSummaries(param) {
+      // console.log(param);
+      const { columns, data } = param;
+      const sums = [];
+      console.log(data);
+      columns.forEach((column, index) => {
+        if (index === 0) {
+          sums[index] = '合计';
+          return;
+        }
+        switch (column.property) {
+          case 'balanceAmount':
+            sums[index] = this.consumptionCount.balanceStatisticsCount;
+            break;
+          case 'closingBalance':
+            sums[index] = this.consumptionCount.closingBalanceCount;
+            break;
+          case 'paidAmount':
+            sums[index] = this.consumptionCount.currentRechargeCount;
+            break;
+          case 'freightAmount':
+            sums[index] = this.consumptionCount.freightCount;
+            break;
+          case 'freightInvoiceAmount':
+            sums[index] = this.consumptionCount.freightInvoicedCount;
+            break;
+          case 'freightUnbilledAmount':
+            sums[index] = this.consumptionCount.freightNotInvoicedCount;
+            break;
+          case 'rechargeNet':
+            sums[index] = this.consumptionCount.netRechargeCount;
+            break;
+          case 'serviceAmount':
+            sums[index] = this.consumptionCount.serviceChargeCount;
+            break;
+          case 'serviceInvoiceAmount':
+            sums[index] = this.consumptionCount.serviceChargeInvoicedCount;
+            break;
+          case 'serviceUnbilledAmount':
+            sums[index] = this.consumptionCount.serviceChargeNotInvoicedCount;
+            break;
+          case 'transferAmount':
+            sums[index] = this.consumptionCount.totalConsumptionCount;
+            break;
+          case 'drawMoney':
+            sums[index] = this.consumptionCount.withdrawalAmountCount;
+            break;
+          default:
+            break;
+        }
+      });
+      // console.log(sums);
+      return sums;
+    },
     // 搜索时间选择
     datechoose(date) {
       if (date) {
-        this.queryParams.queryStartTime = this.parseTime(date[0], '{y}-{m}-{d}');
-        this.queryParams.queryEndTime = this.parseTime(date[1], '{y}-{m}-{d}');
+        this.queryParams.beginTime = this.parseTime(date[0], '{y}-{m}-{d}');
+        this.queryParams.endTime = this.parseTime(date[1], '{y}-{m}-{d}');
       } else {
-        this.queryParams.queryStartTime = null;
-        this.queryParams.queryEndTime = null;
+        this.queryParams.beginTime = null;
+        this.queryParams.endTime = null;
       }
     },
     /** 查询客服统计报表列表 */
@@ -134,6 +192,15 @@ export default {
         this.total = response.data.length;
         this.loading = false;
       });
+      // 查询列表合计
+      if (this.queryParams.companyName || this.queryParams.shipmentPhone || this.queryParams.beginTime) {
+        this.queryParams.haveCondition = true;
+      } else {
+        this.queryParams.haveCondition = false;
+      }
+      countCustomer(this.queryParams).then(response => {
+        this.customerCount = response.data;
+      });
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -143,6 +210,9 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.resetForm('queryForm');
+      this.queryTime = [];
+      this.queryParams.beginTime = null;
+      this.queryParams.endTime = null;
       this.handleQuery();
     },
     // 导出
