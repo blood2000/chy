@@ -57,7 +57,7 @@ export default {
           }, {
             name: '票务总额（省）'
           }, {
-            name: '票总额（省）'
+            name: '运费总额（省）'
           }]
         },
         grid: {
@@ -164,7 +164,7 @@ export default {
           },
           data: [3, 3, 3, 2, 2, 3, 3, 3, 2, 2]
         }, {
-          name: '票总额（省）',
+          name: '运费总额（省）',
           type: 'bar',
           itemStyle: {
             normal: {

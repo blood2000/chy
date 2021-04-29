@@ -38,13 +38,14 @@ export default {
   >.text{
     line-height: 1.6rem;
     font-size: 0.9rem;
-    font-weight: bold;
     color: #01e3ff;
+    font-family: 'PingFang Bold';
     >span{
       font-size: 0.7rem;
       font-weight: normal;
       padding-left: 0.4rem;
       color: #3AA7BC;
+      font-family: 'PingFang Medium';
     }
   }
   &::before{

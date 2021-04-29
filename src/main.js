@@ -4,6 +4,7 @@ import Element from 'element-ui';
 import './assets/styles/element-variables.scss';
 import '@/assets/styles/index.scss'; // global css
 import '@/assets/styles/ddc.scss'; // ddc css
+import '@/assets/font/index.scss'; // 自定义字体
 import App from './App';
 import store from './store';
 import router from './router';

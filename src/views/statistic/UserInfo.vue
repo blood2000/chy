@@ -100,7 +100,7 @@ export default {
         line-height: 1.3rem;
         opacity: 0.9;
         &.blod{
-          font-weight: 700;
+          font-family: 'PingFang Bold';
           opacity: 1;
         }
         .arow_up{

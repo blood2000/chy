@@ -69,8 +69,7 @@ export default {
     right: 0.7rem;
     top: 0.4rem;
     font-size: 0.6rem;
-    font-family: PingFang SC;
-    font-weight: bold;
+    font-family: 'PingFang Bold';
     color: #01E3FF;
   }
   &__list{
