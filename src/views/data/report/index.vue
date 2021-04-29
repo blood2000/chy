@@ -646,9 +646,9 @@ export default {
     /* 上报接口 */
     async _waybillReport(row) {
       console.log(row);
-      const res_driver = await waybillReportDriver(row.driverCode);
-      const res_vehicle = await waybillReportVehicle(row.vehicleCode);
-      const res_waybill = await waybillReportWaybill(row.waybillCode);
+      const res_driver = await waybillReportDriver(row.waybillReportCode);
+      const res_vehicle = await waybillReportVehicle(row.waybillReportCode);
+      const res_waybill = await waybillReportWaybill(row.waybillReportCode);
       const res_load = await waybillReportLoad(row.waybillReportCode);
       const res_unload = await waybillReportUnload(row.waybillReportCode);
       const res_bill = await waybillReportBill(row.waybillReportCode);

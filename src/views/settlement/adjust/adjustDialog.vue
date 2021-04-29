@@ -21,42 +21,6 @@
       </el-col>
     </el-row>
     <el-table v-loading="loading" :data="adjustlist" border stripe>
-      <!-- <el-table-column type="expand">
-        <template slot-scope="scope">
-          <el-row :gutter="100">
-            <el-col :span="12">
-
-              <el-form label-position="right" label-width="80px">
-                <el-form-item label="规则1">
-                  <el-input v-model="scope.row.tin1.guize1" placeholder="审批人" />
-                </el-form-item>
-                <el-form-item label="规则2">
-                  <el-input v-model="scope.row.tin1.guize2" placeholder="审批人" />
-                </el-form-item>
-                <el-form-item label="规则3">
-                  <el-input v-model="scope.row.tin1.guize3" placeholder="审批人" />
-                </el-form-item>
-              </el-form>
-            </el-col>
-            <el-col :span="12">
-
-              <el-form label-position="right" label-width="80px">
-                <el-form-item label="规则1">
-                  <el-input v-model="scope.row.tin1.guize1" placeholder="审批人" />
-                </el-form-item>
-                <el-form-item label="规则2">
-                  <el-input v-model="scope.row.tin1.guize2" placeholder="审批人" />
-                </el-form-item>
-                <el-form-item label="规则3">
-                  <el-input v-model="scope.row.tin1.guize3" placeholder="审批人" />
-                </el-form-item>
-              </el-form>
-            </el-col>
-          </el-row>
-
-        </template>
-      </el-table-column> -->
-
 
       <el-table-column width="160" label="运输单号" show-overflow-tooltip align="center" prop="waybillNo" />
 
@@ -108,7 +72,7 @@
             <div v-for="(freight, index) in scope.row.subsidiesFreightList" :key="index">
               <el-form-item :label="freight.cnName">
                 <span v-show="!isEdit2">{{ freight.ruleValue }}</span>
-                <el-input-number v-show="isEdit2" v-model="freight.ruleValue" :controls="false" :precision="2" :placeholder="`请输入${freight.cnName}`" style="width:90px;" @blur="handlerChange(scope.row,freight.ruleValue,'add')" />
+                <el-input-number v-show="isEdit2" v-model="freight.ruleValue" :controls="false" :precision="2" :placeholder="`请输入${freight.cnName}`" style="width:90px;" @blur="handlerItem(scope.row,freight.ruleValue,'add',freight.enName)" />
               </el-form-item>
             </div>
 
@@ -131,7 +95,7 @@
             <div v-for="(freight, index) in scope.row.deductionFreightList" :key="index" class="ly-flex-1">
               <el-form-item :label="freight.cnName">
                 <span v-show="!isEdit">{{ freight.ruleValue }}</span>
-                <el-input-number v-show="isEdit" v-model="freight.ruleValue" :controls="false" :precision="2" :placeholder="`请输入${freight.cnName}`" style="width:90px;" @blur="handlerChange(scope.row,freight.ruleValue,'')" />
+                <el-input-number v-show="isEdit" v-model="freight.ruleValue" :controls="false" :precision="2" :placeholder="`请输入${freight.cnName}`" style="width:90px;" @blur="handlerItem(scope.row,freight.ruleValue,'',freight.enName)" />
               </el-form-item>
             </div>
 
@@ -221,29 +185,77 @@ export default {
   methods: {
     // 修改了增项
     handlerChange(row, value, key) {
+      const filterRow = this.filterRow(row);
       if (key === 'add') {
-        row.deliveryCashFee += value;
+        // star1 = 未改变前, star2 = 未改变后
+        const star1 = filterRow.otherSubsidies;
+        const star2 = value;
+
+        row.deliveryCashFee = filterRow.deliveryCashFee + (star2 - star1);
+        filterRow.otherSubsidies = value;
       } else {
-        row.deliveryCashFee -= value;
+        const star1 = filterRow.otherCharges;
+        const star2 = value;
+
+        row.deliveryCashFee = filterRow.deliveryCashFee + (star1 - star2);
+        filterRow.otherCharges = value;
+      }
+
+      this.getDeliveryCashFee(row, row.deliveryCashFee);
+    },
+
+    handlerItem(row, value, key, name) {
+      const filterRow = this.filterRow(row);
+      if (key === 'add') {
+        // star1 = 未改变前, star2 = 未改变后
+        const star1 = this._sum(filterRow.subsidiesFreightList);
+        const star2 = this._sum(row.subsidiesFreightList);
+
+        row.deliveryCashFee = filterRow.deliveryCashFee + (star2 - star1);
+        filterRow.subsidiesFreightList.forEach(e => {
+          if (e.enName === name) {
+            e.ruleValue = value;
+          }
+        });
+      } else {
+        const star1 = this._sum(filterRow.deductionFreightList);
+        const star2 = this._sum(row.deductionFreightList);
+
+        row.deliveryCashFee = filterRow.deliveryCashFee + (star1 - star2);
+        filterRow.deductionFreightList.forEach(e => {
+          if (e.enName === name) {
+            e.ruleValue = value;
+          }
+        });
       }
 
       this.getDeliveryCashFee(row, row.deliveryCashFee);
     },
 
     // 司机实收现金, 改变会出发其他的扣费,和
+    // row 当前对象, value 修改的值, key 修改的字段名
     handlerInput(row, value, key) {
+      // 获取一下未修改前的对象
       const filterRow = this.filterRow(row);
 
       if (filterRow[key] === value) return;
 
-      if (filterRow.deliveryCashFee > row.deliveryCashFee) {
-        row.otherCharges = filterRow.deliveryCashFee - row.deliveryCashFee;
-        filterRow.otherCharges = row.otherCharges;
+      //  原始值 > 输入值
+      if (filterRow.deliveryCashFee > value) {
+        // otherCharges: 其他扣款 = 原始值 - 输入值
+        row.otherCharges = filterRow.deliveryCashFee - value;
+
+        // 原始值的其他扣款 进行同步一下
+        // filterRow.otherCharges = row.otherCharges;
       } else {
-        row.otherSubsidies = row.deliveryCashFee - filterRow.deliveryCashFee;
-        filterRow.otherSubsidies = row.otherSubsidies;
+        //  原始值 < 输入值
+        // otherSubsidies: 其他其他补贴 = 输入值 - 原始值
+        row.otherSubsidies = value - filterRow.deliveryCashFee;
+        // 原始值的其他补贴 进行同步一下
+        // filterRow.otherSubsidies = row.otherSubsidies;
       }
 
+      filterRow.deliveryCashFee = value;
       this.getDeliveryCashFee(row, value);
     },
 
@@ -254,8 +266,13 @@ export default {
         shipperCode: row.shipperCode //	货主Code		false
       });
 
+      // 自动计算出serviceFee=> 平台服务费费用
+      // 自动计算出shipperRealPay=> 货主实付金额
       row.serviceFee = data.serviceFee;
       row.shipperRealPay = data.shipperRealPay;
+
+      const filterRow = this.filterRow(row);
+      filterRow.deliveryCashFee = row.deliveryCashFee;
     },
 
     // 过滤当前
@@ -304,13 +321,16 @@ export default {
       row.shipperRealPay = data.shipperRealPay;
       row.taxFreeFee = data.taxFreeFee; // ?
       row.taxPayment = data.taxPayment;
+
+      filterRow.deliveryCashFee = row.deliveryCashFee;
     },
 
     // 批量修改
     handleChange() {
       this.adjustlist.forEach(e => {
+        // deliveryCashFee => 司机实收现金
         e.deliveryCashFee = this.deliveryCashFee;
-        // this.$set(e, 'deliveryCashFee', this.deliveryCashFee);
+
         this.handlerInput(e, this.deliveryCashFee);
       });
     },
@@ -359,8 +379,8 @@ export default {
     getList() {
       // this.loading = true;
       adjustDetail(this.queryParams).then(response => {
-        console.log(response, '查询核算列表');
-        this.oldList = response.data;
+        // console.log(response, '查询核算列表');
+        this.oldList = JSON.parse(JSON.stringify(response.data));
         this.adjustlist = JSON.parse(JSON.stringify(response.data));
         this.total = response.total;
         this.loading = false;
@@ -381,6 +401,25 @@ export default {
       this.deliveryCashFee = undefined;
       this.queryParams.waybillCodeList = data;
       this.getList();
+    },
+
+    /* 工具 */
+    _dataSync(obj1, obj2) {
+      Object.keys(obj1).forEach(prop => {
+        obj1[prop] = obj2[prop]; // 需要同步的两个对象
+      });
+    },
+    /* 计算价格 */
+    _sum(arr) {
+      let sum = 0;
+      arr.forEach(e => {
+        sum += (e.ruleValue - 0);
+      });
+      return sum;
+    },
+    _mynum(arr, key) {
+      const valueobj = (arr.filter(e => e.enName === key))[0];
+      return valueobj ? valueobj.ruleValue : undefined;
     }
 
   }

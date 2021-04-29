@@ -13,23 +13,23 @@ export function waybillReport(query) {
 // 上报 先  司机, 车辆，然后运单，装, 卸，资金
 
 // 1上报司机信息
-export function waybillReportDriver(driverCode) {
+export function waybillReportDriver(waybillReportCode) {
   return request({
-    url: '/transportation/waybillReport/driver/' + driverCode,
+    url: '/transportation/waybillReport/driver/' + waybillReportCode,
     method: 'get'
   });
 }
 // 2上报车辆信息
-export function waybillReportVehicle(vehicleCode) {
+export function waybillReportVehicle(waybillReportCode) {
   return request({
-    url: '/transportation/waybillReport/vehicle/' + vehicleCode,
+    url: '/transportation/waybillReport/vehicle/' + waybillReportCode,
     method: 'get'
   });
 }
 // 3上报运单
-export function waybillReportWaybill(waybillCode) {
+export function waybillReportWaybill(waybillReportCode) {
   return request({
-    url: '/transportation/waybillReport/waybill/' + waybillCode,
+    url: '/transportation/waybillReport/waybill/' + waybillReportCode,
     method: 'get'
   });
 }
