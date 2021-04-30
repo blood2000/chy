@@ -303,7 +303,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12" v-if="!form.userId">
+          <el-col v-if="!form.userId" :span="12">
             <el-form-item label="是否创建银行账号" label-width="140px">
               <el-radio-group v-model="form.isCreate">
                 <el-radio
@@ -717,7 +717,7 @@ export default {
     handleExport() {
       this.download('system/user/export', {
         ...this.queryParams
-      }, `user_${new Date().getTime()}.xlsx`);
+      }, `用户信息_${new Date().getTime()}.xlsx`);
     },
     /** 导入按钮操作 */
     handleImport() {

@@ -213,7 +213,7 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row :gutter="24">
           <el-col :span="24">
-          <!--  :rules="[{ required: true, message: '所属组织不能为空', trigger: 'blur' }]"-->
+            <!--  :rules="[{ required: true, message: '所属组织不能为空', trigger: 'blur' }]"-->
             <el-form-item v-if="!form.roleId" label="所属组织" prop="orgCode">
               <!-- <el-tree
                 ref="tree"
@@ -826,7 +826,7 @@ export default {
     handleExport() {
       this.download('system/role/export', {
         ...this.queryParams
-      }, `role_${new Date().getTime()}.xlsx`);
+      }, `角色信息_${new Date().getTime()}.xlsx`);
     },
     /** 查询部门下拉树结构 */
     getDeptTree() {
