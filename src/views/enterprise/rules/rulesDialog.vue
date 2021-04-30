@@ -1,6 +1,6 @@
 <template>
   <el-dialog :title="title" :class="[{'i-add':title==='添加'}]" :visible="visible" width="800px" append-to-body @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" label-width="120px" label-position="left">
+    <el-form ref="form" :model="form" :rules="rules" label-width="120px" label-position="left" :disabled="form.platformType === 1">
       <el-row>
         <el-col :span="12">
           <el-form-item label="规则名称" prop="name">
@@ -144,7 +144,7 @@
         </el-form-item>
       </el-row>
     </el-form>
-    <div slot="footer" class="dialog-footer">
+    <div v-if="form.platformType !== 1" slot="footer" class="dialog-footer">
       <el-button type="primary" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
     </div>
@@ -223,6 +223,8 @@ export default {
         this.$emit('update:open', v);
       }
     }
+
+
   },
   mounted() {
     this.getAllDicList();
@@ -433,7 +435,7 @@ export default {
      * 表单回填
      */
     setForm(data) {
-      this.form.platformType = 2; // 1运营 2货主
+      this.form.platformType = data.ruleInfo.platformType === 1 ? 1 : 2; // 1运营 2货主
       this.form.code = data.ruleInfo.code;
       this.form.name = data.ruleInfo.name;
       this.form.ruleDictValue = data.ruleInfo.ruleDictValue;

@@ -4,7 +4,7 @@
       <el-button size="mini" circle icon="el-icon-sort" @click="handleUpdate" />
     </el-tooltip>
 
-    <el-tooltip class="item" effect="dark" content="重置表头" placement="top">
+    <el-tooltip v-if="false" class="item" effect="dark" content="重置表头" placement="top">
       <el-button size="mini" circle icon="el-icon-refresh-left" @click="handleCache" />
     </el-tooltip>
 
@@ -46,6 +46,7 @@
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
+        <el-button @click="handleCache">重置表头</el-button>
       </div>
     </el-dialog>
   </div>
@@ -112,6 +113,7 @@ export default {
       if (JSON.stringify(query) !== '{}') {
         this.$store.commit('util/setParameters', query);
       }
+      this.open = false;
 
       this.$router.replace({
         path: '/refresh'
