@@ -303,6 +303,17 @@
               </el-select>
             </el-form-item>
           </el-col>
+          <el-col :span="12" v-if="!form.userId">
+            <el-form-item label="是否创建银行账号" label-width="140px">
+              <el-radio-group v-model="form.isCreate">
+                <el-radio
+                  v-for="dict in createOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictValue"
+                >{{ dict.dictLabel }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
@@ -313,7 +324,7 @@
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" :disabled="btnDisabled" @click="submitForm">确 定</el-button>
+        <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -357,7 +368,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" :disabled="btnDisabled" @click="submitResetPwd">确 定</el-button>
+        <el-button type="primary" :loading="resetLoading" @click="submitResetPwd">确 定</el-button>
         <el-button @click="pwOpen = false">取 消</el-button>
       </div>
     </el-dialog>
@@ -386,7 +397,8 @@ export default {
       // 遮罩层
       loading: true,
       // 按钮loading
-      btnDisabled: false,
+      buttonLoading: false,
+      resetLoading: false,
       // 选中数组
       ids: [],
       userNames: [],
@@ -422,6 +434,10 @@ export default {
       dateRange: [],
       // 状态数据字典
       statusOptions: [],
+      createOptions: [
+        { dictLabel: '是', dictValue: '1' },
+        { dictLabel: '否', dictValue: '2' }
+      ],
       // 性别状态字典
       sexOptions: [],
       // 岗位选项
@@ -470,9 +486,9 @@ export default {
           { required: true, message: '用户密码不能为空', trigger: 'blur' },
           { validator: this.formValidate.passWord, trigger: 'blur' }
         ],
-        orgCode: [
+        /*  orgCode: [
           { required: true, message: '归属组织不能为空', trigger: 'blur' }
-        ],
+        ],*/
         phonenumber: [
           { required: true, message: '手机号不能为空', trigger: 'blur' },
           { validator: this.formValidate.telphone, trigger: 'blur' }
@@ -581,6 +597,7 @@ export default {
         sex: undefined,
         status: '0',
         remark: undefined,
+        isCreate: '2',
         postIds: [],
         roleCodes: []
       };
@@ -608,7 +625,6 @@ export default {
     handleAdd() {
       this.reset();
       this.getTreeselect();
-      this.btnDisabled = false;
       getUser().then(response => {
         this.postOptions = response.posts;
         this.roleOptions = response.roles;
@@ -648,41 +664,37 @@ export default {
       this.resetForm('pwForm');
     },
     submitResetPwd() {
-      this.btnDisabled = true;
       this.$refs['pwForm'].validate(valid => {
         if (valid) {
+          this.resetLoading = true;
           resetUserPwd(this.userId, this.pwForm.password).then(response => {
             this.msgSuccess('修改成功，新密码是：' + this.pwForm.password);
             this.pwReset();
-            this.btnDisabled = false;
-          }).catch(() => { this.btnDisabled = false; });
-        } else {
-          this.btnDisabled = false;
+            this.resetLoading = false;
+          }).catch(() => { this.resetLoading = false; });
         }
       });
     },
     /** 提交按钮 */
     submitForm: function() {
-      this.btnDisabled = true;
       this.$refs['form'].validate(valid => {
         if (valid) {
+          this.buttonLoading = true;
           if (this.form.userId !== undefined) {
             updateUser(this.form).then(response => {
               this.msgSuccess('修改成功');
               this.open = false;
-              this.btnDisabled = false;
+              this.buttonLoading = false;
               this.getList();
-            }).catch(() => { this.btnDisabled = false; });
+            }).catch(() => { this.buttonLoading = false; });
           } else {
             addUser(this.form).then(response => {
               this.msgSuccess('新增成功');
               this.open = false;
-              this.btnDisabled = false;
+              this.buttonLoading = false;
               this.getList();
-            }).catch(() => { this.btnDisabled = false; });
+            }).catch(() => { this.buttonLoading = false; });
           }
-        } else {
-          this.btnDisabled = false;
         }
       });
     },

@@ -122,7 +122,7 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button type="primary" :disabled="btnDisabled" @click="submitForm">确 定</el-button>
+          <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
           <el-button @click="cancel">取 消</el-button>
         </div>
       </el-dialog>
@@ -143,7 +143,7 @@ export default {
     return {
       // 遮罩层
       loading: true,
-      btnDisabled: false,
+      buttonLoading: false,
       // 选中数组
       ids: [],
       // 非单个禁用
@@ -189,6 +189,9 @@ export default {
         ],
         branchTel: [
           { validator: this.formValidate.telphone, trigger: 'blur' }
+        ],
+        orgCode: [
+          { required: true, message: '组织不能为空', trigger: 'blur' }
         ]
       }
     };
@@ -258,26 +261,28 @@ export default {
     },
     /** 提交按钮 */
     submitForm: function() {
-      this.btnDisabled = true;
       this.$refs['form'].validate(valid => {
         if (valid) {
+          this.buttonLoading = true;
           if (this.form.id !== undefined) {
             updateBranch(this.form).then(response => {
               this.msgSuccess('修改成功');
               this.open = false;
-              this.btnDisabled = false;
+              this.buttonLoading = false;
               this.getList();
+            }).catch(() => {
+              this.buttonLoading = false;
             });
           } else {
             addBranch(this.form).then(response => {
               this.msgSuccess('新增成功');
               this.open = false;
-              this.btnDisabled = false;
+              this.buttonLoading = false;
               this.getList();
+            }).catch(() => {
+              this.buttonLoading = false;
             });
           }
-        } else {
-          this.btnDisabled = false;
         }
       });
     },
