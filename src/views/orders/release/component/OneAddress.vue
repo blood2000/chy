@@ -16,7 +16,7 @@
             ref="pccFef"
             :config="{
               size:'medium',
-              labelWidth:'60px',
+              labelWidth:'80px',
               labelPosition:'left',
               inputwidth:'200px'
             }"

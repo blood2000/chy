@@ -106,7 +106,7 @@ export default {
     },
     cbData: {
       type: Array,
-      default: null
+      default: () => []
     },
     actionIndex: {
       type: String,
@@ -287,9 +287,11 @@ export default {
 
       // // 去重
 
-      // this.ids = selection.map(item => item.code);
-      // this['selections_' + this.activeName] = selection;
-      const concatArr = this._deduplication([...this['list_' + this.activeName], ...this['t_cbData_' + this.activeName]], 'code'); // 当前页和其他页选中的数据
+
+      const list1 = this['list_' + this.activeName] || [];
+      const list2 = this['t_cbData_' + this.activeName] || [];
+
+      const concatArr = this._deduplication([...list1, ...list2], 'code'); // 当前页和其他页选中的数据
 
       // 过滤出其他页的数据
       const weArr = concatArr.filter(e => {
