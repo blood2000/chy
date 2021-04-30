@@ -1,7 +1,7 @@
 <template>
   <div>
-    <el-row>
-      <el-col :lg="5" :md="6" :sm="7" :xs="24">
+    <div class="row-box ly-flex-pack-justify">
+      <div class="col-box-left">
         <div class="app-container app-container--tree">
           <div class="el-tree-scroll-container page-param-tree">
             <el-tree
@@ -15,8 +15,8 @@
             />
           </div>
         </div>
-      </el-col>
-      <el-col :lg="19" :md="18" :sm="17" :xs="24">
+      </div>
+      <div class="col-box-right">
         <template v-if="formList.length > 0">
           <div v-for="item in formList" :key="item.id" class="app-container app-container--card">
             <h3 class="g-card-title g-card-header mb20">
@@ -88,8 +88,8 @@
             </div>
           </div>
         </template>
-      </el-col>
-    </el-row>
+      </div>
+    </div>
 
     <!-- 新增/编辑树 对话框 -->
     <setting-dialog ref="settingDialogRef" :open.sync="settingOpen" :title="title" @refresh="getTree" />
@@ -255,6 +255,18 @@ export default {
   line-height: 40px;
   text-align: center;
 }
+// 布局
+.row-box{
+  .col-box-left{
+    width: 357px;
+  }
+  .col-box-right{
+    width: calc(100% - 357px);
+  }
+}
+</style>
+
+<style lang="scss">
 // 树样式
 .page-param-tree{
   .el-tree-node__content .custom-tree-node{
@@ -266,6 +278,7 @@ export default {
     padding-right: 8px;
     .custom-tree-button{
       display: none;
+      padding-left: 10px;
       >button{
         padding: 5px;
         +.el-button{
