@@ -125,22 +125,24 @@
 
 
           <el-form-item v-if="formData.tin5 === '1'" label="指定联系人" prop="tin6_1">
-            <div class="ly-flex-align-center">
-              <!-- <el-tag
-                v-for="(tag, index) in orderSpecifiedList"
+            <div class="ly-flex-align-center m_warp">
+              <el-tag
+                v-for="(tag, index) in formData['tin6_' + actionIndex]"
                 :key="tag.name + index"
                 class="mr10"
-                :class="tag.userType === 1? 'team':'driver'"
-                closable
+                :class="actionIndex == 1? 'team':'driver'"
+                :closable="!myisdisabled"
                 :disable-transitions="true"
-                :type="tag.type"
+                :type="'info'"
                 @close="closable(index)"
               >
-                {{ tag.name }}
-              </el-tag> -->
-              <el-button type="primary" size="mini" @click="open1">请选择</el-button>
-              <div class="ml0">调度者: {{ formData.tin6_1.length }} 人</div>
-              <div class="ml0">司机: {{ formData.tin6_2.length }} 人</div>
+                {{ tag.driverName || tag.teamName }}
+              </el-tag>
+              <template v-if="!myisdisabled">
+                <el-button type="primary" size="mini" @click="open1">请选择</el-button>
+                <div class="ml0">调度者: {{ formData.tin6_1.length }} 人</div>
+                <div class="ml0">司机: {{ formData.tin6_2.length }} 人</div>
+              </template>
             </div>
           </el-form-item>
 
@@ -171,7 +173,7 @@
       width="80%"
       append-to-body
     >
-      <open-dialog v-if="open" :cb-data="formData['tin6_' + actionIndex]" :action-index="actionIndex" @handleSelectionChange="handleSelectionChange" />
+      <open-dialog v-if="open" :cb-data="[...formData['tin6_' + actionIndex]]" :action-index="actionIndex" @handleSelectionChange="handleSelectionChange" />
     </el-dialog>
   </div>
 </template>
@@ -180,6 +182,9 @@
 import { listInfo } from '@/api/enterprise/project';
 import { listStockcode } from '@/api/enterprise/stockcode';
 import OpenDialog from '../manage/component/OpenDialog';
+
+// import { getDriver } from '@/api/assets/driver';
+// import { listInfo as listTeam } from '@/api/assets/team';
 
 // import OpenDialog from './OpenDialog';
 
@@ -221,9 +226,8 @@ export default {
     //   }
     // };
     return {
-      // orderSpecifiedList1: [], // 指定联系人 { name: '调度者', type: 'info', userType: 1 }, { name: '司机2', type: 'info', userType: 2 }
       // myisdisabled: false,
-      orderSpecifiedList: null, // 调度者信息
+      orderSpecifiedList: [], // 调度者信息 指定联系人 { name: '调度者', type: 'info', userType: 1 }, { name: '司机2', type: 'info', userType: 2 }
       actionIndex: '2', // 控制弹框显示谁
       open: false,
       classList: null, // 修改的时候
@@ -370,7 +374,9 @@ export default {
         // 4.处理调度者
         this.orderSpecifiedList = orderSpecifiedList;
 
-        // console.log(orderSpecifiedList);
+        console.log(orderSpecifiedList); // 这里处理调度者信息
+
+        // this.handlerOrderSpecifiedList(orderSpecifiedList);
 
         this.orderSpecifiedList.forEach(e => {
           if (e.userType + '' === '1') {
@@ -379,8 +385,8 @@ export default {
             e.code = e.driverInfoCode;
           }
           this.actionIndex = e.userType + '';
-          this.formData['tin6_' + e.userType] = this.orderSpecifiedList;
         });
+        this.formData['tin6_' + this.actionIndex] = this.orderSpecifiedList;
 
         // 5.货集码只做单选处理
 
@@ -521,7 +527,7 @@ export default {
           return {
             ...e, // 需要其他再加
             code: e.code,
-            name: e.name,
+            driverName: e.name,
             type: 'info',
             userType: 2
           };
@@ -530,13 +536,15 @@ export default {
           return {
             ...e, // 需要其他再加
             code: e.code,
-            name: e.name,
+            teamName: e.name,
             type: 'info',
             userType: 1
           };
         });
 
+
         this.orderSpecifiedList = [...listDriver, ...listInfo];
+        this.formData['tin6_' + this.actionIndex] = this.orderSpecifiedList;
 
         if (this.formData.tin6_1.length > 1) {
           this.msgInfo('调度者只能选择一个');
@@ -644,6 +652,32 @@ export default {
       });
     },
 
+    /* 关闭 */
+    closable(index) {
+      this.orderSpecifiedList.splice(index, 1);
+      // console.log(this.orderSpecifiedList);
+      // console.log(this.formData['tin6_' + this.actionIndex]);
+
+      this.formData['tin6_' + this.actionIndex] = this.orderSpecifiedList;
+      // this.handlerOrderSpecifiedList(this.orderSpecifiedList);
+    },
+
+    // /* 处理司机/调度者 */
+    // handlerOrderSpecifiedList(orderSpecifiedList) {
+    //   this.orderSpecifiedList = orderSpecifiedList;
+    //   this.orderSpecifiedList.forEach(e => {
+    //     if (e.userType + '' === '1') {
+    //       e.code = e.teamInfoCode;
+    //     } else {
+    //       e.code = e.driverInfoCode;
+    //     }
+    //     this.actionIndex = e.userType + '';
+    //     this.formData['tin6_' + e.userType] = this.orderSpecifiedList;
+    //   });
+
+    //   // this.orderSpecifiedList = orderSpecifiedList;
+    // },
+
 
     // 处理小类传入[1,2] =>
     _handleGoodsType(arr) {
@@ -725,6 +759,9 @@ export default {
   ::v-deep .el-radio__input{
       display: none;
   }
+}
+.m_warp{
+  flex-wrap: wrap;
 }
 
 .m_radio.is-checked{

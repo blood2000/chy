@@ -826,7 +826,7 @@ export default {
     handleExport() {
       this.download('system/role/export', {
         ...this.queryParams
-      }, `role_${new Date().getTime()}.xlsx`);
+      }, `角色信息_${new Date().getTime()}.xlsx`);
     },
     /** 查询部门下拉树结构 */
     getDeptTree() {

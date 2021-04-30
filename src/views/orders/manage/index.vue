@@ -1,11 +1,11 @@
 <template>
   <div>
 
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="90px" class="clearfix app-container" @submit.native.prevent>
+    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="90px" class="app-container" @submit.native.prevent>
       <el-form-item v-show="!isShipment" label="下单客户" prop="tin1">
         <el-input
           v-model="queryParams.tin1"
-          placeholder="公司名称/客户姓名/手机号"
+          placeholder="企业名称/客户姓名/手机号"
           clearable
           size="small"
           style="width: 228px"
@@ -144,12 +144,10 @@
         </el-select>
       </el-form-item>
 
-      <el-row :gutter="10" class="mb8">
-        <el-col :span="1.5" class="fr">
-          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-          <el-button icon="el-icon-refresh" type="primary" plain size="mini" @click="resetQuery">重置</el-button>
-        </el-col>
-      </el-row>
+      <el-form-item>
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+        <el-button icon="el-icon-refresh" type="primary" plain size="mini" @click="resetQuery">重置</el-button>
+      </el-form-item>
 
     </el-form>
 
@@ -200,10 +198,20 @@
         <template #addressName1="{row}">
           <span>{{ row.addressAlias1 || row.addressName1 }}</span>
         </template>
+
+        <template #contact1="{row}">
+          <span>{{ `${row.contact1} [${row.contactPhone1}]` }}</span>
+        </template>
+
         <!-- 装货地 -->
         <template #addressName2="{row}">
           <span>{{ row.addressAlias2 || row.addressName2 }}</span>
         </template>
+
+        <template #contact2="{row}">
+          <span>{{ `${row.contact2} [${row.contactPhone2}]` }}</span>
+        </template>
+
         <template #landAddress="{row}">
           <span>{{ row.landAddress }}</span>
         </template>
@@ -332,7 +340,7 @@
               @click="handleClose(row)"
             >{{ row.status+''==='0'?'禁用':'启用' }}</el-button>
 
-            <TableDropdown>
+            <TableDropdown v-if="!row.haveWaybill || row.status+''==='0'">
               <el-dropdown-item>
                 <el-button
                   v-if="!row.haveWaybill"
@@ -781,7 +789,6 @@ export default {
               };
             }
           });
-
           // 对应的
           redis.redisOrderAddressInfoVoList.forEach(address => {
             const addresCodes = address.addressCode.split(':');
@@ -845,24 +852,8 @@ export default {
           children: mgoods.length ? mgoods : null
         };
       });
-
-
-      console.log(this.list, '最后封装好的列表数据');
-
-
+      // console.log(this.list, '最后封装好的列表数据');
       this.theight = null;
-
-      // if (this.list.length === 10) {
-      //   this.$nextTick(() => {
-      //     if (this.$el && this.$refs.queryFormBox) {
-      //       const box1 = this.$el.offsetHeight;
-      //       const box2 = this.$refs.queryFormBox.offsetHeight;
-      //       this.theight = box1 - box2 - 200;
-      //     }
-      //   });
-      // }
-
-
       this.loading = false;
     },
 

@@ -10,33 +10,45 @@
   >
 
     <div v-if="!showbudget" class="header mb8 mt8">费用信息</div>
-    <el-form-item label="运费单价: " prop="freightPrice" label-width="90px">
+    <el-form-item label="运费单价(含税): " prop="freightPrice" label-width="120px">
       <el-row>
-        <el-col :span="16" class="ly-flex">
 
-          <el-input-number
-            v-model="formData.freightPrice"
-            :controls="false"
-            :precision="2"
-            :step="0.01"
-            :max="999999"
-            :min="0"
-            :placeholder="'请输入运费单价'"
-            controls-position="right"
-            :style="{ width: '200px' }"
-            @change="handlerChange"
-          />
-          <span class="ml0 mr10"> 元 / {{ mygoodsUnitName }}</span>
+        <el-col :span="24" class="ly-flex-pack-justify ">
+          <div class="ly-flex ly-flex-w">
+            <div class="mr10">
+              <div class="m_zhuanxieadderss ly-flex-align-center">
+                <span class="m_text m_zhuanghuo">{{ addressName[0] }}</span>
+                <span class="m_style" />
+                <span class="m_text m_xie">{{ addressName[1] }}</span>
+              </div>
+            </div>
+            <div class="ly-flex">
+              <el-input-number
+                v-model="formData.freightPrice"
+                :controls="false"
+                :precision="2"
+                :step="0.01"
+                :max="999999"
+                :min="0"
+                :placeholder="'请输入运费单价'"
+                controls-position="right"
+                :style="{ width: '140px' }"
+                @change="handlerChange"
+              />
+              <span class="ml0 mr10"> 元 / {{ mygoodsUnitName }}</span>
 
-          <div v-if="!showbudget" class="ml0 mr10 t_color_c t_m_pac">
-            司机实收单价:  {{ totalTransportationCost || 0 }} 元
+              <div v-if="!showbudget" class="ml0 mr10 t_color_c t_m_pac">
+                司机实收单价:
+                <span class="m_pac">{{ totalTransportationCost || 0 }}</span>
+                元
+              </div>
+            </div>
           </div>
-        </el-col>
-        <el-col :span="8">
           <el-form-item
             label="规则: "
             prop="ruleItemId"
             label-width="60px"
+            style="width:260px;"
           >
             <el-select
               v-model="formData.ruleItemId"
@@ -53,18 +65,11 @@
               />
             </el-select>
           </el-form-item>
+
         </el-col>
+
       </el-row>
     </el-form-item>
-    <el-form-item label="" label-width="90px">
-      <div class="m_zhuanxieadderss ly-flex-align-center">
-        <span class="m_text m_zhuanghuo">{{ addressName[0] }}</span>
-        <span class="m_style" />
-        <span class="m_text m_xie">{{ addressName[1] }}</span>
-      </div>
-    </el-form-item>
-
-
 
     <template v-if="formData.ruleItemId">
 
@@ -570,12 +575,13 @@ export default {
 .t_m_pac{
   padding: 0 15px;
   background-color: #f2f2f2;
+  .m_pac{
+    color: #000;
+  }
 }
 
 .m_zhuanxieadderss{
-  .m_text{
 
-  }
   .m_style{
     width: 28px;
     height: 4px;
