@@ -246,10 +246,6 @@ export default {
         this.loading = false;
       });
     },
-    /** 平台角色字典翻译 */
-    roleFormat(row, column) {
-      return this.selectDictLabel(this.roleOptions, row.status);
-    },
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;

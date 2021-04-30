@@ -1,12 +1,12 @@
 <template>
-  <!-- 提现记录 -->
+  <!-- 出入账记录 -->
   <div>
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="80px">
-        <el-form-item label="交易类型" prop="name">
-          <el-select v-model="queryParams.name" placeholder="请选择交易类型" clearable filterable size="small">
+        <el-form-item label="交易类型" prop="paidItem">
+          <el-select v-model="queryParams.paidItem" placeholder="请选择交易类型" clearable filterable size="small">
             <el-option
-              v-for="dict in typeOptions"
+              v-for="dict in consumeOptions"
               :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
@@ -15,18 +15,18 @@
         </el-form-item>
         <el-form-item label="交易日期">
           <el-date-picker
-            v-model="queryParams.name"
+            v-model="queryParams.updateTimeBegin"
             clearable
-            type="datetime"
+            type="date"
             size="small"
             value-format="yyyy-MM-dd"
             placeholder="请选择"
           />
           至
           <el-date-picker
-            v-model="queryParams.name"
+            v-model="queryParams.updateTimeEnd"
             clearable
-            type="datetime"
+            type="date"
             size="small"
             value-format="yyyy-MM-dd"
             placeholder="请选择"
@@ -47,32 +47,57 @@
     </div>
     <div class="app-container">
       <el-row :gutter="10" class="mb8">
-        <el-col :span="1.5" class="fr">
-          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
-        </el-col>
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <!-- <RefactorTable :loading="loading" :data="dataList" :table-columns-config="tableColumnsConfig">
-        <template #updateTime="{row}">
-          <span>{{ parseTime(row.updateTime) }}</span>
-        </template>
-      </RefactorTable> -->
-      <el-table v-loading="loading" :data="dataList">
-        <el-table-column label="平台角色" align="center" prop="" />
-        <el-table-column label="操作员" align="center" prop="" />
-        <el-table-column label="手机号" align="center" prop="" />
-        <el-table-column label="收支类型" align="center" prop="" />
-        <el-table-column label="支付类型" align="center" prop="" />
-        <el-table-column label="银行卡类型" align="center" prop="" />
-        <el-table-column label="银行卡号" align="center" prop="" />
-        <el-table-column label="交易类型" align="center" prop="" />
-        <el-table-column label="变动金额（元）" align="center" prop="">
-          <span class="g-color-blue" />
+      <el-table v-loading="loading" stripe border :data="dataList">
+        <el-table-column label="平台角色" align="center" prop="roleName" />
+        <el-table-column label="操作员" align="center" prop="updateName" />
+        <el-table-column label="手机号" align="center" prop="phonenumber" />
+        <el-table-column label="收支类型" align="center" prop="paidFeeType">
+          <template slot-scope="scope">
+            <p v-if="scope.row.paidFeeType === '0'">
+              <span class="g-color-success g-pot" />
+              收入
+            </p>
+            <p v-if="scope.row.paidFeeType === '1'">
+              <span class="g-color-error g-pot" />
+              支出
+            </p>
+          </template>
         </el-table-column>
-        <el-table-column label="账户余额（元）" align="center" prop="" />
-        <el-table-column label="备注" align="center" prop="" />
-        <el-table-column label="变动时间" align="center" prop="" />
+        <el-table-column label="支付类型" align="center" prop="paidLineType">
+          <template slot-scope="scope">
+            <span>{{ selectDictLabel(paidLineTypeOptions, scope.row.paidLineType) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="银行卡类型" align="center" prop="bankType" width="100" />
+        <el-table-column label="银行卡号" align="center" prop="bankNumber" width="180" />
+        <el-table-column label="交易类型" align="center" prop="paidItem">
+          <template slot-scope="scope">
+            <span>{{ selectDictLabel(consumeOptions, scope.row.paidItem) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="变动金额" align="center" prop="paidAmount">
+          <template slot-scope="scope">
+            <p v-if="scope.row.paidFeeType === '0'" class="g-color-success">
+              +{{ scope.row.paidAmount }}
+            </p>
+            <p v-else-if="scope.row.paidFeeType === '1'" class="g-color-error">
+              -{{ scope.row.paidAmount }}
+            </p>
+            <p v-else>
+              {{ scope.row.paidAmount }}
+            </p>
+          </template>
+        </el-table-column>
+        <el-table-column label="账户余额" align="center" prop="accountAmount" />
+        <el-table-column label="备注" align="center" prop="remark" width="180" />
+        <el-table-column label="变动时间" align="center" prop="updateTime" width="180">
+          <template slot-scope="scope">
+            <span>{{ parseTime(scope.row.updateTime) }}</span>
+          </template>
+        </el-table-column>
       </el-table>
 
       <pagination
@@ -87,14 +112,13 @@
 </template>
 
 <script>
-import { balanceListApi, balanceList } from '@/api/capital/ubalance';
+import { getUserInfo } from '@/utils/auth';
+import { rechargelist } from '@/api/capital/recharge';
 
 export default {
   name: 'WithdrawalsRecord',
   data() {
     return {
-      tableColumnsConfig: [],
-      api: balanceListApi,
       // 遮罩层
       loading: true,
       // 显示搜索条件
@@ -104,26 +128,37 @@ export default {
       // 表格数据
       dataList: [],
       // 交易类型字典
-      typeOptions: [
-        { dictLabel: '全部', dictValue: 0 }
+      consumeOptions: [
+        { dictLabel: '充值', dictValue: 0 },
+        { dictLabel: '提现', dictValue: 5 }
+      ],
+      // 支付类型字典
+      paidLineTypeOptions: [
+        { dictLabel: '在线支付', dictValue: 0 },
+        { dictLabel: '现金支付', dictValue: 1 }
       ],
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 10
+        pageSize: 10,
+        paidItem: undefined,
+        updateTimeBegin: undefined,
+        updateTimeEnd: undefined,
+        isTranfer: '1' // 只查充值和提现
       },
       activeName: '近三月'
     };
   },
   created() {
-    this.tableHeaderConfig(this.tableColumnsConfig, balanceListApi);
     this.getList();
   },
   methods: {
     /** 查询列表 */
     getList() {
       this.loading = true;
-      balanceList(this.queryParams).then(response => {
+      const { user = {}} = getUserInfo() || {};
+      const { userCode } = user;
+      rechargelist(Object.assign({}, this.queryParams, { userCode: userCode })).then(response => {
         this.dataList = response.data.rows;
         this.total = response.data.total;
         this.loading = false;
@@ -136,6 +171,8 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.queryParams.updateTimeBegin = undefined;
+      this.queryParams.updateTimeEnd = undefined;
       this.resetForm('queryForm');
       this.handleQuery();
     },

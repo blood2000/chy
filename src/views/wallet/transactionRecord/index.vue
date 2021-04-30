@@ -5,18 +5,18 @@
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="80px">
         <el-form-item label="交易日期">
           <el-date-picker
-            v-model="queryParams.name"
+            v-model="queryParams.updateTimeBegin"
             clearable
-            type="datetime"
+            type="date"
             size="small"
             value-format="yyyy-MM-dd"
             placeholder="请选择"
           />
           至
           <el-date-picker
-            v-model="queryParams.name"
+            v-model="queryParams.updateTimeEnd"
             clearable
-            type="datetime"
+            type="date"
             size="small"
             value-format="yyyy-MM-dd"
             placeholder="请选择"
@@ -37,9 +37,6 @@
     </div>
     <div class="app-container">
       <el-row :gutter="10" class="mb8">
-        <el-col :span="1.5" class="fr">
-          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
-        </el-col>
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
@@ -48,24 +45,19 @@
         <el-tab-pane label="付款记录" name="fk" />
       </el-tabs>
 
-      <!-- <RefactorTable :loading="loading" :data="dataList" :table-columns-config="tableColumnsConfig">
-        <template #updateTime="{row}">
-          <span>{{ parseTime(row.updateTime) }}</span>
-        </template>
-      </RefactorTable> -->
-      <el-table v-loading="loading" :data="dataList">
-        <el-table-column label="运单号" align="center" prop="" />
-        <el-table-column label="装货地" align="center" prop="" />
-        <el-table-column label="卸货地" align="center" prop="" />
+      <el-table v-loading="loading" stripe border :data="dataList">
+        <el-table-column label="运单号" align="center" prop="waybillNo" width="150" />
+        <el-table-column label="装货地" align="center" prop="" width="150" />
+        <el-table-column label="卸货地" align="center" prop="" width="150" />
         <el-table-column label="货物类型" align="center" prop="" />
-        <el-table-column label="承运司机" align="center" prop="" />
-        <el-table-column label="承运车辆" align="center" prop="" />
-        <el-table-column label="所属调度者" align="center" prop="" />
+        <el-table-column label="承运司机" align="center" prop="payeeName" />
+        <el-table-column label="承运车辆" align="center" prop="licenseNumber" />
+        <el-table-column label="所属调度者" align="center" prop="teamName" width="150" />
         <el-table-column label="交易类型" align="center" prop="" />
         <el-table-column label="单价（元）" align="center" prop="" />
         <el-table-column label="重量（吨）" align="center" prop="" />
-        <el-table-column label="总额（元）" align="center" prop="" />
-        <el-table-column label="操作时间" align="center" prop="" />
+        <el-table-column label="总额（元）" align="center" prop="amount" />
+        <el-table-column label="操作时间" align="center" prop="payTime" width="180" />
       </el-table>
 
       <pagination
@@ -80,14 +72,12 @@
 </template>
 
 <script>
-import { balanceListApi, balanceList } from '@/api/capital/ubalance';
-
+import { getUserInfo } from '@/utils/auth';
+import { payRecordlist } from '@/api/capital/payrecord';
 export default {
   name: 'TransactionRecord',
   data() {
     return {
-      tableColumnsConfig: [],
-      api: balanceListApi,
       // 选中tab
       activeTab: 'dj', // dj冻结 fk付款
       // 遮罩层
@@ -105,23 +95,26 @@ export default {
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 10
+        pageSize: 10,
+        updateTimeBegin: undefined,
+        updateTimeEnd: undefined
       },
       activeName: '近三月'
     };
   },
   created() {
-    this.tableHeaderConfig(this.tableColumnsConfig, balanceListApi);
     this.getList();
   },
   methods: {
     handleTabClick() {
-      console.log(this.activeTab);
+      // console.log(this.activeTab);
     },
     /** 查询列表 */
     getList() {
       this.loading = true;
-      balanceList(this.queryParams).then(response => {
+      const { user = {}} = getUserInfo() || {};
+      const { userCode } = user;
+      payRecordlist(Object.assign({}, this.queryParams, { userCode: userCode })).then(response => {
         this.dataList = response.data.rows;
         this.total = response.data.total;
         this.loading = false;
@@ -134,6 +127,8 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.queryParams.updateTimeBegin = undefined;
+      this.queryParams.updateTimeEnd = undefined;
       this.resetForm('queryForm');
       this.handleQuery();
     },
