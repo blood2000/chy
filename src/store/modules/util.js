@@ -15,6 +15,8 @@ const mutations = {
       });
 
       state.parameters = parameters;
+    } else {
+      state.parameters = {};
     }
   }
 };

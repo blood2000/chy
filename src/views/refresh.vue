@@ -8,7 +8,7 @@ export default {
   name: 'Refresh',
   beforeRouteEnter(to, from, next) {
     next(vm => {
-      vm.$router.replace(from.path);
+      vm.$router.replace({ path: from.path, query: vm.$store.getters.parameters });
     });
   },
   data() {

@@ -84,6 +84,11 @@ export default {
       banner_list: []
     };
   },
+
+  created() {
+    this.$store.commit('util/setParameters', null);
+  },
+
   methods: {
     submitForm() {
       this.$emit('input', this.banner_list);
@@ -102,9 +107,11 @@ export default {
     handleCache() {
       removeLocalStorage(this.lcokey);
 
-      this.$store.commit('util/setParameters', this.$route.query);
-
-      // 获取参数 console.log(this.$store.getters.parameters);
+      // 当前页面如果有参数, 则保存到vuex中, 重新调用this.$store.getters.parameters
+      const { query } = this.$route;
+      if (JSON.stringify(query) !== '{}') {
+        this.$store.commit('util/setParameters', query);
+      }
 
       this.$router.replace({
         path: '/refresh'
