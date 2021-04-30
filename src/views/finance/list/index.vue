@@ -93,18 +93,16 @@
             @click="handleVerify"
           >批量审核</el-button>
         </el-col>
-        <el-col v-if="activeName == '3'" :span="1.5">
+        <el-col v-if="activeName == '5'" :span="1.5">
           <el-button
-            v-hasPermi="['assets:vehicle:remove']"
             type="primary"
             icon="el-icon-upload2"
             size="mini"
             @click="handleExportFreight"
           >导出运费明细</el-button>
         </el-col>
-        <el-col v-if="activeName == '3'" :span="1.5">
+        <el-col v-if="activeName == '5'" :span="1.5">
           <el-button
-            v-hasPermi="['assets:vehicle:export']"
             type="primary"
             icon="el-icon-upload2"
             size="mini"

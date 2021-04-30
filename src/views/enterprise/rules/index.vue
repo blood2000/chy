@@ -32,7 +32,7 @@
       </el-row>
 
       <el-table v-loading="loading" :data="rulesList" stripe border @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55" align="center" fixed="left" />
+        <!-- <el-table-column type="selection" width="55" align="center" fixed="left" /> -->
         <el-table-column label="规则名称" align="center" prop="name" />
         <el-table-column label="计算公式" align="center" prop="ruleDictValue" :formatter="ruleTypeFormat" min-width="150" />
         <el-table-column label="扣费项目" align="center" prop="deduction" min-width="150" />
@@ -40,12 +40,20 @@
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
           <template slot-scope="scope">
             <el-button
+              v-if="scope.row.platformType === 1"
+              size="mini"
+              type="text"
+              @click="handleUpdate(scope.row)"
+            >详情</el-button>
+            <el-button
+              v-if="scope.row.platformType !== 1"
               v-hasPermi="['transport:ruleInfoShipment:edit']"
               size="mini"
               type="text"
               @click="handleUpdate(scope.row)"
             >修改</el-button>
             <el-button
+              v-if="scope.row.platformType !== 1"
               v-hasPermi="['transport:ruleInfoShipment:remove']"
               size="mini"
               type="text"
@@ -171,7 +179,7 @@ export default {
       const code = row.code || this.ids;
       getRules({ code: code }).then(response => {
         this.open = true;
-        this.title = '修改';
+        this.title = row.platformType !== 1 ? '修改' : '详情';
         this.$refs.RulesDialog.setForm(response.data);
       });
     },

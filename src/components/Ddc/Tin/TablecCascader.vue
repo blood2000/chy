@@ -4,10 +4,6 @@
       <el-button size="mini" circle icon="el-icon-sort" @click="handleUpdate" />
     </el-tooltip>
 
-    <el-tooltip class="item" effect="dark" content="重置表头" placement="top">
-      <el-button size="mini" circle icon="el-icon-refresh-left" @click="handleCache" />
-    </el-tooltip>
-
     <el-dialog title="拖拽排序" :visible.sync="open" append-to-body destroy-on-close width="80%" class="table-cascader-dialog">
       <ul class="t-thead">
         <draggable
@@ -44,8 +40,9 @@
       </ul>
 
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button type="danger" @click="handleCache">重置表头</el-button>
         <el-button @click="cancel">取 消</el-button>
+        <el-button type="primary" @click="submitForm">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -105,16 +102,21 @@ export default {
     },
 
     handleCache() {
-      removeLocalStorage(this.lcokey);
-
-      // 当前页面如果有参数, 则保存到vuex中, 重新调用this.$store.getters.parameters
-      const { query } = this.$route;
-      if (JSON.stringify(query) !== '{}') {
-        this.$store.commit('util/setParameters', query);
-      }
-
-      this.$router.replace({
-        path: '/refresh'
+      this.$confirm('确定要重置表头,恢复到初始状态?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        removeLocalStorage(this.lcokey);
+        // 当前页面如果有参数, 则保存到vuex中, 重新调用this.$store.getters.parameters
+        const { query } = this.$route;
+        if (JSON.stringify(query) !== '{}') {
+          this.$store.commit('util/setParameters', query);
+        }
+        this.open = false;
+        this.$router.replace({
+          path: '/refresh'
+        });
       });
     }
   }

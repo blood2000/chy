@@ -99,6 +99,7 @@
               v-model="formData.contactPhone"
               placeholder="请输入联系电话"
               clearable
+              maxlength="11"
               :style="{ width: '250px' }"
             />
           </el-form-item>
