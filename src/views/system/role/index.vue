@@ -213,7 +213,8 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row :gutter="24">
           <el-col :span="24">
-            <el-form-item v-if="!form.roleId" label="所属组织" prop="orgCode" :rules="[{ required: true, message: '所属组织不能为空', trigger: 'blur' }]">
+          <!--  :rules="[{ required: true, message: '所属组织不能为空', trigger: 'blur' }]"-->
+            <el-form-item v-if="!form.roleId" label="所属组织" prop="orgCode">
               <!-- <el-tree
                 ref="tree"
                 class="tree-border"
@@ -328,7 +329,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" :disabled="btnDisabled" @click="submitForm">确 定</el-button>
+        <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -370,7 +371,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" :disabled="btnDisabled" @click="submitDataScope">确 定</el-button>
+        <el-button type="primary" :loading="dataScopeLoading" @click="submitDataScope">确 定</el-button>
         <el-button @click="cancelDataScope">取 消</el-button>
       </div>
     </el-dialog>
@@ -398,9 +399,10 @@ export default {
   },
   data() {
     return {
+      buttonLoading: false,
+      dataScopeLoading: false,
       // 遮罩层
       loading: true,
-      btnDisabled: false,
       // 选中数组
       ids: [],
       names: [],
@@ -764,43 +766,45 @@ export default {
     },
     /** 提交按钮 */
     submitForm: function() {
-      this.btnDisabled = true;
       this.$refs['form'].validate(valid => {
         if (valid) {
+          this.buttonLoading = true;
           this.form.menuCodes = this.getMenuAllCheckedKeys();
           if (this.form.roleId !== undefined) {
             updateRole(this.form).then(response => {
+              this.buttonLoading = false;
               this.msgSuccess('修改成功');
               this.open = false;
-              this.btnDisabled = false;
               this.getList();
+            }).catch(() => {
+              this.buttonLoading = false;
             });
           } else {
             addRole(this.form).then(response => {
+              this.buttonLoading = false;
               this.msgSuccess('新增成功');
               this.open = false;
-              this.btnDisabled = false;
               this.getList();
+            }).catch(() => {
+              this.buttonLoading = false;
             });
           }
-        } else {
-          this.btnDisabled = false;
         }
       });
     },
     /** 提交按钮（数据权限） */
     submitDataScope: function() {
-      this.btnDisabled = true;
       if (this.form.roleId !== undefined) {
+        this.dataScopeLoading = true;
         this.form.orgCodes = this.getDeptAllCheckedKeys();
         dataScope(this.form).then(response => {
           this.msgSuccess('修改成功');
           this.openDataScope = false;
-          this.btnDisabled = false;
+          this.dataScopeLoading = false;
           this.getList();
+        }).catch(() => {
+          this.dataScopeLoading = false;
         });
-      } else {
-        this.btnDisabled = false;
       }
     },
     /** 删除按钮操作 */

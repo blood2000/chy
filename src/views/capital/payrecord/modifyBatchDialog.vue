@@ -6,13 +6,13 @@
         <el-input v-model="form.amount" readonly class="input-width" clearable />
       </el-form-item>
     </el-form>
-    <el-button
+    <!-- <el-button
       type="primary"
       icon="el-icon-plus"
       size="mini"
       class="fr mb10"
       @click="handleAdd"
-    >新增</el-button>
+    >新增</el-button> -->
     <el-table :data="infoList">
       <el-table-column label="序号" align="center" type="index" min-width="5%" />
       <el-table-column label="支付批次号" align="center" prop="bizNo">
@@ -31,7 +31,7 @@
           <upload-image v-model="scope.row.payReceiptImg" />
         </template>
       </el-table-column>
-      <el-table-column label="删除" align="center">
+      <!-- <el-table-column label="删除" align="center">
         <template scope="scope">
           <el-button
             size="mini"
@@ -40,7 +40,7 @@
             @click="handleDelete(scope.row, scope.$index)"
           >删除</el-button>
         </template>
-      </el-table-column>
+      </el-table-column> -->
     </el-table>
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" @click="submitForm">保 存</el-button>
@@ -82,18 +82,7 @@ export default {
       }
     }
   },
-  watch: {
-    open(val) {
-      if (val) {
-        this.getBatch();
-      }
-    }
-  },
   methods: {
-    /** 查询批次号 */
-    getBatch() {
-
-    },
     /** 取消按钮 */
     cancel() {
       this.close();

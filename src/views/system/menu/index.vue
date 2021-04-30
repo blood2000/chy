@@ -307,7 +307,7 @@
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" :disabled="btnDisabled" @click="submitForm">确 定</el-button>
+        <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -331,7 +331,7 @@ export default {
     return {
       // 遮罩层
       loading: true,
-      btnDisabled: false,
+      buttonLoading: false,
       // 显示搜索条件
       showSearch: true,
       // 菜单表格树数据
@@ -533,26 +533,28 @@ export default {
     },
     /** 提交按钮 */
     submitForm: function() {
-      this.btnDisabled = true;
       this.$refs['form'].validate(valid => {
         if (valid) {
+          this.buttonLoading = true;
           if (this.form.menuId !== undefined) {
             updateMenu(this.form).then(response => {
               this.msgSuccess('修改成功');
               this.open = false;
-              this.btnDisabled = false;
+              this.buttonLoading = false;
               this.getList();
+            }).catch(() => {
+              this.buttonLoading = false;
             });
           } else {
             addMenu(this.form).then(response => {
               this.msgSuccess('新增成功');
               this.open = false;
-              this.btnDisabled = false;
+              this.buttonLoading = false;
               this.getList();
+            }).catch(() => {
+              this.buttonLoading = false;
             });
           }
-        } else {
-          this.btnDisabled = false;
         }
       });
     },
