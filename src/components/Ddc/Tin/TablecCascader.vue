@@ -4,6 +4,10 @@
       <el-button size="mini" circle icon="el-icon-sort" @click="handleUpdate" />
     </el-tooltip>
 
+    <el-tooltip class="item" effect="dark" content="重置表头" placement="top">
+      <el-button size="mini" circle icon="el-icon-refresh-left" @click="handleCache" />
+    </el-tooltip>
+
     <el-dialog title="拖拽排序" :visible.sync="open" append-to-body destroy-on-close width="80%" class="table-cascader-dialog">
       <ul class="t-thead">
         <draggable
@@ -49,7 +53,7 @@
 
 <script>
 import draggable from 'vuedraggable';
-import { setLocalStorage } from '@/utils/auth';
+import { setLocalStorage, removeLocalStorage } from '@/utils/auth';
 
 /**
  * 调用示例:
@@ -93,6 +97,18 @@ export default {
     handleUpdate() {
       this.open = true;
       this.banner_list = JSON.parse(JSON.stringify(this.value));
+    },
+
+    handleCache() {
+      removeLocalStorage(this.lcokey);
+
+      this.$store.commit('util/setParameters', this.$route.query);
+
+      // 获取参数 console.log(this.$store.getters.parameters);
+
+      this.$router.replace({
+        path: '/refresh'
+      });
     }
   }
 };
