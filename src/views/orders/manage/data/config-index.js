@@ -50,13 +50,13 @@ export default [
     tooltip: true,
     label: '装货地联系人'
   },
-  {
-    prop: 'contactPhone1',
-    isShow: true,
-    width: 200,
-    tooltip: true,
-    label: '装货地联系电话'
-  },
+  // {
+  //   prop: 'contactPhone1',
+  //   isShow: true,
+  //   width: 200,
+  //   tooltip: true,
+  //   label: '装货地联系电话'
+  // },
   {
     prop: 'addressName2',
     isShow: true,
@@ -71,13 +71,13 @@ export default [
     tooltip: true,
     label: '卸货地联系人'
   },
-  {
-    prop: 'contactPhone2',
-    isShow: true,
-    width: 200,
-    tooltip: true,
-    label: '卸货地联系电话'
-  },
+  // {
+  //   prop: 'contactPhone2',
+  //   isShow: true,
+  //   width: 200,
+  //   tooltip: true,
+  //   label: '卸货地联系电话'
+  // },
   {
     prop: 'remark',
     isShow: true,

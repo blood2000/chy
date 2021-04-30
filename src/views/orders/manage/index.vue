@@ -198,10 +198,20 @@
         <template #addressName1="{row}">
           <span>{{ row.addressAlias1 || row.addressName1 }}</span>
         </template>
+
+        <template #contact1="{row}">
+          <span>{{ `${row.contact1} [${row.contactPhone1}]` }}</span>
+        </template>
+
         <!-- 装货地 -->
         <template #addressName2="{row}">
           <span>{{ row.addressAlias2 || row.addressName2 }}</span>
         </template>
+
+        <template #contact2="{row}">
+          <span>{{ `${row.contact2} [${row.contactPhone2}]` }}</span>
+        </template>
+
         <template #landAddress="{row}">
           <span>{{ row.landAddress }}</span>
         </template>

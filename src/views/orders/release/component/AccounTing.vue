@@ -10,11 +10,11 @@
   >
 
     <div v-if="!showbudget" class="header mb8 mt8">费用信息</div>
-    <el-form-item label="运费单价: " prop="freightPrice" label-width="90px">
+    <el-form-item label="运费单价(含税): " prop="freightPrice" label-width="120px">
       <el-row>
 
-        <el-col :span="24" class="ly-flex-pack-justify">
-          <div class="ly-flex">
+        <el-col :span="24" class="ly-flex-pack-justify ">
+          <div class="ly-flex ly-flex-w">
             <div class="mr10">
               <div class="m_zhuanxieadderss ly-flex-align-center">
                 <span class="m_text m_zhuanghuo">{{ addressName[0] }}</span>
@@ -38,7 +38,9 @@
               <span class="ml0 mr10"> 元 / {{ mygoodsUnitName }}</span>
 
               <div v-if="!showbudget" class="ml0 mr10 t_color_c t_m_pac">
-                司机实收单价:  {{ totalTransportationCost || 0 }} 元
+                司机实收单价:
+                <span class="m_pac">{{ totalTransportationCost || 0 }}</span>
+                元
               </div>
             </div>
           </div>
@@ -573,12 +575,13 @@ export default {
 .t_m_pac{
   padding: 0 15px;
   background-color: #f2f2f2;
+  .m_pac{
+    color: #000;
+  }
 }
 
 .m_zhuanxieadderss{
-  .m_text{
 
-  }
   .m_style{
     width: 28px;
     height: 4px;
