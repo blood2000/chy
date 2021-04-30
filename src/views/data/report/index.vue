@@ -611,12 +611,17 @@ export default {
     /** 批量导入 */
     handleImport() {
       this.openImport = true;
+      alert('未接接口');
       // this.title = '司机批量导入';
     },
     /** 下载模板 */
-    handleDownload() {},
+    handleDownload() {
+      alert('未接接口');
+    },
     /** 更新网商打款状态 */
-    handleUpdate() {},
+    handleUpdate() {
+      alert('未接接口');
+    },
 
 
     /** 列表按钮 */
