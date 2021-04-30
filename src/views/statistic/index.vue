@@ -154,7 +154,7 @@ export default {
   font-size: 0.7rem;
   background-color: #011c5f;
   box-sizing: border-box;
-  // background: #011c5f url('~@/assets/images/statistic/map_bg.png') no-repeat;
+  background: #011c5f url('~@/assets/images/statistic/map_bg.png') no-repeat;
   background-size: 100% 100%;
 
   //unSelect

@@ -13,10 +13,10 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="用户名称" prop="userName">
+        <el-form-item label="用户姓名" prop="userName">
           <el-input
             v-model="queryParams.userName"
-            placeholder="请输入用户名称"
+            placeholder="请输入用户姓名"
             clearable
             size="small"
             @keyup.enter.native="handleQuery"
