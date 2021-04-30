@@ -74,6 +74,8 @@
 <script>
 import { getUserInfo } from '@/utils/auth';
 import { payRecordlist } from '@/api/capital/payrecord';
+import { getTimeRange } from '@/utils/timeRange';
+
 export default {
   name: 'TransactionRecord',
   data() {
@@ -103,7 +105,7 @@ export default {
     };
   },
   created() {
-    this.getList();
+    this.handleClick();
   },
   methods: {
     handleTabClick() {
@@ -130,10 +132,22 @@ export default {
       this.queryParams.updateTimeBegin = undefined;
       this.queryParams.updateTimeEnd = undefined;
       this.resetForm('queryForm');
-      this.handleQuery();
+      this.queryParams.pageNum = 1;
+      this.handleClick();
     },
     handleClick() {
-
+      let t = 0;
+      if (this.activeName === '近三月') {
+        t = 3;
+      } else if (this.activeName === '近半年') {
+        t = 6;
+      } else if (this.activeName === '近一年') {
+        t = 12;
+      }
+      const { start, end } = getTimeRange(t);
+      this.queryParams.updateTimeBegin = start;
+      this.queryParams.updateTimeEnd = end;
+      this.getList();
     }
   }
 };
