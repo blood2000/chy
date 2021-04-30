@@ -473,8 +473,8 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const code = row.wayBillCode;
-      this.$confirm('是否确认作废编号为"' + code + '"的运单?', '警告', {
+      const code = row.waybillNo;
+      this.$confirm('是否确认作废单号为"' + code + '"的运单?', '警告', {
         'confirmButtonText': '确定',
         'cancelButtonText': '取消',
         'type': 'warning'

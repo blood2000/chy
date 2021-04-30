@@ -230,27 +230,30 @@
       <detail-dialog ref="DetailDialog" :current-id="currentId" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
 
     </div>
-    <el-row
-      :gutter="10"
-      class="g-statistics-bg"
-    >
+
+    <el-row type="flex" :gutter="10" class="g-statistics-bg">
       <el-col :span="1">
         <img src="../../../../src/assets/images/icon/total.png" alt="">
       </el-col>
-      <el-col :span="3">
-        <span style="line-height: 31px">运单数量：{{ feeinfo.waybillNum }}</span>
+      <el-col :span="2">
+        <div class="g-statistics-tag">运单数量：</div>
+        <div class="g-statistics-num">{{ feeinfo.waybillNum }}</div>
       </el-col>
-      <el-col :span="3">
-        <span style="line-height: 31px">运费金额：{{ feeinfo.deliveryFee }}</span>
+      <el-col :span="2">
+        <div class="g-statistics-tag">运费金额：</div>
+        <div class="g-statistics-num">{{ feeinfo.deliveryFee }}</div>
       </el-col>
-      <el-col :span="3">
-        <span style="line-height: 31px">运费税额：{{ feeinfo.taxPayment }}</span>
+      <el-col :span="2">
+        <div class="g-statistics-tag">运费税额：</div>
+        <div class="g-statistics-num">{{ feeinfo.taxPayment }}</div>
       </el-col>
-      <el-col :span="3">
-        <span style="line-height: 31px">服务费金额：{{ feeinfo.serviceFee }}</span>
+      <el-col :span="2">
+        <div class="g-statistics-tag">服务费金额：</div>
+        <div class="g-statistics-num">{{ feeinfo.serviceFee }}</div>
       </el-col>
-      <el-col :span="3">
-        <span style="line-height: 31px">服务费税额：{{ feeinfo.serviceTaxFee }}</span>
+      <el-col :span="2">
+        <div class="g-statistics-tag">服务费税额：</div>
+        <div class="g-statistics-num">{{ feeinfo.serviceTaxFee }}</div>
       </el-col>
     </el-row>
   </div>

@@ -19,16 +19,14 @@
         <el-row :gutter="10">
           <el-col :span="1.5">
             <el-button
-              v-hasPermi="['assets:vehicle:edit']"
               type="primary"
-              icon="el-icon-document-checked"
+              icon="el-icon-upload2"
               size="mini"
               @click="handleExportFreight"
             >导出运费明细</el-button>
           </el-col>
           <el-col :span="1.5">
             <el-button
-              v-hasPermi="['assets:vehicle:remove']"
               type="primary"
               icon="el-icon-upload2"
               size="mini"
