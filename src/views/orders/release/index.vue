@@ -156,18 +156,19 @@
                 v-if="!myisdisabled && (formData.tin7 === '2' || formData.tin7 === '4')"
                 type="primary"
                 size="mini"
+                plain
                 @click="_addAddress('address_add')"
               >添加地址</el-button>
 
             </div>
 
             <div
-              v-for="address in address_add"
+              v-for="(address,index) in address_add"
               :key="address.refName"
             >
               <div v-if="address.addressType !=='3'" class="oneAddress_item pr">
                 <div class="pa triangleR " />
-                <div class="pa m_pa">1</div>
+                <div class="pa m_pa">{{ index + 1 }}</div>
 
                 <OneAddress v-if="isShowAddress" :ref="address.refName" type="1" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
                 <div class="ly-t-right">
@@ -199,16 +200,19 @@
                 v-if="!myisdisabled && (formData.tin7 === '3' || formData.tin7 === '4')"
                 type="primary"
                 size="mini"
+                plain
                 style="margin-top: -12px"
                 @click="_addAddress('address_xie')"
               >添加地址</el-button>
             </div>
 
             <div
-              v-for="address in address_xie"
+              v-for="(address, index) in address_xie"
               :key="address.refName"
             >
-              <div v-if="address.addressType !=='4'" class="oneAddress_item">
+              <div v-if="address.addressType !=='4'" class="oneAddress_item pr">
+                <div class="pa triangleR " />
+                <div class="pa m_pa">{{ index + 1 }}</div>
 
                 <OneAddress v-if="isShowAddress" :ref="address.refName" type="2" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
 
@@ -269,19 +273,31 @@
 
         </el-form>
 
-        <div v-if="active >= 4 && !isT" class="ly-t-center app-container pr">
-          <el-button type="primary" plain @click="nextFe(3)">上一步</el-button>
-          <el-button v-hasPermi="['transportation:order:pubilsh']" type="primary" @click="onPubilsh">{{ isCreated?'立即发布':'保存' }}</el-button>
+        <div v-if="active >= 4 && !isT" class="app-container ">
 
-          <div class="release_warning pa">
-            <el-alert
-              title="司机在接单的时候会相应的扣除余额中的运输费用，请及时充值，以免招成司机接单不成功的情况。"
-              type="info"
-              effect="dark"
-              :closable="false"
-              show-icon
-            />
-          </div>
+          <el-row>
+            <el-col :span="10">
+              <div class="release_warning">
+                <el-alert
+                  title="司机在接单的时候会相应的扣除余额中的运输费用，请及时充值，以免招成司机接单不成功的情况。"
+                  type="info"
+                  effect="dark"
+                  :closable="false"
+                  show-icon
+                />
+              </div>
+            </el-col>
+            <el-col :span="4" class="ly-flex-pack-center">
+              <div class="m_btn">
+                <el-button type="primary" plain @click="nextFe(3)">上一步</el-button>
+                <el-button v-hasPermi="['transportation:order:pubilsh']" type="primary" @click="onPubilsh">{{ isCreated?'立即发布':'保存' }}</el-button>
+              </div>
+            </el-col>
+            <el-col :span="10" />
+          </el-row>
+
+
+
         </div>
         <div v-if="isT" class="ly-t-center">
           <el-button @click="backPge">返 回</el-button>
@@ -433,6 +449,7 @@ export default {
       },
       immediate: true
     }
+
   },
 
   async created() {
@@ -1171,22 +1188,22 @@ export default {
 
     zhuangOrxiechange(value) {
       if (this.formData.tin7 === '1' && (this.address_add.length >= 2 || this.address_add.length <= 0)) {
-        this.msgError('装货地址只能填一个');
+        this.msgError('选择一装多卸,装货地址必须为一个, 且不能选择允许自装');
         this.formData.tin7 = '2';
         return;
       }
       if (this.formData.tin7 === '1' && (this.address_xie.length >= 2 || this.address_xie.length <= 0)) {
-        this.msgError('卸货地址只能填一个');
+        this.msgError('选择一装多卸,卸货地址必须为一个, 且不能选择允许自卸');
         this.formData.tin7 = '3';
         return;
       }
       if (this.formData.tin7 === '2' && (this.address_xie.length >= 2 || this.address_xie.length <= 0)) {
-        this.msgError('卸货地址只能填一个');
+        this.msgError('选择多装一卸,则卸货地址必须填一个且不能选择允许自卸');
         this.formData.tin7 = '3';
         return;
       }
       if (this.formData.tin7 === '3' && (this.address_add.length >= 2 || this.address_add.length <= 0)) {
-        this.msgError('装货地址只能填一个');
+        this.msgError('选择一装多卸,则装货地址必须填一个且不能选择允许自装');
         this.formData.tin7 = '2';
         return;
       }
@@ -1207,18 +1224,33 @@ export default {
     },
 
     handlerCheck(type) {
+      console.log(this.formData.tin8);
+
+      // if(!this.formData.tin8)
+
+
       if (!this.formData.tin8) {
         this.address_add = this.address_add.filter(e => e.addressType !== '3');
       }
 
       if (type === 'add' && !this.formData.tin8 && this.address_add.length <= 0) {
-        this.msgError('装货地址至少填一个');
-        this.formData.tin8 = true;
+        // this.msgError('装货地址至少填一个');
+
+        // // 加一个地址
+        // this.formData.tin8 = true;
+
+
+
+        this._addAddress('address_add');
       }
     },
     handlerXie() {
       if (!this.formData.tin9) {
         this.address_xie = this.address_xie.filter(e => e.addressType !== '4');
+      }
+
+      if (!this.formData.tin9 && this.address_xie.length <= 0) {
+        this._addAddress('address_xie');
       }
     },
 
@@ -1335,9 +1367,11 @@ export default {
 .oneAddress_item {
   padding: 10px;
   margin-bottom: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #f2f6fa;
   width: 66%;
   min-width: 850px;
+  border-radius: 3px;
+  overflow: hidden;
 }
 .m-flex {
   display: flex;
@@ -1345,11 +1379,8 @@ export default {
   align-items: center;
 }
 .release_warning{
-  width: 500px;
-  // margin: 20px auto 0;
+  padding-right: 50px;
   text-align: left;
-  left: 20px;
-  top: 12px;
 }
 
 .my_huozhu{
@@ -1403,7 +1434,9 @@ export default {
   left: 4px;
   color: #fff;
 }
-
+.m_btn{
+  width: 200px;
+}
 .triangleR{
     width: 40px;
     height: 20px;
