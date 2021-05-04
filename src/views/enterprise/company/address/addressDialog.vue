@@ -88,7 +88,7 @@
         </el-col>
       </el-row>
       <el-form-item label="地址" prop="addressName">
-        <amap-search v-model="form.addressName" :search-option="searchOption" class="width100" @change="addressChange" />
+        <amap-search ref="AmapSearchRef" v-model="form.addressName" :search-option="searchOption" class="width100" @change="addressChange" />
       </el-form-item>
       <el-form-item label="地址详情" prop="detail">
         <el-input v-model="form.detail" placeholder="请输入地址详情" class="width100" clearable />
@@ -278,6 +278,8 @@ export default {
       if (this.$refs.AMapSearch) {
         this.$refs.AMapSearch.keyword = '';
       }
+      // 地址框重置
+      this.clearAddressOption();
     },
     // 表单赋值
     setForm(data) {
@@ -356,6 +358,7 @@ export default {
     },
     // 选中省
     changeProvince(code) {
+      this.clearAddressOption();
       this.form.cityCode = null;
       this.form.districtCode = null;
       this.cityCodeOptions = [];
@@ -367,6 +370,7 @@ export default {
     },
     // 选中市
     changeCity(code) {
+      this.clearAddressOption();
       this.form.districtCode = null;
       this.countyCodeOptions = [];
       this.geCountyListFun(code);
@@ -393,6 +397,11 @@ export default {
       geCountyList({ cityCode: code }).then((response) => {
         this.countyCodeOptions = response.rows;
       });
+    },
+    // 清空地址
+    clearAddressOption() {
+      this.form.addressName = '';
+      if (this.$refs.AmapSearchRef) this.$refs.AmapSearchRef.clearOption();
     }
   }
 };

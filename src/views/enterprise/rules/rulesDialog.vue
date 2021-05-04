@@ -1,6 +1,6 @@
 <template>
   <el-dialog :title="title" :class="[{'i-add':title==='添加'}]" :visible="visible" width="800px" append-to-body @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" label-width="120px" label-position="left" :disabled="form.platformType === 1">
+    <el-form ref="form" :model="form" :rules="rules" label-width="120px" label-position="left" :disabled="!isAdmin && form.platformType === 1">
       <el-row>
         <el-col :span="12">
           <el-form-item label="规则名称" prop="name">
@@ -144,7 +144,7 @@
         </el-form-item>
       </el-row>
     </el-form>
-    <div v-if="form.platformType !== 1" slot="footer" class="dialog-footer">
+    <div v-if="isAdmin || form.platformType !== 1" slot="footer" class="dialog-footer">
       <el-button type="primary" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
     </div>
@@ -165,6 +165,10 @@
 import { addRules, updateRules, getRuleItemList } from '@/api/enterprise/rules';
 import chooseItemDialog from './chooseItemDialog.vue';
 
+import { getUserInfo } from '@/utils/auth';
+
+const { isAdmin = false } = getUserInfo() || {};
+
 export default {
   components: {
     chooseItemDialog
@@ -182,6 +186,7 @@ export default {
   },
   data() {
     return {
+      isAdmin,
       // 计算公式字典
       ruleTypeOptions: [],
       // 表单参数

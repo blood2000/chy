@@ -40,25 +40,26 @@
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
           <template slot-scope="scope">
             <el-button
-              v-if="scope.row.platformType === 1"
+              v-if="!isAdmin && scope.row.platformType === 1"
               size="mini"
               type="text"
               @click="handleUpdate(scope.row)"
             >详情</el-button>
-            <el-button
-              v-if="scope.row.platformType !== 1"
-              v-hasPermi="['transport:ruleInfoShipment:edit']"
-              size="mini"
-              type="text"
-              @click="handleUpdate(scope.row)"
-            >修改</el-button>
-            <el-button
-              v-if="scope.row.platformType !== 1"
-              v-hasPermi="['transport:ruleInfoShipment:remove']"
-              size="mini"
-              type="text"
-              @click="handleDelete(scope.row)"
-            >删除</el-button>
+            <template v-else>
+              <el-button
+                v-hasPermi="['transport:ruleInfoShipment:edit']"
+                size="mini"
+                type="text"
+                @click="handleUpdate(scope.row)"
+              >修改</el-button>
+              <el-button
+                v-if="scope.row.platformType !== 1"
+                v-hasPermi="['transport:ruleInfoShipment:remove']"
+                size="mini"
+                type="text"
+                @click="handleDelete(scope.row)"
+              >删除</el-button>
+            </template>
           </template>
         </el-table-column>
       </el-table>
@@ -80,6 +81,9 @@
 <script>
 import { listRules, getRules, delRules } from '@/api/enterprise/rules';
 import RulesDialog from './rulesDialog.vue';
+import { getUserInfo } from '@/utils/auth';
+
+const { isAdmin = false } = getUserInfo() || {};
 
 export default {
   name: 'Rules',
@@ -94,6 +98,7 @@ export default {
   },
   data() {
     return {
+      isAdmin,
       // 遮罩层
       loading: true,
       // 选中数组
