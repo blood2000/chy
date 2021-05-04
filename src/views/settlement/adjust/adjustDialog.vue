@@ -50,7 +50,7 @@
       <el-table-column width="160" label="运费单价" align="center" prop="freightPrice" />
 
       <el-table-column width="160" label="司机成交单价" align="center" prop="freightPriceDriver" />
-      <el-table-column width="160" label="亏涨扣费" align="center" prop="deduction" />
+      <el-table-column width="160" label="亏涨扣费" align="center" prop="lossDeductionFee" />
 
 
       <el-table-column width="120" label="抹零金额" align="center" prop="m0Fee" />
