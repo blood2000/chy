@@ -31,11 +31,11 @@
     </div>
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <div class="s-container__box__content">
-        <p class="label">总运输总量(吨)</p>
+        <p class="label">运输总量(吨)</p>
         <p class="text">0.211</p>
       </div>
       <div class="s-container__box__content">
-        <p class="label">今日新增路线</p>
+        <p class="label">今日新增吨数</p>
         <p class="text blod">
           0.211
           <span class="arow_up" />
@@ -49,7 +49,7 @@
         <p class="text">0.211</p>
       </div>
       <div class="s-container__box__content">
-        <p class="label">今日新增路线</p>
+        <p class="label">今日新增里程</p>
         <p class="text blod">
           0.211
           <span class="arow_up" />
@@ -73,7 +73,7 @@
     </div>
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <div class="s-container__box__content">
-        <p class="label">网点</p>
+        <p class="label">总网点</p>
         <p class="text">0.211</p>
       </div>
       <div class="s-container__box__content">

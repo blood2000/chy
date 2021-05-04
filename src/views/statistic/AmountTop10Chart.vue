@@ -50,7 +50,7 @@ export default {
           right: 0,
           icon: 'rect',
           textStyle: {
-            color: '#fff'
+            color: '#D5EAFF'
           },
           data: [{
             name: '交易总额（省）'
@@ -142,7 +142,7 @@ export default {
           },
           data: [4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
         }, {
-          name: '票务总额（省）',
+          name: '开票总额（省）',
           type: 'bar',
           itemStyle: {
             normal: {
