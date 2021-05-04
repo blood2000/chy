@@ -178,13 +178,13 @@
           <span>{{ selectDictLabel(isWarningOptions, row.isWarning) }}</span>
         </template>
         <template #orderTime="{row}">
-          <span>{{ parseTime(row.orderTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(row.orderTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
         <template #receiveTime="{row}">
-          <span>{{ parseTime(row.receiveTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(row.receiveTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
         <template #wayBillUpdateTime="{row}">
-          <span>{{ parseTime(row.wayBillUpdateTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(row.wayBillUpdateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
         <template #edit="{row}">
           <el-button
@@ -196,12 +196,12 @@
             详情
           </el-button>
           <el-button
-            v-has-permi="['transportation:waybillAbnormal:add']"
+            v-hasPermi="['transportation:waybillOper:invalid']"
             size="mini"
             type="text"
-            @click="handleMark(row)"
+            @click="handleDelete(row)"
           >
-            标记异常
+            作废运单
           </el-button>
           <el-button
             v-has-permi="['transportation:waybillOper:shipperRemark']"
@@ -211,15 +211,23 @@
           >
             备注
           </el-button>
-          <TableDropdown>
+          <el-button
+            v-if="row.isChild === 2 && !isAdmin"
+            size="mini"
+            type="text"
+            @click="handleSeperate(row)"
+          >
+            分单列表
+          </el-button>
+          <TableDropdown v-show="isAdmin">
             <el-dropdown-item>
               <el-button
-                v-hasPermi="['transportation:waybillOper:invalid']"
+                v-has-permi="['transportation:waybillAbnormal:add']"
                 size="mini"
                 type="text"
-                @click="handleDelete(row)"
+                @click="handleMark(row)"
               >
-                作废运单
+                标记异常
               </el-button>
             </el-dropdown-item>
             <el-dropdown-item>
