@@ -205,9 +205,12 @@
             {{ selectDictLabel(statusOptions, row.status) }}
           </span>
         </template>
-        <!-- <template #isChild="{row}">
-          <span>{{ selectDictLabel(isChildOptions, row.isChild) }}</span>
-        </template> -->
+        <template #fillTime="{row}">
+          <span>{{ parseTime(row.fillTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+        </template>
+        <template #signTime="{row}">
+          <span>{{ parseTime(row.signTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+        </template>
 
         <template #edit="{row}">
           <el-button
