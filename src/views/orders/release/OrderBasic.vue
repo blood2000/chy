@@ -38,13 +38,15 @@
             size="medium"
             @change="handletin2(false)"
           >
-            <el-radio
-              v-for="dict in tin2Option"
-              :key="dict.dictValue"
-              class="mb10 ml0 m_radio"
-              border
-              :label="dict.dictValue"
-            >{{ dict.dictLabel }}</el-radio>
+            <template v-for="dict in tin2Option">
+              <el-radio
+                v-if="dict.status === '0'"
+                :key="dict.dictValue"
+                class="mb10 ml0 m_radio"
+                border
+                :label="dict.dictValue"
+              >{{ dict.dictLabel }}</el-radio>
+            </template>
           </el-radio-group>
         </el-form-item>
 
@@ -52,22 +54,26 @@
           <!-- isMultiGoods true->多商品 ; false->单商品 -->
           <el-form-item v-if="isMultiGoods" label="货物类型(多)" prop="tin2_1">
             <el-checkbox-group v-model="formData.tin2_1" size="medium" :disabled="formData.tin3 !== '0'">
-              <el-checkbox
-                v-for="dict in tin2_Option"
-                :key="dict.dictValue"
-                class="ml0 mb10"
-                :label="dict.dictValue"
-              >{{ dict.dictLabel }}</el-checkbox>
+              <template v-for="dict in tin2_Option">
+                <el-checkbox
+                  v-if="dict.status === '0'"
+                  :key="dict.dictValue"
+                  class="ml0 mb10"
+                  :label="dict.dictValue"
+                >{{ dict.dictLabel }}</el-checkbox>
+              </template>
             </el-checkbox-group>
           </el-form-item>
           <el-form-item v-else label="货物类型(单)" prop="tin2_2">
             <el-radio-group v-model="formData.tin2_2" size="medium" :disabled="formData.tin3 !== '0'">
-              <el-radio
-                v-for="dict in tin2_Option"
-                :key="dict.dictValue"
-                class="ml0 mb10 mt10"
-                :label="dict.dictValue"
-              >{{ dict.dictLabel }}</el-radio>
+              <template v-for="dict in tin2_Option">
+                <el-radio
+                  v-if="dict.status === '0'"
+                  :key="dict.dictValue"
+                  class="ml0 mb10 mt10"
+                  :label="dict.dictValue"
+                >{{ dict.dictLabel }}</el-radio>
+              </template>
 
             </el-radio-group>
           </el-form-item>
