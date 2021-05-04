@@ -129,6 +129,11 @@ export default {
           dictLabel: e[dictLabel]
         };
       });
+    },
+
+    // 重置
+    clearOption() {
+      this.detailOptin = [];
     }
   }
 };
