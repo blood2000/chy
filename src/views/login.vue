@@ -20,7 +20,7 @@
           </div>
         </div>
 
-        <div>
+        <div class="login-mform">
           <el-form ref="loginForm" :model="loginForm" :rules="loginRules">
             <el-form-item prop="username">
               <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号">
@@ -67,6 +67,8 @@
             </el-form-item>
           </el-form>
         </div>
+
+
       </div>
 
     </div>
@@ -312,6 +314,11 @@ export default {
     color: #282828;
     border-radius: 4px;
   }
+  // &-mform{
+  //   v-deep.el-input__inner {
+  //     color: #fff;
+  //   }
+  // }
 }
 .title {
   margin: 0px auto 30px auto;
