@@ -11,6 +11,7 @@
             size="small"
             value-format="yyyy-MM-dd"
             placeholder="请选择"
+            @change="changeDatePicker"
           />
           至
           <el-date-picker
@@ -20,6 +21,7 @@
             size="small"
             value-format="yyyy-MM-dd"
             placeholder="请选择"
+            @change="changeDatePicker"
           />
         </el-form-item>
         <el-form-item>
@@ -101,11 +103,14 @@ export default {
         updateTimeBegin: undefined,
         updateTimeEnd: undefined
       },
-      activeName: '近三月'
+      activeName: '近三月',
+      updateTimeBegin: undefined,
+      updateTimeEnd: undefined
     };
   },
   created() {
-    this.handleClick();
+    this.changeTimeFormate();
+    this.getList();
   },
   methods: {
     handleTabClick() {
@@ -116,7 +121,17 @@ export default {
       this.loading = true;
       const { user = {}} = getUserInfo() || {};
       const { userCode } = user;
-      payRecordlist(Object.assign({}, this.queryParams, { userCode: userCode })).then(response => {
+      payRecordlist(
+        Object.assign(
+          {},
+          this.queryParams,
+          { userCode: userCode },
+          {
+            updateTimeBegin: this.queryParams.updateTimeBegin ? this.queryParams.updateTimeBegin : this.updateTimeBegin,
+            updateTimeEnd: this.queryParams.updateTimeEnd ? this.queryParams.updateTimeEnd : this.updateTimeEnd
+          }
+        )
+      ).then(response => {
         this.dataList = response.data.rows;
         this.total = response.data.total;
         this.loading = false;
@@ -129,13 +144,19 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.queryParams.updateTimeBegin = undefined;
-      this.queryParams.updateTimeEnd = undefined;
+      this.changeTimeFormate();
       this.resetForm('queryForm');
-      this.queryParams.pageNum = 1;
-      this.handleClick();
+      this.handleQuery();
     },
     handleClick() {
+      this.queryParams.pageNum = 1;
+      this.changeTimeFormate();
+      this.getList();
+    },
+    changeTimeFormate() {
+      if (this.activeName === '') this.activeName = '近三月';
+      this.queryParams.updateTimeBegin = undefined;
+      this.queryParams.updateTimeEnd = undefined;
       let t = 0;
       if (this.activeName === '近三月') {
         t = 3;
@@ -145,9 +166,13 @@ export default {
         t = 12;
       }
       const { start, end } = getTimeRange(t);
-      this.queryParams.updateTimeBegin = start;
-      this.queryParams.updateTimeEnd = end;
-      this.getList();
+      this.updateTimeBegin = start;
+      this.updateTimeEnd = end;
+    },
+    changeDatePicker() {
+      this.activeName = '';
+      this.updateTimeBegin = undefined;
+      this.updateTimeEnd = undefined;
     }
   }
 };
