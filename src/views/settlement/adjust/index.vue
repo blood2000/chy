@@ -9,6 +9,34 @@
         label-width="80px"
       >
         <el-form-item
+          v-show="isAdmin"
+          label="下单客户"
+          prop="orderClient"
+        >
+          <el-input
+            v-model="queryParams.orderClient"
+            placeholder="请输入下单客户"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item
+          v-show="isAdmin"
+          label="发货企业"
+          prop="deliveryCompany"
+        >
+          <el-input
+            v-model="queryParams.deliveryCompany"
+            placeholder="请输入发货企业"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item
           label="装货信息"
           prop="loadInfo"
         >
@@ -111,32 +139,6 @@
           <el-input
             v-model="queryParams.waybillNo"
             placeholder="请输入运输单号"
-            clearable
-            size="small"
-            style="width: 228px"
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item>
-        <el-form-item
-          label="下单客户"
-          prop="orderClient"
-        >
-          <el-input
-            v-model="queryParams.orderClient"
-            placeholder="请输入下单客户"
-            clearable
-            size="small"
-            style="width: 228px"
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item>
-        <el-form-item
-          label="发货企业"
-          prop="deliveryCompany"
-        >
-          <el-input
-            v-model="queryParams.deliveryCompany"
-            placeholder="请输入发货企业"
             clearable
             size="small"
             style="width: 228px"
@@ -338,6 +340,7 @@
 
 <script>
 import { adjustList, adjustListApi, batchApply } from '@/api/settlement/adjust';
+import { getUserInfo } from '@/utils/auth';
 // 驳回弹窗
 import RejectDialog from '../components/rejectDialog';
 // 核算弹窗
@@ -427,7 +430,10 @@ export default {
         { 'dictLabel': '否', 'dictValue': '0' },
         // { 'dictLabel': '子单', 'dictValue': '1' },
         { 'dictLabel': '是', 'dictValue': '2' }
-      ]
+      ],
+      isAdmin: false,
+      user: {},
+      shipment: {}
     };
   },
   computed: {
@@ -436,6 +442,10 @@ export default {
     }
   },
   created() {
+    const { isAdmin = false, user = {}, shipment = {}} = getUserInfo() || {};
+    this.isAdmin = isAdmin;
+    this.user = user;
+    this.shipment = shipment;
     this.tableHeaderConfig(this.tableColumnsConfig, adjustListApi, {
       prop: 'edit',
       isShow: true,

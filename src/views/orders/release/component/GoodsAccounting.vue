@@ -53,9 +53,10 @@
                   :rules="[
                     {
                       required: formData.totalType === '2',
-                      message: '请输入货物重量(吨)',
+                      message: `请输入货物重量(${goodsUnitName})`,
                       trigger: 'blur',
                     },
+                    { validator: _myValidator, required: formData.totalType === '2', trigger: 'blur' }
                   ]"
                 >
                   <span class="pr-5">共</span>
@@ -100,7 +101,7 @@
               placeholder="请输入承运次数"
               step-strictly
               :max="999999"
-              :min="0"
+              :min="1"
               controls-position="right"
               :style="{ width: '150px' }"
             />
@@ -360,6 +361,13 @@ export default {
           }
         });
       });
+    },
+    _myValidator(rule, value, callback) {
+      if (value <= 0) {
+        callback(new Error('请输入大于0的值'));
+      } else {
+        callback();
+      }
     }
   }
 };

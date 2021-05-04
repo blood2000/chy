@@ -94,11 +94,13 @@ export default {
       isMore: '2',
       // 大类字典类型
       commodityCategory: {
+        'status': '0',
         'dictPid': '0',
         'dictType': 'goodsType'
       },
       // 小类字典类型
       commoditySubclass: {
+        'status': '0',
         'dictPid': '',
         'dictType': 'goodsType'
       }

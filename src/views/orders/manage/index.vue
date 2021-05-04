@@ -200,7 +200,7 @@
         </template>
 
         <template #contact1="{row}">
-          <span>{{ `${row.contact1} [${row.contactPhone1}]` }}</span>
+          <span>{{ `${row.contact1 || '-'} [${row.contactPhone1 || '-'}]` }}</span>
         </template>
 
         <!-- 装货地 -->
@@ -209,7 +209,7 @@
         </template>
 
         <template #contact2="{row}">
-          <span>{{ `${row.contact2} [${row.contactPhone2}]` }}</span>
+          <span>{{ `${row.contact2 || '-'} [${row.contactPhone2 || '-'}]` }}</span>
         </template>
 
         <template #landAddress="{row}">
@@ -243,11 +243,15 @@
         <template #number_remainingNumber="{row}">
           <span>{{ (row.number - 0) - (row.remainingNumber - 0) }}</span>
         </template>
+        <!-- 已抢单量 -->
+        <template #remainingNumber="{row}">
+          <span>{{ row.remainingNumber || '不限' }}</span>
+        </template>
         <!-- 重量/体积/车 -->
         <template #tin_weight="{row}">
-          <span v-if="row.stowageStatus == 0">{{ (row.remainingWeight - 0) + ' 吨' }}</span>
-          <span v-if="row.stowageStatus == 1">{{ (row.remainingWeight - 0) + ' 立方' }}</span>
-          <span v-if="row.stowageStatus == 2">{{ (row.number - 0) + ' 车' }}</span>
+          <span v-if="row.stowageStatus == 0">{{ row.remainingWeight? (row.remainingWeight - 0) + ' 吨':'不限' }}</span>
+          <span v-if="row.stowageStatus == 1">{{ row.remainingWeight?(row.remainingWeight - 0) + ' 立方' :'不限' }}</span>
+          <span v-if="row.stowageStatus == 2">{{ row.number? (row.number - 0) + ' 车' : '不限' }}</span>
         </template>
 
         <template #stowageStatus="{row}">

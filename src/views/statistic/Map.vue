@@ -15,8 +15,9 @@
 </template>
 
 <script>
-import echarts from 'echarts';
-import maps from 'echarts/map/json/china.json';
+import * as echarts from 'echarts';
+// import 'echarts-gl';
+import maps from '@/assets/json/china.json';
 import { setfontSize } from '@/utils/fontSize';
 
 export default {
@@ -45,9 +46,10 @@ export default {
   },
   methods: {
     initChart() {
-      this.chart = echarts.init(this.$refs.map);
+      this.chart = echarts.init(this.$refs.map, null, {
+        renderer: 'svg'
+      });
       echarts.registerMap('china', maps);
-      console.log(maps);
       this.setOption();
       this.setFontOption();
     },
@@ -57,13 +59,30 @@ export default {
     },
     setOption() {
       this.chart.setOption({
+        tooltip: {
+          show: false,
+          trigger: 'item',
+          borderColor: 'rgba(0, 0, 0, 0)',
+          backgroundColor: 'rgba(70, 70, 70, 0.5)',
+          textStyle: {
+            color: '#ffffff'
+          },
+          formatter: function(params) {
+            const { value } = params;
+            if (value) {
+              return `${params.name}: ${value[2]}`;
+            } else {
+              return `${params.name}`;
+            }
+          }
+        },
         geo: {
           map: 'china',
           zoom: 1.2,
           z: 2,
-          aspectScale: 0.9,
+          aspectScale: 0.8,
           layoutCenter: ['48%', '48%'],
-          layoutSize: '110%',
+          layoutSize: '100%',
           itemStyle: {
             normal: {
               borderColor: 'rgba(1, 227, 255, 1)',
@@ -73,57 +92,63 @@ export default {
               areaColor: 'rgba(0, 244, 255, 1)' // 鼠标移入高亮显颜色
             }
           },
-          // 在地图中对特定的区域配置样式。
+          // 在地图中对特定的区域配置样式
           regions: [{
-            name: '广东',
+            name: '广东省',
             itemStyle: {
               areaColor: 'rgba(10, 187, 221, 1)'
             }
           }, {
-            name: '湖北',
+            name: '湖北省',
             itemStyle: {
               areaColor: 'rgba(3, 252, 255, 1)'
             }
           }, {
-            name: '新疆',
+            name: '福建省',
             itemStyle: {
-              areaColor: 'rgba(1, 227, 255, 1)'
+              areaColor: 'rgba(3, 252, 255, 1)'
             }
           }, {
-            name: '四川',
+            name: '四川省',
             itemStyle: {
               areaColor: 'rgba(10, 187, 221, 1)'
             }
           }, {
-            name: '辽宁',
+            name: '辽宁省',
             itemStyle: {
               areaColor: 'rgba(1, 227, 255, 1)'
             }
           }, {
-            name: '江西',
+            name: '浙江省',
             itemStyle: {
               areaColor: 'rgba(1, 227, 255, 1)'
             }
           }, {
-            name: '山西',
+            name: '山西省',
             itemStyle: {
               areaColor: 'rgba(31, 137, 188, 1)'
             }
           }, {
-            name: '山东',
+            name: '山东省',
             itemStyle: {
               areaColor: 'rgba(1, 227, 255, 1)'
             }
-          }]
+          }],
+          label: {
+            emphasis: {
+              show: true,
+              color: '#000'
+            }
+          }
         },
         series: [{
           type: 'map',
           z: 0,
           map: 'china',
           zoom: 1.2,
-          aspectScale: 0.9,
+          aspectScale: 0.8,
           layoutCenter: ['48%', '48%'],
-          layoutSize: '110%',
+          layoutSize: '100%',
           itemStyle: {
             normal: {
               borderColor: 'rgba(1, 227, 255, 1)',
@@ -131,6 +156,30 @@ export default {
               areaColor: 'rgba(16, 48, 131, 1)'
             }
           }
+        },
+        {
+          name: '散点',
+          type: 'scatter',
+          geoIndex: 0,
+          coordinateSystem: 'geo',
+          symbol: 'circle',
+          symbolSize: setfontSize(14),
+          animation: true,
+          animationDelay: function(idx) {
+            // 越往后的数据延迟越大
+            return idx * 1000;
+          },
+          label: {
+            formatter() {
+              return '散点';
+            }
+          },
+          data: [
+            { name: '海门', value: [121.15, 31.89, 1000] },
+            { name: '鄂尔多斯', value: [109.781327, 39.608266, 1000] },
+            { name: '招远', value: [120.38, 37.35, 1000] },
+            { name: '舟山', value: [122.207216, 29.985295, 1000] }
+          ]
         }]
       });
     },
