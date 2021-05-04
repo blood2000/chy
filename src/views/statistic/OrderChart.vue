@@ -4,7 +4,7 @@
 </template>
 
 <script>
-import echarts from 'echarts';
+import * as echarts from 'echarts';
 import { setfontSize } from '@/utils/fontSize';
 
 export default {
@@ -109,6 +109,11 @@ export default {
             lineStyle: {
               color: '#3F5C84'
             }
+          },
+          borderColor: 'rgba(0, 0, 0, 0)',
+          backgroundColor: 'rgba(70, 70, 70, 0.5)',
+          textStyle: {
+            color: '#ffffff'
           }
         },
         series: [{

@@ -4,7 +4,7 @@
 </template>
 
 <script>
-import echarts from 'echarts';
+import * as echarts from 'echarts';
 import { setfontSize } from '@/utils/fontSize';
 
 export default {
@@ -107,6 +107,11 @@ export default {
           trigger: 'axis',
           axisPointer: { // 坐标轴指示器，坐标轴触发有效
             type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+          },
+          borderColor: 'rgba(0, 0, 0, 0)',
+          backgroundColor: 'rgba(70, 70, 70, 0.5)',
+          textStyle: {
+            color: '#ffffff'
           }
           // formatter: `{b0}月：<br />{a0}: {c0}<br />{a1}: {c1}`
         },
