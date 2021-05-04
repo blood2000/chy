@@ -63,16 +63,16 @@ export default {
         }
       }
     }
-    &::after{
-      content: '';
-      position: absolute;
-      bottom: 0.4rem;
-      right: 0.8rem;
-      width: 2.55rem;
-      height: 0.15rem;
-      background: url('~@/assets/images/statistic/card_after.png') no-repeat;
-      background-size: 100% 100%;
-    }
+    // &::after{
+    //   content: '';
+    //   position: absolute;
+    //   bottom: 0.4rem;
+    //   right: 0.8rem;
+    //   width: 2.55rem;
+    //   height: 0.15rem;
+    //   background: url('~@/assets/images/statistic/card_after.png') no-repeat;
+    //   background-size: 100% 100%;
+    // }
     >.s-timer{
       position: absolute;
       top: 0;
