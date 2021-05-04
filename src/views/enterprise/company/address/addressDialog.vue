@@ -278,6 +278,8 @@ export default {
       if (this.$refs.AMapSearch) {
         this.$refs.AMapSearch.keyword = '';
       }
+      // 地址框重置
+      this.clearAddressOption();
     },
     // 表单赋值
     setForm(data) {
@@ -399,7 +401,7 @@ export default {
     // 清空地址
     clearAddressOption() {
       this.form.addressName = '';
-      this.$refs.AmapSearchRef.clearOption();
+      if (this.$refs.AmapSearchRef) this.$refs.AmapSearchRef.clearOption();
     }
   }
 };
