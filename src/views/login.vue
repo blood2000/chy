@@ -1,6 +1,77 @@
 <template>
-  <div class="login">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form">
+  <div class="login pr">
+    <img class="m_log pa" src="../assets/images/login/chy-log.png" alt="chy-log">
+
+    <div class="login_box pa">
+
+      <ul class="login-tab">
+        <li :class="{'active': active==='0'}" @click="active = '0'">密码登录</li>
+        <li :class="{'active': active==='1'}" @click="active = '1'">短信登录</li>
+      </ul>
+
+      <div class="p26">
+        <h2 class="login-h2_t">WELCOME</h2>
+        <div class="login-h6_t">你好，欢迎登录</div>
+
+        <div class="login-box">
+          <div v-show="false" class="login-msg">
+            <i class="el-icon-warning" style="color:#faad14; margin:0 8px 0 16px" />
+            非企业账户不能登录
+          </div>
+        </div>
+
+        <div>
+          <el-form ref="loginForm" :model="loginForm" :rules="loginRules">
+            <el-form-item prop="username">
+              <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号">
+                <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
+              </el-input>
+            </el-form-item>
+            <el-form-item prop="password">
+              <el-input
+                v-model="loginForm.password"
+                type="password"
+                auto-complete="off"
+                placeholder="密码"
+                @keyup.enter.native="handleLogin"
+              >
+                <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
+              </el-input>
+            </el-form-item>
+            <el-form-item prop="code">
+              <el-input
+                v-model="loginForm.code"
+                auto-complete="off"
+                placeholder="验证码"
+                style="width: 63%"
+                @keyup.enter.native="handleLogin"
+              >
+                <svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon" />
+              </el-input>
+              <div class="login-code">
+                <img :src="codeUrl" class="login-code-img" @click="getCode">
+              </div>
+            </el-form-item>
+            <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;color:#fff;">记住密码</el-checkbox>
+            <el-form-item style="width:100%;">
+              <el-button
+                :loading="loading"
+                size="medium"
+                type="primary"
+                style="width:100%;"
+                @click.native.prevent="handleLogin"
+              >
+                <span v-if="!loading">登 录</span>
+                <span v-else>登 录 中...</span>
+              </el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+
+    </div>
+
+    <el-form v-if="false" ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form">
       <h3 class="title">综合服务管理平台</h3>
       <el-form-item prop="username">
         <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号">
@@ -62,6 +133,7 @@ export default {
   name: 'Login',
   data() {
     return {
+      active: '0',
       codeUrl: '',
       cookiePassword: '',
       loginForm: {
@@ -148,6 +220,98 @@ export default {
   height: 100%;
   background-image: url("../assets/images/login-background.jpg");
   background-size: cover;
+  font-family: PingFang SC;
+
+  .p26{
+    padding:0 26px;
+  }
+
+  .m_log{
+    width: 9.4vw;
+    top: 6.2vh;
+    left: 4.1vw;
+  }
+  .login_box{
+    width: 376px;
+    height: 490px;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    right: 15vw;
+    border-radius: 5px;
+    background: rgba(37, 37, 37, .5);
+  }
+  &-tab{
+    display: flex;
+    border-bottom: 1px solid #3A3A3A;
+    height: 70px;
+    margin: 0 24px 0 16px;
+    letter-spacing: 1px;
+    li{
+      font-size: 14px;
+      line-height: 20px;
+      color: #FFFFFF;
+      cursor: pointer;
+      // letter-spacing: 60px;
+      opacity: 0.6;
+      padding: 30px 20px 10px;
+      margin-right: 2px;
+      transition: all .5s;
+    }
+    li.active{
+      font-size: 16px;
+      font-weight: bold;
+      color: #FFFFFF;
+      opacity: 1;
+      position: relative;
+      &::after{
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        width: 55%;
+        height: 2px;
+        background: #FFFFFF;
+        opacity: 1;
+        border-radius: 2px;
+      }
+    }
+  }
+  &-h2_t{
+    width: 167px;
+    height: 45px;
+    font-size: 32px;
+    font-weight: bold;
+    line-height: 45px;
+    color: #FFFFFF;
+    opacity: 1;
+
+    margin-top: 33px;
+  }
+  &-h6_t{
+    width: 88px;
+    height: 17px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 17px;
+    color: #FFFFFF;
+    opacity: 1;
+  }
+  &-box{
+    width: 100%;
+    height: 36px;
+    border-radius: 4px;
+    margin: 5px 0;
+    line-height: 36px;
+  }
+  &-msg{
+    background: #FFFBE6;
+    border: 1px solid #FAAD14;
+    color: #282828;
+    border-radius: 4px;
+  }
 }
 .title {
   margin: 0px auto 30px auto;
