@@ -1385,7 +1385,7 @@ export default {
 
 .my_huozhu{
   background: #fff url('~@/assets/images/order-jiaoliu.png') no-repeat;
-  background-position: 99% 15px;
+  background-position: 99% 6px;
 }
 
 .m_zhuanghuo{
@@ -1407,6 +1407,9 @@ export default {
 }
 .btn{
   padding-right: 70px;
+  .el-form-item{
+    margin-bottom:0px;
+  }
 }
 .dai-sytle{
     color: #ccc;
