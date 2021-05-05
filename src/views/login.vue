@@ -251,11 +251,14 @@ export default {
       const username = Cookies.get('username');
       const password = Cookies.get('password');
       const rememberMe = Cookies.get('rememberMe');
+      const telno = Cookies.get('telno');
       this.loginForm = {
         username: username === undefined ? this.loginForm.username : username,
         password: password === undefined ? this.loginForm.password : decrypt(password),
         rememberMe: rememberMe === undefined ? false : Boolean(rememberMe)
       };
+
+      this.loginForm2.telno = telno === undefined ? this.loginForm2.telno : telno;
     },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
@@ -285,8 +288,19 @@ export default {
     handleLogin2() {
       this.$refs.loginForm2.validate(valid => {
         if (valid) {
-          console.log('ok');
-          // this.loading = true;
+          if (!this.loginForm2.captcha) return;
+          if (this.loginForm.rememberMe) {
+            Cookies.set('telno', this.loginForm2.telno, { expires: 30 });
+          } else {
+            Cookies.remove('telno');
+          }
+
+          this.$store.dispatch('Login2', this.loginForm2).then(() => {
+            this.$router.push({ path: this.redirect || '/' }).catch(() => {});
+          }).catch(() => {
+            this.loading = false;
+            this.active = '1';
+          });
         }
       });
     },
@@ -295,7 +309,7 @@ export default {
     send() {
       this.$refs.loginForm2.validate(valid => {
         if (valid) {
-          send_sms(this.loginForm2.telno).then(res => {
+          send_sms(this.loginForm2.telno, 'login').then(res => {
             this.msgSuccess('验证码发送成功!');
             this._countdown();
           });

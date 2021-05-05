@@ -42,10 +42,19 @@ export function getCodeImg() {
 }
 
 // 发送短信
-export function send_sms(telno) {
+export function send_sms(telno, type) {
   return request({
     url: '/auth/send_sms',
     method: 'post',
-    data: { telno }
+    data: { telno, type }
+  });
+}
+
+// 手机号短信登陆
+export function sms_login(telno, captcha) {
+  return request({
+    url: '/auth/sms_login',
+    method: 'post',
+    data: { telno, captcha }
   });
 }
