@@ -29,6 +29,55 @@ export default {
         { name: '5-10万单', color: 'rgba(16, 216, 227, 1)' },
         { name: '1-5万单', color: 'rgba(10, 187, 221, 1)' },
         { name: '小于1万单', color: 'rgba(31, 137, 188, 1)' }
+      ],
+      regionData: [{
+        name: '广东省',
+        itemStyle: {
+          areaColor: 'rgba(10, 187, 221, 1)'
+        }
+      }, {
+        name: '湖北省',
+        itemStyle: {
+          areaColor: 'rgba(3, 252, 255, 1)'
+        }
+      }, {
+        name: '福建省',
+        itemStyle: {
+          areaColor: 'rgba(3, 252, 255, 1)'
+        }
+      }, {
+        name: '四川省',
+        itemStyle: {
+          areaColor: 'rgba(10, 187, 221, 1)'
+        }
+      }, {
+        name: '辽宁省',
+        itemStyle: {
+          areaColor: 'rgba(1, 227, 255, 1)'
+        }
+      }, {
+        name: '浙江省',
+        itemStyle: {
+          areaColor: 'rgba(1, 227, 255, 1)'
+        }
+      }, {
+        name: '山西省',
+        itemStyle: {
+          areaColor: 'rgba(31, 137, 188, 1)'
+        }
+      }, {
+        name: '山东省',
+        itemStyle: {
+          areaColor: 'rgba(1, 227, 255, 1)'
+        }
+      }],
+      timer: null,
+      nows: -1,
+      warnData: [
+        { name: '海门', value: [121.15, 31.89, 1000] },
+        { name: '鄂尔多斯', value: [109.781327, 39.608266, 1000] },
+        { name: '招远', value: [120.38, 37.35, 1000] },
+        { name: '舟山', value: [122.207216, 29.985295, 1000] }
       ]
     };
   },
@@ -38,6 +87,7 @@ export default {
     });
   },
   beforeDestroy() {
+    if (this.timer) clearInterval(this.timer);
     if (!this.chart) {
       return;
     }
@@ -52,6 +102,7 @@ export default {
       echarts.registerMap('china', maps);
       this.setOption();
       this.setFontOption();
+      this.initData();
     },
     refreshChart() {
       this.chart.resize();
@@ -60,17 +111,31 @@ export default {
     setOption() {
       this.chart.setOption({
         tooltip: {
-          show: false,
+          show: true,
+          showContent: true, // 是否显示提示框浮层
+          enterable: true, // 鼠标是否可进入提示框浮层中
+          alwaysShowContent: true, // 是否永远显示提示框内容
+          // showDelay: 300, // 浮层显示的延迟，单位为 ms
+          // hideDelay: 300, // 浮层隐藏的延迟，单位为 ms
+          renderMode: 'html',
+          appendToBody: true,
+          className: 's-echart-map-tooltip',
+          transitionDuration: 0, // 默认0.4
+          // position: [10, 10],
+          triggerOn: 'none',
           trigger: 'item',
           borderColor: 'rgba(0, 0, 0, 0)',
-          backgroundColor: 'rgba(70, 70, 70, 0.5)',
+          backgroundColor: 'rgba(70, 70, 70, 0)',
           textStyle: {
-            color: '#ffffff'
+            color: '#FFFFFF'
           },
           formatter: function(params) {
             const { value } = params;
             if (value) {
-              return `${params.name}: ${value[2]}`;
+              // return `${params.name}: ${value[2]}`;
+              return `<section class="s-echart-map-tooltip-content">
+                        <div class="text">${params.name}：${value[2]}</div>
+                      </section>`;
             } else {
               return `${params.name}`;
             }
@@ -92,54 +157,14 @@ export default {
               areaColor: 'rgba(0, 244, 255, 1)' // 鼠标移入高亮显颜色
             }
           },
-          // 在地图中对特定的区域配置样式
-          regions: [{
-            name: '广东省',
-            itemStyle: {
-              areaColor: 'rgba(10, 187, 221, 1)'
-            }
-          }, {
-            name: '湖北省',
-            itemStyle: {
-              areaColor: 'rgba(3, 252, 255, 1)'
-            }
-          }, {
-            name: '福建省',
-            itemStyle: {
-              areaColor: 'rgba(3, 252, 255, 1)'
-            }
-          }, {
-            name: '四川省',
-            itemStyle: {
-              areaColor: 'rgba(10, 187, 221, 1)'
-            }
-          }, {
-            name: '辽宁省',
-            itemStyle: {
-              areaColor: 'rgba(1, 227, 255, 1)'
-            }
-          }, {
-            name: '浙江省',
-            itemStyle: {
-              areaColor: 'rgba(1, 227, 255, 1)'
-            }
-          }, {
-            name: '山西省',
-            itemStyle: {
-              areaColor: 'rgba(31, 137, 188, 1)'
-            }
-          }, {
-            name: '山东省',
-            itemStyle: {
-              areaColor: 'rgba(1, 227, 255, 1)'
-            }
-          }],
           label: {
             emphasis: {
               show: true,
-              color: '#000'
+              color: '#D5EAFF'
             }
-          }
+          },
+          // 在地图中对特定的区域配置样式
+          regions: this.regionData
         },
         series: [{
           type: 'map',
@@ -174,12 +199,7 @@ export default {
               return '散点';
             }
           },
-          data: [
-            { name: '海门', value: [121.15, 31.89, 1000] },
-            { name: '鄂尔多斯', value: [109.781327, 39.608266, 1000] },
-            { name: '招远', value: [120.38, 37.35, 1000] },
-            { name: '舟山', value: [122.207216, 29.985295, 1000] }
-          ]
+          data: this.warnData
         }]
       });
     },
@@ -201,6 +221,41 @@ export default {
           }
         }]
       });
+    },
+    // 测试数据
+    initData() {
+      // this.showToolTip();
+      if (this.timer) clearInterval(this.timer);
+      this.timer = window.setInterval(() => {
+        this.showToolTip();
+        setTimeout(() => {
+          this.removeDom();
+        }, 3000);
+      }, 4000);
+    },
+    showToolTip() {
+      const length = this.warnData.length;
+      this.nows = (this.nows + 1) % length;
+      this.chart.dispatchAction({
+        type: 'showTip',
+        seriesIndex: 1,
+        dataIndex: this.nows
+      });
+    },
+    hideToolTip() {
+      this.chart.dispatchAction({
+        type: 'hideTip'
+      });
+    },
+    removeDom() {
+      const toolDom = document.getElementsByClassName('s-echart-map-tooltip-content')[0];
+      toolDom.classList.add('hide');
+    },
+    resetDom() {
+      const toolDom = document.getElementsByClassName('s-echart-map-tooltip-content')[0];
+      if (toolDom.classList.contains('hide')) {
+        toolDom.classList.remove('hide');
+      }
     }
   }
 };
@@ -215,6 +270,7 @@ export default {
   >.map-box{
     width: 100%;
     height: 100%;
+    background: rgba(0,0,0,0.2);
   }
   >.map-legend{
     position: absolute;
@@ -270,6 +326,34 @@ export default {
         }
       }
     }
+  }
+}
+</style>
+
+<style lang="scss">
+/* 全局样式，谨慎使用类名 */
+.s-echart-map-tooltip{
+  box-shadow: none !important;
+  padding: 0 !important;
+  >section{
+    background: rgba(70, 70, 70, 0.5);
+    border-radius: 2%;
+    padding: 0.5rem 1rem;
+    // 消失动画
+    transition: all 0.5s;
+    transform: translate(0, 0);
+    opacity: 1;
+    &.hide{
+      transition: all 0.5s;
+      transform: translate(8rem, -5rem);
+      opacity: 0;
+    }
+    >.text{
+      font-size: 0.7rem;
+    }
+  }
+  >div{
+    display: none;
   }
 }
 </style>
