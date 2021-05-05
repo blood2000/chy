@@ -156,7 +156,7 @@ export default {
       },
 
       rules: {
-        addressName: [{ required: true, message: '选择所属项目', trigger: 'change' }],
+        addressName: [{ required: true, message: '请输入详细地址', trigger: 'change' }],
         detail: [{ required: true, message: '选择所属项目', trigger: 'change' }],
         addressAlias: [{ required: true, message: '选择所属项目', trigger: 'blur' }],
         contact: [{ required: true, message: '请输入联系人', trigger: 'blur' }],
@@ -206,7 +206,7 @@ export default {
       this.isrules = !value;
 
       this.rules = {
-        addressName: [{ required: !value, message: '选择所属项目', trigger: 'change' }],
+        addressName: [{ required: !value, message: '请输入详细地址', trigger: 'change' }],
         detail: [{ required: !value, message: '选择所属项目', trigger: 'change' }],
         addressAlias: [{ required: !value, message: '选择所属项目', trigger: 'blur' }],
         contact: [{ required: !value, message: '请输入联系人', trigger: 'blur' }],
@@ -214,6 +214,13 @@ export default {
           { required: !value, message: '请输入联系电话', trigger: 'blue' }
         ]
       };
+    },
+
+    'searchOption.city'(val, oldval) {
+      if (oldval !== '全国') {
+        this.formData.addressName = '';
+        this.detailOptin = [];
+      }
     }
   },
 
