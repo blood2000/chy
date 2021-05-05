@@ -270,7 +270,7 @@ export default {
   >.map-box{
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.2);
+    // background: rgba(0,0,0,0.2); // 辅助线
   }
   >.map-legend{
     position: absolute;
