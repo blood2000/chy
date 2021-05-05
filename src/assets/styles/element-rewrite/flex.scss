@@ -1,0 +1,37 @@
+.g-flex{
+  display: flex;
+}
+.g-aligncenter{
+  align-items: center;
+} 
+.g-alignstart{
+  align-items: flex-start;
+}
+.g-alignend{
+  align-items: flex-end;
+}
+.g-justifycenter{
+  justify-content: center;
+}
+.g-justifystart{
+  justify-content: flex-start;
+}
+.g-justifyend{
+  justify-content: flex-end;
+}
+.g-justifybetween{
+  justify-content: space-between;
+}
+.g-justifyevenly{
+  justify-content: space-evenly;
+}
+.g-flexdirection{
+  flex-direction: column;
+}
+.g-flexwrap{
+  flex-wrap: wrap;
+}
+.g-margin-tb{
+  margin: 5px 0;
+}
+
