@@ -10,11 +10,14 @@
           placeholder="请输入司机实收金额"
           :controls="false"
           :precision="2"
+          :step="1"
+          :min="0"
           size="small"
           style="width: 180px"
           class="mr3"
           @keyup.enter.native="handleChange"
         />
+        <!-- :max="999999" -->
 
 
         <el-button type="primary" @click="handleChange">批量修改</el-button>
@@ -72,13 +75,13 @@
             <div v-for="(freight, index) in scope.row.subsidiesFreightList" :key="index">
               <el-form-item :label="freight.cnName">
                 <span v-show="!isEdit2">{{ freight.ruleValue }}</span>
-                <el-input-number v-show="isEdit2" v-model="freight.ruleValue" :controls="false" :precision="2" :placeholder="`请输入${freight.cnName}`" style="width:90px;" @blur="handlerItem(scope.row,freight.ruleValue,'add',freight.enName)" />
+                <el-input-number v-show="isEdit2" v-model="freight.ruleValue" :controls="false" :precision="2" :min="0" :placeholder="`请输入${freight.cnName}`" style="width:90px;" @blur="handlerItem(scope.row,freight.ruleValue,'add',freight.enName)" />
               </el-form-item>
             </div>
 
             <el-form-item label="其他补贴" class="ly-flex-1">
               <span v-show="!isEdit2">{{ scope.row.otherSubsidies }}</span>
-              <el-input-number v-show="isEdit2" v-model="scope.row.otherSubsidies" :controls="false" :precision="2" :placeholder="`请输入其他扣款`" style="width:90px;" @blur="handlerChange(scope.row,scope.row.otherSubsidies, 'add')" />
+              <el-input-number v-show="isEdit2" v-model="scope.row.otherSubsidies" :controls="false" :precision="2" :min="0" :placeholder="`请输入其他扣款`" style="width:90px;" @blur="handlerChange(scope.row,scope.row.otherSubsidies, 'add')" />
             </el-form-item>
           </el-form>
         </template>
@@ -95,13 +98,13 @@
             <div v-for="(freight, index) in scope.row.deductionFreightList" :key="index" class="ly-flex-1">
               <el-form-item :label="freight.cnName">
                 <span v-show="!isEdit">{{ freight.ruleValue }}</span>
-                <el-input-number v-show="isEdit" v-model="freight.ruleValue" :controls="false" :precision="2" :placeholder="`请输入${freight.cnName}`" style="width:90px;" @blur="handlerItem(scope.row,freight.ruleValue,'',freight.enName)" />
+                <el-input-number v-show="isEdit" v-model="freight.ruleValue" :controls="false" :precision="2" :min="0" :placeholder="`请输入${freight.cnName}`" style="width:90px;" @blur="handlerItem(scope.row,freight.ruleValue,'',freight.enName)" />
               </el-form-item>
             </div>
 
             <el-form-item label="其他扣款" class="ly-flex-1">
               <span v-show="!isEdit">{{ scope.row.otherCharges }}</span>
-              <el-input-number v-show="isEdit" v-model="scope.row.otherCharges" :controls="false" :precision="2" :placeholder="`请输入其他扣款`" style="width:90px;" @blur="handlerChange(scope.row,scope.row.otherCharges, '')" />
+              <el-input-number v-show="isEdit" v-model="scope.row.otherCharges" :controls="false" :precision="2" :min="0" :placeholder="`请输入其他扣款`" style="width:90px;" @blur="handlerChange(scope.row,scope.row.otherCharges, '')" />
             </el-form-item>
           </el-form>
         </template>
