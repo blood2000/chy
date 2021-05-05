@@ -40,3 +40,12 @@ export function getCodeImg() {
     method: 'get'
   });
 }
+
+// 发送短信
+export function send_sms(telno) {
+  return request({
+    url: '/auth/send_sms',
+    method: 'post',
+    data: { telno }
+  });
+}

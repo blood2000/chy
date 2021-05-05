@@ -21,63 +21,38 @@
         </div>
 
         <div class="login-mform">
-          <el-form ref="loginForm" :model="loginForm" :rules="loginRules">
+          <el-form v-if="active==='0'" ref="loginForm" :model="loginForm" :rules="loginRules">
 
-            <template v-if="active==='0'">
-              <el-form-item prop="username">
-                <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号">
-                  <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
-                </el-input>
-              </el-form-item>
-              <el-form-item prop="password">
-                <el-input
-                  v-model="loginForm.password"
-                  type="password"
-                  auto-complete="off"
-                  placeholder="密码"
-                  @keyup.enter.native="handleLogin"
-                >
-                  <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
-                </el-input>
-              </el-form-item>
-              <el-form-item prop="code">
-                <el-input
-                  v-model="loginForm.code"
-                  auto-complete="off"
-                  placeholder="验证码"
-                  style="width: 63%"
-                  @keyup.enter.native="handleLogin"
-                >
-                  <svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon" />
-                </el-input>
-                <div class="login-code">
-                  <img :src="codeUrl" class="login-code-img" @click="getCode">
-                </div>
-              </el-form-item>
-            </template>
-
-            <template v-else>
-              <el-form-item prop="username">
-                <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="手机号码">
-                  <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
-                </el-input>
-              </el-form-item>
-              <el-form-item prop="password">
-                <el-input
-                  v-model="loginForm.password"
-                  type="number"
-                  auto-complete="off"
-                  placeholder="输入验证码"
-                  @keyup.enter.native="handleLogin"
-                >
-                  <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
-
-                  <span v-show="Verification" slot="suffix" class="shou" style="marginRight:10px;" @click.stop="send">发送验证码</span>
-                  <span v-show="!Verification" slot="suffix" style="marginRight:10px;"><span>{{ timer }}</span>秒后重新获取</span>
-                </el-input>
-              </el-form-item>
-            </template>
-
+            <el-form-item prop="username">
+              <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号">
+                <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
+              </el-input>
+            </el-form-item>
+            <el-form-item prop="password">
+              <el-input
+                v-model="loginForm.password"
+                type="password"
+                auto-complete="off"
+                placeholder="密码"
+                @keyup.enter.native="handleLogin"
+              >
+                <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
+              </el-input>
+            </el-form-item>
+            <el-form-item prop="code">
+              <el-input
+                v-model="loginForm.code"
+                auto-complete="off"
+                placeholder="验证码"
+                style="width: 63%"
+                @keyup.enter.native="handleLogin"
+              >
+                <svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon" />
+              </el-input>
+              <div class="login-code">
+                <img :src="codeUrl" class="login-code-img" @click="getCode">
+              </div>
+            </el-form-item>
             <el-form-item style="width:100%;">
               <el-button
                 :loading="loading"
@@ -90,15 +65,59 @@
                 <span v-else>登 录 中...</span>
               </el-button>
             </el-form-item>
-            <div class="ly-flex-pack-justify">
-              <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;color:rgba(255, 255, 255, .6);">记住密码</el-checkbox>
-              <div style="width:50%;" class="ly-t-right login-mform-btn">
-                <span class="shou">注册</span>
-                <span class="login-mform-btn-s">|</span>
-                <span class="shou">忘记密码</span>
-              </div>
-            </div>
           </el-form>
+
+          <el-form v-else ref="loginForm2" :model="loginForm2" :rules="loginRules2">
+
+            <el-form-item prop="telno">
+              <el-input v-model="loginForm2.telno" type="text" auto-complete="off" placeholder="手机号码">
+                <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
+              </el-input>
+            </el-form-item>
+            <el-form-item
+              prop="captcha"
+              :rules="[
+                { required: !Verification, message: '验证码不能为空', trigger: 'blur' },
+              ]"
+            >
+              <!-- type="number" -->
+              <el-input
+                v-model="loginForm2.captcha"
+                auto-complete="off"
+                placeholder="输入验证码"
+                @keyup.enter.native="handleLogin"
+              >
+                <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
+
+                <span v-show="Verification" slot="suffix" class="shou" style="marginRight:10px;" @click.stop="send">发送验证码</span>
+                <span v-show="!Verification" slot="suffix" style="marginRight:10px;"><span>{{ timer }}</span>秒后重新获取</span>
+              </el-input>
+            </el-form-item>
+
+            <el-form-item style="width:100%;">
+              <el-button
+                :loading="loading"
+                size="medium"
+                type="primary"
+                style="width:100%;"
+                @click.native.prevent="handleLogin2"
+              >
+                <span v-if="!loading">立即登录</span>
+                <span v-else>登 录 中...</span>
+              </el-button>
+            </el-form-item>
+          </el-form>
+
+          <div class="ly-flex-pack-justify">
+            <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;color:rgba(255, 255, 255, .6);">记住密码</el-checkbox>
+            <div style="width:50%;" class="ly-t-right login-mform-btn">
+              <span class="shou">注册</span>
+              <span class="login-mform-btn-s">|</span>
+              <span class="shou">忘记密码</span>
+            </div>
+          </div>
+
+
         </div>
 
 
@@ -156,11 +175,16 @@
     <div class="el-login-footer">
       <span>Copyright © 2021-2023 ddc.vip All Rights Reserved.</span>
     </div>
+
+
+    <video autoplay muted loop>
+      <source src="https://t.alipayobjects.com/images/T1T78eXapfXXXXXXXX.mp4" type="video/mp4">
+    </video>
   </div>
 </template>
 
 <script>
-import { getCodeImg } from '@/api/login';
+import { getCodeImg, send_sms } from '@/api/login';
 import Cookies from 'js-cookie';
 import { encrypt, decrypt } from '@/utils/jsencrypt';
 
@@ -180,6 +204,12 @@ export default {
         code: '',
         uuid: ''
       },
+      loginForm2: {
+        telno: '',
+        captcha: ''
+      },
+
+
       loginRules: {
         username: [
           { required: true, trigger: 'blur', message: '用户名不能为空' }
@@ -188,6 +218,11 @@ export default {
           { required: true, trigger: 'blur', message: '密码不能为空' }
         ],
         code: [{ required: true, trigger: 'change', message: '验证码不能为空' }]
+      },
+
+      loginRules2: {
+        telno: [{ required: true, trigger: 'blur', message: '手机号不能为空' }, { validator: this.formValidate.telphone, trigger: 'blur' }]
+        // captcha: [{ required: true, trigger: 'blur', message: '验证码不能为空' }]
       },
       loading: false,
       redirect: undefined
@@ -246,7 +281,30 @@ export default {
       });
     },
 
+    /* 手机登录 */
+    handleLogin2() {
+      this.$refs.loginForm2.validate(valid => {
+        if (valid) {
+          console.log('ok');
+          // this.loading = true;
+        }
+      });
+    },
+
+    /* 发送验证码 */
     send() {
+      this.$refs.loginForm2.validate(valid => {
+        if (valid) {
+          send_sms(this.loginForm2.telno).then(res => {
+            this.msgSuccess('验证码发送成功!');
+            this._countdown();
+          });
+        }
+      });
+    },
+
+    /* 倒计时 */
+    _countdown() {
       this.Verification = false; // 点击button改变v-show的状态
       const auth_timer = setInterval(() => { // 定时器设置每秒递减
         this.timer--; // 递减时间
@@ -267,9 +325,19 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100%;
-  background-image: url("../assets/images/login-background.jpg");
+  // background-image: url("../assets/images/login-background.jpg");
   background-size: cover;
   font-family: PingFang SC;
+
+  video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+  }
 
   .p26{
     padding:0 26px;
