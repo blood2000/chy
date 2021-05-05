@@ -83,8 +83,8 @@
               :controls="false"
               :placeholder="`请输入${item.cnName}`"
               step-strictly
-              :max="999999"
-              :min="-999999"
+              :max="item.unit==='%'?100: 999999"
+              :min="item.unit==='%'?0: -999999"
               controls-position="right"
               :style="{ width: '85px' }"
             />
@@ -103,8 +103,8 @@
               :controls="false"
               :placeholder="`请输入${item.cnName}`"
               step-strictly
-              :max="999999"
-              :min="-999999"
+              :max="item.unit==='%'?100: 999999"
+              :min="item.unit==='%'?0: -999999"
               controls-position="right"
               :style="{ width: '85px' }"
             />

@@ -1,4 +1,4 @@
-import { login, logout, getInfo, refreshToken, sms_login } from '@/api/login';
+import { login, logout, getInfo, refreshToken, sms_login, pwd_login } from '@/api/login';
 import { getToken, setToken, setExpiresIn, removeToken, setUserInfo, removeUserInfo } from '@/utils/auth';
 
 const user = {
@@ -86,6 +86,24 @@ const user = {
 
       return new Promise((resolve, reject) => {
         sms_login(telno, captcha).then(res => {
+          const data = res.data;
+          setToken(data.access_token);
+          commit('SET_TOKEN', data.access_token);
+          setExpiresIn(data.expires_in);
+          commit('SET_EXPIRES_IN', data.expires_in);
+          resolve();
+        }).catch(error => {
+          reject(error);
+        });
+      });
+    },
+    // 登录
+    Login3({ commit }, userInfo) {
+      const telno = userInfo.telno.trim();
+      const password = userInfo.password.trim();
+
+      return new Promise((resolve, reject) => {
+        pwd_login(telno, btoa(password)).then(res => {
           const data = res.data;
           setToken(data.access_token);
           commit('SET_TOKEN', data.access_token);

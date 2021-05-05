@@ -5,8 +5,9 @@
     <div class="login_box pa">
 
       <ul class="login-tab">
-        <li :class="{'active': active==='0'}" @click="active = '0'">密码登录</li>
+        <li :class="{'active': active==='0'}" @click="active = '0'">账号登录</li>
         <li :class="{'active': active==='1'}" @click="active = '1'">短信登录</li>
+        <li :class="{'active': active==='3'}" @click="active = '3'">密码登录</li>
       </ul>
 
       <div class="p26">
@@ -21,7 +22,8 @@
         </div>
 
         <div class="login-mform">
-          <el-form v-if="active==='0'" ref="loginForm" :model="loginForm" :rules="loginRules">
+          <!-- 平台正常登录 -->
+          <el-form v-show="active==='0'" ref="loginForm" :model="loginForm" :rules="loginRules">
 
             <el-form-item prop="username">
               <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号">
@@ -67,7 +69,8 @@
             </el-form-item>
           </el-form>
 
-          <el-form v-else ref="loginForm2" :model="loginForm2" :rules="loginRules2">
+          <!-- 短信登录 -->
+          <el-form v-show="active==='1'" ref="loginForm2" :model="loginForm2" :rules="loginRules2">
 
             <el-form-item prop="telno">
               <el-input v-model="loginForm2.telno" type="text" auto-complete="off" placeholder="手机号码">
@@ -85,7 +88,7 @@
                 v-model="loginForm2.captcha"
                 auto-complete="off"
                 placeholder="输入验证码"
-                @keyup.enter.native="handleLogin"
+                @keyup.enter.native="handleLogin2"
               >
                 <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
 
@@ -101,6 +104,41 @@
                 type="primary"
                 style="width:100%;"
                 @click.native.prevent="handleLogin2"
+              >
+                <span v-if="!loading">立即登录</span>
+                <span v-else>登 录 中...</span>
+              </el-button>
+            </el-form-item>
+          </el-form>
+
+          <!-- 密码登录 -->
+          <el-form v-show="active==='3'" ref="loginForm3" :model="loginForm3" :rules="loginRules3">
+
+            <el-form-item prop="telno">
+              <el-input v-model="loginForm3.telno" type="text" auto-complete="off" placeholder="手机号码">
+                <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
+              </el-input>
+            </el-form-item>
+
+            <el-form-item prop="password">
+              <el-input
+                v-model="loginForm3.password"
+                type="password"
+                auto-complete="off"
+                placeholder="密码"
+                @keyup.enter.native="handleLogin3"
+              >
+                <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
+              </el-input>
+            </el-form-item>
+
+            <el-form-item style="width:100%;">
+              <el-button
+                :loading="loading"
+                size="medium"
+                type="primary"
+                style="width:100%;"
+                @click.native.prevent="handleLogin3"
               >
                 <span v-if="!loading">立即登录</span>
                 <span v-else>登 录 中...</span>
@@ -208,6 +246,10 @@ export default {
         telno: '',
         captcha: ''
       },
+      loginForm3: {
+        telno: '',
+        password: ''
+      },
 
 
       loginRules: {
@@ -222,7 +264,11 @@ export default {
 
       loginRules2: {
         telno: [{ required: true, trigger: 'blur', message: '手机号不能为空' }, { validator: this.formValidate.telphone, trigger: 'blur' }]
-        // captcha: [{ required: true, trigger: 'blur', message: '验证码不能为空' }]
+      },
+
+      loginRules3: {
+        telno: [{ required: true, trigger: 'blur', message: '手机号不能为空' }, { validator: this.formValidate.telphone, trigger: 'blur' }],
+        password: [{ required: true, trigger: 'blur', message: '密码不能为空' }]
       },
       loading: false,
       redirect: undefined
@@ -251,7 +297,12 @@ export default {
       const username = Cookies.get('username');
       const password = Cookies.get('password');
       const rememberMe = Cookies.get('rememberMe');
+
       const telno = Cookies.get('telno');
+
+      const telno3 = Cookies.get('telno3');
+      const password3 = Cookies.get('password3');
+
       this.loginForm = {
         username: username === undefined ? this.loginForm.username : username,
         password: password === undefined ? this.loginForm.password : decrypt(password),
@@ -259,6 +310,11 @@ export default {
       };
 
       this.loginForm2.telno = telno === undefined ? this.loginForm2.telno : telno;
+
+      this.loginForm3 = {
+        telno: telno3 === undefined ? this.loginForm3.telno : telno3,
+        password: password3 === undefined ? this.loginForm3.password : decrypt(password3)
+      };
     },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
@@ -269,9 +325,10 @@ export default {
             Cookies.set('password', encrypt(this.loginForm.password), { expires: 30 });
             Cookies.set('rememberMe', this.loginForm.rememberMe, { expires: 30 });
           } else {
-            Cookies.remove('username');
-            Cookies.remove('password');
-            Cookies.remove('rememberMe');
+            // Cookies.remove('username');
+            // Cookies.remove('password');
+            // Cookies.remove('rememberMe');
+            this._remove();
           }
 
           this.$store.dispatch('Login', this.loginForm).then(() => {
@@ -289,10 +346,12 @@ export default {
       this.$refs.loginForm2.validate(valid => {
         if (valid) {
           if (!this.loginForm2.captcha) return;
+          this.loading = true;
           if (this.loginForm.rememberMe) {
             Cookies.set('telno', this.loginForm2.telno, { expires: 30 });
+            Cookies.set('rememberMe', this.loginForm.rememberMe, { expires: 30 });
           } else {
-            Cookies.remove('telno');
+            this._remove();
           }
 
           this.$store.dispatch('Login2', this.loginForm2).then(() => {
@@ -305,13 +364,37 @@ export default {
       });
     },
 
+    handleLogin3() {
+      this.$refs.loginForm3.validate(valid => {
+        if (valid) {
+          this.loading = true;
+          if (this.loginForm.rememberMe) {
+            Cookies.set('telno3', this.loginForm3.telno, { expires: 30 });
+            Cookies.set('password3', encrypt(this.loginForm3.password), { expires: 30 });
+            Cookies.set('rememberMe', this.loginForm.rememberMe, { expires: 30 });
+          } else {
+            this._remove();
+          }
+
+          this.$store.dispatch('Login3', this.loginForm3).then(() => {
+            this.$router.push({ path: this.redirect || '/' }).catch(() => {});
+          }).catch(() => {
+            this.loading = false;
+            this.active = '3';
+          });
+        }
+      });
+    },
+
     /* 发送验证码 */
     send() {
       this.$refs.loginForm2.validate(valid => {
         if (valid) {
           send_sms(this.loginForm2.telno, 'login').then(res => {
-            this.msgSuccess('验证码发送成功!');
-            this._countdown();
+            if (res.code === 200) {
+              this.msgSuccess('验证码发送成功!');
+              this._countdown();
+            }
           });
         }
       });
@@ -328,6 +411,15 @@ export default {
           clearInterval(auth_timer);
         }
       }, 1000);
+    },
+
+    /* 移除所有cooki */
+    _remove() {
+      const keys = ['username', 'password', 'rememberMe', 'telno', 'telno3', 'password3'];
+
+      keys.forEach(e => {
+        Cookies.remove(e);
+      });
     }
   }
 };

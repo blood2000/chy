@@ -41,10 +41,10 @@ export function getCodeImg() {
   });
 }
 
-// 发送短信
+// t发送短信
 export function send_sms(telno, type) {
   return request({
-    url: '/auth/send_sms',
+    url: '/system/send_sms',
     method: 'post',
     data: { telno, type }
   });
@@ -53,8 +53,17 @@ export function send_sms(telno, type) {
 // 手机号短信登陆
 export function sms_login(telno, captcha) {
   return request({
-    url: '/auth/sms_login',
+    url: '/system/sms_login',
     method: 'post',
     data: { telno, captcha }
+  });
+}
+
+// 手机号+密码登录
+export function pwd_login(telno, password) {
+  return request({
+    url: '/system/pwd_login',
+    method: 'post',
+    data: { telno, password }
   });
 }
