@@ -479,10 +479,10 @@ export default {
       this.openSeperateList = true;
       this.title = '子单列表';
     },
-    /** 删除按钮操作 */
+    /** 作废运单按钮操作 */
     handleDelete(row) {
-      const code = row.waybillNo;
-      this.$confirm('是否确认作废单号为"' + code + '"的运单?', '警告', {
+      const code = row.wayBillCode;
+      this.$confirm('是否确认作废单号为"' + row.waybillNo + '"的运单?', '警告', {
         'confirmButtonText': '确定',
         'cancelButtonText': '取消',
         'type': 'warning'

@@ -93,7 +93,7 @@
             @click="handleVerify"
           >批量审核</el-button>
         </el-col>
-        <el-col v-if="activeName == '5'" :span="1.5">
+        <el-col v-if="activeName == '6'" :span="1.5">
           <el-button
             type="primary"
             icon="el-icon-upload2"
@@ -101,7 +101,7 @@
             @click="handleExportFreight"
           >导出运费明细</el-button>
         </el-col>
-        <el-col v-if="activeName == '5'" :span="1.5">
+        <el-col v-if="activeName == '6'" :span="1.5">
           <el-button
             type="primary"
             icon="el-icon-upload2"
