@@ -271,8 +271,10 @@ export default {
 
       // 自动计算出serviceFee=> 平台服务费费用
       // 自动计算出shipperRealPay=> 货主实付金额
+      // 自动计算出m0Fee=> 货主实付金额
       row.serviceFee = data.serviceFee;
       row.shipperRealPay = data.shipperRealPay;
+      row.m0Fee = data.m0Fee ? data.m0Fee : row.m0Fee;
 
       const filterRow = this.filterRow(row);
       filterRow.deliveryCashFee = row.deliveryCashFee;
