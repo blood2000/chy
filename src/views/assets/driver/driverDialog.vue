@@ -174,7 +174,7 @@
       <el-form-item label="营业执照号" prop="businessLicenseImgNo">
         <el-input v-model="form.businessLicenseImgNo" placeholder="请输入营业执照号" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="是否上传人员信用信息" prop="isReportPerson">
+      <!-- <el-form-item label="是否上传人员信用信息" prop="isReportPerson">
         <el-select v-model="form.isReportPerson" class="width90" clearable filterable>
           <el-option
             v-for="dict in isOption"
@@ -193,8 +193,8 @@
           value-format="yyyy-MM-dd"
           placeholder="请选择上传人员信用信息时间"
         />
-      </el-form-item>
-      <el-form-item label="是否上传企业" prop="isReportEnterprise">
+      </el-form-item> -->
+      <!-- <el-form-item label="是否上传企业" prop="isReportEnterprise">
         <el-select v-model="form.isReportEnterprise" class="width90" clearable filterable>
           <el-option
             v-for="dict in isOption"
@@ -213,7 +213,7 @@
           value-format="yyyy-MM-dd"
           placeholder="请选择上传企业时间"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="是否冻结" prop="isFreeze">
         <el-select
           v-model="form.isFreeze"
@@ -750,11 +750,11 @@ export default {
         workLicense: null,
         workLicenseDueDate: null,
         businessLicenseImgNo: null,
-        isReportPerson: null,
-        isReportPersonDate: null,
+        // isReportPerson: null,
+        // isReportPersonDate: null,
         issuingOrganizations: null,
-        isReportEnterprise: null,
-        isReportEnterpriseDate: null,
+        // isReportEnterprise: null,
+        // isReportEnterpriseDate: null,
         workLicenseProvinceCode: null,
         workLicenseProvinceName: null,
         authStatus: 0,
