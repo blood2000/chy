@@ -33,7 +33,7 @@ export default {
 <style lang="scss" scoped>
 .s-choose-time{
   position: relative;
-  width: 4.5rem;
+  width: 5rem;
   height: 1.8rem;
   line-height: 1.8rem;
   text-align: center;
@@ -77,7 +77,7 @@ export default {
     position: absolute;
     right: 0;
     top: 50%;
-    margin-top: -0.15rem;
+    margin: -0.15rem 0.3rem 0;
     width: 0.3rem;
     height: 0.3rem;
     cursor: pointer;

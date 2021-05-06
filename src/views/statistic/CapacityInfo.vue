@@ -4,12 +4,12 @@
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <div class="s-container__box__content">
         <p class="label">总车辆(万)</p>
-        <p class="text">0.211</p>
+        <p class="text"><count-to :end-val="0.211" :decimal-places="3" /></p>
       </div>
       <div class="s-container__box__content">
         <p class="label">今日新增司机</p>
         <p class="text blod">
-          0.211
+          <count-to :end-val="0.211" :decimal-places="3" />
           <span class="arow_down" />
           <span class="value_down">12.6%</span>
         </p>
@@ -18,12 +18,12 @@
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <div class="s-container__box__content">
         <p class="label">总路线(条)</p>
-        <p class="text">0.211</p>
+        <p class="text"><count-to :end-val="0.211" :decimal-places="3" /></p>
       </div>
       <div class="s-container__box__content">
         <p class="label">今日新增路线</p>
         <p class="text blod">
-          0.211
+          <count-to :end-val="0.211" :decimal-places="3" />
           <span class="arow_up" />
           <span class="value_up">12.6%</span>
         </p>
@@ -32,12 +32,12 @@
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <div class="s-container__box__content">
         <p class="label">运输总量(吨)</p>
-        <p class="text">0.211</p>
+        <p class="text"><count-to :end-val="0.211" :decimal-places="3" /></p>
       </div>
       <div class="s-container__box__content">
         <p class="label">今日新增吨数</p>
         <p class="text blod">
-          0.211
+          <count-to :end-val="0.211" :decimal-places="3" />
           <span class="arow_up" />
           <span class="value_up">12.6%</span>
         </p>
@@ -46,12 +46,12 @@
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <div class="s-container__box__content">
         <p class="label">行驶里程(公里)</p>
-        <p class="text">0.211</p>
+        <p class="text"><count-to :end-val="0.211" :decimal-places="3" /></p>
       </div>
       <div class="s-container__box__content">
         <p class="label">今日新增里程</p>
         <p class="text blod">
-          0.211
+          <count-to :end-val="0.211" :decimal-places="3" />
           <span class="arow_up" />
           <span class="value_up">12.6%</span>
         </p>
@@ -60,12 +60,12 @@
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <div class="s-container__box__content">
         <p class="label">行驶时长(天)</p>
-        <p class="text">0.211</p>
+        <p class="text"><count-to :end-val="0.211" :decimal-places="3" /></p>
       </div>
       <div class="s-container__box__content">
         <p class="label">今日新增时长</p>
         <p class="text blod">
-          0.211
+          <count-to :end-val="0.211" :decimal-places="3" />
           <span class="arow_up" />
           <span class="value_up">12.6%</span>
         </p>
@@ -74,12 +74,12 @@
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <div class="s-container__box__content">
         <p class="label">总网点</p>
-        <p class="text">0.211</p>
+        <p class="text"><count-to :end-val="0.211" :decimal-places="3" /></p>
       </div>
       <div class="s-container__box__content">
         <p class="label">今日新增网点</p>
         <p class="text blod">
-          0.211
+          <count-to :end-val="0.211" :decimal-places="3" />
           <span class="arow_up" />
           <span class="value_up">12.6%</span>
         </p>
@@ -89,8 +89,11 @@
 </template>
 
 <script>
+import CountTo from '@/components/CountTo';
 export default {
-
+  components: {
+    CountTo
+  }
 };
 </script>
 
