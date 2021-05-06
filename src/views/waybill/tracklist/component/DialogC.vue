@@ -14,8 +14,8 @@
           @change="unloadTimeChoose"
         />
       </el-form-item>
-      <el-form-item label="卸货重量(吨)" prop="unloadWeight">
-        <el-input-number v-model="form.unloadWeight" placeholder="请输入卸货过磅重量" :disabled="disable" controls-position="right" :min="0" style="width:90%;" />
+      <el-form-item :label="weightLabel" prop="unloadWeight">
+        <el-input-number v-model="form.unloadWeight" placeholder="请输入卸货数量" :disabled="disable" controls-position="right" style="width:90%;" />
       </el-form-item>
       <!-- <el-form-item label="卸货地址" prop="waybillAddress">
         <el-select
@@ -88,7 +88,9 @@ export default {
       },
       // 日期格式
       time: '',
-      fresh: false
+      fresh: false,
+      // 卸车数量标签
+      weightLabel: ''
     };
   },
   computed: {
@@ -108,8 +110,6 @@ export default {
         // this.getAddress();
         if (this.disable) {
           this.getDetail();
-        } else {
-          this.reset();
         }
       }
     }
@@ -168,25 +168,37 @@ export default {
       this.unloadTimeChoose(this.form.unloadTime);
       this.$refs['form'].validate(valid => {
         if (valid) {
-          if (this.form.unloadWeight > 0) {
-            if (this.disable) {
-              unloadCredentials(this.form).then(response => {
-                this.msgSuccess('补卸货凭证成功');
-                this.close();
-                this.$emit('refresh');
-              });
+          if (this.waybill.stowageStatus === '2') {
+            if (this.form.loadWeight !== 1) {
+              this.msgWarning('车数配载的运单卸货车数只能为1车！');
             } else {
-              unload(this.form).then(response => {
-                this.msgSuccess('车辆卸货成功');
-                this.close();
-                this.$emit('refresh');
-              });
+              this.submitInfo();
             }
           } else {
-            this.msgWarning('卸货重量必须大于0！');
+            if (this.form.unloadWeight <= 0) {
+              this.msgWarning('卸货重量或立方数必须大于0！');
+            } else {
+              this.submitInfo();
+            }
           }
         }
       });
+    },
+    // 提交信息，接口调用
+    submitInfo() {
+      if (this.disable) {
+        unloadCredentials(this.form).then(response => {
+          this.msgSuccess('补卸货凭证成功');
+          this.close();
+          this.$emit('refresh');
+        });
+      } else {
+        unload(this.form).then(response => {
+          this.msgSuccess('车辆卸货成功');
+          this.close();
+          this.$emit('refresh');
+        });
+      }
     },
     /** 取消按钮 */
     cancel() {
@@ -214,8 +226,21 @@ export default {
     // 表单赋值
     setForm(data) {
       this.waybill = data;
-      this.form.code = this.waybill.code;
-      console.log(this.waybill);
+      this.form = {
+        ...this.form,
+        code: this.waybill.code,
+        unloadWeight: data.loadWeight - 0
+      };
+      if (this.waybill.stowageStatus === '0') {
+        this.weightLabel = '卸货重量（吨）';
+      } else if (this.waybill.stowageStatus === '1') {
+        this.weightLabel = '卸货立方数';
+      } else if (this.waybill.stowageStatus === '2') {
+        this.weightLabel = '卸货车数';
+        this.form.loadWeight = 1;
+      } else {
+        this.weightLabel = '卸货重量（吨）';
+      }
     }
   }
 };
