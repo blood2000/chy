@@ -326,6 +326,7 @@ export default {
       row.shipperRealPay = data.shipperRealPay;
       row.taxFreeFee = data.taxFreeFee; // ?
       row.taxPayment = data.taxPayment;
+      row.m0Fee = data.m0Fee;
 
       filterRow.deliveryCashFee = row.deliveryCashFee;
     },
