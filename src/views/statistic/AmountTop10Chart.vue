@@ -43,7 +43,7 @@ export default {
           textStyle: {
             color: '#FFFFFF',
             fontWeight: 'normal',
-            fontFamily: 'PingFang Regular'
+            fontFamily: 'PingFang Medium'
           }
         },
         legend: {
@@ -93,7 +93,7 @@ export default {
           nameTextStyle: {
             color: '#CDEDFF',
             paddingLeft: '2%',
-            fontFamily: 'PingFang Regular'
+            fontFamily: 'PingFang Medium'
           },
           type: 'value',
           minInterval: 1, // 只显示整数
@@ -108,7 +108,7 @@ export default {
             show: true,
             textStyle: {
               color: '#CDEDFF',
-              fontFamily: 'PingFang Regular'
+              fontFamily: 'PingFang Medium'
             }
           },
           // 网格样式

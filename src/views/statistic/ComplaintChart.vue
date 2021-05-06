@@ -185,7 +185,7 @@ export default {
         }
         .text{
           font-size: 1.1rem;
-          font-family: PingFang Regular;
+          font-family: 'PingFang Medium';
           font-weight: 500;
           color: #FFFFFF;
         }

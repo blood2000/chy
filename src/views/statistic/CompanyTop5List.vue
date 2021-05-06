@@ -129,7 +129,7 @@ export default {
           }
           >.text{
             font-size: 0.8rem;
-            font-family: PingFang Regular;
+            font-family: 'PingFang Medium';
             font-weight: 500;
             color: #FFFFFF;
             line-height: 1.3rem;

@@ -133,12 +133,14 @@ export default {
           vertical-align: top;
           color: rgba(0, 210, 255, 1);
           margin-left: 0.15rem;
+          font-family: 'PingFang Medium';
         }
         .value_down{
           font-size: 0.6rem;
           vertical-align: top;
           color: rgba(52, 213, 192, 1);
           margin-left: 0.15rem;
+          font-family: 'PingFang Medium';
         }
       }
     }

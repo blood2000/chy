@@ -127,7 +127,8 @@ export default {
           borderColor: 'rgba(0, 0, 0, 0)',
           backgroundColor: 'rgba(70, 70, 70, 0)',
           textStyle: {
-            color: '#FFFFFF'
+            color: '#FFFFFF',
+            fontFamily: 'PingFang Regular'
           },
           formatter: function(params) {
             const { value } = params;

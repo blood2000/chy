@@ -110,7 +110,7 @@ export default {
         }
         .text{
           font-size: 1.1rem;
-          // font-family: PingFang Regular;
+          font-family: 'PingFang Medium';
           color: #FFFFFF;
           &.blod{
             font-family: 'PingFang Bold';

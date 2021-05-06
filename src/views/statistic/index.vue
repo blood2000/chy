@@ -279,7 +279,7 @@ export default {
     left: 50%;
     margin-left: -13rem;
     font-size: 1.6rem;
-    font-family: PingFang-SC-Bold;
+    font-family: 'PingFang Regular';
     font-weight: bold;
     color: #FFFFFF;
     text-align: center;

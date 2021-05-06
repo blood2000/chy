@@ -44,7 +44,7 @@ export default {
           icon: 'circle',
           textStyle: {
             color: '#D5EAFF',
-            fontFamily: 'PingFang Regular'
+            fontFamily: 'PingFang Medium'
           },
           data: [{
             name: '货单订单数'
@@ -82,7 +82,7 @@ export default {
           nameTextStyle: {
             color: '#CDEDFF',
             paddingLeft: '2%',
-            fontFamily: 'PingFang Regular'
+            fontFamily: 'PingFang Medium'
           },
           type: 'value',
           minInterval: 1, // 只显示整数
@@ -97,7 +97,7 @@ export default {
             show: true,
             textStyle: {
               color: '#CDEDFF',
-              fontFamily: 'PingFang Regular'
+              fontFamily: 'PingFang Medium'
             }
           },
           // 网格样式
