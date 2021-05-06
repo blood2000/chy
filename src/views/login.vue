@@ -251,8 +251,8 @@ export default {
         captcha: ''
       },
       loginForm3: {
-        telno: '18305984285',
-        password: 'admin123'
+        telno: '',
+        password: ''
       },
 
 
