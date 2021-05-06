@@ -299,6 +299,7 @@ export default {
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
     },
+    // 只有状态是“提现申请”才能发起提现申请
     selectableFn(row, index) {
       if (row.status === 0) {
         return true;
