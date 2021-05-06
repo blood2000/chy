@@ -66,7 +66,8 @@ export default {
           orient: 'vertical',
           top: '10%',
           textStyle: {
-            color: '#D5EAFF'
+            color: '#D5EAFF',
+            fontFamily: 'PingFang Regular'
           },
           data: [{
             name: '总投诉量'
@@ -81,7 +82,8 @@ export default {
           borderColor: 'rgba(0, 0, 0, 0)',
           backgroundColor: 'rgba(70, 70, 70, 0.5)',
           textStyle: {
-            color: '#ffffff'
+            color: '#ffffff',
+            fontFamily: 'PingFang Regular'
           }
         },
         series: [
@@ -147,6 +149,11 @@ export default {
           textStyle: {
             fontSize: setfontSize(12)
           }
+        },
+        tooltip: {
+          textStyle: {
+            fontSize: setfontSize(14)
+          }
         }
       });
     }
@@ -167,7 +174,7 @@ export default {
         margin-top: 1rem;
         .label{
           font-size: 0.6rem;
-          font-family: PingFang SC;
+          font-family: PingFang Regular;
           font-weight: bold;
           color: #FFFFFF;
           margin-bottom: 0.1rem;
@@ -178,7 +185,7 @@ export default {
         }
         .text{
           font-size: 1.1rem;
-          font-family: PingFang SC;
+          font-family: PingFang Regular;
           font-weight: 500;
           color: #FFFFFF;
         }

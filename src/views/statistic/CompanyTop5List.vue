@@ -65,7 +65,7 @@ export default {
     top: -1.45rem;
     line-height: 0.8rem;
     font-size: 0.5rem;
-    font-family: PingFang SC;
+    font-family: PingFang Regular;
     font-weight: 300;
     color: #96CFD9;
   }
@@ -93,7 +93,7 @@ export default {
           line-height: 1.6rem;
           text-align: center;
           font-size: 0.7rem;
-          font-family: PingFang SC;
+          font-family: PingFang Regular;
           font-weight: 500;
           color: #FFFFFF;
           background: url('~@/assets/images/statistic/index_default.png') no-repeat;
@@ -110,7 +110,7 @@ export default {
           vertical-align: middle;
           line-height: 1.6rem;
           font-size: 0.8rem;
-          font-family: PingFang SC;
+          font-family: PingFang Regular;
           font-weight: 300;
           color: #7CFFF4;
           overflow: hidden;
@@ -123,13 +123,13 @@ export default {
           width: 33.33%;
           >.label{
             font-size: 0.6rem;
-            font-family: PingFang SC;
+            font-family: PingFang Regular;
             font-weight: 300;
             color: #D5EAFF;
           }
           >.text{
             font-size: 0.8rem;
-            font-family: PingFang SC;
+            font-family: PingFang Regular;
             font-weight: 500;
             color: #FFFFFF;
             line-height: 1.3rem;

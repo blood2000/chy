@@ -42,7 +42,8 @@ export default {
           right: 0,
           icon: 'rect',
           textStyle: {
-            color: '#D5EAFF'
+            color: '#D5EAFF',
+            fontFamily: 'PingFang Regular'
           },
           data: [{
             name: '完成业绩'
@@ -63,7 +64,8 @@ export default {
           axisLabel: {
             show: true,
             textStyle: {
-              color: '#CDEDFF'
+              color: '#CDEDFF',
+              fontFamily: 'PingFang Regular'
             }
             // rotate: '30' // 字体倾斜角度
           },
@@ -79,11 +81,13 @@ export default {
           name: '业绩(亿)',
           nameTextStyle: {
             color: '#CDEDFF',
-            paddingLeft: '2%'
+            paddingLeft: '2%',
+            fontFamily: 'PingFang Regular'
           },
           type: 'value',
           minInterval: 1, // 只显示整数
           axisLine: {
+            show: true,
             lineStyle: {
               color: '#3F5C84'
             }
@@ -92,7 +96,8 @@ export default {
           axisLabel: {
             show: true,
             textStyle: {
-              color: '#CDEDFF'
+              color: '#CDEDFF',
+              fontFamily: 'PingFang Regular'
             }
           },
           // 网格样式
@@ -111,7 +116,8 @@ export default {
           borderColor: 'rgba(0, 0, 0, 0)',
           backgroundColor: 'rgba(70, 70, 70, 0.5)',
           textStyle: {
-            color: '#ffffff'
+            color: '#ffffff',
+            fontFamily: 'PingFang Regular'
           }
           // formatter: `{b0}月：<br />{a0}: {c0}<br />{a1}: {c1}`
         },
@@ -172,6 +178,11 @@ export default {
             fontSize: setfontSize(12)
           },
           itemGap: setfontSize(36)
+        },
+        tooltip: {
+          textStyle: {
+            fontSize: setfontSize(14)
+          }
         },
         xAxis: {
           axisLabel: {

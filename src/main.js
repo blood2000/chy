@@ -4,7 +4,7 @@ import Element from 'element-ui';
 import './assets/styles/element-variables.scss';
 import '@/assets/styles/index.scss'; // global css
 import '@/assets/styles/ddc.scss'; // ddc css
-import '@/assets/font/index.scss'; // 自定义字体
+import '@/assets/font/index.scss'; // 自定义字体,只在数据大屏用到,不影响其他页面的加载速度
 import App from './App';
 import store from './store';
 import router from './router';

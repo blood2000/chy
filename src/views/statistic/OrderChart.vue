@@ -43,7 +43,8 @@ export default {
           top: '10%',
           icon: 'circle',
           textStyle: {
-            color: '#D5EAFF'
+            color: '#D5EAFF',
+            fontFamily: 'PingFang Regular'
           },
           data: [{
             name: '货单订单数'
@@ -64,7 +65,8 @@ export default {
           axisLabel: {
             show: true,
             textStyle: {
-              color: '#CDEDFF'
+              color: '#CDEDFF',
+              fontFamily: 'PingFang Regular'
             }
           },
           // x轴颜色
@@ -79,11 +81,13 @@ export default {
           name: '订单数(万)',
           nameTextStyle: {
             color: '#CDEDFF',
-            paddingLeft: '2%'
+            paddingLeft: '2%',
+            fontFamily: 'PingFang Regular'
           },
           type: 'value',
           minInterval: 1, // 只显示整数
           axisLine: {
+            show: true,
             lineStyle: {
               color: '#3F5C84'
             }
@@ -92,7 +96,8 @@ export default {
           axisLabel: {
             show: true,
             textStyle: {
-              color: '#CDEDFF'
+              color: '#CDEDFF',
+              fontFamily: 'PingFang Regular'
             }
           },
           // 网格样式
@@ -113,7 +118,8 @@ export default {
           borderColor: 'rgba(0, 0, 0, 0)',
           backgroundColor: 'rgba(70, 70, 70, 0.5)',
           textStyle: {
-            color: '#ffffff'
+            color: '#ffffff',
+            fontFamily: 'PingFang Regular'
           }
         },
         series: [{
@@ -154,6 +160,11 @@ export default {
           itemHeight: setfontSize(8),
           textStyle: {
             fontSize: setfontSize(12)
+          }
+        },
+        tooltip: {
+          textStyle: {
+            fontSize: setfontSize(14)
           }
         },
         xAxis: {

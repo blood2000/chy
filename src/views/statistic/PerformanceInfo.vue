@@ -64,6 +64,7 @@ export default {
     height: 100%;
     position: relative;
     padding-left: 0.2rem;
+    font-family: PingFang Regular;
     &:not(:last-child)::before{
       content: '';
       position: absolute;
@@ -81,14 +82,12 @@ export default {
         font-weight: 200;
         color: rgba(213, 234, 255, 1);
         line-height: 1rem;
-        opacity: 0.7;
       }
       >.text{
         font-size: 1.1rem;
         font-weight: normal;
         color: #FFFFFF;
         line-height: 1.3rem;
-        opacity: 0.9;
         &.blod{
           font-family: 'PingFang Bold';
           opacity: 1;

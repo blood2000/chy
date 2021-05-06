@@ -103,14 +103,14 @@ export default {
         margin-right: 1rem;
         .label{
           font-size: 0.6rem;
-          font-family: PingFang SC;
+          font-family: PingFang Regular;
           font-weight: 200;
           color: #D5EAFF;
           margin-bottom: 0.1rem;
         }
         .text{
           font-size: 1.1rem;
-          // font-family: PingFang SC;
+          // font-family: PingFang Regular;
           color: #FFFFFF;
           &.blod{
             font-family: 'PingFang Bold';
@@ -154,13 +154,13 @@ export default {
           border-radius: 26px 0px 0px 0px;
           .label{
             font-size: 0.6rem;
-            font-family: PingFang SC;
+            font-family: PingFang Regular;
             font-weight: 300;
             color: #D5EAFF;
           }
           .text{
             font-size: 0.8rem;
-            font-family: PingFang SC;
+            font-family: PingFang Regular;
             font-weight: 400;
             color: #FFFFFF;
           }

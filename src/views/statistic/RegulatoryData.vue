@@ -65,6 +65,7 @@ export default {
   &__box{
     width: 48%;
     height: 100%;
+    font-family: PingFang Regular;
     &__line{
       width: 100%;
       line-height: 1.2rem;
