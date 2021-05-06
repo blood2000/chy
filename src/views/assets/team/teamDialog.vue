@@ -69,15 +69,15 @@
       </el-form-item>
       <el-form-item>
         <el-row>
-          <el-col :span="7">
+          <el-col :span="7" class="mb">
             <p class="upload-image-label">身份证正面照</p>
             <uploadImage v-model="form.identificationImage" :disabled="disable" image-type="id-card" side="front" @fillForm="fillForm" />
           </el-col>
-          <el-col :span="7">
+          <el-col :span="7" class="mb">
             <p class="upload-image-label">身份证反面照</p>
             <uploadImage v-model="form.identificationBackImage" :disabled="disable" image-type="id-card" side="back" @fillForm="fillForm" />
           </el-col>
-          <el-col :span="7">
+          <el-col :span="7" class="mb">
             <p class="upload-image-label">营业执照</p>
             <uploadImage v-model="form.businessLicenseImg" :disabled="disable" image-type="business-license" @fillForm="fillForm" />
           </el-col>
@@ -287,6 +287,9 @@ export default {
 	.mr3{
 	  margin-right: 3%;
 	}
+  .mb{
+    margin-bottom: 22px;
+  }
 	.width90{
 	  width: 90%;
 	}

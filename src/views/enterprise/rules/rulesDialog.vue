@@ -50,12 +50,12 @@
           :prop="item.code"
         >
           <label slot="label"><span style="color: #ff4949">* </span>{{ item.cnName }}</label>
-          <el-input v-if="item.showType === 1" v-model="lossItemObj[item.code]" :placeholder="`请输入${item.cnName}`" class="width-small" clearable />
+          <el-input-number v-if="item.showType === 1" v-model="lossItemObj[item.code]" :controls="false" :placeholder="`请输入${item.cnName}`" class="width-small" clearable />
           <template v-if="item.showType === 2">
-            <el-input-number v-model="lossItemObj[item.code].start" :controls="false" placeholder="最小值" class="width-small" clearable />
+            <el-input-number v-model="lossItemObj[item.code].start" :controls="false" :min="currentRadio === 'DE' ? -10000000 : -100" :max="currentRadio === 'DE' ? 10000000 : 100" placeholder="最小值" class="width-small" clearable />
             <span v-show="currentRadio && currentRadio !== ''" style="margin-left: 5px">{{ currentRadio === 'DE' ? 'kg' : '%' }}</span>
             -
-            <el-input-number v-model="lossItemObj[item.code].end" :controls="false" placeholder="最大值" class="width-small" clearable />
+            <el-input-number v-model="lossItemObj[item.code].end" :controls="false" :min="currentRadio === 'DE' ? -10000000 : -100" :max="currentRadio === 'DE' ? 10000000 : 100" placeholder="最大值" class="width-small" clearable />
             <span v-show="currentRadio && currentRadio !== ''" style="margin-left: 5px">{{ currentRadio === 'DE' ? 'kg' : '%' }}</span>
           </template>
           <el-select v-if="item.showType === 3" v-model="lossItemObj[item.code]" class="width-small" clearable filterable>
