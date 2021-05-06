@@ -25,7 +25,15 @@
 
     <!-- 司机 -->
     <div v-show="activeName === 'listDriver'">
-      <refactor-table :loading="loading" :data="list_listDriver" :table-columns-config="tableColumnsConfig" :cb-data="myTo" :row-key="(row)=> row.id" reserve-selection @selection-change="handleSelectionChange">
+      <refactor-table
+        :loading="loading"
+        :data="list_listDriver"
+        :table-columns-config="tableColumnsConfig"
+        :cb-data="myTo"
+        :row-key="(row)=> row.id"
+        reserve-selection
+        @selection-change="handleSelectionChange"
+      >
 
         <template #tin12="{row}">
           <span v-if="row">司机</span>
@@ -73,7 +81,7 @@
       @pagination="getList"
     />
 
-    <div class="ly-t-right mt20">
+    <div class="ly-t-right mt20 mb20">
       <el-button v-show="activeName === 'listDriver'" type="primary" :disabled="!(ids.length>0)" size="mini" @click="_ok('listDriver')">确定</el-button>
       <el-button v-show="activeName === 'listInfo'" type="primary" :disabled="!radio" size="mini" @click="_ok('listInfo')">确定</el-button>
       <el-button size="mini" @click="_ok(false)">取消</el-button>

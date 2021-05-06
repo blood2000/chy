@@ -69,8 +69,6 @@ const user = {
       return new Promise((resolve, reject) => {
         login(username, btoa(password), code, uuid).then(res => {
           const data = res.data;
-          console.log(res);
-
           setToken(data.access_token);
           commit('SET_TOKEN', data.access_token);
           setExpiresIn(data.expires_in);
