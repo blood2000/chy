@@ -83,19 +83,24 @@ export default {
   methods: {
     // 赋值
     inputInfo() {
-      this.images = this.imageOldList.map(function(response) {
+      // console.log(this.imageOldList);
+      const images = this.imageOldList.map(function(response) {
         return [response.code];
       });
-      this.images = this.images.join(',');
+      this.images = images.join(',');
       this.$emit('input', this.images);
-      console.log(this.images);
+      // console.log(this.images);
     },
     /** 取消按钮 */
     cancel() {
       this.dialogVisible = false;
     },
     handleRemove(images, imageList) {
-      this.imageList = imageList;
+      // console.log(imageList);
+      const removeimg = imageList.map(function(response) {
+        return response.response.data;
+      });
+      this.imageOldList = removeimg;
       this.inputInfo();
     },
     handlePictureCardPreview(images) {
