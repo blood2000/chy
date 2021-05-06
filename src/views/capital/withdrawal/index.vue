@@ -135,7 +135,7 @@
             @click="handleImport"
           >网商批量提现</el-button>
         </el-col>
-        <el-col :span="1.5">
+        <!-- <el-col :span="1.5">
           <el-button
             type="success"
             icon="el-icon-download"
@@ -143,14 +143,14 @@
             :disabled="multiple"
             @click="handleRefreshStatus"
           >更新网商提现状态</el-button>
-        </el-col>
+        </el-col> -->
         <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <RefactorTable ref="multipleTable" :loading="loading" :data="withdrawalList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <RefactorTable ref="multipleTable" :loading="loading" :data="withdrawalList" :table-columns-config="tableColumnsConfig" :selectable-fn="selectableFn" @selection-change="handleSelectionChange">
         <!-- 转账渠道 -->
         <template #payStatus="{row}">
           <span>{{ selectDictLabel(payStatusOption, row.payStatus) }}</span>
@@ -298,6 +298,14 @@ export default {
       this.ids = selection.map(item => item.id);
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
+    },
+    // 只有状态是“提现申请”才能发起提现申请
+    selectableFn(row, index) {
+      if (row.status === 0) {
+        return true;
+      } else {
+        return false;
+      }
     }
   }
 };

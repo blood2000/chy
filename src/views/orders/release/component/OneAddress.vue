@@ -48,8 +48,8 @@
               @change="handlechengDetail"
             >
               <el-option
-                v-for="dict in detailOptin"
-                :key="dict.dictValue"
+                v-for="(dict,index) in detailOptin"
+                :key="dict.dictValue + index"
                 :label="dict.dictLabel"
                 :value="dict.dictValue"
               >

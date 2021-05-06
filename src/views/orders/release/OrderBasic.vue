@@ -23,8 +23,8 @@
             <!-- :style="{ width: '200px' }" -->
             <!-- clearable -->
             <el-option
-              v-for="dict in tin3Optin"
-              :key="dict.dictValue"
+              v-for="(dict,index) in tin3Optin"
+              :key="index"
               :label="dict.dictLabel"
               :value="dict.dictValue"
             />
@@ -38,10 +38,10 @@
             size="medium"
             @change="handletin2(false)"
           >
-            <template v-for="dict in tin2Option">
+            <template v-for="(dict,index) in tin2Option">
               <el-radio
                 v-if="dict.status === '0'"
-                :key="dict.dictValue"
+                :key="index"
                 class="mb10 ml0 m_radio"
                 border
                 :label="dict.dictValue"
@@ -54,10 +54,10 @@
           <!-- isMultiGoods true->多商品 ; false->单商品 -->
           <el-form-item v-if="isMultiGoods" label="货物类型(多)" prop="tin2_1">
             <el-checkbox-group v-model="formData.tin2_1" size="medium" :disabled="formData.tin3 !== '0'">
-              <template v-for="dict in tin2_Option">
+              <template v-for="(dict,index) in tin2_Option">
                 <el-checkbox
                   v-if="dict.status === '0'"
-                  :key="dict.dictValue"
+                  :key="index"
                   class="ml0 mb10"
                   :label="dict.dictValue"
                 >{{ dict.dictLabel }}</el-checkbox>
@@ -66,10 +66,10 @@
           </el-form-item>
           <el-form-item v-else label="货物类型(单)" prop="tin2_2">
             <el-radio-group v-model="formData.tin2_2" size="medium" :disabled="formData.tin3 !== '0'">
-              <template v-for="dict in tin2_Option">
+              <template v-for="(dict,index) in tin2_Option">
                 <el-radio
                   v-if="dict.status === '0'"
-                  :key="dict.dictValue"
+                  :key="index"
                   class="ml0 mb10 mt10"
                   :label="dict.dictValue"
                 >{{ dict.dictLabel }}</el-radio>
@@ -89,8 +89,8 @@
             @change="handleTin4"
           >
             <el-radio
-              v-for="dict in tin4Option"
-              :key="dict.dictValue"
+              v-for="(dict,index) in tin4Option"
+              :key="index"
               :label="dict.dictValue"
             >{{ dict.dictLabel }}</el-radio>
           </el-radio-group>
@@ -103,8 +103,8 @@
               <el-form-item label="指定联系人" prop="tin5">
                 <el-radio-group v-model="formData.tin5" size="medium">
                   <el-radio
-                    v-for="dict in tin5Option"
-                    :key="dict.dictValue"
+                    v-for="(dict,index) in tin5Option"
+                    :key="index"
                     :label="dict.dictValue"
                   >{{ dict.dictLabel }}</el-radio>
                 </el-radio-group>
@@ -119,8 +119,8 @@
                   :style="{ width: '100%' }"
                 >
                   <el-option
-                    v-for="dict in tin6Option"
-                    :key="dict.dictValue"
+                    v-for="(dict,index) in tin6Option"
+                    :key="index"
                     :label="dict.dictLabel"
                     :value="dict.dictValue"
                   />
@@ -380,9 +380,6 @@ export default {
         // 4.处理调度者
         this.orderSpecifiedList = orderSpecifiedList;
 
-        console.log(orderSpecifiedList); // 这里处理调度者信息
-
-        // this.handlerOrderSpecifiedList(orderSpecifiedList);
 
         this.orderSpecifiedList.forEach(e => {
           if (e.userType + '' === '1') {
@@ -400,7 +397,6 @@ export default {
         this.formData.tin6 = classList[0] ? classList[0].classCode : '';
         this.classList = classList;
         this.InfoCode = code;
-
         this.formData.tin3 = projectCode || '0';
       },
       immediate: true

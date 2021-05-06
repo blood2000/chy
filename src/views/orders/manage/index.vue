@@ -215,25 +215,23 @@
         <template #landAddress="{row}">
           <span>{{ row.landAddress }}</span>
         </template>
-        <!-- billingType	发运方式 0->汽运一票制，1->对付，2->代收代付 -->
-        <!-- <template #billingType="{row}">
-                <span>{{ selectDictLabel(billingTypeOptions, row.billingType) }}</span>
-              </template> -->
-        <!-- status	状态 0.启用 1.禁用 -->
+
+        <template #goodsPrice="{row}">
+          <span>{{ row.goodsPrice + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) }}</span>
+        </template>
+        <template #shipmentPrice="{row}">
+          <span>{{ row.shipmentPrice + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) }}</span>
+        </template>
+        <template #transactionPrice="{row}">
+          <span>{{ row.transactionPrice + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) }}</span>
+        </template>
+
         <template #status="{row}">
           <span>{{ selectDictLabel(statusOptions, (row.status +'')) }}</span>
         </template>
-        <!-- importType	是否导入货源 0-正常发布货源，1-货源单导入，2-运输单导入 -->
-        <!-- <template #importType="{row}">
-                <span>{{ selectDictLabel(importTypeOptions, row.importType) }}</span>
-              </template> -->
 
         <template #isClass="{row}">
           <span>{{ selectDictLabel(isClassOptions, row.isClass) }}</span>
-        </template>
-
-        <template #isDel="{row}">
-          <span>{{ selectDictLabel(isDelTypeOptions, row.isDel) }}</span>
         </template>
 
         <template #businessType="{row}">
@@ -243,7 +241,7 @@
         <template #number_remainingNumber="{row}">
           <span>{{ (row.number - 0) - (row.remainingNumber - 0) }}</span>
         </template>
-        <!-- 已抢单量 -->
+        <!-- 可抢单量 -->
         <template #remainingNumber="{row}">
           <span>{{ row.remainingNumber || '不限' }}</span>
         </template>
@@ -255,66 +253,21 @@
         </template>
 
         <template #stowageStatus="{row}">
-          <span v-if="row.stowageStatus == 0">吨</span>
-          <span v-if="row.stowageStatus == 1">立方</span>
-          <span v-if="row.stowageStatus == 2">车</span>
+          <span>{{ selectDictLabel(stowageStatusOptions, row.stowageStatus) }}</span>
         </template>
-
-        <!-- <template #isInsure="{row}">
-                <span>{{ selectDictLabel(isInsureTypeOptions, row.isInsure) }}</span>
-              </template> -->
-
-        <!-- <template #isMonthlyOrder="{row}">
-                <span>{{ selectDictLabel(isMonthlyOrderTypeOptions, row.isMonthlyOrder) }}</span>
-              </template> -->
-
-        <!-- <template #isPay="{row}">
-                <span>{{ selectDictLabel(isPayTypeOptions, row.isPay) }}</span>
-              </template> -->
 
         <template #isPublic="{row}">
-          <span>{{ selectDictLabel(isPublicTypeOptions, row.isPublic) }}</span>
+          <span :class="row.isPublic===0?'g-color-warning':'g-color-blue'">{{ selectDictLabel(isPublicTypeOptions, row.isPublic) }}</span>
         </template>
-
-        <!-- <template #isReturnMoney="{row}">
-                <span>{{ selectDictLabel(isReturnMoneyTypeOptions, row.isReturnMoney) }}</span>
-              </template> -->
-
-        <!-- <template #isShare="{row}">
-                <span>{{ selectDictLabel(isShareTypeOptions, row.isShare) }}</span>
-              </template> -->
-
-        <!-- <template #isShipperConfirm="{row}">
-                <span>{{ selectDictLabel(isShipperConfirmTypeOptions, row.isShipperConfirm) }}</span>
-              </template> -->
 
         <template #isSpecified="{row}">
-          <span>{{ selectDictLabel(isSpecifiedTypeOptions, row.isSpecified) }}</span>
+          <span v-if="row.isSpecified === 0" class="g-color-error">否</span>
+          <span v-if="row.isSpecified === 1">{{ row.specified }}</span>
         </template>
-
-        <!-- <template #isSplit="{row}">
-                <span>{{ selectDictLabel(isSplitTypeOptions, row.isSplit) }}</span>
-              </template> -->
-
-        <!-- <template #isTop="{row}">
-                <span>{{ selectDictLabel(isTopTypeOptions, row.isTop) }}</span>
-              </template> -->
-
-        <!-- <template #isTrunk="{row}">
-                <span>{{ selectDictLabel(isTrunkTypeOptions, row.isTrunk) }}</span>
-              </template> -->
 
         <template #loadType="{row}">
           <span>{{ selectDictLabel(loadTypeOptions, row.loadType) }}</span>
         </template>
-
-        <!-- <template #orderTypeType="{row}">
-                <span>{{ selectDictLabel(orderTypeTypeOptions, row.orderTypeType) }}</span>
-              </template> -->
-
-        <!-- <template #paymentCodeType="{row}">
-                <span>{{ selectDictLabel(paymentCodeTypeOptions, row.paymentCodeType) }}</span>
-              </template> -->
 
         <template #accessTime="{row}">
           <span>{{ row.accessTime }}</span>
@@ -490,6 +443,11 @@ export default {
         { dictLabel: '启用', dictValue: '0' },
         { dictLabel: '禁用', dictValue: '1' }
       ],
+      stowageStatusOptions: [
+        { dictLabel: '吨', dictValue: 0 },
+        { dictLabel: '立方', dictValue: 1 },
+        { dictLabel: '车', dictValue: 2 }
+      ],
       // 发运方式字典
       // billingTypeOptions: [
       //   { dictLabel: '汽运一票制', dictValue: '0' },
@@ -508,10 +466,10 @@ export default {
         { dictLabel: '是', dictValue: 1 }
       ],
       // isDel	是否删除 0.正常 1.删除	boolean
-      isDelTypeOptions: [
-        { dictLabel: '正常', dictValue: 0 },
-        { dictLabel: '删除', dictValue: 1 }
-      ],
+      // isDelTypeOptions: [
+      //   { dictLabel: '正常', dictValue: 0 },
+      //   { dictLabel: '删除', dictValue: 1 }
+      // ],
       // isDispatch	是否已受理 0未受理，1已受理	boolean
       // isDispatchTypeOptions: [
       //   { dictLabel: '未受理', dictValue: false },
@@ -676,6 +634,9 @@ export default {
     handleClick() {
       // console.log(this.activeName);
       this.queryParams.tin8 = this.activeName;
+      if (this.activeName === '0') {
+        this.queryParams.isManual = undefined;
+      }
       this.handleQuery();
     },
 
@@ -755,6 +716,16 @@ export default {
         // 先判断几个商品
         e = e.redisOrderInfoListVoList[0];
 
+        // 调度者
+        e.redisOrderSpecifiedVoList.forEach(specified => {
+          // 只考虑互斥
+          if (specified.userType === 1) {
+            e.specified = `调度者：${e.redisOrderSpecifiedVoList.length} 人`;
+          } else {
+            e.specified = `司机：${e.redisOrderSpecifiedVoList.length} 人`;
+          }
+        });
+
         // 货集码
         e.redisOrderClassGoodsVoList.forEach(orderClass => {
           e.cargoCodeQr = orderClass.cargoCodeQr || '-';
@@ -769,10 +740,11 @@ export default {
           e.addressName2 = '';
           e.shipmentPrice = '';
           e.transactionPrice = '';
-          e.unitPrice = '';
+          // e.unitPrice = '';
           e.businessType = '';
           e.contact2 = '';
           e.contactPhone2 = '';
+          e.specified = ''; // 调度者或司机几人
           mgoods.push({
             ...this.baseData(e)
           });
@@ -839,7 +811,7 @@ export default {
               // 成交单价
               if (freight.ruleItemCode === '20') {
                 e.transactionPrice = freight.ruleValue;
-                e.unitPrice = freight.ruleValue;
+                // e.unitPrice = freight.ruleValue;
               }
             });
 

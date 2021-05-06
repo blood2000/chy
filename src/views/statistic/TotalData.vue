@@ -6,8 +6,8 @@
         <p>运单总数(万)</p>
       </div>
       <div class="s-container__box__content bottom ly-flex-pack-center">
-        <p>120000</p>
-        <p>242000</p>
+        <p><count-to :end-val="24501" /></p>
+        <p><count-to :end-val="25151" /></p>
       </div>
       <Time class="s-timer" />
     </div>
@@ -15,9 +15,11 @@
 </template>
 
 <script>
+import CountTo from '@/components/CountTo';
 import Time from './components/time';
 export default {
   components: {
+    CountTo,
     Time
   }
 };
