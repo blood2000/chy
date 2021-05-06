@@ -15,9 +15,13 @@
         <div class="login-h6_t">你好，欢迎登录</div>
 
         <div class="login-box">
-          <div v-show="false" class="login-msg">
+          <div v-if="false" class="login-msg">
             <i class="el-icon-warning" style="color:#faad14; margin:0 8px 0 16px" />
             非企业账户不能登录
+          </div>
+          <div v-if="true" class="login-errmsg">
+            <i class="el-icon-remove" style="color:rgba(246, 89, 57, 1); margin:0 8px 0 16px" />
+            账号或密码错误，请重新输入
           </div>
         </div>
 
@@ -216,7 +220,7 @@
 
 
     <video autoplay muted loop>
-      <source src="https://t.alipayobjects.com/images/T1T78eXapfXXXXXXXX.mp4" type="video/mp4">
+      <source src="../assets/images/mp4/【2048】202104271143janv2_2021429115831.mp4" type="video/mp4">
     </video>
   </div>
 </template>
@@ -428,7 +432,8 @@ export default {
 <style rel="stylesheet/scss" lang="scss">
 .login {
   display: flex;
-  justify-content: center;
+  // justify-content: center;
+  justify-content: flex-end;
   align-items: center;
   height: 100%;
   // background-image: url("../assets/images/login-background.jpg");
@@ -450,17 +455,19 @@ export default {
   }
 
   .m_log{
-    width: 9.4vw;
+    // width: 9.4vw;
+    width: 182px;
     top: 6.2vh;
     left: 4.1vw;
   }
   .login_box{
     width: 376px;
-    height: 490px;
-    margin: auto;
-    top: 0;
-    bottom: 0;
-    right: 15vw;
+    // height: 490px;
+    // margin: auto;
+    // top: 0;
+    // bottom: 0;
+    // right: 15vw;
+    margin-right: 15vw;
     border-radius: 5px;
     background: rgba(37, 37, 37, .5);
   }
@@ -532,6 +539,12 @@ export default {
   &-msg{
     background: #FFFBE6;
     border: 1px solid #FAAD14;
+    color: #282828;
+    border-radius: 4px;
+  }
+  &-errmsg{
+    background: #FCD5D5;
+    border: 1px solid #F65939;
     color: #282828;
     border-radius: 4px;
   }
