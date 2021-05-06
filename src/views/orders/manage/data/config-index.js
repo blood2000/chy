@@ -128,13 +128,7 @@ export default [
     label: '货集码地址'
   },
 
-  {
-    prop: 'createTime',
-    isShow: true,
-    width: 120,
-    tooltip: true,
-    label: '发布时间'
-  },
+
   // {
   //   prop: 'isDel',
   //   isShow: true,
@@ -186,7 +180,7 @@ export default [
   },
   {
     prop: 'status',
-    isShow: true,
+    isShow: false,
     width: 120,
     tooltip: true,
     label: '状态'
@@ -218,6 +212,13 @@ export default [
     width: 120,
     tooltip: true,
     label: '配载方式'
+  },
+  {
+    prop: 'createTime',
+    isShow: true,
+    width: 120,
+    tooltip: true,
+    label: '发布时间'
   },
   {
     prop: 'updateTime',
