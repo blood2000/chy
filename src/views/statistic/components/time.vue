@@ -2,7 +2,7 @@
   <div class="s-choose-time">
     {{ currentTime }}
     <ul class="time-list">
-      <li v-for="item in timeList" :key="item.code" @click="changeTime(item)">{{ item.name }}</li>
+      <li v-for="item in timeList" :key="item.code" :class="{active: currentTime === item.name}" @click="changeTime(item)">{{ item.name }}</li>
     </ul>
   </div>
 </template>
@@ -41,6 +41,7 @@ export default {
   font-family: 'PingFang Medium';
   font-weight: 500;
   color: rgba(196, 238, 255, 0.8);
+  cursor: pointer;
   &::after{
     display: none;
     z-index: 1;
@@ -67,8 +68,14 @@ export default {
       text-align: center;
       cursor: pointer;
       color: rgba(196, 238, 255, 0.8);
+      transition: all 0.2s;
       &:not(:last-child){
         border-bottom: 0.02rem solid rgba(30, 74, 132, 1);
+      }
+      &.active{
+        font-weight: bold;
+        color: #01E3FF;
+        transition: all 0.2s;
       }
     }
   }
