@@ -232,9 +232,9 @@
           <span>{{ selectDictLabel(isClassOptions, row.isClass) }}</span>
         </template>
 
-        <template #isDel="{row}">
+        <!-- <template #isDel="{row}">
           <span>{{ selectDictLabel(isDelTypeOptions, row.isDel) }}</span>
-        </template>
+        </template> -->
 
         <template #businessType="{row}">
           <span>{{ selectDictLabel(dicts['businessTypes'], row.businessType) }}</span>
@@ -243,7 +243,7 @@
         <template #number_remainingNumber="{row}">
           <span>{{ (row.number - 0) - (row.remainingNumber - 0) }}</span>
         </template>
-        <!-- 已抢单量 -->
+        <!-- 可抢单量 -->
         <template #remainingNumber="{row}">
           <span>{{ row.remainingNumber || '不限' }}</span>
         </template>
@@ -508,10 +508,10 @@ export default {
         { dictLabel: '是', dictValue: 1 }
       ],
       // isDel	是否删除 0.正常 1.删除	boolean
-      isDelTypeOptions: [
-        { dictLabel: '正常', dictValue: 0 },
-        { dictLabel: '删除', dictValue: 1 }
-      ],
+      // isDelTypeOptions: [
+      //   { dictLabel: '正常', dictValue: 0 },
+      //   { dictLabel: '删除', dictValue: 1 }
+      // ],
       // isDispatch	是否已受理 0未受理，1已受理	boolean
       // isDispatchTypeOptions: [
       //   { dictLabel: '未受理', dictValue: false },
@@ -769,7 +769,7 @@ export default {
           e.addressName2 = '';
           e.shipmentPrice = '';
           e.transactionPrice = '';
-          e.unitPrice = '';
+          // e.unitPrice = '';
           e.businessType = '';
           e.contact2 = '';
           e.contactPhone2 = '';
@@ -839,7 +839,7 @@ export default {
               // 成交单价
               if (freight.ruleItemCode === '20') {
                 e.transactionPrice = freight.ruleValue;
-                e.unitPrice = freight.ruleValue;
+                // e.unitPrice = freight.ruleValue;
               }
             });
 
