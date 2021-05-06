@@ -19,10 +19,10 @@
             <i class="el-icon-warning" style="color:#faad14; margin:0 8px 0 16px" />
             非企业账户不能登录
           </div>
-          <div v-if="false" class="login-errmsg">
+          <!-- <div v-if="false" class="login-errmsg">
             <i class="el-icon-remove" style="color:rgba(246, 89, 57, 1); margin:0 8px 0 16px" />
             账号或密码错误，请重新输入
-          </div>
+          </div> -->
         </div>
 
         <div class="login-mform">
@@ -251,8 +251,8 @@ export default {
         captcha: ''
       },
       loginForm3: {
-        telno: '',
-        password: ''
+        telno: '18305984285',
+        password: 'admin123'
       },
 
 
@@ -329,9 +329,6 @@ export default {
             Cookies.set('password', encrypt(this.loginForm.password), { expires: 30 });
             Cookies.set('rememberMe', this.loginForm.rememberMe, { expires: 30 });
           } else {
-            // Cookies.remove('username');
-            // Cookies.remove('password');
-            // Cookies.remove('rememberMe');
             this._remove();
           }
 
@@ -345,7 +342,7 @@ export default {
       });
     },
 
-    /* 手机登录 */
+    /* 短信登录 */
     handleLogin2() {
       this.$refs.loginForm2.validate(valid => {
         if (valid) {
@@ -362,12 +359,12 @@ export default {
             this.$router.push({ path: this.redirect || '/' }).catch(() => {});
           }).catch(() => {
             this.loading = false;
-            this.active = '1';
           });
         }
       });
     },
 
+    /* 密码登录 */
     handleLogin3() {
       this.$refs.loginForm3.validate(valid => {
         if (valid) {
@@ -384,7 +381,6 @@ export default {
             this.$router.push({ path: this.redirect || '/' }).catch(() => {});
           }).catch(() => {
             this.loading = false;
-            this.active = '3';
           });
         }
       });

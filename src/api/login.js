@@ -44,7 +44,7 @@ export function getCodeImg() {
 // t发送短信
 export function send_sms(telno, type) {
   return request({
-    url: '/system/send_sms',
+    url: '/auth/send_sms',
     method: 'post',
     data: { telno, type }
   });
@@ -53,7 +53,7 @@ export function send_sms(telno, type) {
 // 手机号短信登陆
 export function sms_login(telno, captcha) {
   return request({
-    url: '/system/sms_login',
+    url: '/auth/sms_login',
     method: 'post',
     data: { telno, captcha }
   });
@@ -62,7 +62,7 @@ export function sms_login(telno, captcha) {
 // 手机号+密码登录
 export function pwd_login(telno, password) {
   return request({
-    url: '/system/pwd_login',
+    url: '/auth/pwd_login',
     method: 'post',
     data: { telno, password }
   });
