@@ -6,14 +6,14 @@
       <div class="s-container__box__content">
         <div class="content">
           <p class="label">货单总数(万)</p>
-          <p class="text">677</p>
+          <p class="text"><count-to :end-val="677" /></p>
         </div>
       </div>
       <div class="s-container__box__content ly-flex-pack-start">
         <div class="content">
           <p class="label">今日新增货单</p>
           <p class="text blod">
-            126
+            <count-to :end-val="126" />
             <span class="arow_down" />
             <span class="value_down">12.6%</span>
           </p>
@@ -22,7 +22,7 @@
         <div class="card-content ly-flex-pack-justify">
           <div class="card ly-flex-v ly-flex-pack-justify">
             <p class="label">已发布</p>
-            <p class="text">2333</p>
+            <p class="text"><count-to :end-val="2333" /></p>
           </div>
         </div>
       </div>
@@ -33,21 +33,21 @@
       <div class="s-container__box__content ly-flex-pack-start">
         <div class="content">
           <p class="label">运单总数(万)</p>
-          <p class="text">677</p>
+          <p class="text"><count-to :end-val="677" /></p>
         </div>
         <!-- card -->
         <div class="card-content ly-flex-pack-justify">
           <div class="card ly-flex-v ly-flex-pack-justify">
             <p class="label">已接单</p>
-            <p class="text">2333</p>
+            <p class="text"><count-to :end-val="2333" /></p>
           </div>
           <div class="card ly-flex-v ly-flex-pack-justify">
             <p class="label">已装货</p>
-            <p class="text">2333</p>
+            <p class="text"><count-to :end-val="2333" /></p>
           </div>
           <div class="card ly-flex-v ly-flex-pack-justify">
             <p class="label">已卸货</p>
-            <p class="text">2333</p>
+            <p class="text"><count-to :end-val="2333" /></p>
           </div>
         </div>
       </div>
@@ -55,7 +55,7 @@
         <div class="content">
           <p class="label">今日新增运单</p>
           <p class="text blod">
-            126
+            <count-to :end-val="128" />
             <span class="arow_up" />
             <span class="value_up">12.6%</span>
           </p>
@@ -64,15 +64,15 @@
         <div class="card-content ly-flex-pack-justify">
           <div class="card ly-flex-v ly-flex-pack-justify">
             <p class="label">已复核</p>
-            <p class="text">2333</p>
+            <p class="text"><count-to :end-val="2333" /></p>
           </div>
           <div class="card ly-flex-v ly-flex-pack-justify">
             <p class="label">已结算</p>
-            <p class="text">2333</p>
+            <p class="text"><count-to :end-val="2333" /></p>
           </div>
           <div class="card ly-flex-v ly-flex-pack-justify">
             <p class="label">已打款</p>
-            <p class="text">2333</p>
+            <p class="text"><count-to :end-val="2333" /></p>
           </div>
         </div>
       </div>
@@ -81,8 +81,12 @@
 </template>
 
 <script>
-export default {
+import CountTo from '@/components/CountTo';
 
+export default {
+  components: {
+    CountTo
+  }
 };
 </script>
 

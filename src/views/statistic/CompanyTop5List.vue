@@ -13,7 +13,7 @@
           <div class="content__box">
             <p class="label">总货单量(万)</p>
             <p class="text">
-              16.7
+              <count-to :end-val="16.7" :decimal-places="1" />
               <span class="arow_down" />
               <span class="value_down">12.6%</span>
             </p>
@@ -21,7 +21,7 @@
           <div class="content__box">
             <p class="label">总货单量(万)</p>
             <p class="text">
-              16.7
+              <count-to :end-val="25.1" :decimal-places="1" />
               <span class="arow_up" />
               <span class="value_up">12.6%</span>
             </p>
@@ -29,7 +29,7 @@
           <div class="content__box">
             <p class="label">总货单量(万)</p>
             <p class="text">
-              16.7
+              <count-to :end-val="18.8" :decimal-places="1" />
               <span class="arow_up" />
               <span class="value_up">12.6%</span>
             </p>
@@ -41,7 +41,12 @@
 </template>
 
 <script>
+import CountTo from '@/components/CountTo';
+
 export default {
+  components: {
+    CountTo
+  },
   data() {
     return {
       dataList: [{}, {}, {}, {}, {}]

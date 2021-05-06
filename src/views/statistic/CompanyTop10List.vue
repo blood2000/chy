@@ -11,7 +11,7 @@
           <div class="line">
             <div class="value" />
           </div>
-          <div class="text">3000</div>
+          <div class="text"><count-to :end-val="3000" /></div>
         </li>
       </ul>
     </div>
@@ -19,7 +19,12 @@
 </template>
 
 <script>
+import CountTo from '@/components/CountTo';
+
 export default {
+  components: {
+    CountTo
+  },
   data() {
     return {
       dataList: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
