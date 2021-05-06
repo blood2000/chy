@@ -14,9 +14,6 @@
           @change="loadTimeChoose"
         />
       </el-form-item>
-      <el-form-item label="装货重量(吨)" prop="loadWeight">
-        <el-input-number v-model="form.loadWeight" placeholder="请输入装货过磅重量" :disabled="disable" controls-position="right" :min="0" style="width:90%;" />
-      </el-form-item>
       <el-form-item label="货物" prop="goodsCode">
         <el-select
           v-model="form.goodsCode"
@@ -35,6 +32,9 @@
             :value="dict.code"
           />
         </el-select>
+      </el-form-item>
+      <el-form-item label="装货重量(吨)" prop="loadWeight">
+        <el-input-number v-model="form.loadWeight" placeholder="请输入装货过磅重量" :disabled="disable" controls-position="right" :min="0" style="width:90%;" />
       </el-form-item>
       <el-form-item label="装货地址" prop="loadAddressCode">
         <el-select

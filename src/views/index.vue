@@ -232,7 +232,7 @@
             <div class="g-color-bigtitle g-strong g-title-medium">平台概览</div>
             <div class="g-flex g-aligncenter margintop5">
               <div class="g-flex g-aligncenter g-flexdirection" style="width:25%">
-                <el-progress type="circle" :percentage="80" :stroke-width="20" width="160" color="#409EFF" :show-text="false" />
+                <el-progress type="circle" :percentage="80" :stroke-width="20" :width="160" color="#409EFF" :show-text="false" />
                 <div class="platform-num g-flex g-aligncenter g-flexdirection">
                   <div class="g-color-title g-strong g-title-medium">4514</div>
                   <div class="g-color-title">平台货主数</div>
@@ -254,7 +254,7 @@
                 </div>
               </div>
               <div class="g-flex g-aligncenter g-flexdirection" style="width:25%">
-                <el-progress type="circle" :percentage="70" :stroke-width="20" width="160" color="#40CBFF" :show-text="false" />
+                <el-progress type="circle" :percentage="70" :stroke-width="20" :width="160" color="#40CBFF" :show-text="false" />
                 <div class="platform-num g-flex g-aligncenter g-flexdirection">
                   <div class="g-color-title g-strong g-title-medium">15067</div>
                   <div class="g-color-title">平台司机数</div>
@@ -276,7 +276,7 @@
                 </div>
               </div>
               <div class="g-flex g-aligncenter g-flexdirection" style="width:25%">
-                <el-progress type="circle" :percentage="30" :stroke-width="20" width="160" color="#67C23A" :show-text="false" />
+                <el-progress type="circle" :percentage="30" :stroke-width="20" :width="160" color="#67C23A" :show-text="false" />
                 <div class="platform-num g-flex g-aligncenter g-flexdirection">
                   <div class="g-color-title g-strong g-title-medium">15099</div>
                   <div class="g-color-title">平台车辆数</div>
@@ -290,7 +290,7 @@
                 </div>
               </div>
               <div class="g-flex g-aligncenter g-flexdirection" style="width:25%">
-                <el-progress type="circle" :percentage="60" :stroke-width="20" width="160" color="#FFBB00" :show-text="false" />
+                <el-progress type="circle" :percentage="60" :stroke-width="20" :width="160" color="#FFBB00" :show-text="false" />
                 <div class="platform-num g-flex g-aligncenter g-flexdirection">
                   <div class="g-color-title g-strong g-title-medium">13067</div>
                   <div class="g-color-title">平台调度者数</div>
