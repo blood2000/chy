@@ -1457,4 +1457,6 @@ export default {
 .triangleR::after{border-right-color: #409EFF;border-width:20px;}
 .triangleT::after{border-top-color: green;border-width:20px;}
 .triangleL::after{border-left-color: yellow;border-width:20px;}
+
+
 </style>

@@ -178,6 +178,7 @@
       :visible.sync="open"
       width="80%"
       append-to-body
+      class="m_elDialog"
     >
       <open-dialog v-if="open" :cb-data="[...formData['tin6_' + actionIndex]]" :action-index="actionIndex" @handleSelectionChange="handleSelectionChange" />
     </el-dialog>
@@ -581,6 +582,11 @@ export default {
       return new Promise((resolve, reject) => {
         this.$refs['elForm'].validate((valid) => {
           if (valid) {
+            if (this.formData.tin5 === '1' && !this.formData.tin6_1.length && !this.formData.tin6_2.length) {
+              this.msgInfo('请选择指定联系人');
+              return;
+            }
+
             const tin6_1 = this.formData.tin6_1.map((e) => {
               return {
                 driverInfoCode: '',
@@ -780,5 +786,10 @@ export default {
       background: url('~@/assets/images/order_xiabiao.png') no-repeat;
       background-size: 100% 100%;
     }
+}
+</style>
+<style>
+.m_elDialog.el-dialog__wrapper .el-dialog .el-dialog__body{
+      max-height: none;
 }
 </style>
