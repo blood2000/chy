@@ -194,7 +194,7 @@
           placeholder="请选择上传人员信用信息时间"
         />
       </el-form-item>
-      <el-form-item label="是否上传企业" prop="isReportEnterprise">
+      <!-- <el-form-item label="是否上传企业" prop="isReportEnterprise">
         <el-select v-model="form.isReportEnterprise" class="width90" clearable filterable>
           <el-option
             v-for="dict in isOption"
@@ -213,7 +213,7 @@
           value-format="yyyy-MM-dd"
           placeholder="请选择上传企业时间"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="是否冻结" prop="isFreeze">
         <el-select
           v-model="form.isFreeze"
@@ -753,8 +753,8 @@ export default {
         isReportPerson: null,
         isReportPersonDate: null,
         issuingOrganizations: null,
-        isReportEnterprise: null,
-        isReportEnterpriseDate: null,
+        // isReportEnterprise: null,
+        // isReportEnterpriseDate: null,
         workLicenseProvinceCode: null,
         workLicenseProvinceName: null,
         authStatus: 0,
