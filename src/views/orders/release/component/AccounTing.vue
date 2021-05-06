@@ -48,13 +48,12 @@
             label="规则: "
             prop="ruleItemId"
             label-width="60px"
-            style="width:260px;"
+            style="width:280px;"
           >
             <el-select
               v-model="formData.ruleItemId"
               placeholder="请选择规则"
               clearable
-              :style="{ width: '200px' }"
               @change="handleRuleItemId"
             >
               <el-option

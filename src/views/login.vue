@@ -19,7 +19,7 @@
             <i class="el-icon-warning" style="color:#faad14; margin:0 8px 0 16px" />
             非企业账户不能登录
           </div>
-          <div v-if="true" class="login-errmsg">
+          <div v-if="false" class="login-errmsg">
             <i class="el-icon-remove" style="color:rgba(246, 89, 57, 1); margin:0 8px 0 16px" />
             账号或密码错误，请重新输入
           </div>
