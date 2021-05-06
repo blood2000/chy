@@ -169,7 +169,7 @@
       <el-row :gutter="20">
         <el-col :span="11">
           <el-form-item label="税点(%)" prop="texPoint">
-            <el-input-number v-model="form.texPoint" controls-position="right" :precision="2" placeholder="请输入税点" :step="1" :min="0" :max="100" clearable @input="changeTextPoint" />
+            <el-input-number v-model="form.texPoint" controls-position="right" :precision="2" placeholder="请输入税点" :step="1" :min="0" :max="99.99" clearable @input="changeTextPoint" />
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -184,7 +184,7 @@
                 <ul slot="content">
                   <li class="g-text">一票制：调度费点数 = 税点</li>
                   <li class="g-text">二票制：调度费点数 = 税点</li>
-                  <li class="g-text">非一票制：调度费点数 = [税点/(100-税点)]*100%</li>
+                  <li class="g-text">非一票制：调度费点数 = [税点/(100-税点)]*100</li>
                 </ul>
               </el-tooltip>
               调度费点数(%)
@@ -473,8 +473,12 @@ export default {
       } else if (this.form.ticketType === '2') { // 二票制：服务费税率(%)、调度费点数=原来的『服务费比例』备注：运单结算使用的比例
         this.$set(this.form, 'dispatchPoints', value);
       } else if (this.form.ticketType === '3') { // 非一票制：调度费点数=原来的『税点(%) 』备注：运单结算使用的比例是「合同税点/（1-合同税点）」
-        this.$set(this.form, 'dispatchPoints', ((value / (100 - value)) * 100).toFixed(2));
         this.$set(this.form, 'serviceRate', '');// 服务费税率
+        if (value === '' || value === undefined || value === null) {
+          this.$set(this.form, 'dispatchPoints', undefined);
+        } else {
+          this.$set(this.form, 'dispatchPoints', ((value / (100 - value)) * 100).toFixed(2));
+        }
       }
     },
     changeTicketType(value) {
@@ -485,8 +489,11 @@ export default {
         this.$set(this.form, 'dispatchPoints', this.form.texPoint);
       } else if (value === '3') { // 非一票制：调度费点数=原来的『税点(%) 』备注：运单结算使用的比例是「合同税点/（1-合同税点）」
         this.$set(this.form, 'serviceRate', '');// 服务费税率
-        if (this.form.texPoint === '' || this.form.texPoint === undefined || this.form.texPoint === null) return;
-        this.$set(this.form, 'dispatchPoints', ((this.form.texPoint / (100 - this.form.texPoint)) * 100).toFixed(2));
+        if (this.form.texPoint === '' || this.form.texPoint === undefined || this.form.texPoint === null) {
+          this.$set(this.form, 'dispatchPoints', undefined);
+        } else {
+          this.$set(this.form, 'dispatchPoints', ((this.form.texPoint / (100 - this.form.texPoint)) * 100).toFixed(2));
+        }
       }
     },
     changeCompany(item) {
