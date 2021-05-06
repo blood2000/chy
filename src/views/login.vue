@@ -153,8 +153,8 @@
           <div class="ly-flex-pack-justify">
             <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;color:rgba(255, 255, 255, .6);">记住密码</el-checkbox>
             <div style="width:50%;" class="ly-t-right login-mform-btn">
-              <span class="shou">注册</span>
-              <span class="login-mform-btn-s">|</span>
+              <!-- <span class="shou">注册</span>
+              <span class="login-mform-btn-s">|</span> -->
               <span class="shou">忘记密码</span>
             </div>
           </div>
