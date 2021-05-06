@@ -150,7 +150,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <RefactorTable ref="multipleTable" :loading="loading" :data="withdrawalList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <RefactorTable ref="multipleTable" :loading="loading" :data="withdrawalList" :table-columns-config="tableColumnsConfig" :selectable-fn="selectableFn" @selection-change="handleSelectionChange">
         <!-- 转账渠道 -->
         <template #payStatus="{row}">
           <span>{{ selectDictLabel(payStatusOption, row.payStatus) }}</span>
@@ -298,6 +298,13 @@ export default {
       this.ids = selection.map(item => item.id);
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
+    },
+    selectableFn(row, index) {
+      if (row.status === 0) {
+        return true;
+      } else {
+        return false;
+      }
     }
   }
 };
