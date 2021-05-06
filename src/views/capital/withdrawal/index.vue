@@ -135,7 +135,7 @@
             @click="handleImport"
           >网商批量提现</el-button>
         </el-col>
-        <el-col :span="1.5">
+        <!-- <el-col :span="1.5">
           <el-button
             type="success"
             icon="el-icon-download"
@@ -143,7 +143,7 @@
             :disabled="multiple"
             @click="handleRefreshStatus"
           >更新网商提现状态</el-button>
-        </el-col>
+        </el-col> -->
         <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
