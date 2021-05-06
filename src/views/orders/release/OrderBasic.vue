@@ -489,8 +489,9 @@ export default {
       this.tin2_Option = data;
       if (!this.isMultiGoods) {
         this.formData.tin2_2 = this.tin2_Option[0] ? this.tin2_Option[0].dictValue : this.formData.tin2;
-
-        // console.log(this.formData.tin2_2);
+        this.formData.tin2_1 = [];
+      } else {
+        this.formData.tin2_2 = '';
       }
 
       if (!tin3item) return;
