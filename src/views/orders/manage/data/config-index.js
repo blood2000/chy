@@ -106,13 +106,13 @@ export default [
     tooltip: true,
     label: '成交单价'
   },
-  {
-    prop: 'unitPrice',
-    isShow: true,
-    width: 120,
-    tooltip: true,
-    label: '承运单价'
-  },
+  // {
+  //   prop: 'unitPrice',
+  //   isShow: true,
+  //   width: 120,
+  //   tooltip: true,
+  //   label: '承运单价'
+  // },
   {
     prop: 'businessType',
     isShow: true,
@@ -135,13 +135,13 @@ export default [
     tooltip: true,
     label: '发布时间'
   },
-  {
-    prop: 'isDel',
-    isShow: true,
-    width: 120,
-    tooltip: true,
-    label: '是否删除'
-  },
+  // {
+  //   prop: 'isDel',
+  //   isShow: true,
+  //   width: 120,
+  //   tooltip: true,
+  //   label: '是否删除'
+  // },
   {
     prop: 'isPublic',
     isShow: true,
