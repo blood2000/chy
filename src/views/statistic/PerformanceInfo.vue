@@ -4,12 +4,12 @@
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <div class="s-container__box__content">
         <p class="label">交易总额(亿)</p>
-        <p class="text">0.211</p>
+        <p class="text"><count-to :end-val="0.211" :decimal-places="3" /></p>
       </div>
       <div class="s-container__box__content">
         <p class="label">今日新增交易</p>
         <p class="text blod">
-          0.211
+          <count-to :end-val="0.211" :decimal-places="3" />
           <span class="arow_down" />
           <span class="value_down">12.6%</span>
         </p>
@@ -18,12 +18,12 @@
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <div class="s-container__box__content">
         <p class="label">开票总额(亿)</p>
-        <p class="text">0.211</p>
+        <p class="text"><count-to :end-val="0.211" :decimal-places="3" /></p>
       </div>
       <div class="s-container__box__content">
         <p class="label">今日新增开票</p>
         <p class="text blod">
-          0.211
+          <count-to :end-val="0.211" :decimal-places="3" />
           <span class="arow_up" />
           <span class="value_up">12.6%</span>
         </p>
@@ -32,12 +32,12 @@
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <div class="s-container__box__content">
         <p class="label">运费总额(亿)</p>
-        <p class="text">0.211</p>
+        <p class="text"><count-to :end-val="0.211" :decimal-places="3" /></p>
       </div>
       <div class="s-container__box__content">
         <p class="label">今日新增运费</p>
         <p class="text blod">
-          0.211
+          <count-to :end-val="0.211" :decimal-places="3" />
           <span class="arow_up" />
           <span class="value_up">12.6%</span>
         </p>
@@ -47,8 +47,12 @@
 </template>
 
 <script>
-export default {
+import CountTo from '@/components/CountTo';
 
+export default {
+  components: {
+    CountTo
+  }
 };
 </script>
 
