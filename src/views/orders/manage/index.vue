@@ -243,7 +243,7 @@
         <template #number_remainingNumber="{row}">
           <span>{{ (row.number - 0) - (row.remainingNumber - 0) }}</span>
         </template>
-        <!-- 已抢单量 -->
+        <!-- 可抢单量 -->
         <template #remainingNumber="{row}">
           <span>{{ row.remainingNumber || '不限' }}</span>
         </template>
