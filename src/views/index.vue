@@ -150,27 +150,27 @@
                       <span class="g-color-blue marginright5">●</span>今日已装货
                       <span class="g-color-title g-strong g-title-medium">334</span>单
                     </div>
-                    <el-progress :percentage="70" />
+                    <el-progress class="margintop5" :percentage="70" :show-text="false" />
                     <div class="g-color-title g-title-smaller margintop20">
                       <span class="g-color-blue marginright5">●</span>今日已卸货
                       <span class="g-color-title g-strong g-title-medium">200</span>单
                     </div>
-                    <el-progress :percentage="60" />
+                    <el-progress class="margintop5" :percentage="60" :show-text="false" />
                     <div class="g-color-title g-title-smaller margintop20">
                       <span class="g-color-blue marginright5">●</span>今日已复核
                       <span class="g-color-title g-strong g-title-medium">160</span>单
                     </div>
-                    <el-progress :percentage="50" />
+                    <el-progress class="margintop5" :percentage="50" :show-text="false" />
                     <div class="g-color-title g-title-smaller margintop20">
                       <span class="g-color-blue marginright5">●</span>今日已结算
                       <span class="g-color-title g-strong g-title-medium">120</span>单
                     </div>
-                    <el-progress :percentage="40" />
+                    <el-progress class="margintop5" :percentage="40" :show-text="false" />
                     <div class="g-color-title g-title-smaller margintop20">
                       <span class="g-color-blue marginright5">●</span>今日已打款
                       <span class="g-color-title g-strong g-title-medium">100</span>单
                     </div>
-                    <el-progress :percentage="30" />
+                    <el-progress class="margintop5" :percentage="30" :show-text="false" />
                   </div>
                 </div>
               </div>
@@ -452,6 +452,7 @@ export default {
   width: 275px;
 }
 .notice-tip{
+  margin-top: 10px;
   font-family: PingFang SC;
   height: 80px;
   overflow: hidden; //超出隐藏

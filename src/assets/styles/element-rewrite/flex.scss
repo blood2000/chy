@@ -1,6 +1,16 @@
 .g-flex{
   display: flex;
 }
+.g-flexcenter{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.g-directioncenter{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
 .g-aligncenter{
   align-items: center;
 } 
