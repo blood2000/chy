@@ -27,7 +27,7 @@
       </div>
     </div>
 
-    <div v-for="goods in tabs" :key="goods.activeName">
+    <div v-for="(goods,index) in tabs" :key="goods.activeName + index">
       <div v-show="activeName === goods.activeName">
         <el-form :model="goods">
           <el-form-item label="货物单价: ">

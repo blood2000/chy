@@ -42,8 +42,8 @@
         >
           <el-select v-model="formData[item.myName]" :placeholder="`请输入${item.cnName}`" :style="{ width: '200px' }" @change="change()">
             <el-option
-              v-for="dict in item.Option"
-              :key="dict.dictValue"
+              v-for="(dict,index1) in item.Option"
+              :key="dict.dictValue + index1"
               :label="dict.dictLabel"
               :value="dict.dictValue"
             />
@@ -61,8 +61,8 @@
             @change="change()"
           >
             <el-radio
-              v-for="dict in item.Option"
-              :key="dict.dictValue"
+              v-for="(dict, index2) in item.Option"
+              :key="dict.dictValue + index2"
               :label="dict.dictValue"
             >{{ dict.dictLabel }}</el-radio>
           </el-radio-group>
