@@ -866,7 +866,7 @@ export default {
           if (data.valid_to) {
             if (data.valid_to === '长期') {
               this.$set(this.form, 'identificationEffective', true);
-            } else {
+            } else if (data.valid_to !== '') {
               this.$set(this.form, 'identificationEndTime', data.valid_to);
             }
           }
@@ -878,7 +878,7 @@ export default {
           if (data.valid_to) {
             if (data.valid_to === '长期') {
               this.$set(this.form, 'validPeriodAlways', true);
-            } else {
+            } else if (data.valid_to !== '') {
               this.$set(this.form, 'validPeriodTo', data.valid_to);
             }
           }
