@@ -7,7 +7,7 @@
           <el-row>
             <el-col :span="8">
               <el-form-item label="货源单号" prop="mainOrderCode">
-                <el-input v-model="form.mainOrderCode" placeholder="请输入货源单号" class="width90" @change="getOrderDetail" />
+                <el-input v-model="form.mainOrderCode" placeholder="请输入货源单号" class="width90" clearable @change="getOrderDetail" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -166,7 +166,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="车辆代码" prop="classificationCode">
+              <el-form-item label="车牌类型" prop="classificationCode">
                 <el-input v-model="form.classificationCode" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
@@ -208,7 +208,10 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="运单重量" prop="loadWeight">
+              <el-form-item v-if="!stowage" label="运单车数" prop="loadWeight">
+                <el-input-number v-model="form.loadWeight" placeholder="请输入运单重量" controls-position="right" :min="0" class="width90" @change="inputWeight" />
+              </el-form-item>
+              <el-form-item v-if="stowage" label="运单重量(吨/立方)" prop="loadWeight">
                 <el-input-number v-model="form.loadWeight" placeholder="请输入运单重量" controls-position="right" :min="0" class="width90" @change="inputWeight" />
               </el-form-item>
             </el-col>
@@ -458,12 +461,16 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid) {
           if (this.form.loadWeight > 0) {
-            extra(this.form).then(response => {
-              this.msgSuccess('运单补录成功');
-              this.reset();
-            });
+            if (!this.stowage && this.form.loadWeight !== 1) {
+              this.msgWarning('运单车数只能为1车！');
+            } else {
+              extra(this.form).then(response => {
+                this.msgSuccess('运单补录成功');
+                this.reset();
+              });
+            }
           } else {
-            this.msgWarning('运单重量必须大于0！');
+            this.msgWarning('运单重量或车数必须大于0！');
           }
         }
         loading.close();
@@ -594,13 +601,16 @@ export default {
             return item.ruleItemCode === '19';
           });
           this.form.ruleFormulaDictValue = caculation.ruleValue;
+          setTimeout(() => {
+            this.calculate();
+          }, 100);
         });
-        this.calculate();
       }
     },
     // 获取运单总价
     calculate() {
-      if (this.form.shipmentPrice && this.form.loadWeight) {
+      console.log(this.form);
+      if (this.form.loadWeight && this.form.shipmentPrice) {
         const calculateBo = {
           driverAddFee: 0,
           driverReductionFee: 0,
@@ -612,6 +622,7 @@ export default {
           stowageStatus: this.form.stowageStatus,
           unloadWeight: this.form.loadWeight
         };
+        console.log(calculateBo);
         calculate(calculateBo).then(response => {
           console.log(response);
           this.form.wayBillPrice = response.data.shipperRealPay;
@@ -626,6 +637,8 @@ export default {
       this.form.stowageStatus = result.stowageStatus; // 配载方式赋值
       if (result.stowageStatus === '2') {
         this.stowage = false;
+        this.form.loadWeight = 1;
+        // this.calculate();
       } else {
         this.stowage = true;
       }
