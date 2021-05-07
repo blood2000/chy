@@ -43,6 +43,7 @@
         <el-switch v-model="form.isLoss" class="isLoss-switch" />
       </h5>
       <el-divider />
+      <div v-show="!form.isLoss" class="none-box">未计算路耗</div>
       <el-row v-if="form.isLoss">
         <el-form-item
           v-for="item in lossItem"
@@ -50,13 +51,14 @@
           :prop="item.code"
         >
           <label slot="label"><span style="color: #ff4949">* </span>{{ item.cnName }}</label>
-          <el-input-number v-if="item.showType === 1" v-model="lossItemObj[item.code]" :controls="false" :placeholder="`请输入${item.cnName}`" class="width-small" clearable />
+          <el-input-number v-if="item.showType === 1" v-model="lossItemObj[item.code]" :controls="false" :precision="2" :placeholder="`请输入${item.cnName}`" class="width-small" clearable />
           <template v-if="item.showType === 2">
-            <el-input-number v-model="lossItemObj[item.code].start" :controls="false" :min="currentRadio === 'DE' ? -10000000 : -100" :max="currentRadio === 'DE' ? 10000000 : 100" placeholder="最小值" class="width-small" clearable />
-            <span v-show="currentRadio && currentRadio !== ''" style="margin-left: 5px">{{ currentRadio === 'DE' ? 'kg' : '%' }}</span>
             -
-            <el-input-number v-model="lossItemObj[item.code].end" :controls="false" :min="currentRadio === 'DE' ? -10000000 : -100" :max="currentRadio === 'DE' ? 10000000 : 100" placeholder="最大值" class="width-small" clearable />
-            <span v-show="currentRadio && currentRadio !== ''" style="margin-left: 5px">{{ currentRadio === 'DE' ? 'kg' : '%' }}</span>
+            <el-input-number v-model="lossItemObj[item.code].start" :controls="false" :precision="2" :min="0" :max="currentRadio === 'DE' ? 100000 : 100" placeholder="最小值" class="width-small" clearable />
+            <span v-show="currentRadio && currentRadio !== ''" class="unit-span-l g-color-gray">{{ currentRadio === 'DE' ? 'kg' : '%' }}</span>
+            <span style="margin: 0 15px">至</span>
+            <el-input-number v-model="lossItemObj[item.code].end" :controls="false" :precision="2" :min="0" :max="currentRadio === 'DE' ? 100000 : 100" placeholder="最大值" class="width-small" clearable />
+            <span v-show="currentRadio && currentRadio !== ''" class="unit-span-r g-color-gray">{{ currentRadio === 'DE' ? 'kg' : '%' }}</span>
           </template>
           <el-select v-if="item.showType === 3" v-model="lossItemObj[item.code]" class="width-small" clearable filterable>
             <el-option
@@ -82,6 +84,7 @@
         <el-button class="fr" icon="el-icon-plus" type="primary" plain circle size="mini" @click="chooseItem('reduce')" />
       </h5>
       <el-divider />
+      <div v-show="form.reduceItem.length === 0" class="none-box">未添加项目</div>
       <el-row>
         <el-form-item v-for="item in form.reduceItem" :key="item.code" :label="item.cnName" :prop="item.code">
           <el-input-number v-if="item.showType === 1" v-model="form.reduceItemObj[item.code]" :min="0" :controls="false" :placeholder="`请输入${item.cnName}`" class="width-small mr3" clearable />
@@ -116,6 +119,7 @@
         <el-button class="fr" icon="el-icon-plus" type="primary" plain circle size="mini" @click="chooseItem('add')" />
       </h5>
       <el-divider />
+      <div v-show="form.addItem.length === 0" class="none-box">未添加项目</div>
       <el-row>
         <el-form-item v-for="item in form.addItem" :key="item.code" :label="item.cnName" :prop="item.code">
           <el-input-number v-if="item.showType === 1" v-model="form.addItemObj[item.code]" :min="0" :controls="false" :placeholder="`请输入${item.cnName}`" class="width-small mr3" clearable />
@@ -145,7 +149,7 @@
       </el-row>
     </el-form>
     <div v-if="isAdmin || form.platformType !== 1" slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="submitForm">确 定</el-button>
+      <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
     </div>
 
@@ -164,7 +168,6 @@
 <script>
 import { addRules, updateRules, getRuleItemList } from '@/api/enterprise/rules';
 import chooseItemDialog from './chooseItemDialog.vue';
-
 import { getUserInfo } from '@/utils/auth';
 
 const { isAdmin = false } = getUserInfo() || {};
@@ -186,6 +189,7 @@ export default {
   },
   data() {
     return {
+      buttonLoading: false,
       isAdmin,
       // 计算公式字典
       ruleTypeOptions: [],
@@ -216,7 +220,7 @@ export default {
       chooseItemOpen: false,
       chooseItemType: '',
       // 储存选择的 定额/定率
-      currentRadio: undefined
+      currentRadio: 'DE'
     };
   },
   computed: {
@@ -261,6 +265,7 @@ export default {
       this.lossItem.forEach(el => {
         this.fillFormItem(el, this.lossItemObj);
       });
+      this.setLossStartAndEndDefault();
       if (lossList) {
         lossList.forEach(el => {
           this.fillFormItem(el, this.lossItemObj);
@@ -298,6 +303,7 @@ export default {
      */
     submitForm() {
       this.$refs['form'].validate(valid => {
+        this.buttonLoading = true;
         // 构造参数
         const params = {
           name: this.form.name,
@@ -317,9 +323,12 @@ export default {
           if (this.form.code) {
             params.code = this.form.code;
             updateRules(params).then(response => {
+              this.buttonLoading = false;
               this.msgSuccess('修改成功');
               this.close();
               this.$emit('refresh');
+            }).catch(() => {
+              this.buttonLoading = false;
             });
           } else {
             if (this.shipmentCode) {
@@ -329,9 +338,12 @@ export default {
               params.platformType = this.form.platformType;
             }
             addRules(params).then(response => {
+              this.buttonLoading = false;
               this.msgSuccess('新增成功');
               this.close();
               this.$emit('refresh');
+            }).catch(() => {
+              this.buttonLoading = false;
             });
           }
         }
@@ -422,7 +434,8 @@ export default {
      * 表单重置
      */
     reset() {
-      this.currentRadio = '';
+      this.buttonLoading = false;
+      this.currentRadio = 'DE';
       this.form = {
         platformType: 2, // 1运营 2货主
         code: null,
@@ -523,6 +536,34 @@ export default {
      */
     radioChange(data) {
       this.currentRadio = data;
+      if (data === 'DL') {
+        this.setLossStartAndEnd(100);
+      }
+    },
+    /**
+     * 路耗容忍值-赋值
+     */
+    setLossStartAndEnd(val) {
+      this.lossItem.forEach(el => {
+        if (el.showType === 2) {
+          if (this.lossItemObj[el.code].start > 100) this.lossItemObj[el.code].start = val;
+          if (this.lossItemObj[el.code].end > 100) this.lossItemObj[el.code].end = val;
+        }
+      });
+    },
+    /**
+     * 路耗容忍值-设默认值
+     */
+    setLossStartAndEndDefault() {
+      this.lossItem.forEach(el => {
+        if (el.showType === 4) {
+          this.lossItemObj[el.code] = 'DE';
+        }
+        if (el.showType === 2) {
+          this.lossItemObj[el.code].start = 5;
+          this.lossItemObj[el.code].end = 5;
+        }
+      });
     }
   }
 };
@@ -549,6 +590,23 @@ export default {
   /* 计数器样式 */
   .el-input-number ::v-deep.el-input__inner{
     text-align: left;
+    padding-right: 30px;
+  }
+  /* 单位 */
+  .unit-span-l{
+    position: absolute;
+    left: 184px;
+    top: 0;
+  }
+  .unit-span-r{
+    position: absolute;
+    left: 428px;
+    top: 0;
+  }
+  /* 暂无数据 */
+  .none-box{
+    text-align: center;
+    padding: 10px 0 15px;
   }
 }
 </style>>
