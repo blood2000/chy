@@ -271,7 +271,13 @@ export default {
           if (data.name) this.form.teamLeaderName = data.name;
           if (data.number) this.form.identificationNumber = data.number;
           if (data.valid_from) this.$set(this.form, 'identificationBeginTime', data.valid_from);
-          if (data.valid_to) this.$set(this.form, 'identificationEndTime', data.valid_to);
+          if (data.valid_to) {
+            if (data.valid_to === '长期') {
+              this.$set(this.form, 'identificationEffective', true);
+            } else {
+              this.$set(this.form, 'identificationEndTime', data.valid_to);
+            }
+          }
           break;
         case 'business-license':
           break;
