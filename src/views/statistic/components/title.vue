@@ -66,6 +66,18 @@ export default {
     right: 0;
     background: linear-gradient(to right, rgba(50, 255, 255, 0), rgba(50, 255, 255, 0.2));
   }
+  .top_line{
+    &::before{
+      content: '';
+      position: absolute;
+      top: 0.05rem;
+      right: -0.3rem;
+      width: 4rem;
+      height: 0.6rem;
+      background: url('~@/assets/images/statistic/title_flash.gif');
+      background-size: 100% 100%;
+    }
+  }
   &.title_1, &.title_2, &.title_3, &.title_4, &.title_5{
     .top_line{
       position: absolute;

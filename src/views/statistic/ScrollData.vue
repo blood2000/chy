@@ -3,7 +3,11 @@
     <!-- 货单数据 -->
     <div class="s-container__card">
       <div class="herder">
-        <h5>货单数据</h5>
+        <h5>
+          货单数据
+          <span class="flash flash_left" />
+          <span class="flash flash_right" />
+        </h5>
       </div>
       <ScrollCard :data-list="orderList" />
     </div>
@@ -11,7 +15,11 @@
     <!-- 交易数据 -->
     <div class="s-container__card">
       <div class="herder">
-        <h5>交易数据</h5>
+        <h5>
+          交易数据
+          <span class="flash flash_left" />
+          <span class="flash flash_right" />
+        </h5>
       </div>
       <ScrollCard :data-list="dealList" />
     </div>
@@ -19,7 +27,11 @@
     <!-- 用户/车辆 -->
     <div class="s-container__card">
       <div class="herder">
-        <h5>用户、车辆数据</h5>
+        <h5>
+          用户、车辆数据
+          <span class="flash flash_left" />
+          <span class="flash flash_right" />
+        </h5>
       </div>
       <ScrollCard :data-list="userList" />
     </div>
@@ -85,6 +97,24 @@ export default {
           height: 0.35rem;
           background: url('~@/assets/images/statistic/min_title_right.png') no-repeat;
           background-size: 100% 100%;
+        }
+        >.flash{
+          display: block;
+          position: absolute;
+          top: 50%;
+          margin-top: -0.175rem;
+          width: 2.35rem;
+          height: 0.35rem;
+          &.flash_left{
+            left: -2.6rem;
+            background: url('~@/assets/images/statistic/min_title_left.gif') no-repeat;
+            background-size: 100% 100%;
+          }
+          &.flash_right{
+            right: -2.6rem;
+            background: url('~@/assets/images/statistic/min_title_right.gif') no-repeat;
+            background-size: 100% 100%;
+          }
         }
       }
     }
