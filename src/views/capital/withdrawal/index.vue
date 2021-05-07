@@ -287,6 +287,7 @@ export default {
       toCard(this.ids).then(response => {
         this.msgSuccess('操作成功');
         this.$refs.multipleTable.m2ToggleSelection();
+        this.getList();
       });
     },
     /** 更新网商提现状态 */
