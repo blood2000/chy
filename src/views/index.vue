@@ -150,27 +150,27 @@
                       <span class="g-color-blue marginright5">●</span>今日已装货
                       <span class="g-color-title g-strong g-title-medium">334</span>单
                     </div>
-                    <el-progress :percentage="70" />
+                    <el-progress class="margintop5" :percentage="70" :show-text="false" />
                     <div class="g-color-title g-title-smaller margintop20">
                       <span class="g-color-blue marginright5">●</span>今日已卸货
                       <span class="g-color-title g-strong g-title-medium">200</span>单
                     </div>
-                    <el-progress :percentage="60" />
+                    <el-progress class="margintop5" :percentage="60" :show-text="false" />
                     <div class="g-color-title g-title-smaller margintop20">
                       <span class="g-color-blue marginright5">●</span>今日已复核
                       <span class="g-color-title g-strong g-title-medium">160</span>单
                     </div>
-                    <el-progress :percentage="50" />
+                    <el-progress class="margintop5" :percentage="50" :show-text="false" />
                     <div class="g-color-title g-title-smaller margintop20">
                       <span class="g-color-blue marginright5">●</span>今日已结算
                       <span class="g-color-title g-strong g-title-medium">120</span>单
                     </div>
-                    <el-progress :percentage="40" />
+                    <el-progress class="margintop5" :percentage="40" :show-text="false" />
                     <div class="g-color-title g-title-smaller margintop20">
                       <span class="g-color-blue marginright5">●</span>今日已打款
                       <span class="g-color-title g-strong g-title-medium">100</span>单
                     </div>
-                    <el-progress :percentage="30" />
+                    <el-progress class="margintop5" :percentage="30" :show-text="false" />
                   </div>
                 </div>
               </div>
@@ -232,7 +232,7 @@
             <div class="g-color-bigtitle g-strong g-title-medium">平台概览</div>
             <div class="g-flex g-aligncenter margintop5">
               <div class="g-flex g-aligncenter g-flexdirection" style="width:25%">
-                <el-progress type="circle" :percentage="80" :stroke-width="20" width="160" color="#409EFF" :show-text="false" />
+                <el-progress type="circle" :percentage="80" :stroke-width="20" :width="160" color="#409EFF" :show-text="false" />
                 <div class="platform-num g-flex g-aligncenter g-flexdirection">
                   <div class="g-color-title g-strong g-title-medium">4514</div>
                   <div class="g-color-title">平台货主数</div>
@@ -254,7 +254,7 @@
                 </div>
               </div>
               <div class="g-flex g-aligncenter g-flexdirection" style="width:25%">
-                <el-progress type="circle" :percentage="70" :stroke-width="20" width="160" color="#40CBFF" :show-text="false" />
+                <el-progress type="circle" :percentage="70" :stroke-width="20" :width="160" color="#40CBFF" :show-text="false" />
                 <div class="platform-num g-flex g-aligncenter g-flexdirection">
                   <div class="g-color-title g-strong g-title-medium">15067</div>
                   <div class="g-color-title">平台司机数</div>
@@ -276,7 +276,7 @@
                 </div>
               </div>
               <div class="g-flex g-aligncenter g-flexdirection" style="width:25%">
-                <el-progress type="circle" :percentage="30" :stroke-width="20" width="160" color="#67C23A" :show-text="false" />
+                <el-progress type="circle" :percentage="30" :stroke-width="20" :width="160" color="#67C23A" :show-text="false" />
                 <div class="platform-num g-flex g-aligncenter g-flexdirection">
                   <div class="g-color-title g-strong g-title-medium">15099</div>
                   <div class="g-color-title">平台车辆数</div>
@@ -290,7 +290,7 @@
                 </div>
               </div>
               <div class="g-flex g-aligncenter g-flexdirection" style="width:25%">
-                <el-progress type="circle" :percentage="60" :stroke-width="20" width="160" color="#FFBB00" :show-text="false" />
+                <el-progress type="circle" :percentage="60" :stroke-width="20" :width="160" color="#FFBB00" :show-text="false" />
                 <div class="platform-num g-flex g-aligncenter g-flexdirection">
                   <div class="g-color-title g-strong g-title-medium">13067</div>
                   <div class="g-color-title">平台调度者数</div>
@@ -452,6 +452,7 @@ export default {
   width: 275px;
 }
 .notice-tip{
+  margin-top: 10px;
   font-family: PingFang SC;
   height: 80px;
   overflow: hidden; //超出隐藏

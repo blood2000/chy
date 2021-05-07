@@ -228,6 +228,7 @@ export default {
       const that = this;
       getDetail(val).then(response => {
         that.form = response.data;
+        console.log(that.form);
         that.invoicelist = [];
         Object.keys(response.data.invoiceGroup).forEach(function(key) {
           that.invoicelist = that.invoicelist.concat(response.data.invoiceGroup[key]);
@@ -242,11 +243,11 @@ export default {
     },
     // 导出运费明细
     handleExportFreight() {
-
+      this.download('/transportation/invoiceApply/export', { applyCode: this.form.code, type: 1 }, `invoiceApply_${new Date().getTime()}.xlsx`);
     },
     // 导出运费明细
     handleExportService() {
-
+      this.download('/transportation/invoiceApply/export', { applyCode: this.form.code, type: 2 }, `invoiceApply_${new Date().getTime()}.xlsx`);
     },
     // 查看发票里的运单
     handleClick(row) {

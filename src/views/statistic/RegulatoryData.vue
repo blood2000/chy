@@ -4,49 +4,58 @@
     <div class="s-container__box">
       <p class="s-container__box__line">
         <label>已上报司机信息:</label>
-        <span>1515</span>
+        <span><count-to :end-val="15459" /></span>
       </p>
       <p class="s-container__box__line">
         <label>已上报车辆信息:</label>
-        <span>1515</span>
+        <span><count-to :end-val="15459" /></span>
       </p>
       <p class="s-container__box__line">
         <label>已上报运单信息:</label>
-        <span>1515</span>
+        <span><count-to :end-val="15459" /></span>
       </p>
       <p class="s-container__box__line">
         <label>已上报轨迹信息:</label>
-        <span>1515</span>
+        <span><count-to :end-val="15459" /></span>
       </p>
       <p class="s-container__box__line">
         <label>来自硬件的轨迹信息:</label>
-        <span>1515</span>
+        <span><count-to :end-val="15459" /></span>
       </p>
     </div>
     <div class="s-container__box">
       <p class="s-container__box__line">
         <label>已上报装货信息:</label>
-        <span>1515</span>
+        <span><count-to :end-val="15459" /></span>
       </p>
       <p class="s-container__box__line">
         <label>已上报卸货信息:</label>
-        <span>1515</span>
+        <span><count-to :end-val="15459" /></span>
       </p>
       <p class="s-container__box__line">
         <label>已上报资金信息:</label>
-        <span>1515</span>
+        <span><count-to :end-val="15459" /></span>
       </p>
       <p class="s-container__box__line">
         <label>来自APP的轨迹信息:</label>
-        <span>1515</span>
+        <span><count-to :end-val="15459" /></span>
       </p>
     </div>
   </div>
 </template>
 
 <script>
-export default {
+import CountTo from '@/components/CountTo';
 
+export default {
+  components: {
+    CountTo
+  },
+  data() {
+    return {
+
+    };
+  }
 };
 </script>
 
@@ -56,6 +65,7 @@ export default {
   &__box{
     width: 48%;
     height: 100%;
+    font-family: PingFang Regular;
     &__line{
       width: 100%;
       line-height: 1.2rem;

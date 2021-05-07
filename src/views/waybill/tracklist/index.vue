@@ -486,7 +486,7 @@ export default {
           });
           break;
         case 2:
-          // this.$refs.DialogA.reset();
+          this.$refs.DialogA.reset();
           this.dialoga = true;
           this.title = '车辆装货';
           this.formDisable = false;
@@ -494,7 +494,7 @@ export default {
           // this.$refs.DialogA.getAddress(row);
           break;
         case 3:
-          // this.$refs.DialogC.reset();
+          this.$refs.DialogC.reset();
           this.dialogc = true;
           this.title = '车辆卸货';
           this.formDisable = false;

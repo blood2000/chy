@@ -13,7 +13,7 @@
           <div class="content__box">
             <p class="label">总货单量(万)</p>
             <p class="text">
-              16.7
+              <count-to :end-val="16.7" :decimal-places="1" />
               <span class="arow_down" />
               <span class="value_down">12.6%</span>
             </p>
@@ -21,7 +21,7 @@
           <div class="content__box">
             <p class="label">总货单量(万)</p>
             <p class="text">
-              16.7
+              <count-to :end-val="25.1" :decimal-places="1" />
               <span class="arow_up" />
               <span class="value_up">12.6%</span>
             </p>
@@ -29,7 +29,7 @@
           <div class="content__box">
             <p class="label">总货单量(万)</p>
             <p class="text">
-              16.7
+              <count-to :end-val="18.8" :decimal-places="1" />
               <span class="arow_up" />
               <span class="value_up">12.6%</span>
             </p>
@@ -41,7 +41,12 @@
 </template>
 
 <script>
+import CountTo from '@/components/CountTo';
+
 export default {
+  components: {
+    CountTo
+  },
   data() {
     return {
       dataList: [{}, {}, {}, {}, {}]
@@ -60,7 +65,7 @@ export default {
     top: -1.45rem;
     line-height: 0.8rem;
     font-size: 0.5rem;
-    font-family: PingFang SC;
+    font-family: PingFang Regular;
     font-weight: 300;
     color: #96CFD9;
   }
@@ -88,7 +93,7 @@ export default {
           line-height: 1.6rem;
           text-align: center;
           font-size: 0.7rem;
-          font-family: PingFang SC;
+          font-family: PingFang Regular;
           font-weight: 500;
           color: #FFFFFF;
           background: url('~@/assets/images/statistic/index_default.png') no-repeat;
@@ -105,7 +110,7 @@ export default {
           vertical-align: middle;
           line-height: 1.6rem;
           font-size: 0.8rem;
-          font-family: PingFang SC;
+          font-family: PingFang Regular;
           font-weight: 300;
           color: #7CFFF4;
           overflow: hidden;
@@ -118,13 +123,13 @@ export default {
           width: 33.33%;
           >.label{
             font-size: 0.6rem;
-            font-family: PingFang SC;
+            font-family: PingFang Regular;
             font-weight: 300;
             color: #D5EAFF;
           }
           >.text{
             font-size: 0.8rem;
-            font-family: PingFang SC;
+            font-family: 'PingFang Medium';
             font-weight: 500;
             color: #FFFFFF;
             line-height: 1.3rem;

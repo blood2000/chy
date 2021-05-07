@@ -42,8 +42,8 @@
         >
           <el-select v-model="formData[item.myName]" :placeholder="`请输入${item.cnName}`" :style="{ width: '200px' }" @change="change()">
             <el-option
-              v-for="dict in item.Option"
-              :key="dict.dictValue"
+              v-for="(dict,index1) in item.Option"
+              :key="dict.dictValue + index1"
               :label="dict.dictLabel"
               :value="dict.dictValue"
             />
@@ -61,8 +61,8 @@
             @change="change()"
           >
             <el-radio
-              v-for="dict in item.Option"
-              :key="dict.dictValue"
+              v-for="(dict, index2) in item.Option"
+              :key="dict.dictValue + index2"
               :label="dict.dictValue"
             >{{ dict.dictLabel }}</el-radio>
           </el-radio-group>
@@ -83,8 +83,8 @@
               :controls="false"
               :placeholder="`请输入${item.cnName}`"
               step-strictly
-              :max="999999"
-              :min="-999999"
+              :max="item.unit==='%'?100: 999999"
+              :min="item.unit==='%'?0: -999999"
               controls-position="right"
               :style="{ width: '85px' }"
             />
@@ -103,8 +103,8 @@
               :controls="false"
               :placeholder="`请输入${item.cnName}`"
               step-strictly
-              :max="999999"
-              :min="-999999"
+              :max="item.unit==='%'?100: 999999"
+              :min="item.unit==='%'?0: -999999"
               controls-position="right"
               :style="{ width: '85px' }"
             />

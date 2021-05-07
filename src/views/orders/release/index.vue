@@ -129,12 +129,12 @@
             <el-form-item label="装卸类型" prop="tin7">
               <el-radio-group v-model="formData.tin7" size="medium" @change="zhuangOrxiechange">
                 <el-radio
-                  v-for="dict in (isMultiGoods?[
+                  v-for="(dict,index) in (isMultiGoods?[
                     { dictValue: '1', dictLabel: '一装一卸' },
                     { dictValue: '2', dictLabel: '多装一卸' },
                     { dictValue: '3', dictLabel: '一装多卸' }
                   ]:[{ dictValue: '1', dictLabel: '一装一卸' }])"
-                  :key="dict.dictValue"
+                  :key="dict.dictValue + index"
                   :label="dict.dictValue"
                 >{{ dict.dictLabel }}</el-radio>
               </el-radio-group>
@@ -164,7 +164,7 @@
 
             <div
               v-for="(address,index) in address_add"
-              :key="address.refName"
+              :key="address.refName + index"
             >
               <div v-if="address.addressType !=='3'" class="oneAddress_item pr">
                 <div class="pa triangleR " />
@@ -208,7 +208,7 @@
 
             <div
               v-for="(address, index) in address_xie"
-              :key="address.refName"
+              :key="address.refName + index"
             >
               <div v-if="address.addressType !=='4'" class="oneAddress_item pr">
                 <div class="pa triangleR " />
@@ -287,8 +287,8 @@
                 />
               </div>
             </el-col>
-            <el-col :span="4" class="ly-flex-pack-center">
-              <div class="m_btn">
+            <el-col :span="4" class="m_btn">
+              <div>
                 <el-button type="primary" plain @click="nextFe(3)">上一步</el-button>
                 <el-button v-hasPermi="['transportation:order:pubilsh']" type="primary" @click="onPubilsh">{{ isCreated?'立即发布':'保存' }}</el-button>
               </div>
@@ -1457,4 +1457,6 @@ export default {
 .triangleR::after{border-right-color: #409EFF;border-width:20px;}
 .triangleT::after{border-top-color: green;border-width:20px;}
 .triangleL::after{border-left-color: yellow;border-width:20px;}
+
+
 </style>

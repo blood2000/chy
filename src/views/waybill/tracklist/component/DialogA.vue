@@ -14,9 +14,6 @@
           @change="loadTimeChoose"
         />
       </el-form-item>
-      <el-form-item label="装货重量(吨)" prop="loadWeight">
-        <el-input-number v-model="form.loadWeight" placeholder="请输入装货过磅重量" :disabled="disable" controls-position="right" :min="0" style="width:90%;" />
-      </el-form-item>
       <el-form-item label="货物" prop="goodsCode">
         <el-select
           v-model="form.goodsCode"
@@ -35,6 +32,9 @@
             :value="dict.code"
           />
         </el-select>
+      </el-form-item>
+      <el-form-item :label="weightLabel" prop="loadWeight">
+        <el-input-number v-model="form.loadWeight" placeholder="请输入装货量" :disabled="disable" controls-position="right" :min="0" style="width:90%;" />
       </el-form-item>
       <el-form-item label="装货地址" prop="loadAddressCode">
         <el-select
@@ -162,7 +162,11 @@ export default {
       time: '',
       // 商品code
       goodsCode: '',
-      fresh: false
+      fresh: false,
+      // 装货数量标签
+      weightLabel: '',
+      // 选中商品信息
+      goodsInfo: {}
     };
   },
   computed: {
@@ -184,8 +188,6 @@ export default {
         // this.getVehicle();
         if (this.disable) {
           this.getDetail();
-        } else {
-          this.reset();
         }
       }
     }
@@ -209,10 +211,10 @@ export default {
     getDetail() {
       this.reset();
       getInfoDetail(this.waybill.waybillNo, 1).then(response => {
-        console.log(response);
+        // console.log(response);
         const info = response.data[0];
         this.loadinfo = info;
-        console.log(this.loadinfo);
+        // console.log(this.loadinfo);
         this.form.loadWeight = info.loadWeight;
         this.form.remark = info.remark;
         this.form.loadTime = info.loadTime;
@@ -234,6 +236,9 @@ export default {
     // 选择商品事件
     chooseGoods(e) {
       this.goodsCode = e;
+      const goodsList = this.goodsCodeOptions.filter(response => response.code === e);
+      this.goodsInfo = goodsList[0];
+      console.log(this.goodsInfo);
       this.$forceUpdate(); // 视图强制更新
     },
     chooseAddress() {
@@ -243,7 +248,7 @@ export default {
     getAddress() {
       // console.log(data);
       getAddress(this.waybill.orderCode).then(response => {
-        console.log(response);
+        // console.log(response);
         const address = response.data;
         if (address) {
           // 装货地址
@@ -272,25 +277,41 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          if (this.form.loadWeight > 0) {
-            if (this.disable) {
-              loadCredentials(this.form).then(response => {
-                this.msgSuccess('补装货凭证成功');
-                this.close();
-                this.$emit('refresh');
-              });
+          if (this.waybill.stowageStatus === '2') {
+            if (this.form.loadWeight !== 1) {
+              this.msgWarning('车数配载的运单装货车数只能为1车！');
             } else {
-              load(this.form).then(response => {
-                this.msgSuccess('车辆装货成功');
-                this.close();
-                this.$emit('refresh');
-              });
+              this.submitInfo();
             }
           } else {
-            this.msgWarning('装货重量必须大于0！');
+            if (this.form.loadWeight <= 0) {
+              this.msgWarning('装货重量或立方数必须大于0！');
+            } else if (this.form.loadWeight > 100) {
+              this.msgWarning('系统检测到您的装货数量吨数或立方数过大，请确认后重新仔细填写!');
+            } else if (this.form.loadWeight <= 100 && this.form.loadWeight > this.goodsInfo.remainingWeight) {
+              this.msgWarning('系统检测到您的装货数量吨数或立方数大于货源剩余数量，请确认后重新仔细填写!');
+            } else {
+              this.submitInfo();
+            }
           }
         }
       });
+    },
+    // 提交信息，接口调用
+    submitInfo() {
+      if (this.disable) {
+        loadCredentials(this.form).then(response => {
+          this.msgSuccess('补装货凭证成功');
+          this.close();
+          this.$emit('refresh');
+        });
+      } else {
+        load(this.form).then(response => {
+          this.msgSuccess('车辆装货成功');
+          this.close();
+          this.$emit('refresh');
+        });
+      }
     },
     /** 取消按钮 */
     cancel() {
@@ -326,6 +347,15 @@ export default {
       this.waybill = data;
       this.form.code = this.waybill.code;
       console.log(this.waybill);
+      if (this.waybill.stowageStatus === '0') {
+        this.weightLabel = '装货重量（吨）';
+      } else if (this.waybill.stowageStatus === '1') {
+        this.weightLabel = '装货立方数';
+      } else if (this.waybill.stowageStatus === '2') {
+        this.weightLabel = '装货车数';
+      } else {
+        this.weightLabel = '装货重量（吨）';
+      }
     }
     // 图片上传成功会掉
     // handleUploadSuccess() {

@@ -5,17 +5,17 @@
       <div class="s-container__info__box">
         <div class="content">
           <p class="label">总投诉量</p>
-          <p class="text">100</p>
+          <p class="text"><count-to :end-val="100" /></p>
         </div>
       </div>
       <div class="s-container__info__box ly-flex-pack-justify">
         <div class="content">
           <p class="label child">已解决投诉</p>
-          <p class="text">60</p>
+          <p class="text"><count-to :end-val="60" /></p>
         </div>
         <div class="content">
           <p class="label child">异常单</p>
-          <p class="text">40</p>
+          <p class="text"><count-to :end-val="40" /></p>
         </div>
       </div>
     </div>
@@ -26,8 +26,12 @@
 <script>
 import * as echarts from 'echarts';
 import { setfontSize } from '@/utils/fontSize';
+import CountTo from '@/components/CountTo';
 
 export default {
+  components: {
+    CountTo
+  },
   data() {
     return {
       chart: null
@@ -62,7 +66,8 @@ export default {
           orient: 'vertical',
           top: '10%',
           textStyle: {
-            color: '#D5EAFF'
+            color: '#D5EAFF',
+            fontFamily: 'PingFang Regular'
           },
           data: [{
             name: '总投诉量'
@@ -77,7 +82,8 @@ export default {
           borderColor: 'rgba(0, 0, 0, 0)',
           backgroundColor: 'rgba(70, 70, 70, 0.5)',
           textStyle: {
-            color: '#ffffff'
+            color: '#ffffff',
+            fontFamily: 'PingFang Regular'
           }
         },
         series: [
@@ -143,6 +149,11 @@ export default {
           textStyle: {
             fontSize: setfontSize(12)
           }
+        },
+        tooltip: {
+          textStyle: {
+            fontSize: setfontSize(14)
+          }
         }
       });
     }
@@ -163,7 +174,7 @@ export default {
         margin-top: 1rem;
         .label{
           font-size: 0.6rem;
-          font-family: PingFang SC;
+          font-family: PingFang Regular;
           font-weight: bold;
           color: #FFFFFF;
           margin-bottom: 0.1rem;
@@ -174,7 +185,7 @@ export default {
         }
         .text{
           font-size: 1.1rem;
-          font-family: PingFang SC;
+          font-family: 'PingFang Medium';
           font-weight: 500;
           color: #FFFFFF;
         }
