@@ -43,7 +43,7 @@
         <el-switch v-model="form.isLoss" class="isLoss-switch" />
       </h5>
       <el-divider />
-      <div v-show="!form.isLoss" class="none-box">未计算路耗</div>
+      <div v-show="!form.isLoss" class="none-box g-color-gray">未计算路耗</div>
       <el-row v-if="form.isLoss">
         <el-form-item
           v-for="item in lossItem"
@@ -84,7 +84,7 @@
         <el-button class="fr" icon="el-icon-plus" type="primary" plain circle size="mini" @click="chooseItem('reduce')" />
       </h5>
       <el-divider />
-      <div v-show="form.reduceItem.length === 0" class="none-box">未添加项目</div>
+      <div v-show="form.reduceItem.length === 0" class="none-box g-color-gray">未添加项目</div>
       <el-row>
         <el-form-item v-for="item in form.reduceItem" :key="item.code" :label="item.cnName" :prop="item.code">
           <el-input-number v-if="item.showType === 1" v-model="form.reduceItemObj[item.code]" :min="0" :controls="false" :placeholder="`请输入${item.cnName}`" class="width-small mr3" clearable />
@@ -119,7 +119,7 @@
         <el-button class="fr" icon="el-icon-plus" type="primary" plain circle size="mini" @click="chooseItem('add')" />
       </h5>
       <el-divider />
-      <div v-show="form.addItem.length === 0" class="none-box">未添加项目</div>
+      <div v-show="form.addItem.length === 0" class="none-box g-color-gray">未添加项目</div>
       <el-row>
         <el-form-item v-for="item in form.addItem" :key="item.code" :label="item.cnName" :prop="item.code">
           <el-input-number v-if="item.showType === 1" v-model="form.addItemObj[item.code]" :min="0" :controls="false" :placeholder="`请输入${item.cnName}`" class="width-small mr3" clearable />
