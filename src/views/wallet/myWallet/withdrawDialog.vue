@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="账户提现" class="i-money" :visible="visible" width="800px" append-to-body @close="cancel">
+  <el-dialog title="提现申请" class="i-money" :visible="visible" width="800px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="120px">
       <el-form-item label="选择银行卡" prop="bankNumber">
         <el-select
@@ -45,7 +45,7 @@
         </div>
       </el-form-item>
       <el-form-item label="提现金额" prop="money">
-        <el-input-number v-model="form.money" :min="0" :max="crediAmount?crediAmount:0" :precision="2" :controls="false" placeholder="请输入提现金额" class="width90" clearable />
+        <el-input-number v-model="form.money" :min="0" :precision="2" :controls="false" placeholder="请输入提现金额" class="width90" clearable />
       </el-form-item>
     </el-form>
 
@@ -163,6 +163,14 @@ export default {
     submitForm: function() {
       this.$refs['form'].validate(valid => {
         if (valid) {
+          if (this.form.money > this.crediAmount) {
+            this.msgWarning('提现金额不能大于可用余额!');
+            return;
+          }
+          if (this.form.money === 0) {
+            this.msgWarning('提现金额不能为0');
+            return;
+          }
           this.form.applyerCode = this.userCode;
           this.confirmPasswordOpen = true;
         }
