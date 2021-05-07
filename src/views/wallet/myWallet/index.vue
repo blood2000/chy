@@ -18,7 +18,7 @@
           <p class="g-text">冻结金额</p>
         </el-col>
       </el-row>
-      <el-button type="primary" class="mr20" @click="handleWithdraw">提现</el-button>
+      <el-button type="primary" class="mr20" :disabled="!walletInfo.amount || walletInfo.amount === 0" @click="handleWithdraw">提现</el-button>
       <el-button type="text" class="mr10" @click="handleJumpPage('rechargeDescription')">充值说明</el-button>
       <el-button type="text" class="mr10" @click="handleJumpPage('accountDetails')">账户明细</el-button>
       <el-button type="text" class="mr10" @click="handleJumpPage('withdrawalsRecord')">出入账记录</el-button>

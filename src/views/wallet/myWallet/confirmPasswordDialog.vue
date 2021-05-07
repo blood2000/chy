@@ -59,7 +59,7 @@ export default {
           const params = { ...this.info };
           params.password = sha1(this.form.password);
           transferApply(params).then(response => {
-            this.msgSuccess('操作成功');
+            this.msgSuccess('提现申请成功');
             this.cancel();
             this.$emit('refresh');
           });
