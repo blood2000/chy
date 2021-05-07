@@ -1,7 +1,7 @@
 <template>
   <div class="title ly-flex">
     <div class="before">
-      <img :src="require('@/assets/images/statistic/title_icon_'+icon+'.png')">
+      <img :src="require('@/assets/images/statistic/title_icon_'+icon+'.gif')">
     </div>
     <div class="text ly-flex-1">
       <slot />
