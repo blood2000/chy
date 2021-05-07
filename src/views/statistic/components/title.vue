@@ -55,7 +55,7 @@ export default {
     position: absolute;
     bottom: 0;
     right: 0;
-    background: linear-gradient(to right, #1a88b1 0.6rem, rgba(50, 255, 255, 1) 0);
+    background: linear-gradient(to right, rgba(26, 136, 177, 1) 0.6rem, rgba(50, 255, 255, 1) 0);
   }
   &::after{
     content: '';
@@ -64,7 +64,7 @@ export default {
     bottom: 0;
     left: 0;
     right: 0;
-    background: linear-gradient(to right, rgba(50, 255, 255, 0), rgba(79, 131, 131, 0.2));
+    background: linear-gradient(to right, rgba(50, 255, 255, 0), rgba(50, 255, 255, 0.2));
   }
   &.title_1, &.title_2, &.title_3, &.title_4, &.title_5{
     .top_line{
