@@ -167,7 +167,7 @@
           <span style="line-height: 31px">运费金额：{{ statistical.waybillAmount }}</span>
         </el-col>
         <el-col :span="3">
-          <span style="line-height: 31px">运费税额：{{ statistical.taxPayment }}</span>
+          <span style="line-height: 31px">纳税金额：{{ statistical.taxPayment }}</span>
         </el-col>
         <el-col :span="3">
           <span style="line-height: 31px">服务费金额：{{ statistical.serviceFee }}</span>
