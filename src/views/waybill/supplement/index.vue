@@ -218,8 +218,13 @@
           </el-row>
           <el-row>
             <el-col :span="8">
-              <el-form-item label="运单总价" prop="wayBillPrice">
-                <el-input v-model="form.wayBillPrice" :readonly="true" class="width90" />
+              <el-form-item label="货主实付金额" prop="shipperRealPay">
+                <el-input v-model="form.shipperRealPay" :readonly="true" class="width90" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="司机实收金额" prop="driverRealFee">
+                <el-input v-model="form.driverRealFee" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -494,7 +499,8 @@ export default {
         'unloadTime': null,
         'unloadWeight': 0,
         'vehicleCode': null,
-        'wayBillPrice': null, // 运单总价
+        'shipperRealPay': null, // 货主实付金额
+        'driverRealFee': null, // 司机实收金额
         'wayBillNo': null,
         'remainingNumber': null, // 剩余车数
         'remainingWeight': null, // 剩余吨数、立方数
@@ -625,7 +631,8 @@ export default {
         console.log(calculateBo);
         calculate(calculateBo).then(response => {
           console.log(response);
-          this.form.wayBillPrice = response.data.shipperRealPay;
+          this.form.shipperRealPay = response.data.shipperRealPay;
+          this.form.driverRealFee = response.data.driverRealFee;
         });
       }
     },

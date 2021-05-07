@@ -1,7 +1,7 @@
 <template>
   <!-- 车辆装货对话框 -->
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body destroy-on-close @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" label-width="130px">
+    <el-form ref="form" :model="form" :rules="disable ? rules: rule" label-width="130px">
       <el-form-item label="装货时间" prop="loadTime">
         <el-date-picker
           v-model="form.loadTime"
@@ -9,12 +9,11 @@
           type="datetime"
           placeholder="选择日期时间"
           :default-value="new Date()"
-          :disabled="disable"
           value-format="yyyy-MM-dd HH:mm:ss"
           @change="loadTimeChoose"
         />
       </el-form-item>
-      <el-form-item label="货物" prop="goodsCode">
+      <!-- <el-form-item label="货物" prop="goodsCode">
         <el-select
           v-model="form.goodsCode"
           placeholder="请选择货物"
@@ -32,11 +31,11 @@
             :value="dict.code"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item :label="weightLabel" prop="loadWeight">
-        <el-input-number v-model="form.loadWeight" placeholder="请输入装货量" :disabled="disable" controls-position="right" :min="0" style="width:90%;" />
+        <el-input-number v-model="form.loadWeight" placeholder="请输入装货量" controls-position="right" :min="0" style="width:90%;" />
       </el-form-item>
-      <el-form-item label="装货地址" prop="loadAddressCode">
+      <!-- <el-form-item label="装货地址" prop="loadAddressCode">
         <el-select
           v-model="form.loadAddressCode"
           placeholder="请选择车辆装货地址"
@@ -73,7 +72,7 @@
             :value="dict.code"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <!-- <el-form-item label="实际承运车辆" prop="vehicleCode">
         <el-select
           v-model="form.vehicleCode"
@@ -96,7 +95,7 @@
         <uploadImage v-model="form.attachmentCode" />
       </el-form-item>
       <el-form-item label="装货备注" prop="remark">
-        <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" :disabled="disable" placeholder="请输入装货备注信息" style="width:90%;" />
+        <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入装货备注信息" style="width:90%;" />
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -148,14 +147,22 @@ export default {
         loadWeight: [
           { required: true, message: '装货重量不能为空', trigger: 'blur' }
         ],
-        goodsCode: [
-          { required: true, message: '请选择货物', trigger: 'change' }
-        ],
-        loadAddressCode: [
-          { required: true, message: '请选择装货地址', trigger: 'change' }
-        ],
-        unloadAddressCode: [
-          { required: true, message: '请选择卸货地址', trigger: 'change' }
+        attachmentCode: [
+          { required: true, message: '装货单据不能为空', trigger: 'blur' }
+        ]
+        // goodsCode: [
+        //   { required: true, message: '请选择货物', trigger: 'change' }
+        // ],
+        // loadAddressCode: [
+        //   { required: true, message: '请选择装货地址', trigger: 'change' }
+        // ],
+        // unloadAddressCode: [
+        //   { required: true, message: '请选择卸货地址', trigger: 'change' }
+        // ]
+      },
+      rule: {
+        loadTime: [
+          { required: true, message: '装货时间不能为空', trigger: 'blur' }
         ]
       },
       // 日期格式
@@ -211,19 +218,22 @@ export default {
     getDetail() {
       this.reset();
       getInfoDetail(this.waybill.waybillNo, 1).then(response => {
-        // console.log(response);
-        const info = response.data[0];
-        this.loadinfo = info;
-        // console.log(this.loadinfo);
-        this.form.loadWeight = info.loadWeight;
-        this.form.remark = info.remark;
-        this.form.loadTime = info.loadTime;
-        this.form.goodsCode = info.goodsCode;
-        this.form.loadAddressCode = info.waybillAddres.loadOrderAddressCode;
-        this.form.unloadAddressCode = info.waybillAddres.unloadOrderAddressCode;
-        this.form.attachmentCode = info.attachmentCode;
-        this.fresh = true;
+        this.form.loadTime = this.waybill.fillTime;
+        if (response.data.length) {
+          console.log(response);
+          const info = response.data[0];
+          this.loadinfo = info;
+          // console.log(this.loadinfo);
+          this.form.loadWeight = info.loadWeight;
+          this.form.remark = info.remark;
+          // this.form.loadTime = info.loadTime;
+          // this.form.goodsCode = info.goodsCode;
+          // this.form.loadAddressCode = info.waybillAddres.loadOrderAddressCode;
+          // this.form.unloadAddressCode = info.waybillAddres.unloadOrderAddressCode;
+          this.form.attachmentCode = info.attachmentCode;
+          this.fresh = true;
         // this.form.vehicleCode = info.vehicleCode;
+        }
       });
     },
     // 获取商品列表
@@ -277,41 +287,41 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          if (this.waybill.stowageStatus === '2') {
-            if (this.form.loadWeight !== 1) {
-              this.msgWarning('车数配载的运单装货车数只能为1车！');
+          if (this.disable) {
+            if (this.waybill.stowageStatus === '2') {
+              if (this.form.loadWeight !== 1) {
+                this.msgWarning('车数配载的运单装货车数只能为1车！');
+              } else {
+                this.submitInfo();
+              }
             } else {
-              this.submitInfo();
+              if (this.form.loadWeight <= 0) {
+                this.msgWarning('装货重量或立方数必须大于0！');
+              } else if (this.form.loadWeight > 100) {
+                this.msgWarning('系统检测到您的装货数量吨数或立方数过大，请确认后重新仔细填写!');
+              } else if (this.form.loadWeight <= 100 && this.form.loadWeight > this.goodsInfo.remainingWeight) {
+                this.msgWarning('系统检测到您的装货数量吨数或立方数大于货源剩余数量，请确认后重新仔细填写!');
+              } else {
+                this.submitInfo();
+              }
             }
           } else {
-            if (this.form.loadWeight <= 0) {
-              this.msgWarning('装货重量或立方数必须大于0！');
-            } else if (this.form.loadWeight > 100) {
-              this.msgWarning('系统检测到您的装货数量吨数或立方数过大，请确认后重新仔细填写!');
-            } else if (this.form.loadWeight <= 100 && this.form.loadWeight > this.goodsInfo.remainingWeight) {
-              this.msgWarning('系统检测到您的装货数量吨数或立方数大于货源剩余数量，请确认后重新仔细填写!');
-            } else {
-              this.submitInfo();
-            }
+            load(this.form).then(response => {
+              this.msgSuccess('车辆装货成功');
+              this.close();
+              this.$emit('refresh');
+            });
           }
         }
       });
     },
-    // 提交信息，接口调用
+    // 补装货提交信息，接口调用
     submitInfo() {
-      if (this.disable) {
-        loadCredentials(this.form).then(response => {
-          this.msgSuccess('补装货凭证成功');
-          this.close();
-          this.$emit('refresh');
-        });
-      } else {
-        load(this.form).then(response => {
-          this.msgSuccess('车辆装货成功');
-          this.close();
-          this.$emit('refresh');
-        });
-      }
+      loadCredentials(this.form).then(response => {
+        this.msgSuccess('补装货凭证成功');
+        this.close();
+        this.$emit('refresh');
+      });
     },
     /** 取消按钮 */
     cancel() {
@@ -334,11 +344,11 @@ export default {
         attachmentCode: null,
         // 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
         // oneself: false,
-        remark: null,
+        remark: null
         // vehicleCode: null,
-        loadAddressCode: null,
-        goodsCode: null,
-        unloadAddressCode: null
+        // loadAddressCode: null,
+        // goodsCode: null,
+        // unloadAddressCode: null
       };
       this.resetForm('form');
     },
