@@ -157,7 +157,7 @@
                   v-model="scope.row.status"
                   active-value="0"
                   inactive-value="1"
-                  :disabled="isOperate(scope.row.roleCode)"
+                  :disabled="isOperate(scope.row)"
                   @change="handleStatusChange(scope.row)"
                 />
               </template>
@@ -174,7 +174,7 @@
                   size="mini"
                   type="text"
                   icon="el-icon-edit"
-                  :disabled="isOperate(scope.row.roleCode)"
+                  :disabled="isOperate(scope.row)"
                   @click="handleUpdate(scope.row)"
                 >修改</el-button>
                 <el-button
@@ -182,7 +182,7 @@
                   size="mini"
                   type="text"
                   icon="el-icon-circle-check"
-                  :disabled="isOperate(scope.row.roleCode)"
+                  :disabled="isOperate(scope.row)"
                   @click="handleDataScope(scope.row)"
                 >数据权限</el-button>
                 <el-button
@@ -190,7 +190,7 @@
                   size="mini"
                   type="text"
                   icon="el-icon-delete"
-                  :disabled="isOperate(scope.row.roleCode)"
+                  :disabled="isOperate(scope.row)"
                   @click="handleDelete(scope.row)"
                 >删除</el-button>
               </template>
@@ -873,11 +873,11 @@ export default {
       }
     },
     // 判断操作是否禁用
-    isOperate(roleCode) {
+    isOperate(row) {
       const some = this.defaultRoleCode.split(',').some(el => {
-        return el === roleCode;
+        return el === row.roleCode;
       });
-      if (!this.isAdmin && some) {
+      if (!this.isAdmin && some && row.isSystem === 1) {
         return true;
       } else {
         return false;
