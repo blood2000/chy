@@ -52,12 +52,12 @@
             {{ form.waybillAddress?form.waybillAddress.unloadContact:'' }}
             {{ form.waybillAddress?form.waybillAddress.unloadContactPhone:'' }}
           </el-col>
-          <el-col :span="12" class="text-row">
+          <!-- <el-col :span="12" class="text-row">
             <label>上传装货位置：</label>
           </el-col>
           <el-col :span="12" class="text-row">
             <label>上传卸货位置：</label>
-          </el-col>
+          </el-col> -->
         </el-row>
         <el-divider content-position="left" class="m40">
           <h5 class="g-title-medium">费用</h5>
