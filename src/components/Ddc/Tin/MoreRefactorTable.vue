@@ -16,7 +16,7 @@
       >
         <!-- :formatter="th.formatter" -->
         <template slot-scope="scope">
-          <slot :name="th.prop" :row="scope.row">{{ scope.row[th.prop] || '' }}</slot>
+          <slot :name="th.prop" :row="scope.row">{{ scope.row[th.prop] === 0 ? 0 : scope.row[th.prop] || '' }}</slot>
         </template>
       </el-table-column>
     </template>
@@ -33,7 +33,7 @@
         >
           <template slot-scope="scope">
             <!-- <slot :name="level2Item.prop" :row="scope.row">{{ scope.row[level2Item.prop] || '' }}</slot> -->
-            <span>{{ scope.row[level2Item.prop] || '' }}</span>
+            <span>{{ scope.row[level2Item.prop] === 0 ? 0 : scope.row[level2Item.prop] || '' }}</span>
           </template>
           <template v-if="level2Item.children">
             <el-table-column
@@ -46,7 +46,7 @@
             >
               <template slot-scope="scope">
                 <!-- <slot :name="level3Item.prop" :row="scope.row">{{ scope.row[level3Item.prop] || '' }}</slot> -->
-                <span>{{ scope.row[level3Item.prop] || '' }}</span>
+                <span>{{ scope.row[level3Item.prop] === 0 ? 0 : scope.row[level3Item.prop] || '' }}</span>
               </template>
             </el-table-column>
           </template>
