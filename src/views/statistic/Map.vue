@@ -127,14 +127,16 @@ export default {
           borderColor: 'rgba(0, 0, 0, 0)',
           backgroundColor: 'rgba(70, 70, 70, 0)',
           textStyle: {
-            color: '#FFFFFF'
+            color: '#FFFFFF',
+            fontFamily: 'PingFang Regular'
           },
           formatter: function(params) {
             const { value } = params;
             if (value) {
               // return `${params.name}: ${value[2]}`;
               return `<section class="s-echart-map-tooltip-content">
-                        <div class="text">${params.name}：${value[2]}</div>
+                        <div class="s-echart-map-tooltip-text">${params.name}：${value[2]}</div>
+                        <div class="s-echart-map-tooltip-circle"></div>
                       </section>`;
             } else {
               return `${params.name}`;
@@ -188,8 +190,8 @@ export default {
           geoIndex: 0,
           coordinateSystem: 'geo',
           symbol: 'circle',
-          symbolSize: setfontSize(14),
-          animation: true,
+          symbolSize: 0,
+          animation: false,
           animationDelay: function(idx) {
             // 越往后的数据延迟越大
             return idx * 1000;
@@ -224,14 +226,18 @@ export default {
     },
     // 测试数据
     initData() {
-      // this.showToolTip();
       if (this.timer) clearInterval(this.timer);
       this.timer = window.setInterval(() => {
         this.showToolTip();
+        // 文字框出现
+        setTimeout(() => {
+          this.showText();
+        }, 1 * 1000);
+        // 消失
         setTimeout(() => {
           this.removeDom();
-        }, 3000);
-      }, 4000);
+        }, 3.5 * 1000);
+      }, 6 * 1000);
     },
     showToolTip() {
       const length = this.warnData.length;
@@ -247,15 +253,13 @@ export default {
         type: 'hideTip'
       });
     },
+    showText() {
+      const textDom = document.getElementsByClassName('s-echart-map-tooltip-text')[0];
+      textDom.classList.add('show');
+    },
     removeDom() {
       const toolDom = document.getElementsByClassName('s-echart-map-tooltip-content')[0];
       toolDom.classList.add('hide');
-    },
-    resetDom() {
-      const toolDom = document.getElementsByClassName('s-echart-map-tooltip-content')[0];
-      if (toolDom.classList.contains('hide')) {
-        toolDom.classList.remove('hide');
-      }
     }
   }
 };
@@ -335,21 +339,51 @@ export default {
 .s-echart-map-tooltip{
   box-shadow: none !important;
   padding: 0 !important;
+  top: -2.6rem !important;
   >section{
-    background: rgba(70, 70, 70, 0.5);
-    border-radius: 2%;
-    padding: 0.5rem 1rem;
-    // 消失动画
-    transition: all 0.5s;
+    transition: all 2.5s;
     transform: translate(0, 0);
     opacity: 1;
+    // tooltip消失动画
     &.hide{
-      transition: all 0.5s;
-      transform: translate(8rem, -5rem);
+      transition: all 2.5s;
+      transform: translate(8rem, -6rem);
       opacity: 0;
     }
-    >.text{
-      font-size: 0.7rem;
+    // 圆点闪烁动画
+    >.s-echart-map-tooltip-circle{
+      position: absolute;
+      top: 1.4rem;
+      left: 50%;
+      margin-left: -0.4rem;
+      width: 0.8rem;
+      height: 0.8rem;
+      border-radius: 50%;
+      background: url('~@/assets/images/statistic/circle.png') no-repeat;
+      background-size: 100% 100%;
+      animation: s-echart-map-tooltip-text-flashing 1.6s;
+      animation-iteration-count: 1;
+    }
+    @keyframes s-echart-map-tooltip-text-flashing {
+      0% { opacity: 0; }
+      30% { opacity: 1; }
+      63% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+    // 消息框出现动画
+    >.s-echart-map-tooltip-text{
+      width: 5.8rem;
+      height: 1.45rem;
+      line-height: 1.45rem;
+      text-align: center;
+      background: url('~@/assets/images/statistic/tooltip_box.png') no-repeat;
+      background-size: 100% 100%;
+      font-size: 0.6rem;
+      opacity: 0;
+      &.show{
+        transition: opacity 0.6s;
+        opacity: 1;
+      }
     }
   }
   >div{

@@ -41,12 +41,13 @@ export default {
     font-size: 0.8rem;
     font-weight: 500;
     color: #FFFFFF;
+    font-family: 'PingFang Medium';
   }
   &__legend{
     height: 1.2rem;
     text-align: right;
     font-size: 0.6rem;
-    font-family: PingFang SC;
+    font-family: 'PingFang Medium';
     font-weight: 500;
     color: #CDEDFF;
   }
@@ -63,7 +64,7 @@ export default {
           background: linear-gradient(144deg, #1F91FF, #A965FD);
           border-radius: 50%;
           font-size: 0.6rem;
-          font-family: PingFang SC;
+          font-family: 'PingFang Medium';
           font-weight: 500;
           color: #FFFFFF;
           text-align: center;
@@ -72,7 +73,7 @@ export default {
           width: 7.4rem;
           margin-right: 0.4rem;
           font-size: 0.6rem;
-          font-family: PingFang SC;
+          font-family: PingFang Regular;
           font-weight: 500;
           color: #CDEDFF;
           overflow: hidden;
@@ -92,7 +93,7 @@ export default {
           flex: 1;
           text-align: right;
           font-size: 0.7rem;
-          font-family: PingFang SC;
+          font-family: 'PingFang Medium';
           font-weight: 500;
           color: #E1F3FF;
         }

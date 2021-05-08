@@ -217,7 +217,13 @@ export default {
           if (data.number) this.form.identificationNumber = data.number;
           if (data.address) this.form.area = data.address;
           if (data.valid_from) this.$set(this.form, 'identificationBeginTime', data.valid_from);
-          if (data.valid_to) this.$set(this.form, 'identificationEndTime', data.valid_to);
+          if (data.valid_to) {
+            if (data.valid_to === '长期') {
+              this.$set(this.form, 'identificationEffective', true);
+            } else if (data.valid_to !== '') {
+              this.$set(this.form, 'identificationEndTime', data.valid_to);
+            }
+          }
           break;
         case 'business-license':
           break;

@@ -44,7 +44,7 @@
     </el-row>
     <el-divider />
   </div> -->
-  <div>
+  <div style="min-width:1440px; overflow-x: scroll;">
     <div class="top-tips">
       <el-row :gutter="20">
         <el-col :span="24">
@@ -62,7 +62,7 @@
             <el-image class="user-avator" src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg" fit="cover" />
             <div style="margin-left:15px;">
               <div class="g-color-title g-strong g-title-big">余晨望</div>
-              <div class="user-post g-margin-tb"><i class="el-icon-warning g-color-warning" style="margin-right: 10px;" />客服专员</div>
+              <div class="user-post g-margin-tb"><img src="~@/assets/images/workbench/icon_position.png" style="margin-right: 10px;" alt="">客服专员</div>
               <div class="g-color-tag">大道成物流 | 客服部</div>
             </div>
           </div>
@@ -322,7 +322,7 @@
               </el-col>
             </el-row>
             <!-- 货单动态 -->
-            <div class="trend-frame">
+            <div v-if="activeName === '1'" class="trend-frame">
               <div class="trend-oncontent g-flex g-aligncenter">
                 <img src="~@/assets/images/workbench/icon_publishorder1.png" alt="">
                 <div style="margin-left: 12px;">
@@ -334,16 +334,68 @@
                 <div class="trend-line" />
                 <img src="~@/assets/images/workbench/icon_closeorder1.png" alt="">
                 <div style="margin-left: 12px;">
-                  <div class="g-color-blue g-title-smaller">2分钟前 2021-01-28 09:49:23</div>
-                  <div class="g-color-blue g-strong margintop5">余晨望 发布货源（1092838191201）</div>
+                  <div class="g-color-tag g-title-smaller">2分钟前 2021-01-28 09:49:23</div>
+                  <div class="g-color-title g-strong margintop5">余晨望 关闭货源（1092838191201）</div>
                 </div>
               </div>
               <div v-for="(item, index) in 10" :key="index" class="trend-content g-flex g-aligncenter">
                 <div class="trend-line" />
                 <img src="~@/assets/images/workbench/icon_publishorder1.png" alt="">
                 <div style="margin-left: 12px;">
-                  <div class="g-color-blue g-title-smaller">2分钟前 2021-01-28 09:49:23</div>
-                  <div class="g-color-blue g-strong margintop5">余晨望 发布货源（1092838191201）</div>
+                  <div class="g-color-tag g-title-smaller">2分钟前 2021-01-28 09:49:23</div>
+                  <div class="g-color-title g-strong margintop5">余晨望 发布货源（1092838191201）</div>
+                </div>
+              </div>
+            </div>
+            <!-- 运单动态 -->
+            <div v-if="activeName === '2'" class="trend-frame">
+              <div class="trend-content g-flex g-aligncenter">
+                <img src="~@/assets/images/workbench/icon_addwaybill1.png" alt="">
+                <div style="margin-left: 12px;">
+                  <div class="g-color-tag g-title-smaller">2分钟前 2021-01-28 09:49:23</div>
+                  <div class="g-color-title g-strong margintop5">余晨望 创建订单（1092838191201）</div>
+                </div>
+              </div>
+              <div class="trend-content g-flex g-aligncenter">
+                <div class="trend-line" />
+                <img src="~@/assets/images/workbench/icon_closewaybill.png" alt="">
+                <div style="margin-left: 12px;">
+                  <div class="g-color-tag g-title-smaller">2分钟前 2021-01-28 09:49:23</div>
+                  <div class="g-color-title g-strong margintop5">余晨望 取消订单（1092838191201）</div>
+                </div>
+              </div>
+              <div class="trend-content g-flex g-aligncenter">
+                <div class="trend-line" />
+                <img src="~@/assets/images/workbench/icon_load.png" alt="">
+                <div style="margin-left: 12px;">
+                  <div class="g-color-tag g-title-smaller">2分钟前 2021-01-28 09:49:23</div>
+                  <div class="g-color-title g-strong margintop5">余晨望 运单装货（1092838191201）</div>
+                </div>
+              </div>
+              <div v-for="(item, index) in 10" :key="index" class="trend-content g-flex g-aligncenter">
+                <div class="trend-line" />
+                <img src="~@/assets/images/workbench/icon_unload.png" alt="">
+                <div style="margin-left: 12px;">
+                  <div class="g-color-tag g-title-smaller">2分钟前 2021-01-28 09:49:23</div>
+                  <div class="g-color-title g-strong margintop5">余晨望 运单卸货（1092838191201）</div>
+                </div>
+              </div>
+            </div>
+            <!-- 发票动态 -->
+            <div v-if="activeName === '3'" class="trend-frame">
+              <div class="trend-content g-flex g-aligncenter">
+                <img src="~@/assets/images/workbench/icon_applyinvoice.png" alt="">
+                <div style="margin-left: 12px;">
+                  <div class="g-color-tag g-title-smaller">2分钟前 2021-01-28 09:49:23</div>
+                  <div class="g-color-title g-strong margintop5">余晨望 货主申请开票（1092838191201）</div>
+                </div>
+              </div>
+              <div v-for="(item, index) in 10" :key="index" class="trend-content g-flex g-aligncenter">
+                <div class="trend-line" />
+                <img src="~@/assets/images/workbench/icon_applyinvoice.png" alt="">
+                <div style="margin-left: 12px;">
+                  <div class="g-color-tag g-title-smaller">2分钟前 2021-01-28 09:49:23</div>
+                  <div class="g-color-title g-strong margintop5">余晨望 货主申请开票（1092838191201）</div>
                 </div>
               </div>
             </div>
@@ -423,6 +475,7 @@ export default {
   border: 10px solid #F9F9F9;
 }
 .user-post{
+  display: flex;
   padding: 0 10px;
   height: 22px;
   background: #EBF4FD;
@@ -449,7 +502,7 @@ export default {
 .notice-content{
   margin-top: 10px;
   float: right;
-  width: 275px;
+  width: 70%;
 }
 .notice-tip{
   margin-top: 10px;

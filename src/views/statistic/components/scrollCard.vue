@@ -81,8 +81,8 @@ export default {
         line-height: 1.35rem;
         .text{
           width: calc(100% - 2rem);
-          font-size: 0.7rem;
-          font-family: PingFang SC;
+          font-size: 0.65rem;
+          font-family: PingFang Regular;
           font-weight: 400;
           color: #FFFFFF;
           overflow: hidden;
@@ -92,7 +92,7 @@ export default {
         .time{
           width: 1.6rem;
           font-size: 0.5rem;
-          font-family: PingFang SC;
+          font-family: PingFang Regular;
           font-weight: 400;
           color: #A4ACC0;
         }

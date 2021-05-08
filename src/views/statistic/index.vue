@@ -279,7 +279,7 @@ export default {
     left: 50%;
     margin-left: -13rem;
     font-size: 1.6rem;
-    font-family: PingFang-SC-Bold;
+    font-family: 'PingFang Regular';
     font-weight: bold;
     color: #FFFFFF;
     text-align: center;
@@ -289,8 +289,8 @@ export default {
       height: 2.1rem;
       position: absolute;
       top: 0.1rem;
-      left: -3.2rem;
-      background: url('~@/assets/images/statistic/header_left.png') no-repeat;
+      left: -2.6rem;
+      background: url('~@/assets/images/statistic/header_left.gif') no-repeat;
       background-size: 100% 100%;
     }
     &::after {
@@ -299,8 +299,8 @@ export default {
       height: 2.1rem;
       position: absolute;
       top: 0.1rem;
-      right: -3.2rem;
-      background: url('~@/assets/images/statistic/header_right.png') no-repeat;
+      right: -2.6rem;
+      background: url('~@/assets/images/statistic/header_right.gif') no-repeat;
       background-size: 100% 100%;
     }
   }

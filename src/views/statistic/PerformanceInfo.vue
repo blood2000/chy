@@ -8,7 +8,7 @@
       </div>
       <div class="s-container__box__content">
         <p class="label">今日新增交易</p>
-        <p class="text blod">
+        <p class="text">
           <count-to :end-val="0.211" :decimal-places="3" />
           <span class="arow_down" />
           <span class="value_down">12.6%</span>
@@ -22,7 +22,7 @@
       </div>
       <div class="s-container__box__content">
         <p class="label">今日新增开票</p>
-        <p class="text blod">
+        <p class="text">
           <count-to :end-val="0.211" :decimal-places="3" />
           <span class="arow_up" />
           <span class="value_up">12.6%</span>
@@ -36,7 +36,7 @@
       </div>
       <div class="s-container__box__content">
         <p class="label">今日新增运费</p>
-        <p class="text blod">
+        <p class="text">
           <count-to :end-val="0.211" :decimal-places="3" />
           <span class="arow_up" />
           <span class="value_up">12.6%</span>
@@ -64,6 +64,7 @@ export default {
     height: 100%;
     position: relative;
     padding-left: 0.2rem;
+    font-family: PingFang Regular;
     &:not(:last-child)::before{
       content: '';
       position: absolute;
@@ -81,18 +82,13 @@ export default {
         font-weight: 200;
         color: rgba(213, 234, 255, 1);
         line-height: 1rem;
-        opacity: 0.7;
       }
       >.text{
         font-size: 1.1rem;
         font-weight: normal;
         color: #FFFFFF;
         line-height: 1.3rem;
-        opacity: 0.9;
-        &.blod{
-          font-family: 'PingFang Bold';
-          opacity: 1;
-        }
+        font-family: 'PingFang Medium';
         .arow_up{
           display: inline-block;
           width: 0.9rem;
