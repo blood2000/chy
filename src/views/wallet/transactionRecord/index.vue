@@ -58,7 +58,13 @@
         <el-table-column label="交易类型" align="center" prop="" />
         <el-table-column label="单价（元）" align="center" prop="" />
         <el-table-column label="重量（吨）" align="center" prop="" />
-        <el-table-column label="总额（元）" align="center" prop="amount" />
+        <el-table-column label="总额（元）" align="center" prop="amount">
+          <!-- 金额：单位分转为元 -->
+          <template slot-scope="scope">
+            <span>{{ scope.row.amount ? (scope.row.amount/100).toFixed(2) : scope.row.amount }}</span>
+          </template>
+        <!-- 付款类型 -->
+        </el-table-column>
         <el-table-column label="操作时间" align="center" prop="payTime" width="180" />
       </el-table>
 

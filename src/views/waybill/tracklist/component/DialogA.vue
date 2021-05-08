@@ -225,7 +225,7 @@ export default {
           // console.log(this.loadinfo);
           this.form.loadWeight = info.loadWeight;
           this.form.remark = info.remark;
-          // this.form.loadTime = info.loadTime;
+          this.form.loadTime = info.loadTime;
           // this.form.goodsCode = info.goodsCode;
           // this.form.loadAddressCode = info.waybillAddres.loadOrderAddressCode;
           // this.form.unloadAddressCode = info.waybillAddres.unloadOrderAddressCode;
@@ -234,7 +234,7 @@ export default {
         // this.form.vehicleCode = info.vehicleCode;
         } else {
           this.form.loadTime = this.waybill.fillTime;
-          this.form.loadWeight = this.waybill.loadWeight;
+          // this.form.loadWeight = this.waybill.loadWeight;
         }
       });
     },

@@ -16,7 +16,7 @@
       >
         <!-- :formatter="th.formatter" -->
         <template slot-scope="scope">
-          <slot :name="th.prop" :row="scope.row">{{ scope.row[th.prop] || '' }}</slot>
+          <slot :name="th.prop" :row="scope.row">{{ scope.row[th.prop] === 0 ? 0 : scope.row[th.prop] || '' }}</slot>
         </template>
       </el-table-column>
     </template>

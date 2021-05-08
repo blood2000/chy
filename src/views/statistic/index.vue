@@ -2,7 +2,9 @@
   <div class="g-statistic">
     <!-- title -->
     <div class="header-box">
-      大道成物流科技大数据看板
+      至简数字科技大数据
+      <span class="line left" />
+      <span class="line right" />
     </div>
 
     <!-- left -->
@@ -283,13 +285,26 @@ export default {
     font-weight: bold;
     color: #FFFFFF;
     text-align: center;
+    >.line {
+      width: 6rem;
+      height: 0.1rem;
+      background: linear-gradient(to right, rgba(3, 252, 255, 0) 0%, rgba(3, 252, 255, 0.5) 50%, rgba(3, 252, 255, 0) 100%);
+      position: absolute;
+      top: 1.1rem;
+      &.left {
+        left: -0.5rem;
+      }
+      &.right {
+        right: -0.5rem;
+      }
+    }
     &::before {
       content: '';
       width: 6.1rem;
       height: 2.1rem;
       position: absolute;
       top: 0.1rem;
-      left: -2.6rem;
+      left: -0.5rem;
       background: url('~@/assets/images/statistic/header_left.gif') no-repeat;
       background-size: 100% 100%;
     }
@@ -299,7 +314,7 @@ export default {
       height: 2.1rem;
       position: absolute;
       top: 0.1rem;
-      right: -2.6rem;
+      right: -0.5rem;
       background: url('~@/assets/images/statistic/header_right.gif') no-repeat;
       background-size: 100% 100%;
     }
