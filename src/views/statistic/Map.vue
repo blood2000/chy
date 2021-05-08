@@ -74,10 +74,10 @@ export default {
       warnData: [
         { name: '鄂尔多斯', value: [109.78, 39.60] },
         { name: '招远', value: [120.38, 37.35] },
-        { name: '舟山', value: [122.20, 29.98] },
+        { name: '这是六字名字', value: [122.20, 29.98] },
         { name: '青岛', value: [101.74, 36.56] },
         { name: '四川', value: [104.06, 30.67] },
-        { name: '海门', value: [121.15, 31.89] },
+        { name: '这是七个字名字', value: [121.15, 31.89] },
         { name: '黑龙江', value: [133.68, 47.57] },
         { name: '西藏', value: [91.11, 29.97] },
         { name: '新疆', value: [74.68, 39.27] }
@@ -225,7 +225,7 @@ export default {
       box.style.left = pixel[0] + 'px';
       box.style.top = pixel[1] + 'px';
       // 设置文字框内容
-      text.innerHTML = `${name}新增 1 个运单`;
+      text.innerHTML = `${name}新增100个运单`;
       // 文字框出现
       setTimeout(() => {
         this.showText(id);
@@ -315,13 +315,15 @@ export default {
           display: inline-block;
           width: 0.7rem;
           height: 0.4rem;
-          margin-right: 0.3rem;
+          margin-right: 0.2rem;
         }
         .text{
-          font-size: 0.5rem;
+          display: inline-block;
+          font-size: 0.6rem;
           font-family: 'PingFang Medium';
           font-weight: 500;
           color: #DDF5FF;
+          transform: scale(0.9, 0.9);
         }
       }
     }
@@ -372,22 +374,33 @@ export default {
     >.s-echart-map-tooltip-text{
       position: absolute;
       top: -2rem;
-      left: -2.9rem;
-      width: 5.8rem;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 8.5rem;
       height: 1.45rem;
-      line-height: 1.45rem;
+      line-height: 1.5rem;
       text-align: center;
       background: url('~@/assets/images/statistic/tooltip_box.png') no-repeat;
       background-size: 100% 100%;
       font-size: 0.6rem;
       opacity: 0;
-      padding: 0 0.5rem;
+      padding: 0 0.4rem;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
       &.show{
         transition: opacity 0.6s;
         opacity: 1;
+      }
+      &::before{
+        content: '';
+        position: absolute;
+        top: -0.1rem;
+        left: 0;
+        width: 0.7rem;
+        height: 0.7rem;
+        background: url('~@/assets/images/statistic/tooltip_box_before.png') no-repeat;
+        background-size: 100% 100%;
       }
     }
   }
