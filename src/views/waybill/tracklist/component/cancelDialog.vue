@@ -1,6 +1,6 @@
 <template>
   <!-- 车辆装货对话框 -->
-  <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
+  <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel" :close-on-click-modal="false">
     <el-form ref="form" :model="form" :rules="rules" label-width="130px">
       <el-form-item label="取消理由" prop="driverApplyRemark">
         <el-input v-model="form.driverApplyRemark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入取消订单申请理由" style="width:90%;" clearable />

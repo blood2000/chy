@@ -91,7 +91,7 @@
     />
 
     <!-- 添加或修改【请填写功能名称】对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body  :close-on-click-modal="false">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="${comment}" prop="testName">
           <el-input v-model="form.testName" placeholder="请输入${comment}" />

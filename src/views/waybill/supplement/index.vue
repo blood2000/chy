@@ -512,7 +512,10 @@ export default {
         'ruleFormulaDictValue': null, // 计算公式
         'shipperCode': null, // 货主Code
         'stowageStatus': null, // 配载方式
-        'teamCode': null // 所属调度
+        'teamCode': null, // 所属调度
+        'addFee': null, // 增项费用
+        'reductionFee': null // 减项费用
+
       };
       this.resetForm('form');
     },
@@ -546,6 +549,8 @@ export default {
           getGoods(response.data.redisOrderInfoVo.code).then(response => {
             console.log(response);
             this.goodsCodeOptions = response.data;
+            this.form.goodsCode = this.goodsCodeOptions[0].code;
+            this.goodsChoose(this.form.goodsCode);
           });
           // 获取货源底下的装卸货地
           getAddress(response.data.redisOrderInfoVo.code).then(response => {
@@ -557,17 +562,17 @@ export default {
                 return item.addressType === '1';
               });
               this.loadAddressOptions = address1;
+              this.form.loadAddressCode = this.loadAddressOptions[0].code;
               // 卸货地址
               const address2 = address.filter(item => {
                 return item.addressType === '2';
               });
               this.unloadAddressOptions = address2;
+              this.form.unloadAddressCode = this.unloadAddressOptions[0].code;
+              this.getOrderGoodsProce();
             }
           });
-          this.form.goodsCode = null;
           this.form.shipmentPrice = null;
-          this.form.loadAddressCode = null;
-          this.form.unloadAddressCode = null;
           this.form.remainingNumber = null;
           this.form.remainingWeight = null;
           // 获取运单号
@@ -593,20 +598,16 @@ export default {
         getOrderGoodsProce(orderGoodsFindPriceBo).then(response => {
           console.log(response);
           // 获取运费单价
-          const freightCost = response.data.find((item) => {
-            return item.ruleItemCode === '17';
-          });
+          const freightCost = response.data.detailList.find(item => item.ruleItemCode === '17');
           this.form.shipmentPrice = freightCost.ruleValue;
           // 获取抹零规则字典值
-          const m0 = response.data.find((item) => {
-            return item.ruleItemCode === '18';
-          });
+          const m0 = response.data.detailList.find(item => item.ruleItemCode === '18');
           this.form.m0DictValue = m0.ruleValue;
           // 获取计算公式
-          const caculation = response.data.find((item) => {
-            return item.ruleItemCode === '19';
-          });
+          const caculation = response.data.detailList.find(item => item.ruleItemCode === '19');
           this.form.ruleFormulaDictValue = caculation.ruleValue;
+          this.form.addFee = response.data.addFee;
+          this.form.reductionFee = response.data.reductionFee;
           setTimeout(() => {
             this.calculate();
           }, 100);
@@ -618,8 +619,8 @@ export default {
       console.log(this.form);
       if (this.form.loadWeight && this.form.shipmentPrice) {
         const calculateBo = {
-          driverAddFee: 0,
-          driverReductionFee: 0,
+          driverAddFee: this.form.addFee,
+          driverReductionFee: this.form.reductionFee,
           freightPrice: this.form.shipmentPrice,
           loadWeight: this.form.loadWeight,
           m0DictValue: this.form.m0DictValue,

@@ -209,7 +209,7 @@
     </el-row>
 
     <!-- 添加或修改角色配置对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body :close-on-click-modal="false">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row :gutter="24">
           <el-col :span="24">
@@ -335,7 +335,7 @@
     </el-dialog>
 
     <!-- 分配角色数据权限对话框 -->
-    <el-dialog :title="title" :visible.sync="openDataScope" width="500px" append-to-body>
+    <el-dialog :title="title" :visible.sync="openDataScope" width="500px" append-to-body :close-on-click-modal="false">
       <el-form :model="form" label-width="80px">
         <el-form-item label="角色名称">
           <el-input v-model="form.roleName" :disabled="true" />

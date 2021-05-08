@@ -2,7 +2,13 @@
   <div class="login pr">
     <img class="m_log pa" src="../assets/images/login/chy-log.png" alt="chy-log">
 
-    <div class="login_box pa">
+    <!-- 注册界面 -->
+    <div v-if="isRpPage" class="login_box pa">
+      <RetrievePassword @returnLogin="isRpPage = false" />
+    </div>
+
+    <!-- 登录界面 -->
+    <div v-else class="login_box pa">
 
       <ul class="login-tab">
         <li :class="{'active': active==='0'}" @click="active = '0'">账号登录</li>
@@ -84,7 +90,7 @@
             <el-form-item
               prop="captcha"
               :rules="[
-                { required: !Verification, message: '验证码不能为空', trigger: 'blur' },
+                { required: true, message: '验证码不能为空', trigger: 'blur' },
               ]"
             >
               <!-- type="number" -->
@@ -96,7 +102,7 @@
               >
                 <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
 
-                <span v-show="Verification" slot="suffix" class="shou" style="marginRight:10px;" @click.stop="send">发送验证码</span>
+                <span v-show="Verification" slot="suffix" class="shou" style="marginRight:10px;color:rgba(80, 148, 252, 1);" @click.stop="send">发送验证码</span>
                 <span v-show="!Verification" slot="suffix" style="marginRight:10px;"><span>{{ timer }}</span>秒后重新获取</span>
               </el-input>
             </el-form-item>
@@ -155,13 +161,11 @@
             <div style="width:50%;" class="ly-t-right login-mform-btn">
               <!-- <span class="shou">注册</span>
               <span class="login-mform-btn-s">|</span> -->
-              <span class="shou">忘记密码</span>
+              <span class="shou" @click="isRpPage = true">忘记密码</span>
             </div>
           </div>
 
-
         </div>
-
 
       </div>
 
@@ -230,10 +234,14 @@ import { getCodeImg, send_sms } from '@/api/login';
 import Cookies from 'js-cookie';
 import { encrypt, decrypt } from '@/utils/jsencrypt';
 
+import RetrievePassword from '@/components/Ddc/Tin/RetrievePassword';
+
 export default {
   name: 'Login',
+  components: { RetrievePassword },
   data() {
     return {
+      isRpPage: false,
       Verification: true, // 通过v-show控制显示获取还是倒计时
       timer: 60, // 定义初始时间为60s
       active: '0',
@@ -388,8 +396,8 @@ export default {
 
     /* 发送验证码 */
     send() {
-      this.$refs.loginForm2.validate(valid => {
-        if (valid) {
+      this.$refs.loginForm2.validateField('telno', (err) => {
+        if (!err) {
           send_sms(this.loginForm2.telno, 'login').then(res => {
             if (res.code === 200) {
               this.msgSuccess('验证码发送成功!');
@@ -403,12 +411,13 @@ export default {
     /* 倒计时 */
     _countdown() {
       this.Verification = false; // 点击button改变v-show的状态
-      const auth_timer = setInterval(() => { // 定时器设置每秒递减
+      let auth_timer = setInterval(() => { // 定时器设置每秒递减
         this.timer--; // 递减时间
         if (this.timer <= 0) {
           this.Verification = true; // 60s时间结束还原v-show状态并清除定时器
           this.timer = 60;
           clearInterval(auth_timer);
+          auth_timer = null;
         }
       }, 1000);
     },
@@ -451,18 +460,13 @@ export default {
   }
 
   .m_log{
-    // width: 9.4vw;
     width: 182px;
     top: 6.2vh;
     left: 4.1vw;
   }
   .login_box{
     width: 376px;
-    // height: 490px;
-    // margin: auto;
-    // top: 0;
-    // bottom: 0;
-    // right: 15vw;
+    height: 490px;
     margin-right: 15vw;
     border-radius: 5px;
     background: rgba(37, 37, 37, .5);

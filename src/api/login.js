@@ -67,3 +67,21 @@ export function pwd_login(telno, password) {
     data: { telno, password }
   });
 }
+
+// 根据验证码修改密码
+export function updatePwdByCaptcha(telno, captcha, newPwd) {
+  return request({
+    url: '/auth/updatePwdByCaptcha',
+    method: 'post',
+    data: { telno, captcha, newPwd }
+  });
+}
+
+// 校验验证码是否有效
+export function check_captcha(telno, captcha, type) {
+  return request({
+    url: '/auth/check_captcha',
+    method: 'post',
+    data: { telno, captcha, type }
+  });
+}
