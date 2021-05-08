@@ -392,6 +392,16 @@ export default {
         transition: opacity 0.6s;
         opacity: 1;
       }
+      &::before{
+        content: '';
+        position: absolute;
+        top: -0.1rem;
+        left: 0;
+        width: 0.7rem;
+        height: 0.7rem;
+        background: url('~@/assets/images/statistic/tooltip_box_before.png') no-repeat;
+        background-size: 100% 100%;
+      }
     }
   }
 }
