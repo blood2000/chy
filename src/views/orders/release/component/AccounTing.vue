@@ -348,6 +348,11 @@ export default {
 
           if (e.enName === 'FREIGHT_COST') {
             this.formData.freightPrice = e.ruleValue;
+
+            // 如果是复制的则重新计算
+            if (this.$route.query.t === '3') {
+              this.handlerChange();
+            }
           }
 
           if (e.enName === 'CALCULATION_FORMULA') {
