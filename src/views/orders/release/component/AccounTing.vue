@@ -10,7 +10,7 @@
   >
 
     <div v-if="!showbudget" class="header mb8 mt8">费用信息</div>
-    <el-form-item label="运费单价(含税): " prop="freightPrice" label-width="120px">
+    <el-form-item label="运费单价(含税): " prop="freightPrice" label-width="130px">
       <el-row>
 
         <el-col :span="24" class="ly-flex-pack-justify ">
@@ -167,7 +167,7 @@ export default {
       default: () => {
         return {
           size: 'medium',
-          labelWidth: '120px',
+          labelWidth: '130px',
           labelPosition: 'left'
         };
       }
@@ -348,6 +348,11 @@ export default {
 
           if (e.enName === 'FREIGHT_COST') {
             this.formData.freightPrice = e.ruleValue;
+
+            // 如果是复制的则重新计算
+            if (this.$route.query.t === '3') {
+              this.handlerChange();
+            }
           }
 
           if (e.enName === 'CALCULATION_FORMULA') {
