@@ -1,6 +1,6 @@
 <template>
   <!-- 车辆跟踪对话框 -->
-  <el-dialog :title="title" :visible="visible" width="1400px" append-to-body destroy-on-close @close="cancel">
+  <el-dialog :title="title" :visible="visible" width="1400px" append-to-body destroy-on-close @close="cancel" :close-on-click-modal="false">
     <div style="width:100%; height: 750px;">
       <el-amap ref="map" vid="DDCmap" :zoom="zoom" :center="center">
         <!-- <el-amap-polyline :path="polyline.path" :stroke-weight="8" line-join="round" :stroke-opacity="0.8" :stroke-color="'#0091ea'" /> -->

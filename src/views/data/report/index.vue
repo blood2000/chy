@@ -371,7 +371,7 @@
 
     <!-- 弹框使用  class类 i-price 是使用图片了 -->
     <!-- 弹框内的组件 -->
-    <el-dialog :title="'查看校验结果'" class="i-price" :visible.sync="open" width="70%" append-to-body>
+    <el-dialog :title="'查看校验结果'" class="i-price" :visible.sync="open" width="70%" :close-on-click-modal="false" append-to-body>
       <check-result v-if="open" :prop-data="openData" @refresh="(bool)=>{open = false; bool && getList()}" />
     </el-dialog>
 

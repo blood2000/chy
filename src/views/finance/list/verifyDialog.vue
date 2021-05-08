@@ -1,6 +1,6 @@
 <template>
   <!-- 审核对话框 -->
-  <el-dialog class="i-check" :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
+  <el-dialog class="i-check" :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="false" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="130px">
       <el-form-item v-if="form.num" label="审核数量" prop="num">
         <span>{{ form.num }}</span>

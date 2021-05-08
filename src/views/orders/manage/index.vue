@@ -354,12 +354,12 @@
     </div>
 
     <!-- 派送订单 -->
-    <el-dialog :title="title" :visible.sync="openDispatch" width="80%" append-to-body>
+    <el-dialog :close-on-click-modal="false"  :title="title" :visible.sync="openDispatch" width="80%" append-to-body>
       <open-dialog v-if="openDispatch" :dispatch="dispatch" @_ok="(bool)=>{openDispatch = false;bool ==='success' && getList()}" />
     </el-dialog>
 
     <!-- 价格调整 -->
-    <el-dialog :title="'费用调价'" class="i-price" :visible.sync="openPriceAdjustment" width="900px" append-to-body>
+    <el-dialog  :close-on-click-modal="false" :title="'费用调价'" class="i-price" :visible.sync="openPriceAdjustment" width="900px" append-to-body>
       <price-adjustment v-if="openPriceAdjustment" :mytabs="tabs" :order-code="orderCode" :pubilsh-code="pubilshCode" @submitRes="submitRes" />
     </el-dialog>
   </div>

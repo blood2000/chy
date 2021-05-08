@@ -7,6 +7,8 @@
     title="管理"
     append-to-body
     @close="cancel"
+    :modal-append-to-body="false"
+    :close-on-click-modal="false"
   >
     <el-tabs v-model="activeName">
       <el-tab-pane label="归属司机" name="driver">

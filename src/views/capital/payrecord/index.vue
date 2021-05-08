@@ -204,6 +204,10 @@
       </el-row>
 
       <RefactorTable :loading="loading" :data="recordList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+        <!-- 金额：单位分转为元 -->
+        <template #amount="{row}">
+          <span>{{ row.amount ? (row.amount/100).toFixed(2) : row.amount }}</span>
+        </template>
         <!-- 付款类型 -->
         <template #payType="{row}">
           <span>{{ selectDictLabel(payTypeOptions, row.payType) }}</span>
