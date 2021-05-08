@@ -153,7 +153,7 @@ export default {
           this.unloadinfo = info;
           console.log(info);
           this.form.unloadWeight = info.unloadWeight;
-          this.form.unloadTime = info.cargoTime;
+          this.form.unloadTime = info.unloadTime;
           this.form.remark = info.remark;
           // this.form.waybillAddress = info.waybillAddressList[0].orderAddressCode;
           this.form.attachmentCode = info.attachmentCode;
