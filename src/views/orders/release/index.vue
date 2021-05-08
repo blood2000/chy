@@ -1026,7 +1026,11 @@ export default {
         this.isT && this.isTEstimateCost(data);
 
         this.$nextTick(() => {
-          this.loading = false;
+          let tiem = setTimeout(() => {
+            this.loading = false;
+            clearTimeout(tiem);
+            tiem = undefined;
+          }, 700);
         });
       } catch (error) {
         // this.loading = false;

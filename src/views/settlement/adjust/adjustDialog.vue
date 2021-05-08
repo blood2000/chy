@@ -272,6 +272,9 @@ export default {
       // 自动计算出serviceFee=> 平台服务费费用
       // 自动计算出shipperRealPay=> 货主实付金额
       // 自动计算出m0Fee=> 货主实付金额
+
+      console.log(data);
+
       row.serviceFee = data.serviceFee;
       row.shipperRealPay = data.shipperRealPay;
       row.m0Fee = data.m0Fee ? data.m0Fee : row.m0Fee;
@@ -302,7 +305,8 @@ export default {
         stowageStatus: row.stowageStatus,
         driverAddFee: row.driverAddFee,
         loadWeight: row.loadWeight,
-        unloadWeight: row.unloadWeight
+        unloadWeight: row.unloadWeight,
+        waybillCode: row.waybillCode
       };
 
       const { data } = await calculateFee(parame);
@@ -327,6 +331,7 @@ export default {
       row.taxFreeFee = data.taxFreeFee; // ?
       row.taxPayment = data.taxPayment;
       row.m0Fee = data.m0Fee;
+      row.loss = data.loss;
 
       filterRow.deliveryCashFee = row.deliveryCashFee;
     },
