@@ -218,7 +218,6 @@ export default {
     getDetail() {
       this.reset();
       getInfoDetail(this.waybill.waybillNo, 1).then(response => {
-        this.form.loadTime = this.waybill.fillTime;
         if (response.data.length) {
           console.log(response);
           const info = response.data[0];
@@ -233,6 +232,9 @@ export default {
           this.form.attachmentCode = info.attachmentCode;
           this.fresh = true;
         // this.form.vehicleCode = info.vehicleCode;
+        } else {
+          this.form.loadTime = this.waybill.fillTime;
+          this.form.loadWeight = this.waybill.loadWeight;
         }
       });
     },
@@ -306,11 +308,25 @@ export default {
               }
             }
           } else {
-            load(this.form).then(response => {
-              this.msgSuccess('车辆装货成功');
-              this.close();
-              this.$emit('refresh');
-            });
+            if (!this.form.attachmentCode && this.form.loadWeight > 0) {
+              this.$confirm('未上传装货凭证，所填装货数量无效，是否确定继续提交？', '提示', {
+                confirmButtonText: '确定',
+                cancerButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
+                load(this.form).then(response => {
+                  this.msgSuccess('车辆装货成功');
+                  this.close();
+                  this.$emit('refresh');
+                });
+              });
+            } else {
+              load(this.form).then(response => {
+                this.msgSuccess('车辆装货成功');
+                this.close();
+                this.$emit('refresh');
+              });
+            }
           }
         }
       });
