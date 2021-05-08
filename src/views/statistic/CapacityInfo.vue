@@ -4,84 +4,138 @@
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <div class="s-container__box__content">
         <p class="label">总车辆(万)</p>
-        <p class="text"><count-to :end-val="0.211" :decimal-places="3" /></p>
+        <p class="text">
+          <count-to :end-val="dataList.vehicleCount" :decimal-places="2" />
+        </p>
       </div>
       <div class="s-container__box__content">
-        <p class="label">今日新增司机</p>
+        <p class="label">今日新增车辆</p>
         <p class="text">
-          <count-to :end-val="0.211" :decimal-places="3" />
-          <span class="arow_down" />
-          <span class="value_down">12.6%</span>
+          <count-to :end-val="dataList.newVehicleCount" :decimal-places="2" />
+          <template v-if="dataList.newVehicleYoyType !== 2">
+            <span :class="dataList.newVehicleYoyType===1 ? 'arow_down' : 'arow_up'" />
+            <span :class="dataList.newVehicleYoyType===1 ? 'value_down' : 'value_up'">
+              <count-to :end-val="dataList.newVehicleYoy" :decimal-places="1" />%
+            </span>
+          </template>
+          <template v-else>
+            <span class="arow_line" />
+          </template>
         </p>
       </div>
     </div>
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <div class="s-container__box__content">
         <p class="label">总路线(条)</p>
-        <p class="text"><count-to :end-val="0.211" :decimal-places="3" /></p>
+        <p class="text">
+          <count-to :end-val="dataList.lienCount" :decimal-places="2" />
+        </p>
       </div>
       <div class="s-container__box__content">
         <p class="label">今日新增路线</p>
         <p class="text">
-          <count-to :end-val="0.211" :decimal-places="3" />
-          <span class="arow_up" />
-          <span class="value_up">12.6%</span>
+          <count-to :end-val="dataList.newLineCount" :decimal-places="2" />
+          <template v-if="dataList.newLineYoyType !== 2">
+            <span :class="dataList.newLineYoyType===1 ? 'arow_down' : 'arow_up'" />
+            <span :class="dataList.newLineYoyType===1 ? 'value_down' : 'value_up'">
+              <count-to :end-val="dataList.newLineYoy" :decimal-places="1" />%
+            </span>
+          </template>
+          <template v-else>
+            <span class="arow_line" />
+          </template>
         </p>
       </div>
     </div>
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <div class="s-container__box__content">
         <p class="label">运输总量(吨)</p>
-        <p class="text"><count-to :end-val="0.211" :decimal-places="3" /></p>
+        <p class="text">
+          <count-to :end-val="dataList.transportCount" :decimal-places="2" />
+        </p>
       </div>
       <div class="s-container__box__content">
         <p class="label">今日新增吨数</p>
         <p class="text">
-          <count-to :end-val="0.211" :decimal-places="3" />
-          <span class="arow_up" />
-          <span class="value_up">12.6%</span>
+          <count-to :end-val="dataList.newTransportCount" :decimal-places="2" />
+          <template v-if="dataList.newTransportYoyType !== 2">
+            <span :class="dataList.newTransportYoyType===1 ? 'arow_down' : 'arow_up'" />
+            <span :class="dataList.newTransportYoyType===1 ? 'value_down' : 'value_up'">
+              <count-to :end-val="dataList.newTransportYoy" :decimal-places="1" />%
+            </span>
+          </template>
+          <template v-else>
+            <span class="arow_line" />
+          </template>
         </p>
       </div>
     </div>
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <div class="s-container__box__content">
         <p class="label">行驶里程(公里)</p>
-        <p class="text"><count-to :end-val="0.211" :decimal-places="3" /></p>
+        <p class="text">
+          <count-to :end-val="dataList.kilometreCount" :decimal-places="2" />
+        </p>
       </div>
       <div class="s-container__box__content">
         <p class="label">今日新增里程</p>
         <p class="text">
-          <count-to :end-val="0.211" :decimal-places="3" />
-          <span class="arow_up" />
-          <span class="value_up">12.6%</span>
+          <count-to :end-val="dataList.newKilometreCount" :decimal-places="2" />
+          <template v-if="dataList.newKilometreYoyType !== 2">
+            <span :class="dataList.newKilometreYoyType===1 ? 'arow_down' : 'arow_up'" />
+            <span :class="dataList.newKilometreYoyType===1 ? 'value_down' : 'value_up'">
+              <count-to :end-val="dataList.newKilometreYoy" :decimal-places="1" />%
+            </span>
+          </template>
+          <template v-else>
+            <span class="arow_line" />
+          </template>
         </p>
       </div>
     </div>
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <div class="s-container__box__content">
-        <p class="label">行驶时长(天)</p>
-        <p class="text"><count-to :end-val="0.211" :decimal-places="3" /></p>
+        <p class="label">行驶时长(月)</p>
+        <p class="text">
+          <count-to :end-val="dataList.haulageTimeCount" :decimal-places="2" />
+        </p>
       </div>
       <div class="s-container__box__content">
         <p class="label">今日新增时长</p>
         <p class="text">
-          <count-to :end-val="0.211" :decimal-places="3" />
-          <span class="arow_up" />
-          <span class="value_up">12.6%</span>
+          <count-to :end-val="dataList.newHaulageTimeCount" :decimal-places="2" />
+          <template v-if="dataList.newHaulageTimeYoyType !== 2">
+            <span :class="dataList.newHaulageTimeYoyType===1 ? 'arow_down' : 'arow_up'" />
+            <span :class="dataList.newHaulageTimeYoyType===1 ? 'value_down' : 'value_up'">
+              <count-to :end-val="dataList.newHaulageTimeYoy" :decimal-places="1" />%
+            </span>
+          </template>
+          <template v-else>
+            <span class="arow_line" />
+          </template>
         </p>
       </div>
     </div>
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <div class="s-container__box__content">
         <p class="label">总网点</p>
-        <p class="text"><count-to :end-val="0.211" :decimal-places="3" /></p>
+        <p class="text">
+          <count-to :end-val="dataList.branchCount" :decimal-places="2" />
+        </p>
       </div>
       <div class="s-container__box__content">
         <p class="label">今日新增网点</p>
         <p class="text">
-          <count-to :end-val="0.211" :decimal-places="3" />
-          <span class="arow_up" />
-          <span class="value_up">12.6%</span>
+          <count-to :end-val="dataList.newBranchCount" :decimal-places="2" />
+          <template v-if="dataList.newBranchYoyType !== 2">
+            <span :class="dataList.newBranchYoyType===1 ? 'arow_down' : 'arow_up'" />
+            <span :class="dataList.newBranchYoyType===1 ? 'value_down' : 'value_up'">
+              <count-to :end-val="dataList.newBranchYoy" :decimal-places="1" />%
+            </span>
+          </template>
+          <template v-else>
+            <span class="arow_line" />
+          </template>
         </p>
       </div>
     </div>
@@ -90,9 +144,32 @@
 
 <script>
 import CountTo from '@/components/CountTo';
+import { getCapacityData } from '@/api/statistic/statistic.js';
+
 export default {
   components: {
     CountTo
+  },
+  props: {
+    branchCode: {
+      type: String,
+      default: null
+    }
+  },
+  data() {
+    return {
+      dataList: {}
+    };
+  },
+  created() {
+    this.getData();
+  },
+  methods: {
+    getData() {
+      getCapacityData(this.branchCode).then(response => {
+        this.dataList = response.data || {};
+      });
+    }
   }
 };
 </script>
@@ -145,6 +222,15 @@ export default {
           background: url('~@/assets/images/statistic/arow_down.png') no-repeat;
           background-size: 100% 100%;
           margin-left: 0.3rem;
+        }
+        .arow_line{
+          display: inline-block;
+          width: 0.9rem;
+          height: 0.02rem;
+          background: #00d2ff;
+          margin-left: 0.4rem;
+          vertical-align: top;
+          margin-top: 0.65rem;
         }
         .value_up{
           font-size: 0.6rem;

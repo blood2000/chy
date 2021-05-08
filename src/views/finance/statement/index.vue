@@ -243,11 +243,11 @@ export default {
     },
     // 导出运费明细
     handleExportFreight() {
-      this.download('/transportation/invoiceApply/export', { applyCode: this.form.code, type: 1 }, `invoiceApply_${new Date().getTime()}.xlsx`);
+      this.download('/transportation/invoiceApply/export', { applyCode: this.form.code, type: 1 }, `运费明细_${new Date().getTime()}.xlsx`);
     },
-    // 导出运费明细
+    // 导出服务费明细
     handleExportService() {
-      this.download('/transportation/invoiceApply/export', { applyCode: this.form.code, type: 2 }, `invoiceApply_${new Date().getTime()}.xlsx`);
+      this.download('/transportation/invoiceApply/export', { applyCode: this.form.code, type: 2 }, `服务费明细_${new Date().getTime()}.xlsx`);
     },
     // 查看发票里的运单
     handleClick(row) {

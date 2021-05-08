@@ -186,14 +186,14 @@ export default [
     label: '状态'
   },
   {
-    prop: 'remainingNumber',
+    prop: 'notRobbedOrder',
     isShow: true,
     width: 120,
     tooltip: true,
     label: '可抢单量'
   },
   {
-    prop: 'number_remainingNumber',
+    prop: 'robbedOrder',
     isShow: true,
     width: 120,
     tooltip: true,
