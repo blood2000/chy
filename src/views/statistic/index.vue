@@ -12,16 +12,16 @@
       <div class="ly-left-top mb1rem ly-flex-pack-justify ly-border">
         <div class="ly-left-top-left ly-border">
           <Title class="title_1" icon="1">监管数据<span>Regulatory data</span></Title>
-          <RegulatoryData />
+          <RegulatoryData :branch-code="branchCode" />
         </div>
         <div class="ly-left-top-right ly-border">
           <Title class="title_2" icon="2">用户情况<span>User situation</span></Title>
-          <UserInfo />
+          <UserInfo :branch-code="branchCode" />
         </div>
       </div>
       <div class="ly-left-center mb1rem ly-border">
         <Title class="title_3" icon="3">运力情况<span>Capacity situation</span></Title>
-        <CapacityInfo />
+        <CapacityInfo :branch-code="branchCode" />
       </div>
       <div class="ly-left-bottom ly-border">
         <Title class="title_3" icon="4">业绩数据<span>Performance data</span></Title>
@@ -75,6 +75,7 @@
 
 <script>
 import { ThrottleFun } from '@/utils/index.js';
+import { mapState } from 'vuex';
 import Title from './components/title';
 import RegulatoryData from './RegulatoryData';// 监管数据
 import UserInfo from './UserInfo';// 用户情况
@@ -114,10 +115,17 @@ export default {
   },
   data() {
     return {
+      branchCode: null,
       websock: null
     };
   },
+  computed: {
+    ...mapState({
+      branch: state => state.user.branch
+    })
+  },
   created() {
+    this.branchCode = this.branch.code;
     // this.initWebSocket();
   },
   mounted() {
@@ -128,7 +136,7 @@ export default {
   },
   beforeDestroy() {
     window.onresize = null;
-    this.websock.close();
+    if (this.websock) this.websock.close();
   },
   methods: {
     initWebSocket() { // 初始化websocket
@@ -140,7 +148,7 @@ export default {
       this.websock.onclose = this.websocketclose;
     },
     websocketonopen() { // 连接建立之后执行send方法发送数据
-      const actions = { 'test': '12345' };
+      // const actions = { 'test': '12345' };
       // this.websocketsend(JSON.stringify(actions));
     },
     websocketonerror() { // 连接建立失败重连
@@ -148,7 +156,7 @@ export default {
     },
     websocketonmessage(e) { // 数据接收
       console.log('数据接收', e);
-      const redata = JSON.parse(e.data);
+      // const redata = JSON.parse(e.data);
     },
     websocketsend(data) { // 数据发送
       this.websock.send(data);
