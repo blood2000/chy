@@ -243,6 +243,11 @@ export default {
 
       if (filterRow[key] === value) return;
 
+      if (!value) {
+        this.msgError('司机实收现金不能为空');
+        row.deliveryCashFee = filterRow.deliveryCashFee;
+        return;
+      }
       //  原始值 > 输入值
       if (filterRow.deliveryCashFee > value) {
         // otherCharges: 其他扣款 = 原始值 - 输入值
@@ -296,6 +301,12 @@ export default {
 
       if (filterRow[key] === value) return;
 
+      if (!value) {
+        this.msgError(key === 'loadWeight' ? '装货重量不能为空' : '卸货重量不能为空');
+        row[key] = filterRow[key];
+        return;
+      }
+
       const parame = {
         driverReductionFee: row.driverReductionFee,
         m0DictValue: row.m0DictValue,
@@ -334,6 +345,7 @@ export default {
       row.loss = data.loss;
 
       filterRow.deliveryCashFee = row.deliveryCashFee;
+      filterRow[key] = row[key];
     },
 
     // 批量修改
