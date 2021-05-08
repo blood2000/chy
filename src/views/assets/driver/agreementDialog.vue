@@ -6,6 +6,7 @@
     title="协议"
     append-to-body
     @close="cancel"
+    :close-on-click-modal="false"
   >
     <div ref="AgreementHtml" v-html="agreementHtml" />
     <div slot="footer" class="dialog-footer">

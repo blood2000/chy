@@ -179,6 +179,7 @@
       width="80%"
       append-to-body
       class="m_elDialog"
+      :close-on-click-modal="false"
     >
       <open-dialog v-if="open" :cb-data="[...formData['tin6_' + actionIndex]]" :action-index="actionIndex" @handleSelectionChange="handleSelectionChange" />
     </el-dialog>

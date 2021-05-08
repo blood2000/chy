@@ -1,6 +1,6 @@
 <template>
   <!-- 评价对话框 -->
-  <el-dialog class="i-comment" :title="title" :visible="visible" width="1400px" append-to-body @close="cancel">
+  <el-dialog class="i-comment" :title="title" :visible="visible" width="1400px" :close-on-click-modal="false" append-to-body @close="cancel">
     <el-table v-loading="loading" :data="commentlist" border stripe>
       <el-table-column type="index" label="序号" align="center" width="50" />
       <el-table-column width="150" label="运输单号" align="center" prop="waybillNo" />

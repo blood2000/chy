@@ -147,18 +147,20 @@ export default {
     getDetail() {
       this.reset();
       getInfoDetail(this.waybill.waybillNo, 2).then(response => {
-        this.form.unloadTime = this.waybill.receiveTime;
         console.log(response);
         if (response.data.length) {
           const info = response.data[0];
           this.unloadinfo = info;
           console.log(info);
           this.form.unloadWeight = info.unloadWeight;
-          // this.form.unloadTime = info.cargoTime;
+          this.form.unloadTime = info.unloadTime;
           this.form.remark = info.remark;
           // this.form.waybillAddress = info.waybillAddressList[0].orderAddressCode;
           this.form.attachmentCode = info.attachmentCode;
           this.fresh = true;
+        } else {
+          this.form.unloadTime = this.waybill.receiveTime;
+          this.form.unloadWeight = this.waybill.loadWeight;
         }
       });
     },
@@ -193,11 +195,25 @@ export default {
               }
             }
           } else {
-            unload(this.form).then(response => {
-              this.msgSuccess('车辆卸货成功');
-              this.close();
-              this.$emit('refresh');
-            });
+            if (!this.form.attachmentCode && this.form.unloadWeight > 0) {
+              this.$confirm('未上传卸货凭证，所填卸货数量无效，是否确定继续提交？', '提示', {
+                confirmButtonText: '确定',
+                cancerButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
+                unload(this.form).then(response => {
+                  this.msgSuccess('车辆卸货成功');
+                  this.close();
+                  this.$emit('refresh');
+                });
+              });
+            } else {
+              unload(this.form).then(response => {
+                this.msgSuccess('车辆卸货成功');
+                this.close();
+                this.$emit('refresh');
+              });
+            }
           }
         }
       });

@@ -136,7 +136,7 @@
       />
 
       <!-- 添加或修改岗位对话框 -->
-      <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+      <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body  :close-on-click-modal="false">
         <el-form ref="form" :model="form" :rules="rules" label-width="80px">
           <el-form-item label="产品名称" prop="produceCode">
             <el-select
@@ -186,6 +186,7 @@ export default {
   name: 'Post',
   data() {
     return {
+      modalClick: false,
       // 遮罩层
       loading: true,
       buttonLoading: false,

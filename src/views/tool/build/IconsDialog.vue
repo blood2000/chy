@@ -4,6 +4,7 @@
       v-bind="$attrs"
       width="980px"
       :modal-append-to-body="false"
+      :close-on-click-modal="false"
       v-on="$listeners"
       @open="onOpen"
       @close="onClose"

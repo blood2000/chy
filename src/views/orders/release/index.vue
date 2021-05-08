@@ -308,6 +308,7 @@
 
     <!-- 打开弹框 -->
     <el-dialog
+      :close-on-click-modal="false"
       title="常用地址"
       :visible.sync="openSelectaddress"
       width="80%"

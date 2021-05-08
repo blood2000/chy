@@ -206,7 +206,7 @@
     </el-row>
 
     <!-- 添加或修改参数配置对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body :close-on-click-modal="false" >
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row>
           <el-col :span="12">
@@ -330,7 +330,7 @@
     </el-dialog>
 
     <!-- 用户导入对话框 -->
-    <el-dialog :title="upload.title" :visible.sync="upload.open" width="400px" append-to-body>
+    <el-dialog :title="upload.title" :visible.sync="upload.open" width="400px" append-to-body :close-on-click-modal="false">
       <el-upload
         ref="upload"
         :limit="1"
@@ -361,7 +361,7 @@
     </el-dialog>
 
     <!-- 重置密码弹窗 -->
-    <el-dialog :title="pwTitle" :visible.sync="pwOpen" width="500px" append-to-body @close="pwReset">
+    <el-dialog :title="pwTitle" :visible.sync="pwOpen" width="500px" append-to-body :modal-append-to-body="false" :close-on-click-modal="false" @close="pwReset">
       <el-form ref="pwForm" :model="pwForm" :rules="pwRules" label-width="0px">
         <el-form-item prop="password">
           <el-input v-model="pwForm.password" placeholder="请输入密码" />

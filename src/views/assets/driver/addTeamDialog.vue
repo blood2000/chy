@@ -2,6 +2,7 @@
   <el-dialog
     :visible="visible"
     :fullscreen="isfullscreen"
+    :close-on-click-modal="false"
     width="1300px"
     title="申请加入调度"
     append-to-body

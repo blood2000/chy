@@ -39,6 +39,14 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
+        <el-form-item label="手机号" prop="telphone">
+          <el-input
+            v-model="queryParams.telphone"
+            placeholder="请输入手机号"
+            clearable
+            size="small"
+          />
+        </el-form-item>
         <el-form-item label="车牌号码" prop="licenseNumber">
           <el-input
             v-model="queryParams.licenseNumber"
@@ -297,6 +305,7 @@ export default {
         orderByColumn: 't0.create_time',
         name: undefined,
         teamLeaderName: undefined,
+        telphone: undefined,
         status: undefined,
         driverName: undefined,
         licenseNumber: undefined,

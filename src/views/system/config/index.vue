@@ -102,7 +102,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <el-table v-loading="loading" :data="configList" @selection-change="handleSelectionChange">
+      <el-table v-loading="loading" :data="configList" @selection-change="handleSelectionChange" :close-on-click-modal="modalClick">
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="参数主键" align="center" prop="configId" />
         <el-table-column label="参数名称" align="center" prop="configName" :show-overflow-tooltip="true" />
@@ -144,7 +144,7 @@
       />
 
       <!-- 添加或修改参数配置对话框 -->
-      <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+      <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body :close-on-click-modal="false">
         <el-form ref="form" :model="form" :rules="rules" label-width="80px">
           <el-form-item label="参数名称" prop="configName">
             <el-input v-model="form.configName" placeholder="请输入参数名称" />

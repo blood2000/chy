@@ -298,7 +298,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="车牌类型" prop="classificationCode">
+        <!--<el-form-item label="车牌类型" prop="classificationCode">
           <el-select v-model="vehicleForm.classificationCode" class="width90" filterable clearable :disabled="disable">
             <el-option
               v-for="dict in licensePlateTypeOptions"
@@ -307,7 +307,7 @@
               :value="dict.dictValue"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="车身颜色" prop="vehicleColorCode">
           <el-select v-model="vehicleForm.vehicleColorCode" class="width90" filterable clearable :disabled="disable">
             <el-option
@@ -602,9 +602,9 @@ export default {
         this.driverLicenseTypeOptions = response.data;
       });
       // 车牌类型
-      this.getDicts('licensePlateType').then(response => {
+      /* this.getDicts('licensePlateType').then(response => {
         this.licensePlateTypeOptions = response.data;
-      });
+      });*/
       // 车牌颜色
       this.getDicts('licenseColor').then(response => {
         this.licenseColorOptions = response.data;

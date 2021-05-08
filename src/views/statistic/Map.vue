@@ -72,10 +72,15 @@ export default {
         }
       }],
       warnData: [
-        { name: '海门', value: [121.15, 31.89] },
-        { name: '鄂尔多斯', value: [109.781327, 39.608266] },
+        { name: '鄂尔多斯', value: [109.78, 39.60] },
         { name: '招远', value: [120.38, 37.35] },
-        { name: '舟山', value: [122.207216, 29.985295] }
+        { name: '这是六字名字', value: [122.20, 29.98] },
+        { name: '青岛', value: [101.74, 36.56] },
+        { name: '四川', value: [104.06, 30.67] },
+        { name: '这是七个字名字', value: [121.15, 31.89] },
+        { name: '黑龙江', value: [133.68, 47.57] },
+        { name: '西藏', value: [91.11, 29.97] },
+        { name: '新疆', value: [74.68, 39.27] }
       ],
       // 模拟实时数据
       warnIndex: 0
@@ -184,15 +189,16 @@ export default {
     // 模拟实时数据
     initData() {
       const data = this.warnData[this.warnIndex];
-      this.createPrompt(data.value[0], data.value[1], data.name, this.warnIndex);
-      if (this.warnIndex < 3) {
+      this.createPrompt(data.value[0], data.value[1], data.name);
+      if (this.warnIndex < this.warnData.length - 1) {
         this.warnIndex++;
       } else {
         this.warnIndex = 0;
       }
     },
     // 地图新增一条提示
-    createPrompt(lng, lat, name, id) {
+    createPrompt(lng, lat, name) {
+      const id = new Date().getTime();
       // 经纬度转换成屏幕xy坐标
       const pixel = this.chart.convertToPixel('geo', [lng, lat]); // return Array
       if (!pixel || !pixel.length || pixel.length < 2) return;
@@ -219,14 +225,14 @@ export default {
       box.style.left = pixel[0] + 'px';
       box.style.top = pixel[1] + 'px';
       // 设置文字框内容
-      text.innerHTML = `${name}新增一个运单`;
+      text.innerHTML = `${name}新增100个运单`;
       // 文字框出现
       setTimeout(() => {
         this.showText(id);
       }, 1 * 1000);
       // 文字框和点一起消失动画
       setTimeout(() => {
-        this.hideDom(id);
+        this.hideDom(id, lng);
       }, 3.5 * 1000);
       // 移除dom
       setTimeout(() => {
@@ -237,9 +243,14 @@ export default {
       const textDom = document.getElementById('s-echart-map-tooltip-text' + id);
       textDom.classList.add('show');
     },
-    hideDom(id) {
+    hideDom(id, lng) {
       const toolDom = document.getElementById('s-echart-map-tooltip-content' + id);
-      toolDom.classList.add('hide');
+      // 以经度108为界
+      if (lng < 108) {
+        toolDom.classList.add('hide_left');
+      } else {
+        toolDom.classList.add('hide_right');
+      }
     },
     removeDom(id) {
       const promptDom = document.getElementById('s-echart-map-tooltip-wrap' + id);
@@ -304,13 +315,15 @@ export default {
           display: inline-block;
           width: 0.7rem;
           height: 0.4rem;
-          margin-right: 0.3rem;
+          margin-right: 0.2rem;
         }
         .text{
-          font-size: 0.5rem;
+          display: inline-block;
+          font-size: 0.6rem;
           font-family: 'PingFang Medium';
           font-weight: 500;
           color: #DDF5FF;
+          transform: scale(0.9, 0.9);
         }
       }
     }
@@ -327,7 +340,12 @@ export default {
     transform: translate(0, 0);
     opacity: 1;
     // tooltip消失动画
-    &.hide{
+    &.hide_left{
+      transition: all 2.5s;
+      transform: translate(-8rem, -6rem);
+      opacity: 0;
+    }
+    &.hide_right{
       transition: all 2.5s;
       transform: translate(8rem, -6rem);
       opacity: 0;
@@ -356,18 +374,33 @@ export default {
     >.s-echart-map-tooltip-text{
       position: absolute;
       top: -2rem;
-      left: -2.9rem;
-      width: 5.8rem;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 8.5rem;
       height: 1.45rem;
-      line-height: 1.45rem;
+      line-height: 1.5rem;
       text-align: center;
       background: url('~@/assets/images/statistic/tooltip_box.png') no-repeat;
       background-size: 100% 100%;
       font-size: 0.6rem;
       opacity: 0;
+      padding: 0 0.4rem;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
       &.show{
         transition: opacity 0.6s;
         opacity: 1;
+      }
+      &::before{
+        content: '';
+        position: absolute;
+        top: -0.1rem;
+        left: 0;
+        width: 0.7rem;
+        height: 0.7rem;
+        background: url('~@/assets/images/statistic/tooltip_box_before.png') no-repeat;
+        background-size: 100% 100%;
       }
     }
   }

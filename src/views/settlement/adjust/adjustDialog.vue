@@ -1,6 +1,6 @@
 <template>
   <!-- 评价对话框 -->
-  <el-dialog class="i-adjust" :title="title" :visible="visible" width="1400px" append-to-body @close="cancel">
+  <el-dialog class="i-adjust" :title="title" :visible="visible" width="1400px" :close-on-click-modal="false" append-to-body @close="cancel">
     <el-row :gutter="10" class="mb8">
       <el-col :span="10">
         <span class="mr3">司机实收金额</span>

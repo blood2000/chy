@@ -1,6 +1,6 @@
 <template>
   <!-- 导入表 -->
-  <el-dialog title="导入表" :visible.sync="visible" width="800px" top="5vh" append-to-body>
+  <el-dialog title="导入表" :visible.sync="visible" width="800px" top="5vh" append-to-body :close-on-click-modal="false">
     <el-form ref="queryForm" :model="queryParams" :inline="true">
       <el-form-item label="表名称" prop="tableName">
         <el-input

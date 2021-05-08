@@ -1,6 +1,6 @@
 <template>
   <!-- 车辆装货对话框 -->
-  <el-dialog :title="title" :visible="visible" width="800px" append-to-body destroy-on-close @close="cancel">
+  <el-dialog :title="title" :visible="visible" width="800px" append-to-body   :modal-append-to-body="false" destroy-on-close @close="cancel">
     <el-form ref="form" :model="form" :rules="disable ? rules: rule" label-width="130px">
       <el-form-item label="装货时间" prop="loadTime">
         <el-date-picker
@@ -218,7 +218,6 @@ export default {
     getDetail() {
       this.reset();
       getInfoDetail(this.waybill.waybillNo, 1).then(response => {
-        this.form.loadTime = this.waybill.fillTime;
         if (response.data.length) {
           console.log(response);
           const info = response.data[0];
@@ -226,13 +225,16 @@ export default {
           // console.log(this.loadinfo);
           this.form.loadWeight = info.loadWeight;
           this.form.remark = info.remark;
-          // this.form.loadTime = info.loadTime;
+          this.form.loadTime = info.loadTime;
           // this.form.goodsCode = info.goodsCode;
           // this.form.loadAddressCode = info.waybillAddres.loadOrderAddressCode;
           // this.form.unloadAddressCode = info.waybillAddres.unloadOrderAddressCode;
           this.form.attachmentCode = info.attachmentCode;
           this.fresh = true;
         // this.form.vehicleCode = info.vehicleCode;
+        } else {
+          this.form.loadTime = this.waybill.fillTime;
+          // this.form.loadWeight = this.waybill.loadWeight;
         }
       });
     },
@@ -306,11 +308,25 @@ export default {
               }
             }
           } else {
-            load(this.form).then(response => {
-              this.msgSuccess('车辆装货成功');
-              this.close();
-              this.$emit('refresh');
-            });
+            if (!this.form.attachmentCode && this.form.loadWeight > 0) {
+              this.$confirm('未上传装货凭证，所填装货数量无效，是否确定继续提交？', '提示', {
+                confirmButtonText: '确定',
+                cancerButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
+                load(this.form).then(response => {
+                  this.msgSuccess('车辆装货成功');
+                  this.close();
+                  this.$emit('refresh');
+                });
+              });
+            } else {
+              load(this.form).then(response => {
+                this.msgSuccess('车辆装货成功');
+                this.close();
+                this.$emit('refresh');
+              });
+            }
           }
         }
       });
