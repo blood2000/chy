@@ -1,4 +1,4 @@
-import { login, logout, getInfo, refreshToken, sms_login, pwd_login } from '@/api/login';
+import { login, logout, getInfo, refreshToken, sms_login, pwd_login, updatePwdByCaptcha, check_captcha } from '@/api/login';
 import { getToken, setToken, setExpiresIn, removeToken, setUserInfo, removeUserInfo } from '@/utils/auth';
 
 const user = {
@@ -109,6 +109,41 @@ const user = {
           commit('SET_TOKEN', data.access_token);
           setExpiresIn(data.expires_in);
           commit('SET_EXPIRES_IN', data.expires_in);
+          resolve();
+        }).catch(error => {
+          reject(error);
+        });
+      });
+    },
+
+    // 修改密码
+    RetrievePassword({ commit }, userInfo) {
+      const newPwd = userInfo.newPwd.trim();
+      const captcha = userInfo.captcha.trim();
+      const telno = userInfo.telno.trim();
+
+      return new Promise((resolve, reject) => {
+        updatePwdByCaptcha(telno, captcha, btoa(newPwd)).then(res => {
+          // const data = res.data;
+          // setToken(data.access_token);
+          // commit('SET_TOKEN', data.access_token);
+          // setExpiresIn(data.expires_in);
+          // commit('SET_EXPIRES_IN', data.expires_in);
+          resolve();
+        }).catch(error => {
+          reject(error);
+        });
+      });
+    },
+
+    // 校验验证码是否有效
+    checkCaptcha({ commit }, userInfo) {
+      const telno = userInfo.telno.trim();
+      const captcha = userInfo.captcha.trim();
+      const type = userInfo.type.trim();
+
+      return new Promise((resolve, reject) => {
+        check_captcha(telno, captcha, type).then(res => {
           resolve();
         }).catch(error => {
           reject(error);
