@@ -1,9 +1,9 @@
 <template>
-  <div class="s-container">
+  <div class="s-container s-map-container-relative">
     <div ref="map" class="map-box" />
     <!-- 图例 -->
     <div class="map-legend">
-      <h5>运单量</h5>
+      <h5 @click="initData">运单量</h5>
       <ul class="ly-flex-v ly-flex-pack-justify">
         <li v-for="(item, index) in legendList" :key="index">
           <span class="color" :style="{background: item.color}" />
@@ -71,14 +71,14 @@ export default {
           areaColor: 'rgba(1, 227, 255, 1)'
         }
       }],
-      timer: null,
-      nows: -1,
       warnData: [
-        { name: '海门', value: [121.15, 31.89, 1000] },
-        { name: '鄂尔多斯', value: [109.781327, 39.608266, 1000] },
-        { name: '招远', value: [120.38, 37.35, 1000] },
-        { name: '舟山', value: [122.207216, 29.985295, 1000] }
-      ]
+        { name: '海门', value: [121.15, 31.89] },
+        { name: '鄂尔多斯', value: [109.781327, 39.608266] },
+        { name: '招远', value: [120.38, 37.35] },
+        { name: '舟山', value: [122.207216, 29.985295] }
+      ],
+      // 模拟实时数据
+      warnIndex: 0
     };
   },
   mounted() {
@@ -87,7 +87,6 @@ export default {
     });
   },
   beforeDestroy() {
-    if (this.timer) clearInterval(this.timer);
     if (!this.chart) {
       return;
     }
@@ -102,7 +101,6 @@ export default {
       echarts.registerMap('china', maps);
       this.setOption();
       this.setFontOption();
-      this.initData();
     },
     refreshChart() {
       this.chart.resize();
@@ -110,39 +108,6 @@ export default {
     },
     setOption() {
       this.chart.setOption({
-        tooltip: {
-          show: true,
-          showContent: true, // 是否显示提示框浮层
-          enterable: true, // 鼠标是否可进入提示框浮层中
-          alwaysShowContent: true, // 是否永远显示提示框内容
-          // showDelay: 300, // 浮层显示的延迟，单位为 ms
-          // hideDelay: 300, // 浮层隐藏的延迟，单位为 ms
-          renderMode: 'html',
-          appendToBody: true,
-          className: 's-echart-map-tooltip',
-          transitionDuration: 0, // 默认0.4
-          // position: [10, 10],
-          triggerOn: 'none',
-          trigger: 'item',
-          borderColor: 'rgba(0, 0, 0, 0)',
-          backgroundColor: 'rgba(70, 70, 70, 0)',
-          textStyle: {
-            color: '#FFFFFF',
-            fontFamily: 'PingFang Regular'
-          },
-          formatter: function(params) {
-            const { value } = params;
-            if (value) {
-              // return `${params.name}: ${value[2]}`;
-              return `<section class="s-echart-map-tooltip-content">
-                        <div class="s-echart-map-tooltip-text">${params.name}：${value[2]}</div>
-                        <div class="s-echart-map-tooltip-circle"></div>
-                      </section>`;
-            } else {
-              return `${params.name}`;
-            }
-          }
-        },
         geo: {
           map: 'china',
           zoom: 1.2,
@@ -185,6 +150,7 @@ export default {
           }
         },
         {
+          // 测试数据
           name: '散点',
           type: 'scatter',
           geoIndex: 0,
@@ -192,15 +158,6 @@ export default {
           symbol: 'circle',
           symbolSize: 0,
           animation: false,
-          animationDelay: function(idx) {
-            // 越往后的数据延迟越大
-            return idx * 1000;
-          },
-          label: {
-            formatter() {
-              return '散点';
-            }
-          },
           data: this.warnData
         }]
       });
@@ -224,42 +181,69 @@ export default {
         }]
       });
     },
-    // 测试数据
+    // 模拟实时数据
     initData() {
-      if (this.timer) clearInterval(this.timer);
-      this.timer = window.setInterval(() => {
-        this.showToolTip();
-        // 文字框出现
-        setTimeout(() => {
-          this.showText();
-        }, 1 * 1000);
-        // 消失
-        setTimeout(() => {
-          this.removeDom();
-        }, 3.5 * 1000);
+      const data = this.warnData[this.warnIndex];
+      this.createPrompt(data.value[0], data.value[1], data.name, this.warnIndex);
+      if (this.warnIndex < 3) {
+        this.warnIndex++;
+      } else {
+        this.warnIndex = 0;
+      }
+    },
+    // 地图新增一条提示
+    createPrompt(lng, lat, name, id) {
+      // 经纬度转换成屏幕xy坐标
+      const pixel = this.chart.convertToPixel('geo', [lng, lat]); // return Array
+      if (!pixel || !pixel.length || pixel.length < 2) return;
+      // createDom-box
+      const box = document.createElement('div');
+      box.setAttribute('class', 's-echart-map-tooltip-wrap');
+      box.setAttribute('id', 's-echart-map-tooltip-wrap' + id);
+      document.getElementsByClassName('s-map-container-relative')[0].appendChild(box);
+      // createDom-content
+      const section = document.createElement('section');
+      section.setAttribute('class', 's-echart-map-tooltip-content');
+      section.setAttribute('id', 's-echart-map-tooltip-content' + id);
+      box.appendChild(section);
+      // createDom-text
+      const text = document.createElement('div');
+      text.setAttribute('class', 's-echart-map-tooltip-text');
+      text.setAttribute('id', 's-echart-map-tooltip-text' + id);
+      section.appendChild(text);
+      // createDom-circle
+      const circle = document.createElement('div');
+      circle.setAttribute('class', 's-echart-map-tooltip-circle');
+      section.appendChild(circle);
+      // 设置弹窗位置
+      box.style.left = pixel[0] + 'px';
+      box.style.top = pixel[1] + 'px';
+      // 设置文字框内容
+      text.innerHTML = `${name}新增一个运单`;
+      // 文字框出现
+      setTimeout(() => {
+        this.showText(id);
+      }, 1 * 1000);
+      // 文字框和点一起消失动画
+      setTimeout(() => {
+        this.hideDom(id);
+      }, 3.5 * 1000);
+      // 移除dom
+      setTimeout(() => {
+        this.removeDom(id);
       }, 6 * 1000);
     },
-    showToolTip() {
-      const length = this.warnData.length;
-      this.nows = (this.nows + 1) % length;
-      this.chart.dispatchAction({
-        type: 'showTip',
-        seriesIndex: 1,
-        dataIndex: this.nows
-      });
-    },
-    hideToolTip() {
-      this.chart.dispatchAction({
-        type: 'hideTip'
-      });
-    },
-    showText() {
-      const textDom = document.getElementsByClassName('s-echart-map-tooltip-text')[0];
+    showText(id) {
+      const textDom = document.getElementById('s-echart-map-tooltip-text' + id);
       textDom.classList.add('show');
     },
-    removeDom() {
-      const toolDom = document.getElementsByClassName('s-echart-map-tooltip-content')[0];
+    hideDom(id) {
+      const toolDom = document.getElementById('s-echart-map-tooltip-content' + id);
       toolDom.classList.add('hide');
+    },
+    removeDom(id) {
+      const promptDom = document.getElementById('s-echart-map-tooltip-wrap' + id);
+      promptDom.remove();
     }
   }
 };
@@ -274,7 +258,7 @@ export default {
   >.map-box{
     width: 100%;
     height: 100%;
-    // background: rgba(0,0,0,0.2); // 辅助线
+    // background: rgba(0,0,0,0.4); // 辅助线
   }
   >.map-legend{
     position: absolute;
@@ -336,10 +320,8 @@ export default {
 
 <style lang="scss">
 /* 全局样式，谨慎使用类名 */
-.s-echart-map-tooltip{
-  box-shadow: none !important;
-  padding: 0 !important;
-  top: -2.6rem !important;
+.s-echart-map-tooltip-wrap{
+  position: absolute;
   >section{
     transition: all 2.5s;
     transform: translate(0, 0);
@@ -353,9 +335,9 @@ export default {
     // 圆点闪烁动画
     >.s-echart-map-tooltip-circle{
       position: absolute;
-      top: 1.4rem;
+      top: -0.4rem;
       left: 50%;
-      margin-left: -0.4rem;
+      margin-left: -0.33rem;
       width: 0.8rem;
       height: 0.8rem;
       border-radius: 50%;
@@ -372,6 +354,9 @@ export default {
     }
     // 消息框出现动画
     >.s-echart-map-tooltip-text{
+      position: absolute;
+      top: -2rem;
+      left: -2.9rem;
       width: 5.8rem;
       height: 1.45rem;
       line-height: 1.45rem;
@@ -385,9 +370,6 @@ export default {
         opacity: 1;
       }
     }
-  }
-  >div{
-    display: none;
   }
 }
 </style>
