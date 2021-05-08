@@ -30,3 +30,8 @@
   font-size: 10px;
   margin-right: 10px;
 }
+
+// this.$alert 弹窗提示数字字母强制换行
+.el-message-box__message {
+  word-break: break-word;
+}
