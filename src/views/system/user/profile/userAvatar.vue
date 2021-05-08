@@ -56,7 +56,7 @@
 import store from '@/store';
 import { VueCropper } from 'vue-cropper';
 import { uploadAvatar } from '@/api/system/user';
-
+import { uploadImg } from '@/api/system/image.js';
 export default {
   components: { VueCropper },
   props: {
@@ -123,10 +123,11 @@ export default {
     uploadImg() {
       this.$refs.cropper.getCropBlob(data => {
         const formData = new FormData();
-        formData.append('avatarfile', data);
-        uploadAvatar(formData).then(response => {
+        var file = new File([data], '头像.jpg');
+        formData.append('file', file);
+        uploadImg(formData).then(response => {
           this.open = false;
-          this.options.img = response.imgUrl;
+          this.options.img = response.data.path;
           store.commit('SET_AVATAR', this.options.img);
           this.msgSuccess('修改成功');
           this.visible = false;
@@ -136,7 +137,7 @@ export default {
     // 实时预览
     realTime(data) {
       this.previews = data;
-    }
+    },
   }
 };
 </script>

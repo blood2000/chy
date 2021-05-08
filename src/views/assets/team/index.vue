@@ -396,7 +396,7 @@ export default {
     handleDelete(row) {
       const ids = row.id || this.ids;
       const teamNames = row.name || this.teamNames;
-      this.$confirm('是否确认删除调度者名称为"' + teamNames + '"的数据项?', '警告', {
+      this.$confirm('是否确认删除调度者名称为"' + teamNames + '"的数据项，并解除关联的司机和车辆?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
