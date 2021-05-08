@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
+  <el-dialog :title="title" :visible="visible" width="800px" append-to-body  :close-on-click-modal="false" @close="cancel">
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-upload
@@ -111,6 +111,7 @@ export default {
         return this.open;
       },
       set(v) {
+        this.fileList = [];
         this.$emit('update:open', v);
       }
     }

@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" :class="[{'i-add':title==='添加地址'}]" :visible="visible" width="1000px" append-to-body @close="cancel">
+  <el-dialog :title="title" :class="[{'i-add':title==='添加地址'}]" :visible="visible" width="1000px" :close-on-click-modal="modalClick" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="140px" class="address-dialog">
       <el-row>
         <el-col :span="12">
@@ -149,6 +149,7 @@ export default {
   },
   data() {
     return {
+      modalClick: false,
       // 状态字典
       statusOptions: [
         { 'dictLabel': '启用', 'dictValue': 1 },

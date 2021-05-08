@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" :visible="visible" width="500px" append-to-body @close="cancel">
+  <el-dialog :title="title" :visible="visible" width="500px" append-to-body   :modal-append-to-body="false" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="80px">
       <el-form-item label="押金" prop="money">
         <el-input v-model="form.money" placeholder="请输入扣押金金额" class="width90" clearable />

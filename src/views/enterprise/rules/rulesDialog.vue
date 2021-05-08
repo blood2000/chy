@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" :class="[{'i-add':title==='添加'}]" :visible="visible" width="800px" append-to-body @close="cancel">
+  <el-dialog :title="title" :class="[{'i-add':title==='添加'}]" :visible="visible" width="800px" :close-on-click-modal="false" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="120px" label-position="left" :disabled="!isAdmin && form.platformType === 1">
       <el-row>
         <el-col :span="12">

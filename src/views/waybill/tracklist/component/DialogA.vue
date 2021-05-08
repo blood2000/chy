@@ -1,6 +1,6 @@
 <template>
   <!-- 车辆装货对话框 -->
-  <el-dialog :title="title" :visible="visible" width="800px" append-to-body destroy-on-close @close="cancel">
+  <el-dialog :title="title" :visible="visible" width="800px" append-to-body   :modal-append-to-body="false" destroy-on-close @close="cancel">
     <el-form ref="form" :model="form" :rules="disable ? rules: rule" label-width="130px">
       <el-form-item label="装货时间" prop="loadTime">
         <el-date-picker

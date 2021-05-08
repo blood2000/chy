@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" :visible="visible" width="500px" append-to-body @close="cancel">
+  <el-dialog :title="title" :visible="visible" width="500px" append-to-body   :modal-append-to-body="false" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="80px">
       <el-form-item label="货主备注" prop="shipperRemark">
         <el-input v-model="form.shipperRemark" type="textarea" />

@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible="visible" :title="title" :class="[{'i-add':title==='新增'}]" width="800px" append-to-body @close="cancel">
+  <el-dialog :visible="visible" :title="title" :class="[{'i-add':title==='新增'}]" width="800px" :close-on-click-modal="false" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="140px">
       <el-form-item v-if="title==='新增'" label="类型编码" prop="typeCode">
         <el-input v-model="form.typeCode" placeholder="请输入类型编码" class="width90" clearable />

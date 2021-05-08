@@ -1,5 +1,5 @@
 <template>
-  <el-dialog class="component-choose-rule-item" title="增减费用项目选择" :visible="visible" width="500px" append-to-body @close="cancel">
+  <el-dialog class="component-choose-rule-item" title="增减费用项目选择" :visible="visible" width="500px" :close-on-click-modal="false" append-to-body @close="cancel">
     <el-checkbox-group v-model="checkGroup" size="medium" class="ml20">
       <el-row>
         <el-col v-for="item in formGroup" :key="item.code" class="mb20">
