@@ -3,7 +3,7 @@
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="130px">
       <el-form-item label="驳回原因" prop="rebutRemark">
-        <el-input v-model="form.rebutRemark" type="textarea" maxlength="50" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入驳回理由" style="width:90%;" clearable />
+        <el-input v-model="form.rebutRemark" type="textarea" maxlength="50" show-word-limit :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入驳回理由" style="width:90%;" clearable />
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
