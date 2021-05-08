@@ -875,9 +875,9 @@ export default {
     // 判断操作是否禁用
     isOperate(row) {
       const some = this.defaultRoleCode.split(',').some(el => {
-        return el === row.roleCode;
+        return el === row.roleCode || row.isSystem === 1;
       });
-      if (!this.isAdmin && some && row.isSystem === 1) {
+      if (!this.isAdmin && some) {
         return true;
       } else {
         return false;
