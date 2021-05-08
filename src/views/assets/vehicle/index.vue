@@ -189,9 +189,9 @@
 
       <RefactorTable :loading="loading" :data="vehicleList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
         <!-- 车牌类型 -->
-        <template #classificationCode="{row}">
+        <!--<template #classificationCode="{row}">
           <span>{{ selectDictLabel( licensePlateTypeOptions, row.classificationCode ) }}</span>
-        </template>
+        </template>-->
         <!-- 车牌颜色 -->
         <template #vehicleLicenseColorCode="{row}">
           <span>{{ selectDictLabel( licenseColorOptions, row.vehicleLicenseColorCode ) }}</span>
@@ -443,9 +443,9 @@ export default {
     /** 查询字典 */
     getDictsList() {
       // 车牌类型
-      this.getDicts('licensePlateType').then(response => {
+    /*  this.getDicts('licensePlateType').then(response => {
         this.licensePlateTypeOptions = response.data;
-      });
+      });*/
       // 车牌颜色
       this.getDicts('licenseColor').then(response => {
         this.licenseColorOptions = response.data;

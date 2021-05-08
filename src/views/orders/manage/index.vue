@@ -238,12 +238,12 @@
           <span>{{ selectDictLabel(dicts['businessTypes'], row.businessType) }}</span>
         </template>
         <!-- 已抢单量 -->
-        <template #number_remainingNumber="{row}">
-          <span>{{ (row.number - 0) - (row.remainingNumber - 0) }}</span>
+        <template #robbedOrder="{row}">
+          <span>{{ row.robbedOrder || 0 }}</span>
         </template>
         <!-- 可抢单量 -->
-        <template #remainingNumber="{row}">
-          <span>{{ row.remainingNumber || '不限' }}</span>
+        <template #notRobbedOrder="{row}">
+          <span>{{ row.notRobbedOrder || '不限' }}</span>
         </template>
         <!-- 重量/体积/车 -->
         <template #tin_weight="{row}">
