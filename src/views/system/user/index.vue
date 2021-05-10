@@ -206,7 +206,7 @@
     </el-row>
 
     <!-- 添加或修改参数配置对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body :close-on-click-modal="false" >
+    <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body :close-on-click-modal="false">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row>
           <el-col :span="12">
@@ -486,9 +486,9 @@ export default {
           { required: true, message: '用户密码不能为空', trigger: 'blur' },
           { validator: this.formValidate.passWord, trigger: 'blur' }
         ],
-        /*  orgCode: [
+        orgCode: [
           { required: true, message: '归属组织不能为空', trigger: 'blur' }
-        ],*/
+        ],
         phonenumber: [
           { required: true, message: '手机号不能为空', trigger: 'blur' },
           { validator: this.formValidate.telphone, trigger: 'blur' }
