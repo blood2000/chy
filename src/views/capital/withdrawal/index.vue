@@ -250,11 +250,24 @@ export default {
       }
     };
   },
+  watch: {
+    $route(route) {
+      this.getRouterQuery(route);
+    }
+  },
   created() {
     this.tableHeaderConfig(this.tableColumnsConfig, withDrawalListApi);
-    this.getList();
+    this.getRouterQuery(this.$route);
   },
   methods: {
+    /** 从快捷入口进 */
+    getRouterQuery(route) {
+      if (route.name !== this.$options.name) return;
+      const { query } = route;
+      const data = JSON.parse(query.data || '{}');
+      Object.assign(this.queryParams, data);
+      this.getList();
+    },
     /** 查询列表 */
     getList() {
       this.loading = true;
