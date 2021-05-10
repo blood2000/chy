@@ -1,11 +1,11 @@
 <template>
   <!-- 添加或修改项目对话框 -->
-  <el-dialog :title="title" :class="[{'i-add':title==='添加项目'}]" :visible="visible" width="800px"  :close-on-click-modal="false" append-to-body @close="cancel">
+  <el-dialog :title="title" :class="[{'i-add':title==='添加项目'}]" :visible="visible" width="800px" :close-on-click-modal="false" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="120px">
       <el-form-item label="项目名称" prop="projectName">
         <el-input v-model="form.projectName" placeholder="请输入项目名称" />
       </el-form-item>
-      <el-form-item label="货物类型" prop="commodityCategoryCode">
+      <el-form-item label="货物大类" prop="commodityCategoryCode">
         <el-radio-group v-model="form.commodityCategoryCode" @change="handlecommodityCategoryChange">
           <el-radio
             v-for="dict in commodityCategoryCodeOptions"
@@ -14,7 +14,7 @@
           >{{ dict.dictLabel }}</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item v-if="isMore == 0 || !isMore" label="货物类型分类" prop="commoditySubclassCodes">
+      <el-form-item v-if="isMore == 0 || !isMore" label="货物小类" prop="commoditySubclassCodes">
         <el-radio-group v-model="form.commoditySubclassCodes">
           <el-radio
             v-for="dict in commoditySubclassCodesOptions"
@@ -23,7 +23,7 @@
           >{{ dict.dictLabel }}</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item v-if="isMore == 1" label="货物类型分类" prop="commoditySubclassCodes">
+      <el-form-item v-if="isMore == 1" label="货物小类" prop="commoditySubclassCodes">
         <el-checkbox-group v-model="commoditySubclassCodes" @change="handleCheckedChange">
           <el-checkbox
             v-for="dict in commoditySubclassCodesOptions"
@@ -84,10 +84,10 @@ export default {
           { required: true, message: '项目名称不能为空', trigger: 'blur' }
         ],
         commodityCategoryCode: [
-          { required: true, message: '请选择货物类型', trigger: 'blur' }
+          { required: true, message: '请选择货物大类', trigger: 'blur' }
         ],
         commoditySubclassCodes: [
-          { required: true, message: '请选择货物类型分类', trigger: 'blur' }
+          { required: true, message: '请选择货物小类', trigger: 'blur' }
         ]
       },
       // 是否多选

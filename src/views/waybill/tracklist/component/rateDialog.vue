@@ -1,15 +1,15 @@
 <template>
   <!-- 车辆装货对话框 -->
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" label-width="130px">
+    <el-form ref="form" :model="form" :disabled="disable" :rules="rules" label-width="130px">
       <el-form-item label="综合评价" prop="score">
         <el-rate v-model="form.score" allow-half />
       </el-form-item>
       <el-form-item label="评价内容" prop="content">
-        <el-input v-model="form.content" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入您的客观评价" style="width:90%;" clearable />
+        <el-input v-model="form.content" type="textarea" maxlength="100" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入您的客观评价" style="width:90%;" clearable />
       </el-form-item>
     </el-form>
-    <div slot="footer" class="dialog-footer">
+    <div v-if="!disable" slot="footer" class="dialog-footer">
       <el-button type="primary" @click="submitForm">立即提交</el-button>
       <el-button @click="cancel">取消</el-button>
     </div>
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { waybillComment } from '@/api/waybill/tracklist';
+import { waybillComment, waybillCommentDetail } from '@/api/waybill/tracklist';
 // import UploadImage from '@/components/UploadImage/index';
 
 export default {
@@ -30,8 +30,8 @@ export default {
       type: String,
       default: ''
     },
-    open: Boolean
-    // disable: Boolean
+    open: Boolean,
+    disable: Boolean
   },
   data() {
     return {
@@ -70,7 +70,7 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid) {
           waybillComment(this.form).then(response => {
-            this.msgSuccess('发表评论成功');
+            this.msgSuccess('发表评价成功');
             this.close();
             this.$emit('refresh');
           });
@@ -98,6 +98,11 @@ export default {
     // 表单赋值
     setForm(data) {
       this.form.waybillCode = data.code;
+      waybillCommentDetail(0, data.code).then(response => {
+        console.log(response);
+        this.form.score = response.data[0].score;
+        this.form.content = response.data[0].content;
+      });
     }
   }
 };

@@ -5,7 +5,7 @@ Vue.use(Router);
 
 /* Layout */
 import Layout from '@/layout';
-import ParentView from '@/components/ParentView';
+// import ParentView from '@/components/ParentView';
 
 /**
  * Note: 路由配置项
@@ -140,3 +140,9 @@ export default new Router({
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 });
+
+// 解决ElementUI导航栏中的vue-router在3.0版本以上重复点菜单报错问题
+const originalReplace = Router.prototype.replace;
+Router.prototype.replace = function replace(location) {
+  return originalReplace.call(this, location).catch(err => err);
+};

@@ -248,7 +248,8 @@ export default {
     authRead() {
       authRead({
         authStatus: 1,
-        code: this.form.code
+        code: this.form.code,
+        id: this.form.id
       }).then(response => {
         this.$emit('refresh');
       });
@@ -257,7 +258,8 @@ export default {
     reviewForm(key) {
       examine({
         authStatus: key,
-        code: this.form.code
+        code: this.form.code,
+        id: this.form.id
       }).then(response => {
         this.msgSuccess('操作成功');
         this.close();

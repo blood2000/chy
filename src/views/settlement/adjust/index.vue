@@ -62,10 +62,10 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="货物类型" prop="goodsBigType">
+        <el-form-item label="货物大类" prop="goodsBigType">
           <el-select
             v-model="queryParams.goodsBigType"
-            placeholder="请选择货物类型"
+            placeholder="请选择货物大类"
             filterable
             clearable
             style="width: 228px"
@@ -380,6 +380,7 @@ export default {
       'adjustlist': [],
       // 弹窗表格
       commentlist: [],
+      commentlist1: [],
       // 查询参数
       'queryParams': {
         'pageNum': 1,
@@ -531,7 +532,7 @@ export default {
     // 批量评价
     handleAssess() {
       this.commentdialog = true;
-      this.title = '用户评价';
+      this.title = '评价司机';
       this.$refs.CommentDialog.setForm(this.commentlist);
     },
 
@@ -581,10 +582,10 @@ export default {
           break;
         case 5:
           this.commentdialog = true;
-          this.title = '用户评价';
-          this.commentlist = [];
-          this.commentlist.push(row);
-          this.$refs.CommentDialog.setForm(this.commentlist);
+          this.title = '评价司机';
+          this.commentlist1 = [];
+          this.commentlist1.push(row);
+          this.$refs.CommentDialog.setForm(this.commentlist1);
           break;
         case 6:
           this.title = '子单列表';
