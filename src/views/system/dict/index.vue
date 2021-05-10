@@ -109,7 +109,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <el-table v-loading="loading" :data="typeList" @selection-change="handleSelectionChange"  :close-on-click-modal="modalClick">
+      <el-table v-loading="loading" :data="typeList" @selection-change="handleSelectionChange"  :close-on-click-modal="false">
         <el-table-column type="selection" width="55" align="center" />
         <!-- <el-table-column label="字典编号" align="center" prop="dictId" />-->
         <el-table-column label="字典名称" align="center" prop="dictName" :show-overflow-tooltip="true" />
