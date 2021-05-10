@@ -182,7 +182,7 @@ export default {
         if (valid) {
           if (this.disable) {
             if (this.waybill.stowageStatus === '2') {
-              if (this.form.loadWeight !== 1) {
+              if (this.form.unloadWeight !== 1) {
                 this.msgWarning('车数配载的运单卸货车数只能为1车！');
               } else {
                 this.submitInfo();

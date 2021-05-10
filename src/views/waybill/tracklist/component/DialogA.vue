@@ -190,8 +190,8 @@ export default {
     open(val) {
       if (val) {
         // this.reset();
-        this.getGoods();
-        this.getAddress();
+        // this.getGoods();
+        // this.getAddress();
         // this.getVehicle();
         if (this.disable) {
           this.getDetail();

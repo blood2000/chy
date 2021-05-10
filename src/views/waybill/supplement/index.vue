@@ -166,8 +166,8 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="车牌类型" prop="classificationCode">
-                <el-input v-model="form.classificationCode" :readonly="true" class="width90" />
+              <el-form-item label="车辆识别码" prop="chassisNumber">
+                <el-input v-model="form.chassisNumber" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -507,7 +507,7 @@ export default {
         'shipmentPrice': null, // 运费单价
         'roadTransportCertificateNumber': null, // 运输许可证号
         'vehicleLoadWeight': null, // 车辆载重
-        'classificationCode': null, // 车辆代码
+        'chassisNumber': null, // 车辆识别码
         'm0DictValue': null, // 抹零规则字典值
         'ruleFormulaDictValue': null, // 计算公式
         'shipperCode': null, // 货主Code
@@ -676,7 +676,7 @@ export default {
       });
       this.form.vehicleCode = null;
       this.form.roadTransportCertificateNumber = null;
-      this.form.classificationCode = null;
+      this.form.chassisNumber = null;
       this.form.vehicleLoadWeight = null;
     },
     // 根据选择的车辆获取信息
@@ -685,7 +685,7 @@ export default {
         console.log(response);
         this.form.roadTransportCertificateNumber = response.data.roadTransportCertificateNumber;
         this.form.vehicleLoadWeight = response.data.vehicleLoadWeight;
-        this.form.classificationCode = response.data.classificationCode;
+        this.form.chassisNumber = response.data.chassisNumber;
       });
       this.$forceUpdate(); // 视图强制更新
     },
