@@ -270,9 +270,12 @@ export default {
     /** 切换操作 */
     handleClick(value) {
       // console.log(this.activeName);
-
-      !this.list_listDriver.length && this.getList();
-      !this.list_listInfo.length && this.getList();
+      // console.log();
+      if (!this.list_listDriver.length || !this.list_listInfo.length) {
+        this.getList();
+      }
+      // !this.list_listDriver.length && this.getList();
+      // !this.list_listInfo.length && this.getList();
     },
     /** 搜索按钮操作 */
     handleQuery() {
