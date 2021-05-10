@@ -130,7 +130,14 @@ export default {
   watch: {
     cbData: {
       async handler(newName, oldName) {
-        if (!this.cbData) return;
+        if (!this.cbData) {
+          this.form = {
+            ...this.form,
+            city: '',
+            county: ''
+          };
+          return;
+        }
         const { provinceCode, cityCode, districtCode } = this.cbData;
 
         this.form.province = provinceCode;

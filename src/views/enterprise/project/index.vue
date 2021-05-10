@@ -138,6 +138,10 @@ export default {
     shipmentCode: {
       type: String,
       default: null
+    },
+    orgCode: {
+      type: String,
+      default: null
     }
   },
   data() {
@@ -214,7 +218,9 @@ export default {
     /** 查询项目列表 */
     getList() {
       this.loading = true;
-      if (this.shipmentCode) {
+      if (this.orgCode) {
+        this.queryParams.orgCode = this.orgCode;
+      } else if (this.shipmentCode) {
         this.queryParams.shipmentCode = this.shipmentCode;
       }
       listInfo(this.queryParams).then(response => {

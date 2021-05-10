@@ -247,14 +247,30 @@ export default {
         transferTimeEnd: undefined,
         applyTimeBegin: undefined,
         applyTimeEnd: undefined
-      }
+      },
+      searched: false
     };
+  },
+  watch: {
+    $route(route) {
+      this.getRouterQuery(route);
+    }
   },
   created() {
     this.tableHeaderConfig(this.tableColumnsConfig, withDrawalListApi);
-    this.getList();
+    this.getRouterQuery(this.$route);
   },
   methods: {
+    /** 从快捷入口进 */
+    getRouterQuery(route) {
+      if (route.name !== this.$options.name) return;
+      const { query } = route;
+      const data = JSON.parse(query.data || '{}');
+      // 页面缓存
+      if (this.searched) return;
+      Object.assign(this.queryParams, data);
+      this.getList();
+    },
     /** 查询列表 */
     getList() {
       this.loading = true;
@@ -262,6 +278,7 @@ export default {
         this.withdrawalList = response.data.rows;
         this.total = response.data.total;
         this.loading = false;
+        this.searched = true;
       });
     },
     /** 搜索按钮操作 */
