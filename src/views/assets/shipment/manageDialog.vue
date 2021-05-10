@@ -20,13 +20,13 @@
         <rule-page v-if="activeName === 'rule'" class="table-page" :shipment-code="shipmentCode" />
       </el-tab-pane>
       <el-tab-pane label="货集码管理" name="stock">
-        <stock-page v-if="activeName === 'stock'" class="table-page" :shipment-code="shipmentCode" />
+        <stock-page v-if="activeName === 'stock'" class="table-page" :shipment-code="shipmentCode" :org-code="companyCode" />
       </el-tab-pane>
       <el-tab-pane label="项目管理" name="project">
-        <project-Page v-if="activeName === 'project'" class="table-page" :shipment-code="shipmentCode" />
+        <project-Page v-if="activeName === 'project'" class="table-page" :shipment-code="shipmentCode" :org-code="companyCode"/>
       </el-tab-pane>
       <el-tab-pane label="常用地址管理" name="address">
-        <address-page v-if="activeName === 'address'" class="table-page" :shipment-code="shipmentCode" />
+        <address-page v-if="activeName === 'address'" class="table-page" :shipment-code="shipmentCode" :org-code="companyCode"/>
       </el-tab-pane>
       <template v-if="companyCode">
         <el-tab-pane label="企业成员管理" name="member">
