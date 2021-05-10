@@ -134,8 +134,8 @@
       <el-form-item label="车身自重" prop="selfRespect">
         <el-input v-model="form.selfRespect" placeholder="请输入车身自重" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="车架号" prop="chassisNumber">
-        <el-input v-model="form.chassisNumber" placeholder="请输入车架号" class="width90" clearable />
+      <el-form-item label="车辆识别码" prop="chassisNumber">
+        <el-input v-model="form.chassisNumber" placeholder="请输入车辆识别码" class="width90" clearable />
       </el-form-item>
       <el-form-item label="发动机号" prop="engineNumber">
         <el-input v-model="form.engineNumber" placeholder="请输入发动机号" class="width90" clearable />
@@ -299,7 +299,7 @@ export default {
         this.carBodyColorOptions = response.data;
       });
       // 车辆类型
-      this.getDicts('vehicleType').then(response => {
+      this.getDicts('licenseNumberType').then(response => {
         this.vehicleTypeOptions = response.data;
       });
       // 能源类型
