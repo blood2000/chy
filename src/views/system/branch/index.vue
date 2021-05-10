@@ -115,6 +115,7 @@
               :show-count="true"
               placeholder="请选择归属组织"
               clearable
+              @select="selectOrgCode"
             />
           </el-form-item>
           <el-form-item label="统一信用社会代码" prop="uniformSocialCreditCode">
@@ -199,7 +200,7 @@ export default {
           { validator: this.formValidate.telphone, trigger: 'blur' }
         ],
         orgCode: [
-          { required: true, message: '组织不能为空', trigger: 'blur' }
+          { required: true, message: '归属组织不能为空', trigger: ['change', 'blur'] }
         ]
       }
     };
@@ -318,6 +319,12 @@ export default {
     filterNode(value, data) {
       if (!value) return true;
       return data.label.indexOf(value) !== -1;
+    },
+    // 手动刷新校验
+    selectOrgCode() {
+      this.$nextTick(() => {
+        this.$refs.form.validateField('orgCode');
+      });
     }
   }
 };

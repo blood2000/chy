@@ -61,7 +61,7 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid) {
           rejectUnload(this.form).then(response => {
-            this.msgSuccess('申请取消运单成功');
+            this.msgSuccess('驳回运单成功');
             this.close();
             this.$emit('refresh');
           });
