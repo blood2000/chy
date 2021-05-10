@@ -2,12 +2,12 @@
   <div class="quick-entry ly-flex-align-center ly-flex-align-center">
     <div
       v-for="item in itemList"
-      :key="item.name"
+      :key="item.label"
       class="quick-entry__item ly-flex-v ly-flex-align-center ly-flex-pack-center"
-      @click="handlePath(item.path)"
+      @click="handleRouter(item.name, item.query)"
     >
-      <img width="26" height="26" :src="require('@/assets/images/navBar/icon_quick_entry_' + item.path + '.png')">
-      <p>{{ item.name }}</p>
+      <img width="26" height="26" :src="require('@/assets/images/navBar/icon_quick_entry_' + item.icon + '.png')">
+      <p>{{ item.label }}</p>
       <span v-show="item.count > 0" class="count">{{ item.count }}</span>
     </div>
   </div>
@@ -18,17 +18,34 @@ export default {
   data() {
     return {
       itemList: [
-        { name: '调度者审核', path: 'team', count: 0 },
-        { name: '司机审核', path: 'driver', count: 0 },
-        { name: '车辆审核', path: 'car', count: 5 },
-        { name: '运输单', path: 'order', count: 24 },
-        { name: '提现申请', path: 'payment', count: 20 }
+        { label: '调度者审核', icon: 'team', name: 'Team', query: { authStatus: 0 }, count: 0 },
+        { label: '司机审核', icon: 'driver', name: 'Driver', query: { authStatus: 0 }, count: 0 },
+        { label: '车辆审核', icon: 'vehicle', name: 'Vehicle', query: { authStatus: 0 }, count: 5 },
+        { label: '运输单', icon: 'order', name: 'Manages', query: {}, count: 24 },
+        { label: '提现申请', icon: 'withdrawal', name: 'Withdrawal', query: { status: 0 }, count: 20 }
       ]
     };
   },
   methods: {
-    handlePath(path) {
+    handleRouter(name, query) {
       // 打开对应路由
+      if (name === '') {
+        return;
+      } else if (name === this.$route.name) {
+        this.$router.replace({
+          name: name,
+          query: {
+            data: JSON.stringify(query)
+          }
+        });
+      } else {
+        this.$router.push({
+          name: name,
+          query: {
+            data: JSON.stringify(query)
+          }
+        });
+      }
     }
   }
 };

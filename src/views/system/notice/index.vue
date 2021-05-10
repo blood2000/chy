@@ -167,7 +167,7 @@
           </el-row>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="submitForm">确 定</el-button>
+          <el-button type="primary" @click="submitForm" :loading="buttonLoading">确 定</el-button>
           <el-button @click="cancel">取 消</el-button>
         </div>
       </el-dialog>
@@ -186,6 +186,7 @@ export default {
   },
   data() {
     return {
+      buttonLoading: false,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -308,17 +309,24 @@ export default {
     submitForm: function() {
       this.$refs['form'].validate(valid => {
         if (valid) {
+          this.buttonLoading = true;
           if (this.form.noticeId !== undefined) {
             updateNotice(this.form).then(response => {
               this.msgSuccess('修改成功');
               this.open = false;
               this.getList();
+              this.buttonLoading = false;
+            }).catch(() => {
+              this.buttonLoading = false;
             });
           } else {
             addNotice(this.form).then(response => {
               this.msgSuccess('新增成功');
               this.open = false;
               this.getList();
+              this.buttonLoading = false;
+            }).catch(() => {
+              this.buttonLoading = false;
             });
           }
         }
