@@ -205,7 +205,7 @@
       </el-col>
     </el-row>
 
-    <!-- 添加或修改参数配置对话框 -->
+    <!-- 添加或修改用户对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body :close-on-click-modal="false">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row>
@@ -222,6 +222,7 @@
                 :normalizer="normalizer"
                 :show-count="true"
                 placeholder="请选择归属组织"
+                @select="selectOrgCode"
               />
             </el-form-item>
           </el-col>
@@ -485,7 +486,7 @@ export default {
           { validator: this.formValidate.passWord, trigger: 'blur' }
         ],
         orgCode: [
-          { required: true, message: '归属组织不能为空', trigger: 'blur' }
+          { required: true, message: '归属组织不能为空', trigger: ['change', 'blur'] }
         ],
         phonenumber: [
           { required: true, message: '手机号不能为空', trigger: 'blur' },
@@ -743,6 +744,12 @@ export default {
     // 提交上传文件
     submitFileForm() {
       this.$refs.upload.submit();
+    },
+    // 手动刷新校验
+    selectOrgCode() {
+      this.$nextTick(() => {
+        this.$refs.form.validateField('orgCode');
+      });
     }
   }
 };
