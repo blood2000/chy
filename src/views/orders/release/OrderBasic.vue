@@ -31,7 +31,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="选择货物类别" prop="tin2">
+        <el-form-item label="货物大类" prop="tin2">
           <el-radio-group
             v-model="formData.tin2"
             :disabled="formData.tin3 !== '0'"
@@ -52,7 +52,7 @@
 
         <template v-if="formData.tin2">
           <!-- isMultiGoods true->多商品 ; false->单商品 -->
-          <el-form-item v-if="isMultiGoods" label="货物类型(多)" prop="tin2_1">
+          <el-form-item v-if="isMultiGoods" label="货物小类" prop="tin2_1">
             <el-checkbox-group v-model="formData.tin2_1" size="medium" :disabled="formData.tin3 !== '0'">
               <template v-for="(dict,index) in tin2_Option">
                 <el-checkbox
@@ -64,7 +64,7 @@
               </template>
             </el-checkbox-group>
           </el-form-item>
-          <el-form-item v-else label="货物类型(单)" prop="tin2_2">
+          <el-form-item v-else label="货物小类" prop="tin2_2">
             <el-radio-group v-model="formData.tin2_2" size="medium" :disabled="formData.tin3 !== '0'">
               <template v-for="(dict,index) in tin2_Option">
                 <el-radio
@@ -256,12 +256,12 @@ export default {
       },
       rules: {
         tin3: [{ required: false, message: '选择所属项目', trigger: 'change' }],
-        tin2: [{ required: true, message: '选择货物类别', trigger: 'change' }],
+        tin2: [{ required: true, message: '选择货物大类', trigger: 'change' }],
         tin2_1: [
-          { required: true, message: '选择货物类型', trigger: 'change' }
+          { required: true, message: '选择货物小类', trigger: 'change' }
         ],
         tin2_2: [
-          { required: true, message: '选择货物类型', trigger: 'change' }
+          { required: true, message: '选择货物小类', trigger: 'change' }
         ],
         tin4: [{ required: true, message: '选择是否公开货源', trigger: 'change' }],
         tin5: [

@@ -35,7 +35,7 @@
         />
       </el-form-item>
 
-      <el-form-item label="货物类型" prop="tin4">
+      <el-form-item label="货物大类" prop="tin4">
         <el-select v-model="queryParams.tin4" placeholder="----请选择----" clearable filterable style="width: 228px">
           <el-option
             v-for="(dict,index) in goodsTypeOption"
@@ -573,7 +573,7 @@ export default {
         endTime: this.queryParams.tin10[1], //	结束时间	query	false
         companyAndCustomerAndPhone: this.queryParams.tin1, //	下单客户	query	false
         goodsName: this.queryParams.tin5, //	货物描述(名称)	query	false
-        goodsBigType: this.queryParams.tin4 ? [this.queryParams.tin4] : undefined, //	货物类型大类	query	false
+        goodsBigType: this.queryParams.tin4 ? [this.queryParams.tin4] : undefined, //	货物大类大类	query	false
         goodsType: undefined, // 小类
         isPublic: this.queryParams.tin11, //	发布状态	query	false
         landInfo: this.queryParams.tin3, //	收货信息	query	false
@@ -617,12 +617,16 @@ export default {
 
 
   created() {
-    const { isAdmin = true, shipment = {}} = getUserInfo() || {};
+    const { isAdmin = true, isShipment = false, shipment = {}} = getUserInfo() || {};
+
+    // console.log();
+
 
 
     // 判断当前是什么角色登入的 true 是运营
-    this.isShipment = !isAdmin;
-    this.isShipment && (this.queryParams.tin6 = shipment.info.code);
+    this.isShipment = isShipment;
+
+    isShipment && (this.queryParams.tin6 = shipment.info.code);
     // 要配置好才能用
     this.tableHeaderConfig(this.tableColumnsConfig, listManagesApi, null, tableColumnsConfig);
     this.getDict();
@@ -937,7 +941,7 @@ export default {
           }
         });
 
-        console.log(e.redisOrderAddressInfoVoList);
+        // console.log(e.redisOrderAddressInfoVoList);
 
 
         const redis = e.redisOrderAddressInfoVoList.map(eee => {

@@ -47,7 +47,7 @@
                 />
               </el-form-item>
 
-              <el-form-item label="货物类型" prop="tin3">
+              <el-form-item label="货物大类" prop="tin3">
                 <el-select v-model="queryParams.tin3" placeholder="----请选择----" style="width: 215px" clearable filterable>
                   <el-option label="区域一" value="shanghai" />
                   <el-option label="区域二" value="beijing" />
@@ -185,7 +185,7 @@
 
 
     <!-- 添加或修改【请填写功能名称】对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body  :close-on-click-modal="false">
+    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body :close-on-click-modal="false">
       <el-form ref="form" :model="form" label-width="80px">
         <el-form-item label="货源单号" prop="tin1">
           <el-input v-model="form.tin1" placeholder="请输入货源单号" disabled />
@@ -228,7 +228,7 @@ const tableColumnsConfig = [
   }, {
     prop: 'tin4',
     isShow: true,
-    label: '货物类型'
+    label: '货物大类'
   }, {
     prop: 'tin5',
     isShow: true,

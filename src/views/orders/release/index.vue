@@ -455,21 +455,21 @@ export default {
 
   async created() {
     // 判断用户
-    const { isAdmin = true, isShipment = true, shipment = {}, user = {}} = getUserInfo() || {};
+    const { isAdmin = true, isShipment = false, shipment = {}, user = {}} = getUserInfo() || {};
 
     this.isShipment = isShipment;
     // console.log(this.isShipment);
-    this.isAdmin = !isAdmin;
-    if (!isAdmin) {
-      if (shipment && shipment.info && shipment.info.authStatus !== 3) {
+    // this.isAdmin = !isShipment;
+    if (isShipment) {
+      if (isShipment && shipment.info && shipment.info.authStatus !== 3) {
         this.authStatus = false;
         this.msgWarning('审核通过才能发布货源~!');
 
         return;
       }
 
-      if (shipment && shipment.info) {
-        this.isAdmin && (this.formData.tin1 = shipment.info.code);
+      if (isShipment && shipment.info) {
+        this.formData.tin1 = shipment.info.code;
       }
       if (user.orgCode) {
         this.orgCode = user.orgCode;
@@ -1229,7 +1229,7 @@ export default {
     },
 
     handlerCheck(type) {
-      console.log(this.formData.tin8);
+      // console.log(this.formData.tin8);
 
       // if(!this.formData.tin8)
 

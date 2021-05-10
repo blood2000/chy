@@ -51,7 +51,7 @@
         <el-table-column label="运单号" align="center" prop="waybillNo" width="150" />
         <el-table-column label="装货地" align="center" prop="" width="150" />
         <el-table-column label="卸货地" align="center" prop="" width="150" />
-        <el-table-column label="货物类型" align="center" prop="" />
+        <el-table-column label="货物大类" align="center" prop="" />
         <el-table-column label="承运司机" align="center" prop="payeeName" />
         <el-table-column label="承运车辆" align="center" prop="licenseNumber" />
         <el-table-column label="所属调度者" align="center" prop="teamName" width="150" />

@@ -261,7 +261,7 @@ export default {
         { 'dictLabel': '已申请开票', 'dictValue': '8' },
         { 'dictLabel': '已开票', 'dictValue': '9' }
       ],
-      // 货物类型字典
+      // 货物大类字典
       goodsBigTypeOptions: [],
       // 货物重量字典
       weightOptions: [],
@@ -341,7 +341,7 @@ export default {
     isReturnFormat(row, column) {
       return this.selectDictLabel(this.isReturnOptions, row.isReturn);
     },
-    // 货物类型大类字典翻译
+    // 货物大类大类字典翻译
     // goodsBigTypeFormat(row, column) {
     //   return this.selectDictLabel(this.goodsBigTypeOptions, row.goodsBigType);
     // },

@@ -70,7 +70,7 @@ export default [
   {
     prop: 'goodsBigType',
     isShow: true,
-    label: '货物类型'
+    label: '货物大类'
   },
   {
     prop: 'wastage',
@@ -134,7 +134,7 @@ export default [
   {
     prop: 'goodsType',
     isShow: false,
-    label: '货物类型分类'
+    label: '货物小类'
   },
   {
     prop: 'code',
