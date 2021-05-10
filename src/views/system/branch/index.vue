@@ -2,10 +2,19 @@
   <div>
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-        <el-form-item label="名称" prop="name">
+        <el-form-item label="网点名称" prop="name">
           <el-input
             v-model="queryParams.name"
-            placeholder="请输入名称"
+            placeholder="请输入网点名称"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="组织名称" prop="orgName">
+          <el-input
+            v-model="queryParams.orgName"
+            placeholder="请输入组织名称"
             clearable
             size="small"
             @keyup.enter.native="handleQuery"
@@ -93,7 +102,7 @@
       />
 
       <!-- 添加或修改岗位对话框 -->
-      <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body :close-on-click-modal="modalClick">
+      <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body :close-on-click-modal="false">
         <el-form ref="form" :model="form" :rules="rules" label-width="130px">
           <el-form-item label="网点名称" prop="name">
             <el-input v-model="form.name" placeholder="请输入网点名称" clearable />
@@ -141,7 +150,6 @@ export default {
   components: { Treeselect },
   data() {
     return {
-      modalClick: false,
       // 遮罩层
       loading: true,
       buttonLoading: false,
@@ -167,9 +175,8 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        postCode: undefined,
-        postName: undefined,
-        status: undefined
+        orgName: undefined,
+        name: undefined
       },
       // 表单参数
       form: {},

@@ -18,7 +18,7 @@
 
       <div class="p26">
         <h2 class="login-h2_t">WELCOME</h2>
-        <div class="login-h6_t">你好，欢迎登录</div>
+        <div class="login-h6_t">您好，欢迎登录</div>
 
         <div class="login-box">
           <div v-if="false" class="login-msg">
@@ -354,7 +354,11 @@ export default {
     handleLogin2() {
       this.$refs.loginForm2.validate(valid => {
         if (valid) {
-          if (!this.loginForm2.captcha) return;
+          if (this.Verification) {
+            this.msgError('请重新获取验证码~!');
+            return;
+          }
+
           this.loading = true;
           if (this.loginForm.rememberMe) {
             Cookies.set('telno', this.loginForm2.telno, { expires: 30 });
