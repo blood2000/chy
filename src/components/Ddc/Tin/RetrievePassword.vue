@@ -22,7 +22,7 @@
         >
           <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
 
-          <span v-show="Verification" slot="suffix" class="shou" style="marginRight:10px;color:rgba(80, 148, 252, 1);" @click.stop="send">发送验证码</span>
+          <span v-show="Verification" slot="suffix" class="shou sen_btn" style="marginRight:10px;color:rgba(80, 148, 252, 1);" @click.stop="send">发送验证码</span>
           <span v-show="!Verification" slot="suffix" style="marginRight:10px;"><span>{{ timer }}</span>秒后重新获取</span>
         </el-input>
       </el-form-item>
