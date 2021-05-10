@@ -148,3 +148,11 @@ export function waybillComment(data) {
   });
 }
 
+// 评价详情
+export function waybillCommentDetail(commentObject, wayBillCode) {
+  return request({
+    url: `/transportation/waybillComment/getByWayBillCode?commentObject=${commentObject}&wayBillCode=${wayBillCode}`,
+    method: 'get'
+  });
+}
+
