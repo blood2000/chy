@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" :visible="visible" width="1300px" append-to-body   :modal-append-to-body="false" class="waybill-seperate-list-dialog" @close="cancel">
+  <el-dialog :title="title" :visible="visible" width="1300px" append-to-body :modal-append-to-body="false" class="waybill-seperate-list-dialog" @close="cancel">
     <el-table v-loading="loading" border stripe :data="childList">
       <el-table-column label="序号" align="center" type="index" width="50" />
       <el-table-column label="货源单号" align="center" prop="mainOrderNumber" width="150" />

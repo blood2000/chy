@@ -157,7 +157,7 @@
       @pagination="getList"
     />
     <!-- 预览界面 -->
-    <el-dialog :title="preview.title" :visible.sync="preview.open" width="80%" top="5vh" append-to-body :close-on-click-modal="false" >
+    <el-dialog :title="preview.title" :visible.sync="preview.open" width="80%" top="5vh" append-to-body :close-on-click-modal="false">
       <el-tabs v-model="preview.activeName">
         <el-tab-pane
           v-for="(value, key) in preview.data"

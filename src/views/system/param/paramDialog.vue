@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible="visible" :title="`${typeName} - ${title}`" :class="[{'i-add':title==='新增'}]" width="800px"  :close-on-click-modal="false" append-to-body @close="cancel">
+  <el-dialog :visible="visible" :title="`${typeName} - ${title}`" :class="[{'i-add':title==='新增'}]" width="800px" :close-on-click-modal="false" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="140px">
       <el-form-item label="参数中文名" prop="paramCnName">
         <el-input v-model="form.paramCnName" placeholder="请输入参数中文名" class="width90" clearable />
