@@ -189,7 +189,11 @@ export default {
         this.formData.contact = contact;
         this.formData.contactPhone = contactPhone;
         this.$nextTick(_ => {
-          this.formData.addressName = addressName;
+          let time1 = setTimeout(() => {
+            this.formData.addressName = addressName;
+            clearTimeout(time1);
+            time1 = null;
+          }, 100);
         });
         this.selected = {
           name: addressName,

@@ -1315,8 +1315,8 @@ export default {
         });
       }
 
-      this.openSelectaddress = false;
       this.isRadioSelection = null;
+      this.openSelectaddress = false;
     },
 
     // 去重
