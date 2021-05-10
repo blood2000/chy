@@ -137,7 +137,7 @@ export default {
     // 实时预览
     realTime(data) {
       this.previews = data;
-    },
+    }
   }
 };
 </script>
