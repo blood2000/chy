@@ -266,7 +266,8 @@ export default {
       if (route.name !== this.$options.name) return;
       const { query } = route;
       const data = JSON.parse(query.data || '{}');
-      if (JSON.stringify(data) === '{}' && this.searched) return;
+      // 页面缓存
+      if (this.searched) return;
       Object.assign(this.queryParams, data);
       this.getList();
     },
