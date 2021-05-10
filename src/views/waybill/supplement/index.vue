@@ -20,6 +20,7 @@
                   filterable
                   size="small"
                   class="width90"
+                  :disabled="orderDisable"
                   @change="goodsChoose"
                 >
                   <el-option
@@ -48,6 +49,7 @@
                   filterable
                   size="small"
                   class="width90"
+                  :disabled="orderDisable"
                   @change="loadChoose"
                 >
                   <el-option
@@ -69,6 +71,7 @@
                   filterable
                   size="small"
                   class="width90"
+                  :disabled="orderDisable"
                   @change="lendChoose"
                 >
                   <el-option
@@ -127,6 +130,7 @@
                   filterable
                   size="small"
                   class="width90"
+                  :disabled="driverDisable"
                   @change="vehicleChoose"
                 >
                   <el-option
@@ -155,6 +159,7 @@
                   filterable
                   size="small"
                   class="width90"
+                  :disabled="driverDisable"
                 >
                   <el-option
                     v-for="dict in teamOptions"
@@ -376,7 +381,11 @@ export default {
         unloadAttachmentCode: [
           { required: true, message: '请上传卸货单据', trigger: 'change' }
         ]
-      }
+      },
+      // 输入货源前前禁用
+      orderDisable: true,
+      // 输入承运司机前前禁用
+      driverDisable: true
     };
   },
   computed: {
@@ -540,50 +549,57 @@ export default {
     },
     // 根据货原单号查询信息
     getOrderDetail(e) {
-      getOrder(e).then(response => {
-        console.log(response);
-        if (response.data) {
-          this.form.orderCode = response.data.redisOrderInfoVo.code; // 货源编码赋值
-          this.form.shipperCode = response.data.redisOrderInfoVo.pubilshCode; // 货主编码赋值
-          // 获取货源底下的商品列表
-          getGoods(response.data.redisOrderInfoVo.code).then(response => {
-            console.log(response);
-            this.goodsCodeOptions = response.data;
-            this.form.goodsCode = this.goodsCodeOptions[0].code;
-            this.goodsChoose(this.form.goodsCode);
-          });
-          // 获取货源底下的装卸货地
-          getAddress(response.data.redisOrderInfoVo.code).then(response => {
-            console.log(response);
-            const address = response.data;
-            if (address) {
+      if (e) {
+        getOrder(e).then(response => {
+          console.log(response);
+          if (response.data) {
+            this.form.orderCode = response.data.redisOrderInfoVo.code; // 货源编码赋值
+            this.form.shipperCode = response.data.redisOrderInfoVo.pubilshCode; // 货主编码赋值
+            // 获取货源底下的商品列表
+            getGoods(response.data.redisOrderInfoVo.code).then(response => {
+              console.log(response);
+              this.goodsCodeOptions = response.data;
+              this.form.goodsCode = this.goodsCodeOptions[0].code;
+              this.goodsChoose(this.form.goodsCode);
+            });
+            // 获取货源底下的装卸货地
+            getAddress(response.data.redisOrderInfoVo.code).then(response => {
+              console.log(response);
+              const address = response.data;
+              if (address) {
               // 装货地址
-              const address1 = address.filter(item => {
-                return item.addressType === '1';
-              });
-              this.loadAddressOptions = address1;
-              this.form.loadAddressCode = this.loadAddressOptions[0].code;
-              // 卸货地址
-              const address2 = address.filter(item => {
-                return item.addressType === '2';
-              });
-              this.unloadAddressOptions = address2;
-              this.form.unloadAddressCode = this.unloadAddressOptions[0].code;
-              this.getOrderGoodsProce();
-            }
-          });
-          this.form.shipmentPrice = null;
-          this.form.remainingNumber = null;
-          this.form.remainingWeight = null;
-          // 获取运单号
-          getWayBillNo().then(response => {
-            console.log(response);
-            this.form.wayBillNo = response.msg;
-          });
-        } else {
-          this.msgError('未查询到货源信息，或输入的货源单号有误！');
-        }
-      });
+                const address1 = address.filter(item => {
+                  return item.addressType === '1';
+                });
+                this.loadAddressOptions = address1;
+                this.form.loadAddressCode = this.loadAddressOptions[0].code;
+                // 卸货地址
+                const address2 = address.filter(item => {
+                  return item.addressType === '2';
+                });
+                this.unloadAddressOptions = address2;
+                this.form.unloadAddressCode = this.unloadAddressOptions[0].code;
+                this.getOrderGoodsProce();
+              }
+            });
+            this.form.shipmentPrice = null;
+            this.form.remainingNumber = null;
+            this.form.remainingWeight = null;
+            // 获取运单号
+            getWayBillNo().then(response => {
+              console.log(response);
+              this.form.wayBillNo = response.msg;
+            });
+            this.orderDisable = false;
+          } else {
+            this.msgError('未查询到货源信息，或输入的货源单号有误！');
+          }
+        });
+      } else {
+        this.reset();
+        this.orderDisable = true;
+        this.driverDisable = true;
+      }
     },
     // 获取单个商品的运费单价
     getOrderGoodsProce() {
@@ -612,6 +628,10 @@ export default {
             this.calculate();
           }, 100);
         });
+      } else {
+        this.form.shipmentPrice = null;
+        this.form.shipperRealPay = null;
+        this.form.driverRealFee = null;
       }
     },
     // 获取运单总价
@@ -639,22 +659,28 @@ export default {
     },
     // 根据选择的商品查询对应信息
     goodsChoose(e) {
-      const result = this.goodsCodeOptions.find((item) => {
-        return item.code === e;
-      });
-      this.form.stowageStatus = result.stowageStatus; // 配载方式赋值
-      if (result.stowageStatus === '2') {
-        this.stowage = false;
-        this.form.loadWeight = 1;
+      if (e) {
+        const result = this.goodsCodeOptions.find((item) => {
+          return item.code === e;
+        });
+        this.form.stowageStatus = result.stowageStatus; // 配载方式赋值
+        if (result.stowageStatus === '2') {
+          this.stowage = false;
+          this.form.loadWeight = 1;
         // this.calculate();
+        } else {
+          this.stowage = true;
+        }
+        console.log(result);
+        this.form.remainingNumber = result.remainingNumber || '不限';
+        this.form.remainingWeight = result.remainingWeight || '不限';
+        this.getOrderGoodsProce();
+        this.$forceUpdate(); // 视图强制更新
       } else {
-        this.stowage = true;
+        this.form.remainingNumber = null;
+        this.form.remainingWeight = null;
+        this.getOrderGoodsProce();
       }
-      console.log(result);
-      this.form.remainingNumber = result.remainingNumber || '不限';
-      this.form.remainingWeight = result.remainingWeight || '不限';
-      this.getOrderGoodsProce();
-      this.$forceUpdate(); // 视图强制更新
     },
     loadChoose() {
       this.getOrderGoodsProce();
@@ -667,27 +693,42 @@ export default {
     },
     // 根据选择的司机查询司机拥有的车辆和所属调度
     driverChoose(e) {
-      this.vehicleInfoQuery.driverCode = e;
-      vehicle(this.vehicleInfoQuery).then(response => {
-        this.vehicleOptions = response.rows;
-      });
-      team(this.vehicleInfoQuery).then(response => {
-        this.teamOptions = response.rows;
-      });
-      this.form.vehicleCode = null;
-      this.form.roadTransportCertificateNumber = null;
-      this.form.chassisNumber = null;
-      this.form.vehicleLoadWeight = null;
+      if (e) {
+        this.vehicleInfoQuery.driverCode = e;
+        vehicle(this.vehicleInfoQuery).then(response => {
+          this.vehicleOptions = response.rows;
+        });
+        team(this.vehicleInfoQuery).then(response => {
+          this.teamOptions = response.rows;
+        });
+        this.form.vehicleCode = null;
+        this.form.roadTransportCertificateNumber = null;
+        this.form.chassisNumber = null;
+        this.form.vehicleLoadWeight = null;
+        this.driverDisable = false;
+      } else {
+        this.driverDisable = true;
+        this.form.vehicleCode = null;
+        this.form.roadTransportCertificateNumber = null;
+        this.form.chassisNumber = null;
+        this.form.vehicleLoadWeight = null;
+      }
     },
     // 根据选择的车辆获取信息
     vehicleChoose(e) {
-      vehicleInfo(e).then(response => {
-        console.log(response);
-        this.form.roadTransportCertificateNumber = response.data.roadTransportCertificateNumber;
-        this.form.vehicleLoadWeight = response.data.vehicleLoadWeight;
-        this.form.chassisNumber = response.data.chassisNumber;
-      });
-      this.$forceUpdate(); // 视图强制更新
+      if (e) {
+        vehicleInfo(e).then(response => {
+          console.log(response);
+          this.form.roadTransportCertificateNumber = response.data.roadTransportCertificateNumber;
+          this.form.vehicleLoadWeight = response.data.vehicleLoadWeight;
+          this.form.chassisNumber = response.data.chassisNumber;
+        });
+        this.$forceUpdate(); // 视图强制更新
+      } else {
+        this.form.roadTransportCertificateNumber = null;
+        this.form.chassisNumber = null;
+        this.form.vehicleLoadWeight = null;
+      }
     },
     // 赋值卸货重量
     inputWeight(e) {

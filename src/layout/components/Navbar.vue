@@ -14,9 +14,9 @@
 
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
 
-        <el-tooltip content="布局大小" effect="dark" placement="bottom">
+        <!-- <el-tooltip content="布局大小" effect="dark" placement="bottom">
           <size-select id="size-select" class="right-menu-item hover-effect" />
-        </el-tooltip>
+        </el-tooltip> -->
 
       </template>
 
@@ -38,6 +38,8 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+
+    <quick-entry />
   </div>
 </template>
 
@@ -46,18 +48,20 @@ import { mapGetters } from 'vuex';
 import Breadcrumb from '@/components/Breadcrumb';
 import Hamburger from '@/components/Hamburger';
 import Screenfull from '@/components/Screenfull';
-import SizeSelect from '@/components/SizeSelect';
+// import SizeSelect from '@/components/SizeSelect';
 import Search from '@/components/HeaderSearch';
 import DdcYiDoc from '@/components/Ddc/Doc';
+import QuickEntry from './QuickEntry';
 
 export default {
   components: {
     Breadcrumb,
     Hamburger,
     Screenfull,
-    SizeSelect,
+    // SizeSelect,
     Search,
-    DdcYiDoc
+    DdcYiDoc,
+    QuickEntry
   },
   computed: {
     ...mapGetters([
@@ -98,14 +102,14 @@ export default {
 
 <style lang="scss" scoped>
 .navbar {
-  height: 50px;
+  height: 70px;
   overflow: hidden;
   position: relative;
   background: #fff;
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
 
   .hamburger-container {
-    line-height: 46px;
+    line-height: 70px;
     height: 100%;
     float: left;
     cursor: pointer;
@@ -130,7 +134,7 @@ export default {
   .right-menu {
     float: right;
     height: 100%;
-    line-height: 50px;
+    line-height: 70px;
 
     &:focus {
       outline: none;
@@ -158,7 +162,7 @@ export default {
       margin-right: 30px;
 
       .avatar-wrapper {
-        margin-top: 5px;
+        margin-top: 15px;
         position: relative;
 
         .user-avatar {

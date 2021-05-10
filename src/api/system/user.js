@@ -108,3 +108,11 @@ export function uploadAvatar(data) {
     data: data
   });
 }
+
+export function changeUserAvatar(data) {
+  return request({
+    url: '/system/user/changeUserAvatar',
+    method: 'post',
+    data: data
+  });
+}

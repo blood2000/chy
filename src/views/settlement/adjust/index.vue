@@ -531,7 +531,7 @@ export default {
     // 批量评价
     handleAssess() {
       this.commentdialog = true;
-      this.title = '用户评价';
+      this.title = '评价司机';
       this.$refs.CommentDialog.setForm(this.commentlist);
     },
 
@@ -581,7 +581,7 @@ export default {
           break;
         case 5:
           this.commentdialog = true;
-          this.title = '用户评价';
+          this.title = '评价司机';
           this.commentlist = [];
           this.commentlist.push(row);
           this.$refs.CommentDialog.setForm(this.commentlist);

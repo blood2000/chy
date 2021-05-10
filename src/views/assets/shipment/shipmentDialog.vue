@@ -124,7 +124,7 @@
           <el-input v-model="form.organizationCodeNo" placeholder="请输入统一社会信用代码" class="width90" clearable />
         </el-form-item>
         <el-form-item label="营业执照号" prop="businessLicenseNo">
-          <el-input v-model="form.businessLicenseNo" placeholder="请输入营业执照号" class="width90" clearable />
+          <el-input v-model="form.businessLicenseNo" placeholder="支持自动识别" class="width90" clearable />
         </el-form-item>
         <el-form-item label="法人姓名" prop="artificialName">
           <el-input v-model="form.artificialName" placeholder="请输入法人姓名" class="width90" clearable />
@@ -718,6 +718,7 @@ export default {
           }
           break;
         case 'business-license':
+          if (data.registration_number) this.form.businessLicenseNo = data.registration_number;
           break;
         default:
           break;

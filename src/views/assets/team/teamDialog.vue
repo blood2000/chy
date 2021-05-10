@@ -279,8 +279,6 @@ export default {
             }
           }
           break;
-        case 'business-license':
-          break;
         default:
           break;
       }
