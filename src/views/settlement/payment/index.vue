@@ -60,10 +60,10 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="货物类型" prop="goodsBigType">
+        <el-form-item label="货物大类" prop="goodsBigType">
           <el-select
             v-model="queryParams.goodsBigType"
-            placeholder="请选择货物类型"
+            placeholder="请选择货物大类"
             filterable
             clearable
             style="width: 225px"
