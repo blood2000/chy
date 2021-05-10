@@ -19,6 +19,7 @@
         <el-row :gutter="10">
           <el-col :span="1.5">
             <el-button
+              v-if="hasFreightInvoice"
               type="primary"
               icon="el-icon-upload2"
               size="mini"
@@ -27,6 +28,7 @@
           </el-col>
           <el-col :span="1.5">
             <el-button
+              v-if="hasServiceInvoice"
               type="primary"
               icon="el-icon-upload2"
               size="mini"
@@ -194,7 +196,9 @@ export default {
       invoiceTypeOptions: [
         { dictLabel: '运费发票', dictValue: '1' },
         { dictLabel: '服务费发票', dictValue: '2' }
-      ]
+      ],
+      hasFreightInvoice: true,
+      hasServiceInvoice: true
     };
   },
   computed: {
@@ -233,7 +237,25 @@ export default {
         Object.keys(response.data.invoiceGroup).forEach(function(key) {
           that.invoicelist = that.invoicelist.concat(response.data.invoiceGroup[key]);
         });
-        console.log(that.invoicelist);
+        // 判断是否有运费发票
+        const freightInvoice = that.invoicelist.filter(item => item.invoiceType === '1');
+        // console.log(freightInvoice);
+        if (freightInvoice.length === 0) {
+          that.hasFreightInvoice = false;
+        } else {
+          that.hasFreightInvoice = true;
+        }
+        // 判断是否有服务费发票
+        const serviceInvoice = that.invoicelist.filter(item => item.invoiceType === '2');
+        // console.log(serviceInvoice);
+        if (serviceInvoice.length === 0) {
+          that.hasServiceInvoice = false;
+        } else {
+          that.hasFreightInvoice = true;
+        }
+        // console.log(that.hasFreightInvoice);
+        // console.log(that.hasServiceInvoice);
+        // console.log(that.invoicelist);
         that.loading = false;
       });
     },
