@@ -24,7 +24,7 @@
             <!-- clearable -->
             <el-option
               v-for="(dict,index) in tin3Optin"
-              :key="index"
+              :key="index + '' + dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
             />
@@ -41,7 +41,7 @@
             <template v-for="(dict,index) in tin2Option">
               <el-radio
                 v-if="dict.status === '0'"
-                :key="index"
+                :key="index + '' + dict.dictValue"
                 class="mb10 ml0 m_radio"
                 border
                 :label="dict.dictValue"
@@ -57,7 +57,7 @@
               <template v-for="(dict,index) in tin2_Option">
                 <el-checkbox
                   v-if="dict.status === '0'"
-                  :key="index"
+                  :key="index + '' + dict.dictValue"
                   class="ml0 mb10"
                   :label="dict.dictValue"
                 >{{ dict.dictLabel }}</el-checkbox>
@@ -69,7 +69,7 @@
               <template v-for="(dict,index) in tin2_Option">
                 <el-radio
                   v-if="dict.status === '0'"
-                  :key="index"
+                  :key="index + '' + dict.dictValue"
                   class="ml0 mb10 mt10"
                   :label="dict.dictValue"
                 >{{ dict.dictLabel }}</el-radio>
@@ -90,7 +90,7 @@
           >
             <el-radio
               v-for="(dict,index) in tin4Option"
-              :key="index"
+              :key="index + '' + dict.dictValue"
               :label="dict.dictValue"
             >{{ dict.dictLabel }}</el-radio>
           </el-radio-group>
@@ -104,7 +104,7 @@
                 <el-radio-group v-model="formData.tin5" size="medium">
                   <el-radio
                     v-for="(dict,index) in tin5Option"
-                    :key="index"
+                    :key="index + '' + dict.dictValue"
                     :label="dict.dictValue"
                   >{{ dict.dictLabel }}</el-radio>
                 </el-radio-group>
@@ -120,7 +120,7 @@
                 >
                   <el-option
                     v-for="(dict,index) in tin6Option"
-                    :key="index"
+                    :key="index + '' + dict.dictValue"
                     :label="dict.dictLabel"
                     :value="dict.dictValue"
                   />
@@ -134,7 +134,7 @@
             <div class="ly-flex-align-center m_warp">
               <el-tag
                 v-for="(tag, index) in formData['tin6_' + actionIndex]"
-                :key="tag.name + index"
+                :key="tag.name + '' + index"
                 class="mr10"
                 :class="actionIndex == 1? 'team':'driver'"
                 :closable="!myisdisabled"

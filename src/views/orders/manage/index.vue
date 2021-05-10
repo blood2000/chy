@@ -39,7 +39,7 @@
         <el-select v-model="queryParams.tin4" placeholder="----请选择----" clearable filterable style="width: 228px">
           <el-option
             v-for="(dict,index) in goodsTypeOption"
-            :key="index"
+            :key="index + dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
           />
@@ -74,7 +74,7 @@
         <el-select v-model="queryParams.tin8" placeholder="----请选择----" style="width: 228px" clearable filterable>
           <el-option
             v-for="(dict,index) in statusOptions"
-            :key="index"
+            :key="index + dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
             @keyup.enter.native="handleQuery"
@@ -86,7 +86,7 @@
         <el-select v-model="queryParams.tin11" placeholder="----请选择----" style="width: 228px" clearable filterable>
           <el-option
             v-for="(dict,index) in isPublicTypeOptions"
-            :key="index"
+            :key="index + dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
             @keyup.enter.native="handleQuery"
@@ -98,7 +98,7 @@
         <el-select v-model="queryParams.isManual" placeholder="----请选择----" clearable filterable style="width: 228px">
           <el-option
             v-for="(dict,index) in dicts['isManual_option']"
-            :key="index"
+            :key="index + dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
           />
@@ -135,7 +135,7 @@
         >
           <el-option
             v-for="(item, index1) in shipmentList"
-            :key="index1"
+            :key="index1 + item.code"
             :value="item.code"
             :label="item.adminName"
           >
@@ -617,12 +617,9 @@ export default {
 
 
   created() {
-    const { isAdmin = true, isShipment = false, shipment = {}} = getUserInfo() || {};
+    const { isShipment = false, shipment = {}} = getUserInfo() || {};
 
-    // console.log();
-
-
-
+    // isAdmin = true,
     // 判断当前是什么角色登入的 true 是运营
     this.isShipment = isShipment;
 
@@ -631,7 +628,6 @@ export default {
     this.tableHeaderConfig(this.tableColumnsConfig, listManagesApi, null, tableColumnsConfig);
     this.getDict();
     this.getList();
-    // this.listShipment();
   },
   methods: {
     // tab切换

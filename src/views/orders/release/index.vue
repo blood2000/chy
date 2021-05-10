@@ -90,7 +90,7 @@
                     >
                       <el-option
                         v-for="(item, index1) in shipmentList"
-                        :key="index1"
+                        :key="index1 + item.code"
                         :value="item.code"
                         :label="item.adminName"
                       >
@@ -134,7 +134,7 @@
                     { dictValue: '2', dictLabel: '多装一卸' },
                     { dictValue: '3', dictLabel: '一装多卸' }
                   ]:[{ dictValue: '1', dictLabel: '一装一卸' }])"
-                  :key="dict.dictValue + index"
+                  :key="dict.dictValue + '' + index"
                   :label="dict.dictValue"
                 >{{ dict.dictLabel }}</el-radio>
               </el-radio-group>
