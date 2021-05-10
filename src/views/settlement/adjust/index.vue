@@ -234,7 +234,7 @@
             @click="handleApply"
           >批量申请</el-button>
         </el-col>
-        <el-col v-if="activeName == '7'" :span="1.5">
+        <el-col v-if="activeName == '7' && !isAdmin" :span="1.5">
           <el-button
             type="primary"
             icon="el-icon-chat-dot-square"
@@ -296,11 +296,17 @@
             @click="handleTableBtn(row, 4)"
           >申请打款</el-button>
           <el-button
-            v-if="activeName == '7'"
+            v-if="activeName == '7' && !isAdmin"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 5)"
           >评价</el-button>
+          <el-button
+            v-if="activeName == '7' && isAdmin"
+            size="mini"
+            type="text"
+            @click="handleTableBtn(row, 8)"
+          >评价详情</el-button>
           <el-button
             v-if="row.isChild == '2'"
             v-has-permi="['transportation:waybill:childList']"
@@ -335,6 +341,8 @@
     <detail-dialog ref="DetailDialog" :current-id="currentId" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
     <!-- 评价弹窗 -->
     <comment-dialog ref="CommentDialog" :open.sync="commentdialog" :title="title" @refresh="getList" />
+    <!-- 评价详情 -->
+    <rate-dialog ref="RateDialog" :open.sync="ratedialog" :disable="formDisable" :title="title" @refresh="getList" />
   </div>
 </template>
 
@@ -351,11 +359,13 @@ import ChildDialog from '../components/childDialog';
 import DetailDialog from '@/views/waybill/components/detailDialog';
 // 评价弹窗
 import CommentDialog from './commentDialog';
+// 评价详情弹窗
+import RateDialog from './rateDialog';
 
 
 export default {
   'name': 'AdjustList',
-  components: { RejectDialog, AdjustDialog, DetailDialog, ChildDialog, CommentDialog },
+  components: { RejectDialog, AdjustDialog, DetailDialog, ChildDialog, CommentDialog, RateDialog },
   data() {
     return {
       tableColumnsConfig: [],
@@ -408,6 +418,7 @@ export default {
       adjustdialog: false,
       childdialog: false,
       commentdialog: false,
+      ratedialog: false,
       title: '',
       dialogWidth: '800px',
       // 当前选中的运单id
@@ -598,6 +609,13 @@ export default {
           this.open = true;
           this.title = '运输单信息';
           this.formDisable = true;
+          break;
+        case 8:
+          this.$refs.RateDialog.reset();
+          this.ratedialog = true;
+          this.formDisable = true;
+          this.title = '货主评价司机详情';
+          this.$refs.RateDialog.setForm(row);
           break;
         default:
           break;

@@ -44,7 +44,7 @@
     </el-row>
     <el-divider />
   </div> -->
-  <div style="min-width:1440px; overflow-x: scroll;">
+  <div style="min-width:1450px; overflow-x: scroll;">
     <div class="top-tips">
       <el-row :gutter="20">
         <el-col :span="24">
@@ -71,7 +71,7 @@
         <el-col :span="14">
           <div class="index-frame" style="height:144px">
             <div class="g-color-bigtitle g-strong g-title-medium">便捷导航</div>
-            <div class="g-flex g-aligncenter" style="margin-top: 10px;">
+            <div class="g-flex g-aligncenter g-flexwrap" style="margin-top: 10px;">
               <div class="g-flex g-aligncenter g-flexdirection width10">
                 <img class="nav-icon" src="~@/assets/images/workbench/icon_addcompany.png" alt="">
                 <div class="g-color-title g-strong margintop5">新增企业</div>

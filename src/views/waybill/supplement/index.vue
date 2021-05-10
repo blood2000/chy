@@ -482,6 +482,8 @@ export default {
                 this.msgSuccess('运单补录成功');
                 this.reset();
               });
+              this.orderDisable = true;
+              this.driverDisable = true;
             }
           } else {
             this.msgWarning('运单重量或车数必须大于0！');
@@ -667,6 +669,7 @@ export default {
         if (result.stowageStatus === '2') {
           this.stowage = false;
           this.form.loadWeight = 1;
+          this.form.unloadWeight = 1;
         // this.calculate();
         } else {
           this.stowage = true;
@@ -733,6 +736,7 @@ export default {
     // 赋值卸货重量
     inputWeight(e) {
       this.form.unloadWeight = e;
+      console.log(this.form.unloadWeight);
       this.calculate();
     },
     chooseImg() {

@@ -1,6 +1,6 @@
 <template>
   <!-- 评价对话框 -->
-  <el-dialog class="i-comment" :title="title" :visible="visible" width="1400px" :close-on-click-modal="false" append-to-body @close="cancel">
+  <el-dialog class="i-comment" :title="title" :visible="visible" width="1400px" :close-on-click-modal="false" destroy-on-close append-to-body @close="cancel">
     <el-table v-loading="loading" :data="commentlist" border stripe>
       <el-table-column type="index" label="序号" align="center" width="50" />
       <el-table-column width="150" label="运输单号" align="center" prop="waybillNo" />
@@ -13,7 +13,7 @@
       <el-table-column width="100" label="卸货重量" align="center" prop="unloadWeight" />
       <el-table-column width="280" label="评价内容" align="center" fixed="right" prop="content">
         <template #default="scope">
-          <el-input v-model="scope.row.content" placeholder="请输入评价内容" clearable />
+          <el-input v-model="scope.row.content" maxlength="100" show-word-limit placeholder="请输入评价内容" />
         </template>
       </el-table-column>
       <el-table-column width="180" label="评分" align="center" fixed="right" prop="score">
@@ -110,7 +110,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
 .mr3 {
   margin-right: 3%;
 }
@@ -122,5 +122,8 @@ export default {
 }
 .el-input-number ::v-deep.el-input__inner {
   text-align: left;
+}
+.el-input ::v-deep.el-input__inner{
+  padding: 0 50px 0 15px !important;
 }
 </style>
