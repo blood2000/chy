@@ -504,6 +504,8 @@ export default {
     async handlerEstimateCost(data) {
       const { orderEstimateCostBoList } = data;
 
+      if (!this.good) return;
+
       orderEstimateCostBoList.forEach(e => {
         if (e.goodsIdentification === this.good.goodsType) {
           e.orderAddressBoList.forEach(ee => {

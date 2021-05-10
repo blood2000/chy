@@ -27,7 +27,7 @@ export default [
     isShow: true,
     width: 120,
     tooltip: true,
-    label: '货物类型'
+    label: '货物大类'
   },
   {
     prop: 'goodsTypeName',

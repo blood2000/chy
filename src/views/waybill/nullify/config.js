@@ -60,13 +60,13 @@ export default [
     prop: 'goodsBigType',
     isShow: true,
     width: 130,
-    label: '货物类型'
+    label: '货物大类'
   },
   {
     prop: 'goodsType',
     isShow: true,
     width: 130,
-    label: '货物类型分类'
+    label: '货物小类'
   },
   {
     prop: 'licenseNumber',

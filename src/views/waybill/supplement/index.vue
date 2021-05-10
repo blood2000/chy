@@ -352,7 +352,7 @@ export default {
           { required: true, message: '货源单号不能为空', trigger: 'blur' }
         ],
         goodsCode: [
-          { required: true, message: '请选择货物类型', trigger: 'change' }
+          { required: true, message: '请选择货物大类', trigger: 'change' }
         ],
         loadAddressCode: [
           { required: true, message: '请选择装货地址', trigger: 'change' }

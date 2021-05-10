@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="user-info-head" @click="editCropper()"><img :src="options.img" title="点击上传头像" class="img-circle img-lg"></div>
+    <div class="user-info-head" @click="editCropper()"><img :src="user.avatar" title="点击上传头像" class="img-circle img-lg"></div>
     <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body @opened="modalOpened">
       <el-row>
         <el-col :xs="24" :md="12" :style="{height: '350px'}">
@@ -45,7 +45,7 @@
           <el-button icon="el-icon-refresh-right" size="small" @click="rotateRight()" />
         </el-col>
         <el-col :lg="{span: 2, offset: 6}" :md="2">
-          <el-button type="primary" size="small" @click="uploadImg()">提 交</el-button>
+          <el-button type="primary" size="small" @click="uploadImg()" :loading="buttonLoading">提 交</el-button>
         </el-col>
       </el-row>
     </el-dialog>
@@ -66,14 +66,15 @@ export default {
   },
   data() {
     return {
+      buttonLoading: false,
       // 是否显示弹出层
       open: false,
       // 是否显示cropper
       visible: false,
       // 弹出层标题
-      title: '修改头像',
+      title: '上传头像',
       options: {
-        img: store.getters.avatar, // 裁剪图片的地址
+        img: '', // 裁剪图片的地址
         autoCrop: true, // 是否默认生成截图框
         autoCropWidth: 200, // 默认生成截图框宽度
         autoCropHeight: 200, // 默认生成截图框高度
@@ -121,9 +122,14 @@ export default {
     },
     // 上传图片
     uploadImg() {
+      if (!this.previews.url) {
+        this.msgWarning('请选择图片上传');
+        return;
+      }
       this.$refs.cropper.getCropBlob(data => {
+        this.buttonLoading = true;
         const formData = new FormData();
-        var file = new File([data], '头像.jpg');
+        var file = new File([data], `${new Date().getTime()}.png`);
         formData.append('file', file);
         changeUserAvatar(formData).then(response => {
           this.open = false;
@@ -131,6 +137,9 @@ export default {
           store.commit('SET_AVATAR', this.options.data);
           this.msgSuccess('修改成功');
           this.visible = false;
+          this.buttonLoading = true;
+        }).catch(() => {
+          this.buttonLoading = false;
         });
       });
     },

@@ -202,13 +202,19 @@
         </template> -->
 
         <template #edit="{row}">
-          <el-button
-            v-if="activeName == '3'"
+          <!-- <el-button
+            v-if="activeName == '3' && !isAdmin"
             v-hasPermi="['transportation:waybillComment:add']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 10)"
           >评价</el-button>
+          <el-button
+            v-if="activeName == '3' && isAdmin"
+            size="mini"
+            type="text"
+            @click="handleTableBtn(row, 11)"
+          >评价详情</el-button> -->
           <el-button
             v-if="activeName == '1'"
             v-hasPermi="['transportation:waybillOper:load']"
@@ -243,6 +249,13 @@
             type="text"
             @click="handleTableBtn(row, 8)"
           >定位</el-button>
+          <el-button
+            v-if="activeName == '3'"
+            v-hasPermi="['transportation:driverComplaint:add']"
+            size="mini"
+            type="text"
+            @click="handleTableBtn(row, 9)"
+          >投诉</el-button>
           <TableDropdown>
             <el-dropdown-item>
               <el-button
@@ -271,7 +284,7 @@
                 @click="handleTableBtn(row, 6)"
               >补卸货凭证</el-button>
             </el-dropdown-item>
-            <el-dropdown-item>
+            <el-dropdown-item v-if="activeName != '3'">
               <el-button
                 v-hasPermi="['transportation:driverComplaint:add']"
                 size="mini"
@@ -300,7 +313,7 @@
     <!-- 取消订单 -->
     <cancel-dialog ref="CancelDialog" :open.sync="canceldialog" :title="title" @refresh="getList" />
     <!-- 评价 -->
-    <rate-dialog ref="RateDialog" :open.sync="ratedialog" :title="title" @refresh="getList" />
+    <rate-dialog ref="RateDialog" :open.sync="ratedialog" :disable="formDisable" :title="title" @refresh="getList" />
     <!-- 车辆跟踪 -->
     <track-dialog ref="TrackDialog" :open.sync="trackdialog" :title="title" />
     <!-- 定位 -->
@@ -548,7 +561,14 @@ export default {
         case 10:
           this.$refs.RateDialog.reset();
           this.ratedialog = true;
-          this.title = '评价';
+          this.title = '评价司机';
+          this.$refs.RateDialog.setForm(row);
+          break;
+        case 11:
+          this.$refs.RateDialog.reset();
+          this.ratedialog = true;
+          this.formDisable = true;
+          this.title = '货主评价司机详情';
           this.$refs.RateDialog.setForm(row);
           break;
         default:
