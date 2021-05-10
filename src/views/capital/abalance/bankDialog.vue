@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel"   :close-on-click-modal="false" >
+  <el-dialog :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="false" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="140px">
       <el-form-item label="开户姓名" prop="name">
         <el-input v-model="form.name" placeholder="请输入开户姓名" class="width90" clearable />

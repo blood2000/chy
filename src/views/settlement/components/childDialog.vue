@@ -1,6 +1,6 @@
 <template>
   <!-- 子单对话框 -->
-  <el-dialog :title="title" :visible="visible" width="1400px" append-to-body @close="cancel" :close-on-click-modal="false">
+  <el-dialog :title="title" :visible="visible" width="1400px" append-to-body :close-on-click-modal="false" @close="cancel">
     <RefactorTable :loading="loading" :data="childlist" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
       <!-- <template #lastLoadingTime="{row}">
         <span>{{ parseTime(row.lastLoadingTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>

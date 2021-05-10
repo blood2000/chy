@@ -39,13 +39,13 @@
           <el-input v-model="form.artificialName" placeholder="请输入法人姓名" class="width90" clearable />
         </el-form-item>
         <el-form-item label="法人身份证" prop="artificialIdentificationNumber">
-          <el-input v-model="form.artificialIdentificationNumber" class="width90" clearable />
+          <el-input v-model="form.artificialIdentificationNumber" placeholder="请输入法人身份证" class="width90" clearable />
         </el-form-item>
         <el-form-item label="统一社会信用代码" prop="organizationCodeNo">
-          <el-input v-model="form.organizationCodeNo" class="width90" clearable />
+          <el-input v-model="form.organizationCodeNo" class="width90" placeholder="请输入统一社会信用代码" clearable />
         </el-form-item>
         <el-form-item label="营业执照号" prop="businessLicenseNo">
-          <el-input v-model="form.businessLicenseNo" class="width90" clearable />
+          <el-input v-model="form.businessLicenseNo" placeholder="支持自动识别" class="width90" clearable />
         </el-form-item>
       </template>
       <!-- 选择省/市/区 -->
@@ -226,6 +226,7 @@ export default {
           }
           break;
         case 'business-license':
+          if (data.registration_number) this.form.businessLicenseNo = data.registration_number;
           break;
         default:
           break;

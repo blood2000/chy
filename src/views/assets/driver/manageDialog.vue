@@ -6,8 +6,8 @@
     width="1300px"
     title="管理"
     append-to-body
-    @close="cancel"
     :close-on-click-modal="false"
+    @close="cancel"
   >
     <el-tabs v-model="activeName">
       <el-tab-pane label="车辆管理" name="vehicle">

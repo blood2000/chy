@@ -67,7 +67,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <el-table v-loading="loading" :data="configList" @selection-change="handleSelectionChange" :close-on-click-modal="false">
+      <el-table v-loading="loading" :data="configList" :close-on-click-modal="false" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="字段名" align="center" prop="fieldName" />
         <el-table-column label="接口地址" align="center" prop="route" />
@@ -116,7 +116,7 @@
       />
 
       <!-- 添加或修改参数配置对话框 -->
-      <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body  :close-on-click-modal="false">
+      <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body :close-on-click-modal="false">
         <el-form ref="form" :model="form" :rules="rules" label-width="80px">
           <el-form-item label="字段名" prop="fieldName">
             <el-input v-model="form.fieldName" placeholder="请输入字段名" clearable />

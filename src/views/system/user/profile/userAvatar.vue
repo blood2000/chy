@@ -55,8 +55,8 @@
 <script>
 import store from '@/store';
 import { VueCropper } from 'vue-cropper';
-import { uploadAvatar } from '@/api/system/user';
-import { uploadImg } from '@/api/system/image.js';
+import { changeUserAvatar } from '@/api/system/user';
+// import { uploadImg } from '@/api/system/image.js';
 export default {
   components: { VueCropper },
   props: {
@@ -125,10 +125,10 @@ export default {
         const formData = new FormData();
         var file = new File([data], '头像.jpg');
         formData.append('file', file);
-        uploadImg(formData).then(response => {
+        changeUserAvatar(formData).then(response => {
           this.open = false;
-          this.options.img = response.data.path;
-          store.commit('SET_AVATAR', this.options.img);
+          this.options.img = response.data;
+          store.commit('SET_AVATAR', this.options.data);
           this.msgSuccess('修改成功');
           this.visible = false;
         });
