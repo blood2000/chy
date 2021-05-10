@@ -143,16 +143,10 @@ export default {
     handleLogin() {
       this.$refs.rpform.validate(valid => {
         if (valid) {
-          // if (this.Verification) {
-          //   this.msgError('请发送验证码~!');
-          //   return;
-          // }
-
-          //   this.active = '1';
-          //   this.Verification = true;
-          //   this.timer = 60;
-
-          //   return;
+          if (this.Verification) {
+            this.msgError('请重新获取验证码~!');
+            return;
+          }
 
           this.loading = true;
           const req = {
