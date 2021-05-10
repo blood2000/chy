@@ -21,3 +21,11 @@ export function uploadOcr(data) {
     data: data
   });
 }
+
+export function uploadImg(data) {
+  return request({
+    url: uploadImgApi,
+    method: 'post',
+    data: data
+  });
+}

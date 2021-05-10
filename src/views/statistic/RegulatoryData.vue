@@ -4,41 +4,59 @@
     <div class="s-container__box">
       <p class="s-container__box__line">
         <label>已上报司机信息:</label>
-        <span><count-to :end-val="15459" /></span>
+        <span>
+          <count-to :end-val="dataList.reportDriver" />
+        </span>
       </p>
       <p class="s-container__box__line">
         <label>已上报车辆信息:</label>
-        <span><count-to :end-val="15459" /></span>
+        <span>
+          <count-to :end-val="dataList.reportCar" />
+        </span>
       </p>
       <p class="s-container__box__line">
         <label>已上报运单信息:</label>
-        <span><count-to :end-val="15459" /></span>
+        <span>
+          <count-to :end-val="dataList.reportWaybill" />
+        </span>
       </p>
       <p class="s-container__box__line">
         <label>已上报轨迹信息:</label>
-        <span><count-to :end-val="15459" /></span>
+        <span>
+          <count-to :end-val="dataList.reportTrajectory" />
+        </span>
       </p>
       <p class="s-container__box__line">
         <label>来自硬件的轨迹信息:</label>
-        <span><count-to :end-val="15459" /></span>
+        <span>
+          <count-to :end-val="dataList.reportHardwareTrajectory" />
+        </span>
       </p>
     </div>
     <div class="s-container__box">
       <p class="s-container__box__line">
         <label>已上报装货信息:</label>
-        <span><count-to :end-val="15459" /></span>
+        <span>
+          <count-to :end-val="dataList.reportLoadInfo" />
+        </span>
       </p>
       <p class="s-container__box__line">
         <label>已上报卸货信息:</label>
-        <span><count-to :end-val="15459" /></span>
+        <span>
+          <count-to :end-val="dataList.reportLandInfo" />
+        </span>
       </p>
       <p class="s-container__box__line">
         <label>已上报资金信息:</label>
-        <span><count-to :end-val="15459" /></span>
+        <span>
+          <count-to :end-val="dataList.reportAmount" />
+        </span>
       </p>
       <p class="s-container__box__line">
         <label>来自APP的轨迹信息:</label>
-        <span><count-to :end-val="15459" /></span>
+        <span>
+          <count-to :end-val="dataList.reportAppTrajectory" />
+        </span>
       </p>
     </div>
   </div>
@@ -46,15 +64,32 @@
 
 <script>
 import CountTo from '@/components/CountTo';
+import { getRegulatoryData } from '@/api/statistic/statistic.js';
 
 export default {
   components: {
     CountTo
   },
+  props: {
+    branchCode: {
+      type: String,
+      default: null
+    }
+  },
   data() {
     return {
-
+      dataList: {}
     };
+  },
+  created() {
+    this.getData();
+  },
+  methods: {
+    getData() {
+      getRegulatoryData(this.branchCode).then(response => {
+        this.dataList = response.data || {};
+      });
+    }
   }
 };
 </script>

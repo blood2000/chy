@@ -4,56 +4,92 @@
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <div class="s-container__box__content">
         <p class="label">总用户数(万)</p>
-        <p class="text"><count-to :end-val="0.211" :decimal-places="3" /></p>
+        <p class="text">
+          <count-to :end-val="dataList.userCount" :decimal-places="2" />
+        </p>
       </div>
       <div class="s-container__box__content">
         <p class="label">今日新增用户</p>
         <p class="text blod">
-          <count-to :end-val="0.211" :decimal-places="3" />
-          <span class="arow_down" />
-          <span class="value_down">12.6%</span>
+          <count-to :end-val="dataList.newUserCount" :decimal-places="2" />
+          <template v-if="dataList.newUserYoyType !== 2">
+            <span :class="dataList.newUserYoyType===1 ? 'arow_down' : 'arow_up'" />
+            <span :class="dataList.newUserYoyType===1 ? 'value_down' : 'value_up'">
+              <count-to :end-val="dataList.newUserYoy" :decimal-places="1" />%
+            </span>
+          </template>
+          <template v-else>
+            <span class="arow_line" />
+          </template>
         </p>
       </div>
     </div>
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <div class="s-container__box__content">
         <p class="label">总货主数(万)</p>
-        <p class="text"><count-to :end-val="0.211" :decimal-places="3" /></p>
+        <p class="text">
+          <count-to :end-val="dataList.shipmentUserCount" :decimal-places="2" />
+        </p>
       </div>
       <div class="s-container__box__content">
         <p class="label">今日新增货主</p>
         <p class="text blod">
-          <count-to :end-val="0.211" :decimal-places="3" />
-          <span class="arow_up" />
-          <span class="value_up">12.6%</span>
+          <count-to :end-val="dataList.newShipmentCount" :decimal-places="2" />
+          <template v-if="dataList.newShipmentYoyType !== 2">
+            <span :class="dataList.newShipmentYoyType===1 ? 'arow_down' : 'arow_up'" />
+            <span :class="dataList.newShipmentYoyType===1 ? 'value_down' : 'value_up'">
+              <count-to :end-val="dataList.newShipmentYoy" :decimal-places="1" />%
+            </span>
+          </template>
+          <template v-else>
+            <span class="arow_line" />
+          </template>
         </p>
       </div>
     </div>
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <div class="s-container__box__content">
         <p class="label">总调度者(万)</p>
-        <p class="text"><count-to :end-val="0.211" :decimal-places="3" /></p>
+        <p class="text">
+          <count-to :end-val="dataList.teamUserCount" :decimal-places="2" />
+        </p>
       </div>
       <div class="s-container__box__content">
         <p class="label">今日新增调度者</p>
         <p class="text blod">
-          <count-to :end-val="0.211" :decimal-places="3" />
-          <span class="arow_up" />
-          <span class="value_up">12.6%</span>
+          <count-to :end-val="dataList.newTeamCount" :decimal-places="2" />
+          <template v-if="dataList.newTeamYoyType !== 2">
+            <span :class="dataList.newTeamYoyType===1 ? 'arow_down' : 'arow_up'" />
+            <span :class="dataList.newTeamYoyType===1 ? 'value_down' : 'value_up'">
+              <count-to :end-val="dataList.newTeamYoy" :decimal-places="1" />%
+            </span>
+          </template>
+          <template v-else>
+            <span class="arow_line" />
+          </template>
         </p>
       </div>
     </div>
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <div class="s-container__box__content">
         <p class="label">总司机(万)</p>
-        <p class="text"><count-to :end-val="0.211" :decimal-places="3" /></p>
+        <p class="text">
+          <count-to :end-val="dataList.driverUserCount" :decimal-places="2" />
+        </p>
       </div>
       <div class="s-container__box__content">
         <p class="label">今日新增司机</p>
         <p class="text blod">
-          <count-to :end-val="0.211" :decimal-places="3" />
-          <span class="arow_up" />
-          <span class="value_up">12.6%</span>
+          <count-to :end-val="dataList.newDriverCount" :decimal-places="2" />
+          <template v-if="dataList.newDriverYoyType !== 2">
+            <span :class="dataList.newDriverYoyType===1 ? 'arow_down' : 'arow_up'" />
+            <span :class="dataList.newDriverYoyType===1 ? 'value_down' : 'value_up'">
+              <count-to :end-val="dataList.newDriverYoy" :decimal-places="1" />%
+            </span>
+          </template>
+          <template v-else>
+            <span class="arow_line" />
+          </template>
         </p>
       </div>
     </div>
@@ -62,14 +98,32 @@
 
 <script>
 import CountTo from '@/components/CountTo';
+import { getUserData } from '@/api/statistic/statistic.js';
+
 export default {
   components: {
     CountTo
   },
+  props: {
+    branchCode: {
+      type: String,
+      default: null
+    }
+  },
   data() {
     return {
-
+      dataList: {}
     };
+  },
+  created() {
+    this.getData();
+  },
+  methods: {
+    getData() {
+      getUserData(this.branchCode).then(response => {
+        this.dataList = response.data || {};
+      });
+    }
   }
 };
 </script>
@@ -127,6 +181,15 @@ export default {
           background: url('~@/assets/images/statistic/arow_down.png') no-repeat;
           background-size: 100% 100%;
           margin-left: 0.4rem;
+        }
+        .arow_line{
+          display: inline-block;
+          width: 0.9rem;
+          height: 0.02rem;
+          background: #00d2ff;
+          margin-left: 0.4rem;
+          vertical-align: top;
+          margin-top: 0.65rem;
         }
         .value_up{
           font-size: 0.6rem;

@@ -186,7 +186,6 @@ export default {
   name: 'Post',
   data() {
     return {
-      modalClick: false,
       // 遮罩层
       loading: true,
       buttonLoading: false,

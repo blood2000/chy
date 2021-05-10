@@ -93,7 +93,7 @@
       />
 
       <!-- 添加或修改岗位对话框 -->
-      <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body :close-on-click-modal="modalClick">
+      <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body :close-on-click-modal="false">
         <el-form ref="form" :model="form" :rules="rules" label-width="130px">
           <el-form-item label="网点名称" prop="name">
             <el-input v-model="form.name" placeholder="请输入网点名称" clearable />
@@ -141,7 +141,6 @@ export default {
   components: { Treeselect },
   data() {
     return {
-      modalClick: false,
       // 遮罩层
       loading: true,
       buttonLoading: false,

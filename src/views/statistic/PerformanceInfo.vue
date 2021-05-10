@@ -105,6 +105,15 @@ export default {
           background-size: 100% 100%;
           margin-left: 0.3rem;
         }
+        .arow_line{
+          display: inline-block;
+          width: 0.9rem;
+          height: 0.02rem;
+          background: #00d2ff;
+          margin-left: 0.4rem;
+          vertical-align: top;
+          margin-top: 0.65rem;
+        }
         .value_up{
           font-size: 0.6rem;
           vertical-align: top;
