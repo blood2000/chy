@@ -146,7 +146,7 @@
                     <span class="license">{{ form.licenseNumber }}</span>
                   </h5>
                   <p>
-                    <label>货物类型：</label>
+                    <label>货物大类：</label>
                     {{ form.goodsBigType }}
                   </p>
                   <p>
