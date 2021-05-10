@@ -244,12 +244,21 @@ export default {
 
     // 2. 下拉选择地址
     handlechengDetail(value) {
+      if (!value) {
+        this.selected = null;
+        this.pccCode = null;
+        this.searchOption.city = '全国';
+        return;
+      }
+
       if (!value && this.isRules) {
-        this.selected = '';
+        this.selected = null;
       }
 
       this.selected = this._zhaovalue(this.detailOptin, this.formData.addressName);
 
+
+      if (!this.selected) return;
 
       var lnglat = [this.selected.lng, this.selected.lat];
       this.getaddress(lnglat);
