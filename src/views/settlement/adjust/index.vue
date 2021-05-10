@@ -380,6 +380,7 @@ export default {
       'adjustlist': [],
       // 弹窗表格
       commentlist: [],
+      commentlist1: [],
       // 查询参数
       'queryParams': {
         'pageNum': 1,
@@ -582,9 +583,9 @@ export default {
         case 5:
           this.commentdialog = true;
           this.title = '评价司机';
-          this.commentlist = [];
-          this.commentlist.push(row);
-          this.$refs.CommentDialog.setForm(this.commentlist);
+          this.commentlist1 = [];
+          this.commentlist1.push(row);
+          this.$refs.CommentDialog.setForm(this.commentlist1);
           break;
         case 6:
           this.title = '子单列表';
