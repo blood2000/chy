@@ -2,56 +2,65 @@
   <!-- 业绩数据 -->
   <div class="s-container ly-flex-pack-justify">
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
-      <div class="s-container__box__content">
-        <p class="label">交易总额(亿)</p>
-        <p class="text"><count-to :end-val="0.211" :decimal-places="3" /></p>
-      </div>
-      <div class="s-container__box__content">
-        <p class="label">今日新增交易</p>
-        <p class="text">
-          <count-to :end-val="0.211" :decimal-places="3" />
-          <span class="arow_down" />
-          <span class="value_down">12.6%</span>
-        </p>
-      </div>
+      <InfoBox
+        label="交易总额"
+        unit="亿"
+        :count="0.211"
+        :places="3"
+      />
+      <InfoBox
+        label="今日新增交易"
+        :count="0.211"
+        :places="3"
+        :has-yoy="true"
+        :yoy="12.6"
+        :yoy-type="0"
+        :yoy-places="1"
+      />
     </div>
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
-      <div class="s-container__box__content">
-        <p class="label">开票总额(亿)</p>
-        <p class="text"><count-to :end-val="0.211" :decimal-places="3" /></p>
-      </div>
-      <div class="s-container__box__content">
-        <p class="label">今日新增开票</p>
-        <p class="text">
-          <count-to :end-val="0.211" :decimal-places="3" />
-          <span class="arow_up" />
-          <span class="value_up">12.6%</span>
-        </p>
-      </div>
+      <InfoBox
+        label="开票总额"
+        unit="亿"
+        :count="0.211"
+        :places="3"
+      />
+      <InfoBox
+        label="今日新增开票"
+        :count="0.211"
+        :places="3"
+        :has-yoy="true"
+        :yoy="12.6"
+        :yoy-type="1"
+        :yoy-places="1"
+      />
     </div>
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
-      <div class="s-container__box__content">
-        <p class="label">运费总额(亿)</p>
-        <p class="text"><count-to :end-val="0.211" :decimal-places="3" /></p>
-      </div>
-      <div class="s-container__box__content">
-        <p class="label">今日新增运费</p>
-        <p class="text">
-          <count-to :end-val="0.211" :decimal-places="3" />
-          <span class="arow_up" />
-          <span class="value_up">12.6%</span>
-        </p>
-      </div>
+      <InfoBox
+        label="运费总额"
+        unit="亿"
+        :count="0.211"
+        :places="3"
+      />
+      <InfoBox
+        label="今日新增运费"
+        :count="0.211"
+        :places="3"
+        :has-yoy="true"
+        :yoy="12.6"
+        :yoy-type="0"
+        :yoy-places="1"
+      />
     </div>
   </div>
 </template>
 
 <script>
-import CountTo from '@/components/CountTo';
+import InfoBox from './components/infoBox';
 
 export default {
   components: {
-    CountTo
+    InfoBox
   }
 };
 </script>
@@ -73,60 +82,6 @@ export default {
       bottom: 0;
       width: 1px;
       background: linear-gradient(rgba(1, 227, 255, 0), rgba(1, 227, 255, 0.22), rgba(1, 227, 255, 0));
-    }
-    &__content{
-      width: 100%;
-      height: 50%;
-      >.label{
-        font-size: 0.6rem;
-        font-weight: 200;
-        color: rgba(213, 234, 255, 1);
-        line-height: 1rem;
-      }
-      >.text{
-        font-size: 1.1rem;
-        font-weight: normal;
-        color: #FFFFFF;
-        line-height: 1.3rem;
-        font-family: 'PingFang Medium';
-        .arow_up{
-          display: inline-block;
-          width: 0.9rem;
-          height: 0.6rem;
-          background: url('~@/assets/images/statistic/arow_up.png') no-repeat;
-          background-size: 100% 100%;
-          margin-left: 0.3rem;
-        }
-        .arow_down{
-          display: inline-block;
-          width: 0.9rem;
-          height: 0.6rem;
-          background: url('~@/assets/images/statistic/arow_down.png') no-repeat;
-          background-size: 100% 100%;
-          margin-left: 0.3rem;
-        }
-        .arow_line{
-          display: inline-block;
-          width: 0.9rem;
-          height: 0.02rem;
-          background: #00d2ff;
-          margin-left: 0.4rem;
-          vertical-align: top;
-          margin-top: 0.65rem;
-        }
-        .value_up{
-          font-size: 0.6rem;
-          vertical-align: top;
-          color: rgba(0, 210, 255, 1);
-          margin-left: 0.15rem;
-        }
-        .value_down{
-          font-size: 0.6rem;
-          vertical-align: top;
-          color: rgba(52, 213, 192, 1);
-          margin-left: 0.15rem;
-        }
-      }
     }
   }
 }
