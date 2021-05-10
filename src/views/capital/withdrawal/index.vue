@@ -247,7 +247,8 @@ export default {
         transferTimeEnd: undefined,
         applyTimeBegin: undefined,
         applyTimeEnd: undefined
-      }
+      },
+      searched: false
     };
   },
   watch: {
@@ -265,6 +266,7 @@ export default {
       if (route.name !== this.$options.name) return;
       const { query } = route;
       const data = JSON.parse(query.data || '{}');
+      if (JSON.stringify(data) === '{}' && this.searched) return;
       Object.assign(this.queryParams, data);
       this.getList();
     },
@@ -275,6 +277,7 @@ export default {
         this.withdrawalList = response.data.rows;
         this.total = response.data.total;
         this.loading = false;
+        this.searched = true;
       });
     },
     /** 搜索按钮操作 */
