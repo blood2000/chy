@@ -2,11 +2,12 @@
   <!-- 货主评价司机对话框 -->
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :disabled="disable" :rules="rules" label-width="130px">
-      <el-form-item label="综合评价" prop="score">
+      <el-form-item label="综合评价：" prop="score">
         <el-rate v-model="form.score" allow-half />
       </el-form-item>
-      <el-form-item label="评价内容" prop="content">
-        <el-input v-model="form.content" type="textarea" maxlength="100" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入您的客观评价" style="width:90%;" clearable />
+      <el-form-item label="评价内容：" prop="content">
+        <span>{{ form.content || '暂无评价内容' }}</span>
+        <!-- <el-input v-model="form.content" type="textarea" maxlength="100" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入您的客观评价" style="width:90%;" clearable /> -->
       </el-form-item>
     </el-form>
     <div v-if="!disable" slot="footer" class="dialog-footer">
@@ -43,12 +44,12 @@ export default {
       },
       // 表单校验
       rules: {
-        score: [
-          { required: true, message: '请选择评分', trigger: 'blur' }
-        ],
-        content: [
-          { required: true, message: '评价内容不能为空', trigger: 'blur' }
-        ]
+        // score: [
+        //   { required: true, message: '请选择评分', trigger: 'blur' }
+        // ],
+        // content: [
+        //   { required: true, message: '评价内容不能为空', trigger: 'blur' }
+        // ]
       }
     };
   },
