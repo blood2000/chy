@@ -1229,7 +1229,7 @@ export default {
     },
 
     handlerCheck(type) {
-      console.log(this.formData.tin8);
+      // console.log(this.formData.tin8);
 
       // if(!this.formData.tin8)
 

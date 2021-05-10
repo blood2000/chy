@@ -937,7 +937,7 @@ export default {
           }
         });
 
-        console.log(e.redisOrderAddressInfoVoList);
+        // console.log(e.redisOrderAddressInfoVoList);
 
 
         const redis = e.redisOrderAddressInfoVoList.map(eee => {
