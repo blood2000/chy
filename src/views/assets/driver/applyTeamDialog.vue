@@ -5,8 +5,8 @@
     width="1300px"
     title="处理邀请"
     append-to-body
-    @close="cancel"
     :close-on-click-modal="false"
+    @close="cancel"
   >
     <el-table v-loading="loading" :data="infoList" border stripe @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />

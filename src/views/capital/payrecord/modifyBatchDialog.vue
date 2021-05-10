@@ -1,6 +1,6 @@
 <template>
   <!-- 修改批次号（该页面逻辑暂时不确定） -->
-  <el-dialog :title="title" :visible="visible" width="1200px" append-to-body @close="cancel" :close-on-click-modal="false">
+  <el-dialog :title="title" :visible="visible" width="1200px" append-to-body :close-on-click-modal="false" @close="cancel">
     <el-form ref="form" :model="form" label-width="120px">
       <el-form-item label="司机实收现金" prop="amount">
         <el-input v-model="form.amount" readonly class="input-width" clearable />

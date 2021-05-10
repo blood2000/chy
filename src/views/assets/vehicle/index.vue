@@ -455,7 +455,7 @@ export default {
         this.carBodyColorOptions = response.data;
       });
       // 车辆类型
-      this.getDicts('vehicleType').then(response => {
+      this.getDicts('licenseNumberType').then(response => {
         this.vehicleTypeOptions = response.data;
       });
       // 能源类型

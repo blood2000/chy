@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" :visible="visible" width="600px" append-to-body @close="cancel" :close-on-click-modal="false" >
+  <el-dialog :title="title" :visible="visible" width="600px" append-to-body :close-on-click-modal="false" @close="cancel">
     <el-form ref="form" :model="form" label-width="100px">
       <el-form-item label="充值金额(元)" prop="name">
         <el-input v-model="form.name" class="width90" placeholder="请输入充值金额(元)" clearable />
