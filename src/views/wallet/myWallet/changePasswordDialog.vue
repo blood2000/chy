@@ -1,10 +1,10 @@
 <template>
   <el-dialog :title="title" :visible="visible" width="600px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="110px">
-      <el-form-item v-if="type === 'edit'" label="原密码" prop="passwordBefore" :rules="[{ required: true, trigger: 'blur', message: '原密码不能为空' }]">
-        <el-input v-model="form.passwordBefore" class="width90" placeholder="请输入原密码 ( 若第一次修改, 则原密码为平台账户密码 )" type="password" clearable />
+      <el-form-item v-if="type === 'edit' && isEmptyPassword !==1" label="原密码" prop="passwordBefore" :rules="[{ required: true, trigger: 'blur', message: '原密码不能为空' }]">
+        <el-input v-model="form.passwordBefore" class="width90" placeholder="请输入原密码" type="password" clearable />
       </el-form-item>
-      <el-form-item v-else label="平台密码" prop="platformPassword" :rules="[{ required: true, trigger: 'blur', message: '平台密码不能为空' }]">
+      <el-form-item v-if="type === 'forget'" label="平台密码" prop="platformPassword" :rules="[{ required: true, trigger: 'blur', message: '平台密码不能为空' }]">
         <el-input v-model="form.platformPassword" class="width90" placeholder="请输入平台密码" type="password" clearable />
       </el-form-item>
       <el-form-item label="新密码" prop="password">
@@ -40,6 +40,10 @@ export default {
     type: {
       type: String,
       default: ''
+    },
+    isEmptyPassword: {
+      type: Number,
+      default: null
     }
   },
   data() {
@@ -79,12 +83,19 @@ export default {
         if (valid) {
           // 修改密码
           if (this.type === 'edit') {
-            editAmountPassword({
+            const params = {
               id: this.amountId,
-              password: sha1(this.form.password),
-              passwordBefore: sha1(this.form.passwordBefore)
-            }).then(response => {
-              this.msgSuccess('修改成功');
+              password: sha1(this.form.password)
+            };
+            if (this.isEmptyPassword !== 1) {
+              Object.assign(params, { passwordBefore: sha1(this.form.passwordBefore) });
+            }
+            editAmountPassword(params).then(response => {
+              if (this.isEmptyPassword !== 1) {
+                this.msgSuccess('修改成功');
+              } else {
+                this.msgSuccess('设置成功');
+              }
               this.close();
               this.$emit('refresh');
             });
