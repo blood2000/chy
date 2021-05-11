@@ -21,7 +21,7 @@
         >
           <el-option
             v-for="(dict,index) in provinceOption"
-            :key="index + dict.dictValue"
+            :key="index + '' + dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
           />
@@ -38,7 +38,7 @@
         >
           <el-option
             v-for="(dict,index) in cityOption"
-            :key="index + dict.dictValue"
+            :key="index + '' + dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
           />
@@ -48,7 +48,7 @@
         <el-select v-model="form.county" placeholder="请选择县/区" clearable>
           <el-option
             v-for="(dict,index) in countyOption"
-            :key="index + dict.dictValue"
+            :key="index + '' + dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
             :style="{ width: config.inputwidth }"
