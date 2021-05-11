@@ -25,6 +25,7 @@
             :disabled="myisdisabled"
             @getCity="getCity"
             @getProvince="getProvince"
+            @setEnd="setEnd"
           />
         </el-col>
       </el-row>
@@ -49,7 +50,7 @@
             >
               <el-option
                 v-for="(dict,index) in detailOptin"
-                :key="dict.dictValue + index"
+                :key="dict.dictValue + '' + index"
                 :label="dict.dictLabel"
                 :value="dict.dictValue"
               >
@@ -139,6 +140,7 @@ export default {
   },
   data() {
     return {
+      midAddressName: '',
       pccCode: null, // 主要搜集金纬度
       isrules: true,
       loading: false,
@@ -188,13 +190,14 @@ export default {
         this.formData.addressAlias = addressAlias;
         this.formData.contact = contact;
         this.formData.contactPhone = contactPhone;
-        this.$nextTick(_ => {
-          let time1 = setTimeout(() => {
-            this.formData.addressName = addressName;
-            clearTimeout(time1);
-            time1 = null;
-          }, 100);
-        });
+        // this.$nextTick(_ => {
+        //   let time1 = setTimeout(() => {
+        //     this.formData.addressName = addressName;
+        //     clearTimeout(time1);
+        //     time1 = null;
+        //   }, 700);
+        // });
+        this.midAddressName = addressName;
         this.selected = {
           name: addressName,
           lat: location ? location[1] - 0 : 0,
@@ -223,7 +226,6 @@ export default {
     'searchOption.city'(val, oldval) {
       if (oldval !== '全国') {
         this.formData.addressName = '';
-        this.detailOptin = [];
       }
     }
   },
@@ -248,6 +250,7 @@ export default {
 
     // 2. 下拉选择地址
     handlechengDetail(value) {
+      console.log(value);
       if (!value) {
         this.selected = null;
         this.pccCode = null;
@@ -261,8 +264,9 @@ export default {
 
       this.selected = this._zhaovalue(this.detailOptin, this.formData.addressName);
 
-
       if (!this.selected) return;
+
+      this.midAddressName = this.selected.dictLabel;
 
       var lnglat = [this.selected.lng, this.selected.lat];
       this.getaddress(lnglat);
@@ -286,9 +290,6 @@ export default {
       const provinceCode = code.slice(0, 2);
       const cityCode = code.slice(0, 4);
       const districtCode = code.slice(0, 6);
-
-
-
       this.pccCode = { provinceCode, cityCode, districtCode };
     },
 
@@ -306,6 +307,14 @@ export default {
         this.formData.addressName = '';
         this.detailOptin = [];
       }
+    },
+
+    setEnd() {
+      console.log(this.midAddressName);
+      if (this.midAddressName) {
+        this.formData.addressName = this.midAddressName;
+      }
+      this.midAddressName = null;
     },
 
     async _submitForm() {

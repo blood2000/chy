@@ -269,8 +269,6 @@ export default {
 
     /** 切换操作 */
     handleClick(value) {
-      // console.log(this.activeName);
-      // console.log();
       if (!this.list_listDriver.length || !this.list_listInfo.length) {
         this.getList();
       }
