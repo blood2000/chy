@@ -25,6 +25,7 @@
             :disabled="myisdisabled"
             @getCity="getCity"
             @getProvince="getProvince"
+            @setEnd="formData.addressName = midAddressName"
           />
         </el-col>
       </el-row>
@@ -139,6 +140,7 @@ export default {
   },
   data() {
     return {
+      midAddressName: '',
       pccCode: null, // 主要搜集金纬度
       isrules: true,
       loading: false,
@@ -188,13 +190,14 @@ export default {
         this.formData.addressAlias = addressAlias;
         this.formData.contact = contact;
         this.formData.contactPhone = contactPhone;
-        this.$nextTick(_ => {
-          let time1 = setTimeout(() => {
-            this.formData.addressName = addressName;
-            clearTimeout(time1);
-            time1 = null;
-          }, 100);
-        });
+        // this.$nextTick(_ => {
+        //   let time1 = setTimeout(() => {
+        //     this.formData.addressName = addressName;
+        //     clearTimeout(time1);
+        //     time1 = null;
+        //   }, 700);
+        // });
+        this.midAddressName = addressName;
         this.selected = {
           name: addressName,
           lat: location ? location[1] - 0 : 0,
