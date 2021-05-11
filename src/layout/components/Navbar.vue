@@ -22,10 +22,14 @@
 
       </template>
 
+      <div class="avatar-wrapper">
+        <img :src="avatar" class="avatar-wrapper__image">
+        <span class="avatar-wrapper__role">客服部</span>
+        <span class="avatar-wrapper__user">余晨望</span>
+      </div>
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar" class="user-avatar">
-          <i class="el-icon-caret-bottom" />
+          <span class="avatar-wrapper__icon" />
         </div>
         <el-dropdown-menu slot="dropdown">
           <router-link to="/user/profile">
@@ -172,26 +176,64 @@ export default {
     }
 
     .avatar-container {
-      margin-right: 30px;
+      margin-right: 20px;
+      cursor: default;
+      background: transparent !important;
+    }
 
-      .avatar-wrapper {
-        margin-top: 15px;
+    .avatar-wrapper {
+      position: relative;
+      height: 100%;
+      float: left;
+
+      &__image {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        vertical-align: middle;
+      }
+
+      &__role{
+        padding: 0 12px 0 10px;
+        font-size: 14px;
+        font-family: PingFang SC;
+        color: #FFFFFF;
+        vertical-align: middle;
         position: relative;
-
-        .user-avatar {
-          cursor: pointer;
-          width: 40px;
-          height: 40px;
-          border-radius: 10px;
-        }
-
-        .el-icon-caret-bottom {
-          cursor: pointer;
+        &::after{
+          content: '';
+          width: 1px;
+          height: 12px;
           position: absolute;
-          right: -20px;
-          top: 25px;
-          font-size: 12px;
+          top: 50%;
+          margin-top: -6px;
+          right: 0;
+          background: #fff;
+          font-size: 14px;
+          opacity: 0.4;
         }
+      }
+
+      &__user{
+        margin-left: 10px;
+        font-size: 14px;
+        font-family: PingFang SC;
+        color: #FFFFFF;
+        font-weight: bold;
+        vertical-align: middle;
+      }
+
+      &__icon {
+        display: inline-block;
+        width: 12px;
+        height: 16px;
+        background: url('~@/assets/images/navBar/avatar_icon.png') no-repeat;
+        background-size: 100% 100%;
+        cursor: pointer;
+        position: absolute;
+        right: -12px;
+        top: 50%;
+        margin-top: -7px;
       }
     }
   }
