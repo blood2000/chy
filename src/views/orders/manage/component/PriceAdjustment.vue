@@ -4,7 +4,7 @@
       <el-tabs v-model="activeName">
         <el-tab-pane
           v-for="(dict,index) in tabs"
-          :key="index"
+          :key="index + '' + dict.dictLabel"
           :label="dict.dictLabel"
           :name="dict.activeName"
         />
@@ -27,7 +27,7 @@
       </div>
     </div>
 
-    <div v-for="(goods,index) in tabs" :key="goods.activeName + index">
+    <div v-for="(goods,index) in tabs" :key="goods.activeName +''+ index">
       <div v-show="activeName === goods.activeName">
         <el-form :model="goods">
           <el-form-item label="货物单价: ">
