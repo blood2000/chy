@@ -1,6 +1,6 @@
 <template>
   <div id="tags-view-container" ref="TagsViewContainer" class="tags-view-container">
-    <scroll-pane ref="scrollPane" class="tags-view-wrapper" @scroll="handleScroll">
+    <div class="tags-view-wrapper">
       <router-link
         v-for="tag in visitedViews"
         ref="tag"
@@ -13,13 +13,13 @@
         @click.middle.native="!isAffix(tag)?closeSelectedTag(tag):''"
         @contextmenu.prevent.native="openMenu(tag,$event)"
       >
-        {{ tag.title }}
+        <span class="label">{{ tag.title }}</span>
         <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
       </router-link>
-    </scroll-pane>
+    </div>
 
-    <!-- <el-dropdown ref="TagsDerpDown" class="btn-arrow-container" trigger="click">
-      <div class="btn-arrow el-icon-arrow-down" />
+    <el-dropdown ref="TagsDerpDown" class="btn-arrow-container" trigger="click">
+      <div class="btn-arrow" />
       <el-dropdown-menu slot="dropdown" class="tags-dropdown">
         <router-link
           v-for="tag in overflowTagsList"
@@ -30,13 +30,13 @@
           @contextmenu.prevent.native="openMenu(tag,$event)"
         >
           <el-dropdown-item>
-            {{ tag.title }}
+            <span style="padding-right: 40px">{{ tag.title }}</span>
             <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
           </el-dropdown-item>
         </router-link>
         <el-dropdown-item v-show="overflowTagsList.length==0" disabled>暂无更多</el-dropdown-item>
       </el-dropdown-menu>
-    </el-dropdown> -->
+    </el-dropdown>
 
     <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
       <li @click="refreshSelectedTag(selectedTag)">刷新页面</li>
@@ -49,10 +49,8 @@
 
 <script>
 import path from 'path';
-import ScrollPane from './ScrollPane';
-// import { ThrottleFun } from '@/utils/index.js';
+import { ThrottleFun } from '@/utils/index.js';
 export default {
-  components: { ScrollPane },
   data() {
     return {
       visible: false,
@@ -78,9 +76,9 @@ export default {
     $route() {
       this.addTags();
       this.moveToCurrentTag();
-      // this.$nextTick(() => {
-      //   this.tagsOverflow();
-      // });
+      this.$nextTick(() => {
+        this.tagsOverflow();
+      });
     },
     visible(value) {
       if (value) {
@@ -93,18 +91,18 @@ export default {
   mounted() {
     this.initTags();
     this.addTags();
-    // this.$nextTick(() => {
-    //   this.tagsOverflow();
-    // });
-    // const throttle = ThrottleFun(this.tagsOverflow, 300);
-    // window.onresize = () => {
-    //   this.$refs.TagsDerpDown.hide();
-    //   throttle();
-    // };
+    this.$nextTick(() => {
+      this.tagsOverflow();
+    });
+    const throttle = ThrottleFun(this.tagsOverflow, 300);
+    window.onresize = () => {
+      this.$refs.TagsDerpDown.hide();
+      throttle();
+    };
   },
-  // beforeDestroy() {
-  //   window.onresize = null;
-  // },
+  beforeDestroy() {
+    window.onresize = null;
+  },
   methods: {
     isActive(route) {
       return route.path === this.$route.path;
@@ -112,8 +110,8 @@ export default {
     activeStyle(tag) {
       if (!this.isActive(tag)) return {};
       return {
-        'background-color': this.theme,
-        'border-color': this.theme
+        'background-color': 'rgba(242, 245, 248, 1)',
+        'border-color': 'rgba(242, 245, 248, 1)'
       };
     },
     isAffix(tag) {
@@ -161,7 +159,7 @@ export default {
       this.$nextTick(() => {
         for (const tag of tags) {
           if (tag.to.path === this.$route.path) {
-            this.$refs.scrollPane.moveToTarget(tag);
+            // this.$refs.scrollPane.moveToTarget(tag);
             // when query is different then update
             if (tag.to.fullPath !== this.$route.fullPath) {
               this.$store.dispatch('tagsView/updateVisitedView', this.$route);
@@ -187,12 +185,12 @@ export default {
           this.toLastView(visitedViews, view);
         }
       });
-      // this.$nextTick(() => {
-      //   this.tagsOverflow();
-      //   if (this.overflowTagsList.length === 0) {
-      //     this.$refs.TagsDerpDown.hide();
-      //   }
-      // });
+      this.$nextTick(() => {
+        this.tagsOverflow();
+        if (this.overflowTagsList.length === 0) {
+          this.$refs.TagsDerpDown.hide();
+        }
+      });
     },
     closeOthersTags() {
       this.$router.push(this.selectedTag);
@@ -235,8 +233,8 @@ export default {
       } else {
         this.left = left;
       }
-
-      this.top = e.clientY;
+      // 70: headerHeight
+      this.top = e.clientY - 70;
       this.visible = true;
       this.selectedTag = tag;
     },
@@ -254,14 +252,14 @@ export default {
       let flag = true;
       for (let i = 0; i < tagList.length; i++) {
         tagswidth += tagList[i].$el.clientWidth;
-        // 44: The width of a arrow
-        if (flag && (tagswidth > $ContainerWidth - 44)) {
+        // 36: The width of a arrow
+        if (flag && (tagswidth > $ContainerWidth - 36)) {
           flag = false;
           index = i;
           this.overflowTagsList = this.visitedViews.slice(index);
         }
       }
-      if (tagswidth < $ContainerWidth - 44) {
+      if (tagswidth < $ContainerWidth - 36) {
         this.overflowTagsList = [];
       }
     }
@@ -274,63 +272,84 @@ export default {
   height: 44px;
   width: 100%;
   background: #fff;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
+  // box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
+  position: relative;
   .tags-view-wrapper {
+    width: calc(100% - 36px);
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    padding-top: 8px;
     .tags-view-item {
+      min-width: 150px;
       display: inline-block;
       position: relative;
       cursor: pointer;
-      height: 26px;
-      line-height: 26px;
-      border: 1px solid #d8dce5;
-      color: #495060;
+      height: 36px;
+      line-height: 36px;
+      // color: #262626;
       background: #fff;
-      padding: 0 8px;
-      font-size: 12px;
-      margin-left: 5px;
-      margin-top: 9px;
-      &:first-of-type {
-        margin-left: 15px;
+      padding: 0 10px 0 14px;
+      font-size: 14px;
+      border-radius: 8px 8px 0px 0px;
+      >.label{
+        display: inline-block;
+        vertical-align: middle;
+        padding-right: 20px;
       }
-      &:last-of-type {
-        margin-right: 15px;
+      &:not(:first-child){
+        &::before{
+          content: '';
+          width: 1px;
+          height: 14px;
+          position: absolute;
+          left: -1px;
+          top: 50%;
+          margin-top: -7px;
+          background: rgba(159, 162, 181, 0.4);
+        }
+      }
+      &:last-child{
+        &::after{
+          content: '';
+          width: 1px;
+          height: 14px;
+          position: absolute;
+          right: -1px;
+          top: 50%;
+          margin-top: -7px;
+          background: rgba(159, 162, 181, 0.4);
+        }
       }
       &.active {
-        background-color: #42b983;
-        color: #fff;
-        border-color: #42b983;
-        &::before {
-          content: '';
-          background: #fff;
-          display: inline-block;
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          position: relative;
-          margin-right: 2px;
+        color: rgba(64, 158, 255, 1);
+        font-weight: bold;
+        &::before, &::after{
+          opacity: 0;
+        }
+        &+span{
+          &::before{
+            opacity: 0;
+          }
         }
       }
     }
   }
   .btn-arrow-container{
-    float: right;
+    position: absolute;
+    top: 0;
+    right: 0;
   }
   .btn-arrow{
-    position: relative;
-    height: 100%;
-    width: 44px;
+    height: 16px;
+    width: 12px;
     color: #666;
     line-height: 40px;
     text-align: center;
     cursor: pointer;
-    &::after{
-      content: '|';
-      position: absolute;
-      left: -1px;
-      top: 0;
-      color: #CCCCCC;
-      font-size: 12px;
-    }
+    background: url('~@/assets/images/navBar/tag_icon.png') no-repeat;
+    background-size: 100% 100%;
+    margin: 14px 12px;
   }
   .contextmenu {
     margin: 0;
@@ -343,7 +362,7 @@ export default {
     font-size: 12px;
     font-weight: 400;
     color: #333;
-    box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, .3);
+    box-shadow: 1px 1px 6px 0 rgba(0, 0, 0, .1);
     li {
       margin: 0;
       padding: 7px 16px;
@@ -360,15 +379,19 @@ export default {
 @mixin tag-icon-close {
   width: 16px;
   height: 16px;
-  vertical-align: 2px;
+  vertical-align: -1px;
   border-radius: 50%;
   text-align: center;
   transition: all .3s cubic-bezier(.645, .045, .355, 1);
   transform-origin: 100% 50%;
+  position: absolute;
+  top: 50%;
+  margin-top: -8px;
+  right: 8px;
   &:before {
-    transform: scale(.6);
+    transform: scale(.7);
     display: inline-block;
-    vertical-align: -3px;
+    vertical-align: -1px;
   }
   &:hover {
     background-color: #b4bccc;
@@ -383,28 +406,20 @@ export default {
     }
   }
 }
-// .tags-dropdown {
-//   .tags-dropdown-item-active {
-//     position: relative;
-//     .el-dropdown-menu__item {
-//       color: #409eff;
-//       background: rgba(64, 158, 255, 0.1);
-//     }
-//     // &::after {
-//     //   position: absolute;
-//     //   top: 0;
-//     //   left: 0;
-//     //   right: 0;
-//     //   bottom: 0;
-//     //   content: '';
-//     //   pointer-events: none;
-//     //   background: $theme;
-//     //   opacity: 0.1;
-//     // }
-//   }
-//   .el-icon-close {
-//     margin-left: 6px;
-//     @include tag-icon-close
-//   }
-// }
+.tags-dropdown {
+  .el-dropdown-menu__item{
+    position: relative;
+    height: 36px;
+    line-height: 36px;
+  }
+  .tags-dropdown-item-active {
+    .el-dropdown-menu__item {
+      color: #409eff;
+      background: rgba(64, 158, 255, 0.1);
+    }
+  }
+  .el-icon-close {
+    @include tag-icon-close
+  }
+}
 </style>

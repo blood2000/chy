@@ -4,7 +4,7 @@
 
     <!-- <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" /> -->
 
-    <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
+    <!-- <breadcrumb id="breadcrumb-container" class="breadcrumb-container" /> -->
 
     <div class="right-menu">
       <template v-if="device!=='mobile'">
@@ -51,8 +51,8 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import Breadcrumb from '@/components/Breadcrumb';
 import QuickEntry from './QuickEntry';
+// import Breadcrumb from '@/components/Breadcrumb';
 // import Hamburger from '@/components/Hamburger';
 // import Screenfull from '@/components/Screenfull';
 // import SizeSelect from '@/components/SizeSelect';
@@ -61,8 +61,8 @@ import QuickEntry from './QuickEntry';
 
 export default {
   components: {
-    Breadcrumb,
     QuickEntry
+    // Breadcrumb,
     // Hamburger
     // Screenfull,
     // SizeSelect,
