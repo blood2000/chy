@@ -92,6 +92,7 @@ import DriverTop5List from './DriverTop5List';// 总排名TOP5司机
 import TotalData from './TotalData';// 中间总数统计
 import ScrollData from './ScrollData';// 中间滚屏数据
 import Map from './Map.vue';// 地图
+import { dataJson } from './data';
 
 export default {
   name: 'Statistic',
