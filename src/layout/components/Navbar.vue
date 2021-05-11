@@ -1,18 +1,20 @@
 <template>
   <div class="navbar">
-    <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
+    <img class="navbar__logo" src="@/assets/images/navBar/logo.png">
+
+    <!-- <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" /> -->
 
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
 
     <div class="right-menu">
       <template v-if="device!=='mobile'">
-        <search id="header-search" class="right-menu-item" />
+        <!-- <search id="header-search" class="right-menu-item" /> -->
 
-        <el-tooltip content="官网地址" effect="dark" placement="bottom">
+        <!-- <el-tooltip content="官网地址" effect="dark" placement="bottom">
           <ddc-yi-doc id="ddc-doc" class="right-menu-item hover-effect" />
-        </el-tooltip>
+        </el-tooltip> -->
 
-        <screenfull id="screenfull" class="right-menu-item hover-effect" />
+        <!-- <screenfull id="screenfull" class="right-menu-item hover-effect" /> -->
 
         <!-- <el-tooltip content="布局大小" effect="dark" placement="bottom">
           <size-select id="size-select" class="right-menu-item hover-effect" />
@@ -29,9 +31,9 @@
           <router-link to="/user/profile">
             <el-dropdown-item>个人中心</el-dropdown-item>
           </router-link>
-          <el-dropdown-item @click.native="setting = true">
+          <!-- <el-dropdown-item @click.native="setting = true">
             <span>布局设置</span>
-          </el-dropdown-item>
+          </el-dropdown-item> -->
           <el-dropdown-item divided @click.native="logout">
             <span>退出登录</span>
           </el-dropdown-item>
@@ -39,29 +41,29 @@
       </el-dropdown>
     </div>
 
-    <!-- <quick-entry /> -->
+    <quick-entry />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
 import Breadcrumb from '@/components/Breadcrumb';
-import Hamburger from '@/components/Hamburger';
-import Screenfull from '@/components/Screenfull';
+import QuickEntry from './QuickEntry';
+// import Hamburger from '@/components/Hamburger';
+// import Screenfull from '@/components/Screenfull';
 // import SizeSelect from '@/components/SizeSelect';
-import Search from '@/components/HeaderSearch';
-import DdcYiDoc from '@/components/Ddc/Doc';
-// import QuickEntry from './QuickEntry';
+// import Search from '@/components/HeaderSearch';
+// import DdcYiDoc from '@/components/Ddc/Doc';
 
 export default {
   components: {
     Breadcrumb,
-    Hamburger,
-    Screenfull,
+    QuickEntry
+    // Hamburger
+    // Screenfull,
     // SizeSelect,
-    Search,
-    DdcYiDoc
-    // QuickEntry
+    // Search,
+    // DdcYiDoc
   },
   computed: {
     ...mapGetters([
@@ -102,13 +104,22 @@ export default {
 
 <style lang="scss" scoped>
 .navbar {
+  // 70: headerHeight
   height: 70px;
   overflow: hidden;
   position: relative;
-  background: #fff;
+  background: linear-gradient(270deg, #409EFF 0%, #0571D8 100%);
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
 
+  &__logo{
+    float: left;
+    width: 134px;
+    height: 36px;
+    margin: 18px 10px 18px 24px;
+  }
+
   .hamburger-container {
+    // 70: headerHeight
     line-height: 70px;
     height: 100%;
     float: left;
@@ -123,6 +134,7 @@ export default {
 
   .breadcrumb-container {
     float: left;
+    padding-top: 7px;
   }
 
 
@@ -134,6 +146,7 @@ export default {
   .right-menu {
     float: right;
     height: 100%;
+    // 70: headerHeight
     line-height: 70px;
 
     &:focus {

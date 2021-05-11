@@ -24,7 +24,7 @@ export default {
 
 <style lang="scss" scoped>
 .app-main {
-  /* 70 = navbar  70  */
+  // 70: headerHeight
   min-height: calc(100vh - 70px);
   width: 100%;
   position: relative;
@@ -34,13 +34,13 @@ export default {
 
 .hasTagsView {
   .app-main {
-    /* 84 = navbar + tags-view = 70 + 34 */
-    min-height: calc(100vh - 104px);
+    /* 84 = navbar + tags-view = 70 + 44 */
+    min-height: calc(100vh - 114px);
   }
 }
 
 .fixed-header+.app-main{
-  height: calc(100vh - 104px);
+  height: calc(100vh - 114px);
   overflow-y: auto;
 }
 </style>

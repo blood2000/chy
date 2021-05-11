@@ -1372,7 +1372,7 @@ export default {
 .oneAddress_item {
   padding: 10px;
   margin-bottom: 10px;
-  border: 1px solid #f2f6fa;
+  border: 1px solid rgba(242, 245, 248, 1);
   width: 66%;
   min-width: 850px;
   border-radius: 3px;

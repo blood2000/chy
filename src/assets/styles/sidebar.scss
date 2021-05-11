@@ -5,7 +5,7 @@
     transition: margin-left .28s;
     margin-left: $sideBarWidth;
     position: relative;
-    background: #F2F6FA;
+    background: rgba(242, 245, 248, 1);
     overflow: auto;
   }
 
@@ -14,16 +14,18 @@
     transition: width 0.28s;
     width: $sideBarWidth !important;
     background-color: $menuBg;
-    height: 100%;
+    // 70: headerHeight
+    height: calc(100% - 70px);
     position: fixed;
     font-size: 0px;
-    top: 0;
+    // 70: headerHeight
+    top: 70px;
     bottom: 0;
     left: 0;
     z-index: 1001;
     overflow: hidden;
-    -webkit-box-shadow: 2px 0 6px rgba(0,21,41,.35);
-    box-shadow: 2px 0 6px rgba(0,21,41,.35);
+    -webkit-box-shadow: 2px 0 6px rgba(0,21,41,.05);
+    box-shadow: 2px 0 6px rgba(0,21,41,.05);
 
     // reset element-ui css
     .horizontal-collapse-transition {
