@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="user-info-head" @click="editCropper()"><img :src="user.avatar" title="点击上传头像" class="img-circle img-lg"></div>
+    <div class="user-info-head" @click="editCropper()"><img :src="avatar" title="点击上传头像" class="img-circle img-lg"></div>
     <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body @opened="modalOpened">
       <el-row>
         <el-col :xs="24" :md="12" :style="{height: '350px'}">
@@ -54,6 +54,7 @@
 
 <script>
 import store from '@/store';
+import { mapGetters } from 'vuex';
 import { VueCropper } from 'vue-cropper';
 import { changeUserAvatar } from '@/api/system/user';
 // import { uploadImg } from '@/api/system/image.js';
@@ -82,6 +83,11 @@ export default {
       },
       previews: {}
     };
+  },
+  computed: {
+    ...mapGetters([
+      'avatar'
+    ])
   },
   methods: {
     // 编辑头像
@@ -134,7 +140,7 @@ export default {
         changeUserAvatar(formData).then(response => {
           this.open = false;
           this.options.img = response.data;
-          store.commit('SET_AVATAR', this.options.data);
+          store.commit('SET_AVATAR', this.options.img);
           this.msgSuccess('修改成功');
           this.visible = false;
           this.buttonLoading = true;
