@@ -159,7 +159,7 @@ export default {
           this.form.attachmentCode = info.attachmentCode;
           this.fresh = true;
         } else {
-          this.form.unloadTime = this.waybill.receiveTime;
+          this.form.unloadTime = this.waybill.signTime;
           this.form.unloadWeight = this.waybill.loadWeight;
         }
       });

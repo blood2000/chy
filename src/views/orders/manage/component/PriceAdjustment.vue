@@ -152,6 +152,7 @@ export default {
 
   created() {
     this.tabs = JSON.parse(JSON.stringify(this.mytabs));
+    console.log(this.tabs);
   },
 
   methods: {
