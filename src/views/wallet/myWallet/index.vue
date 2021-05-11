@@ -28,17 +28,17 @@
     <div class="app-container app-container--card">
       <h3 class="g-card-title g-card-header mb20">支付与安全</h3>
       <p class="g-text mb20">
-        <span class="g-color-blue">已设置</span>
+        <span class="g-color-blue">{{ isEmptyPassword ? '未设置' : '已设置' }}</span>
       </p>
       <p class="g-text mb20">保护账户财产安全，请设置一个与登录密码不同的支付密码</p>
-      <el-button type="primary" @click="handleChangePassword('edit')">修改支付密码</el-button>
+      <el-button type="primary" @click="handleChangePassword('edit')">{{ isEmptyPassword ? '设置支付密码' : '修改支付密码' }}</el-button>
       <el-button @click="handleChangePassword('forget')">忘记密码</el-button>
     </div>
 
     <!-- 账户提现弹窗 -->
     <withdraw-dialog :open.sync="withdrawOpen" :user-code="userCode" :credi-amount="amount" @refresh="getWallet" />
     <!-- 修改/忘记密码弹窗 -->
-    <change-password-dialog :open.sync="changePasswordOpen" :amount-id="amountId" :title="title" :type="changePasswordType" />
+    <change-password-dialog :open.sync="changePasswordOpen" :amount-id="amountId" :title="title" :type="changePasswordType" :is-empty-password="isEmptyPassword" @refresh="getWallet" />
   </div>
 </template>
 <script>
@@ -65,7 +65,9 @@ export default {
       // 钱包id
       amountId: null,
       userCode: null,
-      amount: null
+      amount: null,
+      // 支付密码是否设置
+      isEmptyPassword: null
     };
   },
   created() {
@@ -78,6 +80,7 @@ export default {
       const { userCode } = user;
       getWalletInfo({ code: userCode }).then(response => {
         this.walletInfo = response.data || {};
+        this.isEmptyPassword = this.walletInfo.isEmptyPassword;
       });
     },
     // 提现按钮
@@ -91,7 +94,11 @@ export default {
       if (type === 'forget') {
         this.title = '忘记密码';
       } else if (type === 'edit') {
-        this.title = '修改支付密码';
+        if (this.isEmptyPassword) {
+          this.title = '设置支付密码';
+        } else {
+          this.title = '修改支付密码';
+        }
       }
       this.changePasswordType = type;
       this.amountId = this.walletInfo.id;

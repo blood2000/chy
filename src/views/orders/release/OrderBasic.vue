@@ -789,8 +789,3 @@ export default {
     }
 }
 </style>
-<style>
-.m_elDialog.el-dialog__wrapper .el-dialog .el-dialog__body{
-      max-height: none;
-}
-</style>

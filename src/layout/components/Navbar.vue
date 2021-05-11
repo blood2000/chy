@@ -39,7 +39,7 @@
       </el-dropdown>
     </div>
 
-    <quick-entry />
+    <!-- <quick-entry /> -->
   </div>
 </template>
 
@@ -51,7 +51,7 @@ import Screenfull from '@/components/Screenfull';
 // import SizeSelect from '@/components/SizeSelect';
 import Search from '@/components/HeaderSearch';
 import DdcYiDoc from '@/components/Ddc/Doc';
-import QuickEntry from './QuickEntry';
+// import QuickEntry from './QuickEntry';
 
 export default {
   components: {
@@ -60,8 +60,8 @@ export default {
     Screenfull,
     // SizeSelect,
     Search,
-    DdcYiDoc,
-    QuickEntry
+    DdcYiDoc
+    // QuickEntry
   },
   computed: {
     ...mapGetters([
