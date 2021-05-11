@@ -33,20 +33,25 @@
 
       <el-table-column width="160" label="装货重量" align="center" prop="loadWeight">
         <template slot-scope="scope">
-          <el-input-number v-model="scope.row.loadWeight" :controls="false" placeholder="请输入装货重量" style="width:100%;" size="mini" @blur="handlerBlur(scope.row, scope.row.loadWeight, 'loadWeight' )" />
+          <el-input-number v-if="true" v-model="scope.row.loadWeight" :controls="false" placeholder="请输入装货重量" style="width:100%;" size="mini" @blur="handlerBlur(scope.row, scope.row.loadWeight, 'loadWeight' )" />
+
+          <span v-else>{{ scope.row.loadWeight }}</span>
         </template>
       </el-table-column>
       <el-table-column width="160" label="卸货重量" align="center" prop="unloadWeight">
         <template slot-scope="scope">
-          <el-input-number v-model="scope.row.unloadWeight" :controls="false" placeholder="请输入卸货重量" style="width:100%;" size="mini" @blur="handlerBlur(scope.row, scope.row.unloadWeight, 'unloadWeight' )" />
+          <el-input-number v-if="true" v-model="scope.row.unloadWeight" :controls="false" placeholder="请输入卸货重量" style="width:100%;" size="mini" @blur="handlerBlur(scope.row, scope.row.unloadWeight, 'unloadWeight' )" />
+          <span v-else>{{ scope.row.unloadWeight }}</span>
         </template>
       </el-table-column>
 
-      <!-- <el-table-column width="160" label="实际承运重量??" align="center" prop="tin11111111" /> -->
-
       <el-table-column width="160" label="路耗" align="center" prop="loss" />
 
-      <el-table-column width="160" label="路耗允许范围" align="center" prop="lossAllowScope" />
+      <el-table-column width="160" label="路耗允许范围" align="center" prop="lossAllowScope">
+        <template slot-scope="scope">
+          <span>{{ scope.row.lossAllowScope? _lossAllowScope(scope.row.lossAllowScope) : null }}</span>
+        </template>
+      </el-table-column>
 
       <el-table-column width="160" label="货物单价" align="center" prop="goodsPrice" />
 
@@ -60,9 +65,6 @@
 
       <el-table-column width="160" label="司机应收运费" align="center" prop="deliveryFeeDeserved" />
       <el-table-column width="160" label="司机实收运费" align="center" prop="deliveryFeePractical" />
-      <!-- <el-table-column width="160" label="司机实收抹零??" align="center" prop="tin11111111" /> -->
-
-
 
       <!-- 补贴项目 -->
       <el-table-column align="center" width="500" label="补贴项目">
@@ -122,14 +124,6 @@
 
       <el-table-column width="120" label="货主实付金额" align="center" prop="shipperRealPay" fixed="right" />
 
-      <!-- <el-table-column width="120" label="要扣的货主金额" align="center" prop="deductShipmentAmount" /> -->
-
-      <!-- <el-table-column width="120" label="司机增项费用" align="center" prop="driverAddFee" />
-
-      <el-table-column width="120" label="司机减项费用" align="center" prop="driverReductionFee" /> -->
-
-
-      <!-- <el-table-column width="120" label="核算规则" align="center" prop="freightList.enName" /> -->
     </el-table>
 
     <div slot="footer" class="dialog-footer">
@@ -443,7 +437,20 @@ export default {
     _mynum(arr, key) {
       const valueobj = (arr.filter(e => e.enName === key))[0];
       return valueobj ? valueobj.ruleValue : undefined;
+    },
+
+    /* 处理路耗展示 */
+    _lossAllowScope(value) {
+      if (value) {
+        const arr = value.match(/\d+(\.\d+)?/g);
+
+        arr[0] = (arr[0] - 0) === 0 ? 0 : -arr[0];
+        arr[1] = arr[1] - 0;
+
+        return JSON.stringify(arr);
+      }
     }
+
 
   }
 };

@@ -241,8 +241,6 @@ export default {
 
     // 1. 搜索地址回调
     onSearchResult(res) {
-      // console.log(res);
-
       this.detailOptin = [];
       this.detailOptin = this._baozhuan(res, 'id', 'name');
       this.loading = false;
@@ -250,7 +248,6 @@ export default {
 
     // 2. 下拉选择地址
     handlechengDetail(value) {
-      console.log(value);
       if (!value) {
         this.selected = null;
         this.pccCode = null;
@@ -310,7 +307,6 @@ export default {
     },
 
     setEnd() {
-      console.log(this.midAddressName);
       if (this.midAddressName) {
         this.formData.addressName = this.midAddressName;
       }

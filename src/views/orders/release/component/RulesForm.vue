@@ -78,19 +78,20 @@
               { required: true, message: '请输入起始值', trigger: 'blur' },
             ]"
           >
+            <span v-if="formData[item.myName+'_0'] !== 0"> - </span>
             <el-input-number
               v-model="formData[item.myName+'_0']"
               :controls="false"
               :placeholder="`请输入${item.cnName}`"
               step-strictly
               :max="item.unit==='%'?100: 999999"
-              :min="item.unit==='%'?0: -999999"
+              :min="item.unit==='%'?0: 0"
               controls-position="right"
               :style="{ width: '85px' }"
             />
             <span class="ml0 mr10">{{ item.unit }}</span>
           </el-form-item>
-          <div class="mr10" style="margin-bottom: 22px;">~</div>
+          <el-form-item>至</el-form-item>
           <el-form-item
             :prop="item.myName+'_1'"
             label-width="0"
@@ -104,7 +105,7 @@
               :placeholder="`请输入${item.cnName}`"
               step-strictly
               :max="item.unit==='%'?100: 999999"
-              :min="item.unit==='%'?0: -999999"
+              :min="item.unit==='%'?0: 0"
               controls-position="right"
               :style="{ width: '85px' }"
             />
@@ -245,6 +246,8 @@ export default {
 };
 </script>
 
-<style>
-
+<style scoped>
+	/* .el-input-number ::v-deep.el-input__inner{
+	  text-align: left;
+	} */
 </style>
