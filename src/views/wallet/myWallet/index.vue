@@ -38,7 +38,7 @@
     <!-- 账户提现弹窗 -->
     <withdraw-dialog :open.sync="withdrawOpen" :user-code="userCode" :credi-amount="amount" @refresh="getWallet" />
     <!-- 修改/忘记密码弹窗 -->
-    <change-password-dialog :open.sync="changePasswordOpen" :amount-id="amountId" :title="title" :type="changePasswordType" :is-empty-password="isEmptyPassword" />
+    <change-password-dialog :open.sync="changePasswordOpen" :amount-id="amountId" :title="title" :type="changePasswordType" :is-empty-password="isEmptyPassword" @refresh="getWallet" />
   </div>
 </template>
 <script>
