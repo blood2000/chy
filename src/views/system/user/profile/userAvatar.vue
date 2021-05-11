@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="user-info-head" @click="editCropper()"><img :src="avatar" title="点击上传头像" class="img-circle img-lg"></div>
+    <div class="user-info-head" @click="editCropper()"><img :src="user.avatar" title="点击上传头像" class="img-circle img-lg"></div>
     <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body @opened="modalOpened">
       <el-row>
         <el-col :xs="24" :md="12" :style="{height: '350px'}">
@@ -92,6 +92,8 @@ export default {
   methods: {
     // 编辑头像
     editCropper() {
+      this.options.img = '';
+      this.buttonLoading = false;
       this.open = true;
     },
     // 打开弹出层结束时的回调
@@ -144,6 +146,7 @@ export default {
           this.msgSuccess('修改成功');
           this.visible = false;
           this.buttonLoading = true;
+          this.$emit('fresh');
         }).catch(() => {
           this.buttonLoading = false;
         });
