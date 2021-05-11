@@ -145,6 +145,7 @@ export default {
         this.form.city = cityCode;
         await this.changeCity(cityCode);
         this.form.county = districtCode;
+        this.$emit('setEnd'); // 有延迟, 等全部赋值完后,通知回填完毕
       },
       // 代表在wacth里声明了firstName这个方法之后立即先去执行handler方法
       immediate: true
