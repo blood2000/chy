@@ -301,10 +301,17 @@ export default {
     },
     /** 网商批量提现 */
     handleImport() {
-      toCard(this.ids).then(response => {
-        this.msgSuccess('操作成功');
-        this.$refs.multipleTable.m2ToggleSelection();
-        this.getList();
+      const _this = this;
+      this.$confirm('是否确认网商批量提现?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        toCard(_this.ids).then(response => {
+          _this.msgSuccess('操作成功');
+          _this.$refs.multipleTable.m2ToggleSelection();
+          _this.getList();
+        });
       });
     },
     /** 更新网商提现状态 */
