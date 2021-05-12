@@ -1,6 +1,6 @@
 <template>
   <div class="navbar">
-    <img class="navbar__logo" src="@/assets/images/navBar/logo.png">
+    <img class="navbar__logo" src="@/assets/images/navBar/logo.png" @click="goToStatistic">
 
     <!-- <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" /> -->
 
@@ -103,6 +103,12 @@ export default {
           location.href = '/index';
         });
       });
+    },
+    goToStatistic() {
+      const routeData = this.$router.resolve({
+        path: '/statistic'
+      });
+      window.open(routeData.href, '_blank');
     }
   }
 };
@@ -122,6 +128,7 @@ export default {
     width: 134px;
     height: 36px;
     margin: 18px 10px 18px 24px;
+    cursor: pointer;
   }
 
   .hamburger-container {
