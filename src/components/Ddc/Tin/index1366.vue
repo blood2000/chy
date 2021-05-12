@@ -23,7 +23,7 @@
           <!-- 便捷导航 -->
           <div class="index-frame" style="width:calc(100% - 220px);">
             <div class="g-color-bigtitle g-strong g-title-mini">便捷导航</div>
-            <div class="g-flex g-aligncenter g-flexwrap" style="margin-top: 10px;">
+            <div class="g-flex g-aligncenter g-justifyaround" style="margin-top: 10px;">
               <div class="g-flex g-aligncenter g-flexdirection width10">
                 <img class="nav-icon" src="~@/assets/images/workbench/icon_addcompany.png" alt="">
                 <div class="g-color-title g-strong margintop5">新增企业</div>
@@ -185,7 +185,7 @@
                   <div class="g-color-title">平台货主数</div>
                 </div>
                 <div style="margin-top:5px;"><span class="g-color-blue marginright5">●</span>活跃货主</div>
-                <div class="g-flex g-aligncenter g-justifyaround" style="margin-top:5px; width: 90%">
+                <div class="g-flex g-aligncenter g-justifyaround" style="width: 90%">
                   <div>
                     <div class="g-color-title g-strong g-title-small font-Bahnschrif">260</div>
                     <div class="g-color-tag">企业数</div>
@@ -207,7 +207,7 @@
                   <div class="g-color-title">平台司机数</div>
                 </div>
                 <div style="margin-top:5px;"><span class="g-color-blue marginright5">●</span>活跃司机</div>
-                <div class="g-flex g-aligncenter g-justifyaround" style="margin-top:5px; width: 90%">
+                <div class="g-flex g-aligncenter g-justifyaround" style="width: 90%">
                   <div>
                     <div class="g-color-title g-strong g-title-small font-Bahnschrif">260</div>
                     <div class="g-color-tag">零散司机</div>
@@ -229,7 +229,7 @@
                   <div class="g-color-title">平台车辆数</div>
                 </div>
                 <div style="margin-top:5px;"><span class="g-color-success marginright5">●</span>活跃车辆</div>
-                <div class="g-flex g-aligncenter g-justifyaround" style="margin-top:5px; width: 90%">
+                <div class="g-flex g-aligncenter g-justifyaround" style="width: 90%">
                   <div>
                     <div class="g-color-title g-strong g-title-small font-Bahnschrif">260</div>
                     <div class="g-color-tag">活跃车辆</div>
@@ -243,7 +243,7 @@
                   <div class="g-color-title">平台调度者数</div>
                 </div>
                 <div style="margin-top:5px;"><span class="g-color-warning marginright5">●</span>活跃调度者</div>
-                <div class="g-flex g-aligncenter g-justifyaround" style="margin-top:5px; width: 90%">
+                <div class="g-flex g-aligncenter g-justifyaround" style="width: 90%">
                   <div>
                     <div class="g-color-title g-strong g-title-small font-Bahnschrif">160</div>
                     <div class="g-color-tag">活跃调度者</div>
@@ -266,7 +266,7 @@
           <div class="notice-bottom" />
         </div>
         <!-- 动态 -->
-        <div class="index-frame margintop8" style="height:473px;">
+        <div class="index-frame margintop8" style="height:468px;">
           <div class="g-color-bigtitle g-strong g-title-mini">动态</div>
           <el-row class="trend-tab">
             <el-col :span="8">
@@ -539,7 +539,7 @@ export default {
   justify-content: center;
 }
 .trend-frame{
-  height: 395px;
+  height: 389px;
   overflow: hidden;
 }
 .trend-line{

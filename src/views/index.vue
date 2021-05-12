@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import { ThrottleFun } from '@/utils/index.js';
 // import { color } from 'echarts';
 import index1920 from '../components/Ddc/Tin/index1920';// 首页分辨率1920*1080
 import index1366 from '../components/Ddc/Tin/index1366';// 首页分辨率1366*768
@@ -23,46 +24,31 @@ export default {
       screenWidth: document.body.clientWidth
     };
   },
-  watch: {
-    screenWidth(val) {
-      // 为了避免频繁触发resize函数导致页面卡顿，使用定时器
-      if (!this.timer) {
-        // 一旦监听到的screenWidth值改变，就将其重新赋给data里的screenWidth
-        this.screenWidth = val;
-        this.timer = true;
-        const that = this;
-        setTimeout(function() {
-          // 打印screenWidth变化的值
-          console.log(that.screenWidth);
-          if (that.screenWidth > 1366) {
-            that.activeName = '0';
-          } else {
-            that.activeName = '1';
-          }
-          that.timer = false;
-        }, 400);
-      }
-    }
-  },
   mounted() {
-    const that = this;
+    const throttle = ThrottleFun(this.changeWidth, 500);
     window.onresize = () => {
-      return (() => {
-        window.screenWidth = document.body.clientWidth;
-        that.screenWidth = window.screenWidth;
-      })();
+      throttle();
     };
   },
+  beforeDestroy() {
+    window.onresize = null;
+  },
   created() {
-    if (this.screenWidth > 1366) {
-      this.activeName = '0';
-    } else {
-      this.activeName = '1';
-    }
+    this.changeWidth();
   },
   methods: {
     goTarget(href) {
       window.open(href, '_blank');
+    },
+    changeWidth() {
+      window.screenWidth = document.body.clientWidth;
+      this.screenWidth = window.screenWidth;
+      // console.log(this.screenWidth);
+      if (this.screenWidth > 1366) {
+        this.activeName = '0';
+      } else {
+        this.activeName = '1';
+      }
     }
   }
 };
