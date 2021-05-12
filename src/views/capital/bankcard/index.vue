@@ -117,6 +117,12 @@
         <template #updateTime="{row}">
           <span>{{ parseTime(row.updateTime, '{y}-{m}-{d}') }}</span>
         </template>
+        <template #province="{row}">
+          <span>{{ selectProvinceLabel(provinceOptions, row.province)  }}</span>
+        </template>
+        <template #city="{row}">
+          <span>{{ selectCityLabel(cityOptions, row.city)  }}</span>
+        </template>
         <template #edit="{row}">
           <el-button
             size="mini"
@@ -151,6 +157,7 @@
 </template>
 
 <script>
+import { getProvinceList, getCityList } from '@/api/system/area';
 import { bankListApi, banklist, getBankDetail, delBank } from '@/api/capital/bankcard';
 import BankDialog from './bankDialog';
 
@@ -184,6 +191,8 @@ export default {
       ],
       // 开户银行字典
       bankOptions: [],
+      provinceOptions: [],
+      cityOptions: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -207,6 +216,8 @@ export default {
       fixed: 'right'
     });
     this.getDictsOptions();
+    this.getProvinceList();
+    this.getCityList();
     this.getList();
   },
   methods: {
@@ -214,6 +225,16 @@ export default {
     getDictsOptions() {
       this.getDicts('bank').then(response => {
         this.bankOptions = response.data;
+      });
+    },
+    getProvinceList() {
+      getProvinceList().then((response) => {
+        this.provinceOptions = response.rows;
+      });
+    },
+    getCityList() {
+      getCityList().then((response) => {
+        this.cityOptions = response.rows;
       });
     },
     /** 查询列表 */
