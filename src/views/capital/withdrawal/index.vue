@@ -251,14 +251,15 @@ export default {
       searched: false
     };
   },
-  watch: {
-    $route(route) {
-      this.getRouterQuery(route);
-    }
-  },
+  // watch: {
+  //   $route(route) {
+  //     this.getRouterQuery(route);
+  //   }
+  // },
   created() {
     this.tableHeaderConfig(this.tableColumnsConfig, withDrawalListApi);
-    this.getRouterQuery(this.$route);
+    this.getList();
+    // this.getRouterQuery(this.$route);
   },
   methods: {
     /** 从快捷入口进 */
