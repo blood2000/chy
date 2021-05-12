@@ -1,5 +1,5 @@
 <template>
-  <div class="g-title-smaller">
+  <div class="g-title-smaller" style="min-width: 1145px; overflow-x: scroll;">
     <div class="top-tips">
       <i class="el-icon-warning g-color-warning" style="margin-right: 10px;" />
       <span class="g-color-gray">{{ tip }}</span>
