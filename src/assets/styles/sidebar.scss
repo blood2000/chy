@@ -117,6 +117,10 @@
       margin-left: 72px;
     }
 
+    .el-menu--collapse{
+      padding-top: 20px;
+    }
+
     .submenu-title-noDropdown {
       padding: 0 !important;
       position: relative;
@@ -135,6 +139,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      padding-bottom: 20px;
 
       .svg-icon-box{
         display: inline-flex;
@@ -149,8 +154,6 @@
       }
 
       .svg-icon {
-        width: 14px;
-        height: 14px;
         margin: 0;
         color: #9FA2B5;
       }
