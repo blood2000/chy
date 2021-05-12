@@ -1,5 +1,5 @@
 <template>
-  <div class="ly-card-box">
+  <div class="pr">
     <div ref="searchBox">
       <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="90px" class="clearfix app-container" @submit.native.prevent>
 
@@ -248,7 +248,7 @@
       <!-- 表格 -->
       <RefactorTable
         is-show-index
-        :height="tHeight"
+        :height="list.length ? tHeight : null"
         :loading="loading"
         :data="list"
         :table-columns-config="tableColumnsConfig"
@@ -495,9 +495,9 @@ export default {
       openData: null, // 类型对象
 
       /* 弹框2- 批量导入 */
-      openImport: false
+      openImport: false,
 
-      // addition: 30
+      addition: -10
 
       /* 其他额外参数 */
       // shipmentList: [], // 远程搜索的时候使用
@@ -749,10 +749,3 @@ export default {
 };
 </script>
 
-<style scoped lang='scss'>
-.ly-card-box{
-  position: relative;
-  overflow-y: auto;
-  height: calc(100vh - 120px);
-}
-</style>

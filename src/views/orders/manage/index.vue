@@ -186,7 +186,7 @@
 
       <RefactorTable
         is-show-index
-        :height="tHeight || null"
+        :height="list.length? tHeight : null"
         :loading="loading"
         :data="list"
         row-key="id"
