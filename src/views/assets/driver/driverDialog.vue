@@ -379,19 +379,24 @@
           </el-select>
         </el-form-item>
         <el-form-item label="车辆总重量" prop="vehicleTotalWeight" :rules="[{ required: true, message: '车辆总重量不能为空', trigger: 'blur' }]">
-          <el-input-number v-model="vehicleForm.vehicleTotalWeight" :controls="false" :min="0" placeholder="请输入车辆总重量（吨）" class="width90" clearable :disabled="disable" />
+          <el-input-number v-model="vehicleForm.vehicleTotalWeight" :controls="false" :min="0" :max="1000000" placeholder="请输入车辆总重量（吨）" class="width90 unit-item" clearable :disabled="disable" />
+          <span class="unit-span g-color-gray">吨</span>
         </el-form-item>
         <el-form-item label="车辆可载重量" prop="vehicleLoadWeight" :rules="[{ required: true, message: '车辆可载重量不能为空', trigger: 'blur' }]">
-          <el-input-number v-model="vehicleForm.vehicleLoadWeight" :controls="false" :min="0" placeholder="请输入车辆可载重量（吨）" class="width90" clearable :disabled="disable" />
+          <el-input-number v-model="vehicleForm.vehicleLoadWeight" :controls="false" :min="0" :max="1000000" placeholder="请输入车辆可载重量（吨）" class="width90 unit-item" clearable :disabled="disable" />
+          <span class="unit-span g-color-gray">吨</span>
         </el-form-item>
         <el-form-item label="车辆可载平方" prop="vehicleLoadVolume">
-          <el-input v-model="vehicleForm.vehicleLoadVolume" placeholder="请输入车辆可载平方" class="width90" clearable :disabled="disable" />
+          <el-input v-model="vehicleForm.vehicleLoadVolume" placeholder="请输入车辆可载平方" class="width90 unit-item" clearable :disabled="disable" />
+          <span class="unit-span g-color-gray">m²</span>
         </el-form-item>
         <el-form-item label="车辆可载立方" prop="vehicleRemainingLoadVolume">
-          <el-input v-model="vehicleForm.vehicleRemainingLoadVolume" placeholder="请输入车辆可载立方" class="width90" clearable :disabled="disable" />
+          <el-input v-model="vehicleForm.vehicleRemainingLoadVolume" placeholder="请输入车辆可载立方" class="width90 unit-item" clearable :disabled="disable" />
+          <span class="unit-span g-color-gray">m³</span>
         </el-form-item>
         <el-form-item label="车身自重" prop="selfRespect">
-          <el-input v-model="vehicleForm.selfRespect" placeholder="请输入车身自重" class="width90" clearable :disabled="disable" />
+          <el-input v-model="vehicleForm.selfRespect" placeholder="请输入车身自重" class="width90 unit-item" clearable :disabled="disable" />
+          <span class="unit-span g-color-gray">吨</span>
         </el-form-item>
         <el-form-item label="车辆识别码" prop="chassisNumber" :rules="[{ required: true, message: '车辆识别码不能为空', trigger: 'blur' }]">
           <el-input v-model="vehicleForm.chassisNumber" placeholder="请输入车辆识别码" class="width90" clearable :disabled="disable" />
@@ -935,5 +940,16 @@ export default {
 .upload-image-label{
   margin: 0;
   line-height: 24px;
+}
+
+.unit-item{
+  ::v-deep .el-input__inner{
+    padding-right: 36px;
+  }
+}
+.unit-span{
+  position: absolute;
+  right: 75px;
+  top: 0;
 }
 </style>
