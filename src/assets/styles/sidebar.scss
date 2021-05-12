@@ -107,6 +107,7 @@
     }
   }
 
+  // 菜单折叠
   .hideSidebar {
     .sidebar-container {
       width: 72px !important;
@@ -122,19 +123,49 @@
 
       .el-tooltip {
         padding: 0 !important;
-
-        .svg-icon {
-          margin-left: 20px;
-        }
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
       }
     }
 
-    .el-submenu {
+    .el-submenu, .el-menu-item{
       overflow: hidden;
       height: 85px;
       display: flex;
       justify-content: center;
       align-items: center;
+
+      .svg-icon-box{
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: transparent;
+        box-shadow: none;
+        transition: all 0.3s;
+      }
+
+      .svg-icon {
+        width: 14px;
+        height: 14px;
+        margin: 0;
+        color: #9FA2B5;
+      }
+
+      .label{
+        line-height: 24px;
+        font-size: 12px;
+        font-family: PingFang SC;
+        font-weight: 400;
+        color: #9FA2B5;
+      }
+
+      .el-submenu__icon-arrow {
+        display: none;
+      }
 
       &>.el-submenu__title {
         width: 100%;
@@ -144,38 +175,6 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-
-        .svg-icon-box{
-          display: inline-flex;
-          justify-content: center;
-          align-items: center;
-          width: 38px;
-          height: 38px;
-          border-radius: 50%;
-          background: transparent;
-          box-shadow: none;
-          transition: all 0.3s;
-        }
-
-        .svg-icon {
-          width: 14px;
-          height: 14px;
-          margin: 0;
-          color: #9FA2B5;
-        }
-
-        .label{
-          line-height: 24px;
-          font-size: 12px;
-          font-family: PingFang SC;
-          font-weight: 400;
-          color: #9FA2B5;
-        }
-
-        .el-submenu__icon-arrow {
-          display: none;
-        }
-
         &:hover{
           background: transparent !important;
         }
@@ -192,7 +191,14 @@
           .svg-icon {
             color: #fff;
           }
+          .label{
+            color: #262626;
+          }
         }
+      }
+
+      &:hover{
+        background: transparent !important;
       }
     }
   }
