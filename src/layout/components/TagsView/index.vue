@@ -18,7 +18,7 @@
       </router-link>
     </div>
 
-    <el-dropdown v-show="overflowTagsList.length > 0" ref="TagsDerpDown" class="btn-arrow-container" trigger="click">
+    <el-dropdown ref="TagsDerpDown" class="btn-arrow-container" trigger="click">
       <div class="btn-arrow" />
       <el-dropdown-menu slot="dropdown" class="tags-dropdown">
         <router-link

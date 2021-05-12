@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        fill: #9fa2b5;
+      }
+    </style>
+  </defs>
+  <g id="组_22516" data-name="组 22516" transform="translate(-23 -99)">
+    <rect id="矩形_300" data-name="矩形 300" class="cls-1" width="24" height="24" transform="translate(23 99)"/>
+    <g id="组_22595" data-name="组 22595" transform="translate(-3195.636 878.735)">
+      <g id="组_22590" data-name="组 22590" transform="translate(3220.637 -773.87)">
+        <path id="路径_18202" data-name="路径 18202" class="cls-2" d="M3227.067-760.9h-5.584c-.844,0-.844,0-.845-4.24v-5.438l2.9-2.839h3.509a.843.843,0,0,1,.844.844.843.843,0,0,1-.844.844h-2.82l-1.9,1.861c0,1.039,0,5.789,0,7.282h4.741a.843.843,0,0,1,.844.844A.843.843,0,0,1,3227.067-760.9Z" transform="translate(-3220.637 773.414)"/>
+      </g>
+      <g id="组_22591" data-name="组 22591" transform="translate(3226.251 -776.332)">
+        <path id="路径_18203" data-name="路径 18203" class="cls-2" d="M3242.4-765.281h-1.687v-9.364h-11.73v7.718h-1.687v-9.405h15.1Z" transform="translate(-3227.292 776.332)"/>
+      </g>
+      <g id="组_22592" data-name="组 22592" transform="translate(3226.251 -763.815)">
+        <path id="路径_18204" data-name="路径 18204" class="cls-2" d="M3242.4-759.033h-15.1v-1.687h13.417v-.774h1.687Z" transform="translate(-3227.292 761.495)"/>
+      </g>
+      <g id="组_22593" data-name="组 22593" transform="translate(3224.432 -761.026)">
+        <path id="路径_18205" data-name="路径 18205" class="cls-2" d="M3227.023-756.3a1.89,1.89,0,0,1-1.887-1.887h1.688c0,.22.4.22.4,0h1.687A1.89,1.89,0,0,1,3227.023-756.3Z" transform="translate(-3225.136 758.189)"/>
+      </g>
+      <g id="组_22594" data-name="组 22594" transform="translate(3235.087 -761.026)">
+        <path id="路径_18206" data-name="路径 18206" class="cls-2" d="M3239.652-756.3a1.89,1.89,0,0,1-1.887-1.887h1.688c0,.22.4.22.4,0h1.687A1.89,1.89,0,0,1,3239.652-756.3Z" transform="translate(-3237.765 758.189)"/>
+      </g>
+    </g>
+  </g>
+</svg>
