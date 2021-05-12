@@ -120,11 +120,11 @@
         </el-select>
       </el-form-item>
       <el-form-item label="车辆总重量" prop="vehicleTotalWeight">
-        <el-input-number v-model="form.vehicleTotalWeight" :controls="false" :min="0" :max="1000000" placeholder="请输入车辆总重量（吨）" class="width90 unit-item" clearable />
+        <el-input-number v-model="form.vehicleTotalWeight" :controls="false" :min="0" :max="1000000" placeholder="请输入车辆总重量" class="width90 unit-item" clearable />
         <span class="unit-span g-color-gray">吨</span>
       </el-form-item>
       <el-form-item label="车辆可载重量" prop="vehicleLoadWeight">
-        <el-input-number v-model="form.vehicleLoadWeight" :controls="false" :min="0" :max="1000000" placeholder="请输入车辆可载重量（吨）" class="width90 unit-item" clearable />
+        <el-input-number v-model="form.vehicleLoadWeight" :controls="false" :min="0" :max="1000000" placeholder="请输入车辆可载重量" class="width90 unit-item" clearable />
         <span class="unit-span g-color-gray">吨</span>
       </el-form-item>
       <el-form-item label="车辆可载平方" prop="vehicleLoadVolume">
