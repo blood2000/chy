@@ -5,6 +5,8 @@ const user = {
   state: {
     token: getToken(),
     name: '',
+    nickName: '',
+    roleName: '',
     avatar: '',
     roles: [],
     permissions: [],
@@ -26,6 +28,12 @@ const user = {
     },
     SET_NAME: (state, name) => {
       state.name = name;
+    },
+    SET_NICK_NAME: (state, nickName) => {
+      state.nickName = nickName;
+    },
+    SET_ROLE_NAME: (state, roleName) => {
+      state.roleName = roleName;
     },
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar;
@@ -166,6 +174,12 @@ const user = {
             commit('SET_ROLES', ['ROLE_DEFAULT']);
           }
           commit('SET_NAME', user.userName);
+          commit('SET_NICK_NAME', user.nickName);
+          if (user.roles && user.roles.length > 0) {
+            commit('SET_ROLE_NAME', user.roles[0].roleName);
+          } else {
+            commit('SET_ROLE_NAME', '');
+          }
           commit('SET_AVATAR', avatar);
           console.log(user.branch);
           if (user.branch) { // 网点

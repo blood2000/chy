@@ -24,8 +24,8 @@
 
       <div class="avatar-wrapper">
         <img :src="avatar" class="avatar-wrapper__image">
-        <span class="avatar-wrapper__role">客服部</span>
-        <span class="avatar-wrapper__user">余晨望</span>
+        <span v-if="roleName !== ''" class="avatar-wrapper__role">{{ roleName }}</span>
+        <span class="avatar-wrapper__user">{{ nickName }}</span>
       </div>
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
@@ -73,7 +73,9 @@ export default {
     ...mapGetters([
       'sidebar',
       'avatar',
-      'device'
+      'device',
+      'nickName',
+      'roleName'
     ]),
     setting: {
       get() {
