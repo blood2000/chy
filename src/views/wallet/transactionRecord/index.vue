@@ -46,16 +46,16 @@
         <el-tab-pane label="冻结记录" name="dj" />
         <el-tab-pane label="付款记录" name="fk" />
       </el-tabs>
-      <el-table v-loading="loading" stripe border :data="dataList" v-show="activeTab == 'dj'">
+      <el-table v-show="activeTab == 'dj'" v-loading="loading" stripe border :data="dataList">
         <el-table-column label="运单号" align="center" prop="waybillNo" width="150" />
         <el-table-column label="装货地" align="center" prop="unloadAddress" width="150" />
         <el-table-column label="卸货地" align="center" prop="loadAddress" width="150" />
-        <el-table-column label="货物大类" align="center" prop="goodsBigType" >
+        <el-table-column label="货物大类" align="center" prop="goodsBigType">
           <template slot-scope="scope">
             <span>{{ selectDictLabel(commodityCategoryCodeOptions, scope.row.goodsBigType) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="货物小类" align="center" prop="goodsType" >
+        <el-table-column label="货物小类" align="center" prop="goodsType">
           <template slot-scope="scope">
             <span>{{ selectDictLabel(commoditySubclassOptions, scope.row.goodsType) }}</span>
           </template>
@@ -64,18 +64,16 @@
         <el-table-column label="承运车辆" align="center" prop="licenseNumber" />
         <el-table-column label="所属调度者" align="center" prop="teamName" width="150" />
         <!-- 付款方式：0-现金支付， 1-京东支付 2-交通银行， 3-新生支付，4-工商银行,5-传化支付,6-建行支付,7-环迅-->
-        <el-table-column label="交易类型" align="center" prop="payBy" >
-          <template>
-            <span>冻结</span>
-          </template>
+        <el-table-column label="交易类型" align="center" prop="payBy">
+          <span>冻结</span>
         </el-table-column>
         <el-table-column label="装货重量" align="center" prop="loadWeight" />
         <el-table-column label="卸货重量" align="center" prop="unloadWeight" />
         <el-table-column label="货物损耗(kg)" align="center" prop="wastage" />
         <el-table-column label="货物单价（元）" align="center" prop="goodsPrice" />
         <el-table-column label="成交单价（元）" align="center" prop="freightPriceDriver" />
-        <el-table-column label="冻结总额（元）" align="center" prop="freezeMoney"/>
-        <el-table-column label="操作时间" align="center" prop="updateTime" width="180" >
+        <el-table-column label="冻结总额（元）" align="center" prop="freezeMoney" />
+        <el-table-column label="操作时间" align="center" prop="updateTime" width="180">
           <template slot-scope="scope">
             <span>{{ parseTime(scope.row.updateTime) }}</span>
           </template>
@@ -83,16 +81,16 @@
       </el-table>
 
 
-      <el-table v-loading="loading" stripe border :data="dataList" v-show="activeTab == 'fk'">
+      <el-table v-show="activeTab == 'fk'" v-loading="loading" stripe border :data="dataList">
         <el-table-column label="运单号" align="center" prop="waybillNo" width="150" />
         <el-table-column label="装货地" align="center" prop="unloadAddress" width="150" />
         <el-table-column label="卸货地" align="center" prop="loadAddress" width="150" />
-        <el-table-column label="货物大类" align="center" prop="goodsBigType" >
+        <el-table-column label="货物大类" align="center" prop="goodsBigType">
           <template slot-scope="scope">
             <span>{{ selectDictLabel(commodityCategoryCodeOptions, scope.row.goodsBigType) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="货物小类" align="center" prop="goodsType" >
+        <el-table-column label="货物小类" align="center" prop="goodsType">
           <template slot-scope="scope">
             <span>{{ selectDictLabel(commoditySubclassOptions, scope.row.goodsType) }}</span>
           </template>
@@ -100,11 +98,9 @@
         <el-table-column label="承运司机" align="center" prop="driverName" />
         <el-table-column label="承运车辆" align="center" prop="licenseNumber" />
         <el-table-column label="所属调度者" align="center" prop="teamName" width="150" />
-       <!-- 付款方式：0-现金支付， 1-京东支付 2-交通银行， 3-新生支付，4-工商银行,5-传化支付,6-建行支付,7-环迅-->
-        <el-table-column label="交易类型" align="center" prop="payBy" >
-          <template>
-            <span>付款</span>
-          </template>
+        <!-- 付款方式：0-现金支付， 1-京东支付 2-交通银行， 3-新生支付，4-工商银行,5-传化支付,6-建行支付,7-环迅-->
+        <el-table-column label="交易类型" align="center" prop="payBy">
+          <span>付款</span>
         </el-table-column>
         <el-table-column label="装货重量" align="center" prop="loadWeight" />
         <el-table-column label="卸货重量" align="center" prop="unloadWeight" />
@@ -118,7 +114,7 @@
           </template>
         <!-- 付款类型 -->
         </el-table-column>
-        <el-table-column label="操作时间" align="center" prop="updateTime" width="180" >
+        <el-table-column label="操作时间" align="center" prop="updateTime" width="180">
           <template slot-scope="scope">
             <span>{{ parseTime(scope.row.updateTime) }}</span>
           </template>

@@ -17,7 +17,8 @@ export default {
     const vnodes = [];
 
     if (icon) {
-      vnodes.push(<span class='svg-icon-box'><svg-icon icon-class={icon}/></span>);
+      const node = <span class='svg-icon-box'><span class='svg-icon-box'><span class={'svg-icon iconfont icon-nav-system icon-nav-' + icon} /></span></span>;
+      vnodes.push(node);
     }
 
     if (title) {
