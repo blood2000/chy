@@ -273,10 +273,10 @@
 
     <el-form ref="vehicleForm" :model="vehicleForm" :rules="vehicleRules" label-width="154px">
       <template v-if="form.driverType == 1">
-        <el-form-item v-if="title === '新增' || vehicleInfoList.length === 0" label="车牌号" prop="licenseNumber" :rules="[{ required: true, message: '车牌号不能为空', trigger: 'blur' }]">
+        <el-form-item v-if="title === '新增'" label="车牌号" prop="licenseNumber" :rules="[{ required: true, message: '车牌号不能为空', trigger: 'blur' }]">
           <el-input v-model="vehicleForm.licenseNumber" :disabled="disable" placeholder="支持自动识别" class="width90" clearable />
         </el-form-item>
-        <el-form-item v-else label="车牌号" prop="licenseNumber" :rules="[{ required: true, message: '车牌号不能为空', trigger: ['change','blur'] }]">
+        <el-form-item v-else-if="title !== '新增' && vehicleInfoList.length > 0" label="车牌号" prop="licenseNumber" :rules="[{ required: true, message: '车牌号不能为空', trigger: ['change','blur'] }]">
           <el-select v-model="vehicleForm.licenseNumber" class="width90" filterable @change="changeVehicle" @focus="saveVehicle">
             <el-option
               v-for="dict in vehicleInfoList"
@@ -287,7 +287,7 @@
           </el-select>
         </el-form-item>
       </template>
-      <template v-if="form.driverType == 1">
+      <template v-if="form.driverType == 1 && (title === '新增' || (title !== '新增' && vehicleInfoList.length > 0))">
         <el-form-item label="车牌颜色" prop="vehicleLicenseColorCode">
           <el-select v-model="vehicleForm.vehicleLicenseColorCode" class="width90" filterable clearable :disabled="disable">
             <el-option
