@@ -14,11 +14,11 @@
         @contextmenu.prevent.native="openMenu(tag,$event)"
       >
         <span class="label">{{ tag.title }}</span>
-        <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
+        <span v-if="!isAffix(tag)" class="tag-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
       </router-link>
     </div>
 
-    <el-dropdown ref="TagsDerpDown" class="btn-arrow-container" trigger="click">
+    <el-dropdown v-show="overflowTagsList.length > 0" ref="TagsDerpDown" class="btn-arrow-container" trigger="click">
       <div class="btn-arrow" />
       <el-dropdown-menu slot="dropdown" class="tags-dropdown">
         <router-link
@@ -31,7 +31,7 @@
         >
           <el-dropdown-item>
             <span style="padding-right: 40px">{{ tag.title }}</span>
-            <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
+            <span v-if="!isAffix(tag)" class="tag-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
           </el-dropdown-item>
         </router-link>
         <el-dropdown-item v-show="overflowTagsList.length==0" disabled>暂无更多</el-dropdown-item>
@@ -269,11 +269,12 @@ export default {
 
 <style lang="scss" scoped>
 .tags-view-container {
-  height: 44px;
+  height: 49px;
   width: 100%;
   background: #fff;
-  // box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
   position: relative;
+  border-bottom: 5px solid rgb(242, 245, 248);
+  box-sizing: border-box;
   .tags-view-wrapper {
     width: calc(100% - 36px);
     height: 100%;
@@ -298,18 +299,6 @@ export default {
         padding-right: 20px;
       }
       &:not(:first-child){
-        &::before{
-          content: '';
-          width: 1px;
-          height: 14px;
-          position: absolute;
-          left: -1px;
-          top: 50%;
-          margin-top: -7px;
-          background: rgba(159, 162, 181, 0.4);
-        }
-      }
-      &:last-child{
         &::after{
           content: '';
           width: 1px;
@@ -321,9 +310,34 @@ export default {
           background: rgba(159, 162, 181, 0.4);
         }
       }
+      &::before{
+        content: '';
+        width: 1px;
+        height: 14px;
+        position: absolute;
+        left: -1px;
+        top: 50%;
+        margin-top: -7px;
+        background: rgba(159, 162, 181, 0.4);
+      }
       &.active {
-        color: rgba(64, 158, 255, 1);
-        font-weight: bold;
+        >.label{
+          color: rgba(64, 158, 255, 1);
+          font-weight: bold;
+          padding-left: 14px;
+          position: relative;
+          &::before{
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: rgba(64, 158, 255, 0.9);
+            position: absolute;
+            left: 0;
+            top: 50%;
+            margin-top: -3px;
+          }
+        }
         &::before, &::after{
           opacity: 0;
         }
@@ -349,7 +363,7 @@ export default {
     cursor: pointer;
     background: url('~@/assets/images/navBar/tag_icon.png') no-repeat;
     background-size: 100% 100%;
-    margin: 14px 12px;
+    margin: 17px 12px 11px;
   }
   .contextmenu {
     margin: 0;
@@ -388,20 +402,16 @@ export default {
   top: 50%;
   margin-top: -8px;
   right: 8px;
-  &:before {
-    transform: scale(.7);
-    display: inline-block;
-    vertical-align: -1px;
-  }
+  color: #9FA2B5;
+  background: transparent url('~@/assets/images/navBar/close_icon.png') no-repeat center center;
   &:hover {
-    background-color: #b4bccc;
-    color: #fff;
+    background: rgba(180, 188, 204, 0.3) url('~@/assets/images/navBar/close_icon.png') no-repeat center center;
   }
 }
-//reset element css of el-icon-close
+//tag-icon-close
 .tags-view-wrapper {
   .tags-view-item {
-    .el-icon-close {
+    .tag-icon-close {
       @include tag-icon-close
     }
   }
@@ -411,14 +421,22 @@ export default {
     position: relative;
     height: 36px;
     line-height: 36px;
+    color: #606266;
+    &:hover{
+      background-color: #FAFAFA;
+      color: #606266;
+    }
+    &.is-disabled{
+      color: #bbb;
+    }
   }
   .tags-dropdown-item-active {
     .el-dropdown-menu__item {
-      color: #409eff;
-      background: rgba(64, 158, 255, 0.1);
+      color: rgba(64, 158, 255, 1);
+      background: #FAFAFA;
     }
   }
-  .el-icon-close {
+  .tag-icon-close {
     @include tag-icon-close
   }
 }

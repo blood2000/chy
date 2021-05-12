@@ -6,7 +6,7 @@
       :inline="true"
       label-width="90px"
     >
-      <div v-show="isAdmin" class="app-container" style="display: flex; align-items: center;">
+      <div v-if="isAdmin" class="app-container" style="display: flex; align-items: center;">
         <el-form-item label="货主信息" prop="shipmentCode" style="margin-bottom:0">
           <!-- filterable开启可搜索 remote远程搜索 reserve-keyword 保存搜索关键词 -->
           <el-select
@@ -16,7 +16,7 @@
             clearable
             remote
             reserve-keyword
-            placeholder="请选择货主企业"
+            placeholder="请选择货主"
             :remote-method="remoteMethod"
             :loading="shipmentloading"
             style="width: 230px"
@@ -38,7 +38,7 @@
         </el-form-item>
         <span v-if="!queryParams.shipmentCode" class="g-color-warning">
           <i class="el-icon-warning" />
-          你还未选择企业
+          您还未选择货主
         </span>
       </div>
 
@@ -170,7 +170,7 @@
       >
         <el-col :span="1.5">
           <el-button
-            v-hasPermi="['assets:vehicle:edit']"
+            v-hasPermi="['askfor:invoice:batch']"
             type="primary"
             icon="el-icon-document-checked"
             size="mini"
@@ -178,7 +178,7 @@
             @click="handleAskfor"
           >批量索票</el-button>
           <el-button
-            v-hasPermi="['assets:vehicle:edit']"
+            v-hasPermi="['askfor:invoice:export']"
             type="primary"
             icon="el-icon-upload2"
             size="mini"
@@ -360,6 +360,7 @@ export default {
       // },
       // 账号信息
       isAdmin: false,
+      isShipment: false,
       user: {},
       shipment: {},
       // 数据统计
@@ -383,14 +384,16 @@ export default {
   computed: {
   },
   created() {
-    const { isAdmin = false, user = {}, shipment = {}} = getUserInfo() || {};
+    const { isAdmin = false, isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
     this.isAdmin = isAdmin;
+    this.isShipment = isShipment;
     this.user = user;
     this.shipment = shipment;
-    if (this.isShipment) {
+    this.getList();
+    /* if (this.isShipment) {
       this.queryParams.shipmentCode = shipment.info.code;
       this.getList();
-    }
+    }*/
     this.tableHeaderConfig(this.tableColumnsConfig, askforListApi, {
       prop: 'edit',
       isShow: true,
@@ -473,6 +476,9 @@ export default {
     },
     /** 查询【请填写功能名称】列表 */
     getList() {
+      if (this.isShipment) {
+        this.queryParams.shipmentCode = this.shipment.info.code;
+      }
       if (this.queryParams.shipmentCode) {
         this.loading = true;
         askforList(this.queryParams).then(response => {

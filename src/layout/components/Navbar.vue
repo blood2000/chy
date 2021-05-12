@@ -121,6 +121,7 @@ export default {
   overflow: hidden;
   position: relative;
   background: linear-gradient(270deg, #409EFF 0%, #0571D8 100%);
+  box-shadow: 0px 3px 6px rgba(64, 158, 255, 0.22);
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
 
   &__logo{
