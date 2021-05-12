@@ -117,9 +117,9 @@
 
       <el-table-column width="120" label="纳税金额" align="center" prop="taxPayment" fixed="right" />
       <el-table-column width="120" label="服务费" align="center" prop="serviceFee" fixed="right" />
-      <el-table-column width="162" label="司机实收现金" align="center" prop="deliveryCashFee" fixed="right">
+      <el-table-column width="162" label="司机实收金额" align="center" prop="deliveryCashFee" fixed="right">
         <template slot-scope="scope">
-          <el-input-number v-model="scope.row.deliveryCashFee" :controls="false" :precision="2" placeholder="请输入司机实收现金" style="width:100%;" size="mini" @blur="handlerInput(scope.row,scope.row.deliveryCashFee, 'deliveryCashFee')" />
+          <el-input-number v-model="scope.row.deliveryCashFee" :controls="false" :precision="2" placeholder="请输入司机实收金额" style="width:100%;" size="mini" @blur="handlerInput(scope.row,scope.row.deliveryCashFee, 'deliveryCashFee')" />
         </template>
       </el-table-column>
 
@@ -183,6 +183,8 @@ export default {
   methods: {
     // 修改了增项
     handlerChange(row, value, key) {
+      if (!value && value !== 0) return;
+
       const filterRow = this.filterRow(row);
       if (key === 'add') {
         // star1 = 未改变前, star2 = 未改变后
@@ -203,6 +205,10 @@ export default {
     },
 
     handlerItem(row, value, key, name) {
+      if (!value && value !== 0) {
+        return;
+      }
+
       const filterRow = this.filterRow(row);
       if (key === 'add') {
         // star1 = 未改变前, star2 = 未改变后

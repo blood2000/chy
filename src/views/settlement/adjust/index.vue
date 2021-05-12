@@ -1,7 +1,7 @@
 
 <template>
   <div>
-    <div v-show="showSearch" class="app-container app-container--search">
+    <div v-show="showSearch" ref="searchBox" class="app-container app-container--search">
       <el-form
         ref="queryForm"
         :model="queryParams"
@@ -252,7 +252,7 @@
         />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig" :height="tHeight" @selection-change="handleSelectionChange">
         <template #goodsBigType="{row}">
           <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
         </template>
@@ -362,10 +362,12 @@ import CommentDialog from './commentDialog';
 // 评价详情弹窗
 import RateDialog from './rateDialog';
 
+import setTheight from '@/layout/mixin/setTheight';
 
 export default {
   'name': 'AdjustList',
   components: { RejectDialog, AdjustDialog, DetailDialog, ChildDialog, CommentDialog, RateDialog },
+  mixins: [setTheight],
   data() {
     return {
       tableColumnsConfig: [],
@@ -445,7 +447,9 @@ export default {
       ],
       isAdmin: false,
       user: {},
-      shipment: {}
+      shipment: {},
+
+      addition: 45 // tin添加的(追加高度)
     };
   },
   computed: {
