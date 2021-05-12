@@ -84,8 +84,8 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item v-if="!stowage" label="剩余车数" prop="remainingNumber">
-                <el-input v-model="form.remainingNumber" :readonly="true" class="width90" />
+              <el-form-item v-if="!stowage" label="剩余车数" prop="notRobbedOrder">
+                <el-input v-model="form.notRobbedOrder" :readonly="true" class="width90" />
               </el-form-item>
               <el-form-item v-if="stowage" label="剩余吨数/立方数" prop="remainingWeight">
                 <el-input v-model="form.remainingWeight" :readonly="true" class="width90" />
@@ -513,7 +513,7 @@ export default {
         'shipperRealPay': null, // 货主实付金额
         'driverRealFee': null, // 司机实收金额
         'wayBillNo': null,
-        'remainingNumber': null, // 剩余车数
+        'notRobbedOrder': null, // 剩余车数
         'remainingWeight': null, // 剩余吨数、立方数
         'shipmentPrice': null, // 运费单价
         'roadTransportCertificateNumber': null, // 运输许可证号
@@ -585,7 +585,7 @@ export default {
               }
             });
             this.form.shipmentPrice = null;
-            this.form.remainingNumber = null;
+            this.form.notRobbedOrder = null;
             this.form.remainingWeight = null;
             // 获取运单号
             getWayBillNo().then(response => {
@@ -675,12 +675,12 @@ export default {
           this.stowage = true;
         }
         console.log(result);
-        this.form.remainingNumber = result.remainingNumber || '不限';
+        this.form.notRobbedOrder = result.notRobbedOrder || '不限';
         this.form.remainingWeight = result.remainingWeight || '不限';
         this.getOrderGoodsProce();
         this.$forceUpdate(); // 视图强制更新
       } else {
-        this.form.remainingNumber = null;
+        this.form.notRobbedOrder = null;
         this.form.remainingWeight = null;
         this.getOrderGoodsProce();
       }
