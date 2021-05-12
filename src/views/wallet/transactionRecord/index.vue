@@ -67,8 +67,16 @@
         <el-table-column label="交易类型" align="center" prop="payBy">
           <span>冻结</span>
         </el-table-column>
-        <el-table-column label="装货重量" align="center" prop="loadWeight" />
-        <el-table-column label="卸货重量" align="center" prop="unloadWeight" />
+        <el-table-column label="装货重量" align="center" prop="loadWeight">
+          <template slot-scope="scope">
+            <span>{{ selectDictLabel(stowageStatusOptions, scope.row.stowageStatus) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="卸货重量" align="center" prop="unloadWeight">
+          <template slot-scope="scope">
+            <span>{{ selectDictLabel(stowageStatusOptions, scope.row.stowageStatus) }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="货物损耗(kg)" align="center" prop="wastage" />
         <el-table-column label="货物单价（元）" align="center" prop="goodsPrice" />
         <el-table-column label="成交单价（元）" align="center" prop="freightPriceDriver" />
@@ -102,8 +110,16 @@
         <el-table-column label="交易类型" align="center" prop="payBy">
           <span>付款</span>
         </el-table-column>
-        <el-table-column label="装货重量" align="center" prop="loadWeight" />
-        <el-table-column label="卸货重量" align="center" prop="unloadWeight" />
+        <el-table-column label="装货重量" align="center" prop="loadWeight">
+          <template slot-scope="scope">
+            <span>{{ scope.row.loadWeight + selectDictLabel(stowageStatusOptions, scope.row.stowageStatus) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="卸货重量" align="center" prop="unloadWeight">
+          <template slot-scope="scope">
+            <span>{{ scope.row.loadWeight + selectDictLabel(stowageStatusOptions, scope.row.stowageStatus) }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="货物损耗(kg)" align="center" prop="wastage" />
         <el-table-column label="货物单价（元）" align="center" prop="goodsPrice" />
         <el-table-column label="成交单价（元）" align="center" prop="freightPriceDriver" />
@@ -188,7 +204,13 @@ export default {
         'dictPid': '',
         'dictType': 'goodsType'
       },
-      commoditySubclassOptions: []
+      commoditySubclassOptions: [],
+      // 配载方式 0->吨，1->方 2->车数配载
+      stowageStatusOptions: [
+        { dictLabel: '吨', dictValue: '0' },
+        { dictLabel: '方', dictValue: '1' },
+        { dictLabel: '车', dictValue: '2' }
+      ]
     };
   },
   created() {
