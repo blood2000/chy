@@ -92,15 +92,15 @@ export default {
     >li{
       width: 0.85rem;
       height: 0.35rem;
-      background: rgba(50, 255, 255, 0.9);
+      background: rgba(50, 255, 255, 0.8);
       &.flash1{
-        animation: title-flash-1 2.6s infinite;
+        animation: title-flash-1 2s infinite;
       }
       &.flash2{
-        animation: title-flash-2 2.6s infinite;
+        animation: title-flash-2 2s infinite;
       }
       &.flash3{
-        animation: title-flash-3 2.6s infinite;
+        animation: title-flash-3 2s infinite;
       }
       @keyframes title-flash-1 {
         0% { opacity: 0; }

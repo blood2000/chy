@@ -109,11 +109,11 @@
 
   .hideSidebar {
     .sidebar-container {
-      width: 72px !important;
+      width: 54px !important;
     }
 
     .main-container {
-      margin-left: 72px;
+      margin-left: 54px;
     }
 
     .submenu-title-noDropdown {
@@ -131,66 +131,29 @@
 
     .el-submenu {
       overflow: hidden;
-      height: 85px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
 
       &>.el-submenu__title {
-        width: 100%;
-        height: 100%;
         padding: 0 !important;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-
-        .svg-icon-box{
-          display: inline-flex;
-          justify-content: center;
-          align-items: center;
-          width: 38px;
-          height: 38px;
-          border-radius: 50%;
-          background: transparent;
-          box-shadow: none;
-          transition: all 0.3s;
-        }
 
         .svg-icon {
-          width: 14px;
-          height: 14px;
-          margin: 0;
-          color: #9FA2B5;
-        }
-
-        .label{
-          line-height: 24px;
-          font-size: 12px;
-          font-family: PingFang SC;
-          font-weight: 400;
-          color: #9FA2B5;
+          margin-left: 20px;
         }
 
         .el-submenu__icon-arrow {
           display: none;
         }
-
-        &:hover{
-          background: transparent !important;
-        }
       }
+    }
 
-      &.is-active{
-        >.el-submenu__title{
-          .svg-icon-box{
-            color: #262626;
-            background: linear-gradient(180deg, #409EFF 0%, #006ED5 100%);
-            box-shadow: 0px 3px 6px rgba(118, 189, 255, 0.55);
-            transition: all 0.3s;
-          }
-          .svg-icon {
-            color: #fff;
+    .el-menu--collapse {
+      .el-submenu {
+        &>.el-submenu__title {
+          &>span {
+            height: 0;
+            width: 0;
+            overflow: hidden;
+            visibility: hidden;
+            display: inline-block;
           }
         }
       }
@@ -233,48 +196,9 @@
 // when menu collapsed
 .el-menu--vertical {
   &>.el-menu {
-    >.nest-menu{
-      >.el-submenu{
-        >.el-submenu__title{
-          height: 38px;
-          line-height: 38px;
-          >.svg-icon-box{
-            display: none;
-          }
-          >.label{
-            font-size: 14px;
-            font-family: PingFang SC;
-            font-weight: bold;
-            line-height: 20px;
-            color: #717171;
-          }
-        }
-      }
+    .svg-icon {
+      margin-right: 16px;
     }
-    .el-menu-item{
-      height: 38px;
-      line-height: 38px;
-      position: relative;
-      &::before{
-        content: '';
-        width: 2px;
-        height: 2px;
-        border-radius: 2px;
-        background: #717171;
-        position: absolute;
-        left: 20px;
-        top: 50%;
-      }
-      .svg-icon-box {
-        display: none !important;
-      }
-      .label{
-        font-size: 14px;
-        color: #717171;
-        padding-left: 12px;
-      }
-    }
-    
   }
 
   .nest-menu .el-submenu>.el-submenu__title,

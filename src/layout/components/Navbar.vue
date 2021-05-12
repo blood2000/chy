@@ -1,18 +1,20 @@
 <template>
   <div class="navbar">
-    <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
+    <img class="navbar__logo" src="@/assets/images/navBar/logo.png" @click="goToStatistic">
 
-    <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
+    <!-- <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" /> -->
+
+    <!-- <breadcrumb id="breadcrumb-container" class="breadcrumb-container" /> -->
 
     <div class="right-menu">
       <template v-if="device!=='mobile'">
-        <search id="header-search" class="right-menu-item" />
+        <!-- <search id="header-search" class="right-menu-item" /> -->
 
-        <el-tooltip content="官网地址" effect="dark" placement="bottom">
+        <!-- <el-tooltip content="官网地址" effect="dark" placement="bottom">
           <ddc-yi-doc id="ddc-doc" class="right-menu-item hover-effect" />
-        </el-tooltip>
+        </el-tooltip> -->
 
-        <screenfull id="screenfull" class="right-menu-item hover-effect" />
+        <!-- <screenfull id="screenfull" class="right-menu-item hover-effect" /> -->
 
         <!-- <el-tooltip content="布局大小" effect="dark" placement="bottom">
           <size-select id="size-select" class="right-menu-item hover-effect" />
@@ -20,18 +22,22 @@
 
       </template>
 
+      <div class="avatar-wrapper">
+        <img :src="avatar" class="avatar-wrapper__image">
+        <span v-if="roleName !== ''" class="avatar-wrapper__role">{{ roleName }}</span>
+        <span class="avatar-wrapper__user">{{ nickName }}</span>
+      </div>
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar" class="user-avatar">
-          <i class="el-icon-caret-bottom" />
+          <span class="avatar-wrapper__icon" />
         </div>
         <el-dropdown-menu slot="dropdown">
           <router-link to="/user/profile">
             <el-dropdown-item>个人中心</el-dropdown-item>
           </router-link>
-          <el-dropdown-item @click.native="setting = true">
+          <!-- <el-dropdown-item @click.native="setting = true">
             <span>布局设置</span>
-          </el-dropdown-item>
+          </el-dropdown-item> -->
           <el-dropdown-item divided @click.native="logout">
             <span>退出登录</span>
           </el-dropdown-item>
@@ -39,35 +45,37 @@
       </el-dropdown>
     </div>
 
-    <!-- <quick-entry /> -->
+    <quick-entry />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
-import Breadcrumb from '@/components/Breadcrumb';
-import Hamburger from '@/components/Hamburger';
-import Screenfull from '@/components/Screenfull';
+import QuickEntry from './QuickEntry';
+// import Breadcrumb from '@/components/Breadcrumb';
+// import Hamburger from '@/components/Hamburger';
+// import Screenfull from '@/components/Screenfull';
 // import SizeSelect from '@/components/SizeSelect';
-import Search from '@/components/HeaderSearch';
-import DdcYiDoc from '@/components/Ddc/Doc';
-// import QuickEntry from './QuickEntry';
+// import Search from '@/components/HeaderSearch';
+// import DdcYiDoc from '@/components/Ddc/Doc';
 
 export default {
   components: {
-    Breadcrumb,
-    Hamburger,
-    Screenfull,
+    QuickEntry
+    // Breadcrumb,
+    // Hamburger
+    // Screenfull,
     // SizeSelect,
-    Search,
-    DdcYiDoc
-    // QuickEntry
+    // Search,
+    // DdcYiDoc
   },
   computed: {
     ...mapGetters([
       'sidebar',
       'avatar',
-      'device'
+      'device',
+      'nickName',
+      'roleName'
     ]),
     setting: {
       get() {
@@ -95,6 +103,12 @@ export default {
           location.href = '/index';
         });
       });
+    },
+    goToStatistic() {
+      const routeData = this.$router.resolve({
+        path: '/statistic'
+      });
+      window.open(routeData.href, '_blank');
     }
   }
 };
@@ -102,13 +116,24 @@ export default {
 
 <style lang="scss" scoped>
 .navbar {
+  // 70: headerHeight
   height: 70px;
   overflow: hidden;
   position: relative;
-  background: #fff;
+  background: linear-gradient(270deg, #409EFF 0%, #0571D8 100%);
+  box-shadow: 0px 3px 6px rgba(64, 158, 255, 0.22);
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
 
+  &__logo{
+    float: left;
+    width: 134px;
+    height: 36px;
+    margin: 18px 10px 18px 24px;
+    cursor: pointer;
+  }
+
   .hamburger-container {
+    // 70: headerHeight
     line-height: 70px;
     height: 100%;
     float: left;
@@ -123,6 +148,7 @@ export default {
 
   .breadcrumb-container {
     float: left;
+    padding-top: 7px;
   }
 
 
@@ -134,6 +160,7 @@ export default {
   .right-menu {
     float: right;
     height: 100%;
+    // 70: headerHeight
     line-height: 70px;
 
     &:focus {
@@ -159,26 +186,64 @@ export default {
     }
 
     .avatar-container {
-      margin-right: 30px;
+      margin-right: 20px;
+      cursor: default;
+      background: transparent !important;
+    }
 
-      .avatar-wrapper {
-        margin-top: 15px;
+    .avatar-wrapper {
+      position: relative;
+      height: 100%;
+      float: left;
+
+      &__image {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        vertical-align: middle;
+      }
+
+      &__role{
+        padding: 0 12px 0 10px;
+        font-size: 14px;
+        font-family: PingFang SC;
+        color: #FFFFFF;
+        vertical-align: middle;
         position: relative;
-
-        .user-avatar {
-          cursor: pointer;
-          width: 40px;
-          height: 40px;
-          border-radius: 10px;
-        }
-
-        .el-icon-caret-bottom {
-          cursor: pointer;
+        &::after{
+          content: '';
+          width: 1px;
+          height: 12px;
           position: absolute;
-          right: -20px;
-          top: 25px;
-          font-size: 12px;
+          top: 50%;
+          margin-top: -6px;
+          right: 0;
+          background: #fff;
+          font-size: 14px;
+          opacity: 0.4;
         }
+      }
+
+      &__user{
+        margin-left: 10px;
+        font-size: 14px;
+        font-family: PingFang SC;
+        color: #FFFFFF;
+        font-weight: bold;
+        vertical-align: middle;
+      }
+
+      &__icon {
+        display: inline-block;
+        width: 12px;
+        height: 16px;
+        background: url('~@/assets/images/navBar/avatar_icon.png') no-repeat;
+        background-size: 100% 100%;
+        cursor: pointer;
+        position: absolute;
+        right: -12px;
+        top: 50%;
+        margin-top: -7px;
       }
     }
   }
