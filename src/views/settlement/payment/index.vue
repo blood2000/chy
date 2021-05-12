@@ -351,7 +351,7 @@ export default {
         { 'dictLabel': '已装货', 'dictValue': '2' },
         { 'dictLabel': '已签收(已卸货)', 'dictValue': '3' },
         { 'dictLabel': '已回单(收单复核)', 'dictValue': '4' },
-        { 'dictLabel': '已结算', 'dictValue': '5' },
+        { 'dictLabel': '已核算', 'dictValue': '5' },
         { 'dictLabel': '已申请(打款)', 'dictValue': '6' },
         { 'dictLabel': '已打款', 'dictValue': '7' },
         { 'dictLabel': '已申请开票', 'dictValue': '8' },

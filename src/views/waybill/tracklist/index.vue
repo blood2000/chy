@@ -197,9 +197,19 @@
         <template #cancelStatus="{row}">
           <span>{{ selectDictLabel(cancelStatusOptions, row.cancelStatus) }}</span>
         </template>
-        <!-- <template #goodsBigType="{row}">
-          <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
-        </template> -->
+        <template #loadWeight="{row}">
+          <span v-if="row.stowageStatus === '0'">{{ row.loadWeight || '0.00' }} 吨</span>
+          <span v-if="row.stowageStatus === '1'">{{ row.loadWeight || '0.00' }} 立方</span>
+          <span v-if="row.stowageStatus === '2'">{{ row.loadWeight || '0.00' }} 车</span>
+        </template>
+        <template #unloadWeight="{row}">
+          <span v-if="row.stowageStatus === '0'">{{ row.unloadWeight || '0.00' }} 吨</span>
+          <span v-if="row.stowageStatus === '1'">{{ row.unloadWeight || '0.00' }} 立方</span>
+          <span v-if="row.stowageStatus === '2'">{{ row.unloadWeight || '0.00' }} 车</span>
+        </template>
+        <template #stowageStatus="{row}">
+          <span>{{ selectDictLabel(stowageStatusOptions, row.stowageStatus) }}</span>
+        </template>
 
         <template #edit="{row}">
           <!-- <el-button
@@ -405,6 +415,12 @@ export default {
         { 'dictLabel': '司机撤单申请', 'dictValue': '1' },
         { 'dictLabel': '货主同意撤销 ', 'dictValue': '2' },
         { 'dictLabel': '货主拒绝撤销 ', 'dictValue': '3' }
+      ],
+      // 配载方式
+      stowageStatusOptions: [
+        { 'dictLabel': '吨数配载', 'dictValue': '0' },
+        { 'dictLabel': '立方配载', 'dictValue': '1' },
+        { 'dictLabel': '车数配载 ', 'dictValue': '2' }
       ],
       isAdmin: false,
       user: {},
