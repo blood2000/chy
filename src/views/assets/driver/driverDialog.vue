@@ -944,7 +944,10 @@ export default {
 
 .unit-item{
   ::v-deep .el-input__inner{
-    padding-right: 36px;
+    padding-right: 50px;
+  }
+  ::v-deep .el-input__suffix{
+    right: 30px !important;
   }
 }
 .unit-span{
