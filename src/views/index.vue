@@ -54,7 +54,11 @@ export default {
     };
   },
   created() {
-    console.log(this.screenWidth);
+    if (this.screenWidth > 1366) {
+      this.activeName = '0';
+    } else {
+      this.activeName = '1';
+    }
   },
   methods: {
     goTarget(href) {
