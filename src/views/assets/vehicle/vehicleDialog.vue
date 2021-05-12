@@ -3,9 +3,9 @@
   <el-dialog :class="[{'i-add':title==='新增'||title==='添加车辆'},{'i-check':title==='审核'}]" :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
       <!-- 调度者/司机选择车辆 -->
-      <el-form-item v-if="teamCode || driverCode" label="查询已有车辆" prop="licenseNumber">
+      <el-form-item v-if="teamCode || driverCode" label="查询已有车辆">
         <el-select
-          v-model="form.licenseNumber"
+          v-model="licenseNumber"
           v-el-select-loadmore="loadmore"
           filterable
           clearable
@@ -266,6 +266,7 @@ export default {
         ]
       },
       // 选择车辆
+      licenseNumber: '',
       vehicleLoading: false,
       vehicleOptions: [],
       queryParams: {
@@ -385,6 +386,7 @@ export default {
     // 表单重置
     reset() {
       this.buttonLoading = false;
+      this.licenseNumber = '';
       this.form = {
         id: null,
         code: null,
