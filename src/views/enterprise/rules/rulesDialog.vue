@@ -1,13 +1,13 @@
 <template>
-  <el-dialog :title="title" :class="[{'i-add':title==='添加'}]" :visible="visible" width="800px" :close-on-click-modal="false" append-to-body @close="cancel">
+  <el-dialog :title="title" :class="[{'i-add':title==='添加'}]" :visible="visible" width="1050px" :close-on-click-modal="false" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="120px" label-position="left" :disabled="!isAdmin && form.platformType === 1">
       <el-row>
-        <el-col :span="12">
+        <el-col :span="10">
           <el-form-item label="规则名称" prop="name">
             <el-input v-model="form.name" placeholder="请输入规则名称" class="width-small" clearable />
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="14">
           <el-form-item label="计算公式" prop="ruleDictValue">
             <el-select
               v-model="form.ruleDictValue"
@@ -15,6 +15,7 @@
               class="width-small mr3"
               clearable
               filterable
+              style="width: 350px;"
             >
               <el-option
                 v-for="dict in ruleTypeOptions"
@@ -60,7 +61,7 @@
             <el-input-number v-model="lossItemObj[item.code].end" :controls="false" :precision="2" :min="0" :max="currentRadio === 'DE' ? 100000 : 100" placeholder="最大值" class="width-small" clearable />
             <span v-show="currentRadio && currentRadio !== ''" class="unit-span-r g-color-gray">{{ currentRadio === 'DE' ? 'kg' : '%' }}</span>
           </template>
-          <el-select v-if="item.showType === 3" v-model="lossItemObj[item.code]" class="width-small" clearable filterable>
+          <el-select v-if="item.showType === 3" v-model="lossItemObj[item.code]" class="width-small" clearable filterable style="width: 350px;">
             <el-option
               v-for="dict in options[item.dictCode]"
               :key="dict.dictValue"

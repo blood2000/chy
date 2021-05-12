@@ -31,16 +31,17 @@
       <el-table-column width="120" label="司机电话" align="center" prop="driverPhone" />
       <el-table-column width="120" label="车牌号" align="center" prop="licenseNumber" />
 
+      <!-- stowageStatus "配载方式 0->吨，1->方 2->车数配载" -->
       <el-table-column width="160" label="装货重量" align="center" prop="loadWeight">
         <template slot-scope="scope">
-          <el-input-number v-if="true" v-model="scope.row.loadWeight" :controls="false" placeholder="请输入装货重量" style="width:100%;" size="mini" @blur="handlerBlur(scope.row, scope.row.loadWeight, 'loadWeight' )" />
+          <el-input-number v-if="scope.row.stowageStatus !== '2'" v-model="scope.row.loadWeight" :controls="false" placeholder="请输入装货重量" style="width:100%;" size="mini" @blur="handlerBlur(scope.row, scope.row.loadWeight, 'loadWeight' )" />
 
           <span v-else>{{ scope.row.loadWeight }}</span>
         </template>
       </el-table-column>
       <el-table-column width="160" label="卸货重量" align="center" prop="unloadWeight">
         <template slot-scope="scope">
-          <el-input-number v-if="true" v-model="scope.row.unloadWeight" :controls="false" placeholder="请输入卸货重量" style="width:100%;" size="mini" @blur="handlerBlur(scope.row, scope.row.unloadWeight, 'unloadWeight' )" />
+          <el-input-number v-if="scope.row.stowageStatus !== '2'" v-model="scope.row.unloadWeight" :controls="false" placeholder="请输入卸货重量" style="width:100%;" size="mini" @blur="handlerBlur(scope.row, scope.row.unloadWeight, 'unloadWeight' )" />
           <span v-else>{{ scope.row.unloadWeight }}</span>
         </template>
       </el-table-column>
@@ -77,13 +78,13 @@
             <div v-for="(freight, index) in scope.row.subsidiesFreightList" :key="index">
               <el-form-item :label="freight.cnName">
                 <span v-show="!isEdit2">{{ freight.ruleValue }}</span>
-                <el-input-number v-show="isEdit2" v-model="freight.ruleValue" :controls="false" :precision="2" :min="0" :placeholder="`请输入${freight.cnName}`" style="width:90px;" @blur="handlerItem(scope.row,freight.ruleValue,'add',freight.enName)" />
+                <el-input-number v-show="isEdit2" v-model="freight.ruleValue" :controls="false" :precision="2" :min="0" :placeholder="`${freight.cnName}`" style="width:90px;" @blur="handlerItem(scope.row,freight.ruleValue,'add',freight.enName)" />
               </el-form-item>
             </div>
 
             <el-form-item label="其他补贴" class="ly-flex-1">
               <span v-show="!isEdit2">{{ scope.row.otherSubsidies }}</span>
-              <el-input-number v-show="isEdit2" v-model="scope.row.otherSubsidies" :controls="false" :precision="2" :min="0" :placeholder="`请输入其他扣款`" style="width:90px;" @blur="handlerChange(scope.row,scope.row.otherSubsidies, 'add')" />
+              <el-input-number v-show="isEdit2" v-model="scope.row.otherSubsidies" :controls="false" :precision="2" :min="0" :placeholder="`其他扣款`" style="width:90px;" @blur="handlerChange(scope.row,scope.row.otherSubsidies, 'add')" />
             </el-form-item>
           </el-form>
         </template>
@@ -100,13 +101,13 @@
             <div v-for="(freight, index) in scope.row.deductionFreightList" :key="index" class="ly-flex-1">
               <el-form-item :label="freight.cnName">
                 <span v-show="!isEdit">{{ freight.ruleValue }}</span>
-                <el-input-number v-show="isEdit" v-model="freight.ruleValue" :controls="false" :precision="2" :min="0" :placeholder="`请输入${freight.cnName}`" style="width:90px;" @blur="handlerItem(scope.row,freight.ruleValue,'',freight.enName)" />
+                <el-input-number v-show="isEdit" v-model="freight.ruleValue" :controls="false" :precision="2" :min="0" :placeholder="`${freight.cnName}`" style="width:90px;" @blur="handlerItem(scope.row,freight.ruleValue,'',freight.enName)" />
               </el-form-item>
             </div>
 
             <el-form-item label="其他扣款" class="ly-flex-1">
               <span v-show="!isEdit">{{ scope.row.otherCharges }}</span>
-              <el-input-number v-show="isEdit" v-model="scope.row.otherCharges" :controls="false" :precision="2" :min="0" :placeholder="`请输入其他扣款`" style="width:90px;" @blur="handlerChange(scope.row,scope.row.otherCharges, '')" />
+              <el-input-number v-show="isEdit" v-model="scope.row.otherCharges" :controls="false" :precision="2" :min="0" :placeholder="`其他扣款`" style="width:90px;" @blur="handlerChange(scope.row,scope.row.otherCharges, '')" />
             </el-form-item>
           </el-form>
         </template>
@@ -116,7 +117,7 @@
 
       <el-table-column width="120" label="纳税金额" align="center" prop="taxPayment" fixed="right" />
       <el-table-column width="120" label="服务费" align="center" prop="serviceFee" fixed="right" />
-      <el-table-column width="120" label="司机实收现金" align="center" prop="deliveryCashFee" fixed="right">
+      <el-table-column width="162" label="司机实收现金" align="center" prop="deliveryCashFee" fixed="right">
         <template slot-scope="scope">
           <el-input-number v-model="scope.row.deliveryCashFee" :controls="false" :precision="2" placeholder="请输入司机实收现金" style="width:100%;" size="mini" @blur="handlerInput(scope.row,scope.row.deliveryCashFee, 'deliveryCashFee')" />
         </template>
