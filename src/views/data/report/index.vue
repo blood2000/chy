@@ -1,143 +1,144 @@
 <template>
-  <div class="ly-card-box">
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="90px" class="clearfix app-container" @submit.native.prevent>
+  <div class="pr">
+    <div ref="searchBox">
+      <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="90px" class="clearfix app-container" @submit.native.prevent>
 
-      <!-- 普通input搜索 -->
-      <el-form-item label="支付批次号" prop="bizNo">
-        <el-input
-          v-model="queryParams.bizNo"
-          placeholder="请输入支付批次号"
-          clearable
-          size="small"
-          style="width: 150px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="发货企业" prop="companyName">
-        <el-input
-          v-model="queryParams.companyName"
-          placeholder="请输入发货企业"
-          clearable
-          size="small"
-          style="width: 150px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="司机" prop="driverName">
-        <el-input
-          v-model="queryParams.driverName"
-          placeholder="请输入司机"
-          clearable
-          size="small"
-          style="width: 150px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="车牌号" prop="licenseNumber">
-        <el-input
-          v-model="queryParams.licenseNumber"
-          placeholder="请输入车牌号"
-          clearable
-          size="small"
-          style="width: 150px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="货源单号" prop="mainOrderNumber">
-        <el-input
-          v-model="queryParams.mainOrderNumber"
-          placeholder="请输入货源单号"
-          clearable
-          size="small"
-          style="width: 150px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="车队名称" prop="teamName">
-        <el-input
-          v-model="queryParams.teamName"
-          placeholder="请输入车队名称"
-          clearable
-          size="small"
-          style="width: 150px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="运输单号" prop="waybillNo">
-        <el-input
-          v-model="queryParams.waybillNo"
-          placeholder="请输入运输单号"
-          clearable
-          size="small"
-          style="width: 150px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
+        <!-- 普通input搜索 -->
+        <el-form-item label="支付批次号" prop="bizNo">
+          <el-input
+            v-model="queryParams.bizNo"
+            placeholder="请输入支付批次号"
+            clearable
+            size="small"
+            style="width: 150px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="发货企业" prop="companyName">
+          <el-input
+            v-model="queryParams.companyName"
+            placeholder="请输入发货企业"
+            clearable
+            size="small"
+            style="width: 150px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="司机" prop="driverName">
+          <el-input
+            v-model="queryParams.driverName"
+            placeholder="请输入司机"
+            clearable
+            size="small"
+            style="width: 150px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="车牌号" prop="licenseNumber">
+          <el-input
+            v-model="queryParams.licenseNumber"
+            placeholder="请输入车牌号"
+            clearable
+            size="small"
+            style="width: 150px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="货源单号" prop="mainOrderNumber">
+          <el-input
+            v-model="queryParams.mainOrderNumber"
+            placeholder="请输入货源单号"
+            clearable
+            size="small"
+            style="width: 150px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="车队名称" prop="teamName">
+          <el-input
+            v-model="queryParams.teamName"
+            placeholder="请输入车队名称"
+            clearable
+            size="small"
+            style="width: 150px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="运输单号" prop="waybillNo">
+          <el-input
+            v-model="queryParams.waybillNo"
+            placeholder="请输入运输单号"
+            clearable
+            size="small"
+            style="width: 150px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
 
-      <!-- 下拉框 -->
-      <el-form-item label="流水上报" prop="billSendStatus">
-        <el-select v-model="queryParams.billSendStatus" placeholder="----请选择----" clearable filterable style="width: 150px">
-          <el-option
-            v-for="(dict,index) in dicts['billSendStatus_option'] || []"
-            :key="index"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="司机上报" prop="driverReport">
-        <el-select v-model="queryParams.driverReport" placeholder="----请选择----" clearable filterable style="width: 150px">
-          <el-option
-            v-for="(dict,index) in dicts['driverReport_option'] || []"
-            :key="index"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="装货上报" prop="loadSendStatus">
-        <el-select v-model="queryParams.loadSendStatus" placeholder="----请选择----" clearable filterable style="width: 150px">
-          <el-option
-            v-for="(dict,index) in dicts['loadSendStatus_option'] || []"
-            :key="index"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="卸货上报" prop="unloadSendStatus">
-        <el-select v-model="queryParams.unloadSendStatus" placeholder="----请选择----" clearable filterable style="width: 150px">
-          <el-option
-            v-for="(dict,index) in dicts['unloadSendStatus_option'] || []"
-            :key="index"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="车辆上报" prop="vehicleReport">
-        <el-select v-model="queryParams.vehicleReport" placeholder="----请选择----" clearable filterable style="width: 150px">
-          <el-option
-            v-for="(dict,index) in dicts['vehicleReport_option'] || []"
-            :key="index"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="运单上报" prop="waybillSendStatus">
-        <el-select v-model="queryParams.waybillSendStatus" placeholder="----请选择----" clearable filterable style="width: 150px">
-          <el-option
-            v-for="(dict,index) in dicts['waybillSendStatus_option'] || []"
-            :key="index"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
+        <!-- 下拉框 -->
+        <el-form-item label="流水上报" prop="billSendStatus">
+          <el-select v-model="queryParams.billSendStatus" placeholder="----请选择----" clearable filterable style="width: 150px">
+            <el-option
+              v-for="(dict,index) in dicts['billSendStatus_option'] || []"
+              :key="index"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="司机上报" prop="driverReport">
+          <el-select v-model="queryParams.driverReport" placeholder="----请选择----" clearable filterable style="width: 150px">
+            <el-option
+              v-for="(dict,index) in dicts['driverReport_option'] || []"
+              :key="index"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="装货上报" prop="loadSendStatus">
+          <el-select v-model="queryParams.loadSendStatus" placeholder="----请选择----" clearable filterable style="width: 150px">
+            <el-option
+              v-for="(dict,index) in dicts['loadSendStatus_option'] || []"
+              :key="index"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="卸货上报" prop="unloadSendStatus">
+          <el-select v-model="queryParams.unloadSendStatus" placeholder="----请选择----" clearable filterable style="width: 150px">
+            <el-option
+              v-for="(dict,index) in dicts['unloadSendStatus_option'] || []"
+              :key="index"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="车辆上报" prop="vehicleReport">
+          <el-select v-model="queryParams.vehicleReport" placeholder="----请选择----" clearable filterable style="width: 150px">
+            <el-option
+              v-for="(dict,index) in dicts['vehicleReport_option'] || []"
+              :key="index"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="运单上报" prop="waybillSendStatus">
+          <el-select v-model="queryParams.waybillSendStatus" placeholder="----请选择----" clearable filterable style="width: 150px">
+            <el-option
+              v-for="(dict,index) in dicts['waybillSendStatus_option'] || []"
+              :key="index"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
 
-      <!-- 时间筛选框 -->
-      <!-- <el-form-item label="发布时间" prop="tin10">
+        <!-- 时间筛选框 -->
+        <!-- <el-form-item label="发布时间" prop="tin10">
         <el-date-picker
           v-model="queryParams.tin10"
           size="small"
@@ -150,8 +151,8 @@
         />
       </el-form-item> -->
 
-      <!-- 做远程使用的 -->
-      <!-- <el-form-item label="货主" prop="tin6" size="small">
+        <!-- 做远程使用的 -->
+        <!-- <el-form-item label="货主" prop="tin6" size="small">
         <el-select
           v-model="queryParams.tin6"
           v-el-select-loadmore="loadmore"
@@ -176,13 +177,14 @@
         </el-select>
       </el-form-item> -->
 
-      <el-row :gutter="10" class="mb8">
-        <el-col :span="1.5" class="fr">
-          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-          <el-button icon="el-icon-refresh" type="primary" plain size="mini" @click="resetQuery">重置</el-button>
-        </el-col>
-      </el-row>
-    </el-form>
+        <el-row :gutter="10" class="mb8">
+          <el-col :span="1.5" class="fr">
+            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+            <el-button icon="el-icon-refresh" type="primary" plain size="mini" @click="resetQuery">重置</el-button>
+          </el-col>
+        </el-row>
+      </el-form>
+    </div>
 
     <div class="app-container">
       <el-row :gutter="10" class="mb8">
@@ -246,6 +248,7 @@
       <!-- 表格 -->
       <RefactorTable
         is-show-index
+        :height="list.length ? tHeight : null"
         :loading="loading"
         :data="list"
         :table-columns-config="tableColumnsConfig"
@@ -403,11 +406,15 @@ import ChildDialog from '@/views/settlement/components/childDialog';
 import DetailDialog from '@/views/waybill/components/detailDialog';
 import importDialog from './components/importDialog';
 
+import setTheight from '@/layout/mixin/setTheight';
+
+
 const dictsData1 = [{ dictLabel: '未上报', dictValue: 0 }, { dictLabel: '上报成功', dictValue: 1 }, { dictLabel: '上报失败', dictValue: 2 }];
 
 export default {
   name: 'Manage', // 页面缓存需要name
   components: { CheckResult, ChildDialog, DetailDialog, importDialog },
+  mixins: [setTheight],
   data() {
     return {
       /* 模板参数必须 */
@@ -488,7 +495,9 @@ export default {
       openData: null, // 类型对象
 
       /* 弹框2- 批量导入 */
-      openImport: false
+      openImport: false,
+
+      addition: -10
 
       /* 其他额外参数 */
       // shipmentList: [], // 远程搜索的时候使用
@@ -740,10 +749,3 @@ export default {
 };
 </script>
 
-<style scoped lang='scss'>
-.ly-card-box{
-  position: relative;
-  overflow-y: auto;
-  height: calc(100vh - 115px);
-}
-</style>

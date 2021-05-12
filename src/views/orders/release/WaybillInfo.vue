@@ -183,8 +183,8 @@ export default {
   },
 
   created() {
-    if (this.waybillData && this.waybillData.classList.length) {
-      this.url = this.waybillData.classList[0].cargoCodeQr;
+    if (this.waybillData) {
+      this.url = this.waybillData.classList.length ? this.waybillData.classList[0].cargoCodeQr : '';
       this.orderCode = this.waybillData.code;
       this.getList();
     }

@@ -1,155 +1,156 @@
 <template>
   <div>
-
-    <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="90px" class="app-container" @submit.native.prevent>
-      <el-form-item v-show="!isShipment" label="下单客户" prop="tin1">
-        <el-input
-          v-model="queryParams.tin1"
-          placeholder="企业名称/客户姓名/手机号"
-          clearable
-          size="small"
-          style="width: 228px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-
-      <el-form-item label="装货信息" prop="tin2">
-        <el-input
-          v-model="queryParams.tin2"
-          placeholder="装货地/装货电话/装货人"
-          clearable
-          size="small"
-          style="width: 228px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-
-      <el-form-item label="卸货信息" prop="tin3">
-        <el-input
-          v-model="queryParams.tin3"
-          placeholder="卸货地/卸货电话/卸货人"
-          clearable
-          size="small"
-          style="width: 228px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-
-      <el-form-item label="货物大类" prop="tin4">
-        <el-select v-model="queryParams.tin4" placeholder="----请选择----" clearable filterable style="width: 228px">
-          <el-option
-            v-for="(dict,index) in goodsTypeOption"
-            :key="index + '' + dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-
-      <el-form-item v-if="false" label="货物描述" prop="tin5">
-        <el-input
-          v-model="queryParams.tin5"
-          placeholder="请输入货物描述"
-          clearable
-          size="small"
-          style="width: 228px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-
-
-
-      <el-form-item label="货源单号" prop="tin7">
-        <el-input
-          v-model="queryParams.tin7"
-          placeholder="请输入货源单号"
-          clearable
-          size="small"
-          style="width: 228px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-
-      <el-form-item v-if="false" label="货源状态" prop="tin8">
-        <el-select v-model="queryParams.tin8" placeholder="----请选择----" style="width: 228px" clearable filterable>
-          <el-option
-            v-for="(dict,index) in statusOptions"
-            :key="index + '' + dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+    <div ref="searchBox">
+      <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="90px" class="app-container" @submit.native.prevent>
+        <el-form-item v-show="!isShipment" label="下单客户" prop="tin1">
+          <el-input
+            v-model="queryParams.tin1"
+            placeholder="企业名称/客户姓名/手机号"
+            clearable
+            size="small"
+            style="width: 228px"
             @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item>
+        </el-form-item>
 
-      <el-form-item label="发布方式" prop="tin11">
-        <el-select v-model="queryParams.tin11" placeholder="----请选择----" style="width: 228px" clearable filterable>
-          <el-option
-            v-for="(dict,index) in isPublicTypeOptions"
-            :key="index + '' + dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+        <el-form-item label="装货信息" prop="tin2">
+          <el-input
+            v-model="queryParams.tin2"
+            placeholder="装货地/装货电话/装货人"
+            clearable
+            size="small"
+            style="width: 228px"
             @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item>
+        </el-form-item>
 
-      <el-form-item v-show="(queryParams.tin8+'') ==='1'" label="下架状态" prop="isManual">
-        <el-select v-model="queryParams.isManual" placeholder="----请选择----" clearable filterable style="width: 228px">
-          <el-option
-            v-for="(dict,index) in dicts['isManual_option']"
-            :key="index + '' + dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+        <el-form-item label="卸货信息" prop="tin3">
+          <el-input
+            v-model="queryParams.tin3"
+            placeholder="卸货地/卸货电话/卸货人"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item>
+        </el-form-item>
 
-      <el-form-item label="发布时间" prop="tin10">
-        <el-date-picker
-          v-model="queryParams.tin10"
-          size="small"
-          style="width: 228px"
-          value-format="yyyy-MM-dd"
-          type="daterange"
-          range-separator="-"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        />
-      </el-form-item>
+        <el-form-item label="货物大类" prop="tin4">
+          <el-select v-model="queryParams.tin4" placeholder="----请选择----" clearable filterable style="width: 228px">
+            <el-option
+              v-for="(dict,index) in goodsTypeOption"
+              :key="index + '' + dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
 
-      <!-- 做远程的 -->
-      <el-form-item v-show="!isShipment" label="货主" prop="tin6" size="small">
-        <el-select
-          v-model="queryParams.tin6"
-          v-el-select-loadmore="loadmore"
-          filterable
-          clearable
-          remote
-          reserve-keyword
-          placeholder="请输入关键词"
-          :remote-method="remoteMethod"
-          :loading="loading"
-          style="width: 228px"
-          @keyup.enter.native="handleQuery"
-        >
-          <el-option
-            v-for="(item, index1) in shipmentList"
-            :key="index1 + '' + item.code"
-            :value="item.code"
-            :label="item.adminName"
+        <el-form-item v-if="false" label="货物描述" prop="tin5">
+          <el-input
+            v-model="queryParams.tin5"
+            placeholder="请输入货物描述"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+
+
+
+        <el-form-item label="货源单号" prop="tin7">
+          <el-input
+            v-model="queryParams.tin7"
+            placeholder="请输入货源单号"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+
+        <el-form-item v-if="false" label="货源状态" prop="tin8">
+          <el-select v-model="queryParams.tin8" placeholder="----请选择----" style="width: 228px" clearable filterable>
+            <el-option
+              v-for="(dict,index) in statusOptions"
+              :key="index + '' + dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+              @keyup.enter.native="handleQuery"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="发布方式" prop="tin11">
+          <el-select v-model="queryParams.tin11" placeholder="----请选择----" style="width: 228px" clearable filterable>
+            <el-option
+              v-for="(dict,index) in isPublicTypeOptions"
+              :key="index + '' + dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+              @keyup.enter.native="handleQuery"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item v-show="(queryParams.tin8+'') ==='1'" label="下架状态" prop="isManual">
+          <el-select v-model="queryParams.isManual" placeholder="----请选择----" clearable filterable style="width: 228px">
+            <el-option
+              v-for="(dict,index) in dicts['isManual_option']"
+              :key="index + '' + dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="发布时间" prop="tin10">
+          <el-date-picker
+            v-model="queryParams.tin10"
+            size="small"
+            style="width: 228px"
+            value-format="yyyy-MM-dd"
+            type="daterange"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
+
+        <!-- 做远程的 -->
+        <el-form-item v-show="!isShipment" label="货主" prop="tin6" size="small">
+          <el-select
+            v-model="queryParams.tin6"
+            v-el-select-loadmore="loadmore"
+            filterable
+            clearable
+            remote
+            reserve-keyword
+            placeholder="请输入关键词"
+            :remote-method="remoteMethod"
+            :loading="loading"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
           >
-            <div class="ly-flex-pack-justify"><span>{{ item.adminName }}</span><span>{{ item.telphone }}</span></div>
-          </el-option>
-        </el-select>
-      </el-form-item>
+            <el-option
+              v-for="(item, index1) in shipmentList"
+              :key="index1 + '' + item.code"
+              :value="item.code"
+              :label="item.adminName"
+            >
+              <div class="ly-flex-pack-justify"><span>{{ item.adminName }}</span><span>{{ item.telphone }}</span></div>
+            </el-option>
+          </el-select>
+        </el-form-item>
 
-      <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" type="primary" plain size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
+        <el-form-item>
+          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+          <el-button icon="el-icon-refresh" type="primary" plain size="mini" @click="resetQuery">重置</el-button>
+        </el-form-item>
 
-    </el-form>
+      </el-form>
+    </div>
 
     <div class="app-container">
 
@@ -185,7 +186,7 @@
 
       <RefactorTable
         is-show-index
-        :height="theight"
+        :height="list.length? tHeight : null"
         :loading="loading"
         :data="list"
         row-key="id"
@@ -375,12 +376,15 @@ import tableColumnsConfig from './data/config-index';
 
 import PriceAdjustment from './component/PriceAdjustment';
 
+import setTheight from '@/layout/mixin/setTheight';
+
 export default {
   name: 'Manage',
   components: { OpenDialog, PriceAdjustment },
+  mixins: [setTheight],
   data() {
     return {
-      theight: null, // 高度
+      // tHeight: null,
 
       activeName: '0', // 做tab切换
       listManagesApi, // 表头存的key
@@ -592,15 +596,11 @@ export default {
       };
     }
 
-
-    // loading	装货信息电话联系人等	query	false
-
-    // projectCode	项目code	query	false
-
-    // receiving	收货信息电话联系人等	query	false
-
-    // remark	备注	query	false
-
+    // theight() {
+    //   // 头部 70 49 10 460 186 65
+    //   var h = window.innerHeight || document.body.clientHeight;
+    //   return h - 292 - this.searchBoxheight;
+    // }
   },
 
   watch: {
@@ -613,6 +613,12 @@ export default {
       },
       immediate: true
     }
+    // showSearch: {
+    //   handler(value, odvalue) {
+    //     this.setTheight('tHeight', 'searchBox', this.showSearch);
+    //   },
+    //   immediate: true
+    // }
   },
 
 
@@ -629,6 +635,15 @@ export default {
     this.getDict();
     this.getList();
   },
+
+  // mounted() {
+  //   window.addEventListener('resize',
+  //     debounce(() => {
+  //       this.setTheight('tHeight', 'searchBox', this.showSearch);
+  //     }, 700)
+  //   );
+  // },
+
   methods: {
     // tab切换
     handleClick() {
@@ -829,7 +844,7 @@ export default {
         };
       });
       // console.log(this.list, '最后封装好的列表数据');
-      this.theight = null;
+      // this.theight = null;
       this.loading = false;
     },
 
@@ -1026,6 +1041,14 @@ export default {
       }
       return '';
     }
+
+    // setTheight(tHeight, refName, showSearch, addition = 0) {
+    //   var h = window.innerHeight || document.body.clientHeight;
+    //   this.$nextTick(() => {
+    //     const searchBoxheight = showSearch ? this.$refs[refName].offsetHeight : 0;
+    //     this[tHeight] = h - 292 - searchBoxheight - addition;
+    //   });
+    // }
   }
 };
 </script>
