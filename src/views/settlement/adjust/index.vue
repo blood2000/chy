@@ -204,7 +204,7 @@
     <div class="g-radio-group">
       <el-radio-group v-model="activeName" size="small" @change="handleClick">
         <el-radio-button label="4">已复核</el-radio-button>
-        <el-radio-button label="5">已结算</el-radio-button>
+        <el-radio-button label="5">已核算</el-radio-button>
         <el-radio-button label="7">已打款</el-radio-button>
       </el-radio-group>
     </div>

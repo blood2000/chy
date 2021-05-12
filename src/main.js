@@ -5,6 +5,7 @@ import './assets/styles/element-variables.scss';
 import '@/assets/styles/index.scss'; // global css
 import '@/assets/styles/ddc.scss'; // ddc css
 import '@/assets/font/index.scss'; // 自定义字体,只在数据大屏用到,不影响其他页面的加载速度
+import '@/assets/iconfont/iconfont.css'; // 字体图标
 import App from './App';
 import store from './store';
 import router from './router';
@@ -18,7 +19,7 @@ import './assets/icons'; // icon
 import './permission'; // permission control
 import { getDicts, listByDict, getDictsByType } from '@/api/system/dict/data';
 import { getConfigKey } from '@/api/system/config';
-import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree, tableHeaderConfig } from '@/utils/ddc';
+import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, selectProvinceLabel, selectCityLabel, handleTree, tableHeaderConfig } from '@/utils/ddc';
 // 本地缓存
 import { setLocalStorage, getLocalStorage, removeLocalStorage } from '@/utils/auth';
 // 表单校验
@@ -66,6 +67,8 @@ Vue.prototype.resetForm = resetForm;
 Vue.prototype.addDateRange = addDateRange;
 Vue.prototype.selectDictLabel = selectDictLabel;
 Vue.prototype.selectDictLabels = selectDictLabels;
+Vue.prototype.selectProvinceLabel = selectProvinceLabel;
+Vue.prototype.selectCityLabel = selectCityLabel;
 Vue.prototype.download = download;
 Vue.prototype.handleTree = handleTree;
 Vue.prototype.tableHeaderConfig = tableHeaderConfig;

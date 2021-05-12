@@ -269,11 +269,12 @@ export default {
 
 <style lang="scss" scoped>
 .tags-view-container {
-  height: 44px;
+  height: 49px;
   width: 100%;
   background: #fff;
-  // box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
   position: relative;
+  border-bottom: 5px solid rgb(242, 245, 248);
+  box-sizing: border-box;
   .tags-view-wrapper {
     width: calc(100% - 36px);
     height: 100%;
@@ -424,6 +425,9 @@ export default {
     &:hover{
       background-color: #FAFAFA;
       color: #606266;
+    }
+    &.is-disabled{
+      color: #bbb;
     }
   }
   .tags-dropdown-item-active {

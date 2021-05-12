@@ -101,6 +101,33 @@ export function selectDictLabels(datas, value, separator) {
   return actions.join('').substring(0, actions.join('').length - 1);
 }
 
+export function selectProvinceLabel(datas, value) {
+  if (datas === undefined || datas === null) {
+    return '';
+  }
+  var actions = [];
+  Object.keys(datas).some((key) => {
+    if (('' + datas[key].provinceCode) === ('' + value)) {
+      actions.push(datas[key].provinceName);
+      return true;
+    }
+  });
+  return actions.join('');
+}
+
+export function selectCityLabel(datas, value) {
+  if (datas === undefined || datas === null) {
+    return '';
+  }
+  var actions = [];
+  Object.keys(datas).some((key) => {
+    if (('' + datas[key].cityCode) === ('' + value)) {
+      actions.push(datas[key].cityName);
+      return true;
+    }
+  });
+  return actions.join('');
+}
 // 通用下载方法
 export function download(fileName) {
   window.location.href = baseURL + '/common/download?fileName=' + encodeURI(fileName) + '&delete=' + true;

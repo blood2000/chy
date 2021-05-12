@@ -120,19 +120,24 @@
         </el-select>
       </el-form-item>
       <el-form-item label="车辆总重量" prop="vehicleTotalWeight">
-        <el-input v-model="form.vehicleTotalWeight" placeholder="请输入车辆总重量" class="width90" clearable />
+        <el-input-number v-model="form.vehicleTotalWeight" :controls="false" :min="0" :max="1000000" placeholder="请输入车辆总重量" class="width90 unit-item" clearable />
+        <span class="unit-span g-color-gray">吨</span>
       </el-form-item>
       <el-form-item label="车辆可载重量" prop="vehicleLoadWeight">
-        <el-input v-model="form.vehicleLoadWeight" placeholder="请输入车辆可载重量" class="width90" clearable />
+        <el-input-number v-model="form.vehicleLoadWeight" :controls="false" :min="0" :max="1000000" placeholder="请输入车辆可载重量" class="width90 unit-item" clearable />
+        <span class="unit-span g-color-gray">吨</span>
       </el-form-item>
       <el-form-item label="车辆可载平方" prop="vehicleLoadVolume">
-        <el-input v-model="form.vehicleLoadVolume" placeholder="请输入车辆可载平方" class="width90" clearable />
+        <el-input v-model="form.vehicleLoadVolume" placeholder="请输入车辆可载平方" class="width90 unit-item" clearable />
+        <span class="unit-span g-color-gray">m²</span>
       </el-form-item>
       <el-form-item label="车辆可载立方" prop="vehicleRemainingLoadVolume">
-        <el-input v-model="form.vehicleRemainingLoadVolume" placeholder="请输入车辆可载立方" class="width90" clearable />
+        <el-input v-model="form.vehicleRemainingLoadVolume" placeholder="请输入车辆可载立方" class="width90 unit-item" clearable />
+        <span class="unit-span g-color-gray">m³</span>
       </el-form-item>
       <el-form-item label="车身自重" prop="selfRespect">
-        <el-input v-model="form.selfRespect" placeholder="请输入车身自重" class="width90" clearable />
+        <el-input v-model="form.selfRespect" placeholder="请输入车身自重" class="width90 unit-item" clearable />
+        <span class="unit-span g-color-gray">吨</span>
       </el-form-item>
       <el-form-item label="车辆识别码" prop="chassisNumber">
         <el-input v-model="form.chassisNumber" placeholder="请输入车辆识别码" class="width90" clearable />
@@ -480,7 +485,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 	.mr3{
 	  margin-right: 3%;
 	}
@@ -493,4 +498,18 @@ export default {
 	.el-input-number ::v-deep.el-input__inner{
 	  text-align: left;
 	}
+
+  .unit-item{
+    ::v-deep .el-input__inner{
+      padding-right: 50px;
+    }
+    ::v-deep .el-input__suffix{
+      right: 30px !important;
+    }
+  }
+  .unit-span{
+    position: absolute;
+    right: 75px;
+    top: 0;
+  }
 </style>

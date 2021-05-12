@@ -29,18 +29,18 @@ export default {
   width: 100%;
   position: relative;
   // overflow: hidden;
-  padding-top: 15px;
+  padding-top: 10px;
 }
 
 .hasTagsView {
   .app-main {
-    /* 84 = navbar + tags-view = 70 + 44 */
-    min-height: calc(100vh - 114px);
+    /* 84 = navbar + tags-view = 70 + 49 */
+    min-height: calc(100vh - 119px);
   }
 }
 
 .fixed-header+.app-main{
-  height: calc(100vh - 114px);
+  height: calc(100vh - 119px);
   overflow-y: auto;
 }
 </style>
