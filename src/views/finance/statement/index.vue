@@ -203,7 +203,7 @@ export default {
   },
   computed: {
     idCode() {
-      return this.$route.query.id;
+      return this.$route.query.code;
     }
   },
   watch: {

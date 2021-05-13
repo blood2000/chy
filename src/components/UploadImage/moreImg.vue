@@ -83,7 +83,7 @@ export default {
   methods: {
     // 赋值
     inputInfo() {
-      // console.log(this.imageOldList);
+      console.log(this.imageOldList);
       const images = this.imageOldList.map(function(response) {
         return [response.code];
       });
