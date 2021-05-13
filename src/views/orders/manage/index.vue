@@ -188,7 +188,7 @@
         ref="RefactorTable"
         is-show-index
         :loading="loading"
-        :height="list.length>=10? tHeight : 'auto'"
+        :height="list.length? tHeight : 'auto'"
         :data="list"
         row-key="id"
         stripe
