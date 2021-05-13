@@ -274,7 +274,7 @@
       <!-- 新增/修改/详情/审核 对话框 -->
       <shipment-dialog ref="ShipmentDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
       <!-- 管理 对话框 -->
-      <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :shipment-code="shipmentCode" :company-code="companyCode" :user-code="userCode"/>
+      <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :shipment-code="shipmentCode" :company-code="companyCode" :user-code="userCode" />
     </div>
   </div>
 </template>

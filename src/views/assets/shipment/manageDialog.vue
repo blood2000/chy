@@ -30,13 +30,13 @@
       </el-tab-pane>
       <template v-if="companyCode">
         <el-tab-pane label="企业成员管理" name="member">
-          <user-page v-if="activeName === 'member'" class="table-page" :company-code="companyCode" :user-code="userCode"/>
+          <user-page v-if="activeName === 'member'" class="table-page" :company-code="companyCode" :user-code="userCode" />
         </el-tab-pane>
         <el-tab-pane label="企业组织管理" name="dep">
-          <dept-page v-if="activeName === 'dep'" class="table-page" :company-code="companyCode"  :user-code="userCode" />
+          <dept-page v-if="activeName === 'dep'" class="table-page" :company-code="companyCode" :user-code="userCode" />
         </el-tab-pane>
         <el-tab-pane label="企业角色管理" name="role">
-          <role-page v-if="activeName === 'role'" class="table-page" :company-code="companyCode"  :user-code="userCode"/>
+          <role-page v-if="activeName === 'role'" class="table-page" :company-code="companyCode" :user-code="userCode" />
         </el-tab-pane>
       </template>
     </el-tabs>
