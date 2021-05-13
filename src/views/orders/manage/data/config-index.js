@@ -122,7 +122,7 @@ export default [
   },
   {
     prop: 'cargoCodeQr',
-    isShow: true,
+    isShow: false,
     width: 120,
     tooltip: true,
     label: '货集码地址'

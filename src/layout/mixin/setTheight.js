@@ -17,7 +17,7 @@ export default {
 
   data() {
     return {
-      tbodyHeight: 0, // 实际高度(最后赋值)
+      tbodyHeight: 100, // 实际高度(最后赋值)
       $__tHeight: 0, // 正常高度
 
       $_initListener: null,
