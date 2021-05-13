@@ -6,10 +6,10 @@
         <p>运单总数(万)</p>
       </div>
       <div class="s-container__box__content bottom ly-flex-pack-center">
-        <p><count-to :end-val="24501" /></p>
-        <p><count-to :end-val="25151" /></p>
+        <p><count-to :end-val="dataList.shipmentCount" /></p>
+        <p><count-to :end-val="dataList.waybillCount" /></p>
       </div>
-      <Time class="s-timer" />
+      <Time class="s-timer" @getTimeType="getData" />
     </div>
   </div>
 </template>
@@ -17,10 +17,32 @@
 <script>
 import CountTo from '@/components/CountTo';
 import Time from './components/time';
+import { getShipmentWaybillCount } from '@/api/statistic/statistic';
 export default {
   components: {
     CountTo,
     Time
+  },
+  props: {
+    branchCode: {
+      type: String,
+      default: null
+    }
+  },
+  data() {
+    return {
+      dataList: {}
+    };
+  },
+  methods: {
+    getData(timeType) {
+      getShipmentWaybillCount(this.branchCode, timeType).then(response => {
+        this.dataList = response.data || {};
+        if (response.data.partitionListVo && response.data.partitionListVo.length > 0) {
+          this.$emit('getPartitionListVo', response.data.partitionListVo);
+        }
+      });
+    }
   }
 };
 </script>
