@@ -132,6 +132,10 @@ export default {
     companyCode: {
       type: String,
       default: null
+    },
+    userCode: {
+      type: String,
+      default: null
     }
   },
   data() {
@@ -246,6 +250,9 @@ export default {
       this.loading = true;
       if (this.companyCode) {
         this.queryParams.orgCode = this.companyCode;
+      }
+      if (this.userCode) {
+        this.queryParams.userCode = this.userCode;
       }
       listDept(this.queryParams).then(response => {
         this.deptList = this.handleTree(response.data, 'id');

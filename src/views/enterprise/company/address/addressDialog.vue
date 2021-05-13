@@ -145,6 +145,10 @@ export default {
     shipmentCode: {
       type: String,
       default: null
+    },
+    orgCode: {
+      type: String,
+      default: null
     }
   },
   data() {
@@ -223,6 +227,9 @@ export default {
           this.form.defaultPush = praseBooleanToNum(this.form.defaultPush);
           if (this.shipmentCode) {
             this.form.shipmentCode = this.shipmentCode;
+          }
+          if (this.orgCode) {
+            this.form.orgCode = this.orgCode;
           }
           if (this.form.code != null) {
             updateAddress(this.form).then(response => {

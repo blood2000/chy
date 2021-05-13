@@ -25,6 +25,7 @@
       <div class="avatar-wrapper">
         <img :src="avatar" class="avatar-wrapper__image">
         <span v-if="roleName !== ''" class="avatar-wrapper__role">{{ roleName }}</span>
+        <span class="avatar-wrapper__user">{{ nickName || name}}</span>
       </div>
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
@@ -75,6 +76,7 @@ export default {
       'avatar',
       'device',
       'nickName',
+      'name',
       'roleName'
     ]),
     setting: {

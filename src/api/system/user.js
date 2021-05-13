@@ -11,10 +11,11 @@ export function listUser(query) {
 }
 
 // 查询用户详细
-export function getUser(userId) {
+export function getUser(userId,query) {
   return request({
     url: '/system/user/' + praseStrEmpty(userId),
-    method: 'get'
+    method: 'get',
+    params: query
   });
 }
 
