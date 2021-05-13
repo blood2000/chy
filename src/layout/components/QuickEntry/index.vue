@@ -22,8 +22,8 @@ export default {
         { label: '司机审核', icon: 'driver', name: 'Driver', query: { authStatus: 0 }, count: 0 },
         { label: '车辆审核', icon: 'vehicle', name: 'Vehicle', query: { authStatus: 0 }, count: 5 },
         { label: '运输单', icon: 'order', name: 'Manages', query: {}, count: 24 },
-        { label: '提现申请', icon: 'withdrawal', name: 'Withdrawal', query: { status: 0 }, count: 20 },
-        { label: '消息', icon: 'msg', name: 'Withdrawal', query: { status: 0 }, count: 20 }
+        { label: '提现申请', icon: 'withdrawal', name: 'Withdrawal', query: { status: 0 }, count: 20 }
+        // { label: '消息', icon: 'msg', name: 'Withdrawal', query: { status: 0 }, count: 20 }
       ]
     };
   },

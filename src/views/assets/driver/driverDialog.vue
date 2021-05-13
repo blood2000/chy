@@ -16,7 +16,7 @@
         label="所属调度"
         prop="teamCode"
         :rules="[
-          { required: true, message: '所属调度不能为空', trigger: 'blur' },
+          { required: true, message: '所属调度不能为空', trigger: ['change', 'blur'] },
         ]"
       >
         <el-select
@@ -271,12 +271,39 @@
       </el-form-item>
     </el-form>
 
+    <!--
+      新增独立司机的时候, 必须且仅能绑定一辆车, 可以绑定已经存在的车(未被其他司机绑定)并修改, 也可以绑定不存在的车(等于新增一辆车)
+      修改独立司机的时候, 可以修改他名下车辆的信息, 不能新增/删除车辆(在管理页新增/删除)
+    -->
     <el-form ref="vehicleForm" :model="vehicleForm" :rules="vehicleRules" label-width="154px">
       <template v-if="form.driverType == 1">
-        <el-form-item v-if="title === '新增' || vehicleInfoList.length === 0" label="车牌号" prop="licenseNumber" :rules="[{ required: true, message: '车牌号不能为空', trigger: 'blur' }]">
+        <el-form-item v-if="title === '新增'" label="查询已有车辆">
+          <el-select
+            v-model="licenseNumber"
+            v-el-select-loadmore="VehicleLoadmore"
+            filterable
+            clearable
+            remote
+            reserve-keyword
+            placeholder="通过车牌号码进行查询"
+            class="width90"
+            :disabled="disable"
+            :remote-method="vehicleRemoteMethod"
+            :loading="vehicleLoading"
+            @change="vehicleChange"
+          >
+            <el-option
+              v-for="item in vehicleOptions"
+              :key="item.code"
+              :label="item.licenseNumber"
+              :value="item.code"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if="title === '新增'" label="车牌号" prop="licenseNumber" :rules="[{ required: true, message: '车牌号不能为空', trigger: ['change', 'blur'] }]">
           <el-input v-model="vehicleForm.licenseNumber" :disabled="disable" placeholder="支持自动识别" class="width90" clearable />
         </el-form-item>
-        <el-form-item v-else label="车牌号" prop="licenseNumber" :rules="[{ required: true, message: '车牌号不能为空', trigger: ['change','blur'] }]">
+        <el-form-item v-else-if="title !== '新增' && vehicleInfoList.length > 0" label="车牌号" prop="licenseNumber" :rules="[{ required: true, message: '车牌号不能为空', trigger: ['change','blur'] }]">
           <el-select v-model="vehicleForm.licenseNumber" class="width90" filterable @change="changeVehicle" @focus="saveVehicle">
             <el-option
               v-for="dict in vehicleInfoList"
@@ -287,7 +314,7 @@
           </el-select>
         </el-form-item>
       </template>
-      <template v-if="form.driverType == 1">
+      <template v-if="form.driverType == 1 && (title === '新增' || (title !== '新增' && vehicleInfoList.length > 0))">
         <el-form-item label="车牌颜色" prop="vehicleLicenseColorCode">
           <el-select v-model="vehicleForm.vehicleLicenseColorCode" class="width90" filterable clearable :disabled="disable">
             <el-option
@@ -452,6 +479,7 @@
 import { addDriver, updateDriver, authRead, examine } from '@/api/assets/driver';
 import { getProvinceList } from '@/api/system/area';
 import { listInfo } from '@/api/assets/team';
+import { listInfo as vehicleListInfo } from '@/api/assets/vehicle';
 import UploadImage from '@/components/UploadImage/index';
 import ProvinceCityCounty from '@/components/ProvinceCityCounty';
 import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
@@ -568,7 +596,7 @@ export default {
       },
       vehicleRules: {
         licenseNumber: [
-          { validator: this.formValidate.plateNo, trigger: ['blur', 'change'] }
+          // { validator: this.formValidate.plateNo, trigger: ['blur', 'change'] }
         ]
       },
       // 远程搜索调度者分页
@@ -579,7 +607,16 @@ export default {
       },
       // 一个司机绑定多个车辆list
       vehicleInfoList: [],
-      currentIndex: 0
+      currentIndex: 0,
+      // 选择车辆
+      licenseNumber: '',
+      vehicleLoading: false,
+      vehicleOptions: [],
+      vehicleQueryParams: {
+        pageNum: 1,
+        pageSize: 10,
+        licenseNumber: null
+      }
     };
   },
   computed: {
@@ -725,6 +762,7 @@ export default {
     // 表单重置
     reset() {
       this.buttonLoading = false;
+      this.licenseNumber = '';
       this.vehicleInfoList = [];
       this.currentIndex = 0;
       this.form = {
@@ -780,6 +818,10 @@ export default {
         peopleImage: null,
         workLicenseImage: null
       };
+      this.resetForm('form');
+      this.resetVehicle();
+    },
+    resetVehicle() {
       this.vehicleForm = {
         id: null,
         code: null,
@@ -815,7 +857,6 @@ export default {
         vehicleImage: null,
         licenseNumber: null
       };
-      this.resetForm('form');
       this.resetForm('vehicleForm');
     },
     // 表单赋值
@@ -906,11 +947,46 @@ export default {
         }
       })[0];
       this.vehicleForm = { ...vehicleInfo };
-      console.log(this.vehicleInfoList);
     },
     // 修改车辆保存
     saveVehicle() {
       this.vehicleInfoList[this.currentIndex] = { ...this.vehicleForm };
+    },
+    // 查询车辆列表
+    getVehicleList() {
+      vehicleListInfo(this.vehicleQueryParams).then((response) => {
+        this.vehicleLoading = false;
+        this.vehicleOptions = [...this.vehicleOptions, ...response.rows];
+      });
+    },
+    // 车辆远程搜索
+    vehicleRemoteMethod(query) {
+      if (query !== '') {
+        this.vehicleLoading = true;
+        this.vehicleQueryParams.licenseNumber = query;
+        this.vehicleQueryParams.pageNum = 1;
+        this.vehicleOptions = [];
+        this.getVehicleList();
+      } else {
+        this.vehicleOptions = [];
+      }
+    },
+    // 选择车辆远程搜索列表触底事件
+    VehicleLoadmore() {
+      this.vehicleQueryParams.pageNum++;
+      this.getVehicleList();
+    },
+    // 获取选中的车辆回填
+    vehicleChange(code) {
+      if (!code || code === '') {
+        this.resetVehicle();
+        return;
+      }
+      this.vehicleOptions.forEach(el => {
+        if (el.code === code) {
+          this.vehicleForm = { ...el };
+        }
+      });
     }
   }
 };
