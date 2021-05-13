@@ -185,6 +185,7 @@
 
 
       <RefactorTable
+        ref="RefactorTable"
         is-show-index
         :loading="loading"
         :height="list.length>=10? tHeight : 'auto'"
@@ -622,6 +623,10 @@ export default {
     this.tableHeaderConfig(this.tableColumnsConfig, listManagesApi, null, tableColumnsConfig);
     this.getDict();
     this.getList();
+  },
+
+  mounted() {
+    console.log(this.$refs);
   },
 
   methods: {

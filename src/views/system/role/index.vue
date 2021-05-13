@@ -483,6 +483,9 @@ export default {
       },
       // 表单校验
       rules: {
+        orgCode: [
+          { required: true, message: '所属组织不能为空', trigger: 'change' }
+        ],
         produceCode: [
           { required: true, message: '所属产品不能为空', trigger: 'change' }
         ],
