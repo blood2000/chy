@@ -6,7 +6,7 @@ export function getWithDrawalList(data) {
   return request({
     url: withDrawalListApi,
     method: 'post',
-    data: Object.assign({}, { isAsc: 'asc', orderByColumn: 'id' }, data)
+    data: Object.assign({}, { isAsc: 'desc', orderByColumn: 'applyDate' }, data)
   });
 }
 
