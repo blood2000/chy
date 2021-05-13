@@ -233,8 +233,6 @@ export default {
         this.$emit('update:open', v);
       }
     }
-
-
   },
   mounted() {
     this.getAllDicList();
@@ -282,6 +280,7 @@ export default {
     getOptionsByCode(dictCode) {
       this.getDicts(dictCode).then((response) => {
         this.options[dictCode] = response.data;
+        this.$forceUpdate();
       });
     },
     /**
