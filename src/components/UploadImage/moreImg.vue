@@ -1,5 +1,5 @@
 <template>
-  <div class="component-upload-image">
+  <div class="component-upload-image" :class="!isShowUpload ? null :'isShowUpload'">
     <el-upload
       ref="upload"
       :action="uploadImgUrl"
@@ -17,6 +17,7 @@
     >
       <i class="el-icon-plus" />
     </el-upload>
+
     <el-dialog :visible="dialogVisible" width="600px" append-to-body @close="cancel">
       <img width="100%" :src="dialogImageUrl" alt="">
     </el-dialog>
@@ -43,6 +44,7 @@ export default {
   },
   data() {
     return {
+      isShowUpload: false,
       uploadImgUrl: process.env.VUE_APP_BASE_API + uploadImgApi, // 上传的图片服务器地址
       headers: {
         'Authorization': authorPre + getToken(),
@@ -102,6 +104,8 @@ export default {
       });
       this.imageOldList = removeimg;
       this.inputInfo();
+
+      this.isShowUpload = this.imageOldList.length >= this.limit;
     },
     handlePictureCardPreview(images) {
       console.log(images);
@@ -118,9 +122,12 @@ export default {
       // console.log(this.images);
       this.imageOldList.push({ url: res.data.path, code: res.data.code });
       this.inputInfo();
+
+      this.isShowUpload = this.imageOldList.length >= this.limit;
       // this.loading.close();
     },
     handleBeforeUpload(file) {
+      this.isShowUpload = true;
       const isJPG = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg';
       const isLt1M = file.size / 1024 / 1024 < 1;
       if (!isJPG) {
@@ -155,9 +162,12 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .avatar {
   width: 100%;
   height: 100%;
+}
+.isShowUpload ::v-deep .el-upload--picture-card{
+  display: none;
 }
 </style>
