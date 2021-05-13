@@ -94,16 +94,17 @@ export default {
     this.$nextTick(() => {
       this.tagsOverflow();
     });
-    const throttle = ThrottleFun(this.tagsOverflow, 300);
-    window.onresize = () => {
-      this.$refs.TagsDerpDown.hide();
-      throttle();
-    };
+    window.addEventListener('resize', this.resizeFun);
   },
   beforeDestroy() {
-    window.onresize = null;
+    window.removeEventListener('resize', this.resizeFun);
   },
   methods: {
+    resizeFun() {
+      const throttle = ThrottleFun(this.tagsOverflow, 300);
+      this.$refs.TagsDerpDown.hide();
+      throttle();
+    },
     isActive(route) {
       return route.path === this.$route.path;
     },

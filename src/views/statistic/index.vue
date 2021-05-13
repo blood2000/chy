@@ -132,16 +132,17 @@ export default {
     // this.initWebSocket();
   },
   mounted() {
-    const throttle = ThrottleFun(this.refreshChart, 300);
-    window.onresize = () => {
-      throttle();
-    };
+    window.addEventListener('resize', this.resizeFun);
   },
   beforeDestroy() {
-    window.onresize = null;
+    window.removeEventListener('resize', this.resizeFun);
     if (this.websock) this.websock.close();
   },
   methods: {
+    resizeFun() {
+      const throttle = ThrottleFun(this.refreshChart, 300);
+      throttle();
+    },
     initWebSocket() { // 初始化websocket
       const wsuri = 'ws://127.0.0.1:8080';
       this.websock = new WebSocket(wsuri);
