@@ -62,21 +62,21 @@
         <div class="g-flex margintop8">
           <!-- 运单 -->
           <div class="index-frame marginright8" style="height: 280px; width:calc(100% - 432px);">
-            <div class="g-color-bigtitle g-strong g-title-mini">运单</div>
-            <div class="g-flex g-justifybetween">
-              <div style="width:150px; margin: 15px 20px 0;">
+            <!-- <div class="g-color-bigtitle g-strong g-title-mini">运单</div> -->
+            <div class="g-flex g-justifybetween" style="height:100%;">
+              <div style="width:150px; margin: 25px 10px 0;">
                 <div class="g-flex g-aligncenter">
                   <img class="marginright15" src="~@/assets/images/workbench/icon_waybillnum.png" alt="">
                   <div>
                     <div class="g-color-title">运单总数</div>
-                    <div class="g-color-tag"><span class="g-color-title g-strong g-title-medium font-Bahnschrif">23436</span> 单</div>
+                    <div class="g-color-tag"><span class="g-color-title g-strong g-title-big font-Bahnschrif">23436</span> 单</div>
                   </div>
                 </div>
-                <div class="g-flex g-aligncenter" style="margin-top:20px;">
+                <div class="g-flex g-aligncenter" style="margin-top:40px;">
                   <img class="marginright15" src="~@/assets/images/workbench/icon_waybillnum.png" alt="">
                   <div>
                     <div class="g-color-title">今日运单数</div>
-                    <div class="g-color-tag"><span class="g-color-title g-strong g-title-medium font-Bahnschrif">436</span> 单</div>
+                    <div class="g-color-tag"><span class="g-color-title g-strong g-title-big font-Bahnschrif">436</span> 单</div>
                   </div>
                 </div>
                 <img class="waybill-bg" src="~@/assets/images/workbench/icon_waybillbg.png" alt="">
@@ -87,35 +87,35 @@
                     <span class="g-color-blue marginright5">●</span>今日已装货
                     <span class="g-color-title g-strong g-title-mini font-Bahnschrif">334</span>单
                   </div>
-                  <el-progress :percentage="70" :show-text="false" />
+                  <el-progress :stroke-width="4" :percentage="70" :show-text="false" />
                 </div>
                 <div>
                   <div class="g-color-title">
                     <span class="g-color-blue marginright5">●</span>今日已卸货
                     <span class="g-color-title g-strong g-title-mini font-Bahnschrif">200</span>单
                   </div>
-                  <el-progress :percentage="60" :show-text="false" />
+                  <el-progress :stroke-width="4" :percentage="60" :show-text="false" />
                 </div>
                 <div>
                   <div class="g-color-title">
                     <span class="g-color-blue marginright5">●</span>今日已复核
                     <span class="g-color-title g-strong g-title-mini font-Bahnschrif">160</span>单
                   </div>
-                  <el-progress :percentage="50" :show-text="false" />
+                  <el-progress :stroke-width="4" :percentage="50" :show-text="false" />
                 </div>
                 <div>
                   <div class="g-color-title">
                     <span class="g-color-blue marginright5">●</span>今日已结算
                     <span class="g-color-title g-strong g-title-mini font-Bahnschrif">120</span>单
                   </div>
-                  <el-progress :percentage="40" :show-text="false" />
+                  <el-progress :stroke-width="4" :percentage="40" :show-text="false" />
                 </div>
                 <div>
                   <div class="g-color-title">
                     <span class="g-color-blue marginright5">●</span>今日已打款
                     <span class="g-color-title g-strong g-title-mini font-Bahnschrif">100</span>单
                   </div>
-                  <el-progress :percentage="30" :show-text="false" />
+                  <el-progress :stroke-width="4" :percentage="30" :show-text="false" />
                 </div>
 
               </div>
@@ -124,13 +124,17 @@
           <div style="width:432px;">
             <!-- 货单 -->
             <div class="index-frame" style="height: 136px;">
-              <div class="g-color-bigtitle g-strong g-title-mini">货单</div>
-              <div class="g-flex" style="margin-top: 8px; margin-left:5px">
-                <div style="margin-right: 30px;">
-                  <div class="g-color-title">货单总数</div>
-                  <div class="g-color-tag"><span class="g-color-title g-strong g-title-medium font-Bahnschrif">23436</span> 单</div>
-                  <div class="g-color-title">今日货单</div>
-                  <div class="g-color-tag"><span class="g-color-title g-strong g-title-medium font-Bahnschrif">436</span> 单</div>
+              <!-- <div class="g-color-bigtitle g-strong g-title-mini">货单</div> -->
+              <div class="g-flex g-aligncenter" style="height: 100%;">
+                <div class="g-flex g-flexdirection g-justifyaround" style="margin-right: 30px; margin-left:10px;height: 100%;">
+                  <div>
+                    <div class="g-color-title">货单总数</div>
+                    <div class="g-color-tag"><span class="g-color-title g-strong g-title-big font-Bahnschrif">23436</span> 单</div>
+                  </div>
+                  <div>
+                    <div class="g-color-title">今日货单</div>
+                    <div class="g-color-tag"><span class="g-color-title g-strong g-title-big font-Bahnschrif">436</span> 单</div>
+                  </div>
                 </div>
                 <div class="order-frame" style="margin-right: 8px;">
                   <img class="order-img" src="~@/assets/images/workbench/icon_publishorder.png" alt="">
@@ -146,13 +150,17 @@
             </div>
             <!-- 发票 -->
             <div class="index-frame margintop8" style="height: 136px;">
-              <div class="g-color-bigtitle g-strong g-title-mini">发票</div>
-              <div class="g-flex" style="margin-top: 8px; margin-left:5px">
-                <div style="margin-right: 30px;">
-                  <div class="g-color-title">发票总数</div>
-                  <div class="g-color-tag"><span class="g-color-title g-strong g-title-medium font-Bahnschrif">23436</span> 单</div>
-                  <div class="g-color-title">今日发票</div>
-                  <div class="g-color-tag"><span class="g-color-title g-strong g-title-medium font-Bahnschrif">436</span> 单</div>
+              <!-- <div class="g-color-bigtitle g-strong g-title-mini">发票</div> -->
+              <div class="g-flex g-aligncenter" style="height: 100%;">
+                <div class="g-flex g-flexdirection g-justifyaround" style="margin-right: 30px; margin-left:10px; height: 100%;">
+                  <div>
+                    <div class="g-color-title">发票总数</div>
+                    <div class="g-color-tag"><span class="g-color-title g-strong g-title-big font-Bahnschrif">23436</span> 单</div>
+                  </div>
+                  <div>
+                    <div class="g-color-title">今日发票</div>
+                    <div class="g-color-tag"><span class="g-color-title g-strong g-title-big font-Bahnschrif">436</span> 单</div>
+                  </div>
                 </div>
                 <div class="order-frame" style="margin-right: 8px;">
                   <img class="order-img" src="~@/assets/images/workbench/icon_ask.png" alt="">
@@ -176,13 +184,15 @@
         <div>
           <!-- 平台概览 -->
           <div class="index-frame g-flex margintop8">
-            <div class="g-color-bigtitle g-strong g-title-mini">平台概览</div>
-            <div class="g-flex g-aligncenter margintop5" style="width:90%;">
+            <!-- <div class="g-color-bigtitle g-strong g-title-mini">平台概览</div> -->
+            <div class="g-flex g-aligncenter margintop5" style="width:100%;">
               <div class="g-flex g-aligncenter g-flexdirection" style="width:25%">
-                <el-progress type="circle" :percentage="80" :stroke-width="10" :width="100" color="#409EFF" :show-text="false" />
-                <div class="platform-num g-flex g-aligncenter g-flexdirection">
-                  <div class="g-color-title g-strong g-title-medium font-Bahnschrif">4514</div>
-                  <div class="g-color-title">平台货主数</div>
+                <div class="g-flex g-aligncenter">
+                  <el-progress type="circle" :percentage="80" :stroke-width="10" :width="100" color="#409EFF" :show-text="false" />
+                  <div class="platform-num g-flex g-aligncenter g-flexdirection">
+                    <div class="g-color-title g-strong g-title-big font-Bahnschrif">4514</div>
+                    <div class="g-color-title" style="white-space: nowrap;">平台货主</div>
+                  </div>
                 </div>
                 <div style="margin-top:5px;"><span class="g-color-blue marginright5">●</span>活跃货主</div>
                 <div class="g-flex g-aligncenter g-justifyaround" style="width: 90%">
@@ -201,10 +211,12 @@
                 </div>
               </div>
               <div class="g-flex g-aligncenter g-flexdirection" style="width:25%">
-                <el-progress type="circle" :percentage="70" :stroke-width="10" :width="100" color="#40CBFF" :show-text="false" />
-                <div class="platform-num g-flex g-aligncenter g-flexdirection">
-                  <div class="g-color-title g-strong g-title-medium font-Bahnschrif">15067</div>
-                  <div class="g-color-title">平台司机数</div>
+                <div class="g-flex g-aligncenter">
+                  <el-progress type="circle" :percentage="70" :stroke-width="10" :width="100" color="#40CBFF" :show-text="false" />
+                  <div class="platform-num g-flex g-aligncenter g-flexdirection">
+                    <div class="g-color-title g-strong g-title-big font-Bahnschrif">15067</div>
+                    <div class="g-color-title" style="white-space: nowrap;">平台司机</div>
+                  </div>
                 </div>
                 <div style="margin-top:5px;"><span class="g-color-blue marginright5">●</span>活跃司机</div>
                 <div class="g-flex g-aligncenter g-justifyaround" style="width: 90%">
@@ -223,10 +235,12 @@
                 </div>
               </div>
               <div class="g-flex g-aligncenter g-flexdirection" style="width:25%">
-                <el-progress type="circle" :percentage="30" :stroke-width="10" :width="100" color="#67C23A" :show-text="false" />
-                <div class="platform-num g-flex g-aligncenter g-flexdirection">
-                  <div class="g-color-title g-strong g-title-medium font-Bahnschrif">15099</div>
-                  <div class="g-color-title">平台车辆数</div>
+                <div class="g-flex g-aligncenter">
+                  <el-progress type="circle" :percentage="30" :stroke-width="10" :width="100" color="#67C23A" :show-text="false" />
+                  <div class="platform-num g-flex g-aligncenter g-flexdirection">
+                    <div class="g-color-title g-strong g-title-big font-Bahnschrif">15099</div>
+                    <div class="g-color-title" style="white-space: nowrap;">平台车辆</div>
+                  </div>
                 </div>
                 <div style="margin-top:5px;"><span class="g-color-success marginright5">●</span>活跃车辆</div>
                 <div class="g-flex g-aligncenter g-justifyaround" style="width: 90%">
@@ -237,10 +251,12 @@
                 </div>
               </div>
               <div class="g-flex g-aligncenter g-flexdirection" style="width:25%">
-                <el-progress type="circle" :percentage="60" :stroke-width="10" :width="100" color="#FFBB00" :show-text="false" />
-                <div class="platform-num g-flex g-aligncenter g-flexdirection">
-                  <div class="g-color-title g-strong g-title-medium font-Bahnschrif">13067</div>
-                  <div class="g-color-title">平台调度者数</div>
+                <div class="g-flex g-aligncenter">
+                  <el-progress type="circle" :percentage="60" :stroke-width="10" :width="100" color="#FFBB00" :show-text="false" />
+                  <div class="platform-num g-flex g-aligncenter g-flexdirection">
+                    <div class="g-color-title g-strong g-title-big font-Bahnschrif">13067</div>
+                    <div class="g-color-title" style="white-space: nowrap;">平台调度者</div>
+                  </div>
                 </div>
                 <div style="margin-top:5px;"><span class="g-color-warning marginright5">●</span>活跃调度者</div>
                 <div class="g-flex g-aligncenter g-justifyaround" style="width: 90%">
@@ -267,7 +283,7 @@
         </div>
         <!-- 动态 -->
         <div class="index-frame margintop8" style="height:468px;">
-          <div class="g-color-bigtitle g-strong g-title-mini">动态</div>
+          <!-- <div class="g-color-bigtitle g-strong g-title-mini">动态</div> -->
           <el-row class="trend-tab">
             <el-col :span="8">
               <div :class="activeName === '1' ? 'trend-onbottom': 'trend-bottom'" @click="handleClick('1')">运单动态</div>
@@ -477,19 +493,19 @@ export default {
   width: 68%;
 }
 .notice-tip{
-  margin-top: 5px;
+  margin-top: 10px;
   margin-right: 10px;
   // font-family: PingFang SC;
-  height: 67px;
+  height: 65px;
   overflow: hidden; //超出隐藏
 }
 // 运单
 .waybill-bg{
-  height: 114px;
-  width: 168px;
+  height: 100px;
+  width: 148px;
   position: relative;
   top: 10px;
-  left: -28px;
+  left: -18px;
 }
 ::v-deep .el-progress-bar__inner {
   background: linear-gradient(270deg, #409EFF 0%, rgba(64, 158, 255, 0.51) 100%);
@@ -509,12 +525,13 @@ export default {
 // 平台概览
 .platform-num{
   position: relative;
-  bottom: 80px;
-  left: 0;
-  height: 0;
+  bottom: 0;
+  left: -50px;
+  width: 0;
 }
 // 动态
 .trend-tab{
+  cursor: pointer;
   height: 30px;
   background: #F3F3F3;
   border-radius: 16px;
@@ -539,7 +556,7 @@ export default {
   justify-content: center;
 }
 .trend-frame{
-  height: 389px;
+  height: 410px;
   overflow: hidden;
 }
 .trend-line{

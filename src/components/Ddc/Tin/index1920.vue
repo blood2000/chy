@@ -1,12 +1,12 @@
 <template>
-  <div style="min-width: 1350px; overflow-x: scroll;">
+  <div style="min-width: 1350px; overflow-x: scroll;height: 100%">
     <div class="top-tips">
       <i class="el-icon-warning g-color-warning" style="margin-right: 10px;" />
       <span class="g-color-gray">{{ tip }}</span>
     </div>
 
-    <div class="g-flex" style="margin: 0 15px;">
-      <div class="marginright15" style="width:calc(100% - 400px);">
+    <div class="g-flex" style="margin: 0 15px;height: calc(100% - 59px);">
+      <div class="marginright15" style="width:calc(100% - 400px);height: 100%">
         <div class="g-flex">
           <!-- 用户信息 -->
           <div class="index-frame g-flex g-aligncenter  marginright15" style="width:300px;">
@@ -56,12 +56,12 @@
             </div>
           </div>
         </div>
-        <div class="g-flex margintop15">
+        <div class="g-flex margintop15" style="height: 49%; min-height: 363px;">
           <!-- 运单 -->
-          <div class="index-frame marginright15" style="height: 355px; width:calc(100% - 555px);">
+          <div class="index-frame marginright15" style="width:calc(100% - 555px); height: 100%;">
             <div class="g-color-bigtitle g-strong g-title-big">运单</div>
-            <div class="g-flex g-justifybetween">
-              <div style="width:150px; margin: 15px 20px 0;">
+            <div class="g-flex g-justifybetween" style="height: calc(100% - 24px);">
+              <div class="g-flex g-flexdirection g-justifyaround" style="width: 35%; margin: 15px 20px 0;">
                 <div class="g-flex g-aligncenter">
                   <img class="marginright15" src="~@/assets/images/workbench/icon_waybillnum.png" alt="">
                   <div>
@@ -78,7 +78,7 @@
                 </div>
                 <img class="waybill-bg" src="~@/assets/images/workbench/icon_waybillbg.png" alt="">
               </div>
-              <div class="g-flex g-flexdirection g-justifyaround" style="width: 65%; margin-right:10px;">
+              <div class="g-flex g-flexdirection g-justifyaround" style="width: 65%; min-width: 120px; margin-right:10px;">
                 <div>
                   <div class="g-color-title g-title-smaller">
                     <span class="g-color-blue marginright5">●</span>今日已装货
@@ -118,16 +118,20 @@
               </div>
             </div>
           </div>
-          <div style="width:540px;">
+          <div style="width:540px; height: 100%">
             <!-- 货单 -->
-            <div class="index-frame" style="height: 170px;">
+            <div class="index-frame" style="height: 49%; min-height: 178px;">
               <div class="g-color-bigtitle g-strong g-title-big">货单</div>
-              <div class="g-flex" style="margin-top: 8px; margin-left:5px">
-                <div style="margin-right: 30px;">
-                  <div class="g-color-title">货单总数</div>
-                  <div class="g-color-tag g-title-smaller"><span class="g-color-title g-strong g-title-large font-Bahnschrif">23436</span> 单</div>
-                  <div class="g-color-title" style="margin-top: 10px;">今日货单</div>
-                  <div class="g-color-tag g-title-smaller"><span class="g-color-title g-strong g-title-large font-Bahnschrif">436</span> 单</div>
+              <div class="g-flex g-aligncenter" style="margin-top: 8px; margin-left:5px; height: calc(100% - 24px);">
+                <div class="g-flex g-flexdirection g-justifyaround" style="margin-right: 30px; height: 70%;">
+                  <div>
+                    <div class="g-color-title">货单总数</div>
+                    <div class="g-color-tag g-title-smaller"><span class="g-color-title g-strong g-title-large font-Bahnschrif">23436</span> 单</div>
+                  </div>
+                  <div>
+                    <div class="g-color-title" style="margin-top: 10px;">今日货单</div>
+                    <div class="g-color-tag g-title-smaller"><span class="g-color-title g-strong g-title-large font-Bahnschrif">436</span> 单</div>
+                  </div>
                 </div>
                 <div class="order-frame" style="margin-right: 20px;">
                   <img src="~@/assets/images/workbench/icon_publishorder.png" alt="">
@@ -142,14 +146,18 @@
               </div>
             </div>
             <!-- 发票 -->
-            <div class="index-frame margintop15" style="height: 170px;">
+            <div class="index-frame margintop15" style="height: calc(51% - 15px); min-height: 170px;">
               <div class="g-color-bigtitle g-strong g-title-big">发票</div>
-              <div class="g-flex" style="margin-top: 8px; margin-left:5px">
-                <div style="margin-right: 30px;">
-                  <div class="g-color-title">发票总数</div>
-                  <div class="g-color-tag g-title-smaller"><span class="g-color-title g-strong g-title-large font-Bahnschrif">23436</span> 单</div>
-                  <div class="g-color-title" style="margin-top: 10px;">今日发票</div>
-                  <div class="g-color-tag g-title-smaller"><span class="g-color-title g-strong g-title-large font-Bahnschrif">436</span> 单</div>
+              <div class="g-flex g-aligncenter" style="margin-top: 8px; margin-left:5px; height: calc(100% - 24px);">
+                <div class="g-flex g-flexdirection g-justifyaround" style="margin-right: 30px; height: 70%;">
+                  <div>
+                    <div class="g-color-title">发票总数</div>
+                    <div class="g-color-tag g-title-smaller"><span class="g-color-title g-strong g-title-large font-Bahnschrif">23436</span> 单</div>
+                  </div>
+                  <div>
+                    <div class="g-color-title" style="margin-top: 10px;">今日发票</div>
+                    <div class="g-color-tag g-title-smaller"><span class="g-color-title g-strong g-title-large font-Bahnschrif">436</span> 单</div>
+                  </div>
                 </div>
                 <div class="order-frame" style="margin-right: 20px;">
                   <img src="~@/assets/images/workbench/icon_ask.png" alt="">
@@ -170,11 +178,11 @@
             </div>
           </div>
         </div>
-        <div>
+        <div style="height: calc(51% - 148px); min-height: 230px;">
           <!-- 平台概览 -->
-          <div class="index-frame g-flex margintop15">
+          <div class="index-frame g-flex margintop15" style="height:100%">
             <div class="g-color-bigtitle g-strong g-title-big">平台概览</div>
-            <div class="g-flex g-aligncenter margintop5" style="width:90%;">
+            <div class="g-flex g-aligncenter margintop5" style="width:90%;height:100%">
               <div class="g-flex g-aligncenter g-flexdirection" style="width:25%">
                 <el-progress type="circle" :percentage="80" :stroke-width="15" :width="130" color="#409EFF" :show-text="false" />
                 <div class="platform-num g-flex g-aligncenter g-flexdirection">
@@ -251,7 +259,7 @@
           </div>
         </div>
       </div>
-      <div style="width: 400px;">
+      <div style="width: 400px;height:100%">
         <!-- 公告 -->
         <div class="notice-frame" style="height:118px; width: 400px;">
           <div class="notice-img">
@@ -263,7 +271,7 @@
           <div class="notice-bottom" />
         </div>
         <!-- 动态 -->
-        <div class="index-frame margintop15" style="height:605px;">
+        <div class="index-frame margintop15" style="height:calc(100% - 133px); min-height: 609px;">
           <div class="g-color-bigtitle g-strong g-title-big">动态</div>
           <el-row class="trend-tab">
             <el-col :span="8">
@@ -457,8 +465,8 @@ export default {
 }
 .notice-img{
   background: url('~@/assets/images/workbench/icon_notice.png') no-repeat;
-  background-size: 164px 120px;
-  height: 120px;
+  background-size: 164px 118px;
+  height: 118px;
 }
 .notice-content{
   margin-top: 10px;
@@ -466,10 +474,10 @@ export default {
   width: 70%;
 }
 .notice-tip{
-  margin-top: 5px;
+  margin-top: 10px;
   margin-right: 10px;
   // font-family: PingFang SC;
-  height: 80px;
+  height: 73px;
   overflow: hidden; //超出隐藏
 }
 // 运单
@@ -498,6 +506,7 @@ export default {
 }
 // 动态
 .trend-tab{
+  cursor: pointer;
   height: 32px;
   background: #F3F3F3;
   border-radius: 16px;
@@ -522,7 +531,7 @@ export default {
   justify-content: center;
 }
 .trend-frame{
-  height: 505px;
+  height: calc(100% - 80px);
   overflow: hidden;
 }
 .trend-line{
