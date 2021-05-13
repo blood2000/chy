@@ -185,10 +185,9 @@
 
 
       <RefactorTable
-        ref="RefactorTable"
         is-show-index
         :loading="loading"
-        :height="list.length? tHeight : 'auto'"
+        :height="tbodyHeight"
         :data="list"
         row-key="id"
         stripe
@@ -245,7 +244,7 @@
         </template>
         <!-- 可抢单量 -->
         <template #notRobbedOrder="{row}">
-          <span>{{ row.notRobbedOrder || '不限' }}</span>
+          <span>{{ row.totalType === "1"? '不限' : row.notRobbedOrder }}</span>
         </template>
         <!-- 重量/体积/车 -->
         <template #tin_weight="{row}">
@@ -625,9 +624,6 @@ export default {
     this.getList();
   },
 
-  mounted() {
-    console.log(this.$refs);
-  },
 
   methods: {
     // tab切换
@@ -758,6 +754,7 @@ export default {
               e.goodsTypeName = goods.goodsTypeName;
               e.goodsBigTypeName = goods.goodsBigTypeName;
               e.businessType = goods.businessType;
+              e.totalType = goods.totalType;
 
               e = {
                 ...e,
@@ -828,8 +825,10 @@ export default {
           children: mgoods.length ? mgoods : null
         };
       });
-      // console.log(this.list, '最后封装好的列表数据');
-      // this.theight = null;
+
+
+      this.$_getHeight();
+
       this.loading = false;
     },
 
