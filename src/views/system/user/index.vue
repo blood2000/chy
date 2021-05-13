@@ -297,7 +297,7 @@
                   :key="item.roleCode"
                   :label="item.roleName"
                   :value="item.roleCode"
-                  :disabled="item.status == 1"
+                  :disabled="item.status == 1 || item.isSystem == 1"
                 />
               </el-select>
             </el-form-item>
@@ -387,6 +387,10 @@ export default {
   components: { Treeselect },
   props: {
     companyCode: {
+      type: String,
+      default: null
+    },
+    userCode: {
       type: String,
       default: null
     }
@@ -549,7 +553,7 @@ export default {
     },
     /** 查询部门下拉树结构 */
     getTreeselect() {
-      treeselect({ orgCode: this.companyCode }).then(response => {
+      treeselect({ orgCode: this.companyCode, userCode: this.userCode }).then(response => {
         this.deptOptions = response.data;
       });
     },
@@ -624,7 +628,7 @@ export default {
     handleAdd() {
       this.reset();
       this.getTreeselect();
-      getUser().then(response => {
+      getUser(null, { orgCode: this.companyCode }).then(response => {
         this.postOptions = response.posts;
         this.roleOptions = response.roles;
         this.open = true;
@@ -637,7 +641,7 @@ export default {
       this.reset();
       this.getTreeselect();
       const userId = row.userId || this.ids;
-      getUser(userId).then(response => {
+      getUser(userId, { orgCode: this.companyCode }).then(response => {
         this.form = response.data;
         this.postOptions = response.posts;
         this.roleOptions = response.roles;

@@ -213,8 +213,7 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row :gutter="24">
           <el-col :span="24">
-            <!--  :rules="[{ required: true, message: '所属组织不能为空', trigger: 'blur' }]"-->
-            <el-form-item v-if="!form.roleId" label="所属组织" prop="orgCode">
+            <el-form-item v-if="!form.roleId" label="所属组织" prop="orgCode" :rules="[{ required: true, message: '所属组织不能为空', trigger: 'change' }]">
               <!-- <el-tree
                 ref="tree"
                 class="tree-border"
@@ -395,6 +394,10 @@ export default {
     companyCode: {
       type: String,
       default: null
+    },
+    userCode: {
+      type: String,
+      default: null
     }
   },
   data() {
@@ -483,9 +486,9 @@ export default {
       },
       // 表单校验
       rules: {
-        orgCode: [
+        /* orgCode: [
           { required: true, message: '所属组织不能为空', trigger: 'change' }
-        ],
+        ],*/
         produceCode: [
           { required: true, message: '所属产品不能为空', trigger: 'change' }
         ],
@@ -833,7 +836,7 @@ export default {
     },
     /** 查询部门下拉树结构 */
     getDeptTree() {
-      deptTreeselect({ orgCode: this.companyCode }).then(response => {
+      deptTreeselect({ orgCode: this.companyCode, userCode: this.userCode }).then(response => {
         this.deptTreeOptions = response.data;
       });
     },
