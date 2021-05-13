@@ -1,7 +1,7 @@
 import { debounce } from '@/utils';
 /**
  * 使用 只要添加下面4个就行了
- * :height="list.length ? tHeight : null" 必须, 有值就则高度(tab表格设置高)
+ * :height="list.length>=10 ? tHeight : 'auto'" 必须, 有值就则高度(tab表格设置高)
  * ref="searchBox" 必须有, (获取搜索框的高度)
  * v-show="showSearch" 必须有 (隐藏的时候高度变化)
  * addition: 60 // 默认不填是0 (追加高度)
@@ -65,6 +65,7 @@ export default {
           var hh = window.document.querySelector('.navbar').offsetHeight;
           var fh = window.document.querySelector('.fixed-header').offsetHeight;
           this[tHeight] = h - (paddingH + sh + hh + fh + addition);
+          console.log(this[tHeight]);
         }
       });
     }

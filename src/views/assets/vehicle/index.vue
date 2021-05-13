@@ -278,7 +278,7 @@
             <TableDropdown>
               <el-dropdown-item>
                 <el-button
-                  v-show="row.authStatus === 0 || row.authStatus === 1"
+                  v-show="row.authStatus != 3"
                   size="mini"
                   type="text"
                   @click="handleDetail(row, 'review')"
