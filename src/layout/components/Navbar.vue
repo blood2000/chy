@@ -29,6 +29,7 @@
       </div>
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
+          <span class="avatar-wrapper__user">{{ nickName }}</span>
           <span class="avatar-wrapper__icon" />
         </div>
         <el-dropdown-menu slot="dropdown">
@@ -226,7 +227,7 @@ export default {
       }
 
       &__user{
-        margin-left: 10px;
+        margin: 0 6px 0 2px;
         font-size: 14px;
         font-family: PingFang SC;
         color: #FFFFFF;

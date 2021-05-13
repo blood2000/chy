@@ -358,7 +358,7 @@ export default {
     async getDeliveryCashFee(row, value) {
       const { data } = await deliveryCashFee({
         deliveryCashFee: value, //	司机实收现金		false
-        deliveryFeeDeserved: row.deliveryFeeDeserved, // 司机应收运费
+        // deliveryFeeDeserved: row.deliveryFeeDeserved, // 司机应收运费
         shipperCode: row.shipperCode //	货主Code		false
       });
 
@@ -370,7 +370,7 @@ export default {
 
       row.serviceFee = data.serviceFee;
       row.shipperRealPay = data.shipperRealPay;
-      row.taxPayment = data.taxPayment || row.taxPayment;
+      // row.taxPayment = data.taxPayment || row.taxPayment;
 
       // const filterRow = this.filterRow(row);
       // filterRow.deliveryCashFee = row.deliveryCashFee;
@@ -510,6 +510,8 @@ export default {
     // 获取列表
     setForm(data) {
       // console.log(data);
+      this.isEdit2 = false;
+      this.isEdit = false;
       this.isPiliang = data.length > 1;
       this.deliveryCashFee = undefined;
       this.queryParams.waybillCodeList = data;
