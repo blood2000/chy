@@ -119,7 +119,7 @@
         </el-form-item>
 
         <!-- 做远程的 -->
-        <el-form-item v-show="!isShipment" label="货主" prop="tin6" size="small">
+        <el-form-item v-show="!isShipment" v-if="false" label="货主" prop="tin6" size="small">
           <el-select
             v-model="queryParams.tin6"
             v-el-select-loadmore="loadmore"
@@ -186,8 +186,8 @@
 
       <RefactorTable
         is-show-index
-        :height="list.length>8? tHeight : null"
         :loading="loading"
+        :height="list.length>=10? tHeight : 'auto'"
         :data="list"
         row-key="id"
         stripe
@@ -595,12 +595,6 @@ export default {
         pageSize: this.queryParams.pageSize //	pageSize,示例值(10)	query	false
       };
     }
-
-    // theight() {
-    //   // 头部 70 49 10 460 186 65
-    //   var h = window.innerHeight || document.body.clientHeight;
-    //   return h - 292 - this.searchBoxheight;
-    // }
   },
 
   watch: {
@@ -613,12 +607,6 @@ export default {
       },
       immediate: true
     }
-    // showSearch: {
-    //   handler(value, odvalue) {
-    //     this.setTheight('tHeight', 'searchBox', this.showSearch);
-    //   },
-    //   immediate: true
-    // }
   },
 
 
@@ -635,14 +623,6 @@ export default {
     this.getDict();
     this.getList();
   },
-
-  // mounted() {
-  //   window.addEventListener('resize',
-  //     debounce(() => {
-  //       this.setTheight('tHeight', 'searchBox', this.showSearch);
-  //     }, 700)
-  //   );
-  // },
 
   methods: {
     // tab切换

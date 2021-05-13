@@ -248,7 +248,6 @@
       <!-- 表格 -->
       <RefactorTable
         is-show-index
-        :height="list.length ? tHeight : null"
         :loading="loading"
         :data="list"
         :table-columns-config="tableColumnsConfig"
@@ -406,15 +405,11 @@ import ChildDialog from '@/views/settlement/components/childDialog';
 import DetailDialog from '@/views/waybill/components/detailDialog';
 import importDialog from './components/importDialog';
 
-import setTheight from '@/layout/mixin/setTheight';
-
-
 const dictsData1 = [{ dictLabel: '未上报', dictValue: 0 }, { dictLabel: '上报成功', dictValue: 1 }, { dictLabel: '上报失败', dictValue: 2 }];
 
 export default {
   name: 'Manage', // 页面缓存需要name
   components: { CheckResult, ChildDialog, DetailDialog, importDialog },
-  mixins: [setTheight],
   data() {
     return {
       /* 模板参数必须 */
