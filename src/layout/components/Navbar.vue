@@ -28,7 +28,7 @@
       </div>
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
-          <span class="avatar-wrapper__user">{{ nickName }}</span>
+          <span class="avatar-wrapper__user">{{ nickName || name }}</span>
           <span class="avatar-wrapper__icon" />
         </div>
         <el-dropdown-menu slot="dropdown">
@@ -75,6 +75,7 @@ export default {
       'avatar',
       'device',
       'nickName',
+      'name',
       'roleName'
     ]),
     setting: {

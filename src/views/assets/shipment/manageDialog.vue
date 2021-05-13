@@ -23,20 +23,20 @@
         <stock-page v-if="activeName === 'stock'" class="table-page" :shipment-code="shipmentCode" :org-code="companyCode" />
       </el-tab-pane>
       <el-tab-pane label="项目管理" name="project">
-        <project-Page v-if="activeName === 'project'" class="table-page" :shipment-code="shipmentCode" :org-code="companyCode" />
+        <project-Page v-if="activeName === 'project'" class="table-page" :shipment-code="shipmentCode" :company-code="companyCode" />
       </el-tab-pane>
       <el-tab-pane label="常用地址管理" name="address">
-        <address-page v-if="activeName === 'address'" class="table-page" :shipment-code="shipmentCode" :org-code="companyCode" />
+        <address-page v-if="activeName === 'address'" class="table-page" :shipment-code="shipmentCode" :company-code="companyCode" />
       </el-tab-pane>
       <template v-if="companyCode">
         <el-tab-pane label="企业成员管理" name="member">
-          <user-page v-if="activeName === 'member'" class="table-page" :company-code="companyCode" />
+          <user-page v-if="activeName === 'member'" class="table-page" :company-code="companyCode" :user-code="userCode" />
         </el-tab-pane>
         <el-tab-pane label="企业组织管理" name="dep">
-          <dept-page v-if="activeName === 'dep'" class="table-page" :company-code="companyCode" />
+          <dept-page v-if="activeName === 'dep'" class="table-page" :company-code="companyCode" :user-code="userCode" />
         </el-tab-pane>
         <el-tab-pane label="企业角色管理" name="role">
-          <role-page v-if="activeName === 'role'" class="table-page" :company-code="companyCode" />
+          <role-page v-if="activeName === 'role'" class="table-page" :company-code="companyCode" :user-code="userCode" />
         </el-tab-pane>
       </template>
     </el-tabs>
@@ -74,6 +74,10 @@ export default {
       default: null
     },
     companyCode: {
+      type: String,
+      default: null
+    },
+    userCode: {
       type: String,
       default: null
     }

@@ -23,3 +23,15 @@ export function getCapacityData(branchCode) {
     method: 'get'
   });
 }
+
+// 货单/运单数
+export function getShipmentWaybillCount(branchCode, timeType) {
+  return request({
+    url: `/schedule/bigScreenSeach/getWaybillCount`,
+    method: 'get',
+    params: {
+      branchCode,
+      timeType
+    }
+  });
+}

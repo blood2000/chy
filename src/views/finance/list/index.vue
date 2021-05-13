@@ -341,7 +341,7 @@ export default {
           this.$refs.BillingDialog.setForm(row);
           break;
         case 3:
-          this.$router.push({ name: 'Statement', query: { id: row.code }});
+          this.$router.push({ name: 'Statement', query: { code: row.code }});
           break;
         default:
           break;

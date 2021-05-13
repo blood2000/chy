@@ -39,8 +39,8 @@
 
     <!-- center -->
     <div class="ly-center ly-border ly-flex-v ly-flex-pack-justify">
-      <TotalData class="ly-border" />
-      <Map ref="mapRef" class="ly-border" />
+      <TotalData :branch-code="branchCode" class="ly-border" @getPartitionListVo="getPartitionListVo" />
+      <Map ref="mapRef" :partition-list-vo="partitionListVo" class="ly-border" />
       <ScrollData class="ly-border" />
     </div>
 
@@ -117,7 +117,9 @@ export default {
   data() {
     return {
       branchCode: null,
-      websock: null
+      websock: null,
+      // 地图对应省份运单数据
+      partitionListVo: []
     };
   },
   computed: {
@@ -130,16 +132,17 @@ export default {
     // this.initWebSocket();
   },
   mounted() {
-    const throttle = ThrottleFun(this.refreshChart, 300);
-    window.onresize = () => {
-      throttle();
-    };
+    window.addEventListener('resize', this.resizeFun);
   },
   beforeDestroy() {
-    window.onresize = null;
+    window.removeEventListener('resize', this.resizeFun);
     if (this.websock) this.websock.close();
   },
   methods: {
+    resizeFun() {
+      const throttle = ThrottleFun(this.refreshChart, 300);
+      throttle();
+    },
     initWebSocket() { // 初始化websocket
       const wsuri = 'ws://127.0.0.1:8080';
       this.websock = new WebSocket(wsuri);
@@ -171,6 +174,10 @@ export default {
       this.$refs.OrderChartRef.refreshChart();
       this.$refs.ComplaintChartRef.refreshChart();
       this.$refs.mapRef.refreshChart();
+    },
+    // 获取地图对应省份运单数据
+    getPartitionListVo(data = []) {
+      this.partitionListVo = data;
     }
   }
 };

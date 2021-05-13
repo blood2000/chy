@@ -21,6 +21,14 @@ import maps from '@/assets/json/china.json';
 import { setfontSize } from '@/utils/fontSize';
 
 export default {
+  props: {
+    partitionListVo: {
+      type: Array,
+      default: () => {
+        return [];
+      }
+    }
+  },
   data() {
     return {
       chart: null,
@@ -30,47 +38,49 @@ export default {
         { name: '1-5万单', color: 'rgba(10, 187, 221, 1)' },
         { name: '小于1万单', color: 'rgba(31, 137, 188, 1)' }
       ],
-      regionData: [{
-        name: '广东省',
-        itemStyle: {
-          areaColor: 'rgba(10, 187, 221, 1)'
-        }
-      }, {
-        name: '湖北省',
-        itemStyle: {
-          areaColor: 'rgba(3, 252, 255, 1)'
-        }
-      }, {
-        name: '福建省',
-        itemStyle: {
-          areaColor: 'rgba(3, 252, 255, 1)'
-        }
-      }, {
-        name: '四川省',
-        itemStyle: {
-          areaColor: 'rgba(10, 187, 221, 1)'
-        }
-      }, {
-        name: '辽宁省',
-        itemStyle: {
-          areaColor: 'rgba(1, 227, 255, 1)'
-        }
-      }, {
-        name: '浙江省',
-        itemStyle: {
-          areaColor: 'rgba(1, 227, 255, 1)'
-        }
-      }, {
-        name: '山西省',
-        itemStyle: {
-          areaColor: 'rgba(31, 137, 188, 1)'
-        }
-      }, {
-        name: '山东省',
-        itemStyle: {
-          areaColor: 'rgba(1, 227, 255, 1)'
-        }
-      }],
+      regionData: [
+        // {
+        //   name: '广东省',
+        //   itemStyle: {
+        //     areaColor: 'rgba(10, 187, 221, 1)'
+        //   }
+        // }, {
+        //   name: '湖北省',
+        //   itemStyle: {
+        //     areaColor: 'rgba(3, 252, 255, 1)'
+        //   }
+        // }, {
+        //   name: '福建省',
+        //   itemStyle: {
+        //     areaColor: 'rgba(3, 252, 255, 1)'
+        //   }
+        // }, {
+        //   name: '四川省',
+        //   itemStyle: {
+        //     areaColor: 'rgba(10, 187, 221, 1)'
+        //   }
+        // }, {
+        //   name: '辽宁省',
+        //   itemStyle: {
+        //     areaColor: 'rgba(1, 227, 255, 1)'
+        //   }
+        // }, {
+        //   name: '浙江省',
+        //   itemStyle: {
+        //     areaColor: 'rgba(1, 227, 255, 1)'
+        //   }
+        // }, {
+        //   name: '山西省',
+        //   itemStyle: {
+        //     areaColor: 'rgba(31, 137, 188, 1)'
+        //   }
+        // }, {
+        //   name: '山东省',
+        //   itemStyle: {
+        //     areaColor: 'rgba(1, 227, 255, 1)'
+        //   }
+        // }
+      ],
       warnData: [
         { name: '鄂尔多斯', value: [109.78, 39.60] },
         { name: '招远', value: [120.38, 37.35] },
@@ -85,6 +95,15 @@ export default {
       // 模拟实时数据
       warnIndex: 0
     };
+  },
+  watch: {
+    partitionListVo: {
+      handler(value) {
+        if (!this.chart) return;
+        this.setRegionData();
+      },
+      deep: true
+    }
   },
   mounted() {
     this.$nextTick(() => {
@@ -106,6 +125,7 @@ export default {
       echarts.registerMap('china', maps);
       this.setOption();
       this.setFontOption();
+      this.setRegionData();
     },
     refreshChart() {
       this.chart.resize();
@@ -134,9 +154,7 @@ export default {
               show: true,
               color: '#D5EAFF'
             }
-          },
-          // 在地图中对特定的区域配置样式
-          regions: this.regionData
+          }
         },
         series: [{
           type: 'map',
@@ -184,6 +202,36 @@ export default {
             }
           }
         }]
+      });
+    },
+    // 设置地图对应省份运单数据
+    setRegionData() {
+      // 处理数据 [{provinceName: '', waybillCount: 0}] => [{name: '', itemStyle: {areaColor: ''}]
+      this.regionData = [];
+      this.partitionListVo.forEach(el => {
+        const { provinceName, waybillCount } = el;
+        let color = '';
+        if (waybillCount < 10000) {
+          color = 'rgba(31, 137, 188, 1)';
+        } else if (waybillCount >= 10000 && waybillCount < 50000) {
+          color = 'rgba(10, 187, 221, 1)';
+        } else if (waybillCount >= 50000 && waybillCount < 100000) {
+          color = 'rgba(16, 216, 227, 1)';
+        } else if (waybillCount >= 100000) {
+          color = 'rgba(3, 252, 255, 1)';
+        }
+        this.regionData.push({
+          name: provinceName,
+          itemStyle: {
+            areaColor: color
+          }
+        });
+      });
+      // 在地图中对特定的区域配置样式
+      this.chart.setOption({
+        geo: {
+          regions: this.regionData
+        }
       });
     },
     // 模拟实时数据

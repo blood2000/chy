@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="height: 100%">
     <index1920 v-if="activeName === '0'" />
     <index1366 v-if="activeName === '1'" />
   </div>
@@ -25,18 +25,19 @@ export default {
     };
   },
   mounted() {
-    const throttle = ThrottleFun(this.changeWidth, 500);
-    window.onresize = () => {
-      throttle();
-    };
+    window.addEventListener('resize', this.resizeFun);
   },
   beforeDestroy() {
-    window.onresize = null;
+    window.removeEventListener('resize', this.resizeFun);
   },
   created() {
     this.changeWidth();
   },
   methods: {
+    resizeFun() {
+      const throttle = ThrottleFun(this.changeWidth, 500);
+      throttle();
+    },
     goTarget(href) {
       window.open(href, '_blank');
     },

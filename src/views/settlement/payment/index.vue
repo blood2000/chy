@@ -434,7 +434,7 @@ export default {
         type: 'warning'
       }).then(() => {
         batch(this.bodyParams).then(response => {
-          this.$message({ type: 'success', message: '批量打款成功！' });
+          this.$message({ type: 'success', message: '发起网商打款成功！' });
           this.getList();
         });
       }).catch(() => {
@@ -462,7 +462,7 @@ export default {
             this.bodyParams.wayBillSettlementCodeList = [];
             this.bodyParams.wayBillSettlementCodeList.push(row.wayBillSettlementCode);
             batch(this.bodyParams).then(response => {
-              this.$message({ type: 'success', message: '打款成功！' });
+              this.$message({ type: 'success', message: '发起网商打款成功！' });
               this.getList();
             });
           }).catch(() => {

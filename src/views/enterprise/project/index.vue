@@ -119,6 +119,7 @@
         :title="title"
         :open.sync="open"
         :shipment-code="shipmentCode"
+        :company-code="companyCode"
         @refresh="getList"
       />
     </div>
@@ -139,7 +140,7 @@ export default {
       type: String,
       default: null
     },
-    orgCode: {
+    companyCode: {
       type: String,
       default: null
     }
@@ -218,8 +219,8 @@ export default {
     /** 查询项目列表 */
     getList() {
       this.loading = true;
-      if (this.orgCode) {
-        this.queryParams.orgCode = this.orgCode;
+      if (this.companyCode) {
+        this.queryParams.companyCode = this.companyCode;
       } else if (this.shipmentCode) {
         this.queryParams.shipmentCode = this.shipmentCode;
       }
