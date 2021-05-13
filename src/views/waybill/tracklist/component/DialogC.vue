@@ -35,7 +35,7 @@
         </el-select>
       </el-form-item> -->
       <el-form-item label="卸货凭证" prop="attachmentCode">
-        <uploadImage v-model="form.attachmentCode" :limit="9" fresh="true" />
+        <uploadImage v-model="form.attachmentCode" :limit="9" :fresh="fresh" />
       </el-form-item>
       <el-form-item label="卸货备注" prop="remark">
         <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入装货备注信息" style="width:90%;" />
@@ -63,7 +63,10 @@ export default {
       default: ''
     },
     open: Boolean,
-    disable: Boolean
+    disable: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
@@ -95,6 +98,7 @@ export default {
       },
       // 日期格式
       time: '',
+      // 加载多图
       fresh: false,
       // 卸车数量标签
       weightLabel: ''
@@ -157,7 +161,7 @@ export default {
           this.form.remark = info.remark;
           // this.form.waybillAddress = info.waybillAddressList[0].orderAddressCode;
           this.form.attachmentCode = info.attachmentCode;
-          this.fresh = true;
+          this.fresh = true; // 加载多图
         } else {
           this.form.unloadTime = this.waybill.signTime;
           this.form.unloadWeight = this.waybill.loadWeight;

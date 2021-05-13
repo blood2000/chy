@@ -65,7 +65,6 @@ export default {
   },
   watch: {
     fresh(val) {
-      console.log(val);
       if (val) {
         getFile(this.value).then(response => {
           console.log(response);

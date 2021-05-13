@@ -17,7 +17,7 @@
         <el-input-number v-model="form.loadWeight" placeholder="请输入装货量" controls-position="right" :min="0" style="width:90%;" />
       </el-form-item>
       <el-form-item label="装货单据" prop="attachmentCode">
-        <uploadImage v-model="form.attachmentCode" :limit="9" fresh="true" />
+        <uploadImage v-model="form.attachmentCode" :limit="9" :fresh="fresh" />
       </el-form-item>
       <el-form-item label="装货备注" prop="remark">
         <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入装货备注信息" style="width:90%;" />
@@ -120,7 +120,10 @@ export default {
       default: ''
     },
     open: Boolean,
-    disable: Boolean
+    disable: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
@@ -169,6 +172,7 @@ export default {
       time: '',
       // 商品code
       goodsCode: '',
+      // 加载多图
       fresh: false,
       // 装货数量标签
       weightLabel: '',
@@ -230,7 +234,7 @@ export default {
           // this.form.loadAddressCode = info.waybillAddres.loadOrderAddressCode;
           // this.form.unloadAddressCode = info.waybillAddres.unloadOrderAddressCode;
           this.form.attachmentCode = info.attachmentCode;
-          this.fresh = true;
+          this.fresh = true; // 加载多图
         // this.form.vehicleCode = info.vehicleCode;
         } else {
           this.form.loadTime = this.waybill.fillTime;
