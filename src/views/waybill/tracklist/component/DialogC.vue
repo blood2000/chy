@@ -35,7 +35,7 @@
         </el-select>
       </el-form-item> -->
       <el-form-item label="卸货凭证" prop="attachmentCode">
-        <uploadImage v-model="form.attachmentCode" />
+        <uploadImage v-model="form.attachmentCode" :limit="9" fresh="true" />
       </el-form-item>
       <el-form-item label="卸货备注" prop="remark">
         <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入装货备注信息" style="width:90%;" />
@@ -50,7 +50,7 @@
 
 <script>
 import { unload, getInfoDetail, unloadCredentials } from '@/api/waybill/tracklist';
-import UploadImage from '@/components/UploadImage/index';
+import UploadImage from '@/components/UploadImage/moreImg';
 
 export default {
   name: 'DialogC',
