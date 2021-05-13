@@ -358,7 +358,7 @@ export default {
     async getDeliveryCashFee(row, value) {
       const { data } = await deliveryCashFee({
         deliveryCashFee: value, //	司机实收现金		false
-        // deliveryFeeDeserved: row.deliveryFeeDeserved, // 司机应收运费
+        deliveryFeeDeserved: row.deliveryFeeDeserved, // 司机应收运费
         shipperCode: row.shipperCode //	货主Code		false
       });
 
