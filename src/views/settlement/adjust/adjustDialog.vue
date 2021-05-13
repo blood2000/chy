@@ -3,7 +3,7 @@
   <el-dialog class="i-adjust" :title="title" :visible="visible" width="1400px" :close-on-click-modal="false" append-to-body @close="cancel">
     <el-row v-if="isPiliang" :gutter="10" class="mb8">
       <el-col :span="10">
-        <span class="mr3">司机实收金额{{ isPiliang + '' }}</span>
+        <span class="mr3">司机实收金额</span>
         <!-- v-model="adjustlist.deliveryCashFee" -->
         <el-input-number
           v-model="deliveryCashFee"
@@ -321,7 +321,7 @@ export default {
 
       if (filterRow[key] === value) return;
 
-      if (!value) {
+      if (!value && value !== 0) {
         this.msgError('司机实收现金不能为空');
         row.deliveryCashFee = filterRow.deliveryCashFee;
         return;
@@ -389,7 +389,7 @@ export default {
 
       if (filterRow[key] === value) return;
 
-      if (!value) {
+      if (!value && value !== 0) {
         this.msgError(key === 'loadWeight' ? '装货重量不能为空' : '卸货重量不能为空');
         row[key] = filterRow[key];
         return;
