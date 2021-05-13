@@ -13,6 +13,15 @@
           @change="loadTimeChoose"
         />
       </el-form-item>
+      <el-form-item :label="weightLabel" prop="loadWeight">
+        <el-input-number v-model="form.loadWeight" placeholder="请输入装货量" controls-position="right" :min="0" style="width:90%;" />
+      </el-form-item>
+      <el-form-item label="装货单据" prop="attachmentCode">
+        <uploadImage v-model="form.attachmentCode" />
+      </el-form-item>
+      <el-form-item label="装货备注" prop="remark">
+        <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入装货备注信息" style="width:90%;" />
+      </el-form-item>
       <!-- <el-form-item label="货物" prop="goodsCode">
         <el-select
           v-model="form.goodsCode"
@@ -32,9 +41,6 @@
           />
         </el-select>
       </el-form-item> -->
-      <el-form-item :label="weightLabel" prop="loadWeight">
-        <el-input-number v-model="form.loadWeight" placeholder="请输入装货量" controls-position="right" :min="0" style="width:90%;" />
-      </el-form-item>
       <!-- <el-form-item label="装货地址" prop="loadAddressCode">
         <el-select
           v-model="form.loadAddressCode"
@@ -91,12 +97,6 @@
           />
         </el-select>
       </el-form-item> -->
-      <el-form-item label="装货单据" prop="attachmentCode">
-        <uploadImage v-model="form.attachmentCode" />
-      </el-form-item>
-      <el-form-item label="装货备注" prop="remark">
-        <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入装货备注信息" style="width:90%;" />
-      </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" @click="submitForm">立即提交</el-button>
@@ -107,7 +107,7 @@
 
 <script>
 import { load, getAddress, getInfoDetail, loadCredentials, getGoods } from '@/api/waybill/tracklist';
-import UploadImage from '@/components/UploadImage/index';
+import UploadImage from '@/components/UploadImage/moreImg';
 
 export default {
   name: 'DialogA',
