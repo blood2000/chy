@@ -39,8 +39,8 @@
 
     <!-- center -->
     <div class="ly-center ly-border ly-flex-v ly-flex-pack-justify">
-      <TotalData class="ly-border" />
-      <Map ref="mapRef" class="ly-border" />
+      <TotalData :branch-code="branchCode" class="ly-border" @getPartitionListVo="getPartitionListVo" />
+      <Map ref="mapRef" :partition-list-vo="partitionListVo" class="ly-border" />
       <ScrollData class="ly-border" />
     </div>
 
@@ -117,7 +117,9 @@ export default {
   data() {
     return {
       branchCode: null,
-      websock: null
+      websock: null,
+      // 地图对应省份运单数据
+      partitionListVo: []
     };
   },
   computed: {
@@ -171,6 +173,10 @@ export default {
       this.$refs.OrderChartRef.refreshChart();
       this.$refs.ComplaintChartRef.refreshChart();
       this.$refs.mapRef.refreshChart();
+    },
+    // 获取地图对应省份运单数据
+    getPartitionListVo(data = []) {
+      this.partitionListVo = data;
     }
   }
 };

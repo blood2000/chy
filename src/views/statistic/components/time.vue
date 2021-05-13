@@ -1,8 +1,8 @@
 <template>
   <div class="s-choose-time">
-    {{ currentTime }}
+    {{ timeList[currentTime] }}
     <ul class="time-list">
-      <li v-for="item in timeList" :key="item.code" :class="{active: currentTime === item.name}" @click="changeTime(item)">{{ item.name }}</li>
+      <li v-for="(value, key) in timeList" :key="key" :class="{active: currentTime == key}" @click="changeTime(key)">{{ value }}</li>
     </ul>
   </div>
 </template>
@@ -11,20 +11,33 @@
 export default {
   data() {
     return {
-      currentTime: '最近3个月',
-      timeList: [
-        { name: '最近7天', code: '1' },
-        { name: '最近1个月', code: '2' },
-        { name: '最近3个月', code: '3' },
-        { name: '最近1年', code: '4' },
-        { name: '全部数据', code: '5' }
-      ]
+      currentTime: 3,
+      timeList: {
+        1: '最近7天',
+        2: '最近1个月',
+        3: '最近3个月',
+        4: '最近1年',
+        5: '全部数据' // 实际key为0, 为了排序设为5
+      }
     };
   },
+  created() {
+    this.setTimeType();
+  },
   methods: {
-    changeTime(item) {
-      if (this.currentTime === item) return;
-      this.currentTime = item.name;
+    changeTime(key) {
+      if (this.currentTime === Number(key)) return;
+      this.currentTime = Number(key);
+      this.setTimeType();
+    },
+    changeKey() {
+      if (this.currentTime === 5) {
+        return 0;
+      }
+      return this.currentTime;
+    },
+    setTimeType() {
+      this.$emit('getTimeType', this.changeKey());
     }
   }
 };
