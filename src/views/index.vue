@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="height: 100%">
     <index1920 v-if="activeName === '0'" />
     <index1366 v-if="activeName === '1'" />
   </div>
