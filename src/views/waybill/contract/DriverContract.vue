@@ -75,7 +75,7 @@
               <td id="coal_type_name">{{ obj.goodsTypeName || obj.goodsBigTypeName }}</td>
             </tr>
             <tr>
-              <td><b>净重</b></td>
+              <td><b>计划数量</b></td>
               <td id="weight">{{ obj.loadWeight }}
                 吨
               </td>
