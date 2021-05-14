@@ -244,7 +244,8 @@
         </template>
         <!-- 可抢单量 -->
         <template #notRobbedOrder="{row}">
-          <span>{{ row.totalType === "1"? '不限' : row.notRobbedOrder }}</span>
+          <span>{{ (!row.notRobbedOrder && row.notRobbedOrder !== 0)? '不限': row.notRobbedOrder }}</span>
+          <!-- <span>{{ row.totalType === "1"? '不限' : row.notRobbedOrder }}</span> -->
         </template>
         <!-- 重量/体积/车 -->
         <template #tin_weight="{row}">
@@ -601,9 +602,9 @@ export default {
     '$route.query.p': {
       handler(value, odvalue) {
         if (!value) return;
-        this.queryParams.pageNum = 1;
-        this.getList();
-        this.$route.query.p = '';
+        this.$router.replace({
+          path: '/refresh'
+        });
       },
       immediate: true
     }
