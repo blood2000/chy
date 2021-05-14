@@ -207,6 +207,16 @@
         <template #applyStatus="{row}">
           <span>{{ selectDictLabel(applyStatusOptions, row.applyStatus) }}</span>
         </template>
+        <template #loadWeight="{row}">
+          <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.loadWeight || '0.00' }} 吨</span>
+          <span v-if="row.stowageStatus === '1'">{{ row.loadWeight || '0.00' }} 立方</span>
+          <span v-if="row.stowageStatus === '2'">{{ row.loadWeight || '0.00' }} 车</span>
+        </template>
+        <template #unloadWeight="{row}">
+          <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.unloadWeight || '0.00' }} 吨</span>
+          <span v-if="row.stowageStatus === '1'">{{ row.unloadWeight || '0.00' }} 立方</span>
+          <span v-if="row.stowageStatus === '2'">{{ row.unloadWeight || '0.00' }} 车</span>
+        </template>
         <template #applyTime="{row}">
           <span>{{ parseTime(row.applyTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
