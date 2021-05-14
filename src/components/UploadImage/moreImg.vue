@@ -170,4 +170,7 @@ export default {
 .isShowUpload ::v-deep .el-upload--picture-card{
   display: none;
 }
+::v-deep .el-upload-list--picture-card .el-upload-list__item-thumbnail {
+    object-fit: contain;
+}
 </style>
