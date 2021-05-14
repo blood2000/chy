@@ -20,6 +20,7 @@
               :data="deptTreeOptions"
               :props="defaultTreeProps"
               :expand-on-click-node="false"
+              :filter-node-method="filterDepNode"
               default-expand-all
               @node-click="handleNodeClick"
             />
@@ -849,6 +850,10 @@ export default {
     handleNodeClick(data) {
       this.queryParams.orgCode = data.code;
       this.getList();
+    },
+    filterDepNode(value, data) {
+      if (!value) return true;
+      return data.label.indexOf(value) !== -1;
     },
     handleOrgClick(data) {
       this.form.orgCode = data.code;
