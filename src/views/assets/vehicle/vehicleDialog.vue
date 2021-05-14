@@ -441,13 +441,19 @@ export default {
     },
     /** 审核通过/未通过按钮 */
     reviewForm(key) {
-      examine({
-        authStatus: key,
-        code: this.form.code
-      }).then(response => {
-        this.msgSuccess('操作成功');
-        this.close();
-        this.$emit('refresh');
+      this.$refs['form'].validate(valid => {
+        if (key === 2 || valid) {
+          examine({
+            authStatus: key,
+            code: this.form.code
+          }).then(response => {
+            this.msgSuccess('操作成功');
+            this.close();
+            this.$emit('refresh');
+          });
+        } else {
+          this.msgWarning('填写的信息不完整或有误，不能通过审核');
+        }
       });
     },
     // 查询车辆列表

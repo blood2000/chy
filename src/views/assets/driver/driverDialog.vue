@@ -745,13 +745,26 @@ export default {
     },
     /** 审核通过/未通过按钮 */
     reviewForm(key) {
-      this.form.authStatus = key;
-      this.form.identificationEffective = praseBooleanToNum(this.form.identificationEffective);
-      this.form.validPeriodAlways = praseBooleanToNum(this.form.validPeriodAlways);
-      examine(this.form).then(response => {
-        this.msgSuccess('操作成功');
-        this.close();
-        this.$emit('refresh');
+      const flag = this.$refs.ChooseArea.submit();
+      this.$refs['form'].validate(valid => {
+        if (key === 2 || (valid && flag)) {
+          this.$refs['vehicleForm'].validate(valid => {
+            if (key === 2 || valid) {
+              this.form.authStatus = key;
+              this.form.identificationEffective = praseBooleanToNum(this.form.identificationEffective);
+              this.form.validPeriodAlways = praseBooleanToNum(this.form.validPeriodAlways);
+              examine(this.form).then(response => {
+                this.msgSuccess('操作成功');
+                this.close();
+                this.$emit('refresh');
+              });
+            } else {
+              this.msgWarning('填写的信息不完整或有误，不能通过审核');
+            }
+          });
+        } else {
+          this.msgWarning('填写的信息不完整或有误，不能通过审核');
+        }
       });
     },
     /** 取消按钮 */
