@@ -349,6 +349,22 @@
           />
         </el-select>
       </el-form-item>
+
+        <el-form-item label="打款开票方式" prop="payInvoiceType">
+            <el-select
+                    v-model="form.payInvoiceType"
+                    clearable
+                    filterable
+                    class="width90"
+            >
+                <el-option
+                        v-for="dict in payInvoiceTypeOptions"
+                        :key="dict.dictValue"
+                        :label="dict.dictLabel"
+                        :value="dict.dictValue"
+                />
+            </el-select>
+        </el-form-item>
     </el-form>
 
     <div v-if="title === '新增' || title === '编辑'" slot="footer" class="dialog-footer">
@@ -404,6 +420,10 @@ export default {
       isOptions: [
         { dictLabel: '否', dictValue: 0 },
         { dictLabel: '是', dictValue: 1 }
+      ],
+      payInvoiceTypeOptions: [
+        { dictLabel: '先打款后开票', dictValue: 1 },
+        { dictLabel: '先开票后打款', dictValue: 2 }
       ],
       // 核算方式字典
       accountTypeOptions: [],
@@ -665,6 +685,7 @@ export default {
         wipeType: null,
         isMonthly: null,
         isPrepaid: 1, // 是否预付运费，默认是
+        payInvoiceType: 1,
         isConsumption: null,
         consumptionUnit: null,
         consumptionMin: null,
