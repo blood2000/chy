@@ -39,15 +39,19 @@
         <el-divider content-position="left" class="m40">
           <h5 class="g-title-medium">地址</h5>
         </el-divider>
-        <el-row>
-          <el-col :span="12" class="text-row">
+        <el-row :gutter="20">
+          <el-col :span="2" class="text-row">
             <label>装货地址：</label>
+          </el-col>
+          <el-col :span="10" class="text-row">
             {{ form.waybillAddress?form.waybillAddress.loadFormattedAddress:'' }}
             {{ form.waybillAddress?form.waybillAddress.loadContact:'' }}
             {{ form.waybillAddress?form.waybillAddress.loadContactPhone:'' }}
           </el-col>
-          <el-col :span="12" class="text-row">
+          <el-col :span="2" class="text-row">
             <label>卸货地址：</label>
+          </el-col>
+          <el-col :span="10" class="text-row">
             {{ form.waybillAddress?form.waybillAddress.unloadFormattedAddress:'' }}
             {{ form.waybillAddress?form.waybillAddress.unloadContact:'' }}
             {{ form.waybillAddress?form.waybillAddress.unloadContactPhone:'' }}
