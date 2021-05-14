@@ -20,7 +20,7 @@
 
     <el-dropdown ref="TagsDerpDown" class="btn-arrow-container" trigger="click">
       <div class="btn-arrow" />
-      <el-dropdown-menu slot="dropdown" class="tags-dropdown">
+      <el-dropdown-menu slot="dropdown" :append-to-body="false" class="tags-dropdown">
         <router-link
           v-for="tag in overflowTagsList"
           :key="tag.path"
@@ -29,12 +29,12 @@
           @click.middle.native="!isAffix(tag)?closeSelectedTag(tag):''"
           @contextmenu.prevent.native="openMenu(tag,$event)"
         >
-          <el-dropdown-item>
-            <span style="padding-right: 40px">{{ tag.title }}</span>
+          <el-dropdown-item class="btn-arrow-container-item">
+            <span>{{ tag.title }}</span>
             <span v-if="!isAffix(tag)" class="tag-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
           </el-dropdown-item>
         </router-link>
-        <el-dropdown-item v-show="overflowTagsList.length==0" disabled>暂无更多</el-dropdown-item>
+        <el-dropdown-item v-show="overflowTagsList.length==0" class="btn-arrow-container-none" disabled>暂无更多</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
 
@@ -354,6 +354,13 @@ export default {
     position: absolute;
     top: 0;
     right: 0;
+    .btn-arrow-container-item{
+      min-width: 160px;
+    }
+    .btn-arrow-container-none{
+      text-align: center;
+      min-width: 94px;
+    }
   }
   .btn-arrow{
     height: 16px;
