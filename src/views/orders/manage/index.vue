@@ -174,7 +174,7 @@
         </el-col>
 
         <el-col :span="1.5" class="fr">
-          <tablec-cascader v-model="tableColumnsConfig" :lcokey="listManagesApi" />
+          <tablec-cascader v-model="tableColumnsConfig" :lcokey="listManagesApi" refresh />
         </el-col>
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
         <!-- <el-col v-show="showSearch" :span="1.5" class="fr mr20">
