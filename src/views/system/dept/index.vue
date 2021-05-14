@@ -136,6 +136,9 @@ export default {
     userCode: {
       type: String,
       default: null
+    },
+    isShipment: {
+      type: Boolean
     }
   },
   data() {
@@ -254,6 +257,9 @@ export default {
       if (this.userCode) {
         this.queryParams.userCode = this.userCode;
       }
+      if (this.isShipment) {
+        this.queryParams.isShipment = this.isShipment;
+      }
       listDept(this.queryParams).then(response => {
         this.deptList = this.handleTree(response.data, 'id');
         this.loading = false;
@@ -311,6 +317,9 @@ export default {
       this.title = '添加组织';
       if (this.companyCode) {
         this.queryParams.orgCode = this.companyCode;
+      }
+      if (this.isShipment) {
+        this.queryParams.isShipment = this.isShipment;
       }
       listDept(this.queryParams).then(response => {
 	      this.deptOptions = this.handleTree(response.data, 'id');
