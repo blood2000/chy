@@ -111,9 +111,11 @@
             <label>装货重量（吨）：</label>
             {{ formAttachment?formAttachment.loadWeight:'' }}
           </el-col>
-          <el-col :span="12" class="text-row">
+          <el-col :span="2" class="text-row">
             <label>装货签照片：</label>
-            <img v-viewer :src="formAttachment?formAttachment.attachUrls:''" class="img-box">
+          </el-col>
+          <el-col :span="22" class="text-row">
+            <img v-for="(url, index) in formAttachmentUrl" :key="index" v-viewer :src="url ? url:''" class="img-box">
           </el-col>
         </el-row>
         <el-divider content-position="left" class="m40">
@@ -128,9 +130,11 @@
             <label>卸货重量（吨）：</label>
             {{ formAttachmentUp?formAttachmentUp.unloadWeight:'' }}
           </el-col>
-          <el-col :span="12" class="text-row">
+          <el-col :span="2" class="text-row">
             <label>卸货签照片：</label>
-            <img v-viewer :src="formAttachmentUp?formAttachmentUp.attachUrls:''" class="img-box">
+          </el-col>
+          <el-col :span="22" class="text-row">
+            <img v-for="(url, index) in formAttachmentUpUrl" :key="index" v-viewer :src="url ? url:''" class="img-box">
           </el-col>
         </el-row>
       </el-tab-pane>
@@ -238,7 +242,9 @@ export default {
         balanceVo: {}
       },
       formAttachment: {},
+      formAttachmentUrl: [],
       formAttachmentUp: {},
+      formAttachmentUpUrl: [],
       formCommentDriver: {},
       formCommentShipment: {},
       timeLineList: [],
@@ -296,12 +302,14 @@ export default {
       getWaybillAttachment(this.currentId, 1).then(response => {
         // console.log(response);
         this.formAttachment = response.data ? response.data[0] : null;
+        this.formAttachmentUrl = this.formAttachment.attachUrls.split(',');
         console.log(this.formAttachment);
       });
       // 回单-卸货
       getWaybillAttachment(this.currentId, 2).then(response => {
         // console.log(response);
         this.formAttachmentUp = response.data ? response.data[0] : null;
+        this.formAttachmentUpUrl = this.formAttachmentUp.attachUrls.split(',');
         console.log(this.formAttachmentUp);
       });
       // 评价-司机
@@ -384,10 +392,13 @@ export default {
   margin-bottom: 22px;
 }
 .img-box{
+  margin: 5px 5px 0 0;
   width: 200px;
   height: 200px;
   vertical-align: top;
   object-fit: contain;
+  border-radius: 6px;
+  border: 1px dashed #dddddd;
 }
 // 轨迹-运单详情卡片
 .map-content{
