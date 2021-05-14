@@ -9,9 +9,9 @@
           <div class="index">{{ index + 1 }}</div>
           <div class="label">大道成技术有股份核心有限公司</div>
           <div class="line">
-            <div class="value" />
+            <div class="value" :style="`width: ${item.count / maxCount * 100}%;`" />
           </div>
-          <div class="text"><count-to :end-val="3000" /></div>
+          <div class="text"><count-to :end-val="item.count" /></div>
         </li>
       </ul>
     </div>
@@ -27,8 +27,29 @@ export default {
   },
   data() {
     return {
-      dataList: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
+      maxCount: 0,
+      dataList: [
+        { count: 3000 },
+        { count: 2951 },
+        { count: 2652 },
+        { count: 2561 },
+        { count: 2469 },
+        { count: 2004 },
+        { count: 1950 },
+        { count: 1620 },
+        { count: 1520 },
+        { count: 1236 }
+      ]
     };
+  },
+  created() {
+    this.createProgress();
+  },
+  methods: {
+    // 模拟进度条
+    createProgress() {
+      this.maxCount = this.dataList[0].count;
+    }
   }
 };
 </script>
@@ -84,9 +105,11 @@ export default {
           width: 11rem;
           height: 0.4rem;
           .value{
+            width: 0%;
             height: 100%;
             background: linear-gradient(93deg, #9C4DDC, #3397F4);
             border-radius: 0px 4px 4px 0px;
+            transition: width 0.5s;
           }
         }
         >.text{
