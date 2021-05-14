@@ -431,6 +431,9 @@ export default {
           { validator: (rules, value, callback) => this.formValidate.idCardValidate(rules, value, callback, this.form.identificationBeginTime, this.form.identificationEffective), trigger: ['change', 'blur'] },
           { validator: (rules, value, callback) => this.formValidate.isExpired(rules, value, callback, this.form.identificationEffective), trigger: ['change', 'blur'] }
         ],
+        artificialIdentificationNumber: [
+          { validator: this.formValidate.idCard, trigger: ['blur', 'change'] }
+        ],
         creditAmount: [
           { validator: this.formValidate.number, trigger: 'blur' }
         ],
