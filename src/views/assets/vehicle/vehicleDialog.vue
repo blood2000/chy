@@ -2,17 +2,18 @@
   <!-- 添加或修改车辆对话框 -->
   <el-dialog :class="[{'i-add':title==='新增'||title==='添加车辆'},{'i-check':title==='审核'}]" :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
-      <!-- 调度者/司机选择车辆 -->
-      <el-form-item v-if="(teamCode || driverCode) && title!=='详情'" label="查询已有车辆">
+      <!-- 车辆信息 -->
+      <el-form-item label="车牌号" prop="licenseNumber">
         <el-select
-          v-model="licenseNumber"
+          v-if="(teamCode || driverCode) && title!=='详情' && addVehicleType === 1"
+          v-model="form.licenseNumber"
           v-el-select-loadmore="loadmore"
           filterable
           clearable
           remote
           reserve-keyword
           placeholder="通过车牌号码进行查询"
-          class="width90"
+          class="width70"
           :remote-method="vehicleRemoteMethod"
           :loading="vehicleLoading"
           @change="vehicleChange"
@@ -24,10 +25,8 @@
             :value="item.code"
           />
         </el-select>
-      </el-form-item>
-      <!-- 车辆信息 -->
-      <el-form-item label="车牌号" prop="licenseNumber">
-        <el-input v-model="form.licenseNumber" placeholder="请输入车牌号" class="width90" clearable />
+        <el-input v-if="addVehicleType === 0" v-model="form.licenseNumber" placeholder="请输入车牌号" :class="(teamCode || driverCode) && title!=='详情' ? 'width70' : 'width90'" clearable />
+        <el-button v-if="(teamCode || driverCode) && title!=='详情'" type="text" style="width: 20%;text-decoration: underline;" @click="changeAddVehicleType">{{ addVehicleType === 0 ? '选择已有车辆' : '手动添加车辆' }}</el-button>
       </el-form-item>
       <el-form-item label="车辆归属类型" prop="vehicleAscriptionType">
         <el-select v-model="form.vehicleAscriptionType" placeholder="请选择车辆归属类型" class="width90" clearable filterable>
@@ -266,14 +265,15 @@ export default {
         ]
       },
       // 选择车辆
-      licenseNumber: '',
       vehicleLoading: false,
       vehicleOptions: [],
       queryParams: {
         pageNum: 1,
         pageSize: 10,
         licenseNumber: null
-      }
+      },
+      // 添加车辆方式
+      addVehicleType: 0 // 0input  1select
     };
   },
   computed: {
@@ -386,7 +386,10 @@ export default {
     // 表单重置
     reset() {
       this.buttonLoading = false;
-      this.licenseNumber = '';
+      this.addVehicleType = 0;
+      this.resetVehicle();
+    },
+    resetVehicle() {
       this.form = {
         id: null,
         code: null,
@@ -438,13 +441,19 @@ export default {
     },
     /** 审核通过/未通过按钮 */
     reviewForm(key) {
-      examine({
-        authStatus: key,
-        code: this.form.code
-      }).then(response => {
-        this.msgSuccess('操作成功');
-        this.close();
-        this.$emit('refresh');
+      this.$refs['form'].validate(valid => {
+        if (key === 2 || valid) {
+          examine({
+            authStatus: key,
+            code: this.form.code
+          }).then(response => {
+            this.msgSuccess('操作成功');
+            this.close();
+            this.$emit('refresh');
+          });
+        } else {
+          this.msgWarning('填写的信息不完整或有误，不能通过审核');
+        }
       });
     },
     // 查询车辆列表
@@ -482,6 +491,15 @@ export default {
           this.form = { ...el };
         }
       });
+    },
+    // 切换添加车辆方式
+    changeAddVehicleType() {
+      if (this.addVehicleType === 0) {
+        this.addVehicleType = 1;
+      } else {
+        this.addVehicleType = 0;
+      }
+      this.resetVehicle();
     }
   }
 };
@@ -494,6 +512,9 @@ export default {
 	.width90{
 	  width: 90%;
 	}
+  .width70{
+    width: 70%;
+  }
 	.width28{
 	  width: 28%;
 	}

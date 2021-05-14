@@ -277,16 +277,20 @@
     -->
     <el-form ref="vehicleForm" :model="vehicleForm" :rules="vehicleRules" label-width="154px">
       <template v-if="form.driverType == 1">
-        <el-form-item v-if="title === '新增'" label="查询已有车辆">
+        <el-form-item v-if="title === '新增'" label="车牌号" prop="licenseNumber" :rules="[{ required: true, message: '车牌号不能为空', trigger: ['change', 'blur'] }]">
+          <!-- 新增车辆 -->
+          <el-input v-if="addVehicleType === 0" v-model="vehicleForm.licenseNumber" :disabled="disable" placeholder="支持自动识别" class="width70" clearable />
+          <!-- 选择已有车辆 -->
           <el-select
-            v-model="licenseNumber"
+            v-else
+            v-model="vehicleForm.licenseNumber"
             v-el-select-loadmore="VehicleLoadmore"
             filterable
             clearable
             remote
             reserve-keyword
             placeholder="通过车牌号码进行查询"
-            class="width90"
+            class="width70"
             :disabled="disable"
             :remote-method="vehicleRemoteMethod"
             :loading="vehicleLoading"
@@ -299,9 +303,8 @@
               :value="item.code"
             />
           </el-select>
-        </el-form-item>
-        <el-form-item v-if="title === '新增'" label="车牌号" prop="licenseNumber" :rules="[{ required: true, message: '车牌号不能为空', trigger: ['change', 'blur'] }]">
-          <el-input v-model="vehicleForm.licenseNumber" :disabled="disable" placeholder="支持自动识别" class="width90" clearable />
+          <!-- 切换按钮 -->
+          <el-button type="text" style="width: 20%;text-decoration: underline;" @click="changeAddVehicleType">{{ addVehicleType === 0 ? '选择已有车辆' : '手动添加车辆' }}</el-button>
         </el-form-item>
         <el-form-item v-else-if="title !== '新增' && vehicleInfoList.length > 0" label="车牌号" prop="licenseNumber" :rules="[{ required: true, message: '车牌号不能为空', trigger: ['change','blur'] }]">
           <el-select v-model="vehicleForm.licenseNumber" class="width90" filterable @change="changeVehicle" @focus="saveVehicle">
@@ -609,14 +612,15 @@ export default {
       vehicleInfoList: [],
       currentIndex: 0,
       // 选择车辆
-      licenseNumber: '',
       vehicleLoading: false,
       vehicleOptions: [],
       vehicleQueryParams: {
         pageNum: 1,
         pageSize: 10,
         licenseNumber: null
-      }
+      },
+      // 添加车辆方式
+      addVehicleType: 0 // 0input  1select
     };
   },
   computed: {
@@ -741,13 +745,26 @@ export default {
     },
     /** 审核通过/未通过按钮 */
     reviewForm(key) {
-      this.form.authStatus = key;
-      this.form.identificationEffective = praseBooleanToNum(this.form.identificationEffective);
-      this.form.validPeriodAlways = praseBooleanToNum(this.form.validPeriodAlways);
-      examine(this.form).then(response => {
-        this.msgSuccess('操作成功');
-        this.close();
-        this.$emit('refresh');
+      const flag = this.$refs.ChooseArea.submit();
+      this.$refs['form'].validate(valid => {
+        if (key === 2 || (valid && flag)) {
+          this.$refs['vehicleForm'].validate(valid => {
+            if (key === 2 || valid) {
+              this.form.authStatus = key;
+              this.form.identificationEffective = praseBooleanToNum(this.form.identificationEffective);
+              this.form.validPeriodAlways = praseBooleanToNum(this.form.validPeriodAlways);
+              examine(this.form).then(response => {
+                this.msgSuccess('操作成功');
+                this.close();
+                this.$emit('refresh');
+              });
+            } else {
+              this.msgWarning('填写的信息不完整或有误，不能通过审核');
+            }
+          });
+        } else {
+          this.msgWarning('填写的信息不完整或有误，不能通过审核');
+        }
       });
     },
     /** 取消按钮 */
@@ -762,9 +779,9 @@ export default {
     // 表单重置
     reset() {
       this.buttonLoading = false;
-      this.licenseNumber = '';
       this.vehicleInfoList = [];
       this.currentIndex = 0;
+      this.addVehicleType = 0;
       this.form = {
         id: null,
         code: null,
@@ -987,6 +1004,15 @@ export default {
           this.vehicleForm = { ...el };
         }
       });
+    },
+    // 切换添加车辆方式
+    changeAddVehicleType() {
+      if (this.addVehicleType === 0) {
+        this.addVehicleType = 1;
+      } else {
+        this.addVehicleType = 0;
+      }
+      this.resetVehicle();
     }
   }
 };
@@ -1001,6 +1027,9 @@ export default {
 }
 .width90{
   width: 90%;
+}
+.width70{
+  width: 70%;
 }
 .width27{
   width: 27%;

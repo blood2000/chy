@@ -16,8 +16,10 @@
             {{ form.statusName }}
           </el-col>
           <el-col :span="12" class="text-row">
-            <label>装货重量(吨)：</label>
-            {{ form.loadWeight }}
+            <label>装货数量：</label>
+            <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ form.loadWeight || '0.00' }} 吨</span>
+            <span v-if="form.stowageStatus === '1'">{{ form.loadWeight || '0.00' }} 立方</span>
+            <span v-if="form.stowageStatus === '2'">{{ form.loadWeight || '0.00' }} 车</span>
           </el-col>
           <el-col :span="12" class="text-row">
             <label>货品类别：</label>
@@ -39,15 +41,19 @@
         <el-divider content-position="left" class="m40">
           <h5 class="g-title-medium">地址</h5>
         </el-divider>
-        <el-row>
-          <el-col :span="12" class="text-row">
+        <el-row :gutter="20">
+          <el-col :span="2" class="text-row">
             <label>装货地址：</label>
+          </el-col>
+          <el-col :span="10" class="text-row">
             {{ form.waybillAddress?form.waybillAddress.loadFormattedAddress:'' }}
             {{ form.waybillAddress?form.waybillAddress.loadContact:'' }}
             {{ form.waybillAddress?form.waybillAddress.loadContactPhone:'' }}
           </el-col>
-          <el-col :span="12" class="text-row">
+          <el-col :span="2" class="text-row">
             <label>卸货地址：</label>
+          </el-col>
+          <el-col :span="10" class="text-row">
             {{ form.waybillAddress?form.waybillAddress.unloadFormattedAddress:'' }}
             {{ form.waybillAddress?form.waybillAddress.unloadContact:'' }}
             {{ form.waybillAddress?form.waybillAddress.unloadContactPhone:'' }}
@@ -101,15 +107,19 @@
         <el-row>
           <el-col :span="12" class="text-row">
             <label>装货签到时间：</label>
-            {{ formAttachment?formAttachment.cargoTime:'' }}
+            {{ formAttachment?formAttachment.cargoTime:'暂无' }}
           </el-col>
           <el-col :span="12" class="text-row">
-            <label>装货重量（吨）：</label>
-            {{ formAttachment?formAttachment.loadWeight:'' }}
+            <label>装货数量：</label>
+            <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ formAttachment?formAttachment.loadWeight:'0.00' }} 吨</span>
+            <span v-if="form.stowageStatus === '1'">{{ formAttachment?formAttachment.loadWeight:'0.00' }} 立方</span>
+            <span v-if="form.stowageStatus === '2'">{{ formAttachment?formAttachment.loadWeight:'0.00' }} 车</span>
           </el-col>
-          <el-col :span="12" class="text-row">
+          <el-col :span="2" class="text-row">
             <label>装货签照片：</label>
-            <img v-viewer :src="formAttachment?formAttachment.attachUrls:''" class="img-box">
+          </el-col>
+          <el-col :span="22" class="text-row">
+            <img v-for="(url, index) in formAttachmentUrl" :key="index" v-viewer :src="url ? url:''" class="img-box">
           </el-col>
         </el-row>
         <el-divider content-position="left" class="m40">
@@ -118,15 +128,19 @@
         <el-row>
           <el-col :span="12" class="text-row">
             <label>卸货签到时间：</label>
-            {{ formAttachmentUp?formAttachmentUp.unloadTime:'' }}
+            {{ formAttachmentUp?formAttachmentUp.unloadTime:'暂无' }}
           </el-col>
           <el-col :span="12" class="text-row">
-            <label>卸货重量（吨）：</label>
-            {{ formAttachmentUp?formAttachmentUp.unloadWeight:'' }}
+            <label>卸货数量：</label>
+            <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ formAttachmentUp?formAttachmentUp.unloadWeight:'0.00' }} 吨</span>
+            <span v-if="form.stowageStatus === '1'">{{ formAttachmentUp?formAttachmentUp.unloadWeight:'0.00' }} 立方</span>
+            <span v-if="form.stowageStatus === '2'">{{ formAttachmentUp?formAttachmentUp.unloadWeight:'0.00' }} 车</span>
           </el-col>
-          <el-col :span="12" class="text-row">
+          <el-col :span="2" class="text-row">
             <label>卸货签照片：</label>
-            <img v-viewer :src="formAttachmentUp?formAttachmentUp.attachUrls:''" class="img-box">
+          </el-col>
+          <el-col :span="22" class="text-row">
+            <img v-for="(url, index) in formAttachmentUpUrl" :key="index" v-viewer :src="url ? url:''" class="img-box">
           </el-col>
         </el-row>
       </el-tab-pane>
@@ -234,7 +248,9 @@ export default {
         balanceVo: {}
       },
       formAttachment: {},
+      formAttachmentUrl: [],
       formAttachmentUp: {},
+      formAttachmentUpUrl: [],
       formCommentDriver: {},
       formCommentShipment: {},
       timeLineList: [],
@@ -292,12 +308,14 @@ export default {
       getWaybillAttachment(this.currentId, 1).then(response => {
         // console.log(response);
         this.formAttachment = response.data ? response.data[0] : null;
+        this.formAttachmentUrl = this.formAttachment.attachUrls.split(',');
         console.log(this.formAttachment);
       });
       // 回单-卸货
       getWaybillAttachment(this.currentId, 2).then(response => {
         // console.log(response);
         this.formAttachmentUp = response.data ? response.data[0] : null;
+        this.formAttachmentUpUrl = this.formAttachmentUp.attachUrls.split(',');
         console.log(this.formAttachmentUp);
       });
       // 评价-司机
@@ -380,10 +398,13 @@ export default {
   margin-bottom: 22px;
 }
 .img-box{
+  margin: 5px 5px 0 0;
   width: 200px;
   height: 200px;
   vertical-align: top;
   object-fit: contain;
+  border-radius: 6px;
+  border: 1px dashed #dddddd;
 }
 // 轨迹-运单详情卡片
 .map-content{

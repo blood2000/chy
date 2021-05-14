@@ -431,6 +431,9 @@ export default {
           { validator: (rules, value, callback) => this.formValidate.idCardValidate(rules, value, callback, this.form.identificationBeginTime, this.form.identificationEffective), trigger: ['change', 'blur'] },
           { validator: (rules, value, callback) => this.formValidate.isExpired(rules, value, callback, this.form.identificationEffective), trigger: ['change', 'blur'] }
         ],
+        artificialIdentificationNumber: [
+          { validator: this.formValidate.idCard, trigger: ['blur', 'change'] }
+        ],
         creditAmount: [
           { validator: this.formValidate.number, trigger: 'blur' }
         ],
@@ -602,12 +605,19 @@ export default {
     },
     /** 审核通过/未通过按钮 */
     reviewForm(key) {
-      this.form.authStatus = key;
-      this.form.identificationEffective = praseNumToBoolean(this.form.identificationEffective);
-      examine(this.form).then(response => {
-        this.msgSuccess('操作成功');
-        this.close();
-        this.$emit('refresh');
+      const flag = this.$refs.ChooseArea.submit();
+      this.$refs['form'].validate(valid => {
+        if (key === 2 || (valid && flag)) {
+          this.form.authStatus = key;
+          this.form.identificationEffective = praseNumToBoolean(this.form.identificationEffective);
+          examine(this.form).then(response => {
+            this.msgSuccess('操作成功');
+            this.close();
+            this.$emit('refresh');
+          });
+        } else {
+          this.msgWarning('填写的信息不完整或有误，不能通过审核');
+        }
       });
     },
     // 关闭弹窗

@@ -73,6 +73,7 @@ export default {
           });
           this.imageOldList = this.imageList;
           console.log(this.imageList);
+          this.isShowUpload = this.imageOldList.length >= this.limit;
           // this.imageList.push({ url: response.data.attachUrl, code: response.data.code });
         });
         this.images = this.value;
@@ -97,10 +98,8 @@ export default {
       this.dialogVisible = false;
     },
     handleRemove(images, imageList) {
-      // console.log(imageList);
-      const removeimg = imageList.map(function(response) {
-        return response.response.data;
-      });
+      console.log(imageList);
+      const removeimg = imageList.map(({ code, url }) => ({ code, url }));
       this.imageOldList = removeimg;
       this.inputInfo();
 
@@ -112,7 +111,9 @@ export default {
       this.dialogVisible = true;
     },
     handleUploadSuccess(res, images, imageList) {
-      // console.log(res);
+      console.log(res);
+      console.log(images);
+      console.log(imageList);
       // if (this.images === '') {
       //   this.images = res.data.code;
       // } else {
@@ -168,5 +169,8 @@ export default {
 }
 .isShowUpload ::v-deep .el-upload--picture-card{
   display: none;
+}
+::v-deep .el-upload-list--picture-card .el-upload-list__item-thumbnail {
+    object-fit: contain;
 }
 </style>

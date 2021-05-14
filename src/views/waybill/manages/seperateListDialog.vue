@@ -12,8 +12,20 @@
       <el-table-column label="司机电话" align="center" prop="driverPhone" width="150" />
       <el-table-column label="货物大类" align="center" prop="goodsBigType" />
       <el-table-column label="货物小类" align="center" prop="goodsType" width="150" />
-      <el-table-column label="装货重量" align="center" prop="loadWeight" />
-      <el-table-column label="卸货重量" align="center" prop="unloadWeight" />
+      <el-table-column label="装货数量" align="center" prop="loadWeight">
+        <template slot-scope="scope">
+          <span v-if="scope.row.stowageStatus === '0' || !scope.row.stowageStatus">{{ scope.row.loadWeight || '0.00' }} 吨</span>
+          <span v-if="scope.row.stowageStatus === '1'">{{ scope.row.loadWeight || '0.00' }} 立方</span>
+          <span v-if="scope.row.stowageStatus === '2'">{{ scope.row.loadWeight || '0.00' }} 车</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="卸货数量" align="center" prop="unloadWeight">
+        <template slot-scope="scope">
+          <span v-if="scope.row.stowageStatus === '0' || !scope.row.stowageStatus">{{ scope.row.unloadWeight || '0.00' }} 吨</span>
+          <span v-if="scope.row.stowageStatus === '1'">{{ scope.row.unloadWeight || '0.00' }} 立方</span>
+          <span v-if="scope.row.stowageStatus === '2'">{{ scope.row.unloadWeight || '0.00' }} 车</span>
+        </template>
+      </el-table-column>
       <el-table-column label="数量(车)" align="center" prop="carNum" />
       <el-table-column label="用车类型" align="center" prop="carType" />
       <el-table-column label="货物单价" align="center" prop="goodsPrice" />

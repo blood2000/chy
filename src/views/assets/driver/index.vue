@@ -456,6 +456,7 @@ export default {
       width: 180,
       fixed: 'right'
     });
+    this.isShowAgreementNo();
     this.getDictsOptions();
     if (!this.teamCode) {
       // 如果这个页面是以组件形式展示在调度者管理弹窗里面，则这里不加载列表
@@ -635,6 +636,13 @@ export default {
       }).then(() => {
         this.getList();
         this.msgSuccess('操作成功');
+      });
+    },
+    // 司机列表不展示协议编号, 调度者管理页面的司机列表展示协议编号
+    isShowAgreementNo() {
+      if (this.teamCode) return;
+      this.tableColumnsConfig = this.tableColumnsConfig.filter(el => {
+        if (el.prop !== 'agreementNo') return true;
       });
     }
   }

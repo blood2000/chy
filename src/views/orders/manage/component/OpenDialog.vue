@@ -59,15 +59,15 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="调度者名称" align="left" prop="name" show-overflow-tooltip />
-          <el-table-column label="身份证" align="left" prop="identificationNumber" show-overflow-tooltip />
-          <el-table-column label="管理者" align="left" prop="teamLeaderName" show-overflow-tooltip />
-          <el-table-column label="承运人类型" align="left" prop="contactPhone" show-overflow-tooltip>
+          <el-table-column label="调度者名称" align="center" prop="name" show-overflow-tooltip />
+          <!-- <el-table-column label="身份证" align="center" prop="identificationNumber" show-overflow-tooltip /> -->
+          <el-table-column label="管理者" align="center" prop="teamLeaderName" show-overflow-tooltip />
+          <!-- <el-table-column label="承运人类型" align="center" prop="contactPhone" show-overflow-tooltip>
             <template v-if="scope" slot-scope="scope">
               调度者
             </template>
-          </el-table-column>
-          <el-table-column label="电话" align="left" prop="telphone" show-overflow-tooltip />
+          </el-table-column> -->
+          <el-table-column label="电话" align="center" prop="telphone" show-overflow-tooltip />
 
         </el-table>
       </el-radio-group>
