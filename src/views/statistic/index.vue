@@ -117,7 +117,14 @@ export default {
   data() {
     return {
       branchCode: null,
+      // websocket
+      wsurl: 'ws://192.168.30.134:8083/chy',
+      // wsurl: 'ws://127.0.0.1:8080',
       websock: null,
+      lockReconnect: false,
+      timerReconnect: null,
+      heartTimeout: null,
+      serverTimeout: null,
       // 地图对应省份运单数据
       partitionListVo: []
     };
@@ -129,7 +136,7 @@ export default {
   },
   created() {
     this.branchCode = this.branch.code;
-    // this.initWebSocket();
+    // this.createWebSocket();
   },
   mounted() {
     window.addEventListener('resize', this.resizeFun);
@@ -143,31 +150,67 @@ export default {
       const throttle = ThrottleFun(this.refreshChart, 300);
       throttle();
     },
-    initWebSocket() { // 初始化websocket
-      const wsuri = 'ws://127.0.0.1:8080';
-      this.websock = new WebSocket(wsuri);
-      this.websock.onmessage = this.websocketonmessage;
-      this.websock.onopen = this.websocketonopen;
-      this.websock.onerror = this.websocketonerror;
-      this.websock.onclose = this.websocketclose;
+    // 创建websocket
+    createWebSocket() {
+      try {
+        this.websock = new WebSocket(this.wsurl);
+        this.initWebSocket();
+      } catch (e) {
+        console.log('catch', e);
+        this.reconnect();
+      }
     },
-    websocketonopen() { // 连接建立之后执行send方法发送数据
-      // const actions = { 'test': '12345' };
-      // this.websocketsend(JSON.stringify(actions));
+    initWebSocket() {
+      this.websock.onmessage = (e) => {
+        console.log('数据接收', e);
+        // 拿到pong说明当前连接是正常的
+        if (e.data === 'pong') {
+          this.heartCheck();
+        }
+      };
+      this.websock.onopen = () => {
+        console.log('连接成功', this.websock);
+        this.heartCheck();
+      };
+      this.websock.onerror = () => {
+        console.log('连接失败');
+        this.reconnect();
+      };
+      this.websock.onclose = (e) => {
+        console.log('断开连接', e);
+        this.reconnect();
+      };
     },
-    websocketonerror() { // 连接建立失败重连
-      // this.initWebSocket();
+    // 重连
+    reconnect() {
+      if (this.lockReconnect) {
+        return;
+      }
+      console.log('发起重连');
+      this.lockReconnect = true;
+      // 没连接上会一直重连，设置延迟
+      this.timerReconnect && clearTimeout(this.timerReconnect);
+      this.timerReconnect = setTimeout(() => {
+        this.createWebSocket();
+        this.lockReconnect = false;
+      }, 3 * 1000);
     },
-    websocketonmessage(e) { // 数据接收
-      console.log('数据接收', e);
-      // const redata = JSON.parse(e.data);
+    // 心跳检测
+    heartCheck() {
+      this.heartTimeout && clearTimeout(this.heartTimeout);
+      this.serverTimeout && clearTimeout(this.serverTimeout);
+      this.heartTimeout = setTimeout(() => {
+        // 发送一个心跳包
+        console.log('发送ping');
+        this.websock.send('ping');
+        // 计算答复的超时时间
+        this.serverTimeout = setTimeout(() => {
+          this.websock.close();
+          console.log('答复超时');
+        }, 5 * 1000);
+      }, 4 * 1000);
     },
-    websocketsend(data) { // 数据发送
-      this.websock.send(data);
-    },
-    websocketclose(e) { // 关闭
-      console.log('断开连接', e);
-    },
+    // 图表自适应
     refreshChart() {
       this.$refs.AmountTop10ChartRef.refreshChart();
       this.$refs.TargetChartRef.refreshChart();
