@@ -16,8 +16,10 @@
             {{ form.statusName }}
           </el-col>
           <el-col :span="12" class="text-row">
-            <label>装货重量(吨)：</label>
-            {{ form.loadWeight }}
+            <label>装货数量：</label>
+            <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ form.loadWeight || '0.00' }} 吨</span>
+            <span v-if="form.stowageStatus === '1'">{{ form.loadWeight || '0.00' }} 立方</span>
+            <span v-if="form.stowageStatus === '2'">{{ form.loadWeight || '0.00' }} 车</span>
           </el-col>
           <el-col :span="12" class="text-row">
             <label>货品类别：</label>
@@ -105,11 +107,13 @@
         <el-row>
           <el-col :span="12" class="text-row">
             <label>装货签到时间：</label>
-            {{ formAttachment?formAttachment.cargoTime:'' }}
+            {{ formAttachment?formAttachment.cargoTime:'暂无' }}
           </el-col>
           <el-col :span="12" class="text-row">
-            <label>装货重量（吨）：</label>
-            {{ formAttachment?formAttachment.loadWeight:'' }}
+            <label>装货数量：</label>
+            <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ formAttachment?formAttachment.loadWeight:'0.00' }} 吨</span>
+            <span v-if="form.stowageStatus === '1'">{{ formAttachment?formAttachment.loadWeight:'0.00' }} 立方</span>
+            <span v-if="form.stowageStatus === '2'">{{ formAttachment?formAttachment.loadWeight:'0.00' }} 车</span>
           </el-col>
           <el-col :span="2" class="text-row">
             <label>装货签照片：</label>
@@ -124,11 +128,13 @@
         <el-row>
           <el-col :span="12" class="text-row">
             <label>卸货签到时间：</label>
-            {{ formAttachmentUp?formAttachmentUp.unloadTime:'' }}
+            {{ formAttachmentUp?formAttachmentUp.unloadTime:'暂无' }}
           </el-col>
           <el-col :span="12" class="text-row">
-            <label>卸货重量（吨）：</label>
-            {{ formAttachmentUp?formAttachmentUp.unloadWeight:'' }}
+            <label>卸货数量：</label>
+            <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ formAttachmentUp?formAttachmentUp.unloadWeight:'0.00' }} 吨</span>
+            <span v-if="form.stowageStatus === '1'">{{ formAttachmentUp?formAttachmentUp.unloadWeight:'0.00' }} 立方</span>
+            <span v-if="form.stowageStatus === '2'">{{ formAttachmentUp?formAttachmentUp.unloadWeight:'0.00' }} 车</span>
           </el-col>
           <el-col :span="2" class="text-row">
             <label>卸货签照片：</label>
