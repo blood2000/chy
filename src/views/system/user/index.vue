@@ -297,7 +297,7 @@
                   :key="item.roleCode"
                   :label="item.roleName"
                   :value="item.roleCode"
-                  :disabled="item.status == 1 || item.isSystem == 1"
+                  :disabled="item.status == 1 || (item.isSystem == 1 && !isAdmin) "
                 />
               </el-select>
             </el-form-item>
@@ -381,6 +381,7 @@ import { getToken } from '@/utils/auth';
 import { authorPre } from '@/headers';
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'User',
@@ -393,6 +394,9 @@ export default {
     userCode: {
       type: String,
       default: null
+    },
+    isShipment: {
+      type: Boolean
     }
   },
   data() {
@@ -475,7 +479,8 @@ export default {
         userName: undefined,
         phonenumber: undefined,
         status: undefined,
-        deptId: undefined
+        deptId: undefined,
+        orgCode: undefined
       },
       // 表单校验
       rules: {
@@ -515,6 +520,9 @@ export default {
       }
     };
   },
+  computed: {
+    ...mapGetters(['isAdmin'])
+  },
   watch: {
     // 根据名称筛选部门树
     deptName(val) {
@@ -544,6 +552,9 @@ export default {
       if (this.companyCode) {
         this.queryParams.orgCode = this.companyCode;
       }
+      if (this.isShipment) {
+        this.queryParams.isShipment = this.isShipment;
+      }
       listUser(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
         this.userList = response.rows;
         this.total = response.total;
@@ -553,7 +564,7 @@ export default {
     },
     /** 查询部门下拉树结构 */
     getTreeselect() {
-      treeselect({ orgCode: this.companyCode, userCode: this.userCode }).then(response => {
+      treeselect({ orgCode: this.companyCode, userCode: this.userCode, isShipemnt: this.isShipemnt }).then(response => {
         this.deptOptions = response.data;
       });
     },
@@ -615,6 +626,7 @@ export default {
     resetQuery() {
       this.dateRange = [];
       this.resetForm('queryForm');
+      this.queryParams.orgCode = undefined;
       this.handleQuery();
     },
     // 多选框选中数据

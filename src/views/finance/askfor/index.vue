@@ -6,7 +6,7 @@
       :inline="true"
       label-width="90px"
     >
-      <div v-if="isAdmin" class="app-container" style="display: flex; align-items: center;">
+      <div v-if="!isShipment" class="app-container" style="display: flex; align-items: center;">
         <el-form-item label="货主信息" prop="shipmentCode" style="margin-bottom:0">
           <!-- filterable开启可搜索 remote远程搜索 reserve-keyword 保存搜索关键词 -->
           <el-select

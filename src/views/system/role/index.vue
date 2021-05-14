@@ -398,6 +398,9 @@ export default {
     userCode: {
       type: String,
       default: null
+    },
+    isShipemnt: {
+      type: Boolean
     }
   },
   data() {
@@ -578,6 +581,9 @@ export default {
       if (this.companyCode) {
         this.queryParams.orgCode = this.companyCode;
       }
+      if (this.isShipment) {
+        this.queryParams.isShipment = this.isShipment;
+      }
       listRole(this.addDateRange(this.queryParams, this.dateRange)).then(
         response => {
           this.roleList = response.rows;
@@ -689,6 +695,7 @@ export default {
     resetQuery() {
       this.dateRange = [];
       this.resetForm('queryForm');
+      this.queryParams.orgCode = undefined;
       this.handleQuery();
     },
     // 多选框选中数据
@@ -836,7 +843,7 @@ export default {
     },
     /** 查询部门下拉树结构 */
     getDeptTree() {
-      deptTreeselect({ orgCode: this.companyCode, userCode: this.userCode }).then(response => {
+      deptTreeselect({ orgCode: this.companyCode, userCode: this.userCode, isShipment: this.isShipment }).then(response => {
         this.deptTreeOptions = response.data;
       });
     },
