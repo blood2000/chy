@@ -137,7 +137,7 @@
         </el-select>
       </el-form-item>
       <!-- ================================================================= -->
-      <el-form-item label="工作单位" prop="workCompany"  v-show="form.driverType===2">
+      <el-form-item v-show="form.driverType===2" label="工作单位" prop="workCompany">
         <el-input v-model="form.workCompany" placeholder="请输入工作单位" class="width90" clearable />
       </el-form-item>
       <el-form-item label="道路运输经营许可证" prop="transportPermitNo">
