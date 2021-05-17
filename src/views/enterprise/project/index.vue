@@ -11,10 +11,10 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="商品类别" prop="commodityCategoryCode">
+        <el-form-item label="货物大类" prop="commodityCategoryCode">
           <el-select
             v-model="queryParams.commodityCategoryCode"
-            placeholder="请选择商品类别"
+            placeholder="请选择货物大类"
             clearable
             filterable
             size="small"
