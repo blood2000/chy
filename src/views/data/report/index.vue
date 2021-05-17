@@ -268,33 +268,33 @@
         </template>
 
         <template #vehicleReport="{row}">
-          <span v-if="row.vehicleReport == '0'" class="g-color-error">未上报</span>
-          <span v-if="row.vehicleReport == '1'" class="g-color-success">上报成功</span>
+          <span v-if="row.vehicleReport == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
+          <span v-if="row.vehicleReport == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
           <span v-if="row.vehicleReport == '2'" class="g-color-warning">上报失败</span>
         </template>
         <template #driverReport="{row}">
-          <span v-if="row.driverReport == '0'" class="g-color-error">未上报</span>
-          <span v-if="row.driverReport == '1'" class="g-color-success">上报成功</span>
+          <span v-if="row.driverReport == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
+          <span v-if="row.driverReport == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
           <span v-if="row.driverReport == '2'" class="g-color-warning">上报失败</span>
         </template>
         <template #waybillSendStatus="{row}">
-          <span v-if="row.waybillSendStatus == '0'" class="g-color-error">未上报</span>
-          <span v-if="row.waybillSendStatus == '1'" class="g-color-success">上报成功</span>
+          <span v-if="row.waybillSendStatus == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
+          <span v-if="row.waybillSendStatus == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
           <span v-if="row.waybillSendStatus == '2'" class="g-color-warning">上报失败</span>
         </template>
         <template #loadSendStatus="{row}">
-          <span v-if="row.loadSendStatus == '0'" class="g-color-error">未上报</span>
-          <span v-if="row.loadSendStatus == '1'" class="g-color-success">上报成功</span>
+          <span v-if="row.loadSendStatus == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
+          <span v-if="row.loadSendStatus == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
           <span v-if="row.loadSendStatus == '2'" class="g-color-warning">上报失败</span>
         </template>
         <template #unloadSendStatus="{row}">
-          <span v-if="row.unloadSendStatus == '0'" class="g-color-error">未上报</span>
-          <span v-if="row.unloadSendStatus == '1'" class="g-color-success">上报成功</span>
+          <span v-if="row.unloadSendStatus == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
+          <span v-if="row.unloadSendStatus == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
           <span v-if="row.unloadSendStatus == '2'" class="g-color-warning">上报失败</span>
         </template>
         <template #billSendStatus="{row}">
-          <span v-if="row.unloadSendStatus == '0'" class="g-color-error">未上报</span>
-          <span v-if="row.unloadSendStatus == '1'" class="g-color-success">上报成功</span>
+          <span v-if="row.unloadSendStatus == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
+          <span v-if="row.unloadSendStatus == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
           <span v-if="row.unloadSendStatus == '2'" class="g-color-warning">上报失败</span>
         </template>
 
