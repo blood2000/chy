@@ -116,7 +116,12 @@
                     :key="dict.code"
                     :label="dict.name"
                     :value="dict.code"
-                  />
+                  >
+                    <div class="ly-flex-pack-justify">
+                      <span style="margin-right:10px">{{ dict.name }}</span>
+                      <span>{{ dict.telphone }}</span>
+                    </div>
+                  </el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -324,7 +329,7 @@ export default {
         'pageSize': 10,
         'authStatus': 3,
         'isFreeze': 0,
-        'name': null
+        'phoneOrName': null
       },
       vehicleInfoQuery: {
         'authStatus': 3,
