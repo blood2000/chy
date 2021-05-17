@@ -82,13 +82,13 @@
       <el-table-column width="160" label="司机实收运费" align="center" prop="deliveryFeePractical" />
 
       <!-- 补贴项目 -->
-      <el-table-column align="center" width="500" label="补贴项目">
+      <el-table-column align="center" width="400" label="补贴项目">
         <template slot="header">
           <span>补贴项目 <el-button type="text" @click="isEdit2 = !isEdit2"><i class="el-icon-edit" /></el-button></span>
 
         </template>
         <template slot-scope="scope">
-          <el-form :inline="true" label-position="right" size="mini" class="ly-flex">
+          <el-form :inline="true" label-position="right" size="mini" class="ly-flex" label-width="80px">
             <div v-for="(freight, index) in scope.row.subsidiesFreightList" :key="index">
               <el-form-item :label="freight.cnName">
                 <span v-show="!isEdit2">{{ freight.ruleValue }}</span>
@@ -96,7 +96,7 @@
               </el-form-item>
             </div>
 
-            <el-form-item label="其他补贴" class="ly-flex-1">
+            <el-form-item label="其他补贴">
               <span v-show="!isEdit2">{{ scope.row.otherSubsidies }}</span>
               <el-input-number v-show="isEdit2" v-model="scope.row.otherSubsidies" :controls="false" :precision="2" :min="0" :placeholder="`其他扣款`" style="width:90px;" @blur="handlerChange(scope.row,scope.row.otherSubsidies, 'add')" />
             </el-form-item>
@@ -104,22 +104,22 @@
         </template>
       </el-table-column>
       <!-- 扣费项目 -->
-      <el-table-column align="center" width="500">
+      <el-table-column align="center" width="400">
         <template slot="header">
           <span>扣费项目 <el-button type="text" @click="isEdit = !isEdit"><i class="el-icon-edit" /></el-button></span>
 
         </template>
 
         <template slot-scope="scope">
-          <el-form :inline="true" label-position="right" size="mini" class="ly-flex">
-            <div v-for="(freight, index) in scope.row.deductionFreightList" :key="index" class="ly-flex-1">
+          <el-form :inline="true" label-position="right" size="mini" class="ly-flex" label-width="80px">
+            <div v-for="(freight, index) in scope.row.deductionFreightList" :key="index">
               <el-form-item :label="freight.cnName">
                 <span v-show="!isEdit">{{ freight.ruleValue }}</span>
                 <el-input-number v-show="isEdit" v-model="freight.ruleValue" :controls="false" :precision="2" :min="0" :placeholder="`${freight.cnName}`" style="width:90px;" @blur="handlerItem(scope.row,freight.ruleValue,'',freight.enName)" />
               </el-form-item>
             </div>
 
-            <el-form-item label="其他扣款" class="ly-flex-1">
+            <el-form-item label="其他扣款">
               <span v-show="!isEdit">{{ scope.row.otherCharges }}</span>
               <el-input-number v-show="isEdit" v-model="scope.row.otherCharges" :controls="false" :precision="2" :min="0" :placeholder="`其他扣款`" style="width:90px;" @blur="handlerChange(scope.row,scope.row.otherCharges, '')" />
             </el-form-item>
@@ -150,20 +150,6 @@
 
 <script>
 import { adjustDetail, calculateFee, deliveryCashFee, batchCheck } from '@/api/settlement/adjust';
-// 规则  司机实收运费 未基
-// 1- 司机实收金额 修改 > 司机实收运费 ?  补贴项目 = 司机实收金额 - 司机实收运费  扣费项目 = 0  (并且不编辑了)
-//    row.deliveryCashFee > filterRow.deliveryCashFee    row.otherCharges
-// 2- 司机实收金额 修改 < 司机实收运费 ?  扣费项目 = 司机实收运费 - 司机实收金额  补贴项目 = 0  (并且不编辑了)
-
-
-// 1. - 其他补贴   修改 > 初始补贴(0) ?  司机实收金额 = 修改 - 初始补贴(0)      扣费项目 = 恢复到初始值
-// 2. - 其他补贴   修改 < 初始补贴(0) ?  司机实收金额 = 初始补贴(0) - 修改的值      扣费项目 = 恢复到初始值 (扣费不编辑))
-
-// 1. - 其他扣费   修改 > 初始扣费(0) ?  司机实收金额 = 修改 - 初始扣费(0)      补贴项目 = 恢复到初始值
-// 2. - 其他扣费   修改 < 初始扣费(0) ?  司机实收金额 = 初始扣费(0) - 修改的值      补贴项目 = 恢复到初始值
-
-// 1. - 修改补贴项目 中的其中一项  修改 > 初始值  司机实收金额 = 司机实收金额原始 + 修改-初始值      扣费项目 = 恢复到初始值 补贴项目 = 恢复到初始值
-// 2. - 修改补贴项目 中的其中一项  修改 < 初始值  司机实收金额 = 司机实收金额原始 + 初始值-修改      扣费项目 = 恢复到初始值 补贴项目 = 恢复到初始值
 
 export default {
   name: 'AdjustDialog',
@@ -213,167 +199,42 @@ export default {
     // 修改了增项
     handlerChange(row, value, key) {
       if (!value && value !== 0) return;
-
-      const filterRow = this.filterRow(row);
-      row.deliveryCashFee = filterRow.deliveryCashFee;
-
-      row.deductionFreightList = JSON.parse(JSON.stringify(filterRow.deductionFreightList));
-      row.subsidiesFreightList = JSON.parse(JSON.stringify(filterRow.subsidiesFreightList));
-
-      // 这个是补贴的
-      if (key === 'add') {
-        const star1 = filterRow.otherSubsidies; // 初始值(0)
-        const star2 = value;
-
-        if (star2 > star1) {
-          row.deliveryCashFee = filterRow.deliveryCashFee + (star2 - star1);
-        } else if (star2 < star1) {
-          row.deliveryCashFee = filterRow.deliveryCashFee + (star1 - star2);
-        }
-        row.otherCharges = filterRow.otherCharges;
-        this.isEdit = false;
-
-        // if (star1) { row.deliveryCashFee = filterRow.deliveryCashFee + (star2 - star1); }
-        // filterRow.otherSubsidies = value;
-      } else {
-        // 扣费的
-        const star1 = filterRow.otherCharges;
-        const star2 = value;
-
-        if (star2 > star1) {
-          row.deliveryCashFee = filterRow.deliveryCashFee - (star2 - star1);
-        } else if (star2 < star1) {
-          row.deliveryCashFee = filterRow.deliveryCashFee - (star1 - star2);
-        }
-
-        row.otherSubsidies = filterRow.otherSubsidies;
-        this.isEdit2 = false;
-
-        // filterRow.otherCharges = value;
-      }
-
-      this.getDeliveryCashFee(row, row.deliveryCashFee);
+      this.gongshi(row);
+      this.getDeliveryCashFee(row);
     },
 
     // 修改
     handlerItem(row, value, key, name) {
-      if (!value && value !== 0) {
-        return;
-      }
+      if (!value && value !== 0) return;
 
-      const filterRow = this.filterRow(row);
-
-      row.otherCharges = filterRow.otherCharges;
-      row.otherSubsidies = filterRow.otherSubsidies;
-
-      if (key === 'add') {
-        row.deductionFreightList = JSON.parse(JSON.stringify(filterRow.deductionFreightList));
-
-        // star1 = 未改变前, star2 = 未改变后
-        const star1 = this._sum(filterRow.subsidiesFreightList);
-        const star2 = this._sum(row.subsidiesFreightList);
-
-
-
-        if (star2 > star1) {
-          row.deliveryCashFee = filterRow.deliveryCashFee + (star2 - star1);
-        } else if (star2 < star1) {
-          row.deliveryCashFee = filterRow.deliveryCashFee + (star1 - star2);
-        }
-
-        // filterRow.subsidiesFreightList.forEach(e => {
-        //   if (e.enName === name) {
-        //     e.ruleValue = value;
-        //   }
-        // });
-        this.isEdit = false;
-      } else {
-        row.subsidiesFreightList = JSON.parse(JSON.stringify(filterRow.subsidiesFreightList));
-
-
-
-        const star1 = this._sum(filterRow.deductionFreightList);
-        const star2 = this._sum(row.deductionFreightList);
-
-
-        if (star2 > star1) {
-          row.deliveryCashFee = filterRow.deliveryCashFee - (star2 - star1);
-        } else if (star2 < star1) {
-          row.deliveryCashFee = filterRow.deliveryCashFee - (star1 - star2);
-        }
-
-        // filterRow.deductionFreightList.forEach(e => {
-        //   if (e.enName === name) {
-        //     e.ruleValue = value;
-        //   }
-        // });
-        this.isEdit2 = false;
-      }
-
-      this.getDeliveryCashFee(row, row.deliveryCashFee);
+      this.gongshi(row);
+      this.getDeliveryCashFee(row);
     },
 
-    // 司机实收现金, 改变会出发其他的扣费,和
-    // row 当前对象, value 修改的值, key 修改的字段名
     handlerInput(row, value, key) {
-      // 获取一下未修改前的对象
-      const filterRow = this.filterRow(row);
-
-      if (filterRow[key] === value) return;
-
       if (!value && value !== 0) {
         this.msgError('司机实收现金不能为空');
-        row.deliveryCashFee = filterRow.deliveryCashFee;
         return;
       }
 
-      row.deductionFreightList = JSON.parse(JSON.stringify(filterRow.deductionFreightList));
-      row.subsidiesFreightList = JSON.parse(JSON.stringify(filterRow.subsidiesFreightList));
+      this.otherdeValue(row);
 
-
-      //  原始值 > 输入值
-      if (filterRow.deliveryCashFee > value) {
-        // otherCharges: 其他扣款 = 原始值 - 输入值
-        row.otherCharges = filterRow.deliveryCashFee - value;
-        row.otherSubsidies = 0;
-
-        // 原始值的其他扣款 进行同步一下
-        // filterRow.otherCharges = row.otherCharges;
-      } else if (filterRow.deliveryCashFee < value) {
-        //  原始值 < 输入值
-        // otherSubsidies: 其他其他补贴 = 输入值 - 原始值
-        row.otherSubsidies = value - filterRow.deliveryCashFee;
-        row.otherCharges = 0;
-        // 原始值的其他补贴 进行同步一下
-        // filterRow.otherSubsidies = row.otherSubsidies;
-      }
-      this.isEdit2 = false;
-      this.isEdit = false;
-
-      // filterRow.deliveryCashFee = value;
-      this.getDeliveryCashFee(row, value);
+      this.getDeliveryCashFee(row);
     },
 
     // 获取数据
-    async getDeliveryCashFee(row, value) {
+    async getDeliveryCashFee(row) {
       const { data } = await deliveryCashFee({
-        deliveryCashFee: value, //	司机实收现金		false
+        deliveryCashFee: row.deliveryCashFee, //	司机实收现金		false
         // deliveryFeeDeserved: row.deliveryFeeDeserved, // 司机应收运费
         shipperCode: row.shipperCode //	货主Code		false
       });
-
-      // 自动计算出 serviceFee=> 平台服务费费用
-      // 自动计算出 shipperRealPay=> 货主实付金额
-      // 自动计算出 taxPayment=> 纳税金额
-
-      // console.log(data);
 
       row.serviceFee = data.serviceFee;
       row.shipperRealPay = data.shipperRealPay;
       // row.taxPayment = data.taxPayment || row.taxPayment;
 
-      // const filterRow = this.filterRow(row);
-      // filterRow.deliveryCashFee = row.deliveryCashFee;
+      row.tin_deliveryCashFee = row.deliveryCashFee;
     },
 
     // 过滤当前
@@ -490,7 +351,6 @@ export default {
     getList() {
       this.loading = true;
       adjustDetail(this.queryParams).then(response => {
-        // console.log(response, '查询核算列表');
         this.oldList = JSON.parse(JSON.stringify(response.data));
         this.adjustlist = JSON.parse(JSON.stringify(response.data));
 
@@ -501,7 +361,6 @@ export default {
     /** 取消按钮 */
     cancel() {
       this.close();
-      // this.reset();
     },
     // 关闭弹窗
     close() {
@@ -509,7 +368,6 @@ export default {
     },
     // 获取列表
     setForm(data) {
-      // console.log(data);
       this.isEdit2 = false;
       this.isEdit = false;
       this.isPiliang = data.length > 1;
@@ -547,6 +405,39 @@ export default {
 
         return JSON.stringify(arr);
       }
+    },
+
+    /* 计算公式1 */
+    gongshi(row) {
+      const shazhi = this.sharzhi(row);
+      const { otherSubsidies, otherCharges, subsidiesFreightList, deductionFreightList } = row;
+
+      const rowsubsidies = this._sum(subsidiesFreightList);
+      const rowdeduction = this._sum(deductionFreightList);
+
+      row.deliveryCashFee = ((rowsubsidies + otherSubsidies) - (rowdeduction + otherCharges)) + shazhi;
+    },
+    /* 计算公式2 */
+    otherdeValue(row) {
+      const shazhi = this.sharzhi(row);
+      const { deliveryCashFee, otherSubsidies, otherCharges, subsidiesFreightList, deductionFreightList } = row;
+      const rowsubsidies = this._sum(subsidiesFreightList);
+      const rowdeduction = this._sum(deductionFreightList);
+
+      // row.tin_deliveryCashFee 上一次修改的值
+      if (deliveryCashFee >= (row.tin_deliveryCashFee || deliveryCashFee)) {
+        row.otherSubsidies = (deliveryCashFee - shazhi) + (rowdeduction + otherCharges) - rowsubsidies;
+      } else {
+        row.otherCharges = (rowsubsidies + otherSubsidies) + shazhi - deliveryCashFee - rowdeduction;
+      }
+    },
+
+    /* 计算差值 */
+    sharzhi(row) {
+      const { deliveryCashFee, otherSubsidies, otherCharges, subsidiesFreightList, deductionFreightList } = this.filterRow(row);
+      const subsidies = this._sum(subsidiesFreightList);
+      const deduction = this._sum(deductionFreightList);
+      return deliveryCashFee - ((subsidies + otherSubsidies) - (deduction + otherCharges));
     }
 
 
@@ -571,4 +462,8 @@ export default {
 .el-input-number ::v-deep.el-input__inner {
   text-align: left;
 }
+.ly-flex{
+  flex-wrap: wrap;
+}
+
 </style>

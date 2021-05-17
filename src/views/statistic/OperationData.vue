@@ -4,25 +4,30 @@
     <!-- 货单 -->
     <div class="s-container__box top ly-flex-v ly-flex-pack-justify">
       <div class="s-container__box__content">
-        <div class="content">
-          <p class="label">货单总数(万)</p>
-          <p class="text"><count-to :end-val="677" /></p>
-        </div>
+        <InfoBox
+          class="op-content"
+          label="货单总数"
+          unit="万"
+          :count="orderVo.orderCount"
+        />
       </div>
       <div class="s-container__box__content ly-flex-pack-start">
-        <div class="content">
-          <p class="label">今日新增货单</p>
-          <p class="text blod">
-            <count-to :end-val="126" />
-            <span class="arow_down" />
-            <span class="value_down">12.6%</span>
-          </p>
-        </div>
+        <InfoBox
+          class="op-content"
+          label="今日新增货单"
+          :count="orderVo.newOrderCount"
+          :has-yoy="true"
+          :yoy="orderVo.newOrderYoy"
+          :yoy-type="orderVo.newOrderYoyType"
+          :yoy-places="1"
+          :is-blod="true"
+          :is-small="true"
+        />
         <!-- card -->
         <div class="card-content ly-flex-pack-justify">
           <div class="card ly-flex-v ly-flex-pack-justify">
             <p class="label">已发布</p>
-            <p class="text"><count-to :end-val="2333" /></p>
+            <p class="text"><count-to :end-val="orderVo.publishedNum" /></p>
           </div>
         </div>
       </div>
@@ -31,48 +36,53 @@
     <!-- 运单 -->
     <div class="s-container__box bottom ly-flex-v ly-flex-pack-justify">
       <div class="s-container__box__content ly-flex-pack-start">
-        <div class="content">
-          <p class="label">运单总数(万)</p>
-          <p class="text"><count-to :end-val="677" /></p>
-        </div>
+        <InfoBox
+          class="op-content"
+          label="运单总数"
+          unit="万"
+          :count="waillBillVo.wallBillCount"
+        />
         <!-- card -->
         <div class="card-content ly-flex-pack-justify">
           <div class="card ly-flex-v ly-flex-pack-justify">
             <p class="label">已接单</p>
-            <p class="text"><count-to :end-val="2333" /></p>
+            <p class="text"><count-to :end-val="waillBillVo.orderReceiving" /></p>
           </div>
           <div class="card ly-flex-v ly-flex-pack-justify">
             <p class="label">已装货</p>
-            <p class="text"><count-to :end-val="2333" /></p>
+            <p class="text"><count-to :end-val="waillBillVo.orderLoading" /></p>
           </div>
           <div class="card ly-flex-v ly-flex-pack-justify">
             <p class="label">已卸货</p>
-            <p class="text"><count-to :end-val="2333" /></p>
+            <p class="text"><count-to :end-val="waillBillVo.orderUnload" /></p>
           </div>
         </div>
       </div>
       <div class="s-container__box__content ly-flex-pack-start">
-        <div class="content">
-          <p class="label">今日新增运单</p>
-          <p class="text blod">
-            <count-to :end-val="128" />
-            <span class="arow_up" />
-            <span class="value_up">12.6%</span>
-          </p>
-        </div>
+        <InfoBox
+          class="op-content"
+          label="今日新增运单"
+          :count="waillBillVo.newWallBillCount"
+          :has-yoy="true"
+          :yoy="waillBillVo.newWallBillYoy"
+          :yoy-type="waillBillVo.newWallBillYoyType"
+          :yoy-places="1"
+          :is-blod="true"
+          :is-small="true"
+        />
         <!-- card -->
         <div class="card-content ly-flex-pack-justify">
           <div class="card ly-flex-v ly-flex-pack-justify">
             <p class="label">已复核</p>
-            <p class="text"><count-to :end-val="2333" /></p>
+            <p class="text"><count-to :end-val="waillBillVo.orderReviewer" /></p>
           </div>
           <div class="card ly-flex-v ly-flex-pack-justify">
             <p class="label">已结算</p>
-            <p class="text"><count-to :end-val="2333" /></p>
+            <p class="text"><count-to :end-val="waillBillVo.orderBalance" /></p>
           </div>
           <div class="card ly-flex-v ly-flex-pack-justify">
             <p class="label">已打款</p>
-            <p class="text"><count-to :end-val="2333" /></p>
+            <p class="text"><count-to :end-val="waillBillVo.orderRemit" /></p>
           </div>
         </div>
       </div>
@@ -82,10 +92,28 @@
 
 <script>
 import CountTo from '@/components/CountTo';
+import InfoBox from './components/infoBox';
 
 export default {
   components: {
-    CountTo
+    CountTo,
+    InfoBox
+  },
+  props: {
+    // 货单
+    orderVo: {
+      type: Object,
+      default: () => {
+        return {};
+      }
+    },
+    // 运单
+    waillBillVo: {
+      type: Object,
+      default: () => {
+        return {};
+      }
+    }
   }
 };
 </script>
@@ -98,52 +126,9 @@ export default {
     position: relative;
     height: 50%;
     &__content{
-      >.content{
+      >.op-content{
         width: 6.8rem;
         margin-right: 1rem;
-        .label{
-          font-size: 0.6rem;
-          font-family: PingFang Regular;
-          font-weight: 200;
-          color: #D5EAFF;
-          margin-bottom: 0.1rem;
-        }
-        .text{
-          font-size: 1.1rem;
-          font-family: 'PingFang Medium';
-          color: #FFFFFF;
-          &.blod{
-            font-family: 'PingFang Bold';
-          }
-          .arow_up{
-            display: inline-block;
-            width: 0.9rem;
-            height: 0.6rem;
-            background: url('~@/assets/images/statistic/arow_up_small.png') no-repeat;
-            background-size: 100% 100%;
-            margin-left: 0.3rem;
-          }
-          .arow_down{
-            display: inline-block;
-            width: 0.9rem;
-            height: 0.6rem;
-            background: url('~@/assets/images/statistic/arow_down_small.png') no-repeat;
-            background-size: 100% 100%;
-            margin-left: 0.3rem;
-          }
-          .value_up{
-            font-size: 0.6rem;
-            vertical-align: top;
-            color: rgba(1, 156, 255, 1);
-            margin-left: 0.15rem;
-          }
-          .value_down{
-            font-size: 0.6rem;
-            vertical-align: top;
-            color: rgba(52, 163, 152, 1);
-            margin-left: 0.15rem;
-          }
-        }
       }
       >.card-content{
         width: calc(100% - 7.8rem);

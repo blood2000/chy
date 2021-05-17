@@ -79,9 +79,6 @@
         v-if="form.bankType === 2"
         label="银行支行号"
         prop="bankLineNo"
-        :rules="[
-          { required: true, message: '银行支行号不能为空', trigger: 'blur' },
-        ]"
       >
         <el-input v-model="form.bankLineNo" placeholder="请输入银行支行号" class="width90" clearable />
       </el-form-item>
@@ -139,7 +136,8 @@ export default {
           { required: true, message: '开户姓名不能为空', trigger: ['blur', 'change'] }
         ],
         account: [
-          { required: true, message: '银行卡号不能为空', trigger: 'blur' }
+          { required: true, message: '银行卡号不能为空', trigger: 'blur' },
+          { validator: this.formValidate.bankCard, trigger: ['blur', 'change'] }
         ],
         bankCode: [
           { required: true, message: '开户银行不能为空', trigger: ['blur', 'change'] }
@@ -150,6 +148,10 @@ export default {
         ],
         bankType: [
           { required: true, message: '账户类型不能为空', trigger: 'change' }
+        ],
+        bankLineNo: [
+          { required: true, message: '银行支行号不能为空', trigger: 'blur' },
+          { validator: this.formValidate.subBankCard, trigger: ['blur', 'change'] }
         ]
       },
       // 选择人员

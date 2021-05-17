@@ -483,12 +483,16 @@ export default {
       this.formData.tin3 = '0';
       this.$emit('input', this.isMultiGoods);
 
-      const { data } = await this.listByDict({
-        dictPid: this._zhaovalue(this.tin2Option, this.formData.tin2).dictCode,
-        dictType: 'goodsType'
-      });
+      try {
+        const { data } = await this.listByDict({
+          dictPid: this._zhaovalue(this.tin2Option, this.formData.tin2).dictCode,
+          dictType: 'goodsType'
+        });
+        this.tin2_Option = data;
+      } catch (error) {
+        this.tin2_Option = [];
+      }
 
-      this.tin2_Option = data;
       if (!this.isMultiGoods) {
         this.formData.tin2_2 = this.tin2_Option[0] ? this.tin2_Option[0].dictValue : this.formData.tin2;
         this.formData.tin2_1 = [];

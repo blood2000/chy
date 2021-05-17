@@ -72,7 +72,7 @@
               <td id="coal_type_name">{{ obj.goodsTypeName || obj.goodsBigTypeName }}</td>
             </tr>
             <tr>
-              <td><b>净重</b></td>
+              <td><b>计划数量</b></td>
               <td id="weight">{{ obj.loadWeight }}
                 吨
               </td>
@@ -92,9 +92,9 @@
             <tr>
               <td><b>是否开票</b></td>
 
-              <td>{{ obj.aaaaaaaaaaaaa || '是' }}</td>
+              <td>{{ '是' }}</td>
               <td><b>备注</b></td>
-              <td colspan="4">{{ obj.shipperRemark || '这是备注信息' }}</td>
+              <td colspan="4">{{ obj.shipperRemark }}</td>
             </tr>
           </tbody></table>
       </div>

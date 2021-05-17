@@ -2,6 +2,8 @@ server {
     listen      #{http_port};
     server_name localhost;
     charset 'utf-8';
+    client_max_body_size #{client_max_body_size};
+    client_body_buffer_size #{client_body_buffer_size};
     location / {
         root   /usr/share/nginx/html/#{JOB_BASE_NAME};
         try_files $uri $uri/ /index.html;

@@ -50,9 +50,9 @@
         <div class="ly-right-left-top mb1rem ly-border">
           <Title class="title_4 mb05rem" icon="5">运营情况<span>Operation situation</span></Title>
           <div class="ly-right-left-top-box">
-            <OperationData />
-            <OrderChart ref="OrderChartRef" />
-            <ComplaintChart ref="ComplaintChartRef" />
+            <OperationData :order-vo="businessData.orderVo" :waill-bill-vo="businessData.waillBillVo" />
+            <OrderChart ref="OrderChartRef" :week-vo-list="businessData.weekVoList" />
+            <ComplaintChart ref="ComplaintChartRef" :complain-vo="businessData.complainVo" />
           </div>
         </div>
         <div class="ly-right-left-bottom ly-border">
@@ -92,7 +92,8 @@ import DriverTop5List from './DriverTop5List';// 总排名TOP5司机
 import TotalData from './TotalData';// 中间总数统计
 import ScrollData from './ScrollData';// 中间滚屏数据
 import Map from './Map.vue';// 地图
-import { dataJson } from './data';
+// import { dataJson } from './data';
+import { getBusinessDetail } from '@/api/statistic/statistic.js';
 
 export default {
   name: 'Statistic',
@@ -126,7 +127,14 @@ export default {
       heartTimeout: null,
       serverTimeout: null,
       // 地图对应省份运单数据
-      partitionListVo: []
+      partitionListVo: [],
+      // 运营情况数据
+      businessData: {
+        orderVo: {}, // 货单
+        waillBillVo: {}, // 运单
+        weekVoList: [], // 近8周订单数
+        complainVo: {} // 投诉
+      }
     };
   },
   computed: {
@@ -136,10 +144,11 @@ export default {
   },
   created() {
     this.branchCode = this.branch.code;
-    // this.createWebSocket();
   },
   mounted() {
     window.addEventListener('resize', this.resizeFun);
+    this.getBusinessData();
+    // this.createWebSocket();
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.resizeFun);
@@ -221,6 +230,22 @@ export default {
     // 获取地图对应省份运单数据
     getPartitionListVo(data = []) {
       this.partitionListVo = data;
+    },
+    // 获取运营情况的数据
+    getBusinessData() {
+      getBusinessDetail(this.branchCode).then(response => {
+        const data = response.data || {};
+        this.businessData = {
+          orderVo: data.orderVo || {}, // 货单
+          waillBillVo: data.waillBillVo || {}, // 运单
+          weekVoList: data.weekVoList || [], // 近8周订单数
+          complainVo: data.complainVo || {} // 投诉
+        };
+        this.$nextTick(() => {
+          this.$refs.OrderChartRef.initChart();
+          this.$refs.ComplaintChartRef.initChart();
+        });
+      });
     }
   }
 };

@@ -152,7 +152,7 @@ export default {
           label: {
             emphasis: {
               show: true,
-              color: '#D5EAFF'
+              color: '#000' // 亮色: #D5EAFF
             }
           }
         },
