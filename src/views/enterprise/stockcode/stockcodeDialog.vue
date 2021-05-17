@@ -1,11 +1,11 @@
 <template>
-  <el-dialog :title="title" :class="[{'i-add':title==='添加'}]" :visible="visible" width="800px"  :close-on-click-modal="false" append-to-body @close="cancel">
+  <el-dialog :title="title" :class="[{'i-add':title==='添加'}]" :visible="visible" width="800px" :close-on-click-modal="false" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="120px">
       <el-form-item label="货集码名称" prop="cargoCodeName">
         <el-input v-model="form.cargoCodeName" placeholder="请输入货集码名称" class="width50 mr3" clearable />
         <span class="g-color-gray">(货集码名称可自定义,如线路名称等)</span>
       </el-form-item>
-      <el-form-item label="货集二维码">
+      <el-form-item label="货集二维码" :required="true">
         <!-- 编辑的时候不能修改二维码 -->
         <template v-if="form.id == null || form.id == undefined || form.id == ''">
           <el-button type="primary" @click="generateCode">生成货集码</el-button>
@@ -18,7 +18,7 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="submitForm">确 定</el-button>
+      <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
     </div>
   </el-dialog>
@@ -40,6 +40,7 @@ export default {
   },
   data() {
     return {
+      buttonLoading: false,
       // 表单参数
       form: {},
       // 表单校验
@@ -65,6 +66,7 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
+          this.buttonLoading = true;
           const params = {
             cargoCodeName: this.form.cargoCodeName
           };
@@ -74,16 +76,27 @@ export default {
           if (this.form.id != null) {
             params.code = this.form.code;
             updateStockcode(params).then(response => {
+              this.buttonLoading = false;
               this.msgSuccess('修改成功');
               this.close();
               this.$emit('refresh');
+            }).catch(() => {
+              this.buttonLoading = false;
             });
           } else {
+            if (this.form.cargoCodeQR === '' || this.form.cargoCodeQR === null || this.form.cargoCodeQR === undefined) {
+              this.msgWarning('请生成货集二维码');
+              this.buttonLoading = false;
+              return;
+            }
             params.cargoCodeQR = this.form.cargoCodeQR;
             addStockcode(params).then(response => {
+              this.buttonLoading = false;
               this.msgSuccess('新增成功');
               this.close();
               this.$emit('refresh');
+            }).catch(() => {
+              this.buttonLoading = false;
             });
           }
         }
@@ -100,6 +113,7 @@ export default {
     },
     // 表单重置
     reset() {
+      this.buttonLoading = false;
       this.form = {
         id: null,
         code: null,
