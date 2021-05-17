@@ -92,9 +92,9 @@
             <tr>
               <td><b>是否开票</b></td>
 
-              <td>{{ obj.aaaaaaaaaaaaa || '是' }}</td>
+              <td>{{ '是' }}</td>
               <td><b>备注</b></td>
-              <td colspan="4">{{ obj.shipperRemark || '这是备注信息' }}</td>
+              <td colspan="4">{{ obj.shipperRemark }}</td>
             </tr>
           </tbody></table>
       </div>
