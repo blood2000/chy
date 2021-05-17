@@ -11,10 +11,10 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="管理者名称" prop="teamLeaderName">
+        <el-form-item label="姓名" prop="teamLeaderName">
           <el-input
             v-model="queryParams.teamLeaderName"
-            placeholder="请输入管理者名称"
+            placeholder="请输入姓名"
             clearable
             size="small"
             @keyup.enter.native="handleQuery"

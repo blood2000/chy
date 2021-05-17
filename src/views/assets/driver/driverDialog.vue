@@ -137,7 +137,7 @@
         </el-select>
       </el-form-item>
       <!-- ================================================================= -->
-      <el-form-item label="工作单位" prop="workCompany">
+      <el-form-item label="工作单位" prop="workCompany"  v-show="form.driverType===2">
         <el-input v-model="form.workCompany" placeholder="请输入工作单位" class="width90" clearable />
       </el-form-item>
       <el-form-item label="道路运输经营许可证" prop="transportPermitNo">
@@ -587,9 +587,9 @@ export default {
           { validator: (rules, value, callback) => this.formValidate.idCardValidate(rules, value, callback, this.form.validPeriodFrom, this.form.validPeriodAlways, '驾驶证'), trigger: ['change', 'blur'] },
           { validator: (rules, value, callback) => this.formValidate.isExpired(rules, value, callback, this.form.validPeriodAlways), trigger: ['change', 'blur'] }
         ],
-        workCompany: [
+        /*  workCompany: [
           { required: true, message: '工作单位不能为空', trigger: 'blur' }
-        ],
+        ],*/
         transportPermitNo: [
           { required: true, message: '道路运输经营许可证不能为空', trigger: 'blur' }
         ],
