@@ -4,7 +4,7 @@
       {{ label }}
       <span v-if="unit && unit !== ''">({{ unit }})</span>
     </p>
-    <p class="text" :class="[{blod: isBlod}, {small: isSmall}]">
+    <p class="text" :class="[{blod: isBlod}, {small: isSmall}, {smallSize: isSmallSize}]">
       <count-to :end-val="count" :decimal-places="places" />
       <template v-if="hasYoy">
         <template v-if="yoyType !== null && yoyType !== 2">
@@ -73,6 +73,10 @@ export default {
     isSmall: {
       type: Boolean,
       default: false
+    },
+    isSmallSize: {
+      type: Boolean,
+      default: false
     }
   }
 };
@@ -120,18 +124,22 @@ export default {
       margin-top: 0.65rem;
     }
     .value_up{
+      display: inline-block;
       font-size: 0.6rem;
       vertical-align: top;
       color: rgba(0, 210, 255, 1);
       margin-left: 0.15rem;
       font-family: 'PingFang Medium' !important;
+      transform: scale(0.95, 0.95);
     }
     .value_down{
+      display: inline-block;
       font-size: 0.6rem;
       vertical-align: top;
       color: rgba(52, 213, 192, 1);
       margin-left: 0.15rem;
       font-family: 'PingFang Medium' !important;
+      transform: scale(0.95, 0.95);
     }
     // 样式区分
     &.blod{
@@ -154,6 +162,25 @@ export default {
       }
       .value_down{
         color: #34A398;
+      }
+    }
+    &.smallSize{
+      font-size: 0.8rem;
+      .arow_up{
+        width: 0.7rem;
+        height: 0.45rem;
+      }
+      .arow_down{
+        width: 0.7rem;
+        height: 0.45rem;
+      }
+      .value_up{
+        transform: scale(0.85, 0.85);
+        margin-left: 0.05rem;
+      }
+      .value_down{
+        transform: scale(0.85, 0.85);
+        margin-left: 0.05rem;
       }
     }
   }
