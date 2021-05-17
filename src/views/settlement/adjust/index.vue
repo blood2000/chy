@@ -244,7 +244,7 @@
           >批量评价</el-button>
         </el-col>
         <el-col :span="1.5" class="fr">
-          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
+          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" refresh />
         </el-col>
         <right-toolbar
           :show-search.sync="showSearch"
@@ -252,7 +252,7 @@
         />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig" :height="tbodyHeight" @selection-change="handleSelectionChange">
         <template #goodsBigType="{row}">
           <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
         </template>
@@ -372,9 +372,12 @@ import CommentDialog from './commentDialog';
 // 评价详情弹窗
 import RateDialog from './rateDialog';
 
+import setTheight from '@/layout/mixin/setTheight';
+
 export default {
   'name': 'AdjustList',
   components: { RejectDialog, AdjustDialog, DetailDialog, ChildDialog, CommentDialog, RateDialog },
+  mixins: [setTheight],
   data() {
     return {
       tableColumnsConfig: [],
@@ -512,6 +515,7 @@ export default {
         this.adjustlist = response.rows;
         this.total = response.total;
         this.loading = false;
+        this.$_getHeight();
       });
     },
     /** 搜索按钮操作 */
