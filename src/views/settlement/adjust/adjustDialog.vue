@@ -82,13 +82,13 @@
       <el-table-column width="160" label="司机实收运费" align="center" prop="deliveryFeePractical" />
 
       <!-- 补贴项目 -->
-      <el-table-column align="center" width="500" label="补贴项目">
+      <el-table-column align="center" width="400" label="补贴项目">
         <template slot="header">
           <span>补贴项目 <el-button type="text" @click="isEdit2 = !isEdit2"><i class="el-icon-edit" /></el-button></span>
 
         </template>
         <template slot-scope="scope">
-          <el-form :inline="true" label-position="right" size="mini" class="ly-flex">
+          <el-form :inline="true" label-position="right" size="mini" class="ly-flex" label-width="80px">
             <div v-for="(freight, index) in scope.row.subsidiesFreightList" :key="index">
               <el-form-item :label="freight.cnName">
                 <span v-show="!isEdit2">{{ freight.ruleValue }}</span>
@@ -96,7 +96,7 @@
               </el-form-item>
             </div>
 
-            <el-form-item label="其他补贴" class="ly-flex-1">
+            <el-form-item label="其他补贴">
               <span v-show="!isEdit2">{{ scope.row.otherSubsidies }}</span>
               <el-input-number v-show="isEdit2" v-model="scope.row.otherSubsidies" :controls="false" :precision="2" :min="0" :placeholder="`其他扣款`" style="width:90px;" @blur="handlerChange(scope.row,scope.row.otherSubsidies, 'add')" />
             </el-form-item>
@@ -104,22 +104,22 @@
         </template>
       </el-table-column>
       <!-- 扣费项目 -->
-      <el-table-column align="center" width="500">
+      <el-table-column align="center" width="400">
         <template slot="header">
           <span>扣费项目 <el-button type="text" @click="isEdit = !isEdit"><i class="el-icon-edit" /></el-button></span>
 
         </template>
 
         <template slot-scope="scope">
-          <el-form :inline="true" label-position="right" size="mini" class="ly-flex">
-            <div v-for="(freight, index) in scope.row.deductionFreightList" :key="index" class="ly-flex-1">
+          <el-form :inline="true" label-position="right" size="mini" class="ly-flex" label-width="80px">
+            <div v-for="(freight, index) in scope.row.deductionFreightList" :key="index">
               <el-form-item :label="freight.cnName">
                 <span v-show="!isEdit">{{ freight.ruleValue }}</span>
                 <el-input-number v-show="isEdit" v-model="freight.ruleValue" :controls="false" :precision="2" :min="0" :placeholder="`${freight.cnName}`" style="width:90px;" @blur="handlerItem(scope.row,freight.ruleValue,'',freight.enName)" />
               </el-form-item>
             </div>
 
-            <el-form-item label="其他扣款" class="ly-flex-1">
+            <el-form-item label="其他扣款">
               <span v-show="!isEdit">{{ scope.row.otherCharges }}</span>
               <el-input-number v-show="isEdit" v-model="scope.row.otherCharges" :controls="false" :precision="2" :min="0" :placeholder="`其他扣款`" style="width:90px;" @blur="handlerChange(scope.row,scope.row.otherCharges, '')" />
             </el-form-item>
@@ -218,6 +218,7 @@ export default {
       }
 
       this.otherdeValue(row);
+
       this.getDeliveryCashFee(row);
     },
 
@@ -424,7 +425,7 @@ export default {
       const rowdeduction = this._sum(deductionFreightList);
 
       // row.tin_deliveryCashFee 上一次修改的值
-      if (deliveryCashFee >= row.tin_deliveryCashFee) {
+      if (deliveryCashFee >= (row.tin_deliveryCashFee || deliveryCashFee)) {
         row.otherSubsidies = (deliveryCashFee - shazhi) + (rowdeduction + otherCharges) - rowsubsidies;
       } else {
         row.otherCharges = (rowsubsidies + otherSubsidies) + shazhi - deliveryCashFee - rowdeduction;
@@ -461,4 +462,8 @@ export default {
 .el-input-number ::v-deep.el-input__inner {
   text-align: left;
 }
+.ly-flex{
+  flex-wrap: wrap;
+}
+
 </style>
