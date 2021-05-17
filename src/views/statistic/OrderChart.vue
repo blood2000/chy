@@ -8,15 +8,18 @@ import * as echarts from 'echarts';
 import { setfontSize } from '@/utils/fontSize';
 
 export default {
+  props: {
+    weekVoList: {
+      type: Array,
+      default: () => {
+        return [];
+      }
+    }
+  },
   data() {
     return {
       chart: null
     };
-  },
-  mounted() {
-    this.$nextTick(() => {
-      this.initChart();
-    });
   },
   beforeDestroy() {
     if (!this.chart) {
@@ -36,6 +39,15 @@ export default {
       this.setFontOption();
     },
     setOption() {
+      // 构造数据
+      const timeData = [];
+      const shipmentData = [];
+      const wayBillData = [];
+      this.weekVoList.forEach(el => {
+        timeData.push(el.dataTime.substring(el.dataTime.length - 5));
+        shipmentData.push(el.orderCount);
+        wayBillData.push(el.waybillCount);
+      });
       this.chart.setOption({
         legend: {
           show: true,
@@ -75,7 +87,7 @@ export default {
               color: '#3F5C84'
             }
           },
-          data: ['第1周', '第2周', '第3周', '第4周', '第5周', '第6周', '第7周', '第8周']
+          data: timeData
         },
         yAxis: {
           name: '订单数(万)',
@@ -124,7 +136,7 @@ export default {
         },
         series: [{
           name: '货单订单数',
-          data: [2, 4, 5, 8, 6, 2, 6, 2, 6, 2],
+          data: shipmentData,
           type: 'line',
           symbol: 'circle',
           color: 'rgba(38, 123, 183, 1)', // 拐点颜色
@@ -138,7 +150,7 @@ export default {
           }
         }, {
           name: '运单订单数',
-          data: [5, 3, 4, 8, 5, 6, 5, 6],
+          data: wayBillData,
           type: 'line',
           symbol: 'circle',
           color: 'rgba(255, 158, 44, 1)', // 拐点颜色

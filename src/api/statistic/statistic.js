@@ -35,3 +35,11 @@ export function getShipmentWaybillCount(branchCode, timeType) {
     }
   });
 }
+
+// 运营情况
+export function getBusinessDetail(branchCode) {
+  return request({
+    url: `/schedule/bigScreenSeach/getBusinessDetail/${branchCode}`,
+    method: 'get'
+  });
+}

@@ -10,30 +10,42 @@
           <span class="text">福建省融谷供应链管理有限公司福建省融谷供应链管理有限公司</span>
         </div>
         <div class="s-container__list__item__content ly-flex-pack-justify">
-          <div class="content__box">
-            <p class="label">总货单量(万)</p>
-            <p class="text">
-              <count-to :end-val="16.7" :decimal-places="1" />
-              <span class="arow_down" />
-              <span class="value_down">12.6%</span>
-            </p>
-          </div>
-          <div class="content__box">
-            <p class="label">总货单量(万)</p>
-            <p class="text">
-              <count-to :end-val="25.1" :decimal-places="1" />
-              <span class="arow_up" />
-              <span class="value_up">12.6%</span>
-            </p>
-          </div>
-          <div class="content__box">
-            <p class="label">总货单量(万)</p>
-            <p class="text">
-              <count-to :end-val="18.8" :decimal-places="1" />
-              <span class="arow_up" />
-              <span class="value_up">12.6%</span>
-            </p>
-          </div>
+          <InfoBox
+            label="总货单量"
+            unit="万"
+            :count="67.7"
+            :places="1"
+            :has-yoy="true"
+            :yoy="12.6"
+            :yoy-type="0"
+            :yoy-places="1"
+            :is-small="true"
+            :is-small-size="true"
+          />
+          <InfoBox
+            label="总运单量"
+            unit="万"
+            :count="67.7"
+            :places="1"
+            :has-yoy="true"
+            :yoy="12.6"
+            :yoy-type="0"
+            :yoy-places="1"
+            :is-small="true"
+            :is-small-size="true"
+          />
+          <InfoBox
+            label="总运输费"
+            unit="万"
+            :count="67.7"
+            :places="1"
+            :has-yoy="true"
+            :yoy="12.6"
+            :yoy-type="0"
+            :yoy-places="1"
+            :is-small="true"
+            :is-small-size="true"
+          />
         </div>
       </li>
     </ul>
@@ -41,11 +53,11 @@
 </template>
 
 <script>
-import CountTo from '@/components/CountTo';
+import InfoBox from './components/infoBox';
 
 export default {
   components: {
-    CountTo
+    InfoBox
   },
   data() {
     return {
@@ -116,52 +128,6 @@ export default {
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
-        }
-      }
-      &__content{
-        >.content__box{
-          width: 33.33%;
-          >.label{
-            font-size: 0.6rem;
-            font-family: PingFang Regular;
-            font-weight: 300;
-            color: #D5EAFF;
-          }
-          >.text{
-            font-size: 0.8rem;
-            font-family: 'PingFang Medium';
-            font-weight: 500;
-            color: #FFFFFF;
-            line-height: 1.3rem;
-            .arow_up{
-              display: inline-block;
-              width: 0.7rem;
-              height: 0.45rem;
-              background: url('~@/assets/images/statistic/arow_up_small.png') no-repeat;
-              background-size: 100% 100%;
-              margin-left: 0.3rem;
-            }
-            .arow_down{
-              display: inline-block;
-              width: 0.7rem;
-              height: 0.45rem;
-              background: url('~@/assets/images/statistic/arow_down_small.png') no-repeat;
-              background-size: 100% 100%;
-              margin-left: 0.3rem;
-            }
-            .value_up{
-              font-size: 0.6rem;
-              vertical-align: top;
-              color: rgba(1, 156, 255, 1);
-              margin-left: 0.15rem;
-            }
-            .value_down{
-              font-size: 0.6rem;
-              vertical-align: top;
-              color: rgba(52, 163, 152, 1);
-              margin-left: 0.15rem;
-            }
-          }
         }
       }
     }

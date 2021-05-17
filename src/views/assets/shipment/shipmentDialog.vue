@@ -350,21 +350,21 @@
         </el-select>
       </el-form-item>
 
-        <el-form-item label="打款开票方式" prop="payInvoiceType">
-            <el-select
-                    v-model="form.payInvoiceType"
-                    clearable
-                    filterable
-                    class="width90"
-            >
-                <el-option
-                        v-for="dict in payInvoiceTypeOptions"
-                        :key="dict.dictValue"
-                        :label="dict.dictLabel"
-                        :value="dict.dictValue"
-                />
-            </el-select>
-        </el-form-item>
+      <el-form-item label="打款开票方式" prop="payInvoiceType">
+        <el-select
+          v-model="form.payInvoiceType"
+          clearable
+          filterable
+          class="width90"
+        >
+          <el-option
+            v-for="dict in payInvoiceTypeOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
     </el-form>
 
     <div v-if="title === '新增' || title === '编辑'" slot="footer" class="dialog-footer">

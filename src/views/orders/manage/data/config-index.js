@@ -233,6 +233,13 @@ export default [
     isShow: true,
     width: 120,
     tooltip: true,
+    label: '创建人'
+  },
+  {
+    prop: 'updateUserName',
+    isShow: true,
+    width: 120,
+    tooltip: true,
     label: '操作人'
   },
   {

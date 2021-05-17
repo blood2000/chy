@@ -3,42 +3,42 @@ export default [
     prop: 'driverReport',
     isShow: true,
     label: '司机信息上报',
-    // width: 100,
+    width: 100,
     fixed: 'left'
   },
   {
     prop: 'vehicleReport',
     isShow: true,
     label: '车辆信息上报',
-    // width: 100,
+    width: 100,
     fixed: 'left'
   },
   {
     prop: 'waybillSendStatus',
     isShow: true,
     label: '运单上报',
-    // width: 100,
+    width: 100,
     fixed: 'left'
   },
   {
     prop: 'loadSendStatus',
     isShow: true,
     label: '装货位置上报',
-    // width: 100,
+    width: 100,
     fixed: 'left'
   },
   {
     prop: 'unloadSendStatus',
     isShow: true,
     label: '卸货位置上报',
-    // width: 100,
+    width: 100,
     fixed: 'left'
   },
   {
     prop: 'billSendStatus',
     isShow: true,
     label: '流水上报',
-    // width: 100,
+    width: 100,
     fixed: 'left'
   },
   {

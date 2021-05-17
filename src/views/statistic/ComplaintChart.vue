@@ -5,17 +5,17 @@
       <div class="s-container__info__box">
         <div class="content">
           <p class="label">总投诉量</p>
-          <p class="text"><count-to :end-val="100" /></p>
+          <p class="text"><count-to :end-val="complainVo.complaintCount" /></p>
         </div>
       </div>
       <div class="s-container__info__box ly-flex-pack-justify">
         <div class="content">
           <p class="label child">已解决投诉</p>
-          <p class="text"><count-to :end-val="60" /></p>
+          <p class="text"><count-to :end-val="complainVo.complaintSolve" /></p>
         </div>
         <div class="content">
           <p class="label child">异常单</p>
-          <p class="text"><count-to :end-val="40" /></p>
+          <p class="text"><count-to :end-val="complainVo.complaintAbnormal" /></p>
         </div>
       </div>
     </div>
@@ -32,15 +32,18 @@ export default {
   components: {
     CountTo
   },
+  props: {
+    complainVo: {
+      type: Object,
+      default: () => {
+        return {};
+      }
+    }
+  },
   data() {
     return {
       chart: null
     };
-  },
-  mounted() {
-    this.$nextTick(() => {
-      this.initChart();
-    });
   },
   beforeDestroy() {
     if (!this.chart) {
@@ -93,9 +96,9 @@ export default {
             radius: ['48%', '70%'],
             center: ['35%', '50%'],
             data: [
-              { value: 100, name: '总投诉量' },
-              { value: 60, name: '已解决投诉' },
-              { value: 40, name: '异常单' }
+              { value: this.complainVo.complaintCount, name: '总投诉量' },
+              { value: this.complainVo.complaintSolve, name: '已解决投诉' },
+              { value: this.complainVo.complaintAbnormal, name: '异常单' }
             ],
             // 标示线
             label: {
