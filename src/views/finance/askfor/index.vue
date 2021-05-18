@@ -254,7 +254,7 @@
       </el-col>
       <el-col :span="2">
         <div class="g-statistics-tag">运费金额：</div>
-        <div class="g-statistics-num">{{ feeinfo.shipperDeliveryFee - feeinfo.serviceFee }}</div>
+        <div class="g-statistics-num">{{ feeinfo.deliveryCashFee }}</div>
       </el-col>
       <el-col :span="2">
         <div class="g-statistics-tag">运费税额：</div>
@@ -380,7 +380,7 @@ export default {
         taxPayment: 0,
         serviceFee: 0,
         serviceTaxFee: 0,
-        shipperDeliveryFee: 0
+        deliveryCashFee: 0
       },
       shipmentInfoQuery: {
         pageNum: 1,
@@ -476,13 +476,13 @@ export default {
         taxPayment: 0,
         serviceFee: 0,
         serviceTaxFee: 0,
-        shipperDeliveryFee: 0
+        deliveryCashFee: 0
       };
       // selection.map((item) => { this.feeinfo.deliveryFee += item.deliveryFeePractical; });
       selection.map((item) => { this.feeinfo.taxPayment += item.taxPayment; });
       selection.map((item) => { this.feeinfo.serviceFee += item.serviceFee; });
       selection.map((item) => { this.feeinfo.serviceTaxFee += item.serviceTaxFee; });
-      selection.map((item) => { this.feeinfo.shipperDeliveryFee += item.shipperDeliveryFee; });
+      selection.map((item) => { this.feeinfo.deliveryCashFee += item.deliveryCashFee; });
       this.ids = selection.map((item) => item.code).join(',');
       this.multiple = !selection.length;
       console.log(this.ids);
