@@ -246,6 +246,21 @@
           />
         </el-select>
       </el-form-item>
+        <el-form-item label="票务规则" prop="payInvoiceType">
+            <el-select
+                    v-model="form.payInvoiceType"
+                    clearable
+                    filterable
+                    class="width90"
+            >
+                <el-option
+                        v-for="dict in payInvoiceTypeOptions"
+                        :key="dict.dictValue"
+                        :label="dict.dictLabel"
+                        :value="dict.dictValue"
+                />
+            </el-select>
+        </el-form-item>
       <!-- <el-form-item label="核算方式" prop="accountType">
         <el-select v-model="form.accountType" placeholder="请选择核算方式" filterable clearable class="width90">
           <el-option
@@ -349,24 +364,19 @@
           />
         </el-select>
       </el-form-item>
-
-      <el-form-item label="打款开票方式" prop="payInvoiceType">
-        <el-select
-          v-model="form.payInvoiceType"
-          clearable
-          filterable
-          class="width90"
-        >
-          <el-option
-            v-for="dict in payInvoiceTypeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
+        <el-row :gutter="20">
+            <el-col :span="8">
+                <el-form-item prop="noNeedUnloadImg">
+                    <el-checkbox v-model="form.noNeedUnloadImg">是否不需要卸货图片</el-checkbox>
+                </el-form-item>
+            </el-col>
+            <el-col :span="10">
+                <el-form-item prop="openProjectDesignView">
+                    <el-checkbox v-model="form.openProjectDesignView">开启项目版设计视图</el-checkbox>
+                </el-form-item>
+            </el-col>
+        </el-row>
     </el-form>
-
     <div v-if="title === '新增' || title === '编辑'" slot="footer" class="dialog-footer">
       <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
@@ -422,8 +432,8 @@ export default {
         { dictLabel: '是', dictValue: 1 }
       ],
       payInvoiceTypeOptions: [
-        { dictLabel: '先打款后开票', dictValue: 1 },
-        { dictLabel: '先开票后打款', dictValue: 2 }
+        { dictLabel: '核算打款后', dictValue: 1 },
+        { dictLabel: '核算申请后', dictValue: 2 }
       ],
       // 核算方式字典
       accountTypeOptions: [],
@@ -591,6 +601,17 @@ export default {
             this.$set(this.form, 'serviceRate', '');// 服务费税率
             this.$set(this.form, 'dispatchPoints', ((this.form.texPoint / (100 - this.form.texPoint)) * 100).toFixed(2));
           }
+          var noNeedUnloadImg = 1;
+          var openProjectDesignView = 1;
+          if (this.form.noNeedUnloadImg) {
+            noNeedUnloadImg = 0;
+          }
+          if (this.form.openProjectDesignView) {
+            openProjectDesignView = 0;
+          }
+          var extendForm = { noNeedUnloadImg: noNeedUnloadImg, openProjectDesignView: openProjectDesignView };
+          // eslint-disable-next-line no-undef
+          this.form = Object.assign(this.form, extendForm);
           if (this.form.id) {
             updateShipment(this.form).then(response => {
               this.buttonLoading = false;
@@ -695,7 +716,9 @@ export default {
         ticketType: null,
         serviceRatio: null,
         serviceRate: null,
-        supplyIsAuth: 0 // 是否审核货源，默认否
+        supplyIsAuth: 0, // 是否审核货源，默认否
+        noNeedUnloadImg: 1,
+        openProjectDesignView: 1
         // branchCode: null
       };
       this.resetForm('form');
@@ -704,6 +727,16 @@ export default {
     setForm(data) {
       this.form = data;
       this.form.identificationEffective = praseNumToBoolean(this.form.identificationEffective);
+      if (this.form.noNeedUnloadImg === 0) {
+        this.form.noNeedUnloadImg = true;
+      } else {
+        this.form.noNeedUnloadImg = false;
+      }
+      if (this.form.openProjectDesignView === 0) {
+        this.form.openProjectDesignView = true;
+      } else {
+        this.form.openProjectDesignView = false;
+      }
       if (this.form.branchCode && this.form.branchName) {
         this.branchOptions = [{
           code: this.form.branchCode,
