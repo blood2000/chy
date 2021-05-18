@@ -314,15 +314,6 @@ export default {
 
       return bool;
     }
-
-    // isdisabled(value) {
-    //   console.log(value);
-
-    //   return this.active === 4;
-    // }
-    // InfoCodes() {
-    //   return this.formData.tin6_1.concat(this.formData.tin6_2);
-    // }
   },
 
   watch: {
@@ -343,11 +334,8 @@ export default {
       this.tin6Option = [];
 
       this.api_tin3Optin();
-      // this.api_dictInit();
     },
-    // isdisabled(value) {
-    //   console.log(value);
-    // },
+
 
     // 回填数据
     cbData: {
@@ -486,7 +474,6 @@ export default {
     // 4. 选择所属项目
     handleTin3() {
       // 如果是复制或者编辑的话 提示一下
-      // console.log(this.$store.getters.isClone);
 
       if (this.formData.tin3 === '0') {
         this.formData.tin2 = '';
@@ -694,29 +681,9 @@ export default {
     /* 关闭 */
     closable(index) {
       this.orderSpecifiedList.splice(index, 1);
-      // console.log(this.orderSpecifiedList);
-      // console.log(this.formData['tin6_' + this.actionIndex]);
 
       this.formData['tin6_' + this.actionIndex] = this.orderSpecifiedList;
-      // this.handlerOrderSpecifiedList(this.orderSpecifiedList);
     },
-
-    // /* 处理司机/调度者 */
-    // handlerOrderSpecifiedList(orderSpecifiedList) {
-    //   this.orderSpecifiedList = orderSpecifiedList;
-    //   this.orderSpecifiedList.forEach(e => {
-    //     if (e.userType + '' === '1') {
-    //       e.code = e.teamInfoCode;
-    //     } else {
-    //       e.code = e.driverInfoCode;
-    //     }
-    //     this.actionIndex = e.userType + '';
-    //     this.formData['tin6_' + e.userType] = this.orderSpecifiedList;
-    //   });
-
-    //   // this.orderSpecifiedList = orderSpecifiedList;
-    // },
-
 
     // 处理小类传入[1,2] =>
     _handleGoodsType(arr) {
@@ -731,8 +698,6 @@ export default {
 
     // 回填多商品处理code
     _handlreMultiGoodsType(arr1, options) {
-      // console.log(arr1);
-
       const arr2 = [];
       arr1.forEach(e => {
         options.forEach(ee => {

@@ -151,9 +151,6 @@ export default {
       immediate: true
     }
   },
-  created() {
-    // console.log(this.morelist);
-  },
   beforeDestroy() {
     clearTimeout(this.time);
   },

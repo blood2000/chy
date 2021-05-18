@@ -229,7 +229,7 @@ export default [
   },
 
   {
-    prop: 'opNickName',
+    prop: 'opUserName',
     isShow: true,
     width: 120,
     tooltip: true,

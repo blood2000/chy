@@ -249,9 +249,12 @@
         </template>
         <!-- 重量/体积/车 -->
         <template #tin_weight="{row}">
-          <span v-if="row.stowageStatus == 0">{{ row.totalType === '2'? (row.remainingWeight - 0) + ' 吨':'不限' }}</span>
-          <span v-if="row.stowageStatus == 1">{{ row.totalType === '2'?(row.remainingWeight - 0) + ' 立方' :'不限' }}</span>
+          <span v-if="row.stowageStatus == 0">{{ row.totalType === '2'? (row.weight - 0) + ' 吨':'不限' }}</span>
+          <span v-if="row.stowageStatus == 1">{{ row.totalType === '2'?(row.weight - 0) + ' 立方' :'不限' }}</span>
           <span v-if="row.stowageStatus == 2">{{ row.totalType === '2'? (row.number - 0) + ' 车' : '不限' }}</span>
+          <!-- <span v-if="row.stowageStatus == 0">{{ row.totalType === '2'? (row.remainingWeight - 0) + ' 吨':'不限' }}</span>
+          <span v-if="row.stowageStatus == 1">{{ row.totalType === '2'?(row.remainingWeight - 0) + ' 立方' :'不限' }}</span>
+          <span v-if="row.stowageStatus == 2">{{ row.totalType === '2'? (row.number - 0) + ' 车' : '不限' }}</span> -->
         </template>
 
         <template #stowageStatus="{row}">
@@ -612,9 +615,9 @@ export default {
 
 
   created() {
-    const { isShipment = false, shipment = {}} = getUserInfo() || {};
+    console.log('页面初始化');
 
-    // isAdmin = true,
+    const { isShipment = false, shipment = {}} = getUserInfo() || {};
     // 判断当前是什么角色登入的 true 是运营
     this.isShipment = isShipment;
 
@@ -629,7 +632,6 @@ export default {
   methods: {
     // tab切换
     handleClick() {
-      // console.log(this.activeName);
       this.queryParams.tin8 = this.activeName;
       if (this.activeName === '0') {
         this.queryParams.isManual = undefined;
@@ -936,9 +938,6 @@ export default {
             e.goodsPrice = ee.goodsPrice;
           }
         });
-
-        // console.log(e.redisOrderAddressInfoVoList);
-
 
         const redis = e.redisOrderAddressInfoVoList.map(eee => {
           const tin_names = [];
