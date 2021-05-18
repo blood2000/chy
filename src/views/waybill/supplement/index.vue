@@ -678,9 +678,8 @@ export default {
         } else {
           this.stowage = true;
         }
-        console.log(result);
-        this.form.notRobbedOrder = result.notRobbedOrder || '不限';
-        this.form.remainingWeight = result.remainingWeight || '不限';
+        this.form.notRobbedOrder = !result.notRobbedOrder && result.notRobbedOrder !== 0 ? '不限' : result.notRobbedOrder;
+        this.form.remainingWeight = !result.remainingWeight && result.remainingWeight !== 0 ? '不限' : result.remainingWeight;
         this.getOrderGoodsProce();
         this.$forceUpdate(); // 视图强制更新
       } else {
