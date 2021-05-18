@@ -444,7 +444,7 @@ export default {
         this.loading = true;
         this.driverInfoQuery.pageNum = 1;
         this.dataOver = false;
-        this.driverInfoQuery.name = query;
+        this.driverInfoQuery.phoneOrName = query;
         this.driverOptions = [];
         this.getDriver();
       } else {

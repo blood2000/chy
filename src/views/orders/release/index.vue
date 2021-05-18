@@ -112,6 +112,7 @@
               :pubilsh-code="formData.tin1"
               :cb-data="cbOrderBasic"
               :myisdisabled="myisdisabled"
+              :goods-big-types="goodsBigTypes"
               @goods="handlerGoos"
             >
 
@@ -344,6 +345,7 @@ export default {
   },
   data() {
     return {
+      goodsBigTypes: undefined,
       shipmentInfo: null, // 选中的货主信息
       orderInfo: '0', // 详情的时候切换查看
       waybillData: null, // 货源-运单详情
@@ -455,7 +457,7 @@ export default {
 
   async created() {
     // 判断用户
-    const { isAdmin = true, isShipment = false, shipment = {}, user = {}} = getUserInfo() || {};
+    const { isShipment = false, shipment = {}, user = {}} = getUserInfo() || {};
 
     this.isShipment = isShipment;
     // console.log(this.isShipment);
@@ -1005,8 +1007,28 @@ export default {
 
         const { redisOrderInfoVo, redisOrderClassGoodsVoList, redisOrderSpecifiedVoList, redisOrderFreightInfoVoList, redisOrderGoodsVoList, redisAddressList } = data;
 
+        // 5/18s=特殊处理
+        const redisOrderGoodsVoListRest = redisOrderGoodsVoList.map(e => {
+          const goodsBigTypes = e.goodsBigType.split(',');
+
+          if (goodsBigTypes.length > 1) {
+            this.goodsBigTypes = goodsBigTypes;
+            e.goodsBigType = goodsBigTypes[goodsBigTypes.length - 1];
+
+            // 处理小类
+            const goodsTypes = e.goodsType.split(',');
+
+            e.goodsType = goodsTypes[goodsTypes.length - 1];
+          }
+
+          return e;
+        });
+
+        console.log(redisOrderGoodsVoListRest);
+        // 5/18e=特殊处理
+
         // 1
-        this.handlerOrderBasic({ ...redisOrderInfoVo, redisOrderClassGoodsVoList, redisOrderSpecifiedVoList, redisOrderGoodsVoList });
+        this.handlerOrderBasic({ ...redisOrderInfoVo, redisOrderClassGoodsVoList, redisOrderSpecifiedVoList, redisOrderGoodsVoListRest });
 
         // 2
         this.handlercbAddress(redisAddressList);
@@ -1015,7 +1037,7 @@ export default {
         this.handerRedisOrder(redisAddressList);
 
         // 4. 处理商品
-        this.cbGoodsAccounting = redisOrderGoodsVoList;
+        this.cbGoodsAccounting = redisOrderGoodsVoListRest;
 
         // 5. 处理规则
 
@@ -1104,11 +1126,16 @@ export default {
 
     // 1.处理 cbOrderBasic 要的数据
     handlerOrderBasic(data) {
-      const { code, isPublic, isSpecified, loadType, projectCode, pubilshCode, remark, redisOrderClassGoodsVoList, redisOrderGoodsVoList, redisOrderSpecifiedVoList } = data;
+      const { code, isPublic, isSpecified, loadType, projectCode, pubilshCode, remark, redisOrderClassGoodsVoList, redisOrderGoodsVoListRest: redisOrderGoodsVoList, redisOrderSpecifiedVoList } = data;
 
       // 基本
       this.formData.tin1 = pubilshCode; // 货主的code(重要,根据这个展示所有)
       this.formData.tin7 = loadType ? loadType + '' : '1'; // 无则默认 '1'
+
+
+
+
+
       // 处理2 OrderBasic 组件
       this.cbOrderBasic = {
         code,

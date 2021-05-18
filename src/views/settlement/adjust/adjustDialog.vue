@@ -226,12 +226,17 @@ export default {
     async getDeliveryCashFee(row) {
       const { data } = await deliveryCashFee({
         deliveryCashFee: row.deliveryCashFee, //	司机实收现金		false
+        m0DictValue: row.m0DictValue,
         // deliveryFeeDeserved: row.deliveryFeeDeserved, // 司机应收运费
         shipperCode: row.shipperCode //	货主Code		false
       });
 
+      console.log(data);
+
       row.serviceFee = data.serviceFee;
       row.shipperRealPay = data.shipperRealPay;
+      row.m0Fee = data.m0Fee;
+      row.deliveryCashFee = data.driverFee;
       // row.taxPayment = data.taxPayment || row.taxPayment;
 
       row.tin_deliveryCashFee = row.deliveryCashFee;
