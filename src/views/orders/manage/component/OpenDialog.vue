@@ -62,11 +62,7 @@
           <el-table-column label="调度者名称" align="center" prop="name" show-overflow-tooltip />
           <!-- <el-table-column label="身份证" align="center" prop="identificationNumber" show-overflow-tooltip /> -->
           <el-table-column label="管理者" align="center" prop="teamLeaderName" show-overflow-tooltip />
-          <!-- <el-table-column label="承运人类型" align="center" prop="contactPhone" show-overflow-tooltip>
-            <template v-if="scope" slot-scope="scope">
-              调度者
-            </template>
-          </el-table-column> -->
+
           <el-table-column label="电话" align="center" prop="telphone" show-overflow-tooltip />
 
         </el-table>
@@ -96,8 +92,6 @@ import { listInfo } from '@/api/assets/team';
 import { dispatchOrder } from '@/api/order/manage';
 import tableColumnsConfig_listDriver from '../data/config-driver';
 import tableColumnsConfig_listInfo from '../data/config-team';
-
-// import { listShipment, getShipment, delShipment } from '@/api/assets/shipment';
 
 const apiFn = {
   listDriver, listInfo
@@ -197,7 +191,6 @@ export default {
 
   },
   created() {
-    // this['t_cbData_' + this.activeName] = JSON.parse(JSON.stringify(this.cbData)) || [];
     const arr = JSON.parse(JSON.stringify(this.cbData)) || [];
 
     this['t_cbData_' + this.activeName] = arr.map(e => {
@@ -272,8 +265,6 @@ export default {
       if (!this.list_listDriver.length || !this.list_listInfo.length) {
         this.getList();
       }
-      // !this.list_listDriver.length && this.getList();
-      // !this.list_listInfo.length && this.getList();
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -292,11 +283,6 @@ export default {
 
     // 多选框选中数据
     handleSelectionChange(selection) {
-      // this.t_data1['page_' + this.queryParams_listDriver.pageNum] = selection;
-
-      // // 去重
-
-
       const list1 = this['list_' + this.activeName] || [];
       const list2 = this['t_cbData_' + this.activeName] || [];
 
@@ -314,13 +300,9 @@ export default {
       this['t_cbData_' + this.activeName] = newArr;
     },
     // 单选
-    handlerChange(value) {
-      // console.log(value);
-      // console.log(this.radio);
-    },
+    handlerChange(value) {},
     handlerclick1(e, value) {
       if (value === this.radio) {
-        // console.log('点击了2次');
         if (e && e.preventDefault) {
           e.preventDefault();// 非IE浏览器
         } else { window.event.returnValue = false; } // IE浏览器
@@ -401,21 +383,6 @@ export default {
 
       return result;
     }
-
-    // 回填 rows 为数组
-    // toggleSelection(rows) {
-    //   console.log(this.$refs.multipleTable.toggleRowSelection());
-
-    //   if (rows) {
-    //     rows.forEach(row => {
-    //       this.$refs.multipleTable.toggleRowSelection(row, true);
-    //     });
-    //   } else {
-    //     this.$refs.multipleTable.clearSelection();
-    //   }
-    // }
-
-
   }
 };
 </script>

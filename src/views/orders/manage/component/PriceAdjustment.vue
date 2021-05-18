@@ -73,8 +73,6 @@
 <script>
 import { adjustPrice } from '@/api/order/manage';
 
-
-// import GoodsInfo from '@/views/orders/release/GoodsInfo';
 import AccounTing from '@/views/orders/release/component/AccounTing';
 export default {
   components: { AccounTing },
@@ -94,52 +92,7 @@ export default {
       entry: '', // 生效时间
       activeName: '0',
       tabs: [],
-      // [
-      //   { dictLabel: '无烟煤', // 展示tab
-      //     activeName: '0', // 切换tab
-      //     goodsPrice: 500, // 商品价格
-      //     goodsType: '0001', // 商品divtValue
-      //     redis: [{ // 地址1 对应的其他的规则
-      //       tin_name: 'A--B', // 地址a到b 显示
-      //       ruleCode: '1', // 下拉规则的的值(会改)
-      //       ruleDictValue: '1', // 计算规则的值
-      //       orderFreightVo: { // 显示具体规则的值
-      //         'detailList': [
-      //           {
-      //             'id': 196,
-      //             'code': 'da84a113618749e6b72a3ebe4d96b60c',
-      //             'ruleCode': 'd553a41ff0b5474caa46111ae95a50a4',
-      //             'ruleItemCode': '12',
-      //             'ruleValue': '120',
-      //             'type': '2',
-      //             'cnName': '卸车费',
-      //             'enName': 'DISCHARGE_FARE',
-      //             'showType': 1,
-      //             'dictCode': null,
-      //             'ruleType': 0,
-      //             'dictLabel': null,
-      //             'unit': null
-      //           },
-      //           {
-      //             'id': 194,
-      //             'code': '280fbb2214f14fffa655211777199135',
-      //             'ruleCode': 'd553a41ff0b5474caa46111ae95a50a4',
-      //             'ruleItemCode': '17',
-      //             'ruleValue': '100',
-      //             'type': '2',
-      //             'cnName': '运费单价',
-      //             'enName': 'FREIGHT_COST',
-      //             'showType': 1,
-      //             'dictCode': null,
-      //             'ruleType': 0,
-      //             'dictLabel': null,
-      //             'unit': null
-      //           }
-      //         ]
-      //       }}],
-      //     newRedis: [] // 这个是封装返回的时候使用
-      //   },
-      totalTypeValue: '', // ??
+      totalTypeValue: '',
       myisdisabled: false // 是否预览(组件内要使用)
     };
   },
@@ -152,7 +105,6 @@ export default {
 
   created() {
     this.tabs = JSON.parse(JSON.stringify(this.mytabs));
-    console.log(this.tabs);
   },
 
   methods: {
@@ -178,14 +130,6 @@ export default {
           };
         });
 
-        // console.log(orderFreightBoList, '想要的结构-----');
-        // console.log(this.entry, '时间----');
-
-
-        // 提交需要这样的结构
-        // 1-1 订单号直接传
-        // 1-2 商品code 需要
-        // 1-3 地址装--卸code 需要
         const req = {
           'orderCode': this.orderCode,
           orderFreightBoList,
@@ -215,15 +159,10 @@ export default {
           return {
             ...ee,
             ...accounTing // 返回 ruleDictValue(这个值已经有了) 和 orderFreightBoList(这个是包装完后的)
-            // goodsType: e.goodsType
-            // goodsBigType: this.goodsBigType
-            // ruleInfoShipmentCode: accounTing.orderFreightBoList[0].ruleCode
           };
         });
         e.newRedis = await Promise.all(lists);
       }
-
-      // console.log(this.tabs, '处理后的this.tabs');
     }
   }
 

@@ -615,9 +615,9 @@ export default {
 
 
   created() {
-    const { isShipment = false, shipment = {}} = getUserInfo() || {};
+    console.log('页面初始化');
 
-    // isAdmin = true,
+    const { isShipment = false, shipment = {}} = getUserInfo() || {};
     // 判断当前是什么角色登入的 true 是运营
     this.isShipment = isShipment;
 
@@ -632,7 +632,6 @@ export default {
   methods: {
     // tab切换
     handleClick() {
-      // console.log(this.activeName);
       this.queryParams.tin8 = this.activeName;
       if (this.activeName === '0') {
         this.queryParams.isManual = undefined;
@@ -939,9 +938,6 @@ export default {
             e.goodsPrice = ee.goodsPrice;
           }
         });
-
-        // console.log(e.redisOrderAddressInfoVoList);
-
 
         const redis = e.redisOrderAddressInfoVoList.map(eee => {
           const tin_names = [];
