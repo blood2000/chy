@@ -73,6 +73,7 @@ export default {
   },
   mounted() {
     this.setNewMenu();
+    this.handleScroll();
   },
   methods: {
     // 重新构造菜单结构
@@ -111,6 +112,12 @@ export default {
     closeMenu() {
       this.isOpen = '';
     },
+    handleScroll() {
+      const scrollbarEl = this.$refs.elScroll.wrap;
+      scrollbarEl.onscroll = () => {
+        this.closeMenu();
+      };
+    },
     // 计算展开菜单的位置
     setPanelPosition(refDom, item) {
       if (item.children && item.children.length > 0) {
@@ -136,6 +143,7 @@ export default {
           // console.log('高度撑满');
           this.panelTop = headerHeight + 'px';
           this.panelBottom = 0 + 'px';
+          this.setPanelFull();
         } else if (panelTop < headerHeight) {
           // console.log('顶部超出');
           this.panelTop = headerHeight + 'px';
@@ -202,13 +210,16 @@ export default {
         background-size: 100% 100%;
         z-index: 0;
         opacity: 0;
+        transition: all 0.3s;
       }
 
       // 选中菜单样式
       &.isOpen{
         color: #409EFF;
+        transition: all 0.3s;
         &::after{
           opacity: 1;
+          transition: all 0.3s;
         }
       }
 
@@ -222,9 +233,21 @@ export default {
         box-shadow: 8px 0px 8px rgba(145, 147, 148, 0.15);
         display: none;
         z-index: 2100;
+        opacity: 0;
         &.show{
           display: block;
+          animation: show-panel 0.3s;
+          opacity: 1;
         }
+        @keyframes show-panel {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+
         .panel-item{
           height: 44px;
           line-height: 44px;
@@ -237,6 +260,7 @@ export default {
           >.panel-item-router{
             position: relative;
             padding: 0 20px 0 28px;
+            transition: all 0.3s;
             &::before{
               content: '';
               width: 2px;
@@ -246,6 +270,7 @@ export default {
               position: absolute;
               left: 18px;
               top: 50%;
+              transition: all 0.3s;
             }
             &::after{
               content: '';
@@ -256,6 +281,7 @@ export default {
               top: 0;
               background: #409EFF;
               opacity: 0;
+              transition: all 0.3s;
             }
 
             // 选中样式
@@ -264,20 +290,25 @@ export default {
               color: #409EFF;
               &::before{
                 background: #409EFF;
+                transition: all 0.3s;
               }
               &::after{
                 opacity: 0.9;
+                transition: all 0.3s;
               }
             }
             &.isActive{
               background: #D7EAFD !important;
               font-weight: bold;
               color: #409EFF;
+              transition: all 0.3s;
               &::before{
                 background: #409EFF;
+                transition: all 0.3s;
               }
               &::after{
                 opacity: 1;
+                transition: all 0.3s;
               }
             }
           }
@@ -292,6 +323,10 @@ export default {
       }
 
     }
+  }
+
+  .el-scrollbar__bar.is-vertical{
+    display: none !important;
   }
 }
 </style>
