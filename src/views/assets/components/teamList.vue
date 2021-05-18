@@ -12,7 +12,7 @@
           <span>{{ selectDictLabel(authStatusOptions, scope.row.authStatus) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="管理者" align="center" prop="teamLeaderName" />
+      <el-table-column label="姓名" align="center" prop="teamLeaderName" />
       <el-table-column label="身份证号" align="center" prop="identificationNumber" />
       <el-table-column label="是否清分" align="center" prop="isDistribution">
         <template slot-scope="scope">
