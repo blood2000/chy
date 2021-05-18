@@ -5,7 +5,8 @@
     <div class="app-wrapper__container">
       <!-- 侧边导航栏 -->
       <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
-      <sidebar class="sidebar-container" :style="{ backgroundColor: sideTheme === 'theme-dark' ? variables.menuBg : variables.menuLightBg }" />
+      <!-- <sidebar class="sidebar-container" :style="{ backgroundColor: sideTheme === 'theme-dark' ? variables.menuBg : variables.menuLightBg }" /> -->
+      <side-panel v-if="device!=='mobile'" />
       <!-- 内容 -->
       <div :class="{hasTagsView:needTagsView}" class="main-container">
         <!-- 标签栏 -->
@@ -25,7 +26,9 @@
 
 <script>
 import RightPanel from '@/components/RightPanel';
-import { AppMain, Navbar, Settings, Sidebar, TagsView } from './components';
+import { AppMain, Navbar, Settings, TagsView } from './components';
+// import { Sidebar } from './components';
+import SidePanel from './components/SidePanel/index';
 import ResizeMixin from './mixin/ResizeHandler';
 import { mapState } from 'vuex';
 import variables from '@/assets/styles/variables.scss';
@@ -37,7 +40,8 @@ export default {
     Navbar,
     RightPanel,
     Settings,
-    Sidebar,
+    // Sidebar,
+    SidePanel,
     TagsView
   },
   mixins: [ResizeMixin],
