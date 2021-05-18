@@ -140,6 +140,7 @@
       justify-content: center;
       align-items: center;
       padding-bottom: 20px;
+      transition: all 0.3s;
 
       .svg-icon-box{
         display: inline-flex;
@@ -184,25 +185,35 @@
         }
       }
 
-      &.is-active{
+      // &.is-active{
+      //   >.el-submenu__title{
+      //     .svg-icon-box{
+      //       color: #262626;
+      //       background: linear-gradient(180deg, #409EFF 0%, #006ED5 100%);
+      //       box-shadow: 0px 3px 6px rgba(118, 189, 255, 0.55);
+      //       transition: all 0.3s;
+      //     }
+      //     .svg-icon {
+      //       color: #fff;
+      //     }
+      //     .label{
+      //       color: #262626;
+      //     }
+      //   }
+      // }
+
+      &.is-opened{
+        transition: all 0.3s;
+        background: transparent !important;
         >.el-submenu__title{
-          .svg-icon-box{
-            color: #262626;
-            background: linear-gradient(180deg, #409EFF 0%, #006ED5 100%);
-            box-shadow: 0px 3px 6px rgba(118, 189, 255, 0.55);
-            transition: all 0.3s;
-          }
+          background: #F2F7FC;
           .svg-icon {
-            color: #fff;
+            color: #409EFF;
           }
           .label{
-            color: #262626;
+            color: #409EFF;
           }
         }
-      }
-
-      &:hover{
-        background: transparent !important;
       }
     }
   }
@@ -317,9 +328,9 @@
         padding-left: 12px;
         transition: all 0.2s;
       }
-      &:hover, &.is-active{
+      &:hover{
         transition: all 0.2s;
-        background: #D7EAFD !important;
+        background: rgba(215, 234, 253, 0.5) !important;
         .label{
           color: #409EFF;
           transition: all 0.2s;
@@ -328,12 +339,16 @@
           background: #409EFF;
           transition: all 0.2s;
         }
+        &::after{
+          opacity: 0.9;
+          transition: all 0.2s;
+        }
       }
       &.is-active{
         transition: all 0.2s;
         background: #D7EAFD !important;
-        font-weight: bold;
         .label{
+          font-weight: bold;
           color: #409EFF;
           transition: all 0.2s;
         }
@@ -347,7 +362,6 @@
         }
       }
     }
-    
   }
 
   .nest-menu .el-submenu>.el-submenu__title,
