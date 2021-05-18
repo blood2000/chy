@@ -196,9 +196,9 @@ export default {
         name: [
           { required: true, message: '名称不能为空', trigger: 'blur' }
         ],
-        branchTel: [
+        /* branchTel: [
           { validator: this.formValidate.telphone, trigger: 'blur' }
-        ],
+        ],*/
         orgCode: [
           { required: true, message: '归属组织不能为空', trigger: ['change', 'blur'] }
         ]
