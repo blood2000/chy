@@ -248,8 +248,9 @@ export default {
       this.loading = true;
       // 查询列表
       listConsumption(this.queryParams).then(response => {
-        this.consumptionList = response.data;
-        this.total = response.data.length;
+        console.log(response);
+        this.consumptionList = response.data.list;
+        this.total = response.data.list.length;
         this.loading = false;
       });
       // 查询列表合计
@@ -275,11 +276,11 @@ export default {
       this.queryParams.beginTime = null;
       this.queryParams.endTime = null;
       this.handleQuery();
-    },
-    // 导出
-    handleExport() {
-      this.download('/transportation/invoice/listWayBill', { ...this.queryParams }, `askfor_${new Date().getTime()}.xlsx`);
     }
+    // 导出
+    // handleExport() {
+    //   this.download('/transportation/invoice/listWayBill', { ...this.queryParams }, `askfor_${new Date().getTime()}.xlsx`);
+    // }
   }
 };
 </script>

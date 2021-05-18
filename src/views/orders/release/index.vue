@@ -460,7 +460,6 @@ export default {
     const { isShipment = false, shipment = {}, user = {}} = getUserInfo() || {};
 
     this.isShipment = isShipment;
-    // console.log(this.isShipment);
     // this.isAdmin = !isShipment;
     if (isShipment) {
       if (isShipment && shipment.info && shipment.info.authStatus !== 3) {
@@ -531,8 +530,6 @@ export default {
 
     // 获取orgCode
     handlerchange(value) {
-      // console.log(this.shipmentList);
-
       this.shipmentList.forEach(e => {
         if (e.code === value) {
           this.orgCode = e.orgCode || '';
@@ -708,8 +705,6 @@ export default {
 
     // 处理预估
     async handlerEstimateCost(lastData) {
-      // console.log(lastData, '处理预估的时机');
-
       // 注意编辑的时候是有加update的, 要重新处理一下
       const { orderFreightInfoBoList, orderGoodsList, orderFreightInfoUpdateBoList, orderGoodsUpdateBoList } = JSON.parse(JSON.stringify(lastData));
 
@@ -1024,7 +1019,6 @@ export default {
           return e;
         });
 
-        console.log(redisOrderGoodsVoListRest);
         // 5/18e=特殊处理
 
         // 1
@@ -1062,8 +1056,6 @@ export default {
 
     // 查看详情处理预估
     async isTEstimateCost(lastData) {
-      // console.log(lastData, '处理预估的时机');
-
       // 注意编辑的时候是有加update的, 要重新处理一下
       const { redisOrderGoodsVoList, redisOrderFreightInfoVoList } = lastData;
 
@@ -1078,8 +1070,6 @@ export default {
 
 
         redisOrderGoodsVoList.forEach(goods => {
-          // console.log(goods.code === e.goodsCode);
-
           if (goods.code === e.goodsCode) {
             goodsIdentification = goods.goodsType;
             number = goods.number;
@@ -1256,8 +1246,6 @@ export default {
     },
 
     handlerCheck(type) {
-      // console.log(this.formData.tin8);
-
       // if(!this.formData.tin8)
 
 

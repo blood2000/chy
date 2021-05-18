@@ -445,17 +445,11 @@ export default {
         return !bool;
       });
 
-      // console.log(filterDetailList, '处理完的规则');
-
-
       this.setData(filterDetailList, lossList);
     },
 
     // 赋值
     setData(detailList, lossList) {
-      // this.lossList = lossList;
-
-
       detailList.forEach(e => {
         if (e.type + '' === '1') {
           this.shouruList.push(e);
