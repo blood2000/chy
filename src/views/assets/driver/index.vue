@@ -455,8 +455,9 @@ export default {
       label: '操作',
       width: 180,
       fixed: 'right'
+    }).then(() => {
+      this.isShowAgreementNo();
     });
-    this.isShowAgreementNo();
     this.getDictsOptions();
     if (!this.teamCode) {
       // 如果这个页面是以组件形式展示在调度者管理弹窗里面，则这里不加载列表

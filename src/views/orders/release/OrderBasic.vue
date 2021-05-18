@@ -32,7 +32,22 @@
         </el-form-item>
 
         <el-form-item label="货物大类" prop="tin2">
+          <template v-if="goodsBigTypes && goodsBigTypes.length > 1">
+            <template v-for="(dict,index) in tin2Option">
+              <el-radio
+                v-if="dict.status === '0'"
+                :key="index + '' + dict.dictValue"
+                :value="dict.checkedValue"
+                class="mb10 m_radio"
+                border
+                disabled
+                :label="dict.dictValue"
+              >{{ dict.dictLabel }}</el-radio>
+            </template>
+          </template>
+
           <el-radio-group
+            v-else
             v-model="formData.tin2"
             :disabled="formData.tin3 !== '0'"
             size="medium"
@@ -42,12 +57,16 @@
               <el-radio
                 v-if="dict.status === '0'"
                 :key="index + '' + dict.dictValue"
-                class="mb10 ml0 m_radio"
+                class="mb10 m_radio"
                 border
                 :label="dict.dictValue"
               >{{ dict.dictLabel }}</el-radio>
             </template>
           </el-radio-group>
+
+
+          <!-- <el-radio v-model="radio" label="1">备选项</el-radio> -->
+
         </el-form-item>
 
         <template v-if="formData.tin2">
@@ -168,9 +187,6 @@
 
         <slot />
       </div>
-
-
-      <!-- <el-divider /> -->
     </el-form>
 
     <el-dialog
@@ -191,11 +207,6 @@ import { listInfo } from '@/api/enterprise/project';
 import { listStockcode } from '@/api/enterprise/stockcode';
 import OpenDialog from '../manage/component/OpenDialog';
 
-// import { getDriver } from '@/api/assets/driver';
-// import { listInfo as listTeam } from '@/api/assets/team';
-
-// import OpenDialog from './OpenDialog';
-
 export default {
   components: { OpenDialog },
   props: {
@@ -214,11 +225,11 @@ export default {
     myisdisabled: {
       type: Boolean,
       default: false
+    },
+    goodsBigTypes: {
+      type: Array,
+      default: null
     }
-    // active: {
-    //   type: Number,
-    //   default: 0
-    // }
   },
   data() {
     // const tin5_validator = (rule, value, callback) => {
@@ -234,6 +245,8 @@ export default {
     //   }
     // };
     return {
+      // 5/18 s= 特殊
+      // mgoodsBigTypes:
       // myisdisabled: false,
       orderSpecifiedList: [], // 调度者信息 指定联系人 { name: '调度者', type: 'info', userType: 1 }, { name: '司机2', type: 'info', userType: 2 }
       actionIndex: '2', // 控制弹框显示谁
@@ -400,6 +413,19 @@ export default {
         this.classList = classList;
         this.InfoCode = code;
         this.formData.tin3 = projectCode || '0';
+
+        // 6. 特殊处理
+        if (this.goodsBigTypes && this.goodsBigTypes.length > 1) {
+          this.tin2Option = this.tin2Option.map(e => {
+            e.checkedValue = undefined;
+            this.goodsBigTypes.forEach(ee => {
+              if (ee === e.dictValue) {
+                e.checkedValue = ee;
+              }
+            });
+            return e;
+          });
+        }
       },
       immediate: true
     },
@@ -424,7 +450,6 @@ export default {
       immediate: true
     }
   },
-  created() {},
 
   methods: {
     // api相关
@@ -770,6 +795,8 @@ export default {
 }
 
 .m_radio{
+  margin-left: 0;
+  margin-right: 5px;
   ::v-deep .el-radio__input{
       display: none;
   }

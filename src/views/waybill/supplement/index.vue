@@ -259,7 +259,7 @@
 
         <el-row>
           <el-col :span="2" :offset="11">
-            <el-button type="primary" v-hasPermi="['transportation:waybillOper:extra']" @click="submitForm">确 定</el-button>
+            <el-button v-hasPermi="['transportation:waybillOper:extra']" type="primary" @click="submitForm">确 定</el-button>
           </el-col>
         </el-row>
       </div>
@@ -444,7 +444,7 @@ export default {
         this.loading = true;
         this.driverInfoQuery.pageNum = 1;
         this.dataOver = false;
-        this.driverInfoQuery.name = query;
+        this.driverInfoQuery.phoneOrName = query;
         this.driverOptions = [];
         this.getDriver();
       } else {
