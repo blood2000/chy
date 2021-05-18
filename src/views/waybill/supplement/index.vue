@@ -259,7 +259,7 @@
 
         <el-row>
           <el-col :span="2" :offset="11">
-            <el-button type="primary" v-hasPermi="['transportation:waybillOper:extra']" @click="submitForm">确 定</el-button>
+            <el-button v-hasPermi="['transportation:waybillOper:extra']" type="primary" @click="submitForm">确 定</el-button>
           </el-col>
         </el-row>
       </div>
@@ -678,9 +678,8 @@ export default {
         } else {
           this.stowage = true;
         }
-        console.log(result);
-        this.form.notRobbedOrder = result.notRobbedOrder || '不限';
-        this.form.remainingWeight = result.remainingWeight || '不限';
+        this.form.notRobbedOrder = !result.notRobbedOrder && result.notRobbedOrder !== 0 ? '不限' : result.notRobbedOrder;
+        this.form.remainingWeight = !result.remainingWeight && result.remainingWeight !== 0 ? '不限' : result.remainingWeight;
         this.getOrderGoodsProce();
         this.$forceUpdate(); // 视图强制更新
       } else {
