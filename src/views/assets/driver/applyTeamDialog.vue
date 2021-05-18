@@ -26,8 +26,8 @@
       </el-table-column>
     </el-table>
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" :disabled="multiple" @click="handleAgree(1)">同 意</el-button>
-      <el-button type="danger" :disabled="multiple" @click="handleAgree(2)">拒 绝</el-button>
+      <el-button type="primary" :loading="buttonLoading" :disabled="multiple" @click="handleAgree(1)">同 意</el-button>
+      <el-button type="danger" :loading="buttonLoading" :disabled="multiple" @click="handleAgree(2)">拒 绝</el-button>
     </div>
   </el-dialog>
 </template>
@@ -46,6 +46,7 @@ export default {
   },
   data() {
     return {
+      buttonLoading: false,
       isfullscreen: false,
       // 遮罩层
       loading: true,
@@ -114,6 +115,7 @@ export default {
     },
     // 同意按钮
     handleAgree(status) {
+      this.buttonLoading = true;
       dealApply({
         driverCode: this.driverCode,
         ids: this.ids,
@@ -123,6 +125,9 @@ export default {
         this.msgSuccess('操作成功');
         this.close();
         this.$emit('refresh');
+        this.buttonLoading = false;
+      }).catch(() => {
+        this.buttonLoading = false;
       });
     }
   }

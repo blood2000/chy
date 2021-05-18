@@ -341,16 +341,13 @@ export default {
   name: 'Index',
   props: {
     width: {
-      type: String,
-      default: ''
+      type: Number,
+      default: 0
     }
   },
   data() {
     return {
-      // 版本号
-      version: '1.2.4.0',
       activeName: '1',
-      customColor: 'linear-gradient(180deg, #409EFF 0%, #006FE2 100%)',
       tip: '亲爱的用户，2021年4月22日（周四晚）21:30至23:00,银行系统升级，这期可能存在部分运单支付后较长时间处于“支付中”，处于“支付中”的您可以待系统升级以后反馈销售让我们处理，为了您能正常支付运单，建议您避开此时段操作支付感谢您的支持！'
     };
   },
