@@ -220,30 +220,34 @@ export function tansParams(params) {
  */
 import { tableHeadList } from '@/api/system/table';
 export function tableHeaderConfig(list, url, editColumn, myColumen) {
-  if (getLocalStorage(url)) {
-    getLocalStorage(url).forEach(el => {
-      list.push(el);
-    });
-  } else {
-    tableHeadList(url).then(response => {
-      response.data.forEach(el => {
-        list.push({
-          label: el.comment,
-          prop: el.fieldName,
-          isShow: el.isShow,
-          width: el.width || '120',
-          tooltip: true
-        });
+  return new Promise(resolve => {
+    if (getLocalStorage(url)) {
+      getLocalStorage(url).forEach(el => {
+        list.push(el);
       });
-      if (editColumn) {
-        list.push(editColumn);
-      }
-      if (myColumen && myColumen.length) {
-        list.push(...myColumen);
-      }
-      setLocalStorage(url, list);
-    });
-  }
+      resolve();
+    } else {
+      tableHeadList(url).then(response => {
+        response.data.forEach(el => {
+          list.push({
+            label: el.comment,
+            prop: el.fieldName,
+            isShow: el.isShow,
+            width: el.width || '120',
+            tooltip: true
+          });
+        });
+        if (editColumn) {
+          list.push(editColumn);
+        }
+        if (myColumen && myColumen.length) {
+          list.push(...myColumen);
+        }
+        setLocalStorage(url, list);
+        resolve();
+      });
+    }
+  });
 }
 
 /**
