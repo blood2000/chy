@@ -1,7 +1,7 @@
 export const dataJson = {
-  'module': '', // 模块 user,transport,trade
+  'module': '', // 模块 user,transport,trade （NoticeConstants.MODULE_XX）
   branchCode: '', // 网点
-  // 1.平台用户注册注销模块
+  // 平台用户注册注销模块
   'user': {
     // 用户
     'user': {
@@ -19,8 +19,7 @@ export const dataJson = {
       }
     }
   },
-
-  // 2.运输
+  // 运输
   'transport': {
     // 货单
     'order': {
@@ -45,12 +44,14 @@ export const dataJson = {
       'goods': '', // 多商品逗号隔开
       'isNewPoint': true, // 是否新增网点
       'isNewLine': true // 是否新增路线
-
     },
     // 运单
     'waybill': {
-      'status': '', // 1.接单 2装货 3.卸货 4.复核 5.结算
-      'num': 1, // 1.接单 2装货 3.卸货基本为1，4.复核 5.结算存在批量
+      'receiveNum': 1, // 接单数量
+      'loadNum': 1, // 装货数量
+      'unloadNum': 1, // 卸货数量
+      'accountNum': 1, // 复核数量
+      'settlementNum': 1, // 结算数量
       'orderCode': '', // 货源CODE,如果后面有更多的需求，可根据CODE去获取
       'waybillCode': '', // 运单CODE,如果后面有更多的需求，可根据CODe去获取
       // 以下只有接单的时候才有
@@ -77,7 +78,7 @@ export const dataJson = {
     }
   },
 
-  // 3.交易,批量将金额汇总展示
+  // 交易,批量将金额汇总展示
   'trade': {
     // 打款
     'settle': {
@@ -99,5 +100,6 @@ export const dataJson = {
       }, // 货主基本信息
       'amount': 10000
     }
+
   }
 };

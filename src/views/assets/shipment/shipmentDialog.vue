@@ -81,6 +81,23 @@
         />
         <el-checkbox v-model="form.identificationEffective">长期有效</el-checkbox>
       </el-form-item>
+      <!-- 选择省/市/区 -->
+      <province-city-county
+        ref="ChooseArea"
+        :visible="visible"
+        :disabled="disable"
+        :prop-province-code="form.provinceCode"
+        :prop-city-code="form.cityCode"
+        :prop-county-code="form.countyCode"
+        @refresh="(data) => {
+          form.provinceCode = data.provinceCode;
+          form.cityCode = data.cityCode;
+          form.countyCode = data.countyCode;
+        }"
+      />
+      <el-form-item label="详细地址" prop="area">
+        <el-input v-model="form.area" clearable placeholder="支持自动识别" class="width90" />
+      </el-form-item>
       <!-- <el-form-item label="网点" prop="branchCode">
         <el-select
           v-model="form.branchCode"
@@ -133,23 +150,6 @@
           <el-input v-model="form.artificialIdentificationNumber" placeholder="请输入法人身份证" class="width90" clearable />
         </el-form-item>
       </template>
-      <!-- 选择省/市/区 -->
-      <province-city-county
-        ref="ChooseArea"
-        :visible="visible"
-        :disabled="disable"
-        :prop-province-code="form.provinceCode"
-        :prop-city-code="form.cityCode"
-        :prop-county-code="form.countyCode"
-        @refresh="(data) => {
-          form.provinceCode = data.provinceCode;
-          form.cityCode = data.cityCode;
-          form.countyCode = data.countyCode;
-        }"
-      />
-      <el-form-item label="详细地址" prop="area">
-        <el-input v-model="form.area" clearable placeholder="支持自动识别" class="width90" />
-      </el-form-item>
       <el-form-item label="票制类别" prop="ticketType">
         <el-select
           v-model="form.ticketType"
