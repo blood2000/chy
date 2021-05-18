@@ -382,8 +382,8 @@
       <el-button @click="cancel">取 消</el-button>
     </div>
     <div v-if="title === '审核'" slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="reviewForm(3)">审核通过</el-button>
-      <el-button type="danger" @click="reviewForm(2)">审核不通过</el-button>
+      <el-button type="primary"  :loading="authButtonLoading" @click="reviewForm(3)">审核通过</el-button>
+      <el-button type="danger"  :loading="authButtonLoading" @click="reviewForm(2)">审核不通过</el-button>
     </div>
   </el-dialog>
 </template>
@@ -412,6 +412,7 @@ export default {
   data() {
     return {
       buttonLoading: false,
+      authButtonLoading: false,
       // 初始密码
       initialPassword: 'abcd1234@',
       // 货主类型数据字典
@@ -649,12 +650,16 @@ export default {
       const flag = this.$refs.ChooseArea.submit();
       this.$refs['form'].validate(valid => {
         if (key === 2 || (valid && flag)) {
+          this.authButtonLoading = true;
           this.form.authStatus = key;
           this.form.identificationEffective = praseNumToBoolean(this.form.identificationEffective);
           examine(this.form).then(response => {
             this.msgSuccess('操作成功');
             this.close();
             this.$emit('refresh');
+            this.authButtonLoading = false;
+          }).catch(() => {
+            this.authButtonLoading = false;
           });
         } else {
           this.msgWarning('填写的信息不完整或有误，不能通过审核');
