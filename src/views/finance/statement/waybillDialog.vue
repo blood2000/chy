@@ -1,8 +1,8 @@
 <template>
   <!-- 运单明细对话框 -->
   <el-dialog :title="title" :visible="visible" width="1200px" append-to-body :close-on-click-modal="false" @close="cancel">
-    <el-table v-loading="loading" :data="waybilllist" border stripe>
-      <el-table-column type="index" label="序号" width="50" />
+    <el-table v-loading="loading" :data="waybilllist" max-height="650" border stripe>
+      <el-table-column type="index" label="序号" align="center" width="50" />
       <el-table-column width="170" label="运输单号" align="center" prop="waybillNo" />
       <el-table-column width="120" label="商品信息" align="center" prop="goodsName" />
       <el-table-column width="180" label="装货地址" align="center" show-overflow-tooltip prop="loadFormattedAddress" />
