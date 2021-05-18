@@ -404,7 +404,7 @@ export default {
   border: 1px solid #FFE58F;
   border-radius: 2px;
   margin: 0 15px 15px;
-  padding: 10px;
+  padding: 8px 10px;
 }
 // 用户信息
 .user-avator{
