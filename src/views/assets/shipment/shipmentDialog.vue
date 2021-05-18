@@ -246,21 +246,21 @@
           />
         </el-select>
       </el-form-item>
-        <el-form-item label="票务规则" prop="payInvoiceType">
-            <el-select
-                    v-model="form.payInvoiceType"
-                    clearable
-                    filterable
-                    class="width90"
-            >
-                <el-option
-                        v-for="dict in payInvoiceTypeOptions"
-                        :key="dict.dictValue"
-                        :label="dict.dictLabel"
-                        :value="dict.dictValue"
-                />
-            </el-select>
-        </el-form-item>
+      <el-form-item label="票务规则" prop="payInvoiceType">
+        <el-select
+          v-model="form.payInvoiceType"
+          clearable
+          filterable
+          class="width90"
+        >
+          <el-option
+            v-for="dict in payInvoiceTypeOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
       <!-- <el-form-item label="核算方式" prop="accountType">
         <el-select v-model="form.accountType" placeholder="请选择核算方式" filterable clearable class="width90">
           <el-option
@@ -364,26 +364,26 @@
           />
         </el-select>
       </el-form-item>
-        <el-row :gutter="20">
-            <el-col :span="8">
-                <el-form-item prop="noNeedUnloadImg">
-                    <el-checkbox v-model="form.noNeedUnloadImg">是否不需要卸货图片</el-checkbox>
-                </el-form-item>
-            </el-col>
-            <el-col :span="10">
-                <el-form-item prop="openProjectDesignView">
-                    <el-checkbox v-model="form.openProjectDesignView">开启项目版设计视图</el-checkbox>
-                </el-form-item>
-            </el-col>
-        </el-row>
+      <el-row :gutter="20">
+        <el-col :span="8">
+          <el-form-item prop="noNeedUnloadImg">
+            <el-checkbox v-model="form.noNeedUnloadImg">是否不需要卸货图片</el-checkbox>
+          </el-form-item>
+        </el-col>
+        <el-col :span="10">
+          <el-form-item prop="openProjectDesignView">
+            <el-checkbox v-model="form.openProjectDesignView">开启项目版设计视图</el-checkbox>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
     <div v-if="title === '新增' || title === '编辑'" slot="footer" class="dialog-footer">
       <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
     </div>
     <div v-if="title === '审核'" slot="footer" class="dialog-footer">
-      <el-button type="primary"  :loading="authButtonLoading" @click="reviewForm(3)">审核通过</el-button>
-      <el-button type="danger"  :loading="authButtonLoading" @click="reviewForm(2)">审核不通过</el-button>
+      <el-button type="primary" :loading="authButtonLoading" @click="reviewForm(3)">审核通过</el-button>
+      <el-button type="danger" :loading="authButtonLoading" @click="reviewForm(2)">审核不通过</el-button>
     </div>
   </el-dialog>
 </template>
