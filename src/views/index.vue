@@ -1,7 +1,6 @@
 <template>
   <div style="height: 100%">
-    <index1920 v-if="activeName === '0'" />
-    <index1366 v-if="activeName === '1'" />
+    <index1920 />
   </div>
 </template>
 
@@ -9,12 +8,10 @@
 import { ThrottleFun } from '@/utils/index.js';
 // import { color } from 'echarts';
 import index1920 from '../components/Ddc/Tin/index1920';// 首页分辨率1920*1080
-import index1366 from '../components/Ddc/Tin/index1366';// 首页分辨率1366*768
 export default {
   name: 'Index',
   components: {
-    index1920,
-    index1366
+    index1920
   },
   data() {
     return {
@@ -44,7 +41,7 @@ export default {
     changeWidth() {
       window.screenWidth = document.body.clientWidth;
       this.screenWidth = window.screenWidth;
-      // console.log(this.screenWidth);
+      console.log(this.screenWidth);
       if (this.screenWidth > 1366) {
         this.activeName = '0';
       } else {

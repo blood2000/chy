@@ -116,7 +116,12 @@
                     :key="dict.code"
                     :label="dict.name"
                     :value="dict.code"
-                  />
+                  >
+                    <div class="ly-flex-pack-justify">
+                      <span style="margin-right:10px">{{ dict.name }}</span>
+                      <span>{{ dict.telphone }}</span>
+                    </div>
+                  </el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -254,7 +259,7 @@
 
         <el-row>
           <el-col :span="2" :offset="11">
-            <el-button type="primary" @click="submitForm">确 定</el-button>
+            <el-button type="primary" v-hasPermi="['transportation:waybillOper:extra']" @click="submitForm">确 定</el-button>
           </el-col>
         </el-row>
       </div>
@@ -272,7 +277,6 @@
         </el-col>
         <el-col :span="1.5">
           <el-button
-            v-hasPermi="['waybill:abnormal:edit']"
             type="primary"
             icon="el-icon-upload2"
             size="mini"
@@ -324,7 +328,7 @@ export default {
         'pageSize': 10,
         'authStatus': 3,
         'isFreeze': 0,
-        'name': null
+        'phoneOrName': null
       },
       vehicleInfoQuery: {
         'authStatus': 3,
@@ -440,7 +444,7 @@ export default {
         this.loading = true;
         this.driverInfoQuery.pageNum = 1;
         this.dataOver = false;
-        this.driverInfoQuery.name = query;
+        this.driverInfoQuery.phoneOrName = query;
         this.driverOptions = [];
         this.getDriver();
       } else {

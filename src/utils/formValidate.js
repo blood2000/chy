@@ -160,6 +160,19 @@ export const formValidate = {
       callback();
     }
   },
+  // 支行号
+  subBankCard: function(rule, value, callback) {
+    if (value === undefined || value === null || value === '') {
+      callback();
+    }
+    // 12位数字
+    const ptr_length = /^[0-9a-zA-Z_]{12,12}$/;
+    if (ptr_length.test(value)) {
+      callback();
+    } else {
+      callback(new Error('请输入正确的支行号'));
+    }
+  },
   // 驾驶证
   driverCard: function(rule, value, callback) {
     if (value === undefined || value === null || value === '') {

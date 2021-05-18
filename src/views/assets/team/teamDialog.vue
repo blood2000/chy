@@ -142,7 +142,7 @@ export default {
           { required: true, message: '调度者名称不能为空', trigger: 'blur' }
         ],
         teamLeader: [
-          { required: true, message: '管理者名称不能为空', trigger: 'blur' }
+          { required: true, message: '名称不能为空', trigger: 'blur' }
         ],
         identificationNumber: [
           { required: true, message: '身份证号不能为空', trigger: ['blur', 'change'] },

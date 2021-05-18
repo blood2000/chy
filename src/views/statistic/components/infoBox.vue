@@ -4,10 +4,10 @@
       {{ label }}
       <span v-if="unit && unit !== ''">({{ unit }})</span>
     </p>
-    <p class="text" :class="isBlod ? 'blod' : ''">
+    <p class="text" :class="[{blod: isBlod}, {small: isSmall}, {smallSize: isSmallSize}]">
       <count-to :end-val="count" :decimal-places="places" />
       <template v-if="hasYoy">
-        <template v-if="yoyType !== 2">
+        <template v-if="yoyType !== null && yoyType !== 2">
           <span :class="yoyType===1 ? 'arow_down' : 'arow_up'" />
           <span :class="yoyType===1 ? 'value_down' : 'value_up'">
             <count-to :end-val="yoy" :decimal-places="yoyPlaces" />%
@@ -61,11 +61,20 @@ export default {
       type: Number,
       default: 0
     },
+    // 样式区分
     isUser: {
       type: Boolean,
       default: false
     },
     isBlod: {
+      type: Boolean,
+      default: false
+    },
+    isSmall: {
+      type: Boolean,
+      default: false
+    },
+    isSmallSize: {
       type: Boolean,
       default: false
     }
@@ -87,7 +96,7 @@ export default {
     font-size: 1.1rem;
     font-weight: normal;
     color: #FFFFFF;
-    line-height: 1.3rem;
+    // line-height: 1.3rem; //会和vertical-align冲突
     font-family: 'PingFang Medium';
     .arow_up{
       display: inline-block;
@@ -115,27 +124,73 @@ export default {
       margin-top: 0.65rem;
     }
     .value_up{
+      display: inline-block;
       font-size: 0.6rem;
       vertical-align: top;
       color: rgba(0, 210, 255, 1);
       margin-left: 0.15rem;
+      font-family: 'PingFang Medium' !important;
+      transform: scale(0.95, 0.95);
     }
     .value_down{
+      display: inline-block;
       font-size: 0.6rem;
       vertical-align: top;
       color: rgba(52, 213, 192, 1);
       margin-left: 0.15rem;
+      font-family: 'PingFang Medium' !important;
+      transform: scale(0.95, 0.95);
+    }
+    // 样式区分
+    &.blod{
+      font-family: 'PingFang Bold' !important;
+    }
+    &.small{
+      .arow_up{
+        background: url('~@/assets/images/statistic/arow_up_small.png') no-repeat;
+        background-size: 100% 100%;
+      }
+      .arow_down{
+        background: url('~@/assets/images/statistic/arow_down_small.png') no-repeat;
+        background-size: 100% 100%;
+      }
+      .arow_line{
+        background: #019cff;
+      }
+      .value_up{
+        color: #019cff;
+      }
+      .value_down{
+        color: #34A398;
+      }
+    }
+    &.smallSize{
+      font-size: 0.8rem;
+      .arow_up{
+        width: 0.7rem;
+        height: 0.45rem;
+      }
+      .arow_down{
+        width: 0.7rem;
+        height: 0.45rem;
+      }
+      .value_up{
+        transform: scale(0.85, 0.85);
+        margin-left: 0.05rem;
+      }
+      .value_down{
+        transform: scale(0.85, 0.85);
+        margin-left: 0.05rem;
+      }
     }
   }
+  // 用户字体样式
   &.s-info-box--user{
     >.label{
       color: #9CAFD0;
     }
     >.text{
       font-family: PingFang Regular;
-      &.blod{
-        font-family: 'PingFang Bold';
-      }
     }
   }
 }

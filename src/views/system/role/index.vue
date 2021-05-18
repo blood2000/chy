@@ -120,7 +120,7 @@
                 type="success"
                 icon="el-icon-edit"
                 size="mini"
-                :disabled="single"
+                :disabled="single || isSystemDisabled"
                 @click="handleUpdate"
               >修改</el-button>
             </el-col>
@@ -130,7 +130,7 @@
                 type="danger"
                 icon="el-icon-delete"
                 size="mini"
-                :disabled="multiple"
+                :disabled="multiple || isSystemDisabled"
                 @click="handleDelete"
               >删除</el-button>
             </el-col>
@@ -530,7 +530,8 @@ export default {
       produceDefaultProps: {
         children: 'children',
         label: 'cnName'
-      }
+      },
+      isSystemDisabled: false
     };
   },
   computed: {
@@ -701,6 +702,15 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
+      // 判断内置角色不允许操作
+      this.isSystemDisabled = false;
+      selection.map(item => {
+        if (this.isOperate(item)) {
+          this.isSystemDisabled = true;
+          return;
+        }
+      });
+      console.log(this.isSystemDisabled);
       this.ids = selection.map(item => item.roleId);
       this.names = selection.map(item => item.roleName);
       this.single = selection.length !== 1;
