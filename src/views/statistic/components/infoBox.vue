@@ -7,10 +7,10 @@
     <p class="text" :class="[{blod: isBlod}, {small: isSmall}, {smallSize: isSmallSize}]">
       <count-to :end-val="unit==='万' ? count/10000 : count" :decimal-places="places" />
       <template v-if="hasYoy">
-        <template v-if="yoyType !== null && yoyType !== 2">
-          <span :class="yoyType===1 ? 'arow_down' : 'arow_up'" />
-          <span :class="yoyType===1 ? 'value_down' : 'value_up'">
-            <count-to :end-val="yoy" :decimal-places="yoyPlaces" />%
+        <template v-if="myYoyType !== null && myYoyType !== 2">
+          <span :class="myYoyType===1 ? 'arow_down' : 'arow_up'" />
+          <span :class="myYoyType===1 ? 'value_down' : 'value_up'">
+            <count-to :end-val="myYoy" :decimal-places="yoyPlaces" />%
           </span>
         </template>
         <template v-else>
@@ -30,6 +30,10 @@ export default {
   },
   props: {
     count: {
+      type: Number,
+      default: 0
+    },
+    lastCount: {
       type: Number,
       default: 0
     },
@@ -53,6 +57,7 @@ export default {
       type: Number,
       default: 0
     },
+    // 0=上升 1=下降 2=没变化
     yoyType: {
       type: Number,
       default: 2
@@ -79,12 +84,43 @@ export default {
       default: false
     }
   },
+  data() {
+    return {
+      myYoy: 0,
+      myYoyType: 2
+    };
+  },
+  watch: {
+    count(val) {
+      if (!this.hasYoy) return;
+      if (!val || val === 0) return;
+      if (!this.lastCount || this.lastCount === 0) return;
+      this.computeYoy();
+    },
+    yoy(val) {
+      this.myYoy = val;
+    },
+    yoyType(val) {
+      this.myYoyType = val;
+    }
+  },
   methods: {
-    // 计算同比
-    // 公式 = (当日数据-昨日数据)/昨日数据*100
-    // 产品定的规则 同比 = 当日数据-(昨天数据*当时时间/24)/(昨天数据*当时时间/24)*100
+    // 计算同比和同比类型
+    // 同比 = (当日数据-(昨天数据*当时时间/24))/(昨天数据*当时时间/24)*100
     computeYoy() {
-
+      const time = Number(this.parseTime(new Date(), '{h}'));
+      const yoy = (this.count - (this.lastCount * time / 24)) / (this.lastCount * time / 24) * 100;
+      // 0=上升 1=下降 2=没变化
+      if (yoy > 0) {
+        this.myYoyType = 0;
+      } else if (yoy < 0) {
+        this.myYoyType = 1;
+      } else {
+        this.myYoyType = 2;
+      }
+      this.myYoy = Math.abs(yoy);
+      this.$emit('update:yoy', this.myYoy);
+      this.$emit('update:yoyType', this.myYoyType);
     }
   }
 };

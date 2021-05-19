@@ -10,8 +10,8 @@
         label="今日新增车辆"
         :count="dataList.newVehicleCount"
         :has-yoy="true"
-        :yoy="dataList.newVehicleYoy"
-        :yoy-type="dataList.newVehicleYoyType"
+        :yoy.sync="dataList.newVehicleYoy"
+        :yoy-type.sync="dataList.newVehicleYoyType"
         :yoy-places="1"
       />
     </div>
@@ -24,8 +24,8 @@
         label="今日新增路线"
         :count="dataList.newLineCount"
         :has-yoy="true"
-        :yoy="dataList.newLineYoy"
-        :yoy-type="dataList.newLineYoyType"
+        :yoy.sync="dataList.newLineYoy"
+        :yoy-type.sync="dataList.newLineYoyType"
         :yoy-places="1"
       />
     </div>
@@ -41,8 +41,8 @@
         :count="dataList.newTransportCount"
         :places="2"
         :has-yoy="true"
-        :yoy="dataList.newTransportYoy"
-        :yoy-type="dataList.newTransportYoyType"
+        :yoy.sync="dataList.newTransportYoy"
+        :yoy-type.sync="dataList.newTransportYoyType"
         :yoy-places="1"
       />
     </div>
@@ -58,8 +58,8 @@
         :count="dataList.newKilometreCount"
         :places="2"
         :has-yoy="true"
-        :yoy="dataList.newKilometreYoy"
-        :yoy-type="dataList.newKilometreYoyType"
+        :yoy.sync="dataList.newKilometreYoy"
+        :yoy-type.sync="dataList.newKilometreYoyType"
         :yoy-places="1"
       />
     </div>
@@ -76,8 +76,8 @@
         :count="dataList.newHaulageTimeCount"
         :places="2"
         :has-yoy="true"
-        :yoy="dataList.newHaulageTimeYoy"
-        :yoy-type="dataList.newHaulageTimeYoyType"
+        :yoy.sync="dataList.newHaulageTimeYoy"
+        :yoy-type.sync="dataList.newHaulageTimeYoyType"
         :yoy-places="1"
       />
     </div>
@@ -90,8 +90,8 @@
         label="今日新增网点"
         :count="dataList.newBranchCount"
         :has-yoy="true"
-        :yoy="dataList.newBranchYoy"
-        :yoy-type="dataList.newBranchYoyType"
+        :yoy.sync="dataList.newBranchYoy"
+        :yoy-type.sync="dataList.newBranchYoyType"
         :yoy-places="1"
       />
     </div>

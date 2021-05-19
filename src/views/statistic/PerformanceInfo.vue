@@ -12,10 +12,11 @@
         label="今日新增交易"
         unit="万"
         :count="performance.newTransactionAmount"
+        :last-count="performance.lastTransactionAmount"
         :places="2"
         :has-yoy="true"
-        :yoy="performance.newTransactionYoy"
-        :yoy-type="performance.newTransactionYoyType"
+        :yoy.sync="performance.newTransactionYoy"
+        :yoy-type.sync="performance.newTransactionYoyType"
         :yoy-places="1"
       />
     </div>
@@ -30,10 +31,11 @@
         label="今日新增开票"
         unit="万"
         :count="performance.newVotesAmount"
+        :last-count="performance.lastVotesAmount"
         :places="2"
         :has-yoy="true"
-        :yoy="performance.newVotesYoy"
-        :yoy-type="performance.newVotesYoyType"
+        :yoy.sync="performance.newVotesYoy"
+        :yoy-type.sync="performance.newVotesYoyType"
         :yoy-places="1"
       />
     </div>
@@ -48,10 +50,11 @@
         label="今日新增运费"
         unit="万"
         :count="performance.newWaybillAmount"
+        :last-count="performance.lastWaybillAmount"
         :places="2"
         :has-yoy="true"
-        :yoy="performance.newWaybillYoy"
-        :yoy-type="performance.newWaybillYoyType"
+        :yoy.sync="performance.newWaybillYoy"
+        :yoy-type.sync="performance.newWaybillYoyType"
         :yoy-places="1"
       />
     </div>
