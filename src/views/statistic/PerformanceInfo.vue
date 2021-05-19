@@ -5,17 +5,18 @@
       <InfoBox
         label="交易总额"
         unit="万"
-        :count="performance.transactionAmount"
+        :count="myPerformance.transactionAmount"
         :places="2"
       />
       <InfoBox
         label="今日新增交易"
         unit="万"
-        :count="performance.newTransactionAmount"
+        :count="myPerformance.newTransactionAmount"
+        :last-count="myPerformance.lastTransactionAmount"
         :places="2"
         :has-yoy="true"
-        :yoy="performance.newTransactionYoy"
-        :yoy-type="performance.newTransactionYoyType"
+        :yoy.sync="myPerformance.newTransactionYoy"
+        :yoy-type.sync="myPerformance.newTransactionYoyType"
         :yoy-places="1"
       />
     </div>
@@ -23,17 +24,18 @@
       <InfoBox
         label="开票总额"
         unit="万"
-        :count="performance.votesAmount"
+        :count="myPerformance.votesAmount"
         :places="2"
       />
       <InfoBox
         label="今日新增开票"
         unit="万"
-        :count="performance.newVotesAmount"
+        :count="myPerformance.newVotesAmount"
+        :last-count="myPerformance.lastVotesAmount"
         :places="2"
         :has-yoy="true"
-        :yoy="performance.newVotesYoy"
-        :yoy-type="performance.newVotesYoyType"
+        :yoy.sync="myPerformance.newVotesYoy"
+        :yoy-type.sync="myPerformance.newVotesYoyType"
         :yoy-places="1"
       />
     </div>
@@ -41,17 +43,18 @@
       <InfoBox
         label="运费总额"
         unit="万"
-        :count="performance.waybillAmount"
+        :count="myPerformance.waybillAmount"
         :places="2"
       />
       <InfoBox
         label="今日新增运费"
         unit="万"
-        :count="performance.newWaybillAmount"
+        :count="myPerformance.newWaybillAmount"
+        :last-count="myPerformance.lastWaybillAmount"
         :places="2"
         :has-yoy="true"
-        :yoy="performance.newWaybillYoy"
-        :yoy-type="performance.newWaybillYoyType"
+        :yoy.sync="myPerformance.newWaybillYoy"
+        :yoy-type.sync="myPerformance.newWaybillYoyType"
         :yoy-places="1"
       />
     </div>
@@ -79,12 +82,31 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      myPerformance: {}
+    };
+  },
   watch: {
+    performance(val) {
+      this.myPerformance = val;
+    },
     invoiceNotice: {
       handler(val) {
-        console.log('invoiceNotice: ', val);
+        this.setData(val);
       },
       immediate: true
+    }
+  },
+  methods: {
+    // 处理实时数据
+    setData(val) {
+      console.log('invoiceNotice: ', val);
+      const { invoiceAmount } = val;
+      if (invoiceAmount) {
+        this.myPerformance.votesAmount += invoiceAmount;
+        this.myPerformance.newVotesAmount += invoiceAmount;
+      }
     }
   }
 };

@@ -27,12 +27,38 @@ export default {
     branchCode: {
       type: String,
       default: null
+    },
+    orderNotice: {
+      type: Object,
+      default: () => {
+        return {};
+      }
+    },
+    waybillNotice: {
+      type: Object,
+      default: () => {
+        return {};
+      }
     }
   },
   data() {
     return {
       dataList: {}
     };
+  },
+  watch: {
+    orderNotice: {
+      handler(val) {
+        this.setOrderData(val);
+      },
+      immediate: true
+    },
+    waybillNotice: {
+      handler(val) {
+        this.setWaybillData(val);
+      },
+      immediate: true
+    }
   },
   methods: {
     getData(timeType) {
@@ -42,6 +68,24 @@ export default {
           this.$emit('getPartitionListVo', response.data.partitionListVo);
         }
       });
+    },
+    // 处理实时数据-货单
+    setOrderData(val) {
+      console.log('orderNotice-total: ', val);
+      const { orderInfoNumber } = val;
+      // 货单
+      if (orderInfoNumber) {
+        this.dataList.shipmentCount += orderInfoNumber;
+      }
+    },
+    // 处理实时数据-运单
+    setWaybillData(val) {
+      console.log('waybillNotice-total: ', val);
+      const { newNum } = val;
+      // 运单
+      if (newNum) {
+        this.dataList.waybillCount += newNum;
+      }
     }
   }
 };
