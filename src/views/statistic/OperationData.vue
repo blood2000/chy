@@ -7,17 +7,17 @@
         <InfoBox
           class="op-content"
           label="货单总数"
-          :count="orderVo.orderCount"
+          :count="myOrderVo.orderCount"
         />
       </div>
       <div class="s-container__box__content ly-flex-pack-start">
         <InfoBox
           class="op-content"
           label="今日新增货单"
-          :count="orderVo.newOrderCount"
+          :count="myOrderVo.newOrderCount"
           :has-yoy="true"
-          :yoy.sync="orderVo.newOrderYoy"
-          :yoy-type.sync="orderVo.newOrderYoyType"
+          :yoy.sync="myOrderVo.newOrderYoy"
+          :yoy-type.sync="myOrderVo.newOrderYoyType"
           :yoy-places="1"
           :is-blod="true"
           :is-small="true"
@@ -26,7 +26,7 @@
         <div class="card-content ly-flex-pack-justify">
           <div class="card ly-flex-v ly-flex-pack-justify">
             <p class="label">已发布</p>
-            <p class="text"><count-to :end-val="orderVo.publishedNum" /></p>
+            <p class="text"><count-to :end-val="myOrderVo.publishedNum" /></p>
           </div>
         </div>
       </div>
@@ -38,21 +38,21 @@
         <InfoBox
           class="op-content"
           label="运单总数"
-          :count="waillBillVo.wallBillCount"
+          :count="myWaillBillVo.wallBillCount"
         />
         <!-- card -->
         <div class="card-content ly-flex-pack-justify">
           <div class="card ly-flex-v ly-flex-pack-justify">
             <p class="label">已接单</p>
-            <p class="text"><count-to :end-val="waillBillVo.orderReceiving" /></p>
+            <p class="text"><count-to :end-val="myWaillBillVo.orderReceiving" /></p>
           </div>
           <div class="card ly-flex-v ly-flex-pack-justify">
             <p class="label">已装货</p>
-            <p class="text"><count-to :end-val="waillBillVo.orderLoading" /></p>
+            <p class="text"><count-to :end-val="myWaillBillVo.orderLoading" /></p>
           </div>
           <div class="card ly-flex-v ly-flex-pack-justify">
             <p class="label">已卸货</p>
-            <p class="text"><count-to :end-val="waillBillVo.orderUnload" /></p>
+            <p class="text"><count-to :end-val="myWaillBillVo.orderUnload" /></p>
           </div>
         </div>
       </div>
@@ -60,10 +60,10 @@
         <InfoBox
           class="op-content"
           label="今日新增运单"
-          :count="waillBillVo.newWallBillCount"
+          :count="myWaillBillVo.newWallBillCount"
           :has-yoy="true"
-          :yoy.sync="waillBillVo.newWallBillYoy"
-          :yoy-type.sync="waillBillVo.newWallBillYoyType"
+          :yoy.sync="myWaillBillVo.newWallBillYoy"
+          :yoy-type.sync="myWaillBillVo.newWallBillYoyType"
           :yoy-places="1"
           :is-blod="true"
           :is-small="true"
@@ -72,15 +72,15 @@
         <div class="card-content ly-flex-pack-justify">
           <div class="card ly-flex-v ly-flex-pack-justify">
             <p class="label">已复核</p>
-            <p class="text"><count-to :end-val="waillBillVo.orderReviewer" /></p>
+            <p class="text"><count-to :end-val="myWaillBillVo.orderReviewer" /></p>
           </div>
           <div class="card ly-flex-v ly-flex-pack-justify">
             <p class="label">已结算</p>
-            <p class="text"><count-to :end-val="waillBillVo.orderBalance" /></p>
+            <p class="text"><count-to :end-val="myWaillBillVo.orderBalance" /></p>
           </div>
           <div class="card ly-flex-v ly-flex-pack-justify">
             <p class="label">已打款</p>
-            <p class="text"><count-to :end-val="waillBillVo.orderRemit" /></p>
+            <p class="text"><count-to :end-val="myWaillBillVo.orderRemit" /></p>
           </div>
         </div>
       </div>
@@ -110,6 +110,94 @@ export default {
       type: Object,
       default: () => {
         return {};
+      }
+    },
+    orderNotice: {
+      type: Object,
+      default: () => {
+        return {};
+      }
+    },
+    waybillNotice: {
+      type: Object,
+      default: () => {
+        return {};
+      }
+    }
+  },
+  data() {
+    return {
+      myOrderVo: {},
+      myWaillBillVo: {}
+    };
+  },
+  watch: {
+    orderVo(val) {
+      this.myOrderVo = val;
+    },
+    waillBillVo(val) {
+      this.myWaillBillVo = val;
+    },
+    orderNotice: {
+      handler(val) {
+        this.setOrderData(val);
+      },
+      immediate: true
+    },
+    waybillNotice: {
+      handler(val) {
+        this.setWaybillData(val);
+      },
+      immediate: true
+    }
+  },
+  methods: {
+    // 处理实时数据-货单
+    setOrderData(val) {
+      console.log('orderNotice: ', val);
+      const { orderInfoNumber, publishedNumber } = val;
+      // 货单
+      if (orderInfoNumber) {
+        this.myOrderVo.orderCount += orderInfoNumber;
+        this.myOrderVo.newOrderCount += orderInfoNumber;
+      }
+      // 已发布
+      if (publishedNumber) {
+        this.myOrderVo.publishedNum += publishedNumber;
+      }
+    },
+    // 处理实时数据-运单
+    setWaybillData(val) {
+      console.log('waybillNotice: ', val);
+      const { receiveNum, loadNum, unloadNum, accountNum, settlementNum, moneyNum, newNum } = val;
+      // 运单
+      if (newNum) {
+        this.myWaillBillVo.wallBillCount += newNum;
+        this.myWaillBillVo.newWallBillCount += newNum;
+      }
+      // 已接单
+      if (receiveNum) {
+        this.myWaillBillVo.orderReceiving += receiveNum;
+      }
+      // 已装货
+      if (loadNum) {
+        this.myWaillBillVo.orderLoading += loadNum;
+      }
+      // 已卸货
+      if (unloadNum) {
+        this.myWaillBillVo.orderUnload += unloadNum;
+      }
+      // 已复核
+      if (accountNum) {
+        this.myWaillBillVo.orderReviewer += accountNum;
+      }
+      // 已结算
+      if (settlementNum) {
+        this.myWaillBillVo.orderBalance += settlementNum;
+      }
+      // 已打款
+      if (moneyNum) {
+        this.myWaillBillVo.orderRemit += moneyNum;
       }
     }
   }

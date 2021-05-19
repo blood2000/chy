@@ -39,7 +39,13 @@
 
     <!-- center -->
     <div class="ly-center ly-border ly-flex-v ly-flex-pack-justify">
-      <TotalData :branch-code="branchCode" class="ly-border" @getPartitionListVo="getPartitionListVo" />
+      <TotalData
+        :branch-code="branchCode"
+        :order-notice="dJson.orderNotice"
+        :waybill-notice="dJson.waybillNotice"
+        class="ly-border"
+        @getPartitionListVo="getPartitionListVo"
+      />
       <Map ref="mapRef" :partition-list-vo="partitionListVo" class="ly-border" />
       <ScrollData class="ly-border" />
     </div>
@@ -50,7 +56,12 @@
         <div class="ly-right-left-top mb1rem ly-border">
           <Title class="title_4 mb05rem" icon="5">运营情况<span>Operation situation</span></Title>
           <div class="ly-right-left-top-box">
-            <OperationData :order-vo="businessData.orderVo" :waill-bill-vo="businessData.waillBillVo" />
+            <OperationData
+              :order-vo="businessData.orderVo"
+              :waill-bill-vo="businessData.waillBillVo"
+              :order-notice="dJson.orderNotice"
+              :waybill-notice="dJson.waybillNotice"
+            />
             <OrderChart ref="OrderChartRef" :week-vo-list="businessData.weekVoList" />
             <ComplaintChart ref="ComplaintChartRef" :complain-vo="businessData.complainVo" />
           </div>
@@ -146,7 +157,7 @@ export default {
       // 实时数据
       dJson: {
         invoiceNotice: {}, // 开票
-        transportVo: {}, // 货源
+        orderNotice: {}, // 货单
         userNotice: {}, // 用户
         waybillNotice: {}, // 运单
         waybillSettlementNotice: {} // 打款
@@ -245,10 +256,10 @@ export default {
     setData(dJson) {
       console.log('实时Json：', dJson);
       this.dJson = {
-        invoiceNotice: dJson.invoiceNotice || {}, // 开票
-        transportVo: dJson.orderNoticeVo.transportVo.orderBean || {}, // 货源
-        userNotice: dJson.userNotice || [], // 用户
-        waybillNotice: dJson.waybillNotice || [], // 运单
+        invoiceNotice: dJson.invoiceNotice || {}, // 开票√
+        orderNotice: dJson.orderNoticeVo.transportVo.orderBean || {}, // 货单√
+        userNotice: dJson.userNotice || [], // 用户√
+        waybillNotice: dJson.waybillNotice || [], // 运单√
         waybillSettlementNotice: dJson.waybillSettlementNotice || {} // 打款
       };
     },
