@@ -4,51 +4,54 @@
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <InfoBox
         label="交易总额"
-        unit="亿"
-        :count="0.211"
-        :places="3"
+        unit="万"
+        :count="performance.transactionAmount"
+        :places="2"
       />
       <InfoBox
         label="今日新增交易"
-        :count="0.211"
-        :places="3"
+        unit="万"
+        :count="performance.newTransactionAmount"
+        :places="2"
         :has-yoy="true"
-        :yoy="12.6"
-        :yoy-type="0"
+        :yoy="performance.newTransactionYoy"
+        :yoy-type="performance.newTransactionYoyType"
         :yoy-places="1"
       />
     </div>
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <InfoBox
         label="开票总额"
-        unit="亿"
-        :count="0.211"
-        :places="3"
+        unit="万"
+        :count="performance.votesAmount"
+        :places="2"
       />
       <InfoBox
         label="今日新增开票"
-        :count="0.211"
-        :places="3"
+        unit="万"
+        :count="performance.newVotesAmount"
+        :places="2"
         :has-yoy="true"
-        :yoy="12.6"
-        :yoy-type="1"
+        :yoy="performance.newVotesYoy"
+        :yoy-type="performance.newVotesYoyType"
         :yoy-places="1"
       />
     </div>
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <InfoBox
         label="运费总额"
-        unit="亿"
-        :count="0.211"
-        :places="3"
+        unit="万"
+        :count="performance.waybillAmount"
+        :places="2"
       />
       <InfoBox
         label="今日新增运费"
-        :count="0.211"
-        :places="3"
+        unit="万"
+        :count="performance.newWaybillAmount"
+        :places="2"
         :has-yoy="true"
-        :yoy="12.6"
-        :yoy-type="0"
+        :yoy="performance.newWaybillYoy"
+        :yoy-type="performance.newWaybillYoyType"
         :yoy-places="1"
       />
     </div>
@@ -61,6 +64,28 @@ import InfoBox from './components/infoBox';
 export default {
   components: {
     InfoBox
+  },
+  props: {
+    performance: {
+      type: Object,
+      default: () => {
+        return {};
+      }
+    },
+    invoiceNotice: {
+      type: Object,
+      default: () => {
+        return {};
+      }
+    }
+  },
+  watch: {
+    invoiceNotice: {
+      handler(val) {
+        console.log('invoiceNotice: ', val);
+      },
+      immediate: true
+    }
   }
 };
 </script>

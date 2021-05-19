@@ -7,7 +7,6 @@
         <InfoBox
           class="op-content"
           label="货单总数"
-          unit="万"
           :count="orderVo.orderCount"
         />
       </div>
@@ -39,7 +38,6 @@
         <InfoBox
           class="op-content"
           label="运单总数"
-          unit="万"
           :count="waillBillVo.wallBillCount"
         />
         <!-- card -->

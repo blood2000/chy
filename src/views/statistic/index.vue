@@ -16,22 +16,22 @@
         </div>
         <div class="ly-left-top-right ly-border">
           <Title class="title_2" icon="2">用户情况<span>User situation</span></Title>
-          <UserInfo :branch-code="branchCode" />
+          <UserInfo :branch-code="branchCode" :user-notice="dJson.userNotice" />
         </div>
       </div>
       <div class="ly-left-center mb1rem ly-border">
         <Title class="title_3" icon="3">运力情况<span>Capacity situation</span></Title>
-        <CapacityInfo :branch-code="branchCode" />
+        <CapacityInfo :branch-code="branchCode" :user-notice="dJson.userNotice" />
       </div>
       <div class="ly-left-bottom ly-border">
         <Title class="title_3" icon="4">业绩数据<span>Performance data</span></Title>
         <div class="ly-left-bottom-box ly-flex-pack-justify">
           <div class="ly-left-bottom-left ly-border">
-            <PerformanceInfo class="mb1rem" />
-            <AmountTop10Chart ref="AmountTop10ChartRef" />
+            <PerformanceInfo :performance="performanceData.performance" :invoice-notice="dJson.invoiceNotice" class="mb1rem" />
+            <AmountTop10Chart ref="AmountTop10ChartRef" :province-ranking="performanceData.provinceRanking" />
           </div>
           <div class="ly-left-bottom-right ly-border">
-            <CompanyTop10List />
+            <CompanyTop10List ref="CompanyTop10ListRef" :company-ranking-list="performanceData.companyRankingList" />
           </div>
         </div>
       </div>
@@ -63,10 +63,10 @@
       <div class="ly-right-right ly-border">
         <Title class="title_4 mb05rem" icon="7">总排名<span>Total number</span></Title>
         <div class="ly-right-right-top mb1rem ly-border">
-          <CompanyTop5List />
+          <CompanyTop5List :company-rank-data="companyRankData" />
         </div>
         <div class="ly-right-right-bottom mb1rem ly-border">
-          <DriverTop5List />
+          <DriverTop5List :driver-rank-data="driverRankData" />
         </div>
       </div>
     </div>
@@ -92,8 +92,8 @@ import DriverTop5List from './DriverTop5List';// 总排名TOP5司机
 import TotalData from './TotalData';// 中间总数统计
 import ScrollData from './ScrollData';// 中间滚屏数据
 import Map from './Map.vue';// 地图
-// import { dataJson } from './data';
-import { getBusinessDetail } from '@/api/statistic/statistic.js';
+import { getCompanyPerformance, getBusinessDetail, getCompanyDriverRank } from '@/api/statistic/statistic.js';
+import { dataJson } from './data';
 
 export default {
   name: 'Statistic',
@@ -119,8 +119,7 @@ export default {
     return {
       branchCode: null,
       // websocket
-      wsurl: 'ws://192.168.30.134:8083/chy',
-      // wsurl: 'ws://127.0.0.1:8080',
+      wsurl: 'ws://192.168.30.134:8080/websocket/chy',
       websock: null,
       lockReconnect: false,
       timerReconnect: null,
@@ -128,12 +127,29 @@ export default {
       serverTimeout: null,
       // 地图对应省份运单数据
       partitionListVo: [],
+      // 业绩数据
+      performanceData: {
+        performance: {}, // 数据
+        provinceRanking: [], // Top10省份交易额
+        companyRankingList: [] // Top10公司交易额
+      },
       // 运营情况数据
       businessData: {
         orderVo: {}, // 货单
         waillBillVo: {}, // 运单
         weekVoList: [], // 近8周订单数
         complainVo: {} // 投诉
+      },
+      // 总排名
+      companyRankData: [],
+      driverRankData: [],
+      // 实时数据
+      dJson: {
+        invoiceNotice: {}, // 开票
+        transportVo: {}, // 货源
+        userNotice: {}, // 用户
+        waybillNotice: {}, // 运单
+        waybillSettlementNotice: {} // 打款
       }
     };
   },
@@ -147,8 +163,12 @@ export default {
   },
   mounted() {
     window.addEventListener('resize', this.resizeFun);
+    this.getPerformanceData();
     this.getBusinessData();
+    this.getRankData();
     // this.createWebSocket();
+    // 模拟实时数据
+    this.setData(dataJson);
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.resizeFun);
@@ -171,10 +191,12 @@ export default {
     },
     initWebSocket() {
       this.websock.onmessage = (e) => {
-        console.log('数据接收', e);
         // 拿到pong说明当前连接是正常的
         if (e.data === 'pong') {
+          console.log('pong');
           this.heartCheck();
+        } else if (e.data) {
+          this.setData(e.data);
         }
       };
       this.websock.onopen = () => {
@@ -210,7 +232,7 @@ export default {
       this.serverTimeout && clearTimeout(this.serverTimeout);
       this.heartTimeout = setTimeout(() => {
         // 发送一个心跳包
-        console.log('发送ping');
+        console.log('ping');
         this.websock.send('ping');
         // 计算答复的超时时间
         this.serverTimeout = setTimeout(() => {
@@ -218,6 +240,17 @@ export default {
           console.log('答复超时');
         }, 5 * 1000);
       }, 4 * 1000);
+    },
+    // 处理实时数据
+    setData(dJson) {
+      console.log('实时Json：', dJson);
+      this.dJson = {
+        invoiceNotice: dJson.invoiceNotice || {}, // 开票
+        transportVo: dJson.orderNoticeVo.transportVo.orderBean || {}, // 货源
+        userNotice: dJson.userNotice || [], // 用户
+        waybillNotice: dJson.waybillNotice || [], // 运单
+        waybillSettlementNotice: dJson.waybillSettlementNotice || {} // 打款
+      };
     },
     // 图表自适应
     refreshChart() {
@@ -230,6 +263,21 @@ export default {
     // 获取地图对应省份运单数据
     getPartitionListVo(data = []) {
       this.partitionListVo = data;
+    },
+    // 获取业绩数据
+    getPerformanceData() {
+      getCompanyPerformance(this.branchCode).then(response => {
+        const data = response.data || {};
+        this.performanceData = {
+          performance: data.performance || {}, // 数据
+          provinceRanking: data.provinceRanking || [], // Top10省份交易额
+          companyRankingList: data.companyRankingList || [] // Top10公司交易额
+        };
+        this.$nextTick(() => {
+          this.$refs.AmountTop10ChartRef.initChart();
+          this.$refs.CompanyTop10ListRef.createProgress();
+        });
+      });
     },
     // 获取运营情况的数据
     getBusinessData() {
@@ -245,6 +293,14 @@ export default {
           this.$refs.OrderChartRef.initChart();
           this.$refs.ComplaintChartRef.initChart();
         });
+      });
+    },
+    // 获取总排名数据
+    getRankData() {
+      getCompanyDriverRank(this.branchCode).then(response => {
+        const data = response.data || {};
+        this.companyRankData = data.companyList || [];
+        this.driverRankData = data.driverList || [];
       });
     }
   }

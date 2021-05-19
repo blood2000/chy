@@ -59,6 +59,7 @@ export default {
       this.setFontOption();
     },
     refreshChart() {
+      if (!this.chart) return;
       this.chart.resize();
       this.setFontOption();
     },

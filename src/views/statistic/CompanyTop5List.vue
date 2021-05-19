@@ -4,32 +4,28 @@
     <span class="s-container__time">最近30天内</span>
     <span class="s-container__title">TOP 5 企业</span>
     <ul class="s-container__list">
-      <li v-for="(item, index) in dataList" :key="index" class="s-container__list__item">
+      <li v-for="(item, index) in companyRankData" :key="item.orgCode + index" class="s-container__list__item">
         <div class="s-container__list__item__title">
           <span :class="index === 0 ? 'first' : ''" class="index">{{ index + 1 }}</span>
-          <span class="text">福建省融谷供应链管理有限公司福建省融谷供应链管理有限公司</span>
+          <span class="text">{{ item.orgName }}</span>
         </div>
         <div class="s-container__list__item__content ly-flex-pack-justify">
           <InfoBox
             label="总货单量"
-            unit="万"
-            :count="67.7"
-            :places="1"
+            :count="item.orderCount"
             :has-yoy="true"
-            :yoy="12.6"
-            :yoy-type="0"
+            :yoy="item.orderCountYoy"
+            :yoy-type="item.orderCountYoyType"
             :yoy-places="1"
             :is-small="true"
             :is-small-size="true"
           />
           <InfoBox
             label="总运单量"
-            unit="万"
-            :count="67.7"
-            :places="1"
+            :count="item.waybillCount"
             :has-yoy="true"
-            :yoy="12.6"
-            :yoy-type="0"
+            :yoy="item.waybillCountYoy"
+            :yoy-type="item.waybillCountYoyType"
             :yoy-places="1"
             :is-small="true"
             :is-small-size="true"
@@ -37,11 +33,11 @@
           <InfoBox
             label="总运输费"
             unit="万"
-            :count="67.7"
-            :places="1"
+            :count="item.freightFee"
+            :places="2"
             :has-yoy="true"
-            :yoy="12.6"
-            :yoy-type="0"
+            :yoy="item.freightFeeYoy"
+            :yoy-type="item.freightFeeYoyType"
             :yoy-places="1"
             :is-small="true"
             :is-small-size="true"
@@ -59,9 +55,17 @@ export default {
   components: {
     InfoBox
   },
+  props: {
+    companyRankData: {
+      type: Array,
+      default: () => {
+        return [];
+      }
+    }
+  },
   data() {
     return {
-      dataList: [{}, {}, {}, {}, {}]
+
     };
   }
 };
