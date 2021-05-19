@@ -219,10 +219,10 @@
             </el-col>
             <el-col :span="8">
               <el-form-item v-if="!stowage" label="运单车数" prop="loadWeight">
-                <el-input-number v-model="form.loadWeight" placeholder="请输入运单重量" controls-position="right" :min="0" class="width90" @change="inputWeight" />
+                <el-input-number v-model="form.loadWeight" placeholder="请输入运单重量" controls-position="right" :precision="2" :min="0" class="width90" @change="inputWeight" />
               </el-form-item>
               <el-form-item v-if="stowage" label="运单重量(吨/立方)" prop="loadWeight">
-                <el-input-number v-model="form.loadWeight" placeholder="请输入运单重量" controls-position="right" :min="0" class="width90" @change="inputWeight" />
+                <el-input-number v-model="form.loadWeight" placeholder="请输入运单重量" controls-position="right" :precision="2" :min="0" class="width90" @change="inputWeight" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -663,8 +663,8 @@ export default {
         console.log(calculateBo);
         calculate(calculateBo).then(response => {
           console.log(response);
-          this.form.shipperRealPay = response.data.shipperRealPay;
-          this.form.driverRealFee = response.data.driverRealFee;
+          this.form.shipperRealPay = response.data.shipperRealPay.toFixed(2);
+          this.form.driverRealFee = response.data.driverRealFee.toFixed(2);
         });
       }
     },
