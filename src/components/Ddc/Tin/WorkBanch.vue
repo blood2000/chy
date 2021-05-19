@@ -255,7 +255,7 @@
         <!-- 动态 -->
         <div style="height:100%; min-height: 609px;">
           <div style="height:300px">
-            <el-calendar />
+            <el-calendar v-model="value" />
           </div>
           <el-row class="trend-tab">
             <el-col :span="6">
@@ -377,8 +377,14 @@ export default {
       // 当前选中的运单id
       currentId: null,
       // 表单是否禁用
-      formDisable: false
+      formDisable: false,
+      value: new Date()
     };
+  },
+  watch: {
+    value(val) {
+      console.log(val);
+    }
   },
   created() {
     const { isAdmin = false, isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
