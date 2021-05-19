@@ -123,9 +123,9 @@
                   <div class="mb10 t_color_c">平台服务费 (总费用估): </div>
                 </el-col>
                 <el-col :span="8">
-                  <div class="mb10">{{ predictData.totalEstimateMoney || 0 }} 元</div>
-                  <div class="mb10 t_color_c">{{ predictData.totalTransportationCost || 0 }} 元</div>
-                  <div class="mb10 t_color_c">{{ predictData.totalServiceFee || 0 }} 元</div>
+                  <div class="mb10">{{ _floor(predictData.totalEstimateMoney) || 0 }} 元</div>
+                  <div class="mb10 t_color_c">{{ _floor(predictData.totalTransportationCost) || 0 }} 元</div>
+                  <div class="mb10 t_color_c">{{ _floor(predictData.totalServiceFee) || 0 }} 元</div>
                 </el-col>
               </el-row>
             </template>
@@ -137,9 +137,9 @@
                 <div class="mb10 t_color_c">平台服务费 (单笔运费估): </div>
               </el-col>
               <el-col :span="8">
-                <div class="mb10">{{ predictData.singleAllCost || 0 }} 元</div>
-                <div class="mb10 t_color_c">{{ predictData.singleDriverCashReceived || 0 }} 元</div>
-                <div class="mb10 t_color_c">{{ predictData.singleServiceFee || 0 }} 元</div>
+                <div class="mb10">{{ _floor(predictData.singleAllCost) || 0 }} 元</div>
+                <div class="mb10 t_color_c">{{ _floor(predictData.singleDriverCashReceived) || 0 }} 元</div>
+                <div class="mb10 t_color_c">{{ _floor(predictData.singleServiceFee) || 0 }} 元</div>
               </el-col>
             </el-row>
           </div>
@@ -540,6 +540,9 @@ export default {
           dictLabel: e[dictLabel]
         };
       });
+    },
+    _floor(number) {
+      return Math.floor(number * 100) / 100;
     }
   }
 };
