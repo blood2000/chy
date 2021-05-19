@@ -3,23 +3,21 @@
   <div class="s-container">
     <span class="s-container__title">TOP 5 司机</span>
     <ul class="s-container__list">
-      <li v-for="(item, index) in dataList" :key="index" class="s-container__list__item">
+      <li v-for="(item, index) in driverRankData" :key="item.driverCode + index" class="s-container__list__item">
         <div class="s-container__list__item__title">
           <span :class="index === 0 ? 'first' : ''" class="index">{{ index + 1 }}</span>
           <span class="text">
-            吴磊
+            {{ item.driverName }}
             <span class="driver">司机</span>
           </span>
         </div>
         <div class="s-container__list__item__content ly-flex-pack-justify">
           <InfoBox
             label="接单次数"
-            unit="万"
-            :count="67.7"
-            :places="1"
+            :count="item.orderCount"
             :has-yoy="true"
-            :yoy="12.6"
-            :yoy-type="1"
+            :yoy="item.orderCountYoy"
+            :yoy-type="item.orderCountYoyType"
             :yoy-places="1"
             :is-small="true"
             :is-small-size="true"
@@ -27,11 +25,11 @@
           <InfoBox
             label="结算总额"
             unit="万"
-            :count="67.7"
-            :places="1"
+            :count="item.amount"
+            :places="2"
             :has-yoy="true"
-            :yoy="12.6"
-            :yoy-type="1"
+            :yoy="item.amountYoy"
+            :yoy-type="item.amountYoyType"
             :yoy-places="1"
             :is-small="true"
             :is-small-size="true"
@@ -49,9 +47,17 @@ export default {
   components: {
     InfoBox
   },
+  props: {
+    driverRankData: {
+      type: Array,
+      default: () => {
+        return [];
+      }
+    }
+  },
   data() {
     return {
-      dataList: [{}, {}, {}, {}, {}]
+
     };
   }
 };

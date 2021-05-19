@@ -16,6 +16,15 @@ export function getUserData(branchCode) {
   });
 }
 
+// 业绩数据
+export function getCompanyPerformance(branchCode) {
+  return request({
+    url: `/schedule/bigScreenSeach/getCompanyPerformance/${branchCode}`,
+    method: 'get'
+  });
+}
+
+
 // 运力情况
 export function getCapacityData(branchCode) {
   return request({
@@ -40,6 +49,14 @@ export function getShipmentWaybillCount(branchCode, timeType) {
 export function getBusinessDetail(branchCode) {
   return request({
     url: `/schedule/bigScreenSeach/getBusinessDetail/${branchCode}`,
+    method: 'get'
+  });
+}
+
+// 总排名 公司/司机
+export function getCompanyDriverRank(branchCode) {
+  return request({
+    url: `/schedule/bigScreenSeach/getCompanyRanking/${branchCode}`,
     method: 'get'
   });
 }
