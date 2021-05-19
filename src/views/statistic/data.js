@@ -40,7 +40,7 @@ export const dataJson = {
         'isNewLine': true, // 是否新增路线
         'isNewPoint': true, // 是否新增网点
         'operateType': 0, // 1发布(上架) 2下架
-        'orderInfoNumber': 0, // 货源总数 1 -1
+        'orderInfoNumber': 0, // 货单总数 1 -1
         'publishedNumber': 0, // 已发布 1 -1
         // 货主信息
         'shipmentBean': {
@@ -75,11 +75,13 @@ export const dataJson = {
   'waybillNotice': {
     'orderCode': '',
     'waybillCode': '',
+    'newNum': 0, // 总数量
     'accountNum': 0, // 复核数量
     'loadNum': 0, // 装货数量
     'unloadNum': 0, // 卸货数量
     'receiveNum': 0, // 接单数量
     'settlementNum': 0, // 结算数量
+    'moneyNum': 0, // 打款数量
     'address': {
       'loadAddressAlias': '',
       'loadBankType': '',

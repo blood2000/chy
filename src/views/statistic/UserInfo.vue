@@ -11,8 +11,8 @@
         label="今日新增用户"
         :count="dataList.newUserCount"
         :has-yoy="true"
-        :yoy="dataList.newUserYoy"
-        :yoy-type="dataList.newUserYoyType"
+        :yoy.sync="dataList.newUserYoy"
+        :yoy-type.sync="dataList.newUserYoyType"
         :yoy-places="1"
         :is-user="true"
         :is-blod="true"
@@ -28,8 +28,8 @@
         label="今日新增货主"
         :count="dataList.newShipmentCount"
         :has-yoy="true"
-        :yoy="dataList.newShipmentYoy"
-        :yoy-type="dataList.newShipmentYoyType"
+        :yoy.sync="dataList.newShipmentYoy"
+        :yoy-type.sync="dataList.newShipmentYoyType"
         :yoy-places="1"
         :is-user="true"
         :is-blod="true"
@@ -45,8 +45,8 @@
         label="今日新增调度者"
         :count="dataList.newTeamCount"
         :has-yoy="true"
-        :yoy="dataList.newTeamYoy"
-        :yoy-type="dataList.newTeamYoyType"
+        :yoy.sync="dataList.newTeamYoy"
+        :yoy-type.sync="dataList.newTeamYoyType"
         :yoy-places="1"
         :is-user="true"
         :is-blod="true"
@@ -62,8 +62,8 @@
         label="今日新增司机"
         :count="dataList.newDriverCount"
         :has-yoy="true"
-        :yoy="dataList.newDriverYoy"
-        :yoy-type="dataList.newDriverYoyType"
+        :yoy.sync="dataList.newDriverYoy"
+        :yoy-type.sync="dataList.newDriverYoyType"
         :yoy-places="1"
         :is-user="true"
         :is-blod="true"
@@ -84,26 +84,12 @@ export default {
     branchCode: {
       type: String,
       default: null
-    },
-    userNotice: {
-      type: Object,
-      default: () => {
-        return {};
-      }
     }
   },
   data() {
     return {
       dataList: {}
     };
-  },
-  watch: {
-    userNotice: {
-      handler(val) {
-        this.setData(val);
-      },
-      immediate: true
-    }
   },
   created() {
     this.getData();
