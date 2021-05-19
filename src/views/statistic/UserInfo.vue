@@ -4,15 +4,12 @@
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <InfoBox
         label="总用户数"
-        unit="万"
         :count="dataList.userCount"
-        :places="2"
         :is-user="true"
       />
       <InfoBox
         label="今日新增用户"
         :count="dataList.newUserCount"
-        :places="2"
         :has-yoy="true"
         :yoy="dataList.newUserYoy"
         :yoy-type="dataList.newUserYoyType"
@@ -24,15 +21,12 @@
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <InfoBox
         label="总货主数"
-        unit="万"
         :count="dataList.shipmentUserCount"
-        :places="2"
         :is-user="true"
       />
       <InfoBox
         label="今日新增货主"
         :count="dataList.newShipmentCount"
-        :places="2"
         :has-yoy="true"
         :yoy="dataList.newShipmentYoy"
         :yoy-type="dataList.newShipmentYoyType"
@@ -44,15 +38,12 @@
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <InfoBox
         label="总调度者"
-        unit="万"
         :count="dataList.teamUserCount"
-        :places="2"
         :is-user="true"
       />
       <InfoBox
         label="今日新增调度者"
         :count="dataList.newTeamCount"
-        :places="2"
         :has-yoy="true"
         :yoy="dataList.newTeamYoy"
         :yoy-type="dataList.newTeamYoyType"
@@ -64,15 +55,12 @@
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <InfoBox
         label="总司机"
-        unit="万"
         :count="dataList.driverUserCount"
-        :places="2"
         :is-user="true"
       />
       <InfoBox
         label="今日新增司机"
         :count="dataList.newDriverCount"
-        :places="2"
         :has-yoy="true"
         :yoy="dataList.newDriverYoy"
         :yoy-type="dataList.newDriverYoyType"
@@ -96,12 +84,26 @@ export default {
     branchCode: {
       type: String,
       default: null
+    },
+    userNotice: {
+      type: Object,
+      default: () => {
+        return {};
+      }
     }
   },
   data() {
     return {
       dataList: {}
     };
+  },
+  watch: {
+    userNotice: {
+      handler(val) {
+        this.setData(val);
+      },
+      immediate: true
+    }
   },
   created() {
     this.getData();
@@ -111,6 +113,31 @@ export default {
       getUserData(this.branchCode).then(response => {
         this.dataList = response.data || {};
       });
+    },
+    // 处理实时数据
+    setData(val) {
+      console.log('userNotice-user: ', val);
+      if (val.user) {
+        const { shipmentNum, teamNum, driverNum } = val.user;
+        if (shipmentNum) {
+          this.dataList.shipmentUserCount += shipmentNum;
+          this.dataList.newShipmentCount += shipmentNum;
+          this.dataList.userCount += shipmentNum;
+          this.dataList.newUserCount += shipmentNum;
+        }
+        if (teamNum) {
+          this.dataList.teamUserCount += teamNum;
+          this.dataList.newTeamCount += teamNum;
+          this.dataList.userCount += teamNum;
+          this.dataList.newUserCount += teamNum;
+        }
+        if (driverNum) {
+          this.dataList.driverUserCount += driverNum;
+          this.dataList.newDriverCount += driverNum;
+          this.dataList.userCount += driverNum;
+          this.dataList.newUserCount += driverNum;
+        }
+      }
     }
   }
 };

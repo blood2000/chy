@@ -5,13 +5,15 @@
     <p class="s-container__legend">交易额(万)</p>
     <div class="s-container__list">
       <ul class="ly-flex-v ly-flex-pack-justify">
-        <li v-for="(item, index) in dataList" :key="index" class="s-container__list__item ly-flex-pack-start ly-flex-align-center">
+        <li v-for="(item, index) in companyRankingList" :key="item.compayCode + index" class="s-container__list__item ly-flex-pack-start ly-flex-align-center">
           <div class="index">{{ index + 1 }}</div>
-          <div class="label">大道成技术有股份核心有限公司</div>
+          <div class="label">{{ item.companyName }}</div>
           <div class="line">
-            <div class="value" :style="`width: ${item.count / maxCount * 100}%;`" />
+            <div v-if="item.transactionAmount / maxCount * 100 > 1" class="value" :style="`width: ${item.transactionAmount / maxCount * 100}%;`" />
+            <!-- 避免百分比太小不显示 -->
+            <div v-else class="value" :style="`width: 1%;`" />
           </div>
-          <div class="text"><count-to :end-val="item.count" /></div>
+          <div class="text"><count-to :end-val="item.transactionAmount / 10000" :decimal-places="2" /></div>
         </li>
       </ul>
     </div>
@@ -25,30 +27,25 @@ export default {
   components: {
     CountTo
   },
+  props: {
+    companyRankingList: {
+      type: Array,
+      default: () => {
+        return [];
+      }
+    }
+  },
   data() {
     return {
-      maxCount: 0,
-      dataList: [
-        { count: 3000 },
-        { count: 2951 },
-        { count: 2652 },
-        { count: 2561 },
-        { count: 2469 },
-        { count: 2004 },
-        { count: 1950 },
-        { count: 1620 },
-        { count: 1520 },
-        { count: 1236 }
-      ]
+      maxCount: 1
     };
-  },
-  created() {
-    this.createProgress();
   },
   methods: {
     // 模拟进度条
     createProgress() {
-      this.maxCount = this.dataList[0].count;
+      if (this.companyRankingList && this.companyRankingList.length > 0) {
+        this.maxCount = this.companyRankingList[0].transactionAmount;
+      }
     }
   }
 };

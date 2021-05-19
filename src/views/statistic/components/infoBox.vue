@@ -5,7 +5,7 @@
       <span v-if="unit && unit !== ''">({{ unit }})</span>
     </p>
     <p class="text" :class="[{blod: isBlod}, {small: isSmall}, {smallSize: isSmallSize}]">
-      <count-to :end-val="count" :decimal-places="places" />
+      <count-to :end-val="unit==='万' ? count/10000 : count" :decimal-places="places" />
       <template v-if="hasYoy">
         <template v-if="yoyType !== null && yoyType !== 2">
           <span :class="yoyType===1 ? 'arow_down' : 'arow_up'" />
@@ -77,6 +77,14 @@ export default {
     isSmallSize: {
       type: Boolean,
       default: false
+    }
+  },
+  methods: {
+    // 计算同比
+    // 公式 = (当日数据-昨日数据)/昨日数据*100
+    // 产品定的规则 同比 = 当日数据-(昨天数据*当时时间/24)/(昨天数据*当时时间/24)*100
+    computeYoy() {
+
     }
   }
 };

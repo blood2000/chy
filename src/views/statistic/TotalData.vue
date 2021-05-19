@@ -2,8 +2,8 @@
   <div class="s-container ly-flex-pack-center">
     <div class="s-container__box">
       <div class="s-container__box__content top ly-flex-pack-center">
-        <p>货单总数(万)</p>
-        <p>运单总数(万)</p>
+        <p>货单总数</p>
+        <p>运单总数</p>
       </div>
       <div class="s-container__box__content bottom ly-flex-pack-center">
         <p><count-to :end-val="dataList.shipmentCount" /></p>

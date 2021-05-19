@@ -128,6 +128,7 @@ export default {
       this.setRegionData();
     },
     refreshChart() {
+      if (!this.chart) return;
       this.chart.resize();
       this.setFontOption();
     },
