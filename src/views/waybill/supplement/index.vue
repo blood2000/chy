@@ -624,12 +624,17 @@ export default {
           this.form.shipmentPrice = freightCost.ruleValue;
           // 获取抹零规则字典值
           const m0 = response.data.detailList.find(item => item.ruleItemCode === '18');
-          this.form.m0DictValue = m0.ruleValue;
+          if (m0) {
+            this.form.m0DictValue = m0.ruleValue;
+          } else {
+            this.form.m0DictValue = '1';
+          }
           // 获取计算公式
           const caculation = response.data.detailList.find(item => item.ruleItemCode === '19');
           this.form.ruleFormulaDictValue = caculation.ruleValue;
-          this.form.addFee = response.data.addFee;
-          this.form.reductionFee = response.data.reductionFee;
+          this.form.addFee = response.data.addFee || 0;
+          this.form.reductionFee = response.data.reductionFee || 0;
+          console.log(this.form);
           setTimeout(() => {
             this.calculate();
           }, 100);
