@@ -1,17 +1,17 @@
 <template>
   <div style="height: 100%">
-    <index1920 />
+    <WorkBanch :width="screenWidth" />
   </div>
 </template>
 
 <script>
 import { ThrottleFun } from '@/utils/index.js';
 // import { color } from 'echarts';
-import index1920 from '../components/Ddc/Tin/index1920';// 首页分辨率1920*1080
+import WorkBanch from '../components/Ddc/Tin/WorkBanch';// 客服工作台
 export default {
   name: 'Index',
   components: {
-    index1920
+    WorkBanch
   },
   data() {
     return {
