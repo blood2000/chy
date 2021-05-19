@@ -16,18 +16,18 @@
         </div>
         <div class="ly-left-top-right ly-border">
           <Title class="title_2" icon="2">用户情况<span>User situation</span></Title>
-          <UserInfo :branch-code="branchCode" :user-notice="dJson.userNotice" />
+          <UserInfo ref="UserInfoRef" :branch-code="branchCode" />
         </div>
       </div>
       <div class="ly-left-center mb1rem ly-border">
         <Title class="title_3" icon="3">运力情况<span>Capacity situation</span></Title>
-        <CapacityInfo :branch-code="branchCode" :user-notice="dJson.userNotice" />
+        <CapacityInfo ref="CapacityInfoRef" :branch-code="branchCode" />
       </div>
       <div class="ly-left-bottom ly-border">
         <Title class="title_3" icon="4">业绩数据<span>Performance data</span></Title>
         <div class="ly-left-bottom-box ly-flex-pack-justify">
           <div class="ly-left-bottom-left ly-border">
-            <PerformanceInfo :performance="performanceData.performance" :invoice-notice="dJson.invoiceNotice" class="mb1rem" />
+            <PerformanceInfo ref="PerformanceInfoRef" :performance="performanceData.performance" class="mb1rem" />
             <AmountTop10Chart ref="AmountTop10ChartRef" :province-ranking="performanceData.provinceRanking" />
           </div>
           <div class="ly-left-bottom-right ly-border">
@@ -40,9 +40,8 @@
     <!-- center -->
     <div class="ly-center ly-border ly-flex-v ly-flex-pack-justify">
       <TotalData
+        ref="TotalDataRef"
         :branch-code="branchCode"
-        :order-notice="dJson.orderNotice"
-        :waybill-notice="dJson.waybillNotice"
         class="ly-border"
         @getPartitionListVo="getPartitionListVo"
       />
@@ -57,10 +56,9 @@
           <Title class="title_4 mb05rem" icon="5">运营情况<span>Operation situation</span></Title>
           <div class="ly-right-left-top-box">
             <OperationData
+              ref="OperationDataRef"
               :order-vo="businessData.orderVo"
               :waill-bill-vo="businessData.waillBillVo"
-              :order-notice="dJson.orderNotice"
-              :waybill-notice="dJson.waybillNotice"
             />
             <OrderChart ref="OrderChartRef" :week-vo-list="businessData.weekVoList" />
             <ComplaintChart ref="ComplaintChartRef" :complain-vo="businessData.complainVo" />
@@ -104,7 +102,7 @@ import TotalData from './TotalData';// 中间总数统计
 import ScrollData from './ScrollData';// 中间滚屏数据
 import Map from './Map.vue';// 地图
 import { getCompanyPerformance, getBusinessDetail, getCompanyDriverRank } from '@/api/statistic/statistic.js';
-import { dataJson } from './data';
+// import { dataJson } from './data';
 
 export default {
   name: 'Statistic',
@@ -153,15 +151,7 @@ export default {
       },
       // 总排名
       companyRankData: [],
-      driverRankData: [],
-      // 实时数据
-      dJson: {
-        invoiceNotice: {}, // 开票
-        orderNotice: {}, // 货单
-        userNotice: {}, // 用户
-        waybillNotice: {}, // 运单
-        waybillSettlementNotice: {} // 打款
-      }
+      driverRankData: []
     };
   },
   computed: {
@@ -177,9 +167,7 @@ export default {
     this.getPerformanceData();
     this.getBusinessData();
     this.getRankData();
-    // this.createWebSocket();
-    // 模拟实时数据
-    this.setData(dataJson);
+    this.createWebSocket();
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.resizeFun);
@@ -255,13 +243,30 @@ export default {
     // 处理实时数据
     setData(dJson) {
       console.log('实时Json：', dJson);
-      this.dJson = {
-        invoiceNotice: dJson.invoiceNotice || {}, // 开票√
-        orderNotice: dJson.orderNoticeVo.transportVo.orderBean || {}, // 货单√
-        userNotice: dJson.userNotice || [], // 用户√
-        waybillNotice: dJson.waybillNotice || [], // 运单√
-        waybillSettlementNotice: dJson.waybillSettlementNotice || {} // 打款
-      };
+      const { userNotice, invoiceNotice, orderNoticeVo, waybillNotice, waybillSettlementNotice } = dJson;
+      // 用户√
+      if (userNotice) {
+        this.$refs.UserInfoRef.setData(userNotice);
+        this.$refs.CapacityInfoRef.setData(userNotice);
+      }
+      // 开票√
+      if (invoiceNotice) {
+        this.$refs.PerformanceInfoRef.setData(invoiceNotice);
+      }
+      // 货单√
+      if (orderNoticeVo && orderNoticeVo.transportVo && orderNoticeVo.transportVo.orderBean) {
+        this.$refs.TotalDataRef.setOrderData(orderNoticeVo.transportVo.orderBean);
+        this.$refs.OperationDataRef.setOrderData(orderNoticeVo.transportVo.orderBean);
+      }
+      // 运单√
+      if (waybillNotice) {
+        this.$refs.TotalDataRef.setWaybillData(waybillNotice);
+        this.$refs.OperationDataRef.setWaybillData(waybillNotice);
+      }
+      // 打款
+      if (waybillSettlementNotice) {
+        //
+      }
     },
     // 图表自适应
     refreshChart() {

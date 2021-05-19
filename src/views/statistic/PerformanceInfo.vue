@@ -74,12 +74,6 @@ export default {
       default: () => {
         return {};
       }
-    },
-    invoiceNotice: {
-      type: Object,
-      default: () => {
-        return {};
-      }
     }
   },
   data() {
@@ -90,12 +84,6 @@ export default {
   watch: {
     performance(val) {
       this.myPerformance = val;
-    },
-    invoiceNotice: {
-      handler(val) {
-        this.setData(val);
-      },
-      immediate: true
     }
   },
   methods: {

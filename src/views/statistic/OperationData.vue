@@ -111,18 +111,6 @@ export default {
       default: () => {
         return {};
       }
-    },
-    orderNotice: {
-      type: Object,
-      default: () => {
-        return {};
-      }
-    },
-    waybillNotice: {
-      type: Object,
-      default: () => {
-        return {};
-      }
     }
   },
   data() {
@@ -137,18 +125,6 @@ export default {
     },
     waillBillVo(val) {
       this.myWaillBillVo = val;
-    },
-    orderNotice: {
-      handler(val) {
-        this.setOrderData(val);
-      },
-      immediate: true
-    },
-    waybillNotice: {
-      handler(val) {
-        this.setWaybillData(val);
-      },
-      immediate: true
     }
   },
   methods: {

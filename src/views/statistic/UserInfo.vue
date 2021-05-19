@@ -84,26 +84,12 @@ export default {
     branchCode: {
       type: String,
       default: null
-    },
-    userNotice: {
-      type: Object,
-      default: () => {
-        return {};
-      }
     }
   },
   data() {
     return {
       dataList: {}
     };
-  },
-  watch: {
-    userNotice: {
-      handler(val) {
-        this.setData(val);
-      },
-      immediate: true
-    }
   },
   created() {
     this.getData();
