@@ -47,7 +47,7 @@ export default {
         provinceData.push(el.provinceName);
         transactionData.push(el.transactionAmount); // 交易
         votesData.push(el.votesAmount); // 开票
-        waybillData.push(el.waybillAmount); // 运费
+        waybillData.push((el.waybillAmount / 10000).toFixed(2)); // 运费
       });
       this.chart.setOption({
         title: {

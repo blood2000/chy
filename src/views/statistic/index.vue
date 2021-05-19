@@ -31,7 +31,7 @@
             <AmountTop10Chart ref="AmountTop10ChartRef" :province-ranking="performanceData.provinceRanking" />
           </div>
           <div class="ly-left-bottom-right ly-border">
-            <CompanyTop10List />
+            <CompanyTop10List ref="CompanyTop10ListRef" :company-ranking-list="performanceData.companyRankingList" />
           </div>
         </div>
       </div>
@@ -130,7 +130,8 @@ export default {
       // 业绩数据
       performanceData: {
         performance: {}, // 数据
-        provinceRanking: [] // Top10省份交易额
+        provinceRanking: [], // Top10省份交易额
+        companyRankingList: [] // Top10公司交易额
       },
       // 运营情况数据
       businessData: {
@@ -269,10 +270,12 @@ export default {
         const data = response.data || {};
         this.performanceData = {
           performance: data.performance || {}, // 数据
-          provinceRanking: data.provinceRanking || [] // Top10省份交易额
+          provinceRanking: data.provinceRanking || [], // Top10省份交易额
+          companyRankingList: data.companyRankingList || [] // Top10公司交易额
         };
         this.$nextTick(() => {
           this.$refs.AmountTop10ChartRef.initChart();
+          this.$refs.CompanyTop10ListRef.createProgress();
         });
       });
     },
