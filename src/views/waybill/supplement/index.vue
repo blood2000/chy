@@ -343,7 +343,7 @@ export default {
       teamOptions: [],
       // 弹出层标题
       title: '',
-      stowage: false,
+      stowage: true,
       // 是否显示弹出层
       open: false,
       openImport: false,

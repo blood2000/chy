@@ -32,6 +32,10 @@
 }
 .width10{
   width: 10%;
+  cursor: pointer;
+}
+.cursor{
+  cursor: pointer;
 }
 .nav-icon{
   height: 28px;
@@ -46,10 +50,12 @@
 }
 // 用户信息
 .user-avator{
-  width: 80px;
-  height: 80px;
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
   border-radius: 50%;
-  border: 10px solid #F9F9F9;
+  // border: 10px solid #F9F9F9;
+  box-shadow: 5px 0px 10px rgba(145, 147, 148, 0.22);
 }
 .user-post{
   display: flex;
@@ -181,6 +187,7 @@
   background: #F9FBFC;
 }
 .trend-content{
+  cursor: pointer;
   height: 60px;
   padding: 10px 0 10px 15px;
 }
@@ -188,5 +195,4 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  width: 255px;
 }
