@@ -733,9 +733,9 @@ export default {
       this.form = data;
       this.form.identificationEffective = praseNumToBoolean(this.form.identificationEffective);
       if (this.form.noNeedUnloadImg === 0) {
-        this.form.noNeedUnloadImg = true;
-      } else {
         this.form.noNeedUnloadImg = false;
+      } else {
+        this.form.noNeedUnloadImg = true;
       }
       if (this.form.openProjectDesignView === 0) {
         this.form.openProjectDesignView = true;

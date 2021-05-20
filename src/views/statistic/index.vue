@@ -28,10 +28,10 @@
         <div class="ly-left-bottom-box ly-flex-pack-justify">
           <div class="ly-left-bottom-left ly-border">
             <PerformanceInfo ref="PerformanceInfoRef" :performance="performanceData.performance" class="mb1rem" />
-            <AmountTop10Chart ref="AmountTop10ChartRef" :province-ranking="performanceData.provinceRanking" />
+            <AmountTop5Chart ref="AmountTop5ChartRef" :province-ranking="performanceData.provinceRanking" />
           </div>
           <div class="ly-left-bottom-right ly-border">
-            <CompanyTop10List ref="CompanyTop10ListRef" :company-ranking-list="performanceData.companyRankingList" />
+            <CompanyTop10List ref="CompanyTop10ListRef" :province-ranking="performanceData.provinceRanking" />
           </div>
         </div>
       </div>
@@ -90,7 +90,7 @@ import RegulatoryData from './RegulatoryData';// 监管数据
 import UserInfo from './UserInfo';// 用户情况
 import CapacityInfo from './CapacityInfo';// 运力情况
 import PerformanceInfo from './PerformanceInfo';// 业绩数据
-import AmountTop10Chart from './AmountTop10Chart';// TOP10省份交易额排名
+import AmountTop5Chart from './AmountTop5Chart';// TOP5省份交易额排名
 import CompanyTop10List from './CompanyTop10List';// TOP10省内十大公司
 import OperationData from './OperationData';// 运营情况
 import OrderChart from './OrderChart';// 订单统计
@@ -112,7 +112,7 @@ export default {
     UserInfo,
     CapacityInfo,
     PerformanceInfo,
-    AmountTop10Chart,
+    AmountTop5Chart,
     CompanyTop10List,
     OperationData,
     OrderChart,
@@ -128,7 +128,7 @@ export default {
     return {
       branchCode: null,
       // websocket
-      wsurl: 'ws://192.168.30.134:8080/websocket/chy',
+      wsurl: 'ws://10.0.0.75:8080/websocket/chy',
       websock: null,
       lockReconnect: false,
       timerReconnect: null,
@@ -139,8 +139,7 @@ export default {
       // 业绩数据
       performanceData: {
         performance: {}, // 数据
-        provinceRanking: [], // Top10省份交易额
-        companyRankingList: [] // Top10公司交易额
+        provinceRanking: [] // Top5省份交易额
       },
       // 运营情况数据
       businessData: {
@@ -192,10 +191,10 @@ export default {
       this.websock.onmessage = (e) => {
         // 拿到pong说明当前连接是正常的
         if (e.data === 'pong') {
-          console.log('pong');
+          // console.log('pong');
           this.heartCheck();
         } else if (e.data) {
-          this.setData(e.data);
+          this.setData(JSON.parse(e.data));
         }
       };
       this.websock.onopen = () => {
@@ -231,7 +230,7 @@ export default {
       this.serverTimeout && clearTimeout(this.serverTimeout);
       this.heartTimeout = setTimeout(() => {
         // 发送一个心跳包
-        console.log('ping');
+        // console.log('ping');
         this.websock.send('ping');
         // 计算答复的超时时间
         this.serverTimeout = setTimeout(() => {
@@ -270,7 +269,7 @@ export default {
     },
     // 图表自适应
     refreshChart() {
-      this.$refs.AmountTop10ChartRef.refreshChart();
+      this.$refs.AmountTop5ChartRef.refreshChart();
       this.$refs.TargetChartRef.refreshChart();
       this.$refs.OrderChartRef.refreshChart();
       this.$refs.ComplaintChartRef.refreshChart();
@@ -286,12 +285,11 @@ export default {
         const data = response.data || {};
         this.performanceData = {
           performance: data.performance || {}, // 数据
-          provinceRanking: data.provinceRanking || [], // Top10省份交易额
-          companyRankingList: data.companyRankingList || [] // Top10公司交易额
+          provinceRanking: data.provinceRanking || [] // Top5省份交易额
         };
         this.$nextTick(() => {
-          this.$refs.AmountTop10ChartRef.initChart();
-          this.$refs.CompanyTop10ListRef.createProgress();
+          this.$refs.AmountTop5ChartRef.initChart();
+          this.$refs.CompanyTop10ListRef.rollTooltip();
         });
       });
     },

@@ -529,6 +529,13 @@ export default {
         this.form = response.data;
         this.open = true;
         this.title = '修改菜单';
+        this.getProduceList();
+        if (this.form.produceCode) {
+          this.changeProduce(this.form.produceCode);
+        }
+        if (this.form.appCode) {
+          this.changeApplication(this.form.appCode);
+        }
       });
     },
     /** 提交按钮 */
