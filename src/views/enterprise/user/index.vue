@@ -382,29 +382,16 @@ import { authorPre } from '@/headers';
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 import { mapGetters } from 'vuex';
-
+import { getUserInfo } from '@/utils/auth';
 export default {
   name: 'User',
   components: { Treeselect },
-  props: {
-    companyCode: {
-      type: String,
-      default: null
-    },
-    userCode: {
-      type: String,
-      default: null
-    },
-    showShipment: {
-      type: Boolean
-    },
-    orgType: {
-      type: Number,
-      default: 2
-    }
-  },
   data() {
     return {
+      companyCode: undefined,
+      userCode: undefined,
+      showShipment: true,
+      orgType: 1,
       // 遮罩层
       loading: true,
       // 按钮loading
@@ -534,6 +521,9 @@ export default {
     }
   },
   created() {
+    const { user = {}} = getUserInfo() || {};
+    this.companyCode = user.org.orgCode;
+    this.userCode = user.userCode;
     this.getList();
     this.getTreeselect();
     /** 状态*/
@@ -571,7 +561,7 @@ export default {
     /** 查询部门下拉树结构 */
     getTreeselect() {
       // 只展示普通企业（1:发货企业 2:普通组织 3：发货企业下的组织）
-      treeselect({ orgCode: this.companyCode, userCode: this.userCode,showShipment: this.showShipment, orgType: this.orgType }).then(response => {
+      treeselect({ orgCode: this.companyCode, userCode: this.userCode, showShipment: this.showShipment, orgType: this.orgType }).then(response => {
         this.deptOptions = response.data;
       });
     },
@@ -647,7 +637,7 @@ export default {
     handleAdd() {
       this.reset();
       this.getTreeselect();
-      getUser(null, { orgCode: this.companyCode, orgType: this.orgType }).then(response => {
+      getUser(null, { orgCode: this.companyCode, orgType: this.orgType, showShipment: this.showShipment }).then(response => {
         this.postOptions = response.posts;
         this.roleOptions = response.roles;
         this.open = true;
@@ -660,7 +650,7 @@ export default {
       this.reset();
       this.getTreeselect();
       const userId = row.userId || this.ids;
-      getUser(userId, { orgCode: this.companyCode, orgType: this.orgType }).then(response => {
+      getUser(userId, { orgCode: this.companyCode, orgType: this.orgType, showShipment: this.showShipment }).then(response => {
         this.form = response.data;
         this.postOptions = response.posts;
         this.roleOptions = response.roles;

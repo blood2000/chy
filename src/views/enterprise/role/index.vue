@@ -385,31 +385,19 @@ import { treeselect as deptTreeselect, roleDeptTreeselect } from '@/api/system/d
 import { mapGetters } from 'vuex';
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
+import { getUserInfo } from '@/utils/auth';
 
 export default {
   name: 'Role',
   components: {
     Treeselect
   },
-  props: {
-    companyCode: {
-      type: String,
-      default: null
-    },
-    userCode: {
-      type: String,
-      default: null
-    },
-    showShipment: {
-      type: Boolean
-    },
-    orgType: {
-      type: Number,
-      default: 2
-    }
-  },
   data() {
     return {
+      companyCode: undefined,
+      userCode: undefined,
+      showShipment: true,
+      orgType: 1,
       buttonLoading: false,
       dataScopeLoading: false,
       // 遮罩层
@@ -548,6 +536,9 @@ export default {
     }
   },
   created() {
+    const { user = {}} = getUserInfo() || {};
+    this.companyCode = user.org.orgCode;
+    this.userCode = user.userCode;
     this.getProduceList();
     this.getDeptTree();
     this.getList();
