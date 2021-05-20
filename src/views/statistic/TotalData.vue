@@ -27,38 +27,12 @@ export default {
     branchCode: {
       type: String,
       default: null
-    },
-    orderNotice: {
-      type: Object,
-      default: () => {
-        return {};
-      }
-    },
-    waybillNotice: {
-      type: Object,
-      default: () => {
-        return {};
-      }
     }
   },
   data() {
     return {
       dataList: {}
     };
-  },
-  watch: {
-    orderNotice: {
-      handler(val) {
-        this.setOrderData(val);
-      },
-      immediate: true
-    },
-    waybillNotice: {
-      handler(val) {
-        this.setWaybillData(val);
-      },
-      immediate: true
-    }
   },
   methods: {
     getData(timeType) {
