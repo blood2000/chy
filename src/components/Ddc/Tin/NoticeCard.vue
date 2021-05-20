@@ -45,6 +45,9 @@ export default {
       handler(value) {
         if (value) {
           this.valueNotice = this.notice;
+          this.$nextTick(() => {
+            this.noticeWidth = -(this.$refs.noticeRef.offsetWidth);
+          });
         }
       },
       immediate: true
@@ -60,6 +63,9 @@ export default {
             });
             this.valueNotice = valueNotice;
           }
+          this.$nextTick(() => {
+            this.noticeWidth = -(this.$refs.noticeRef.offsetWidth);
+          });
         } else {
           this.valueNotice = '暂无公告~';
         }
@@ -67,14 +73,7 @@ export default {
       immediate: true,
       deep: true
     }
-  },
-
-  mounted() {
-    this.$nextTick(() => {
-      this.noticeWidth = -(this.$refs.noticeRef.offsetWidth);
-    });
   }
-
 };
 </script>
 
