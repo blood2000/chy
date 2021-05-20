@@ -4,7 +4,7 @@
     <h5 class="s-container__title">{{ `TOP 10${title}十大公司` }}</h5>
     <p class="s-container__legend">交易额(万)</p>
     <div class="s-container__list">
-      <ul class="ly-flex-v ly-flex-pack-justify">
+      <ul :class="[{change: isChage}, {show: isShow}]" class="ly-flex-v ly-flex-pack-justify">
         <li v-for="(item, index) in dataList" :key="item.compayCode + index" class="s-container__list__item ly-flex-pack-start ly-flex-align-center">
           <div class="index">{{ index + 1 }}</div>
           <div class="label">{{ item.companyName }}</div>
@@ -41,7 +41,9 @@ export default {
       dataList: [],
       title: '',
       timer: null,
-      dataIndex: 0
+      dataIndex: 0,
+      isChage: false,
+      isShow: false
     };
   },
   beforeDestroy() {
@@ -76,6 +78,17 @@ export default {
       } else {
         this.dataIndex++;
       }
+    },
+    changePage() {
+      this.isChage = true;
+      setTimeout(() => {
+        this.showToolTip();
+        this.isChage = false;
+        this.isShow = true;
+      }, 1 * 1000);
+      setTimeout(() => {
+        this.isShow = false;
+      }, 1.3 * 1000);
     }
   }
 };
@@ -101,6 +114,7 @@ export default {
   }
   &__list{
     height: calc(100% - 2.8rem);
+    overflow: hidden;
     >ul{
       height: 100%;
       .s-container__list__item{
@@ -146,6 +160,31 @@ export default {
           font-family: 'PingFang Medium';
           font-weight: 500;
           color: #E1F3FF;
+        }
+      }
+      // 切换动画
+      &.change{
+        animation: change-page 1s;
+      }
+      @keyframes change-page {
+        0% {
+          transform: translateX(0);
+          opacity: 1;
+        }
+        100% {
+          transform: translateX(-4rem);
+          opacity: 0;
+        }
+      }
+      &.show{
+        animation: show-page 0.3s;
+      }
+      @keyframes show-page {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
         }
       }
     }
