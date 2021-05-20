@@ -8,7 +8,8 @@
 
 <script>
 /**
- * 使用: <NoticeCard :notice="tip" speed="30s" />
+ * 使用: <NoticeCard v-if="tip" :notice="tip" speed="30s" />
+ * 使用: <NoticeCard v-if="tips.length>1" :lists="tips" speed="30s" />
  * notice: 要滚动的文字
  * lists: 数组['消息1','消息2']
  * speed: 滚动快慢(动画执行的时间)
@@ -21,11 +22,11 @@ export default {
   props: {
     notice: {
       type: String,
-      default: ''
+      default: '暂无公告~'
     },
     lists: {
       type: Array,
-      default: null
+      default: () => []
     },
     speed: {
       type: String,
@@ -39,18 +40,34 @@ export default {
     };
   },
 
-  created() {
+  watch: {
+    notice(value) {
+      if (value) {
+        this.valueNotice = this.notice;
+      }
+    },
+
+    lists: {
+      handler(value) {
+        console.log(value && value.length);
+        if (value && value.length) {
+          let valueNotice = '';
+          if (this.lists) {
+            this.lists.forEach((item, index) => {
+              valueNotice += `<span style="margin-right:${(this.lists.length - 1) === index ? 0 : this.$el.offsetWidth + 'px'}">${item}</span>`;
+            });
+            this.valueNotice = valueNotice;
+          }
+        } else {
+          this.valueNotice = '暂无公告~';
+        }
+      },
+      immediate: true,
+      deep: true
+    }
   },
 
   mounted() {
-    this.valueNotice = this.notice;
-
-    if (this.lists) {
-      this.lists.forEach((item, index) => {
-        this.valueNotice += `<span style="margin-right:${(this.lists.length - 1) === index ? 0 : this.$el.offsetWidth + 'px'}">${item}</span>`;
-      });
-    }
-
     this.$nextTick(() => {
       this.noticeWidth = -(this.$refs.noticeRef.offsetWidth);
     });

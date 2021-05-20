@@ -4,7 +4,7 @@
       <img class="marginright10" src="~@/assets/images/workbench/icon_notice.png" alt="">
       <img class="marginright10" src="~@/assets/images/workbench/font_notice.png" alt="">
       <span class="notic-tip g-color-gray">
-        <NoticeCard v-if="noticeList2" :lists="noticeList2 || ['暂无公告~']" />
+        <NoticeCard :lists="noticeList2" />
       </span>
     </div>
 
