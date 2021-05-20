@@ -260,11 +260,11 @@ export default {
           }
         },
         series: [{
-          barWidth: setfontSize(8)
+          barWidth: setfontSize(10)
         }, {
-          barWidth: setfontSize(8)
+          barWidth: setfontSize(10)
         }, {
-          barWidth: setfontSize(8)
+          barWidth: setfontSize(10)
         }]
       });
     },
@@ -285,7 +285,8 @@ export default {
       this.chart.dispatchAction({
         type: 'showTip',
         seriesIndex: 0,
-        dataIndex: this.dataIndex
+        dataIndex: this.dataIndex,
+        position: [-1000, 100]
       });
       if (this.dataIndex >= this.provinceRanking.length - 1) {
         this.dataIndex = 0;
@@ -299,6 +300,7 @@ export default {
 
 <style lang="scss" scoped>
 .s-container{
+  overflow: hidden;
   height: 72.5%;
 }
 </style>
