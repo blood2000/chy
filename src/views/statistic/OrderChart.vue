@@ -66,7 +66,7 @@ export default {
           }]
         },
         grid: {
-          left: '3%',
+          left: '0%',
           right: '3%',
           bottom: '10%',
           top: '26%',

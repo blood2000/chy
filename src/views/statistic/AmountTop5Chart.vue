@@ -56,7 +56,7 @@ export default {
       this.chart.setOption({
         title: {
           show: true,
-          text: 'TOP 5省份交易额排名',
+          text: 'TOP 5区域交易额排名',
           textStyle: {
             color: '#FFFFFF',
             fontWeight: 'normal',
@@ -80,7 +80,7 @@ export default {
           }]
         },
         grid: {
-          left: '3%',
+          left: '1%',
           right: '3%',
           bottom: '6%',
           top: '20%',
@@ -142,7 +142,7 @@ export default {
             type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
           },
           borderColor: 'rgba(0, 0, 0, 0)',
-          backgroundColor: 'rgba(70, 70, 70, 0.5)',
+          backgroundColor: 'rgba(70, 70, 70, 0.3)',
           textStyle: {
             color: '#ffffff',
             fontFamily: 'PingFang Regular'
@@ -217,7 +217,7 @@ export default {
         }]
       });
       // 绑定事件
-      // this.chart.on('mouseover', { seriesIndex: 0 }, function(params) {
+      // this.chart.on('mouseover', 'series', function(params) {
       //   console.log('mouseover:', params);
       // });
     },

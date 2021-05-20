@@ -1,7 +1,7 @@
 <template>
   <!-- TOP10全省十大公司 -->
   <div class="s-container">
-    <h5 class="s-container__title">TOP 10全省十大公司</h5>
+    <h5 class="s-container__title">{{ `TOP 10${title}十大公司` }}</h5>
     <p class="s-container__legend">交易额(万)</p>
     <div class="s-container__list">
       <ul class="ly-flex-v ly-flex-pack-justify">
@@ -39,6 +39,7 @@ export default {
     return {
       maxCount: 1,
       dataList: [],
+      title: '',
       timer: null,
       dataIndex: 0
     };
@@ -67,7 +68,8 @@ export default {
       if (this.timer) clearInterval(this.timer);
     },
     showToolTip() {
-      this.dataList = this.provinceRanking[this.dataIndex].companyRankingList;
+      this.dataList = this.provinceRanking[this.dataIndex].companyRankingList || [];
+      this.title = this.provinceRanking[this.dataIndex].provinceName || '';
       this.createProgress();
       if (this.dataIndex >= this.provinceRanking.length - 1) {
         this.dataIndex = 0;
