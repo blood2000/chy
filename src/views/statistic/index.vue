@@ -66,7 +66,7 @@
         </div>
         <div class="ly-right-left-bottom ly-border">
           <Title class="title_5 mb05rem" icon="6">目标达成情况<span>Achievement of Goals</span></Title>
-          <TargetChart ref="TargetChartRef" />
+          <TargetChart ref="TargetChartRef" :branch-code="branchCode" />
         </div>
       </div>
       <div class="ly-right-right ly-border">

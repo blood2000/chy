@@ -26,6 +26,7 @@
             :controls="false"
             :max="999999"
             :min="-999999"
+            :precision="2"
             :placeholder="`请输入${item.cnName}`"
             controls-position="right"
             :style="{ width: '200px' }"
@@ -86,6 +87,7 @@
               step-strictly
               :max="item.unit==='%'?100: 999999"
               :min="item.unit==='%'?0: 0"
+              :precision="0"
               controls-position="right"
               :style="{ width: '85px' }"
             />
@@ -106,6 +108,7 @@
               step-strictly
               :max="item.unit==='%'?100: 999999"
               :min="item.unit==='%'?0: 0"
+              :precision="0"
               controls-position="right"
               :style="{ width: '85px' }"
             />

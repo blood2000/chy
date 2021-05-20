@@ -33,54 +33,12 @@ export default {
     return {
       chart: null,
       legendList: [
-        { name: '大于10万单', color: 'rgba(3, 252, 255, 1)' },
-        { name: '5-10万单', color: 'rgba(16, 216, 227, 1)' },
-        { name: '1-5万单', color: 'rgba(10, 187, 221, 1)' },
-        { name: '小于1万单', color: 'rgba(31, 137, 188, 1)' }
+        { name: '大于10万单', color: '#03fcff' },
+        { name: '5-10万单', color: '#10c8da' },
+        { name: '1-5万单', color: '#067bab' },
+        { name: '小于1万单', color: '#105296' }
       ],
-      regionData: [
-        // {
-        //   name: '广东省',
-        //   itemStyle: {
-        //     areaColor: 'rgba(10, 187, 221, 1)'
-        //   }
-        // }, {
-        //   name: '湖北省',
-        //   itemStyle: {
-        //     areaColor: 'rgba(3, 252, 255, 1)'
-        //   }
-        // }, {
-        //   name: '福建省',
-        //   itemStyle: {
-        //     areaColor: 'rgba(3, 252, 255, 1)'
-        //   }
-        // }, {
-        //   name: '四川省',
-        //   itemStyle: {
-        //     areaColor: 'rgba(10, 187, 221, 1)'
-        //   }
-        // }, {
-        //   name: '辽宁省',
-        //   itemStyle: {
-        //     areaColor: 'rgba(1, 227, 255, 1)'
-        //   }
-        // }, {
-        //   name: '浙江省',
-        //   itemStyle: {
-        //     areaColor: 'rgba(1, 227, 255, 1)'
-        //   }
-        // }, {
-        //   name: '山西省',
-        //   itemStyle: {
-        //     areaColor: 'rgba(31, 137, 188, 1)'
-        //   }
-        // }, {
-        //   name: '山东省',
-        //   itemStyle: {
-        //     areaColor: 'rgba(1, 227, 255, 1)'
-        //   }
-        // }
-      ],
+      regionData: [],
       warnData: [
         { name: '鄂尔多斯', value: [109.78, 39.60] },
         { name: '招远', value: [120.38, 37.35] },
@@ -213,13 +171,13 @@ export default {
         const { provinceName, waybillCount } = el;
         let color = '';
         if (waybillCount < 10000) {
-          color = 'rgba(31, 137, 188, 1)';
+          color = '#105296';
         } else if (waybillCount >= 10000 && waybillCount < 50000) {
-          color = 'rgba(10, 187, 221, 1)';
+          color = '#067bab';
         } else if (waybillCount >= 50000 && waybillCount < 100000) {
-          color = 'rgba(16, 216, 227, 1)';
+          color = '#10c8da';
         } else if (waybillCount >= 100000) {
-          color = 'rgba(3, 252, 255, 1)';
+          color = '#03fcff';
         }
         this.regionData.push({
           name: provinceName,
