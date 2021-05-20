@@ -84,13 +84,11 @@ export default {
     $_getHeight() {
       this.$nextTick(() => {
         this.$_setTheight(this.showSearch, this.addition);
+
         const tbodyDom = this.t__tbodyDom;
 
-        const listLength = tbodyDom.childNodes.length - 1;
-
-        const tbodyHeight = tbodyDom.offsetHeight;
-
-        this.tbodyHeight = tbodyHeight > this.__tHeight ? this.__tHeight : tbodyHeight + tbodyHeight / listLength;
+        // 无数据 tbodyDom.childNodes.length = 1
+        this.tbodyHeight = tbodyDom.childNodes.length > 1 ? this.__tHeight : 100;
       });
     }
   }

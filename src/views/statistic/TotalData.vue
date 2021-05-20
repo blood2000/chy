@@ -2,8 +2,8 @@
   <div class="s-container ly-flex-pack-center">
     <div class="s-container__box">
       <div class="s-container__box__content top ly-flex-pack-center">
-        <p>货单总数(万)</p>
-        <p>运单总数(万)</p>
+        <p>货单总数</p>
+        <p>运单总数</p>
       </div>
       <div class="s-container__box__content bottom ly-flex-pack-center">
         <p><count-to :end-val="dataList.shipmentCount" /></p>
@@ -42,6 +42,24 @@ export default {
           this.$emit('getPartitionListVo', response.data.partitionListVo);
         }
       });
+    },
+    // 处理实时数据-货单
+    setOrderData(val) {
+      console.log('orderNotice-total: ', val);
+      const { orderInfoNumber } = val;
+      // 货单
+      if (orderInfoNumber) {
+        this.dataList.shipmentCount += orderInfoNumber;
+      }
+    },
+    // 处理实时数据-运单
+    setWaybillData(val) {
+      console.log('waybillNotice-total: ', val);
+      const { newNum } = val;
+      // 运单
+      if (newNum) {
+        this.dataList.waybillCount += newNum;
+      }
     }
   }
 };

@@ -4,51 +4,57 @@
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <InfoBox
         label="交易总额"
-        unit="亿"
-        :count="0.211"
-        :places="3"
+        unit="万"
+        :count="myPerformance.transactionAmount"
+        :places="2"
       />
       <InfoBox
         label="今日新增交易"
-        :count="0.211"
-        :places="3"
+        unit="万"
+        :count="myPerformance.newTransactionAmount"
+        :last-count="myPerformance.lastTransactionAmount"
+        :places="2"
         :has-yoy="true"
-        :yoy="12.6"
-        :yoy-type="0"
+        :yoy.sync="myPerformance.newTransactionYoy"
+        :yoy-type.sync="myPerformance.newTransactionYoyType"
         :yoy-places="1"
       />
     </div>
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <InfoBox
         label="开票总额"
-        unit="亿"
-        :count="0.211"
-        :places="3"
+        unit="万"
+        :count="myPerformance.votesAmount"
+        :places="2"
       />
       <InfoBox
         label="今日新增开票"
-        :count="0.211"
-        :places="3"
+        unit="万"
+        :count="myPerformance.newVotesAmount"
+        :last-count="myPerformance.lastVotesAmount"
+        :places="2"
         :has-yoy="true"
-        :yoy="12.6"
-        :yoy-type="1"
+        :yoy.sync="myPerformance.newVotesYoy"
+        :yoy-type.sync="myPerformance.newVotesYoyType"
         :yoy-places="1"
       />
     </div>
     <div class="s-container__box ly-flex-pack-justify ly-flex-v">
       <InfoBox
         label="运费总额"
-        unit="亿"
-        :count="0.211"
-        :places="3"
+        unit="万"
+        :count="myPerformance.waybillAmount"
+        :places="2"
       />
       <InfoBox
         label="今日新增运费"
-        :count="0.211"
-        :places="3"
+        unit="万"
+        :count="myPerformance.newWaybillAmount"
+        :last-count="myPerformance.lastWaybillAmount"
+        :places="2"
         :has-yoy="true"
-        :yoy="12.6"
-        :yoy-type="0"
+        :yoy.sync="myPerformance.newWaybillYoy"
+        :yoy-type.sync="myPerformance.newWaybillYoyType"
         :yoy-places="1"
       />
     </div>
@@ -61,6 +67,35 @@ import InfoBox from './components/infoBox';
 export default {
   components: {
     InfoBox
+  },
+  props: {
+    performance: {
+      type: Object,
+      default: () => {
+        return {};
+      }
+    }
+  },
+  data() {
+    return {
+      myPerformance: {}
+    };
+  },
+  watch: {
+    performance(val) {
+      this.myPerformance = val;
+    }
+  },
+  methods: {
+    // 处理实时数据
+    setData(val) {
+      console.log('invoiceNotice: ', val);
+      const { invoiceAmount } = val;
+      if (invoiceAmount) {
+        this.myPerformance.votesAmount += invoiceAmount;
+        this.myPerformance.newVotesAmount += invoiceAmount;
+      }
+    }
   }
 };
 </script>

@@ -32,6 +32,7 @@ export default {
       this.setFontOption();
     },
     refreshChart() {
+      if (!this.chart) return;
       this.chart.resize();
       this.setFontOption();
     },
@@ -78,7 +79,7 @@ export default {
           data: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
         },
         yAxis: {
-          name: '业绩(亿)',
+          name: '业绩(万)',
           nameTextStyle: {
             color: '#CDEDFF',
             paddingLeft: '2%',

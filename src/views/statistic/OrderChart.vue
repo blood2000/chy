@@ -35,6 +35,7 @@ export default {
       this.setFontOption();
     },
     refreshChart() {
+      if (!this.chart) return;
       this.chart.resize();
       this.setFontOption();
     },
@@ -90,7 +91,7 @@ export default {
           data: timeData
         },
         yAxis: {
-          name: '订单数(万)',
+          name: '订单数',
           nameTextStyle: {
             color: '#CDEDFF',
             paddingLeft: '2%',

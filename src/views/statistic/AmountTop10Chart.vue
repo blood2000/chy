@@ -8,20 +8,21 @@ import * as echarts from 'echarts';
 import { setfontSize } from '@/utils/fontSize';
 
 export default {
+  props: {
+    provinceRanking: {
+      type: Array,
+      default: () => {
+        return [];
+      }
+    }
+  },
   data() {
     return {
       chart: null
     };
   },
-  mounted() {
-    this.$nextTick(() => {
-      this.initChart();
-    });
-  },
   beforeDestroy() {
-    if (!this.chart) {
-      return;
-    }
+    if (!this.chart) return;
     this.chart.dispose();
     this.chart = null;
   },
@@ -32,10 +33,22 @@ export default {
       this.setFontOption();
     },
     refreshChart() {
+      if (!this.chart) return;
       this.chart.resize();
       this.setFontOption();
     },
     setOption() {
+      // 构造数据
+      const provinceData = [];
+      const transactionData = [];
+      const votesData = [];
+      const waybillData = [];
+      this.provinceRanking.forEach(el => {
+        provinceData.push(el.provinceName);
+        transactionData.push(el.transactionAmount); // 交易
+        votesData.push(el.votesAmount); // 开票
+        waybillData.push((el.waybillAmount / 10000).toFixed(2)); // 运费
+      });
       this.chart.setOption({
         title: {
           show: true,
@@ -86,10 +99,10 @@ export default {
               color: '#3F5C84'
             }
           },
-          data: ['内蒙古', '内蒙古', '内蒙古', '内蒙古', '内蒙古', '内蒙古', '内蒙古', '内蒙古', '内蒙古', '内蒙古']
+          data: provinceData
         },
         yAxis: {
-          name: '交易额(万）',
+          name: '交易额(万)',
           nameTextStyle: {
             color: '#CDEDFF',
             paddingLeft: '2%',
@@ -152,7 +165,7 @@ export default {
               }])
             }
           },
-          data: [4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
+          data: transactionData
         }, {
           name: '开票总额（省）',
           type: 'bar',
@@ -174,7 +187,7 @@ export default {
               }])
             }
           },
-          data: [3, 3, 3, 2, 2, 3, 3, 3, 2, 2]
+          data: votesData
         }, {
           name: '运费总额（省）',
           type: 'bar',
@@ -196,7 +209,7 @@ export default {
               }])
             }
           },
-          data: [3, 3, 3, 2, 2, 3, 3, 3, 2, 2]
+          data: waybillData
         }]
       });
     },

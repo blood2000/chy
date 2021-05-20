@@ -1,41 +1,35 @@
 <template>
   <!-- 运力情况 -->
   <div class="s-container ly-flex-pack-justify">
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 16%">
       <InfoBox
         label="总车辆"
-        unit="万"
         :count="dataList.vehicleCount"
-        :places="2"
       />
       <InfoBox
         label="今日新增车辆"
         :count="dataList.newVehicleCount"
-        :places="2"
         :has-yoy="true"
-        :yoy="dataList.newVehicleYoy"
-        :yoy-type="dataList.newVehicleYoyType"
+        :yoy.sync="dataList.newVehicleYoy"
+        :yoy-type.sync="dataList.newVehicleYoyType"
         :yoy-places="1"
       />
     </div>
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 16%">
       <InfoBox
         label="总路线"
-        unit="条"
         :count="dataList.lienCount"
-        :places="2"
       />
       <InfoBox
         label="今日新增路线"
         :count="dataList.newLineCount"
-        :places="2"
         :has-yoy="true"
-        :yoy="dataList.newLineYoy"
-        :yoy-type="dataList.newLineYoyType"
+        :yoy.sync="dataList.newLineYoy"
+        :yoy-type.sync="dataList.newLineYoyType"
         :yoy-places="1"
       />
     </div>
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 20%">
       <InfoBox
         label="运输总量"
         unit="吨"
@@ -47,12 +41,12 @@
         :count="dataList.newTransportCount"
         :places="2"
         :has-yoy="true"
-        :yoy="dataList.newTransportYoy"
-        :yoy-type="dataList.newTransportYoyType"
+        :yoy.sync="dataList.newTransportYoy"
+        :yoy-type.sync="dataList.newTransportYoyType"
         :yoy-places="1"
       />
     </div>
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 20%">
       <InfoBox
         label="行驶里程"
         unit="公里"
@@ -64,12 +58,12 @@
         :count="dataList.newKilometreCount"
         :places="2"
         :has-yoy="true"
-        :yoy="dataList.newKilometreYoy"
-        :yoy-type="dataList.newKilometreYoyType"
+        :yoy.sync="dataList.newKilometreYoy"
+        :yoy-type.sync="dataList.newKilometreYoyType"
         :yoy-places="1"
       />
     </div>
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 16%">
       <InfoBox
         label="行驶时长"
         unit="月"
@@ -78,27 +72,26 @@
       />
       <InfoBox
         label="今日新增时长"
+        unit="时"
         :count="dataList.newHaulageTimeCount"
         :places="2"
         :has-yoy="true"
-        :yoy="dataList.newHaulageTimeYoy"
-        :yoy-type="dataList.newHaulageTimeYoyType"
+        :yoy.sync="dataList.newHaulageTimeYoy"
+        :yoy-type.sync="dataList.newHaulageTimeYoyType"
         :yoy-places="1"
       />
     </div>
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 12%">
       <InfoBox
         label="总网点"
         :count="dataList.branchCount"
-        :places="2"
       />
       <InfoBox
         label="今日新增网点"
         :count="dataList.newBranchCount"
-        :places="2"
         :has-yoy="true"
-        :yoy="dataList.newBranchYoy"
-        :yoy-type="dataList.newBranchYoyType"
+        :yoy.sync="dataList.newBranchYoy"
+        :yoy-type.sync="dataList.newBranchYoyType"
         :yoy-places="1"
       />
     </div>
@@ -132,6 +125,17 @@ export default {
       getCapacityData(this.branchCode).then(response => {
         this.dataList = response.data || {};
       });
+    },
+    // 处理实时数据
+    setData(val) {
+      console.log('userNotice-car: ', val);
+      if (val.car) {
+        const { carNum } = val.car;
+        if (carNum) {
+          this.dataList.vehicleCount += carNum;
+          this.dataList.newVehicleCount += carNum;
+        }
+      }
     }
   }
 };
@@ -141,7 +145,6 @@ export default {
 .s-container{
   height: calc(100% - 2.9rem);
   &__box{
-    width: 16.66%;
     height: 100%;
     position: relative;
     padding-left: 0.2rem;

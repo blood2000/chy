@@ -39,7 +39,7 @@
 
               <div v-if="!showbudget" class="ml0 mr10 t_color_c t_m_pac">
                 司机实收单价:
-                <span class="m_pac">{{ totalTransportationCost || 0 }}</span>
+                <span class="m_pac">{{ _floor(totalTransportationCost) || 0 }}</span>
                 元
               </div>
             </div>
@@ -123,9 +123,9 @@
                   <div class="mb10 t_color_c">平台服务费 (总费用估): </div>
                 </el-col>
                 <el-col :span="8">
-                  <div class="mb10">{{ predictData.totalEstimateMoney || 0 }} 元</div>
-                  <div class="mb10 t_color_c">{{ predictData.totalTransportationCost || 0 }} 元</div>
-                  <div class="mb10 t_color_c">{{ predictData.totalServiceFee || 0 }} 元</div>
+                  <div class="mb10">{{ _floor(predictData.totalEstimateMoney) || 0 }} 元</div>
+                  <div class="mb10 t_color_c">{{ _floor(predictData.totalTransportationCost) || 0 }} 元</div>
+                  <div class="mb10 t_color_c">{{ _floor(predictData.totalServiceFee) || 0 }} 元</div>
                 </el-col>
               </el-row>
             </template>
@@ -137,9 +137,9 @@
                 <div class="mb10 t_color_c">平台服务费 (单笔运费估): </div>
               </el-col>
               <el-col :span="8">
-                <div class="mb10">{{ predictData.singleAllCost || 0 }} 元</div>
-                <div class="mb10 t_color_c">{{ predictData.singleDriverCashReceived || 0 }} 元</div>
-                <div class="mb10 t_color_c">{{ predictData.singleServiceFee || 0 }} 元</div>
+                <div class="mb10">{{ _floor(predictData.singleAllCost) || 0 }} 元</div>
+                <div class="mb10 t_color_c">{{ _floor(predictData.singleDriverCashReceived) || 0 }} 元</div>
+                <div class="mb10 t_color_c">{{ _floor(predictData.singleServiceFee) || 0 }} 元</div>
               </el-col>
             </el-row>
           </div>
@@ -330,6 +330,19 @@ export default {
     },
     redis: {
       handler(value) {
+        let totalTransportationCost;
+        let freightPrice;
+
+        if (value.orderFreightBoList) {
+          value.orderFreightBoList.forEach(ee => {
+            if (ee.ruleItemCode === '17') {
+              freightPrice = ee.ruleValue;
+            } else if (ee.ruleItemCode === '20') {
+              totalTransportationCost = ee.ruleValue;
+            }
+          });
+        }
+
         if (!value || !value.orderFreightVo) return;
 
         // 清空
@@ -343,10 +356,12 @@ export default {
 
         const filterDetailList = detailList.filter(e => {
           if (e.enName === 'DRIVER_ACTUAL_PRICE') {
+            totalTransportationCost && (e.ruleValue = totalTransportationCost);
             this.totalTransportationCost = e.ruleValue;
           }
 
           if (e.enName === 'FREIGHT_COST') {
+            freightPrice && (e.ruleValue = freightPrice);
             this.formData.freightPrice = e.ruleValue;
 
             // 如果是复制的则重新计算
@@ -506,6 +521,7 @@ export default {
             const addresCodes = ee.addressIdentification.split(':');
             const arr = this.good.newRedis || this.good.redis;
 
+
             arr.forEach(redi => {
               if (addresCodes[0] === redi.identification + '' || addresCodes[1] === redi.identification + '' || addresCodes[0] === redi.code || addresCodes[1] === redi.code) {
                 this.predictData = ee;
@@ -540,6 +556,9 @@ export default {
           dictLabel: e[dictLabel]
         };
       });
+    },
+    _floor(number) {
+      return Math.floor(number * 100) / 100;
     }
   }
 };

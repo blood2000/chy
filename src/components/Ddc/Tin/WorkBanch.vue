@@ -3,7 +3,9 @@
     <div class="top-tips g-flex g-aligncenter">
       <img class="marginright10" src="~@/assets/images/workbench/icon_notice.png" alt="">
       <img class="marginright10" src="~@/assets/images/workbench/font_notice.png" alt="">
-      <span class="notic-tip g-color-gray">{{ tip }}</span>
+      <span class="notic-tip g-color-gray">
+        <NoticeCard :lists="noticeList2" />
+      </span>
     </div>
 
     <div class="g-flex" style="margin: 0 15px;height: calc(100% - 59px);">
@@ -11,44 +13,48 @@
         <div class="g-flex">
           <!-- 用户信息 -->
           <div class="index-frame g-flex g-aligncenter  marginright15" style="width:330px;">
-            <el-image class="user-avator" src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg" fit="cover" />
-            <div style="margin-left:15px;">
-              <div class="g-color-title g-strong g-title-big">余晨望</div>
-              <div class="user-post g-margin-tb"><img src="~@/assets/images/workbench/icon_position.png" style="margin-right: 10px;" alt="">客服专员</div>
-              <div class="g-color-tag">大道成物流 | 客服部</div>
+            <img v-if="user.avatar != null" class="user-avator" :src="user.avatar">
+            <img v-else class="user-avator" src="~@/assets/images/workbench/icon_noavator.png">
+            <div style="margin-left:15px;max-width:205px;">
+              <div class="g-color-title g-strong g-title-big">{{ user.nickName }}</div>
+              <div class="user-post g-margin-tb">
+                <img src="~@/assets/images/workbench/icon_position.png" style="margin-right: 10px;" alt="">
+                {{ user.roles[0].roleName }}
+              </div>
+              <div class="g-color-tag">{{ user.org.orgName }}</div>
             </div>
           </div>
           <!-- 便捷导航 -->
           <div class="index-frame g-flex g-aligncenter g-justifyaround" style="width:calc(100% - 345px);min-width:835px;">
-            <div class="g-flex g-aligncenter g-flexdirection width10">
+            <div class="g-flex g-aligncenter g-flexdirection width10" @click="handleNav(1)">
               <img class="nav-icon" src="~@/assets/images/workbench/icon_addcompany.png" alt="">
               <div class="g-color-title g-strong margintop5">新增企业</div>
             </div>
-            <div class="g-flex g-aligncenter g-flexdirection width10">
+            <div class="g-flex g-aligncenter g-flexdirection width10" @click="handleNav(2)">
               <img class="nav-icon" src="~@/assets/images/workbench/icon_report.png" alt="">
               <div class="g-color-title g-strong margintop5">数据上报</div>
             </div>
-            <div class="g-flex g-aligncenter g-flexdirection width10">
+            <div class="g-flex g-aligncenter g-flexdirection width10" @click="handleNav(3)">
               <img class="nav-icon" src="~@/assets/images/workbench/icon_order.png" alt="">
               <div class="g-color-title g-strong margintop5">发布货源</div>
             </div>
-            <div class="g-flex g-aligncenter g-flexdirection width10">
+            <div class="g-flex g-aligncenter g-flexdirection width10" @click="handleNav(4)">
               <img class="nav-icon" src="~@/assets/images/workbench/icon_addwaybill.png" alt="">
               <div class="g-color-title g-strong margintop5">新增运单</div>
             </div>
-            <div class="g-flex g-aligncenter g-flexdirection width10">
+            <div class="g-flex g-aligncenter g-flexdirection width10" @click="handleNav(5)">
               <img class="nav-icon" src="~@/assets/images/workbench/icon_waybillmanage.png" alt="">
               <div class="g-color-title g-strong margintop5">运单管理</div>
             </div>
-            <div class="g-flex g-aligncenter g-flexdirection width10">
+            <div class="g-flex g-aligncenter g-flexdirection width10" @click="handleNav(6)">
               <img class="nav-icon" src="~@/assets/images/workbench/icon_billing.png" alt="">
               <div class="g-color-title g-strong margintop5">开具发票</div>
             </div>
-            <div class="g-flex g-aligncenter g-flexdirection width10">
+            <div class="g-flex g-aligncenter g-flexdirection width10" @click="handleNav(7)">
               <img class="nav-icon" src="~@/assets/images/workbench/icon_invoicelist.png" alt="">
               <div class="g-color-title g-strong margintop5">发票列表</div>
             </div>
-            <div class="g-flex g-aligncenter g-flexdirection width10">
+            <div class="g-flex g-aligncenter g-flexdirection width10" @click="handleNav(8)">
               <img class="nav-icon" src="~@/assets/images/workbench/icon_waybillcp.png" alt="">
               <div class="g-color-title g-strong margintop5">运单投诉</div>
             </div>
@@ -251,7 +257,7 @@
         <!-- 动态 -->
         <div style="height:100%; min-height: 609px;">
           <div style="height:300px">
-            <el-calendar />
+            <el-calendar v-model="value" />
           </div>
           <el-row class="trend-tab">
             <el-col :span="6">
@@ -269,7 +275,7 @@
           </el-row>
           <!-- 运单动态 -->
           <div v-if="activeName === '1'" class="trend-frame">
-            <div v-for="(item, index) in 10" :key="index" class="trend-content g-flex g-alignend">
+            <div v-for="(item, index) in 10" :key="index" class="trend-content g-flex g-alignend" @click="handleWaybill(item)">
               <div style="margin-right: 12px;">
                 <div class="g-color-tag g-title-smaller">5月17日</div>
                 <div class="g-color-title g-strong margintop5">14:15</div>
@@ -278,13 +284,13 @@
               <div v-if="index != 0" class="trend-line" />
               <div style="margin-left: 12px;">
                 <div class="g-color-tag g-title-smaller">余晨望</div>
-                <div class="ellipsis g-color-title g-strong margintop5">取消订单（1092838191201）</div>
+                <div class="ellipsis g-color-title g-strong margintop5" style="width:250px;">取消订单（1092838191201）</div>
               </div>
             </div>
           </div>
           <!-- 货单动态 -->
           <div v-if="activeName === '2'" class="trend-frame">
-            <div v-for="(item, index) in 10" :key="index" class="trend-content g-flex g-alignend">
+            <div v-for="(item, index) in 10" :key="index" class="trend-content g-flex g-alignend" @click="handleOrder(item)">
               <div style="margin-right: 12px;">
                 <div class="g-color-tag g-title-smaller">5月17日</div>
                 <div class="g-color-title g-strong margintop5">14:15</div>
@@ -293,13 +299,13 @@
               <div v-if="index != 0" class="trend-line" />
               <div style="margin-left: 12px;">
                 <div class="g-color-tag g-title-smaller">余晨望</div>
-                <div class="ellipsis g-color-title g-strong margintop5">发布货源（1092838191201）</div>
+                <div class="ellipsis g-color-title g-strong margintop5" style="width:250px;">发布货源（1092838191201）</div>
               </div>
             </div>
           </div>
           <!-- 发票动态 -->
           <div v-if="activeName === '3'" class="trend-frame">
-            <div v-for="(item, index) in 10" :key="index" class="trend-content g-flex g-alignend">
+            <div v-for="(item, index) in 10" :key="index" class="trend-content g-flex g-alignend" @click="handleInvoice(item)">
               <div style="margin-right: 12px;">
                 <div class="g-color-tag g-title-smaller">5月17日</div>
                 <div class="g-color-title g-strong margintop5">14:15</div>
@@ -308,22 +314,22 @@
               <div v-if="index != 0" class="trend-line" />
               <div style="margin-left: 12px;">
                 <div class="g-color-tag g-title-smaller">余晨望</div>
-                <div class="ellipsis g-color-title g-strong margintop5">货主申请开票（1092838191201）</div>
+                <div class="ellipsis g-color-title g-strong margintop5" style="width:250px;">货主申请开票（1092838191201）</div>
               </div>
             </div>
           </div>
           <!-- 消息通知 -->
           <div v-if="activeName === '4'" class="trend-frame">
-            <div v-for="(item, index) in 10" :key="index" class="trend-content g-flex g-alignend">
+            <div v-for="(item, index) in noticeList1" :key="index" class="trend-content g-flex g-alignend">
               <div style="margin-right: 12px;">
-                <div class="g-color-tag g-title-smaller">5月17日</div>
-                <div class="g-color-title g-strong margintop5">14:15</div>
+                <div class="g-color-tag g-title-smaller">{{ parseTime(item.createTime, '{m}月{d}日') }}</div>
+                <div class="g-color-title g-strong margintop5">{{ parseTime(item.createTime, '{h}:{i}') }}</div>
               </div>
               <span class="g-color-blue marginright5">●</span>
               <div v-if="index != 0" class="trend-line" />
               <div style="margin-left: 12px;">
-                <div class="g-color-tag g-title-smaller">余晨望</div>
-                <div class="ellipsis g-color-title g-strong margintop5">系统将在今晚22：00更新，请及时保存相关数据，以免数据丢失！</div>
+                <div class="g-color-tag g-title-smaller">{{ item.remark }}</div>
+                <div class="ellipsis g-color-title g-strong margintop5" style="width:250px;" v-html="item.noticeContent" />
               </div>
             </div>
           </div>
@@ -331,14 +337,22 @@
         </div>
       </div>
     </div>
-
+    <!-- 运单详情 对话框 -->
+    <detail-dialog ref="DetailDialog" :current-id="currentId" :title="title" :open.sync="open" :disable="formDisable" />
   </div>
 </template>
 
 <script>
+import { getUserInfo } from '@/utils/auth';
+import { listNotice } from '@/api/system/notice';
+// 运单详情弹窗
+import DetailDialog from '@/views/waybill/components/detailDialog';
+// 运单详情弹窗
+import NoticeCard from './NoticeCard';
 // import { color } from 'echarts';
 export default {
   name: 'Index',
+  components: { DetailDialog, NoticeCard },
   props: {
     width: {
       type: Number,
@@ -348,15 +362,145 @@ export default {
   data() {
     return {
       activeName: '1',
-      tip: '亲爱的用户，2021年4月22日（周四晚）21:30至23:00,银行系统升级，这期可能存在部分运单支付后较长时间处于“支付中”，处于“支付中”的您可以待系统升级以后反馈销售让我们处理，为了您能正常支付运单，建议您避开此时段操作支付感谢您的支持！'
+      // 账号信息
+      isAdmin: false,
+      isShipment: false,
+      user: {},
+      shipment: {},
+      // 通知列表
+      noticeList1: [],
+      // 公告列表
+      noticeList2: [],
+      // websocket参数
+      websock: null,
+      // 弹框 内容
+      open: false,
+      title: '',
+      // 当前选中的运单id
+      currentId: null,
+      // 表单是否禁用
+      formDisable: false,
+      value: new Date()
     };
   },
+  watch: {
+    value(val) {
+      console.log(val);
+    }
+  },
+  created() {
+    const { isAdmin = false, isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
+    this.isAdmin = isAdmin;
+    this.isShipment = isShipment;
+    this.user = user;
+    this.shipment = shipment;
+    this.getNoticeList();
+    // 页面刚进入时开启长连接
+    // this.initWebSocket();
+  },
+  destroyed: function() {
+    // 页面销毁时关闭长连接
+    // this.websocketclose();
+  },
   methods: {
+    // 查看运单详情
+    handleWaybill(item) {
+      this.$refs.DetailDialog.reset();
+      this.currentId = '9715e39b88ec45cb9d125c44a67cab90';
+      this.open = true;
+      this.title = '运输单信息';
+      this.formDisable = true;
+    },
+    handleOrder(item) {
+      const code = '41dbe49a630644549d89aa8676fde6a3';
+      this.$router.push({ name: 'Release', query: { id: code, t: '0' }});
+    },
+    handleInvoice(item) {
+      this.$router.push({ name: 'Statement', query: { code: item.code }});
+    },
+    /** 查询通知公告列表 */
+    getNoticeList() {
+      // 通知
+      listNotice({ noticeType: '1' }).then(response => {
+        this.noticeList1 = response.rows;
+        console.log(this.noticeList1);
+      });
+      // 公告
+      listNotice({ noticeType: '2' }).then(response => {
+        this.noticeList2 = response.rows.map(response => {
+          return response.noticeContent;
+        });
+        console.log(this.noticeList2);
+      });
+    },
+    // weosocket调用方法
+    initWebSocket() { // 初始化weosocket
+      const wsuri = process.env.WS_API + '/websocket/threadsocket';// ws地址
+      this.websock = new WebSocket(wsuri);
+      this.websocket.onopen = this.websocketonopen;
+
+      this.websocket.onerror = this.websocketonerror;
+
+      this.websock.onmessage = this.websocketonmessage;
+      this.websock.onclose = this.websocketclose;
+    },
+    websocketonopen() {
+      console.log('WebSocket连接成功');
+    },
+    websocketonerror(e) { // 错误
+      console.log('WebSocket连接发生错误');
+    },
+    websocketonmessage(e) { // 数据接收
+      const redata = JSON.parse(e.data);
+      // 注意：长连接我们是后台直接1秒推送一条数据，
+      // 但是点击某个列表时，会发送给后台一个标识，后台根据此标识返回相对应的数据，
+      // 这个时候数据就只能从一个出口出，所以让后台加了一个键，例如键为1时，是每隔1秒推送的数据，为2时是发送标识后再推送的数据，以作区分
+      console.log(redata.value);
+    },
+    websocketsend(agentData) { // 数据发送
+      this.websock.send(agentData);
+    },
+    websocketclose(e) { // 关闭
+      console.log('connection closed (' + e.code + ')');
+    },
+
     goTarget(href) {
       window.open(href, '_blank');
     },
+    // 切换动态
     handleClick(tab) {
       this.activeName = tab;
+    },
+    // 导航点击事件
+    handleNav(index) {
+      switch (index) {
+        case 1:
+          this.$router.push({ name: 'Shipment' });
+          break;
+        case 2:
+          this.$router.push({ name: 'Report' });
+          break;
+        case 3:
+          this.$router.push({ name: 'Release' });
+          break;
+        case 4:
+          this.$router.push({ name: 'Supplement' });
+          break;
+        case 5:
+          this.$router.push({ name: 'Manages' });
+          break;
+        case 6:
+          this.$router.push({ name: 'Askfor' });
+          break;
+        case 7:
+          this.$router.push({ name: 'List' });
+          break;
+        case 8:
+          this.$router.push({ name: 'Complaint' });
+          break;
+        default:
+          break;
+      }
     }
   }
 };
