@@ -1,11 +1,11 @@
 <template>
-  <!-- TOP10全国十大公司 -->
+  <!-- TOP10全省十大公司 -->
   <div class="s-container">
-    <h5 class="s-container__title">TOP 10全国十大公司</h5>
+    <h5 class="s-container__title">TOP 10全省十大公司</h5>
     <p class="s-container__legend">交易额(万)</p>
     <div class="s-container__list">
       <ul class="ly-flex-v ly-flex-pack-justify">
-        <li v-for="(item, index) in companyRankingList" :key="item.compayCode + index" class="s-container__list__item ly-flex-pack-start ly-flex-align-center">
+        <li v-for="(item, index) in dataList" :key="item.compayCode + index" class="s-container__list__item ly-flex-pack-start ly-flex-align-center">
           <div class="index">{{ index + 1 }}</div>
           <div class="label">{{ item.companyName }}</div>
           <div class="line">
@@ -28,7 +28,7 @@ export default {
     CountTo
   },
   props: {
-    companyRankingList: {
+    provinceRanking: {
       type: Array,
       default: () => {
         return [];
@@ -37,14 +37,42 @@ export default {
   },
   data() {
     return {
-      maxCount: 1
+      maxCount: 1,
+      dataList: [],
+      timer: null,
+      dataIndex: 0
     };
+  },
+  beforeDestroy() {
+    this.clearTimer();
   },
   methods: {
     // 模拟进度条
     createProgress() {
-      if (this.companyRankingList && this.companyRankingList.length > 0) {
-        this.maxCount = this.companyRankingList[0].transactionAmount;
+      if (this.dataList && this.dataList.length > 0) {
+        this.maxCount = this.dataList[0].transactionAmount;
+      }
+    },
+    // 定时选中
+    rollTooltip() {
+      this.showToolTip();
+      this.setTimer();
+    },
+    setTimer() {
+      this.timer = setInterval(() => {
+        this.showToolTip();
+      }, 15 * 1000);
+    },
+    clearTimer() {
+      if (this.timer) clearInterval(this.timer);
+    },
+    showToolTip() {
+      this.dataList = this.provinceRanking[this.dataIndex].companyRankingList;
+      this.createProgress();
+      if (this.dataIndex >= this.provinceRanking.length - 1) {
+        this.dataIndex = 0;
+      } else {
+        this.dataIndex++;
       }
     }
   }
