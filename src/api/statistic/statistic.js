@@ -53,6 +53,14 @@ export function getBusinessDetail(branchCode) {
   });
 }
 
+// 目标达成情况
+export function getTarget(branchCode) {
+  return request({
+    url: `/schedule/bigScreenSeach/getBigScrennTarget/${branchCode}`,
+    method: 'get'
+  });
+}
+
 // 总排名 公司/司机
 export function getCompanyDriverRank(branchCode) {
   return request({

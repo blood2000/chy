@@ -6,17 +6,23 @@
 <script>
 import * as echarts from 'echarts';
 import { setfontSize } from '@/utils/fontSize';
+import { getTarget } from '@/api/statistic/statistic.js';
 
 export default {
+  props: {
+    branchCode: {
+      type: String,
+      default: null
+    }
+  },
   data() {
     return {
-      chart: null
+      chart: null,
+      targetList: []
     };
   },
   mounted() {
-    this.$nextTick(() => {
-      this.initChart();
-    });
+    this.getData();
   },
   beforeDestroy() {
     if (!this.chart) {
@@ -26,6 +32,17 @@ export default {
     this.chart = null;
   },
   methods: {
+    getData() {
+      getTarget(this.branchCode).then((response) => {
+        const data = response.data;
+        if (data) {
+          this.targetList = data.targetList || [];
+        }
+        this.$nextTick(() => {
+          this.initChart();
+        });
+      });
+    },
     initChart() {
       this.chart = echarts.init(this.$el, 'macarons');
       this.setOption();
@@ -37,6 +54,15 @@ export default {
       this.setFontOption();
     },
     setOption() {
+      // 构造数据
+      const timeData = [];
+      const desireData = [];
+      const transactionData = [];
+      this.targetList.forEach(el => {
+        timeData.push(el.desireMonth + '月');
+        desireData.push(el.desireAmount); // 目标业绩
+        transactionData.push(el.transactionAmount); // 完成业绩
+      });
       this.chart.setOption({
         legend: {
           show: true,
@@ -76,7 +102,7 @@ export default {
               color: '#3F5C84'
             }
           },
-          data: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
+          data: timeData
         },
         yAxis: {
           name: '业绩(万)',
@@ -143,7 +169,7 @@ export default {
               }])
             }
           },
-          data: [3, 3, 3, 2, 2, 3, 3, 3, 2, 2, 2, 2]
+          data: transactionData
         }, {
           name: '目标业绩',
           type: 'bar',
@@ -165,7 +191,7 @@ export default {
               }])
             }
           },
-          data: [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
+          data: desireData
         }]
       });
     },

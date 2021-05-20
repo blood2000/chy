@@ -102,7 +102,7 @@ export default {
     },
     // 处理实时数据
     setData(val) {
-      console.log('userNotice-user: ', val);
+      // console.log('userNotice-user: ', val);
       if (val.user) {
         const { shipmentNum, teamNum, driverNum } = val.user;
         if (shipmentNum) {

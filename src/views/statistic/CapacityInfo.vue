@@ -128,7 +128,7 @@ export default {
     },
     // 处理实时数据
     setData(val) {
-      console.log('userNotice-car: ', val);
+      // console.log('userNotice-car: ', val);
       if (val.car) {
         const { carNum } = val.car;
         if (carNum) {

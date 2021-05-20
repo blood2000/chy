@@ -45,7 +45,7 @@ export default {
     },
     // 处理实时数据-货单
     setOrderData(val) {
-      console.log('orderNotice-total: ', val);
+      // console.log('orderNotice-total: ', val);
       const { orderInfoNumber } = val;
       // 货单
       if (orderInfoNumber) {
@@ -54,7 +54,7 @@ export default {
     },
     // 处理实时数据-运单
     setWaybillData(val) {
-      console.log('waybillNotice-total: ', val);
+      // console.log('waybillNotice-total: ', val);
       const { newNum } = val;
       // 运单
       if (newNum) {

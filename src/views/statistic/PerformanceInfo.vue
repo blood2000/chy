@@ -89,7 +89,7 @@ export default {
   methods: {
     // 处理实时数据
     setData(val) {
-      console.log('invoiceNotice: ', val);
+      // console.log('invoiceNotice: ', val);
       const { invoiceAmount } = val;
       if (invoiceAmount) {
         this.myPerformance.votesAmount += invoiceAmount;
