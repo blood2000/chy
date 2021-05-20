@@ -18,10 +18,13 @@ export default {
   },
   data() {
     return {
-      chart: null
+      chart: null,
+      timer: null,
+      dataIndex: 0
     };
   },
   beforeDestroy() {
+    this.clearTimer();
     if (!this.chart) return;
     this.chart.dispose();
     this.chart = null;
@@ -31,6 +34,7 @@ export default {
       this.chart = echarts.init(this.$el, 'macarons');
       this.setOption();
       this.setFontOption();
+      this.rollTooltip();
     },
     refreshChart() {
       if (!this.chart) return;
@@ -45,14 +49,14 @@ export default {
       const waybillData = [];
       this.provinceRanking.forEach(el => {
         provinceData.push(el.provinceName);
-        transactionData.push(el.transactionAmount); // 交易
-        votesData.push(el.votesAmount); // 开票
+        transactionData.push((el.transactionAmount / 10000).toFixed(2)); // 交易
+        votesData.push((el.votesAmount / 10000).toFixed(2)); // 开票
         waybillData.push((el.waybillAmount / 10000).toFixed(2)); // 运费
       });
       this.chart.setOption({
         title: {
           show: true,
-          text: 'TOP 10省份交易额排名',
+          text: 'TOP 5省份交易额排名',
           textStyle: {
             color: '#FFFFFF',
             fontWeight: 'normal',
@@ -212,6 +216,10 @@ export default {
           data: waybillData
         }]
       });
+      // 绑定事件
+      // this.chart.on('mouseover', { seriesIndex: 0 }, function(params) {
+      //   console.log('mouseover:', params);
+      // });
     },
     setFontOption() {
       this.chart.setOption({
@@ -259,6 +267,31 @@ export default {
           barWidth: setfontSize(8)
         }]
       });
+    },
+    // 定时选中
+    rollTooltip() {
+      this.showToolTip();
+      this.setTimer();
+    },
+    setTimer() {
+      this.timer = setInterval(() => {
+        this.showToolTip();
+      }, 15 * 1000);
+    },
+    clearTimer() {
+      if (this.timer) clearInterval(this.timer);
+    },
+    showToolTip() {
+      this.chart.dispatchAction({
+        type: 'showTip',
+        seriesIndex: 0,
+        dataIndex: this.dataIndex
+      });
+      if (this.dataIndex >= this.provinceRanking.length - 1) {
+        this.dataIndex = 0;
+      } else {
+        this.dataIndex++;
+      }
     }
   }
 };

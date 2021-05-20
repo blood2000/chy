@@ -485,9 +485,9 @@ export default {
               extra(this.form).then(response => {
                 this.msgSuccess('运单补录成功');
                 this.reset();
+                this.orderDisable = true;
+                this.driverDisable = true;
               });
-              this.orderDisable = true;
-              this.driverDisable = true;
             }
           } else {
             this.msgWarning('运单重量或车数必须大于0！');

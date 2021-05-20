@@ -344,7 +344,7 @@
 
 <script>
 import { getUserInfo } from '@/utils/auth';
-import { listNotice } from '@/api/system/notice';
+import { listNoticeAll } from '@/api/system/notice';
 // 运单详情弹窗
 import DetailDialog from '@/views/waybill/components/detailDialog';
 // 运单详情弹窗
@@ -396,11 +396,11 @@ export default {
     this.shipment = shipment;
     this.getNoticeList();
     // 页面刚进入时开启长连接
-    // this.initWebSocket();
+    this.initWebSocket();
   },
   destroyed: function() {
     // 页面销毁时关闭长连接
-    // this.websocketclose();
+    this.websocketclose();
   },
   methods: {
     // 查看运单详情
@@ -421,25 +421,25 @@ export default {
     /** 查询通知公告列表 */
     getNoticeList() {
       // 通知
-      listNotice({ noticeType: '1' }).then(response => {
-        this.noticeList1 = response.rows;
-        console.log(this.noticeList1);
+      listNoticeAll({ noticeType: '1' }).then(response => {
+        this.noticeList1 = response.data;
+        // console.log(this.noticeList1);
       });
       // 公告
-      listNotice({ noticeType: '2' }).then(response => {
-        this.noticeList2 = response.rows.map(response => {
+      listNoticeAll({ noticeType: '2' }).then(response => {
+        this.noticeList2 = response.data.map(response => {
           return response.noticeContent;
         });
-        console.log(this.noticeList2);
+        // console.log(this.noticeList2);
       });
     },
     // weosocket调用方法
     initWebSocket() { // 初始化weosocket
-      const wsuri = process.env.WS_API + '/websocket/threadsocket';// ws地址
+      const wsuri = 'ws://10.0.0.75:8080/websocket/chy';// ws地址
       this.websock = new WebSocket(wsuri);
-      this.websocket.onopen = this.websocketonopen;
+      this.websock.onopen = this.websocketonopen;
 
-      this.websocket.onerror = this.websocketonerror;
+      this.websock.onerror = this.websocketonerror;
 
       this.websock.onmessage = this.websocketonmessage;
       this.websock.onclose = this.websocketclose;
@@ -451,17 +451,19 @@ export default {
       console.log('WebSocket连接发生错误');
     },
     websocketonmessage(e) { // 数据接收
-      const redata = JSON.parse(e.data);
+      console.log(e);
+      // const redata = JSON.parse(e.data);
       // 注意：长连接我们是后台直接1秒推送一条数据，
       // 但是点击某个列表时，会发送给后台一个标识，后台根据此标识返回相对应的数据，
       // 这个时候数据就只能从一个出口出，所以让后台加了一个键，例如键为1时，是每隔1秒推送的数据，为2时是发送标识后再推送的数据，以作区分
-      console.log(redata.value);
+      // console.log(redata.value);
     },
     websocketsend(agentData) { // 数据发送
       this.websock.send(agentData);
     },
     websocketclose(e) { // 关闭
-      console.log('connection closed (' + e.code + ')');
+      console.log(e);
+      // console.log('connection closed (' + e.code + ')');
     },
 
     goTarget(href) {
