@@ -3,7 +3,9 @@
     <div class="top-tips g-flex g-aligncenter">
       <img class="marginright10" src="~@/assets/images/workbench/icon_notice.png" alt="">
       <img class="marginright10" src="~@/assets/images/workbench/font_notice.png" alt="">
-      <span class="notic-tip g-color-gray" v-html="noticeList2[0].noticeContent || '暂无公告~'" />
+      <span class="notic-tip g-color-gray">
+        <NoticeCard :lists="noticeList2" />
+      </span>
     </div>
 
     <div class="g-flex" style="margin: 0 15px;height: calc(100% - 59px);">
@@ -345,10 +347,12 @@ import { getUserInfo } from '@/utils/auth';
 import { listNotice } from '@/api/system/notice';
 // 运单详情弹窗
 import DetailDialog from '@/views/waybill/components/detailDialog';
+// 运单详情弹窗
+import NoticeCard from './NoticeCard';
 // import { color } from 'echarts';
 export default {
   name: 'Index',
-  components: { DetailDialog },
+  components: { DetailDialog, NoticeCard },
   props: {
     width: {
       type: Number,
@@ -366,9 +370,7 @@ export default {
       // 通知列表
       noticeList1: [],
       // 公告列表
-      noticeList2: [{
-        noticeContent: ''
-      }],
+      noticeList2: [],
       // websocket参数
       websock: null,
       // 弹框 内容
@@ -418,12 +420,16 @@ export default {
     },
     /** 查询通知公告列表 */
     getNoticeList() {
+      // 通知
       listNotice({ noticeType: '1' }).then(response => {
         this.noticeList1 = response.rows;
         console.log(this.noticeList1);
       });
+      // 公告
       listNotice({ noticeType: '2' }).then(response => {
-        this.noticeList2 = response.rows;
+        this.noticeList2 = response.rows.map(response => {
+          return response.noticeContent;
+        });
         console.log(this.noticeList2);
       });
     },
