@@ -41,15 +41,17 @@ export default {
   },
 
   watch: {
-    notice(value) {
-      if (value) {
-        this.valueNotice = this.notice;
-      }
+    notice: {
+      handler(value) {
+        if (value) {
+          this.valueNotice = this.notice;
+        }
+      },
+      immediate: true
     },
 
     lists: {
       handler(value) {
-        console.log(value && value.length);
         if (value && value.length) {
           let valueNotice = '';
           if (this.lists) {
