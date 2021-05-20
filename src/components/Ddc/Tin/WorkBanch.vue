@@ -344,7 +344,7 @@
 
 <script>
 import { getUserInfo } from '@/utils/auth';
-import { listNotice } from '@/api/system/notice';
+import { listNoticeAll } from '@/api/system/notice';
 // 运单详情弹窗
 import DetailDialog from '@/views/waybill/components/detailDialog';
 // 运单详情弹窗
@@ -421,16 +421,16 @@ export default {
     /** 查询通知公告列表 */
     getNoticeList() {
       // 通知
-      listNotice({ noticeType: '1' }).then(response => {
-        this.noticeList1 = response.rows;
-        console.log(this.noticeList1);
+      listNoticeAll({ noticeType: '1' }).then(response => {
+        this.noticeList1 = response.data;
+        // console.log(this.noticeList1);
       });
       // 公告
-      listNotice({ noticeType: '2' }).then(response => {
-        this.noticeList2 = response.rows.map(response => {
+      listNoticeAll({ noticeType: '2' }).then(response => {
+        this.noticeList2 = response.data.map(response => {
           return response.noticeContent;
         });
-        console.log(this.noticeList2);
+        // console.log(this.noticeList2);
       });
     },
     // weosocket调用方法
