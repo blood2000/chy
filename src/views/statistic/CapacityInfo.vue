@@ -1,7 +1,7 @@
 <template>
   <!-- 运力情况 -->
   <div class="s-container ly-flex-pack-justify">
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 16%">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 18%">
       <InfoBox
         label="总车辆"
         :count="dataList.vehicleCount"

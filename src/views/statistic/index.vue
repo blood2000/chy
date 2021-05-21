@@ -46,7 +46,7 @@
         @getPartitionListVo="getPartitionListVo"
       />
       <Map ref="mapRef" :partition-list-vo="partitionListVo" class="ly-border" />
-      <ScrollData class="ly-border" />
+      <ScrollData ref="ScrollDataRef" class="ly-border" />
     </div>
 
     <!-- right -->
@@ -242,7 +242,7 @@ export default {
     // 处理实时数据
     setData(dJson) {
       console.log('实时Json：', dJson);
-      const { reportVo, userNotice, invoiceNotice, orderNoticeVo, waybillNotice, waybillSettlementNotice } = dJson;
+      const { reportVo, userNotice, invoiceNotice, orderNoticeVo, waybillNotice, waybillSettlementNotice, insertTime } = dJson;
       // 上报√
       if (reportVo) {
         this.$refs.RegulatoryDataRef.setData(reportVo);
@@ -255,6 +255,7 @@ export default {
       // 开票√
       if (invoiceNotice) {
         this.$refs.PerformanceInfoRef.setData(invoiceNotice);
+        this.$refs.ScrollDataRef.setInvoiceData(invoiceNotice, insertTime);
       }
       // 货单√
       if (orderNoticeVo && orderNoticeVo.transportVo && orderNoticeVo.transportVo.orderBean) {

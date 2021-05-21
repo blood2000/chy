@@ -1,11 +1,12 @@
 export const dataJson = {
   'branchCode': '',
-  'insertTime': '',
+  'insertTime': '', // 时间戳格式
   'mode': '',
   'uuid': '',
   'invoiceNotice': {
     'companyName': '', // 公司名称
-    'invoiceAmount': 0 // 开票金额
+    'invoiceAmount': 0, // 开票金额
+    'remark': '' // 滚动信息
   },
   'orderNoticeVo': {
     'branchCode': '',

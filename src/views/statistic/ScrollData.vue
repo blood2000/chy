@@ -9,7 +9,8 @@
           <span class="flash flash_right" />
         </h5>
       </div>
-      <ScrollCard :data-list="orderList" />
+      <!-- <ScrollCard :data-list="orderList" /> -->
+      <StaticCard ref="orderRef" />
     </div>
 
     <!-- 交易数据 -->
@@ -21,7 +22,8 @@
           <span class="flash flash_right" />
         </h5>
       </div>
-      <ScrollCard :data-list="dealList" />
+      <!-- <ScrollCard :data-list="dealList" /> -->
+      <StaticCard ref="transferRef" />
     </div>
 
     <!-- 用户/车辆 -->
@@ -33,23 +35,35 @@
           <span class="flash flash_right" />
         </h5>
       </div>
-      <ScrollCard :data-list="userList" />
+      <!-- <ScrollCard :data-list="userList" /> -->
+      <StaticCard ref="userRef" />
     </div>
   </div>
 </template>
 
 <script>
-import ScrollCard from './components/scrollCard';
+// import ScrollCard from './components/scrollCard';
+import StaticCard from './components/staticCard';
 export default {
   components: {
-    ScrollCard
+    // ScrollCard
+    StaticCard
   },
   data() {
     return {
-      orderList: [{}, {}, {}, {}],
-      dealList: [{}, {}, {}, {}],
-      userList: [{}, {}, {}, {}]
+      // orderList: [{}],
+      // dealList: [{}],
+      // userList: [{}]
     };
+  },
+  methods: {
+    // 处理实时数据-开票
+    setInvoiceData(val, time) {
+      const { remark } = val;
+      if (remark) {
+        this.$refs.transferRef.setData(remark, time);
+      }
+    }
   }
 };
 </script>
