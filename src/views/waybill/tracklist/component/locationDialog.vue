@@ -79,7 +79,7 @@ export default {
         icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/cart.png',
         position: [119.358267, 26.04577],
         label: {
-          content: '辽NC2589',
+          content: '',
           offset: [-10, -34]
         },
         events: {
@@ -173,6 +173,7 @@ export default {
         this.windowContent.status = '空车';
       }
       this.windowContent.licenseNumber = data.licenseNumber;
+      this.markers[0].label.content = data.licenseNumber;
       this.windowContent.driverName = data.driverName;
       console.log(this.wayBillInfo);
     }
