@@ -175,7 +175,7 @@
             </div>
           </div>
         </div>
-        <div class="index-frame margintop15" style="height: calc(51% - 140px); min-height: 238px;">
+        <div class="index-frame margintop15" style="height: calc(51% - 135px); min-height: 238px;">
           <!-- 平台概览 -->
           <div class="g-flex g-aligncenter" style="width:100%;height:100%">
             <div class="g-flex g-aligncenter g-flexdirection" style="width:25%">

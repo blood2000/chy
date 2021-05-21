@@ -32,8 +32,9 @@
 </template>
 
 <script>
-import { jimiTrackLocation, getVehicleInfo, getInfoDetail, getWaybillTrace } from '@/api/waybill/tracklist';
+import { jimiTrackLocation, getLieyingInfo, getVehicleInfo, getInfoDetail, getWaybillTrace } from '@/api/waybill/tracklist';
 // import UploadImage from '@/components/UploadImage/index';
+import axios from 'axios';
 
 export default {
   name: 'TrackDialog',
@@ -72,10 +73,10 @@ export default {
       },
       // 猎鹰查询参数
       lieyingQueryParams: {
-        key: '2066cb0dafaa492aee47fa1090227a38',
-        sid: '', // sid为终端所属service唯一编号
-        tid: '', // tid为终端唯一编号
-        trid: '', // trid为轨迹唯一编号
+        key: 'fd9430939b98767748c4b5e00df949c0',
+        sid: 275116, // sid为终端所属service唯一编号
+        tid: 338258525, // tid为终端唯一编号
+        trid: '360', // trid为轨迹唯一编号
         starttime: '', // 必须为Unix时间戳精确到毫秒
         endtime: '' // 必须为Unix时间戳精确到毫秒
       },
@@ -117,25 +118,44 @@ export default {
     /** 获取轨迹 */
     getTrackLocation() {
       if (this.trackChange === 0) {
-        console.log(this.loadAddress, this.unloadAddress);
-        // 获取高德地图路线规划
-        this.getRoutePlan();
+        // 获取APP轨迹
+        axios.get('https://tsapi.amap.com/v1/track/terminal/trsearch', { params: this.lieyingQueryParams }).then(response => {
+          console.log(response);
+          if (response.data.data) {
+            this.tracklist = response.data.data.tracks[0].points.map(function(response) {
+              // console.log(response.location.split(','));
+              return response.location.split(',');
+            });
+            console.log(this.tracklist);
+            if (this.tracklist.length !== 0) {
+              // 绘制轨迹
+              this.drawPolyline(this.tracklist);
+            } else {
+              // 获取高德地图路线规划
+              this.getRoutePlan();
+            }
+          } else {
+            // 获取高德地图路线规划
+            this.getRoutePlan();
+          }
+        });
       } else {
+        // 获取硬件轨迹
         jimiTrackLocation(this.jimiQueryParams).then(response => {
           console.log(response.data.result);
           if (response.data.result) {
             this.tracklist = response.data.result.map(function(response) {
               return [response.lng, response.lat];
             });
+            if (this.tracklist.length !== 0) {
+              // 绘制轨迹
+              this.drawPolyline(this.tracklist);
+            } else {
+              // 获取高德地图路线规划
+              this.getRoutePlan();
+            }
           }
         });
-        if (this.tracklist.length !== 0) {
-          // 绘制轨迹
-          this.drawPolyline(this.tracklist);
-        } else {
-          // 获取高德地图路线规划
-          this.getRoutePlan();
-        }
       }
     },
     // 获取高德地图路线规划
@@ -157,7 +177,6 @@ export default {
             return pathArr;
           });
           const path = [].concat.apply([], pathArr);
-          console.log(path);
           // 绘制轨迹
           that.drawPolyline(path);
         } else {
@@ -196,6 +215,7 @@ export default {
     },
     // 绘制轨迹
     drawPolyline(path) {
+      console.log(path);
       const that = this;
       const polyline = new window.AMap.Polyline({
         map: that.$refs.map.$$getInstance(),
@@ -243,22 +263,28 @@ export default {
         } else {
           this.unloadAddress = [119.344435, 25.721053];
         }
-        // 获取查询轨迹时间
-        this.time = this.parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}');
-        this.jimiQueryParams.begin_time = this.wayBillInfo.loadTime;
-        this.lieyingQueryParams.starttime = new Date(this.wayBillInfo.loadTime).getTime();
-        if (this.wayBillInfo.unloadTime) {
-          this.jimiQueryParams.end_time = this.wayBillInfo.unloadTime;
-          this.lieyingQueryParams.endtime = new Date(this.wayBillInfo.unloadTime).getTime();
-        } else {
-          this.jimiQueryParams.end_time = this.time;
-          this.lieyingQueryParams.endtime = new Date().getTime();
-        }
-        console.log(this.lieyingQueryParams);
-        // 标记装卸货地址
-        this.getMark();
-        // 获取路线
-        this.getTrackLocation();
+        // 获取猎鹰信息
+        getLieyingInfo(this.wayBillInfo.driverCode).then(response => {
+          console.log(response);
+          this.lieyingQueryParams.sid = response.data.serviceId;
+          this.lieyingQueryParams.tid = response.data.terminalId;
+          // 获取查询轨迹时间
+          this.time = this.parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}');
+          this.jimiQueryParams.begin_time = this.wayBillInfo.loadTime;
+          this.lieyingQueryParams.starttime = new Date(this.wayBillInfo.loadTime).getTime();
+          if (this.wayBillInfo.unloadTime) {
+            this.jimiQueryParams.end_time = this.wayBillInfo.unloadTime;
+            this.lieyingQueryParams.endtime = new Date(this.wayBillInfo.unloadTime).getTime();
+          } else {
+            this.jimiQueryParams.end_time = this.time;
+            this.lieyingQueryParams.endtime = new Date().getTime();
+          }
+          console.log(this.lieyingQueryParams);
+          // 标记装卸货地址
+          this.getMark();
+          // 获取路线
+          this.getTrackLocation();
+        });
       });
       // 轨迹时间线
       getWaybillTrace(data.code).then(response => {
