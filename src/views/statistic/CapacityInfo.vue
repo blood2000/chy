@@ -9,6 +9,7 @@
       <InfoBox
         label="今日新增车辆"
         :count="dataList.newVehicleCount"
+        :last-count="dataList.lastNewVehicleCount"
         :has-yoy="true"
         :yoy.sync="dataList.newVehicleYoy"
         :yoy-type.sync="dataList.newVehicleYoyType"
