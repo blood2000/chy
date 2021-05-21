@@ -132,7 +132,7 @@ export default {
         formData.append('side', this.side);
       }
       uploadOcr(formData).then(response => {
-        if (response.data && !response.data.msg) {
+        if (response.data) {
           this.$emit('fillForm', this.imageType, response.data);
         }
       });
