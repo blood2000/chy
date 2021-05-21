@@ -1,7 +1,7 @@
 <template>
   <!-- 业绩数据 -->
   <div class="s-container ly-flex-pack-justify">
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 35%">
       <InfoBox
         label="交易总额"
         unit="万"
@@ -20,7 +20,7 @@
         :yoy-places="1"
       />
     </div>
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 35%">
       <InfoBox
         label="开票总额"
         unit="万"
@@ -39,7 +39,7 @@
         :yoy-places="1"
       />
     </div>
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 30%">
       <InfoBox
         label="运费总额"
         unit="万"

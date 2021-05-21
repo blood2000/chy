@@ -31,6 +31,21 @@
         :yoy-places="1"
       />
     </div>
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 16%">
+      <InfoBox
+        label="总网点"
+        :count="dataList.branchCount"
+      />
+      <InfoBox
+        label="今日新增网点"
+        :count="dataList.newBranchCount"
+        :last-count="dataList.lastNewBranchCount"
+        :has-yoy="true"
+        :yoy.sync="dataList.newBranchYoy"
+        :yoy-type.sync="dataList.newBranchYoyType"
+        :yoy-places="1"
+      />
+    </div>
     <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 20%">
       <InfoBox
         label="运输总量"
@@ -48,7 +63,7 @@
         :yoy-places="1"
       />
     </div>
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 20%">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 17%">
       <InfoBox
         label="行驶里程"
         unit="公里"
@@ -65,7 +80,7 @@
         :yoy-places="1"
       />
     </div>
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 16%">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 15%">
       <InfoBox
         label="行驶时长"
         unit="月"
@@ -80,21 +95,6 @@
         :has-yoy="true"
         :yoy.sync="dataList.newHaulageTimeYoy"
         :yoy-type.sync="dataList.newHaulageTimeYoyType"
-        :yoy-places="1"
-      />
-    </div>
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 12%">
-      <InfoBox
-        label="总网点"
-        :count="dataList.branchCount"
-      />
-      <InfoBox
-        label="今日新增网点"
-        :count="dataList.newBranchCount"
-        :last-count="dataList.lastNewBranchCount"
-        :has-yoy="true"
-        :yoy.sync="dataList.newBranchYoy"
-        :yoy-type.sync="dataList.newBranchYoyType"
         :yoy-places="1"
       />
     </div>
