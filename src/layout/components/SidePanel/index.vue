@@ -23,7 +23,7 @@
           <!-- 展开的菜单 -->
           <div
             v-if="item.children && item.children.length > 0"
-            :style="[{top: panelTop},{bottom: panelBottom}]"
+            :style="[{top: panelTop},{bottom: panelBottom},{width: panelWidth}]"
             :class="{show: isOpen === item.path + index}"
             class="s-side-menu-item__panel"
           >
@@ -55,7 +55,8 @@ export default {
       sidebarMenu: [],
       isOpen: '',
       panelTop: '',
-      panelBottom: ''
+      panelBottom: '',
+      panelWidth: '160px'
     };
   },
   computed: {
@@ -120,6 +121,7 @@ export default {
     },
     // 计算展开菜单的位置
     setPanelPosition(refDom, item) {
+      this.panelWidth = '160px';
       if (item.children && item.children.length > 0) {
         const child = item.children.filter(el => {
           if (!el.hidden) return true;
@@ -143,7 +145,8 @@ export default {
           // console.log('高度撑满');
           this.panelTop = headerHeight + 'px';
           this.panelBottom = 0 + 'px';
-          this.setPanelFull();
+          // 菜单超出, 设置panel宽度
+          this.panelWidth = (160 * Math.ceil((44 * child.length) / ($clintHeight - 70 - 40))) + 'px';
         } else if (panelTop < headerHeight) {
           // console.log('顶部超出');
           this.panelTop = headerHeight + 'px';
@@ -158,10 +161,6 @@ export default {
           this.panelBottom = '';
         }
       }
-    },
-    // 菜单超出
-    setPanelFull() {
-
     }
   }
 };
@@ -227,7 +226,6 @@ export default {
       .s-side-menu-item__panel{
         position: fixed;
         left: 72px;
-        min-width: 160px;
         padding: 20px 0;
         background: #F2F7FC;
         box-shadow: 8px 0px 8px rgba(145, 147, 148, 0.15);
@@ -247,8 +245,17 @@ export default {
             opacity: 1;
           }
         }
+        >ul{
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          flex-wrap: wrap;
+          animation: show-panel 0.3s;
+          justify-content: flex-start;
+        }
 
         .panel-item{
+          width: 160px;
           height: 44px;
           line-height: 44px;
           color: #717171;
