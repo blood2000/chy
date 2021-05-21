@@ -148,7 +148,7 @@ export default {
       height: 0.6rem;
       background: url('~@/assets/images/statistic/arow_up.png') no-repeat;
       background-size: 100% 100%;
-      margin-left: 0.3rem;
+      margin-left: 0.6rem;
     }
     .arow_down{
       display: inline-block;
@@ -156,16 +156,16 @@ export default {
       height: 0.6rem;
       background: url('~@/assets/images/statistic/arow_down.png') no-repeat;
       background-size: 100% 100%;
-      margin-left: 0.3rem;
+      margin-left: 0.6rem;
     }
     .arow_line{
       display: inline-block;
       width: 0.9rem;
       height: 0.02rem;
       background: #00d2ff;
-      margin-left: 0.4rem;
+      margin-left: 0.6rem;
       vertical-align: top;
-      margin-top: 0.65rem;
+      margin-top: 0.7rem;
     }
     .value_up{
       display: inline-block;
@@ -217,6 +217,9 @@ export default {
       .arow_down{
         width: 0.7rem;
         height: 0.45rem;
+      }
+      .arow_line{
+        margin-top: 0.5rem;
       }
       .value_up{
         transform: scale(0.85, 0.85);
