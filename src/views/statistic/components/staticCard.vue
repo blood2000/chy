@@ -36,7 +36,7 @@ export default {
       });
       // 开启缓存查询
       this.readStorage();
-      // 接收数据，最快0.8s刷一条数据
+      // 接收数据，最快0.6s刷一条数据
       this.rollCard();
     },
     rollCard() {
@@ -53,7 +53,7 @@ export default {
         // console.log(this.storageList);
         // 保证一个完整的动画
         this.rollTimer = null;
-      }, 0.5 * 1000);
+      }, 0.4 * 1000);
     },
     startAnimation() {
       this.isOpacity = true;
