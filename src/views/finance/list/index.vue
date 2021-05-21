@@ -253,6 +253,19 @@ export default {
       return this.$route.name + this.activeName;
     }
   },
+
+  watch: {
+    '$route.query.list': {
+      handler(value) {
+        if (value) {
+          this.activeName = value;
+          this.handleClick(value);
+        }
+      },
+      immediate: true
+    }
+  },
+
   created() {
     this.tableHeaderConfig(this.tableColumnsConfig, billListApi, {
       prop: 'edit',
@@ -261,7 +274,7 @@ export default {
       width: 180,
       fixed: 'right'
     });
-    this.getList();
+    !this.$route.query.list && this.getList();
   },
   'methods': {
     datechoose(date) {

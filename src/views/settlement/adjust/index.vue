@@ -467,6 +467,19 @@ export default {
       return this.$route.name + this.activeName;
     }
   },
+
+  watch: {
+    '$route.query.adjust': {
+      handler(value) {
+        if (value) {
+          this.activeName = value;
+          this.handleClick(value);
+        }
+      },
+      immediate: true
+    }
+  },
+
   created() {
     const { isAdmin = false, user = {}, shipment = {}} = getUserInfo() || {};
     this.isAdmin = isAdmin;
@@ -480,7 +493,7 @@ export default {
       width: 240,
       fixed: 'right'
     });
-    this.getList();
+    !this.$route.query.adjust && this.getList();
     this.listByDict(this.commodityCategory).then(response => {
       this.commodityCategoryCodeOptions = response.data;
     });
@@ -499,6 +512,7 @@ export default {
     handleClick(tab) {
       this.queryParams.status = tab;
       this.queryParams.pageNum = 1;
+      console.log(456);
       this.getList();
     },
     // 多选框选中数据

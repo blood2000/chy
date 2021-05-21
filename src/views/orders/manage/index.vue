@@ -610,6 +610,13 @@ export default {
         });
       },
       immediate: true
+    },
+    '$route.query.manage': {
+      handler(value) {
+        this.activeName = this.$route.query.manage;
+        this.handleClick();
+      },
+      immediate: true
     }
   },
 

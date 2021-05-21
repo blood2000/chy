@@ -1,6 +1,8 @@
 <template>
   <div style="height: 100%">
-    <WorkBanch :width="screenWidth" />
+    <WorkBanch v-if="false" :width="screenWidth" />
+
+    <WorkbanchShipper />
   </div>
 </template>
 
@@ -8,10 +10,12 @@
 import { ThrottleFun } from '@/utils/index.js';
 // import { color } from 'echarts';
 import WorkBanch from '../components/Ddc/Tin/WorkBanch';// 客服工作台
+
+import WorkbanchShipper from '../components/Ddc/Tin/WorkBanchShipper'; // 货主工作台
 export default {
   name: 'Index',
   components: {
-    WorkBanch
+    WorkBanch, WorkbanchShipper
   },
   data() {
     return {

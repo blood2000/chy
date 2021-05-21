@@ -145,6 +145,7 @@ export default {
       default: null
     }
   },
+
   data() {
     return {
       tableColumnsConfig: [],
@@ -201,6 +202,17 @@ export default {
         'dictType': 'goodsType'
       }
     };
+  },
+
+  watch: {
+    '$route.query.project': {
+      handler(value) {
+        if (value) {
+          console.log(value);
+        }
+      },
+      immediate: true
+    }
   },
   created() {
     this.tableHeaderConfig(this.tableColumnsConfig, listInfoApi, {
