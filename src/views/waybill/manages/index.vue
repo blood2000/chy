@@ -359,7 +359,7 @@ export default {
       ],
       // 给超载的子单排序用字典
       'childSortOptions': [
-        { 'dictLabel': '车辆核载装货重量的子单', 'dictValue': 1 },
+        { 'dictLabel': '车辆核载装货数量的子单', 'dictValue': 1 },
         { 'dictLabel': '其余重量子单', 'dictValue': 2 }
       ],
       // 运单状态字典

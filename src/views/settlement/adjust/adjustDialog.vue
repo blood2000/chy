@@ -32,16 +32,16 @@
       <el-table-column width="120" label="车牌号" align="center" prop="licenseNumber" />
 
       <!-- stowageStatus "配载方式 0->吨，1->方 2->车数配载" -->
-      <el-table-column width="160" label="装货重量" align="left" prop="loadWeight">
+      <el-table-column width="160" label="装货数量" align="left" prop="loadWeight">
         <template slot-scope="scope">
-          <el-input-number v-if="scope.row.stowageStatus !== '2'" v-model="scope.row.loadWeight" :controls="false" placeholder="请输入装货重量" style="width:100%;" size="mini" @blur="handlerBlur(scope.row, scope.row.loadWeight, 'loadWeight' )" />
+          <el-input-number v-if="scope.row.stowageStatus !== '2'" v-model="scope.row.loadWeight" :controls="false" placeholder="请输入装货数量" style="width:100%;" size="mini" @blur="handlerBlur(scope.row, scope.row.loadWeight, 'loadWeight' )" />
 
           <span v-else>{{ scope.row.loadWeight }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160" label="卸货重量" align="left" prop="unloadWeight">
+      <el-table-column width="160" label="卸货数量" align="left" prop="unloadWeight">
         <template slot-scope="scope">
-          <el-input-number v-if="scope.row.stowageStatus !== '2'" v-model="scope.row.unloadWeight" :controls="false" placeholder="请输入卸货重量" style="width:100%;" size="mini" @blur="handlerBlur(scope.row, scope.row.unloadWeight, 'unloadWeight' )" />
+          <el-input-number v-if="scope.row.stowageStatus !== '2'" v-model="scope.row.unloadWeight" :controls="false" placeholder="请输入卸货数量" style="width:100%;" size="mini" @blur="handlerBlur(scope.row, scope.row.unloadWeight, 'unloadWeight' )" />
           <span v-else>{{ scope.row.unloadWeight }}</span>
         </template>
       </el-table-column>
@@ -256,7 +256,7 @@ export default {
       if (filterRow[key] === value) return;
 
       if (!value && value !== 0) {
-        this.msgError(key === 'loadWeight' ? '装货重量不能为空' : '卸货重量不能为空');
+        this.msgError(key === 'loadWeight' ? '装货数量不能为空' : '卸货数量不能为空');
         row[key] = filterRow[key];
         return;
       }

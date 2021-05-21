@@ -63,12 +63,21 @@ export default {
         icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/unload.png',
         position: [119.358267, 26.04577]
       }],
-      // 查询参数 map_type:GOOGOLE或BAIDU
-      queryParams: {
+      // jimi查询参数 map_type:GOOGOLE或BAIDU
+      jimiQueryParams: {
         begin_time: '2021-03-22 08:00:00',
         end_time: '2021-03-22 09:00:00',
         imeis: '867567047562525',
         map_type: 'GOOGLE'
+      },
+      // 猎鹰查询参数
+      lieyingQueryParams: {
+        key: '2066cb0dafaa492aee47fa1090227a38',
+        sid: '', // sid为终端所属service唯一编号
+        tid: '', // tid为终端唯一编号
+        trid: '', // trid为轨迹唯一编号
+        starttime: '', // 必须为Unix时间戳精确到毫秒
+        endtime: '' // 必须为Unix时间戳精确到毫秒
       },
       // 定位轨迹列表
       tracklist: [],
@@ -112,7 +121,7 @@ export default {
         // 获取高德地图路线规划
         this.getRoutePlan();
       } else {
-        jimiTrackLocation(this.queryParams).then(response => {
+        jimiTrackLocation(this.jimiQueryParams).then(response => {
           console.log(response.data.result);
           if (response.data.result) {
             this.tracklist = response.data.result.map(function(response) {
@@ -236,12 +245,16 @@ export default {
         }
         // 获取查询轨迹时间
         this.time = this.parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}');
-        this.queryParams.begin_time = this.wayBillInfo.loadTime;
+        this.jimiQueryParams.begin_time = this.wayBillInfo.loadTime;
+        this.lieyingQueryParams.starttime = new Date(this.wayBillInfo.loadTime).getTime();
         if (this.wayBillInfo.unloadTime) {
-          this.queryParams.end_time = this.wayBillInfo.unloadTime;
+          this.jimiQueryParams.end_time = this.wayBillInfo.unloadTime;
+          this.lieyingQueryParams.endtime = new Date(this.wayBillInfo.unloadTime).getTime();
         } else {
-          this.queryParams.end_time = this.time;
+          this.jimiQueryParams.end_time = this.time;
+          this.lieyingQueryParams.endtime = new Date().getTime();
         }
+        console.log(this.lieyingQueryParams);
         // 标记装卸货地址
         this.getMark();
         // 获取路线
