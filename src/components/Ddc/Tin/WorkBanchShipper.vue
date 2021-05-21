@@ -11,7 +11,7 @@
     <div class="g-flex" style="margin: 0 15px;height: calc(100% - 59px);">
 
       <!-- 左边 -->
-      <div class="marginright15 shipper" style="width:calc(100% - 400px);height: 100%">
+      <div class="marginright15 shipper" style="width:calc(100% - 400px);height: 100%;min-height: 740px;">
         <div class="shipper_left">
           <!-- 用户信息 -->
           <div class="g-flex">
