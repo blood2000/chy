@@ -10,6 +10,7 @@
       <InfoBox
         label="今日新增用户"
         :count="dataList.newUserCount"
+        :last-count="dataList.lastNewUserCount"
         :has-yoy="true"
         :yoy.sync="dataList.newUserYoy"
         :yoy-type.sync="dataList.newUserYoyType"
@@ -27,6 +28,7 @@
       <InfoBox
         label="今日新增货主"
         :count="dataList.newShipmentCount"
+        :last-count="dataList.lastNewShipmentCount"
         :has-yoy="true"
         :yoy.sync="dataList.newShipmentYoy"
         :yoy-type.sync="dataList.newShipmentYoyType"
@@ -44,6 +46,7 @@
       <InfoBox
         label="今日新增调度者"
         :count="dataList.newTeamCount"
+        :last-count="dataList.lastNewTeamCount"
         :has-yoy="true"
         :yoy.sync="dataList.newTeamYoy"
         :yoy-type.sync="dataList.newTeamYoyType"
@@ -61,6 +64,7 @@
       <InfoBox
         label="今日新增司机"
         :count="dataList.newDriverCount"
+        :last-count="dataList.lastNewDriverCount"
         :has-yoy="true"
         :yoy.sync="dataList.newDriverYoy"
         :yoy-type.sync="dataList.newDriverYoyType"
