@@ -767,7 +767,7 @@ export default {
       this.reset();
       this.getVersionTreeselect();
       const roleId = row.roleId || this.ids;
-      const roleMenu = this.getRoleMenuTreeselect(roleId, null);
+      const roleMenu = this.getRoleMenuTreeselect(roleId, { userCode: this.userCode });
       this.getProduceList();
       getRole(roleId).then(response => {
         this.form = response.data;
@@ -898,6 +898,7 @@ export default {
       } else if (data.type === 'version') {
         params.versionCode = data.code;
       }
+      params.userCode = this.userCode;
       if (this.form.roleId !== undefined) {
         const roleMenu = this.getRoleMenuTreeselect(this.form.roleId, params);
         roleMenu.then(res => {
