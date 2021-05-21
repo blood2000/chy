@@ -106,7 +106,7 @@
 </template>
 
 <script>
-import { load, getAddress, getInfoDetail, loadCredentials, getGoods } from '@/api/waybill/tracklist';
+import { load, getAddress, getLoadInfoDetail, loadCredentials, getGoods } from '@/api/waybill/tracklist';
 import UploadImage from '@/components/UploadImage/moreImg';
 
 export default {
@@ -221,7 +221,7 @@ export default {
     // 获取装货详情
     getDetail() {
       this.reset();
-      getInfoDetail(this.waybill.waybillNo, 1).then(response => {
+      getLoadInfoDetail(this.waybill.waybillNo, 1).then(response => {
         if (response.data.length) {
           console.log(response);
           const info = response.data[0];
