@@ -38,7 +38,9 @@ export const dataJson = {
         'orderCode': '',
         'goods': '', // 多商品
         'isNewLine': true, // 是否新增路线
+        'newLineNum': 0, // 新增路线num  1 -1
         'isNewPoint': true, // 是否新增网点
+        'newPointNum': 0, // 新增网点num  1 -1
         'operateType': 0, // 1发布(上架) 2下架
         'orderInfoNumber': 0, // 货单总数 1 -1
         'publishedNumber': 0, // 已发布 1 -1
@@ -49,6 +51,17 @@ export const dataJson = {
         }
       }
     }
+  },
+  'reportVo': {
+    'appTrackReportNum': 0, // 已上报APP轨迹信息
+    'carReportNum': 0, // 已上报车辆信息
+    'driverReportNum': 0, // 已上报司机信息
+    'fundReportNum': 0, // 已上报资金信息
+    'hardwareTrackReportNum': 0, // 已上硬件轨迹信息
+    'loadReportNum': 0, // 已上报装货信息
+    'trackReportNum': 0, //	已上报轨迹信息
+    'unLoadReportNum': 0, // 已上报卸货信息
+    'waybillReportNum': 0 // 已上报运单信息
   },
   'userNotice': {
     'branchCode': '',

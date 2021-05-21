@@ -12,7 +12,7 @@
       <div class="ly-left-top mb1rem ly-flex-pack-justify ly-border">
         <div class="ly-left-top-left ly-border">
           <Title class="title_1" icon="1">监管数据<span>Regulatory data</span></Title>
-          <RegulatoryData :branch-code="branchCode" />
+          <RegulatoryData ref="RegulatoryDataRef" :branch-code="branchCode" />
         </div>
         <div class="ly-left-top-right ly-border">
           <Title class="title_2" icon="2">用户情况<span>User situation</span></Title>
@@ -242,11 +242,15 @@ export default {
     // 处理实时数据
     setData(dJson) {
       console.log('实时Json：', dJson);
-      const { userNotice, invoiceNotice, orderNoticeVo, waybillNotice, waybillSettlementNotice } = dJson;
+      const { reportVo, userNotice, invoiceNotice, orderNoticeVo, waybillNotice, waybillSettlementNotice } = dJson;
+      // 上报√
+      if (reportVo) {
+        this.$refs.RegulatoryDataRef.setData(reportVo);
+      }
       // 用户√
       if (userNotice) {
         this.$refs.UserInfoRef.setData(userNotice);
-        this.$refs.CapacityInfoRef.setData(userNotice);
+        this.$refs.CapacityInfoRef.setVehicleData(userNotice);
       }
       // 开票√
       if (invoiceNotice) {
@@ -256,6 +260,7 @@ export default {
       if (orderNoticeVo && orderNoticeVo.transportVo && orderNoticeVo.transportVo.orderBean) {
         this.$refs.TotalDataRef.setOrderData(orderNoticeVo.transportVo.orderBean);
         this.$refs.OperationDataRef.setOrderData(orderNoticeVo.transportVo.orderBean);
+        this.$refs.CapacityInfoRef.setOrderData(orderNoticeVo.transportVo.orderBean);
       }
       // 运单√
       if (waybillNotice) {

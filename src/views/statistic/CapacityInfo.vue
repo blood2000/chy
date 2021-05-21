@@ -24,6 +24,7 @@
       <InfoBox
         label="今日新增路线"
         :count="dataList.newLineCount"
+        :last-count="dataList.lastNewLineCount"
         :has-yoy="true"
         :yoy.sync="dataList.newLineYoy"
         :yoy-type.sync="dataList.newLineYoyType"
@@ -90,6 +91,7 @@
       <InfoBox
         label="今日新增网点"
         :count="dataList.newBranchCount"
+        :last-count="dataList.lastNewBranchCount"
         :has-yoy="true"
         :yoy.sync="dataList.newBranchYoy"
         :yoy-type.sync="dataList.newBranchYoyType"
@@ -128,7 +130,7 @@ export default {
       });
     },
     // 处理实时数据
-    setData(val) {
+    setVehicleData(val) {
       // console.log('userNotice-car: ', val);
       if (val.car) {
         const { carNum } = val.car;
@@ -136,6 +138,19 @@ export default {
           this.dataList.vehicleCount += carNum;
           this.dataList.newVehicleCount += carNum;
         }
+      }
+    },
+    // 处理实时数据
+    setOrderData(val) {
+      // console.log('orderNotice-capacity: ', val);
+      const { newLineNum, newPointNum } = val;
+      if (newLineNum) {
+        this.dataList.newLineCount += newLineNum;
+        this.dataList.lienCount += newLineNum;
+      }
+      if (newPointNum) {
+        this.dataList.newBranchCount += newPointNum;
+        this.dataList.branchCount += newPointNum;
       }
     }
   }
