@@ -146,7 +146,9 @@ export default {
           this.panelTop = headerHeight + 'px';
           this.panelBottom = 0 + 'px';
           // 菜单超出, 设置panel宽度
-          this.panelWidth = (160 * Math.ceil((44 * child.length) / ($clintHeight - headerHeight - 40))) + 'px';
+          const oneColumnItemNum = parseInt(($clintHeight - headerHeight - 40) / 44);
+          const columnNum = Math.ceil(child.length / oneColumnItemNum);
+          this.panelWidth = columnNum * 160 + 'px';
         } else if (panelTop < headerHeight) {
           // console.log('顶部超出');
           this.panelTop = headerHeight + 'px';
