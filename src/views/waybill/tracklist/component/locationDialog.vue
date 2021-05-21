@@ -1,9 +1,9 @@
 <template>
   <!-- 车辆定位对话框 -->
-  <el-dialog :title="title" :visible="visible" width="1400px" append-to-body @close="cancel">
+  <el-dialog :title="title" :visible="visible" width="1400px" append-to-body destroy-on-close @close="cancel">
     <div class="map-content">
-      <el-amap vid="amapDemo" :zoom="zoom" :center="center">
-        <el-amap-marker v-for="(marker, index) in markers" :key="index" :events="marker.events" :position="marker.position" :icon="marker.icon" :label="marker.label" />
+      <el-amap ref="map" vid="amapDemo" :zoom="zoom" :center="center">
+        <!-- <el-amap-marker v-for="(marker, index) in markers" :key="index" :events="marker.events" :position="marker.position" :icon="marker.icon" :label="marker.label" /> -->
         <el-amap-info-window :position="window.position" :visible="window.visible" :offset="window.offset" :auto-move="true">
           <div style="width: 300px;">
             <el-row type="flex" class="row-bg">
@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { location } from '@/api/waybill/tracklist';
+import { jimiLocation } from '@/api/waybill/tracklist';
 // import UploadImage from '@/components/UploadImage/index';
 
 export default {
@@ -73,13 +73,13 @@ export default {
       zoom: 16,
       // 中心点坐标
       center: [119.358267, 26.04577],
-      // 标记点列表
+      // 标记点列表-暂无使用
       markers: [{
         // icon: 'https://ddcwl.com/static/img/admin/sys/cc.png',
         icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/cart.png',
         position: [119.358267, 26.04577],
         label: {
-          content: '辽NC2589',
+          content: '',
           offset: [-10, -34]
         },
         events: {
@@ -143,7 +143,7 @@ export default {
   methods: {
     /** 获取定位 */
     getLocation() {
-      location(this.queryParams).then(response => {
+      jimiLocation(this.queryParams).then(response => {
         // console.log(response);
         this.windowContent.gpsTime = response.data.result[0].gpsTime;
         this.windowContent.imeis = response.data.result[0].imei;
@@ -152,8 +152,32 @@ export default {
         });
         console.log(this.location);
         this.center = this.location[0];
-        this.markers[0].position = this.location[0];
+        // this.markers[0].position = this.location[0];
         this.window.position = this.location[0];
+        this.getMark();
+      });
+    },
+    // 标记点
+    getMark() {
+      const that = this;
+      // 装货地marker
+      const startPosition = that.location[0];
+      const startMark = new AMap.Marker({
+        position: startPosition,
+        icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/cart.png',
+        autoFitView: true,
+        autoRotation: true,
+        clickable: true,
+        label: {
+          content: that.wayBillInfo.licenseNumber,
+          offset: new AMap.Pixel(-10, -34)
+        }
+      });
+      startMark.setMap(that.$refs.map.$$getInstance()); // 点标记
+      that.$refs.map.$$getInstance().setFitView([startMark]); // 执行定位
+      // 点标注的点击事件
+      startMark.on('click', function(e) {
+        that.window.visible = !that.window.visible;
       });
     },
     /** 取消按钮 */

@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { unload, getInfoDetail, unloadCredentials } from '@/api/waybill/tracklist';
+import { unload, getLoadInfoDetail, unloadCredentials } from '@/api/waybill/tracklist';
 import UploadImage from '@/components/UploadImage/moreImg';
 
 export default {
@@ -150,7 +150,7 @@ export default {
     // 获取卸货详情
     getDetail() {
       this.reset();
-      getInfoDetail(this.waybill.waybillNo, 2).then(response => {
+      getLoadInfoDetail(this.waybill.waybillNo, 2).then(response => {
         console.log(response);
         if (response.data.length) {
           const info = response.data[0];

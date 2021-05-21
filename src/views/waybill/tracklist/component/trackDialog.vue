@@ -1,17 +1,38 @@
 <template>
   <!-- 车辆跟踪对话框 -->
   <el-dialog :title="title" :visible="visible" width="1400px" append-to-body destroy-on-close :close-on-click-modal="false" @close="cancel">
-    <div style="width:100%; height: 750px;">
-      <el-amap ref="map" vid="DDCmap" :zoom="zoom" :center="center">
-        <!-- <el-amap-polyline :path="polyline.path" :stroke-weight="8" line-join="round" :stroke-opacity="0.8" :stroke-color="'#0091ea'" /> -->
-        <!-- <el-amap-marker v-for="(marker, index) in markers" :key="index" :position="marker.position" :icon="marker.icon" /> -->
-      </el-amap>
-    </div>
+    <el-row :gutter="20">
+      <el-col :span="18">
+        <div style="width:100%; height: 650px;border-radius: 6px">
+          <el-amap ref="map" vid="DDCmap" :zoom="zoom" :center="center">
+            <!-- <el-amap-polyline :path="polyline.path" :stroke-weight="8" line-join="round" :stroke-opacity="0.8" :stroke-color="'#0091ea'" /> -->
+            <!-- <el-amap-marker v-for="(marker, index) in markers" :key="index" :position="marker.position" :icon="marker.icon" /> -->
+          </el-amap>
+        </div>
+      </el-col>
+      <el-col :span="6">
+        <div class="g-flex g-justifyaround">
+          <div class="g-flex g-aligncenter g-justifycenter" :class="trackChange === 0 ? 'track-onbtn' : 'track-btn'" @click="handleTrackChange(0)">
+            <div :class="trackChange === 0 ? 'track-onicon' : 'track-icon'" />APP轨迹
+          </div>
+          <div class="g-flex g-aligncenter g-justifycenter" :class="trackChange === 1 ? 'track-onbtn' : 'track-btn'" @click="handleTrackChange(1)">
+            <div :class="trackChange === 1 ? 'track-onicon' : 'track-icon'" />硬件轨迹
+          </div>
+        </div>
+        <ul class="time-line-content">
+          <li v-for="(item, index) in timeLineList" :key="index" :class="index===0?'light':''">
+            <p class="g-strong g-text">{{ parseTime(item.createTime, '{y}-{m}-{d} {h}:{i}') }}</p>
+            <p class="g-color-gray g-text">{{ item.content }}</p>
+            <!-- <p class="g-color-warning g-text">状态</p> -->
+          </li>
+        </ul>
+      </el-col>
+    </el-row>
   </el-dialog>
 </template>
 
 <script>
-import { trackLocation, getVehicleInfo, getInfoDetail } from '@/api/waybill/tracklist';
+import { jimiTrackLocation, getVehicleInfo, getInfoDetail, getWaybillTrace } from '@/api/waybill/tracklist';
 // import UploadImage from '@/components/UploadImage/index';
 
 export default {
@@ -42,12 +63,21 @@ export default {
         icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/unload.png',
         position: [119.358267, 26.04577]
       }],
-      // 查询参数 map_type:GOOGOLE或BAIDU
-      queryParams: {
+      // jimi查询参数 map_type:GOOGOLE或BAIDU
+      jimiQueryParams: {
         begin_time: '2021-03-22 08:00:00',
         end_time: '2021-03-22 09:00:00',
         imeis: '867567047562525',
         map_type: 'GOOGLE'
+      },
+      // 猎鹰查询参数
+      lieyingQueryParams: {
+        key: '2066cb0dafaa492aee47fa1090227a38',
+        sid: '', // sid为终端所属service唯一编号
+        tid: '', // tid为终端唯一编号
+        trid: '', // trid为轨迹唯一编号
+        starttime: '', // 必须为Unix时间戳精确到毫秒
+        endtime: '' // 必须为Unix时间戳精确到毫秒
       },
       // 定位轨迹列表
       tracklist: [],
@@ -59,7 +89,10 @@ export default {
       time: '',
       // 装卸货地经纬度
       loadAddress: [],
-      unloadAddress: []
+      unloadAddress: [],
+      // 轨迹切换 0：app轨迹、1：硬件轨迹
+      trackChange: 0,
+      timeLineList: []
     };
   },
   computed: {
@@ -72,80 +105,69 @@ export default {
       }
     }
   },
-  watch: {
-    open(val) {
-      if (val) {
-        this.getDetail();
-      }
-    }
-  },
   created() {
     // this.getguiji();
   },
   methods: {
-    // 获取装货详情
-    getDetail() {
-      getInfoDetail(this.wayBillInfo.waybillNo, 1).then(response => {
-        console.log(response);
-        const info = response.data[0];
-        if (info.waybillAddres.loadLocation) {
-          this.loadAddress = info.waybillAddres.loadLocation.replace('(', '').replace(')', '').split(',');
-        }
-        if (info.waybillAddres.unloadLocation) {
-          this.unloadAddress = info.waybillAddres.unloadLocation.replace('(', '').replace(')', '').split(',');
-        }
-        if (this.loadAddress.length === 0) {
-          this.loadAddress = [119.358267, 26.04577];
-        }
-        if (this.unloadAddress.length === 0) {
-          this.unloadAddress = [119.344435, 25.721053];
-        }
-        this.getTrackLocation();
-        this.getMark();
-      });
+    // 轨迹切换
+    handleTrackChange(e) {
+      this.trackChange = e;
+      this.getTrackLocation();
     },
     /** 获取轨迹 */
     getTrackLocation() {
-      trackLocation(this.queryParams).then(response => {
-        // console.log(response.data.result);
-        this.tracklist = response.data.result.map(function(response) {
-          return [response.lng, response.lat];
+      if (this.trackChange === 0) {
+        console.log(this.loadAddress, this.unloadAddress);
+        // 获取高德地图路线规划
+        this.getRoutePlan();
+      } else {
+        jimiTrackLocation(this.jimiQueryParams).then(response => {
+          console.log(response.data.result);
+          if (response.data.result) {
+            this.tracklist = response.data.result.map(function(response) {
+              return [response.lng, response.lat];
+            });
+          }
         });
-        // 绘制轨迹
-        // this.drawPolyline(this.tracklist);
-        // this.getMark(this.tracklist);
-      });
-      this.getRoutePlan();
+        if (this.tracklist.length !== 0) {
+          // 绘制轨迹
+          this.drawPolyline(this.tracklist);
+        } else {
+          // 获取高德地图路线规划
+          this.getRoutePlan();
+        }
+      }
     },
     // 获取高德地图路线规划
     getRoutePlan() {
-      this.$nextTick(() => {
-        const that = this;
-        const driving = new AMap.Driving({
-          policy: AMap.DrivingPolicy.LEAST_TIME
-          // map 指定将路线规划方案绘制到对应的AMap.Map对象上
-          // map: that.$refs.map.$$getInstance()
-          // panel: 'DDCmap',
-        });
-        driving.search(that.loadAddress, that.unloadAddress, function(status, result) {
-          if (status === 'complete') {
-            const { routes = [] } = result;
-            const { steps = [] } = routes[0];
-            const pathArr = [];
-            steps.map(i => {
-              pathArr.push(i.path);
-              return pathArr;
-            });
-            const path = [].concat.apply([], pathArr);
-            console.log(path);
-            // 绘制轨迹
-            that.drawPolyline(path);
-          } else {
-            console.log('获取驾车数据失败');
-          }
-        // 未出错时，result即是对应的路线规划方案
-        });
+      const that = this;
+      const driving = new AMap.Driving({
+        policy: AMap.DrivingPolicy.LEAST_TIME
+        // map 指定将路线规划方案绘制到对应的AMap.Map对象上
+        // map: that.$refs.map.$$getInstance()
+        // panel: 'DDCmap',
       });
+      driving.search(that.loadAddress, that.unloadAddress, function(status, result) {
+        if (status === 'complete') {
+          const { routes = [] } = result;
+          const { steps = [] } = routes[0];
+          const pathArr = [];
+          steps.map(i => {
+            pathArr.push(i.path);
+            return pathArr;
+          });
+          const path = [].concat.apply([], pathArr);
+          console.log(path);
+          // 绘制轨迹
+          that.drawPolyline(path);
+        } else {
+          console.log('获取驾车数据失败');
+        }
+        // 未出错时，result即是对应的路线规划方案
+      });
+      // this.$nextTick(() => {
+
+      // });
     },
     // 起点终点
     getMark() {
@@ -159,7 +181,7 @@ export default {
         autoRotation: true
         // offset: new Pixel(-14, -20),
       });
-      startMark.setMap(that.$refs.map.$$getInstance());
+      startMark.setMap(that.$refs.map.$$getInstance()); // 点标记
       // 卸货地marker
       const endPosition = that.unloadAddress;
       const endMark = new AMap.Marker({
@@ -169,8 +191,8 @@ export default {
         autoRotation: true
         // offset: new Pixel(-14, -20),
       });
-      endMark.setMap(that.$refs.map.$$getInstance());
-      that.$refs.map.$$getInstance().setFitView([startMark, endMark]);
+      endMark.setMap(that.$refs.map.$$getInstance()); // 点标记
+      that.$refs.map.$$getInstance().setFitView([startMark, endMark]); // 执行定位
     },
     // 绘制轨迹
     drawPolyline(path) {
@@ -203,25 +225,57 @@ export default {
     },
     // 表单赋值
     setForm(data) {
-      this.wayBillInfo = data;
-      this.time = this.parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}');
-      // this.queryParams.begin_time = data.fillTime;
-      // if (data.signTime) {
-      //   this.queryParams.end_time = data.signTime;
-      // } else {
-      //   this.queryParams.end_time = this.time;
-      // }
+      // 获取运单信息，并标记装卸货地
+      getInfoDetail(data.code).then(response => {
+        console.log(response);
+        this.wayBillInfo = response.data;
+        // 获取装卸货地址经纬度
+        if (this.wayBillInfo.loadLocation) {
+          // this.loadAddress = info.loadLocation.replace('(', '').replace(')', '').split(',');
+          this.loadAddress[0] = this.wayBillInfo.loadLocation[1];
+          this.loadAddress[1] = this.wayBillInfo.loadLocation[0];
+        } else {
+          this.loadAddress = [119.358267, 26.04577];
+        }
+        if (this.wayBillInfo.unloadLocation) {
+          this.unloadAddress[0] = this.wayBillInfo.unloadLocation[1];
+          this.unloadAddress[1] = this.wayBillInfo.unloadLocation[0];
+        } else {
+          this.unloadAddress = [119.344435, 25.721053];
+        }
+        // 获取查询轨迹时间
+        this.time = this.parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}');
+        this.jimiQueryParams.begin_time = this.wayBillInfo.loadTime;
+        this.lieyingQueryParams.starttime = new Date(this.wayBillInfo.loadTime).getTime();
+        if (this.wayBillInfo.unloadTime) {
+          this.jimiQueryParams.end_time = this.wayBillInfo.unloadTime;
+          this.lieyingQueryParams.endtime = new Date(this.wayBillInfo.unloadTime).getTime();
+        } else {
+          this.jimiQueryParams.end_time = this.time;
+          this.lieyingQueryParams.endtime = new Date().getTime();
+        }
+        console.log(this.lieyingQueryParams);
+        // 标记装卸货地址
+        this.getMark();
+        // 获取路线
+        this.getTrackLocation();
+      });
+      // 轨迹时间线
+      getWaybillTrace(data.code).then(response => {
+        response.data.forEach(el => {
+          this.timeLineList.unshift(el);
+        });
+      });
       getVehicleInfo(data.vehicleCode).then(response => {
         this.vehicleInfo = response.data;
         console.log(this.vehicleInfo);
       });
-      console.log(this.wayBillInfo);
     }
   }
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .mr3 {
   margin-right: 3%;
 }
@@ -236,5 +290,71 @@ export default {
 }
 .el-rate{
   margin-top: 8px;
+}
+.track-onbtn{
+  cursor: pointer;
+  width: 124px;
+  height: 32px;
+  background: #409EFF;
+  border-radius: 18px;
+  line-height: 22px;
+  color: #FFFFFF;
+  .track-onicon{
+    margin-right: 10px;
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    border: 3px solid #1570CE;
+  }
+}
+.track-btn{
+  cursor: pointer;
+  width: 124px;
+  height: 32px;
+  background: #F6F6F6;
+  border-radius: 18px;
+  line-height: 22px;
+  color: #000000;
+  .track-icon{
+    margin-right: 10px;
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    background: #B2B4B9;
+  }
+}
+
+
+
+/* 轨迹-时间线 */
+.time-line-content{
+  margin: 20px 0 0;
+  padding: 20px;
+  border: 1px solid rgba(0, 0, 0, 0);
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.09);
+  max-height: 600px;
+  overflow: scroll;
+  >li{
+    position: relative;
+    padding: 0 0 20px 20px;
+    border-left: 1px dashed #d2d4da;
+    &::before{
+      content: '';
+      position: absolute;
+      top: 5px;
+      left: -6px;
+      width: 11px;
+      height: 11px;
+      border-radius: 100%;
+      background: #d2d4da;
+    }
+    &.light{
+      &::before{
+        content: '';
+        background: #409EFF;
+      }
+    }
+  }
 }
 </style>

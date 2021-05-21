@@ -400,8 +400,12 @@ export default {
       type: String,
       default: null
     },
-    isShipemnt: {
+    showShipment: {
       type: Boolean
+    },
+    orgType: {
+      type: Number,
+      default: 2
     }
   },
   data() {
@@ -583,8 +587,11 @@ export default {
       if (this.companyCode) {
         this.queryParams.orgCode = this.companyCode;
       }
-      if (this.isShipment) {
-        this.queryParams.isShipment = this.isShipment;
+      if (this.showShipment) {
+        this.queryParams.showShipment = this.showShipment;
+      }
+      if (this.orgType) {
+        this.queryParams.orgType = this.orgType;
       }
       listRole(this.addDateRange(this.queryParams, this.dateRange)).then(
         response => {
@@ -710,7 +717,7 @@ export default {
           return;
         }
       });
-      console.log(this.isSystemDisabled);
+      // console.log(this.isSystemDisabled);
       this.ids = selection.map(item => item.roleId);
       this.names = selection.map(item => item.roleName);
       this.single = selection.length !== 1;
@@ -760,7 +767,7 @@ export default {
       this.reset();
       this.getVersionTreeselect();
       const roleId = row.roleId || this.ids;
-      const roleMenu = this.getRoleMenuTreeselect(roleId, null);
+      const roleMenu = this.getRoleMenuTreeselect(roleId, { userCode: this.userCode });
       this.getProduceList();
       getRole(roleId).then(response => {
         this.form = response.data;
@@ -854,7 +861,7 @@ export default {
     },
     /** 查询部门下拉树结构 */
     getDeptTree() {
-      deptTreeselect({ orgCode: this.companyCode, userCode: this.userCode, isShipment: this.isShipment }).then(response => {
+      deptTreeselect({ orgCode: this.companyCode, userCode: this.userCode, showShipment: this.showShipment, orgType: this.orgType }).then(response => {
         this.deptTreeOptions = response.data;
       });
     },
@@ -891,6 +898,7 @@ export default {
       } else if (data.type === 'version') {
         params.versionCode = data.code;
       }
+      params.userCode = this.userCode;
       if (this.form.roleId !== undefined) {
         const roleMenu = this.getRoleMenuTreeselect(this.form.roleId, params);
         roleMenu.then(res => {

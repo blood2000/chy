@@ -483,7 +483,7 @@ export default {
     handleDelete(row) {
       const ids = row.id || this.ids;
       const adminNames = row.adminName || this.adminNames;
-      this.$confirm('是否确认删除货主姓名为"' + adminNames + '"的数据项?', '警告', {
+      this.$confirm('是否确认删除货主姓名为"' + adminNames + '"，以及以下的所有员工的数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

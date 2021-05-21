@@ -96,8 +96,16 @@ export function getVehicleInfo(code) {
   });
 }
 
+// 获取运单详情
+export function getInfoDetail(waybillCode) {
+  return request({
+    url: '/transportation/app/waybillInfo/getWaybillInfo/' + waybillCode,
+    method: 'get'
+  });
+}
+
 // 获取装货、卸货信息
-export function getInfoDetail(waybillNo, type) {
+export function getLoadInfoDetail(waybillNo, type) {
   return request({
     url: '/transportation/waybillAttachment/getByWaybillNo?waybillNo=' + waybillNo + '&type=' + type,
     method: 'get'
@@ -121,8 +129,8 @@ export function addComplaint(data) {
   });
 }
 
-// 获取车辆轨迹
-export function trackLocation(data) {
+// jimi获取车辆轨迹
+export function jimiTrackLocation(data) {
   return request({
     url: '/iot/jimiDevice/getTrackList',
     method: 'post',
@@ -130,8 +138,17 @@ export function trackLocation(data) {
   });
 }
 
-// 获取车辆轨迹
-export function location(data) {
+// 猎鹰获取车辆轨迹
+export function lieyingTrackLocation(query) {
+  return request({
+    url: 'https://tsapi.amap.com/v1/track/terminal/trsearch',
+    method: 'get',
+    params: query
+  });
+}
+
+// 获取车辆定位
+export function jimiLocation(data) {
   return request({
     url: '/iot/jimiDevice/location',
     method: 'post',
@@ -155,4 +172,13 @@ export function waybillCommentDetail(commentObject, wayBillCode) {
     method: 'get'
   });
 }
+
+// 查询运单详情-轨迹(根据运单CODE获取运单轨迹时间线)
+export function getWaybillTrace(code) {
+  return request({
+    url: `/transportation/waybillTrace/getByWayBillCode?waybillCode=${code}`,
+    method: 'get'
+  });
+}
+
 

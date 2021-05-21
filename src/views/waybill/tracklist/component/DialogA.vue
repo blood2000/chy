@@ -106,7 +106,7 @@
 </template>
 
 <script>
-import { load, getAddress, getInfoDetail, loadCredentials, getGoods } from '@/api/waybill/tracklist';
+import { load, getAddress, getLoadInfoDetail, loadCredentials, getGoods } from '@/api/waybill/tracklist';
 import UploadImage from '@/components/UploadImage/moreImg';
 
 export default {
@@ -148,7 +148,7 @@ export default {
           { required: true, message: '装货时间不能为空', trigger: 'blur' }
         ],
         loadWeight: [
-          { required: true, message: '装货重量不能为空', trigger: 'blur' }
+          { required: true, message: '装货数量不能为空', trigger: 'blur' }
         ],
         attachmentCode: [
           { required: true, message: '装货单据不能为空', trigger: 'blur' }
@@ -221,7 +221,7 @@ export default {
     // 获取装货详情
     getDetail() {
       this.reset();
-      getInfoDetail(this.waybill.waybillNo, 1).then(response => {
+      getLoadInfoDetail(this.waybill.waybillNo, 1).then(response => {
         if (response.data.length) {
           console.log(response);
           const info = response.data[0];
@@ -304,7 +304,7 @@ export default {
               if (this.form.loadWeight <= 0) {
                 this.msgWarning('装货重量或立方数必须大于0！');
               } else if (this.form.loadWeight > 100) {
-                this.msgWarning('系统检测到您的装货数量吨数或立方数过大，请确认后重新仔细填写!');
+                this.msgWarning('系统检测到您的装货吨数或立方数过大，请确认后重新仔细填写!');
               } else if (this.form.loadWeight <= 100 && this.form.loadWeight > this.goodsInfo.remainingWeight) {
                 this.msgWarning('系统检测到您的装货数量吨数或立方数大于货源剩余数量，请确认后重新仔细填写!');
               } else {

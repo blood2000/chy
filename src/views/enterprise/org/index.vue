@@ -122,31 +122,19 @@
 <script>
 import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild } from '@/api/system/dept';
 import Treeselect from '@riophae/vue-treeselect';
+import { getUserInfo } from '@/utils/auth';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 // import UploadImage from '@/components/UploadImage/index';
 
 export default {
   name: 'Dept',
   components: { Treeselect },
-  props: {
-    companyCode: {
-      type: String,
-      default: null
-    },
-    userCode: {
-      type: String,
-      default: null
-    },
-    showShipment: {
-      type: Boolean
-    },
-    orgType: {
-      type: Number,
-      default: 2
-    }
-  },
   data() {
     return {
+      companyCode: undefined,
+      userCode: undefined,
+      showShipment: true,
+      orgType: 1,
       // 遮罩层
       loading: true,
       buttonLoading: false,
@@ -203,6 +191,9 @@ export default {
     };
   },
   created() {
+    const { user = {}} = getUserInfo() || {};
+    this.companyCode = user.org.orgCode;
+    this.userCode = user.userCode;
     this.getList();
     this.getDictsOptions();
   },

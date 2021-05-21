@@ -363,15 +363,15 @@ export default {
     }
   }
   .btn-arrow{
-    height: 16px;
-    width: 12px;
+    height: 44px;
+    width: 36px;
     color: #666;
     line-height: 40px;
     text-align: center;
     cursor: pointer;
-    background: url('~@/assets/images/navBar/tag_icon.png') no-repeat;
-    background-size: 100% 100%;
-    margin: 17px 12px 11px;
+    background: url('~@/assets/images/navBar/tag_icon.png') 12px 17px no-repeat;
+    background-size: 12px 16px;
+    padding: 17px 12px 11px;
   }
   .contextmenu {
     margin: 0;

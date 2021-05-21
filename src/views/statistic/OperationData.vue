@@ -15,6 +15,7 @@
           class="op-content"
           label="今日新增货单"
           :count="myOrderVo.newOrderCount"
+          :last-count="myOrderVo.lastNewOrderCount"
           :has-yoy="true"
           :yoy.sync="myOrderVo.newOrderYoy"
           :yoy-type.sync="myOrderVo.newOrderYoyType"
@@ -61,6 +62,7 @@
           class="op-content"
           label="今日新增运单"
           :count="myWaillBillVo.newWallBillCount"
+          :last-count="myWaillBillVo.lastNewWallBillCount"
           :has-yoy="true"
           :yoy.sync="myWaillBillVo.newWallBillYoy"
           :yoy-type.sync="myWaillBillVo.newWallBillYoyType"
@@ -130,7 +132,7 @@ export default {
   methods: {
     // 处理实时数据-货单
     setOrderData(val) {
-      console.log('orderNotice: ', val);
+      // console.log('orderNotice: ', val);
       const { orderInfoNumber, publishedNumber } = val;
       // 货单
       if (orderInfoNumber) {
@@ -144,7 +146,7 @@ export default {
     },
     // 处理实时数据-运单
     setWaybillData(val) {
-      console.log('waybillNotice: ', val);
+      // console.log('waybillNotice: ', val);
       const { receiveNum, loadNum, unloadNum, accountNum, settlementNum, moneyNum, newNum } = val;
       // 运单
       if (newNum) {
