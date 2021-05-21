@@ -138,8 +138,8 @@ export function jimiTrackLocation(data) {
   });
 }
 
-// 获取车辆轨迹
-export function location(data) {
+// 获取车辆定位
+export function jimiLocation(data) {
   return request({
     url: '/iot/jimiDevice/location',
     method: 'post',
