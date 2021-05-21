@@ -432,9 +432,23 @@ export default {
     //   ]
     };
   },
+
   computed: {
     lcokey() {
       return this.$route.name + this.activeName;
+    }
+  },
+
+  watch: {
+    '$route.query.tracklist': {
+      handler(value) {
+        if (value) {
+          this.activeName = value;
+          this.queryParams.statusList[0] = value;
+          this.handleQuery();
+        }
+      },
+      immediate: true
     }
   },
   created() {
@@ -450,7 +464,7 @@ export default {
       width: 240,
       fixed: 'right'
     });
-    this.getList();
+    !this.$route.query.tracklist && this.getList();
     this.listByDict(this.commodityCategory).then(response => {
       this.commodityCategoryCodeOptions = response.data;
     });

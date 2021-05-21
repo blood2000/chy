@@ -1,6 +1,8 @@
 <template>
   <div style="height: 100%">
-    <WorkBanch :width="screenWidth" />
+    <WorkbanchShipper v-if="isShipment" />
+    <WorkBanch v-else :width="screenWidth" />
+
   </div>
 </template>
 
@@ -8,10 +10,14 @@
 import { ThrottleFun } from '@/utils/index.js';
 // import { color } from 'echarts';
 import WorkBanch from '../components/Ddc/Tin/WorkBanch';// 客服工作台
+
+import WorkbanchShipper from '../components/Ddc/Tin/WorkBanchShipper'; // 货主工作台
+
+import { getUserInfo } from '@/utils/auth';
 export default {
   name: 'Index',
   components: {
-    WorkBanch
+    WorkBanch, WorkbanchShipper
   },
   data() {
     return {
@@ -29,6 +35,11 @@ export default {
   },
   created() {
     this.changeWidth();
+
+
+
+    const { isShipment = false, shipment = {}} = getUserInfo() || {};
+    this.isShipment = isShipment;
   },
   methods: {
     resizeFun() {

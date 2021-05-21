@@ -49,7 +49,7 @@
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       >
         <el-table-column prop="orgName" label="组织名称" width="400" />
-      <!--  <el-table-column prop="orgType" label="类型" width="100">
+        <!--  <el-table-column prop="orgType" label="类型" width="100">
           <template slot-scope="scope">
             <span>{{ selectDictLabel(orgTypeOptions, scope.row.orgType) }}</span>
           </template>

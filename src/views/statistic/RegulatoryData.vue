@@ -89,6 +89,48 @@ export default {
       getRegulatoryData(this.branchCode).then(response => {
         this.dataList = response.data || {};
       });
+    },
+    // 处理实时数据
+    setData(val) {
+      // console.log('reportVo: ', val);
+      const {
+        driverReportNum, // 已上报司机信息
+        carReportNum, // 已上报车辆信息
+        waybillReportNum, // 已上报运单信息
+        trackReportNum, //	已上报轨迹信息
+        hardwareTrackReportNum, // 已上硬件轨迹信息
+        loadReportNum, // 已上报装货信息
+        unLoadReportNum, // 已上报卸货信息
+        fundReportNum, // 已上报资金信息
+        appTrackReportNum // 已上报APP轨迹信息
+      } = val;
+      if (driverReportNum) {
+        this.dataList.reportDriver += driverReportNum;
+      }
+      if (carReportNum) {
+        this.dataList.reportCar += carReportNum;
+      }
+      if (waybillReportNum) {
+        this.dataList.reportWaybill += waybillReportNum;
+      }
+      if (trackReportNum) {
+        this.dataList.reportTrajectory += trackReportNum;
+      }
+      if (hardwareTrackReportNum) {
+        this.dataList.reportHardwareTrajectory += hardwareTrackReportNum;
+      }
+      if (loadReportNum) {
+        this.dataList.reportLoadInfo += loadReportNum;
+      }
+      if (unLoadReportNum) {
+        this.dataList.reportLandInfo += unLoadReportNum;
+      }
+      if (fundReportNum) {
+        this.dataList.reportAmount += fundReportNum;
+      }
+      if (appTrackReportNum) {
+        this.dataList.reportAppTrajectory += appTrackReportNum;
+      }
     }
   }
 };

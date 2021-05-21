@@ -424,10 +424,10 @@
           <el-input v-model="vehicleForm.vehicleRemainingLoadVolume" placeholder="请输入车辆可载立方" class="width90 unit-item" clearable :disabled="disable" />
           <span class="unit-span g-color-gray">m³</span>
         </el-form-item>
-        <el-form-item label="车身自重" prop="selfRespect">
+        <!-- <el-form-item label="车身自重" prop="selfRespect">
           <el-input v-model="vehicleForm.selfRespect" placeholder="请输入车身自重" class="width90 unit-item" clearable :disabled="disable" />
           <span class="unit-span g-color-gray">吨</span>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="车辆识别码" prop="chassisNumber" :rules="[{ required: true, message: '车辆识别码不能为空', trigger: 'blur' }]">
           <el-input v-model="vehicleForm.chassisNumber" placeholder="请输入车辆识别码" class="width90" clearable :disabled="disable" />
         </el-form-item>
@@ -661,7 +661,7 @@ export default {
         this.carBodyColorOptions = response.data;
       });
       // 车辆类型
-      this.getDicts('licenseNumberType').then(response => {
+      this.getDicts('vehicleClassification').then(response => {
         this.vehicleTypeOptions = response.data;
       });
       // 能源类型
@@ -861,7 +861,7 @@ export default {
         vehicleLoadWeight: null,
         vehicleLoadVolume: null,
         vehicleRemainingLoadVolume: null,
-        selfRespect: null,
+        // selfRespect: null,
         chassisNumber: null,
         engineNumber: null,
         vehicleChassisNumber: null,
@@ -926,39 +926,109 @@ export default {
     // 图片识别后回填
     fillForm(type, data) {
       switch (type) {
+        // 身份证
         case 'id-card':
-          if (data.name) this.form.name = data.name;
-          if (data.number) this.form.identificationNumber = data.number;
-          if (data.address) this.form.homeAddress = data.address;
-          if (data.valid_from) this.$set(this.form, 'identificationBeginTime', data.valid_from);
+          if (data.name) {
+            this.form.name = data.name;
+          } else {
+            this.form.name = '';
+          }
+          if (data.number) {
+            this.form.identificationNumber = data.number;
+          } else {
+            this.form.identificationNumber = '';
+          }
+          if (data.address) {
+            this.form.homeAddress = data.address;
+          } else {
+            this.form.homeAddress = '';
+          }
+          if (data.valid_from) {
+            this.$set(this.form, 'identificationBeginTime', data.valid_from);
+          } else {
+            this.$set(this.form, 'identificationBeginTime', '');
+          }
           if (data.valid_to) {
             if (data.valid_to === '长期') {
               this.$set(this.form, 'identificationEffective', true);
             } else if (data.valid_to !== '') {
               this.$set(this.form, 'identificationEndTime', data.valid_to);
             }
+          } else {
+            this.$set(this.form, 'identificationEffective', false);
+            this.$set(this.form, 'identificationBeginTime', '');
           }
           break;
+        // 驾驶证
         case 'driver-license':
-          if (data.number) this.form.driverLicense = data.number;
-          if (data.issuing_authority) this.form.issuingOrganizations = data.issuing_authority;
-          if (data.valid_from) this.$set(this.form, 'validPeriodFrom', data.valid_from);
+          if (data.number) {
+            this.form.driverLicense = data.number;
+          } else {
+            this.form.driverLicense = '';
+          }
+          if (data.issuing_authority) {
+            this.form.issuingOrganizations = data.issuing_authority;
+          } else {
+            this.form.issuingOrganizations = '';
+          }
+          if (data.valid_from) {
+            this.$set(this.form, 'validPeriodFrom', data.valid_from);
+          } else {
+            this.$set(this.form, 'validPeriodFrom', '');
+          }
           if (data.valid_to) {
             if (data.valid_to === '长期') {
               this.$set(this.form, 'validPeriodAlways', true);
             } else if (data.valid_to !== '') {
               this.$set(this.form, 'validPeriodTo', data.valid_to);
             }
+          } else {
+            this.$set(this.form, 'validPeriodAlways', false);
+            this.$set(this.form, 'validPeriodTo', '');
           }
-          if (data.class) this.form.driverLicenseType = data.class;
+          if (data.class) {
+            this.form.driverLicenseType = data.class;
+          } else {
+            this.form.driverLicenseType = '';
+          }
           break;
+        // 行驶证
         case 'vehicle-license':
-          if (data.number && (this.title === '新增' || this.vehicleInfoList.length === 0)) this.vehicleForm.licenseNumber = data.number;
-          if (data.engine_no) this.form.driverLicense = data.engine_no;
+          if (data.number) {
+            this.vehicleForm.licenseNumber = data.number;
+          } else {
+            this.vehicleForm.licenseNumber = '';
+          }
+          if (data.engine_no) {
+            this.vehicleForm.engineNumber = data.engine_no;
+          } else {
+            this.vehicleForm.engineNumber = '';
+          }
+          if (data.vin) {
+            this.vehicleForm.chassisNumber = data.vin;
+          } else {
+            this.vehicleForm.chassisNumber = '';
+          }
+          if (data.vehicle_type) {
+            // 车辆类型
+            this.vehicleForm.vehicleTypeCode = this.getVehicleTypeKey(data.vehicle_type);
+          } else {
+            this.vehicleForm.vehicleTypeCode = '';
+          }
           break;
         default:
           break;
       }
+    },
+    // 根据车牌类型的value值获取对应的key
+    getVehicleTypeKey(value) {
+      let key = null;
+      this.vehicleTypeOptions.forEach(el => {
+        if (value === el.dictLabel) {
+          key = el.dictValue;
+        }
+      });
+      return key || '';
     },
     // 选中车辆回显
     changeVehicle(licenseNumber) {

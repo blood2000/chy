@@ -1,7 +1,7 @@
 <template>
   <!-- 运力情况 -->
   <div class="s-container ly-flex-pack-justify">
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 16%">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 18%">
       <InfoBox
         label="总车辆"
         :count="dataList.vehicleCount"
@@ -24,9 +24,25 @@
       <InfoBox
         label="今日新增路线"
         :count="dataList.newLineCount"
+        :last-count="dataList.lastNewLineCount"
         :has-yoy="true"
         :yoy.sync="dataList.newLineYoy"
         :yoy-type.sync="dataList.newLineYoyType"
+        :yoy-places="1"
+      />
+    </div>
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 16%">
+      <InfoBox
+        label="总网点"
+        :count="dataList.branchCount"
+      />
+      <InfoBox
+        label="今日新增网点"
+        :count="dataList.newBranchCount"
+        :last-count="dataList.lastNewBranchCount"
+        :has-yoy="true"
+        :yoy.sync="dataList.newBranchYoy"
+        :yoy-type.sync="dataList.newBranchYoyType"
         :yoy-places="1"
       />
     </div>
@@ -47,7 +63,7 @@
         :yoy-places="1"
       />
     </div>
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 20%">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 17%">
       <InfoBox
         label="行驶里程"
         unit="公里"
@@ -64,7 +80,7 @@
         :yoy-places="1"
       />
     </div>
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 16%">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 15%">
       <InfoBox
         label="行驶时长"
         unit="月"
@@ -79,20 +95,6 @@
         :has-yoy="true"
         :yoy.sync="dataList.newHaulageTimeYoy"
         :yoy-type.sync="dataList.newHaulageTimeYoyType"
-        :yoy-places="1"
-      />
-    </div>
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 12%">
-      <InfoBox
-        label="总网点"
-        :count="dataList.branchCount"
-      />
-      <InfoBox
-        label="今日新增网点"
-        :count="dataList.newBranchCount"
-        :has-yoy="true"
-        :yoy.sync="dataList.newBranchYoy"
-        :yoy-type.sync="dataList.newBranchYoyType"
         :yoy-places="1"
       />
     </div>
@@ -128,7 +130,7 @@ export default {
       });
     },
     // 处理实时数据
-    setData(val) {
+    setVehicleData(val) {
       // console.log('userNotice-car: ', val);
       if (val.car) {
         const { carNum } = val.car;
@@ -136,6 +138,19 @@ export default {
           this.dataList.vehicleCount += carNum;
           this.dataList.newVehicleCount += carNum;
         }
+      }
+    },
+    // 处理实时数据
+    setOrderData(val) {
+      // console.log('orderNotice-capacity: ', val);
+      const { newLineNum, newPointNum } = val;
+      if (newLineNum) {
+        this.dataList.newLineCount += newLineNum;
+        this.dataList.lienCount += newLineNum;
+      }
+      if (newPointNum) {
+        this.dataList.newBranchCount += newPointNum;
+        this.dataList.branchCount += newPointNum;
       }
     }
   }

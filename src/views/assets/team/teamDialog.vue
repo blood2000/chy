@@ -281,15 +281,30 @@ export default {
     fillForm(type, data) {
       switch (type) {
         case 'id-card':
-          if (data.name) this.form.teamLeaderName = data.name;
-          if (data.number) this.form.identificationNumber = data.number;
-          if (data.valid_from) this.$set(this.form, 'identificationBeginTime', data.valid_from);
+          if (data.name) {
+            this.form.teamLeaderName = data.name;
+          } else {
+            this.form.teamLeaderName = '';
+          }
+          if (data.number) {
+            this.form.identificationNumber = data.number;
+          } else {
+            this.form.identificationNumber = '';
+          }
+          if (data.valid_from) {
+            this.$set(this.form, 'identificationBeginTime', data.valid_from);
+          } else {
+            this.$set(this.form, 'identificationBeginTime', '');
+          }
           if (data.valid_to) {
             if (data.valid_to === '长期') {
               this.$set(this.form, 'identificationEffective', true);
             } else if (data.valid_to !== '') {
               this.$set(this.form, 'identificationEndTime', data.valid_to);
             }
+          } else {
+            this.$set(this.form, 'identificationEffective', false);
+            this.$set(this.form, 'identificationEndTime', '');
           }
           break;
         default:
