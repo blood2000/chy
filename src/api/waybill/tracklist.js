@@ -138,6 +138,15 @@ export function jimiTrackLocation(data) {
   });
 }
 
+// 猎鹰获取车辆轨迹
+export function lieyingTrackLocation(query) {
+  return request({
+    url: 'https://tsapi.amap.com/v1/track/terminal/trsearch',
+    method: 'get',
+    params: query
+  });
+}
+
 // 获取车辆定位
 export function jimiLocation(data) {
   return request({
