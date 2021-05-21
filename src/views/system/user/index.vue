@@ -571,7 +571,7 @@ export default {
     /** 查询部门下拉树结构 */
     getTreeselect() {
       // 只展示普通企业（1:发货企业 2:普通组织 3：发货企业下的组织）
-      treeselect({ orgCode: this.companyCode, userCode: this.userCode,showShipment: this.showShipment, orgType: this.orgType }).then(response => {
+      treeselect({ orgCode: this.companyCode, userCode: this.userCode, showShipment: this.showShipment, orgType: this.orgType }).then(response => {
         this.deptOptions = response.data;
       });
     },
