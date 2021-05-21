@@ -138,15 +138,15 @@ export default {
         // console.log('scrollHeight: ', $scrollHeight);
         // console.log('======================');
 
-        const panelTop = ($offsetTop - $scrollHeight + headerHeight) - ($panelHeight / 2) + 43;
+        const panelTop = ($offsetTop - $scrollHeight + headerHeight) - ($panelHeight / 2) + 43; // 43 = 86 / 2
         // console.log(panelTop);
 
-        if ($panelHeight + 70 > $clintHeight) {
+        if ($panelHeight + headerHeight > $clintHeight) {
           // console.log('高度撑满');
           this.panelTop = headerHeight + 'px';
           this.panelBottom = 0 + 'px';
           // 菜单超出, 设置panel宽度
-          this.panelWidth = (160 * Math.ceil((44 * child.length) / ($clintHeight - 70 - 40))) + 'px';
+          this.panelWidth = (160 * Math.ceil((44 * child.length) / ($clintHeight - headerHeight - 40))) + 'px';
         } else if (panelTop < headerHeight) {
           // console.log('顶部超出');
           this.panelTop = headerHeight + 'px';
