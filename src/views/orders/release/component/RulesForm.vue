@@ -156,7 +156,7 @@ export default {
   watch: {
     dataList: {
       handler(newName, oldName) {
-        this.formData = {};
+        // this.formData = {};
         this.resettingData = [];
         this.initData();
       },
@@ -174,10 +174,10 @@ export default {
         e.showType = e.showType + '';
         e.myName = 't_' + e.enName;
         if (e.showType !== '2') {
-          this.formData[e.myName] = e.ruleValue;
+          this.formData[e.myName] = this.formData[e.myName] || e.ruleValue;
         } else {
-          this.formData[e.myName + '_0'] = (JSON.parse(e.ruleValue))[0];
-          this.formData[e.myName + '_1'] = (JSON.parse(e.ruleValue))[1];
+          this.formData[e.myName + '_0'] = this.formData[e.myName + '_0'] || (JSON.parse(e.ruleValue))[0];
+          this.formData[e.myName + '_1'] = this.formData[e.myName + '_1'] || (JSON.parse(e.ruleValue))[1];
         }
       });
 

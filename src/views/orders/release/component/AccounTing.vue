@@ -330,22 +330,40 @@ export default {
     },
     redis: {
       handler(value) {
-        let totalTransportationCost;
-        let freightPrice;
-
-        if (value.orderFreightBoList) {
-          value.orderFreightBoList.forEach(ee => {
-            if (ee.ruleItemCode === '17') {
-              freightPrice = ee.ruleValue;
-            } else if (ee.ruleItemCode === '20') {
-              totalTransportationCost = ee.ruleValue;
-            }
-          });
-        }
-
+        // 1. 正常回填时候用到
         if (!value || !value.orderFreightVo) return;
+        // 2. 数据回填
+        // 3. 规则改变
+        // 4. 预览时候
+        // let totalTransportationCost;
+        // let freightPrice;
+        // // let ruleCode;
 
-        // 清空
+        // if (value.orderFreightBoList) {
+        //   value.orderFreightBoList.forEach(ee => {
+        //     // !ruleCode && (ruleCode = ee.ruleCode);
+        //     if (ee.ruleItemCode === '17') {
+        //       freightPrice = ee.ruleValue;
+        //     } else if (ee.ruleItemCode === '20') {
+        //       totalTransportationCost = ee.ruleValue;
+        //     }
+        //   });
+        // }
+        // 4 e=
+
+
+        console.log(this.formData.ruleItemId);
+
+        console.log(value.ruleCode);
+
+        // // 处理规则不一样的情况
+        if (this.formData.ruleItemId && this.formData.ruleItemId !== value.ruleCode) return;
+
+        console.log('规则改变了 不走着');
+        console.log(JSON.stringify(this.jisuanRule) === '{}');
+
+        // 2. 第一次回调走下面
+
         this.lossList = [];
         this.zichuList = [];
         this.shouruList = [];
@@ -355,14 +373,16 @@ export default {
         this.formData.ruleItemId = value.ruleCode;
 
         const filterDetailList = detailList.filter(e => {
+          // !this.formData.ruleItemId && (this.formData.ruleItemId = e.ruleCode);
+
           if (e.enName === 'DRIVER_ACTUAL_PRICE') {
-            totalTransportationCost && (e.ruleValue = totalTransportationCost);
-            this.totalTransportationCost = e.ruleValue;
+            // totalTransportationCost && (e.ruleValue = totalTransportationCost);
+            !this.totalTransportationCost && (this.totalTransportationCost = e.ruleValue);
           }
 
           if (e.enName === 'FREIGHT_COST') {
-            freightPrice && (e.ruleValue = freightPrice);
-            this.formData.freightPrice = e.ruleValue;
+            // freightPrice && (e.ruleValue = freightPrice);
+            !this.formData.freightPrice && (this.formData.freightPrice = e.ruleValue);
 
             // 如果是复制的则重新计算
             if (this.$route.query.t === '3') {
@@ -371,7 +391,7 @@ export default {
           }
 
           if (e.enName === 'CALCULATION_FORMULA') {
-            this.jisuanRule = e;
+            (JSON.stringify(this.jisuanRule) === '{}') && (this.jisuanRule = e);
           }
 
           const bool = (e.enName === 'LOSS_PLAN' || e.enName === 'LOSS_RULE' || e.enName === 'CALCULATION_FORMULA' || e.enName === 'FREIGHT_COST' || e.enName === 'DRIVER_ACTUAL_PRICE');
@@ -380,6 +400,7 @@ export default {
         });
 
         this.setData(filterDetailList, lossList);
+        // 2 e=
       },
       immediate: true
 
@@ -449,6 +470,14 @@ export default {
         code: this.formData.ruleItemId
       })).data;
 
+      // console.log({ detailList, lossList });
+      // 如果切换了, 这原始值
+
+      // if (this.redisorderFreightVo) {
+      //   this.redisorderFreightVo.detailList = detailList;
+      //   this.redisorderFreightVo.lossList = lossList;
+      // }
+
 
 
       const filterDetailList = detailList.filter(e => {
@@ -478,7 +507,24 @@ export default {
       return new Promise((resolve, reject) => {
         this.$refs['formData'].validate(async(valid) => {
           if (valid) {
-            // 报ruleValue undefined 说明 单价或计算公式未放到细则里面
+            // 保存修改后的值-下次进来使用
+            // (this.redis.ruleCode = this.formData.ruleItemId);
+            if (this.redis && this.redis.orderFreightVo) {
+              this.redis.orderFreightVo.detailList.forEach(e => {
+                if (e.enName === 'DRIVER_ACTUAL_PRICE') {
+                  e.ruleValue = this.totalTransportationCost;
+                }
+                if (e.enName === 'FREIGHT_COST') {
+                  e.ruleValue = this.formData.freightPrice;
+                }
+
+                if (e.enName === 'CALCULATION_FORMULA') {
+                  e = this.jisuanRule || e;
+                }
+              });
+            }
+
+            // 封装需要的值
             (this.ruleFreightPrice[0].ruleValue = this.formData.freightPrice);
             (this.ruleFreightPrice[0].ruleCode = this.formData.ruleItemId);
             (this.claculationFormula[0].ruleValue = this.totalTransportationCost);
@@ -500,6 +546,8 @@ export default {
                 };
               })
             };
+
+
 
             resolve({ ...obj, ruleDictValue: this.formData.ruleDictValue });
           } else {

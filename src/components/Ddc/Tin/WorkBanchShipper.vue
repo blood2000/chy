@@ -887,117 +887,117 @@ export default {
         justify-content: space-between;
       }
 
-      .middle-span{
-        font-size: 12px;
-        font-weight: 500;
-        line-height: 1;
-        color: #B3AFAF;
-      }
-      .middle-span.mt_show{
-        opacity: 0;
-      }
+      // .middle-span{
+      //   font-size: 12px;
+      //   font-weight: 500;
+      //   line-height: 1;
+      //   color: #B3AFAF;
+      // }
+      // .middle-span.mt_show{
+      //   opacity: 0;
+      // }
 
-      &-item{
-        width: 50%;
-        background-color: #fff;
-        margin-left: 15px;
-        border-radius: 4px 20px 4px 4px;
-        overflow: hidden;
-        padding: 6px 30px;
+      // &-item{
+      //   width: 50%;
+      //   background-color: #fff;
+      //   margin-left: 15px;
+      //   border-radius: 4px 20px 4px 4px;
+      //   overflow: hidden;
+      //   padding: 6px 30px;
 
-        // display: flex;
-        // flex-direction: column;
-        // justify-content: space-between;
-        .middle-row-icon{
-          top: 0;
-          right: 0;
-          width: 50px;
-          height: 50px;
-        }
-        .icon-zhanghu{
-          background: url('~@/assets/images/workbench/icon-zhanghu.png') no-repeat;
-          background-size: 100% 100%;
-        }
-        .icon-donjie{
-          background: url('~@/assets/images/workbench/icon-donjie.png') no-repeat;
-          background-size: 100% 100%;
-        }
-        .icon-fabu{
-          background: url('~@/assets/images/workbench/icon-fabu.png') no-repeat;
-          background-size: 100% 100%;
-        }
-        .icon-guanbi{
-          background: url('~@/assets/images/workbench/icon-guanbi.png') no-repeat;
-          background-size: 100% 100%;
-        }
-        .icon-yijiedan{
-          background: url('~@/assets/images/workbench/icon-yijiedan.png') no-repeat;
-          background-size: 100% 100%;
-        }
-        .icon-yizhuanhuo{
-          background: url('~@/assets/images/workbench/icon-yizhuanhuo.png') no-repeat;
-          background-size: 100% 100%;
-        }
-        .icon-yixie{
-          background: url('~@/assets/images/workbench/icon-yixie.png') no-repeat;
-          background-size: 100% 100%;
-        }
-        .icon-yifuhe{
-          background: url('~@/assets/images/workbench/icon-yifuhe.png') no-repeat;
-          background-size: 100% 100%;
-        }
-        .icon-hesuan{
-          background: url('~@/assets/images/workbench/icon-hesuan.png') no-repeat;
-          background-size: 100% 100%;
-        }
-        .icon-yidakuan{
-          background: url('~@/assets/images/workbench/icon-yidakuan.png') no-repeat;
-          background-size: 100% 100%;
-        }
-        .icon-yishenqing{
-          background: url('~@/assets/images/workbench/icon-yishenqing.png') no-repeat;
-          background-size: 100% 100%;
-        }
-        .icon-daihesuan{
-          background: url('~@/assets/images/workbench/icon-daihesuan.png') no-repeat;
-          background-size: 100% 100%;
-        }
-        .icon-yikai{
-          background: url('~@/assets/images/workbench/icon-yikai.png') no-repeat;
-          background-size: 100% 100%;
-        }
-        .g-text span{
-          color: #B3AFAF;
-          margin-left: 10px;
-        }
-      }
-      .col3{
-        width: 33.3%;
-        .middle-row-btn>div{
-          width: 50%;
-        }
-      }
+      //   // display: flex;
+      //   // flex-direction: column;
+      //   // justify-content: space-between;
+      //   .middle-row-icon{
+      //     top: 0;
+      //     right: 0;
+      //     width: 50px;
+      //     height: 50px;
+      //   }
+      //   .icon-zhanghu{
+      //     background: url('~@/assets/images/workbench/icon-zhanghu.png') no-repeat;
+      //     background-size: 100% 100%;
+      //   }
+      //   .icon-donjie{
+      //     background: url('~@/assets/images/workbench/icon-donjie.png') no-repeat;
+      //     background-size: 100% 100%;
+      //   }
+      //   .icon-fabu{
+      //     background: url('~@/assets/images/workbench/icon-fabu.png') no-repeat;
+      //     background-size: 100% 100%;
+      //   }
+      //   .icon-guanbi{
+      //     background: url('~@/assets/images/workbench/icon-guanbi.png') no-repeat;
+      //     background-size: 100% 100%;
+      //   }
+      //   .icon-yijiedan{
+      //     background: url('~@/assets/images/workbench/icon-yijiedan.png') no-repeat;
+      //     background-size: 100% 100%;
+      //   }
+      //   .icon-yizhuanhuo{
+      //     background: url('~@/assets/images/workbench/icon-yizhuanhuo.png') no-repeat;
+      //     background-size: 100% 100%;
+      //   }
+      //   .icon-yixie{
+      //     background: url('~@/assets/images/workbench/icon-yixie.png') no-repeat;
+      //     background-size: 100% 100%;
+      //   }
+      //   .icon-yifuhe{
+      //     background: url('~@/assets/images/workbench/icon-yifuhe.png') no-repeat;
+      //     background-size: 100% 100%;
+      //   }
+      //   .icon-hesuan{
+      //     background: url('~@/assets/images/workbench/icon-hesuan.png') no-repeat;
+      //     background-size: 100% 100%;
+      //   }
+      //   .icon-yidakuan{
+      //     background: url('~@/assets/images/workbench/icon-yidakuan.png') no-repeat;
+      //     background-size: 100% 100%;
+      //   }
+      //   .icon-yishenqing{
+      //     background: url('~@/assets/images/workbench/icon-yishenqing.png') no-repeat;
+      //     background-size: 100% 100%;
+      //   }
+      //   .icon-daihesuan{
+      //     background: url('~@/assets/images/workbench/icon-daihesuan.png') no-repeat;
+      //     background-size: 100% 100%;
+      //   }
+      //   .icon-yikai{
+      //     background: url('~@/assets/images/workbench/icon-yikai.png') no-repeat;
+      //     background-size: 100% 100%;
+      //   }
+      //   .g-text span{
+      //     color: #B3AFAF;
+      //     margin-left: 10px;
+      //   }
+      // }
+      // .col3{
+      //   width: 33.3%;
+      //   .middle-row-btn>div{
+      //     width: 50%;
+      //   }
+      // }
 
-      &-item:nth-child(1){
-        margin-left: 0;
-      }
-      .middle-row-title{
-        font-size: 14px;
-        font-weight: bold;
-        color: #262626;
-        margin-left: -12px;
-        margin-bottom: 6px;
-      }
-      .middle-row-btn{
-        display: flex;
-        &>div{
-          width: 40%;
-        }
-        .el-button{
-          width: 100px;
-          height: 30px;
-        }
-      }
+      // &-item:nth-child(1){
+      //   margin-left: 0;
+      // }
+      // .middle-row-title{
+      //   font-size: 14px;
+      //   font-weight: bold;
+      //   color: #262626;
+      //   margin-left: -12px;
+      //   margin-bottom: 6px;
+      // }
+      // .middle-row-btn{
+      //   display: flex;
+      //   &>div{
+      //     width: 40%;
+      //   }
+      //   .el-button{
+      //     width: 100px;
+      //     height: 30px;
+      //   }
+      // }
     }
 
     &-content.last-row{
