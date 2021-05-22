@@ -332,35 +332,10 @@ export default {
       handler(value) {
         // 1. 正常回填时候用到
         if (!value || !value.orderFreightVo) return;
-        // 2. 数据回填
-        // 3. 规则改变
-        // 4. 预览时候
-        // let totalTransportationCost;
-        // let freightPrice;
-        // // let ruleCode;
-
-        // if (value.orderFreightBoList) {
-        //   value.orderFreightBoList.forEach(ee => {
-        //     // !ruleCode && (ruleCode = ee.ruleCode);
-        //     if (ee.ruleItemCode === '17') {
-        //       freightPrice = ee.ruleValue;
-        //     } else if (ee.ruleItemCode === '20') {
-        //       totalTransportationCost = ee.ruleValue;
-        //     }
-        //   });
-        // }
-        // 4 e=
-
-
-        console.log(this.formData.ruleItemId);
-
-        console.log(value.ruleCode);
 
         // // 处理规则不一样的情况
         if (this.formData.ruleItemId && this.formData.ruleItemId !== value.ruleCode) return;
 
-        console.log('规则改变了 不走着');
-        console.log(JSON.stringify(this.jisuanRule) === '{}');
 
         // 2. 第一次回调走下面
 
@@ -469,15 +444,6 @@ export default {
       const { detailList, lossList } = (await getRuleItem({
         code: this.formData.ruleItemId
       })).data;
-
-      // console.log({ detailList, lossList });
-      // 如果切换了, 这原始值
-
-      // if (this.redisorderFreightVo) {
-      //   this.redisorderFreightVo.detailList = detailList;
-      //   this.redisorderFreightVo.lossList = lossList;
-      // }
-
 
 
       const filterDetailList = detailList.filter(e => {
