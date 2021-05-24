@@ -63,6 +63,26 @@ export default {
       if (remark) {
         this.$refs.transferRef.setData(remark, time);
       }
+    },
+    // 处理实时数据-用户
+    setUserData(val, time) {
+      const { car, user } = val;
+      if (car) {
+        const { remark } = car;
+        if (remark) {
+          this.$refs.userRef.setData(remark, time);
+        }
+      }
+      if (user) {
+        const { remark } = user;
+        if (remark) {
+          this.$refs.userRef.setData(remark, time);
+        }
+      }
+    },
+    // 处理实时数据-货单
+    setOrderData(val, time) {
+
     }
   }
 };

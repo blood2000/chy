@@ -38,7 +38,7 @@ export default {
 
 
 
-    const { isShipment = false, shipment = {}} = getUserInfo() || {};
+    const { isShipment = false } = getUserInfo() || {};
     this.isShipment = isShipment;
   },
   methods: {

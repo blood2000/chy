@@ -72,7 +72,8 @@ export const dataJson = {
         'cph': ''
       },
       'carNum': 0, // 车辆 1 -1
-      'operateType': '' // 1新增 2注销
+      'operateType': '', // 1新增 2注销
+      'remark': '' // 滚动信息
     },
     // 运力
     'user': {
@@ -83,7 +84,8 @@ export const dataJson = {
       'shipmentNum': 0, // 货主 1 -1
       'teamNum': 0, // 调度者 1 -1
       'operateType': '', // 1新增 2注销
-      'userType': '' // 货主shipment,司机driver,调度team
+      'userType': '', // 货主shipment,司机driver,调度team
+      'remark': '' // 滚动信息
     }
   },
   'waybillNotice': {
