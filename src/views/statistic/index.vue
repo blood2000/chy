@@ -260,18 +260,20 @@ export default {
       }
       // 货单√
       if (orderNoticeVo && orderNoticeVo.transportVo && orderNoticeVo.transportVo.orderBean) {
-        this.$refs.TotalDataRef.setOrderData(orderNoticeVo.transportVo.orderBean);
-        this.$refs.OperationDataRef.setOrderData(orderNoticeVo.transportVo.orderBean);
-        this.$refs.CapacityInfoRef.setOrderData(orderNoticeVo.transportVo.orderBean);
+        const orderBean = orderNoticeVo.transportVo.orderBean;
+        this.$refs.TotalDataRef.setOrderData(orderBean);
+        this.$refs.OperationDataRef.setOrderData(orderBean);
+        this.$refs.CapacityInfoRef.setOrderData(orderBean);
+        this.$refs.ScrollDataRef.setOrderData(orderBean, insertTime);
       }
       // 运单√
       if (waybillNotice) {
         this.$refs.TotalDataRef.setWaybillData(waybillNotice);
         this.$refs.OperationDataRef.setWaybillData(waybillNotice);
       }
-      // 打款
+      // 打款√
       if (waybillSettlementNotice) {
-        //
+        this.$refs.ScrollDataRef.setOrderData(waybillSettlementNotice, insertTime);
       }
     },
     // 图表自适应
