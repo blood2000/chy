@@ -180,12 +180,12 @@
         <template #loadWeight="{row}">
           <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.loadWeight || '0.00' }} 吨</span>
           <span v-if="row.stowageStatus === '1'">{{ row.loadWeight || '0.00' }} 立方</span>
-          <span v-if="row.stowageStatus === '2'">{{ row.loadWeight || '0.00' }} 车</span>
+          <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.loadWeight) || '0.00' }} 车</span>
         </template>
         <template #unloadWeight="{row}">
           <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.unloadWeight || '0.00' }} 吨</span>
           <span v-if="row.stowageStatus === '1'">{{ row.unloadWeight || '0.00' }} 立方</span>
-          <span v-if="row.stowageStatus === '2'">{{ row.unloadWeight || '0.00' }} 车</span>
+          <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.unloadWeight) || '0.00' }} 车</span>
         </template>
         <template #orderTime="{row}">
           <span>{{ parseTime(row.orderTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>

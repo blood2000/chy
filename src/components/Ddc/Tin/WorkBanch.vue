@@ -26,35 +26,35 @@
           </div>
           <!-- 便捷导航 -->
           <div class="index-frame g-flex g-aligncenter g-justifyaround" style="width:calc(100% - 345px);min-width:835px;">
-            <div class="g-flex g-aligncenter g-flexdirection width10" @click="handleNav(1)">
+            <div class="g-flex g-aligncenter g-flexdirection width10" @click="handleNav('Shipment')">
               <img class="nav-icon" src="~@/assets/images/workbench/icon_addcompany.png" alt="">
               <div class="g-color-title g-strong margintop5">新增企业</div>
             </div>
-            <div class="g-flex g-aligncenter g-flexdirection width10" @click="handleNav(2)">
+            <div class="g-flex g-aligncenter g-flexdirection width10" @click="handleNav('Report')">
               <img class="nav-icon" src="~@/assets/images/workbench/icon_report.png" alt="">
               <div class="g-color-title g-strong margintop5">数据上报</div>
             </div>
-            <div class="g-flex g-aligncenter g-flexdirection width10" @click="handleNav(3)">
+            <div class="g-flex g-aligncenter g-flexdirection width10" @click="handleNav('Release')">
               <img class="nav-icon" src="~@/assets/images/workbench/icon_order.png" alt="">
               <div class="g-color-title g-strong margintop5">发布货源</div>
             </div>
-            <div class="g-flex g-aligncenter g-flexdirection width10" @click="handleNav(4)">
+            <div class="g-flex g-aligncenter g-flexdirection width10" @click="handleNav('Supplement')">
               <img class="nav-icon" src="~@/assets/images/workbench/icon_addwaybill.png" alt="">
               <div class="g-color-title g-strong margintop5">新增运单</div>
             </div>
-            <div class="g-flex g-aligncenter g-flexdirection width10" @click="handleNav(5)">
+            <div class="g-flex g-aligncenter g-flexdirection width10" @click="handleNav('Manages')">
               <img class="nav-icon" src="~@/assets/images/workbench/icon_waybillmanage.png" alt="">
               <div class="g-color-title g-strong margintop5">运单管理</div>
             </div>
-            <div class="g-flex g-aligncenter g-flexdirection width10" @click="handleNav(6)">
+            <div class="g-flex g-aligncenter g-flexdirection width10" @click="handleNav('Askfor')">
               <img class="nav-icon" src="~@/assets/images/workbench/icon_billing.png" alt="">
               <div class="g-color-title g-strong margintop5">开具发票</div>
             </div>
-            <div class="g-flex g-aligncenter g-flexdirection width10" @click="handleNav(7)">
+            <div class="g-flex g-aligncenter g-flexdirection width10" @click="handleNav('List')">
               <img class="nav-icon" src="~@/assets/images/workbench/icon_invoicelist.png" alt="">
               <div class="g-color-title g-strong margintop5">发票列表</div>
             </div>
-            <div class="g-flex g-aligncenter g-flexdirection width10" @click="handleNav(8)">
+            <div class="g-flex g-aligncenter g-flexdirection width10" @click="handleNav('Complaint')">
               <img class="nav-icon" src="~@/assets/images/workbench/icon_waybillcp.png" alt="">
               <div class="g-color-title g-strong margintop5">运单投诉</div>
             </div>
@@ -72,23 +72,23 @@
                 <div class="g-flex g-flexdirection g-aligncenter margintop15" style="width: 70%;">
                   <div class="g-title-smaller">
                     <div class="g-color-title">今日货单</div>
-                    <div class="g-color-title"><span class="g-color-title g-strong g-title-max font-Bahnschrif">23436</span> 单</div>
-                    <div class="g-color-tag">货单总数 / 89567 单</div>
+                    <div class="g-color-title"><span class="g-color-title g-strong g-title-max font-Bahnschrif">{{ statistic.order?statistic.order.newOrder:0 }}</span> 单</div>
+                    <div class="g-color-tag">货单总数 / {{ statistic.order?statistic.order.orderCount:0 }} 单</div>
                   </div>
                 </div>
                 <img class="waybill-bg" src="~@/assets/images/workbench/icon_waybillbg.png" alt="">
               </div>
             </div>
-            <div class="g-flex g-justifybetween">
-              <div class="order-frame g-title-smaller">
+            <div class="g-flex g-justifybetween g-title-smaller">
+              <div class="order-frame">
                 <div class="g-color-title">发布中货单</div>
-                <div class="g-color-tag"><span class="g-color-title g-strong g-title-large font-Bahnschrif">436</span> 单</div>
-                <img class="margintop15" src="~@/assets/images/workbench/icon_publishorder.png" alt="">
+                <div class="g-color-tag"><span class="g-color-title g-strong g-title-large font-Bahnschrif">{{ statistic.order?statistic.order.publishedCount:0 }}</span> 单</div>
+                <img class="order-img" src="~@/assets/images/workbench/icon_publishorder.png" alt="">
               </div>
-              <div class="order-frame g-title-smaller">
+              <div class="order-frame">
                 <div class="g-color-title">已关闭货单</div>
-                <div class="g-color-tag"><span class="g-color-title g-strong g-title-large font-Bahnschrif">436</span> 单</div>
-                <img class="margintop15" src="~@/assets/images/workbench/icon_closeorder.png" alt="">
+                <div class="g-color-tag"><span class="g-color-title g-strong g-title-large font-Bahnschrif">{{ statistic.order?statistic.order.soldOut:0 }}</span> 单</div>
+                <img class="order-img" src="~@/assets/images/workbench/icon_closeorder.png" alt="">
               </div>
             </div>
           </div>
@@ -103,28 +103,28 @@
                 <div class="g-flex g-flexdirection g-aligncenter margintop15" style="width: 70%;">
                   <div class="g-title-smaller">
                     <div class="g-color-title">今日发票</div>
-                    <div class="g-color-title"><span class="g-color-title g-strong g-title-max font-Bahnschrif">23436</span> 票</div>
-                    <div class="g-color-tag">发票总数 / 89567 票</div>
+                    <div class="g-color-title"><span class="g-color-title g-strong g-title-max font-Bahnschrif">{{ statistic.invoice?statistic.invoice.newInvoiceCount:0 }}</span> 票</div>
+                    <div class="g-color-tag">发票总数 / {{ statistic.invoice?statistic.invoice.invoiceCount:0 }} 票</div>
                   </div>
                 </div>
                 <img class="waybill-bg" src="~@/assets/images/workbench/icon_waybillbg.png" alt="">
               </div>
             </div>
-            <div class="g-flex g-justifybetween">
+            <div class="g-flex g-justifybetween g-title-smaller">
               <div class="order-frame">
                 <div class="g-color-title">今日已索票</div>
-                <div class="g-color-tag g-title-smaller"><span class="g-color-title g-strong g-title-large font-Bahnschrif">436</span> 单</div>
-                <img class="margintop15" src="~@/assets/images/workbench/icon_ask.png" alt="">
+                <div class="g-color-tag"><span class="g-color-title g-strong g-title-large font-Bahnschrif">{{ statistic.invoice?statistic.invoice.applyInvoiceCount:0 }}</span> 单</div>
+                <img class="order-img" src="~@/assets/images/workbench/icon_ask.png" alt="">
               </div>
               <div class="order-frame">
                 <div class="g-color-title">今日已审核</div>
-                <div class="g-color-tag g-title-smaller"><span class="g-color-title g-strong g-title-large font-Bahnschrif">436</span> 单</div>
-                <img class="margintop15" src="~@/assets/images/workbench/icon_examine.png" alt="">
+                <div class="g-color-tag"><span class="g-color-title g-strong g-title-large font-Bahnschrif">{{ statistic.invoice?statistic.invoice.auditInvoiceCount:0 }}</span> 单</div>
+                <img class="order-img" src="~@/assets/images/workbench/icon_examine.png" alt="">
               </div>
               <div class="order-frame">
                 <div class="g-color-title">已开票</div>
-                <div class="g-color-tag g-title-smaller"><span class="g-color-title g-strong g-title-large font-Bahnschrif">436</span> 单</div>
-                <img class="margintop15" src="~@/assets/images/workbench/icon_onbilling.png" alt="">
+                <div class="g-color-tag"><span class="g-color-title g-strong g-title-large font-Bahnschrif">{{ statistic.invoice?statistic.invoice.openInvoiceCount:0 }}</span> 单</div>
+                <img class="order-img" src="~@/assets/images/workbench/icon_onbilling.png" alt="">
               </div>
             </div>
           </div>
@@ -139,38 +139,40 @@
                 <div class="g-flex g-flexdirection g-aligncenter margintop15" style="width: 70%;">
                   <div class="g-title-smaller">
                     <div class="g-color-title">今日运单</div>
-                    <div class="g-color-title"><span class="g-color-title g-strong g-title-max font-Bahnschrif">23436</span> 单</div>
-                    <div class="g-color-tag">运单总数 / 89567 单</div>
+                    <div class="g-color-title"><span class="g-color-title g-strong g-title-max font-Bahnschrif">{{ statistic.waybill?statistic.waybill.newWaybillCount:0 }}</span> 单</div>
+                    <div class="g-color-tag">运单总数 / {{ statistic.waybill?statistic.waybill.waybillCount:0 }} 单</div>
                   </div>
                 </div>
                 <img class="waybill-bg" src="~@/assets/images/workbench/icon_waybillbg.png" alt="">
               </div>
             </div>
-            <div class="waybill-frame">
+            <div class="waybill-frame g-title-smaller">
               <div class=" g-flex g-justifybetween">
                 <div style="width: 100px">
-                  <div class="g-color-title"><span class="g-color-blue g-title-smaller">●</span> 今日已装货</div>
-                  <div class="g-color-title g-strong g-title-large font-Bahnschrif" style="margin-left:10px">334</div>
+                  <div class="g-color-title"><span class="g-color-blue">●</span> 今日已装货</div>
+                  <div class="g-color-title g-strong g-title-large font-Bahnschrif" style="margin-left:10px">{{ statistic.waybill?statistic.waybill.orderLoading:0 }}</div>
                 </div>
                 <div style="width: 100px">
-                  <div class="g-color-title"><span class="g-color-blue g-title-smaller">●</span> 今日已卸货</div>
-                  <div class="g-color-title g-strong g-title-large font-Bahnschrif" style="margin-left:10px">334</div>
+                  <div class="g-color-title"><span class="g-color-blue">●</span> 今日已卸货</div>
+                  <div class="g-color-title g-strong g-title-large font-Bahnschrif" style="margin-left:10px">{{ statistic.waybill?statistic.waybill.orderUnload:0 }}</div>
                 </div>
                 <div style="width: 100px">
-                  <div class="g-color-title"><span class="g-color-blue g-title-smaller">●</span> 今日已复核</div>
-                  <div class="g-color-title g-strong g-title-large font-Bahnschrif" style="margin-left:10px">334</div>
+                  <div class="g-color-title"><span class="g-color-blue">●</span> 今日已复核</div>
+                  <div class="g-color-title g-strong g-title-large font-Bahnschrif" style="margin-left:10px">{{ statistic.waybill?statistic.waybill.orderReviewer:0 }}</div>
                 </div>
               </div>
               <div class=" g-flex g-justifybetween">
                 <div style="width: 100px">
-                  <div class="g-color-title"><span class="g-color-blue g-title-smaller">●</span> 今日已结算</div>
-                  <div class="g-color-title g-strong g-title-large font-Bahnschrif" style="margin-left:10px">334</div>
+                  <div class="g-color-title"><span class="g-color-blue">●</span> 今日已结算</div>
+                  <div class="g-color-title g-strong g-title-large font-Bahnschrif" style="margin-left:10px">{{ statistic.waybill?statistic.waybill.orderBalance:0 }}</div>
                 </div>
                 <div style="width: 100px">
-                  <div class="g-color-title"><span class="g-color-blue g-title-smaller">●</span> 今日已打款</div>
-                  <div class="g-color-title g-strong g-title-large font-Bahnschrif" style="margin-left:10px">334</div>
+                  <div class="g-color-title"><span class="g-color-blue">●</span> 今日已打款</div>
+                  <div class="g-color-title g-strong g-title-large font-Bahnschrif" style="margin-left:10px">{{ statistic.waybill?statistic.waybill.orderRemit:0 }}</div>
                 </div>
-                <div style="width: 100px" />
+                <div style="width: 100px">
+                  <img class="waybill-img" src="~@/assets/images/workbench/icon_waybilling.png" alt="">
+                </div>
               </div>
             </div>
           </div>
@@ -179,73 +181,73 @@
           <!-- 平台概览 -->
           <div class="g-flex g-aligncenter" style="width:100%;height:100%">
             <div class="g-flex g-aligncenter g-flexdirection" style="width:25%">
-              <el-progress type="circle" :percentage="80" :stroke-width="15" :width="130" color="#409EFF" :show-text="false" />
+              <el-progress type="circle" :percentage="shipmentPersent" :stroke-width="15" :width="130" color="#409EFF" :show-text="false" />
               <div class="platform-num g-flex g-aligncenter g-flexdirection">
-                <div class="g-color-title g-strong g-title-big font-Bahnschrif">4514</div>
+                <div class="g-color-title g-strong g-title-big font-Bahnschrif">{{ statistic.user?statistic.user.shipmentCount:0 }}</div>
                 <div class="g-color-title">平台货主数</div>
               </div>
               <div style="margin-top:10px;"><span class="g-color-blue marginright5">●</span>活跃货主</div>
               <div class="g-flex g-aligncenter g-justifyaround" style="width: 80%">
                 <div>
-                  <div class="g-color-title g-strong g-title-big font-Bahnschrif">260</div>
+                  <div class="g-color-title g-strong g-title-big font-Bahnschrif">{{ statistic.user?statistic.user.companyCount:0 }}</div>
                   <div class="g-color-tag">企业数</div>
                 </div>
                 <div>
-                  <div class="g-color-title g-strong g-title-big font-Bahnschrif">300</div>
+                  <div class="g-color-title g-strong g-title-big font-Bahnschrif">{{ statistic.user?statistic.user.accountCount:0 }}</div>
                   <div class="g-color-tag">账号数</div>
                 </div>
                 <div>
-                  <div class="g-color-title g-strong g-title-big font-Bahnschrif">160</div>
+                  <div class="g-color-title g-strong g-title-big font-Bahnschrif">{{ statistic.user?statistic.user.activeCompany:0 }}</div>
                   <div class="g-color-tag">活跃企业</div>
                 </div>
               </div>
             </div>
             <div class="g-flex g-aligncenter g-flexdirection" style="width:25%">
-              <el-progress type="circle" :percentage="70" :stroke-width="15" :width="130" color="#40CBFF" :show-text="false" />
+              <el-progress type="circle" :percentage="driverPersent" :stroke-width="15" :width="130" color="#40CBFF" :show-text="false" />
               <div class="platform-num g-flex g-aligncenter g-flexdirection">
-                <div class="g-color-title g-strong g-title-big font-Bahnschrif">15067</div>
+                <div class="g-color-title g-strong g-title-big font-Bahnschrif">{{ statistic.user?statistic.user.driverCount:0 }}</div>
                 <div class="g-color-title">平台司机数</div>
               </div>
               <div style="margin-top:10px;"><span class="g-color-blue marginright5">●</span>活跃司机</div>
               <div class="g-flex g-aligncenter g-justifyaround" style="width: 80%">
                 <div>
-                  <div class="g-color-title g-strong g-title-big font-Bahnschrif">260</div>
+                  <div class="g-color-title g-strong g-title-big font-Bahnschrif">{{ statistic.user?statistic.user.temporaryDriver:0 }}</div>
                   <div class="g-color-tag">零散司机</div>
                 </div>
                 <div>
-                  <div class="g-color-title g-strong g-title-big font-Bahnschrif">300</div>
+                  <div class="g-color-title g-strong g-title-big font-Bahnschrif">{{ statistic.user?statistic.user.employmentDriver:0 }}</div>
                   <div class="g-color-tag">聘用司机</div>
                 </div>
                 <div>
-                  <div class="g-color-title g-strong g-title-big font-Bahnschrif">15067</div>
+                  <div class="g-color-title g-strong g-title-big font-Bahnschrif">{{ statistic.user?statistic.user.activeDriver:0 }}</div>
                   <div class="g-color-tag">活跃司机</div>
                 </div>
               </div>
             </div>
             <div class="g-flex g-aligncenter g-flexdirection" style="width:25%">
-              <el-progress type="circle" :percentage="30" :stroke-width="15" :width="130" color="#67C23A" :show-text="false" />
+              <el-progress type="circle" :percentage="vehiclePersent" :stroke-width="15" :width="130" color="#67C23A" :show-text="false" />
               <div class="platform-num g-flex g-aligncenter g-flexdirection">
-                <div class="g-color-title g-strong g-title-big font-Bahnschrif">15099</div>
+                <div class="g-color-title g-strong g-title-big font-Bahnschrif">{{ statistic.user?statistic.user.vehicleCount:0 }}</div>
                 <div class="g-color-title">平台车辆数</div>
               </div>
               <div style="margin-top:10px;"><span class="g-color-success marginright5">●</span>活跃车辆</div>
               <div class="g-flex g-aligncenter g-justifyaround" style="width: 80%">
                 <div>
-                  <div class="g-color-title g-strong g-title-big font-Bahnschrif">260</div>
+                  <div class="g-color-title g-strong g-title-big font-Bahnschrif">{{ statistic.user?statistic.user.activeVehicle:0 }}</div>
                   <div class="g-color-tag">活跃车辆</div>
                 </div>
               </div>
             </div>
             <div class="g-flex g-aligncenter g-flexdirection" style="width:25%">
-              <el-progress type="circle" :percentage="60" :stroke-width="15" :width="130" color="#FFBB00" :show-text="false" />
+              <el-progress type="circle" :percentage="teamPersent" :stroke-width="15" :width="130" color="#FFBB00" :show-text="false" />
               <div class="platform-num g-flex g-aligncenter g-flexdirection">
-                <div class="g-color-title g-strong g-title-big font-Bahnschrif">13067</div>
+                <div class="g-color-title g-strong g-title-big font-Bahnschrif">{{ statistic.user?statistic.user.teamCount:0 }}</div>
                 <div class="g-color-title">平台调度者数</div>
               </div>
               <div style="margin-top:10px;"><span class="g-color-warning marginright5">●</span>活跃调度者</div>
               <div class="g-flex g-aligncenter g-justifyaround" style="width: 80%">
                 <div>
-                  <div class="g-color-title g-strong g-title-big font-Bahnschrif">160</div>
+                  <div class="g-color-title g-strong g-title-big font-Bahnschrif">{{ statistic.user?statistic.user.activeTeam:0 }}</div>
                   <div class="g-color-tag">活跃调度者</div>
                 </div>
               </div>
@@ -273,66 +275,87 @@
               <div :class="activeName === '4' ? 'trend-onbottom': 'trend-bottom'" @click="handleClick('4')">消息通知</div>
             </el-col>
           </el-row>
-          <!-- 运单动态 -->
-          <div v-if="activeName === '1'" class="trend-frame">
-            <div v-for="(item, index) in 10" :key="index" class="trend-content g-flex g-alignend" @click="handleWaybill(item)">
-              <div style="margin-right: 12px;">
-                <div class="g-color-tag g-title-smaller">5月17日</div>
-                <div class="g-color-title g-strong margintop5">14:15</div>
-              </div>
-              <span class="g-color-blue marginright5">●</span>
-              <div v-if="index != 0" class="trend-line" />
-              <div style="margin-left: 12px;">
-                <div class="g-color-tag g-title-smaller">余晨望</div>
-                <div class="ellipsis g-color-title g-strong margintop5" style="width:250px;">取消订单（1092838191201）</div>
-              </div>
+
+          <ul v-infinite-scroll="loadmore" infinite-scroll-delay="500" :infinite-scroll-disabled="disabled" class="trend-frame">
+            <!-- 运单动态 -->
+            <div v-if="activeName === '1'" class="cursor-point">
+              <li v-for="(item, index) in waybillList" :key="index" class="trend-content g-flex g-alignend" @click="handleWaybill(item)">
+                <div style="margin-right: 12px;width:51px;">
+                  <div class="g-color-tag g-title-smaller">{{ parseTime(item.wayBillUpdateTime, '{m}月{d}日') }}</div>
+                  <div class="g-color-title g-strong margintop5">{{ parseTime(item.wayBillUpdateTime, '{h}:{i}') }}</div>
+                </div>
+                <span class="g-color-blue marginright5">●</span>
+                <div v-if="index != 0" class="trend-line" />
+                <div style="margin-left: 12px;">
+                  <div class="g-color-tag g-title-smaller">余晨望</div>
+                  <div class="ellipsis g-color-title g-strong margintop5" style="width:250px;">
+                    <span v-if="item.status === '1'">已接单</span>
+                    <span v-if="item.status === '2'">已装货</span>
+                    <span v-if="item.status === '3'">已卸货</span>
+                    <span v-if="item.status === '4'">已回单</span>
+                    <span v-if="item.status === '5'">已结算</span>
+                    <span v-if="item.status === '6'">申请打款</span>
+                    <span v-if="item.status === '7'">已打款/</span>
+                    （{{ item.waybillNo }}）
+                  </div>
+                </div>
+              </li>
             </div>
-          </div>
-          <!-- 货单动态 -->
-          <div v-if="activeName === '2'" class="trend-frame">
-            <div v-for="(item, index) in 10" :key="index" class="trend-content g-flex g-alignend" @click="handleOrder(item)">
-              <div style="margin-right: 12px;">
-                <div class="g-color-tag g-title-smaller">5月17日</div>
-                <div class="g-color-title g-strong margintop5">14:15</div>
-              </div>
-              <span class="g-color-blue marginright5">●</span>
-              <div v-if="index != 0" class="trend-line" />
-              <div style="margin-left: 12px;">
-                <div class="g-color-tag g-title-smaller">余晨望</div>
-                <div class="ellipsis g-color-title g-strong margintop5" style="width:250px;">发布货源（1092838191201）</div>
-              </div>
+            <!-- 货单动态 -->
+            <div v-if="activeName === '2'">
+              <li v-for="(item, index) in orderList" :key="index" class="trend-content g-flex g-alignend" @click="handleOrder(item)">
+                <div style="margin-right: 12px;width:51px;">
+                  <div class="g-color-tag g-title-smaller">{{ parseTime(item.redisOrderInfoListVoList[0].createTime, '{m}月{d}日') }}</div>
+                  <div class="g-color-title g-strong margintop5">{{ parseTime(item.redisOrderInfoListVoList[0].createTime, '{h}:{i}') }}</div>
+                </div>
+                <span class="g-color-blue marginright5">●</span>
+                <div v-if="index != 0" class="trend-line" />
+                <div style="margin-left: 12px;">
+                  <div class="g-color-tag g-title-smaller">{{ item.redisOrderInfoListVoList[0].adminName }}</div>
+                  <div class="ellipsis g-color-title g-strong margintop5" style="width:250px;">发布货源（{{ item.redisOrderInfoListVoList[0].mainOrderNumber }}）</div>
+                </div>
+              </li>
             </div>
-          </div>
-          <!-- 发票动态 -->
-          <div v-if="activeName === '3'" class="trend-frame">
-            <div v-for="(item, index) in 10" :key="index" class="trend-content g-flex g-alignend" @click="handleInvoice(item)">
-              <div style="margin-right: 12px;">
-                <div class="g-color-tag g-title-smaller">5月17日</div>
-                <div class="g-color-title g-strong margintop5">14:15</div>
-              </div>
-              <span class="g-color-blue marginright5">●</span>
-              <div v-if="index != 0" class="trend-line" />
-              <div style="margin-left: 12px;">
-                <div class="g-color-tag g-title-smaller">余晨望</div>
-                <div class="ellipsis g-color-title g-strong margintop5" style="width:250px;">货主申请开票（1092838191201）</div>
-              </div>
+            <!-- 发票动态 -->
+            <div v-if="activeName === '3'">
+              <li v-for="(item, index) in billList" :key="index" class="trend-content g-flex g-alignend" @click="handleInvoice(item)">
+                <div style="margin-right: 12px;width:51px;">
+                  <div class="g-color-tag g-title-smaller">{{ parseTime(item.invoiceApplyTime, '{m}月{d}日') }}</div>
+                  <div class="g-color-title g-strong margintop5">{{ parseTime(item.invoiceApplyTime, '{h}:{i}') }}</div>
+                </div>
+                <span class="g-color-blue marginright5">●</span>
+                <div v-if="index != 0" class="trend-line" />
+                <div style="margin-left: 12px;">
+                  <div class="g-color-tag g-title-smaller">余晨望</div>
+                  <div class="ellipsis g-color-title g-strong margintop5" style="width:250px;">
+                    <span v-if="item.invoiceStatus === '1'">货主申请开票</span>
+                    <span v-if="item.invoiceStatus === '2'">货主已取消</span>
+                    <span v-if="item.invoiceStatus === '3'">审核不通过</span>
+                    <span v-if="item.invoiceStatus === '4'">审核通过</span>
+                    <span v-if="item.invoiceStatus === '5'">已开票</span>
+                    （{{ item.askForNo }}）
+                  </div>
+                </div>
+              </li>
             </div>
-          </div>
-          <!-- 消息通知 -->
-          <div v-if="activeName === '4'" class="trend-frame">
-            <div v-for="(item, index) in noticeList1" :key="index" class="trend-content g-flex g-alignend">
-              <div style="margin-right: 12px;">
-                <div class="g-color-tag g-title-smaller">{{ parseTime(item.createTime, '{m}月{d}日') }}</div>
-                <div class="g-color-title g-strong margintop5">{{ parseTime(item.createTime, '{h}:{i}') }}</div>
-              </div>
-              <span class="g-color-blue marginright5">●</span>
-              <div v-if="index != 0" class="trend-line" />
-              <div style="margin-left: 12px;">
-                <div class="g-color-tag g-title-smaller">{{ item.remark }}</div>
-                <div class="ellipsis g-color-title g-strong margintop5" style="width:250px;" v-html="item.noticeContent" />
-              </div>
+            <!-- 消息通知 -->
+            <div v-if="activeName === '4'">
+              <li v-for="(item, index) in noticeList1" :key="index" class="trend-content g-flex g-alignend">
+                <div style="margin-right: 12px;width:51px;">
+                  <div class="g-color-tag g-title-smaller">{{ parseTime(item.createTime, '{m}月{d}日') }}</div>
+                  <div class="g-color-title g-strong margintop5">{{ parseTime(item.createTime, '{h}:{i}') }}</div>
+                </div>
+                <span class="g-color-blue marginright5">●</span>
+                <div v-if="index != 0" class="trend-line" />
+                <div style="margin-left: 12px;">
+                  <div class="g-color-tag g-title-smaller">{{ item.remark }}</div>
+                  <div class="ellipsis g-color-title g-strong margintop5" style="width:250px;" v-html="item.noticeContent" />
+                </div>
+              </li>
             </div>
-          </div>
+            <li v-if="loading" class="g-flex g-justifycenter">加载中...</li>
+            <li v-if="dataOver" class="g-flex g-justifycenter">没有更多了</li>
+          </ul>
           <div class="notice-bottom" />
         </div>
       </div>
@@ -345,6 +368,7 @@
 <script>
 import { getUserInfo } from '@/utils/auth';
 import { listNoticeAll } from '@/api/system/notice';
+import { statisticInfo, waybillList, orderList, billList } from '@/api/workBanch';
 // 运单详情弹窗
 import DetailDialog from '@/views/waybill/components/detailDialog';
 // 运单详情弹窗
@@ -380,12 +404,37 @@ export default {
       currentId: null,
       // 表单是否禁用
       formDisable: false,
-      value: new Date()
+      // 选中时间
+      value: new Date(),
+      dataTime: null,
+      queryParams: {
+        pageNum: 1,
+        pageSize: 20
+        // updateTime: null
+      },
+      // 动态列表
+      waybillList: [],
+      orderList: [],
+      billList: [],
+      // 是否全部加载
+      dataOver: false,
+      // 加载中
+      loading: false,
+      // 禁用加载
+      disabled: true,
+      // 统计数据
+      statistic: {},
+      shipmentPersent: 0,
+      driverPersent: 0,
+      vehiclePersent: 0,
+      teamPersent: 0
     };
   },
   watch: {
     value(val) {
-      console.log(val);
+      this.dataTime = this.parseTime(val, '{y}-{m}-{d}');
+      // console.log(this.dataTime);
+      this.getStatisticInfo();
     }
   },
   created() {
@@ -394,44 +443,118 @@ export default {
     this.isShipment = isShipment;
     this.user = user;
     this.shipment = shipment;
-    this.getNoticeList();
+    // console.log(this.user);
+    this.dataTime = this.parseTime(new Date(), '{y}-{m}-{d}');
+    this.getInfo();
     // 页面刚进入时开启长连接
-    this.initWebSocket();
+    // this.initWebSocket();
   },
   destroyed: function() {
     // 页面销毁时关闭长连接
-    this.websocketclose();
+    // this.websocketclose();
   },
   methods: {
-    // 查看运单详情
-    handleWaybill(item) {
-      this.$refs.DetailDialog.reset();
-      this.currentId = '9715e39b88ec45cb9d125c44a67cab90';
-      this.open = true;
-      this.title = '运输单信息';
-      this.formDisable = true;
+    getInfo() {
+      this.getStatisticInfo();
+      this.getNoticeList2();
+      this.getWaybillList();
     },
-    handleOrder(item) {
-      const code = '41dbe49a630644549d89aa8676fde6a3';
-      this.$router.push({ name: 'Release', query: { id: code, t: '0' }});
+    // 查询统计数据
+    getStatisticInfo() {
+      statisticInfo(this.user.branch.code, this.dataTime).then(response => {
+        // console.log(response);
+        this.statistic = response.data;
+        this.shipmentPersent = Math.round((response.data.user.activeCompany * 100) / response.data.user.shipmentCount);
+        this.driverPersent = Math.round((response.data.user.activeDriver * 100) / response.data.user.driverCount);
+        this.vehiclePersent = Math.round((response.data.user.activeVehicle * 100) / response.data.user.vehicleCount);
+        this.teamPersent = Math.round((response.data.user.activeTeam * 100) / response.data.user.teamCount);
+      });
     },
-    handleInvoice(item) {
-      this.$router.push({ name: 'Statement', query: { code: item.code }});
-    },
-    /** 查询通知公告列表 */
-    getNoticeList() {
+    /** 查询通知列表 */
+    getNoticeList1() {
       // 通知
       listNoticeAll({ noticeType: '1' }).then(response => {
-        this.noticeList1 = response.data;
+        this.dataOver = !response.data.length;
+        this.noticeList1 = this.noticeList1.concat(response.data);
         // console.log(this.noticeList1);
+        this.loading = false;
+        if (this.waybillList) {
+          this.disabled = false;
+        }
       });
-      // 公告
+    },
+    /** 查询公告列表 */
+    getNoticeList2() {
       listNoticeAll({ noticeType: '2' }).then(response => {
         this.noticeList2 = response.data.map(response => {
           return response.noticeContent;
         });
         // console.log(this.noticeList2);
       });
+    },
+    loadmore() {
+      if (this.dataOver) return;
+      this.queryParams.pageNum++;
+      this.loading = true;
+      this.disabled = true;
+      if (this.activeName === '1') {
+        this.getWaybillList();
+      } else if (this.activeName === '2') {
+        this.getOrderList();
+      } else if (this.activeName === '3') {
+        this.getBillList();
+      } else if (this.activeName === '4') {
+        this.getNoticeList1();
+      }
+    },
+    // 查询运单列表
+    getWaybillList() {
+      waybillList(this.queryParams).then(response => {
+        this.dataOver = !response.rows.length;
+        this.waybillList = this.waybillList.concat(response.rows);
+        this.loading = false;
+        if (this.waybillList) {
+          this.disabled = false;
+        }
+      });
+    },
+    // 查询货源列表
+    getOrderList() {
+      orderList(this.queryParams).then(response => {
+        this.dataOver = !response.data.list.length;
+        this.orderList = this.orderList.concat(response.data.list);
+        // console.log(this.orderList);
+        this.loading = false;
+        if (this.waybillList) {
+          this.disabled = false;
+        }
+      });
+    },
+    // 查询发票列表
+    getBillList() {
+      billList(this.queryParams).then(response => {
+        this.dataOver = !response.data.rows.length;
+        this.billList = this.billList.concat(response.data.rows);
+        this.loading = false;
+        if (this.waybillList) {
+          this.disabled = false;
+        }
+      });
+    },
+    // 查看运单详情
+    handleWaybill(item) {
+      this.$refs.DetailDialog.reset();
+      this.currentId = item.wayBillCode;
+      this.open = true;
+      this.title = '运输单信息';
+      this.formDisable = true;
+    },
+    handleOrder(item) {
+      const code = item.code;
+      this.$router.push({ name: 'Release', query: { id: code, t: '0' }});
+    },
+    handleInvoice(item) {
+      this.$router.push({ name: 'Statement', query: { code: item.code }});
     },
     // weosocket调用方法
     initWebSocket() { // 初始化weosocket
@@ -472,37 +595,21 @@ export default {
     // 切换动态
     handleClick(tab) {
       this.activeName = tab;
+      this.queryParams.pageNum = 1;
+      this.dataOver = false;
+      if (tab === '1') {
+        this.getWaybillList();
+      } else if (tab === '2') {
+        this.getOrderList();
+      } else if (tab === '3') {
+        this.getBillList();
+      } else if (tab === '4') {
+        this.getNoticeList1();
+      }
     },
     // 导航点击事件
-    handleNav(index) {
-      switch (index) {
-        case 1:
-          this.$router.push({ name: 'Shipment' });
-          break;
-        case 2:
-          this.$router.push({ name: 'Report' });
-          break;
-        case 3:
-          this.$router.push({ name: 'Release' });
-          break;
-        case 4:
-          this.$router.push({ name: 'Supplement' });
-          break;
-        case 5:
-          this.$router.push({ name: 'Manages' });
-          break;
-        case 6:
-          this.$router.push({ name: 'Askfor' });
-          break;
-        case 7:
-          this.$router.push({ name: 'List' });
-          break;
-        case 8:
-          this.$router.push({ name: 'Complaint' });
-          break;
-        default:
-          break;
-      }
+    handleNav(e) {
+      this.$router.push({ name: e });
     }
   }
 };

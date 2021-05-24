@@ -75,9 +75,14 @@
 }
 .waybill-frame{
   height: 140px;
-  background: #F1F3F5;
-  border-radius: 4px;
+  background: #F6FAFE;
+  border-radius: 4px 4px 25px 4px;
   padding: 15px;
+}
+.waybill-img{
+  position: relative;
+  left: 63px;
+  top: 21px;
 }
 ::v-deep .el-progress-bar__inner {
   background: linear-gradient(270deg, #409EFF 0%, rgba(64, 158, 255, 0.51) 100%);
@@ -86,9 +91,14 @@
 .order-frame{
   width: 140px;
   height: 140px;
-  background: #F1F3F5;
-  border-radius: 4px;
+  background: #F6FAFE;
+  border-radius: 4px 4px 25px 4px;
   padding: 25px 15px 15px;
+}
+.order-img{
+  position: relative;
+  left: 73px;
+  top: 11px;
 }
 // 平台概览
 .platform-num{
@@ -170,9 +180,6 @@
   padding: 0 10px 0 20px;
   margin-right: 5px;
 }
-.trend-frame :hover{
-  background: #F8FBFE;
-}
 .trend-line{
   position: relative;
   bottom: 25px;
@@ -190,6 +197,9 @@
   cursor: pointer;
   height: 60px;
   padding: 10px 0 10px 15px;
+}
+.cursor-point :hover{
+  background: #F8FBFE;
 }
 .ellipsis{
   overflow: hidden;
