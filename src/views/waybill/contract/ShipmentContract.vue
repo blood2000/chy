@@ -74,7 +74,7 @@
             <tr>
               <td><b>计划数量</b></td>
               <td id="weight">{{ obj.loadWeight }}
-                吨
+                {{ obj.stowageStatus == '0' ? '吨' : (obj.stowageStatus == '1'? '立方': '车') }}
               </td>
               <td><b>货物描述</b></td>
               <td id="goods_type">{{ obj.goodsName }}</td>
