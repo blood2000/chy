@@ -7,7 +7,10 @@
     <div class="middle-row-btn">
       <div v-for="(item, index) in datas" :key="index">
         <div class="middle-span" :class="!item.mt_show?'mt_show': null">{{ item.mt_show || '...' }}</div>
-        <div class="g-text">{{ item.value }}<span>{{ item.unit }}</span></div>
+        <div class="g-text">
+          <!-- {{ item.value }} -->
+          <count-to :end-val="item.value -0" :decimal-places="item.unit==='万元' || item.unit==='元'? 2:0" />
+          <span>{{ item.unit }}</span></div>
       </div>
     </div>
 
@@ -46,7 +49,10 @@
 </template>
 
 <script>
+import CountTo from '@/components/CountTo';
+
 export default {
+  components: { CountTo },
   props: {
     layout: {
       type: Object,

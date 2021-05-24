@@ -134,10 +134,10 @@
         <el-input v-model="form.vehicleRemainingLoadVolume" placeholder="请输入车辆可载立方" class="width90 unit-item" clearable />
         <span class="unit-span g-color-gray">m³</span>
       </el-form-item>
-      <el-form-item label="车身自重" prop="selfRespect">
+      <!-- <el-form-item label="车身自重" prop="selfRespect">
         <el-input v-model="form.selfRespect" placeholder="请输入车身自重" class="width90 unit-item" clearable />
         <span class="unit-span g-color-gray">吨</span>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="车辆识别码" prop="chassisNumber">
         <el-input v-model="form.chassisNumber" placeholder="请输入车辆识别码" class="width90" clearable />
       </el-form-item>
@@ -408,7 +408,7 @@ export default {
         vehicleLoadWeight: null,
         vehicleLoadVolume: null,
         vehicleRemainingLoadVolume: null,
-        selfRespect: null,
+        // selfRespect: null,
         chassisNumber: null,
         engineNumber: null,
         vehicleChassisNumber: null,

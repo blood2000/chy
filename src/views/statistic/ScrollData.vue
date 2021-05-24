@@ -82,7 +82,17 @@ export default {
     },
     // 处理实时数据-货单
     setOrderData(val, time) {
-
+      const { remark } = val;
+      if (remark) {
+        this.$refs.orderRef.setData(remark, time);
+      }
+    },
+    // 处理实时数据-打款
+    setWaybillData(val, time) {
+      const { remark } = val;
+      if (remark) {
+        this.$refs.transferRef.setData(remark, time);
+      }
     }
   }
 };
