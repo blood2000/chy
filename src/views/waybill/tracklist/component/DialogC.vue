@@ -14,7 +14,7 @@
         />
       </el-form-item>
       <el-form-item :label="weightLabel" prop="unloadWeight">
-        <el-input-number v-model="form.unloadWeight" placeholder="请输入卸货数量" controls-position="right" style="width:90%;" />
+        <el-input-number v-model="form.unloadWeight" placeholder="请输入卸货数量" :precision="2" controls-position="right" :min="0" style="width:90%;" />
       </el-form-item>
       <!-- <el-form-item label="卸货地址" prop="waybillAddress">
         <el-select

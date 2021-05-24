@@ -57,7 +57,7 @@ export default {
       default: ''
     },
     open: Boolean,
-    shipmentCode: {
+    shipment: {
       type: String,
       default: null
     }
@@ -126,8 +126,8 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          if (this.shipmentCode) {
-            this.form.shipmentCode = this.shipmentCode;
+          if (this.shipment) {
+            this.form.shipmentCode = this.shipment;
           }
           if (this.form.id) {
             updateInfo(this.form).then(response => {
@@ -162,7 +162,8 @@ export default {
         projectName: null,
         commodityCategoryCode: null,
         commoditySubclassCodes: null,
-        projectRemark: null
+        projectRemark: null,
+        projectType: '1' // 新增项目类型 1 大宗商品 2 渣土
       };
       this.resetForm('form');
       this.isMore = '2';

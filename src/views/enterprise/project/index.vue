@@ -118,8 +118,8 @@
         ref="ProjectDialog"
         :title="title"
         :open.sync="open"
-        :shipment-code="shipmentCode"
-        :company-code="companyCode"
+        :shipment="shipmentCode"
+        :company="companyCode"
         @refresh="getList"
       />
     </div>
