@@ -208,7 +208,9 @@ export default {
     '$route.query.project': {
       handler(value) {
         if (value) {
-          console.log(value);
+          this.$nextTick(() => {
+            this.handleAdd();
+          });
         }
       },
       immediate: true
