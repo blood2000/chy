@@ -131,7 +131,6 @@ export default {
       // 动画
       transform: translateY(0);
       &.isRoll{
-        color: #000;
         transform: translateY(1.35rem);
         transition: transform 0.4s;
       }

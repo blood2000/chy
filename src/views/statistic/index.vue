@@ -251,6 +251,7 @@ export default {
       if (userNotice) {
         this.$refs.UserInfoRef.setData(userNotice);
         this.$refs.CapacityInfoRef.setVehicleData(userNotice);
+        this.$refs.ScrollDataRef.setUserData(userNotice, insertTime);
       }
       // 开票√
       if (invoiceNotice) {
