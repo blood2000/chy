@@ -572,7 +572,9 @@ export default {
       });
     },
     _floor(number) {
-      return Math.floor(number * 100) / 100;
+      // return Math.floor(number * 100) / 100; // (截取)
+      // return (number - 0).toFixed(2); //  bug比较多
+      return Math.round((number - 0) * Math.pow(10, 2)) / Math.pow(10, 2);
     }
   }
 };
