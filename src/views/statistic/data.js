@@ -45,6 +45,7 @@ export const dataJson = {
         'operateType': 0, // 1发布(上架) 2下架
         'orderInfoNumber': 0, // 货单总数 1 -1
         'publishedNumber': 0, // 已发布 1 -1
+        'remark': '', // 滚动信息
         // 货主信息
         'shipmentBean': {
           'adminName': '',
@@ -157,6 +158,7 @@ export const dataJson = {
       'name': '',
       'telphone': ''
     },
+    'remark': '', // 滚动信息
     'shipment': {
       'code': '',
       'adminName': '',
