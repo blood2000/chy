@@ -1,7 +1,7 @@
 <template>
   <div class="quick-entry ly-flex-align-center ly-flex-align-center">
     <div
-      v-for="item in itemList"
+      v-for="item in lists"
       :key="item.label"
       class="quick-entry__item ly-flex-v ly-flex-align-center ly-flex-pack-center"
       @click="handleRouter(item.name, item.query)"
@@ -10,10 +10,12 @@
       <p>{{ item.label }}</p>
       <span v-show="item.count > 0" class="count">{{ item.count }}</span>
     </div>
+
   </div>
 </template>
 
 <script>
+import { getUserInfo } from '@/utils/auth';
 export default {
   data() {
     return {
@@ -24,13 +26,35 @@ export default {
         { label: '运输单', icon: 'order', name: 'Manages', query: {}, count: 24 },
         { label: '提现申请', icon: 'withdrawal', name: 'Withdrawal', query: { status: 0 }, count: 20 }
         // { label: '消息', icon: 'msg', name: 'Withdrawal', query: { status: 0 }, count: 20 }
-      ]
+      ],
+      itemListShipment: [
+        { label: '联系客服', icon: 'service', name: '', query: { authStatus: 0, type: 'service' }, count: 0 },
+        { label: 'app下载', icon: 'download', name: '', query: { authStatus: 0, url: 'https://ddcwl.com/kuaiche/apps' }, count: 0 }
+        // { label: '消息', icon: 'msg', name: '', query: { authStatus: 0 }, count: 20 }
+      ],
+      open: false
     };
   },
+
+  computed: {
+    lists() {
+      const { isShipment = false } = getUserInfo() || {};
+      return isShipment ? this.itemListShipment : this.itemList;
+    }
+  },
+
+  created() {
+
+
+    // this.isShipment = isShipment;
+  },
+
   methods: {
     handleRouter(name, query) {
       // 打开对应路由
       if (name === '') {
+        query.url && (window.open(query.url));
+        query.type === 'service' && this.serviceOpen();
         return;
       } else if (name === this.$route.name) {
         this.$router.replace({
@@ -47,6 +71,16 @@ export default {
           }
         });
       }
+    },
+
+    serviceOpen() {
+      const msg = `
+      <strong class="g-title-big"><i class="el-icon-phone mr10"></i> 400 827 0535</strong>
+      `;
+      this.$alert(msg, '联系客服', {
+        showClose: false,
+        dangerouslyUseHTMLString: true
+      });
     }
   }
 };

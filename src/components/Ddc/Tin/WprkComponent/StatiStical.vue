@@ -3,7 +3,10 @@
 
     <div v-for="(item,index) in datas" :key="index" class="shujubox-rowitem-item">
       <div class="shujubox-rowitem-item-t" :class="!item.name?'text_none': null">{{ item.name || '***' }}</div>
-      <div class="g-text">{{ item.value }} <span>{{ item.unit }}</span></div>
+      <div class="g-text">
+        <!-- {{ item.value }}  -->
+        <count-to :end-val="item.value-0" :decimal-places="item.unit==='万元' || item.unit==='元'? 2:0" />
+        <span>{{ item.unit }}</span></div>
     </div>
 
     <!-- <div v-if="(item,index) in datas" :key="index" class="shujubox-rowitem-item">
@@ -23,7 +26,9 @@
 </template>
 
 <script>
+import CountTo from '@/components/CountTo';
 export default {
+  components: { CountTo },
   props: {
     datas: {
       type: Array,

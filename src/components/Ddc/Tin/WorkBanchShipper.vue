@@ -38,7 +38,7 @@
                   unit: '个',
                   title: '项目'
                 }"
-                value="58"
+                value="58222"
                 @click="handlerClick('Project','0')"
               />
               <DagaoItem
@@ -77,7 +77,7 @@
                   },
                   {
                     name: '今日运输',
-                    value: '266.5',
+                    value: '266',
                     unit: '单'
                   },
 
@@ -159,7 +159,7 @@
                   :datas="[
                     {
                       mt_show: '',
-                      value: '4,369.68',
+                      value: '4369.68',
                       unit: '元'
                     },
                     {
@@ -186,7 +186,7 @@
                   :datas="[
                     {
                       mt_show: '',
-                      value: '1,369.68',
+                      value: '1369.68',
                       unit: '元'
                     }
                   ]"
