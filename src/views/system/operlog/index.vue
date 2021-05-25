@@ -33,7 +33,6 @@
           >
             <el-option
               v-for="dict in typeOptions"
-              :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
             />
@@ -50,7 +49,6 @@
           >
             <el-option
               v-for="dict in statusOptions"
-              :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
             />
