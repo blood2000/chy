@@ -75,6 +75,8 @@ export default {
       // 商品小类字典
       commoditySubclassCodesOptions: [],
       commoditySubclassCodes: [],
+      // 项目类型字典
+      projectTypeOptions: [],
       // 表单参数
       form: {
       },
@@ -120,6 +122,10 @@ export default {
     this.listByDict(this.commodityCategory).then(response => {
       this.commodityCategoryCodeOptions = response.data;
     });
+    this.listByDict({ dictPid: '0', dictType: 'transportation_scenario' }).then(response => {
+      this.projectTypeOptions = response.data;
+      console.log(this.projectTypeOptions);
+    });
   },
   methods: {
     /** 提交按钮 */
@@ -163,7 +169,7 @@ export default {
         commodityCategoryCode: null,
         commoditySubclassCodes: null,
         projectRemark: null,
-        projectType: '1' // 新增项目类型 1 大宗商品 2 渣土
+        projectType: '1100' // 新增项目类型 1100 大宗商品 1200 渣土
       };
       this.resetForm('form');
       this.isMore = '2';

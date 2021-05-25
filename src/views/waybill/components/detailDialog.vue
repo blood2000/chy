@@ -218,7 +218,7 @@
 
 <script>
 import { getWayBill, getWaybillAttachment, getWaybillComment, getWaybillTrace } from '@/api/waybill/manages';
-import { trackLocation } from '@/api/waybill/tracklist';
+import { jimiTrackLocation } from '@/api/waybill/tracklist';
 export default {
   props: {
     title: {
@@ -327,7 +327,7 @@ export default {
         this.formCommentShipment = response.data ? response.data[0] : null;
       });
       // 轨迹
-      trackLocation(this.queryParams).then(response => {
+      jimiTrackLocation(this.queryParams).then(response => {
         const tracklist = response.data.result.map(function(response) {
           return [response.lng, response.lat];
         });

@@ -295,7 +295,7 @@
                     <span v-if="item.status === '4'">已回单</span>
                     <span v-if="item.status === '5'">已结算</span>
                     <span v-if="item.status === '6'">申请打款</span>
-                    <span v-if="item.status === '7'">已打款/</span>
+                    <span v-if="item.status === '7'">已打款</span>
                     （{{ item.waybillNo }}）
                   </div>
                 </div>
