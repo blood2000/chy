@@ -34,3 +34,22 @@ export function billList(data) {
     data: data
   });
 }
+
+// 货主工作台统计
+export function shipmentInformation(query) {
+  return request({
+    url: '/transportation/shipmentWorkBench/shipmentInformation',
+    method: 'get',
+    params: query
+  });
+}
+
+// 运营侧 导航栏待审核数字
+export function getUnreviewed(branchCode) {
+  return request({
+    url: `/transportation/workBench/getUnreviewed/${branchCode}`,
+    method: 'get'
+  });
+}
+
+

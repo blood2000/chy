@@ -38,7 +38,7 @@
                   unit: '个',
                   title: '项目'
                 }"
-                :value="dagaoItem.key1111"
+                :value="dagaoItem.item || 0"
                 @click="handlerClick('Project','0')"
               />
               <DagaoItem
@@ -47,7 +47,7 @@
                   unit: '个',
                   title: '常用地址'
                 }"
-                :value="dagaoItem.key1112"
+                :value="dagaoItem.frequentlyAddress || 0"
                 @click="handlerClick('CompanyAddress','0')"
               />
               <DagaoItem
@@ -56,7 +56,7 @@
                   unit: '个',
                   title: '计算规则'
                 }"
-                :value="dagaoItem.key1113"
+                :value="dagaoItem.rule || 0"
                 @click="handlerClick('Rules','0')"
               />
 
@@ -72,12 +72,12 @@
                 :datas="[
                   {
                     name: '今日接单',
-                    value: statiStical.statiStical1_1 || '0',
+                    value: statiStical.orderReceivingToday || '0',
                     unit: '单'
                   },
                   {
                     name: '今日运输',
-                    value: statiStical.statiStical1_2 || '0',
+                    value: statiStical.transportToday || '0',
                     unit: '单'
                   },
 
@@ -88,12 +88,12 @@
                 :datas="[
                   {
                     name: '今日打款',
-                    value: statiStical.statiStical2_1 || '0',
+                    value: statiStical.orderRemitToday || '0',
                     unit: '单'
                   },
                   {
                     name: '',
-                    value: statiStical.statiStical2_2 || '0',
+                    value: statiStical.orderRemitAmountToday || '0',
                     unit: '万元'
                   },
 
@@ -104,12 +104,12 @@
                 :datas="[
                   {
                     name: '今日开票',
-                    value: statiStical.statiStical3_1 || '0',
+                    value: statiStical.openInvoiceToday || '0',
                     unit: '单'
                   },
                   {
                     name: '',
-                    value: statiStical.statiStical3_2 || '0',
+                    value: statiStical.openInvoiceAmountToday || '0',
                     unit: '万元'
                   },
 
@@ -120,17 +120,17 @@
                 :datas="[
                   {
                     name: '合作车队',
-                    value: statiStical.statiStical4_1 || '0',
+                    value: statiStical.team || '0',
                     unit: '个'
                   },
                   {
                     name: '合作车辆',
-                    value: statiStical.statiStical4_2 || '0',
+                    value: statiStical.vehicle || '0',
                     unit: '辆'
                   },
                   {
                     name: '合作司机',
-                    value: statiStical.statiStical4_3 || '0',
+                    value: statiStical.driver || '0',
                     unit: '个'
                   }
                 ]"
@@ -159,13 +159,8 @@
                   :datas="[
                     {
                       mt_show: '',
-                      value: rowContent.rowContent1_1 || '0',
+                      value: rowContent.balanceAccount || '0',
                       unit: '元'
-                    },
-                    {
-                      mt_show: '',
-                      value: rowContent.rowContent1_2 || '0',
-                      unit: '单'
                     }
                   ]"
 
@@ -186,7 +181,7 @@
                   :datas="[
                     {
                       mt_show: '',
-                      value: rowContent.rowContent2_1 || 0,
+                      value: rowContent.frozenCapital || 0,
                       unit: '元'
                     }
                   ]"
@@ -215,12 +210,12 @@
                   :datas="[
                     {
                       mt_show: '公开货源',
-                      value: rowContent.rowContent3_1 || '0',
+                      value: rowContent.publicOrder || '0',
                       unit: '单'
                     },
                     {
                       mt_show: '非公开货源',
-                      value: rowContent.rowContent3_2 || '0',
+                      value: rowContent.privateOrder || '0',
                       unit: '单'
                     }
                   ]"
@@ -241,13 +236,13 @@
 
                   :datas="[
                     {
-                      mt_show: '公开货源',
-                      value: rowContent.rowContent4_1 || '0',
+                      mt_show: '完成',
+                      value: rowContent.soldOut || '0',
                       unit: '单'
                     },
                     {
-                      mt_show: '非公开货源',
-                      value: rowContent.rowContent4_2 || '0',
+                      mt_show: '手动关闭',
+                      value: rowContent.artificialClose || '0',
                       unit: '单'
                     }
                   ]"
@@ -279,7 +274,7 @@
                   :datas="[
                     {
                       mt_show: '',
-                      value: rowContent.rowContent5_1 || '0',
+                      value: rowContent.orderReceiving || '0',
                       unit: '单'
                     }
                   ]"
@@ -300,7 +295,7 @@
                   :datas="[
                     {
                       mt_show: '',
-                      value: rowContent.rowContent6_1 || '0',
+                      value: rowContent.orderLoading || '0',
                       unit: '单'
                     }
                   ]"
@@ -321,7 +316,7 @@
                   :datas="[
                     {
                       mt_show: '',
-                      value: rowContent.rowContent7_1 || '0',
+                      value: rowContent.orderUnload || '0',
                       unit: '单'
                     }
                   ]"
@@ -354,7 +349,7 @@
                   :datas="[
                     {
                       mt_show: '',
-                      value: rowContent.rowContent8_1 || '0',
+                      value: rowContent.orderReviewer || '0',
                       unit: '单'
                     }
                   ]"
@@ -376,12 +371,12 @@
                   :datas="[
                     {
                       mt_show: '',
-                      value: rowContent.rowContent9_1 || '0',
+                      value: rowContent.orderBalance || '0',
                       unit: '单'
                     },
                     {
                       mt_show: '',
-                      value: rowContent.rowContent9_2 || '0',
+                      value: rowContent.orderBalanceAmount || '0',
                       unit: '万元'
                     },
                   ]"
@@ -403,12 +398,12 @@
                   :datas="[
                     {
                       mt_show: '',
-                      value: rowContent.rowContent10_1 || '0',
+                      value: rowContent.orderRemit || '0',
                       unit: '单'
                     },
                     {
                       mt_show: '',
-                      value: rowContent.rowContent10_2 || '0',
+                      value: rowContent.orderRemitAmount || '0',
                       unit: '万元'
                     },
                   ]"
@@ -440,12 +435,12 @@
                   :datas="[
                     {
                       mt_show: '',
-                      value:rowContent.rowContent11_1 || '0',
+                      value:rowContent.applyInvoice || '0',
                       unit: '单'
                     },
                     {
                       mt_show: '',
-                      value:rowContent.rowContent11_2 || '0',
+                      value:rowContent.applyInvoiceAmount || '0',
                       unit: '万元'
                     },
                   ]"
@@ -466,12 +461,12 @@
                   :datas="[
                     {
                       mt_show: '',
-                      value: rowContent.rowContent12_1 || '0',
+                      value: rowContent.auditInvoice || '0',
                       unit: '单'
                     },
                     {
                       mt_show: '',
-                      value: rowContent.rowContent12_2 || '0',
+                      value: rowContent.auditInvoiceAmount || '0',
                       unit: '万元'
                     },
                   ]"
@@ -492,12 +487,12 @@
                   :datas="[
                     {
                       mt_show: '',
-                      value: rowContent.rowContent13_1 || '0',
+                      value: rowContent.openInvoice || '0',
                       unit: '单'
                     },
                     {
                       mt_show: '',
-                      value: rowContent.rowContent13_2 || '0',
+                      value: rowContent.openInvoiceAmount || '0',
                       unit: '万元'
                     },
                   ]"
@@ -619,6 +614,8 @@ import RowContent from './WprkComponent/RowContent';
 import DagaoItem from './WprkComponent/DagaoItem';
 import StatiStical from './WprkComponent/StatiStical';
 
+import { shipmentInformation } from '@/api/workBanch';
+
 export default {
   name: 'Index',
   components: { DetailDialog, NoticeCard, RowTitle, RowContent, DagaoItem, StatiStical },
@@ -654,12 +651,12 @@ export default {
       // 货源的值
       dagaoItem: {},
       statiStical: {},
-      RowContent: {}
+      rowContent: {}
     };
   },
   watch: {
     value(val) {
-      console.log(val);
+      // console.log(val);
     }
   },
   created() {
@@ -709,38 +706,6 @@ export default {
         // console.log(this.noticeList2);
       });
     },
-    // weosocket调用方法
-    // initWebSocket() { // 初始化weosocket
-    //   const wsuri = 'ws://10.0.0.75:8080/websocket/chy';// ws地址
-    //   this.websock = new WebSocket(wsuri);
-    //   this.websock.onopen = this.websocketonopen;
-
-    //   this.websock.onerror = this.websocketonerror;
-
-    //   this.websock.onmessage = this.websocketonmessage;
-    //   this.websock.onclose = this.websocketclose;
-    // },
-    // websocketonopen() {
-    //   console.log('WebSocket连接成功');
-    // },
-    // websocketonerror(e) { // 错误
-    //   console.log('WebSocket连接发生错误');
-    // },
-    // websocketonmessage(e) { // 数据接收
-    //   console.log(e);
-    //   // const redata = JSON.parse(e.data);
-    //   // 注意：长连接我们是后台直接1秒推送一条数据，
-    //   // 但是点击某个列表时，会发送给后台一个标识，后台根据此标识返回相对应的数据，
-    //   // 这个时候数据就只能从一个出口出，所以让后台加了一个键，例如键为1时，是每隔1秒推送的数据，为2时是发送标识后再推送的数据，以作区分
-    //   // console.log(redata.value);
-    // },
-    // websocketsend(agentData) { // 数据发送
-    //   this.websock.send(agentData);
-    // },
-    // websocketclose(e) { // 关闭
-    //   console.log(e);
-    //   // console.log('connection closed (' + e.code + ')');
-    // },
 
     goTarget(href) {
       window.open(href, '_blank');
@@ -760,76 +725,113 @@ export default {
     },
 
     // 获取数据
-    getList() {
-      console.log(456);
+    async getList() {
+      const res = await shipmentInformation({
+        branchCode: this.shipment.info.branchCode,
+        shipmentCode: this.shipment.info.code,
+        companyCode: this.shipment.info.companyCode
+      });
+
+      const {
+        balanceAccount, //	账号余额	number
+        driver, //	合作司机	integer(int32)	integer(int32)
+        frequentlyAddress, //	常用地址	integer(int32)	integer(int32)
+        frozenCapital, //	冻结余额	number
+        invoice: { // 发票	货主工作台-发票统计	货主工作台-发票统计
+          applyInvoice, //	申请发票数	integer(int32)
+          applyInvoiceAmount, //	申请金额	number
+          auditInvoice, //	待审核发票数	integer(int32)
+          auditInvoiceAmount, //	待审核金额	number
+          openInvoice, //	已开票	integer(int32)
+          openInvoiceAmount, //	已开票金额	number
+          openInvoiceAmountToday, //	今日已开票金额	number
+          openInvoiceToday //	今日开票
+        },
+        item,	// 项目	integer(int32)	integer(int32)
+        order: { // 货源	货主工作台-货源统计Vo	货主工作台-货源统计Vo
+          artificialClose, //	手动关闭	integer(int32)
+          privateOrder, //	非公开货源	integer(int32)
+          publicOrder, //	发布中货单	integer(int32)
+          soldOut //	完成关闭
+        },
+        rule,	// 计算规则	integer(int32)	integer(int32)
+        team,	// 合作车队	integer(int32)	integer(int32)
+        vehicle,	// 合作车辆	integer(int32)	integer(int32)
+        waybill: { // 运单
+          orderBalance, //	已核算	integer(int32)
+          orderBalanceAmount, //	已核算金额	number
+          orderLoading, //	已装货	integer(int32)
+          orderReceiving, //	已接单	integer(int32)
+          orderReceivingToday, //	今日接单	integer(int32)
+          orderRemit, //	已打款	integer(int32)
+          orderRemitAmount, //	已打款金额	number
+          orderRemitAmountToday, //	今日打款金额	number
+          orderRemitToday, //	今日打款	integer(int32)
+          orderReviewer, //	已复核	integer(int32)
+          orderUnload, //	已卸货	integer(int32)
+          transportToday //	今日运输
+        }
+      } = res.data;
+
 
       // 项目模块
       this.dagaoItem = {
-        key1111: 58222,
-        key1112: 58222,
-        key1113: 58222
+        item,
+        frequentlyAddress,
+        rule
       };
 
       // 接单模块
       this.statiStical = {
-        statiStical1_1: 123,
-        statiStical1_2: 266,
+        orderReceivingToday,
+        transportToday,
 
-        statiStical2_1: 798,
-        statiStical2_2: 266.0,
+        orderRemitToday,
+        orderRemitAmountToday,
 
-        statiStical3_1: 900,
-        statiStical3_2: 100.33,
+        openInvoiceToday,
+        openInvoiceAmountToday,
 
-        statiStical4_1: 123,
-        statiStical4_2: 456,
-        statiStical4_3: 782
+        team,
+        vehicle,
+        driver
 
       };
-
+      // 中间
       this.rowContent = {
-        rowContent1_1: '4369.68',
-        rowContent1_2: '1370',
+        balanceAccount,
 
-        rowContent2_1: '1369.68',
+        frozenCapital,
 
-        rowContent3_1: '4369',
-        rowContent3_2: '1369',
+        publicOrder,
+        privateOrder,
 
-        rowContent4_1: '4369',
-        rowContent4_2: '1369',
+        soldOut,
+        artificialClose,
 
-        rowContent5_1: '4516',
+        orderReceiving,
 
-        rowContent6_1: '4516',
+        orderLoading,
 
-        rowContent7_1: '4516',
+        orderUnload,
 
-        rowContent8_1: '456',
+        orderReviewer,
 
-        rowContent9_1: '456',
-        rowContent9_2: '456',
+        orderBalance,
+        orderBalanceAmount,
 
-        rowContent10_1: '456',
-        rowContent10_2: '456',
+        orderRemit,
+        orderRemitAmount,
 
-        rowContent11_1: '456',
-        rowContent11_2: '456',
+        applyInvoice,
+        applyInvoiceAmount,
 
-        rowContent12_1: '456',
-        rowContent12_2: '456',
+        auditInvoice,
+        auditInvoiceAmount,
 
-        rowContent13_1: '456',
-        rowContent13_2: '600'
+        openInvoice,
+        openInvoiceAmount
       };
-
-
-      // setInterval(() => {
-      //   this.rowContent.rowContent13_2 -= 1;
-      //   console.log(123);
-      //   this.$forceUpdate();
-      // }, 1000);
-      console.log(123);
     }
   }
 };

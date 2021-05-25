@@ -123,6 +123,7 @@
             type="warning"
             icon="el-icon-download"
             size="mini"
+            :loading="exportLoading"
             @click="handleExport"
           >导出</el-button>
         </el-col>
@@ -248,7 +249,8 @@ export default {
         applyTimeBegin: undefined,
         applyTimeEnd: undefined
       },
-      searched: false
+      searched: false,
+      exportLoading: false
     };
   },
   // watch: {
@@ -298,7 +300,13 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      // this.download('assets/driver/export', {}, `driver_${new Date().getTime()}.xlsx`, 'application/json');
+      this.exportLoading = true;
+      const params = Object.assign({}, this.queryParams);
+      params.pageSize = undefined;
+      params.pageNum = undefined;
+      this.download('/payment/transferApply/export', params, `提现申请_${new Date().getTime()}.xlsx`).then(() => {
+        this.exportLoading = false;
+      });
     },
     /** 网商批量提现 */
     handleImport() {

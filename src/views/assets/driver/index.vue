@@ -190,8 +190,8 @@
           <span>{{ selectDictLabel(driverTypeOptions, row.driverType) }}</span>
         </template>
         <template #authStatus="{row}">
-          <i v-show="row.authStatus === 0" class="el-icon-warning g-color-light-gray mr5" />
-          <i v-show="row.authStatus === 1" class="g-icon-deal mr5" />
+          <i v-show="row.authStatus === 0" class="g-icon-none mr5" />
+          <i v-show="row.authStatus === 1" class="g-icon-deal-blue mr5" />
           <i v-show="row.authStatus === 2" class="el-icon-error g-color-error mr5" />
           <i v-show="row.authStatus === 3" class="el-icon-success g-color-success mr5" />
           <span>{{ selectDictLabel(statusOptions, row.authStatus) }}</span>
@@ -529,7 +529,7 @@ export default {
         } else if (flag === 'review') {
           this.title = '审核';
           if (row.authStatus === 0) {
-            this.$refs.DriverDialog.authRead({ id: row.id });
+            this.$refs.DriverDialog.authRead({ id: row.id, code: row.code });
           }
         }
         this.formDisable = flag !== 'edit';

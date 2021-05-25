@@ -19,8 +19,8 @@
       <el-table-column label="名字" align="center" prop="name" />
       <el-table-column label="审核状态" align="center" prop="authStatus" width="120">
         <template slot-scope="scope">
-          <i v-show="scope.row.authStatus === 0" class="el-icon-warning g-color-light-gray mr5" />
-          <i v-show="scope.row.authStatus === 1" class="g-icon-deal mr5" />
+          <i v-show="scope.row.authStatus === 0" class="g-icon-none mr5" />
+          <i v-show="scope.row.authStatus === 1" class="g-icon-deal-blue mr5" />
           <i v-show="scope.row.authStatus === 2" class="el-icon-error g-color-error mr5" />
           <i v-show="scope.row.authStatus === 3" class="el-icon-success g-color-success mr5" />
           <span>{{ selectDictLabel(authStatusOptions, scope.row.authStatus) }}</span>
