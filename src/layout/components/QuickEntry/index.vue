@@ -16,7 +16,8 @@
 
 <script>
 import { getUserInfo } from '@/utils/auth';
-import { listRules as getList } from '@/api/enterprise/rules';
+
+import { getUnreviewed } from '@/api/workBanch';
 
 export default {
   data() {
@@ -34,7 +35,8 @@ export default {
         { label: 'app下载', icon: 'download', name: '', query: { authStatus: 0, url: 'https://ddcwl.com/kuaiche/apps' }, count: 0 }
         // { label: '消息', icon: 'msg', name: '', query: { authStatus: 0 }, count: 20 } // 5/25 产品说去掉
       ],
-      open: false
+      open: false,
+      branchCode: undefined
     };
   },
 
@@ -46,8 +48,12 @@ export default {
   },
 
   created() {
-    // this.isShipment = isShipment;
-    this.getList();
+    const { isShipment = false, user = {}} = getUserInfo() || {};
+
+    if (!isShipment) {
+      this.branchCode = user.branch.code;
+      this.getList();
+    }
   },
 
   methods: {
@@ -85,14 +91,21 @@ export default {
     },
 
     getList() {
-      const params = {};
-      getList(params).then(response => {
-        console.log(response);
+      getUnreviewed(
+        this.branchCode
+      ).then(response => {
+        const {
+          driver, //	司机审核	integer(int32)	integer(int32)
+          team, //	调度者审核	integer(int32)	integer(int32)
+          vehicle, //	车辆审核	integer(int32)	integer(int32)
+          withdrawDeposit: withdrawal //	提款申请
+        } = response.data;
+
         const data = {
-          team: 10,
-          driver: 20,
-          vehicle: 30,
-          withdrawal: 40
+          team,
+          driver,
+          vehicle,
+          withdrawal
         };
 
         this.itemList.forEach(e => {

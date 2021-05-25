@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { getDetail } from '@/api/waybill/manages';
+// import { getDetail } from '@/api/waybill/manages';
 export default {
   props: {
     title: {
@@ -55,9 +55,7 @@ export default {
   methods: {
     // 获取详情
     getDetail() {
-      getDetail(this.currentId).then(response => {
-        this.form = response.data;
-      });
+      console.log('未用');
     },
     // 提交按钮
     submitForm: function() {
