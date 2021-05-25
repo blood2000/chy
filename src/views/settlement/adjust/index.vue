@@ -252,7 +252,7 @@
         />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig" :height="tbodyHeight" @selection-change="handleSelectionChange">
+      <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
         <template #goodsBigType="{row}">
           <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
         </template>
@@ -264,14 +264,25 @@
           </span>
         </template>
         <template #loadWeight="{row}">
-          <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.loadWeight || '0.00' }} 吨</span>
-          <span v-if="row.stowageStatus === '1'">{{ row.loadWeight || '0.00' }} 立方</span>
-          <span v-if="row.stowageStatus === '2'">{{ row.loadWeight || '0.00' }} 车</span>
+          <span v-if="row.loadWeight">
+            <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.loadWeight }} 吨</span>
+            <span v-if="row.stowageStatus === '1'">{{ row.loadWeight }} 立方</span>
+            <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.loadWeight) }} 车</span>
+          </span>
         </template>
         <template #unloadWeight="{row}">
-          <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.unloadWeight || '0.00' }} 吨</span>
-          <span v-if="row.stowageStatus === '1'">{{ row.unloadWeight || '0.00' }} 立方</span>
-          <span v-if="row.stowageStatus === '2'">{{ row.unloadWeight || '0.00' }} 车</span>
+          <span v-if="row.unloadWeight">
+            <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.unloadWeight }} 吨</span>
+            <span v-if="row.stowageStatus === '1'">{{ row.unloadWeight }} 立方</span>
+            <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.unloadWeight) }} 车</span>
+          </span>
+        </template>
+        <template #weight="{row}">
+          <span v-if="row.weight">
+            <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.weight }} 吨</span>
+            <span v-if="row.stowageStatus === '1'">{{ row.weight }} 立方</span>
+            <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.weight) }} 车</span>
+          </span>
         </template>
         <template #lastLoadingTime="{row}">
           <span>{{ parseTime(row.lastLoadingTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
@@ -372,12 +383,12 @@ import CommentDialog from './commentDialog';
 // 评价详情弹窗
 import RateDialog from './rateDialog';
 
-import setTheight from '@/layout/mixin/setTheight';
+// import setTheight from '@/layout/mixin/setTheight';
 
 export default {
   'name': 'AdjustList',
   components: { RejectDialog, AdjustDialog, DetailDialog, ChildDialog, CommentDialog, RateDialog },
-  mixins: [setTheight],
+  // mixins: [setTheight],
   data() {
     return {
       tableColumnsConfig: [],
@@ -512,7 +523,6 @@ export default {
     handleClick(tab) {
       this.queryParams.status = tab;
       this.queryParams.pageNum = 1;
-      console.log(456);
       this.getList();
     },
     // 多选框选中数据
@@ -529,7 +539,6 @@ export default {
         this.adjustlist = response.rows;
         this.total = response.total;
         this.loading = false;
-        this.$_getHeight();
       });
     },
     /** 搜索按钮操作 */

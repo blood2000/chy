@@ -187,7 +187,6 @@
       <RefactorTable
         is-show-index
         :loading="loading"
-        :height="tbodyHeight"
         :data="list"
         row-key="id"
         stripe
@@ -380,12 +379,12 @@ import tableColumnsConfig from './data/config-index';
 
 import PriceAdjustment from './component/PriceAdjustment';
 
-import setTheight from '@/layout/mixin/setTheight';
+// import setTheight from '@/layout/mixin/setTheight';
 
 export default {
   name: 'Manage',
   components: { OpenDialog, PriceAdjustment },
-  mixins: [setTheight],
+  // mixins: [setTheight],
   data() {
     return {
       // tHeight: null,
@@ -839,7 +838,7 @@ export default {
       });
 
 
-      this.$_getHeight();
+      // this.$_getHeight();
 
       this.loading = false;
     },

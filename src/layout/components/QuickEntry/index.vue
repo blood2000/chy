@@ -16,6 +16,8 @@
 
 <script>
 import { getUserInfo } from '@/utils/auth';
+import { listRules as getList } from '@/api/enterprise/rules';
+
 export default {
   data() {
     return {
@@ -44,9 +46,8 @@ export default {
   },
 
   created() {
-
-
     // this.isShipment = isShipment;
+    this.getList();
   },
 
   methods: {
@@ -80,6 +81,27 @@ export default {
       this.$alert(msg, '联系客服', {
         showClose: false,
         dangerouslyUseHTMLString: true
+      });
+    },
+
+    getList() {
+      const params = {};
+      getList(params).then(response => {
+        console.log(response);
+        const data = {
+          team: 10,
+          driver: 20,
+          vehicle: 30,
+          withdrawal: 40
+        };
+
+        this.itemList.forEach(e => {
+          Object.keys(data).forEach(ee => {
+            if (e.icon === ee) {
+              e.count = data[ee];
+            }
+          });
+        });
       });
     }
   }

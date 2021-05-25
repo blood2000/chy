@@ -173,7 +173,7 @@
 
         </template>
 
-        <el-form-item label="备注信息" prop="remark">
+        <el-form-item label="货源备注信息" prop="remark">
           <el-input
             v-model="formData.remark"
             type="textarea"

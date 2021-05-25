@@ -127,6 +127,18 @@ export default {
       }
     };
   },
+  watch: {
+    '$route.query.rules': {
+      handler(value) {
+        if (value) {
+          this.$nextTick(() => {
+            this.handleAdd();
+          });
+        }
+      },
+      immediate: true
+    }
+  },
   created() {
     this.getAllDicList();
     this.getList();
