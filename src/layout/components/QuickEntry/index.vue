@@ -33,7 +33,7 @@ export default {
       itemListShipment: [
         { label: '联系客服', icon: 'service', name: '', query: { authStatus: 0, type: 'service' }, count: 0 },
         { label: 'app下载', icon: 'download', name: '', query: { authStatus: 0, url: 'https://ddcwl.com/kuaiche/apps' }, count: 0 }
-        // { label: '消息', icon: 'msg', name: '', query: { authStatus: 0 }, count: 20 } // 5/25 产品说去掉
+        // { label: '消息', icon: 'msg', name: '', query: { authStatus: 0 }, count: 0 } // 5/25 产品说去掉
       ],
       open: false,
       branchCode: undefined
