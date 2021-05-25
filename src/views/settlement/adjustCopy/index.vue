@@ -38,7 +38,6 @@
         </el-form-item>
 
         <el-form-item
-          v-if="false"
           label="装货信息"
           prop="loadInfo"
         >
@@ -52,7 +51,6 @@
           />
         </el-form-item>
         <el-form-item
-          v-if="false"
           label="卸货信息"
           prop="receivedInfo"
         >
@@ -85,6 +83,20 @@
           prop="waybill"
         >
           <el-checkbox v-model="queryParams.waybill" />
+        </el-form-item>
+
+        <el-form-item
+          label="批次号"
+          prop="criticism"
+        >
+          <el-input
+            v-model="queryParams.criticism"
+            placeholder="请输入批次号"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
+          />
         </el-form-item>
 
 
@@ -235,7 +247,7 @@
         <el-radio-button label="7">已打款</el-radio-button>
       </el-radio-group>
 
-      <el-button type="success" size="mini" @click="nuclearCardOpen">核销IC卡</el-button>
+      <el-button v-hasPermi="['transportation:waybillBalanceInfo:batchDetail']" type="success" size="mini" @click="nuclearCardOpen">核销IC卡</el-button>
     </div>
 
     <div class="app-container">
@@ -469,7 +481,8 @@ export default {
         'isChild': undefined,
         'status': '4',
         teamName: undefined,
-        waybill: false
+        waybill: false,
+        criticism: undefined
       },
       receiveTime: [],
       // 弹框 内容
