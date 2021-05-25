@@ -418,23 +418,23 @@ import { getUserInfo } from '@/utils/auth';
 // 驳回弹窗
 import RejectDialog from '../components/rejectDialog';
 // 核算弹窗
-import AdjustDialog from './adjustDialog';
+import AdjustDialog from '@/views/settlement/adjust/adjustDialog';
 // 子单弹窗
 import ChildDialog from '../components/childDialog';
 // 运单详情弹窗
 import DetailDialog from '@/views/waybill/components/detailDialog';
 // 评价弹窗
-import CommentDialog from './commentDialog';
+import CommentDialog from '@/views/settlement/adjust//commentDialog';
 // 评价详情弹窗
-import RateDialog from './rateDialog';
+import RateDialog from '@/views/settlement/adjust//rateDialog';
 // 核销IC卡
-import NuclearCard from '@/views/settlement/adjustCopy/NuclearCard';
+import NuclearCard from './NuclearCard';
 
 
 // import setTheight from '@/layout/mixin/setTheight';
 
 export default {
-  'name': 'AdjustList',
+  'name': 'AdjustDregs',
   components: { RejectDialog, AdjustDialog, DetailDialog, ChildDialog, CommentDialog, RateDialog, NuclearCard },
   // mixins: [setTheight],
   data() {

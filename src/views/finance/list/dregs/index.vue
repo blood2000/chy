@@ -179,15 +179,15 @@
 <script>
 import { billList, billListApi } from '@/api/finance/list';
 // 审核弹窗
-import VerifyDialog from './verifyDialog';
+import VerifyDialog from '../verifyDialog';
 // 开票弹窗
-import BillingDialog from './billingDialog';
+import BillingDialog from '../billingDialog';
 // 详情弹窗
 // import DetailDialog from './detail';
 
 
 export default {
-  'name': 'BillList',
+  'name': 'AskforDregs',
   components: { VerifyDialog, BillingDialog },
   data() {
     return {
