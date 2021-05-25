@@ -252,7 +252,7 @@
         />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig" :height="tbodyHeight" @selection-change="handleSelectionChange">
+      <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
         <template #goodsBigType="{row}">
           <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
         </template>
@@ -372,12 +372,12 @@ import CommentDialog from './commentDialog';
 // 评价详情弹窗
 import RateDialog from './rateDialog';
 
-import setTheight from '@/layout/mixin/setTheight';
+// import setTheight from '@/layout/mixin/setTheight';
 
 export default {
   'name': 'AdjustList',
   components: { RejectDialog, AdjustDialog, DetailDialog, ChildDialog, CommentDialog, RateDialog },
-  mixins: [setTheight],
+  // mixins: [setTheight],
   data() {
     return {
       tableColumnsConfig: [],
@@ -512,7 +512,6 @@ export default {
     handleClick(tab) {
       this.queryParams.status = tab;
       this.queryParams.pageNum = 1;
-      console.log(456);
       this.getList();
     },
     // 多选框选中数据
@@ -529,7 +528,6 @@ export default {
         this.adjustlist = response.rows;
         this.total = response.total;
         this.loading = false;
-        this.$_getHeight();
       });
     },
     /** 搜索按钮操作 */
