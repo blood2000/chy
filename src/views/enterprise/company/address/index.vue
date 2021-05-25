@@ -188,6 +188,18 @@ export default {
       }
     };
   },
+  watch: {
+    '$route.query.companyaddress': {
+      handler(value) {
+        if (value) {
+          this.$nextTick(() => {
+            this.handleAdd();
+          });
+        }
+      },
+      immediate: true
+    }
+  },
   created() {
     this.getList();
   },

@@ -70,3 +70,13 @@ export function getShipmentEnterprise(companyCode) {
   });
 }
 
+// 票务规则
+export function getWaybillStatus(data) {
+  return request({
+    url: '/transportation/invoiceApply/getWaybillStatus',
+    method: 'post',
+    data: data
+  });
+}
+
+

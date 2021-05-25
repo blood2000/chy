@@ -267,7 +267,7 @@ export default {
         this.weightLabel = '卸货立方数';
       } else if (this.waybill.stowageStatus === '2') {
         this.weightLabel = '卸货车数';
-        this.form.loadWeight = 1;
+        this.form.unloadWeight = 1;
       } else {
         this.weightLabel = '卸货重量（吨）';
       }

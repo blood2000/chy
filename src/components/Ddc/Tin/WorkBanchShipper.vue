@@ -38,7 +38,7 @@
                   unit: '个',
                   title: '项目'
                 }"
-                value="58222"
+                :value="dagaoItem.key1111"
                 @click="handlerClick('Project','0')"
               />
               <DagaoItem
@@ -47,7 +47,7 @@
                   unit: '个',
                   title: '常用地址'
                 }"
-                value="12"
+                :value="dagaoItem.key1112"
                 @click="handlerClick('CompanyAddress','0')"
               />
               <DagaoItem
@@ -56,7 +56,7 @@
                   unit: '个',
                   title: '计算规则'
                 }"
-                value="26"
+                :value="dagaoItem.key1113"
                 @click="handlerClick('Rules','0')"
               />
 
@@ -72,12 +72,12 @@
                 :datas="[
                   {
                     name: '今日接单',
-                    value: '123',
+                    value: statiStical.statiStical1_1 || '0',
                     unit: '单'
                   },
                   {
                     name: '今日运输',
-                    value: '266',
+                    value: statiStical.statiStical1_2 || '0',
                     unit: '单'
                   },
 
@@ -88,12 +88,12 @@
                 :datas="[
                   {
                     name: '今日打款',
-                    value: '123',
+                    value: statiStical.statiStical2_1 || '0',
                     unit: '单'
                   },
                   {
                     name: '',
-                    value: '266.5',
+                    value: statiStical.statiStical2_2 || '0',
                     unit: '万元'
                   },
 
@@ -104,12 +104,12 @@
                 :datas="[
                   {
                     name: '今日开票',
-                    value: '123',
+                    value: statiStical.statiStical3_1 || '0',
                     unit: '单'
                   },
                   {
                     name: '',
-                    value: '266.5',
+                    value: statiStical.statiStical3_2 || '0',
                     unit: '万元'
                   },
 
@@ -120,17 +120,17 @@
                 :datas="[
                   {
                     name: '合作车队',
-                    value: '123',
+                    value: statiStical.statiStical4_1 || '0',
                     unit: '个'
                   },
                   {
                     name: '合作车辆',
-                    value: '123',
+                    value: statiStical.statiStical4_2 || '0',
                     unit: '辆'
                   },
                   {
                     name: '合作司机',
-                    value: '123',
+                    value: statiStical.statiStical4_3 || '0',
                     unit: '个'
                   }
                 ]"
@@ -159,12 +159,12 @@
                   :datas="[
                     {
                       mt_show: '',
-                      value: '4369.68',
+                      value: rowContent.rowContent1_1 || '0',
                       unit: '元'
                     },
                     {
                       mt_show: '',
-                      value: '1369',
+                      value: rowContent.rowContent1_2 || '0',
                       unit: '单'
                     }
                   ]"
@@ -186,7 +186,7 @@
                   :datas="[
                     {
                       mt_show: '',
-                      value: '1369.68',
+                      value: rowContent.rowContent2_1 || 0,
                       unit: '元'
                     }
                   ]"
@@ -215,12 +215,12 @@
                   :datas="[
                     {
                       mt_show: '公开货源',
-                      value: '4369',
+                      value: rowContent.rowContent3_1 || '0',
                       unit: '单'
                     },
                     {
                       mt_show: '非公开货源',
-                      value: '1369',
+                      value: rowContent.rowContent3_2 || '0',
                       unit: '单'
                     }
                   ]"
@@ -242,12 +242,12 @@
                   :datas="[
                     {
                       mt_show: '公开货源',
-                      value: '4369',
+                      value: rowContent.rowContent4_1 || '0',
                       unit: '单'
                     },
                     {
                       mt_show: '非公开货源',
-                      value: '1369',
+                      value: rowContent.rowContent4_2 || '0',
                       unit: '单'
                     }
                   ]"
@@ -279,7 +279,7 @@
                   :datas="[
                     {
                       mt_show: '',
-                      value: '4369',
+                      value: rowContent.rowContent5_1 || '0',
                       unit: '单'
                     }
                   ]"
@@ -300,7 +300,7 @@
                   :datas="[
                     {
                       mt_show: '',
-                      value: '4369',
+                      value: rowContent.rowContent6_1 || '0',
                       unit: '单'
                     }
                   ]"
@@ -321,7 +321,7 @@
                   :datas="[
                     {
                       mt_show: '',
-                      value: '4369',
+                      value: rowContent.rowContent7_1 || '0',
                       unit: '单'
                     }
                   ]"
@@ -354,7 +354,7 @@
                   :datas="[
                     {
                       mt_show: '',
-                      value: '4369',
+                      value: rowContent.rowContent8_1 || '0',
                       unit: '单'
                     }
                   ]"
@@ -376,12 +376,12 @@
                   :datas="[
                     {
                       mt_show: '',
-                      value: '4369',
+                      value: rowContent.rowContent9_1 || '0',
                       unit: '单'
                     },
                     {
                       mt_show: '',
-                      value: '136.9',
+                      value: rowContent.rowContent9_2 || '0',
                       unit: '万元'
                     },
                   ]"
@@ -403,12 +403,12 @@
                   :datas="[
                     {
                       mt_show: '',
-                      value: '4369',
+                      value: rowContent.rowContent10_1 || '0',
                       unit: '单'
                     },
                     {
                       mt_show: '',
-                      value: '136.9',
+                      value: rowContent.rowContent10_2 || '0',
                       unit: '万元'
                     },
                   ]"
@@ -440,12 +440,12 @@
                   :datas="[
                     {
                       mt_show: '',
-                      value: '4369',
+                      value:rowContent.rowContent11_1 || '0',
                       unit: '单'
                     },
                     {
                       mt_show: '',
-                      value: '136.9',
+                      value:rowContent.rowContent11_2 || '0',
                       unit: '万元'
                     },
                   ]"
@@ -466,12 +466,12 @@
                   :datas="[
                     {
                       mt_show: '',
-                      value: '4369',
+                      value: rowContent.rowContent12_1 || '0',
                       unit: '单'
                     },
                     {
                       mt_show: '',
-                      value: '136.9',
+                      value: rowContent.rowContent12_2 || '0',
                       unit: '万元'
                     },
                   ]"
@@ -492,12 +492,12 @@
                   :datas="[
                     {
                       mt_show: '',
-                      value: '4369',
+                      value: rowContent.rowContent13_1 || '0',
                       unit: '单'
                     },
                     {
                       mt_show: '',
-                      value: '136.9',
+                      value: rowContent.rowContent13_2 || '0',
                       unit: '万元'
                     },
                   ]"
@@ -613,6 +613,7 @@ import DetailDialog from '@/views/waybill/components/detailDialog';
 import NoticeCard from './NoticeCard';
 // import { color } from 'echarts';
 
+// 货主组件
 import RowTitle from './WprkComponent/RowTitle';
 import RowContent from './WprkComponent/RowContent';
 import DagaoItem from './WprkComponent/DagaoItem';
@@ -648,7 +649,12 @@ export default {
       currentId: null,
       // 表单是否禁用
       formDisable: false,
-      value: new Date()
+      value: new Date(),
+
+      // 货源的值
+      dagaoItem: {},
+      statiStical: {},
+      RowContent: {}
     };
   },
   watch: {
@@ -663,6 +669,8 @@ export default {
     this.user = user;
     this.shipment = shipment;
     this.getNoticeList();
+
+    this.isShipment && this.getList();
     // 页面刚进入时开启长连接
     // this.initWebSocket();
   },
@@ -742,13 +750,86 @@ export default {
       this.activeName = tab;
     },
 
-    /** --> 货主端  */
+    /** --> 货主端 页面跳转  */
     handlerClick(url, param) {
       if (param) {
         this.$router.push({ name: url, query: { [url.toLowerCase()]: param }});
       } else {
         this.$router.push({ name: url });
       }
+    },
+
+    // 获取数据
+    getList() {
+      console.log(456);
+
+      // 项目模块
+      this.dagaoItem = {
+        key1111: 58222,
+        key1112: 58222,
+        key1113: 58222
+      };
+
+      // 接单模块
+      this.statiStical = {
+        statiStical1_1: 123,
+        statiStical1_2: 266,
+
+        statiStical2_1: 798,
+        statiStical2_2: 266.0,
+
+        statiStical3_1: 900,
+        statiStical3_2: 100.33,
+
+        statiStical4_1: 123,
+        statiStical4_2: 456,
+        statiStical4_3: 782
+
+      };
+
+      this.rowContent = {
+        rowContent1_1: '4369.68',
+        rowContent1_2: '1370',
+
+        rowContent2_1: '1369.68',
+
+        rowContent3_1: '4369',
+        rowContent3_2: '1369',
+
+        rowContent4_1: '4369',
+        rowContent4_2: '1369',
+
+        rowContent5_1: '4516',
+
+        rowContent6_1: '4516',
+
+        rowContent7_1: '4516',
+
+        rowContent8_1: '456',
+
+        rowContent9_1: '456',
+        rowContent9_2: '456',
+
+        rowContent10_1: '456',
+        rowContent10_2: '456',
+
+        rowContent11_1: '456',
+        rowContent11_2: '456',
+
+        rowContent12_1: '456',
+        rowContent12_2: '456',
+
+        rowContent13_1: '456',
+        rowContent13_2: '600'
+      };
+
+
+      // setInterval(() => {
+      //   this.rowContent.rowContent13_2 -= 1;
+      //   console.log(123);
+      //   this.$forceUpdate();
+      // }, 1000);
+      console.log(123);
     }
   }
 };
@@ -777,26 +858,6 @@ export default {
 // 左中
 .dagao{
   justify-content: space-between;
-  // &-item{
-  //   width: 47%;
-  //   height: 100px;
-  //   background: #F6FAFE;
-  //   margin-top: 10px;
-  //   border-radius: 9px;
-  //   padding: 2px 10px;
-  // }
-  // &-item:nth-child(1),&-item:nth-child(2){
-  //   margin-top: 0;
-  // }
-
-  // &-name{
-  //   font-size: 14px;
-  //   color: #262626;
-  // }
-  // &-btn{
-  //   right: 4px;
-  //   bottom: 0;
-  // }
 }
 
 // 左下
@@ -811,46 +872,7 @@ export default {
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
-  // &-rowitem{
-  //   height: 20%;
-  //   color: #fff;
-  //   display: flex;
-  //   align-items: center;
-  //   &-item{
-  //     width: 33.33%;
-  //     height: 100%;
-  //     display: flex;
-  //     flex-direction: column;
-  //     justify-content: center;
-  //     &-t{
-  //       font-size: 12px;
-  //       color: #FFFFFF;
-  //     }
-  //     .text_none{
-  //       opacity: 0;
-  //     }
-  //     .g-text,.g-text span{
-  //       color: #FFFFFF;
-  //     }
-
-  //   }
-  // }
 }
-// .g-text{
-//     font-size: 24px;
-//     font-weight: bold;
-//     font-family: Bahnschrift;
-//     color: #262626;
-//     margin-top: 5px;
-//     margin-bottom: 2px;
-//     span{
-//       font-size: 12px;
-//       font-family: PingFang SC;
-//       font-weight: 400;
-//       line-height: 22px;
-//       color: #262626;
-//     }
-//   }
 
 // 中间
 .shipper-middle{
@@ -886,118 +908,6 @@ export default {
         display: flex;
         justify-content: space-between;
       }
-
-      // .middle-span{
-      //   font-size: 12px;
-      //   font-weight: 500;
-      //   line-height: 1;
-      //   color: #B3AFAF;
-      // }
-      // .middle-span.mt_show{
-      //   opacity: 0;
-      // }
-
-      // &-item{
-      //   width: 50%;
-      //   background-color: #fff;
-      //   margin-left: 15px;
-      //   border-radius: 4px 20px 4px 4px;
-      //   overflow: hidden;
-      //   padding: 6px 30px;
-
-      //   // display: flex;
-      //   // flex-direction: column;
-      //   // justify-content: space-between;
-      //   .middle-row-icon{
-      //     top: 0;
-      //     right: 0;
-      //     width: 50px;
-      //     height: 50px;
-      //   }
-      //   .icon-zhanghu{
-      //     background: url('~@/assets/images/workbench/icon-zhanghu.png') no-repeat;
-      //     background-size: 100% 100%;
-      //   }
-      //   .icon-donjie{
-      //     background: url('~@/assets/images/workbench/icon-donjie.png') no-repeat;
-      //     background-size: 100% 100%;
-      //   }
-      //   .icon-fabu{
-      //     background: url('~@/assets/images/workbench/icon-fabu.png') no-repeat;
-      //     background-size: 100% 100%;
-      //   }
-      //   .icon-guanbi{
-      //     background: url('~@/assets/images/workbench/icon-guanbi.png') no-repeat;
-      //     background-size: 100% 100%;
-      //   }
-      //   .icon-yijiedan{
-      //     background: url('~@/assets/images/workbench/icon-yijiedan.png') no-repeat;
-      //     background-size: 100% 100%;
-      //   }
-      //   .icon-yizhuanhuo{
-      //     background: url('~@/assets/images/workbench/icon-yizhuanhuo.png') no-repeat;
-      //     background-size: 100% 100%;
-      //   }
-      //   .icon-yixie{
-      //     background: url('~@/assets/images/workbench/icon-yixie.png') no-repeat;
-      //     background-size: 100% 100%;
-      //   }
-      //   .icon-yifuhe{
-      //     background: url('~@/assets/images/workbench/icon-yifuhe.png') no-repeat;
-      //     background-size: 100% 100%;
-      //   }
-      //   .icon-hesuan{
-      //     background: url('~@/assets/images/workbench/icon-hesuan.png') no-repeat;
-      //     background-size: 100% 100%;
-      //   }
-      //   .icon-yidakuan{
-      //     background: url('~@/assets/images/workbench/icon-yidakuan.png') no-repeat;
-      //     background-size: 100% 100%;
-      //   }
-      //   .icon-yishenqing{
-      //     background: url('~@/assets/images/workbench/icon-yishenqing.png') no-repeat;
-      //     background-size: 100% 100%;
-      //   }
-      //   .icon-daihesuan{
-      //     background: url('~@/assets/images/workbench/icon-daihesuan.png') no-repeat;
-      //     background-size: 100% 100%;
-      //   }
-      //   .icon-yikai{
-      //     background: url('~@/assets/images/workbench/icon-yikai.png') no-repeat;
-      //     background-size: 100% 100%;
-      //   }
-      //   .g-text span{
-      //     color: #B3AFAF;
-      //     margin-left: 10px;
-      //   }
-      // }
-      // .col3{
-      //   width: 33.3%;
-      //   .middle-row-btn>div{
-      //     width: 50%;
-      //   }
-      // }
-
-      // &-item:nth-child(1){
-      //   margin-left: 0;
-      // }
-      // .middle-row-title{
-      //   font-size: 14px;
-      //   font-weight: bold;
-      //   color: #262626;
-      //   margin-left: -12px;
-      //   margin-bottom: 6px;
-      // }
-      // .middle-row-btn{
-      //   display: flex;
-      //   &>div{
-      //     width: 40%;
-      //   }
-      //   .el-button{
-      //     width: 100px;
-      //     height: 30px;
-      //   }
-      // }
     }
 
     &-content.last-row{
@@ -1014,61 +924,6 @@ export default {
   .mt12{
     margin-top: 12px;
   }
-
-  // .icon_dagao{
-  //   width: 44px;
-  //   height: 44px;
-  //   cursor: pointer;
-  //   background: #f6fafe;
-  // }
-
-  // .g-text{
-  //   font-size: 24px;
-  //   font-weight: bold;
-  //   font-family: Bahnschrift;
-  //   color: #262626;
-  //   margin-top: 5px;
-  //   margin-bottom: 2px;
-  //   span{
-  //     font-size: 12px;
-  //     font-family: PingFang SC;
-  //     font-weight: 400;
-  //     line-height: 22px;
-  //     color: #262626;
-  //   }
-  // }
-  // .dagao-icon{
-  //   font-size: 30px;
-  //   color: #d9ebfe;
-  //   margin-left: -4px;
-  // }
-
-  // .g-ciont-style{
-  //   width: 17px;
-  //   height: 17px;
-  //   background: linear-gradient(168deg, #69ADF3 0%, #066FDC 100%);
-  //   border-radius: 50%;
-  //   opacity: 1;
-  //   display: flex;
-  //   align-items: center;
-  //   justify-content: center;
-  //   color: #FFFFFF;
-  //   margin-right: 5px;
-  // }
-
-  // .z30d{
-  //   font-size: 12px;
-  //   font-family: PingFang SC;
-  //   font-weight: 500;
-  //   line-height: 20px;
-  //   color: #B3AFAF;
-  //   opacity: 1;
-  //   margin-left: 10px;
-  // }
-  // .bgf{
-  //   background-color: #fff;
-  // }
-
 
 </style>
 
