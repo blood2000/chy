@@ -249,7 +249,6 @@
       <el-form-item label="票务规则" prop="payInvoiceType">
         <el-select
           v-model="form.payInvoiceType"
-          multiple
           clearable
           filterable
           class="width90"
@@ -434,8 +433,8 @@ export default {
         { dictLabel: '是', dictValue: 1 }
       ],
       payInvoiceTypeOptions: [
-        /* { dictLabel: '核算打款后', dictValue: '1' },
-        { dictLabel: '核算申请后', dictValue: '2' } */
+        { dictLabel: '核算打款后', dictValue: '7' },
+        { dictLabel: '核算申请后', dictValue: '6' }
       ],
       // 核算方式字典
       accountTypeOptions: [],
@@ -553,7 +552,6 @@ export default {
     getCompany(companyCode) {
       getShipmentEnterprise(companyCode).then((response) => {
         this.form = Object.assign(this.form, response.data);
-        console.log(this.form);
       });
     },
     /** 查询字典 */
@@ -567,11 +565,11 @@ export default {
         this.ticketTypeOptions = response.data;
       });
       // 票制规则
-      getWaybillStatus().then((response) => {
+      /* getWaybillStatus().then((response) => {
         response.data.forEach(e => {
           this.payInvoiceTypeOptions.push({ dictValue: e.value.toString(), dictLabel: e.name });
         });
-      });
+      });*/
       // 合理路耗计量单位
       /* this.getDicts('consumption_unit').then((response) => {
         this.consumptionUnitOptions = response.data;
@@ -614,17 +612,13 @@ export default {
           }
           var noNeedUnloadImg = 1;
           var openProjectDesignView = 1;
-          var payInvoiceType = '';
           if (this.form.noNeedUnloadImg) {
             noNeedUnloadImg = 0;
           }
           if (this.form.openProjectDesignView) {
             openProjectDesignView = 0;
           }
-          if (this.form.payInvoiceType) {
-            payInvoiceType = this.form.payInvoiceType.join(',');
-          }
-          var extendForm = { noNeedUnloadImg: noNeedUnloadImg, openProjectDesignView: openProjectDesignView, payInvoiceType: payInvoiceType };
+          var extendForm = { noNeedUnloadImg: noNeedUnloadImg, openProjectDesignView: openProjectDesignView};
           // eslint-disable-next-line no-undef
           this.form = Object.assign(this.form, extendForm);
           if (this.form.id) {
@@ -761,9 +755,6 @@ export default {
           code: this.form.branchCode,
           name: this.form.branchName
         }];
-      }
-      if (this.form.payInvoiceType) {
-        this.form.payInvoiceType = this.form.payInvoiceType.split(',');
       }
     },
     // 已读
