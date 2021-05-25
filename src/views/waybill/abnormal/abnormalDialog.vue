@@ -1,6 +1,6 @@
 <template>
   <!-- 添加或修改运输异常对话框 -->
-  <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel" :close-on-click-modal="false">
+  <el-dialog :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="false" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="130px">
       <el-form-item label="标记时间" prop="warningTime">
         <el-date-picker
