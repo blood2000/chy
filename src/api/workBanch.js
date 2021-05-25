@@ -43,3 +43,13 @@ export function shipmentInformation(query) {
     params: query
   });
 }
+
+// 运营侧 导航栏待审核数字
+export function getUnreviewed(branchCode) {
+  return request({
+    url: `/transportation/workBench/getUnreviewed/${branchCode}`,
+    method: 'get'
+  });
+}
+
+
