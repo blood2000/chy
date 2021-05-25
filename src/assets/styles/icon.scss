@@ -49,6 +49,18 @@
   background-size: 100% 100%;
 }
 
+.g-icon-deal-blue{
+  @include g-icon;
+  background: url('~@/assets/images/icon/icon_deal_blue.png') no-repeat;
+  background-size: 100% 100%;
+}
+
+.g-icon-none{
+  @include g-icon;
+  background: url('~@/assets/images/icon/icon_none.png') no-repeat;
+  background-size: 100% 100%;
+}
+
 .g-icon-money{
   @include g-icon;
   background: url('~@/assets/images/icon/icon_money.png') no-repeat;
