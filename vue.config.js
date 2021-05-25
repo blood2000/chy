@@ -1,6 +1,7 @@
 'use strict'
 const path = require('path')
 const defaultSettings = require('./src/settings.js')
+const CompressionPlugin = require('compression-webpack-plugin');
 
 function resolve(dir) {
   return path.join(__dirname, dir)
@@ -54,7 +55,17 @@ module.exports = {
       alias: {
         '@': resolve('src')
       }
-    }
+    },
+    plugins: [
+      new CompressionPlugin({
+        algorithm: 'gzip',
+        test: /\.js$|\.html$|\.css$/, // 匹配文件名
+        filename: '[path][base].gz', // 压缩后的文件名(保持原文件名，后缀加.gz)
+        minRatio: 1, // 压缩率小于1才会压缩
+        threshold: 10240, // 对超过10k的数据压缩
+        deleteOriginalAssets: false
+      }),
+    ]
   },
   chainWebpack(config) {
     config.plugins.delete('preload') // TODO: need test
