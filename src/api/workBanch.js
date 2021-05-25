@@ -34,3 +34,12 @@ export function billList(data) {
     data: data
   });
 }
+
+// 货主工作台统计
+export function shipmentInformation(query) {
+  return request({
+    url: '/transportation/shipmentWorkBench/shipmentInformation',
+    method: 'get',
+    params: query
+  });
+}
