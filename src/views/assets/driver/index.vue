@@ -529,7 +529,7 @@ export default {
         } else if (flag === 'review') {
           this.title = '审核';
           if (row.authStatus === 0) {
-            this.$refs.DriverDialog.authRead({ id: row.id });
+            this.$refs.DriverDialog.authRead({ id: row.id, code: row.code });
           }
         }
         this.formDisable = flag !== 'edit';
