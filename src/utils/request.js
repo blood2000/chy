@@ -143,7 +143,8 @@ export function download(url, params, filename, headers) {
     headers: {
       'Content-Type': headers || 'application/x-www-form-urlencoded'
     },
-    responseType: 'blob'
+    responseType: 'blob',
+    timeout: 10 * 60 * 1000 // 有些表导出数据量太大, 超时时间设为10分钟
   }).then((data) => {
     const content = data;
     const blob = new Blob([content]);
