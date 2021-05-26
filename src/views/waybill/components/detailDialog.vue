@@ -1,5 +1,5 @@
 <template>
-  <el-dialog class="waybill-detail-dialog" :title="title" :visible="visible" width="1200px" append-to-body @close="cancel">
+  <el-dialog v-loading="loading" class="waybill-detail-dialog" :title="title" :visible="visible" width="1200px" append-to-body @close="cancel">
     <el-tabs v-model="activeTab">
       <!-- 运单 -->
       <el-tab-pane label="运单" name="1">
@@ -272,7 +272,8 @@ export default {
       }, {
         icon: 'https://webapi.amap.com/theme/v1.3/markers/n/end.png',
         position: []
-      }]
+      }],
+      loading: false
     };
   },
   computed: {
@@ -288,6 +289,7 @@ export default {
   watch: {
     open(val) {
       if (val) {
+        this.loading = true;
         this.reset();
         this.getDetail();
       }
@@ -303,20 +305,19 @@ export default {
         // this.form.unloadAddress = response.data.waybillAddress || {};
         this.form.balanceVo = response.data.balanceVo || {};
         // console.log(response);
+        this.loading = false;
       });
       // 回单-装货
       getWaybillAttachment(this.currentId, 1).then(response => {
-        // console.log(response);
+        console.log(response);
         this.formAttachment = response.data ? response.data[0] : null;
-        this.formAttachmentUrl = this.formAttachment.attachUrls.split(',');
-        console.log(this.formAttachment);
+        this.formAttachmentUrl = this.formAttachment ? this.formAttachment.attachUrls.split(',') : null;
       });
       // 回单-卸货
       getWaybillAttachment(this.currentId, 2).then(response => {
-        // console.log(response);
+        console.log(response);
         this.formAttachmentUp = response.data ? response.data[0] : null;
-        this.formAttachmentUpUrl = this.formAttachmentUp.attachUrls.split(',');
-        console.log(this.formAttachmentUp);
+        this.formAttachmentUpUrl = this.formAttachmentUp ? this.formAttachmentUp.attachUrls.split(',') : null;
       });
       // 评价-司机
       getWaybillComment(this.currentId, 1).then(response => {
