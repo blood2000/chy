@@ -228,11 +228,11 @@ export default {
       const { data } = await deliveryCashFee({
         deliveryCashFee: row.deliveryCashFee, //	司机实收现金		false
         m0DictValue: row.m0DictValue,
+        waybillCode: row.waybillCode,
         // deliveryFeeDeserved: row.deliveryFeeDeserved, // 司机应收运费
         shipperCode: row.shipperCode //	货主Code		false
       });
 
-      console.log(data);
 
       row.serviceFee = data.serviceFee;
       row.shipperRealPay = data.shipperRealPay;
@@ -357,7 +357,7 @@ export default {
     getList() {
       this.loading = true;
       adjustDetail(this.queryParams).then(response => {
-        // isDregs // 是否渣土   1 是 0 否
+        // isDregs // 是否渣土   1 是 0 否 (司机实收 只有渣土1能修改)
 
         this.oldList = JSON.parse(JSON.stringify(response.data));
         this.adjustlist = JSON.parse(JSON.stringify(response.data));
