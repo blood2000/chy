@@ -133,7 +133,8 @@
       <el-table-column width="120" label="服务费" align="center" prop="serviceFee" fixed="right" />
       <el-table-column width="162" label="司机实收金额" align="center" prop="deliveryCashFee" fixed="right">
         <template slot-scope="scope">
-          <el-input-number v-model="scope.row.deliveryCashFee" :controls="false" :precision="2" placeholder="请输入司机实收金额" style="width:100%;" size="mini" @blur="handlerInput(scope.row,scope.row.deliveryCashFee, 'deliveryCashFee')" />
+          <span v-if="scope.row.isDregs === 0">{{ scope.row.deliveryCashFee }}</span>
+          <el-input-number v-else v-model="scope.row.deliveryCashFee" :controls="false" :precision="2" placeholder="请输入司机实收金额" style="width:100%;" size="mini" @blur="handlerInput(scope.row,scope.row.deliveryCashFee, 'deliveryCashFee')" />
         </template>
       </el-table-column>
 
@@ -356,6 +357,8 @@ export default {
     getList() {
       this.loading = true;
       adjustDetail(this.queryParams).then(response => {
+        // isDregs // 是否渣土   1 是 0 否
+
         this.oldList = JSON.parse(JSON.stringify(response.data));
         this.adjustlist = JSON.parse(JSON.stringify(response.data));
 
