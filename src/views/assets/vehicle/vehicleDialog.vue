@@ -185,7 +185,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="车头正面照">
-        <upload-image v-model="form.vehicleImage" :disabled="disable" />
+        <upload-image v-model="form.vehicleImage" :disabled="disable" icon-type="vehicle_head" />
       </el-form-item>
     </el-form>
     <div v-if="title === '新增' || title === '编辑' || title === '添加车辆'" slot="footer" class="dialog-footer">

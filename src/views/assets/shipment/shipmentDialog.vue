@@ -25,31 +25,31 @@
         <el-row>
           <el-col :span="7">
             <p class="upload-image-label">管理员身份证正面照</p>
-            <upload-image v-model="form.identificationImg" :disabled="disable" image-type="id-card" side="front" @fillForm="fillForm" />
+            <upload-image v-model="form.identificationImg" :disabled="disable" image-type="id-card" side="front" icon-type="idcard" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">管理员身份证背面照</p>
-            <upload-image v-model="form.identificationBackImg" :disabled="disable" image-type="id-card" side="back" @fillForm="fillForm" />
+            <upload-image v-model="form.identificationBackImg" :disabled="disable" image-type="id-card" side="back" icon-type="idcard_back" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">手持身份证照</p>
-            <upload-image v-model="form.identificationInhandImg" :disabled="disable" />
+            <upload-image v-model="form.identificationInhandImg" icon-type="idcard_hand" :disabled="disable" />
           </el-col>
           <el-col v-show="form.shipperType === 1" :span="7" class="mt">
             <p class="upload-image-label">法人身份证正面照</p>
-            <upload-image v-model="form.artificialIdentificationImg" :disabled="disable" />
+            <upload-image v-model="form.artificialIdentificationImg" icon-type="idcard" :disabled="disable" />
           </el-col>
           <el-col v-show="form.shipperType === 1" :span="7" class="mt">
             <p class="upload-image-label">法人身份证背面照</p>
-            <upload-image v-model="form.artificialIdentificationBackImg" :disabled="disable" />
+            <upload-image v-model="form.artificialIdentificationBackImg" icon-type="idcard_back" :disabled="disable" />
           </el-col>
           <el-col v-show="form.shipperType === 1" :span="7" class="mt">
             <p class="upload-image-label">法人手持身份证照</p>
-            <upload-image v-model="form.artificialIdentificationInhandImg" :disabled="disable" />
+            <upload-image v-model="form.artificialIdentificationInhandImg" icon-type="idcard_hand" :disabled="disable" />
           </el-col>
           <el-col v-show="form.shipperType === 1" :span="7" class="mt">
             <p class="upload-image-label">营业执照</p>
-            <upload-image v-model="form.businessLicenseImg" :disabled="disable" image-type="business-license" @fillForm="fillForm" />
+            <upload-image v-model="form.businessLicenseImg" :disabled="disable" icon-type="organization" image-type="business-license" @fillForm="fillForm" />
           </el-col>
         </el-row>
       </el-form-item>

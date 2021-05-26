@@ -68,31 +68,31 @@
         <el-row>
           <el-col :span="7">
             <p class="upload-image-label">身份证正面照</p>
-            <upload-image v-model="form.identificationImg" image-type="id-card" side="front" @fillForm="fillForm" />
+            <upload-image v-model="form.identificationImg" image-type="id-card" side="front" icon-type="idcard" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">身份证反面照</p>
-            <upload-image v-model="form.identificationBackImg" image-type="id-card" side="back" @fillForm="fillForm" />
+            <upload-image v-model="form.identificationBackImg" image-type="id-card" side="back" icon-type="idcard_back" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">本人手持身份证正面</p>
-            <upload-image v-model="form.identificationInhandImg" />
+            <upload-image v-model="form.identificationInhandImg" icon-type="idcard_hand" />
           </el-col>
           <el-col v-show="form.shipperType === 1" :span="7" class="mt">
             <p class="upload-image-label">法人身份证正面照</p>
-            <upload-image v-model="form.artificialIdentificationImg" />
+            <upload-image v-model="form.artificialIdentificationImg" icon-type="idcard" />
           </el-col>
           <el-col v-show="form.shipperType === 1" :span="7" class="mt">
             <p class="upload-image-label">法人身份证背面照</p>
-            <upload-image v-model="form.artificialIdentificationBackImg" />
+            <upload-image v-model="form.artificialIdentificationBackImg" icon-type="idcard_back" />
           </el-col>
           <el-col v-show="form.shipperType === 1" :span="7" class="mt">
             <p class="upload-image-label">法人手持身份证照</p>
-            <upload-image v-model="form.artificialIdentificationInhandImg" />
+            <upload-image v-model="form.artificialIdentificationInhandImg" icon-type="idcard_hand" />
           </el-col>
           <el-col v-show="form.shipperType === 1" :span="7" class="mt">
             <p class="upload-image-label">营业执照</p>
-            <upload-image v-model="form.businessLicenseImg" image-type="business-license" @fillForm="fillForm" />
+            <upload-image v-model="form.businessLicenseImg" image-type="business-license" icon-type="organization" @fillForm="fillForm" />
           </el-col>
         </el-row>
       </el-form-item>

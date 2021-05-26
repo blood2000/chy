@@ -71,19 +71,19 @@
         <el-row>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">身份证正面照</p>
-            <uploadImage v-model="form.identificationImage" :disabled="disable" image-type="id-card" side="front" @fillForm="fillForm" />
+            <uploadImage v-model="form.identificationImage" :disabled="disable" image-type="id-card" side="front" icon-type="idcard" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">身份证反面照</p>
-            <uploadImage v-model="form.identificationBackImage" :disabled="disable" image-type="id-card" side="back" @fillForm="fillForm" />
+            <uploadImage v-model="form.identificationBackImage" :disabled="disable" image-type="id-card" side="back" icon-type="idcard_back" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">营业执照</p>
-            <uploadImage v-model="form.businessLicenseImg" :disabled="disable" image-type="business-license" @fillForm="fillForm" />
+            <uploadImage v-model="form.businessLicenseImg" :disabled="disable" image-type="business-license" icon-type="organization" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">道路运输经营许可证照</p>
-            <uploadImage v-model="form.transportPermitImage" :disabled="disable" />
+            <uploadImage v-model="form.transportPermitImage" icon-type="transport" :disabled="disable" />
           </el-col>
         </el-row>
       </el-form-item>
