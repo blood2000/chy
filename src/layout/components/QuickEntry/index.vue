@@ -28,7 +28,7 @@ export default {
         { label: '车辆审核', icon: 'vehicle', name: 'Vehicle', query: { authStatus: 0 }, count: 0 },
         // { label: '运输单', icon: 'order', name: 'Manages', query: {}, count: 24 }, // 5/25 产品说去掉
         { label: '提现申请', icon: 'withdrawal', name: 'Withdrawal', query: { status: 0 }, count: 0 }
-        // { label: '消息', icon: 'msg', name: 'Withdrawal', query: { status: 0 }, count: 0 }
+        // { label: '消息', icon: 'msg', name: 'Withdrawal', query: { status: 0 }, count: 20 }
       ],
       itemListShipment: [
         { label: '联系客服', icon: 'service', name: '', query: { authStatus: 0, type: 'service' }, count: 0 },
