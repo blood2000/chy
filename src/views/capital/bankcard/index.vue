@@ -94,6 +94,7 @@
             type="warning"
             icon="el-icon-download"
             size="mini"
+            :loading="exportLoading"
             @click="handleExport"
           >导出</el-button>
         </el-col>
@@ -118,10 +119,10 @@
           <span>{{ parseTime(row.updateTime, '{y}-{m}-{d}') }}</span>
         </template>
         <template #province="{row}">
-          <span>{{ selectProvinceLabel(provinceOptions, row.province)  }}</span>
+          <span>{{ selectProvinceLabel(provinceOptions, row.province) }}</span>
         </template>
         <template #city="{row}">
-          <span>{{ selectCityLabel(cityOptions, row.city)  }}</span>
+          <span>{{ selectCityLabel(cityOptions, row.city) }}</span>
         </template>
         <template #edit="{row}">
           <el-button
@@ -204,7 +205,8 @@ export default {
         account: undefined,
         userName: undefined,
         userPhone: undefined
-      }
+      },
+      exportLoading: false
     };
   },
   created() {
@@ -297,7 +299,13 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      // this.download('assets/driver/export', {}, `driver_${new Date().getTime()}.xlsx`, 'application/json');
+      this.exportLoading = true;
+      const params = Object.assign({}, this.queryParams);
+      params.pageSize = undefined;
+      params.pageNum = undefined;
+      this.download('/payment/bankCard/export', params, `银行卡_${new Date().getTime()}.xlsx`).then(() => {
+        this.exportLoading = false;
+      });
     }
   }
 };

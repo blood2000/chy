@@ -177,6 +177,7 @@
             type="warning"
             icon="el-icon-download"
             size="mini"
+            :loading="exportLoading"
             @click="handleExport"
           >导出</el-button>
         </el-col>
@@ -416,7 +417,8 @@ export default {
         upWaybillStatus: undefined,
         isSplit: undefined,
         abnormal: undefined
-      }
+      },
+      exportLoading: false
     };
   },
   created() {
@@ -472,7 +474,13 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      // this.download('assets/driver/export', {}, `driver_${new Date().getTime()}.xlsx`, 'application/json');
+      this.exportLoading = true;
+      const params = Object.assign({}, this.queryParams);
+      params.pageSize = undefined;
+      params.pageNum = undefined;
+      this.download('/payment/wallet/remit/export', params, `打款记录_${new Date().getTime()}.xlsx`).then(() => {
+        this.exportLoading = false;
+      });
     },
     /** 流水批量导入 */
     handleImport() {
