@@ -34,15 +34,21 @@
       <!-- stowageStatus "配载方式 0->吨，1->方 2->车数配载" -->
       <el-table-column width="160" label="装货数量" align="left" prop="loadWeight">
         <template slot-scope="scope">
-          <el-input-number v-if="scope.row.stowageStatus !== '2'" v-model="scope.row.loadWeight" :controls="false" placeholder="请输入装货数量" style="width:100%;" size="mini" @blur="handlerBlur(scope.row, scope.row.loadWeight, 'loadWeight' )" />
+          <span v-if="scope.row.isDregs === 1">{{ scope.row.loadWeight }}</span>
+          <div v-else>
+            <el-input-number v-if="scope.row.stowageStatus !== '2'" v-model="scope.row.loadWeight" :controls="false" placeholder="请输入装货数量" style="width:100%;" size="mini" @blur="handlerBlur(scope.row, scope.row.loadWeight, 'loadWeight' )" />
+            <span v-else>{{ scope.row.loadWeight }}</span>
+          </div>
 
-          <span v-else>{{ scope.row.loadWeight }}</span>
         </template>
       </el-table-column>
       <el-table-column width="160" label="卸货数量" align="left" prop="unloadWeight">
         <template slot-scope="scope">
-          <el-input-number v-if="scope.row.stowageStatus !== '2'" v-model="scope.row.unloadWeight" :controls="false" placeholder="请输入卸货数量" style="width:100%;" size="mini" @blur="handlerBlur(scope.row, scope.row.unloadWeight, 'unloadWeight' )" />
-          <span v-else>{{ scope.row.unloadWeight }}</span>
+          <span v-if="scope.row.isDregs === 1">{{ scope.row.unloadWeight }}</span>
+          <div v-else>
+            <el-input-number v-if="scope.row.stowageStatus !== '2'" v-model="scope.row.unloadWeight" :controls="false" placeholder="请输入卸货数量" style="width:100%;" size="mini" @blur="handlerBlur(scope.row, scope.row.unloadWeight, 'unloadWeight' )" />
+            <span v-else>{{ scope.row.unloadWeight }}</span>
+          </div>
         </template>
       </el-table-column>
 
@@ -90,15 +96,22 @@
         <template slot-scope="scope">
           <el-form :inline="true" label-position="right" size="mini" class="ly-flex" label-width="80px">
             <div v-for="(freight, index) in scope.row.subsidiesFreightList" :key="index">
+              <!-- 渣土 其他不能修改 -->
               <el-form-item :label="freight.cnName">
-                <span v-show="!isEdit2">{{ freight.ruleValue }}</span>
-                <el-input-number v-show="isEdit2" v-model="freight.ruleValue" :controls="false" :precision="2" :min="0" :placeholder="`${freight.cnName}`" style="width:90px;" @blur="handlerItem(scope.row,freight.ruleValue,'add',freight.enName)" />
+                <span v-if="scope.row.isDregs === 1">{{ freight.ruleValue }}</span>
+                <div v-else>
+                  <span v-show="!isEdit2">{{ freight.ruleValue }}</span>
+                  <el-input-number v-show="isEdit2" v-model="freight.ruleValue" :controls="false" :precision="2" :min="0" :placeholder="`${freight.cnName}`" style="width:90px;" @blur="handlerItem(scope.row,freight.ruleValue,'add',freight.enName)" />
+                </div>
               </el-form-item>
             </div>
 
             <el-form-item label="其他补贴">
-              <span v-show="!isEdit2">{{ scope.row.otherSubsidies }}</span>
-              <el-input-number v-show="isEdit2" v-model="scope.row.otherSubsidies" :controls="false" :precision="2" :min="0" :placeholder="`其他扣款`" style="width:90px;" @blur="handlerChange(scope.row,scope.row.otherSubsidies, 'add')" />
+              <span v-if="scope.row.isDregs === 1">{{ scope.row.otherSubsidies }}</span>
+              <div v-else>
+                <span v-show="!isEdit2">{{ scope.row.otherSubsidies }}</span>
+                <el-input-number v-show="isEdit2" v-model="scope.row.otherSubsidies" :controls="false" :precision="2" :min="0" :placeholder="`其他扣款`" style="width:90px;" @blur="handlerChange(scope.row,scope.row.otherSubsidies, 'add')" />
+              </div>
             </el-form-item>
           </el-form>
         </template>
@@ -114,14 +127,22 @@
           <el-form :inline="true" label-position="right" size="mini" class="ly-flex" label-width="80px">
             <div v-for="(freight, index) in scope.row.deductionFreightList" :key="index">
               <el-form-item :label="freight.cnName">
-                <span v-show="!isEdit">{{ freight.ruleValue }}</span>
-                <el-input-number v-show="isEdit" v-model="freight.ruleValue" :controls="false" :precision="2" :min="0" :placeholder="`${freight.cnName}`" style="width:90px;" @blur="handlerItem(scope.row,freight.ruleValue,'',freight.enName)" />
+
+                <span v-if="scope.row.isDregs === 1">{{ freight.ruleValue }}</span>
+
+                <div v-else>
+                  <span v-show="!isEdit">{{ freight.ruleValue }}</span>
+                  <el-input-number v-show="isEdit" v-model="freight.ruleValue" :controls="false" :precision="2" :min="0" :placeholder="`${freight.cnName}`" style="width:90px;" @blur="handlerItem(scope.row,freight.ruleValue,'',freight.enName)" />
+                </div>
               </el-form-item>
             </div>
 
             <el-form-item label="其他扣款">
-              <span v-show="!isEdit">{{ scope.row.otherCharges }}</span>
-              <el-input-number v-show="isEdit" v-model="scope.row.otherCharges" :controls="false" :precision="2" :min="0" :placeholder="`其他扣款`" style="width:90px;" @blur="handlerChange(scope.row,scope.row.otherCharges, '')" />
+              <span v-if="scope.row.isDregs === 1">{{ scope.row.otherCharges }}</span>
+              <div v-else>
+                <span v-show="!isEdit">{{ scope.row.otherCharges }}</span>
+                <el-input-number v-show="isEdit" v-model="scope.row.otherCharges" :controls="false" :precision="2" :min="0" :placeholder="`其他扣款`" style="width:90px;" @blur="handlerChange(scope.row,scope.row.otherCharges, '')" />
+              </div>
             </el-form-item>
           </el-form>
         </template>
@@ -133,7 +154,8 @@
       <el-table-column width="120" label="服务费" align="center" prop="serviceFee" fixed="right" />
       <el-table-column width="162" label="司机实收金额" align="center" prop="deliveryCashFee" fixed="right">
         <template slot-scope="scope">
-          <el-input-number v-model="scope.row.deliveryCashFee" :controls="false" :precision="2" placeholder="请输入司机实收金额" style="width:100%;" size="mini" @blur="handlerInput(scope.row,scope.row.deliveryCashFee, 'deliveryCashFee')" />
+          <span v-if="scope.row.isDregs === 0">{{ scope.row.deliveryCashFee }}</span>
+          <el-input-number v-else v-model="scope.row.deliveryCashFee" :controls="false" :precision="2" placeholder="请输入司机实收金额" style="width:100%;" size="mini" @blur="handlerInput(scope.row,scope.row.deliveryCashFee, 'deliveryCashFee')" />
         </template>
       </el-table-column>
 
@@ -227,17 +249,17 @@ export default {
       const { data } = await deliveryCashFee({
         deliveryCashFee: row.deliveryCashFee, //	司机实收现金		false
         m0DictValue: row.m0DictValue,
+        waybillCode: row.waybillCode,
         // deliveryFeeDeserved: row.deliveryFeeDeserved, // 司机应收运费
         shipperCode: row.shipperCode //	货主Code		false
       });
 
-      console.log(data);
 
       row.serviceFee = data.serviceFee;
       row.shipperRealPay = data.shipperRealPay;
       row.m0Fee = data.m0Fee;
       row.deliveryCashFee = data.driverFee;
-      // row.taxPayment = data.taxPayment || row.taxPayment;
+      row.taxPayment = data.taxPayment;
 
       row.tin_deliveryCashFee = row.deliveryCashFee;
     },
@@ -356,6 +378,8 @@ export default {
     getList() {
       this.loading = true;
       adjustDetail(this.queryParams).then(response => {
+        // isDregs // 是否渣土   1 是 0 否 (司机实收 只有渣土1能修改)
+
         this.oldList = JSON.parse(JSON.stringify(response.data));
         this.adjustlist = JSON.parse(JSON.stringify(response.data));
 
@@ -375,7 +399,8 @@ export default {
     setForm(data) {
       this.isEdit2 = false;
       this.isEdit = false;
-      this.isPiliang = data.length > 1;
+
+      this.isPiliang = data.length > 1 && data[0].isDregs === 1;
       this.deliveryCashFee = undefined;
       this.queryParams.waybillCodeList = data;
       this.getList();

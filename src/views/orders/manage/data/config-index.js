@@ -9,18 +9,39 @@ export default [
     label: '货源单号'
   },
   {
-    prop: 'adminName',
+    prop: 'updateUserName',
     isShow: true,
     width: 120,
     tooltip: true,
-    label: '货主名称'
+    label: '操作人'
   },
+  // {
+  //   prop: 'adminName',
+  //   isShow: true,
+  //   width: 120,
+  //   tooltip: true,
+  //   label: '货主名称'
+  // },
   {
     prop: 'companyName',
     isShow: true,
     width: 120,
     tooltip: true,
-    label: '企业名称'
+    label: '发货企业'
+  },
+  {
+    prop: 'businessType',
+    isShow: true,
+    width: 120,
+    tooltip: true,
+    label: '业务类型'
+  },
+  {
+    prop: 'projectName',
+    isShow: true,
+    width: 120,
+    tooltip: true,
+    label: '项目'
   },
   {
     prop: 'goodsBigTypeName',
@@ -36,106 +57,6 @@ export default [
     tooltip: true,
     label: '货物小类'
   },
-  {
-    prop: 'addressName1',
-    isShow: true,
-    width: 200,
-    tooltip: true,
-    label: '装货地'
-  },
-  {
-    prop: 'contact1',
-    isShow: true,
-    width: 200,
-    tooltip: true,
-    label: '装货地联系人'
-  },
-  // {
-  //   prop: 'contactPhone1',
-  //   isShow: true,
-  //   width: 200,
-  //   tooltip: true,
-  //   label: '装货地联系电话'
-  // },
-  {
-    prop: 'addressName2',
-    isShow: true,
-    width: 200,
-    tooltip: true,
-    label: '卸货地'
-  },
-  {
-    prop: 'contact2',
-    isShow: true,
-    width: 200,
-    tooltip: true,
-    label: '卸货地联系人'
-  },
-  // {
-  //   prop: 'contactPhone2',
-  //   isShow: true,
-  //   width: 200,
-  //   tooltip: true,
-  //   label: '卸货地联系电话'
-  // },
-  {
-    prop: 'remark',
-    isShow: true,
-    width: 120,
-    tooltip: true,
-    label: '备注'
-  },
-  {
-    prop: 'goodsPrice',
-    isShow: true,
-    width: 120,
-    tooltip: true,
-    label: '货物单价'
-  },
-  {
-    prop: 'shipmentPrice',
-    isShow: true,
-    width: 120,
-    tooltip: true,
-    label: '运输单价'
-  },
-  {
-    prop: 'transactionPrice',
-    isShow: true,
-    width: 120,
-    tooltip: true,
-    label: '成交单价'
-  },
-  // {
-  //   prop: 'unitPrice',
-  //   isShow: true,
-  //   width: 120,
-  //   tooltip: true,
-  //   label: '承运单价'
-  // },
-  {
-    prop: 'businessType',
-    isShow: true,
-    width: 120,
-    tooltip: true,
-    label: '业务类型'
-  },
-  {
-    prop: 'cargoCodeQr',
-    isShow: false,
-    width: 120,
-    tooltip: true,
-    label: '货集码地址'
-  },
-
-
-  // {
-  //   prop: 'isDel',
-  //   isShow: true,
-  //   width: 120,
-  //   tooltip: true,
-  //   label: '是否删除'
-  // },
   {
     prop: 'isPublic',
     isShow: true,
@@ -157,34 +78,124 @@ export default [
     tooltip: true,
     label: '装卸类型'
   },
+
   {
-    prop: 'nickName',
-    isShow: false,
-    width: 120,
+    prop: 'addressName1',
+    isShow: true,
+    width: 200,
     tooltip: true,
-    label: '昵称'
+    label: '装货地'
   },
   {
-    prop: 'phonenumber',
+    prop: 'contact1',
     isShow: false,
-    width: 120,
+    width: 200,
     tooltip: true,
-    label: '手机号码'
+    label: '装货地联系人'
+  },
+  // {
+  //   prop: 'contactPhone1',
+  //   isShow: true,
+  //   width: 200,
+  //   tooltip: true,
+  //   label: '装货地联系电话'
+  // },
+  {
+    prop: 'addressName2',
+    isShow: true,
+    width: 200,
+    tooltip: true,
+    label: '卸货地'
   },
   {
-    prop: 'projectName',
+    prop: 'contact2',
+    isShow: false,
+    width: 200,
+    tooltip: true,
+    label: '卸货地联系人'
+  },
+  // {
+  //   prop: 'contactPhone2',
+  //   isShow: true,
+  //   width: 200,
+  //   tooltip: true,
+  //   label: '卸货地联系电话'
+  // },
+  // {
+  //   prop: 'remark',
+  //   isShow: true,
+  //   width: 120,
+  //   tooltip: true,
+  //   label: '备注'
+  // },
+  {
+    prop: 'goodsPrice',
     isShow: true,
     width: 120,
     tooltip: true,
-    label: '项目'
+    label: '货物单价'
   },
   {
-    prop: 'status',
-    isShow: false,
+    prop: 'shipmentPrice',
+    isShow: true,
     width: 120,
     tooltip: true,
-    label: '状态'
+    label: '货主成交单价'
   },
+  {
+    prop: 'transactionPrice',
+    isShow: true,
+    width: 120,
+    tooltip: true,
+    label: '司机成交单价'
+  },
+  // {
+  //   prop: 'unitPrice',
+  //   isShow: true,
+  //   width: 120,
+  //   tooltip: true,
+  //   label: '承运单价'
+  // },
+
+  // {
+  //   prop: 'cargoCodeQr',
+  //   isShow: false,
+  //   width: 120,
+  //   tooltip: true,
+  //   label: '货集码地址'
+  // },
+
+
+  // {
+  //   prop: 'isDel',
+  //   isShow: true,
+  //   width: 120,
+  //   tooltip: true,
+  //   label: '是否删除'
+  // },
+
+  // {
+  //   prop: 'nickName',
+  //   isShow: false,
+  //   width: 120,
+  //   tooltip: true,
+  //   label: '昵称'
+  // },
+  // {
+  //   prop: 'phonenumber',
+  //   isShow: false,
+  //   width: 120,
+  //   tooltip: true,
+  //   label: '手机号码'
+  // },
+
+  // {
+  //   prop: 'status',
+  //   isShow: false,
+  //   width: 120,
+  //   tooltip: true,
+  //   label: '状态'
+  // },
   {
     prop: 'notRobbedOrder',
     isShow: true,
@@ -214,34 +225,28 @@ export default [
     label: '配载方式'
   },
   {
-    prop: 'createTime',
-    isShow: true,
-    width: 120,
-    tooltip: true,
-    label: '发布时间'
-  },
-  {
     prop: 'updateTime',
     isShow: true,
     width: 120,
     tooltip: true,
     label: '修改时间'
   },
+  {
+    prop: 'createTime',
+    isShow: true,
+    width: 120,
+    tooltip: true,
+    label: '创建时间'
+  },
 
   {
     prop: 'opUserName',
-    isShow: true,
+    isShow: false,
     width: 120,
     tooltip: true,
     label: '创建人'
   },
-  {
-    prop: 'updateUserName',
-    isShow: true,
-    width: 120,
-    tooltip: true,
-    label: '操作人'
-  },
+
   {
     prop: 'edit',
     isShow: true,
