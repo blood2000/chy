@@ -389,7 +389,8 @@
 </template>
 
 <script>
-import { addShipment, updateShipment, authRead, examine, getShipmentEnterprise, getWaybillStatus } from '@/api/assets/shipment';
+import { addShipment, updateShipment, authRead, examine, getShipmentEnterprise } from '@/api/assets/shipment';
+// import { getWaybillStatus } from '@/api/assets/shipment';
 import { listDeptAll } from '@/api/system/dept';
 import { getBranchList } from '@/api/system/branch';
 import UploadImage from '@/components/UploadImage/index';
@@ -618,7 +619,7 @@ export default {
           if (this.form.openProjectDesignView) {
             openProjectDesignView = 0;
           }
-          var extendForm = { noNeedUnloadImg: noNeedUnloadImg, openProjectDesignView: openProjectDesignView};
+          var extendForm = { noNeedUnloadImg: noNeedUnloadImg, openProjectDesignView: openProjectDesignView };
           // eslint-disable-next-line no-undef
           this.form = Object.assign(this.form, extendForm);
           if (this.form.id) {

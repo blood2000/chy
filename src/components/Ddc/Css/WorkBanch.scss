@@ -4,7 +4,7 @@
   height: 100%;
 }
 .minworkbanch{
-  min-width: 1300px;
+  min-width: 1244px;
   overflow-x: scroll;
   height: 100%;
   font-size: 12px;
@@ -57,6 +57,10 @@
 // 公告
 .notic-tip{
   width: calc(100% - 100px);
+  overflow: hidden;
+}
+.minworkbanch .notic-tip{
+  width: calc(100% - 30px);
   overflow: hidden;
 }
 .top-tips{
@@ -160,22 +164,22 @@
   padding: 15px;
 }
 .minworkbanch .waybill-frame{
-  height: 105px;
+  height: 100px;
   background: #F6FAFE;
   border-radius: 2px 2px 15px 2px;
   padding: 10px;
 }
 .waybill-img{
   position: relative;
-  left: 63px;
+  left: 15px;
   top: 21px;
 }
 .minworkbanch .waybill-img{
   height: 38px;
   width: 38px;
   position: relative;
-  left: 72px;
-  top: 11px;
+  left: 10px;
+  top: 6px;
 }
 ::v-deep .el-progress-bar__inner {
   background: linear-gradient(270deg, #409EFF 0%, rgba(64, 158, 255, 0.51) 100%);
@@ -274,6 +278,9 @@
   overflow: hidden;
   margin: 16px 20px;
 }
+.minworkbanch .trend-tab{
+  margin: 10px;
+}
 .trend-onbottom{
   height: 32px;
   background: #409EFF;
@@ -292,10 +299,14 @@
   justify-content: center;
 }
 .trend-frame{
-  height: calc(100% - 365px);
+  height: calc(100% - 355px);
   overflow: scroll;
   padding: 0 10px 0 20px;
   margin-right: 5px;
+}
+.minworkbanch .trend-frame{
+  padding: 0 10px;
+  height: calc(100% - 325px);
 }
 .trend-line{
   position: relative;
@@ -346,7 +357,7 @@
   margin-right: 15px;
 }
 .minworkbanch .user-frame{
-  min-width:240px;
+  width:240px;
   margin-right: 10px;
 }
 .nav-frame{
@@ -355,7 +366,7 @@
 }
 .minworkbanch .nav-frame{
   width:calc(100% - 240px);
-  min-width:685px;
+  min-width:500px;
 }
 .middle-frame{
   height: 49%;
@@ -396,7 +407,7 @@
 }
 .minworkbanch .way-frame{
   width:calc(100% - 570px);
-  min-width:340px;
+  min-width:300px;
   height: 100%;
 }
 .platform-frame{
@@ -406,20 +417,32 @@
 }
 .minworkbanch .platform-frame{
   height: calc(51% - 125px);
-  min-height: 170px;
+  min-height: 165px;
   margin-top: 10px;
 }
 .active-frame{
   width: 400px;
   height:100%;
-  min-height: 740px;
+  min-height: 745px;
   padding:0px;
 }
 .minworkbanch .active-frame{
   width: 320px;
   height:100%;
-  min-height: 740px;
+  min-height: 585px;
   padding:0px;
+}
+.active-cont{
+  width: 250px;
+  margin-top: 5px;
+}
+.minworkbanch .active-cont{
+  width: 180px;
+  margin-top: 5px;
+}
+
+::v-deep  .el-calendar__body{
+  padding: 0;
 }
 
 .minworkbanch .g-title-big{

@@ -23,7 +23,7 @@
       </template>
 
       <div class="avatar-wrapper">
-        <img :src="avatar" class="avatar-wrapper__image">
+        <img v-real-img="avatar" src="@/assets/images/workbench/icon_noavator.png" class="avatar-wrapper__image">
         <span v-if="roleName !== ''" class="avatar-wrapper__role">{{ roleName }}</span>
       </div>
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
