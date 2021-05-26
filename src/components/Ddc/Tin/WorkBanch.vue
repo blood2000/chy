@@ -112,7 +112,7 @@
                 <img class="order-img" src="~@/assets/images/workbench/icon_examine.png" alt="">
               </div>
               <div class="statistic-frame">
-                <div>已开票</div>
+                <div>今日已开票</div>
                 <div class="g-color-tag">
                   <span class="g-color-title g-strong g-title-large"><count-to :end-val="statistic.invoice?statistic.invoice.openInvoiceCount:0" :decimal-places="0" /></span>
                   单
