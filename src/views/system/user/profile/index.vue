@@ -8,7 +8,7 @@
           </div>
           <div>
             <div class="text-center">
-              <userAvatar :user="user" @fresh="getUser"/>
+              <userAvatar :user="user" @fresh="getUser" />
             </div>
             <ul class="list-group list-group-striped">
               <li class="list-group-item">
