@@ -125,7 +125,7 @@
 import { getProvinceList, getCityList, geCountyList } from '@/api/system/area';
 import { addAddress, updateAddress } from '@/api/enterprise/company/address';
 import AmapSearch from '@/components/Ddc/Tin/AmapSearch';
-import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
+// import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
 
 const geocoder = new AMap.Geocoder({
   radius: 1000,
