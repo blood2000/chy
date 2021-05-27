@@ -1,7 +1,7 @@
 <template>
   <!-- 投诉统计 -->
   <div class="s-container ly-flex-pack-justify">
-    <div class="s-container__info">
+    <!-- <div class="s-container__info">
       <div class="s-container__info__box">
         <div class="content">
           <p class="label">总投诉量</p>
@@ -19,7 +19,27 @@
         </div>
       </div>
     </div>
-    <div ref="pie" class="s-container__pie" />
+    <div ref="pie" class="s-container__pie" /> -->
+
+    <!-- new -->
+    <div class="s-container__box">
+      <div class="title title_1">评价</div>
+      <div class="count">
+        <count-to :end-val="0" />
+      </div>
+    </div>
+    <div class="s-container__box">
+      <div class="title title_2">投诉</div>
+      <div class="count">
+        <count-to :end-val="complainVo.complaintCount" />
+      </div>
+    </div>
+    <div class="s-container__box">
+      <div class="title title_3">异常单</div>
+      <div class="count">
+        <count-to :end-val="complainVo.complaintAbnormal" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -167,7 +187,7 @@ export default {
 
 <style lang="scss" scoped>
 .s-container{
-  height: 23%;
+  height: 12%;
   &__info{
     width: 45%;
     height: 100%;
@@ -199,6 +219,52 @@ export default {
   &__pie{
     width: 55%;
     height: 100%;
+  }
+  // 新样式
+  margin-right: 1.4rem;
+  &__box{
+    >.title{
+      font-size: 0.6rem;
+      font-family: PingFang Regular;
+      font-weight: 300;
+      color: #D5EAFF;
+      margin: 0.6rem 0 0.3rem;
+      padding-left: 0.8rem;
+      position: relative;
+      &::before{
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        margin-top: -0.175rem;
+        width: 0.7rem;
+        height: 0.35rem;
+      }
+      &.title_1{
+        &::before{
+          background: url('~@/assets/images/statistic/complaint_1.png') no-repeat;
+          background-size: 100% 100%;
+        }
+      }
+      &.title_2{
+        &::before{
+          background: url('~@/assets/images/statistic/complaint_2.png') no-repeat;
+          background-size: 100% 100%;
+        }
+      }
+      &.title_3{
+        &::before{
+          background: url('~@/assets/images/statistic/complaint_3.png') no-repeat;
+          background-size: 100% 100%;
+        }
+      }
+    }
+    >.count{
+      font-size: 1.1rem;
+      font-family: 'PingFang Medium';
+      font-weight: 500;
+      color: #FFFFFF;
+    }
   }
 }
 </style>
