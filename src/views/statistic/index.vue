@@ -439,7 +439,7 @@ export default {
     display: inline-block;
     position: absolute;
     width: 26rem;
-    top: 1.5rem;
+    top: 1.4rem;
     left: 50%;
     margin-left: -13rem;
     font-size: 1.6rem;
@@ -448,8 +448,8 @@ export default {
     color: #FFFFFF;
     text-align: center;
     >img{
-      width: 19.95rem;
-      height: 2.35rem;
+      width: 21.35rem;
+      height: 2.4rem;
     }
     >.line {
       width: 6rem;
@@ -458,10 +458,10 @@ export default {
       position: absolute;
       top: 1.1rem;
       &.left {
-        left: -3.6rem;
+        left: -4rem;
       }
       &.right {
-        right: -3.6rem;
+        right: -4rem;
       }
     }
     &::before {
@@ -470,7 +470,7 @@ export default {
       height: 2.1rem;
       position: absolute;
       top: 0.1rem;
-      left: -3.6rem;
+      left: -4rem;
       background: url('~@/assets/images/statistic/header_left.gif') no-repeat;
       background-size: 100% 100%;
     }
@@ -480,7 +480,7 @@ export default {
       height: 2.1rem;
       position: absolute;
       top: 0.1rem;
-      right: -3.6rem;
+      right: -4rem;
       background: url('~@/assets/images/statistic/header_right.gif') no-repeat;
       background-size: 100% 100%;
     }

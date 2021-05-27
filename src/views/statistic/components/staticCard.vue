@@ -90,7 +90,7 @@ export default {
 .s-scroll-card{
   height: 5.25rem;
   overflow: hidden;
-  padding: 0.4rem 0.8rem 0.8rem 0.6rem;
+  padding: 0.4rem 0.4rem 0.8rem;
   background: rgba(1, 18, 60, 0.2);
   .s-scroll-box{
     height: 4.05rem;
@@ -99,7 +99,7 @@ export default {
       .content__list__item{
         line-height: 1.35rem;
         .text{
-          width: calc(100% - 2rem);
+          width: calc(100% - 1.8rem);
           font-size: 0.65rem;
           font-family: PingFang Regular;
           font-weight: 400;
@@ -114,6 +114,7 @@ export default {
           font-family: PingFang Regular;
           font-weight: 400;
           color: #A4ACC0;
+          transform: scale(0.9, 0.9);
         }
         // 动画
         &.isOpacity:first-child{
