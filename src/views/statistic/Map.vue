@@ -5,12 +5,14 @@
     <div class="map-legend">
       <h5 @click="initData">运单量</h5>
       <ul class="ly-flex-v ly-flex-pack-justify">
-        <li v-for="(item, index) in legendList" :key="index">
+        <li v-for="(item, index) in legendList" :key="index" @click="initWillData">
           <span class="color" :style="{background: item.color}" />
           <span class="text">{{ item.name }}</span>
         </li>
       </ul>
     </div>
+    <!-- 运单 -->
+    <WaybillCard ref="WaybillCardRef" />
   </div>
 </template>
 
@@ -19,8 +21,12 @@ import * as echarts from 'echarts';
 // import 'echarts-gl';
 import maps from '@/assets/json/china.json';
 import { setfontSize } from '@/utils/fontSize';
+import WaybillCard from './WaybillCard';
 
 export default {
+  components: {
+    WaybillCard
+  },
   props: {
     partitionListVo: {
       type: Array,
@@ -193,7 +199,37 @@ export default {
         }
       });
     },
-    // 模拟实时数据
+    // 处理实时数据-运单
+    setWayBillData(val, time) {
+      const { status } = val;
+      if (status) {
+        const driver = val.driver.name;
+        const licenseNumber = val.vehicle.licenseNumber;
+        // 接单
+        if (status === 1) {
+          const title = `[ 接单 ] ${driver} ${licenseNumber}`;
+          const address = val.address.loadFormattedAddress;
+          this.$refs.WaybillCardRef.setData(status, title, address, time);
+        }
+        // 装货
+        if (status === 2) {
+          const title = `[ 装货 ] ${driver} ${licenseNumber}`;
+          const address = val.address.loadFormattedAddress;
+          this.$refs.WaybillCardRef.setData(status, title, address, time);
+        }
+        // 卸货
+        if (status === 3) {
+          const title = `[ 卸货 ] ${driver} ${licenseNumber}`;
+          const address = val.address.unloadFormattedAddress;
+          this.$refs.WaybillCardRef.setData(status, title, address, time);
+        }
+      }
+    },
+    // 模拟实时数据-运单
+    initWillData() {
+      this.$refs.WaybillCardRef.setData(1, '[ 测试 ] 吴敬东 闽A510AY', '测试-福建福州市马尾区儒江东路乌山小学', '2021-05-27 13:00:00');
+    },
+    // 模拟地图实时数据
     initData() {
       const data = this.warnData[this.warnIndex];
       this.createPrompt(data.value[0], data.value[1], data.name);
