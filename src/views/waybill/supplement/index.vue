@@ -1,20 +1,21 @@
 <template>
-  <el-tabs type="border-card">
-    <el-tab-pane label="运单补录" style="padding:0 30px;">
+  <el-tabs type="border-card" style="margin:0 12px; height:99%">
+    <el-tab-pane label="运单补录">
       <div class="container">
         <el-form ref="form" :model="form" :rules="rules" label-width="140px">
-          <el-divider content-position="left"><span class="supplement-title">货源信息</span></el-divider>
+          <div class="supplement-title"><div class="supplement-icon" />货源信息</div>
+          <el-divider />
           <el-row>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item label="货源单号" prop="mainOrderCode">
                 <el-input v-model="form.mainOrderCode" placeholder="请输入货源单号" class="width90" clearable @change="getOrderDetail" />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item label="货物名称" prop="goodsCode">
                 <el-select
                   v-model="form.goodsCode"
-                  placeholder="请选择货物"
+                  placeholder="请选择货物名称"
                   no-data-text="请先输入货源单号"
                   clearable
                   filterable
@@ -32,18 +33,18 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item label="运费单价" prop="shipmentPrice">
-                <el-input v-model="form.shipmentPrice" :readonly="true" class="width90" />
+                <el-input v-model="form.shipmentPrice" placeholder="请输入" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item label="装货地址" prop="loadAddressCode">
                 <el-select
                   v-model="form.loadAddressCode"
-                  placeholder="请选择车辆装货地址"
+                  placeholder="请选择装货地址"
                   no-data-text="请先输入货源单号"
                   clearable
                   filterable
@@ -61,11 +62,11 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item label="卸货地址" prop="unloadAddressCode">
                 <el-select
                   v-model="form.unloadAddressCode"
-                  placeholder="请选择车辆卸货地址"
+                  placeholder="请选择卸货地址"
                   no-data-text="请先输入货源单号"
                   clearable
                   filterable
@@ -83,19 +84,20 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item v-if="!stowage" label="剩余车数" prop="notRobbedOrder">
-                <el-input v-model="form.notRobbedOrder" :readonly="true" class="width90" />
+                <el-input v-model="form.notRobbedOrder" placeholder="请输入" :readonly="true" class="width90" />
               </el-form-item>
               <el-form-item v-if="stowage" label="剩余吨数/立方数" prop="remainingWeight">
-                <el-input v-model="form.remainingWeight" :readonly="true" class="width90" />
+                <el-input v-model="form.remainingWeight" placeholder="请输入" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
           </el-row>
 
-          <el-divider content-position="left"><span class="supplement-title">承运车辆</span></el-divider>
+          <div class="supplement-title"><div class="supplement-icon" />承运车辆</div>
+          <el-divider />
           <el-row>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item label="承运司机" prop="driverCode">
                 <el-select
                   v-model="form.driverCode"
@@ -104,7 +106,7 @@
                   clearable
                   remote
                   reserve-keyword
-                  placeholder="请输入关键词"
+                  placeholder="请输入关键字"
                   :remote-method="remoteMethod"
                   :loading="loading"
                   size="small"
@@ -125,7 +127,7 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item label="承运车辆" prop="vehicleCode">
                 <el-select
                   v-model="form.vehicleCode"
@@ -147,14 +149,14 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item label="运输许可号" prop="roadTransportCertificateNumber">
-                <el-input v-model="form.roadTransportCertificateNumber" :readonly="true" class="width90" />
+                <el-input v-model="form.roadTransportCertificateNumber" placeholder="请输入" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item label="所属调度" prop="teamCode">
                 <el-select
                   v-model="form.teamCode"
@@ -175,21 +177,22 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item label="车辆识别码" prop="chassisNumber">
-                <el-input v-model="form.chassisNumber" :readonly="true" class="width90" />
+                <el-input v-model="form.chassisNumber" placeholder="请输入" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item label="车辆载重" prop="vehicleLoadWeight">
-                <el-input v-model="form.vehicleLoadWeight" :readonly="true" class="width90" />
+                <el-input v-model="form.vehicleLoadWeight" placeholder="请输入" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
           </el-row>
 
-          <el-divider content-position="left"><span class="supplement-title">运单信息</span></el-divider>
+          <div class="supplement-title"><div class="supplement-icon" />运单信息</div>
+          <el-divider />
           <el-row>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item label="装货时间" prop="loadTime">
                 <el-date-picker
                   v-model="form.loadTime"
@@ -203,7 +206,7 @@
                 />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item label="卸货时间" prop="unloadTime">
                 <el-date-picker
                   v-model="form.unloadTime"
@@ -217,39 +220,39 @@
                 />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item v-if="!stowage" label="运单车数" prop="loadWeight">
-                <el-input-number v-model="form.loadWeight" placeholder="请输入运单重量" controls-position="right" :precision="2" :min="0" class="width90" @change="inputWeight" />
+                <el-input-number v-model="form.loadWeight" placeholder="请输入运单数量" controls-position="right" :precision="2" :min="0" class="width90" @change="inputWeight" />
               </el-form-item>
               <el-form-item v-if="stowage" label="运单重量(吨/立方)" prop="loadWeight">
-                <el-input-number v-model="form.loadWeight" placeholder="请输入运单重量" controls-position="right" :precision="2" :min="0" class="width90" @change="inputWeight" />
+                <el-input-number v-model="form.loadWeight" placeholder="请输入运单数量" controls-position="right" :precision="2" :min="0" class="width90" @change="inputWeight" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item label="货主实付金额" prop="shipperRealPay">
-                <el-input v-model="form.shipperRealPay" :readonly="true" class="width90" />
+                <el-input v-model="form.shipperRealPay" placeholder="请输入" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item label="司机实收金额" prop="driverRealFee">
-                <el-input v-model="form.driverRealFee" :readonly="true" class="width90" />
+                <el-input v-model="form.driverRealFee" placeholder="请输入" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item label="运输单号" prop="wayBillNo">
-                <el-input v-model="form.wayBillNo" :readonly="true" class="width90" />
+                <el-input v-model="form.wayBillNo" placeholder="请输入" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item ref="loadAttachment" label="装货单据" prop="loadAttachmentCode">
                 <uploadImage v-model="form.loadAttachmentCode" @input="chooseImg" />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item ref="unloadAttachment" label="卸货单据/回执单" prop="unloadAttachmentCode">
                 <uploadImage v-model="form.unloadAttachmentCode" @input="chooseImg" />
               </el-form-item>
@@ -764,8 +767,24 @@ export default {
   overflow-y: auto;
   height: calc(100vh - 201px);
 }
+.supplement-icon{
+  margin-right: 6px;
+  width: 2px;
+  height: 16px;
+  background: #1990FF;
+  border-radius: 2px;
+}
 .supplement-title{
-    font-size: 18px;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  font-family: PingFang SC;
+  font-weight: bold;
+  line-height: 24px;
+  color: #262626;
+}
+.el-divider--horizontal{
+  margin: 12px 0 24px;
 }
 .width90{
 	width: 90% !important;
