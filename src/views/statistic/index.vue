@@ -273,7 +273,7 @@ export default {
       }
       // 打款√
       if (waybillSettlementNotice) {
-        this.$refs.ScrollDataRef.setOrderData(waybillSettlementNotice, insertTime);
+        this.$refs.ScrollDataRef.setInvoiceData(waybillSettlementNotice, insertTime);
       }
     },
     // 图表自适应

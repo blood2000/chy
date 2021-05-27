@@ -233,39 +233,39 @@
         <el-row>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">驾驶证</p>
-            <upload-image v-model="form.driverLicenseImage" :disabled="disable" image-type="driver-license" @fillForm="fillForm" />
+            <upload-image v-model="form.driverLicenseImage" :disabled="disable" image-type="driver-license" icon-type="driver" @fillForm="fillForm" />
           </el-col>
           <el-col v-show="form.driverType===1" :span="7" class="mb">
             <p class="upload-image-label">行驶证</p>
-            <upload-image v-model="form.driverOtherLicenseImage" :disabled="disable" image-type="vehicle-license" @fillForm="fillForm" />
+            <upload-image v-model="form.driverOtherLicenseImage" :disabled="disable" image-type="vehicle-license" icon-type="vehicle" @fillForm="fillForm" />
           </el-col>
           <el-col v-show="form.driverType===1" :span="7" class="mb">
             <p class="upload-image-label">行驶证副页</p>
-            <upload-image v-model="form.driverOtherLicenseBackImage" :disabled="disable" image-type="vehicle-license" @fillForm="fillForm" />
+            <upload-image v-model="form.driverOtherLicenseBackImage" :disabled="disable" image-type="vehicle-license" icon-type="vehicle_back" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">身份证正面照</p>
-            <upload-image v-model="form.identificationImage" :disabled="disable" image-type="id-card" side="front" @fillForm="fillForm" />
+            <upload-image v-model="form.identificationImage" :disabled="disable" image-type="id-card" side="front" icon-type="idcard" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">身份证反面照</p>
-            <upload-image v-model="form.identificationBackImage" :disabled="disable" image-type="id-card" side="back" @fillForm="fillForm" />
+            <upload-image v-model="form.identificationBackImage" :disabled="disable" image-type="id-card" side="back" icon-type="idcard_back" @fillForm="fillForm" />
           </el-col>
           <el-col v-show="form.driverType===1" :span="7" class="mb">
             <p class="upload-image-label">道路运输许可证</p>
-            <upload-image v-model="form.transportPermitImage" :disabled="disable" />
+            <upload-image v-model="form.transportPermitImage" :disabled="disable" icon-type="transport" />
           </el-col>
           <el-col v-show="form.driverType===1" :span="7">
             <p class="upload-image-label">车头正面照</p>
-            <upload-image v-model="vehicleForm.vehicleImage" :disabled="disable" />
+            <upload-image v-model="vehicleForm.vehicleImage" :disabled="disable" icon-type="vehicle_head" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">司机照片</p>
-            <upload-image v-model="form.peopleImage" :disabled="disable" />
+            <upload-image v-model="form.peopleImage" :disabled="disable" icon-type="driver_head" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">从业资格证</p>
-            <upload-image v-model="form.workLicenseImage" :disabled="disable" />
+            <upload-image v-model="form.workLicenseImage" :disabled="disable" icon-type="work" />
           </el-col>
         </el-row>
       </el-form-item>

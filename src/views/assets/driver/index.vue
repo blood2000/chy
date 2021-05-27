@@ -369,10 +369,10 @@ export default {
       ],
       // 处理状态字典
       applyStatusOptions: [
-        { dictLabel: '未处理', dictValue: 0 },
-        { dictLabel: '已加入', dictValue: 1 },
+        { dictLabel: '待处理', dictValue: 0 },
+        { dictLabel: '已同意', dictValue: 1 },
         { dictLabel: '已拒绝', dictValue: 2 },
-        { dictLabel: '待加入', dictValue: 3 }
+        { dictLabel: '未邀请', dictValue: 3 }
       ],
       // 是否冻结字典
       isFreezoneOptions: [

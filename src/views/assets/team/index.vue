@@ -2,19 +2,19 @@
   <div>
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
-        <el-form-item label="调度者名称" prop="name">
+        <el-form-item label="调度组名称" prop="name">
           <el-input
             v-model="queryParams.name"
-            placeholder="请输入调度者名称"
+            placeholder="请输入调度组名称"
             clearable
             size="small"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="姓名" prop="teamLeaderName">
+        <el-form-item label="调度者姓名" prop="teamLeaderName">
           <el-input
             v-model="queryParams.teamLeaderName"
-            placeholder="请输入姓名"
+            placeholder="请输入调度者姓名"
             clearable
             size="small"
             @keyup.enter.native="handleQuery"
@@ -30,7 +30,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="司机姓名" prop="driverName">
+        <!-- <el-form-item label="司机姓名" prop="driverName">
           <el-input
             v-model="queryParams.driverName"
             placeholder="请输入司机姓名"
@@ -38,7 +38,7 @@
             size="small"
             @keyup.enter.native="handleQuery"
           />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="手机号" prop="telphone">
           <el-input
             v-model="queryParams.telphone"
@@ -47,7 +47,7 @@
             size="small"
           />
         </el-form-item>
-        <el-form-item label="车牌号码" prop="licenseNumber">
+        <!-- <el-form-item label="车牌号码" prop="licenseNumber">
           <el-input
             v-model="queryParams.licenseNumber"
             placeholder="请输入车牌号码"
@@ -55,7 +55,7 @@
             size="small"
             @keyup.enter.native="handleQuery"
           />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="审核状态" prop="authStatus">
           <el-select
             v-model="queryParams.authStatus"
@@ -71,7 +71,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="处理状态" prop="applyStatus">
+        <!-- <el-form-item label="处理状态" prop="applyStatus">
           <el-select v-model="queryParams.applyStatus" placeholder="请选择状态" filterable clearable size="small">
             <el-option
               v-for="dict in applyStatusOptions"
@@ -80,7 +80,7 @@
               :value="dict.dictValue"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
           <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -292,10 +292,10 @@ export default {
       ],
       // 处理状态字典
       applyStatusOptions: [
-        { dictLabel: '未处理', dictValue: 0 },
-        { dictLabel: '已加入', dictValue: 1 },
+        { dictLabel: '待处理', dictValue: 0 },
+        { dictLabel: '已同意', dictValue: 1 },
         { dictLabel: '已拒绝', dictValue: 2 },
-        { dictLabel: '待加入', dictValue: 3 }
+        { dictLabel: '未邀请', dictValue: 3 }
       ],
       // 查询参数
       queryParams: {
@@ -396,7 +396,7 @@ export default {
     handleDelete(row) {
       const ids = row.id || this.ids;
       const teamNames = row.name || this.teamNames;
-      this.$confirm('是否确认删除调度者名称为"' + teamNames + '"的数据项，并解除关联的司机和车辆?', '警告', {
+      this.$confirm('是否确认删除调度组名称为"' + teamNames + '"的数据项，并解除关联的司机和车辆?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

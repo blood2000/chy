@@ -112,7 +112,7 @@
                 <img class="order-img" src="~@/assets/images/workbench/icon_examine.png" alt="">
               </div>
               <div class="statistic-frame">
-                <div>已开票</div>
+                <div>今日已开票</div>
                 <div class="g-color-tag">
                   <span class="g-color-title g-strong g-title-large"><count-to :end-val="statistic.invoice?statistic.invoice.openInvoiceCount:0" :decimal-places="0" /></span>
                   单
@@ -166,7 +166,7 @@
                   <div><span class="g-color-blue">●</span> 今日已打款</div>
                   <div class="g-strong g-title-large" style="margin-left:10px"><count-to :end-val="statistic.waybill?statistic.waybill.orderRemit:0" :decimal-places="0" /></div>
                 </div>
-                <div style="width: 100px">
+                <div style="width: 100px;text-align:end;">
                   <img class="waybill-img" src="~@/assets/images/workbench/icon_waybilling.png" alt="">
                 </div>
               </div>
@@ -253,8 +253,8 @@
       </div>
       <div class="index-frame active-frame">
         <!-- 动态 -->
-        <div style="height:100%; min-height: 609px;">
-          <div style="height:300px">
+        <div style="height:100%;">
+          <div>
             <el-calendar v-model="value" />
           </div>
           <el-row class="trend-tab">
@@ -284,7 +284,7 @@
                 <div v-if="index != 0" class="trend-line" />
                 <div style="margin-left: 12px;">
                   <div class="g-color-tag g-title-smaller">余晨望</div>
-                  <div class="ellipsis g-strong margintop5" style="width:250px;">
+                  <div class="active-cont ellipsis g-strong">
                     <span v-if="item.status === '1'">已接单</span>
                     <span v-if="item.status === '2'">已装货</span>
                     <span v-if="item.status === '3'">已卸货</span>
@@ -308,7 +308,7 @@
                 <div v-if="index != 0" class="trend-line" />
                 <div style="margin-left: 12px;">
                   <div class="g-color-tag g-title-smaller">{{ item.redisOrderInfoListVoList[0].adminName }}</div>
-                  <div class="ellipsis g-strong margintop5" style="width:250px;">发布货源（{{ item.redisOrderInfoListVoList[0].mainOrderNumber }}）</div>
+                  <div class="active-cont ellipsis g-strong">发布货源（{{ item.redisOrderInfoListVoList[0].mainOrderNumber }}）</div>
                 </div>
               </li>
             </div>
@@ -323,7 +323,7 @@
                 <div v-if="index != 0" class="trend-line" />
                 <div style="margin-left: 12px;">
                   <div class="g-color-tag g-title-smaller">余晨望</div>
-                  <div class="ellipsis g-strong margintop5" style="width:250px;">
+                  <div class="active-cont ellipsis g-strong">
                     <span v-if="item.invoiceStatus === '1'">货主申请开票</span>
                     <span v-if="item.invoiceStatus === '2'">货主已取消</span>
                     <span v-if="item.invoiceStatus === '3'">审核不通过</span>
@@ -345,7 +345,7 @@
                 <div v-if="index != 0" class="trend-line" />
                 <div style="margin-left: 12px;">
                   <div class="g-color-tag g-title-smaller">{{ item.remark }}</div>
-                  <div class="ellipsis g-strong margintop5" style="width:250px;" v-html="item.noticeContent" />
+                  <div class="active-cont ellipsis g-strong" v-html="item.noticeContent" />
                 </div>
               </li>
             </div>
@@ -500,7 +500,7 @@ export default {
         this.noticeList1 = this.noticeList1.concat(response.data);
         // console.log(this.noticeList1);
         this.loading = false;
-        if (this.waybillList) {
+        if (this.noticeList1) {
           this.disabled = false;
         }
       });
@@ -547,7 +547,7 @@ export default {
         this.orderList = this.orderList.concat(response.data.list);
         // console.log(this.orderList);
         this.loading = false;
-        if (this.waybillList) {
+        if (this.orderList) {
           this.disabled = false;
         }
       });
@@ -558,7 +558,7 @@ export default {
         this.dataOver = !response.data.rows.length;
         this.billList = this.billList.concat(response.data.rows);
         this.loading = false;
-        if (this.waybillList) {
+        if (this.billList) {
           this.disabled = false;
         }
       });

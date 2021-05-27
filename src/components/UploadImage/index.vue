@@ -13,12 +13,16 @@
       :disabled="disabled"
       accept=".jpg,.png,.jpeg"
       style="display: inline-block; vertical-align: top"
+      class="upload-image"
     >
       <img v-if="value && !disabled" :src="attachUrl" class="avatar">
       <div v-else-if="value && disabled" v-viewer class="avatar-box">
-        <img :src="attachUrl" class="avatar">
+        <img v-real-img="attachUrl" src="@/assets/images/uploadImage/load_error.png" class="avatar">
       </div>
-      <i v-else class="el-icon-plus avatar-uploader-icon" />
+      <template v-else>
+        <img :src="require('@/assets/images/uploadImage/' + iconType + '.png')">
+        <img src="@/assets/images/uploadImage/upload_icon.png" class="avatar-uploader-icon">
+      </template>
     </el-upload>
   </div>
 </template>
@@ -39,13 +43,20 @@ export default {
       type: Boolean,
       default: false
     },
+    // 图片类型
     imageType: {
       type: String,
       default: null
     },
+    // 图片正反面
     side: {
       type: String,
       default: null
+    },
+    // 图标类型
+    iconType: {
+      type: String,
+      default: 'default'
     }
   },
   data() {
@@ -157,9 +168,22 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  background: #F9F9F9;
+  width: 128px;
+  height: 88px;
+  overflow: hidden;
   .avatar {
     max-width: 100%;
     max-height: 100%;
+  }
+}
+.upload-image{
+  position: relative;
+  .avatar-uploader-icon{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 }
 </style>

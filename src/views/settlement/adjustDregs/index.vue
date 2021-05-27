@@ -65,12 +65,12 @@
         </el-form-item>
 
         <el-form-item
-          label="调度者姓名"
+          label="调度组名称"
           prop="teamName"
         >
           <el-input
             v-model="queryParams.teamName"
-            placeholder="请输入调度者姓名"
+            placeholder="请输入调度组名称"
             clearable
             size="small"
             style="width: 228px"

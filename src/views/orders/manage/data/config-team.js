@@ -10,7 +10,7 @@ const arr = [
   {
     prop: 'name',
     isShow: true,
-    label: '调度者名称'
+    label: '调度组名称'
     // width: 180,
     // fixed: 'right'
   },

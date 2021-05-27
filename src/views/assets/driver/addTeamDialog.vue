@@ -9,10 +9,10 @@
     @close="cancel"
   >
     <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
-      <el-form-item label="调度者名称" prop="name">
+      <el-form-item label="调度组名称" prop="name">
         <el-input
           v-model="queryParams.name"
-          placeholder="请输入调度者名称"
+          placeholder="请输入调度组名称"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -78,10 +78,10 @@
       <el-table-column label="处理状态" align="center" prop="applyStatus">
         <template slot-scope="scope">
           <span v-if="scope.row.applyStatus !=null && scope.row.applyStatus>=0">{{ selectDictLabel(applyStatusOptions, scope.row.applyStatus) }}</span>
-          <span v-else>待加入</span>
+          <span v-else>未邀请</span>
         </template>
       </el-table-column>
-      <el-table-column label="调度者名称" align="center" prop="name" />
+      <el-table-column label="调度组名称" align="center" prop="name" />
       <el-table-column label="审核状态" align="center" prop="authStatus">
         <template slot-scope="scope">
           <i v-show="scope.row.authStatus === 0" class="g-icon-none mr5" />
@@ -157,10 +157,10 @@ export default {
       ],
       // 处理状态字典
       applyStatusOptions: [
-        { dictLabel: '未处理', dictValue: 0 },
-        { dictLabel: '已加入', dictValue: 1 },
+        { dictLabel: '待处理', dictValue: 0 },
+        { dictLabel: '已同意', dictValue: 1 },
         { dictLabel: '已拒绝', dictValue: 2 },
-        { dictLabel: '待加入', dictValue: 3 }
+        { dictLabel: '未邀请', dictValue: 3 }
       ],
       // 审核状态字典
       authStatusOptions: [

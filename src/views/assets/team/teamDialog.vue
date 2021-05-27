@@ -2,8 +2,12 @@
   <!-- 添加或修改调度者对话框 -->
   <el-dialog :class="[{'i-add':title==='新增'},{'i-check':title==='审核'}]" :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
-      <el-form-item label="调度者名称" prop="name">
-        <el-input v-model="form.name" placeholder="请输入调度者名称" class="width90" clearable />
+      <el-form-item label="手机号" prop="telphone">
+        <el-input v-model="form.telphone" placeholder="请输入手机号" class="width90" clearable />
+      </el-form-item>
+      <el-form-item label="密码" prop="password">
+        <el-input v-model="form.password" type="password" :placeholder="form.id?'密码未修改可不填写':'请输入密码'" class="width60 mr3" clearable />
+        <span class="g-color-blue">(初始密码为{{ initialPassword }})</span>
       </el-form-item>
       <el-form-item label="状态">
         <el-radio-group v-model="form.status">
@@ -17,12 +21,8 @@
       <el-form-item label="姓名" prop="teamLeaderName">
         <el-input v-model="form.teamLeaderName" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="手机号/账号" prop="telphone">
-        <el-input v-model="form.telphone" placeholder="请输入手机号/账号" class="width90" clearable />
-      </el-form-item>
-      <el-form-item label="密码" prop="password">
-        <el-input v-model="form.password" type="password" :placeholder="form.id?'密码未修改可不填写':'请输入密码'" class="width60 mr3" clearable />
-        <span class="g-color-blue">(初始密码为{{ initialPassword }})</span>
+      <el-form-item label="调度组名称" prop="name">
+        <el-input v-model="form.name" placeholder="请输入调度组名称" class="width90" clearable />
       </el-form-item>
       <el-form-item label="身份证号" prop="identificationNumber">
         <el-input v-model="form.identificationNumber" placeholder="支持自动识别" class="width90" clearable />
@@ -71,19 +71,19 @@
         <el-row>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">身份证正面照</p>
-            <uploadImage v-model="form.identificationImage" :disabled="disable" image-type="id-card" side="front" @fillForm="fillForm" />
+            <uploadImage v-model="form.identificationImage" :disabled="disable" image-type="id-card" side="front" icon-type="idcard" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">身份证反面照</p>
-            <uploadImage v-model="form.identificationBackImage" :disabled="disable" image-type="id-card" side="back" @fillForm="fillForm" />
+            <uploadImage v-model="form.identificationBackImage" :disabled="disable" image-type="id-card" side="back" icon-type="idcard_back" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">营业执照</p>
-            <uploadImage v-model="form.businessLicenseImg" :disabled="disable" image-type="business-license" @fillForm="fillForm" />
+            <uploadImage v-model="form.businessLicenseImg" :disabled="disable" image-type="business-license" icon-type="organization" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">道路运输经营许可证照</p>
-            <uploadImage v-model="form.transportPermitImage" :disabled="disable" />
+            <uploadImage v-model="form.transportPermitImage" icon-type="transport" :disabled="disable" />
           </el-col>
         </el-row>
       </el-form-item>
@@ -136,15 +136,18 @@ export default {
       // 表单校验
       rules: {
         telphone: [
-          { required: true, message: '手机号/账号不能为空', trigger: 'blur' },
+          { required: true, message: '手机号不能为空', trigger: 'blur' },
           { validator: this.formValidate.telphone, trigger: 'blur' }
         ],
-        name: [
-          { required: true, message: '调度者名称不能为空', trigger: 'blur' }
+        // name: [
+        //   { required: true, message: '调度组名称不能为空', trigger: 'blur' }
+        // ],
+        teamLeaderName: [
+          { required: true, message: '姓名不能为空', trigger: 'blur' }
         ],
-        teamLeader: [
-          { required: true, message: '名称不能为空', trigger: 'blur' }
-        ],
+        // teamLeader: [
+        //   { required: true, message: '名称不能为空', trigger: 'blur' }
+        // ],
         identificationNumber: [
           { required: true, message: '身份证号不能为空', trigger: ['blur', 'change'] },
           { validator: this.formValidate.idCard, trigger: ['blur', 'change'] }
@@ -178,6 +181,10 @@ export default {
           this.form.identificationEffective = praseBooleanToNum(this.form.identificationEffective);
           if (!this.form.isDistribution) {
             this.form.distributionPercent = null;
+          }
+          // 调度组名称默认为: 姓名+'车队'
+          if (!this.form.name || this.form.name === '') {
+            this.form.name = this.form.teamLeaderName + '车队';
           }
           if (this.form.id) {
             updateInfo(this.form).then(response => {
@@ -218,7 +225,7 @@ export default {
         code: null,
         branchCode: null,
         name: null,
-        teamLeader: null,
+        // teamLeader: null,
         isDel: null,
         status: 0,
         createCode: null,
@@ -235,8 +242,8 @@ export default {
         identificationBeginTime: null,
         identificationEndTime: null,
         identificationEffective: null,
-        isDistribution: null,
-        distributionPercent: null
+        isDistribution: 0,
+        distributionPercent: 100
       };
       this.resetForm('form');
     },
