@@ -406,7 +406,7 @@ export default {
       dataTime: null,
       queryParams: {
         pageNum: 1,
-        pageSize: 20
+        pageSize: 15
         // updateTime: null
       },
       // 动态列表
@@ -484,18 +484,26 @@ export default {
     // 查询统计数据
     getStatisticInfo() {
       statisticInfo(this.user.branch.code, this.dataTime).then(response => {
-        // console.log(response);
+        console.log(response);
         this.statistic = response.data;
-        this.shipmentPersent = Math.round((response.data.user.activeCompany * 100) / response.data.user.shipmentCount);
-        this.driverPersent = Math.round((response.data.user.activeDriver * 100) / response.data.user.driverCount);
-        this.vehiclePersent = Math.round((response.data.user.activeVehicle * 100) / response.data.user.vehicleCount);
-        this.teamPersent = Math.round((response.data.user.activeTeam * 100) / response.data.user.teamCount);
+        if (response.data.user.shipmentCount !== 0) {
+          this.shipmentPersent = Math.round((response.data.user.activeCompany * 100) / response.data.user.shipmentCount);
+        }
+        if (response.data.user.driverCount !== 0) {
+          this.driverPersent = Math.round((response.data.user.activeDriver * 100) / response.data.user.driverCount);
+        }
+        if (response.data.user.vehicleCount !== 0) {
+          this.vehiclePersent = Math.round((response.data.user.activeVehicle * 100) / response.data.user.vehicleCount);
+        }
+        if (response.data.user.teamCount !== 0) {
+          this.teamPersent = Math.round((response.data.user.activeTeam * 100) / response.data.user.teamCount);
+        }
       });
     },
     /** 查询通知列表 */
     getNoticeList1() {
       // 通知
-      listNoticeAll({ noticeType: '1' }).then(response => {
+      listNoticeAll({ ...this.queryParams, noticeType: '1' }).then(response => {
         this.dataOver = !response.data.length;
         this.noticeList1 = this.noticeList1.concat(response.data);
         // console.log(this.noticeList1);
@@ -616,6 +624,10 @@ export default {
     },
     // 切换动态
     handleClick(tab) {
+      this.waybillList = [];
+      this.orderList = [];
+      this.billList = [];
+      this.noticeList1 = [];
       this.activeName = tab;
       this.queryParams.pageNum = 1;
       this.dataOver = false;

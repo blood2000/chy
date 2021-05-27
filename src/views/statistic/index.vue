@@ -2,7 +2,7 @@
   <div class="g-statistic">
     <!-- title -->
     <div class="header-box">
-      至简数字科技大数据
+      <img src="@/assets/images/statistic/title.png">
       <span class="line left" />
       <span class="line right" />
     </div>
@@ -59,8 +59,8 @@
               ref="OperationDataRef"
               :order-vo="businessData.orderVo"
               :waill-bill-vo="businessData.waillBillVo"
+              :week-vo-list="businessData.weekVoList"
             />
-            <OrderChart ref="OrderChartRef" :week-vo-list="businessData.weekVoList" />
             <ComplaintChart ref="ComplaintChartRef" :complain-vo="businessData.complainVo" />
           </div>
         </div>
@@ -93,7 +93,6 @@ import PerformanceInfo from './PerformanceInfo';// 业绩数据
 import AmountTop5Chart from './AmountTop5Chart';// TOP5省份交易额排名
 import CompanyTop10List from './CompanyTop10List';// TOP10省内十大公司
 import OperationData from './OperationData';// 运营情况
-import OrderChart from './OrderChart';// 订单统计
 import ComplaintChart from './ComplaintChart';// 投诉统计
 import TargetChart from './TargetChart';// 目标达成情况
 import CompanyTop5List from './CompanyTop5List';// 总排名TOP5公司
@@ -115,7 +114,6 @@ export default {
     AmountTop5Chart,
     CompanyTop10List,
     OperationData,
-    OrderChart,
     ComplaintChart,
     TargetChart,
     CompanyTop5List,
@@ -270,6 +268,7 @@ export default {
       if (waybillNotice) {
         this.$refs.TotalDataRef.setWaybillData(waybillNotice);
         this.$refs.OperationDataRef.setWaybillData(waybillNotice);
+        this.$refs.CapacityInfoRef.setWayBillData(waybillNotice);
       }
       // 打款√
       if (waybillSettlementNotice) {
@@ -280,8 +279,8 @@ export default {
     refreshChart() {
       this.$refs.AmountTop5ChartRef.refreshChart();
       this.$refs.TargetChartRef.refreshChart();
-      this.$refs.OrderChartRef.refreshChart();
-      this.$refs.ComplaintChartRef.refreshChart();
+      this.$refs.OperationDataRef.refreshChart();
+      // this.$refs.ComplaintChartRef.refreshChart();
       this.$refs.mapRef.refreshChart();
     },
     // 获取地图对应省份运单数据
@@ -313,8 +312,8 @@ export default {
           complainVo: data.complainVo || {} // 投诉
         };
         this.$nextTick(() => {
-          this.$refs.OrderChartRef.initChart();
-          this.$refs.ComplaintChartRef.initChart();
+          this.$refs.OperationDataRef.initChart();
+          // this.$refs.ComplaintChartRef.initChart();
         });
       });
     },
@@ -440,7 +439,7 @@ export default {
     display: inline-block;
     position: absolute;
     width: 26rem;
-    top: 1.6rem;
+    top: 1.4rem;
     left: 50%;
     margin-left: -13rem;
     font-size: 1.6rem;
@@ -448,6 +447,10 @@ export default {
     font-weight: bold;
     color: #FFFFFF;
     text-align: center;
+    >img{
+      width: 21.35rem;
+      height: 2.4rem;
+    }
     >.line {
       width: 6rem;
       height: 0.1rem;
@@ -455,10 +458,10 @@ export default {
       position: absolute;
       top: 1.1rem;
       &.left {
-        left: -0.5rem;
+        left: -4rem;
       }
       &.right {
-        right: -0.5rem;
+        right: -4rem;
       }
     }
     &::before {
@@ -467,7 +470,7 @@ export default {
       height: 2.1rem;
       position: absolute;
       top: 0.1rem;
-      left: -0.5rem;
+      left: -4rem;
       background: url('~@/assets/images/statistic/header_left.gif') no-repeat;
       background-size: 100% 100%;
     }
@@ -477,7 +480,7 @@ export default {
       height: 2.1rem;
       position: absolute;
       top: 0.1rem;
-      right: -0.5rem;
+      right: -4rem;
       background: url('~@/assets/images/statistic/header_right.gif') no-repeat;
       background-size: 100% 100%;
     }

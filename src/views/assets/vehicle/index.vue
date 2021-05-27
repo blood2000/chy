@@ -5,7 +5,7 @@
         ref="queryForm"
         :model="queryParams"
         :inline="true"
-        label-width="100px"
+        label-width="68px"
       >
         <el-form-item label="车牌号" prop="licenseNumber">
           <el-input
@@ -16,7 +16,17 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="归属类型" prop="vehicleAscriptionType">
+        <!-- <el-form-item label="车辆类型" prop="vehicleTypeCode">
+          <el-select v-model="queryParams.vehicleTypeCode" placeholder="请选择车辆类型" clearable filterable>
+            <el-option
+              v-for="dict in vehicleTypeOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item> -->
+        <!-- <el-form-item label="归属类型" prop="vehicleAscriptionType">
           <el-select
             v-model="queryParams.vehicleAscriptionType"
             placeholder="请选择车辆归属类型"
@@ -31,8 +41,8 @@
               :value="dict.dictValue"
             />
           </el-select>
-        </el-form-item>
-        <el-form-item label="能源类型" prop="vehicleEnergyType">
+        </el-form-item> -->
+        <!-- <el-form-item label="能源类型" prop="vehicleEnergyType">
           <el-select
             v-model="queryParams.vehicleEnergyType"
             placeholder="请选择车辆能源类型"
@@ -47,7 +57,7 @@
               :value="dict.dictValue"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="审核状态" prop="authStatus">
           <el-select
             v-model="queryParams.authStatus"
@@ -80,7 +90,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="年审时间">
+        <!-- <el-form-item label="年审时间">
           <el-date-picker
             v-model="queryParams.annualVerificationBeginDate"
             clearable
@@ -100,7 +110,7 @@
             value-format="yyyy-MM-dd"
             placeholder="请选择"
           />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item>
           <el-button
             type="primary"
@@ -415,7 +425,8 @@ export default {
         annualVerificationBeginDate: undefined,
         annualVerificationEndDate: undefined,
         authStatus: undefined,
-        isFreeze: undefined
+        isFreeze: undefined,
+        vehicleTypeCode: undefined
       },
       // 表单是否禁用
       formDisable: false,

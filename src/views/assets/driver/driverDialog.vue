@@ -42,8 +42,8 @@
       <el-form-item label="姓名" prop="name">
         <el-input v-model="form.name" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="手机号/账号" prop="telphone">
-        <el-input v-model="form.telphone" placeholder="请输入手机号/账号" class="width90" clearable />
+      <el-form-item label="手机号" prop="telphone">
+        <el-input v-model="form.telphone" placeholder="请输入手机号" class="width90" clearable />
       </el-form-item>
       <!-- <el-form-item label="联系人固话" prop="fixedPhone">
         <el-input v-model="form.fixedPhone" placeholder="请输入固话" class="width90" clearable />
@@ -570,7 +570,7 @@ export default {
           { validator: this.formValidate.name, trigger: ['blur', 'change'] }
         ],
         telphone: [
-          { required: true, message: '手机号/账号不能为空', trigger: 'blur' },
+          { required: true, message: '手机号不能为空', trigger: 'blur' },
           { validator: this.formValidate.telphone, trigger: 'blur' }
         ],
         identificationNumber: [
@@ -924,39 +924,43 @@ export default {
       this.getTeamList();
     },
     // 图片识别后回填
-    fillForm(type, data) {
+    fillForm(type, data, side) {
       switch (type) {
         // 身份证
         case 'id-card':
-          if (data.name) {
-            this.form.name = data.name;
-          } else {
-            this.form.name = '';
-          }
-          if (data.number) {
-            this.form.identificationNumber = data.number;
-          } else {
-            this.form.identificationNumber = '';
-          }
-          if (data.address) {
-            this.form.homeAddress = data.address;
-          } else {
-            this.form.homeAddress = '';
-          }
-          if (data.valid_from) {
-            this.$set(this.form, 'identificationBeginTime', data.valid_from);
-          } else {
-            this.$set(this.form, 'identificationBeginTime', '');
-          }
-          if (data.valid_to) {
-            if (data.valid_to === '长期') {
-              this.$set(this.form, 'identificationEffective', true);
-            } else if (data.valid_to !== '') {
-              this.$set(this.form, 'identificationEndTime', data.valid_to);
+          if (side === 'front') {
+            if (data.name) {
+              this.form.name = data.name;
+            } else {
+              this.form.name = '';
             }
-          } else {
-            this.$set(this.form, 'identificationEffective', false);
-            this.$set(this.form, 'identificationBeginTime', '');
+            if (data.number) {
+              this.form.identificationNumber = data.number;
+            } else {
+              this.form.identificationNumber = '';
+            }
+            if (data.address) {
+              this.form.homeAddress = data.address;
+            } else {
+              this.form.homeAddress = '';
+            }
+          }
+          if (side === 'back') {
+            if (data.valid_from) {
+              this.$set(this.form, 'identificationBeginTime', data.valid_from);
+            } else {
+              this.$set(this.form, 'identificationBeginTime', '');
+            }
+            if (data.valid_to) {
+              if (data.valid_to === '长期') {
+                this.$set(this.form, 'identificationEffective', true);
+              } else if (data.valid_to !== '') {
+                this.$set(this.form, 'identificationEndTime', data.valid_to);
+              }
+            } else {
+              this.$set(this.form, 'identificationEffective', false);
+              this.$set(this.form, 'identificationBeginTime', '');
+            }
           }
           break;
         // 驾驶证

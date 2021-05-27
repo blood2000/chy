@@ -93,19 +93,19 @@
       <el-form-item label="地址详情" prop="detail">
         <el-input v-model="form.detail" placeholder="请输入地址详情" class="width100" clearable />
       </el-form-item>
-        <el-row :gutter="20">
-            <el-col :span="12">
-              <el-form-item label="是否默认地址">
-                <el-switch v-model="form.defaultPut" active-text="默认装货地址" class="mr5" />
-                <el-switch v-model="form.defaultPush" active-text="默认卸货地址" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-                <el-form-item label="碰撞半径" prop="collisionRadius">
-                    <el-input-number v-model="form.collisionRadius" :min="1" :max="100000" ></el-input-number>&nbsp;米
-                </el-form-item>
-            </el-col>
-        </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="是否默认地址">
+            <el-switch v-model="form.defaultPut" active-text="默认装货地址" class="mr5" />
+            <el-switch v-model="form.defaultPush" active-text="默认卸货地址" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="碰撞半径" prop="collisionRadius">
+            <el-input-number v-model="form.collisionRadius" :min="1" :max="100000" />&nbsp;米
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-form-item label="备注" prop="remark">
         <el-input v-model="form.remark" type="textarea" placeholder="请输入备注" class="width100" />
       </el-form-item>
