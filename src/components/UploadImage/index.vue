@@ -15,7 +15,7 @@
       style="display: inline-block; vertical-align: top"
       class="upload-image"
     >
-      <img v-if="value && !disabled" v-real-img="attachUrl" src="@/assets/images/uploadImage/load_error.png" class="avatar">
+      <img v-if="value && !disabled" :src="attachUrl" class="avatar">
       <div v-else-if="value && disabled" v-viewer class="avatar-box">
         <img v-real-img="attachUrl" src="@/assets/images/uploadImage/load_error.png" class="avatar">
       </div>

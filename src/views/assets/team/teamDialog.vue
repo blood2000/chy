@@ -2,8 +2,8 @@
   <!-- 添加或修改调度者对话框 -->
   <el-dialog :class="[{'i-add':title==='新增'},{'i-check':title==='审核'}]" :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
-      <el-form-item label="手机号/账号" prop="telphone">
-        <el-input v-model="form.telphone" placeholder="请输入手机号/账号" class="width90" clearable />
+      <el-form-item label="手机号" prop="telphone">
+        <el-input v-model="form.telphone" placeholder="请输入手机号" class="width90" clearable />
       </el-form-item>
       <el-form-item label="密码" prop="password">
         <el-input v-model="form.password" type="password" :placeholder="form.id?'密码未修改可不填写':'请输入密码'" class="width60 mr3" clearable />
@@ -136,7 +136,7 @@ export default {
       // 表单校验
       rules: {
         telphone: [
-          { required: true, message: '手机号/账号不能为空', trigger: 'blur' },
+          { required: true, message: '手机号不能为空', trigger: 'blur' },
           { validator: this.formValidate.telphone, trigger: 'blur' }
         ],
         // name: [
@@ -181,6 +181,10 @@ export default {
           this.form.identificationEffective = praseBooleanToNum(this.form.identificationEffective);
           if (!this.form.isDistribution) {
             this.form.distributionPercent = null;
+          }
+          // 调度组名称默认为: 姓名+'车队'
+          if (!this.form.name || this.form.name === '') {
+            this.form.name = this.form.teamLeaderName + '车队';
           }
           if (this.form.id) {
             updateInfo(this.form).then(response => {
