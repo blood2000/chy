@@ -195,31 +195,43 @@
             <div class="map-content">
               <el-amap vid="amapDemo" :zoom="zoom" :center="center" style="height:600px">
                 <div class="waybill-detail-card">
+                  <div class="waybill-licenseNumber">{{ form.licenseNumber }}</div>
                   <h5>
                     {{ form.driverName }}
                     <span>{{ form.driverPhone }}</span>
-                    <span class="license">{{ form.licenseNumber }}</span>
                   </h5>
-                  <p>
-                    <label>货物大类：</label>
-                    {{ form.goodsBigType }}
-                  </p>
-                  <p>
-                    <label>运单号：</label>
-                    {{ form.waybillNo }}
-                  </p>
-                  <p>
-                    <label>接单时间：</label>
-                    {{ parseTime(form.receiveTime) }}
-                  </p>
-                  <p>
-                    <label>装货地：</label>
-                    {{ form.waybillAddress?form.waybillAddress.unloadFormattedAddress:'' }}
-                  </p>
-                  <p>
-                    <label>卸货地：</label>
-                    {{ form.waybillAddress?form.waybillAddress.loadFormattedAddress:'' }}
-                  </p>
+                  <el-row>
+                    <!-- <el-col :span="8" class="text-label">
+                      货物大类：
+                    </el-col>
+                    <el-col :span="16" class="text-row">
+                      {{ form.goodsBigType }}
+                    </el-col> -->
+                    <el-col :span="8" class="text-label">
+                      运输单号：
+                    </el-col>
+                    <el-col :span="16" class="text-row">
+                      {{ form.waybillNo || '-' }}
+                    </el-col>
+                    <el-col :span="8" class="text-label">
+                      接单时间：
+                    </el-col>
+                    <el-col :span="16" class="text-row">
+                      {{ parseTime(form.receiveTime) || '-' }}
+                    </el-col>
+                    <el-col :span="8" class="text-label">
+                      装货地：
+                    </el-col>
+                    <el-col :span="16" class="text-row">
+                      {{ form.waybillAddress?form.waybillAddress.unloadFormattedAddress:'-' }}
+                    </el-col>
+                    <el-col :span="8" class="text-label">
+                      卸货地：
+                    </el-col>
+                    <el-col :span="16" class="text-row">
+                      {{ form.waybillAddress?form.waybillAddress.loadFormattedAddress:'-' }}
+                    </el-col>
+                  </el-row>
                 </div>
                 <el-amap-polyline :path="polyline.path" :stroke-weight="8" :stroke-opacity="0.8" :stroke-color="'#0091ea'" />
                 <el-amap-marker v-for="(marker, index) in markers" :key="index" :position="marker.position" :icon="marker.icon" />
@@ -350,7 +362,7 @@ export default {
         this.form.waybillAddress = response.data.waybillAddress || {};
         // this.form.unloadAddress = response.data.waybillAddress || {};
         this.form.balanceVo = response.data.balanceVo || {};
-        // console.log(response);
+        console.log(response);
         this.loading = false;
       });
       // 回单-装货
@@ -457,8 +469,8 @@ export default {
 }
 .img-box{
   margin: 5px 5px 0 0;
-  width: 200px;
-  height: 200px;
+  width: 150px;
+  height: 150px;
   vertical-align: top;
   object-fit: contain;
   border-radius: 6px;
@@ -468,21 +480,36 @@ export default {
 .map-content{
   position: relative;
   height: 600px;
+  border-radius: 4px;
+  overflow: hidden;
   .waybill-detail-card{
     position: absolute;
     top: 10px;
     left: 10px;
-    width: 240px;
+    width: 250px;
     background: #fff;
     padding: 15px;
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.15);
+    border-radius: 2px;
+    .waybill-licenseNumber{
+      background: url('~@/assets/images/location/bg_lic.png') no-repeat;
+      background-size: 100% 100%;
+      height: 24px;
+      width: 90px;
+      font-weight: bold;
+      line-height: 24px;
+      text-align: center;
+      color: #050407;
+    }
     >h5{
       line-height: 30px;
       border-bottom: 1px solid #d2d4da;
-      margin-bottom: 5px;
+      margin-bottom: 8px;
       font-size: 14px;
+      color: #262626;
+      font-weight: bold;
       >span{
-        font-size: 13px;
+        font-size: 14px;
         &.license{
           background: #ffba00;
           padding: 3px 4px 1px;
@@ -492,12 +519,11 @@ export default {
         }
       }
     }
-    >p{
-      line-height: 28px;
-      >label{
-        font-weight: normal;
-        color: gray;
-      }
+    .text-label{
+      margin-bottom: 6px;
+    }
+    .text-row{
+      margin-bottom: 6px;
     }
   }
 }
