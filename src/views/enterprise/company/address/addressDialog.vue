@@ -93,10 +93,10 @@
       <el-form-item label="地址详情" prop="detail">
         <el-input v-model="form.detail" placeholder="请输入地址详情" class="width100" clearable />
       </el-form-item>
-      <!-- <el-form-item label="是否默认地址">
+      <el-form-item label="是否默认地址">
         <el-switch v-model="form.defaultPut" active-text="默认装货地址" class="mr5" />
         <el-switch v-model="form.defaultPush" active-text="默认卸货地址" />
-      </el-form-item> -->
+      </el-form-item>
       <el-form-item label="备注" prop="remark">
         <el-input v-model="form.remark" type="textarea" placeholder="请输入备注" class="width100" />
       </el-form-item>
@@ -125,7 +125,7 @@
 import { getProvinceList, getCityList, geCountyList } from '@/api/system/area';
 import { addAddress, updateAddress } from '@/api/enterprise/company/address';
 import AmapSearch from '@/components/Ddc/Tin/AmapSearch';
-// import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
+import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
 
 const geocoder = new AMap.Geocoder({
   radius: 1000,
@@ -223,8 +223,8 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          // this.form.defaultPut = praseBooleanToNum(this.form.defaultPut);
-          // this.form.defaultPush = praseBooleanToNum(this.form.defaultPush);
+          this.form.defaultPut = praseBooleanToNum(this.form.defaultPut);
+          this.form.defaultPush = praseBooleanToNum(this.form.defaultPush);
           if (this.shipmentCode) {
             this.form.shipmentCode = this.shipmentCode;
           }
@@ -270,8 +270,8 @@ export default {
         contact: null,
         contactPhone: null,
         remark: null,
-        // defaultPut: null, // 是否默认装货地址
-        // defaultPush: null, // 是否默认卸货地址
+        defaultPut: null, // 是否默认装货地址
+        defaultPush: null, // 是否默认卸货地址
         provinceCode: null,
         cityCode: null,
         districtCode: null
@@ -291,8 +291,8 @@ export default {
     // 表单赋值
     setForm(data) {
       this.form = data;
-      // this.form.defaultPut = praseNumToBoolean(this.form.defaultPut);
-      // this.form.defaultPush = praseNumToBoolean(this.form.defaultPush);
+      this.form.defaultPut = praseNumToBoolean(this.form.defaultPut);
+      this.form.defaultPush = praseNumToBoolean(this.form.defaultPush);
       if (this.form.longitude && this.form.latitude) {
         this.getMapData(this.form.longitude, this.form.latitude);
       }
