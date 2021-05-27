@@ -207,7 +207,7 @@
           <span>{{ selectDictLabel(isOptions, row.isPrepaid) }}</span>
         </template>
         <template #createTime="{row}">
-          <span>{{ parseTime(row.createTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
         <template #updateTime="{row}">
           <span>{{ parseTime(row.updateTime, '{y}-{m}-{d}') }}</span>
