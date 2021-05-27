@@ -190,9 +190,6 @@
       </el-tab-pane>
       <!-- 轨迹 -->
       <el-tab-pane label="轨迹" name="3">
-        <el-divider content-position="left">
-          <h5 class="g-title-medium">运单轨迹</h5>
-        </el-divider>
         <el-row v-if="activeTab === '3'" :gutter="20">
           <el-col :span="18">
             <div class="map-content">
@@ -266,7 +263,7 @@
 <script>
 import { getWayBill, getWaybillAttachment, getWaybillComment, getWaybillTrace } from '@/api/waybill/manages';
 import { jimiTrackLocation } from '@/api/waybill/tracklist';
-import DataNull from '@/components/Ddc/Tin/DataNull';
+import DataNull from '@/components/DataNull/index';
 export default {
   components: { DataNull },
   props: {
