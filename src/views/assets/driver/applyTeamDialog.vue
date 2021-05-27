@@ -11,7 +11,7 @@
     <el-table v-loading="loading" :data="infoList" border stripe @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="序号" align="center" type="index" min-width="5%" />
-      <el-table-column label="调度者名称" align="center" prop="name" />
+      <el-table-column label="调度组名称" align="center" prop="name" />
       <el-table-column label="身份证号" align="center" prop="identificationNumber" />
       <el-table-column label="是否清分" align="center" prop="isDistribution">
         <template slot-scope="scope">

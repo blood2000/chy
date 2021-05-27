@@ -59,7 +59,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="调度者名称" align="center" prop="name" show-overflow-tooltip />
+          <el-table-column label="调度组名称" align="center" prop="name" show-overflow-tooltip />
           <!-- <el-table-column label="身份证" align="center" prop="identificationNumber" show-overflow-tooltip /> -->
           <el-table-column label="管理者" align="center" prop="teamLeaderName" show-overflow-tooltip />
 

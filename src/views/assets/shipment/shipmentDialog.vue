@@ -372,7 +372,7 @@
         </el-col>
         <el-col :span="10">
           <el-form-item prop="openProjectDesignView">
-            <el-checkbox v-model="form.openProjectDesignView">开启项目版设计视图</el-checkbox>
+            <el-checkbox v-model="form.openProjectDesignView">开启项目版统计视图</el-checkbox>
           </el-form-item>
         </el-col>
       </el-row>

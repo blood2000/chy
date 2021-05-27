@@ -18,10 +18,10 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="用户名称" prop="name">
+      <el-form-item label="司机姓名" prop="name">
         <el-input
           v-model="queryParams.name"
-          placeholder="请输入用户名称"
+          placeholder="请输入司机姓名"
           clearable
           size="small"
           class="input-width"
@@ -68,7 +68,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="处理状态" prop="applyStatus">
+      <el-form-item label="邀请状态" prop="applyStatus">
         <el-select v-model="queryParams.applyStatus" placeholder="请选择状态" filterable clearable size="small">
           <el-option
             v-for="dict in applyStatusOptions"
@@ -87,10 +87,10 @@
     <el-table v-loading="loading" :data="driverList" border stripe @selection-change="handleSelectionChange">
       <el-table-column type="selection" :selectable="checkboxSelectable" width="55" align="center" fixed="left" />
       <el-table-column label="序号" align="center" type="index" min-width="5%" />
-      <el-table-column label="处理状态" align="center" prop="applyStatus">
+      <el-table-column label="邀请状态" align="center" prop="applyStatus">
         <template slot-scope="scope">
           <span v-if="scope.row.applyStatus !=null && scope.row.applyStatus>=0">{{ selectDictLabel(applyStatusOptions, scope.row.applyStatus) }}</span>
-          <span v-else>待加入</span>
+          <span v-else>未邀请</span>
         </template>
       </el-table-column>
       <el-table-column label="司机类别" align="center" prop="driverType">
@@ -98,8 +98,29 @@
           <span>{{ selectDictLabel(driverTypeOptions, scope.row.driverType) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="用户名称" align="center" prop="name" />
-      <el-table-column label="审核状态" align="center" prop="authStatus" width="120">
+      <el-table-column label="司机姓名" align="center" prop="name" />
+      <el-table-column label="手机" align="center" prop="telphone" width="120" />
+      <el-table-column label="身份证号" align="center" prop="identificationNumber" width="180" />
+      <!-- <el-table-column label="道路运输许可证号" align="center" prop="" width="180" /> -->
+      <el-table-column label="驾驶证类型" align="center" prop="driverLicenseType" width="180">
+        <template slot-scope="scope">
+          <span>{{ selectDictLabel(driverLicenseTypeOptions, scope.row.driverLicenseType) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="驾驶证到期" align="center" prop="validPeriodTo" width="120">
+        <template slot-scope="scope">
+          <span>{{ parseTime(scope.row.validPeriodTo, '{y}-{m}-{d}') }}</span>
+        </template>
+      </el-table-column>
+      <!-- <el-table-column label="车牌号" align="center" prop="" /> -->
+      <!-- <el-table-column label="行驶证到期" align="center" prop="validPeriodTo" width="120">
+        <template slot-scope="scope">
+          <span>{{ parseTime(scope.row.validPeriodTo, '{y}-{m}-{d}') }}</span>
+        </template>
+      </el-table-column> -->
+      <!-- <el-table-column label="载重" align="center" prop="" /> -->
+
+      <!-- <el-table-column label="审核状态" align="center" prop="authStatus" width="120">
         <template slot-scope="scope">
           <i v-show="scope.row.authStatus === 0" class="g-icon-none mr5" />
           <i v-show="scope.row.authStatus === 1" class="g-icon-deal-blue mr5" />
@@ -107,34 +128,17 @@
           <i v-show="scope.row.authStatus === 3" class="el-icon-success g-color-success mr5" />
           <span>{{ selectDictLabel(authStatusOptions, scope.row.authStatus) }}</span>
         </template>
-      </el-table-column>
-      <el-table-column label="手机" align="center" prop="telphone" width="120" />
-      <el-table-column label="工作单位" align="center" prop="workCompany" width="180" />
-      <el-table-column label="地址" align="center" prop="homeAddress" width="180" />
-      <el-table-column label="身份证号" align="center" prop="identificationNumber" width="180" />
-      <el-table-column label="驾驶证" align="center" prop="driverLicense" width="180" />
-      <!-- <el-table-column label="驾驶证有效期自" align="center" prop="validPeriodFrom" width="120">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.validPeriodFrom, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="驾驶证有效期至" align="center" prop="validPeriodTo" width="120">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.validPeriodTo, '{y}-{m}-{d}') }}</span>
-        </template>
       </el-table-column> -->
-      <el-table-column label="驾驶证类型" align="center" prop="driverLicenseType" width="180">
-        <template slot-scope="scope">
-          <span>{{ selectDictLabel(driverLicenseTypeOptions, scope.row.driverLicenseType) }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="上岗证" align="center" prop="workLicense" width="180" />
-      <el-table-column label="从业资格证到期日期" align="center" prop="workLicenseDueDate" width="180">
+      <!-- <el-table-column label="工作单位" align="center" prop="workCompany" width="180" /> -->
+      <!-- <el-table-column label="地址" align="center" prop="homeAddress" width="180" /> -->
+      <!-- <el-table-column label="驾驶证" align="center" prop="driverLicense" width="180" /> -->
+      <!-- <el-table-column label="上岗证" align="center" prop="workLicense" width="180" /> -->
+      <!-- <el-table-column label="从业资格证到期日期" align="center" prop="workLicenseDueDate" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.workLicenseDueDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="营业执照号" align="center" prop="businessLicenseImgNo" width="180" />
+      <el-table-column label="营业执照号" align="center" prop="businessLicenseImgNo" width="180" /> -->
       <!-- <el-table-column label="是否上传人员信用信息" align="center" prop="isReportPerson">
         <template slot-scope="scope">
           <span>{{ selectDictLabel(isOption, scope.row.isReportPerson) }}</span>
@@ -220,10 +224,10 @@ export default {
       ],
       // 处理状态字典
       applyStatusOptions: [
-        { dictLabel: '未处理', dictValue: 0 },
-        { dictLabel: '已加入', dictValue: 1 },
+        { dictLabel: '待处理', dictValue: 0 },
+        { dictLabel: '已同意', dictValue: 1 },
         { dictLabel: '已拒绝', dictValue: 2 },
-        { dictLabel: '待加入', dictValue: 3 }
+        { dictLabel: '未邀请', dictValue: 3 }
       ],
       // 审核状态字典
       authStatusOptions: [

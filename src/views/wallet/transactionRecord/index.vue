@@ -62,7 +62,7 @@
         </el-table-column>
         <el-table-column label="承运司机" align="center" prop="driverName" />
         <el-table-column label="承运车辆" align="center" prop="licenseNumber" />
-        <el-table-column label="所属调度者" align="center" prop="teamName" width="150" />
+        <el-table-column label="所属调度组" align="center" prop="teamName" width="150" />
         <!-- 付款方式：0-现金支付， 1-京东支付 2-交通银行， 3-新生支付，4-工商银行,5-传化支付,6-建行支付,7-环迅-->
         <el-table-column label="交易类型" align="center" prop="payBy">
           <span>冻结</span>
