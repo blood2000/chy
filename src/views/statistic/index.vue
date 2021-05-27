@@ -268,6 +268,7 @@ export default {
       if (waybillNotice) {
         this.$refs.TotalDataRef.setWaybillData(waybillNotice);
         this.$refs.OperationDataRef.setWaybillData(waybillNotice);
+        this.$refs.CapacityInfoRef.setWayBillData(waybillNotice);
       }
       // 打款√
       if (waybillSettlementNotice) {

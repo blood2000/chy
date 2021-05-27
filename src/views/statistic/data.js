@@ -99,6 +99,9 @@ export const dataJson = {
     'receiveNum': 0, // 接单数量
     'settlementNum': 0, // 结算数量
     'moneyNum': 0, // 打款数量
+    'tunnage ': 0, // 吨数
+    'mileage': 0, // 公里数
+    'hour': 0, // 时长
     'address': {
       'loadAddressAlias': '',
       'loadBankType': '',
