@@ -144,7 +144,11 @@ export default {
       }
       uploadOcr(formData).then(response => {
         if (response.data) {
-          this.$emit('fillForm', this.imageType, response.data);
+          if (this.side) {
+            this.$emit('fillForm', this.imageType, response.data, this.side);
+          } else {
+            this.$emit('fillForm', this.imageType, response.data);
+          }
         }
       });
     },

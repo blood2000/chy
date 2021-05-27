@@ -1,10 +1,19 @@
 <template>
-  <div class="s-scroll-card">
+  <div class="s-waybill-card">
     <div ref="box" class="s-scroll-box">
       <ul :class="{isRoll: isRoll}" class="content__list">
-        <li v-for="(item, index) in dataList" :key="index" :class="{isOpacity: isOpacity}" class="content__list__item ly-flex-pack-justify ly-flex-align-center">
-          <p class="text">{{ item.text }}</p>
-          <p class="time">{{ item.time }}</p>
+        <!-- 1接单 2装货 3卸货 -->
+        <li
+          v-for="(item, index) in dataList"
+          :key="index"
+          :class="[{isOpacity: isOpacity}, 'color' + item.status]"
+          class="content__list__item ly-flex-v ly-flex-pack-justify"
+        >
+          <div class="title">{{ item.title }}</div>
+          <div class="content ly-flex-pack-justify ly-flex-align-center">
+            <p class="text">{{ item.address }}</p>
+            <p class="time">{{ item.time }}</p>
+          </div>
         </li>
       </ul>
     </div>
@@ -28,11 +37,13 @@ export default {
     if (this.storageTimer) this.clearReadStorage();
   },
   methods: {
-    setData(val, time) {
+    setData(status, val, address, time) {
       // 缓存数据
       this.storageList.push({
-        text: val,
-        time: this.parseTime(time, '{h}:{i}')
+        status: status,
+        title: val,
+        address: address,
+        time: this.parseTime(time, '{h}:{i}:{s}')
       });
       // 开启缓存查询
       this.readStorage();
@@ -87,34 +98,63 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.s-scroll-card{
-  height: 5.25rem;
+.s-waybill-card{
+  position: absolute;
+  bottom: 1.5rem;
+  left: 1.8rem;
+  width: 14.6rem;
   overflow: hidden;
-  padding: 0.4rem 0.4rem 0.8rem;
-  background: rgba(1, 18, 60, 0.2);
   .s-scroll-box{
-    height: 4.05rem;
+    height: 8.1rem;
     overflow: hidden;
     .content__list{
       .content__list__item{
-        line-height: 1.35rem;
-        .text{
-          width: calc(100% - 1.8rem);
+        padding: 0.3rem 0 0.25rem;
+        width: 14.6rem;
+        height: 2.5rem;
+        margin-bottom: 0.3rem;
+        >.title{
+          padding: 0 0.6rem;
           font-size: 0.65rem;
-          font-family: PingFang Regular;
           font-weight: 400;
           color: #FFFFFF;
+          font-family: PingFang Regular;
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
         }
-        .time{
-          width: 1.6rem;
-          font-size: 0.5rem;
-          font-family: PingFang Regular;
-          font-weight: 400;
-          color: #A4ACC0;
-          transform: scale(0.9, 0.9);
+        >.content{
+          padding: 0 0.5rem 0 0;
+          .text{
+            font-size: 0.6rem;
+            transform: scale(0.9, 0.9);
+            font-family: PingFang Regular;
+            font-weight: 400;
+            color: #FFFFFF;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
+          .time{
+            font-size: 0.6rem;
+            transform: scale(0.8, 0.8);
+            font-family: PingFang Regular;
+            font-weight: 400;
+            color: #BDC4D7;
+          }
+        }
+        // 背景色
+        &.color1{
+          background: url('~@/assets/images/statistic/waybill1.png') no-repeat;
+          background-size: 100% 100%;
+        }
+        &.color2{
+          background: url('~@/assets/images/statistic/waybill2.png') no-repeat;
+          background-size: 100% 100%;
+        }
+        &.color3{
+          background: url('~@/assets/images/statistic/waybill3.png') no-repeat;
+          background-size: 100% 100%;
         }
         // 动画
         &.isOpacity:first-child{
@@ -132,7 +172,7 @@ export default {
       // 动画
       transform: translateY(0);
       &.isRoll{
-        transform: translateY(1.35rem);
+        transform: translateY(2.8rem);
         transition: transform 0.4s;
       }
     }

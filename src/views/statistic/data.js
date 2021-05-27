@@ -99,6 +99,10 @@ export const dataJson = {
     'receiveNum': 0, // 接单数量
     'settlementNum': 0, // 结算数量
     'moneyNum': 0, // 打款数量
+    'tunnage ': 0, // 吨数
+    'mileage': 0, // 公里数
+    'hour': 0, // 时长
+    'status': 0, // 1已接单 2已装货 3已卸货
     'address': {
       'loadAddressAlias': '',
       'loadBankType': '',
@@ -110,7 +114,7 @@ export const dataJson = {
       'loadDetail': '',
       'loadDistrict': '',
       'loadDistrictCode': '',
-      'loadFormattedAddress': '',
+      'loadFormattedAddress': '', // 装货地
       'loadLevel': '',
       'loadLocation': '',
       'loadLocations': [],
@@ -129,7 +133,7 @@ export const dataJson = {
       'unloadDetail': '',
       'unloadDistrict': '',
       'unloadDistrictCode': '',
-      'unloadFormattedAddress': '',
+      'unloadFormattedAddress': '', // 卸货地
       'unloadLevel': '',
       'unloadLocation': '',
       'unloadLocations': [],
@@ -148,6 +152,9 @@ export const dataJson = {
       'adminName': '',
       'companyName': '',
       'telphone': ''
+    },
+    'vehicle': {
+      'licenseNumber': '' // 车牌号
     }
   },
   'waybillSettlementNotice': {

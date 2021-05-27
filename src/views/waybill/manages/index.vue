@@ -483,7 +483,7 @@ export default {
       this.currentId = row.wayBillCode;
       this.currentRow = row;
       this.open = true;
-      this.title = '查看运单详情';
+      this.title = '运输单信息';
       this.formDisable = true;
     },
     /** 标记异常按钮操作 */

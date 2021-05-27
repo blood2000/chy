@@ -99,8 +99,7 @@ export default {
         background: rgba(0, 45, 93, 0.4);
         >p{
           font-size: 1.6rem;
-          font-family: 'PingFang Medium';
-          font-weight: bold;
+          font-family: 'PingFang Bold';
           color: #01E3FF;
         }
       }
