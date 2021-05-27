@@ -1,6 +1,6 @@
 <template>
   <!-- 订单统计 -->
-  <div class="s-container" />
+  <div class="s-container-chart" />
 </template>
 
 <script>
@@ -9,11 +9,22 @@ import { setfontSize } from '@/utils/fontSize';
 
 export default {
   props: {
-    weekVoList: {
+    timeData: {
       type: Array,
       default: () => {
         return [];
       }
+    },
+    orderData: {
+      type: Array,
+      default: () => {
+        return [];
+      }
+    },
+    // 判断货单or运单
+    type: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -41,35 +52,37 @@ export default {
     },
     setOption() {
       // 构造数据
-      const timeData = [];
-      const shipmentData = [];
-      const wayBillData = [];
-      this.weekVoList.forEach(el => {
-        timeData.push(el.dataTime.substring(el.dataTime.length - 5));
-        shipmentData.push(el.orderCount);
-        wayBillData.push(el.waybillCount);
-      });
+      let typeName = '';
+      let pointColor = '';
+      let lineColot = '';
+      if (this.type === 'shipment') {
+        typeName = '货单';
+        pointColor = '#18B8C5';
+        lineColot = '#267BB7';
+      } else if (this.type === 'wayBill') {
+        typeName = '运单';
+        pointColor = '#F6BE61';
+        lineColot = '#E68D27';
+      }
       this.chart.setOption({
         legend: {
           show: true,
           right: 0,
-          top: '10%',
+          top: '5%',
           icon: 'circle',
           textStyle: {
             color: '#D5EAFF',
             fontFamily: 'PingFang Medium'
           },
           data: [{
-            name: '货单订单数'
-          }, {
-            name: '运单订单数'
+            name: typeName + '订单数'
           }]
         },
         grid: {
           left: '0%',
           right: '3%',
-          bottom: '10%',
-          top: '26%',
+          bottom: '0%',
+          top: '22%',
           containLabel: true
         },
         xAxis: {
@@ -78,7 +91,7 @@ export default {
           axisLabel: {
             show: true,
             textStyle: {
-              color: '#CDEDFF',
+              color: '#D5EAFF',
               fontFamily: 'PingFang Regular'
             }
           },
@@ -88,12 +101,12 @@ export default {
               color: '#3F5C84'
             }
           },
-          data: timeData
+          data: this.timeData
         },
         yAxis: {
           name: '订单数',
           nameTextStyle: {
-            color: '#CDEDFF',
+            color: '#D5EAFF',
             paddingLeft: '2%',
             fontFamily: 'PingFang Medium'
           },
@@ -109,7 +122,7 @@ export default {
           axisLabel: {
             show: true,
             textStyle: {
-              color: '#CDEDFF',
+              color: '#D5EAFF',
               fontFamily: 'PingFang Medium'
             }
           },
@@ -136,30 +149,16 @@ export default {
           }
         },
         series: [{
-          name: '货单订单数',
-          data: shipmentData,
+          name: typeName + '订单数',
+          data: this.orderData,
           type: 'line',
           symbol: 'circle',
-          color: 'rgba(38, 123, 183, 1)', // 拐点颜色
+          color: pointColor, // 拐点颜色
           // 折线样式
           itemStyle: {
             normal: {
               lineStyle: {
-                color: 'rgba(38, 123, 183, 1)'
-              }
-            }
-          }
-        }, {
-          name: '运单订单数',
-          data: wayBillData,
-          type: 'line',
-          symbol: 'circle',
-          color: 'rgba(255, 158, 44, 1)', // 拐点颜色
-          // 折线样式
-          itemStyle: {
-            normal: {
-              lineStyle: {
-                color: 'rgba(255, 158, 44, 1)'
+                color: lineColot
               }
             }
           }
@@ -223,17 +222,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.s-container{
-  height: 31%;
-  position: relative;
-  &::after{
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(to right, rgba(76, 203, 219, 0.5), rgba(76, 203, 219, 0));
-  }
+.s-container-chart{
+  height: 100%;
+  // position: relative;
+  // &::after{
+  //   content: '';
+  //   position: absolute;
+  //   bottom: 0;
+  //   left: 0;
+  //   right: 0;
+  //   height: 1px;
+  //   background: linear-gradient(to right, rgba(76, 203, 219, 0.5), rgba(76, 203, 219, 0));
+  // }
 }
 </style>

@@ -73,8 +73,8 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="用户角色" prop="roleCode">
-          <el-select v-model="queryParams.roleCode" placeholder="请选择用户角色" clearable filterable size="small">
+        <el-form-item label="用户角色" prop="roleName">
+          <el-select v-model="queryParams.roleName" placeholder="请选择用户角色" clearable filterable size="small">
             <el-option
               v-for="dict in roleOptions"
               :key="dict.dictValue"
@@ -221,7 +221,7 @@ export default {
         account: undefined,
         userName: undefined,
         userPhone: undefined,
-        roleCode: undefined
+        roleName: undefined
       },
       exportLoading: false
     };
