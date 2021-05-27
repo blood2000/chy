@@ -73,6 +73,16 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
+        <el-form-item label="用户角色" prop="roleCode">
+          <el-select v-model="queryParams.roleCode" placeholder="请选择用户角色" clearable filterable size="small">
+            <el-option
+              v-for="dict in roleOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
           <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -190,6 +200,12 @@ export default {
         { dictLabel: '个人账户', dictValue: 1 },
         { dictLabel: '企业账户', dictValue: 2 }
       ],
+      // 平台角色字典
+      roleOptions: [
+        { dictLabel: '货主', dictValue: 0 },
+        { dictLabel: '调度者', dictValue: 1 },
+        { dictLabel: '司机', dictValue: 2 }
+      ],
       // 开户银行字典
       bankOptions: [],
       provinceOptions: [],
@@ -204,7 +220,8 @@ export default {
         bankName: undefined,
         account: undefined,
         userName: undefined,
-        userPhone: undefined
+        userPhone: undefined,
+        roleCode: undefined
       },
       exportLoading: false
     };
