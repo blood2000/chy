@@ -152,7 +152,7 @@
           <span>{{ parseTime(row.authTime, '{y}-{m}-{d}') }}</span>
         </template>
         <template #createTime="{row}">
-          <span>{{ parseTime(row.createTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
         <template #edit="{row}">
           <el-button

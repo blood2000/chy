@@ -82,7 +82,7 @@
         </template>
       </el-table-column>
       <el-table-column label="调度组名称" align="center" prop="name" />
-      <el-table-column label="审核状态" align="center" prop="authStatus">
+      <!-- <el-table-column label="审核状态" align="center" prop="authStatus">
         <template slot-scope="scope">
           <i v-show="scope.row.authStatus === 0" class="g-icon-none mr5" />
           <i v-show="scope.row.authStatus === 1" class="g-icon-deal-blue mr5" />
@@ -90,7 +90,7 @@
           <i v-show="scope.row.authStatus === 3" class="el-icon-success g-color-success mr5" />
           <span>{{ selectDictLabel(authStatusOptions, scope.row.authStatus) }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <!-- <el-table-column label="管理者" align="center" prop="teamLeader" />-->
       <el-table-column label="身份证号" align="center" prop="identificationNumber" />
       <el-table-column label="是否清分" align="center" prop="isDistribution">
@@ -99,11 +99,11 @@
         </template>
       </el-table-column>
       <el-table-column label="清分百分比" align="center" prop="distributionPercent" />
-      <el-table-column label="状态" align="center" prop="status">
+      <!-- <el-table-column label="状态" align="center" prop="status">
         <template slot-scope="scope">
           <span>{{ selectDictLabel(statusOptions, scope.row.status) }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
     </el-table>
 
     <pagination
