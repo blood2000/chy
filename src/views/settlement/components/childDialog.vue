@@ -3,14 +3,14 @@
   <el-dialog :title="title" :visible="visible" width="1400px" append-to-body :close-on-click-modal="false" @close="cancel">
     <RefactorTable :loading="loading" :data="childlist" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
       <template #loadWeight="{row}">
-        <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.loadWeight || '0.00' }} 吨</span>
-        <span v-if="row.stowageStatus === '1'">{{ row.loadWeight || '0.00' }} 立方</span>
+        <span v-if="row.stowageStatus === '1'">{{ row.loadWeight || '0.00' }} 方</span>
         <span v-if="row.stowageStatus === '2'">{{ row.loadWeight || '0.00' }} 车</span>
+        <span v-else>{{ row.loadWeight || '0.00' }} 吨</span>
       </template>
       <template #unloadWeight="{row}">
-        <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.unloadWeight || '0.00' }} 吨</span>
-        <span v-if="row.stowageStatus === '1'">{{ row.unloadWeight || '0.00' }} 立方</span>
+        <span v-if="row.stowageStatus === '1'">{{ row.unloadWeight || '0.00' }} 方</span>
         <span v-if="row.stowageStatus === '2'">{{ row.unloadWeight || '0.00' }} 车</span>
+        <span v-else>{{ row.unloadWeight || '0.00' }} 吨</span>
       </template>
       <!-- <template #lastLoadingTime="{row}">
         <span>{{ parseTime(row.lastLoadingTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>

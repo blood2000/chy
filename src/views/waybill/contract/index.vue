@@ -98,9 +98,9 @@
           <span>{{ selectDictLabel(isDzqzContractOptions, row.isDzqzContract) }}</span>
         </template>
         <template #loadWeight="{row}">
-          <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.loadWeight || '0.00' }} 吨</span>
-          <span v-if="row.stowageStatus === '1'">{{ row.loadWeight || '0.00' }} 立方</span>
+          <span v-if="row.stowageStatus === '1'">{{ row.loadWeight || '0.00' }} 方</span>
           <span v-if="row.stowageStatus === '2'">{{ row.loadWeight || '0.00' }} 车</span>
+          <span v-else>{{ row.loadWeight || '0.00' }} 吨</span>
         </template>
 
         <template #edit="{row}">
