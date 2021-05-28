@@ -17,7 +17,7 @@
           <el-option
             v-for="item in personOptions"
             :key="item.userCode"
-            :label="`${item.nickName}(${item.phonenumber})`"
+            :label="item.phonenumber + (item.nickName ? ' (' + item.nickName + ')' : '')"
             :value="item.userCode"
           />
         </el-select>
@@ -189,6 +189,9 @@ export default {
       const flag = this.$refs.ChooseArea.submit();
       this.$refs['form'].validate(valid => {
         if (valid && flag) {
+          if (this.form.bankType === 1) {
+            this.form.bankLineNo = null;
+          }
           const params = {
             ...this.form,
             isDefault: praseBooleanToNum(this.form.isDefault)

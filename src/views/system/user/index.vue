@@ -647,7 +647,7 @@ export default {
     handleAdd() {
       this.reset();
       this.getTreeselect();
-      getUser(null, { orgCode: this.companyCode, orgType: this.orgType }).then(response => {
+      getUser(null, { orgCode: this.companyCode, orgType: this.orgType, showShipment: this.showShipment }).then(response => {
         this.postOptions = response.posts;
         this.roleOptions = response.roles;
         this.open = true;
@@ -660,7 +660,7 @@ export default {
       this.reset();
       this.getTreeselect();
       const userId = row.userId || this.ids;
-      getUser(userId, { orgCode: this.companyCode, orgType: this.orgType }).then(response => {
+      getUser(userId, { orgCode: this.companyCode, orgType: this.orgType, showShipment: this.showShipment }).then(response => {
         this.form = response.data;
         this.postOptions = response.posts;
         this.roleOptions = response.roles;

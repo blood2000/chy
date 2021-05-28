@@ -129,7 +129,7 @@ export default {
         this.dataList = response.data || {};
       });
     },
-    // 处理实时数据
+    // 处理实时数据-车辆
     setVehicleData(val) {
       // console.log('userNotice-car: ', val);
       if (val.car) {
@@ -140,7 +140,7 @@ export default {
         }
       }
     },
-    // 处理实时数据
+    // 处理实时数据-路线,网点
     setOrderData(val) {
       // console.log('orderNotice-capacity: ', val);
       const { newLineNum, newPointNum } = val;
@@ -151,6 +151,24 @@ export default {
       if (newPointNum) {
         this.dataList.newBranchCount += newPointNum;
         this.dataList.branchCount += newPointNum;
+      }
+    },
+    // 处理实时数据-吨数,里程,时长
+    setWayBillData(val) {
+      const { tunnage, mileage, hour } = val;
+      if (tunnage) {
+        this.dataList.newTransportCount += tunnage;
+        this.dataList.transportCount += tunnage;
+      }
+      if (mileage) {
+        this.dataList.newKilometreCount += mileage;
+        this.dataList.kilometreCount += mileage;
+      }
+      if (hour) {
+        this.dataList.newHaulageTimeCount += hour;
+        // 单位: 时 => 月
+        const changeHour = hour / 24 / 30;
+        this.dataList.haulageTimeCount += changeHour;
       }
     }
   }

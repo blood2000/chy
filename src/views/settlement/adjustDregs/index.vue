@@ -418,15 +418,15 @@ import { getUserInfo } from '@/utils/auth';
 // 驳回弹窗
 import RejectDialog from '../components/rejectDialog';
 // 核算弹窗
-import AdjustDialog from '@/views/settlement/adjust/adjustDialog';
+import AdjustDialog from './adjustDialog';
 // 子单弹窗
 import ChildDialog from '../components/childDialog';
 // 运单详情弹窗
 import DetailDialog from '@/views/waybill/components/detailDialog';
 // 评价弹窗
-import CommentDialog from '@/views/settlement/adjust//commentDialog';
+import CommentDialog from './commentDialog';
 // 评价详情弹窗
-import RateDialog from '@/views/settlement/adjust//rateDialog';
+import RateDialog from './rateDialog';
 // 核销IC卡
 import NuclearCard from './NuclearCard';
 

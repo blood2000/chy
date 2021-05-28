@@ -73,7 +73,7 @@
 
     <!-- 详情对话框 -->
     <detail-dialog
-      :title="'查看运单详情'"
+      :title="'运输单信息'"
       :open.sync="detailOpen"
       :current-id="detailCurrentId"
       :disable="true"

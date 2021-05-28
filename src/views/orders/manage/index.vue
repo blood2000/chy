@@ -5,7 +5,7 @@
         <el-form-item v-show="!isShipment" label="下单客户" prop="tin1">
           <el-input
             v-model="queryParams.tin1"
-            placeholder="企业名称/客户姓名/手机号"
+            placeholder="企业名称/操作人/手机号"
             clearable
             size="small"
             style="width: 228px"
