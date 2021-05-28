@@ -44,6 +44,7 @@
 <script>
 // import ScrollCard from './components/scrollCard';
 import StaticCard from './components/staticCard';
+import { getUserAndCarTop } from '@/api/statistic/statistic.js';
 export default {
   components: {
     // ScrollCard
@@ -55,6 +56,9 @@ export default {
       // dealList: [{}],
       // userList: [{}]
     };
+  },
+  mounted() {
+    this.getUserData();
   },
   methods: {
     // 处理实时数据-开票
@@ -92,6 +96,29 @@ export default {
       const { remark } = val;
       if (remark) {
         this.$refs.transferRef.setData(remark, time);
+      }
+    },
+    // 获取用户初始数据
+    getUserData() {
+      getUserAndCarTop().then(response => {
+        const dataList = [];
+        response.data.forEach(el => {
+          dataList.push({
+            text: el.remark,
+            time: this.idToday(el.create_time)
+          });
+        });
+        this.$refs.userRef.initDataList(dataList);
+      });
+    },
+    // 判断数据是否当天
+    idToday(time) {
+      const today = this.parseTime(new Date(), '{m}:{d}');
+      const day = this.parseTime(time, '{m}:{d}');
+      if (today === day) {
+        return this.parseTime(time, '{h}:{i}');
+      } else {
+        return this.parseTime(time, '{m}/{d}');
       }
     }
   }

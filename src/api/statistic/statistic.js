@@ -68,3 +68,11 @@ export function getCompanyDriverRank(branchCode) {
     method: 'get'
   });
 }
+
+// 最近3条滚屏-用户车辆数据
+export function getUserAndCarTop() {
+  return request({
+    url: `/assets/notice/userAndCarTop`,
+    method: 'post'
+  });
+}

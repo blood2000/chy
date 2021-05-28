@@ -82,6 +82,9 @@ export default {
     },
     clearReadStorage() {
       clearInterval(this.storageTimer);
+    },
+    initDataList(dataList) {
+      this.dataList = dataList;
     }
   }
 };
