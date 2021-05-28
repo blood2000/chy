@@ -264,13 +264,15 @@ export default {
           this.loadAddress[0] = this.wayBillInfo.loadLocation[1];
           this.loadAddress[1] = this.wayBillInfo.loadLocation[0];
         } else {
-          this.loadAddress = [119.358267, 26.04577];
+          // this.loadAddress = [119.358267, 26.04577];
+          this.loadAddress = [];
         }
         if (this.wayBillInfo.unloadLocation) {
           this.unloadAddress[0] = this.wayBillInfo.unloadLocation[1];
           this.unloadAddress[1] = this.wayBillInfo.unloadLocation[0];
         } else {
-          this.unloadAddress = [119.344435, 25.721053];
+          // this.unloadAddress = [119.344435, 25.721053];
+          this.unloadAddress = [];
         }
         // 获取查询轨迹时间
         this.time = this.parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}');
@@ -283,10 +285,12 @@ export default {
           this.jimiQueryParams.end_time = this.time;
           this.lieyingQueryParams.endtime = new Date().getTime();
         }
-        // 标记装卸货地址
-        this.getMark();
-        // 获取路线
-        this.getTrackLocation();
+        if (this.loadAddress && this.unloadAddress) {
+          // 标记装卸货地址
+          this.getMark();
+          // 获取路线
+          this.getTrackLocation();
+        }
       });
       // 轨迹时间线
       getWaybillTrace(data.code).then(response => {
