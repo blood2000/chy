@@ -298,7 +298,7 @@
               </li>
             </div>
             <!-- 货单动态 -->
-            <div v-if="activeName === '2'">
+            <div v-if="activeName === '2'" class="cursor-point">
               <li v-for="(item, index) in orderList" :key="index" class="trend-content g-flex g-alignend" @click="handleOrder(item)">
                 <div style="margin-right: 12px;width:51px;">
                   <div class="g-color-tag g-title-smaller">{{ parseTime(item.redisOrderInfoListVoList[0].createTime, '{m}月{d}日') }}</div>
@@ -313,7 +313,7 @@
               </li>
             </div>
             <!-- 发票动态 -->
-            <div v-if="activeName === '3'">
+            <div v-if="activeName === '3'" class="cursor-point">
               <li v-for="(item, index) in billList" :key="index" class="trend-content g-flex g-alignend" @click="handleInvoice(item)">
                 <div style="margin-right: 12px;width:51px;">
                   <div class="g-color-tag g-title-smaller">{{ parseTime(item.invoiceApplyTime, '{m}月{d}日') }}</div>
@@ -335,7 +335,7 @@
               </li>
             </div>
             <!-- 消息通知 -->
-            <div v-if="activeName === '4'">
+            <div v-if="activeName === '4'" class="cursor-point">
               <li v-for="(item, index) in noticeList1" :key="index" class="trend-content g-flex g-alignend">
                 <div style="margin-right: 12px;width:51px;">
                   <div class="g-color-tag g-title-smaller">{{ parseTime(item.createTime, '{m}月{d}日') }}</div>
@@ -406,7 +406,7 @@ export default {
       dataTime: null,
       queryParams: {
         pageNum: 1,
-        pageSize: 15
+        pageSize: 10
         // updateTime: null
       },
       // 动态列表
