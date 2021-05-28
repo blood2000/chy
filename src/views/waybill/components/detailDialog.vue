@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-loading="loading" class="waybill-detail-dialog" :title="title" :visible="visible" width="1200px" append-to-body @close="cancel">
+  <el-dialog v-loading="loading" class="waybill-detail-dialog i-add" :title="title" :visible="visible" width="1200px" append-to-body @close="cancel">
     <el-tabs v-model="activeTab">
       <!-- 运单 -->
       <el-tab-pane label="运单" name="1">
@@ -190,64 +190,48 @@
       </el-tab-pane>
       <!-- 轨迹 -->
       <el-tab-pane label="轨迹" name="3">
-        <el-row v-if="activeTab === '3'" :gutter="20">
-          <el-col :span="18">
-            <div class="map-content">
-              <el-amap vid="amapDemo" :zoom="zoom" :center="center" style="height:600px">
-                <div class="waybill-detail-card">
-                  <div class="waybill-licenseNumber">{{ form.licenseNumber }}</div>
-                  <h5>
-                    {{ form.driverName }}
-                    <span>{{ form.driverPhone }}</span>
-                  </h5>
-                  <el-row>
-                    <!-- <el-col :span="8" class="text-label">
+        <div v-if="activeTab === '3'" style="height:650px;width:100%;">
+          <Track :waybill="form" />
+          <div class="waybill-detail-card">
+            <div class="waybill-licenseNumber">{{ form.licenseNumber }}</div>
+            <h5>
+              {{ form.driverName }}
+              <span>{{ form.driverPhone }}</span>
+            </h5>
+            <el-row>
+              <!-- <el-col :span="8" class="text-label">
                       货物大类：
                     </el-col>
                     <el-col :span="16" class="text-row">
                       {{ form.goodsBigType }}
                     </el-col> -->
-                    <el-col :span="8" class="text-label">
-                      运输单号：
-                    </el-col>
-                    <el-col :span="16" class="text-row">
-                      {{ form.waybillNo || '-' }}
-                    </el-col>
-                    <el-col :span="8" class="text-label">
-                      接单时间：
-                    </el-col>
-                    <el-col :span="16" class="text-row">
-                      {{ parseTime(form.receiveTime) || '-' }}
-                    </el-col>
-                    <el-col :span="8" class="text-label">
-                      装货地：
-                    </el-col>
-                    <el-col :span="16" class="text-row">
-                      {{ form.waybillAddress?form.waybillAddress.unloadFormattedAddress:'-' }}
-                    </el-col>
-                    <el-col :span="8" class="text-label">
-                      卸货地：
-                    </el-col>
-                    <el-col :span="16" class="text-row">
-                      {{ form.waybillAddress?form.waybillAddress.loadFormattedAddress:'-' }}
-                    </el-col>
-                  </el-row>
-                </div>
-                <el-amap-polyline :path="polyline.path" :stroke-weight="8" :stroke-opacity="0.8" :stroke-color="'#0091ea'" />
-                <el-amap-marker v-for="(marker, index) in markers" :key="index" :position="marker.position" :icon="marker.icon" />
-              </el-amap>
-            </div>
-          </el-col>
-          <el-col :span="6">
-            <ul class="time-line-content">
-              <li v-for="(item, index) in timeLineList" :key="item.id" :class="index===0?'light':''">
-                <p class="g-strong g-text">{{ parseTime(item.createTime, '{y}-{m}-{d} {h}:{i}') }}</p>
-                <p class="g-color-gray g-text">{{ item.content }}</p>
-                <!-- <p class="g-color-warning g-text">状态</p> -->
-              </li>
-            </ul>
-          </el-col>
-        </el-row>
+              <el-col :span="8" class="text-label">
+                运输单号：
+              </el-col>
+              <el-col :span="16" class="text-row">
+                {{ form.waybillNo || '-' }}
+              </el-col>
+              <el-col :span="8" class="text-label">
+                接单时间：
+              </el-col>
+              <el-col :span="16" class="text-row">
+                {{ parseTime(form.receiveTime) || '-' }}
+              </el-col>
+              <el-col :span="8" class="text-label">
+                装货地：
+              </el-col>
+              <el-col :span="16" class="text-row">
+                {{ form.waybillAddress?form.waybillAddress.unloadFormattedAddress:'-' }}
+              </el-col>
+              <el-col :span="8" class="text-label">
+                卸货地：
+              </el-col>
+              <el-col :span="16" class="text-row">
+                {{ form.waybillAddress?form.waybillAddress.loadFormattedAddress:'-' }}
+              </el-col>
+            </el-row>
+          </div>
+        </div>
       </el-tab-pane>
       <!-- 评价 -->
       <el-tab-pane label="评价" name="4">
@@ -276,8 +260,9 @@
 import { getWayBill, getWaybillAttachment, getWaybillComment, getWaybillTrace } from '@/api/waybill/manages';
 import { jimiTrackLocation } from '@/api/waybill/tracklist';
 import DataNull from '@/components/DataNull/index';
+import Track from './track';
 export default {
-  components: { DataNull },
+  components: { DataNull, Track },
   props: {
     title: {
       type: String,
@@ -477,54 +462,48 @@ export default {
   border: 1px dashed #dddddd;
 }
 // 轨迹-运单详情卡片
-.map-content{
-  position: relative;
-  height: 600px;
-  border-radius: 4px;
-  overflow: hidden;
-  .waybill-detail-card{
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 250px;
-    background: #fff;
-    padding: 15px;
-    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.15);
-    border-radius: 2px;
-    .waybill-licenseNumber{
-      background: url('~@/assets/images/location/bg_lic.png') no-repeat;
-      background-size: 100% 100%;
-      height: 24px;
-      width: 90px;
-      font-weight: bold;
-      line-height: 24px;
-      text-align: center;
-      color: #050407;
-    }
-    >h5{
-      line-height: 30px;
-      border-bottom: 1px solid #d2d4da;
-      margin-bottom: 8px;
+.waybill-detail-card{
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 250px;
+  background: #fff;
+  padding: 15px;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.15);
+  border-radius: 2px;
+  .waybill-licenseNumber{
+    background: url('~@/assets/images/location/bg_lic.png') no-repeat;
+    background-size: 100% 100%;
+    height: 24px;
+    width: 90px;
+    font-weight: bold;
+    line-height: 24px;
+    text-align: center;
+    color: #050407;
+  }
+  >h5{
+    line-height: 30px;
+    border-bottom: 1px solid #d2d4da;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #262626;
+    font-weight: bold;
+    >span{
       font-size: 14px;
-      color: #262626;
-      font-weight: bold;
-      >span{
-        font-size: 14px;
-        &.license{
-          background: #ffba00;
-          padding: 3px 4px 1px;
-          margin-left: 6px;
-          border-radius: 4px;
-          border: 1px solid gray;
-        }
+      &.license{
+        background: #ffba00;
+        padding: 3px 4px 1px;
+        margin-left: 6px;
+        border-radius: 4px;
+        border: 1px solid gray;
       }
     }
-    .text-label{
-      margin-bottom: 6px;
-    }
-    .text-row{
-      margin-bottom: 6px;
-    }
+  }
+  .text-label{
+    margin-bottom: 6px;
+  }
+  .text-row{
+    margin-bottom: 6px;
   }
 }
 // 轨迹-时间线
