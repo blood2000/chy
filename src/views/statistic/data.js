@@ -117,7 +117,7 @@ export const dataJson = {
       'loadDistrictCode': '',
       'loadFormattedAddress': '', // 装货地
       'loadLevel': '',
-      'loadLocation': [], // 装货地经纬度
+      'loadLocations': [], // 装货地经纬度
       'loadOrderAddressCode': '',
       'loadProvince': '',
       'loadProvinceCode': '',
@@ -135,7 +135,7 @@ export const dataJson = {
       'unloadDistrictCode': '',
       'unloadFormattedAddress': '', // 卸货地
       'unloadLevel': '',
-      'unloadLocation': [], // 卸货地经纬度
+      'unloadLocations': [], // 卸货地经纬度
       'unloadOrderAddressCode': '',
       'unloadProvince': '',
       'unloadProvinceCode': '',
@@ -159,6 +159,8 @@ export const dataJson = {
   'waybillSettlementNotice': {
     'amount': 0, //	打款金额
     'totalFee': 0, // 手续费
+    'shipperRealPay': 0, // 货主实付金额 (交易)
+    'deliveryCashFee': 0, // 司机实收金额 (运费)
     'driver': {
       'code': '',
       'name': '',
