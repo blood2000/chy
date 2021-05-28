@@ -1,7 +1,7 @@
 <template>
   <!-- 运力情况 -->
   <div class="s-container ly-flex-pack-justify">
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 18%">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 16%">
       <InfoBox
         label="总车辆"
         :count="dataList.vehicleCount"
@@ -16,7 +16,7 @@
         :yoy-places="1"
       />
     </div>
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 16%">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 14%">
       <InfoBox
         label="总路线"
         :count="dataList.lienCount"
@@ -31,7 +31,7 @@
         :yoy-places="1"
       />
     </div>
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 16%">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 14%">
       <InfoBox
         label="总网点"
         :count="dataList.branchCount"
@@ -56,6 +56,7 @@
       <InfoBox
         label="今日新增吨数"
         :count="dataList.newTransportCount"
+        :last-count="dataList.lastNewTransportCount"
         :places="2"
         :has-yoy="true"
         :yoy.sync="dataList.newTransportYoy"
@@ -63,7 +64,7 @@
         :yoy-places="1"
       />
     </div>
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 17%">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 24%">
       <InfoBox
         label="行驶里程"
         unit="公里"
@@ -73,6 +74,7 @@
       <InfoBox
         label="今日新增里程"
         :count="dataList.newKilometreCount"
+        :last-count="dataList.lastNewKilometreCount"
         :places="2"
         :has-yoy="true"
         :yoy.sync="dataList.newKilometreYoy"
@@ -91,6 +93,7 @@
         label="今日新增时长"
         unit="时"
         :count="dataList.newHaulageTimeCount"
+        :last-count="dataList.lastNewHaulageTimeCount"
         :places="2"
         :has-yoy="true"
         :yoy.sync="dataList.newHaulageTimeYoy"
