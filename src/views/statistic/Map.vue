@@ -311,13 +311,13 @@ export default {
       let location = [];
       if (status === 1) {
         contentTitle = '【 接单 】';
-        location = val.address.loadLocation;
+        location = val.address.loadLocations;
       } else if (status === 2) {
         contentTitle = '【 装货 】';
-        location = val.address.loadLocation;
+        location = val.address.loadLocations;
       } else if (status === 3) {
         contentTitle = '【 卸货 】';
-        location = val.address.unloadLocation;
+        location = val.address.unloadLocations;
       }
       if (location && location.length === 2) {
         this.createTooltip(status, location[0], location[1], contentTitle, contentText, contentTime);

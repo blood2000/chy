@@ -253,7 +253,7 @@ export default {
       }
       // 开票√
       if (invoiceNotice) {
-        this.$refs.PerformanceInfoRef.setData(invoiceNotice);
+        this.$refs.PerformanceInfoRef.setInvoiceData(invoiceNotice);
         this.$refs.ScrollDataRef.setInvoiceData(invoiceNotice, insertTime);
       }
       // 货单√
@@ -274,6 +274,7 @@ export default {
       // 打款√
       if (waybillSettlementNotice) {
         this.$refs.ScrollDataRef.setInvoiceData(waybillSettlementNotice, insertTime);
+        this.$refs.PerformanceInfoRef.setWaybillData(waybillSettlementNotice);
       }
     },
     // 图表自适应

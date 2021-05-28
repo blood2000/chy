@@ -87,13 +87,27 @@ export default {
     }
   },
   methods: {
-    // 处理实时数据
-    setData(val) {
+    // 处理实时数据-开票
+    setInvoiceData(val) {
       // console.log('invoiceNotice: ', val);
       const { invoiceAmount } = val;
       if (invoiceAmount) {
         this.myPerformance.votesAmount += invoiceAmount;
         this.myPerformance.newVotesAmount += invoiceAmount;
+      }
+    },
+    // 处理实时数据-运单
+    setWaybillData(val) {
+      const { shipperRealPay, deliveryCashFee } = val;
+      // 交易
+      if (shipperRealPay) {
+        this.myPerformance.newTransactionAmount += shipperRealPay;
+        this.myPerformance.transactionAmount += shipperRealPay;
+      }
+      // 运费
+      if (deliveryCashFee) {
+        this.myPerformance.newWaybillAmount += deliveryCashFee;
+        this.myPerformance.waybillAmount += deliveryCashFee;
       }
     }
   }
