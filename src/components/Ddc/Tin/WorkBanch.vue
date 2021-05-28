@@ -283,7 +283,7 @@
                 <span class="g-color-blue marginright5">●</span>
                 <div v-if="index != 0" class="trend-line" />
                 <div style="margin-left: 12px;">
-                  <div class="g-color-tag g-title-smaller">余晨望</div>
+                  <div class="g-color-tag g-title-smaller">{{ item.driverName }}</div>
                   <div class="active-cont ellipsis g-strong">
                     <span v-if="item.status === '1'">已接单</span>
                     <span v-if="item.status === '2'">已装货</span>
@@ -322,7 +322,7 @@
                 <span class="g-color-blue marginright5">●</span>
                 <div v-if="index != 0" class="trend-line" />
                 <div style="margin-left: 12px;">
-                  <div class="g-color-tag g-title-smaller">余晨望</div>
+                  <div class="g-color-tag g-title-smaller">{{ item.invoiceTitle }}</div>
                   <div class="active-cont ellipsis g-strong">
                     <span v-if="item.invoiceStatus === '1'">货主申请开票</span>
                     <span v-if="item.invoiceStatus === '2'">货主已取消</span>
@@ -539,7 +539,7 @@ export default {
     },
     // 查询运单列表
     getWaybillList() {
-      waybillList(this.queryParams).then(response => {
+      waybillList({ ...this.queryParams, statusList: '1,2,3,4,5,6,7' }).then(response => {
         this.dataOver = !response.rows.length;
         this.waybillList = this.waybillList.concat(response.rows);
         this.loading = false;
