@@ -1,8 +1,8 @@
 <template>
   <el-dialog :title="`数据IC卡: ${ titleData.ttttt1111 || 'IC20511547'} (承运司机: ${titleData.ttttt222 ||'张张张'})`" :visible="visible" width="80%" append-to-body @close="$emit('update:open', false)">
     <div>
-      <el-button type="primary" @click="handler('connect')">连接服务</el-button>
-      <el-button type="primary" @click="handler('cancellation')">注销卡片</el-button>
+      <!-- <el-button type="primary" @click="handler('connect')">连接服务</el-button> -->
+      <el-button type="primary" @click="handler('cancellation')">注销卡片(清空使用者信息)</el-button>
       <el-button type="primary" @click="handler('getCard')">获得卡片</el-button>
       <el-button type="primary" @click="handler('issuingCard')">发卡</el-button>
       <el-button type="primary" @click="handler('readUserinfo')">读取用户信息</el-button>
@@ -189,7 +189,6 @@ export default {
         case 'readUserinfo':
           // 读取用户信息
           CardReader.action.readUserInfo();
-          console.log('readUserInfo');
           break;
         case 'readData':
           // 读取数据

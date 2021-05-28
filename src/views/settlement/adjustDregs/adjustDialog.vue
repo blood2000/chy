@@ -27,6 +27,8 @@
 
       <el-table-column width="160" label="运输单号" show-overflow-tooltip align="center" prop="waybillNo" />
 
+      <el-table-column width="120" label="调度组名称" align="center" prop="driverName" />
+
       <el-table-column width="120" label="司机姓名" align="center" prop="driverName" />
       <el-table-column width="120" label="司机电话" align="center" prop="driverPhone" />
       <el-table-column width="120" label="车牌号" align="center" prop="licenseNumber" />
@@ -88,7 +90,7 @@
       <el-table-column width="160" label="司机实收运费" align="center" prop="deliveryFeePractical" />
 
       <!-- 补贴项目 -->
-      <el-table-column align="center" width="400" label="补贴项目">
+      <el-table-column v-if="false" align="center" width="400" label="补贴项目">
         <template slot="header">
           <span>补贴项目 <el-button type="text" @click="isEdit2 = !isEdit2"><i class="el-icon-edit" /></el-button></span>
 
@@ -117,7 +119,7 @@
         </template>
       </el-table-column>
       <!-- 扣费项目 -->
-      <el-table-column align="center" width="400">
+      <el-table-column v-if="false" align="center" width="400">
         <template slot="header">
           <span>扣费项目 <el-button type="text" @click="isEdit = !isEdit"><i class="el-icon-edit" /></el-button></span>
 
@@ -154,8 +156,8 @@
       <el-table-column width="120" label="服务费" align="center" prop="serviceFee" fixed="right" />
       <el-table-column width="162" label="司机实收金额" align="center" prop="deliveryCashFee" fixed="right">
         <template slot-scope="scope">
-          <span v-if="scope.row.isDregs === 0">{{ scope.row.deliveryCashFee }}</span>
-          <el-input-number v-else v-model="scope.row.deliveryCashFee" :controls="false" :precision="2" placeholder="请输入司机实收金额" style="width:100%;" size="mini" @blur="handlerInput(scope.row,scope.row.deliveryCashFee, 'deliveryCashFee')" />
+          <!-- <span>{{ scope.row.deliveryCashFee }}</span> -->
+          <el-input-number v-model="scope.row.deliveryCashFee" :controls="false" :precision="2" placeholder="请输入司机实收金额" style="width:100%;" size="mini" @blur="handlerInput(scope.row,scope.row.deliveryCashFee, 'deliveryCashFee')" />
         </template>
       </el-table-column>
 
@@ -400,7 +402,7 @@ export default {
       this.isEdit2 = false;
       this.isEdit = false;
 
-      this.isPiliang = data.length > 1 && data[0].isDregs === 1;
+      this.isPiliang = data.length > 1;
       this.deliveryCashFee = undefined;
       this.queryParams.waybillCodeList = data;
       this.getList();
@@ -424,6 +426,7 @@ export default {
       const valueobj = (arr.filter(e => e.enName === key))[0];
       return valueobj ? valueobj.ruleValue : undefined;
     },
+
 
     /* 处理路耗展示 */
     _lossAllowScope(value) {
@@ -460,6 +463,19 @@ export default {
       } else {
         row.otherCharges = (rowsubsidies + otherSubsidies) + shazhi - deliveryCashFee - rowdeduction;
       }
+    },
+
+    /* 计算公式 a */
+    aa() {
+
+
+      // ---货主应付运费（四舍五入保留两位小数）= 货主成交单价 * 承运重量；
+      // ---司机应收运费（四舍五入保留两位小数）= 货主成交单价 /（1 + 税率比例） * 承运重量；
+      // a、货主实付金额（四舍五入保留两位小数）= 司机实收金额  + 平台服务金额；
+      // b、司机实收金额（四舍五入保留两位小数,再应用抹零规则） =  货主成交单价 /（1 + 税率比例） * 承运重量 - 扣费 + 补贴；
+      // c、平台服务金额（四舍五入保留两位小数）= 货主应付运费 - 司机应收运费 ；
+
+
     },
 
     /* 计算差值 */

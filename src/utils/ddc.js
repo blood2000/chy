@@ -227,7 +227,7 @@ export function tableHeaderConfig(list, url, editColumn, myColumen) {
       });
       resolve();
     } else {
-      tableHeadList(url).then(response => {
+      tableHeadList(url.split('--')[0]).then(response => {
         response.data.forEach(el => {
           list.push({
             label: el.comment,
@@ -277,4 +277,17 @@ export function Md5Util(text) {
   md5.update(text);
   const md5password = md5.digest('hex');
   return md5password;
+}
+
+/**
+ * 数组内对象去重
+ * @param {*} arr 数组
+ * @param {*} id 对什么字段进行去重 字符串
+ */
+export function objReduce(arr, id) {
+  const obj = {};
+  return arr.reduce((cur, next) => {
+    obj[next[id]] ? '' : obj[next[id]] = true && cur.push(next);
+    return cur;
+  }, []); // 设置cur默认类型为数组，并且初始值为空的数组
 }

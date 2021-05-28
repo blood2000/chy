@@ -6,7 +6,7 @@
         ref="queryForm"
         :model="queryParams"
         :inline="true"
-        label-width="85px"
+        label-width="98px"
       >
         <el-form-item
           v-show="isAdmin"
@@ -65,12 +65,12 @@
         </el-form-item>
 
         <el-form-item
-          label="调度组名称"
+          label="调度者姓名"
           prop="teamName"
         >
           <el-input
             v-model="queryParams.teamName"
-            placeholder="请输入调度组名称"
+            placeholder="请输入调度者姓名"
             clearable
             size="small"
             style="width: 228px"
@@ -79,6 +79,7 @@
         </el-form-item>
 
         <el-form-item
+          v-if="false"
           label="运单核对"
           prop="waybill"
         >
@@ -86,6 +87,31 @@
         </el-form-item>
 
         <el-form-item
+          label="IC卡核对状态"
+          prop="ICCard"
+        >
+          <el-select
+            v-model="queryParams.ICCard"
+            placeholder="请选择纸质回单"
+            filterable
+            clearable
+            size="small"
+            style="width: 228px"
+          >
+            <el-option
+              v-for="dict in [
+                { dictValue: '0',dictLabel:'未核对' },
+                { dictValue: '1',dictLabel:'已核对' }
+              ]"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item
+          v-if="false"
           label="批次号"
           prop="criticism"
         >
@@ -119,6 +145,7 @@
           </el-select>
         </el-form-item>
         <el-form-item
+          v-if="false"
           label="货源单号"
           prop="mainOrderNumber"
         >
@@ -247,7 +274,7 @@
         <el-radio-button label="7">已打款</el-radio-button>
       </el-radio-group>
 
-      <el-button v-hasPermi="['transportation:waybillBalanceInfo:batchDetail']" type="success" size="mini" @click="nuclearCardOpen">核销IC卡</el-button>
+      <el-button v-if="activeName==='4'" v-hasPermi="['transportation:waybillBalanceInfo:batchDetail']" type="success" size="mini" @click="nuclearCardOpen">核销IC卡</el-button>
     </div>
 
     <div class="app-container">
@@ -273,7 +300,7 @@
             size="mini"
             :disabled="multiple"
             @click="handleApply"
-          >批量申请</el-button>
+          >批量申请对账</el-button>
         </el-col>
         <el-col v-if="activeName == '7' && !isAdmin" :span="1.5">
           <el-button
@@ -297,19 +324,23 @@
         <template #goodsBigType="{row}">
           <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
         </template>
-        <template #isReturn="{row}">
+        <!-- <template #isReturn="{row}">
           <span>
             <i v-if="row.isReturn == 0" class="el-icon-error g-color-gray" />
             <i v-if="row.isReturn == 1" class="el-icon-success g-color-success" />
             {{ selectDictLabel(isReturnOptions, row.isReturn) }}
           </span>
-        </template>
+        </template> -->
         <template #loadWeight="{row}">
           <span v-if="row.loadWeight">
             <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.loadWeight }} 吨</span>
             <span v-if="row.stowageStatus === '1'">{{ row.loadWeight }} 立方</span>
             <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.loadWeight) }} 车</span>
           </span>
+        </template>
+        <template #ICCard="{row}">
+          <span v-if="row.ICCard == '0'"><i class="el-icon-error g-color-gray" />未核对</span>
+          <span v-if="row.ICCard == '1'"><i class="el-icon-success g-color-success" />已核对</span>
         </template>
         <template #unloadWeight="{row}">
           <span v-if="row.unloadWeight">
@@ -356,7 +387,7 @@
             size="mini"
             type="text"
             @click="handleTableBtn(row, 4)"
-          >申请打款</el-button>
+          >申请对账</el-button>
           <el-button
             v-if="activeName == '7' && !isAdmin"
             size="mini"
@@ -406,6 +437,9 @@
     <!-- 评价详情 -->
     <rate-dialog ref="RateDialog" :open.sync="ratedialog" :disable="formDisable" :title="title" @refresh="getList" />
 
+    <!-- 对账单弹窗 -->
+    <StatementsDialog ref="StatementsDialog" :open.sync="Statementsdialog" :disable="formDisable" :title="title" @refresh="getList" />
+
     <!-- 核销IC卡 -->
     <nuclear-card ref="NuclearCard" :open.sync="nuclearCardDialog" @refresh="getList" />
 
@@ -430,17 +464,19 @@ import RateDialog from './rateDialog';
 // 核销IC卡
 import NuclearCard from './NuclearCard';
 
+import StatementsDialog from './StatementsDialog';
+
 
 // import setTheight from '@/layout/mixin/setTheight';
 
 export default {
   'name': 'AdjustDregs',
-  components: { RejectDialog, AdjustDialog, DetailDialog, ChildDialog, CommentDialog, RateDialog, NuclearCard },
+  components: { RejectDialog, AdjustDialog, DetailDialog, ChildDialog, CommentDialog, RateDialog, NuclearCard, StatementsDialog },
   // mixins: [setTheight],
   data() {
     return {
       tableColumnsConfig: [],
-      api: adjustListApi,
+      api: adjustListApi + '--asjos',
       activeName: '4',
       createTime: '',
       // 遮罩层
@@ -475,6 +511,7 @@ export default {
         'licenseNumber': undefined,
         'driverName': undefined,
         'waybillNo': undefined,
+        'ICCard': undefined,
         'orderClient': undefined,
         'deliveryCompany': undefined,
         'isReturn': undefined,
@@ -494,6 +531,7 @@ export default {
       commentdialog: false,
       nuclearCardDialog: false,
       ratedialog: false,
+      Statementsdialog: false,
       title: '',
       dialogWidth: '800px',
       // 当前选中的运单id
@@ -529,6 +567,7 @@ export default {
     lcokey() {
       return this.$route.name + this.activeName;
     }
+
   },
 
   watch: {
@@ -548,14 +587,27 @@ export default {
     this.isAdmin = isAdmin;
     this.user = user;
     this.shipment = shipment;
-    this.tableHeaderConfig(this.tableColumnsConfig, adjustListApi, {
+    this.tableHeaderConfig(this.tableColumnsConfig, this.api, {
       prop: 'edit',
       isShow: true,
       tooltip: false,
       label: '操作',
       width: 240,
       fixed: 'right'
-    });
+    }, [{
+      prop: 'ICCard',
+      isShow: true,
+      tooltip: false,
+      label: 'IC卡核对状态',
+      width: 240
+    },
+    {
+      prop: 'lastLoadingTime',
+      isShow: false,
+      tooltip: false,
+      label: '装货截止时间',
+      width: 240
+    }]);
     !this.$route.query.adjust && this.getList();
     this.listByDict(this.commodityCategory).then(response => {
       this.commodityCategoryCodeOptions = response.data;
@@ -663,23 +715,29 @@ export default {
           this.$refs.AdjustDialog.setForm(this.waybillCodeList);
           break;
         case 4:
-          this.$confirm('是否确认申请打款?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            this.bodyParams.waybillCodeList = [];
-            this.bodyParams.waybillCodeList.push(row.wayBillCode);
-            batchApply(this.bodyParams).then(response => {
-              this.$message({ type: 'success', message: '申请打款成功！' });
-              this.getList();
-            });
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消'
-            });
-          });
+          // this.$confirm('是否确认申请打款?', '提示', {
+          //   confirmButtonText: '确定',
+          //   cancelButtonText: '取消',
+          //   type: 'warning'
+          // }).then(() => {
+          //   this.bodyParams.waybillCodeList = [];
+          //   this.bodyParams.waybillCodeList.push(row.wayBillCode);
+          //   batchApply(this.bodyParams).then(response => {
+          //     this.$message({ type: 'success', message: '申请打款成功！' });
+          //     this.getList();
+          //   });
+          // }).catch(() => {
+          //   this.$message({
+          //     type: 'info',
+          //     message: '已取消'
+          //   });
+          // });
+          this.Statementsdialog = true;
+          this.title = '对账单';
+          // this.waybillCodeList = [];
+          // this.waybillCodeList.push(row.wayBillCode);
+          this.$refs.StatementsDialog.setForm(row);
+          console.log(123);
           break;
         case 5:
           this.commentdialog = true;

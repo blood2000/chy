@@ -1,4 +1,5 @@
 const CryptoJS = require('crypto-js');
+import { MessageBox, Message } from 'element-ui';
 
 const CardReader = {
   _cmdIndex: 1,

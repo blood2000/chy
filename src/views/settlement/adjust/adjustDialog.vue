@@ -400,7 +400,7 @@ export default {
       this.isEdit2 = false;
       this.isEdit = false;
 
-      this.isPiliang = data.length > 1 && data[0].isDregs === 1;
+      // this.isPiliang = data.length > 1;
       this.deliveryCashFee = undefined;
       this.queryParams.waybillCodeList = data;
       this.getList();
