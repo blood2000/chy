@@ -143,7 +143,7 @@ export default {
         //   { required: true, message: '调度组名称不能为空', trigger: 'blur' }
         // ],
         teamLeaderName: [
-          { required: true, message: '姓名不能为空', trigger: 'blur' }
+          { required: true, message: '姓名不能为空', trigger: ['blur', 'change'] }
         ],
         // teamLeader: [
         //   { required: true, message: '名称不能为空', trigger: 'blur' }
@@ -290,14 +290,14 @@ export default {
         case 'id-card':
           if (side === 'front') {
             if (data.name) {
-              this.form.teamLeaderName = data.name;
+              this.$set(this.form, 'teamLeaderName', data.name);
             } else {
-              this.form.teamLeaderName = '';
+              this.$set(this.form, 'teamLeaderName', '');
             }
             if (data.number) {
-              this.form.identificationNumber = data.number;
+              this.$set(this.form, 'identificationNumber', data.number);
             } else {
-              this.form.identificationNumber = '';
+              this.$set(this.form, 'identificationNumber', '');
             }
           }
           if (side === 'back') {

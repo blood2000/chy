@@ -930,19 +930,19 @@ export default {
         case 'id-card':
           if (side === 'front') {
             if (data.name) {
-              this.form.name = data.name;
+              this.$set(this.form, 'name', data.name);
             } else {
-              this.form.name = '';
+              this.$set(this.form, 'name', '');
             }
             if (data.number) {
-              this.form.identificationNumber = data.number;
+              this.$set(this.form, 'identificationNumber', data.number);
             } else {
-              this.form.identificationNumber = '';
+              this.$set(this.form, 'identificationNumber', '');
             }
             if (data.address) {
-              this.form.homeAddress = data.address;
+              this.$set(this.form, 'homeAddress', data.address);
             } else {
-              this.form.homeAddress = '';
+              this.$set(this.form, 'homeAddress', '');
             }
           }
           if (side === 'back') {
@@ -966,14 +966,14 @@ export default {
         // 驾驶证
         case 'driver-license':
           if (data.number) {
-            this.form.driverLicense = data.number;
+            this.$set(this.form, 'driverLicense', data.number);
           } else {
-            this.form.driverLicense = '';
+            this.$set(this.form, 'driverLicense', '');
           }
           if (data.issuing_authority) {
-            this.form.issuingOrganizations = data.issuing_authority;
+            this.$set(this.form, 'issuingOrganizations', data.issuing_authority);
           } else {
-            this.form.issuingOrganizations = '';
+            this.$set(this.form, 'issuingOrganizations', '');
           }
           if (data.valid_from) {
             this.$set(this.form, 'validPeriodFrom', data.valid_from);
@@ -991,33 +991,33 @@ export default {
             this.$set(this.form, 'validPeriodTo', '');
           }
           if (data.class) {
-            this.form.driverLicenseType = data.class;
+            this.$set(this.form, 'driverLicenseType', data.class);
           } else {
-            this.form.driverLicenseType = '';
+            this.$set(this.form, 'driverLicenseType', '');
           }
           break;
         // 行驶证
         case 'vehicle-license':
           if (data.number) {
-            this.vehicleForm.licenseNumber = data.number;
+            this.$set(this.vehicleForm, 'licenseNumber', data.number);
           } else {
-            this.vehicleForm.licenseNumber = '';
+            this.$set(this.vehicleForm, 'licenseNumber', '');
           }
           if (data.engine_no) {
-            this.vehicleForm.engineNumber = data.engine_no;
+            this.$set(this.vehicleForm, 'engineNumber', data.engine_no);
           } else {
-            this.vehicleForm.engineNumber = '';
+            this.$set(this.vehicleForm, 'engineNumber', '');
           }
           if (data.vin) {
-            this.vehicleForm.chassisNumber = data.vin;
+            this.$set(this.vehicleForm, 'chassisNumber', data.vin);
           } else {
-            this.vehicleForm.chassisNumber = '';
+            this.$set(this.vehicleForm, 'chassisNumber', '');
           }
           if (data.vehicle_type) {
             // 车辆类型
-            this.vehicleForm.vehicleTypeCode = this.getVehicleTypeKey(data.vehicle_type);
+            this.$set(this.vehicleForm, 'vehicleTypeCode', this.getVehicleTypeKey(data.vehicle_type));
           } else {
-            this.vehicleForm.vehicleTypeCode = '';
+            this.$set(this.vehicleForm, 'vehicleTypeCode', '');
           }
           break;
         default:
