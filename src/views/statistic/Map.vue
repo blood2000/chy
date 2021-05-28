@@ -423,11 +423,11 @@ export default {
       // 动画-消失
       setTimeout(() => {
         wrap.classList.add('hide');
-      }, 4.4 * 1000);
+      }, 5.4 * 1000);
       // 移除dom
       setTimeout(() => {
         wrap.remove();
-      }, 5 * 1000);
+      }, 6 * 1000);
     }
   }
 };
