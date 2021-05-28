@@ -84,14 +84,14 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="6">
+            <!-- <el-col :span="6">
               <el-form-item v-if="!stowage" label="剩余车数" prop="notRobbedOrder">
                 <el-input v-model="form.notRobbedOrder" placeholder="请输入" :readonly="true" class="width90" />
               </el-form-item>
               <el-form-item v-if="stowage" label="剩余吨数/立方数" prop="remainingWeight">
                 <el-input v-model="form.remainingWeight" placeholder="请输入" :readonly="true" class="width90" />
               </el-form-item>
-            </el-col>
+            </el-col> -->
           </el-row>
 
           <div class="supplement-title"><div class="supplement-icon" />承运车辆</div>
@@ -221,25 +221,28 @@
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item v-if="!stowage" label="运单车数" prop="loadWeight">
-                <el-input-number v-model="form.loadWeight" placeholder="请输入运单数量" controls-position="right" :precision="2" :min="0" class="width90" @change="inputWeight" />
+              <el-form-item v-if="form.stowageStatus === '1'" label="结算数量（方）" prop="loadWeight">
+                <el-input-number v-model="form.loadWeight" controls-position="right" :precision="2" :min="0" class="width90" @change="inputWeight" />
               </el-form-item>
-              <el-form-item v-if="stowage" label="运单重量(吨/立方)" prop="loadWeight">
-                <el-input-number v-model="form.loadWeight" placeholder="请输入运单数量" controls-position="right" :precision="2" :min="0" class="width90" @change="inputWeight" />
+              <el-form-item v-if="form.stowageStatus === '2'" label="结算数量（车）" prop="loadWeight">
+                <el-input-number v-model="form.loadWeight" controls-position="right" :precision="2" :min="0" class="width90" @change="inputWeight" />
+              </el-form-item>
+              <el-form-item v-else label="结算数量（吨）" prop="loadWeight">
+                <el-input-number v-model="form.loadWeight" controls-position="right" :precision="2" :min="0" class="width90" @change="inputWeight" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="6">
-              <el-form-item label="货主实付金额" prop="shipperRealPay">
+              <el-form-item label="货主应付金额" prop="shipperRealPay">
                 <el-input v-model="form.shipperRealPay" placeholder="请输入" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
-            <el-col :span="6">
+            <!-- <el-col :span="6">
               <el-form-item label="司机实收金额" prop="driverRealFee">
                 <el-input v-model="form.driverRealFee" placeholder="请输入" :readonly="true" class="width90" />
               </el-form-item>
-            </el-col>
+            </el-col> -->
             <el-col :span="6">
               <el-form-item label="运输单号" prop="wayBillNo">
                 <el-input v-model="form.wayBillNo" placeholder="请输入" :readonly="true" class="width90" />
