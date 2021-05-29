@@ -625,7 +625,7 @@
 </template>
 
 <script>
-import { waybillList, orderList, billList } from '@/api/workBanch';
+import { waybillList, orderList, billList, shipmentWaybillBehavior } from '@/api/workBanch';
 import { getUserInfo } from '@/utils/auth';
 import { listNoticeAll } from '@/api/system/notice';
 // 运单详情弹窗
@@ -863,7 +863,7 @@ export default {
 
       const {
         // balanceAccount, //	账号余额	number
-        driver, //	合作司机	integer(int32)	integer(int32)
+        // driver, //	合作司机	integer(int32)	integer(int32)
         frequentlyAddress, //	常用地址	integer(int32)	integer(int32)
         // frozenCapital, //	冻结余额	number
         invoice: { // 发票	货主工作台-发票统计	货主工作台-发票统计
@@ -872,9 +872,9 @@ export default {
           auditInvoice, //	待审核发票数	integer(int32)
           auditInvoiceAmount, //	待审核金额	number
           openInvoice, //	已开票	integer(int32)
-          openInvoiceAmount, //	已开票金额	number
-          openInvoiceAmountToday, //	今日已开票金额	number
-          openInvoiceToday //	今日开票
+          openInvoiceAmount //	已开票金额	number
+          // openInvoiceAmountToday, //	今日已开票金额	number
+          // openInvoiceToday //	今日开票
         },
         item,	// 项目	integer(int32)	integer(int32)
         order: { // 货源	货主工作台-货源统计Vo	货主工作台-货源统计Vo
@@ -884,21 +884,21 @@ export default {
           soldOut //	完成关闭
         },
         rule,	// 计算规则	integer(int32)	integer(int32)
-        team,	// 合作车队	integer(int32)	integer(int32)
-        vehicle,	// 合作车辆	integer(int32)	integer(int32)
+        // team,	// 合作车队	integer(int32)	integer(int32)
+        // vehicle,	// 合作车辆	integer(int32)	integer(int32)
         waybill: { // 运单
           orderBalance, //	已核算	integer(int32)
           orderBalanceAmount, //	已核算金额	number
           orderLoading, //	已装货	integer(int32)
           orderReceiving, //	已接单	integer(int32)
-          orderReceivingToday, //	今日接单	integer(int32)
+          // orderReceivingToday, //	今日接单	integer(int32)
           orderRemit, //	已打款	integer(int32)
           orderRemitAmount, //	已打款金额	number
-          orderRemitAmountToday, //	今日打款金额	number
-          orderRemitToday, //	今日打款	integer(int32)
+          // orderRemitAmountToday, //	今日打款金额	number
+          // orderRemitToday, //	今日打款	integer(int32)
           orderReviewer, //	已复核	integer(int32)
-          orderUnload, //	已卸货	integer(int32)
-          transportToday //	今日运输
+          orderUnload //	已卸货	integer(int32)
+          // transportToday //	今日运输
         }
       } = res.data;
 
@@ -910,22 +910,7 @@ export default {
         rule
       };
 
-      // 接单模块
-      this.statiStical = {
-        orderReceivingToday,
-        transportToday,
 
-        orderRemitToday,
-        orderRemitAmountToday,
-
-        openInvoiceToday,
-        openInvoiceAmountToday,
-
-        team,
-        vehicle,
-        driver
-
-      };
       // 中间
       this.rowContent = {
         // balanceAccount,
@@ -980,7 +965,39 @@ export default {
     },
     // 获取今日
     async getToday() {
+      const res = await shipmentWaybillBehavior({
+        branchCode: this.shipment.info.branchCode,
+        shipmentCode: this.shipment.info.code,
+        companyCode: this.shipment.info.companyCode
+      });
 
+      const {
+        driver, //	合作司机	integer(int32)	integer(int32)
+        openInvoiceAmountToday, //	今日已开票金额	number
+        openInvoiceToday, //	今日开票	integer(int32)	integer(int32)
+        orderReceivingToday, //	今日接单	integer(int32)	integer(int32)
+        orderRemitAmountToday, //	今日打款金额	number
+        orderRemitToday, //	今日打款	integer(int32)	integer(int32)
+        team, //	合作车队	integer(int32)	integer(int32)
+        transportToday, //	今日运输	integer(int32)	integer(int32)
+        vehicle //	合作车辆
+      } = res.data;
+      // 接单模块
+      this.statiStical = {
+        orderReceivingToday,
+        transportToday,
+
+        orderRemitToday,
+        orderRemitAmountToday,
+
+        openInvoiceToday,
+        openInvoiceAmountToday,
+
+        team,
+        vehicle,
+        driver
+      };
+      this.$forceUpdate();
     }
   }
 };
@@ -1082,17 +1099,17 @@ export default {
     margin-top: 12px;
   }
 
-// @media (max-width:1324px) {
-//   .shipper-middle{
-//     .middle-row-content{
-//       margin-left: 10px !important;
+@media (max-width:1324px) {
+  .shipper-middle{
+    .middle-row-content{
+      margin-left: 10px !important;
 
-//     }
-//     .middle-row-content-item{
-//       background-color: red !important;
-//     }
-//   }
-// }
+    }
+    .middle-row-content-item{
+      background-color: red !important;
+    }
+  }
+}
 
 
 </style>

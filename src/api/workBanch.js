@@ -44,6 +44,15 @@ export function shipmentInformation(query) {
   });
 }
 
+// 货主日运单数据
+export function shipmentWaybillBehavior(query) {
+  return request({
+    url: '/transportation/shipmentWorkBench/shipmentWaybillBehavior',
+    method: 'get',
+    params: query
+  });
+}
+
 // 运营侧 导航栏待审核数字
 export function getUnreviewed(branchCode) {
   return request({
