@@ -80,6 +80,7 @@ export default {
     margin-left: -4px;
   }
   .g-text{
+    display: flex;
     font-size: 24px;
     font-weight: bold;
     font-family: Bahnschrift;
