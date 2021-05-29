@@ -45,7 +45,7 @@ export default {
       handler(value) {
         console.log(value);
         if (value) {
-          this.valueNotice = this.notice.replace(/<\/?.+?>/g, '').replace(/ /g, '');
+          this.valueNotice = this.notice.replace(/<\/?.+?>/g, '');
           // this.valueNotice = this.valueNotice.replace(/\s/ig, '');
           console.log(this.valueNotice);
           this.$nextTick(() => {

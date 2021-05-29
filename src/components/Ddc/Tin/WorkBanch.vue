@@ -345,7 +345,7 @@
                 <span class="g-color-blue marginright5">●</span>
                 <div v-if="index != 0" class="trend-line" />
                 <div style="margin-left: 12px;">
-                  <div class="g-color-tag g-title-smaller">{{ item.remark }}</div>
+                  <div class="g-color-tag g-title-smaller">{{ item.remark || '管理员' }}</div>
 
                   <div class="active-cont ellipsis g-strong">
                     <NoticeCard :notice="item.noticeContent" />
