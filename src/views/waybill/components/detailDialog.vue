@@ -24,7 +24,7 @@
           <el-col :span="8" class="text-row">
             <span v-if="form.stowageStatus === '1'">{{ form.loadWeight || '0.00' }} 方</span>
             <span v-if="form.stowageStatus === '2'">{{ form.loadWeight || '0.00' }} 车</span>
-            <span v-else>{{ form.loadWeight || '0.00' }} 吨</span>
+            <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ form.loadWeight || '0.00' }} 吨</span>
           </el-col>
           <el-col :span="3" class="text-label">
             货品类别：
@@ -151,7 +151,7 @@
           </el-col>
           <el-col :span="8" class="text-row">
             <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ formAttachment?formAttachment.loadWeight:'0.00' }} 吨</span>
-            <span v-if="form.stowageStatus === '1'">{{ formAttachment?formAttachment.loadWeight:'0.00' }} 立方</span>
+            <span v-if="form.stowageStatus === '1'">{{ formAttachment?formAttachment.loadWeight:'0.00' }} 方</span>
             <span v-if="form.stowageStatus === '2'">{{ formAttachment?formAttachment.loadWeight:'0.00' }} 车</span>
           </el-col>
           <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
@@ -176,7 +176,7 @@
           </el-col>
           <el-col :span="8" class="text-row">
             <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ formAttachmentUp?formAttachmentUp.unloadWeight:'0.00' }} 吨</span>
-            <span v-if="form.stowageStatus === '1'">{{ formAttachmentUp?formAttachmentUp.unloadWeight:'0.00' }} 立方</span>
+            <span v-if="form.stowageStatus === '1'">{{ formAttachmentUp?formAttachmentUp.unloadWeight:'0.00' }} 方</span>
             <span v-if="form.stowageStatus === '2'">{{ formAttachmentUp?formAttachmentUp.unloadWeight:'0.00' }} 车</span>
           </el-col>
           <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
