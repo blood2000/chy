@@ -101,7 +101,7 @@
       <el-table-column label="司机姓名" align="center" prop="name" />
       <el-table-column label="手机" align="center" prop="telphone" width="120" />
       <el-table-column label="身份证号" align="center" prop="identificationNumber" width="180" />
-      <!-- <el-table-column label="道路运输许可证号" align="center" prop="" width="180" /> -->
+      <el-table-column label="道路运输许可证号" align="center" prop="transportPermitNo" width="180" />
       <el-table-column label="驾驶证类型" align="center" prop="driverLicenseType" width="180">
         <template slot-scope="scope">
           <span>{{ selectDictLabel(driverLicenseTypeOptions, scope.row.driverLicenseType) }}</span>
