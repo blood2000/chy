@@ -348,7 +348,7 @@
                   <div class="g-color-tag g-title-smaller">{{ item.remark || '管理员' }}</div>
 
                   <div class="active-cont ellipsis g-strong">
-                    <NoticeCard :notice="item.noticeContent" />
+                    <NoticeCard :key="index" speed="5s" :notice="item.noticeContent" />
                   </div>
                 </div>
               </li>

@@ -182,6 +182,9 @@ export default {
           width: 40%;
         }
         .el-button{
+          display: flex;
+          justify-content: center;
+          align-items: center;
           width: 100px;
           height: 30px;
         }
@@ -209,6 +212,7 @@ export default {
 }
 
 .g-text{
+  display: flex;
     font-size: 24px;
     font-weight: bold;
     font-family: Bahnschrift;
@@ -221,6 +225,7 @@ export default {
       font-weight: 400;
       line-height: 22px;
       color: #262626;
+      white-space: nowrap;
     }
   }
   .z30d{

@@ -87,6 +87,7 @@ export default {
   }
 }
 .g-text{
+    display: flex;
     font-size: 24px;
     font-weight: bold;
     font-family: Bahnschrift;

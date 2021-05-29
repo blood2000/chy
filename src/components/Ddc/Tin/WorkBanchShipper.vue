@@ -1,21 +1,21 @@
 <template>
-  <div style="min-width: 1695px; overflow-x: scroll;height: 100%">
+  <div style="min-width: 1222px; overflow-x: scroll;height: 100%">
     <div class="top-tips g-flex g-aligncenter">
       <img class="marginright10" src="~@/assets/images/workbench/icon_notice.png" alt="">
       <img class="marginright10" src="~@/assets/images/workbench/font_notice.png" alt="">
       <span class="notic-tip g-color-gray">
-        <NoticeCard :lists="noticeList2" />
+        <NoticeCard :lists="['123']" />
       </span>
     </div>
 
     <div class="g-flex" style="margin: 0 15px;height: calc(100% - 59px);">
 
       <!-- 左边 -->
-      <div class="marginright15 shipper" style="width:calc(100% - 400px);height: 100%;min-height: 740px;">
-        <div class="shipper_left">
+      <div class="marginright15 shipper ly-flex-1" style="height: 100%;min-height: 740px;">
+        <div class="shipper_left my-impo">
           <!-- 用户信息 -->
           <div class="g-flex">
-            <div class="index-frame g-flex g-aligncenter  marginright15" style="width:330px;">
+            <div class="index-frame g-flex g-aligncenter  marginright15" style="width: 100%;">
               <img v-if="user.avatar != null" class="user-avator" :src="user.avatar">
               <img v-else class="user-avator" src="~@/assets/images/workbench/icon_noavator.png">
               <div style="margin-left:15px;max-width:205px;">
@@ -141,7 +141,7 @@
         </div>
 
         <!-- 中间 -->
-        <div class="shipper-middle">
+        <div class="shipper-middle" style="minWidth: 600px;">
           <div class="middle-row">
             <RowTitle v-once index="1">账户充值</RowTitle>
             <div class="middle-row-content">
@@ -510,7 +510,7 @@
 
       </div>
 
-      <div class="index-frame" style="width: 400px;height:100%;min-height: 740px;padding:0px;">
+      <div class="index-frame" style="minWidth: 320px;height:100%;min-height: 740px;padding:0px; maxWidth:400px;">
         <!-- 动态 -->
         <div style="height:100%; min-height: 609px;">
           <div style="height:300px">
@@ -616,6 +616,8 @@ import StatiStical from './WprkComponent/StatiStical';
 
 import { shipmentInformation } from '@/api/workBanch';
 
+import { getWalletInfo } from '@/api/wallet/wallet';
+
 export default {
   name: 'Index',
   components: { DetailDialog, NoticeCard, RowTitle, RowContent, DagaoItem, StatiStical },
@@ -668,6 +670,8 @@ export default {
     this.getNoticeList();
 
     this.isShipment && this.getList();
+    this.isShipment && this.paymentWallet();
+    this.isShipment && this.getToday();
     // 页面刚进入时开启长连接
     // this.initWebSocket();
   },
@@ -733,10 +737,10 @@ export default {
       });
 
       const {
-        balanceAccount, //	账号余额	number
+        // balanceAccount, //	账号余额	number
         driver, //	合作司机	integer(int32)	integer(int32)
         frequentlyAddress, //	常用地址	integer(int32)	integer(int32)
-        frozenCapital, //	冻结余额	number
+        // frozenCapital, //	冻结余额	number
         invoice: { // 发票	货主工作台-发票统计	货主工作台-发票统计
           applyInvoice, //	申请发票数	integer(int32)
           applyInvoiceAmount, //	申请金额	number
@@ -799,9 +803,8 @@ export default {
       };
       // 中间
       this.rowContent = {
-        balanceAccount,
-
-        frozenCapital,
+        // balanceAccount,
+        // frozenCapital,
 
         publicOrder,
         privateOrder,
@@ -832,6 +835,28 @@ export default {
         openInvoice,
         openInvoiceAmount
       };
+
+      this.$forceUpdate();
+    },
+    // 获取账户钱
+    async paymentWallet() {
+      const res = await getWalletInfo({
+        code: this.user.userCode
+      });
+
+      const {
+        amount,
+        freezeAmount
+      } = res.data;
+
+      // this.$set(this.rowContent, 'balanceAccount', amount);
+      this.rowContent.balanceAccount = amount;
+      this.rowContent.frozenCapital = freezeAmount;
+      this.$forceUpdate();
+    },
+    // 获取今日
+    async getToday() {
+
     }
   }
 };
@@ -840,6 +865,14 @@ export default {
 <style scoped lang="scss">
 @import '../Css/WorkBanch.scss';
 
+.middle-row-content{
+  // padding: 5px 0 5px 0px;
+}
+.shipper_left.my-impo{
+  min-width: 290px;
+  max-width: 330px;
+  width: auto;
+}
 // 追加的样式
 .shipper{
   display: flex;
@@ -892,7 +925,7 @@ export default {
       flex: 1;
       position: relative;
       margin-left: 12px;
-      padding: 5px 0 5px 17px;
+      padding: 5px 0 5px 0px;
 
 
       &::before{
@@ -926,6 +959,19 @@ export default {
   .mt12{
     margin-top: 12px;
   }
+
+@media (max-width:1324px) {
+  .shipper-middle{
+    .middle-row-content{
+      margin-left: 10px !important;
+
+    }
+    .middle-row-content-item{
+      background-color: red !important;
+    }
+  }
+}
+
 
 </style>
 
