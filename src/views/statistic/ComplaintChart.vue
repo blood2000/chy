@@ -25,13 +25,13 @@
     <div class="s-container__box">
       <div class="title title_1">评价</div>
       <div class="count">
-        <count-to :end-val="0" />
+        <count-to :end-val="complainVo.complaintCount" />
       </div>
     </div>
     <div class="s-container__box">
       <div class="title title_2">投诉</div>
       <div class="count">
-        <count-to :end-val="complainVo.complaintCount" />
+        <count-to :end-val="complainVo.complaintSolve" />
       </div>
     </div>
     <div class="s-container__box">
