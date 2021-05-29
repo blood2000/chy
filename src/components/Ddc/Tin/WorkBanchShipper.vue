@@ -1,5 +1,5 @@
 <template>
-  <div style="min-width: 1222px; overflow-x: scroll;height: 100%">
+  <div style=" overflow-x: scroll;height: 100%">
     <div class="top-tips g-flex g-aligncenter">
       <img class="marginright10" src="~@/assets/images/workbench/icon_notice.png" alt="">
       <img class="marginright10" src="~@/assets/images/workbench/font_notice.png" alt="">
@@ -960,17 +960,17 @@ export default {
     margin-top: 12px;
   }
 
-@media (max-width:1324px) {
-  .shipper-middle{
-    .middle-row-content{
-      margin-left: 10px !important;
+// @media (max-width:1324px) {
+//   .shipper-middle{
+//     .middle-row-content{
+//       margin-left: 10px !important;
 
-    }
-    .middle-row-content-item{
-      background-color: red !important;
-    }
-  }
-}
+//     }
+//     .middle-row-content-item{
+//       background-color: red !important;
+//     }
+//   }
+// }
 
 
 </style>

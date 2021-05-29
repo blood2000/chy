@@ -170,11 +170,13 @@ export default {
         }
 
       .middle-row-title{
+        display: flex;
         font-size: 14px;
         font-weight: bold;
         color: #262626;
         margin-left: -12px;
         margin-bottom: 6px;
+        white-space: nowrap;
       }
       .middle-row-btn{
         display: flex;
@@ -236,6 +238,7 @@ export default {
     color: #B3AFAF;
     opacity: 1;
     margin-left: 10px;
+    white-space: nowrap;
   }
   .bgf{
     background-color: #fff;
