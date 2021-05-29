@@ -347,13 +347,14 @@ export default {
       content.setAttribute('class', 's-echart-map-waybill-tooltip-content color' + status);
       wrap.appendChild(content);
       // 设置content基础宽度
-      if (status === 1) {
-        content.style.width = 14.35 + 1.35 + 'rem';
-      } else if (status === 2) {
-        content.style.width = 12.25 + 1.35 + 'rem';
-      } else if (status === 3) {
-        content.style.width = 12.25 + 1.35 + 'rem';
-      }
+      // if (status === 1) {
+      //   content.style.width = 14.35 + 1.35 + 'rem';
+      // } else if (status === 2) {
+      //   content.style.width = 12.25 + 1.35 + 'rem';
+      // } else if (status === 3) {
+      //   content.style.width = 12.25 + 1.35 + 'rem';
+      // }
+      content.style.width = 12.25 + 1.35 + 'rem'; // 接单还未区分自动/手动，长度先保持一致
       // createDom-car-head
       const carHead = document.createElement('div');
       carHead.setAttribute('class', 's-echart-map-waybill-tooltip-car-head');
@@ -404,13 +405,14 @@ export default {
       }, 1.4 * 1000);
       // 动画-背景展开
       setTimeout(() => {
-        if (status === 1) {
-          carBody.style.width = '14.35rem';
-        } else if (status === 2) {
-          carBody.style.width = '12.25rem';
-        } else if (status === 3) {
-          carBody.style.width = '12.25rem';
-        }
+        // if (status === 1) {
+        //   carBody.style.width = '14.35rem';
+        // } else if (status === 2) {
+        //   carBody.style.width = '12.25rem';
+        // } else if (status === 3) {
+        //   carBody.style.width = '12.25rem';
+        // }
+        carBody.style.width = '12.25rem'; // 接单还未区分自动/手动，长度先保持一致
       }, 1.6 * 1000);
       // 动画-边框线条出现
       setTimeout(() => {
