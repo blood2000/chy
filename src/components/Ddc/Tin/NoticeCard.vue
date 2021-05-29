@@ -43,8 +43,11 @@ export default {
   watch: {
     notice: {
       handler(value) {
+        console.log(value);
         if (value) {
-          this.valueNotice = this.notice;
+          this.valueNotice = this.notice.replace(/<\/?.+?>/g, '').replace(/ /g, '');
+          // this.valueNotice = this.valueNotice.replace(/\s/ig, '');
+          console.log(this.valueNotice);
           this.$nextTick(() => {
             this.noticeWidth = -(this.$refs.noticeRef.offsetWidth);
           });

@@ -1,10 +1,11 @@
 <template>
   <div class="g-color-title" :class="width<=1366 ? 'minworkbanch' : 'workbanch'">
+    <!-- 系统公告 -->
     <div class="top-tips g-aligncenter">
       <img class="marginright10" src="~@/assets/images/workbench/icon_notice.png" alt="">
       <img v-if="width>1366" class="marginright10" src="~@/assets/images/workbench/font_notice.png" alt="">
       <span class="notic-tip g-color-gray">
-        <NoticeCard :lists="noticeList2" />
+        <NoticeCard :notice="noticeSys" />
       </span>
     </div>
 
@@ -345,7 +346,10 @@
                 <div v-if="index != 0" class="trend-line" />
                 <div style="margin-left: 12px;">
                   <div class="g-color-tag g-title-smaller">{{ item.remark }}</div>
-                  <div class="active-cont ellipsis g-strong" v-html="item.noticeContent" />
+
+                  <div class="active-cont ellipsis g-strong">
+                    <NoticeCard :notice="item.noticeContent" />
+                  </div>
                 </div>
               </li>
             </div>
@@ -392,6 +396,7 @@ export default {
       noticeList1: [],
       // 公告列表
       noticeList2: [],
+      noticeSys: '',
       // websocket参数
       websock: null,
       // 弹框 内容
@@ -505,7 +510,10 @@ export default {
       // 通知
       listNoticeAll({ ...this.queryParams, noticeType: '1' }).then(response => {
         this.dataOver = !response.data.length;
-        this.noticeList1 = this.noticeList1.concat(response.data);
+        const notice = response.data.filter(response => {
+          return response.status === '0';
+        });
+        this.noticeList1 = this.noticeList1.concat(notice);
         // console.log(this.noticeList1);
         this.loading = false;
         if (this.noticeList1) {
@@ -516,10 +524,10 @@ export default {
     /** 查询公告列表 */
     getNoticeList2() {
       listNoticeAll({ noticeType: '2' }).then(response => {
-        this.noticeList2 = response.data.map(response => {
-          return response.noticeContent;
+        this.noticeList2 = response.data.filter(response => {
+          return response.status === '0';
         });
-        // console.log(this.noticeList2);
+        this.noticeSys = this.noticeList2[0].noticeContent;
       });
     },
     loadmore() {
