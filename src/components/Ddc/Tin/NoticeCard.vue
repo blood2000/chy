@@ -46,7 +46,7 @@ export default {
       handler(value) {
         console.log(value, '151');
         if (value) {
-          this.valueNotice = this.notice.replace(/<\/?.+?>/g, '').replace(/ /g, '');
+          this.valueNotice = this.notice.replace(/<\/?.+?>/g, '');
           // this.valueNotice = this.valueNotice.replace(/\s/ig, '');
           this.$nextTick(() => {
             this.noticeWidth = -(this.$refs.noticeRef.offsetWidth);

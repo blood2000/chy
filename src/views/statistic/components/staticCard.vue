@@ -6,7 +6,9 @@
           <p class="text">{{ item.text }}</p>
           <p class="time">{{ item.time }}</p>
         </li>
-        <li v-if="dataList.length === 0" class="content__list__item ly-flex-pack-justify ly-flex-align-center">暂无数据</li>
+        <li v-if="dataList.length === 0" class="content__list__item ly-flex-pack-justify ly-flex-align-center">
+          <p class="text">暂无数据</p>
+        </li>
       </ul>
     </div>
   </div>

@@ -44,7 +44,7 @@
 <script>
 // import ScrollCard from './components/scrollCard';
 import StaticCard from './components/staticCard';
-import { getUserAndCarTop } from '@/api/statistic/statistic.js';
+import { getOrderTop, getSettlementTop, getUserAndCarTop } from '@/api/statistic/statistic.js';
 export default {
   components: {
     // ScrollCard
@@ -58,6 +58,8 @@ export default {
     };
   },
   mounted() {
+    this.getOrderData();
+    this.getSettlementData();
     this.getUserData();
   },
   methods: {
@@ -97,6 +99,32 @@ export default {
       if (remark) {
         this.$refs.transferRef.setData(remark, time);
       }
+    },
+    // 获取货单初始数据
+    getOrderData() {
+      getOrderTop().then(response => {
+        const dataList = [];
+        response.data.forEach(el => {
+          dataList.push({
+            text: el.remark,
+            time: this.idToday(el.createTime)
+          });
+        });
+        this.$refs.orderRef.initDataList(dataList);
+      });
+    },
+    // 获取交易初始数据
+    getSettlementData() {
+      getSettlementTop().then(response => {
+        const dataList = [];
+        response.data.forEach(el => {
+          dataList.push({
+            text: el.remark,
+            time: this.idToday(el.createTime)
+          });
+        });
+        this.$refs.transferRef.initDataList(dataList);
+      });
     },
     // 获取用户初始数据
     getUserData() {

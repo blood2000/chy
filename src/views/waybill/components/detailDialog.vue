@@ -24,7 +24,7 @@
           <el-col :span="8" class="text-row">
             <span v-if="form.stowageStatus === '1'">{{ form.loadWeight || '0.00' }} 方</span>
             <span v-if="form.stowageStatus === '2'">{{ form.loadWeight || '0.00' }} 车</span>
-            <span v-else>{{ form.loadWeight || '0.00' }} 吨</span>
+            <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ form.loadWeight || '0.00' }} 吨</span>
           </el-col>
           <el-col :span="3" class="text-label">
             货品类别：
@@ -151,7 +151,7 @@
           </el-col>
           <el-col :span="8" class="text-row">
             <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ formAttachment?formAttachment.loadWeight:'0.00' }} 吨</span>
-            <span v-if="form.stowageStatus === '1'">{{ formAttachment?formAttachment.loadWeight:'0.00' }} 立方</span>
+            <span v-if="form.stowageStatus === '1'">{{ formAttachment?formAttachment.loadWeight:'0.00' }} 方</span>
             <span v-if="form.stowageStatus === '2'">{{ formAttachment?formAttachment.loadWeight:'0.00' }} 车</span>
           </el-col>
           <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
@@ -176,7 +176,7 @@
           </el-col>
           <el-col :span="8" class="text-row">
             <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ formAttachmentUp?formAttachmentUp.unloadWeight:'0.00' }} 吨</span>
-            <span v-if="form.stowageStatus === '1'">{{ formAttachmentUp?formAttachmentUp.unloadWeight:'0.00' }} 立方</span>
+            <span v-if="form.stowageStatus === '1'">{{ formAttachmentUp?formAttachmentUp.unloadWeight:'0.00' }} 方</span>
             <span v-if="form.stowageStatus === '2'">{{ formAttachmentUp?formAttachmentUp.unloadWeight:'0.00' }} 车</span>
           </el-col>
           <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
@@ -347,18 +347,18 @@ export default {
         this.form.waybillAddress = response.data.waybillAddress || {};
         // this.form.unloadAddress = response.data.waybillAddress || {};
         this.form.balanceVo = response.data.balanceVo || {};
-        console.log(response);
+        // console.log(response);
         this.loading = false;
       });
       // 回单-装货
       getWaybillAttachment(this.currentId, 1).then(response => {
-        console.log(response);
+        // console.log(response);
         this.formAttachment = response.data ? response.data[0] : null;
         this.formAttachmentUrl = this.formAttachment ? this.formAttachment.attachUrls.split(',') : null;
       });
       // 回单-卸货
       getWaybillAttachment(this.currentId, 2).then(response => {
-        console.log(response);
+        // console.log(response);
         this.formAttachmentUp = response.data ? response.data[0] : null;
         this.formAttachmentUpUrl = this.formAttachmentUp ? this.formAttachmentUp.attachUrls.split(',') : null;
       });
@@ -384,7 +384,7 @@ export default {
       });
       // 轨迹时间线
       getWaybillTrace(this.currentId).then(response => {
-        console.log(response);
+        // console.log(response);
         response.data.forEach(el => {
           this.timeLineList.unshift(el);
         });

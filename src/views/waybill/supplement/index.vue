@@ -227,7 +227,7 @@
               <el-form-item v-if="form.stowageStatus === '2'" label="结算数量（车）" prop="loadWeight">
                 <el-input-number v-model="form.loadWeight" controls-position="right" :precision="2" :min="0" class="width90" @change="inputWeight" />
               </el-form-item>
-              <el-form-item v-else label="结算数量（吨）" prop="loadWeight">
+              <el-form-item v-if="form.stowageStatus === '0' || !form.stowageStatus" label="结算数量（吨）" prop="loadWeight">
                 <el-input-number v-model="form.loadWeight" controls-position="right" :precision="2" :min="0" class="width90" @change="inputWeight" />
               </el-form-item>
             </el-col>
@@ -487,19 +487,21 @@ export default {
           if (this.form.loadWeight > 0) {
             if (!this.stowage && this.form.loadWeight !== 1) {
               this.msgWarning('运单车数只能为1车！');
+              loading.close();
             } else {
               extra(this.form).then(response => {
                 this.msgSuccess('运单补录成功');
                 this.reset();
                 this.orderDisable = true;
                 this.driverDisable = true;
+                loading.close();
               });
             }
           } else {
             this.msgWarning('运单重量或车数必须大于0！');
+            loading.close();
           }
         }
-        loading.close();
       });
     },
     // 表单重置

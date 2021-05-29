@@ -19,9 +19,10 @@
 <script>
 import * as echarts from 'echarts';
 // import 'echarts-gl';
-import maps from '@/assets/json/china.json';
+import mapJson from '@/assets/json/china.json';
 import { setfontSize } from '@/utils/fontSize';
 import WaybillCard from './WaybillCard';
+import cityJson from '@/assets/json/city.json';
 
 export default {
   components: {
@@ -86,7 +87,7 @@ export default {
       this.chart = echarts.init(this.$refs.map, null, {
         renderer: 'svg'
       });
-      echarts.registerMap('china', maps);
+      echarts.registerMap('china', mapJson);
       this.setOption();
       this.setFontOption();
       this.setRegionData();
@@ -306,22 +307,43 @@ export default {
     // 处理地图实时数据
     createMapData(status, val, time) {
       let contentTitle = '';
+      let cityName = '';
       const contentText = `${val.driver.name ? val.driver.name : ''} ${val.vehicle.licenseNumber ? val.vehicle.licenseNumber : ''}`;
       const contentTime = this.parseTime(time, '{h}:{i}:{s}');
       let location = [];
       if (status === 1) {
         contentTitle = '【 接单 】';
         location = val.address.loadLocations;
+        cityName = val.address.loadCity;
       } else if (status === 2) {
         contentTitle = '【 装货 】';
         location = val.address.loadLocations;
+        cityName = val.address.loadCity;
       } else if (status === 3) {
         contentTitle = '【 卸货 】';
         location = val.address.unloadLocations;
+        cityName = val.address.unloadCity;
       }
       if (location && location.length === 2) {
         this.createTooltip(status, location[0], location[1], contentTitle, contentText, contentTime);
+      } else {
+        console.log('后端未获取到经纬度：', val);
+        this.getLngAndLat(cityName).then(loc => {
+          if (!loc || loc.length !== 2) {
+            console.log('前端也匹配不到经纬度');
+            return;
+          }
+          console.log('loc: ', loc);
+          this.createTooltip(status, loc[0], loc[1], contentTitle, contentText, contentTime);
+        });
       }
+    },
+    // 经纬度为空时，根据市取经纬度
+    getLngAndLat(cityName) {
+      return new Promise((resolve, reject) => {
+        const location = cityJson[cityName] || [];
+        resolve(location);
+      });
     },
     // 地图新增一条运单信息-现用
     createTooltip(status, lng, lat, contentTitle, contentText, contentTime) {

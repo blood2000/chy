@@ -201,14 +201,14 @@
           <span v-if="row.loadWeight">
             <span v-if="row.stowageStatus === '1'">{{ row.loadWeight }} 方</span>
             <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.loadWeight) }} 车</span>
-            <span v-else>{{ row.loadWeight }} 吨</span>
+            <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.loadWeight }} 吨</span>
           </span>
         </template>
         <template #unloadWeight="{row}">
           <span v-if="row.unloadWeight">
             <span v-if="row.stowageStatus === '1'">{{ row.unloadWeight }} 方</span>
             <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.unloadWeight) }} 车</span>
-            <span v-else>{{ row.unloadWeight }} 吨</span>
+            <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.unloadWeight }} 吨</span>
 
           </span>
         </template>
@@ -216,7 +216,7 @@
           <span v-if="row.weight">
             <span v-if="row.stowageStatus === '1'">{{ row.weight }} 方</span>
             <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.weight) }} 车</span>
-            <span v-else>{{ row.weight }} 吨</span>
+            <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.weight }} 吨</span>
           </span>
         </template>
         <!-- <template #stowageStatus="{row}">
