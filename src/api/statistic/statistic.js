@@ -80,7 +80,7 @@ export function getOrderTop() {
 // 最近3条滚屏-交易数据
 export function getSettlementTop() {
   return request({
-    url: `/waybillSettlement/getNew3`,
+    url: `/transportation/waybillSettlement/getNew3`,
     method: 'get'
   });
 }

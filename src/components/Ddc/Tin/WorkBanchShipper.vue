@@ -974,7 +974,6 @@ export default {
         freezeAmount
       } = res.data;
 
-      // this.$set(this.rowContent, 'balanceAccount', amount);
       this.rowContent.balanceAccount = amount;
       this.rowContent.frozenCapital = freezeAmount;
       this.$forceUpdate();
@@ -990,9 +989,7 @@ export default {
 <style scoped lang="scss">
 @import '../Css/WorkBanch.scss';
 
-.middle-row-content{
-  // padding: 5px 0 5px 0px;
-}
+
 .shipper_left.my-impo{
   min-width: 290px;
   max-width: 330px;
@@ -1085,17 +1082,17 @@ export default {
     margin-top: 12px;
   }
 
-@media (max-width:1324px) {
-  .shipper-middle{
-    .middle-row-content{
-      margin-left: 10px !important;
+// @media (max-width:1324px) {
+//   .shipper-middle{
+//     .middle-row-content{
+//       margin-left: 10px !important;
 
-    }
-    .middle-row-content-item{
-      background-color: red !important;
-    }
-  }
-}
+//     }
+//     .middle-row-content-item{
+//       background-color: red !important;
+//     }
+//   }
+// }
 
 
 </style>
