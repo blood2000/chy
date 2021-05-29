@@ -347,18 +347,18 @@ export default {
         this.form.waybillAddress = response.data.waybillAddress || {};
         // this.form.unloadAddress = response.data.waybillAddress || {};
         this.form.balanceVo = response.data.balanceVo || {};
-        console.log(response);
+        // console.log(response);
         this.loading = false;
       });
       // 回单-装货
       getWaybillAttachment(this.currentId, 1).then(response => {
-        console.log(response);
+        // console.log(response);
         this.formAttachment = response.data ? response.data[0] : null;
         this.formAttachmentUrl = this.formAttachment ? this.formAttachment.attachUrls.split(',') : null;
       });
       // 回单-卸货
       getWaybillAttachment(this.currentId, 2).then(response => {
-        console.log(response);
+        // console.log(response);
         this.formAttachmentUp = response.data ? response.data[0] : null;
         this.formAttachmentUpUrl = this.formAttachmentUp ? this.formAttachmentUp.attachUrls.split(',') : null;
       });
@@ -384,7 +384,7 @@ export default {
       });
       // 轨迹时间线
       getWaybillTrace(this.currentId).then(response => {
-        console.log(response);
+        // console.log(response);
         response.data.forEach(el => {
           this.timeLineList.unshift(el);
         });

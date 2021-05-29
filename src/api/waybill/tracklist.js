@@ -96,7 +96,14 @@ export function getVehicleInfo(code) {
   });
 }
 
-// 获取运单详情
+// 获取运单详情（平台）
+export function getWebDetail(waybillCode) {
+  return request({
+    url: `/transportation/waybill/getWayBillByCode?code=${waybillCode}`,
+    method: 'get'
+  });
+}
+// 获取运单详情（app）
 export function getInfoDetail(waybillCode) {
   return request({
     url: '/transportation/app/waybillInfo/getWaybillInfo/' + waybillCode,
