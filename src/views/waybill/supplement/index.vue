@@ -487,19 +487,21 @@ export default {
           if (this.form.loadWeight > 0) {
             if (!this.stowage && this.form.loadWeight !== 1) {
               this.msgWarning('运单车数只能为1车！');
+              loading.close();
             } else {
               extra(this.form).then(response => {
                 this.msgSuccess('运单补录成功');
                 this.reset();
                 this.orderDisable = true;
                 this.driverDisable = true;
+                loading.close();
               });
             }
           } else {
             this.msgWarning('运单重量或车数必须大于0！');
+            loading.close();
           }
         }
-        loading.close();
       });
     },
     // 表单重置
