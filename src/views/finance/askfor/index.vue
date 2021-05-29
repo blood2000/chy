@@ -194,7 +194,7 @@
         />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="askforlist" :table-columns-config="tableColumnsConfig" :max-height="isAdmin ? '400':'500'" @selection-change="handleSelectionChange">
+      <RefactorTable :loading="loading" :data="askforlist" :table-columns-config="tableColumnsConfig" :max-height="isAdmin ? '380':'500'" @selection-change="handleSelectionChange">
         <template #stowageStatus="{row}">
           <span>{{ selectDictLabel(stowageStatusOptions, row.stowageStatus) }}</span>
         </template>

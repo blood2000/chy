@@ -1,6 +1,6 @@
 <template>
   <div style="height: 100%">
-    <WorkbanchShipper v-if="isShipment" />
+    <WorkbanchShipper v-if="isShipment" :width="screenWidth" />
     <WorkBanch v-else :width="screenWidth" />
 
   </div>
