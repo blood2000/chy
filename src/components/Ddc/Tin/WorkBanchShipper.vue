@@ -1,5 +1,5 @@
 <template>
-  <div style="min-width: 1222px; overflow-x: scroll;height: 100%">
+  <div style="overflow-x: scroll;height: 100%">
     <!-- 系统公告 -->
     <div class="top-tips g-aligncenter">
       <img class="marginright10" src="~@/assets/images/workbench/icon_notice.png" alt="">
@@ -972,15 +972,15 @@ export default {
       });
 
       const {
-        driver, //	合作司机	integer(int32)	integer(int32)
-        openInvoiceAmountToday, //	今日已开票金额	number
-        openInvoiceToday, //	今日开票	integer(int32)	integer(int32)
-        orderReceivingToday, //	今日接单	integer(int32)	integer(int32)
-        orderRemitAmountToday, //	今日打款金额	number
-        orderRemitToday, //	今日打款	integer(int32)	integer(int32)
-        team, //	合作车队	integer(int32)	integer(int32)
-        transportToday, //	今日运输	integer(int32)	integer(int32)
-        vehicle //	合作车辆
+        driver = 0, //	合作司机	integer(int32)	integer(int32)
+        openInvoiceAmountToday = 0, //	今日已开票金额	number
+        openInvoiceToday = 0, //	今日开票	integer(int32)	integer(int32)
+        orderReceivingToday = 0, //	今日接单	integer(int32)	integer(int32)
+        orderRemitAmountToday = 0, //	今日打款金额	number
+        orderRemitToday = 0, //	今日打款	integer(int32)	integer(int32)
+        team = 0, //	合作车队	integer(int32)	integer(int32)
+        transportToday = 0, //	今日运输	integer(int32)	integer(int32)
+        vehicle = 0 //	合作车辆
       } = res.data;
       // 接单模块
       this.statiStical = {
@@ -1008,9 +1008,7 @@ export default {
 
 
 .shipper_left.my-impo{
-  min-width: 290px;
-  max-width: 330px;
-  width: auto;
+  min-width: 330px;
 }
 // 追加的样式
 .shipper{
@@ -1100,15 +1098,19 @@ export default {
   }
 
 @media (max-width:1324px) {
-  .shipper-middle{
-    .middle-row-content{
-      margin-left: 10px !important;
+  // .shipper-middle{
+  //   .middle-row-content{
+  //     margin-left: 10px !important;
 
+  //   }
+  // }
+    .shipper_left.my-impo{
+      min-width: 290px !important;
+      width: 290px !important;
     }
-    .middle-row-content-item{
-      background-color: red !important;
-    }
-  }
+
+
+
 }
 
 

@@ -205,6 +205,12 @@ export default {
           margin-right: 5px;
       }
 }
+@media (max-width:1500px) {
+  .middle-row-content-item .middle-row-btn .el-button{
+    width: 90% !important;
+  }
+
+}
 
 .middle-row-content-item.col3{
     width: 33.3%;

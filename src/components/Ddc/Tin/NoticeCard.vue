@@ -44,7 +44,6 @@ export default {
   watch: {
     notice: {
       handler(value) {
-        console.log(value, '151');
         if (value) {
           this.valueNotice = this.notice.replace(/<\/?.+?>/g, '');
           // this.valueNotice = this.valueNotice.replace(/\s/ig, '');
