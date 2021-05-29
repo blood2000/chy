@@ -178,15 +178,11 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-
-
-        <div class="mt20 mb20 ly-t-center">
-          <el-button type="info" plain>取消</el-button>
-          <el-button type="primary">确认</el-button>
-        </div>
-
-
       </el-form>
+      <div class="mt20 mb20 ly-t-center">
+        <el-button type="info" plain>取消</el-button>
+        <el-button type="primary">确认</el-button>
+      </div>
 
     </div>
 

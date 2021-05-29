@@ -3,6 +3,7 @@
   <div>
     <div v-show="showSearch" ref="searchBox" class="app-container app-container--search">
       <el-form
+        v-show="activeName !== '7'"
         ref="queryForm"
         :model="queryParams"
         :inline="true"
@@ -265,6 +266,10 @@
           </el-button>
         </el-form-item>
       </el-form>
+
+      <div v-show="showSearch || activeName === '7'">
+        <AlreadyPaid v-model="AlreadyPaid_queryParams" @handleQuery="handleQuery12" />
+      </div>
     </div>
 
     <div class="g-radio-group ly-flex-pack-justify">
@@ -278,151 +283,167 @@
     </div>
 
     <div class="app-container">
-      <el-row
-        :gutter="10"
-        class="mb8"
-      >
-        <el-col v-if="activeName == '4'" :span="1.5">
-          <el-button
-            v-hasPermi="['transportation:waybillBalanceInfo:batchCheck']"
-            type="primary"
-            icon="el-icon-document-checked"
-            size="mini"
-            :disabled="multiple"
-            @click="handleAdjust"
-          >批量核算</el-button>
-        </el-col>
-        <el-col v-if="activeName == '5'" :span="1.5">
-          <el-button
-            v-hasPermi="['transportation:waybillBalanceInfo:batchApply']"
-            type="primary"
-            icon="el-icon-wallet"
-            size="mini"
-            :disabled="multiple"
-            @click="handleApply"
-          >批量申请对账</el-button>
-        </el-col>
-        <el-col v-if="activeName == '7' && !isAdmin" :span="1.5">
-          <el-button
-            type="primary"
-            icon="el-icon-chat-dot-square"
-            size="mini"
-            :disabled="multiple"
-            @click="handleAssess"
-          >批量评价</el-button>
-        </el-col>
-        <el-col :span="1.5" class="fr">
-          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" refresh />
-        </el-col>
-        <right-toolbar
-          :show-search.sync="showSearch"
-          @queryTable="getList"
+      <div v-show="activeName !== '7'">
+        <el-row
+          :gutter="10"
+          class="mb8"
+        >
+          <el-col v-if="activeName == '4'" :span="1.5">
+            <el-button
+              v-hasPermi="['transportation:waybillBalanceInfo:batchCheck']"
+              type="primary"
+              icon="el-icon-document-checked"
+              size="mini"
+              :disabled="multiple"
+              @click="handleAdjust"
+            >批量核算</el-button>
+          </el-col>
+          <el-col v-if="activeName == '5'" :span="1.5">
+            <el-button
+              v-hasPermi="['transportation:waybillBalanceInfo:batchApply']"
+              type="primary"
+              icon="el-icon-wallet"
+              size="mini"
+              :disabled="multiple"
+              @click="handleApply"
+            >批量申请对账</el-button>
+          </el-col>
+          <el-col v-if="activeName == '7' && !isAdmin" :span="1.5">
+            <el-button
+              type="primary"
+              icon="el-icon-chat-dot-square"
+              size="mini"
+              :disabled="multiple"
+              @click="handleAssess"
+            >批量评价</el-button>
+          </el-col>
+          <el-col :span="1.5" class="fr">
+            <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" refresh />
+          </el-col>
+          <right-toolbar
+            :show-search.sync="showSearch"
+            @queryTable="getList"
+          />
+        </el-row>
+        <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+          <template #goodsBigType="{row}">
+            <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
+          </template>
+          <!-- <template #isReturn="{row}">
+            <span>
+              <i v-if="row.isReturn == 0" class="el-icon-error g-color-gray" />
+              <i v-if="row.isReturn == 1" class="el-icon-success g-color-success" />
+              {{ selectDictLabel(isReturnOptions, row.isReturn) }}
+            </span>
+          </template> -->
+          <template #loadWeight="{row}">
+            <span v-if="row.loadWeight">
+              <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.loadWeight }} 吨</span>
+              <span v-if="row.stowageStatus === '1'">{{ row.loadWeight }} 立方</span>
+              <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.loadWeight) }} 车</span>
+            </span>
+          </template>
+          <template #ICCard="{row}">
+            <span v-if="row.ICCard == '0'"><i class="el-icon-error g-color-gray" />未核对</span>
+            <span v-if="row.ICCard == '1'"><i class="el-icon-success g-color-success" />已核对</span>
+          </template>
+          <template #unloadWeight="{row}">
+            <span v-if="row.unloadWeight">
+              <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.unloadWeight }} 吨</span>
+              <span v-if="row.stowageStatus === '1'">{{ row.unloadWeight }} 立方</span>
+              <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.unloadWeight) }} 车</span>
+            </span>
+          </template>
+          <template #weight="{row}">
+            <span v-if="row.weight">
+              <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.weight }} 吨</span>
+              <span v-if="row.stowageStatus === '1'">{{ row.weight }} 立方</span>
+              <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.weight) }} 车</span>
+            </span>
+          </template>
+          <template #lastLoadingTime="{row}">
+            <span>{{ parseTime(row.lastLoadingTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+          </template>
+
+          <template #edit="{row}">
+            <el-button
+              v-if="activeName == '5' && row.isApplyMoneyBack == 1"
+              v-has-permi="['transportation:waybillBalanceInfo:warning']"
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 1)"
+            >驳回提示</el-button>
+            <el-button
+              v-if="activeName == '4'"
+              v-hasPermi="['transportation:waybillBalanceInfo:shipperRebutUnloading']"
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 2)"
+            >驳回</el-button>
+            <el-button
+              v-if="activeName == '4'"
+              v-hasPermi="['transportation:waybillBalanceInfo:batchDetail']"
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 3)"
+            >核算</el-button>
+            <el-button
+              v-if="activeName == '5'"
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 4)"
+            >申请对账</el-button>
+            <el-button
+              v-if="activeName == '7' && !isAdmin"
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 5)"
+            >评价</el-button>
+            <el-button
+              v-if="activeName == '7' && isAdmin"
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 8)"
+            >评价详情</el-button>
+            <el-button
+              v-if="row.isChild == '2'"
+              v-has-permi="['transportation:waybill:childList']"
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 6)"
+            >分单列表</el-button>
+            <el-button
+              v-has-permi="['transportation:waybill:getWayBillByCode']"
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 7)"
+            >详情</el-button>
+          </template>
+        </RefactorTable>
+
+        <pagination
+          v-show="total>0"
+          :total="total"
+          :page.sync="queryParams.pageNum"
+          :limit.sync="queryParams.pageSize"
+          @pagination="getList"
         />
-      </el-row>
+      </div>
 
-      <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
-        <template #goodsBigType="{row}">
-          <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
-        </template>
-        <!-- <template #isReturn="{row}">
-          <span>
-            <i v-if="row.isReturn == 0" class="el-icon-error g-color-gray" />
-            <i v-if="row.isReturn == 1" class="el-icon-success g-color-success" />
-            {{ selectDictLabel(isReturnOptions, row.isReturn) }}
-          </span>
-        </template> -->
-        <template #loadWeight="{row}">
-          <span v-if="row.loadWeight">
-            <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.loadWeight }} 吨</span>
-            <span v-if="row.stowageStatus === '1'">{{ row.loadWeight }} 立方</span>
-            <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.loadWeight) }} 车</span>
-          </span>
-        </template>
-        <template #ICCard="{row}">
-          <span v-if="row.ICCard == '0'"><i class="el-icon-error g-color-gray" />未核对</span>
-          <span v-if="row.ICCard == '1'"><i class="el-icon-success g-color-success" />已核对</span>
-        </template>
-        <template #unloadWeight="{row}">
-          <span v-if="row.unloadWeight">
-            <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.unloadWeight }} 吨</span>
-            <span v-if="row.stowageStatus === '1'">{{ row.unloadWeight }} 立方</span>
-            <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.unloadWeight) }} 车</span>
-          </span>
-        </template>
-        <template #weight="{row}">
-          <span v-if="row.weight">
-            <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.weight }} 吨</span>
-            <span v-if="row.stowageStatus === '1'">{{ row.weight }} 立方</span>
-            <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.weight) }} 车</span>
-          </span>
-        </template>
-        <template #lastLoadingTime="{row}">
-          <span>{{ parseTime(row.lastLoadingTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-        </template>
+      <!-- 已打款 -->
+      <div v-show="activeName === '7'">
+        <AlreadyTable
+          v-model="AlreadyPaid_queryParams"
+          :loading="loading"
+          :config="{api: 'hahah'}"
+          :show-search.sync="showSearch"
+          @getList="getList1"
+          @handleSelectionChange="handleSelectionChange1"
+        />
+      </div>
 
-        <template #edit="{row}">
-          <el-button
-            v-if="activeName == '5' && row.isApplyMoneyBack == 1"
-            v-has-permi="['transportation:waybillBalanceInfo:warning']"
-            size="mini"
-            type="text"
-            @click="handleTableBtn(row, 1)"
-          >驳回提示</el-button>
-          <el-button
-            v-if="activeName == '4'"
-            v-hasPermi="['transportation:waybillBalanceInfo:shipperRebutUnloading']"
-            size="mini"
-            type="text"
-            @click="handleTableBtn(row, 2)"
-          >驳回</el-button>
-          <el-button
-            v-if="activeName == '4'"
-            v-hasPermi="['transportation:waybillBalanceInfo:batchDetail']"
-            size="mini"
-            type="text"
-            @click="handleTableBtn(row, 3)"
-          >核算</el-button>
-          <el-button
-            v-if="activeName == '5'"
-            size="mini"
-            type="text"
-            @click="handleTableBtn(row, 4)"
-          >申请对账</el-button>
-          <el-button
-            v-if="activeName == '7' && !isAdmin"
-            size="mini"
-            type="text"
-            @click="handleTableBtn(row, 5)"
-          >评价</el-button>
-          <el-button
-            v-if="activeName == '7' && isAdmin"
-            size="mini"
-            type="text"
-            @click="handleTableBtn(row, 8)"
-          >评价详情</el-button>
-          <el-button
-            v-if="row.isChild == '2'"
-            v-has-permi="['transportation:waybill:childList']"
-            size="mini"
-            type="text"
-            @click="handleTableBtn(row, 6)"
-          >分单列表</el-button>
-          <el-button
-            v-has-permi="['transportation:waybill:getWayBillByCode']"
-            size="mini"
-            type="text"
-            @click="handleTableBtn(row, 7)"
-          >详情</el-button>
-        </template>
-      </RefactorTable>
 
-      <pagination
-        v-show="total>0"
-        :total="total"
-        :page.sync="queryParams.pageNum"
-        :limit.sync="queryParams.pageSize"
-        @pagination="getList"
-      />
+
     </div>
     <!-- 驳回弹窗 -->
     <reject-dialog ref="RejectDialog" :open.sync="rejectdialog" :title="title" :disable="formDisable" @refresh="getList" />
@@ -466,12 +487,15 @@ import NuclearCard from './NuclearCard';
 
 import StatementsDialog from './StatementsDialog';
 
+import AlreadyPaid from './AlreadyQueryForm';
+import AlreadyTable from './AlreadyTable';
+
 
 // import setTheight from '@/layout/mixin/setTheight';
 
 export default {
   'name': 'AdjustDregs',
-  components: { RejectDialog, AdjustDialog, DetailDialog, ChildDialog, CommentDialog, RateDialog, NuclearCard, StatementsDialog },
+  components: { RejectDialog, AdjustDialog, DetailDialog, ChildDialog, CommentDialog, RateDialog, NuclearCard, StatementsDialog, AlreadyPaid, AlreadyTable },
   // mixins: [setTheight],
   data() {
     return {
@@ -560,7 +584,16 @@ export default {
       user: {},
       shipment: {},
 
-      addition: 45 // tin添加的(追加高度)
+      addition: 45, // tin添加的(追加高度)
+
+      areadyPaid_List: [], // 已打款的数据(单独)
+
+
+      AlreadyPaid_queryParams: {
+        'pageNum': 1,
+        'pageSize': 10,
+        'total': 50
+      }
     };
   },
   computed: {
@@ -644,6 +677,12 @@ export default {
         this.total = response.total;
         this.loading = false;
       });
+    },
+    getList1() {
+      console.log(this.AlreadyPaid_queryParams);
+    },
+    handleSelectionChange1(selection) {
+      console.log(selection);
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -773,6 +812,10 @@ export default {
     nuclearCardOpen() {
       this.nuclearCardDialog = true;
       this.$refs.NuclearCard.init({ id: 123 });
+    },
+
+    handleQuery12() {
+      console.log(this.AlreadyPaid_queryParams);
     }
   }
 };
