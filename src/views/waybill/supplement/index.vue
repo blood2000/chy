@@ -227,7 +227,7 @@
               <el-form-item v-if="form.stowageStatus === '2'" label="结算数量（车）" prop="loadWeight">
                 <el-input-number v-model="form.loadWeight" controls-position="right" :precision="2" :min="0" class="width90" @change="inputWeight" />
               </el-form-item>
-              <el-form-item v-else label="结算数量（吨）" prop="loadWeight">
+              <el-form-item v-if="form.stowageStatus === '0' || !form.stowageStatus" label="结算数量（吨）" prop="loadWeight">
                 <el-input-number v-model="form.loadWeight" controls-position="right" :precision="2" :min="0" class="width90" @change="inputWeight" />
               </el-form-item>
             </el-col>

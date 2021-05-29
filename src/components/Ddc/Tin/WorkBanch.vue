@@ -278,8 +278,8 @@
             <div v-if="activeName === '1'" class="cursor-point">
               <li v-for="(item, index) in waybillList" :key="index" class="trend-content g-flex g-alignend" @click="handleWaybill(item)">
                 <div style="margin-right: 12px;width:51px;">
-                  <div class="g-color-tag g-title-smaller">{{ parseTime(item.wayBillUpdateTime, '{m}月{d}日') }}</div>
-                  <div class="g-strong margintop5">{{ parseTime(item.wayBillUpdateTime, '{h}:{i}') }}</div>
+                  <div class="g-color-tag g-title-smaller">{{ parseTime(item.wayBillUpdateTime, '{m}月{d}日') || parseTime(item.receiveTime, '{m}月{d}日') }}</div>
+                  <div class="g-strong margintop5">{{ parseTime(item.wayBillUpdateTime, '{h}:{i}') || parseTime(item.receiveTime, '{h}:{i}') }}</div>
                 </div>
                 <span class="g-color-blue marginright5">●</span>
                 <div v-if="index != 0" class="trend-line" />
