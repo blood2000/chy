@@ -103,7 +103,7 @@ export default {
           zoom: 1.2,
           z: 2,
           aspectScale: 0.8,
-          layoutCenter: ['48%', '48%'],
+          layoutCenter: ['49%', '48%'],
           layoutSize: '100%',
           itemStyle: {
             normal: {
@@ -127,7 +127,7 @@ export default {
           map: 'china',
           zoom: 1.2,
           aspectScale: 0.8,
-          layoutCenter: ['48%', '48%'],
+          layoutCenter: ['49%', '48%'],
           layoutSize: '100%',
           itemStyle: {
             normal: {

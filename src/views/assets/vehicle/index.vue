@@ -16,7 +16,7 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <!-- <el-form-item label="车辆类型" prop="vehicleTypeCode">
+        <el-form-item label="车辆类型" prop="vehicleTypeCode">
           <el-select v-model="queryParams.vehicleTypeCode" placeholder="请选择车辆类型" clearable filterable>
             <el-option
               v-for="dict in vehicleTypeOptions"
@@ -25,7 +25,7 @@
               :value="dict.dictValue"
             />
           </el-select>
-        </el-form-item> -->
+        </el-form-item>
         <!-- <el-form-item label="归属类型" prop="vehicleAscriptionType">
           <el-select
             v-model="queryParams.vehicleAscriptionType"
