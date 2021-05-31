@@ -160,7 +160,7 @@ export default {
     this.branchCode = this.branch.code;
   },
   mounted() {
-    this.setHtmlFontSize();
+    // this.setHtmlFontSize();
     window.addEventListener('resize', this.resizeFun);
     this.getPerformanceData();
     this.getBusinessData();
@@ -280,7 +280,7 @@ export default {
     },
     // 图表自适应
     refreshChart() {
-      this.setHtmlFontSize();
+      // this.setHtmlFontSize();
       this.$refs.AmountTop5ChartRef.refreshChart();
       this.$refs.TargetChartRef.refreshChart();
       this.$refs.OperationDataRef.refreshChart();
