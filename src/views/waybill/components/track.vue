@@ -2,7 +2,7 @@
   <div>
     <el-row :gutter="20">
       <el-col :span="18">
-        <div style="width:100%; height: 650px;border-radius: 6px">
+        <div style="width:100%; height: 600px;border-radius: 6px">
           <el-amap ref="map" vid="DDCmap" :zoom="zoom" :center="center" />
         </div>
       </el-col>

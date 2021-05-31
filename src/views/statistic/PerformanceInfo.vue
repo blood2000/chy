@@ -129,7 +129,7 @@ export default {
       right: 1.59rem;
       top: 0;
       bottom: 0;
-      width: 1px;
+      width: 0.05rem;
       background: linear-gradient(rgba(1, 227, 255, 0), rgba(1, 227, 255, 0.22), rgba(1, 227, 255, 0));
     }
   }

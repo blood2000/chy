@@ -139,14 +139,12 @@
         <template #edit="{row}">
           <el-button
             v-if="activeName == '1'"
-            v-hasPermi="['system:menu:edit']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 1)"
           >审核</el-button>
           <el-button
             v-if="row.invoiceStatus == '4'"
-            v-hasPermi="['system:menu:edit']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 2)"

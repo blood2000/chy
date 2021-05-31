@@ -238,6 +238,7 @@ export default {
           }
         },
         tooltip: {
+          padding: setfontSize(10),
           textStyle: {
             fontSize: setfontSize(14)
           }

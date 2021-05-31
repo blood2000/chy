@@ -107,7 +107,10 @@ export default {
     },
     goToStatistic() {
       const routeData = this.$router.resolve({
-        path: '/statistic'
+        path: '/statistic',
+        query: {
+          isScale: true
+        }
       });
       window.open(routeData.href, '_blank');
     }
