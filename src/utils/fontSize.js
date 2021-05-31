@@ -2,6 +2,6 @@
 export function setfontSize(res) {
   const clientWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
   if (!clientWidth) return;
-  const fontSize = clientWidth / 1920; // 该数值为屏幕宽度
+  const fontSize = clientWidth / clientWidth; // 该数值为屏幕宽度
   return res * fontSize;
 }

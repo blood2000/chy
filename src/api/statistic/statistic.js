@@ -68,3 +68,27 @@ export function getCompanyDriverRank(branchCode) {
     method: 'get'
   });
 }
+
+// 最近3条滚屏-货单数据
+export function getOrderTop() {
+  return request({
+    url: `/transportation/orderInfoSearch/getNewestOrderInfo`,
+    method: 'get'
+  });
+}
+
+// 最近3条滚屏-交易数据
+export function getSettlementTop() {
+  return request({
+    url: `/transportation/waybillSettlement/getNew3`,
+    method: 'get'
+  });
+}
+
+// 最近3条滚屏-用户车辆数据
+export function getUserAndCarTop() {
+  return request({
+    url: `/assets/notice/userAndCarTop`,
+    method: 'post'
+  });
+}

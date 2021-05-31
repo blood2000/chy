@@ -70,11 +70,17 @@
       <el-form-item>
         <el-row>
           <el-col :span="7" class="mb">
-            <p class="upload-image-label">身份证正面照</p>
+            <p class="upload-image-label">
+              <span class="g-color-require">* </span>
+              身份证正面照
+            </p>
             <uploadImage v-model="form.identificationImage" :disabled="disable" image-type="id-card" side="front" icon-type="idcard" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7" class="mb">
-            <p class="upload-image-label">身份证反面照</p>
+            <p class="upload-image-label">
+              <span class="g-color-require">* </span>
+              身份证反面照
+            </p>
             <uploadImage v-model="form.identificationBackImage" :disabled="disable" image-type="id-card" side="back" icon-type="idcard_back" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7" class="mb">
@@ -143,7 +149,7 @@ export default {
         //   { required: true, message: '调度组名称不能为空', trigger: 'blur' }
         // ],
         teamLeaderName: [
-          { required: true, message: '姓名不能为空', trigger: 'blur' }
+          { required: true, message: '姓名不能为空', trigger: ['blur', 'change'] }
         ],
         // teamLeader: [
         //   { required: true, message: '名称不能为空', trigger: 'blur' }
@@ -177,6 +183,14 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
+          if (!this.form.identificationImage) {
+            this.msgWarning('请上传身份证正面照');
+            return;
+          }
+          if (!this.form.identificationBackImage) {
+            this.msgWarning('请上传身份证反面照');
+            return;
+          }
           this.buttonLoading = true;
           this.form.identificationEffective = praseBooleanToNum(this.form.identificationEffective);
           if (!this.form.isDistribution) {
@@ -290,14 +304,14 @@ export default {
         case 'id-card':
           if (side === 'front') {
             if (data.name) {
-              this.form.teamLeaderName = data.name;
+              this.$set(this.form, 'teamLeaderName', data.name);
             } else {
-              this.form.teamLeaderName = '';
+              this.$set(this.form, 'teamLeaderName', '');
             }
             if (data.number) {
-              this.form.identificationNumber = data.number;
+              this.$set(this.form, 'identificationNumber', data.number);
             } else {
-              this.form.identificationNumber = '';
+              this.$set(this.form, 'identificationNumber', '');
             }
           }
           if (side === 'back') {

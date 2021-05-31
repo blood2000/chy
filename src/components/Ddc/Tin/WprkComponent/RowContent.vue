@@ -170,11 +170,13 @@ export default {
         }
 
       .middle-row-title{
+        display: flex;
         font-size: 14px;
         font-weight: bold;
         color: #262626;
         margin-left: -12px;
         margin-bottom: 6px;
+        white-space: nowrap;
       }
       .middle-row-btn{
         display: flex;
@@ -182,6 +184,9 @@ export default {
           width: 40%;
         }
         .el-button{
+          display: flex;
+          justify-content: center;
+          align-items: center;
           width: 100px;
           height: 30px;
         }
@@ -200,6 +205,12 @@ export default {
           margin-right: 5px;
       }
 }
+@media (max-width:1500px) {
+  .middle-row-content-item .middle-row-btn .el-button{
+    width: 90% !important;
+  }
+
+}
 
 .middle-row-content-item.col3{
     width: 33.3%;
@@ -209,6 +220,7 @@ export default {
 }
 
 .g-text{
+  display: flex;
     font-size: 24px;
     font-weight: bold;
     font-family: Bahnschrift;
@@ -221,6 +233,7 @@ export default {
       font-weight: 400;
       line-height: 22px;
       color: #262626;
+      white-space: nowrap;
     }
   }
   .z30d{
@@ -231,6 +244,7 @@ export default {
     color: #B3AFAF;
     opacity: 1;
     margin-left: 10px;
+    white-space: nowrap;
   }
   .bgf{
     background-color: #fff;

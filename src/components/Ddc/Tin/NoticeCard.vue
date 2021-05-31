@@ -1,7 +1,7 @@
 <template>
-  <div class="notice-card-wrapper" :style="{'--noticeWidth':noticeWidth, '--speed': speed }">
-    <div class="inner-container">
-      <span ref="noticeRef" style="display: inline-block;" v-html="valueNotice" />
+  <div class="notice-card-wrapper" :style="{'--noticeWidth':noticeWidth, '--speed': speed, '--innercontainer': innercontainer }">
+    <div :class="noticeWidth?'inner-container':null">
+      <span ref="noticeRef" style="display: inline-block; white-space:nowrap;" v-html="valueNotice" />
     </div>
   </div>
 </template>
@@ -22,7 +22,7 @@ export default {
   props: {
     notice: {
       type: String,
-      default: '暂无公告~'
+      default: '暂无消息~'
     },
     lists: {
       type: Array,
@@ -36,7 +36,8 @@ export default {
   data() {
     return {
       noticeWidth: 0,
-      valueNotice: ''
+      valueNotice: '',
+      innercontainer: 0
     };
   },
 
@@ -44,9 +45,11 @@ export default {
     notice: {
       handler(value) {
         if (value) {
-          this.valueNotice = this.notice;
+          this.valueNotice = this.notice.replace(/<\/?.+?>/g, '');
+          // this.valueNotice = this.valueNotice.replace(/\s/ig, '');
           this.$nextTick(() => {
             this.noticeWidth = -(this.$refs.noticeRef.offsetWidth);
+            this.innercontainer = this.$el.offsetWidth;
           });
         }
       },
@@ -67,7 +70,7 @@ export default {
             this.noticeWidth = -(this.$refs.noticeRef.offsetWidth);
           });
         } else {
-          this.valueNotice = '暂无公告~';
+          !this.notice && (this.valueNotice = '暂无消息~');
         }
       },
       immediate: true,
@@ -81,13 +84,13 @@ export default {
 .notice-card-wrapper {
   .inner-container {
     margin-left: 100%; // 把文字弄出可见区域
-    width: 200%;
+    width: calc((var(--noticeWidth) * -1px));
     animation: myMove var(--speed) linear infinite; // 重点，定义动画
     animation-fill-mode: forwards;
   }
 
   .inner-container:hover{
-      animation-play-state: paused; // hover 动画暂停
+      animation-play-state: paused; // hover 动画暂停 running
   }
 
     /*文字无缝滚动*/
@@ -96,7 +99,7 @@ export default {
       transform: translateX(0);
     }
     100% {
-      transform: translateX(calc(-50% + var(--noticeWidth) * 1px));
+      transform: translateX(calc(var(--innercontainer) * -1px + -100%));
     }
   }
 }

@@ -124,7 +124,7 @@ export default {
           text-overflow: ellipsis;
         }
         >.content{
-          padding: 0 0.5rem 0 0;
+          padding: 0 0.5rem 0 0.2rem;
           .text{
             font-size: 0.6rem;
             transform: scale(0.9, 0.9);

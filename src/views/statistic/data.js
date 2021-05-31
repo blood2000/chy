@@ -91,7 +91,7 @@ export const dataJson = {
   },
   'waybillNotice': {
     'orderCode': '',
-    'waybillCode': '',
+    'waybillCode': '', // 运单编号
     'newNum': 0, // 总数量
     'accountNum': 0, // 复核数量
     'loadNum': 0, // 装货数量
@@ -103,6 +103,7 @@ export const dataJson = {
     'mileage': 0, // 公里数
     'hour': 0, // 时长
     'status': 0, // 1已接单 2已装货 3已卸货
+    // 运单状态：--0未接单/1已接单/2已装货/3已签收（已卸货）/4已回单（收单复核）/5已结算/6已申请（打款）/7已打款/8已申请开票/9已开票
     'address': {
       'loadAddressAlias': '',
       'loadBankType': '',
@@ -116,8 +117,7 @@ export const dataJson = {
       'loadDistrictCode': '',
       'loadFormattedAddress': '', // 装货地
       'loadLevel': '',
-      'loadLocation': '',
-      'loadLocations': [],
+      'loadLocations': [], // 装货地经纬度
       'loadOrderAddressCode': '',
       'loadProvince': '',
       'loadProvinceCode': '',
@@ -135,8 +135,7 @@ export const dataJson = {
       'unloadDistrictCode': '',
       'unloadFormattedAddress': '', // 卸货地
       'unloadLevel': '',
-      'unloadLocation': '',
-      'unloadLocations': [],
+      'unloadLocations': [], // 卸货地经纬度
       'unloadOrderAddressCode': '',
       'unloadProvince': '',
       'unloadProvinceCode': '',
@@ -160,6 +159,8 @@ export const dataJson = {
   'waybillSettlementNotice': {
     'amount': 0, //	打款金额
     'totalFee': 0, // 手续费
+    'shipperRealPay': 0, // 货主实付金额 (交易)
+    'deliveryCashFee': 0, // 司机实收金额 (运费)
     'driver': {
       'code': '',
       'name': '',

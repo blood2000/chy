@@ -160,6 +160,7 @@ export default {
     this.branchCode = this.branch.code;
   },
   mounted() {
+    this.setHtmlFontSize();
     window.addEventListener('resize', this.resizeFun);
     this.getPerformanceData();
     this.getBusinessData();
@@ -253,7 +254,7 @@ export default {
       }
       // 开票√
       if (invoiceNotice) {
-        this.$refs.PerformanceInfoRef.setData(invoiceNotice);
+        this.$refs.PerformanceInfoRef.setInvoiceData(invoiceNotice);
         this.$refs.ScrollDataRef.setInvoiceData(invoiceNotice, insertTime);
       }
       // 货单√
@@ -273,16 +274,33 @@ export default {
       }
       // 打款√
       if (waybillSettlementNotice) {
-        this.$refs.ScrollDataRef.setInvoiceData(waybillSettlementNotice, insertTime);
+        this.$refs.ScrollDataRef.setWaybillData(waybillSettlementNotice, insertTime);
+        this.$refs.PerformanceInfoRef.setWaybillData(waybillSettlementNotice);
       }
     },
     // 图表自适应
     refreshChart() {
+      this.setHtmlFontSize();
       this.$refs.AmountTop5ChartRef.refreshChart();
       this.$refs.TargetChartRef.refreshChart();
       this.$refs.OperationDataRef.refreshChart();
       // this.$refs.ComplaintChartRef.refreshChart();
       this.$refs.mapRef.refreshChart();
+    },
+    // 计算根节点fontsize
+    setHtmlFontSize() {
+      // 设1rem = 20px
+      // 160 = 3200 / 20
+      // 96 = 1920 / 20
+      // font-size: calc(100vw / 96);
+      const clientWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+      if (!clientWidth) return;
+      let size = clientWidth / 20;
+      if (size < 96) size = 96;
+      if (size > 160) size = 160;
+      // console.log('clientWidth: ', clientWidth);
+      // console.log('size: ', size);
+      document.getElementsByTagName('html')[0].style.fontSize = `calc(100vw / ${size})`;
     },
     // 获取地图对应省份运单数据
     getPartitionListVo(data = []) {

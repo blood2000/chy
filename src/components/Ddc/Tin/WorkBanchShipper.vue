@@ -1,21 +1,22 @@
 <template>
-  <div style="min-width: 1695px; overflow-x: scroll;height: 100%">
-    <div class="top-tips g-flex g-aligncenter">
+  <div style="overflow-x: scroll;height: 100%">
+    <!-- 系统公告 -->
+    <div class="top-tips g-aligncenter">
       <img class="marginright10" src="~@/assets/images/workbench/icon_notice.png" alt="">
-      <img class="marginright10" src="~@/assets/images/workbench/font_notice.png" alt="">
+      <img v-if="width>1366" class="marginright10" src="~@/assets/images/workbench/font_notice.png" alt="">
       <span class="notic-tip g-color-gray">
-        <NoticeCard :lists="noticeList2" />
+        <NoticeCard :notice="noticeSys" />
       </span>
     </div>
 
     <div class="g-flex" style="margin: 0 15px;height: calc(100% - 59px);">
 
       <!-- 左边 -->
-      <div class="marginright15 shipper" style="width:calc(100% - 400px);height: 100%;min-height: 740px;">
-        <div class="shipper_left">
+      <div class="marginright15 shipper ly-flex-1" style="height: 100%;min-height: 740px;">
+        <div class="shipper_left my-impo">
           <!-- 用户信息 -->
           <div class="g-flex">
-            <div class="index-frame g-flex g-aligncenter  marginright15" style="width:330px;">
+            <div class="index-frame g-flex g-aligncenter  marginright15" style="width: 100%;">
               <img v-if="user.avatar != null" class="user-avator" :src="user.avatar">
               <img v-else class="user-avator" src="~@/assets/images/workbench/icon_noavator.png">
               <div style="margin-left:15px;max-width:205px;">
@@ -141,7 +142,7 @@
         </div>
 
         <!-- 中间 -->
-        <div class="shipper-middle">
+        <div class="shipper-middle" style="minWidth: 600px;">
           <div class="middle-row">
             <RowTitle v-once index="1">账户充值</RowTitle>
             <div class="middle-row-content">
@@ -510,10 +511,10 @@
 
       </div>
 
-      <div class="index-frame" style="width: 400px;height:100%;min-height: 740px;padding:0px;">
+      <div class="index-frame active-frame">
         <!-- 动态 -->
-        <div style="height:100%; min-height: 609px;">
-          <div style="height:300px">
+        <div style="height:100%;">
+          <div>
             <el-calendar v-model="value" />
           </div>
           <el-row class="trend-tab">
@@ -530,66 +531,90 @@
               <div :class="activeName === '4' ? 'trend-onbottom': 'trend-bottom'" @click="handleClick('4')">消息通知</div>
             </el-col>
           </el-row>
-          <!-- 运单动态 -->
-          <div v-if="activeName === '1'" class="trend-frame">
-            <div v-for="(item, index) in 10" :key="index" class="trend-content g-flex g-alignend" @click="handleWaybill(item)">
-              <div style="margin-right: 12px;">
-                <div class="g-color-tag g-title-smaller">5月17日</div>
-                <div class="g-color-title g-strong margintop5">14:15</div>
-              </div>
-              <span class="g-color-blue marginright5">●</span>
-              <div v-if="index != 0" class="trend-line" />
-              <div style="margin-left: 12px;">
-                <div class="g-color-tag g-title-smaller">余晨望</div>
-                <div class="ellipsis g-color-title g-strong margintop5" style="width:250px;">取消订单（1092838191201）</div>
-              </div>
+
+          <ul v-infinite-scroll="loadmore" infinite-scroll-delay="500" :infinite-scroll-disabled="disabled" class="trend-frame">
+            <!-- 运单动态 -->
+            <div v-if="activeName === '1'" class="cursor-point">
+              <li v-for="(item, index) in waybillList" :key="index" class="trend-content g-flex g-alignend" @click="handleWaybill(item)">
+                <div style="margin-right: 12px;width:51px;">
+                  <div class="g-color-tag g-title-smaller">{{ parseTime(item.wayBillUpdateTime, '{m}月{d}日') || parseTime(item.receiveTime, '{m}月{d}日') }}</div>
+                  <div class="g-strong margintop5">{{ parseTime(item.wayBillUpdateTime, '{h}:{i}') || parseTime(item.receiveTime, '{h}:{i}') }}</div>
+                </div>
+                <span class="g-color-blue marginright5">●</span>
+                <div v-if="index != 0" class="trend-line" />
+                <div style="margin-left: 12px;">
+                  <div class="g-color-tag g-title-smaller">{{ item.driverName }}</div>
+                  <div class="active-cont ellipsis g-strong">
+                    <span v-if="item.status === '1'">已接单</span>
+                    <span v-if="item.status === '2'">已装货</span>
+                    <span v-if="item.status === '3'">已卸货</span>
+                    <span v-if="item.status === '4'">已回单</span>
+                    <span v-if="item.status === '5'">已结算</span>
+                    <span v-if="item.status === '6'">申请打款</span>
+                    <span v-if="item.status === '7'">已打款</span>
+                    （{{ item.waybillNo }}）
+                  </div>
+                </div>
+              </li>
             </div>
-          </div>
-          <!-- 货单动态 -->
-          <div v-if="activeName === '2'" class="trend-frame">
-            <div v-for="(item, index) in 10" :key="index" class="trend-content g-flex g-alignend" @click="handleOrder(item)">
-              <div style="margin-right: 12px;">
-                <div class="g-color-tag g-title-smaller">5月17日</div>
-                <div class="g-color-title g-strong margintop5">14:15</div>
-              </div>
-              <span class="g-color-blue marginright5">●</span>
-              <div v-if="index != 0" class="trend-line" />
-              <div style="margin-left: 12px;">
-                <div class="g-color-tag g-title-smaller">余晨望</div>
-                <div class="ellipsis g-color-title g-strong margintop5" style="width:250px;">发布货源（1092838191201）</div>
-              </div>
+            <!-- 货单动态 -->
+            <div v-if="activeName === '2'" class="cursor-point">
+              <li v-for="(item, index) in orderList" :key="index" class="trend-content g-flex g-alignend" @click="handleOrder(item)">
+                <div style="margin-right: 12px;width:51px;">
+                  <div class="g-color-tag g-title-smaller">{{ parseTime(item.redisOrderInfoListVoList[0].createTime, '{m}月{d}日') }}</div>
+                  <div class="g-strong margintop5">{{ parseTime(item.redisOrderInfoListVoList[0].createTime, '{h}:{i}') }}</div>
+                </div>
+                <span class="g-color-blue marginright5">●</span>
+                <div v-if="index != 0" class="trend-line" />
+                <div style="margin-left: 12px;">
+                  <div class="g-color-tag g-title-smaller">{{ item.redisOrderInfoListVoList[0].adminName }}</div>
+                  <div class="active-cont ellipsis g-strong">发布货源（{{ item.redisOrderInfoListVoList[0].mainOrderNumber }}）</div>
+                </div>
+              </li>
             </div>
-          </div>
-          <!-- 发票动态 -->
-          <div v-if="activeName === '3'" class="trend-frame">
-            <div v-for="(item, index) in 10" :key="index" class="trend-content g-flex g-alignend" @click="handleInvoice(item)">
-              <div style="margin-right: 12px;">
-                <div class="g-color-tag g-title-smaller">5月17日</div>
-                <div class="g-color-title g-strong margintop5">14:15</div>
-              </div>
-              <span class="g-color-blue marginright5">●</span>
-              <div v-if="index != 0" class="trend-line" />
-              <div style="margin-left: 12px;">
-                <div class="g-color-tag g-title-smaller">余晨望</div>
-                <div class="ellipsis g-color-title g-strong margintop5" style="width:250px;">货主申请开票（1092838191201）</div>
-              </div>
+            <!-- 发票动态 -->
+            <div v-if="activeName === '3'" class="cursor-point">
+              <li v-for="(item, index) in billList" :key="index" class="trend-content g-flex g-alignend" @click="handleInvoice(item)">
+                <div style="margin-right: 12px;width:51px;">
+                  <div class="g-color-tag g-title-smaller">{{ parseTime(item.invoiceApplyTime, '{m}月{d}日') }}</div>
+                  <div class="g-strong margintop5">{{ parseTime(item.invoiceApplyTime, '{h}:{i}') }}</div>
+                </div>
+                <span class="g-color-blue marginright5">●</span>
+                <div v-if="index != 0" class="trend-line" />
+                <div style="margin-left: 12px;">
+                  <div class="g-color-tag g-title-smaller">{{ item.invoiceTitle }}</div>
+                  <div class="active-cont ellipsis g-strong">
+                    <span v-if="item.invoiceStatus === '1'">货主申请开票</span>
+                    <span v-if="item.invoiceStatus === '2'">货主已取消</span>
+                    <span v-if="item.invoiceStatus === '3'">审核不通过</span>
+                    <span v-if="item.invoiceStatus === '4'">审核通过</span>
+                    <span v-if="item.invoiceStatus === '5'">已开票</span>
+                    （{{ item.askForNo }}）
+                  </div>
+                </div>
+              </li>
             </div>
-          </div>
-          <!-- 消息通知 -->
-          <div v-if="activeName === '4'" class="trend-frame">
-            <div v-for="(item, index) in noticeList1" :key="index" class="trend-content g-flex g-alignend">
-              <div style="margin-right: 12px;">
-                <div class="g-color-tag g-title-smaller">{{ parseTime(item.createTime, '{m}月{d}日') }}</div>
-                <div class="g-color-title g-strong margintop5">{{ parseTime(item.createTime, '{h}:{i}') }}</div>
-              </div>
-              <span class="g-color-blue marginright5">●</span>
-              <div v-if="index != 0" class="trend-line" />
-              <div style="margin-left: 12px;">
-                <div class="g-color-tag g-title-smaller">{{ item.remark }}</div>
-                <div class="ellipsis g-color-title g-strong margintop5" style="width:250px;" v-html="item.noticeContent" />
-              </div>
+            <!-- 消息通知 -->
+            <div v-if="activeName === '4'" class="cursor-point">
+              <li v-for="(item, index) in noticeList1" :key="index" class="trend-content g-flex g-alignend">
+                <div style="margin-right: 12px;width:51px;">
+                  <div class="g-color-tag g-title-smaller">{{ parseTime(item.createTime, '{m}月{d}日') }}</div>
+                  <div class="g-strong margintop5">{{ parseTime(item.createTime, '{h}:{i}') }}</div>
+                </div>
+                <span class="g-color-blue marginright5">●</span>
+                <div v-if="index != 0" class="trend-line" />
+                <div style="margin-left: 12px;">
+                  <div class="g-color-tag g-title-smaller">{{ item.remark || '管理员' }}</div>
+
+                  <div class="active-cont ellipsis g-strong">
+                    <NoticeCard :key="index" speed="5s" :notice="item.noticeContent" />
+                  </div>
+                </div>
+              </li>
             </div>
-          </div>
+            <li v-if="loading" class="g-flex g-justifycenter">加载中...</li>
+            <li v-if="dataOver" class="g-flex g-justifycenter">没有更多了</li>
+          </ul>
           <div class="notice-bottom" />
         </div>
       </div>
@@ -600,6 +625,7 @@
 </template>
 
 <script>
+import { waybillList, orderList, billList, shipmentWaybillBehavior } from '@/api/workBanch';
 import { getUserInfo } from '@/utils/auth';
 import { listNoticeAll } from '@/api/system/notice';
 // 运单详情弹窗
@@ -615,6 +641,8 @@ import DagaoItem from './WprkComponent/DagaoItem';
 import StatiStical from './WprkComponent/StatiStical';
 
 import { shipmentInformation } from '@/api/workBanch';
+
+import { getWalletInfo } from '@/api/wallet/wallet';
 
 export default {
   name: 'Index',
@@ -637,6 +665,7 @@ export default {
       noticeList1: [],
       // 公告列表
       noticeList2: [],
+      noticeSys: '',
       // websocket参数
       websock: null,
       // 弹框 内容
@@ -646,12 +675,30 @@ export default {
       currentId: null,
       // 表单是否禁用
       formDisable: false,
-      value: new Date(),
 
       // 货源的值
       dagaoItem: {},
       statiStical: {},
-      rowContent: {}
+      rowContent: {},
+
+      // 选中时间
+      value: new Date(),
+      dataTime: null,
+      queryParams: {
+        pageNum: 1,
+        pageSize: 10
+        // updateTime: null
+      },
+      // 动态列表
+      waybillList: [],
+      orderList: [],
+      billList: [],
+      // 是否全部加载
+      dataOver: false,
+      // 加载中
+      loading: false,
+      // 禁用加载
+      disabled: true
     };
   },
   watch: {
@@ -665,9 +712,13 @@ export default {
     this.isShipment = isShipment;
     this.user = user;
     this.shipment = shipment;
-    this.getNoticeList();
+    // console.log(this.user);
+    this.dataTime = this.parseTime(new Date(), '{y}-{m}-{d}');
+    this.getInfo();
 
     this.isShipment && this.getList();
+    this.isShipment && this.paymentWallet();
+    this.isShipment && this.getToday();
     // 页面刚进入时开启长连接
     // this.initWebSocket();
   },
@@ -676,43 +727,121 @@ export default {
     // this.websocketclose();
   },
   methods: {
+    getInfo() {
+      this.getNoticeList2();
+      this.getWaybillList();
+    },
+    /** 查询通知列表 */
+    getNoticeList1() {
+      // 通知
+      listNoticeAll({ ...this.queryParams, noticeType: '1' }).then(response => {
+        this.dataOver = !response.data.length;
+        const notice = response.data.filter(response => {
+          return response.status === '0';
+        });
+        this.noticeList1 = this.noticeList1.concat(notice);
+        // console.log(this.noticeList1);
+        this.loading = false;
+        if (this.noticeList1) {
+          this.disabled = false;
+        }
+      });
+    },
+    /** 查询公告列表 */
+    getNoticeList2() {
+      listNoticeAll({ noticeType: '2' }).then(response => {
+        this.noticeList2 = response.data.filter(response => {
+          return response.status === '0';
+        });
+        this.noticeSys = this.noticeList2[0].noticeContent;
+      });
+    },
+    loadmore() {
+      if (this.dataOver) return;
+      this.queryParams.pageNum++;
+      this.loading = true;
+      this.disabled = true;
+      if (this.activeName === '1') {
+        this.getWaybillList();
+      } else if (this.activeName === '2') {
+        this.getOrderList();
+      } else if (this.activeName === '3') {
+        this.getBillList();
+      } else if (this.activeName === '4') {
+        this.getNoticeList1();
+      }
+    },
+    // 查询运单列表
+    getWaybillList() {
+      waybillList({ ...this.queryParams, statusList: '1,2,3,4,5,6,7' }).then(response => {
+        this.dataOver = !response.rows.length;
+        this.waybillList = this.waybillList.concat(response.rows);
+        this.loading = false;
+        if (this.waybillList) {
+          this.disabled = false;
+        }
+      });
+    },
+    // 查询货源列表
+    getOrderList() {
+      orderList(this.queryParams).then(response => {
+        this.dataOver = !response.data.list.length;
+        this.orderList = this.orderList.concat(response.data.list);
+        // console.log(this.orderList);
+        this.loading = false;
+        if (this.orderList) {
+          this.disabled = false;
+        }
+      });
+    },
+    // 查询发票列表
+    getBillList() {
+      billList(this.queryParams).then(response => {
+        this.dataOver = !response.data.rows.length;
+        this.billList = this.billList.concat(response.data.rows);
+        this.loading = false;
+        if (this.billList) {
+          this.disabled = false;
+        }
+      });
+    },
     // 查看运单详情
     handleWaybill(item) {
       this.$refs.DetailDialog.reset();
-      this.currentId = '9715e39b88ec45cb9d125c44a67cab90';
+      this.currentId = item.wayBillCode;
       this.open = true;
       this.title = '运输单信息';
       this.formDisable = true;
     },
     handleOrder(item) {
-      const code = '41dbe49a630644549d89aa8676fde6a3';
+      const code = item.code;
       this.$router.push({ name: 'Release', query: { id: code, t: '0' }});
     },
     handleInvoice(item) {
       this.$router.push({ name: 'Statement', query: { code: item.code }});
     },
-    /** 查询通知公告列表 */
-    getNoticeList() {
-      // 通知
-      listNoticeAll({ noticeType: '1' }).then(response => {
-        this.noticeList1 = response.data;
-        // console.log(this.noticeList1);
-      });
-      // 公告
-      listNoticeAll({ noticeType: '2' }).then(response => {
-        this.noticeList2 = response.data.map(response => {
-          return response.noticeContent;
-        });
-        // console.log(this.noticeList2);
-      });
+    // 切换动态
+    handleClick(tab) {
+      this.waybillList = [];
+      this.orderList = [];
+      this.billList = [];
+      this.noticeList1 = [];
+      this.activeName = tab;
+      this.queryParams.pageNum = 1;
+      this.dataOver = false;
+      if (tab === '1') {
+        this.getWaybillList();
+      } else if (tab === '2') {
+        this.getOrderList();
+      } else if (tab === '3') {
+        this.getBillList();
+      } else if (tab === '4') {
+        this.getNoticeList1();
+      }
     },
 
     goTarget(href) {
       window.open(href, '_blank');
-    },
-    // 切换动态
-    handleClick(tab) {
-      this.activeName = tab;
     },
 
     /** --> 货主端 页面跳转  */
@@ -733,19 +862,19 @@ export default {
       });
 
       const {
-        balanceAccount, //	账号余额	number
-        driver, //	合作司机	integer(int32)	integer(int32)
+        // balanceAccount, //	账号余额	number
+        // driver, //	合作司机	integer(int32)	integer(int32)
         frequentlyAddress, //	常用地址	integer(int32)	integer(int32)
-        frozenCapital, //	冻结余额	number
+        // frozenCapital, //	冻结余额	number
         invoice: { // 发票	货主工作台-发票统计	货主工作台-发票统计
           applyInvoice, //	申请发票数	integer(int32)
           applyInvoiceAmount, //	申请金额	number
           auditInvoice, //	待审核发票数	integer(int32)
           auditInvoiceAmount, //	待审核金额	number
           openInvoice, //	已开票	integer(int32)
-          openInvoiceAmount, //	已开票金额	number
-          openInvoiceAmountToday, //	今日已开票金额	number
-          openInvoiceToday //	今日开票
+          openInvoiceAmount //	已开票金额	number
+          // openInvoiceAmountToday, //	今日已开票金额	number
+          // openInvoiceToday //	今日开票
         },
         item,	// 项目	integer(int32)	integer(int32)
         order: { // 货源	货主工作台-货源统计Vo	货主工作台-货源统计Vo
@@ -755,21 +884,21 @@ export default {
           soldOut //	完成关闭
         },
         rule,	// 计算规则	integer(int32)	integer(int32)
-        team,	// 合作车队	integer(int32)	integer(int32)
-        vehicle,	// 合作车辆	integer(int32)	integer(int32)
+        // team,	// 合作车队	integer(int32)	integer(int32)
+        // vehicle,	// 合作车辆	integer(int32)	integer(int32)
         waybill: { // 运单
           orderBalance, //	已核算	integer(int32)
           orderBalanceAmount, //	已核算金额	number
           orderLoading, //	已装货	integer(int32)
           orderReceiving, //	已接单	integer(int32)
-          orderReceivingToday, //	今日接单	integer(int32)
+          // orderReceivingToday, //	今日接单	integer(int32)
           orderRemit, //	已打款	integer(int32)
           orderRemitAmount, //	已打款金额	number
-          orderRemitAmountToday, //	今日打款金额	number
-          orderRemitToday, //	今日打款	integer(int32)
+          // orderRemitAmountToday, //	今日打款金额	number
+          // orderRemitToday, //	今日打款	integer(int32)
           orderReviewer, //	已复核	integer(int32)
-          orderUnload, //	已卸货	integer(int32)
-          transportToday //	今日运输
+          orderUnload //	已卸货	integer(int32)
+          // transportToday //	今日运输
         }
       } = res.data;
 
@@ -781,27 +910,11 @@ export default {
         rule
       };
 
-      // 接单模块
-      this.statiStical = {
-        orderReceivingToday,
-        transportToday,
 
-        orderRemitToday,
-        orderRemitAmountToday,
-
-        openInvoiceToday,
-        openInvoiceAmountToday,
-
-        team,
-        vehicle,
-        driver
-
-      };
       // 中间
       this.rowContent = {
-        balanceAccount,
-
-        frozenCapital,
+        // balanceAccount,
+        // frozenCapital,
 
         publicOrder,
         privateOrder,
@@ -832,6 +945,59 @@ export default {
         openInvoice,
         openInvoiceAmount
       };
+
+      this.$forceUpdate();
+    },
+    // 获取账户钱
+    async paymentWallet() {
+      const res = await getWalletInfo({
+        code: this.user.userCode
+      });
+
+      const {
+        amount,
+        freezeAmount
+      } = res.data;
+
+      this.rowContent.balanceAccount = amount;
+      this.rowContent.frozenCapital = freezeAmount;
+      this.$forceUpdate();
+    },
+    // 获取今日
+    async getToday() {
+      const res = await shipmentWaybillBehavior({
+        branchCode: this.shipment.info.branchCode,
+        shipmentCode: this.shipment.info.code,
+        companyCode: this.shipment.info.companyCode
+      });
+
+      const {
+        driver = 0, //	合作司机	integer(int32)	integer(int32)
+        openInvoiceAmountToday = 0, //	今日已开票金额	number
+        openInvoiceToday = 0, //	今日开票	integer(int32)	integer(int32)
+        orderReceivingToday = 0, //	今日接单	integer(int32)	integer(int32)
+        orderRemitAmountToday = 0, //	今日打款金额	number
+        orderRemitToday = 0, //	今日打款	integer(int32)	integer(int32)
+        team = 0, //	合作车队	integer(int32)	integer(int32)
+        transportToday = 0, //	今日运输	integer(int32)	integer(int32)
+        vehicle = 0 //	合作车辆
+      } = res.data;
+      // 接单模块
+      this.statiStical = {
+        orderReceivingToday,
+        transportToday,
+
+        orderRemitToday,
+        orderRemitAmountToday,
+
+        openInvoiceToday,
+        openInvoiceAmountToday,
+
+        team,
+        vehicle,
+        driver
+      };
+      this.$forceUpdate();
     }
   }
 };
@@ -840,6 +1006,10 @@ export default {
 <style scoped lang="scss">
 @import '../Css/WorkBanch.scss';
 
+
+.shipper_left.my-impo{
+  min-width: 330px;
+}
 // 追加的样式
 .shipper{
   display: flex;
@@ -892,7 +1062,7 @@ export default {
       flex: 1;
       position: relative;
       margin-left: 12px;
-      padding: 5px 0 5px 17px;
+      padding: 5px 0 5px 0px;
 
 
       &::before{
@@ -926,6 +1096,23 @@ export default {
   .mt12{
     margin-top: 12px;
   }
+
+@media (max-width:1324px) {
+  // .shipper-middle{
+  //   .middle-row-content{
+  //     margin-left: 10px !important;
+
+  //   }
+  // }
+    .shipper_left.my-impo{
+      min-width: 290px !important;
+      width: 290px !important;
+    }
+
+
+
+}
+
 
 </style>
 

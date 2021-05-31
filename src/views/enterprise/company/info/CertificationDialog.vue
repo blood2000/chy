@@ -218,19 +218,19 @@ export default {
         case 'id-card':
           if (side === 'front') {
             if (data.name) {
-              this.form.adminName = data.name;
+              this.$set(this.form, 'adminName', data.name);
             } else {
-              this.form.adminName = '';
+              this.$set(this.form, 'adminName', '');
             }
             if (data.number) {
-              this.form.identificationNumber = data.number;
+              this.$set(this.form, 'identificationNumber', data.number);
             } else {
-              this.form.identificationNumber = '';
+              this.$set(this.form, 'identificationNumber', '');
             }
             if (data.address) {
-              this.form.area = data.address;
+              this.$set(this.form, 'area', data.address);
             } else {
-              this.form.area = '';
+              this.$set(this.form, 'area', '');
             }
           }
           if (side === 'back') {
@@ -253,9 +253,9 @@ export default {
           break;
         case 'business-license':
           if (data.registration_number) {
-            this.form.businessLicenseNo = data.registration_number;
+            this.$set(this.form, 'businessLicenseNo', data.registration_number);
           } else {
-            this.form.businessLicenseNo = '';
+            this.$set(this.form, 'businessLicenseNo', '');
           }
           break;
         default:

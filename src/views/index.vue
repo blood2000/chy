@@ -1,6 +1,8 @@
 <template>
   <div style="height: 100%">
-    <WorkbanchShipper v-if="isShipment" />
+    <!-- 货主工作台 -->
+    <WorkbanchShipper v-if="isShipment" :width="screenWidth" />
+    <!-- 运营工作台 -->
     <WorkBanch v-else :width="screenWidth" />
 
   </div>
@@ -52,7 +54,7 @@ export default {
     changeWidth() {
       window.screenWidth = document.body.clientWidth;
       this.screenWidth = window.screenWidth;
-      console.log(this.screenWidth);
+      // console.log(this.screenWidth);
       if (this.screenWidth > 1366) {
         this.activeName = '0';
       } else {

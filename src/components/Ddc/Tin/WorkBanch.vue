@@ -1,10 +1,11 @@
 <template>
   <div class="g-color-title" :class="width<=1366 ? 'minworkbanch' : 'workbanch'">
+    <!-- 系统公告 -->
     <div class="top-tips g-aligncenter">
       <img class="marginright10" src="~@/assets/images/workbench/icon_notice.png" alt="">
       <img v-if="width>1366" class="marginright10" src="~@/assets/images/workbench/font_notice.png" alt="">
       <span class="notic-tip g-color-gray">
-        <NoticeCard :lists="noticeList2" />
+        <NoticeCard :notice="noticeSys" />
       </span>
     </div>
 
@@ -277,13 +278,13 @@
             <div v-if="activeName === '1'" class="cursor-point">
               <li v-for="(item, index) in waybillList" :key="index" class="trend-content g-flex g-alignend" @click="handleWaybill(item)">
                 <div style="margin-right: 12px;width:51px;">
-                  <div class="g-color-tag g-title-smaller">{{ parseTime(item.wayBillUpdateTime, '{m}月{d}日') }}</div>
-                  <div class="g-strong margintop5">{{ parseTime(item.wayBillUpdateTime, '{h}:{i}') }}</div>
+                  <div class="g-color-tag g-title-smaller">{{ parseTime(item.wayBillUpdateTime, '{m}月{d}日') || parseTime(item.receiveTime, '{m}月{d}日') }}</div>
+                  <div class="g-strong margintop5">{{ parseTime(item.wayBillUpdateTime, '{h}:{i}') || parseTime(item.receiveTime, '{h}:{i}') }}</div>
                 </div>
                 <span class="g-color-blue marginright5">●</span>
                 <div v-if="index != 0" class="trend-line" />
                 <div style="margin-left: 12px;">
-                  <div class="g-color-tag g-title-smaller">余晨望</div>
+                  <div class="g-color-tag g-title-smaller">{{ item.driverName }}</div>
                   <div class="active-cont ellipsis g-strong">
                     <span v-if="item.status === '1'">已接单</span>
                     <span v-if="item.status === '2'">已装货</span>
@@ -298,7 +299,7 @@
               </li>
             </div>
             <!-- 货单动态 -->
-            <div v-if="activeName === '2'">
+            <div v-if="activeName === '2'" class="cursor-point">
               <li v-for="(item, index) in orderList" :key="index" class="trend-content g-flex g-alignend" @click="handleOrder(item)">
                 <div style="margin-right: 12px;width:51px;">
                   <div class="g-color-tag g-title-smaller">{{ parseTime(item.redisOrderInfoListVoList[0].createTime, '{m}月{d}日') }}</div>
@@ -313,7 +314,7 @@
               </li>
             </div>
             <!-- 发票动态 -->
-            <div v-if="activeName === '3'">
+            <div v-if="activeName === '3'" class="cursor-point">
               <li v-for="(item, index) in billList" :key="index" class="trend-content g-flex g-alignend" @click="handleInvoice(item)">
                 <div style="margin-right: 12px;width:51px;">
                   <div class="g-color-tag g-title-smaller">{{ parseTime(item.invoiceApplyTime, '{m}月{d}日') }}</div>
@@ -322,7 +323,7 @@
                 <span class="g-color-blue marginright5">●</span>
                 <div v-if="index != 0" class="trend-line" />
                 <div style="margin-left: 12px;">
-                  <div class="g-color-tag g-title-smaller">余晨望</div>
+                  <div class="g-color-tag g-title-smaller">{{ item.invoiceTitle }}</div>
                   <div class="active-cont ellipsis g-strong">
                     <span v-if="item.invoiceStatus === '1'">货主申请开票</span>
                     <span v-if="item.invoiceStatus === '2'">货主已取消</span>
@@ -335,7 +336,7 @@
               </li>
             </div>
             <!-- 消息通知 -->
-            <div v-if="activeName === '4'">
+            <div v-if="activeName === '4'" class="cursor-point">
               <li v-for="(item, index) in noticeList1" :key="index" class="trend-content g-flex g-alignend">
                 <div style="margin-right: 12px;width:51px;">
                   <div class="g-color-tag g-title-smaller">{{ parseTime(item.createTime, '{m}月{d}日') }}</div>
@@ -344,8 +345,11 @@
                 <span class="g-color-blue marginright5">●</span>
                 <div v-if="index != 0" class="trend-line" />
                 <div style="margin-left: 12px;">
-                  <div class="g-color-tag g-title-smaller">{{ item.remark }}</div>
-                  <div class="active-cont ellipsis g-strong" v-html="item.noticeContent" />
+                  <div class="g-color-tag g-title-smaller">{{ item.remark || '管理员' }}</div>
+
+                  <div class="active-cont ellipsis g-strong">
+                    <NoticeCard :key="index" speed="5s" :notice="item.noticeContent" />
+                  </div>
                 </div>
               </li>
             </div>
@@ -392,6 +396,7 @@ export default {
       noticeList1: [],
       // 公告列表
       noticeList2: [],
+      noticeSys: '',
       // websocket参数
       websock: null,
       // 弹框 内容
@@ -406,7 +411,7 @@ export default {
       dataTime: null,
       queryParams: {
         pageNum: 1,
-        pageSize: 15
+        pageSize: 10
         // updateTime: null
       },
       // 动态列表
@@ -505,7 +510,10 @@ export default {
       // 通知
       listNoticeAll({ ...this.queryParams, noticeType: '1' }).then(response => {
         this.dataOver = !response.data.length;
-        this.noticeList1 = this.noticeList1.concat(response.data);
+        const notice = response.data.filter(response => {
+          return response.status === '0';
+        });
+        this.noticeList1 = this.noticeList1.concat(notice);
         // console.log(this.noticeList1);
         this.loading = false;
         if (this.noticeList1) {
@@ -516,10 +524,10 @@ export default {
     /** 查询公告列表 */
     getNoticeList2() {
       listNoticeAll({ noticeType: '2' }).then(response => {
-        this.noticeList2 = response.data.map(response => {
-          return response.noticeContent;
+        this.noticeList2 = response.data.filter(response => {
+          return response.status === '0';
         });
-        // console.log(this.noticeList2);
+        this.noticeSys = this.noticeList2[0].noticeContent;
       });
     },
     loadmore() {
@@ -539,7 +547,7 @@ export default {
     },
     // 查询运单列表
     getWaybillList() {
-      waybillList(this.queryParams).then(response => {
+      waybillList({ ...this.queryParams, statusList: '1,2,3,4,5,6,7' }).then(response => {
         this.dataOver = !response.rows.length;
         this.waybillList = this.waybillList.concat(response.rows);
         this.loading = false;

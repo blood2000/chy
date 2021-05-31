@@ -205,15 +205,6 @@ export default {
               }
             }
           }
-        }, {
-          symbolSize: setfontSize(8),
-          itemStyle: {
-            normal: {
-              lineStyle: {
-                width: setfontSize(2)
-              }
-            }
-          }
         }]
       });
     }
