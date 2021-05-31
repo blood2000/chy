@@ -482,6 +482,7 @@ export default {
   },
   methods: {
     getInfo() {
+      this.loading = true;
       this.getStatisticInfo();
       this.getNoticeList2();
       this.getWaybillList();
@@ -638,6 +639,7 @@ export default {
       this.noticeList1 = [];
       this.activeName = tab;
       this.queryParams.pageNum = 1;
+      this.loading = true;
       this.dataOver = false;
       if (tab === '1') {
         this.getWaybillList();

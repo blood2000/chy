@@ -193,8 +193,8 @@
           @queryTable="getList"
         />
       </el-row>
-
-      <RefactorTable :loading="loading" :data="askforlist" :table-columns-config="tableColumnsConfig" :max-height="isAdmin ? '380':'500'" @selection-change="handleSelectionChange">
+      <!-- :max-height="isAdmin ? '380':'500'" -->
+      <RefactorTable :loading="loading" :data="askforlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
         <template #stowageStatus="{row}">
           <span>{{ selectDictLabel(stowageStatusOptions, row.stowageStatus) }}</span>
         </template>
@@ -243,7 +243,7 @@
       <detail-dialog ref="DetailDialog" :current-id="currentId" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
 
     </div>
-
+    <div style="height:80px" />
     <el-row type="flex" :gutter="10" class="g-statistics-bg">
       <el-col :span="1">
         <img src="../../../../src/assets/images/icon/total.png" alt="">
