@@ -26,6 +26,7 @@ export default {
         { label: '调度者审核', icon: 'team', name: 'Team', query: { authStatus: 0 }, count: 0 },
         { label: '司机审核', icon: 'driver', name: 'Driver', query: { authStatus: 0 }, count: 0 },
         { label: '车辆审核', icon: 'vehicle', name: 'Vehicle', query: { authStatus: 0 }, count: 0 },
+        { label: '货主审核', icon: 'shipment', name: 'Shipment', query: { authStatus: 0 }, count: 0 },
         // { label: '运输单', icon: 'order', name: 'Manages', query: {}, count: 24 }, // 5/25 产品说去掉
         { label: '提现申请', icon: 'withdrawal', name: 'Withdrawal', query: { status: 0 }, count: 0 }
         // { label: '消息', icon: 'msg', name: 'Withdrawal', query: { status: 0 }, count: 20 }
@@ -98,14 +99,16 @@ export default {
           driver, //	司机审核	integer(int32)	integer(int32)
           team, //	调度者审核	integer(int32)	integer(int32)
           vehicle, //	车辆审核	integer(int32)	integer(int32)
-          withdrawDeposit: withdrawal //	提款申请
+          withdrawDeposit: withdrawal, //	提款申请
+          shipment
         } = response.data;
 
         const data = {
           team,
           driver,
           vehicle,
-          withdrawal
+          withdrawal,
+          shipment
         };
 
         this.itemList.forEach(e => {
