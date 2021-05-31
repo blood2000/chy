@@ -161,6 +161,7 @@ export default {
   },
   mounted() {
     this.setHtmlFontSize();
+    this.setScale();
     window.addEventListener('resize', this.resizeFun);
     this.getPerformanceData();
     this.getBusinessData();
@@ -170,6 +171,7 @@ export default {
   beforeDestroy() {
     window.removeEventListener('resize', this.resizeFun);
     if (this.websock) this.websock.close();
+    this.removeScale();
   },
   methods: {
     resizeFun() {
@@ -301,6 +303,20 @@ export default {
       // console.log('clientWidth: ', clientWidth);
       // console.log('size: ', size);
       document.getElementsByTagName('html')[0].style.fontSize = `calc(100vw / ${size})`;
+    },
+    // 临时设置scale
+    setScale() {
+      const { isScale } = this.$route.query;
+      console.log('isScale: ', isScale);
+      if (!isScale) {
+        document.getElementById('app').style.transform = 'scaleX(0.6)'; // 0.6 = 1920 / 3200
+        document.getElementById('app').style.transformOrigin = '0px 0px';
+      } else {
+        this.removeScale();
+      }
+    },
+    removeScale() {
+      document.getElementById('app').style.transform = '';
     },
     // 获取地图对应省份运单数据
     getPartitionListVo(data = []) {
