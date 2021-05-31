@@ -250,23 +250,23 @@
       </el-col>
       <el-col :span="2">
         <div class="g-statistics-tag">运单数量：</div>
-        <div class="g-statistics-num">{{ feeinfo.waybillNum }}</div>
+        <div class="g-statistics-num">{{ feeinfo.waybillNum.toFixed(2) }}</div>
       </el-col>
       <el-col :span="2">
         <div class="g-statistics-tag">运费金额：</div>
-        <div class="g-statistics-num">{{ feeinfo.deliveryCashFee }}</div>
+        <div class="g-statistics-num">{{ feeinfo.deliveryCashFee.toFixed(2) }}</div>
       </el-col>
       <el-col :span="2">
         <div class="g-statistics-tag">运费税额：</div>
-        <div class="g-statistics-num">{{ feeinfo.taxPayment }}</div>
+        <div class="g-statistics-num">{{ feeinfo.taxPayment.toFixed(2) }}</div>
       </el-col>
       <el-col :span="2">
         <div class="g-statistics-tag">服务费金额：</div>
-        <div class="g-statistics-num">{{ feeinfo.serviceFee }}</div>
+        <div class="g-statistics-num">{{ feeinfo.serviceFee.toFixed(2) }}</div>
       </el-col>
       <el-col :span="2">
         <div class="g-statistics-tag">服务费税额：</div>
-        <div class="g-statistics-num">{{ feeinfo.serviceTaxFee }}</div>
+        <div class="g-statistics-num">{{ feeinfo.serviceTaxFee.toFixed(2) }}</div>
       </el-col>
     </el-row>
   </div>
