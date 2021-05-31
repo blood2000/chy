@@ -238,7 +238,7 @@ export default {
         .card{
           height: 2.6rem;
           padding: 0.3rem 0 0.3rem 1rem;
-          border-radius: 26px 0px 0px 0px;
+          border-radius: 1.3rem 0 0 0;
           .label{
             font-size: 0.6rem;
             font-family: PingFang Regular;
@@ -284,7 +284,7 @@ export default {
       bottom: 0;
       left: -0.2rem;
       right: 0;
-      height: 1px;
+      height: 0.05rem;
       background: linear-gradient(to right, rgba(76, 203, 219, 0.5), rgba(76, 203, 219, 0));
     }
   }

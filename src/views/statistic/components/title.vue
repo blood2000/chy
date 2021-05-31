@@ -57,7 +57,7 @@ export default {
   &::before{
     content: '';
     width: 1.2rem;
-    height: 1px;
+    height: 0.05rem;
     position: absolute;
     bottom: 0;
     right: 0;
@@ -65,7 +65,7 @@ export default {
   }
   &::after{
     content: '';
-    height: 1px;
+    height: 0.05rem;
     position: absolute;
     bottom: 0;
     left: 0;

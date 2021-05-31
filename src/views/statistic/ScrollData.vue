@@ -160,7 +160,7 @@ export default {
     margin: 0 0.4rem;
     width: calc(33.33% - 0.8rem);
     height: 7.2rem;
-    border: 2px solid rgba(23, 129, 167, 0.2);
+    border: 0.1rem solid rgba(23, 129, 167, 0.2);
     padding: 0 0.45rem 0.45rem;
     position: relative;
     >.herder{
