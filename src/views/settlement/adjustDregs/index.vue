@@ -89,10 +89,10 @@
 
         <el-form-item
           label="IC卡核对状态"
-          prop="ICCard"
+          prop="icStatus"
         >
           <el-select
-            v-model="queryParams.ICCard"
+            v-model="queryParams.icStatus"
             placeholder="请选择纸质回单"
             filterable
             clearable
@@ -343,9 +343,9 @@
               <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.loadWeight) }} 车</span>
             </span>
           </template>
-          <template #ICCard="{row}">
-            <span v-if="row.ICCard == '0'"><i class="el-icon-error g-color-gray" />未核对</span>
-            <span v-if="row.ICCard == '1'"><i class="el-icon-success g-color-success" />已核对</span>
+          <template #icStatus="{row}">
+            <span v-if="row.icStatus == '0'"><i class="el-icon-error g-color-error mr10" />未核对</span>
+            <span v-if="row.icStatus == '1'"><i class="el-icon-success g-color-success mr10" />已核对</span>
           </template>
           <template #unloadWeight="{row}">
             <span v-if="row.unloadWeight">
@@ -406,7 +406,7 @@
               @click="handleTableBtn(row, 8)"
             >评价详情</el-button>
             <el-button
-              v-if="row.isChild == '2'"
+              v-if="!isShipment && row.isChild == '2'"
               v-has-permi="['transportation:waybill:childList']"
               size="mini"
               type="text"
@@ -541,7 +541,7 @@ export default {
         'licenseNumber': undefined,
         'driverName': undefined,
         'waybillNo': undefined,
-        'ICCard': undefined,
+        'icStatus': undefined,
         'orderClient': undefined,
         'deliveryCompany': undefined,
         'isReturn': undefined,
@@ -589,6 +589,7 @@ export default {
       isAdmin: false,
       user: {},
       shipment: {},
+      isShipment: false,
 
       addition: 45, // tin添加的(追加高度)
 
@@ -622,10 +623,11 @@ export default {
   },
 
   created() {
-    const { isAdmin = false, user = {}, shipment = {}} = getUserInfo() || {};
+    const { isAdmin = false, isShipment, user = {}, shipment = {}} = getUserInfo() || {};
     this.isAdmin = isAdmin;
     this.user = user;
     this.shipment = shipment;
+    this.isShipment = isShipment;
     this.tableHeaderConfig(this.tableColumnsConfig, this.api, {
       prop: 'edit',
       isShow: true,
@@ -634,18 +636,11 @@ export default {
       width: 240,
       fixed: 'right'
     }, [{
-      prop: 'ICCard',
+      prop: 'icStatus',
       isShow: true,
       tooltip: false,
       label: 'IC卡核对状态',
-      width: 240
-    },
-    {
-      prop: 'lastLoadingTime',
-      isShow: false,
-      tooltip: false,
-      label: '装货截止时间',
-      width: 240
+      width: 120
     }]);
     !this.$route.query.adjust && this.getList();
     this.listByDict(this.commodityCategory).then(response => {

@@ -44,6 +44,7 @@
 
         </template>
       </el-table-column>
+
       <el-table-column width="160" label="卸货数量" align="left" prop="unloadWeight">
         <template slot-scope="scope">
           <span v-if="scope.row.isDregs === 1">{{ scope.row.unloadWeight }}</span>

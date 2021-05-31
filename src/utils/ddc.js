@@ -217,9 +217,10 @@ export function tansParams(params) {
  * @param {*} url 接口地址
  * @param {*} editColumn 操作列
  * @param {*} myColumen 自定义的表头 数组
+ * @param {*} customSort 自定义的排序和需要展示的字段 数组
  */
 import { tableHeadList } from '@/api/system/table';
-export function tableHeaderConfig(list, url, editColumn, myColumen) {
+export function tableHeaderConfig(list, url, editColumn, myColumen, customSort) {
   return new Promise(resolve => {
     if (getLocalStorage(url)) {
       getLocalStorage(url).forEach(el => {
@@ -228,6 +229,8 @@ export function tableHeaderConfig(list, url, editColumn, myColumen) {
       resolve();
     } else {
       tableHeadList(url.split('--')[0]).then(response => {
+        console.log(response.data);
+
         response.data.forEach(el => {
           list.push({
             label: el.comment,
@@ -241,8 +244,22 @@ export function tableHeaderConfig(list, url, editColumn, myColumen) {
           list.push(editColumn);
         }
         if (myColumen && myColumen.length) {
-          list.push(...myColumen);
+          list.unshift(...myColumen);
         }
+
+        if (customSort) {
+          const arr = [];
+          customSort.forEach(propName => {
+            list.forEach(e => {
+              if (e.fieldName === propName) {
+                arr.push(e);
+              }
+            });
+          });
+          console.log(arr);
+        }
+
+
         setLocalStorage(url, list);
         resolve();
       });
