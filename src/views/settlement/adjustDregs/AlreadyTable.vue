@@ -79,7 +79,7 @@
           v-has-permi="['transportation:waybill:getWayBillByCode']"
           size="mini"
           type="text"
-          @click="handleTableBtn(row, 7)"
+          @click="$emit('handleTableBtn', row,7)"
         >详情</el-button>
       </template>
     </RefactorTable>
@@ -133,7 +133,8 @@ export default {
   },
   data() {
     return {
-      tableColumnsConfig: [
+      tableColumnsConfig: [],
+      tableColumnsConfig1: [
         {
           prop: 'mainOrderNumber',
           isShow: true,
@@ -157,6 +158,62 @@ export default {
           tooltip: true,
           // fixed: 'left',
           label: '发货企业'
+        },
+        {
+          prop: 'sfiesfs',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '项目'
+        },
+        {
+          prop: 'fiwefinwon',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '渣土场'
+        },
+        {
+          prop: 'diaodsfiwfp',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '调度组名称'
+        },
+        {
+          prop: 'nubiu568',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '运单数量'
+        },
+        {
+          prop: 'sjfiohws68',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '运费结算金额'
+        },
+        {
+          prop: 'snfwuienn3211',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '操作时间'
+        },
+        {
+          prop: 'seiniwonfm12',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '操作人'
         }
       ]
     };
@@ -189,7 +246,7 @@ export default {
       label: '操作',
       width: 240,
       fixed: 'right'
-    });
+    }, this.tableColumnsConfig1);
   },
 
   methods: {

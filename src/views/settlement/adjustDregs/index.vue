@@ -267,7 +267,7 @@
         </el-form-item>
       </el-form>
 
-      <div v-show="showSearch || activeName === '7'">
+      <div v-show="showSearch && activeName === '7'">
         <AlreadyPaid v-model="AlreadyPaid_queryParams" @handleQuery="handleQuery12" />
       </div>
     </div>
@@ -431,7 +431,12 @@
       </div>
 
       <!-- 已打款 -->
-      <div v-show="activeName === '7'">
+      <div v-if="activeName === '7'">
+        <!--
+            v-modler = queryParams:{ total,pageNum,pageSize }
+            @getList = '' // 重新请求
+            :list="null" // 数据
+        -->
         <AlreadyTable
           v-model="AlreadyPaid_queryParams"
           :loading="loading"
@@ -439,6 +444,7 @@
           :show-search.sync="showSearch"
           @getList="getList1"
           @handleSelectionChange="handleSelectionChange1"
+          @handleTableBtn="(row,type)=>handleTableBtn(row,type)"
         />
       </div>
 
