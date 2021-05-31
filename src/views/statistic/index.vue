@@ -295,7 +295,11 @@ export default {
       // font-size: calc(100vw / 96);
       const clientWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
       if (!clientWidth) return;
-      const size = clientWidth / 20;
+      let size = clientWidth / 20;
+      if (size < 96) size = 96;
+      if (size > 160) size = 160;
+      // console.log('clientWidth: ', clientWidth);
+      // console.log('size: ', size);
       document.getElementsByTagName('html')[0].style.fontSize = `calc(100vw / ${size})`;
     },
     // 获取地图对应省份运单数据
