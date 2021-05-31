@@ -17,7 +17,8 @@
     >
       <img v-if="value && !disabled" :src="attachUrl" class="avatar">
       <div v-else-if="value && disabled" v-viewer class="avatar-box">
-        <img v-real-img="attachUrl" src="@/assets/images/uploadImage/load_error.png" class="avatar">
+        <!-- <img v-real-img="attachUrl" src="@/assets/images/uploadImage/load_error.png" class="avatar"> -->
+        <img :src="attachUrl" class="avatar">
       </div>
       <template v-else>
         <img :src="require('@/assets/images/uploadImage/' + iconType + '.png')">

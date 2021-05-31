@@ -149,7 +149,7 @@ export default {
             width: 0%;
             height: 100%;
             background: linear-gradient(93deg, #9C4DDC, #3397F4);
-            border-radius: 0px 4px 4px 0px;
+            border-radius: 0px 0.2rem 0.2rem 0px;
             transition: width 0.5s;
           }
         }

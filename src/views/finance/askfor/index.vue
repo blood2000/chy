@@ -30,7 +30,7 @@
               :value="dict.code"
             >
               <div class="ly-flex-pack-justify">
-                <span style="margin-right:10px">{{ dict.adminName }}</span>
+                <span style="margin-right:10px">{{ dict.adminName }}（{{ dict.telphone }}）</span>
                 <span>{{ dict.companyName }}</span>
               </div>
             </el-option>
@@ -193,8 +193,8 @@
           @queryTable="getList"
         />
       </el-row>
-
-      <RefactorTable :loading="loading" :data="askforlist" :table-columns-config="tableColumnsConfig" :max-height="isAdmin ? '380':'500'" @selection-change="handleSelectionChange">
+      <!-- :max-height="isAdmin ? '380':'500'" -->
+      <RefactorTable :loading="loading" :data="askforlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
         <template #stowageStatus="{row}">
           <span>{{ selectDictLabel(stowageStatusOptions, row.stowageStatus) }}</span>
         </template>
@@ -243,30 +243,30 @@
       <detail-dialog ref="DetailDialog" :current-id="currentId" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
 
     </div>
-
+    <div style="height:80px" />
     <el-row type="flex" :gutter="10" class="g-statistics-bg">
       <el-col :span="1">
         <img src="../../../../src/assets/images/icon/total.png" alt="">
       </el-col>
       <el-col :span="2">
         <div class="g-statistics-tag">运单数量：</div>
-        <div class="g-statistics-num">{{ feeinfo.waybillNum }}</div>
+        <div class="g-statistics-num">{{ feeinfo.waybillNum.toFixed(2) }}</div>
       </el-col>
       <el-col :span="2">
         <div class="g-statistics-tag">运费金额：</div>
-        <div class="g-statistics-num">{{ feeinfo.deliveryCashFee }}</div>
+        <div class="g-statistics-num">{{ feeinfo.deliveryCashFee.toFixed(2) }}</div>
       </el-col>
       <el-col :span="2">
         <div class="g-statistics-tag">运费税额：</div>
-        <div class="g-statistics-num">{{ feeinfo.taxPayment }}</div>
+        <div class="g-statistics-num">{{ feeinfo.taxPayment.toFixed(2) }}</div>
       </el-col>
       <el-col :span="2">
         <div class="g-statistics-tag">服务费金额：</div>
-        <div class="g-statistics-num">{{ feeinfo.serviceFee }}</div>
+        <div class="g-statistics-num">{{ feeinfo.serviceFee.toFixed(2) }}</div>
       </el-col>
       <el-col :span="2">
         <div class="g-statistics-tag">服务费税额：</div>
-        <div class="g-statistics-num">{{ feeinfo.serviceTaxFee }}</div>
+        <div class="g-statistics-num">{{ feeinfo.serviceTaxFee.toFixed(2) }}</div>
       </el-col>
     </el-row>
   </div>
@@ -386,7 +386,7 @@ export default {
         pageNum: 1,
         pageSize: 10,
         authStatus: 3,
-        adminName: null
+        keywords: null
       },
       shipmentloading: false,
       dataOver: false // 是否请求完了
@@ -435,7 +435,7 @@ export default {
         this.shipmentloading = true;
         this.shipmentInfoQuery.pageNum = 1;
         this.dataOver = false;
-        this.shipmentInfoQuery.adminName = query;
+        this.shipmentInfoQuery.keywords = query;
         this.shipmentlist = [];
         this.getShipment();
       } else {
@@ -524,7 +524,7 @@ export default {
     },
     // 导出
     handleExport() {
-      this.download('/transportation/invoice/export', { ...this.queryParams }, `askfor_${new Date().getTime()}.xlsx`);
+      this.download('/transportation/invoice/export', { ...this.queryParams }, `发票索取列表_${new Date().getTime()}.xlsx`);
     },
     // 批量索票
     handleAskfor() {

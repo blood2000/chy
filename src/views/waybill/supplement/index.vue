@@ -495,6 +495,9 @@ export default {
                 this.orderDisable = true;
                 this.driverDisable = true;
                 loading.close();
+              }).catch(error => {
+                console.log(error);
+                loading.close();
               });
             }
           } else {

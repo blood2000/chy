@@ -42,9 +42,9 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="货源单号" prop="orderCode">
+        <el-form-item label="货源单号" prop="mainOrderNumber">
           <el-input
-            v-model="queryParams.orderCode"
+            v-model="queryParams.mainOrderNumber"
             placeholder="请输入货源单号"
             clearable
             size="small"
@@ -277,7 +277,7 @@ export default {
         deliveryCompany: null,
         loadInfo: null,
         receivedInfo: null,
-        orderCode: null,
+        mainOrderNumber: null,
         startReceiveTime: null,
         endReceiveTime: null,
         licenseNumber: null,

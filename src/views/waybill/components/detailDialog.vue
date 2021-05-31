@@ -18,6 +18,28 @@
             {{ form.statusName || '-' }}
           </el-col>
           <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
+          <template v-if="form.projectName">
+            <el-col :span="3" class="text-label">
+              项目名称：
+            </el-col>
+            <el-col :span="8" class="text-row">
+              {{ form.projectName || '-' }}
+            </el-col>
+            <el-col :span="13" class="text-row"><div style="height:22px" /></el-col>
+          </template>
+          <el-col :span="3" class="text-label">
+            货物大类：
+          </el-col>
+          <el-col :span="8" class="text-row">
+            {{ form.goodsBigType || '-' }}
+          </el-col>
+          <el-col :span="3" class="text-label">
+            货物小类：
+          </el-col>
+          <el-col :span="8" class="text-row">
+            {{ form.goodsType || '-' }}
+          </el-col>
+          <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
           <el-col :span="3" class="text-label">
             装货数量：
           </el-col>
@@ -27,10 +49,12 @@
             <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ form.loadWeight || '0.00' }} 吨</span>
           </el-col>
           <el-col :span="3" class="text-label">
-            货品类别：
+            卸货数量：
           </el-col>
           <el-col :span="8" class="text-row">
-            {{ form.goodsBigType || '-' }}
+            <span v-if="form.stowageStatus === '1'">{{ form.unloadWeight || '0.00' }} 方</span>
+            <span v-if="form.stowageStatus === '2'">{{ form.unloadWeight || '0.00' }} 车</span>
+            <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ form.unloadWeight || '0.00' }} 吨</span>
           </el-col>
           <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
           <el-col :span="3" class="text-label">
@@ -46,6 +70,12 @@
             {{ form.signTime || '-' }}
           </el-col>
           <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
+          <el-col :span="3" class="text-label">
+            货源备注：
+          </el-col>
+          <el-col :span="8" class="text-row">
+            {{ form.orderRemark || '-' }}
+          </el-col>
           <el-col :span="3" class="text-label">
             货主备注：
           </el-col>
@@ -89,50 +119,70 @@
         <div class="waybill-title"><div class="waybill-icon" />费用<div class="waybill-divider" /></div>
         <el-row>
           <el-col :span="3" class="text-label">
-            实收现金（元）：
+            货主实付金额（元）：
+          </el-col>
+          <el-col :span="8" class="text-row">
+            {{ form.balanceVo.shipperRealPay || '0.00' }}
+          </el-col>
+          <el-col :span="3" class="text-label">
+            司机实收金额（元）：
           </el-col>
           <el-col :span="8" class="text-row">
             {{ form.balanceVo.deliveryCashFee || '0.00' }}
           </el-col>
+          <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
+
           <el-col :span="3" class="text-label">
-            应收运费（元）：
+            平台服务费用：
+          </el-col>
+          <el-col :span="8" class="text-row">
+            {{ form.balanceVo.serviceFee || '0.00' }}
+          </el-col>
+          <el-col :span="3" class="text-label">
+            司机实收运费（元）：
+          </el-col>
+          <el-col :span="8" class="text-row">
+            {{ form.balanceVo.deliveryFeePractical || '0.00' }}
+          </el-col>
+          <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
+
+          <el-col :span="3" class="text-label">
+            平台服务税费：
+          </el-col>
+          <el-col :span="8" class="text-row">
+            {{ form.balanceVo.serviceTaxFee || '0.00' }}
+          </el-col>
+          <el-col :span="3" class="text-label">
+            司机应收运费（元）：
           </el-col>
           <el-col :span="8" class="text-row">
             {{ form.balanceVo.deliveryFeeDeserved || '0.00' }}
           </el-col>
           <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
-          <el-col :span="3" class="text-label">
-            实收运费（元）：
-          </el-col>
-          <el-col :span="8" class="text-row">
-            {{ form.balanceVo.deliveryFeePractical || '0.00' }}
-          </el-col>
-          <el-col :span="3" class="text-label">
-            服务费：
-          </el-col>
-          <el-col :span="8" class="text-row">
-            {{ form.balanceVo.serviceFee || '0.00' }}
-          </el-col>
-          <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
-          <el-col :span="3" class="text-label">
-            服务税费：
-          </el-col>
-          <el-col :span="8" class="text-row">
-            {{ form.balanceVo.serviceTaxFee || '0.00' }}
-          </el-col>
+
           <el-col :span="3" class="text-label">
             不含税价：
           </el-col>
           <el-col :span="8" class="text-row">
             {{ form.balanceVo.taxFreeFee || '0.00' }}
           </el-col>
-          <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
           <el-col :span="3" class="text-label">
             纳税金额：
           </el-col>
           <el-col :span="8" class="text-row">
             {{ form.balanceVo.taxPayment || '0.00' }}
           </el-col>
+          <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
+
+          <div v-for="(item, index) in freightList" :key="index">
+            <el-col :span="3" class="text-label">
+              {{ item.cnName || '0.00' }}：
+            </el-col>
+            <el-col :span="8" class="text-row">
+              {{ item.ruleValue || '0.00' }}
+            </el-col>
+          </div>
+
         </el-row>
       </el-tab-pane>
       <!-- 回单 -->
@@ -190,7 +240,7 @@
       </el-tab-pane>
       <!-- 轨迹 -->
       <el-tab-pane label="轨迹" name="3">
-        <div v-if="activeTab === '3'" style="height:650px;width:100%;">
+        <div v-if="activeTab === '3'" style="height:600px;width:100%;">
           <Track :waybill="form" />
           <div class="waybill-detail-card">
             <div class="waybill-licenseNumber">{{ form.licenseNumber }}</div>
@@ -290,6 +340,7 @@ export default {
         // unloadAddress: {},
         balanceVo: {}
       },
+      freightList: [],
       formAttachment: {},
       formAttachmentUrl: [],
       formAttachmentUp: {},
@@ -347,7 +398,11 @@ export default {
         this.form.waybillAddress = response.data.waybillAddress || {};
         // this.form.unloadAddress = response.data.waybillAddress || {};
         this.form.balanceVo = response.data.balanceVo || {};
-        // console.log(response);
+        this.freightList = response.data.freightList.filter(e => {
+          const bool = (e.ruleItemCode === '6' || e.ruleItemCode === '11' || e.ruleItemCode === '12' || e.ruleItemCode === '13' || e.ruleItemCode === '14' || e.ruleItemCode === '15' || e.ruleItemCode === '16');
+          return bool;
+        });
+        console.log(this.freightList);
         this.loading = false;
       });
       // 回单-装货
