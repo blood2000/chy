@@ -161,7 +161,7 @@ export default {
   },
   mounted() {
     this.setHtmlFontSize();
-    // this.setScale();
+    this.setScale();
     window.addEventListener('resize', this.resizeFun);
     this.getPerformanceData();
     this.getBusinessData();
@@ -306,7 +306,14 @@ export default {
     },
     // 临时设置scale
     setScale() {
-      document.getElementById('app').style.transform = 'scaleX(0.6)'; // 0.6 = 1920 / 3200
+      const { isScale } = this.$route.query;
+      console.log('isScale: ', isScale);
+      if (isScale) {
+        document.getElementById('app').style.transform = 'scaleX(0.6)'; // 0.6 = 1920 / 3200
+        document.getElementById('app').style.transformOrigin = '0px 0px';
+      } else {
+        this.removeScale();
+      }
     },
     removeScale() {
       document.getElementById('app').style.transform = '';
