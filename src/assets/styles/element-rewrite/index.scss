@@ -8,14 +8,15 @@
 
 // 统计样式
 .g-statistics-bg{
-  position: absolute;
+  position: fixed;
   bottom: 0;
-  left: 0;
+  left: 75px;
+  z-index: 100;
   align-items: center;
   width: 100%;
   background: #fff;
   padding: 15px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  // box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   .g-statistics-tag{
     color: #B3AFAF;
   }
