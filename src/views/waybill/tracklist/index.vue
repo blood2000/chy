@@ -197,6 +197,9 @@
         <template #cancelStatus="{row}">
           <span>{{ selectDictLabel(cancelStatusOptions, row.cancelStatus) }}</span>
         </template>
+        <template #status="{row}">
+          <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
+        </template>
         <template #loadWeight="{row}">
           <span v-if="row.loadWeight">
             <span v-if="row.stowageStatus === '1'">{{ row.loadWeight }} 方</span>
@@ -433,6 +436,19 @@ export default {
         { 'dictLabel': '吨数配载', 'dictValue': '0' },
         { 'dictLabel': '立方配载', 'dictValue': '1' },
         { 'dictLabel': '车数配载 ', 'dictValue': '2' }
+      ],
+      // 运单状态字典
+      'statusOptions': [
+        { 'dictLabel': '未接单', 'dictValue': '0' },
+        { 'dictLabel': '已接单', 'dictValue': '1' },
+        { 'dictLabel': '已装货', 'dictValue': '2' },
+        { 'dictLabel': '已签收(已卸货)', 'dictValue': '3' },
+        { 'dictLabel': '已回单(收单复核)', 'dictValue': '4' },
+        { 'dictLabel': '已核算', 'dictValue': '5' },
+        { 'dictLabel': '已申请(打款)', 'dictValue': '6' },
+        { 'dictLabel': '已打款', 'dictValue': '7' },
+        { 'dictLabel': '已申请开票', 'dictValue': '8' },
+        { 'dictLabel': '已开票', 'dictValue': '9' }
       ],
       isAdmin: false,
       user: {},
