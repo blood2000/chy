@@ -30,7 +30,7 @@
               :value="dict.code"
             >
               <div class="ly-flex-pack-justify">
-                <span style="margin-right:10px">{{ dict.adminName }}</span>
+                <span style="margin-right:10px">{{ dict.adminName }}（{{ dict.telphone }}）</span>
                 <span>{{ dict.companyName }}</span>
               </div>
             </el-option>
@@ -386,7 +386,7 @@ export default {
         pageNum: 1,
         pageSize: 10,
         authStatus: 3,
-        adminName: null
+        keywords: null
       },
       shipmentloading: false,
       dataOver: false // 是否请求完了
@@ -435,7 +435,7 @@ export default {
         this.shipmentloading = true;
         this.shipmentInfoQuery.pageNum = 1;
         this.dataOver = false;
-        this.shipmentInfoQuery.adminName = query;
+        this.shipmentInfoQuery.keywords = query;
         this.shipmentlist = [];
         this.getShipment();
       } else {
