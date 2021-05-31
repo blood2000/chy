@@ -1,16 +1,15 @@
 <template>
   <el-dialog :title="`数据IC卡: ${ titleData.ttttt1111 || 'IC20511547'} (承运司机: ${titleData.ttttt222 ||'张张张'})`" :visible="visible" width="80%" append-to-body @close="$emit('update:open', false)">
-    <div>
+    <div class="mb20">
       <!-- <el-button type="primary" @click="handler('connect')">连接服务</el-button> -->
       <el-button type="primary" @click="handler('cancellation')">注销卡片(清空使用者信息)</el-button>
-      <el-button type="primary" @click="handler('getCard')">获得卡片</el-button>
-      <el-button type="primary" @click="handler('issuingCard')">发卡</el-button>
+      <el-button type="primary" @click="handler('issuingCard')">发卡(绑定卡用户)</el-button>
       <el-button type="primary" @click="handler('readUserinfo')">读取用户信息</el-button>
       <el-button type="primary" @click="handler('readData')">读取数据</el-button>
       <el-button type="primary" @click="handler('writeData')">写数据</el-button>
-      <el-button type="primary" @click="handler('writeDataBatch')">写批量数据</el-button>
+      <!-- <el-button type="primary" @click="handler('writeDataBatch')">写批量数据</el-button>
       <el-button type="primary" @click="handler('folderBatch')">批量创建目录</el-button>
-      <el-button type="primary" @click="handler('stop')">停止定时器</el-button>
+      <el-button type="primary" @click="handler('stop')">停止定时器</el-button> -->
 
     </div>
     <!-- 表格 -->
@@ -163,73 +162,76 @@ export default {
 
     handler(key) {
       const _this = this;
+      const { action } = CardReader;
       switch (key) {
-        case 'connect':
-          // 连接服务
-          CardReader.fn.connect();
-          break;
+        // case 'connect':
+        //   // 连接服务
+        //   CardReader.fn.connect();
+        //   break;
         case 'cancellation':
           // 注销卡片
-          CardReader.action.cancellation();
+          action.cancellation().then(res => { console.log(res); });
           break;
         case 'getCard':
           // 获得卡片
-          CardReader.action.getCard();
+          action.getCard().then(res => { console.log(res); });
           break;
         case 'issuingCard':
           // 发卡
-          CardReader.action.issuingCard({
+          action.issuingCard({
             user_code: 'adf34d2d22b64c43b31476a746dd757f',
             user_telno: '18415451845',
             user_name: '黄婷',
             issuing_code: '94671e0bff6647e88db777427d700e32',
             issuing_name: '陈大帅'
-          });
+          }).then(res => { console.log(res); });
           break;
         case 'readUserinfo':
           // 读取用户信息
-          CardReader.action.readUserInfo();
+          action.readUserInfo().then(res => {
+            console.log(res, '用户信息----');
+          });
           break;
         case 'readData':
           // 读取数据
-          CardReader.action.readData();
+          action.readData().then(res => { console.log(res); });
           break;
         case 'writeData':
           // 写数据
-          CardReader.action.writeData();
+          action.writeData().then(res => { console.log(res); });
           break;
-        case 'writeDataBatch':
-          // 写批量数据
-          // CardReader.action.readData();
-          // _this.start = true;
-          // let index1 = 1;
-          // const interval1 = set1(function() {
-          //   console.log(index1);
-          //   CardReader.action.writeData();
-          //   index1 += 1;
-          //   if (!_this.start) {
-          //     window.clearInterval(interval1);
-          //   }
-          // }, 1500);
-          break;
-        case 'folderBatch':
-          // 批量创建目录
-          // CardReader.action.readData();
-          // _this.start = true;
-          // let index = 1;
-          // const interval2 = setInterval(function() {
-          //   console.log(index);
-          //   CardReader.action.createFolder(index);
-          //   index += 1;
-          //   if (!_this.start) {
-          //     window.clearInterval(interval2);
-          //   }
-          // }, 1500);
-          break;
-        case 'stop':
-          // 停止定时器
-          _this.start = false;
-          break;
+          // case 'writeDataBatch':
+          //   // 写批量数据
+          //   // CardReader.action.readData();
+          //   // _this.start = true;
+          //   // let index1 = 1;
+          //   // const interval1 = set1(function() {
+          //   //   console.log(index1);
+          //   //   CardReader.action.writeData();
+          //   //   index1 += 1;
+          //   //   if (!_this.start) {
+          //   //     window.clearInterval(interval1);
+          //   //   }
+          //   // }, 1500);
+          //   break;
+          // case 'folderBatch':
+          //   // 批量创建目录
+          //   // CardReader.action.readData();
+          //   // _this.start = true;
+          //   // let index = 1;
+          //   // const interval2 = setInterval(function() {
+          //   //   console.log(index);
+          //   //   CardReader.action.createFolder(index);
+          //   //   index += 1;
+          //   //   if (!_this.start) {
+          //   //     window.clearInterval(interval2);
+          //   //   }
+          //   // }, 1500);
+          //   break;
+          // case 'stop':
+          //   // 停止定时器
+          //   _this.start = false;
+          //   break;
 
         default:
           break;

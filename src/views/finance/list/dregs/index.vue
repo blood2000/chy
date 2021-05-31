@@ -201,26 +201,50 @@
         </template>
 
         <template #edit="{row}">
-          <el-button
-            v-if="activeName == '1'"
-            v-hasPermi="['system:menu:buhuihsuihwof']"
-            size="mini"
-            type="text"
-            @click="handleTableBtn(row, 1)"
-          >驳回</el-button>
-          <!-- && row.invoiceStatus == '4'  可能是要根据这个判断能不能再开票了吧-->
-          <el-button
-            v-if="!isShipment "
-            v-hasPermi="['system:menu:edit']"
-            size="mini"
-            type="text"
-            @click="handleTableBtn(row, 2)"
-          >开票</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            @click="handleTableBtn(row, 3)"
-          >详情</el-button>
+          <div v-if="activeName == '1'">
+            <el-button
+              v-if="activeName == '1'"
+              v-hasPermi="['system:menu:buhuihsuihwof']"
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 1)"
+            >驳回</el-button>
+            <!-- && row.invoiceStatus == '4'  可能是要根据这个判断能不能再开票了吧-->
+            <el-button
+              v-if="!isShipment "
+              v-hasPermi="['system:menu:edit']"
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 2)"
+            >开票</el-button>
+            <el-button
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 3)"
+            >详情</el-button>
+          </div>
+          <div v-else>
+
+            <el-button
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 3)"
+            >详情</el-button>
+            <el-button
+              v-if="activeName == '1'"
+              v-hasPermi="['system:menu:buhuihsuihwof']"
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 1)"
+            >打款</el-button>
+            <el-button
+              v-if="activeName == '1'"
+              v-hasPermi="['system:menu:buhuihsuihwof']"
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 1)"
+            >导出</el-button>
+          </div>
         </template>
       </RefactorTable>
 
@@ -428,22 +452,6 @@ export default {
           tooltip: true,
           // fixed: 'left',
           label: '发票图片'
-        },
-        {
-          prop: 'fapownfwqag',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '票务抬头'
-        },
-        {
-          prop: 'shfwuhfnqaw',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '税务登记'
         },
         {
           prop: 'beiiesp',
