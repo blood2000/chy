@@ -161,7 +161,7 @@ export default {
   },
   mounted() {
     this.setHtmlFontSize();
-    this.setScale();
+    // this.setScale();
     window.addEventListener('resize', this.resizeFun);
     this.getPerformanceData();
     this.getBusinessData();
