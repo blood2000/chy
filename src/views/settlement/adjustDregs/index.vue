@@ -642,7 +642,7 @@ export default {
       sortNum: 8,
       label: 'IC卡核对状态',
       width: 120
-    }, { // 顶替掉
+    }, { // 需要顶替掉的项
       prop: 'isReturn',
       isShow: false,
       tooltip: false,

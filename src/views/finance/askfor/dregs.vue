@@ -145,6 +145,7 @@
       >
         <el-col :span="1.5">
           <el-button
+            v-if="false"
             v-hasPermi="['askfor:invoice:batch']"
             type="primary"
             icon="el-icon-document-checked"
