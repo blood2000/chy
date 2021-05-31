@@ -32,6 +32,7 @@
       <el-table-column width="120" label="车牌号" align="center" prop="licenseNumber" />
 
       <!-- stowageStatus "配载方式 0->吨，1->方 2->车数配载" -->
+      <!-- isDregs "是否渣土 1->是  0->否" -->
       <el-table-column width="160" label="装货数量" align="left" prop="loadWeight">
         <template slot-scope="scope">
           <span v-if="scope.row.isDregs === 1">{{ scope.row.loadWeight }}</span>
@@ -66,82 +67,82 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="160" label="路耗" align="center" prop="loss" />
+      <el-table-column width="160" label="路耗(吨/方)" align="center" prop="loss" />
 
-      <el-table-column width="160" label="路耗允许范围" align="center" prop="lossAllowScope">
+      <el-table-column width="160" label="路耗允许范围(吨/方)" align="center" prop="lossAllowScope">
         <template slot-scope="scope">
           <span>{{ scope.row.lossAllowScope? _lossAllowScope(scope.row.lossAllowScope) : null }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="160" label="货物单价" align="center" prop="goodsPrice" />
+      <el-table-column width="160" label="货物单价(元)" align="center" prop="goodsPrice" />
 
-      <el-table-column width="160" label="运费单价" align="center" prop="freightPrice" />
+      <el-table-column width="160" label="货主成交单价(元)" align="center" prop="freightPrice" />
 
-      <el-table-column width="160" label="司机成交单价" align="center" prop="freightPriceDriver" />
-      <el-table-column width="160" label="亏涨扣费" align="center" prop="lossDeductionFee" />
+      <el-table-column width="160" label="司机成交单价(元)" align="center" prop="freightPriceDriver" />
+      <el-table-column width="160" label="亏涨扣费(元)" align="center" prop="lossDeductionFee" />
 
 
-      <el-table-column width="120" label="抹零金额" align="center" prop="m0Fee" />
+      <el-table-column width="120" label="抹零金额(元)" align="center" prop="m0Fee" />
 
-      <el-table-column width="160" label="司机应收运费" align="center" prop="deliveryFeeDeserved" />
-      <el-table-column width="160" label="司机实收运费" align="center" prop="deliveryFeePractical" />
+      <!-- <el-table-column width="160" label="司机应收运费" align="center" prop="deliveryFeeDeserved" /> -->
+      <el-table-column width="160" label="司机实收运费(元)" align="center" prop="deliveryFeePractical" />
 
       <!-- 补贴项目 -->
-      <el-table-column align="center" width="400" label="补贴项目">
+      <el-table-column align="center" width="420" label="补贴项目">
         <template slot="header">
           <span>补贴项目 <el-button type="text" @click="isEdit2 = !isEdit2"><i class="el-icon-edit" /></el-button></span>
 
         </template>
         <template slot-scope="scope">
-          <el-form :inline="true" label-position="right" size="mini" class="ly-flex" label-width="80px">
+          <el-form :inline="true" label-position="right" size="mini" class="ly-flex" label-width="110px">
             <div v-for="(freight, index) in scope.row.subsidiesFreightList" :key="index">
               <!-- 渣土 其他不能修改 -->
-              <el-form-item :label="freight.cnName">
+              <el-form-item :label="freight.cnName + '(元)'">
                 <span v-if="scope.row.isDregs === 1">{{ freight.ruleValue }}</span>
                 <div v-else>
                   <span v-show="!isEdit2">{{ freight.ruleValue }}</span>
-                  <el-input-number v-show="isEdit2" v-model="freight.ruleValue" :controls="false" :precision="2" :min="0" :placeholder="`${freight.cnName}`" style="width:90px;" @blur="handlerItem(scope.row,freight.ruleValue,'add',freight.enName)" />
+                  <el-input-number v-show="isEdit2" v-model="freight.ruleValue" :controls="false" :precision="2" :min="0" :placeholder="`${freight.cnName}`" style="width:110px;" @blur="handlerItem(scope.row,freight.ruleValue,'add',freight.enName)" />
                 </div>
               </el-form-item>
             </div>
 
-            <el-form-item label="其他补贴">
+            <el-form-item label="其他补贴(元)">
               <span v-if="scope.row.isDregs === 1">{{ scope.row.otherSubsidies }}</span>
               <div v-else>
                 <span v-show="!isEdit2">{{ scope.row.otherSubsidies }}</span>
-                <el-input-number v-show="isEdit2" v-model="scope.row.otherSubsidies" :controls="false" :precision="2" :min="0" :placeholder="`其他扣款`" style="width:90px;" @blur="handlerChange(scope.row,scope.row.otherSubsidies, 'add')" />
+                <el-input-number v-show="isEdit2" v-model="scope.row.otherSubsidies" :controls="false" :precision="2" :min="0" :placeholder="`其他扣款`" style="width:110px;" @blur="handlerChange(scope.row,scope.row.otherSubsidies, 'add')" />
               </div>
             </el-form-item>
           </el-form>
         </template>
       </el-table-column>
       <!-- 扣费项目 -->
-      <el-table-column align="center" width="400">
+      <el-table-column align="center" width="420">
         <template slot="header">
           <span>扣费项目 <el-button type="text" @click="isEdit = !isEdit"><i class="el-icon-edit" /></el-button></span>
 
         </template>
 
         <template slot-scope="scope">
-          <el-form :inline="true" label-position="right" size="mini" class="ly-flex" label-width="80px">
+          <el-form :inline="true" label-position="right" size="mini" class="ly-flex" label-width="110px">
             <div v-for="(freight, index) in scope.row.deductionFreightList" :key="index">
-              <el-form-item :label="freight.cnName">
+              <el-form-item :label="freight.cnName + '(元)'">
 
                 <span v-if="scope.row.isDregs === 1">{{ freight.ruleValue }}</span>
 
                 <div v-else>
                   <span v-show="!isEdit">{{ freight.ruleValue }}</span>
-                  <el-input-number v-show="isEdit" v-model="freight.ruleValue" :controls="false" :precision="2" :min="0" :placeholder="`${freight.cnName}`" style="width:90px;" @blur="handlerItem(scope.row,freight.ruleValue,'',freight.enName)" />
+                  <el-input-number v-show="isEdit" v-model="freight.ruleValue" :controls="false" :precision="2" :min="0" :placeholder="`${freight.cnName}`" style="width:110px;" @blur="handlerItem(scope.row,freight.ruleValue,'',freight.enName)" />
                 </div>
               </el-form-item>
             </div>
 
-            <el-form-item label="其他扣款">
+            <el-form-item label="其他扣款(元)">
               <span v-if="scope.row.isDregs === 1">{{ scope.row.otherCharges }}</span>
               <div v-else>
                 <span v-show="!isEdit">{{ scope.row.otherCharges }}</span>
-                <el-input-number v-show="isEdit" v-model="scope.row.otherCharges" :controls="false" :precision="2" :min="0" :placeholder="`其他扣款`" style="width:90px;" @blur="handlerChange(scope.row,scope.row.otherCharges, '')" />
+                <el-input-number v-show="isEdit" v-model="scope.row.otherCharges" :controls="false" :precision="2" :min="0" :placeholder="`其他扣款`" style="width:110px;" @blur="handlerChange(scope.row,scope.row.otherCharges, '')" />
               </div>
             </el-form-item>
           </el-form>
@@ -150,16 +151,16 @@
 
 
 
-      <el-table-column width="120" label="纳税金额" align="center" prop="taxPayment" fixed="right" />
-      <el-table-column width="120" label="服务费" align="center" prop="serviceFee" fixed="right" />
-      <el-table-column width="162" label="司机实收金额" align="center" prop="deliveryCashFee" fixed="right">
+      <el-table-column width="120" label="纳税金额(元)" align="center" prop="taxPayment" fixed="right" />
+      <el-table-column width="120" label="服务费(元)" align="center" prop="serviceFee" fixed="right" />
+      <el-table-column width="162" label="司机实收金额(元)" align="center" prop="deliveryCashFee" fixed="right">
         <template slot-scope="scope">
           <span v-if="scope.row.isDregs === 0">{{ scope.row.deliveryCashFee }}</span>
           <el-input-number v-else v-model="scope.row.deliveryCashFee" :controls="false" :precision="2" placeholder="请输入司机实收金额" style="width:100%;" size="mini" @blur="handlerInput(scope.row,scope.row.deliveryCashFee, 'deliveryCashFee')" />
         </template>
       </el-table-column>
 
-      <el-table-column width="120" label="货主实付金额" align="center" prop="shipperRealPay" fixed="right" />
+      <el-table-column width="120" label="货主实付金额(元)" align="center" prop="shipperRealPay" fixed="right" />
 
     </el-table>
 
