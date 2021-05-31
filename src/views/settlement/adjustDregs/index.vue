@@ -639,9 +639,18 @@ export default {
       prop: 'icStatus',
       isShow: true,
       tooltip: false,
+      sortNum: 8,
       label: 'IC卡核对状态',
       width: 120
-    }]);
+    }, {
+      prop: 'isReturn',
+      isShow: false,
+      tooltip: false,
+      sortNum: 0,
+      label: '纸质回单状态',
+      width: 120
+    }
+    ]);
     !this.$route.query.adjust && this.getList();
     this.listByDict(this.commodityCategory).then(response => {
       this.commodityCategoryCodeOptions = response.data;

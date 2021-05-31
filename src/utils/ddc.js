@@ -216,11 +216,10 @@ export function tansParams(params) {
  * @param {*} list 表头数组
  * @param {*} url 接口地址
  * @param {*} editColumn 操作列
- * @param {*} myColumen 自定义的表头 数组
- * @param {*} customSort 自定义的排序和需要展示的字段 数组
+ * @param {*} myColumen 自定义的表头(可以替代) 数组
  */
 import { tableHeadList } from '@/api/system/table';
-export function tableHeaderConfig(list, url, editColumn, myColumen, customSort) {
+export function tableHeaderConfig(list, url, editColumn, myColumen) {
   return new Promise(resolve => {
     if (getLocalStorage(url)) {
       getLocalStorage(url).forEach(el => {
@@ -229,36 +228,37 @@ export function tableHeaderConfig(list, url, editColumn, myColumen, customSort) 
       resolve();
     } else {
       tableHeadList(url.split('--')[0]).then(response => {
-        console.log(response.data);
-
+        const arr = [];
         response.data.forEach(el => {
-          list.push({
+          arr.push({
             label: el.comment,
             prop: el.fieldName,
             isShow: el.isShow,
+            sortNum: el.sortNum || 0,
             width: el.width || '120',
             tooltip: true
           });
         });
         if (editColumn) {
-          list.push(editColumn);
+          arr.push(editColumn);
         }
         if (myColumen && myColumen.length) {
-          list.unshift(...myColumen);
+          arr.unshift(...myColumen);
         }
 
-        if (customSort) {
-          const arr = [];
-          customSort.forEach(propName => {
-            list.forEach(e => {
-              if (e.fieldName === propName) {
-                arr.push(e);
-              }
-            });
-          });
-          console.log(arr);
-        }
+        // 去重
+        list.push(...objReduce(arr, 'prop'));
 
+        // 根據距離遠近排序，越近在前面，升序
+        list.sort(function(a, b) {
+          if (a.sortNum < b.sortNum) {
+            return -1;
+          } else if (a.sortNum == b.sortNum) {
+            return 0;
+          } else {
+            return 1;
+          }
+        });
 
         setLocalStorage(url, list);
         resolve();
