@@ -475,7 +475,7 @@ export default {
     bottom: 2rem;
     height: 6.8rem;
     background: rgba(4, 28, 84, 0.4);
-    border: 1px solid #387C94;
+    border: 0.05rem solid #387C94;
     padding: 0 0.6rem;
     >h5{
       height: 1.5rem;
@@ -491,7 +491,7 @@ export default {
         left: 0;
         right: 0;
         bottom: 0;
-        height: 1px;
+        height: 0.05rem;
         background: linear-gradient(to right, rgba(76, 203, 219, 0.5), rgba(76, 203, 219, 0));
       }
       &::after{
