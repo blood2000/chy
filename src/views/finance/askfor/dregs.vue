@@ -7,7 +7,7 @@
       label-width="90px"
     >
       <div v-if="!isShipment" class="app-container" style="display: flex; align-items: center;">
-        <el-form-item label="货主信息" prop="shipmentCode" style="margin-bottom:0">
+        <el-form-item label="发货企业" prop="shipmentCode" style="margin-bottom:0">
           <!-- filterable开启可搜索 remote远程搜索 reserve-keyword 保存搜索关键词 -->
           <el-select
             v-model="queryParams.shipmentCode"
@@ -16,7 +16,7 @@
             clearable
             remote
             reserve-keyword
-            placeholder="请选择货主"
+            placeholder="请选择发货企业"
             :remote-method="remoteMethod"
             :loading="shipmentloading"
             style="width: 230px"
@@ -38,48 +38,32 @@
         </el-form-item>
         <span v-if="!queryParams.shipmentCode" class="g-color-warning">
           <i class="el-icon-warning" />
-          您还未选择货主
+          您还未选择发货企业
         </span>
       </div>
 
       <div v-show="showSearch" class="app-container app-container--search">
         <el-form-item
-          label="货源单号"
-          prop="orderNo"
+          label="对账批次号"
+          prop="dhsihaqhsbkabfk"
         >
           <el-input
-            v-model="queryParams.orderNo"
-            placeholder="请输入货源单号"
+            v-model="queryParams.dhsihaqhsbkabfk"
+            placeholder="请输入对账批次号"
             clearable
             size="small"
             style="width: 230px"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="货物大类" prop="goodsBigType">
-          <el-select
-            v-model="queryParams.goodsBigType"
-            placeholder="请选择货物大类"
-            filterable
-            clearable
-            style="width: 230px"
-            size="small"
-          >
-            <el-option
-              v-for="dict in commodityCategoryCodeOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-        </el-form-item>
+
         <el-form-item
-          label="装货信息"
-          prop="loading"
+          label="渣土场"
+          prop="zhatusanfsn"
         >
           <el-input
-            v-model="queryParams.loading"
-            placeholder="装货地/装货电话/装货人"
+            v-model="queryParams.zhatusanfsn"
+            placeholder="请输入渣土场"
             clearable
             size="small"
             style="width: 230px"
@@ -87,59 +71,50 @@
           />
         </el-form-item>
         <el-form-item
-          label="卸货信息"
-          prop="receiving"
+          label="调度组名称"
+          prop="diaodshahsna"
         >
           <el-input
-            v-model="queryParams.receiving"
-            placeholder="卸货地/卸货电话/卸货人"
+            v-model="queryParams.diaodshahsna"
+            placeholder="请输入调度组名称"
             clearable
             size="small"
             style="width: 230px"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
+
         <el-form-item
-          label="运输单号"
-          prop="waybillNo"
+          label="操作人"
+          prop="sfuwnfskjnqa"
         >
           <el-input
-            v-model="queryParams.waybillNo"
-            placeholder="请输入运输单号"
+            v-model="queryParams.sfuwnfskjnqa"
+            placeholder="请输入操作人"
             clearable
             size="small"
             style="width: 230px"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
+
+
+
         <el-form-item
-          label="装货日期"
-          prop="loadTime"
+          v-if="!isShipment"
+          label="发票抬头"
+          prop="ordsnnseerNohuehiuw"
         >
-          <el-date-picker
-            v-model="loadTime"
-            type="daterange"
-            range-separator="-"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+          <el-input
+            v-model="queryParams.ordsnnseerNohuehiuw"
+            placeholder="请输入发票抬头"
+            clearable
+            size="small"
             style="width: 230px"
-            @change="datechoose1"
+            @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item
-          label="卸货日期"
-          prop="unloadTime"
-        >
-          <el-date-picker
-            v-model="unloadTime"
-            type="daterange"
-            range-separator="-"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            style="width: 230px"
-            @change="datechoose2"
-          />
-        </el-form-item>
+
         <el-form-item>
           <el-button
             type="primary"
@@ -195,8 +170,8 @@
       </el-row>
 
       <RefactorTable :loading="loading" :data="askforlist" :table-columns-config="tableColumnsConfig" :max-height="isAdmin ? '400':'500'" @selection-change="handleSelectionChange">
-        <template #stowageStatus="{row}">
-          <span>{{ selectDictLabel(stowageStatusOptions, row.stowageStatus) }}</span>
+        <template #zhuanfowe="{row}">
+          <span class="g-color-error">已申请{{ row.zhuanfowe }}</span>
         </template>
         <template #status="{row}">
           <span>
@@ -286,7 +261,105 @@ export default {
   data() {
     return {
       tableColumnsConfig: [],
-      api: askforListApi,
+      tableColumnsConfig1: [
+        {
+          prop: 'mainOrderNumber',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '对账批次号'
+        },
+        {
+          prop: 'zhuanfowe',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '状态'
+        },
+        {
+          prop: 'fahiuwnn',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '发货企业'
+        },
+        {
+          prop: 'xuiqabskn',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '项目'
+        },
+        {
+          prop: 'zhaunenowt',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '渣土场'
+        },
+        {
+          prop: 'duaijwhubiubi',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '调度组名称'
+        },
+        {
+          prop: 'yunsnewonow',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '运单数量'
+        },
+        {
+          prop: 'yuwinfsnfhahoiajog',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '运费结算金额'
+        },
+        {
+          prop: 'fapownfwqag',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '发票抬头'
+        },
+        {
+          prop: 'shfwuhfnqaw',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '税务登记'
+        },
+        {
+          prop: 'sewfjhehgo',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '申请时间'
+        },
+        {
+          prop: 'cshiwops',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '操作人'
+        }
+      ],
+      api: 'test' || askforListApi,
       // 遮罩层
       'loading': false,
       // 选中数组
@@ -405,13 +478,13 @@ export default {
       this.queryParams.shipmentCode = shipment.info.code;
       this.getList();
     }*/
-    this.tableHeaderConfig(this.tableColumnsConfig, askforListApi, {
+    this.tableHeaderConfig(this.tableColumnsConfig, this.api, {
       prop: 'edit',
       isShow: true,
       label: '操作',
       width: 180,
       fixed: 'right'
-    });
+    }, this.tableColumnsConfig1);
     // this.getShipment();
     this.listByDict(this.commodityCategory).then(response => {
       this.commodityCategoryCodeOptions = response.data;
