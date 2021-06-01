@@ -6,7 +6,7 @@
         ref="queryForm"
         :model="queryParams"
         :inline="true"
-        label-width="80px"
+        label-width="110px"
       >
         <el-form-item
           label="发票抬头"
@@ -22,12 +22,12 @@
           />
         </el-form-item>
         <el-form-item
-          label="发票编号"
+          label="发票索取记录号"
           prop="askForNo"
         >
           <el-input
             v-model="queryParams.askForNo"
-            placeholder="请输入发票编号"
+            placeholder="请输入发票索取记录号"
             clearable
             size="small"
             style="width: 230px"
