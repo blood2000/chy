@@ -46,10 +46,21 @@
         :count="myPerformance.waybillAmount"
         :places="2"
       />
-      <InfoBox
+      <!-- <InfoBox
         label="今日新增运费"
         unit="万"
         :count="myPerformance.newWaybillAmount"
+        :last-count="myPerformance.lastWaybillAmount"
+        :places="2"
+        :has-yoy="true"
+        :yoy.sync="myPerformance.newWaybillYoy"
+        :yoy-type.sync="myPerformance.newWaybillYoyType"
+        :yoy-places="1"
+      /> -->
+      <InfoBox
+        label="今日新增运费"
+        unit="万"
+        :count="myPerformance.newTransactionAmount * 0.9"
         :last-count="myPerformance.lastWaybillAmount"
         :places="2"
         :has-yoy="true"
