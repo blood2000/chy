@@ -2,10 +2,10 @@
   <div>
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
-        <el-form-item v-show="isAdmin" label="下单企业" prop="orderClient">
+        <el-form-item v-show="isAdmin" label="下单用户" prop="orderClient">
           <el-input
             v-model="queryParams.orderClient"
-            placeholder="请输入下单企业"
+            placeholder="发货企业/操作人/手机号"
             clearable
             size="small"
             style="width: 228px"

@@ -501,6 +501,7 @@ export default {
         });
       } else {
         this.$message({ type: 'warning', message: '请选择货主查询列表！' });
+        this.askforlist = [{ deliveryFeePractical: 123 }];
       }
     },
     chooseShipment() {
@@ -528,12 +529,16 @@ export default {
     },
     // 批量索票
     handleAskfor() {
-      askInvoice({ shipmentCode: this.queryParams.shipmentCode, waybillCodes: this.ids }).then(response => {});
-      this.getList();
+      this.$confirm('是否立即批量索票?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        askInvoice({ shipmentCode: this.queryParams.shipmentCode, waybillCodes: this.ids }).then(response => {});
+        this.getList();
+      });
     },
     handleTableBtn(row, index) {
-      // console.log(row, index);
-
       this.visible = true;
       switch (index) {
         case 1:

@@ -1098,19 +1098,13 @@ export default {
   }
 
 @media (max-width:1324px) {
-  // .shipper-middle{
-  //   .middle-row-content{
-  //     margin-left: 10px !important;
-
-  //   }
-  // }
     .shipper_left.my-impo{
       min-width: 290px !important;
       width: 290px !important;
     }
-
-
-
+    .active-frame{
+      min-width: 320px !important;
+    }
 }
 
 
