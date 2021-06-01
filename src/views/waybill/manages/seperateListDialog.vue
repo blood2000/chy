@@ -4,7 +4,7 @@
       <el-table-column label="序号" align="center" type="index" width="50" />
       <el-table-column label="货源单号" align="center" prop="mainOrderNumber" width="150" />
       <el-table-column label="发货企业" align="center" prop="shipperFactory" width="150" />
-      <el-table-column label="下单客户" align="center" prop="orderClient" width="160" />
+      <el-table-column label="下单用户" align="center" prop="orderClient" width="160" />
       <el-table-column label="运输单号" align="center" prop="waybillNo" width="160" />
       <!-- <el-table-column label="运单状态" align="center" prop="status" :formatter="statusFormat" /> -->
       <el-table-column label="承运调度" align="center" prop="teamName" />

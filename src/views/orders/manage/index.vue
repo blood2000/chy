@@ -2,10 +2,10 @@
   <div>
     <div ref="searchBox">
       <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="90px" class="app-container" @submit.native.prevent>
-        <el-form-item v-show="!isShipment" label="下单客户" prop="tin1">
+        <el-form-item v-show="!isShipment" label="下单用户" prop="tin1">
           <el-input
             v-model="queryParams.tin1"
-            placeholder="企业名称/操作人/手机号"
+            placeholder="发货企业/操作人/手机号"
             clearable
             size="small"
             style="width: 228px"
@@ -578,7 +578,7 @@ export default {
       return {
         beginTime: this.queryParams.tin10[0], //	开始时间	query	false
         endTime: this.queryParams.tin10[1], //	结束时间	query	false
-        companyAndCustomerAndPhone: this.queryParams.tin1, //	下单客户	query	false
+        companyAndCustomerAndPhone: this.queryParams.tin1, //	下单用户	query	false
         goodsName: this.queryParams.tin5, //	货物描述(名称)	query	false
         goodsBigType: this.queryParams.tin4 ? [this.queryParams.tin4] : undefined, //	货物大类大类	query	false
         goodsType: undefined, // 小类
