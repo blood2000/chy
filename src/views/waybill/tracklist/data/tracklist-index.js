@@ -20,7 +20,7 @@ export default [
   {
     prop: 'orderClient',
     isShow: true,
-    label: '下单客户'
+    label: '下单用户'
   },
   {
     prop: 'shipper',
