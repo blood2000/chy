@@ -532,8 +532,11 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(function() {
-        askInvoice({ shipmentCode: this.queryParams.shipmentCode, waybillCodes: this.ids }).then(response => {});
+      }).then(() => {
+        askInvoice({ shipmentCode: this.queryParams.shipmentCode, waybillCodes: this.ids }).then(response => {
+          this.msgSuccess('索票申请成功');
+          this.ids = null;
+        });
         this.getList();
       });
     },
