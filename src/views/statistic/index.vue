@@ -21,13 +21,13 @@
       </div>
       <div class="ly-left-center mb1rem ly-border">
         <Title class="title_3" icon="3">运力情况<span>Capacity situation</span></Title>
-        <CapacityInfo ref="CapacityInfoRef" :branch-code="branchCode" :is-scale="$route.query || false" />
+        <CapacityInfo ref="CapacityInfoRef" :branch-code="branchCode" :is-scale="!!$route.query.isScale" />
       </div>
       <div class="ly-left-bottom ly-border">
         <Title class="title_3" icon="4">业绩数据<span>Performance data</span></Title>
         <div class="ly-left-bottom-box ly-flex-pack-justify">
           <div class="ly-left-bottom-left ly-border">
-            <PerformanceInfo ref="PerformanceInfoRef" :performance="performanceData.performance" :is-scale="$route.query || false" class="mb1rem" />
+            <PerformanceInfo ref="PerformanceInfoRef" :performance="performanceData.performance" :is-scale="!!$route.query.isScale" class="mb1rem" />
             <AmountTop5Chart ref="AmountTop5ChartRef" :province-ranking="performanceData.provinceRanking" />
           </div>
           <div class="ly-left-bottom-right ly-border">
