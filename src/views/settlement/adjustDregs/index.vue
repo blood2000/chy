@@ -268,7 +268,7 @@
       </el-form>
 
       <div v-show="showSearch && activeName === '7'">
-        <AlreadyPaid v-model="AlreadyPaid_queryParams" @handleQuery="handleQuery12" />
+        <AlreadyPaid v-model="alreadyPaid_queryParams" @handleQuery="handleQuery12" />
       </div>
     </div>
 
@@ -438,9 +438,9 @@
             :list="null" // 数据
         -->
         <AlreadyTable
-          v-model="AlreadyPaid_queryParams"
+          v-model="alreadyPaid_queryParams"
           :loading="loading"
-          :config="{api: 'hahah'}"
+          :config="{api: adjustDregsApi}"
           :show-search.sync="showSearch"
           @getList="getList1"
           @handleSelectionChange="handleSelectionChange1"
@@ -475,6 +475,7 @@
 
 <script>
 import { adjustList, adjustListApi, batchApply } from '@/api/settlement/adjust';
+import { adjustDregsList, adjustListApi as adjustDregsApi } from '@/api/settlement/adjustDregs';
 import { getUserInfo } from '@/utils/auth';
 // 驳回弹窗
 import RejectDialog from '../components/rejectDialog';
@@ -507,6 +508,7 @@ export default {
     return {
       tableColumnsConfig: [],
       api: adjustListApi + '--asjos',
+
       activeName: '4',
       createTime: '',
       // 遮罩层
@@ -593,14 +595,17 @@ export default {
 
       addition: 45, // tin添加的(追加高度)
 
+      // 渣土相关的
+
       areadyPaid_List: [], // 已打款的数据(单独)
 
 
-      AlreadyPaid_queryParams: {
+      alreadyPaid_queryParams: {
         'pageNum': 1,
         'pageSize': 10,
-        'total': 50
-      }
+        'total': 0
+      },
+      adjustDregsApi: adjustDregsApi + '--adjustDregsApi'
     };
   },
   computed: {
@@ -677,9 +682,14 @@ export default {
     },
     /** handleClick */
     handleClick(tab) {
-      this.queryParams.status = tab;
-      this.queryParams.pageNum = 1;
-      this.getList();
+      if (tab === 7) {
+        this.alreadyPaid_queryParams.pageNum = 1;
+        this.getadjustDregsList();
+      } else {
+        this.queryParams.status = tab;
+        this.queryParams.pageNum = 1;
+        this.getList();
+      }
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
@@ -697,8 +707,10 @@ export default {
         this.loading = false;
       });
     },
-    getList1() {
-      console.log(this.AlreadyPaid_queryParams);
+    // 获取渣土已审核列表
+    getadjustDregsList() {
+      // 触发请求
+      console.log(this.alreadyPaid_queryParams);
     },
     handleSelectionChange1(selection) {
       console.log(selection);
@@ -831,7 +843,7 @@ export default {
     },
 
     handleQuery12() {
-      console.log(this.AlreadyPaid_queryParams);
+      console.log(this.alreadyPaid_queryParams);
     },
 
     _handlerwaybillCode(arr) {
