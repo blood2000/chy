@@ -21,9 +21,18 @@
         label="总路线"
         :count="dataList.lienCount"
       />
-      <InfoBox
+      <!-- <InfoBox
         label="今日新增路线"
         :count="dataList.newLineCount"
+        :last-count="dataList.lastNewLineCount"
+        :has-yoy="true"
+        :yoy.sync="dataList.newLineYoy"
+        :yoy-type.sync="dataList.newLineYoyType"
+        :yoy-places="1"
+      /> -->
+      <InfoBox
+        label="今日新增路线"
+        :count="9"
         :last-count="dataList.lastNewLineCount"
         :has-yoy="true"
         :yoy.sync="dataList.newLineYoy"
@@ -32,13 +41,26 @@
       />
     </div>
     <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 14%">
-      <InfoBox
+      <!-- <InfoBox
         label="总网点"
         :count="dataList.branchCount"
       />
       <InfoBox
         label="今日新增网点"
         :count="dataList.newBranchCount"
+        :last-count="dataList.lastNewBranchCount"
+        :has-yoy="true"
+        :yoy.sync="dataList.newBranchYoy"
+        :yoy-type.sync="dataList.newBranchYoyType"
+        :yoy-places="1"
+      /> -->
+      <InfoBox
+        label="总网点"
+        :count="983"
+      />
+      <InfoBox
+        label="今日新增网点"
+        :count="23"
         :last-count="dataList.lastNewBranchCount"
         :has-yoy="true"
         :yoy.sync="dataList.newBranchYoy"
