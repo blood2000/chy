@@ -313,7 +313,7 @@ export default {
       console.log('isScale: ', isScale);
       if (!isScale) {
         document.getElementById('app').style.transform = 'scaleX(0.6)'; // 0.6 = 1920 / 3200
-        document.getElementById('app').style.transformOrigin = '0px 0px';
+        // document.getElementById('app').style.transformOrigin = '0px 0px';
       } else {
         this.removeScale();
       }
