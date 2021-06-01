@@ -10,12 +10,12 @@
       >
         <el-form-item
           v-show="isAdmin"
-          label="下单客户"
+          label="下单用户"
           prop="orderClient"
         >
           <el-input
             v-model="queryParams.orderClient"
-            placeholder="请输入下单客户"
+            placeholder="发货企业/操作人/手机号"
             clearable
             size="small"
             style="width: 228px"
