@@ -529,7 +529,7 @@ export default {
     },
     // 批量索票
     handleAskfor() {
-      this.$confirm('是否立即批量索票?', '警告', {
+      this.$confirm('是否立即批量索票?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
