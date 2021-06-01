@@ -204,6 +204,21 @@
             type="text"
             @click="handleTableBtn(row, 1)"
           >详情</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleTableBtn(row, 2)"
+          >索票</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleTableBtn(row, 3)"
+          >驳回</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleTableBtn(row, 4)"
+          >导出</el-button>
         </template>
       </RefactorTable>
 
@@ -215,8 +230,11 @@
         @pagination="getList"
       />
 
-      <!-- 运单详情 对话框 -->
-      <detail-dialog ref="DetailDialog" :current-id="currentId" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
+      <!-- 对账单弹窗 -->
+      <StatementsDialog ref="StatementsDialog" :open.sync="Statementsdialog" :disable="formDisable" :title="title" @refresh="getList" />
+
+      <!-- 驳回弹窗 -->
+      <reject-dialog ref="RejectDialog" :open.sync="rejectdialog" :title="title" :disable="formDisable" @refresh="getList" />
 
     </div>
 
@@ -253,12 +271,15 @@ import { askforList, askforListApi, shipmentList, askInvoice } from '@/api/finan
 import { getUserInfo } from '@/utils/auth';
 // import ChildDialog from '../components/childDialog';
 // 运单详情弹窗
-import DetailDialog from '@/views/waybill/components/detailDialog';
+import StatementsDialog from '@/views/settlement/adjustDregs/StatementsDialog';
+
+// 驳回弹窗
+import RejectDialog from './components/rejectDialog';
 
 
 export default {
   'name': 'Dregs',
-  components: { DetailDialog },
+  components: { StatementsDialog, RejectDialog },
   data() {
     return {
       tableColumnsConfig: [],
@@ -397,7 +418,7 @@ export default {
       visible: false,
       open: false,
       rejectdialog: false,
-      childdialog: false,
+      Statementsdialog: false,
       title: '',
       dialogWidth: '800px',
       // 当前选中的运单id
@@ -575,7 +596,7 @@ export default {
         });
       } else {
         this.$message({ type: 'warning', message: '请选择货主查询列表！' });
-        this.askforlist = [{ deliveryFeePractical: 123 }];
+        this.askforlist = [{ code: 123, deliveryFeePractical: 123 }];
       }
     },
     chooseShipment() {
@@ -607,8 +628,11 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(function() {
-        askInvoice({ shipmentCode: this.queryParams.shipmentCode, waybillCodes: this.ids }).then(response => {});
+      }).then(() => {
+        askInvoice({ shipmentCode: this.queryParams.shipmentCode, waybillCodes: this.ids }).then(response => {
+          this.msgSuccess('索票申请成功');
+          this.ids = null;
+        });
         this.getList();
       });
     },
@@ -616,11 +640,38 @@ export default {
       this.visible = true;
       switch (index) {
         case 1:
-          this.$refs.DetailDialog.reset();
-          this.currentId = row.code;
-          this.open = true;
-          this.title = '运输单信息';
-          this.formDisable = true;
+          // this.$refs.DetailDialog.reset();
+          // this.currentId = row.code;
+          // this.open = true;
+          // this.title = '运输单信息';
+          // this.formDisable = true;
+          this.Statementsdialog = true;
+          this.title = '对账单';
+          this.$refs.StatementsDialog.setForm(row);
+          break;
+        case 2:
+          // // this.$refs.DetailDialog.reset();
+          // // this.currentId = row.code;
+          // // this.open = true;
+          // // this.title = '运输单信息';
+          // // this.formDisable = true;
+          // console.log('索票', row);
+          this.ids = row.code;
+          this.handleAskfor();
+          break;
+        case 3:
+          this.$refs.RejectDialog.reset();
+          this.rejectdialog = true;
+          this.title = '驳回运输核算单';
+          this.$refs.RejectDialog.setForm(row);
+          break;
+        case 4:
+          // this.$refs.DetailDialog.reset();
+          // this.currentId = row.code;
+          // this.open = true;
+          // this.title = '运输单信息';
+          // this.formDisable = true;
+          this.handleExport();
           break;
         default:
           break;

@@ -1,5 +1,5 @@
 <template>
-  <el-dialog class="i-adjust" :title="title" :visible="visible" width="1400px" :close-on-click-modal="false" append-to-body @close="cancel">
+  <el-dialog class="i-adjust" :title="title" :visible="visible" width="80%" :close-on-click-modal="false" append-to-body @close="cancel">
     <div v-if="open">
       <div class="ly-t-center f20 b mb20">
         <div>对账单</div>
@@ -187,7 +187,14 @@
     </div>
 
     <!-- 运单详情 对话框 -->
-    <detail-dialog ref="DetailDialog" :current-id="currentId" :title="titleDetailDialog" :open.sync="openDetailDialog" :disable="formDisable" @refresh="getList" />
+    <el-dialog class="i-adjust" title="运单详情" :visible.sync="openDetailDialog" width="80%" :close-on-click-modal="false" append-to-body>
+      <WaybillDialog
+        v-if="openDetailDialog"
+        :dialog-config="{
+
+        }"
+      />
+    </el-dialog>
 
     <!-- 开票信息管理 -->
     <el-dialog class="i-adjust" title="票务信息" :visible.sync="openBillPage" width="80%" :close-on-click-modal="false" append-to-body>
@@ -199,12 +206,12 @@
 
 <script>
 // 运单详情弹窗
-import DetailDialog from '@/views/waybill/components/detailDialog';
+import WaybillDialog from '@/views/waybill/manages';
 
 import BillPage from '@/views/enterprise/company/billing';
 export default {
   name: 'AdjustDialog',
-  components: { DetailDialog, BillPage },
+  components: { WaybillDialog, BillPage },
   props: {
     title: {
       type: String,
@@ -331,11 +338,11 @@ export default {
     },
 
     handleBtn(row) {
-      this.$refs.DetailDialog.reset();
-      this.currentId = row.wayBillCode || 'f1bd42167008437e84474f90e27850be';
+      // this.$refs.DetailDialog.reset();
+      // this.currentId = row.wayBillCode || 'f1bd42167008437e84474f90e27850be';
       this.openDetailDialog = true;
-      this.titleDetailDialog = '运输单信息';
-      this.formDisable = true;
+      // this.titleDetailDialog = '运输单信息';
+      // this.formDisable = true;
     },
 
     // 编辑票务信息
