@@ -21,7 +21,6 @@
           <span v-if="scope.row.stowageStatus === '0' || !scope.row.stowageStatus">{{ scope.row.unloadWeight || '0.00' }} 吨</span>
         </template>
       </el-table-column>
-      <el-table-column width="120" label="货物损耗（kg）" align="center" prop="wastage" />
       <el-table-column width="100" label="实收运费" align="center" prop="deliveryFeePractical" />
       <el-table-column width="100" label="纳税金额" align="center" prop="taxPayment" />
       <el-table-column width="100" label="服务费" align="center" prop="serviceFee" />

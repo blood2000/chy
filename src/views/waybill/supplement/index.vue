@@ -476,14 +476,14 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
-      const loading = this.$loading({
-        lock: true,
-        text: '提交中',
-        spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0.7)'
-      });
       this.$refs['form'].validate(valid => {
         if (valid) {
+          const loading = this.$loading({
+            lock: true,
+            text: '提交中',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+          });
           if (this.form.loadWeight > 0) {
             if (!this.stowage && this.form.loadWeight !== 1) {
               this.msgWarning('运单车数只能为1车！');
