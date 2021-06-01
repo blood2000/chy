@@ -206,8 +206,8 @@
             size="mini"
             @click="handleExport"
           >导出</el-button>
+          <!-- v-hasPermi="['data:report:report']" -->
           <el-button
-            v-hasPermi="['data:report:report']"
             :disabled="!ids.length"
             type="info"
             icon="el-icon-s-order"
@@ -215,6 +215,7 @@
             @click="handleReport"
           >批量上报</el-button>
           <el-button
+            v-if="false"
             v-hasPermi="['data:report:import']"
             type="info"
             icon="el-icon-upload2"
@@ -222,6 +223,7 @@
             @click="handleImport"
           >批量导入</el-button>
           <el-button
+            v-if="false"
             v-hasPermi="['data:report:download']"
             type="primary"
             icon="el-icon-download"
@@ -229,6 +231,7 @@
             @click="handleDownload"
           >下载模板</el-button>
           <el-button
+            v-if="false"
             v-hasPermi="['data:report:update']"
             type="success"
             icon="el-icon-s-open"
@@ -328,9 +331,9 @@
             @click="handleEdit(row, 'seperate')"
           >分单列表</el-button>
 
+          <!-- v-hasPermi="['data:report:report']" -->
           <el-button
-            v-if="false"
-            v-hasPermi="['data:report:report']"
+            v-if="true"
             size="mini"
             type="text"
             @click="handleEdit(row, 'report')"
@@ -606,7 +609,7 @@ export default {
     },
     /** 批量上报 */
     handleReport() {
-      console.log(this.ids);
+      // console.log(this.ids);
 
       this.ids.forEach(row => {
         this._waybillReport(row);
