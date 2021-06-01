@@ -18,15 +18,16 @@ const CardReader = {
         return 'ws://' + CardReader._attr.host + ':' + CardReader._attr.port;
       }
     },
-    connect: function() {
+    connect: function(success, error) {
       if (CardReader.socket == null) {
         CardReader.socket = new WebSocket(this.getWsUrl());
         CardReader.socket.onopen = function() {
           CardReader.log.info('# [Socket] 连接本地服务成功');
+          success && success('连接服务成功');
         };
         CardReader.socket.onclose = function(event) {
           CardReader.log.warn('# [Socket] 本地服务链接已断开 : ', event.wasClean);
-          Message.error('服务链接已断开, 请检查服务是否开启');
+          error && error('服务链接已断开, 请检查服务是否开启');
         };
         CardReader.socket.onmessage = function(event) {
           CardReader.log.info(event.data);
@@ -103,6 +104,39 @@ const CardReader = {
         'source': str
       };
     },
+    /**
+         * 数据
+         * @param str 格式: XX | XXX | XXXXXXXX;XXXXXXXX;XXXXXXXX;XXXXXXXX;XXXXXXXX;XXXXXXXX
+         * @returns {{code: string, data: (string|null), success: boolean}}
+         */
+    resultData: function(str, key = [
+      'user_code',
+      'user_name',
+      'user_telno',
+      'issuing_code',
+      'issuing_name']) {
+      // 1000|1|adf34d2d22b64c43b31476a746dd757f;黄婷;18415451845;94671e0bff6647e88db777427d700e32;陈大帅;1622531892853
+
+      const arr = str.split('|');
+      const arr2 = arr[2].split(';');
+
+      const data = {};
+      key.forEach((e, index) => {
+        data[e] = arr2[index];
+      });
+      if (key.length !== arr2.length) {
+        console.log('字段不匹配, 截取');
+        data['other'] = arr2.filter((e, index) => {
+          return index >= key.length;
+        });
+      }
+      return {
+        meter: [arr[0], arr[1]],
+        data
+      };
+    },
+
+
     /**
          * DES 单倍长加密
          * @param message
@@ -246,7 +280,7 @@ const CardReader = {
     getCard: async function() {
       let ret;
       ret = await CardReader.fn.exec(CardReader.command.get.card);
-      console.log('获得卡', ret);
+      ret = CardReader.fn.getResult(ret);
       ret = await CardReader.fn.exec(CardReader.command.reset);
       console.log('选择卡', ret);
       ret = await CardReader.fn.exec(CardReader.command.get.random);
@@ -254,8 +288,7 @@ const CardReader = {
       console.log('获得随机数', ret);
       if (!ret.success) {
         await CardReader.action.error();
-        Message.error('请重新放置卡片：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
-        // console.error('请重新放置卡片：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
+        console.error('请重新放置卡片：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
         return;
       }
       const encrypt = CardReader.fn.encryptByDES(ret.data, CardReader._attr.key);
@@ -477,6 +510,7 @@ CardReader.action['issuingCard'] = async function(data) {
 CardReader.action['readUserInfo'] = async function() {
   console.log('【读取用户信息】');
   let ret = await this.getCard();
+
   ret = await CardReader.fn.apdu((function() {
     return ['00', 'A4', '00', '00', '02', '3F00'].join('');
   })());

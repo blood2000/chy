@@ -36,7 +36,7 @@
       <!-- stowageStatus "配载方式 0->吨，1->方 2->车数配载" -->
       <el-table-column width="160" label="装货数量" align="left" prop="loadWeight">
         <template slot-scope="scope">
-          <span v-if="scope.row.isDregs === 1">{{ scope.row.loadWeight }}</span>
+          <span v-if="true">{{ scope.row.loadWeight }}</span>
           <div v-else>
             <el-input-number v-if="scope.row.stowageStatus !== '2'" v-model="scope.row.loadWeight" :controls="false" placeholder="请输入装货数量" style="width:100%;" size="mini" @blur="handlerBlur(scope.row, scope.row.loadWeight, 'loadWeight' )" />
             <span v-else>{{ scope.row.loadWeight }}</span>
@@ -47,7 +47,7 @@
 
       <el-table-column width="160" label="卸货数量" align="left" prop="unloadWeight">
         <template slot-scope="scope">
-          <span v-if="scope.row.isDregs === 1">{{ scope.row.unloadWeight }}</span>
+          <span v-if="true">{{ scope.row.unloadWeight }}</span>
           <div v-else>
             <el-input-number v-if="scope.row.stowageStatus !== '2'" v-model="scope.row.unloadWeight" :controls="false" placeholder="请输入卸货数量" style="width:100%;" size="mini" @blur="handlerBlur(scope.row, scope.row.unloadWeight, 'unloadWeight' )" />
             <span v-else>{{ scope.row.unloadWeight }}</span>
@@ -154,7 +154,7 @@
 
 
       <el-table-column width="120" label="纳税金额" align="center" prop="taxPayment" fixed="right" />
-      <el-table-column width="120" label="服务费" align="center" prop="serviceFee" fixed="right" />
+      <!-- <el-table-column width="120" label="服务费" align="center" prop="serviceFee" fixed="right" /> -->
       <el-table-column width="162" label="司机实收金额" align="center" prop="deliveryCashFee" fixed="right">
         <template slot-scope="scope">
           <!-- <span>{{ scope.row.deliveryCashFee }}</span> -->
@@ -162,7 +162,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="120" label="货主实付金额" align="center" prop="shipperRealPay" fixed="right" />
+      <!-- <el-table-column width="120" label="货主实付金额" align="center" prop="shipperRealPay" fixed="right" /> -->
 
     </el-table>
 

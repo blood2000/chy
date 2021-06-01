@@ -134,7 +134,7 @@
         :gutter="10"
         class="mb8"
       >
-        <el-col v-if="!isShipment && activeName == '1'" :span="1.5">
+        <el-col v-if="false && !isShipment && activeName == '1'" :span="1.5">
           <el-button
             v-hasPermi="['assets:vehicle:edit']"
             type="primary"

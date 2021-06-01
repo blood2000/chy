@@ -642,7 +642,16 @@ export default {
       sortNum: 8,
       label: 'IC卡核对状态',
       width: 120
-    }, { // 需要顶替掉的项
+    },
+    { // 需要顶替掉的项
+      prop: 'huojhzouihfowe',
+      isShow: true,
+      tooltip: false,
+      sortNum: 28,
+      label: '货主应付金额',
+      width: 120
+    },
+    { // 需要顶替掉的项
       prop: 'isReturn',
       isShow: false,
       tooltip: false,
@@ -715,21 +724,23 @@ export default {
     },
     // 批量申请打款
     handleApply() {
-      this.$confirm('是否确认批量申请打款?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        batchApply(this.bodyParams).then(response => {
-          this.$message({ type: 'success', message: '申请打款成功！' });
-          this.getList();
-        });
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消'
-        });
-      });
+      // this.$confirm('是否确认批量申请打款?', '提示', {
+      //   confirmButtonText: '确定',
+      //   cancelButtonText: '取消',
+      //   type: 'warning'
+      // }).then(() => {
+      //   batchApply(this.bodyParams).then(response => {
+      //     this.$message({ type: 'success', message: '申请打款成功！' });
+      //     this.getList();
+      //   });
+      // }).catch(() => {
+      //   this.$message({
+      //     type: 'info',
+      //     message: '已取消'
+      //   });
+      // });
+      console.log(this.commentlist);
+      this._handlerwaybillCode(this.commentlist);
     },
     // 批量评价
     handleAssess() {
@@ -781,12 +792,7 @@ export default {
           //     message: '已取消'
           //   });
           // });
-          this.Statementsdialog = true;
-          this.title = '对账单';
-          // this.waybillCodeList = [];
-          // this.waybillCodeList.push(row.wayBillCode);
-          this.$refs.StatementsDialog.setForm(row);
-          console.log(123);
+          this._handlerwaybillCode([row]);
           break;
         case 5:
           this.commentdialog = true;
@@ -826,6 +832,12 @@ export default {
 
     handleQuery12() {
       console.log(this.AlreadyPaid_queryParams);
+    },
+
+    _handlerwaybillCode(arr) {
+      this.Statementsdialog = true;
+      this.title = '对账单';
+      this.$refs.StatementsDialog.setForm(arr);
     }
   }
 };

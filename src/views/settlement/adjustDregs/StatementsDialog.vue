@@ -191,7 +191,8 @@
       <WaybillDialog
         v-if="openDetailDialog"
         :dialog-config="{
-
+          showSearch: false,
+          list: []
         }"
       />
     </el-dialog>
