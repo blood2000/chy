@@ -194,8 +194,11 @@ export default {
         if (e.data === 'pong') {
           // console.log('pong');
           this.heartCheck();
-        } else if (e.data) {
+        } else if (e.data && e.data.length > 10) {
           this.setData(JSON.parse(e.data));
+        } else if (e.data === 'refresh') {
+          // 判断凌晨后更新接口
+          this.refreshData();
         }
       };
       this.websock.onopen = () => {
@@ -235,7 +238,7 @@ export default {
         this.websock.send('ping');
         // 计算答复的超时时间
         this.serverTimeout = setTimeout(() => {
-          this.websock.close();
+          if (this.websock) this.websock.close();
           console.log('答复超时');
         }, 5 * 1000);
       }, 4 * 1000);
@@ -359,6 +362,17 @@ export default {
         this.companyRankData = data.companyList || [];
         this.driverRankData = data.driverList || [];
       });
+    },
+    // 零点更新接口
+    refreshData() {
+      this.getPerformanceData(); // 业绩
+      this.getBusinessData(); // 运营
+      this.getRankData(); // 总排名
+      this.$refs.RegulatoryDataRef.getData(); // 监管
+      this.$refs.UserInfoRef.getData(); // 用户
+      this.$refs.CapacityInfoRef.getData(); // 运力
+      this.$refs.TargetChartRef.getData(); // 目标
+      this.$refs.TotalDataRef.getCount();// 地图运单
     }
   }
 };
