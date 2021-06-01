@@ -170,8 +170,8 @@ export default {
       // console.log('orderNotice-capacity: ', val);
       const { newLineNum, newPointNum } = val;
       if (newLineNum) {
-        this.dataList.newLineCount += newLineNum;
-        this.dataList.lienCount += newLineNum;
+        // this.dataList.newLineCount += newLineNum;
+        // this.dataList.lienCount += newLineNum;
       }
       if (newPointNum) {
         this.dataList.newBranchCount += newPointNum;
