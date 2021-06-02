@@ -31,12 +31,17 @@ export default {
   },
   data() {
     return {
-      dataList: {}
+      dataList: {},
+      timeType: null
     };
   },
   methods: {
     getData(timeType) {
-      getShipmentWaybillCount(this.branchCode, timeType).then(response => {
+      this.timeType = timeType;
+      this.getCount();
+    },
+    getCount() {
+      getShipmentWaybillCount(this.branchCode, this.timeType).then(response => {
         this.dataList = response.data || {};
         if (response.data.partitionListVo && response.data.partitionListVo.length > 0) {
           this.$emit('getPartitionListVo', response.data.partitionListVo);

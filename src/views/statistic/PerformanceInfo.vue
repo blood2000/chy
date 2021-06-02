@@ -49,7 +49,7 @@
       <InfoBox
         label="今日新增运费"
         unit="万"
-        :count="myPerformance.newWaybillAmount"
+        :count="!isScale ? myPerformance.newTransactionAmount * 0.9 : myPerformance.newWaybillAmount"
         :last-count="myPerformance.lastWaybillAmount"
         :places="2"
         :has-yoy="true"
@@ -74,7 +74,8 @@ export default {
       default: () => {
         return {};
       }
-    }
+    },
+    isScale: Boolean
   },
   data() {
     return {

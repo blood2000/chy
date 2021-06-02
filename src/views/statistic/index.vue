@@ -21,13 +21,13 @@
       </div>
       <div class="ly-left-center mb1rem ly-border">
         <Title class="title_3" icon="3">运力情况<span>Capacity situation</span></Title>
-        <CapacityInfo ref="CapacityInfoRef" :branch-code="branchCode" />
+        <CapacityInfo ref="CapacityInfoRef" :branch-code="branchCode" :is-scale="!!$route.query.isScale" />
       </div>
       <div class="ly-left-bottom ly-border">
         <Title class="title_3" icon="4">业绩数据<span>Performance data</span></Title>
         <div class="ly-left-bottom-box ly-flex-pack-justify">
           <div class="ly-left-bottom-left ly-border">
-            <PerformanceInfo ref="PerformanceInfoRef" :performance="performanceData.performance" class="mb1rem" />
+            <PerformanceInfo ref="PerformanceInfoRef" :performance="performanceData.performance" :is-scale="!!$route.query.isScale" class="mb1rem" />
             <AmountTop5Chart ref="AmountTop5ChartRef" :province-ranking="performanceData.provinceRanking" />
           </div>
           <div class="ly-left-bottom-right ly-border">
@@ -194,8 +194,11 @@ export default {
         if (e.data === 'pong') {
           // console.log('pong');
           this.heartCheck();
-        } else if (e.data) {
+        } else if (e.data && e.data.length > 10) {
           this.setData(JSON.parse(e.data));
+        } else if (e.data === 'refresh') {
+          // 判断凌晨后更新接口
+          this.refreshData();
         }
       };
       this.websock.onopen = () => {
@@ -235,7 +238,7 @@ export default {
         this.websock.send('ping');
         // 计算答复的超时时间
         this.serverTimeout = setTimeout(() => {
-          this.websock.close();
+          if (this.websock) this.websock.close();
           console.log('答复超时');
         }, 5 * 1000);
       }, 4 * 1000);
@@ -359,6 +362,17 @@ export default {
         this.companyRankData = data.companyList || [];
         this.driverRankData = data.driverList || [];
       });
+    },
+    // 零点更新接口
+    refreshData() {
+      this.getPerformanceData(); // 业绩
+      this.getBusinessData(); // 运营
+      this.getRankData(); // 总排名
+      this.$refs.RegulatoryDataRef.getData(); // 监管
+      this.$refs.UserInfoRef.getData(); // 用户
+      this.$refs.CapacityInfoRef.getData(); // 运力
+      this.$refs.TargetChartRef.getData(); // 目标
+      this.$refs.TotalDataRef.getCount();// 地图运单
     }
   }
 };

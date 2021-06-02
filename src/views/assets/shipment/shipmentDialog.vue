@@ -434,8 +434,8 @@ export default {
         { dictLabel: '是', dictValue: 1 }
       ],
       payInvoiceTypeOptions: [
-        { dictLabel: '核算打款后', dictValue: '7' },
-        { dictLabel: '核算申请后', dictValue: '6' }
+        { dictLabel: '打款成功后', dictValue: '7' },
+        { dictLabel: '申请打款后', dictValue: '6' }
       ],
       // 核算方式字典
       accountTypeOptions: [],

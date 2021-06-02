@@ -16,8 +16,8 @@
       <el-table-column width="100" label="服务费税" align="center" prop="serviceTaxFee" />
     </el-table> -->
     <el-form ref="form" :model="form" :rules="rules" label-width="130px">
-      <el-form-item label="发票批次号" prop="askForNo">
-        <el-input v-model="form.askForNo" disabled placeholder="请输入发票号码" clearable size="small" style="width:90%;" />
+      <el-form-item label="发票索取记录号" prop="askForNo">
+        <el-input v-model="form.askForNo" disabled placeholder="请输入发票索取记录号" clearable size="small" style="width:90%;" />
       </el-form-item>
       <el-form-item label="发票图片">
         <uploadImage v-model="form.images" />
@@ -26,10 +26,10 @@
         <el-input v-model="form.receiveName" placeholder="请输入收票人姓名" clearable size="small" style="width:90%;" />
       </el-form-item>
       <el-form-item label="收票人电话" prop="receivePhone">
-        <el-input v-model="form.receivePhone" placeholder="请输入收票人电话" clearable size="small" style="width:90%;" />
+        <el-input v-model="form.receivePhone" placeholder="请输入收票人电话" maxlength="11" clearable size="small" style="width:90%;" />
       </el-form-item>
       <el-form-item label="收票地址" prop="receiveAddress">
-        <el-input v-model="form.receiveAddress" placeholder="请输入收票地址" clearable size="small" style="width:90%;" />
+        <el-input v-model="form.receiveAddress" placeholder="请输入收票地址" maxlength="50" clearable size="small" style="width:90%;" />
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
