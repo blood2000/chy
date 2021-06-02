@@ -101,11 +101,12 @@ export default {
       this.chart.setOption({
         geo: {
           map: 'china',
-          zoom: 1.2,
+          zoom: 1.08,
           z: 2,
           aspectScale: 0.8,
-          layoutCenter: ['49%', '48%'],
-          layoutSize: '100%',
+          // layoutCenter: ['49%', '48%'],
+          // layoutSize: '100%',
+          top: '9%',
           itemStyle: {
             normal: {
               borderColor: 'rgba(1, 227, 255, 1)',
@@ -126,10 +127,11 @@ export default {
           type: 'map',
           z: 0,
           map: 'china',
-          zoom: 1.2,
+          zoom: 1.08,
           aspectScale: 0.8,
-          layoutCenter: ['49%', '48%'],
-          layoutSize: '100%',
+          // layoutCenter: ['49%', '48%'],
+          // layoutSize: '100%',
+          top: '9%',
           itemStyle: {
             normal: {
               borderColor: 'rgba(1, 227, 255, 1)',
