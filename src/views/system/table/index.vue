@@ -70,6 +70,7 @@
       <el-table v-loading="loading" :data="configList" :close-on-click-modal="false" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="字段名" align="center" prop="fieldName" />
+        <el-table-column label="排序" align="center" sortable prop="sortNum" />
         <el-table-column label="接口地址" align="center" prop="route" />
         <el-table-column label="字段描述" align="center" prop="comment" />
         <el-table-column label="列宽" align="center" prop="width">
