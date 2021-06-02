@@ -75,27 +75,26 @@
               <td id="coal_type_name">{{ obj.goodsTypeName || obj.goodsBigTypeName }}</td>
             </tr>
             <tr>
-              <td><b>计划数量</b></td>
+              <td><b>最高配载</b></td>
               <td id="weight">{{ obj.loadWeight }}
                 {{ obj.stowageStatus == '0' ? '吨' : (obj.stowageStatus == '1'? '立方': '车') }}
               </td>
               <td><b>货物描述</b></td>
               <td id="goods_type">{{ obj.goodsName }}</td>
-              <td><b>货值（元）</b></td>
-              <td id="goods_total">{{ obj.goodsAmount }}</td>
+              <!-- <td><b>货值（元）</b></td>
+              <td id="goods_total">{{ obj.goodsAmount }}</td> -->
+              <td><b>货主应付金额（元）</b></td>
+              <td id="amount">￥{{ obj.deliveryFeeDeserved }}</td>
             </tr>
             <tr>
-              <td><b>运费金额（元）</b></td>
-              <td id="amount">￥{{ obj.deliveryFeeDeserved }}</td>
               <td><b>合同签订时间</b></td>
               <td id="create_time">{{ obj.createTime }}</td>
-              <td><b>货物装车截止时间</b></td>
-              <td id="last_loading_time">{{ obj.lastLoadingTime }}</td>
+              <td><b>货物装车时间</b></td>
+              <td id="last_loading_time">{{ obj.loadTime }}</td>
+              <td><b>是否开票</b></td>
+              <td>{{ obj.aaaaaaaaaaaaa || '是' }}</td>
             </tr>
             <tr>
-              <td><b>是否开票</b></td>
-
-              <td>{{ obj.aaaaaaaaaaaaa || '是' }}</td>
               <td><b>备注</b></td>
               <td colspan="4">{{ obj.shipperRemark || '' }}</td>
             </tr>
