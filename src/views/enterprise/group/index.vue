@@ -63,6 +63,12 @@
       </el-row>
 
       <RefactorTable :loading="loading" :data="infoList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+        <template #isOften="{row}">
+          <span>{{ selectDictLabel(isOftenOptions, row.isOften) }}</span>
+        </template>
+        <template #isNotInvoice="{row}">
+          <span>{{ selectDictLabel(isNotInvoiceOptions, row.isNotInvoice) }}</span>
+        </template>
         <template #edit="{row}">
           <el-button
             v-hasPermi="['assets:shipment:project:remove']"
@@ -135,6 +141,16 @@ export default {
         disUserName: null,
         disUserPhone: null
       },
+      // 是否常用调度组
+      isOftenOptions: [
+        { 'dictLabel': '否', 'dictValue': '0' },
+        { 'dictLabel': '是', 'dictValue': '1' }
+      ],
+      // 是否不开票打款
+      isNotInvoiceOptions: [
+        { 'dictLabel': '否', 'dictValue': '0' },
+        { 'dictLabel': '是', 'dictValue': '1' }
+      ],
       // 表单参数
       form: {},
       // 表单校验

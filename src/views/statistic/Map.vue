@@ -361,10 +361,10 @@ export default {
       const circle = document.createElement('div');
       wrap.appendChild(circle);
       // 动画-圆点闪烁1s
-      circle.setAttribute('class', 's-echart-map-waybill-tooltip-circle');
+      circle.setAttribute('class', 's-echart-map-waybill-tooltip-circle color' + status);
       // createDom-line
       const line = document.createElement('div');
-      line.setAttribute('class', 's-echart-map-waybill-tooltip-line');
+      line.setAttribute('class', 's-echart-map-waybill-tooltip-line color' + status);
       wrap.appendChild(line);
       // createDom-content
       const content = document.createElement('div');
@@ -615,14 +615,28 @@ export default {
     position: absolute;
     top: -0.4rem;
     left: 50%;
-    margin-left: -0.33rem;
-    width: 0.8rem;
-    height: 0.8rem;
+    transform: translateX(-50%);
     border-radius: 50%;
-    background: url('~@/assets/images/statistic/circle.png') no-repeat;
-    background-size: 100% 100%;
+    // width: 0.8rem;
+    // height: 0.8rem;
+    width: 0.4rem;
+    height: 0.4rem;
+    // background: url('~@/assets/images/statistic/circle.png') no-repeat;
+    // background-size: 100% 100%;
     animation: s-echart-map-waybill-tooltip-text-flashing 1s;
     animation-iteration-count: 1;
+    &.color1{
+      background: rgba(2, 74, 181, 0.9);
+      box-shadow: 0 0 0.3rem rgba(2, 74, 181, 0.8);
+    }
+    &.color2{
+      background: rgba(126, 53, 184, 0.9);
+      box-shadow: 0 0 0.3rem rgba(126, 53, 184, 0.8);
+    }
+    &.color3{
+      background: rgba(255, 126, 0, 0.8);
+      box-shadow: 0 0 0.3rem rgba(255, 126, 0, 0.8);
+    }
   }
   @keyframes s-echart-map-waybill-tooltip-text-flashing {
     0% { opacity: 0; }
@@ -632,13 +646,22 @@ export default {
   }
   // 线条
   >.s-echart-map-waybill-tooltip-line{
-    width: 0.05rem;
-    border-left: 0.05rem dashed rgba(255, 255, 255, 0.6);
+    //border-left: 0.05rem dashed rgba(255, 255, 255, 0.6);
     position: absolute;
     left: 50%;
-    bottom: 0.2rem;
+    margin-left: -0.06rem;
+    bottom: 0.3rem;
     height: 0;
     transition: height 0.3s;
+    &.color1{
+      border-right: 0.08rem dashed rgba(2, 74, 181, 0.8);
+    }
+    &.color2{
+      border-right: 0.08rem dashed rgba(126, 53, 184, 0.8);
+    }
+    &.color3{
+      border-right: 0.08rem dashed rgba(255, 126, 0, 1);
+    }
   }
   // 消息框
   >.s-echart-map-waybill-tooltip-content{

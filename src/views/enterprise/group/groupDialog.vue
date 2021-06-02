@@ -6,16 +6,28 @@
         <el-input v-model="form.disUserName" placeholder="请输入调度者姓名" />
       </el-form-item>
       <el-form-item label="调度者手机" prop="disUserPhone">
-        <el-input v-model="form.disUserPhone" placeholder="请输入调度者手机" />
+        <el-input v-model="form.disUserPhone" maxlength="11" placeholder="请输入调度者手机" />
       </el-form-item>
       <el-form-item label="调度组名称" prop="disName">
         <el-input v-model="form.disName" placeholder="请输入调度组名称" />
       </el-form-item>
       <el-form-item label="常用调度组" prop="isOften">
-        <el-input v-model="form.isOften" type="number" placeholder="请输入调度组名称" />
+        <el-switch
+          v-model="form.isOften"
+          active-color="#409EFF"
+          inactive-color="#9FA2B5"
+          active-value="1"
+          inactive-value="0"
+        />
       </el-form-item>
       <el-form-item label="不开票打款" prop="isNotInvoice">
-        <el-input v-model="form.isNotInvoice" type="number" placeholder="请输入调度者手机" />
+        <el-switch
+          v-model="form.isNotInvoice"
+          active-color="#409EFF"
+          inactive-color="#9FA2B5"
+          active-value="1"
+          inactive-value="0"
+        />
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -98,8 +110,8 @@ export default {
         disName: null,
         disUserName: null,
         disUserPhone: null,
-        isNotInvoice: null,
-        isOften: null
+        isNotInvoice: 0,
+        isOften: 0
       };
       this.resetForm('form');
     },
