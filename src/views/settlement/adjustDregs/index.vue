@@ -268,7 +268,7 @@
       </el-form>
 
       <div v-show="showSearch && activeName === '7'">
-        <AlreadyPaid v-model="alreadyPaid_queryParams" @handleQuery="handleQuery12" />
+        <AlreadyPaid v-model="alreadyPaid_queryParams" @handleQuery="handleClick('7')" />
       </div>
     </div>
 
@@ -393,6 +393,8 @@
               type="text"
               @click="handleTableBtn(row, 4)"
             >申请对账</el-button>
+
+
             <el-button
               v-if="activeName == '7' && !isAdmin"
               size="mini"
@@ -405,6 +407,7 @@
               type="text"
               @click="handleTableBtn(row, 8)"
             >评价详情</el-button>
+
             <el-button
               v-if="!isShipment && row.isChild == '2'"
               v-has-permi="['transportation:waybill:childList']"
@@ -427,6 +430,7 @@
           :page.sync="queryParams.pageNum"
           :limit.sync="queryParams.pageSize"
           @pagination="getList"
+          @handleTableBtn="(row, type)=>{ handleTableBtn(row, type) }"
         />
       </div>
 
@@ -442,9 +446,8 @@
           :loading="loading"
           :config="{api: adjustDregsApi}"
           :show-search.sync="showSearch"
-          @getList="getList1"
+          @getList="getadjustDregsList"
           @handleSelectionChange="handleSelectionChange1"
-          @handleTableBtn="(row,type)=>handleTableBtn(row,type)"
         />
       </div>
 
@@ -601,6 +604,14 @@ export default {
 
 
       alreadyPaid_queryParams: {
+        batchNo: undefined, //	批次号	query	false
+        companyName: undefined, //	发货企业	query	false
+        invoiceTitle: undefined, //	发票抬头	query	false
+        operator: undefined, //	操作人名称	query	false
+        status: 4, //	1已申请对账列表 2已申请开票列表 3已申请打款列表 4已完成列表	query	false
+        teamName: undefined, //	调度者名称	query	false
+        ztcName: undefined, //	渣土场	query	false
+
         'pageNum': 1,
         'pageSize': 10,
         'total': 0
@@ -682,7 +693,7 @@ export default {
     },
     /** handleClick */
     handleClick(tab) {
-      if (tab === 7) {
+      if (tab === '7') {
         this.alreadyPaid_queryParams.pageNum = 1;
         this.getadjustDregsList();
       } else {
@@ -711,9 +722,10 @@ export default {
     getadjustDregsList() {
       // 触发请求
       this.loading = true;
+      console.log(this.alreadyPaid_queryParams, 'qignqiu');
       adjustDregsList(this.alreadyPaid_queryParams).then(res => {
         console.log(res);
-        this.alreadyPaid_queryParams.total = res.total;
+        this.alreadyPaid_queryParams.total = res.data.total;
         this.loading = false;
       });
 
@@ -839,14 +851,25 @@ export default {
           this.title = '货主评价司机详情';
           this.$refs.RateDialog.setForm(row);
           break;
+        case 'XIANGQONG':
+          this.Statementsdialog = true;
+          this.title = '对账单详情';
+          this.$refs.StatementsDialog.setForm(row);
+          break;
         default:
           break;
       }
     },
 
     nuclearCardOpen() {
-      this.nuclearCardDialog = true;
-      this.$refs.NuclearCard.init({ id: 123 });
+      this.$confirm('请确认读卡器USB设备连接上了吗? 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.nuclearCardDialog = true;
+        this.$refs.NuclearCard.init({ id: 123 });
+      }).catch(() => {});
     },
 
     handleQuery12() {

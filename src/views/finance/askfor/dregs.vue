@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- 发票索取-渣土 页面 -->
     <el-form
       ref="queryForm"
       :model="queryParams"
@@ -8,7 +9,7 @@
     >
       <div v-if="!isShipment" class="app-container" style="display: flex; align-items: center;">
         <el-form-item label="发货企业" prop="shipmentCode" style="margin-bottom:0">
-          <!-- filterable开启可搜索 remote远程搜索 reserve-keyword 保存搜索关键词 -->
+          <!-- filterable开启可搜索 remote远程搜索 reserve-keyword 保存搜索关键词  companyName -->
           <el-select
             v-model="queryParams.shipmentCode"
             v-el-select-loadmore="loadmore"
@@ -45,10 +46,10 @@
       <div v-show="showSearch" class="app-container app-container--search">
         <el-form-item
           label="对账批次号"
-          prop="dhsihaqhsbkabfk"
+          prop="batchNo"
         >
           <el-input
-            v-model="queryParams.dhsihaqhsbkabfk"
+            v-model="queryParams.batchNo"
             placeholder="请输入对账批次号"
             clearable
             size="small"
@@ -59,10 +60,10 @@
 
         <el-form-item
           label="渣土场"
-          prop="zhatusanfsn"
+          prop="ztcName"
         >
           <el-input
-            v-model="queryParams.zhatusanfsn"
+            v-model="queryParams.ztcName"
             placeholder="请输入渣土场"
             clearable
             size="small"
@@ -71,12 +72,12 @@
           />
         </el-form-item>
         <el-form-item
-          label="调度组名称"
-          prop="diaodshahsna"
+          label="调度者名称"
+          prop="teamName"
         >
           <el-input
-            v-model="queryParams.diaodshahsna"
-            placeholder="请输入调度组名称"
+            v-model="queryParams.teamName"
+            placeholder="请输入调度者名称"
             clearable
             size="small"
             style="width: 230px"
@@ -86,10 +87,10 @@
 
         <el-form-item
           label="操作人"
-          prop="sfuwnfskjnqa"
+          prop="operator"
         >
           <el-input
-            v-model="queryParams.sfuwnfskjnqa"
+            v-model="queryParams.operator"
             placeholder="请输入操作人"
             clearable
             size="small"
@@ -103,10 +104,10 @@
         <el-form-item
           v-if="!isShipment"
           label="发票抬头"
-          prop="ordsnnseerNohuehiuw"
+          prop="invoiceTitle"
         >
           <el-input
-            v-model="queryParams.ordsnnseerNohuehiuw"
+            v-model="queryParams.invoiceTitle"
             placeholder="请输入发票抬头"
             clearable
             size="small"
@@ -145,7 +146,6 @@
       >
         <el-col :span="1.5">
           <el-button
-            v-if="false"
             v-hasPermi="['askfor:invoice:batch']"
             type="primary"
             icon="el-icon-document-checked"
@@ -393,24 +393,26 @@ export default {
       // 总条数
       'total': 0,
       // 表格数据
-      askforlist: [],
+      askforlist: [{ code: 123 }],
       shipmentlist: [],
       // 查询参数
+
+
+
+
       'queryParams': {
+        batchNo: undefined, //	批次号	query	false
+        invoiceTitle: undefined, //	发票抬头	query	false
+        operator: undefined, //	操作人名称	query	false
+        status: 1, //	1已申请对账列表 2已申请开票列表 3已申请打款列表 4已完成列表	query	false
+        teamName: undefined, //	调度者名称	query	false
+        ztcName: undefined, //	渣土场	query	false
         'pageNum': 1,
         'pageSize': 10,
-        // 'companyCode': undefined,
-        'goodsBigType': undefined,
-        // 'goodsType': undefined,
-        'loadTimeBegin': undefined,
-        'loadTimeEnd': undefined,
-        'loading': undefined,
-        'receiving': undefined,
-        'orderNo': undefined,
-        'receiveDateBegin': undefined,
-        'receiveDateEnd': undefined,
-        'shipmentCode': undefined,
-        'waybillNo': undefined
+
+        // companyName: undefined, //	发货企业	query	false
+        'shipmentCode': undefined
+        // 'waybillNo': undefined
       },
       loadTime: [],
       unloadTime: [],
@@ -495,7 +497,7 @@ export default {
     this.isShipment = isShipment;
     this.user = user;
     this.shipment = shipment;
-    this.getList();
+    // this.getList();
     /* if (this.isShipment) {
       this.queryParams.shipmentCode = shipment.info.code;
       this.getList();
@@ -624,7 +626,7 @@ export default {
     },
     // 批量索票
     handleAskfor() {
-      this.$confirm('是否立即批量索票?', '提示', {
+      this.$confirm('是否立即索票?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

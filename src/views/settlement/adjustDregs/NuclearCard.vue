@@ -125,67 +125,73 @@ export default {
     },
 
     _minit() {
-      this.loading = true;
-      const _this = this;
       CardReader.fn.connect(() => {
-        _this.$alert('请把确认卡片放在读卡器上了吗?', '读卡提示', {
-          confirmButtonText: '确定',
-          callback: async() => {
-            // 读取用户信息
-            const { data, code } = await action.readUserInfo();
-            if (code !== 200) return;
-            console.log(
-              resultData(data, [
-                'user_code',
-                'user_name',
-                'user_telno',
-                'issuing_code',
-                'issuing_name'])
-            );
 
-            // 读取数据
-            const { data: data2, code: code2 } = await action.readData();
-
-            if (code2 !== 200) {
-              console.log(code2);
-            } else {
-              const resData = data2.map(e => {
-                return resultData(e, [
-                  'user_code',
-                  'user_name',
-                  'user_telno',
-                  'issuing_code',
-                  'issuing_name'
-                ]).data;
-              });
-              console.log(resData);
-            }
-            //   .then(res => {
-            //   const resData = res.data.map(e => {
-            //     return resultData(e, [
-            //       'user_code',
-            //       'user_name',
-            //       'user_telno',
-            //       'issuing_code',
-            //       'issuing_name'
-            //     ]).data;
-            //   });
-            //   console.log(resData);
-            // });
-          }
-        });
-
-
-        _this.loading = false;
-      }, () => {
-        _this.$alert('服务链接已断开, 请检查服务是否开启', '服务连接提示', {
-          confirmButtonText: '确定',
-          callback: action => {
-            _this.visible = false;
-            _this.loading = false;
-          }
-        });
       });
+      console.log(789);
+      // this.loading = true;
+      // const _this = this;
+      // CardReader.fn.connect(() => {
+      //   _this.$alert('请把确认卡片放在读卡器上了吗?', '读卡提示', {
+      //     confirmButtonText: '确定',
+      //     callback: () => {
+      //       console.log('提示OK');
+      //       // // 读取用户信息
+      //       // const { data, code } = await action.readUserInfo();
+      //       // if (code !== 200) return;
+      //       // console.log(
+      //       //   resultData(data, [
+      //       //     'user_code',
+      //       //     'user_name',
+      //       //     'user_telno',
+      //       //     'issuing_code',
+      //       //     'issuing_name']), '用户数据'
+      //       // );
+
+
+      //       // // 读取数据
+      //       // const { data: data2, code: code2 } = await action.readData();
+
+      //       // if (code2 !== 200) {
+      //       //   console.log(code2);
+      //       // } else {
+      //       //   const resData = data2.map(e => {
+      //       //     return resultData(e, [
+      //       //       'user_code',
+      //       //       'user_name',
+      //       //       'user_telno',
+      //       //       'issuing_code',
+      //       //       'issuing_name'
+      //       //     ]).data;
+      //       //   });
+      //       //   console.log(resData);
+      //       // }
+      //       // //   .then(res => {
+      //       // //   const resData = res.data.map(e => {
+      //       // //     return resultData(e, [
+      //       // //       'user_code',
+      //       // //       'user_name',
+      //       // //       'user_telno',
+      //       // //       'issuing_code',
+      //       // //       'issuing_name'
+      //       // //     ]).data;
+      //       // //   });
+      //       // //   console.log(resData);
+      //       // // });
+      //     }
+      //   });
+
+
+      //   _this.loading = false;
+      // }, () => {
+      //   _this.$alert('服务链接已断开, 请检查服务是否开启', '服务连接提示', {
+      //     confirmButtonText: '确定',
+      //     callback: action => {
+      //       _this.visible = false;
+      //       _this.loading = false;
+      //     }
+      //   });
+      // });
     },
 
     absenceOpen(row) {

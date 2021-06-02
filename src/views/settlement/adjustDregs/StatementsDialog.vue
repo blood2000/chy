@@ -6,6 +6,10 @@
         <div>(UHY123456)</div>
       </div>
 
+
+
+
+
       <el-form v-show="showSearch" ref="queryForm1" :model="queryParams" :inline="true" label-width="90px" class="clearfix" disabled @submit.native.prevent>
         <!-- 普通input搜索 -->
         <el-form-item label="托运方" prop="testName1">

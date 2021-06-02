@@ -79,7 +79,7 @@
           v-has-permi="['transportation:waybill:getWayBillByCode']"
           size="mini"
           type="text"
-          @click="$emit('handleTableBtn', row,7)"
+          @click="$emit('handleTableBtn', row, 'XIANGQONG')"
         >详情</el-button>
       </template>
     </RefactorTable>
@@ -247,11 +247,13 @@ export default {
       width: 240,
       fixed: 'right'
     }, this.tableColumnsConfig1);
-  },
-
-  methods: {
-    handleTableBtn() {}
   }
+
+  // methods: {
+  //   handleTableBtn(row) {
+  //     // 打开详情
+  //   }
+  // }
 };
 </script>
 

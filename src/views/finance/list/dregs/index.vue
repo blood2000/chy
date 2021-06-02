@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- 发票列表-渣土 页面-->
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form
         v-show="showSearch"
@@ -12,10 +13,10 @@
         <el-form-item
           v-if="!isShipment"
           label="发货企业"
-          prop="qighoqhnoiqo"
+          prop="companyName"
         >
           <el-input
-            v-model="queryParams.qighoqhnoiqo"
+            v-model="queryParams.companyName"
             placeholder="请输入发货企业"
             clearable
             size="small"
@@ -27,10 +28,10 @@
         <el-form-item
           v-if="!isShipment"
           label="发票抬头"
-          prop="bqguihbas"
+          prop="invoiceTitle"
         >
           <el-input
-            v-model="queryParams.bqguihbas"
+            v-model="queryParams.invoiceTitle"
             placeholder="请输入发票抬头"
             clearable
             size="small"
@@ -39,15 +40,12 @@
           />
         </el-form-item>
 
-
-
-
         <el-form-item
           label="对账批次号"
-          prop="dsioqfnqig"
+          prop="batchNo"
         >
           <el-input
-            v-model="queryParams.dsioqfnqig"
+            v-model="queryParams.batchNo"
             placeholder="请输入对账批次号"
             clearable
             size="small"
@@ -58,10 +56,10 @@
 
         <el-form-item
           label="渣土场"
-          prop="hfuwahosngio"
+          prop="ztcName"
         >
           <el-input
-            v-model="queryParams.hfuwahosngio"
+            v-model="queryParams.ztcName"
             placeholder="请输入渣土场"
             clearable
             size="small"
@@ -71,12 +69,12 @@
         </el-form-item>
 
         <el-form-item
-          label="调度组名称"
-          prop="twngisngaml"
+          label="调度者名称"
+          prop="teamName"
         >
           <el-input
-            v-model="queryParams.twngisngaml"
-            placeholder="请输入调度组名称"
+            v-model="queryParams.teamName"
+            placeholder="请输入调度者名称"
             clearable
             size="small"
             style="width: 230px"
@@ -86,10 +84,10 @@
 
         <el-form-item
           label="操作人"
-          prop="chaozyoren"
+          prop="operator"
         >
           <el-input
-            v-model="queryParams.chaozyoren"
+            v-model="queryParams.operator"
             placeholder="请输入操作人"
             clearable
             size="small"
@@ -235,14 +233,14 @@
               v-hasPermi="['system:menu:buhuihsuihwof']"
               size="mini"
               type="text"
-              @click="handleTableBtn(row, 1)"
+              @click="handleTableBtn(row, 4)"
             >打款</el-button>
             <el-button
               v-if="activeName == '1'"
               v-hasPermi="['system:menu:buhuihsuihwof']"
               size="mini"
               type="text"
-              @click="handleTableBtn(row, 1)"
+              @click="handleTableBtn(row, 5)"
             >导出</el-button>
           </div>
         </template>
@@ -256,28 +254,34 @@
         @pagination="getList"
       />
     </div>
+
+    <!-- 驳回弹窗 -->
+    <reject-dialog ref="RejectDialog" :open.sync="rejectdialog" :title="title" :disable="formDisable" @refresh="getList" />
     <!-- 审核弹窗 -->
-    <verify-dialog ref="VerifyDialog" :open.sync="verifydialog" :title="title" :disable="formDisable" @refresh="getList" />
+    <!-- <verify-dialog ref="VerifyDialog" :open.sync="verifydialog" :title="title" :disable="formDisable" @refresh="getList" /> -->
     <!-- 开票弹窗 -->
     <billing-dialog ref="BillingDialog" :open.sync="billingdialog" :title="title" @refresh="getList" />
-    <!-- 详情弹窗 -->
-    <!-- <detail-dialog ref="DetailDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" /> -->
+    <!-- 对账单详情弹窗 -->
+    <StatementsDialog ref="StatementsDialog" :open.sync="Statementsdialog" :disable="formDisable" :title="title" @refresh="getList" />
   </div>
 </template>
 
 <script>
 import { billList, billListApi } from '@/api/finance/list';
 // 审核弹窗
-import VerifyDialog from '../verifyDialog';
+// import VerifyDialog from '../verifyDialog';
 // 开票弹窗
 import BillingDialog from '../billingDialog';
 // 详情弹窗
+import StatementsDialog from '@/views/settlement/adjustDregs/StatementsDialog';
+// 驳回弹窗
+import RejectDialog from './components/rejectDialog';
 // import DetailDialog from './detail';
 
 import { getUserInfo } from '@/utils/auth';
 export default {
   'name': 'AskforDregs',
-  components: { VerifyDialog, BillingDialog },
+  components: { StatementsDialog, BillingDialog, RejectDialog },
   data() {
     return {
       isShipment: false,
@@ -478,7 +482,7 @@ export default {
           label: '操作人'
         }
       ],
-      api: 'asds' || billListApi,
+      api: billListApi,
       activeName: '1',
       createTime: '',
       // 遮罩层
@@ -494,17 +498,19 @@ export default {
       // 总条数
       'total': 0,
       // 表格数据
-      'billlist': [],
+      'billlist': [{ code: 123 }],
 
       // 查询参数
       'queryParams': {
         'pageNum': 1,
         'pageSize': 10,
-        'askForNo': undefined,
-        'invoiceTitle': undefined,
-        'invoiceApplyTimeBegin': undefined,
-        'invoiceApplyTimeEnd': undefined,
-        'invoiceStatus': '1'
+        batchNo: undefined, //	批次号	query	false
+        companyName: undefined, //	发货企业	query	false
+        invoiceTitle: undefined, //	发票抬头	query	false
+        operator: undefined, //	操作人名称	query	false
+        status: 2, //	1已申请对账列表 2已申请开票列表 3已申请打款列表 4已完成列表	query	false
+        teamName: undefined, //	调度者名称	query	false
+        ztcName: undefined //	渣土场	query	false
       },
       invoiceApplyTime: [],
       // 弹框 内容
@@ -512,6 +518,8 @@ export default {
       open: false,
       verifydialog: false,
       billingdialog: false,
+      rejectdialog: false,
+      Statementsdialog: false,
       title: '',
       dialogWidth: '800px',
       // 当前选中的运单id
@@ -579,8 +587,10 @@ export default {
     },
     /** handleClick */
     handleClick(tab) {
-      this.api = tab === '1' ? 'asds' : 'qioqhoiq';
+      this.api = this.api + '--' + tab;
       const tableColumnsConfig = tab === '1' ? this.tableColumnsConfig1 : this.tableColumnsConfig2;
+      this.queryParams.status = tab === '1' ? 2 : 3;
+
       this.tableColumnsConfig = [];
 
       this.tableHeaderConfig(this.tableColumnsConfig, this.api, {
@@ -592,9 +602,9 @@ export default {
       }, tableColumnsConfig);
 
       // 切换
-      this.queryParams.invoiceStatus = tab;
+      // this.queryParams.invoiceStatus = tab;
       this.queryParams.pageNum = 1;
-      this.getList();
+      // this.getList();
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
@@ -645,10 +655,10 @@ export default {
       this.visible = true;
       switch (index) {
         case 1:
-          this.$refs.VerifyDialog.reset();
-          this.verifydialog = true;
-          this.title = '审批';
-          this.$refs.VerifyDialog.setForm(row.code);
+          this.$refs.RejectDialog.reset();
+          this.rejectdialog = true;
+          this.title = '驳回运输核算单';
+          this.$refs.RejectDialog.setForm(row);
           break;
         case 2:
           this.$refs.BillingDialog.reset();
@@ -658,7 +668,21 @@ export default {
           this.$refs.BillingDialog.setForm(row);
           break;
         case 3:
-          this.$router.push({ name: 'Statement', query: { code: row.code }});
+          // this.$router.push({ name: 'Statement', query: { code: row.code }});
+          console.log('打开详情页面');
+          this.Statementsdialog = true;
+          this.title = '对账单';
+          this.$refs.StatementsDialog.setForm(row);
+
+          break;
+        case 4:
+          // this.$router.push({ name: 'Statement', query: { code: row.code }});
+          break;
+        case 5:
+          // this.$router.push({ name: 'Statement', query: { code: row.code }});
+          break;
+        case 6:
+          // this.$router.push({ name: 'Statement', query: { code: row.code }});
           break;
         default:
           break;
