@@ -1,10 +1,10 @@
 import request from '@/utils/request';
 
 // 查询司机往来明细列表
-export const listDrivertoApi = '/schedule/driverCountSearch/getDriverCommunicationList';
+export const listDrivertoApi = '/transportation/driverCountSearch/getDriverCommunicationList';
 export function listDriverto(query) {
   return request({
-    url: '/schedule/driverCountSearch/getDriverCommunicationList',
+    url: '/transportation/driverCountSearch/getDriverCommunicationList',
     method: 'get',
     params: query
   });
@@ -13,7 +13,7 @@ export function listDriverto(query) {
 // 查询司机往来明细合计
 export function getDriverCount(query) {
   return request({
-    url: '/schedule/driverCountSearch/getDriverCount',
+    url: '/transportation/driverCountSearch/getDriverCount',
     method: 'get',
     params: query
   });
