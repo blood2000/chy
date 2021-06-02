@@ -4,7 +4,7 @@
     <el-table v-loading="loading" :data="waybilllist" max-height="650" border stripe>
       <el-table-column type="index" label="序号" align="center" width="50" />
       <el-table-column width="170" label="运输单号" align="center" prop="waybillNo" />
-      <el-table-column width="120" label="货物大类" align="center" prop="goodsName" />
+      <el-table-column width="120" label="货物大类" align="center" prop="goodsBigTypeName" />
       <el-table-column width="180" label="装货地址" align="center" show-overflow-tooltip prop="loadFormattedAddress" />
       <el-table-column width="180" label="卸货地址" align="center" show-overflow-tooltip prop="unloadFormattedAddress" />
       <el-table-column width="100" label="装货数量" align="center" prop="loadWeight">

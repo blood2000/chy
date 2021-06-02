@@ -7,7 +7,7 @@
       label-width="90px"
     >
       <div v-if="!isShipment" class="app-container" style="display: flex; align-items: center;">
-        <el-form-item label="货主信息" prop="shipmentCode" style="margin-bottom:0">
+        <el-form-item label="发货企业" prop="shipmentCode" style="margin-bottom:0">
           <!-- filterable开启可搜索 remote远程搜索 reserve-keyword 保存搜索关键词 -->
           <el-select
             v-model="queryParams.shipmentCode"
@@ -16,7 +16,7 @@
             clearable
             remote
             reserve-keyword
-            placeholder="请选择货主"
+            placeholder="请选择发货企业"
             :remote-method="remoteMethod"
             :loading="shipmentloading"
             style="width: 230px"
@@ -38,48 +38,32 @@
         </el-form-item>
         <span v-if="!queryParams.shipmentCode" class="g-color-warning">
           <i class="el-icon-warning" />
-          您还未选择货主
+          您还未选择发货企业
         </span>
       </div>
 
       <div v-show="showSearch" class="app-container app-container--search">
         <el-form-item
-          label="货源单号"
-          prop="orderNo"
+          label="对账批次号"
+          prop="dhsihaqhsbkabfk"
         >
           <el-input
-            v-model="queryParams.orderNo"
-            placeholder="请输入货源单号"
+            v-model="queryParams.dhsihaqhsbkabfk"
+            placeholder="请输入对账批次号"
             clearable
             size="small"
             style="width: 230px"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="货物大类" prop="goodsBigType">
-          <el-select
-            v-model="queryParams.goodsBigType"
-            placeholder="请选择货物大类"
-            filterable
-            clearable
-            style="width: 230px"
-            size="small"
-          >
-            <el-option
-              v-for="dict in commodityCategoryCodeOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-        </el-form-item>
+
         <el-form-item
-          label="装货信息"
-          prop="loading"
+          label="渣土场"
+          prop="zhatusanfsn"
         >
           <el-input
-            v-model="queryParams.loading"
-            placeholder="装货地/装货电话/装货人"
+            v-model="queryParams.zhatusanfsn"
+            placeholder="请输入渣土场"
             clearable
             size="small"
             style="width: 230px"
@@ -87,59 +71,50 @@
           />
         </el-form-item>
         <el-form-item
-          label="卸货信息"
-          prop="receiving"
+          label="调度组名称"
+          prop="diaodshahsna"
         >
           <el-input
-            v-model="queryParams.receiving"
-            placeholder="卸货地/卸货电话/卸货人"
+            v-model="queryParams.diaodshahsna"
+            placeholder="请输入调度组名称"
             clearable
             size="small"
             style="width: 230px"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
+
         <el-form-item
-          label="运输单号"
-          prop="waybillNo"
+          label="操作人"
+          prop="sfuwnfskjnqa"
         >
           <el-input
-            v-model="queryParams.waybillNo"
-            placeholder="请输入运输单号"
+            v-model="queryParams.sfuwnfskjnqa"
+            placeholder="请输入操作人"
             clearable
             size="small"
             style="width: 230px"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
+
+
+
         <el-form-item
-          label="装货日期"
-          prop="loadTime"
+          v-if="!isShipment"
+          label="发票抬头"
+          prop="ordsnnseerNohuehiuw"
         >
-          <el-date-picker
-            v-model="loadTime"
-            type="daterange"
-            range-separator="-"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+          <el-input
+            v-model="queryParams.ordsnnseerNohuehiuw"
+            placeholder="请输入发票抬头"
+            clearable
+            size="small"
             style="width: 230px"
-            @change="datechoose1"
+            @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item
-          label="卸货日期"
-          prop="unloadTime"
-        >
-          <el-date-picker
-            v-model="unloadTime"
-            type="daterange"
-            range-separator="-"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            style="width: 230px"
-            @change="datechoose2"
-          />
-        </el-form-item>
+
         <el-form-item>
           <el-button
             type="primary"
@@ -170,6 +145,7 @@
       >
         <el-col :span="1.5">
           <el-button
+            v-if="false"
             v-hasPermi="['askfor:invoice:batch']"
             type="primary"
             icon="el-icon-document-checked"
@@ -195,8 +171,8 @@
       </el-row>
 
       <RefactorTable :loading="loading" :data="askforlist" :table-columns-config="tableColumnsConfig" :max-height="isAdmin ? '400':'500'" @selection-change="handleSelectionChange">
-        <template #stowageStatus="{row}">
-          <span>{{ selectDictLabel(stowageStatusOptions, row.stowageStatus) }}</span>
+        <template #zhuanfowe="{row}">
+          <span class="g-color-error">已申请{{ row.zhuanfowe }}</span>
         </template>
         <template #status="{row}">
           <span>
@@ -228,6 +204,21 @@
             type="text"
             @click="handleTableBtn(row, 1)"
           >详情</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleTableBtn(row, 2)"
+          >索票</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleTableBtn(row, 3)"
+          >驳回</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleTableBtn(row, 4)"
+          >导出</el-button>
         </template>
       </RefactorTable>
 
@@ -239,8 +230,11 @@
         @pagination="getList"
       />
 
-      <!-- 运单详情 对话框 -->
-      <detail-dialog ref="DetailDialog" :current-id="currentId" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
+      <!-- 对账单弹窗 -->
+      <StatementsDialog ref="StatementsDialog" :open.sync="Statementsdialog" :disable="formDisable" :title="title" @refresh="getList" />
+
+      <!-- 驳回弹窗 -->
+      <reject-dialog ref="RejectDialog" :open.sync="rejectdialog" :title="title" :disable="formDisable" @refresh="getList" />
 
     </div>
 
@@ -277,16 +271,117 @@ import { askforList, askforListApi, shipmentList, askInvoice } from '@/api/finan
 import { getUserInfo } from '@/utils/auth';
 // import ChildDialog from '../components/childDialog';
 // 运单详情弹窗
-import DetailDialog from '@/views/waybill/components/detailDialog';
+import StatementsDialog from '@/views/settlement/adjustDregs/StatementsDialog';
+
+// 驳回弹窗
+import RejectDialog from './components/rejectDialog';
 
 
 export default {
   'name': 'Dregs',
-  components: { DetailDialog },
+  components: { StatementsDialog, RejectDialog },
   data() {
     return {
       tableColumnsConfig: [],
-      api: askforListApi,
+      tableColumnsConfig1: [
+        {
+          prop: 'mainOrderNumber',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '对账批次号'
+        },
+        {
+          prop: 'zhuanfowe',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '状态'
+        },
+        {
+          prop: 'fahiuwnn',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '发货企业'
+        },
+        {
+          prop: 'xuiqabskn',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '项目'
+        },
+        {
+          prop: 'zhaunenowt',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '渣土场'
+        },
+        {
+          prop: 'duaijwhubiubi',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '调度组名称'
+        },
+        {
+          prop: 'yunsnewonow',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '运单数量'
+        },
+        {
+          prop: 'yuwinfsnfhahoiajog',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '运费结算金额'
+        },
+        {
+          prop: 'fapownfwqag',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '发票抬头'
+        },
+        {
+          prop: 'shfwuhfnqaw',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '税务登记'
+        },
+        {
+          prop: 'sewfjhehgo',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '申请时间'
+        },
+        {
+          prop: 'cshiwops',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '操作人'
+        }
+      ],
+      api: 'test' || askforListApi,
       // 遮罩层
       'loading': false,
       // 选中数组
@@ -323,7 +418,7 @@ export default {
       visible: false,
       open: false,
       rejectdialog: false,
-      childdialog: false,
+      Statementsdialog: false,
       title: '',
       dialogWidth: '800px',
       // 当前选中的运单id
@@ -405,13 +500,13 @@ export default {
       this.queryParams.shipmentCode = shipment.info.code;
       this.getList();
     }*/
-    this.tableHeaderConfig(this.tableColumnsConfig, askforListApi, {
+    this.tableHeaderConfig(this.tableColumnsConfig, this.api, {
       prop: 'edit',
       isShow: true,
       label: '操作',
       width: 180,
       fixed: 'right'
-    });
+    }, this.tableColumnsConfig1);
     // this.getShipment();
     this.listByDict(this.commodityCategory).then(response => {
       this.commodityCategoryCodeOptions = response.data;
@@ -501,7 +596,7 @@ export default {
         });
       } else {
         this.$message({ type: 'warning', message: '请选择货主查询列表！' });
-        this.askforlist = [{ deliveryFeePractical: 123 }];
+        this.askforlist = [{ code: 123, deliveryFeePractical: 123 }];
       }
     },
     chooseShipment() {
@@ -533,8 +628,11 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(function() {
-        askInvoice({ shipmentCode: this.queryParams.shipmentCode, waybillCodes: this.ids }).then(response => {});
+      }).then(() => {
+        askInvoice({ shipmentCode: this.queryParams.shipmentCode, waybillCodes: this.ids }).then(response => {
+          this.msgSuccess('索票申请成功');
+          this.ids = null;
+        });
         this.getList();
       });
     },
@@ -542,11 +640,38 @@ export default {
       this.visible = true;
       switch (index) {
         case 1:
-          this.$refs.DetailDialog.reset();
-          this.currentId = row.code;
-          this.open = true;
-          this.title = '运输单信息';
-          this.formDisable = true;
+          // this.$refs.DetailDialog.reset();
+          // this.currentId = row.code;
+          // this.open = true;
+          // this.title = '运输单信息';
+          // this.formDisable = true;
+          this.Statementsdialog = true;
+          this.title = '对账单';
+          this.$refs.StatementsDialog.setForm(row);
+          break;
+        case 2:
+          // // this.$refs.DetailDialog.reset();
+          // // this.currentId = row.code;
+          // // this.open = true;
+          // // this.title = '运输单信息';
+          // // this.formDisable = true;
+          // console.log('索票', row);
+          this.ids = row.code;
+          this.handleAskfor();
+          break;
+        case 3:
+          this.$refs.RejectDialog.reset();
+          this.rejectdialog = true;
+          this.title = '驳回运输核算单';
+          this.$refs.RejectDialog.setForm(row);
+          break;
+        case 4:
+          // this.$refs.DetailDialog.reset();
+          // this.currentId = row.code;
+          // this.open = true;
+          // this.title = '运输单信息';
+          // this.formDisable = true;
+          this.handleExport();
           break;
         default:
           break;
