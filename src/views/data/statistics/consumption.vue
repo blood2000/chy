@@ -104,7 +104,7 @@
 </template>
 
 <script>
-import { listConsumptionApi, listConsumption, getShipmentMoneyCount } from '@/api/data/statistics';
+import { listConsumptionApi, listConsumption, countConsumption } from '@/api/data/statistics';
 // import tableColumnsConfig from './config';
 
 export default {
@@ -259,7 +259,7 @@ export default {
       } else {
         this.queryParams.haveCondition = false;
       }
-      getShipmentMoneyCount(this.queryParams).then(response => {
+      countConsumption(this.queryParams).then(response => {
         console.log(response);
         this.consumptionCount = response.data;
       });

@@ -95,7 +95,6 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        id: null,
         disName: null,
         disUserName: null,
         disUserPhone: null,
