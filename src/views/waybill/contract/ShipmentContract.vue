@@ -93,7 +93,7 @@
             </tr>
             <tr>
               <td><b>备注</b></td>
-              <td colspan="4">{{ obj.shipperRemark }}</td>
+              <td colspan="5">{{ obj.shipperRemark }}</td>
             </tr>
           </tbody></table>
       </div>
