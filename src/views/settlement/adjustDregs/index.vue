@@ -710,6 +710,13 @@ export default {
     // 获取渣土已审核列表
     getadjustDregsList() {
       // 触发请求
+      this.loading = true;
+      adjustDregsList(this.alreadyPaid_queryParams).then(res => {
+        console.log(res);
+        this.alreadyPaid_queryParams.total = res.total;
+        this.loading = false;
+      });
+
       console.log(this.alreadyPaid_queryParams);
     },
     handleSelectionChange1(selection) {
