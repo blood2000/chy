@@ -36,22 +36,13 @@
       <!-- stowageStatus "配载方式 0->吨，1->方 2->车数配载" -->
       <el-table-column width="160" label="装货数量" align="left" prop="loadWeight">
         <template slot-scope="scope">
-          <span v-if="true">{{ scope.row.loadWeight }}</span>
-          <div v-else>
-            <el-input-number v-if="scope.row.stowageStatus !== '2'" v-model="scope.row.loadWeight" :controls="false" placeholder="请输入装货数量" style="width:100%;" size="mini" @blur="handlerBlur(scope.row, scope.row.loadWeight, 'loadWeight' )" />
-            <span v-else>{{ scope.row.loadWeight }}</span>
-          </div>
-
+          <span>{{ scope.row.loadWeight }}</span>
         </template>
       </el-table-column>
 
       <el-table-column width="160" label="卸货数量" align="left" prop="unloadWeight">
         <template slot-scope="scope">
-          <span v-if="true">{{ scope.row.unloadWeight }}</span>
-          <div v-else>
-            <el-input-number v-if="scope.row.stowageStatus !== '2'" v-model="scope.row.unloadWeight" :controls="false" placeholder="请输入卸货数量" style="width:100%;" size="mini" @blur="handlerBlur(scope.row, scope.row.unloadWeight, 'unloadWeight' )" />
-            <span v-else>{{ scope.row.unloadWeight }}</span>
-          </div>
+          <span>{{ scope.row.unloadWeight }}</span>
         </template>
       </el-table-column>
 
@@ -158,7 +149,7 @@
       <el-table-column width="162" label="司机实收金额" align="center" prop="deliveryCashFee" fixed="right">
         <template slot-scope="scope">
           <!-- <span>{{ scope.row.deliveryCashFee }}</span> -->
-          <el-input-number v-model="scope.row.deliveryCashFee" :controls="false" :precision="2" placeholder="请输入司机实收金额" style="width:100%;" size="mini" @blur="handlerInput(scope.row,scope.row.deliveryCashFee, 'deliveryCashFee')" />
+          <el-input-number v-model="scope.row.deliveryCashFee" :controls="false" :precision="2" placeholder="请输入司机实收金额" style="width:100%;" size="mini" @blur="getDeliveryCashFee(scope.row)" />
         </template>
       </el-table-column>
 
@@ -199,7 +190,7 @@ export default {
       // 总条数
       // total: 0,
       // 旧的数据
-      oldList: [],
+      // oldList: [],
       // 评价列表
       adjustlist: [],
       // 查询参数
@@ -222,30 +213,12 @@ export default {
   },
   methods: {
     // 修改了增项
-    handlerChange(row, value, key) {
-      if (!value && value !== 0) return;
-      this.gongshi(row);
-      this.getDeliveryCashFee(row);
-    },
+    handlerChange(row, value, key) {},
 
     // 修改
-    handlerItem(row, value, key, name) {
-      if (!value && value !== 0) return;
+    handlerItem(row, value, key, name) {},
 
-      this.gongshi(row);
-      this.getDeliveryCashFee(row);
-    },
-
-    handlerInput(row, value, key) {
-      if (!value && value !== 0) {
-        this.msgError('司机实收现金不能为空');
-        return;
-      }
-
-      this.otherdeValue(row);
-
-      this.getDeliveryCashFee(row);
-    },
+    handlerInput(row, value, key) {},
 
     // 获取数据
     async getDeliveryCashFee(row) {
@@ -257,83 +230,27 @@ export default {
         shipperCode: row.shipperCode //	货主Code		false
       });
 
-
-      row.serviceFee = data.serviceFee;
-      row.shipperRealPay = data.shipperRealPay;
-      row.m0Fee = data.m0Fee;
-      row.deliveryCashFee = data.driverFee;
-      row.taxPayment = data.taxPayment;
-
-      row.tin_deliveryCashFee = row.deliveryCashFee;
-    },
-
-    // 过滤当前
-    filterRow(row) {
-      return (this.oldList.filter(e => {
-        return e.waybillCode === row.waybillCode;
-      }))[0];
-    },
-
-    // 单项修改
-    async handlerBlur(row, value, key) {
-      const filterRow = this.filterRow(row);
-
-      if (filterRow[key] === value) return;
-
-      if (!value && value !== 0) {
-        this.msgError(key === 'loadWeight' ? '装货数量不能为空' : '卸货数量不能为空');
-        row[key] = filterRow[key];
-        return;
-      }
-
-      const parame = {
-        driverReductionFee: row.driverReductionFee,
-        m0DictValue: row.m0DictValue,
-        freightPrice: row.freightPrice,
-        ruleFormulaDictValue: row.ruleFormulaDictValue,
-        shipperCode: row.shipperCode,
-        stowageStatus: row.stowageStatus,
-        driverAddFee: row.driverAddFee,
-        loadWeight: row.loadWeight,
-        unloadWeight: row.unloadWeight,
-        waybillCode: row.waybillCode
-      };
-
-      const { data } = await calculateFee(parame);
-
-      // deliveryFeeDeserved	司机应收运费	number
-      // driverRealFee	司机实收金额	number
-      // serviceFee	平台服务费费用	number
-      // serviceTaxFee	服务税费	number
-      // shipperCopeFee	货主应付金额	number
-      // shipperRealPay	货主实付金额	number
-      // taxFreeFee	不含税价	number
-      // taxPayment	纳税金额	number
+      const {
+        driverFee, //	抹零后司机实收金额	number
+        m0Fee, //	抹零金额	number
+        serviceFee, //	服务费	number
+        shipperRealPay, //	货主实付金额	number
+        taxPayment //	纳税金额
+      } = data;
 
 
-
-      row.deliveryFeeDeserved = data.deliveryFeeDeserved;
-      row.deliveryCashFee = data.driverRealFee; // ?
-      row.serviceFee = data.serviceFee;
-      row.serviceTaxFee = data.serviceTaxFee; // ?
-      row.shipperCopeFee = data.shipperCopeFee;
-      row.shipperRealPay = data.shipperRealPay;
-      row.taxFreeFee = data.taxFreeFee; // ?
-      row.taxPayment = data.taxPayment;
-      row.m0Fee = data.m0Fee;
-      row.loss = data.loss;
-
-      filterRow.deliveryCashFee = row.deliveryCashFee;
-      filterRow[key] = row[key];
+      row.serviceFee = serviceFee;
+      row.shipperRealPay = shipperRealPay;
+      row.m0Fee = m0Fee;
+      row.deliveryCashFee = driverFee;
+      row.taxPayment = taxPayment;
     },
 
     // 批量修改
     handleChange() {
       this.adjustlist.forEach(e => {
-        // deliveryCashFee => 司机实收现金
         e.deliveryCashFee = this.deliveryCashFee;
-
-        this.handlerInput(e, this.deliveryCashFee);
+        this.getDeliveryCashFee(e);
       });
     },
     /** 提交按钮 */
@@ -383,7 +300,7 @@ export default {
       adjustDetail(this.queryParams).then(response => {
         // isDregs // 是否渣土   1 是 0 否 (司机实收 只有渣土1能修改)
 
-        this.oldList = JSON.parse(JSON.stringify(response.data));
+        // this.oldList = JSON.parse(JSON.stringify(response.data));
         this.adjustlist = JSON.parse(JSON.stringify(response.data));
 
         this.total = response.total;
@@ -409,26 +326,6 @@ export default {
       this.getList();
     },
 
-    /* 工具 */
-    _dataSync(obj1, obj2) {
-      Object.keys(obj1).forEach(prop => {
-        obj1[prop] = obj2[prop]; // 需要同步的两个对象
-      });
-    },
-    /* 计算价格 */
-    _sum(arr) {
-      let sum = 0;
-      arr.forEach(e => {
-        sum += (e.ruleValue - 0);
-      });
-      return sum;
-    },
-    _mynum(arr, key) {
-      const valueobj = (arr.filter(e => e.enName === key))[0];
-      return valueobj ? valueobj.ruleValue : undefined;
-    },
-
-
     /* 处理路耗展示 */
     _lossAllowScope(value) {
       if (value) {
@@ -439,55 +336,7 @@ export default {
 
         return JSON.stringify(arr);
       }
-    },
-
-    /* 计算公式1 */
-    gongshi(row) {
-      const shazhi = this.sharzhi(row);
-      const { otherSubsidies, otherCharges, subsidiesFreightList, deductionFreightList } = row;
-
-      const rowsubsidies = this._sum(subsidiesFreightList);
-      const rowdeduction = this._sum(deductionFreightList);
-
-      row.deliveryCashFee = ((rowsubsidies + otherSubsidies) - (rowdeduction + otherCharges)) + shazhi;
-    },
-    /* 计算公式2 */
-    otherdeValue(row) {
-      const shazhi = this.sharzhi(row);
-      const { deliveryCashFee, otherSubsidies, otherCharges, subsidiesFreightList, deductionFreightList } = row;
-      const rowsubsidies = this._sum(subsidiesFreightList);
-      const rowdeduction = this._sum(deductionFreightList);
-
-      // row.tin_deliveryCashFee 上一次修改的值
-      if (deliveryCashFee >= (row.tin_deliveryCashFee || deliveryCashFee)) {
-        row.otherSubsidies = (deliveryCashFee - shazhi) + (rowdeduction + otherCharges) - rowsubsidies;
-      } else {
-        row.otherCharges = (rowsubsidies + otherSubsidies) + shazhi - deliveryCashFee - rowdeduction;
-      }
-    },
-
-    /* 计算公式 a */
-    aa() {
-
-
-      // ---货主应付运费（四舍五入保留两位小数）= 货主成交单价 * 承运重量；
-      // ---司机应收运费（四舍五入保留两位小数）= 货主成交单价 /（1 + 税率比例） * 承运重量；
-      // a、货主实付金额（四舍五入保留两位小数）= 司机实收金额  + 平台服务金额；
-      // b、司机实收金额（四舍五入保留两位小数,再应用抹零规则） =  货主成交单价 /（1 + 税率比例） * 承运重量 - 扣费 + 补贴；
-      // c、平台服务金额（四舍五入保留两位小数）= 货主应付运费 - 司机应收运费 ；
-
-
-    },
-
-    /* 计算差值 */
-    sharzhi(row) {
-      const { deliveryCashFee, otherSubsidies, otherCharges, subsidiesFreightList, deductionFreightList } = this.filterRow(row);
-      const subsidies = this._sum(subsidiesFreightList);
-      const deduction = this._sum(deductionFreightList);
-      return deliveryCashFee - ((subsidies + otherSubsidies) - (deduction + otherCharges));
     }
-
-
   }
 };
 </script>
