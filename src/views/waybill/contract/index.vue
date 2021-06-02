@@ -256,6 +256,7 @@ export default {
       const { data } = await getContractByCode(row.code);
 
       this.dialogData = data;
+      console.log(data);
       this.visible = true;
     },
 
