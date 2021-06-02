@@ -247,7 +247,7 @@ export default {
       if (this.form.userCode && this.form.name) {
         this.personOptions = [{
           userCode: this.form.userCode,
-          nickName: this.form.name,
+          userName: this.form.name,
           phonenumber: this.form.mobile
         }];
       }
@@ -280,7 +280,7 @@ export default {
     userChange(code) {
       this.personOptions.forEach(el => {
         if (el.userCode === code) {
-          this.form.name = el.nickName;
+          this.form.name = el.userName;
           this.form.mobile = el.phonenumber;
         }
       });
@@ -300,8 +300,8 @@ export default {
         userCode: this.userCode
       }).then(response => {
         if (response.rows && response.rows.length > 0) {
-          const { nickName, phonenumber } = response.rows[0];
-          this.form.name = nickName;
+          const { userName, phonenumber } = response.rows[0];
+          this.form.name = userName;
           this.form.mobile = phonenumber;
         }
       });
