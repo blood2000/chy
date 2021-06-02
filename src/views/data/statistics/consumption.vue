@@ -250,7 +250,7 @@ export default {
       listConsumption(this.queryParams).then(response => {
         console.log(response);
         this.consumptionList = response.data.list;
-        this.total = response.data.list.length;
+        this.total = response.data.total;
         this.loading = false;
       });
       // 查询列表合计
