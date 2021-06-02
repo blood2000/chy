@@ -12,6 +12,7 @@
           class="width90"
           :remote-method="userRemoteMethod"
           :loading="personLoading"
+          :disabled="title === '编辑银行卡信息'"
           @change="userChange"
         >
           <el-option
