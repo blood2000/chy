@@ -206,8 +206,8 @@
             size="mini"
             @click="handleExport"
           >导出</el-button>
+          <!-- v-hasPermi="['data:report:report']" -->
           <el-button
-            v-hasPermi="['data:report:report']"
             :disabled="!ids.length"
             type="info"
             icon="el-icon-s-order"
@@ -215,6 +215,7 @@
             @click="handleReport"
           >批量上报</el-button>
           <el-button
+            v-if="false"
             v-hasPermi="['data:report:import']"
             type="info"
             icon="el-icon-upload2"
@@ -222,6 +223,7 @@
             @click="handleImport"
           >批量导入</el-button>
           <el-button
+            v-if="false"
             v-hasPermi="['data:report:download']"
             type="primary"
             icon="el-icon-download"
@@ -229,6 +231,7 @@
             @click="handleDownload"
           >下载模板</el-button>
           <el-button
+            v-if="false"
             v-hasPermi="['data:report:update']"
             type="success"
             icon="el-icon-s-open"
@@ -328,9 +331,9 @@
             @click="handleEdit(row, 'seperate')"
           >分单列表</el-button>
 
+          <!-- v-hasPermi="['data:report:report']" -->
           <el-button
-            v-if="false"
-            v-hasPermi="['data:report:report']"
+            v-if="true"
             size="mini"
             type="text"
             @click="handleEdit(row, 'report')"
@@ -605,12 +608,15 @@ export default {
       }, `waybillReport_${Date.now()}.xlsx`);
     },
     /** 批量上报 */
-    handleReport() {
-      console.log(this.ids);
-
-      this.ids.forEach(row => {
-        this._waybillReport(row);
+    async handleReport() {
+      const arr = [];
+      this.ids.forEach(async row => {
+        arr.push(this._waybillReport(row));
       });
+
+      await Promise.all(arr);
+
+      console.log(' 成功!!~~ ');
     },
     /** 批量导入 */
     handleImport() {
@@ -654,7 +660,6 @@ export default {
 
     /* 上报接口 */
     async _waybillReport(row) {
-      console.log(row);
       const res_driver = await waybillReportDriver(row.waybillReportCode);
       const res_vehicle = await waybillReportVehicle(row.waybillReportCode);
       const res_waybill = await waybillReportWaybill(row.waybillReportCode);
@@ -667,6 +672,7 @@ export default {
       console.log(res_load);
       console.log(res_unload);
       console.log(res_bill);
+      return res_bill;
     },
 
     /* 多选 */
