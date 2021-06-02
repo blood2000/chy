@@ -858,7 +858,7 @@ export default {
       const res = await shipmentInformation({
         branchCode: this.shipment.info.branchCode,
         shipmentCode: this.shipment.info.code,
-        companyCode: this.shipment.info.companyCode
+        companyCode: this.shipment.info.companyCode ? this.shipment.info.companyCode : undefined
       });
 
       const {
@@ -968,7 +968,7 @@ export default {
       const res = await shipmentWaybillBehavior({
         branchCode: this.shipment.info.branchCode,
         shipmentCode: this.shipment.info.code,
-        companyCode: this.shipment.info.companyCode
+        companyCode: this.shipment.info.companyCode ? this.shipment.info.companyCode : undefined
       });
 
       const {

@@ -271,34 +271,49 @@
         </template>
 
         <template #vehicleReport="{row}">
-          <span v-if="row.vehicleReport == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
-          <span v-if="row.vehicleReport == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
-          <span v-if="row.vehicleReport == '2'" class="g-color-warning">上报失败</span>
+          <div :class="row.vehicleReport != '1'?'shou':null" @click="handlerReport(row, 'vehicleReport', row.vehicleReport == '1')">
+            <span v-if="row.vehicleReport == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
+            <span v-if="row.vehicleReport == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
+            <span v-if="row.vehicleReport == '2'" class="g-color-warning">上报失败</span>
+          </div>
         </template>
         <template #driverReport="{row}">
-          <span v-if="row.driverReport == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
-          <span v-if="row.driverReport == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
-          <span v-if="row.driverReport == '2'" class="g-color-warning">上报失败</span>
+          <div :class="row.driverReport != '1'?'shou':null" @click="handlerReport(row, 'driverReport', row.driverReport == '1')">
+            <span v-if="row.driverReport == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
+            <span v-if="row.driverReport == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
+            <span v-if="row.driverReport == '2'" class="g-color-warning">上报失败</span>
+          </div>
         </template>
         <template #waybillSendStatus="{row}">
-          <span v-if="row.waybillSendStatus == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
-          <span v-if="row.waybillSendStatus == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
-          <span v-if="row.waybillSendStatus == '2'" class="g-color-warning">上报失败</span>
+          <div :class="row.waybillSendStatus != '1'?'shou':null" @click="handlerReport(row, 'waybillSendStatus', row.waybillSendStatus == '1')">
+            <span v-if="row.waybillSendStatus == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
+            <span v-if="row.waybillSendStatus == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
+            <span v-if="row.waybillSendStatus == '2'" class="g-color-warning">上报失败</span>
+          </div>
         </template>
         <template #loadSendStatus="{row}">
-          <span v-if="row.loadSendStatus == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
-          <span v-if="row.loadSendStatus == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
-          <span v-if="row.loadSendStatus == '2'" class="g-color-warning">上报失败</span>
+
+          <div :class="row.loadSendStatus != '1'?'shou':null" @click="handlerReport(row, 'loadSendStatus', row.loadSendStatus == '1')">
+            <span v-if="row.loadSendStatus == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
+            <span v-if="row.loadSendStatus == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
+            <span v-if="row.loadSendStatus == '2'" class="g-color-warning">上报失败</span>
+          </div>
         </template>
         <template #unloadSendStatus="{row}">
-          <span v-if="row.unloadSendStatus == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
-          <span v-if="row.unloadSendStatus == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
-          <span v-if="row.unloadSendStatus == '2'" class="g-color-warning">上报失败</span>
+          <div :class="row.unloadSendStatus != '1'?'shou':null" @click="handlerReport(row, 'unloadSendStatus', row.unloadSendStatus == '1')">
+
+            <span v-if="row.unloadSendStatus == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
+            <span v-if="row.unloadSendStatus == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
+            <span v-if="row.unloadSendStatus == '2'" class="g-color-warning">上报失败</span>
+          </div>
         </template>
         <template #billSendStatus="{row}">
-          <span v-if="row.unloadSendStatus == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
-          <span v-if="row.unloadSendStatus == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
-          <span v-if="row.unloadSendStatus == '2'" class="g-color-warning">上报失败</span>
+          <div :class="row.billSendStatus != '1'?'shou':null" @click="handlerReport(row, 'billSendStatus', row.billSendStatus == '1')">
+
+            <span v-if="row.billSendStatus == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
+            <span v-if="row.billSendStatus == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
+            <span v-if="row.billSendStatus == '2'" class="g-color-warning">上报失败</span>
+          </div>
         </template>
 
         <template #waybillStatus="{row}">
@@ -614,9 +629,9 @@ export default {
         arr.push(this._waybillReport(row));
       });
 
-      await Promise.all(arr);
+      // await Promise.all(arr);
 
-      console.log(' 成功!!~~ ');
+      // console.log(' 成功!!~~ ');
     },
     /** 批量导入 */
     handleImport() {
@@ -660,20 +675,174 @@ export default {
 
     /* 上报接口 */
     async _waybillReport(row) {
-      const res_driver = await waybillReportDriver(row.waybillReportCode);
-      const res_vehicle = await waybillReportVehicle(row.waybillReportCode);
-      const res_waybill = await waybillReportWaybill(row.waybillReportCode);
-      const res_load = await waybillReportLoad(row.waybillReportCode);
-      const res_unload = await waybillReportUnload(row.waybillReportCode);
-      const res_bill = await waybillReportBill(row.waybillReportCode);
-      console.log(res_driver);
-      console.log(res_vehicle);
-      console.log(res_waybill);
-      console.log(res_load);
-      console.log(res_unload);
-      console.log(res_bill);
-      return res_bill;
+      this.loading = true;
+      const { driverReport, vehicleReport, waybillSendStatus, loadSendStatus, unloadSendStatus, billSendStatus } = row;
+
+      let res_driver;
+      let res_vehicle;
+      let res_waybill;
+      let res_load;
+      let res_unload;
+      let res_bill;
+      try {
+        if (driverReport !== 1) {
+          res_driver = await waybillReportDriver(row.waybillReportCode);
+          row.driverReport = 1;
+        } else {
+          res_driver = true;
+        }
+      } catch (error) {
+        row.driverReport = 2;
+      }
+      try {
+        if (vehicleReport !== 1) {
+          res_vehicle = await waybillReportVehicle(row.waybillReportCode);
+          row.vehicleReport = 1;
+        } else {
+          res_vehicle = true;
+        }
+      } catch (error) {
+        row.vehicleReport = 2;
+      }
+      try {
+        if (waybillSendStatus !== 1) {
+          res_waybill = await waybillReportWaybill(row.waybillReportCode);
+          row.waybillSendStatus = 1;
+        } else {
+          res_waybill = true;
+        }
+      } catch (error) {
+        row.waybillSendStatus = 2;
+      }
+      try {
+        if (loadSendStatus !== 1) {
+          res_load = await waybillReportLoad(row.waybillReportCode);
+          row.loadSendStatus = 1;
+        } else {
+          res_load = true;
+        }
+      } catch (error) {
+        row.loadSendStatus = 2;
+      }
+      try {
+        if (unloadSendStatus !== 1) {
+          res_unload = await waybillReportUnload(row.waybillReportCode);
+          row.unloadSendStatus = 1;
+        } else {
+          res_unload = true;
+        }
+      } catch (error) {
+        row.unloadSendStatus = 2;
+      }
+      try {
+        if (billSendStatus !== 1) {
+          res_bill = await waybillReportBill(row.waybillReportCode);
+          row.billSendStatus = 1;
+        } else {
+          res_bill = true;
+        }
+      } catch (error) {
+        row.billSendStatus = 2;
+      }
+
+      if (
+        [res_driver, res_vehicle, res_waybill, res_load, res_unload, res_bill].every(e => e)
+      ) {
+        this.msgSuccess('上报成功');
+      }
+      this.loading = false;
+      this.getList();
+      // return res_bill;
     },
+
+    handlerReport(row, key, bool) {
+      if (bool) return;
+      this.loading = true;
+      switch (key) {
+        case 'driverReport':
+          if (row[key] !== 1) {
+            waybillReportDriver(row.waybillReportCode).then(res => {
+              this.msgSuccess('上报成功');
+              row[key] = 1;
+              this.loading = false;
+            }).catch(() => {
+              this.msgError('上报失败');
+              row[key] = 2;
+              this.loading = false;
+            });
+          }
+          break;
+        case 'vehicleReport':
+          if (row[key] !== 1) {
+            waybillReportVehicle(row.waybillReportCode).then(res => {
+              this.msgSuccess('上报成功');
+              row[key] = 1;
+              this.loading = false;
+            }).catch(() => {
+              this.msgError('上报失败');
+              row[key] = 2;
+              this.loading = false;
+            });
+          }
+          break;
+        case 'waybillSendStatus':
+          if (row[key] !== 1) {
+            waybillReportWaybill(row.waybillReportCode).then(res => {
+              this.msgSuccess('上报成功');
+              row[key] = 1;
+              this.loading = false;
+            }).catch(() => {
+              this.msgError('上报失败');
+              row[key] = 2;
+              this.loading = false;
+            });
+          }
+          break;
+        case 'loadSendStatus':
+          if (row[key] !== 1) {
+            waybillReportLoad(row.waybillReportCode).then(res => {
+              this.msgSuccess('上报成功');
+              row[key] = 1;
+              this.loading = false;
+            }).catch(() => {
+              this.msgError('上报失败');
+              row[key] = 2;
+              this.loading = false;
+            });
+          }
+          break;
+        case 'unloadSendStatus':
+          if (row[key] !== 1) {
+            waybillReportUnload(row.waybillReportCode).then(res => {
+              this.msgSuccess('上报成功');
+              row[key] = 1;
+              this.loading = false;
+            }).catch(() => {
+              this.msgError('上报失败');
+              row[key] = 2;
+              this.loading = false;
+            });
+          }
+          break;
+        case 'billSendStatus':
+          if (row[key] !== 1) {
+            waybillReportBill(row.waybillReportCode).then(res => {
+              this.msgSuccess('上报成功');
+              row[key] = 1;
+              this.loading = false;
+            }).catch(() => {
+              this.msgError('上报失败');
+              row[key] = 2;
+              this.loading = false;
+            });
+          }
+          break;
+
+        default:
+          break;
+      }
+    },
+
 
     /* 多选 */
     handleSelectionChange(selecked) {

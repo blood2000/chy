@@ -26,8 +26,9 @@ const CardReader = {
           success && success('连接服务成功');
         };
         CardReader.socket.onclose = function(event) {
+          Message.error('# [Socket] 本地服务链接已断开 : ', event.wasClean);
           CardReader.log.warn('# [Socket] 本地服务链接已断开 : ', event.wasClean);
-          error && error('服务链接已断开, 请检查服务是否开启');
+          error && error();
         };
         CardReader.socket.onmessage = function(event) {
           CardReader.log.info(event.data);
@@ -287,8 +288,9 @@ const CardReader = {
       ret = CardReader.fn.getResult(ret);
       console.log('获得随机数', ret);
       if (!ret.success) {
-        await CardReader.action.error();
+        Message.error('读取卡片失败');
         console.error('请重新放置卡片：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
+        await CardReader.action.error();
         return;
       }
       const encrypt = CardReader.fn.encryptByDES(ret.data, CardReader._attr.key);
@@ -311,11 +313,8 @@ const CardReader = {
       console.log('清空当前目录文件', ret);
       await CardReader.fn.exec(CardReader.command.deselect);
       await CardReader.fn.exec(CardReader.command.beep);
-      return {
-        code: 200,
-        msg: `注销卡片成功`,
-        data: null
-      };
+      Message.error('注销卡片成功');
+      return;
     },
     error: async function() {
       await CardReader.fn.exec(CardReader.command.deselect);
@@ -522,13 +521,9 @@ CardReader.action['readUserInfo'] = async function() {
   console.log('选择用户信息目录', ret);
   ret = CardReader.fn.getResult(ret);
   if (!ret.success || ret.code != '9000') {
-    await CardReader.action.error();
+    Message.error('不存在用户信息：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
     console.error('不存在用户信息：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
-    return {
-      code: 401,
-      msg: `不存在用户信息`,
-      data: null
-    };
+    return await CardReader.action.error();
   }
 
   // 读二进制文件
@@ -538,13 +533,9 @@ CardReader.action['readUserInfo'] = async function() {
   console.log('读二进制文件', ret);
   ret = CardReader.fn.getResult(ret);
   if (!ret.success || ret.code != '9000') {
-    await CardReader.action.error();
+    Message.error('不存在用户信息：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
     console.error('不存在用户信息：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
-    return {
-      code: 402,
-      msg: `不存在用户信息`,
-      data: null
-    };
+    return await CardReader.action.error();
   }
   console.log('解析后的用户数据：', CardReader.fn.utf8HexToStr(ret.data));
   const data = CardReader.fn.utf8HexToStr(ret.data);
@@ -553,11 +544,11 @@ CardReader.action['readUserInfo'] = async function() {
   await CardReader.fn.exec(CardReader.command.beep);
 
   // 获取成功返回用户数据
-  return {
+  return Promise.resolve({
     code: 200,
     msg: `读取成功`,
     data: data
-  };
+  });
 };
 
 /**
@@ -579,13 +570,9 @@ CardReader.action['readData'] = async function() {
   console.log('读二进制文件', ret);
   ret = CardReader.fn.getResult(ret);
   if (!ret.success || ret.code != '9000') {
-    await CardReader.action.error();
+    Message.error('读文件失败，缺少数据索引信息：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
     console.error('读文件失败，缺少数据索引信息：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
-    return {
-      code: 400,
-      msg: `无任何数据`,
-      data: null
-    };
+    return await CardReader.action.error();
   }
   /**
      * 通过索引文件去获取卡中的数据量，然后进行递归的方式去遍历获取
@@ -628,11 +615,11 @@ CardReader.action['readData'] = async function() {
   // 取消选择卡片
   await CardReader.fn.exec(CardReader.command.deselect);
   await CardReader.fn.exec(CardReader.command.beep);
-  return {
+  return Promise.resolve({
     code: 200,
     msg: `共读取了：${count + errCount} 条记录，成功：${count} -- 失败：${errCount}`,
     data: data
-  };
+  });
 };
 
 /**
