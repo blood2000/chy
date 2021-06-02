@@ -17,7 +17,7 @@
           <el-option
             v-for="item in personOptions"
             :key="item.userCode"
-            :label="item.phonenumber + (item.nickName ? ' (' + item.nickName + ')' : '')"
+            :label="item.phonenumber + (item.userName ? ' (' + item.userName + ')' : '')"
             :value="item.userCode"
           />
         </el-select>
