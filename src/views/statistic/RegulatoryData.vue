@@ -1,7 +1,7 @@
 <template>
   <!-- 监管数据 -->
   <div class="s-container">
-    <div class="s-container__box ly-flex">
+    <div class="s-container__box ly-flex ly-flex-pack-justify">
       <p class="s-container__box__line">
         <label>已上报司机信息:</label>
         <span>
@@ -144,7 +144,7 @@ export default {
     font-family: PingFang Regular;
     flex-wrap: wrap;
     &__line{
-      width: 50%;
+      width: 47%;
       // line-height: 1.2rem;
       >label{
         font-size: 0.6rem;
