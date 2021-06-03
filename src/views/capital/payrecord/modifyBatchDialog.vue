@@ -13,7 +13,7 @@
       class="fr mb10"
       @click="handleAdd"
     >新增</el-button> -->
-    <el-table :data="infoList">
+    <el-table :data="infoList" highlight-current-row>
       <el-table-column label="序号" align="center" type="index" min-width="5%" />
       <el-table-column label="支付批次号" align="center" prop="bizNo">
         <template scope="scope">

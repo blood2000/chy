@@ -71,7 +71,7 @@
       </el-form-item>
     </el-form>
 
-    <el-table v-loading="loading" :data="infoList" border stripe @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="infoList" highlight-current-row border stripe @selection-change="handleSelectionChange">
       <el-table-column type="selection" :selectable="checkboxSelectable" width="55" align="center" />
       <el-table-column label="序号" align="center" type="index" min-width="5%" />
       <!-- <el-table-column label="网点编码" align="center" prop="branchCode" /> -->

@@ -46,7 +46,7 @@
         <el-tab-pane label="冻结记录" name="dj" />
         <el-tab-pane label="付款记录" name="fk" />
       </el-tabs>
-      <el-table v-show="activeTab == 'dj'" v-loading="loading" stripe border :data="dataList">
+      <el-table v-show="activeTab == 'dj'" v-loading="loading" highlight-current-row stripe border :data="dataList">
         <el-table-column label="运单号" align="center" prop="waybillNo" width="150" />
         <el-table-column label="装货地" align="center" prop="unloadAddress" width="150" />
         <el-table-column label="卸货地" align="center" prop="loadAddress" width="150" />
@@ -89,7 +89,7 @@
       </el-table>
 
 
-      <el-table v-show="activeTab == 'fk'" v-loading="loading" stripe border :data="dataList">
+      <el-table v-show="activeTab == 'fk'" v-loading="loading" highlight-current-row stripe border :data="dataList">
         <el-table-column label="运单号" align="center" prop="waybillNo" width="150" />
         <el-table-column label="装货地" align="center" prop="unloadAddress" width="150" />
         <el-table-column label="卸货地" align="center" prop="loadAddress" width="150" />

@@ -87,7 +87,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <el-table v-loading="loading" :data="applicationList" @selection-change="handleSelectionChange">
+      <el-table v-loading="loading" highlight-current-row :data="applicationList" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="应用名称" align="center" prop="cnName" />
         <el-table-column label="英文名称" align="center" prop="enName" />

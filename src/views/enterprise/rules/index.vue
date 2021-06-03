@@ -31,7 +31,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <el-table v-loading="loading" :data="rulesList" stripe border @selection-change="handleSelectionChange">
+      <el-table v-loading="loading" :data="rulesList" highlight-current-row stripe border @selection-change="handleSelectionChange">
         <!-- <el-table-column type="selection" width="55" align="center" fixed="left" /> -->
         <el-table-column label="规则名称" align="center" prop="name" />
         <el-table-column label="计算公式" align="center" prop="ruleDictValue" :formatter="ruleTypeFormat" min-width="150" />
