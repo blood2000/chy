@@ -4,11 +4,10 @@
     v-loading="loading"
     :show-summary="summary"
     border
+    stripe
     :data="data"
     v-bind="$attrs"
-    :row-class-name="tableRowClassName"
-    :row-style="selectedstyle"
-    @row-click="rowClick"
+    highlight-current-row
     @selection-change="handleSelectionChange"
   >
     <el-table-column v-if="!!_events['selection-change']" type="selection" width="55" align="center" fixed :selectable="selectableFn" :reserve-selection="reserveSelection" />
@@ -134,23 +133,24 @@ export default {
     clearTimeout(this.time);
   },
   methods: {
-    selectedstyle({ row, rowIndex }) {
-      if ((this.getIndex) === rowIndex) {
-        return {
-          'background-color': '#FFEEE8'
-        };
-      }
-    },
-    tableRowClassName({ row, rowIndex }) {
-      if (rowIndex % 2 > 0) {
-        return 'warning-row';
-      } else {
-        return '';
-      }
-    },
-    rowClick(row) {
-      this.getIndex = row.index;
-    },
+    // highlight({ row, rowIndex }) {
+    //   if ((this.getIndex) === rowIndex) {
+    //     return {
+    //       'background-color': '#FFEEE8'
+    //     };
+    //   }
+    // },
+    // tableRowClassName({ row, rowIndex }) {
+    //   if (rowIndex % 2 > 0 && this.getIndex !== rowIndex) {
+    //     return 'bg-row';
+    //   } else {
+    //     return '';
+    //   }
+    // },
+    // rowClick(row) {
+    //   console.log('测试');
+    //   this.getIndex = row.index;
+    // },
     handleSelectionChange(selection) {
       this.$emit('selection-change', selection);
     },
@@ -172,9 +172,6 @@ export default {
 </script>
 
 <style lang="scss">
-  .el-table .warning-row {
-    background: #FAFAFA;
-  }
 	.el-table__empty-block{
 	  text-align: left !important;
     margin-left: 50% !important;

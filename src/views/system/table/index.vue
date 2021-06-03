@@ -67,7 +67,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <el-table v-loading="loading" :data="configList" :close-on-click-modal="false" @selection-change="handleSelectionChange">
+      <el-table v-loading="loading" highlight-current-row :data="configList" :close-on-click-modal="false" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="字段名" align="center" prop="fieldName" />
         <el-table-column label="排序" align="center" sortable prop="sortNum" />

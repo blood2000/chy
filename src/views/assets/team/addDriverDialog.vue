@@ -84,7 +84,7 @@
       </el-form-item>
     </el-form>
 
-    <el-table v-loading="loading" :data="driverList" border stripe @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="driverList" highlight-current-row border stripe @selection-change="handleSelectionChange">
       <el-table-column type="selection" :selectable="checkboxSelectable" width="55" align="center" fixed="left" />
       <el-table-column label="序号" align="center" type="index" min-width="5%" />
       <el-table-column label="邀请状态" align="center" prop="applyStatus">

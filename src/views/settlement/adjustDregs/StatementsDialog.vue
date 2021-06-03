@@ -63,7 +63,7 @@
       </div>
       <el-divider />
 
-      <el-table :data="tableData" border show-summary style="width: 100%">
+      <el-table :data="tableData" highlight-current-row border show-summary style="width: 100%">
         <el-table-column
           prop="id"
           label="项目（装货地）"
@@ -311,16 +311,16 @@ export default {
 
     /** 查询核算列表 */
     getList() {
-      this.loading = true;
-      adjustDetail(this.queryParams).then(response => {
-        // isDregs // 是否渣土   1 是 0 否 (司机实收 只有渣土1能修改)
+      // this.loading = true;
+      // adjustDetail(this.queryParams).then(response => {
+      //   // isDregs // 是否渣土   1 是 0 否 (司机实收 只有渣土1能修改)
 
-        this.oldList = JSON.parse(JSON.stringify(response.data));
-        this.adjustlist = JSON.parse(JSON.stringify(response.data));
+      //   this.oldList = JSON.parse(JSON.stringify(response.data));
+      //   this.adjustlist = JSON.parse(JSON.stringify(response.data));
 
-        this.total = response.total;
-        this.loading = false;
-      });
+      //   this.total = response.total;
+      //   this.loading = false;
+      // });
     },
     /** 取消按钮 */
     cancel() {

@@ -477,7 +477,7 @@
 </template>
 
 <script>
-import { adjustList, adjustListApi, batchApply } from '@/api/settlement/adjust';
+import { adjustList, adjustListApi } from '@/api/settlement/adjust';
 import { adjustDregsList, adjustListApi as adjustDregsApi } from '@/api/settlement/adjustDregs';
 import { getUserInfo } from '@/utils/auth';
 // 驳回弹窗
@@ -890,6 +890,33 @@ export default {
 
     createdDatch(selection) {
       console.log(selection);
+    },
+
+    searchKeys(arr) {
+      var str = '';
+      var list = [];
+      for (var i = 0; i < arr.length; i++) {
+        var hasRead = false;
+        for (var k = 0; k < list.length; k++) {
+          if (list[k] === arr[i]) {
+            hasRead = true;
+          }
+        }
+        if (!hasRead) {
+          var _index = i; var haveSame = false;
+          for (var j = i + 1; j < arr.length; j++) {
+            if (arr[i] === arr[j]) {
+              _index += ',' + j;
+              haveSame = true;
+            }
+          }
+          if (haveSame) {
+            list.push(arr[i]);
+            str += '数组下标为' + _index + '，相同值为' + arr[i] + '\n';
+          }
+        }
+      }
+      return str;
     }
   }
 };

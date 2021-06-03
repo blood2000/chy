@@ -269,7 +269,8 @@ export default {
         { 'dictLabel': '已申请打款', 'dictValue': '6' },
         { 'dictLabel': '已打款', 'dictValue': '7' },
         { 'dictLabel': '已申请开票', 'dictValue': '8' },
-        { 'dictLabel': '已开票', 'dictValue': '9' }
+        { 'dictLabel': '已开票', 'dictValue': '9' },
+        { 'dictLabel': '已作废', 'dictValue': '10' }
       ],
       // 货物大类字典
       goodsBigTypeOptions: [],

@@ -341,70 +341,72 @@
           />
         </el-select>
       </el-form-item>
-        <el-row :gutter="20">
-            <el-col :span="11">
-                <el-form-item label="是否月结" prop="isMonthly">
-                    <el-select
-                            v-model="form.isMonthly"
-                            clearable
-                            filterable
-                    >
-                        <el-option
-                                v-for="dict in isOptions"
-                                :key="dict.dictValue"
-                                :label="dict.dictLabel"
-                                :value="dict.dictValue"
-                        />
-                    </el-select>
-                </el-form-item>
-            </el-col>
-            <el-col v-if="form.isMonthly" :span="11">
-                <el-form-item label="授信金额" prop="creditAmount">
-                    <el-input-number v-model="form.creditAmount" :precision="2" :min="0" :max="1000000000" :controls="false" placeholder="保留两位小数" />
-                </el-form-item>
-            </el-col>
-        </el-row>
-        <el-row :gutter="20">
-            <el-col :span="11">
-                <el-form-item label="负责的运营团队" prop="operateOrgCode">
-                    <el-select
-                            v-model="form.operateOrgCode"
-                            clearable
-                            filterable
-                            @change="selectOrgCode"
-                    >
-                        <el-option
-                            v-for="dict in marketList"
-                            :label="dict.market"
-                            :value="dict.orgCode"
-                        />
-                    </el-select>
-                    <!--<treeselect
-                            v-model="form.operateOrgCode"
-                            :options="operateOrgList"
-                            :normalizer="normalizer"
-                            :show-count="true"
-                            placeholder="请选择运营团队"
-                            @select="selectOrgCode"
-                    />-->
-                </el-form-item>
-            </el-col>
-            <el-col :span="11" v-if="form.operateOrgCode">
-                <el-form-item label="负责的业务员" prop="operateUserCode">
-                    <el-select
-                            v-model="form.operateUserCode"
-                            clearable
-                            filterable
-                    >
-                        <el-option
-                                v-for="dict in operateUserList"
-                                :label="dict.userName"
-                                :value="dict.userCode"
-                        />
-                    </el-select>
-                </el-form-item>
-            </el-col>
-        </el-row>
+      <el-row :gutter="20">
+        <el-col :span="11">
+          <el-form-item label="是否月结" prop="isMonthly">
+            <el-select
+              v-model="form.isMonthly"
+              clearable
+              filterable
+            >
+              <el-option
+                v-for="dict in isOptions"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col v-if="form.isMonthly" :span="11">
+          <el-form-item label="授信金额" prop="creditAmount">
+            <el-input-number v-model="form.creditAmount" :precision="2" :min="0" :max="1000000000" :controls="false" placeholder="保留两位小数" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="11">
+          <el-form-item label="负责的运营团队" prop="operateOrgCode">
+            <el-select
+              v-model="form.operateOrgCode"
+              clearable
+              filterable
+              @change="selectOrgCode"
+            >
+              <el-option
+                v-for="dict in marketList"
+                :key="dict.orgCode"
+                :label="dict.market"
+                :value="dict.orgCode"
+              />
+            </el-select>
+            <!-- <treeselect
+              v-model="form.operateOrgCode"
+              :options="operateOrgList"
+              :normalizer="normalizer"
+              :show-count="true"
+              placeholder="请选择运营团队"
+              @select="selectOrgCode"
+            /> -->
+          </el-form-item>
+        </el-col>
+        <el-col v-if="form.operateOrgCode" :span="11">
+          <el-form-item label="负责的业务员" prop="operateUserCode">
+            <el-select
+              v-model="form.operateUserCode"
+              clearable
+              filterable
+            >
+              <el-option
+                v-for="dict in operateUserList"
+                :key="dict.userCode"
+                :label="dict.userName"
+                :value="dict.userCode"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-row :gutter="20">
         <el-col :span="8">
           <el-form-item prop="noNeedUnloadImg">
@@ -437,13 +439,13 @@ import { getBranchList } from '@/api/system/branch';
 import UploadImage from '@/components/UploadImage/index';
 import ProvinceCityCounty from '@/components/ProvinceCityCounty';
 import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
-import Treeselect from '@riophae/vue-treeselect';
+// import Treeselect from '@riophae/vue-treeselect';
 
 export default {
   components: {
     UploadImage,
-    ProvinceCityCounty,
-    Treeselect
+    ProvinceCityCounty
+    // Treeselect
   },
   props: {
     title: {
