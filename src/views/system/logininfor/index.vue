@@ -87,7 +87,7 @@
             @click="handleExport"
           >导出</el-button>
         </el-col>
-        <el-col :span="1.5">
+        <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" />
         </el-col>
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
