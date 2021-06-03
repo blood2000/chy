@@ -131,7 +131,6 @@ export default {
   methods: {
     // 查询用户银行卡
     getBankList() {
-      this.loading = true;
       banklist({
         userCode: this.userCode
       }).then(response => {
