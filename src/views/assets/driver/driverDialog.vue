@@ -95,9 +95,6 @@
       <el-form-item label="详细地址" prop="homeAddress">
         <el-input v-model="form.homeAddress" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
-      <!-- <el-form-item label="司机城市名称" prop="driverCity">
-        <el-input v-model="form.driverCity" placeholder="请输入司机城市名称" class="width90" clearable />
-      </el-form-item> -->
       <el-form-item label="驾驶证号" prop="driverLicense">
         <el-input v-model="form.driverLicense" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
@@ -328,26 +325,6 @@
             />
           </el-select>
         </el-form-item>
-        <!--<el-form-item label="车牌类型" prop="classificationCode">
-          <el-select v-model="vehicleForm.classificationCode" class="width90" filterable clearable :disabled="disable">
-            <el-option
-              v-for="dict in licensePlateTypeOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-        </el-form-item>-->
-        <el-form-item label="车身颜色" prop="vehicleColorCode">
-          <el-select v-model="vehicleForm.vehicleColorCode" class="width90" filterable clearable :disabled="disable">
-            <el-option
-              v-for="dict in carBodyColorOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-        </el-form-item>
         <el-form-item label="车辆归属类型" prop="vehicleAscriptionType">
           <el-select v-model="vehicleForm.vehicleAscriptionType" class="width90" filterable clearable :disabled="disable">
             <el-option
@@ -368,10 +345,23 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="车辆识别码" prop="chassisNumber" :rules="[{ required: true, message: '车辆识别码不能为空', trigger: 'blur' }]">
+          <el-input v-model="vehicleForm.chassisNumber" placeholder="请输入车辆识别码" class="width90" clearable :disabled="disable" />
+        </el-form-item>
         <el-form-item label="车辆能源类型" prop="vehicleEnergyType">
           <el-select v-model="vehicleForm.vehicleEnergyType" class="width90" filterable clearable :disabled="disable">
             <el-option
               v-for="dict in energyTypesOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="车身颜色" prop="vehicleColorCode">
+          <el-select v-model="vehicleForm.vehicleColorCode" class="width90" filterable clearable :disabled="disable">
+            <el-option
+              v-for="dict in carBodyColorOptions"
               :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
@@ -423,13 +413,6 @@
         <el-form-item label="车辆可载立方" prop="vehicleRemainingLoadVolume">
           <el-input v-model="vehicleForm.vehicleRemainingLoadVolume" placeholder="请输入车辆可载立方" class="width90 unit-item" clearable :disabled="disable" />
           <span class="unit-span g-color-gray">m³</span>
-        </el-form-item>
-        <!-- <el-form-item label="车身自重" prop="selfRespect">
-          <el-input v-model="vehicleForm.selfRespect" placeholder="请输入车身自重" class="width90 unit-item" clearable :disabled="disable" />
-          <span class="unit-span g-color-gray">吨</span>
-        </el-form-item> -->
-        <el-form-item label="车辆识别码" prop="chassisNumber" :rules="[{ required: true, message: '车辆识别码不能为空', trigger: 'blur' }]">
-          <el-input v-model="vehicleForm.chassisNumber" placeholder="请输入车辆识别码" class="width90" clearable :disabled="disable" />
         </el-form-item>
         <el-form-item label="发动机号" prop="engineNumber">
           <el-input v-model="vehicleForm.engineNumber" placeholder="支持自动识别" class="width90" clearable :disabled="disable" />
@@ -861,7 +844,6 @@ export default {
         vehicleLoadWeight: null,
         vehicleLoadVolume: null,
         vehicleRemainingLoadVolume: null,
-        // selfRespect: null,
         chassisNumber: null,
         engineNumber: null,
         vehicleChassisNumber: null,
