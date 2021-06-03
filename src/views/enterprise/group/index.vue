@@ -39,7 +39,7 @@
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
           <el-button
-            v-hasPermi="['assets:shipment:project:add']"
+            v-hasPermi="['transportation:dispatch:add']"
             type="primary"
             icon="el-icon-plus"
             size="mini"
@@ -48,7 +48,7 @@
         </el-col>
         <el-col :span="1.5">
           <el-button
-            v-hasPermi="['assets:shipment:project:remove']"
+            v-hasPermi="['transportation:dispatch:del']"
             type="danger"
             icon="el-icon-delete"
             size="mini"
@@ -71,7 +71,7 @@
         </template>
         <template #edit="{row}">
           <el-button
-            v-hasPermi="['assets:shipment:project:remove']"
+            v-hasPermi="['transportation:dispatch:del']"
             size="mini"
             type="text"
             @click="handleDelete(row)"
@@ -108,6 +108,14 @@ export default {
     GroupDialog
   },
   props: {
+    shipmentCode: {
+      type: String,
+      default: null
+    },
+    companyCode: {
+      type: String,
+      default: null
+    }
   },
 
   data() {
@@ -185,6 +193,11 @@ export default {
     /** 查询调度组列表 */
     getList() {
       this.loading = true;
+      if (this.companyCode) {
+        this.queryParams.companyCode = this.companyCode;
+      } else if (this.shipmentCode) {
+        this.queryParams.createCode = this.shipmentCode;
+      }
       listInfo(this.queryParams).then(response => {
         this.infoList = response.data.list;
         this.total = response.data.total;
