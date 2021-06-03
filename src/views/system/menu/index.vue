@@ -137,7 +137,7 @@
           </el-col>-->
         <el-row>
           <el-col :span="8">
-            <el-form-item label="产品">
+            <el-form-item label="产品" prop="produceCode">
               <el-select
                 v-model="form.produceCode"
                 style="width: 100%;"
@@ -157,7 +157,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="应用">
+            <el-form-item label="应用" prop="appCode">
               <el-select
                 v-model="form.appCode"
                 style="width: 100%;"
@@ -177,7 +177,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="版本">
+            <el-form-item label="版本" prop="versionCode">
               <el-select
                 v-model="form.versionCode"
                 style="width: 100%;"
@@ -361,6 +361,15 @@ export default {
       form: {},
       // 表单校验
       rules: {
+        produceCode: [
+          { required: true, message: '产品不能为空', trigger: 'blur,change' }
+        ],
+        appCode: [
+          { required: true, message: '应用不能为空', trigger: 'blur,change' }
+        ],
+        versionCode: [
+          { required: true, message: '版本不能为空', trigger: 'blur,change' }
+        ],
         menuName: [
           { required: true, message: '菜单名称不能为空', trigger: 'blur' }
         ],
