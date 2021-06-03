@@ -45,7 +45,7 @@
           <el-button icon="el-icon-refresh-right" size="small" @click="rotateRight()" />
         </el-col>
         <el-col :lg="{span: 2, offset: 6}" :md="2">
-          <el-button type="primary" size="small" @click="uploadImg()" :loading="buttonLoading">提 交</el-button>
+          <el-button class="submit-button" type="primary" :loading="buttonLoading" @click="uploadImg()">提 交</el-button>
         </el-col>
       </el-row>
     </el-dialog>
@@ -62,7 +62,10 @@ export default {
   components: { VueCropper },
   props: {
     user: {
-      type: Object
+      type: Object,
+      default: () => {
+        return {};
+      }
     }
   },
   data() {
@@ -163,7 +166,10 @@ export default {
 .user-info-head {
   position: relative;
   display: inline-block;
-  height: 120px;
+  height: 82px;
+  border: 5px solid #F2F5F8;
+  border-radius: 50%;
+  margin: 8px 0 10px;
 }
 
 .user-info-head:hover:after {
@@ -180,7 +186,13 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   cursor: pointer;
-  line-height: 110px;
+  line-height: 72px;
   border-radius: 50%;
+}
+
+.submit-button{
+  height: 32px;
+  padding: 7px 20px;
+  border-radius: 2px;
 }
 </style>
