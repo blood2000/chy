@@ -107,7 +107,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <el-table v-loading="loading" highlight-current-row :data="list" @selection-change="handleSelectionChange">
+      <el-table v-loading="loading" highlight-current-row border :data="list" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="日志编号" align="center" prop="operId" />
         <el-table-column label="系统模块" align="center" prop="title" />
@@ -127,7 +127,6 @@
               v-hasPermi="['system:operlog:query']"
               size="mini"
               type="text"
-              icon="el-icon-view"
               @click="handleView(scope.row,scope.index)"
             >详细</el-button>
           </template>

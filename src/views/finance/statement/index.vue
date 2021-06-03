@@ -94,7 +94,7 @@
         <div class="bg-info">
           <div class="header">结算信息</div>
           <div style="padding:20px">
-            <el-table v-loading="loading" highlight-current-row :data="invoicelist" border stripe>
+            <el-table v-loading="loading" highlight-current-row :data="invoicelist" border>
               <el-table-column width="180" label="装货地" align="center" prop="invoiceInfoStatisticsVo.loadFormattedAddress" show-overflow-tooltip />
               <el-table-column width="180" label="卸货地" align="center" prop="invoiceInfoStatisticsVo.unloadFormattedAddress" show-overflow-tooltip />
               <el-table-column width="120" label="货物大类" align="center" prop="invoiceInfoStatisticsVo.goodsBigTypeName" />

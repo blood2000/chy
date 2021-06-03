@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-row :gutter="companyCode?20:0">
+    <el-row>
       <!--部门数据-->
       <el-col :lg="5" :md="6" :sm="7" :xs="24">
         <div class="app-container app-container--tree">
@@ -138,7 +138,7 @@
             <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
           </el-row>
 
-          <el-table v-loading="loading" highlight-current-row :data="userList" @selection-change="handleSelectionChange">
+          <el-table v-loading="loading" highlight-current-row border :data="userList" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="50" align="center" />
             <!-- <el-table-column label="用户编号" align="center" prop="userId" />-->
             <el-table-column label="用户名称" align="center" prop="userName" :show-overflow-tooltip="true" />
@@ -172,7 +172,6 @@
                   v-hasPermi="['system:user:edit']"
                   size="mini"
                   type="text"
-                  icon="el-icon-edit"
                   @click="handleUpdate(scope.row)"
                 >修改</el-button>
                 <el-button
@@ -180,14 +179,12 @@
                   v-hasPermi="['system:user:remove']"
                   size="mini"
                   type="text"
-                  icon="el-icon-delete"
                   @click="handleDelete(scope.row)"
                 >删除</el-button>
                 <el-button
                   v-hasPermi="['system:user:resetPwd']"
                   size="mini"
                   type="text"
-                  icon="el-icon-key"
                   @click="handleResetPwd(scope.row)"
                 >重置</el-button>
               </template>

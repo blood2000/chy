@@ -58,7 +58,7 @@
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table v-loading="loading" highlight-current-row :data="testList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" highlight-current-row border :data="testList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="${comment}" align="center" prop="testId" />
       <el-table-column label="${comment}" align="center" prop="testName" />

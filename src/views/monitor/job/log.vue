@@ -95,7 +95,7 @@
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table v-loading="loading" highlight-current-row :data="jobLogList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" highlight-current-row border :data="jobLogList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="日志编号" width="80" align="center" prop="jobLogId" />
       <el-table-column label="任务名称" align="center" prop="jobName" :show-overflow-tooltip="true" />

@@ -108,6 +108,7 @@ export default {
     height: 370px;
     min-width: 368px;
     margin: 0 15px 0 0;
+    padding-top: 10px;
   }
 }
 </style>

@@ -8,7 +8,7 @@
     :close-on-click-modal="false"
     @close="cancel"
   >
-    <el-table v-loading="loading" :data="infoList" highlight-current-row border stripe @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="infoList" highlight-current-row border @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="序号" align="center" type="index" min-width="5%" />
       <el-table-column label="调度组名称" align="center" prop="name" />
