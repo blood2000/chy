@@ -704,10 +704,16 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.commentlist = selection;
-      this.ids = selection.map((item) => item.wayBillCode);
-      this.bodyParams.waybillCodeList = this.ids;
-      this.multiple = !selection.length;
+      if (this.activeName === '5') {
+        console.log(selection);
+        // 柔和成一个批次
+        this.createdDatch(selection);
+      } else {
+        this.commentlist = selection;
+        this.ids = selection.map((item) => item.wayBillCode);
+        this.bodyParams.waybillCodeList = this.ids;
+        this.multiple = !selection.length;
+      }
     },
     /** 查询【请填写功能名称】列表 */
     getList() {
@@ -880,6 +886,10 @@ export default {
       this.Statementsdialog = true;
       this.title = '对账单';
       this.$refs.StatementsDialog.setForm(arr);
+    },
+
+    createdDatch(selection) {
+      console.log(selection);
     }
   }
 };
