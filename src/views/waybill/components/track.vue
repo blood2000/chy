@@ -199,8 +199,8 @@ export default {
         position: startPosition,
         icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/load.png',
         autoFitView: true,
-        autoRotation: true
-        // offset: new Pixel(-14, -20),
+        autoRotation: true,
+        offset: new AMap.Pixel(-40, -40)
       });
       startMark.setMap(that.$refs.map.$$getInstance()); // 点标记
       // 卸货地marker
@@ -209,8 +209,8 @@ export default {
         position: endPosition,
         icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/unload.png',
         autoFitView: true,
-        autoRotation: true
-        // offset: new Pixel(-14, -20),
+        autoRotation: true,
+        offset: new AMap.Pixel(-40, -40)
       });
       endMark.setMap(that.$refs.map.$$getInstance()); // 点标记
       that.$refs.map.$$getInstance().setFitView([startMark, endMark]); // 执行定位
@@ -284,7 +284,7 @@ export default {
           this.jimiQueryParams.end_time = this.time;
           this.lieyingQueryParams.endtime = new Date().getTime();
         }
-        if (this.loadAddress && this.unloadAddress) {
+        if (this.loadAddress.length !== 0 && this.unloadAddress.length !== 0) {
           // 标记装卸货地址
           this.getMark();
           // 获取路线
