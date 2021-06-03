@@ -311,16 +311,16 @@ export default {
 
     /** 查询核算列表 */
     getList() {
-      this.loading = true;
-      adjustDetail(this.queryParams).then(response => {
-        // isDregs // 是否渣土   1 是 0 否 (司机实收 只有渣土1能修改)
+      // this.loading = true;
+      // adjustDetail(this.queryParams).then(response => {
+      //   // isDregs // 是否渣土   1 是 0 否 (司机实收 只有渣土1能修改)
 
-        this.oldList = JSON.parse(JSON.stringify(response.data));
-        this.adjustlist = JSON.parse(JSON.stringify(response.data));
+      //   this.oldList = JSON.parse(JSON.stringify(response.data));
+      //   this.adjustlist = JSON.parse(JSON.stringify(response.data));
 
-        this.total = response.total;
-        this.loading = false;
-      });
+      //   this.total = response.total;
+      //   this.loading = false;
+      // });
     },
     /** 取消按钮 */
     cancel() {
