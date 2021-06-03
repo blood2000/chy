@@ -196,6 +196,9 @@ export default {
         ],
         districtCode: [
           { required: true, message: '请选择县/区', trigger: 'change' }
+        ],
+        addressAlias: [
+          { required: true, message: '地址别名不能为空', trigger: 'change' }
         ]
       },
       // 地图初始点位
