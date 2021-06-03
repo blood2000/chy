@@ -207,8 +207,8 @@
             @click="handleExport"
           >导出</el-button>
           <el-button
-            :disabled="!ids.length"
             v-hasPermi="['transportation:waybillReport:batch']"
+            :disabled="!ids.length"
             type="info"
             icon="el-icon-s-order"
             size="mini"
