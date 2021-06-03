@@ -79,4 +79,30 @@ export function getWaybillStatus(data) {
   });
 }
 
+// 获取运营团队
+export function getMarket(data) {
+  return request({
+    url: '/assets/market/list',
+    method: 'post',
+    data: data
+  });
+}
+
+export function getOperateOrg(data) {
+  return request({
+    url: '/system/dept/operate_treeselect',
+    method: 'post',
+    data: data
+  });
+}
+
+// 获取业务员
+export function getOperateUser(data) {
+  return request({
+    url: '/system/user/listByOrg',
+    method: 'post',
+    data: data
+  });
+}
+
 

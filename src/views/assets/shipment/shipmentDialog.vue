@@ -326,6 +326,21 @@
         至
         <el-input-number v-model="form.consumptionMax" :controls="false" placeholder="最大值" class="width12" />
       </el-form-item>-->
+      <el-form-item label="是否预付运费" prop="isPrepaid">
+        <el-select
+          v-model="form.isPrepaid"
+          clearable
+          filterable
+          class="width90"
+        >
+          <el-option
+            v-for="dict in isOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
       <el-row :gutter="20">
         <el-col :span="11">
           <el-form-item label="是否月结" prop="isMonthly">
@@ -349,21 +364,49 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-form-item label="是否预付运费" prop="isPrepaid">
-        <el-select
-          v-model="form.isPrepaid"
-          clearable
-          filterable
-          class="width90"
-        >
-          <el-option
-            v-for="dict in isOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
+      <el-row :gutter="20">
+        <el-col :span="11">
+          <el-form-item label="负责的运营团队" prop="operateOrgCode">
+            <el-select
+              v-model="form.operateOrgCode"
+              clearable
+              filterable
+              @change="selectOrgCode"
+            >
+              <el-option
+                v-for="dict in marketList"
+                :key="dict.orgCode"
+                :label="dict.market"
+                :value="dict.orgCode"
+              />
+            </el-select>
+            <!-- <treeselect
+              v-model="form.operateOrgCode"
+              :options="operateOrgList"
+              :normalizer="normalizer"
+              :show-count="true"
+              placeholder="请选择运营团队"
+              @select="selectOrgCode"
+            /> -->
+          </el-form-item>
+        </el-col>
+        <el-col v-if="form.operateOrgCode" :span="11">
+          <el-form-item label="负责的业务员" prop="operateUserCode">
+            <el-select
+              v-model="form.operateUserCode"
+              clearable
+              filterable
+            >
+              <el-option
+                v-for="dict in operateUserList"
+                :key="dict.userCode"
+                :label="dict.userName"
+                :value="dict.userCode"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-row :gutter="20">
         <el-col :span="8">
           <el-form-item prop="noNeedUnloadImg">
@@ -372,7 +415,7 @@
         </el-col>
         <el-col :span="10">
           <el-form-item prop="openProjectDesignView">
-            <el-checkbox v-model="form.openProjectDesignView">开启项目版统计视图</el-checkbox>
+            <el-checkbox v-model="form.openProjectDesignView">开启&nbsp;项目版统计视图</el-checkbox>
           </el-form-item>
         </el-col>
       </el-row>
@@ -389,18 +432,20 @@
 </template>
 
 <script>
-import { addShipment, updateShipment, authRead, examine, getShipmentEnterprise } from '@/api/assets/shipment';
+import { addShipment, updateShipment, authRead, examine, getShipmentEnterprise, getMarket, getOperateOrg, getOperateUser } from '@/api/assets/shipment';
 // import { getWaybillStatus } from '@/api/assets/shipment';
 import { listDeptAll } from '@/api/system/dept';
 import { getBranchList } from '@/api/system/branch';
 import UploadImage from '@/components/UploadImage/index';
 import ProvinceCityCounty from '@/components/ProvinceCityCounty';
 import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
+// import Treeselect from '@riophae/vue-treeselect';
 
 export default {
   components: {
     UploadImage,
     ProvinceCityCounty
+    // Treeselect
   },
   props: {
     title: {
@@ -485,7 +530,20 @@ export default {
       // 网点查询
       loading: false,
       branchOptions: [],
-      companyList: []
+      companyList: [],
+      marketList: [],
+      marketMap: {},
+      operateUserList: [],
+      // 部门树选项
+      operateOrgList: undefined,
+      // 部门树键值转换
+      normalizer(node) {
+        return {
+          id: node.code, // 键名转换，方法默认是label和children进行树状渲染
+          label: node.label,
+          children: node.children
+        };
+      }
     };
   },
   computed: {
@@ -500,10 +558,47 @@ export default {
   },
   created() {
     this.getDictsOptions();
+    this.getMarketList();
+    // this.getOperateOrgList();
     // 不用了
     // this.getCompanyList();
   },
   methods: {
+    // 获取运营团队
+    getMarketList() {
+      getMarket().then((response) => {
+        this.marketList = response.data;
+        response.data.forEach(e => {
+          this.marketList[e.orgCode] = e.id;
+        });
+      });
+    },
+    getOperateOrgList() {
+      getOperateOrg().then((response) => {
+        this.operateOrgList = response.data;
+      });
+    },
+    // 手动刷新校验
+    selectOrgCode(data) {
+      if (data) {
+        this.form.marketId = this.marketList[data];
+        this.getOperateUserList(data);
+      } else {
+        this.form.operateUserCode = '';
+      }
+      /* this.$nextTick(() => {
+        this.$refs.form.validateField('operateOrgCode');
+        if (this.form.operateOrgCode) {
+          this.getOperateUserList(this.form.operateOrgCode);
+        }
+      }); */
+    },
+    // 获取业务员
+    getOperateUserList(orgCode) {
+      getOperateUser({ orgCode: orgCode }).then((response) => {
+        this.operateUserList = response.data;
+      });
+    },
     changeTextPoint(value) {
       if (this.form.ticketType === '1') { // 一票制：调度费点数=原来的『税点(%) 』备注：运单结算使用的比例
         this.$set(this.form, 'dispatchPoints', value);
@@ -756,6 +851,10 @@ export default {
           code: this.form.branchCode,
           name: this.form.branchName
         }];
+      }
+      if (this.form.operateOrgCode) {
+        this.form.marketId = this.marketList[this.form.operateOrgCode];
+        this.getOperateUserList(this.form.operateOrgCode);
       }
     },
     // 已读
