@@ -60,7 +60,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <el-table v-loading="loading" :data="branchList" @selection-change="handleSelectionChange">
+      <el-table v-loading="loading" highlight-current-row :data="branchList" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="网点名称" align="center" prop="name" />
         <el-table-column label="组织" align="center" prop="orgName" />

@@ -63,7 +63,7 @@
       </div>
       <el-divider />
 
-      <el-table :data="tableData" border show-summary style="width: 100%">
+      <el-table :data="tableData" highlight-current-row border show-summary style="width: 100%">
         <el-table-column
           prop="id"
           label="项目（装货地）"
