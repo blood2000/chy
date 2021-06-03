@@ -381,7 +381,7 @@ import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 import { mapGetters } from 'vuex';
 import { getUserInfo } from '@/utils/auth';
 export default {
-  name: 'User',
+  name: 'CompanyUser',
   components: { Treeselect },
   data() {
     return {

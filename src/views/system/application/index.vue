@@ -181,7 +181,7 @@
 import { list, addApplication, updateApplication, getApplication, changeStatus } from '@/api/system/application';
 import { listProduce } from '@/api/system/produce';
 export default {
-  name: 'Post',
+  name: 'Application',
   data() {
     return {
       // 遮罩层

@@ -240,7 +240,7 @@ import { listProduce } from '@/api/system/produce';
 import { listAll } from '@/api/system/application';
 
 export default {
-  name: 'Post',
+  name: 'Version',
   data() {
     return {
       // 遮罩层

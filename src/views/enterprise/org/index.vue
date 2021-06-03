@@ -126,7 +126,7 @@ import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 // import UploadImage from '@/components/UploadImage/index';
 
 export default {
-  name: 'Dept',
+  name: 'CompanyOrg',
   components: { Treeselect },
   data() {
     return {

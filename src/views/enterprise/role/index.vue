@@ -385,7 +385,7 @@ import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 import { getUserInfo } from '@/utils/auth';
 
 export default {
-  name: 'Role',
+  name: 'CompanyRole',
   components: {
     Treeselect
   },

@@ -132,7 +132,7 @@
 import { list, addProduce, updateProduce, getProduce, changeStatus } from '@/api/system/produce';
 
 export default {
-  name: 'Post',
+  name: 'Produce',
   data() {
     return {
       // 遮罩层

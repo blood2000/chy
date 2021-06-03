@@ -138,7 +138,7 @@ import { listAddress, getAddress, delAddress } from '@/api/enterprise/company/ad
 import AddressDialog from './addressDialog.vue';
 
 export default {
-  name: 'Address',
+  name: 'CompanyAddress',
   components: {
     AddressDialog
   },

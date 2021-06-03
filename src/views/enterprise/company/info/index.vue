@@ -116,6 +116,7 @@ import CertificationDialog from './CertificationDialog.vue';
 import UploadImage from '@/components/UploadImage/index';
 
 export default {
+  name: 'CompanyInfo',
   components: {
     CertificationDialog,
     UploadImage
