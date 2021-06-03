@@ -1,7 +1,7 @@
 <template>
   <!-- 归属司机列表 -->
   <div class="app-container">
-    <el-table v-loading="loading" border stripe :data="infoList">
+    <el-table v-loading="loading" highlight-current-row border stripe :data="infoList">
       <el-table-column label="司机姓名" align="center" prop="name" />
       <el-table-column label="司机类别" align="center" prop="driverType">
         <template slot-scope="scope">

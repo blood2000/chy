@@ -48,7 +48,7 @@
     <div v-show="activeName === 'listInfo'">
       <el-radio-group v-model="radio" style="width:100%" @change="handlerChange">
 
-        <el-table v-loading="loading" :data="list_listInfo" border stripe>
+        <el-table v-loading="loading" highlight-current-row :data="list_listInfo" border stripe>
           <el-table-column label="" align="center" width="50">
             <template slot-scope="scope">
               <div @click.capture="handlerclick1($event, scope.row.id)">

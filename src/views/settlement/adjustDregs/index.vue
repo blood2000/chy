@@ -477,7 +477,7 @@
 </template>
 
 <script>
-import { adjustList, adjustListApi, batchApply } from '@/api/settlement/adjust';
+import { adjustList, adjustListApi } from '@/api/settlement/adjust';
 import { adjustDregsList, adjustListApi as adjustDregsApi } from '@/api/settlement/adjustDregs';
 import { getUserInfo } from '@/utils/auth';
 // 驳回弹窗

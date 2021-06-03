@@ -146,7 +146,7 @@
             <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
           </el-row>
 
-          <el-table v-loading="loading" :data="roleList" @selection-change="handleSelectionChange">
+          <el-table v-loading="loading" highlight-current-row :data="roleList" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55" align="center" />
             <el-table-column label="所属产品" prop="produceName" width="120" />
             <el-table-column label="角色名称" prop="roleName" :show-overflow-tooltip="true" width="150" />

@@ -5,7 +5,7 @@
         <basic-info-form ref="basicInfo" :info="info" />
       </el-tab-pane>
       <el-tab-pane label="字段信息" name="cloum">
-        <el-table ref="dragTable" :data="cloumns" row-key="columnId" :max-height="tableHeight">
+        <el-table ref="dragTable" highlight-current-row :data="cloumns" row-key="columnId" :max-height="tableHeight">
           <el-table-column label="序号" type="index" min-width="5%" class-name="allowDrag" align="center" />
           <el-table-column
             label="字段列名"
