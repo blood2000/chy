@@ -118,11 +118,11 @@ export default {
   }
 }
 .table-style{
-  border: 1px solid rgba(229, 229, 229, 1);
+  border: 1px solid rgba(229, 229, 229, 0.8);
   td{
     padding: 15px;
-    border-bottom: 1px solid rgba(229, 229, 229, 1);
-    border-right: 1px solid rgba(229, 229, 229, 1);
+    border-bottom: 1px solid rgba(229, 229, 229, 0.8);
+    border-right: 1px solid rgba(229, 229, 229, 0.8);
     text-align: center;
     &.label{
       width: 300px;

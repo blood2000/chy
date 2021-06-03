@@ -407,66 +407,66 @@
           </el-form-item>
         </el-col>
       </el-row>
-        <el-row :gutter="20">
-            <el-col :span="11">
-                <el-form-item label="单货源多商品" prop="singleSourceMultiCommodity">
-                    <el-radio-group v-model="form.singleSourceMultiCommodity">
-                        <el-radio
-                                v-for="dict in allowOptions"
-                                :key="dict.dictValue"
-                                :label="parseInt(dict.dictValue)"
-                        >{{ dict.dictLabel }}</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-            </el-col>
-            <el-col :span="11">
-                <el-form-item label="单货源多装货地" prop="singleSourceMultiLoadingLocations">
-                    <el-radio-group v-model="form.singleSourceMultiLoadingLocations">
-                        <el-radio
-                                v-for="dict in allowOptions"
-                                :key="dict.dictValue"
-                                :label="parseInt(dict.dictValue)"
-                        >{{ dict.dictLabel }}</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-            </el-col>
-        </el-row>
-        <el-row :gutter="20">
-            <el-col :span="11">
-                <el-form-item label="单货源多卸货地" prop="singleSourceMultiUnloadingLocations">
-                    <el-radio-group v-model="form.singleSourceMultiUnloadingLocations">
-                        <el-radio
-                                v-for="dict in allowOptions"
-                                :key="dict.dictValue"
-                                :label="parseInt(dict.dictValue)"
-                        >{{ dict.dictLabel }}</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-            </el-col>
-            <el-col :span="11">
-                <el-form-item label="修改司机实收金额" prop="editDriverActualAmount">
-                    <el-radio-group v-model="form.editDriverActualAmount">
-                        <el-radio
-                                v-for="dict in allowOptions"
-                                :key="dict.dictValue"
-                                :label="parseInt(dict.dictValue)"
-                        >{{ dict.dictLabel }}</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-            </el-col>
-        </el-row>
-        <el-row :gutter="20">
-            <el-col :span="8">
-                <el-form-item prop="noNeedUnloadImg">
-                    <el-checkbox v-model="form.noNeedUnloadImg">是否不需要卸货图片</el-checkbox>
-                </el-form-item>
-            </el-col>
-            <el-col :span="10">
-                <el-form-item prop="openProjectDesignView">
-                    <el-checkbox v-model="form.openProjectDesignView">开启&nbsp;项目版统计视图</el-checkbox>
-                </el-form-item>
-            </el-col>
-        </el-row>
+      <el-row :gutter="20">
+        <el-col :span="11">
+          <el-form-item label="单货源多商品" prop="singleSourceMultiCommodity">
+            <el-radio-group v-model="form.singleSourceMultiCommodity">
+              <el-radio
+                v-for="dict in allowOptions"
+                :key="dict.dictValue"
+                :label="parseInt(dict.dictValue)"
+              >{{ dict.dictLabel }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item label="单货源多装货地" prop="singleSourceMultiLoadingLocations">
+            <el-radio-group v-model="form.singleSourceMultiLoadingLocations">
+              <el-radio
+                v-for="dict in allowOptions"
+                :key="dict.dictValue"
+                :label="parseInt(dict.dictValue)"
+              >{{ dict.dictLabel }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="11">
+          <el-form-item label="单货源多卸货地" prop="singleSourceMultiUnloadingLocations">
+            <el-radio-group v-model="form.singleSourceMultiUnloadingLocations">
+              <el-radio
+                v-for="dict in allowOptions"
+                :key="dict.dictValue"
+                :label="parseInt(dict.dictValue)"
+              >{{ dict.dictLabel }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item label="修改司机实收金额" prop="editDriverActualAmount">
+            <el-radio-group v-model="form.editDriverActualAmount">
+              <el-radio
+                v-for="dict in allowOptions"
+                :key="dict.dictValue"
+                :label="parseInt(dict.dictValue)"
+              >{{ dict.dictLabel }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="8">
+          <el-form-item prop="noNeedUnloadImg">
+            <el-checkbox v-model="form.noNeedUnloadImg">是否不需要卸货图片</el-checkbox>
+          </el-form-item>
+        </el-col>
+        <el-col :span="10">
+          <el-form-item prop="openProjectDesignView">
+            <el-checkbox v-model="form.openProjectDesignView">开启&nbsp;项目版统计视图</el-checkbox>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
     <div v-if="title === '新增' || title === '编辑'" slot="footer" class="dialog-footer">
       <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>

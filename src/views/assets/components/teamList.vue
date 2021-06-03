@@ -1,7 +1,7 @@
 <template>
   <!-- 归属调度列表 -->
   <div class="app-container">
-    <el-table v-loading="loading" highlight-current-row border stripe :data="infoList">
+    <el-table v-loading="loading" highlight-current-row border :data="infoList">
       <el-table-column label="调度组名称" align="center" prop="name" />
       <el-table-column label="审核状态" align="center" prop="authStatus">
         <template slot-scope="scope">

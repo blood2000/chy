@@ -104,7 +104,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <el-table v-loading="loading" :data="versionList" @selection-change="handleSelectionChange">
+      <el-table v-loading="loading" :data="versionList" highlight-current-row border @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="版本" align="center" prop="version" />
         <el-table-column label="产品名称" align="center" prop="produceName" />
@@ -151,14 +151,12 @@
               v-hasPermi="['system:post:edit']"
               size="mini"
               type="text"
-              icon="el-icon-edit"
               @click="handleUpdate(scope.row)"
             >修改</el-button>
             <!--  <el-button
             v-hasPermi="['system:post:remove']"
             size="mini"
             type="text"
-            icon="el-icon-delete"
             @click="handleDelete(scope.row)"
           >删除</el-button>-->
           </template>

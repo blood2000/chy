@@ -134,7 +134,7 @@ export default {
 
 <style scoped>
 .t-thead li {
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #F3F3F3;
 }
 </style>
 

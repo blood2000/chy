@@ -62,7 +62,7 @@
 
 
 
-      <el-table v-loading="loading" highlight-current-row :data="addressList">
+      <el-table v-loading="loading" highlight-current-row :data="addressList" border>
         <!-- <el-table-column type="selection" width="55" align="center" fixed="left" /> -->
 
         <el-table-column label="" align="center" width="50">

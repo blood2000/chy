@@ -89,7 +89,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <el-table v-loading="loading" highlight-current-row :data="jobList" @selection-change="handleSelectionChange">
+      <el-table v-loading="loading" highlight-current-row border :data="jobList" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="任务编号" align="center" prop="jobId" />
         <el-table-column label="任务名称" align="center" prop="jobName" :show-overflow-tooltip="true" />
@@ -119,7 +119,6 @@
               v-hasPermi="['monitor:job:query']"
               size="mini"
               type="text"
-              icon="el-icon-view"
               @click="handleView(scope.row)"
             >详细</el-button>
           </template>

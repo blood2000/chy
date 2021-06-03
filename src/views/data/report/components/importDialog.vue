@@ -35,7 +35,7 @@
       <!-- <right-toolbar :show-search.sync="showSearch" @queryTable="getList" /> -->
     </el-row>
 
-    <el-table v-loading="loading" highlight-current-row :data="fileList">
+    <el-table v-loading="loading" highlight-current-row border :data="fileList">
       <!-- <el-table-column type="selection" width="55" align="center" fixed="left" /> -->
       <el-table-column label="文件名" align="center" prop="name" width="200" />
       <el-table-column label="大小" align="center" prop="size">
