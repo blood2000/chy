@@ -271,13 +271,13 @@
                 装货地：
               </el-col>
               <el-col :span="16" class="text-row">
-                {{ form.waybillAddress?form.waybillAddress.unloadFormattedAddress:'-' }}
+                {{ form.waybillAddress?form.waybillAddress.loadFormattedAddress:'-' }}
               </el-col>
               <el-col :span="8" class="text-label">
                 卸货地：
               </el-col>
               <el-col :span="16" class="text-row">
-                {{ form.waybillAddress?form.waybillAddress.loadFormattedAddress:'-' }}
+                {{ form.waybillAddress?form.waybillAddress.unloadFormattedAddress:'-' }}
               </el-col>
             </el-row>
           </div>
@@ -308,7 +308,7 @@
 
 <script>
 import { getWayBill, getWaybillAttachment, getWaybillComment, getWaybillTrace } from '@/api/waybill/manages';
-import { jimiTrackLocation } from '@/api/waybill/tracklist';
+// import { jimiTrackLocation } from '@/api/waybill/tracklist';
 import DataNull from '@/components/DataNull/index';
 import Track from './track';
 export default {
@@ -426,17 +426,17 @@ export default {
         this.formCommentShipment = response.data ? response.data[0] : null;
       });
       // 轨迹
-      jimiTrackLocation(this.queryParams).then(response => {
-        const tracklist = response.data.result.map(function(response) {
-          return [response.lng, response.lat];
-        });
-        this.polyline.path = tracklist || [];
-        if (tracklist.length > 0) {
-          this.center = tracklist[0];
-          this.markers[0].position = tracklist[0];
-          this.markers[1].position = tracklist[tracklist.length - 1];
-        }
-      });
+      // jimiTrackLocation(this.queryParams).then(response => {
+      //   const tracklist = response.data.result.map(function(response) {
+      //     return [response.lng, response.lat];
+      //   });
+      //   this.polyline.path = tracklist || [];
+      //   if (tracklist.length > 0) {
+      //     this.center = tracklist[0];
+      //     this.markers[0].position = tracklist[0];
+      //     this.markers[1].position = tracklist[tracklist.length - 1];
+      //   }
+      // });
       // 轨迹时间线
       getWaybillTrace(this.currentId).then(response => {
         // console.log(response);
