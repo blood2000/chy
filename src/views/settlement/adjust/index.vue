@@ -386,7 +386,7 @@ import RateDialog from './rateDialog';
 // import setTheight from '@/layout/mixin/setTheight';
 
 export default {
-  'name': 'AdjustList',
+  'name': 'Adjust',
   components: { RejectDialog, AdjustDialog, DetailDialog, ChildDialog, CommentDialog, RateDialog },
   // mixins: [setTheight],
   data() {
