@@ -76,6 +76,7 @@
               filterable
               class="width100"
               placeholder="请选择县/区"
+              @change="changeCounty"
             >
               <el-option
                 v-for="dict in countyCodeOptions"
@@ -225,6 +226,15 @@ export default {
       }
     }
   },
+  // 调试搜索地址限制时打开
+  // watch: {
+  //   searchOption: {
+  //     handler(val) {
+  //       console.log('当前搜索的范围: ', val.city);
+  //     },
+  //     deep: true
+  //   }
+  // },
   created() {
     getProvinceList().then((response) => {
       this.provinceCodeOptions = response.rows;
@@ -326,12 +336,26 @@ export default {
       // 只填地址也可以回填省市区
       this.getAddressBylnglat(lng, lat);
     },
+    // 选择完省以后,限定地址搜索只能在这个省里面选
+    addressSearchLimitProvince(code) {
+      const { provinceName } = this.provinceCodeOptions.filter(el => {
+        return el.provinceCode === code;
+      })[0];
+      this.searchOption.city = provinceName;
+    },
     // 选择完市以后,限定地址搜索只能在这个市里面选
-    addressSearchLimit(code) {
+    addressSearchLimitCity(code) {
       const { cityName } = this.cityCodeOptions.filter(el => {
         return el.cityCode === code;
       })[0];
       this.searchOption.city = cityName;
+    },
+    // 选择完县以后,限定地址搜索只能在这个县里面选
+    addressSearchLimitCounty(code) {
+      const { countyName } = this.countyCodeOptions.filter(el => {
+        return el.countyCode === code;
+      })[0];
+      this.searchOption.city = countyName;
     },
     // 重置搜索地址
     addressReset() {
@@ -384,7 +408,9 @@ export default {
       this.cityCodeOptions = [];
       this.countyCodeOptions = [];
       this.getCityListFun(code);
-      if (code === null || code === undefined || code === '') {
+      if (code !== null && code !== undefined && code !== '') {
+        this.addressSearchLimitProvince(code);
+      } else {
         this.addressReset();
       }
     },
@@ -395,9 +421,18 @@ export default {
       this.countyCodeOptions = [];
       this.geCountyListFun(code);
       if (code !== null && code !== undefined && code !== '') {
-        this.addressSearchLimit(code);
+        this.addressSearchLimitCity(code);
       } else {
-        this.addressReset();
+        this.addressSearchLimitProvince(this.form.provinceCode);
+      }
+    },
+    // 选中县/区
+    changeCounty(code) {
+      this.clearAddressOption();
+      if (code !== null && code !== undefined && code !== '') {
+        this.addressSearchLimitCounty(code);
+      } else {
+        this.addressSearchLimitCity(this.form.cityCode);
       }
     },
     // 获取市

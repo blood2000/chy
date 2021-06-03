@@ -165,7 +165,7 @@
 </template>
 
 <script>
-import { adjustDetail, calculateFee, deliveryCashFee, batchCheck } from '@/api/settlement/adjust';
+import { adjustDetail, deliveryCashFee, batchCheck } from '@/api/settlement/adjust';
 
 export default {
   name: 'AdjustDialog',

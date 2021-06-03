@@ -200,14 +200,14 @@
         <!-- 做批量按钮使用 -->
         <el-col :span="1.5">
           <el-button
-            v-hasPermi="['data:report:export']"
+            v-hasPermi="['transportation:waybillReport:export']"
             type="warning"
             icon="el-icon-download"
             size="mini"
             @click="handleExport"
           >导出</el-button>
-          <!-- v-hasPermi="['data:report:report']" -->
           <el-button
+            v-hasPermi="['transportation:waybillReport:batch']"
             :disabled="!ids.length"
             type="info"
             icon="el-icon-s-order"
