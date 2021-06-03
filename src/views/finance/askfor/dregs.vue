@@ -398,8 +398,6 @@ export default {
       // 查询参数
 
 
-
-
       'queryParams': {
         batchNo: undefined, //	批次号	query	false
         invoiceTitle: undefined, //	发票抬头	query	false

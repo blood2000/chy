@@ -898,14 +898,14 @@ export default {
       for (var i = 0; i < arr.length; i++) {
         var hasRead = false;
         for (var k = 0; k < list.length; k++) {
-          if (list[k] == arr[i]) {
+          if (list[k] === arr[i]) {
             hasRead = true;
           }
         }
         if (!hasRead) {
           var _index = i; var haveSame = false;
           for (var j = i + 1; j < arr.length; j++) {
-            if (arr[i] == arr[j]) {
+            if (arr[i] === arr[j]) {
               _index += ',' + j;
               haveSame = true;
             }
