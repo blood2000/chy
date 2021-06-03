@@ -221,8 +221,8 @@ export default {
       this.loading = true;
       // 查询列表
       listDriverto(this.queryParams).then(response => {
-        this.drivertoList = response.data;
-        this.total = response.data.length;
+        this.drivertoList = response.data.list;
+        this.total = response.data.total;
         this.loading = false;
       });
       // 查询合计

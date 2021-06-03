@@ -97,7 +97,7 @@
             <el-table v-loading="loading" :data="invoicelist" border stripe>
               <el-table-column width="180" label="装货地" align="center" prop="invoiceInfoStatisticsVo.loadFormattedAddress" show-overflow-tooltip />
               <el-table-column width="180" label="卸货地" align="center" prop="invoiceInfoStatisticsVo.unloadFormattedAddress" show-overflow-tooltip />
-              <el-table-column width="120" label="货物大类" align="center" prop="invoiceInfoStatisticsVo.goodsName" />
+              <el-table-column width="120" label="货物大类" align="center" prop="invoiceInfoStatisticsVo.goodsBigTypeName" />
               <el-table-column width="120" label="装货车数" align="center" prop="invoiceInfoStatisticsVo.wayBillCount" />
               <el-table-column width="120" label="装车数量" align="center">
                 <template #default="scope">

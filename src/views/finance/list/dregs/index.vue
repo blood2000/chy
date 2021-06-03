@@ -1,14 +1,32 @@
 <template>
   <div>
+    <!-- 发票列表-渣土 页面-->
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form
         v-show="showSearch"
         ref="queryForm"
         :model="queryParams"
         :inline="true"
-        label-width="80px"
+        label-width="110px"
       >
+
         <el-form-item
+          v-if="!isShipment"
+          label="发货企业"
+          prop="companyName"
+        >
+          <el-input
+            v-model="queryParams.companyName"
+            placeholder="请输入发货企业"
+            clearable
+            size="small"
+            style="width: 230px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+
+        <el-form-item
+          v-if="!isShipment"
           label="发票抬头"
           prop="invoiceTitle"
         >
@@ -21,33 +39,64 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
+
         <el-form-item
-          label="发票编号"
-          prop="askForNo"
+          label="对账批次号"
+          prop="batchNo"
         >
           <el-input
-            v-model="queryParams.askForNo"
-            placeholder="请输入发票编号"
+            v-model="queryParams.batchNo"
+            placeholder="请输入对账批次号"
             clearable
             size="small"
             style="width: 230px"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
+
         <el-form-item
-          label="申请日期"
-          prop="invoiceApplyTime"
+          label="渣土场"
+          prop="ztcName"
         >
-          <el-date-picker
-            v-model="invoiceApplyTime"
-            type="daterange"
-            range-separator="-"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+          <el-input
+            v-model="queryParams.ztcName"
+            placeholder="请输入渣土场"
+            clearable
+            size="small"
             style="width: 230px"
-            @change="datechoose"
+            @keyup.enter.native="handleQuery"
           />
         </el-form-item>
+
+        <el-form-item
+          label="调度者名称"
+          prop="teamName"
+        >
+          <el-input
+            v-model="queryParams.teamName"
+            placeholder="请输入调度者名称"
+            clearable
+            size="small"
+            style="width: 230px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+
+        <el-form-item
+          label="操作人"
+          prop="operator"
+        >
+          <el-input
+            v-model="queryParams.operator"
+            placeholder="请输入操作人"
+            clearable
+            size="small"
+            style="width: 230px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+
+
         <el-form-item>
           <el-button
             type="primary"
@@ -73,7 +122,7 @@
     <div class="g-radio-group">
       <el-radio-group v-model="activeName" size="small" @change="handleClick">
         <el-radio-button label="1">已申请</el-radio-button>
-        <el-radio-button label="2,3,4">已审核</el-radio-button>
+        <!-- <el-radio-button label="2,3,4">已审核</el-radio-button> -->
         <el-radio-button label="5">已开票</el-radio-button>
       </el-radio-group>
     </div>
@@ -83,7 +132,7 @@
         :gutter="10"
         class="mb8"
       >
-        <el-col v-if="activeName == '1'" :span="1.5">
+        <el-col v-if="false && !isShipment && activeName == '1'" :span="1.5">
           <el-button
             v-hasPermi="['assets:vehicle:edit']"
             type="primary"
@@ -91,9 +140,19 @@
             size="mini"
             :disabled="multiple"
             @click="handleVerify"
-          >批量审核</el-button>
+          >批量开票</el-button>
         </el-col>
-        <el-col v-if="activeName == '6'" :span="1.5">
+        <el-col v-if="activeName == '5'" :span="1.5">
+          <el-button
+            v-hasPermi="['assets:vehicle:edit']"
+            type="primary"
+            icon="el-icon-document-checked"
+            size="mini"
+            :disabled="multiple"
+            @click="handleVerify"
+          >批量打款</el-button>
+        </el-col>
+        <!-- <el-col v-if="activeName == '6'" :span="1.5">
           <el-button
             type="primary"
             icon="el-icon-upload2"
@@ -108,7 +167,7 @@
             size="mini"
             @click="handleExportService"
           >导出服务费明细</el-button>
-        </el-col>
+        </el-col> -->
         <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
@@ -119,6 +178,9 @@
       </el-row>
 
       <RefactorTable :loading="loading" :data="billlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+        <template #zhuanfowe="{row}">
+          <span class="g-color-error">已申请{{ row.zhuanfowe }}</span>
+        </template>
         <template #invoiceStatus="{row}">
           <span>
             <span v-if="row.invoiceStatus == 1" class="g-statusDot g-color-warning">●</span>
@@ -137,25 +199,50 @@
         </template>
 
         <template #edit="{row}">
-          <el-button
-            v-if="activeName == '1'"
-            v-hasPermi="['system:menu:edit']"
-            size="mini"
-            type="text"
-            @click="handleTableBtn(row, 1)"
-          >审核</el-button>
-          <el-button
-            v-if="row.invoiceStatus == '4'"
-            v-hasPermi="['system:menu:edit']"
-            size="mini"
-            type="text"
-            @click="handleTableBtn(row, 2)"
-          >开票</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            @click="handleTableBtn(row, 3)"
-          >详情</el-button>
+          <div v-if="activeName == '1'">
+            <el-button
+              v-if="activeName == '1'"
+              v-hasPermi="['system:menu:buhuihsuihwof']"
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 1)"
+            >驳回</el-button>
+            <!-- && row.invoiceStatus == '4'  可能是要根据这个判断能不能再开票了吧-->
+            <el-button
+              v-if="!isShipment "
+              v-hasPermi="['system:menu:edit']"
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 2)"
+            >开票</el-button>
+            <el-button
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 3)"
+            >详情</el-button>
+          </div>
+          <div v-else>
+
+            <el-button
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 3)"
+            >详情</el-button>
+            <el-button
+              v-if="activeName == '1'"
+              v-hasPermi="['system:menu:buhuihsuihwof']"
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 4)"
+            >打款</el-button>
+            <el-button
+              v-if="activeName == '1'"
+              v-hasPermi="['system:menu:buhuihsuihwof']"
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 5)"
+            >导出</el-button>
+          </div>
         </template>
       </RefactorTable>
 
@@ -167,31 +254,234 @@
         @pagination="getList"
       />
     </div>
+
+    <!-- 驳回弹窗 -->
+    <reject-dialog ref="RejectDialog" :open.sync="rejectdialog" :title="title" :disable="formDisable" @refresh="getList" />
     <!-- 审核弹窗 -->
-    <verify-dialog ref="VerifyDialog" :open.sync="verifydialog" :title="title" :disable="formDisable" @refresh="getList" />
+    <!-- <verify-dialog ref="VerifyDialog" :open.sync="verifydialog" :title="title" :disable="formDisable" @refresh="getList" /> -->
     <!-- 开票弹窗 -->
     <billing-dialog ref="BillingDialog" :open.sync="billingdialog" :title="title" @refresh="getList" />
-    <!-- 详情弹窗 -->
-    <!-- <detail-dialog ref="DetailDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" /> -->
+    <!-- 对账单详情弹窗 -->
+    <StatementsDialog ref="StatementsDialog" :open.sync="Statementsdialog" :disable="formDisable" :title="title" @refresh="getList" />
   </div>
 </template>
 
 <script>
 import { billList, billListApi } from '@/api/finance/list';
 // 审核弹窗
-import VerifyDialog from '../verifyDialog';
+// import VerifyDialog from '../verifyDialog';
 // 开票弹窗
 import BillingDialog from '../billingDialog';
 // 详情弹窗
+import StatementsDialog from '@/views/settlement/adjustDregs/StatementsDialog';
+// 驳回弹窗
+import RejectDialog from './components/rejectDialog';
 // import DetailDialog from './detail';
 
-
+import { getUserInfo } from '@/utils/auth';
 export default {
   'name': 'AskforDregs',
-  components: { VerifyDialog, BillingDialog },
+  components: { StatementsDialog, BillingDialog, RejectDialog },
   data() {
     return {
+      isShipment: false,
       tableColumnsConfig: [],
+      tableColumnsConfig1: [
+        {
+          prop: 'mainOrderNumber',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '对账批次号'
+        },
+        {
+          prop: 'zhuanfowe',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '状态'
+        },
+        {
+          prop: 'fahiuwnn',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '发货企业'
+        },
+        {
+          prop: 'xuiqabskn',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '项目'
+        },
+        {
+          prop: 'zhaunenowt',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '渣土场'
+        },
+        {
+          prop: 'duaijwhubiubi',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '调度组名称'
+        },
+        {
+          prop: 'yunsnewonow',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '运单数量'
+        },
+        {
+          prop: 'yuwinfsnfhahoiajog',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '运费结算金额'
+        },
+        {
+          prop: 'fapownfwqag',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '发票抬头'
+        },
+        {
+          prop: 'shfwuhfnqaw',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '税务登记'
+        },
+        {
+          prop: 'sewfjhehgo',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '申请时间'
+        },
+        {
+          prop: 'cshiwops',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '操作人'
+        }
+      ],
+      tableColumnsConfig2: [
+        {
+          prop: 'mainOrderNumber',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '对账批次号'
+        },
+        {
+          prop: 'zhuanfowe',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '状态'
+        },
+        {
+          prop: 'fahiuwnn',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '发货企业'
+        },
+        {
+          prop: 'xuiqabskn',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '项目'
+        },
+        {
+          prop: 'zhaunenowt',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '渣土场'
+        },
+        {
+          prop: 'duaijwhubiubi',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '调度组名称'
+        },
+        {
+          prop: 'yunsnewonow',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '运单数量'
+        },
+        {
+          prop: 'yuwinfsnfhahoiajog',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '运费结算金额'
+        },
+        {
+          prop: 'pabiaott',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '发票图片'
+        },
+        {
+          prop: 'beiiesp',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '备注'
+        },
+        {
+          prop: 'chaoskziehio',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '操作时间'
+        },
+        {
+          prop: 'cshiwops',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          // fixed: 'left',
+          label: '操作人'
+        }
+      ],
       api: billListApi,
       activeName: '1',
       createTime: '',
@@ -208,17 +498,19 @@ export default {
       // 总条数
       'total': 0,
       // 表格数据
-      'billlist': [],
+      'billlist': [{ code: 123 }],
 
       // 查询参数
       'queryParams': {
         'pageNum': 1,
         'pageSize': 10,
-        'askForNo': undefined,
-        'invoiceTitle': undefined,
-        'invoiceApplyTimeBegin': undefined,
-        'invoiceApplyTimeEnd': undefined,
-        'invoiceStatus': '1'
+        batchNo: undefined, //	批次号	query	false
+        companyName: undefined, //	发货企业	query	false
+        invoiceTitle: undefined, //	发票抬头	query	false
+        operator: undefined, //	操作人名称	query	false
+        status: 2, //	1已申请对账列表 2已申请开票列表 3已申请打款列表 4已完成列表	query	false
+        teamName: undefined, //	调度者名称	query	false
+        ztcName: undefined //	渣土场	query	false
       },
       invoiceApplyTime: [],
       // 弹框 内容
@@ -226,6 +518,8 @@ export default {
       open: false,
       verifydialog: false,
       billingdialog: false,
+      rejectdialog: false,
+      Statementsdialog: false,
       title: '',
       dialogWidth: '800px',
       // 当前选中的运单id
@@ -267,14 +561,19 @@ export default {
   },
 
   created() {
-    this.tableHeaderConfig(this.tableColumnsConfig, billListApi, {
-      prop: 'edit',
-      isShow: true,
-      label: '操作',
-      width: 180,
-      fixed: 'right'
-    });
-    !this.$route.query.list && this.getList();
+    const { isAdmin = false, isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
+
+    this.isShipment = isShipment;
+
+    // this.tableHeaderConfig(this.tableColumnsConfig, this.api, {
+    //   prop: 'edit',
+    //   isShow: true,
+    //   label: '操作',
+    //   width: 180,
+    //   fixed: 'right'
+    // }, this.tableColumnsConfig1);
+    // !this.$route.query.list && this.getList();
+    this.handleClick('1');
   },
   'methods': {
     datechoose(date) {
@@ -288,9 +587,24 @@ export default {
     },
     /** handleClick */
     handleClick(tab) {
-      this.queryParams.invoiceStatus = tab;
+      this.api = this.api + '--' + tab;
+      const tableColumnsConfig = tab === '1' ? this.tableColumnsConfig1 : this.tableColumnsConfig2;
+      this.queryParams.status = tab === '1' ? 2 : 3;
+
+      this.tableColumnsConfig = [];
+
+      this.tableHeaderConfig(this.tableColumnsConfig, this.api, {
+        prop: 'edit',
+        isShow: true,
+        label: '操作',
+        width: 180,
+        fixed: 'right'
+      }, tableColumnsConfig);
+
+      // 切换
+      // this.queryParams.invoiceStatus = tab;
       this.queryParams.pageNum = 1;
-      this.getList();
+      // this.getList();
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
@@ -341,10 +655,10 @@ export default {
       this.visible = true;
       switch (index) {
         case 1:
-          this.$refs.VerifyDialog.reset();
-          this.verifydialog = true;
-          this.title = '审批';
-          this.$refs.VerifyDialog.setForm(row.code);
+          this.$refs.RejectDialog.reset();
+          this.rejectdialog = true;
+          this.title = '驳回运输核算单';
+          this.$refs.RejectDialog.setForm(row);
           break;
         case 2:
           this.$refs.BillingDialog.reset();
@@ -354,7 +668,21 @@ export default {
           this.$refs.BillingDialog.setForm(row);
           break;
         case 3:
-          this.$router.push({ name: 'Statement', query: { code: row.code }});
+          // this.$router.push({ name: 'Statement', query: { code: row.code }});
+          console.log('打开详情页面');
+          this.Statementsdialog = true;
+          this.title = '对账单';
+          this.$refs.StatementsDialog.setForm(row);
+
+          break;
+        case 4:
+          // this.$router.push({ name: 'Statement', query: { code: row.code }});
+          break;
+        case 5:
+          // this.$router.push({ name: 'Statement', query: { code: row.code }});
+          break;
+        case 6:
+          // this.$router.push({ name: 'Statement', query: { code: row.code }});
           break;
         default:
           break;

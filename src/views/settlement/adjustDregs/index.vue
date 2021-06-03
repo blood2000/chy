@@ -3,10 +3,11 @@
   <div>
     <div v-show="showSearch" ref="searchBox" class="app-container app-container--search">
       <el-form
+        v-show="activeName !== '7'"
         ref="queryForm"
         :model="queryParams"
         :inline="true"
-        label-width="85px"
+        label-width="98px"
       >
         <el-form-item
           v-show="isAdmin"
@@ -65,12 +66,12 @@
         </el-form-item>
 
         <el-form-item
-          label="调度组名称"
+          label="调度者姓名"
           prop="teamName"
         >
           <el-input
             v-model="queryParams.teamName"
-            placeholder="请输入调度组名称"
+            placeholder="请输入调度者姓名"
             clearable
             size="small"
             style="width: 228px"
@@ -79,6 +80,7 @@
         </el-form-item>
 
         <el-form-item
+          v-if="false"
           label="运单核对"
           prop="waybill"
         >
@@ -86,6 +88,31 @@
         </el-form-item>
 
         <el-form-item
+          label="IC卡核对状态"
+          prop="icStatus"
+        >
+          <el-select
+            v-model="queryParams.icStatus"
+            placeholder="请选择纸质回单"
+            filterable
+            clearable
+            size="small"
+            style="width: 228px"
+          >
+            <el-option
+              v-for="dict in [
+                { dictValue: '0',dictLabel:'未核对' },
+                { dictValue: '1',dictLabel:'已核对' }
+              ]"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item
+          v-if="false"
           label="批次号"
           prop="criticism"
         >
@@ -119,6 +146,7 @@
           </el-select>
         </el-form-item>
         <el-form-item
+          v-if="false"
           label="货源单号"
           prop="mainOrderNumber"
         >
@@ -238,6 +266,10 @@
           </el-button>
         </el-form-item>
       </el-form>
+
+      <div v-show="showSearch && activeName === '7'">
+        <AlreadyPaid v-model="alreadyPaid_queryParams" @handleQuery="handleClick('7')" />
+      </div>
     </div>
 
     <div class="g-radio-group ly-flex-pack-justify">
@@ -247,151 +279,180 @@
         <el-radio-button label="7">已打款</el-radio-button>
       </el-radio-group>
 
-      <el-button v-hasPermi="['transportation:waybillBalanceInfo:batchDetail']" type="success" size="mini" @click="nuclearCardOpen">核销IC卡</el-button>
+      <el-button v-if="activeName==='4'" v-hasPermi="['transportation:waybillBalanceInfo:batchDetail']" type="success" size="mini" @click="nuclearCardOpen">核销IC卡</el-button>
     </div>
 
     <div class="app-container">
-      <el-row
-        :gutter="10"
-        class="mb8"
-      >
-        <el-col v-if="activeName == '4'" :span="1.5">
-          <el-button
-            v-hasPermi="['transportation:waybillBalanceInfo:batchCheck']"
-            type="primary"
-            icon="el-icon-document-checked"
-            size="mini"
-            :disabled="multiple"
-            @click="handleAdjust"
-          >批量核算</el-button>
-        </el-col>
-        <el-col v-if="activeName == '5'" :span="1.5">
-          <el-button
-            v-hasPermi="['transportation:waybillBalanceInfo:batchApply']"
-            type="primary"
-            icon="el-icon-wallet"
-            size="mini"
-            :disabled="multiple"
-            @click="handleApply"
-          >批量申请</el-button>
-        </el-col>
-        <el-col v-if="activeName == '7' && !isAdmin" :span="1.5">
-          <el-button
-            type="primary"
-            icon="el-icon-chat-dot-square"
-            size="mini"
-            :disabled="multiple"
-            @click="handleAssess"
-          >批量评价</el-button>
-        </el-col>
-        <el-col :span="1.5" class="fr">
-          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" refresh />
-        </el-col>
-        <right-toolbar
-          :show-search.sync="showSearch"
-          @queryTable="getList"
+      <div v-show="activeName !== '7'">
+        <el-row
+          :gutter="10"
+          class="mb8"
+        >
+          <el-col v-if="activeName == '4'" :span="1.5">
+            <el-button
+              v-hasPermi="['transportation:waybillBalanceInfo:batchCheck']"
+              type="primary"
+              icon="el-icon-document-checked"
+              size="mini"
+              :disabled="multiple"
+              @click="handleAdjust"
+            >批量核算</el-button>
+          </el-col>
+          <el-col v-if="activeName == '5'" :span="1.5">
+            <el-button
+              v-hasPermi="['transportation:waybillBalanceInfo:batchApply']"
+              type="primary"
+              icon="el-icon-wallet"
+              size="mini"
+              :disabled="multiple"
+              @click="handleApply"
+            >批量申请对账</el-button>
+          </el-col>
+          <el-col v-if="activeName == '7' && !isAdmin" :span="1.5">
+            <el-button
+              type="primary"
+              icon="el-icon-chat-dot-square"
+              size="mini"
+              :disabled="multiple"
+              @click="handleAssess"
+            >批量评价</el-button>
+          </el-col>
+          <el-col :span="1.5" class="fr">
+            <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" refresh />
+          </el-col>
+          <right-toolbar
+            :show-search.sync="showSearch"
+            @queryTable="getList"
+          />
+        </el-row>
+        <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+          <template #goodsBigType="{row}">
+            <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
+          </template>
+          <!-- <template #isReturn="{row}">
+            <span>
+              <i v-if="row.isReturn == 0" class="el-icon-error g-color-gray" />
+              <i v-if="row.isReturn == 1" class="el-icon-success g-color-success" />
+              {{ selectDictLabel(isReturnOptions, row.isReturn) }}
+            </span>
+          </template> -->
+          <template #loadWeight="{row}">
+            <span v-if="row.loadWeight">
+              <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.loadWeight }} 吨</span>
+              <span v-if="row.stowageStatus === '1'">{{ row.loadWeight }} 立方</span>
+              <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.loadWeight) }} 车</span>
+            </span>
+          </template>
+          <template #icStatus="{row}">
+            <span v-if="row.icStatus == '0'"><i class="el-icon-error g-color-error mr10" />未核对</span>
+            <span v-if="row.icStatus == '1'"><i class="el-icon-success g-color-success mr10" />已核对</span>
+          </template>
+          <template #unloadWeight="{row}">
+            <span v-if="row.unloadWeight">
+              <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.unloadWeight }} 吨</span>
+              <span v-if="row.stowageStatus === '1'">{{ row.unloadWeight }} 立方</span>
+              <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.unloadWeight) }} 车</span>
+            </span>
+          </template>
+          <template #weight="{row}">
+            <span v-if="row.weight">
+              <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.weight }} 吨</span>
+              <span v-if="row.stowageStatus === '1'">{{ row.weight }} 立方</span>
+              <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.weight) }} 车</span>
+            </span>
+          </template>
+          <template #lastLoadingTime="{row}">
+            <span>{{ parseTime(row.lastLoadingTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+          </template>
+
+          <template #edit="{row}">
+            <el-button
+              v-if="activeName == '5' && row.isApplyMoneyBack == 1"
+              v-has-permi="['transportation:waybillBalanceInfo:warning']"
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 1)"
+            >驳回提示</el-button>
+            <el-button
+              v-if="activeName == '4'"
+              v-hasPermi="['transportation:waybillBalanceInfo:shipperRebutUnloading']"
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 2)"
+            >驳回</el-button>
+            <el-button
+              v-if="activeName == '4'"
+              v-hasPermi="['transportation:waybillBalanceInfo:batchDetail']"
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 3)"
+            >核算</el-button>
+            <el-button
+              v-if="activeName == '5'"
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 4)"
+            >申请对账</el-button>
+
+
+            <el-button
+              v-if="activeName == '7' && !isAdmin"
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 5)"
+            >评价</el-button>
+            <el-button
+              v-if="activeName == '7' && isAdmin"
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 8)"
+            >评价详情</el-button>
+
+            <el-button
+              v-if="!isShipment && row.isChild == '2'"
+              v-has-permi="['transportation:waybill:childList']"
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 6)"
+            >分单列表</el-button>
+            <el-button
+              v-has-permi="['transportation:waybill:getWayBillByCode']"
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 7)"
+            >详情</el-button>
+          </template>
+        </RefactorTable>
+
+        <pagination
+          v-show="total>0"
+          :total="total"
+          :page.sync="queryParams.pageNum"
+          :limit.sync="queryParams.pageSize"
+          @pagination="getList"
+          @handleTableBtn="(row, type)=>{ handleTableBtn(row, type) }"
         />
-      </el-row>
+      </div>
 
-      <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
-        <template #goodsBigType="{row}">
-          <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
-        </template>
-        <template #isReturn="{row}">
-          <span>
-            <i v-if="row.isReturn == 0" class="el-icon-error g-color-gray" />
-            <i v-if="row.isReturn == 1" class="el-icon-success g-color-success" />
-            {{ selectDictLabel(isReturnOptions, row.isReturn) }}
-          </span>
-        </template>
-        <template #loadWeight="{row}">
-          <span v-if="row.loadWeight">
-            <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.loadWeight }} 吨</span>
-            <span v-if="row.stowageStatus === '1'">{{ row.loadWeight }} 方</span>
-            <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.loadWeight) }} 车</span>
-          </span>
-        </template>
-        <template #unloadWeight="{row}">
-          <span v-if="row.unloadWeight">
-            <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.unloadWeight }} 吨</span>
-            <span v-if="row.stowageStatus === '1'">{{ row.unloadWeight }} 方</span>
-            <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.unloadWeight) }} 车</span>
-          </span>
-        </template>
-        <template #weight="{row}">
-          <span v-if="row.weight">
-            <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.weight }} 吨</span>
-            <span v-if="row.stowageStatus === '1'">{{ row.weight }} 方</span>
-            <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.weight) }} 车</span>
-          </span>
-        </template>
-        <template #lastLoadingTime="{row}">
-          <span>{{ parseTime(row.lastLoadingTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-        </template>
+      <!-- 已打款 -->
+      <div v-if="activeName === '7'">
+        <!--
+            v-modler = queryParams:{ total,pageNum,pageSize }
+            @getList = '' // 重新请求
+            :list="null" // 数据
+        -->
+        <AlreadyTable
+          v-model="alreadyPaid_queryParams"
+          :loading="loading"
+          :config="{api: adjustDregsApi}"
+          :show-search.sync="showSearch"
+          @getList="getadjustDregsList"
+          @handleSelectionChange="handleSelectionChange1"
+        />
+      </div>
 
-        <template #edit="{row}">
-          <el-button
-            v-if="activeName == '5' && row.isApplyMoneyBack == 1"
-            v-has-permi="['transportation:waybillBalanceInfo:warning']"
-            size="mini"
-            type="text"
-            @click="handleTableBtn(row, 1)"
-          >驳回提示</el-button>
-          <el-button
-            v-if="activeName == '4'"
-            v-hasPermi="['transportation:waybillBalanceInfo:shipperRebutUnloading']"
-            size="mini"
-            type="text"
-            @click="handleTableBtn(row, 2)"
-          >驳回</el-button>
-          <el-button
-            v-if="activeName == '4'"
-            v-hasPermi="['transportation:waybillBalanceInfo:batchDetail']"
-            size="mini"
-            type="text"
-            @click="handleTableBtn(row, 3)"
-          >核算</el-button>
-          <el-button
-            v-if="activeName == '5'"
-            size="mini"
-            type="text"
-            @click="handleTableBtn(row, 4)"
-          >申请打款</el-button>
-          <el-button
-            v-if="activeName == '7' && !isAdmin"
-            size="mini"
-            type="text"
-            @click="handleTableBtn(row, 5)"
-          >评价</el-button>
-          <el-button
-            v-if="activeName == '7' && isAdmin"
-            size="mini"
-            type="text"
-            @click="handleTableBtn(row, 8)"
-          >评价详情</el-button>
-          <el-button
-            v-if="row.isChild == '2'"
-            v-has-permi="['transportation:waybill:childList']"
-            size="mini"
-            type="text"
-            @click="handleTableBtn(row, 6)"
-          >分单列表</el-button>
-          <el-button
-            v-has-permi="['transportation:waybill:getWayBillByCode']"
-            size="mini"
-            type="text"
-            @click="handleTableBtn(row, 7)"
-          >详情</el-button>
-        </template>
-      </RefactorTable>
 
-      <pagination
-        v-show="total>0"
-        :total="total"
-        :page.sync="queryParams.pageNum"
-        :limit.sync="queryParams.pageSize"
-        @pagination="getList"
-      />
+
     </div>
     <!-- 驳回弹窗 -->
     <reject-dialog ref="RejectDialog" :open.sync="rejectdialog" :title="title" :disable="formDisable" @refresh="getList" />
@@ -406,6 +467,9 @@
     <!-- 评价详情 -->
     <rate-dialog ref="RateDialog" :open.sync="ratedialog" :disable="formDisable" :title="title" @refresh="getList" />
 
+    <!-- 对账单弹窗 -->
+    <StatementsDialog ref="StatementsDialog" :open.sync="Statementsdialog" :disable="formDisable" :title="title" @refresh="getList" />
+
     <!-- 核销IC卡 -->
     <nuclear-card ref="NuclearCard" :open.sync="nuclearCardDialog" @refresh="getList" />
 
@@ -414,6 +478,7 @@
 
 <script>
 import { adjustList, adjustListApi, batchApply } from '@/api/settlement/adjust';
+import { adjustDregsList, adjustListApi as adjustDregsApi } from '@/api/settlement/adjustDregs';
 import { getUserInfo } from '@/utils/auth';
 // 驳回弹窗
 import RejectDialog from '../components/rejectDialog';
@@ -430,17 +495,23 @@ import RateDialog from './rateDialog';
 // 核销IC卡
 import NuclearCard from './NuclearCard';
 
+import StatementsDialog from './StatementsDialog';
+
+import AlreadyPaid from './AlreadyQueryForm';
+import AlreadyTable from './AlreadyTable';
+
 
 // import setTheight from '@/layout/mixin/setTheight';
 
 export default {
   'name': 'AdjustDregs',
-  components: { RejectDialog, AdjustDialog, DetailDialog, ChildDialog, CommentDialog, RateDialog, NuclearCard },
+  components: { RejectDialog, AdjustDialog, DetailDialog, ChildDialog, CommentDialog, RateDialog, NuclearCard, StatementsDialog, AlreadyPaid, AlreadyTable },
   // mixins: [setTheight],
   data() {
     return {
       tableColumnsConfig: [],
-      api: adjustListApi,
+      api: adjustListApi + '--asjos',
+
       activeName: '4',
       createTime: '',
       // 遮罩层
@@ -475,6 +546,7 @@ export default {
         'licenseNumber': undefined,
         'driverName': undefined,
         'waybillNo': undefined,
+        'icStatus': undefined,
         'orderClient': undefined,
         'deliveryCompany': undefined,
         'isReturn': undefined,
@@ -494,6 +566,7 @@ export default {
       commentdialog: false,
       nuclearCardDialog: false,
       ratedialog: false,
+      Statementsdialog: false,
       title: '',
       dialogWidth: '800px',
       // 当前选中的运单id
@@ -521,14 +594,36 @@ export default {
       isAdmin: false,
       user: {},
       shipment: {},
+      isShipment: false,
 
-      addition: 45 // tin添加的(追加高度)
+      addition: 45, // tin添加的(追加高度)
+
+      // 渣土相关的
+
+      areadyPaid_List: [], // 已打款的数据(单独)
+
+
+      alreadyPaid_queryParams: {
+        batchNo: undefined, //	批次号	query	false
+        companyName: undefined, //	发货企业	query	false
+        invoiceTitle: undefined, //	发票抬头	query	false
+        operator: undefined, //	操作人名称	query	false
+        status: 4, //	1已申请对账列表 2已申请开票列表 3已申请打款列表 4已完成列表	query	false
+        teamName: undefined, //	调度者名称	query	false
+        ztcName: undefined, //	渣土场	query	false
+
+        'pageNum': 1,
+        'pageSize': 10,
+        'total': 0
+      },
+      adjustDregsApi: adjustDregsApi + '--adjustDregsApi'
     };
   },
   computed: {
     lcokey() {
       return this.$route.name + this.activeName;
     }
+
   },
 
   watch: {
@@ -544,18 +639,43 @@ export default {
   },
 
   created() {
-    const { isAdmin = false, user = {}, shipment = {}} = getUserInfo() || {};
+    const { isAdmin = false, isShipment, user = {}, shipment = {}} = getUserInfo() || {};
     this.isAdmin = isAdmin;
     this.user = user;
     this.shipment = shipment;
-    this.tableHeaderConfig(this.tableColumnsConfig, adjustListApi, {
+    this.isShipment = isShipment;
+    this.tableHeaderConfig(this.tableColumnsConfig, this.api, {
       prop: 'edit',
       isShow: true,
       tooltip: false,
       label: '操作',
       width: 240,
       fixed: 'right'
-    });
+    }, [{
+      prop: 'icStatus',
+      isShow: true,
+      tooltip: false,
+      sortNum: 8,
+      label: 'IC卡核对状态',
+      width: 120
+    },
+    { // 需要顶替掉的项
+      prop: 'huojhzouihfowe',
+      isShow: true,
+      tooltip: false,
+      sortNum: 28,
+      label: '货主应付金额',
+      width: 120
+    },
+    { // 需要顶替掉的项
+      prop: 'isReturn',
+      isShow: false,
+      tooltip: false,
+      sortNum: 0,
+      label: '纸质回单状态',
+      width: 120
+    }
+    ]);
     !this.$route.query.adjust && this.getList();
     this.listByDict(this.commodityCategory).then(response => {
       this.commodityCategoryCodeOptions = response.data;
@@ -573,16 +693,27 @@ export default {
     },
     /** handleClick */
     handleClick(tab) {
-      this.queryParams.status = tab;
-      this.queryParams.pageNum = 1;
-      this.getList();
+      if (tab === '7') {
+        this.alreadyPaid_queryParams.pageNum = 1;
+        this.getadjustDregsList();
+      } else {
+        this.queryParams.status = tab;
+        this.queryParams.pageNum = 1;
+        this.getList();
+      }
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.commentlist = selection;
-      this.ids = selection.map((item) => item.wayBillCode);
-      this.bodyParams.waybillCodeList = this.ids;
-      this.multiple = !selection.length;
+      if (this.activeName === '5') {
+        console.log(selection);
+        // 柔和成一个批次
+        this.createdDatch(selection);
+      } else {
+        this.commentlist = selection;
+        this.ids = selection.map((item) => item.wayBillCode);
+        this.bodyParams.waybillCodeList = this.ids;
+        this.multiple = !selection.length;
+      }
     },
     /** 查询【请填写功能名称】列表 */
     getList() {
@@ -592,6 +723,22 @@ export default {
         this.total = response.total;
         this.loading = false;
       });
+    },
+    // 获取渣土已审核列表
+    getadjustDregsList() {
+      // 触发请求
+      this.loading = true;
+      console.log(this.alreadyPaid_queryParams, 'qignqiu');
+      adjustDregsList(this.alreadyPaid_queryParams).then(res => {
+        console.log(res);
+        this.alreadyPaid_queryParams.total = res.data.total;
+        this.loading = false;
+      });
+
+      console.log(this.alreadyPaid_queryParams);
+    },
+    handleSelectionChange1(selection) {
+      console.log(selection);
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -614,21 +761,23 @@ export default {
     },
     // 批量申请打款
     handleApply() {
-      this.$confirm('是否确认批量申请打款?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        batchApply(this.bodyParams).then(response => {
-          this.$message({ type: 'success', message: '申请打款成功！' });
-          this.getList();
-        });
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消'
-        });
-      });
+      // this.$confirm('是否确认批量申请打款?', '提示', {
+      //   confirmButtonText: '确定',
+      //   cancelButtonText: '取消',
+      //   type: 'warning'
+      // }).then(() => {
+      //   batchApply(this.bodyParams).then(response => {
+      //     this.$message({ type: 'success', message: '申请打款成功！' });
+      //     this.getList();
+      //   });
+      // }).catch(() => {
+      //   this.$message({
+      //     type: 'info',
+      //     message: '已取消'
+      //   });
+      // });
+      console.log(this.commentlist);
+      this._handlerwaybillCode(this.commentlist);
     },
     // 批量评价
     handleAssess() {
@@ -663,23 +812,24 @@ export default {
           this.$refs.AdjustDialog.setForm(this.waybillCodeList);
           break;
         case 4:
-          this.$confirm('是否确认申请打款?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            this.bodyParams.waybillCodeList = [];
-            this.bodyParams.waybillCodeList.push(row.wayBillCode);
-            batchApply(this.bodyParams).then(response => {
-              this.$message({ type: 'success', message: '申请打款成功！' });
-              this.getList();
-            });
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消'
-            });
-          });
+          // this.$confirm('是否确认申请打款?', '提示', {
+          //   confirmButtonText: '确定',
+          //   cancelButtonText: '取消',
+          //   type: 'warning'
+          // }).then(() => {
+          //   this.bodyParams.waybillCodeList = [];
+          //   this.bodyParams.waybillCodeList.push(row.wayBillCode);
+          //   batchApply(this.bodyParams).then(response => {
+          //     this.$message({ type: 'success', message: '申请打款成功！' });
+          //     this.getList();
+          //   });
+          // }).catch(() => {
+          //   this.$message({
+          //     type: 'info',
+          //     message: '已取消'
+          //   });
+          // });
+          this._handlerwaybillCode([row]);
           break;
         case 5:
           this.commentdialog = true;
@@ -707,14 +857,39 @@ export default {
           this.title = '货主评价司机详情';
           this.$refs.RateDialog.setForm(row);
           break;
+        case 'XIANGQONG':
+          this.Statementsdialog = true;
+          this.title = '对账单详情';
+          this.$refs.StatementsDialog.setForm(row);
+          break;
         default:
           break;
       }
     },
 
     nuclearCardOpen() {
-      this.nuclearCardDialog = true;
-      this.$refs.NuclearCard.init({ id: 123 });
+      this.$confirm('请确认读卡器USB设备连接上了吗? 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.nuclearCardDialog = true;
+        this.$refs.NuclearCard.init({ id: 123 });
+      }).catch(() => {});
+    },
+
+    handleQuery12() {
+      console.log(this.alreadyPaid_queryParams);
+    },
+
+    _handlerwaybillCode(arr) {
+      this.Statementsdialog = true;
+      this.title = '对账单';
+      this.$refs.StatementsDialog.setForm(arr);
+    },
+
+    createdDatch(selection) {
+      console.log(selection);
     }
   }
 };

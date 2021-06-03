@@ -32,7 +32,7 @@
                   <el-option label="固定右边" value="right" />
                 </el-select></el-col>
               <el-col :span="4">
-                <el-input v-model="th.remark" placeholder="备注" clearable />
+                <el-input v-model="th.sortNum" placeholder="备注" clearable />
               </el-col>
             </el-row>
           </li>
