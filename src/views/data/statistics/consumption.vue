@@ -2,19 +2,19 @@
   <div>
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
-        <el-form-item label="客户名称" prop="driverName">
+        <el-form-item label="公司名称" prop="companyName">
           <el-input
-            v-model="queryParams.driverName"
-            placeholder="请输入客户名称"
+            v-model="queryParams.companyName"
+            placeholder="请输入公司名称"
             clearable
             size="small"
             style="width: 228px"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="手机号码" prop="driverPhone">
+        <el-form-item label="手机号码" prop="shipmentPhone">
           <el-input
-            v-model="queryParams.driverPhone"
+            v-model="queryParams.shipmentPhone"
             placeholder="请输入手机号码"
             clearable
             size="small"
