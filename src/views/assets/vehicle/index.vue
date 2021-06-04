@@ -169,6 +169,16 @@
             @click="handleExport"
           >导出</el-button>
         </el-col>
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['assets:vehicle:report']"
+            type="warning"
+            icon="el-icon-upload2"
+            size="mini"
+            :disabled="reportCodes.length == 0"
+            @click="batchReportVehicle"
+          >车辆批量上报</el-button>
+        </el-col>
         <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
@@ -202,6 +212,9 @@
         <!--<template #classificationCode="{row}">
           <span>{{ selectDictLabel( licensePlateTypeOptions, row.classificationCode ) }}</span>
         </template>-->
+        <template #isReport="{row}">
+          <span>{{ selectDictLabel(isOption, row.isReport) }}</span>
+        </template>
         <!-- 车牌颜色 -->
         <template #vehicleLicenseColorCode="{row}">
           <span>{{ selectDictLabel( licenseColorOptions, row.vehicleLicenseColorCode ) }}</span>
@@ -267,10 +280,12 @@
             @click="handleManage(row)"
           >管理</el-button>
           <el-button
+            v-show="row.isReport === 0"
+            v-hasPermi="['assets:vehicle:report']"
             size="mini"
             type="text"
-            @click="handleDetail(row, 'detail')"
-          >详情</el-button>
+            @click="reportVehicle(row)"
+          >上报</el-button>
           <el-button
             v-show="teamCode || driverCode"
             v-hasPermi="teamCode?['assets:team:vehicle:del']:['assets:driver:vehicle:del']"
@@ -278,6 +293,11 @@
             type="text"
             @click="handleDelBind(row)"
           >解除绑定</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleDetail(row, 'detail')"
+          >详情</el-button>
           <template v-if="!teamCode && !driverCode">
             <el-button
               v-hasPermi="['assets:vehicle:edit']"
@@ -333,6 +353,7 @@
 
 <script>
 import { listVehicleApi, listInfo, getInfo, delInfo, delDriverCar, delTeamCar } from '@/api/assets/vehicle';
+import { waybillReportVehicleByCode } from '@/api/data/report';
 import VehicleDialog from './vehicleDialog';
 import ManageDialog from './manageDialog';
 
@@ -362,6 +383,7 @@ export default {
       ids: [],
       vehicleNames: [],
       codes: [],
+      reportCodes: [],
       // 非单个禁用
       single: true,
       // 非多个禁用
@@ -395,6 +417,11 @@ export default {
   	  vehicleHeightOptions: [],
   	  // 轴数字典
   	  axisTypeOptions: [],
+      // 是否
+      isOption: [
+        { dictLabel: '否', dictValue: 0 },
+        { dictLabel: '是', dictValue: 1 }
+      ],
       // 车辆归属类型字典
       vehicleAscriptionTypeOptions: [
         { dictLabel: '自有', dictValue: '0' },
@@ -522,6 +549,12 @@ export default {
       this.ids = selection.map((item) => item.id);
       this.vehicleNames = selection.map((item) => item.licenseNumber);
       this.codes = selection.map((item) => item.code);
+      this.reportCodes = [];
+      selection.map(item => {
+        if (item.isReport === 0) {
+          this.reportCodes.push(item.code);
+        }
+      });
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
     },
@@ -623,6 +656,41 @@ export default {
         this.getList();
         this.msgSuccess('操作成功');
       });
+    },
+    batchReportVehicle(row) {
+      var codes = this.reportCodes;
+      if (row.isReport === 0) {
+        codes = row.code || this.reportCodes;
+      }
+      if (codes.length === 0) {
+        this.msgWarning('请选择未上报的车辆');
+        return;
+      }
+      codes.forEach(code => {
+        waybillReportVehicleByCode(code).then(response => {
+          if (response.code === 200) {
+            this.msgSuccess('上报成功');
+          } else {
+            this.msgWarning('上报失败');
+          }
+        });
+      });
+    },
+    // 上报
+    reportVehicle(row) {
+      if (row.code) {
+        waybillReportVehicleByCode(row.code).then(response => {
+          if (response.code === 200) {
+            this.msgSuccess('上报成功');
+          } else {
+            this.msgError(response.data);
+          }
+        }).catch(() => {
+          this.msgError('上报失败');
+        });
+      } else {
+        this.msgWarning('请选择要上报的车辆');
+      }
     }
   }
 };
