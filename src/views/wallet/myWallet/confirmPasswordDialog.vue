@@ -82,6 +82,7 @@ export default {
     },
     // 表单重置
     reset() {
+      this.buttonLoading = false;
       this.form = {};
       this.resetForm('form');
     }

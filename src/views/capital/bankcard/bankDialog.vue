@@ -89,7 +89,7 @@
     </el-form>
 
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="submitForm">确 定</el-button>
+      <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
     </div>
   </el-dialog>
@@ -119,6 +119,7 @@ export default {
   },
   data() {
     return {
+      buttonLoading: false,
       // 开户银行字典
       bankOptions: [],
       // 账户类型字典
@@ -190,6 +191,7 @@ export default {
       const flag = this.$refs.ChooseArea.submit();
       this.$refs['form'].validate(valid => {
         if (valid && flag) {
+          this.buttonLoading = true;
           if (this.form.bankType === 1) {
             this.form.bankLineNo = null;
           }
@@ -199,15 +201,21 @@ export default {
           };
           if (this.form.id) {
             updateBank(params).then(response => {
+              this.buttonLoading = false;
               this.msgSuccess('修改成功');
               this.close();
               this.$emit('refresh');
+            }).catch(() => {
+              this.buttonLoading = false;
             });
           } else {
             addBank(params).then(response => {
+              this.buttonLoading = false;
               this.msgSuccess('新增成功');
               this.close();
               this.$emit('refresh');
+            }).catch(() => {
+              this.buttonLoading = false;
             });
           }
         }
@@ -224,6 +232,8 @@ export default {
     },
     // 表单重置
     reset() {
+      this.buttonLoading = false;
+      this.personOptions = [];
       this.form = {
         id: null,
         userCode: null,
@@ -245,11 +255,11 @@ export default {
     setForm(data) {
       this.form = data;
       this.form.isDefault = praseNumToBoolean(this.form.isDefault);
-      if (this.form.userCode && this.form.name) {
+      if (this.form.userCode) {
         this.personOptions = [{
           userCode: this.form.userCode,
-          userName: this.form.name,
-          phonenumber: this.form.mobile
+          userName: this.form.nickName,
+          phonenumber: this.form.phonenumber
         }];
       }
     },
