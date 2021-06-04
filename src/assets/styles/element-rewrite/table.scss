@@ -1,0 +1,35 @@
+// 高亮行样式
+.el-table__body tr.current-row > td{
+  background-color: rgba(0, 0, 0, 0.03);
+}
+.el-table__body tr.hover-row > td{
+  background-color: rgba(0, 0, 0, 0.02) !important;
+}
+
+// 头部样式
+.el-table .el-table__header-wrapper th, .el-table .el-table__fixed-header-wrapper th{
+  background-color: #FAFAFA !important;
+}
+
+// 边框样式
+.el-table--border:after,
+.el-table--group:after,
+.el-table:before {
+  background-color: #F3F3F3;
+}
+.el-table--border,
+.el-table--group {
+  border-color: #F3F3F3;
+}
+.el-table td,
+.el-table th.is-leaf {
+  border-bottom: 1px solid #F3F3F3;
+}
+.el-table--border th,
+.el-table--border th.gutter:last-of-type {
+  border-bottom: 1px solid #F3F3F3;
+}
+.el-table--border td,
+.el-table--border th {
+  border-right: 1px solid #F3F3F3;
+}

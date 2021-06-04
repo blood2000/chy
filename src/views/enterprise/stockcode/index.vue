@@ -51,7 +51,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <el-table v-loading="loading" :data="stockcodeList" highlight-current-row border stripe @selection-change="handleSelectionChange">
+      <el-table v-loading="loading" :data="stockcodeList" highlight-current-row border @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" fixed="left" />
         <el-table-column label="货集码名称" align="center" prop="cargoCodeName" />
         <el-table-column label="货集码" align="center" prop="cargoCodeQr">

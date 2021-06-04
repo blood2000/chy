@@ -281,7 +281,7 @@ import DetailDialog from '@/views/waybill/components/detailDialog';
 
 
 export default {
-  'name': 'AskforList',
+  'name': 'Askfor',
   components: { DetailDialog },
   data() {
     return {

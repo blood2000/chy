@@ -22,7 +22,7 @@
       </div>
       <template v-else>
         <img :src="require('@/assets/images/uploadImage/' + iconType + '.png')">
-        <img src="@/assets/images/uploadImage/upload_icon.png" class="avatar-uploader-icon">
+        <img :class="disabled ? 'filter' : ''" src="@/assets/images/uploadImage/upload_icon.png" class="avatar-uploader-icon">
       </template>
     </el-upload>
   </div>
@@ -189,6 +189,10 @@ export default {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    &.filter{
+      filter: grayscale(100%);
+      opacity: 0.6;
+    }
   }
 }
 </style>

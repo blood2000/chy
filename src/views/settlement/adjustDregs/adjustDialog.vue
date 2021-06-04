@@ -23,7 +23,7 @@
         <el-button type="primary" @click="handleChange">批量修改</el-button>
       </el-col>
     </el-row>
-    <el-table v-loading="loading" highlight-current-row :data="adjustlist" border stripe>
+    <el-table v-loading="loading" highlight-current-row :data="adjustlist" border>
 
       <el-table-column width="160" label="运输单号" show-overflow-tooltip align="center" prop="waybillNo" />
 

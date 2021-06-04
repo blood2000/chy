@@ -87,7 +87,7 @@
             @click="handleExport"
           >导出</el-button>
         </el-col>
-        <el-col :span="1.5">
+        <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" />
         </el-col>
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
@@ -102,7 +102,7 @@
         </template>
       </RefactorTable>
 
-      <!-- <el-table v-loading="loading" :data="list" @selection-change="handleSelectionChange">
+      <!-- <el-table v-loading="loading" :data="list" border @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="访问编号" align="center" prop="infoId" />
       <el-table-column label="用户名称" align="center" prop="userName" />

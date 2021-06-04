@@ -254,7 +254,7 @@ import DetailDialog from '@/views/waybill/components/detailDialog';
 
 
 export default {
-  'name': 'ClarifyList',
+  'name': 'Clearing',
   components: { DetailDialog },
   data() {
     return {

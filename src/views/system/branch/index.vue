@@ -60,7 +60,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <el-table v-loading="loading" highlight-current-row :data="branchList" @selection-change="handleSelectionChange">
+      <el-table v-loading="loading" highlight-current-row border :data="branchList" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="网点名称" align="center" prop="name" />
         <el-table-column label="组织" align="center" prop="orgName" />
@@ -79,14 +79,12 @@
               v-hasPermi="['system:branch:edit']"
               size="mini"
               type="text"
-              icon="el-icon-edit"
               @click="handleUpdate(scope.row)"
             >修改</el-button>
             <el-button
               v-hasPermi="['system:branch:remove']"
               size="mini"
               type="text"
-              icon="el-icon-delete"
               @click="handleDelete(scope.row)"
             >删除</el-button>
           </template>
@@ -147,7 +145,7 @@ import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 
 export default {
-  name: 'Post',
+  name: 'Branch',
   components: { Treeselect },
   data() {
     return {

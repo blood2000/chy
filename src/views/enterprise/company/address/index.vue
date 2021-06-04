@@ -88,7 +88,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <el-table v-loading="loading" :data="addressList" highlight-current-row border stripe @selection-change="handleSelectionChange">
+      <el-table v-loading="loading" :data="addressList" highlight-current-row border @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" fixed="left" />
         <el-table-column label="地址" align="center" prop="addressName">
           <template slot-scope="scope">
@@ -138,7 +138,7 @@ import { listAddress, getAddress, delAddress } from '@/api/enterprise/company/ad
 import AddressDialog from './addressDialog.vue';
 
 export default {
-  name: 'Address',
+  name: 'CompanyAddress',
   components: {
     AddressDialog
   },

@@ -217,12 +217,12 @@
             详情
           </el-button>
           <el-button
-            v-hasPermi="['transportation:waybillOper:invalid']"
+            v-has-permi="['transportation:waybillAbnormal:add']"
             size="mini"
             type="text"
-            @click="handleDelete(row)"
+            @click="handleMark(row)"
           >
-            作废运单
+            标记异常
           </el-button>
           <el-button
             v-has-permi="['transportation:waybillOper:shipperRemark']"
@@ -233,22 +233,23 @@
             备注
           </el-button>
           <el-button
-            v-if="row.isChild === 2 && !isAdmin"
+            v-if="row.isChild === 2 && isShipment"
             size="mini"
             type="text"
             @click="handleSeperate(row)"
           >
             分单列表
           </el-button>
-          <TableDropdown v-show="isAdmin">
+          <TableDropdown v-show="!isShipment && (row.isChild === 2 || row.status < '5')">
             <el-dropdown-item>
               <el-button
-                v-has-permi="['transportation:waybillAbnormal:add']"
+                v-if="row.status < '5'"
+                v-hasPermi="['transportation:waybillOper:invalid']"
                 size="mini"
                 type="text"
-                @click="handleMark(row)"
+                @click="handleDelete(row)"
               >
-                标记异常
+                作废运单
               </el-button>
             </el-dropdown-item>
             <el-dropdown-item>
@@ -423,12 +424,14 @@ export default {
       'currentRow': null,
       isAdmin: false,
       user: {},
-      shipment: {}
+      shipment: {},
+      isShipment: false
     };
   },
   created() {
-    const { isAdmin = false, user = {}, shipment = {}} = getUserInfo() || {};
+    const { isAdmin = false, isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
     this.isAdmin = isAdmin;
+    this.isShipment = isShipment;
     this.user = user;
     this.shipment = shipment;
     this.tableHeaderConfig(this.tableColumnsConfig, listManagesApi, {

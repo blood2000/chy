@@ -57,7 +57,7 @@
         <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
-    <el-table v-loading="loading" highlight-current-row :data="infoList">
+    <el-table v-loading="loading" border highlight-current-row :data="infoList">
       <el-table-column label="序号" align="center" type="index" min-width="5%" />
       <el-table-column label="客户名称" align="center" prop="userName" />
       <el-table-column label="变动金额" align="center" prop="paidAmount">

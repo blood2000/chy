@@ -84,6 +84,8 @@
         v-loading="loading"
         :data="dataList"
         row-key="dictCode"
+        highlight-current-row
+        border
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
         @selection-change="handleSelectionChange"
       >
@@ -107,21 +109,18 @@
               v-hasPermi="['system:dict:add']"
               size="mini"
               type="text"
-              icon="el-icon-edit"
               @click="handleAdd(scope.row)"
             >新增</el-button>
             <el-button
               v-hasPermi="['system:dict:edit']"
               size="mini"
               type="text"
-              icon="el-icon-edit"
               @click="handleUpdate(scope.row)"
             >修改</el-button>
             <el-button
               v-hasPermi="['system:dict:remove']"
               size="mini"
               type="text"
-              icon="el-icon-delete"
               @click="handleDelete(scope.row)"
             >删除</el-button>
           </template>

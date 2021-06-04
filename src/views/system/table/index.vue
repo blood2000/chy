@@ -67,7 +67,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <el-table v-loading="loading" highlight-current-row :data="configList" :close-on-click-modal="false" @selection-change="handleSelectionChange">
+      <el-table v-loading="loading" highlight-current-row border :data="configList" :close-on-click-modal="false" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="字段名" align="center" prop="fieldName" />
         <el-table-column label="排序" align="center" sortable prop="sortNum" />
@@ -95,13 +95,11 @@
             <el-button
               size="mini"
               type="text"
-              icon="el-icon-edit"
               @click="handleUpdate(scope.row)"
             >修改</el-button>
             <el-button
               size="mini"
               type="text"
-              icon="el-icon-delete"
               @click="handleDelete(scope.row)"
             >删除</el-button>
           </template>

@@ -336,6 +336,7 @@ import { getProvinceList } from '@/api/system/area';
 
 
 export default {
+  name: 'Release',
   components: {
     OrderBasic,
     OneAddress,

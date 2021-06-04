@@ -314,6 +314,7 @@ import WaybillimportDialog from './waybillimportDialog';
 import PictureimportDialog from './pictureimportDialog';
 
 export default {
+  name: 'Supplement',
   components: {
     UploadImage,
     WaybillimportDialog,

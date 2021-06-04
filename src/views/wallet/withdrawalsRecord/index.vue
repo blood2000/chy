@@ -52,7 +52,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <el-table v-loading="loading" highlight-current-row stripe border :data="dataList">
+      <el-table v-loading="loading" highlight-current-row border :data="dataList">
         <el-table-column label="平台角色" align="center" prop="roleName" />
         <el-table-column label="操作员" align="center" prop="updateName" />
         <el-table-column label="手机号" align="center" prop="phonenumber" />

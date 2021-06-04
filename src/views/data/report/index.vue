@@ -258,7 +258,6 @@
         reserve-selection
         @selection-change="handleSelectionChange"
       >
-        <!-- stripe -->
         <!-- row-key="id" -->
         <!-- :tree-props="{children: 'children', hasChildren: 'hasChildren'}" -->
         <!-- @selection-change="handleSelectionChange" -->
