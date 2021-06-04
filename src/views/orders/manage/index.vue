@@ -272,6 +272,9 @@
         <template #loadType="{row}">
           <span>{{ selectDictLabel(loadTypeOptions, row.loadType) }}</span>
         </template>
+        <template #updateUserName="{row}">
+          <span>{{ row.updateUserName || row.opUserName }}</span>
+        </template>
 
         <template #accessTime="{row}">
           <span>{{ row.accessTime }}</span>
