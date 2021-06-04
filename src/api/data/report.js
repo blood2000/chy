@@ -19,10 +19,24 @@ export function waybillReportDriver(waybillReportCode) {
     method: 'get'
   });
 }
+// 1根据司机编码上报司机信息
+export function waybillReportDriverByCode(driverCode) {
+  return request({
+    url: '/transportation/waybillReport/driverByCode/' + driverCode,
+    method: 'get'
+  });
+}
 // 2上报车辆信息
 export function waybillReportVehicle(waybillReportCode) {
   return request({
     url: '/transportation/waybillReport/vehicle/' + waybillReportCode,
+    method: 'get'
+  });
+}
+// 2根据车辆编码上报车辆信息
+export function waybillReportVehicleByCode(vehicleCode) {
+  return request({
+    url: '/transportation/waybillReport/vehicleByCode/' + vehicleCode,
     method: 'get'
   });
 }
