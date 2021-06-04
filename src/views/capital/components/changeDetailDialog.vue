@@ -91,10 +91,10 @@
         </template>
       </el-table-column>
       <el-table-column label="账户余额" align="center" prop="accountAmount" />
-      <el-table-column label="操作人" align="center" prop="updateName" />
-      <el-table-column label="变动时间" align="center" prop="updateTime" min-width="180">
+      <el-table-column label="操作人" align="center" prop="operatorName" />
+      <el-table-column label="变动时间" align="center" prop="createtime" min-width="180">
         <template slot-scope="scope">
-          {{ parseTime(scope.row.updateTime) }}
+          {{ parseTime(scope.row.createtime) }}
         </template>
       </el-table-column>
       <el-table-column label="备注" align="center" prop="remark" min-width="180" />
