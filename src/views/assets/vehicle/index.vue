@@ -169,16 +169,16 @@
             @click="handleExport"
           >导出</el-button>
         </el-col>
-          <el-col :span="1.5">
-              <el-button
-                      v-hasPermi="['assets:vehicle:report']"
-                      type="warning"
-                      icon="el-icon-upload2"
-                      size="mini"
-                      :disabled="reportCodes.length == 0"
-                      @click="batchReportVehicle"
-              >车辆批量上报</el-button>
-          </el-col>
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['assets:vehicle:report']"
+            type="warning"
+            icon="el-icon-upload2"
+            size="mini"
+            :disabled="reportCodes.length == 0"
+            @click="batchReportVehicle"
+          >车辆批量上报</el-button>
+        </el-col>
         <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
@@ -212,9 +212,9 @@
         <!--<template #classificationCode="{row}">
           <span>{{ selectDictLabel( licensePlateTypeOptions, row.classificationCode ) }}</span>
         </template>-->
-          <template #isReport="{row}">
-              <span>{{ selectDictLabel(isOption, row.isReport) }}</span>
-          </template>
+        <template #isReport="{row}">
+          <span>{{ selectDictLabel(isOption, row.isReport) }}</span>
+        </template>
         <!-- 车牌颜色 -->
         <template #vehicleLicenseColorCode="{row}">
           <span>{{ selectDictLabel( licenseColorOptions, row.vehicleLicenseColorCode ) }}</span>
@@ -279,13 +279,13 @@
             type="text"
             @click="handleManage(row)"
           >管理</el-button>
-            <el-button
-                    v-show="row.isReport === 0"
-                    v-hasPermi="['assets:vehicle:report']"
-                    size="mini"
-                    type="text"
-                    @click="reportVehicle(row)"
-            >上报</el-button>
+          <el-button
+            v-show="row.isReport === 0"
+            v-hasPermi="['assets:vehicle:report']"
+            size="mini"
+            type="text"
+            @click="reportVehicle(row)"
+          >上报</el-button>
           <el-button
             v-show="teamCode || driverCode"
             v-hasPermi="teamCode?['assets:team:vehicle:del']:['assets:driver:vehicle:del']"
@@ -293,11 +293,11 @@
             type="text"
             @click="handleDelBind(row)"
           >解除绑定</el-button>
-            <el-button
-                    size="mini"
-                    type="text"
-                    @click="handleDetail(row, 'detail')"
-            >详情</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleDetail(row, 'detail')"
+          >详情</el-button>
           <template v-if="!teamCode && !driverCode">
             <el-button
               v-hasPermi="['assets:vehicle:edit']"

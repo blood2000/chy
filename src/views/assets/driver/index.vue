@@ -159,16 +159,16 @@
             @click="handleImportTemplateDriver"
           >下载模板</el-button>
         </el-col>
-          <el-col :span="1.5">
-              <el-button
-                      v-hasPermi="['assets:driver:report']"
-                      type="warning"
-                      icon="el-icon-upload2"
-                      size="mini"
-                      :disabled="reportCodes.length ==0"
-                      @click="batchReportDriver"
-              >司机批量上报</el-button>
-          </el-col>
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['assets:driver:report']"
+            type="warning"
+            icon="el-icon-upload2"
+            size="mini"
+            :disabled="reportCodes.length ==0"
+            @click="batchReportDriver"
+          >司机批量上报</el-button>
+        </el-col>
         <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
@@ -239,13 +239,13 @@
             type="text"
             @click="handleManage(row)"
           >管理</el-button>
-            <el-button
-                    v-show="row.isReportPerson === 0"
-                    v-hasPermi="['assets:driver:report']"
-                    size="mini"
-                    type="text"
-                    @click="reportDriver(row)"
-            >上报</el-button>
+          <el-button
+            v-show="row.isReportPerson === 0"
+            v-hasPermi="['assets:driver:report']"
+            size="mini"
+            type="text"
+            @click="reportDriver(row)"
+          >上报</el-button>
           <el-button
             v-show="teamCode"
             v-hasPermi="['assets:team:driver:del']"
@@ -270,12 +270,12 @@
                   @click="handleDetail(row, 'review')"
                 >审核</el-button>
               </el-dropdown-item>
-                <el-button
-                        v-hasPermi="['assets:driver:get']"
-                        size="mini"
-                        type="text"
-                        @click="handleDetail(row, 'detail')"
-                >详情</el-button>
+              <el-button
+                v-hasPermi="['assets:driver:get']"
+                size="mini"
+                type="text"
+                @click="handleDetail(row, 'detail')"
+              >详情</el-button>
               <el-dropdown-item>
                 <el-button
                   v-show="row.authStatus == 3"
