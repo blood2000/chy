@@ -1,8 +1,8 @@
 <template>
-  <el-dialog v-loading="loading" class="waybill-detail-dialog i-add" :title="title" :visible="visible" width="1200px" append-to-body @close="cancel">
+  <el-dialog class="waybill-detail-dialog i-add" :title="title" :visible="visible" width="1200px" append-to-body @close="cancel">
     <el-tabs v-model="activeTab">
       <!-- 运单 -->
-      <el-tab-pane label="运单" name="1">
+      <el-tab-pane v-loading="loading" label="运单" name="1">
         <div class="waybill-title"><div class="waybill-icon" />运单<div class="waybill-divider" /></div>
         <el-row>
           <el-col :span="3" class="text-label">
@@ -307,7 +307,7 @@
 </template>
 
 <script>
-import { getWayBill, getWaybillAttachment, getWaybillComment, getWaybillTrace } from '@/api/waybill/manages';
+import { getWayBill, getWaybillAttachment, getWaybillComment } from '@/api/waybill/manages';
 // import { jimiTrackLocation } from '@/api/waybill/tracklist';
 import DataNull from '@/components/DataNull/index';
 import Track from './track';
@@ -347,7 +347,7 @@ export default {
       formAttachmentUpUrl: [],
       formCommentDriver: {},
       formCommentShipment: {},
-      timeLineList: [],
+      // timeLineList: [],
       // 地图
       queryParams: {
         begin_time: '2021-03-22 08:00:00',
@@ -404,6 +404,8 @@ export default {
         });
         console.log(this.freightList);
         this.loading = false;
+      }).catch(e => {
+        this.loading = false;
       });
       // 回单-装货
       getWaybillAttachment(this.currentId, 1).then(response => {
@@ -438,12 +440,12 @@ export default {
       //   }
       // });
       // 轨迹时间线
-      getWaybillTrace(this.currentId).then(response => {
-        // console.log(response);
-        response.data.forEach(el => {
-          this.timeLineList.unshift(el);
-        });
-      });
+      // getWaybillTrace(this.currentId).then(response => {
+      //   // console.log(response);
+      //   response.data.forEach(el => {
+      //     this.timeLineList.unshift(el);
+      //   });
+      // });
     },
     // 取消按钮
     cancel() {
@@ -466,7 +468,7 @@ export default {
       this.formAttachmentUp = {};
       this.formCommentDriver = {};
       this.formCommentShipment = {};
-      this.timeLineList = [];
+      // this.timeLineList = [];
     }
   }
 };
