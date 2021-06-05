@@ -7,6 +7,7 @@
       :inline="true"
       label-width="90px"
     >
+
       <div v-if="!isShipment" class="app-container" style="display: flex; align-items: center;">
         <el-form-item label="发货企业" prop="shipmentCode" style="margin-bottom:0">
           <!-- filterable开启可搜索 remote远程搜索 reserve-keyword 保存搜索关键词  companyName -->
@@ -238,36 +239,14 @@
 
     </div>
 
-    <el-row type="flex" :gutter="10" class="g-statistics-bg">
-      <el-col :span="1">
-        <img src="../../../../src/assets/images/icon/total.png" alt="">
-      </el-col>
-      <el-col :span="2">
-        <div class="g-statistics-tag">运单数量：</div>
-        <div class="g-statistics-num">{{ feeinfo.waybillNum }}</div>
-      </el-col>
-      <el-col :span="2">
-        <div class="g-statistics-tag">运费金额：</div>
-        <div class="g-statistics-num">{{ feeinfo.deliveryCashFee }}</div>
-      </el-col>
-      <el-col :span="2">
-        <div class="g-statistics-tag">运费税额：</div>
-        <div class="g-statistics-num">{{ feeinfo.taxPayment }}</div>
-      </el-col>
-      <el-col :span="2">
-        <div class="g-statistics-tag">服务费金额：</div>
-        <div class="g-statistics-num">{{ feeinfo.serviceFee }}</div>
-      </el-col>
-      <el-col :span="2">
-        <div class="g-statistics-tag">服务费税额：</div>
-        <div class="g-statistics-num">{{ feeinfo.serviceTaxFee }}</div>
-      </el-col>
-    </el-row>
+
   </div>
 </template>
 
 <script>
-import { askforList, askforListApi, shipmentList, askInvoice } from '@/api/finance/askfor';
+import { shipmentList } from '@/api/finance/askfor'; // 获取货主(搜索用)
+import { adjustDregsList, adjustListApi, passBatchClaim } from '@/api/settlement/adjustDregs'; // 1 当前页列表(批次号) 2. 表头 3.索票
+
 import { getUserInfo } from '@/utils/auth';
 // import ChildDialog from '../components/childDialog';
 // 运单详情弹窗
@@ -278,110 +257,12 @@ import RejectDialog from './components/rejectDialog';
 
 
 export default {
-  'name': 'Dregs',
+  'name': 'AskforDregs',
   components: { StatementsDialog, RejectDialog },
   data() {
     return {
       tableColumnsConfig: [],
-      tableColumnsConfig1: [
-        {
-          prop: 'mainOrderNumber',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '对账批次号'
-        },
-        {
-          prop: 'zhuanfowe',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '状态'
-        },
-        {
-          prop: 'fahiuwnn',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '发货企业'
-        },
-        {
-          prop: 'xuiqabskn',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '项目'
-        },
-        {
-          prop: 'zhaunenowt',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '渣土场'
-        },
-        {
-          prop: 'duaijwhubiubi',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '调度组名称'
-        },
-        {
-          prop: 'yunsnewonow',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '运单数量'
-        },
-        {
-          prop: 'yuwinfsnfhahoiajog',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '运费结算金额'
-        },
-        {
-          prop: 'fapownfwqag',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '发票抬头'
-        },
-        {
-          prop: 'shfwuhfnqaw',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '税务登记'
-        },
-        {
-          prop: 'sewfjhehgo',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '申请时间'
-        },
-        {
-          prop: 'cshiwops',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '操作人'
-        }
-      ],
-      api: 'test' || askforListApi,
+      api: adjustListApi + '--1',
       // 遮罩层
       'loading': false,
       // 选中数组
@@ -393,7 +274,7 @@ export default {
       // 总条数
       'total': 0,
       // 表格数据
-      askforlist: [{ code: 123 }],
+      askforlist: [],
       shipmentlist: [],
       // 查询参数
 
@@ -464,6 +345,7 @@ export default {
       //   ]
       // },
       // 账号信息
+
       isAdmin: false,
       isShipment: false,
       user: {},
@@ -495,23 +377,18 @@ export default {
     this.isShipment = isShipment;
     this.user = user;
     this.shipment = shipment;
-    // this.getList();
-    /* if (this.isShipment) {
-      this.queryParams.shipmentCode = shipment.info.code;
-      this.getList();
-    }*/
+    this.getList();
+
     this.tableHeaderConfig(this.tableColumnsConfig, this.api, {
       prop: 'edit',
       isShow: true,
       label: '操作',
       width: 180,
       fixed: 'right'
-    }, this.tableColumnsConfig1);
-    // this.getShipment();
+    });
     this.listByDict(this.commodityCategory).then(response => {
       this.commodityCategoryCodeOptions = response.data;
     });
-    // this.getList();
   },
   'methods': {
     // 获取货主列表
@@ -564,23 +441,22 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      console.log(selection);
-      this.feeinfo = {
-        waybillNum: selection.length,
-        // deliveryFee: 0,
-        taxPayment: 0,
-        serviceFee: 0,
-        serviceTaxFee: 0,
-        deliveryCashFee: 0
-      };
+      // console.log(selection);
+      // this.feeinfo = {
+      //   waybillNum: selection.length,
+      //   // deliveryFee: 0,
+      //   taxPayment: 0,
+      //   serviceFee: 0,
+      //   serviceTaxFee: 0,
+      //   deliveryCashFee: 0
+      // };
       // selection.map((item) => { this.feeinfo.deliveryFee += item.deliveryFeePractical; });
-      selection.map((item) => { this.feeinfo.taxPayment += item.taxPayment; });
-      selection.map((item) => { this.feeinfo.serviceFee += item.serviceFee; });
-      selection.map((item) => { this.feeinfo.serviceTaxFee += item.serviceTaxFee; });
-      selection.map((item) => { this.feeinfo.deliveryCashFee += item.deliveryCashFee; });
-      this.ids = selection.map((item) => item.code).join(',');
+      // selection.map((item) => { this.feeinfo.taxPayment += item.taxPayment; });
+      // selection.map((item) => { this.feeinfo.serviceFee += item.serviceFee; });
+      // selection.map((item) => { this.feeinfo.serviceTaxFee += item.serviceTaxFee; });
+      // selection.map((item) => { this.feeinfo.deliveryCashFee += item.deliveryCashFee; });
+      this.ids = selection.map((item) => item.batchNo);
       this.multiple = !selection.length;
-      console.log(this.ids);
     },
     /** 查询【请填写功能名称】列表 */
     getList() {
@@ -589,14 +465,20 @@ export default {
       }
       if (this.queryParams.shipmentCode) {
         this.loading = true;
-        askforList(this.queryParams).then(response => {
-          this.askforlist = response.data.rows;
+
+        const quer = {
+          ...this.queryParams,
+          createCode: this.queryParams.shipmentCode,
+          shipmentCode: undefined
+        };
+        adjustDregsList(quer).then(response => {
+          this.askforlist = response.data.list;
           this.total = response.data.total;
           this.loading = false;
         });
       } else {
         this.$message({ type: 'warning', message: '请选择货主查询列表！' });
-        this.askforlist = [{ code: 123, deliveryFeePractical: 123 }];
+        this.askforlist = [];
       }
     },
     chooseShipment() {
@@ -629,13 +511,28 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        askInvoice({ shipmentCode: this.queryParams.shipmentCode, waybillCodes: this.ids }).then(response => {
+        this.loading = true;
+        const que = {
+          batchCodes: this.ids //	批次列表不能为空		false
+          // createCode: this.queryParams.shipmentCode
+          // remark, //	原因		false
+        };
+        passBatchClaim(que).then(response => {
           this.msgSuccess('索票申请成功');
           this.ids = null;
+          this.loading = false;
+          this.getList();
         });
-        this.getList();
       });
     },
+    // 批量驳回
+    handleBohui() {
+      this.$refs.RejectDialog.reset();
+      this.rejectdialog = true;
+      this.title = '驳回索取发票';
+      this.$refs.RejectDialog.setForm(this.ids);
+    },
+
     handleTableBtn(row, index) {
       this.visible = true;
       switch (index) {
@@ -656,14 +553,12 @@ export default {
           // // this.title = '运输单信息';
           // // this.formDisable = true;
           // console.log('索票', row);
-          this.ids = row.code;
+          this.ids = [row.batchNo];
           this.handleAskfor();
           break;
         case 3:
-          this.$refs.RejectDialog.reset();
-          this.rejectdialog = true;
-          this.title = '驳回运输核算单';
-          this.$refs.RejectDialog.setForm(row);
+          this.ids = [row.batchNo];
+          this.handleBohui();
           break;
         case 4:
           // this.$refs.DetailDialog.reset();

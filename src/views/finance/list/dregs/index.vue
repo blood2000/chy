@@ -149,7 +149,7 @@
             icon="el-icon-document-checked"
             size="mini"
             :disabled="multiple"
-            @click="handleVerify"
+            @click="handlerPassPayment"
           >批量打款</el-button>
         </el-col>
         <!-- <el-col v-if="activeName == '6'" :span="1.5">
@@ -267,11 +267,11 @@
 </template>
 
 <script>
-import { billList, billListApi } from '@/api/finance/list';
+import { passPayment } from '@/api/finance/askfor';
 // 审核弹窗
 // import VerifyDialog from '../verifyDialog';
 // 开票弹窗
-import BillingDialog from '../billingDialog';
+import BillingDialog from './billingDialog';
 // 详情弹窗
 import StatementsDialog from '@/views/settlement/adjustDregs/StatementsDialog';
 // 驳回弹窗
@@ -279,6 +279,9 @@ import RejectDialog from './components/rejectDialog';
 // import DetailDialog from './detail';
 
 import { getUserInfo } from '@/utils/auth';
+
+import { adjustDregsList, adjustListApi } from '@/api/settlement/adjustDregs';
+
 export default {
   'name': 'AskforDregs',
   components: { StatementsDialog, BillingDialog, RejectDialog },
@@ -286,203 +289,107 @@ export default {
     return {
       isShipment: false,
       tableColumnsConfig: [],
-      tableColumnsConfig1: [
-        {
-          prop: 'mainOrderNumber',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '对账批次号'
-        },
-        {
-          prop: 'zhuanfowe',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '状态'
-        },
-        {
-          prop: 'fahiuwnn',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '发货企业'
-        },
-        {
-          prop: 'xuiqabskn',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '项目'
-        },
-        {
-          prop: 'zhaunenowt',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '渣土场'
-        },
-        {
-          prop: 'duaijwhubiubi',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '调度组名称'
-        },
-        {
-          prop: 'yunsnewonow',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '运单数量'
-        },
-        {
-          prop: 'yuwinfsnfhahoiajog',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '运费结算金额'
-        },
-        {
-          prop: 'fapownfwqag',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '发票抬头'
-        },
-        {
-          prop: 'shfwuhfnqaw',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '税务登记'
-        },
-        {
-          prop: 'sewfjhehgo',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '申请时间'
-        },
-        {
-          prop: 'cshiwops',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '操作人'
-        }
-      ],
-      tableColumnsConfig2: [
-        {
-          prop: 'mainOrderNumber',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '对账批次号'
-        },
-        {
-          prop: 'zhuanfowe',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '状态'
-        },
-        {
-          prop: 'fahiuwnn',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '发货企业'
-        },
-        {
-          prop: 'xuiqabskn',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '项目'
-        },
-        {
-          prop: 'zhaunenowt',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '渣土场'
-        },
-        {
-          prop: 'duaijwhubiubi',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '调度组名称'
-        },
-        {
-          prop: 'yunsnewonow',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '运单数量'
-        },
-        {
-          prop: 'yuwinfsnfhahoiajog',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '运费结算金额'
-        },
-        {
-          prop: 'pabiaott',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '发票图片'
-        },
-        {
-          prop: 'beiiesp',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '备注'
-        },
-        {
-          prop: 'chaoskziehio',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '操作时间'
-        },
-        {
-          prop: 'cshiwops',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '操作人'
-        }
-      ],
-      api: billListApi,
+      tableColumnsConfig1: [],
+      tableColumnsConfig2: [],
+      // [
+      //   {
+      //     prop: 'mainOrderNumber',
+      //     isShow: true,
+      //     width: 200,
+      //     tooltip: true,
+      //     // fixed: 'left',
+      //     label: '对账批次号'
+      //   },
+      //   {
+      //     prop: 'zhuanfowe',
+      //     isShow: true,
+      //     width: 200,
+      //     tooltip: true,
+      //     // fixed: 'left',
+      //     label: '状态'
+      //   },
+      //   {
+      //     prop: 'fahiuwnn',
+      //     isShow: true,
+      //     width: 200,
+      //     tooltip: true,
+      //     // fixed: 'left',
+      //     label: '发货企业'
+      //   },
+      //   {
+      //     prop: 'xuiqabskn',
+      //     isShow: true,
+      //     width: 200,
+      //     tooltip: true,
+      //     // fixed: 'left',
+      //     label: '项目'
+      //   },
+      //   {
+      //     prop: 'zhaunenowt',
+      //     isShow: true,
+      //     width: 200,
+      //     tooltip: true,
+      //     // fixed: 'left',
+      //     label: '渣土场'
+      //   },
+      //   {
+      //     prop: 'duaijwhubiubi',
+      //     isShow: true,
+      //     width: 200,
+      //     tooltip: true,
+      //     // fixed: 'left',
+      //     label: '调度组名称'
+      //   },
+      //   {
+      //     prop: 'yunsnewonow',
+      //     isShow: true,
+      //     width: 200,
+      //     tooltip: true,
+      //     // fixed: 'left',
+      //     label: '运单数量'
+      //   },
+      //   {
+      //     prop: 'yuwinfsnfhahoiajog',
+      //     isShow: true,
+      //     width: 200,
+      //     tooltip: true,
+      //     // fixed: 'left',
+      //     label: '运费结算金额'
+      //   },
+      //   {
+      //     prop: 'pabiaott',
+      //     isShow: true,
+      //     width: 200,
+      //     tooltip: true,
+      //     // fixed: 'left',
+      //     label: '发票图片'
+      //   },
+      //   {
+      //     prop: 'beiiesp',
+      //     isShow: true,
+      //     width: 200,
+      //     tooltip: true,
+      //     // fixed: 'left',
+      //     label: '备注'
+      //   },
+      //   {
+      //     prop: 'chaoskziehio',
+      //     isShow: true,
+      //     width: 200,
+      //     tooltip: true,
+      //     // fixed: 'left',
+      //     label: '操作时间'
+      //   },
+      //   {
+      //     prop: 'cshiwops',
+      //     isShow: true,
+      //     width: 200,
+      //     tooltip: true,
+      //     // fixed: 'left',
+      //     label: '操作人'
+      //   }
+      // ],
+      api: adjustListApi,
       activeName: '1',
       createTime: '',
       // 遮罩层
@@ -587,7 +494,7 @@ export default {
     },
     /** handleClick */
     handleClick(tab) {
-      this.api = this.api + '--' + tab;
+      this.api = this.api + '--' + ((tab - 0) + 1);
       const tableColumnsConfig = tab === '1' ? this.tableColumnsConfig1 : this.tableColumnsConfig2;
       this.queryParams.status = tab === '1' ? 2 : 3;
 
@@ -604,20 +511,21 @@ export default {
       // 切换
       // this.queryParams.invoiceStatus = tab;
       this.queryParams.pageNum = 1;
-      // this.getList();
+      this.getList();
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
       console.log(selection);
       this.selectlenght = selection.length;
-      this.ids = selection.map((item) => item.code).join(',');
+      this.ids = selection.map((item) => item.batchNo);
       this.multiple = !selection.length;
     },
     /** 查询【请填写功能名称】列表 */
     getList() {
       this.loading = true;
-      billList(this.queryParams).then(response => {
-        this.billlist = response.data.rows;
+
+      adjustDregsList(this.queryParams).then(response => {
+        this.billlist = response.data.list;
         this.total = response.data.total;
         this.loading = false;
       });
@@ -657,7 +565,7 @@ export default {
         case 1:
           this.$refs.RejectDialog.reset();
           this.rejectdialog = true;
-          this.title = '驳回运输核算单';
+          this.title = '驳回申请';
           this.$refs.RejectDialog.setForm(row);
           break;
         case 2:
@@ -677,6 +585,8 @@ export default {
           break;
         case 4:
           // this.$router.push({ name: 'Statement', query: { code: row.code }});
+          this.ids = [row.batchNo];
+          this.handlerPassPayment();
           break;
         case 5:
           // this.$router.push({ name: 'Statement', query: { code: row.code }});
@@ -687,6 +597,25 @@ export default {
         default:
           break;
       }
+    },
+
+    // 批量打款
+    handlerPassPayment() {
+      this.$confirm('确定批量打款?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const que = {
+          batchCodes: this.ids
+        };
+
+        passPayment(que).then(res => {
+          this.msgSuccess('确定批量打款成功');
+          this.queryParams.pageNum = 1;
+          this.getList();
+        });
+      }).catch(() => {});
     }
   }
 };

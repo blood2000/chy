@@ -117,16 +117,13 @@ const CardReader = {
       'issuing_code',
       'issuing_name']) {
       // 1000|1|adf34d2d22b64c43b31476a746dd757f;黄婷;18415451845;94671e0bff6647e88db777427d700e32;陈大帅;1622531892853
-
       const arr = str.split('|');
       const arr2 = arr[2].split(';');
-
       const data = {};
       key.forEach((e, index) => {
         data[e] = arr2[index];
       });
       if (key.length !== arr2.length) {
-        console.log('字段不匹配, 截取');
         data['other'] = arr2.filter((e, index) => {
           return index >= key.length;
         });
@@ -278,7 +275,7 @@ const CardReader = {
          * 获得卡片
          * 包含：获得卡、卡片复位、获取随机值进行认证
          */
-    getCard: async function() {
+    getCard: async function(resolve, rejected) {
       let ret;
       ret = await CardReader.fn.exec(CardReader.command.get.card);
       ret = CardReader.fn.getResult(ret);
@@ -288,16 +285,24 @@ const CardReader = {
       ret = CardReader.fn.getResult(ret);
       console.log('获得随机数', ret);
       if (!ret.success) {
-        Message.error('读取卡片失败');
-        console.error('请重新放置卡片：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
+        if (!ret.code) {
+          MessageBox.alert('请重新放置卡片, 并重新启动服务', '未获取到卡片', {
+            confirmButtonText: '确定',
+            callback: action => {
+              rejected && rejected({ code: 501, msg: '' });
+            }
+          });
+        } else {
+          Message.error('请重新放置卡片：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
+          // console.error('请重新放置卡片：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
+          rejected && rejected({ code: ret.code, msg: '请重新放置卡片：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code) });
+        }
         await CardReader.action.error();
         return;
       }
       const encrypt = CardReader.fn.encryptByDES(ret.data, CardReader._attr.key);
       ret = await CardReader.fn.exec('SendCOSCommand,0082000008' + encrypt);
       return ret;
-
-      // 不做其他处理会有问题
     },
     /**
          * 注销卡片
@@ -506,9 +511,9 @@ CardReader.action['issuingCard'] = async function(data) {
  * 读取用户信息
  * @returns {Promise<void>}
  */
-CardReader.action['readUserInfo'] = async function() {
+CardReader.action['readUserInfo'] = async function(resolve, rejected) {
   console.log('【读取用户信息】');
-  let ret = await this.getCard();
+  let ret = await this.getCard(resolve, rejected);
 
   ret = await CardReader.fn.apdu((function() {
     return ['00', 'A4', '00', '00', '02', '3F00'].join('');
@@ -521,9 +526,10 @@ CardReader.action['readUserInfo'] = async function() {
   console.log('选择用户信息目录', ret);
   ret = CardReader.fn.getResult(ret);
   if (!ret.success || ret.code !== '9000') {
-    Message.error('不存在用户信息：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
+    // Message.error('不存在用户信息：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
     console.error('不存在用户信息：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
-    return await CardReader.action.error();
+    CardReader.action.error();
+    return;
   }
 
   // 读二进制文件
@@ -535,7 +541,16 @@ CardReader.action['readUserInfo'] = async function() {
   if (!ret.success || ret.code !== '9000') {
     Message.error('不存在用户信息：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
     console.error('不存在用户信息：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
-    return await CardReader.action.error();
+
+    rejected && rejected(
+      {
+        code: 500,
+        msg: '不存在用户信息：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code),
+        data: null
+      }
+    );
+    await CardReader.action.error();
+    return;
   }
   console.log('解析后的用户数据：', CardReader.fn.utf8HexToStr(ret.data));
   const data = CardReader.fn.utf8HexToStr(ret.data);
@@ -543,7 +558,11 @@ CardReader.action['readUserInfo'] = async function() {
   await CardReader.fn.exec(CardReader.command.deselect);
   await CardReader.fn.exec(CardReader.command.beep);
 
-  // 获取成功返回用户数据
+  resolve && resolve({
+    code: 200,
+    msg: `读取成功`,
+    data: data
+  });
   return Promise.resolve({
     code: 200,
     msg: `读取成功`,
@@ -555,7 +574,7 @@ CardReader.action['readUserInfo'] = async function() {
  * 获得卡数据
  * @returns {Promise<void>}
  */
-CardReader.action['readData'] = async function() {
+CardReader.action['readData'] = async function(resolve, rejected) {
   console.log('【获得卡数据】');
   let ret = await this.getCard();
   // 选择索引目录
@@ -572,6 +591,14 @@ CardReader.action['readData'] = async function() {
   if (!ret.success || ret.code !== '9000') {
     Message.error('读文件失败，缺少数据索引信息：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
     console.error('读文件失败，缺少数据索引信息：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
+    console.log(ret.code);
+    rejected && rejected(
+      {
+        code: 500,
+        msg: '读文件失败，缺少数据索引信息：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code),
+        data: null
+      }
+    );
     return await CardReader.action.error();
   }
   /**
@@ -615,6 +642,12 @@ CardReader.action['readData'] = async function() {
   // 取消选择卡片
   await CardReader.fn.exec(CardReader.command.deselect);
   await CardReader.fn.exec(CardReader.command.beep);
+
+  resolve && resolve({
+    code: 200,
+    msg: `读取成功`,
+    data: data
+  });
   return Promise.resolve({
     code: 200,
     msg: `共读取了：${count + errCount} 条记录，成功：${count} -- 失败：${errCount}`,

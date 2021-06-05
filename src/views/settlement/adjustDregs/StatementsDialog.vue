@@ -3,7 +3,7 @@
     <div v-if="open">
       <div class="ly-t-center f20 b mb20">
         <div>对账单</div>
-        <div>(UHY123456)</div>
+        <div v-if="statementNo">({{ statementNo }})</div>
       </div>
 
 
@@ -12,9 +12,9 @@
 
       <el-form v-show="showSearch" ref="queryForm1" :model="queryParams" :inline="true" label-width="90px" class="clearfix" disabled @submit.native.prevent>
         <!-- 普通input搜索 -->
-        <el-form-item label="托运方" prop="testName1">
+        <el-form-item label="托运方" prop="shipper">
           <el-input
-            v-model="queryParams.testName1"
+            v-model="queryParams.shipper"
             placeholder="请输入托运方"
             clearable
             size="small"
@@ -23,9 +23,9 @@
           />
         </el-form-item>
 
-        <el-form-item label="承运方" prop="testName2">
+        <el-form-item label="承运方" prop="carrier">
           <el-input
-            v-model="queryParams.testName2"
+            v-model="queryParams.carrier"
             placeholder="请输入承运方"
             clearable
             size="small"
@@ -35,20 +35,9 @@
         </el-form-item>
 
         <!-- 时间筛选框 -->
-        <el-form-item label="申请日期" prop="testName3">
-          <!-- <el-date-picker
-            v-model="queryParams.testName3"
-            size="small"
-            style="width: 228px"
-            value-format="yyyy-MM-dd"
-            type="daterange"
-            range-separator="-"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          /> -->
-
+        <el-form-item label="申请日期" prop="applyTime">
           <el-date-picker
-            v-model="queryParams.testName3"
+            v-model="queryParams.applyTime"
             type="date"
             placeholder="选择日期"
             format="yyyy 年 MM 月 dd 日"
@@ -63,50 +52,55 @@
       </div>
       <el-divider />
 
-      <el-table :data="tableData" highlight-current-row border show-summary style="width: 100%">
+      <el-table :data="tableData" highlight-current-row border show-summary :summary-method="getSummaries" style="width: 100%">
         <el-table-column
-          prop="id"
+          prop="load"
           label="项目（装货地）"
           width="120"
           align="center"
         />
         <el-table-column
-          prop="name"
+          prop="land"
           label="渣土场（卸货地）"
           width="130"
           align="center"
         />
         <el-table-column
-          prop="titnijsoi"
+          prop="teamName"
           label="调度者"
           width="120"
           align="center"
         />
 
         <el-table-column
-          prop="amount1"
+          prop="loadNum"
           sortable
           label="装车数量"
           align="center"
         />
         <el-table-column
-          prop="amount2"
+          prop="actualTripsNum"
           sortable
           label="实发趟数（次）"
           align="center"
         />
         <el-table-column
-          prop="amount3"
+          prop="settlementTripsNum"
           sortable
           label="结算趟数（次）"
           align="center"
         />
         <el-table-column
-          prop="amount4"
+          prop="freightAmount"
           sortable
           label="运费结算金额（含税）"
           align="center"
-        />
+          width="180"
+        >
+          <template slot-scope="scope">
+            {{ floorFn(scope.row.freightAmount) }}
+          </template>
+        </el-table-column>
         <el-table-column
           label="运单明细"
           align="center"
@@ -129,11 +123,13 @@
       </div>
       <el-divider />
 
+
+
       <el-form v-show="showSearch" ref="formData" :model="formData" :inline="true" label-width="120px" class="clearfix" disabled @submit.native.prevent>
         <!-- 普通input搜索 -->
-        <el-form-item label="纳税人识别号" prop="tsjsjops">
+        <el-form-item label="纳税人识别号" prop="taxpayerNumber">
           <el-input
-            v-model="formData.tsjsjops"
+            v-model="formData.taxpayerNumber"
             placeholder="请输入托运方"
             clearable
             size="small"
@@ -142,9 +138,9 @@
           />
         </el-form-item>
 
-        <el-form-item label="注册地址" prop="tingi1h2i">
+        <el-form-item label="注册地址" prop="registeredAddress">
           <el-input
-            v-model="formData.tingi1h2i"
+            v-model="formData.registeredAddress"
             placeholder="请输入承运方"
             clearable
             size="small"
@@ -152,9 +148,9 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="注册电话" prop="tinhu3hu2">
+        <el-form-item label="注册电话" prop="registeredPhone">
           <el-input
-            v-model="formData.tinhu3hu2"
+            v-model="formData.registeredPhone"
             placeholder="请输入承运方"
             clearable
             size="small"
@@ -162,9 +158,9 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="开户行" prop="tinhwenfwn">
+        <el-form-item label="开户行" prop="bankNo">
           <el-input
-            v-model="formData.tinhwenfwn"
+            v-model="formData.bankNo"
             placeholder="请输入承运方"
             clearable
             size="small"
@@ -172,10 +168,10 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="账号" prop="tinhwe34343">
+        <el-form-item label="账号" prop="account">
           <el-input
-            v-model="formData.tinhwe34343"
-            placeholder="请输入承运方"
+            v-model="formData.account"
+            placeholder="请输入账号"
             clearable
             size="small"
             style="width: 228px"
@@ -185,19 +181,16 @@
       </el-form>
       <div class="mt20 mb20 ly-t-center">
         <el-button type="info" plain>取消</el-button>
-        <el-button type="primary">确认</el-button>
+        <el-button type="primary" @click="handlerSubm">确认</el-button>
       </div>
 
     </div>
 
     <!-- 运单详情 对话框 -->
     <el-dialog class="i-adjust" title="运单详情" :visible.sync="openDetailDialog" width="80%" :close-on-click-modal="false" append-to-body>
-      <WaybillDialog
+      <StatementsInfo
         v-if="openDetailDialog"
-        :dialog-config="{
-          showSearch: false,
-          list: []
-        }"
+        :list="a_dataList"
       />
     </el-dialog>
 
@@ -213,10 +206,16 @@
 // 运单详情弹窗
 import WaybillDialog from '@/views/waybill/manages';
 
+import StatementsInfo from './StatementsInfo';
+
+import { applyForReconciliation } from '@/api/settlement/adjustDregs';
+
 import BillPage from '@/views/enterprise/company/billing';
+
+import { floor } from '@/utils/ddc';
 export default {
   name: 'AdjustDialog',
-  components: { WaybillDialog, BillPage },
+  components: { StatementsInfo, BillPage },
   props: {
     title: {
       type: String,
@@ -239,60 +238,25 @@ export default {
       openBillPage: false,
       shipmentCode: undefined,
 
-
+      // 赋值
+      statementNo: '',
       queryParams: {
-        testName1: '山阴利德商贸有限公司',
-        testName2: '福建大道成物流科技有限公司',
-        testName3: '2021-05-11'
+        shipper: undefined,
+        carrier: undefined,
+        applyTime: undefined
       },
       formData: {
-        tsjsjops: '91140621MA0K2NMN7D',
-        tingi1h2i: '山阴县岱岳镇府东街兴隆小区',
-        tinhu3hu2: '18504214537',
-        tinhwenfwn: '晋商银行股份有限公司山阴支行',
-        tinhwe34343: '34910230000005897'
+        taxpayerNumber: undefined,
+        registeredAddress: undefined,
+        registeredPhone: undefined,
+        bankNo: undefined,
+        account: undefined
       },
-      tableData: [{
-        id: '八里庄',
-        name: '九里庄',
-        titnijsoi: '甘某某',
-        amount1: '234',
-        amount2: '3.2',
-        amount3: 10,
-        amount4: 20
-      }, {
-        id: '八里庄',
-        name: '九里庄',
-        titnijsoi: '甘某某',
-        amount1: '165',
-        amount2: '4.43',
-        amount3: 12,
-        amount4: 20
-      }, {
-        id: '八里庄',
-        name: '九里庄',
-        titnijsoi: '甘某某',
-        amount1: '324',
-        amount2: '1.9',
-        amount3: 9,
-        amount4: 20
-      }, {
-        id: '八里庄',
-        name: '九里庄',
-        titnijsoi: '甘某某',
-        amount1: '621',
-        amount2: '2.2',
-        amount3: 17,
-        amount4: 20
-      }, {
-        id: '八里庄',
-        name: '九里庄',
-        titnijsoi: '甘某某',
-        amount1: '539',
-        amount2: '4.1',
-        amount3: 15,
-        amount4: 20
-      }]
+      tableData: [],
+
+      accountStatementVo: null,
+      a_dataList: undefined,
+      floorFn: floor // 方法
     };
   },
   computed: {
@@ -308,6 +272,23 @@ export default {
   created() {
   },
   methods: {
+
+    /*
+     <!--
+
+        actualTripsNumCount	实发趟数合计前端统计	integer(int32)	integer(int32)
+
+        carrierCode	承运方code	string
+        freightAmountCount	运费金额合计前端统计	integer(int32)	integer(int32)
+        loadNumCount	装车数量合计前端统计	integer(int32)	integer(int32)
+
+        settlementTripsNumCount	结算趟数合计前端统计	integer(int32)	integer(int32)
+
+        shipperCode	货主code	string
+        statementInfoCode	对账单code	string
+
+      -->
+    */
 
     /** 查询核算列表 */
     getList() {
@@ -331,20 +312,84 @@ export default {
       this.$emit('update:open', false);
     },
     // 获取列表
-    setForm(data) {
-      console.log(data);
-      //   this.isEdit2 = false;
-      //   this.isEdit = false;
+    setForm(object, data2) {
+      console.log(object);
+      const {
+        account, //	账号	string
+        actualTripsNumCount, //	实发趟数合计前端统计	integer(int32)	integer(int32)
+        applyTime, //	申请日期	string(date-time)	string(date-time)
+        bankNo, //	开户行	string
+        carrier, //	承运方 默认大道成	string
+        carrierCode, //	承运方code	string
+        freightAmountCount, //	运费金额合计前端统计	integer(int32)	integer(int32)
+        loadNumCount, //	装车数量合计前端统计	integer(int32)	integer(int32)
+        registeredAddress, //	注册地址	string
+        registeredPhone, //	注册电话	string
+        settlementTripsNumCount, //	结算趟数合计前端统计	integer(int32)	integer(int32)
+        shipper, //	托运方 货主公司名称	string
+        shipperCode, //	货主code	string
+        statementInfoCode, //	对账单code	string
+        statementNo, //	对账单编号	string
+        taxpayerNumber //	纳税人识别号
+      } = data2;
+      this.accountStatementVo = data2;
 
-    //   this.isPiliang = data.length > 1;
-    //   this.deliveryCashFee = undefined;
-    //   this.queryParams.waybillCodeList = data;
-    //   this.getList();
+      this.shipmentCode = shipperCode;
+
+      this.statementNo = statementNo;
+      this.queryParams = {
+        shipper,
+        carrier,
+        applyTime
+      };
+      this.formData = {
+        taxpayerNumber,
+        registeredAddress,
+        registeredPhone,
+        bankNo,
+        account
+      };
+      this.tableData = [];
+      for (const item in object) {
+        const obj = {
+          // deliveryFeeDeserved: 0,
+          freightAmount: 0
+        };
+
+        object[item].forEach(ite => {
+          Object.keys(ite).forEach(name => {
+            // obj[name] = ite[name];
+          });
+          obj['freightAmount'] += ite['taxFee'] - 0; // 运费结算金额(取含税价字段)
+          obj['teamName'] = ite['teamName']; // 调度者Code
+          obj['teamCode'] = ite['teamCode']; // 调度者Code
+
+          obj['land'] = ite['unloadAddress']; // 渣土场（卸货地）
+          obj['landCode'] = ite['unloadAddressCode']; // 	渣土场（卸货地）Code
+          obj['load'] = ite['loadAddress']; // 	项目（装货地）
+          obj['loadCode'] = ite['loadAddressCode']; // 	项目（装货地）Code
+        });
+        obj['loadNum'] = object[item].length; // 装车数量
+        obj['actualTripsNum'] = object[item].length; // 实发趟数（次）
+        obj['settlementTripsNum'] = object[item].length; // 结算趟数
+        obj['waybillCodes'] = object[item].map(e => e.wayBillCode); // 	运单CodeIds
+        obj['a_dataList'] = object[item];
+        console.log(obj);
+
+        this.tableData.push(obj);
+      }
+
+      console.log(this.tableData);
+
+      // 表格
     },
 
     handleBtn(row) {
       // this.$refs.DetailDialog.reset();
       // this.currentId = row.wayBillCode || 'f1bd42167008437e84474f90e27850be';
+      console.log(row);
+      // this.detailList = row
+      this.a_dataList = row.a_dataList;
       this.openDetailDialog = true;
       // this.titleDetailDialog = '运输单信息';
       // this.formDisable = true;
@@ -352,11 +397,60 @@ export default {
 
     // 编辑票务信息
     handleBianjiPiaowu() {
-      this.shipmentCode = '1eb059d2255b43ee872925164ddfe0d1';
       this.openBillPage = true;
+    },
+
+    // 确认
+    handlerSubm() {
+      this.$confirm('确定立即申请对账, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.loading = true;
+        const accountStatementVo = this.accountStatementVo;
+        const statementBatchVoList = this.tableData.map(e => {
+          return {
+            ...e,
+            a_dataList: undefined
+          };
+        });
+        applyForReconciliation({ accountStatementVo, statementBatchVoList }).then(res => {
+          this.msgSuccess('申请对账成功');
+          this.loading = false;
+          this.close();
+          this.$emit('refresh');
+        });
+      }).catch(() => {});
+    },
+
+    getSummaries(param) {
+      const { columns, data } = param;
+      const sums = [];
+      columns.forEach((column, index) => {
+        if (index === 0) {
+          sums[index] = '合计';
+          return;
+        }
+        const values = data.map(item => Number(item[column.property]));
+        if (!values.every(value => isNaN(value))) {
+          sums[index] = values.reduce((prev, curr) => {
+            const value = Number(curr);
+            if (!isNaN(value)) {
+              return prev + curr;
+            } else {
+              return prev;
+            }
+          }, 0);
+          sums[index] = floor(sums[index]);
+          sums[index] += ' 元';
+        } else {
+          sums[index] = '';
+        }
+      });
+
+      return sums;
     }
-
-
 
   }
 };

@@ -9,3 +9,67 @@ export function adjustDregsList(query) {
     params: query
   });
 }
+
+
+// 批量修改司机实收金额
+export function batchUpdateMoney(data) {
+  return request({
+    url: '/transportation/batch/updateMoney',
+    method: 'post',
+    data: data
+  });
+}
+
+// 结算审核中立即核算 transportation:dispatch:immediateAccounting ???
+export function immediateAccounting(data) {
+  return request({
+    url: '/transportation/batch/immediateAccounting',
+    method: 'post',
+    data: data
+  });
+}
+
+// 批量对账中对账单基本信息
+export function accountStatement(query) {
+  return request({
+    url: '/transportation/batch/accountStatement',
+    method: 'get',
+    params: query
+  });
+}
+// 确定批量申请对账
+export function applyForReconciliation(data) {
+  return request({
+    url: '/transportation/batch/applyForReconciliation',
+    method: 'post',
+    data: data
+  });
+}
+
+// 确定批量索票
+export function passBatchClaim(data) {
+  return request({
+    url: '/transportation/batch/passBatchClaim',
+    method: 'post',
+    data: data
+  });
+}
+
+// 驳回批量索票
+export function refuseBatchClaim(data) {
+  return request({
+    url: '/transportation/batch/refuseBatchClaim',
+    method: 'post',
+    data: data
+  });
+}
+
+// 计算费用
+export function calculateFee(data) {
+  return request({
+    url: '/transportation/batch/calculateFee',
+    method: 'post',
+    data: data
+  });
+}
+

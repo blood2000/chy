@@ -40,7 +40,8 @@
 </template>
 
 <script>
-import { openInvoice } from '@/api/finance/list';
+import { passBilling } from '@/api/finance/askfor';
+
 import UploadImage from '@/components/UploadImage/moreImg';
 
 export default {
@@ -107,7 +108,7 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          openInvoice(this.form).then(response => {
+          passBilling({ batchCodes: [this.form.batchCodes] }).then(response => {
             this.msgSuccess('开票成功');
             this.close();
             this.$emit('refresh');
@@ -132,7 +133,8 @@ export default {
         invoiceApplyCode: null,
         receiveAddress: null,
         receiveName: null,
-        receivePhone: null
+        receivePhone: null,
+        batchCodes: null
       };
       this.resetForm('form');
     },
@@ -144,7 +146,9 @@ export default {
         invoiceApplyCode: data.code,
         receiveAddress: data.invoiceReceiverAddress,
         receiveName: data.receiver,
-        receivePhone: data.receiverPhone
+        receivePhone: data.receiverPhone,
+        batchCodes: data.batchNo
+
       };
       // this.form.invoiceApplyCode = data.code;
       // this.form.askForNo = data.askForNo;

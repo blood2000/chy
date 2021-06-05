@@ -119,8 +119,8 @@
       <el-table-column width="120" label="服务费(元)" align="center" prop="serviceFee" fixed="right" />
       <el-table-column width="162" label="司机实收金额(元)" align="center" prop="deliveryCashFee" fixed="right">
         <template slot-scope="scope">
-          <span v-if="scope.row.isDregs == 0">{{ scope.row.deliveryCashFee }}</span>
-          <el-input-number v-else v-model="scope.row.deliveryCashFee" :controls="false" :precision="2" placeholder="请输入司机实收金额" style="width:100%;" size="mini" @blur="getDeliveryCashFee(scope.row)" />
+          <span>{{ scope.row.deliveryCashFee }}</span>
+          <!-- <el-input-number v-else v-model="scope.row.deliveryCashFee" :controls="false" :precision="2" placeholder="请输入司机实收金额" style="width:100%;" size="mini" @blur="getDeliveryCashFee(scope.row)" /> -->
         </template>
       </el-table-column>
 
@@ -136,7 +136,7 @@
 </template>
 
 <script>
-import { adjustDetail, calculateFee, deliveryCashFee, batchCheck } from '@/api/settlement/adjust';
+import { adjustDetail, calculateFee, batchCheck } from '@/api/settlement/adjust';
 
 export default {
   name: 'AdjustDialog',
@@ -335,33 +335,33 @@ export default {
 
         return JSON.stringify(arr);
       }
-    },
+    }
 
     // 获取数据
-    async getDeliveryCashFee(row) {
-      const { data } = await deliveryCashFee({
-        deliveryCashFee: row.deliveryCashFee, //	司机实收现金		false
-        m0DictValue: row.m0DictValue,
-        waybillCode: row.waybillCode,
-        // deliveryFeeDeserved: row.deliveryFeeDeserved, // 司机应收运费
-        shipperCode: row.shipperCode //	货主Code		false
-      });
+    // async getDeliveryCashFee(row) {
+    //   // const { data } = await deliveryCashFee({
+    //   //   deliveryCashFee: row.deliveryCashFee, //	司机实收现金		false
+    //   //   m0DictValue: row.m0DictValue,
+    //   //   waybillCode: row.waybillCode,
+    //   //   // deliveryFeeDeserved: row.deliveryFeeDeserved, // 司机应收运费
+    //   //   shipperCode: row.shipperCode //	货主Code		false
+    //   // });
 
-      const {
-        driverFee, //	抹零后司机实收金额	number
-        m0Fee, //	抹零金额	number
-        serviceFee, //	服务费	number
-        shipperRealPay, //	货主实付金额	number
-        taxPayment //	纳税金额
-      } = data;
+    //   // const {
+    //   //   driverFee, //	抹零后司机实收金额	number
+    //   //   m0Fee, //	抹零金额	number
+    //   //   serviceFee, //	服务费	number
+    //   //   shipperRealPay, //	货主实付金额	number
+    //   //   taxPayment //	纳税金额
+    //   // } = data;
 
 
-      row.serviceFee = serviceFee;
-      row.shipperRealPay = shipperRealPay;
-      row.m0Fee = m0Fee;
-      row.deliveryCashFee = driverFee;
-      row.taxPayment = taxPayment;
-    }
+    //   // row.serviceFee = serviceFee;
+    //   // row.shipperRealPay = shipperRealPay;
+    //   // row.m0Fee = m0Fee;
+    //   // row.deliveryCashFee = driverFee;
+    //   // row.taxPayment = taxPayment;
+    // }
 
   }
 };

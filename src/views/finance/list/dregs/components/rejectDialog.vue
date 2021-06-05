@@ -14,8 +14,8 @@
 </template>
 
 <script>
-import { rejectUnload } from '@/api/settlement/adjust';
-// import UploadImage from '@/components/UploadImage/index';
+
+import { refuseBilling } from '@/api/finance/list';
 
 export default {
   name: 'RejectDialog',
@@ -60,7 +60,12 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          rejectUnload(this.form).then(response => {
+          const que = {
+            batchCodes: [this.form.waybillCode], //	批次列表不能为空		false
+            createCode: this.form.createCode,
+            remark: this.form.rebutRemark
+          };
+          refuseBilling(que).then(response => {
             this.msgSuccess('驳回运单成功');
             this.close();
             this.$emit('refresh');
@@ -81,14 +86,15 @@ export default {
     reset() {
       this.form = {
         waybillCode: null,
-        rebutRemark: null
+        rebutRemark: null,
+        createCode: null
       };
       this.resetForm('form');
     },
     // 表单赋值
-    setForm(data) {
-      this.form.waybillCode = data.wayBillCode;
-      console.log(this.form);
+    setForm(data, createCode) {
+      this.form.waybillCode = data.batchNo;
+      this.form.createCode = createCode;
     }
   }
 };

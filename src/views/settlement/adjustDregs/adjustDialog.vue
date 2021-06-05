@@ -4,7 +4,6 @@
     <el-row v-if="isPiliang" :gutter="10" class="mb8">
       <el-col :span="10">
         <span class="mr3">司机实收金额</span>
-        <!-- v-model="adjustlist.deliveryCashFee" -->
         <el-input-number
           v-model="deliveryCashFee"
           placeholder="请输入司机实收金额"
@@ -17,8 +16,6 @@
           class="mr3"
           @keyup.enter.native="handleChange"
         />
-        <!-- :max="999999" -->
-
 
         <el-button type="primary" @click="handleChange">批量修改</el-button>
       </el-col>
@@ -27,13 +24,12 @@
 
       <el-table-column width="160" label="运输单号" show-overflow-tooltip align="center" prop="waybillNo" />
 
-      <el-table-column width="120" label="调度组名称" align="center" prop="driverName" />
+      <el-table-column width="120" label="调度者名称" align="center" prop="teamName" />
 
       <el-table-column width="120" label="司机姓名" align="center" prop="driverName" />
       <el-table-column width="120" label="司机电话" align="center" prop="driverPhone" />
       <el-table-column width="120" label="车牌号" align="center" prop="licenseNumber" />
 
-      <!-- stowageStatus "配载方式 0->吨，1->方 2->车数配载" -->
       <el-table-column width="160" label="装货数量" align="left" prop="loadWeight">
         <template slot-scope="scope">
           <span>{{ scope.row.loadWeight }}</span>
@@ -81,79 +77,13 @@
       <el-table-column width="160" label="司机应收运费" align="center" prop="deliveryFeeDeserved" />
       <el-table-column width="160" label="司机实收运费" align="center" prop="deliveryFeePractical" />
 
-      <!-- 补贴项目 -->
-      <el-table-column v-if="false" align="center" width="400" label="补贴项目">
-        <template slot="header">
-          <span>补贴项目 <el-button type="text" @click="isEdit2 = !isEdit2"><i class="el-icon-edit" /></el-button></span>
-
-        </template>
-        <template slot-scope="scope">
-          <el-form :inline="true" label-position="right" size="mini" class="ly-flex" label-width="80px">
-            <div v-for="(freight, index) in scope.row.subsidiesFreightList" :key="index">
-              <!-- 渣土 其他不能修改 -->
-              <el-form-item :label="freight.cnName">
-                <span v-if="scope.row.isDregs === 1">{{ freight.ruleValue }}</span>
-                <div v-else>
-                  <span v-show="!isEdit2">{{ freight.ruleValue }}</span>
-                  <el-input-number v-show="isEdit2" v-model="freight.ruleValue" :controls="false" :precision="2" :min="0" :placeholder="`${freight.cnName}`" style="width:90px;" @blur="handlerItem(scope.row,freight.ruleValue,'add',freight.enName)" />
-                </div>
-              </el-form-item>
-            </div>
-
-            <el-form-item label="其他补贴">
-              <span v-if="scope.row.isDregs === 1">{{ scope.row.otherSubsidies }}</span>
-              <div v-else>
-                <span v-show="!isEdit2">{{ scope.row.otherSubsidies }}</span>
-                <el-input-number v-show="isEdit2" v-model="scope.row.otherSubsidies" :controls="false" :precision="2" :min="0" :placeholder="`其他扣款`" style="width:90px;" @blur="handlerChange(scope.row,scope.row.otherSubsidies, 'add')" />
-              </div>
-            </el-form-item>
-          </el-form>
-        </template>
-      </el-table-column>
-      <!-- 扣费项目 -->
-      <el-table-column v-if="false" align="center" width="400">
-        <template slot="header">
-          <span>扣费项目 <el-button type="text" @click="isEdit = !isEdit"><i class="el-icon-edit" /></el-button></span>
-
-        </template>
-
-        <template slot-scope="scope">
-          <el-form :inline="true" label-position="right" size="mini" class="ly-flex" label-width="80px">
-            <div v-for="(freight, index) in scope.row.deductionFreightList" :key="index">
-              <el-form-item :label="freight.cnName">
-
-                <span v-if="scope.row.isDregs === 1">{{ freight.ruleValue }}</span>
-
-                <div v-else>
-                  <span v-show="!isEdit">{{ freight.ruleValue }}</span>
-                  <el-input-number v-show="isEdit" v-model="freight.ruleValue" :controls="false" :precision="2" :min="0" :placeholder="`${freight.cnName}`" style="width:90px;" @blur="handlerItem(scope.row,freight.ruleValue,'',freight.enName)" />
-                </div>
-              </el-form-item>
-            </div>
-
-            <el-form-item label="其他扣款">
-              <span v-if="scope.row.isDregs === 1">{{ scope.row.otherCharges }}</span>
-              <div v-else>
-                <span v-show="!isEdit">{{ scope.row.otherCharges }}</span>
-                <el-input-number v-show="isEdit" v-model="scope.row.otherCharges" :controls="false" :precision="2" :min="0" :placeholder="`其他扣款`" style="width:90px;" @blur="handlerChange(scope.row,scope.row.otherCharges, '')" />
-              </div>
-            </el-form-item>
-          </el-form>
-        </template>
-      </el-table-column>
-
-
 
       <el-table-column width="120" label="纳税金额" align="center" prop="taxPayment" fixed="right" />
-      <!-- <el-table-column width="120" label="服务费" align="center" prop="serviceFee" fixed="right" /> -->
       <el-table-column width="162" label="司机实收金额" align="center" prop="deliveryCashFee" fixed="right">
         <template slot-scope="scope">
-          <!-- <span>{{ scope.row.deliveryCashFee }}</span> -->
-          <el-input-number v-model="scope.row.deliveryCashFee" :controls="false" :precision="2" placeholder="请输入司机实收金额" style="width:100%;" size="mini" @blur="getDeliveryCashFee(scope.row)" />
+          <el-input-number v-model="scope.row.deliveryCashFee" :controls="false" :precision="2" placeholder="请输入司机实收金额" style="width:100%;" size="mini" @blur="getDeliveryCashFee([scope.row])" />
         </template>
       </el-table-column>
-
-      <!-- <el-table-column width="120" label="货主实付金额" align="center" prop="shipperRealPay" fixed="right" /> -->
 
     </el-table>
 
@@ -165,7 +95,11 @@
 </template>
 
 <script>
-import { adjustDetail, calculateFee, deliveryCashFee, batchCheck } from '@/api/settlement/adjust';
+import { adjustDetail } from '@/api/settlement/adjust'; // 获取列表
+import { immediateAccounting, calculateFee } from '@/api/settlement/adjustDregs'; // 立即核算
+
+import { floor } from '@/utils/ddc';
+
 
 export default {
   name: 'AdjustDialog',
@@ -221,74 +155,71 @@ export default {
     handlerInput(row, value, key) {},
 
     // 获取数据
-    async getDeliveryCashFee(row) {
-      const { data } = await deliveryCashFee({
-        deliveryCashFee: row.deliveryCashFee, //	司机实收现金		false
-        m0DictValue: row.m0DictValue,
-        waybillCode: row.waybillCode,
-        // deliveryFeeDeserved: row.deliveryFeeDeserved, // 司机应收运费
-        shipperCode: row.shipperCode //	货主Code		false
+    async getDeliveryCashFee(arr) {
+      // console.log(arr);
+      const que = {
+        deliveryCashFee: arr[0].deliveryCashFee, //	金额		false
+        waybillCodeList: arr.map(e => e.waybillCode)//	运单ids
+      };
+      const { data } = await calculateFee(que);
+
+      arr.forEach(row => {
+        data.forEach(da => {
+          if (row.waybillCode === da.waybillCode) {
+            const {
+              // deliveryCashFee, //	司机实收现金	number
+              // serviceFee, //	服务费	number
+              serviceTaxFee, //	服务费税费	number
+              // shipperRealPay, //	货主实付金额	number
+              taxPayment //	纳税金额	number
+              // waybillCode //	运单CODE
+            } = da;
+
+            // row.serviceFee = serviceFee;
+            // row.shipperRealPay = shipperRealPay;
+            row.serviceTaxFee = floor(serviceTaxFee);
+            // row.deliveryCashFee = driverFee;
+            row.taxPayment = floor(taxPayment);
+          }
+        });
       });
-
-      const {
-        driverFee, //	抹零后司机实收金额	number
-        m0Fee, //	抹零金额	number
-        serviceFee, //	服务费	number
-        shipperRealPay, //	货主实付金额	number
-        taxPayment //	纳税金额
-      } = data;
-
-
-      row.serviceFee = serviceFee;
-      row.shipperRealPay = shipperRealPay;
-      row.m0Fee = m0Fee;
-      row.deliveryCashFee = driverFee;
-      row.taxPayment = taxPayment;
     },
 
     // 批量修改
     handleChange() {
       this.adjustlist.forEach(e => {
         e.deliveryCashFee = this.deliveryCashFee;
-        this.getDeliveryCashFee(e);
       });
+      this.getDeliveryCashFee(this.adjustlist);
     },
     /** 提交按钮 */
     async submitForm() {
-      const boList = this.adjustlist.map(e => {
+      const immediateWaybillBoList = this.adjustlist.map(e => {
         return {
-          'deduction': e.deduction,
-          'deliveryCashFee': e.deliveryCashFee,
-          'deliveryFeeDeserved': e.deliveryFeeDeserved,
-          'deliveryFeePractical': e.deliveryFeePractical,
-          'driverAddFee': e.driverAddFee,
-          'driverReductionFee': e.driverReductionFee,
-          'freightList': e.deductionFreightList.concat(e.subsidiesFreightList),
-          'freightPrice': e.freightPrice,
-          'goodsPrice': e.goodsPrice,
-          'loadWeight': e.loadWeight,
-          'lossDeductionFee': e.lossDeductionFee,
-          'm0Amount': e.m0Amount,
-          'm0Fee': e.m0Fee,
-          'otherCharges': e.otherCharges,
-          'otherSubsidies': e.otherSubsidies,
+          waybillCode: e.waybillCode,
+          deliveryCashFee: e.deliveryCashFee,
+          teamUserCode: e.teamUserCode,
           'serviceFee': e.serviceFee,
-          'shipperCopeFee': e.shipperCopeFee,
+          'serviceTaxFee': e.serviceTaxFee,
           'shipperRealPay': e.shipperRealPay,
-          'unloadWeight': e.unloadWeight,
-          'waybillCode': e.waybillCode
+          'taxPayment': e.taxPayment
         };
       });
+      // const teamUserCode = [...new Set(this.adjustlist.map(e => e.teamUserCode))];
+      const shipmentCodeArr = [...new Set(this.adjustlist.map(e => e.shipperCode))];
 
+      if (shipmentCodeArr.length > 1) {
+        this.msgError('存在多个货主, 请确保要同一个货主才行');
+        return;
+      }
 
       this.$confirm('确定要立即核算?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
-        return batchCheck({ boList });
+        return immediateAccounting({ immediateWaybillBoList, shipmentCode: shipmentCodeArr[0] });
       }).then(() => {
-        // this.getList();
         this.msgSuccess('核算成功');
         this.visible = false;
         this.$emit('refresh');
@@ -299,8 +230,6 @@ export default {
       this.loading = true;
       adjustDetail(this.queryParams).then(response => {
         // isDregs // 是否渣土   1 是 0 否 (司机实收 只有渣土1能修改)
-
-        // this.oldList = JSON.parse(JSON.stringify(response.data));
         this.adjustlist = JSON.parse(JSON.stringify(response.data));
 
         this.total = response.total;

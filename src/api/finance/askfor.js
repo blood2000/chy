@@ -38,4 +38,19 @@ export function childList(query) {
   });
 }
 
-
+// 索取发票
+export function passBilling(data) {
+  return request({
+    url: '/transportation/batch/passBilling',
+    method: 'post',
+    data: data
+  });
+}
+// 索取发票
+export function passPayment(data) {
+  return request({
+    url: '/transportation/batch/passPayment',
+    method: 'post',
+    data: data
+  });
+}

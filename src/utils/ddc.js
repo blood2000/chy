@@ -253,7 +253,7 @@ export function tableHeaderConfig(list, url, editColumn, myColumen) {
         list.sort(function(a, b) {
           if (a.sortNum < b.sortNum) {
             return -1;
-          } else if (a.sortNum == b.sortNum) {
+          } else if (a.sortNum === b.sortNum) {
             return 0;
           } else {
             return 1;
@@ -307,4 +307,15 @@ export function objReduce(arr, id) {
     obj[next[id]] ? '' : obj[next[id]] = true && cur.push(next);
     return cur;
   }, []); // 设置cur默认类型为数组，并且初始值为空的数组
+}
+
+/**
+ * 四舍五入
+ * @param {*} number 数字
+ * @param {*} precision 保留位置(1= 小数一位 2=小数二位, -1= 位数, -2=百位数)
+ */
+export function floor(number, precision = 2) {
+  // return Math.floor(number * 100) / 100; // (截取)
+  // return (number - 0).toFixed(2); //  bug比较多
+  return Math.round((number - 0) * Math.pow(10, precision)) / Math.pow(10, precision);
 }

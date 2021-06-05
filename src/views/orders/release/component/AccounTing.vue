@@ -40,7 +40,7 @@
               <div v-if="!showbudget" class="ml0 mr10 t_color_c t_m_pac">
                 司机实收单价:
                 <span class="m_pac">{{ _floor(totalTransportationCost) || 0 }}</span>
-                元
+                元 / {{ mygoodsUnitName }}
               </div>
             </div>
           </div>

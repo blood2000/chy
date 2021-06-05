@@ -114,6 +114,7 @@ export default {
   },
   created() {
     this.getBilling();
+    console.log(89);
   },
   methods: {
     getBilling() {

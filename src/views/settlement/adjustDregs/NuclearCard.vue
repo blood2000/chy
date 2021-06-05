@@ -1,6 +1,6 @@
 <template>
-  <el-dialog :title="`数据IC卡: ${ titleData.ttttt1111 || 'IC20511547'} (承运司机: ${titleData.ttttt222 ||'张张张'})`" :visible="visible" width="80%" append-to-body @close="$emit('update:open', false)">
-    <div class="mb20">
+  <el-dialog :title="`发卡人: ${ userInfo.issuing_name || ''} (承运司机: ${userInfo.user_name ||''})`" :visible="visible" width="80%" append-to-body @close="$emit('update:open', false)">
+    <div class="mb20" style="padding: 20px;">
       <!-- <el-button type="primary" @click="handler('connect')">连接服务</el-button> -->
       <el-button type="primary" @click="handler('cancellation')">注销卡片(清空使用者信息)</el-button>
       <el-button type="primary" @click="handler('issuingCard')">发卡(绑定卡用户)</el-button>
@@ -13,58 +13,79 @@
 
     </div>
     <!-- 表格 -->
+
     <RefactorTable
       :loading="loading"
       :data="list"
       :table-columns-config="[
         {
-          prop: 'id',
+          prop: '驾驶员姓名',
           isShow: true,
           width: 120,
           tooltip: true,
-          label: '承运车辆'
+          label: '驾驶员姓名'
         },
         {
-          prop: 'id1',
+          prop: '联系手机号',
           isShow: true,
+          width: 120,
+          tooltip: true,
+          label: '联系手机号'
+        },
+        {
+          prop: '车牌号',
+          isShow: true,
+          width: 120,
+          tooltip: true,
+          label: '车牌号'
+        },
+        {
+          prop: '项目名称',
+          isShow: true,
+          width: 120,
           label: '项目(装货地)'
         },
         {
-          prop: 'id2',
+          prop: '泥尾名称',
           isShow: true,
           label: '卸货地'
         },
         {
-          prop: 'id3',
+          prop: '入场时间',
           isShow: true,
-          label: '装货时间'
+          label: '入场时间'
         },
         {
-          prop: 'id4',
+          prop: '出场时间',
           isShow: true,
-          label: '操作员'
+          label: '出场时间'
         },
         {
-          prop: 'id5',
+          prop: '货源数值编号',
+          isShow: true,
+          label: '货源编号'
+        },
+        {
+          prop: '运单数值编号',
           isShow: true,
           label: '运单编号'
         },
         {
           prop: 'id6',
           isShow: true,
+          width: 90,
           label: '核对状态'
         },
         {
-          prop: 'id7',
-          width: 100,
+          prop: 'id4',
           isShow: true,
-          label: '核对时间'
+          label: '操作员'
         }
       ]"
     >
       <template #id6="{row}">
         <span v-if="row.id6 === 0">√</span>
-        <el-button v-else type="danger" plain @click="absenceOpen(row)">不存在</el-button>
+        <el-button v-else size="mini" type="danger" plain @click="absenceOpen(row)">不存在</el-button>
       </template>
     </RefactorTable>
 
@@ -77,7 +98,29 @@
 
 <script>
 import CardReader from '@/libs/ICCard/CardReader';
+
+
 const { fn: { resultData }, action } = CardReader;
+
+const USERINFO = [
+  'user_code',
+  'user_name',
+  'user_telno',
+  'issuing_code',
+  'issuing_name'];
+
+const DATAINFO = [
+  '货源数值编号',
+  '运单数值编号',
+  '项目名称',
+  '车牌号',
+  '驾驶员姓名',
+  '联系手机号',
+  '入场时间',
+  '出场时间',
+  '泥尾名称'
+];
+
 export default {
   name: 'NuclearCard',
   components: {
@@ -88,9 +131,9 @@ export default {
   },
   data() {
     return {
-      titleData: {},
       loading: false,
 
+      userInfo: {},
       list: [{
         id: 1,
         id6: 1,
@@ -121,77 +164,30 @@ export default {
 
   methods: {
     init() {
-      console.log('123');
+      // console.log('没其他的意思');
     },
 
     _minit() {
-      CardReader.fn.connect(() => {
+      CardReader.fn.connect(async() => {
+        this.loading = true;
+        // 读取用户 和 卡数据
+        const resUserInfo = (await action.readUserInfo()).data;
 
+        console.log('失败!!');
+
+
+        const readDataInfo = (await action.readData()).data;
+        // 用户数据处理
+        this.userInfo = resultData(resUserInfo, USERINFO).data;
+        this.list = readDataInfo.map(e => resultData(e, DATAINFO).data);
+        // 存储一份 key 当前的 user_code valu {用户信息: 值}
+        this.setLocalStorage(this.userInfo.user_code, { [resUserInfo]: readDataInfo });
+
+        this.loading = false;
+      }, () => {
+        this.loading = false;
+        this.$emit('update:open', false);
       });
-      console.log(789);
-      // this.loading = true;
-      // const _this = this;
-      // CardReader.fn.connect(() => {
-      //   _this.$alert('请把确认卡片放在读卡器上了吗?', '读卡提示', {
-      //     confirmButtonText: '确定',
-      //     callback: () => {
-      //       console.log('提示OK');
-      //       // // 读取用户信息
-      //       // const { data, code } = await action.readUserInfo();
-      //       // if (code !== 200) return;
-      //       // console.log(
-      //       //   resultData(data, [
-      //       //     'user_code',
-      //       //     'user_name',
-      //       //     'user_telno',
-      //       //     'issuing_code',
-      //       //     'issuing_name']), '用户数据'
-      //       // );
-
-
-      //       // // 读取数据
-      //       // const { data: data2, code: code2 } = await action.readData();
-
-      //       // if (code2 !== 200) {
-      //       //   console.log(code2);
-      //       // } else {
-      //       //   const resData = data2.map(e => {
-      //       //     return resultData(e, [
-      //       //       'user_code',
-      //       //       'user_name',
-      //       //       'user_telno',
-      //       //       'issuing_code',
-      //       //       'issuing_name'
-      //       //     ]).data;
-      //       //   });
-      //       //   console.log(resData);
-      //       // }
-      //       // //   .then(res => {
-      //       // //   const resData = res.data.map(e => {
-      //       // //     return resultData(e, [
-      //       // //       'user_code',
-      //       // //       'user_name',
-      //       // //       'user_telno',
-      //       // //       'issuing_code',
-      //       // //       'issuing_name'
-      //       // //     ]).data;
-      //       // //   });
-      //       // //   console.log(resData);
-      //       // // });
-      //     }
-      //   });
-
-
-      //   _this.loading = false;
-      // }, () => {
-      //   _this.$alert('服务链接已断开, 请检查服务是否开启', '服务连接提示', {
-      //     confirmButtonText: '确定',
-      //     callback: action => {
-      //       _this.visible = false;
-      //       _this.loading = false;
-      //     }
-      //   });
-      // });
     },
 
     absenceOpen(row) {
@@ -225,7 +221,6 @@ export default {
     },
 
     handler(key) {
-      const _this = this;
       switch (key) {
         // case 'connect':
         //   // 连接服务
@@ -237,7 +232,7 @@ export default {
           break;
         case 'getCard':
           // 获得卡片
-          action.getCard().then(res => {});
+          // action.getCard().then(res => {});
           break;
         case 'issuingCard':
           // 发卡
@@ -252,27 +247,31 @@ export default {
         case 'readUserinfo':
           // 读取用户信息
           action.readUserInfo().then(res => {
-            console.log(res, '用户信息----');
-            console.log(
-              resultData(res.data, [
-                'user_code',
-                'user_name',
-                'user_telno',
-                'issuing_code',
-                'issuing_name'])
-            );
+            this.userInfo = resultData(res.data, [
+              'user_code',
+              'user_name',
+              'user_telno',
+              'issuing_code',
+              'issuing_name']).data;
           });
+
           break;
         case 'readData':
           // 读取数据e
           action.readData().then(res => {
             const resData = res.data.map(e => {
+              // 29804;2614710;广东深圳福龙学校项目;鄂ALF106;张三丰;13812345678;1621648441990;1621648441990;广东深圳妈湾石头';
+
               return resultData(e, [
-                'user_code',
-                'user_name',
-                'user_telno',
-                'issuing_code',
-                'issuing_name'
+                '货源数值编号',
+                '运单数值编号',
+                '项目名称',
+                '车牌号',
+                '驾驶员姓名',
+                '联系手机号',
+                '入场时间（时间戳）',
+                '出场时间（时间戳）',
+                '泥尾名称'
               ]).data;
             });
             console.log(resData);

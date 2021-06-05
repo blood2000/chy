@@ -305,7 +305,7 @@
               icon="el-icon-wallet"
               size="mini"
               :disabled="multiple"
-              @click="handleApply"
+              @click="createdDatch"
             >批量申请对账</el-button>
           </el-col>
           <el-col v-if="activeName == '7' && !isAdmin" :span="1.5">
@@ -318,7 +318,7 @@
             >批量评价</el-button>
           </el-col>
           <el-col :span="1.5" class="fr">
-            <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" refresh />
+            <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
           </el-col>
           <right-toolbar
             :show-search.sync="showSearch"
@@ -430,19 +430,14 @@
           :page.sync="queryParams.pageNum"
           :limit.sync="queryParams.pageSize"
           @pagination="getList"
-          @handleTableBtn="(row, type)=>{ handleTableBtn(row, type) }"
         />
       </div>
 
       <!-- 已打款 -->
       <div v-if="activeName === '7'">
-        <!--
-            v-modler = queryParams:{ total,pageNum,pageSize }
-            @getList = '' // 重新请求
-            :list="null" // 数据
-        -->
         <AlreadyTable
           v-model="alreadyPaid_queryParams"
+          :list="alreadyTableList"
           :loading="loading"
           :config="{api: adjustDregsApi}"
           :show-search.sync="showSearch"
@@ -478,7 +473,7 @@
 
 <script>
 import { adjustList, adjustListApi } from '@/api/settlement/adjust';
-import { adjustDregsList, adjustListApi as adjustDregsApi } from '@/api/settlement/adjustDregs';
+import { adjustDregsList, adjustListApi as adjustDregsApi, accountStatement } from '@/api/settlement/adjustDregs';
 import { getUserInfo } from '@/utils/auth';
 // 驳回弹窗
 import RejectDialog from '../components/rejectDialog';
@@ -509,8 +504,8 @@ export default {
   // mixins: [setTheight],
   data() {
     return {
-      tableColumnsConfig: [],
-      api: adjustListApi + '--asjos',
+      tableColumnsConfig_4: [],
+      tableColumnsConfig_5: [],
 
       activeName: '4',
       createTime: '',
@@ -530,6 +525,7 @@ export default {
       'total': 0,
       // 表格数据
       'adjustlist': [],
+
       // 弹窗表格
       commentlist: [],
       commentlist1: [],
@@ -553,9 +549,10 @@ export default {
         'isChild': undefined,
         'status': '4',
         teamName: undefined,
-        waybill: false,
+        waybill: undefined,
         criticism: undefined
       },
+
       receiveTime: [],
       // 弹框 内容
       visible: false,
@@ -580,6 +577,11 @@ export default {
         'dictPid': '0',
         'dictType': 'goodsType'
       },
+      // 字典
+      transportation_scenario: [
+        { 'dictLabel': '渣土短倒', 'dictValue': '1200' },
+        { 'dictLabel': '大宗商品货物运输', 'dictValue': '1100' }
+      ],
       // 纸质回单字典
       isReturnOptions: [
         { 'dictLabel': '未回单', 'dictValue': '0' },
@@ -600,9 +602,8 @@ export default {
 
       // 渣土相关的
 
-      areadyPaid_List: [], // 已打款的数据(单独)
-
-
+      // tab = 7 的表格数据
+      alreadyTableList: [],
       alreadyPaid_queryParams: {
         batchNo: undefined, //	批次号	query	false
         companyName: undefined, //	发货企业	query	false
@@ -616,12 +617,20 @@ export default {
         'pageSize': 10,
         'total': 0
       },
-      adjustDregsApi: adjustDregsApi + '--adjustDregsApi'
+      adjustDregsApi: adjustDregsApi + '--74'
     };
   },
   computed: {
-    lcokey() {
-      return this.$route.name + this.activeName;
+    api() {
+      return adjustListApi + '--adjustDregs' + this.activeName;
+    },
+    tableColumnsConfig: {
+      get() {
+        return this['tableColumnsConfig_' + this.activeName];
+      },
+      set(data) {
+        this['tableColumnsConfig_' + this.activeName] = data;
+      }
     }
 
   },
@@ -644,41 +653,18 @@ export default {
     this.user = user;
     this.shipment = shipment;
     this.isShipment = isShipment;
-    this.tableHeaderConfig(this.tableColumnsConfig, this.api, {
-      prop: 'edit',
-      isShow: true,
-      tooltip: false,
-      label: '操作',
-      width: 240,
-      fixed: 'right'
-    }, [{
-      prop: 'icStatus',
-      isShow: true,
-      tooltip: false,
-      sortNum: 8,
-      label: 'IC卡核对状态',
-      width: 120
-    },
-    { // 需要顶替掉的项
-      prop: 'huojhzouihfowe',
-      isShow: true,
-      tooltip: false,
-      sortNum: 28,
-      label: '货主应付金额',
-      width: 120
-    },
-    { // 需要顶替掉的项
-      prop: 'isReturn',
-      isShow: false,
-      tooltip: false,
-      sortNum: 0,
-      label: '纸质回单状态',
-      width: 120
-    }
-    ]);
+
+    this.handleClick('4');
+
     !this.$route.query.adjust && this.getList();
     this.listByDict(this.commodityCategory).then(response => {
       this.commodityCategoryCodeOptions = response.data;
+    });
+
+    console.log(41151);
+    this.getDicts('transportation_scenario').then(res => {
+      // console.log(res);
+      this.transportation_scenario = res.data;
     });
   },
   'methods': {
@@ -691,55 +677,85 @@ export default {
         this.queryParams.orderEndTime = null;
       }
     },
-    /** handleClick */
+    /** tab切换 */
     handleClick(tab) {
       if (tab === '7') {
         this.alreadyPaid_queryParams.pageNum = 1;
         this.getadjustDregsList();
       } else {
+        !this.tableColumnsConfig.length && this.tableHeaderConfig(
+          this.tableColumnsConfig,
+          this.api,
+          { prop: 'edit',
+            isShow: true,
+            tooltip: false,
+            label: '操作',
+            width: 240,
+            fixed: 'right' }, [{
+            prop: 'icStatus',
+            isShow: true,
+            tooltip: false,
+            sortNum: 8,
+            label: 'IC卡核对状态',
+            width: 120
+          }, { // 需要顶替掉的项
+            prop: 'huojhzouihfowe',
+            isShow: true,
+            tooltip: false,
+            sortNum: 28,
+            label: '货主应付金额',
+            width: 120
+          }, { // 需要顶替掉的项
+            prop: 'isReturn',
+            isShow: false,
+            tooltip: false,
+            sortNum: 0,
+            label: '纸质回单状态',
+            width: 120
+          }]);
         this.queryParams.status = tab;
         this.queryParams.pageNum = 1;
         this.getList();
       }
     },
-    // 多选框选中数据
+
+    /** 多选框选中数据 */
     handleSelectionChange(selection) {
-      if (this.activeName === '5') {
-        console.log(selection);
-        // 柔和成一个批次
-        this.createdDatch(selection);
-      } else {
-        this.commentlist = selection;
+      if (this.activeName !== '5') {
         this.ids = selection.map((item) => item.wayBillCode);
         this.bodyParams.waybillCodeList = this.ids;
-        this.multiple = !selection.length;
       }
+      this.commentlist = selection;
+      this.multiple = !selection.length;
     },
+
     /** 查询【请填写功能名称】列表 */
     getList() {
       this.loading = true;
-      adjustList(this.queryParams).then(response => {
+      const que = {
+        ...this.queryParams,
+        scenario: '1200',
+        waybillType: this.activeName === '5' ? 1 : undefined
+      };
+      adjustList(que).then(response => {
         this.adjustlist = response.rows;
         this.total = response.total;
         this.loading = false;
       });
     },
-    // 获取渣土已审核列表
+
+    /** 获取渣土已审核列表 */
     getadjustDregsList() {
-      // 触发请求
       this.loading = true;
-      console.log(this.alreadyPaid_queryParams, 'qignqiu');
       adjustDregsList(this.alreadyPaid_queryParams).then(res => {
-        console.log(res);
+        this.alreadyTableList = res.data.list;
         this.alreadyPaid_queryParams.total = res.data.total;
         this.loading = false;
       });
+    },
 
-      console.log(this.alreadyPaid_queryParams);
-    },
-    handleSelectionChange1(selection) {
-      console.log(selection);
-    },
+    handleSelectionChange1(selection) {},
+
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
@@ -753,32 +769,17 @@ export default {
       this.queryParams.orderEndTime = null;
       this.handleQuery();
     },
-    // 批量核算
+
+    /** 批量核算 */
     handleAdjust() {
       this.adjustdialog = true;
       this.title = '结算审核';
-      this.$refs.AdjustDialog.setForm(this.ids);
+      this.$refs.AdjustDialog.setForm(this.ids); // this.ids 数组
     },
-    // 批量申请打款
-    handleApply() {
-      // this.$confirm('是否确认批量申请打款?', '提示', {
-      //   confirmButtonText: '确定',
-      //   cancelButtonText: '取消',
-      //   type: 'warning'
-      // }).then(() => {
-      //   batchApply(this.bodyParams).then(response => {
-      //     this.$message({ type: 'success', message: '申请打款成功！' });
-      //     this.getList();
-      //   });
-      // }).catch(() => {
-      //   this.$message({
-      //     type: 'info',
-      //     message: '已取消'
-      //   });
-      // });
-      console.log(this.commentlist);
-      this._handlerwaybillCode(this.commentlist);
-    },
+    /** 批量申请打款 */
+    // handleApply() {
+    //   this._handlerwaybillCode(this.commentlist);
+    // },
     // 批量评价
     handleAssess() {
       this.commentdialog = true;
@@ -786,50 +787,34 @@ export default {
       this.$refs.CommentDialog.setForm(this.commentlist);
     },
 
-    handleTableBtn(row, index) {
-      // console.log(row, index);
 
+    /** 批量核算 */
+    handleTableBtn(row, index) {
       this.visible = true;
       switch (index) {
-        case 1:
+        case 1: // 驳回提示
           this.$alert(row.applyMoneyBackRemark, '驳回提示', {
             confirmButtonText: '确定',
             type: 'warning'
           }).then(() => {
           });
           break;
-        case 2:
+        case 2: // 驳回 - 弹框
           this.$refs.RejectDialog.reset();
           this.rejectdialog = true;
           this.title = '驳回运输核算单';
           this.$refs.RejectDialog.setForm(row);
           break;
-        case 3:
+        case 3: // 核算 - 弹框
           this.adjustdialog = true;
           this.title = '结算审核';
           this.waybillCodeList = [];
           this.waybillCodeList.push(row.wayBillCode);
           this.$refs.AdjustDialog.setForm(this.waybillCodeList);
           break;
-        case 4:
-          // this.$confirm('是否确认申请打款?', '提示', {
-          //   confirmButtonText: '确定',
-          //   cancelButtonText: '取消',
-          //   type: 'warning'
-          // }).then(() => {
-          //   this.bodyParams.waybillCodeList = [];
-          //   this.bodyParams.waybillCodeList.push(row.wayBillCode);
-          //   batchApply(this.bodyParams).then(response => {
-          //     this.$message({ type: 'success', message: '申请打款成功！' });
-          //     this.getList();
-          //   });
-          // }).catch(() => {
-          //   this.$message({
-          //     type: 'info',
-          //     message: '已取消'
-          //   });
-          // });
-          this._handlerwaybillCode([row]);
+        case 4: // 申请对账 - 弹框
+          this.commentlist = [row];
+          this.createdDatch();
           break;
         case 5:
           this.commentdialog = true;
@@ -867,6 +852,7 @@ export default {
       }
     },
 
+    /** IC核算 **/
     nuclearCardOpen() {
       this.$confirm('请确认读卡器USB设备连接上了吗? 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -874,49 +860,37 @@ export default {
         type: 'warning'
       }).then(() => {
         this.nuclearCardDialog = true;
-        this.$refs.NuclearCard.init({ id: 123 });
       }).catch(() => {});
     },
 
-    handleQuery12() {
-      console.log(this.alreadyPaid_queryParams);
-    },
 
-    _handlerwaybillCode(arr) {
-      this.Statementsdialog = true;
-      this.title = '对账单';
-      this.$refs.StatementsDialog.setForm(arr);
-    },
+    /** 处理申请对账 **/
+    createdDatch() {
+      this.loading = true;
+      const que = {
+        waybillCodes: this.commentlist.map(e => e.wayBillCode)
+      };
 
-    createdDatch(selection) {
-      console.log(selection);
-    },
-
-    searchKeys(arr) {
-      var str = '';
-      var list = [];
-      for (var i = 0; i < arr.length; i++) {
-        var hasRead = false;
-        for (var k = 0; k < list.length; k++) {
-          if (list[k] === arr[i]) {
-            hasRead = true;
-          }
+      const obj = {};
+      this.commentlist.forEach(e => {
+        const str = e.loadAddress + ':' + e.unloadAddress + ':' + e.teamName;
+        const array = obj[str];
+        if (array) {
+          array.push(e);
+        } else {
+          const suibian = [e];
+          obj[str] = suibian;
         }
-        if (!hasRead) {
-          var _index = i; var haveSame = false;
-          for (var j = i + 1; j < arr.length; j++) {
-            if (arr[i] === arr[j]) {
-              _index += ',' + j;
-              haveSame = true;
-            }
-          }
-          if (haveSame) {
-            list.push(arr[i]);
-            str += '数组下标为' + _index + '，相同值为' + arr[i] + '\n';
-          }
-        }
-      }
-      return str;
+      });
+
+      accountStatement(que).then(res => {
+        this.Statementsdialog = true;
+        this.title = '对账单';
+        this.loading = false;
+        this.$refs.StatementsDialog.setForm(obj, res.data);
+      }).catch(() => {
+        this.loading = false;
+      });
     }
   }
 };

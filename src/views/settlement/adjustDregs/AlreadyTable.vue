@@ -42,7 +42,7 @@
       />
     </el-row>
     <RefactorTable :loading="loading" :data="list" :table-columns-config="tableColumnsConfig" is-show-index @selection-change="(rdata)=>$emit('handleSelectionChange', rdata)">
-      <template #goodsBigType="{row}">
+      <!-- <template #goodsBigType="{row}">
         <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
       </template>
       <template #loadWeight="{row}">
@@ -72,7 +72,7 @@
       </template>
       <template #lastLoadingTime="{row}">
         <span>{{ parseTime(row.lastLoadingTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-      </template>
+      </template> -->
 
       <template #edit="{row}">
         <el-button
@@ -112,9 +112,7 @@ export default {
     loading: Boolean,
     list: {
       type: Array,
-      default: () => [
-        { mainOrderNumber: 1233 }
-      ]
+      default: () => []
     },
 
     config: {
@@ -133,89 +131,7 @@ export default {
   },
   data() {
     return {
-      tableColumnsConfig: [],
-      tableColumnsConfig1: [
-        {
-          prop: 'mainOrderNumber',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '对账批次号'
-        },
-        {
-          prop: 'saf13',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '状态'
-        },
-        {
-          prop: 'nuiwon16',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '发货企业'
-        },
-        {
-          prop: 'sfiesfs',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '项目'
-        },
-        {
-          prop: 'fiwefinwon',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '渣土场'
-        },
-        {
-          prop: 'diaodsfiwfp',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '调度组名称'
-        },
-        {
-          prop: 'nubiu568',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '运单数量'
-        },
-        {
-          prop: 'sjfiohws68',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '运费结算金额'
-        },
-        {
-          prop: 'snfwuienn3211',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '操作时间'
-        },
-        {
-          prop: 'seiniwonfm12',
-          isShow: true,
-          width: 200,
-          tooltip: true,
-          // fixed: 'left',
-          label: '操作人'
-        }
-      ]
+      tableColumnsConfig: []
     };
   },
 
@@ -246,7 +162,7 @@ export default {
       label: '操作',
       width: 240,
       fixed: 'right'
-    }, this.tableColumnsConfig1);
+    });
   }
 
   // methods: {
