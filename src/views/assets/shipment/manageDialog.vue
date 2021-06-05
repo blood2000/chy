@@ -38,6 +38,9 @@
         <el-tab-pane label="企业角色管理" name="role">
           <role-page v-if="activeName === 'role'" class="table-page" :company-code="companyCode" :user-code="userCode" :show-shipment="true" :org-type="orgType" />
         </el-tab-pane>
+        <el-tab-pane label="调度组管理" name="group">
+          <group-page v-if="activeName === 'group'" class="table-page" :shipment-code="shipmentCode" />
+        </el-tab-pane>
       </template>
     </el-tabs>
   </el-dialog>
@@ -53,6 +56,7 @@ import AddressPage from '../../enterprise/company/address';
 import UserPage from '../../system/user';
 import DeptPage from '../../system/dept';
 import RolePage from '../../system/role';
+import GroupPage from '../../enterprise/group';
 
 export default {
   name: 'ShipmentManageDialog',
@@ -65,7 +69,8 @@ export default {
     AddressPage,
     UserPage,
     DeptPage,
-    RolePage
+    RolePage,
+    GroupPage
   },
   props: {
     open: Boolean,

@@ -408,6 +408,54 @@
         </el-col>
       </el-row>
       <el-row :gutter="20">
+        <el-col :span="11">
+          <el-form-item label="单货源多商品" prop="singleSourceMultiCommodity">
+            <el-radio-group v-model="form.singleSourceMultiCommodity">
+              <el-radio
+                v-for="dict in allowOptions"
+                :key="dict.dictValue"
+                :label="parseInt(dict.dictValue)"
+              >{{ dict.dictLabel }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item label="单货源多装货地" prop="singleSourceMultiLoadingLocations">
+            <el-radio-group v-model="form.singleSourceMultiLoadingLocations">
+              <el-radio
+                v-for="dict in allowOptions"
+                :key="dict.dictValue"
+                :label="parseInt(dict.dictValue)"
+              >{{ dict.dictLabel }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="11">
+          <el-form-item label="单货源多卸货地" prop="singleSourceMultiUnloadingLocations">
+            <el-radio-group v-model="form.singleSourceMultiUnloadingLocations">
+              <el-radio
+                v-for="dict in allowOptions"
+                :key="dict.dictValue"
+                :label="parseInt(dict.dictValue)"
+              >{{ dict.dictLabel }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item label="修改司机实收金额" prop="editDriverActualAmount">
+            <el-radio-group v-model="form.editDriverActualAmount">
+              <el-radio
+                v-for="dict in allowOptions"
+                :key="dict.dictValue"
+                :label="parseInt(dict.dictValue)"
+              >{{ dict.dictLabel }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
         <el-col :span="8">
           <el-form-item prop="noNeedUnloadImg">
             <el-checkbox v-model="form.noNeedUnloadImg">是否不需要卸货图片</el-checkbox>
@@ -477,6 +525,11 @@ export default {
       isOptions: [
         { dictLabel: '否', dictValue: 0 },
         { dictLabel: '是', dictValue: 1 }
+      ],
+      // 是否允许
+      allowOptions: [
+        { dictLabel: '允许', dictValue: 0 },
+        { dictLabel: '不允许', dictValue: 1 }
       ],
       payInvoiceTypeOptions: [
         { dictLabel: '打款成功后', dictValue: '7' },
@@ -706,10 +759,10 @@ export default {
             this.$set(this.form, 'serviceRate', '');// 服务费税率
             this.$set(this.form, 'dispatchPoints', ((this.form.texPoint / (100 - this.form.texPoint)) * 100).toFixed(2));
           }
-          var noNeedUnloadImg = 1;
+          var noNeedUnloadImg = 0;
           var openProjectDesignView = 1;
           if (this.form.noNeedUnloadImg) {
-            noNeedUnloadImg = 0;
+            noNeedUnloadImg = 1;
           }
           if (this.form.openProjectDesignView) {
             openProjectDesignView = 0;
@@ -826,8 +879,12 @@ export default {
         serviceRatio: null,
         serviceRate: null,
         supplyIsAuth: 0, // 是否审核货源，默认否
-        noNeedUnloadImg: 1,
-        openProjectDesignView: 1
+        noNeedUnloadImg: 0,
+        openProjectDesignView: 1,
+        singleSourceMultiCommodity: 1,
+        singleSourceMultiLoadingLocations: 1,
+        singleSourceMultiUnloadingLocations: 1,
+        editDriverActualAmount: 1
         // branchCode: null
       };
       this.resetForm('form');

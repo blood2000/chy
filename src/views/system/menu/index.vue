@@ -73,6 +73,8 @@
             v-loading="loading"
             :data="menuList"
             row-key="menuId"
+            highlight-current-row
+            border
             :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
           >
             <el-table-column prop="menuName" label="菜单名称" :show-overflow-tooltip="true" width="160" />
@@ -81,10 +83,10 @@
                 <svg-icon :icon-class="scope.row.icon" />
               </template>
             </el-table-column>
-            <el-table-column prop="orderNum" label="排序" width="60" />
-            <el-table-column prop="perms" label="权限标识" :show-overflow-tooltip="true" />
-            <el-table-column prop="component" label="组件路径" :show-overflow-tooltip="true" />
-            <el-table-column prop="status" label="状态" :formatter="statusFormat" width="80" />
+            <el-table-column prop="orderNum" label="排序" align="center" width="60" />
+            <el-table-column prop="perms" label="权限标识" align="center" :show-overflow-tooltip="true" />
+            <el-table-column prop="component" label="组件路径" align="center" :show-overflow-tooltip="true" />
+            <el-table-column prop="status" label="状态" align="center" :formatter="statusFormat" width="80" />
             <el-table-column label="创建时间" align="center" prop="createTime">
               <template slot-scope="scope">
                 <span>{{ parseTime(scope.row.createTime) }}</span>
@@ -96,21 +98,18 @@
                   v-hasPermi="['system:menu:edit']"
                   size="mini"
                   type="text"
-                  icon="el-icon-edit"
                   @click="handleUpdate(scope.row)"
                 >修改</el-button>
                 <el-button
                   v-hasPermi="['system:menu:add']"
                   size="mini"
                   type="text"
-                  icon="el-icon-plus"
                   @click="handleAdd(scope.row)"
                 >新增</el-button>
                 <el-button
                   v-hasPermi="['system:menu:remove']"
                   size="mini"
                   type="text"
-                  icon="el-icon-delete"
                   @click="handleDelete(scope.row)"
                 >删除</el-button>
               </template>
@@ -137,7 +136,7 @@
           </el-col>-->
         <el-row>
           <el-col :span="8">
-            <el-form-item label="产品">
+            <el-form-item label="产品" prop="produceCode">
               <el-select
                 v-model="form.produceCode"
                 style="width: 100%;"
@@ -157,7 +156,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="应用">
+            <el-form-item label="应用" prop="appCode">
               <el-select
                 v-model="form.appCode"
                 style="width: 100%;"
@@ -177,7 +176,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="版本">
+            <el-form-item label="版本" prop="versionCode">
               <el-select
                 v-model="form.versionCode"
                 style="width: 100%;"
@@ -361,6 +360,15 @@ export default {
       form: {},
       // 表单校验
       rules: {
+        produceCode: [
+          { required: true, message: '产品不能为空', trigger: 'blur,change' }
+        ],
+        appCode: [
+          { required: true, message: '应用不能为空', trigger: 'blur,change' }
+        ],
+        versionCode: [
+          { required: true, message: '版本不能为空', trigger: 'blur,change' }
+        ],
         menuName: [
           { required: true, message: '菜单名称不能为空', trigger: 'blur' }
         ],

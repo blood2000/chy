@@ -146,13 +146,13 @@
             <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
           </el-row>
 
-          <el-table v-loading="loading" highlight-current-row :data="roleList" @selection-change="handleSelectionChange">
+          <el-table v-loading="loading" highlight-current-row border :data="roleList" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55" align="center" />
-            <el-table-column label="所属产品" prop="produceName" width="120" />
-            <el-table-column label="角色名称" prop="roleName" :show-overflow-tooltip="true" width="150" />
-            <!--   <el-table-column label="权限字符" prop="roleKey" :show-overflow-tooltip="true" width="150" />-->
-            <el-table-column label="显示顺序" prop="roleSort" width="100" />
-            <el-table-column label="状态" align="center" width="100">
+            <el-table-column label="所属产品" prop="produceName" align="center" />
+            <el-table-column label="角色名称" prop="roleName" align="center" :show-overflow-tooltip="true" />
+            <!-- <el-table-column label="权限字符" prop="roleKey" align="center" :show-overflow-tooltip="true" />-->
+            <el-table-column label="显示顺序" prop="roleSort" align="center" />
+            <el-table-column label="状态" align="center">
               <template slot-scope="scope">
                 <el-switch
                   v-model="scope.row.status"
@@ -163,18 +163,17 @@
                 />
               </template>
             </el-table-column>
-            <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+            <el-table-column label="创建时间" align="center" prop="createTime">
               <template slot-scope="scope">
                 <span>{{ parseTime(scope.row.createTime) }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+            <el-table-column label="操作" align="center">
               <template slot-scope="scope">
                 <el-button
                   v-hasPermi="['system:role:edit']"
                   size="mini"
                   type="text"
-                  icon="el-icon-edit"
                   :disabled="isOperate(scope.row)"
                   @click="handleUpdate(scope.row)"
                 >修改</el-button>
@@ -182,7 +181,6 @@
                   v-hasPermi="['system:role:edit']"
                   size="mini"
                   type="text"
-                  icon="el-icon-circle-check"
                   :disabled="isOperate(scope.row)"
                   @click="handleDataScope(scope.row)"
                 >数据权限</el-button>
@@ -190,7 +188,6 @@
                   v-hasPermi="['system:role:remove']"
                   size="mini"
                   type="text"
-                  icon="el-icon-delete"
                   :disabled="isOperate(scope.row)"
                   @click="handleDelete(scope.row)"
                 >删除</el-button>

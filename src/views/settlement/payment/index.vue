@@ -290,7 +290,7 @@ import DetailDialog from '@/views/waybill/components/detailDialog';
 
 
 export default {
-  'name': 'PaymentList',
+  'name': 'Payment',
   components: { RejectDialog, DetailDialog, ChildDialog },
   data() {
     return {

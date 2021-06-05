@@ -4,7 +4,6 @@
     v-loading="loading"
     :show-summary="summary"
     border
-    stripe
     :data="data"
     v-bind="$attrs"
     highlight-current-row

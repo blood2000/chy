@@ -185,7 +185,7 @@ import BillingDialog from './billingDialog';
 
 
 export default {
-  'name': 'BillList',
+  'name': 'List',
   components: { VerifyDialog, BillingDialog },
   data() {
     return {

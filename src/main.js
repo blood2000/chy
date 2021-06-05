@@ -41,6 +41,22 @@ import 'highlight.js/styles/github-gist.css';
 import Print from 'vue-print-nb';
 Vue.use(Print);
 
+import visibility from 'vue-visibility-change';
+Vue.use(visibility);
+import { getToken } from '@/utils/auth';
+
+var token = '';
+// 浏览器标签页切换监控 (切换标签页后若token变化，则强制刷新)
+visibility.change((evt, hidden) => {
+  if (hidden) {
+    token = getToken();
+  } else {
+    if (token !== getToken()) {
+      location.reload();
+    }
+  }
+});
+
 // 图片查看插件
 import Viewer from 'v-viewer';
 import 'viewerjs/dist/viewer.css';

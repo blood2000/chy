@@ -44,7 +44,7 @@
           <el-input v-model="form.payeeName" placeholder="请输入收票人姓名" class="input-width" clearable />
         </el-form-item>
         <el-form-item label="收票人联系电话" prop="payeeTelphone">
-          <el-input v-model="form.payeeTelphone" placeholder="请输入收票人联系电话" class="input-width" clearable />
+          <el-input v-model="form.payeeTelphone" placeholder="请输入手机或座机号（XXXX-XXXXXXX）" class="input-width" clearable />
         </el-form-item>
         <el-form-item label="收票人电子邮箱" prop="payeeEmail">
           <el-input v-model="form.payeeEmail" placeholder="请输入收票人电子邮箱" class="input-width" clearable />
@@ -64,6 +64,7 @@
 import { addBilling, updateBilling, getBilling } from '@/api/enterprise/company/billing';
 
 export default {
+  name: 'CompanyBilling',
   props: {
     shipmentCode: {
       type: String,

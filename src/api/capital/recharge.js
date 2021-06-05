@@ -6,6 +6,6 @@ export function rechargelist(data) {
   return request({
     url: rechargelistApi,
     method: 'post',
-    data: Object.assign({}, { isAsc: 'desc', orderByColumn: 't0.create_time' }, data)
+    data: Object.assign({}, { isAsc: 'desc', orderByColumn: 'create_time' }, data)
   });
 }

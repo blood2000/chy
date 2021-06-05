@@ -189,7 +189,6 @@
         :loading="loading"
         :data="list"
         row-key="id"
-        stripe
         :row-class-name="tableRowClassName"
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
         :table-columns-config="tableColumnsConfig"
@@ -1050,12 +1049,12 @@ export default {
 
 <style>
 
-.el-table .warning-row,.el-table--striped .el-table__body tr.el-table__row--striped.warning-row td {
+/* .el-table .warning-row,.el-table--striped .el-table__body tr.el-table__row--striped.warning-row td {
     background: oldlace;
   }
 
 .el-table .red-row,.el-table--striped .el-table__body tr.el-table__row--striped.red-row td {
   background: #e1f3d8;
-}
+} */
 
 </style>

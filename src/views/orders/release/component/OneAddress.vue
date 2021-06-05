@@ -70,7 +70,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="10">
-          <el-form-item label="地址别名">
+          <el-form-item label="地址别名" prop="addressAlias">
             <el-input
               v-model="formData.addressAlias"
               clearable
@@ -160,7 +160,7 @@ export default {
       rules: {
         addressName: [{ required: true, message: '请输入详细地址', trigger: 'change' }],
         detail: [{ required: true, message: '选择所属项目', trigger: 'change' }],
-        addressAlias: [{ required: true, message: '选择所属项目', trigger: 'blur' }],
+        addressAlias: [{ required: true, message: '请输入地址别名', trigger: 'blur' }],
         contact: [{ required: true, message: '请输入联系人', trigger: 'blur' }],
         contactPhone: [
           { required: true, message: '请输入联系电话', trigger: 'blue' },

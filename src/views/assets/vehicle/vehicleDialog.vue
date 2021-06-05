@@ -119,10 +119,10 @@
         <el-input-number v-model="form.vehicleLoadWeight" :controls="false" :min="0" :max="1000000" placeholder="请输入车辆可载重量" class="width90 unit-item" clearable />
         <span class="unit-span g-color-gray">吨</span>
       </el-form-item>
-      <el-form-item label="车辆可载平方" prop="vehicleLoadVolume">
+      <!-- <el-form-item label="车辆可载平方" prop="vehicleLoadVolume">
         <el-input v-model="form.vehicleLoadVolume" placeholder="请输入车辆可载平方" class="width90 unit-item" clearable />
         <span class="unit-span g-color-gray">m²</span>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="车辆可载立方" prop="vehicleRemainingLoadVolume">
         <el-input v-model="form.vehicleRemainingLoadVolume" placeholder="请输入车辆可载立方" class="width90 unit-item" clearable />
         <span class="unit-span g-color-gray">m³</span>
@@ -403,7 +403,7 @@ export default {
         vehicleHeight: null,
         vehicleTotalWeight: null,
         vehicleLoadWeight: null,
-        vehicleLoadVolume: null,
+        // vehicleLoadVolume: null,
         vehicleRemainingLoadVolume: null,
         chassisNumber: null,
         engineNumber: null,

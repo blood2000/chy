@@ -152,20 +152,22 @@
         </el-col>
         <el-col :span="1.5">
           <el-button
-            v-hasPermi="['assets:driver:report']"
-            type="warning"
-            icon="el-icon-upload2"
-            size="mini"
-          >司机车辆信息上报</el-button>
-        </el-col>
-        <el-col :span="1.5">
-          <el-button
             v-hasPermi="['assets:driver:down']"
             type="success"
             icon="el-icon-download"
             size="mini"
             @click="handleImportTemplateDriver"
           >下载模板</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['assets:driver:report']"
+            type="warning"
+            icon="el-icon-upload2"
+            size="mini"
+            :disabled="reportCodes.length ==0"
+            @click="batchReportDriver"
+          >司机批量上报</el-button>
         </el-col>
         <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
@@ -238,11 +240,12 @@
             @click="handleManage(row)"
           >管理</el-button>
           <el-button
-            v-hasPermi="['assets:driver:get']"
+            v-show="row.isReportPerson === 0"
+            v-hasPermi="['assets:driver:report']"
             size="mini"
             type="text"
-            @click="handleDetail(row, 'detail')"
-          >详情</el-button>
+            @click="reportDriver(row)"
+          >上报</el-button>
           <el-button
             v-show="teamCode"
             v-hasPermi="['assets:team:driver:del']"
@@ -267,6 +270,12 @@
                   @click="handleDetail(row, 'review')"
                 >审核</el-button>
               </el-dropdown-item>
+              <el-button
+                v-hasPermi="['assets:driver:get']"
+                size="mini"
+                type="text"
+                @click="handleDetail(row, 'detail')"
+              >详情</el-button>
               <el-dropdown-item>
                 <el-button
                   v-show="row.authStatus == 3"
@@ -324,6 +333,7 @@
 <script>
 import { listDriverApi, listDriver, getDriver, delDriver, getAgreementWord } from '@/api/assets/driver';
 import { listInfo, delTeamReDriver } from '@/api/assets/team';
+import { waybillReportDriverByCode } from '@/api/data/report';
 import DriverDialog from './driverDialog';
 import ImportDialog from './importDialog';
 import ManageDialog from './manageDialog';
@@ -394,6 +404,7 @@ export default {
       ids: [],
       driverNames: [],
       codes: [],
+      reportCodes: [],
       // 非单个禁用
       single: true,
       // 非多个禁用
@@ -512,6 +523,12 @@ export default {
       this.ids = selection.map(item => item.id);
       this.driverNames = selection.map(item => item.name);
       this.codes = selection.map(item => item.code);
+      this.reportCodes = [];
+      selection.map(item => {
+        if (item.isReportPerson === 0) {
+          this.reportCodes.push(item.code);
+        }
+      });
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
     },
@@ -645,6 +662,41 @@ export default {
       this.tableColumnsConfig = this.tableColumnsConfig.filter(el => {
         if (el.prop !== 'agreementNo') return true;
       });
+    },
+    // 车辆信息上报
+    batchReportDriver(row) {
+      var codes = this.reportCodes;
+      if (row.isReportPerson === 0) {
+        codes = row.code || this.reportCodes;
+      }
+      if (codes.length === 0) {
+        this.msgWarning('请选择未上报的司机');
+        return;
+      }
+      codes.forEach(code => {
+        waybillReportDriverByCode(code).then(response => {
+          if (response.code === 200) {
+            this.msgSuccess('上报成功');
+          } else {
+            this.msgWarning('上报失败');
+          }
+        });
+      });
+    },
+    reportDriver(row) {
+      if (row.code) {
+        waybillReportDriverByCode(row.code).then(response => {
+          if (response.code === 200) {
+            this.msgSuccess('上报成功');
+          } else {
+            this.msgError(response.data);
+          }
+        }).catch(() => {
+          this.msgError('上报失败');
+        });
+      } else {
+        this.msgWarning('请选择要上报的司机');
+      }
     }
   }
 };

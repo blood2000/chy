@@ -7,7 +7,7 @@
       </el-col> -->
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
-    <el-table v-loading="loading" highlight-current-row stripe border :data="dataList">
+    <el-table v-loading="loading" highlight-current-row border :data="dataList">
       <!-- <el-table-column label="姓名" align="center" prop="" />
       <el-table-column label="网商汇款账号" align="center" prop="" />
       <el-table-column label="角色" align="center" prop="" />
