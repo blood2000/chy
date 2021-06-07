@@ -152,15 +152,15 @@
             @click="handlerPassPayment"
           >批量打款</el-button>
         </el-col>
-        <!-- <el-col v-if="activeName == '6'" :span="1.5">
+        <!-- <el-col :span="1.5">
           <el-button
             type="primary"
             icon="el-icon-upload2"
             size="mini"
-            @click="handleExportFreight"
-          >导出运费明细</el-button>
-        </el-col>
-        <el-col v-if="activeName == '6'" :span="1.5">
+            @click="loogImage"
+          >查看图片</el-button>
+        </el-col> -->
+        <!-- <el-col v-if="activeName == '6'" :span="1.5">
           <el-button
             type="primary"
             icon="el-icon-upload2"
@@ -178,7 +178,7 @@
       </el-row>
 
       <RefactorTable :loading="loading" :data="billlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
-        <template #zhuanfowe="{row}">
+        <!-- <template #zhuanfowe="{row}">
           <span class="g-color-error">已申请{{ row.zhuanfowe }}</span>
         </template>
         <template #invoiceStatus="{row}">
@@ -196,6 +196,19 @@
         </template>
         <template #invoiceApplyTime="{row}">
           <span>{{ parseTime(row.invoiceApplyTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+        </template> -->
+        <template #loogImage="{row}">
+          <el-button
+            size="mini"
+            type="text"
+            @click="loogImage(row)"
+          >查看</el-button>
+        </template>
+
+        <template #status="{row}">
+          <span>
+            {{ selectDictLabel(statusOptions, row.status) }}
+          </span>
         </template>
 
         <template #edit="{row}">
@@ -242,6 +255,11 @@
               type="text"
               @click="handleTableBtn(row, 5)"
             >导出</el-button>
+            <el-button
+              size="mini"
+              type="text"
+              @click="handleTableBtn(row, 6)"
+            >驳回</el-button>
           </div>
         </template>
       </RefactorTable>
@@ -263,11 +281,40 @@
     <billing-dialog ref="BillingDialog" :open.sync="billingdialog" :title="title" @refresh="getList" />
     <!-- 对账单详情弹窗 -->
     <StatementsDialog ref="StatementsDialog" :open.sync="Statementsdialog" :disable="formDisable" :title="title" @refresh="getList" />
+
+    <!-- 查看图片
+
+     -->
+    <el-dialog :title="'查看发票图片'" class="i-price" :visible.sync="openimg" append-to-body>
+      <!-- 弹框内的组件 -->
+      <div v-if="openimg" class="ly-flex-pack-center ly-flex-pack-center">
+
+        <viewer :images="[attachUrl]">
+          <!-- <img
+                        v-for="(src,index) in photo"
+                        :src="src"
+                        :key="index"
+                        :onerror="errorImg"
+                      > -->
+          <!-- v-real-img="src"  -->
+          <img
+            v-for="(src,index) in [attachUrl]"
+            :key="index"
+            v-real-img="src"
+            src="@/assets/images/workbench/icon_noavator.png"
+            class="avatar-wrapper__image"
+          >
+        </viewer>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { passPayment } from '@/api/finance/askfor';
+import { getFile } from '@/api/system/image.js';
+
+import { passPayment, refusePayment } from '@/api/finance/askfor';
+
 // 审核弹窗
 // import VerifyDialog from '../verifyDialog';
 // 开票弹窗
@@ -287,108 +334,36 @@ export default {
   components: { StatementsDialog, BillingDialog, RejectDialog },
   data() {
     return {
+      // s=图片
+      openimg: false,
+      attachUrl: '', // 查看图片地址
+      // e=图片
       isShipment: false,
       tableColumnsConfig: [],
-      tableColumnsConfig1: [],
-      tableColumnsConfig2: [],
-      // [
-      //   {
-      //     prop: 'mainOrderNumber',
-      //     isShow: true,
-      //     width: 200,
-      //     tooltip: true,
-      //     // fixed: 'left',
-      //     label: '对账批次号'
-      //   },
-      //   {
-      //     prop: 'zhuanfowe',
-      //     isShow: true,
-      //     width: 200,
-      //     tooltip: true,
-      //     // fixed: 'left',
-      //     label: '状态'
-      //   },
-      //   {
-      //     prop: 'fahiuwnn',
-      //     isShow: true,
-      //     width: 200,
-      //     tooltip: true,
-      //     // fixed: 'left',
-      //     label: '发货企业'
-      //   },
-      //   {
-      //     prop: 'xuiqabskn',
-      //     isShow: true,
-      //     width: 200,
-      //     tooltip: true,
-      //     // fixed: 'left',
-      //     label: '项目'
-      //   },
-      //   {
-      //     prop: 'zhaunenowt',
-      //     isShow: true,
-      //     width: 200,
-      //     tooltip: true,
-      //     // fixed: 'left',
-      //     label: '渣土场'
-      //   },
-      //   {
-      //     prop: 'duaijwhubiubi',
-      //     isShow: true,
-      //     width: 200,
-      //     tooltip: true,
-      //     // fixed: 'left',
-      //     label: '调度组名称'
-      //   },
-      //   {
-      //     prop: 'yunsnewonow',
-      //     isShow: true,
-      //     width: 200,
-      //     tooltip: true,
-      //     // fixed: 'left',
-      //     label: '运单数量'
-      //   },
-      //   {
-      //     prop: 'yuwinfsnfhahoiajog',
-      //     isShow: true,
-      //     width: 200,
-      //     tooltip: true,
-      //     // fixed: 'left',
-      //     label: '运费结算金额'
-      //   },
-      //   {
-      //     prop: 'pabiaott',
-      //     isShow: true,
-      //     width: 200,
-      //     tooltip: true,
-      //     // fixed: 'left',
-      //     label: '发票图片'
-      //   },
-      //   {
-      //     prop: 'beiiesp',
-      //     isShow: true,
-      //     width: 200,
-      //     tooltip: true,
-      //     // fixed: 'left',
-      //     label: '备注'
-      //   },
-      //   {
-      //     prop: 'chaoskziehio',
-      //     isShow: true,
-      //     width: 200,
-      //     tooltip: true,
-      //     // fixed: 'left',
-      //     label: '操作时间'
-      //   },
-      //   {
-      //     prop: 'cshiwops',
-      //     isShow: true,
-      //     width: 200,
-      //     tooltip: true,
-      //     // fixed: 'left',
-      //     label: '操作人'
-      //   }
-      // ],
+      tableColumnsConfig1: [{
+        prop: 'status',
+        isShow: true,
+        label: '状态',
+        sortNum: 2,
+        width: 180
+      }],
+      tableColumnsConfig2: [
+        { // 查看图片
+          prop: 'loogImage',
+          isShow: true,
+          width: 120,
+          sortNum: 10,
+          tooltip: true,
+          label: '发票图片'
+        },
+        {
+          prop: 'status',
+          isShow: true,
+          label: '状态',
+          sortNum: 2,
+          width: 180
+        }
+      ],
       api: adjustListApi,
       activeName: '1',
       createTime: '',
@@ -441,6 +416,12 @@ export default {
         { 'dictLabel': '审核不通过', 'dictValue': '3' },
         { 'dictLabel': '审核通过', 'dictValue': '4' },
         { 'dictLabel': '已开票', 'dictValue': '5' }
+      ],
+      statusOptions: [
+        { dictLabel: '已申请对账', dictValue: 1 },
+        { dictLabel: '已申请开票', dictValue: 2 },
+        { dictLabel: '已申请打款', dictValue: 3 },
+        { dictLabel: '已完成', dictValue: 4 }
       ],
       // 发票来源字典
       invoiceFromOptions: [
@@ -577,11 +558,9 @@ export default {
           break;
         case 3:
           // this.$router.push({ name: 'Statement', query: { code: row.code }});
-          console.log('打开详情页面');
           this.Statementsdialog = true;
-          this.title = '对账单';
-          this.$refs.StatementsDialog.setForm(row);
-
+          this.title = '对账单详情';
+          this.$refs.StatementsDialog.setBatchStatementCode(row.batchStatementCode, row); // 传code
           break;
         case 4:
           // this.$router.push({ name: 'Statement', query: { code: row.code }});
@@ -593,6 +572,23 @@ export default {
           break;
         case 6:
           // this.$router.push({ name: 'Statement', query: { code: row.code }});
+          this.ids = [row.batchNo];
+          this.$confirm('我驳回?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            const que = {
+              batchCodes: this.ids
+            };
+
+            refusePayment(que).then(res => {
+              this.msgSuccess('驳回成功');
+              this.queryParams.pageNum = 1;
+              this.getList();
+            });
+          }).catch(() => {});
+
           break;
         default:
           break;
@@ -616,6 +612,24 @@ export default {
           this.getList();
         });
       }).catch(() => {});
+    },
+
+    // 查看图片信息
+    loogImage(row) {
+      this.loading = true;
+      getFile(row.imgCodes).then(response => {
+        this.loading = false;
+
+        if (response.data && response.data.length > 0) {
+          this.attachUrl = response.data[0].attachUrl;
+          this.openimg = true;
+        } else {
+          this.attachUrl = '';
+        }
+      }).catch(() => {
+        this.loading = false;
+        this.openimg = true;
+      });
     }
   }
 };

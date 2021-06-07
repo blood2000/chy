@@ -16,8 +16,8 @@
       <el-table-column width="100" label="服务费税" align="center" prop="serviceTaxFee" />
     </el-table> -->
     <el-form ref="form" :model="form" :rules="rules" label-width="130px">
-      <el-form-item label="发票批次号" prop="askForNo">
-        <el-input v-model="form.askForNo" disabled placeholder="请输入发票号码" clearable size="small" style="width:90%;" />
+      <el-form-item label="发票批次号" prop="batchNo">
+        <el-input v-model="form.batchNo" disabled placeholder="请输入发票号码" clearable size="small" style="width:90%;" />
       </el-form-item>
       <el-form-item label="发票图片">
         <uploadImage v-model="form.images" />
@@ -66,7 +66,7 @@ export default {
       waybilllist: [],
       // 表单参数
       form: {
-        askForNo: null,
+        batchNo: null,
         images: null,
         invoiceApplyCode: null,
         receiveAddress: null,
@@ -108,7 +108,13 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          passBilling({ batchCodes: [this.form.batchCodes] }).then(response => {
+          const que = {
+            // ...this.form,
+            batchCodes: [this.form.batchCodes],
+            imgCodes: this.form.images
+            // batchNo: undefined
+          };
+          passBilling(que).then(response => {
             this.msgSuccess('开票成功');
             this.close();
             this.$emit('refresh');
@@ -128,7 +134,7 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        askForNo: null,
+        batchNo: null,
         images: null,
         invoiceApplyCode: null,
         receiveAddress: null,
@@ -141,7 +147,7 @@ export default {
     // 表单赋值
     setForm(data) {
       this.form = {
-        askForNo: data.askForNo,
+        batchNo: data.batchNo,
         images: null,
         invoiceApplyCode: data.code,
         receiveAddress: data.invoiceReceiverAddress,
@@ -150,10 +156,6 @@ export default {
         batchCodes: data.batchNo
 
       };
-      // this.form.invoiceApplyCode = data.code;
-      // this.form.askForNo = data.askForNo;
-      console.log(this.form);
-      // this.getList();
     }
   }
 };

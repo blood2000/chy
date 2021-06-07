@@ -9,7 +9,7 @@
     >
 
       <div v-if="!isShipment" class="app-container" style="display: flex; align-items: center;">
-        <el-form-item label="发货企业" prop="shipmentCode" style="margin-bottom:0">
+        <el-form-item label="发货企业" style="margin-bottom:0">
           <!-- filterable开启可搜索 remote远程搜索 reserve-keyword 保存搜索关键词  companyName -->
           <el-select
             v-model="queryParams.shipmentCode"
@@ -172,16 +172,10 @@
       </el-row>
 
       <RefactorTable :loading="loading" :data="askforlist" :table-columns-config="tableColumnsConfig" :max-height="isAdmin ? '400':'500'" @selection-change="handleSelectionChange">
-        <template #zhuanfowe="{row}">
+        <!-- <template #zhuanfowe="{row}">
           <span class="g-color-error">已申请{{ row.zhuanfowe }}</span>
         </template>
-        <template #status="{row}">
-          <span>
-            <span v-if="row.status == 5" class="g-statusDot g-color-success">●</span>
-            <span v-if="row.status == 7" class="g-statusDot g-color-blue">●</span>
-            {{ selectDictLabel(statusOptions, row.status) }}
-          </span>
-        </template>
+
         <template #loadWeight="{row}">
           <span v-if="row.stowageStatus === '1'">{{ row.loadWeight || '0.00' }} 方</span>
           <span v-if="row.stowageStatus === '2'">{{ row.loadWeight || '0.00' }} 车</span>
@@ -197,6 +191,12 @@
         </template>
         <template #signTime="{row}">
           <span>{{ parseTime(row.signTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+        </template> -->
+
+        <template #status="{row}">
+          <span>
+            {{ selectDictLabel(statusOptions, row.status) }}
+          </span>
         </template>
 
         <template #edit="{row}">
@@ -321,16 +321,10 @@ export default {
       ],
       // 运单状态字典
       statusOptions: [
-        { 'dictLabel': '未接单', 'dictValue': '0' },
-        { 'dictLabel': '已接单', 'dictValue': '1' },
-        { 'dictLabel': '已装货', 'dictValue': '2' },
-        { 'dictLabel': '已签收(已卸货)', 'dictValue': '3' },
-        { 'dictLabel': '已回单(收单复核)', 'dictValue': '4' },
-        { 'dictLabel': '已核算', 'dictValue': '5' },
-        { 'dictLabel': '已申请(打款)', 'dictValue': '6' },
-        { 'dictLabel': '已打款', 'dictValue': '7' },
-        { 'dictLabel': '已申请开票', 'dictValue': '8' },
-        { 'dictLabel': '已开票', 'dictValue': '9' }
+        { dictLabel: '已申请对账', dictValue: 1 },
+        { dictLabel: '已申请开票', dictValue: 2 },
+        { dictLabel: '已申请打款', dictValue: 3 },
+        { dictLabel: '已完成', dictValue: 4 }
       ],
       // 是否子单字典
       isChildOptions: [
@@ -385,7 +379,13 @@ export default {
       label: '操作',
       width: 180,
       fixed: 'right'
-    });
+    }, [{
+      prop: 'status',
+      isShow: true,
+      label: '状态',
+      sortNum: 2,
+      width: 180
+    }]);
     this.listByDict(this.commodityCategory).then(response => {
       this.commodityCategoryCodeOptions = response.data;
     });
@@ -537,14 +537,10 @@ export default {
       this.visible = true;
       switch (index) {
         case 1:
-          // this.$refs.DetailDialog.reset();
-          // this.currentId = row.code;
-          // this.open = true;
-          // this.title = '运输单信息';
-          // this.formDisable = true;
+
           this.Statementsdialog = true;
-          this.title = '对账单';
-          this.$refs.StatementsDialog.setForm(row);
+          this.title = '对账单详情';
+          this.$refs.StatementsDialog.setBatchStatementCode(row.batchStatementCode, row); // 传code
           break;
         case 2:
           // // this.$refs.DetailDialog.reset();

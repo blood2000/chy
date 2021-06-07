@@ -7,6 +7,7 @@
       <el-button type="primary" @click="handler('readUserinfo')">读取用户信息</el-button>
       <el-button type="primary" @click="handler('readData')">读取数据</el-button>
       <el-button type="primary" @click="handler('writeData')">写数据</el-button>
+      <el-button type="primary" @click="handler('writeOtherData2')">写数据</el-button>
       <!-- <el-button type="primary" @click="handler('writeDataBatch')">写批量数据</el-button>
       <el-button type="primary" @click="handler('folderBatch')">批量创建目录</el-button>
       <el-button type="primary" @click="handler('stop')">停止定时器</el-button> -->
@@ -14,77 +15,102 @@
     </div>
     <!-- 表格 -->
 
+    <!--
+        icList	核销数据列表		false
+        array
+            driverName	司机名称		false
+            driverPhone	司机电话		false
+            fillTime	装货时间戳		false
+            fillTimeDate	装货时间		false
+            licenseNumber	车牌号		false
+            mudtail	泥尾		false
+
+            orderId	货源ID		false
+
+            projectName	项目名称		false
+
+            serialNumber	序号		false
+
+            signTime	卸货时间戳		false
+            signTimeDate	卸货时间		false
+            status	0正常 1.数据库有数据IC卡没有 2.IC卡有数据数据库没有		false
+
+            waybillId	运单ID		false
+
+        userCode	用户CODE
+     -->
+
     <RefactorTable
       :loading="loading"
       :data="list"
       :table-columns-config="[
         {
-          prop: '驾驶员姓名',
+          prop: 'driverName',
           isShow: true,
           width: 120,
           tooltip: true,
           label: '驾驶员姓名'
         },
         {
-          prop: '联系手机号',
+          prop: 'driverPhone',
           isShow: true,
           width: 120,
           tooltip: true,
           label: '联系手机号'
         },
         {
-          prop: '车牌号',
+          prop: 'licenseNumber',
           isShow: true,
           width: 120,
           tooltip: true,
           label: '车牌号'
         },
         {
-          prop: '项目名称',
+          prop: 'projectName',
           isShow: true,
           width: 120,
           label: '项目(装货地)'
         },
         {
-          prop: '泥尾名称',
+          prop: 'mudtail',
           isShow: true,
-          label: '卸货地'
+          label: '泥尾'
         },
         {
-          prop: '入场时间',
+          prop: 'fillTimeDate',
           isShow: true,
           label: '入场时间'
         },
         {
-          prop: '出场时间',
+          prop: 'signTimeDate',
           isShow: true,
           label: '出场时间'
         },
         {
-          prop: '货源数值编号',
+          prop: 'orderId',
           isShow: true,
           label: '货源编号'
         },
         {
-          prop: '运单数值编号',
+          prop: 'waybillId',
           isShow: true,
           label: '运单编号'
         },
         {
-          prop: 'id6',
+          prop: 'serialNumber',
+          isShow: true,
+          label: '渣土场编号'
+        },
+        {
+          prop: 'status',
           isShow: true,
           width: 90,
           label: '核对状态'
-        },
-        {
-          prop: 'id4',
-          isShow: true,
-          label: '操作员'
         }
       ]"
     >
-      <template #id6="{row}">
-        <span v-if="row.id6 === 0">√</span>
+      <template #status="{row}">
+        <span v-if="row.status === 0"><i class="el-icon-check" /></span>
         <el-button v-else size="mini" type="danger" plain @click="absenceOpen(row)">不存在</el-button>
       </template>
     </RefactorTable>
@@ -99,6 +125,10 @@
 <script>
 import CardReader from '@/libs/ICCard/CardReader';
 
+import { checkList, delWaybill, check } from '@/api/settlement/adjustDregs';
+
+// /transportation/icCheck/delWaybill
+
 
 const { fn: { resultData }, action } = CardReader;
 
@@ -108,17 +138,18 @@ const USERINFO = [
   'user_telno',
   'issuing_code',
   'issuing_name'];
-
+// 29804;2614710;广东深圳福龙学校项目;鄂ALF106;张三丰;13812345678;1621648441990;1621648441990;49384299482;广东深圳妈湾石头';
 const DATAINFO = [
-  '货源数值编号',
-  '运单数值编号',
-  '项目名称',
-  '车牌号',
-  '驾驶员姓名',
-  '联系手机号',
-  '入场时间',
-  '出场时间',
-  '泥尾名称'
+  'orderId',
+  'waybillId',
+  'projectName',
+  'licenseNumber',
+  'driverName',
+  'driverPhone',
+  'fillTime',
+  'signTime',
+  'serialNumber',
+  'mudtail'
 ];
 
 export default {
@@ -134,11 +165,8 @@ export default {
       loading: false,
 
       userInfo: {},
-      list: [{
-        id: 1,
-        id6: 1,
-        id7: '2021.06.21 15:30:45'
-      }]
+      list: [],
+      IClist: []
     };
   },
   computed: {
@@ -171,40 +199,145 @@ export default {
       CardReader.fn.connect(async() => {
         this.loading = true;
         // 读取用户 和 卡数据
-        const resUserInfo = (await action.readUserInfo()).data;
-
-        console.log('失败!!');
+        const { data: resUserInfo } = (await action.readUserInfo());
 
 
-        const readDataInfo = (await action.readData()).data;
-        // 用户数据处理
-        this.userInfo = resultData(resUserInfo, USERINFO).data;
-        this.list = readDataInfo.map(e => resultData(e, DATAINFO).data);
-        // 存储一份 key 当前的 user_code valu {用户信息: 值}
-        this.setLocalStorage(this.userInfo.user_code, { [resUserInfo]: readDataInfo });
+        const res = (await action.readData(null, () => {
+          this.msgError('无任何消息');
+          this.loading = false;
+        }));
 
-        this.loading = false;
+        if (res) {
+          const readDataInfo = res.data;
+
+          // 用户数据处理
+          this.userInfo = resultData(resUserInfo, USERINFO).data;
+          this.IClist = readDataInfo.map(e => resultData(e, DATAINFO).data);
+          // 存储一份 key 当前的 user_code valu {用户信息: 值}
+          this.setLocalStorage(this.userInfo.user_code, { [resUserInfo]: readDataInfo });
+
+          this.initData();
+        }
       }, () => {
         this.loading = false;
         this.$emit('update:open', false);
       });
     },
 
+    // /transportation/icCheck/checkList
+    async initData() {
+      console.log(this.IClist);
+      console.log(this.userInfo);
+
+      const que = {
+        icList: this.IClist.map(e => {
+          // this.parseTime(date[0], '{y}-{m}-{d}')
+          return {
+            ...e,
+            other: undefined
+            // fillTimeDate: this.parseTime(1623036606252),
+            // signTimeDate: this.parseTime(e.signTime - 0) + ''
+          };
+        }),
+        // [
+        //   {
+        //     driverName: '', //	司机名称		false
+        //     driverPhone: '', //	司机电话		false
+        //     fillTime: '', //	装货时间戳		false
+        //     fillTimeDate: '', //	装货时间		false
+        //     licenseNumber: '', //	车牌号		false
+        //     mudtail: '', //	泥尾		false
+        //     orderId: '', //	货源ID		false
+        //     projectName: '', //	项目名称		false
+        //     serialNumber: '', //	序号		false
+        //     signTime: '', //	卸货时间戳		false
+        //     signTimeDate: '', //	卸货时间		false
+        //     status: '', //	0正常 1.数据库有数据IC卡没有 2.IC卡有数据数据库没有 3.数据不一致		false
+        //     waybillId: '' //	运单ID
+        //   }
+        // ],
+        userCode: this.userInfo.user_code //	用户CODE
+
+      };
+
+      try {
+        const res = await checkList(que);
+        this.list = res.data.map(e => {
+          return {
+            ...e,
+            fillTimeDate: this.parseTime(e.fillTime - 0),
+            signTimeDate: this.parseTime(e.signTime - 0)
+          };
+        });
+        this.loading = false;
+      } catch (error) {
+        this.loading = false;
+      }
+    },
+
     absenceOpen(row) {
-      this.$confirm('运单不存在', `运单: ${'YGH123456789'}`, {
+      this.$confirm('运单不存在', `运单: ${row.waybillId}`, {
         confirmButtonText: '转为正常单',
         cancelButtonText: '删除该条记录',
+        distinguishCancelAndClose: true,
         type: 'warning',
         center: true
       }).then(() => {
         console.log('转为正常单');
-      }).catch(() => {
-        console.log('删除该条记录');
+        row.status = 0;
+      }).catch((action) => {
+        if (action === 'cancel') {
+          delWaybill({ waybillId: row.waybillId - 0 }).then(res => {
+            this.msgSuccess('删除该条记录成功');
+            this.list = this.list.filter(e => e.waybillId !== row.waybillId);
+          });
+        }
       });
     },
 
     submitForm() {
-      console.log('保存并清空');
+      const filterArr = this.list.filter(e => {
+        return e.status !== 0;
+      });
+
+      if (filterArr.length > 0) {
+        this.$alert(`运单${filterArr[0].waybillId} 平台未能核对成功`, '数据存在异常', {
+          confirmButtonText: '好的',
+          type: 'warning',
+          center: true,
+          callback: action => {}
+        });
+      } else {
+        this.$confirm('确认保存并清空, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          // console.log('保存并清空');
+          this.loading = true;
+          check(this.list.map(e => e.waybillId)).then(res => {
+            action.issuingCard({
+              user_code: this.userInfo.user_code,
+              user_telno: this.userInfo.user_telno,
+              user_name: this.userInfo.user_name,
+              issuing_code: this.userInfo.issuing_code,
+              issuing_name: this.userInfo.issuing_name
+            }).then(res => {
+              if (res.code === 200) {
+                this.msgSuccess('保存并核销成功');
+                this.userInfo = {};
+                this.list = [];
+                this.IClist = [];
+                this.loading = false;
+
+                this.$emit('update:open', false);
+              }
+            });
+          });
+        }).catch(() => {
+
+        });
+      }
     },
 
     _reqerror() {
@@ -237,7 +370,7 @@ export default {
         case 'issuingCard':
           // 发卡
           action.issuingCard({
-            user_code: 'adf34d2d22b64c43b31476a746dd757f',
+            user_code: '2356e0709128412eb3af3bf3397a0518',
             user_telno: '18415451845',
             user_name: '黄婷',
             issuing_code: '94671e0bff6647e88db777427d700e32',
@@ -247,12 +380,7 @@ export default {
         case 'readUserinfo':
           // 读取用户信息
           action.readUserInfo().then(res => {
-            this.userInfo = resultData(res.data, [
-              'user_code',
-              'user_name',
-              'user_telno',
-              'issuing_code',
-              'issuing_name']).data;
+            this.userInfo = resultData(res.data, USERINFO).data;
           });
 
           break;
@@ -260,22 +388,14 @@ export default {
           // 读取数据e
           action.readData().then(res => {
             const resData = res.data.map(e => {
-              // 29804;2614710;广东深圳福龙学校项目;鄂ALF106;张三丰;13812345678;1621648441990;1621648441990;广东深圳妈湾石头';
-
-              return resultData(e, [
-                '货源数值编号',
-                '运单数值编号',
-                '项目名称',
-                '车牌号',
-                '驾驶员姓名',
-                '联系手机号',
-                '入场时间（时间戳）',
-                '出场时间（时间戳）',
-                '泥尾名称'
-              ]).data;
+              return resultData(e, DATAINFO).data;
             });
             console.log(resData);
           });
+          break;
+        case 'writeOtherData':
+          // 读取数据e
+          action.writeOtherData();
           break;
         case 'writeData':
           // 写数据

@@ -69,5 +69,3 @@ export function passPayment(data) {
     data: data
   });
 }
-
-
