@@ -36,7 +36,7 @@ export default {
   },
   data() {
     return {
-      form: this.user,
+      form: { ...this.user },
       // 表单校验
       rules: {
         nickName: [
@@ -51,8 +51,7 @@ export default {
   },
   watch: {
     user(val) {
-      this.form = val;
-      console.log(this.form);
+      this.form = { ...val };
     }
   },
   methods: {
@@ -61,6 +60,7 @@ export default {
         if (valid) {
           updateUserProfile(this.form).then(response => {
             this.msgSuccess('修改成功');
+            this.$emit('refresh');
           });
         }
       });
