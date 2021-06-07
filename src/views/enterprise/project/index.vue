@@ -11,7 +11,7 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="货物大类" prop="commodityCategoryCode">
+        <!-- <el-form-item label="货物大类" prop="commodityCategoryCode">
           <el-select
             v-model="queryParams.commodityCategoryCode"
             placeholder="请选择货物大类"
@@ -26,7 +26,7 @@
               :value="dict.dictValue"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
           <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>

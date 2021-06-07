@@ -5,7 +5,16 @@
       <el-form-item label="项目名称" prop="projectName">
         <el-input v-model="form.projectName" placeholder="请输入项目名称" />
       </el-form-item>
-      <el-form-item label="货物大类" prop="commodityCategoryCode">
+      <el-form-item label="合作单位" prop="earthworkUnit">
+        <el-input v-model="form.earthworkUnit" placeholder="请输入合作单位" />
+      </el-form-item>
+      <el-form-item label="装货地址" prop="detail">
+        <amap-search ref="AmapSearchRef" v-model="form.detail" :search-option="searchOption" class="width100" @change="addressChange" />
+      </el-form-item>
+      <el-form-item label="卸货地址" prop="unloadDetail">
+        <amap-search ref="UnloadAmapSearchRef" v-model="form.unloadDetail" :search-option="searchOption" class="width100" @change="unloadAddressChange" />
+      </el-form-item>
+      <!--<el-form-item label="货物大类" prop="commodityCategoryCode">
         <el-radio-group v-model="form.commodityCategoryCode" @change="handlecommodityCategoryChange">
           <el-radio
             v-for="dict in commodityCategoryCodeOptions"
@@ -34,7 +43,7 @@
       </el-form-item>
       <el-form-item label="备注" prop="projectRemark">
         <el-input v-model="form.projectRemark" type="textarea" placeholder="请输入备注" />
-      </el-form-item>
+      </el-form-item>-->
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -46,9 +55,16 @@
 <script>
 import { addInfo, updateInfo } from '@/api/enterprise/project';
 // import UploadImage from '@/components/UploadImage/index';
+import AmapSearch from '@/components/Ddc/Tin/AmapSearch';
+
+const geocoder = new AMap.Geocoder({
+  radius: 1000,
+  extensions: 'all'
+});
 
 export default {
   components: {
+    AmapSearch
     // UploadImage
   },
   props: {
@@ -64,6 +80,10 @@ export default {
   },
   data() {
     return {
+      searchOption: {
+        city: '全国',
+        citylimit: true
+      },
       // 选中数组
       ids: [],
   	  // 货主编码字典
@@ -85,12 +105,18 @@ export default {
         projectName: [
           { required: true, message: '项目名称不能为空', trigger: 'blur' }
         ],
-        commodityCategoryCode: [
+        detail: [
+          { required: true, message: '装货地址不能为空', trigger: ['blur', 'change'] }
+        ],
+        unloadDetail: [
+          { required: true, message: '卸货地址不能为空', trigger: ['blur', 'change'] }
+        ]
+        /* commodityCategoryCode: [
           { required: true, message: '请选择货物大类', trigger: 'blur' }
         ],
         commoditySubclassCodes: [
           { required: true, message: '请选择货物小类', trigger: 'blur' }
-        ]
+        ]*/
       },
       // 是否多选
       isMore: '2',
@@ -119,15 +145,69 @@ export default {
     }
   },
   created() {
-    this.listByDict(this.commodityCategory).then(response => {
+    /* this.listByDict(this.commodityCategory).then(response => {
       this.commodityCategoryCodeOptions = response.data;
     });
     this.listByDict({ dictPid: '0', dictType: 'transportation_scenario' }).then(response => {
       this.projectTypeOptions = response.data;
       console.log(this.projectTypeOptions);
-    });
+    });*/
   },
   methods: {
+    // 搜索地址
+    addressChange(row) {
+      const { lng, lat, dictLabel } = row;
+      this.form.longitude = lng;
+      this.form.latitude = lat;
+      this.form.detail = dictLabel;
+      // 根据地址获取省市区
+      this.getAddressBylnglat(lng, lat);
+    },
+    // 通过经纬度获取详细点位信息
+    getAddressBylnglat(lng, lat) {
+      const _this = this;
+      // 通过高德地图的sdk将坐标转为地址
+      geocoder.getAddress([lng, lat], function(status, result) {
+        if (status === 'complete' && result.info === 'OK') {
+          if (result && result.regeocode) {
+            const { adcode, province, city, district } = result.regeocode.addressComponent;
+            _this.form.provinceCode = adcode.slice(0, 2);
+            _this.form.cityCode = adcode.slice(0, 4);
+            _this.form.districtCode = adcode.slice(0, 6);
+            _this.form.province = province;
+            _this.form.city = city;
+            _this.form.district = district;
+          }
+        }
+      });
+    },
+    // 搜索卸货地址
+    unloadAddressChange(row) {
+      const { lng, lat, dictLabel } = row;
+      this.form.unloadLongitude = lng;
+      this.form.unloadLatitude = lat;
+      this.form.unloadDetail = dictLabel;
+      // 根据地址获取省市区
+      this.getUnloadAddressBylnglat(lng, lat);
+    },
+    // 通过经纬度获取详细点位信息
+    getUnloadAddressBylnglat(lng, lat) {
+      const _this = this;
+      // 通过高德地图的sdk将坐标转为地址
+      geocoder.getAddress([lng, lat], function(status, result) {
+        if (status === 'complete' && result.info === 'OK') {
+          if (result && result.regeocode) {
+            const { adcode, province, city, district } = result.regeocode.addressComponent;
+            _this.form.unloadProvinceCode = adcode.slice(0, 2);
+            _this.form.unloadCityCode = adcode.slice(0, 4);
+            _this.form.unloadDistrictCode = adcode.slice(0, 6);
+            _this.form.unloadProvince = province;
+            _this.form.unloadCity = city;
+            _this.form.unloadDistrict = district;
+          }
+        }
+      });
+    },
     /** 提交按钮 */
     submitForm() {
       this.$refs['form'].validate(valid => {
@@ -166,9 +246,30 @@ export default {
         id: null,
         shipmentCode: null,
         projectName: null,
-        commodityCategoryCode: null,
-        commoditySubclassCodes: null,
-        projectRemark: null,
+        earthworkUnit: null,
+        // 装货
+        detail: null,
+        provinceCode: null,
+        cityCode: null,
+        districtCode: null,
+        province: '',
+        city: '',
+        district: '',
+        latitude: null,
+        longitude: null,
+        // 卸货
+        unloadDetail: null,
+        unloadProvinceCode: null,
+        unloadCityCode: null,
+        unloadDistrictCode: null,
+        unloadProvince: null,
+        unloadCity: null,
+        unloadDistrict: null,
+        unloadLatitude: null,
+        unloadLongitude: null,
+        // commodityCategoryCode: null,
+        // commoditySubclassCodes: null,
+        // projectRemark: null,
         projectType: '1100' // 新增项目类型 1100 大宗商品 1200 渣土
       };
       this.resetForm('form');
@@ -176,7 +277,6 @@ export default {
     },
     // 表单赋值
     setForm(data) {
-      console.log(data);
 	    this.form = data;
       if (data.commoditySubclassCodes) {
         this.commoditySubclassCodes = data.commoditySubclassCodes.split(',');
@@ -196,9 +296,7 @@ export default {
       const commodity = this.commodityCategoryCodeOptions.filter(item => {
         return item.dictValue === value;
       });
-      console.log(commodity);
       this.commoditySubclass.dictPid = commodity[0].dictCode;
-      console.log(this.commoditySubclass);
       this.listByDict(this.commoditySubclass).then(response => {
         this.commoditySubclassCodesOptions = response.data;
       });
@@ -213,7 +311,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 	.mr3{
 	  margin-right: 3%;
 	}
