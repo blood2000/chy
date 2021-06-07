@@ -56,7 +56,6 @@
 import { addInfo, updateInfo } from '@/api/enterprise/project';
 // import UploadImage from '@/components/UploadImage/index';
 import AmapSearch from '@/components/Ddc/Tin/AmapSearch';
-import { getProvinceList, getCityList, geCountyList } from '@/api/system/area';
 
 const geocoder = new AMap.Geocoder({
   radius: 1000,
