@@ -1,6 +1,7 @@
 <template>
-  <el-tabs type="border-card" style="margin:0 12px; height:99%">
-    <el-tab-pane label="新增运单">
+  <div class="frame">
+    <Tabs :tablist="tablist" @getActiveName="getActiveName" />
+    <div v-if="activeName === '新增运单'">
       <div class="container">
         <el-form ref="form" :model="form" :rules="rules" label-width="140px">
           <div class="supplement-title"><div class="supplement-icon" />货源信息</div>
@@ -269,10 +270,10 @@
           </el-col>
         </el-row>
       </div>
-    </el-tab-pane>
+    </div>
 
-    <el-tab-pane label="批量新增">
-      <el-row :gutter="10" class="mb8">
+    <div v-if="activeName === '批量新增'" class="container">
+      <el-row :gutter="10" style="margin: 0 24px;">
         <el-col :span="1.5">
           <el-button
             type="primary"
@@ -298,13 +299,12 @@
           >下载模板</el-button>
         </el-col>
       </el-row>
-    </el-tab-pane>
-
+    </div>
     <!-- 运输单批量导入 对话框 -->
     <waybillimport-dialog ref="WaybillimportDialog" :title="title" :open.sync="openImport" />
     <!-- 装/卸货图片导入 对话框 -->
     <pictureimport-dialog ref="PictureimportDialog" :title="title" :open.sync="open" />
-  </el-tabs>
+  </div>
 </template>
 
 <script>
@@ -312,16 +312,21 @@ import { extra, getOrder, getGoods, getAddress, driver, vehicle, vehicleInfo, te
 import UploadImage from '@/components/UploadImage/index';
 import WaybillimportDialog from './waybillimportDialog';
 import PictureimportDialog from './pictureimportDialog';
+import Tabs from '@/components/Tabs/index';
 
 export default {
   name: 'Supplement',
   components: {
+    Tabs,
     UploadImage,
     WaybillimportDialog,
     PictureimportDialog
   },
   data() {
     return {
+      // Tabs参数
+      tablist: [{ tabName: '新增运单' }, { tabName: '批量新增' }],
+      activeName: '新增运单',
       // 装货地址选择
       loadAddressOptions: [],
       // 商品选择
@@ -406,6 +411,9 @@ export default {
     // this.getDriver();
   },
   methods: {
+    getActiveName(val) {
+      this.activeName = val;
+    },
     // 装卸货时间选择判断
     loadTimeChoose(e) {
       const loadtime = new Date(e);
@@ -772,9 +780,14 @@ export default {
 </script>
 
 <style>
+.frame{
+  margin:0 15px 15px;
+  /* height: 100%; */
+}
 .container {
+  padding: 24px 0 30px;
+  background: #fff;
   overflow-y: auto;
-  height: calc(100vh - 201px);
 }
 .supplement-icon{
   margin-right: 6px;
@@ -791,6 +804,7 @@ export default {
   font-weight: bold;
   line-height: 24px;
   color: #262626;
+  margin-left: 8px;
 }
 .el-divider--horizontal{
   margin: 12px 0 24px;
