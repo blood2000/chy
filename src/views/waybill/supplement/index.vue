@@ -1,6 +1,6 @@
 <template>
   <el-tabs type="border-card" style="margin:0 12px; height:99%">
-    <el-tab-pane label="运单补录">
+    <el-tab-pane label="新增运单">
       <div class="container">
         <el-form ref="form" :model="form" :rules="rules" label-width="140px">
           <div class="supplement-title"><div class="supplement-icon" />货源信息</div>
@@ -271,7 +271,7 @@
       </div>
     </el-tab-pane>
 
-    <el-tab-pane label="批量补录">
+    <el-tab-pane label="批量新增">
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
           <el-button
