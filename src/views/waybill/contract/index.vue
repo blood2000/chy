@@ -228,25 +228,6 @@ export default {
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
     },
-    /** 详情按钮操作 */
-    handleUpdate(row) {
-      this.currentId = row.code;
-      this.open = true;
-      this.title = '运输单信息';
-      this.formDisable = true;
-    },
-    /** 标记异常按钮操作 */
-    handleMark(row) {
-      this.currentId = row.code;
-      this.openMarkAbanormal = true;
-      this.title = '标记异常';
-    },
-    /** 分单列表按钮操作 */
-    handleSeperate(row) {
-      this.currentId = row.code;
-      this.openSeperateList = true;
-      this.title = '子单列表';
-    },
 
     /* 打印 */
     async handleInfo(row) {

@@ -70,7 +70,6 @@
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
           <el-button
-            v-hasPermi="['assets:vehicle:edit']"
             type="primary"
             icon="el-icon-upload2"
             size="mini"
@@ -251,7 +250,7 @@ export default {
     },
     // 导出
     handleExport() {
-      this.download('/transportation/invoice/listWayBill', { ...this.queryParams }, `askfor_${new Date().getTime()}.xlsx`);
+      this.download('/transportation/driverCountSearch/export', { ...this.queryParams }, `司机往来明细_${new Date().getTime()}.xlsx`);
     }
   }
 };
