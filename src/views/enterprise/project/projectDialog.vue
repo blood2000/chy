@@ -104,6 +104,12 @@ export default {
       rules: {
         projectName: [
           { required: true, message: '项目名称不能为空', trigger: 'blur' }
+        ],
+        detail: [
+          { required: true, message: '装货地址不能为空', trigger: ['blur', 'change'] }
+        ],
+        unloadDetail: [
+          { required: true, message: '卸货地址不能为空', trigger: ['blur', 'change'] }
         ]
         /* commodityCategoryCode: [
           { required: true, message: '请选择货物大类', trigger: 'blur' }
