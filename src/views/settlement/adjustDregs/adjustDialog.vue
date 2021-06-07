@@ -88,7 +88,7 @@
     </el-table>
 
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="submitForm">立即核算</el-button>
+      <el-button type="primary" :disabled="!adjustlist || adjustlist.length < 1" @click="submitForm">立即核算</el-button>
       <el-button @click="cancel">返回</el-button>
     </div>
   </el-dialog>

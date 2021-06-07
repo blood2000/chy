@@ -442,6 +442,7 @@
           :config="{api: adjustDregsApi}"
           :show-search.sync="showSearch"
           @getList="getadjustDregsList"
+          @handleTableBtn="handleTableBtn"
           @handleSelectionChange="handleSelectionChange1"
         />
       </div>
@@ -656,18 +657,21 @@ export default {
 
     this.handleClick('4');
 
-    !this.$route.query.adjust && this.getList();
-    this.listByDict(this.commodityCategory).then(response => {
-      this.commodityCategoryCodeOptions = response.data;
-    });
-
-    console.log(41151);
-    this.getDicts('transportation_scenario').then(res => {
-      // console.log(res);
-      this.transportation_scenario = res.data;
-    });
+    // 请求字典值
+    this.getAllDict();
   },
   'methods': {
+    getAllDict() {
+      this.getDicts('transportation_scenario').then(res => {
+        this.transportation_scenario = res.data;
+      });
+
+      !this.$route.query.adjust && this.getList();
+      this.listByDict(this.commodityCategory).then(response => {
+        this.commodityCategoryCodeOptions = response.data;
+      });
+    },
+
     datechoose(date) {
       if (date) {
         this.queryParams.orderStartTime = this.parseTime(date[0], '{y}-{m}-{d}');
@@ -699,7 +703,7 @@ export default {
             label: 'IC卡核对状态',
             width: 120
           }, { // 需要顶替掉的项
-            prop: 'huojhzouihfowe',
+            prop: 'shipperCopeFee',
             isShow: true,
             tooltip: false,
             sortNum: 28,
@@ -843,9 +847,10 @@ export default {
           this.$refs.RateDialog.setForm(row);
           break;
         case 'XIANGQONG':
+          console.log(123);
           this.Statementsdialog = true;
           this.title = '对账单详情';
-          this.$refs.StatementsDialog.setForm(row);
+          this.$refs.StatementsDialog.setBatchStatementCode(row.batchStatementCode, row); // 传code
           break;
         default:
           break;
