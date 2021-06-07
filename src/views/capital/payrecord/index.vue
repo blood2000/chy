@@ -181,7 +181,7 @@
             @click="handleExport"
           >导出</el-button>
         </el-col>
-        <el-col :span="1.5">
+        <!-- <el-col :span="1.5">
           <el-button
             type="info"
             icon="el-icon-upload2"
@@ -197,7 +197,7 @@
             @click="handleImportTemplate"
           >下载模板</el-button>
         </el-col>
-        <el-tag type="warning" class="mb10">提示: 已打款、打款成功的运输单才能上报流水</el-tag>
+        <el-tag type="warning" class="mb10">提示: 已打款、打款成功的运输单才能上报流水</el-tag> -->
         <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
@@ -268,11 +268,11 @@
           <span>{{ parseTime(row.updateTime) }}</span>
         </template>
         <template #edit="{row}">
-          <el-button
+          <!-- <el-button
             size="mini"
             type="text"
             @click="handleReport(row)"
-          >上报流水</el-button>
+          >上报流水</el-button> -->
           <el-button
             size="mini"
             type="text"
@@ -426,7 +426,7 @@ export default {
       prop: 'edit',
       isShow: true,
       label: '操作',
-      width: 180,
+      width: 100,
       fixed: 'right'
     });
     this.getList();
