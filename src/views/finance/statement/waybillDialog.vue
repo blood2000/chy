@@ -2,7 +2,7 @@
   <!-- 运单明细对话框 -->
   <el-dialog :title="title" :visible="visible" width="1200px" append-to-body :close-on-click-modal="false" @close="cancel">
     <el-table v-loading="loading" highlight-current-row :data="waybilllist" max-height="650" border>
-      <el-table-column type="index" label="序号" align="center" width="50" />
+      <el-table-column type="index" label="序号" fixed="left" align="center" width="50" />
       <el-table-column width="170" label="运输单号" align="center" prop="waybillNo" />
       <el-table-column width="120" label="货物大类" align="center" prop="goodsBigTypeName" />
       <el-table-column width="180" label="装货地址" align="center" show-overflow-tooltip prop="loadFormattedAddress" />

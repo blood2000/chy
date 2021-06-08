@@ -72,7 +72,7 @@
 
       <el-table v-loading="loading" highlight-current-row border :data="noticeList" :close-on-click-modal="false" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
-        <el-table-column label="序号" width="55" align="center" prop="noticeId" />
+        <el-table-column label="序号" width="55" align="center" fixed="left" prop="noticeId" />
         <el-table-column
           label="公告标题"
           align="center"
@@ -97,7 +97,7 @@
             <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center">
+        <el-table-column label="操作" align="center" fixed="left">
           <template slot-scope="scope">
             <el-button
               v-hasPermi="['system:notice:edit']"

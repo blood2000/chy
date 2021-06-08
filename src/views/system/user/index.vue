@@ -164,6 +164,7 @@
             <el-table-column
               label="操作"
               align="center"
+              fixed="left"
               width="160"
               class-name="small-padding fixed-width"
             >
