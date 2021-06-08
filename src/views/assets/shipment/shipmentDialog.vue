@@ -341,52 +341,52 @@
           />
         </el-select>
       </el-form-item>
-        <el-row :gutter="20">
-            <el-col :span="23">
-                <el-form-item label="授信保护期" prop="singleSourceMultiUnloadingLocations">
-                    <el-date-picker
-                            v-model="form.creditStartTime"
-                            clearable
-                            class="width45"
-                            type="date"
-                            value-format="yyyy-MM-dd"
-                            placeholder="授信开始日期"
-                    />
-                    <span style="margin: 0 1.5%;">至</span>
-                    <el-date-picker
-                            v-model="form.creditEndTime"
-                            clearable
-                            class="width45 mr3"
-                            type="date"
-                            value-format="yyyy-MM-dd"
-                            placeholder="授信结束日期"
-                    />
-                </el-form-item>
-            </el-col>
-        </el-row>
+      <el-row :gutter="20">
+        <el-col :span="23">
+          <el-form-item label="授信保护期" prop="singleSourceMultiUnloadingLocations">
+            <el-date-picker
+              v-model="form.creditStartTime"
+              clearable
+              class="width45"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="授信开始日期"
+            />
+            <span style="margin: 0 1.5%;">至</span>
+            <el-date-picker
+              v-model="form.creditEndTime"
+              clearable
+              class="width45 mr3"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="授信结束日期"
+            />
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-row :gutter="20">
         <!--<el-col v-if="form.isMonthly" :span="11">-->
-          <el-col :span="11">
+        <el-col :span="11">
           <el-form-item label="授信金额" prop="creditAmount">
             <el-input-number v-model="form.creditAmount" :precision="2" :min="0" :max="1000000000" :controls="false" placeholder="保留两位小数" />
           </el-form-item>
         </el-col>
-          <el-col :span="11">
-              <el-form-item label="是否月结" prop="isMonthly">
-                  <el-select
-                          v-model="form.isMonthly"
-                          clearable
-                          filterable
-                  >
-                      <el-option
-                              v-for="dict in isOptions"
-                              :key="dict.dictValue"
-                              :label="dict.dictLabel"
-                              :value="dict.dictValue"
-                      />
-                  </el-select>
-              </el-form-item>
-          </el-col>
+        <el-col :span="11">
+          <el-form-item label="是否月结" prop="isMonthly">
+            <el-select
+              v-model="form.isMonthly"
+              clearable
+              filterable
+            >
+              <el-option
+                v-for="dict in isOptions"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="11">
