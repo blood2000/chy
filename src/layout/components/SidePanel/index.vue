@@ -179,13 +179,14 @@ export default {
   .s-side-menu{
     padding-top: 20px;
     .s-side-menu-item{
-      width: 64px;
+      width: 52px;
       height: 86px;
+      padding-left: 4px;
       margin-left: 8px;
-      padding-right: 8px;
+      margin-right: 12px;
       color: #9FA2B5;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: color 0.3s;
       position: relative;
       .iconfont{
         font-size: 24px;
@@ -205,22 +206,23 @@ export default {
         top: 50%;
         margin-top: -57px;
         left: 0;
-        width: 64px;
+        width: 0px;
         height: 114px;
         background: url('~@/assets/images/navBar/nav_bg.png') no-repeat;
         background-size: 100% 100%;
         z-index: 0;
         opacity: 0;
-        transition: all 0.3s;
+        transition: opacity 0.3s;
       }
 
       // 选中菜单样式
       &.isOpen{
         color: #409EFF;
-        transition: all 0.3s;
+        transition: color 0.3s;
         &::after{
           opacity: 1;
-          transition: all 0.3s;
+          transition: opacity 0.3s;
+          width: 64px;
         }
       }
 
