@@ -787,7 +787,11 @@ export default {
           if (this.form.noNeedUnloadImg) {
             noNeedUnloadImg = 1;
           }
-          var extendForm = { noNeedUnloadImg: noNeedUnloadImg, openProjectDesignView: this.form.openProjectDesignView };
+          var openProjectDesignView = 1;
+          if (this.form.openProjectDesignView) {
+            openProjectDesignView = 0;
+          }
+          var extendForm = { noNeedUnloadImg: noNeedUnloadImg, openProjectDesignView: openProjectDesignView };
           // eslint-disable-next-line no-undef
           this.form = Object.assign(this.form, extendForm);
           if (this.form.id) {
