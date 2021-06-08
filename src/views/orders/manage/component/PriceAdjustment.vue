@@ -44,8 +44,6 @@
           </el-form-item>
         </el-form>
 
-        <!-- 每一小块 -->
-
         <div v-for="(redi,i) in goods.redis" :key="i" class="mt20">
           <AccounTing
             :ref="'AccounTing'+goods.activeName+i"
@@ -109,7 +107,6 @@ export default {
 
   methods: {
     getGoodsAccounting() {},
-
     // 确认
     async submit(bool) {
       if (bool) {
@@ -137,13 +134,9 @@ export default {
         };
 
         // 请求接口
-
         const data = await adjustPrice(req);
-
         this.loading = false;
         this.msgSuccess(data.msg);
-        // 全部保存完毕在回调
-
         this.$emit('submitRes', 'success');
       } else {
         this.$emit('submitRes', false);
@@ -154,11 +147,10 @@ export default {
       // 只能用 for of 遍历
       for (const e of this.tabs) {
         const lists = e.redis.map(async(ee, i) => {
-          // 只能调一次
           const accounTing = (await this.$refs['AccounTing' + e.activeName + i][0]._submitForm());
           return {
             ...ee,
-            ...accounTing // 返回 ruleDictValue(这个值已经有了) 和 orderFreightBoList(这个是包装完后的)
+            ...accounTing
           };
         });
         e.newRedis = await Promise.all(lists);

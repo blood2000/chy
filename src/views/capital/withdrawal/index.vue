@@ -260,6 +260,13 @@ export default {
   // },
   created() {
     this.tableHeaderConfig(this.tableColumnsConfig, withDrawalListApi);
+
+    const routeData = this.$route.query.data;
+    if (routeData) {
+      console.log(routeData);
+      this.queryParams.status = JSON.parse(routeData).status;
+    }
+
     this.getList();
     // this.getRouterQuery(this.$route);
   },
@@ -296,6 +303,7 @@ export default {
       this.queryParams.applyTimeBegin = null;
       this.queryParams.applyTimeEnd = null;
       this.resetForm('queryForm');
+      this.queryParams.status = undefined;
       this.handleQuery();
     },
     /** 导出按钮操作 */

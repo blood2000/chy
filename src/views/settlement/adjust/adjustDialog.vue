@@ -1,5 +1,4 @@
 <template>
-  <!-- 评价对话框 -->
   <el-dialog class="i-adjust" :title="title" :visible="visible" width="1400px" :close-on-click-modal="false" append-to-body @close="cancel">
 
     <el-table v-loading="loading" highlight-current-row :data="adjustlist" border>
@@ -10,8 +9,6 @@
       <el-table-column width="120" label="司机电话" align="center" prop="driverPhone" />
       <el-table-column width="120" label="车牌号" align="center" prop="licenseNumber" />
 
-      <!-- stowageStatus "配载方式 0->吨，1->方 2->车数配载" -->
-      <!-- isDregs "是否渣土 1->是  0->否" -->
       <el-table-column width="160" label="装货数量" align="left" prop="loadWeight">
         <template slot-scope="scope">
           <span v-if="scope.row.isDregs === 1">{{ scope.row.loadWeight }}</span>
@@ -64,7 +61,6 @@
 
       <el-table-column width="120" label="抹零金额(元)" align="center" prop="m0Fee" />
 
-      <!-- <el-table-column width="160" label="司机应收运费" align="center" prop="deliveryFeeDeserved" /> -->
       <el-table-column width="160" label="司机实收运费(元)" align="center" prop="deliveryFeePractical" />
 
       <!-- 补贴项目 -->
@@ -120,7 +116,6 @@
       <el-table-column width="162" label="司机实收金额(元)" align="center" prop="deliveryCashFee" fixed="right">
         <template slot-scope="scope">
           <span>{{ scope.row.deliveryCashFee }}</span>
-          <!-- <el-input-number v-else v-model="scope.row.deliveryCashFee" :controls="false" :precision="2" placeholder="请输入司机实收金额" style="width:100%;" size="mini" @blur="getDeliveryCashFee(scope.row)" /> -->
         </template>
       </el-table-column>
 
@@ -155,13 +150,8 @@ export default {
       isEdit2: false,
       isEdit: false,
       deliveryCashFee: undefined,
-      // tableColumnsConfig: [],
       // 遮罩层
       loading: false,
-      // 总条数
-      // total: 0,
-      // 旧的数据
-      // oldList: [],
       // 评价列表
       adjustlist: [],
       // 查询参数
@@ -238,9 +228,6 @@ export default {
       row.taxPayment = taxPayment;
       row.m0Fee = m0Fee;
       row.loss = loss;
-
-      // filterRow.deliveryCashFee = row.deliveryCashFee;
-      // filterRow[key] = row[key];
     },
 
     /** 提交按钮 */
@@ -278,7 +265,6 @@ export default {
       }).then(function() {
         return batchCheck({ boList });
       }).then(() => {
-        // this.getList();
         this.msgSuccess('核算成功');
         this.visible = false;
         this.$emit('refresh');
@@ -288,9 +274,6 @@ export default {
     getList() {
       this.loading = true;
       adjustDetail(this.queryParams).then(response => {
-        // isDregs // 是否渣土   1 是 0 否 (司机实收 只有渣土1能修改)
-
-        // this.oldList = JSON.parse(JSON.stringify(response.data));
         this.adjustlist = JSON.parse(JSON.stringify(response.data));
 
         this.total = response.total;
@@ -309,8 +292,6 @@ export default {
     setForm(data) {
       this.isEdit2 = false;
       this.isEdit = false;
-
-      // this.isPiliang = data.length > 1;
       this.deliveryCashFee = undefined;
       this.queryParams.waybillCodeList = data;
       this.getList();
@@ -336,33 +317,6 @@ export default {
         return JSON.stringify(arr);
       }
     }
-
-    // 获取数据
-    // async getDeliveryCashFee(row) {
-    //   // const { data } = await deliveryCashFee({
-    //   //   deliveryCashFee: row.deliveryCashFee, //	司机实收现金		false
-    //   //   m0DictValue: row.m0DictValue,
-    //   //   waybillCode: row.waybillCode,
-    //   //   // deliveryFeeDeserved: row.deliveryFeeDeserved, // 司机应收运费
-    //   //   shipperCode: row.shipperCode //	货主Code		false
-    //   // });
-
-    //   // const {
-    //   //   driverFee, //	抹零后司机实收金额	number
-    //   //   m0Fee, //	抹零金额	number
-    //   //   serviceFee, //	服务费	number
-    //   //   shipperRealPay, //	货主实付金额	number
-    //   //   taxPayment //	纳税金额
-    //   // } = data;
-
-
-    //   // row.serviceFee = serviceFee;
-    //   // row.shipperRealPay = shipperRealPay;
-    //   // row.m0Fee = m0Fee;
-    //   // row.deliveryCashFee = driverFee;
-    //   // row.taxPayment = taxPayment;
-    // }
-
   }
 };
 </script>

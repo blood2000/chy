@@ -1,16 +1,6 @@
 <template>
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-      <!-- <el-form-item label="地址类型" prop="addressType">
-        <el-select v-model="queryParams.addressType" placeholder="请选择地址类型" clearable filterable size="small">
-          <el-option
-            v-for="dict in addressTypeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item> -->
       <el-form-item v-if="false" label="状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择状态" clearable filterable size="small">
           <el-option
@@ -39,15 +29,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <!-- <el-form-item label="地址详情" prop="detail">
-        <el-input
-          v-model="queryParams.detail"
-          placeholder="请输入地址详情"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -63,8 +44,6 @@
 
 
       <el-table v-loading="loading" highlight-current-row :data="addressList" border>
-        <!-- <el-table-column type="selection" width="55" align="center" fixed="left" /> -->
-
         <el-table-column label="" align="center" width="50">
           <template slot-scope="scope">
             <el-radio :label="scope.row.id">
@@ -163,7 +142,6 @@ export default {
         contactPhone: undefined
       },
 
-      // 选中
       isSelected: {}
     };
   },
@@ -189,7 +167,6 @@ export default {
         this.loading = false;
       });
 
-      // 测试数据
       this.loading = false;
     },
     // 地址类型字典翻译

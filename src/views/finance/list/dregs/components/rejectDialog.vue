@@ -19,16 +19,12 @@ import { refuseBilling } from '@/api/finance/list';
 
 export default {
   name: 'RejectDialog',
-  components: {
-    // UploadImage
-  },
   props: {
     title: {
       type: String,
       default: ''
     },
     open: Boolean
-    // disable: Boolean
   },
   data() {
     return {

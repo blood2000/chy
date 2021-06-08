@@ -89,7 +89,7 @@
 <script>
 import CardReader from '@/libs/ICCard/CardReader';
 import { checkList, delWaybill, check } from '@/api/settlement/adjustDregs';
-const { fn: { resultData }, action } = CardReader;
+const { action } = CardReader;
 export default {
   name: 'NuclearCard',
   props: {
@@ -239,17 +239,9 @@ export default {
 
     async handler(key) {
       switch (key) {
-        // case 'connect':
-        //   // 连接服务
-        //   CardReader.fn.connect();
-        //   break;
         case 'cancellation':
           // 注销卡片
           action.cancellation().then(res => { console.log(res); });
-          break;
-        case 'getCard':
-          // 获得卡片
-          // action.getCard().then(res => {});
           break;
         case 'issuingCard':
           // 发卡
@@ -268,68 +260,18 @@ export default {
           break;
         case 'readData':
           // 读取数据e
-          // action.readData().then(res => {
-          //   const resData = res.data.map(e => {
-          //     return resultData(e, DATAINFO).data;
-          //   });
-          //   console.log(resData);
-          // });
+          action.readData().then(res => {
+            console.log(res);
+          });
           break;
         case 'readUserInfoAndreadData':
           // 读取数据e
           action.readUserInfoAndreadData();
           break;
         case 'writeData':
-          // || '1010|1|29804;2614710;广东深圳福龙学校项目;鄂ALF106;张三丰;13812345678;1621648441990;1621648441990;2614710;广东深圳妈湾石头';
-
-          //  {
-          //     "waybillid": 2365416,
-          //     "licensenumber": "晋F31022",
-          //     "orderid": 27108,
-          //     "projectname": null,
-          //     "drivername": "张涛",
-          //     "driverphone": "13703509052",
-          //     "filltimedate": "1595034420",
-          //     "signtimedate": "1595042520",
-          //     "mudtail": "苑家辛庄村东五福煤业有限公司"
-          //   },
-
           // 写数据
           await action.writeData('1010|1|27251;2396020;;晋F31022;张涛;13703509052;1596868020000;1596873720000;;苑家辛庄村东五福煤业有限公司');
           break;
-          // case 'writeDataBatch':
-          //   // 写批量数据
-          //   // CardReader.action.readData();
-          //   // _this.start = true;
-          //   // let index1 = 1;
-          //   // const interval1 = set1(function() {
-          //   //   console.log(index1);
-          //   //   CardReader.action.writeData();
-          //   //   index1 += 1;
-          //   //   if (!_this.start) {
-          //   //     window.clearInterval(interval1);
-          //   //   }
-          //   // }, 1500);
-          //   break;
-          // case 'folderBatch':
-          //   // 批量创建目录
-          //   // CardReader.action.readData();
-          //   // _this.start = true;
-          //   // let index = 1;
-          //   // const interval2 = setInterval(function() {
-          //   //   console.log(index);
-          //   //   CardReader.action.createFolder(index);
-          //   //   index += 1;
-          //   //   if (!_this.start) {
-          //   //     window.clearInterval(interval2);
-          //   //   }
-          //   // }, 1500);
-          //   break;
-          // case 'stop':
-          //   // 停止定时器
-          //   _this.start = false;
-          //   break;
-
         default:
           break;
       }

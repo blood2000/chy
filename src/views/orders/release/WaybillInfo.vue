@@ -79,19 +79,6 @@ export default {
         pageNum: 1,
         pageSize: 10
       },
-
-      // {
-      //     waybillNo: 123, // waybillCode	运输单CODE	string
-      //     // waybillNo	运输单号	string
-      //     licenseNumber: 123,
-      //     driverName: 123,
-      //     driverPhone: 123,
-      //     fillTime: 123,
-      //     signTime: 123,
-      //     status: 123 // 运单状态：--0未接单/1已接单/2已装货/3已签收（已卸货）/4已回单（收单复核）/5已结算/6已申请（打款）/7已打款/8已申请开票/9已开票
-      //   }
-
-
       tableColumnsConfig: [
         {
           prop: 'waybillNo',
@@ -168,13 +155,10 @@ export default {
 
       // 请求用
       orderCode: '',
-
       // 展示用
       chenyunma: true,
       url: '',
-
       // 弹框
-      // 当前选中的运单id
       currentId: null,
       title: '',
       open: false,

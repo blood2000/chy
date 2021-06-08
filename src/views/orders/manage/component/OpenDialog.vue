@@ -93,14 +93,10 @@ import { dispatchOrder } from '@/api/order/manage';
 import tableColumnsConfig_listDriver from '../data/config-driver';
 import tableColumnsConfig_listInfo from '../data/config-team';
 
-const apiFn = {
-  listDriver, listInfo
-};
-
+const apiFn = { listDriver, listInfo };
 
 export default {
   name: 'OpenDialog',
-
   props: {
     dispatch: {
       type: Object,
@@ -183,16 +179,13 @@ export default {
     actionIndex: {
       handler(value) {
         if (!value) return;
-
         this.activeName = value === '2' ? 'listDriver' : 'listInfo';
       },
       immediate: true
     }
-
   },
   created() {
     const arr = JSON.parse(JSON.stringify(this.cbData)) || [];
-
     this['t_cbData_' + this.activeName] = arr.map(e => {
       return {
         ...e,
@@ -203,23 +196,17 @@ export default {
   },
 
   methods: {
-    /** 查询【请填写功能名称】列表 */
     getList() {
       this.loading = true;
-
       let quer = this.queryParams;
       if (this.activeName === 'listDriver') {
         quer = {
           ...this.queryParams,
-          // authStatus: 3,
           isOK: 0
-
         };
       } else {
         quer = {
           ...this.queryParams,
-          // status: 0,
-          // authStatus: 3,
           isOK: 0
         };
       }
@@ -228,14 +215,10 @@ export default {
         this['list_' + this.activeName] = response.rows;
         this['total_' + this.activeName] = response.total;
         this.loading = false;
-
         if (this['t_cbData_' + this.activeName]) {
           if (this.activeName === 'listDriver') {
             const arr = [];
-
             const data1 = this.t_data1['page_' + this.queryParams_listDriver.pageNum];
-
-            // data1 当前页选中的值(初始值为空)
             (data1 || this['t_cbData_' + this.activeName]).forEach(ee => {
               this.list.forEach((e, index) => {
                 if (e.code === ee.code) {
@@ -243,7 +226,6 @@ export default {
                 }
               });
             });
-
             this['myTo_' + this.activeName] = arr;
           } else {
             this['t_cbData_' + this.activeName].forEach(ee => {
@@ -261,7 +243,7 @@ export default {
     },
 
     /** 切换操作 */
-    handleClick(value) {
+    handleClick() {
       if (!this.list_listDriver.length || !this.list_listInfo.length) {
         this.getList();
       }
@@ -277,23 +259,17 @@ export default {
       this.handleQuery();
     },
 
-    handleUpdate() {
-
-    },
-
     // 多选框选中数据
     handleSelectionChange(selection) {
       const list1 = this['list_' + this.activeName] || [];
       const list2 = this['t_cbData_' + this.activeName] || [];
 
-      const concatArr = this._deduplication([...list1, ...list2], 'code'); // 当前页和其他页选中的数据
+      const concatArr = this._deduplication([...list1, ...list2], 'code');
 
-      // 过滤出其他页的数据
       const weArr = concatArr.filter(e => {
         return e.tin_isOk;
       });
 
-      // 选中的拼接上其他页的数据
       const newArr = this._deduplication([...selection, ...weArr], 'code');
       this.ids = newArr.map(item => item.code);
       this['selections_' + this.activeName] = newArr;
@@ -328,7 +304,6 @@ export default {
           this.$emit('handleSelectionChange', { [this.activeName]: this.selections }, bool);
         }
       } else {
-        // dispatch 有值是manage组件调用的
         if (bool) {
           let arr = [];
           if (this.activeName === 'listDriver') {
