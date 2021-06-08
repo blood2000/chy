@@ -5,15 +5,15 @@
       <el-form-item label="项目名称" prop="projectName">
         <el-input v-model="form.projectName" placeholder="请输入项目名称" />
       </el-form-item>
-        <el-form-item label="合作单位" prop="earthworkUnit">
-            <el-input v-model="form.earthworkUnit" placeholder="请输入合作单位" />
-        </el-form-item>
-        <el-form-item label="装货地址" prop="detail">
-            <amap-search ref="AmapSearchRef" v-model="form.detail" :search-option="searchOption" class="width100" @change="addressChange" />
-        </el-form-item>
-        <el-form-item label="卸货地址" prop="unloadDetail">
-            <amap-search ref="AmapSearchRef1" v-model="form.unloadDetail" :search-option="searchOption" class="width100" @change="addressChange" />
-        </el-form-item>
+      <el-form-item label="合作单位" prop="earthworkUnit">
+        <el-input v-model="form.earthworkUnit" placeholder="请输入合作单位" />
+      </el-form-item>
+      <el-form-item label="装货地址" prop="detail">
+        <amap-search ref="AmapSearchRef" v-model="form.detail" :search-option="searchOption" class="width100" @change="addressChange" />
+      </el-form-item>
+      <el-form-item label="卸货地址" prop="unloadDetail">
+        <amap-search ref="UnloadAmapSearchRef" v-model="form.unloadDetail" :search-option="searchOption" class="width100" @change="unloadAddressChange" />
+      </el-form-item>
       <!--<el-form-item label="货物大类" prop="commodityCategoryCode">
         <el-radio-group v-model="form.commodityCategoryCode" @change="handlecommodityCategoryChange">
           <el-radio
@@ -56,7 +56,6 @@
 import { addInfo, updateInfo } from '@/api/enterprise/project';
 // import UploadImage from '@/components/UploadImage/index';
 import AmapSearch from '@/components/Ddc/Tin/AmapSearch';
-import { getProvinceList, getCityList, geCountyList } from '@/api/system/area';
 
 const geocoder = new AMap.Geocoder({
   radius: 1000,
@@ -105,6 +104,12 @@ export default {
       rules: {
         projectName: [
           { required: true, message: '项目名称不能为空', trigger: 'blur' }
+        ],
+        detail: [
+          { required: true, message: '装货地址不能为空', trigger: ['blur', 'change'] }
+        ],
+        unloadDetail: [
+          { required: true, message: '卸货地址不能为空', trigger: ['blur', 'change'] }
         ]
         /* commodityCategoryCode: [
           { required: true, message: '请选择货物大类', trigger: 'blur' }
@@ -152,15 +157,11 @@ export default {
     // 搜索地址
     addressChange(row) {
       const { lng, lat, dictLabel } = row;
-      this.getFormData(lng, lat, dictLabel);
-      // 只填地址也可以回填省市区
-      this.getAddressBylnglat(lng, lat);
-    },
-    // 同步表单数据
-    getFormData(lng, lat, name) {
       this.form.longitude = lng;
       this.form.latitude = lat;
-      this.form.detail = name;
+      this.form.detail = dictLabel;
+      // 根据地址获取省市区
+      this.getAddressBylnglat(lng, lat);
     },
     // 通过经纬度获取详细点位信息
     getAddressBylnglat(lng, lat) {
@@ -169,48 +170,43 @@ export default {
       geocoder.getAddress([lng, lat], function(status, result) {
         if (status === 'complete' && result.info === 'OK') {
           if (result && result.regeocode) {
-            const { adcode } = result.regeocode.addressComponent;
-            _this.getAreaCode(adcode);
+            const { adcode, province, city, district } = result.regeocode.addressComponent;
+            _this.form.provinceCode = adcode.slice(0, 2);
+            _this.form.cityCode = adcode.slice(0, 4);
+            _this.form.districtCode = adcode.slice(0, 6);
+            _this.form.province = province;
+            _this.form.city = city;
+            _this.form.district = district;
           }
         }
       });
     },
-    // 截取省市区code
-    getAreaCode(code) {
-      this.form.provinceCode = code.slice(0, 2);
-      this.form.cityCode = code.slice(0, 4);
-      this.form.districtCode = code.slice(0, 6);
-      // 市
-      if (this.form.provinceCode) {
-        this.getCityListFun(this.form.provinceCode);
-      }
-      // 区
-      if (this.form.cityCode) {
-        this.geCountyListFun(this.form.cityCode);
-      }
+    // 搜索卸货地址
+    unloadAddressChange(row) {
+      const { lng, lat, dictLabel } = row;
+      this.form.unloadLongitude = lng;
+      this.form.unloadLatitude = lat;
+      this.form.unloadDetail = dictLabel;
+      // 根据地址获取省市区
+      this.getUnloadAddressBylnglat(lng, lat);
     },
-    // 获取市
-    getCityListFun(code) {
-      if (code == null || code === '') {
-        return;
-      }
-      getCityList({ provinceCode: code }).then((response) => {
-        this.cityCodeOptions = response.rows;
+    // 通过经纬度获取详细点位信息
+    getUnloadAddressBylnglat(lng, lat) {
+      const _this = this;
+      // 通过高德地图的sdk将坐标转为地址
+      geocoder.getAddress([lng, lat], function(status, result) {
+        if (status === 'complete' && result.info === 'OK') {
+          if (result && result.regeocode) {
+            const { adcode, province, city, district } = result.regeocode.addressComponent;
+            _this.form.unloadProvinceCode = adcode.slice(0, 2);
+            _this.form.unloadCityCode = adcode.slice(0, 4);
+            _this.form.unloadDistrictCode = adcode.slice(0, 6);
+            _this.form.unloadProvince = province;
+            _this.form.unloadCity = city;
+            _this.form.unloadDistrict = district;
+          }
+        }
       });
-    },
-    // 获取区
-    geCountyListFun(code) {
-      if (code == null || code === '') {
-        return;
-      }
-      geCountyList({ cityCode: code }).then((response) => {
-        this.countyCodeOptions = response.rows;
-      });
-    },
-    // 清空地址
-    clearAddressOption() {
-      this.form.addressName = '';
-      if (this.$refs.AmapSearchRef) this.$refs.AmapSearchRef.clearOption();
     },
     /** 提交按钮 */
     submitForm() {
@@ -251,16 +247,26 @@ export default {
         shipmentCode: null,
         projectName: null,
         earthworkUnit: null,
-        longitude: null,
-        latitude: null,
+        // 装货
         detail: null,
         provinceCode: null,
         cityCode: null,
         districtCode: null,
+        province: '',
+        city: '',
+        district: '',
+        latitude: null,
+        longitude: null,
+        // 卸货
         unloadDetail: null,
         unloadProvinceCode: null,
         unloadCityCode: null,
         unloadDistrictCode: null,
+        unloadProvince: null,
+        unloadCity: null,
+        unloadDistrict: null,
+        unloadLatitude: null,
+        unloadLongitude: null,
         // commodityCategoryCode: null,
         // commoditySubclassCodes: null,
         // projectRemark: null,
@@ -271,7 +277,6 @@ export default {
     },
     // 表单赋值
     setForm(data) {
-      console.log(data);
 	    this.form = data;
       if (data.commoditySubclassCodes) {
         this.commoditySubclassCodes = data.commoditySubclassCodes.split(',');
@@ -291,9 +296,7 @@ export default {
       const commodity = this.commodityCategoryCodeOptions.filter(item => {
         return item.dictValue === value;
       });
-      console.log(commodity);
       this.commoditySubclass.dictPid = commodity[0].dictCode;
-      console.log(this.commoditySubclass);
       this.listByDict(this.commoditySubclass).then(response => {
         this.commoditySubclassCodesOptions = response.data;
       });

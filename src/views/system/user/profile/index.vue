@@ -34,14 +34,20 @@
       </ul>
     </div>
     <div class="right-panel app-container ly-flex-1">
-      <el-tabs v-model="activeTab">
+      <Tabs :tablist="tablist" @getActiveName="getActiveName" />
+      <div class="right-panel-box">
+        <userInfo v-if="activeTab === '基本资料'" :user="user" @refresh="getUser" />
+        <resetPwd v-if="activeTab === '修改密码'" :user="user" />
+      </div>
+
+      <!-- <el-tabs v-model="activeTab">
         <el-tab-pane label="基本资料" name="userinfo">
           <userInfo :user="user" />
         </el-tab-pane>
         <el-tab-pane label="修改密码" name="resetPwd">
           <resetPwd :user="user" />
         </el-tab-pane>
-      </el-tabs>
+      </el-tabs> -->
     </div>
   </div>
 </template>
@@ -51,22 +57,27 @@ import userAvatar from './userAvatar';
 import userInfo from './userInfo';
 import resetPwd from './resetPwd';
 import { getUserProfile } from '@/api/system/user';
+import Tabs from '@/components/Tabs/index';
 
 export default {
   name: 'Profile',
-  components: { userAvatar, userInfo, resetPwd },
+  components: { userAvatar, userInfo, resetPwd, Tabs },
   data() {
     return {
       user: {},
       roleGroup: {},
       postGroup: {},
-      activeTab: 'userinfo'
+      activeTab: '基本资料',
+      tablist: [{ tabName: '基本资料' }, { tabName: '修改密码' }]
     };
   },
   created() {
     this.getUser();
   },
   methods: {
+    getActiveName(val) {
+      this.activeTab = val;
+    },
     getUser() {
       getUserProfile().then(response => {
         this.user = response.data;
@@ -108,7 +119,15 @@ export default {
     height: 370px;
     min-width: 368px;
     margin: 0 15px 0 0;
-    padding-top: 10px;
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+    >.right-panel-box{
+      height: calc(100% - 34px);
+      background: #fff;
+      padding: 26px 20px;
+      box-shadow: 0px 2px 3px 0px rgb(51 153 255 / 10%);
+    }
   }
 }
 </style>

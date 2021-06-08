@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 
-// 发票索取列表  1已申请对账列表 2已申请开票列表 3已申请打款列表 4已完成列表
+// 发票索取列表  1已申请对账列表 2已申请开票列表 3已申请打款列表 4已完成列表 com.ddc.common.beans.trans.batch.vo.BatchInfoListVo
 export const adjustListApi = '/transportation/batch/list';
 export function adjustDregsList(query) {
   return request({
@@ -73,3 +73,47 @@ export function calculateFee(data) {
   });
 }
 
+// 查看批次详情
+export function batchInfo(query) {
+  return request({
+    url: '/transportation/batch/batchInfo',
+    method: 'get',
+    params: query
+  });
+}
+
+// 相关运单 com.ddc.common.beans.trans.invoice.vo.list.InvoiceWaybillInfoVo
+export const BatchInfoListVo = '/transportation/batch/batchRelatedWaybill';
+export function batchRelatedWaybill(query) {
+  return request({
+    url: BatchInfoListVo,
+    method: 'get',
+    params: query
+  });
+}
+
+// 核销列表
+export function checkList(data) {
+  return request({
+    url: '/transportation/icCheck/checkList',
+    method: 'post',
+    data: data
+  });
+}
+// 删除运单
+export function delWaybill(query) {
+  return request({
+    url: '/transportation/icCheck/delWaybill',
+    method: 'get',
+    params: query
+  });
+}
+
+// 核销列表
+export function check(data) {
+  return request({
+    url: '/transportation/icCheck/check',
+    method: 'post',
+    data: data
+  });
+}

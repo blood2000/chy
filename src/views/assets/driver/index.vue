@@ -270,12 +270,14 @@
                   @click="handleDetail(row, 'review')"
                 >审核</el-button>
               </el-dropdown-item>
-              <el-button
-                v-hasPermi="['assets:driver:get']"
-                size="mini"
-                type="text"
-                @click="handleDetail(row, 'detail')"
-              >详情</el-button>
+              <el-dropdown-item>
+                <el-button
+                  v-hasPermi="['assets:driver:get']"
+                  size="mini"
+                  type="text"
+                  @click="handleDetail(row, 'detail')"
+                >详情</el-button>
+              </el-dropdown-item>
               <el-dropdown-item>
                 <el-button
                   v-show="row.authStatus == 3"

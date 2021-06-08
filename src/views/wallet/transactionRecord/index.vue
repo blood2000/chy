@@ -37,113 +37,113 @@
         <el-radio-button label="近一年" />
       </el-radio-group>
     </div>
-    <div class="app-container">
-      <el-row :gutter="10" class="mb8">
-        <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
-      </el-row>
 
-      <el-tabs v-model="activeTab" @tab-click="handleTabClick">
-        <el-tab-pane label="冻结记录" name="dj" />
-        <el-tab-pane label="付款记录" name="fk" />
-      </el-tabs>
-      <el-table v-show="activeTab == 'dj'" v-loading="loading" highlight-current-row border :data="dataList">
-        <el-table-column label="运单号" align="center" prop="waybillNo" width="150" />
-        <el-table-column label="装货地" align="center" prop="unloadAddress" width="150" />
-        <el-table-column label="卸货地" align="center" prop="loadAddress" width="150" />
-        <el-table-column label="货物大类" align="center" prop="goodsBigType">
-          <template slot-scope="scope">
-            <span>{{ selectDictLabel(commodityCategoryCodeOptions, scope.row.goodsBigType) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="货物小类" align="center" prop="goodsType">
-          <template slot-scope="scope">
-            <span>{{ selectDictLabel(commoditySubclassOptions, scope.row.goodsType) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="承运司机" align="center" prop="driverName" />
-        <el-table-column label="承运车辆" align="center" prop="licenseNumber" />
-        <el-table-column label="所属调度组" align="center" prop="teamName" width="150" />
-        <!-- 付款方式：0-现金支付， 1-京东支付 2-交通银行， 3-新生支付，4-工商银行,5-传化支付,6-建行支付,7-环迅-->
-        <el-table-column label="交易类型" align="center" prop="payBy">
-          <span>冻结</span>
-        </el-table-column>
-        <el-table-column label="装货数量" align="center" prop="loadWeight">
-          <template slot-scope="scope">
-            <span>{{ selectDictLabel(stowageStatusOptions, scope.row.stowageStatus) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="卸货数量" align="center" prop="unloadWeight">
-          <template slot-scope="scope">
-            <span>{{ selectDictLabel(stowageStatusOptions, scope.row.stowageStatus) }}</span>
-          </template>
-        </el-table-column>
-        <!-- <el-table-column label="货物损耗(kg)" align="center" prop="wastage" /> -->
-        <el-table-column label="货物单价（元）" align="center" prop="goodsPrice" />
-        <el-table-column label="成交单价（元）" align="center" prop="freightPriceDriver" />
-        <el-table-column label="冻结总额（元）" align="center" prop="freezeMoney" />
-        <el-table-column label="操作时间" align="center" prop="updateTime" width="180">
-          <template slot-scope="scope">
-            <span>{{ parseTime(scope.row.updateTime) }}</span>
-          </template>
-        </el-table-column>
-      </el-table>
+    <div class="app-container table-container">
+      <Tabs :tablist="tablist" @getActiveName="getActiveName" />
 
+      <div class="table-box">
+        <el-row :gutter="10" class="mb8">
+          <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+        </el-row>
 
-      <el-table v-show="activeTab == 'fk'" v-loading="loading" highlight-current-row border :data="dataList">
-        <el-table-column label="运单号" align="center" prop="waybillNo" width="150" />
-        <el-table-column label="装货地" align="center" prop="unloadAddress" width="150" />
-        <el-table-column label="卸货地" align="center" prop="loadAddress" width="150" />
-        <el-table-column label="货物大类" align="center" prop="goodsBigType">
-          <template slot-scope="scope">
-            <span>{{ selectDictLabel(commodityCategoryCodeOptions, scope.row.goodsBigType) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="货物小类" align="center" prop="goodsType">
-          <template slot-scope="scope">
-            <span>{{ selectDictLabel(commoditySubclassOptions, scope.row.goodsType) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="承运司机" align="center" prop="driverName" />
-        <el-table-column label="承运车辆" align="center" prop="licenseNumber" />
-        <el-table-column label="所属调度者" align="center" prop="teamName" width="150" />
-        <!-- 付款方式：0-现金支付， 1-京东支付 2-交通银行， 3-新生支付，4-工商银行,5-传化支付,6-建行支付,7-环迅-->
-        <el-table-column label="交易类型" align="center" prop="payBy">
-          <span>付款</span>
-        </el-table-column>
-        <el-table-column label="装货数量" align="center" prop="loadWeight">
-          <template slot-scope="scope">
-            <span>{{ scope.row.loadWeight + selectDictLabel(stowageStatusOptions, scope.row.stowageStatus) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="卸货数量" align="center" prop="unloadWeight">
-          <template slot-scope="scope">
-            <span>{{ scope.row.loadWeight + selectDictLabel(stowageStatusOptions, scope.row.stowageStatus) }}</span>
-          </template>
-        </el-table-column>
-        <!-- <el-table-column label="货物损耗(kg)" align="center" prop="wastage" /> -->
-        <el-table-column label="货物单价（元）" align="center" prop="goodsPrice" />
-        <el-table-column label="成交单价（元）" align="center" prop="freightPriceDriver" />
-        <el-table-column label="实付金额（元）" align="center" prop="amount">
-          <!-- 金额：单位分转为元 -->
-          <template slot-scope="scope">
-            <span>{{ scope.row.amount ? (scope.row.amount/100).toFixed(2) : scope.row.amount }}</span>
-          </template>
-        <!-- 付款类型 -->
-        </el-table-column>
-        <el-table-column label="操作时间" align="center" prop="updateTime" width="180">
-          <template slot-scope="scope">
-            <span>{{ parseTime(scope.row.updateTime) }}</span>
-          </template>
-        </el-table-column>
-      </el-table>
+        <el-table v-show="activeTab == '冻结记录'" v-loading="loading" highlight-current-row border :data="dataList">
+          <el-table-column label="运单号" align="center" prop="waybillNo" width="150" />
+          <el-table-column label="装货地" align="center" prop="unloadAddress" width="150" />
+          <el-table-column label="卸货地" align="center" prop="loadAddress" width="150" />
+          <el-table-column label="货物大类" align="center" prop="goodsBigType">
+            <template slot-scope="scope">
+              <span>{{ selectDictLabel(commodityCategoryCodeOptions, scope.row.goodsBigType) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="货物小类" align="center" prop="goodsType">
+            <template slot-scope="scope">
+              <span>{{ selectDictLabel(commoditySubclassOptions, scope.row.goodsType) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="承运司机" align="center" prop="driverName" />
+          <el-table-column label="承运车辆" align="center" prop="licenseNumber" />
+          <el-table-column label="所属调度组" align="center" prop="teamName" width="150" />
+          <!-- 付款方式：0-现金支付， 1-京东支付 2-交通银行， 3-新生支付，4-工商银行,5-传化支付,6-建行支付,7-环迅-->
+          <el-table-column label="交易类型" align="center" prop="payBy">
+            <span>冻结</span>
+          </el-table-column>
+          <el-table-column label="装货数量" align="center" prop="loadWeight">
+            <template slot-scope="scope">
+              <span>{{ selectDictLabel(stowageStatusOptions, scope.row.stowageStatus) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="卸货数量" align="center" prop="unloadWeight">
+            <template slot-scope="scope">
+              <span>{{ selectDictLabel(stowageStatusOptions, scope.row.stowageStatus) }}</span>
+            </template>
+          </el-table-column>
+          <!-- <el-table-column label="货物损耗(kg)" align="center" prop="wastage" /> -->
+          <el-table-column label="货物单价（元）" align="center" prop="goodsPrice" />
+          <el-table-column label="成交单价（元）" align="center" prop="freightPriceDriver" />
+          <el-table-column label="冻结总额（元）" align="center" prop="freezeMoney" />
+          <el-table-column label="操作时间" align="center" prop="updateTime" width="180">
+            <template slot-scope="scope">
+              <span>{{ parseTime(scope.row.updateTime) }}</span>
+            </template>
+          </el-table-column>
+        </el-table>
 
-      <pagination
-        v-show="total>0"
-        :total="total"
-        :page.sync="queryParams.pageNum"
-        :limit.sync="queryParams.pageSize"
-        @pagination="getList"
-      />
+        <el-table v-show="activeTab == '付款记录'" v-loading="loading" highlight-current-row border :data="dataList">
+          <el-table-column label="运单号" align="center" prop="waybillNo" width="150" />
+          <el-table-column label="装货地" align="center" prop="unloadAddress" width="150" />
+          <el-table-column label="卸货地" align="center" prop="loadAddress" width="150" />
+          <el-table-column label="货物大类" align="center" prop="goodsBigType">
+            <template slot-scope="scope">
+              <span>{{ selectDictLabel(commodityCategoryCodeOptions, scope.row.goodsBigType) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="货物小类" align="center" prop="goodsType">
+            <template slot-scope="scope">
+              <span>{{ selectDictLabel(commoditySubclassOptions, scope.row.goodsType) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="承运司机" align="center" prop="driverName" />
+          <el-table-column label="承运车辆" align="center" prop="licenseNumber" />
+          <el-table-column label="所属调度者" align="center" prop="teamName" width="150" />
+          <!-- 付款方式：0-现金支付， 1-京东支付 2-交通银行， 3-新生支付，4-工商银行,5-传化支付,6-建行支付,7-环迅-->
+          <el-table-column label="交易类型" align="center" prop="payBy">
+            <span>付款</span>
+          </el-table-column>
+          <el-table-column label="装货数量" align="center" prop="loadWeight">
+            <template slot-scope="scope">
+              <span>{{ scope.row.loadWeight + selectDictLabel(stowageStatusOptions, scope.row.stowageStatus) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="卸货数量" align="center" prop="unloadWeight">
+            <template slot-scope="scope">
+              <span>{{ scope.row.loadWeight + selectDictLabel(stowageStatusOptions, scope.row.stowageStatus) }}</span>
+            </template>
+          </el-table-column>
+          <!-- <el-table-column label="货物损耗(kg)" align="center" prop="wastage" /> -->
+          <el-table-column label="货物单价（元）" align="center" prop="goodsPrice" />
+          <el-table-column label="成交单价（元）" align="center" prop="freightPriceDriver" />
+          <el-table-column label="实付金额（元）" align="center" prop="amount">
+            <!-- 金额：单位分转为元 -->
+            <template slot-scope="scope">
+              <span>{{ scope.row.amount ? (scope.row.amount/100).toFixed(2) : scope.row.amount }}</span>
+            </template>
+            <!-- 付款类型 -->
+          </el-table-column>
+          <el-table-column label="操作时间" align="center" prop="updateTime" width="180">
+            <template slot-scope="scope">
+              <span>{{ parseTime(scope.row.updateTime) }}</span>
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <pagination
+          v-show="total>0"
+          :total="total"
+          :page.sync="queryParams.pageNum"
+          :limit.sync="queryParams.pageSize"
+          @pagination="getList"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -152,13 +152,16 @@
 import { getUserInfo } from '@/utils/auth';
 import { payRecordlist } from '@/api/capital/payrecord';
 import { getTimeRange } from '@/utils/timeRange';
+import Tabs from '@/components/Tabs/index';
 
 export default {
   name: 'TransactionRecord',
+  components: { Tabs },
   data() {
     return {
       // 选中tab
-      activeTab: 'dj', // dj冻结 fk付款
+      activeTab: '冻结记录',
+      tablist: [{ tabName: '冻结记录' }, { tabName: '付款记录' }],
       // 遮罩层
       loading: true,
       // 显示搜索条件
@@ -224,9 +227,12 @@ export default {
     });
   },
   methods: {
+    getActiveName(val) {
+      this.activeTab = val;
+    },
     handleTabClick(e) {
       this.activeTab = e.name;
-      if (this.activeTab === 'dj') {
+      if (this.activeTab === '冻结记录') {
         this.queryParams.usedFreeze = 1;
       } else {
         this.queryParams.usedFreeze = 0;
@@ -294,3 +300,16 @@ export default {
   }
 };
 </script>
+
+<style scoped lang="scss">
+.table-container{
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  .table-box{
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0px 2px 3px 0px rgb(51 153 255 / 10%);
+  }
+}
+</style>
