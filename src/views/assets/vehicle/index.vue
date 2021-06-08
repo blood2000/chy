@@ -280,13 +280,6 @@
             @click="handleManage(row)"
           >管理</el-button>
           <el-button
-            v-show="row.isReport === 0"
-            v-hasPermi="['assets:vehicle:report']"
-            size="mini"
-            type="text"
-            @click="reportVehicle(row)"
-          >上报</el-button>
-          <el-button
             v-show="teamCode || driverCode"
             v-hasPermi="teamCode?['assets:team:vehicle:del']:['assets:driver:vehicle:del']"
             size="mini"
@@ -313,6 +306,15 @@
                   type="text"
                   @click="handleDetail(row, 'review')"
                 >审核</el-button>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <el-button
+                  v-show="row.isReport === 0"
+                  v-hasPermi="['assets:vehicle:report']"
+                  size="mini"
+                  type="text"
+                  @click="reportVehicle(row)"
+                >上报</el-button>
               </el-dropdown-item>
               <el-dropdown-item>
                 <el-button
