@@ -394,6 +394,12 @@ export default {
       fixed: 'left'
     });
     this.getDictsOptions();
+
+    const routeData = this.$route.query.data;
+    if (routeData) {
+      this.queryParams.authStatus = JSON.parse(routeData).authStatus;
+    }
+
     this.getList();
   },
   methods: {
@@ -437,6 +443,7 @@ export default {
       this.queryParams.createTimeBegin = undefined;
       this.queryParams.createTimeEnd = undefined;
       this.resetForm('queryForm');
+      this.queryParams.authStatus = undefined;
       this.handleQuery();
     },
     // 多选框选中数据
