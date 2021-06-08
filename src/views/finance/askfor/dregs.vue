@@ -147,7 +147,7 @@
       >
         <el-col :span="1.5">
           <el-button
-            v-hasPermi="['askfor:invoice:batch']"
+            v-hasPermi="['transportation:batch:passBatchClaim']"
             type="primary"
             icon="el-icon-document-checked"
             size="mini"
@@ -155,6 +155,7 @@
             @click="handleAskfor"
           >批量索票</el-button>
           <el-button
+            v-if="false"
             v-hasPermi="['askfor:invoice:export']"
             type="primary"
             icon="el-icon-upload2"
@@ -201,21 +202,25 @@
 
         <template #edit="{row}">
           <el-button
+            v-hasPermi="['transportation:batch:batchInfo']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 1)"
           >详情</el-button>
           <el-button
+            v-hasPermi="['transportation:batch:passBatchClaim']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 2)"
           >索票</el-button>
           <el-button
+            v-hasPermi="['transportation:batch:refuseBatchClaim']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 3)"
           >驳回</el-button>
           <el-button
+            v-if="false"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 4)"

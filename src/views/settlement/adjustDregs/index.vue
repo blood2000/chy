@@ -279,7 +279,7 @@
         <el-radio-button label="7">已打款</el-radio-button>
       </el-radio-group>
 
-      <el-button v-if="activeName==='4'" v-hasPermi="['transportation:waybillBalanceInfo:batchDetail']" type="success" size="mini" @click="nuclearCardOpen">核销IC卡</el-button>
+      <el-button v-if="activeName==='4'" v-hasPermi="['transportation:icCheck:checkList']" type="success" size="mini" @click="nuclearCardOpen">核销IC卡</el-button>
     </div>
 
     <div class="app-container">
@@ -300,7 +300,7 @@
           </el-col>
           <el-col v-if="activeName == '5'" :span="1.5">
             <el-button
-              v-hasPermi="['transportation:waybillBalanceInfo:batchApply']"
+              v-hasPermi="['transportation:batch:applyReconciliation']"
               type="primary"
               icon="el-icon-wallet"
               size="mini"
@@ -308,7 +308,7 @@
               @click="createdDatch"
             >批量申请对账</el-button>
           </el-col>
-          <el-col v-if="activeName == '7' && !isAdmin" :span="1.5">
+          <!-- <el-col v-if="activeName == '7' && !isAdmin" :span="1.5">
             <el-button
               type="primary"
               icon="el-icon-chat-dot-square"
@@ -316,7 +316,7 @@
               :disabled="multiple"
               @click="handleAssess"
             >批量评价</el-button>
-          </el-col>
+          </el-col> -->
           <el-col :span="1.5" class="fr">
             <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
           </el-col>
@@ -382,31 +382,32 @@
             >驳回</el-button>
             <el-button
               v-if="activeName == '4'"
-              v-hasPermi="['transportation:waybillBalanceInfo:batchDetail']"
+              v-hasPermi="['transportation:waybillBalanceInfo:batchCheck']"
               size="mini"
               type="text"
               @click="handleTableBtn(row, 3)"
             >核算</el-button>
             <el-button
               v-if="activeName == '5'"
+              v-hasPermi="['transportation:batch:applyReconciliation']"
               size="mini"
               type="text"
               @click="handleTableBtn(row, 4)"
             >申请对账</el-button>
 
 
-            <el-button
+            <!-- <el-button
               v-if="activeName == '7' && !isAdmin"
               size="mini"
               type="text"
               @click="handleTableBtn(row, 5)"
-            >评价</el-button>
-            <el-button
+            >评价</el-button> -->
+            <!-- <el-button
               v-if="activeName == '7' && isAdmin"
               size="mini"
               type="text"
               @click="handleTableBtn(row, 8)"
-            >评价详情</el-button>
+            >评价详情</el-button> -->
 
             <el-button
               v-if="!isShipment && row.isChild == '2'"

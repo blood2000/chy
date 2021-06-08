@@ -134,7 +134,7 @@
       >
         <el-col v-if="false && !isShipment && activeName == '1'" :span="1.5">
           <el-button
-            v-hasPermi="['assets:vehicle:edit']"
+            v-hasPermi="['transportation:batch:passBilling']"
             type="primary"
             icon="el-icon-document-checked"
             size="mini"
@@ -144,7 +144,7 @@
         </el-col>
         <el-col v-if="activeName == '5'" :span="1.5">
           <el-button
-            v-hasPermi="['assets:vehicle:edit']"
+            v-hasPermi="['transportation:batch:passPayment']"
             type="primary"
             icon="el-icon-document-checked"
             size="mini"
@@ -214,8 +214,7 @@
         <template #edit="{row}">
           <div v-if="activeName == '1'">
             <el-button
-              v-if="activeName == '1'"
-              v-hasPermi="['system:menu:buhuihsuihwof']"
+              v-hasPermi="['transportation:batch:refuseBilling']"
               size="mini"
               type="text"
               @click="handleTableBtn(row, 1)"
@@ -223,12 +222,13 @@
             <!-- && row.invoiceStatus == '4'  可能是要根据这个判断能不能再开票了吧-->
             <el-button
               v-if="!isShipment "
-              v-hasPermi="['system:menu:edit']"
+              v-hasPermi="['transportation:batch:passBilling']"
               size="mini"
               type="text"
               @click="handleTableBtn(row, 2)"
             >开票</el-button>
             <el-button
+              v-hasPermi="['transportation:batch:batchInfo']"
               size="mini"
               type="text"
               @click="handleTableBtn(row, 3)"
@@ -242,24 +242,23 @@
               @click="handleTableBtn(row, 3)"
             >详情</el-button>
             <el-button
-              v-if="activeName == '1'"
-              v-hasPermi="['system:menu:buhuihsuihwof']"
+              v-hasPermi="['transportation:batch:passPayment']"
               size="mini"
               type="text"
               @click="handleTableBtn(row, 4)"
             >打款</el-button>
             <el-button
-              v-if="activeName == '1'"
-              v-hasPermi="['system:menu:buhuihsuihwof']"
+              v-if="false"
+              v-hasPermi="['transportation:batch:passPayment']"
               size="mini"
               type="text"
               @click="handleTableBtn(row, 5)"
             >导出</el-button>
-            <el-button
+            <!-- <el-button
               size="mini"
               type="text"
               @click="handleTableBtn(row, 6)"
-            >驳回</el-button>
+            >驳回</el-button> -->
           </div>
         </template>
       </RefactorTable>
@@ -597,22 +596,22 @@ export default {
           break;
         case 6:
           // this.$router.push({ name: 'Statement', query: { code: row.code }});
-          this.ids = [row.batchNo];
-          this.$confirm('我驳回?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            const que = {
-              batchCodes: this.ids
-            };
+          // this.ids = [row.batchNo];
+          // this.$confirm('我驳回?', '提示', {
+          //   confirmButtonText: '确定',
+          //   cancelButtonText: '取消',
+          //   type: 'warning'
+          // }).then(() => {
+          //   const que = {
+          //     batchCodes: this.ids
+          //   };
 
-            refusePayment(que).then(res => {
-              this.msgSuccess('驳回成功');
-              this.queryParams.pageNum = 1;
-              this.getList();
-            });
-          }).catch(() => {});
+          //   refusePayment(que).then(res => {
+          //     this.msgSuccess('驳回成功');
+          //     this.queryParams.pageNum = 1;
+          //     this.getList();
+          //   });
+          // }).catch(() => {});
 
           break;
         default:
@@ -644,10 +643,10 @@ export default {
       this.loading = true;
       getFile(row.imgCodes).then(response => {
         this.loading = false;
+        this.openimg = true;
 
         if (response.data && response.data.length > 0) {
           this.attachUrl = response.data[0].attachUrl;
-          this.openimg = true;
         } else {
           this.attachUrl = '';
         }

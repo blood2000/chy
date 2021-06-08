@@ -217,7 +217,7 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(function() {
+      }).then(() => {
         this.loading = true;
         return immediateAccounting({ immediateWaybillBoList, shipmentCode: shipmentCodeArr[0] });
       }).then(() => {

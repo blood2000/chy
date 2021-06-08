@@ -81,7 +81,7 @@
 
       <template #edit="{row}">
         <el-button
-          v-has-permi="['transportation:waybill:getWayBillByCode']"
+          v-has-permi="['transportation:batch:batchInfo']"
           size="mini"
           type="text"
           @click="$emit('handleTableBtn', row, 'XIANGQONG')"

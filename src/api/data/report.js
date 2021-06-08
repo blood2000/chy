@@ -71,10 +71,10 @@ export function waybillReportBill(waybillReportCode) {
 
 
 // 查询调度列表
-// export function teamList(data) {
-//   return request({
-//     url: '/assets/team/list',
-//     method: 'post',
-//     data: data
-//   });
-// }
+export function batch(data) {
+  return request({
+    url: '/transportation/waybillReport/batch',
+    method: 'post',
+    data: data
+  });
+}
