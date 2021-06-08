@@ -73,7 +73,7 @@
 
     <el-table v-loading="loading" :data="infoList" highlight-current-row border @selection-change="handleSelectionChange">
       <el-table-column type="selection" :selectable="checkboxSelectable" width="55" align="center" />
-      <el-table-column label="序号" align="center" type="index" min-width="5%" />
+      <el-table-column label="序号" align="center" fixed="left" type="index" min-width="5%" />
       <!-- <el-table-column label="网点编码" align="center" prop="branchCode" /> -->
       <el-table-column label="处理状态" align="center" prop="applyStatus">
         <template slot-scope="scope">

@@ -2,7 +2,7 @@
   <!-- 评价对话框 -->
   <el-dialog class="i-comment" :title="title" :visible="visible" width="1400px" :close-on-click-modal="false" destroy-on-close append-to-body @close="cancel">
     <el-table v-loading="loading" highlight-current-row :data="commentlist" border>
-      <el-table-column type="index" label="序号" align="center" width="50" />
+      <el-table-column type="index" label="序号" align="center" fixed="left" width="50" />
       <el-table-column width="150" label="运输单号" align="center" prop="waybillNo" />
       <el-table-column width="120" label="车牌号" align="center" prop="licenseNumber" />
       <el-table-column width="100" label="司机" align="center" prop="driverName" />

@@ -278,12 +278,12 @@ export default {
     // 表单赋值
     setForm(data) {
 	    this.form = data;
-      if (data.commoditySubclassCodes) {
+      /* if (data.commoditySubclassCodes) {
         this.commoditySubclassCodes = data.commoditySubclassCodes.split(',');
       }
       if (data.commodityCategoryCode) {
         this.handleChange(data.commodityCategoryCode);
-      }
+      } */
     },
     // 单选商品大类
     handlecommodityCategoryChange(selection) {
