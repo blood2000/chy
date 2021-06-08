@@ -341,28 +341,52 @@
           />
         </el-select>
       </el-form-item>
+        <el-row :gutter="20">
+            <el-col :span="23">
+                <el-form-item label="授信保护期" prop="singleSourceMultiUnloadingLocations">
+                    <el-date-picker
+                            v-model="form.creditStartTime"
+                            clearable
+                            class="width45"
+                            type="date"
+                            value-format="yyyy-MM-dd"
+                            placeholder="授信开始日期"
+                    />
+                    <span style="margin: 0 1.5%;">至</span>
+                    <el-date-picker
+                            v-model="form.creditEndTime"
+                            clearable
+                            class="width45 mr3"
+                            type="date"
+                            value-format="yyyy-MM-dd"
+                            placeholder="授信结束日期"
+                    />
+                </el-form-item>
+            </el-col>
+        </el-row>
       <el-row :gutter="20">
-        <el-col :span="11">
-          <el-form-item label="是否月结" prop="isMonthly">
-            <el-select
-              v-model="form.isMonthly"
-              clearable
-              filterable
-            >
-              <el-option
-                v-for="dict in isOptions"
-                :key="dict.dictValue"
-                :label="dict.dictLabel"
-                :value="dict.dictValue"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col v-if="form.isMonthly" :span="11">
+        <!--<el-col v-if="form.isMonthly" :span="11">-->
+          <el-col :span="11">
           <el-form-item label="授信金额" prop="creditAmount">
             <el-input-number v-model="form.creditAmount" :precision="2" :min="0" :max="1000000000" :controls="false" placeholder="保留两位小数" />
           </el-form-item>
         </el-col>
+          <el-col :span="11">
+              <el-form-item label="是否月结" prop="isMonthly">
+                  <el-select
+                          v-model="form.isMonthly"
+                          clearable
+                          filterable
+                  >
+                      <el-option
+                              v-for="dict in isOptions"
+                              :key="dict.dictValue"
+                              :label="dict.dictLabel"
+                              :value="dict.dictValue"
+                      />
+                  </el-select>
+              </el-form-item>
+          </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="11">
@@ -746,9 +770,9 @@ export default {
             this.form.artificialIdentificationInhandImg = null;
             this.form.businessLicenseImg = null;
           }
-          if (!this.form.isMonthly) {
+          /*  if (!this.form.isMonthly) {
             this.form.creditAmount = null;
-          }
+          }*/
           this.form.identificationEffective = praseBooleanToNum(this.form.identificationEffective);
           if (this.form.ticketType === '1') { // 一票制：调度费点数=原来的『税点(%) 』备注：运单结算使用的比例
             this.$set(this.form, 'dispatchPoints', this.form.texPoint);
@@ -760,14 +784,10 @@ export default {
             this.$set(this.form, 'dispatchPoints', ((this.form.texPoint / (100 - this.form.texPoint)) * 100).toFixed(2));
           }
           var noNeedUnloadImg = 0;
-          var openProjectDesignView = 1;
           if (this.form.noNeedUnloadImg) {
             noNeedUnloadImg = 1;
           }
-          if (this.form.openProjectDesignView) {
-            openProjectDesignView = 0;
-          }
-          var extendForm = { noNeedUnloadImg: noNeedUnloadImg, openProjectDesignView: openProjectDesignView };
+          var extendForm = { noNeedUnloadImg: noNeedUnloadImg, openProjectDesignView: this.form.openProjectDesignView };
           // eslint-disable-next-line no-undef
           this.form = Object.assign(this.form, extendForm);
           if (this.form.id) {
@@ -884,7 +904,9 @@ export default {
         singleSourceMultiCommodity: 1,
         singleSourceMultiLoadingLocations: 1,
         singleSourceMultiUnloadingLocations: 1,
-        editDriverActualAmount: 1
+        editDriverActualAmount: 1,
+        creditStartTime: null,
+        creditEndTime: null
         // branchCode: null
       };
       this.resetForm('form');
@@ -1007,6 +1029,9 @@ export default {
 }
 .width50{
   width: 50%;
+}
+.width45{
+    width: 45%;
 }
 .width28{
   width: 28%;
