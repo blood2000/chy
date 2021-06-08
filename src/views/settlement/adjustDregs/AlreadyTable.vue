@@ -74,6 +74,10 @@
         <span>{{ parseTime(row.lastLoadingTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
       </template> -->
 
+      <template #status="{row}">
+        <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
+      </template>
+
       <template #edit="{row}">
         <el-button
           v-has-permi="['transportation:waybill:getWayBillByCode']"
@@ -131,7 +135,14 @@ export default {
   },
   data() {
     return {
-      tableColumnsConfig: []
+      tableColumnsConfig: [],
+
+      statusOptions: [
+        { dictLabel: '已申请对账', dictValue: 1 },
+        { dictLabel: '已申请开票', dictValue: 2 },
+        { dictLabel: '已申请打款', dictValue: 3 },
+        { dictLabel: '已完成', dictValue: 4 }
+      ]
     };
   },
 
@@ -162,7 +173,13 @@ export default {
       label: '操作',
       width: 240,
       fixed: 'right'
-    });
+    }, [{
+      prop: 'status',
+      isShow: true,
+      label: '状态',
+      sortNum: 2,
+      width: 180
+    }]);
   }
 
   // methods: {

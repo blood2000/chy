@@ -280,16 +280,17 @@ const CardReader = {
       ret = await CardReader.fn.exec(CardReader.command.get.card);
       ret = CardReader.fn.getResult(ret);
       ret = await CardReader.fn.exec(CardReader.command.reset);
-      console.log('选择卡', ret);
+      // console.log('选择卡', ret);
       ret = await CardReader.fn.exec(CardReader.command.get.random);
       ret = CardReader.fn.getResult(ret);
-      console.log('获得随机数', ret);
+      // console.log('获得随机数', ret);
       if (!ret.success) {
         if (!ret.code) {
-          MessageBox.alert('请重新放置卡片, 并重新启动服务', '未获取到卡片', {
+          MessageBox.alert('请将【数据IC卡】放至有效位置, 并重新启动服务', '读取数据异常', {
             confirmButtonText: '确定',
             callback: action => {
               rejected && rejected({ code: 501, msg: '' });
+              CardReader.action.error();
             }
           });
         } else {
@@ -444,13 +445,13 @@ const CardReader = {
  * 发卡
  */
 CardReader.action['issuingCard'] = async function(data) {
-  const res = await MessageBox.confirm('确认发卡？发卡会清空卡中数据', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
-  });
+  // const res = await MessageBox.confirm('确认保存并清空?', '提示', {
+  //   confirmButtonText: '确定',
+  //   cancelButtonText: '取消',
+  //   type: 'warning'
+  // });
 
-  if (res === 'confirm') {
+  if (data) {
     console.log('【发卡流程】');
     let ret = await this.getCard();
     console.log('选择MF', ret);
@@ -518,16 +519,16 @@ CardReader.action['readUserInfo'] = async function(resolve, rejected) {
   ret = await CardReader.fn.apdu((function() {
     return ['00', 'A4', '00', '00', '02', '3F00'].join('');
   })());
-  console.log('选择MF', ret);
+  // console.log('选择MF', ret);
   // 选择用户信息目录
   ret = await CardReader.fn.apdu((function() {
     return ['00', 'A4', '00', '00', '02', '3F', '01'].join('');
   })());
-  console.log('选择用户信息目录', ret);
+  // console.log('选择用户信息目录', ret);
   ret = CardReader.fn.getResult(ret);
   if (!ret.success || ret.code !== '9000') {
-    // Message.error('不存在用户信息：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
-    console.error('不存在用户信息：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
+    Message.error('不存在用户信息：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
+    // console.error('不存在用户信息：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
     CardReader.action.error();
     return;
   }
@@ -536,11 +537,11 @@ CardReader.action['readUserInfo'] = async function(resolve, rejected) {
   ret = await CardReader.fn.apdu((function() {
     return ['00', 'B0', CardReader.fn.numToHex16(1 | 0x80), '00', '00'].join('');
   })());
-  console.log('读二进制文件', ret);
+  // console.log('读二进制文件', ret);
   ret = CardReader.fn.getResult(ret);
   if (!ret.success || ret.code !== '9000') {
     Message.error('不存在用户信息：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
-    console.error('不存在用户信息：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
+    // console.error('不存在用户信息：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
 
     rejected && rejected(
       {
@@ -552,7 +553,7 @@ CardReader.action['readUserInfo'] = async function(resolve, rejected) {
     await CardReader.action.error();
     return;
   }
-  console.log('解析后的用户数据：', CardReader.fn.utf8HexToStr(ret.data));
+  // console.log('解析后的用户数据：', CardReader.fn.utf8HexToStr(ret.data));
   const data = CardReader.fn.utf8HexToStr(ret.data);
   // 取消选择卡片
   await CardReader.fn.exec(CardReader.command.deselect);
@@ -575,23 +576,22 @@ CardReader.action['readUserInfo'] = async function(resolve, rejected) {
  * @returns {Promise<void>}
  */
 CardReader.action['readData'] = async function(resolve, rejected) {
-  console.log('【获得卡数据】');
+  // console.log('【获得卡数据】');
   let ret = await this.getCard();
   // 选择索引目录
   ret = await CardReader.fn.apdu((function() {
     return ['00', 'A4', '00', '00', '02', '3F', '02'].join('');
   })());
-  console.log('选择索引目录', ret);
+  // console.log('选择索引目录', ret);
   // 读取索引目录索引文件
   ret = await CardReader.fn.apdu((function() {
     return ['00', 'B0', CardReader.fn.numToHex16(1 | 0x80), '00', '00'].join('');
   })());
-  console.log('读二进制文件', ret);
+  // console.log('读二进制文件', ret);
   ret = CardReader.fn.getResult(ret);
   if (!ret.success || ret.code !== '9000') {
-    Message.error('读文件失败，缺少数据索引信息：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
-    console.error('读文件失败，缺少数据索引信息：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
-    console.log(ret.code);
+    // Message.error('无任何信息');
+    // console.error('读文件失败，缺少数据索引信息：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
     rejected && rejected(
       {
         code: 500,
@@ -609,7 +609,7 @@ CardReader.action['readData'] = async function(resolve, rejected) {
   const index = [];
   index[0] = parseInt(iData[0], 16);
   index[1] = parseInt(iData[1], 16);
-  console.log(index);
+  // console.log(index);
   let count = 0; let errCount = 0;
   const data = [];
   while (index[0] > 2 && index[1] > 0) {
@@ -617,7 +617,7 @@ CardReader.action['readData'] = async function(resolve, rejected) {
     ret = await CardReader.fn.apdu((function() {
       return ['00', 'A4', '00', '00', '02', '3F', CardReader.fn.numToHex16(index[0])].join('');
     })());
-    console.log('选择数据目录', ret);
+    // console.log('选择数据目录', ret);
     // 读取二进制文件
     ret = await CardReader.fn.apdu((function() {
       return ['00', 'B0', CardReader.fn.numToHex16(index[1] | 0x80), '00', '00'].join('');
@@ -636,9 +636,8 @@ CardReader.action['readData'] = async function(resolve, rejected) {
       index[1] -= 1;
     }
   }
-  console.log('共读取了：', count + errCount, ' 条记录，成功：', count, ' 失败：', errCount);
-  console.log('记录内容：');
-  console.log(data);
+  // console.log('共读取了：', count + errCount, ' 条记录，成功：', count, ' 失败：', errCount);
+  // console.log('记录内容：');
   // 取消选择卡片
   await CardReader.fn.exec(CardReader.command.deselect);
   await CardReader.fn.exec(CardReader.command.beep);
@@ -660,7 +659,7 @@ CardReader.action['readData'] = async function(resolve, rejected) {
  * @returns {Promise<void>}
  */
 CardReader.action['writeData'] = async function(data) {
-  data = data || '1010|1|29804;2614710;广东深圳福龙学校项目;鄂ALF106;张三丰;13812345678;1621648441990;1621648441990;广东深圳妈湾石头';
+  data = data || '1010|1|29804;2614710;广东深圳福龙学校项目;鄂ALF106;张三丰;13812345678;1621648441990;1621648441990;2614710;广东深圳妈湾石头';
   data = CardReader.fn.strToHex16(data);
   console.log('【写数据】');
   const dfSize = '1900'; const efSize = '00C8';
@@ -809,6 +808,10 @@ CardReader.action['writeData'] = async function(data) {
 
     }
   };
+};
+
+CardReader.action['writeOtherData'] = async function(data) {
+  console.log(789);
 };
 
 CardReader.action['createFolder'] = async function(index) {
