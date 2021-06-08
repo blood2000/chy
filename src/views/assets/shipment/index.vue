@@ -391,7 +391,7 @@ export default {
       isShow: true,
       label: '操作',
       width: 180,
-      fixed: 'right'
+      fixed: 'left'
     });
     this.getDictsOptions();
     this.getList();

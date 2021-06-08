@@ -490,7 +490,7 @@ export default {
       isShow: true,
       label: '操作',
       width: 240,
-      fixed: 'right'
+      fixed: 'left'
     });
     !this.$route.query.tracklist && this.getList();
     this.listByDict(this.commodityCategory).then(response => {

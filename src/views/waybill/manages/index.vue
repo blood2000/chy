@@ -439,7 +439,7 @@ export default {
       isShow: true,
       label: '操作',
       width: 180,
-      fixed: 'right'
+      fixed: 'left'
     });
     this.queryParams.startReceiveTime = this.parseTime(new Date().getTime() - 24 * 60 * 60 * 1000 * 2, '{y}-{m}-{d}');
     this.queryParams.endReceiveTime = this.parseTime(new Date(), '{y}-{m}-{d}');

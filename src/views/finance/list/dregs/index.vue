@@ -458,7 +458,7 @@ export default {
     //   isShow: true,
     //   label: '操作',
     //   width: 180,
-    //   fixed: 'right'
+    //   fixed: 'left'
     // }, this.tableColumnsConfig1);
     // !this.$route.query.list && this.getList();
     this.handleClick('1');
@@ -486,7 +486,7 @@ export default {
         isShow: true,
         label: '操作',
         width: 180,
-        fixed: 'right'
+        fixed: 'left'
       }, tableColumnsConfig);
 
       // 切换
