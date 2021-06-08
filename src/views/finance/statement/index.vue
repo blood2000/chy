@@ -128,7 +128,7 @@
               <el-table-column width="120" label="发票类型" align="center" prop="invoiceType" :formatter="invoiceTypeFormatter" />
               <el-table-column width="150" label="货主成交单价" align="center" prop="invoiceInfoStatisticsVo.goodsPrice" />
               <el-table-column width="150" label="货主实付金额" align="center" prop="amount" />
-              <el-table-column fixed="right" label="运单明细" align="center" width="100">
+              <el-table-column fixed="left" label="运单明细" align="center" width="100">
                 <template #default="scope">
                   <el-button type="text" size="small" icon="el-icon-document-checked" @click="handleClick(scope.row)">详情</el-button>
                 </template>

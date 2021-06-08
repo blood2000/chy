@@ -22,7 +22,7 @@
       <el-table-column label="公户银行账户" align="center" prop="bankLineNo" />
       <el-table-column label="联行号" align="center" prop="bankLineNo" />
       <el-table-column label="银行预留手机号" align="center" prop="mobile" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="240" fixed="right">
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="240" fixed="left">
         <template slot-scope="scope">
           <el-button
             size="mini"
