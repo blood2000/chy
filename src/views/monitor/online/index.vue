@@ -35,7 +35,7 @@
         border
         highlight-current-row
       >
-        <el-table-column label="序号" type="index" align="center">
+        <el-table-column label="序号" fixed="left" type="index" align="center">
           <template slot-scope="scope">
             <span>{{ (pageNum - 1) * pageSize + scope.$index + 1 }}</span>
           </template>
@@ -48,7 +48,7 @@
             <span>{{ parseTime(scope.row.loginTime) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center">
+        <el-table-column label="操作" align="center" fixed="left">
           <template slot-scope="scope">
             <el-button
               v-hasPermi="['monitor:online:forceLogout']"

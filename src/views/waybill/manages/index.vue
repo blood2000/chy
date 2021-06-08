@@ -2,7 +2,7 @@
   <div>
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
-        <el-form-item v-show="isAdmin" label="下单用户" prop="orderClient">
+        <el-form-item v-show="!isShipment" label="下单用户" prop="orderClient">
           <el-input
             v-model="queryParams.orderClient"
             placeholder="发货企业/操作人/手机号"
@@ -12,7 +12,7 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item v-show="isAdmin" label="发货企业" prop="deliveryCompany">
+        <el-form-item v-show="!isShipment" label="发货企业" prop="deliveryCompany">
           <el-input
             v-model="queryParams.deliveryCompany"
             placeholder="请输入发货企业"
@@ -439,7 +439,7 @@ export default {
       isShow: true,
       label: '操作',
       width: 180,
-      fixed: 'right'
+      fixed: 'left'
     });
     this.queryParams.startReceiveTime = this.parseTime(new Date().getTime() - 24 * 60 * 60 * 1000 * 2, '{y}-{m}-{d}');
     this.queryParams.endReceiveTime = this.parseTime(new Date(), '{y}-{m}-{d}');

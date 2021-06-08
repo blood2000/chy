@@ -73,7 +73,7 @@
             >{{ scope.row.relationOrderNum }}</el-button>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
+        <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="left">
           <template slot-scope="scope">
             <el-button
               v-hasPermi="['assets:shipment:cargocode:edit']"

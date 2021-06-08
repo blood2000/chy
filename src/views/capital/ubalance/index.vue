@@ -168,7 +168,7 @@ export default {
       isShow: true,
       label: '操作',
       width: 140,
-      fixed: 'right'
+      fixed: 'left'
     });
     this.getList();
   },

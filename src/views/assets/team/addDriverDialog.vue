@@ -86,7 +86,7 @@
 
     <el-table v-loading="loading" :data="driverList" highlight-current-row border @selection-change="handleSelectionChange">
       <el-table-column type="selection" :selectable="checkboxSelectable" width="55" align="center" fixed="left" />
-      <el-table-column label="序号" align="center" type="index" min-width="5%" />
+      <el-table-column label="序号" align="center" fixed="left" type="index" min-width="5%" />
       <el-table-column label="邀请状态" align="center" prop="applyStatus">
         <template slot-scope="scope">
           <span v-if="scope.row.applyStatus !=null && scope.row.applyStatus>=0">{{ selectDictLabel(applyStatusOptions, scope.row.applyStatus) }}</span>

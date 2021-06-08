@@ -33,6 +33,7 @@
           @click="handleAssess"
         >批量评价</el-button> -->
       </el-col>
+      <slot />
       <el-col :span="1.5" class="fr">
         <tablec-cascader v-model="tableColumnsConfig" :lcokey="config.api" />
       </el-col>
@@ -80,7 +81,7 @@
 
       <template #edit="{row}">
         <el-button
-          v-has-permi="['transportation:waybill:getWayBillByCode']"
+          v-has-permi="['transportation:batch:batchInfo']"
           size="mini"
           type="text"
           @click="$emit('handleTableBtn', row, 'XIANGQONG')"
@@ -110,6 +111,7 @@
     @getList = '' // 重新请求
     @handleSelectionChange = '' // 选中列表
 */
+import { getUserInfo } from '@/utils/auth';
 export default {
   name: 'AlreadyTable',
   props: {
@@ -135,6 +137,7 @@ export default {
   },
   data() {
     return {
+      isShipment: false,
       tableColumnsConfig: [],
 
       statusOptions: [
@@ -162,24 +165,51 @@ export default {
       set(data) {
         this.$emit('update:showSearch', data);
       }
+    },
+    isShipmentTableColumnsConfig() {
+      return !this.isShipment ? [
+        {
+          prop: 'companyName',
+          isShow: true,
+          label: '发货企业',
+          sortNum: 2,
+          width: 180
+        },
+        {
+          prop: 'invoiceTitle',
+          isShow: true,
+          label: '发票抬头',
+          sortNum: 2,
+          width: 180
+        },
+        {
+          prop: 'taxpayerNumber',
+          isShow: true,
+          label: '税务登记',
+          sortNum: 2,
+          width: 180
+        }
+      ] : [];
     }
   },
 
   created() {
+    const { isShipment = false } = getUserInfo() || {};
+    this.isShipment = isShipment;
     this.tableHeaderConfig(this.tableColumnsConfig, this.config.api, {
       prop: 'edit',
       isShow: true,
       tooltip: false,
       label: '操作',
       width: 240,
-      fixed: 'right'
+      fixed: 'left'
     }, [{
       prop: 'status',
       isShow: true,
       label: '状态',
       sortNum: 2,
       width: 180
-    }]);
+    }].concat(this.isShipmentTableColumnsConfig));
   }
 
   // methods: {

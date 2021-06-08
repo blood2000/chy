@@ -42,21 +42,7 @@ export default {
     return {
       'tableColumnsConfig': [],
       'tableColumnsConfig1': [
-        {
-          prop: 'icStatus',
-          isShow: true,
-          tooltip: false,
-          sortNum: 8,
-          label: 'IC卡核对状态',
-          width: 120
-        }, { // 需要顶替掉的项
-          prop: 'huojhzouihfowe',
-          isShow: true,
-          tooltip: false,
-          sortNum: 28,
-          label: '货主应付金额',
-          width: 120
-        }, { // 需要顶替掉的项
+        { // 需要顶替掉的项
           prop: 'isReturn',
           isShow: false,
           tooltip: false,

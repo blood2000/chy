@@ -62,7 +62,7 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="${comment}" align="center" prop="testId" />
       <el-table-column label="${comment}" align="center" prop="testName" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" fixed="left" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             v-hasPermi="['system:test:edit']"

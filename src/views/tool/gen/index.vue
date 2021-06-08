@@ -81,7 +81,7 @@
 
     <el-table v-loading="loading" highlight-current-row border :data="tableList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" />
-      <el-table-column label="序号" type="index" width="50" align="center">
+      <el-table-column label="序号" type="index" fixed="left" width="50" align="center">
         <template slot-scope="scope">
           <span>{{ (queryParams.pageNum - 1) * queryParams.pageSize + scope.$index + 1 }}</span>
         </template>
@@ -109,7 +109,7 @@
       />
       <el-table-column label="创建时间" align="center" prop="createTime" width="160" />
       <el-table-column label="更新时间" align="center" prop="updateTime" width="160" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" fixed="left" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             v-hasPermi="['tool:gen:preview']"

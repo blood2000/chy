@@ -37,7 +37,7 @@
         <el-table-column label="计算公式" align="center" prop="ruleDictValue" :formatter="ruleTypeFormat" min-width="150" />
         <el-table-column label="扣费项目" align="center" prop="deduction" min-width="150" />
         <el-table-column label="补贴项目" align="center" prop="subsidies" min-width="150" />
-        <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
+        <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="left">
           <template slot-scope="scope">
             <el-button
               v-if="!isAdmin && scope.row.platformType === 1"

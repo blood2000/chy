@@ -107,7 +107,7 @@ export default {
       isShow: true,
       label: '操作',
       width: 100,
-      fixed: 'right'
+      fixed: 'left'
     });
   },
   methods: {

@@ -88,7 +88,7 @@
     </el-table>
 
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" :disabled="!adjustlist || adjustlist.length < 1" @click="submitForm">立即核算</el-button>
+      <el-button type="primary" :disabled="loading || !adjustlist || adjustlist.length < 1" @click="submitForm">立即核算</el-button>
       <el-button @click="cancel">返回</el-button>
     </div>
   </el-dialog>
@@ -217,9 +217,11 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(function() {
+      }).then(() => {
+        this.loading = true;
         return immediateAccounting({ immediateWaybillBoList, shipmentCode: shipmentCodeArr[0] });
       }).then(() => {
+        this.loading = false;
         this.msgSuccess('核算成功');
         this.visible = false;
         this.$emit('refresh');

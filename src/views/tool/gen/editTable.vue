@@ -6,7 +6,7 @@
       </el-tab-pane>
       <el-tab-pane label="字段信息" name="cloum">
         <el-table ref="dragTable" highlight-current-row border :data="cloumns" row-key="columnId" :max-height="tableHeight">
-          <el-table-column label="序号" type="index" min-width="5%" class-name="allowDrag" align="center" />
+          <el-table-column label="序号" type="index" fixed="left" min-width="5%" class-name="allowDrag" align="center" />
           <el-table-column
             label="字段列名"
             prop="columnName"

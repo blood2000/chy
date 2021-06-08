@@ -3,7 +3,7 @@
     <div ref="searchBox">
       <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="90px" class="clearfix app-container" @submit.native.prevent>
 
-        <!-- 普通input搜索 -->
+        <!-- 数据上报 -->
         <el-form-item label="支付批次号" prop="bizNo">
           <el-input
             v-model="queryParams.bizNo"
@@ -208,7 +208,7 @@
           >导出</el-button>
           <el-button
             v-hasPermi="['transportation:waybillReport:batch']"
-            :disabled="!ids.length"
+            :disabled="loading || !ids.length"
             type="info"
             icon="el-icon-s-order"
             size="mini"
@@ -348,6 +348,7 @@
           <!-- v-hasPermi="['data:report:report']" -->
           <el-button
             v-if="true"
+            :disabled="loading"
             size="mini"
             type="text"
             @click="handleEdit(row, 'report')"
@@ -413,7 +414,8 @@ import { listApi,
   waybillReportWaybill,
   waybillReportLoad,
   waybillReportUnload,
-  waybillReportBill
+  waybillReportBill,
+  batch
 } from '@/api/data/report';
 
 
@@ -541,8 +543,6 @@ export default {
     // 配置表头 listApi-> 请求的接口, null-> 编辑, tableColumnsConfig-> 外部的表头
     this.tableHeaderConfig(this.tableColumnsConfig, listApi, null, tableColumnsConfig);
 
-    // console.log(this.tableColumnsConfig);
-
     // 需要字典的这里请求
     this.getDict();
 
@@ -623,14 +623,19 @@ export default {
     },
     /** 批量上报 */
     async handleReport() {
-      const arr = [];
-      this.ids.forEach(async row => {
-        arr.push(this._waybillReport(row));
-      });
+      // const arr = [];
+      // this.ids.forEach(async row => {
+      //   arr.push(this._waybillReport(row));
+      // });
 
-      // await Promise.all(arr);
-
-      // console.log(' 成功!!~~ ');
+      // 6/8 改成一个上报接口
+      this.loading = true;
+      const res = await batch(this.ids.map(e => e.waybillReportCode));
+      this.loading = false;
+      if (res.code === 200) {
+        this.msgSuccess('上报成功');
+        this.getList();
+      }
     },
     /** 批量导入 */
     handleImport() {
@@ -663,13 +668,21 @@ export default {
           this.$refs.ChildDialog.setForm({ wayBillCode: row.waybillCode });
           break;
         case 'report':
-          this._waybillReport(row);
+          // this._waybillReport(row);
+          this.oneWaybillReport(row);
           break;
         case 'check':
           this.open = true;
           this.openData = row;
           break;
       }
+    },
+
+    /* 单次 */
+    oneWaybillReport(row) {
+      this.ids = [row];
+
+      this.handleReport();
     },
 
     /* 上报接口 */

@@ -102,7 +102,7 @@
         <el-table-column label="手机号码" align="center" prop="contactPhone" />
         <el-table-column label="联系人" align="center" prop="contact" />
         <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" />
-        <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="200" fixed="right">
+        <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="200" fixed="left">
           <template slot-scope="scope">
             <el-button
               v-hasPermi="['assets:shipment:address:edit']"
