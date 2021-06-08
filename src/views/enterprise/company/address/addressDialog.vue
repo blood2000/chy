@@ -29,65 +29,101 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row :gutter="15">
-        <el-col :span="10">
-          <el-form-item label="所在地区" prop="provinceCode">
-            <el-select
-              v-model="form.provinceCode"
-              clearable
-              filterable
-              class="width100"
-              placeholder="请选择省"
-              @change="changeProvince"
-            >
-              <el-option
-                v-for="dict in provinceCodeOptions"
-                :key="dict.provinceCode"
-                :label="dict.provinceName"
-                :value="dict.provinceCode"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="7">
-          <el-form-item class="no-label" prop="cityCode">
-            <el-select
-              v-model="form.cityCode"
-              clearable
-              filterable
-              class="width100"
-              placeholder="请选择市"
-              @change="changeCity"
-            >
-              <el-option
-                v-for="dict in cityCodeOptions"
-                :key="dict.cityCode"
-                :label="dict.cityName"
-                :value="dict.cityCode"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="7">
-          <el-form-item class="no-label" prop="districtCode">
-            <el-select
-              v-model="form.districtCode"
-              clearable
-              filterable
-              class="width100"
-              placeholder="请选择县/区"
-              @change="changeCounty"
-            >
-              <el-option
-                v-for="dict in countyCodeOptions"
-                :key="dict.countyCode"
-                :label="dict.countyName"
-                :value="dict.countyCode"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
+        <el-row>
+            <el-col :span="12">
+                <el-form-item label="货物大类" prop="commodityCategoryCode">
+                    <el-select v-model="form.commodityCategoryCode" placeholder="请选择货物大类" style="width: 100%" @change="handlecommodityCategoryChange">
+                        <el-option
+                                v-for="item in commodityCategoryCodeOptions"
+                                :key="item.dictValue"
+                                :label="item.dictLabel"
+                                :value="item.dictValue">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+            </el-col>
+            <el-col :span="12">
+                <el-form-item v-if="isMore == 0 || !isMore" label="货物小类" prop="commoditySubclassCodes">
+                    <el-select v-model="form.commoditySubclassCodes" placeholder="请选择货物小类" style="width: 100%" @change="handlecommodityCategoryChange">
+                        <el-option
+                                v-for="item in commoditySubclassCodesOptions"
+                                :key="item.dictValue"
+                                :label="item.dictLabel"
+                                :value="item.dictValue">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item v-if="isMore == 1" label="货物小类" prop="commoditySubclassCodes">
+                    <el-select v-model="form.commoditySubclassCodes" placeholder="请选择货物小类" style="width: 100%" @change="handleCheckedChange">
+                        <el-option
+                                v-for="item in commoditySubclassCodesOptions"
+                                :key="item.dictValue"
+                                :label="item.dictLabel"
+                                :value="item.dictValue">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+            </el-col>
+        </el-row>
+        <el-row :gutter="15">
+            <el-col :span="10">
+                <el-form-item label="所在地区" prop="provinceCode">
+                    <el-select
+                            v-model="form.provinceCode"
+                            clearable
+                            filterable
+                            class="width100"
+                            placeholder="请选择省"
+                            @change="changeProvince"
+                    >
+                        <el-option
+                                v-for="dict in provinceCodeOptions"
+                                :key="dict.provinceCode"
+                                :label="dict.provinceName"
+                                :value="dict.provinceCode"
+                        />
+                    </el-select>
+                </el-form-item>
+            </el-col>
+            <el-col :span="7">
+                <el-form-item class="no-label" prop="cityCode">
+                    <el-select
+                            v-model="form.cityCode"
+                            clearable
+                            filterable
+                            class="width100"
+                            placeholder="请选择市"
+                            @change="changeCity"
+                    >
+                        <el-option
+                                v-for="dict in cityCodeOptions"
+                                :key="dict.cityCode"
+                                :label="dict.cityName"
+                                :value="dict.cityCode"
+                        />
+                    </el-select>
+                </el-form-item>
+            </el-col>
+            <el-col :span="7">
+                <el-form-item class="no-label" prop="districtCode">
+                    <el-select
+                            v-model="form.districtCode"
+                            clearable
+                            filterable
+                            class="width100"
+                            placeholder="请选择县/区"
+                            @change="changeCounty"
+                    >
+                        <el-option
+                                v-for="dict in countyCodeOptions"
+                                :key="dict.countyCode"
+                                :label="dict.countyName"
+                                :value="dict.countyCode"
+                        />
+                    </el-select>
+                </el-form-item>
+            </el-col>
+        </el-row>
       <el-form-item label="地址" prop="addressName">
         <amap-search ref="AmapSearchRef" v-model="form.addressName" :search-option="searchOption" class="width100" @change="addressChange" />
       </el-form-item>
@@ -95,12 +131,12 @@
         <el-input v-model="form.detail" placeholder="请输入地址详情" class="width100" clearable />
       </el-form-item>
       <el-row :gutter="20">
-        <el-col :span="12">
+       <!-- <el-col :span="12">
           <el-form-item label="是否默认地址">
             <el-switch v-model="form.defaultPut" active-text="默认装货地址" class="mr5" />
             <el-switch v-model="form.defaultPush" active-text="默认卸货地址" />
           </el-form-item>
-        </el-col>
+        </el-col>-->
         <el-col :span="12">
           <el-form-item label="碰撞半径" prop="collisionRadius">
             <el-input-number v-model="form.collisionRadius" :min="1" :max="100000" />&nbsp;米
@@ -213,6 +249,24 @@ export default {
       searchOption: {
         city: '全国',
         citylimit: true
+      },
+      // 商品类别编码字典
+      commodityCategoryCodeOptions: [],
+      // 商品小类字典
+      commoditySubclassCodesOptions: [],
+      // 是否多选
+      isMore: '2',
+      // 大类字典类型
+      commodityCategory: {
+        'status': '0',
+        'dictPid': '0',
+        'dictType': 'goodsType'
+      },
+      // 小类字典类型
+      commoditySubclass: {
+        'status': '0',
+        'dictPid': '',
+        'dictType': 'goodsType'
       }
     };
   },
@@ -238,6 +292,13 @@ export default {
   created() {
     getProvinceList().then((response) => {
       this.provinceCodeOptions = response.rows;
+    });
+    this.listByDict(this.commodityCategory).then(response => {
+      this.commodityCategoryCodeOptions = response.data;
+    });
+    this.listByDict({ dictPid: '0', dictType: 'transportation_scenario' }).then(response => {
+      this.projectTypeOptions = response.data;
+      console.log(this.projectTypeOptions);
     });
   },
   methods: {
@@ -297,7 +358,9 @@ export default {
         provinceCode: null,
         cityCode: null,
         districtCode: null,
-        collisionRadius: 1000
+        collisionRadius: 1000,
+        commodityCategoryCode: null,
+        commoditySubclassCodes: null
       };
       this.resetForm('form');
       this.cityCodeOptions = [];
@@ -457,6 +520,28 @@ export default {
     clearAddressOption() {
       this.form.addressName = '';
       if (this.$refs.AmapSearchRef) this.$refs.AmapSearchRef.clearOption();
+    },
+    // 单选商品大类
+    handlecommodityCategoryChange(selection) {
+      this.handleChange(selection);
+      this.form.commoditySubclassCodes = null;
+      this.commoditySubclassCodes = [];
+    },
+    // 单选商品大类后联动数据事件
+    handleChange(value) {
+      const commodity = this.commodityCategoryCodeOptions.filter(item => {
+        return item.dictValue === value;
+      });
+      this.commoditySubclass.dictPid = commodity[0].dictCode;
+      this.listByDict(this.commoditySubclass).then(response => {
+        this.commoditySubclassCodesOptions = response.data;
+      });
+      this.isMore = commodity[0].isCheckbox;
+    },
+    // 多选小类
+    handleCheckedChange(selection) {
+      this.form.commoditySubclassCodes = selection.join(',');
+      // this.commoditySubclassCodes = selection.map((item) => item.commoditySubclassCodesOptions);
     }
   }
 };
