@@ -7,7 +7,7 @@
       <el-button type="primary" @click="handler('readUserinfo')">读取用户信息</el-button>
       <el-button type="primary" @click="handler('readData')">读取数据</el-button>
       <el-button type="primary" @click="handler('writeData')">写数据</el-button>
-      <el-button type="primary" @click="handler('writeOtherData2')">写数据</el-button>
+      <el-button type="primary" @click="handler('writeOtherData')">写数据222</el-button>
       <!-- <el-button type="primary" @click="handler('writeDataBatch')">写批量数据</el-button>
       <el-button type="primary" @click="handler('folderBatch')">批量创建目录</el-button>
       <el-button type="primary" @click="handler('stop')">停止定时器</el-button> -->

@@ -892,7 +892,7 @@ export default {
         this.Statementsdialog = true;
         this.title = '对账单';
         this.loading = false;
-        this.$refs.StatementsDialog.setForm(obj, res.data);
+        this.$refs.StatementsDialog.setForm(obj, res.data || {});
       }).catch(() => {
         this.loading = false;
       });

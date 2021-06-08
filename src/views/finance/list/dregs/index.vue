@@ -433,6 +433,31 @@ export default {
   computed: {
     lcokey() {
       return this.$route.name + this.activeName;
+    },
+    isShipmentTableColumnsConfig() {
+      return !this.isShipment ? [
+        {
+          prop: 'companyName',
+          isShow: true,
+          label: '发货企业',
+          sortNum: 2,
+          width: 180
+        },
+        {
+          prop: 'invoiceTitle',
+          isShow: true,
+          label: '发票抬头',
+          sortNum: 2,
+          width: 180
+        },
+        {
+          prop: 'taxpayerNumber',
+          isShow: true,
+          label: '税务登记',
+          sortNum: 2,
+          width: 180
+        }
+      ] : [];
     }
   },
 
@@ -487,7 +512,7 @@ export default {
         label: '操作',
         width: 180,
         fixed: 'right'
-      }, tableColumnsConfig);
+      }, tableColumnsConfig.concat(this.isShipmentTableColumnsConfig));
 
       // 切换
       // this.queryParams.invoiceStatus = tab;

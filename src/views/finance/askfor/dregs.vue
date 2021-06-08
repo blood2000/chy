@@ -231,14 +231,13 @@
         @pagination="getList"
       />
 
-      <!-- 对账单弹窗 -->
-      <StatementsDialog ref="StatementsDialog" :open.sync="Statementsdialog" :disable="formDisable" :title="title" @refresh="getList" />
-
-      <!-- 驳回弹窗 -->
-      <reject-dialog ref="RejectDialog" :open.sync="rejectdialog" :title="title" :disable="formDisable" @refresh="getList" />
-
     </div>
 
+    <!-- 对账单弹窗 -->
+    <StatementsDialog ref="StatementsDialog" :open.sync="Statementsdialog" :disable="formDisable" :title="title" @refresh="getList" />
+
+    <!-- 驳回弹窗 -->
+    <reject-dialog ref="RejectDialog" :open.sync="rejectdialog" :title="title" :disable="formDisable" @refresh="getList" />
 
   </div>
 </template>
@@ -249,6 +248,8 @@ import { adjustDregsList, adjustListApi, passBatchClaim } from '@/api/settlement
 
 import { getUserInfo } from '@/utils/auth';
 // import ChildDialog from '../components/childDialog';
+
+
 // 运单详情弹窗
 import StatementsDialog from '@/views/settlement/adjustDregs/StatementsDialog';
 
@@ -364,6 +365,31 @@ export default {
     };
   },
   computed: {
+    isShipmentTableColumnsConfig() {
+      return !this.isShipment ? [
+        {
+          prop: 'companyName',
+          isShow: true,
+          label: '发货企业',
+          sortNum: 2,
+          width: 180
+        },
+        {
+          prop: 'invoiceTitle',
+          isShow: true,
+          label: '发票抬头',
+          sortNum: 2,
+          width: 180
+        },
+        {
+          prop: 'taxpayerNumber',
+          isShow: true,
+          label: '税务登记',
+          sortNum: 2,
+          width: 180
+        }
+      ] : [];
+    }
   },
   created() {
     const { isAdmin = false, isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
@@ -385,7 +411,7 @@ export default {
       label: '状态',
       sortNum: 2,
       width: 180
-    }]);
+    }].concat(this.isShipmentTableColumnsConfig));
     this.listByDict(this.commodityCategory).then(response => {
       this.commodityCategoryCodeOptions = response.data;
     });

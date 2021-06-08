@@ -270,6 +270,7 @@ export default {
     }
   },
   created() {
+
   },
   methods: {
 
@@ -314,6 +315,7 @@ export default {
     // 关闭弹窗
     close() {
       this.$emit('update:open', false);
+      this.batchStatementCode = undefined;
     },
     // 获取列表
     setForm(object, data2) {
