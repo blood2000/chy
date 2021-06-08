@@ -204,7 +204,7 @@
           <p id="dfirst" class="row row1">甲方签字： {{ obj.branchName }}</p>
           <font id="jiafangspan" style="color:#FFF;font-size:10px">{{ obj.aaaaaaaaaaaaa || '' }}</font>
           <p class="row row2">(签章)</p>
-          <p id="jiafangTime" class="row row2">时间：{{ obj.aaaaaaaaaaaaa || '' }}</p>
+          <p id="jiafangTime" class="row row2">时间：{{ parseTime(obj.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</p>
         </div>
         <div class="company-info company2" style="margin-left: 5%">
           <p id="dsecond" class="row row1">乙方签字： {{ obj.driverName }}</p>
