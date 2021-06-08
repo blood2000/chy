@@ -510,13 +510,8 @@ export default {
         isShow: true,
         label: '操作',
         width: 180,
-<<<<<<< HEAD
         fixed: 'left'
       }, tableColumnsConfig);
-=======
-        fixed: 'right'
-      }, tableColumnsConfig.concat(this.isShipmentTableColumnsConfig));
->>>>>>> 86eee71f1a9edac711226f5c25d68c9050e3881e
 
       // 切换
       // this.queryParams.invoiceStatus = tab;
