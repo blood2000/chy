@@ -1,6 +1,27 @@
 const CryptoJS = require('crypto-js');
 import { MessageBox, Message } from 'element-ui';
 
+const USERINFO = [
+  'user_code',
+  'user_name',
+  'user_telno',
+  'issuing_code',
+  'issuing_name'];
+// 29804;2614710;广东深圳福龙学校项目;鄂ALF106;张三丰;13812345678;1621648441990;1621648441990;49384299482;广东深圳妈湾石头';
+const DATAINFO = [
+  'orderId',
+  'waybillId',
+  'projectName',
+  'licenseNumber',
+  'driverName',
+  'driverPhone',
+  'fillTime',
+  'signTime',
+  'serialNumber',
+  'mudtail'
+];
+// resultData(resUserInfo, USERINFO)
+
 const CardReader = {
   _cmdIndex: 1,
   socket: null,
@@ -66,32 +87,44 @@ const CardReader = {
       return this.exec('SendCOSCommand,' + command);
     },
     _receiveMessage: function() {
-      return new Promise(resolve => {
-        CardReader.socket.onmessage = function(e) {
-          resolve(e.data);
-        };
-      });
-    },
-    _receiveMessageWithTimeout: function(timeout) {
       return new Promise((resolve, reject) => {
         CardReader.socket.onmessage = function(e) {
           const ret = CardReader.fn.getResult(e.data);
           if (ret.success) {
-            console.log('返回的信息: ' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
+            // console.log('返回的信息: ' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
             resolve(e.data);
           } else {
             if (ret.code) {
-              Message.error('请重新放置卡片：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
-              reject(ret);
-            } else {
-              MessageBox.alert('请将【数据IC卡】放至有效位置, 并重新启动服务', '读取数据异常', {
-                confirmButtonText: '确定',
-                callback: action => {
-                  reject(ret);
-                }
+              // Message.error('请重新放置卡片：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
+              // reject(ret);
+              reject({
+                success: false,
+                code: 99990,
+                msg: '请重新放置卡片：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code)
               });
+            } else {
+              // '请将【数据IC卡】放至有效位置', '读取数据异常'
+              reject({
+                success: false,
+                code: '',
+                msg: '请将【数据IC卡】放至有效位置'
+              });
+              // MessageBox.alert('请将【数据IC卡】放至有效位置', '读取数据异常', {
+              //   confirmButtonText: '确定',
+              //   callback: action => {
+              //     reject(ret);
+              //   }
+              // });
             }
           }
+          // resolve(e.data);
+        };
+      });
+    },
+    _receiveMessageWithTimeout: function(timeout) {
+      return new Promise(resolve => {
+        CardReader.socket.onmessage = function(e) {
+          resolve(e.data);
         };
         setTimeout(function() {
           resolve('timeout');
@@ -679,98 +712,118 @@ CardReader.action['readUserInfoAndreadData'] = async function() {
   // let userInfo;
   // let dataList;
   // 1. 获取卡片
-  let ret = await this.getCard();
-  // 2.进入mf目录
-  console.log('00选择MF');
-  ret = await CardReader.fn.apdu((() => ['00', 'A4', '00', '00', '02', '3F', '00'].join(''))());
-  // 3.进入用户信息的目录
-  console.log('01用户信息目录');
-  ret = await CardReader.fn.apdu((() => ['00', 'A4', '00', '00', '02', '3F', '01'].join(''))());
-  // 4. 如果是9000 说明能进入文件夹里了
-  ret = CardReader.fn.getResult(ret);
-  if (ret.code !== '9000') {
-    console.error('无01文件夹');
-    return CardReader.action.error();
-  }
-
-  // 5. 读文件(二进制)
-  ret = await CardReader.fn.apdu((() => ['00', 'B0', CardReader.fn.numToHex16(1 | 0x80), '00', '00'].join(''))());
-  ret = CardReader.fn.getResult(ret);
-  if (ret.code !== '9000') {
-    console.error('无用户信息');
-    return CardReader.action.error();
-  }
-
-  // 6. 数据解析
-  ret = CardReader.fn.utf8HexToStr(ret.data);
-
-  const userInfo = ret;
-
-  // 7. 继续 读取卡信息== 进入数据目录 02
-  console.log('02数据目录');
-  ret = await CardReader.fn.apdu((() => ['00', 'A4', '00', '00', '02', '3F', '02'].join(''))());
-  ret = CardReader.fn.getResult(ret);
-  if (ret.code !== '9000') {
-    console.error('无02文件夹');
-    return CardReader.action.error();
-  }
-  // 8. 读取数据文件夹里的数据(里面是一个03的文件夹)
-  ret = await CardReader.fn.apdu((() => ['00', 'B0', CardReader.fn.numToHex16(1 | 0x80), '00', '00'].join(''))());
-  ret = CardReader.fn.getResult(ret);
-  if (ret.code !== '9000') {
-    console.error('读取文件失败, 缺少数据索引信息,  也就是说, 没有任何数据存在咯');
-    return CardReader.action.error();
-  }
-  // 9. 读文件 == 文件多个
-  /**
-   * 通过索引文件去获取卡中的数据量，然后进行递归的方式去遍历获取
-   */
-  const iData = CardReader.fn.splitByCharNum(ret.data, 2);
-
-  const index = iData.map(e => parseInt(e, 16));
-
-  let count = 0;
-  let errCount = 0;
-
-  const data = [];
-
-  // 比如是这样的 [8, 30]
-  while (index[0] > 2 && index[1] > 0) {
-    // 进入 03 的文件夹
-    ret = await CardReader.fn.apdu((() => ['00', 'A4', '00', '00', '02', '3F', CardReader.fn.numToHex16(index[0])].join(''))());
-
-    // 读取01的数据
-    ret = await CardReader.fn.apdu((() => ['00', 'B0', CardReader.fn.numToHex16(index[1] | 0x80), '00', '00'].join(''))());
-
+  try {
+    let ret = await this.getCard();
+    // 2.进入mf目录
+    console.log('00选择MF');
+    ret = await CardReader.fn.apdu((() => ['00', 'A4', '00', '00', '02', '3F', '00'].join(''))());
+    // 3.进入用户信息的目录
+    console.log('01用户信息目录');
+    ret = await CardReader.fn.apdu((() => ['00', 'A4', '00', '00', '02', '3F', '01'].join(''))());
+    // 4. 如果是9000 说明能进入文件夹里了
     ret = CardReader.fn.getResult(ret);
-    if (ret.code === '9000') {
-      data.push(CardReader.fn.utf8HexToStr(ret.data).replace(eval('/\u0000/g'), ''));
-      count += 1;
-    } else {
-      errCount += 1;
+    if (ret.code !== '9000') {
+      console.error('无01文件夹');
+      await CardReader.action.error();
+      return {
+        ...ret,
+        msg: '无01文件夹'
+      };
     }
 
-    // 倒过来读取的
-    if (index[1] - 1 === 0) {
-      index[0] -= 1;
-      index[1] = 30;
-    } else {
-      index[1] -= 1;
+    // 5. 读文件(二进制)
+    ret = await CardReader.fn.apdu((() => ['00', 'B0', CardReader.fn.numToHex16(1 | 0x80), '00', '00'].join(''))());
+    ret = CardReader.fn.getResult(ret);
+    if (ret.code !== '9000') {
+      console.error('无用户信息');
+      await CardReader.action.error();
+      return {
+        ...ret,
+        msg: '无用户信息'
+      };
     }
+
+    // 6. 数据解析
+    ret = CardReader.fn.utf8HexToStr(ret.data);
+
+    const userInfo = CardReader.fn.resultData(ret, USERINFO).data;
+
+    // 7. 继续 读取卡信息== 进入数据目录 02
+    console.log('02数据目录');
+    ret = await CardReader.fn.apdu((() => ['00', 'A4', '00', '00', '02', '3F', '02'].join(''))());
+    ret = CardReader.fn.getResult(ret);
+    if (ret.code !== '9000') {
+      console.error('无02文件夹');
+      return CardReader.action.error();
+    }
+    // 8. 读取数据文件夹里的数据(里面是一个03的文件夹)
+    ret = await CardReader.fn.apdu((() => ['00', 'B0', CardReader.fn.numToHex16(1 | 0x80), '00', '00'].join(''))());
+    ret = CardReader.fn.getResult(ret);
+    if (ret.code !== '9000') {
+      console.error('读取文件失败, 缺少数据索引信息,  也就是说, 没有任何数据存在咯');
+      await CardReader.action.error();
+      return {
+        ...ret,
+        msg: '没有任何数据存在'
+      };
+    }
+    // 9. 读文件 == 文件多个
+    /**
+     * 通过索引文件去获取卡中的数据量，然后进行递归的方式去遍历获取
+     */
+    const iData = CardReader.fn.splitByCharNum(ret.data, 2);
+
+    const index = iData.map(e => parseInt(e, 16));
+
+    let count = 0;
+    let errCount = 0;
+
+    const data = [];
+
+    // 比如是这样的 [8, 30]
+    while (index[0] > 2 && index[1] > 0) {
+      // 进入 03 的文件夹
+      ret = await CardReader.fn.apdu((() => ['00', 'A4', '00', '00', '02', '3F', CardReader.fn.numToHex16(index[0])].join(''))());
+
+      // 读取01的数据
+      ret = await CardReader.fn.apdu((() => ['00', 'B0', CardReader.fn.numToHex16(index[1] | 0x80), '00', '00'].join(''))());
+
+      ret = CardReader.fn.getResult(ret);
+      if (ret.code === '9000') {
+        const datae = (CardReader.fn.utf8HexToStr(ret.data).replace(eval('/\u0000/g'), ''));
+        data.push(CardReader.fn.resultData(datae, DATAINFO).data);
+        count += 1;
+      } else {
+        errCount += 1;
+      }
+
+      // 倒过来读取的
+      if (index[1] - 1 === 0) {
+        index[0] -= 1;
+        index[1] = 30;
+      } else {
+        index[1] -= 1;
+      }
+    }
+
+    console.log('共读取了：', count + errCount, ' 条记录，成功：', count, ' 失败：', errCount);
+
+    const dataList = data;
+    // resultData(data, USERINFO)
+
+    // 结束操作这样是一个闭合的操作了
+    await CardReader.fn.exec(CardReader.command.deselect);
+    await CardReader.fn.exec(CardReader.command.beep);
+
+    return {
+      ...ret,
+      success: true,
+      userInfo,
+      dataList
+    };
+  } catch (error) {
+    return error;
   }
-
-  console.log('共读取了：', count + errCount, ' 条记录，成功：', count, ' 失败：', errCount);
-
-  const dataList = data;
-
-  // 结束操作这样是一个闭合的操作了
-  await CardReader.fn.exec(CardReader.command.deselect);
-  await CardReader.fn.exec(CardReader.command.beep);
-
-  return {
-    userInfo,
-    dataList
-  };
 };
 
 /**
@@ -928,26 +981,6 @@ CardReader.action['writeData'] = async function(data) {
     }
   };
 };
-
-// /**
-//  * 读取用户数据, 并读取数据
-// */
-// CardReader.action['writeOtherData'] = async function(data) {
-//   // 1. 先获取卡
-//   let ret = await this.getCard();
-//   // 2. 选择主目录MF
-//   ret = await CardReader.fn.apdu((function() {
-//     return ['00', 'A4', '00', '00', '02', '3F00'].join('');
-//   })());
-//   // 3. 读取用户信息
-//   ret = await CardReader.fn.apdu((() => ['00', 'A4', '00', '00', '02', '3F', '01'].join(''))());
-
-//   console.log(ret);
-
-//   ret = await CardReader.fn.exec(CardReader.command.deselect);
-//   ret = await CardReader.fn.exec(CardReader.command.deep);
-//   console.log(789);
-// };
 
 CardReader.action['createFolder'] = async function(index) {
   let ret = await this.getCard();

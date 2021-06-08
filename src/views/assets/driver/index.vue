@@ -240,19 +240,18 @@
             @click="handleManage(row)"
           >管理</el-button>
           <el-button
-            v-show="row.isReportPerson === 0"
-            v-hasPermi="['assets:driver:report']"
-            size="mini"
-            type="text"
-            @click="reportDriver(row)"
-          >上报</el-button>
-          <el-button
             v-show="teamCode"
             v-hasPermi="['assets:team:driver:del']"
             size="mini"
             type="text"
             @click="handleDelBind(row)"
           >解除绑定</el-button>
+          <el-button
+            v-hasPermi="['assets:driver:get']"
+            size="mini"
+            type="text"
+            @click="handleDetail(row, 'detail')"
+          >详情</el-button>
           <template v-if="!teamCode">
             <el-button
               v-hasPermi="['assets:driver:edit']"
@@ -272,11 +271,12 @@
               </el-dropdown-item>
               <el-dropdown-item>
                 <el-button
-                  v-hasPermi="['assets:driver:get']"
+                  v-show="row.isReportPerson === 0"
+                  v-hasPermi="['assets:driver:report']"
                   size="mini"
                   type="text"
-                  @click="handleDetail(row, 'detail')"
-                >详情</el-button>
+                  @click="reportDriver(row)"
+                >上报</el-button>
               </el-dropdown-item>
               <el-dropdown-item>
                 <el-button

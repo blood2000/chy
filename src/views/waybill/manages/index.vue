@@ -140,6 +140,16 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="调度/调度员" prop="teamName">
+          <el-input
+            v-model="queryParams.teamName"
+            placeholder="请输入调度名称/调度员姓名"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
         <el-form-item>
           <el-button
             type="primary"
@@ -412,7 +422,8 @@ export default {
         'licenseNumber': null,
         'driverName': null,
         'driverPhone': null,
-        'status': null
+        'status': null,
+        'teamName': null
       },
       // 表单参数
       'form': {},
