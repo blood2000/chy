@@ -1,12 +1,12 @@
 <template>
   <el-dialog :title="`发卡人: ${ userInfo.issuing_name || ''} (承运司机: ${userInfo.user_name ||''})`" :visible="visible" width="80%" append-to-body :close-on-click-modal="false" @close="$emit('update:open', false)">
     <div v-if="true" class="mb20" style="padding: 20px;">
-      <el-button type="primary" @click="handler('cancellation')">注销卡片(清空使用者信息)</el-button>
-      <el-button type="primary" @click="handler('issuingCard')">发卡(绑定卡用户)</el-button>
-      <el-button type="primary" @click="handler('readUserinfo')">读取用户信息</el-button>
-      <el-button type="primary" @click="handler('readData')">读取数据</el-button>
+      <!-- <el-button type="primary" @click="handler('cancellation')">注销卡片(清空使用者信息)</el-button> -->
+      <el-button type="primary" @click="handler('issuingCard')">核销并发卡(绑定卡用户)</el-button>
+      <!-- <el-button type="primary" @click="handler('readUserinfo')">读取用户信息</el-button> -->
+      <!-- <el-button type="primary" @click="handler('readData')">读取数据</el-button> -->
       <el-button type="primary" @click="handler('writeData')">写数据</el-button>
-      <el-button type="primary" @click="handler('readUserInfoAndreadData')">写数据222</el-button>
+      <!-- <el-button type="primary" @click="handler('readUserInfoAndreadData')">读取数据</el-button> -->
     </div>
 
     <RefactorTable
@@ -126,10 +126,22 @@ export default {
       CardReader.fn.connect(async() => {
         this.loading = true;
         const ret = await action.readUserInfoAndreadData();
+
+        console.log(ret);
         if (!ret.success && !ret.code) {
           this._reqerror();
           return;
-        } else if (ret.code !== '9000') {
+        }
+
+        if (ret.code === '6A82') {
+          if (ret.userInfo) {
+            this.userInfo = ret.userInfo;
+          }
+          this.msgWarning(ret.msg);
+          return;
+        }
+
+        if (ret.code !== '9000') {
           this.msgError(ret.msg);
           return;
         }
@@ -246,9 +258,9 @@ export default {
         case 'issuingCard':
           // 发卡
           action.issuingCard({
-            user_code: '7f4b46fd6294461e91de322d31a1f0bb',
+            user_code: 'ea656213e44b4a9da1f23ec9f8eb969d',
             user_telno: '18415451845',
-            user_name: '黄婷',
+            user_name: '张涛',
             issuing_code: '94671e0bff6647e88db777427d700e32',
             issuing_name: '陈大帅'
           }).then(res => { console.log(res); });
@@ -259,10 +271,6 @@ export default {
 
           break;
         case 'readData':
-          // 读取数据e
-          action.readData().then(res => {
-            console.log(res);
-          });
           break;
         case 'readUserInfoAndreadData':
           // 读取数据e
@@ -270,7 +278,8 @@ export default {
           break;
         case 'writeData':
           // 写数据
-          await action.writeData('1010|1|27251;2396020;;晋F31022;张涛;13703509052;1596868020000;1596873720000;;苑家辛庄村东五福煤业有限公司');
+          await action.writeData('1010|1|29384;2913199;;晋F31022;张涛;13703509052;1621218660000;0;;苑家辛庄村东五福煤业有限公司');
+          await action.writeData('1010|1|29384;2918501;;晋F31022;张涛;13703509052;1621382400000;1621388100000;;苑家辛庄村东五福煤业有限公司');
           break;
         default:
           break;

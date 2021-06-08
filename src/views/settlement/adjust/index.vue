@@ -537,7 +537,7 @@ export default {
     /** 查询【请填写功能名称】列表 */
     getList() {
       this.loading = true;
-      adjustList(this.queryParams).then(response => {
+      adjustList({ ...this.queryParams, scenario: 1100 }).then(response => {
         this.adjustlist = response.rows;
         this.total = response.total;
         this.loading = false;

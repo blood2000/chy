@@ -659,7 +659,7 @@ export default {
             tooltip: false,
             label: '操作',
             width: 240,
-            fixed: 'right' }, [{
+            fixed: 'left' }, [{
             prop: 'icStatus',
             isShow: true,
             tooltip: false,

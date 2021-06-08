@@ -91,30 +91,21 @@ const CardReader = {
         CardReader.socket.onmessage = function(e) {
           const ret = CardReader.fn.getResult(e.data);
           if (ret.success) {
-            // console.log('返回的信息: ' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
             resolve(e.data);
           } else {
             if (ret.code) {
-              // Message.error('请重新放置卡片：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
-              // reject(ret);
               reject({
+                ...ret,
                 success: false,
-                code: 99990,
                 msg: '请重新放置卡片：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code)
               });
             } else {
-              // '请将【数据IC卡】放至有效位置', '读取数据异常'
               reject({
+                ...ret,
                 success: false,
                 code: '',
                 msg: '请将【数据IC卡】放至有效位置'
               });
-              // MessageBox.alert('请将【数据IC卡】放至有效位置', '读取数据异常', {
-              //   confirmButtonText: '确定',
-              //   callback: action => {
-              //     reject(ret);
-              //   }
-              // });
             }
           }
           // resolve(e.data);
@@ -709,25 +700,20 @@ CardReader.action['readData'] = async function(resolve, rejected) {
  */
 
 CardReader.action['readUserInfoAndreadData'] = async function() {
-  // let userInfo;
-  // let dataList;
   // 1. 获取卡片
   try {
     let ret = await this.getCard();
     // 2.进入mf目录
-    console.log('00选择MF');
     ret = await CardReader.fn.apdu((() => ['00', 'A4', '00', '00', '02', '3F', '00'].join(''))());
     // 3.进入用户信息的目录
-    console.log('01用户信息目录');
     ret = await CardReader.fn.apdu((() => ['00', 'A4', '00', '00', '02', '3F', '01'].join(''))());
     // 4. 如果是9000 说明能进入文件夹里了
     ret = CardReader.fn.getResult(ret);
     if (ret.code !== '9000') {
-      console.error('无01文件夹');
       await CardReader.action.error();
       return {
         ...ret,
-        msg: '无01文件夹'
+        msg: '无01文件夹: 无任何数据'
       };
     }
 
@@ -735,7 +721,6 @@ CardReader.action['readUserInfoAndreadData'] = async function() {
     ret = await CardReader.fn.apdu((() => ['00', 'B0', CardReader.fn.numToHex16(1 | 0x80), '00', '00'].join(''))());
     ret = CardReader.fn.getResult(ret);
     if (ret.code !== '9000') {
-      console.error('无用户信息');
       await CardReader.action.error();
       return {
         ...ret,
@@ -745,26 +730,28 @@ CardReader.action['readUserInfoAndreadData'] = async function() {
 
     // 6. 数据解析
     ret = CardReader.fn.utf8HexToStr(ret.data);
-
     const userInfo = CardReader.fn.resultData(ret, USERINFO).data;
 
     // 7. 继续 读取卡信息== 进入数据目录 02
-    console.log('02数据目录');
     ret = await CardReader.fn.apdu((() => ['00', 'A4', '00', '00', '02', '3F', '02'].join(''))());
     ret = CardReader.fn.getResult(ret);
     if (ret.code !== '9000') {
-      console.error('无02文件夹');
-      return CardReader.action.error();
+      await CardReader.action.error();
+      return {
+        ...ret,
+        msg: '无02文件夹'
+      };
     }
     // 8. 读取数据文件夹里的数据(里面是一个03的文件夹)
     ret = await CardReader.fn.apdu((() => ['00', 'B0', CardReader.fn.numToHex16(1 | 0x80), '00', '00'].join(''))());
     ret = CardReader.fn.getResult(ret);
     if (ret.code !== '9000') {
-      console.error('读取文件失败, 缺少数据索引信息,  也就是说, 没有任何数据存在咯');
+      // console.error('读取文件失败, 缺少数据索引信息,  也就是说, 没有任何数据存在咯');
       await CardReader.action.error();
       return {
         ...ret,
-        msg: '没有任何数据存在'
+        userInfo,
+        msg: '已核销 / 无任何信息'
       };
     }
     // 9. 读文件 == 文件多个
@@ -809,14 +796,13 @@ CardReader.action['readUserInfoAndreadData'] = async function() {
     console.log('共读取了：', count + errCount, ' 条记录，成功：', count, ' 失败：', errCount);
 
     const dataList = data;
-    // resultData(data, USERINFO)
-
     // 结束操作这样是一个闭合的操作了
     await CardReader.fn.exec(CardReader.command.deselect);
     await CardReader.fn.exec(CardReader.command.beep);
 
     return {
       ...ret,
+      msg: '读取成功',
       success: true,
       userInfo,
       dataList

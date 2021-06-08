@@ -69,7 +69,7 @@ export default arr.concat({
   isShow: false,
   label: '操作',
   width: 180,
-  fixed: 'right'
+  fixed: 'left'
 });
 
 
