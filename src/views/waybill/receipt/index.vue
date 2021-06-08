@@ -2,7 +2,7 @@
   <div>
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
-        <el-form-item v-show="isAdmin" label="下单用户" prop="orderClient">
+        <el-form-item v-show="!isShipment" label="下单用户" prop="orderClient">
           <el-input
             v-model="queryParams.orderClient"
             placeholder="发货企业/操作人/手机号"
@@ -309,12 +309,14 @@ export default {
       },
       isAdmin: false,
       user: {},
-      shipment: {}
+      shipment: {},
+      isShipment: false
     };
   },
   created() {
-    const { isAdmin = false, user = {}, shipment = {}} = getUserInfo() || {};
+    const { isAdmin = false, isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
     this.isAdmin = isAdmin;
+    this.isShipment = isShipment;
     this.user = user;
     this.shipment = shipment;
     this.tableHeaderConfig(this.tableColumnsConfig, listInfoApi, {

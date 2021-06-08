@@ -9,7 +9,7 @@
         label-width="80px"
       >
         <el-form-item
-          v-show="isAdmin"
+          v-show="!isShipment"
           label="下单用户"
           prop="orderClient"
         >
@@ -23,7 +23,7 @@
           />
         </el-form-item>
         <el-form-item
-          v-show="isAdmin"
+          v-show="!isShipment"
           label="发货企业"
           prop="deliveryCompany"
         >
@@ -467,6 +467,7 @@ export default {
         { 'dictLabel': '是', 'dictValue': '2' }
       ],
       isAdmin: false,
+      isShipment: false,
       user: {},
       shipment: {},
 
@@ -492,8 +493,9 @@ export default {
   },
 
   created() {
-    const { isAdmin = false, user = {}, shipment = {}} = getUserInfo() || {};
+    const { isAdmin = false, isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
     this.isAdmin = isAdmin;
+    this.isShipment = isShipment;
     this.user = user;
     this.shipment = shipment;
     this.tableHeaderConfig(this.tableColumnsConfig, adjustListApi, {

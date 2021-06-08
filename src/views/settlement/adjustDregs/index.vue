@@ -10,7 +10,7 @@
         label-width="98px"
       >
         <el-form-item
-          v-show="isAdmin"
+          v-show="!isShipment"
           label="下单用户"
           prop="orderClient"
         >
@@ -24,7 +24,7 @@
           />
         </el-form-item>
         <el-form-item
-          v-show="isAdmin"
+          v-show="!isShipment"
           label="发货企业"
           prop="deliveryCompany"
         >

@@ -9,7 +9,7 @@
         label-width="90px"
       >
         <el-form-item
-          v-show="isAdmin"
+          v-show="!isShipment"
           label="下单用户"
           prop="orderClient"
         >
@@ -23,7 +23,7 @@
           />
         </el-form-item>
         <el-form-item
-          v-show="isAdmin"
+          v-show="!isShipment"
           label="发货企业"
           prop="deliveryCompany"
         >
@@ -452,7 +452,8 @@ export default {
       ],
       isAdmin: false,
       user: {},
-      shipment: {}
+      shipment: {},
+      isShipment: false
     //   // <!-- isPay	支付给司机运费状态 0-未支付 1-已支付 -->
     //   isPayOptions: [
     //     { 'dictLabel': '未支付', 'dictValue': '0' },
@@ -480,8 +481,9 @@ export default {
     }
   },
   created() {
-    const { isAdmin = false, user = {}, shipment = {}} = getUserInfo() || {};
+    const { isAdmin = false, isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
     this.isAdmin = isAdmin;
+    this.isShipment = isShipment;
     this.user = user;
     this.shipment = shipment;
     // this['tableColumnsConfig' + this.activeName] = this.getLocalStorage(this.lcokey) || this.tableColumnsConfig;
