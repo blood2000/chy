@@ -147,7 +147,7 @@
       >
         <el-col :span="1.5">
           <el-button
-            v-hasPermi="['askfor:invoice:batch']"
+            v-hasPermi="['transportation:batch:passBatchClaim']"
             type="primary"
             icon="el-icon-document-checked"
             size="mini"
@@ -155,6 +155,7 @@
             @click="handleAskfor"
           >批量索票</el-button>
           <el-button
+            v-if="false"
             v-hasPermi="['askfor:invoice:export']"
             type="primary"
             icon="el-icon-upload2"
@@ -201,21 +202,25 @@
 
         <template #edit="{row}">
           <el-button
+            v-hasPermi="['transportation:batch:batchInfo']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 1)"
           >详情</el-button>
           <el-button
+            v-hasPermi="['transportation:batch:passBatchClaim']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 2)"
           >索票</el-button>
           <el-button
+            v-hasPermi="['transportation:batch:refuseBatchClaim']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 3)"
           >驳回</el-button>
           <el-button
+            v-if="false"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 4)"
@@ -231,14 +236,13 @@
         @pagination="getList"
       />
 
-      <!-- 对账单弹窗 -->
-      <StatementsDialog ref="StatementsDialog" :open.sync="Statementsdialog" :disable="formDisable" :title="title" @refresh="getList" />
-
-      <!-- 驳回弹窗 -->
-      <reject-dialog ref="RejectDialog" :open.sync="rejectdialog" :title="title" :disable="formDisable" @refresh="getList" />
-
     </div>
 
+    <!-- 对账单弹窗 -->
+    <StatementsDialog ref="StatementsDialog" :open.sync="Statementsdialog" :disable="formDisable" :title="title" @refresh="getList" />
+
+    <!-- 驳回弹窗 -->
+    <reject-dialog ref="RejectDialog" :open.sync="rejectdialog" :title="title" :disable="formDisable" @refresh="getList" />
 
   </div>
 </template>
@@ -249,6 +253,8 @@ import { adjustDregsList, adjustListApi, passBatchClaim } from '@/api/settlement
 
 import { getUserInfo } from '@/utils/auth';
 // import ChildDialog from '../components/childDialog';
+
+
 // 运单详情弹窗
 import StatementsDialog from '@/views/settlement/adjustDregs/StatementsDialog';
 
@@ -364,6 +370,31 @@ export default {
     };
   },
   computed: {
+    isShipmentTableColumnsConfig() {
+      return !this.isShipment ? [
+        {
+          prop: 'companyName',
+          isShow: true,
+          label: '发货企业',
+          sortNum: 2,
+          width: 180
+        },
+        {
+          prop: 'invoiceTitle',
+          isShow: true,
+          label: '发票抬头',
+          sortNum: 2,
+          width: 180
+        },
+        {
+          prop: 'taxpayerNumber',
+          isShow: true,
+          label: '税务登记',
+          sortNum: 2,
+          width: 180
+        }
+      ] : [];
+    }
   },
   created() {
     const { isAdmin = false, isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
@@ -385,7 +416,7 @@ export default {
       label: '状态',
       sortNum: 2,
       width: 180
-    }]);
+    }].concat(this.isShipmentTableColumnsConfig));
     this.listByDict(this.commodityCategory).then(response => {
       this.commodityCategoryCodeOptions = response.data;
     });
