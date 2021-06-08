@@ -1,7 +1,7 @@
 <template>
   <el-dialog :title="title" :visible="visible" width="1300px" append-to-body :modal-append-to-body="false" class="waybill-seperate-list-dialog" @close="cancel">
     <el-table v-loading="loading" highlight-current-row border :data="childList">
-      <el-table-column label="序号" align="center" type="index" width="50" />
+      <el-table-column label="序号" align="center" fixed="left" type="index" width="50" />
       <el-table-column label="货源单号" align="center" prop="mainOrderNumber" width="150" />
       <el-table-column label="发货企业" align="center" prop="shipperFactory" width="150" />
       <el-table-column label="下单用户" align="center" prop="orderClient" width="160" />

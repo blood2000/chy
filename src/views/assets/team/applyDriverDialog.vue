@@ -10,7 +10,7 @@
   >
     <el-table v-loading="loading" :data="infoList" highlight-current-row border @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <el-table-column label="序号" align="center" type="index" min-width="5%" />
+      <el-table-column label="序号" align="center" fixed="left" type="index" min-width="5%" />
       <el-table-column label="司机类别" align="center" prop="driverType">
         <template slot-scope="scope">
           <span>{{ selectDictLabel(driverTypeOptions, scope.row.driverType) }}</span>
