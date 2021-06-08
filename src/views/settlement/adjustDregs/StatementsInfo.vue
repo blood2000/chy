@@ -1,7 +1,6 @@
 
 <template>
   <div>
-    <!-- @selection-change="handleSelectionChange" -->
     <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig">
       <template #weight="{row}">
         <span v-if="row.weight">
@@ -73,9 +72,6 @@ export default {
   created() {
     this.tabColInit();
     this.getList();
-    // if (this.wayBillCodes.length) {
-    // }
-    console.log(45646);
   },
   'methods': {
     /** 表头初始化 */

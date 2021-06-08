@@ -7,7 +7,6 @@
       </el-form-item>
       <el-form-item label="评价内容：" prop="content">
         <span>{{ form.content || '暂无评价内容' }}</span>
-        <!-- <el-input v-model="form.content" type="textarea" maxlength="100" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入您的客观评价" style="width:90%;" clearable /> -->
       </el-form-item>
     </el-form>
     <div v-if="!disable" slot="footer" class="dialog-footer">
@@ -19,7 +18,6 @@
 
 <script>
 import { waybillComment, waybillCommentDetail } from '@/api/waybill/tracklist';
-// import UploadImage from '@/components/UploadImage/index';
 
 export default {
   name: 'RateDialog',
@@ -43,14 +41,7 @@ export default {
         content: null
       },
       // 表单校验
-      rules: {
-        // score: [
-        //   { required: true, message: '请选择评分', trigger: 'blur' }
-        // ],
-        // content: [
-        //   { required: true, message: '评价内容不能为空', trigger: 'blur' }
-        // ]
-      }
+      rules: {}
     };
   },
   computed: {

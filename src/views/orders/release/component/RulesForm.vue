@@ -155,8 +155,7 @@ export default {
 
   watch: {
     dataList: {
-      handler(newName, oldName) {
-        // this.formData = {};
+      handler() {
         this.resettingData = [];
         this.initData();
       },
@@ -188,12 +187,6 @@ export default {
       const M0_option = this.$store.state.orders.M0_option;
       return arr.map(async e => {
         if (e.dictCode && (e.showType === '3' || e.showType === '4')) {
-          // 新
-          // const { data } = await this.listByDict({
-          //   dictPid: '0',
-          //   dictType: e.dictCode
-          // });
-          // 旧
           if (e.dictCode === 'M0') {
             if (M0_option && M0_option.length) {
               e.Option = M0_option;
@@ -248,9 +241,3 @@ export default {
 
 };
 </script>
-
-<style scoped>
-	/* .el-input-number ::v-deep.el-input__inner{
-	  text-align: left;
-	} */
-</style>

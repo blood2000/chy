@@ -76,32 +76,6 @@
         <el-col :span="!showbudget? 14: 24">
           <div v-if="zichuList.length || shouruList.length" class="t_box_item">
 
-            <!-- <el-form-item
-              label="计算方式"
-              prop="ruleDictValue"
-              :rules="[
-                { required: true, message: '选择计算方式', trigger: 'change' },
-              ]"
-            >
-              <el-select
-                v-model="formData.ruleDictValue"
-                placeholder="选择抹计算方式"
-                clearable
-                :style="{ width: '200px' }"
-              >
-                <el-option
-                  v-for="(dict, index1) in ruleFormulaOption"
-                  :key="index1"
-                  :label="dict.dictLabel"
-                  :value="dict.dictValue"
-                />
-              </el-select>
-            </el-form-item> -->
-
-
-            <!-- <div class="header mb8">路耗:</div>
-            <RulesForm v-if="lossList.length" ref="lossList" :data-list="lossList" :myisdisabled="myisdisabled" /> -->
-
             <div v-if="zichuList.length" class="header mb8">扣费项目:</div>
             <RulesForm v-if="zichuList.length" ref="zichuList" :data-list="zichuList" :myisdisabled="myisdisabled" />
 
@@ -241,7 +215,7 @@ export default {
           'type': null
 
         }
-      ], // 运费单价(单独提取出来)
+      ], // 运费单价
       claculationFormula: [
         {
           'code': undefined,
@@ -263,12 +237,10 @@ export default {
       },
       rules: {
         ruleItemId: [
-          // { required: true, message: '请选择核算规则', trigger: 'change' }
           { validator: ruleItemId_validator, required: true, trigger: 'change' }
 
         ],
         freightPrice: [
-          // { required: true, message: '请输入运费单价', trigger: 'blur' },
           { validator: freightPrice_validator, required: true, trigger: 'blur' }
         ]
       },
@@ -330,14 +302,9 @@ export default {
     },
     redis: {
       handler(value) {
-        // 1. 正常回填时候用到
         if (!value || !value.orderFreightVo) return;
 
-        // // 处理规则不一样的情况
         if (this.formData.ruleItemId && this.formData.ruleItemId !== value.ruleCode) return;
-
-
-        // 2. 第一次回调走下面
 
         this.lossList = [];
         this.zichuList = [];
@@ -348,18 +315,13 @@ export default {
         this.formData.ruleItemId = value.ruleCode;
 
         const filterDetailList = detailList.filter(e => {
-          // !this.formData.ruleItemId && (this.formData.ruleItemId = e.ruleCode);
-
           if (e.enName === 'DRIVER_ACTUAL_PRICE') {
-            // totalTransportationCost && (e.ruleValue = totalTransportationCost);
             !this.totalTransportationCost && (this.totalTransportationCost = e.ruleValue);
           }
 
           if (e.enName === 'FREIGHT_COST') {
-            // freightPrice && (e.ruleValue = freightPrice);
             !this.formData.freightPrice && (this.formData.freightPrice = e.ruleValue);
 
-            // 如果是复制的则重新计算
             if (this.$route.query.t === '3') {
               this.handlerChange();
             }
@@ -375,7 +337,6 @@ export default {
         });
 
         this.setData(filterDetailList, lossList);
-        // 2 e=
       },
       immediate: true
 
@@ -404,7 +365,6 @@ export default {
         });
         this.totalTransportationCost = data.data;
       } catch (error) {
-        // this.msgError('司机实收单价获取失败, 请重新输入运费单价');
         this.$confirm('请求超时, 点击确定重新获取', '警告', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -433,7 +393,6 @@ export default {
       }
     },
 
-    // 交互
     // 选择规格
     async handleRuleItemId() {
       if (!this.formData.ruleItemId) return;
@@ -473,8 +432,6 @@ export default {
       return new Promise((resolve, reject) => {
         this.$refs['formData'].validate(async(valid) => {
           if (valid) {
-            // 保存修改后的值-下次进来使用
-            // (this.redis.ruleCode = this.formData.ruleItemId);
             if (this.redis && this.redis.orderFreightVo) {
               this.redis.orderFreightVo.detailList.forEach(e => {
                 if (e.enName === 'DRIVER_ACTUAL_PRICE') {
@@ -490,7 +447,6 @@ export default {
               });
             }
 
-            // 封装需要的值
             (this.ruleFreightPrice[0].ruleValue = this.formData.freightPrice);
             (this.ruleFreightPrice[0].ruleCode = this.formData.ruleItemId);
             (this.claculationFormula[0].ruleValue = this.totalTransportationCost);
@@ -572,8 +528,6 @@ export default {
       });
     },
     _floor(number) {
-      // return Math.floor(number * 100) / 100; // (截取)
-      // return (number - 0).toFixed(2); //  bug比较多
       return Math.round((number - 0) * Math.pow(10, 2)) / Math.pow(10, 2);
     }
   }

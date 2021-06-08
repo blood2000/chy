@@ -1,5 +1,4 @@
 <template>
-  <!-- 评价对话框 -->
   <el-dialog class="i-adjust" :title="title" :visible="visible" width="1400px" :close-on-click-modal="false" append-to-body @close="cancel">
     <el-row v-if="isPiliang" :gutter="10" class="mb8">
       <el-col :span="10">
@@ -95,8 +94,8 @@
 </template>
 
 <script>
-import { adjustDetail } from '@/api/settlement/adjust'; // 获取列表
-import { immediateAccounting, calculateFee } from '@/api/settlement/adjustDregs'; // 立即核算
+import { adjustDetail } from '@/api/settlement/adjust';
+import { immediateAccounting, calculateFee } from '@/api/settlement/adjustDregs';
 
 import { floor } from '@/utils/ddc';
 
@@ -110,7 +109,6 @@ export default {
       default: ''
     },
     open: Boolean
-    // disable: Boolean
   },
   data() {
     return {
@@ -118,13 +116,8 @@ export default {
       isEdit2: false,
       isEdit: false,
       deliveryCashFee: undefined,
-      // tableColumnsConfig: [],
       // 遮罩层
       loading: false,
-      // 总条数
-      // total: 0,
-      // 旧的数据
-      // oldList: [],
       // 评价列表
       adjustlist: [],
       // 查询参数
@@ -146,17 +139,8 @@ export default {
   created() {
   },
   methods: {
-    // 修改了增项
-    handlerChange(row, value, key) {},
-
-    // 修改
-    handlerItem(row, value, key, name) {},
-
-    handlerInput(row, value, key) {},
-
     // 获取数据
     async getDeliveryCashFee(arr) {
-      // console.log(arr);
       const que = {
         deliveryCashFee: arr[0].deliveryCashFee, //	金额		false
         waybillCodeList: arr.map(e => e.waybillCode)//	运单ids
@@ -175,10 +159,7 @@ export default {
               // waybillCode //	运单CODE
             } = da;
 
-            // row.serviceFee = serviceFee;
-            // row.shipperRealPay = shipperRealPay;
             row.serviceTaxFee = floor(serviceTaxFee);
-            // row.deliveryCashFee = driverFee;
             row.taxPayment = floor(taxPayment);
           }
         });
@@ -205,7 +186,6 @@ export default {
           'taxPayment': e.taxPayment
         };
       });
-      // const teamUserCode = [...new Set(this.adjustlist.map(e => e.teamUserCode))];
       const shipmentCodeArr = [...new Set(this.adjustlist.map(e => e.shipperCode))];
 
       if (shipmentCodeArr.length > 1) {
@@ -231,9 +211,7 @@ export default {
     getList() {
       this.loading = true;
       adjustDetail(this.queryParams).then(response => {
-        // isDregs // 是否渣土   1 是 0 否 (司机实收 只有渣土1能修改)
         this.adjustlist = JSON.parse(JSON.stringify(response.data));
-
         this.total = response.total;
         this.loading = false;
       });

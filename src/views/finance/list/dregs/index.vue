@@ -122,7 +122,6 @@
     <div class="g-radio-group">
       <el-radio-group v-model="activeName" size="small" @change="handleClick">
         <el-radio-button label="1">已申请</el-radio-button>
-        <!-- <el-radio-button label="2,3,4">已审核</el-radio-button> -->
         <el-radio-button label="5">已开票</el-radio-button>
       </el-radio-group>
     </div>
@@ -152,22 +151,6 @@
             @click="handlerPassPayment"
           >批量打款</el-button>
         </el-col>
-        <!-- <el-col :span="1.5">
-          <el-button
-            type="primary"
-            icon="el-icon-upload2"
-            size="mini"
-            @click="loogImage"
-          >查看图片</el-button>
-        </el-col> -->
-        <!-- <el-col v-if="activeName == '6'" :span="1.5">
-          <el-button
-            type="primary"
-            icon="el-icon-upload2"
-            size="mini"
-            @click="handleExportService"
-          >导出服务费明细</el-button>
-        </el-col> -->
         <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
@@ -178,25 +161,6 @@
       </el-row>
 
       <RefactorTable :loading="loading" :data="billlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
-        <!-- <template #zhuanfowe="{row}">
-          <span class="g-color-error">已申请{{ row.zhuanfowe }}</span>
-        </template>
-        <template #invoiceStatus="{row}">
-          <span>
-            <span v-if="row.invoiceStatus == 1" class="g-statusDot g-color-warning">●</span>
-            <span v-if="row.invoiceStatus == 2" class="g-statusDot g-color-gray">●</span>
-            <span v-if="row.invoiceStatus == 3" class="g-statusDot g-color-error">●</span>
-            <span v-if="row.invoiceStatus == 4" class="g-statusDot g-color-success">●</span>
-            <span v-if="row.invoiceStatus == 5" class="g-statusDot g-color-success">●</span>
-            {{ selectDictLabel(invoiceStatusOptions, row.invoiceStatus) }}
-          </span>
-        </template>
-        <template #invoiceFrom="{row}">
-          <span>{{ selectDictLabel(invoiceFromOptions, row.invoiceFrom) }}</span>
-        </template>
-        <template #invoiceApplyTime="{row}">
-          <span>{{ parseTime(row.invoiceApplyTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-        </template> -->
         <template #loogImage="{row}">
           <el-button
             size="mini"
@@ -219,7 +183,6 @@
               type="text"
               @click="handleTableBtn(row, 1)"
             >驳回</el-button>
-            <!-- && row.invoiceStatus == '4'  可能是要根据这个判断能不能再开票了吧-->
             <el-button
               v-if="!isShipment "
               v-hasPermi="['transportation:batch:passBilling']"
@@ -254,11 +217,6 @@
               type="text"
               @click="handleTableBtn(row, 5)"
             >导出</el-button>
-            <!-- <el-button
-              size="mini"
-              type="text"
-              @click="handleTableBtn(row, 6)"
-            >驳回</el-button> -->
           </div>
         </template>
       </RefactorTable>
@@ -274,28 +232,16 @@
 
     <!-- 驳回弹窗 -->
     <reject-dialog ref="RejectDialog" :open.sync="rejectdialog" :title="title" :disable="formDisable" @refresh="getList" />
-    <!-- 审核弹窗 -->
-    <!-- <verify-dialog ref="VerifyDialog" :open.sync="verifydialog" :title="title" :disable="formDisable" @refresh="getList" /> -->
     <!-- 开票弹窗 -->
     <billing-dialog ref="BillingDialog" :open.sync="billingdialog" :title="title" @refresh="getList" />
     <!-- 对账单详情弹窗 -->
     <StatementsDialog ref="StatementsDialog" :open.sync="Statementsdialog" :disable="formDisable" :title="title" @refresh="getList" />
 
-    <!-- 查看图片
-
-     -->
     <el-dialog :title="'查看发票图片'" class="i-price" :visible.sync="openimg" append-to-body>
       <!-- 弹框内的组件 -->
       <div v-if="openimg" class="ly-flex-pack-center ly-flex-pack-center">
 
         <viewer :images="[attachUrl]">
-          <!-- <img
-                        v-for="(src,index) in photo"
-                        :src="src"
-                        :key="index"
-                        :onerror="errorImg"
-                      > -->
-          <!-- v-real-img="src"  -->
           <img
             v-for="(src,index) in [attachUrl]"
             :key="index"
@@ -312,17 +258,14 @@
 <script>
 import { getFile } from '@/api/system/image.js';
 
-import { passPayment, refusePayment } from '@/api/finance/askfor';
+import { passPayment } from '@/api/finance/askfor';
 
-// 审核弹窗
-// import VerifyDialog from '../verifyDialog';
 // 开票弹窗
 import BillingDialog from './billingDialog';
 // 详情弹窗
 import StatementsDialog from '@/views/settlement/adjustDregs/StatementsDialog';
 // 驳回弹窗
 import RejectDialog from './components/rejectDialog';
-// import DetailDialog from './detail';
 
 import { getUserInfo } from '@/utils/auth';
 
@@ -473,18 +416,10 @@ export default {
   },
 
   created() {
-    const { isAdmin = false, isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
+    const { isShipment = false } = getUserInfo() || {};
 
     this.isShipment = isShipment;
 
-    // this.tableHeaderConfig(this.tableColumnsConfig, this.api, {
-    //   prop: 'edit',
-    //   isShow: true,
-    //   label: '操作',
-    //   width: 180,
-    //   fixed: 'left'
-    // }, this.tableColumnsConfig1);
-    // !this.$route.query.list && this.getList();
     this.handleClick('1');
   },
   'methods': {
@@ -497,7 +432,6 @@ export default {
         this.queryParams.invoiceApplyTimeEnd = null;
       }
     },
-    /** handleClick */
     handleClick(tab) {
       this.api = this.api + '--' + ((tab - 0) + 1);
       const tableColumnsConfig = tab === '1' ? this.tableColumnsConfig1 : this.tableColumnsConfig2;
@@ -513,8 +447,6 @@ export default {
         fixed: 'left'
       }, tableColumnsConfig);
 
-      // 切换
-      // this.queryParams.invoiceStatus = tab;
       this.queryParams.pageNum = 1;
       this.getList();
     },
@@ -581,38 +513,13 @@ export default {
           this.$refs.BillingDialog.setForm(row);
           break;
         case 3:
-          // this.$router.push({ name: 'Statement', query: { code: row.code }});
           this.Statementsdialog = true;
           this.title = '对账单详情';
           this.$refs.StatementsDialog.setBatchStatementCode(row.batchStatementCode, row); // 传code
           break;
         case 4:
-          // this.$router.push({ name: 'Statement', query: { code: row.code }});
           this.ids = [row.batchNo];
           this.handlerPassPayment();
-          break;
-        case 5:
-          // this.$router.push({ name: 'Statement', query: { code: row.code }});
-          break;
-        case 6:
-          // this.$router.push({ name: 'Statement', query: { code: row.code }});
-          // this.ids = [row.batchNo];
-          // this.$confirm('我驳回?', '提示', {
-          //   confirmButtonText: '确定',
-          //   cancelButtonText: '取消',
-          //   type: 'warning'
-          // }).then(() => {
-          //   const que = {
-          //     batchCodes: this.ids
-          //   };
-
-          //   refusePayment(que).then(res => {
-          //     this.msgSuccess('驳回成功');
-          //     this.queryParams.pageNum = 1;
-          //     this.getList();
-          //   });
-          // }).catch(() => {});
-
           break;
         default:
           break;

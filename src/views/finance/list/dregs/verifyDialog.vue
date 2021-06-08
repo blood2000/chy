@@ -4,7 +4,6 @@
     <el-form ref="form" :model="form" :rules="rules" label-width="130px">
       <el-form-item v-if="form.num" label="审核数量" prop="num">
         <span>{{ form.num }}</span>
-        <!-- <el-input v-model="form.num" disabled placeholder="请输入审核数量" clearable size="small" style="width:90%;" /> -->
       </el-form-item>
       <el-form-item label="审核结果" prop="invoiceStatus">
         <el-select
@@ -36,7 +35,6 @@
 
 <script>
 import { passCheck } from '@/api/finance/list';
-// import UploadImage from '@/components/UploadImage/index';
 
 export default {
   name: 'VerifyDialog',

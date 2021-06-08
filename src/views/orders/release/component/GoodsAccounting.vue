@@ -262,7 +262,6 @@ export default {
   },
 
   computed: {
-    // 计算显示的单位
     goodsUnitName() {
       let name = '吨';
       switch (this.formData.stowageStatus) {

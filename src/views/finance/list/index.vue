@@ -169,8 +169,6 @@
     <verify-dialog ref="VerifyDialog" :open.sync="verifydialog" :title="title" :disable="formDisable" @refresh="getList" />
     <!-- 开票弹窗 -->
     <billing-dialog ref="BillingDialog" :open.sync="billingdialog" :title="title" @refresh="getList" />
-    <!-- 详情弹窗 -->
-    <!-- <detail-dialog ref="DetailDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" /> -->
   </div>
 </template>
 
@@ -180,9 +178,6 @@ import { billList, billListApi } from '@/api/finance/list';
 import VerifyDialog from './verifyDialog';
 // 开票弹窗
 import BillingDialog from './billingDialog';
-// 详情弹窗
-// import DetailDialog from './detail';
-
 
 export default {
   'name': 'List',
