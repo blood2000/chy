@@ -29,101 +29,101 @@
           </el-form-item>
         </el-col>
       </el-row>
-        <el-row>
-            <el-col :span="12">
-                <el-form-item label="货物大类" prop="commodityCategoryCode">
-                    <el-select v-model="form.commodityCategoryCode" placeholder="请选择货物大类" style="width: 100%" @change="handlecommodityCategoryChange">
-                        <el-option
-                                v-for="item in commodityCategoryCodeOptions"
-                                :key="item.dictValue"
-                                :label="item.dictLabel"
-                                :value="item.dictValue">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-            </el-col>
-            <el-col :span="12">
-                <el-form-item v-if="isMore == 0 || !isMore" label="货物小类" prop="commoditySubclassCodes">
-                    <el-select v-model="form.commoditySubclassCodes" placeholder="请选择货物小类" style="width: 100%" @change="handlecommodityCategoryChange">
-                        <el-option
-                                v-for="item in commoditySubclassCodesOptions"
-                                :key="item.dictValue"
-                                :label="item.dictLabel"
-                                :value="item.dictValue">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item v-if="isMore == 1" label="货物小类" prop="commoditySubclassCodes">
-                    <el-select v-model="form.commoditySubclassCodes" placeholder="请选择货物小类" style="width: 100%" @change="handleCheckedChange">
-                        <el-option
-                                v-for="item in commoditySubclassCodesOptions"
-                                :key="item.dictValue"
-                                :label="item.dictLabel"
-                                :value="item.dictValue">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-            </el-col>
-        </el-row>
-        <el-row :gutter="15">
-            <el-col :span="10">
-                <el-form-item label="所在地区" prop="provinceCode">
-                    <el-select
-                            v-model="form.provinceCode"
-                            clearable
-                            filterable
-                            class="width100"
-                            placeholder="请选择省"
-                            @change="changeProvince"
-                    >
-                        <el-option
-                                v-for="dict in provinceCodeOptions"
-                                :key="dict.provinceCode"
-                                :label="dict.provinceName"
-                                :value="dict.provinceCode"
-                        />
-                    </el-select>
-                </el-form-item>
-            </el-col>
-            <el-col :span="7">
-                <el-form-item class="no-label" prop="cityCode">
-                    <el-select
-                            v-model="form.cityCode"
-                            clearable
-                            filterable
-                            class="width100"
-                            placeholder="请选择市"
-                            @change="changeCity"
-                    >
-                        <el-option
-                                v-for="dict in cityCodeOptions"
-                                :key="dict.cityCode"
-                                :label="dict.cityName"
-                                :value="dict.cityCode"
-                        />
-                    </el-select>
-                </el-form-item>
-            </el-col>
-            <el-col :span="7">
-                <el-form-item class="no-label" prop="districtCode">
-                    <el-select
-                            v-model="form.districtCode"
-                            clearable
-                            filterable
-                            class="width100"
-                            placeholder="请选择县/区"
-                            @change="changeCounty"
-                    >
-                        <el-option
-                                v-for="dict in countyCodeOptions"
-                                :key="dict.countyCode"
-                                :label="dict.countyName"
-                                :value="dict.countyCode"
-                        />
-                    </el-select>
-                </el-form-item>
-            </el-col>
-        </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="货物大类" prop="commodityCategoryCode">
+            <el-select v-model="form.commodityCategoryCode" placeholder="请选择货物大类" style="width: 100%" @change="handlecommodityCategoryChange">
+              <el-option
+                v-for="item in commodityCategoryCodeOptions"
+                :key="item.dictValue"
+                :label="item.dictLabel"
+                :value="item.dictValue"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item v-if="isMore == 0 || !isMore" label="货物小类" prop="commoditySubclassCodes">
+            <el-select v-model="form.commoditySubclassCodes" placeholder="请选择货物小类" style="width: 100%" @change="handlecommodityCategoryChange">
+              <el-option
+                v-for="item in commoditySubclassCodesOptions"
+                :key="item.dictValue"
+                :label="item.dictLabel"
+                :value="item.dictValue"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item v-if="isMore == 1" label="货物小类" prop="commoditySubclassCodes">
+            <el-select v-model="form.commoditySubclassCodes" placeholder="请选择货物小类" style="width: 100%" @change="handleCheckedChange">
+              <el-option
+                v-for="item in commoditySubclassCodesOptions"
+                :key="item.dictValue"
+                :label="item.dictLabel"
+                :value="item.dictValue"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="15">
+        <el-col :span="10">
+          <el-form-item label="所在地区" prop="provinceCode">
+            <el-select
+              v-model="form.provinceCode"
+              clearable
+              filterable
+              class="width100"
+              placeholder="请选择省"
+              @change="changeProvince"
+            >
+              <el-option
+                v-for="dict in provinceCodeOptions"
+                :key="dict.provinceCode"
+                :label="dict.provinceName"
+                :value="dict.provinceCode"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="7">
+          <el-form-item class="no-label" prop="cityCode">
+            <el-select
+              v-model="form.cityCode"
+              clearable
+              filterable
+              class="width100"
+              placeholder="请选择市"
+              @change="changeCity"
+            >
+              <el-option
+                v-for="dict in cityCodeOptions"
+                :key="dict.cityCode"
+                :label="dict.cityName"
+                :value="dict.cityCode"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="7">
+          <el-form-item class="no-label" prop="districtCode">
+            <el-select
+              v-model="form.districtCode"
+              clearable
+              filterable
+              class="width100"
+              placeholder="请选择县/区"
+              @change="changeCounty"
+            >
+              <el-option
+                v-for="dict in countyCodeOptions"
+                :key="dict.countyCode"
+                :label="dict.countyName"
+                :value="dict.countyCode"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-form-item label="地址" prop="addressName">
         <amap-search ref="AmapSearchRef" v-model="form.addressName" :search-option="searchOption" class="width100" @change="addressChange" />
       </el-form-item>
@@ -131,7 +131,7 @@
         <el-input v-model="form.detail" placeholder="请输入地址详情" class="width100" clearable />
       </el-form-item>
       <el-row :gutter="20">
-       <!-- <el-col :span="12">
+        <!-- <el-col :span="12">
           <el-form-item label="是否默认地址">
             <el-switch v-model="form.defaultPut" active-text="默认装货地址" class="mr5" />
             <el-switch v-model="form.defaultPush" active-text="默认卸货地址" />
@@ -397,6 +397,7 @@ export default {
       this.getMapData(lng, lat);
       this.getFormData(lng, lat, dictLabel);
       // 只填地址也可以回填省市区
+      // console.log(JSON.stringify(row));
       this.getAddressBylnglat(lng, lat);
     },
     // 选择完省以后,限定地址搜索只能在这个省里面选
@@ -431,6 +432,7 @@ export default {
       // 通过高德地图的sdk将坐标转为地址
       geocoder.getAddress([lng, lat], function(status, result) {
         if (status === 'complete' && result.info === 'OK') {
+          // console.log(JSON.stringify(result));
           if (result && result.regeocode) {
             const { adcode } = result.regeocode.addressComponent;
             _this.getAreaCode(adcode);
