@@ -369,8 +369,8 @@ export default {
       api: listDriverApi,
       // 司机类别字典
       driverTypeOptions: [
-        { dictLabel: '独立司机', dictValue: 1 },
-        { dictLabel: '聘用司机', dictValue: 2 }
+        { dictLabel: '零散司机', dictValue: 1 },
+        { dictLabel: '雇佣司机', dictValue: 2 }
       ],
       // 审核状态字典
       statusOptions: [
