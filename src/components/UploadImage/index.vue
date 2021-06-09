@@ -116,16 +116,22 @@ export default {
     // 根据code获取url
     handleGetFile(code, flag) {
       this.flag = true;
-      getFile(code).then(response => {
-        this.flag = false;
-        if (response.data && response.data.length > 0) {
-          this.attachUrl = response.data[0].attachUrl;
-          if (!flag) return;
-          this.handleOrc(this.attachUrl);
+      if (code) {
+        if (code.startsWith('https://')) {
+          this.attachUrl = code;
         } else {
-          this.attachUrl = '';
+          getFile(code).then(response => {
+            this.flag = false;
+            if (response.data && response.data.length > 0) {
+              this.attachUrl = response.data[0].attachUrl;
+              if (!flag) return;
+              this.handleOrc(this.attachUrl);
+            } else {
+              this.attachUrl = '';
+            }
+          });
         }
-      });
+      }
     },
     // 图片识别
     handleOrc(url) {
