@@ -18,7 +18,7 @@
           <el-option
             v-for="item in personOptions"
             :key="item.userCode"
-            :label="item.phonenumber + (item.userName ? ' (' + item.userName + ')' : '')"
+            :label="item.phonenumber + (item.nickName ? ' (' + item.nickName + ')' : item.userName ? ' (' + item.userName + ')' : '')"
             :value="item.userCode"
           />
         </el-select>
@@ -291,7 +291,7 @@ export default {
     userChange(code) {
       this.personOptions.forEach(el => {
         if (el.userCode === code) {
-          this.form.name = el.userName;
+          this.form.name = el.nickName || el.userName;
           this.form.mobile = el.phonenumber;
         }
       });
