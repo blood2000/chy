@@ -246,22 +246,24 @@ export default {
       this.closeMenu();
     },
     tagsOverflow() {
-      const $ContainerWidth = this.$refs.TagsViewContainer.offsetWidth;
-      const tagList = this.$refs.tag;
-      let tagswidth = 0;
-      let index;
-      let flag = true;
-      for (let i = 0; i < tagList.length; i++) {
-        tagswidth += tagList[i].$el.clientWidth;
-        // 36: The width of a arrow
-        if (flag && (tagswidth > $ContainerWidth - 36)) {
-          flag = false;
-          index = i;
-          this.overflowTagsList = this.visitedViews.slice(index);
+      if (this.$refs.TagsViewContainer) {
+        const $ContainerWidth = this.$refs.TagsViewContainer.offsetWidth;
+        const tagList = this.$refs.tag;
+        let tagswidth = 0;
+        let index;
+        let flag = true;
+        for (let i = 0; i < tagList.length; i++) {
+          tagswidth += tagList[i].$el.clientWidth;
+          // 36: The width of a arrow
+          if (flag && (tagswidth > $ContainerWidth - 36)) {
+            flag = false;
+            index = i;
+            this.overflowTagsList = this.visitedViews.slice(index);
+          }
         }
-      }
-      if (tagswidth < $ContainerWidth - 36) {
-        this.overflowTagsList = [];
+        if (tagswidth < $ContainerWidth - 36) {
+          this.overflowTagsList = [];
+        }
       }
     }
   }
