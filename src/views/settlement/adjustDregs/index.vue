@@ -257,7 +257,7 @@
             clearable
             size="small"
             style="width: 228px"
-            @keyup.enter.native="$emit('handleQuery')"
+            @keyup.enter.native="handleQuery"
           />
         </el-form-item>
 
@@ -271,7 +271,21 @@
             clearable
             size="small"
             style="width: 228px"
-            @keyup.enter.native="$emit('handleQuery')"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+
+        <el-form-item
+          label="项目"
+          prop="projectName"
+        >
+          <el-input
+            v-model="queryParams.projectName"
+            placeholder="请输入项目名称"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
           />
         </el-form-item>
 
@@ -553,6 +567,7 @@ export default {
         ztcName: undefined,
         teamName: undefined,
         waybill: undefined,
+        projectName: undefined,
         criticism: undefined
       },
 
