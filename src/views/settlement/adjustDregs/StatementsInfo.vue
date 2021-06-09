@@ -64,7 +64,7 @@ export default {
   },
   computed: {
     api() {
-      return BatchInfoListVo + '--adjustDregs66';
+      return BatchInfoListVo;
     }
   },
 
@@ -76,7 +76,8 @@ export default {
   'methods': {
     /** 表头初始化 */
     tabColInit() {
-      !this.tableColumnsConfig.length && this.tableHeaderConfig(
+      this.tableColumnsConfig = [];
+      this.tableHeaderConfig(
         this.tableColumnsConfig,
         this.api, null,
         this.tableColumnsConfig1

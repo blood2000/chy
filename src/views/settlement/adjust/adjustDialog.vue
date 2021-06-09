@@ -123,7 +123,7 @@
       </el-table-column>
       <el-table-column width="162" label="司机实收金额(元)" align="center" prop="deliveryCashFee" fixed="right">
         <template slot-scope="scope">
-          <span>{{ scope.row.deliveryCashFee }}</span>
+          <span>{{ floor(scope.row.deliveryCashFee) }}</span>
         </template>
       </el-table-column>
 
@@ -200,7 +200,12 @@ export default {
         waybillCode,
         subsidiesFreightList,
         deductionFreightList
+        // serviceFee,
+        // serviceTaxFee,
+        // taxPayment
+
       } = row;
+      console.log(row);
 
       const parame = {
         driverReductionFee: this._sum(deductionFreightList),
@@ -213,6 +218,9 @@ export default {
         loadWeight,
         unloadWeight,
         waybillCode
+        // serviceFee,
+        // serviceTaxFee,
+        // taxPayment
       };
       if (this.loading) return;
       this.loading = true;
@@ -270,6 +278,8 @@ export default {
           'otherCharges': e.otherCharges,
           'otherSubsidies': e.otherSubsidies,
           'serviceFee': e.serviceFee,
+          'serviceTaxFee': e.serviceTaxFee,
+          'taxPayment': e.taxPayment,
           'shipperCopeFee': e.shipperCopeFee,
           'shipperRealPay': e.shipperRealPay,
           'unloadWeight': e.unloadWeight,

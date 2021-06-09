@@ -245,7 +245,7 @@ export default {
   data() {
     return {
       tableColumnsConfig: [],
-      api: adjustListApi + '--1',
+      // api: adjustListApi + '--1',
       // 遮罩层
       'loading': false,
       // 选中数组
@@ -337,6 +337,10 @@ export default {
     };
   },
   computed: {
+    api() {
+      return adjustListApi + '--' + (this.isShipment ? 'isShipment' : 'isNoShipment') + ('1');
+    },
+
     isShipmentTableColumnsConfig() {
       return !this.isShipment ? [
         {
@@ -369,13 +373,12 @@ export default {
     this.isShipment = isShipment;
     this.user = user;
     this.shipment = shipment;
-    this.getList();
 
     this.tableHeaderConfig(this.tableColumnsConfig, this.api, {
       prop: 'edit',
       isShow: true,
       label: '操作',
-      width: 180,
+      width: 120,
       fixed: 'left'
     }, [{
       prop: 'status',
@@ -384,9 +387,12 @@ export default {
       sortNum: 2,
       width: 180
     }].concat(this.isShipmentTableColumnsConfig));
+
     this.listByDict(this.commodityCategory).then(response => {
       this.commodityCategoryCodeOptions = response.data;
     });
+
+    this.getList();
   },
   'methods': {
     // 获取货主列表
