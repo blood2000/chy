@@ -316,7 +316,14 @@
             @queryTable="getList"
           />
         </el-row>
-        <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+        <RefactorTable
+          :loading="loading"
+          :data="adjustlist"
+          :table-columns-config="tableColumnsConfig"
+          :row-key="(row)=> row.waybillNo"
+          reserve-selection
+          @selection-change="handleSelectionChange"
+        >
           <template #goodsBigType="{row}">
             <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
           </template>

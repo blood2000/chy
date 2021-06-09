@@ -103,7 +103,6 @@
         >
           <template slot-scope="scope">
             <el-button
-              v-hasPermi="['consigner-order-edit']"
               size="mini"
               type="text"
               @click="handleBtn(scope.row)"
