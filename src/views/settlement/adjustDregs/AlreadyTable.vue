@@ -128,7 +128,7 @@ export default {
       isShow: true,
       tooltip: false,
       label: '操作',
-      width: 240,
+      width: 100,
       fixed: 'left'
     }, [{
       prop: 'status',

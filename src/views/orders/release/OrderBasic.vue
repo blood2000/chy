@@ -47,7 +47,7 @@
           <el-radio-group
             v-else
             v-model="formData.tin2"
-            :disabled="formData.tin3 !== '0'"
+
             size="medium"
             @change="handletin2(false)"
           >
@@ -66,7 +66,7 @@
 
         <template v-if="formData.tin2">
           <el-form-item v-if="isMultiGoods" label="货物小类" prop="tin2_1">
-            <el-checkbox-group v-model="formData.tin2_1" size="medium" :disabled="formData.tin3 !== '0'">
+            <el-checkbox-group v-model="formData.tin2_1" size="medium">
               <template v-for="(dict,index) in tin2_Option">
                 <el-checkbox
                   v-if="dict.status === '0'"
@@ -78,7 +78,7 @@
             </el-checkbox-group>
           </el-form-item>
           <el-form-item v-else label="货物小类" prop="tin2_2">
-            <el-radio-group v-model="formData.tin2_2" size="medium" :disabled="formData.tin3 !== '0'">
+            <el-radio-group v-model="formData.tin2_2" size="medium">
               <template v-for="(dict,index) in tin2_Option">
                 <el-radio
                   v-if="dict.status === '0'"

@@ -443,7 +443,7 @@ export default {
         prop: 'edit',
         isShow: true,
         label: '操作',
-        width: 180,
+        width: 120,
         fixed: 'left'
       }, tableColumnsConfig);
 
