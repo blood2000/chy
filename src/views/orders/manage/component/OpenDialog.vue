@@ -39,7 +39,7 @@
           <span v-if="row">司机</span>
         </template>
         <template #driverType="{row}">
-          <span>{{ row.driverType === 1? '独立司机': '聘用司机' }}</span>
+          <span>{{ row.driverType === 1? '零散司机': '雇佣司机' }}</span>
         </template>
       </refactor-table>
     </div>
