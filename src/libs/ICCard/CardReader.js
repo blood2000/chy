@@ -817,7 +817,8 @@ CardReader.action['readUserInfoAndreadData'] = async function() {
  * @returns {Promise<void>}
  */
 CardReader.action['writeData'] = async function(data) {
-  data = data || '1010|1|29804;2614710;广东深圳福龙学校项目;鄂ALF106;张三丰;13812345678;1621648441990;1621648441990;2614710;广东深圳妈湾石头';
+  // data = data;
+  if (!data) return;
   data = CardReader.fn.strToHex16(data);
   console.log('【写数据】');
   const dfSize = '1900'; const efSize = '00C8';

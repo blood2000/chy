@@ -266,7 +266,7 @@
           <span>{{ row.accessTime }}</span>
         </template>
         <template #edit="{row}">
-          <template v-if="row.isShowEdit">
+          <template v-if="row.isDregs === 0 && row.isShowEdit">
             <el-button
               size="mini"
               type="text"
@@ -613,7 +613,9 @@ export default {
     // 处理返回的列表
     handlerList(lists) {
       this.list = lists.map(e => {
+        const isDregs = e.isDregs;
         e = e.redisOrderInfoListVoList[0];
+        e.isDregs = isDregs;
 
         e.redisOrderSpecifiedVoList.forEach(specified => {
           if (specified.userType === 1) {
@@ -717,6 +719,7 @@ export default {
         };
       });
 
+      console.log(this.list);
       this.loading = false;
     },
 

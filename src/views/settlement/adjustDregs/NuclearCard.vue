@@ -81,7 +81,7 @@
 
 
     <div slot="footer" class="dialog-footer ly-flex-pack-center">
-      <el-button type="primary" :disabled="!list.length" @click="submitForm">保存并清空</el-button>
+      <el-button type="primary" :disabled="!list.length || isUserInfo" @click="submitForm">保存并清空</el-button>
     </div>
   </el-dialog>
 </template>
@@ -116,6 +116,10 @@ export default {
       set(v) {
         this.$emit('update:open', v);
       }
+    },
+
+    isUserInfo() {
+      return JSON.stringify(this.userInfo) === '{}';
     }
   },
 
@@ -239,8 +243,11 @@ export default {
                 this.list = [];
                 this.IClist = [];
                 this.loading = false;
+                this.$emit('refresh');
                 this.$emit('update:open', false);
               }
+            }).catch(error => {
+              this.msgError(error);
             });
           });
         }).catch(() => {
@@ -258,12 +265,14 @@ export default {
         case 'issuingCard':
           // 发卡
           action.issuingCard({
-            user_code: 'ea656213e44b4a9da1f23ec9f8eb969d',
+            user_code: 'b0d285c8b68a46f7a93c0039a0242d20',
             user_telno: '18415451845',
-            user_name: '张涛',
+            user_name: '林先生',
             issuing_code: '94671e0bff6647e88db777427d700e32',
             issuing_name: '陈大帅'
-          }).then(res => { console.log(res); });
+          }).then(res => {
+            this.msgSuccess(res.msg);
+          });
           break;
         case 'readUserinfo':
           // 读取用户信息
@@ -278,8 +287,7 @@ export default {
           break;
         case 'writeData':
           // 写数据
-          await action.writeData('1010|1|29384;2913199;;晋F31022;张涛;13703509052;1621218660000;0;;苑家辛庄村东五福煤业有限公司');
-          await action.writeData('1010|1|29384;2918501;;晋F31022;张涛;13703509052;1621382400000;1621388100000;;苑家辛庄村东五福煤业有限公司');
+          await action.writeData('1010|1|30273;2977608;国脉时代广场二期;闽j45678;林先生;;1623177000000;1623177480000;;妈湾');
           break;
         default:
           break;

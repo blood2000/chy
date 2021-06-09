@@ -103,7 +103,6 @@
         >
           <template slot-scope="scope">
             <el-button
-              v-hasPermi="['consigner-order-edit']"
               size="mini"
               type="text"
               @click="handleBtn(scope.row)"
@@ -273,7 +272,6 @@ export default {
     getList() {
       this.loading = true;
       batchInfo({ batchStatementCode: this.batchStatementCode, batchNo: this.batchNo }).then(response => {
-        console.log(response);
         this.setForm(undefined, response.data);
         this.tableData = this.tableData.map(e => {
           return {
@@ -281,8 +279,6 @@ export default {
             waybillCods: response.data.waybillCods
           };
         });
-
-        console.log(this.tableData);
         this.loading = false;
       });
     },
@@ -297,7 +293,7 @@ export default {
     },
     // 获取列表
     setForm(object, data2) {
-      console.log(object);
+      this.isStatementCode = !object;
       const {
         account, //	账号	string
         // actualTripsNumCount, //	实发趟数合计前端统计	integer(int32)	integer(int32)
@@ -356,7 +352,6 @@ export default {
           obj['settlementTripsNum'] = object[item].length; // 结算趟数
           obj['waybillCods'] = object[item].map(e => e.wayBillCode); // 	运单CodeIds
           obj['a_dataList'] = object[item];
-          console.log(obj);
 
           this.tableData.push(obj);
         }
@@ -365,10 +360,7 @@ export default {
 
     // 已生成通过code请求详情
     setBatchStatementCode(data, row) {
-      this.isStatementCode = true;
       if (data) {
-        console.log(row);
-
         this.batchStatementCode = data;
         this.batchNo = row.batchNo;
         this.tableData = [row].map(e => {
@@ -384,7 +376,6 @@ export default {
     },
 
     handleBtn(row) {
-      console.log(row);
       this.a_dataList = row.waybillCods;
       this.openDetailDialog = true;
     },
