@@ -345,22 +345,27 @@ const CardReader = {
       ret = await CardReader.fn.exec('SendCOSCommand,0082000008' + encrypt);
       return ret;
     },
+
     /**
-         * 注销卡片
-         * @returns {Promise<void>}
-         */
+     * 注销卡片
+     * @returns {Promise<void>}
+     */
     cancellation: async function() {
       let ret = await this.getCard();
       ret = await CardReader.fn.apdu((function() {
         return ['00', 'A4', '00', '00', '02', '3F00'].join('');
       })());
-      console.log('选择MF', ret);
+      // console.log('选择MF', ret);
       ret = await CardReader.fn.exec(CardReader.command.clean);
-      console.log('清空当前目录文件', ret);
+      // console.log('清空当前目录文件', ret);
       await CardReader.fn.exec(CardReader.command.deselect);
       await CardReader.fn.exec(CardReader.command.beep);
-      Message.error('注销卡片成功');
-      return;
+      return {
+        ...ret,
+        code: 200,
+        msg: `注销卡片成功`,
+        data: null
+      };
     },
     error: async function() {
       await CardReader.fn.exec(CardReader.command.deselect);
@@ -713,7 +718,8 @@ CardReader.action['readUserInfoAndreadData'] = async function() {
       await CardReader.action.error();
       return {
         ...ret,
-        msg: '无01文件夹: 无任何数据'
+        mcode: '8000',
+        msg: '无任何数据'
       };
     }
 

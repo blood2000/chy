@@ -65,7 +65,7 @@
           />
         </el-form-item>
 
-        <el-form-item
+        <!-- <el-form-item
           label="调度者姓名"
           prop="teamName"
         >
@@ -77,7 +77,7 @@
             style="width: 228px"
             @keyup.enter.native="handleQuery"
           />
-        </el-form-item>
+        </el-form-item> -->
 
         <el-form-item
           v-if="false"
@@ -246,6 +246,49 @@
             />
           </el-select>
         </el-form-item>
+
+        <el-form-item
+          label="渣土场"
+          prop="ztcName"
+        >
+          <el-input
+            v-model="queryParams.ztcName"
+            placeholder="请输入渣土场"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+
+        <el-form-item
+          label="调度者名称"
+          prop="teamName"
+        >
+          <el-input
+            v-model="queryParams.teamName"
+            placeholder="请输入调度者名称"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+
+        <el-form-item
+          label="项目"
+          prop="projectName"
+        >
+          <el-input
+            v-model="queryParams.projectName"
+            placeholder="请输入项目名称"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+
         <el-form-item>
           <el-button
             type="primary"
@@ -521,8 +564,10 @@ export default {
         'isReturn': undefined,
         'isChild': undefined,
         'status': '4',
+        ztcName: undefined,
         teamName: undefined,
         waybill: undefined,
+        projectName: undefined,
         criticism: undefined
       },
 

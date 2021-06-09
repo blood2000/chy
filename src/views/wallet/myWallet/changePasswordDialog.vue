@@ -54,7 +54,7 @@ export default {
       rules: {
         password: [
           { required: true, trigger: 'blur', message: '新密码不能为空' },
-          { validator: this.formValidate.passWord, trigger: 'blur' }
+          { validator: this.formValidate.number6Password, trigger: 'blur' }
         ],
         passwordAgain: [
           { required: true, trigger: 'blur', message: '确认密码不能为空' },

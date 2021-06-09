@@ -1,6 +1,6 @@
 <template>
   <el-dialog :title="`发卡人: ${ userInfo.issuing_name || ''} (承运司机: ${userInfo.user_name ||''})`" :visible="visible" width="80%" append-to-body :close-on-click-modal="false" @close="$emit('update:open', false)">
-    <div v-if="true" class="mb20" style="padding: 20px;">
+    <div v-show="false" class="mb20" style="padding: 20px;">
       <!-- <el-button type="primary" @click="handler('cancellation')">注销卡片(清空使用者信息)</el-button> -->
       <el-button type="primary" @click="handler('issuingCard')">核销并发卡(绑定卡用户)</el-button>
       <!-- <el-button type="primary" @click="handler('readUserinfo')">读取用户信息</el-button> -->
@@ -131,13 +131,14 @@ export default {
         this.loading = true;
         const ret = await action.readUserInfoAndreadData();
 
-        console.log(ret);
         if (!ret.success && !ret.code) {
           this._reqerror();
           return;
         }
+        // console.log(ret);
 
         if (ret.code === '6A82') {
+          // 读取文件失败
           if (ret.userInfo) {
             this.userInfo = ret.userInfo;
           }
@@ -198,7 +199,7 @@ export default {
         type: 'warning',
         center: true
       }).then(() => {
-        console.log('转为正常单- 接口欠着');
+        // console.log('转为正常单- 接口欠着');
         row.status = 0;
       }).catch((action) => {
         if (action === 'cancel') {
@@ -230,13 +231,16 @@ export default {
         }).then(() => {
           this.loading = true;
           check(this.list.map(e => e.waybillId)).then(res => {
-            action.issuingCard({
-              user_code: this.userInfo.user_code,
-              user_telno: this.userInfo.user_telno,
-              user_name: this.userInfo.user_name,
-              issuing_code: this.userInfo.issuing_code,
-              issuing_name: this.userInfo.issuing_name
-            }).then(res => {
+            // 发卡
+            // action.issuingCard({
+            //   user_code: this.userInfo.user_code,
+            //   user_telno: this.userInfo.user_telno,
+            //   user_name: this.userInfo.user_name,
+            //   issuing_code: this.userInfo.issuing_code,
+            //   issuing_name: this.userInfo.issuing_name
+            // })
+            // 销卡
+            action.cancellation().then(res => {
               if (res.code === 200) {
                 this.msgSuccess('保存并核销成功');
                 this.userInfo = {};
@@ -287,7 +291,10 @@ export default {
           break;
         case 'writeData':
           // 写数据
-          await action.writeData('1010|1|30273;2977608;国脉时代广场二期;闽j45678;林先生;;1623177000000;1623177480000;;妈湾');
+          action.writeData('1010|1|30273;2977608;国脉时代广场二期;闽j45678;林先生;;1623177000000;1623177480000;;妈湾').then(res => {
+            this.msgSuccess(res.msg);
+          });
+
           break;
         default:
           break;
@@ -303,7 +310,6 @@ export default {
         this.userInfo = {};
         this.list = [];
         this.IClist = [];
-        console.log('关闭');
       }
     },
 
