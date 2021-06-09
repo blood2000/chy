@@ -633,13 +633,15 @@ export default {
         'pageNum': 1,
         'pageSize': 10,
         'total': 0
-      },
-      adjustDregsApi: adjustDregsApi + '--74'
+      }
     };
   },
   computed: {
     api() {
-      return adjustListApi + '--adjustDregs' + this.activeName;
+      return adjustListApi + '--' + (this.isShipment ? 'isShipment' : 'isNoShipment') + this.activeName;
+    },
+    adjustDregsApi() {
+      return adjustDregsApi + '--' + (this.isShipment ? 'isShipment' : 'isNoShipment') + ('4');
     },
     tableColumnsConfig: {
       get() {

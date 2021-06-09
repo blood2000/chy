@@ -16,12 +16,12 @@
     <el-option
       v-for="(item, index) in shipmentList"
       :key="index"
-      :value="item[showKey.value]"
-      :label="item[showKey.label]"
+      :value="item[showKey.value || 'code']"
+      :label="item[showKey.label || 'name']"
     >
       <div class="ly-flex-pack-justify">
         <slot :row="item">
-          <span>{{ item[showKey.label] }}</span><span>{{ item[showKey.telphone] || '' }}</span>
+          <span>{{ item[showKey.label|| 'name'] }}</span><span>{{ item[showKey.telphone|| 'telphone'] || '' }}</span>
         </slot>
       </div>
     </el-option>

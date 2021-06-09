@@ -178,6 +178,7 @@
         <template #edit="{row}">
           <div v-if="activeName == '1'">
             <el-button
+              v-if="!isShipment "
               v-hasPermi="['transportation:batch:refuseBilling']"
               size="mini"
               type="text"
@@ -306,7 +307,7 @@ export default {
           width: 180
         }
       ],
-      api: adjustListApi,
+      // api: adjustListApi,
       activeName: '1',
       createTime: '',
       // 遮罩层
@@ -373,11 +374,16 @@ export default {
     };
   },
   computed: {
-    lcokey() {
-      return this.$route.name + this.activeName;
+
+    api() {
+      return adjustListApi + '--' + (this.isShipment ? 'isShipment' : 'isNoShipment') + (this.activeName === '1' ? '2' : '3');
+    },
+
+    mtableColumns() {
+      return this.activeName === '1' ? this.tableColumnsConfig1 : this.tableColumnsConfig2;
     },
     isShipmentTableColumnsConfig() {
-      return !this.isShipment ? [
+      return (!this.isShipment ? [
         {
           prop: 'companyName',
           isShow: true,
@@ -399,7 +405,7 @@ export default {
           sortNum: 2,
           width: 180
         }
-      ] : [];
+      ] : []).concat(this.mtableColumns);
     }
   },
 
@@ -433,8 +439,15 @@ export default {
       }
     },
     handleClick(tab) {
-      this.api = this.api + '--' + ((tab - 0) + 1);
-      const tableColumnsConfig = tab === '1' ? this.tableColumnsConfig1 : this.tableColumnsConfig2;
+      this.tableColumnsInit(tab);
+
+      this.queryParams.pageNum = 1;
+      this.getList();
+    },
+
+    tableColumnsInit(tab) {
+      // this.api = this.api + '--' + ((tab - 0) + 1);
+      // const tableColumnsConfig = tab === '1' ? this.tableColumnsConfig1 : this.tableColumnsConfig2;
       this.queryParams.status = tab === '1' ? 2 : 3;
 
       this.tableColumnsConfig = [];
@@ -445,11 +458,9 @@ export default {
         label: '操作',
         width: 120,
         fixed: 'left'
-      }, tableColumnsConfig);
-
-      this.queryParams.pageNum = 1;
-      this.getList();
+      }, this.isShipmentTableColumnsConfig);
     },
+
     // 多选框选中数据
     handleSelectionChange(selection) {
       console.log(selection);
