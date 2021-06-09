@@ -14,6 +14,9 @@ const phoneReg01 = /^(0|86|17951)?(13[0-9]|15[012356789]|17[01678]|18[0-9]|14[57
 const phoneReg02 = /^(0[0-9]{2,3}\-)([2-9][0-9]{6,7})+(\-[0-9]{1,4})?$/;
 // 身份证
 const idCardReg = /^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)$/;
+// 6位纯数字
+const number6 = /^[0-9]{6}$/;
+
 // 判断传入日期是否小于当前日期
 function compareTime(time) {
   const _new = Date.parse(new Date());
@@ -220,6 +223,17 @@ export const formValidate = {
       callback();
     } else {
       callback(new Error('密码中至少包含字母、数字、特殊字符中的两种'));
+    }
+  },
+  // 6位纯数字
+  number6Password: function(rule, value, callback) {
+    if (value === undefined || value === null || value === '') {
+      callback();
+    }
+    if (!number6.test(value)) {
+      callback(new Error('请输入6位数字的密码'));
+    } else {
+      callback();
     }
   }
 };

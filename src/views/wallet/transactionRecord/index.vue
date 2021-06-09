@@ -229,9 +229,9 @@ export default {
   methods: {
     getActiveName(val) {
       this.activeTab = val;
+      this.handleTabClick();
     },
-    handleTabClick(e) {
-      this.activeTab = e.name;
+    handleTabClick() {
       if (this.activeTab === '冻结记录') {
         this.queryParams.usedFreeze = 1;
       } else {
