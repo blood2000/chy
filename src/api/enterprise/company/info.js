@@ -4,7 +4,8 @@ import { praseStrEmpty } from '@/utils/ddc';
 export function getCompanyInfo(data) {
   return request({
     url: `/assets/shipment/getShipmentAndEnterprise/` + praseStrEmpty(data),
-    method: 'get'
+    method: 'get',
+    params: Object.assign({}, { urlShow: 'urlShow'})
   });
 }
 
