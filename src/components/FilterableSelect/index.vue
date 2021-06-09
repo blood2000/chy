@@ -30,13 +30,30 @@
 
 <script>
 /**
- *
- *        v-model="queryParams.disUserName"
-          placeholder="发货企业/操作人/手机号"
+ * 调用示例:
+ * <FilterableSelect
+          v-if="open" <----- 把组件注销(不缓存)
+          v-model="form.disUserCode" <----- 双向绑定的数据
           clearable
-          size="small"
-          style="width: 228px"
-          @keyup.enter.native="handleQuery"
+          style="width:255px"
+          placeholder="请输入调度者姓名/手机号"
+          :axios="{
+            queryFn:listInfo, <----- 请求接口的函数
+            queryData:{} <----- 请求的额外参数
+          }"
+          :show-key="{
+            value: 'code', <----- 默认value 的key是 code
+            label: 'name', <----- 默认label 的key是 name
+            telphone: 'telphone' <----- 下拉多加一个展示数据
+          }"
+          @selected="(data)=>{form.disUserPhone = data.telphone;form.disUserName = data.name; form.disName = data.teamLeaderName }" <----- 选中对象返回
+        >
+          <template #default="{row}"> <----- 插槽下拉框数据展示
+            <span>{{ row.name }}</span><span>{{ row.telphone }}</span>
+          </template>
+        </FilterableSelect>
+ *
+ *
 */
 export default {
 
