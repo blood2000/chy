@@ -393,11 +393,10 @@ export default {
     },
     // 搜索地址
     addressChange(row) {
-      const { lng, lat, dictLabel } = row;
+      const { lng, lat, dictLabel, address } = row;
       this.getMapData(lng, lat);
-      this.getFormData(lng, lat, dictLabel);
+      this.getFormData(lng, lat, dictLabel, address);
       // 只填地址也可以回填省市区
-      // console.log(JSON.stringify(row));
       this.getAddressBylnglat(lng, lat);
     },
     // 选择完省以后,限定地址搜索只能在这个省里面选
@@ -432,7 +431,6 @@ export default {
       // 通过高德地图的sdk将坐标转为地址
       geocoder.getAddress([lng, lat], function(status, result) {
         if (status === 'complete' && result.info === 'OK') {
-          // console.log(JSON.stringify(result));
           if (result && result.regeocode) {
             const { adcode } = result.regeocode.addressComponent;
             _this.getAreaCode(adcode);
@@ -460,10 +458,11 @@ export default {
       this.center = [lng, lat];
     },
     // 同步表单数据
-    getFormData(lng, lat, name) {
+    getFormData(lng, lat, name, detail) {
       this.form.longitude = lng;
       this.form.latitude = lat;
       this.form.addressName = name;
+      this.form.detail = detail;
     },
     // 选中省
     changeProvince(code) {
@@ -521,6 +520,7 @@ export default {
     // 清空地址
     clearAddressOption() {
       this.form.addressName = '';
+      this.form.detail = '';
       if (this.$refs.AmapSearchRef) this.$refs.AmapSearchRef.clearOption();
     },
     // 单选商品大类
