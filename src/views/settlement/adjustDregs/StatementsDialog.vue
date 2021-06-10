@@ -342,9 +342,11 @@ export default {
             obj['teamName'] = ite['teamName']; // 调度者Code
             obj['teamCode'] = ite['teamCode']; // 调度者Code
 
-            obj['land'] = ite['unloadAddress']; // 渣土场（卸货地）
+            obj['land'] = ite['ztcName']; // 渣土场（卸货地）
+            // obj['land'] = ite['unloadAddress']; // 渣土场（卸货地）
             obj['landCode'] = ite['unloadAddressCode']; // 	渣土场（卸货地）Code
-            obj['load'] = ite['loadAddress']; // 	项目（装货地）
+            obj['load'] = ite['projectName']; // 	项目（装货地）
+            // obj['load'] = ite['loadAddress']; // 	项目（装货地）
             obj['loadCode'] = ite['loadAddressCode']; // 	项目（装货地）Code
           });
           obj['loadNum'] = object[item].length; // 装车数量
