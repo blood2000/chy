@@ -212,7 +212,7 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="纸质回单" prop="isReturn">
+        <!-- <el-form-item label="纸质回单" prop="isReturn">
           <el-select
             v-model="queryParams.isReturn"
             placeholder="请选择纸质回单"
@@ -228,7 +228,7 @@
               :value="dict.dictValue"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="分单" prop="isChild">
           <el-select
             v-model="queryParams.isChild"

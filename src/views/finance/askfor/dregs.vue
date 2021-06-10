@@ -20,7 +20,7 @@
             placeholder="请输入企业名称/货主姓名/手机号"
             :remote-method="remoteMethod"
             :loading="shipmentloading"
-            style="width: 230px"
+            style="width: 300px"
             size="small"
             @change="chooseShipment"
           >
