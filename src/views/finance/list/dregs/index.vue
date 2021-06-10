@@ -178,7 +178,6 @@
         <template #edit="{row}">
           <div v-if="activeName == '1'">
             <el-button
-              v-if="!isShipment "
               v-hasPermi="['transportation:batch:refuseBilling']"
               size="mini"
               type="text"
