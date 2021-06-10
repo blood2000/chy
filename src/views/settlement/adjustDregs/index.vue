@@ -364,7 +364,7 @@
           :data="adjustlist"
           :table-columns-config="tableColumnsConfig"
           :row-key="(row)=> row.waybillNo"
-          reserve-selection
+          :reserve-selection="activeName == '5'"
           @selection-change="handleSelectionChange"
         >
           <template #goodsBigType="{row}">

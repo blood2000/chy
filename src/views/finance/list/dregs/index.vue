@@ -539,7 +539,7 @@ export default {
 
     // 批量打款
     handlerPassPayment() {
-      this.$confirm('确定批量打款?', '提示', {
+      this.$confirm('确定打款?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -549,7 +549,7 @@ export default {
         };
 
         passPayment(que).then(res => {
-          this.msgSuccess('确定批量打款成功');
+          this.msgSuccess('确定打款成功');
           this.queryParams.pageNum = 1;
           this.getList();
         });
