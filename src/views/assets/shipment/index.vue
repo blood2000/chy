@@ -251,14 +251,14 @@
                 @click="handleDetail(row, 'review')"
               >审核</el-button>
             </el-dropdown-item>
-              <el-dropdown-item>
-                  <el-button
-                          v-hasPermi="['assets:shipment:examine']"
-                          size="mini"
-                          type="text"
-                          @click="roleAssignment(row)"
-                  >角色分配</el-button>
-              </el-dropdown-item>
+            <el-dropdown-item>
+              <el-button
+                v-hasPermi="['assets:shipment:examine']"
+                size="mini"
+                type="text"
+                @click="roleAssignment(row)"
+              >角色分配</el-button>
+            </el-dropdown-item>
             <el-dropdown-item>
               <el-button
                 v-hasPermi="['assets:shipment:remove']"
@@ -284,7 +284,7 @@
       <!-- 管理 对话框 -->
       <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :shipment-code="shipmentCode" :company-code="companyCode" :user-code="userCode" />
       <!--  分配角色-->
-      <role-assignment-dialog ref="RoleAssignmentDialog" :open.sync="roleAssignmentDialogOpen" :user-id="userId" :admin-name="adminName" :shipment-code="shipmentCode" :company-code="companyCode" :user-code="userCode"></role-assignment-dialog>
+      <role-assignment-dialog ref="RoleAssignmentDialog" :open.sync="roleAssignmentDialogOpen" :user-id="userId" :admin-name="adminName" :shipment-code="shipmentCode" :company-code="companyCode" :user-code="userCode" />
     </div>
   </div>
 </template>

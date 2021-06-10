@@ -1,6 +1,6 @@
 <template>
   <el-dialog class="i-adjust" :title="title" :visible="visible" width="80%" :close-on-click-modal="false" append-to-body @close="cancel">
-    <div v-if="open">
+    <div v-if="open" v-loading="loading">
       <div class="ly-t-center f20 b mb20">
         <div>对账单</div>
         <div v-if="statementNo">({{ statementNo }})</div>
@@ -342,9 +342,11 @@ export default {
             obj['teamName'] = ite['teamName']; // 调度者Code
             obj['teamCode'] = ite['teamCode']; // 调度者Code
 
-            obj['land'] = ite['unloadAddress']; // 渣土场（卸货地）
+            obj['land'] = ite['land']; // 渣土场（卸货地）
+            // obj['land'] = ite['unloadAddress']; // 渣土场（卸货地）
             obj['landCode'] = ite['unloadAddressCode']; // 	渣土场（卸货地）Code
-            obj['load'] = ite['loadAddress']; // 	项目（装货地）
+            obj['load'] = ite['load']; // 	项目（装货地）
+            // obj['load'] = ite['loadAddress']; // 	项目（装货地）
             obj['loadCode'] = ite['loadAddressCode']; // 	项目（装货地）Code
           });
           obj['loadNum'] = object[item].length; // 装车数量
@@ -427,7 +429,7 @@ export default {
           this.close();
           this.$emit('refresh');
         });
-      }).catch(() => {});
+      }).catch(() => { this.loading = false; });
     },
 
     getSummaries(param) {

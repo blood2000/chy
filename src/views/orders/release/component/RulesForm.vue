@@ -91,7 +91,7 @@
               controls-position="right"
               :style="{ width: '85px' }"
             />
-            <span class="ml0 mr10">{{ item.unit }}</span>
+            <span class="ml0 mr10">{{ unit }}</span>
           </el-form-item>
           <el-form-item>至</el-form-item>
           <el-form-item
@@ -112,7 +112,7 @@
               controls-position="right"
               :style="{ width: '85px' }"
             />
-            <span class="ml0 mr10">{{ item.unit }}</span>
+            <span class="ml0 mr10">{{ unit }}</span>
           </el-form-item>
         </div>
 
@@ -151,6 +151,24 @@ export default {
       resettingData: []
 
     };
+  },
+
+  computed: {
+    unit() {
+      let name = 'kg';
+      switch (this.$store.state.orders.orderStowageStatus) {
+        case '0':
+          name = 'kg';
+          break;
+        case '1':
+          name = 'm³';
+          break;
+        case '2':
+          name = '';
+          break;
+      }
+      return name;
+    }
   },
 
   watch: {

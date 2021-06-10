@@ -276,6 +276,7 @@ export default {
           break;
       }
       this.$emit('getGoodsUnitName', name);
+
       return name;
     }
   },
@@ -328,6 +329,7 @@ export default {
       } else {
         this.formData.number = undefined;
       }
+      this.$store.commit('orders/SET_ORDERSTOWAGESTATUS', val);
     }
   },
 

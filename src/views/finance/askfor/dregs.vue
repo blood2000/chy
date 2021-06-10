@@ -20,7 +20,7 @@
             placeholder="请输入企业名称/货主姓名/手机号"
             :remote-method="remoteMethod"
             :loading="shipmentloading"
-            style="width: 230px"
+            style="width: 400px"
             size="small"
             @change="chooseShipment"
           >
@@ -31,7 +31,7 @@
               :value="dict.code"
             >
               <div class="ly-flex-pack-justify">
-                <span style="margin-right:10px">{{ dict.adminName }}</span>
+                <span style="margin-right:10px">{{ dict.adminName }}（{{ dict.telphone }}）</span>
                 <span>{{ dict.companyName }}</span>
               </div>
             </el-option>
@@ -104,10 +104,10 @@
         <el-form-item
           v-if="!isShipment"
           label="发票抬头"
-          prop="invoiceTitle"
+          prop="shipper"
         >
           <el-input
-            v-model="queryParams.invoiceTitle"
+            v-model="queryParams.shipper"
             placeholder="请输入发票抬头"
             clearable
             size="small"
@@ -264,7 +264,7 @@ export default {
 
       'queryParams': {
         batchNo: undefined, //	批次号	query	false
-        invoiceTitle: undefined, //	发票抬头	query	false
+        shipper: undefined, //	发票抬头	query	false
         operator: undefined, //	操作人名称	query	false
         status: 1, //	1已申请对账列表 2已申请开票列表 3已申请打款列表 4已完成列表	query	false
         teamName: undefined, //	调度者名称	query	false
@@ -352,7 +352,7 @@ export default {
           width: 180
         },
         {
-          prop: 'invoiceTitle',
+          prop: 'shipper',
           isShow: true,
           label: '发票抬头',
           sortNum: 2,
