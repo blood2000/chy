@@ -103,7 +103,7 @@ export default {
           width: 180
         },
         {
-          prop: 'invoiceTitle',
+          prop: 'shipper',
           isShow: true,
           label: '发票抬头',
           sortNum: 2,

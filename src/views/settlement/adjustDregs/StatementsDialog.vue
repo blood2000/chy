@@ -429,7 +429,7 @@ export default {
           this.close();
           this.$emit('refresh');
         });
-      }).catch(() => {});
+      }).catch(() => { this.loading = false; });
     },
 
     getSummaries(param) {
