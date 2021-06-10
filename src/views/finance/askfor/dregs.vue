@@ -17,7 +17,7 @@
             clearable
             remote
             reserve-keyword
-            placeholder="请选择发货企业"
+            placeholder="请输入企业名称/货主姓名/手机号"
             :remote-method="remoteMethod"
             :loading="shipmentloading"
             style="width: 230px"
@@ -330,7 +330,8 @@ export default {
         pageNum: 1,
         pageSize: 10,
         authStatus: 3,
-        adminName: null
+        adminName: undefined,
+        searchValue: undefined
       },
       shipmentloading: false,
       dataOver: false // 是否请求完了
@@ -411,7 +412,8 @@ export default {
         this.shipmentloading = true;
         this.shipmentInfoQuery.pageNum = 1;
         this.dataOver = false;
-        this.shipmentInfoQuery.adminName = query;
+        // this.shipmentInfoQuery.adminName = query;
+        this.shipmentInfoQuery.searchValue = query;
         this.shipmentlist = [];
         this.getShipment();
       } else {

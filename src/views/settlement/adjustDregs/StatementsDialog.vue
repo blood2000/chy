@@ -191,7 +191,7 @@
 
     <!-- 开票信息管理 -->
     <el-dialog class="i-adjust" title="票务信息" :visible.sync="openBillPage" width="80%" :close-on-click-modal="false" append-to-body>
-      <bill-page v-if="openBillPage" :shipment-code="shipmentCode" />
+      <bill-page v-if="openBillPage" :shipment-code="shipmentCode" @submitRes="submitRes" />
     </el-dialog>
   </el-dialog>
 </template>
@@ -387,6 +387,25 @@ export default {
 
     // 确认
     handlerSubm() {
+      const formArr = [];
+      for (const key in this.formData) {
+        if (Object.hasOwnProperty.call(this.formData, key)) {
+          const element = this.formData[key];
+          formArr.push(element);
+        }
+      }
+
+      if (!(formArr.every(e => !!e))) {
+        this.$confirm('无任何票务信息要先去编辑, 是否去编辑?', '提示', {
+          confirmButtonText: '确定编辑',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.handleBianjiPiaowu();
+        });
+        return;
+      }
+
       this.$confirm('确定立即申请对账, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -436,6 +455,33 @@ export default {
       });
 
       return sums;
+    },
+
+    submitRes(data) {
+      console.log(data);
+      this.openBillPage = false;
+
+      // companyName: "阿斯发我"
+
+      // openBankName: "13131"
+      // openBankNumber: "1121131351531515"
+
+      // payeeAddress: "富邦大厦"
+      // payeeEmail: "123456@qq.com"
+      // payeeName: "沙发"
+      // payeeTelphone: "18542458741"
+      // registrationAddrtion: "3131321"
+      // registrationTelphone: "17652412584"
+      // taxRegistration: "465161"
+      this.queryParams.shipper = data.companyName;
+
+      this.formData = {
+        taxpayerNumber: data.taxRegistration,
+        registeredAddress: data.registrationAddrtion,
+        registeredPhone: data.registrationTelphone,
+        bankNo: data.openBankName,
+        account: data.openBankNumber
+      };
     }
 
   }
