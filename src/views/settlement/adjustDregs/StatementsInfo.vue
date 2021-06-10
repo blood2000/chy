@@ -1,6 +1,9 @@
 
 <template>
-  <div>
+  <div style="margin-bottom: 50px;">
+    <div class="mb20 ly-t-right">
+      <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
+    </div>
     <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig">
       <template #weight="{row}">
         <span v-if="row.weight">
@@ -41,6 +44,14 @@ export default {
     return {
       'tableColumnsConfig': [],
       'tableColumnsConfig1': [
+        { // 需要顶替掉的项
+          prop: 'waybillNo',
+          isShow: true,
+          tooltip: false,
+          sortNum: 0,
+          label: '运单号',
+          width: 150
+        },
         { // 需要顶替掉的项
           prop: 'isReturn',
           isShow: false,

@@ -55,30 +55,35 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="160" label="路耗" align="center" prop="loss" />
-
-      <el-table-column width="160" label="路耗允许范围" align="center" prop="lossAllowScope">
+      <el-table-column width="160" label="路耗(吨/方)" align="center" prop="loss">
         <template slot-scope="scope">
-          <span>{{ scope.row.lossAllowScope? _lossAllowScope(scope.row.lossAllowScope) : null }}</span>
+          <span v-if="scope.row.stowageStatus === '0'">{{ floor((scope.row.loss -0) / 1000, 3) }}</span>
+          <span v-else>{{ scope.row.loss || 0 }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="160" label="货物单价" align="center" prop="goodsPrice" />
+      <el-table-column width="160" label="路耗允许范围(吨/方)" align="center" prop="lossAllowScope">
+        <template slot-scope="scope">
+          <span>{{ scope.row.lossAllowScope? _lossAllowScope(scope.row.lossAllowScope, scope.row.stowageStatus === '0' ) : '--' }}</span>
+        </template>
+      </el-table-column>
 
-      <el-table-column width="160" label="运费单价" align="center" prop="freightPrice" />
+      <el-table-column width="160" label="货物单价(元)" align="center" prop="goodsPrice" />
 
-      <el-table-column width="160" label="司机成交单价" align="center" prop="freightPriceDriver" />
-      <el-table-column width="160" label="亏涨扣费" align="center" prop="lossDeductionFee" />
+      <el-table-column width="160" label="运费单价(元)" align="center" prop="freightPrice" />
 
-
-      <el-table-column width="120" label="抹零金额" align="center" prop="m0Fee" />
-
-      <el-table-column width="160" label="司机应收运费" align="center" prop="deliveryFeeDeserved" />
-      <el-table-column width="160" label="司机实收运费" align="center" prop="deliveryFeePractical" />
+      <el-table-column width="160" label="司机成交单价(元)" align="center" prop="freightPriceDriver" />
+      <el-table-column width="160" label="亏涨扣费(元)" align="center" prop="lossDeductionFee" />
 
 
-      <el-table-column width="120" label="纳税金额" align="center" prop="taxPayment" fixed="right" />
-      <el-table-column width="162" label="司机实收金额" align="center" prop="deliveryCashFee" fixed="right">
+      <el-table-column width="120" label="抹零金额(元)" align="center" prop="m0Fee" />
+
+      <el-table-column width="160" label="司机应收运费(元)" align="center" prop="deliveryFeeDeserved" />
+      <el-table-column width="160" label="司机实收运费(元)" align="center" prop="deliveryFeePractical" />
+
+
+      <el-table-column width="120" label="纳税金额(元)" align="center" prop="taxPayment" fixed="right" />
+      <el-table-column width="162" label="司机实收金额(元)" align="center" prop="deliveryCashFee" fixed="right">
         <template slot-scope="scope">
           <el-input-number v-model="scope.row.deliveryCashFee" :controls="false" :precision="2" placeholder="请输入司机实收金额" style="width:100%;" size="mini" @blur="getDeliveryCashFee([scope.row])" />
         </template>
@@ -123,7 +128,8 @@ export default {
       // 查询参数
       queryParams: {
         waybillCodeList: []
-      }
+      },
+      floor
     };
   },
   computed: {
@@ -181,8 +187,6 @@ export default {
     },
     /** 提交按钮 */
     async submitForm() {
-      console.log(this.adjustlist);
-
       const immediateWaybillBoList = this.adjustlist.map(e => {
         return {
           waybillCode: e.waybillCode,
@@ -245,12 +249,16 @@ export default {
     },
 
     /* 处理路耗展示 */
-    _lossAllowScope(value) {
+    _lossAllowScope(value, bool) {
       if (value) {
         const arr = value.match(/\d+(\.\d+)?/g);
 
         arr[0] = (arr[0] - 0) === 0 ? 0 : -arr[0];
         arr[1] = arr[1] - 0;
+        if (bool) {
+          arr[0] = this.floor(arr[0] / 1000, 3);
+          arr[1] = this.floor(arr[1] / 1000, 3);
+        }
 
         return JSON.stringify(arr);
       }

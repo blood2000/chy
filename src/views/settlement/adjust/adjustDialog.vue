@@ -43,11 +43,16 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="160" label="路耗(吨/方)" align="center" prop="loss" />
+      <el-table-column width="160" label="路耗(吨/方)" align="center" prop="loss">
+        <template slot-scope="scope">
+          <span v-if="scope.row.stowageStatus === '0'">{{ floor((scope.row.loss -0) / 1000, 3) }}</span>
+          <span v-else>{{ scope.row.loss || 0 }}</span>
+        </template>
+      </el-table-column>
 
       <el-table-column width="160" label="路耗允许范围(吨/方)" align="center" prop="lossAllowScope">
         <template slot-scope="scope">
-          <span>{{ scope.row.lossAllowScope? _lossAllowScope(scope.row.lossAllowScope) : null }}</span>
+          <span>{{ scope.row.lossAllowScope? _lossAllowScope(scope.row.lossAllowScope, scope.row.stowageStatus === '0' ) : '--' }}</span>
         </template>
       </el-table-column>
 
@@ -337,12 +342,17 @@ export default {
     },
 
     /* 处理路耗展示 */
-    _lossAllowScope(value) {
+    _lossAllowScope(value, bool) {
       if (value) {
         const arr = value.match(/\d+(\.\d+)?/g);
 
         arr[0] = (arr[0] - 0) === 0 ? 0 : -arr[0];
         arr[1] = arr[1] - 0;
+
+        if (bool) {
+          arr[0] = this.floor(arr[0] / 1000, 3);
+          arr[1] = this.floor(arr[1] / 1000, 3);
+        }
 
         return JSON.stringify(arr);
       }
