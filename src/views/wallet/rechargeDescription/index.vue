@@ -1,34 +1,47 @@
 <template>
   <div class="page-wallet">
-    <div class="app-container app-container--card">
+    <div class="app-container app-container--card" style="position: relative">
       <h3 class="g-card-title g-card-header mb20">充值说明</h3>
-      <p class="g-text mb20 text-before">如需对钱包账户中的可用余额进行充值，必须使用与下方展示的司机宝电子账户开户名一致的企业对公账户向电子账户进行转账</p>
-      <p class="g-text mb20 text-before">当前账户电子托管账户开户信息如下：</p>
+      <p v-if="companyName" class="g-text mb20">{{ companyName }}：</p>
+      <p class="g-text mb20">您好！这是贵司充值运费的账号，必须使用与超好运注册账户一致的企业对公户进行充值，充值成功后在超好运货主端APP的个人中心即可显示充值的金额。</p>
+      <el-button class="mb20" type="primary" size="small" @click="copy">复制账号信息</el-button>
       <table class="table-style mb20">
         <tr>
-          <td class="label">电子托管账户开户行</td>
-          <td class="text">华夏银行武汉分行汉正街支行</td>
+          <td class="label">银行账号</td>
+          <!-- 货主认证后网商生成的账号 -->
+          <td class="text">{{ account ? account : '' }}</td>
         </tr>
         <tr>
-          <td class="label">电子托管账户账号</td>
-          <td class="text">95165464645541651615</td>
+          <td class="label">开户名称</td>
+          <td class="text">福建大道成物流科技有限公司</td>
         </tr>
         <tr>
-          <td class="label">结算账户名</td>
-          <td class="text">福建省XXX有限公司</td>
+          <td class="label">开户行</td>
+          <td class="text">浙江网商银行</td>
         </tr>
         <tr>
-          <td class="label">结算账户开户行</td>
-          <td class="text">农业银行</td>
+          <td class="label">省份</td>
+          <td class="text">浙江省</td>
         </tr>
         <tr>
-          <td class="label">结算账户账号</td>
-          <td class="text">131561654654651651616</td>
+          <td class="label">城市</td>
+          <td class="text">杭州市</td>
+        </tr>
+        <tr>
+          <td class="label">联行号</td>
+          <td class="text">323331000001</td>
         </tr>
       </table>
+
+      <input
+        id="table-inner-id"
+        :value="inputValue"
+        style="width: 100px;"
+      >
+      <div style="width: 110px; height: 30px; background: #fff; position: absolute; left: 15px; bottom: 15px" />
     </div>
 
-    <div class="app-container app-container--card">
+    <!-- <div class="app-container app-container--card">
       <h3 class="g-card-title g-card-header mb10">常见问题</h3>
       <p class="g-text mb20 text-before">关于充值到账时间：</p>
       <table class="table-style mb20">
@@ -77,10 +90,11 @@
       <p class="g-text mb20">转账资金到账后，可通过“钱包-钱包首页”中的“钱包账户-可用余额”以及报表或钱包明细(app)查询充值到账详情</p>
       <p class="g-text mb10 text-before">关于误操作：</p>
       <p class="g-text mb10">如若转账错误，银行会在24小时内把对应资金返回原账户，特殊情况请及时咨询各银行的客服热线</p>
-    </div>
+    </div> -->
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex';
 export default {
   name: 'RechargeDescription',
   props: {
@@ -88,15 +102,34 @@ export default {
   },
   data() {
     return {
-
+      companyName: null,
+      account: null
     };
+  },
+  computed: {
+    ...mapGetters(['shipment']),
+    inputValue() {
+      return `银行账号：${this.account ? this.account : ''}; 开户名称：福建大道成物流科技有限公司; 开户行：浙江网商银行; 省份：浙江省; 城市：杭州市; 联行号：323331000001`;
+    }
   },
   created() {
     this.getInfo();
   },
   methods: {
     getInfo() {
-
+      if (this.shipment && this.shipment.info && this.shipment.info.companyName) {
+        this.companyName = this.shipment.info.companyName;
+      }
+      this.account = JSON.parse(this.$route.query.params).params;
+    },
+    copy() {
+      document.getElementById('table-inner-id').select();
+      if (document.execCommand('copy')) {
+        document.execCommand('copy');
+        this.msgSuccess('复制成功!');
+      } else {
+        this.msgError('复制失败');
+      }
     }
   }
 };
