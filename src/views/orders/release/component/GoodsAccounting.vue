@@ -262,7 +262,6 @@ export default {
   },
 
   computed: {
-    // 计算显示的单位
     goodsUnitName() {
       let name = '吨';
       switch (this.formData.stowageStatus) {
@@ -277,6 +276,7 @@ export default {
           break;
       }
       this.$emit('getGoodsUnitName', name);
+
       return name;
     }
   },
@@ -329,6 +329,7 @@ export default {
       } else {
         this.formData.number = undefined;
       }
+      this.$store.commit('orders/SET_ORDERSTOWAGESTATUS', val);
     }
   },
 

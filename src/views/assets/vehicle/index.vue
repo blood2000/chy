@@ -476,6 +476,11 @@ export default {
     this.getDictsList();
     if (!this.teamCode && !this.driverCode) {
       // 如果这个页面是以组件形式展示在调度者管理弹窗或司机管理弹窗里面，则这里不加载列表
+      const routeData = this.$route.query.data;
+      if (routeData) {
+        this.queryParams.authStatus = JSON.parse(routeData).authStatus + '';
+      }
+
       this.getList();
     }
   },
@@ -544,6 +549,7 @@ export default {
       this.queryParams.annualVerificationBeginDate = undefined;
       this.queryParams.annualVerificationEndDate = undefined;
       this.resetForm('queryForm');
+      this.queryParams.authStatus = undefined;
       this.handleQuery();
     },
     // 多选框选中数据

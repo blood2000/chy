@@ -5,14 +5,6 @@
     :inline="true"
     label-width="98px"
   >
-
-    <!--  batchNo: undefined, //	批次号	query	false
-        companyName: undefined, //	发货企业	query	false
-        invoiceTitle: undefined, //	发票抬头	query	false
-        operator: undefined, //	操作人名称	query	false
-        status: 1, //	1已申请对账列表 2已申请开票列表 3已申请打款列表 4已完成列表	query	false
-        teamName: undefined, //	调度者名称	query	false
-        ztcName: undefined, //	渣土场	query	false -->
     <el-form-item
       label="对账批次号"
       prop="batchNo"
@@ -42,12 +34,12 @@
     </el-form-item>
 
     <el-form-item
-      label="调度组名称"
+      label="调度者名称"
       prop="teamName"
     >
       <el-input
         v-model="queryParams.teamName"
-        placeholder="请输入调度组名称"
+        placeholder="请输入调度者名称"
         clearable
         size="small"
         style="width: 228px"

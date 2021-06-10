@@ -1,6 +1,6 @@
 <template>
   <el-dialog class="i-adjust" :title="title" :visible="visible" width="80%" :close-on-click-modal="false" append-to-body @close="cancel">
-    <div v-if="open">
+    <div v-if="open" v-loading="loading">
       <div class="ly-t-center f20 b mb20">
         <div>对账单</div>
         <div v-if="statementNo">({{ statementNo }})</div>
@@ -103,7 +103,6 @@
         >
           <template slot-scope="scope">
             <el-button
-              v-hasPermi="['consigner-order-edit']"
               size="mini"
               type="text"
               @click="handleBtn(scope.row)"
@@ -192,18 +191,14 @@
 
     <!-- 开票信息管理 -->
     <el-dialog class="i-adjust" title="票务信息" :visible.sync="openBillPage" width="80%" :close-on-click-modal="false" append-to-body>
-      <bill-page v-if="openBillPage" :shipment-code="shipmentCode" />
+      <bill-page v-if="openBillPage" :shipment-code="shipmentCode" @submitRes="submitRes" />
     </el-dialog>
   </el-dialog>
 </template>
 
 
 <script>
-// 运单详情弹窗
-import WaybillDialog from '@/views/waybill/manages';
-
 import StatementsInfo from './StatementsInfo';
-
 // 批次详情
 import { applyForReconciliation, batchInfo } from '@/api/settlement/adjustDregs';
 
@@ -273,29 +268,10 @@ export default {
 
   },
   methods: {
-
-    /*
-     <!--
-
-        actualTripsNumCount	实发趟数合计前端统计	integer(int32)	integer(int32)
-
-        carrierCode	承运方code	string
-        freightAmountCount	运费金额合计前端统计	integer(int32)	integer(int32)
-        loadNumCount	装车数量合计前端统计	integer(int32)	integer(int32)
-
-        settlementTripsNumCount	结算趟数合计前端统计	integer(int32)	integer(int32)
-
-        shipperCode	货主code	string
-        statementInfoCode	对账单code	string
-
-      -->
-    */
-
     /** 查询核算列表 */
     getList() {
       this.loading = true;
       batchInfo({ batchStatementCode: this.batchStatementCode, batchNo: this.batchNo }).then(response => {
-        console.log(response);
         this.setForm(undefined, response.data);
         this.tableData = this.tableData.map(e => {
           return {
@@ -303,8 +279,6 @@ export default {
             waybillCods: response.data.waybillCods
           };
         });
-
-        console.log(this.tableData);
         this.loading = false;
       });
     },
@@ -319,22 +293,22 @@ export default {
     },
     // 获取列表
     setForm(object, data2) {
-      console.log(object);
+      this.isStatementCode = !object;
       const {
         account, //	账号	string
-        actualTripsNumCount, //	实发趟数合计前端统计	integer(int32)	integer(int32)
+        // actualTripsNumCount, //	实发趟数合计前端统计	integer(int32)	integer(int32)
         applyTime, //	申请日期	string(date-time)	string(date-time)
         bankNo, //	开户行	string
         carrier, //	承运方 默认大道成	string
-        carrierCode, //	承运方code	string
-        freightAmountCount, //	运费金额合计前端统计	integer(int32)	integer(int32)
-        loadNumCount, //	装车数量合计前端统计	integer(int32)	integer(int32)
+        // carrierCode, //	承运方code	string
+        // freightAmountCount, //	运费金额合计前端统计	integer(int32)	integer(int32)
+        // loadNumCount, //	装车数量合计前端统计	integer(int32)	integer(int32)
         registeredAddress, //	注册地址	string
         registeredPhone, //	注册电话	string
-        settlementTripsNumCount, //	结算趟数合计前端统计	integer(int32)	integer(int32)
+        // settlementTripsNumCount, //	结算趟数合计前端统计	integer(int32)	integer(int32)
         shipper, //	托运方 货主公司名称	string
         shipperCode, //	货主code	string
-        statementInfoCode, //	对账单code	string
+        // statementInfoCode, //	对账单code	string
         statementNo, //	对账单编号	string
         taxpayerNumber //	纳税人识别号
       } = data2;
@@ -360,21 +334,19 @@ export default {
         this.tableData = [];
         for (const item in object) {
           const obj = {
-            // deliveryFeeDeserved: 0,
             freightAmount: 0
           };
 
           object[item].forEach(ite => {
-            Object.keys(ite).forEach(name => {
-              // obj[name] = ite[name];
-            });
             obj['freightAmount'] += ite['taxFee'] - 0; // 运费结算金额(取含税价字段)
             obj['teamName'] = ite['teamName']; // 调度者Code
             obj['teamCode'] = ite['teamCode']; // 调度者Code
 
-            obj['land'] = ite['unloadAddress']; // 渣土场（卸货地）
+            obj['land'] = ite['land']; // 渣土场（卸货地）
+            // obj['land'] = ite['unloadAddress']; // 渣土场（卸货地）
             obj['landCode'] = ite['unloadAddressCode']; // 	渣土场（卸货地）Code
-            obj['load'] = ite['loadAddress']; // 	项目（装货地）
+            obj['load'] = ite['load']; // 	项目（装货地）
+            // obj['load'] = ite['loadAddress']; // 	项目（装货地）
             obj['loadCode'] = ite['loadAddressCode']; // 	项目（装货地）Code
           });
           obj['loadNum'] = object[item].length; // 装车数量
@@ -382,21 +354,15 @@ export default {
           obj['settlementTripsNum'] = object[item].length; // 结算趟数
           obj['waybillCods'] = object[item].map(e => e.wayBillCode); // 	运单CodeIds
           obj['a_dataList'] = object[item];
-          console.log(obj);
 
           this.tableData.push(obj);
         }
-        // 表格
       }
     },
 
     // 已生成通过code请求详情
     setBatchStatementCode(data, row) {
-      // console.log(9);
-      this.isStatementCode = true;
       if (data) {
-        console.log(row);
-
         this.batchStatementCode = data;
         this.batchNo = row.batchNo;
         this.tableData = [row].map(e => {
@@ -404,11 +370,6 @@ export default {
             ...e,
             load: e.ztcLoad,
             land: e.ztcLand
-            // teamName: e.teamName,
-            // loadNum: e.loadNum,
-            // actualTripsNum: e.actualTripsNum,
-            // settlementTripsNum: e.settlementTripsNum,
-            // freightAmount: e.freightAmount
           };
         });
 
@@ -417,7 +378,6 @@ export default {
     },
 
     handleBtn(row) {
-      console.log(row);
       this.a_dataList = row.waybillCods;
       this.openDetailDialog = true;
     },
@@ -429,6 +389,25 @@ export default {
 
     // 确认
     handlerSubm() {
+      const formArr = [];
+      for (const key in this.formData) {
+        if (Object.hasOwnProperty.call(this.formData, key)) {
+          const element = this.formData[key];
+          formArr.push(element);
+        }
+      }
+
+      if (!(formArr.every(e => !!e))) {
+        this.$confirm('无任何票务信息要先去编辑, 是否去编辑?', '提示', {
+          confirmButtonText: '确定编辑',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.handleBianjiPiaowu();
+        });
+        return;
+      }
+
       this.$confirm('确定立即申请对账, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -450,7 +429,7 @@ export default {
           this.close();
           this.$emit('refresh');
         });
-      }).catch(() => {});
+      }).catch(() => { this.loading = false; });
     },
 
     getSummaries(param) {
@@ -472,13 +451,39 @@ export default {
             }
           }, 0);
           sums[index] = floor(sums[index]);
-          // sums[index] += ' 元';
         } else {
           sums[index] = '';
         }
       });
 
       return sums;
+    },
+
+    submitRes(data) {
+      console.log(data);
+      this.openBillPage = false;
+
+      // companyName: "阿斯发我"
+
+      // openBankName: "13131"
+      // openBankNumber: "1121131351531515"
+
+      // payeeAddress: "富邦大厦"
+      // payeeEmail: "123456@qq.com"
+      // payeeName: "沙发"
+      // payeeTelphone: "18542458741"
+      // registrationAddrtion: "3131321"
+      // registrationTelphone: "17652412584"
+      // taxRegistration: "465161"
+      this.queryParams.shipper = data.companyName;
+
+      this.formData = {
+        taxpayerNumber: data.taxRegistration,
+        registeredAddress: data.registrationAddrtion,
+        registeredPhone: data.registrationTelphone,
+        bankNo: data.openBankName,
+        account: data.openBankNumber
+      };
     }
 
   }

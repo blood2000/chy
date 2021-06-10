@@ -83,3 +83,13 @@ export function setUserRoleInfoRedis(query) {
   });
 }
 
+// 角色分配
+export function roleAssignment(data) {
+  return request({
+    url: '/system/role/edit',
+    method: 'put',
+    data: data
+  });
+}
+
+

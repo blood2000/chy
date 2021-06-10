@@ -112,8 +112,8 @@ export default {
       multiple: true,
       // 司机类别字典
       driverTypeOptions: [
-        { dictLabel: '独立司机', dictValue: 1 },
-        { dictLabel: '聘用司机', dictValue: 2 }
+        { dictLabel: '零散司机', dictValue: 1 },
+        { dictLabel: '雇佣司机', dictValue: 2 }
       ],
       // 是否冻结字典
       isFreezoneOptions: [

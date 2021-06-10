@@ -151,7 +151,7 @@ export default [
     isShow: true,
     label: '操作',
     width: 280,
-    fixed: 'right'
+    fixed: 'left'
   }
 ];
 

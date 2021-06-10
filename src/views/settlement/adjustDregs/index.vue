@@ -65,7 +65,7 @@
           />
         </el-form-item>
 
-        <el-form-item
+        <!-- <el-form-item
           label="调度者姓名"
           prop="teamName"
         >
@@ -77,7 +77,7 @@
             style="width: 228px"
             @keyup.enter.native="handleQuery"
           />
-        </el-form-item>
+        </el-form-item> -->
 
         <el-form-item
           v-if="false"
@@ -212,7 +212,7 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="纸质回单" prop="isReturn">
+        <!-- <el-form-item label="纸质回单" prop="isReturn">
           <el-select
             v-model="queryParams.isReturn"
             placeholder="请选择纸质回单"
@@ -228,7 +228,7 @@
               :value="dict.dictValue"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="分单" prop="isChild">
           <el-select
             v-model="queryParams.isChild"
@@ -246,6 +246,49 @@
             />
           </el-select>
         </el-form-item>
+
+        <el-form-item
+          label="渣土场"
+          prop="ztcName"
+        >
+          <el-input
+            v-model="queryParams.ztcName"
+            placeholder="请输入渣土场"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+
+        <el-form-item
+          label="调度者名称"
+          prop="teamName"
+        >
+          <el-input
+            v-model="queryParams.teamName"
+            placeholder="请输入调度者名称"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+
+        <el-form-item
+          label="项目"
+          prop="projectName"
+        >
+          <el-input
+            v-model="queryParams.projectName"
+            placeholder="请输入项目名称"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+
         <el-form-item>
           <el-button
             type="primary"
@@ -308,15 +351,6 @@
               @click="createdDatch"
             >批量申请对账</el-button>
           </el-col>
-          <!-- <el-col v-if="activeName == '7' && !isAdmin" :span="1.5">
-            <el-button
-              type="primary"
-              icon="el-icon-chat-dot-square"
-              size="mini"
-              :disabled="multiple"
-              @click="handleAssess"
-            >批量评价</el-button>
-          </el-col> -->
           <el-col :span="1.5" class="fr">
             <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
           </el-col>
@@ -325,17 +359,17 @@
             @queryTable="getList"
           />
         </el-row>
-        <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+        <RefactorTable
+          :loading="loading"
+          :data="adjustlist"
+          :table-columns-config="tableColumnsConfig"
+          :row-key="(row)=> row.waybillNo"
+          :reserve-selection="activeName == '5'"
+          @selection-change="handleSelectionChange"
+        >
           <template #goodsBigType="{row}">
             <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
           </template>
-          <!-- <template #isReturn="{row}">
-            <span>
-              <i v-if="row.isReturn == 0" class="el-icon-error g-color-gray" />
-              <i v-if="row.isReturn == 1" class="el-icon-success g-color-success" />
-              {{ selectDictLabel(isReturnOptions, row.isReturn) }}
-            </span>
-          </template> -->
           <template #loadWeight="{row}">
             <span v-if="row.loadWeight">
               <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.loadWeight }} 吨</span>
@@ -395,20 +429,6 @@
               @click="handleTableBtn(row, 4)"
             >申请对账</el-button>
 
-
-            <!-- <el-button
-              v-if="activeName == '7' && !isAdmin"
-              size="mini"
-              type="text"
-              @click="handleTableBtn(row, 5)"
-            >评价</el-button> -->
-            <!-- <el-button
-              v-if="activeName == '7' && isAdmin"
-              size="mini"
-              type="text"
-              @click="handleTableBtn(row, 8)"
-            >评价详情</el-button> -->
-
             <el-button
               v-if="!isShipment && row.isChild == '2'"
               v-has-permi="['transportation:waybill:childList']"
@@ -454,7 +474,7 @@
     <!-- 驳回弹窗 -->
     <reject-dialog ref="RejectDialog" :open.sync="rejectdialog" :title="title" :disable="formDisable" @refresh="getList" />
     <!-- 核算弹窗 -->
-    <adjust-dialog ref="AdjustDialog" :open.sync="adjustdialog" :title="title" @refresh="getList" />
+    <adjust-dialog ref="AdjustDialog" :open.sync="adjustdialog" :title="title" @refresh="()=>{getList(); multiple=true }" />
     <!-- 子单弹窗 -->
     <child-dialog ref="ChildDialog" :open.sync="childdialog" :title="title" @refresh="getList" />
     <!-- 运单详情 对话框 -->
@@ -463,10 +483,8 @@
     <comment-dialog ref="CommentDialog" :open.sync="commentdialog" :title="title" @refresh="getList" />
     <!-- 评价详情 -->
     <rate-dialog ref="RateDialog" :open.sync="ratedialog" :disable="formDisable" :title="title" @refresh="getList" />
-
     <!-- 对账单弹窗 -->
     <StatementsDialog ref="StatementsDialog" :open.sync="Statementsdialog" :disable="formDisable" :title="title" @refresh="getList" />
-
     <!-- 核销IC卡 -->
     <nuclear-card ref="NuclearCard" :open.sync="nuclearCardDialog" @refresh="getList" />
 
@@ -497,13 +515,9 @@ import StatementsDialog from './StatementsDialog';
 import AlreadyPaid from './AlreadyQueryForm';
 import AlreadyTable from './AlreadyTable';
 
-
-// import setTheight from '@/layout/mixin/setTheight';
-
 export default {
   'name': 'AdjustDregs',
   components: { RejectDialog, AdjustDialog, DetailDialog, ChildDialog, CommentDialog, RateDialog, NuclearCard, StatementsDialog, AlreadyPaid, AlreadyTable },
-  // mixins: [setTheight],
   data() {
     return {
       tableColumnsConfig_4: [],
@@ -550,8 +564,10 @@ export default {
         'isReturn': undefined,
         'isChild': undefined,
         'status': '4',
+        ztcName: undefined,
         teamName: undefined,
         waybill: undefined,
+        projectName: undefined,
         criticism: undefined
       },
 
@@ -592,7 +608,6 @@ export default {
       // 是否子单字典
       isChildOptions: [
         { 'dictLabel': '否', 'dictValue': '0' },
-        // { 'dictLabel': '子单', 'dictValue': '1' },
         { 'dictLabel': '是', 'dictValue': '2' }
       ],
       isAdmin: false,
@@ -618,13 +633,15 @@ export default {
         'pageNum': 1,
         'pageSize': 10,
         'total': 0
-      },
-      adjustDregsApi: adjustDregsApi + '--74'
+      }
     };
   },
   computed: {
     api() {
-      return adjustListApi + '--adjustDregs' + this.activeName;
+      return adjustListApi + '--' + (this.isShipment ? 'isShipment' : 'isNoShipment') + this.activeName;
+    },
+    adjustDregsApi() {
+      return adjustDregsApi + '--' + (this.isShipment ? 'isShipment' : 'isNoShipment') + ('4');
     },
     tableColumnsConfig: {
       get() {
@@ -696,7 +713,7 @@ export default {
             tooltip: false,
             label: '操作',
             width: 240,
-            fixed: 'right' }, [{
+            fixed: 'left' }, [{
             prop: 'icStatus',
             isShow: true,
             tooltip: false,
@@ -781,10 +798,7 @@ export default {
       this.title = '结算审核';
       this.$refs.AdjustDialog.setForm(this.ids); // this.ids 数组
     },
-    /** 批量申请打款 */
-    // handleApply() {
-    //   this._handlerwaybillCode(this.commentlist);
-    // },
+
     // 批量评价
     handleAssess() {
       this.commentdialog = true;

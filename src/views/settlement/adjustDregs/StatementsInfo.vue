@@ -1,7 +1,9 @@
 
 <template>
-  <div>
-    <!-- @selection-change="handleSelectionChange" -->
+  <div style="margin-bottom: 50px;">
+    <div class="mb20 ly-t-right">
+      <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
+    </div>
     <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig">
       <template #weight="{row}">
         <span v-if="row.weight">
@@ -43,6 +45,14 @@ export default {
       'tableColumnsConfig': [],
       'tableColumnsConfig1': [
         { // 需要顶替掉的项
+          prop: 'waybillNo',
+          isShow: true,
+          tooltip: false,
+          sortNum: 0,
+          label: '运单号',
+          width: 150
+        },
+        { // 需要顶替掉的项
           prop: 'isReturn',
           isShow: false,
           tooltip: false,
@@ -65,7 +75,7 @@ export default {
   },
   computed: {
     api() {
-      return BatchInfoListVo + '--adjustDregs66';
+      return BatchInfoListVo;
     }
   },
 
@@ -73,14 +83,12 @@ export default {
   created() {
     this.tabColInit();
     this.getList();
-    // if (this.wayBillCodes.length) {
-    // }
-    console.log(45646);
   },
   'methods': {
     /** 表头初始化 */
     tabColInit() {
-      !this.tableColumnsConfig.length && this.tableHeaderConfig(
+      this.tableColumnsConfig = [];
+      this.tableHeaderConfig(
         this.tableColumnsConfig,
         this.api, null,
         this.tableColumnsConfig1

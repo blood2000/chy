@@ -115,7 +115,7 @@ export default {
   },
   created() {
     this.getBilling();
-    console.log(89);
+    console.log(this.shipmentCode);
   },
   methods: {
     getBilling() {
@@ -132,11 +132,13 @@ export default {
           if (this.form.id != null) {
             updateBilling(this.form).then(response => {
               this.msgSuccess('修改成功');
+              this.$emit('submitRes', this.form);
               this.getBilling();
             });
           } else {
             addBilling(this.form).then(response => {
               this.msgSuccess('新增成功');
+              this.$emit('submitRes', this.form);
               this.getBilling();
             });
           }

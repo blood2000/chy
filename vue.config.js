@@ -41,6 +41,7 @@ module.exports = {
         // target: `http://192.168.30.208:8080`, //秀
         // target: `http://192.168.30.186:8080`, //同
         //target: `http://192.168.30.134:8080`, //志
+        // target: `http://10.0.0.75:8080`,
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''

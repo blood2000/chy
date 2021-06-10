@@ -56,7 +56,8 @@ export default {
       isOpen: '',
       panelTop: '',
       panelBottom: '',
-      panelWidth: '160px'
+      panelWidth: '160px',
+      timer: null
     };
   },
   computed: {
@@ -107,10 +108,14 @@ export default {
       return /^(https?:|mailto:|tel:)/.test(path);
     },
     openMenu(path, item) {
-      this.isOpen = path;
-      this.setPanelPosition(path, item);
+      this.timer && clearTimeout(this.timer);
+      this.timer = setTimeout(() => {
+        this.isOpen = path;
+        this.setPanelPosition(path, item);
+      }, 100);
     },
     closeMenu() {
+      this.timer && clearTimeout(this.timer);
       this.isOpen = '';
     },
     handleScroll() {

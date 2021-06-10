@@ -118,7 +118,7 @@
           />
         </el-form-item>
 
-        <!-- 做远程的 -->
+        <!-- 远程 -->
         <el-form-item v-show="!isShipment" v-if="false" label="货主" prop="tin6" size="small">
           <el-select
             v-model="queryParams.tin6"
@@ -177,10 +177,6 @@
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="listManagesApi" refresh />
         </el-col>
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
-        <!-- <el-col v-show="showSearch" :span="1.5" class="fr mr20">
-          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-          <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-        </el-col> -->
       </el-row>
 
 
@@ -193,7 +189,6 @@
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
         :table-columns-config="tableColumnsConfig"
       ><!-- @selection-change="handleSelectionChange" -->
-        <!-- 装货地 -->
         <template #addressName1="{row}">
           <span>{{ row.addressAlias1 || row.addressName1 }}</span>
         </template>
@@ -202,7 +197,6 @@
           <span>{{ `${row.contact1 || '-'} [${row.contactPhone1 || '-'}]` }}</span>
         </template>
 
-        <!-- 装货地 -->
         <template #addressName2="{row}">
           <span>{{ row.addressAlias2 || row.addressName2 }}</span>
         </template>
@@ -236,23 +230,16 @@
         <template #businessType="{row}">
           <span>{{ selectDictLabel(dicts['businessTypes'], row.businessType) }}</span>
         </template>
-        <!-- 已抢单量 -->
         <template #robbedOrder="{row}">
           <span>{{ row.robbedOrder || 0 }}</span>
         </template>
-        <!-- 可抢单量 -->
         <template #notRobbedOrder="{row}">
           <span>{{ (!row.notRobbedOrder && row.notRobbedOrder !== 0)? '不限': row.notRobbedOrder }}</span>
-          <!-- <span>{{ row.totalType === "1"? '不限' : row.notRobbedOrder }}</span> -->
         </template>
-        <!-- 重量/体积/车 -->
         <template #tin_weight="{row}">
           <span v-if="row.stowageStatus == 0">{{ row.totalType === '2'? (row.weight - 0) + ' 吨':'不限' }}</span>
           <span v-if="row.stowageStatus == 1">{{ row.totalType === '2'?(row.weight - 0) + ' 立方' :'不限' }}</span>
           <span v-if="row.stowageStatus == 2">{{ row.totalType === '2'? (row.number - 0) + ' 车' : '不限' }}</span>
-          <!-- <span v-if="row.stowageStatus == 0">{{ row.totalType === '2'? (row.remainingWeight - 0) + ' 吨':'不限' }}</span>
-          <span v-if="row.stowageStatus == 1">{{ row.totalType === '2'?(row.remainingWeight - 0) + ' 立方' :'不限' }}</span>
-          <span v-if="row.stowageStatus == 2">{{ row.totalType === '2'? (row.number - 0) + ' 车' : '不限' }}</span> -->
         </template>
 
         <template #stowageStatus="{row}">
@@ -279,14 +266,12 @@
           <span>{{ row.accessTime }}</span>
         </template>
         <template #edit="{row}">
-          <template v-if="row.isShowEdit">
+          <template v-if="row.isDregs === 0 && row.isShowEdit">
             <el-button
               size="mini"
               type="text"
               @click="handleInfo(row)"
             >详情</el-button>
-
-            <!-- v-hasPermi="['transportation:order:pubilsh']" -->
             <el-button
               v-if="row.status+''==='0'"
               v-hasPermi="['transportation:order:modify']"
@@ -342,9 +327,6 @@
                 >复制</el-button>
               </el-dropdown-item>
             </TableDropdown>
-
-
-
           </template>
         </template>
       </RefactorTable>
@@ -377,29 +359,20 @@ import { listShipment } from '@/api/assets/shipment';
 import { getUserInfo } from '@/utils/auth';
 import OpenDialog from './component/OpenDialog';
 import tableColumnsConfig from './data/config-index';
-
-
 import PriceAdjustment from './component/PriceAdjustment';
-
-// import setTheight from '@/layout/mixin/setTheight';
 
 export default {
   name: 'Manage',
   components: { OpenDialog, PriceAdjustment },
-  // mixins: [setTheight],
   data() {
     return {
-      // tHeight: null,
-
-      activeName: '0', // 做tab切换
-      listManagesApi, // 表头存的key
-      pubilshCode: '', // 当前货主code
-      // 测试数据上
+      activeName: '0',
+      listManagesApi,
+      pubilshCode: '',
 
       openPriceAdjustment: false,
       tabs: [],
       orderCode: '',
-      // 树形数据
       data: [],
 
       // 遮罩层
@@ -457,108 +430,28 @@ export default {
         { dictLabel: '立方', dictValue: 1 },
         { dictLabel: '车', dictValue: 2 }
       ],
-      // 发运方式字典
-      // billingTypeOptions: [
-      //   { dictLabel: '汽运一票制', dictValue: '0' },
-      //   { dictLabel: '对付', dictValue: '1' },
-      //   { dictLabel: '代收代付', dictValue: '2' }
-      // ],
-      // 是否导入货源字典
-      // importTypeOptions: [
-      //   { dictLabel: '正常发布货源', dictValue: '0' },
-      //   { dictLabel: '货源单导入', dictValue: '1' },
-      //   { dictLabel: '运输单导入', dictValue: '2' }
-      // ],
-      // isClass	是否加入货集码
+
       isClassOptions: [
         { dictLabel: '否', dictValue: 0 },
         { dictLabel: '是', dictValue: 1 }
       ],
-      // isDel	是否删除 0.正常 1.删除	boolean
-      // isDelTypeOptions: [
-      //   { dictLabel: '正常', dictValue: 0 },
-      //   { dictLabel: '删除', dictValue: 1 }
-      // ],
-      // isDispatch	是否已受理 0未受理，1已受理	boolean
-      // isDispatchTypeOptions: [
-      //   { dictLabel: '未受理', dictValue: false },
-      //   { dictLabel: '已受理', dictValue: true }
-      // ],
-      // isInsure	投保类别 0否 1是	boolean
-      // isInsureTypeOptions: [
-      //   { dictLabel: '否', dictValue: false },
-      //   { dictLabel: '是', dictValue: true }
-      // ],
-      // isMonthlyOrder	是否月结订单 0否 1 是	boolean
-      // isMonthlyOrderTypeOptions: [
-      //   { dictLabel: '否', dictValue: false },
-      //   { dictLabel: '是', dictValue: true }
-      // ],
-      // isPay	是否已经支付 0 未支付 1 已经支付	boolean
-      // isPayTypeOptions: [
-      //   { dictLabel: '未支付', dictValue: false },
-      //   { dictLabel: '已经支付', dictValue: true }
-      // ],
-      // isPublic	是否公开货源 0.非公开 1.公开
+
       isPublicTypeOptions: [
         { dictLabel: '非公开', dictValue: 0 },
         { dictLabel: '公开', dictValue: 1 }
       ],
-      // isReturnMoney	标记货主是否结算 0 否 1-是	boolean
-      // isReturnMoneyTypeOptions: [
-      //   { dictLabel: '否', dictValue: false },
-      //   { dictLabel: '是', dictValue: true }
-      // ],
-      // isShare	是否拼单 0-否，1-是	boolean
-      // isShareTypeOptions: [
-      //   { dictLabel: '否', dictValue: false },
-      //   { dictLabel: '是', dictValue: true }
-      // ],
-      // isShipperConfirm	是否货主确认装货 0否，1是	boolean
-      // isShipperConfirmTypeOptions: [
-      //   { dictLabel: '否', dictValue: false },
-      //   { dictLabel: '是', dictValue: true }
-      // ],
-      // isSpecified	是否指定接单人 0否 1是	boolean
+
       isSpecifiedTypeOptions: [
         { dictLabel: '否', dictValue: 0 },
         { dictLabel: '是', dictValue: 1 }
       ],
-      // isSplit	是否允许拆单 0-不允许，1-允许	boolean
-      // isSplitTypeOptions: [
-      //   { dictLabel: '不允许', dictValue: false },
-      //   { dictLabel: '允许', dictValue: true }
-      // ],
-      // isTop	是否置顶 0否 1是	boolean
-      // isTopTypeOptions: [
-      //   { dictLabel: '否', dictValue: false },
-      //   { dictLabel: '是', dictValue: true }
-      // ],
-      // isTrunk	订单类型 0-整车大宗，1-零散多货	boolean
-      // isTrunkTypeOptions: [
-      //   { dictLabel: '整车大宗', dictValue: '0' },
-      //   { dictLabel: '零散多货', dictValue: '1' }
-      // ],
-      // loadType	装卸类型 1.一装一卸 2.多装一卸 3.一装多卸 4.多装多卸
+
       loadTypeOptions: [
         { dictLabel: '', dictValue: '0' },
         { dictLabel: '一装一卸', dictValue: '1' },
         { dictLabel: '多装一卸', dictValue: '2' },
         { dictLabel: '一装多卸', dictValue: '3' }
-        // { dictLabel: '多装多卸', dictValue: '4' }
       ],
-
-      // orderType	运输类型 0-汽运，1-船运	string
-      // orderTypeTypeOptions: [
-      //   { dictLabel: '汽运', dictValue: '0' },
-      //   { dictLabel: '船运', dictValue: '1' }
-      // ],
-      // paymentCode	支付方式 0-现金，1-打卡，2现金+油卡 (字典表CODE)
-      // paymentCodeTypeOptions: [
-      //   { dictLabel: '现金', dictValue: '0' },
-      //   { dictLabel: '打卡', dictValue: '1' },
-      //   { dictLabel: '现金+油卡', dictValue: '2' }
-      // ],
 
       goodsTypeOption: [],
       isShipment: false,
@@ -628,11 +521,9 @@ export default {
     console.log('页面初始化');
 
     const { isShipment = false, shipment = {}} = getUserInfo() || {};
-    // 判断当前是什么角色登入的 true 是运营
     this.isShipment = isShipment;
 
     isShipment && (this.queryParams.tin6 = shipment.info.code);
-    // 要配置好才能用
     this.tableHeaderConfig(this.tableColumnsConfig, listManagesApi, null, tableColumnsConfig);
     this.getDict();
     this.getList();
@@ -666,8 +557,8 @@ export default {
       this.shipmentreq.pageNum++;
       this.getTeamList();
     },
+    // 获取代理用户表
     getTeamList() {
-      // 获取代理用户表
       listShipment(this.shipmentreq).then(
         (res) => {
           this.dataOver = !res.rows.length;
@@ -722,12 +613,11 @@ export default {
     // 处理返回的列表
     handlerList(lists) {
       this.list = lists.map(e => {
-        // 先判断几个商品
+        const isDregs = e.isDregs;
         e = e.redisOrderInfoListVoList[0];
+        e.isDregs = isDregs;
 
-        // 调度者
         e.redisOrderSpecifiedVoList.forEach(specified => {
-          // 只考虑互斥
           if (specified.userType === 1) {
             e.specified = `调度者：${e.redisOrderSpecifiedVoList.length} 人`;
           } else {
@@ -735,7 +625,6 @@ export default {
           }
         });
 
-        // 货集码
         e.redisOrderClassGoodsVoList.forEach(orderClass => {
           e.cargoCodeQr = orderClass.cargoCodeQr || '-';
         });
@@ -749,7 +638,6 @@ export default {
           e.addressName2 = '';
           e.shipmentPrice = '';
           e.transactionPrice = '';
-          // e.unitPrice = '';
           e.businessType = '';
           e.contact2 = '';
           e.contactPhone2 = '';
@@ -759,8 +647,6 @@ export default {
           });
         }
         e.redisOrderFreightInfoVoList.length && e.redisOrderFreightInfoVoList.forEach((redis, index) => {
-          // 获取商品信息到这里获取
-
           e.redisOrderGoodsVoList.forEach(goods => {
             if (goods.code === redis.goodsCode) {
               e.goodsPrice = goods.goodsPrice;
@@ -775,13 +661,9 @@ export default {
               };
             }
           });
-          // 对应的
           redis.redisOrderAddressInfoVoList.forEach(address => {
             const addresCodes = address.addressCode.split(':');
-            // 地址信息的到这里获取
             e.redisAddressList.forEach(addr => {
-              // 装货地
-
               if (addr.code === addresCodes[0] || addr.code === addresCodes[1]) {
                 if (addr.addressType === '3') {
                   e.addressName1 = '自装';
@@ -808,7 +690,6 @@ export default {
                   e.contact2 = '-';
                   e.contactPhone2 = '-';
                 }
-              // 卸货地
               }
             });
 
@@ -821,7 +702,6 @@ export default {
               // 成交单价
               if (freight.ruleItemCode === '20') {
                 e.transactionPrice = freight.ruleValue;
-                // e.unitPrice = freight.ruleValue;
               }
             });
 
@@ -839,9 +719,7 @@ export default {
         };
       });
 
-
-      // this.$_getHeight();
-
+      console.log(this.list);
       this.loading = false;
     },
 
@@ -890,7 +768,6 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const testIds = row.orderCode;
-      // 操作删除按钮，判断货单是否产生运单。
       const waybill = row.haveWaybill - 0 === 0;
 
       let msg = '';
@@ -899,9 +776,6 @@ export default {
       } else {
         msg = `该货源单下，已产生运单，确认是否删除`;
       }
-
-      // 1、无，选择提示“该货源单下，暂无产生运单，确认是否删除”；
-      // 2、有，选择提示“该货源单下，已产生10条运单，确认是否删除”；
 
       this.$confirm(msg, '警告', {
         confirmButtonText: '确定',
@@ -965,21 +839,20 @@ export default {
 
           return {
             addressIdentification: eee.addressCode,
-            tin_name: tin_names.join('--'), // 地址a到b 显示
-            ruleCode: eee.ruleCode, // 下拉规则的的值(会改)
-            // ruleDictValue: '1', // 计算规则的值
-            orderFreightVo: eee.orderFreightVo // 细则
+            tin_name: tin_names.join('--'),
+            ruleCode: eee.ruleCode,
+            orderFreightVo: eee.orderFreightVo
           };
         });
 
         return {
-          dictLabel: e.goodsTypeName, // 展示tab
-          activeName: index + '', // 切换tab
-          goodsPrice: e.goodsPrice, // 商品价格??
-          goodsType: e.goodsType, // 商品divtValue
+          dictLabel: e.goodsTypeName,
+          activeName: index + '',
+          goodsPrice: e.goodsPrice,
+          goodsType: e.goodsType,
           goodsCode: e.goodsCode,
           redis,
-          newRedis: [] // 这个是封装返回的时候使用
+          newRedis: []
         };
       });
 
@@ -1036,25 +909,6 @@ export default {
       return '';
     }
 
-    // setTheight(tHeight, refName, showSearch, addition = 0) {
-    //   var h = window.innerHeight || document.body.clientHeight;
-    //   this.$nextTick(() => {
-    //     const searchBoxheight = showSearch ? this.$refs[refName].offsetHeight : 0;
-    //     this[tHeight] = h - 292 - searchBoxheight - addition;
-    //   });
-    // }
   }
 };
 </script>
-
-<style>
-
-/* .el-table .warning-row,.el-table--striped .el-table__body tr.el-table__row--striped.warning-row td {
-    background: oldlace;
-  }
-
-.el-table .red-row,.el-table--striped .el-table__body tr.el-table__row--striped.red-row td {
-  background: #e1f3d8;
-} */
-
-</style>

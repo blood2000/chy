@@ -56,10 +56,10 @@
           <template v-if="item.showType === 2">
             -
             <el-input-number v-model="lossItemObj[item.code].start" :controls="false" :precision="2" :min="0" :max="currentRadio === 'DE' ? 100000 : 100" placeholder="最小值" class="width-small" clearable />
-            <span v-show="currentRadio && currentRadio !== ''" class="unit-span-l g-color-gray">{{ currentRadio === 'DE' ? 'kg' : '%' }}</span>
+            <span v-show="currentRadio && currentRadio !== ''" class="unit-span-l g-color-gray" :class="currentRadio === 'DE' ? 'double' : ''">{{ currentRadio === 'DE' ? 'kg/m³' : '%' }}</span>
             <span style="margin: 0 15px">至</span>
             <el-input-number v-model="lossItemObj[item.code].end" :controls="false" :precision="2" :min="0" :max="currentRadio === 'DE' ? 100000 : 100" placeholder="最大值" class="width-small" clearable />
-            <span v-show="currentRadio && currentRadio !== ''" class="unit-span-r g-color-gray">{{ currentRadio === 'DE' ? 'kg' : '%' }}</span>
+            <span v-show="currentRadio && currentRadio !== ''" class="unit-span-r g-color-gray" :class="currentRadio === 'DE' ? 'double' : ''">{{ currentRadio === 'DE' ? 'kg/m³' : '%' }}</span>
           </template>
           <el-select v-if="item.showType === 3" v-model="lossItemObj[item.code]" class="width-small" clearable filterable style="width: 350px;">
             <el-option
@@ -590,18 +590,24 @@ export default {
   /* 计数器样式 */
   .el-input-number ::v-deep.el-input__inner{
     text-align: left;
-    padding-right: 30px;
+    padding-right: 46px;
   }
   /* 单位 */
   .unit-span-l{
     position: absolute;
     left: 184px;
     top: 0;
+    &.double{
+      left: 166px;
+    }
   }
   .unit-span-r{
     position: absolute;
     left: 428px;
     top: 0;
+    &.double{
+      left: 410px;
+    }
   }
   /* 暂无数据 */
   .none-box{

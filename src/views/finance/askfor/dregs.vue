@@ -10,7 +10,6 @@
 
       <div v-if="!isShipment" class="app-container" style="display: flex; align-items: center;">
         <el-form-item label="发货企业" style="margin-bottom:0">
-          <!-- filterable开启可搜索 remote远程搜索 reserve-keyword 保存搜索关键词  companyName -->
           <el-select
             v-model="queryParams.shipmentCode"
             v-el-select-loadmore="loadmore"
@@ -18,10 +17,10 @@
             clearable
             remote
             reserve-keyword
-            placeholder="请选择发货企业"
+            placeholder="请输入企业名称/货主姓名/手机号"
             :remote-method="remoteMethod"
             :loading="shipmentloading"
-            style="width: 230px"
+            style="width: 400px"
             size="small"
             @change="chooseShipment"
           >
@@ -32,7 +31,7 @@
               :value="dict.code"
             >
               <div class="ly-flex-pack-justify">
-                <span style="margin-right:10px">{{ dict.adminName }}</span>
+                <span style="margin-right:10px">{{ dict.adminName }}（{{ dict.telphone }}）</span>
                 <span>{{ dict.companyName }}</span>
               </div>
             </el-option>
@@ -105,10 +104,10 @@
         <el-form-item
           v-if="!isShipment"
           label="发票抬头"
-          prop="invoiceTitle"
+          prop="shipper"
         >
           <el-input
-            v-model="queryParams.invoiceTitle"
+            v-model="queryParams.shipper"
             placeholder="请输入发票抬头"
             clearable
             size="small"
@@ -173,26 +172,6 @@
       </el-row>
 
       <RefactorTable :loading="loading" :data="askforlist" :table-columns-config="tableColumnsConfig" :max-height="isAdmin ? '400':'500'" @selection-change="handleSelectionChange">
-        <!-- <template #zhuanfowe="{row}">
-          <span class="g-color-error">已申请{{ row.zhuanfowe }}</span>
-        </template>
-
-        <template #loadWeight="{row}">
-          <span v-if="row.stowageStatus === '1'">{{ row.loadWeight || '0.00' }} 方</span>
-          <span v-if="row.stowageStatus === '2'">{{ row.loadWeight || '0.00' }} 车</span>
-          <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.loadWeight || '0.00' }} 吨</span>
-        </template>
-        <template #unloadWeight="{row}">
-          <span v-if="row.stowageStatus === '1'">{{ row.unloadWeight || '0.00' }} 方</span>
-          <span v-if="row.stowageStatus === '2'">{{ row.unloadWeight || '0.00' }} 车</span>
-          <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.unloadWeight || '0.00' }} 吨</span>
-        </template>
-        <template #fillTime="{row}">
-          <span>{{ parseTime(row.fillTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-        </template>
-        <template #signTime="{row}">
-          <span>{{ parseTime(row.signTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-        </template> -->
 
         <template #status="{row}">
           <span>
@@ -252,8 +231,6 @@ import { shipmentList } from '@/api/finance/askfor'; // 获取货主(搜索用)
 import { adjustDregsList, adjustListApi, passBatchClaim } from '@/api/settlement/adjustDregs'; // 1 当前页列表(批次号) 2. 表头 3.索票
 
 import { getUserInfo } from '@/utils/auth';
-// import ChildDialog from '../components/childDialog';
-
 
 // 运单详情弹窗
 import StatementsDialog from '@/views/settlement/adjustDregs/StatementsDialog';
@@ -268,7 +245,7 @@ export default {
   data() {
     return {
       tableColumnsConfig: [],
-      api: adjustListApi + '--1',
+      // api: adjustListApi + '--1',
       // 遮罩层
       'loading': false,
       // 选中数组
@@ -287,17 +264,14 @@ export default {
 
       'queryParams': {
         batchNo: undefined, //	批次号	query	false
-        invoiceTitle: undefined, //	发票抬头	query	false
+        shipper: undefined, //	发票抬头	query	false
         operator: undefined, //	操作人名称	query	false
         status: 1, //	1已申请对账列表 2已申请开票列表 3已申请打款列表 4已完成列表	query	false
         teamName: undefined, //	调度者名称	query	false
         ztcName: undefined, //	渣土场	query	false
         'pageNum': 1,
         'pageSize': 10,
-
-        // companyName: undefined, //	发货企业	query	false
         'shipmentCode': undefined
-        // 'waybillNo': undefined
       },
       loadTime: [],
       unloadTime: [],
@@ -338,13 +312,6 @@ export default {
         { 'dictLabel': '子单', 'dictValue': '1' },
         { 'dictLabel': '超载的主单', 'dictValue': '2' }
       ],
-      // 表单校验
-      // rules: {
-      //   shipmentCode: [
-      //     { required: true, message: '请选择货主', trigger: 'blur' }
-      //   ]
-      // },
-      // 账号信息
 
       isAdmin: false,
       isShipment: false,
@@ -363,13 +330,18 @@ export default {
         pageNum: 1,
         pageSize: 10,
         authStatus: 3,
-        adminName: null
+        adminName: undefined,
+        searchValue: undefined
       },
       shipmentloading: false,
       dataOver: false // 是否请求完了
     };
   },
   computed: {
+    api() {
+      return adjustListApi + '--' + (this.isShipment ? 'isShipment' : 'isNoShipment') + ('1');
+    },
+
     isShipmentTableColumnsConfig() {
       return !this.isShipment ? [
         {
@@ -380,7 +352,7 @@ export default {
           width: 180
         },
         {
-          prop: 'invoiceTitle',
+          prop: 'shipper',
           isShow: true,
           label: '发票抬头',
           sortNum: 2,
@@ -402,13 +374,12 @@ export default {
     this.isShipment = isShipment;
     this.user = user;
     this.shipment = shipment;
-    this.getList();
 
     this.tableHeaderConfig(this.tableColumnsConfig, this.api, {
       prop: 'edit',
       isShow: true,
       label: '操作',
-      width: 180,
+      width: 120,
       fixed: 'left'
     }, [{
       prop: 'status',
@@ -417,9 +388,12 @@ export default {
       sortNum: 2,
       width: 180
     }].concat(this.isShipmentTableColumnsConfig));
+
     this.listByDict(this.commodityCategory).then(response => {
       this.commodityCategoryCodeOptions = response.data;
     });
+
+    this.getList();
   },
   'methods': {
     // 获取货主列表
@@ -438,7 +412,8 @@ export default {
         this.shipmentloading = true;
         this.shipmentInfoQuery.pageNum = 1;
         this.dataOver = false;
-        this.shipmentInfoQuery.adminName = query;
+        // this.shipmentInfoQuery.adminName = query;
+        this.shipmentInfoQuery.searchValue = query;
         this.shipmentlist = [];
         this.getShipment();
       } else {
@@ -472,24 +447,10 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      // console.log(selection);
-      // this.feeinfo = {
-      //   waybillNum: selection.length,
-      //   // deliveryFee: 0,
-      //   taxPayment: 0,
-      //   serviceFee: 0,
-      //   serviceTaxFee: 0,
-      //   deliveryCashFee: 0
-      // };
-      // selection.map((item) => { this.feeinfo.deliveryFee += item.deliveryFeePractical; });
-      // selection.map((item) => { this.feeinfo.taxPayment += item.taxPayment; });
-      // selection.map((item) => { this.feeinfo.serviceFee += item.serviceFee; });
-      // selection.map((item) => { this.feeinfo.serviceTaxFee += item.serviceTaxFee; });
-      // selection.map((item) => { this.feeinfo.deliveryCashFee += item.deliveryCashFee; });
       this.ids = selection.map((item) => item.batchNo);
       this.multiple = !selection.length;
     },
-    /** 查询【请填写功能名称】列表 */
+
     getList() {
       if (this.isShipment) {
         this.queryParams.shipmentCode = this.shipment.info.code;
@@ -545,8 +506,6 @@ export default {
         this.loading = true;
         const que = {
           batchCodes: this.ids //	批次列表不能为空		false
-          // createCode: this.queryParams.shipmentCode
-          // remark, //	原因		false
         };
         passBatchClaim(que).then(response => {
           this.msgSuccess('索票申请成功');
@@ -574,12 +533,6 @@ export default {
           this.$refs.StatementsDialog.setBatchStatementCode(row.batchStatementCode, row); // 传code
           break;
         case 2:
-          // // this.$refs.DetailDialog.reset();
-          // // this.currentId = row.code;
-          // // this.open = true;
-          // // this.title = '运输单信息';
-          // // this.formDisable = true;
-          // console.log('索票', row);
           this.ids = [row.batchNo];
           this.handleAskfor();
           break;
@@ -588,11 +541,6 @@ export default {
           this.handleBohui();
           break;
         case 4:
-          // this.$refs.DetailDialog.reset();
-          // this.currentId = row.code;
-          // this.open = true;
-          // this.title = '运输单信息';
-          // this.formDisable = true;
           this.handleExport();
           break;
         default:

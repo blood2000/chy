@@ -253,6 +253,14 @@
             </el-dropdown-item>
             <el-dropdown-item>
               <el-button
+                v-hasPermi="['assets:shipment:examine']"
+                size="mini"
+                type="text"
+                @click="roleAssignment(row)"
+              >角色分配</el-button>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <el-button
                 v-hasPermi="['assets:shipment:remove']"
                 size="mini"
                 type="text"
@@ -275,6 +283,8 @@
       <shipment-dialog ref="ShipmentDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
       <!-- 管理 对话框 -->
       <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :shipment-code="shipmentCode" :company-code="companyCode" :user-code="userCode" />
+      <!--  分配角色-->
+      <role-assignment-dialog ref="RoleAssignmentDialog" :open.sync="roleAssignmentDialogOpen" :user-id="userId" :admin-name="adminName" :shipment-code="shipmentCode" :company-code="companyCode" :user-code="userCode" />
     </div>
   </div>
 </template>
@@ -284,12 +294,13 @@ import { listShipmentApi, listShipment, getShipment, delShipment } from '@/api/a
 import { getBranchList } from '@/api/system/branch';
 import ShipmentDialog from './shipmentDialog';
 import ManageDialog from './manageDialog.vue';
-
+import RoleAssignmentDialog from './roleAssignmentDialog.vue';
 export default {
   name: 'Shipment',
   components: {
     ShipmentDialog,
-    ManageDialog
+    ManageDialog,
+    RoleAssignmentDialog
   },
   data() {
     return {
@@ -315,6 +326,7 @@ export default {
       // 是否显示弹出层
       open: false,
       manageDialogOpen: false,
+      roleAssignmentDialogOpen: false,
       // 货主类型数据字典
       typeOptions: [
         { dictLabel: '发货人', dictValue: 0 },
@@ -381,6 +393,8 @@ export default {
       shipmentCode: null,
       companyCode: null,
       userCode: null,
+      adminName: null,
+      userId: null,
       // 导出
       exportLoading: false
     };
@@ -394,6 +408,12 @@ export default {
       fixed: 'left'
     });
     this.getDictsOptions();
+
+    const routeData = this.$route.query.data;
+    if (routeData) {
+      this.queryParams.authStatus = JSON.parse(routeData).authStatus;
+    }
+
     this.getList();
   },
   methods: {
@@ -437,6 +457,7 @@ export default {
       this.queryParams.createTimeBegin = undefined;
       this.queryParams.createTimeEnd = undefined;
       this.resetForm('queryForm');
+      this.queryParams.authStatus = undefined;
       this.handleQuery();
     },
     // 多选框选中数据
@@ -524,6 +545,16 @@ export default {
       } else {
         this.branchOptions = [];
       }
+    },
+    // 分配角色
+    roleAssignment(row) {
+      console.log(row);
+      this.shipmentCode = row.code;
+      this.companyCode = row.companyCode;
+      this.userCode = row.adminCode;
+      this.adminName = row.adminName;
+      this.userId = row.userId;
+      this.roleAssignmentDialogOpen = true;
     }
   }
 };

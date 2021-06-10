@@ -1,5 +1,4 @@
 <template>
-  <!-- 评价对话框 -->
   <el-dialog class="i-adjust" :title="title" :visible="visible" width="1400px" :close-on-click-modal="false" append-to-body @close="cancel">
 
     <el-table v-loading="loading" highlight-current-row :data="adjustlist" border>
@@ -10,8 +9,6 @@
       <el-table-column width="120" label="司机电话" align="center" prop="driverPhone" />
       <el-table-column width="120" label="车牌号" align="center" prop="licenseNumber" />
 
-      <!-- stowageStatus "配载方式 0->吨，1->方 2->车数配载" -->
-      <!-- isDregs "是否渣土 1->是  0->否" -->
       <el-table-column width="160" label="装货数量" align="left" prop="loadWeight">
         <template slot-scope="scope">
           <span v-if="scope.row.isDregs === 1">{{ scope.row.loadWeight }}</span>
@@ -46,11 +43,16 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="160" label="路耗(吨/方)" align="center" prop="loss" />
+      <el-table-column width="160" label="路耗(吨/方)" align="center" prop="loss">
+        <template slot-scope="scope">
+          <span v-if="scope.row.stowageStatus === '0'">{{ floor((scope.row.loss -0) / 1000, 6) }}</span>
+          <span v-else>{{ scope.row.loss || 0 }}</span>
+        </template>
+      </el-table-column>
 
       <el-table-column width="160" label="路耗允许范围(吨/方)" align="center" prop="lossAllowScope">
         <template slot-scope="scope">
-          <span>{{ scope.row.lossAllowScope? _lossAllowScope(scope.row.lossAllowScope) : null }}</span>
+          <span>{{ scope.row.lossAllowScope? _lossAllowScope(scope.row.lossAllowScope, scope.row.stowageStatus === '0' ) : '--' }}</span>
         </template>
       </el-table-column>
 
@@ -64,7 +66,6 @@
 
       <el-table-column width="120" label="抹零金额(元)" align="center" prop="m0Fee" />
 
-      <!-- <el-table-column width="160" label="司机应收运费" align="center" prop="deliveryFeeDeserved" /> -->
       <el-table-column width="160" label="司机实收运费(元)" align="center" prop="deliveryFeePractical" />
 
       <!-- 补贴项目 -->
@@ -115,16 +116,27 @@
 
 
 
-      <el-table-column width="120" label="纳税金额(元)" align="center" prop="taxPayment" fixed="right" />
-      <el-table-column width="120" label="服务费(元)" align="center" prop="serviceFee" fixed="right" />
+      <el-table-column width="120" label="纳税金额(元)" align="center" prop="taxPayment" fixed="right">
+        <template slot-scope="scope">
+          <span> {{ floor(scope.row.taxPayment) }} </span>
+        </template>
+      </el-table-column>
+      <el-table-column width="120" label="服务费(元)" align="center" prop="serviceFee" fixed="right">
+        <template slot-scope="scope">
+          <span> {{ floor(scope.row.serviceFee) }} </span>
+        </template>
+      </el-table-column>
       <el-table-column width="162" label="司机实收金额(元)" align="center" prop="deliveryCashFee" fixed="right">
         <template slot-scope="scope">
-          <span>{{ scope.row.deliveryCashFee }}</span>
-          <!-- <el-input-number v-else v-model="scope.row.deliveryCashFee" :controls="false" :precision="2" placeholder="请输入司机实收金额" style="width:100%;" size="mini" @blur="getDeliveryCashFee(scope.row)" /> -->
+          <span>{{ floor(scope.row.deliveryCashFee) }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="140" label="货主实付金额(元)" align="center" prop="shipperRealPay" fixed="right" />
+      <el-table-column width="140" label="货主实付金额(元)" align="center" prop="shipperRealPay" fixed="right">
+        <template slot-scope="scope">
+          <span> {{ floor(scope.row.shipperRealPay) }} </span>
+        </template>
+      </el-table-column>
 
     </el-table>
 
@@ -137,6 +149,7 @@
 
 <script>
 import { adjustDetail, calculateFee, batchCheck } from '@/api/settlement/adjust';
+import { floor } from '@/utils/ddc';
 
 export default {
   name: 'AdjustDialog',
@@ -155,19 +168,15 @@ export default {
       isEdit2: false,
       isEdit: false,
       deliveryCashFee: undefined,
-      // tableColumnsConfig: [],
       // 遮罩层
       loading: false,
-      // 总条数
-      // total: 0,
-      // 旧的数据
-      // oldList: [],
       // 评价列表
       adjustlist: [],
       // 查询参数
       queryParams: {
         waybillCodeList: []
-      }
+      },
+      floor
     };
   },
   computed: {
@@ -196,7 +205,12 @@ export default {
         waybillCode,
         subsidiesFreightList,
         deductionFreightList
+        // serviceFee,
+        // serviceTaxFee,
+        // taxPayment
+
       } = row;
+      console.log(row);
 
       const parame = {
         driverReductionFee: this._sum(deductionFreightList),
@@ -209,38 +223,44 @@ export default {
         loadWeight,
         unloadWeight,
         waybillCode
+        // serviceFee,
+        // serviceTaxFee,
+        // taxPayment
       };
+      if (this.loading) return;
+      this.loading = true;
+      try {
+        const { data } = await calculateFee(parame);
+        this.loading = false;
+        const {
+          deliveryFeeDeserved, //	司机应收运费	number
+          driverRealFee, //	司机实收金额	number
+          serviceFee, //	平台服务费费用	number
+          serviceTaxFee, //	服务税费	number
+          shipperCopeFee, //	货主应付金额	number
+          shipperRealPay, //	货主实付金额	number
+          taxFreeFee, //	不含税价	number
+          taxPayment, //	纳税金额	number
+          m0Fee,
+          loss
+        } = data;
 
-      const { data } = await calculateFee(parame);
-
-      const {
-        deliveryFeeDeserved, //	司机应收运费	number
-        driverRealFee, //	司机实收金额	number
-        serviceFee, //	平台服务费费用	number
-        serviceTaxFee, //	服务税费	number
-        shipperCopeFee, //	货主应付金额	number
-        shipperRealPay, //	货主实付金额	number
-        taxFreeFee, //	不含税价	number
-        taxPayment, //	纳税金额	number
-        m0Fee,
-        loss
-      } = data;
 
 
-
-      row.deliveryFeeDeserved = deliveryFeeDeserved;
-      row.deliveryCashFee = driverRealFee; // ?
-      row.serviceFee = serviceFee;
-      row.serviceTaxFee = serviceTaxFee; // ?
-      row.shipperCopeFee = shipperCopeFee;
-      row.shipperRealPay = shipperRealPay;
-      row.taxFreeFee = taxFreeFee; // ?
-      row.taxPayment = taxPayment;
-      row.m0Fee = m0Fee;
-      row.loss = loss;
-
-      // filterRow.deliveryCashFee = row.deliveryCashFee;
-      // filterRow[key] = row[key];
+        row.deliveryFeeDeserved = deliveryFeeDeserved;
+        row.deliveryCashFee = driverRealFee; // ?
+        row.serviceFee = serviceFee;
+        row.serviceTaxFee = serviceTaxFee; // ?
+        row.shipperCopeFee = shipperCopeFee;
+        row.shipperRealPay = shipperRealPay;
+        row.taxFreeFee = taxFreeFee; // ?
+        row.taxPayment = taxPayment;
+        row.m0Fee = m0Fee;
+        row.loss = loss;
+      } catch (error) {
+        this.loading = false;
+        return;
+      }
     },
 
     /** 提交按钮 */
@@ -263,6 +283,8 @@ export default {
           'otherCharges': e.otherCharges,
           'otherSubsidies': e.otherSubsidies,
           'serviceFee': e.serviceFee,
+          'serviceTaxFee': e.serviceTaxFee,
+          'taxPayment': e.taxPayment,
           'shipperCopeFee': e.shipperCopeFee,
           'shipperRealPay': e.shipperRealPay,
           'unloadWeight': e.unloadWeight,
@@ -278,7 +300,6 @@ export default {
       }).then(function() {
         return batchCheck({ boList });
       }).then(() => {
-        // this.getList();
         this.msgSuccess('核算成功');
         this.visible = false;
         this.$emit('refresh');
@@ -288,9 +309,6 @@ export default {
     getList() {
       this.loading = true;
       adjustDetail(this.queryParams).then(response => {
-        // isDregs // 是否渣土   1 是 0 否 (司机实收 只有渣土1能修改)
-
-        // this.oldList = JSON.parse(JSON.stringify(response.data));
         this.adjustlist = JSON.parse(JSON.stringify(response.data));
 
         this.total = response.total;
@@ -309,8 +327,6 @@ export default {
     setForm(data) {
       this.isEdit2 = false;
       this.isEdit = false;
-
-      // this.isPiliang = data.length > 1;
       this.deliveryCashFee = undefined;
       this.queryParams.waybillCodeList = data;
       this.getList();
@@ -326,43 +342,21 @@ export default {
     },
 
     /* 处理路耗展示 */
-    _lossAllowScope(value) {
+    _lossAllowScope(value, bool) {
       if (value) {
         const arr = value.match(/\d+(\.\d+)?/g);
 
         arr[0] = (arr[0] - 0) === 0 ? 0 : -arr[0];
         arr[1] = arr[1] - 0;
 
+        if (bool) {
+          arr[0] = this.floor(arr[0] / 1000, 6);
+          arr[1] = this.floor(arr[1] / 1000, 6);
+        }
+
         return JSON.stringify(arr);
       }
     }
-
-    // 获取数据
-    // async getDeliveryCashFee(row) {
-    //   // const { data } = await deliveryCashFee({
-    //   //   deliveryCashFee: row.deliveryCashFee, //	司机实收现金		false
-    //   //   m0DictValue: row.m0DictValue,
-    //   //   waybillCode: row.waybillCode,
-    //   //   // deliveryFeeDeserved: row.deliveryFeeDeserved, // 司机应收运费
-    //   //   shipperCode: row.shipperCode //	货主Code		false
-    //   // });
-
-    //   // const {
-    //   //   driverFee, //	抹零后司机实收金额	number
-    //   //   m0Fee, //	抹零金额	number
-    //   //   serviceFee, //	服务费	number
-    //   //   shipperRealPay, //	货主实付金额	number
-    //   //   taxPayment //	纳税金额
-    //   // } = data;
-
-
-    //   // row.serviceFee = serviceFee;
-    //   // row.shipperRealPay = shipperRealPay;
-    //   // row.m0Fee = m0Fee;
-    //   // row.deliveryCashFee = driverFee;
-    //   // row.taxPayment = taxPayment;
-    // }
-
   }
 };
 </script>

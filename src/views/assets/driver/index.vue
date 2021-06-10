@@ -369,8 +369,8 @@ export default {
       api: listDriverApi,
       // 司机类别字典
       driverTypeOptions: [
-        { dictLabel: '独立司机', dictValue: 1 },
-        { dictLabel: '聘用司机', dictValue: 2 }
+        { dictLabel: '零散司机', dictValue: 1 },
+        { dictLabel: '雇佣司机', dictValue: 2 }
       ],
       // 审核状态字典
       statusOptions: [
@@ -474,6 +474,12 @@ export default {
     this.getDictsOptions();
     if (!this.teamCode) {
       // 如果这个页面是以组件形式展示在调度者管理弹窗里面，则这里不加载列表
+
+      const routeData = this.$route.query.data;
+      if (routeData) {
+        this.queryParams.authStatus = JSON.parse(routeData).authStatus;
+      }
+
       this.getList();
     }
   },
@@ -511,6 +517,7 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.resetForm('queryForm');
+      this.queryParams.authStatus = undefined;
       this.handleQuery();
     },
     /** 新增按钮操作 */

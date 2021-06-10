@@ -91,7 +91,7 @@
               controls-position="right"
               :style="{ width: '85px' }"
             />
-            <span class="ml0 mr10">{{ item.unit }}</span>
+            <span class="ml0 mr10">{{ unit }}</span>
           </el-form-item>
           <el-form-item>至</el-form-item>
           <el-form-item
@@ -112,7 +112,7 @@
               controls-position="right"
               :style="{ width: '85px' }"
             />
-            <span class="ml0 mr10">{{ item.unit }}</span>
+            <span class="ml0 mr10">{{ unit }}</span>
           </el-form-item>
         </div>
 
@@ -153,10 +153,27 @@ export default {
     };
   },
 
+  computed: {
+    unit() {
+      let name = 'kg';
+      switch (this.$store.state.orders.orderStowageStatus) {
+        case '0':
+          name = 'kg';
+          break;
+        case '1':
+          name = 'm³';
+          break;
+        case '2':
+          name = '';
+          break;
+      }
+      return name;
+    }
+  },
+
   watch: {
     dataList: {
-      handler(newName, oldName) {
-        // this.formData = {};
+      handler() {
         this.resettingData = [];
         this.initData();
       },
@@ -188,12 +205,6 @@ export default {
       const M0_option = this.$store.state.orders.M0_option;
       return arr.map(async e => {
         if (e.dictCode && (e.showType === '3' || e.showType === '4')) {
-          // 新
-          // const { data } = await this.listByDict({
-          //   dictPid: '0',
-          //   dictType: e.dictCode
-          // });
-          // 旧
           if (e.dictCode === 'M0') {
             if (M0_option && M0_option.length) {
               e.Option = M0_option;
@@ -248,9 +259,3 @@ export default {
 
 };
 </script>
-
-<style scoped>
-	/* .el-input-number ::v-deep.el-input__inner{
-	  text-align: left;
-	} */
-</style>

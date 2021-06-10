@@ -29,6 +29,42 @@
           </el-form-item>
         </el-col>
       </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="货物大类" prop="commodityCategoryCode">
+            <el-select v-model="form.commodityCategoryCode" placeholder="请选择货物大类" style="width: 100%" @change="handlecommodityCategoryChange">
+              <el-option
+                v-for="item in commodityCategoryCodeOptions"
+                :key="item.dictValue"
+                :label="item.dictLabel"
+                :value="item.dictValue"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item v-if="isMore == 0 || !isMore" label="货物小类" prop="commoditySubclassCodes">
+            <el-select v-model="form.commoditySubclassCodes" placeholder="请选择货物小类" style="width: 100%" @change="handlecommodityCategoryChange">
+              <el-option
+                v-for="item in commoditySubclassCodesOptions"
+                :key="item.dictValue"
+                :label="item.dictLabel"
+                :value="item.dictValue"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item v-if="isMore == 1" label="货物小类" prop="commoditySubclassCodes">
+            <el-select v-model="form.commoditySubclassCodes" placeholder="请选择货物小类" style="width: 100%" @change="handleCheckedChange">
+              <el-option
+                v-for="item in commoditySubclassCodesOptions"
+                :key="item.dictValue"
+                :label="item.dictLabel"
+                :value="item.dictValue"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-row :gutter="15">
         <el-col :span="10">
           <el-form-item label="所在地区" prop="provinceCode">
@@ -95,12 +131,12 @@
         <el-input v-model="form.detail" placeholder="请输入地址详情" class="width100" clearable />
       </el-form-item>
       <el-row :gutter="20">
-        <el-col :span="12">
+        <!-- <el-col :span="12">
           <el-form-item label="是否默认地址">
             <el-switch v-model="form.defaultPut" active-text="默认装货地址" class="mr5" />
             <el-switch v-model="form.defaultPush" active-text="默认卸货地址" />
           </el-form-item>
-        </el-col>
+        </el-col>-->
         <el-col :span="12">
           <el-form-item label="碰撞半径" prop="collisionRadius">
             <el-input-number v-model="form.collisionRadius" :min="1" :max="100000" />&nbsp;米
@@ -213,6 +249,24 @@ export default {
       searchOption: {
         city: '全国',
         citylimit: true
+      },
+      // 商品类别编码字典
+      commodityCategoryCodeOptions: [],
+      // 商品小类字典
+      commoditySubclassCodesOptions: [],
+      // 是否多选
+      isMore: '2',
+      // 大类字典类型
+      commodityCategory: {
+        'status': '0',
+        'dictPid': '0',
+        'dictType': 'goodsType'
+      },
+      // 小类字典类型
+      commoditySubclass: {
+        'status': '0',
+        'dictPid': '',
+        'dictType': 'goodsType'
       }
     };
   },
@@ -238,6 +292,13 @@ export default {
   created() {
     getProvinceList().then((response) => {
       this.provinceCodeOptions = response.rows;
+    });
+    this.listByDict(this.commodityCategory).then(response => {
+      this.commodityCategoryCodeOptions = response.data;
+    });
+    this.listByDict({ dictPid: '0', dictType: 'transportation_scenario' }).then(response => {
+      this.projectTypeOptions = response.data;
+      console.log(this.projectTypeOptions);
     });
   },
   methods: {
@@ -297,7 +358,9 @@ export default {
         provinceCode: null,
         cityCode: null,
         districtCode: null,
-        collisionRadius: 1000
+        collisionRadius: 1000,
+        commodityCategoryCode: null,
+        commoditySubclassCodes: null
       };
       this.resetForm('form');
       this.cityCodeOptions = [];
@@ -330,9 +393,9 @@ export default {
     },
     // 搜索地址
     addressChange(row) {
-      const { lng, lat, dictLabel } = row;
+      const { lng, lat, dictLabel, address } = row;
       this.getMapData(lng, lat);
-      this.getFormData(lng, lat, dictLabel);
+      this.getFormData(lng, lat, dictLabel, address);
       // 只填地址也可以回填省市区
       this.getAddressBylnglat(lng, lat);
     },
@@ -395,10 +458,11 @@ export default {
       this.center = [lng, lat];
     },
     // 同步表单数据
-    getFormData(lng, lat, name) {
+    getFormData(lng, lat, name, detail) {
       this.form.longitude = lng;
       this.form.latitude = lat;
       this.form.addressName = name;
+      this.form.detail = detail;
     },
     // 选中省
     changeProvince(code) {
@@ -456,7 +520,30 @@ export default {
     // 清空地址
     clearAddressOption() {
       this.form.addressName = '';
+      this.form.detail = '';
       if (this.$refs.AmapSearchRef) this.$refs.AmapSearchRef.clearOption();
+    },
+    // 单选商品大类
+    handlecommodityCategoryChange(selection) {
+      this.handleChange(selection);
+      this.form.commoditySubclassCodes = null;
+      this.commoditySubclassCodes = [];
+    },
+    // 单选商品大类后联动数据事件
+    handleChange(value) {
+      const commodity = this.commodityCategoryCodeOptions.filter(item => {
+        return item.dictValue === value;
+      });
+      this.commoditySubclass.dictPid = commodity[0].dictCode;
+      this.listByDict(this.commoditySubclass).then(response => {
+        this.commoditySubclassCodesOptions = response.data;
+      });
+      this.isMore = commodity[0].isCheckbox;
+    },
+    // 多选小类
+    handleCheckedChange(selection) {
+      this.form.commoditySubclassCodes = selection.join(',');
+      // this.commoditySubclassCodes = selection.map((item) => item.commoditySubclassCodesOptions);
     }
   }
 };

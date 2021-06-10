@@ -402,9 +402,7 @@ export default {
         ]
       },
 
-      // 字典
       shipmentList: [], // 发布人下拉列表
-      // 其他
       isMultiGoods: false // 用来判断多商品还是单商品
     };
   },
@@ -415,7 +413,6 @@ export default {
       return this.active === 4;
     },
 
-    // 创建/编辑 true=>创建 false=>编辑
     isCreated() {
       return this.isClone || !this.$route.query.id;
     },
@@ -429,7 +426,6 @@ export default {
     }
   },
   watch: {
-    // 切换商品 false=> 单 true=>多
     isMultiGoods() {
       if (this.isMultiGoods) return;
       this.formData.tin7 = '1';
@@ -440,7 +436,6 @@ export default {
 
       handler(value, odvalue) {
         if ((odvalue === '0' || odvalue === '1' || odvalue === '3') && !value) {
-          // 初次使用
           this.$router.replace({
             path: '/refresh'
           });
@@ -457,11 +452,9 @@ export default {
   },
 
   async created() {
-    // 判断用户
     const { isShipment = false, shipment = {}, user = {}} = getUserInfo() || {};
 
     this.isShipment = isShipment;
-    // this.isAdmin = !isShipment;
     if (isShipment) {
       if (isShipment && shipment.info && shipment.info.authStatus !== 3) {
         this.authStatus = false;
@@ -478,12 +471,9 @@ export default {
       }
     }
 
-    // 判断地址栏有没有id- true=>有说明编辑/详情 false=>创建-什么都不做
     if (this.idCode) {
       this.getCbdata(this.idCode);
     }
-
-    // 缓存mo的吧
 
     this.getDicts('M0').then(res => {
       this.$store.dispatch('orders/store_getM0_option', res.data);
@@ -539,7 +529,6 @@ export default {
       });
     },
 
-    // 下一步 active =2
     async nextTo(active, cb) {
       if (!cb) {
         this.basicInfor = await this.handlerPromise('OrderBasic', false);
@@ -547,54 +536,8 @@ export default {
         this.goodsBigType = this.basicInfor.orderGoodsList[0].goodsBigType;
       }
       this.active = active;
-      // 测数据用
-      false && this.handlercbAddress([
-        {
-          'addressType': 2,
-          'country': '中国',
-          'province': '福建省',
-          'city': '福州市',
-          'cityCode': '3501',
-          'district': '仓山区',
-          'street': '',
-          'districtCode': '350104',
-          'location': [
-            119.358265,
-            26.045794
-          ],
-          'addressName': '富邦针织',
-          'detail': '120号',
-          'contact': '12123',
-          'contactPhone': '12345678910',
-          'addressAlias': '1212',
-          'provinceCode': '35' // 没返回
-
-        },
-        {
-          'addressType': 1,
-          'country': '中国',
-          'province': '福建省',
-          'city': '福州市',
-          'cityCode': '3501',
-          'district': '台江区',
-          'street': '',
-          'districtCode': '350103',
-          'location': [
-            119.358265,
-            26.045794
-          ],
-          'level': null,
-          'addressName': '富邦总部大楼',
-          'detail': '1004',
-          'contact': '123456',
-          'contactPhone': '12345678910',
-          'addressAlias': '案发地上',
-          'provinceCode': '35'
-        }
-      ]);
     },
 
-    // 下一步 active =3
     async nextSe(active, cb) {
       if (active === 1) {
         this.active = 1;
@@ -689,24 +632,17 @@ export default {
 
     // 下一步 active =4
     nextFe(active) {
-      // this.loading = true;
       if (active === 4) {
         this.onSubmit('elForm');
-
-        // 2. 请求数据预估数据
-        // 1. 单active到4的时候去显示预估价格
-        // 3. 传到组件中
       } else if (active === 2) {
         this.active = 2;
       } else if (active === 3) {
         this.active = 3;
       }
-      // this.loading = false;
     },
 
     // 处理预估
     async handlerEstimateCost(lastData) {
-      // 注意编辑的时候是有加update的, 要重新处理一下
       const { orderFreightInfoBoList, orderGoodsList, orderFreightInfoUpdateBoList, orderGoodsUpdateBoList } = JSON.parse(JSON.stringify(lastData));
 
       const orderEstimateCostBoList = (orderFreightInfoBoList || orderFreightInfoUpdateBoList).map(e => {
@@ -813,8 +749,6 @@ export default {
 
       const orderInfoBo = {
         code: InfoCode || undefined,
-        // branchCode:'',
-        // createCode:'',
         isPublic: isPublic ? 1 : 0,
         isSpecified: isSpecified ? 1 : 0,
         loadType: this.formData.tin7 - 0,
@@ -827,12 +761,7 @@ export default {
 
       const orderBasic = {};
 
-
-
       // 商品处理对象-按多个商品处理
-
-
-
       const orderGoodsListArr = orderGoodsList.map(e => {
         this.basicInfor.orderGoodsList.forEach(itemGoods => {
           if (itemGoods.goodsType === e.goodsType) {
@@ -858,13 +787,6 @@ export default {
           'vehicleLength': e.vehicleLength,
           'vehicleType': e.vehicleType,
           'weight': e.weight ? e.weight : '' // 货品吨数
-
-          // "goodsUnit": "", // 货物单位 0：吨 1：立方米 无
-          // 'isModifyFinish': true, // 平台是否完成调价??
-          // 'limitWastage': '', // 货物损耗 格式： 0/1(0-定额kg/车，1-定率千分之几/车)-1
-          // "perWeight": 0, // 每车载重量（吨） ??
-          // 'priceWastage': 0, // 路耗超出范围 赔偿单价 （元/吨）
-
         };
       });
       if (this.isCreated) {
@@ -888,11 +810,8 @@ export default {
 
     // 处理地址 和 商品
     async handlerAddress() {
-      // 获取商品基本信息(1.商品info 2.地址及地址下对应的规则)
       const goodsInfo = await this.$refs.goodsInfo._submitForm();
 
-
-      // 1.商品info
       const orderGoodsList = goodsInfo.map(e => {
         return {
           code: e.code || undefined,
@@ -902,11 +821,6 @@ export default {
         };
       });
 
-      // 2. 地址及地址下对应的规则(注意: arr不包括一卸或者一装)
-
-
-
-      // 规则-找出来
       const orderFreightInfoBoList = goodsInfo.map(e => {
         const orderAddressBoList = e.newRedis.map((ee, index) => {
           ee.identification = index + 1;
@@ -927,15 +841,12 @@ export default {
       });
 
 
-      // 重复的问题
       let arr = [];
       for (const e of goodsInfo) {
         arr = [...arr, ...e.newRedis];
       }
-
       arr = this.distinct1(arr, 'identification');
 
-      // 这一步是必要的
       if (this.formData.tin7 === '3') {
         this.addr_xie = arr;
       } else {
@@ -1022,13 +933,10 @@ export default {
 
         // 5/18e=特殊处理
 
-        // 1
         this.handlerOrderBasic({ ...redisOrderInfoVo, redisOrderClassGoodsVoList, redisOrderSpecifiedVoList, redisOrderGoodsVoListRest });
 
-        // 2
         this.handlercbAddress(redisAddressList);
 
-        // 3
         this.handerRedisOrder(redisAddressList);
 
         // 4. 处理商品
@@ -1057,7 +965,6 @@ export default {
 
     // 查看详情处理预估
     async isTEstimateCost(lastData) {
-      // 注意编辑的时候是有加update的, 要重新处理一下
       const { redisOrderGoodsVoList, redisOrderFreightInfoVoList } = lastData;
 
       const orderEstimateCostBoList = redisOrderFreightInfoVoList.map(e => {
@@ -1089,8 +996,6 @@ export default {
               orderFreightBoList: ee.redisOrderFreightVoList
             };
           });
-
-          // e.redisOrderAddressInfoVoList = undefined;
         }
         return {
           goodsIdentification,
@@ -1119,15 +1024,9 @@ export default {
     handlerOrderBasic(data) {
       const { code, isPublic, isSpecified, loadType, projectCode, pubilshCode, remark, redisOrderClassGoodsVoList, redisOrderGoodsVoListRest: redisOrderGoodsVoList, redisOrderSpecifiedVoList } = data;
 
-      // 基本
-      this.formData.tin1 = pubilshCode; // 货主的code(重要,根据这个展示所有)
-      this.formData.tin7 = loadType ? loadType + '' : '1'; // 无则默认 '1'
+      this.formData.tin1 = pubilshCode;
+      this.formData.tin7 = loadType ? loadType + '' : '1';
 
-
-
-
-
-      // 处理2 OrderBasic 组件
       this.cbOrderBasic = {
         code,
         projectCode,
@@ -1141,13 +1040,11 @@ export default {
         orderSpecifiedList: redisOrderSpecifiedVoList,
         classList: redisOrderClassGoodsVoList.map(e => {
           return {
-            // code: e.code,
             classCode: e ? e.classCode : ''
           };
         })
       };
 
-      // WaybillInfo组件要的数据
       this.waybillData = {
         code,
         classList: redisOrderClassGoodsVoList
@@ -1160,13 +1057,11 @@ export default {
       this.address_xie = [];
 
       addressList.forEach((e, index) => {
-        // 这说明是允许自装或自卸了
         if ((e.addressType - 0) === 3) {
           this.formData.tin8 = true;
         } else if ((e.addressType - 0) === 4) {
           this.formData.tin9 = true;
         }
-
 
         if ((e.addressType - 0) === 1) {
           // 装
@@ -1247,21 +1142,11 @@ export default {
     },
 
     handlerCheck(type) {
-      // if(!this.formData.tin8)
-
-
       if (!this.formData.tin8) {
         this.address_add = this.address_add.filter(e => e.addressType !== '3');
       }
 
       if (type === 'add' && !this.formData.tin8 && this.address_add.length <= 0) {
-        // this.msgError('装货地址至少填一个');
-
-        // // 加一个地址
-        // this.formData.tin8 = true;
-
-
-
         this._addAddress('address_add');
       }
     },
@@ -1285,11 +1170,7 @@ export default {
       this.$router.back();
     },
 
-    /* 方法和其他------------------------------------------- */
-
-    // 1. 添加一个地址
     _addAddress(name) {
-      // 处理到第三步后, 又点击返回
       if (this.active >= 3) {
         this.active = 2;
       }
@@ -1298,7 +1179,6 @@ export default {
         refName: name + Date.now()
       });
     },
-    // 2. 删一个地址
     _delAddress(name, refName) {
       this[name] = this[name].filter((e) => {
         return e.refName !== refName;
@@ -1311,7 +1191,6 @@ export default {
       this.openSelectaddress = true;
     },
 
-    // 本来是想封装一下处理的数据
     async handlerPromise(refname, bool) {
       return await this.$refs[refname]._submitForm();
     },
@@ -1336,7 +1215,6 @@ export default {
     },
 
     // 去重
-
     distinct1(arr, key) {
       var newobj = {}; var newArr = [];
       for (var i = 0; i < arr.length; i++) {

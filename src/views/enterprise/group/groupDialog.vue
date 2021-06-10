@@ -2,14 +2,36 @@
   <!-- 添加调度组对话框 -->
   <el-dialog :title="title" :class="[{'i-add':title==='添加调度组'}]" :visible="visible" width="800px" :close-on-click-modal="false" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="120px">
-      <el-form-item label="调度者姓名" prop="disUserName">
-        <el-input v-model="form.disUserName" placeholder="请输入调度者姓名" />
+      <el-form-item label="调度者姓名" prop="disUserCode">
+        <FilterableSelect
+          v-if="open"
+          v-model="form.disUserCode"
+          clearable
+          style="width:255px"
+          placeholder="请输入调度者姓名/手机号"
+          :axios="{
+            queryFn:listInfo,
+            queryData:{}
+          }"
+          :show-key="{
+            value: 'code',
+            label: 'name',
+            telphone: 'telphone'
+          }"
+          @selected="(data)=>{form.disUserPhone = data.telphone;form.disUserName = data.name; form.disName = data.teamLeaderName }"
+        >
+          <template #default="{row}">
+            <span>{{ row.name }}</span><span>{{ row.telphone }}</span>
+          </template>
+        </FilterableSelect>
+
+        <!-- <el-input v-model="form.disUserName" placeholder="请输入调度者姓名" /> -->
       </el-form-item>
       <el-form-item label="调度者手机" prop="disUserPhone">
-        <el-input v-model="form.disUserPhone" maxlength="11" placeholder="请输入调度者手机" />
+        <el-input v-model="form.disUserPhone" :disabled="!!form.disUserCode" maxlength="11" placeholder="请输入调度者手机" />
       </el-form-item>
       <el-form-item label="调度组名称" prop="disName">
-        <el-input v-model="form.disName" placeholder="请输入调度组名称" />
+        <el-input v-model="form.disName" :disabled="!!form.disUserCode" placeholder="请输入调度组名称" />
       </el-form-item>
       <el-form-item label="常用调度组" prop="isOften">
         <el-switch
@@ -41,9 +63,14 @@
 import { addInfo } from '@/api/enterprise/group';
 // import UploadImage from '@/components/UploadImage/index';
 
+import { listInfo } from '@/api/assets/team';
+import FilterableSelect from '@/components/FilterableSelect';
+
+
 export default {
   components: {
     // UploadImage
+    FilterableSelect
   },
   props: {
     title: {
@@ -61,13 +88,14 @@ export default {
       },
       // 表单校验
       rules: {
-        disUserName: [
+        disUserCode: [
           { required: true, message: '调度者姓名不能为空', trigger: 'blur' }
         ],
         disUserPhone: [
           { required: true, message: '调度者电话不能为空', trigger: 'blur' }
         ]
-      }
+      },
+      listInfo
     };
   },
   computed: {
@@ -76,6 +104,9 @@ export default {
         return this.open;
       },
       set(v) {
+        if (!v) {
+          this.form = {};
+        }
         this.$emit('update:open', v);
       }
     }
@@ -108,6 +139,7 @@ export default {
     reset() {
       this.form = {
         disName: null,
+        disUserCode: null,
         disUserName: null,
         disUserPhone: null,
         isNotInvoice: 0,

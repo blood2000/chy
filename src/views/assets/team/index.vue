@@ -309,7 +309,8 @@ export default {
         status: undefined,
         driverName: undefined,
         licenseNumber: undefined,
-        applyStatus: undefined
+        applyStatus: undefined,
+        authStatus: undefined
       },
       // 表单参数
       form: {},
@@ -330,12 +331,18 @@ export default {
       width: 180,
       fixed: 'left'
     });
+
+    const routeData = this.$route.query.data;
+    if (routeData) {
+      this.queryParams.authStatus = JSON.parse(routeData).authStatus;
+    }
     this.getList();
   },
   methods: {
     /** 查询调度者列表 */
     getList() {
       this.loading = true;
+      console.log(this.queryParams);
       listInfo(this.queryParams).then(response => {
         this.infoList = response.rows;
         this.total = response.total;
@@ -350,6 +357,7 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.resetForm('queryForm');
+      this.queryParams.authStatus = undefined;
       this.handleQuery();
     },
     // 多选框选中数据
