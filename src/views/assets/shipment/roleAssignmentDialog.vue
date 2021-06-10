@@ -1,25 +1,25 @@
 <template>
   <el-dialog title="分配角色" :visible="visible" width="400px" append-to-body :close-on-click-modal="false" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="60px">
-     <!--   <el-form-item label="货主" prop="form.adminName">
+      <!--   <el-form-item label="货主" prop="form.adminName">
             <el-input v-model="form.adminName" disabled/>
         </el-form-item>-->
-         <el-form-item label="角色" prop="roleCodes">
-          <el-select v-model="form.roleCodes" multiple placeholder="请选择" clearable filterable style="width: 100%">
-              <el-option
-                      v-for="item in roleOptions"
-                      :key="item.roleCode"
-                      :label="item.roleName"
-                      :value="item.roleCode"
-                      :disabled="item.status == 1 || (item.isSystem == 1 && !isAdmin) "
-              />
-          </el-select>
-        </el-form-item>
+      <el-form-item label="角色" prop="roleCodes">
+        <el-select v-model="form.roleCodes" multiple placeholder="请选择" clearable filterable style="width: 100%">
+          <el-option
+            v-for="item in roleOptions"
+            :key="item.roleCode"
+            :label="item.roleName"
+            :value="item.roleCode"
+            :disabled="item.status == 1 || (item.isSystem == 1 && !isAdmin) "
+          />
+        </el-select>
+      </el-form-item>
     </el-form>
-      <div slot="footer" class="dialog-footer">
-          <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
-          <el-button @click="cancel">取 消</el-button>
-      </div>
+    <div slot="footer" class="dialog-footer">
+      <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
+      <el-button @click="cancel">取 消</el-button>
+    </div>
   </el-dialog>
 </template>
 
