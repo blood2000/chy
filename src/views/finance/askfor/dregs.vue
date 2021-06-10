@@ -20,7 +20,7 @@
             placeholder="请输入企业名称/货主姓名/手机号"
             :remote-method="remoteMethod"
             :loading="shipmentloading"
-            style="width: 300px"
+            style="width: 400px"
             size="small"
             @change="chooseShipment"
           >
@@ -31,7 +31,7 @@
               :value="dict.code"
             >
               <div class="ly-flex-pack-justify">
-                <span style="margin-right:10px">{{ dict.adminName }}</span>
+                <span style="margin-right:10px">{{ dict.adminName }}（{{ dict.telphone }}）</span>
                 <span>{{ dict.companyName }}</span>
               </div>
             </el-option>
