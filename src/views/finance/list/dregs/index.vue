@@ -131,7 +131,7 @@
         :gutter="10"
         class="mb8"
       >
-        <el-col v-if="false && !isShipment && activeName == '1'" :span="1.5">
+        <el-col v-show="false && !isShipment && activeName == '1'" :span="1.5">
           <el-button
             v-hasPermi="['transportation:batch:passBilling']"
             type="primary"
@@ -141,7 +141,7 @@
             @click="handleVerify"
           >批量开票</el-button>
         </el-col>
-        <el-col v-if="activeName == '5'" :span="1.5">
+        <el-col v-show="activeName == '5'" :span="1.5">
           <el-button
             v-hasPermi="['transportation:batch:passPayment']"
             type="primary"
@@ -176,7 +176,7 @@
         </template>
 
         <template #edit="{row}">
-          <div v-if="activeName == '1'">
+          <div v-show="activeName == '1'">
             <el-button
               v-hasPermi="['transportation:batch:refuseBilling']"
               size="mini"
@@ -184,7 +184,7 @@
               @click="handleTableBtn(row, 1)"
             >驳回</el-button>
             <el-button
-              v-if="!isShipment "
+              v-show="!isShipment "
               v-hasPermi="['transportation:batch:passBilling']"
               size="mini"
               type="text"
@@ -197,7 +197,7 @@
               @click="handleTableBtn(row, 3)"
             >详情</el-button>
           </div>
-          <div v-else>
+          <div v-show="activeName != '1'">
 
             <el-button
               size="mini"
@@ -211,7 +211,7 @@
               @click="handleTableBtn(row, 4)"
             >打款</el-button>
             <el-button
-              v-if="false"
+              v-show="false"
               v-hasPermi="['transportation:batch:passPayment']"
               size="mini"
               type="text"
