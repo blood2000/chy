@@ -132,6 +132,9 @@ export default {
         return this.open;
       },
       set(v) {
+        if (!v) {
+          this.adjustlist = [];
+        }
         this.$emit('update:open', v);
       }
     }
@@ -152,13 +155,16 @@ export default {
           if (row.waybillCode === da.waybillCode) {
             const {
               // deliveryCashFee, //	司机实收现金	number
-              // serviceFee, //	服务费	number
+              serviceFee, //	服务费	number
               serviceTaxFee, //	服务费税费	number
-              // shipperRealPay, //	货主实付金额	number
+              shipperRealPay, //	货主实付金额	number
               taxPayment //	纳税金额	number
               // waybillCode //	运单CODE
             } = da;
 
+
+            row.serviceFee = serviceFee;
+            row.shipperRealPay = shipperRealPay;
             row.serviceTaxFee = floor(serviceTaxFee);
             row.taxPayment = floor(taxPayment);
           }
@@ -175,6 +181,8 @@ export default {
     },
     /** 提交按钮 */
     async submitForm() {
+      console.log(this.adjustlist);
+
       const immediateWaybillBoList = this.adjustlist.map(e => {
         return {
           waybillCode: e.waybillCode,
@@ -199,6 +207,7 @@ export default {
         type: 'warning'
       }).then(() => {
         this.loading = true;
+
         return immediateAccounting({ immediateWaybillBoList, shipmentCode: shipmentCodeArr[0] });
       }).then(() => {
         this.loading = false;

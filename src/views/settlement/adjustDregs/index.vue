@@ -474,7 +474,7 @@
     <!-- 驳回弹窗 -->
     <reject-dialog ref="RejectDialog" :open.sync="rejectdialog" :title="title" :disable="formDisable" @refresh="getList" />
     <!-- 核算弹窗 -->
-    <adjust-dialog ref="AdjustDialog" :open.sync="adjustdialog" :title="title" @refresh="getList" />
+    <adjust-dialog ref="AdjustDialog" :open.sync="adjustdialog" :title="title" @refresh="()=>{getList(); multiple=true }" />
     <!-- 子单弹窗 -->
     <child-dialog ref="ChildDialog" :open.sync="childdialog" :title="title" @refresh="getList" />
     <!-- 运单详情 对话框 -->
