@@ -308,8 +308,8 @@ export default {
           vehicleMaxWeight,
           shipmentPrice,
           goodsPrice,
-          vehicleType: vehicleType ? vehicleType.split(',') : undefined, // 车型->查字典
-          vehicleLength: vehicleLength ? vehicleLength.split(',') : undefined // 车长->查字典
+          vehicleType: vehicleType ? vehicleType.split(',') : [], // 车型->查字典
+          vehicleLength: vehicleLength ? vehicleLength.split(',') : [] // 车长->查字典
         };
       },
       immediate: true
