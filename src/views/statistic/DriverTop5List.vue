@@ -1,7 +1,7 @@
 <template>
   <!-- 总排名TOP5司机 -->
   <div class="s-container">
-    <span class="s-container__title">TOP 5 司机</span>
+    <span v-if="showTop" class="s-container__title">TOP 5 司机</span>
     <ul class="s-container__list">
       <li v-for="(item, index) in driverRankData" :key="item.driverCode + index" class="s-container__list__item">
         <div class="s-container__list__item__title">
@@ -53,6 +53,10 @@ export default {
       default: () => {
         return [];
       }
+    },
+    showTop: {
+      type: Boolean,
+      default: true
     }
   },
   data() {

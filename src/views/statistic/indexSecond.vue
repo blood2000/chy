@@ -9,29 +9,33 @@
 
     <!-- left -->
     <div class="ly-left ly-border">
-      <div class="ly-left-top mb1rem ly-flex-pack-justify ly-border">
-        <div class="ly-left-top-left ly-border">
-          <Title class="title_1" icon="1">监管数据<span>Regulatory data</span></Title>
-          <RegulatoryData ref="RegulatoryDataRef" :branch-code="branchCode" />
-        </div>
-        <div class="ly-left-top-right ly-border">
-          <Title class="title_2" icon="2">用户情况<span>User situation</span></Title>
-          <UserInfo ref="UserInfoRef" :branch-code="branchCode" />
-        </div>
+      <div class="ly-left-top mb1rem ly-border">
+        <Title class="title_3" icon="2">用户概览<span>User situation</span></Title>
+        <UserInfo ref="UserInfoRef" :branch-code="branchCode" />
       </div>
       <div class="ly-left-center mb1rem ly-border">
         <Title class="title_3" icon="3">运力情况<span>Capacity situation</span></Title>
         <CapacityInfo ref="CapacityInfoRef" :branch-code="branchCode" :is-scale="!!$route.query.isScale" />
       </div>
       <div class="ly-left-bottom ly-border">
-        <Title class="title_3" icon="4">业绩数据<span>Performance data</span></Title>
         <div class="ly-left-bottom-box ly-flex-pack-justify">
           <div class="ly-left-bottom-left ly-border">
-            <PerformanceInfo ref="PerformanceInfoRef" :performance="performanceData.performance" :is-scale="!!$route.query.isScale" class="mb1rem" />
-            <AmountTop5Chart ref="AmountTop5ChartRef" :province-ranking="performanceData.provinceRanking" />
+            <div class="ly-left-bottom-left-top ly-border">
+              <Title class="title_4 mb05rem" icon="4" :show-time="true">货运类型排行<span>Performance data</span></Title>
+              <div class="ly-left-bottom-left-box ly-border">
+                none
+              </div>
+            </div>
+            <div class="ly-left-bottom-left-bottom ly-border">
+              <Title class="title_4 mb05rem" icon="6">地域业务分布情况<span>Achievement of Goals</span></Title>
+              <div class="ly-left-bottom-left-box ly-border">
+                none
+              </div>
+            </div>
           </div>
           <div class="ly-left-bottom-right ly-border">
-            <CompanyTop10List ref="CompanyTop10ListRef" :province-ranking="performanceData.provinceRanking" />
+            <Title class="title_5 mb05rem" icon="4" :show-time="true">承运排行<span>Shipping list</span></Title>
+            <DriverTop5List :driver-rank-data="driverRankData" :show-top="false" style="height: calc(100% - 2.1rem)" />
           </div>
         </div>
       </div>
@@ -70,12 +74,18 @@
         </div>
       </div>
       <div class="ly-right-right ly-border">
-        <Title class="title_4 mb05rem" icon="7">总排名<span>Total number</span></Title>
-        <div class="ly-right-right-top mb1rem ly-border">
-          <CompanyTop5List :company-rank-data="companyRankData" />
-        </div>
-        <div class="ly-right-right-bottom mb1rem ly-border">
-          <DriverTop5List :driver-rank-data="driverRankData" />
+        <Title class="title_4 mb05rem" icon="7">业绩数据<span>Performance data</span></Title>
+        <div class="ly-right-right-box ly-border">
+          <div class="ly-border mb05rem" style="height: 15%">
+            <PerformanceInfo ref="PerformanceInfoRef" :performance="performanceData.performance" :is-scale="!!$route.query.isScale" />
+          </div>
+          <div class="ly-border mb07rem" style="height: calc(33% - 1.2rem)">
+            <div class="ly-right-right-box-title mb05rem">TOP 5省份交易额排名</div>
+            <AmountTop5Chart ref="AmountTop5ChartRef" :province-ranking="performanceData.provinceRanking" :show-title="false" style="height: calc(100% - 1.5rem)" />
+          </div>
+          <div class="ly-border" style="height: 52%">
+            <CompanyTop10ListSecond ref="CompanyTop10ListSecondRef" :province-ranking="performanceData.provinceRanking" />
+          </div>
         </div>
       </div>
     </div>
@@ -86,16 +96,14 @@
 import { ThrottleFun } from '@/utils/index.js';
 import { mapState } from 'vuex';
 import Title from './components/title';
-import RegulatoryData from './RegulatoryData';// 监管数据
 import UserInfo from './UserInfo';// 用户情况
 import CapacityInfo from './CapacityInfo';// 运力情况
 import PerformanceInfo from './PerformanceInfo';// 业绩数据
 import AmountTop5Chart from './AmountTop5Chart';// TOP5省份交易额排名
-import CompanyTop10List from './CompanyTop10List';// TOP10省内十大公司
+import CompanyTop10ListSecond from './CompanyTop10ListSecond';// TOP10省内十大公司
 import OperationData from './OperationData';// 运营情况
 import ComplaintChart from './ComplaintChart';// 投诉统计
 import TargetChart from './TargetChart';// 目标达成情况
-import CompanyTop5List from './CompanyTop5List';// 总排名TOP5公司
 import DriverTop5List from './DriverTop5List';// 总排名TOP5司机
 import TotalData from './TotalData';// 中间总数统计
 import ScrollData from './ScrollData';// 中间滚屏数据
@@ -107,16 +115,14 @@ export default {
   name: 'Statistic',
   components: {
     Title,
-    RegulatoryData,
     UserInfo,
     CapacityInfo,
     PerformanceInfo,
     AmountTop5Chart,
-    CompanyTop10List,
+    CompanyTop10ListSecond,
     OperationData,
     ComplaintChart,
     TargetChart,
-    CompanyTop5List,
     DriverTop5List,
     TotalData,
     ScrollData,
@@ -246,11 +252,7 @@ export default {
     // 处理实时数据
     setData(dJson) {
       console.log('实时Json：', dJson);
-      const { reportVo, userNotice, invoiceNotice, orderNoticeVo, waybillNotice, waybillSettlementNotice, insertTime } = dJson;
-      // 上报√
-      if (reportVo) {
-        this.$refs.RegulatoryDataRef.setData(reportVo);
-      }
+      const { userNotice, invoiceNotice, orderNoticeVo, waybillNotice, waybillSettlementNotice, insertTime } = dJson;
       // 用户√
       if (userNotice) {
         this.$refs.UserInfoRef.setData(userNotice);
@@ -335,7 +337,7 @@ export default {
         };
         this.$nextTick(() => {
           this.$refs.AmountTop5ChartRef.initChart();
-          this.$refs.CompanyTop10ListRef.rollTooltip();
+          this.$refs.CompanyTop10ListSecondRef.rollTooltip();
         });
       });
     },
@@ -368,11 +370,10 @@ export default {
       this.getPerformanceData(); // 业绩
       this.getBusinessData(); // 运营
       this.getRankData(); // 总排名
-      this.$refs.RegulatoryDataRef.getData(); // 监管
       this.$refs.UserInfoRef.getData(); // 用户
       this.$refs.CapacityInfoRef.getData(); // 运力
       this.$refs.TargetChartRef.getData(); // 目标
-      this.$refs.TotalDataRef.getCount();// 地图运单
+      this.$refs.TotalDataRef.getCount(); // 地图运单
     }
   }
 };
@@ -390,10 +391,11 @@ export default {
 .g-statistic {
   //variabbles
   $width: 160rem;
-  $width_left: 53.8rem;
+  $width_left: 47.2rem;
   $width_right: 48rem;
   $mb1rem: 1rem;
   $mb05rem: 0.5rem;
+  $mb07rem: 0.7rem;
 
   //base
   position: relative;
@@ -421,30 +423,32 @@ export default {
   .mb05rem{
     margin-bottom: $mb05rem;
   }
+  .mb07rem{
+    margin-bottom: $mb07rem;
+  }
   .ly-left {
     width: $width_left;
     height: 100%;
     float: left;
     .ly-left-top, .ly-left-center {
       height: calc(21.87% - #{$mb1rem});
-      .ly-left-top-left {
-        width: 19.6rem;
-      }
-      .ly-left-top-right {
-        width: 32.6rem;
-      }
     }
     .ly-left-bottom {
       height: calc(100% - 21.87% * 2);
       .ly-left-bottom-box{
-        // 2.6 = titleHeight + mb1rem
-        height: calc(100% - 2.6rem);
+        height: 100%;
         .ly-left-bottom-left {
-          width: 28.4rem;
+          width: 26.3rem;
           height: 100%;
+          .ly-left-bottom-left-top, .ly-left-bottom-left-bottom{
+            height: 50%;
+            .ly-left-bottom-left-box{
+              height: calc(100% - 2.1rem);
+            }
+          }
         }
         .ly-left-bottom-right {
-          width: 23.8rem;
+          width: 17.8rem;
           height: 100%;
         }
       }
@@ -475,10 +479,15 @@ export default {
     }
     .ly-right-right {
       width: 22.6rem;
-      .ly-right-right-top, .ly-right-right-bottom {
-        // 0.75 = [mb1 + mb0.5] / 2
-        // 0.95 = titleHeight / 2
-        height: calc(50% - 0.75rem - 0.8rem);
+      .ly-right-right-box {
+        height: calc(100% - 2.1rem);
+        .ly-right-right-box-title{
+          height: 1rem;
+          font-size: 0.8rem;
+          font-family: 'PingFang Regular';
+          font-weight: 500;
+          color: #FFFFFF;
+        }
       }
     }
   }
