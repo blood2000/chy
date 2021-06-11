@@ -6,7 +6,7 @@
         ref="queryForm"
         :model="queryParams"
         :inline="true"
-        label-width="90px"
+        label-width="110px"
       >
         <el-form-item
           label="装货信息"
@@ -78,12 +78,12 @@
           </el-select>
         </el-form-item>
         <el-form-item
-          label="支付批次号"
+          label="结算申请批次号"
           prop="bizNo"
         >
           <el-input
             v-model="queryParams.bizNo"
-            placeholder="请输入支付批次号"
+            placeholder="请输入结算申请批次号"
             clearable
             size="small"
             style="width: 225px"
