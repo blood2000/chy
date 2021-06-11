@@ -719,7 +719,6 @@ export default {
         };
       });
 
-      console.log(this.list);
       this.loading = false;
     },
 
