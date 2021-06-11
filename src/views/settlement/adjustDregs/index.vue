@@ -319,7 +319,7 @@
       <el-radio-group v-model="activeName" size="small" @change="handleClick">
         <el-radio-button label="4">已复核</el-radio-button>
         <el-radio-button label="5">已核算</el-radio-button>
-        <el-radio-button label="7">已打款</el-radio-button>
+        <el-radio-button v-hasPermi="['transportation:batch:list']" label="7">已打款</el-radio-button>
       </el-radio-group>
 
       <el-button v-show="activeName==='4'" v-hasPermi="['transportation:icCheck:checkList']" type="success" size="mini" @click="nuclearCardOpen">核销IC卡</el-button>
@@ -492,7 +492,7 @@
 </template>
 
 <script>
-import { adjustList, adjustListApi } from '@/api/settlement/adjust';
+import { adjustList, ztApi } from '@/api/settlement/adjust';
 import { adjustDregsList, adjustListApi as adjustDregsApi, accountStatement } from '@/api/settlement/adjustDregs';
 import { getUserInfo } from '@/utils/auth';
 // 驳回弹窗
@@ -638,7 +638,7 @@ export default {
   },
   computed: {
     api() {
-      return adjustListApi + '--' + (this.isShipment ? 'isShipment' : 'isNoShipment') + this.activeName;
+      return ztApi + '--' + (this.isShipment ? 'isShipment' : 'isNoShipment') + this.activeName;
     },
     adjustDregsApi() {
       return adjustDregsApi + '--' + (this.isShipment ? 'isShipment' : 'isNoShipment') + ('4');
@@ -886,7 +886,6 @@ export default {
 
     /** 处理申请对账 **/
     createdDatch() {
-      this.loading = true;
       const que = {
         waybillCodes: this.commentlist.map(e => e.wayBillCode)
       };
@@ -903,6 +902,7 @@ export default {
         }
       });
 
+      this.loading = true;
       accountStatement(que).then(res => {
         this.Statementsdialog = true;
         this.title = '对账单';

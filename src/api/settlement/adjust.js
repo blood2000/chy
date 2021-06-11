@@ -1,5 +1,7 @@
 import request from '@/utils/request';
 
+// 渣土使用表头
+export const ztApi = '/transportation/batch/findWaybillBalanceList';
 // 查询运单核算列表
 export const adjustListApi = '/transportation/waybillBalanceInfo/findList';
 export function adjustList(query) {

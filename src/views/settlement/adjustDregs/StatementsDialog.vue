@@ -293,6 +293,7 @@ export default {
     },
     // 获取列表
     setForm(object, data2) {
+      this.loading = false;
       this.isStatementCode = !object;
       const {
         account, //	账号	string
