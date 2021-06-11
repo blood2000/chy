@@ -73,7 +73,7 @@
         }
       ]"
     >
-      <template #status="{row}">
+      <template v-if="!isError" #status="{row}">
         <span v-if="row.status === 0"><i class="el-icon-check" /></span>
         <el-button v-else size="mini" type="danger" plain @click="absenceOpen(row)">不存在</el-button>
       </template>
@@ -81,7 +81,7 @@
 
 
     <div slot="footer" class="dialog-footer ly-flex-pack-center">
-      <el-button type="primary" :disabled="!list.length || isUserInfo" @click="submitForm">保存并清空</el-button>
+      <el-button type="primary" :disabled="!list.length || isUserInfo || isError" @click="submitForm">保存并清空</el-button>
     </div>
   </el-dialog>
 </template>
@@ -100,7 +100,8 @@ export default {
       loading: false,
       userInfo: {},
       list: [],
-      IClist: []
+      IClist: [],
+      isError: true
     };
   },
   computed: {
@@ -174,6 +175,7 @@ export default {
 
       try {
         const res = await checkList(que);
+        this.isError = false;
         this.list = res.data.map(e => {
           return {
             ...e,
@@ -187,6 +189,14 @@ export default {
         });
         this.loading = false;
       } catch (error) {
+        this.isError = true;
+        this.list = this.IClist.map(e => {
+          return {
+            ...e,
+            fillTimeDate: this.parseTime(e.fillTime - 0),
+            signTimeDate: this.parseTime(e.signTime - 0)
+          };
+        });
         this.loading = false;
       }
     },
@@ -212,6 +222,7 @@ export default {
     },
 
     submitForm() {
+      if (this.isError) return;
       const filterArr = this.list.filter(e => {
         return e.status !== 0;
       });
