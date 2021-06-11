@@ -1,6 +1,6 @@
 <template>
-  <el-dialog title="分配角色" :visible="visible" width="400px" append-to-body :close-on-click-modal="false" @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" label-width="60px">
+  <el-dialog title="分配角色" :visible="visible" width="600px" append-to-body :close-on-click-modal="false" @close="cancel">
+    <el-form ref="form" :model="form" :rules="rules" label-width="130px">
       <!--   <el-form-item label="货主" prop="form.adminName">
             <el-input v-model="form.adminName" disabled/>
         </el-form-item>-->
@@ -14,6 +14,17 @@
             :disabled="item.status == 1 || (item.isSystem == 1 && !isAdmin) "
           />
         </el-select>
+      </el-form-item>
+      <el-form-item label="复制货主成员角色" prop="memberRoleCodes">
+          <el-select v-model="form.copyShipmentCompanyCode" placeholder="请选择" clearable filterable style="width: 100%">
+              <el-option
+                      v-for="item in shipmentOptions"
+                      :key="item.companyCode"
+                      :label="item.adminName+'('+item.telphone+')'"
+                      :value="item.companyCode"
+                      :disabled="item.code == shipmentCode"
+              />
+          </el-select>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -52,6 +63,10 @@ export default {
     userId: {
       type: Number,
       default: null
+    },
+    shipmentList: {
+      type: Array,
+      default: null
     }
   },
   data() {
@@ -59,6 +74,7 @@ export default {
       buttonLoading: false,
       authButtonLoading: false,
       roleOptions: [],
+      shipmentOptions: [],
       // 表单参数
       form: {
       },
@@ -91,6 +107,8 @@ export default {
         }
         this.form.userId = this.userId;
         this.form.userCode = this.userCode;
+        this.shipmentOptions = this.shipmentList;
+        this.form.companyCode = this.companyCode;
         this.listRole();
       }
     }
@@ -109,7 +127,8 @@ export default {
         userCode: null,
         shipmentCode: null,
         companyCode: null,
-        roleCodes: null
+        roleCodes: null,
+        copyShipmentCompanyCode: null
       };
       this.$emit('update:open', false);
     },
