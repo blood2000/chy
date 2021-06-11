@@ -273,7 +273,7 @@ export default {
           'deliveryFeePractical': e.deliveryFeePractical,
           'driverAddFee': e.driverAddFee,
           'driverReductionFee': e.driverReductionFee,
-          'freightList': e.deductionFreightList.concat(e.subsidiesFreightList),
+          'freightList': (e.deductionFreightList || []).concat(e.subsidiesFreightList),
           'freightPrice': e.freightPrice,
           'goodsPrice': e.goodsPrice,
           'loadWeight': e.loadWeight,
