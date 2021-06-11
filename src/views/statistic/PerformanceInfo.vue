@@ -117,7 +117,7 @@ export default {
 
 <style lang="scss" scoped>
 .s-container{
-  height: 26.5%;
+  height: 100%;
   &__box{
     width: 33.33%;
     height: 100%;
