@@ -33,7 +33,7 @@
       <el-form-item label="调度组名称" prop="disName">
         <el-input v-model="form.disName" :disabled="!!form.disUserCode" placeholder="请输入调度组名称" />
       </el-form-item>
-      <el-form-item label="常用调度组" prop="isOften">
+      <el-form-item v-if="false" label="常用调度组" prop="isOften">
         <el-switch
           v-model="form.isOften"
           active-color="#409EFF"

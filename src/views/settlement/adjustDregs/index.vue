@@ -322,7 +322,7 @@
         <el-radio-button label="7">已打款</el-radio-button>
       </el-radio-group>
 
-      <el-button v-if="activeName==='4'" v-hasPermi="['transportation:icCheck:checkList']" type="success" size="mini" @click="nuclearCardOpen">核销IC卡</el-button>
+      <el-button v-show="activeName==='4'" v-hasPermi="['transportation:icCheck:checkList']" type="success" size="mini" @click="nuclearCardOpen">核销IC卡</el-button>
     </div>
 
     <div class="app-container">
@@ -331,7 +331,7 @@
           :gutter="10"
           class="mb8"
         >
-          <el-col v-if="activeName == '4'" :span="1.5">
+          <el-col v-show="activeName == '4'" :span="1.5">
             <el-button
               v-hasPermi="['transportation:waybillBalanceInfo:batchCheck']"
               type="primary"
@@ -341,7 +341,7 @@
               @click="handleAdjust"
             >批量核算</el-button>
           </el-col>
-          <el-col v-if="activeName == '5'" :span="1.5">
+          <el-col v-show="activeName == '5'" :span="1.5">
             <el-button
               v-hasPermi="['transportation:batch:applyReconciliation']"
               type="primary"
@@ -401,28 +401,28 @@
 
           <template #edit="{row}">
             <el-button
-              v-if="activeName == '5' && row.isApplyMoneyBack == 1"
+              v-show="activeName == '5' && row.isApplyMoneyBack == 1"
               v-has-permi="['transportation:waybillBalanceInfo:warning']"
               size="mini"
               type="text"
               @click="handleTableBtn(row, 1)"
             >驳回提示</el-button>
             <el-button
-              v-if="activeName == '4'"
+              v-show="activeName == '4'"
               v-hasPermi="['transportation:waybillBalanceInfo:shipperRebutUnloading']"
               size="mini"
               type="text"
               @click="handleTableBtn(row, 2)"
             >驳回</el-button>
             <el-button
-              v-if="activeName == '4'"
+              v-show="activeName == '4'"
               v-hasPermi="['transportation:waybillBalanceInfo:batchCheck']"
               size="mini"
               type="text"
               @click="handleTableBtn(row, 3)"
             >核算</el-button>
             <el-button
-              v-if="activeName == '5'"
+              v-show="activeName == '5'"
               v-hasPermi="['transportation:batch:applyReconciliation']"
               size="mini"
               type="text"
@@ -430,7 +430,7 @@
             >申请对账</el-button>
 
             <el-button
-              v-if="!isShipment && row.isChild == '2'"
+              v-show="!isShipment && row.isChild == '2'"
               v-has-permi="['transportation:waybill:childList']"
               size="mini"
               type="text"

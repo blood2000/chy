@@ -154,7 +154,7 @@
             @click="handleAskfor"
           >批量索票</el-button>
           <el-button
-            v-if="false"
+            v-show="false"
             v-hasPermi="['askfor:invoice:export']"
             type="primary"
             icon="el-icon-upload2"
@@ -199,7 +199,7 @@
             @click="handleTableBtn(row, 3)"
           >驳回</el-button>
           <el-button
-            v-if="false"
+            v-show="false"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 4)"

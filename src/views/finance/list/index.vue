@@ -83,7 +83,7 @@
         :gutter="10"
         class="mb8"
       >
-        <el-col v-if="activeName == '1'" :span="1.5">
+        <el-col v-show="activeName == '1'" :span="1.5">
           <el-button
             v-hasPermi="['assets:vehicle:edit']"
             type="primary"
@@ -93,7 +93,7 @@
             @click="handleVerify"
           >批量审核</el-button>
         </el-col>
-        <el-col v-if="activeName == '6'" :span="1.5">
+        <el-col v-show="activeName == '6'" :span="1.5">
           <el-button
             type="primary"
             icon="el-icon-upload2"
@@ -101,7 +101,7 @@
             @click="handleExportFreight"
           >导出运费明细</el-button>
         </el-col>
-        <el-col v-if="activeName == '6'" :span="1.5">
+        <el-col v-show="activeName == '6'" :span="1.5">
           <el-button
             type="primary"
             icon="el-icon-upload2"
@@ -138,13 +138,13 @@
 
         <template #edit="{row}">
           <el-button
-            v-if="activeName == '1'"
+            v-show="activeName == '1'"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 1)"
           >审核</el-button>
           <el-button
-            v-if="row.invoiceStatus == '4'"
+            v-show="row.invoiceStatus == '4'"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 2)"
