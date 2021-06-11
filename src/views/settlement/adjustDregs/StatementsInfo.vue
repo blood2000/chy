@@ -12,12 +12,20 @@
           <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.weight) }} 车</span>
         </span>
       </template>
+      <template #stowageStatus="{row}">
+        <span v-if="row.stowageStatus === '0'">吨</span>
+        <span v-if="row.stowageStatus === '1'">立方</span>
+        <span v-if="row.stowageStatus === '2'">车</span>
+      </template>
       <template #fillTime="{row}">
         <span>{{ parseTime(row.fillTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
       </template>
       <template #signTime="{row}">
         <span>{{ parseTime(row.signTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
       </template>
+      <!-- <template #status="{row}">
+        <span>{{ parseTime(row.status, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+      </template> -->
 
 
     </RefactorTable>

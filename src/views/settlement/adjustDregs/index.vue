@@ -492,7 +492,7 @@
 </template>
 
 <script>
-import { adjustList, ztApi } from '@/api/settlement/adjust';
+import { ztApiList, ztApi } from '@/api/settlement/adjust';
 import { adjustDregsList, adjustListApi as adjustDregsApi, accountStatement } from '@/api/settlement/adjustDregs';
 import { getUserInfo } from '@/utils/auth';
 // 驳回弹窗
@@ -717,7 +717,7 @@ export default {
             prop: 'icStatus',
             isShow: true,
             tooltip: false,
-            sortNum: 8,
+            sortNum: 2,
             label: 'IC卡核对状态',
             width: 120
           }, { // 需要顶替掉的项
@@ -759,7 +759,7 @@ export default {
         scenario: '1200',
         waybillType: this.activeName === '5' ? 1 : undefined
       };
-      adjustList(que).then(response => {
+      ztApiList(que).then(response => {
         this.adjustlist = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -892,7 +892,7 @@ export default {
 
       const obj = {};
       this.commentlist.forEach(e => {
-        const str = e.loadAddress + ':' + e.unloadAddress + ':' + e.teamName;
+        const str = e.projectName + ':' + e.ztcName + ':' + e.teamName;
         const array = obj[str];
         if (array) {
           array.push(e);
