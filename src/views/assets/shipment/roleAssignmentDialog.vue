@@ -11,7 +11,6 @@
             :key="item.roleCode"
             :label="item.roleName"
             :value="item.roleCode"
-            :disabled="item.status == 1 || (item.isSystem == 1 && !isAdmin) "
           />
         </el-select>
       </el-form-item>
