@@ -492,6 +492,11 @@ export default {
         bankNo: data.openBankName,
         account: data.openBankNumber
       };
+      this.accountStatementVo = {
+        ...(this.accountStatementVo || {}),
+        ...this.formData,
+        ...this.queryParams
+      };
     }
 
   }
