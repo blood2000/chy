@@ -210,7 +210,6 @@ export default {
         // taxPayment
 
       } = row;
-      console.log(row);
 
       const parame = {
         driverReductionFee: this._sum(deductionFreightList),
@@ -333,7 +332,7 @@ export default {
     },
 
     /* 计算价格 */
-    _sum(arr) {
+    _sum(arr = []) {
       let sum = 0;
       arr.forEach(e => {
         sum += (e.ruleValue - 0);
