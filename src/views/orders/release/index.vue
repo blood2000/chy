@@ -908,9 +908,14 @@ export default {
 
     // 编辑和详情-回填获取数据
     async getCbdata(id) {
+      console.log(id);
+
+
       this.loading = true;
       try {
         const { data } = await getOrderByCode(id);
+
+
 
         const { redisOrderInfoVo, redisOrderClassGoodsVoList, redisOrderSpecifiedVoList, redisOrderFreightInfoVoList, redisOrderGoodsVoList, redisAddressList } = data;
 

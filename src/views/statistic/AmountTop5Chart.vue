@@ -14,6 +14,10 @@ export default {
       default: () => {
         return [];
       }
+    },
+    showTitle: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -55,7 +59,7 @@ export default {
       });
       this.chart.setOption({
         title: {
-          show: true,
+          show: this.showTitle,
           text: 'TOP 5区域交易额排名',
           textStyle: {
             color: '#FFFFFF',
@@ -302,6 +306,6 @@ export default {
 <style lang="scss" scoped>
 .s-container{
   overflow: hidden;
-  height: 72.5%;
+  height: 100%;
 }
 </style>

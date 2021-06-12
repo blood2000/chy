@@ -377,6 +377,13 @@
               <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.loadWeight) }} 车</span>
             </span>
           </template>
+          <template #stowageStatus="{row}">
+            <span>
+              <span v-if="row.stowageStatus === '0'"> 吨</span>
+              <span v-if="row.stowageStatus === '1'"> 立方</span>
+              <span v-if="row.stowageStatus === '2'"> 车</span>
+            </span>
+          </template>
           <template #icStatus="{row}">
             <span v-if="row.icStatus == '0'"><i class="el-icon-error g-color-error mr10" />未核对</span>
             <span v-if="row.icStatus == '1'"><i class="el-icon-success g-color-success mr10" />已核对</span>
@@ -492,7 +499,7 @@
 </template>
 
 <script>
-import { adjustList, ztApi } from '@/api/settlement/adjust';
+import { ztApiList, ztApi } from '@/api/settlement/adjust';
 import { adjustDregsList, adjustListApi as adjustDregsApi, accountStatement } from '@/api/settlement/adjustDregs';
 import { getUserInfo } from '@/utils/auth';
 // 驳回弹窗
@@ -717,7 +724,7 @@ export default {
             prop: 'icStatus',
             isShow: true,
             tooltip: false,
-            sortNum: 8,
+            sortNum: 2,
             label: 'IC卡核对状态',
             width: 120
           }, { // 需要顶替掉的项
@@ -759,7 +766,7 @@ export default {
         scenario: '1200',
         waybillType: this.activeName === '5' ? 1 : undefined
       };
-      adjustList(que).then(response => {
+      ztApiList(que).then(response => {
         this.adjustlist = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -892,7 +899,7 @@ export default {
 
       const obj = {};
       this.commentlist.forEach(e => {
-        const str = e.loadAddress + ':' + e.unloadAddress + ':' + e.teamName;
+        const str = e.projectName + ':' + e.ztcName + ':' + e.teamName;
         const array = obj[str];
         if (array) {
           array.push(e);

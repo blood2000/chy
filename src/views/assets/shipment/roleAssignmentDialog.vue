@@ -15,15 +15,15 @@
         </el-select>
       </el-form-item>
       <el-form-item label="复制货主成员角色" prop="memberRoleCodes">
-          <el-select v-model="form.copyShipmentCompanyCode" placeholder="请选择" clearable filterable style="width: 100%">
-              <el-option
-                      v-for="item in shipmentOptions"
-                      :key="item.companyCode"
-                      :label="item.adminName+'('+item.telphone+')'"
-                      :value="item.companyCode"
-                      :disabled="item.code == shipmentCode"
-              />
-          </el-select>
+        <el-select v-model="form.copyShipmentCompanyCode" placeholder="请选择" clearable filterable style="width: 100%">
+          <el-option
+            v-for="item in shipmentOptions"
+            :key="item.companyCode"
+            :label="item.adminName+'('+item.telphone+')'"
+            :value="item.companyCode"
+            :disabled="item.code == shipmentCode"
+          />
+        </el-select>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">

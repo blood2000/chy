@@ -50,13 +50,13 @@
 
       <el-table :data="tableData" highlight-current-row border show-summary :summary-method="getSummaries" style="width: 100%">
         <el-table-column
-          prop="load"
+          prop="projectName"
           label="项目（装货地）"
           width="120"
           align="center"
         />
         <el-table-column
-          prop="land"
+          prop="ztcName"
           label="渣土场（卸货地）"
           width="130"
           align="center"
@@ -332,6 +332,7 @@ export default {
       };
 
       if (object) {
+        console.log(object);
         this.tableData = [];
         for (const item in object) {
           const obj = {
@@ -343,10 +344,10 @@ export default {
             obj['teamName'] = ite['teamName']; // 调度者Code
             obj['teamCode'] = ite['teamCode']; // 调度者Code
 
-            obj['land'] = ite['land']; // 渣土场（卸货地）
+            obj['ztcName'] = ite['ztcName']; // 渣土场（卸货地）
             // obj['land'] = ite['unloadAddress']; // 渣土场（卸货地）
             obj['landCode'] = ite['unloadAddressCode']; // 	渣土场（卸货地）Code
-            obj['load'] = ite['load']; // 	项目（装货地）
+            obj['projectName'] = ite['projectName']; // 	项目（装货地）
             // obj['load'] = ite['loadAddress']; // 	项目（装货地）
             obj['loadCode'] = ite['loadAddressCode']; // 	项目（装货地）Code
           });
@@ -368,9 +369,7 @@ export default {
         this.batchNo = row.batchNo;
         this.tableData = [row].map(e => {
           return {
-            ...e,
-            load: e.ztcLoad,
-            land: e.ztcLand
+            ...e
           };
         });
 
@@ -419,18 +418,22 @@ export default {
         const statementBatchVoList = this.tableData.map(e => {
           return {
             ...e,
+            ztcName: undefined,
+            projectName: undefined,
             waybillCodes: e.waybillCods,
             waybillCods: undefined,
             a_dataList: undefined
           };
         });
+
+        // console.log({ accountStatementVo, statementBatchVoList });
         applyForReconciliation({ accountStatementVo, statementBatchVoList }).then(res => {
           this.msgSuccess('申请对账成功');
           this.loading = false;
           this.close();
           this.$emit('refresh');
-        });
-      }).catch(() => { this.loading = false; });
+        }).catch(() => { this.loading = false; });
+      });
     },
 
     getSummaries(param) {
@@ -439,6 +442,10 @@ export default {
       columns.forEach((column, index) => {
         if (index === 0) {
           sums[index] = '合计';
+          return;
+        }
+        if (index < 3) {
+          sums[index] = '';
           return;
         }
         const values = data.map(item => Number(item[column.property]));
@@ -461,7 +468,7 @@ export default {
     },
 
     submitRes(data) {
-      console.log(data);
+      // console.log(data);
       this.openBillPage = false;
 
       // companyName: "阿斯发我"
@@ -484,6 +491,11 @@ export default {
         registeredPhone: data.registrationTelphone,
         bankNo: data.openBankName,
         account: data.openBankNumber
+      };
+      this.accountStatementVo = {
+        ...(this.accountStatementVo || {}),
+        ...this.formData,
+        ...this.queryParams
       };
     }
 

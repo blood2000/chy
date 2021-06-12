@@ -76,7 +76,8 @@ export default {
       'device',
       'nickName',
       'name',
-      'roleName'
+      'roleName',
+      'isShipment'
     ]),
     setting: {
       get() {
@@ -106,8 +107,10 @@ export default {
       });
     },
     goToStatistic() {
+      if (this.isShipment) return;
       const routeData = this.$router.resolve({
         path: '/statistic',
+        // path: '/statisticSecond',
         query: {
           isScale: true
         }

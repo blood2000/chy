@@ -1,8 +1,8 @@
 <template>
   <el-dialog :title="`发卡人: ${ userInfo.issuing_name || ''} (承运司机: ${userInfo.user_name ||''})`" :visible="visible" width="80%" append-to-body :close-on-click-modal="false" @close="$emit('update:open', false)">
-    <div v-show="false" class="mb20" style="padding: 20px;">
+    <div v-show="true" class="mb20" style="padding: 20px;">
       <!-- <el-button type="primary" @click="handler('cancellation')">注销卡片(清空使用者信息)</el-button> -->
-      <el-button type="primary" @click="handler('issuingCard')">核销并发卡(绑定卡用户)</el-button>
+      <el-button type="primary" @click="handler('issuingCard')">发卡(绑定卡用户)</el-button>
       <!-- <el-button type="primary" @click="handler('readUserinfo')">读取用户信息</el-button> -->
       <!-- <el-button type="primary" @click="handler('readData')">读取数据</el-button> -->
       <el-button type="primary" @click="handler('writeData')">写数据</el-button>
@@ -73,7 +73,7 @@
         }
       ]"
     >
-      <template #status="{row}">
+      <template v-if="!isError" #status="{row}">
         <span v-if="row.status === 0"><i class="el-icon-check" /></span>
         <el-button v-else size="mini" type="danger" plain @click="absenceOpen(row)">不存在</el-button>
       </template>
@@ -81,7 +81,7 @@
 
 
     <div slot="footer" class="dialog-footer ly-flex-pack-center">
-      <el-button type="primary" :disabled="!list.length || isUserInfo" @click="submitForm">保存并清空</el-button>
+      <el-button type="primary" :disabled="!list.length || isUserInfo || isError" @click="submitForm">保存并清空</el-button>
     </div>
   </el-dialog>
 </template>
@@ -100,7 +100,8 @@ export default {
       loading: false,
       userInfo: {},
       list: [],
-      IClist: []
+      IClist: [],
+      isError: true
     };
   },
   computed: {
@@ -174,6 +175,7 @@ export default {
 
       try {
         const res = await checkList(que);
+        this.isError = false;
         this.list = res.data.map(e => {
           return {
             ...e,
@@ -187,6 +189,14 @@ export default {
         });
         this.loading = false;
       } catch (error) {
+        this.isError = true;
+        this.list = this.IClist.map(e => {
+          return {
+            ...e,
+            fillTimeDate: this.parseTime(e.fillTime - 0),
+            signTimeDate: this.parseTime(e.signTime - 0)
+          };
+        });
         this.loading = false;
       }
     },
@@ -212,6 +222,7 @@ export default {
     },
 
     submitForm() {
+      if (this.isError) return;
       const filterArr = this.list.filter(e => {
         return e.status !== 0;
       });
@@ -269,9 +280,9 @@ export default {
         case 'issuingCard':
           // 发卡
           action.issuingCard({
-            user_code: 'b0d285c8b68a46f7a93c0039a0242d20',
-            user_telno: '18415451845',
-            user_name: '林先生',
+            user_code: 'b059e2004be441508f8fdf561db6eb4b',
+            user_telno: '15859109001',
+            user_name: '测试独立强',
             issuing_code: '94671e0bff6647e88db777427d700e32',
             issuing_name: '陈大帅'
           }).then(res => {
@@ -291,7 +302,7 @@ export default {
           break;
         case 'writeData':
           // 写数据
-          action.writeData('1010|1|30273;2977608;国脉时代广场二期;闽j45678;林先生;;1623177000000;1623177480000;;妈湾').then(res => {
+          action.writeData('1010|1|30273;2977608;测试项目3;闽AQ8001;测试独立强;15859109001;1623177000000;1623177480000;;妈湾').then(res => {
             this.msgSuccess(res.msg);
           });
 

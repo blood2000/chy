@@ -266,7 +266,7 @@
           <span>{{ row.accessTime }}</span>
         </template>
         <template #edit="{row}">
-          <template v-if="row.isDregs === 0 && row.isShowEdit">
+          <template v-if="row.isShowEdit">
             <el-button
               size="mini"
               type="text"
@@ -613,9 +613,11 @@ export default {
     // 处理返回的列表
     handlerList(lists) {
       this.list = lists.map(e => {
-        const isDregs = e.isDregs;
-        e = e.redisOrderInfoListVoList[0];
-        e.isDregs = isDregs;
+        e = {
+          isDregs: e.isDregs,
+          ...e.redisOrderInfoListVoList[0],
+          orderCode: e.orderCode
+        };
 
         e.redisOrderSpecifiedVoList.forEach(specified => {
           if (specified.userType === 1) {
@@ -740,10 +742,12 @@ export default {
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
+      console.log(row);
       this.$router.push({ name: 'Release', query: { id: row.orderCode, t: '1' }});
     },
     /** 查看详情操作 */
     handleInfo(row) {
+      console.log(row);
       this.$router.push({ name: 'Release', query: { id: row.orderCode, t: '0' }});
     },
     /** 上下架货源 */
