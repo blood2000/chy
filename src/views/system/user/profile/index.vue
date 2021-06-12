@@ -126,7 +126,7 @@ export default {
       height: calc(100% - 34px);
       background: #fff;
       padding: 26px 20px;
-      box-shadow: 0px 2px 3px 0px rgb(51 153 255 / 10%);
+      box-shadow: 0px 2px 3px 0px rgba(51, 153, 255, 0.1);
     }
   }
 }

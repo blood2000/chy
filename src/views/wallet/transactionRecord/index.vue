@@ -309,7 +309,7 @@ export default {
   .table-box{
     padding: 20px;
     background: #fff;
-    box-shadow: 0px 2px 3px 0px rgb(51 153 255 / 10%);
+    box-shadow: 0px 2px 3px 0px rgba(51, 153, 255, 0.1);
   }
 }
 </style>

@@ -110,7 +110,6 @@ export default {
     // 确认
     async submit(bool) {
       if (bool) {
-        this.loading = true;
         await this.getdata();
 
         const orderFreightBoList = this.tabs.map(e => {
@@ -134,6 +133,7 @@ export default {
         };
 
         // 请求接口
+        this.loading = true;
         const data = await adjustPrice(req);
         this.loading = false;
         this.msgSuccess(data.msg);
@@ -148,6 +148,7 @@ export default {
       for (const e of this.tabs) {
         const lists = e.redis.map(async(ee, i) => {
           const accounTing = (await this.$refs['AccounTing' + e.activeName + i][0]._submitForm());
+          console.log(accounTing);
           return {
             ...ee,
             ...accounTing
