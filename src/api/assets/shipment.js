@@ -10,6 +10,13 @@ export function listShipment(data) {
   });
 }
 
+export function listShipmentAll(data) {
+  return request({
+    url: '/assets/shipment/listAll',
+    method: 'post',
+    data: Object.assign({}, { isAsc: 'desc', orderByColumn: 'create_time' }, data)
+  });
+}
 // 查询货主详细
 export function getShipment(id) {
   return request({

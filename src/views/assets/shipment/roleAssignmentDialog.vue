@@ -14,16 +14,16 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="复制货主成员角色" prop="memberRoleCodes">
-        <el-select v-model="form.copyShipmentCompanyCode" placeholder="请选择" clearable filterable style="width: 100%">
-          <el-option
-            v-for="item in shipmentOptions"
-            :key="item.companyCode"
-            :label="item.adminName+'('+item.telphone+')'"
-            :value="item.companyCode"
-            :disabled="item.code == shipmentCode"
-          />
-        </el-select>
+      <el-form-item label="复制货主成员角色" prop="copyShipmentCompanyCode">
+          <el-select v-model="form.copyShipmentCompanyCode" placeholder="请选择搜索关键字" clearable filterable remote :remote-method="shipmentRemoteMethod" style="width: 100%">
+              <el-option
+                      v-for="item in shipmentOptions"
+                      :key="item.code"
+                      :label="item.adminName+'('+item.telphone+')'"
+                      :value="item.companyCode"
+                      :disabled="item.code == shipmentCode"
+              />
+          </el-select>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -36,6 +36,7 @@
 <script>
 import { getUser } from '@/api/system/user';
 import { roleAssignment } from '@/api/system/role';
+import { listShipmentAll } from '@/api/assets/shipment';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -61,10 +62,6 @@ export default {
     },
     userId: {
       type: Number,
-      default: null
-    },
-    shipmentList: {
-      type: Array,
       default: null
     }
   },
@@ -106,8 +103,8 @@ export default {
         }
         this.form.userId = this.userId;
         this.form.userCode = this.userCode;
-        this.shipmentOptions = this.shipmentList;
         this.form.companyCode = this.companyCode;
+        this.copyShipmentCompanyCode = undefined;
         this.listRole();
       }
     }
@@ -115,6 +112,21 @@ export default {
   created() {
   },
   methods: {
+    getShipmentAll(data) {
+      data.authStatus = 3;
+      listShipmentAll(data).then(response => {
+        this.shipmentOptions = response.rows;
+      });
+    },
+    // 车辆远程搜索
+    shipmentRemoteMethod(query) {
+      if (query !== '') {
+        var data = { keywords: query };
+        this.getShipmentAll(data);
+      } else {
+        this.shipmentOptions = [];
+      }
+    },
     // 取消按钮
     cancel() {
       this.close();
@@ -122,12 +134,12 @@ export default {
     // 关闭弹窗
     close() {
       this.form = {
-        userId: null,
-        userCode: null,
-        shipmentCode: null,
-        companyCode: null,
-        roleCodes: null,
-        copyShipmentCompanyCode: null
+        userId: undefined,
+        userCode: undefined,
+        shipmentCode: undefined,
+        companyCode: undefined,
+        roleCodes: undefined,
+        copyShipmentCompanyCode: undefined
       };
       this.$emit('update:open', false);
     },
