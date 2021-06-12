@@ -163,10 +163,12 @@
       <RefactorTable :loading="loading" :data="billlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
         <template #loogImage="{row}">
           <el-button
+            v-if="row.imgCodes"
             size="mini"
             type="text"
             @click="loogImage(row)"
           >查看</el-button>
+          <span v-else>-</span>
         </template>
 
         <template #status="{row}">
@@ -557,6 +559,10 @@ export default {
 
     // 查看图片信息
     loogImage(row) {
+      if (!row.imgCodes) {
+        this.msgWarning('无图片信息');
+        return;
+      }
       this.loading = true;
       getFile(row.imgCodes).then(response => {
         this.loading = false;

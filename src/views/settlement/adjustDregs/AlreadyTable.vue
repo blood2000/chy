@@ -17,6 +17,11 @@
       <template #status="{row}">
         <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
       </template>
+      <template #opName="{row}">
+        <div>
+          <span>{{ row.opName }}</span>
+        </div>
+      </template>
 
       <template #edit="{row}">
         <el-button

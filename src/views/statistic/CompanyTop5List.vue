@@ -1,7 +1,6 @@
 <template>
   <!-- 总排名TOP5公司 -->
   <div class="s-container">
-    <span class="s-container__time">最近30天内</span>
     <span class="s-container__title">TOP 5 企业</span>
     <ul class="s-container__list">
       <li v-for="(item, index) in companyRankData" :key="item.orgCode + index" class="s-container__list__item">
@@ -75,16 +74,6 @@ export default {
 .s-container{
   height: 100%;
   position: relative;
-  &__time{
-    position: absolute;
-    right: 0;
-    top: -1.45rem;
-    line-height: 0.8rem;
-    font-size: 0.5rem;
-    font-family: PingFang Regular;
-    font-weight: 300;
-    color: #96CFD9;
-  }
   &__title{
     position: absolute;
     right: 0.7rem;

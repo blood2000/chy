@@ -377,6 +377,13 @@
               <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.loadWeight) }} 车</span>
             </span>
           </template>
+          <template #stowageStatus="{row}">
+            <span>
+              <span v-if="row.stowageStatus === '0'"> 吨</span>
+              <span v-if="row.stowageStatus === '1'"> 立方</span>
+              <span v-if="row.stowageStatus === '2'"> 车</span>
+            </span>
+          </template>
           <template #icStatus="{row}">
             <span v-if="row.icStatus == '0'"><i class="el-icon-error g-color-error mr10" />未核对</span>
             <span v-if="row.icStatus == '1'"><i class="el-icon-success g-color-success mr10" />已核对</span>

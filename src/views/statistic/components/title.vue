@@ -1,5 +1,6 @@
 <template>
   <div class="title ly-flex">
+    <span v-if="showTime" class="time">最近30天内</span>
     <div class="before">
       <img :src="require('@/assets/images/statistic/title_icon_'+icon+'.gif')">
     </div>
@@ -22,6 +23,10 @@ export default {
     icon: {
       type: String,
       default: '1'
+    },
+    showTime: {
+      type: Boolean,
+      default: false
     }
   }
 };
@@ -32,6 +37,18 @@ export default {
   height: 1.6rem;
   margin-bottom: 1rem;
   position: relative;
+  >.time{
+    display: block;
+    position: absolute;
+    right: -0.15rem;
+    top: 0.65rem;
+    line-height: 0.8rem;
+    font-size: 0.5rem;
+    font-family: PingFang Regular;
+    font-weight: 300;
+    color: #96CFD9;
+    transform: scale(0.9);
+  }
   >.before{
     width: 1.6rem;
     height: 1.6rem;

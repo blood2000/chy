@@ -27,8 +27,8 @@
         <Title class="title_3" icon="4">业绩数据<span>Performance data</span></Title>
         <div class="ly-left-bottom-box ly-flex-pack-justify">
           <div class="ly-left-bottom-left ly-border">
-            <PerformanceInfo ref="PerformanceInfoRef" :performance="performanceData.performance" :is-scale="!!$route.query.isScale" class="mb1rem" />
-            <AmountTop5Chart ref="AmountTop5ChartRef" :province-ranking="performanceData.provinceRanking" />
+            <PerformanceInfo ref="PerformanceInfoRef" :performance="performanceData.performance" :is-scale="!!$route.query.isScale" class="mb1rem" style="height: 26.5%;" />
+            <AmountTop5Chart ref="AmountTop5ChartRef" :province-ranking="performanceData.provinceRanking" style="height: 72.5%;" />
           </div>
           <div class="ly-left-bottom-right ly-border">
             <CompanyTop10List ref="CompanyTop10ListRef" :province-ranking="performanceData.provinceRanking" />
@@ -70,7 +70,7 @@
         </div>
       </div>
       <div class="ly-right-right ly-border">
-        <Title class="title_4 mb05rem" icon="7">总排名<span>Total number</span></Title>
+        <Title class="title_4 mb05rem" icon="7" :show-time="true">总排名<span>Total number</span></Title>
         <div class="ly-right-right-top mb1rem ly-border">
           <CompanyTop5List :company-rank-data="companyRankData" />
         </div>
@@ -372,7 +372,7 @@ export default {
       this.$refs.UserInfoRef.getData(); // 用户
       this.$refs.CapacityInfoRef.getData(); // 运力
       this.$refs.TargetChartRef.getData(); // 目标
-      this.$refs.TotalDataRef.getCount();// 地图运单
+      this.$refs.TotalDataRef.getCount(); // 地图运单
     }
   }
 };

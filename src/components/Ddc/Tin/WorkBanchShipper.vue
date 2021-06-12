@@ -883,25 +883,26 @@ export default {
           publicOrder, //	发布中货单	integer(int32)
           soldOut //	完成关闭
         },
-        rule,	// 计算规则	integer(int32)	integer(int32)
+        rule	// 计算规则	integer(int32)	integer(int32)
         // team,	// 合作车队	integer(int32)	integer(int32)
         // vehicle,	// 合作车辆	integer(int32)	integer(int32)
-        waybill: { // 运单
-          orderBalance, //	已核算	integer(int32)
-          orderBalanceAmount, //	已核算金额	number
-          orderLoading, //	已装货	integer(int32)
-          orderReceiving, //	已接单	integer(int32)
-          // orderReceivingToday, //	今日接单	integer(int32)
-          orderRemit, //	已打款	integer(int32)
-          orderRemitAmount, //	已打款金额	number
-          // orderRemitAmountToday, //	今日打款金额	number
-          // orderRemitToday, //	今日打款	integer(int32)
-          orderReviewer, //	已复核	integer(int32)
-          orderUnload //	已卸货	integer(int32)
-          // transportToday //	今日运输
-        }
+        // waybill:
       } = res.data;
 
+      const { // 运单
+        orderBalance, //	已核算	integer(int32)
+        orderBalanceAmount, //	已核算金额	number
+        orderLoading, //	已装货	integer(int32)
+        orderReceiving, //	已接单	integer(int32)
+        // orderReceivingToday, //	今日接单	integer(int32)
+        orderRemit, //	已打款	integer(int32)
+        orderRemitAmount, //	已打款金额	number
+        // orderRemitAmountToday, //	今日打款金额	number
+        // orderRemitToday, //	今日打款	integer(int32)
+        orderReviewer, //	已复核	integer(int32)
+        orderUnload //	已卸货	integer(int32)
+        // transportToday //	今日运输
+      } = res.data.waybill || {};
 
       // 项目模块
       this.dagaoItem = {

@@ -41,7 +41,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="160" label="配载方式" align="center" prop="lossAllowScope">
+      <!-- <el-table-column width="160" label="配载方式" align="center" prop="lossAllowScope">
         <template slot-scope="scope">
           <span v-show="scope.row.stowageStatus === '0'">
             吨数配载
@@ -53,39 +53,52 @@
             车数配载
           </span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
 
-      <el-table-column width="160" label="路耗(吨/方)" align="center" prop="loss">
+      <!-- <el-table-column width="160" label="路耗(吨/方)" align="center" prop="loss">
         <template slot-scope="scope">
           <span v-if="scope.row.stowageStatus === '0'">{{ floor((scope.row.loss -0) / 1000, 6) }}</span>
           <span v-else>{{ scope.row.loss || 0 }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
 
-      <el-table-column width="160" label="路耗允许范围(吨/方)" align="center" prop="lossAllowScope">
+      <!-- <el-table-column width="160" label="路耗允许范围(吨/方)" align="center" prop="lossAllowScope">
         <template slot-scope="scope">
           <span>{{ scope.row.lossAllowScope? _lossAllowScope(scope.row.lossAllowScope, scope.row.stowageStatus === '0' ) : '--' }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
 
-      <el-table-column width="160" label="货物单价(元)" align="center" prop="goodsPrice" />
+      <!-- <el-table-column width="160" label="货物单价(元)" align="center" prop="goodsPrice" /> -->
 
-      <el-table-column width="160" label="运费单价(元)" align="center" prop="freightPrice" />
+      <!-- <el-table-column width="160" label="运费单价(元)" align="center" prop="freightPrice" /> -->
 
-      <el-table-column width="160" label="司机成交单价(元)" align="center" prop="freightPriceDriver" />
-      <el-table-column width="160" label="亏涨扣费(元)" align="center" prop="lossDeductionFee" />
+      <!-- <el-table-column width="160" label="司机成交单价(元)" align="center" prop="freightPriceDriver" /> -->
+      <!-- <el-table-column width="160" label="亏涨扣费(元)" align="center" prop="lossDeductionFee" /> -->
 
 
-      <el-table-column width="120" label="抹零金额(元)" align="center" prop="m0Fee" />
+      <!-- <el-table-column width="120" label="抹零金额(元)" align="center" prop="m0Fee" /> -->
 
-      <el-table-column width="160" label="司机应收运费(元)" align="center" prop="deliveryFeeDeserved" />
-      <el-table-column width="160" label="司机实收运费(元)" align="center" prop="deliveryFeePractical" />
+      <!-- <el-table-column width="160" label="司机应收运费(元)" align="center" prop="deliveryFeeDeserved" /> -->
+      <!-- <el-table-column width="160" label="司机实收运费(元)" align="center" prop="deliveryFeePractical" /> -->
 
 
       <el-table-column width="120" label="纳税金额(元)" align="center" prop="taxPayment" fixed="right" />
+
+      <el-table-column width="120" label="服务费(元)" align="center" prop="serviceFee" fixed="right">
+        <template slot-scope="scope">
+          <span> {{ floor(scope.row.serviceFee) }} </span>
+        </template>
+      </el-table-column>
+
       <el-table-column width="162" label="司机实收金额(元)" align="center" prop="deliveryCashFee" fixed="right">
         <template slot-scope="scope">
           <el-input-number v-model="scope.row.deliveryCashFee" :controls="false" :precision="2" placeholder="请输入司机实收金额" style="width:100%;" size="mini" @blur="getDeliveryCashFee([scope.row])" />
+        </template>
+      </el-table-column>
+
+      <el-table-column width="140" label="货主实付金额(元)" align="center" prop="shipperRealPay" fixed="right">
+        <template slot-scope="scope">
+          <span> {{ floor(scope.row.shipperRealPay) }} </span>
         </template>
       </el-table-column>
 
