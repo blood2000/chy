@@ -77,9 +77,9 @@ export default {
 <style lang="scss" scoped>
 .box-card{
   cursor: default;
-  box-shadow: 0 2px 12px 0 rgb(0, 0, 0, 0.1);
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   &:hover{
-    box-shadow: 0 2px 12px 0 rgb(0, 0, 0, 0.2);
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
   }
   ::v-deep.el-card__body{
     padding: 0;
