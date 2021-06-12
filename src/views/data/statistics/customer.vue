@@ -69,7 +69,7 @@
         :total="total"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
-        @pagination="getList"
+        @pagination="getList(1)"
       />
 
     </div>
@@ -134,7 +134,7 @@ export default {
             sums[index] = this.customerCount.accConfirmedServiceFeeCount;
             break;
           case 'closingBalance':
-            sums[index] = this.customerCount.accountBalanceCount;
+            sums[index] = this.customerCount.closingBalanceCount;
             break;
           case 'arrearsAmount':
             sums[index] = this.customerCount.arrearsAmountCount;
@@ -211,7 +211,7 @@ export default {
       }
     },
     /** 查询客服统计报表列表 */
-    getList() {
+    getList(e) {
       this.loading = true;
       listCustomer(this.queryParams).then(response => {
         console.log(response);
@@ -225,10 +225,12 @@ export default {
       } else {
         this.queryParams.haveCondition = false;
       }
-      countCustomer(this.queryParams).then(response => {
-        console.log(response);
-        this.customerCount = response.data;
-      });
+      if (e !== 1) {
+        countCustomer(this.queryParams).then(response => {
+          console.log(response);
+          this.customerCount = response.data;
+        });
+      }
     },
     /** 搜索按钮操作 */
     handleQuery() {

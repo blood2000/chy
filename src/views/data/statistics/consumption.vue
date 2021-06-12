@@ -69,7 +69,7 @@
         :total="total"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
-        @pagination="getList"
+        @pagination="getList(1)"
       />
 
       <!-- <el-row type="flex" :gutter="10" class="g-statistics-bg">
@@ -243,7 +243,7 @@ export default {
       }
     },
     /** 查询客户消费明细列表 */
-    getList() {
+    getList(e) {
       this.loading = true;
       // 查询列表
       listConsumption(this.queryParams).then(response => {
@@ -258,10 +258,12 @@ export default {
       } else {
         this.queryParams.haveCondition = false;
       }
-      countConsumption(this.queryParams).then(response => {
-        console.log(response);
-        this.consumptionCount = response.data;
-      });
+      if (e !== 1) {
+        countConsumption(this.queryParams).then(response => {
+          console.log(response);
+          this.consumptionCount = response.data;
+        });
+      }
     },
     /** 搜索按钮操作 */
     handleQuery() {
