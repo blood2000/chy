@@ -548,7 +548,8 @@ export default {
     },
     // 查询运单列表
     getWaybillList() {
-      waybillList({ ...this.queryParams, statusList: '1,2,3,4,5,6,7' }).then(response => {
+      const receiveTime = this.parseTime(new Date(), '{y}-{m}-{d}');
+      waybillList({ ...this.queryParams, startReceiveTime: receiveTime, endReceiveTime: receiveTime, statusList: '1,2,3,4,5,6,7' }).then(response => {
         this.dataOver = !response.rows.length;
         this.waybillList = this.waybillList.concat(response.rows);
         this.loading = false;

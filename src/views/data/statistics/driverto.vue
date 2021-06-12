@@ -107,7 +107,7 @@
         :total="total"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
-        @pagination="getList"
+        @pagination="getList(1)"
       />
     </div>
   </div>
@@ -216,7 +216,7 @@ export default {
       }
     },
     /** 查询司机往来明细列表 */
-    getList() {
+    getList(e) {
       this.loading = true;
       // 查询列表
       listDriverto(this.queryParams).then(response => {
@@ -230,10 +230,12 @@ export default {
       } else {
         this.queryParams.haveCondition = false;
       }
-      getDriverCount(this.queryParams).then(response => {
-        console.log(response);
-        this.drivertoCount = response.data;
-      });
+      if (e !== 1) {
+        getDriverCount(this.queryParams).then(response => {
+          console.log(response);
+          this.drivertoCount = response.data;
+        });
+      }
     },
     /** 搜索按钮操作 */
     handleQuery() {
