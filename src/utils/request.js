@@ -105,10 +105,10 @@ service.interceptors.response.use(res => {
       showClose: true
     });
     return Promise.reject(new Error(msg));
+  } else if (code === 404) {
+    // 404时不弹出报错提示
+    return Promise.reject(new Error(msg));
   } else if (code !== 200) {
-    // Notification.error({
-    //   title: msg
-    // });
     Message({
       message: msg,
       type: 'error',
