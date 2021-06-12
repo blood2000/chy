@@ -598,7 +598,7 @@ export default {
     },
     // weosocket调用方法
     initWebSocket() { // 初始化weosocket
-      const wsuri = 'ws://124.71.25.3:8080/websocket/chy';// ws地址
+      const wsuri = 'ws://192.168.0.147:8083/websocket/chy';// ws地址
       this.websock = new WebSocket(wsuri);
       this.websock.onopen = this.websocketonopen;
 
