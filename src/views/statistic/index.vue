@@ -126,7 +126,7 @@ export default {
     return {
       branchCode: null,
       // websocket
-      wsurl: 'ws://10.0.0.75:8080/websocket/chy',
+      wsurl: 'ws://124.71.25.3:8080/websocket/chy',
       websock: null,
       lockReconnect: false,
       timerReconnect: null,

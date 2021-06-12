@@ -23,7 +23,7 @@
             <div class="ly-left-bottom-left-top ly-border">
               <Title class="title_4 mb05rem" icon="4" :show-time="true">货运类型排行<span>Performance data</span></Title>
               <div class="ly-left-bottom-left-box ly-border">
-                none
+                <FreightTypeRanking ref="FreightTypeRankingRef" />
               </div>
             </div>
             <div class="ly-left-bottom-left-bottom ly-border">
@@ -57,7 +57,7 @@
     <div class="ly-right ly-flex-pack-justify ly-border">
       <div class="ly-right-left ly-border">
         <div class="ly-right-left-top mb1rem ly-border">
-          <Title class="title_4 mb05rem" icon="5">运营情况<span>Operation situation</span></Title>
+          <Title class="title_4 mb05rem" icon="5" :show-time="true">运营情况<span>Operation situation</span></Title>
           <div class="ly-right-left-top-box">
             <OperationData
               ref="OperationDataRef"
@@ -74,7 +74,7 @@
         </div>
       </div>
       <div class="ly-right-right ly-border">
-        <Title class="title_4 mb05rem" icon="7">业绩数据<span>Performance data</span></Title>
+        <Title class="title_4 mb05rem" icon="7" :show-time="true">业绩数据<span>Performance data</span></Title>
         <div class="ly-right-right-box ly-border">
           <div class="ly-border mb05rem" style="height: 15%">
             <PerformanceInfo ref="PerformanceInfoRef" :performance="performanceData.performance" :is-scale="!!$route.query.isScale" />
@@ -108,6 +108,7 @@ import DriverTop5List from './DriverTop5List';// 总排名TOP5司机
 import TotalData from './TotalData';// 中间总数统计
 import ScrollData from './ScrollData';// 中间滚屏数据
 import Map from './Map.vue';// 地图
+import FreightTypeRanking from './FreightTypeRanking';// 货运类型排行
 import { getCompanyPerformance, getBusinessDetail, getCompanyDriverRank } from '@/api/statistic/statistic.js';
 // import { dataJson } from './data';
 
@@ -126,13 +127,14 @@ export default {
     DriverTop5List,
     TotalData,
     ScrollData,
-    Map
+    Map,
+    FreightTypeRanking
   },
   data() {
     return {
       branchCode: null,
       // websocket
-      wsurl: 'ws://10.0.0.75:8080/websocket/chy',
+      wsurl: 'ws://124.71.25.3:8080/websocket/chy',
       websock: null,
       lockReconnect: false,
       timerReconnect: null,
