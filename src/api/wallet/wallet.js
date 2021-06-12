@@ -35,3 +35,11 @@ export function transferApply(data) {
     data: data
   });
 }
+
+// 获取网商账号
+export function getUserWalletBank() {
+  return request({
+    url: '/payment/wallet/getUserWalletBank',
+    method: 'post'
+  });
+}
