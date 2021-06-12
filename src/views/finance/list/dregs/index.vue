@@ -163,10 +163,12 @@
       <RefactorTable :loading="loading" :data="billlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
         <template #loogImage="{row}">
           <el-button
+            v-if="row.imgCodes"
             size="mini"
             type="text"
             @click="loogImage(row)"
           >查看</el-button>
+          <span v-else>-</span>
         </template>
 
         <template #status="{row}">
