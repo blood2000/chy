@@ -557,6 +557,10 @@ export default {
 
     // 查看图片信息
     loogImage(row) {
+      if (!row.imgCodes) {
+        this.msgWarning('无图片信息');
+        return;
+      }
       this.loading = true;
       getFile(row.imgCodes).then(response => {
         this.loading = false;

@@ -183,8 +183,12 @@ export default {
   data() {
     var freightPrice_validator = (rule, value, callback) => {
       if (!value) {
-        this.msgError(this.good.dictLabel + '的运费单价是必填的');
-        this.$emit('showisweitian', this.good.activeName);
+        if (this.good) {
+          this.msgError(this.good.dictLabel + '的运费单价是必填的');
+          this.$emit('showisweitian', this.good.activeName);
+        } else {
+          this.msgError('运费单价是必填的');
+        }
         callback(new Error('请输入运费单价'));
       } else {
         callback();
@@ -192,8 +196,12 @@ export default {
     };
     var ruleItemId_validator = (rule, value, callback) => {
       if (!value) {
-        this.msgError(this.good.dictLabel + '的核算规则是必填的');
-        this.$emit('showisweitian', this.good.activeName);
+        if (this.good) {
+          this.msgError(this.good.dictLabel + '的核算规则是必填的');
+          this.$emit('showisweitian', this.good.activeName);
+        } else {
+          this.msgError('核算规则是必填的');
+        }
         callback(new Error('请选择核算规则'));
       } else {
         callback();
@@ -356,7 +364,8 @@ export default {
   methods: {
     // 获取司机成交单价
     async handlerChange() {
-      if (!(this.formData.freightPrice || this.formData.freightPrice === 0)) return;
+      if (!this.formData.freightPrice || this.formData.freightPrice === 0) return;
+      console.log(this.formData.freightPrice);
 
       try {
         const data = await getDriverPrice({
