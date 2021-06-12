@@ -95,6 +95,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex';
+import { getUserWalletBank } from '@/api/wallet/wallet';
 export default {
   name: 'RechargeDescription',
   props: {
@@ -120,7 +121,9 @@ export default {
       if (this.shipment && this.shipment.info && this.shipment.info.companyName) {
         this.companyName = this.shipment.info.companyName;
       }
-      this.account = JSON.parse(this.$route.query.params).params;
+      getUserWalletBank().then(response => {
+        this.account = response.data;
+      });
     },
     copy() {
       document.getElementById('table-inner-id').select();
