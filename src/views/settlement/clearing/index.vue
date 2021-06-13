@@ -181,7 +181,7 @@
             type="primary"
             icon="el-icon-document"
             size="mini"
-            :disabled="multiple"
+            :disabled="multiple || loading"
             @click="handleClearing"
           >运单清分</el-button>
           <el-button
@@ -189,7 +189,7 @@
             type="primary"
             icon="el-icon-refresh"
             size="mini"
-            :disabled="multiple"
+            :disabled="multiple || loading"
             @click="handleUpdate"
           >更新清分状态</el-button>
         </el-col>
@@ -404,8 +404,8 @@ export default {
             this.bodyParams.wayBillSettlementCodeList = [];
             this.bodyParams.wayBillSettlementCodeList.push(row.wayBillSettlementCode);
             batch(this.bodyParams).then(response => {
-              this.$message({ type: 'success', message: '运单清分成功！' });
               this.getList();
+              this.$message({ type: 'success', message: '运单清分成功！' });
             });
           }).catch(() => {
             this.$message({
