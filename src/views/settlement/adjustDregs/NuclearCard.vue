@@ -177,7 +177,7 @@ export default {
             other: undefined
           };
         }),
-        userCode: this.userInfo.user_code //	用户CODE
+        driverCode: this.userInfo.user_code //	用户CODE
       };
 
       try {
@@ -274,10 +274,11 @@ export default {
               }
             }).catch(error => {
               this.msgError(error);
+              this.loading = false;
             });
+          }).catch(() => {
+            this.loading = false;
           });
-        }).catch(() => {
-
         });
       }
     },
