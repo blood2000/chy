@@ -37,7 +37,7 @@
             }"
             :show-key="{
               value: 'orgCode',
-              label: 'adminName',
+              label: 'companyName',
             }"
             :keywords="'searchValue'"
             @selected="(data)=>{ shipmentCode= data.code; orgCode= data.orgCode; companyCode = data.companyCode; handleQuery()}"
