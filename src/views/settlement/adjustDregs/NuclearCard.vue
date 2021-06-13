@@ -1,6 +1,6 @@
 <template>
-  <el-dialog :title="`发卡人: ${ userInfo.issuing_name || ''} (承运司机: ${userInfo.user_name ||''})`" :visible="visible" width="80%" append-to-body :close-on-click-modal="false" @close="$emit('update:open', false)">
-    <div v-show="false" class="mb20" style="padding: 20px;">
+  <el-dialog v-loading :title="`发卡人: ${ userInfo.issuing_name || ''} (承运司机: ${userInfo.user_name ||''})`" :visible="visible" width="80%" append-to-body :close-on-click-modal="false" @close="handlerClose">
+    <div v-show="true" class="mb20" style="padding: 20px;">
       <!-- <el-button type="primary" @click="handler('cancellation')">注销卡片(清空使用者信息)</el-button> -->
       <el-button type="primary" @click="handler('issuingCard')">发卡(绑定卡用户)</el-button>
       <!-- <el-button type="primary" @click="handler('readUserinfo')">读取用户信息</el-button> -->
@@ -81,7 +81,7 @@
 
 
     <div slot="footer" class="dialog-footer ly-flex-pack-center">
-      <el-button type="primary" :disabled="!list.length || isUserInfo || isError" @click="submitForm">保存并清空</el-button>
+      <el-button type="primary" :disabled="!list.length || isUserInfo || isError || isWart" @click="submitForm">保存并清空</el-button>
     </div>
   </el-dialog>
 </template>
@@ -89,7 +89,22 @@
 <script>
 import CardReader from '@/libs/ICCard/CardReader';
 import { checkList, delWaybill, check } from '@/api/settlement/adjustDregs';
-const { action } = CardReader;
+const { action, fn } = CardReader;
+
+const datads = {
+  driverName: '测试独立强',
+  driverPhone: '15859109001',
+  fillTime: '1623177000000',
+  licenseNumber: '闽AQ8001',
+  mudtail: '妈湾',
+  orderId: '30273',
+  projectName: '测试项目3',
+  serialNumber: '',
+  signTime: '1623177480000',
+  waybillId: '2977608'
+};
+console.log(fn.setData('1010|1|', datads));
+
 export default {
   name: 'NuclearCard',
   props: {
@@ -98,10 +113,13 @@ export default {
   data() {
     return {
       loading: false,
+      isWart: false,
       userInfo: {},
       list: [],
       IClist: [],
-      isError: true
+      isError: true,
+      delData: [], // 保存删除的数据
+      meter: null
     };
   },
   computed: {
@@ -154,7 +172,10 @@ export default {
 
         this.userInfo = ret.userInfo;
         this.IClist = ret.dataList;
-        this.setLocalStorage(ret.userInfo.user_code, { [ret.userInfo]: ret.dataList });
+        this.meter = ret.meter;
+
+        console.log(ret, '数据');
+        this.setLocalStorage(ret.userInfo.user_code, { [ret.userInfo]: ret.dataList, meter: ret.meter });
         this.initData();
       }, () => {
         this.loading = false;
@@ -190,13 +211,13 @@ export default {
         this.loading = false;
       } catch (error) {
         this.isError = true;
-        this.list = this.IClist.map(e => {
-          return {
-            ...e,
-            fillTimeDate: this.parseTime(e.fillTime - 0),
-            signTimeDate: this.parseTime(e.signTime - 0)
-          };
-        });
+        // this.list = this.IClist.map(e => {
+        //   return {
+        //     ...e,
+        //     fillTimeDate: this.parseTime(e.fillTime - 0),
+        //     signTimeDate: this.parseTime(e.signTime - 0)
+        //   };
+        // });
         this.loading = false;
       }
     },
@@ -216,6 +237,8 @@ export default {
           delWaybill({ waybillId: row.waybillId - 0 }).then(res => {
             this.msgSuccess('删除该条记录成功');
             this.list = this.list.filter(e => e.waybillId !== row.waybillId);
+            this.delData.push(row.waybillId);
+            console.log('当前删除的数据是', this.delData);
           });
         }
       });
@@ -235,7 +258,7 @@ export default {
           callback: action => {}
         });
       } else {
-        this.$confirm('确认保存并清空, 是否继续?', '提示', {
+        this.$confirm('保存并清空后,将清空卡数据, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -259,6 +282,7 @@ export default {
                 this.IClist = [];
                 this.loading = false;
                 this.$emit('refresh');
+                this.delData = [];
                 this.$emit('update:open', false);
               }
             }).catch(error => {
@@ -302,7 +326,8 @@ export default {
           break;
         case 'writeData':
           // 写数据
-          action.writeData('1010|1|30273;2977608;测试项目3;闽AQ8001;测试独立强;15859109001;1623177000000;1623177480000;;妈湾').then(res => {
+          // 1010|1|30419;2993353;测试项目;b42da668161f424e8309c2b6eb81a399;贺彩善;17712345678;1623482232031;1623482340000;17;鼓山大桥
+          action.writeData('1010|1|30633;2975634;测试项目4;闽AQ8001;测试独立强;15859109001;1623177000000;1623177480000;;妈湾').then(res => {
             this.msgSuccess(res.msg);
           });
 
@@ -325,7 +350,7 @@ export default {
     },
 
     _reqerror() {
-      this.$confirm('请将【数据IC卡】放至有效位置!', '为能读取到数据', {
+      this.$confirm('请将【数据IC卡】放至有效位置!', '不能读取到数据', {
         confirmButtonText: '知道了',
         type: 'warning',
         showCancelButton: false,
@@ -335,6 +360,66 @@ export default {
       }).catch(() => {
         this.$emit('update:open', false);
       });
+    },
+
+    _returnWrite(userData, infoDataList) {
+      this.loading = true;
+      this.isWart = true;
+      action.issuingCard({
+        user_code: userData.user_code,
+        user_telno: userData.user_telno,
+        user_name: userData.user_name,
+        issuing_code: userData.issuing_code,
+        issuing_name: userData.issuing_name
+      }).then(res => {
+        console.log(infoDataList);
+        let meter = '1010|1|';
+        if (this.meter) {
+          meter = this.meter.join('|') + '|';
+        }
+
+        const arr = [];
+        infoDataList.forEach(async(e, index) => {
+          // 1010|1|30273;2977608;测试项目3;闽AQ8001;测试独立强;15859109001;1623177000000;1623177480000;;妈湾
+          // '1010|1|30273;2977608;测试项目3;闽AQ8001;测试独立强;15859109001;1623177000000;1623177480000;;妈湾';
+          this['time' + index] = setTimeout(() => {
+            action.writeData(fn.setData(meter, e)).then(res => {
+              // console.log('写入成功' + index);
+              clearTimeout(this['time' + index]);
+              arr.push(true);
+              if (arr.length === infoDataList.length && arr.every(e => e)) {
+                this.loading = false;
+                this.isWart = false;
+                this.msgSuccess(res.msg, '操作成功');
+                this.delData = [];
+                this.handlerClose();
+              }
+            });
+          }, (index) * 1500);
+        });
+      });
+    },
+    handlerClose() {
+      if (this.isWart) return;
+      if (this.delData.length > 0) {
+        this.$confirm('删除数据要花费' + (this.list.length * 1500) / 1000 + '秒, 期间禁止移动卡片, 确定要删除' + this.delData.join(',') + '吗', '确定要从卡里面清除吗?', {
+          confirmButtonText: '确定删除',
+          cancelButtonText: '保留原记录',
+          type: 'warning',
+          center: true
+        }).then(() => {
+          this._returnWrite(this.userInfo, this.list);
+          console.log(this.list);
+          console.log(this.IClist);
+        }).catch(() => {
+          this.$emit('update:open', false);
+        });
+        this.delData = [];
+
+        return;
+      }
+
+      this.$emit('update:open', false);
     }
   }
 };

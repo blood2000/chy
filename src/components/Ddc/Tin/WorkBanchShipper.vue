@@ -900,10 +900,19 @@ export default {
         // orderRemitAmountToday, //	今日打款金额	number
         // orderRemitToday, //	今日打款	integer(int32)
         orderReviewer, //	已复核	integer(int32)
-        orderUnload //	已卸货	integer(int32)
+        orderUnload, //	已卸货	integer(int32)
         // transportToday //	今日运输
+
+        partnerDriver, // : 4
+        partnerTeam, // 10
+        partnerVehicle // : 4
       } = res.data.waybill || {};
 
+
+      this.statiStical.team = partnerTeam;
+      this.statiStical.vehicle = partnerVehicle;
+      this.statiStical.driver = partnerDriver;
+      // this.statiStical.1212
       // 项目模块
       this.dagaoItem = {
         item,
@@ -973,18 +982,20 @@ export default {
       });
 
       const {
-        driver = 0, //	合作司机	integer(int32)	integer(int32)
         openInvoiceAmountToday = 0, //	今日已开票金额	number
         openInvoiceToday = 0, //	今日开票	integer(int32)	integer(int32)
         orderReceivingToday = 0, //	今日接单	integer(int32)	integer(int32)
         orderRemitAmountToday = 0, //	今日打款金额	number
         orderRemitToday = 0, //	今日打款	integer(int32)	integer(int32)
-        team = 0, //	合作车队	integer(int32)	integer(int32)
-        transportToday = 0, //	今日运输	integer(int32)	integer(int32)
-        vehicle = 0 //	合作车辆
+        transportToday = 0 //	今日运输	integer(int32)	integer(int32)
+
+        // team = 0, //	合作车队	integer(int32)	integer(int32)
+        // driver = 0, //	合作司机	integer(int32)	integer(int32)
+        // vehicle = 0 //	合作车辆
       } = res.data;
       // 接单模块
       this.statiStical = {
+        ...(this.statiStical || {}),
         orderReceivingToday,
         transportToday,
 
@@ -992,11 +1003,11 @@ export default {
         orderRemitAmountToday,
 
         openInvoiceToday,
-        openInvoiceAmountToday,
+        openInvoiceAmountToday
 
-        team,
-        vehicle,
-        driver
+        // team,
+        // vehicle,
+        // driver
       };
       this.$forceUpdate();
     }

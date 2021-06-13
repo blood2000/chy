@@ -78,6 +78,10 @@ export default {
           label: 'name'
         };
       }
+    },
+    keywords: {
+      type: String,
+      default: 'keywords'
     }
   },
 
@@ -87,7 +91,7 @@ export default {
       shipmentList: [], // 远程搜索的时候使用
       shipmentreq: {
         pageNum: 1,
-        keywords: '',
+        keywords: undefined,
         pageSize: 10
       },
       loading: false,
@@ -118,7 +122,8 @@ export default {
     remoteMethod(query) {
       if (query !== '') {
         this.shipmentreq.pageNum = 1;
-        this.shipmentreq.keywords = query;
+        this.shipmentreq[this.keywords] = query;
+
         this.shipmentList = [];
         this.getTeamList();
       } else {
@@ -130,7 +135,8 @@ export default {
     getTeamList() {
       // 请求数据
       const { queryFn, queryData = {}, key = 'rows' } = this.axios;
-      queryFn && queryFn({ ...this.shipmentreq, ...queryData }).then(
+
+      queryFn && queryFn({ ...this.shipmentreq, ...queryData, [this.keywords]: this.shipmentreq[this.keywords] }).then(
         (res) => {
           this.dataOver = !res[key].length;
           this.shipmentList = this.shipmentList.concat(res[key]);

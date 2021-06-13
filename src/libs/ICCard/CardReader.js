@@ -174,6 +174,19 @@ const CardReader = {
       };
     },
 
+    setData: function(heder = '1010|1|', data) {
+      if (!data) return;
+      // let str = '';
+      // console.log(data, '1231312');
+      const arr = [];
+      DATAINFO.forEach((key) => {
+        // str += (data[key] || '') + ';';
+        arr.push(data[key] || '');
+      });
+      // console.log(arr);
+      return heder + arr.join(';');
+    },
+
 
     /**
          * DES 单倍长加密
@@ -772,6 +785,7 @@ CardReader.action['readUserInfoAndreadData'] = async function() {
     let errCount = 0;
 
     const data = [];
+    let meter = null;
 
     // 比如是这样的 [8, 30]
     while (index[0] > 2 && index[1] > 0) {
@@ -785,6 +799,8 @@ CardReader.action['readUserInfoAndreadData'] = async function() {
       if (ret.code === '9000') {
         const datae = (CardReader.fn.utf8HexToStr(ret.data).replace(eval('/\u0000/g'), ''));
         data.push(CardReader.fn.resultData(datae, DATAINFO).data);
+        !meter && (meter = CardReader.fn.resultData(datae, DATAINFO).meter);
+        console.log(data);
         count += 1;
       } else {
         errCount += 1;
@@ -811,7 +827,8 @@ CardReader.action['readUserInfoAndreadData'] = async function() {
       msg: '读取成功',
       success: true,
       userInfo,
-      dataList
+      dataList,
+      meter
     };
   } catch (error) {
     return error;

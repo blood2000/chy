@@ -28,14 +28,37 @@
           label="发货企业"
           prop="deliveryCompany"
         >
-          <el-input
+          <!-- <el-input
             v-model="queryParams.deliveryCompany"
             placeholder="请输入发货企业"
             clearable
             size="small"
             style="width: 228px"
             @keyup.enter.native="handleQuery"
-          />
+          /> -->
+          <FilterableSelect
+            v-model="queryParams.deliveryCompany"
+            clearable
+            style="width:228px"
+            placeholder="请输入发货企业"
+            :axios="{
+              queryFn:shipmentList,
+              queryData:{
+                authStatus: 3
+              },
+              key: 'rows'
+            }"
+            :show-key="{
+              value: 'adminName',
+              label: 'adminName',
+            }"
+            :keywords="'searchValue'"
+            @selected="(data)=>{ shipmentCode= data.code; companyCode = data.companyCode; handleQuery()}"
+          >
+            <template #default="{row}">
+              <span>{{ row.adminName }}({{ row.telphone }})</span>
+            </template>
+          </FilterableSelect>
         </el-form-item>
 
         <el-form-item
@@ -249,44 +272,120 @@
 
         <el-form-item
           label="渣土场"
-          prop="ztcName"
+          prop="ztcCode"
         >
-          <el-input
-            v-model="queryParams.ztcName"
+          <!-- <el-input
+            v-model="queryParams.ztcCode"
             placeholder="请输入渣土场"
             clearable
             size="small"
             style="width: 228px"
             @keyup.enter.native="handleQuery"
-          />
+          /> -->
+          <FilterableSelect
+            v-model="queryParams.ztcCode"
+            clearable
+            style="width:228px"
+            placeholder="请输入渣土场"
+            :axios="{
+              queryFn:listForWeb,
+              queryData:{
+                shipmentCode: shipmentCode
+              },
+              key: 'data'
+            }"
+            :show-key="{
+              value: 'code',
+              label: 'name',
+            }"
+            :keywords="'name'"
+            @selected="handleQuery"
+          >
+            <template #default="{row}">
+              <span>{{ row.name }}</span>
+            </template>
+          </FilterableSelect>
         </el-form-item>
 
         <el-form-item
           label="调度者名称"
           prop="teamName"
         >
-          <el-input
+          <!-- <el-input
             v-model="queryParams.teamName"
             placeholder="请输入调度者名称"
             clearable
             size="small"
             style="width: 228px"
             @keyup.enter.native="handleQuery"
-          />
+          /> -->
+
+          <FilterableSelect
+            v-model="queryParams.teamName"
+            clearable
+            style="width:228px"
+            placeholder="请输入调度者名称"
+            :axios="{
+              queryFn:teamListInfo,
+              queryData:{
+                isAsc: 'desc',
+                orderByColumn:'t0.create_time'
+              },
+              key: 'rows'
+            }"
+            :show-key="{
+              value: 'teamLeaderName',
+              label: 'teamLeaderName',
+            }"
+            :keywords="'keywords'"
+            @selected="(data)=>{ handleQuery()}"
+          >
+            <template #default="{row}">
+              <span>{{ row.teamLeaderName }}({{ row.telphone }})</span>
+            </template>
+          </FilterableSelect>
         </el-form-item>
 
         <el-form-item
           label="项目"
-          prop="projectName"
+          prop="projectCode"
         >
-          <el-input
-            v-model="queryParams.projectName"
+          <!-- <el-input
+            v-model="queryParams.projectCode"
             placeholder="请输入项目名称"
             clearable
             size="small"
             style="width: 228px"
             @keyup.enter.native="handleQuery"
-          />
+          /> -->
+
+          <FilterableSelect
+            v-model="queryParams.projectCode"
+            clearable
+            style="width:228px"
+            placeholder="请输入项目名称"
+            :axios="{
+              queryFn:listInfo,
+              queryData:{
+                isAsc:'desc',
+                orderByColumn:'t0.id',
+                companyCode:companyCode
+              }
+            }"
+            :show-key="{
+              value: 'code',
+              label: 'projectName',
+              telphone: ''
+            }"
+            :keywords="'projectName'"
+            @selected="(data)=>{ handleQuery() }"
+          >
+            <template #default="{row}">
+              <span>{{ row.projectName }}</span>
+            </template>
+          </FilterableSelect>
+
+
         </el-form-item>
 
         <el-form-item>
@@ -499,6 +598,13 @@
 </template>
 
 <script>
+import FilterableSelect from '@/components/FilterableSelect';
+
+import { listForWeb } from '@/api/listForWeb/index';
+import { listInfo } from '@/api/enterprise/project';
+import { shipmentList } from '@/api/finance/askfor'; // 获取货主(搜索用)
+import { listInfo as teamListInfo } from '@/api/assets/team';
+
 import { ztApiList, ztApi } from '@/api/settlement/adjust';
 import { adjustDregsList, adjustListApi as adjustDregsApi, accountStatement } from '@/api/settlement/adjustDregs';
 import { getUserInfo } from '@/utils/auth';
@@ -524,7 +630,7 @@ import AlreadyTable from './AlreadyTable';
 
 export default {
   'name': 'AdjustDregs',
-  components: { RejectDialog, AdjustDialog, DetailDialog, ChildDialog, CommentDialog, RateDialog, NuclearCard, StatementsDialog, AlreadyPaid, AlreadyTable },
+  components: { RejectDialog, AdjustDialog, DetailDialog, ChildDialog, CommentDialog, RateDialog, NuclearCard, StatementsDialog, AlreadyPaid, AlreadyTable, FilterableSelect },
   data() {
     return {
       tableColumnsConfig_4: [],
@@ -571,10 +677,10 @@ export default {
         'isReturn': undefined,
         'isChild': undefined,
         'status': '4',
-        ztcName: undefined,
+        ztcCode: undefined,
         teamName: undefined,
         waybill: undefined,
-        projectName: undefined,
+        projectCode: undefined,
         criticism: undefined
       },
 
@@ -640,7 +746,15 @@ export default {
         'pageNum': 1,
         'pageSize': 10,
         'total': 0
-      }
+      },
+
+      companyCode: undefined,
+      shipmentCode: undefined,
+
+      listInfo,
+      listForWeb,
+      shipmentList,
+      teamListInfo
     };
   },
   computed: {
@@ -679,6 +793,11 @@ export default {
     this.user = user;
     this.shipment = shipment;
     this.isShipment = isShipment;
+
+    if (this.shipment.info) {
+      this.companyCode = this.shipment.info.companyCode;
+      this.shipmentCode = this.shipment.info.code;
+    }
 
     this.handleClick('4');
 
