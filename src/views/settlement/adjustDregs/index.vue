@@ -335,13 +335,13 @@
             }"
             :show-key="{
               value: 'code',
-              label: 'teamLeaderName',
+              label: 'name',
             }"
-            :keywords="'keywords'"
+            :keywords="'name'"
             @selected="(data)=>{ handleQuery()}"
           >
             <template #default="{row}">
-              <span>{{ row.teamLeaderName }}({{ row.telphone }})</span>
+              <span>{{ row.name }}({{ row.telphone }})</span>
             </template>
           </FilterableSelect>
         </el-form-item>
