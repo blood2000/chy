@@ -464,6 +464,7 @@ export default {
       this.getStatisticInfo();
     }
   },
+
   created() {
     const { isAdmin = false, isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
     this.isAdmin = isAdmin;
