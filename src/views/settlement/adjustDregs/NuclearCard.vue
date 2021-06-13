@@ -161,7 +161,7 @@ export default {
         this.meter = ret.meter;
 
         // console.log(ret, '数据');
-        this.setLocalStorage(ret.userInfo.user_code, { [ret.userInfo]: ret.dataList, meter: ret.meter });
+        this.setLocalStorage(this.userInfo.user_code, { [this.userInfo]: this.IClist, meter: this.meter });
         this.initData();
       }, () => {
         this.loading = false;
@@ -262,7 +262,8 @@ export default {
             // 销卡
             action.cancellation().then(res => {
               if (res.code === 200) {
-                this.msgSuccess('保存并核销成功');
+                this.msgSuccess('核销成功');
+                this.removeLocalStorage(this.userInfo.user_code);
                 this.userInfo = {};
                 this.list = [];
                 this.IClist = [];

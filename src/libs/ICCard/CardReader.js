@@ -749,6 +749,8 @@ CardReader.action['readUserInfoAndreadData'] = async function() {
 
     // 6. 数据解析
     ret = CardReader.fn.utf8HexToStr(ret.data);
+
+    console.log(ret);
     const userInfo = CardReader.fn.resultData(ret, USERINFO).data;
 
     // 7. 继续 读取卡信息== 进入数据目录 02
