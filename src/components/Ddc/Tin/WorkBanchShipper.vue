@@ -866,16 +866,16 @@ export default {
         // driver, //	合作司机	integer(int32)	integer(int32)
         frequentlyAddress, //	常用地址	integer(int32)	integer(int32)
         // frozenCapital, //	冻结余额	number
-        invoice: { // 发票	货主工作台-发票统计	货主工作台-发票统计
-          applyInvoice, //	申请发票数	integer(int32)
-          applyInvoiceAmount, //	申请金额	number
-          auditInvoice, //	待审核发票数	integer(int32)
-          auditInvoiceAmount, //	待审核金额	number
-          openInvoice, //	已开票	integer(int32)
-          openInvoiceAmount //	已开票金额	number
-          // openInvoiceAmountToday, //	今日已开票金额	number
-          // openInvoiceToday //	今日开票
-        },
+        // invoice: { // 发票	货主工作台-发票统计	货主工作台-发票统计
+        //   applyInvoice, //	申请发票数	integer(int32)
+        //   applyInvoiceAmount, //	申请金额	number
+        //   auditInvoice, //	待审核发票数	integer(int32)
+        //   auditInvoiceAmount, //	待审核金额	number
+        //   openInvoice, //	已开票	integer(int32)
+        //   openInvoiceAmount //	已开票金额	number
+        //   // openInvoiceAmountToday, //	今日已开票金额	number
+        //   // openInvoiceToday //	今日开票
+        // },
         item,	// 项目	integer(int32)	integer(int32)
         order: { // 货源	货主工作台-货源统计Vo	货主工作台-货源统计Vo
           artificialClose, //	手动关闭	integer(int32)
@@ -907,6 +907,18 @@ export default {
         partnerTeam, // 10
         partnerVehicle // : 4
       } = res.data.waybill || {};
+
+      const {
+        // 发票	货主工作台-发票统计	货主工作台-发票统计
+        applyInvoice, //	申请发票数	integer(int32)
+        applyInvoiceAmount, //	申请金额	number
+        auditInvoice, //	待审核发票数	integer(int32)
+        auditInvoiceAmount, //	待审核金额	number
+        openInvoice, //	已开票	integer(int32)
+        openInvoiceAmount //	已开票金额	number
+        // openInvoiceAmountToday, //	今日已开票金额	number
+        // openInvoiceToday //	今日开票
+      } = res.data.invoice || {};
 
 
       this.statiStical.team = partnerTeam;

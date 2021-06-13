@@ -26,10 +26,10 @@
         <el-form-item
           v-show="!isShipment"
           label="发货企业"
-          prop="deliveryCompany"
+          prop="companyCode"
         >
           <!-- <el-input
-            v-model="queryParams.deliveryCompany"
+            v-model="queryParams.companyCode"
             placeholder="请输入发货企业"
             clearable
             size="small"
@@ -37,7 +37,7 @@
             @keyup.enter.native="handleQuery"
           /> -->
           <FilterableSelect
-            v-model="queryParams.deliveryCompany"
+            v-model="queryParams.companyCode"
             clearable
             style="width:228px"
             placeholder="请输入发货企业"
@@ -49,14 +49,14 @@
               key: 'rows'
             }"
             :show-key="{
-              value: 'adminName',
-              label: 'adminName',
+              value: 'orgCode',
+              label: 'companyName',
             }"
             :keywords="'searchValue'"
-            @selected="(data)=>{ shipmentCode= data.code; companyCode = data.companyCode; handleQuery()}"
+            @selected="(data)=>{ shipmentCode= data.code; orgCode = data.orgCode; companyCode = data.companyCode; handleQuery()}"
           >
             <template #default="{row}">
-              <span>{{ row.adminName }}({{ row.telphone }})</span>
+              <span>{{ row.companyName }}</span>
             </template>
           </FilterableSelect>
         </el-form-item>
@@ -290,7 +290,7 @@
             :axios="{
               queryFn:listForWeb,
               queryData:{
-                shipmentCode: shipmentCode
+                orgCode: orgCode
               },
               key: 'data'
             }"
@@ -309,10 +309,10 @@
 
         <el-form-item
           label="调度者名称"
-          prop="teamName"
+          prop="teamCode"
         >
           <!-- <el-input
-            v-model="queryParams.teamName"
+            v-model="queryParams.teamCode"
             placeholder="请输入调度者名称"
             clearable
             size="small"
@@ -321,7 +321,7 @@
           /> -->
 
           <FilterableSelect
-            v-model="queryParams.teamName"
+            v-model="queryParams.teamCode"
             clearable
             style="width:228px"
             placeholder="请输入调度者名称"
@@ -334,14 +334,14 @@
               key: 'rows'
             }"
             :show-key="{
-              value: 'teamLeaderName',
-              label: 'teamLeaderName',
+              value: 'code',
+              label: 'name',
             }"
-            :keywords="'keywords'"
+            :keywords="'name'"
             @selected="(data)=>{ handleQuery()}"
           >
             <template #default="{row}">
-              <span>{{ row.teamLeaderName }}({{ row.telphone }})</span>
+              <span>{{ row.name }}({{ row.telphone }})</span>
             </template>
           </FilterableSelect>
         </el-form-item>
@@ -673,12 +673,12 @@ export default {
         'waybillNo': undefined,
         'icStatus': undefined,
         'orderClient': undefined,
-        'deliveryCompany': undefined,
+        'companyCode': undefined,
         'isReturn': undefined,
         'isChild': undefined,
         'status': '4',
         ztcCode: undefined,
-        teamName: undefined,
+        teamCode: undefined,
         waybill: undefined,
         projectCode: undefined,
         criticism: undefined
@@ -750,6 +750,7 @@ export default {
 
       companyCode: undefined,
       shipmentCode: undefined,
+      orgCode: undefined,
 
       listInfo,
       listForWeb,
