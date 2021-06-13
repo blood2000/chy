@@ -94,7 +94,7 @@
                   },
                   {
                     name: '',
-                    value: statiStical.orderRemitAmountToday || '0',
+                    value: statiStical.orderRemitAmountToday / 10000 || '0',
                     unit: '万元'
                   },
 
@@ -110,7 +110,7 @@
                   },
                   {
                     name: '',
-                    value: statiStical.openInvoiceAmountToday || '0',
+                    value: statiStical.openInvoiceAmountToday / 10000 || '0',
                     unit: '万元'
                   },
 
@@ -377,7 +377,7 @@
                     },
                     {
                       mt_show: '',
-                      value: rowContent.orderBalanceAmount || '0',
+                      value: rowContent.orderBalanceAmount / 10000 || '0',
                       unit: '万元'
                     },
                   ]"
@@ -404,7 +404,7 @@
                     },
                     {
                       mt_show: '',
-                      value: rowContent.orderRemitAmount || '0',
+                      value: rowContent.orderRemitAmount / 10000 || '0',
                       unit: '万元'
                     },
                   ]"
@@ -441,7 +441,7 @@
                     },
                     {
                       mt_show: '',
-                      value:rowContent.applyInvoiceAmount || '0',
+                      value:(rowContent.applyInvoiceAmount / 10000) || '0',
                       unit: '万元'
                     },
                   ]"
@@ -467,7 +467,7 @@
                     },
                     {
                       mt_show: '',
-                      value: rowContent.auditInvoiceAmount || '0',
+                      value: rowContent.auditInvoiceAmount / 10000 || '0',
                       unit: '万元'
                     },
                   ]"
@@ -493,7 +493,7 @@
                     },
                     {
                       mt_show: '',
-                      value: rowContent.openInvoiceAmount || '0',
+                      value: rowContent.openInvoiceAmount / 10000 || '0',
                       unit: '万元'
                     },
                   ]"
