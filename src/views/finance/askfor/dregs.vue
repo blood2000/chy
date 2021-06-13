@@ -60,29 +60,76 @@
 
         <el-form-item
           label="渣土场"
-          prop="ztcName"
+          prop="ztcCode"
         >
-          <el-input
-            v-model="queryParams.ztcName"
+          <!-- <el-input
+            v-model="queryParams.ztcCode"
             placeholder="请输入渣土场"
             clearable
             size="small"
             style="width: 230px"
             @keyup.enter.native="handleQuery"
-          />
+          /> -->
+          <FilterableSelect
+            v-model="queryParams.ztcCode"
+            clearable
+            style="width:228px"
+            placeholder="请输入渣土场"
+            :axios="{
+              queryFn:listForWeb,
+              queryData:{
+                shipmentCode: shipmentCode
+              },
+              key: 'data'
+            }"
+            :show-key="{
+              value: 'code',
+              label: 'name',
+            }"
+            :keywords="'name'"
+            @selected="handleQuery"
+          >
+            <template #default="{row}">
+              <span>{{ row.name }}</span>
+            </template>
+          </FilterableSelect>
         </el-form-item>
         <el-form-item
           label="调度者名称"
-          prop="teamName"
+          prop="teamCode"
         >
-          <el-input
-            v-model="queryParams.teamName"
+          <!-- <el-input
+            v-model="queryParams.teamCode"
             placeholder="请输入调度者名称"
             clearable
             size="small"
             style="width: 230px"
             @keyup.enter.native="handleQuery"
-          />
+          /> -->
+          <FilterableSelect
+            v-model="queryParams.teamCode"
+            clearable
+            style="width:228px"
+            placeholder="请输入调度者名称"
+            :axios="{
+              queryFn:teamListInfo,
+              queryData:{
+                isAsc: 'desc',
+                orderByColumn:'t0.create_time'
+              },
+              key: 'rows'
+            }"
+            :show-key="{
+              value: 'code',
+              label: 'teamLeaderName',
+            }"
+            :keywords="'keywords'"
+            @selected="(data)=>{ handleQuery()}"
+          >
+            <template #default="{row}">
+              <span>{{ row.teamLeaderName }}({{ row.telphone }})</span>
+            </template>
+          </FilterableSelect>
         </el-form-item>
 
         <el-form-item
@@ -227,6 +274,8 @@
 </template>
 
 <script>
+import { listForWeb } from '@/api/listForWeb/index';
+import { listInfo as teamListInfo } from '@/api/assets/team';
 import { shipmentList } from '@/api/finance/askfor'; // 获取货主(搜索用)
 import { adjustDregsList, adjustListApi, passBatchClaim } from '@/api/settlement/adjustDregs'; // 1 当前页列表(批次号) 2. 表头 3.索票
 
@@ -238,10 +287,12 @@ import StatementsDialog from '@/views/settlement/adjustDregs/StatementsDialog';
 // 驳回弹窗
 import RejectDialog from './components/rejectDialog';
 
+import FilterableSelect from '@/components/FilterableSelect';
+
 
 export default {
   'name': 'AskforDregs',
-  components: { StatementsDialog, RejectDialog },
+  components: { StatementsDialog, RejectDialog, FilterableSelect },
   data() {
     return {
       tableColumnsConfig: [],
@@ -267,8 +318,8 @@ export default {
         shipper: undefined, //	发票抬头	query	false
         operator: undefined, //	操作人名称	query	false
         status: 1, //	1已申请对账列表 2已申请开票列表 3已申请打款列表 4已完成列表	query	false
-        teamName: undefined, //	调度者名称	query	false
-        ztcName: undefined, //	渣土场	query	false
+        teamCode: undefined, //	调度者名称	query	false
+        ztcCode: undefined, //	渣土场	query	false
         'pageNum': 1,
         'pageSize': 10,
         'shipmentCode': undefined
@@ -334,7 +385,14 @@ export default {
         searchValue: undefined
       },
       shipmentloading: false,
-      dataOver: false // 是否请求完了
+      dataOver: false, // 是否请求完了
+
+      shipmentCode: undefined,
+      companyCode: undefined,
+
+      shipmentList,
+      listForWeb,
+      teamListInfo
     };
   },
   computed: {
@@ -473,7 +531,10 @@ export default {
         this.askforlist = [];
       }
     },
-    chooseShipment() {
+    chooseShipment(data) {
+      const filterData = (this.shipmentlist.filter(e => e['code'] === data))[0] || {};
+      this.shipmentCode = filterData.code;
+      this.companyCode = filterData.companyCode;
       this.handleQuery();
     },
     /** 搜索按钮操作 */

@@ -21,30 +21,77 @@
 
     <el-form-item
       label="渣土场"
-      prop="ztcName"
+      prop="ztcCode"
     >
-      <el-input
-        v-model="queryParams.ztcName"
+      <!-- <el-input
+        v-model="queryParams.ztcCode"
         placeholder="请输入渣土场"
         clearable
         size="small"
         style="width: 228px"
         @keyup.enter.native="$emit('handleQuery')"
-      />
+      /> -->
+      <FilterableSelect
+        v-model="queryParams.ztcCode"
+        clearable
+        style="width:228px"
+        placeholder="请输入渣土场"
+        :axios="{
+          queryFn:listForWeb,
+          queryData:{
+            shipmentCode: shipmentCode
+          },
+          key: 'data'
+        }"
+        :show-key="{
+          value: 'code',
+          label: 'name',
+        }"
+        :keywords="'name'"
+        @selected="(data)=>{ $emit('handleQuery')}"
+      >
+        <template #default="{row}">
+          <span>{{ row.name }}</span>
+        </template>
+      </FilterableSelect>
     </el-form-item>
 
     <el-form-item
       label="调度者名称"
-      prop="teamName"
+      prop="teamCode"
     >
-      <el-input
-        v-model="queryParams.teamName"
+      <!-- <el-input
+        v-model="queryParams.teamCode"
         placeholder="请输入调度者名称"
         clearable
         size="small"
         style="width: 228px"
         @keyup.enter.native="$emit('handleQuery')"
-      />
+      /> -->
+      <FilterableSelect
+        v-model="queryParams.teamCode"
+        clearable
+        style="width:228px"
+        placeholder="请输入调度者名称"
+        :axios="{
+          queryFn:teamListInfo,
+          queryData:{
+            isAsc: 'desc',
+            orderByColumn:'t0.create_time'
+          },
+          key: 'rows'
+        }"
+        :show-key="{
+          value: 'code',
+          label: 'teamLeaderName',
+        }"
+        :keywords="'keywords'"
+        @selected="(data)=>{ $emit('handleQuery')}"
+      >
+        <template #default="{row}">
+          <span>{{ row.teamLeaderName }}({{ row.telphone }})</span>
+        </template>
+      </FilterableSelect>
     </el-form-item>
 
     <el-form-item
@@ -64,16 +111,39 @@
     <el-form-item
       v-show="!isShipment"
       label="发货企业"
-      prop="companyName"
+      prop="companyCode"
     >
-      <el-input
-        v-model="queryParams.companyName"
+      <!-- <el-input
+        v-model="queryParams.companyCode"
         placeholder="请输入发货企业"
         clearable
         size="small"
         style="width: 228px"
         @keyup.enter.native="$emit('handleQuery')"
-      />
+      /> -->
+      <FilterableSelect
+        v-model="queryParams.companyCode"
+        clearable
+        style="width:228px"
+        placeholder="请输入发货企业"
+        :axios="{
+          queryFn:shipmentList,
+          queryData:{
+            authStatus: undefined
+          },
+          key: 'rows'
+        }"
+        :show-key="{
+          value: 'code',
+          label: 'companyName',
+        }"
+        :keywords="'searchValue'"
+        @selected="(data)=>{ shipmentCode= data.code; companyCode = data.companyCode; $emit('handleQuery')}"
+      >
+        <template #default="{row}">
+          <span class="mr20">{{ row.adminName }}({{ row.telphone }})</span><span>{{ row.companyName }}</span>
+        </template>
+      </FilterableSelect>
     </el-form-item>
 
     <el-form-item>
@@ -101,8 +171,15 @@
 
 <script>
 // 已打款 - 表格组件
+import { shipmentList } from '@/api/finance/askfor'; // 获取货主(搜索用)
+import { listForWeb } from '@/api/listForWeb/index';
+import { listInfo as teamListInfo } from '@/api/assets/team';
+
+
+import FilterableSelect from '@/components/FilterableSelect';
 export default {
   name: 'AlreadyQueryForm',
+  components: { FilterableSelect },
   props: {
     value: {
       type: Object,
@@ -113,7 +190,15 @@ export default {
   },
 
   data() {
-    return {};
+    return {
+      shipmentCode: undefined,
+      companyCode: undefined,
+
+      shipmentList,
+      listForWeb,
+      teamListInfo
+
+    };
   },
 
   computed: {
