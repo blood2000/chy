@@ -410,7 +410,7 @@
       </el-form>
 
       <div v-show="showSearch && activeName === '7'">
-        <AlreadyPaid v-model="alreadyPaid_queryParams" @handleQuery="handleClick('7')" />
+        <AlreadyPaid v-model="alreadyPaid_queryParams" :is-shipment="isShipment" @handleQuery="handleClick('7')" />
       </div>
     </div>
 

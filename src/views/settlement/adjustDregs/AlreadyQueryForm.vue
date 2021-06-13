@@ -62,6 +62,7 @@
     </el-form-item>
 
     <el-form-item
+      v-show="!isShipment"
       label="发货企业"
       prop="companyName"
     >
@@ -107,6 +108,7 @@ export default {
       type: Object,
       default: () => { return {}; }
     },
+    isShipment: Boolean,
     loading: Boolean
   },
 
