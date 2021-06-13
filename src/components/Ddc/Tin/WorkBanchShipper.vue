@@ -927,6 +927,7 @@ export default {
       // this.statiStical.1212
       // 项目模块
       this.dagaoItem = {
+        ...(this.dagaoItem || {}),
         item,
         frequentlyAddress,
         rule
@@ -935,6 +936,7 @@ export default {
 
       // 中间
       this.rowContent = {
+        ...(this.rowContent || {}),
         // balanceAccount,
         // frozenCapital,
 
