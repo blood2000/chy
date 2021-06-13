@@ -78,7 +78,7 @@
             :axios="{
               queryFn:listForWeb,
               queryData:{
-                shipmentCode: shipmentCode
+                orgCode: orgCode
               },
               key: 'data'
             }"
@@ -388,6 +388,7 @@ export default {
       dataOver: false, // 是否请求完了
 
       shipmentCode: undefined,
+      orgCode: undefined,
       companyCode: undefined,
 
       shipmentList,
@@ -534,6 +535,7 @@ export default {
     chooseShipment(data) {
       const filterData = (this.shipmentlist.filter(e => e['code'] === data))[0] || {};
       this.shipmentCode = filterData.code;
+      this.orgCode = filterData.orgCode;
       this.companyCode = filterData.companyCode;
       this.handleQuery();
     },

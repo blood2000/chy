@@ -39,7 +39,7 @@
         :axios="{
           queryFn:listForWeb,
           queryData:{
-            shipmentCode: shipmentCode
+            orgCode: orgCode
           },
           key: 'data'
         }"
@@ -134,14 +134,14 @@
           key: 'rows'
         }"
         :show-key="{
-          value: 'code',
+          value: 'orgCode',
           label: 'companyName',
         }"
         :keywords="'searchValue'"
-        @selected="(data)=>{ shipmentCode= data.code; companyCode = data.companyCode; $emit('handleQuery')}"
+        @selected="(data)=>{ shipmentCode= data.code; orgCode=data.orgCode; companyCode = data.companyCode; $emit('handleQuery')}"
       >
         <template #default="{row}">
-          <span class="mr20">{{ row.adminName }}({{ row.telphone }})</span><span>{{ row.companyName }}</span>
+          <span>{{ row.companyName }}</span>
         </template>
       </FilterableSelect>
     </el-form-item>
@@ -193,6 +193,7 @@ export default {
     return {
       shipmentCode: undefined,
       companyCode: undefined,
+      orgCode: undefined,
 
       shipmentList,
       listForWeb,
