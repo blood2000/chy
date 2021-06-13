@@ -29,7 +29,7 @@
             <div class="ly-left-bottom-left-bottom ly-border">
               <Title class="title_4 mb05rem" icon="6">地域业务分布情况<span>Achievement of Goals</span></Title>
               <div class="ly-left-bottom-left-box ly-border">
-                none
+                <BusinessDistribution ref="BusinessDistributionRef" />
               </div>
             </div>
           </div>
@@ -109,6 +109,7 @@ import TotalData from './TotalData';// 中间总数统计
 import ScrollData from './ScrollData';// 中间滚屏数据
 import Map from './Map.vue';// 地图
 import FreightTypeRanking from './FreightTypeRanking';// 货运类型排行
+import BusinessDistribution from './BusinessDistribution.vue';// 地区业务分布情况
 import { getCompanyPerformance, getBusinessDetail, getCompanyDriverRank } from '@/api/statistic/statistic.js';
 // import { dataJson } from './data';
 
@@ -128,7 +129,8 @@ export default {
     TotalData,
     ScrollData,
     Map,
-    FreightTypeRanking
+    FreightTypeRanking,
+    BusinessDistribution
   },
   data() {
     return {
