@@ -1,6 +1,6 @@
 <template>
   <el-dialog v-loading :title="`发卡人: ${ userInfo.issuing_name || ''} (承运司机: ${userInfo.user_name ||''})`" :visible="visible" width="80%" append-to-body :close-on-click-modal="false" @close="handlerClose">
-    <div v-show="true" class="mb20" style="padding: 20px;">
+    <div v-show="false" class="mb20" style="padding: 20px;">
       <!-- <el-button type="primary" @click="handler('cancellation')">注销卡片(清空使用者信息)</el-button> -->
       <el-button type="primary" @click="handler('issuingCard')">发卡(绑定卡用户)</el-button>
       <!-- <el-button type="primary" @click="handler('readUserinfo')">读取用户信息</el-button> -->
@@ -81,7 +81,7 @@
 
 
     <div slot="footer" class="dialog-footer ly-flex-pack-center">
-      <el-button type="primary" :disabled="!list.length || isUserInfo || isError || isWart" @click="submitForm">保存并清空</el-button>
+      <el-button type="primary" :disabled="loading || !list.length || isUserInfo || isError || isWart" @click="submitForm">保存并清空</el-button>
     </div>
   </el-dialog>
 </template>
@@ -90,20 +90,6 @@
 import CardReader from '@/libs/ICCard/CardReader';
 import { checkList, delWaybill, check } from '@/api/settlement/adjustDregs';
 const { action, fn } = CardReader;
-
-const datads = {
-  driverName: '测试独立强',
-  driverPhone: '15859109001',
-  fillTime: '1623177000000',
-  licenseNumber: '闽AQ8001',
-  mudtail: '妈湾',
-  orderId: '30273',
-  projectName: '测试项目3',
-  serialNumber: '',
-  signTime: '1623177480000',
-  waybillId: '2977608'
-};
-console.log(fn.setData('1010|1|', datads));
 
 export default {
   name: 'NuclearCard',
@@ -174,7 +160,7 @@ export default {
         this.IClist = ret.dataList;
         this.meter = ret.meter;
 
-        console.log(ret, '数据');
+        // console.log(ret, '数据');
         this.setLocalStorage(ret.userInfo.user_code, { [ret.userInfo]: ret.dataList, meter: ret.meter });
         this.initData();
       }, () => {
@@ -238,7 +224,7 @@ export default {
             this.msgSuccess('删除该条记录成功');
             this.list = this.list.filter(e => e.waybillId !== row.waybillId);
             this.delData.push(row.waybillId);
-            console.log('当前删除的数据是', this.delData);
+            // console.log('当前删除的数据是', this.delData);
           });
         }
       });
@@ -372,7 +358,7 @@ export default {
         issuing_code: userData.issuing_code,
         issuing_name: userData.issuing_name
       }).then(res => {
-        console.log(infoDataList);
+        // console.log(infoDataList);
         let meter = '1010|1|';
         if (this.meter) {
           meter = this.meter.join('|') + '|';
@@ -409,8 +395,8 @@ export default {
           center: true
         }).then(() => {
           this._returnWrite(this.userInfo, this.list);
-          console.log(this.list);
-          console.log(this.IClist);
+          // console.log(this.list);
+          // console.log(this.IClist);
         }).catch(() => {
           this.$emit('update:open', false);
         });
