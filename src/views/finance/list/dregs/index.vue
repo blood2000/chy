@@ -13,16 +13,39 @@
         <el-form-item
           v-if="!isShipment"
           label="发货企业"
-          prop="companyName"
+          prop="companyCode"
         >
-          <el-input
-            v-model="queryParams.companyName"
+          <!-- <el-input
+            v-model="queryParams.companyCode"
             placeholder="请输入发货企业"
             clearable
             size="small"
             style="width: 230px"
             @keyup.enter.native="handleQuery"
-          />
+          /> -->
+          <FilterableSelect
+            v-model="queryParams.companyCode"
+            clearable
+            style="width:228px"
+            placeholder="请输入发货企业"
+            :axios="{
+              queryFn:shipmentList,
+              queryData:{
+                authStatus: undefined
+              },
+              key: 'rows'
+            }"
+            :show-key="{
+              value: 'code',
+              label: 'adminName',
+            }"
+            :keywords="'searchValue'"
+            @selected="(data)=>{ shipmentCode= data.code; companyCode = data.companyCode; handleQuery()}"
+          >
+            <template #default="{row}">
+              <span>{{ row.adminName }}({{ row.telphone }})</span>
+            </template>
+          </FilterableSelect>
         </el-form-item>
 
         <el-form-item
@@ -56,30 +79,77 @@
 
         <el-form-item
           label="渣土场"
-          prop="ztcName"
+          prop="ztcCode"
         >
-          <el-input
-            v-model="queryParams.ztcName"
+          <!-- <el-input
+            v-model="queryParams.ztcCode"
             placeholder="请输入渣土场"
             clearable
             size="small"
             style="width: 230px"
             @keyup.enter.native="handleQuery"
-          />
+          /> -->
+          <FilterableSelect
+            v-model="queryParams.ztcCode"
+            clearable
+            style="width:228px"
+            placeholder="请输入渣土场"
+            :axios="{
+              queryFn:listForWeb,
+              queryData:{
+                shipmentCode: shipmentCode
+              },
+              key: 'data'
+            }"
+            :show-key="{
+              value: 'code',
+              label: 'name',
+            }"
+            :keywords="'name'"
+            @selected="handleQuery"
+          >
+            <template #default="{row}">
+              <span>{{ row.name }}</span>
+            </template>
+          </FilterableSelect>
         </el-form-item>
 
         <el-form-item
           label="调度者名称"
-          prop="teamName"
+          prop="teamCode"
         >
-          <el-input
-            v-model="queryParams.teamName"
+          <!-- <el-input
+            v-model="queryParams.teamCode"
             placeholder="请输入调度者名称"
             clearable
             size="small"
             style="width: 230px"
             @keyup.enter.native="handleQuery"
-          />
+          /> -->
+          <FilterableSelect
+            v-model="queryParams.teamCode"
+            clearable
+            style="width:228px"
+            placeholder="请输入调度者名称"
+            :axios="{
+              queryFn:teamListInfo,
+              queryData:{
+                isAsc: 'desc',
+                orderByColumn:'t0.create_time'
+              },
+              key: 'rows'
+            }"
+            :show-key="{
+              value: 'code',
+              label: 'teamLeaderName',
+            }"
+            :keywords="'keywords'"
+            @selected="(data)=>{ handleQuery()}"
+          >
+            <template #default="{row}">
+              <span>{{ row.teamLeaderName }}({{ row.telphone }})</span>
+            </template>
+          </FilterableSelect>
         </el-form-item>
 
         <el-form-item
@@ -258,6 +328,11 @@
 </template>
 
 <script>
+
+import { shipmentList } from '@/api/finance/askfor'; // 获取货主(搜索用)
+import { listForWeb } from '@/api/listForWeb/index';
+import { listInfo as teamListInfo } from '@/api/assets/team';
+
 import { getFile } from '@/api/system/image.js';
 
 import { passPayment } from '@/api/finance/askfor';
@@ -273,9 +348,12 @@ import { getUserInfo } from '@/utils/auth';
 
 import { adjustDregsList, adjustListApi } from '@/api/settlement/adjustDregs';
 
+import FilterableSelect from '@/components/FilterableSelect';
+
+
 export default {
   'name': 'AskforDregs',
-  components: { StatementsDialog, BillingDialog, RejectDialog },
+  components: { StatementsDialog, BillingDialog, RejectDialog, FilterableSelect },
   data() {
     return {
       // s=图片
@@ -331,12 +409,12 @@ export default {
         'pageNum': 1,
         'pageSize': 10,
         batchNo: undefined, //	批次号	query	false
-        companyName: undefined, //	发货企业	query	false
+        companyCode: undefined, //	发货企业	query	false
         shipper: undefined, //	发票抬头	query	false
         operator: undefined, //	操作人名称	query	false
         status: 2, //	1已申请对账列表 2已申请开票列表 3已申请打款列表 4已完成列表	query	false
-        teamName: undefined, //	调度者名称	query	false
-        ztcName: undefined //	渣土场	query	false
+        teamCode: undefined, //	调度者名称	query	false
+        ztcCode: undefined //	渣土场	query	false
       },
       invoiceApplyTime: [],
       // 弹框 内容
@@ -371,7 +449,14 @@ export default {
       invoiceFromOptions: [
         { 'dictLabel': '货主向平台索取', 'dictValue': '0' },
         { 'dictLabel': '货主向承运商索取', 'dictValue': '1' }
-      ]
+      ],
+
+      shipmentCode: undefined,
+      companyCode: undefined,
+
+      shipmentList,
+      listForWeb,
+      teamListInfo
     };
   },
   computed: {
@@ -386,7 +471,7 @@ export default {
     isShipmentTableColumnsConfig() {
       return (!this.isShipment ? [
         {
-          prop: 'companyName',
+          prop: 'companyCode',
           isShow: true,
           label: '发货企业',
           sortNum: 2,
