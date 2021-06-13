@@ -295,6 +295,7 @@ export default {
       this.$refs.OperationDataRef.refreshChart();
       // this.$refs.ComplaintChartRef.refreshChart();
       this.$refs.mapRef.refreshChart();
+      this.$refs.FreightTypeRankingRef.refreshChart();
     },
     // 计算根节点fontsize
     setHtmlFontSize() {
