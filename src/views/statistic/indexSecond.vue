@@ -377,6 +377,7 @@ export default {
       this.$refs.CapacityInfoRef.getData(); // 运力
       this.$refs.TargetChartRef.getData(); // 目标
       this.$refs.TotalDataRef.getCount(); // 地图运单
+      this.$refs.FreightTypeRankingRef.getData(); // 货运类型排行
     }
   }
 };

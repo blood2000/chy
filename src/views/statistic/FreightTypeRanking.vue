@@ -36,9 +36,12 @@ export default {
     this.chart = null;
   },
   mounted() {
-    this.initChart();
+    this.getData();
   },
   methods: {
+    getData() {
+      this.initChart();
+    },
     initChart() {
       this.chart = echarts.init(this.$refs.pie, 'macarons');
       this.setOption();
