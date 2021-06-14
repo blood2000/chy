@@ -161,7 +161,7 @@ export default {
         this.meter = ret.meter;
 
         // console.log(ret, '数据');
-        this.setLocalStorage(ret.userInfo.user_code, { [ret.userInfo]: ret.dataList, meter: ret.meter });
+        this.setLocalStorage(this.userInfo.user_code, { [this.userInfo]: this.IClist, meter: this.meter });
         this.initData();
       }, () => {
         this.loading = false;
@@ -177,7 +177,7 @@ export default {
             other: undefined
           };
         }),
-        userCode: this.userInfo.user_code //	用户CODE
+        driverCode: this.userInfo.user_code //	用户CODE
       };
 
       try {
@@ -262,7 +262,8 @@ export default {
             // 销卡
             action.cancellation().then(res => {
               if (res.code === 200) {
-                this.msgSuccess('保存并核销成功');
+                this.msgSuccess('核销成功');
+                this.removeLocalStorage(this.userInfo.user_code);
                 this.userInfo = {};
                 this.list = [];
                 this.IClist = [];
@@ -273,10 +274,11 @@ export default {
               }
             }).catch(error => {
               this.msgError(error);
+              this.loading = false;
             });
+          }).catch(() => {
+            this.loading = false;
           });
-        }).catch(() => {
-
         });
       }
     },
@@ -290,11 +292,11 @@ export default {
         case 'issuingCard':
           // 发卡
           action.issuingCard({
-            user_code: 'b059e2004be441508f8fdf561db6eb4b',
-            user_telno: '15859109001',
-            user_name: '测试独立强',
-            issuing_code: '94671e0bff6647e88db777427d700e32',
-            issuing_name: '陈大帅'
+            user_code: 'f38c9fd49746429fa284472a56475c81',
+            user_telno: '15859109808',
+            user_name: '测试独立',
+            issuing_code: '9a27ad2df954403490641da6ad9fbd7f',
+            issuing_name: '罗增强'
           }).then(res => {
             this.msgSuccess(res.msg);
           });
@@ -312,8 +314,9 @@ export default {
           break;
         case 'writeData':
           // 写数据
+
           // 1010|1|30419;2993353;测试项目;b42da668161f424e8309c2b6eb81a399;贺彩善;17712345678;1623482232031;1623482340000;17;鼓山大桥
-          action.writeData('1010|1|30633;2975634;测试项目4;闽AQ8001;测试独立强;15859109001;1623177000000;1623177480000;;妈湾').then(res => {
+          action.writeData('1010|1|33381;3637601;测试新一轮;闽AC0008;测试独立;15859109808;1623577380000;1623577500000;28;测试渣土新一轮—水泥块').then(res => {
             this.msgSuccess(res.msg);
           });
 
