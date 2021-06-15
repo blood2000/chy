@@ -17,7 +17,7 @@
                 <el-select
                   v-model="form.goodsCode"
                   placeholder="请选择货物名称"
-                  no-data-text="请先输入货源单号"
+                  no-data-text="无数据"
                   clearable
                   filterable
                   size="small"
@@ -46,7 +46,7 @@
                 <el-select
                   v-model="form.loadAddressCode"
                   placeholder="请选择装货地址"
-                  no-data-text="请先输入货源单号"
+                  no-data-text="无数据"
                   clearable
                   filterable
                   size="small"
@@ -68,7 +68,7 @@
                 <el-select
                   v-model="form.unloadAddressCode"
                   placeholder="请选择卸货地址"
-                  no-data-text="请先输入货源单号"
+                  no-data-text="无数据"
                   clearable
                   filterable
                   size="small"
@@ -133,7 +133,7 @@
                 <el-select
                   v-model="form.vehicleCode"
                   placeholder="请选择承运车辆"
-                  no-data-text="请先选择承运司机"
+                  no-data-text="司机暂无车辆"
                   clearable
                   filterable
                   size="small"
