@@ -70,7 +70,7 @@
         </div>
       </div>
       <div class="ly-right-right ly-border">
-        <Title class="title_4 mb05rem" icon="7" :show-time="true">总排名<span>Total number</span></Title>
+        <Title class="title_4 mb05rem" icon="7" :show-time="true" :time-text="'最近30天'">总排名<span>Total number</span></Title>
         <div class="ly-right-right-top mb1rem ly-border">
           <CompanyTop5List :company-rank-data="companyRankData" />
         </div>

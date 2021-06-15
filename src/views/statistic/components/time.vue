@@ -1,5 +1,5 @@
 <template>
-  <div class="s-choose-time">
+  <div class="s-choose-time" :class="{isSecond: isSecond}">
     {{ timeList[currentTime] }}
     <ul class="time-list">
       <li v-for="(value, key) in timeList" :key="key" :class="{active: currentTime == key}" @click="changeTime(key)">{{ value }}</li>
@@ -9,12 +9,18 @@
 
 <script>
 export default {
+  props: {
+    isSecond: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
-      currentTime: 3,
+      currentTime: 2,
       timeList: {
         1: '最近7天',
-        2: '最近1个月',
+        2: '最近30天',
         3: '最近3个月',
         4: '最近1年',
         5: '全部数据' // 实际key为0, 为了排序设为5
@@ -37,7 +43,8 @@ export default {
       return this.currentTime;
     },
     setTimeType() {
-      this.$emit('getTimeType', this.changeKey());
+      const timeKey = this.changeKey();
+      this.$emit('getTimeType', timeKey, this.timeList[timeKey === 0 ? 5 : timeKey]);
     }
   }
 };
@@ -69,12 +76,13 @@ export default {
     display: none;
     z-index: 2;
     position: absolute;
-    bottom: -7.5rem;
+    bottom: -7.6rem;
     right: 0;
     background: #043576;
     border: 0.02rem solid;
     border-image: linear-gradient(45deg, rgba(0, 185, 253, 0.14), rgba(0, 167, 215, 0.14)) 1 1;
     padding: 0 0.6rem;
+    width: 100%;
     >li{
       height: 1.5rem;
       line-height: 1.5rem;
@@ -82,6 +90,7 @@ export default {
       cursor: pointer;
       color: rgba(196, 238, 255, 0.8);
       transition: all 0.2s;
+      font-size: 0.6rem;
       &:not(:last-child){
         border-bottom: 0.02rem solid rgba(30, 74, 132, 1);
       }
@@ -132,6 +141,21 @@ export default {
       -o-transition: -o-transform 0.15s;
       -ms-transition: -ms-transform 0.15s;
     }
+  }
+
+  // 第二版时间控件样式
+  &.isSecond{
+    width: 5rem;
+    height: 1.8rem;
+    border: 1px solid rgba(55, 255, 248, 0.18);
+    background: rgba(0, 45, 93, 0.2);
+    position: absolute;
+    right: calc(50% - 17.4rem);
+    top: 0;
+    text-align: left;
+    padding-left: 0.6rem;
+    font-size: 0.7rem;
+    color: rgba(196, 238, 255, 0.5);
   }
 }
 </style>

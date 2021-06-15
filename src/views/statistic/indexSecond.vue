@@ -21,7 +21,7 @@
         <div class="ly-left-bottom-box ly-flex-pack-justify">
           <div class="ly-left-bottom-left ly-border">
             <div class="ly-left-bottom-left-top ly-border">
-              <Title class="title_4 mb05rem" icon="4" :show-time="true">货运类型排行<span>Performance data</span></Title>
+              <Title class="title_4 mb05rem" icon="4" :show-time="true" :time-text="timeText">货运类型排行<span>Performance data</span></Title>
               <div class="ly-left-bottom-left-box ly-border">
                 <FreightTypeRanking ref="FreightTypeRankingRef" />
               </div>
@@ -29,12 +29,12 @@
             <div class="ly-left-bottom-left-bottom ly-border">
               <Title class="title_4 mb05rem" icon="6">地域业务分布情况<span>Achievement of Goals</span></Title>
               <div class="ly-left-bottom-left-box ly-border">
-                none
+                <BusinessDistribution ref="BusinessDistributionRef" />
               </div>
             </div>
           </div>
           <div class="ly-left-bottom-right ly-border">
-            <Title class="title_5 mb05rem" icon="4" :show-time="true">承运排行<span>Shipping list</span></Title>
+            <Title class="title_5 mb05rem" icon="4" :show-time="true" :time-text="timeText">承运排行<span>Shipping list</span></Title>
             <DriverTop5List :driver-rank-data="driverRankData" :show-top="false" style="height: calc(100% - 2.1rem)" />
           </div>
         </div>
@@ -43,29 +43,31 @@
 
     <!-- center -->
     <div class="ly-center ly-border ly-flex-v ly-flex-pack-justify">
-      <TotalData
+      <TotalDataSecond
         ref="TotalDataRef"
         :branch-code="branchCode"
         class="ly-border"
+        @getTime="getTime"
         @getPartitionListVo="getPartitionListVo"
       />
       <Map ref="mapRef" :partition-list-vo="partitionListVo" class="ly-border" />
-      <ScrollData ref="ScrollDataRef" class="ly-border" />
+      <ScrollData ref="ScrollDataRef" class="ly-border" style="margin: 0 1.4rem" />
     </div>
 
     <!-- right -->
     <div class="ly-right ly-flex-pack-justify ly-border">
       <div class="ly-right-left ly-border">
         <div class="ly-right-left-top mb1rem ly-border">
-          <Title class="title_4 mb05rem" icon="5" :show-time="true">运营情况<span>Operation situation</span></Title>
+          <Title class="title_4 mb05rem" icon="5" :show-time="true" :time-text="timeText">运营情况<span>Operation situation</span></Title>
           <div class="ly-right-left-top-box">
             <OperationData
               ref="OperationDataRef"
               :order-vo="businessData.orderVo"
               :waill-bill-vo="businessData.waillBillVo"
               :week-vo-list="businessData.weekVoList"
+              :is-second="true"
+              style="height: 100%"
             />
-            <ComplaintChart ref="ComplaintChartRef" :complain-vo="businessData.complainVo" />
           </div>
         </div>
         <div class="ly-right-left-bottom ly-border">
@@ -74,7 +76,7 @@
         </div>
       </div>
       <div class="ly-right-right ly-border">
-        <Title class="title_4 mb05rem" icon="7" :show-time="true">业绩数据<span>Performance data</span></Title>
+        <Title class="title_4 mb05rem" icon="7" :show-time="true" :time-text="timeText">业绩数据<span>Performance data</span></Title>
         <div class="ly-right-right-box ly-border">
           <div class="ly-border mb05rem" style="height: 15%">
             <PerformanceInfo ref="PerformanceInfoRef" :performance="performanceData.performance" :is-scale="!!$route.query.isScale" />
@@ -102,13 +104,13 @@ import PerformanceInfo from './PerformanceInfo';// 业绩数据
 import AmountTop5Chart from './AmountTop5Chart';// TOP5省份交易额排名
 import CompanyTop10ListSecond from './CompanyTop10ListSecond';// TOP10省内十大公司
 import OperationData from './OperationData';// 运营情况
-import ComplaintChart from './ComplaintChart';// 投诉统计
 import TargetChart from './TargetChart';// 目标达成情况
 import DriverTop5List from './DriverTop5List';// 总排名TOP5司机
-import TotalData from './TotalData';// 中间总数统计
+import TotalDataSecond from './TotalDataSecond';// 中间总数统计
 import ScrollData from './ScrollData';// 中间滚屏数据
-import Map from './Map.vue';// 地图
+import Map from './Map';// 地图
 import FreightTypeRanking from './FreightTypeRanking';// 货运类型排行
+import BusinessDistribution from './BusinessDistribution';// 地区业务分布情况
 import { getCompanyPerformance, getBusinessDetail, getCompanyDriverRank } from '@/api/statistic/statistic.js';
 // import { dataJson } from './data';
 
@@ -122,13 +124,13 @@ export default {
     AmountTop5Chart,
     CompanyTop10ListSecond,
     OperationData,
-    ComplaintChart,
     TargetChart,
     DriverTop5List,
-    TotalData,
+    TotalDataSecond,
     ScrollData,
     Map,
-    FreightTypeRanking
+    FreightTypeRanking,
+    BusinessDistribution
   },
   data() {
     return {
@@ -156,7 +158,10 @@ export default {
       },
       // 总排名
       companyRankData: [],
-      driverRankData: []
+      driverRankData: [],
+      // 当前时间
+      timeKey: 2,
+      timeText: '最近30天'
     };
   },
   computed: {
@@ -293,8 +298,8 @@ export default {
       this.$refs.AmountTop5ChartRef.refreshChart();
       this.$refs.TargetChartRef.refreshChart();
       this.$refs.OperationDataRef.refreshChart();
-      // this.$refs.ComplaintChartRef.refreshChart();
       this.$refs.mapRef.refreshChart();
+      this.$refs.FreightTypeRankingRef.refreshChart();
     },
     // 计算根节点fontsize
     setHtmlFontSize() {
@@ -329,6 +334,14 @@ export default {
     getPartitionListVo(data = []) {
       this.partitionListVo = data;
     },
+    // 获取时间
+    getTime(timeKey, timeText) {
+      if (timeKey === this.timeKey) return;
+      this.timeKey = timeKey;
+      this.timeText = timeText;
+      // 切换时间后的处理
+      // ...
+    },
     // 获取业绩数据
     getPerformanceData() {
       getCompanyPerformance(this.branchCode).then(response => {
@@ -355,7 +368,6 @@ export default {
         };
         this.$nextTick(() => {
           this.$refs.OperationDataRef.initChart();
-          // this.$refs.ComplaintChartRef.initChart();
         });
       });
     },
@@ -376,6 +388,7 @@ export default {
       this.$refs.CapacityInfoRef.getData(); // 运力
       this.$refs.TargetChartRef.getData(); // 目标
       this.$refs.TotalDataRef.getCount(); // 地图运单
+      this.$refs.FreightTypeRankingRef.getData(); // 货运类型排行
     }
   }
 };
@@ -385,7 +398,7 @@ export default {
 // 辅助线
 .ly-border {
   box-sizing: border-box;
-  border: 0.05rem dashed rgba(255, 255, 255, 0.2);
+  // border: 0.05rem dashed rgba(255, 255, 255, 0.2);
 }
 
 // 设计稿大小：3200*1080

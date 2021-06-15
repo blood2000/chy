@@ -1,10 +1,10 @@
 <template>
   <!-- 货运类型排行 -->
   <div class="s-container ly-flex-pack-justify">
-    <ul class="s-container__list">
+    <ul class="s-container__list ly-flex-v ly-flex-pack-justify">
       <li v-for="(item, index) in pieData" :key="index" class="s-container__list__item ly-flex-pack-start ly-flex-pack-center">
-        <p class="index">{{ index + 1 }}</p>
-        <p class="text">{{ item.name }}</p>
+        <p class="index" :class="'index_' + (index + 1)">{{ index + 1 }}</p>
+        <p class="text">{{ `${item.name}(${item.percen})` }}</p>
       </li>
     </ul>
     <div ref="pie" class="s-container__pie" />
@@ -20,11 +20,11 @@ export default {
     return {
       chart: null,
       pieData: [
-        { value: 200, name: '煤炭及制品' },
-        { value: 100, name: '钢材' },
-        { value: 80, name: '渣土' },
-        { value: 60, name: '原料' },
-        { value: 30, name: '汽车制品' }
+        { value: 200, name: '煤炭及制品', percen: '50%' },
+        { value: 100, name: '钢材', percen: '50%' },
+        { value: 80, name: '渣土', percen: '50%' },
+        { value: 60, name: '原料', percen: '50%' },
+        { value: 30, name: '汽车制品', percen: '50%' }
       ]
     };
   },
@@ -36,9 +36,12 @@ export default {
     this.chart = null;
   },
   mounted() {
-    this.initChart();
+    this.getData();
   },
   methods: {
+    getData() {
+      this.initChart();
+    },
     initChart() {
       this.chart = echarts.init(this.$refs.pie, 'macarons');
       this.setOption();
@@ -68,7 +71,7 @@ export default {
             name: '',
             type: 'pie',
             radius: ['48%', '70%'],
-            center: ['35%', '50%'],
+            center: ['40%', '50%'],
             data: this.pieData,
             // 标示线
             label: {
@@ -154,6 +157,7 @@ export default {
   &__list{
     width: 45%;
     height: 100%;
+    padding: 1rem 0;
     &__item{
       .index{
         width: 0.9rem;
@@ -162,12 +166,29 @@ export default {
         font-size: 0.6rem;
         text-align: center;
         color: #fff;
+        border-radius: 50%;
+        &.index_1{
+          background: #019FF9;
+        }
+        &.index_2{
+          background: #8267FC;
+        }
+        &.index_3{
+          background: #FF6FBB;
+        }
+        &.index_4{
+          background: #60DCEC;
+        }
+        &.index_5{
+          background: #EE7BFF;
+        }
       }
       .text{
         font-size: 0.7rem;
         font-family: 'PingFang Regular';
         font-weight: 500;
         color: #CDEDFF;
+        padding-left: 0.6rem;
       }
     }
   }

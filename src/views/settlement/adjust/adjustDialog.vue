@@ -374,8 +374,11 @@ export default {
 .el-form-item{
   margin-bottom: 0;
 }
-.el-input-number ::v-deep.el-input__inner {
-  text-align: left;
+.el-table .el-input-number ::v-deep.el-input__inner {
+  /* text-align: left; */
+  /* border-radius: 0; */
+  border: 0;
+  background-color: #cceeff;
 }
 .ly-flex{
   flex-wrap: wrap;
