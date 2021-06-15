@@ -36,7 +36,7 @@
     </div>
 
     <!-- 运单 -->
-    <div class="s-container__box bottom">
+    <div class="s-container__box bottom" :class="{isSecond: isSecond}">
       <div class="s-container__box__content ly-flex-pack-start">
         <InfoBox
           class="op-content"
@@ -128,6 +128,10 @@ export default {
       default: () => {
         return [];
       }
+    },
+    isSecond: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -286,6 +290,11 @@ export default {
       right: 0;
       height: 0.05rem;
       background: linear-gradient(to right, rgba(76, 203, 219, 0.5), rgba(76, 203, 219, 0));
+    }
+    &.isSecond{
+      &::after{
+        opacity: 0;
+      }
     }
   }
 }

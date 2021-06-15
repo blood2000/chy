@@ -65,8 +65,9 @@
               :order-vo="businessData.orderVo"
               :waill-bill-vo="businessData.waillBillVo"
               :week-vo-list="businessData.weekVoList"
+              :is-second="true"
+              style="height: 100%"
             />
-            <ComplaintChart ref="ComplaintChartRef" :complain-vo="businessData.complainVo" />
           </div>
         </div>
         <div class="ly-right-left-bottom ly-border">
@@ -103,7 +104,6 @@ import PerformanceInfo from './PerformanceInfo';// 业绩数据
 import AmountTop5Chart from './AmountTop5Chart';// TOP5省份交易额排名
 import CompanyTop10ListSecond from './CompanyTop10ListSecond';// TOP10省内十大公司
 import OperationData from './OperationData';// 运营情况
-import ComplaintChart from './ComplaintChart';// 投诉统计
 import TargetChart from './TargetChart';// 目标达成情况
 import DriverTop5List from './DriverTop5List';// 总排名TOP5司机
 import TotalDataSecond from './TotalDataSecond';// 中间总数统计
@@ -124,7 +124,6 @@ export default {
     AmountTop5Chart,
     CompanyTop10ListSecond,
     OperationData,
-    ComplaintChart,
     TargetChart,
     DriverTop5List,
     TotalDataSecond,
@@ -299,7 +298,6 @@ export default {
       this.$refs.AmountTop5ChartRef.refreshChart();
       this.$refs.TargetChartRef.refreshChart();
       this.$refs.OperationDataRef.refreshChart();
-      // this.$refs.ComplaintChartRef.refreshChart();
       this.$refs.mapRef.refreshChart();
       this.$refs.FreightTypeRankingRef.refreshChart();
     },
@@ -370,7 +368,6 @@ export default {
         };
         this.$nextTick(() => {
           this.$refs.OperationDataRef.initChart();
-          // this.$refs.ComplaintChartRef.initChart();
         });
       });
     },
