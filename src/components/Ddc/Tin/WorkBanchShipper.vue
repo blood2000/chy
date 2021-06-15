@@ -17,8 +17,8 @@
           <!-- 用户信息 -->
           <div class="g-flex">
             <div class="index-frame g-flex g-aligncenter  marginright15" style="width: 100%;">
-              <img v-if="user.avatar != null" class="user-avator" :src="user.avatar">
-              <img v-else class="user-avator" src="~@/assets/images/workbench/icon_noavator.png">
+              <img v-if="user.avatar != null" class="user-avator" :src="user.avatar" @click="JumpH5">
+              <img v-else class="user-avator" src="~@/assets/images/workbench/icon_noavator.png" @click="JumpH5">
               <div style="margin-left:15px;max-width:205px;">
                 <div class="g-color-title g-strong g-title-big">{{ user.nickName }}</div>
                 <div class="user-post g-margin-tb">
@@ -625,6 +625,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import { waybillList, orderList, billList, shipmentWaybillBehavior } from '@/api/workBanch';
 import { getUserInfo } from '@/utils/auth';
 import { listNoticeAll } from '@/api/system/notice';
@@ -700,6 +701,9 @@ export default {
       // 禁用加载
       disabled: true
     };
+  },
+  computed: {
+    ...mapGetters(['token'])
   },
   watch: {
     value(val) {
@@ -1024,6 +1028,9 @@ export default {
         // driver
       };
       this.$forceUpdate();
+    },
+    JumpH5() {
+      window.location.href = 'http://124.71.25.3:8090/#/?isWeb=true&tk=' + this.token;
     }
   }
 };
