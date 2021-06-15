@@ -1,5 +1,5 @@
 <template>
-  <div class="s-choose-time">
+  <div class="s-choose-time" :class="{isSecond: isSecond}">
     {{ timeList[currentTime] }}
     <ul class="time-list">
       <li v-for="(value, key) in timeList" :key="key" :class="{active: currentTime == key}" @click="changeTime(key)">{{ value }}</li>
@@ -9,12 +9,18 @@
 
 <script>
 export default {
+  props: {
+    isSecond: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
-      currentTime: 3,
+      currentTime: 2,
       timeList: {
         1: '最近7天',
-        2: '最近1个月',
+        2: '最近30天',
         3: '最近3个月',
         4: '最近1年',
         5: '全部数据' // 实际key为0, 为了排序设为5
@@ -37,7 +43,8 @@ export default {
       return this.currentTime;
     },
     setTimeType() {
-      this.$emit('getTimeType', this.changeKey());
+      const timeKey = this.changeKey();
+      this.$emit('getTimeType', timeKey, this.timeList[timeKey === 0 ? 5 : timeKey]);
     }
   }
 };
@@ -132,6 +139,16 @@ export default {
       -o-transition: -o-transform 0.15s;
       -ms-transition: -ms-transform 0.15s;
     }
+  }
+
+  // 第二版时间控件样式
+  &.isSecond{
+    width: 5rem;
+    height: 1.8rem;
+    border: 1px solid rgba(55, 255, 248, 0.18);
+    position: absolute;
+    right: calc(50% - 17.4rem);
+    top: 0;
   }
 }
 </style>

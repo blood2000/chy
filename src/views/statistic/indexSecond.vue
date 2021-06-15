@@ -21,7 +21,7 @@
         <div class="ly-left-bottom-box ly-flex-pack-justify">
           <div class="ly-left-bottom-left ly-border">
             <div class="ly-left-bottom-left-top ly-border">
-              <Title class="title_4 mb05rem" icon="4" :show-time="true">货运类型排行<span>Performance data</span></Title>
+              <Title class="title_4 mb05rem" icon="4" :show-time="true" :time-text="timeText">货运类型排行<span>Performance data</span></Title>
               <div class="ly-left-bottom-left-box ly-border">
                 <FreightTypeRanking ref="FreightTypeRankingRef" />
               </div>
@@ -34,7 +34,7 @@
             </div>
           </div>
           <div class="ly-left-bottom-right ly-border">
-            <Title class="title_5 mb05rem" icon="4" :show-time="true">承运排行<span>Shipping list</span></Title>
+            <Title class="title_5 mb05rem" icon="4" :show-time="true" :time-text="timeText">承运排行<span>Shipping list</span></Title>
             <DriverTop5List :driver-rank-data="driverRankData" :show-top="false" style="height: calc(100% - 2.1rem)" />
           </div>
         </div>
@@ -43,10 +43,11 @@
 
     <!-- center -->
     <div class="ly-center ly-border ly-flex-v ly-flex-pack-justify">
-      <TotalData
+      <TotalDataSecond
         ref="TotalDataRef"
         :branch-code="branchCode"
         class="ly-border"
+        @getTime="getTime"
         @getPartitionListVo="getPartitionListVo"
       />
       <Map ref="mapRef" :partition-list-vo="partitionListVo" class="ly-border" />
@@ -57,7 +58,7 @@
     <div class="ly-right ly-flex-pack-justify ly-border">
       <div class="ly-right-left ly-border">
         <div class="ly-right-left-top mb1rem ly-border">
-          <Title class="title_4 mb05rem" icon="5" :show-time="true">运营情况<span>Operation situation</span></Title>
+          <Title class="title_4 mb05rem" icon="5" :show-time="true" :time-text="timeText">运营情况<span>Operation situation</span></Title>
           <div class="ly-right-left-top-box">
             <OperationData
               ref="OperationDataRef"
@@ -74,7 +75,7 @@
         </div>
       </div>
       <div class="ly-right-right ly-border">
-        <Title class="title_4 mb05rem" icon="7" :show-time="true">业绩数据<span>Performance data</span></Title>
+        <Title class="title_4 mb05rem" icon="7" :show-time="true" :time-text="timeText">业绩数据<span>Performance data</span></Title>
         <div class="ly-right-right-box ly-border">
           <div class="ly-border mb05rem" style="height: 15%">
             <PerformanceInfo ref="PerformanceInfoRef" :performance="performanceData.performance" :is-scale="!!$route.query.isScale" />
@@ -105,11 +106,11 @@ import OperationData from './OperationData';// 运营情况
 import ComplaintChart from './ComplaintChart';// 投诉统计
 import TargetChart from './TargetChart';// 目标达成情况
 import DriverTop5List from './DriverTop5List';// 总排名TOP5司机
-import TotalData from './TotalData';// 中间总数统计
+import TotalDataSecond from './TotalDataSecond';// 中间总数统计
 import ScrollData from './ScrollData';// 中间滚屏数据
-import Map from './Map.vue';// 地图
+import Map from './Map';// 地图
 import FreightTypeRanking from './FreightTypeRanking';// 货运类型排行
-import BusinessDistribution from './BusinessDistribution.vue';// 地区业务分布情况
+import BusinessDistribution from './BusinessDistribution';// 地区业务分布情况
 import { getCompanyPerformance, getBusinessDetail, getCompanyDriverRank } from '@/api/statistic/statistic.js';
 // import { dataJson } from './data';
 
@@ -126,7 +127,7 @@ export default {
     ComplaintChart,
     TargetChart,
     DriverTop5List,
-    TotalData,
+    TotalDataSecond,
     ScrollData,
     Map,
     FreightTypeRanking,
@@ -158,7 +159,10 @@ export default {
       },
       // 总排名
       companyRankData: [],
-      driverRankData: []
+      driverRankData: [],
+      // 当前时间
+      timeKey: 2,
+      timeText: '最近30天'
     };
   },
   computed: {
@@ -331,6 +335,14 @@ export default {
     // 获取地图对应省份运单数据
     getPartitionListVo(data = []) {
       this.partitionListVo = data;
+    },
+    // 获取时间
+    getTime(timeKey, timeText) {
+      if (timeKey === this.timeKey) return;
+      this.timeKey = timeKey;
+      this.timeText = timeText;
+      // 切换时间后的处理
+      // ...
     },
     // 获取业绩数据
     getPerformanceData() {

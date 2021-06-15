@@ -1,6 +1,6 @@
 <template>
   <div class="title ly-flex">
-    <span v-if="showTime" class="time">最近30天内</span>
+    <span v-if="showTime" class="time">{{ timeText }}</span>
     <div class="before">
       <img :src="require('@/assets/images/statistic/title_icon_'+icon+'.gif')">
     </div>
@@ -27,6 +27,10 @@ export default {
     showTime: {
       type: Boolean,
       default: false
+    },
+    timeText: {
+      type: String,
+      default: ''
     }
   }
 };
