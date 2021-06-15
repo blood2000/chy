@@ -174,6 +174,8 @@ export default {
         icList: this.IClist.map(e => {
           return {
             ...e,
+            fillTimeDate: e.fillTime,
+            signTimeDate: e.signTime,
             other: undefined
           };
         }),
