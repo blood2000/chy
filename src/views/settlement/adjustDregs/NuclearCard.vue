@@ -2,10 +2,10 @@
   <el-dialog v-loading :title="`发卡人: ${ userInfo.issuing_name || ''} (承运司机: ${userInfo.user_name ||''})`" :visible="visible" width="80%" append-to-body :close-on-click-modal="false" @close="handlerClose">
     <div v-show="false" class="mb20" style="padding: 20px;">
       <!-- <el-button type="primary" @click="handler('cancellation')">注销卡片(清空使用者信息)</el-button> -->
-      <el-button type="primary" @click="handler('issuingCard')">发卡(绑定卡用户)</el-button>
+      <el-button type="primary" @click="handler('issuingCard')">issuingCard</el-button>
       <!-- <el-button type="primary" @click="handler('readUserinfo')">读取用户信息</el-button> -->
       <!-- <el-button type="primary" @click="handler('readData')">读取数据</el-button> -->
-      <el-button type="primary" @click="handler('writeData')">写数据</el-button>
+      <el-button type="primary" @click="handler('writeData')">writeData</el-button>
       <!-- <el-button type="primary" @click="handler('readUserInfoAndreadData')">读取数据</el-button> -->
     </div>
 
@@ -174,6 +174,8 @@ export default {
         icList: this.IClist.map(e => {
           return {
             ...e,
+            fillTimeDate: e.fillTime,
+            signTimeDate: e.signTime,
             other: undefined
           };
         }),

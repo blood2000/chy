@@ -92,7 +92,7 @@
 
       <el-table-column width="162" label="司机实收金额(元)" align="center" prop="deliveryCashFee" fixed="right">
         <template slot-scope="scope">
-          <el-input-number v-model="scope.row.deliveryCashFee" :controls="false" :precision="2" placeholder="请输入司机实收金额" style="width:100%;" size="mini" @blur="getDeliveryCashFee([scope.row])" />
+          <el-input-number v-model="scope.row.deliveryCashFee" :controls="false" :precision="2" placeholder="请输入司机实收金额" style="width:100%;" size="mini" @keyup.native="getDeliveryCashFee($event,[scope.row])" />
         </template>
       </el-table-column>
 
@@ -116,7 +116,7 @@ import { adjustDetail } from '@/api/settlement/adjust';
 import { immediateAccounting, calculateFee } from '@/api/settlement/adjustDregs';
 
 import { floor } from '@/utils/ddc';
-
+// import { DebounceFun } from '@/utils/index';
 
 export default {
   name: 'AdjustDialog',
@@ -142,7 +142,9 @@ export default {
       queryParams: {
         waybillCodeList: []
       },
-      floor
+      floor,
+      changeFee: null,
+      que: {}
     };
   },
   computed: {
@@ -159,44 +161,68 @@ export default {
     }
   },
   created() {
+    this.changeFee = this.newDebounceFun(this.setDeliveryCashFee, 1000);
   },
   methods: {
     // 获取数据
-    async getDeliveryCashFee(arr) {
-      const que = {
-        deliveryCashFee: arr[0].deliveryCashFee, //	金额		false
+    async getDeliveryCashFee(event, arr) {
+      if (this.loading) return;
+      this.que = {
+        deliveryCashFee: event ? event.target.value - 0 : arr[0].deliveryCashFee, //	金额		false
         waybillCodeList: arr.map(e => e.waybillCode)//	运单ids
       };
-      const { data } = await calculateFee(que);
-
-      arr.forEach(row => {
-        data.forEach(da => {
-          if (row.waybillCode === da.waybillCode) {
-            const {
-              // deliveryCashFee, //	司机实收现金	number
-              serviceFee, //	服务费	number
-              serviceTaxFee, //	服务费税费	number
-              shipperRealPay, //	货主实付金额	number
-              taxPayment //	纳税金额	number
-              // waybillCode //	运单CODE
-            } = da;
-
-
-            row.serviceFee = serviceFee;
-            row.shipperRealPay = shipperRealPay;
-            row.serviceTaxFee = floor(serviceTaxFee);
-            row.taxPayment = floor(taxPayment);
-          }
-        });
-      });
+      this.changeFee(arr);
     },
+
+    async setDeliveryCashFee(arr) {
+      this.loading = true;
+      try {
+        const { data } = await calculateFee(this.que);
+        this.loading = false;
+        arr && arr.forEach(row => {
+          data.forEach(da => {
+            if (row.waybillCode === da.waybillCode) {
+              const {
+                deliveryCashFee, //	司机实收现金	number
+                serviceFee, //	服务费	number
+                serviceTaxFee, //	服务费税费	number
+                shipperRealPay, //	货主实付金额	number
+                taxPayment //	纳税金额	number
+                // waybillCode //	运单CODE
+              } = da;
+
+              row.deliveryCashFee = deliveryCashFee;
+              row.serviceFee = serviceFee;
+              row.shipperRealPay = shipperRealPay;
+              row.serviceTaxFee = floor(serviceTaxFee);
+              row.taxPayment = floor(taxPayment);
+            }
+          });
+        });
+      } catch (error) {
+        this.loading = false;
+      }
+    },
+
+    // 防抖=需要带参数,避免和原方法冲突
+    newDebounceFun(callback, time) {
+      var timer;
+      return function(argument) {
+        clearTimeout(timer);
+        timer = setTimeout(function() {
+          callback(argument);
+        }, time);
+      };
+    },
+
+
 
     // 批量修改
     handleChange() {
       this.adjustlist.forEach(e => {
         e.deliveryCashFee = this.deliveryCashFee;
       });
-      this.getDeliveryCashFee(this.adjustlist);
+      this.getDeliveryCashFee(undefined, this.adjustlist);
     },
     /** 提交按钮 */
     async submitForm() {
@@ -294,9 +320,13 @@ export default {
 .el-form-item{
   margin-bottom: 0;
 }
-.el-input-number ::v-deep.el-input__inner {
-  text-align: left;
+.el-table .el-input-number ::v-deep.el-input__inner {
+  /* text-align: left; */
+  /* border-radius: 0; */
+  border: 0;
+  background-color: #cceeff;
 }
+
 .ly-flex{
   flex-wrap: wrap;
 }
