@@ -50,7 +50,7 @@
         @getPartitionListVo="getPartitionListVo"
       />
       <Map ref="mapRef" :partition-list-vo="partitionListVo" class="ly-border" />
-      <ScrollData ref="ScrollDataRef" class="ly-border" />
+      <ScrollData ref="ScrollDataRef" class="ly-border" style="margin: 0 1.4rem" />
     </div>
 
     <!-- right -->
@@ -389,7 +389,7 @@ export default {
 // 辅助线
 .ly-border {
   box-sizing: border-box;
-  border: 0.05rem dashed rgba(255, 255, 255, 0.2);
+  // border: 0.05rem dashed rgba(255, 255, 255, 0.2);
 }
 
 // 设计稿大小：3200*1080

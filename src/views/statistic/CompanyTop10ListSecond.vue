@@ -1,5 +1,5 @@
 <template>
-  <!-- TOP10全省十大公司 -->
+  <!-- TOP10团队排名 -->
   <div class="s-container">
     <h5 class="s-container__title">{{ `TOP 10${title}团队排名` }}</h5>
     <ul class="s-container__list">
