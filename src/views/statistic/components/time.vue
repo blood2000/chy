@@ -76,12 +76,13 @@ export default {
     display: none;
     z-index: 2;
     position: absolute;
-    bottom: -7.5rem;
+    bottom: -7.6rem;
     right: 0;
     background: #043576;
     border: 0.02rem solid;
     border-image: linear-gradient(45deg, rgba(0, 185, 253, 0.14), rgba(0, 167, 215, 0.14)) 1 1;
     padding: 0 0.6rem;
+    width: 100%;
     >li{
       height: 1.5rem;
       line-height: 1.5rem;
@@ -89,6 +90,7 @@ export default {
       cursor: pointer;
       color: rgba(196, 238, 255, 0.8);
       transition: all 0.2s;
+      font-size: 0.6rem;
       &:not(:last-child){
         border-bottom: 0.02rem solid rgba(30, 74, 132, 1);
       }
@@ -146,9 +148,14 @@ export default {
     width: 5rem;
     height: 1.8rem;
     border: 1px solid rgba(55, 255, 248, 0.18);
+    background: rgba(0, 45, 93, 0.2);
     position: absolute;
     right: calc(50% - 17.4rem);
     top: 0;
+    text-align: left;
+    padding-left: 0.6rem;
+    font-size: 0.7rem;
+    color: rgba(196, 238, 255, 0.5);
   }
 }
 </style>
