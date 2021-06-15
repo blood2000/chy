@@ -1030,7 +1030,7 @@ export default {
       this.$forceUpdate();
     },
     JumpH5() {
-      window.location.href = 'http://124.71.25.3:8090/#/?isWeb=true&tk=' + this.token;
+      window.open('http://124.71.25.3:8090/#/?isWeb=true&tk=' + this.token);
     }
   }
 };
