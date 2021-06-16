@@ -322,9 +322,9 @@
       <!-- 弹框内的组件 -->
       <div v-if="openimg" class="ly-flex-pack-center ly-flex-pack-center">
 
-        <viewer :images="[attachUrl]">
+        <viewer :images="attachUrl">
           <img
-            v-for="(src,index) in [attachUrl]"
+            v-for="(src,index) in attachUrl"
             :key="index"
             v-real-img="src"
             src="@/assets/images/workbench/icon_noavator.png"
@@ -367,7 +367,7 @@ export default {
     return {
       // s=图片
       openimg: false,
-      attachUrl: '', // 查看图片地址
+      attachUrl: [], // 查看图片地址
       // e=图片
       isShipment: false,
       tableColumnsConfig: [],
@@ -664,14 +664,16 @@ export default {
         return;
       }
       this.loading = true;
+
+
       getFile(row.imgCodes).then(response => {
         this.loading = false;
         this.openimg = true;
 
         if (response.data && response.data.length > 0) {
-          this.attachUrl = response.data[0].attachUrl;
+          this.attachUrl = response.data.map(e => e.attachUrl);
         } else {
-          this.attachUrl = '';
+          this.attachUrl = [];
         }
       }).catch(() => {
         this.loading = false;
@@ -683,4 +685,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.avatar-wrapper__image{
+  width: 100px;
+  height: 100px;
+  margin: 0 10px;
+}
 </style>
