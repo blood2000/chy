@@ -188,6 +188,8 @@ table th, table td {
     border-bottom: 1px solid #000;
     border-right: 1px solid #000;
     font-weight: normal;
+    padding: 5px;
+    text-align: center;
 }
 #wholecont{
     font-size: 14px;
@@ -204,7 +206,7 @@ table th, table td {
     font-size: 20px;
     text-align: center;
     font-weight: 700;
-    margin: 20px 0 40px;
+    margin: 0 0 40px;
 }
 
 .feiyong{
