@@ -8,7 +8,6 @@
         type="primary"
         icon="el-icon-printer"
         plain
-        class="wholecont-print"
       >打印</el-button>
     </div>
 
