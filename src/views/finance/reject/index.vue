@@ -99,8 +99,8 @@ export default {
       openNullify: false,
       // 操作类型
       operate_typeOptions: [
-        { 'dictLabel': '通过', 'dictValue': 0 },
-        { 'dictLabel': '驳回', 'dictValue': 1 }
+        { 'dictLabel': '驳回', 'dictValue': 0 },
+        { 'dictLabel': '通过', 'dictValue': 1 }
       ],
       statusOptions: [
         { 'dictLabel': '已结算', 'dictValue': 0 },
