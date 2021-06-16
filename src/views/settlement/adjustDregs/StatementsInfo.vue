@@ -120,7 +120,7 @@ export default {
       batchRelatedWaybill({ wayBillCodes: this.wayBillCodes }).then(res => {
         this.loading = false;
         this.adjustlist = res.data.list;
-        this.total = res.total - 0;
+        this.total = res.data.total;
       });
     }
   }
