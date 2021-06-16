@@ -24,8 +24,8 @@
 
     <el-table v-loading="loading" :data="infoList" highlight-current-row border>
       <el-table-column label="序号" align="center" fixed="left" type="index" min-width="5%" />
-      <el-table-column label="支付批次号" align="center" prop="bizNo" />
-      <el-table-column label="运单号" align="center" prop="waybillNo" />
+      <el-table-column label="支付批次号" align="center" prop="bizNo" width="160" />
+      <el-table-column label="运单号" align="center" prop="waybillNo" width="160" />
       <el-table-column label="司机姓名" align="center" prop="driverName" />
       <el-table-column label="司机电话" align="center" prop="driverPhone" />
       <el-table-column label="金额" align="center" prop="deliveryCashFee" />
@@ -38,7 +38,7 @@
           <span v-if="scope.row.responseStatus === 3">异常</span>
         </template>
       </el-table-column>
-      <el-table-column label="到账时间" align="center" prop="finishDate">
+      <el-table-column label="到账时间" align="center" prop="finishDate" width="160">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.finishDate) }}</span>
         </template>
