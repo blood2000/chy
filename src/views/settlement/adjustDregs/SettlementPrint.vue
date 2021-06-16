@@ -8,7 +8,6 @@
         type="primary"
         icon="el-icon-printer"
         plain
-        class="wholecont-print"
       >打印</el-button>
     </div>
 
@@ -74,7 +73,7 @@
             运费结算：
           </el-col>
           <el-col :span="21" class="text-row">
-            {{ floorFn(printData.freightAmount) || '-' }}
+            {{ floorFn(printData.freightAmount) }} 元
           </el-col>
         </el-row>
       </div>
