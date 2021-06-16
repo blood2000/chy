@@ -11,7 +11,7 @@
     <div class="ly-left ly-border">
       <div class="ly-left-top mb1rem ly-border">
         <Title class="title_3" icon="2">用户概览<span>User situation</span></Title>
-        <UserInfo ref="UserInfoRef" :branch-code="branchCode" />
+        <UserInfo ref="UserInfoRef" :branch-code="branchCode" :is-second="true" />
       </div>
       <div class="ly-left-center mb1rem ly-border">
         <Title class="title_3" icon="3">运力情况<span>Capacity situation</span></Title>

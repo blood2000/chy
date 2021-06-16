@@ -187,7 +187,7 @@ export default {
     }
     // 样式区分
     &.blod{
-      font-family: 'PingFang Bold' !important;
+      // font-family: 'PingFang Bold' !important;
     }
     &.small{
       .arow_up{
