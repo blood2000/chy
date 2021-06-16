@@ -23,6 +23,7 @@
       <el-button type="text" class="mr10" @click="handleJumpPage('accountDetails')">账户明细</el-button>
       <el-button type="text" class="mr10" @click="handleJumpPage('withdrawalsRecord')">出入账记录</el-button>
       <el-button type="text" class="mr10" @click="handleJumpPage('transactionRecord')">交易记录</el-button>
+      <el-button v-hasPermi="['wallet:statement']" type="text" class="mr10" @click="handleJumpPage('Statement')">批次对账单</el-button>
     </div>
 
     <div class="app-container app-container--card">

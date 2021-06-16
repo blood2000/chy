@@ -43,3 +43,21 @@ export function getUserWalletBank() {
     method: 'post'
   });
 }
+
+// 批次对账单列表
+export function getBatchStatementList(query) {
+  return request({
+    url: '/transportation/batchStatement/statementList',
+    method: 'get',
+    params: query
+  });
+}
+
+// 现金详情
+export function getBatchStatementDetail(query) {
+  return request({
+    url: '/transportation/batchStatement/cashList',
+    method: 'get',
+    params: query
+  });
+}
