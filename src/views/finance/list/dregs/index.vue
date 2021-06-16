@@ -221,6 +221,15 @@
             @click="handlerPassPayment"
           >批量打款</el-button>
         </el-col>
+
+        <el-col :span="1.5">
+          <el-button
+            type="primary"
+            icon="el-icon-upload2"
+            size="mini"
+            @click="handleExport"
+          >导出</el-button>
+        </el-col>
         <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
@@ -593,6 +602,11 @@ export default {
     // 导出服务费明细
     handleExportService() {
     },
+    // 导出批次列表
+    handleExport() {
+      this.download('/transportation/batch/export', this.queryParams, `batch_${new Date().getTime()}.xlsx`);
+    },
+
 
     handleTableBtn(row, index) {
       this.visible = true;
