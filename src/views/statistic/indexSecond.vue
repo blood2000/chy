@@ -21,13 +21,13 @@
         <div class="ly-left-bottom-box ly-flex-pack-justify">
           <div class="ly-left-bottom-left ly-border">
             <div class="ly-left-bottom-left-top ly-border">
-              <Title class="title_4 mb05rem" icon="4" :show-time="true" :time-text="timeText">货运类型排行<span>Performance data</span></Title>
+              <Title class="title_4 mb05rem" icon="4" :show-time="true" :time-text="timeText">货运类型排行<span>Freight Type list</span></Title>
               <div class="ly-left-bottom-left-box ly-border">
                 <FreightTypeRanking ref="FreightTypeRankingRef" />
               </div>
             </div>
             <div class="ly-left-bottom-left-bottom ly-border">
-              <Title class="title_4 mb05rem" icon="6">地域业务分布情况<span>Achievement of Goals</span></Title>
+              <Title class="title_4 mb05rem" icon="6">地域业务分布情况<span>Geographical Business Distribution</span></Title>
               <div class="ly-left-bottom-left-box ly-border">
                 <BusinessDistribution ref="BusinessDistributionRef" />
               </div>
@@ -50,7 +50,7 @@
         @getTime="getTime"
         @getPartitionListVo="getPartitionListVo"
       />
-      <Map ref="mapRef" :partition-list-vo="partitionListVo" class="ly-border" />
+      <Map ref="mapRef" :partition-list-vo="partitionListVo" :is-second="true" class="ly-border" />
       <ScrollData ref="ScrollDataRef" class="ly-border" style="margin: 0 1.4rem" />
     </div>
 
