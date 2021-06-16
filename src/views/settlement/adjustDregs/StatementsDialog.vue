@@ -107,6 +107,11 @@
               type="text"
               @click="handleBtn(scope.row)"
             >相关运单</el-button>
+            <el-button
+              size="mini"
+              type="text"
+              @click="settlement(scope.row)"
+            >结算单</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -193,11 +198,20 @@
     <el-dialog class="i-adjust" title="票务信息" :visible.sync="openBillPage" width="80%" :close-on-click-modal="false" append-to-body>
       <bill-page v-if="openBillPage" :shipment-code="shipmentCode" @submitRes="submitRes" />
     </el-dialog>
+
+    <!-- 结算单 -->
+    <el-dialog class="i-adjust" title="结算单" :visible.sync="settlementOpen" width="1200px" :close-on-click-modal="false" append-to-body>
+      <div v-if="settlementOpen">
+        <SettlementPrint :print-data="printData" :way-bill-codes="a_dataList" />
+      </div>
+    </el-dialog>
   </el-dialog>
 </template>
 
 
 <script>
+import SettlementPrint from './SettlementPrint.vue';
+
 import StatementsInfo from './StatementsInfo';
 // 批次详情
 import { applyForReconciliation, batchInfo } from '@/api/settlement/adjustDregs';
@@ -207,7 +221,7 @@ import BillPage from '@/views/enterprise/company/billing';
 import { floor } from '@/utils/ddc';
 export default {
   name: 'AdjustDialog',
-  components: { StatementsInfo, BillPage },
+  components: { StatementsInfo, BillPage, SettlementPrint },
   props: {
     title: {
       type: String,
@@ -251,7 +265,11 @@ export default {
       accountStatementVo: null,
       a_dataList: undefined,
       isStatementCode: false,
-      floorFn: floor // 方法
+      floorFn: floor, // 方法
+
+      settlementOpen: false,
+
+      printData: undefined
     };
   },
   computed: {
@@ -497,6 +515,13 @@ export default {
         ...this.formData,
         ...this.queryParams
       };
+    },
+
+    // 结算单
+    settlement(row) {
+      this.printData = row;
+      this.a_dataList = row.waybillCods;
+      this.settlementOpen = true;
     }
 
   }
