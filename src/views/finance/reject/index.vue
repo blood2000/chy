@@ -151,7 +151,7 @@ export default {
       this.loading = true;
       rejectList(this.queryParams).then(response => {
         this.rejectList = response.data.list;
-        this.total = response.total;
+        this.total = response.data.total;
         console.log(this.rejectList);
         this.loading = false;
       });
