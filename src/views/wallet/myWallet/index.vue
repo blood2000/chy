@@ -18,11 +18,11 @@
           <p class="g-text">冻结金额</p>
         </el-col>
       </el-row>
-      <el-button type="primary" class="mr20" :disabled="!walletInfo.amount || walletInfo.amount === 0" @click="handleWithdraw">提现</el-button>
-      <el-button type="text" class="mr10" @click="handleJumpPage('rechargeDescription')">充值说明</el-button>
-      <el-button type="text" class="mr10" @click="handleJumpPage('accountDetails')">账户明细</el-button>
-      <el-button type="text" class="mr10" @click="handleJumpPage('withdrawalsRecord')">出入账记录</el-button>
-      <el-button type="text" class="mr10" @click="handleJumpPage('transactionRecord')">交易记录</el-button>
+      <el-button  v-has-permi="['myWallet:account:withdrawal']" type="primary" class="mr20" :disabled="!walletInfo.amount || walletInfo.amount === 0" @click="handleWithdraw">提现</el-button>
+      <el-button  v-has-permi="['myWallet:account:description']" type="text" class="mr10" @click="handleJumpPage('rechargeDescription')">充值说明</el-button>
+      <el-button  v-has-permi="['myWallet:account:details']" type="text" class="mr10" @click="handleJumpPage('accountDetails')">账户明细</el-button>
+      <el-button  v-has-permi="['myWallet:account:record']" type="text" class="mr10" @click="handleJumpPage('withdrawalsRecord')">出入账记录</el-button>
+      <el-button  v-has-permi="['myWallet:account:transaction']" type="text" class="mr10" @click="handleJumpPage('transactionRecord')">交易记录</el-button>
       <el-button v-hasPermi="['wallet:statement']" type="text" class="mr10" @click="handleJumpPage('Statement')">批次对账单</el-button>
     </div>
 
@@ -32,8 +32,8 @@
         <span class="g-color-blue">{{ isEmptyPassword ? '未设置' : '已设置' }}</span>
       </p>
       <p class="g-text mb20">保护账户财产安全，请设置一个与登录密码不同的支付密码</p>
-      <el-button type="primary" @click="handleChangePassword('edit')">{{ isEmptyPassword ? '设置支付密码' : '修改支付密码' }}</el-button>
-      <el-button @click="handleChangePassword('forget')">忘记密码</el-button>
+      <el-button v-has-permi="['myWallet:pay:reset']" type="primary" @click="handleChangePassword('edit')">{{ isEmptyPassword ? '设置支付密码' : '修改支付密码' }}</el-button>
+      <el-button v-has-permi="['myWallet:pay:forget']" @click="handleChangePassword('forget')">忘记密码</el-button>
     </div>
 
     <!-- 账户提现弹窗 -->

@@ -2,7 +2,7 @@
   <el-dialog class="waybill-detail-dialog i-add" :title="title" :visible="visible" width="1200px" append-to-body @close="cancel">
     <el-tabs v-model="activeTab">
       <!-- 运单 -->
-      <el-tab-pane v-loading="loading" label="运单" name="1">
+      <el-tab-pane v-loading="loading" label="运单" name="1" v-has-permi="['transportation:waybill:getWayBillByCode']">
         <div class="waybill-title"><div class="waybill-icon" />运单<div class="waybill-divider" /></div>
         <el-row>
           <el-col :span="3" class="text-label">
@@ -186,7 +186,7 @@
         </el-row>
       </el-tab-pane>
       <!-- 回单 -->
-      <el-tab-pane label="回单" name="2">
+      <el-tab-pane label="回单" name="2" v-has-permi="['transportation:waybill:receipt']">
         <!-- 装货单 -->
         <div class="waybill-title"><div class="waybill-icon" />装货单<div class="waybill-divider" /></div>
         <el-row>
@@ -239,7 +239,7 @@
         </el-row>
       </el-tab-pane>
       <!-- 轨迹 -->
-      <el-tab-pane label="轨迹" name="3">
+      <el-tab-pane label="轨迹" name="3"  v-has-permi="['transportation:waybill:trajectory']">
         <div v-if="activeTab === '3'" style="height:600px;width:100%;">
           <Track :waybill="form" />
           <div class="waybill-detail-card">
@@ -284,7 +284,7 @@
         </div>
       </el-tab-pane>
       <!-- 评价 -->
-      <el-tab-pane label="评价" name="4">
+      <el-tab-pane label="评价" name="4"  v-has-permi="['transportation:waybill:comment']">
         <el-row>
           <el-col :span="3" class="text-label">
             司机评价货主：

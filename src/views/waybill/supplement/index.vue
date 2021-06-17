@@ -276,6 +276,7 @@
       <el-row :gutter="10" style="margin: 0 24px;">
         <el-col :span="1.5">
           <el-button
+            v-has-permi="['supplement:batch:orders:import']"
             type="primary"
             icon="el-icon-upload2"
             size="mini"
@@ -284,6 +285,7 @@
         </el-col>
         <el-col :span="1.5">
           <el-button
+            v-has-permi="['supplement:batch:pic:import']"
             type="primary"
             icon="el-icon-upload2"
             size="mini"
@@ -292,6 +294,7 @@
         </el-col>
         <el-col :span="1.5">
           <el-button
+            v-has-permi="['supplement:batch:template:export']"
             type="primary"
             icon="el-icon-download"
             size="mini"

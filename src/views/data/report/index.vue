@@ -339,7 +339,7 @@
 
           <el-button
             v-if="row.isChild == 2"
-            v-hasPermi="['data:report:seperate']"
+            v-hasPermi="['transportation:waybill:childList']"
             size="mini"
             type="text"
             @click="handleEdit(row, 'seperate')"
@@ -348,6 +348,7 @@
           <!-- v-hasPermi="['data:report:report']" -->
           <el-button
             v-if="true"
+            v-has-permi="['transportation:waybillReport:batch']"
             :disabled="loading"
             size="mini"
             type="text"
@@ -427,7 +428,7 @@ import importDialog from './components/importDialog';
 const dictsData1 = [{ dictLabel: '未上报', dictValue: 0 }, { dictLabel: '上报成功', dictValue: 1 }, { dictLabel: '上报失败', dictValue: 2 }];
 
 export default {
-  name: 'Manage', // 页面缓存需要name
+  name: 'Report', // 页面缓存需要name
   components: { CheckResult, ChildDialog, DetailDialog, importDialog },
   data() {
     return {

@@ -119,6 +119,7 @@ export default {
       if (code) {
         if (code.startsWith('https://')) {
           this.attachUrl = code;
+          this.flag = false;
         } else {
           getFile(code).then(response => {
             this.flag = false;

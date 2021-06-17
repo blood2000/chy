@@ -175,6 +175,7 @@
 
         <template #edit="{row}">
           <el-button
+            v-has-permi="['transportation:waybill:receiptList:detail']"
             size="mini"
             type="text"
             @click="handleDetail(row)"
