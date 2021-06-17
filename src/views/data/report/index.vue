@@ -427,7 +427,7 @@ import importDialog from './components/importDialog';
 const dictsData1 = [{ dictLabel: '未上报', dictValue: 0 }, { dictLabel: '上报成功', dictValue: 1 }, { dictLabel: '上报失败', dictValue: 2 }];
 
 export default {
-  name: 'Manage', // 页面缓存需要name
+  name: 'Report', // 页面缓存需要name
   components: { CheckResult, ChildDialog, DetailDialog, importDialog },
   data() {
     return {
