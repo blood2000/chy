@@ -1,77 +1,106 @@
 <template>
   <!-- 用户情况 -->
-  <div class="s-container ly-flex-pack-justify">
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v">
-      <InfoBox
-        label="总用户数"
-        :count="dataList.userCount"
-        :is-user="true"
-      />
-      <InfoBox
-        label="今日新增用户"
-        :count="dataList.newUserCount"
-        :last-count="dataList.lastNewUserCount"
-        :has-yoy="true"
-        :yoy.sync="dataList.newUserYoy"
-        :yoy-type.sync="dataList.newUserYoyType"
-        :yoy-places="1"
-        :is-user="true"
-        :is-blod="true"
-      />
+  <div class="s-container ly-flex-pack-justify" :class="{isSecond: isSecond}">
+    <div class="s-container__box ly-flex-pack-start small">
+      <div class="s-container__box__info ly-flex-pack-justify ly-flex-v">
+        <InfoBox
+          label="总用户数"
+          :count="dataList.userCount"
+          :is-user="true"
+        />
+        <InfoBox
+          label="今日新增用户"
+          :count="dataList.newUserCount"
+          :last-count="dataList.lastNewUserCount"
+          :has-yoy="true"
+          :yoy.sync="dataList.newUserYoy"
+          :yoy-type.sync="dataList.newUserYoyType"
+          :yoy-places="1"
+          :is-user="true"
+          :is-blod="true"
+        />
+      </div>
     </div>
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v">
-      <InfoBox
-        label="总货主数"
-        :count="dataList.shipmentUserCount"
-        :is-user="true"
-      />
-      <InfoBox
-        label="今日新增货主"
-        :count="dataList.newShipmentCount"
-        :last-count="dataList.lastNewShipmentCount"
-        :has-yoy="true"
-        :yoy.sync="dataList.newShipmentYoy"
-        :yoy-type.sync="dataList.newShipmentYoyType"
-        :yoy-places="1"
-        :is-user="true"
-        :is-blod="true"
-      />
+    <div class="s-container__box ly-flex-pack-start big">
+      <div class="s-container__box__info ly-flex-pack-justify ly-flex-v">
+        <InfoBox
+          label="总货主数"
+          :count="dataList.shipmentUserCount"
+          :is-user="true"
+        />
+        <InfoBox
+          label="今日新增货主"
+          :count="dataList.newShipmentCount"
+          :last-count="dataList.lastNewShipmentCount"
+          :has-yoy="true"
+          :yoy.sync="dataList.newShipmentYoy"
+          :yoy-type.sync="dataList.newShipmentYoyType"
+          :yoy-places="1"
+          :is-user="true"
+          :is-blod="true"
+        />
+      </div>
+      <div v-if="isSecond" class="s-container__box__info ly-flex-pack-justify ly-flex-v">
+        <InfoBox
+          label="月活跃数"
+          :count="0"
+          :is-user="true"
+        />
+      </div>
     </div>
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v">
-      <InfoBox
-        label="总调度者"
-        :count="dataList.teamUserCount"
-        :is-user="true"
-      />
-      <InfoBox
-        label="今日新增调度者"
-        :count="dataList.newTeamCount"
-        :last-count="dataList.lastNewTeamCount"
-        :has-yoy="true"
-        :yoy.sync="dataList.newTeamYoy"
-        :yoy-type.sync="dataList.newTeamYoyType"
-        :yoy-places="1"
-        :is-user="true"
-        :is-blod="true"
-      />
+    <div class="s-container__box ly-flex-pack-start big">
+      <div class="s-container__box__info ly-flex-pack-justify ly-flex-v">
+        <InfoBox
+          label="总调度者"
+          :count="dataList.teamUserCount"
+          :is-user="true"
+        />
+        <InfoBox
+          label="今日新增调度者"
+          :count="dataList.newTeamCount"
+          :last-count="dataList.lastNewTeamCount"
+          :has-yoy="true"
+          :yoy.sync="dataList.newTeamYoy"
+          :yoy-type.sync="dataList.newTeamYoyType"
+          :yoy-places="1"
+          :is-user="true"
+          :is-blod="true"
+        />
+      </div>
+      <div v-if="isSecond" class="s-container__box__info ly-flex-pack-justify ly-flex-v">
+        <InfoBox
+          label="月活跃数"
+          :count="0"
+          :is-user="true"
+        />
+      </div>
     </div>
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v">
-      <InfoBox
-        label="总司机"
-        :count="dataList.driverUserCount"
-        :is-user="true"
-      />
-      <InfoBox
-        label="今日新增司机"
-        :count="dataList.newDriverCount"
-        :last-count="dataList.lastNewDriverCount"
-        :has-yoy="true"
-        :yoy.sync="dataList.newDriverYoy"
-        :yoy-type.sync="dataList.newDriverYoyType"
-        :yoy-places="1"
-        :is-user="true"
-        :is-blod="true"
-      />
+    <div class="s-container__box ly-flex-pack-start big last">
+      <div class="s-container__box__info ly-flex-pack-justify ly-flex-v">
+        <InfoBox
+          label="总司机"
+          :count="dataList.driverUserCount"
+          :is-user="true"
+        />
+        <InfoBox
+          label="今日新增司机"
+          :count="dataList.newDriverCount"
+          :last-count="dataList.lastNewDriverCount"
+          :has-yoy="true"
+          :yoy.sync="dataList.newDriverYoy"
+          :yoy-type.sync="dataList.newDriverYoyType"
+          :yoy-places="1"
+          :is-user="true"
+          :is-blod="true"
+        />
+      </div>
+      <div v-if="isSecond" class="s-container__box__info ly-flex-pack-justify ly-flex-v">
+        <InfoBox
+          label="月活跃数"
+          :count="0"
+          :is-user="true"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -88,6 +117,10 @@ export default {
     branchCode: {
       type: String,
       default: null
+    },
+    isSecond: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -150,6 +183,33 @@ export default {
       bottom: 0;
       width: 0.05rem;
       background: linear-gradient(rgba(1, 227, 255, 0), rgba(1, 227, 255, 0.22), rgba(1, 227, 255, 0));
+    }
+    &__info{
+      height: 100%;
+    }
+  }
+  &.isSecond{
+    >.s-container__box{
+      padding-left: 0;
+      padding-right: 1.59rem;
+      &::before{
+        left: -1.59rem;
+      }
+      &:first-child::before{
+        opacity: 0;
+      }
+      &.small{
+        width: 20%;
+      }
+      &.big{
+        width: 27%;
+        >.s-container__box__info{
+          width: 50%;
+        }
+      }
+      &.last{
+        width: 26%;
+      }
     }
   }
 }

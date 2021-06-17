@@ -51,6 +51,7 @@
         label="运输总量"
         unit="吨"
         :count="dataList.transportCount"
+        :has-change-unit="true"
         :places="2"
       />
       <InfoBox
@@ -69,6 +70,7 @@
         label="行驶里程"
         unit="公里"
         :count="dataList.kilometreCount"
+        :has-change-unit="true"
         :places="2"
       />
       <InfoBox
@@ -87,6 +89,7 @@
         label="行驶时长"
         unit="月"
         :count="dataList.haulageTimeCount"
+        :has-change-unit="true"
         :places="2"
       />
       <InfoBox

@@ -12,7 +12,7 @@
       </ul>
     </div>
     <!-- 运单 -->
-    <WaybillCard ref="WaybillCardRef" />
+    <WaybillCard ref="WaybillCardRef" :is-second="isSecond" />
   </div>
 </template>
 
@@ -34,6 +34,10 @@ export default {
       default: () => {
         return [];
       }
+    },
+    isSecond: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -213,21 +217,21 @@ export default {
           const title = `[ 接单 ] ${driver} ${licenseNumber}`;
           const address = val.address.loadFormattedAddress ? val.address.loadFormattedAddress : '';
           this.$refs.WaybillCardRef.setData(status, title, address, time);
-          this.createMapData(status, val, time);
+          this.createMapData(status, val, time, address);
         }
         // 装货
         if (status === 2) {
           const title = `[ 装货 ] ${driver} ${licenseNumber}`;
           const address = val.address.loadFormattedAddress ? val.address.loadFormattedAddress : '';
           this.$refs.WaybillCardRef.setData(status, title, address, time);
-          this.createMapData(status, val, time);
+          this.createMapData(status, val, time, address);
         }
         // 卸货
         if (status === 3) {
           const title = `[ 卸货 ] ${driver} ${licenseNumber}`;
           const address = val.address.unloadFormattedAddress ? val.address.unloadFormattedAddress : '';
           this.$refs.WaybillCardRef.setData(status, title, address, time);
-          this.createMapData(status, val, time);
+          this.createMapData(status, val, time, address);
         }
       }
     },
@@ -299,7 +303,8 @@ export default {
       const title = '【 测试 】';
       const text = '吴敬东 闽A510AY';
       const time = '14:26:25';
-      this.createTooltip(2, data.value[0], data.value[1], title, text, time);
+      const address = '福建省福州市台江区东滨路富邦分部大楼';
+      this.createTooltip(3, data.value[0], data.value[1], title, text, time, address);
       if (this.warnIndex < this.warnData.length - 1) {
         this.warnIndex++;
       } else {
@@ -307,7 +312,7 @@ export default {
       }
     },
     // 处理地图实时数据
-    createMapData(status, val, time) {
+    createMapData(status, val, time, address) {
       let contentTitle = '';
       let cityName = '';
       const contentText = `${val.driver.name ? val.driver.name : ''} ${val.vehicle.licenseNumber ? val.vehicle.licenseNumber : ''}`;
@@ -327,7 +332,7 @@ export default {
         cityName = val.address.unloadCity;
       }
       if (location && location.length === 2) {
-        this.createTooltip(status, location[0], location[1], contentTitle, contentText, contentTime);
+        this.createTooltip(status, location[0], location[1], contentTitle, contentText, contentTime, address);
       } else {
         console.log('后端未获取到经纬度：', val);
         this.getLngAndLat(cityName).then(loc => {
@@ -336,7 +341,7 @@ export default {
             return;
           }
           console.log('loc: ', loc);
-          this.createTooltip(status, loc[0], loc[1], contentTitle, contentText, contentTime);
+          this.createTooltip(status, loc[0], loc[1], contentTitle, contentText, contentTime, address);
         });
       }
     },
@@ -348,7 +353,7 @@ export default {
       });
     },
     // 地图新增一条运单信息-现用
-    createTooltip(status, lng, lat, contentTitle, contentText, contentTime) {
+    createTooltip(status, lng, lat, contentTitle, contentText, contentTime, address) {
       if (!lng || !lat) return;
       // 经纬度转换成屏幕xy坐标
       const pixel = this.chart.convertToPixel('geo', [lng, lat]); // return Array
@@ -361,14 +366,14 @@ export default {
       const circle = document.createElement('div');
       wrap.appendChild(circle);
       // 动画-圆点闪烁1s
-      circle.setAttribute('class', 's-echart-map-waybill-tooltip-circle color' + status);
+      circle.setAttribute('class', 's-echart-map-waybill-tooltip-circle color' + status + (this.isSecond ? ' isSecond' : ''));
       // createDom-line
       const line = document.createElement('div');
       line.setAttribute('class', 's-echart-map-waybill-tooltip-line color' + status);
       wrap.appendChild(line);
       // createDom-content
       const content = document.createElement('div');
-      content.setAttribute('class', 's-echart-map-waybill-tooltip-content color' + status);
+      content.setAttribute('class', 's-echart-map-waybill-tooltip-content color' + status + (this.isSecond ? ' isSecond' : ''));
       wrap.appendChild(content);
       // 设置content基础宽度
       // if (status === 1) {
@@ -378,7 +383,7 @@ export default {
       // } else if (status === 3) {
       //   content.style.width = 12.25 + 1.35 + 'rem';
       // }
-      content.style.width = 12.25 + 1.35 + 'rem'; // 接单还未区分自动/手动，长度先保持一致
+      content.style.width = 12.25 + (this.isSecond ? 2.3 : 1.35) + 'rem'; // 接单还未区分自动/手动，长度先保持一致
       // createDom-car-head
       const carHead = document.createElement('div');
       carHead.setAttribute('class', 's-echart-map-waybill-tooltip-car-head');
@@ -391,6 +396,13 @@ export default {
       const carBodyBox = document.createElement('div');
       carBodyBox.setAttribute('class', 's-echart-map-waybill-tooltip-car-body-box');
       carBody.appendChild(carBodyBox);
+      let carBodyAddress;
+      if (this.isSecond) {
+        carBodyAddress = document.createElement('div');
+        carBodyAddress.setAttribute('class', 's-echart-map-waybill-tooltip-car-body-address');
+        carBodyAddress.innerHTML = address;
+        carBody.appendChild(carBodyAddress);
+      }
       // createDom-title
       const title = document.createElement('div');
       title.setAttribute('class', 's-echart-map-waybill-tooltip-title');
@@ -445,6 +457,9 @@ export default {
       // 动画-文字出现
       setTimeout(() => {
         carBodyBox.style.opacity = 1;
+        if (this.isSecond) {
+          carBodyAddress.style.opacity = 1;
+        }
       }, 2 * 1000);
       // 动画-消失
       setTimeout(() => {
@@ -617,25 +632,29 @@ export default {
     left: 50%;
     transform: translateX(-50%);
     border-radius: 50%;
-    // width: 0.8rem;
-    // height: 0.8rem;
-    width: 0.4rem;
-    height: 0.4rem;
-    // background: url('~@/assets/images/statistic/circle.png') no-repeat;
-    // background-size: 100% 100%;
     animation: s-echart-map-waybill-tooltip-text-flashing 1s;
     animation-iteration-count: 1;
-    &.color1{
-      background: rgba(2, 74, 181, 0.9);
-      box-shadow: 0 0 0.3rem rgba(2, 74, 181, 0.8);
-    }
-    &.color2{
-      background: rgba(126, 53, 184, 0.9);
-      box-shadow: 0 0 0.3rem rgba(126, 53, 184, 0.8);
-    }
-    &.color3{
-      background: rgba(255, 126, 0, 0.8);
-      box-shadow: 0 0 0.3rem rgba(255, 126, 0, 0.8);
+    // width: 0.4rem;
+    // height: 0.4rem;
+    // &.color1{
+    //   background: rgba(2, 74, 181, 0.9);
+    //   box-shadow: 0 0 0.3rem rgba(2, 74, 181, 0.8);
+    // }
+    // &.color2{
+    //   background: rgba(126, 53, 184, 0.9);
+    //   box-shadow: 0 0 0.3rem rgba(126, 53, 184, 0.8);
+    // }
+    // &.color3{
+    //   background: rgba(255, 126, 0, 0.8);
+    //   box-shadow: 0 0 0.3rem rgba(255, 126, 0, 0.8);
+    // }
+    width: 0.8rem;
+    height: 0.8rem;
+    background: url('~@/assets/images/statistic/circle.png') no-repeat;
+    background-size: 100% 100%;
+    &.isSecond{
+      width: 1.1rem;
+      height: 1.1rem;
     }
   }
   @keyframes s-echart-map-waybill-tooltip-text-flashing {
@@ -646,22 +665,22 @@ export default {
   }
   // 线条
   >.s-echart-map-waybill-tooltip-line{
-    //border-left: 0.05rem dashed rgba(255, 255, 255, 0.6);
     position: absolute;
     left: 50%;
     margin-left: -0.06rem;
     bottom: 0.3rem;
     height: 0;
     transition: height 0.3s;
-    &.color1{
-      border-right: 0.08rem dashed rgba(2, 74, 181, 0.8);
-    }
-    &.color2{
-      border-right: 0.08rem dashed rgba(126, 53, 184, 0.8);
-    }
-    &.color3{
-      border-right: 0.08rem dashed rgba(255, 126, 0, 1);
-    }
+    // &.color1{
+    //   border-right: 0.08rem dashed rgba(2, 74, 181, 0.8);
+    // }
+    // &.color2{
+    //   border-right: 0.08rem dashed rgba(126, 53, 184, 0.8);
+    // }
+    // &.color3{
+    //   border-right: 0.08rem dashed rgba(255, 126, 0, 1);
+    // }
+    border-right: 0.08rem dashed rgba(255, 255, 255, 0.6);
   }
   // 消息框
   >.s-echart-map-waybill-tooltip-content{
@@ -757,6 +776,68 @@ export default {
       >.s-echart-map-waybill-tooltip-car-body{
         margin-top: -0.1rem;
         background: linear-gradient(to right, rgba(255, 126, 0, 0.5) 0%, rgba(246, 220, 4, 0.3) 70%, rgba(246, 220, 4, 0) 100%);
+      }
+    }
+    // 地图第二版样式
+    &.isSecond{
+      top: -3.3rem;
+      height: 2.2rem;
+      >.s-echart-map-waybill-tooltip-car-head{
+        width: 2.1rem;
+        height: 2.2rem;
+      }
+      >.s-echart-map-waybill-tooltip-car-body{
+        height: 2.1rem;
+        margin-left: 0.2rem;
+        >.s-echart-map-waybill-tooltip-car-body-box{
+          height: 50%;
+          >.s-echart-map-waybill-tooltip-text{
+            font-weight: normal;
+          }
+        }
+        >.s-echart-map-waybill-tooltip-car-body-address{
+          height: 50%;
+          line-height: 1.05rem;
+          color: #FFFFFF;
+          font-family: PingFang Regular;
+          font-size: 0.6rem;
+          padding-left: 0.4rem;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          opacity: 0;
+          transition: opacity 0.5s;
+        }
+      }
+      &.color1{
+        >.s-echart-map-waybill-tooltip-car-head{
+          background: url('~@/assets/images/statistic/waybill_car_1_second.png') no-repeat;
+          background-size: 100% 100%;
+        }
+        >.s-echart-map-waybill-tooltip-car-body{
+          background: url('~@/assets/images/statistic/car_body_1.png') no-repeat;
+          background-size: 100% 100%;
+        }
+      }
+      &.color2{
+        >.s-echart-map-waybill-tooltip-car-head{
+          background: url('~@/assets/images/statistic/waybill_car_2_second.png') no-repeat;
+          background-size: 100% 100%;
+        }
+        >.s-echart-map-waybill-tooltip-car-body{
+          background: url('~@/assets/images/statistic/car_body_2.png') no-repeat;
+          background-size: 100% 100%;
+        }
+      }
+      &.color3{
+        >.s-echart-map-waybill-tooltip-car-head{
+          background: url('~@/assets/images/statistic/waybill_car_3_second.png') no-repeat;
+          background-size: 100% 100%;
+        }
+        >.s-echart-map-waybill-tooltip-car-body{
+          background: url('~@/assets/images/statistic/car_body_3.png') no-repeat;
+          background-size: 100% 100%;
+        }
       }
     }
   }

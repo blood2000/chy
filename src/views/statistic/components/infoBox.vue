@@ -5,7 +5,10 @@
       <span v-if="unit && unit !== ''">({{ unit }})</span>
     </p>
     <p class="text" :class="[{blod: isBlod}, {small: isSmall}, {smallSize: isSmallSize}]">
-      <count-to :end-val="unit==='万' ? count/10000 : count" :decimal-places="places" />
+      <count-to :end-val="changedCount" :decimal-places="places" />
+      <!-- 单位 -->
+      <span v-if="hasChangeUnit" class="count-unit">{{ changedUnit }}</span>
+      <!-- 同比 -->
       <template v-if="hasYoy">
         <template v-if="myYoyType !== null && myYoyType !== 2">
           <span :class="myYoyType===1 ? 'arow_down' : 'arow_up'" />
@@ -45,6 +48,7 @@ export default {
       type: String,
       default: ''
     },
+    // 固定单位 (备注：为'万'单位时，不能和hasChangeUnit同时传)
     unit: {
       type: String,
       default: ''
@@ -82,6 +86,11 @@ export default {
     isSmallSize: {
       type: Boolean,
       default: false
+    },
+    // 是否换算单位 (备注： unit为'万'单位时，不能和unit同时传)
+    hasChangeUnit: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -89,6 +98,32 @@ export default {
       myYoy: 0,
       myYoyType: 2
     };
+  },
+  computed: {
+    changedCount() {
+      let num = this.count;
+      if (this.unit === '万') {
+        num = Math.floor(this.count / 100) / 100;
+      } else if (this.hasChangeUnit) {
+        if (this.count > 9999 && this.count <= 99999999) {
+          num = Math.floor(this.count / 100) / 100;
+        } else if (this.count > 99999999) {
+          num = Math.floor(Math.floor(Math.floor(this.count / 100) / 100) / 100) / 100;
+        }
+      }
+      return num;
+    },
+    changedUnit() {
+      let unit = '';
+      if (this.hasChangeUnit) {
+        if (this.count > 9999 && this.count <= 99999999) {
+          unit = '万';
+        } else if (this.count > 99999999) {
+          unit = '亿';
+        }
+      }
+      return unit;
+    }
   },
   watch: {
     count(val) {
@@ -135,6 +170,7 @@ export default {
     font-weight: 200;
     color: rgba(213, 234, 255, 1);
     line-height: 1rem;
+    font-family: PingFang Regular;
   }
   >.text{
     font-size: 1.1rem;
@@ -142,6 +178,14 @@ export default {
     color: #FFFFFF;
     // line-height: 1.3rem; //会和vertical-align冲突
     font-family: 'PingFang Medium';
+    .count-unit{
+      font-family: PingFang Regular;
+      font-size: 0.65rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.6);
+      vertical-align: baseline;
+      margin-left: 0.2rem;
+    }
     .arow_up{
       display: inline-block;
       width: 0.9rem;
@@ -187,7 +231,7 @@ export default {
     }
     // 样式区分
     &.blod{
-      font-family: 'PingFang Bold' !important;
+      // font-family: 'PingFang Bold' !important;
     }
     &.small{
       .arow_up{

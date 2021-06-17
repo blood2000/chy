@@ -6,7 +6,7 @@
         <li
           v-for="(item, index) in dataList"
           :key="index"
-          :class="[{isOpacity: isOpacity}, 'color' + item.status]"
+          :class="[{isOpacity: isOpacity}, 'color' + item.status, {isSecond: isSecond}]"
           class="content__list__item ly-flex-v ly-flex-pack-justify"
         >
           <div class="title">{{ item.title }}</div>
@@ -22,6 +22,12 @@
 
 <script>
 export default {
+  props: {
+    isSecond: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       dataList: [],
@@ -166,6 +172,20 @@ export default {
           }
           100% {
             opacity: 1;
+          }
+        }
+        &.isSecond{
+          &.color1{
+            background: url('~@/assets/images/statistic/waybill1_second.png') no-repeat;
+            background-size: 100% 100%;
+          }
+          &.color2{
+            background: url('~@/assets/images/statistic/waybill2_second.png') no-repeat;
+            background-size: 100% 100%;
+          }
+          &.color3{
+            background: url('~@/assets/images/statistic/waybill3_second.png') no-repeat;
+            background-size: 100% 100%;
           }
         }
       }
