@@ -70,6 +70,7 @@
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
           <el-button
+            v-hasPermi="['data:driverto:export']"
             type="primary"
             icon="el-icon-upload2"
             size="mini"

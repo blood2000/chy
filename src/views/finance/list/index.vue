@@ -72,9 +72,9 @@
 
     <div class="g-radio-group">
       <el-radio-group v-model="activeName" size="small" @change="handleClick">
-        <el-radio-button label="1">已申请</el-radio-button>
-        <el-radio-button label="2,3,4">已审核</el-radio-button>
-        <el-radio-button label="5">已开票</el-radio-button>
+        <el-radio-button v-has-permi="['list:applayed']" label="1">已申请</el-radio-button>
+        <el-radio-button  v-has-permi="['list:checked']" label="2,3,4">已审核</el-radio-button>
+        <el-radio-button  v-has-permi="['list:invoiced']" label="5">已开票</el-radio-button>
       </el-radio-group>
     </div>
 
@@ -85,7 +85,7 @@
       >
         <el-col v-show="activeName == '1'" :span="1.5">
           <el-button
-            v-hasPermi="['assets:vehicle:edit']"
+            v-hasPermi="['list:invoiceApply:passCheck']"
             type="primary"
             icon="el-icon-document-checked"
             size="mini"
@@ -139,17 +139,20 @@
         <template #edit="{row}">
           <el-button
             v-show="activeName == '1'"
+            v-hasPermi="['list:invoiceApply:passCheck']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 1)"
           >审核</el-button>
           <el-button
             v-show="row.invoiceStatus == '4'"
+            v-hasPermi="['list:invoiceApply:passCheck']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 2)"
           >开票</el-button>
           <el-button
+            v-hasPermi="['list:invoice:detail']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 3)"

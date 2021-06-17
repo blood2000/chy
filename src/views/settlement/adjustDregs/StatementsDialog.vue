@@ -119,7 +119,7 @@
       <div class="mt20 f20 b ly-flex-pack-justify">
         票务信息
 
-        <el-button v-if="!batchStatementCode" size="mini" type="text" @click="handleBianjiPiaowu">编辑票务信息</el-button>
+        <el-button v-if="!batchStatementCode" v-has-permi="['assets:shipment:invoice:get']" size="mini" type="text" @click="handleBianjiPiaowu">编辑票务信息</el-button>
       </div>
       <el-divider />
 

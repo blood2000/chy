@@ -66,7 +66,6 @@
         <el-table-column label="关联的货源数" align="center" prop="relationOrderNum">
           <template slot-scope="scope">
             <el-button
-              v-hasPermi="['assets:shipment:cargocode:orders']"
               size="mini"
               type="text"
               @click="handleOrderList(scope.row)"

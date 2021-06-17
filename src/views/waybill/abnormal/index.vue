@@ -82,11 +82,13 @@
             @click="handleAbnormal(row)"
           >处理异常</el-button>
           <el-button
+            v-hasPermi="['transportation:waybillAbnormal:orders']"
             size="mini"
             type="text"
             @click="handleWaybill(row)"
           >查看运单</el-button>
           <el-button
+            v-hasPermi="['transportation:waybillAbnormal:logs']"
             size="mini"
             type="text"
             @click="handleLog(row)"

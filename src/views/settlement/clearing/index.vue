@@ -185,7 +185,7 @@
             @click="handleClearing"
           >运单清分</el-button>
           <el-button
-            v-hasPermi="['transportation:waybillSettlementClarify:batchStatu']"
+            v-hasPermi="['transportation:waybillSettlementClarify:batchStatus']"
             type="primary"
             icon="el-icon-refresh"
             size="mini"
@@ -221,12 +221,13 @@
             @click="handleTableBtn(row, 1)"
           >运单清分</el-button>
           <el-button
-            v-hasPermi="['transportation:waybillSettlementClarify:batchStatu']"
+            v-hasPermi="['transportation:waybillSettlementClarify:batchStatus']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 2)"
           >更新清分状态</el-button>
           <el-button
+            v-hasPermi="['transportation:waybillSettlementClarify:detail']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 3)"

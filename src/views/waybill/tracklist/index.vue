@@ -165,9 +165,9 @@
 
     <div class="g-radio-group">
       <el-radio-group v-model="activeName" size="small" @change="handleClick">
-        <el-radio-button label="1">已接单</el-radio-button>
-        <el-radio-button label="2">已装货</el-radio-button>
-        <el-radio-button label="3">已卸货</el-radio-button>
+        <el-radio-button v-has-permi="['waybill:tracklist:received']" label="1">已接单</el-radio-button>
+        <el-radio-button v-has-permi="['waybill:tracklist:loaded']" label="2">已装货</el-radio-button>
+        <el-radio-button v-has-permi="['waybill:tracklist:unloaded']" label="3">已卸货</el-radio-button>
       </el-radio-group>
     </div>
 
