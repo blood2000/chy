@@ -435,6 +435,9 @@ export default {
     '$route.query.t': {
 
       handler(value, odvalue) {
+        // console.log(value, 8888);
+        if (!value) return;
+
         if ((odvalue === '0' || odvalue === '1' || odvalue === '3') && !value) {
           this.$router.replace({
             path: '/refresh'
