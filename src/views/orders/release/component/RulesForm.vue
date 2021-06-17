@@ -25,7 +25,7 @@
             v-model="formData[item.myName]"
             :controls="false"
             :max="999999"
-            :min="-999999"
+            :min="0"
             :precision="2"
             :placeholder="`请输入${item.cnName}`"
             controls-position="right"

@@ -152,20 +152,19 @@
       </el-form>
     </div>
 
+    <div class="g-radio-group ly-flex-pack-justify">
+      <el-radio-group v-model="activeName" size="small" @change="handleClick">
+        <el-radio-button label="0">已发布</el-radio-button>
+        <el-radio-button label="1">已关闭</el-radio-button>
+      </el-radio-group>
+    </div>
+
     <div class="app-container">
 
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
-          <el-radio-group v-model="activeName" size="small" @change="handleClick">
-            <el-radio-button label="0">已发布</el-radio-button>
-            <el-radio-button label="1">已关闭</el-radio-button>
-          </el-radio-group>
-        </el-col>
-
-        <el-col :span="1.5">
           <el-button
-            v-if="false"
-            v-hasPermi="['system:test:export']"
+            v-if="true"
             type="warning"
             icon="el-icon-download"
             size="mini"
@@ -210,13 +209,13 @@
         </template>
 
         <template #goodsPrice="{row}">
-          <span>{{ row.goodsPrice + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) }}</span>
+          <span>{{ isWorth(row.goodsPrice) ? floor(row.goodsPrice) + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) :'-' }}</span>
         </template>
         <template #shipmentPrice="{row}">
-          <span>{{ row.shipmentPrice + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) }}</span>
+          <span>{{ isWorth(row.shipmentPrice) ? floor(row.shipmentPrice) + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) : '-' }}</span>
         </template>
         <template #transactionPrice="{row}">
-          <span>{{ row.transactionPrice + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) }}</span>
+          <span>{{ isWorth(row.transactionPrice) ? floor(row.transactionPrice) + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)):'-' }}</span>
         </template>
 
         <template #status="{row}">
@@ -360,6 +359,7 @@ import { getUserInfo } from '@/utils/auth';
 import OpenDialog from './component/OpenDialog';
 import tableColumnsConfig from './data/config-index';
 import PriceAdjustment from './component/PriceAdjustment';
+import { floor } from '@/utils/ddc';
 
 export default {
   name: 'Manage',
@@ -464,7 +464,8 @@ export default {
         pageNum: 1,
         keywords: '',
         pageSize: 10
-      }
+      },
+      floor
     };
   },
 
@@ -873,7 +874,7 @@ export default {
     handleExport() {
       this.download('/transportation/order/export', {
         ...this.newQueryParams
-      }, `order_export.xlsx`);
+      }, `order_${new Date().getTime()}.xlsx`);
     },
     /** 派单对话 */
     handleDispatch(row) {
@@ -911,6 +912,10 @@ export default {
         return 'red-row';
       }
       return '';
+    },
+
+    isWorth(value) {
+      return !!value || value === 0;
     }
 
   }

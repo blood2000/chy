@@ -201,8 +201,6 @@
             @click="handleAskfor"
           >批量索票</el-button>
           <el-button
-            v-show="false"
-            v-hasPermi="['askfor:invoice:export']"
             type="primary"
             icon="el-icon-download"
             size="mini"
@@ -557,7 +555,12 @@ export default {
     },
     // 导出
     handleExport() {
-      this.download('/transportation/invoice/export', { ...this.queryParams }, `askfor_${new Date().getTime()}.xlsx`);
+      const quer = {
+        ...this.queryParams,
+        createCode: this.queryParams.shipmentCode,
+        shipmentCode: undefined
+      };
+      this.download('/transportation/batch/export', quer, `batch_${new Date().getTime()}.xlsx`);
     },
     // 批量索票
     handleAskfor() {
