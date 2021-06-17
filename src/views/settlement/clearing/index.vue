@@ -172,7 +172,7 @@
           <el-button
             v-hasPermi="['transportation:waybillSettlementClarify:export']"
             type="primary"
-            icon="el-icon-upload2"
+            icon="el-icon-download"
             size="mini"
             @click="handleExport"
           >导出</el-button>
@@ -319,7 +319,7 @@ export default {
       prop: 'edit',
       isShow: true,
       label: '操作',
-      width: 180,
+      width: 200,
       fixed: 'left'
     });
     this.getList();

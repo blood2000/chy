@@ -72,7 +72,7 @@
           <el-button
             v-hasPermi="['data:driverto:export']"
             type="primary"
-            icon="el-icon-upload2"
+            icon="el-icon-download"
             size="mini"
             @click="handleExport"
           >导出</el-button>

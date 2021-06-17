@@ -21,7 +21,7 @@
             <el-button
               v-if="hasFreightInvoice"
               type="primary"
-              icon="el-icon-upload2"
+              icon="el-icon-download"
               size="mini"
               @click="handleExportFreight"
             >导出运费明细</el-button>
@@ -30,7 +30,7 @@
             <el-button
               v-if="hasServiceInvoice"
               type="primary"
-              icon="el-icon-upload2"
+              icon="el-icon-download"
               size="mini"
               @click="handleExportService"
             >导出服务费明细</el-button>

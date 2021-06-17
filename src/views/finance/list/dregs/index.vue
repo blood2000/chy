@@ -221,6 +221,15 @@
             @click="handlerPassPayment"
           >批量打款</el-button>
         </el-col>
+
+        <el-col :span="1.5">
+          <el-button
+            type="primary"
+            icon="el-icon-upload2"
+            size="mini"
+            @click="handleExport"
+          >导出</el-button>
+        </el-col>
         <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
@@ -314,9 +323,9 @@
       <!-- 弹框内的组件 -->
       <div v-if="openimg" class="ly-flex-pack-center ly-flex-pack-center">
 
-        <viewer :images="[attachUrl]">
+        <viewer :images="attachUrl">
           <img
-            v-for="(src,index) in [attachUrl]"
+            v-for="(src,index) in attachUrl"
             :key="index"
             v-real-img="src"
             src="@/assets/images/workbench/icon_noavator.png"
@@ -359,7 +368,7 @@ export default {
     return {
       // s=图片
       openimg: false,
-      attachUrl: '', // 查看图片地址
+      attachUrl: [], // 查看图片地址
       // e=图片
       isShipment: false,
       tableColumnsConfig: [],
@@ -594,6 +603,11 @@ export default {
     // 导出服务费明细
     handleExportService() {
     },
+    // 导出批次列表
+    handleExport() {
+      this.download('/transportation/batch/export', this.queryParams, `batch_${new Date().getTime()}.xlsx`);
+    },
+
 
     handleTableBtn(row, index) {
       this.visible = true;
@@ -651,14 +665,16 @@ export default {
         return;
       }
       this.loading = true;
+
+
       getFile(row.imgCodes).then(response => {
         this.loading = false;
         this.openimg = true;
 
         if (response.data && response.data.length > 0) {
-          this.attachUrl = response.data[0].attachUrl;
+          this.attachUrl = response.data.map(e => e.attachUrl);
         } else {
-          this.attachUrl = '';
+          this.attachUrl = [];
         }
       }).catch(() => {
         this.loading = false;
@@ -670,4 +686,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.avatar-wrapper__image{
+  width: 100px;
+  height: 100px;
+  margin: 0 10px;
+}
 </style>

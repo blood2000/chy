@@ -166,7 +166,7 @@ export default {
   methods: {
     // 获取数据
     async getDeliveryCashFee(event, arr) {
-      if (this.loading) return;
+      if (this.loading || (!(/^[0-9]*$/.test(event.key - 0)) && event.key !== 'ArrowUp' && event.key !== 'ArrowDown' && event.key !== 'Backspace')) return;
       this.que = {
         deliveryCashFee: event ? event.target.value - 0 : arr[0].deliveryCashFee, //	金额		false
         waybillCodeList: arr.map(e => e.waybillCode)//	运单ids

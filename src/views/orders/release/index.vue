@@ -336,7 +336,7 @@ import { getProvinceList } from '@/api/system/area';
 
 
 export default {
-  name: 'Release',
+  // name: 'Release',
   components: {
     OrderBasic,
     OneAddress,
@@ -433,9 +433,8 @@ export default {
       this.formData.tin9 = false;
     },
     '$route.query.t': {
-
       handler(value, odvalue) {
-        if ((odvalue === '0' || odvalue === '1' || odvalue === '3') && !value) {
+        if ((odvalue === '0' || odvalue === '1' || odvalue === '3')) {
           this.$router.replace({
             path: '/refresh'
           });

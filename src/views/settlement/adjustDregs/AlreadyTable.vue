@@ -5,6 +5,15 @@
       class="mb8"
     >
       <slot />
+      <el-col :span="1.5">
+        <el-button
+          type="primary"
+          icon="el-icon-upload2"
+          size="mini"
+          @click="handleExport"
+        >导出</el-button>
+      </el-col>
+
       <el-col :span="1.5" class="fr">
         <tablec-cascader v-model="tableColumnsConfig" :lcokey="config.api" />
       </el-col>
@@ -142,6 +151,17 @@ export default {
       sortNum: 2,
       width: 180
     }].concat(this.isShipmentTableColumnsConfig));
+  },
+
+  methods: {
+    // 导出批次列表
+    handleExport() {
+      const que = {
+        ...this.queryParams,
+        total: undefined
+      };
+      this.download('/transportation/batch/export', que, `batch_${new Date().getTime()}.xlsx`);
+    }
   }
 };
 </script>
