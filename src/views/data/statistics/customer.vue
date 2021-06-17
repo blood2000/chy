@@ -60,7 +60,7 @@
         <el-col :span="1.5">
           <el-button
             type="primary"
-            icon="el-icon-upload2"
+            icon="el-icon-download"
             size="mini"
             @click="handleExport"
           >导出</el-button>
