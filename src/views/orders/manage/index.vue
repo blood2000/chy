@@ -312,8 +312,8 @@
 
               <el-dropdown-item>
                 <el-button
-                  v-hasPermi="['transportation:order:check']"
                   v-if="false"
+                  v-hasPermi="['transportation:order:check']"
                   size="mini"
                   type="text"
                   @click="handleShenhe(row)"
@@ -322,8 +322,8 @@
 
               <el-dropdown-item>
                 <el-button
-                  v-hasPermi="['transportation:order:copy']"
                   v-if="row.status+''==='0'"
+                  v-hasPermi="['transportation:order:copy']"
                   size="mini"
                   type="text"
                   @click="handleclone(row)"
