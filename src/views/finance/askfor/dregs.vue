@@ -202,7 +202,7 @@
           >批量索票</el-button>
           <el-button
             type="primary"
-            icon="el-icon-upload2"
+            icon="el-icon-download"
             size="mini"
             @click="handleExport"
           >导出</el-button>

@@ -591,7 +591,8 @@ export default {
       this.formDisable = true;
     },
     handleOrder(item) {
-      const code = item.code;
+      const code = item.orderCode;
+      console.log(item);
       this.$router.push({ name: 'Release', query: { id: code, t: '0' }});
     },
     handleInvoice(item) {
