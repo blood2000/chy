@@ -18,13 +18,24 @@ export function syncContract(query) {
   });
 }
 
-// 生成电子合同
-export function getContract(id) {
+// 生成货主电子签章
+export function getShipmentSign(data) {
   return request({
-    url: '/transportation/orderContract/generate/' + id,
-    method: 'get'
+    url: '/iot/business/cargoOwnerContractCreationAndSigning',
+    method: 'post',
+    data: data
   });
 }
+
+// 生成司机电子签章
+export function getDriverSign(data) {
+  return request({
+    url: '/iot/business/driverContractCreationAndSigning',
+    method: 'post',
+    data: data
+  });
+}
+
 // 根据ID获取运单合同
 export function getOrderContract(id) {
   return request({
