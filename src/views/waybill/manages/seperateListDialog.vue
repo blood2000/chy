@@ -31,8 +31,8 @@
       <el-table-column label="货物单价" align="center" prop="goodsPrice" />
       <el-table-column label="运费单价" align="center" prop="freightPrice" />
       <el-table-column label="公里数" align="center" prop="mileage" />
-      <el-table-column label="含税价" align="center" prop="taxFee" />
-      <el-table-column label="不含税价" align="center" prop="noTaxFee" />
+      <!-- <el-table-column label="含税价" align="center" prop="taxFee" />
+      <el-table-column label="不含税价" align="center" prop="noTaxFee" /> -->
       <el-table-column label="装货地" align="center" prop="loadAddress" width="180" />
       <el-table-column label="卸货地" align="center" prop="unloadAddress" width="180" />
       <el-table-column label="发布货源时间" align="center" prop="orderTime" width="150">
