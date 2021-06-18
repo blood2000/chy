@@ -392,7 +392,7 @@ export default {
         const data = (await getListRules({ shipperCode: this.pubilshCode })).data;
         this.ruleItemIdOption = this._baozhuan(data, 'code', 'name');
       } catch (error) {
-        this.$confirm('请求超时, 点击确定重新获取', '警告', {
+        this.$confirm('司机实收单价计算超时, 点击确定重新计算', '警告', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
