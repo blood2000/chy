@@ -46,7 +46,7 @@
                   <div class="g-title-smaller">
                     <div>今日货单</div>
                     <div>
-                      <span class="g-strong g-title-max"><count-to :end-val="statistic.order?statistic.order.newOrder:0" :decimal-places="0" /></span>
+                      <span class="g-strong g-title-max"><count-to :end-val="statistic.order.newOrder>0?statistic.order.newOrder:0" :decimal-places="0" /></span>
                       单
                     </div>
                     <div class="g-color-tag">货单总数 / <count-to :end-val="statistic.order?statistic.order.orderCount:0" :decimal-places="0" /> 单</div>
