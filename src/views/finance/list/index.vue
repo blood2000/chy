@@ -73,8 +73,8 @@
     <div class="g-radio-group">
       <el-radio-group v-model="activeName" size="small" @change="handleClick">
         <el-radio-button v-has-permi="['list:applayed']" label="1">已申请</el-radio-button>
-        <el-radio-button  v-has-permi="['list:checked']" label="2,3,4">已审核</el-radio-button>
-        <el-radio-button  v-has-permi="['list:invoiced']" label="5">已开票</el-radio-button>
+        <el-radio-button v-has-permi="['list:checked']" label="2,3,4">已审核</el-radio-button>
+        <el-radio-button v-has-permi="['list:invoiced']" label="5">已开票</el-radio-button>
       </el-radio-group>
     </div>
 

@@ -117,6 +117,12 @@
             type="text"
             @click="handleElectron(row)"
           >生成电子章</el-button>
+          <el-button
+            v-if="row.isDzqzContract+'' === '1'"
+            size="mini"
+            type="text"
+            @click="handleDownload(row)"
+          >下载电子合同</el-button>
         </template>
       </RefactorTable>
 
@@ -128,7 +134,7 @@
         @pagination="getList"
       />
     </div>
-    <!-- 生成电子合同 -->
+    <!-- 打印合同 -->
     <el-dialog :title="title" :visible.sync="visible" width="1200px" append-to-body>
       <div v-if="dialogData && visible">
         <driver-contract v-if="driverOrShipment === 0" :obj="dialogData" />
@@ -143,7 +149,7 @@
 import DriverContract from './DriverContract';
 import ShipmentContract from './ShipmentContract';
 
-import { listContract, getContractByCode, listContractApi, getContract } from '@/api/waybill/contract';
+import { listContract, getContractByCode, listContractApi, getShipmentSign, getDriverSign } from '@/api/waybill/contract';
 
 export default {
   'name': 'Contract',
@@ -168,7 +174,7 @@ export default {
       'total': 0,
       // 表格数据
       'contractList': [],
-
+      waybill: {},
       // 查询参数
       'queryParams': {
         'pageNum': 1,
@@ -243,16 +249,32 @@ export default {
 
     /** 生成电子章合同 */
     async handleElectron(row) {
-      this.$confirm('生成电子签章合同? 大概用时20秒才可生成电子签章合同', '警告', {
-        'confirmButtonText': '确定',
-        'cancelButtonText': '取消',
-        'type': 'warning'
-      }).then(function() {
-        return getContract(row.code);
-      }).then(() => {
-        this.getList();
-        this.msgSuccess('请求成功');
-      });
+      var that = this;
+      that.waybill = (await getContractByCode(row.code)).data;
+      that.waybill.createTime = new Date(that.waybill.createTime);
+      that.waybill.loadTime = new Date(that.waybill.loadTime);
+      console.log(that.waybill);
+      if (that.waybill.electronic.idNumber) {
+        that.$confirm('生成电子签章合同? 大概用时20秒才可生成电子签章合同', '警告', {
+          'confirmButtonText': '确定',
+          'cancelButtonText': '取消',
+          'type': 'warning'
+        }).then(function() {
+          if (row.driverOrShipment === 0) {
+            return getDriverSign(that.waybill);
+          } else {
+            return getShipmentSign(that.waybill);
+          }
+        }).then(() => {
+          that.getList();
+        });
+      } else {
+        that.msgWarning('货主或司机的身份证号码不能为空！');
+      }
+    },
+    // 下载电子合同
+    handleDownload(row) {
+      window.open(row.contractPath);
     }
   }
 };
