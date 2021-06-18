@@ -268,7 +268,7 @@
         <template #edit="{row}">
           <template v-if="row.isShowEdit">
             <el-button
-              v-has-permi="['transportation:orderInfoSearch:getOrderDetailBycode\n']"
+              v-has-permi="['transportation:orderInfoSearch:getOrderDetailBycode']"
               size="mini"
               type="text"
               @click="handleInfo(row)"
