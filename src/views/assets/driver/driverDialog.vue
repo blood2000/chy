@@ -168,9 +168,9 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="营业执照号" prop="businessLicenseImgNo">
+      <!-- <el-form-item label="营业执照号" prop="businessLicenseImgNo">
         <el-input v-model="form.businessLicenseImgNo" placeholder="请输入营业执照号" class="width90" clearable />
-      </el-form-item>
+      </el-form-item> -->
       <!-- <el-form-item label="是否上传人员信用信息" prop="isReportPerson">
         <el-select v-model="form.isReportPerson" class="width90" clearable filterable>
           <el-option
@@ -414,7 +414,7 @@
           <el-input v-model="vehicleForm.vehicleRemainingLoadVolume" placeholder="请输入车辆可载立方" class="width90 unit-item" clearable :disabled="disable" />
           <span class="unit-span g-color-gray">m³</span>
         </el-form-item>
-        <el-form-item label="发动机号" prop="engineNumber">
+        <!-- <el-form-item label="发动机号" prop="engineNumber">
           <el-input v-model="vehicleForm.engineNumber" placeholder="支持自动识别" class="width90" clearable :disabled="disable" />
         </el-form-item>
         <el-form-item label="底盘号" prop="vehicleChassisNumber">
@@ -422,7 +422,7 @@
         </el-form-item>
         <el-form-item label="功率" prop="vehiclePower">
           <el-input v-model="vehicleForm.vehiclePower" placeholder="请输入功率" class="width90" clearable :disabled="disable" />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="轴数" prop="axesNumber">
           <el-select v-model="vehicleForm.axesNumber" placeholder="请选择轴数" class="width90" clearable filterable :disabled="disable">
             <el-option
@@ -433,7 +433,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="年审时间" prop="annualVerificationDate">
+        <!-- <el-form-item label="年审时间" prop="annualVerificationDate">
           <el-date-picker
             v-model="vehicleForm.annualVerificationDate"
             clearable
@@ -446,7 +446,7 @@
         </el-form-item>
         <el-form-item label="运输介子" prop="transportMeson">
           <el-input v-model="vehicleForm.transportMeson" placeholder="请输入运输介子" class="width90" clearable :disabled="disable" />
-        </el-form-item>
+        </el-form-item> -->
       </template>
     </el-form>
 

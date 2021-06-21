@@ -127,7 +127,7 @@
         <el-input v-model="form.vehicleRemainingLoadVolume" placeholder="请输入车辆可载立方" class="width90 unit-item" clearable />
         <span class="unit-span g-color-gray">m³</span>
       </el-form-item>
-      <el-form-item label="发动机号" prop="engineNumber">
+      <!-- <el-form-item label="发动机号" prop="engineNumber">
         <el-input v-model="form.engineNumber" placeholder="请输入发动机号" class="width90" clearable />
       </el-form-item>
       <el-form-item label="底盘号" prop="vehicleChassisNumber">
@@ -135,7 +135,7 @@
       </el-form-item>
       <el-form-item label="功率" prop="vehiclePower">
         <el-input v-model="form.vehiclePower" placeholder="请输入功率" class="width90" clearable />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="轴数" prop="axesNumber">
         <el-select v-model="form.axesNumber" placeholder="请选择轴数" class="width90" clearable filterable>
           <el-option
@@ -146,7 +146,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="年审时间" prop="annualVerificationDate">
+      <!-- <el-form-item label="年审时间" prop="annualVerificationDate">
         <el-date-picker
           v-model="form.annualVerificationDate"
           clearable
@@ -159,7 +159,7 @@
       </el-form-item>
       <el-form-item label="运输介子" prop="transportMeson">
         <el-input v-model="form.transportMeson" placeholder="请输入运输介子" class="width90" clearable />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="是否冻结" prop="isFreeze">
         <el-select v-model="form.isFreeze" placeholder="请选择是否冻结" class="width90" clearable filterable>
           <el-option

@@ -1,204 +1,204 @@
 <template>
-    <div>
-        <div v-show="showSearch" class="app-container app-container--search">
-            <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-                <el-form-item label="新闻类型" prop="newsType">
-                    <el-select v-model="queryParams.newsType" placeholder="新闻类型" clearable size="small">
-                        <el-option
-                                v-for="dict in newsTypeOptions"
-                                :key="dict.dictValue"
-                                :label="dict.dictLabel"
-                                :value="dict.dictValue"
-                        />
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="标题" prop="newsTitle">
-                    <el-input
-                            v-model="queryParams.newsTitle"
-                            placeholder="请输入标题"
-                            clearable
-                            size="small"
-                    />
-                </el-form-item>
-                <el-form-item label="内容" prop="newsContent">
-                    <el-input
-                            v-model="queryParams.newsContent"
-                            placeholder="请输入内容"
-                            clearable
-                            size="small"
-                    />
-                </el-form-item>
-                <el-form-item label="发布状态" prop="newsStatus">
-                    <el-select v-model="queryParams.newsStatus" placeholder="状态" clearable size="small">
-                        <el-option
-                                v-for="dict in statusOptions"
-                                :key="dict.dictValue"
-                                :label="dict.dictLabel"
-                                :value="dict.dictValue"
-                        />
-                    </el-select>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-                    <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-                </el-form-item>
-            </el-form>
-        </div>
-        <div class="app-container">
-            <el-row :gutter="10" class="mb8">
-                <el-col :span="1.5">
-                    <el-button
-                            type="primary"
-                            icon="el-icon-plus"
-                            size="mini"
-                            @click="handleAdd"
-                    >新增</el-button>
-                </el-col>
-                <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
-            </el-row>
-
-            <el-table v-loading="loading" :data="dataList" highlight-current-row border>
-                <el-table-column label="新闻类型" align="center" prop="newsType">
-                    <template slot-scope="scope">
-                        <span>{{ selectDictLabel(newsTypeOptions, scope.row.newsType) }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column label="发布状态" align="center" prop="newsStatus">
-                    <template slot-scope="scope">
-                        <span>{{ selectDictLabel(statusOptions, scope.row.newsStatus) }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column label="标题" align="left" prop="newsTitle" />
-                <el-table-column label="发布时间" align="center" prop="newsPublishTime" width="180">
-                    <template slot-scope="scope">
-                        <span>{{ parseTime(scope.row.newsPublishTime) }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column label="创建时间" align="center" prop="createTime" width="180">
-                    <template slot-scope="scope">
-                        <span>{{ parseTime(scope.row.createTime) }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column label="操作" align="center" fixed="left" class-name="small-padding fixed-width">
-                    <template slot-scope="scope">
-                        <el-button
-                                size="mini"
-                                type="text"
-                                @click="handleUpdate(scope.row)"
-                        >修改</el-button>
-                        <el-button
-                            size="mini"
-                            type="text"
-                            @click="handleDelete(scope.row)"
-                      >删除</el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
-
-            <pagination
-                    v-show="total>0"
-                    :total="total"
-                    :page.sync="queryParams.pageNum"
-                    :limit.sync="queryParams.pageSize"
-                    @pagination="getList"
+  <div>
+    <div v-show="showSearch" class="app-container app-container--search">
+      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+        <el-form-item label="新闻类型" prop="newsType">
+          <el-select v-model="queryParams.newsType" placeholder="新闻类型" clearable size="small">
+            <el-option
+              v-for="dict in newsTypeOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
             />
-
-            <!-- 添加或修改岗位对话框 -->
-            <el-dialog :title="title" :visible.sync="open" width="900px" append-to-body :close-on-click-modal="false">
-                <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-                    <el-row :gutter="20">
-                        <el-col :span="8">
-                            <el-form-item label="新闻类型" prop="newsType">
-                                <el-select
-                                        v-model="form.newsType"
-                                        placeholder="新闻类型"
-                                        clearable
-                                        filterable
-                                        size="small"
-                                        style="width: 100%"
-                                >
-                                    <el-option
-                                            v-for="item in newsTypeOptions"
-                                            :key="item.dictValue"
-                                            :label="item.dictLabel"
-                                            :value="item.dictValue"
-                                    />
-                                </el-select>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="8">
-                            <el-form-item label="发布状态" prop="newsStatus">
-                                <el-select
-                                        v-model="form.newsStatus"
-                                        placeholder="发布状态"
-                                        clearable
-                                        filterable
-                                        size="small"
-                                        style="width: 100%"
-                                >
-                                    <el-option
-                                            v-for="dict in statusOptions"
-                                            :key="dict.dictValue"
-                                            :label="dict.dictLabel"
-                                            :value="dict.dictValue"
-                                    />
-                                </el-select>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="8">
-                            <el-form-item label="发布时间" prop="newsPublishTime">
-                                <el-date-picker
-                                        v-model="form.newsPublishTime"
-                                        type="datetime"
-                                        size="small"
-                                        value-format="yyyy-MM-dd HH:mm:ss"
-                                        style="width: 100%"
-                                        placeholder="选择发布时间">
-                                </el-date-picker>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row :gutter="20">
-                        <el-col :span="24">
-                            <el-form-item label="新闻标题" prop="newsTitle">
-                                <el-input v-model="form.newsTitle" placeholder="请输入新闻标题" />
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row :gutter="20">
-                        <el-col :span="6">
-                            <el-form-item label="简介图片" prop="newsPrefaceImg">
-                                <upload-image style="margin-top: 5px" v-model="form.newsPrefaceImg"/>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="18">
-                            <el-form-item label="简介" prop="newsPreface">
-                                <el-input
-                                        el-input
-                                        type="textarea"
-                                        :rows="4"
-                                        style="resize:none"
-                                        placeholder="请输入前言（简介）"
-                                        v-model="form.newsPreface">
-                                </el-input>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row :gutter="20">
-                        <el-col :span="24">
-                            <el-form-item label="内容">
-                                <editor v-model="form.newsContent" :min-height="192" />
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                </el-form>
-                <div slot="footer" class="dialog-footer">
-                    <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
-                    <el-button @click="cancel">取 消</el-button>
-                </div>
-            </el-dialog>
-        </div>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="标题" prop="newsTitle">
+          <el-input
+            v-model="queryParams.newsTitle"
+            placeholder="请输入标题"
+            clearable
+            size="small"
+          />
+        </el-form-item>
+        <el-form-item label="内容" prop="newsContent">
+          <el-input
+            v-model="queryParams.newsContent"
+            placeholder="请输入内容"
+            clearable
+            size="small"
+          />
+        </el-form-item>
+        <el-form-item label="发布状态" prop="newsStatus">
+          <el-select v-model="queryParams.newsStatus" placeholder="状态" clearable size="small">
+            <el-option
+              v-for="dict in statusOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+          <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        </el-form-item>
+      </el-form>
     </div>
+    <div class="app-container">
+      <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            type="primary"
+            icon="el-icon-plus"
+            size="mini"
+            @click="handleAdd"
+          >新增</el-button>
+        </el-col>
+        <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+      </el-row>
+
+      <el-table v-loading="loading" :data="dataList" highlight-current-row border>
+        <el-table-column label="新闻类型" align="center" prop="newsType">
+          <template slot-scope="scope">
+            <span>{{ selectDictLabel(newsTypeOptions, scope.row.newsType) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="发布状态" align="center" prop="newsStatus">
+          <template slot-scope="scope">
+            <span>{{ selectDictLabel(statusOptions, scope.row.newsStatus) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="标题" align="left" prop="newsTitle" />
+        <el-table-column label="发布时间" align="center" prop="newsPublishTime" width="180">
+          <template slot-scope="scope">
+            <span>{{ parseTime(scope.row.newsPublishTime) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+          <template slot-scope="scope">
+            <span>{{ parseTime(scope.row.createTime) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center" fixed="left" class-name="small-padding fixed-width">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              type="text"
+              @click="handleUpdate(scope.row)"
+            >修改</el-button>
+            <el-button
+              size="mini"
+              type="text"
+              @click="handleDelete(scope.row)"
+            >删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
+
+      <!-- 添加或修改岗位对话框 -->
+      <el-dialog :title="title" :visible.sync="open" width="900px" append-to-body :close-on-click-modal="false">
+        <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+          <el-row :gutter="20">
+            <el-col :span="8">
+              <el-form-item label="新闻类型" prop="newsType">
+                <el-select
+                  v-model="form.newsType"
+                  placeholder="新闻类型"
+                  clearable
+                  filterable
+                  size="small"
+                  style="width: 100%"
+                >
+                  <el-option
+                    v-for="item in newsTypeOptions"
+                    :key="item.dictValue"
+                    :label="item.dictLabel"
+                    :value="item.dictValue"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="发布状态" prop="newsStatus">
+                <el-select
+                  v-model="form.newsStatus"
+                  placeholder="发布状态"
+                  clearable
+                  filterable
+                  size="small"
+                  style="width: 100%"
+                >
+                  <el-option
+                    v-for="dict in statusOptions"
+                    :key="dict.dictValue"
+                    :label="dict.dictLabel"
+                    :value="dict.dictValue"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="发布时间" prop="newsPublishTime">
+                <el-date-picker
+                  v-model="form.newsPublishTime"
+                  type="datetime"
+                  size="small"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                  style="width: 100%"
+                  placeholder="选择发布时间"
+                />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="20">
+            <el-col :span="24">
+              <el-form-item label="新闻标题" prop="newsTitle">
+                <el-input v-model="form.newsTitle" placeholder="请输入新闻标题" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="20">
+            <el-col :span="6">
+              <el-form-item label="简介图片" prop="newsPrefaceImg">
+                <upload-image v-model="form.newsPrefaceImg" style="margin-top: 5px" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="18">
+              <el-form-item label="简介" prop="newsPreface">
+                <el-input
+                  v-model="form.newsPreface"
+                  el-input
+                  type="textarea"
+                  :rows="4"
+                  style="resize:none"
+                  placeholder="请输入前言（简介）"
+                />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="20">
+            <el-col :span="24">
+              <el-form-item label="内容">
+                <editor v-model="form.newsContent" :min-height="192" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
+          <el-button @click="cancel">取 消</el-button>
+        </div>
+      </el-dialog>
+    </div>
+  </div>
 </template>
 
 <script>
