@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { uploadImgApi, getFile, uploadOcr } from '@/api/system/image.js';
+import { uploadImgApi } from '@/api/system/image.js';
 import { getToken } from '@/utils/auth';
 import { authorPre, produceCode, appCode, appVersion, terminalType } from '@/headers';
 
