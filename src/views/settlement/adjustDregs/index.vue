@@ -432,7 +432,7 @@
         >
           <el-col v-show="activeName == '4'" :span="1.5">
             <el-button
-              v-hasPermi="['transportation:waybillBalanceInfo:batchCheck']"
+              v-hasPermi="['transportation:waybillBalanceInfo:batchDetail']"
               type="primary"
               icon="el-icon-document-checked"
               size="mini"
