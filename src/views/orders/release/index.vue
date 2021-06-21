@@ -740,7 +740,8 @@ export default {
         projectCode,
         pubilshCode,
         remark,
-        InfoCode
+        InfoCode,
+        publishMode
       } = this.basicInfor; // 货源基本结构和信息
 
       // 处理商品信息和地址相关的规则
@@ -748,6 +749,7 @@ export default {
 
       const orderInfoBo = {
         code: InfoCode || undefined,
+        publishMode,
         isPublic: isPublic ? 1 : 0,
         isSpecified: isSpecified ? 1 : 0,
         loadType: this.formData.tin7 - 0,
@@ -1026,7 +1028,7 @@ export default {
 
     // 1.处理 cbOrderBasic 要的数据
     handlerOrderBasic(data) {
-      const { code, isPublic, isSpecified, loadType, projectCode, pubilshCode, remark, redisOrderClassGoodsVoList, redisOrderGoodsVoListRest: redisOrderGoodsVoList, redisOrderSpecifiedVoList } = data;
+      const { code, isPublic, publishMode, isSpecified, loadType, projectCode, pubilshCode, remark, redisOrderClassGoodsVoList, redisOrderGoodsVoListRest: redisOrderGoodsVoList, redisOrderSpecifiedVoList } = data;
 
       this.formData.tin1 = pubilshCode;
       this.formData.tin7 = loadType ? loadType + '' : '1';
@@ -1035,6 +1037,7 @@ export default {
         code,
         projectCode,
         isPublic,
+        publishMode,
         goodsBigType: redisOrderGoodsVoList[0].goodsBigType,
         goodsType: redisOrderGoodsVoList.map(e => {
           return e.goodsType;
