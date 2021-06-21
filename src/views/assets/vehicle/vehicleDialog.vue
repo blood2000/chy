@@ -264,6 +264,9 @@ export default {
         licenseNumber: [
           { required: true, message: '车牌号不能为空', trigger: 'blur' },
           { validator: this.formValidate.plateNo, trigger: ['blur', 'change'] }
+        ],
+        vehicleLicenseColorCode: [
+          { required: true, message: '车牌颜色不能为空', trigger: ['blur', 'change'] }
         ]
       },
       // 选择车辆

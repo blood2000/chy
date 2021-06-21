@@ -176,6 +176,7 @@
 
         <template #edit="{row}">
           <el-button
+            v-hasPermi="['waybill:nullify:detail']"
             size="mini"
             type="text"
             @click="handleWaybill(row)"

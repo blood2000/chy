@@ -191,8 +191,8 @@
 
     <div class="g-radio-group">
       <el-radio-group v-model="activeName" size="small" @change="handleClick">
-        <el-radio-button label="1">已申请</el-radio-button>
-        <el-radio-button label="5">已开票</el-radio-button>
+        <el-radio-button v-has-permi="['list:dregs:applayed']" label="1">已申请</el-radio-button>
+        <el-radio-button v-has-permi="['list:dregs:invoiced']" label="5">已开票</el-radio-button>
       </el-radio-group>
     </div>
 
@@ -281,6 +281,7 @@
           <div v-show="activeName != '1'">
 
             <el-button
+              v-hasPermi="['transportation:invoiced:batchInfo']"
               size="mini"
               type="text"
               @click="handleTableBtn(row, 3)"
@@ -291,13 +292,13 @@
               type="text"
               @click="handleTableBtn(row, 4)"
             >打款</el-button>
-            <el-button
+            <!-- <el-button
               v-show="false"
-              v-hasPermi="['transportation:batch:passPayment']"
+              v-hasPermi="['transportation:invoiced:export']"
               size="mini"
               type="text"
               @click="handleTableBtn(row, 5)"
-            >导出</el-button>
+            >导出</el-button>-->
           </div>
         </template>
       </RefactorTable>

@@ -250,11 +250,13 @@
           >网商打款</el-button>
           <el-button
             v-if="row.isChild == '2'"
+            v-hasPermi="['transportation:waybillSettlement:reinsurance']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 3)"
           >分单列表</el-button>
           <el-button
+            v-hasPermi="['transportation:waybillSettlement:detail']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 4)"

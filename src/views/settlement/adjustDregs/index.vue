@@ -416,8 +416,8 @@
 
     <div class="g-radio-group ly-flex-pack-justify">
       <el-radio-group v-model="activeName" size="small" @change="handleClick">
-        <el-radio-button label="4">已复核</el-radio-button>
-        <el-radio-button label="5">已核算</el-radio-button>
+        <el-radio-button v-has-permi="['transportation:batch:findWaybillBalanceList1']" label="4">已复核</el-radio-button>
+        <el-radio-button v-has-permi="['transportation:batch:findWaybillBalanceList2']" label="5">已核算</el-radio-button>
         <el-radio-button v-hasPermi="['transportation:batch:list']" label="7">已打款</el-radio-button>
       </el-radio-group>
 
@@ -432,7 +432,7 @@
         >
           <el-col v-show="activeName == '4'" :span="1.5">
             <el-button
-              v-hasPermi="['transportation:waybillBalanceInfo:batchCheck']"
+              v-hasPermi="['transportation:waybillBalanceInfo:batchDetail']"
               type="primary"
               icon="el-icon-document-checked"
               size="mini"
@@ -442,7 +442,7 @@
           </el-col>
           <el-col v-show="activeName == '5'" :span="1.5">
             <el-button
-              v-hasPermi="['transportation:batch:applyReconciliation']"
+              v-hasPermi="['transportation:batch:accountStatement']"
               type="primary"
               icon="el-icon-wallet"
               size="mini"
@@ -529,7 +529,7 @@
             >核算</el-button>
             <el-button
               v-show="activeName == '5'"
-              v-hasPermi="['transportation:batch:applyReconciliation']"
+              v-hasPermi="['transportation:batch:accountStatement']"
               size="mini"
               type="text"
               @click="handleTableBtn(row, 4)"

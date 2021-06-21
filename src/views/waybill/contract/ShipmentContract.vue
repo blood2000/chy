@@ -72,7 +72,7 @@
               <td id="coal_type_name">{{ obj.goodsTypeName || obj.goodsBigTypeName }}</td>
             </tr>
             <tr>
-              <td><b>最高配载</b></td>
+              <td><b>计划数量</b></td>
               <td id="weight">{{ obj.loadWeight }}
                 {{ obj.stowageStatus == '0' ? '吨' : (obj.stowageStatus == '1'? '立方': '车') }}
               </td>
@@ -80,7 +80,7 @@
               <td id="goods_type">{{ obj.goodsName }}</td>
               <!-- <td><b>货值（元）</b></td>
               <td id="goods_total">{{ obj.goodsAmount }}</td> -->
-              <td><b>货主应付金额（元）</b></td>
+              <td><b>运费金额（元）</b></td>
               <td id="amount">￥{{ obj.shipperCopeFee }}</td>
             </tr>
             <tr>
