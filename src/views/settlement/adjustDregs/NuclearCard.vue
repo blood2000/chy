@@ -1,12 +1,12 @@
 <template>
   <el-dialog v-loading :title="`发卡人: ${ userInfo.issuing_name || ''} (承运司机: ${userInfo.user_name ||''})`" :visible="visible" width="80%" append-to-body :close-on-click-modal="false" @close="handlerClose">
-    <div v-show="false" class="mb20" style="padding: 20px;">
+    <div v-show="true" class="mb20" style="padding: 20px;">
       <!-- <el-button type="primary" @click="handler('cancellation')">注销卡片(清空使用者信息)</el-button> -->
       <el-button type="primary" @click="handler('issuingCard')">issuingCard</el-button>
       <!-- <el-button type="primary" @click="handler('readUserinfo')">读取用户信息</el-button> -->
       <!-- <el-button type="primary" @click="handler('readData')">读取数据</el-button> -->
       <el-button type="primary" @click="handler('writeData')">writeData</el-button>
-      <!-- <el-button type="primary" @click="handler('readUserInfoAndreadData')">读取数据</el-button> -->
+      <el-button type="primary" @click="handler('getCardInfo')">卡注册给卡加上标识</el-button>
     </div>
 
     <RefactorTable
@@ -57,7 +57,7 @@
           label: '货源编号'
         },
         {
-          prop: 'waybillId',
+          prop: 'waybillNo',
           isShow: true,
           label: '运单编号'
         },
@@ -67,29 +67,51 @@
           label: '渣土场编号'
         },
         {
-          prop: 'status',
+          prop: 'writeOffStatus',
           isShow: true,
-          label: '核对状态'
-        }
+          label: '异常标记'
+        },
+        {
+          prop: 'writeOffRemark',
+          isShow: true,
+          label: '异常备注',
+          width: 200,
+        },
       ]"
     >
-      <template v-if="!isError" #status="{row}">
+      <template #writeOffStatus="{row}">
+        <el-switch
+          v-model="row.writeOffStatus"
+          :disabled="row.$_disable"
+          active-color="#13ce66"
+          inactive-color="#ff4949"
+        />
+      </template>
+      <template #writeOffRemark="{row}">
+        <span v-if="row.writeOffStatus"><i class="el-icon-check" /></span>
+        <el-input v-else v-model="row.writeOffRemark" :disabled="row.$_disable" placeholder="请输入异常备注" />
+      </template>
+
+      <!-- <template v-if="!isError" #status="{row}">
         <span v-if="row.status === 0"><i class="el-icon-check" /></span>
         <el-button v-else size="mini" type="danger" plain @click="absenceOpen(row)">不存在</el-button>
-      </template>
+      </template> -->
     </RefactorTable>
 
 
     <div slot="footer" class="dialog-footer ly-flex-pack-center">
-      <el-button type="primary" :disabled="loading || !list.length || isUserInfo || isError || isWart" @click="submitForm">保存并清空</el-button>
+      <el-button type="primary" :disabled="loading || !list.length || isUserInfo || isWart" @click="submitForm">保存并清空</el-button>
+      <!-- <el-button type="primary" :disabled="loading || !list.length || isUserInfo || isError || isWart" @click="submitForm">保存并清空</el-button> -->
     </div>
   </el-dialog>
 </template>
 
 <script>
-import CardReader from '@/libs/ICCard/CardReader';
+import CardReader, { USERINFO, versionMark } from '@/libs/ICCard/CardReader';
 import { checkList, delWaybill, check } from '@/api/settlement/adjustDregs';
 const { action, fn } = CardReader;
+
+// console.log(USERINFO);
 
 export default {
   name: 'NuclearCard',
@@ -103,9 +125,10 @@ export default {
       userInfo: {},
       list: [],
       IClist: [],
-      isError: true,
+      // isError: true,
       delData: [], // 保存删除的数据
-      meter: null
+      meter: null,
+      carId: undefined
     };
   },
   computed: {
@@ -130,20 +153,21 @@ export default {
 
   methods: {
     init() {},
-    // 连接 读取
+    // 连接` 读卡(卡id + 当前卡信息 + 卡存储的运单)
     _minit() {
       CardReader.fn.connect(async() => {
         this.loading = true;
         const ret = await action.readUserInfoAndreadData();
+        // 读卡成功
 
+        // 失败
         if (!ret.success && !ret.code) {
           this._reqerror();
           return;
         }
-        // console.log(ret);
 
+        // 读取文件失败
         if (ret.code === '6A82') {
-          // 读取文件失败
           if (ret.userInfo) {
             this.userInfo = ret.userInfo;
           }
@@ -151,17 +175,22 @@ export default {
           return;
         }
 
+        // 其他失败
         if (ret.code !== '9000') {
           this.msgError(ret.msg);
           return;
         }
 
+        // 成功 的数据
         this.userInfo = ret.userInfo;
         this.IClist = ret.dataList;
         this.meter = ret.meter;
+        this.carId = ret.GetCardNo.data;
 
-        // console.log(ret, '数据');
-        this.setLocalStorage(this.userInfo.user_code, { [this.userInfo]: this.IClist, meter: this.meter });
+
+        // this.setLocalStorage(this.userInfo.user_code, { [this.userInfo]: this.IClist, meter: this.meter }); // 本地存储
+
+        // 后端交互
         this.initData();
       }, () => {
         this.loading = false;
@@ -169,7 +198,9 @@ export default {
       });
     },
 
+    // 请求
     async initData() {
+      // 参数
       const que = {
         icList: this.IClist.map(e => {
           return {
@@ -179,153 +210,158 @@ export default {
             other: undefined
           };
         }),
-        driverCode: this.userInfo.user_code //	用户CODE
+        icCode: this.carId
+        // driverCode: undefined // this.userInfo.user_code //	用户CODE
       };
 
       try {
         const res = await checkList(que);
-        this.isError = false;
+
+        // 处理数据
         this.list = res.data.map(e => {
           return {
             ...e,
+            writeOffStatus: e.writeOffStatus === 0,
+            $_disable: e.writeOffStatus === -1,
             fillTimeDate: this.parseTime(e.fillTime - 0),
             signTimeDate: this.parseTime(e.signTime - 0)
           };
         });
 
+        // 排序
         this.list.sort((m, n) => {
-          if (m.status > n.status) return -1;
+          if (m.writeOffStatus > n.writeOffStatus) return -1;
         });
         this.loading = false;
       } catch (error) {
-        this.isError = true;
-        // this.list = this.IClist.map(e => {
-        //   return {
-        //     ...e,
-        //     fillTimeDate: this.parseTime(e.fillTime - 0),
-        //     signTimeDate: this.parseTime(e.signTime - 0)
-        //   };
-        // });
         this.loading = false;
       }
     },
 
-    absenceOpen(row) {
-      this.$confirm('运单不存在', `运单: ${row.waybillId}`, {
-        confirmButtonText: '转为正常单',
-        cancelButtonText: '删除该条记录',
-        distinguishCancelAndClose: true,
-        type: 'warning',
-        center: true
-      }).then(() => {
-        // console.log('转为正常单- 接口欠着');
-        row.status = 0;
-      }).catch((action) => {
-        if (action === 'cancel') {
-          delWaybill({ waybillId: row.waybillId - 0 }).then(res => {
-            this.msgSuccess('删除该条记录成功');
-            this.list = this.list.filter(e => e.waybillId !== row.waybillId);
-            this.delData.push(row.waybillId);
-            // console.log('当前删除的数据是', this.delData);
-          });
-        }
-      });
-    },
-
-    submitForm() {
-      if (this.isError) return;
+    /**
+      // absenceOpen(row) {
+      //   this.$confirm('运单不存在', `运单: ${row.waybillId}`, {
+      //     confirmButtonText: '转为正常单',
+      //     cancelButtonText: '删除该条记录',
+      //     distinguishCancelAndClose: true,
+      //     type: 'warning',
+      //     center: true
+      //   }).then(() => {
+      //     // console.log('转为正常单- 接口欠着');
+      //     row.status = 0;
+      //   }).catch((action) => {
+      //     if (action === 'cancel') {
+      //       delWaybill({ waybillId: row.waybillId - 0 }).then(res => {
+      //         this.msgSuccess('删除该条记录成功');
+      //         this.list = this.list.filter(e => e.waybillId !== row.waybillId);
+      //         this.delData.push(row.waybillId);
+      //         // console.log('当前删除的数据是', this.delData);
+      //       });
+      //     }
+      //   });
+      // },
+    */
+    /** 核销 */
+    async submitForm() {
+      // 判断异常的数据 条件 writeOffStatus 为false的时候是异常
       const filterArr = this.list.filter(e => {
-        return e.status !== 0;
+        return !e.writeOffStatus;
       });
 
+      // 数据有异常提示
       if (filterArr.length > 0) {
-        this.$alert(`运单${filterArr[0].waybillId} 平台未能核对成功`, '数据存在异常', {
-          confirmButtonText: '好的',
-          type: 'warning',
-          center: true,
-          callback: action => {}
-        });
-      } else {
-        this.$confirm('保存并清空后,将清空卡数据, 是否继续?', '提示', {
+        this.$confirm(`运单存在${filterArr.length} 条异常单, 确定继续将把数据写回卡中, 并核销正常单`, '数据存在异常', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
-        }).then(() => {
-          this.loading = true;
-          check(this.list.map(e => e.waybillId)).then(res => {
-            // 发卡
-            // action.issuingCard({
-            //   user_code: this.userInfo.user_code,
-            //   user_telno: this.userInfo.user_telno,
-            //   user_name: this.userInfo.user_name,
-            //   issuing_code: this.userInfo.issuing_code,
-            //   issuing_name: this.userInfo.issuing_name
-            // })
-            // 销卡
-            action.cancellation().then(res => {
-              if (res.code === 200) {
-                this.msgSuccess('核销成功');
-                this.removeLocalStorage(this.userInfo.user_code);
-                this.userInfo = {};
-                this.list = [];
-                this.IClist = [];
-                this.loading = false;
-                this.$emit('refresh');
-                this.delData = [];
-                this.$emit('update:open', false);
-              }
-            }).catch(error => {
-              this.msgError(error);
-              this.loading = false;
-            });
-          }).catch(() => {
-            this.loading = false;
-          });
+        }).then(async() => {
+          // 异常要做写回卡的操作 filterArr 是异常的数据
+
+          await this.handlerCheck();
+          // 写卡
+          this.errorHexiaoCheck(filterArr);
         });
+      } else {
+        await this.handlerCheck();
+        // 无异常做核销动作
+        const res = await action.cancellation();
+        if (res.code === 200) {
+          this.loading = false;
+          this.msgSuccess('核销成功');
+          this.handlerClose();
+        }
       }
     },
 
-    async handler(key) {
-      switch (key) {
-        case 'cancellation':
-          // 注销卡片
-          action.cancellation().then(res => { console.log(res); });
-          break;
-        case 'issuingCard':
-          // 发卡
-          action.issuingCard({
-            user_code: 'f38c9fd49746429fa284472a56475c81',
-            user_telno: '15859109808',
-            user_name: '测试独立',
-            issuing_code: '9a27ad2df954403490641da6ad9fbd7f',
-            issuing_name: '罗增强'
-          }).then(res => {
-            this.msgSuccess(res.msg);
+    // 核销请求
+    async handlerCheck() {
+      this.loading = true;
+
+      // 过滤出异常$_disable 为true的数据
+      const queArr = (this.list.filter(ee => !ee.$_disable)).map(e => {
+        return {
+          waybillNo: e.waybillNo,
+          writeOffStatus: e.writeOffStatus ? 0 : 1,
+          writeOffRemark: e.writeOffStatus ? '' : e.writeOffRemark
+        };
+      });
+
+      // 数据发送给父组件
+
+      this.$emit('listData', (this.list.filter(e => e.writeOffStatus)).map(e => {
+        e.batchWayBillBalanceInfoVo.icStatus = '1';
+        e.icStatus = '1';
+        return e;
+      }));
+
+      return await check(queArr);
+    },
+
+
+    // 异常要做写回卡的操作 filterArr 是异常的数据
+    async errorHexiaoCheck(filterArr) {
+      // 走发卡-写卡
+      if (!this.userInfo) return;
+      console.log(this.userInfo);
+
+      await action.issuingCard(this.userInfo);
+      // 写卡
+      // 定义 版本标识
+      const meter = this.meter ? this.meter.join('|') + '|' : versionMark;
+
+      // const arr = [];
+
+      // 通过时间来
+      const arr = [];
+      filterArr.forEach(async(e, index) => {
+        this['time' + index] = setTimeout(() => {
+          action.writeData(fn.setData(meter, e)).then(res => {
+            clearTimeout(this['time' + index]);
+            arr.push(true);
+            if (arr.length === filterArr.length && arr.every(e => e)) {
+              this.loading = false;
+              this.msgSuccess('核销成功');
+              this.handlerClose();
+            }
           });
-          break;
-        case 'readUserinfo':
-          // 读取用户信息
-          action.readUserInfo().then(res => console.log(res));
+        }, (index + 1) * 500);
+      });
 
-          break;
-        case 'readData':
-          break;
-        case 'readUserInfoAndreadData':
-          // 读取数据e
-          action.readUserInfoAndreadData();
-          break;
-        case 'writeData':
-          // 写数据
 
-          // 1010|1|30419;2993353;测试项目;b42da668161f424e8309c2b6eb81a399;贺彩善;17712345678;1623482232031;1623482340000;17;鼓山大桥
-          action.writeData('1010|1|33381;3637601;测试新一轮;闽AC0008;测试独立;15859109808;1623577380000;1623577500000;28;测试渣土新一轮—水泥块').then(res => {
-            this.msgSuccess(res.msg);
-          });
+      // for (let index = 0; index < filterArr.length; index++) {
+      //   const e = filterArr[index];
 
-          break;
-        default:
-          break;
-      }
+      //   const res = await action.writeData(fn.setData(meter, e));
+      //   arr.push(true);
+      //   if (arr.length === filterArr.length && arr.every(e => e)) {
+      //     this.loading = false;
+
+      //     this.msgSuccess(res.msg, '操作成功');
+      //     this.handlerClose();
+      //   } else {
+      //     console.log(arr.length, '写了条数');
+      //   }
+      // }
     },
 
     // 关闭
@@ -353,64 +389,128 @@ export default {
       });
     },
 
-    _returnWrite(userData, infoDataList) {
-      this.loading = true;
-      this.isWart = true;
-      action.issuingCard({
-        user_code: userData.user_code,
-        user_telno: userData.user_telno,
-        user_name: userData.user_name,
-        issuing_code: userData.issuing_code,
-        issuing_name: userData.issuing_name
-      }).then(res => {
-        // console.log(infoDataList);
-        let meter = '1010|1|';
-        if (this.meter) {
-          meter = this.meter.join('|') + '|';
-        }
+    // _returnWrite(userData, infoDataList) {
+    //   this.loading = true;
+    //   this.isWart = true;
+    //   action.issuingCard({
+    //     user_code: userData.user_code,
+    //     user_telno: userData.user_telno,
+    //     user_name: userData.user_name,
+    //     issuing_code: userData.issuing_code,
+    //     issuing_name: userData.issuing_name
+    //   }).then(res => {
+    //     // console.log(infoDataList);
+    //     let meter = '1010|1|';
+    //     if (this.meter) {
+    //       meter = this.meter.join('|') + '|';
+    //     }
 
-        const arr = [];
-        infoDataList.forEach(async(e, index) => {
-          // 1010|1|30273;2977608;测试项目3;闽AQ8001;测试独立强;15859109001;1623177000000;1623177480000;;妈湾
-          // '1010|1|30273;2977608;测试项目3;闽AQ8001;测试独立强;15859109001;1623177000000;1623177480000;;妈湾';
-          this['time' + index] = setTimeout(() => {
-            action.writeData(fn.setData(meter, e)).then(res => {
-              // console.log('写入成功' + index);
-              clearTimeout(this['time' + index]);
-              arr.push(true);
-              if (arr.length === infoDataList.length && arr.every(e => e)) {
-                this.loading = false;
-                this.isWart = false;
-                this.msgSuccess(res.msg, '操作成功');
-                this.delData = [];
-                this.handlerClose();
-              }
-            });
-          }, (index) * 1500);
-        });
-      });
-    },
+    //     const arr = [];
+    //     infoDataList.forEach(async(e, index) => {
+    //       // 1010|1|30273;2977608;测试项目3;闽AQ8001;测试独立强;15859109001;1623177000000;1623177480000;;妈湾
+    //       // '1010|1|30273;2977608;测试项目3;闽AQ8001;测试独立强;15859109001;1623177000000;1623177480000;;妈湾';
+    //       this['time' + index] = setTimeout(() => {
+    //         action.writeData(fn.setData(meter, e)).then(res => {
+    //           // console.log('写入成功' + index);
+    //           clearTimeout(this['time' + index]);
+    //           arr.push(true);
+    //           if (arr.length === infoDataList.length && arr.every(e => e)) {
+    //             this.loading = false;
+    //             this.isWart = false;
+    //             this.msgSuccess(res.msg, '操作成功');
+    //             this.delData = [];
+    //             this.handlerClose();
+    //           }
+    //         });
+    //       }, (index) * 1500);
+    //     });
+    //   });
+    // },
     handlerClose() {
-      if (this.isWart) return;
-      if (this.delData.length > 0) {
-        this.$confirm('删除数据要花费' + (this.list.length * 1500) / 1000 + '秒, 期间禁止移动卡片, 确定要删除' + this.delData.join(',') + '吗', '确定要从卡里面清除吗?', {
-          confirmButtonText: '确定删除',
-          cancelButtonText: '保留原记录',
-          type: 'warning',
-          center: true
-        }).then(() => {
-          this._returnWrite(this.userInfo, this.list);
-          // console.log(this.list);
-          // console.log(this.IClist);
-        }).catch(() => {
-          this.$emit('update:open', false);
-        });
-        this.delData = [];
+      // if (this.isWart) return;
+      // if (this.delData.length > 0) {
+      //   this.$confirm('删除数据要花费' + (this.list.length * 1500) / 1000 + '秒, 期间禁止移动卡片, 确定要删除' + this.delData.join(',') + '吗', '确定要从卡里面清除吗?', {
+      //     confirmButtonText: '确定删除',
+      //     cancelButtonText: '保留原记录',
+      //     type: 'warning',
+      //     center: true
+      //   }).then(() => {
+      //     this._returnWrite(this.userInfo, this.list);
+      //     // console.log(this.list);
+      //     // console.log(this.IClist);
+      //   }).catch(() => {
+      //     this.$emit('update:open', false);
+      //   });
+      //   this.delData = [];
 
-        return;
-      }
+      //   return;
+      // }
 
       this.$emit('update:open', false);
+    },
+
+    /** 卡的操作 */
+    async handler(key) {
+      const mobj = {};
+      const arr = '张三;18415451845;120;16612345678;17812345678;陈大帅;1621648441990;1621648441990123';
+      let res = '';
+      switch (key) {
+        case 'getCardInfo':
+          action.getCardInfo().then(res => {
+            console.log(res);
+          });
+          break;
+        case 'cancellation':
+          // 注销卡片
+          action.cancellation().then(res => { console.log(res); });
+          break;
+        case 'issuingCard':
+          // 发卡
+          USERINFO.forEach((e, index) => {
+            mobj[e] = (arr.split(';'))[index];
+          });
+
+          action.issuingCard(mobj).then(res => {
+            this.msgSuccess(res.msg);
+          });
+          break;
+        case 'readUserinfo':
+          // 读取用户信息
+          action.readUserInfo().then(res => console.log(res));
+
+          break;
+        case 'readData':
+          break;
+        case 'readUserInfoAndreadData':
+          // 读取数据e
+          action.readUserInfoAndreadData();
+          break;
+        case 'writeData':
+          // 写数据
+
+          // res = await action.writeData('1010|1|30528;2106191113516909;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
+          // console.log(res);
+          res = await action.writeData('1010|1|30528;2106191000275187;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
+          // console.log(res);
+          // res = await action.writeData('1010|1|30528;2106191000275188;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
+          // console.log(res);
+          // res = await action.writeData('1010|1|30528;2106191000275189;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
+          // console.log(res);
+          // res = await action.writeData('1010|1|30528;2106191000275110;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
+          // console.log(res);
+          // res = await action.writeData('1010|1|30528;2106191000275111;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
+          // console.log(res);
+          // res = await action.writeData('1010|1|30528;2106191000275112;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
+          // console.log(res);
+          // res = await action.writeData('1010|1|30528;2106191000275113;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
+          // console.log(res);
+          // res = await action.writeData('1010|1|30528;2106191000275114;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
+          // console.log(res);
+
+          break;
+        default:
+          break;
+      }
     }
   }
 };

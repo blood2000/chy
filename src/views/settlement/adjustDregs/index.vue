@@ -1,582 +1,551 @@
 
 <template>
   <div>
-    <div v-show="showSearch" ref="searchBox" class="app-container app-container--search">
-      <el-form
-        v-show="activeName !== '7'"
-        ref="queryForm"
-        :model="queryParams"
-        :inline="true"
-        label-width="98px"
-      >
-        <el-form-item
-          v-show="!isShipment"
-          label="下单用户"
-          prop="orderClient"
+
+    <!-- 已核验 -->
+    <Verification v-if="false" />
+
+    <PaiMoney />
+
+
+    <div
+      v-if="false"
+    >
+      <div v-show="showSearch || activeName === '4'" ref="searchBox" class="app-container app-container--search">
+        <el-form
+          v-show="activeName !== '7'"
+          ref="queryForm"
+          :model="queryParams"
+          :inline="true"
+          label-width="98px"
         >
-          <el-input
-            v-model="queryParams.orderClient"
-            placeholder="发货企业/操作人/手机号"
-            clearable
-            size="small"
-            style="width: 228px"
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item>
-        <el-form-item
-          v-show="!isShipment"
-          label="发货企业"
-          prop="companyCode"
-        >
-          <!-- <el-input
-            v-model="queryParams.companyCode"
-            placeholder="请输入发货企业"
-            clearable
-            size="small"
-            style="width: 228px"
-            @keyup.enter.native="handleQuery"
-          /> -->
-          <FilterableSelect
-            v-model="queryParams.companyCode"
-            clearable
-            style="width:228px"
-            placeholder="请输入发货企业"
-            :axios="{
-              queryFn:shipmentList,
-              queryData:{
-                authStatus: undefined
-              },
-              key: 'rows'
-            }"
-            :show-key="{
-              value: 'orgCode',
-              label: 'companyName',
-            }"
-            :keywords="'searchValue'"
-            @selected="(data)=>{ shipmentCode= data.code; orgCode = data.orgCode; companyCode = data.companyCode; handleQuery()}"
+          <el-form-item
+            v-show="!isShipment"
+            v-if="activeName !== '4'"
+            label="下单用户"
+            prop="orderClient"
           >
-            <template #default="{row}">
-              <span>{{ row.companyName }}</span>
-            </template>
-          </FilterableSelect>
-        </el-form-item>
-
-        <el-form-item
-          label="装货信息"
-          prop="loadInfo"
-        >
-          <el-input
-            v-model="queryParams.loadInfo"
-            placeholder="装货地/装货电话/发货人"
-            clearable
-            size="small"
-            style="width: 228px"
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item>
-        <el-form-item
-          label="卸货信息"
-          prop="receivedInfo"
-        >
-          <el-input
-            v-model="queryParams.receivedInfo"
-            placeholder="卸货地/卸货电话/卸货人"
-            clearable
-            size="small"
-            style="width: 228px"
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item>
-
-        <!-- <el-form-item
-          label="调度者姓名"
-          prop="teamName"
-        >
-          <el-input
-            v-model="queryParams.teamName"
-            placeholder="请输入调度者姓名"
-            clearable
-            size="small"
-            style="width: 228px"
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item> -->
-
-        <el-form-item
-          v-if="false"
-          label="运单核对"
-          prop="waybill"
-        >
-          <el-checkbox v-model="queryParams.waybill" />
-        </el-form-item>
-
-        <el-form-item
-          label="IC卡核对状态"
-          prop="icStatus"
-        >
-          <el-select
-            v-model="queryParams.icStatus"
-            placeholder="请选择纸质回单"
-            filterable
-            clearable
-            size="small"
-            style="width: 228px"
-          >
-            <el-option
-              v-for="dict in [
-                { dictValue: '0',dictLabel:'未核对' },
-                { dictValue: '1',dictLabel:'已核对' }
-              ]"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
+            <el-input
+              v-model="queryParams.orderClient"
+              placeholder="发货企业/操作人/手机号"
+              clearable
+              size="small"
+              style="width: 228px"
+              @keyup.enter.native="handleQuery"
             />
-          </el-select>
-        </el-form-item>
-
-        <el-form-item
-          v-if="false"
-          label="批次号"
-          prop="criticism"
-        >
-          <el-input
-            v-model="queryParams.criticism"
-            placeholder="请输入批次号"
-            clearable
-            size="small"
-            style="width: 228px"
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item>
-
-
-
-        <el-form-item label="货物大类" prop="goodsBigType">
-          <el-select
-            v-model="queryParams.goodsBigType"
-            placeholder="请选择货物大类"
-            filterable
-            clearable
-            style="width: 228px"
-            size="small"
+          </el-form-item>
+          <el-form-item
+            v-show="!isShipment"
+            label="发货企业"
+            prop="companyCode"
           >
-            <el-option
-              v-for="dict in commodityCategoryCodeOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
+            <FilterableSelect
+              v-model="queryParams.companyCode"
+              clearable
+              style="width:228px"
+              placeholder="请输入发货企业"
+              :axios="{
+                queryFn:shipmentList,
+                queryData:{
+                  authStatus: undefined
+                },
+                key: 'rows'
+              }"
+              :show-key="{
+                value: 'orgCode',
+                label: 'companyName',
+              }"
+              :keywords="'searchValue'"
+              @selected="(data)=>{ shipmentCode= data.code; orgCode = data.orgCode; companyCode = data.companyCode; handleQuery()}"
+            >
+              <template #default="{row}">
+                <span>{{ row.companyName }}</span>
+              </template>
+            </FilterableSelect>
+          </el-form-item>
+
+          <el-form-item
+            v-if="activeName !== '4'"
+            label="装货信息"
+            prop="loadInfo"
+          >
+            <el-input
+              v-model="queryParams.loadInfo"
+              placeholder="装货地/装货电话/发货人"
+              clearable
+              size="small"
+              style="width: 228px"
+              @keyup.enter.native="handleQuery"
             />
-          </el-select>
-        </el-form-item>
-        <el-form-item
-          v-if="false"
-          label="货源单号"
-          prop="mainOrderNumber"
-        >
-          <el-input
-            v-model="queryParams.mainOrderNumber"
-            placeholder="请输入货源单号"
-            clearable
-            size="small"
-            style="width: 228px"
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item>
-        <el-form-item
-          label="接单日期"
-          prop="receiveTime"
-        >
-          <el-date-picker
-            v-model="receiveTime"
-            type="daterange"
-            range-separator="-"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            style="width: 228px"
-            @change="datechoose"
-          />
-        </el-form-item>
-        <el-form-item
-          label="车牌号"
-          prop="licenseNumber"
-        >
-          <el-input
-            v-model="queryParams.licenseNumber"
-            placeholder="请输入车牌号"
-            clearable
-            size="small"
-            style="width: 228px"
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item>
-        <el-form-item
-          label="司机姓名"
-          prop="driverName"
-        >
-          <el-input
-            v-model="queryParams.driverName"
-            placeholder="请输入司机姓名"
-            clearable
-            size="small"
-            style="width: 228px"
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item>
-        <el-form-item
-          label="运输单号"
-          prop="waybillNo"
-        >
-          <el-input
-            v-model="queryParams.waybillNo"
-            placeholder="请输入运输单号"
-            clearable
-            size="small"
-            style="width: 228px"
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item>
-        <!-- <el-form-item label="纸质回单" prop="isReturn">
-          <el-select
-            v-model="queryParams.isReturn"
-            placeholder="请选择纸质回单"
-            filterable
-            clearable
-            size="small"
-            style="width: 228px"
+          </el-form-item>
+          <el-form-item
+            v-if="activeName !== '4'"
+            label="卸货信息"
+            prop="receivedInfo"
           >
-            <el-option
-              v-for="dict in isReturnOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
+            <el-input
+              v-model="queryParams.receivedInfo"
+              placeholder="卸货地/卸货电话/卸货人"
+              clearable
+              size="small"
+              style="width: 228px"
+              @keyup.enter.native="handleQuery"
             />
-          </el-select>
-        </el-form-item> -->
-        <el-form-item label="分单" prop="isChild">
-          <el-select
-            v-model="queryParams.isChild"
-            placeholder="请选择分单"
-            filterable
-            clearable
-            size="small"
-            style="width: 228px"
+          </el-form-item>
+
+          <el-form-item
+            v-if="activeName !== '4'"
+            label="IC卡核对状态"
+            prop="icStatus"
           >
-            <el-option
-              v-for="dict in isChildOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
+            <el-select
+              v-model="queryParams.icStatus"
+              placeholder="请选择纸质回单"
+              filterable
+              clearable
+              size="small"
+              style="width: 228px"
+            >
+              <el-option
+                v-for="dict in [
+                  { dictValue: '0',dictLabel:'未核对' },
+                  { dictValue: '1',dictLabel:'已核对' }
+                ]"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
+            </el-select>
+          </el-form-item>
+
+          <el-form-item
+            v-if="false"
+            label="批次号"
+            prop="criticism"
+          >
+            <el-input
+              v-model="queryParams.criticism"
+              placeholder="请输入批次号"
+              clearable
+              size="small"
+              style="width: 228px"
+              @keyup.enter.native="handleQuery"
             />
-          </el-select>
-        </el-form-item>
+          </el-form-item>
 
-        <el-form-item
-          label="渣土场"
-          prop="ztcCode"
-        >
-          <!-- <el-input
-            v-model="queryParams.ztcCode"
-            placeholder="请输入渣土场"
-            clearable
-            size="small"
-            style="width: 228px"
-            @keyup.enter.native="handleQuery"
-          /> -->
-          <FilterableSelect
-            v-model="queryParams.ztcCode"
-            clearable
-            style="width:228px"
-            placeholder="请输入渣土场"
-            :axios="{
-              queryFn:listForWeb,
-              queryData:{
-                orgCode: orgCode
-              },
-              key: 'data'
-            }"
-            :show-key="{
-              value: 'code',
-              label: 'name',
-            }"
-            :keywords="'name'"
-            @selected="handleQuery"
+
+
+          <el-form-item v-if="activeName !== '4'" label="货物大类" prop="goodsBigType">
+            <el-select
+              v-model="queryParams.goodsBigType"
+              placeholder="请选择货物大类"
+              filterable
+              clearable
+              style="width: 228px"
+              size="small"
+            >
+              <el-option
+                v-for="dict in commodityCategoryCodeOptions"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            v-if="false"
+            label="货源单号"
+            prop="mainOrderNumber"
           >
-            <template #default="{row}">
-              <span>{{ row.name }}</span>
-            </template>
-          </FilterableSelect>
-        </el-form-item>
+            <el-input
+              v-model="queryParams.mainOrderNumber"
+              placeholder="请输入货源单号"
+              clearable
+              size="small"
+              style="width: 228px"
+              @keyup.enter.native="handleQuery"
+            />
+          </el-form-item>
 
-        <el-form-item
-          label="调度者名称"
-          prop="teamCode"
-        >
-          <!-- <el-input
-            v-model="queryParams.teamCode"
-            placeholder="请输入调度者名称"
-            clearable
-            size="small"
-            style="width: 228px"
-            @keyup.enter.native="handleQuery"
-          /> -->
-
-          <FilterableSelect
-            v-model="queryParams.teamCode"
-            clearable
-            style="width:228px"
-            placeholder="请输入调度者名称"
-            :axios="{
-              queryFn:teamListInfo,
-              queryData:{
-                isAsc: 'desc',
-                orderByColumn:'t0.create_time'
-              },
-              key: 'rows'
-            }"
-            :show-key="{
-              value: 'code',
-              label: 'name',
-            }"
-            :keywords="'name'"
-            @selected="(data)=>{ handleQuery()}"
+          <el-form-item
+            label="接单日期"
+            prop="receiveTime"
           >
-            <template #default="{row}">
-              <span>{{ row.name }}({{ row.telphone }})</span>
-            </template>
-          </FilterableSelect>
-        </el-form-item>
-
-        <el-form-item
-          label="项目"
-          prop="projectCode"
-        >
-          <!-- <el-input
-            v-model="queryParams.projectCode"
-            placeholder="请输入项目名称"
-            clearable
-            size="small"
-            style="width: 228px"
-            @keyup.enter.native="handleQuery"
-          /> -->
-
-          <FilterableSelect
-            v-model="queryParams.projectCode"
-            clearable
-            style="width:228px"
-            placeholder="请输入项目名称"
-            :axios="{
-              queryFn:listInfo,
-              queryData:{
-                isAsc:'desc',
-                orderByColumn:'t0.id',
-                companyCode:companyCode
-              }
-            }"
-            :show-key="{
-              value: 'code',
-              label: 'projectName',
-              telphone: ''
-            }"
-            :keywords="'projectName'"
-            @selected="(data)=>{ handleQuery() }"
+            <el-date-picker
+              v-model="receiveTime"
+              type="daterange"
+              range-separator="-"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              style="width: 228px"
+              @change="datechoose"
+            />
+          </el-form-item>
+          <el-form-item
+            v-if="activeName !== '4'"
+            label="车牌号"
+            prop="licenseNumber"
           >
-            <template #default="{row}">
-              <span>{{ row.projectName }}</span>
-            </template>
-          </FilterableSelect>
-
-
-        </el-form-item>
-
-        <el-form-item>
-          <el-button
-            type="primary"
-            icon="el-icon-search"
-            size="mini"
-            @click="handleQuery"
+            <el-input
+              v-model="queryParams.licenseNumber"
+              placeholder="请输入车牌号"
+              clearable
+              size="small"
+              style="width: 228px"
+              @keyup.enter.native="handleQuery"
+            />
+          </el-form-item>
+          <el-form-item
+            v-if="activeName !== '4'"
+            label="司机姓名"
+            prop="driverName"
           >
-            搜索
-          </el-button>
-          <el-button
-            type="primary"
-            plain
-            icon="el-icon-refresh"
-            size="mini"
-            @click="resetQuery"
+            <el-input
+              v-model="queryParams.driverName"
+              placeholder="请输入司机姓名"
+              clearable
+              size="small"
+              style="width: 228px"
+              @keyup.enter.native="handleQuery"
+            />
+          </el-form-item>
+          <el-form-item
+            label="运输单号"
+            prop="waybillNo"
           >
-            重置
-          </el-button>
-        </el-form-item>
-      </el-form>
+            <el-input
+              v-model="queryParams.waybillNo"
+              placeholder="请输入运输单号"
+              clearable
+              size="small"
+              style="width: 228px"
+              @keyup.enter.native="handleQuery"
+            />
+          </el-form-item>
 
-      <div v-show="showSearch && activeName === '7'">
-        <AlreadyPaid v-model="alreadyPaid_queryParams" :is-shipment="isShipment" @handleQuery="handleClick('7')" />
+          <el-form-item v-if="activeName !== '4'" label="分单" prop="isChild">
+            <el-select
+              v-model="queryParams.isChild"
+              placeholder="请选择分单"
+              filterable
+              clearable
+              size="small"
+              style="width: 228px"
+            >
+              <el-option
+                v-for="dict in isChildOptions"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
+            </el-select>
+          </el-form-item>
+
+          <el-form-item
+            label="渣土场"
+            prop="ztcCode"
+          >
+            <FilterableSelect
+              v-model="queryParams.ztcCode"
+              clearable
+              style="width:228px"
+              placeholder="请输入渣土场"
+              :axios="{
+                queryFn:listForWeb,
+                queryData:{
+                  orgCode: orgCode
+                },
+                key: 'data'
+              }"
+              :show-key="{
+                value: 'code',
+                label: 'name',
+              }"
+              :keywords="'name'"
+              @selected="handleQuery"
+            >
+              <template #default="{row}">
+                <span>{{ row.name }}</span>
+              </template>
+            </FilterableSelect>
+          </el-form-item>
+
+          <el-form-item
+            label="调度者名称"
+            prop="teamCode"
+          >
+            <FilterableSelect
+              v-model="queryParams.teamCode"
+              clearable
+              style="width:228px"
+              placeholder="请输入调度者名称"
+              :axios="{
+                queryFn:teamListInfo,
+                queryData:{
+                  isAsc: 'desc',
+                  orderByColumn:'t0.create_time'
+                },
+                key: 'rows'
+              }"
+              :show-key="{
+                value: 'code',
+                label: 'name',
+              }"
+              :keywords="'name'"
+              @selected="(data)=>{ handleQuery()}"
+            >
+              <template #default="{row}">
+                <span>{{ row.name }}({{ row.telphone }})</span>
+              </template>
+            </FilterableSelect>
+          </el-form-item>
+
+          <el-form-item
+            label="项目"
+            prop="projectCode"
+          >
+            <FilterableSelect
+              v-model="queryParams.projectCode"
+              clearable
+              style="width:228px"
+              placeholder="请输入项目名称"
+              :axios="{
+                queryFn:listInfo,
+                queryData:{
+                  isAsc:'desc',
+                  orderByColumn:'t0.id',
+                  companyCode:companyCode
+                }
+              }"
+              :show-key="{
+                value: 'code',
+                label: 'projectName',
+                telphone: ''
+              }"
+              :keywords="'projectName'"
+              @selected="(data)=>{ handleQuery() }"
+            >
+              <template #default="{row}">
+                <span>{{ row.projectName }}</span>
+              </template>
+            </FilterableSelect>
+
+
+          </el-form-item>
+
+          <el-form-item>
+            <el-button
+              type="primary"
+              icon="el-icon-search"
+              size="mini"
+              @click="handleQuery"
+            >
+              搜索
+            </el-button>
+            <el-button
+              type="primary"
+              plain
+              icon="el-icon-refresh"
+              size="mini"
+              @click="resetQuery"
+            >
+              重置
+            </el-button>
+          </el-form-item>
+        </el-form>
+
+        <div v-show="showSearch && activeName === '7'">
+          <AlreadyPaid v-model="alreadyPaid_queryParams" :is-shipment="isShipment" @handleQuery="handleClick('7')" />
+        </div>
       </div>
-    </div>
 
-    <div class="g-radio-group ly-flex-pack-justify">
-      <el-radio-group v-model="activeName" size="small" @change="handleClick">
-        <el-radio-button label="4">已复核</el-radio-button>
-        <el-radio-button label="5">已核算</el-radio-button>
-        <el-radio-button v-hasPermi="['transportation:batch:list']" label="7">已打款</el-radio-button>
-      </el-radio-group>
+      <div class="g-radio-group ly-flex-pack-justify">
+        <el-radio-group v-model="activeName" size="small" @change="handleClick">
+          <el-radio-button label="4">已复核</el-radio-button>
+          <el-radio-button label="5">已核验</el-radio-button>
+          <el-radio-button v-hasPermi="['transportation:batch:list']" label="7">已打款</el-radio-button>
+        </el-radio-group>
 
-      <el-button v-show="activeName==='4'" v-hasPermi="['transportation:icCheck:checkList']" type="success" size="mini" @click="nuclearCardOpen">核销IC卡</el-button>
-    </div>
+        <el-button v-show="activeName==='4'" v-hasPermi="['transportation:icCheck:checkList']" type="success" size="mini" @click="nuclearCardOpen">核销IC卡</el-button>
+      </div>
 
-    <div class="app-container">
-      <div v-show="activeName !== '7'">
-        <el-row
-          :gutter="10"
-          class="mb8"
-        >
-          <el-col v-show="activeName == '4'" :span="1.5">
-            <el-button
-              v-hasPermi="['transportation:waybillBalanceInfo:batchCheck']"
-              type="primary"
-              icon="el-icon-document-checked"
-              size="mini"
-              :disabled="multiple"
-              @click="handleAdjust"
-            >批量核算</el-button>
-          </el-col>
-          <el-col v-show="activeName == '5'" :span="1.5">
-            <el-button
-              v-hasPermi="['transportation:batch:applyReconciliation']"
-              type="primary"
-              icon="el-icon-wallet"
-              size="mini"
-              :disabled="multiple"
-              @click="createdDatch"
-            >批量申请对账</el-button>
-          </el-col>
-          <el-col :span="1.5" class="fr">
-            <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
-          </el-col>
-          <right-toolbar
+      <div v-show="activeName == '4' || activeName == '7'" class="app-container">
+        <div v-if="activeName !== '7'">
+          <el-row
+            :gutter="10"
+            class="mb8"
+          >
+            <el-col v-show="activeName == '4'" :span="1.5">
+              <el-button
+                v-hasPermi="['transportation:waybillBalanceInfo:batchCheck']"
+                type="primary"
+                icon="el-icon-document-checked"
+                size="mini"
+                :disabled="multiple"
+                @click="handleAdjust"
+              >批量核算</el-button>
+            </el-col>
+            <!-- <el-col v-show="activeName == '4'" :span="1.5">
+              <el-button
+                type="primary"
+                icon="el-icon-document-checked"
+                size="mini"
+                @click="handleFenzu"
+              >一键分组</el-button>
+            </el-col> -->
+            <el-col v-show="activeName == '5'" :span="1.5">
+              <el-button
+                v-hasPermi="['transportation:batch:applyReconciliation']"
+                type="primary"
+                icon="el-icon-wallet"
+                size="mini"
+                :disabled="multiple"
+                @click="createdDatch"
+              >批量申请对账</el-button>
+            </el-col>
+            <el-col :span="1.5" class="fr">
+              <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
+            </el-col>
+            <right-toolbar
+              :show-search.sync="showSearch"
+              @queryTable="getList"
+            />
+          </el-row>
+
+          <div v-if="false">
+            <RefactorTable
+              :loading="loading"
+              :data="adjustlist"
+              :table-columns-config="tableColumnsConfig"
+              :row-key="(row)=> row.waybillNo"
+              :reserve-selection="activeName == '5'"
+              @selection-change="handleSelectionChange"
+            >
+              <template #goodsBigType="{row}">
+                <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
+              </template>
+              <template #loadWeight="{row}">
+                <span v-if="row.loadWeight">
+                  <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.loadWeight }} 吨</span>
+                  <span v-if="row.stowageStatus === '1'">{{ row.loadWeight }} 立方</span>
+                  <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.loadWeight) }} 车</span>
+                </span>
+              </template>
+              <template #stowageStatus="{row}">
+                <span>
+                  <span v-if="row.stowageStatus === '0'"> 吨</span>
+                  <span v-if="row.stowageStatus === '1'"> 立方</span>
+                  <span v-if="row.stowageStatus === '2'"> 车</span>
+                </span>
+              </template>
+              <template #icStatus="{row}">
+                <span v-if="row.icStatus == '0'"><i class="el-icon-error g-color-error mr10" />未核对</span>
+                <span v-if="row.icStatus == '1'"><i class="el-icon-success g-color-success mr10" />已核对</span>
+              </template>
+              <template #unloadWeight="{row}">
+                <span v-if="row.unloadWeight">
+                  <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.unloadWeight }} 吨</span>
+                  <span v-if="row.stowageStatus === '1'">{{ row.unloadWeight }} 立方</span>
+                  <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.unloadWeight) }} 车</span>
+                </span>
+              </template>
+              <template #weight="{row}">
+                <span v-if="row.weight">
+                  <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.weight }} 吨</span>
+                  <span v-if="row.stowageStatus === '1'">{{ row.weight }} 立方</span>
+                  <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.weight) }} 车</span>
+                </span>
+              </template>
+              <template #lastLoadingTime="{row}">
+                <span>{{ parseTime(row.lastLoadingTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+              </template>
+
+              <template #edit="{row}">
+                <el-button
+                  v-show="activeName == '5' && row.isApplyMoneyBack == 1"
+                  v-has-permi="['transportation:waybillBalanceInfo:warning']"
+                  size="mini"
+                  type="text"
+                  @click="handleTableBtn(row, 1)"
+                >驳回提示</el-button>
+                <el-button
+                  v-show="activeName == '4'"
+                  v-hasPermi="['transportation:waybillBalanceInfo:shipperRebutUnloading']"
+                  size="mini"
+                  type="text"
+                  @click="handleTableBtn(row, 2)"
+                >驳回</el-button>
+                <el-button
+                  v-show="activeName == '4'"
+                  v-hasPermi="['transportation:waybillBalanceInfo:batchCheck']"
+                  size="mini"
+                  type="text"
+                  @click="handleTableBtn(row, 3)"
+                >核算</el-button>
+                <el-button
+                  v-show="activeName == '5'"
+                  v-hasPermi="['transportation:batch:applyReconciliation']"
+                  size="mini"
+                  type="text"
+                  @click="handleTableBtn(row, 4)"
+                >申请对账</el-button>
+
+                <el-button
+                  v-show="!isShipment && row.isChild == '2'"
+                  v-has-permi="['transportation:waybill:childList']"
+                  size="mini"
+                  type="text"
+                  @click="handleTableBtn(row, 6)"
+                >分单列表</el-button>
+                <el-button
+                  v-has-permi="['transportation:waybill:getWayBillByCode']"
+                  size="mini"
+                  type="text"
+                  @click="handleTableBtn(row, 7)"
+                >详情</el-button>
+              </template>
+            </RefactorTable>
+          </div>
+
+          <!-- 数据格式要传对 每个订单的数组 -->
+          <!-- myData 是列表的基础数据 是一条条运单 -->
+          <!-- multiple 是判断选中多项 false是有选中的了 -->
+          <!-- ref 用来触发组件内的核算弹框 -->
+          <MyTest v-show="activeName == '4'" ref="MyTest" :my-data="myData" @multiple="(data)=> multiple = data" />
+
+
+
+
+
+          <pagination
+            v-show="total>0 && activeName == '5'"
+            :total="total"
+            :page.sync="queryParams.pageNum"
+            :limit.sync="queryParams.pageSize"
+            @pagination="getList"
+          />
+        </div>
+
+        <!-- 已打款 -->
+        <div v-if="activeName === '7'">
+          <AlreadyTable
+            v-model="alreadyPaid_queryParams"
+            :list="alreadyTableList"
+            :loading="loading"
+            :config="{api: adjustDregsApi}"
             :show-search.sync="showSearch"
-            @queryTable="getList"
+            @getList="getadjustDregsList"
+            @handleTableBtn="handleTableBtn"
+            @handleSelectionChange="handleSelectionChange1"
           />
-        </el-row>
-        <RefactorTable
-          :loading="loading"
-          :data="adjustlist"
-          :table-columns-config="tableColumnsConfig"
-          :row-key="(row)=> row.waybillNo"
-          :reserve-selection="activeName == '5'"
-          @selection-change="handleSelectionChange"
-        >
-          <template #goodsBigType="{row}">
-            <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
-          </template>
-          <template #loadWeight="{row}">
-            <span v-if="row.loadWeight">
-              <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.loadWeight }} 吨</span>
-              <span v-if="row.stowageStatus === '1'">{{ row.loadWeight }} 立方</span>
-              <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.loadWeight) }} 车</span>
-            </span>
-          </template>
-          <template #stowageStatus="{row}">
-            <span>
-              <span v-if="row.stowageStatus === '0'"> 吨</span>
-              <span v-if="row.stowageStatus === '1'"> 立方</span>
-              <span v-if="row.stowageStatus === '2'"> 车</span>
-            </span>
-          </template>
-          <template #icStatus="{row}">
-            <span v-if="row.icStatus == '0'"><i class="el-icon-error g-color-error mr10" />未核对</span>
-            <span v-if="row.icStatus == '1'"><i class="el-icon-success g-color-success mr10" />已核对</span>
-          </template>
-          <template #unloadWeight="{row}">
-            <span v-if="row.unloadWeight">
-              <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.unloadWeight }} 吨</span>
-              <span v-if="row.stowageStatus === '1'">{{ row.unloadWeight }} 立方</span>
-              <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.unloadWeight) }} 车</span>
-            </span>
-          </template>
-          <template #weight="{row}">
-            <span v-if="row.weight">
-              <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.weight }} 吨</span>
-              <span v-if="row.stowageStatus === '1'">{{ row.weight }} 立方</span>
-              <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.weight) }} 车</span>
-            </span>
-          </template>
-          <template #lastLoadingTime="{row}">
-            <span>{{ parseTime(row.lastLoadingTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-          </template>
-
-          <template #edit="{row}">
-            <el-button
-              v-show="activeName == '5' && row.isApplyMoneyBack == 1"
-              v-has-permi="['transportation:waybillBalanceInfo:warning']"
-              size="mini"
-              type="text"
-              @click="handleTableBtn(row, 1)"
-            >驳回提示</el-button>
-            <el-button
-              v-show="activeName == '4'"
-              v-hasPermi="['transportation:waybillBalanceInfo:shipperRebutUnloading']"
-              size="mini"
-              type="text"
-              @click="handleTableBtn(row, 2)"
-            >驳回</el-button>
-            <el-button
-              v-show="activeName == '4'"
-              v-hasPermi="['transportation:waybillBalanceInfo:batchCheck']"
-              size="mini"
-              type="text"
-              @click="handleTableBtn(row, 3)"
-            >核算</el-button>
-            <el-button
-              v-show="activeName == '5'"
-              v-hasPermi="['transportation:batch:applyReconciliation']"
-              size="mini"
-              type="text"
-              @click="handleTableBtn(row, 4)"
-            >申请对账</el-button>
-
-            <el-button
-              v-show="!isShipment && row.isChild == '2'"
-              v-has-permi="['transportation:waybill:childList']"
-              size="mini"
-              type="text"
-              @click="handleTableBtn(row, 6)"
-            >分单列表</el-button>
-            <el-button
-              v-has-permi="['transportation:waybill:getWayBillByCode']"
-              size="mini"
-              type="text"
-              @click="handleTableBtn(row, 7)"
-            >详情</el-button>
-          </template>
-        </RefactorTable>
-
-        <pagination
-          v-show="total>0"
-          :total="total"
-          :page.sync="queryParams.pageNum"
-          :limit.sync="queryParams.pageSize"
-          @pagination="getList"
-        />
+        </div>
       </div>
-
-      <!-- 已打款 -->
-      <div v-if="activeName === '7'">
-        <AlreadyTable
-          v-model="alreadyPaid_queryParams"
-          :list="alreadyTableList"
-          :loading="loading"
-          :config="{api: adjustDregsApi}"
-          :show-search.sync="showSearch"
-          @getList="getadjustDregsList"
-          @handleTableBtn="handleTableBtn"
-          @handleSelectionChange="handleSelectionChange1"
-        />
-      </div>
-
-
-
     </div>
+
+
+
+
+
     <!-- 驳回弹窗 -->
     <reject-dialog ref="RejectDialog" :open.sync="rejectdialog" :title="title" :disable="formDisable" @refresh="getList" />
     <!-- 核算弹窗 -->
@@ -592,7 +561,7 @@
     <!-- 对账单弹窗 -->
     <StatementsDialog ref="StatementsDialog" :open.sync="Statementsdialog" :disable="formDisable" :title="title" @refresh="getList" />
     <!-- 核销IC卡 -->
-    <nuclear-card ref="NuclearCard" :open.sync="nuclearCardDialog" @refresh="getList" />
+    <nuclear-card ref="NuclearCard" :open.sync="nuclearCardDialog" @listData="listData" />
 
   </div>
 </template>
@@ -628,9 +597,17 @@ import StatementsDialog from './StatementsDialog';
 import AlreadyPaid from './AlreadyQueryForm';
 import AlreadyTable from './AlreadyTable';
 
+
+import MyTest from './test.vue';
+// ----------
+// 已核验的页面
+import Verification from './VerificationPage';
+
+// 已打款的页面
+import PaiMoney from './PaiMoney';
 export default {
   'name': 'AdjustDregs',
-  components: { RejectDialog, AdjustDialog, DetailDialog, ChildDialog, CommentDialog, RateDialog, NuclearCard, StatementsDialog, AlreadyPaid, AlreadyTable, FilterableSelect },
+  components: { RejectDialog, AdjustDialog, DetailDialog, ChildDialog, CommentDialog, RateDialog, NuclearCard, StatementsDialog, AlreadyPaid, AlreadyTable, FilterableSelect, MyTest, Verification, PaiMoney },
   data() {
     return {
       tableColumnsConfig_4: [],
@@ -755,7 +732,10 @@ export default {
       listInfo,
       listForWeb,
       shipmentList,
-      teamListInfo
+      teamListInfo,
+
+      myData: undefined
+
     };
   },
   computed: {
@@ -887,8 +867,8 @@ export default {
         waybillType: this.activeName === '5' ? 1 : undefined
       };
       ztApiList(que).then(response => {
-        this.adjustlist = response.rows;
-        this.total = response.total;
+        this.adjustlist = response.data;
+        this.total = response.total || 0;
         this.loading = false;
       });
     },
@@ -921,9 +901,11 @@ export default {
 
     /** 批量核算 */
     handleAdjust() {
-      this.adjustdialog = true;
-      this.title = '结算审核';
-      this.$refs.AdjustDialog.setForm(this.ids); // this.ids 数组
+      console.log('批量打开的');
+      // this.adjustdialog = true;
+      // this.title = '结算审核';
+      // this.$refs.AdjustDialog.setForm(this.ids); // this.ids 数组
+      // this.$refs.MyTest.handleTableBtn('ADJUST');
     },
 
     // 批量评价
@@ -1038,7 +1020,84 @@ export default {
       }).catch(() => {
         this.loading = false;
       });
+    },
+
+    /** IC卡核销完的数据 */
+    listData(data) {
+      // const data1 = [{
+      //   'serialNumber': 31,
+      //   'waybillNo': '2106191000275187',
+      //   'orderId': 30528,
+      //   'projectName': '616测试项目1',
+      //   'licenseNumber': '闽AQ8002',
+      //   'driverName': '测试独立加强',
+      //   'driverPhone': '15859109002',
+      //   'fillTime': 1624068000000,
+      //   'signTime': 1624068000000,
+      //   'mudtail': '616测试1—石渣土',
+      //   'writeOffStatus': 0,
+      //   'writeOffRemark': null,
+      //   'fillTimeDate': '2021-06-19T02:00:00.000+00:00',
+      //   'signTimeDate': '2021-06-19T02:00:00.000+00:00',
+      //   'icStatus': null,
+      //   'batchWayBillBalanceInfoVo': {
+      //     'wayBillCode': '83d7b5856f3247d78ba7ba5ca574151f',
+      //     'mainOrderNumber': '2106190954579183',
+      //     'waybillNo': '2106191000275187',
+      //     'deliveryCompany': '渣土货主公司',
+      //     'orderClient': '渣土货主[15859109601]',
+      //     'isChild': 0,
+      //     'driverName': '测试独立加强',
+      //     'driverPhone': '15859109002',
+      //     'goodsBigType': '1800',
+      //     'licenseNumber': '闽AQ8002',
+      //     'loadWeight': '1.00',
+      //     'unloadWeight': '1.00',
+      //     'goodsPrice': 0,
+      //     'freightPrice': null,
+      //     'deliveryFeeDeserved': 0,
+      //     'deliveryFeePractical': 0,
+      //     'deliveryCashFee': 0,
+      //     'serviceFee': 0,
+      //     'serviceTaxFee': 0,
+      //     'taxPayment': 0,
+      //     'driverAddFee': 0,
+      //     'driverReductionFee': 0,
+      //     'loadAddress': '福建省福州市晋安区易速递',
+      //     'loadContact': '渣土货主',
+      //     'loadContactPhone': '15859109601',
+      //     'unloadAddress': '福建省福州市台江区江滨中大道鼓山大桥旁富邦总部大楼',
+      //     'unloadContact': null,
+      //     'unloadContactPhone': null,
+      //     'isReturn': 1,
+      //     'lastLoadingTime': null,
+      //     'orderTime': '2021-06-19 09:54:57',
+      //     'receiveTime': '2021-06-19 10:00:00',
+      //     'wayBillUpdateTime': '2021-06-19 10:30:52',
+      //     'isApplyMoneyBack': 0,
+      //     'applyMoneyBackRemark': null,
+      //     'taxFreeFee': 0,
+      //     'taxFee': 0,
+      //     'stowageStatus': '2',
+      //     'weight': null,
+      //     'teamLeaderName': '15859109120',
+      //     'teamName': '测试网商小强调度',
+      //     'teamUserCode': '55221c19f4954853b46dca4a2b481e58',
+      //     'icStatus': '1',
+      //     'shipperCopeFee': '0.00',
+      //     'projectName': '616测试项目1',
+      //     'ztcName': '616测试1'
+      //   }
+      // }];
+      console.log(data, '返回的数据了----');
+      this.myData = data.map(e => e.batchWayBillBalanceInfoVo);
     }
+
+    // /** 一键分组功能 */
+    // handleFenzu() {
+    //   const list = this.adjustlist;
+    //   console.log(list);
+    // }
   }
 };
 </script>
