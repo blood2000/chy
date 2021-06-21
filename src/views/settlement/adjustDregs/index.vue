@@ -5,8 +5,9 @@
     <!-- 已核验 -->
     <Verification v-if="false" />
 
-    <PaiMoney />
+    <PaiMoney v-if="false" />
 
+    <AccountingPage />
 
     <div
       v-if="false"
@@ -536,7 +537,7 @@
             :show-search.sync="showSearch"
             @getList="getadjustDregsList"
             @handleTableBtn="handleTableBtn"
-            @handleSelectionChange="handleSelectionChange1"
+            @handleSelectionChange="()=>{}"
           />
         </div>
       </div>
@@ -605,9 +606,12 @@ import Verification from './VerificationPage';
 
 // 已打款的页面
 import PaiMoney from './PaiMoney';
+
+// 已核算页面
+import AccountingPage from './AccountingPage';
 export default {
   'name': 'AdjustDregs',
-  components: { RejectDialog, AdjustDialog, DetailDialog, ChildDialog, CommentDialog, RateDialog, NuclearCard, StatementsDialog, AlreadyPaid, AlreadyTable, FilterableSelect, MyTest, Verification, PaiMoney },
+  components: { RejectDialog, AdjustDialog, DetailDialog, ChildDialog, CommentDialog, RateDialog, NuclearCard, StatementsDialog, AlreadyPaid, AlreadyTable, FilterableSelect, MyTest, Verification, PaiMoney, AccountingPage },
   data() {
     return {
       tableColumnsConfig_4: [],

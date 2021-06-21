@@ -2,25 +2,19 @@
   <div>
     <!-- 核验的页面 独立 -->
     <div v-show="showSearch" class="app-container app-container--search">
-      <AlreadyQueryForm v-model="alreadyPaid_queryParams" :is-shipment="isShipment" @handleQuery="handleQuery" />
+      <AlreadyQueryForm
+        v-model="alreadyPaid_queryParams"
+        :is-shipment="isShipment"
+        @handleQuery="()=>{
+          alreadyPaid_queryParams.pageNum = 1;
+          getadjustDregsList();
+        }"
+      />
     </div>
 
     <div class="app-container">
-      <el-row
-        :gutter="10"
-        class="mb8"
-      >
-        <el-col :span="1.5" class="fr">
-          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
-        </el-col>
-        <right-toolbar
-          :show-search.sync="showSearch"
-          @queryTable="getList"
-        />
-      </el-row>
-
       <!-- 已打款 -->
-      <div v-if="activeName === '7'">
+      <div>
         <AlreadyTable
           v-model="alreadyPaid_queryParams"
           :list="alreadyTableList"
@@ -29,7 +23,7 @@
           :show-search.sync="showSearch"
           @getList="getadjustDregsList"
           @handleTableBtn="handleTableBtn"
-          @handleSelectionChange="handleSelectionChange1"
+          @handleSelectionChange="()=>{}"
         />
       </div>
     </div>
@@ -37,6 +31,8 @@
 </template>
 
 <script>
+import { getUserInfo } from '@/utils/auth';
+
 import AlreadyQueryForm from './components/AlreadyQueryForm.vue';
 import AlreadyTable from './components/AlreadyTable';
 
@@ -62,7 +58,13 @@ export default {
       showSearch: true,
 
       loading: false,
-      alreadyTableList: []
+      alreadyTableList: [],
+
+      //
+      shipment: {},
+      isShipment: true,
+      companyCode: undefined,
+      shipmentCode: undefined
 
     };
   },
@@ -76,7 +78,14 @@ export default {
   },
 
   created() {
-    //   this.alreadyPaid_queryParams.pageNum = 1;
+    const { isShipment } = getUserInfo() || {};
+    // this.shipment = shipment;
+    this.isShipment = isShipment;
+
+    // if (this.shipment.info) {
+    //   this.companyCode = this.shipment.info.companyCode;
+    //   this.shipmentCode = this.shipment.info.code;
+    // }
     this.getadjustDregsList();
   },
 
