@@ -216,7 +216,7 @@
       >
         <el-col v-if="activeName == '4'" :span="1.5">
           <el-button
-            v-hasPermi="['transportation:waybillBalanceInfo:batchCheck']"
+            v-hasPermi="['transportation:waybillBalanceInfo:batchDetail']"
             type="primary"
             icon="el-icon-document-checked"
             size="mini"
@@ -236,6 +236,7 @@
         </el-col>
         <el-col v-if="activeName == '7' && !isAdmin" :span="1.5">
           <el-button
+            v-hasPermi="['transportation:waybillBalanceInfo:evaluate']"
             type="primary"
             icon="el-icon-chat-dot-square"
             size="mini"
@@ -312,18 +313,21 @@
           >核算</el-button>
           <el-button
             v-if="activeName == '5'"
+            v-hasPermi="['transportation:waybillBalanceInfo:batchApply']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 4)"
           >申请打款</el-button>
           <el-button
             v-if="activeName == '7' && !isAdmin"
+            v-hasPermi="['transportation:waybillBalanceInfo:evaluate']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 5)"
           >评价</el-button>
           <el-button
             v-if="activeName == '7' && isAdmin"
+            v-hasPermi="['transportation:waybillBalanceInfo:evaluate:detail']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 8)"

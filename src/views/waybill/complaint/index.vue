@@ -86,6 +86,7 @@
         </template>
         <template #edit="{row}">
           <el-button
+            v-hasPermi="['transportation:driverComplaint:detail']"
             size="mini"
             type="text"
             @click="handleWaybill(row)"

@@ -339,7 +339,7 @@
 
           <el-button
             v-if="row.isChild == 2"
-            v-hasPermi="['data:report:seperate']"
+            v-hasPermi="['transportation:waybill:childList']"
             size="mini"
             type="text"
             @click="handleEdit(row, 'seperate')"
@@ -348,6 +348,7 @@
           <!-- v-hasPermi="['data:report:report']" -->
           <el-button
             v-if="true"
+            v-has-permi="['transportation:waybillReport:batch']"
             :disabled="loading"
             size="mini"
             type="text"

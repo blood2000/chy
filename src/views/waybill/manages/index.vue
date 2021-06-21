@@ -244,6 +244,7 @@
           </el-button>
           <el-button
             v-if="row.isChild === 2 && isShipment"
+            v-hasPermi="['transportation:waybillOper:reinsurance']"
             size="mini"
             type="text"
             @click="handleSeperate(row)"
@@ -265,6 +266,7 @@
             <el-dropdown-item>
               <el-button
                 v-if="row.isChild === 2"
+                v-hasPermi="['transportation:waybillOper:reinsurance']"
                 size="mini"
                 type="text"
                 @click="handleSeperate(row)"

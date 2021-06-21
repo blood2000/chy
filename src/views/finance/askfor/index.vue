@@ -224,6 +224,7 @@
 
         <template #edit="{row}">
           <el-button
+            v-hasPermi="['askfor:invoice:detail']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 1)"

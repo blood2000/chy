@@ -10,19 +10,15 @@
       name="file"
       :show-file-list="false"
       :headers="headers"
-      :disabled="disabled"
       accept=".jpg,.png,.jpeg"
       style="display: inline-block; vertical-align: top"
       class="upload-image"
     >
-      <img v-if="value && !disabled" :src="attachUrl" class="avatar">
-      <div v-else-if="value && disabled" v-viewer class="avatar-box">
-        <!-- <img v-real-img="attachUrl" src="@/assets/images/uploadImage/load_error.png" class="avatar"> -->
+      <div v-if="value" v-viewer class="avatar-box">
         <img :src="attachUrl" class="avatar">
       </div>
       <template v-else>
-        <img :src="require('@/assets/images/uploadImage/' + iconType + '.png')">
-        <img :class="disabled ? 'filter' : ''" src="@/assets/images/uploadImage/upload_icon.png" class="avatar-uploader-icon">
+        <img src="@/assets/images/uploadImage/upload_icon.png" class="avatar-uploader-icon">
       </template>
     </el-upload>
   </div>
@@ -39,25 +35,6 @@ export default {
     value: {
       type: String,
       default: ''
-    },
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-    // 图片类型
-    imageType: {
-      type: String,
-      default: null
-    },
-    // 图片正反面
-    side: {
-      type: String,
-      default: null
-    },
-    // 图标类型
-    iconType: {
-      type: String,
-      default: 'default'
     }
   },
   data() {
@@ -71,21 +48,19 @@ export default {
         'Terminal-Type': terminalType
       },
       uploadData: {},
-      attachUrl: '',
-      flag: false
+      attachUrl: ''
     };
   },
   watch: {
     value(val) {
       if (val) {
-        if (this.flag) return;
-        this.handleGetFile(val);
+        this.attachUrl = val;
       }
     }
   },
   mounted() {
     if (this.value) {
-      this.handleGetFile(this.value);
+      this.attachUrl = this.value;
     }
   },
   methods: {
@@ -109,56 +84,9 @@ export default {
     handleUploadSuccess(res) {
       if (this.loading) this.loading.close();
       if (res.code === 200) {
-        this.$emit('input', res.data.code);
-        this.handleGetFile(res.data.code, true);
+        this.$emit('input', res.data.path);
+        this.attachUrl = res.data.path;
       }
-    },
-    // 根据code获取url
-    handleGetFile(code, flag) {
-      this.flag = true;
-      if (code) {
-        if (code.startsWith('https://')) {
-          this.attachUrl = code;
-          this.flag = false;
-        } else {
-          getFile(code).then(response => {
-            this.flag = false;
-            if (response.data && response.data.length > 0) {
-              this.attachUrl = response.data[0].attachUrl;
-              if (!flag) return;
-              this.handleOrc(this.attachUrl);
-            } else {
-              this.attachUrl = '';
-            }
-          });
-        }
-      }
-    },
-    // 图片识别
-    handleOrc(url) {
-      const formData = new FormData();
-      if (this.imageType) {
-        formData.append('type', this.imageType);
-      } else {
-        return;
-      }
-      if (url) {
-        formData.append('url', url);
-      } else {
-        return;
-      }
-      if (this.side) {
-        formData.append('side', this.side);
-      }
-      uploadOcr(formData).then(response => {
-        if (response.data) {
-          if (this.side) {
-            this.$emit('fillForm', this.imageType, response.data, this.side);
-          } else {
-            this.$emit('fillForm', this.imageType, response.data);
-          }
-        }
-      });
     },
     handleUploadError() {
       this.$message({

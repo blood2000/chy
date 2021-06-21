@@ -9,15 +9,24 @@
         <el-input v-model="form.password" type="password" :placeholder="form.id?'密码未修改可不填写':'请输入密码'" class="width60 mr3" clearable />
         <span class="g-color-blue">(初始密码为{{ initialPassword }})</span>
       </el-form-item>
-      <el-form-item label="状态">
-        <el-radio-group v-model="form.status">
-          <el-radio
-            v-for="dict in statusOptions"
-            :key="dict.dictValue"
-            :label="parseInt(dict.dictValue)"
-          >{{ dict.dictLabel }}</el-radio>
-        </el-radio-group>
-      </el-form-item>
+        <el-row :gutter="20">
+            <el-col :span="10">
+              <el-form-item label="状态">
+                <el-radio-group v-model="form.status">
+                  <el-radio
+                    v-for="dict in statusOptions"
+                    :key="dict.dictValue"
+                    :label="parseInt(dict.dictValue)"
+                  >{{ dict.dictLabel }}</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+            <el-col :span="10">
+                <el-form-item prop="openProjectDesignView">
+                    <el-checkbox v-model="form.openProjectDesignView">开启&nbsp;项目版统计视图</el-checkbox>
+                </el-form-item>
+            </el-col>
+        </el-row>
       <el-form-item label="姓名" prop="teamLeaderName">
         <el-input v-model="form.teamLeaderName" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
@@ -200,6 +209,12 @@ export default {
           if (!this.form.name || this.form.name === '') {
             this.form.name = this.form.teamLeaderName + '车队';
           }
+          var openProjectDesignView = 1;
+          if (this.form.openProjectDesignView) {
+            openProjectDesignView = 0;
+          }
+          var extendForm = { openProjectDesignView: openProjectDesignView };
+          this.form = Object.assign(this.form, extendForm);
           if (this.form.id) {
             updateInfo(this.form).then(response => {
               this.buttonLoading = false;
@@ -257,7 +272,8 @@ export default {
         identificationEndTime: null,
         identificationEffective: null,
         isDistribution: 0,
-        distributionPercent: 100
+        distributionPercent: 100,
+        openProjectDesignView: 1
       };
       this.resetForm('form');
     },
@@ -265,6 +281,11 @@ export default {
     setForm(data) {
       this.form = data;
       this.form.identificationEffective = praseNumToBoolean(this.form.identificationEffective);
+      if (this.form.openProjectDesignView === 0) {
+        this.form.openProjectDesignView = true;
+      } else {
+        this.form.openProjectDesignView = false;
+      }
     },
     // 已读
     authRead() {

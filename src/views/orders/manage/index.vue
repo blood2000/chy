@@ -165,6 +165,7 @@
         <el-col :span="1.5">
           <el-button
             v-if="true"
+            v-has-permi="['transportation:order:export']"
             type="warning"
             icon="el-icon-download"
             size="mini"
@@ -267,6 +268,7 @@
         <template #edit="{row}">
           <template v-if="row.isShowEdit">
             <el-button
+              v-has-permi="['transportation:orderInfoSearch:getOrderDetailBycode']"
               size="mini"
               type="text"
               @click="handleInfo(row)"
@@ -311,6 +313,7 @@
               <el-dropdown-item>
                 <el-button
                   v-if="false"
+                  v-hasPermi="['transportation:order:check']"
                   size="mini"
                   type="text"
                   @click="handleShenhe(row)"
@@ -320,6 +323,7 @@
               <el-dropdown-item>
                 <el-button
                   v-if="row.status+''==='0'"
+                  v-hasPermi="['transportation:order:copy']"
                   size="mini"
                   type="text"
                   @click="handleclone(row)"
