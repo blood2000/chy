@@ -37,7 +37,7 @@
 
 
     <el-form-item
-      label="对账批次号"
+      label="批次号"
       prop="batchNo"
     >
       <el-input

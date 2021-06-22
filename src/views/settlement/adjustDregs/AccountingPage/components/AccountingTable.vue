@@ -3,14 +3,14 @@
     <el-table
       :data="list"
       style="width: 100%"
-      @selection-change="tabSeleced"
+      @select="tabSelecedOne"
     >
       <el-table-column type="expand">
         <template slot-scope="props">
           <RefactorTable
             :ref="'RefactorTable_'+props.$index"
             :data="props.row.childs"
-            :table-columns-config="com2"
+            :table-columns-config="columns"
             :cb-data="props.row.selectChilds"
             @selection-change="(lists)=>handleSelectionChange(lists, props.row )"
           >
@@ -41,7 +41,7 @@
                 v-hasPermi="['transportation:waybillBalanceInfo:batchCheck']"
                 size="mini"
                 type="text"
-                @click="handleTableBtn(scope.row)"
+                @click="handleTableBtn([scope.row])"
               >核算</el-button>
             </div>
 
@@ -169,200 +169,7 @@ const com = [
   }
 ];
 
-const com2 = [
-  {
-    'label': '装货数量',
-    'prop': 'loadWeight',
-    'isShow': true,
-    'sortNum': 0,
-    'width': '120',
-    'tooltip': true
-  },
-  {
-    'label': '不含税价',
-    'prop': 'taxFreeFee',
-    'isShow': false,
-    'sortNum': 0,
-    'width': '120',
-    'tooltip': true
-  },
-  {
-    'label': '卸货数量',
-    'prop': 'unloadWeight',
-    'isShow': true,
-    'sortNum': 0,
-    'width': '120',
-    'tooltip': true
-  },
-  {
-    'label': '下单用户',
-    'prop': 'orderClient',
-    'isShow': true,
-    'sortNum': 0,
-    'width': '120',
-    'tooltip': true
-  },
-  {
-    'label': '货物大类',
-    'prop': 'goodsBigType',
-    'isShow': true,
-    'sortNum': 0,
-    'width': '120',
-    'tooltip': true
-  },
-  {
-    'label': '服务税费',
-    'prop': 'serviceTaxFee',
-    'isShow': false,
-    'sortNum': 0,
-    'width': '120',
-    'tooltip': true
-  },
-  {
-    'label': '货物单价',
-    'prop': 'goodsPrice',
-    'isShow': true,
-    'sortNum': 0,
-    'width': '120',
-    'tooltip': true
-  },
-  {
-    'label': '运费单价',
-    'prop': 'freightPrice',
-    'isShow': true,
-    'sortNum': 0,
-    'width': '120',
-    'tooltip': true
-  },
-  {
-    'label': '纳税金额',
-    'prop': 'taxPayment',
-    'isShow': true,
-    'sortNum': 0,
-    'width': '120',
-    'tooltip': true
-  },
-  {
-    'label': '装货地',
-    'prop': 'loadAddress',
-    'isShow': true,
-    'sortNum': 0,
-    'width': '120',
-    'tooltip': true
-  },
-  {
-    'label': '卸货地',
-    'prop': 'unloadAddress',
-    'isShow': true,
-    'sortNum': 0,
-    'width': '120',
-    'tooltip': true
-  },
-  {
-    'label': '装货截止时间',
-    'prop': 'lastLoadingTime',
-    'isShow': true,
-    'sortNum': 0,
-    'width': '120',
-    'tooltip': true
-  },
-  {
-    'label': '发布货源时间',
-    'prop': 'orderTime',
-    'isShow': true,
-    'sortNum': 0,
-    'width': '120',
-    'tooltip': true
-  },
-  {
-    'label': '接单时间',
-    'prop': 'receiveTime',
-    'isShow': true,
-    'sortNum': 0,
-    'width': '120',
-    'tooltip': true
-  },
-  {
-    'label': '承运调度',
-    'prop': 'teamName',
-    'isShow': true,
-    'sortNum': 0,
-    'width': '120',
-    'tooltip': true
-  },
-  {
-    'label': '运输单CODE',
-    'prop': 'wayBillCode',
-    'isShow': false,
-    'sortNum': 0,
-    'width': '120',
-    'tooltip': true
-  },
-  {
-    'label': '司机姓名',
-    'prop': 'driverName',
-    'isShow': true,
-    'sortNum': 0,
-    'width': '120',
-    'tooltip': true
-  },
-  {
-    'label': '服务费',
-    'prop': 'serviceFee',
-    'isShow': true,
-    'sortNum': 0,
-    'width': '120',
-    'tooltip': true
-  },
-  {
-    'label': '运输单号',
-    'prop': 'waybillNo',
-    'isShow': true,
-    'sortNum': 0,
-    'width': '120',
-    'tooltip': true
-  },
-  {
-    'label': '货源单号',
-    'prop': 'mainOrderNumber',
-    'isShow': true,
-    'sortNum': 0,
-    'width': '120',
-    'tooltip': true
-  },
-  {
-    'label': '发货企业',
-    'prop': 'deliveryCompany',
-    'isShow': true,
-    'sortNum': 0,
-    'width': '120',
-    'tooltip': true
-  },
-  {
-    'label': '司机电话',
-    'prop': 'driverPhone',
-    'isShow': true,
-    'sortNum': 0,
-    'width': '120',
-    'tooltip': true
-  },
-  {
-    'label': '车牌号',
-    'prop': 'licenseNumber',
-    'isShow': true,
-    'sortNum': 0,
-    'width': '120',
-    'tooltip': true
-  },
-  {
-    'prop': 'edit',
-    'isShow': true,
-    'label': '操作',
-    'sortNum': 0,
-    'width': 100,
-    'fixed': 'left'
-  }
-];
+
 export default {
   components: { AdjustDialog },
 
@@ -852,16 +659,25 @@ export default {
             'ztcName': '鼓山大桥'
           }
         ]
+    },
+    columns: {
+      type: Array,
+      default: () => []
+    },
+    sort: {
+      type: String,
+      default: 'cardBatchNo'
     }
   },
 
   data() {
     return {
       com,
-      com2,
 
       // 弹框数据
-      adjustdialog: false
+      adjustdialog: false,
+
+      selected: [] // 选中外层
     };
   },
 
@@ -871,7 +687,7 @@ export default {
       const arr = [];
       const object = {};
       this.myData.forEach(e => {
-        const str = e.projectName + ':' + e.ztcName;
+        const str = e.projectName + ':' + e[this.sort];
         const array = object[str];
         if (array) {
           array.push(e);
@@ -895,6 +711,7 @@ export default {
           // obj['land'] = ite['unloadAddress']; // 渣土场（卸货地）
           //   obj['landCode'] = ite['unloadAddressCode']; // 	渣土场（卸货地）Code
           obj['projectName'] = ite['projectName']; // 	项目（装货地）
+          obj['cardBatchNo'] = ite['cardBatchNo'] || null; // 	卡批次(初次读卡的时候存在)
           // obj['load'] = ite['loadAddress']; // 	项目（装货地）
         //   obj['loadCode'] = ite['loadAddressCode']; // 	项目（装货地）Code
         });
@@ -905,6 +722,7 @@ export default {
         obj['waybillCods'] = object[item].map(e => e.wayBillCode); // 	运单CodeIds
         obj['childs'] = object[item];
         obj['selectChilds'] = [];
+        obj['$_id'] = this.genID();
 
         arr.push(obj);
       }
@@ -914,32 +732,77 @@ export default {
   },
 
   methods: {
-    // 选中运单
+
+    // 选中运单 data = 当前选中的   row = 当前行  this.list
     handleSelectionChange(data, row) {
-      console.log(data, row);
-      console.log(this.list);
-    },
-    // 选中批次
-    tabSeleced(dataList) {
-      this.list.forEach(ee => {
-        ee.selectChilds = [];
+      const selectChilds = [];
+      row.childs.forEach((e, index) => {
+        data.forEach(ee => {
+          if (e.wayBillCode === ee.wayBillCode) {
+            // 选中
+            selectChilds.push(index);
+          }
+        });
       });
 
-      dataList.forEach(e => {
-        e.selectChilds = e.childs.map((e, index) => index);
+      row.selectChilds = selectChilds;
+      this.isDuo();
+    },
+    tabSelecedOne(selection, row) {
+      let isok = false;
+      selection.forEach(e => {
+        if (e.$_id === row.$_id) {
+          // 找到说明是 选中
+          isok = true;
+        }
       });
+      if (isok) {
+        row.selectChilds = row.childs.map((e, index) => index);
+      } else {
+        row.selectChilds = [];
+      }
 
-
-      this.$emit('multiple', dataList.length <= 0);
+      this.isDuo();
     },
 
-    /** 事件 */
-    handleTableBtn(row) {
-      // console.log(row);
+    // 判断多选
+    isDuo() {
+      const arr = [];
+      this.list.forEach(e => {
+        arr.push(e.selectChilds.length > 0);
+      });
+
+      this.$emit('ismultiple', arr.some(e => e));
+    },
+
+
+    /** 核算事件 批量核算也是触发这个函数 */
+    handleTableBtn(rowArr) {
+      const lists = rowArr || this.list;
+
       this.adjustdialog = true;
-      // this.waybillCodeList = [];
-      // this.waybillCodeList.push(row.waybillCods);
-      this.$refs.AdjustDialog.setForm(row.waybillCods, row);
+      const arr = [];
+      lists.forEach(e => {
+        // 找出选中的下标
+        if (!rowArr) {
+          e.selectChilds.forEach(se => {
+            arr.push(e.childs[se]);
+          });
+        } else {
+          e.childs.forEach((ee) => {
+            arr.push(ee);
+          });
+        }
+      });
+
+      console.log(arr);
+
+      this.$refs.AdjustDialog.setForm(arr);
+    },
+
+    /** 生成随机id */
+    genID(length = 5) {
+      return Number(Math.random().toString().substr(3, length) + Date.now()).toString(36);
     }
 
 

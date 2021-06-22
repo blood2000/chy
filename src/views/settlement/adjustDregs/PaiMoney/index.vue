@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- 核验的页面 独立 -->
+    <!-- 已打款-批次 -->
     <div v-show="showSearch" class="app-container app-container--search">
       <AlreadyQueryForm
         v-model="alreadyPaid_queryParams"

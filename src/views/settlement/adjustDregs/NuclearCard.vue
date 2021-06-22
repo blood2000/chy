@@ -275,21 +275,34 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(async() => {
-          // 异常要做写回卡的操作 filterArr 是异常的数据
-
           await this.handlerCheck();
           // 写卡
           this.errorHexiaoCheck(filterArr);
+        }).catch(() => {
+          // 测试数据 ----------------------------------------------------------------------------------------
+          console.log(this.list);
+          this.$emit('listData', (this.list.filter(e => e.writeOffStatus)).map(e => {
+            e.batchWayBillBalanceInfoVo.icStatus = '1';
+            e.icStatus = '1';
+            e.$_userInfo = this.userInfo;
+            return e;
+          }));
         });
       } else {
-        await this.handlerCheck();
-        // 无异常做核销动作
-        const res = await action.cancellation();
-        if (res.code === 200) {
-          this.loading = false;
-          this.msgSuccess('核销成功');
-          this.handlerClose();
-        }
+        this.$confirm(`确定立即核销`, '数据正常', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async() => {
+          await this.handlerCheck();
+          // 无异常做核销动作
+          const res = await action.cancellation();
+          if (res.code === 200) {
+            this.loading = false;
+            this.msgSuccess('核销成功');
+            this.handlerClose();
+          }
+        });
       }
     },
 
@@ -311,6 +324,7 @@ export default {
       this.$emit('listData', (this.list.filter(e => e.writeOffStatus)).map(e => {
         e.batchWayBillBalanceInfoVo.icStatus = '1';
         e.icStatus = '1';
+        e.$_userInfo = this.userInfo;
         return e;
       }));
 
@@ -452,7 +466,7 @@ export default {
     /** 卡的操作 */
     async handler(key) {
       const mobj = {};
-      const arr = '张三;18415451845;120;16612345678;17812345678;陈大帅;1621648441990;1621648441990123';
+      const arr = '张三;18415451845;120;16612345678;17812345678;陈大帅;1621648441990;1621648441990129';
       let res = '';
       switch (key) {
         case 'getCardInfo':
@@ -488,11 +502,11 @@ export default {
         case 'writeData':
           // 写数据
 
-          // res = await action.writeData('1010|1|30528;2106191113516909;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
+          res = await action.writeData('1010|1|30528;2106191113516909;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
           // console.log(res);
-          res = await action.writeData('1010|1|30528;2106191000275187;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
+          // res = await action.writeData('1010|1|30528;2106191000275187;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
           // console.log(res);
-          // res = await action.writeData('1010|1|30528;2106191000275188;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
+          res = await action.writeData('1010|1|30528;2106211909131006;616测试项目1;闽AQ8001;测试独立强;15859109001;1624068000000;1624068000000;31;616测试1—石渣土'); // ok数据
           // console.log(res);
           // res = await action.writeData('1010|1|30528;2106191000275189;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
           // console.log(res);

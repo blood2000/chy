@@ -86,13 +86,14 @@
             <tr>
               <th width="50px">运输单号</th>
               <th width="50px">司机名称</th>
+              <th width="50px">车牌号</th>
               <th width="50px">货物</th>
 
-              <th width="50px">装货地</th>
+              <th width="50px">项目名称</th>
               <th width="50px">装货重量</th>
               <th width="50px">装货时间</th>
 
-              <th width="50px">卸货地</th>
+              <th width="50px">渣土场</th>
               <th width="50px">卸货重量</th>
               <th width="50px">卸货时间</th>
 
@@ -101,7 +102,8 @@
           <tbody>
             <tr v-for="(item, index) in adjustlist" :key="index" class="tbody_tr">
               <td>{{ item.waybillNo }}</td>
-              <td>{{ item.companyName }}</td>
+              <td>{{ item.fwefw }}</td>
+              <td>{{ item.nwueinfi }}</td>
               <td>{{ item.goodsName }}</td>
 
               <td>{{ item.loadFormattedAddress }}</td>
@@ -177,6 +179,7 @@ export default {
       batchRelatedWaybill({ wayBillCodes: this.wayBillCodes }).then(res => {
         this.loading = false;
         this.adjustlist = res.data.list;
+        console.log(this.adjustlist);
       });
     }
   }

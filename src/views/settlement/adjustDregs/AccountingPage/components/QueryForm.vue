@@ -37,12 +37,26 @@
 
 
     <el-form-item
-      label="对账批次号"
+      label="运输单号"
       prop="batchNo"
     >
       <el-input
         v-model="queryParams.batchNo"
-        placeholder="请输入对账批次号"
+        placeholder="请输入运输单号"
+        clearable
+        size="small"
+        style="width: 228px"
+        @keyup.enter.native="$emit('handleQuery')"
+      />
+    </el-form-item>
+
+    <el-form-item
+      label="卡批次"
+      prop="batchNo"
+    >
+      <el-input
+        v-model="queryParams.cardBatchNo"
+        placeholder="请输入卡批次"
         clearable
         size="small"
         style="width: 228px"
@@ -141,7 +155,7 @@
     </el-form-item>
 
     <el-form-item
-      label="接单日期"
+      label="日期"
       prop="receiveTime"
     >
       <el-date-picker
@@ -156,7 +170,7 @@
       />
     </el-form-item>
 
-    <el-form-item
+    <!-- <el-form-item
       label="操作人"
       prop="operator"
     >
@@ -168,7 +182,7 @@
         style="width: 228px"
         @keyup.enter.native="$emit('handleQuery')"
       />
-    </el-form-item>
+    </el-form-item> -->
 
 
     <el-form-item>
