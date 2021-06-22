@@ -8,7 +8,6 @@
       plain
       class="wholecont-print"
     >打印</el-button>
-
     <div id="wholecont" class="wholecont-div">
 
       <h3 id="plat_hetong_title" style="text-indent: 4em;">福建大道成物流科技有限公司无车承运平台运输电子合同</h3>
@@ -235,9 +234,10 @@ export default {
       printObj: {
         id: 'wholecont',
         popTitle: '福建大道成物流科技有限公司',
-        extraCss: '',
+        extraCss: 'ddc',
         extraHead: '<meta http-equiv="Content-Language" content="zh-cn"/>'
-      }
+      },
+      src: ''
     };
   }
 };
@@ -249,5 +249,14 @@ table th, table td {
     border-bottom: 1px solid #000;
     border-right: 1px solid #000;
     font-weight: normal;
+}
+div .header-top{
+  display: none;
+}
+@media print {
+  div.header-top{
+    display: block;
+    position:  running(header-top);
+  }
 }
 </style>

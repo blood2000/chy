@@ -549,8 +549,9 @@ export default {
     },
     // 查询运单列表
     getWaybillList() {
-      const receiveTime = this.parseTime(new Date(), '{y}-{m}-{d}');
-      waybillList({ ...this.queryParams, startReceiveTime: receiveTime, endReceiveTime: receiveTime, statusList: '1,2,3,4,5,6,7' }).then(response => {
+      const startReceiveTime = this.parseTime(new Date().getTime() - 24 * 60 * 60 * 1000 * 2, '{y}-{m}-{d}');
+      const endReceiveTime = this.parseTime(new Date(), '{y}-{m}-{d}');
+      waybillList({ ...this.queryParams, startReceiveTime: startReceiveTime, endReceiveTime: endReceiveTime, statusList: '1,2,3,4,5,6,7' }).then(response => {
         this.dataOver = !response.rows.length;
         this.waybillList = this.waybillList.concat(response.rows);
         this.loading = false;
