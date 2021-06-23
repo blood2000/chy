@@ -348,13 +348,14 @@
             @click="handleEdit(row, 'detail')"
           >详情</el-button>
 
+
+
           <el-button
-            v-if="row.isChild == 2"
-            v-hasPermi="['transportation:waybill:childList']"
+            v-hasPermi="['transportation:waybillReport:mark']"
             size="mini"
             type="text"
-            @click="handleEdit(row, 'seperate')"
-          >分单列表</el-button>
+            @click="handleEdit(row, 'mark')"
+          >标记异常</el-button>
 
           <!-- v-hasPermi="['data:report:report']" -->
           <el-button
@@ -377,14 +378,14 @@
 
 
           <!-- 大于3个按钮的使用这个... -->
-          <TableDropdown v-if="false">
+          <TableDropdown v-if="row.isChild == 2">
             <el-dropdown-item>
               <el-button
-                v-hasPermi="['consigner-order-delete']"
+                v-hasPermi="['transportation:waybill:childList']"
                 size="mini"
                 type="text"
-                @click="handleDelete(row)"
-              >删除</el-button>
+                @click="handleEdit(row, 'seperate')"
+              >分单列表</el-button>
             </el-dropdown-item>
           </TableDropdown>
         </template>
@@ -427,7 +428,8 @@ import { listApi,
   waybillReportLoad,
   waybillReportUnload,
   waybillReportBill,
-  batch
+  batch,
+  reportMark
 } from '@/api/data/report';
 
 
@@ -700,6 +702,15 @@ export default {
         case 'check':
           this.open = true;
           this.openData = row;
+          break;
+        case 'mark':
+          this.$confirm('是否确认标记上报异常?', '警告', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            reportMark(row.waybillReportCode, 1).then(response => {});
+          });
           break;
       }
     },

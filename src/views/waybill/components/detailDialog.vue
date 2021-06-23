@@ -268,16 +268,22 @@
                 {{ parseTime(form.receiveTime) || '-' }}
               </el-col>
               <el-col :span="8" class="text-label">
+                卸货时间：
+              </el-col>
+              <el-col :span="16" class="text-row">
+                {{ parseTime(form.signTime) || '-' }}
+              </el-col>
+              <el-col :span="8" class="text-label">
                 装货地：
               </el-col>
               <el-col :span="16" class="text-row">
-                {{ form.waybillAddress?form.waybillAddress.loadFormattedAddress:'-' }}
+                {{ form.waybillAddress.loadFormattedAddress || '-' }}
               </el-col>
               <el-col :span="8" class="text-label">
                 卸货地：
               </el-col>
               <el-col :span="16" class="text-row">
-                {{ form.waybillAddress?form.waybillAddress.unloadFormattedAddress:'-' }}
+                {{ form.waybillAddress.unloadFormattedAddress || '-' }}
               </el-col>
             </el-row>
           </div>

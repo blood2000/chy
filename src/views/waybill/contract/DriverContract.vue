@@ -7,6 +7,7 @@
       icon="el-icon-printer"
       plain
       class="wholecont-print"
+      @click="print"
     >打印</el-button>
     <div id="wholecont" class="wholecont-div">
 
@@ -239,6 +240,9 @@ export default {
       },
       src: ''
     };
+  },
+  methods: {
+
   }
 };
 </script>
@@ -253,10 +257,18 @@ table th, table td {
 div .header-top{
   display: none;
 }
-@media print {
-  div.header-top{
-    display: block;
-    position:  running(header-top);
+@page{
+    size:  auto;   /* auto is the initial value */
+    margin: 3mm;  /* this affects the margin in the printer settings */
   }
-}
+
+  html{
+    background-color: #FFFFFF;
+    margin: 0;  /* this affects the margin on the html before sending to printer */
+  }
+
+  body{
+    border: solid 1px blue ;
+    margin: 10mm 15mm 10mm 15mm; /* margin you want for the content */
+  }
 </style>

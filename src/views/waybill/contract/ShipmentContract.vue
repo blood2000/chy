@@ -253,4 +253,18 @@ table th, table td {
     border-right: 1px solid #000;
     font-weight: normal;
 }
+@page{
+    size:  auto;   /* auto is the initial value */
+    margin: 3mm;  /* this affects the margin in the printer settings */
+  }
+
+  html{
+    background-color: #FFFFFF;
+    margin: 0;  /* this affects the margin on the html before sending to printer */
+  }
+
+  body{
+    border: solid 1px blue ;
+    margin: 10mm 15mm 10mm 15mm; /* margin you want for the content */
+  }
 </style>
