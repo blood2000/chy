@@ -147,6 +147,9 @@ export default {
             if (this.tracklist.length !== 0) {
               // 绘制轨迹
               this.drawPolyline(this.tracklist);
+              if (!this.wayBillInfo.signTime) {
+                this.getVehicleMark();
+              }
             } else {
               // 获取高德地图路线规划
               this.getRoutePlan();
