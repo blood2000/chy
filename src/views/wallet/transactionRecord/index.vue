@@ -48,8 +48,8 @@
 
         <el-table v-show="activeTab == '冻结记录'" v-loading="loading" highlight-current-row border :data="dataList">
           <el-table-column label="运单号" align="center" prop="waybillNo" width="150" />
-          <el-table-column label="装货地" align="center" prop="unloadAddress" width="150" />
-          <el-table-column label="卸货地" align="center" prop="loadAddress" width="150" />
+          <el-table-column label="装货地" align="center" prop="loadAddress" width="150" />
+          <el-table-column label="卸货地" align="center" prop="unloadAddress" width="150" />
           <el-table-column label="货物大类" align="center" prop="goodsBigType">
             <template slot-scope="scope">
               <span>{{ selectDictLabel(commodityCategoryCodeOptions, scope.row.goodsBigType) }}</span>
@@ -62,36 +62,27 @@
           </el-table-column>
           <el-table-column label="承运司机" align="center" prop="driverName" />
           <el-table-column label="承运车辆" align="center" prop="licenseNumber" />
-          <el-table-column label="所属调度组" align="center" prop="teamName" width="150" />
+          <el-table-column label="所属调度" align="center" prop="teamName" width="150" />
           <!-- 付款方式：0-现金支付， 1-京东支付 2-交通银行， 3-新生支付，4-工商银行,5-传化支付,6-建行支付,7-环迅-->
           <el-table-column label="交易类型" align="center" prop="payBy">
             <span>冻结</span>
           </el-table-column>
-          <el-table-column label="装货数量" align="center" prop="loadWeight">
-            <template slot-scope="scope">
-              <span>{{ selectDictLabel(stowageStatusOptions, scope.row.stowageStatus) }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="卸货数量" align="center" prop="unloadWeight">
-            <template slot-scope="scope">
-              <span>{{ selectDictLabel(stowageStatusOptions, scope.row.stowageStatus) }}</span>
-            </template>
-          </el-table-column>
-          <!-- <el-table-column label="货物损耗(kg)" align="center" prop="wastage" /> -->
+          <el-table-column label="装货重量" align="center" prop="loadWeight" />
+          <el-table-column label="卸货重量" align="center" prop="unloadWeight" />
           <el-table-column label="货物单价（元）" align="center" prop="goodsPrice" />
-          <el-table-column label="成交单价（元）" align="center" prop="freightPriceDriver" />
-          <el-table-column label="冻结总额（元）" align="center" prop="freezeMoney" />
-          <el-table-column label="操作时间" align="center" prop="updateTime" width="180">
+          <el-table-column label="成交单价（元）" align="center" prop="freightPrice" />
+          <el-table-column label="冻结总额（元）" align="center" prop="amount" />
+          <el-table-column label="操作时间" align="center" prop="createTime" width="180">
             <template slot-scope="scope">
-              <span>{{ parseTime(scope.row.updateTime) }}</span>
+              <span>{{ parseTime(scope.row.createTime) }}</span>
             </template>
           </el-table-column>
         </el-table>
 
         <el-table v-show="activeTab == '付款记录'" v-loading="loading" highlight-current-row border :data="dataList">
           <el-table-column label="运单号" align="center" prop="waybillNo" width="150" />
-          <el-table-column label="装货地" align="center" prop="unloadAddress" width="150" />
-          <el-table-column label="卸货地" align="center" prop="loadAddress" width="150" />
+          <el-table-column label="装货地" align="center" prop="loadAddress" width="150" />
+          <el-table-column label="卸货地" align="center" prop="unloadAddress" width="150" />
           <el-table-column label="货物大类" align="center" prop="goodsBigType">
             <template slot-scope="scope">
               <span>{{ selectDictLabel(commodityCategoryCodeOptions, scope.row.goodsBigType) }}</span>
@@ -104,7 +95,7 @@
           </el-table-column>
           <el-table-column label="承运司机" align="center" prop="driverName" />
           <el-table-column label="承运车辆" align="center" prop="licenseNumber" />
-          <el-table-column label="所属调度者" align="center" prop="teamName" width="150" />
+          <el-table-column label="所属调度" align="center" prop="teamName" width="150" />
           <!-- 付款方式：0-现金支付， 1-京东支付 2-交通银行， 3-新生支付，4-工商银行,5-传化支付,6-建行支付,7-环迅-->
           <el-table-column label="交易类型" align="center" prop="payBy">
             <span>付款</span>
@@ -150,7 +141,7 @@
 
 <script>
 import { getUserInfo } from '@/utils/auth';
-import { payRecordlist } from '@/api/capital/payrecord';
+import { frreezeAmountLog, payRecordlist } from '@/api/capital/payrecord';
 import { getTimeRange } from '@/utils/timeRange';
 import Tabs from '@/components/Tabs/index';
 
@@ -239,8 +230,23 @@ export default {
       }
       this.getList();
     },
-    /** 查询列表 */
-    getList() {
+    /** 冻结记录 */
+    getFrreezeList() {
+      this.loading = true;
+      frreezeAmountLog({
+        pageNum: this.queryParams.pageNum,
+        pageSize: this.queryParams.pageSize,
+        startTime: this.queryParams.updateTimeBegin ? this.queryParams.updateTimeBegin : this.updateTimeBegin,
+        endTime: this.queryParams.updateTimeEnd ? this.queryParams.updateTimeEnd : this.updateTimeEnd,
+        type: 1
+      }).then(response => {
+        this.dataList = response.rows;
+        this.total = response.total;
+        this.loading = false;
+      });
+    },
+    /** 付款记录 */
+    getRecordlist() {
       this.loading = true;
       const { user = {}} = getUserInfo() || {};
       const { userCode } = user;
@@ -259,6 +265,14 @@ export default {
         this.total = response.data.total;
         this.loading = false;
       });
+    },
+    /** 查询列表 */
+    getList() {
+      if (this.activeTab === '冻结记录') {
+        this.getFrreezeList();
+      } else {
+        this.getRecordlist();
+      }
     },
     /** 搜索按钮操作 */
     handleQuery() {
