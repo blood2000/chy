@@ -10,7 +10,7 @@
           :on-change="change"
           :auto-upload="false"
           :show-file-list="false"
-          accept=".xls, .xlsx"
+          accept=".jpg,.png,.jpeg"
           :on-success="success"
           :headers="importHeader"
           :http-request="uploadFile"
@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import { importData } from '@/api/assets/driver';
+import { imagesExtra, uploadToHWS } from '@/api/waybill/supplement';
 import { getToken } from '@/utils/auth';
 import { authorPre, produceCode, appCode, appVersion, terminalType } from '@/headers';
 
@@ -145,7 +145,7 @@ export default {
     },
     // 选择文件操作
     uploadFile(file) {
-		  this.fileData.append('files', file.file); // append增加数据
+		  this.fileData.append('file', file.file); // append增加数据
     },
     // 立即上传操作
     submitUpload(file) {
@@ -158,7 +158,11 @@ export default {
 	      this.fileData = new FormData(); // new formData对象
 	      this.$refs.upload.submit(); // 提交调用uploadFile函数
         // 接口
-        importData(this.fileData).then((res) => {
+        uploadToHWS(this.fileData).then((res) => {
+          console.log(res);
+          imagesExtra(res.data).then(response => {
+            console.log(response);
+          });
           this.$message(res.msg);
           this.fileList = []; // 清除上传文件
         });

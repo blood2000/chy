@@ -1,5 +1,5 @@
 <template>
-  <el-dialog class="waybill-detail-dialog i-add" :title="title" :visible="visible" width="1200px" append-to-body @close="cancel">
+  <el-dialog class="waybill-detail-dialog i-add" :title="title" :visible="visible" width="1500px" append-to-body @close="cancel">
     <el-tabs v-model="activeTab">
       <!-- 运单v-has-permi="['transportation:waybill:getWayBillByCode']" -->
       <el-tab-pane v-loading="loading" label="运单" name="1">

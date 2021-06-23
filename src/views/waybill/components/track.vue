@@ -14,6 +14,9 @@
           <div class="g-flex g-aligncenter g-justifycenter" :class="trackChange === 1 ? 'track-onbtn' : 'track-btn'" @click="handleTrackChange(1)">
             <div :class="trackChange === 1 ? 'track-onicon' : 'track-icon'" />硬件轨迹
           </div>
+          <div class="g-flex g-aligncenter g-justifycenter" :class="trackChange === 2 ? 'track-onbtn' : 'track-btn'" @click="handleTrackChange(2)">
+            <div :class="trackChange === 2 ? 'track-onicon' : 'track-icon'" />北斗轨迹
+          </div>
         </div>
         <ul class="time-line-content">
           <li v-for="(item, index) in timeLineList" :key="index" :class="index===0?'light':''">
@@ -28,7 +31,7 @@
 </template>
 
 <script>
-import { jimiTrackLocation, getVehicleInfo, getWebDetail, getWaybillTrace } from '@/api/waybill/tracklist';
+import { jimiTrackLocation, zjxlTrackLocation, getVehicleInfo, getWebDetail, getWaybillTrace } from '@/api/waybill/tracklist';
 // import UploadImage from '@/components/UploadImage/index';
 import axios from 'axios';
 
@@ -73,6 +76,12 @@ export default {
         trid: undefined, // trid为轨迹唯一编号
         starttime: undefined, // 必须为Unix时间戳精确到毫秒
         endtime: undefined // 必须为Unix时间戳精确到毫秒
+      },
+      // 中交兴路轨迹查询参数
+      zjxlQueryParams: {
+        qryBtm: undefined,
+        qryEtm: undefined,
+        vclN: undefined
       },
       // 定位轨迹列表
       tracklist: [],
@@ -136,7 +145,7 @@ export default {
             this.getRoutePlan();
           }
         });
-      } else {
+      } else if (this.trackChange === 1) {
         // 获取硬件轨迹
         jimiTrackLocation(this.jimiQueryParams).then(response => {
           // console.log(response.data.result);
@@ -155,6 +164,25 @@ export default {
               this.getRoutePlan();
             }
           }
+        });
+      } else if (this.trackChange === 2) {
+        zjxlTrackLocation(this.zjxlQueryParams).then(response => {
+          console.log(response);
+          // if (response.data.result) {
+          //   this.tracklist = response.data.result.map(function(response) {
+          //     return [response.lng, response.lat];
+          //   });
+          //   if (this.tracklist.length !== 0) {
+          //     // 绘制轨迹
+          //     this.drawPolyline(this.tracklist);
+          //     if (!this.wayBillInfo.signTime) {
+          //       this.getVehicleMark();
+          //     }
+          //   } else {
+          //     // 获取高德地图路线规划
+          //     this.getRoutePlan();
+          //   }
+          // }
         });
       }
     },
@@ -267,7 +295,10 @@ export default {
       // 获取运单信息，并标记装卸货地
       getWebDetail(data.code).then(response => {
         this.wayBillInfo = response.data;
+        // 中交车牌号参数赋值
+        this.zjxlQueryParams.vclN = this.wayBillInfo.licenseNumber;
         console.log(this.wayBillInfo);
+        // 猎鹰参数赋值
         if (this.wayBillInfo.trackNumber) {
           const trackNumber = this.wayBillInfo.trackNumber.split('|');
           console.log(trackNumber);
@@ -298,12 +329,15 @@ export default {
         // 获取查询轨迹时间
         this.time = this.parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}');
         this.jimiQueryParams.begin_time = this.parseTime(this.wayBillInfo.fillTime, '{y}-{m}-{d} {h}:{i}:{s}');
+        this.zjxlQueryParams.qryBtm = this.parseTime(this.wayBillInfo.fillTime, '{y}-{m}-{d} {h}:{i}:{s}');
         this.lieyingQueryParams.starttime = new Date(this.wayBillInfo.fillTime).getTime();
         if (this.wayBillInfo.signTime) {
           this.jimiQueryParams.end_time = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
+          this.zjxlQueryParams.qryEtm = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
           this.lieyingQueryParams.endtime = new Date(this.wayBillInfo.signTime).getTime();
         } else {
           this.jimiQueryParams.end_time = this.time;
+          this.zjxlQueryParams.qryEtm = this.time;
           this.lieyingQueryParams.endtime = new Date().getTime();
         }
         if (this.loadAddress.length !== 0 && this.unloadAddress.length !== 0) {
@@ -342,7 +376,7 @@ export default {
 }
 .track-onbtn{
   cursor: pointer;
-  width: 124px;
+  padding: 0 15px;
   height: 32px;
   background: #409EFF;
   border-radius: 18px;
@@ -359,7 +393,8 @@ export default {
 }
 .track-btn{
   cursor: pointer;
-  width: 124px;
+  // width: 124px;
+  padding: 0 15px;
   height: 32px;
   background: #F6F6F6;
   border-radius: 18px;
