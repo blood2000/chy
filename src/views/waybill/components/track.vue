@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { jimiTrackLocation, getLieyingInfo, getVehicleInfo, getWebDetail, getWaybillTrace } from '@/api/waybill/tracklist';
+import { jimiTrackLocation, getVehicleInfo, getWebDetail, getWaybillTrace } from '@/api/waybill/tracklist';
 // import UploadImage from '@/components/UploadImage/index';
 import axios from 'axios';
 
@@ -67,12 +67,12 @@ export default {
       },
       // 猎鹰查询参数
       lieyingQueryParams: {
-        key: 'fd9430939b98767748c4b5e00df949c0',
-        sid: 275116, // sid为终端所属service唯一编号
-        tid: 338258525, // tid为终端唯一编号
-        trid: '360', // trid为轨迹唯一编号
-        starttime: '', // 必须为Unix时间戳精确到毫秒
-        endtime: '' // 必须为Unix时间戳精确到毫秒
+        key: undefined,
+        sid: undefined, // sid为终端所属service唯一编号
+        tid: undefined, // tid为终端唯一编号
+        trid: undefined, // trid为轨迹唯一编号
+        starttime: undefined, // 必须为Unix时间戳精确到毫秒
+        endtime: undefined // 必须为Unix时间戳精确到毫秒
       },
       // 定位轨迹列表
       tracklist: [],
@@ -113,13 +113,6 @@ export default {
     /** 获取轨迹 */
     getTrackLocation() {
       if (this.trackChange === 0) {
-        // 获取猎鹰信息
-        getLieyingInfo(this.wayBillInfo.driverCode).then(response => {
-          // console.log(response);
-          this.lieyingQueryParams.sid = response.data.serviceId;
-          this.lieyingQueryParams.tid = response.data.terminalId;
-          // console.log(this.lieyingQueryParams);
-        });
         // 获取APP轨迹
         axios.get('https://tsapi.amap.com/v1/track/terminal/trsearch', { params: this.lieyingQueryParams }).then(response => {
           // console.log(response);
@@ -128,10 +121,12 @@ export default {
               // console.log(response.location.split(','));
               return response.location.split(',');
             });
-            // console.log(this.tracklist);
             if (this.tracklist.length !== 0) {
               // 绘制轨迹
               this.drawPolyline(this.tracklist);
+              if (!this.wayBillInfo.signTime) {
+                this.getVehicleMark();
+              }
             } else {
               // 获取高德地图路线规划
               this.getRoutePlan();
@@ -152,6 +147,9 @@ export default {
             if (this.tracklist.length !== 0) {
               // 绘制轨迹
               this.drawPolyline(this.tracklist);
+              if (!this.wayBillInfo.signTime) {
+                this.getVehicleMark();
+              }
             } else {
               // 获取高德地图路线规划
               this.getRoutePlan();
@@ -190,6 +188,17 @@ export default {
 
       // });
     },
+    getVehicleMark() {
+      const that = this;
+      const vehicleMark = new AMap.Marker({
+        position: that.tracklist[that.tracklist.length - 1],
+        icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/cart.png',
+        autoFitView: true,
+        autoRotation: true,
+        offset: new AMap.Pixel(0, 0)
+      });
+      vehicleMark.setMap(that.$refs.map.$$getInstance()); // 点标记
+    },
     // 起点终点
     getMark() {
       const that = this;
@@ -217,7 +226,7 @@ export default {
     },
     // 绘制轨迹
     drawPolyline(path) {
-      // console.log(path);
+      console.log(path);
       const that = this;
       const polyline = new window.AMap.Polyline({
         map: that.$refs.map.$$getInstance(),
@@ -232,6 +241,7 @@ export default {
         lineJoin: 'round', // 折线拐点的绘制样式
         zIndex: 999
       });
+      console.log(polyline);
       polyline.setMap(that.$refs.map.$$getInstance());
     },
     // 获取车辆信息
@@ -256,8 +266,20 @@ export default {
     setForm(data) {
       // 获取运单信息，并标记装卸货地
       getWebDetail(data.code).then(response => {
-        // console.log(response);
         this.wayBillInfo = response.data;
+        console.log(this.wayBillInfo);
+        if (this.wayBillInfo.trackNumber) {
+          const trackNumber = this.wayBillInfo.trackNumber.split('|');
+          console.log(trackNumber);
+          this.lieyingQueryParams = {
+            ...this.lieyingQueryParams,
+            key: trackNumber[0],
+            sid: trackNumber[1], // sid为终端所属service唯一编号
+            tid: trackNumber[2], // tid为终端唯一编号
+            trid: trackNumber[3] // trid为轨迹唯一编号
+          };
+          console.log(this.lieyingQueryParams);
+        }
         // 获取装卸货地址经纬度
         if (this.wayBillInfo.waybillAddress.loadLocation) {
           this.loadAddress = this.wayBillInfo.waybillAddress.loadLocation.replace('(', '').replace(')', '').split(',');
