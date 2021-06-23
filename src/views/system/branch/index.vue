@@ -107,8 +107,8 @@
           </el-form-item>
           <el-form-item label="组织" prop="orgCode">
             <treeselect
-                    :disabled="form.code != undefined"
-                    v-model="form.orgCode"
+              v-model="form.orgCode"
+              :disabled="form.code != undefined"
               :options="deptOptions"
               :normalizer="normalizer"
               :show-count="true"

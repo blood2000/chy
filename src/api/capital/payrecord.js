@@ -18,3 +18,12 @@ export function editBzno(data) {
     data: data
   });
 }
+
+// 冻结记录
+export function frreezeAmountLog(query) {
+  return request({
+    url: '/payment/frreezeAmountLog/list',
+    method: 'get',
+    params: query
+  });
+}

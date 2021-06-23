@@ -399,6 +399,10 @@ export default {
     orgType: {
       type: Number,
       default: 2
+    },
+    shipmentCode: {
+      type: String,
+      default: null
     }
   },
   data() {
@@ -708,7 +712,7 @@ export default {
               this.getList();
             }).catch(() => { this.buttonLoading = false; });
           } else {
-            addUser(this.form).then(response => {
+            addUser(Object.assign(this.form, { showShipment: this.showShipment, shipmentCode: this.shipmentCode, shipmentCompanyCode: this.companyCode })).then(response => {
               this.msgSuccess('新增成功');
               this.open = false;
               this.buttonLoading = false;

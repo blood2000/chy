@@ -543,6 +543,9 @@ export default {
       if (this.companyCode) {
         this.queryParams.orgCode = this.companyCode;
       }
+      if (this.queryParams.orgCode1) {
+        this.queryParams.orgCode = this.queryParams.orgCode1;
+      }
       if (this.showShipment) {
         this.queryParams.showShipment = this.showShipment;
       }
@@ -570,7 +573,7 @@ export default {
     },
     // 节点单击事件
     handleNodeClick(data) {
-      this.queryParams.orgCode = data.code;
+      this.queryParams.orgCode1 = data.code;
       this.getList();
     },
     // 用户状态修改
@@ -621,7 +624,7 @@ export default {
     resetQuery() {
       this.dateRange = [];
       this.resetForm('queryForm');
-      this.queryParams.orgCode = undefined;
+      this.queryParams.orgCode1 = undefined;
       this.handleQuery();
     },
     // 多选框选中数据
@@ -698,7 +701,7 @@ export default {
               this.getList();
             }).catch(() => { this.buttonLoading = false; });
           } else {
-            addUser(this.form).then(response => {
+            addUser(Object.assign(this.form, { showShipment: this.showShipment })).then(response => {
               this.msgSuccess('新增成功');
               this.open = false;
               this.buttonLoading = false;

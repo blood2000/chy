@@ -29,13 +29,13 @@
         <address-page v-if="activeName === 'address'" class="table-page" :shipment-code="shipmentCode" :company-code="companyCode" />
       </el-tab-pane>
       <template v-if="companyCode">
-        <el-tab-pane label="企业成员管理" name="member">
-          <user-page v-if="activeName === 'member'" class="table-page" :company-code="companyCode" :user-code="userCode" :show-shipment="true" :org-type="orgType" />
+        <el-tab-pane label="企业成员管理" name="member" v-if="shipperType == 1">
+          <user-page v-if="activeName === 'member'" class="table-page" :shipment-code="shipmentCode" :company-code="companyCode" :user-code="userCode" :show-shipment="true" :org-type="orgType" />
         </el-tab-pane>
-        <el-tab-pane label="企业组织管理" name="dep">
+        <el-tab-pane label="企业组织管理" name="dep"  v-if="shipperType == 1">
           <dept-page v-if="activeName === 'dep'" class="table-page" :company-code="companyCode" :user-code="userCode" :show-shipment="true" :org-type="orgType" />
         </el-tab-pane>
-        <el-tab-pane label="企业角色管理" name="role">
+        <el-tab-pane label="企业角色管理" name="role"  v-if="shipperType == 1">
           <role-page v-if="activeName === 'role'" class="table-page" :company-code="companyCode" :user-code="userCode" :show-shipment="true" :org-type="orgType" />
         </el-tab-pane>
         <el-tab-pane label="调度组管理" name="group">
@@ -84,6 +84,10 @@ export default {
     },
     userCode: {
       type: String,
+      default: null
+    },
+    shipperType: {
+      type: Number,
       default: null
     }
   },
