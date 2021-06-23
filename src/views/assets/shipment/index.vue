@@ -282,7 +282,7 @@
       <!-- 新增/修改/详情/审核 对话框 -->
       <shipment-dialog ref="ShipmentDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
       <!-- 管理 对话框 -->
-      <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :shipment-code="shipmentCode" :company-code="companyCode" :user-code="userCode" />
+      <manage-dialog ref="ManageDialog" :shipper-type="shipperType" :open.sync="manageDialogOpen" :shipment-code="shipmentCode" :company-code="companyCode" :user-code="userCode" />
       <!--  分配角色-->
       <role-assignment-dialog ref="RoleAssignmentDialog" :open.sync="roleAssignmentDialogOpen" :user-id="userId" :admin-name="adminName" :shipment-code="shipmentCode" :company-code="companyCode" :user-code="userCode" />
     </div>
@@ -395,6 +395,7 @@ export default {
       userCode: null,
       adminName: null,
       userId: null,
+      shipperType: null,
       // 导出
       exportLoading: false
     };
@@ -530,6 +531,7 @@ export default {
       this.shipmentCode = row.code;
       this.companyCode = row.companyCode;
       this.userCode = row.adminCode;
+      this.shipperType = row.shipperType;
       this.manageDialogOpen = true;
     },
     /** 查询网点列表 */
