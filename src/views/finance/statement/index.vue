@@ -226,19 +226,20 @@ export default {
         });
         // 判断是否有运费发票
         const freightInvoice = that.invoicelist.filter(item => item.invoiceType === '1');
-        // console.log(freightInvoice);
+        console.log(freightInvoice);
         if (freightInvoice.length === 0) {
           that.hasFreightInvoice = false;
         } else {
           that.hasFreightInvoice = true;
         }
+        console.log(that.hasFreightInvoice);
         // 判断是否有服务费发票
         const serviceInvoice = that.invoicelist.filter(item => item.invoiceType === '2');
-        // console.log(serviceInvoice);
+        console.log(serviceInvoice);
         if (serviceInvoice.length === 0) {
           that.hasServiceInvoice = false;
         } else {
-          that.hasFreightInvoice = true;
+          that.hasServiceInvoice = true;
         }
         // console.log(that.hasFreightInvoice);
         // console.log(that.hasServiceInvoice);
