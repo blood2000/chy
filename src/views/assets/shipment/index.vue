@@ -223,6 +223,13 @@
           <span>{{ selectDictLabel(statusOptions, row.authStatus) }}</span>
         </template>
         <template #edit="{row}">
+            <el-button
+                    v-if="row.authStatus != 3"
+                    v-hasPermi="['assets:shipment:examine']"
+                    size="mini"
+                    type="text"
+                    @click="handleDetail(row, 'review')"
+            >审核</el-button>
           <el-button
             v-hasPermi="['assets:shipment:manage']"
             size="mini"
@@ -230,26 +237,27 @@
             @click="handleManage(row)"
           >管理</el-button>
           <el-button
-            v-hasPermi="['assets:shipment:query']"
-            size="mini"
-            type="text"
-            @click="handleDetail(row, 'detail')"
-          >详情</el-button>
-          <el-button
             v-hasPermi="['assets:shipment:edit']"
             size="mini"
             type="text"
             @click="handleDetail(row, 'edit')"
           >修改</el-button>
+            <el-button
+                    v-if="row.authStatus == 3"
+                    v-hasPermi="['assets:shipment:query']"
+                    size="mini"
+                    type="text"
+                    @click="handleDetail(row, 'detail')"
+            >详情</el-button>
           <TableDropdown>
             <el-dropdown-item>
-              <el-button
-                v-show="row.authStatus != 3"
-                v-hasPermi="['assets:shipment:examine']"
-                size="mini"
-                type="text"
-                @click="handleDetail(row, 'review')"
-              >审核</el-button>
+                <el-button
+                        v-if="row.authStatus != 3"
+                        v-hasPermi="['assets:shipment:query']"
+                        size="mini"
+                        type="text"
+                        @click="handleDetail(row, 'detail')"
+                >详情</el-button>
             </el-dropdown-item>
             <el-dropdown-item>
               <el-button

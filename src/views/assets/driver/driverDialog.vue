@@ -78,7 +78,7 @@
         <el-checkbox v-model="form.identificationEffective">长期有效</el-checkbox>
       </el-form-item>
       <!-- 选择省/市/区 -->
-      <province-city-county
+     <!-- <province-city-county
         ref="ChooseArea"
         :visible="visible"
         :disabled="disable"
@@ -91,8 +91,8 @@
           form.cityCode = data.cityCode;
           form.countyCode = data.countyCode;
         }"
-      />
-      <el-form-item label="详细地址" prop="homeAddress">
+      />-->
+      <el-form-item label="所在区域" prop="homeAddress">
         <el-input v-model="form.homeAddress" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
       <el-form-item label="驾驶证号" prop="driverLicense">
@@ -346,7 +346,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="车辆识别码" prop="chassisNumber" :rules="[{ required: true, message: '车辆识别码不能为空', trigger: 'blur' }]">
-          <el-input v-model="vehicleForm.chassisNumber" placeholder="请输入车辆识别码" class="width90" clearable :disabled="disable" />
+          <el-input v-model="vehicleForm.chassisNumber" placeholder="支持自动识别" class="width90" clearable :disabled="disable" />
         </el-form-item>
         <el-form-item label="车辆能源类型" prop="vehicleEnergyType">
           <el-select v-model="vehicleForm.vehicleEnergyType" class="width90" filterable clearable :disabled="disable">
@@ -937,7 +937,11 @@ export default {
               if (data.valid_to === '长期') {
                 this.$set(this.form, 'identificationEffective', true);
               } else if (data.valid_to !== '') {
-                this.$set(this.form, 'identificationEndTime', data.valid_to);
+                if (data.valid_to.startsWith('9999')) {
+                  this.$set(this.form, 'identificationEffective', true);
+                } else {
+                  this.$set(this.form, 'identificationEndTime', data.valid_to);
+                }
               }
             } else {
               this.$set(this.form, 'identificationEffective', false);
