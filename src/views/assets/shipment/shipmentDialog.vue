@@ -832,7 +832,8 @@ export default {
     },
     /** 审核通过/未通过按钮 */
     reviewForm(key) {
-      const flag = this.$refs.ChooseArea.submit();
+      // const flag = this.$refs.ChooseArea.submit();
+      const flag = true;
       this.$refs['form'].validate(valid => {
         if (key === 2 || (valid && flag)) {
           this.authButtonLoading = true;
