@@ -49,6 +49,13 @@ export default [
     fixed: 'left'
   },
   {
+    prop: 'reportMarkStatus',
+    isShow: true,
+    label: '上报异常',
+    width: 75,
+    fixed: 'left'
+  },
+  {
     prop: 'edit',
     isShow: true,
     label: '操作',

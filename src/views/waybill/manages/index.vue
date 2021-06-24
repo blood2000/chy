@@ -172,10 +172,11 @@
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
           <el-button
-            v-hasPermi="['askfor:invoice:export']"
+            v-hasPermi="['transportation:waybill:manageListExport']"
             type="primary"
             icon="el-icon-download"
             size="mini"
+            :loading="loadingExport"
             @click="handleExport"
           >导出</el-button>
         </el-col>
@@ -446,6 +447,7 @@ export default {
       // 当前选中的运单id
       'currentId': null,
       'currentRow': null,
+      loadingExport: false,
       isAdmin: false,
       user: {},
       shipment: {},
@@ -512,7 +514,10 @@ export default {
     },
     // 导出
     handleExport() {
-      this.download('/transportation/waybill/manageListExport', { ...this.queryParams }, `waybillManages_${new Date().getTime()}.xlsx`);
+      this.loadingExport = true;
+      this.download('/transportation/waybill/manageListExport', { ...this.queryParams }, `waybillManages_${new Date().getTime()}.xlsx`).then(res => {
+        this.loadingExport = false;
+      });
     },
     /** 详情按钮操作 */
     handleUpdate(row) {
