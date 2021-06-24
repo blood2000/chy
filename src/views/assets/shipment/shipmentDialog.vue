@@ -31,8 +31,8 @@
             <p class="upload-image-label">管理员身份证(国徽面)</p>
             <upload-image v-model="form.identificationBackImg" :disabled="disable" image-type="id-card" side="back" icon-type="idcard_back" @fillForm="fillForm" />
           </el-col>
-         <!--   客服建议去掉-->
-         <!-- <el-col :span="7">
+          <!--   客服建议去掉-->
+          <!-- <el-col :span="7">
             <p class="upload-image-label">手持身份证照</p>
             <upload-image v-model="form.identificationInhandImg" icon-type="idcard_hand" :disabled="disable" />
           </el-col>-->
@@ -44,7 +44,7 @@
             <p class="upload-image-label">法人身份证(国徽面)</p>
             <upload-image v-model="form.artificialIdentificationBackImg" icon-type="idcard_back" :disabled="disable" />
           </el-col>
-            <!--   客服建议去掉-->
+          <!--   客服建议去掉-->
           <!--<el-col v-show="form.shipperType === 1" :span="7" class="mt">
             <p class="upload-image-label">法人手持身份证照</p>
             <upload-image v-model="form.artificialIdentificationInhandImg" icon-type="idcard_hand" :disabled="disable" />
@@ -84,7 +84,7 @@
         <el-checkbox v-model="form.identificationEffective">长期有效</el-checkbox>
       </el-form-item>
       <!-- 选择省/市/区 -->
-     <!-- <province-city-county
+      <!-- <province-city-county
         ref="ChooseArea"
         :visible="visible"
         :disabled="disable"
@@ -143,7 +143,7 @@
           <el-input v-model="form.organizationCodeNo" placeholder="请输入统一社会信用代码" class="width90" clearable />
         </el-form-item>
         <!--  去掉营业执照-->
-       <!-- <el-form-item label="营业执照号" prop="businessLicenseNo">
+        <!-- <el-form-item label="营业执照号" prop="businessLicenseNo">
           <el-input v-model="form.businessLicenseNo" placeholder="支持自动识别" class="width90" clearable />
         </el-form-item>-->
         <el-form-item label="法人姓名" prop="artificialName">
@@ -512,13 +512,13 @@ import { addShipment, updateShipment, authRead, examine, getShipmentEnterprise, 
 import { listDeptAll } from '@/api/system/dept';
 import { getBranchList } from '@/api/system/branch';
 import UploadImage from '@/components/UploadImage/index';
-import ProvinceCityCounty from '@/components/ProvinceCityCounty';
+// import ProvinceCityCounty from '@/components/ProvinceCityCounty';
 import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
 // import Treeselect from '@riophae/vue-treeselect';
 
 export default {
   components: {
-    UploadImage,
+    UploadImage
     // ProvinceCityCounty
     // Treeselect
   },

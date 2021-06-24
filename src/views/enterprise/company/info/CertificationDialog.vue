@@ -74,7 +74,7 @@
             <p class="upload-image-label">身份证(国徽面)</p>
             <upload-image v-model="form.identificationBackImg" image-type="id-card" side="back" icon-type="idcard_back" @fillForm="fillForm" />
           </el-col>
-         <!-- <el-col :span="7">
+          <!-- <el-col :span="7">
             <p class="upload-image-label">本人手持身份证正面</p>
             <upload-image v-model="form.identificationInhandImg" icon-type="idcard_hand" />
           </el-col>-->
