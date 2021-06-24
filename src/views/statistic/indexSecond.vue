@@ -191,7 +191,7 @@ export default {
     // 创建websocket
     createWebSocket() {
       try {
-        this.websock = new WebSocket(this.wsurl);
+        this.websock = new WebSocket(this.wsurl + '?branchCode=' + this.branchCode);
         this.initWebSocket();
       } catch (e) {
         console.log('catch', e);
@@ -255,7 +255,7 @@ export default {
     },
     // 处理实时数据
     setData(dJson) {
-      // console.log('实时Json：', dJson);
+      console.log('实时Json：', dJson);
       const { userNotice, invoiceNotice, orderNoticeVo, waybillNotice, waybillSettlementNotice, insertTime } = dJson;
       // 用户√
       if (userNotice) {

@@ -180,7 +180,7 @@ export default {
     // 创建websocket
     createWebSocket() {
       try {
-        this.websock = new WebSocket(this.wsurl);
+        this.websock = new WebSocket(this.wsurl + '?branchCode=' + this.branchCode);
         this.initWebSocket();
       } catch (e) {
         console.log('catch', e);
