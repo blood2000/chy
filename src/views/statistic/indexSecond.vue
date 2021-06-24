@@ -80,14 +80,14 @@
         <Title class="title_4 mb05rem" icon="7" :show-time="true" :time-text="timeText">业绩数据<span>Performance data</span></Title>
         <div class="ly-right-right-box ly-border">
           <div class="ly-border mb05rem" style="height: 15%">
-            <PerformanceInfo ref="PerformanceInfoRef" :performance="performanceData.performance" :time-key="timeKey" :is-scale="!!$route.query.isScale" />
+            <PerformanceInfo ref="PerformanceInfoRef" :performance="performanceData.performance" :is-scale="!!$route.query.isScale" />
           </div>
           <div class="ly-border mb07rem" style="height: calc(33% - 1.2rem)">
             <div class="ly-right-right-box-title mb05rem">TOP 5省份交易额排名</div>
-            <AmountTop5Chart ref="AmountTop5ChartRef" :province-ranking="performanceData.provinceRanking" :time-key="timeKey" :show-title="false" style="height: calc(100% - 1.5rem)" />
+            <AmountTop5Chart ref="AmountTop5ChartRef" :province-ranking="performanceData.provinceRanking" :show-title="false" style="height: calc(100% - 1.5rem)" />
           </div>
           <div class="ly-border" style="height: 52%">
-            <CompanyTop10ListSecond ref="CompanyTop10ListSecondRef" :province-ranking="performanceData.provinceRanking" :time-key="timeKey" />
+            <CompanyTop10ListSecond ref="CompanyTop10ListSecondRef" :province-ranking="performanceData.provinceRanking" />
           </div>
         </div>
       </div>
@@ -112,7 +112,7 @@ import ScrollData from './ScrollData';// 中间滚屏数据
 import Map from './Map';// 地图
 import FreightTypeRanking from './FreightTypeRanking';// 货运类型排行
 import BusinessDistribution from './BusinessDistribution';// 地区业务分布情况
-import { getCompanyPerformance, getBusinessDetail } from '@/api/statistic/statistic.js';
+import { getPerformanceDataV2, getOperationStatusV2 } from '@/api/statistic/statistic.js';
 // import { dataJson } from './data';
 
 export default {
@@ -338,19 +338,21 @@ export default {
       this.timeKey = timeKey;
       this.timeText = timeText;
       // 切换时间后的处理
-      console.log('==============>timeKey: ', this.timeKey);
+      // console.log('==============>timeKey: ', this.timeKey);
       this.$nextTick(() => {
         this.$refs.FreightTypeRankingRef.getData();
         this.$refs.DriverTop5ListRef.getData();
+        this.getBusinessData();
+        this.getPerformanceData();
       });
     },
     // 获取业绩数据
     getPerformanceData() {
-      getCompanyPerformance(this.branchCode).then(response => {
+      getPerformanceDataV2(this.branchCode, this.timeKey).then(response => {
         const data = response.data || {};
         this.performanceData = {
           performance: data.performance || {}, // 数据
-          provinceRanking: data.provinceRanking || [] // Top5省份交易额
+          provinceRanking: data.provinceRankingList || [] // Top5省份交易额
         };
         this.$nextTick(() => {
           this.$refs.AmountTop5ChartRef.initChart();
@@ -360,7 +362,7 @@ export default {
     },
     // 获取运营情况的数据
     getBusinessData() {
-      getBusinessDetail(this.branchCode).then(response => {
+      getOperationStatusV2(this.branchCode, this.timeKey).then(response => {
         const data = response.data || {};
         this.businessData = {
           orderVo: data.orderVo || {}, // 货单

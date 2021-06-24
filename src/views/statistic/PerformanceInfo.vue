@@ -75,11 +75,7 @@ export default {
         return {};
       }
     },
-    isScale: Boolean,
-    timeKey: {
-      type: Number,
-      default: 2
-    }
+    isScale: Boolean
   },
   data() {
     return {

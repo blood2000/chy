@@ -124,10 +124,13 @@ export function getBusinessListV2(branchCode) {
 }
 
 // 运营情况v2
-export function getOperationStatusV2(branchCode) {
+export function getOperationStatusV2(branchCode, timeType) {
   return request({
     url: `/transportation/bigScreenSeach/v2/operationStatus/${branchCode}`,
-    method: 'get'
+    method: 'get',
+    params: {
+      timeType
+    }
   });
 }
 
