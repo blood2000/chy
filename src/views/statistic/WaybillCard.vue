@@ -119,6 +119,7 @@ export default {
         width: 14.6rem;
         height: 2.5rem;
         margin-bottom: 0.3rem;
+        overflow: hidden;
         >.title{
           padding: 0 0.6rem;
           font-size: 0.65rem;
@@ -128,11 +129,15 @@ export default {
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
+          height: 1.2rem;
           line-height: 1.2rem;
+          text-align: left;
+          margin-bottom: 0;
         }
         >.content{
           padding: 0 0.5rem 0 0.2rem;
           line-height: 0.9rem;
+          height: 0.9rem;
           .text{
             font-size: 0.6rem;
             transform: scale(0.9, 0.9);
