@@ -65,6 +65,7 @@ export default {
       this.setTimer();
     },
     setTimer() {
+      this.clearTimer();
       this.timer = setInterval(() => {
         if (this.currentIndex >= this.dataList.length - 1) {
           this.currentIndex = 0;
