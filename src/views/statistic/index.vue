@@ -75,7 +75,7 @@
           <CompanyTop5List :company-rank-data="companyRankData" />
         </div>
         <div class="ly-right-right-bottom mb1rem ly-border">
-          <DriverTop5List :driver-rank-data="driverRankData" />
+          <DriverTop5List ref="DriverTop5ListRef" :time-key="0" />
         </div>
       </div>
     </div>
@@ -100,7 +100,7 @@ import DriverTop5List from './DriverTop5List';// 总排名TOP5司机
 import TotalData from './TotalData';// 中间总数统计
 import ScrollData from './ScrollData';// 中间滚屏数据
 import Map from './Map.vue';// 地图
-import { getCompanyPerformance, getBusinessDetail, getCompanyDriverRank } from '@/api/statistic/statistic.js';
+import { getCompanyPerformance, getOperationStatusV2, getCompanyDriverRank } from '@/api/statistic/statistic.js';
 // import { dataJson } from './data';
 
 export default {
@@ -147,8 +147,7 @@ export default {
         complainVo: {} // 投诉
       },
       // 总排名
-      companyRankData: [],
-      driverRankData: []
+      companyRankData: []
     };
   },
   computed: {
@@ -341,7 +340,7 @@ export default {
     },
     // 获取运营情况的数据
     getBusinessData() {
-      getBusinessDetail(this.branchCode).then(response => {
+      getOperationStatusV2(this.branchCode, 0).then(response => {
         const data = response.data || {};
         this.businessData = {
           orderVo: data.orderVo || {}, // 货单
@@ -360,7 +359,6 @@ export default {
       getCompanyDriverRank(this.branchCode).then(response => {
         const data = response.data || {};
         this.companyRankData = data.companyList || [];
-        this.driverRankData = data.driverList || [];
       });
     },
     // 零点更新接口
@@ -373,6 +371,7 @@ export default {
       this.$refs.CapacityInfoRef.getData(); // 运力
       this.$refs.TargetChartRef.getData(); // 目标
       this.$refs.TotalDataRef.getCount(); // 地图运单
+      this.$refs.DriverTop5ListRef.getData(); // 承运排名
     }
   }
 };

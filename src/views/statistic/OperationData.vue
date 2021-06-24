@@ -132,6 +132,10 @@ export default {
     isSecond: {
       type: Boolean,
       default: false
+    },
+    timeKey: {
+      type: Number,
+      default: 2
     }
   },
   data() {

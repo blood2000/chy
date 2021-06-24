@@ -231,10 +231,10 @@
           <el-col :span="7" class="mb">
             <p class="upload-image-label">驾驶证</p>
             <upload-image v-model="form.driverLicenseImage" :disabled="disable" image-type="driver-license" icon-type="driver" @fillForm="fillForm" />
-          </el-col>
+          </el-col>fillForm
           <el-col v-show="form.driverType===1" :span="7" class="mb">
             <p class="upload-image-label">行驶证</p>
-            <upload-image v-model="form.driverOtherLicenseImage" :disabled="disable" image-type="vehicle-license" side="front"  icon-type="vehicle" @fillForm="fillForm" />
+            <upload-image v-model="form.driverOtherLicenseImage" :disabled="disable" image-type="vehicle-license" side="front" icon-type="vehicle" @fillForm="fillForm" />
           </el-col>
           <el-col v-show="form.driverType===1" :span="7" class="mb">
             <p class="upload-image-label">行驶证副页</p>
@@ -315,29 +315,29 @@
         </el-form-item>
       </template>
       <template v-if="form.driverType == 1 && (title === '新增' || (title !== '新增' && vehicleInfoList.length > 0))">
-          <el-form-item label="车辆归属类型" prop="vehicleAscriptionType">
-              <el-select v-model="vehicleForm.vehicleAscriptionType" placeholder="支持自动识别" class="width90" filterable clearable :disabled="disable">
-                  <el-option
-                          v-for="dict in vehicleAscriptionTypeOptions"
-                          :key="dict.dictValue"
-                          :label="dict.dictLabel"
-                          :value="parseInt(dict.dictValue)"
-                  />
-              </el-select>
-          </el-form-item>
-          <el-form-item label="车辆类型" prop="vehicleTypeCode">
-              <el-select v-model="vehicleForm.vehicleTypeCode" placeholder="支持自动识别" class="width90" clearable filterable :disabled="disable">
-                  <el-option
-                          v-for="dict in vehicleTypeOptions"
-                          :key="dict.dictValue"
-                          :label="dict.dictLabel"
-                          :value="dict.dictValue"
-                  />
-              </el-select>
-          </el-form-item>
-          <el-form-item label="车辆识别码" prop="chassisNumber" :rules="[{ required: true, message: '车辆识别码不能为空', trigger: 'blur' }]">
-              <el-input v-model="vehicleForm.chassisNumber" placeholder="支持自动识别" class="width90" clearable :disabled="disable" />
-          </el-form-item>
+        <el-form-item label="车辆归属类型" prop="vehicleAscriptionType">
+          <el-select v-model="vehicleForm.vehicleAscriptionType" placeholder="支持自动识别" class="width90" filterable clearable :disabled="disable">
+            <el-option
+              v-for="dict in vehicleAscriptionTypeOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="parseInt(dict.dictValue)"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="车辆类型" prop="vehicleTypeCode">
+          <el-select v-model="vehicleForm.vehicleTypeCode" placeholder="支持自动识别" class="width90" clearable filterable :disabled="disable">
+            <el-option
+              v-for="dict in vehicleTypeOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="车辆识别码" prop="chassisNumber" :rules="[{ required: true, message: '车辆识别码不能为空', trigger: 'blur' }]">
+          <el-input v-model="vehicleForm.chassisNumber" placeholder="支持自动识别" class="width90" clearable :disabled="disable" />
+        </el-form-item>
         <el-form-item label="车牌颜色" prop="vehicleLicenseColorCode">
           <el-select v-model="vehicleForm.vehicleLicenseColorCode" class="width90" filterable clearable :disabled="disable">
             <el-option
@@ -348,16 +348,16 @@
             />
           </el-select>
         </el-form-item>
-          <el-form-item label="车身颜色" prop="vehicleColorCode">
-              <el-select v-model="vehicleForm.vehicleColorCode" class="width90" filterable clearable :disabled="disable">
-                  <el-option
-                          v-for="dict in carBodyColorOptions"
-                          :key="dict.dictValue"
-                          :label="dict.dictLabel"
-                          :value="dict.dictValue"
-                  />
-              </el-select>
-          </el-form-item>
+        <el-form-item label="车身颜色" prop="vehicleColorCode">
+          <el-select v-model="vehicleForm.vehicleColorCode" class="width90" filterable clearable :disabled="disable">
+            <el-option
+              v-for="dict in carBodyColorOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="车辆能源类型" prop="vehicleEnergyType">
           <el-select v-model="vehicleForm.vehicleEnergyType" class="width90" filterable clearable :disabled="disable">
             <el-option
