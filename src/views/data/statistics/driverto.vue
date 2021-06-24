@@ -74,6 +74,7 @@
             type="primary"
             icon="el-icon-download"
             size="mini"
+            :loading="loadingExport"
             @click="handleExport"
           >导出</el-button>
         </el-col>
@@ -164,7 +165,8 @@ export default {
       },
       teamloading: false,
       dataOver: false, // 是否请求完了
-      summary: true
+      summary: true,
+      loadingExport: false
     };
   },
   created() {
@@ -253,7 +255,10 @@ export default {
     },
     // 导出
     handleExport() {
-      this.download('/transportation/driverCountSearch/export', { ...this.queryParams }, `司机往来明细_${new Date().getTime()}.xlsx`);
+      this.loadingExport = true;
+      this.download('/transportation/driverCountSearch/export', { ...this.queryParams }, `司机往来明细_${new Date().getTime()}.xlsx`).then(res => {
+        this.loadingExport = false;
+      });
     }
   }
 };

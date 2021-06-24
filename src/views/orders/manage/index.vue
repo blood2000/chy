@@ -169,6 +169,7 @@
             type="warning"
             icon="el-icon-download"
             size="mini"
+            :loading="loadingExport"
             @click="handleExport"
           >导出</el-button>
         </el-col>
@@ -370,6 +371,7 @@ export default {
   components: { OpenDialog, PriceAdjustment },
   data() {
     return {
+      loadingExport: false,
       activeName: '0',
       listManagesApi,
       pubilshCode: '',
@@ -876,9 +878,12 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
+      this.loadingExport = true;
       this.download('/transportation/order/export', {
         ...this.newQueryParams
-      }, `order_${new Date().getTime()}.xlsx`);
+      }, `order_${new Date().getTime()}.xlsx`).then(res => {
+        this.loadingExport = false;
+      });
     },
     /** 派单对话 */
     handleDispatch(row) {

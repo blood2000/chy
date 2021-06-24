@@ -3,7 +3,7 @@ import request from '@/utils/request';
 // 监管数据
 export function getRegulatoryData(branchCode) {
   return request({
-    url: `/schedule/bigScreenSeach/getRegulatoryCount/${branchCode}`,
+    url: `/transportation/bigScreenSeach/getRegulatoryCount/${branchCode}`,
     method: 'get'
   });
 }
@@ -11,7 +11,7 @@ export function getRegulatoryData(branchCode) {
 // 用户情况
 export function getUserData(branchCode) {
   return request({
-    url: `/schedule/bigScreenSeach/getBranchUser/${branchCode}`,
+    url: `/transportation/bigScreenSeach/getBranchUser/${branchCode}`,
     method: 'get'
   });
 }
@@ -19,7 +19,7 @@ export function getUserData(branchCode) {
 // 业绩数据
 export function getCompanyPerformance(branchCode) {
   return request({
-    url: `/schedule/bigScreenSeach/getCompanyPerformance/${branchCode}`,
+    url: `/transportation/bigScreenSeach/getCompanyPerformance/${branchCode}`,
     method: 'get'
   });
 }
@@ -28,7 +28,7 @@ export function getCompanyPerformance(branchCode) {
 // 运力情况
 export function getCapacityData(branchCode) {
   return request({
-    url: `/schedule/bigScreenSeach/getTransportCount/${branchCode}`,
+    url: `/transportation/bigScreenSeach/getTransportCount/${branchCode}`,
     method: 'get'
   });
 }
@@ -36,7 +36,7 @@ export function getCapacityData(branchCode) {
 // 货单/运单数
 export function getShipmentWaybillCount(branchCode, timeType) {
   return request({
-    url: `/schedule/bigScreenSeach/getWaybillCount`,
+    url: `/transportation/bigScreenSeach/getWaybillCount`,
     method: 'get',
     params: {
       branchCode,
@@ -48,7 +48,7 @@ export function getShipmentWaybillCount(branchCode, timeType) {
 // 运营情况
 export function getBusinessDetail(branchCode) {
   return request({
-    url: `/schedule/bigScreenSeach/getBusinessDetail/${branchCode}`,
+    url: `/transportation/bigScreenSeach/getBusinessDetail/${branchCode}`,
     method: 'get'
   });
 }
@@ -56,7 +56,7 @@ export function getBusinessDetail(branchCode) {
 // 目标达成情况
 export function getTarget(branchCode) {
   return request({
-    url: `/schedule/bigScreenSeach/getBigScrennTarget/${branchCode}`,
+    url: `/transportation/bigScreenSeach/getBigScrennTarget/${branchCode}`,
     method: 'get'
   });
 }
@@ -64,7 +64,7 @@ export function getTarget(branchCode) {
 // 总排名 公司/司机
 export function getCompanyDriverRank(branchCode) {
   return request({
-    url: `/schedule/bigScreenSeach/getCompanyRanking/${branchCode}`,
+    url: `/transportation/bigScreenSeach/getCompanyRanking/${branchCode}`,
     method: 'get'
   });
 }
@@ -90,5 +90,57 @@ export function getUserAndCarTop() {
   return request({
     url: `/assets/notice/userAndCarTop`,
     method: 'post'
+  });
+}
+
+// 货运类型排行v2
+export function getCargoTypeListV2(branchCode, timeType) {
+  return request({
+    url: `/transportation/bigScreenSeach/v2/cargoTypeList/${branchCode}`,
+    method: 'get',
+    params: {
+      timeType
+    }
+  });
+}
+
+// 承运排行v2
+export function getCarrierRankingV2(timeType) {
+  return request({
+    url: `/transportation/bigScreenSeach/v2/carrierRanking`,
+    method: 'get',
+    params: {
+      timeType
+    }
+  });
+}
+
+// 地域业务分布情况v2
+export function getBusinessListV2(branchCode) {
+  return request({
+    url: `/transportation/bigScreenSeach/v2/regionBusinessDistributedList/${branchCode}`,
+    method: 'get'
+  });
+}
+
+// 运营情况v2
+export function getOperationStatusV2(branchCode, timeType) {
+  return request({
+    url: `/transportation/bigScreenSeach/v2/operationStatus/${branchCode}`,
+    method: 'get',
+    params: {
+      timeType
+    }
+  });
+}
+
+// 业绩数据v2
+export function getPerformanceDataV2(branchCode, timeType) {
+  return request({
+    url: `/transportation/bigScreenSeach/v2/performanceData/${branchCode}`,
+    method: 'get',
+    params: {
+      timeType
+    }
   });
 }

@@ -109,8 +109,8 @@ export default {
     goToStatistic() {
       if (this.isShipment) return;
       const routeData = this.$router.resolve({
-        path: '/statistic',
-        // path: '/statisticSecond',
+        // path: '/statistic',
+        path: '/statisticSecond',
         query: {
           isScale: true
         }

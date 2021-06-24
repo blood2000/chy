@@ -4,7 +4,7 @@
     <ul class="s-container__list ly-flex-v ly-flex-pack-justify">
       <li v-for="(item, index) in pieData" :key="index" class="s-container__list__item ly-flex-pack-start ly-flex-pack-center">
         <p class="index" :class="'index_' + (index + 1)">{{ index + 1 }}</p>
-        <p class="text">{{ `${item.name}(${item.percen})` }}</p>
+        <p class="text">{{ `${item.goodsBigTypeName}(${item.percentage}%)` }}</p>
       </li>
     </ul>
     <div ref="pie" class="s-container__pie" />
@@ -14,18 +14,23 @@
 <script>
 import * as echarts from 'echarts';
 import { setfontSize } from '@/utils/fontSize';
+import { getCargoTypeListV2 } from '@/api/statistic/statistic.js';
 
 export default {
+  props: {
+    timeKey: {
+      type: Number,
+      default: 2
+    },
+    branchCode: {
+      type: String,
+      default: null
+    }
+  },
   data() {
     return {
       chart: null,
-      pieData: [
-        { value: 200, name: '煤炭及制品', percen: '50%' },
-        { value: 100, name: '钢材', percen: '50%' },
-        { value: 80, name: '渣土', percen: '50%' },
-        { value: 60, name: '原料', percen: '50%' },
-        { value: 30, name: '汽车制品', percen: '50%' }
-      ]
+      pieData: []
     };
   },
   beforeDestroy() {
@@ -40,7 +45,14 @@ export default {
   },
   methods: {
     getData() {
-      this.initChart();
+      getCargoTypeListV2(this.branchCode, this.timeKey).then(response => {
+        this.pieData = response.data || [];
+        this.pieData.forEach(el => {
+          el.value = el.waybillCount;
+          el.name = el.goodsBigTypeName;
+        });
+        this.initChart();
+      });
     },
     initChart() {
       this.chart = echarts.init(this.$refs.pie, 'macarons');
