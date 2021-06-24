@@ -23,19 +23,19 @@
             <div class="ly-left-bottom-left-top ly-border">
               <Title class="title_4 mb05rem" icon="4" :show-time="true" :time-text="timeText">货运类型排行<span>Freight Type list</span></Title>
               <div class="ly-left-bottom-left-box ly-border">
-                <FreightTypeRanking ref="FreightTypeRankingRef" />
+                <FreightTypeRanking ref="FreightTypeRankingRef" :time-key="timeKey" :branch-code="branchCode" />
               </div>
             </div>
             <div class="ly-left-bottom-left-bottom ly-border">
               <Title class="title_4 mb05rem" icon="6">地域业务分布情况<span>Geographical Business Distribution</span></Title>
               <div class="ly-left-bottom-left-box ly-border">
-                <BusinessDistribution ref="BusinessDistributionRef" />
+                <BusinessDistribution ref="BusinessDistributionRef" :branch-code="branchCode" />
               </div>
             </div>
           </div>
           <div class="ly-left-bottom-right ly-border">
             <Title class="title_5 mb05rem" icon="4" :show-time="true" :time-text="timeText">承运排行<span>Shipping list</span></Title>
-            <DriverTop5List :driver-rank-data="driverRankData" :show-top="false" style="height: calc(100% - 2.1rem)" />
+            <DriverTop5List ref="DriverTop5ListRef" :time-key="timeKey" :show-top="false" style="height: calc(100% - 2.1rem)" />
           </div>
         </div>
       </div>
@@ -66,6 +66,7 @@
               :waill-bill-vo="businessData.waillBillVo"
               :week-vo-list="businessData.weekVoList"
               :is-second="true"
+              :time-key="timeKey"
               style="height: 100%"
             />
           </div>
@@ -79,14 +80,14 @@
         <Title class="title_4 mb05rem" icon="7" :show-time="true" :time-text="timeText">业绩数据<span>Performance data</span></Title>
         <div class="ly-right-right-box ly-border">
           <div class="ly-border mb05rem" style="height: 15%">
-            <PerformanceInfo ref="PerformanceInfoRef" :performance="performanceData.performance" :is-scale="!!$route.query.isScale" />
+            <PerformanceInfo ref="PerformanceInfoRef" :performance="performanceData.performance" :time-key="timeKey" :is-scale="!!$route.query.isScale" />
           </div>
           <div class="ly-border mb07rem" style="height: calc(33% - 1.2rem)">
             <div class="ly-right-right-box-title mb05rem">TOP 5省份交易额排名</div>
-            <AmountTop5Chart ref="AmountTop5ChartRef" :province-ranking="performanceData.provinceRanking" :show-title="false" style="height: calc(100% - 1.5rem)" />
+            <AmountTop5Chart ref="AmountTop5ChartRef" :province-ranking="performanceData.provinceRanking" :time-key="timeKey" :show-title="false" style="height: calc(100% - 1.5rem)" />
           </div>
           <div class="ly-border" style="height: 52%">
-            <CompanyTop10ListSecond ref="CompanyTop10ListSecondRef" :province-ranking="performanceData.provinceRanking" />
+            <CompanyTop10ListSecond ref="CompanyTop10ListSecondRef" :province-ranking="performanceData.provinceRanking" :time-key="timeKey" />
           </div>
         </div>
       </div>
@@ -111,7 +112,7 @@ import ScrollData from './ScrollData';// 中间滚屏数据
 import Map from './Map';// 地图
 import FreightTypeRanking from './FreightTypeRanking';// 货运类型排行
 import BusinessDistribution from './BusinessDistribution';// 地区业务分布情况
-import { getCompanyPerformance, getBusinessDetail, getCompanyDriverRank } from '@/api/statistic/statistic.js';
+import { getCompanyPerformance, getBusinessDetail } from '@/api/statistic/statistic.js';
 // import { dataJson } from './data';
 
 export default {
@@ -156,9 +157,6 @@ export default {
         weekVoList: [], // 近8周订单数
         complainVo: {} // 投诉
       },
-      // 总排名
-      companyRankData: [],
-      driverRankData: [],
       // 当前时间
       timeKey: 2,
       timeText: '最近30天'
@@ -178,7 +176,6 @@ export default {
     window.addEventListener('resize', this.resizeFun);
     this.getPerformanceData();
     this.getBusinessData();
-    this.getRankData();
     this.createWebSocket();
   },
   beforeDestroy() {
@@ -258,7 +255,7 @@ export default {
     },
     // 处理实时数据
     setData(dJson) {
-      console.log('实时Json：', dJson);
+      // console.log('实时Json：', dJson);
       const { userNotice, invoiceNotice, orderNoticeVo, waybillNotice, waybillSettlementNotice, insertTime } = dJson;
       // 用户√
       if (userNotice) {
@@ -336,11 +333,16 @@ export default {
     },
     // 获取时间
     getTime(timeKey, timeText) {
+      // 初始化的时候不加载
       if (timeKey === this.timeKey) return;
       this.timeKey = timeKey;
       this.timeText = timeText;
       // 切换时间后的处理
-      // ...
+      console.log('==============>timeKey: ', this.timeKey);
+      this.$nextTick(() => {
+        this.$refs.FreightTypeRankingRef.getData();
+        this.$refs.DriverTop5ListRef.getData();
+      });
     },
     // 获取业绩数据
     getPerformanceData() {
@@ -371,24 +373,16 @@ export default {
         });
       });
     },
-    // 获取总排名数据
-    getRankData() {
-      getCompanyDriverRank(this.branchCode).then(response => {
-        const data = response.data || {};
-        this.companyRankData = data.companyList || [];
-        this.driverRankData = data.driverList || [];
-      });
-    },
     // 零点更新接口
     refreshData() {
       this.getPerformanceData(); // 业绩
       this.getBusinessData(); // 运营
-      this.getRankData(); // 总排名
       this.$refs.UserInfoRef.getData(); // 用户
       this.$refs.CapacityInfoRef.getData(); // 运力
       this.$refs.TargetChartRef.getData(); // 目标
       this.$refs.TotalDataRef.getCount(); // 地图运单
       this.$refs.FreightTypeRankingRef.getData(); // 货运类型排行
+      this.$refs.DriverTop5ListRef.getData(); // 承运排名
     }
   }
 };

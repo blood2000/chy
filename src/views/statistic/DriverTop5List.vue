@@ -3,7 +3,7 @@
   <div class="s-container">
     <span v-if="showTop" class="s-container__title">TOP 5 司机</span>
     <ul class="s-container__list">
-      <li v-for="(item, index) in driverRankData" :key="item.driverCode + index" class="s-container__list__item">
+      <li v-for="(item, index) in driverRankData" :key="item.driverName + index" class="s-container__list__item">
         <div class="s-container__list__item__title">
           <span :class="index === 0 ? 'first' : ''" class="index">{{ index + 1 }}</span>
           <span class="text">
@@ -14,22 +14,22 @@
         <div class="s-container__list__item__content ly-flex-pack-justify">
           <InfoBox
             label="接单次数"
-            :count="item.orderCount"
+            :count="item.waybillCount"
             :has-yoy="true"
-            :yoy="item.orderCountYoy"
-            :yoy-type="item.orderCountYoyType"
+            :yoy="item.waybillCountPercentage"
+            :yoy-type="item.waybillCountPercentageStatus"
             :yoy-places="1"
             :is-small="true"
             :is-small-size="true"
           />
           <InfoBox
-            label="结算总额"
+            label="实收总额"
             unit="万"
             :count="item.amount"
             :places="2"
             :has-yoy="true"
-            :yoy="item.amountYoy"
-            :yoy-type="item.amountYoyType"
+            :yoy="item.amountPercentage"
+            :yoy-type="item.amountPercentageStatus"
             :yoy-places="1"
             :is-small="true"
             :is-small-size="true"
@@ -42,27 +42,37 @@
 
 <script>
 import InfoBox from './components/infoBox';
+import { getCarrierRankingV2 } from '@/api/statistic/statistic.js';
 
 export default {
   components: {
     InfoBox
   },
   props: {
-    driverRankData: {
-      type: Array,
-      default: () => {
-        return [];
-      }
-    },
     showTop: {
       type: Boolean,
       default: true
+    },
+    timeKey: {
+      type: Number,
+      default: 2
     }
   },
   data() {
     return {
-
+      driverRankData: []
     };
+  },
+  mounted() {
+    this.getData();
+  },
+  methods: {
+    getData() {
+      getCarrierRankingV2(this.timeKey).then(response => {
+        console.log(response.data);
+        this.driverRankData = response.data || [];
+      });
+    }
   }
 };
 </script>

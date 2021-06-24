@@ -23,6 +23,12 @@
 
 <script>
 export default {
+  props: {
+    branchCode: {
+      type: String,
+      default: null
+    }
+  },
   data() {
     return {
       timer: null,

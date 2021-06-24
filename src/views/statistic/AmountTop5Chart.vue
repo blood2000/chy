@@ -18,6 +18,10 @@ export default {
     showTitle: {
       type: Boolean,
       default: true
+    },
+    timeKey: {
+      type: Number,
+      default: 2
     }
   },
   data() {

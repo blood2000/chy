@@ -75,7 +75,7 @@
           <CompanyTop5List :company-rank-data="companyRankData" />
         </div>
         <div class="ly-right-right-bottom mb1rem ly-border">
-          <DriverTop5List :driver-rank-data="driverRankData" />
+          <DriverTop5List ref="DriverTop5ListRef" :time-key="0" />
         </div>
       </div>
     </div>
@@ -373,6 +373,7 @@ export default {
       this.$refs.CapacityInfoRef.getData(); // 运力
       this.$refs.TargetChartRef.getData(); // 目标
       this.$refs.TotalDataRef.getCount(); // 地图运单
+      this.$refs.DriverTop5ListRef.getData(); // 承运排名
     }
   }
 };

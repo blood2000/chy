@@ -56,6 +56,10 @@ export default {
       default: () => {
         return [];
       }
+    },
+    timeKey: {
+      type: Number,
+      default: 2
     }
   },
   data() {

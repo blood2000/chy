@@ -92,3 +92,52 @@ export function getUserAndCarTop() {
     method: 'post'
   });
 }
+
+// 货运类型排行v2
+export function getCargoTypeListV2(branchCode, timeType) {
+  return request({
+    url: `/transportation/bigScreenSeach/v2/cargoTypeList/${branchCode}`,
+    method: 'get',
+    params: {
+      timeType
+    }
+  });
+}
+
+// 承运排行v2
+export function getCarrierRankingV2(timeType) {
+  return request({
+    url: `/transportation/bigScreenSeach/v2/carrierRanking`,
+    method: 'get',
+    params: {
+      timeType
+    }
+  });
+}
+
+// 地域业务分布情况v2
+export function getBusinessListV2(branchCode) {
+  return request({
+    url: `/transportation/bigScreenSeach/v2/regionBusinessDistributedList/${branchCode}`,
+    method: 'get'
+  });
+}
+
+// 运营情况v2
+export function getOperationStatusV2(branchCode) {
+  return request({
+    url: `/transportation/bigScreenSeach/v2/operationStatus/${branchCode}`,
+    method: 'get'
+  });
+}
+
+// 业绩数据v2
+export function getPerformanceDataV2(branchCode, timeType) {
+  return request({
+    url: `/transportation/bigScreenSeach/v2/performanceData/${branchCode}`,
+    method: 'get',
+    params: {
+      timeType
+    }
+  });
+}
