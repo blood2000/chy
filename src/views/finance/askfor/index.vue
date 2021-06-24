@@ -525,7 +525,7 @@ export default {
     },
     // 导出
     handleExport() {
-      this.download('/transportation/invoice/export', { ...this.queryParams }, `发票索取列表_${new Date().getTime()}.xlsx`);
+      this.download('/transportation/invoice/export', { ...this.queryParams }, `invoiceAskfor_${new Date().getTime()}.xlsx`);
     },
     // 批量索票
     handleAskfor() {
