@@ -7,7 +7,7 @@
           v-for="(item, index) in dataList"
           :key="index"
           :class="[{isOpacity: isOpacity}, 'color' + item.status, {isSecond: isSecond}]"
-          class="content__list__item ly-flex-v ly-flex-pack-justify"
+          class="content__list__item"
         >
           <div class="title">{{ item.title }}</div>
           <div class="content ly-flex-pack-justify ly-flex-align-center">
@@ -115,7 +115,7 @@ export default {
     overflow: hidden;
     .content__list{
       .content__list__item{
-        padding: 0.3rem 0 0.25rem;
+        padding: 0.2rem 0 0.2rem;
         width: 14.6rem;
         height: 2.5rem;
         margin-bottom: 0.3rem;
@@ -128,9 +128,11 @@ export default {
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
+          line-height: 1.2rem;
         }
         >.content{
           padding: 0 0.5rem 0 0.2rem;
+          line-height: 0.9rem;
           .text{
             font-size: 0.6rem;
             transform: scale(0.9, 0.9);
