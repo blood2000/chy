@@ -172,7 +172,7 @@
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
           <el-button
-            v-hasPermi="['askfor:invoice:export']"
+            v-hasPermi="['transportation:waybill:manageListExport']"
             type="primary"
             icon="el-icon-download"
             size="mini"
