@@ -78,7 +78,7 @@
         <el-checkbox v-model="form.identificationEffective">长期有效</el-checkbox>
       </el-form-item>
       <!-- 选择省/市/区 -->
-     <!-- <province-city-county
+      <!-- <province-city-county
         ref="ChooseArea"
         :visible="visible"
         :disabled="disable"
@@ -467,13 +467,13 @@ import { getProvinceList } from '@/api/system/area';
 import { listInfo } from '@/api/assets/team';
 import { listInfo as vehicleListInfo } from '@/api/assets/vehicle';
 import UploadImage from '@/components/UploadImage/index';
-import ProvinceCityCounty from '@/components/ProvinceCityCounty';
+// import ProvinceCityCounty from '@/components/ProvinceCityCounty';
 import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
 
 export default {
   components: {
-    UploadImage,
-    ProvinceCityCounty
+    UploadImage
+    // ProvinceCityCounty
   },
   props: {
     title: {

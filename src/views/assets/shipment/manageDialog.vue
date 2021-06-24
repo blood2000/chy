@@ -29,13 +29,13 @@
         <address-page v-if="activeName === 'address'" class="table-page" :shipment-code="shipmentCode" :company-code="companyCode" />
       </el-tab-pane>
       <template v-if="companyCode">
-        <el-tab-pane label="企业成员管理" name="member" v-if="shipperType == 1">
+        <el-tab-pane v-if="shipperType == 1" label="企业成员管理" name="member">
           <user-page v-if="activeName === 'member'" class="table-page" :shipment-code="shipmentCode" :company-code="companyCode" :user-code="userCode" :show-shipment="true" :org-type="orgType" />
         </el-tab-pane>
-        <el-tab-pane label="企业组织管理" name="dep"  v-if="shipperType == 1">
+        <el-tab-pane v-if="shipperType == 1" label="企业组织管理" name="dep">
           <dept-page v-if="activeName === 'dep'" class="table-page" :company-code="companyCode" :user-code="userCode" :show-shipment="true" :org-type="orgType" />
         </el-tab-pane>
-        <el-tab-pane label="企业角色管理" name="role"  v-if="shipperType == 1">
+        <el-tab-pane v-if="shipperType == 1" label="企业角色管理" name="role">
           <role-page v-if="activeName === 'role'" class="table-page" :company-code="companyCode" :user-code="userCode" :show-shipment="true" :org-type="orgType" />
         </el-tab-pane>
         <el-tab-pane label="调度组管理" name="group">
