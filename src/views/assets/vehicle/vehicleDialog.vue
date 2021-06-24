@@ -170,25 +170,31 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="车头正面照" prop="vehicleImage">
+      <!--<el-form-item label="车头正面照" prop="vehicleImage">
         <upload-image v-model="form.vehicleImage" :disabled="disable" icon-type="vehicle_head" />
-      </el-form-item>
-      <!-- <el-form-item>
+      </el-form-item>-->
+       <el-form-item>
         <el-row>
+            <el-col :span="7" class="mb">
+                <p class="upload-image-label">行驶证</p>
+                <upload-image v-model="form.vehicleImage" :disabled="disable" icon-type="vehicle_head" />
+            </el-col>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">行驶证</p>
-            <upload-image v-model="form.driverOtherLicenseImage" :disabled="disable" image-type="vehicle-license" icon-type="vehicle" @fillForm="fillForm" />
+            <upload-image v-model="form.vehicleLicenseImg" :disabled="disable" image-type="vehicle-license" side="front" icon-type="vehicle"  @fillForm="fillForm"/>
           </el-col>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">行驶证副页</p>
-            <upload-image v-model="form.driverOtherLicenseBackImage" :disabled="disable" image-type="vehicle-license" icon-type="vehicle_back" @fillForm="fillForm" />
+            <upload-image v-model="form.vehicleLicenseSecondImg" :disabled="disable" image-type="vehicle-license" side="back" icon-type="vehicle_back"  @fillForm="fillForm" />
           </el-col>
+            <!--
           <el-col :span="7" class="mb">
             <p class="upload-image-label">车头正面照</p>
             <upload-image v-model="form.vehicleImage" :disabled="disable" icon-type="vehicle_head" />
           </el-col>
+            -->
         </el-row>
-      </el-form-item> -->
+      </el-form-item>
     </el-form>
     <div v-if="title === '新增' || title === '编辑' || title === '添加车辆'" slot="footer" class="dialog-footer">
       <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
@@ -422,6 +428,8 @@ export default {
         updateCode: null,
         updateTime: null,
         vehicleImage: null,
+        vehicleLicenseImg: null,
+        vehicleLicenseSecondImg: null,
         transportPermitImage: null,
         driverOtherLicenseBackImage: null,
         driverOtherLicenseImage: null
@@ -508,7 +516,52 @@ export default {
       switch (type) {
         // 行驶证
         case 'vehicle-license':
-          if (data.number) {
+          // 正面
+          if (side === 'front') {
+            // 车牌号
+            if (data.number) {
+              this.$set(this.form, 'licenseNumber', data.number);
+            } else {
+              this.$set(this.form, 'licenseNumber', '');
+            }
+            // 车辆类型 vehicleTypeCode
+            if (data.vehicle_type) {
+              // form
+              this.$set(this.form, 'vehicleTypeCode', this.getVehicleTypeKey(data.vehicle_type));
+            } else {
+              this.$set(this.form, 'vehicleTypeCode', '');
+            }
+            // 车辆识别码 chassisNumber
+            if (data.vin) {
+              this.$set(this.form, 'chassisNumber', data.vin);
+            } else {
+              this.$set(this.form, 'chassisNumber', '');
+            }
+            // 发动机号 engineNumber
+            if (data.engine_no) {
+              this.$set(this.form, 'engineNumber', data.engine_no);
+            } else {
+              this.$set(this.form, 'engineNumber', '');
+            }
+          }
+          // 副业
+          if (side === 'back') {
+            // 车辆总重量 vehicleTotalWeight
+            if (data.gross_mass) {
+              var num = data.gross_mass.indexOf('kg');
+              var value = data.gross_mass.substr(0, num);
+              this.$set(this.form, 'vehicleTotalWeight', parseInt(value) / 1000);
+            } else {
+              this.$set(this.form, 'vehicleTotalWeight', '0');
+            }
+            // 车辆可载重量 vehicleLoadWeight
+            if (data.unladen_mass) {
+              num = data.unladen_mass.indexOf('kg');
+              value = data.unladen_mass.substr(0, num);
+              this.$set(this.form, 'vehicleLoadWeight', parseInt(value) / 1000);
+            }
+          }
+          /* if (data.number) {
             this.$set(this.form, 'licenseNumber', data.number);
           } else {
             this.$set(this.form, 'licenseNumber', '');
@@ -528,7 +581,7 @@ export default {
             this.$set(this.form, 'vehicleTypeCode', this.getVehicleTypeKey(data.vehicle_type));
           } else {
             this.$set(this.form, 'vehicleTypeCode', '');
-          }
+          }*/
           break;
         default:
           break;

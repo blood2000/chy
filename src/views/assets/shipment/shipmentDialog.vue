@@ -895,7 +895,7 @@ export default {
         isWipe: null,
         area: null,
         wipeType: null,
-        isMonthly: null,
+        isMonthly: 0,
         isPrepaid: 1, // 是否预付运费，默认是
         payInvoiceType: '7',
         isConsumption: null,

@@ -231,7 +231,7 @@
           <el-col :span="7" class="mb">
             <p class="upload-image-label">驾驶证</p>
             <upload-image v-model="form.driverLicenseImage" :disabled="disable" image-type="driver-license" icon-type="driver" @fillForm="fillForm" />
-          </el-col>
+          </el-col>fillForm
           <el-col v-show="form.driverType===1" :span="7" class="mb">
             <p class="upload-image-label">行驶证</p>
             <upload-image v-model="form.driverOtherLicenseImage" :disabled="disable" image-type="vehicle-license" side="front" icon-type="vehicle" @fillForm="fillForm" />
