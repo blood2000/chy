@@ -327,13 +327,13 @@ export default {
           }
         }).then(() => {
           that.getList();
-        });
+        }).catch(() => {});
       } else {
         that.msgWarning('货主或司机的身份证号码不能为空！');
       }
     },
     handleSign() {
-      this.$confirm('是否确认批量生成电子签章合同? 平均一条数据用时20秒才可生成电子签章合同', '警告', {
+      this.$confirm('平均每份合同耗时20秒，确认批量生成电子签章合同？', '批量生成电子章', {
         'confirmButtonText': '确定',
         'cancelButtonText': '取消',
         'type': 'warning'
@@ -341,7 +341,7 @@ export default {
         getContractSign({ waybillCode: this.ids });
       }).then(() => {
         this.getList();
-      });
+      }).catch(() => {});
     },
     // 下载电子合同
     handleDownload(row) {
