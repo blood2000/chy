@@ -43,7 +43,7 @@
       <div v-if="isSecond" class="s-container__box__info ly-flex-pack-justify ly-flex-v">
         <InfoBox
           label="月活跃数"
-          :count="0"
+          :count="dataList.activeShipment"
           :is-user="true"
         />
       </div>
@@ -70,7 +70,7 @@
       <div v-if="isSecond" class="s-container__box__info ly-flex-pack-justify ly-flex-v">
         <InfoBox
           label="月活跃数"
-          :count="0"
+          :count="dataList.activeTeam"
           :is-user="true"
         />
       </div>
@@ -97,7 +97,7 @@
       <div v-if="isSecond" class="s-container__box__info ly-flex-pack-justify ly-flex-v">
         <InfoBox
           label="月活跃数"
-          :count="0"
+          :count="dataList.activeDriver"
           :is-user="true"
         />
       </div>
