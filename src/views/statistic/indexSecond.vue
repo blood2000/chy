@@ -383,6 +383,7 @@ export default {
       this.$refs.TotalDataRef.getCount(); // 地图运单
       this.$refs.FreightTypeRankingRef.getData(); // 货运类型排行
       this.$refs.DriverTop5ListRef.getData(); // 承运排名
+      this.$refs.BusinessDistributionRef.getData(); // 地域业务分布情况
     }
   }
 };

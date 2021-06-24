@@ -69,7 +69,6 @@ export default {
   methods: {
     getData() {
       getCarrierRankingV2(this.timeKey).then(response => {
-        console.log(response.data);
         this.driverRankData = response.data || [];
       });
     }

@@ -3,25 +3,26 @@
   <div class="s-container ly-flex-pack-justify">
     <ul class="s-container__left ly-flex-v ly-flex-pack-justify">
       <li v-for="(item, index) in dataList" :key="index" class="ly-flex-pack-start ly-flex-align-center">
-        <div class="label">{{ item.area }}</div>
+        <div class="label">{{ item.regionName }}</div>
         <div class="line" :class="index === currentIndex ? 'current' : ''">
-          <div v-if="item.value / maxCount * 100 > 1" class="value" :style="`width: ${item.value / maxCount * 100}%;`" />
+          <div v-if="item.waybillCount / maxCount * 100 > 1" class="value" :style="`width: ${item.waybillCount / maxCount * 100}%;`" />
           <!-- 避免百分比太小不显示 -->
           <div v-else class="value" :style="`width: 1%;`" />
         </div>
-        <div class="text">45.89%</div>
+        <div class="text">{{ item.percentage + '%' }}</div>
       </li>
     </ul>
-    <ul class="s-container__right ly-flex-v ly-flex-pack-justify">
+    <ul class="s-container__right">
       <li v-for="(item, index) in goodList" :key="index" class="ly-flex-pack-start ly-flex-align-center">
         <p class="index">{{ index + 1 }}</p>
-        <p class="text">煤炭制品(50.55%)</p>
+        <p class="text">{{ `${item.goodsBigTypeName}(${item.percentage}%)` }}</p>
       </li>
     </ul>
   </div>
 </template>
 
 <script>
+import { getBusinessListV2 } from '@/api/statistic/statistic.js';
 export default {
   props: {
     branchCode: {
@@ -34,29 +35,28 @@ export default {
       timer: null,
       maxCount: 1,
       currentIndex: 0,
-      dataList: [
-        { area: '福建', value: 100, goods: [{}, {}, {}, {}, {}] },
-        { area: '北京', value: 80, goods: [{}, {}, {}, {}, {}] },
-        { area: '上海', value: 65, goods: [{}, {}, {}, {}, {}] },
-        { area: '广州', value: 55, goods: [{}, {}, {}, {}, {}] },
-        { area: '新疆', value: 40, goods: [{}, {}, {}, {}, {}] },
-        { area: '云南', value: 30, goods: [{}, {}, {}, {}, {}] }
-      ],
+      dataList: [],
       goodList: []
     };
   },
   mounted() {
-    this.createProgress();
-    this.roll();
+    this.getData();
   },
   beforeDestroy() {
     this.clearTimer();
   },
   methods: {
+    getData() {
+      getBusinessListV2(this.branchCode).then(response => {
+        this.dataList = response.data || [];
+        this.createProgress();
+        this.roll();
+      });
+    },
     // 模拟进度条
     createProgress() {
       if (this.dataList && this.dataList.length > 0) {
-        this.maxCount = this.dataList[0].value;
+        this.maxCount = this.dataList[0].waybillCount;
       }
     },
     // 定时选中
@@ -78,7 +78,7 @@ export default {
       if (this.timer) clearInterval(this.timer);
     },
     changeGoodList() {
-      this.goodList = this.dataList[this.currentIndex].goods;
+      this.goodList = this.dataList[this.currentIndex].bigScreenRegionGoodsVoList;
     }
   }
 };
@@ -134,8 +134,9 @@ export default {
     width: 36%;
     height: 100%;
     border: 0.05rem solid rgba(82, 129, 237, 0.4);
-    padding: 0.65rem 0.55rem;
+    padding: 0.3rem 0.55rem;
     >li{
+      height: 20%;
       .index{
         width: 0.9rem;
         height: 0.9rem;
@@ -150,6 +151,7 @@ export default {
         margin-right: 0.6rem;
       }
       .text{
+        width: calc(100% - 1rem);
         font-size: 13px;
         font-family: PingFang Regular;
         font-weight: 500;
