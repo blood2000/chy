@@ -137,7 +137,8 @@ export default {
     return {
       branchCode: null,
       // websocket
-      wsurl: 'ws://124.71.25.3:8080/websocket/chy',
+      wsurl: '/websocket/chy',
+      // wsurl: 'ws://192.168.30.134:8080/websocket/chy',
       websock: null,
       lockReconnect: false,
       timerReconnect: null,
@@ -191,7 +192,7 @@ export default {
     // 创建websocket
     createWebSocket() {
       try {
-        this.websock = new WebSocket(this.wsurl);
+        this.websock = new WebSocket('ws://' + process.env.VUE_APP_BASE_WS + this.wsurl + '?branchCode=' + this.branchCode);
         this.initWebSocket();
       } catch (e) {
         console.log('catch', e);
@@ -255,7 +256,7 @@ export default {
     },
     // 处理实时数据
     setData(dJson) {
-      // console.log('实时Json：', dJson);
+      console.log('实时Json：', dJson);
       const { userNotice, invoiceNotice, orderNoticeVo, waybillNotice, waybillSettlementNotice, insertTime } = dJson;
       // 用户√
       if (userNotice) {
