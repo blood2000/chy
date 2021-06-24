@@ -3,37 +3,36 @@
   <div class="s-container">
     <h5 class="s-container__title">{{ `TOP 10${title}团队排名` }}</h5>
     <ul class="s-container__list">
-      <li v-for="(item, index) in dataList" :key="item.compayCode + index" class="s-container__list__item">
+      <li v-for="(item, index) in dataList" :key="index" class="s-container__list__item">
         <div class="s-container__list__item__title">
           <span :class="index === 0 ? 'first' : ''" class="index">{{ index + 1 }}</span>
           <span class="text">
-            {{ item.companyName }}
+            {{ item.salesmanName }}
           </span>
         </div>
         <div class="s-container__list__item__content ly-flex-pack-justify">
           <InfoBox
             label="货主数"
-            :count="item.transactionAmount"
+            :count="item.shipmentNum"
             :is-small="true"
             :is-small-size="true"
           />
           <InfoBox
             label="运单量"
-            :count="item.transactionAmount"
+            :count="item.waybillNum"
             :is-small="true"
             :is-small-size="true"
-            :unit="'万'"
           />
           <InfoBox
             label="运费额"
-            :count="item.transactionAmount"
+            :count="item.waybillAmount"
             :is-small="true"
             :is-small-size="true"
             :unit="'万'"
           />
           <InfoBox
             label="开票额"
-            :count="item.transactionAmount"
+            :count="item.votesAmount"
             :is-small="true"
             :is-small-size="true"
             :unit="'万'"
@@ -87,7 +86,7 @@ export default {
       if (this.timer) clearInterval(this.timer);
     },
     showToolTip() {
-      this.dataList = this.provinceRanking[this.dataIndex].companyRankingList || [];
+      this.dataList = this.provinceRanking[this.dataIndex].companyInfoList || [];
       this.dataList.splice(5);
       this.title = this.provinceRanking[this.dataIndex].provinceName || '';
       if (this.dataIndex >= this.provinceRanking.length - 1) {
