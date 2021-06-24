@@ -104,16 +104,16 @@
             />
           </el-select>
         </el-form-item>
-          <el-form-item label="是否绑定银行卡" prop="isBindBankCard">
-              <el-select v-model="queryParams.isBindBankCard" placeholder="请选择状" filterable clearable size="small" class="input-width">
-                  <el-option
-                          v-for="dict in bindBankCardOptions"
-                          :key="dict.dictValue"
-                          :label="dict.dictLabel"
-                          :value="dict.dictValue"
-                  />
-              </el-select>
-          </el-form-item>
+        <el-form-item label="是否绑定银行卡" prop="isBindBankCard">
+          <el-select v-model="queryParams.isBindBankCard" placeholder="请选择状" filterable clearable size="small" class="input-width">
+            <el-option
+              v-for="dict in bindBankCardOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
           <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -242,20 +242,20 @@
           <span>{{ parseTime(row.isReportPersonDate, '{y}-{m}-{d}') }}</span>
         </template>
         <template #edit="{row}">
-            <el-button
-                    v-if="row.authStatus != 3"
-                    v-hasPermi="['assets:driver:examine']"
-                    size="mini"
-                    type="text"
-                    @click="handleDetail(row, 'review')"
-            >审核</el-button>
-            <el-button
-                    v-if="row.authStatus == 3"
-                    v-hasPermi="['assets:driver:get']"
-                    size="mini"
-                    type="text"
-                    @click="handleDetail(row, 'detail')"
-            >详情</el-button>
+          <el-button
+            v-if="row.authStatus != 3"
+            v-hasPermi="['assets:driver:examine']"
+            size="mini"
+            type="text"
+            @click="handleDetail(row, 'review')"
+          >审核</el-button>
+          <el-button
+            v-if="row.authStatus == 3"
+            v-hasPermi="['assets:driver:get']"
+            size="mini"
+            type="text"
+            @click="handleDetail(row, 'detail')"
+          >详情</el-button>
           <el-button
             v-show="!teamCode"
             v-hasPermi="['assets:driver:manage']"
@@ -263,30 +263,30 @@
             type="text"
             @click="handleManage(row)"
           >管理</el-button>
-            <el-button
-                    v-hasPermi="['assets:driver:edit']"
-                    size="mini"
-                    type="text"
-                    @click="handleDetail(row, 'edit')"
-            >修改</el-button>
+          <el-button
+            v-hasPermi="['assets:driver:edit']"
+            size="mini"
+            type="text"
+            @click="handleDetail(row, 'edit')"
+          >修改</el-button>
           <template v-if="!teamCode">
             <TableDropdown>
-                <el-dropdown-item  v-if="row.authStatus != 3">
+              <el-dropdown-item v-if="row.authStatus != 3">
                 <el-button
-                        v-hasPermi="['assets:driver:get']"
-                        size="mini"
-                        type="text"
-                        @click="handleDetail(row, 'detail')"
+                  v-hasPermi="['assets:driver:get']"
+                  size="mini"
+                  type="text"
+                  @click="handleDetail(row, 'detail')"
                 >详情</el-button>
-                </el-dropdown-item>
+              </el-dropdown-item>
               <el-dropdown-item>
-                  <el-button
-                          v-if="teamCode"
-                          v-hasPermi="['assets:team:driver:del']"
-                          size="mini"
-                          type="text"
-                          @click="handleDelBind(row)"
-                  >解除绑定</el-button>
+                <el-button
+                  v-if="teamCode"
+                  v-hasPermi="['assets:team:driver:del']"
+                  size="mini"
+                  type="text"
+                  @click="handleDelBind(row)"
+                >解除绑定</el-button>
               </el-dropdown-item>
               <el-dropdown-item>
                 <el-button
