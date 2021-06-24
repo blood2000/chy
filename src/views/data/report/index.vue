@@ -215,6 +215,7 @@
             type="warning"
             icon="el-icon-download"
             size="mini"
+            :loading="loadingExport"
             @click="handleExport"
           >导出</el-button>
           <el-button
@@ -532,7 +533,8 @@ export default {
       /* 弹框2- 批量导入 */
       openImport: false,
 
-      addition: -10
+      addition: -10,
+      loadingExport: false
 
       /* 其他额外参数 */
       // shipmentList: [], // 远程搜索的时候使用
@@ -649,9 +651,12 @@ export default {
     },
     /** 导出作 */
     handleExport() {
+      this.loadingExport = true;
       this.download('/transportation/waybillReport/export', {
         ...this.queryParams
-      }, `waybillReport_${Date.now()}.xlsx`);
+      }, `waybillReport_${Date.now()}.xlsx`).then(res => {
+        this.loadingExport = false;
+      });
     },
     /** 批量上报 */
     async handleReport() {

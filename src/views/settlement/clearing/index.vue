@@ -174,6 +174,7 @@
             type="primary"
             icon="el-icon-download"
             size="mini"
+            :loading="loadingExport"
             @click="handleExport"
           >导出</el-button>
           <el-button
@@ -309,7 +310,8 @@ export default {
         { 'dictLabel': '清分中', 'dictValue': '1' },
         { 'dictLabel': '清分成功', 'dictValue': '2' },
         { 'dictLabel': '清分失败', 'dictValue': '3' }
-      ]
+      ],
+      loadingExport: false
     };
   },
   computed: {
@@ -352,13 +354,16 @@ export default {
     },
     // 导出
     handleExport() {
+      this.loadingExport = true;
       this.download(
         '/transportation/waybillSettlementClarify/export',
         {
           ...this.queryParams
         },
         `clearing_${new Date().getTime()}.xlsx`
-      );
+      ).then(res => {
+        this.loadingExport = false;
+      });
     },
     // 运单清分
     handleClearing() {
