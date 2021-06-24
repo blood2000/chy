@@ -138,10 +138,10 @@
         </el-form-item>
 
         <!-- 标记状态 -->
-        <el-form-item label="是否异常" prop="reportMarkStatus">
+        <el-form-item label="标记异常" prop="reportMarkStatus">
           <el-select v-model="queryParams.reportMarkStatus" placeholder="----请选择----" clearable filterable style="width: 228px">
             <el-option
-              v-for="(dict,index) in dicts['isAbnormal_option'] || []"
+              v-for="(dict,index) in dicts['reportMarkStatus_option'] || []"
               :key="index"
               :label="dict.dictLabel"
               :value="dict.dictValue"
@@ -279,6 +279,9 @@
         <template #isAbnormal="{row}">
           <span :class="row.isAbnormal == '1'?'g-color-success':'g-color-error'">{{ selectDictLabel(dicts['isAbnormal_option'], (row.isAbnormal? row.isAbnormal: 0)) }}</span>
         </template>
+        <template #reportMarkStatus="{row}">
+          <span :class="row.reportMarkStatus == '0'?'g-color-success':'g-color-error'">{{ selectDictLabel(dicts['reportMarkStatus_option'], (row.reportMarkStatus? row.reportMarkStatus: 0)) }}</span>
+        </template>
 
         <template #vehicleReport="{row}">
           <div :class="row.vehicleReport != '1'?'shou':null" @click="handlerReport(row, 'vehicleReport', row.vehicleReport == '1')">
@@ -355,7 +358,7 @@
             size="mini"
             type="text"
             @click="handleEdit(row, 'mark')"
-          >标记异常</el-button>
+          >{{ row.reportMarkStatus===0? '标记异常':'取消异常' }}</el-button>
 
           <!-- v-hasPermi="['data:report:report']" -->
           <el-button
@@ -492,6 +495,7 @@ export default {
         unloadSendStatus_option: dictsData1,
         waybillSendStatus_option: dictsData1,
         isAbnormal_option: [{ dictLabel: '是', dictValue: 1 }, { dictLabel: '否', dictValue: 0 }], // 是否异常
+        reportMarkStatus_option: [{ dictLabel: '异常', dictValue: 1 }, { dictLabel: '正常', dictValue: 0 }], // 是否异常
         isChild_option: [{ dictLabel: '超载的主单', dictValue: 2 }, { dictLabel: '是（子单）', dictValue: 1 }, { dictLabel: '不是 （正常单）', dictValue: 0 }], // 是否子单
         // reportTypeList_option: [
         //   { dictLabel: '运单', dictValue: 1 },
@@ -704,13 +708,27 @@ export default {
           this.openData = row;
           break;
         case 'mark':
-          this.$confirm('是否确认标记上报异常?', '警告', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            reportMark(row.waybillReportCode, 1).then(response => {});
-          });
+          if (row.reportMarkStatus === 0) {
+            this.$confirm('是否确认标记上报异常?', '警告', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              reportMark(row.waybillCode, 1).then(response => {
+                this.getList();
+              });
+            });
+          } else {
+            this.$confirm('是否确认取消上报异常?', '警告', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              reportMark(row.waybillCode, 0).then(response => {
+                this.getList();
+              });
+            });
+          }
           break;
       }
     },
