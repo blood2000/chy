@@ -24,13 +24,13 @@
             项目名称：
           </el-col>
           <el-col :span="8" class="text-row">
-            {{ printData.projectName || '-' }}
+            {{ printData.projectNames || '-' }}
           </el-col>
           <el-col :span="3" class="text-label">
             渣土场：
           </el-col>
           <el-col :span="8" class="text-row">
-            {{ printData.ztcName || '-' }}
+            {{ printData.ztcLandNames || '-' }}
           </el-col>
 
           <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
@@ -41,7 +41,7 @@
             调度者：
           </el-col>
           <el-col :span="8" class="text-row">
-            {{ printData.teamName || '-' }}
+            {{ printData.teamNames || '-' }}
           </el-col>
           <el-col :span="3" class="text-label">
             装车数量：
@@ -102,8 +102,8 @@
           <tbody>
             <tr v-for="(item, index) in adjustlist" :key="index" class="tbody_tr">
               <td>{{ item.waybillNo }}</td>
-              <td>{{ item.fwefw }}</td>
-              <td>{{ item.nwueinfi }}</td>
+              <td>{{ item.companyName }}</td>
+              <td>{{ item.licenseNumber }}</td>
               <td>{{ item.goodsName }}</td>
 
               <td>{{ item.loadFormattedAddress }}</td>
@@ -137,7 +137,6 @@
 </template>
 
 <script>
-debugger;
 import { floor } from '@/utils/ddc';
 import { batchRelatedWaybill } from '@/api/settlement/adjustDregs';
 export default {
@@ -171,6 +170,7 @@ export default {
   },
 
   created() {
+    console.log(this.printData);
     this.getList();
   },
 
@@ -229,5 +229,20 @@ table th, table td {
     right: 0;
     bottom: 0;
     width: 300px;
+}
+
+@page{
+  size:auto; /* auto is the initial value */
+  margin: 3mm;/* this affects the margin in the printer settings */
+}
+
+html{
+  background-color: #FFFFFF;
+  margin: 0;/* this affects the margin on the html before sending to printer */
+}
+
+body{
+  border: solid 1px blue ;
+  margin: 10mm 15mm 10mm 15mm; /* margin you want for the content */
 }
 </style>

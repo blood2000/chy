@@ -47,6 +47,14 @@ export function adjustDetail(data) {
     data: data
   });
 }
+// 批量渣土核算详情
+export function batchDetail(data) {
+  return request({
+    url: 'transportation/batch/batchDetail',
+    method: 'post',
+    data: data
+  });
+}
 
 // 计算费用
 export function calculateFee(data) {

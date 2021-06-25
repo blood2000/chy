@@ -64,4 +64,12 @@ export function refusePayment(data) {
     data: data
   });
 }
+// 驳回批量开票(渣土)
+export function confirmVerification(data) {
+  return request({
+    url: '/transportation/batch/confirmVerification',
+    method: 'post',
+    data: data
+  });
+}
 

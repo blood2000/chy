@@ -1,108 +1,26 @@
 <template>
   <el-dialog class="i-adjust" :title="title" :visible="visible" width="1400px" :close-on-click-modal="false" append-to-body @close="cancel">
-    <el-row v-if="isPiliang" :gutter="10" class="mb8">
-      <el-col :span="10">
-        <span class="mr3">司机实收金额</span>
-        <el-input-number
-          v-model="deliveryCashFee"
-          placeholder="请输入司机实收金额"
-          :controls="false"
-          :precision="2"
-          :step="1"
-          :min="0"
-          size="small"
-          style="width: 180px"
-          class="mr3"
-          @keyup.enter.native="handleChange"
-        />
 
-        <el-button type="primary" @click="handleChange">批量修改</el-button>
+    <el-row v-if="isAgain===0 && com.length" :gutter="10" class="mb20 ly-t-left">
+
+      <el-col :span="20">
+        <span class="b mr20">快速分组:</span>
+        <el-tag
+          v-for="(item, index) in com"
+          :key="index"
+          type="success"
+          class="shou mr5"
+          :disabled="adjustlist.length <= 1"
+          @click="()=> sort = item.prop"
+        >{{ item.label }}</el-tag>
       </el-col>
     </el-row>
-    <el-table v-loading="loading" highlight-current-row :data="adjustlist" border>
 
-      <el-table-column width="160" label="运输单号" show-overflow-tooltip align="center" prop="waybillNo" />
-
-      <el-table-column width="120" label="调度者名称" align="center" prop="teamName" />
-
-      <el-table-column width="120" label="司机姓名" align="center" prop="driverName" />
-      <el-table-column width="120" label="司机电话" align="center" prop="driverPhone" />
-      <el-table-column width="120" label="车牌号" align="center" prop="licenseNumber" />
-
-      <el-table-column width="160" label="装货数量" align="left" prop="loadWeight">
-        <template slot-scope="scope">
-          <span>{{ scope.row.loadWeight }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="160" label="卸货数量" align="left" prop="unloadWeight">
-        <template slot-scope="scope">
-          <span>{{ scope.row.unloadWeight }}</span>
-        </template>
-      </el-table-column>
-
-      <!-- <el-table-column width="160" label="配载方式" align="center" prop="lossAllowScope">
-        <template slot-scope="scope">
-          <span v-show="scope.row.stowageStatus === '0'">
-            吨数配载
-          </span>
-          <span v-show="scope.row.stowageStatus === '1'">
-            方数配载
-          </span>
-          <span v-show="scope.row.stowageStatus === '2'">
-            车数配载
-          </span>
-        </template>
-      </el-table-column> -->
-
-      <!-- <el-table-column width="160" label="路耗(吨/方)" align="center" prop="loss">
-        <template slot-scope="scope">
-          <span v-if="scope.row.stowageStatus === '0'">{{ floor((scope.row.loss -0) / 1000, 6) }}</span>
-          <span v-else>{{ scope.row.loss || 0 }}</span>
-        </template>
-      </el-table-column> -->
-
-      <!-- <el-table-column width="160" label="路耗允许范围(吨/方)" align="center" prop="lossAllowScope">
-        <template slot-scope="scope">
-          <span>{{ scope.row.lossAllowScope? _lossAllowScope(scope.row.lossAllowScope, scope.row.stowageStatus === '0' ) : '--' }}</span>
-        </template>
-      </el-table-column> -->
-
-      <!-- <el-table-column width="160" label="货物单价(元)" align="center" prop="goodsPrice" /> -->
-
-      <!-- <el-table-column width="160" label="运费单价(元)" align="center" prop="freightPrice" /> -->
-
-      <!-- <el-table-column width="160" label="司机成交单价(元)" align="center" prop="freightPriceDriver" /> -->
-      <!-- <el-table-column width="160" label="亏涨扣费(元)" align="center" prop="lossDeductionFee" /> -->
-
-
-      <!-- <el-table-column width="120" label="抹零金额(元)" align="center" prop="m0Fee" /> -->
-
-      <!-- <el-table-column width="160" label="司机应收运费(元)" align="center" prop="deliveryFeeDeserved" /> -->
-      <!-- <el-table-column width="160" label="司机实收运费(元)" align="center" prop="deliveryFeePractical" /> -->
-
-
-      <el-table-column width="120" label="纳税金额(元)" align="center" prop="taxPayment" fixed="right" />
-
-      <el-table-column width="120" label="服务费(元)" align="center" prop="serviceFee" fixed="right">
-        <template slot-scope="scope">
-          <span> {{ floor(scope.row.serviceFee) }} </span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="162" label="司机实收金额(元)" align="center" prop="deliveryCashFee" fixed="right">
-        <template slot-scope="scope">
-          <el-input-number v-model="scope.row.deliveryCashFee" :controls="false" :precision="2" placeholder="请输入司机实收金额" style="width:100%;" size="mini" @keyup.native="getDeliveryCashFee($event,[scope.row])" />
-        </template>
-      </el-table-column>
-
-      <el-table-column width="140" label="货主实付金额(元)" align="center" prop="shipperRealPay" fixed="right">
-        <template slot-scope="scope">
-          <span> {{ floor(scope.row.shipperRealPay) }} </span>
-        </template>
-      </el-table-column>
-
-    </el-table>
+    <div v-for="(item,index) in list" :key="index" v-loading="loading">
+      <div class="mb20">
+        <AdjustDitem :list="item.childs" />
+      </div>
+    </div>
 
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" :disabled="loading || !adjustlist || adjustlist.length < 1" @click="submitForm">立即核算</el-button>
@@ -112,28 +30,53 @@
 </template>
 
 <script>
-import { adjustDetail } from '@/api/settlement/adjust';
-import { immediateAccounting, calculateFee } from '@/api/settlement/adjustDregs';
 
-import { floor } from '@/utils/ddc';
-// import { DebounceFun } from '@/utils/index';
+import { batchDetail } from '@/api/settlement/adjust';
+import { immediateAccounting } from '@/api/settlement/adjustDregs';
+
+import AdjustDitem from './AdjustDitem.vue';
 
 export default {
   name: 'AdjustDialog',
-  components: {},
+  components: { AdjustDitem },
   props: {
     title: {
       type: String,
+      default: '核算审核'
+    },
+    open: Boolean,
+    psort: {
+      type: String,
       default: ''
     },
-    open: Boolean
+    isAgain: {
+      type: Number,
+      default: 0
+    },
+    com: {
+      type: Array,
+      default: () => [
+        {
+          'label': '调度者名称',
+          'prop': 'teamName'
+        },
+        {
+          'label': '项目',
+          'prop': 'projectName'
+        },
+        {
+          'label': '渣土场',
+          'prop': 'ztcLandName'
+        }
+      ]
+    }
   },
   data() {
     return {
-      isPiliang: false,
-      isEdit2: false,
-      isEdit: false,
-      deliveryCashFee: undefined,
+      // isPiliang: false,
+      // isEdit2: false,
+      // isEdit: false,
+      // deliveryCashFee: undefined,
       // 遮罩层
       loading: false,
       // 评价列表
@@ -142,9 +85,11 @@ export default {
       queryParams: {
         waybillCodeList: []
       },
-      floor,
-      changeFee: null,
-      que: {}
+      // floor,
+      // changeFee: null,
+      que: {},
+      listData: null, // 外面的列表数据
+      sort: ''
     };
   },
   computed: {
@@ -155,88 +100,90 @@ export default {
       set(v) {
         if (!v) {
           this.adjustlist = [];
+          console.log(this.list);
         }
         this.$emit('update:open', v);
       }
+    },
+
+    // 父过来的数据, 进一步处理
+    list() {
+      const arr = [];
+
+      // 包装方法
+      const object = {};
+      this.adjustlist.forEach(e => {
+        const str = e[this.sort];
+        const array = object[str];
+        if (array) {
+          array.push(e);
+        } else {
+          const suibian = [e];
+          object[str] = suibian;
+        }
+      });
+
+      console.log(object);
+
+      for (const item in object) {
+        const obj = {
+          freightAmount: 0
+        };
+
+        object[item].forEach(ite => {
+          obj['freightAmount'] += (ite['shipperRealPay'] - 0); // 运费结算金额(取含税价字段)
+          // obj['companyName'] = ite['companyName'] || '没有返回'; // 	公司名称
+          // obj['shipmentCode'] = ite['shipmentCode'] || '没有返回';
+        });
+
+        const objArr = object[item];
+
+        obj['batchNo'] = [...new Set(objArr.map(e => e.batchNo || ''))][0] || undefined;
+        obj['projectCodeIds'] = [...new Set(objArr.map(e => e.projectCode))].join(',');
+        obj['teamCodeIds'] = [...new Set(objArr.map(e => e.teamCode))].join(','); // 调度者Code
+        obj['ztcCodeIds'] = [...new Set(objArr.map(e => e.ztcLandCode))].join(',');
+
+        obj['projectNames'] = [...new Set(objArr.map(e => e.projectName))].join(','); // 	项目（装货地）
+        obj['teamNames'] = [...new Set(objArr.map(e => e.teamName))].join(',');
+        obj['ztcLandNames'] = [...new Set(objArr.map(e => e.ztcLandName))].join(',');
+
+
+        obj['loadNum'] = objArr.length; // 装车数量
+        obj['actualTripsNum'] = objArr.length; // 实发趟数（次）
+        obj['settlementTripsNum'] = objArr.length; // 结算趟数
+        obj['waybillCodeIds'] = objArr.map(e => e.waybillCode); // 	运单CodeIds
+        obj['childs'] = objArr;
+
+        arr.push(obj);
+      }
+
+
+      console.log(arr, '出啊发发');
+
+      return arr;
+    }
+
+
+  },
+  watch: {
+    psort(value) {
+      if (value) {
+        this.sort = value === 'ztcName' ? 'ztcLandName' : value;
+      }
     }
   },
-  created() {
-    this.changeFee = this.newDebounceFun(this.setDeliveryCashFee, 1000);
-  },
   methods: {
-    // 获取数据
-    async getDeliveryCashFee(event, arr) {
-      if (this.loading || (!(/^[0-9]*$/.test(event.key - 0)) && event.key !== 'ArrowUp' && event.key !== 'ArrowDown' && event.key !== 'Backspace')) return;
-      this.que = {
-        deliveryCashFee: event ? event.target.value - 0 : arr[0].deliveryCashFee, //	金额		false
-        waybillCodeList: arr.map(e => e.waybillCode)//	运单ids
-      };
-      this.changeFee(arr);
-    },
-
-    async setDeliveryCashFee(arr) {
-      this.loading = true;
-      try {
-        const { data } = await calculateFee(this.que);
-        this.loading = false;
-        arr && arr.forEach(row => {
-          data.forEach(da => {
-            if (row.waybillCode === da.waybillCode) {
-              const {
-                deliveryCashFee, //	司机实收现金	number
-                serviceFee, //	服务费	number
-                serviceTaxFee, //	服务费税费	number
-                shipperRealPay, //	货主实付金额	number
-                taxPayment //	纳税金额	number
-                // waybillCode //	运单CODE
-              } = da;
-
-              row.deliveryCashFee = deliveryCashFee;
-              row.serviceFee = serviceFee;
-              row.shipperRealPay = shipperRealPay;
-              row.serviceTaxFee = floor(serviceTaxFee);
-              row.taxPayment = floor(taxPayment);
-            }
-          });
-        });
-      } catch (error) {
-        this.loading = false;
-      }
-    },
-
-    // 防抖=需要带参数,避免和原方法冲突
-    newDebounceFun(callback, time) {
-      var timer;
-      return function(argument) {
-        clearTimeout(timer);
-        timer = setTimeout(function() {
-          callback(argument);
-        }, time);
-      };
-    },
+    handleChange(key) {
 
 
 
-    // 批量修改
-    handleChange() {
-      this.adjustlist.forEach(e => {
-        e.deliveryCashFee = this.deliveryCashFee;
-      });
-      this.getDeliveryCashFee(undefined, this.adjustlist);
+      // console.log(123);
     },
     /** 提交按钮 */
     async submitForm() {
-      const immediateWaybillBoList = this.adjustlist.map(e => {
-        return {
-          waybillCode: e.waybillCode,
-          deliveryCashFee: e.deliveryCashFee,
-          teamUserCode: e.teamUserCode,
-          'serviceFee': e.serviceFee,
-          'serviceTaxFee': e.serviceTaxFee,
-          'shipperRealPay': e.shipperRealPay,
-          'taxPayment': e.taxPayment
-        };
-      });
+      // console.log(this.adjustlist);
+
+
       const shipmentCodeArr = [...new Set(this.adjustlist.map(e => e.shipperCode))];
 
       if (shipmentCodeArr.length > 1) {
@@ -251,7 +198,55 @@ export default {
       }).then(() => {
         this.loading = true;
 
-        return immediateAccounting({ immediateWaybillBoList, shipmentCode: shipmentCodeArr[0] });
+        const immediateWaybillBoList = this.adjustlist.map(e => {
+        // immediateWaybillBoList	运单金额BOList		false
+        // deductionDes	减项说明		false
+        // deliveryCashFee	司机实收现金		false
+        // increaseDes	增项说明		false
+        // serviceFee	服务费		false
+        // serviceTaxFee	服务费税费		false
+        // shipperRealPay	货主实付金额		false
+        // taxPayment	纳税金额		false
+        // waybillCode	运单
+        // shipmentCode
+          return {
+            deductionDes: e.deductionDes || '',
+            increaseDes: e.increaseDes || '',
+            waybillCode: e.waybillCode,
+            deliveryCashFee: e.deliveryCashFee,
+            // teamUserCode: e.teamUserCode,
+            'serviceFee': e.serviceFee,
+            'serviceTaxFee': e.serviceTaxFee,
+            'shipperRealPay': e.shipperRealPay,
+            'taxPayment': e.taxPayment
+
+          };
+        });
+
+        const batchBusAccBoList = this.list.map(e => {
+          //   actualTripsNum	实发趟数（次）		false
+          //   loadNum	装车数量		false
+          //   projectCodeIds	项目CodeIds		false
+          //   projectLoadNames	项目名称(装货地)		false
+          //   settlementTripsNum	结算趟数		false
+          //   teamCodeIds	调度者codeIds		false
+          //   teamNames	车队名称		false
+          //   waybillCodeIds	运单		false
+          //   ztcCodeIds	渣土场CodeIds		false
+          //   ztcLandNames	渣土场名称(卸货地)
+          return {
+            ...e,
+            shipperCode: shipmentCodeArr[0],
+            batchNo: e.batchNo || undefined,
+            childs: undefined
+          };
+        });
+
+        return immediateAccounting({
+          batchBusAccBoList,
+          immediateWaybillBoList,
+          isAgain: this.isAgain
+        });
       }).then(() => {
         this.loading = false;
         this.msgSuccess('核算成功');
@@ -262,9 +257,8 @@ export default {
     /** 查询核算列表 */
     getList() {
       this.loading = true;
-      adjustDetail(this.queryParams).then(response => {
+      batchDetail(this.queryParams).then(response => {
         this.adjustlist = JSON.parse(JSON.stringify(response.data));
-        this.total = response.total;
         this.loading = false;
       });
     },
@@ -277,58 +271,29 @@ export default {
       this.$emit('update:open', false);
     },
     // 获取列表
-    setForm(data) {
-      this.isEdit2 = false;
-      this.isEdit = false;
-
-      this.isPiliang = data.length > 1;
-      this.deliveryCashFee = undefined;
-      this.queryParams.waybillCodeList = data;
-      this.getList();
-    },
-
-    /* 处理路耗展示 */
-    _lossAllowScope(value, bool) {
-      if (value) {
-        const arr = value.match(/\d+(\.\d+)?/g);
-
-        arr[0] = (arr[0] - 0) === 0 ? 0 : -arr[0];
-        arr[1] = arr[1] - 0;
-        if (bool) {
-          arr[0] = this.floor(arr[0] / 1000, 6);
-          arr[1] = this.floor(arr[1] / 1000, 6);
+    async setForm(arr) {
+      console.log(arr);
+      this.listData = arr; // 做一下保存 后面核算要
+      if (this.isAgain === 0) {
+        this.queryParams.waybillCodeList = arr.map(e => e.wayBillCode); // 请求参数保存
+        this.getList();
+      } else {
+        let resArr = [];
+        for (let index = 0; index < arr.length; index++) {
+          const e = arr[index];
+          const { data } = await batchDetail({ waybillCodeList: e.waybillCodes });
+          resArr = (JSON.parse(JSON.stringify(data))).map(ee => {
+            ee.batchNo = e.batchNo;
+            return ee;
+          }).concat(resArr);
         }
-
-        return JSON.stringify(arr);
+        this.sort = 'batchNo';
+        this.adjustlist = resArr;
       }
     }
+
+
   }
 };
 </script>
 
-
-<style scoped>
-.mr3 {
-  margin-right: 3%;
-}
-.width90 {
-  width: 90%;
-}
-.width28 {
-  width: 28%;
-}
-.el-form-item{
-  margin-bottom: 0;
-}
-.el-table .el-input-number ::v-deep.el-input__inner {
-  /* text-align: left; */
-  /* border-radius: 0; */
-  border: 0;
-  background-color: #cceeff;
-}
-
-.ly-flex{
-  flex-wrap: wrap;
-}
-
-</style>

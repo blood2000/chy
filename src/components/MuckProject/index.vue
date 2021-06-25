@@ -1,0 +1,759 @@
+<template>
+  <div>
+    <!-- 核验的页面 独立 -->
+    <div v-show="showSearch" class="app-container app-container--search">
+      <QueryForm v-model="queryParams" :is-shipment="isShipment" @handleQuery="handleQuery" />
+    </div>
+
+    <div class="app-container">
+      <el-row
+        :gutter="10"
+        class="mb8"
+      >
+        <el-col :span="1.5">
+          <el-button
+            type="primary"
+            icon="el-icon-upload2"
+            size="mini"
+            :loading="exportLoading"
+            @click="handleExport"
+          >导出</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            v-if="status===0"
+            :disabled="selections.length<=0"
+            type="primary"
+            icon="el-icon-s-claim"
+            size="mini"
+            @click="handlerPilianHeyang()"
+          >批量核验</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            v-if="status===1"
+            v-hasPermi="['transportation:batch:passBatchClaim']"
+            :disabled="selections.length<=0"
+            type="primary"
+            icon="el-icon-document-checked"
+            size="mini"
+            @click="handleAskfor()"
+          >批量索票</el-button>
+        </el-col>
+        <!-- <el-col :span="1.5">
+          <el-button
+            v-if="status===2"
+            v-hasPermi="['transportation:batch:passBilling']"
+            type="primary"
+            icon="el-icon-document-checked"
+            size="mini"
+            :disabled="selections.length<=0"
+            @click="handleVerify"
+          >批量开票</el-button>
+        </el-col> -->
+        <el-col :span="1.5">
+          <el-button
+            v-if="status===3"
+            v-hasPermi="['transportation:batch:passPayment']"
+            type="primary"
+            icon="el-icon-document-checked"
+            size="mini"
+            :disabled="selections.length<=0"
+            @click="handlerPassPayment()"
+          >批量打款</el-button>
+        </el-col>
+
+        <el-col :span="1.5">
+          <el-button
+            v-if="status===-1"
+            type="primary"
+            icon="el-icon-document-checked"
+            size="mini"
+            :disabled="selections.length<=0"
+            @click="handleHesuan()"
+          >批量再复核</el-button>
+        </el-col>
+
+        <el-col :span="1.5" class="fr">
+          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" /><!-- api 使用computed -->
+        </el-col>
+        <right-toolbar
+          :show-search.sync="showSearch"
+          @queryTable="getList"
+        />
+      </el-row>
+
+      <RefactorTable :loading="loading" :data="billlist" :table-columns-config="tableColumnsConfig" @selection-change="(selection)=> selections = selection">
+        <template #status="{row}">
+          <span>
+            {{ selectDictLabel(statusOptions, row.status) }}
+          </span>
+        </template>
+        <template #loogImage="{row}">
+          <el-button
+            v-if="row.imgCodes"
+            size="mini"
+            type="text"
+            @click="loogImage(row)"
+          >查看</el-button>
+          <span v-else>-</span>
+        </template>
+
+        <template #edit="{row}">
+          <div>
+            <el-button
+              v-if="status===0"
+              size="mini"
+              type="text"
+              @click="handlerPilianHeyang(row)"
+            >核验</el-button>
+
+            <el-button
+              v-if="status===1"
+              v-hasPermi="['transportation:batch:passBatchClaim']"
+              size="mini"
+              type="text"
+              @click="handleAskfor(row)"
+            >索票</el-button>
+
+            <el-button
+              v-show="!isShipment "
+              v-if="status===2"
+              v-hasPermi="['transportation:batch:passBilling']"
+              size="mini"
+              type="text"
+              @click="handleVerify(row)"
+            >开票</el-button>
+
+            <el-button
+              v-if="status===3"
+              v-hasPermi="['transportation:batch:passPayment']"
+              size="mini"
+              type="text"
+              @click="handlerPassPayment(row)"
+            >打款</el-button>
+
+            <el-button
+              v-if="status===-1"
+              size="mini"
+              type="text"
+              @click="handleHesuan(row)"
+            >再复核</el-button>
+
+            <!-- 公共有 -->
+            <el-button
+              size="mini"
+              type="text"
+              @click="handleInfo(row)"
+            >详情</el-button>
+            <el-button
+              size="mini"
+              type="text"
+              @click="handleVerification(row)"
+            >结算单</el-button>
+            <el-button
+              v-if="status!==4 && status!==-1"
+              size="mini"
+              type="text"
+              @click="handleBohui(row)"
+            >驳回</el-button>
+
+
+          </div>
+        </template>
+      </RefactorTable>
+
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
+    </div>
+
+    <!-- 驳回弹窗 -->
+    <reject-dialog ref="RejectDialog" :open.sync="rejectdialog" :title="'驳回'" :status="status" @refresh="getList" />
+    <!-- 对账单详情弹窗 -->
+
+    <!-- 运单详情 -->
+    <el-dialog class="i-adjust" title="运单详情" :visible.sync="openDetailDialog" width="80%" :close-on-click-modal="false" append-to-body>
+      <StatementsInfo
+        v-if="openDetailDialog"
+        :print-data="printData"
+      />
+    </el-dialog>
+
+    <!-- 结算单 -->
+    <el-dialog class="i-adjust" title="结算单" :visible.sync="settlementOpen" width="1200px" :close-on-click-modal="false" append-to-body>
+      <div v-if="settlementOpen">
+        <SettlementPrint :print-data="printData" />
+      </div>
+    </el-dialog>
+
+    <!-- 编辑开票信息管理 只在核算页面显示-->
+    <el-dialog v-if="status===0" class="i-adjust" title="票务信息" :visible.sync="openBillPage" width="80%" :close-on-click-modal="false" append-to-body>
+      <bill-page v-if="openBillPage" :shipment-code="shipmentCode" @submitRes="()=>{openBillPage=false; handleQuery()}" />
+    </el-dialog>
+
+    <!-- 开票弹窗 只在索票页面显示-->
+    <billing-dialog v-if="status===2" ref="BillingDialog" :open.sync="billingdialog" :title="'开发票'" @refresh="getList" />
+
+    <!-- 查看图片 -->
+    <el-dialog v-if="status===3" :title="'查看发票图片'" class="i-price" :visible.sync="openimg" append-to-body>
+      <div v-if="openimg" class="ly-flex-pack-center ly-flex-pack-center">
+
+        <viewer :images="attachUrl">
+          <img
+            v-for="(src,index) in attachUrl"
+            :key="index"
+            v-real-img="src"
+            src="@/assets/images/workbench/icon_noavator.png"
+            class="avatar-wrapper__image"
+          >
+        </viewer>
+      </div>
+    </el-dialog>
+
+    <!-- 核算弹窗 重新核算的要传1过去-->
+    <adjust-dialog ref="AdjustDialog" :open.sync="adjustdialog" :is-again="1" :title="'结算审核'" @refresh="getList" />
+  </div>
+</template>
+
+<script>
+
+
+
+import { getUserInfo } from '@/utils/auth';
+
+import { rejectionList, adjustDregsList, adjustListApi, passBatchClaim } from '@/api/settlement/adjustDregs';
+import { confirmVerification, passPayment } from '@/api/finance/askfor';
+import { getFile } from '@/api/system/image.js';
+
+import QueryForm from './components/QueryForm.vue';
+import StatementsInfo from './components/StatementsInfo';
+import SettlementPrint from './components/SettlementPrint';
+import RejectDialog from './components/rejectDialog';
+import BillPage from '@/views/enterprise/company/billing';
+
+// 开票弹窗
+import BillingDialog from '@/views/finance/list/dregs/billingDialog';
+// 核算
+import AdjustDialog from '@/views/settlement/adjustDregs/adjustDialog';
+
+export default {
+  'name': 'AskforDregs',
+  components: { QueryForm, StatementsInfo, SettlementPrint, BillPage, RejectDialog, BillingDialog, AdjustDialog }, // 筛选条件
+
+  props: {
+    status: {
+      type: Number,
+      default: 0
+    }
+  },
+
+  data() {
+    return {
+      'exportLoading': false,
+      // 总条数
+      'total': 0,
+      // 查询参数
+      'queryParams': {
+        // 固定--
+        'pageNum': 1,
+        'pageSize': 10,
+        // 'total': 0,
+        companyCode: undefined, // 发货企业	query	false
+        batchNo: undefined, //	批次号	query	false
+        operator: undefined, //	操作人名称	query	false
+        status: 0, //	1:已核验 2:已索票 3:已开票 4:已完成
+        teamCode: undefined, //	调度者名称	query	false
+        ztcCode: undefined, //	渣土场	query	false
+        projectCode: undefined, // 项目
+        receiveTime: []
+      },
+      isShipment: false,
+      // 显示搜索条件
+      'showSearch': true,
+      // 遮罩层
+      'loading': false,
+
+      'billlist': [],
+
+      tableColumnsConfig: [],
+
+      selections: [], // 多选选中
+
+      verificationOpen: false,
+
+      // 运单详情
+      // a_dataList: undefined,
+      openDetailDialog: false,
+
+      // 结算单数据
+      settlementOpen: false,
+      printData: undefined,
+
+      // 开票
+      billingdialog: false,
+      // 打款
+      openimg: false,
+      attachUrl: [],
+
+      // 再核算
+      adjustdialog: false,
+
+      openBillPage: false,
+
+      // 驳回
+      rejectdialog: false,
+
+      // -1 核验驳回 0 已核算 1 已核验 2 已索票 3 已开票 4 已打款
+      statusOptions: [
+        { dictLabel: '核验驳回', dictValue: -1 },
+        { dictLabel: '已核算', dictValue: 0 },
+        { dictLabel: '已核验', dictValue: 1 },
+        { dictLabel: '已索票', dictValue: 2 },
+        { dictLabel: '已开票', dictValue: 3 },
+        { dictLabel: '已打款', dictValue: 4 }
+      ],
+
+      shipmentCode: undefined
+
+    };
+  },
+  computed: {
+    api() {
+      return adjustListApi + '--' + (this.isShipment ? 'isShipment' : 'isNoShipment') + this.status;
+    },
+    tableColumns() {
+      let arr = [];
+
+      switch (this.status) {
+        case -1:
+        case 0:
+          arr = [{
+            prop: 'companyCode',
+            isShow: false,
+            label: '发货企业',
+            sortNum: 2,
+            width: 180
+          },
+          {
+            prop: 'shipper',
+            isShow: false,
+            label: '发票抬头',
+            sortNum: 2,
+            width: 180
+          },
+          {
+            prop: 'taxpayerNumber',
+            isShow: false,
+            label: '税务登记',
+            sortNum: 2,
+            width: 180
+          },
+          {
+            'label': '收票人',
+            'prop': 'receiver',
+            'isShow': false,
+            'sortNum': 17,
+            'width': '120',
+            'tooltip': true
+          },
+          {
+            'label': '收票人电话',
+            'prop': 'receiverPhone',
+            'isShow': false,
+            'sortNum': 18,
+            'width': '120',
+            'tooltip': true
+          },
+          {
+            'label': '收票人地址',
+            'prop': 'invoiceReceiverAddress',
+            'isShow': false,
+            'sortNum': 19,
+            'width': '120',
+            'tooltip': true
+          },
+          {
+            'label': '开票codes',
+            'prop': 'imgCodes',
+            'isShow': false,
+            'sortNum': 20,
+            'width': '120',
+            'tooltip': true
+          },
+          {
+            'label': '原因',
+            'prop': 'remark',
+            'isShow': false,
+            'sortNum': 21,
+            'width': '120',
+            'tooltip': true
+          }];
+          break;
+        case 1:
+
+          break;
+        case 2:
+
+          break;
+        case 3:
+          arr = [
+            { // 查看图片
+              prop: 'loogImage',
+              isShow: true,
+              width: 120,
+              sortNum: 10,
+              tooltip: true,
+              label: '发票图片'
+            }
+          ];
+          break;
+        case 4:
+
+          break;
+      }
+
+      return !this.isShipment ? arr : [];
+    }
+
+
+
+  },
+
+  watch: {
+    status: {
+      handler(status) {
+        // -1 核验驳回 0 已核算 1 已核验 2 已索票 3 已开票 4 已打款
+        this.queryParams.pageNum = 1;
+        this.queryParams.status = status;
+        this.tableColumnsInit();
+        this.getList();
+      },
+      immediate: true
+    }
+    // '$route.query.list': {
+    //   handler(value) {
+    //     if (value) {
+    //       this.activeName = value;
+    //     //   this.handleClick(value);
+    //     }
+    //   },
+    //   immediate: true
+    // }
+  },
+
+  created() {
+    const { isShipment = false } = getUserInfo() || {};
+    this.isShipment = isShipment;
+    // this.tableColumnsInit();
+    // this.getList();
+  },
+  'methods': {
+    /** 初始化表头 */
+    tableColumnsInit() {
+      this.tableColumnsConfig = [];
+
+      this.tableHeaderConfig(this.tableColumnsConfig, this.api, {
+        prop: 'edit',
+        isShow: true,
+        label: '操作',
+        width: 140,
+        fixed: 'left'
+      }, this.tableColumns);
+    },
+
+    /** 查询【请填写功能名称】列表 */
+    async getList() {
+      this.loading = true;
+
+      const que = {
+        ...this.queryParams
+      };
+      this.loading = false;
+      let res = null;
+      if (this.status === -1) {
+        res = await rejectionList(que);
+      } else {
+        res = await adjustDregsList(que);
+      }
+
+      this.billlist = res.data.list;
+      this.total = res.data.total;
+      this.loading = false;
+    },
+
+    /* s=状态0 */
+    // 核验按钮
+    handlerPilianHeyang(row) {
+      if (row) {
+        this.selections = [row];
+      }
+      this.$confirm('确定立即核验吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const que = {
+          batchNos: this.selections.map(e => e.batchNo),
+          remark: undefined
+        };
+        confirmVerification(que).then(res => {
+          console.log(res);
+
+          if (res.data && res.data.data === '201') {
+            this.msgError(res.data.msg);
+            this.handleError();
+          } else {
+            this.msgSuccess(res.msg);
+            this.selections = [];
+            this.handleQuery();
+          }
+        });
+      }).catch(() => {
+
+      });
+    },
+    /* e= */
+
+    /* s=状态1 */
+    // 索票
+    handleAskfor(row) {
+      if (row) {
+        this.selections = [row];
+      }
+      this.$confirm('确定立即索票吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const que = {
+          batchNos: this.selections.map(e => e.batchNo),
+          remark: undefined
+        };
+
+        passBatchClaim(que).then(response => {
+          this.msgSuccess('索票申请成功');
+          this.selections = [];
+          this.loading = false;
+          this.handleQuery();
+          // this.getList();
+        });
+      }).catch(() => {
+
+      });
+    },
+    /* e= */
+
+    /* s=状态2 */
+    // 开票
+    handleVerify(row) {
+      // if (row) {
+      //   this.selections = [row];
+      // }
+
+      this.$refs.BillingDialog.reset();
+      this.billingdialog = true;
+      this.$refs.BillingDialog.setForm(row);
+    },
+    /* e= */
+
+    /* s=状态3 */
+    // 打款
+    handlerPassPayment(row) {
+      if (row) {
+        this.selections = [row];
+      }
+      this.$confirm('确定打款?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const que = {
+          batchNos: this.selections.map(e => e.batchNo)
+        };
+
+        passPayment(que).then(res => {
+          this.msgSuccess('确定打款成功');
+          this.selections = [];
+          this.loading = false;
+          this.handleQuery();
+        });
+      }).catch(() => {});
+    },
+    // 查看图片信息
+    loogImage(row) {
+      if (!row.imgCodes) {
+        this.msgWarning('无图片信息');
+        return;
+      }
+      this.loading = true;
+
+
+      getFile(row.imgCodes).then(response => {
+        this.loading = false;
+        this.openimg = true;
+
+        if (response.data && response.data.length > 0) {
+          this.attachUrl = response.data.map(e => e.attachUrl);
+        } else {
+          this.attachUrl = [];
+        }
+      }).catch(() => {
+        this.loading = false;
+        this.openimg = true;
+      });
+    },
+    /* e= */
+
+    /* s=状态-1 */
+    // 再核算
+    handleHesuan(row) {
+      if (row) {
+        this.selections = [row];
+      }
+
+      this.adjustdialog = true;
+      this.$refs.AdjustDialog.setForm(this.selections);
+    },
+    /* e= */
+
+
+
+    // 提示去编辑票务信息
+    handleError() {
+      this.$confirm('确定立即去编辑票务信息吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const arr = [...new Set(this.selections.map(e => e.shipperCode))];
+        if (arr.length > 1) {
+          this.msgError('存在多个货主,无法同时编辑, 请选择同一个货主的批次再进行编辑');
+          return;
+        }
+        this.shipmentCode = arr[0];
+        this.openBillPage = true;
+      });
+    },
+
+    // 查看详情
+    handleInfo(row) {
+      this.printData = row;
+      this.openDetailDialog = true;
+    },
+    // 结算单
+    handleVerification(row) {
+      this.printData = row;
+      this.settlementOpen = true;
+    },
+    // 驳回
+    handleBohui(row) {
+      this.$refs.RejectDialog.reset();
+      this.rejectdialog = true;
+      if (row) {
+        this.selections = [row];
+      }
+      this.$refs.RejectDialog.setForm(this.selections);
+    },
+
+    // -------------------
+
+
+
+    /** 搜索按钮操作 */
+    handleQuery() {
+      this.queryParams.pageNum = 1;
+      this.getList();
+    },
+    /** 重置按钮操作 */
+    resetQuery() {
+      this.resetForm('queryForm');
+      this.handleQuery();
+    },
+    // 批量审核
+    // handleVerify() {
+    //   this.formDisable = true;
+    //   this.$refs.VerifyDialog.reset();
+    //   this.verifydialog = true;
+    //   this.title = '批量审批';
+    //   this.$refs.VerifyDialog.setForm(this.ids);
+    //   this.$refs.VerifyDialog.setNum(this.selectlenght);
+    // },
+    // 导出运费明细
+    // handleExportFreight() {
+    // },
+    // 导出服务费明细
+    // handleExportService() {
+    // },
+    // 导出批次列表
+    async handleExport() {
+      this.exportLoading = true;
+      await this.download('/transportation/batch/export', this.queryParams, `batch_${new Date().getTime()}.xlsx`);
+      this.exportLoading = false;
+    }
+
+
+    // handleTableBtn(row, index) {
+    //   this.visible = true;
+    //   switch (index) {
+    //     case 1:
+    //       this.$refs.RejectDialog.reset();
+    //       this.rejectdialog = true;
+    //       this.title = '驳回申请';
+    //       this.$refs.RejectDialog.setForm(row);
+    //       break;
+    //     case 2:
+    //       this.$refs.BillingDialog.reset();
+    //       this.billingdialog = true;
+    //       this.title = '开发票';
+    //       this.formDisable = false;
+    //       this.$refs.BillingDialog.setForm(row);
+    //       break;
+    //     case 3:
+    //       this.Statementsdialog = true;
+    //       this.title = '对账单详情';
+    //       this.$refs.StatementsDialog.setBatchStatementCode(row.batchStatementCode, row); // 传code
+    //       break;
+    //     case 4:
+    //       this.ids = [row.batchNo];
+    //       this.handlerPassPayment();
+    //       break;
+    //     default:
+    //       break;
+    //   }
+    // },
+
+    // // 批量打款
+    // handlerPassPayment() {
+    //   this.$confirm('确定打款?', '提示', {
+    //     confirmButtonText: '确定',
+    //     cancelButtonText: '取消',
+    //     type: 'warning'
+    //   }).then(() => {
+    //     const que = {
+    //       batchNos: this.ids
+    //     };
+
+    //     passPayment(que).then(res => {
+    //       this.msgSuccess('确定打款成功');
+    //       this.queryParams.pageNum = 1;
+    //       this.getList();
+    //     });
+    //   }).catch(() => {});
+    // }
+
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+.avatar-wrapper__image{
+  width: 100px;
+  height: 100px;
+  margin: 0 10px;
+}
+</style>

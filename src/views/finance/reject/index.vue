@@ -48,6 +48,12 @@
         <template #operateType="{row}">
           <span>{{ selectDictLabel(operate_typeOptions, row.operateType) }}</span>
         </template>
+        <template #oldStatus="{row}">
+          <span>{{ selectDictLabel(oldStatus_typeOptions, row.oldStatus) }}</span>
+        </template>
+        <template #nowStatus="{row}">
+          <span>{{ selectDictLabel(oldStatus_typeOptions, row.nowStatus) }}</span>
+        </template>
         <template #operateTime="{row}">
           <span>{{ parseTime(row.operateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
@@ -108,6 +114,15 @@ export default {
         { 'dictLabel': '已申请开票', 'dictValue': 2 },
         { 'dictLabel': '已申请打款', 'dictValue': 3 },
         { 'dictLabel': '已申请打款', 'dictValue': 4 }
+      ],
+      // -1已核对-核算驳回 0已核算 1 已核验 2已申请开票 3已申请打款 4已完成
+      oldStatus_typeOptions: [
+        { dictLabel: '核验驳回', dictValue: -1 },
+        { dictLabel: '已核算', dictValue: 0 },
+        { dictLabel: '已核验', dictValue: 1 },
+        { dictLabel: '已索票', dictValue: 2 },
+        { dictLabel: '已开票', dictValue: 3 },
+        { dictLabel: '已打款', dictValue: 4 }
       ],
       // 查询参数
       queryParams: {
