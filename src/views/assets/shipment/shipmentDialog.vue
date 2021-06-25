@@ -427,7 +427,7 @@
               <el-option
                 v-for="dict in operateUserList"
                 :key="dict.userCode"
-                :label="dict.userName"
+                :label="dict.userName + ' ('+dict.phonenumber+')'"
                 :value="dict.userCode"
               />
             </el-select>
