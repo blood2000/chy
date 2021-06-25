@@ -15,22 +15,34 @@
 
 <script>
 
+import { refuseBatchClaim, refuseVerification, refuseApplied } from '@/api/settlement/adjustDregs';
 import { refuseBilling } from '@/api/finance/list';
+
+
+// 数组安循序填了 0:refuseVerification,1:refuseBatchClaim, 2:refuseApplied, 3:refuseBilling
+const apis = [refuseVerification, refuseBatchClaim, refuseApplied, refuseBilling];
 
 export default {
   name: 'RejectDialog',
+  components: {
+    // UploadImage
+  },
   props: {
     title: {
       type: String,
       default: ''
     },
-    open: Boolean
+    open: Boolean,
+    // disable: Boolean
+    status: {
+      type: Number,
+      default: 0
+    }
   },
   data() {
     return {
       // 表单参数
-      form: {
-      },
+      form: {},
       // 表单校验
       rules: {
         rebutRemark: [
@@ -47,6 +59,10 @@ export default {
       set(v) {
         this.$emit('update:open', v);
       }
+    },
+
+    api() {
+      return apis[this.status];
     }
   },
   created() {
@@ -57,12 +73,14 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid) {
           const que = {
-            batchCodes: [this.form.waybillCode], //	批次列表不能为空		false
+            batchNos: this.form.batchNo, //	批次列表不能为空		传数组
             createCode: this.form.createCode,
             remark: this.form.rebutRemark
           };
-          refuseBilling(que).then(response => {
-            this.msgSuccess('驳回运单成功');
+
+
+          this.api && this.api(que).then(response => {
+            this.msgSuccess('驳回成功');
             this.close();
             this.$emit('refresh');
           });
@@ -81,16 +99,16 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        waybillCode: null,
-        rebutRemark: null,
-        createCode: null
+        batchNo: undefined,
+        rebutRemark: undefined,
+        createCode: undefined
       };
       this.resetForm('form');
     },
     // 表单赋值
-    setForm(data, createCode) {
-      this.form.waybillCode = data.batchNo;
-      this.form.createCode = createCode;
+    setForm(arr, createCode) {
+      this.form.batchNo = arr.map(e => e.batchNo);
+      this.form.createCode = createCode || undefined;
     }
   }
 };

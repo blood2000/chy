@@ -120,10 +120,11 @@ export default {
   },
   watch: {
     cbData: {
+      // cbData数据结构是 [0,1,2 ]
       handler(value) {
         if (!value) return;
 
-        this.m2ToggleSelection(value);
+        this.m2ToggleSelection(value.length > 0 ? value : undefined);
       },
       immediate: true
     }
@@ -163,7 +164,9 @@ export default {
           }, 100);
         });
       } else {
-        this.$refs[this.refName].clearSelection();
+        this.$nextTick(() => {
+          this.$refs[this.refName].clearSelection();
+        });
       }
     }
   }

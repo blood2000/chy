@@ -1,16 +1,25 @@
 const CryptoJS = require('crypto-js');
 import { MessageBox, Message } from 'element-ui';
 
-const USERINFO = [
-  'user_code',
+// 版本二（2021/06/19 启用）
+
+// 用户Id 用户姓名 手机号  项目Id  调度组Id  发卡人Id  发卡人姓名  发卡时间（时间戳） 卡批次号
+
+export const versionMark = '1010|2|';
+export const USERINFO = [
   'user_name',
   'user_telno',
-  'issuing_code',
-  'issuing_name'];
+  'project_id',
+  'team_telno',
+  'issuing_telno',
+  'issuing_name',
+  'issuing_time',
+  'issuing_pc'
+];
 // 29804;2614710;广东深圳福龙学校项目;鄂ALF106;张三丰;13812345678;1621648441990;1621648441990;49384299482;广东深圳妈湾石头';
-const DATAINFO = [
+export const DATAINFO = [
   'orderId',
-  'waybillId',
+  'waybillNo',
   'projectName',
   'licenseNumber',
   'driverName',
@@ -93,6 +102,7 @@ const CardReader = {
           if (ret.success) {
             resolve(e.data);
           } else {
+            console.log(ret);
             if (ret.code) {
               reject({
                 ...ret,
@@ -174,7 +184,7 @@ const CardReader = {
       };
     },
 
-    setData: function(heder = '1010|1|', data) {
+    setData: function(heder = versionMark, data) {
       if (!data) return;
       // let str = '';
       // console.log(data, '1231312');
@@ -328,35 +338,48 @@ const CardReader = {
          * 获得卡片
          * 包含：获得卡、卡片复位、获取随机值进行认证
          */
-    getCard: async function(resolve, rejected) {
+    getCard: async function(resolve) {
       let ret;
       ret = await CardReader.fn.exec(CardReader.command.get.card);
-      ret = CardReader.fn.getResult(ret);
+      const GetCardNo = CardReader.fn.getResult(ret); // 卡的信息
+
       ret = await CardReader.fn.exec(CardReader.command.reset);
-      // console.log('选择卡', ret);
+      const ResetCpuCardNoGetCardNo = CardReader.fn.getResult(ret); // 卡片复位信息
+
       ret = await CardReader.fn.exec(CardReader.command.get.random);
       ret = CardReader.fn.getResult(ret);
       // console.log('获得随机数', ret);
-      if (!ret.success) {
-        if (!ret.code) {
-          MessageBox.alert('请将【数据IC卡】放至有效位置, 并重新启动服务', '读取数据异常', {
-            confirmButtonText: '确定',
-            callback: action => {
-              rejected && rejected({ code: 501, msg: '' });
-              CardReader.action.error();
-            }
-          });
-        } else {
-          Message.error('请重新放置卡片：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
-          // console.error('请重新放置卡片：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
-          rejected && rejected({ code: ret.code, msg: '请重新放置卡片：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code) });
-        }
-        await CardReader.action.error();
-        return;
-      }
+      // if (!ret.success) {
+      //   if (!ret.code) {
+      //     MessageBox.alert('请将【数据IC卡】放至有效位置, 并重新启动服务', '读取数据异常', {
+      //       confirmButtonText: '确定',
+      //       callback: action => {
+      //         rejected && rejected({ code: 501, msg: '' });
+      //         CardReader.action.error();
+      //       }
+      //     });
+      //   } else {
+      //     Message.error('请重新放置卡片：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
+      //     // console.error('请重新放置卡片：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
+      //     rejected && rejected({ code: ret.code, msg: '请重新放置卡片：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code) });
+      //   }
+      //   await CardReader.action.error();
+      //   return;
+      // }
       const encrypt = CardReader.fn.encryptByDES(ret.data, CardReader._attr.key);
       ret = await CardReader.fn.exec('SendCOSCommand,0082000008' + encrypt);
-      return ret;
+
+      resolve && resolve({
+        GetCardNo,
+        ResetCpuCardNoGetCardNo,
+        ret
+      });
+
+      return {
+        ret,
+        GetCardNo,
+        ResetCpuCardNoGetCardNo
+      };
     },
 
     /**
@@ -500,6 +523,26 @@ const CardReader = {
 };
 
 /**
+ * 获取卡片的信息
+*/
+CardReader.action['getCardInfo'] = async function() {
+  let ret;
+  await this.getCard(async(data) => {
+    console.log(data, '这个是回调的数据');
+    await CardReader.fn.exec(CardReader.command.deselect);
+    await CardReader.fn.exec(CardReader.command.beep);
+    ret = data;
+    return data;
+  });
+
+  console.log(ret, '看看是不是和回调的数据一样');
+  return {
+    ...ret,
+    msg: `获取卡片成功`
+  };
+};
+
+/**
  * 发卡
  */
 CardReader.action['issuingCard'] = async function(data) {
@@ -514,7 +557,11 @@ CardReader.action['issuingCard'] = async function(data) {
     let ret = await this.getCard();
     console.log('选择MF', ret);
     // 构造用户数据
-    let str = ['1000', '1', [data.user_code, data.user_name, data.user_telno, data.issuing_code, data.issuing_name, new Date().getTime()].join(';')].join('|');
+
+    let str = versionMark + (USERINFO.map(e => data[e])).join(';'); // ['1000', '1', (USERINFO.map(e => data[e])).join(';')].join('|');
+
+    console.log(str);
+
     str = CardReader.fn.strToHex16(str);
     const size = '00' + CardReader.fn.numToHex16(str.length / 2);
     // 清空目录
@@ -721,6 +768,9 @@ CardReader.action['readUserInfoAndreadData'] = async function() {
   // 1. 获取卡片
   try {
     let ret = await this.getCard();
+
+    const GetCardNo = ret.GetCardNo;
+    // console.log(ret);
     // 2.进入mf目录
     ret = await CardReader.fn.apdu((() => ['00', 'A4', '00', '00', '02', '3F', '00'].join(''))());
     // 3.进入用户信息的目录
@@ -731,8 +781,7 @@ CardReader.action['readUserInfoAndreadData'] = async function() {
       await CardReader.action.error();
       return {
         ...ret,
-        mcode: '8000',
-        msg: '无任何数据'
+        msg: '这是一张白卡'
       };
     }
 
@@ -750,7 +799,7 @@ CardReader.action['readUserInfoAndreadData'] = async function() {
     // 6. 数据解析
     ret = CardReader.fn.utf8HexToStr(ret.data);
 
-    console.log(ret);
+    console.log(ret, '当前卡信息');
     const userInfo = CardReader.fn.resultData(ret, USERINFO).data;
 
     // 7. 继续 读取卡信息== 进入数据目录 02
@@ -772,7 +821,7 @@ CardReader.action['readUserInfoAndreadData'] = async function() {
       return {
         ...ret,
         userInfo,
-        msg: '已核销 / 无任何信息'
+        msg: '已发卡, 无任何订单信息'
       };
     }
     // 9. 读文件 == 文件多个
@@ -800,9 +849,11 @@ CardReader.action['readUserInfoAndreadData'] = async function() {
       ret = CardReader.fn.getResult(ret);
       if (ret.code === '9000') {
         const datae = (CardReader.fn.utf8HexToStr(ret.data).replace(eval('/\u0000/g'), ''));
+
+        console.log(datae, '卡的订单数据');
         data.push(CardReader.fn.resultData(datae, DATAINFO).data);
         !meter && (meter = CardReader.fn.resultData(datae, DATAINFO).meter);
-        console.log(data);
+        // console.log(data);
         count += 1;
       } else {
         errCount += 1;
@@ -830,6 +881,7 @@ CardReader.action['readUserInfoAndreadData'] = async function() {
       success: true,
       userInfo,
       dataList,
+      GetCardNo,
       meter
     };
   } catch (error) {
