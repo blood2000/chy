@@ -27,15 +27,15 @@
               </div>
             </div>
             <div class="ly-left-bottom-left-bottom ly-border">
-              <Title class="title_4 mb05rem" icon="6">地域业务分布情况<span>Geographical Business Distribution</span></Title>
+              <Title class="title_5 mb05rem" icon="6">地域业务分布情况<span>Geographical Business Distribution</span></Title>
               <div class="ly-left-bottom-left-box ly-border">
                 <BusinessDistribution ref="BusinessDistributionRef" :branch-code="branchCode" />
               </div>
             </div>
           </div>
           <div class="ly-left-bottom-right ly-border">
-            <Title class="title_5 mb05rem" icon="4" :show-time="true" :time-text="timeText">承运排行<span>Shipping list</span></Title>
-            <DriverTop5List ref="DriverTop5ListRef" :time-key="timeKey" :show-top="false" style="height: calc(100% - 2.1rem)" />
+            <Title class="title_4 mb05rem" icon="4" :show-time="true" :time-text="timeText">承运排行<span>Shipping list</span></Title>
+            <DriverTop5List ref="DriverTop5ListRef" :time-key="timeKey" :show-top="false" style="height: calc(100% - 2.1rem);padding-top: 0.5rem;" />
           </div>
         </div>
       </div>
@@ -51,7 +51,7 @@
         @getPartitionListVo="getPartitionListVo"
       />
       <Map ref="mapRef" :partition-list-vo="partitionListVo" :is-second="true" class="ly-border" />
-      <ScrollData ref="ScrollDataRef" class="ly-border" style="margin: 0 1.4rem" />
+      <ScrollData ref="ScrollDataRef" class="ly-border" />
     </div>
 
     <!-- right -->
@@ -80,7 +80,7 @@
         <Title class="title_4 mb05rem" icon="7" :show-time="true" :time-text="timeText">业绩数据<span>Performance data</span></Title>
         <div class="ly-right-right-box ly-border">
           <div class="ly-border mb05rem" style="height: 15%">
-            <PerformanceInfo ref="PerformanceInfoRef" :performance="performanceData.performance" :is-scale="!!$route.query.isScale" />
+            <PerformanceInfo ref="PerformanceInfoRef" :performance="performanceData.performance" :is-second="true" :is-scale="!!$route.query.isScale" />
           </div>
           <div class="ly-border mb07rem" style="height: calc(33% - 1.2rem)">
             <div class="ly-right-right-box-title mb05rem">TOP 5省份交易额排名</div>
@@ -404,7 +404,7 @@ export default {
 .g-statistic {
   //variabbles
   $width: 160rem;
-  $width_left: 47.2rem;
+  $width_left: 53.8rem;
   $width_right: 48rem;
   $mb1rem: 1rem;
   $mb05rem: 0.5rem;
@@ -451,7 +451,7 @@ export default {
       .ly-left-bottom-box{
         height: 100%;
         .ly-left-bottom-left {
-          width: 26.3rem;
+          width: 28.3rem;
           height: 100%;
           .ly-left-bottom-left-top, .ly-left-bottom-left-bottom{
             height: 50%;
@@ -461,7 +461,7 @@ export default {
           }
         }
         .ly-left-bottom-right {
-          width: 17.8rem;
+          width: 22.6rem;
           height: 100%;
         }
       }
@@ -519,8 +519,8 @@ export default {
     color: #FFFFFF;
     text-align: center;
     >img{
-      width: 21.35rem;
-      height: 2.4rem;
+      width: 22.45rem;
+      height: 2.35rem;
     }
     >.line {
       width: 6rem;

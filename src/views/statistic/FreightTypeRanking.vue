@@ -169,7 +169,7 @@ export default {
   &__list{
     width: 45%;
     height: 100%;
-    padding: 1rem 0;
+    padding: 0.6rem 0 1rem;
     &__item{
       .index{
         width: 0.9rem;

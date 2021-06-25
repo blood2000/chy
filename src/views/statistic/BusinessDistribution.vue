@@ -89,6 +89,7 @@ export default {
 .s-container{
   width: 100%;
   height: 100%;
+  padding-top: 0.5rem;
   &__left{
     width: 64%;
     height: 100%;
@@ -106,7 +107,7 @@ export default {
           text-overflow: ellipsis;
         }
         >.line{
-          width: 10.7rem;
+          width: 11.2rem;
           height: 0.4rem;
           .value{
             width: 0%;
@@ -149,7 +150,7 @@ export default {
         font-family: PingFang Regular;
         font-weight: 500;
         color: #FFFFFF;
-        margin-right: 0.6rem;
+        margin-right: 0.5rem;
       }
       .text{
         width: calc(100% - 1rem);

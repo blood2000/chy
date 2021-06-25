@@ -1,6 +1,6 @@
 <template>
   <!-- 业绩数据 -->
-  <div class="s-container ly-flex-pack-justify">
+  <div class="s-container ly-flex-pack-justify" :class="{isSecond: isSecond}">
     <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 35%">
       <InfoBox
         label="交易总额"
@@ -75,7 +75,11 @@ export default {
         return {};
       }
     },
-    isScale: Boolean
+    isScale: Boolean,
+    isSecond: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
@@ -132,6 +136,13 @@ export default {
       bottom: 0;
       width: 0.05rem;
       background: linear-gradient(rgba(1, 227, 255, 0), rgba(1, 227, 255, 0.22), rgba(1, 227, 255, 0));
+    }
+  }
+  &.isSecond{
+    .s-container__box{
+      &:not(:last-child)::before{
+        right: 0.8rem;
+      }
     }
   }
 }
