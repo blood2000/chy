@@ -496,8 +496,8 @@ export default {
     color: #FFFFFF;
     text-align: center;
     >img{
-      width: 21.35rem;
-      height: 2.4rem;
+      width: 22.45rem;
+      height: 2.35rem;
     }
     >.line {
       width: 6rem;

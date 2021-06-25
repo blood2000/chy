@@ -178,6 +178,8 @@ export default {
     color: #FFFFFF;
     // line-height: 1.3rem; //会和vertical-align冲突
     font-family: 'PingFang Medium';
+    overflow: visible;
+    white-space: nowrap;
     .count-unit{
       font-family: PingFang Regular;
       font-size: 0.65rem;

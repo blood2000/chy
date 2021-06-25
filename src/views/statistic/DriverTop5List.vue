@@ -23,6 +23,7 @@
             :is-small-size="true"
           />
           <InfoBox
+            style="padding-left: 2rem"
             label="实收总额"
             unit="万"
             :count="item.amount"
