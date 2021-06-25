@@ -229,7 +229,7 @@
         </template>
 
         <template #businessType="{row}">
-          <span>{{ selectDictLabel(dicts['businessTypes'], row.businessType) }}</span>
+          <span>{{ row.businessType ? selectDictLabel(dicts['businessTypes'], row.businessType) : '-' }}</span>
         </template>
         <template #robbedOrder="{row}">
           <span>{{ row.robbedOrder || 0 }}</span>
@@ -260,7 +260,8 @@
           <span>{{ selectDictLabel(loadTypeOptions, row.loadType) }}</span>
         </template>
         <template #updateUserName="{row}">
-          <span>{{ row.updateUserName || row.opUserName }}</span>
+          <span>{{ row.opNickName || row.updateUserName || row.opUserName }}</span>
+          <span v-if="row.phonenumber">[{{ row.phonenumber }}]</span>
         </template>
 
         <template #accessTime="{row}">

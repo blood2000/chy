@@ -1,314 +1,285 @@
 <template>
   <el-dialog class="waybill-detail-dialog i-add" :title="title" :visible="visible" width="1500px" append-to-body @close="cancel">
-    <el-tabs v-model="activeTab">
-      <!-- 运单v-has-permi="['transportation:waybill:getWayBillByCode']" -->
-      <el-tab-pane v-loading="loading" label="运单" name="1">
-        <div class="waybill-title"><div class="waybill-icon" />运单<div class="waybill-divider" /></div>
-        <el-row>
-          <el-col :span="3" class="text-label">
-            运单单号：
-          </el-col>
-          <el-col :span="8" class="text-row">
-            {{ form.waybillNo || '-' }}
-          </el-col>
-          <el-col :span="3" class="text-label">
-            运单状态：
-          </el-col>
-          <el-col :span="8" class="text-row">
-            {{ form.statusName || '-' }}
-          </el-col>
-          <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
-          <template v-if="form.projectName">
-            <el-col :span="3" class="text-label">
-              项目名称：
-            </el-col>
-            <el-col :span="8" class="text-row">
-              {{ form.projectName || '-' }}
-            </el-col>
-            <el-col :span="13" class="text-row"><div style="height:22px" /></el-col>
-          </template>
-          <el-col :span="3" class="text-label">
-            货物大类：
-          </el-col>
-          <el-col :span="8" class="text-row">
-            {{ form.goodsBigType || '-' }}
-          </el-col>
-          <el-col :span="3" class="text-label">
-            货物小类：
-          </el-col>
-          <el-col :span="8" class="text-row">
-            {{ form.goodsType || '-' }}
-          </el-col>
-          <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
-          <el-col :span="3" class="text-label">
-            装货数量：
-          </el-col>
-          <el-col :span="8" class="text-row">
-            <span v-if="form.stowageStatus === '1'">{{ form.loadWeight || '0.00' }} 方</span>
-            <span v-if="form.stowageStatus === '2'">{{ form.loadWeight || '0.00' }} 车</span>
-            <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ form.loadWeight || '0.00' }} 吨</span>
-          </el-col>
-          <el-col :span="3" class="text-label">
-            卸货数量：
-          </el-col>
-          <el-col :span="8" class="text-row">
-            <span v-if="form.stowageStatus === '1'">{{ form.unloadWeight || '0.00' }} 方</span>
-            <span v-if="form.stowageStatus === '2'">{{ form.unloadWeight || '0.00' }} 车</span>
-            <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ form.unloadWeight || '0.00' }} 吨</span>
-          </el-col>
-          <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
-          <el-col :span="3" class="text-label">
-            装货日期：
-          </el-col>
-          <el-col :span="8" class="text-row">
-            {{ form.fillTime || '-' }}
-          </el-col>
-          <el-col :span="3" class="text-label">
-            卸货日期：
-          </el-col>
-          <el-col :span="8" class="text-row">
-            {{ form.signTime || '-' }}
-          </el-col>
-          <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
-          <el-col :span="3" class="text-label">
-            货源备注：
-          </el-col>
-          <el-col :span="8" class="text-row">
-            {{ form.orderRemark || '-' }}
-          </el-col>
-          <el-col :span="3" class="text-label">
-            货主备注：
-          </el-col>
-          <el-col :span="8" class="text-row">
-            {{ form.shipperRemark || '-' }}
-          </el-col>
-        </el-row>
-
-        <!-- 地址 -->
-        <div class="waybill-title"><div class="waybill-icon" />地址<div class="waybill-divider" /></div>
-        <el-row>
-          <el-col :span="3" class="text-label">
-            装货地址：
-          </el-col>
-          <el-col :span="8" class="text-row">
-            {{ form.waybillAddress?form.waybillAddress.loadFormattedAddress:'-' }}
-            <div>
-              {{ form.waybillAddress?form.waybillAddress.loadContact:'' }}
-              {{ form.waybillAddress?form.waybillAddress.loadContactPhone:'' }}
-            </div>
-          </el-col>
-          <el-col :span="3" class="text-label">
-            卸货地址：
-          </el-col>
-          <el-col :span="8" class="text-row">
-            {{ form.waybillAddress?form.waybillAddress.unloadFormattedAddress:'-' }}
-            <div>
-              {{ form.waybillAddress?form.waybillAddress.unloadContact:'' }}
-              {{ form.waybillAddress?form.waybillAddress.unloadContactPhone:'' }}
-            </div>
-          </el-col>
-          <!-- <el-col :span="12" class="text-row">
-            <label>上传装货位置：</label>
-          </el-col>
-          <el-col :span="12" class="text-row">
-            <label>上传卸货位置：</label>
-          </el-col> -->
-        </el-row>
-
-        <!-- 费用 -->
-        <div class="waybill-title"><div class="waybill-icon" />费用<div class="waybill-divider" /></div>
-        <el-row>
-          <el-col :span="3" class="text-label">
-            货主实付金额（元）：
-          </el-col>
-          <el-col :span="8" class="text-row">
-            {{ form.balanceVo.shipperRealPay || '0.00' }}
-          </el-col>
-          <el-col :span="3" class="text-label">
-            司机实收金额（元）：
-          </el-col>
-          <el-col :span="8" class="text-row">
-            {{ form.balanceVo.deliveryCashFee || '0.00' }}
-          </el-col>
-          <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
-
-          <el-col :span="3" class="text-label">
-            平台服务费用：
-          </el-col>
-          <el-col :span="8" class="text-row">
-            {{ form.balanceVo.serviceFee || '0.00' }}
-          </el-col>
-          <el-col :span="3" class="text-label">
-            司机实收运费（元）：
-          </el-col>
-          <el-col :span="8" class="text-row">
-            {{ form.balanceVo.deliveryFeePractical || '0.00' }}
-          </el-col>
-          <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
-
-          <el-col :span="3" class="text-label">
-            平台服务税费：
-          </el-col>
-          <el-col :span="8" class="text-row">
-            {{ form.balanceVo.serviceTaxFee || '0.00' }}
-          </el-col>
-          <el-col :span="3" class="text-label">
-            司机应收运费（元）：
-          </el-col>
-          <el-col :span="8" class="text-row">
-            {{ form.balanceVo.deliveryFeeDeserved || '0.00' }}
-          </el-col>
-          <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
-
-          <el-col :span="3" class="text-label">
-            不含税价：
-          </el-col>
-          <el-col :span="8" class="text-row">
-            {{ form.balanceVo.taxFreeFee || '0.00' }}
-          </el-col>
-          <el-col :span="3" class="text-label">
-            纳税金额：
-          </el-col>
-          <el-col :span="8" class="text-row">
-            {{ form.balanceVo.taxPayment || '0.00' }}
-          </el-col>
-          <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
-
-          <div v-for="(item, index) in freightList" :key="index">
-            <el-col :span="3" class="text-label">
-              {{ item.cnName || '0.00' }}：
-            </el-col>
-            <el-col :span="8" class="text-row">
-              {{ item.ruleValue || '0.00' }}
-            </el-col>
-          </div>
-
-        </el-row>
-      </el-tab-pane>
-      <!-- 回单v-has-permi="['transportation:waybill:receipt']" -->
-      <el-tab-pane label="回单" name="2">
-        <!-- 装货单 -->
-        <div class="waybill-title"><div class="waybill-icon" />装货单<div class="waybill-divider" /></div>
-        <el-row>
-          <el-col :span="3" class="text-label">
-            装货签到时间：
-          </el-col>
-          <el-col :span="8" class="text-row">
-            {{ formAttachment?formAttachment.cargoTime:'暂无' }}
-          </el-col>
-          <el-col :span="3" class="text-label">
-            装货数量：
-          </el-col>
-          <el-col :span="8" class="text-row">
-            <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ formAttachment?formAttachment.loadWeight:'0.00' }} 吨</span>
-            <span v-if="form.stowageStatus === '1'">{{ formAttachment?formAttachment.loadWeight:'0.00' }} 方</span>
-            <span v-if="form.stowageStatus === '2'">{{ formAttachment?formAttachment.loadWeight:'0.00' }} 车</span>
-          </el-col>
-          <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
-          <el-col :span="3" class="text-label">
-            装货签照片：
-          </el-col>
-          <el-col :span="19" class="text-row">
-            <img v-for="(url, index) in formAttachmentUrl" :key="index" v-viewer :src="url ? url:''" class="img-box">
-          </el-col>
-        </el-row>
-        <!-- 卸货单 -->
-        <div class="waybill-title"><div class="waybill-icon" />卸货单<div class="waybill-divider" /></div>
-        <el-row>
-          <el-col :span="3" class="text-label">
-            卸货签到时间：
-          </el-col>
-          <el-col :span="8" class="text-row">
-            {{ formAttachmentUp?formAttachmentUp.unloadTime:'暂无' }}
-          </el-col>
-          <el-col :span="3" class="text-label">
-            卸货数量：
-          </el-col>
-          <el-col :span="8" class="text-row">
-            <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ formAttachmentUp?formAttachmentUp.unloadWeight:'0.00' }} 吨</span>
-            <span v-if="form.stowageStatus === '1'">{{ formAttachmentUp?formAttachmentUp.unloadWeight:'0.00' }} 方</span>
-            <span v-if="form.stowageStatus === '2'">{{ formAttachmentUp?formAttachmentUp.unloadWeight:'0.00' }} 车</span>
-          </el-col>
-          <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
-          <el-col :span="3" class="text-label">
-            卸货签照片：
-          </el-col>
-          <el-col :span="19" class="text-row">
-            <img v-for="(url, index) in formAttachmentUpUrl" :key="index" v-viewer :src="url ? url:''" class="img-box">
-          </el-col>
-        </el-row>
-      </el-tab-pane>
-      <!-- 轨迹 v-has-permi="['transportation:waybill:trajectory']" -->
-      <el-tab-pane label="轨迹" name="3">
-        <div v-if="activeTab === '3'" style="height:600px;width:100%;">
-          <Track :waybill="form" />
-          <div class="waybill-detail-card">
-            <div class="waybill-licenseNumber">{{ form.licenseNumber }}</div>
-            <h5>
-              {{ form.driverName }}
-              <span>{{ form.driverPhone }}</span>
-            </h5>
-            <el-row>
-              <!-- <el-col :span="8" class="text-label">
-                      货物大类：
-                    </el-col>
-                    <el-col :span="16" class="text-row">
-                      {{ form.goodsBigType }}
-                    </el-col> -->
-              <el-col :span="8" class="text-label">
-                运输单号：
-              </el-col>
-              <el-col :span="16" class="text-row">
-                {{ form.waybillNo || '-' }}
-              </el-col>
-              <el-col :span="8" class="text-label">
-                接单时间：
-              </el-col>
-              <el-col :span="16" class="text-row">
-                {{ parseTime(form.receiveTime) || '-' }}
-              </el-col>
-              <el-col :span="8" class="text-label">
-                卸货时间：
-              </el-col>
-              <el-col :span="16" class="text-row">
-                {{ parseTime(form.signTime) || '-' }}
-              </el-col>
-              <el-col :span="8" class="text-label">
-                装货地：
-              </el-col>
-              <el-col :span="16" class="text-row">
-                {{ form.waybillAddress.loadFormattedAddress || '-' }}
-              </el-col>
-              <el-col :span="8" class="text-label">
-                卸货地：
-              </el-col>
-              <el-col :span="16" class="text-row">
-                {{ form.waybillAddress.unloadFormattedAddress || '-' }}
-              </el-col>
-            </el-row>
-          </div>
+    <div class="waybill-title"><div class="waybill-icon" />运单<div class="waybill-divider" /></div>
+    <el-row>
+      <el-col :span="3" class="text-label">
+        运单单号：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.waybillNo || '-' }}
+      </el-col>
+      <el-col :span="3" class="text-label">
+        运单状态：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.statusName || '-' }}
+      </el-col>
+      <el-col :span="3" class="text-label">
+        项目名称：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.projectName || '-' }}
+      </el-col>
+      <el-col :span="3" class="text-label">
+        装货数量：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        <span v-if="form.stowageStatus === '1'">{{ form.loadWeight || '0.00' }} 方</span>
+        <span v-if="form.stowageStatus === '2'">{{ form.loadWeight || '0.00' }} 车</span>
+        <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ form.loadWeight || '0.00' }} 吨</span>
+      </el-col>
+      <el-col :span="3" class="text-label">
+        卸货数量：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        <span v-if="form.stowageStatus === '1'">{{ form.unloadWeight || '0.00' }} 方</span>
+        <span v-if="form.stowageStatus === '2'">{{ form.unloadWeight || '0.00' }} 车</span>
+        <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ form.unloadWeight || '0.00' }} 吨</span>
+      </el-col>
+      <el-col :span="3" class="text-label">
+        货物大类：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.goodsBigType || '-' }}
+      </el-col>
+      <el-col :span="3" class="text-label">
+        装货日期：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.fillTime || '-' }}
+      </el-col>
+      <el-col :span="3" class="text-label">
+        卸货日期：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.signTime || '-' }}
+      </el-col>
+      <el-col :span="3" class="text-label">
+        货物小类：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.goodsType || '-' }}
+      </el-col>
+      <el-col :span="3" class="text-label">
+        装货地址：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.waybillAddress?form.waybillAddress.loadFormattedAddress:'-' }}
+        <div>
+          {{ form.waybillAddress?form.waybillAddress.loadContact:'' }}
+          {{ form.waybillAddress?form.waybillAddress.loadContactPhone:'' }}
         </div>
-      </el-tab-pane>
-      <!-- 评价 v-has-permi="['transportation:waybill:comment']" -->
-      <el-tab-pane label="评价" name="4">
-        <el-row>
-          <el-col :span="3" class="text-label">
-            司机评价货主：
-          </el-col>
-          <el-col :span="9" class="text-row" style="height:300px">
-            {{ formCommentDriver?formCommentDriver.content:'' }}
-            <DataNull v-if="!formCommentDriver" />
-          </el-col>
-          <el-col :span="3" class="text-label">
-            货主评价司机：
-          </el-col>
-          <el-col :span="9" class="text-row" style="height:300px">
-            {{ formCommentShipment?formCommentShipment.content:'' }}
-            <DataNull v-if="!formCommentShipment" />
-          </el-col>
-        </el-row>
-      </el-tab-pane>
-    </el-tabs>
+      </el-col>
+      <el-col :span="3" class="text-label">
+        卸货地址：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.waybillAddress?form.waybillAddress.unloadFormattedAddress:'-' }}
+        <div>
+          {{ form.waybillAddress?form.waybillAddress.unloadContact:'' }}
+          {{ form.waybillAddress?form.waybillAddress.unloadContactPhone:'' }}
+        </div>
+      </el-col>
+      <el-col :span="3" class="text-label">
+        货源备注：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.orderRemark || '-' }}
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="3" class="text-label">
+        装货签照片：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        <img v-for="(url, index) in formAttachmentUrl" :key="index" v-viewer :src="url ? url:''" class="img-box">
+      </el-col>
+      <el-col :span="3" class="text-label">
+        卸货签照片：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        <img v-for="(url, index) in formAttachmentUpUrl" :key="index" v-viewer :src="url ? url:''" class="img-box">
+      </el-col>
+      <el-col :span="3" class="text-label">
+        货主备注：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.shipperRemark || '-' }}
+      </el-col>
+    </el-row>
+    <!-- 费用 -->
+    <div class="waybill-title"><div class="waybill-icon" />费用<div class="waybill-divider" /></div>
+    <el-row>
+      <el-col :span="3" class="text-label">
+        货主实付金额（元）：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.balanceVo.shipperRealPay || '0.00' }}
+      </el-col>
+      <el-col :span="3" class="text-label">
+        司机实收金额（元）：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.balanceVo.deliveryCashFee || '0.00' }}
+      </el-col>
+
+      <el-col :span="3" class="text-label">
+        平台服务费用：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.balanceVo.serviceFee || '0.00' }}
+      </el-col>
+      <el-col :span="3" class="text-label">
+        司机实收运费（元）：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.balanceVo.deliveryFeePractical || '0.00' }}
+      </el-col>
+
+      <el-col :span="3" class="text-label">
+        平台服务税费：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.balanceVo.serviceTaxFee || '0.00' }}
+      </el-col>
+      <el-col :span="3" class="text-label">
+        司机应收运费（元）：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.balanceVo.deliveryFeeDeserved || '0.00' }}
+      </el-col>
+
+      <el-col :span="3" class="text-label">
+        不含税价：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.balanceVo.taxFreeFee || '0.00' }}
+      </el-col>
+      <el-col :span="3" class="text-label">
+        纳税金额：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.balanceVo.taxPayment || '0.00' }}
+      </el-col>
+
+      <div v-for="(item, index) in freightList" :key="index">
+        <el-col :span="3" class="text-label">
+          {{ item.cnName || '0.00' }}：
+        </el-col>
+        <el-col :span="5" class="text-row">
+          {{ item.ruleValue || '0.00' }}
+        </el-col>
+      </div>
+
+    </el-row>
+    <!-- 装货单 -->
+    <!-- <div class="waybill-title"><div class="waybill-icon" />装货单<div class="waybill-divider" /></div>
+    <el-row>
+      <el-col :span="3" class="text-label">
+        装货签到时间：
+      </el-col>
+      <el-col :span="8" class="text-row">
+        {{ formAttachment?formAttachment.cargoTime:'暂无' }}
+      </el-col>
+      <el-col :span="3" class="text-label">
+        装货数量：
+      </el-col>
+      <el-col :span="8" class="text-row">
+        <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ formAttachment?formAttachment.loadWeight:'0.00' }} 吨</span>
+        <span v-if="form.stowageStatus === '1'">{{ formAttachment?formAttachment.loadWeight:'0.00' }} 方</span>
+        <span v-if="form.stowageStatus === '2'">{{ formAttachment?formAttachment.loadWeight:'0.00' }} 车</span>
+      </el-col>
+      <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
+      <el-col :span="3" class="text-label">
+        装货签照片：
+      </el-col>
+      <el-col :span="19" class="text-row">
+        <img v-for="(url, index) in formAttachmentUrl" :key="index" v-viewer :src="url ? url:''" class="img-box">
+      </el-col>
+    </el-row> -->
+    <!-- 卸货单 -->
+    <!-- <div class="waybill-title"><div class="waybill-icon" />卸货单<div class="waybill-divider" /></div>
+    <el-row>
+      <el-col :span="3" class="text-label">
+        卸货签到时间：
+      </el-col>
+      <el-col :span="8" class="text-row">
+        {{ formAttachmentUp?formAttachmentUp.unloadTime:'暂无' }}
+      </el-col>
+      <el-col :span="3" class="text-label">
+        卸货数量：
+      </el-col>
+      <el-col :span="8" class="text-row">
+        <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ formAttachmentUp?formAttachmentUp.unloadWeight:'0.00' }} 吨</span>
+        <span v-if="form.stowageStatus === '1'">{{ formAttachmentUp?formAttachmentUp.unloadWeight:'0.00' }} 方</span>
+        <span v-if="form.stowageStatus === '2'">{{ formAttachmentUp?formAttachmentUp.unloadWeight:'0.00' }} 车</span>
+      </el-col>
+      <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
+      <el-col :span="3" class="text-label">
+        卸货签照片：
+      </el-col>
+      <el-col :span="19" class="text-row">
+        <img v-for="(url, index) in formAttachmentUpUrl" :key="index" v-viewer :src="url ? url:''" class="img-box">
+      </el-col>
+    </el-row> -->
+    <div class="waybill-title"><div class="waybill-icon" />评价<div class="waybill-divider" /></div>
+    <el-row>
+      <el-col :span="3" class="text-label">
+        司机评价货主：
+      </el-col>
+      <el-col :span="9" class="text-row" style="height:300px">
+        {{ formCommentDriver?formCommentDriver.content:'' }}
+        <DataNull v-if="!formCommentDriver" />
+      </el-col>
+      <el-col :span="3" class="text-label">
+        货主评价司机：
+      </el-col>
+      <el-col :span="9" class="text-row" style="height:300px">
+        {{ formCommentShipment?formCommentShipment.content:'' }}
+        <DataNull v-if="!formCommentShipment" />
+      </el-col>
+    </el-row>
+    <div class="waybill-title"><div class="waybill-icon" />轨迹<div class="waybill-divider" /></div>
+    <div style="height:600px;width:100%;padding: 0 30px;">
+      <Track :waybill="form" />
+      <div class="waybill-detail-frame">
+        <div class="waybill-detail-card">
+          <div class="waybill-licenseNumber">{{ form.licenseNumber }}</div>
+          <h5>
+            {{ form.driverName }}
+            <span>{{ form.driverPhone }}</span>
+          </h5>
+          <el-row>
+            <el-col :span="8" class="text-label">
+              运输单号：
+            </el-col>
+            <el-col :span="16" class="text-row">
+              {{ form.waybillNo || '-' }}
+            </el-col>
+            <el-col :span="8" class="text-label">
+              接单时间：
+            </el-col>
+            <el-col :span="16" class="text-row">
+              {{ parseTime(form.receiveTime) || '-' }}
+            </el-col>
+            <el-col :span="8" class="text-label">
+              装货地：
+            </el-col>
+            <el-col :span="16" class="text-row">
+              {{ form.waybillAddress?form.waybillAddress.loadFormattedAddress:'-' }}
+            </el-col>
+            <el-col :span="8" class="text-label">
+              卸货地：
+            </el-col>
+            <el-col :span="16" class="text-row">
+              {{ form.waybillAddress?form.waybillAddress.unloadFormattedAddress:'-' }}
+            </el-col>
+          </el-row>
+        </div>
+      </div>
+
+    </div>
+
   </el-dialog>
 </template>
 
@@ -525,10 +496,13 @@ export default {
   border: 1px dashed #dddddd;
 }
 // 轨迹-运单详情卡片
-.waybill-detail-card{
-  position: absolute;
-  top: 10px;
+.waybill-detail-frame{
+  position: relative;
+  top: -590px;
   left: 10px;
+  height: 0;
+}
+.waybill-detail-card{
   width: 250px;
   background: #fff;
   padding: 15px;

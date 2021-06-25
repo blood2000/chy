@@ -199,7 +199,7 @@ export default {
       // 遮罩层
       'loading': true,
       // 选中数组
-      'ids': [],
+      ids: [],
       multiple: true,
       // 显示搜索条件
       'showSearch': true,
@@ -337,10 +337,10 @@ export default {
         'confirmButtonText': '确定',
         'cancelButtonText': '取消',
         'type': 'warning'
-      }).then(function() {
-        getContractSign({ waybillCode: this.ids });
       }).then(() => {
-        this.getList();
+        getContractSign(this.ids).then(res => {
+          this.getList();
+        });
       }).catch(() => {});
     },
     // 下载电子合同

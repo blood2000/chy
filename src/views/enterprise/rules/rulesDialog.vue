@@ -303,7 +303,6 @@ export default {
      */
     submitForm() {
       this.$refs['form'].validate(valid => {
-        this.buttonLoading = true;
         // 构造参数
         const params = {
           name: this.form.name,
@@ -320,6 +319,7 @@ export default {
         this.setParams(this.form.addItem, this.form.addItemObj, params, 1);
         this.setParams(this.form.reduceItem, this.form.reduceItemObj, params, 2);
         if (valid) {
+          this.buttonLoading = true;
           if (this.form.code) {
             params.code = this.form.code;
             updateRules(params).then(response => {

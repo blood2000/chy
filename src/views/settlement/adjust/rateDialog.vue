@@ -98,8 +98,8 @@ export default {
     },
     // 表单赋值
     setForm(data) {
-      this.form.waybillCode = data.code;
-      waybillCommentDetail(0, data.code).then(response => {
+      this.form.waybillCode = data.wayBillCode;
+      waybillCommentDetail(0, data.wayBillCode).then(response => {
         console.log(response);
         this.form.score = response.data[0].score;
         this.form.content = response.data[0].content;

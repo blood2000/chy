@@ -1,5 +1,5 @@
 <template>
-  <div class="s-waybill-card">
+  <div class="s-waybill-card" :class="{isSecond: isSecond}">
     <div ref="box" class="s-scroll-box">
       <ul :class="{isRoll: isRoll}" class="content__list">
         <!-- 1接单 2装货 3卸货 -->
@@ -110,6 +110,9 @@ export default {
   left: 1.8rem;
   width: 14.6rem;
   overflow: hidden;
+  &.isSecond{
+    left: 1rem;
+  }
   .s-scroll-box{
     height: 8.1rem;
     overflow: hidden;
@@ -181,20 +184,20 @@ export default {
             opacity: 1;
           }
         }
-        &.isSecond{
-          &.color1{
-            background: url('~@/assets/images/statistic/waybill1_second.png') no-repeat;
-            background-size: 100% 100%;
-          }
-          &.color2{
-            background: url('~@/assets/images/statistic/waybill2_second.png') no-repeat;
-            background-size: 100% 100%;
-          }
-          &.color3{
-            background: url('~@/assets/images/statistic/waybill3_second.png') no-repeat;
-            background-size: 100% 100%;
-          }
-        }
+        // &.isSecond{
+        //   &.color1{
+        //     background: url('~@/assets/images/statistic/waybill1_second.png') no-repeat;
+        //     background-size: 100% 100%;
+        //   }
+        //   &.color2{
+        //     background: url('~@/assets/images/statistic/waybill2_second.png') no-repeat;
+        //     background-size: 100% 100%;
+        //   }
+        //   &.color3{
+        //     background: url('~@/assets/images/statistic/waybill3_second.png') no-repeat;
+        //     background-size: 100% 100%;
+        //   }
+        // }
       }
       // 动画
       transform: translateY(0);
