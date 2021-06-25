@@ -79,7 +79,7 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid) {
           const que = {
-            batchCodes: [this.form.batchCodes],
+            batchNos: [this.form.batchNo],
             imgCodes: this.form.images
           };
           passBilling(que).then(response => {
@@ -120,9 +120,7 @@ export default {
         invoiceApplyCode: data.code,
         receiveAddress: data.invoiceReceiverAddress,
         receiveName: data.receiver,
-        receivePhone: data.receiverPhone,
-        batchCodes: data.batchNo
-
+        receivePhone: data.receiverPhone
       };
     }
   }

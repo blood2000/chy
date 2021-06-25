@@ -4,6 +4,8 @@
       :data="list"
       style="width: 100%"
       @select="tabSelecedOne"
+      @select-all="tabSelecedAll"
+      @header-click="headerClick"
     >
       <el-table-column type="expand">
         <template slot-scope="props">
@@ -14,9 +16,12 @@
             :cb-data="props.row.selectChilds"
             @selection-change="(lists)=>handleSelectionChange(lists, props.row )"
           >
-          <!-- <template #goodsBigType="{row}">
-            <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
-          </template> -->
+            <template #icStatus="{row}">
+              <span>{{ selectDictLabel([
+                { 'dictLabel': '未核对', 'dictValue': '0' },
+                { 'dictLabel': '已核对', 'dictValue': '1' },
+              ], row.icStatus) }}</span>
+            </template>
           </RefactorTable>
 
         </template>
@@ -54,7 +59,7 @@
     </el-table>
 
     <!-- 核算弹窗 -->
-    <adjust-dialog ref="AdjustDialog" :open.sync="adjustdialog" :title="'结算审核'" @refresh="()=>{getList(); multiple=true }" />
+    <adjust-dialog ref="AdjustDialog" :open.sync="adjustdialog" :psort="nowSort" :title="'结算审核'" @refresh="()=>{$emit('refresh'); multiple=true }" />
   </div>
 </template>
 
@@ -73,13 +78,13 @@ const com = [
 //     'sortNum': 2,
 //     'width': 180
 //   },
-//   {
-//     'prop': 'status',
-//     'isShow': true,
-//     'label': '状态',
-//     'sortNum': 2,
-//     'width': 180
-//   },
+  {
+    'prop': 'cardBatchNo',
+    'isShow': true,
+    'label': '卡批号',
+    'sortNum': 2,
+    'width': 180
+  },
   {
     'label': '调度者名称',
     'prop': 'teamName',
@@ -115,7 +120,7 @@ const com = [
   {
     'label': '运费结算金额',
     'prop': 'freightAmount',
-    'isShow': true,
+    'isShow': false,
     'sortNum': 8,
     'width': '120',
     'tooltip': true
@@ -170,13 +175,14 @@ const com = [
 ];
 
 
+
 export default {
   components: { AdjustDialog },
 
   props: {
     myData: {
       type: Array,
-      default: () =>
+      default: () => [] ||
         [
           {
             'wayBillCode': 'f2459547a0f7484cbcb1254ffd298539',
@@ -677,7 +683,10 @@ export default {
       // 弹框数据
       adjustdialog: false,
 
-      selected: [] // 选中外层
+      selected: [], // 选中外层
+
+      nowSort: this.sort
+
     };
   },
 
@@ -687,7 +696,7 @@ export default {
       const arr = [];
       const object = {};
       this.myData.forEach(e => {
-        const str = e.projectName + ':' + e[this.sort];
+        const str = e[this.nowSort];
         const array = object[str];
         if (array) {
           array.push(e);
@@ -729,10 +738,18 @@ export default {
 
       return arr;
     }
+
+  },
+
+  watch: {
+    sort() {
+      // console.log(this.sort);
+      this.nowSort = this.sort;
+      this.isDuo();
+    }
   },
 
   methods: {
-
     // 选中运单 data = 当前选中的   row = 当前行  this.list
     handleSelectionChange(data, row) {
       const selectChilds = [];
@@ -746,8 +763,10 @@ export default {
       });
 
       row.selectChilds = selectChilds;
+
       this.isDuo();
     },
+    // 点击单个
     tabSelecedOne(selection, row) {
       let isok = false;
       selection.forEach(e => {
@@ -764,6 +783,19 @@ export default {
 
       this.isDuo();
     },
+    // 点击全选
+    tabSelecedAll(selection) {
+      if (selection.length) {
+        selection.forEach(e => {
+          e.selectChilds = e.childs.map((_, index) => index);
+        });
+      } else {
+        this.list.forEach(e => {
+          e.selectChilds = [];
+        });
+      }
+      this.isDuo();
+    },
 
     // 判断多选
     isDuo() {
@@ -774,7 +806,6 @@ export default {
 
       this.$emit('ismultiple', arr.some(e => e));
     },
-
 
     /** 核算事件 批量核算也是触发这个函数 */
     handleTableBtn(rowArr) {
@@ -798,6 +829,12 @@ export default {
       console.log(arr);
 
       this.$refs.AdjustDialog.setForm(arr);
+    },
+
+    /** headerClick **/
+    headerClick(column, event) {
+      // console.log(column.property);
+      this.nowSort = column.property;
     },
 
     /** 生成随机id */

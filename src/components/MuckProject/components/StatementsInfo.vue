@@ -51,7 +51,6 @@
 </template>
 
 <script>
-debugger;
 import { batchRelatedWaybill, BatchInfoListVo } from '@/api/settlement/adjustDregs';
 
 

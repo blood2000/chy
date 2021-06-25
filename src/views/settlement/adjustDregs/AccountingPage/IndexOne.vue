@@ -47,7 +47,7 @@
       </el-row>
 
 
-      <AccountingTable ref="accountingRef" :my-data="myData" :sort="sortName" :columns="tableColumnsConfig" @ismultiple="(bool)=> multiple = bool" />
+      <AccountingTable ref="accountingRef" :my-data="myData" :sort="sortName" :columns="tableColumnsConfig" @ismultiple="(bool)=> multiple = bool" @refresh="getList" />
 
       <!-- 核销IC卡 -->
       <nuclear-card ref="NuclearCard" :open.sync="nuclearCardDialog" @listData="listData" />
@@ -82,7 +82,7 @@ export default {
         companyCode: undefined, // 发货企业	query	false
         batchNo: undefined, //	批次号	query	false
         operator: undefined, //	操作人名称	query	false
-        status: 2, //	1已申请对账列表 2已申请开票列表 3已申请打款列表 4已完成列表	query	false
+        // status: 2, //	1已申请对账列表 2已申请开票列表 3已申请打款列表 4已完成列表	query	false
         teamCode: undefined, //	调度者名称	query	false
         ztcCode: undefined, //	渣土场	query	false
         projectCode: undefined, // 项目
@@ -159,12 +159,68 @@ export default {
       this.loading = true;
       const que = {
         ...this.alreadyPaid_queryParams,
+        'pageNum': undefined, // 不做分页
+        'pageSize': undefined, // 不做分页
+        'orderStartTime': this.alreadyPaid_queryParams.receiveTime[0],
+        'orderEndTime': this.alreadyPaid_queryParams.receiveTime[1],
+        receiveTime: undefined,
         scenario: '1200',
         waybillType: 1
       };
       ztApiList(que).then(response => {
-        this.adjustlist = response.data;
-        this.total = response.total || 0;
+        this.myData = response.data;
+
+        /*
+      //     'wayBillCode': '83d7b5856f3247d78ba7ba5ca574151f',
+      //     'mainOrderNumber': '2106190954579183',
+      //     'waybillNo': '2106191000275187',
+      //     'deliveryCompany': '渣土货主公司',
+      //     'orderClient': '渣土货主[15859109601]',
+      //     'isChild': 0,
+      //     'driverName': '测试独立加强',
+      //     'driverPhone': '15859109002',
+      //     'goodsBigType': '1800',
+      //     'licenseNumber': '闽AQ8002',
+      //     'loadWeight': '1.00',
+      //     'unloadWeight': '1.00',
+      //     'goodsPrice': 0,
+      //     'freightPrice': null,
+      //     'deliveryFeeDeserved': 0,
+      //     'deliveryFeePractical': 0,
+      //     'deliveryCashFee': 0,
+      //     'serviceFee': 0,
+      //     'serviceTaxFee': 0,
+      //     'taxPayment': 0,
+      //     'driverAddFee': 0,
+      //     'driverReductionFee': 0,
+      //     'loadAddress': '福建省福州市晋安区易速递',
+      //     'loadContact': '渣土货主',
+      //     'loadContactPhone': '15859109601',
+      //     'unloadAddress': '福建省福州市台江区江滨中大道鼓山大桥旁富邦总部大楼',
+      //     'unloadContact': null,
+      //     'unloadContactPhone': null,
+      //     'isReturn': 1,
+      //     'lastLoadingTime': null,
+      //     'orderTime': '2021-06-19 09:54:57',
+      //     'receiveTime': '2021-06-19 10:00:00',
+      //     'wayBillUpdateTime': '2021-06-19 10:30:52',
+      //     'isApplyMoneyBack': 0,
+      //     'applyMoneyBackRemark': null,
+      //     'taxFreeFee': 0,
+      //     'taxFee': 0,
+      //     'stowageStatus': '2',
+      //     'weight': null,
+      //     'teamLeaderName': '15859109120',
+      //     'teamName': '测试网商小强调度',
+      //     'teamUserCode': '55221c19f4954853b46dca4a2b481e58',
+      //     'icStatus': '1',
+      //     'shipperCopeFee': '0.00',
+      //     'projectName': '616测试项目1',
+      //     'ztcName': '616测试1',
+              'cardBatchNo': ''
+        */
+
+        // this.total = response.total || 0;
         this.loading = false;
       });
     },

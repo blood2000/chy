@@ -112,13 +112,13 @@
         }"
         :show-key="{
           value: 'code',
-          label: 'teamLeaderName',
+          label: 'name',
         }"
         :keywords="'keywords'"
         @selected="(data)=>{ $emit('handleQuery')}"
       >
         <template #default="{row}">
-          <span>{{ row.teamLeaderName }}({{ row.telphone }})</span>
+          <span>{{ row.name }}({{ row.telphone }})</span>
         </template>
       </FilterableSelect>
     </el-form-item>
@@ -165,7 +165,7 @@
         start-placeholder="开始日期"
         end-placeholder="结束日期"
         style="width: 228px"
-        value-format="yyyy-MM-dd"
+        value-format="yyyy-MM-dd HH:mm:ss"
         @change="$emit('handleQuery')"
       />
     </el-form-item>

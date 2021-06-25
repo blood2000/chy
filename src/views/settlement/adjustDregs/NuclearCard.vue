@@ -183,11 +183,15 @@ export default {
 
         // 成功 的数据
         this.userInfo = ret.userInfo;
+        this.userInfo.issuing_pc = this.userInfo.issuing_pc || Date.now() + '456';
         this.IClist = ret.dataList;
         this.meter = ret.meter;
         this.carId = ret.GetCardNo.data;
 
-
+        console.log(this.userInfo);
+        console.log(this.IClist);
+        console.log(this.meter);
+        console.log(this.carId);
         // this.setLocalStorage(this.userInfo.user_code, { [this.userInfo]: this.IClist, meter: this.meter }); // 本地存储
 
         // 后端交互
@@ -280,13 +284,25 @@ export default {
           this.errorHexiaoCheck(filterArr);
         }).catch(() => {
           // 测试数据 ----------------------------------------------------------------------------------------
-          console.log(this.list);
-          this.$emit('listData', (this.list.filter(e => e.writeOffStatus)).map(e => {
-            e.batchWayBillBalanceInfoVo.icStatus = '1';
-            e.icStatus = '1';
-            e.$_userInfo = this.userInfo;
-            return e;
-          }));
+          // console.log(this.list);
+          // this.$emit('listData', (this.list.filter(e => e.writeOffStatus)).map(e => {
+          //   e.batchWayBillBalanceInfoVo.icStatus = '1';
+          //   e.icStatus = '1';
+          //   e.$_userInfo = this.userInfo;
+          //   return e;
+          // }));
+
+          // const queArr = (this.list.filter(ee => !ee.$_disable)).map(e => {
+          //   return {
+          //     card16no: this.carId,
+          //     cardBatchNo: this.userInfo.issuing_pc,
+          //     waybillNo: e.waybillNo,
+          //     writeOffStatus: e.writeOffStatus ? 0 : 1,
+          //     writeOffRemark: e.writeOffStatus ? '' : e.writeOffRemark
+          //   };
+          // });
+
+          // console.log(queArr);
         });
       } else {
         this.$confirm(`确定立即核销`, '数据正常', {
@@ -311,9 +327,14 @@ export default {
       this.loading = true;
 
       // 过滤出异常$_disable 为true的数据
+
+      // console.log((this.list.filter(ee => !ee.$_disable)));
       const queArr = (this.list.filter(ee => !ee.$_disable)).map(e => {
         return {
+          card16no: this.carId,
+          cardBatchNo: this.userInfo.issuing_pc,
           waybillNo: e.waybillNo,
+          waybillCode: e.batchWayBillBalanceInfoVo.wayBillCode,
           writeOffStatus: e.writeOffStatus ? 0 : 1,
           writeOffRemark: e.writeOffStatus ? '' : e.writeOffRemark
         };
@@ -502,11 +523,11 @@ export default {
         case 'writeData':
           // 写数据
 
-          res = await action.writeData('1010|1|30528;2106191113516909;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
+          res = await action.writeData('1010|1|30528;2106231554010424;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
           // console.log(res);
-          // res = await action.writeData('1010|1|30528;2106191000275187;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
+          res = await action.writeData('1010|1|30528;2106231554010424;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
           // console.log(res);
-          res = await action.writeData('1010|1|30528;2106211909131006;616测试项目1;闽AQ8001;测试独立强;15859109001;1624068000000;1624068000000;31;616测试1—石渣土'); // ok数据
+          res = await action.writeData('1010|1|30528;2106231534477638;616测试项目1;闽AQ8001;测试独立强;15859109001;1624068000000;1624068000000;31;616测试1—石渣土'); // ok数据
           // console.log(res);
           // res = await action.writeData('1010|1|30528;2106191000275189;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
           // console.log(res);

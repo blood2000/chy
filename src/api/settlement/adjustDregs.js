@@ -9,6 +9,14 @@ export function adjustDregsList(query) {
     params: query
   });
 }
+// 特殊的状态为-1的 驳回核验列表
+export function rejectionList(query) {
+  return request({
+    url: '/transportation/batch/rejectionList',
+    method: 'get',
+    params: query
+  });
+}
 
 
 // 批量修改司机实收金额
@@ -117,3 +125,22 @@ export function check(data) {
     data: data
   });
 }
+
+// 核验驳回
+export function refuseVerification(data) {
+  return request({
+    url: '/transportation/batch/refuseVerification',
+    method: 'post',
+    data: data
+  });
+}
+
+// 核验驳回
+export function refuseApplied(data) {
+  return request({
+    url: '/transportation/batch/refuseApplied',
+    method: 'post',
+    data: data
+  });
+}
+

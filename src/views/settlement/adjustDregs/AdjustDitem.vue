@@ -10,18 +10,16 @@
           :precision="2"
           :step="1"
           :min="0"
-          size="small"
+          size="mini"
           style="width: 180px"
           class="mr3"
           @keyup.enter.native="handleChange"
         />
 
-        <el-button type="primary" @click="handleChange">批量修改</el-button>
+        <el-button type="primary" size="mini" @click="handleChange">批量修改</el-button>
       </el-col>
 
-      <el-col :span="10">
-        <el-button type="primary" plain @click="handleChange">以渣土分批次修改</el-button>
-      </el-col>
+
     </el-row>
     <el-table v-loading="loading" highlight-current-row :data="adjustlist" border>
 
@@ -55,18 +53,19 @@
 
       <el-table-column width="162" label="司机实收金额(元)" align="center" prop="deliveryCashFee" fixed="right">
         <template slot-scope="scope">
-          <el-input-number v-model="scope.row.deliveryCashFee" :controls="false" :precision="2" placeholder="请输入司机实收金额" style="width:100%;" size="mini" @keyup.native="getDeliveryCashFee($event,[scope.row])" />
+          <el-input-number v-model="scope.row.deliveryCashFee" class="teshu" :controls="false" :precision="2" placeholder="请输入司机实收金额" style="width:100%;" size="mini" @keyup.native="getDeliveryCashFee($event,[scope.row])" />
         </template>
       </el-table-column>
 
-      <el-table-column width="162" label="增" align="center" prop="deductionDes" fixed="right">
+      <el-table-column width="162" label="增减值" align="center" prop="deductionDes" fixed="right">
         <template slot-scope="scope">
-          <el-input v-model="scope.row.deductionDes" />
+          <!-- <el-input v-model="scope.row.deductionDes" placeholder="请输入增加的理由" /> -->
+          <el-input-number v-model="scope.row.deductionDes" :controls="false" :precision="2" placeholder="请输入增减金额" style="width:100%;" size="mini" />
         </template>
       </el-table-column>
-      <el-table-column width="162" label="减" align="center" prop="increaseDes" fixed="right">
+      <el-table-column width="162" label="备注" align="center" prop="increaseDes" fixed="right">
         <template slot-scope="scope">
-          <el-input v-model="scope.row.increaseDes" />
+          <el-input v-model="scope.row.increaseDes" placeholder="请输入备注" />
         </template>
       </el-table-column>
 
@@ -82,7 +81,7 @@
 
 <script>
 import { floor } from '@/utils/ddc';
-import { immediateAccounting, calculateFee } from '@/api/settlement/adjustDregs';
+import { calculateFee } from '@/api/settlement/adjustDregs';
 export default {
   props: {
     list: {
@@ -93,7 +92,6 @@ export default {
 
   data() {
     return {
-      isPiliang: false,
       loading: false,
       deliveryCashFee: undefined,
 
@@ -104,8 +102,12 @@ export default {
 
   computed: {
     adjustlist() {
-      console.log(this.list);
-      return JSON.parse(JSON.stringify(this.list));
+      return this.list;
+      // return JSON.parse(JSON.stringify(this.list));
+    },
+
+    isPiliang() {
+      return this.adjustlist.length > 1;
     }
   },
 
@@ -196,6 +198,29 @@ export default {
 };
 </script>
 
-<style>
+
+<style scoped>
+.mr3 {
+  margin-right: 3%;
+}
+.width90 {
+  width: 90%;
+}
+.width28 {
+  width: 28%;
+}
+.el-form-item{
+  margin-bottom: 0;
+}
+.el-table .teshu.el-input-number ::v-deep.el-input__inner {
+  /* text-align: left; */
+  /* border-radius: 0; */
+  border: 0;
+  background-color: #cceeff;
+}
+
+.ly-flex{
+  flex-wrap: wrap;
+}
 
 </style>
