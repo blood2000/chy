@@ -28,14 +28,14 @@
             :count="item.waybillAmount"
             :is-small="true"
             :is-small-size="true"
-            :unit="'万'"
+            unit="万"
           />
           <InfoBox
             label="开票额"
             :count="item.votesAmount"
             :is-small="true"
             :is-small-size="true"
-            :unit="'万'"
+            unit="万"
           />
         </div>
       </li>

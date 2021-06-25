@@ -53,6 +53,33 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item
+          label="运输单号"
+          prop="waybillNo"
+        >
+          <el-input
+            v-model="queryParams.waybillNo"
+            placeholder="请输入运输单号"
+            clearable
+            size="small"
+            style="width: 260px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item
+          label="接单日期"
+          prop="receiveTime"
+        >
+          <el-date-picker
+            v-model="receiveTime"
+            type="daterange"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 228px"
+            @change="datechoose"
+          />
+        </el-form-item>
 
         <el-form-item>
           <el-button
@@ -81,6 +108,17 @@
         :gutter="10"
         class="mb8"
       >
+        <el-col :span="1.5">
+          <el-button
+            type="warning"
+            icon="el-icon-magic-stick"
+            size="mini"
+            :disabled="multiple"
+            :loading="loadingSign"
+            @click="handleSign"
+          >批量生成电子章</el-button>
+        </el-col>
+
         <el-col :span="1.5" style="float: right;">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
@@ -90,7 +128,7 @@
         />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="contractList" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
+      <RefactorTable :loading="loading" :data="contractList" :table-columns-config="tableColumnsConfig" :selectable="checkboxT" @selection-change="handleSelectionChange">
         <template #driverOrShipment="{row}">
           <span>{{ selectDictLabel(driverOrShipmentOptions, row.driverOrShipment) }}</span>
         </template>
@@ -117,12 +155,6 @@
             type="text"
             @click="handleElectron(row)"
           >生成电子章</el-button>
-          <el-button
-            v-if="row.isDzqzContract+'' === '1'"
-            size="mini"
-            type="text"
-            @click="handleDownload(row)"
-          >下载电子合同</el-button>
         </template>
       </RefactorTable>
 
@@ -149,7 +181,7 @@
 import DriverContract from './DriverContract';
 import ShipmentContract from './ShipmentContract';
 
-import { listContract, getContractByCode, listContractApi, getShipmentSign, getDriverSign } from '@/api/waybill/contract';
+import { listContract, getContractByCode, listContractApi, getShipmentSign, getDriverSign, getContractSign } from '@/api/waybill/contract';
 
 export default {
   'name': 'Contract',
@@ -167,7 +199,8 @@ export default {
       // 遮罩层
       'loading': true,
       // 选中数组
-      //   'ids': [],
+      'ids': [],
+      multiple: true,
       // 显示搜索条件
       'showSearch': true,
       // 总条数
@@ -181,8 +214,12 @@ export default {
         'pageSize': 10,
         contractNo: undefined,
         driverInfo: undefined,
-        driverOrShipment: undefined
+        driverOrShipment: undefined,
+        waybillNo: undefined,
+        startReceiveTime: undefined,
+        endReceiveTime: undefined
       },
+      receiveTime: [],
 
       // ne 0 司机 1 货主
       driverOrShipmentOptions: [
@@ -194,7 +231,8 @@ export default {
         { 'dictLabel': '否', 'dictValue': '0' },
         { 'dictLabel': '是', 'dictValue': '1' },
         { 'dictLabel': '正在生成', 'dictValue': '2' }
-      ]
+      ],
+      loadingSign: false
     };
   },
   created() {
@@ -208,6 +246,15 @@ export default {
     this.getList();
   },
   'methods': {
+    datechoose(date) {
+      if (date) {
+        this.queryParams.startReceiveTime = this.parseTime(date[0], '{y}-{m}-{d}');
+        this.queryParams.endReceiveTime = this.parseTime(date[1], '{y}-{m}-{d}');
+      } else {
+        this.queryParams.startReceiveTime = null;
+        this.queryParams.endReceiveTime = null;
+      }
+    },
     /** 查询列表 */
     getList() {
       this.loading = true;
@@ -226,13 +273,22 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.resetForm('queryForm');
+      this.receiveTime = [];
+      this.queryParams.startReceiveTime = null;
+      this.queryParams.endReceiveTime = null;
       this.handleQuery();
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.code);
-      this.single = selection.length !== 1;
       this.multiple = !selection.length;
+    },
+    checkboxT(row) {
+      if (row.isDzqzContract === 1) {
+			  return false;
+      } else {
+			  return true;
+      }
     },
 
     /* 打印 */
@@ -271,10 +327,21 @@ export default {
           }
         }).then(() => {
           that.getList();
-        });
+        }).catch(() => {});
       } else {
         that.msgWarning('货主或司机的身份证号码不能为空！');
       }
+    },
+    handleSign() {
+      this.$confirm('平均每份合同耗时20秒，确认批量生成电子签章合同？', '批量生成电子章', {
+        'confirmButtonText': '确定',
+        'cancelButtonText': '取消',
+        'type': 'warning'
+      }).then(function() {
+        getContractSign({ waybillCode: this.ids });
+      }).then(() => {
+        this.getList();
+      }).catch(() => {});
     },
     // 下载电子合同
     handleDownload(row) {

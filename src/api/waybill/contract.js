@@ -36,6 +36,15 @@ export function getDriverSign(data) {
   });
 }
 
+// 批量生成电子签章
+export function getContractSign(data) {
+  return request({
+    url: '/iot/business/contractCreationAndSigning',
+    method: 'post',
+    data: data
+  });
+}
+
 // 根据ID获取运单合同
 export function getOrderContract(id) {
   return request({
