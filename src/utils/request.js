@@ -101,7 +101,7 @@ service.interceptors.response.use(res => {
   } else if (code === 500) {
     Message({
       message: msg,
-      type: 'error',
+      type: 'info',
       showClose: true
     });
     return Promise.reject(new Error(msg));
@@ -111,7 +111,7 @@ service.interceptors.response.use(res => {
   } else if (code !== 200) {
     Message({
       message: msg,
-      type: 'error',
+      type: 'info',
       showClose: true
     });
     return Promise.reject('error');
