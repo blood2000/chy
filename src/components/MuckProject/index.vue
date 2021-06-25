@@ -2,7 +2,7 @@
   <div>
     <!-- 核验的页面 独立 -->
     <div v-show="showSearch" class="app-container app-container--search">
-      <QueryForm v-model="queryParams" :is-shipment="isShipment" @handleQuery="handleQuery" />
+      <QueryForm ref="queryRefForm" v-model="queryParams" :is-shipment="isShipment" @handleQuery="handleQuery" />
     </div>
 
     <div class="app-container">
@@ -84,6 +84,10 @@
       </el-row>
 
       <RefactorTable :loading="loading" :data="billlist" :table-columns-config="tableColumnsConfig" @selection-change="(selection)=> selections = selection">
+        <template #batchNo="{row}">
+          <DismissedTrack :batch-no="row.batchNo" />
+        </template>
+
         <template #status="{row}">
           <span>
             {{ selectDictLabel(statusOptions, row.status) }}
@@ -235,6 +239,7 @@ import StatementsInfo from './components/StatementsInfo';
 import SettlementPrint from './components/SettlementPrint';
 import RejectDialog from './components/rejectDialog';
 import BillPage from '@/views/enterprise/company/billing';
+import DismissedTrack from './components/DismissedTrack';
 
 // 开票弹窗
 import BillingDialog from '@/views/finance/list/dregs/billingDialog';
@@ -243,7 +248,7 @@ import AdjustDialog from '@/views/settlement/adjustDregs/adjustDialog';
 
 export default {
   'name': 'AskforDregs',
-  components: { QueryForm, StatementsInfo, SettlementPrint, BillPage, RejectDialog, BillingDialog, AdjustDialog }, // 筛选条件
+  components: { QueryForm, StatementsInfo, SettlementPrint, BillPage, RejectDialog, BillingDialog, AdjustDialog, DismissedTrack }, // 筛选条件
 
   props: {
     status: {
@@ -319,7 +324,6 @@ export default {
       ],
 
       shipmentCode: undefined
-
     };
   },
   computed: {
@@ -328,80 +332,155 @@ export default {
     },
     tableColumns() {
       let arr = [];
+      const isAdmin = !this.isShipment;
 
       switch (this.status) {
         case -1:
+          arr = [
+            {
+              'label': '发货企业',
+              'prop': 'companyName',
+              'isShow': isAdmin,
+              'sortNum': 2,
+              'width': '120',
+              'tooltip': true
+            },
+            {
+              'label': '驳回原因',
+              'prop': 'remark',
+              'isShow': true,
+              'sortNum': 21,
+              'width': '120',
+              'tooltip': true
+            },
+            {
+              'label': '驳回人员',
+              'prop': 'opName',
+              'isShow': true,
+              'sortNum': 21,
+              'width': '120',
+              'tooltip': true
+            }
+          ];
+          break;
         case 0:
-          arr = [{
-            prop: 'companyCode',
-            isShow: false,
-            label: '发货企业',
-            sortNum: 2,
-            width: 180
-          },
-          {
-            prop: 'shipper',
-            isShow: false,
-            label: '发票抬头',
-            sortNum: 2,
-            width: 180
-          },
-          {
-            prop: 'taxpayerNumber',
-            isShow: false,
-            label: '税务登记',
-            sortNum: 2,
-            width: 180
-          },
-          {
-            'label': '收票人',
-            'prop': 'receiver',
-            'isShow': false,
-            'sortNum': 17,
-            'width': '120',
-            'tooltip': true
-          },
-          {
-            'label': '收票人电话',
-            'prop': 'receiverPhone',
-            'isShow': false,
-            'sortNum': 18,
-            'width': '120',
-            'tooltip': true
-          },
-          {
-            'label': '收票人地址',
-            'prop': 'invoiceReceiverAddress',
-            'isShow': false,
-            'sortNum': 19,
-            'width': '120',
-            'tooltip': true
-          },
-          {
-            'label': '开票codes',
-            'prop': 'imgCodes',
-            'isShow': false,
-            'sortNum': 20,
-            'width': '120',
-            'tooltip': true
-          },
-          {
-            'label': '原因',
-            'prop': 'remark',
-            'isShow': false,
-            'sortNum': 21,
-            'width': '120',
-            'tooltip': true
-          }];
+          arr = [
+            {
+              'label': '发货企业',
+              'prop': 'companyName',
+              'isShow': isAdmin,
+              'sortNum': 2,
+              'width': '120',
+              'tooltip': true
+            },
+            {
+              'label': '驳回原因',
+              'prop': 'remark',
+              'isShow': true,
+              'sortNum': 21,
+              'width': '120',
+              'tooltip': true
+            },
+            {
+              'label': '复核人员',
+              'prop': 'opName',
+              'isShow': true,
+              'sortNum': 21,
+              'width': '120',
+              'tooltip': true
+            }
+          ];
           break;
         case 1:
-
+          arr = [
+            {
+              'label': '发货企业',
+              'prop': 'companyName',
+              'isShow': isAdmin,
+              'sortNum': 2,
+              'width': '120',
+              'tooltip': true
+            },
+            {
+              'label': '收票人',
+              'prop': 'receiver',
+              'isShow': isAdmin,
+              'sortNum': 17,
+              'width': '120',
+              'tooltip': true
+            },
+            {
+              'label': '收票人电话',
+              'prop': 'receiverPhone',
+              'isShow': isAdmin,
+              'sortNum': 18,
+              'width': '120',
+              'tooltip': true
+            },
+            {
+              'label': '收票人地址',
+              'prop': 'invoiceReceiverAddress',
+              'isShow': isAdmin,
+              'sortNum': 19,
+              'width': '120',
+              'tooltip': true
+            },
+            {
+              'label': '驳回原因',
+              'prop': 'remark',
+              'isShow': true,
+              'sortNum': 21,
+              'width': '120',
+              'tooltip': true
+            },
+            {
+              'label': '核验人员',
+              'prop': 'opName',
+              'isShow': true,
+              'sortNum': 21,
+              'width': '120',
+              'tooltip': true
+            }
+          ];
           break;
         case 2:
-
+          arr = [
+            {
+              'label': '发货企业',
+              'prop': 'companyName',
+              'isShow': isAdmin,
+              'sortNum': 2,
+              'width': '120',
+              'tooltip': true
+            },
+            {
+              'label': '驳回原因',
+              'prop': 'remark',
+              'isShow': true,
+              'sortNum': 21,
+              'width': '120',
+              'tooltip': true
+            },
+            {
+              'label': '索票人员',
+              'prop': 'opName',
+              'isShow': true,
+              'sortNum': 21,
+              'width': '120',
+              'tooltip': true
+            }
+          ];
           break;
         case 3:
           arr = [
+            {
+              'label': '发货企业',
+              'prop': 'companyName',
+              'isShow': isAdmin,
+              'sortNum': 2,
+              'width': '120',
+              'tooltip': true
+            },
             { // 查看图片
               prop: 'loogImage',
               isShow: true,
@@ -409,15 +488,56 @@ export default {
               sortNum: 10,
               tooltip: true,
               label: '发票图片'
+            },
+            {
+              'label': '驳回原因',
+              'prop': 'remark',
+              'isShow': true,
+              'sortNum': 21,
+              'width': '120',
+              'tooltip': true
+            },
+            {
+              'label': '开票人员',
+              'prop': 'opName',
+              'isShow': true,
+              'sortNum': 21,
+              'width': '120',
+              'tooltip': true
             }
           ];
           break;
         case 4:
-
+          arr = [
+            {
+              'label': '发货企业',
+              'prop': 'companyName',
+              'isShow': isAdmin,
+              'sortNum': 2,
+              'width': '120',
+              'tooltip': true
+            },
+            {
+              'label': '驳回原因',
+              'prop': 'remark',
+              'isShow': true,
+              'sortNum': 21,
+              'width': '120',
+              'tooltip': true
+            },
+            {
+              'label': '打款人员',
+              'prop': 'opName',
+              'isShow': true,
+              'sortNum': 21,
+              'width': '120',
+              'tooltip': true
+            }
+          ];
           break;
       }
 
-      return !this.isShipment ? arr : [];
+      return arr;
     }
 
 
@@ -447,8 +567,10 @@ export default {
   },
 
   created() {
-    const { isShipment = false } = getUserInfo() || {};
+    const { isShipment = false, shipment = {}} = getUserInfo() || {};
     this.isShipment = isShipment;
+    // this.shipment = shipment;
+    this.shipmentCode = shipment.info ? shipment.info.code : '';
     // this.tableColumnsInit();
     // this.getList();
   },
@@ -461,7 +583,7 @@ export default {
         prop: 'edit',
         isShow: true,
         label: '操作',
-        width: 140,
+        width: 170,
         fixed: 'left'
       }, this.tableColumns);
     },
@@ -471,7 +593,10 @@ export default {
       this.loading = true;
 
       const que = {
-        ...this.queryParams
+        ...this.queryParams,
+        beginTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[0] : undefined,
+        endTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[1] : undefined,
+        receiveTime: undefined
       };
       this.loading = false;
       let res = null;
@@ -505,8 +630,8 @@ export default {
           console.log(res);
 
           if (res.data && res.data.data === '201') {
-            this.msgError(res.data.msg);
-            this.handleError();
+            // this.msgError(res.data.msg);
+            this.handleError(res.data.msg);
           } else {
             this.msgSuccess(res.msg);
             this.selections = [];
@@ -624,19 +749,37 @@ export default {
 
 
     // 提示去编辑票务信息
-    handleError() {
-      this.$confirm('确定立即去编辑票务信息吗?', '提示', {
+    handleError(msg) {
+      this.$confirm(msg + '需要立即去编辑票务信息吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        // 当前用户是货主则必有code
+        if (this.shipmentCode) {
+          this.openBillPage = true;
+          return;
+        }
+        // 不是货主 通过搜索则走这
+        if (this.$refs.queryRefForm.shipmentCode) {
+          this.shipmentCode = this.$refs.queryRefForm.shipmentCode;
+          this.openBillPage = true;
+          return;
+        }
+
+        // 不是货主也不搜索 走这
         const arr = [...new Set(this.selections.map(e => e.shipperCode))];
+
         if (arr.length > 1) {
           this.msgError('存在多个货主,无法同时编辑, 请选择同一个货主的批次再进行编辑');
           return;
+        } else if (!arr[0]) {
+          this.msgError('请选择当前需要操作的货主~!');
+          return;
+        } else if (arr[0]) {
+          this.shipmentCode = arr[0];
+          this.openBillPage = true;
         }
-        this.shipmentCode = arr[0];
-        this.openBillPage = true;
       });
     },
 

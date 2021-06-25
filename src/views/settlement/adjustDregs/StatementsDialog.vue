@@ -188,10 +188,10 @@
 
     <!-- 运单详情 对话框 -->
     <el-dialog class="i-adjust" title="运单详情" :visible.sync="openDetailDialog" width="80%" :close-on-click-modal="false" append-to-body>
-      <StatementsInfo
+      <!-- <StatementsInfo
         v-if="openDetailDialog"
         :way-bill-codes="a_dataList"
-      />
+      /> -->
     </el-dialog>
 
     <!-- 开票信息管理 -->
@@ -202,7 +202,7 @@
     <!-- 结算单 -->
     <el-dialog class="i-adjust" title="结算单" :visible.sync="settlementOpen" width="1200px" :close-on-click-modal="false" append-to-body>
       <div v-if="settlementOpen">
-        <SettlementPrint :print-data="printData" :way-bill-codes="a_dataList" />
+        <!-- <SettlementPrint :print-data="printData" :way-bill-codes="a_dataList" /> -->
       </div>
     </el-dialog>
   </el-dialog>
@@ -211,9 +211,9 @@
 
 <script>
 debugger;
-import SettlementPrint from './SettlementPrint.vue';
+// import SettlementPrint from './SettlementPrint.vue';
 
-import StatementsInfo from './StatementsInfo';
+// import StatementsInfo from './StatementsInfo';
 // 批次详情
 import { applyForReconciliation, batchInfo } from '@/api/settlement/adjustDregs';
 
@@ -222,7 +222,7 @@ import BillPage from '@/views/enterprise/company/billing';
 import { floor } from '@/utils/ddc';
 export default {
   name: 'AdjustDialog',
-  components: { StatementsInfo, BillPage, SettlementPrint },
+  components: { BillPage },
   props: {
     title: {
       type: String,

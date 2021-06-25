@@ -36,7 +36,9 @@
         <el-table-column
           v-if="item.isShow"
           :key="index"
+          :fixed="item.fixed"
           :label="item.label"
+          :width="item.width"
           :prop="item.prop"
         >
           <template slot-scope="scope">
@@ -90,7 +92,6 @@ const com = [
     'prop': 'teamName',
     'isShow': true,
     'sortNum': 3,
-    'width': '120',
     'tooltip': true
   },
   {
@@ -98,7 +99,6 @@ const com = [
     'prop': 'projectName',
     'isShow': true,
     'sortNum': 5,
-    'width': '120',
     'tooltip': true
   },
   {
@@ -106,7 +106,6 @@ const com = [
     'prop': 'ztcName',
     'isShow': true,
     'sortNum': 6,
-    'width': '120',
     'tooltip': true
   },
   {
@@ -114,7 +113,6 @@ const com = [
     'prop': 'loadNum',
     'isShow': true,
     'sortNum': 7,
-    'width': '120',
     'tooltip': true
   },
   {
@@ -122,7 +120,6 @@ const com = [
     'prop': 'freightAmount',
     'isShow': false,
     'sortNum': 8,
-    'width': '120',
     'tooltip': true
   },
   {
@@ -130,7 +127,6 @@ const com = [
     'prop': 'loadNum',
     'isShow': true,
     'sortNum': 11,
-    'width': '120',
     'tooltip': true
   },
   {
@@ -138,7 +134,6 @@ const com = [
     'prop': 'actualTripsNum',
     'isShow': true,
     'sortNum': 11,
-    'width': '120',
     'tooltip': true
   },
   {
@@ -146,7 +141,6 @@ const com = [
     'prop': 'settlementTripsNum',
     'isShow': true,
     'sortNum': 11,
-    'width': '120',
     'tooltip': true
   },
   //   {
@@ -169,7 +163,7 @@ const com = [
     'prop': 'edit',
     'isShow': true,
     'label': '操作',
-    'width': 120,
+    'width': 50,
     'fixed': 'left'
   }
 ];
@@ -826,7 +820,7 @@ export default {
         }
       });
 
-      console.log(arr);
+      // console.log(arr);
 
       this.$refs.AdjustDialog.setForm(arr);
     },
