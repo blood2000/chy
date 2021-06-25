@@ -224,32 +224,40 @@
         </template>
         <template #edit="{row}">
           <el-button
+            v-if="row.authStatus != 3"
+            v-hasPermi="['assets:shipment:examine']"
+            size="mini"
+            type="text"
+            @click="handleDetail(row, 'review')"
+          >审核</el-button>
+          <el-button
             v-hasPermi="['assets:shipment:manage']"
             size="mini"
             type="text"
             @click="handleManage(row)"
           >管理</el-button>
           <el-button
-            v-hasPermi="['assets:shipment:query']"
-            size="mini"
-            type="text"
-            @click="handleDetail(row, 'detail')"
-          >详情</el-button>
-          <el-button
             v-hasPermi="['assets:shipment:edit']"
             size="mini"
             type="text"
             @click="handleDetail(row, 'edit')"
           >修改</el-button>
+          <el-button
+            v-if="row.authStatus == 3"
+            v-hasPermi="['assets:shipment:query']"
+            size="mini"
+            type="text"
+            @click="handleDetail(row, 'detail')"
+          >详情</el-button>
           <TableDropdown>
             <el-dropdown-item>
               <el-button
-                v-show="row.authStatus != 3"
-                v-hasPermi="['assets:shipment:examine']"
+                v-if="row.authStatus != 3"
+                v-hasPermi="['assets:shipment:query']"
                 size="mini"
                 type="text"
-                @click="handleDetail(row, 'review')"
-              >审核</el-button>
+                @click="handleDetail(row, 'detail')"
+              >详情</el-button>
             </el-dropdown-item>
             <el-dropdown-item>
               <el-button
@@ -282,7 +290,7 @@
       <!-- 新增/修改/详情/审核 对话框 -->
       <shipment-dialog ref="ShipmentDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
       <!-- 管理 对话框 -->
-      <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :shipment-code="shipmentCode" :company-code="companyCode" :user-code="userCode" />
+      <manage-dialog ref="ManageDialog" :shipper-type="shipperType" :open.sync="manageDialogOpen" :shipment-code="shipmentCode" :company-code="companyCode" :user-code="userCode" />
       <!--  分配角色-->
       <role-assignment-dialog ref="RoleAssignmentDialog" :open.sync="roleAssignmentDialogOpen" :user-id="userId" :admin-name="adminName" :shipment-code="shipmentCode" :company-code="companyCode" :user-code="userCode" />
     </div>
@@ -395,6 +403,7 @@ export default {
       userCode: null,
       adminName: null,
       userId: null,
+      shipperType: null,
       // 导出
       exportLoading: false
     };
@@ -530,6 +539,7 @@ export default {
       this.shipmentCode = row.code;
       this.companyCode = row.companyCode;
       this.userCode = row.adminCode;
+      this.shipperType = row.shipperType;
       this.manageDialogOpen = true;
     },
     /** 查询网点列表 */

@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { importData } from '@/api/assets/driver';
+import { batchExtra } from '@/api/waybill/supplement';
 import { getToken } from '@/utils/auth';
 import { authorPre, produceCode, appCode, appVersion, terminalType } from '@/headers';
 
@@ -140,7 +140,9 @@ export default {
     },
     // 选择文件操作
     uploadFile(file) {
-		  this.fileData.append('files', file.file); // append增加数据
+      console.log(file);
+		  this.fileData.append('file', file.file); // append增加数据
+      console.log(this.fileData);
     },
     // 立即上传操作
     submitUpload(file) {
@@ -153,7 +155,7 @@ export default {
 	      this.fileData = new FormData(); // new formData对象
 	      this.$refs.upload.submit(); // 提交调用uploadFile函数
         // 接口
-        importData(this.fileData).then((res) => {
+        batchExtra(this.fileData).then((res) => {
           this.$message(res.msg);
           this.fileList = []; // 清除上传文件
         });

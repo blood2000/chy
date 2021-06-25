@@ -4,7 +4,7 @@
     <div class="before">
       <img :src="require('@/assets/images/statistic/title_icon_'+icon+'.gif')">
     </div>
-    <div class="text ly-flex-1">
+    <div class="text">
       <slot />
     </div>
     <div class="top_line" />

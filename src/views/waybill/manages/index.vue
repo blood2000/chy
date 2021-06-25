@@ -170,6 +170,16 @@
 
     <div class="app-container">
       <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['transportation:waybill:manageListExport']"
+            type="primary"
+            icon="el-icon-download"
+            size="mini"
+            :loading="loadingExport"
+            @click="handleExport"
+          >导出</el-button>
+        </el-col>
         <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
@@ -437,6 +447,7 @@ export default {
       // 当前选中的运单id
       'currentId': null,
       'currentRow': null,
+      loadingExport: false,
       isAdmin: false,
       user: {},
       shipment: {},
@@ -500,6 +511,13 @@ export default {
       this.ids = selection.map(item => item.code);
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
+    },
+    // 导出
+    handleExport() {
+      this.loadingExport = true;
+      this.download('/transportation/waybill/manageListExport', { ...this.queryParams }, `waybillManages_${new Date().getTime()}.xlsx`).then(res => {
+        this.loadingExport = false;
+      });
     },
     /** 详情按钮操作 */
     handleUpdate(row) {

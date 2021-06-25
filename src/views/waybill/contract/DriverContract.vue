@@ -7,8 +7,8 @@
       icon="el-icon-printer"
       plain
       class="wholecont-print"
+      @click="print"
     >打印</el-button>
-
     <div id="wholecont" class="wholecont-div">
 
       <h3 id="plat_hetong_title" style="text-indent: 4em;">福建大道成物流科技有限公司无车承运平台运输电子合同</h3>
@@ -235,10 +235,14 @@ export default {
       printObj: {
         id: 'wholecont',
         popTitle: '福建大道成物流科技有限公司',
-        extraCss: '',
+        extraCss: 'ddc',
         extraHead: '<meta http-equiv="Content-Language" content="zh-cn"/>'
-      }
+      },
+      src: ''
     };
+  },
+  methods: {
+
   }
 };
 </script>
@@ -250,4 +254,21 @@ table th, table td {
     border-right: 1px solid #000;
     font-weight: normal;
 }
+div .header-top{
+  display: none;
+}
+@page{
+    size:  auto;   /* auto is the initial value */
+    margin: 3mm;  /* this affects the margin in the printer settings */
+  }
+
+  html{
+    background-color: #FFFFFF;
+    margin: 0;  /* this affects the margin on the html before sending to printer */
+  }
+
+  body{
+    border: solid 1px blue ;
+    margin: 10mm 15mm 10mm 15mm; /* margin you want for the content */
+  }
 </style>

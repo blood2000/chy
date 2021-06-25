@@ -9,7 +9,7 @@
     highlight-current-row
     @selection-change="handleSelectionChange"
   >
-    <el-table-column v-if="!!_events['selection-change']" type="selection" width="55" align="center" fixed :selectable="selectableFn" :reserve-selection="reserveSelection" />
+    <el-table-column v-if="!!_events['selection-change']" type="selection" width="55" align="center" fixed :selectable="selectable" :reserve-selection="reserveSelection" />
     <el-table-column v-if="!isShowIndex" label="序号" align="center" fixed="left" type="index" width="50" />
     <template v-for="(th, key) in tableColumnsConfig">
       <el-table-column
@@ -104,7 +104,7 @@ export default {
       type: Boolean,
       default: false
     },
-    selectableFn: {
+    selectable: {
       type: Function,
       default: () => {
         return true;

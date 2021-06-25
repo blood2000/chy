@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-show="showSearch" class="app-container app-container--search">
-      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
+      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="110px">
         <el-form-item label="司机类别" prop="driverType">
           <el-select v-model="queryParams.driverType" placeholder="请选择司机类别" filterable clearable size="small" class="input-width">
             <el-option
@@ -98,6 +98,16 @@
           <el-select v-model="queryParams.applyStatus" placeholder="请选择状态" filterable clearable size="small" class="input-width">
             <el-option
               v-for="dict in applyStatusOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="是否绑定银行卡" prop="isBindBankCard">
+          <el-select v-model="queryParams.isBindBankCard" placeholder="请选择状" filterable clearable size="small" class="input-width">
+            <el-option
+              v-for="dict in bindBankCardOptions"
               :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
@@ -233,6 +243,20 @@
         </template>
         <template #edit="{row}">
           <el-button
+            v-if="row.authStatus != 3"
+            v-hasPermi="['assets:driver:examine']"
+            size="mini"
+            type="text"
+            @click="handleDetail(row, 'review')"
+          >审核</el-button>
+          <el-button
+            v-if="row.authStatus == 3"
+            v-hasPermi="['assets:driver:get']"
+            size="mini"
+            type="text"
+            @click="handleDetail(row, 'detail')"
+          >详情</el-button>
+          <el-button
             v-show="!teamCode"
             v-hasPermi="['assets:driver:manage']"
             size="mini"
@@ -240,38 +264,33 @@
             @click="handleManage(row)"
           >管理</el-button>
           <el-button
-            v-show="teamCode"
-            v-hasPermi="['assets:team:driver:del']"
+            v-hasPermi="['assets:driver:edit']"
             size="mini"
             type="text"
-            @click="handleDelBind(row)"
-          >解除绑定</el-button>
-          <el-button
-            v-hasPermi="['assets:driver:get']"
-            size="mini"
-            type="text"
-            @click="handleDetail(row, 'detail')"
-          >详情</el-button>
+            @click="handleDetail(row, 'edit')"
+          >修改</el-button>
           <template v-if="!teamCode">
-            <el-button
-              v-hasPermi="['assets:driver:edit']"
-              size="mini"
-              type="text"
-              @click="handleDetail(row, 'edit')"
-            >修改</el-button>
             <TableDropdown>
-              <el-dropdown-item>
+              <el-dropdown-item v-if="row.authStatus != 3">
                 <el-button
-                  v-show="row.authStatus != 3"
-                  v-hasPermi="['assets:driver:examine']"
+                  v-hasPermi="['assets:driver:get']"
                   size="mini"
                   type="text"
-                  @click="handleDetail(row, 'review')"
-                >审核</el-button>
+                  @click="handleDetail(row, 'detail')"
+                >详情</el-button>
               </el-dropdown-item>
               <el-dropdown-item>
                 <el-button
-                  v-show="row.isReportPerson === 0"
+                  v-if="teamCode"
+                  v-hasPermi="['assets:team:driver:del']"
+                  size="mini"
+                  type="text"
+                  @click="handleDelBind(row)"
+                >解除绑定</el-button>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <el-button
+                  v-if="row.isReportPerson === 0"
                   v-hasPermi="['assets:driver:report']"
                   size="mini"
                   type="text"
@@ -280,7 +299,7 @@
               </el-dropdown-item>
               <el-dropdown-item>
                 <el-button
-                  v-show="row.authStatus == 3"
+                  v-if="row.authStatus == 3"
                   v-hasPermi="['assets:driver:join']"
                   size="mini"
                   type="text"
@@ -289,7 +308,7 @@
               </el-dropdown-item>
               <el-dropdown-item>
                 <el-button
-                  v-show="row.apply && row.authStatus == 3"
+                  v-if="row.apply && row.authStatus == 3"
                   size="mini"
                   type="text"
                   @click="handleDeal(row)"
@@ -374,6 +393,7 @@ export default {
       ],
       // 审核状态字典
       statusOptions: [
+        { dictLabel: '全部', dictValue: null },
         { dictLabel: '未审核', dictValue: 0 },
         { dictLabel: '审核中', dictValue: 1 },
         { dictLabel: '审核未通过', dictValue: 2 },
@@ -385,6 +405,12 @@ export default {
         { dictLabel: '已同意', dictValue: 1 },
         { dictLabel: '已拒绝', dictValue: 2 },
         { dictLabel: '未邀请', dictValue: 3 }
+      ],
+      // 是否绑定银行卡
+      bindBankCardOptions: [
+        { dictLabel: '全部', dictValue: null },
+        { dictLabel: '是', dictValue: 0 },
+        { dictLabel: '否', dictValue: 1 }
       ],
       // 是否冻结字典
       isFreezoneOptions: [
@@ -436,11 +462,12 @@ export default {
         name: undefined,
         telphone: undefined,
         identificationNumber: undefined,
-        authStatus: undefined,
+        authStatus: null,
         licenseNumber: undefined,
         driverLicenseType: undefined,
         teamCode: undefined,
-        applyStatus: undefined
+        applyStatus: undefined,
+        isBindBankCard: null
       },
       // 表单是否禁用
       formDisable: false,
@@ -517,7 +544,8 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.resetForm('queryForm');
-      this.queryParams.authStatus = undefined;
+      this.queryParams.authStatus = null;
+      this.queryParams.isBindBankCard = null;
       this.handleQuery();
     },
     /** 新增按钮操作 */

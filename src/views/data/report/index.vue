@@ -10,7 +10,7 @@
             placeholder="请输入支付批次号"
             clearable
             size="small"
-            style="width: 150px"
+            style="width: 228px"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
@@ -20,7 +20,7 @@
             placeholder="请输入发货企业"
             clearable
             size="small"
-            style="width: 150px"
+            style="width: 228px"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
@@ -30,7 +30,7 @@
             placeholder="请输入司机"
             clearable
             size="small"
-            style="width: 150px"
+            style="width: 228px"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
@@ -40,7 +40,7 @@
             placeholder="请输入车牌号"
             clearable
             size="small"
-            style="width: 150px"
+            style="width: 228px"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
@@ -50,7 +50,7 @@
             placeholder="请输入货源单号"
             clearable
             size="small"
-            style="width: 150px"
+            style="width: 228px"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
@@ -60,7 +60,7 @@
             placeholder="请输入车队名称"
             clearable
             size="small"
-            style="width: 150px"
+            style="width: 228px"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
@@ -70,14 +70,14 @@
             placeholder="请输入运输单号"
             clearable
             size="small"
-            style="width: 150px"
+            style="width: 228px"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
 
         <!-- 下拉框 -->
         <el-form-item label="流水上报" prop="billSendStatus">
-          <el-select v-model="queryParams.billSendStatus" placeholder="----请选择----" clearable filterable style="width: 150px">
+          <el-select v-model="queryParams.billSendStatus" placeholder="----请选择----" clearable filterable style="width: 228px">
             <el-option
               v-for="(dict,index) in dicts['billSendStatus_option'] || []"
               :key="index"
@@ -87,7 +87,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="司机上报" prop="driverReport">
-          <el-select v-model="queryParams.driverReport" placeholder="----请选择----" clearable filterable style="width: 150px">
+          <el-select v-model="queryParams.driverReport" placeholder="----请选择----" clearable filterable style="width: 228px">
             <el-option
               v-for="(dict,index) in dicts['driverReport_option'] || []"
               :key="index"
@@ -97,7 +97,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="装货上报" prop="loadSendStatus">
-          <el-select v-model="queryParams.loadSendStatus" placeholder="----请选择----" clearable filterable style="width: 150px">
+          <el-select v-model="queryParams.loadSendStatus" placeholder="----请选择----" clearable filterable style="width: 228px">
             <el-option
               v-for="(dict,index) in dicts['loadSendStatus_option'] || []"
               :key="index"
@@ -107,7 +107,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="卸货上报" prop="unloadSendStatus">
-          <el-select v-model="queryParams.unloadSendStatus" placeholder="----请选择----" clearable filterable style="width: 150px">
+          <el-select v-model="queryParams.unloadSendStatus" placeholder="----请选择----" clearable filterable style="width: 228px">
             <el-option
               v-for="(dict,index) in dicts['unloadSendStatus_option'] || []"
               :key="index"
@@ -117,7 +117,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="车辆上报" prop="vehicleReport">
-          <el-select v-model="queryParams.vehicleReport" placeholder="----请选择----" clearable filterable style="width: 150px">
+          <el-select v-model="queryParams.vehicleReport" placeholder="----请选择----" clearable filterable style="width: 228px">
             <el-option
               v-for="(dict,index) in dicts['vehicleReport_option'] || []"
               :key="index"
@@ -127,7 +127,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="运单上报" prop="waybillSendStatus">
-          <el-select v-model="queryParams.waybillSendStatus" placeholder="----请选择----" clearable filterable style="width: 150px">
+          <el-select v-model="queryParams.waybillSendStatus" placeholder="----请选择----" clearable filterable style="width: 228px">
             <el-option
               v-for="(dict,index) in dicts['waybillSendStatus_option'] || []"
               :key="index"
@@ -137,19 +137,30 @@
           </el-select>
         </el-form-item>
 
+        <!-- 标记状态 -->
+        <el-form-item label="标记异常" prop="reportMarkStatus">
+          <el-select v-model="queryParams.reportMarkStatus" placeholder="----请选择----" clearable filterable style="width: 228px">
+            <el-option
+              v-for="(dict,index) in dicts['reportMarkStatus_option'] || []"
+              :key="index"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+
         <!-- 时间筛选框 -->
-        <!-- <el-form-item label="发布时间" prop="tin10">
-        <el-date-picker
-          v-model="queryParams.tin10"
-          size="small"
-          style="width: 150px"
-          value-format="yyyy-MM-dd"
-          type="daterange"
-          range-separator="-"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        />
-      </el-form-item> -->
+        <el-form-item label="接单日期" prop="receiveTime">
+          <el-date-picker
+            v-model="receiveTime"
+            type="daterange"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 228px"
+            @change="datechoose"
+          />
+        </el-form-item>
 
         <!-- 做远程使用的 -->
         <!-- <el-form-item label="货主" prop="tin6" size="small">
@@ -204,6 +215,7 @@
             type="warning"
             icon="el-icon-download"
             size="mini"
+            :loading="loadingExport"
             @click="handleExport"
           >导出</el-button>
           <el-button
@@ -267,6 +279,9 @@
 
         <template #isAbnormal="{row}">
           <span :class="row.isAbnormal == '1'?'g-color-success':'g-color-error'">{{ selectDictLabel(dicts['isAbnormal_option'], (row.isAbnormal? row.isAbnormal: 0)) }}</span>
+        </template>
+        <template #reportMarkStatus="{row}">
+          <span :class="row.reportMarkStatus == '0'?'g-color-success':'g-color-error'">{{ selectDictLabel(dicts['reportMarkStatus_option'], (row.reportMarkStatus? row.reportMarkStatus: 0)) }}</span>
         </template>
 
         <template #vehicleReport="{row}">
@@ -337,13 +352,14 @@
             @click="handleEdit(row, 'detail')"
           >详情</el-button>
 
+
+
           <el-button
-            v-if="row.isChild == 2"
-            v-hasPermi="['transportation:waybill:childList']"
+            v-hasPermi="['transportation:waybillReport:mark']"
             size="mini"
             type="text"
-            @click="handleEdit(row, 'seperate')"
-          >分单列表</el-button>
+            @click="handleEdit(row, 'mark')"
+          >{{ row.reportMarkStatus===0? '标记异常':'取消异常' }}</el-button>
 
           <!-- v-hasPermi="['data:report:report']" -->
           <el-button
@@ -366,14 +382,14 @@
 
 
           <!-- 大于3个按钮的使用这个... -->
-          <TableDropdown v-if="false">
+          <TableDropdown v-if="row.isChild == 2">
             <el-dropdown-item>
               <el-button
-                v-hasPermi="['consigner-order-delete']"
+                v-hasPermi="['transportation:waybill:childList']"
                 size="mini"
                 type="text"
-                @click="handleDelete(row)"
-              >删除</el-button>
+                @click="handleEdit(row, 'seperate')"
+              >分单列表</el-button>
             </el-dropdown-item>
           </TableDropdown>
         </template>
@@ -416,7 +432,8 @@ import { listApi,
   waybillReportLoad,
   waybillReportUnload,
   waybillReportBill,
-  batch
+  batch,
+  reportMark
 } from '@/api/data/report';
 
 
@@ -463,9 +480,12 @@ export default {
         licenseNumber: undefined, //	车牌号
         mainOrderNumber: undefined, //	货源单号
         teamName: undefined, //	车队名称
-        waybillNo: undefined //	运输单号
+        waybillNo: undefined, //	运输单号
+        startReceiveTime: undefined,
+        endReceiveTime: undefined,
+        reportMarkStatus: undefined
       },
-
+      receiveTime: [],
       /* 字典集合 取名规则 ***_option */
 
       dicts: {
@@ -476,6 +496,7 @@ export default {
         unloadSendStatus_option: dictsData1,
         waybillSendStatus_option: dictsData1,
         isAbnormal_option: [{ dictLabel: '是', dictValue: 1 }, { dictLabel: '否', dictValue: 0 }], // 是否异常
+        reportMarkStatus_option: [{ dictLabel: '异常', dictValue: 1 }, { dictLabel: '正常', dictValue: 0 }], // 是否异常
         isChild_option: [{ dictLabel: '超载的主单', dictValue: 2 }, { dictLabel: '是（子单）', dictValue: 1 }, { dictLabel: '不是 （正常单）', dictValue: 0 }], // 是否子单
         // reportTypeList_option: [
         //   { dictLabel: '运单', dictValue: 1 },
@@ -512,7 +533,8 @@ export default {
       /* 弹框2- 批量导入 */
       openImport: false,
 
-      addition: -10
+      addition: -10,
+      loadingExport: false
 
       /* 其他额外参数 */
       // shipmentList: [], // 远程搜索的时候使用
@@ -613,14 +635,28 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.resetForm('queryForm');
+      this.receiveTime = [];
+      this.queryParams.startReceiveTime = null;
+      this.queryParams.endReceiveTime = null;
       this.handleQuery();
     },
-
+    datechoose(date) {
+      if (date) {
+        this.queryParams.startReceiveTime = this.parseTime(date[0], '{y}-{m}-{d}');
+        this.queryParams.endReceiveTime = this.parseTime(date[1], '{y}-{m}-{d}');
+      } else {
+        this.queryParams.startReceiveTime = null;
+        this.queryParams.endReceiveTime = null;
+      }
+    },
     /** 导出作 */
     handleExport() {
+      this.loadingExport = true;
       this.download('/transportation/waybillReport/export', {
         ...this.queryParams
-      }, `waybillReport_${Date.now()}.xlsx`);
+      }, `waybillReport_${Date.now()}.xlsx`).then(res => {
+        this.loadingExport = false;
+      });
     },
     /** 批量上报 */
     async handleReport() {
@@ -675,6 +711,29 @@ export default {
         case 'check':
           this.open = true;
           this.openData = row;
+          break;
+        case 'mark':
+          if (row.reportMarkStatus === 0) {
+            this.$confirm('是否确认标记上报异常?', '警告', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              reportMark(row.waybillCode, 1).then(response => {
+                this.getList();
+              });
+            });
+          } else {
+            this.$confirm('是否确认取消上报异常?', '警告', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              reportMark(row.waybillCode, 0).then(response => {
+                this.getList();
+              });
+            });
+          }
           break;
       }
     },

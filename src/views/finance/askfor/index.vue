@@ -182,6 +182,7 @@
             type="primary"
             icon="el-icon-download"
             size="mini"
+            :loading="loadingExport"
             @click="handleExport"
           >导出</el-button>
         </el-col>
@@ -390,7 +391,8 @@ export default {
         keywords: null
       },
       shipmentloading: false,
-      dataOver: false // 是否请求完了
+      dataOver: false, // 是否请求完了
+      loadingExport: false
     };
   },
   computed: {
@@ -525,7 +527,10 @@ export default {
     },
     // 导出
     handleExport() {
-      this.download('/transportation/invoice/export', { ...this.queryParams }, `发票索取列表_${new Date().getTime()}.xlsx`);
+      this.loadingExport = true;
+      this.download('/transportation/invoice/export', { ...this.queryParams }, `invoiceAskfor_${new Date().getTime()}.xlsx`).then(res => {
+        this.loadingExport = false;
+      });
     },
     // 批量索票
     handleAskfor() {

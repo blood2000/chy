@@ -24,29 +24,31 @@
       <el-form-item>
         <el-row>
           <el-col :span="7">
-            <p class="upload-image-label">管理员身份证正面照</p>
+            <p class="upload-image-label">管理员身份证(人像面)</p>
             <upload-image v-model="form.identificationImg" :disabled="disable" image-type="id-card" side="front" icon-type="idcard" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7">
-            <p class="upload-image-label">管理员身份证背面照</p>
+            <p class="upload-image-label">管理员身份证(国徽面)</p>
             <upload-image v-model="form.identificationBackImg" :disabled="disable" image-type="id-card" side="back" icon-type="idcard_back" @fillForm="fillForm" />
           </el-col>
-          <el-col :span="7">
+          <!--   客服建议去掉-->
+          <!-- <el-col :span="7">
             <p class="upload-image-label">手持身份证照</p>
             <upload-image v-model="form.identificationInhandImg" icon-type="idcard_hand" :disabled="disable" />
-          </el-col>
-          <el-col v-show="form.shipperType === 1" :span="7" class="mt">
-            <p class="upload-image-label">法人身份证正面照</p>
+          </el-col>-->
+          <el-col v-show="form.shipperType === 1" :span="7">
+            <p class="upload-image-label">法人身份证(人像面)</p>
             <upload-image v-model="form.artificialIdentificationImg" icon-type="idcard" :disabled="disable" />
           </el-col>
           <el-col v-show="form.shipperType === 1" :span="7" class="mt">
-            <p class="upload-image-label">法人身份证背面照</p>
+            <p class="upload-image-label">法人身份证(国徽面)</p>
             <upload-image v-model="form.artificialIdentificationBackImg" icon-type="idcard_back" :disabled="disable" />
           </el-col>
-          <el-col v-show="form.shipperType === 1" :span="7" class="mt">
+          <!--   客服建议去掉-->
+          <!--<el-col v-show="form.shipperType === 1" :span="7" class="mt">
             <p class="upload-image-label">法人手持身份证照</p>
             <upload-image v-model="form.artificialIdentificationInhandImg" icon-type="idcard_hand" :disabled="disable" />
-          </el-col>
+          </el-col>-->
           <el-col v-show="form.shipperType === 1" :span="7" class="mt">
             <p class="upload-image-label">营业执照</p>
             <upload-image v-model="form.businessLicenseImg" :disabled="disable" icon-type="organization" image-type="business-license" @fillForm="fillForm" />
@@ -82,7 +84,7 @@
         <el-checkbox v-model="form.identificationEffective">长期有效</el-checkbox>
       </el-form-item>
       <!-- 选择省/市/区 -->
-      <province-city-county
+      <!-- <province-city-county
         ref="ChooseArea"
         :visible="visible"
         :disabled="disable"
@@ -94,7 +96,7 @@
           form.cityCode = data.cityCode;
           form.countyCode = data.countyCode;
         }"
-      />
+      />-->
       <el-form-item label="详细地址" prop="area">
         <el-input v-model="form.area" clearable placeholder="支持自动识别" class="width90" />
       </el-form-item>
@@ -119,7 +121,7 @@
       </el-form-item> -->
       <template v-if="form.shipperType === 1">
         <el-form-item label="企业名称" prop="companyName" :rules="[{ required: true, message: '企业名称不能为空', trigger: 'blur' }]">
-          <el-input v-model="form.companyName" placeholder="请输入企业名称" class="width90" clearable />
+          <el-input v-model="form.companyName" placeholder="支持自动识别" class="width90" clearable />
           <!-- <el-select
             v-model="form.companyName"
             style="width: 90%"
@@ -140,9 +142,10 @@
         <el-form-item label="统一社会信用代码" prop="organizationCodeNo" :rules="[{ required: true, message: '统一社会信用代码不能为空', trigger: 'blur' }]">
           <el-input v-model="form.organizationCodeNo" placeholder="请输入统一社会信用代码" class="width90" clearable />
         </el-form-item>
-        <el-form-item label="营业执照号" prop="businessLicenseNo">
+        <!--  去掉营业执照-->
+        <!-- <el-form-item label="营业执照号" prop="businessLicenseNo">
           <el-input v-model="form.businessLicenseNo" placeholder="支持自动识别" class="width90" clearable />
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="法人姓名" prop="artificialName">
           <el-input v-model="form.artificialName" placeholder="请输入法人姓名" class="width90" clearable />
         </el-form-item>
@@ -424,7 +427,7 @@
               <el-option
                 v-for="dict in operateUserList"
                 :key="dict.userCode"
-                :label="dict.userName"
+                :label="dict.userName + ' ('+dict.phonenumber+')'"
                 :value="dict.userCode"
               />
             </el-select>
@@ -509,14 +512,14 @@ import { addShipment, updateShipment, authRead, examine, getShipmentEnterprise, 
 import { listDeptAll } from '@/api/system/dept';
 import { getBranchList } from '@/api/system/branch';
 import UploadImage from '@/components/UploadImage/index';
-import ProvinceCityCounty from '@/components/ProvinceCityCounty';
+// import ProvinceCityCounty from '@/components/ProvinceCityCounty';
 import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
 // import Treeselect from '@riophae/vue-treeselect';
 
 export default {
   components: {
-    UploadImage,
-    ProvinceCityCounty
+    UploadImage
+    // ProvinceCityCounty
     // Treeselect
   },
   props: {
@@ -754,7 +757,8 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
-      const flag = this.$refs.ChooseArea.submit();
+      // const flag = this.$refs.ChooseArea.submit();
+      const flag = true;
       this.$refs['form'].validate(valid => {
         if (valid && flag) {
           this.buttonLoading = true;
@@ -828,7 +832,8 @@ export default {
     },
     /** 审核通过/未通过按钮 */
     reviewForm(key) {
-      const flag = this.$refs.ChooseArea.submit();
+      // const flag = this.$refs.ChooseArea.submit();
+      const flag = true;
       this.$refs['form'].validate(valid => {
         if (key === 2 || (valid && flag)) {
           this.authButtonLoading = true;
@@ -861,7 +866,7 @@ export default {
         password: null,
         companyCode: null,
         companyName: null,
-        shipperType: 0,
+        shipperType: 1,
         identificationNumber: null,
         identificationBeginTime: null,
         identificationEndTime: null,
@@ -890,9 +895,9 @@ export default {
         isWipe: null,
         area: null,
         wipeType: null,
-        isMonthly: null,
+        isMonthly: 0,
         isPrepaid: 1, // 是否预付运费，默认是
-        payInvoiceType: null,
+        payInvoiceType: '7',
         isConsumption: null,
         consumptionUnit: null,
         consumptionMin: null,

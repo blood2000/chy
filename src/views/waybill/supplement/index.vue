@@ -298,8 +298,9 @@
             type="primary"
             icon="el-icon-download"
             size="mini"
-            @click="handleDownload"
-          >下载模板</el-button>
+          >
+            <a href="/supplement.xlsx" download="supplement.xlsx">下载模板</a>
+          </el-button>
         </el-col>
       </el-row>
     </div>
@@ -528,13 +529,13 @@ export default {
         'goodsCode': null,
         'loadAddressCode': null,
         'loadAttachmentCode': null,
-        'loadTime': null,
+        'loadTime': this.parseTime((new Date().getTime() - 5 * 60 * 1000), '{y}-{m}-{d} {h}:{i}:{s}'),
         'loadWeight': 0,
         'remark': null,
         'sourceType': 4,
         'unloadAddressCode': null,
         'unloadAttachmentCode': null,
-        'unloadTime': null,
+        'unloadTime': this.parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}'),
         'unloadWeight': 0,
         'vehicleCode': null,
         'shipperRealPay': null, // 货主实付金额
@@ -564,16 +565,16 @@ export default {
     /** 运输单批量导入按钮操作 */
     handleWaybillImport() {
       this.openImport = true;
-      this.title = '运输单批量导入(未完成，请勿操作)';
+      this.title = '运输单批量导入';
     },
     /** 装/卸货图片导入按钮操作 */
     handlePictureImport() {
       this.open = true;
-      this.title = '装/卸货图片导入(未完成，请勿操作)';
+      this.title = '装/卸货图片导入';
     },
     /** 下载模板 */
     handleDownload() {
-      console.log('点击了下载模板按钮');
+      window.open('/src/assets/tableImport/supplement.xlsx');
     //   this.download('assets/driver/importTemplate', {}, `driver_${new Date().getTime()}.xlsx`);
     },
     // 根据货原单号查询信息

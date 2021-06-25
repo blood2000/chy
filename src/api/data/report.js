@@ -78,3 +78,11 @@ export function batch(data) {
     data: data
   });
 }
+
+export function reportMark(waybillReportCode, markFlag) {
+  return request({
+    url: `/transportation/waybillReport/mark/${waybillReportCode}/${markFlag}`,
+    method: 'get'
+  });
+}
+

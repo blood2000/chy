@@ -46,7 +46,7 @@
         :yoy-places="1"
       />
     </div>
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 20%">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 21%">
       <InfoBox
         label="运输总量"
         unit="吨"
@@ -65,7 +65,7 @@
         :yoy-places="1"
       />
     </div>
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 24%">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 21%">
       <InfoBox
         label="行驶里程"
         unit="公里"
@@ -84,7 +84,7 @@
         :yoy-places="1"
       />
     </div>
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 15%">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 17%">
       <InfoBox
         label="行驶时长"
         unit="月"

@@ -47,6 +47,7 @@
             type="primary"
             icon="el-icon-download"
             size="mini"
+            :loading="loadingExport"
             @click="handleExport"
           >导出</el-button>
         </el-col>
@@ -137,7 +138,8 @@ export default {
         haveCondition: false
       },
       summary: true,
-      morelist: []
+      morelist: [],
+      loadingExport: false
     };
   },
   created() {
@@ -281,7 +283,10 @@ export default {
     },
     // 导出
     handleExport() {
-      this.download('/transportation/customerCountSearch/shipmentMoneyCountExport', { ...this.queryParams }, `客户消费统计_${new Date().getTime()}.xlsx`);
+      this.loadingExport = true;
+      this.download('/transportation/customerCountSearch/shipmentMoneyCountExport', { ...this.queryParams }, `客户消费统计_${new Date().getTime()}.xlsx`).then(res => {
+        this.loadingExport = false;
+      });
     }
   }
 };

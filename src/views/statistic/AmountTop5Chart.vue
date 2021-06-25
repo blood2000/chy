@@ -279,6 +279,7 @@ export default {
       this.setTimer();
     },
     setTimer() {
+      this.clearTimer();
       this.timer = setInterval(() => {
         this.showToolTip();
       }, 15 * 1000);

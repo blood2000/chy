@@ -1,8 +1,8 @@
 <template>
-  <el-dialog class="waybill-detail-dialog i-add" :title="title" :visible="visible" width="1200px" append-to-body @close="cancel">
+  <el-dialog class="waybill-detail-dialog i-add" :title="title" :visible="visible" width="1500px" append-to-body @close="cancel">
     <el-tabs v-model="activeTab">
-      <!-- 运单 -->
-      <el-tab-pane v-loading="loading" v-has-permi="['transportation:waybill:getWayBillByCode']" label="运单" name="1">
+      <!-- 运单v-has-permi="['transportation:waybill:getWayBillByCode']" -->
+      <el-tab-pane v-loading="loading" label="运单" name="1">
         <div class="waybill-title"><div class="waybill-icon" />运单<div class="waybill-divider" /></div>
         <el-row>
           <el-col :span="3" class="text-label">
@@ -185,8 +185,8 @@
 
         </el-row>
       </el-tab-pane>
-      <!-- 回单 -->
-      <el-tab-pane v-has-permi="['transportation:waybill:receipt']" label="回单" name="2">
+      <!-- 回单v-has-permi="['transportation:waybill:receipt']" -->
+      <el-tab-pane label="回单" name="2">
         <!-- 装货单 -->
         <div class="waybill-title"><div class="waybill-icon" />装货单<div class="waybill-divider" /></div>
         <el-row>
@@ -238,8 +238,8 @@
           </el-col>
         </el-row>
       </el-tab-pane>
-      <!-- 轨迹 -->
-      <el-tab-pane v-has-permi="['transportation:waybill:trajectory']" label="轨迹" name="3">
+      <!-- 轨迹 v-has-permi="['transportation:waybill:trajectory']" -->
+      <el-tab-pane label="轨迹" name="3">
         <div v-if="activeTab === '3'" style="height:600px;width:100%;">
           <Track :waybill="form" />
           <div class="waybill-detail-card">
@@ -268,23 +268,29 @@
                 {{ parseTime(form.receiveTime) || '-' }}
               </el-col>
               <el-col :span="8" class="text-label">
+                卸货时间：
+              </el-col>
+              <el-col :span="16" class="text-row">
+                {{ parseTime(form.signTime) || '-' }}
+              </el-col>
+              <el-col :span="8" class="text-label">
                 装货地：
               </el-col>
               <el-col :span="16" class="text-row">
-                {{ form.waybillAddress?form.waybillAddress.loadFormattedAddress:'-' }}
+                {{ form.waybillAddress.loadFormattedAddress || '-' }}
               </el-col>
               <el-col :span="8" class="text-label">
                 卸货地：
               </el-col>
               <el-col :span="16" class="text-row">
-                {{ form.waybillAddress?form.waybillAddress.unloadFormattedAddress:'-' }}
+                {{ form.waybillAddress.unloadFormattedAddress || '-' }}
               </el-col>
             </el-row>
           </div>
         </div>
       </el-tab-pane>
-      <!-- 评价 -->
-      <el-tab-pane v-has-permi="['transportation:waybill:comment']" label="评价" name="4">
+      <!-- 评价 v-has-permi="['transportation:waybill:comment']" -->
+      <el-tab-pane label="评价" name="4">
         <el-row>
           <el-col :span="3" class="text-label">
             司机评价货主：

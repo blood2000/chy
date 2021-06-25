@@ -63,6 +63,7 @@
             type="primary"
             icon="el-icon-download"
             size="mini"
+            :loading="loadingExport"
             @click="handleExport"
           >导出</el-button>
         </el-col>
@@ -135,7 +136,8 @@ export default {
         haveCondition: false
       },
       // 合计
-      summary: true
+      summary: true,
+      loadingExport: false
     };
   },
   created() {
@@ -284,11 +286,14 @@ export default {
     },
     // 导出
     handleExport() {
+      this.loadingExport = true;
       this.download(
         '/transportation/customerCountSearch/customerShipmentCountExport',
         { ...this.queryParams },
         `客服统计报表_${new Date().getTime()}.xlsx`
-      );
+      ).then(res => {
+        this.loadingExport = false;
+      });
     }
   }
 };

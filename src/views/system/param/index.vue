@@ -190,7 +190,9 @@ export default {
               obj.paramValue = (obj.paramValue === 'true');
             }
           });
-          data.paramList = [...(response.data || [])];
+          data.paramList = response.data;
+          this.formList = [];
+          // data.paramList = [...(response.data || [])];
           this.formList.unshift(data);
         });
       }

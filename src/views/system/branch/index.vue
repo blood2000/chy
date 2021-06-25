@@ -108,6 +108,7 @@
           <el-form-item label="组织" prop="orgCode">
             <treeselect
               v-model="form.orgCode"
+              :disabled="form.code != undefined"
               :options="deptOptions"
               :normalizer="normalizer"
               :show-count="true"
@@ -309,7 +310,7 @@ export default {
     },
     /** 查询部门下拉树结构 */
     getTreeselect() {
-      treeselect({ orgCode: this.companyCode }).then(response => {
+      treeselect({ orgCode: this.companyCode, orgType: 2 }).then(response => {
         this.deptOptions = response.data;
       });
     },
