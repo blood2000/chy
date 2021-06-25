@@ -95,8 +95,8 @@ export default {
   },
   data() {
     return {
-      myYoy: 0,
-      myYoyType: 2
+      myYoy: this.yoy,
+      myYoyType: this.yoyType
     };
   },
   computed: {
@@ -232,9 +232,9 @@ export default {
       transform: scale(0.95, 0.95);
     }
     // 样式区分
-    &.blod{
+    //&.blod{
       // font-family: 'PingFang Bold' !important;
-    }
+    //}
     &.small{
       .arow_up{
         background: url('~@/assets/images/statistic/arow_up_small.png') no-repeat;

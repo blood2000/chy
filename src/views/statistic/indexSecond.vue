@@ -80,7 +80,7 @@
         <Title class="title_4 mb05rem" icon="7" :show-time="true" :time-text="timeText">业绩数据<span>Performance data</span></Title>
         <div class="ly-right-right-box ly-border">
           <div class="ly-border mb05rem" style="height: 15%">
-            <PerformanceInfo ref="PerformanceInfoRef" :performance="performanceData.performance" :is-scale="!!$route.query.isScale" />
+            <PerformanceInfo ref="PerformanceInfoRef" :performance="performanceData.performance" :is-second="true" :is-scale="!!$route.query.isScale" />
           </div>
           <div class="ly-border mb07rem" style="height: calc(33% - 1.2rem)">
             <div class="ly-right-right-box-title mb05rem">TOP 5省份交易额排名</div>

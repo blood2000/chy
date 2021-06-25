@@ -3,7 +3,7 @@
   <div class="s-container">
     <span v-if="showTop" class="s-container__title">TOP 5 司机</span>
     <ul class="s-container__list">
-      <li v-for="(item, index) in driverRankData" :key="item.driverName + index" class="s-container__list__item">
+      <li v-for="(item, index) in driverRankData" :key="index" class="s-container__list__item">
         <div class="s-container__list__item__title">
           <span :class="index === 0 ? 'first' : ''" class="index">{{ index + 1 }}</span>
           <span class="text">
