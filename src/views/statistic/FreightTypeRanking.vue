@@ -83,20 +83,32 @@ export default {
             name: '',
             type: 'pie',
             radius: ['48%', '70%'],
-            center: ['40%', '46%'],
+            center: ['50%', '48%'],
             data: this.pieData,
             // 标示线
             label: {
-              normal: {
-                show: false
+              show: true,
+              // color: function(params) {
+              //   // 自定义颜色
+              //   const colorList = ['#019FF9', '#4AE0E2', '#D281F4', '#8267FC', '#FF6EBA'];
+              //   return colorList[params.dataIndex];
+              // },
+              color: '#CDEDFF',
+              formatter: function(obj) {
+                return `${obj.data.percentage}%`;
               }
+            },
+            labelLine: {
+              show: true
+              // length: 4,
+              // length2: 2
             },
             itemStyle: {
               normal: {
                 // 设置饼图的颜色
                 color: function(params) {
                   // 自定义颜色
-                  var colorList = [
+                  const colorList = [
                     new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                       offset: 0,
                       color: '#018AFF'
@@ -156,7 +168,12 @@ export default {
           textStyle: {
             fontSize: setfontSize(14)
           }
-        }
+        },
+        series: [{
+          label: {
+            fontSize: setfontSize(12)
+          }
+        }]
       });
     }
   }
@@ -168,7 +185,7 @@ export default {
   height: 100%;
   padding-bottom: 0.6rem;
   &__list{
-    width: 45%;
+    width: 40%;
     height: 100%;
     padding: 0.8rem 0 1rem;
     &__item{
@@ -206,7 +223,7 @@ export default {
     }
   }
   &__pie{
-    width: 55%;
+    width: 60%;
     height: 100%;
   }
 }
