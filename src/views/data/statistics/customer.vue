@@ -9,7 +9,7 @@
       >
         <el-form-item label="公司名称" prop="companyName">
           <el-input
-            v-model="queryParams.companyName"
+            v-model.trim="queryParams.companyName"
             placeholder="请输入公司名称"
             clearable
             size="small"
@@ -19,7 +19,7 @@
         </el-form-item>
         <el-form-item label="手机号码" prop="shipmentPhone">
           <el-input
-            v-model="queryParams.shipmentPhone"
+            v-model.trim="queryParams.shipmentPhone"
             placeholder="请输入手机号码"
             clearable
             size="small"

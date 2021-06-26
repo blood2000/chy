@@ -15,7 +15,7 @@
         </el-form-item>
         <el-form-item label="企业名称" prop="orgName">
           <el-input
-            v-model="queryParams.orgName"
+            v-model.trim="queryParams.orgName"
             placeholder="请输入企业名称"
             clearable
             size="small"
@@ -24,7 +24,7 @@
         </el-form-item>
         <el-form-item label="用户姓名" prop="nickName">
           <el-input
-            v-model="queryParams.nickName"
+            v-model.trim="queryParams.nickName"
             placeholder="请输入用户姓名"
             clearable
             size="small"
@@ -33,7 +33,7 @@
         </el-form-item>
         <el-form-item label="手机号码" prop="phonenumber">
           <el-input
-            v-model="queryParams.phonenumber"
+            v-model.trim="queryParams.phonenumber"
             placeholder="请输入手机号码"
             clearable
             size="small"
@@ -42,7 +42,7 @@
         </el-form-item>
         <el-form-item label="余额区间">
           <el-input
-            v-model="queryParams.minAmount"
+            v-model.trim="queryParams.minAmount"
             placeholder="最小值"
             clearable
             size="small"
@@ -51,7 +51,7 @@
           />
           至
           <el-input
-            v-model="queryParams.maxAmount"
+            v-model.trim="queryParams.maxAmount"
             placeholder="最大值"
             clearable
             size="small"

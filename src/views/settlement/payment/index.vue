@@ -13,7 +13,7 @@
           prop="loadInfo"
         >
           <el-input
-            v-model="queryParams.loadInfo"
+            v-model.trim="queryParams.loadInfo"
             placeholder="装货地/装货电话/发货人"
             clearable
             size="small"
@@ -26,7 +26,7 @@
           prop="receivedInfo"
         >
           <el-input
-            v-model="queryParams.receivedInfo"
+            v-model.trim="queryParams.receivedInfo"
             placeholder="卸货地/卸货电话/卸货人"
             clearable
             size="small"
@@ -39,7 +39,7 @@
           prop="licenseNumber"
         >
           <el-input
-            v-model="queryParams.licenseNumber"
+            v-model.trim="queryParams.licenseNumber"
             placeholder="请输入车牌号"
             clearable
             size="small"
@@ -52,7 +52,7 @@
           prop="driverName"
         >
           <el-input
-            v-model="queryParams.driverName"
+            v-model.trim="queryParams.driverName"
             placeholder="请输入司机姓名"
             clearable
             size="small"
@@ -82,7 +82,7 @@
           prop="bizNo"
         >
           <el-input
-            v-model="queryParams.bizNo"
+            v-model.trim="queryParams.bizNo"
             placeholder="请输入结算申请批次号"
             clearable
             size="small"
@@ -95,7 +95,7 @@
           prop="mainOrderNumber"
         >
           <el-input
-            v-model="queryParams.mainOrderNumber"
+            v-model.trim="queryParams.mainOrderNumber"
             placeholder="请输入货源单号"
             clearable
             size="small"
@@ -108,7 +108,7 @@
           prop="waybillNo"
         >
           <el-input
-            v-model="queryParams.waybillNo"
+            v-model.trim="queryParams.waybillNo"
             placeholder="请输入运输单号"
             clearable
             size="small"

@@ -6,7 +6,7 @@
         <!-- 数据上报 -->
         <el-form-item label="支付批次号" prop="bizNo">
           <el-input
-            v-model="queryParams.bizNo"
+            v-model.trim="queryParams.bizNo"
             placeholder="请输入支付批次号"
             clearable
             size="small"
@@ -16,7 +16,7 @@
         </el-form-item>
         <el-form-item label="发货企业" prop="companyName">
           <el-input
-            v-model="queryParams.companyName"
+            v-model.trim="queryParams.companyName"
             placeholder="请输入发货企业"
             clearable
             size="small"
@@ -26,7 +26,7 @@
         </el-form-item>
         <el-form-item label="司机" prop="driverName">
           <el-input
-            v-model="queryParams.driverName"
+            v-model.trim="queryParams.driverName"
             placeholder="请输入司机"
             clearable
             size="small"
@@ -36,7 +36,7 @@
         </el-form-item>
         <el-form-item label="车牌号" prop="licenseNumber">
           <el-input
-            v-model="queryParams.licenseNumber"
+            v-model.trim="queryParams.licenseNumber"
             placeholder="请输入车牌号"
             clearable
             size="small"
@@ -46,7 +46,7 @@
         </el-form-item>
         <el-form-item label="货源单号" prop="mainOrderNumber">
           <el-input
-            v-model="queryParams.mainOrderNumber"
+            v-model.trim="queryParams.mainOrderNumber"
             placeholder="请输入货源单号"
             clearable
             size="small"
@@ -56,7 +56,7 @@
         </el-form-item>
         <el-form-item label="车队名称" prop="teamName">
           <el-input
-            v-model="queryParams.teamName"
+            v-model.trim="queryParams.teamName"
             placeholder="请输入车队名称"
             clearable
             size="small"
@@ -66,7 +66,7 @@
         </el-form-item>
         <el-form-item label="运输单号" prop="waybillNo">
           <el-input
-            v-model="queryParams.waybillNo"
+            v-model.trim="queryParams.waybillNo"
             placeholder="请输入运输单号"
             clearable
             size="small"

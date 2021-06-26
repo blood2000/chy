@@ -6,7 +6,7 @@
         <div class="app-container app-container--tree">
           <div class="head-container">
             <el-input
-              v-model="deptName"
+              v-model.trim="deptName"
               placeholder="请输入组织名称"
               clearable
               size="small"
@@ -33,7 +33,7 @@
           <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
             <el-form-item label="用户名称" prop="userName">
               <el-input
-                v-model="queryParams.userName"
+                v-model.trim="queryParams.userName"
                 placeholder="请输入用户名称"
                 clearable
                 size="small"
@@ -43,7 +43,7 @@
             </el-form-item>
             <el-form-item label="手机号码" prop="phonenumber">
               <el-input
-                v-model="queryParams.phonenumber"
+                v-model.trim="queryParams.phonenumber"
                 placeholder="请输入手机号码"
                 clearable
                 size="small"

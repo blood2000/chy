@@ -4,7 +4,7 @@
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
         <el-form-item label="货主" prop="searchValue">
           <el-input
-            v-model="queryParams.searchValue"
+            v-model.trim="queryParams.searchValue"
             placeholder="企业名称/货主姓名/手机号"
             clearable
             size="small"

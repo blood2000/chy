@@ -48,7 +48,7 @@
           prop="orderNo"
         >
           <el-input
-            v-model="queryParams.orderNo"
+            v-model.trim="queryParams.orderNo"
             placeholder="请输入货源单号"
             clearable
             size="small"
@@ -78,7 +78,7 @@
           prop="loading"
         >
           <el-input
-            v-model="queryParams.loading"
+            v-model.trim="queryParams.loading"
             placeholder="装货地/装货电话/装货人"
             clearable
             size="small"
@@ -91,7 +91,7 @@
           prop="receiving"
         >
           <el-input
-            v-model="queryParams.receiving"
+            v-model.trim="queryParams.receiving"
             placeholder="卸货地/卸货电话/卸货人"
             clearable
             size="small"
@@ -104,7 +104,7 @@
           prop="waybillNo"
         >
           <el-input
-            v-model="queryParams.waybillNo"
+            v-model.trim="queryParams.waybillNo"
             placeholder="请输入运输单号"
             clearable
             size="small"

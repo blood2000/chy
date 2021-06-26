@@ -4,7 +4,7 @@
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
         <el-form-item label="地址别名" prop="addressAlias">
           <el-input
-            v-model="queryParams.addressAlias"
+            v-model.trim="queryParams.addressAlias"
             placeholder="请输入地址别名"
             clearable
             size="small"
@@ -13,7 +13,7 @@
         </el-form-item>
         <el-form-item label="地址" prop="addressName">
           <el-input
-            v-model="queryParams.addressName"
+            v-model.trim="queryParams.addressName"
             placeholder="请输入地址"
             clearable
             size="small"
