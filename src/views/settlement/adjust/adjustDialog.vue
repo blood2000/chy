@@ -76,9 +76,15 @@
             <span>补贴项目
               <el-button type="text" @click="isEdit2 = !isEdit2"><i class="el-icon-edit" /></el-button>
 
-              <el-button type="text" @click="handlerPlus"><i class="el-icon-plus" /></el-button>
               <!-- 1: 是增 2: 是减 -->
-
+              <el-popover
+                placement="right"
+                width="400"
+                trigger="click"
+              >
+                <PopoverCom :list="showSubList" />
+                <el-button slot="reference" type="text" @click="handlerClick"><i class="el-icon-plus" /></el-button>
+              </el-popover>
             </span>
 
           </template>
@@ -154,9 +160,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog :title="'规则'" class="i-price" :visible.sync="popoverOpenCom" width="900px" append-to-body>
-      <PopoverCom :list="showSubList" />
-    </el-dialog>
+    <!-- <el-dialog :title="'规则'" class="i-price" :visible.sync="popoverOpenCom" append-to-body /> -->
   </div>
 </template>
 
@@ -184,7 +188,7 @@ export default {
     return {
 
       showSubList: [],
-      popoverOpenCom: false,
+      // popoverOpenCom: false,
       // fixed: [], // 固定的规则
       // title12: '',
       // open12: false,
@@ -355,28 +359,19 @@ export default {
         this.adjustlist = JSON.parse(JSON.stringify(response.data));
 
         const felexes = [...this.adjustlist[0].subsidiesFreightList, ...this.adjustlist[0].deductionFreightList];
+        this.showSubList = this.showSubList.filter(e => {
+          let bool = true;
 
-        // console.log(felexes);
-
-        this.showSubList.forEach(e => {
           felexes.forEach(ee => {
             if (e.enName === ee.enName) {
-              e.ee = ee;
+              bool = false;
             }
           });
+
+          return bool;
         });
-        this.showSubList = this.showSubList.map(e => {
-          if (e.ee) {
-            e = e.ee;
-            e.$_disabled = true;
-            e.ee = undefined;
-          }
-          return e;
-        });
+
         console.log(this.showSubList);
-        // this.$forceUpdate();
-
-
         this.total = response.total;
         this.loading = false;
       });
@@ -412,9 +407,9 @@ export default {
     },
 
     // 处理增减
-    handlerPlus() {
-      this.popoverOpenCom = true;
-    },
+    // handlerPlus() {
+    //   this.popoverOpenCom = true;
+    // },
 
     /* 计算价格 */
     _sum(arr = []) {
