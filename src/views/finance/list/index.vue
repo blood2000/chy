@@ -13,7 +13,7 @@
           prop="invoiceTitle"
         >
           <el-input
-            v-model="queryParams.invoiceTitle"
+            v-model.trim="queryParams.invoiceTitle"
             placeholder="请输入发票抬头"
             clearable
             size="small"
@@ -26,7 +26,7 @@
           prop="askForNo"
         >
           <el-input
-            v-model="queryParams.askForNo"
+            v-model.trim="queryParams.askForNo"
             placeholder="请输入发票索取记录号"
             clearable
             size="small"

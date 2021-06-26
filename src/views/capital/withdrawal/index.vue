@@ -15,7 +15,7 @@
         </el-form-item>
         <el-form-item label="申请人" prop="applyerName">
           <el-input
-            v-model="queryParams.applyerName"
+            v-model.trim="queryParams.applyerName"
             placeholder="请输入申请人"
             clearable
             size="small"
@@ -24,7 +24,7 @@
         </el-form-item>
         <el-form-item label="收款人姓名" prop="bankAcountName">
           <el-input
-            v-model="queryParams.bankAcountName"
+            v-model.trim="queryParams.bankAcountName"
             placeholder="请输入收款人姓名"
             clearable
             size="small"
@@ -33,7 +33,7 @@
         </el-form-item>
         <el-form-item label="手机号码" prop="userPhone">
           <el-input
-            v-model="queryParams.userPhone"
+            v-model.trim="queryParams.userPhone"
             placeholder="请输入手机号码"
             clearable
             size="small"
@@ -42,7 +42,7 @@
         </el-form-item>
         <el-form-item label="银行卡号" prop="bankNumber">
           <el-input
-            v-model="queryParams.bankNumber"
+            v-model.trim="queryParams.bankNumber"
             placeholder="请输入银行卡号"
             clearable
             size="small"
@@ -51,7 +51,7 @@
         </el-form-item>
         <el-form-item label="车牌号" prop="licenseNumber">
           <el-input
-            v-model="queryParams.licenseNumber"
+            v-model.trim="queryParams.licenseNumber"
             placeholder="请输入车牌号"
             clearable
             size="small"

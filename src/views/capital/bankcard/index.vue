@@ -5,7 +5,7 @@
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
         <el-form-item label="开户姓名" prop="name">
           <el-input
-            v-model="queryParams.name"
+            v-model.trim="queryParams.name"
             placeholder="请输入姓名"
             clearable
             size="small"
@@ -14,7 +14,7 @@
         </el-form-item>
         <el-form-item label="开户电话" prop="mobile">
           <el-input
-            v-model="queryParams.mobile"
+            v-model.trim="queryParams.mobile"
             placeholder="请输入开户电话"
             clearable
             size="small"
@@ -23,7 +23,7 @@
         </el-form-item>
         <el-form-item label="车牌号" prop="licenseNumber">
           <el-input
-            v-model="queryParams.licenseNumber"
+            v-model.trim="queryParams.licenseNumber"
             placeholder="请输入车牌号"
             clearable
             size="small"
@@ -48,7 +48,7 @@
         </el-form-item>
         <el-form-item label="银行账户" prop="account">
           <el-input
-            v-model="queryParams.account"
+            v-model.trim="queryParams.account"
             placeholder="请输入银行账户"
             clearable
             size="small"
@@ -57,7 +57,7 @@
         </el-form-item>
         <el-form-item label="用户姓名" prop="userName">
           <el-input
-            v-model="queryParams.userName"
+            v-model.trim="queryParams.userName"
             placeholder="请输入用户姓名"
             clearable
             size="small"
@@ -66,7 +66,7 @@
         </el-form-item>
         <el-form-item label="用户电话" prop="userPhone">
           <el-input
-            v-model="queryParams.userPhone"
+            v-model.trim="queryParams.userPhone"
             placeholder="请输入用户电话"
             clearable
             size="small"

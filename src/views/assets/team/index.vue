@@ -4,7 +4,7 @@
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
         <el-form-item label="调度组名称" prop="name">
           <el-input
-            v-model="queryParams.name"
+            v-model.trim="queryParams.name"
             placeholder="请输入调度组名称"
             clearable
             size="small"
@@ -13,7 +13,7 @@
         </el-form-item>
         <el-form-item label="调度者姓名" prop="teamLeaderName">
           <el-input
-            v-model="queryParams.teamLeaderName"
+            v-model.trim="queryParams.teamLeaderName"
             placeholder="请输入调度者姓名"
             clearable
             size="small"
@@ -41,7 +41,7 @@
         </el-form-item> -->
         <el-form-item label="手机号" prop="telphone">
           <el-input
-            v-model="queryParams.telphone"
+            v-model.trim="queryParams.telphone"
             placeholder="请输入手机号"
             clearable
             size="small"

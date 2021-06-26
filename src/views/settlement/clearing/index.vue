@@ -13,7 +13,7 @@
           prop="driverName"
         >
           <el-input
-            v-model="queryParams.driverName"
+            v-model.trim="queryParams.driverName"
             placeholder="请输入司机姓名"
             clearable
             size="small"
@@ -26,7 +26,7 @@
           prop="driverPhone"
         >
           <el-input
-            v-model="queryParams.driverPhone"
+            v-model.trim="queryParams.driverPhone"
             placeholder="请输入司机电话"
             clearable
             size="small"
@@ -39,7 +39,7 @@
           prop="waybillNo"
         >
           <el-input
-            v-model="queryParams.waybillNo"
+            v-model.trim="queryParams.waybillNo"
             placeholder="请输入运输单号"
             clearable
             size="small"
@@ -52,7 +52,7 @@
           prop="teamName"
         >
           <el-input
-            v-model="queryParams.teamName"
+            v-model.trim="queryParams.teamName"
             placeholder="请输入调度名称"
             clearable
             size="small"
@@ -65,7 +65,7 @@
           prop="teamLeaderPhone"
         >
           <el-input
-            v-model="queryParams.teamLeaderPhone"
+            v-model.trim="queryParams.teamLeaderPhone"
             placeholder="请输入调度电话"
             clearable
             size="small"
@@ -78,7 +78,7 @@
           prop="companyName"
         >
           <el-input
-            v-model="queryParams.companyName"
+            v-model.trim="queryParams.companyName"
             placeholder="请输入运单关联企业"
             clearable
             size="small"
@@ -91,7 +91,7 @@
           prop="shipmentPhone"
         >
           <el-input
-            v-model="queryParams.shipmentPhone"
+            v-model.trim="queryParams.shipmentPhone"
             placeholder="请输入货主电话"
             clearable
             size="small"
@@ -104,7 +104,7 @@
           prop="teamTransferNo"
         >
           <el-input
-            v-model="queryParams.teamTransferNo"
+            v-model.trim="queryParams.teamTransferNo"
             placeholder="请输入清分订单号"
             clearable
             size="small"
@@ -117,7 +117,7 @@
           prop="teamBizNo"
         >
           <el-input
-            v-model="queryParams.teamBizNo"
+            v-model.trim="queryParams.teamBizNo"
             placeholder="请输入清分批次号"
             clearable
             size="small"

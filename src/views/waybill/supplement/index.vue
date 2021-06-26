@@ -9,7 +9,7 @@
           <el-row>
             <el-col :span="6">
               <el-form-item label="货源单号" prop="mainOrderCode">
-                <el-input v-model="form.mainOrderCode" placeholder="请输入货源单号" class="width90" clearable @change="getOrderDetail" />
+                <el-input v-model.trim="form.mainOrderCode" placeholder="请输入货源单号" class="width90" clearable @change="getOrderDetail" />
               </el-form-item>
             </el-col>
             <el-col :span="6">
@@ -36,7 +36,7 @@
             </el-col>
             <el-col :span="6">
               <el-form-item label="运费单价" prop="shipmentPrice">
-                <el-input v-model="form.shipmentPrice" placeholder="请输入" :readonly="true" class="width90" />
+                <el-input v-model.trim="form.shipmentPrice" placeholder="请输入" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -152,7 +152,7 @@
             </el-col>
             <el-col :span="6">
               <el-form-item label="运输许可号" prop="roadTransportCertificateNumber">
-                <el-input v-model="form.roadTransportCertificateNumber" placeholder="请输入" :readonly="true" class="width90" />
+                <el-input v-model.trim="form.roadTransportCertificateNumber" placeholder="请输入" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -180,12 +180,12 @@
             </el-col>
             <el-col :span="6">
               <el-form-item label="车辆识别码" prop="chassisNumber">
-                <el-input v-model="form.chassisNumber" placeholder="请输入" :readonly="true" class="width90" />
+                <el-input v-model.trim="form.chassisNumber" placeholder="请输入" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="车辆载重" prop="vehicleLoadWeight">
-                <el-input v-model="form.vehicleLoadWeight" placeholder="请输入" :readonly="true" class="width90" />
+                <el-input v-model.trim="form.vehicleLoadWeight" placeholder="请输入" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -236,7 +236,7 @@
           <el-row>
             <el-col :span="6">
               <el-form-item label="货主应付金额" prop="shipperRealPay">
-                <el-input v-model="form.shipperRealPay" placeholder="请输入" :readonly="true" class="width90" />
+                <el-input v-model.trim="form.shipperRealPay" placeholder="请输入" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
             <!-- <el-col :span="6">
@@ -246,7 +246,7 @@
             </el-col> -->
             <el-col :span="6">
               <el-form-item label="运输单号" prop="wayBillNo">
-                <el-input v-model="form.wayBillNo" placeholder="请输入" :readonly="true" class="width90" />
+                <el-input v-model.trim="form.wayBillNo" placeholder="请输入" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
           </el-row>

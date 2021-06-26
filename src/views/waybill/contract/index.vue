@@ -12,7 +12,7 @@
           prop="contractNo"
         >
           <el-input
-            v-model="queryParams.contractNo"
+            v-model.trim="queryParams.contractNo"
             placeholder="请输入合同编号"
             clearable
             size="small"
@@ -25,7 +25,7 @@
           prop="driverInfo"
         >
           <el-input
-            v-model="queryParams.driverInfo"
+            v-model.trim="queryParams.driverInfo"
             placeholder="请输入司机信息"
             clearable
             size="small"
@@ -58,7 +58,7 @@
           prop="waybillNo"
         >
           <el-input
-            v-model="queryParams.waybillNo"
+            v-model.trim="queryParams.waybillNo"
             placeholder="请输入运输单号"
             clearable
             size="small"
