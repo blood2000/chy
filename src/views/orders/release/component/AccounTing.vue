@@ -10,7 +10,7 @@
   >
 
     <div v-if="!showbudget" class="header mb8 mt8">费用信息</div>
-    <el-form-item label="运费单价(含税): " prop="freightPrice" label-width="130px">
+    <el-form-item label="运费单价: " prop="freightPrice" label-width="130px">
       <el-row>
 
         <el-col :span="24" class="ly-flex-pack-justify ">
