@@ -71,7 +71,10 @@
       <!-- 补贴项目 -->
       <el-table-column align="center" width="420" label="补贴项目">
         <template slot="header">
-          <span>补贴项目 <el-button type="text" @click="isEdit2 = !isEdit2"><i class="el-icon-edit" /></el-button></span>
+          <span>补贴项目
+            <el-button type="text" @click="isEdit2 = !isEdit2"><i class="el-icon-edit" /></el-button>
+            <PopoverCom />
+          </span>
 
         </template>
         <template slot-scope="scope">
@@ -148,12 +151,13 @@
 </template>
 
 <script>
+import PopoverCom from './components/PopoverCom';
 import { adjustDetail, calculateFee, batchCheck } from '@/api/settlement/adjust';
 import { floor } from '@/utils/ddc';
 
 export default {
   name: 'AdjustDialog',
-  components: {},
+  components: { PopoverCom },
   props: {
     title: {
       type: String,
@@ -329,6 +333,11 @@ export default {
       this.deliveryCashFee = undefined;
       this.queryParams.waybillCodeList = data;
       this.getList();
+    },
+
+    // 处理增减
+    hadlerPlus() {
+
     },
 
     /* 计算价格 */
