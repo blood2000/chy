@@ -2,7 +2,7 @@
   <div class="s-container s-map-container-relative">
     <div ref="map" class="map-box" />
     <!-- 图例 -->
-    <div class="map-legend">
+    <div class="map-legend" :class="{isSecond: isSecond}">
       <h5>运单量</h5>
       <ul class="ly-flex-v ly-flex-pack-justify">
         <li v-for="(item, index) in legendList" :key="index">
@@ -541,6 +541,9 @@ export default {
           transform: scale(0.9, 0.9);
         }
       }
+    }
+    &.isSecond{
+      right: 1.1rem;
     }
   }
 }

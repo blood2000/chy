@@ -36,7 +36,7 @@
           <div class="ly-left-bottom-right ly-border">
             <Title class="title_4 mb1rem" icon="4" :show-time="true" :time-text="timeText">承运排行<span>Shipping list</span></Title>
             <!-- 正常高度: height: calc(100% - 2.1rem) -->
-            <DriverTop5List ref="DriverTop5ListRef" :time-key="timeKey" :show-top="false" style="height: calc(100% - 1.6rem);" />
+            <DriverTop5List ref="DriverTop5ListRef" :time-key="timeKey" :show-top="false" style="height: calc(100% - 1.8rem);" />
           </div>
         </div>
       </div>
@@ -405,8 +405,8 @@ export default {
 .g-statistic {
   //variabbles
   $width: 160rem;
-  $width_left: 53.8rem;
-  $width_right: 48rem;
+  $width_left: 53rem;
+  $width_right: 51rem;
   $mb1rem: 1rem;
   $mb05rem: 0.5rem;
   $mb07rem: 0.7rem;
@@ -455,7 +455,7 @@ export default {
       .ly-left-bottom-box{
         height: 100%;
         .ly-left-bottom-left {
-          width: 28.3rem;
+          width: 29rem;
           height: 100%;
           .ly-left-bottom-left-top, .ly-left-bottom-left-bottom{
             height: 50%;
@@ -465,7 +465,7 @@ export default {
           }
         }
         .ly-left-bottom-right {
-          width: 22.6rem;
+          width: 21.5rem;
           height: 100%;
         }
       }
@@ -483,7 +483,7 @@ export default {
     height: 100%;
     float: right;
     .ly-right-left {
-      width: 23.4rem;
+      width: calc(49% - 1rem);
       .ly-right-left-top {
         height: calc(100% - 26.5% - #{$mb1rem});
         .ly-right-left-top-box{
@@ -495,7 +495,7 @@ export default {
       }
     }
     .ly-right-right {
-      width: 22.6rem;
+      width: calc(51% - 1rem);
       .ly-right-right-box {
         height: calc(100% - 2.1rem);
         .ly-right-right-box-title{

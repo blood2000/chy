@@ -144,7 +144,7 @@ export default {
     padding-top: 0.5rem;
     >h5{
       height: 1.1rem;
-      line-height: 0.6rem;
+      line-height: 0.7rem;
       font-size: 0.75rem;
       font-family: PingFang SC;
       font-weight: bold;
