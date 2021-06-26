@@ -83,7 +83,7 @@ export default {
             name: '',
             type: 'pie',
             radius: ['48%', '70%'],
-            center: ['40%', '50%'],
+            center: ['40%', '46%'],
             data: this.pieData,
             // 标示线
             label: {
@@ -166,10 +166,11 @@ export default {
 <style lang="scss" scoped>
 .s-container{
   height: 100%;
+  padding-bottom: 0.6rem;
   &__list{
     width: 45%;
     height: 100%;
-    padding: 0.6rem 0 1rem;
+    padding: 0.8rem 0 1rem;
     &__item{
       .index{
         width: 0.9rem;

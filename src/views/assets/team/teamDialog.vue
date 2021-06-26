@@ -73,30 +73,30 @@
           />
         </el-select>
       </el-form-item>
-        <el-row v-if="form.isDistribution">
-            <el-col :span="11">
-                <el-form-item label="清分规则" prop="distributionRule">
-                    <el-select
-                            v-model="form.distributionRule"
-                            clearable
-                            filterable
-                            class="width90"
-                    >
-                        <el-option
-                                v-for="dict in distributionRuleOptions"
-                                :key="dict.dictValue"
-                                :label="dict.dictLabel"
-                                :value="dict.dictValue"
-                        />
-                    </el-select>
-                </el-form-item>
-            </el-col>
-            <el-col :span="11">
-              <el-form-item :label="form.distributionRule == 1?'清分百分比(%)':'清分金额'" prop="distributionPercent">
-                <el-input-number v-model="form.distributionPercent" controls-position="right" :precision="2" placeholder="请输入清分百分比" :step="1" :min="0" :max="100" class="width90" clearable />
-              </el-form-item>
-            </el-col>
-        </el-row>
+      <el-row v-if="form.isDistribution">
+        <el-col :span="11">
+          <el-form-item label="清分规则" prop="distributionRule">
+            <el-select
+              v-model="form.distributionRule"
+              clearable
+              filterable
+              class="width90"
+            >
+              <el-option
+                v-for="dict in distributionRuleOptions"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item :label="form.distributionRule == 1?'清分百分比(%)':'清分金额'" prop="distributionPercent">
+            <el-input-number v-model="form.distributionPercent" controls-position="right" :precision="2" placeholder="请输入清分百分比" :step="1" :min="0" :max="100" class="width90" clearable />
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-form-item>
         <el-row>
           <el-col :span="7" class="mb">

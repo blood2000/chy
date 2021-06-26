@@ -93,7 +93,7 @@ export default {
   &__left{
     width: 64%;
     height: 100%;
-    padding: 0.3rem 1rem 0.3rem 0;
+    padding: 0.3rem 2rem 0.3rem 0;
     >li{
       >.label{
           width: 1.5rem;
@@ -107,15 +107,15 @@ export default {
           text-overflow: ellipsis;
         }
         >.line{
-          width: 11.2rem;
+          width: 10.5rem;
           height: 0.4rem;
           .value{
             width: 0%;
             height: 100%;
-            background: linear-gradient(93deg, #9C4DDC, #3397F4);
+            background: linear-gradient(93deg, #0070E3, #60DCEC);
             border-radius: 0px 0.2rem 0.2rem 0px;
           }
-          opacity: 0.4;
+          opacity: 0.3;
           transition: opacity 0.3s;
           &.current{
             opacity: 1;
