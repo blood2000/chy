@@ -141,10 +141,9 @@ export default {
   },
   methods: {
     // 计算同比和同比类型
-    // 同比 = (当日数据-(昨天数据*当时时间/24))/(昨天数据*当时时间/24)*100
+    // 同比 = (当日数据-昨日数据)/昨日数据*100
     computeYoy() {
-      const time = Number(this.parseTime(new Date(), '{h}'));
-      const yoy = (this.count - (this.lastCount * time / 24)) / (this.lastCount * time / 24) * 100;
+      const yoy = (this.count - this.lastCount) / this.lastCount * 100;
       // 0=上升 1=下降 2=没变化
       if (yoy > 0) {
         this.myYoyType = 0;
