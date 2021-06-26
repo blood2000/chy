@@ -76,15 +76,17 @@
             <span>补贴项目
               <el-button type="text" @click="isEdit2 = !isEdit2"><i class="el-icon-edit" /></el-button>
 
-              <!-- 1: 是增 2: 是减 -->
+              <el-button type="text" @click="handlerClick"><i class="el-icon-plus" /></el-button>
+
+              <!-- 1: 是增 2: 是减
               <el-popover
                 placement="right"
                 width="400"
                 trigger="click"
               >
-                <PopoverCom :list="showSubList" />
+                <PopoverCom v-if="popoverOpenCom" :list="felexes" />
                 <el-button slot="reference" type="text" @click="handlerClick"><i class="el-icon-plus" /></el-button>
-              </el-popover>
+              </el-popover> -->
             </span>
 
           </template>
@@ -109,7 +111,11 @@
         <!-- 扣费项目 -->
         <el-table-column align="center" width="420">
           <template slot="header">
-            <span>扣费项目 <el-button type="text" @click="isEdit = !isEdit"><i class="el-icon-edit" /></el-button></span>
+            <span>扣费项目
+              <el-button type="text" @click="isEdit = !isEdit"><i class="el-icon-edit" /></el-button>
+
+              <el-button type="text" @click="handlerdeduc"><i class="el-icon-plus" /></el-button>
+            </span>
           </template>
 
           <template slot-scope="scope">
@@ -160,7 +166,9 @@
       </div>
     </el-dialog>
 
-    <!-- <el-dialog :title="'规则'" class="i-price" :visible.sync="popoverOpenCom" append-to-body /> -->
+    <el-dialog :title="'规则'" class="i-price" :visible.sync="popoverOpenCom" append-to-body>
+      <PopoverCom v-if="popoverOpenCom" :seleced-name="selecedName" :jian-data="jianData" :list="showSubList" @submitForm="handlerSubmit" />
+    </el-dialog>
   </div>
 </template>
 
@@ -188,7 +196,12 @@ export default {
     return {
 
       showSubList: [],
-      // popoverOpenCom: false,
+      popoverOpenCom: false,
+      mtype: '1',
+      subsidiesClone: [],
+      deductionClone: [],
+      selecedName: [],
+      jianData: [],
       // fixed: [], // 固定的规则
       // title12: '',
       // open12: false,
@@ -201,6 +214,7 @@ export default {
       deliveryCashFee: undefined,
       // 遮罩层
       loading: false,
+      loading1: false,
       // 评价列表
       adjustlist: [],
       // 查询参数
@@ -227,7 +241,7 @@ export default {
   //   }
   // },
   created() {
-    this.getRuleLists();
+
   },
 
   methods: {
@@ -275,10 +289,10 @@ export default {
         // taxPayment
       };
       if (this.loading) return;
-      this.loading = true;
+      this.loading1 = true;
       try {
         const { data } = await calculateFee(parame);
-        this.loading = false;
+        this.loading1 = false;
         const {
           deliveryFeeDeserved, //	司机应收运费	number
           driverRealFee, //	司机实收金额	number
@@ -305,7 +319,7 @@ export default {
         row.m0Fee = m0Fee;
         row.loss = loss;
       } catch (error) {
-        this.loading = false;
+        this.loading1 = false;
         return;
       }
     },
@@ -313,6 +327,32 @@ export default {
     /** 提交按钮 */
     async submitForm() {
       const boList = this.adjustlist.map(e => {
+        const aa1 = (e.deductionFreightList || []).map(e => {
+          return {
+            ...e,
+            $_disabled: undefined,
+            ee: undefined,
+            updateTime: undefined,
+            updateCode: undefined,
+            isDel: undefined,
+            createCode: undefined,
+            createTime: undefined
+          };
+        });
+        const bb1 = (e.subsidiesFreightList || []).map(e => {
+          return {
+            ...e,
+            $_disabled: undefined,
+            ee: undefined,
+            updateTime: undefined,
+            updateCode: undefined,
+            isDel: undefined,
+            createCode: undefined,
+            createTime: undefined
+          };
+        });
+
+
         return {
           'deduction': e.deduction,
           'deliveryCashFee': e.deliveryCashFee,
@@ -320,7 +360,7 @@ export default {
           'deliveryFeePractical': e.deliveryFeePractical,
           'driverAddFee': e.driverAddFee,
           'driverReductionFee': e.driverReductionFee,
-          'freightList': (e.deductionFreightList || []).concat(e.subsidiesFreightList),
+          'freightList': aa1.concat(bb1),
           'freightPrice': e.freightPrice,
           'goodsPrice': e.goodsPrice,
           'loadWeight': e.loadWeight,
@@ -350,6 +390,7 @@ export default {
         this.msgSuccess('核算成功');
         this.visible = false;
         this.$emit('refresh');
+        // this.showSubList = [];
       });
     },
     /** 查询核算列表 */
@@ -358,20 +399,36 @@ export default {
       adjustDetail(this.queryParams).then(response => {
         this.adjustlist = JSON.parse(JSON.stringify(response.data));
 
-        const felexes = [...this.adjustlist[0].subsidiesFreightList, ...this.adjustlist[0].deductionFreightList];
-        this.showSubList = this.showSubList.filter(e => {
-          let bool = true;
+        this.subsidiesClone = this.adjustlist[0].subsidiesFreightList;
+        this.deductionClone = this.adjustlist[0].deductionFreightList;
 
+        const felexes = [...this.subsidiesClone, ...this.deductionClone];
+        let waybillCode = '';
+
+        this.showSubList.forEach(e => {
           felexes.forEach(ee => {
             if (e.enName === ee.enName) {
-              bool = false;
+              e.ee = ee;
+              !waybillCode && (waybillCode = ee.waybillCode);
             }
           });
+        });
 
-          return bool;
+
+
+        this.showSubList = this.showSubList.map(e => {
+          e.waybillCode = waybillCode;
+          e.ruleValue = 0;
+          if (e.ee) {
+            e = e.ee;
+            e.ee = null;
+            e.$_disabled = true;
+          }
+          return e;
         });
 
         console.log(this.showSubList);
+
         this.total = response.total;
         this.loading = false;
       });
@@ -391,6 +448,7 @@ export default {
 
     /** 取消按钮 */
     cancel() {
+      // this.showSubList = [];
       this.close();
     },
     // 关闭弹窗
@@ -399,6 +457,7 @@ export default {
     },
     // 获取列表
     setForm(data) {
+      this.getRuleLists();
       this.isEdit2 = false;
       this.isEdit = false;
       this.deliveryCashFee = undefined;
@@ -407,9 +466,59 @@ export default {
     },
 
     // 处理增减
-    // handlerPlus() {
-    //   this.popoverOpenCom = true;
-    // },
+    handlerClick() {
+      // 过滤增
+      const a1 = this.adjustlist[0].subsidiesFreightList.filter(e => {
+        return !e.$_disabled;
+      });
+      // 过滤减(做禁止操作)
+      this.jianData = this.adjustlist[0].deductionFreightList.filter(e => {
+        return !e.$_disabled;
+      });
+      this.selecedName = (a1).map(e => e.cnName);
+      this.mtype = '1';
+      this.popoverOpenCom = true;
+    },
+    handlerdeduc() {
+      // 同上
+      const a1 = this.adjustlist[0].deductionFreightList.filter(e => {
+        return !e.$_disabled;
+      });
+      this.jianData = this.adjustlist[0].subsidiesFreightList.filter(e => {
+        return !e.$_disabled;
+      });
+      this.selecedName = (a1).map(e => e.cnName);
+      this.mtype = '2';
+      this.popoverOpenCom = true;
+    },
+
+    handlerSubmit(arr) {
+      this.popoverOpenCom = false;
+
+      // 如果是增
+      if (this.mtype === '1') {
+        this.adjustlist.forEach(e => {
+          const arrv = arr.map(e => {
+            e.type = this.mtype;
+            return e;
+          });
+
+          e.subsidiesFreightList = this.subsidiesClone.concat(arrv);
+        });
+      } else {
+        // 如果是减
+        this.adjustlist.forEach(e => {
+          const arrv = arr.map(e => {
+            e.type = this.mtype;
+            return e;
+          });
+
+          e.deductionFreightList = this.deductionClone.concat(arrv);
+        });
+      }
+
+      console.log(this.adjustlist);
+    },
 
     /* 计算价格 */
     _sum(arr = []) {
