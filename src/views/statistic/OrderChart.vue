@@ -104,7 +104,7 @@ export default {
           data: this.timeData
         },
         yAxis: {
-          name: '订单数',
+          name: typeName + '数',
           nameTextStyle: {
             color: '#D5EAFF',
             paddingLeft: '2%',
