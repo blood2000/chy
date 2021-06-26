@@ -1,7 +1,7 @@
 <template>
   <el-dialog class="i-adjust" :title="title" :visible="visible" width="1400px" :close-on-click-modal="false" append-to-body @close="cancel">
 
-    <el-table v-loading="loading" highlight-current-row :data="adjustlist" border :row-class-name="tableRowClassName">
+    <el-table v-loading="loading" height="650" highlight-current-row :data="adjustlist" border :row-class-name="tableRowClassName">
 
       <el-table-column width="160" label="运输单号" show-overflow-tooltip align="center" prop="waybillNo" />
 
