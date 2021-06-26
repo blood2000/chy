@@ -78,7 +78,6 @@
           <el-form-item label="清分规则" prop="distributionRule">
             <el-select
               v-model="form.distributionRule"
-              clearable
               filterable
               class="width90"
             >
@@ -92,8 +91,11 @@
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item :label="form.distributionRule == 1?'清分百分比(%)':'清分金额'" prop="distributionPercent">
-            <el-input-number v-model="form.distributionPercent" controls-position="right" :precision="2" placeholder="请输入清分百分比" :step="1" :min="0" :max="100" class="width90" clearable />
+          <el-form-item v-if="form.distributionRule == 1" label="清分百分比(%)" prop="distributionPercent" :rules="[{ required: true, message: '清分百分比不能为空', trigger: ['blur', 'change'] }]">
+            <el-input-number v-model="form.distributionPercent" controls-position="right" :precision="2" :step="1" :min="0.01" :max="100" class="width90" clearable />
+          </el-form-item>
+          <el-form-item v-else label="清分金额" prop="distributionPercent" :rules="[{ required: true, message: '清分金额不能为空', trigger: ['blur', 'change'] }]">
+            <el-input-number v-model="form.distributionPercent" controls-position="right" :precision="2" :step="1" :min="0.01" :max="100000000" class="width90" clearable />
           </el-form-item>
         </el-col>
       </el-row>
