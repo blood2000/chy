@@ -393,7 +393,6 @@ export default {
       ],
       // 审核状态字典
       statusOptions: [
-        { dictLabel: '全部', dictValue: null },
         { dictLabel: '未审核', dictValue: 0 },
         { dictLabel: '审核中', dictValue: 1 },
         { dictLabel: '审核未通过', dictValue: 2 },
@@ -408,7 +407,6 @@ export default {
       ],
       // 是否绑定银行卡
       bindBankCardOptions: [
-        { dictLabel: '全部', dictValue: null },
         { dictLabel: '是', dictValue: 0 },
         { dictLabel: '否', dictValue: 1 }
       ],
