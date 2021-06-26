@@ -142,6 +142,7 @@ export default {
     .s-container__box{
       &:not(:last-child)::before{
         right: 0.8rem;
+        display: none;
       }
     }
   }

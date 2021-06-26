@@ -63,6 +63,7 @@
         :yoy.sync="dataList.newTransportYoy"
         :yoy-type.sync="dataList.newTransportYoyType"
         :yoy-places="1"
+        :has-change-unit="true"
       />
     </div>
     <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 21%">
@@ -82,6 +83,7 @@
         :yoy.sync="dataList.newKilometreYoy"
         :yoy-type.sync="dataList.newKilometreYoyType"
         :yoy-places="1"
+        :has-change-unit="true"
       />
     </div>
     <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 17%">
@@ -102,6 +104,7 @@
         :yoy.sync="dataList.newHaulageTimeYoy"
         :yoy-type.sync="dataList.newHaulageTimeYoyType"
         :yoy-places="1"
+        :has-change-unit="true"
       />
     </div>
   </div>

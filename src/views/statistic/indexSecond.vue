@@ -9,11 +9,11 @@
 
     <!-- left -->
     <div class="ly-left ly-border">
-      <div class="ly-left-top mb1rem ly-border">
+      <div class="ly-left-top mb05rem ly-border">
         <Title class="title_3" icon="2">用户概览<span>User situation</span></Title>
         <UserInfo ref="UserInfoRef" :branch-code="branchCode" :is-second="true" />
       </div>
-      <div class="ly-left-center mb1rem ly-border">
+      <div class="ly-left-center mb05rem ly-border">
         <Title class="title_3" icon="3">运力情况<span>Capacity situation</span></Title>
         <CapacityInfo ref="CapacityInfoRef" :branch-code="branchCode" :is-scale="!!$route.query.isScale" />
       </div>
@@ -22,7 +22,7 @@
           <div class="ly-left-bottom-left ly-border">
             <div class="ly-left-bottom-left-top ly-border">
               <Title class="title_4 mb05rem" icon="4" :show-time="true" :time-text="timeText">货运类型排行<span>Freight Type list</span></Title>
-              <div class="ly-left-bottom-left-box ly-border">
+              <div class="ly-left-bottom-left-box mb05rem ly-border">
                 <FreightTypeRanking ref="FreightTypeRankingRef" :time-key="timeKey" :branch-code="branchCode" />
               </div>
             </div>
@@ -34,8 +34,9 @@
             </div>
           </div>
           <div class="ly-left-bottom-right ly-border">
-            <Title class="title_4 mb05rem" icon="4" :show-time="true" :time-text="timeText">承运排行<span>Shipping list</span></Title>
-            <DriverTop5List ref="DriverTop5ListRef" :time-key="timeKey" :show-top="false" style="height: calc(100% - 2.1rem);padding-top: 0.5rem;" />
+            <Title class="title_4 mb1rem" icon="4" :show-time="true" :time-text="timeText">承运排行<span>Shipping list</span></Title>
+            <!-- 正常高度: height: calc(100% - 2.1rem) -->
+            <DriverTop5List ref="DriverTop5ListRef" :time-key="timeKey" :show-top="false" style="height: calc(100% - 1.6rem);" />
           </div>
         </div>
       </div>
@@ -443,11 +444,14 @@ export default {
     width: $width_left;
     height: 100%;
     float: left;
-    .ly-left-top, .ly-left-center {
-      height: calc(21.87% - #{$mb1rem});
+    .ly-left-top {
+      height: calc(21.8% - #{$mb05rem});
+    }
+    .ly-left-center{
+      height: calc(23.2% - #{$mb05rem});
     }
     .ly-left-bottom {
-      height: calc(100% - 21.87% * 2);
+      height: 55%;
       .ly-left-bottom-box{
         height: 100%;
         .ly-left-bottom-left {
