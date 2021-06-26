@@ -2,7 +2,7 @@
   <div>
     <el-checkbox-group v-model="checkGroup" size="medium" class="ml20">
       <el-row>
-        <el-col v-for="item in formGroup" :key="item.code" class="mb20" :span="8">
+        <el-col v-for="item in showSubList" :key="item.code" class="mb20" :span="8">
           <el-checkbox :label="item.cnName" border />
         </el-col>
       </el-row>
@@ -22,6 +22,9 @@ export default {
     return {
       checkGroup: []
     };
+  },
+  created() {
+    console.log(this.showSubList);
   }
 };
 </script>

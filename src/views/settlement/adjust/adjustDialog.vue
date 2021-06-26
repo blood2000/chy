@@ -356,24 +356,24 @@ export default {
 
         const felexes = [...this.adjustlist[0].subsidiesFreightList, ...this.adjustlist[0].deductionFreightList];
 
-        console.log(felexes);
+        // console.log(felexes);
 
-        // this.showSubList.forEach(e => {
-        //   felexes.forEach(ee => {
-        //     if (e.enName === ee.enName) {
-        //       e.ee = ee;
-        //     }
-        //   });
-        // });
-        // this.showSubList = this.showSubList.map(e => {
-        //   if (e.ee) {
-        //     e = e.ee;
-        //     e.$_disabled = true;
-        //     e.ee = undefined;
-        //   }
-        //   return e;
-        // });
-        // console.log(this.showSubList);
+        this.showSubList.forEach(e => {
+          felexes.forEach(ee => {
+            if (e.enName === ee.enName) {
+              e.ee = ee;
+            }
+          });
+        });
+        this.showSubList = this.showSubList.map(e => {
+          if (e.ee) {
+            e = e.ee;
+            e.$_disabled = true;
+            e.ee = undefined;
+          }
+          return e;
+        });
+        console.log(this.showSubList);
         // this.$forceUpdate();
 
 
