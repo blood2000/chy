@@ -1,6 +1,6 @@
 <template>
   <el-dialog :class="[{'i-add':title==='新增'},{'i-check':title==='审核'}]" :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
+    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="170px">
       <el-form-item label="发货人/发货企业" prop="shipperType">
         <el-select
           v-model="form.shipperType"
@@ -204,6 +204,21 @@
           <el-input-number v-model="form.serviceRatio" controls-position="right" :precision="2" placeholder="请输入服务费比例" :step="1" :min="0" :max="100" class="width90" clearable />
         </el-form-item>-->
       </template>
+        <el-form-item label="票务规则" prop="payInvoiceType">
+            <el-select
+                    v-model="form.payInvoiceType"
+                    clearable
+                    filterable
+                    class="width90"
+            >
+                <el-option
+                        v-for="dict in payInvoiceTypeOptions"
+                        :key="dict.dictValue"
+                        :label="dict.dictLabel"
+                        :value="dict.dictValue"
+                />
+            </el-select>
+        </el-form-item>
       <!-- <el-form-item label="是否冻结" prop="isFreezone">
         <el-select
           v-model="form.isFreezone"
@@ -243,21 +258,6 @@
         >
           <el-option
             v-for="dict in isOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="票务规则" prop="payInvoiceType">
-        <el-select
-          v-model="form.payInvoiceType"
-          clearable
-          filterable
-          class="width90"
-        >
-          <el-option
-            v-for="dict in payInvoiceTypeOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
             :value="dict.dictValue"
@@ -482,6 +482,19 @@
           </el-form-item>
         </el-col>
       </el-row>
+        <el-row :gutter="20">
+            <el-col :span="11">
+                <el-form-item label="允许未审核司机/车辆接单" prop="allowNoAuditDriverToReceive">
+                    <el-radio-group v-model="form.allowNoAuditDriverToReceive">
+                        <el-radio
+                                v-for="dict in allowOptions"
+                                :key="dict.dictValue"
+                                :label="parseInt(dict.dictValue)"
+                        >{{ dict.dictLabel }}</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+            </el-col>
+        </el-row>
       <el-row :gutter="20">
         <el-col :span="8">
           <el-form-item prop="noNeedUnloadImg">
@@ -914,6 +927,7 @@ export default {
         singleSourceMultiLoadingLocations: 1,
         singleSourceMultiUnloadingLocations: 1,
         editDriverActualAmount: 1,
+        allowNoAuditDriverToReceive: 1,
         creditStartTime: null,
         creditEndTime: null
         // branchCode: null
@@ -978,6 +992,7 @@ export default {
             }
             if (data.number) {
               this.$set(this.form, 'identificationNumber', data.number);
+              this.$set(this.form, 'artificialIdentificationNumber', data.number);
             } else {
               this.$set(this.form, 'identificationNumber', '');
             }
@@ -1005,11 +1020,25 @@ export default {
             }
           }
           break;
+        // 营业执照
         case 'business-license':
-          if (data.registration_number) {
-            this.$set(this.form, 'businessLicenseNo', data.registration_number);
+          // 公司名称
+          if (data.name) {
+            this.$set(this.form, 'companyName', data.name);
           } else {
-            this.$set(this.form, 'businessLicenseNo', '');
+            this.$set(this.form, 'companyName', '');
+          }
+          // 统一信用代码
+          if (data.registration_number) {
+            this.$set(this.form, 'organizationCodeNo', data.registration_number);
+          } else {
+            this.$set(this.form, 'organizationCodeNo', '');
+          }
+          // 法人姓名
+          if (data.legal_representative) {
+            this.$set(this.form, 'artificialName', data.legal_representative);
+          } else {
+            this.$set(this.form, 'artificialName', '');
           }
           break;
         default:
