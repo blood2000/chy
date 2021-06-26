@@ -240,7 +240,7 @@
       </el-col>
     </el-row>
     <div class="waybill-title"><div class="waybill-icon" />轨迹<div class="waybill-divider" /></div>
-    <div style="height:600px;width:100%;padding: 0 30px;">
+    <div v-if="form.code" style="height:600px;width:100%;padding: 0 30px;">
       <Track :waybill="form" />
       <div class="waybill-detail-frame">
         <div class="waybill-detail-card">
@@ -325,25 +325,6 @@ export default {
       formCommentDriver: {},
       formCommentShipment: {},
       // timeLineList: [],
-      // 地图
-      queryParams: {
-        begin_time: '2021-03-22 08:00:00',
-        end_time: '2021-03-22 09:00:00',
-        imeis: '867567047562525',
-        map_type: 'GOOGLE' // GOOGOLE或BAIDU
-      },
-      zoom: 16,
-      center: [116.478928, 39.997761],
-      polyline: {
-        path: []
-      },
-      markers: [{
-        icon: 'https://webapi.amap.com/theme/v1.3/markers/n/start.png',
-        position: []
-      }, {
-        icon: 'https://webapi.amap.com/theme/v1.3/markers/n/end.png',
-        position: []
-      }],
       loading: false
     };
   },
@@ -404,25 +385,6 @@ export default {
       getWaybillComment(this.currentId, 0).then(response => {
         this.formCommentShipment = response.data ? response.data[0] : null;
       });
-      // 轨迹
-      // jimiTrackLocation(this.queryParams).then(response => {
-      //   const tracklist = response.data.result.map(function(response) {
-      //     return [response.lng, response.lat];
-      //   });
-      //   this.polyline.path = tracklist || [];
-      //   if (tracklist.length > 0) {
-      //     this.center = tracklist[0];
-      //     this.markers[0].position = tracklist[0];
-      //     this.markers[1].position = tracklist[tracklist.length - 1];
-      //   }
-      // });
-      // 轨迹时间线
-      // getWaybillTrace(this.currentId).then(response => {
-      //   // console.log(response);
-      //   response.data.forEach(el => {
-      //     this.timeLineList.unshift(el);
-      //   });
-      // });
     },
     // 取消按钮
     cancel() {

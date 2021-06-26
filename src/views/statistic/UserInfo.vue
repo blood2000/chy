@@ -22,7 +22,7 @@
       </div>
     </div>
     <div class="s-container__box ly-flex-pack-start big">
-      <div class="s-container__box__info ly-flex-pack-justify ly-flex-v">
+      <div class="s-container__box__info left ly-flex-pack-justify ly-flex-v">
         <InfoBox
           label="总货主数"
           :count="dataList.shipmentUserCount"
@@ -40,7 +40,7 @@
           :is-blod="true"
         />
       </div>
-      <div v-if="isSecond" class="s-container__box__info ly-flex-pack-justify ly-flex-v">
+      <div v-if="isSecond" class="s-container__box__info right ly-flex-pack-justify ly-flex-v">
         <InfoBox
           label="月活跃数"
           :count="dataList.activeShipment"
@@ -49,7 +49,7 @@
       </div>
     </div>
     <div class="s-container__box ly-flex-pack-start big">
-      <div class="s-container__box__info ly-flex-pack-justify ly-flex-v">
+      <div class="s-container__box__info left ly-flex-pack-justify ly-flex-v">
         <InfoBox
           label="总调度者"
           :count="dataList.teamUserCount"
@@ -67,7 +67,7 @@
           :is-blod="true"
         />
       </div>
-      <div v-if="isSecond" class="s-container__box__info ly-flex-pack-justify ly-flex-v">
+      <div v-if="isSecond" class="s-container__box__info right ly-flex-pack-justify ly-flex-v">
         <InfoBox
           label="月活跃数"
           :count="dataList.activeTeam"
@@ -76,7 +76,7 @@
       </div>
     </div>
     <div class="s-container__box ly-flex-pack-start big last">
-      <div class="s-container__box__info ly-flex-pack-justify ly-flex-v">
+      <div class="s-container__box__info left ly-flex-pack-justify ly-flex-v">
         <InfoBox
           label="总司机"
           :count="dataList.driverUserCount"
@@ -94,7 +94,7 @@
           :is-blod="true"
         />
       </div>
-      <div v-if="isSecond" class="s-container__box__info ly-flex-pack-justify ly-flex-v">
+      <div v-if="isSecond" class="s-container__box__info right ly-flex-pack-justify ly-flex-v">
         <InfoBox
           label="月活跃数"
           :count="dataList.activeDriver"
@@ -204,7 +204,12 @@ export default {
       &.big{
         width: 27%;
         >.s-container__box__info{
-          width: 50%;
+          &.left{
+            width: 60%;
+          }
+          &.right{
+            width: 40%;
+          }
         }
       }
       &.last{

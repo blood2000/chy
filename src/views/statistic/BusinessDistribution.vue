@@ -12,12 +12,18 @@
         <div class="text">{{ item.percentage + '%' }}</div>
       </li>
     </ul>
-    <ul class="s-container__right">
-      <li v-for="(item, index) in goodList" :key="index" class="ly-flex-pack-start ly-flex-align-center">
-        <p class="index">{{ index + 1 }}</p>
-        <p class="text">{{ `${item.goodsBigTypeName}(${item.percentage}%)` }}</p>
-      </li>
-    </ul>
+    <div v-show="goodList.length > 0" class="s-container__right">
+      <h5 class="g-single-row">
+        <img src="@/assets/images/statistic/arrow_before.png">
+        {{ dataList.length > 0 ? dataList[currentIndex].regionName : '' }}
+      </h5>
+      <ul>
+        <li v-for="(item, index) in goodList" :key="index" class="ly-flex-pack-start ly-flex-align-center">
+          <p class="index">{{ index + 1 }}</p>
+          <p class="text">{{ `${item.goodsBigTypeName}(${item.percentage}%)` }}</p>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -93,7 +99,7 @@ export default {
   &__left{
     width: 64%;
     height: 100%;
-    padding: 0.3rem 1rem 0.3rem 0;
+    padding: 0.3rem 2rem 0.3rem 0;
     >li{
       >.label{
           width: 1.5rem;
@@ -107,15 +113,15 @@ export default {
           text-overflow: ellipsis;
         }
         >.line{
-          width: 11.2rem;
+          width: 10.5rem;
           height: 0.4rem;
           .value{
             width: 0%;
             height: 100%;
-            background: linear-gradient(93deg, #9C4DDC, #3397F4);
+            background: linear-gradient(93deg, #0070E3, #60DCEC);
             border-radius: 0px 0.2rem 0.2rem 0px;
           }
-          opacity: 0.4;
+          opacity: 0.3;
           transition: opacity 0.3s;
           &.current{
             opacity: 1;
@@ -135,32 +141,54 @@ export default {
   &__right{
     width: 36%;
     height: 100%;
-    border: 0.05rem solid rgba(82, 129, 237, 0.4);
-    padding: 0.3rem 0.55rem;
-    >li{
-      height: 20%;
-      .index{
-        width: 0.9rem;
-        height: 0.9rem;
-        line-height: 0.9rem;
-        background: linear-gradient(144deg, #1F91FF, #A965FD);
-        border-radius: 50%;
-        text-align: center;
-        font-size: 0.6rem;
-        font-family: PingFang Regular;
-        font-weight: 500;
-        color: #FFFFFF;
-        margin-right: 0.5rem;
+    padding-top: 0.5rem;
+    >h5{
+      height: 1.1rem;
+      line-height: 0.7rem;
+      font-size: 0.75rem;
+      font-family: PingFang SC;
+      font-weight: bold;
+      color: #01B6F9;
+      background: url('~@/assets/images/statistic/arrow_bg.png') no-repeat;
+      background-size: 100% 100%;
+      padding-right: 60%;
+      margin-bottom: 0.4rem;
+      >img{
+        width: 0.25rem;
+        height: 0.4rem;
+        vertical-align: middle;
+        margin-top: -0.2rem;
+        margin-right: 0.1rem;
       }
-      .text{
-        width: calc(100% - 1rem);
-        font-size: 13px;
-        font-family: PingFang Regular;
-        font-weight: 500;
-        color: #CDEDFF;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
+    }
+    >ul{
+      height: calc(100% - 1.5rem);
+      >li{
+        height: 20%;
+        .index{
+          width: 0.9rem;
+          height: 0.9rem;
+          line-height: 0.7rem;
+          background: rgba(26, 73, 129, 0.6);
+          border-radius: 50%;
+          text-align: center;
+          font-size: 0.6rem;
+          font-family: PingFang Regular;
+          font-weight: 500;
+          color: #FFFFFF;
+          margin-right: 0.5rem;
+          border: 0.1rem solid rgba(44, 211, 240, 0.6);
+        }
+        .text{
+          width: calc(100% - 1rem);
+          font-size: 13px;
+          font-family: PingFang Regular;
+          font-weight: 500;
+          color: #CDEDFF;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
       }
     }
   }

@@ -166,10 +166,10 @@ export default {
   width: 100%;
   height: 50%;
   >.label{
-    font-size: 0.6rem;
+    font-size: 0.65rem;
     font-weight: 200;
     color: rgba(213, 234, 255, 1);
-    line-height: 1rem;
+    line-height: 1.1rem;
     font-family: PingFang Regular;
   }
   >.text{
@@ -280,10 +280,10 @@ export default {
   // 用户字体样式
   &.s-info-box--user{
     >.label{
-      color: #9CAFD0;
+      //color: #9CAFD0;
     }
     >.text{
-      font-family: PingFang Regular;
+      //font-family: PingFang Regular;
     }
   }
 }
