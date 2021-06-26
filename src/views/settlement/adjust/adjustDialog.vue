@@ -76,9 +76,9 @@
             <span>补贴项目
               <el-button type="text" @click="isEdit2 = !isEdit2"><i class="el-icon-edit" /></el-button>
 
-              <!-- <el-button type="text" @click="handlerPlus"><i class="el-icon-plus" /></el-button> -->
+              <el-button type="text" @click="handlerPlus"><i class="el-icon-plus" /></el-button>
               <!-- 1: 是增 2: 是减 -->
-              <PopoverCom :list="showSubList" />
+
             </span>
 
           </template>
@@ -154,7 +154,9 @@
       </div>
     </el-dialog>
 
-
+    <el-dialog :title="'规则'" class="i-price" :visible.sync="popoverOpenCom" width="900px" append-to-body>
+      <PopoverCom :list="showSubList" />
+    </el-dialog>
   </div>
 </template>
 
@@ -182,6 +184,7 @@ export default {
     return {
 
       showSubList: [],
+      popoverOpenCom: false,
       // fixed: [], // 固定的规则
       // title12: '',
       // open12: false,
@@ -353,17 +356,26 @@ export default {
 
         const felexes = [...this.adjustlist[0].subsidiesFreightList, ...this.adjustlist[0].deductionFreightList];
 
+        console.log(felexes);
 
+        // this.showSubList.forEach(e => {
+        //   felexes.forEach(ee => {
+        //     if (e.enName === ee.enName) {
+        //       e.ee = ee;
+        //     }
+        //   });
+        // });
+        // this.showSubList = this.showSubList.map(e => {
+        //   if (e.ee) {
+        //     e = e.ee;
+        //     e.$_disabled = true;
+        //     e.ee = undefined;
+        //   }
+        //   return e;
+        // });
+        // console.log(this.showSubList);
+        // this.$forceUpdate();
 
-        this.showSubList.forEach(e => {
-          felexes.forEach(ee => {
-            if (e.enName === ee.enName) {
-              e.ee = ee;
-              e.$_disabled = true;
-            }
-          });
-        });
-        console.log(this.showSubList);
 
         this.total = response.total;
         this.loading = false;
@@ -401,10 +413,7 @@ export default {
 
     // 处理增减
     handlerPlus() {
-      this.$refs.RulesDialog.reset();
-      this.open12 = true;
-      this.title12 = '添加';
-      this.$refs.RulesDialog.setLossList();
+      this.popoverOpenCom = true;
     },
 
     /* 计算价格 */
