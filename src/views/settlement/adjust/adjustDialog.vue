@@ -484,6 +484,7 @@ export default {
         return !e.$_disabled;
       });
       this.selecedName = (a1).map(e => e.cnName);
+
       this.mtype = '1';
       this.popoverOpenCom = true;
     },
