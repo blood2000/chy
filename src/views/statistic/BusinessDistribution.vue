@@ -168,7 +168,7 @@ export default {
         .index{
           width: 0.9rem;
           height: 0.9rem;
-          line-height: 0.7rem;
+          line-height: 0.75rem;
           background: rgba(26, 73, 129, 0.6);
           border-radius: 50%;
           text-align: center;

@@ -19,7 +19,6 @@
       >
         <el-col :span="1.5">
           <el-button
-            v-hasPermi="['transportation:waybillBalanceInfo:batchCheck']"
             type="primary"
             icon="el-icon-document-checked"
             size="mini"
@@ -34,7 +33,7 @@
           <el-button type="success" plain size="mini" @click="()=>{sortName = 'ztcName'}">以渣土场排序</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button v-hasPermi="['transportation:icCheck:checkList']" type="success" size="mini" @click="nuclearCardOpen">核销IC卡</el-button>
+          <el-button type="success" size="mini" @click="nuclearCardOpen">核销IC卡</el-button>
         </el-col>
         <el-col :span="1.5" class="fr">
           <!-- api 使用computed -->

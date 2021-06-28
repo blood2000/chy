@@ -8,8 +8,8 @@
       </el-radio-group>
     </div>
 
-    <IndexOne v-show="activeName=='0'" />
-    <MuckProject v-show="activeName=='1'" :status="-1" />
+    <IndexOne v-if="activeName=='0'" />
+    <MuckProject v-if="activeName=='1'" :status="-1" />
 
 
   </div>

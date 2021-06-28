@@ -122,13 +122,6 @@
       <el-col :span="5" class="text-row">
         {{ form.balanceVo.deliveryCashFee || '0.00' }}
       </el-col>
-
-      <el-col :span="3" class="text-label">
-        平台服务费用：
-      </el-col>
-      <el-col :span="5" class="text-row">
-        {{ form.balanceVo.serviceFee || '0.00' }}
-      </el-col>
       <el-col :span="3" class="text-label">
         司机实收运费（元）：
       </el-col>
@@ -136,19 +129,24 @@
         {{ form.balanceVo.deliveryFeePractical || '0.00' }}
       </el-col>
 
-      <el-col :span="3" class="text-label">
+      <!-- <el-col :span="3" class="text-label">
         平台服务税费：
       </el-col>
       <el-col :span="5" class="text-row">
         {{ form.balanceVo.serviceTaxFee || '0.00' }}
-      </el-col>
+      </el-col> -->
       <el-col :span="3" class="text-label">
         司机应收运费（元）：
       </el-col>
       <el-col :span="5" class="text-row">
         {{ form.balanceVo.deliveryFeeDeserved || '0.00' }}
       </el-col>
-
+      <el-col :span="3" class="text-label">
+        平台服务费用：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.balanceVo.serviceFee || '0.00' }}
+      </el-col>
       <el-col :span="3" class="text-label">
         不含税价：
       </el-col>
