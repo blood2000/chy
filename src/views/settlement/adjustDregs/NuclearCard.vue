@@ -168,13 +168,13 @@ export default {
         }
 
         // 读取文件失败
-        // if (ret.code === '6A82') {
-        //   if (ret.userInfo) {
-        //     this.userInfo = ret.userInfo;
-        //   }
-        //   this.msgWarning(ret.msg);
-        //   // return;
-        // }
+        if (ret.code === '6A82') {
+          if (ret.userInfo) {
+            this.userInfo = ret.userInfo;
+          }
+          this.msgWarning(ret.msg);
+          return;
+        }
 
         // 其他失败
         if (ret.code !== '9000' || (!ret.success && ret.code === '9000')) {
