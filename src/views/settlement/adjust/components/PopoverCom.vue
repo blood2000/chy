@@ -59,6 +59,7 @@ export default {
         this.list.forEach(ee => {
           if (ee.cnName === e) {
             bb = ee;
+            bb.ruleItemCode = ee.code;
           }
         });
         return bb;
