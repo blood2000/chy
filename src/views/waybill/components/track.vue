@@ -124,8 +124,9 @@ export default {
     },
     /** 获取轨迹 */
     getTrackLocation() {
-      if (this.trackChange === 0) {
-        this.getLieyingTime();
+      if (this.wayBillInfo.fillTime) {
+        if (this.trackChange === 0) {
+          this.getLieyingTime();
         // 获取APP轨迹
         // axios.get('https://tsapi.amap.com/v1/track/terminal/trsearch', { params: this.lieyingQueryParams }).then(response => {
         //   // console.log(response);
@@ -149,28 +150,28 @@ export default {
         //     this.getRoutePlan();
         //   }
         // });
-      } else if (this.trackChange === 1) {
+        } else if (this.trackChange === 1) {
         // 获取硬件轨迹
-        jimiTrackLocation(this.jimiQueryParams).then(response => {
+          jimiTrackLocation(this.jimiQueryParams).then(response => {
           // console.log(response.data.result);
-          if (response.data.result) {
-            this.tracklist = response.data.result.map(function(response) {
-              return [response.lng, response.lat];
-            });
-            if (this.tracklist.length !== 0) {
+            if (response.data.result) {
+              this.tracklist = response.data.result.map(function(response) {
+                return [response.lng, response.lat];
+              });
+              if (this.tracklist.length !== 0) {
               // 绘制轨迹
-              this.drawPolyline(this.tracklist);
-              if (!this.wayBillInfo.signTime) {
-                this.getVehicleMark();
-              }
-            } else {
+                this.drawPolyline(this.tracklist);
+                if (!this.wayBillInfo.signTime) {
+                  this.getVehicleMark();
+                }
+              } else {
               // 获取高德地图路线规划
-              this.getRoutePlan();
+                this.getRoutePlan();
+              }
             }
-          }
-        });
-      } else if (this.trackChange === 2) {
-        this.getZjxlTime();
+          });
+        } else if (this.trackChange === 2) {
+          this.getZjxlTime();
         // zjxlTrackLocation(this.zjxlQueryParams).then(response => {
         //   console.log(response);
         //   const str = JSON.parse(response.msg);
@@ -192,6 +193,10 @@ export default {
         //     }
         //   }
         // });
+        }
+      } else {
+        // 获取高德地图路线规划
+        this.getRoutePlan();
       }
     },
     // 猎鹰循环判断开始时间与结束时间
