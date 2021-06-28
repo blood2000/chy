@@ -100,7 +100,6 @@ export default {
       set(v) {
         if (!v) {
           this.adjustlist = [];
-          console.log(this.list);
         }
         this.$emit('update:open', v);
       }
@@ -158,7 +157,7 @@ export default {
       }
 
 
-      console.log(arr, '出啊发发');
+      // console.log(arr, '出啊发发');
 
       return arr;
     }

@@ -105,7 +105,7 @@ import { getBatchStatementList } from '@/api/wallet/wallet';
 // 运单详情弹窗
 // import DetailDialog from '@/views/waybill/components/detailDialog';
 import DriverDialog from './driverDialog';
-import StatementsInfo from '@/views/settlement/adjustDregs/StatementsInfo';
+import StatementsInfo from '@/components/MuckProject/components/StatementsInfo';
 export default {
   name: 'Statement',
   components: {

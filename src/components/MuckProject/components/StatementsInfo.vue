@@ -55,7 +55,7 @@ import { batchRelatedWaybill, BatchInfoListVo } from '@/api/settlement/adjustDre
 
 
 export default {
-  'name': 'AdjustDregs',
+  'name': 'StatementsInfo',
   props: {
     // wayBillCodes: { type: Array, default: () => [] }
     printData: { type: Object, default: () => { return {}; } }
@@ -95,7 +95,7 @@ export default {
   },
   computed: {
     api() {
-      return BatchInfoListVo;
+      return BatchInfoListVo + '--' + 'StatementsInfo';
     }
   },
 

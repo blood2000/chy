@@ -222,7 +222,7 @@ export default {
       // 转帐结果字典
       statusOptions: [
         { dictLabel: '提现申请', dictValue: 0 },
-        { dictLabel: '提交成功', dictValue: 1 },
+        { dictLabel: '提现成功', dictValue: 1 },
         { dictLabel: '转账成功', dictValue: 2 },
         { dictLabel: '转账失败', dictValue: 3 },
         { dictLabel: '处理中', dictValue: 4 },
