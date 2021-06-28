@@ -6,7 +6,7 @@
         <el-input v-model="form.batchNo" disabled placeholder="请输入发票号码" clearable size="small" style="width:90%;" />
       </el-form-item>
       <el-form-item label="发票图片">
-        <uploadImage v-model="form.images" />
+        <uploadImage v-model="form.images" @uploadStatus="uploadStatus" />
       </el-form-item>
       <el-form-item label="收票人姓名" prop="receiveName">
         <el-input v-model="form.receiveName" placeholder="请输入收票人姓名" clearable size="small" style="width:90%;" />
@@ -19,7 +19,7 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="submitForm">立即提交</el-button>
+      <el-button :loading="uploadimgStatus" type="primary" @click="submitForm">立即提交</el-button>
       <el-button @click="cancel">取消</el-button>
     </div>
   </el-dialog>
@@ -46,6 +46,7 @@ export default {
     return {
       // 遮罩层
       loading: true,
+      uploadimgStatus: false,
       // 运单列表
       waybilllist: [],
       // 表单参数
@@ -112,6 +113,12 @@ export default {
       };
       this.resetForm('form');
     },
+    // 触发说明正在上传图片
+    uploadStatus(bool, msg) {
+      // console.log(bool, msg);
+      this.uploadimgStatus = bool;
+    },
+
     // 表单赋值
     setForm(data) {
       this.form = {
