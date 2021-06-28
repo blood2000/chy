@@ -250,13 +250,6 @@
             @click="handleDetail(row, 'review')"
           >审核</el-button>
           <el-button
-            v-if="row.authStatus == 3"
-            v-hasPermi="['assets:driver:get']"
-            size="mini"
-            type="text"
-            @click="handleDetail(row, 'detail')"
-          >详情</el-button>
-          <el-button
             v-show="!teamCode"
             v-hasPermi="['assets:driver:manage']"
             size="mini"
@@ -269,6 +262,13 @@
             type="text"
             @click="handleDetail(row, 'edit')"
           >修改</el-button>
+            <el-button
+                    v-if="row.authStatus == 3"
+                    v-hasPermi="['assets:driver:get']"
+                    size="mini"
+                    type="text"
+                    @click="handleDetail(row, 'detail')"
+            >详情</el-button>
           <template v-if="!teamCode">
             <TableDropdown>
               <el-dropdown-item v-if="row.authStatus != 3">

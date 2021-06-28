@@ -1,11 +1,6 @@
 <template>
   <el-dialog title="货主/企业认证" :visible="visible" width="800px" append-to-body :close-on-click-modal="false" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="140px">
-      <template v-if="form.shipperType === 1">
-        <el-form-item label="企业名称" prop="companyName">
-          <el-input v-model="form.companyName" class="width90" clearable />
-        </el-form-item>
-      </template>
       <el-form-item label="姓名" prop="adminName">
         <el-input v-model="form.adminName" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
@@ -35,12 +30,15 @@
         <el-checkbox v-model="form.identificationEffective">长期有效</el-checkbox>
       </el-form-item>
       <template v-if="form.shipperType === 1">
-        <el-form-item label="法人姓名" prop="artificialName">
+       <!-- <el-form-item label="法人姓名" prop="artificialName">
           <el-input v-model="form.artificialName" placeholder="请输入法人姓名" class="width90" clearable />
         </el-form-item>
         <el-form-item label="法人身份证" prop="artificialIdentificationNumber">
           <el-input v-model="form.artificialIdentificationNumber" placeholder="请输入法人身份证" class="width90" clearable />
-        </el-form-item>
+        </el-form-item>-->
+          <el-form-item label="企业名称" prop="companyName">
+              <el-input v-model="form.companyName" class="width90" clearable />
+          </el-form-item>
         <el-form-item label="统一社会信用代码" prop="organizationCodeNo">
           <el-input v-model="form.organizationCodeNo" class="width90" placeholder="请输入统一社会信用代码" clearable />
         </el-form-item>
@@ -49,7 +47,7 @@
         </el-form-item>-->
       </template>
       <!-- 选择省/市/区 -->
-      <province-city-county
+     <!-- <province-city-county
         ref="ChooseArea"
         :visible="visible"
         :prop-province-code="form.provinceCode"
@@ -60,7 +58,7 @@
           form.cityCode = data.cityCode;
           form.countyCode = data.countyCode;
         }"
-      />
+      />-->
       <el-form-item label="详细地址" prop="area">
         <el-input v-model="form.area" class="width90" clearable placeholder="支持自动识别" />
       </el-form-item>
@@ -78,19 +76,19 @@
             <p class="upload-image-label">本人手持身份证正面</p>
             <upload-image v-model="form.identificationInhandImg" icon-type="idcard_hand" />
           </el-col>-->
-          <el-col v-show="form.shipperType === 1" :span="7">
+         <!-- <el-col v-show="form.shipperType === 1" :span="7">
             <p class="upload-image-label">法人身份证(人像面)</p>
             <upload-image v-model="form.artificialIdentificationImg" icon-type="idcard" />
           </el-col>
           <el-col v-show="form.shipperType === 1" :span="7" class="mt">
             <p class="upload-image-label">法人身份证(国徽面)</p>
             <upload-image v-model="form.artificialIdentificationBackImg" icon-type="idcard_back" />
-          </el-col>
+          </el-col>-->
           <!--<el-col v-show="form.shipperType === 1" :span="7" class="mt">
             <p class="upload-image-label">法人手持身份证照</p>
             <upload-image v-model="form.artificialIdentificationInhandImg" icon-type="idcard_hand" />
           </el-col>-->
-          <el-col v-show="form.shipperType === 1" :span="7" class="mt">
+          <el-col v-show="form.shipperType === 1" :span="7">
             <p class="upload-image-label">营业执照</p>
             <upload-image v-model="form.businessLicenseImg" image-type="business-license" icon-type="organization" @fillForm="fillForm" />
           </el-col>
@@ -108,13 +106,13 @@
 <script>
 import { saveCompanyInfo } from '@/api/enterprise/company/info';
 import UploadImage from '@/components/UploadImage/index';
-import ProvinceCityCounty from '@/components/ProvinceCityCounty';
+// import ProvinceCityCounty from '@/components/ProvinceCityCounty';
 import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
 
 export default {
   components: {
-    UploadImage,
-    ProvinceCityCounty
+    UploadImage
+    // ProvinceCityCounty
   },
   props: {
     open: Boolean,
@@ -220,13 +218,17 @@ export default {
           if (side === 'front') {
             if (data.name) {
               this.$set(this.form, 'adminName', data.name);
+              this.$set(this.form, 'artificialName', data.name);
             } else {
               this.$set(this.form, 'adminName', '');
+              this.$set(this.form, 'artificialName', '');
             }
             if (data.number) {
               this.$set(this.form, 'identificationNumber', data.number);
+              this.$set(this.form, 'artificialIdentificationNumber', data.number);
             } else {
               this.$set(this.form, 'identificationNumber', '');
+              this.$set(this.form, 'artificialIdentificationNumber', '');
             }
             if (data.address) {
               this.$set(this.form, 'area', data.address);

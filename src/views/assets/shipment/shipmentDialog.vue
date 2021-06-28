@@ -1,7 +1,8 @@
 <template>
   <el-dialog :class="[{'i-add':title==='新增'},{'i-check':title==='审核'}]" :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="170px">
-      <el-form-item label="发货人/发货企业" prop="shipperType">
+      <!--  修改：目前只有发货企业 -->
+     <!-- <el-form-item label="发货人/发货企业" prop="shipperType">
         <el-select
           v-model="form.shipperType"
           class="width90"
@@ -13,7 +14,7 @@
             :value="dict.dictValue"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item label="手机号/账号" prop="telphone">
         <el-input v-model="form.telphone" placeholder="请输入手机号/账号" class="width90" clearable />
       </el-form-item>
@@ -23,12 +24,13 @@
       </el-form-item>
       <el-form-item>
         <el-row>
-          <el-col :span="7">
-            <p class="upload-image-label">管理员身份证(人像面)</p>
+            <!--   客服建议去掉合并管理员和法人信息-->
+         <el-col :span="7">
+            <p class="upload-image-label">身份证(人像面)</p>
             <upload-image v-model="form.identificationImg" :disabled="disable" image-type="id-card" side="front" icon-type="idcard" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7">
-            <p class="upload-image-label">管理员身份证(国徽面)</p>
+            <p class="upload-image-label">身份证(国徽面)</p>
             <upload-image v-model="form.identificationBackImg" :disabled="disable" image-type="id-card" side="back" icon-type="idcard_back" @fillForm="fillForm" />
           </el-col>
           <!--   客服建议去掉-->
@@ -36,20 +38,20 @@
             <p class="upload-image-label">手持身份证照</p>
             <upload-image v-model="form.identificationInhandImg" icon-type="idcard_hand" :disabled="disable" />
           </el-col>-->
-          <el-col v-show="form.shipperType === 1" :span="7">
+         <!-- <el-col v-show="form.shipperType === 1" :span="7">
             <p class="upload-image-label">法人身份证(人像面)</p>
-            <upload-image v-model="form.artificialIdentificationImg" icon-type="idcard" :disabled="disable" />
+            <upload-image v-model="form.artificialIdentificationImg" icon-type="idcard" :disabled="disable" @fillForm="fillForm"/>
           </el-col>
-          <el-col v-show="form.shipperType === 1" :span="7" class="mt">
+          <el-col v-show="form.shipperType === 1" :span="7">
             <p class="upload-image-label">法人身份证(国徽面)</p>
-            <upload-image v-model="form.artificialIdentificationBackImg" icon-type="idcard_back" :disabled="disable" />
-          </el-col>
+            <upload-image v-model="form.artificialIdentificationBackImg" icon-type="idcard_back" :disabled="disable" @fillForm="fillForm"/>
+          </el-col>-->
           <!--   客服建议去掉-->
           <!--<el-col v-show="form.shipperType === 1" :span="7" class="mt">
             <p class="upload-image-label">法人手持身份证照</p>
             <upload-image v-model="form.artificialIdentificationInhandImg" icon-type="idcard_hand" :disabled="disable" />
           </el-col>-->
-          <el-col v-show="form.shipperType === 1" :span="7" class="mt">
+          <el-col v-show="form.shipperType === 1" :span="7">
             <p class="upload-image-label">营业执照</p>
             <upload-image v-model="form.businessLicenseImg" :disabled="disable" icon-type="organization" image-type="business-license" @fillForm="fillForm" />
           </el-col>
@@ -146,12 +148,13 @@
         <!-- <el-form-item label="营业执照号" prop="businessLicenseNo">
           <el-input v-model="form.businessLicenseNo" placeholder="支持自动识别" class="width90" clearable />
         </el-form-item>-->
-        <el-form-item label="法人姓名" prop="artificialName">
+         <!-- 与管理员共用-->
+        <!-- <el-form-item label="法人姓名" prop="artificialName">
           <el-input v-model="form.artificialName" placeholder="请输入法人姓名" class="width90" clearable />
         </el-form-item>
         <el-form-item label="法人身份证" prop="artificialIdentificationNumber">
           <el-input v-model="form.artificialIdentificationNumber" placeholder="请输入法人身份证" class="width90" clearable />
-        </el-form-item>
+        </el-form-item>-->
       </template>
       <el-form-item label="票制类别" prop="ticketType">
         <el-select
@@ -494,6 +497,17 @@
             </el-radio-group>
           </el-form-item>
         </el-col>
+          <el-col :span="11">
+              <el-form-item label="是否需要申请打款环节" prop="isNeedApplicationForPayment">
+                  <el-radio-group v-model="form.isNeedApplicationForPayment">
+                      <el-radio
+                              v-for="dict in needOptions"
+                              :key="dict.dictValue"
+                              :label="parseInt(dict.dictValue)"
+                      >{{ dict.dictLabel }}</el-radio>
+                  </el-radio-group>
+              </el-form-item>
+          </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="8">
@@ -570,6 +584,10 @@ export default {
       allowOptions: [
         { dictLabel: '允许', dictValue: 0 },
         { dictLabel: '不允许', dictValue: 1 }
+      ],
+      needOptions: [
+        { dictLabel: '需要', dictValue: 0 },
+        { dictLabel: '不需要', dictValue: 1 }
       ],
       payInvoiceTypeOptions: [
         { dictLabel: '打款成功后', dictValue: '7' },
@@ -801,13 +819,16 @@ export default {
             this.$set(this.form, 'dispatchPoints', ((this.form.texPoint / (100 - this.form.texPoint)) * 100).toFixed(2));
           }
           var noNeedUnloadImg = 0;
-          if (this.form.noNeedUnloadImg) {
+          if (this.form.noNeedUnloadImg === true) {
             noNeedUnloadImg = 1;
           }
           var openProjectDesignView = 1;
-          if (this.form.openProjectDesignView) {
+          if (this.form.openProjectDesignView === true) {
             openProjectDesignView = 0;
           }
+          // 复制管理员图片至法人
+          this.form.artificialIdentificationImg = this.form.identificationImg;
+          this.form.artificialIdentificationBackImg = this.form.identificationBackImg;
           var extendForm = { noNeedUnloadImg: noNeedUnloadImg, openProjectDesignView: openProjectDesignView };
           // eslint-disable-next-line no-undef
           this.form = Object.assign(this.form, extendForm);
@@ -928,6 +949,7 @@ export default {
         singleSourceMultiUnloadingLocations: 1,
         editDriverActualAmount: 1,
         allowNoAuditDriverToReceive: 1,
+        isNeedApplicationForPayment: 0,
         creditStartTime: null,
         creditEndTime: null
         // branchCode: null
@@ -987,14 +1009,17 @@ export default {
           if (side === 'front') {
             if (data.name) {
               this.$set(this.form, 'adminName', data.name);
+              this.$set(this.form, 'artificialName', data.name);
             } else {
               this.$set(this.form, 'adminName', '');
+              this.$set(this.form, 'artificialName', '');
             }
             if (data.number) {
               this.$set(this.form, 'identificationNumber', data.number);
               this.$set(this.form, 'artificialIdentificationNumber', data.number);
             } else {
               this.$set(this.form, 'identificationNumber', '');
+              this.$set(this.form, 'artificialIdentificationNumber', '');
             }
             if (data.address) {
               this.$set(this.form, 'area', data.address);
@@ -1035,11 +1060,11 @@ export default {
             this.$set(this.form, 'organizationCodeNo', '');
           }
           // 法人姓名
-          if (data.legal_representative) {
+          /* if (data.legal_representative) {
             this.$set(this.form, 'artificialName', data.legal_representative);
           } else {
             this.$set(this.form, 'artificialName', '');
-          }
+          }*/
           break;
         default:
           break;
