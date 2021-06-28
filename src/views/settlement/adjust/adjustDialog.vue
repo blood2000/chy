@@ -558,6 +558,31 @@ export default {
 };
 </script>
 
+<style lang="scss">
+   /* .el-table {
+        .el-table__fixed {
+            height:auto !important;
+            bottom:17px;
+        }
+    }*/
+    .el-table--scrollable-x .el-table__body-wrapper {
+        z-index: 1;
+    }
+   /* .el-table__fixed, .el-table__fixed-right {
+        box-shadow: none;
+    }
+    .el-table__fixed, .el-table__fixed-right {
+        &::after{
+            position:absolute;
+            top:0;
+            right:0;
+            bottom:0;
+            content:'';
+            z-index:100;
+            box-shadow: 0 0 10px rgba(0,0,0,.12) !important;
+        }
+    }*/
+</style>
 
 <style scoped>
 .mr3 {

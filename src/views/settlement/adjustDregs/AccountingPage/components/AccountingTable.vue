@@ -44,8 +44,8 @@
           <template slot-scope="scope">
 
             <div v-if="item.prop === 'edit'">
+              <!-- v-hasPermi="['transportation:waybillBalanceInfo:batchCheck']" -->
               <el-button
-                v-hasPermi="['transportation:waybillBalanceInfo:batchCheck']"
                 size="mini"
                 type="text"
                 @click="handleTableBtn([scope.row])"

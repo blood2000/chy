@@ -262,13 +262,13 @@
             type="text"
             @click="handleDetail(row, 'edit')"
           >修改</el-button>
-            <el-button
-                    v-if="row.authStatus == 3"
-                    v-hasPermi="['assets:driver:get']"
-                    size="mini"
-                    type="text"
-                    @click="handleDetail(row, 'detail')"
-            >详情</el-button>
+          <el-button
+            v-if="row.authStatus == 3"
+            v-hasPermi="['assets:driver:get']"
+            size="mini"
+            type="text"
+            @click="handleDetail(row, 'detail')"
+          >详情</el-button>
           <template v-if="!teamCode">
             <TableDropdown>
               <el-dropdown-item v-if="row.authStatus != 3">
@@ -418,7 +418,8 @@ export default {
       // 是否
       isOption: [
         { dictLabel: '否', dictValue: 0 },
-        { dictLabel: '是', dictValue: 1 }
+        { dictLabel: '是', dictValue: 1 },
+        { dictLabel: '上报中', dictValue: 3 }
       ],
       // 网点编码字典
       branchCodeOptions: [],

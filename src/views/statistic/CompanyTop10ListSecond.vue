@@ -28,6 +28,7 @@
             :count="item.waybillAmount"
             :is-small="true"
             :is-small-size="true"
+            :places="2"
             unit="万"
           />
           <InfoBox
@@ -35,6 +36,7 @@
             :count="item.votesAmount"
             :is-small="true"
             :is-small-size="true"
+            :places="2"
             unit="万"
           />
         </div>
@@ -120,6 +122,7 @@ export default {
         .index{
           display: inline-block;
           vertical-align: middle;
+          padding-left: 0.05rem;
           margin: -0.3rem 0.2rem 0 0;
           padding-right: 0.1rem;
           width: 1.4rem;

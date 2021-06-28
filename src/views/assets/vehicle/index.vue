@@ -422,7 +422,8 @@ export default {
       // 是否
       isOption: [
         { dictLabel: '否', dictValue: 0 },
-        { dictLabel: '是', dictValue: 1 }
+        { dictLabel: '是', dictValue: 1 },
+        { dictLabel: '上报中', dictValue: 3 }
       ],
       // 车辆归属类型字典
       vehicleAscriptionTypeOptions: [

@@ -32,7 +32,6 @@
         <el-col :span="1.5">
           <el-button
             v-if="status===1"
-            v-hasPermi="['transportation:batch:passBatchClaim']"
             :disabled="selections.length<=0"
             type="primary"
             icon="el-icon-document-checked"
@@ -54,7 +53,6 @@
         <el-col :span="1.5">
           <el-button
             v-if="status===3"
-            v-hasPermi="['transportation:batch:passPayment']"
             type="primary"
             icon="el-icon-document-checked"
             size="mini"
@@ -114,7 +112,6 @@
 
             <el-button
               v-if="status===1"
-              v-hasPermi="['transportation:batch:passBatchClaim']"
               size="mini"
               type="text"
               @click="handleAskfor(row)"
@@ -123,7 +120,6 @@
             <el-button
               v-show="!isShipment "
               v-if="status===2"
-              v-hasPermi="['transportation:batch:passBilling']"
               size="mini"
               type="text"
               @click="handleVerify(row)"
@@ -131,7 +127,6 @@
 
             <el-button
               v-if="status===3"
-              v-hasPermi="['transportation:batch:passPayment']"
               size="mini"
               type="text"
               @click="handlerPassPayment(row)"
