@@ -180,7 +180,7 @@ export default {
     // 创建websocket
     createWebSocket() {
       try {
-        this.websock = new WebSocket('ws://' + process.env.VUE_APP_BASE_WS + this.wsurl + '?branchCode=' + this.branchCode);
+        this.websock = new WebSocket('ws://' + process.env.VUE_APP_BASE_HOST + this.wsurl + '?branchCode=' + this.branchCode);
         this.initWebSocket();
       } catch (e) {
         console.log('catch', e);
