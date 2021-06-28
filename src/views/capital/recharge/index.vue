@@ -90,6 +90,15 @@
     </div>
     <div class="app-container">
       <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            type="warning"
+            icon="el-icon-download"
+            size="mini"
+            :loading="exportLoading"
+            @click="handleExport"
+          >导出</el-button>
+        </el-col>
         <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
@@ -230,7 +239,8 @@ export default {
         paidItem: undefined,
         updateTimeBegin: undefined,
         updateTimeEnd: undefined
-      }
+      },
+      exportLoading: false
     };
   },
   created() {
@@ -258,6 +268,16 @@ export default {
       this.queryParams.updateTimeEnd = null;
       this.resetForm('queryForm');
       this.handleQuery();
+    },
+    /** 导出按钮操作 */
+    handleExport() {
+      this.exportLoading = true;
+      const params = Object.assign({}, this.queryParams);
+      params.pageSize = undefined;
+      params.pageNum = undefined;
+      this.download('payment/shipmentPaidRecord/export', params, `充值记录_${new Date().getTime()}.xlsx`).then(() => {
+        this.exportLoading = false;
+      });
     }
   }
 };
