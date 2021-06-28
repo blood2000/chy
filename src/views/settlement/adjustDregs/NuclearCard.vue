@@ -1,6 +1,6 @@
 <template>
   <el-dialog v-loading :title="`发卡人: ${ userInfo.issuing_name || ''} (承运司机: ${userInfo.user_name ||''})`" :visible="visible" width="80%" append-to-body :close-on-click-modal="false" @close="handlerClose">
-    <div v-show="true" class="mb20" style="padding: 20px;">
+    <div v-show="false" class="mb20" style="padding: 20px;">
       <!-- <el-button type="primary" @click="handler('cancellation')">注销卡片(清空使用者信息)</el-button> -->
       <el-button type="primary" @click="handler('issuingCard')">issuingCard</el-button>
       <!-- <el-button type="primary" @click="handler('readUserinfo')">读取用户信息</el-button> -->
@@ -108,7 +108,7 @@
 
 <script>
 import CardReader, { USERINFO, versionMark } from '@/libs/ICCard/CardReader';
-import { checkList, delWaybill, check } from '@/api/settlement/adjustDregs';
+import { checkList, check } from '@/api/settlement/adjustDregs';
 const { action, fn } = CardReader;
 
 // console.log(USERINFO);
@@ -255,7 +255,7 @@ export default {
       //     row.status = 0;
       //   }).catch((action) => {
       //     if (action === 'cancel') {
-      //       delWaybill({ waybillId: row.waybillId - 0 }).then(res => {
+      //      { waybillId: row.waybillId - 0 }).then(res => {
       //         this.msgSuccess('删除该条记录成功');
       //         this.list = this.list.filter(e => e.waybillId !== row.waybillId);
       //         this.delData.push(row.waybillId);

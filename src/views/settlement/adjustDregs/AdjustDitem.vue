@@ -31,21 +31,21 @@
       <el-table-column width="120" label="司机电话" align="center" prop="driverPhone" />
       <el-table-column width="120" label="车牌号" align="center" prop="licenseNumber" />
 
-      <el-table-column width="160" label="装货数量" align="left" prop="loadWeight">
+      <el-table-column width="80" label="装货数量" align="left" prop="loadWeight">
         <template slot-scope="scope">
           <span>{{ scope.row.loadWeight }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="160" label="卸货数量" align="left" prop="unloadWeight">
+      <el-table-column width="80" label="卸货数量" align="left" prop="unloadWeight">
         <template slot-scope="scope">
           <span>{{ scope.row.unloadWeight }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="120" label="纳税金额(元)" align="center" prop="taxPayment" fixed="right" />
+      <el-table-column width="100" label="纳税金额(元)" align="center" prop="taxPayment" fixed="right" />
 
-      <el-table-column width="120" label="服务费(元)" align="center" prop="serviceFee" fixed="right">
+      <el-table-column width="100" label="服务费(元)" align="center" prop="serviceFee" fixed="right">
         <template slot-scope="scope">
           <span> {{ floor(scope.row.serviceFee) }} </span>
         </template>
@@ -57,10 +57,10 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="162" label="增减值" align="center" prop="deductionDes" fixed="right">
+      <el-table-column width="173" label="增减值" align="center" prop="deductionDes" fixed="right">
         <template slot-scope="scope">
           <!-- <el-input v-model="scope.row.deductionDes" placeholder="请输入增加的理由" /> -->
-          <el-input-number v-model="scope.row.deductionDes" :controls="false" :precision="2" placeholder="请输入增减金额" style="width:100%;" size="mini" />
+          <el-input-number v-model="scope.row.deductionDes" :controls="true" controls-position="right" :precision="2" placeholder="请输入增减金额" style="width:100%;" size="mini" />
         </template>
       </el-table-column>
       <el-table-column width="162" label="备注" align="center" prop="increaseDes" fixed="right">

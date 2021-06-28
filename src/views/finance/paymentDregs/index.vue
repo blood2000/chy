@@ -1,7 +1,7 @@
 <template>
   <div>
-    <MuckProject :status="2" />
-    <!-- <MuckProject :status="3" /> -->
+    <!-- <MuckProject :status="2" /> -->
+    <MuckProject :status="3" />
   </div>
 </template>
 

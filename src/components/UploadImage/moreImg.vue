@@ -92,6 +92,7 @@ export default {
       this.images = images.join(',');
       this.$emit('input', this.images);
       // console.log(this.images);
+      this.$emit('uploadStatus', false, '上传成功');
     },
     /** 取消按钮 */
     cancel() {
@@ -111,8 +112,8 @@ export default {
       this.dialogVisible = true;
     },
     handleUploadSuccess(res, images, imageList) {
-      console.log(res);
-      console.log(images);
+      // console.log(res);
+      // console.log(images);
       console.log(imageList);
       // if (this.images === '') {
       //   this.images = res.data.code;
@@ -143,6 +144,7 @@ export default {
       //   text: '上传中',
       //   background: 'rgba(0, 0, 0, 0.7)'
       // });
+      this.$emit('uploadStatus', true, '上传中...');
     },
     handleUploadError() {
       this.$message({
@@ -150,6 +152,7 @@ export default {
         message: '上传失败'
       });
       // this.loading.close();
+      this.$emit('uploadStatus', false, '上传失败');
     },
     handleExceed() {
       this.$message({

@@ -128,7 +128,7 @@ export default {
         this.tableColumnsConfig,
         this.api,
         { prop: 'edit',
-          isShow: true,
+          isShow: false,
           tooltip: false,
           label: '操作',
           width: 240,
@@ -141,7 +141,7 @@ export default {
           width: 120
         }, { // 需要顶替掉的项
           prop: 'shipperCopeFee',
-          isShow: true,
+          isShow: false,
           tooltip: false,
           sortNum: 28,
           label: '货主应付金额',
@@ -161,8 +161,8 @@ export default {
         ...this.alreadyPaid_queryParams,
         'pageNum': undefined, // 不做分页
         'pageSize': undefined, // 不做分页
-        'orderStartTime': this.alreadyPaid_queryParams.receiveTime[0],
-        'orderEndTime': this.alreadyPaid_queryParams.receiveTime[1],
+        'orderStartTime': this.alreadyPaid_queryParams.receiveTime ? this.alreadyPaid_queryParams.receiveTime[0] : undefined,
+        'orderEndTime': this.alreadyPaid_queryParams.receiveTime ? this.alreadyPaid_queryParams.receiveTime[1] : undefined,
         receiveTime: undefined,
         scenario: '1200',
         waybillType: 1
