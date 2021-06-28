@@ -847,13 +847,16 @@ CardReader.action['readUserInfoAndreadData'] = async function() {
       ret = await CardReader.fn.apdu((() => ['00', 'B0', CardReader.fn.numToHex16(index[1] | 0x80), '00', '00'].join(''))());
 
       ret = CardReader.fn.getResult(ret);
+      console.log(ret);
+
       if (ret.code === '9000') {
         const datae = (CardReader.fn.utf8HexToStr(ret.data).replace(eval('/\u0000/g'), ''));
+        console.log(datae);
         if (!datae) {
           CardReader.action.error();
           return {
             ...ret,
-            msg: `第${count}条, 数据异常, 无法获取全部, 请联系管理员`,
+            msg: `有${count}条, 写入数据异常, 请联系管理员`,
             success: false,
             userInfo,
             dataList: null,
@@ -864,8 +867,8 @@ CardReader.action['readUserInfoAndreadData'] = async function() {
 
         data.push(CardReader.fn.resultData(datae, DATAINFO).data);
 
-
         !meter && (meter = CardReader.fn.resultData(datae, DATAINFO).meter);
+
         // console.log(data);
         count += 1;
       } else {
@@ -887,6 +890,19 @@ CardReader.action['readUserInfoAndreadData'] = async function() {
     // 结束操作这样是一个闭合的操作了
     await CardReader.fn.exec(CardReader.command.deselect);
     await CardReader.fn.exec(CardReader.command.beep);
+
+    if (errCount > 0) {
+      return {
+        ...ret,
+        msg: `读取${errCount} 条失败`,
+        code: '9000',
+        success: true,
+        userInfo,
+        dataList,
+        GetCardNo,
+        meter
+      };
+    }
 
     return {
       ...ret,

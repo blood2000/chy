@@ -8,7 +8,7 @@
       <div class="mb20 mt20 b f20">
         运单轨迹列表
       </div>
-      <el-table v-loading="loading" :data="gridData" :height="300">
+      <el-table v-loading="loading" :data="gridData" :height="300" :row-class-name="tableRowClassName">
         <el-table-column sortable width="200" property="operateTime" label="日期">
           <template slot-scope="scope">
             <span>{{ parseTime(scope.row.operateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
@@ -16,6 +16,11 @@
         </el-table-column>
         <el-table-column align="center" width="200" property="opName" label="操作人" />
         <el-table-column align="center" width="200" property="operateContent" label="动作" />
+        <el-table-column align="center" width="200" property="operateType" label="是否被驳回">
+          <template slot-scope="scope">
+            <span>{{ scope.row.operateType === 1? '否':'是' }}</span>
+          </template>
+        </el-table-column>
         <el-table-column align="center" width="200" property="remark" label="备注">
           <template slot-scope="scope">
             <span>{{ scope.row.remark || '-' }}</span>
@@ -89,6 +94,12 @@ export default {
         this.total = response.data.total;
         this.loading = false;
       });
+    },
+    tableRowClassName({ row, rowIndex }) {
+      if (row.operateType === 0) {
+        return 'dismissedTrack-warning-row';
+      }
+      return '';
     }
   }
 
@@ -96,5 +107,8 @@ export default {
 </script>
 
 <style>
+.el-table .dismissedTrack-warning-row {
+  background: #fab6b6;
+}
 
 </style>
