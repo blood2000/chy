@@ -104,14 +104,14 @@
           <el-col :span="7" class="mb">
             <p class="upload-image-label">
               <span class="g-color-require">* </span>
-              身份证正面照
+              身份证(人像面)
             </p>
             <uploadImage v-model="form.identificationImage" :disabled="disable" image-type="id-card" side="front" icon-type="idcard" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">
               <span class="g-color-require">* </span>
-              身份证反面照
+              身份证(国徽面)
             </p>
             <uploadImage v-model="form.identificationBackImage" :disabled="disable" image-type="id-card" side="back" icon-type="idcard_back" @fillForm="fillForm" />
           </el-col>
@@ -222,11 +222,11 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid) {
           if (!this.form.identificationImage) {
-            this.msgWarning('请上传身份证正面照');
+            this.msgWarning('请上传身份证(人像面)');
             return;
           }
           if (!this.form.identificationBackImage) {
-            this.msgWarning('请上传身份证反面照');
+            this.msgWarning('请上传身份证(国徽面)');
             return;
           }
           this.buttonLoading = true;
