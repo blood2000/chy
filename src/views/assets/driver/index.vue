@@ -14,7 +14,7 @@
         </el-form-item>
         <el-form-item label="司机姓名" prop="name">
           <el-input
-            v-model="queryParams.name"
+            v-model.trim="queryParams.name"
             placeholder="请输入司机姓名"
             clearable
             size="small"
@@ -24,7 +24,7 @@
         </el-form-item>
         <el-form-item label="手机号/账号" prop="telphone">
           <el-input
-            v-model="queryParams.telphone"
+            v-model.trim="queryParams.telphone"
             placeholder="请输入手机号/账号"
             clearable
             size="small"
@@ -34,7 +34,7 @@
         </el-form-item>
         <el-form-item label="车牌号" prop="licenseNumber">
           <el-input
-            v-model="queryParams.licenseNumber"
+            v-model.trim="queryParams.licenseNumber"
             placeholder="请输入车牌号"
             clearable
             size="small"
@@ -66,7 +66,7 @@
         </el-form-item>
         <el-form-item label="身份证号" prop="identificationNumber">
           <el-input
-            v-model="queryParams.identificationNumber"
+            v-model.trim="queryParams.identificationNumber"
             placeholder="请输入身份证号"
             clearable
             size="small"
@@ -393,7 +393,6 @@ export default {
       ],
       // 审核状态字典
       statusOptions: [
-        { dictLabel: '全部', dictValue: null },
         { dictLabel: '未审核', dictValue: 0 },
         { dictLabel: '审核中', dictValue: 1 },
         { dictLabel: '审核未通过', dictValue: 2 },
@@ -408,7 +407,6 @@ export default {
       ],
       // 是否绑定银行卡
       bindBankCardOptions: [
-        { dictLabel: '全部', dictValue: null },
         { dictLabel: '是', dictValue: 0 },
         { dictLabel: '否', dictValue: 1 }
       ],

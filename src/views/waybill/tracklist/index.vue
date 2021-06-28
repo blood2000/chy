@@ -14,7 +14,7 @@
           prop="orderClient"
         >
           <el-input
-            v-model="queryParams.orderClient"
+            v-model.trim="queryParams.orderClient"
             placeholder="发货企业/操作人/手机号"
             clearable
             size="small"
@@ -28,7 +28,7 @@
           prop="deliveryCompany"
         >
           <el-input
-            v-model="queryParams.deliveryCompany"
+            v-model.trim="queryParams.deliveryCompany"
             placeholder="请输入发货企业"
             clearable
             size="small"
@@ -41,7 +41,7 @@
           prop="loadInfo"
         >
           <el-input
-            v-model="queryParams.loadInfo"
+            v-model.trim="queryParams.loadInfo"
             placeholder="装货地/装货电话/装货人"
             clearable
             size="small"
@@ -54,7 +54,7 @@
           prop="receivedInfo"
         >
           <el-input
-            v-model="queryParams.receivedInfo"
+            v-model.trim="queryParams.receivedInfo"
             placeholder="卸货地/卸货电话/卸货人"
             clearable
             size="small"
@@ -67,7 +67,7 @@
           prop="mainOrderNumber"
         >
           <el-input
-            v-model="queryParams.mainOrderNumber"
+            v-model.trim="queryParams.mainOrderNumber"
             placeholder="请输入货源单号"
             clearable
             size="small"
@@ -94,7 +94,7 @@
           prop="licenseNumber"
         >
           <el-input
-            v-model="queryParams.licenseNumber"
+            v-model.trim="queryParams.licenseNumber"
             placeholder="请输入车牌号"
             clearable
             size="small"
@@ -107,7 +107,7 @@
           prop="driverName"
         >
           <el-input
-            v-model="queryParams.driverName"
+            v-model.trim="queryParams.driverName"
             placeholder="请输入司机姓名"
             clearable
             size="small"
@@ -120,7 +120,7 @@
           prop="driverPhone"
         >
           <el-input
-            v-model="queryParams.driverPhone"
+            v-model.trim="queryParams.driverPhone"
             placeholder="请输入司机电话"
             clearable
             size="small"
@@ -133,7 +133,7 @@
           prop="waybillNo"
         >
           <el-input
-            v-model="queryParams.waybillNo"
+            v-model.trim="queryParams.waybillNo"
             placeholder="请输入运输单号"
             clearable
             size="small"

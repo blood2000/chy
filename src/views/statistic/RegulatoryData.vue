@@ -147,9 +147,10 @@ export default {
       width: 47%;
       // line-height: 1.2rem;
       >label{
-        font-size: 0.6rem;
+        font-size: 0.65rem;
         font-weight: 200;
-        color: #9CAFD0;
+        // color: #9CAFD0;
+        color: #d5eaff;
         margin-right: 0.4rem;
       }
       >span{

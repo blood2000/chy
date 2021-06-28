@@ -134,10 +134,14 @@ export default {
 
         // 请求接口
         this.loading = true;
-        const data = await adjustPrice(req);
-        this.loading = false;
-        this.msgSuccess(data.msg);
-        this.$emit('submitRes', 'success');
+        try {
+          const data = await adjustPrice(req);
+          this.msgSuccess(data.msg);
+          this.$emit('submitRes', 'success');
+          this.loading = false;
+        } catch (error) {
+          this.loading = false;
+        }
       } else {
         this.$emit('submitRes', false);
       }

@@ -9,11 +9,11 @@
 
     <!-- left -->
     <div class="ly-left ly-border">
-      <div class="ly-left-top mb1rem ly-border">
+      <div class="ly-left-top mb05rem ly-border">
         <Title class="title_3" icon="2">用户概览<span>User situation</span></Title>
         <UserInfo ref="UserInfoRef" :branch-code="branchCode" :is-second="true" />
       </div>
-      <div class="ly-left-center mb1rem ly-border">
+      <div class="ly-left-center mb05rem ly-border">
         <Title class="title_3" icon="3">运力情况<span>Capacity situation</span></Title>
         <CapacityInfo ref="CapacityInfoRef" :branch-code="branchCode" :is-scale="!!$route.query.isScale" />
       </div>
@@ -22,7 +22,7 @@
           <div class="ly-left-bottom-left ly-border">
             <div class="ly-left-bottom-left-top ly-border">
               <Title class="title_4 mb05rem" icon="4" :show-time="true" :time-text="timeText">货运类型排行<span>Freight Type list</span></Title>
-              <div class="ly-left-bottom-left-box ly-border">
+              <div class="ly-left-bottom-left-box mb05rem ly-border">
                 <FreightTypeRanking ref="FreightTypeRankingRef" :time-key="timeKey" :branch-code="branchCode" />
               </div>
             </div>
@@ -34,8 +34,9 @@
             </div>
           </div>
           <div class="ly-left-bottom-right ly-border">
-            <Title class="title_4 mb05rem" icon="4" :show-time="true" :time-text="timeText">承运排行<span>Shipping list</span></Title>
-            <DriverTop5List ref="DriverTop5ListRef" :time-key="timeKey" :show-top="false" style="height: calc(100% - 2.1rem);padding-top: 0.5rem;" />
+            <Title class="title_4 mb1rem" icon="4" :show-time="true" :time-text="timeText">承运排行<span>Shipping list</span></Title>
+            <!-- 正常高度: height: calc(100% - 2.1rem) -->
+            <DriverTop5List ref="DriverTop5ListRef" :time-key="timeKey" :show-top="false" style="height: calc(100% - 1.8rem);" />
           </div>
         </div>
       </div>
@@ -404,8 +405,8 @@ export default {
 .g-statistic {
   //variabbles
   $width: 160rem;
-  $width_left: 53.8rem;
-  $width_right: 48rem;
+  $width_left: 53rem;
+  $width_right: 51rem;
   $mb1rem: 1rem;
   $mb05rem: 0.5rem;
   $mb07rem: 0.7rem;
@@ -443,15 +444,18 @@ export default {
     width: $width_left;
     height: 100%;
     float: left;
-    .ly-left-top, .ly-left-center {
-      height: calc(21.87% - #{$mb1rem});
+    .ly-left-top {
+      height: calc(21.8% - #{$mb05rem});
+    }
+    .ly-left-center{
+      height: calc(23.2% - #{$mb05rem});
     }
     .ly-left-bottom {
-      height: calc(100% - 21.87% * 2);
+      height: 55%;
       .ly-left-bottom-box{
         height: 100%;
         .ly-left-bottom-left {
-          width: 28.3rem;
+          width: 29rem;
           height: 100%;
           .ly-left-bottom-left-top, .ly-left-bottom-left-bottom{
             height: 50%;
@@ -461,7 +465,7 @@ export default {
           }
         }
         .ly-left-bottom-right {
-          width: 22.6rem;
+          width: 21.5rem;
           height: 100%;
         }
       }
@@ -479,7 +483,7 @@ export default {
     height: 100%;
     float: right;
     .ly-right-left {
-      width: 23.4rem;
+      width: calc(49% - 1rem);
       .ly-right-left-top {
         height: calc(100% - 26.5% - #{$mb1rem});
         .ly-right-left-top-box{
@@ -491,7 +495,7 @@ export default {
       }
     }
     .ly-right-right {
-      width: 22.6rem;
+      width: calc(51% - 1rem);
       .ly-right-right-box {
         height: calc(100% - 2.1rem);
         .ly-right-right-box-title{

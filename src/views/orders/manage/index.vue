@@ -4,7 +4,7 @@
       <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="90px" class="app-container" @submit.native.prevent>
         <el-form-item v-show="!isShipment" label="下单用户" prop="tin1">
           <el-input
-            v-model="queryParams.tin1"
+            v-model.trim="queryParams.tin1"
             placeholder="发货企业/操作人/手机号"
             clearable
             size="small"
@@ -15,7 +15,7 @@
 
         <el-form-item label="装货信息" prop="tin2">
           <el-input
-            v-model="queryParams.tin2"
+            v-model.trim="queryParams.tin2"
             placeholder="装货地/装货电话/装货人"
             clearable
             size="small"
@@ -26,7 +26,7 @@
 
         <el-form-item label="卸货信息" prop="tin3">
           <el-input
-            v-model="queryParams.tin3"
+            v-model.trim="queryParams.tin3"
             placeholder="卸货地/卸货电话/卸货人"
             clearable
             size="small"
@@ -48,7 +48,7 @@
 
         <el-form-item v-if="false" label="货物描述" prop="tin5">
           <el-input
-            v-model="queryParams.tin5"
+            v-model.trim="queryParams.tin5"
             placeholder="请输入货物描述"
             clearable
             size="small"
@@ -61,7 +61,7 @@
 
         <el-form-item label="货源单号" prop="tin7">
           <el-input
-            v-model="queryParams.tin7"
+            v-model.trim="queryParams.tin7"
             placeholder="请输入货源单号"
             clearable
             size="small"

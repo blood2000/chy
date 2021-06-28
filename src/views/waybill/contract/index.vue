@@ -12,7 +12,7 @@
           prop="contractNo"
         >
           <el-input
-            v-model="queryParams.contractNo"
+            v-model.trim="queryParams.contractNo"
             placeholder="请输入合同编号"
             clearable
             size="small"
@@ -25,7 +25,7 @@
           prop="driverInfo"
         >
           <el-input
-            v-model="queryParams.driverInfo"
+            v-model.trim="queryParams.driverInfo"
             placeholder="请输入司机信息"
             clearable
             size="small"
@@ -58,7 +58,7 @@
           prop="waybillNo"
         >
           <el-input
-            v-model="queryParams.waybillNo"
+            v-model.trim="queryParams.waybillNo"
             placeholder="请输入运输单号"
             clearable
             size="small"
@@ -149,12 +149,17 @@
             @click="handleInfo(row)"
           >打印</el-button>
           <el-button
-            v-if="row.isDzqzContract+'' === '0'"
-            v-hasPermi="['transportation:orderContract:generate']"
+            v-if="row.isDzqzContract+'' !== '1'"
             size="mini"
             type="text"
             @click="handleElectron(row)"
           >生成电子章</el-button>
+          <el-button
+            v-if="row.isDzqzContract+'' === '3'"
+            size="mini"
+            type="text"
+            @click="handleMessage(row)"
+          >失败原因</el-button>
         </template>
       </RefactorTable>
 
@@ -230,7 +235,7 @@ export default {
       isDzqzContractOptions: [
         { 'dictLabel': '否', 'dictValue': '0' },
         { 'dictLabel': '是', 'dictValue': '1' },
-        { 'dictLabel': '正在生成', 'dictValue': '2' }
+        { 'dictLabel': '生成失败', 'dictValue': '3' }
       ],
       loadingSign: false
     };
@@ -294,7 +299,7 @@ export default {
     /* 打印 */
     async handleInfo(row) {
       if (row.isDzqzContract === 1) {
-        // window.open(row.contractPath, '_blank');
+        window.open(row.contractPath, '_blank');
       } else {
         this.title = '电子合同';
         this.driverOrShipment = row.driverOrShipment;
@@ -314,7 +319,15 @@ export default {
       that.waybill.createTime = new Date(that.waybill.createTime);
       that.waybill.loadTime = new Date(that.waybill.loadTime);
       console.log(that.waybill);
-      if (that.waybill.electronic.idNumber) {
+      if (!that.waybill.electronic.idNumber) {
+        that.msgWarning('货主或司机的身份证号码不能为空！');
+      } else if (!that.waybill.electronic.userCode) {
+        that.msgWarning('货主或司机的编码不能为空！');
+      } else if (!that.waybill.electronic.name) {
+        that.msgWarning('货主或司机的名称不能为空！');
+      } else if (!that.waybill.electronic.phone) {
+        that.msgWarning('货主或司机的电话号码不能为空！');
+      } else {
         that.$confirm('生成电子签章合同? 大概用时20秒才可生成电子签章合同', '警告', {
           'confirmButtonText': '确定',
           'cancelButtonText': '取消',
@@ -323,15 +336,28 @@ export default {
           if (row.driverOrShipment === 0) {
             return getDriverSign(that.waybill);
           } else {
-            return getShipmentSign(that.waybill);
+            if (!that.waybill.electronic.shipmentId) {
+              that.msgWarning('货主编码不能为空！');
+            } else if (!that.waybill.shipmentCompanyName) {
+              that.msgWarning('货主公司名称不能为空！');
+            } else if (!that.waybill.shipmentOrganizationCodeNo) {
+              that.msgWarning('货主公司统一信用代码不能为空！');
+            } else {
+              return getShipmentSign(that.waybill);
+            }
           }
         }).then(() => {
           that.getList();
         }).catch(() => {});
-      } else {
-        that.msgWarning('货主或司机的身份证号码不能为空！');
       }
     },
+    handleMessage(row) {
+      this.$confirm(row.contractFailMessage, '生成电子签章失败原因', {
+        'confirmButtonText': '确定',
+        'type': 'warning'
+      });
+    },
+    // 批量签章
     handleSign() {
       this.$confirm('平均每份合同耗时20秒，确认批量生成电子签章合同？', '批量生成电子章', {
         'confirmButtonText': '确定',

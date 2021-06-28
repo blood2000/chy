@@ -73,22 +73,45 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item v-if="form.isDistribution" label="清分百分比(%)" prop="distributionPercent">
-        <el-input-number v-model="form.distributionPercent" controls-position="right" :precision="2" placeholder="请输入清分百分比" :step="1" :min="0" :max="100" class="width90" clearable />
-      </el-form-item>
+      <el-row v-if="form.isDistribution">
+        <el-col :span="11">
+          <el-form-item label="清分规则" prop="distributionRule">
+            <el-select
+              v-model="form.distributionRule"
+              filterable
+              class="width90"
+            >
+              <el-option
+                v-for="dict in distributionRuleOptions"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item v-if="form.distributionRule == 1" label="清分百分比(%)" prop="distributionPercent" :rules="[{ required: true, message: '清分百分比不能为空', trigger: ['blur', 'change'] }]">
+            <el-input-number v-model="form.distributionPercent" controls-position="right" :precision="2" :step="1" :min="0.01" :max="100" class="width90" clearable />
+          </el-form-item>
+          <el-form-item v-else label="清分金额" prop="distributionPercent" :rules="[{ required: true, message: '清分金额不能为空', trigger: ['blur', 'change'] }]">
+            <el-input-number v-model="form.distributionPercent" controls-position="right" :precision="2" :step="1" :min="0.01" :max="100000000" class="width90" clearable />
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-form-item>
         <el-row>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">
               <span class="g-color-require">* </span>
-              身份证正面照
+              身份证(人像面)
             </p>
             <uploadImage v-model="form.identificationImage" :disabled="disable" image-type="id-card" side="front" icon-type="idcard" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">
               <span class="g-color-require">* </span>
-              身份证反面照
+              身份证(国徽面)
             </p>
             <uploadImage v-model="form.identificationBackImage" :disabled="disable" image-type="id-card" side="back" icon-type="idcard_back" @fillForm="fillForm" />
           </el-col>
@@ -146,8 +169,14 @@ export default {
         { dictLabel: '否', dictValue: 0 },
         { dictLabel: '是', dictValue: 1 }
       ],
+      distributionRuleOptions: [
+        { dictLabel: '定率', dictValue: 1 },
+        { dictLabel: '定额', dictValue: 2 }
+      ],
       // 表单参数
-      form: {},
+      form: {
+        distributionRule: 1
+      },
       // 表单校验
       rules: {
         telphone: [
@@ -193,17 +222,18 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid) {
           if (!this.form.identificationImage) {
-            this.msgWarning('请上传身份证正面照');
+            this.msgWarning('请上传身份证(人像面)');
             return;
           }
           if (!this.form.identificationBackImage) {
-            this.msgWarning('请上传身份证反面照');
+            this.msgWarning('请上传身份证(国徽面)');
             return;
           }
           this.buttonLoading = true;
           this.form.identificationEffective = praseBooleanToNum(this.form.identificationEffective);
           if (!this.form.isDistribution) {
             this.form.distributionPercent = null;
+            this.form.distributionRule = null;
           }
           // 调度组名称默认为: 姓名+'车队'
           if (!this.form.name || this.form.name === '') {
@@ -273,7 +303,8 @@ export default {
         identificationEffective: null,
         isDistribution: 0,
         distributionPercent: 100,
-        openProjectDesignView: 1
+        openProjectDesignView: 1,
+        distributionRule: 1
       };
       this.resetForm('form');
     },

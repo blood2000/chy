@@ -5,7 +5,7 @@
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
         <el-form-item label="支付批次号" prop="bizNo">
           <el-input
-            v-model="queryParams.bizNo"
+            v-model.trim="queryParams.bizNo"
             placeholder="请输入支付批次号"
             clearable
             size="small"
@@ -15,7 +15,7 @@
         </el-form-item>
         <el-form-item label="支付订单号" prop="orderId">
           <el-input
-            v-model="queryParams.orderId"
+            v-model.trim="queryParams.orderId"
             placeholder="请输入支付订单号"
             clearable
             size="small"
@@ -25,7 +25,7 @@
         </el-form-item>
         <el-form-item label="货源单号" prop="goodId">
           <el-input
-            v-model="queryParams.goodId"
+            v-model.trim="queryParams.goodId"
             placeholder="请输入货源单号"
             clearable
             size="small"
@@ -35,7 +35,7 @@
         </el-form-item>
         <el-form-item label="运输单号" prop="tranId">
           <el-input
-            v-model="queryParams.tranId"
+            v-model.trim="queryParams.tranId"
             placeholder="请输入运输单号"
             clearable
             size="small"
@@ -66,7 +66,7 @@
         </el-form-item>
         <el-form-item label="车牌号" prop="licenseNumber">
           <el-input
-            v-model="queryParams.licenseNumber"
+            v-model.trim="queryParams.licenseNumber"
             placeholder="请输入车牌号"
             clearable
             size="small"
@@ -76,7 +76,7 @@
         </el-form-item>
         <el-form-item label="收款方姓名" prop="payeeName">
           <el-input
-            v-model="queryParams.payeeName"
+            v-model.trim="queryParams.payeeName"
             placeholder="请输入收款方姓名"
             clearable
             size="small"
@@ -86,7 +86,7 @@
         </el-form-item>
         <el-form-item label="运单关联企业" prop="campanyName">
           <el-input
-            v-model="queryParams.campanyName"
+            v-model.trim="queryParams.campanyName"
             placeholder="请输入运单关联企业"
             clearable
             size="small"
@@ -96,7 +96,7 @@
         </el-form-item>
         <el-form-item label="收款人电话" prop="payeeMobile">
           <el-input
-            v-model="queryParams.payeeMobile"
+            v-model.trim="queryParams.payeeMobile"
             placeholder="请输入收款人电话"
             clearable
             size="small"

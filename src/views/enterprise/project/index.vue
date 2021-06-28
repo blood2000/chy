@@ -4,7 +4,7 @@
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
         <el-form-item label="项目名称" prop="projectName">
           <el-input
-            v-model="queryParams.projectName"
+            v-model.trim="queryParams.projectName"
             placeholder="请输入项目名称"
             clearable
             size="small"

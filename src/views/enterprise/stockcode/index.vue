@@ -4,7 +4,7 @@
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
         <el-form-item label="货集码名称" prop="cargoCodeName">
           <el-input
-            v-model="queryParams.cargoCodeName"
+            v-model.trim="queryParams.cargoCodeName"
             placeholder="请输入货集码名称"
             clearable
             size="small"

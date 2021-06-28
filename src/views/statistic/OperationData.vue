@@ -211,7 +211,7 @@ export default {
       this.shipmentData = [];
       this.wayBillData = [];
       this.weekVoList.forEach(el => {
-        this.timeData.push(el.dataTime.substring(el.dataTime.length - 5));
+        this.timeData.push(el.dataTime);
         this.shipmentData.push(el.orderCount);
         this.wayBillData.push(el.waybillCount);
       });

@@ -11,7 +11,7 @@
           prop="batchNo"
         >
           <el-input
-            v-model="queryParams.batchNo"
+            v-model.trim="queryParams.batchNo"
             placeholder="请输入批次号"
             clearable
             size="small"

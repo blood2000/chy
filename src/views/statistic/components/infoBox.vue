@@ -141,10 +141,9 @@ export default {
   },
   methods: {
     // 计算同比和同比类型
-    // 同比 = (当日数据-(昨天数据*当时时间/24))/(昨天数据*当时时间/24)*100
+    // 同比 = (当日数据-昨日数据)/昨日数据*100
     computeYoy() {
-      const time = Number(this.parseTime(new Date(), '{h}'));
-      const yoy = (this.count - (this.lastCount * time / 24)) / (this.lastCount * time / 24) * 100;
+      const yoy = (this.count - this.lastCount) / this.lastCount * 100;
       // 0=上升 1=下降 2=没变化
       if (yoy > 0) {
         this.myYoyType = 0;
@@ -166,10 +165,10 @@ export default {
   width: 100%;
   height: 50%;
   >.label{
-    font-size: 0.6rem;
+    font-size: 0.65rem;
     font-weight: 200;
     color: rgba(213, 234, 255, 1);
-    line-height: 1rem;
+    line-height: 1.1rem;
     font-family: PingFang Regular;
   }
   >.text{
@@ -280,10 +279,10 @@ export default {
   // 用户字体样式
   &.s-info-box--user{
     >.label{
-      color: #9CAFD0;
+      //color: #9CAFD0;
     }
     >.text{
-      font-family: PingFang Regular;
+      //font-family: PingFang Regular;
     }
   }
 }

@@ -6,7 +6,7 @@
         <!-- 数据上报 -->
         <el-form-item label="支付批次号" prop="bizNo">
           <el-input
-            v-model="queryParams.bizNo"
+            v-model.trim="queryParams.bizNo"
             placeholder="请输入支付批次号"
             clearable
             size="small"
@@ -16,7 +16,7 @@
         </el-form-item>
         <el-form-item label="发货企业" prop="companyName">
           <el-input
-            v-model="queryParams.companyName"
+            v-model.trim="queryParams.companyName"
             placeholder="请输入发货企业"
             clearable
             size="small"
@@ -26,7 +26,7 @@
         </el-form-item>
         <el-form-item label="司机" prop="driverName">
           <el-input
-            v-model="queryParams.driverName"
+            v-model.trim="queryParams.driverName"
             placeholder="请输入司机"
             clearable
             size="small"
@@ -36,7 +36,7 @@
         </el-form-item>
         <el-form-item label="车牌号" prop="licenseNumber">
           <el-input
-            v-model="queryParams.licenseNumber"
+            v-model.trim="queryParams.licenseNumber"
             placeholder="请输入车牌号"
             clearable
             size="small"
@@ -46,7 +46,7 @@
         </el-form-item>
         <el-form-item label="货源单号" prop="mainOrderNumber">
           <el-input
-            v-model="queryParams.mainOrderNumber"
+            v-model.trim="queryParams.mainOrderNumber"
             placeholder="请输入货源单号"
             clearable
             size="small"
@@ -56,7 +56,7 @@
         </el-form-item>
         <el-form-item label="车队名称" prop="teamName">
           <el-input
-            v-model="queryParams.teamName"
+            v-model.trim="queryParams.teamName"
             placeholder="请输入车队名称"
             clearable
             size="small"
@@ -66,7 +66,7 @@
         </el-form-item>
         <el-form-item label="运输单号" prop="waybillNo">
           <el-input
-            v-model="queryParams.waybillNo"
+            v-model.trim="queryParams.waybillNo"
             placeholder="请输入运输单号"
             clearable
             size="small"
@@ -289,6 +289,8 @@
             <span v-if="row.vehicleReport == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
             <span v-if="row.vehicleReport == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
             <span v-if="row.vehicleReport == '2'" class="g-color-warning">上报失败</span>
+            <span v-if="row.vehicleReport == '3'" class="g-color-warning">上报中</span>
+            <span v-if="row.vehicleReport == '4'" class="g-color-warning">数据异常</span>
           </div>
         </template>
         <template #driverReport="{row}">
@@ -296,6 +298,8 @@
             <span v-if="row.driverReport == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
             <span v-if="row.driverReport == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
             <span v-if="row.driverReport == '2'" class="g-color-warning">上报失败</span>
+            <span v-if="row.driverReport == '3'" class="g-color-warning">上报中</span>
+            <span v-if="row.driverReport == '4'" class="g-color-warning">数据异常</span>
           </div>
         </template>
         <template #waybillSendStatus="{row}">
@@ -303,6 +307,8 @@
             <span v-if="row.waybillSendStatus == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
             <span v-if="row.waybillSendStatus == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
             <span v-if="row.waybillSendStatus == '2'" class="g-color-warning">上报失败</span>
+            <span v-if="row.waybillSendStatus == '3'" class="g-color-warning">上报中</span>
+            <span v-if="row.waybillSendStatus == '4'" class="g-color-warning">数据异常</span>
           </div>
         </template>
         <template #loadSendStatus="{row}">
@@ -311,6 +317,8 @@
             <span v-if="row.loadSendStatus == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
             <span v-if="row.loadSendStatus == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
             <span v-if="row.loadSendStatus == '2'" class="g-color-warning">上报失败</span>
+            <span v-if="row.loadSendStatus == '3'" class="g-color-warning">上报中</span>
+            <span v-if="row.loadSendStatus == '4'" class="g-color-warning">数据异常</span>
           </div>
         </template>
         <template #unloadSendStatus="{row}">
@@ -319,6 +327,8 @@
             <span v-if="row.unloadSendStatus == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
             <span v-if="row.unloadSendStatus == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
             <span v-if="row.unloadSendStatus == '2'" class="g-color-warning">上报失败</span>
+            <span v-if="row.unloadSendStatus == '3'" class="g-color-warning">上报中</span>
+            <span v-if="row.unloadSendStatus == '4'" class="g-color-warning">数据异常</span>
           </div>
         </template>
         <template #billSendStatus="{row}">
@@ -327,6 +337,8 @@
             <span v-if="row.billSendStatus == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
             <span v-if="row.billSendStatus == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
             <span v-if="row.billSendStatus == '2'" class="g-color-warning">上报失败</span>
+            <span v-if="row.billSendStatus == '3'" class="g-color-warning">上报中</span>
+            <span v-if="row.billSendStatus == '4'" class="g-color-warning">数据异常</span>
           </div>
         </template>
 
@@ -442,7 +454,13 @@ import ChildDialog from '@/views/settlement/components/childDialog';
 import DetailDialog from '@/views/waybill/components/detailDialog';
 import importDialog from './components/importDialog';
 
-const dictsData1 = [{ dictLabel: '未上报', dictValue: 0 }, { dictLabel: '上报成功', dictValue: 1 }, { dictLabel: '上报失败', dictValue: 2 }];
+const dictsData1 = [
+  { dictLabel: '未上报', dictValue: 0 },
+  { dictLabel: '上报成功', dictValue: 1 },
+  { dictLabel: '上报失败', dictValue: 2 },
+  { dictLabel: '上报中', dictValue: 3 },
+  { dictLabel: '数据异常', dictValue: 4 }
+];
 
 export default {
   name: 'Report', // 页面缓存需要name
@@ -670,7 +688,7 @@ export default {
       const res = await batch(this.ids.map(e => e.waybillReportCode));
       this.loading = false;
       if (res.code === 200) {
-        this.msgSuccess('上报成功');
+        this.msgSuccess(res.msg);
         this.getList();
       }
     },
@@ -756,10 +774,12 @@ export default {
       let res_load;
       let res_unload;
       let res_bill;
+      let msg;
       try {
         if (driverReport !== 1) {
           res_driver = await waybillReportDriver(row.waybillReportCode);
-          row.driverReport = 1;
+          row.driverReport = 3;
+          msg = res_driver.msg;
         } else {
           res_driver = true;
         }
@@ -769,7 +789,8 @@ export default {
       try {
         if (vehicleReport !== 1) {
           res_vehicle = await waybillReportVehicle(row.waybillReportCode);
-          row.vehicleReport = 1;
+          row.vehicleReport = 3;
+          msg = res_vehicle.msg;
         } else {
           res_vehicle = true;
         }
@@ -779,7 +800,8 @@ export default {
       try {
         if (waybillSendStatus !== 1) {
           res_waybill = await waybillReportWaybill(row.waybillReportCode);
-          row.waybillSendStatus = 1;
+          row.waybillSendStatus = 3;
+          msg = res_waybill.msg;
         } else {
           res_waybill = true;
         }
@@ -789,7 +811,8 @@ export default {
       try {
         if (loadSendStatus !== 1) {
           res_load = await waybillReportLoad(row.waybillReportCode);
-          row.loadSendStatus = 1;
+          row.loadSendStatus = 3;
+          msg = res_load.msg;
         } else {
           res_load = true;
         }
@@ -799,7 +822,8 @@ export default {
       try {
         if (unloadSendStatus !== 1) {
           res_unload = await waybillReportUnload(row.waybillReportCode);
-          row.unloadSendStatus = 1;
+          row.unloadSendStatus = 3;
+          msg = res_unload.msg;
         } else {
           res_unload = true;
         }
@@ -809,7 +833,8 @@ export default {
       try {
         if (billSendStatus !== 1) {
           res_bill = await waybillReportBill(row.waybillReportCode);
-          row.billSendStatus = 1;
+          row.billSendStatus = 3;
+          msg = res_bill.msg;
         } else {
           res_bill = true;
         }
@@ -820,7 +845,7 @@ export default {
       if (
         [res_driver, res_vehicle, res_waybill, res_load, res_unload, res_bill].every(e => e)
       ) {
-        this.msgSuccess('上报成功');
+        this.msgSuccess(msg);
       }
       this.loading = false;
       this.getList();
@@ -834,8 +859,8 @@ export default {
         case 'driverReport':
           if (row[key] !== 1) {
             waybillReportDriver(row.waybillReportCode).then(res => {
-              this.msgSuccess('上报成功');
-              row[key] = 1;
+              this.msgSuccess(res.msg);
+              row[key] = 3;
               this.loading = false;
             }).catch(() => {
               this.msgError('上报失败');
@@ -847,8 +872,8 @@ export default {
         case 'vehicleReport':
           if (row[key] !== 1) {
             waybillReportVehicle(row.waybillReportCode).then(res => {
-              this.msgSuccess('上报成功');
-              row[key] = 1;
+              this.msgSuccess(res.msg);
+              row[key] = 3;
               this.loading = false;
             }).catch(() => {
               this.msgError('上报失败');
@@ -860,8 +885,8 @@ export default {
         case 'waybillSendStatus':
           if (row[key] !== 1) {
             waybillReportWaybill(row.waybillReportCode).then(res => {
-              this.msgSuccess('上报成功');
-              row[key] = 1;
+              this.msgSuccess(res.msg);
+              row[key] = 3;
               this.loading = false;
             }).catch(() => {
               this.msgError('上报失败');
@@ -873,8 +898,8 @@ export default {
         case 'loadSendStatus':
           if (row[key] !== 1) {
             waybillReportLoad(row.waybillReportCode).then(res => {
-              this.msgSuccess('上报成功');
-              row[key] = 1;
+              this.msgSuccess(res.msg);
+              row[key] = 3;
               this.loading = false;
             }).catch(() => {
               this.msgError('上报失败');
@@ -886,8 +911,8 @@ export default {
         case 'unloadSendStatus':
           if (row[key] !== 1) {
             waybillReportUnload(row.waybillReportCode).then(res => {
-              this.msgSuccess('上报成功');
-              row[key] = 1;
+              this.msgSuccess(res.msg);
+              row[key] = 3;
               this.loading = false;
             }).catch(() => {
               this.msgError('上报失败');
@@ -899,8 +924,8 @@ export default {
         case 'billSendStatus':
           if (row[key] !== 1) {
             waybillReportBill(row.waybillReportCode).then(res => {
-              this.msgSuccess('上报成功');
-              row[key] = 1;
+              this.msgSuccess(res.msg);
+              row[key] = 3;
               this.loading = false;
             }).catch(() => {
               this.msgError('上报失败');
