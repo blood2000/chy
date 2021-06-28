@@ -15,7 +15,7 @@
         </el-form-item>
         <el-form-item label="用户姓名" prop="userName">
           <el-input
-            v-model="queryParams.userName"
+            v-model.trim="queryParams.userName"
             placeholder="请输入用户姓名"
             clearable
             size="small"
@@ -24,7 +24,7 @@
         </el-form-item>
         <el-form-item label="手机号码" prop="userPhone">
           <el-input
-            v-model="queryParams.userPhone"
+            v-model.trim="queryParams.userPhone"
             placeholder="请输入手机号码"
             clearable
             size="small"
@@ -195,7 +195,8 @@ export default {
         { dictLabel: '保费', dictValue: 3 },
         { dictLabel: '罚款', dictValue: 4 },
         { dictLabel: '提现', dictValue: 5 },
-        { dictLabel: '信息费', dictValue: 6 }
+        { dictLabel: '信息费', dictValue: 6 },
+        { dictLabel: '油费', dictValue: 7 }
       ],
       // 平台角色字典
       roleOptions: [

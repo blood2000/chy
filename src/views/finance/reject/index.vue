@@ -4,7 +4,7 @@
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
         <el-form-item v-show="!isShipment" label="批次号" prop="batchNo">
           <el-input
-            v-model="queryParams.batchNo"
+            v-model.trim="queryParams.batchNo"
             placeholder="请输入批次号"
             clearable
             size="small"

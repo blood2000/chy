@@ -79,6 +79,7 @@ export default {
     width: 22.2rem;
     height: 100%;
     position: relative;
+    margin-right: 1.8rem;
     &__content{
       text-align: center;
       >p{

@@ -4,7 +4,7 @@
       <el-form ref="queryForm" :model="queryParams" :inline="true">
         <el-form-item label="组织名称" prop="orgName">
           <el-input
-            v-model="queryParams.orgName"
+            v-model.trim="queryParams.orgName"
             placeholder="请输入组织名称"
             clearable
             size="small"

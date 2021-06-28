@@ -81,7 +81,7 @@ export default {
       zjxlQueryParams: {
         qryBtm: undefined,
         qryEtm: undefined,
-        vclN: undefined
+        vclN: '陕YH0008'
       },
       // 定位轨迹列表
       tracklist: [],
@@ -168,21 +168,24 @@ export default {
       } else if (this.trackChange === 2) {
         zjxlTrackLocation(this.zjxlQueryParams).then(response => {
           console.log(response);
-          // if (response.data.result) {
-          //   this.tracklist = response.data.result.map(function(response) {
-          //     return [response.lng, response.lat];
-          //   });
-          //   if (this.tracklist.length !== 0) {
-          //     // 绘制轨迹
-          //     this.drawPolyline(this.tracklist);
-          //     if (!this.wayBillInfo.signTime) {
-          //       this.getVehicleMark();
-          //     }
-          //   } else {
-          //     // 获取高德地图路线规划
-          //     this.getRoutePlan();
-          //   }
-          // }
+          const str = JSON.parse(response.msg);
+          console.log(str);
+          if (str.result.length !== 0) {
+            this.tracklist = str.result.map(response => {
+              return [response.lon / 600000, response.lat / 600000];
+            });
+            console.log(this.tracklist);
+            if (this.tracklist.length !== 0) {
+              // 绘制轨迹
+              this.drawPolyline(this.tracklist);
+              if (!this.wayBillInfo.signTime) {
+                this.getVehicleMark();
+              }
+            } else {
+              // 获取高德地图路线规划
+              this.getRoutePlan();
+            }
+          }
         });
       }
     },
@@ -220,10 +223,10 @@ export default {
       const that = this;
       const vehicleMark = new AMap.Marker({
         position: that.tracklist[that.tracklist.length - 1],
-        icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/cart.png',
+        icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/icon_car1624672021156.png',
         autoFitView: true,
         autoRotation: true,
-        offset: new AMap.Pixel(0, 0)
+        offset: new AMap.Pixel(-35, -17)
       });
       vehicleMark.setMap(that.$refs.map.$$getInstance()); // 点标记
     },
@@ -234,20 +237,20 @@ export default {
       const startPosition = that.loadAddress;
       const startMark = new AMap.Marker({
         position: startPosition,
-        icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/load.png',
+        icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/icon_load1624672027526.png',
         autoFitView: true,
         autoRotation: true,
-        offset: new AMap.Pixel(-40, -40)
+        offset: new AMap.Pixel(-17, -35)
       });
       startMark.setMap(that.$refs.map.$$getInstance()); // 点标记
       // 卸货地marker
       const endPosition = that.unloadAddress;
       const endMark = new AMap.Marker({
         position: endPosition,
-        icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/unload.png',
+        icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/icon_unload1624672033390.png',
         autoFitView: true,
         autoRotation: true,
-        offset: new AMap.Pixel(-40, -40)
+        offset: new AMap.Pixel(-17, -35)
       });
       endMark.setMap(that.$refs.map.$$getInstance()); // 点标记
       that.$refs.map.$$getInstance().setFitView([startMark, endMark]); // 执行定位
@@ -292,11 +295,12 @@ export default {
     },
     // 表单赋值
     setForm(data) {
+      console.log(data);
       // 获取运单信息，并标记装卸货地
       getWebDetail(data.code).then(response => {
         this.wayBillInfo = response.data;
         // 中交车牌号参数赋值
-        this.zjxlQueryParams.vclN = this.wayBillInfo.licenseNumber;
+        // this.zjxlQueryParams.vclN = this.wayBillInfo.licenseNumber;
         console.log(this.wayBillInfo);
         // 猎鹰参数赋值
         if (this.wayBillInfo.trackNumber) {
@@ -440,5 +444,9 @@ export default {
       }
     }
   }
+}
+
+::v-deep .amap-icon img{
+  height: 35px;
 }
 </style>

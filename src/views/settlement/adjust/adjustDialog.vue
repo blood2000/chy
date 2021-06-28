@@ -1,9 +1,8 @@
 <template>
-
   <div>
     <el-dialog class="i-adjust" :title="title" :visible="visible" width="1400px" :close-on-click-modal="false" append-to-body @close="cancel">
 
-      <el-table v-loading="loading" highlight-current-row :data="adjustlist" border>
+      <el-table v-loading="loading" height="650" highlight-current-row :data="adjustlist" border :row-class-name="tableRowClassName">
 
         <el-table-column width="160" label="运输单号" show-overflow-tooltip align="center" prop="waybillNo" />
 
@@ -11,7 +10,7 @@
         <el-table-column width="120" label="司机电话" align="center" prop="driverPhone" />
         <el-table-column width="120" label="车牌号" align="center" prop="licenseNumber" />
 
-        <el-table-column width="160" label="装货数量" align="left" prop="loadWeight">
+        <el-table-column width="80" label="装货数量" align="left" prop="loadWeight">
           <template slot-scope="scope">
             <span v-if="scope.row.isDregs === 1">{{ scope.row.loadWeight }}</span>
             <div v-else>
@@ -21,6 +20,7 @@
 
           </template>
         </el-table-column>
+
         <el-table-column width="160" label="卸货数量" align="left" prop="unloadWeight">
           <template slot-scope="scope">
             <span v-if="scope.row.isDregs === 1">{{ scope.row.unloadWeight }}</span>
@@ -78,7 +78,7 @@
 
               <el-button type="text" @click="handlerClick"><i class="el-icon-plus" /></el-button>
 
-              <!-- 1: 是增 2: 是减
+            <!-- 1: 是增 2: 是减
               <el-popover
                 placement="right"
                 width="400"
@@ -109,7 +109,7 @@
           </template>
         </el-table-column>
         <!-- 扣费项目 -->
-        <el-table-column align="center" width="420">
+        <el-table-column align="center" width="420" label="扣费项目">
           <template slot="header">
             <span>扣费项目
               <el-button type="text" @click="isEdit = !isEdit"><i class="el-icon-edit" /></el-button>
@@ -133,8 +133,6 @@
             </el-form>
           </template>
         </el-table-column>
-
-
 
         <el-table-column width="120" label="纳税金额(元)" align="center" prop="taxPayment" fixed="right">
           <template slot-scope="scope">
@@ -221,7 +219,9 @@ export default {
       queryParams: {
         waybillCodeList: []
       },
-      floor
+      floor,
+      errList: [],
+      className: ''
     };
   },
   computed: {
@@ -246,7 +246,7 @@ export default {
 
   methods: {
     handlerInput(val) {
-      console.log(val);
+      // console.log(val);
       this.adjustlist.forEach(e => {
         e.subsidiesFreightList = val;
       });
@@ -288,36 +288,30 @@ export default {
         // serviceTaxFee,
         // taxPayment
       };
-      if (this.loading) return;
+      if (this.loading1) return;
       this.loading1 = true;
       try {
-        const { data } = await calculateFee(parame);
+        var data = {};
+        await calculateFee(parame).then(res => {
+          data = res.data;
+          console.log(data);
+
+          if (res.msg) {
+            this.msgError(res.msg);
+          }
+        });
         this.loading1 = false;
-        const {
-          deliveryFeeDeserved, //	司机应收运费	number
-          driverRealFee, //	司机实收金额	number
-          serviceFee, //	平台服务费费用	number
-          serviceTaxFee, //	服务税费	number
-          shipperCopeFee, //	货主应付金额	number
-          shipperRealPay, //	货主实付金额	number
-          taxFreeFee, //	不含税价	number
-          taxPayment, //	纳税金额	number
-          m0Fee,
-          loss
-        } = data;
 
-
-
-        row.deliveryFeeDeserved = deliveryFeeDeserved;
-        row.deliveryCashFee = driverRealFee; // ?
-        row.serviceFee = serviceFee;
-        row.serviceTaxFee = serviceTaxFee; // ?
-        row.shipperCopeFee = shipperCopeFee;
-        row.shipperRealPay = shipperRealPay;
-        row.taxFreeFee = taxFreeFee; // ?
-        row.taxPayment = taxPayment;
-        row.m0Fee = m0Fee;
-        row.loss = loss;
+        row.deliveryFeeDeserved = data.deliveryFeeDeserved;
+        row.deliveryCashFee = data.driverRealFee; // ?
+        row.serviceFee = data.serviceFee;
+        row.serviceTaxFee = data.serviceTaxFee; // ?
+        row.shipperCopeFee = data.shipperCopeFee;
+        row.shipperRealPay = data.shipperRealPay;
+        row.taxFreeFee = data.taxFreeFee; // ?
+        row.taxPayment = data.taxPayment;
+        row.m0Fee = data.m0Fee;
+        row.loss = data.loss;
       } catch (error) {
         this.loading1 = false;
         return;
@@ -384,14 +378,28 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(function() {
-        return batchCheck({ boList });
       }).then(() => {
-        this.msgSuccess('核算成功');
-        this.visible = false;
-        this.$emit('refresh');
-        // this.showSubList = [];
+        return batchCheck({ boList }).then(res => {
+          if (res.data) {
+            this.msgError(res.msg);
+            console.log(res);
+            const list = res.data.exceptionList;
+            this.errList = list.map(item => item.waybillCode);
+            this.getList();
+          } else {
+            this.msgSuccess('核算成功');
+            this.visible = false;
+            this.$emit('refresh');
+          }
+        });
       });
+    },
+    tableRowClassName({ row, rowIndex }) {
+      if (this.errList.length > 0) {
+        if (this.errList.includes(row.waybillCode)) {
+          return 'warning-row';
+        }
+      }
     },
     /** 查询核算列表 */
     getList() {
@@ -571,6 +579,10 @@ export default {
 }
 .ly-flex{
   flex-wrap: wrap;
+}
+
+::v-deep .warning-row{
+  background: #fadbd9;
 }
 
 </style>

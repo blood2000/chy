@@ -4,7 +4,7 @@
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
         <el-form-item v-show="!isShipment" label="下单用户" prop="orderClient">
           <el-input
-            v-model="queryParams.orderClient"
+            v-model.trim="queryParams.orderClient"
             placeholder="发货企业/操作人/手机号"
             clearable
             size="small"
@@ -31,7 +31,7 @@
         </el-form-item>
         <el-form-item label="货源单号" prop="mainOrderNumber">
           <el-input
-            v-model="queryParams.mainOrderNumber"
+            v-model.trim="queryParams.mainOrderNumber"
             placeholder="请输入货源单号"
             clearable
             size="small"
@@ -55,7 +55,7 @@
         </el-form-item>
         <el-form-item label="车牌号" prop="licenseNumber">
           <el-input
-            v-model="queryParams.licenseNumber"
+            v-model.trim="queryParams.licenseNumber"
             placeholder="请输入车牌号"
             clearable
             size="small"
@@ -65,7 +65,7 @@
         </el-form-item>
         <el-form-item label="司机姓名" prop="driverName">
           <el-input
-            v-model="queryParams.driverName"
+            v-model.trim="queryParams.driverName"
             placeholder="请输入司机姓名"
             clearable
             size="small"
@@ -75,7 +75,7 @@
         </el-form-item>
         <el-form-item label="运输单号" prop="waybillNo">
           <el-input
-            v-model="queryParams.waybillNo"
+            v-model.trim="queryParams.waybillNo"
             placeholder="请输入运输单号"
             clearable
             size="small"

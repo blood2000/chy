@@ -150,7 +150,7 @@ export default {
     border: 1px solid rgba(55, 255, 248, 0.18);
     background: rgba(0, 45, 93, 0.2);
     position: absolute;
-    right: calc(50% - 17.4rem);
+    right: calc(50% - 17rem);
     top: 0;
     text-align: left;
     padding-left: 0.6rem;
