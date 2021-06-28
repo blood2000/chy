@@ -102,7 +102,7 @@ const CardReader = {
           if (ret.success) {
             resolve(e.data);
           } else {
-            console.log(ret);
+            console.log(ret, '错误信息------------');
             if (ret.code) {
               reject({
                 ...ret,
@@ -849,9 +849,22 @@ CardReader.action['readUserInfoAndreadData'] = async function() {
       ret = CardReader.fn.getResult(ret);
       if (ret.code === '9000') {
         const datae = (CardReader.fn.utf8HexToStr(ret.data).replace(eval('/\u0000/g'), ''));
+        if (!datae) {
+          CardReader.action.error();
+          return {
+            ...ret,
+            msg: `第${count}条, 数据异常, 无法获取全部, 请联系管理员`,
+            success: false,
+            userInfo,
+            dataList: null,
+            GetCardNo,
+            meter
+          };
+        }
 
-        console.log(datae, '卡的订单数据');
         data.push(CardReader.fn.resultData(datae, DATAINFO).data);
+
+
         !meter && (meter = CardReader.fn.resultData(datae, DATAINFO).meter);
         // console.log(data);
         count += 1;
