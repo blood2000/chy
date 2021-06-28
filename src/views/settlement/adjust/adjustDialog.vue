@@ -21,7 +21,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column width="160" label="卸货数量" align="left" prop="unloadWeight">
+        <el-table-column width="80" label="卸货数量" align="left" prop="unloadWeight">
           <template slot-scope="scope">
             <span v-if="scope.row.isDregs === 1">{{ scope.row.unloadWeight }}</span>
             <div v-else>
@@ -31,7 +31,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column width="160" label="配载方式" align="center" prop="lossAllowScope">
+        <el-table-column width="80" label="配载方式" align="center" prop="lossAllowScope">
           <template slot-scope="scope">
             <span v-show="scope.row.stowageStatus === '0'">
               吨数配载
