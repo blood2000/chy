@@ -117,8 +117,8 @@
               @click="handleAskfor(row)"
             >索票</el-button>
 
+            <!-- v-show="!isShipment " -->
             <el-button
-              v-show="!isShipment "
               v-if="status===2"
               size="mini"
               type="text"
