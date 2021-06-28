@@ -30,15 +30,15 @@
         <el-checkbox v-model="form.identificationEffective">长期有效</el-checkbox>
       </el-form-item>
       <template v-if="form.shipperType === 1">
-       <!-- <el-form-item label="法人姓名" prop="artificialName">
+        <!-- <el-form-item label="法人姓名" prop="artificialName">
           <el-input v-model="form.artificialName" placeholder="请输入法人姓名" class="width90" clearable />
         </el-form-item>
         <el-form-item label="法人身份证" prop="artificialIdentificationNumber">
           <el-input v-model="form.artificialIdentificationNumber" placeholder="请输入法人身份证" class="width90" clearable />
         </el-form-item>-->
-          <el-form-item label="企业名称" prop="companyName">
-              <el-input v-model="form.companyName" class="width90" clearable />
-          </el-form-item>
+        <el-form-item label="企业名称" prop="companyName">
+          <el-input v-model="form.companyName" class="width90" clearable />
+        </el-form-item>
         <el-form-item label="统一社会信用代码" prop="organizationCodeNo">
           <el-input v-model="form.organizationCodeNo" class="width90" placeholder="请输入统一社会信用代码" clearable />
         </el-form-item>
@@ -47,7 +47,7 @@
         </el-form-item>-->
       </template>
       <!-- 选择省/市/区 -->
-     <!-- <province-city-county
+      <!-- <province-city-county
         ref="ChooseArea"
         :visible="visible"
         :prop-province-code="form.provinceCode"
@@ -76,7 +76,7 @@
             <p class="upload-image-label">本人手持身份证正面</p>
             <upload-image v-model="form.identificationInhandImg" icon-type="idcard_hand" />
           </el-col>-->
-         <!-- <el-col v-show="form.shipperType === 1" :span="7">
+          <!-- <el-col v-show="form.shipperType === 1" :span="7">
             <p class="upload-image-label">法人身份证(人像面)</p>
             <upload-image v-model="form.artificialIdentificationImg" icon-type="idcard" />
           </el-col>

@@ -2,7 +2,7 @@
   <el-dialog :class="[{'i-add':title==='新增'},{'i-check':title==='审核'}]" :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="170px">
       <!--  修改：目前只有发货企业 -->
-     <!-- <el-form-item label="发货人/发货企业" prop="shipperType">
+      <!-- <el-form-item label="发货人/发货企业" prop="shipperType">
         <el-select
           v-model="form.shipperType"
           class="width90"
@@ -24,8 +24,8 @@
       </el-form-item>
       <el-form-item>
         <el-row>
-            <!--   客服建议去掉合并管理员和法人信息-->
-         <el-col :span="7">
+          <!--   客服建议去掉合并管理员和法人信息-->
+          <el-col :span="7">
             <p class="upload-image-label">身份证(人像面)</p>
             <upload-image v-model="form.identificationImg" :disabled="disable" image-type="id-card" side="front" icon-type="idcard" @fillForm="fillForm" />
           </el-col>
@@ -38,7 +38,7 @@
             <p class="upload-image-label">手持身份证照</p>
             <upload-image v-model="form.identificationInhandImg" icon-type="idcard_hand" :disabled="disable" />
           </el-col>-->
-         <!-- <el-col v-show="form.shipperType === 1" :span="7">
+          <!-- <el-col v-show="form.shipperType === 1" :span="7">
             <p class="upload-image-label">法人身份证(人像面)</p>
             <upload-image v-model="form.artificialIdentificationImg" icon-type="idcard" :disabled="disable" @fillForm="fillForm"/>
           </el-col>
@@ -148,7 +148,7 @@
         <!-- <el-form-item label="营业执照号" prop="businessLicenseNo">
           <el-input v-model="form.businessLicenseNo" placeholder="支持自动识别" class="width90" clearable />
         </el-form-item>-->
-         <!-- 与管理员共用-->
+        <!-- 与管理员共用-->
         <!-- <el-form-item label="法人姓名" prop="artificialName">
           <el-input v-model="form.artificialName" placeholder="请输入法人姓名" class="width90" clearable />
         </el-form-item>
@@ -497,17 +497,17 @@
             </el-radio-group>
           </el-form-item>
         </el-col>
-          <el-col :span="11">
-              <el-form-item label="是否需要申请打款环节" prop="isNeedApplicationForPayment">
-                  <el-radio-group v-model="form.isNeedApplicationForPayment">
-                      <el-radio
-                              v-for="dict in needOptions"
-                              :key="dict.dictValue"
-                              :label="parseInt(dict.dictValue)"
-                      >{{ dict.dictLabel }}</el-radio>
-                  </el-radio-group>
-              </el-form-item>
-          </el-col>
+        <el-col :span="11">
+          <el-form-item label="是否需要申请打款环节" prop="isNeedApplicationForPayment">
+            <el-radio-group v-model="form.isNeedApplicationForPayment">
+              <el-radio
+                v-for="dict in needOptions"
+                :key="dict.dictValue"
+                :label="parseInt(dict.dictValue)"
+              >{{ dict.dictLabel }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="8">

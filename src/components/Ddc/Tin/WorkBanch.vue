@@ -601,7 +601,7 @@ export default {
     },
     // weosocket调用方法
     initWebSocket() { // 初始化weosocket
-      const wsuri = 'ws://' + process.env.VUE_APP_BASE_WS + '/websocket/chy';// ws地址
+      const wsuri = 'ws://' + process.env.VUE_APP_BASE_HOST + '/websocket/chy';// ws地址
       this.websock = new WebSocket(wsuri);
       this.websock.onopen = this.websocketonopen;
 
