@@ -268,6 +268,8 @@
         :table-columns-config="tableColumnsConfig"
         :row-key="(row)=> row.waybillNo"
         reserve-selection
+        :row-class-name="tableRowClassName"
+        :selectable="checkboxT"
         @selection-change="handleSelectionChange"
       >
         <!-- row-key="id" -->
@@ -281,12 +283,14 @@
           <span :class="row.isAbnormal == '1'?'g-color-success':'g-color-error'">{{ selectDictLabel(dicts['isAbnormal_option'], (row.isAbnormal? row.isAbnormal: 0)) }}</span>
         </template>
         <template #reportMarkStatus="{row}">
-          <span :class="row.reportMarkStatus == '0'?'g-color-success':'g-color-error'">{{ selectDictLabel(dicts['reportMarkStatus_option'], (row.reportMarkStatus? row.reportMarkStatus: 0)) }}</span>
+          <span :class="!row.reportMarkStatus?'g-color-success':'g-color-error'">{{ selectDictLabel(dicts['reportMarkStatus_option'], (row.reportMarkStatus? row.reportMarkStatus: 0)) }}</span>
         </template>
 
         <template #vehicleReport="{row}">
-          <div :class="row.vehicleReport != '1'?'shou':null" @click="handlerReport(row, 'vehicleReport', row.vehicleReport == '1')">
-            <span v-if="row.vehicleReport == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
+          <div :class="row.vehicleReport == '0'?'shou':null">
+            <span v-if="row.vehicleReport == '0'" class="g-color-error" @click="handlerReport(row, 'vehicleReport', row.vehicleReport == '1')">
+              <svg-icon icon-class="not-reported" class-name="mr10" />未上报
+            </span>
             <span v-if="row.vehicleReport == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
             <span v-if="row.vehicleReport == '2'" class="g-color-warning">上报失败</span>
             <span v-if="row.vehicleReport == '3'" class="g-color-warning">上报中</span>
@@ -294,8 +298,10 @@
           </div>
         </template>
         <template #driverReport="{row}">
-          <div :class="row.driverReport != '1'?'shou':null" @click="handlerReport(row, 'driverReport', row.driverReport == '1')">
-            <span v-if="row.driverReport == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
+          <div :class="row.driverReport == '0'?'shou':null">
+            <span v-if="row.driverReport == '0'" class="g-color-error" @click="handlerReport(row, 'driverReport', row.driverReport == '1')">
+              <svg-icon icon-class="not-reported" class-name="mr10" />未上报
+            </span>
             <span v-if="row.driverReport == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
             <span v-if="row.driverReport == '2'" class="g-color-warning">上报失败</span>
             <span v-if="row.driverReport == '3'" class="g-color-warning">上报中</span>
@@ -303,8 +309,10 @@
           </div>
         </template>
         <template #waybillSendStatus="{row}">
-          <div :class="row.waybillSendStatus != '1'?'shou':null" @click="handlerReport(row, 'waybillSendStatus', row.waybillSendStatus == '1')">
-            <span v-if="row.waybillSendStatus == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
+          <div :class="row.waybillSendStatus == '0'?'shou':null">
+            <span v-if="row.waybillSendStatus == '0'" class="g-color-error" @click="handlerReport(row, 'waybillSendStatus', row.waybillSendStatus == '1')">
+              <svg-icon icon-class="not-reported" class-name="mr10" />未上报
+            </span>
             <span v-if="row.waybillSendStatus == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
             <span v-if="row.waybillSendStatus == '2'" class="g-color-warning">上报失败</span>
             <span v-if="row.waybillSendStatus == '3'" class="g-color-warning">上报中</span>
@@ -313,8 +321,10 @@
         </template>
         <template #loadSendStatus="{row}">
 
-          <div :class="row.loadSendStatus != '1'?'shou':null" @click="handlerReport(row, 'loadSendStatus', row.loadSendStatus == '1')">
-            <span v-if="row.loadSendStatus == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
+          <div :class="row.loadSendStatus == '0'?'shou':null">
+            <span v-if="row.loadSendStatus == '0'" class="g-color-error" @click="handlerReport(row, 'loadSendStatus', row.loadSendStatus == '1')">
+              <svg-icon icon-class="not-reported" class-name="mr10" />未上报
+            </span>
             <span v-if="row.loadSendStatus == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
             <span v-if="row.loadSendStatus == '2'" class="g-color-warning">上报失败</span>
             <span v-if="row.loadSendStatus == '3'" class="g-color-warning">上报中</span>
@@ -322,9 +332,11 @@
           </div>
         </template>
         <template #unloadSendStatus="{row}">
-          <div :class="row.unloadSendStatus != '1'?'shou':null" @click="handlerReport(row, 'unloadSendStatus', row.unloadSendStatus == '1')">
+          <div :class="row.unloadSendStatus == '0'?'shou':null">
 
-            <span v-if="row.unloadSendStatus == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
+            <span v-if="row.unloadSendStatus == '0'" class="g-color-error" @click="handlerReport(row, 'unloadSendStatus', row.unloadSendStatus == '1')">
+              <svg-icon icon-class="not-reported" class-name="mr10" />未上报
+            </span>
             <span v-if="row.unloadSendStatus == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
             <span v-if="row.unloadSendStatus == '2'" class="g-color-warning">上报失败</span>
             <span v-if="row.unloadSendStatus == '3'" class="g-color-warning">上报中</span>
@@ -332,9 +344,11 @@
           </div>
         </template>
         <template #billSendStatus="{row}">
-          <div :class="row.billSendStatus != '1'?'shou':null" @click="handlerReport(row, 'billSendStatus', row.billSendStatus == '1')">
+          <div :class="row.billSendStatus == '0'?'shou':null">
 
-            <span v-if="row.billSendStatus == '0'" class="g-color-error"><svg-icon icon-class="not-reported" class-name="mr10" />未上报</span>
+            <span v-if="row.billSendStatus == '0'" class="g-color-error" @click="handlerReport(row, 'billSendStatus', row.billSendStatus == '1')">
+              <svg-icon icon-class="not-reported" class-name="mr10" />未上报
+            </span>
             <span v-if="row.billSendStatus == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
             <span v-if="row.billSendStatus == '2'" class="g-color-warning">上报失败</span>
             <span v-if="row.billSendStatus == '3'" class="g-color-warning">上报中</span>
@@ -371,11 +385,11 @@
             size="mini"
             type="text"
             @click="handleEdit(row, 'mark')"
-          >{{ row.reportMarkStatus===0? '标记异常':'取消异常' }}</el-button>
+          >{{ !row.reportMarkStatus? '标记异常':'取消异常' }}</el-button>
 
           <!-- v-hasPermi="['data:report:report']" -->
           <el-button
-            v-if="true"
+            v-if="false"
             v-has-permi="['transportation:waybillReport:batch']"
             :disabled="loading"
             size="mini"
@@ -384,7 +398,7 @@
           >上报</el-button>
 
           <el-button
-            v-else
+            v-if="false"
             v-hasPermi="['data:report:check']"
             size="mini"
             type="text"
@@ -731,8 +745,8 @@ export default {
           this.openData = row;
           break;
         case 'mark':
-          if (row.reportMarkStatus === 0) {
-            this.$confirm('是否确认标记上报异常?', '警告', {
+          if (!row.reportMarkStatus) {
+            this.$confirm('确认要标记上报异常?', '警告', {
               confirmButtonText: '确定',
               cancelButtonText: '取消',
               type: 'warning'
@@ -742,7 +756,7 @@ export default {
               });
             });
           } else {
-            this.$confirm('是否确认取消上报异常?', '警告', {
+            this.$confirm('确认要取消上报异常?', '警告', {
               confirmButtonText: '确定',
               cancelButtonText: '取消',
               type: 'warning'
@@ -853,18 +867,19 @@ export default {
     },
 
     handlerReport(row, key, bool) {
-      if (bool) return;
+      if (bool || row.reportMarkStatus === 1) return;
       this.loading = true;
       switch (key) {
         case 'driverReport':
           if (row[key] !== 1) {
             waybillReportDriver(row.waybillReportCode).then(res => {
               this.msgSuccess(res.msg);
-              row[key] = 3;
-              this.loading = false;
+              // row[key] = 3;
+              // this.loading = false;
+              this.getList();
             }).catch(() => {
-              this.msgError('上报失败');
-              row[key] = 2;
+              // this.msgError('上报失败');
+              // row[key] = 2;
               this.loading = false;
             });
           }
@@ -873,11 +888,12 @@ export default {
           if (row[key] !== 1) {
             waybillReportVehicle(row.waybillReportCode).then(res => {
               this.msgSuccess(res.msg);
-              row[key] = 3;
-              this.loading = false;
+              // row[key] = 3;
+              // this.loading = false;
+              this.getList();
             }).catch(() => {
-              this.msgError('上报失败');
-              row[key] = 2;
+              // this.msgError('上报失败');
+              // row[key] = 2;
               this.loading = false;
             });
           }
@@ -886,11 +902,12 @@ export default {
           if (row[key] !== 1) {
             waybillReportWaybill(row.waybillReportCode).then(res => {
               this.msgSuccess(res.msg);
-              row[key] = 3;
-              this.loading = false;
+              // row[key] = 3;
+              // this.loading = false;
+              this.getList();
             }).catch(() => {
-              this.msgError('上报失败');
-              row[key] = 2;
+              // this.msgError('上报失败');
+              // row[key] = 2;
               this.loading = false;
             });
           }
@@ -899,11 +916,12 @@ export default {
           if (row[key] !== 1) {
             waybillReportLoad(row.waybillReportCode).then(res => {
               this.msgSuccess(res.msg);
-              row[key] = 3;
-              this.loading = false;
+              // row[key] = 3;
+              // this.loading = false;
+              this.getList();
             }).catch(() => {
-              this.msgError('上报失败');
-              row[key] = 2;
+              // this.msgError('上报失败');
+              // row[key] = 2;
               this.loading = false;
             });
           }
@@ -912,11 +930,12 @@ export default {
           if (row[key] !== 1) {
             waybillReportUnload(row.waybillReportCode).then(res => {
               this.msgSuccess(res.msg);
-              row[key] = 3;
-              this.loading = false;
+              // row[key] = 3;
+              // this.loading = false;
+              this.getList();
             }).catch(() => {
-              this.msgError('上报失败');
-              row[key] = 2;
+              // this.msgError('上报失败');
+              // row[key] = 2;
               this.loading = false;
             });
           }
@@ -925,17 +944,15 @@ export default {
           if (row[key] !== 1) {
             waybillReportBill(row.waybillReportCode).then(res => {
               this.msgSuccess(res.msg);
-              row[key] = 3;
-              this.loading = false;
+              // row[key] = 3;
+              // this.loading = false;
+              this.getList();
             }).catch(() => {
-              this.msgError('上报失败');
-              row[key] = 2;
-              this.loading = false;
+              // this.msgError('上报失败');
+              // row[key] = 2;
+              // this.loading = false;
             });
           }
-          break;
-
-        default:
           break;
       }
     },
@@ -945,7 +962,7 @@ export default {
     handleSelectionChange(selecked) {
       // console.log(selecked);
       this.ids = selecked;
-    }
+    },
 
     /** 触发远程搜索 */
     // remoteMethod(query) {
@@ -1010,9 +1027,30 @@ export default {
     // genID(length) {
     //   return Number(Math.random().toString().substr(3, length) + Date.now()).toString(36);
     // },
+    // 处理上报异常加一个背景颜色
+    tableRowClassName({ row, rowIndex }) {
+      if (row.reportMarkStatus === 1) {
+        return 'tinkai-warning-row ';
+      }
+      return '';
+    },
+    checkboxT(row) {
+      if (row.reportMarkStatus === 1) {
+			  return false;
+      } else {
+			  return true;
+      }
+    }
 
 
   }
 };
 </script>
+
+<style>
+.el-table .tinkai-warning-row {
+  background: #d5d2d2;
+}
+
+</style>
 
