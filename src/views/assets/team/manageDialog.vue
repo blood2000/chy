@@ -1,5 +1,5 @@
 <template>
-  <el-dialog
+  <!--<el-dialog
     class="page-team-manage-dialog"
     :visible="visible"
     :fullscreen="isfullscreen"
@@ -8,7 +8,15 @@
     append-to-body
     :modal-append-to-body="false"
     @close="cancel"
-  >
+  >-->
+    <el-drawer
+            size="96%"
+            title="管理"
+            :wrapperClosable="false"
+            :visible.sync="visible"
+            direction="rtl"
+            append-to-body
+            :close="cancel">
     <el-tabs v-model="activeName">
       <el-tab-pane label="司机管理" name="driver">
         <driver-page ref="DriverPage" :team-code="teamCode" :team-name="teamName" />
@@ -17,7 +25,8 @@
         <vehicle-page ref="VehiclePage" :team-code="teamCode" />
       </el-tab-pane>
     </el-tabs>
-  </el-dialog>
+    </el-drawer>
+<!--  </el-dialog>-->
 </template>
 
 <script>
@@ -82,6 +91,11 @@ export default {
 </script>
 
 <style lang="scss">
+    .el-drawer__body{
+        padding: 0 0 0 2%;
+        height: 80%;
+        overflow-y: auto;
+    }
 .page-team-manage-dialog{
   .el-dialog{
     .el-dialog__body{
