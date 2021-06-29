@@ -377,7 +377,7 @@ export default {
               'tooltip': true
             },
             {
-              'label': '复核人员',
+              'label': '核算人员',
               'prop': 'opName',
               'isShow': true,
               'sortNum': 21,
