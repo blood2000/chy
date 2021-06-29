@@ -2,6 +2,23 @@
   <div>
     <el-dialog class="i-adjust" :title="title" :visible="visible" width="1400px" :close-on-click-modal="false" append-to-body @close="cancel">
 
+      <div slot="title" class="m20">
+        <span class="mr10">批量修改(元)： </span>
+
+        <el-select v-model="selectedValue" size="small" placeholder="请选择" class="mr10">
+          <el-option
+            v-for="(item,index) in showSubList"
+            :key="index"
+            :label="item.cnName"
+            :value="item.enName"
+          />
+        </el-select>
+
+        <el-input-number v-model="selectedNum" style="width:200px;" size="small" controls-position="right" :min="0" :precision="2" placeholder="请输入批量修改的值" />
+
+        <el-button size="small" class="m20" type="primary" :loading="plLoading" @click="handleSelectedNumChange">立即修改</el-button>
+      </div>
+
       <el-table v-loading="loading" height="650" highlight-current-row :data="adjustlist" border :row-class-name="tableRowClassName">
 
         <el-table-column width="160" label="运输单号" show-overflow-tooltip align="center" prop="waybillNo" />
@@ -174,7 +191,7 @@
 
 import PopoverCom from './components/PopoverCom';
 // import chooseItemDialog from '@/views/enterprise/rules/chooseItemDialog';
-import { adjustDetail, calculateFee, batchCheck } from '@/api/settlement/adjust';
+import { adjustDetail, calculateFee, batchCheck, batchCalculate } from '@/api/settlement/adjust';
 import { getRuleItemList } from '@/api/enterprise/rules';
 import { floor } from '@/utils/ddc';
 
@@ -192,7 +209,9 @@ export default {
   },
   data() {
     return {
-
+      plLoading: false, // 批量
+      selectedValue: '', // 下拉值
+      selectedNum: undefined,
       showSubList: [],
       popoverOpenCom: false,
       mtype: '1',
@@ -288,7 +307,7 @@ export default {
         // serviceTaxFee,
         // taxPayment
       };
-      if (this.loading1) return;
+      // if (this.loading1) return;
       this.loading1 = true;
       try {
         var data = {};
@@ -314,9 +333,55 @@ export default {
         row.loss = data.loss;
       } catch (error) {
         this.loading1 = false;
+
+        console.log('请求失败');
         return;
       }
     },
+
+    // 批量修改
+    async handlerBatchCalculate() {
+      // 需要值: selectedValue   selectedNum  this.adjustlist enName ruleValue
+      this.plLoading = true;
+      const req = this.adjustlist.map(e => {
+        return {
+          m0DictValue: e.m0DictValue,
+          freightPrice: e.freightPrice,
+          ruleFormulaDictValue: e.ruleFormulaDictValue,
+          shipperCode: e.shipperCode,
+          stowageStatus: e.stowageStatus,
+          loadWeight: e.loadWeight,
+          unloadWeight: e.unloadWeight,
+          waybillCode: e.waybillCode,
+          driverAddFee: this._sum(e.subsidiesFreightList),
+          driverReductionFee: this._sum(e.deductionFreightList)
+        };
+      });
+      try {
+        const res = await batchCalculate(req);
+
+        res.data.forEach(ee => {
+          this.adjustlist.forEach(e => {
+            if (ee.waybillCode === e.waybillCode) {
+              e.deliveryFeeDeserved = ee.deliveryFeeDeserved;
+              e.deliveryCashFee = ee.driverRealFee;
+              e.serviceFee = ee.serviceFee;
+              e.serviceTaxFee = ee.serviceTaxFee;
+              e.shipperCopeFee = ee.shipperCopeFee;
+              e.shipperRealPay = ee.shipperRealPay;
+              e.taxFreeFee = ee.taxFreeFee;
+              e.taxPayment = ee.taxPayment;
+              e.m0Fee = ee.m0Fee;
+              e.loss = ee.loss;
+            }
+          });
+        });
+        this.plLoading = false;
+      } catch (error) {
+        this.plLoading = false;
+      }
+    },
+
 
     /** 提交按钮 */
     async submitForm() {
@@ -451,6 +516,7 @@ export default {
           return e.showType === 1;
         });
       });
+      console.log(this.showSubList);
     },
 
 
@@ -527,6 +593,38 @@ export default {
       }
 
       console.log(this.adjustlist);
+    },
+
+    /* 批量修改规定的值 */
+    handleSelectedNumChange() {
+      // 需要值: selectedValue   selectedNum  this.adjustlist enName ruleValue
+
+      // console.log(this.selectedValue, this.selectedNum);
+      // console.log(this.adjustlist);
+
+      let isZa = false;
+      this.adjustlist.forEach(e => {
+        e.deductionFreightList.forEach(e => {
+          if (e.enName === this.selectedValue) {
+            // 值要求不一样
+            if (e.ruleValue !== this.selectedNum) {
+              isZa = true;
+              e.ruleValue = this.selectedNum;
+            }
+          }
+        });
+
+        e.subsidiesFreightList.forEach(e => {
+          if (e.enName === this.selectedValue) {
+            // 同上
+            if (e.ruleValue !== this.selectedNum) {
+              isZa = true;
+              e.ruleValue = this.selectedNum;
+            }
+          }
+        });
+      });
+      isZa && this.handlerBatchCalculate();
     },
 
     /* 计算价格 */

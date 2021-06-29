@@ -64,6 +64,14 @@ export function calculateFee(data) {
     data: data
   });
 }
+// 批量计算费用
+export function batchCalculate(data) {
+  return request({
+    url: '/transportation/calculateFee/batchCalculate',
+    method: 'post',
+    data: data
+  });
+}
 
 
 // 根据司机实收金额计算

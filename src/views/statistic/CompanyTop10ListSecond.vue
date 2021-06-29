@@ -1,7 +1,6 @@
 <template>
   <!-- TOP10团队排名 -->
   <div class="s-container">
-    <h5 class="s-container__title">{{ `TOP 10${title}团队排名` }}</h5>
     <ul class="s-container__list">
       <li v-for="(item, index) in dataList" :key="index" class="s-container__list__item">
         <div class="s-container__list__item__title">
@@ -90,7 +89,7 @@ export default {
     },
     showToolTip() {
       this.dataList = this.provinceRanking[this.dataIndex].companyInfoList || [];
-      this.dataList.splice(5);
+      this.dataList.splice(3);
       this.title = this.provinceRanking[this.dataIndex].provinceName || '';
       if (this.dataIndex >= this.provinceRanking.length - 1) {
         this.dataIndex = 0;
@@ -105,18 +104,11 @@ export default {
 <style lang="scss" scoped>
 .s-container{
   height: 100%;
-  &__title{
-    height: 1.2rem;
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: #FFFFFF;
-    font-family: 'PingFang Medium';
-    margin-bottom: 0.5rem;
-  }
+  padding-left: 0.5rem;
   &__list{
-    height: calc(100% - 1.7rem);
+    height: 100%;
     &__item{
-      height: 20%;
+      height: 33.33%;
       &__title{
         margin-bottom: 0.1rem;
         .index{
