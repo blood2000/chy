@@ -333,6 +333,7 @@ export default {
           'cancelButtonText': '取消',
           'type': 'warning'
         }).then(function() {
+          that.loading = true;
           if (row.driverOrShipment === 0) {
             return getDriverSign(that.waybill);
           } else {
