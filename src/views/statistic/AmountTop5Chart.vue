@@ -86,7 +86,7 @@ export default {
         grid: {
           left: '1%',
           right: '3%',
-          bottom: '6%',
+          bottom: this.showTitle ? '6%' : '0%',
           top: '20%',
           containLabel: true
         },
