@@ -68,7 +68,7 @@ export default {
         lineColot = '#E68D27';
       } else if (this.type === 'transaction') {
         typeName = '交易额';
-        yAxisName = '(万)';
+        yAxisName = '万';
         pointColor = '#43dfb5';
         lineColot = 'rgba(47, 235, 149, 0.6)';
       }
