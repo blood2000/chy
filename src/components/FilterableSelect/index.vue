@@ -82,6 +82,14 @@ export default {
     keywords: {
       type: String,
       default: 'keywords'
+    },
+    isSureKey: { // 必选的key名称
+      type: String,
+      default: ''
+    },
+    requerMsg: { // 必选消息
+      type: String,
+      default: ''
     }
   },
 
@@ -136,6 +144,12 @@ export default {
       // 请求数据
       const { queryFn, queryData = {}, key = 'rows' } = this.axios;
 
+      if (this.requerMsg && (!this.isSureKey || !this.axios.queryData[this.isSureKey])) {
+        this.$message({ type: 'warning', message: this.requerMsg });
+        return;
+      }
+
+
       queryFn && queryFn({ ...this.shipmentreq, ...queryData, [this.keywords]: this.shipmentreq[this.keywords] }).then(
         (res) => {
           this.dataOver = !res[key].length;
@@ -146,6 +160,7 @@ export default {
         this.loading = false;
       });
     },
+
 
     /** 选择的 */
     handlerchange(data) {

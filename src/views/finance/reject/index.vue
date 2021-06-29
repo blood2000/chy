@@ -45,6 +45,9 @@
       </el-row>
 
       <RefactorTable :loading="loading" :data="rejectList" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
+        <template #opName="{row}">
+          <span>{{ row.nickName || row.opName }}</span>
+        </template>
         <template #operateType="{row}">
           <span>{{ selectDictLabel(operate_typeOptions, row.operateType) }}</span>
         </template>
