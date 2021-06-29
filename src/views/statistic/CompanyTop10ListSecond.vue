@@ -104,6 +104,7 @@ export default {
 <style lang="scss" scoped>
 .s-container{
   height: 100%;
+  padding-left: 0.5rem;
   &__list{
     height: 100%;
     &__item{

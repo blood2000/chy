@@ -78,16 +78,16 @@
       <div class="ly-right-right ly-border">
         <Title class="title_4 mb05rem" icon="7" :show-time="true" :time-text="timeText">业绩数据<span>Performance data</span></Title>
         <div class="ly-right-right-box ly-border">
-          <div class="ly-border mb05rem" style="height: 15%">
+          <div class="ly-border" style="height: 16%">
             <PerformanceInfo ref="PerformanceInfoRef" :performance="performanceData.performance" :is-second="true" :is-scale="!!$route.query.isScale" />
           </div>
-          <div class="ly-border mb05rem" style="height: 25%">
+          <div class="ly-border mb1rem" style="height: 24%">
             <TargetChart ref="TargetChartRef" :branch-code="branchCode" style="height: 100%" />
           </div>
           <div class="ly-border" style="height: 32%">
             <CompanyTop10ListSecond ref="CompanyTop10ListSecondRef" :province-ranking="performanceData.provinceRanking" />
           </div>
-          <div class="ly-border mb07rem" style="height: calc(28% - 1.2rem)">
+          <div class="ly-border mb07rem" style="height: calc(28% - 1rem)">
             <AmountTop5Chart ref="AmountTop5ChartRef" :province-ranking="performanceData.provinceRanking" :show-title="false" />
           </div>
         </div>
@@ -195,7 +195,7 @@ export default {
     // 创建websocket
     createWebSocket() {
       try {
-        this.websock = new WebSocket(process.env.VUE_APP_WS_PROTOCOL+ process.env.VUE_APP_BASE_HOST + this.wsurl + '?branchCode=' + this.branchCode);
+        this.websock = new WebSocket(process.env.VUE_APP_WS_PROTOCOL + process.env.VUE_APP_BASE_HOST + this.wsurl + '?branchCode=' + this.branchCode);
         this.initWebSocket();
       } catch (e) {
         console.log('catch', e);
