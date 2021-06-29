@@ -194,9 +194,6 @@ export default {
         //   }
         // });
         }
-      } else {
-        // 获取高德地图路线规划
-        this.getRoutePlan();
       }
     },
     // 猎鹰循环判断开始时间与结束时间
@@ -244,15 +241,10 @@ export default {
         this.zjxlQueryParams.qryEtm = this.parseTime(new Date(this.zjxlQueryParams.qryBtm).getTime() + 24 * 60 * 60 * 1000, '{y}-{m}-{d} {h}:{i}:{s}');
         this.getZjxl();
       } else if (this.timePoor === 0) {
-        if (this.tracklist.length !== 0) {
-          // 绘制轨迹
-          this.drawPolyline(this.tracklist);
-          if (!this.wayBillInfo.signTime) {
-            this.getVehicleMark();
-          }
-        } else {
-          // 获取高德地图路线规划
-          this.getRoutePlan();
+        // 绘制轨迹
+        this.drawPolyline(this.tracklist);
+        if (!this.wayBillInfo.signTime) {
+          this.getVehicleMark();
         }
       } else if (this.timePoor !== 0 && this.timePoor < 24 * 60 * 60 * 1000) {
         this.getZjxl();
@@ -262,6 +254,7 @@ export default {
     getZjxl() {
       zjxlTrackLocation(this.zjxlQueryParams).then(response => {
         var str = JSON.parse(response.msg);
+        console.log(str);
         if (str.result.length !== 0) {
           this.tracklist = [
             ...this.tracklist,
