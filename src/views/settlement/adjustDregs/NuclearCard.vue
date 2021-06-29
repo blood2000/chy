@@ -158,7 +158,8 @@ export default {
       CardReader.fn.connect(async() => {
         this.loading = true;
         const ret = await action.readUserInfoAndreadData();
-        // 读卡成功
+
+        console.log(ret);
 
         // 失败
         if (!ret.success && !ret.code) {
@@ -176,10 +177,11 @@ export default {
         }
 
         // 其他失败
-        if (ret.code !== '9000') {
+        if (ret.code !== '9000' || (!ret.success && ret.code === '9000')) {
           this.msgError(ret.msg);
           return;
         }
+
 
         // 成功 的数据
         this.userInfo = ret.userInfo;

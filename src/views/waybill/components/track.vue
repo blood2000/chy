@@ -96,7 +96,10 @@ export default {
       unloadAddress: [],
       // 轨迹切换 0：app轨迹、1：硬件轨迹
       trackChange: 0,
-      timeLineList: []
+      timeLineList: [],
+      // 轨迹查询参数结束时间
+      queryEndtime: '',
+      timePoor: undefined
     };
   },
   computed: {
@@ -121,73 +124,157 @@ export default {
     },
     /** 获取轨迹 */
     getTrackLocation() {
-      if (this.trackChange === 0) {
+      if (this.wayBillInfo.fillTime) {
+        if (this.trackChange === 0) {
+          this.getLieyingTime();
         // 获取APP轨迹
-        axios.get('https://tsapi.amap.com/v1/track/terminal/trsearch', { params: this.lieyingQueryParams }).then(response => {
-          // console.log(response);
-          if (response.data.data) {
-            this.tracklist = response.data.data.tracks[0].points.map(function(response) {
-              // console.log(response.location.split(','));
-              return response.location.split(',');
-            });
-            if (this.tracklist.length !== 0) {
-              // 绘制轨迹
-              this.drawPolyline(this.tracklist);
-              if (!this.wayBillInfo.signTime) {
-                this.getVehicleMark();
-              }
-            } else {
-              // 获取高德地图路线规划
-              this.getRoutePlan();
-            }
-          } else {
-            // 获取高德地图路线规划
-            this.getRoutePlan();
-          }
-        });
-      } else if (this.trackChange === 1) {
+        // axios.get('https://tsapi.amap.com/v1/track/terminal/trsearch', { params: this.lieyingQueryParams }).then(response => {
+        //   // console.log(response);
+        //   if (response.data.data) {
+        //     this.tracklist = response.data.data.tracks[0].points.map(function(response) {
+        //       // console.log(response.location.split(','));
+        //       return response.location.split(',');
+        //     });
+        //     if (this.tracklist.length !== 0) {
+        //       // 绘制轨迹
+        //       this.drawPolyline(this.tracklist);
+        //       if (!this.wayBillInfo.signTime) {
+        //         this.getVehicleMark();
+        //       }
+        //     } else {
+        //       // 获取高德地图路线规划
+        //       this.getRoutePlan();
+        //     }
+        //   } else {
+        //     // 获取高德地图路线规划
+        //     this.getRoutePlan();
+        //   }
+        // });
+        } else if (this.trackChange === 1) {
         // 获取硬件轨迹
-        jimiTrackLocation(this.jimiQueryParams).then(response => {
+          jimiTrackLocation(this.jimiQueryParams).then(response => {
           // console.log(response.data.result);
-          if (response.data.result) {
-            this.tracklist = response.data.result.map(function(response) {
-              return [response.lng, response.lat];
-            });
-            if (this.tracklist.length !== 0) {
+            if (response.data.result) {
+              this.tracklist = response.data.result.map(function(response) {
+                return [response.lng, response.lat];
+              });
+              if (this.tracklist.length !== 0) {
               // 绘制轨迹
-              this.drawPolyline(this.tracklist);
-              if (!this.wayBillInfo.signTime) {
-                this.getVehicleMark();
-              }
-            } else {
+                this.drawPolyline(this.tracklist);
+                if (!this.wayBillInfo.signTime) {
+                  this.getVehicleMark();
+                }
+              } else {
               // 获取高德地图路线规划
-              this.getRoutePlan();
-            }
-          }
-        });
-      } else if (this.trackChange === 2) {
-        zjxlTrackLocation(this.zjxlQueryParams).then(response => {
-          console.log(response);
-          const str = JSON.parse(response.msg);
-          console.log(str);
-          if (str.result.length !== 0) {
-            this.tracklist = str.result.map(response => {
-              return [response.lon / 600000, response.lat / 600000];
-            });
-            console.log(this.tracklist);
-            if (this.tracklist.length !== 0) {
-              // 绘制轨迹
-              this.drawPolyline(this.tracklist);
-              if (!this.wayBillInfo.signTime) {
-                this.getVehicleMark();
+                this.getRoutePlan();
               }
-            } else {
-              // 获取高德地图路线规划
-              this.getRoutePlan();
             }
-          }
-        });
+          });
+        } else if (this.trackChange === 2) {
+          this.getZjxlTime();
+        // zjxlTrackLocation(this.zjxlQueryParams).then(response => {
+        //   console.log(response);
+        //   const str = JSON.parse(response.msg);
+        //   console.log(str);
+        //   if (str.result.length !== 0) {
+        //     this.tracklist = str.result.map(response => {
+        //       return [response.lon / 600000, response.lat / 600000];
+        //     });
+        //     console.log(this.tracklist);
+        //     if (this.tracklist.length !== 0) {
+        //       // 绘制轨迹
+        //       this.drawPolyline(this.tracklist);
+        //       if (!this.wayBillInfo.signTime) {
+        //         this.getVehicleMark();
+        //       }
+        //     } else {
+        //       // 获取高德地图路线规划
+        //       this.getRoutePlan();
+        //     }
+        //   }
+        // });
+        }
+      } else {
+        // 获取高德地图路线规划
+        this.getRoutePlan();
       }
+    },
+    // 猎鹰循环判断开始时间与结束时间
+    getLieyingTime() {
+      this.timePoor = this.lieyingQueryParams.endtime - this.lieyingQueryParams.starttime;
+      if (this.timePoor > 24 * 60 * 60 * 1000) {
+        this.lieyingQueryParams.endtime = this.lieyingQueryParams.starttime + 24 * 60 * 60 * 1000;
+        this.getLieying();
+      } else if (this.timePoor === 0) {
+        if (this.tracklist.length !== 0) {
+          // 绘制轨迹
+          this.drawPolyline(this.tracklist);
+          if (!this.wayBillInfo.signTime) {
+            this.getVehicleMark();
+          }
+        } else {
+          // 获取高德地图路线规划
+          this.getRoutePlan();
+        }
+      } else if (this.timePoor !== 0 && this.timePoor < 24 * 60 * 60 * 1000) {
+        this.getLieying();
+      }
+    },
+    // 调用猎鹰获取轨迹
+    getLieying() {
+      axios.get('https://tsapi.amap.com/v1/track/terminal/trsearch', { params: this.lieyingQueryParams }).then(response => {
+        if (response.data.data) {
+          this.tracklist = [
+            ...this.tracklist,
+            ...response.data.data.tracks[0].points.map(function(response) {
+              return response.location.split(',');
+            })
+          ];
+        }
+        this.lieyingQueryParams.starttime = this.lieyingQueryParams.endtime;
+        this.lieyingQueryParams.endtime = this.queryEndtime.getTime();
+        // console.log(this.lieyingQueryParams);
+        this.getLieyingTime();
+      });
+    },
+    // 中交兴路循环判断开始时间与结束时间
+    getZjxlTime() {
+      this.timePoor = new Date(this.zjxlQueryParams.qryEtm).getTime() - new Date(this.zjxlQueryParams.qryBtm).getTime();
+      if (this.timePoor > 24 * 60 * 60 * 1000) {
+        this.zjxlQueryParams.qryEtm = this.parseTime(new Date(this.zjxlQueryParams.qryBtm).getTime() + 24 * 60 * 60 * 1000, '{y}-{m}-{d} {h}:{i}:{s}');
+        this.getZjxl();
+      } else if (this.timePoor === 0) {
+        if (this.tracklist.length !== 0) {
+          // 绘制轨迹
+          this.drawPolyline(this.tracklist);
+          if (!this.wayBillInfo.signTime) {
+            this.getVehicleMark();
+          }
+        } else {
+          // 获取高德地图路线规划
+          this.getRoutePlan();
+        }
+      } else if (this.timePoor !== 0 && this.timePoor < 24 * 60 * 60 * 1000) {
+        this.getZjxl();
+      }
+    },
+    // 调用中交兴路获取轨迹
+    getZjxl() {
+      zjxlTrackLocation(this.zjxlQueryParams).then(response => {
+        var str = JSON.parse(response.msg);
+        if (str.result.length !== 0) {
+          this.tracklist = [
+            ...this.tracklist,
+            ...str.result.map(response => {
+              return [response.lon / 600000, response.lat / 600000];
+            })
+          ];
+        }
+        this.zjxlQueryParams.qryBtm = this.zjxlQueryParams.qryEtm;
+        this.zjxlQueryParams.qryEtm = this.parseTime(this.queryEndtime, '{y}-{m}-{d} {h}:{i}:{s}');
+        // console.log(this.zjxlQueryParams);
+        this.getZjxlTime();
+      });
     },
     // 获取高德地图路线规划
     getRoutePlan() {
@@ -295,13 +382,13 @@ export default {
     },
     // 表单赋值
     setForm(data) {
-      console.log(data);
+      // console.log(data);
       // 获取运单信息，并标记装卸货地
       getWebDetail(data.code).then(response => {
         this.wayBillInfo = response.data;
         // 中交车牌号参数赋值
-        // this.zjxlQueryParams.vclN = this.wayBillInfo.licenseNumber;
-        console.log(this.wayBillInfo);
+        this.zjxlQueryParams.vclN = this.wayBillInfo.licenseNumber;
+        // console.log(this.wayBillInfo);
         // 猎鹰参数赋值
         if (this.wayBillInfo.trackNumber) {
           const trackNumber = this.wayBillInfo.trackNumber.split('|');
@@ -339,10 +426,12 @@ export default {
           this.jimiQueryParams.end_time = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
           this.zjxlQueryParams.qryEtm = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
           this.lieyingQueryParams.endtime = new Date(this.wayBillInfo.signTime).getTime();
+          this.queryEndtime = new Date(this.wayBillInfo.signTime);
         } else {
           this.jimiQueryParams.end_time = this.time;
           this.zjxlQueryParams.qryEtm = this.time;
           this.lieyingQueryParams.endtime = new Date().getTime();
+          this.queryEndtime = new Date();
         }
         if (this.loadAddress.length !== 0 && this.unloadAddress.length !== 0) {
           // 标记装卸货地址

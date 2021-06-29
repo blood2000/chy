@@ -102,7 +102,7 @@ const CardReader = {
           if (ret.success) {
             resolve(e.data);
           } else {
-            console.log(ret);
+            console.log(ret, '错误信息------------');
             if (ret.code) {
               reject({
                 ...ret,
@@ -834,6 +834,7 @@ CardReader.action['readUserInfoAndreadData'] = async function() {
 
     let count = 0;
     let errCount = 0;
+    let winCount = 0;
 
     const data = [];
     let meter = null;
@@ -847,12 +848,15 @@ CardReader.action['readUserInfoAndreadData'] = async function() {
       ret = await CardReader.fn.apdu((() => ['00', 'B0', CardReader.fn.numToHex16(index[1] | 0x80), '00', '00'].join(''))());
 
       ret = CardReader.fn.getResult(ret);
+
       if (ret.code === '9000') {
         const datae = (CardReader.fn.utf8HexToStr(ret.data).replace(eval('/\u0000/g'), ''));
-
-        console.log(datae, '卡的订单数据');
-        data.push(CardReader.fn.resultData(datae, DATAINFO).data);
-        !meter && (meter = CardReader.fn.resultData(datae, DATAINFO).meter);
+        if (datae) {
+          data.push(CardReader.fn.resultData(datae, DATAINFO).data);
+          !meter && (meter = CardReader.fn.resultData(datae, DATAINFO).meter);
+        } else {
+          winCount += 1;
+        }
         // console.log(data);
         count += 1;
       } else {
@@ -874,10 +878,20 @@ CardReader.action['readUserInfoAndreadData'] = async function() {
     // 结束操作这样是一个闭合的操作了
     await CardReader.fn.exec(CardReader.command.deselect);
     await CardReader.fn.exec(CardReader.command.beep);
+    if (winCount > 0) {
+      console.log(`${ret.code}: 无效数据${winCount}条`);
+    }
 
+
+    if (errCount > 0) {
+      console.log(`${ret.code}: ${errCount}条数据异常`);
+    }
+
+    // console.log(ret);
     return {
       ...ret,
-      msg: '读取成功',
+      code: '9000',
+      msg: `读取数据${count}成功`,
       success: true,
       userInfo,
       dataList,
