@@ -33,19 +33,19 @@
 
       <el-table v-loading="loading" :data="rulesList" highlight-current-row border @selection-change="handleSelectionChange">
         <!-- <el-table-column type="selection" width="55" align="center" fixed="left" /> -->
-          <el-table-column label="默认规则" align="center" prop="isDefault" :formatter="statusFormat" />
+        <el-table-column label="默认规则" align="center" prop="isDefault" :formatter="statusFormat" />
         <el-table-column label="规则名称" align="center" prop="name" />
         <el-table-column label="计算公式" align="center" prop="ruleDictValue" :formatter="ruleTypeFormat" min-width="150" />
         <el-table-column label="扣费项目" align="center" prop="deduction" min-width="150" />
         <el-table-column label="补贴项目" align="center" prop="subsidies" min-width="150" />
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="left">
           <template slot-scope="scope">
-              <el-button
-                      v-if="scope.row.isDefault !='Y' && scope.row.platformType != 1"
-                      size="mini"
-                      type="text"
-                      @click="handleUpdateIsDefault(scope.row)"
-              >默认规则设置</el-button>
+            <el-button
+              v-if="scope.row.isDefault !='Y' && scope.row.platformType != 1"
+              size="mini"
+              type="text"
+              @click="handleUpdateIsDefault(scope.row)"
+            >默认规则设置</el-button>
             <el-button
               v-if="!isAdmin && scope.row.platformType === 1"
               size="mini"
@@ -221,7 +221,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
-        return updateRulesIsDefault({ isDefault: 'Y', shipperCode: row.shipperCode, code:row.code });
+        return updateRulesIsDefault({ isDefault: 'Y', shipperCode: row.shipperCode, code: row.code });
       }).then(() => {
         this.getList();
         this.msgSuccess('设置成功');

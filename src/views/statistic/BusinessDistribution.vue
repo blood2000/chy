@@ -146,7 +146,7 @@ export default {
       height: 1.1rem;
       line-height: 0.7rem;
       font-size: 0.75rem;
-      font-family: PingFang SC;
+      font-family: PingFang Regular;
       font-weight: bold;
       color: #01B6F9;
       background: url('~@/assets/images/statistic/arrow_bg.png') no-repeat;
