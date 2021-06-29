@@ -37,15 +37,19 @@
           </el-form-item>
         </el-col>
       </el-row>
-
-      <!-- 问题 form.isDefault 为什么不行 -->
-      <el-form-item label="设置为默认规则">
-        <el-switch
-          v-model="isDefault"
-          class="isLoss-switch"
-        />
-      </el-form-item>
-
+      <el-row>
+        <el-col v-if="form.platformType !=1" :span="10">
+          <el-form-item label="是否默认规则" prop="isDefault">
+            <el-radio-group v-model="form.isDefault">
+              <el-radio
+                v-for="dict in isDefaultOptions"
+                :key="dict.dictValue"
+                :label="dict.dictValue"
+              >{{ dict.dictLabel }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+      </el-row>
       <!-- 计算路耗 -->
       <!-- 备注：开启路耗之后，路耗的所有项都必填 -->
       <h5 class="g-card-title g-strong mt10">
@@ -234,7 +238,12 @@ export default {
       chooseItemOpen: false,
       chooseItemType: '',
       // 储存选择的 定额/定率
-      currentRadio: 'DE'
+      currentRadio: 'DE',
+      // 是否允许
+      isDefaultOptions: [
+        { dictLabel: '是', dictValue: 'Y' },
+        { dictLabel: '否', dictValue: 'N' }
+      ]
     };
   },
   computed: {
@@ -318,10 +327,10 @@ export default {
       this.$refs['form'].validate(valid => {
         // 构造参数
         const params = {
+          isDefault: this.form.isDefault,
           name: this.form.name,
           ruleDictValue: this.form.ruleDictValue,
-          detailList: [],
-          isDefault: this.isDefault ? 'Y' : 'N'
+          detailList: []
         };
         if (this.form.isLoss) {
           // 开启路耗，所有项都要必填
@@ -456,6 +465,7 @@ export default {
         name: null,
         ruleDictValue: null,
         isLoss: true,
+        isDefault: 'N',
         addItem: [],
         addItemObj: {},
         reduceItem: [],
@@ -472,8 +482,7 @@ export default {
       this.form.name = data.ruleInfo.name;
       this.form.ruleDictValue = data.ruleInfo.ruleDictValue;
       this.form.isLoss = data.lossList.length > 0;
-      this.isDefault = data.ruleInfo.isDefault === 'Y';
-
+      this.form.isDefault = data.ruleInfo.isDefault;
       // 回填路耗
       this.setLossList(data.lossList);
       // 回填增减项
