@@ -15,13 +15,13 @@
           }"
           :show-key="{
             value: 'code',
-            label: 'name',
+            label: 'teamLeaderName',
             telphone: 'telphone'
           }"
-          @selected="(data)=>{form.disUserPhone = data.telphone;form.disUserName = data.name; form.disName = data.teamLeaderName }"
+          @selected="(data)=>{form.disUserPhone = data.telphone;form.disUserName = data.teamLeaderName; form.disName = data.name }"
         >
           <template #default="{row}">
-            <span>{{ row.name }}</span><span>{{ row.telphone }}</span>
+            <span>{{ row.teamLeaderName }}</span><span>{{ row.telphone }}</span>
           </template>
         </FilterableSelect>
 
