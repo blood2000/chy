@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 核验的页面 独立 -->
-    <div v-show="showSearch" class="app-container app-container--search">
+    <div v-show="showSearch">
       <QueryForm ref="queryRefForm" v-model="queryParams" :is-shipment="isShipment" @handleQuery="handleQuery" />
     </div>
 
@@ -13,7 +13,7 @@
         <el-col :span="1.5">
           <el-button
             type="primary"
-            icon="el-icon-upload2"
+            icon="el-icon-download"
             size="mini"
             :loading="exportLoading"
             @click="handleExport"
@@ -26,6 +26,7 @@
             type="primary"
             icon="el-icon-s-claim"
             size="mini"
+            :loading="loading"
             @click="handlerPilianHeyang()"
           >批量核验</el-button>
         </el-col>
@@ -36,6 +37,7 @@
             type="primary"
             icon="el-icon-document-checked"
             size="mini"
+            :loading="loading"
             @click="handleAskfor()"
           >批量索票</el-button>
         </el-col>
@@ -56,6 +58,7 @@
             type="primary"
             icon="el-icon-document-checked"
             size="mini"
+            :loading="loading"
             :disabled="selections.length<=0"
             @click="handlerPassPayment()"
           >批量打款</el-button>
@@ -67,6 +70,7 @@
             type="primary"
             icon="el-icon-document-checked"
             size="mini"
+            :loading="loading"
             :disabled="selections.length<=0"
             @click="handleHesuan()"
           >批量再复核</el-button>
@@ -107,6 +111,7 @@
               v-if="status===0"
               size="mini"
               type="text"
+              :loading="loading"
               @click="handlerPilianHeyang(row)"
             >核验</el-button>
 
@@ -114,14 +119,16 @@
               v-if="status===1"
               size="mini"
               type="text"
+              :loading="loading"
               @click="handleAskfor(row)"
             >索票</el-button>
 
             <!-- v-show="!isShipment " -->
             <el-button
-              v-if="status===2"
+              v-if="status===2 && !isShipment"
               size="mini"
               type="text"
+              :loading="loading"
               @click="handleVerify(row)"
             >开票</el-button>
 
@@ -129,6 +136,7 @@
               v-if="status===3"
               size="mini"
               type="text"
+              :loading="loading"
               @click="handlerPassPayment(row)"
             >打款</el-button>
 
@@ -136,6 +144,7 @@
               v-if="status===-1"
               size="mini"
               type="text"
+              :loading="loading"
               @click="handleHesuan(row)"
             >再复核</el-button>
 
@@ -622,14 +631,14 @@ export default {
           remark: undefined
         };
         confirmVerification(que).then(res => {
-          console.log(res);
+          // console.log(res);
 
           if (res.data && res.data.data === '201') {
             // this.msgError(res.data.msg);
             this.handleError(res.data.msg);
           } else {
             this.msgSuccess(res.msg);
-            this.selections = [];
+            // this.selections = [];
             this.handleQuery();
           }
         });
@@ -692,6 +701,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.loading = true;
         const que = {
           batchNos: this.selections.map(e => e.batchNo)
         };
@@ -701,7 +711,7 @@ export default {
           this.selections = [];
           this.loading = false;
           this.handleQuery();
-        });
+        }).catch(() => { this.loading = false; });
       }).catch(() => {});
     },
     // 查看图片信息
@@ -805,6 +815,7 @@ export default {
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
+      this.selections = [];
       this.getList();
     },
     /** 重置按钮操作 */

@@ -94,14 +94,14 @@
     </el-form-item>
 
     <el-form-item
-      label="调度者名称"
+      label="调度组名称"
       prop="teamCode"
     >
       <FilterableSelect
         v-model="queryParams.teamCode"
         clearable
         style="width:228px"
-        placeholder="请输入调度者名称"
+        placeholder="请输入调度组名称"
         :axios="{
           queryFn:teamListInfo,
           queryData:{

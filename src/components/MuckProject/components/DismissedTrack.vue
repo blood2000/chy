@@ -14,7 +14,11 @@
             <span>{{ parseTime(scope.row.operateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" width="200" property="opName" label="操作人" />
+        <el-table-column align="center" width="200" property="opName" label="操作人">
+          <template slot-scope="scope">
+            <span>{{ scope.row.nickName || scope.row.opName }}[{{ scope.row.phonenumber }}]</span>
+          </template>
+        </el-table-column>
         <el-table-column align="center" width="200" property="operateContent" label="动作" />
         <el-table-column align="center" width="200" property="operateType" label="是否被驳回">
           <template slot-scope="scope">

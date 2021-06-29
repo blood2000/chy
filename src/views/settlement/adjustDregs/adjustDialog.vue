@@ -8,6 +8,7 @@
         <el-tag
           v-for="(item, index) in com"
           :key="index"
+          :class="{'myactive': sort == item.prop}"
           type="success"
           class="shou mr5"
           :disabled="adjustlist.length <= 1"
@@ -67,6 +68,10 @@ export default {
         {
           'label': '渣土场',
           'prop': 'ztcLandName'
+        },
+        {
+          'label': '重置',
+          'prop': 'MadeInChina'
         }
       ]
     }
@@ -111,6 +116,8 @@ export default {
 
       // 包装方法
       const object = {};
+
+      console.log(this.adjustlist);
       this.adjustlist.forEach(e => {
         const str = e[this.sort];
         const array = object[str];
@@ -167,7 +174,8 @@ export default {
   watch: {
     psort(value) {
       if (value) {
-        this.sort = value === 'ztcName' ? 'ztcLandName' : value;
+        console.log(value);
+        this.sort = (value === 'ztcName' ? 'ztcLandName' : value);
       }
     }
   },
@@ -296,3 +304,10 @@ export default {
 };
 </script>
 
+<style scoped>
+.myactive.el-tag.el-tag--success{
+    background: #13ce66;
+    border-color: #13ce66;
+    color: #FFFFFF;
+}
+</style>

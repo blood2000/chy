@@ -27,10 +27,10 @@
           >批量核算</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button type="success" plain size="mini" @click="()=>{sortName = 'cardBatchNo'}">以卡批次排序</el-button>
+          <el-button type="success" plain :class="{'myactive': sortName=='cardBatchNo'}" size="mini" @click="()=>{sortName = 'cardBatchNo'}">以卡批次排序</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button type="success" plain size="mini" @click="()=>{sortName = 'ztcName'}">以渣土场排序</el-button>
+          <el-button type="success" plain :class="{'myactive': sortName=='ztcName'}" size="mini" @click="()=>{sortName = 'ztcName'}">以渣土场排序</el-button>
         </el-col>
         <el-col :span="1.5">
           <el-button type="success" size="mini" @click="nuclearCardOpen">核销IC卡</el-button>
@@ -322,6 +322,10 @@ export default {
 };
 </script>
 
-<style>
-
+<style scoped>
+.myactive.el-button--success.is-plain{
+    background: #13ce66 !important;
+    border-color: #13ce66 !important;
+    color: #FFFFFF !important;
+}
 </style>

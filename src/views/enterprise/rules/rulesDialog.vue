@@ -161,6 +161,8 @@
           <el-button type="danger" plain icon="el-icon-delete" size="mini" circle @click="deleteItem('add', item.code)" />
         </el-form-item>
       </el-row>
+
+
     </el-form>
     <div v-if="isAdmin || form.platformType !== 1" slot="footer" class="dialog-footer">
       <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
@@ -208,9 +210,11 @@ export default {
       // 计算公式字典
       ruleTypeOptions: [],
       // 表单参数
+      isDefault: false,
       form: {
         platformType: 2, // 1运营 2货主
         shipperCode: null, // 角色为1时要传
+        // isDefault: false, // 设置默认 "Y" "N"
         addItem: [],
         addItemObj: {},
         reduceItem: [],
@@ -586,6 +590,8 @@ export default {
         }
       });
     }
+
+
   }
 };
 </script>
