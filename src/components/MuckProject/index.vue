@@ -13,7 +13,7 @@
         <el-col :span="1.5">
           <el-button
             type="primary"
-            icon="el-icon-upload2"
+            icon="el-icon-download"
             size="mini"
             :loading="exportLoading"
             @click="handleExport"
@@ -119,7 +119,7 @@
 
             <!-- v-show="!isShipment " -->
             <el-button
-              v-if="status===2"
+              v-if="status===2 && !isShipment"
               size="mini"
               type="text"
               @click="handleVerify(row)"

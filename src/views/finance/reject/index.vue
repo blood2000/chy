@@ -2,7 +2,7 @@
   <div>
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
-        <el-form-item v-show="!isShipment" label="批次号" prop="batchNo">
+        <el-form-item label="批次号" prop="batchNo">
           <el-input
             v-model.trim="queryParams.batchNo"
             placeholder="请输入批次号"
