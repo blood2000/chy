@@ -31,7 +31,8 @@ export default {
       this.transactionData = [];
       this.weekVoList.forEach(el => {
         this.timeData.push(el.dataTime);
-        this.transactionData.push(el.orderCount);
+        const num = ((el.transactionAmount / 100) / 100).toFixed(2);
+        this.transactionData.push(num);
       });
       setTimeout(() => {
         this.$refs.chartRef.initChart();
@@ -39,6 +40,22 @@ export default {
     },
     refreshChart() {
       this.$refs.chartRef.refreshChart();
+    },
+    keepTwoDecimalFull(num) {
+      let result = num / 10000;
+      result = Math.floor(result * 100) / 100;
+      var s_x = result.toString(); // 将数字转换为字符串
+      var pos_decimal = s_x.indexOf('.'); // 小数点的索引值
+      // 当整数时，pos_decimal=-1 自动补0
+      if (pos_decimal < 0) {
+        pos_decimal = s_x.length;
+        s_x += '.';
+      }
+      // 当数字的长度< 小数点索引+2时，补0
+      while (s_x.length <= pos_decimal + 2) {
+        s_x += '0';
+      }
+      return s_x;
     }
   }
 };
