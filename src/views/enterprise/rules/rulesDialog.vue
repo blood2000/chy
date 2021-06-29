@@ -37,19 +37,19 @@
           </el-form-item>
         </el-col>
       </el-row>
-        <el-row >
-            <el-col :span="10" v-if="form.platformType !=1">
-                <el-form-item label="是否默认规则" prop="isDefault">
-                    <el-radio-group v-model="form.isDefault">
-                        <el-radio
-                                v-for="dict in isDefaultOptions"
-                                :key="dict.dictValue"
-                                :label="dict.dictValue"
-                        >{{ dict.dictLabel }}</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-            </el-col>
-        </el-row>
+      <el-row>
+        <el-col v-if="form.platformType !=1" :span="10">
+          <el-form-item label="是否默认规则" prop="isDefault">
+            <el-radio-group v-model="form.isDefault">
+              <el-radio
+                v-for="dict in isDefaultOptions"
+                :key="dict.dictValue"
+                :label="dict.dictValue"
+              >{{ dict.dictLabel }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+      </el-row>
       <!-- 计算路耗 -->
       <!-- 备注：开启路耗之后，路耗的所有项都必填 -->
       <h5 class="g-card-title g-strong mt10">
