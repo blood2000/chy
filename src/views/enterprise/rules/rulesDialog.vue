@@ -37,19 +37,19 @@
           </el-form-item>
         </el-col>
       </el-row>
-        <el-row >
-            <el-col :span="10" v-if="form.platformType !=1">
-                <el-form-item label="是否默认规则" prop="isDefault">
-                    <el-radio-group v-model="form.isDefault">
-                        <el-radio
-                                v-for="dict in isDefaultOptions"
-                                :key="dict.dictValue"
-                                :label="dict.dictValue"
-                        >{{ dict.dictLabel }}</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-            </el-col>
-        </el-row>
+      <el-row>
+        <el-col v-if="form.platformType !=1" :span="10">
+          <el-form-item label="是否默认规则" prop="isDefault">
+            <el-radio-group v-model="form.isDefault">
+              <el-radio
+                v-for="dict in isDefaultOptions"
+                :key="dict.dictValue"
+                :label="dict.dictValue"
+              >{{ dict.dictLabel }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+      </el-row>
       <!-- 计算路耗 -->
       <!-- 备注：开启路耗之后，路耗的所有项都必填 -->
       <h5 class="g-card-title g-strong mt10">
@@ -161,6 +161,8 @@
           <el-button type="danger" plain icon="el-icon-delete" size="mini" circle @click="deleteItem('add', item.code)" />
         </el-form-item>
       </el-row>
+
+
     </el-form>
     <div v-if="isAdmin || form.platformType !== 1" slot="footer" class="dialog-footer">
       <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
@@ -208,9 +210,11 @@ export default {
       // 计算公式字典
       ruleTypeOptions: [],
       // 表单参数
+      isDefault: false,
       form: {
         platformType: 2, // 1运营 2货主
         shipperCode: null, // 角色为1时要传
+        // isDefault: false, // 设置默认 "Y" "N"
         addItem: [],
         addItemObj: {},
         reduceItem: [],
@@ -586,6 +590,8 @@ export default {
         }
       });
     }
+
+
   }
 };
 </script>

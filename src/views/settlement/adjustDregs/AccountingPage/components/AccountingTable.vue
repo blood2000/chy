@@ -85,7 +85,7 @@ const com = [
     'isShow': true,
     'label': '卡批号',
     'sortNum': 2,
-    'width': 180
+    'width': 150
   },
   {
     'label': '调度者名称',
@@ -707,17 +707,24 @@ export default {
         };
         object[item].forEach(ite => {
           obj['freightAmount'] += ite['taxFee'] - 0; // 运费结算金额(取含税价字段)
-          obj['teamName'] = ite['teamName']; // 调度者Code
+          // obj['teamName'] += ite['teamName']; // 调度者Code
           //   obj['teamCode'] = ite['teamCode']; // 调度者Code
 
-          obj['ztcName'] = ite['ztcName']; // 渣土场（卸货地）
+
           // obj['land'] = ite['unloadAddress']; // 渣土场（卸货地）
           //   obj['landCode'] = ite['unloadAddressCode']; // 	渣土场（卸货地）Code
-          obj['projectName'] = ite['projectName']; // 	项目（装货地）
-          obj['cardBatchNo'] = ite['cardBatchNo'] || null; // 	卡批次(初次读卡的时候存在)
+
+
           // obj['load'] = ite['loadAddress']; // 	项目（装货地）
         //   obj['loadCode'] = ite['loadAddressCode']; // 	项目（装货地）Code
         });
+
+        obj['teamName'] = [...new Set(object[item].map(e => e.teamName))].join(','); // object[item].map(e=> e.teamName)
+        obj['ztcName'] = [...new Set(object[item].map(e => e.ztcName))].join(','); // ite['ztcName']; // 渣土场（卸货地）
+        obj['projectName'] = [...new Set(object[item].map(e => e.projectName))].join(','); // ite['projectName']; // 	项目（装货地）
+        obj['cardBatchNo'] = [...new Set(object[item].map(e => e.cardBatchNo))].join(','); // ite['cardBatchNo'] || null; // 	卡批次(初次读卡的时候存在)
+
+
 
         obj['loadNum'] = object[item].length; // 装车数量
         obj['actualTripsNum'] = object[item].length; // 实发趟数（次）
