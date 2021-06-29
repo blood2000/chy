@@ -39,7 +39,6 @@ export default {
     },
     refreshChart() {
       this.$refs.chartRef.refreshChart();
-      console.log(11);
     }
   }
 };

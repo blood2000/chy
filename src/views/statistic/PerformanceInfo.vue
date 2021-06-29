@@ -9,17 +9,19 @@
         :places="2"
       />
       <InfoBox
-        label="今日新增交易"
+        label="今日货主付款"
         unit="万"
         :count="myPerformance.newTransactionAmount"
         :last-count="myPerformance.lastTransactionAmount"
         :places="2"
-        :has-yoy="true"
-        :yoy.sync="myPerformance.newTransactionYoy"
-        :yoy-type.sync="myPerformance.newTransactionYoyType"
-        :yoy-places="1"
       />
     </div>
+    <!--
+      :has-yoy="true"
+      :yoy.sync="myPerformance.newTransactionYoy"
+      :yoy-type.sync="myPerformance.newTransactionYoyType"
+      :yoy-places="1"
+     -->
     <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 35%">
       <InfoBox
         label="开票总额"
@@ -33,12 +35,14 @@
         :count="myPerformance.newVotesAmount"
         :last-count="myPerformance.lastVotesAmount"
         :places="2"
-        :has-yoy="true"
-        :yoy.sync="myPerformance.newVotesYoy"
-        :yoy-type.sync="myPerformance.newVotesYoyType"
-        :yoy-places="1"
       />
     </div>
+    <!--
+      :has-yoy="true"
+      :yoy.sync="myPerformance.newVotesYoy"
+      :yoy-type.sync="myPerformance.newVotesYoyType"
+      :yoy-places="1"
+     -->
     <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 30%">
       <InfoBox
         label="运费总额"
@@ -47,17 +51,19 @@
         :places="2"
       />
       <InfoBox
-        label="今日新增运费"
+        label="今日司机收款"
         unit="万"
         :count="!isScale ? myPerformance.newTransactionAmount * 0.9 : myPerformance.newWaybillAmount"
         :last-count="myPerformance.lastWaybillAmount"
         :places="2"
-        :has-yoy="true"
-        :yoy.sync="myPerformance.newWaybillYoy"
-        :yoy-type.sync="myPerformance.newWaybillYoyType"
-        :yoy-places="1"
       />
     </div>
+    <!--
+      :has-yoy="true"
+      :yoy.sync="myPerformance.newWaybillYoy"
+      :yoy-type.sync="myPerformance.newWaybillYoyType"
+      :yoy-places="1"
+     -->
   </div>
 </template>
 
