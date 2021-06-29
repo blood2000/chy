@@ -38,6 +38,15 @@
 
     <div class="app-container">
       <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            type="primary"
+            icon="el-icon-download"
+            size="mini"
+            :loading="exportLoading"
+            @click="handleExport"
+          >导出</el-button>
+        </el-col>
         <el-col :span="1.5" style="float: right;">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
@@ -89,6 +98,7 @@ export default {
       api: rejectListApi,
       // 遮罩层
       loading: true,
+      exportLoading: false,
       // 选中数组
       ids: [],
       // 非单个禁用
@@ -192,6 +202,12 @@ export default {
       this.ids = selection.map(item => item.waybillCode);
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
+    },
+
+    async handleExport() {
+      this.exportLoading = true;
+      await this.download('/transportation/batch/operateLogExport', this.queryParams, `nullify_${new Date().getTime()}.xlsx`);
+      this.exportLoading = false;
     }
   }
 };
