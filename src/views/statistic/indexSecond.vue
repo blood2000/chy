@@ -58,7 +58,7 @@
     <!-- right -->
     <div class="ly-right ly-flex-pack-justify ly-border">
       <div class="ly-right-left ly-border">
-        <div class="ly-right-left-top mb1rem ly-border">
+        <div class="ly-right-left-top ly-border">
           <Title class="title_4 mb05rem" icon="5" :show-time="true" :time-text="timeText">运营情况<span>Operation situation</span></Title>
           <div class="ly-right-left-top-box">
             <OperationData
@@ -67,14 +67,12 @@
               :waill-bill-vo="businessData.waillBillVo"
               :week-vo-list="businessData.weekVoList"
               :is-second="true"
-              :time-key="timeKey"
               style="height: 100%"
             />
           </div>
         </div>
         <div class="ly-right-left-bottom ly-border">
-          <Title class="title_5 mb05rem" icon="6">目标达成情况<span>Achievement of Goals</span></Title>
-          <TargetChart ref="TargetChartRef" :branch-code="branchCode" />
+          <PerformanceChart ref="PerformanceChartRef" :week-vo-list="businessData.weekVoList" />
         </div>
       </div>
       <div class="ly-right-right ly-border">
@@ -83,12 +81,14 @@
           <div class="ly-border mb05rem" style="height: 15%">
             <PerformanceInfo ref="PerformanceInfoRef" :performance="performanceData.performance" :is-second="true" :is-scale="!!$route.query.isScale" />
           </div>
-          <div class="ly-border mb07rem" style="height: calc(33% - 1.2rem)">
-            <div class="ly-right-right-box-title mb05rem">TOP 5省份交易额排名</div>
-            <AmountTop5Chart ref="AmountTop5ChartRef" :province-ranking="performanceData.provinceRanking" :show-title="false" style="height: calc(100% - 1.5rem)" />
+          <div class="ly-border mb05rem" style="height: 25%">
+            <TargetChart ref="TargetChartRef" :branch-code="branchCode" style="height: 100%" />
           </div>
-          <div class="ly-border" style="height: 52%">
+          <div class="ly-border" style="height: 32%">
             <CompanyTop10ListSecond ref="CompanyTop10ListSecondRef" :province-ranking="performanceData.provinceRanking" />
+          </div>
+          <div class="ly-border mb07rem" style="height: calc(28% - 1.2rem)">
+            <AmountTop5Chart ref="AmountTop5ChartRef" :province-ranking="performanceData.provinceRanking" :show-title="false" />
           </div>
         </div>
       </div>
@@ -106,6 +106,7 @@ import PerformanceInfo from './PerformanceInfo';// 业绩数据
 import AmountTop5Chart from './AmountTop5Chart';// TOP5省份交易额排名
 import CompanyTop10ListSecond from './CompanyTop10ListSecond';// TOP10省内十大公司
 import OperationData from './OperationData';// 运营情况
+import PerformanceChart from './PerformanceChart';// 交易额
 import TargetChart from './TargetChart';// 目标达成情况
 import DriverTop5List from './DriverTop5List';// 总排名TOP5司机
 import TotalDataSecond from './TotalDataSecond';// 中间总数统计
@@ -126,6 +127,7 @@ export default {
     AmountTop5Chart,
     CompanyTop10ListSecond,
     OperationData,
+    PerformanceChart,
     TargetChart,
     DriverTop5List,
     TotalDataSecond,
@@ -297,6 +299,7 @@ export default {
       this.$refs.AmountTop5ChartRef.refreshChart();
       this.$refs.TargetChartRef.refreshChart();
       this.$refs.OperationDataRef.refreshChart();
+      this.$refs.PerformanceChartRef.refreshChart();
       this.$refs.mapRef.refreshChart();
       this.$refs.FreightTypeRankingRef.refreshChart();
     },
@@ -374,6 +377,7 @@ export default {
         };
         this.$nextTick(() => {
           this.$refs.OperationDataRef.initChart();
+          this.$refs.PerformanceChartRef.initChart();
         });
       });
     },
@@ -485,26 +489,19 @@ export default {
     .ly-right-left {
       width: calc(49% - 1rem);
       .ly-right-left-top {
-        height: calc(100% - 26.5% - #{$mb1rem});
+        height: 76%;
         .ly-right-left-top-box{
           height: calc(100% - #{$mb05rem} - 1.6rem);
         }
       }
       .ly-right-left-bottom {
-        height: 26.5%;
+        height: 24%;
       }
     }
     .ly-right-right {
       width: calc(51% - 1rem);
       .ly-right-right-box {
         height: calc(100% - 2.1rem);
-        .ly-right-right-box-title{
-          height: 1rem;
-          font-size: 0.8rem;
-          font-family: 'PingFang Regular';
-          font-weight: 500;
-          color: #FFFFFF;
-        }
       }
     }
   }

@@ -1,6 +1,6 @@
 <template>
   <!-- 运营情况 -->
-  <div class="s-container">
+  <div class="s-container" :class="{isSecond: isSecond}">
     <!-- 货单 -->
     <div class="s-container__box top">
       <div class="s-container__box__content ly-flex">
@@ -132,10 +132,6 @@ export default {
     isSecond: {
       type: Boolean,
       default: false
-    },
-    timeKey: {
-      type: Number,
-      default: 2
     }
   },
   data() {
@@ -298,6 +294,19 @@ export default {
     &.isSecond{
       &::after{
         opacity: 0;
+      }
+    }
+  }
+
+  &.isSecond{
+    .s-container__box{
+      &.top{
+        //height: 42%;
+        padding-bottom: 1.4rem;
+      }
+      &.bottom{
+        //height: 58%;
+        padding: 1.2rem 0 0.8rem;
       }
     }
   }

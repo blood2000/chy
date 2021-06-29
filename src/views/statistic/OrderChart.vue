@@ -53,16 +53,24 @@ export default {
     setOption() {
       // 构造数据
       let typeName = '';
+      let yAxisName = '';
       let pointColor = '';
       let lineColot = '';
       if (this.type === 'shipment') {
-        typeName = '货单';
+        typeName = '货单订单数';
+        yAxisName = '货单数';
         pointColor = '#18B8C5';
         lineColot = '#267BB7';
       } else if (this.type === 'wayBill') {
-        typeName = '运单';
+        typeName = '运单订单数';
+        yAxisName = '运单数';
         pointColor = '#F6BE61';
         lineColot = '#E68D27';
+      } else if (this.type === 'transaction') {
+        typeName = '交易额';
+        yAxisName = '(万)';
+        pointColor = '#43dfb5';
+        lineColot = 'rgba(47, 235, 149, 0.6)';
       }
       this.chart.setOption({
         legend: {
@@ -75,7 +83,7 @@ export default {
             fontFamily: 'PingFang Medium'
           },
           data: [{
-            name: typeName + '订单数'
+            name: typeName
           }]
         },
         grid: {
@@ -104,7 +112,7 @@ export default {
           data: this.timeData
         },
         yAxis: {
-          name: typeName + '数',
+          name: yAxisName,
           nameTextStyle: {
             color: '#D5EAFF',
             paddingLeft: '2%',
@@ -149,7 +157,7 @@ export default {
           }
         },
         series: [{
-          name: typeName + '订单数',
+          name: typeName,
           data: this.orderData,
           type: 'line',
           symbol: 'circle',
@@ -198,7 +206,7 @@ export default {
           }
         },
         series: [{
-          symbolSize: setfontSize(8),
+          symbolSize: setfontSize(6),
           itemStyle: {
             normal: {
               lineStyle: {
