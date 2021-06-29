@@ -37,6 +37,15 @@
           </el-form-item>
         </el-col>
       </el-row>
+
+      <!-- 问题 form.isDefault 为什么不行 -->
+      <el-form-item label="设置为默认规则">
+        <el-switch
+          v-model="isDefault"
+          class="isLoss-switch"
+        />
+      </el-form-item>
+
       <!-- 计算路耗 -->
       <!-- 备注：开启路耗之后，路耗的所有项都必填 -->
       <h5 class="g-card-title g-strong mt10">
@@ -148,6 +157,8 @@
           <el-button type="danger" plain icon="el-icon-delete" size="mini" circle @click="deleteItem('add', item.code)" />
         </el-form-item>
       </el-row>
+
+
     </el-form>
     <div v-if="isAdmin || form.platformType !== 1" slot="footer" class="dialog-footer">
       <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
@@ -195,9 +206,11 @@ export default {
       // 计算公式字典
       ruleTypeOptions: [],
       // 表单参数
+      isDefault: false,
       form: {
         platformType: 2, // 1运营 2货主
         shipperCode: null, // 角色为1时要传
+        // isDefault: false, // 设置默认 "Y" "N"
         addItem: [],
         addItemObj: {},
         reduceItem: [],
@@ -307,7 +320,8 @@ export default {
         const params = {
           name: this.form.name,
           ruleDictValue: this.form.ruleDictValue,
-          detailList: []
+          detailList: [],
+          isDefault: this.isDefault ? 'Y' : 'N'
         };
         if (this.form.isLoss) {
           // 开启路耗，所有项都要必填
@@ -458,6 +472,8 @@ export default {
       this.form.name = data.ruleInfo.name;
       this.form.ruleDictValue = data.ruleInfo.ruleDictValue;
       this.form.isLoss = data.lossList.length > 0;
+      this.isDefault = data.ruleInfo.isDefault === 'Y';
+
       // 回填路耗
       this.setLossList(data.lossList);
       // 回填增减项
@@ -565,6 +581,8 @@ export default {
         }
       });
     }
+
+
   }
 };
 </script>
