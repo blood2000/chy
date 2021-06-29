@@ -70,7 +70,7 @@ export default {
           'prop': 'ztcLandName'
         },
         {
-          'label': '还原',
+          'label': '重置',
           'prop': 'MadeInChina'
         }
       ]
@@ -116,6 +116,8 @@ export default {
 
       // 包装方法
       const object = {};
+
+      console.log(this.adjustlist);
       this.adjustlist.forEach(e => {
         const str = e[this.sort];
         const array = object[str];
@@ -172,7 +174,8 @@ export default {
   watch: {
     psort(value) {
       if (value) {
-        this.sort = value === 'ztcName' ? 'ztcLandName' : value;
+        console.log(value);
+        this.sort = (value === 'ztcName' ? 'ztcLandName' : value);
       }
     }
   },
