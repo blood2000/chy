@@ -37,6 +37,8 @@
           clearable
           style="width:255px"
           placeholder="请输入调度者姓名/手机号"
+           requer-msg="请先选择发货企业！" <------- 可选 填上说明请求前 这个是必定要有的, 不然就报填的消息 跟is-sure-key一起使用
+          :is-sure-key="'companyCode'" <------- 可选 指定必填的字段是那个 跟requer-msg一起使用
           :axios="{
             queryFn:listInfo, <----- 请求接口的函数
             queryData:{} <----- 请求的额外参数
