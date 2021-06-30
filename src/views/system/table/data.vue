@@ -79,7 +79,6 @@
 
       <el-table v-loading="loading" highlight-current-row border :data="configList" :close-on-click-modal="false" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
-        <el-table-column label="列表名称" align="center" prop="masterName" />
         <el-table-column label="字段名" align="center" prop="fieldName" />
         <el-table-column label="字段描述" align="center" prop="comment" />
         <el-table-column label="排序" align="center" sortable prop="sortNum" />
@@ -95,6 +94,7 @@
             <span v-else class="g-color-error">否</span>
           </template>
         </el-table-column>
+        <el-table-column label="列表名称" align="center" prop="masterName" />
         <!-- <el-table-column label="接口地址" align="center" prop="route" /> -->
         <el-table-column label="创建时间" align="center" prop="createTime" width="180">
           <template slot-scope="scope">
@@ -281,7 +281,7 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = '添加参数';
+      this.title = '添加字段';
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
@@ -296,7 +296,7 @@ export default {
       getConfig(code).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = '修改参数';
+        this.title = '修改字段';
       });
     },
     /** 提交按钮 */
