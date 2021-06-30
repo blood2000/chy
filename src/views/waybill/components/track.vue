@@ -79,8 +79,8 @@ export default {
         trid: undefined, // trid为轨迹唯一编号
         starttime: undefined, // 必须为Unix时间戳精确到毫秒
         endtime: undefined, // 必须为Unix时间戳精确到毫秒
-        correction: 'denoise=1,mapmatch=1,attribute=0,threshold=0,mode=driving',
-        recoup: 1,
+        correction: 'denoise=1,mapmatch=1,attribute=0,threshold=0,mode=driving', // 对轨迹进行处理
+        recoup: 1, // 对轨迹进行补点
         page: 1,
         pagesize: 999
       },
