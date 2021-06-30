@@ -31,7 +31,7 @@
           <template slot-scope="scope">
             <span v-if="scope.row.isDregs === 1">{{ scope.row.loadWeight }}</span>
             <div v-else>
-              <el-input-number v-if="scope.row.stowageStatus !== '2'" v-model="scope.row.loadWeight" :controls="false" placeholder="请输入装货数量" style="width:100%;" size="mini" @blur="handlerBlur(scope.row)" />
+              <el-input-number v-if="scope.row.stowageStatus !== '2'" v-model="scope.row.loadWeight" :controls="false" placeholder="请输入装货数量" style="width:100%;" size="mini" @keyup.native="handlerBlur($event,scope.row,false,'loadWeight')" />
               <span v-else>{{ scope.row.loadWeight }}</span>
             </div>
 
@@ -42,7 +42,7 @@
           <template slot-scope="scope">
             <span v-if="scope.row.isDregs === 1">{{ scope.row.unloadWeight }}</span>
             <div v-else>
-              <el-input-number v-if="scope.row.stowageStatus !== '2'" v-model="scope.row.unloadWeight" :controls="false" placeholder="请输入卸货数量" style="width:100%;" size="mini" @blur="handlerBlur(scope.row)" />
+              <el-input-number v-if="scope.row.stowageStatus !== '2'" v-model="scope.row.unloadWeight" :controls="false" placeholder="请输入卸货数量" style="width:100%;" size="mini" @keyup.native="handlerBlur($event,scope.row,false,'unloadWeight')" />
               <span v-else>{{ scope.row.unloadWeight }}</span>
             </div>
           </template>
@@ -117,7 +117,7 @@
                   <span v-if="scope.row.isDregs === 1">{{ freight.ruleValue }}</span>
                   <div v-else>
                     <span v-show="!isEdit2">{{ freight.ruleValue }}</span>
-                    <el-input-number v-show="isEdit2" v-model="freight.ruleValue" :controls="false" :precision="2" :min="0" :placeholder="`${freight.cnName}`" style="width:110px;" @blur="handlerBlur(scope.row)" />
+                    <el-input-number v-show="isEdit2" v-model="freight.ruleValue" :controls="false" :precision="2" :min="0" :placeholder="`${freight.cnName}`" style="width:110px;" @keyup.native="handlerBlur($event,scope.row, freight)" />
                   </div>
                 </el-form-item>
               </div>
@@ -143,7 +143,7 @@
                 <el-form-item :label="freight.cnName + '(元)'">
                   <div>
                     <span v-show="!isEdit">{{ freight.ruleValue }}</span>
-                    <el-input-number v-show="isEdit" v-model="freight.ruleValue" :controls="false" :precision="2" :min="0" :placeholder="`${freight.cnName}`" style="width:110px;" @blur="handlerBlur(scope.row)" />
+                    <el-input-number v-show="isEdit" v-model="freight.ruleValue" :controls="false" :precision="2" :min="0" :placeholder="`${freight.cnName}`" style="width:110px;" @keyup.native="handlerBlur($event,scope.row, freight)" />
                   </div>
                 </el-form-item>
               </div>
@@ -274,7 +274,30 @@ export default {
 
 
     // 单项修改
-    async handlerBlur(row) {
+    async handlerBlur(event, row, freight, keyName) {
+      if (event) {
+        if (this.loading || (!(/^[0-9]*$/.test(event.key - 0)) && event.key !== 'ArrowUp' && event.key !== 'ArrowDown' && event.key !== 'Backspace')) return;
+      }
+
+      if (freight) {
+        // event.target.value - 0 enName freight.enName   ruleValue
+        if (freight.type === '1') {
+          row.subsidiesFreightList.forEach(e => {
+            if (e.enName === freight.enName) {
+              e.ruleValue = event.target.value;
+            }
+          });
+        } else {
+          row.deductionFreightList.forEach(e => {
+            if (e.enName === freight.enName) {
+              e.ruleValue = event.target.value;
+            }
+          });
+        }
+      } else {
+        // event.target.value - 0 loadWeight unloadWeight
+        row[keyName] = event.target.value - 0;
+      }
       const {
         m0DictValue,
         freightPrice,
@@ -291,6 +314,8 @@ export default {
         // taxPayment
 
       } = row;
+
+
 
       const parame = {
         driverReductionFee: this._sum(deductionFreightList),
@@ -313,7 +338,7 @@ export default {
         var data = {};
         await calculateFee(parame).then(res => {
           data = res.data;
-          console.log(data);
+          // console.log(data);
 
           if (res.msg) {
             this.msgError(res.msg);
@@ -334,7 +359,7 @@ export default {
       } catch (error) {
         this.loading1 = false;
 
-        console.log('请求失败');
+        // console.log('请求失败');
         return;
       }
     },
@@ -447,7 +472,7 @@ export default {
         return batchCheck({ boList }).then(res => {
           if (res.data) {
             this.msgError(res.msg);
-            console.log(res);
+            // console.log(res);
             const list = res.data.exceptionList;
             this.errList = list.map(item => item.waybillCode);
             this.getList();
@@ -500,7 +525,7 @@ export default {
           return e;
         });
 
-        console.log(this.showSubList);
+        // console.log(this.showSubList);
 
         this.total = response.total;
         this.loading = false;
@@ -516,7 +541,7 @@ export default {
           return e.showType === 1;
         });
       });
-      console.log(this.showSubList);
+      // console.log(this.showSubList);
     },
 
 
@@ -592,7 +617,7 @@ export default {
         });
       }
 
-      console.log(this.adjustlist);
+      // console.log(this.adjustlist);
     },
 
     /* 批量修改规定的值 */

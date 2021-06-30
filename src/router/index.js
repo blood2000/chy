@@ -54,6 +54,7 @@ export const constantRoutes = [
   },
   {
     path: '/404',
+    name: '404',
     component: (resolve) => require(['@/views/error/404'], resolve),
     hidden: true
   },
