@@ -90,6 +90,10 @@
           <DismissedTrack :batch-no="row.batchNo" />
         </template>
 
+        <template #opName="{row}">
+          <span>{{ row.nickName || row.opName }}</span>
+        </template>
+
         <template #status="{row}">
           <span>
             {{ selectDictLabel(statusOptions, row.status) }}

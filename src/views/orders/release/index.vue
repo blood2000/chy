@@ -280,7 +280,7 @@
             <el-col :span="10">
               <div class="release_warning">
                 <el-alert
-                  title="司机在接单的时候会相应的扣除余额中的运输费用，请及时充值，以免招成司机接单不成功的情况。"
+                  title="司机在接单的时候会相应的扣除余额中的运输费用，请及时充值，以免造成司机接单不成功的情况。"
                   type="info"
                   effect="dark"
                   :closable="false"

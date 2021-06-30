@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 核算页面 -->
-    <div v-show="showSearch" class="app-container app-container--search">
+    <div v-show="showSearch">
       <QueryForm
         v-model="alreadyPaid_queryParams"
         :is-shipment="isShipment"
