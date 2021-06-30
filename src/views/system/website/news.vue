@@ -187,7 +187,7 @@
           <el-row :gutter="20">
             <el-col :span="24">
               <el-form-item label="内容">
-                <editor v-model="form.newsContent" :min-height="192" />
+                <editor v-model="form.newsContent" :min-height="192" :max-height="250" />
               </el-form-item>
             </el-col>
           </el-row>
