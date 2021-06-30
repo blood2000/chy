@@ -19,62 +19,56 @@
 
 
       <div class="feiyong">
-        <el-row>
-          <el-col :span="3" class="text-label">
-            项目名称：
+        <el-row class="feiyong-row" type="flex" justify="space-around">
+          <el-col :span="12">
+            <el-row type="flex">
+              <el-col :span="5"><span class="text-label">项目名称：</span></el-col>
+              <el-col :span="18"><span class="text-row">{{ printData.projectNames || '-' }}</span></el-col>
+            </el-row>
           </el-col>
-          <el-col :span="8" class="text-row">
-            {{ printData.projectNames || '-' }}
+          <el-col :span="12">
+            <el-row type="flex">
+              <el-col :span="5"><span class="text-label">渣土场：</span></el-col>
+              <el-col :span="18"><span class="text-row"> {{ printData.ztcLandNames || '-' }}</span></el-col>
+            </el-row>
           </el-col>
-          <el-col :span="3" class="text-label">
-            渣土场：
+        </el-row>
+        <el-row class="feiyong-row">
+          <el-col :span="12">
+            <el-row>
+              <el-col :span="5"><span class="text-label">调度者：</span></el-col>
+              <el-col :span="18"><span class="text-row">{{ printData.teamNames || '-' }}</span></el-col>
+            </el-row>
           </el-col>
-          <el-col :span="8" class="text-row">
-            {{ printData.ztcLandNames || '-' }}
+          <el-col :span="12">
+            <el-row>
+              <el-col :span="5"><span class="text-label">装车数量：</span></el-col>
+              <el-col :span="18"><span class="text-row">{{ printData.loadNum || '-' }}</span></el-col>
+            </el-row>
           </el-col>
-
-          <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
-
-
-
-          <el-col :span="3" class="text-label">
-            调度者：
+        </el-row>
+        <el-row class="feiyong-row">
+          <el-col :span="12">
+            <el-row>
+              <el-col :span="5"><span class="text-label">实发趟数：</span></el-col>
+              <el-col :span="18"><span class="text-row">{{ printData.actualTripsNum || '-' }}</span></el-col>
+            </el-row>
           </el-col>
-          <el-col :span="8" class="text-row">
-            {{ printData.teamNames || '-' }}
+          <el-col :span="12">
+            <el-row>
+              <el-col :span="5"><span class="text-label">结算趟数：</span></el-col>
+              <el-col :span="18"><span class="text-row">{{ printData.settlementTripsNum || '-' }}</span></el-col>
+            </el-row>
           </el-col>
-          <el-col :span="3" class="text-label">
-            装车数量：
+        </el-row>
+        <el-row class="feiyong-row">
+          <el-col :span="12">
+            <el-row>
+              <el-col :span="5"><span class="text-label">运费结算：</span></el-col>
+              <el-col :span="18"><span class="text-row"> {{ floorFn(printData.freightAmount) }} 元</span></el-col>
+            </el-row>
           </el-col>
-          <el-col :span="8" class="text-row">
-            {{ printData.loadNum || '-' }}
-          </el-col>
-          <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
-
-
-
-          <el-col :span="3" class="text-label">
-            实发趟数：
-          </el-col>
-          <el-col :span="8" class="text-row">
-            {{ printData.actualTripsNum || '-' }}
-          </el-col>
-          <el-col :span="3" class="text-label">
-            结算趟数：
-          </el-col>
-          <el-col :span="8" class="text-row">
-            {{ printData.settlementTripsNum || '-' }}
-          </el-col>
-          <el-col :span="2" class="text-row"><div style="height:22px" /></el-col>
-
-
-
-          <el-col :span="3" class="text-label">
-            运费结算：
-          </el-col>
-          <el-col :span="21" class="text-row">
-            {{ floorFn(printData.freightAmount) }} 元
-          </el-col>
+          <el-col :span="12" />
         </el-row>
       </div>
 
@@ -216,11 +210,17 @@ table th, table td {
     width: 100%;
     margin-bottom: 30px;
     .text-label{
-        font-weight: 700;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 14px;
     }
-    // .text-row{
-    //     width: 100%;
-    // }
+    .text-row{
+      line-height: 14px;
+    }
+    .feiyong-row{
+      padding: 0 20px;
+      margin-bottom: 10px;
+    }
 }
 .info_tab{
     width: 100%;
