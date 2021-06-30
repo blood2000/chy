@@ -17,3 +17,11 @@ export function toCard(ids) {
     method: 'post'
   });
 }
+
+// 网商批量驳回
+export function reject(ids) {
+  return request({
+    url: `/payment/pay/reject?ids=${ids}`,
+    method: 'post'
+  });
+}
