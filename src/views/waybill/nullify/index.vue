@@ -187,6 +187,12 @@
             type="text"
             @click="handleLog(row)"
           >驳回</el-button>
+          <el-button
+            v-hasPermi="['transportation:waybillOper:delInvalid']"
+            size="mini"
+            type="text"
+            @click="handleDelete(row)"
+          >确认删除</el-button>
         </template>
       </RefactorTable>
 
@@ -205,7 +211,7 @@
 </template>
 
 <script>
-import { listNullify, invalidRejected, listNullifyApi } from '@/api/waybill/nullify';
+import { listNullify, invalidRejected, listNullifyApi, invalidDelete } from '@/api/waybill/nullify';
 import DetailDialog from '../components/detailDialog';
 import { getUserInfo } from '@/utils/auth';
 // import tableColumnsConfig from './config';
@@ -362,7 +368,7 @@ export default {
     },
     /** 驳回按钮操作 */
     handleLog(row) {
-      this.$confirm('请确认驳回此作废运单？', '提示信息', {
+      this.$confirm('请确认驳回此作废运单？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -372,6 +378,24 @@ export default {
           this.$message({
             type: 'success',
             message: '驳回成功'
+          });
+          this.getList();
+        });
+      }).catch(() => {
+
+      });
+    },
+    // 确认删除按钮
+    handleDelete(row) {
+      this.$confirm('请确认删除此作废运单？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        invalidDelete(row.wayBillCode).then(response => {
+          this.$message({
+            type: 'success',
+            message: '删除成功'
           });
           this.getList();
         });
