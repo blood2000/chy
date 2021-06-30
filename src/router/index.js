@@ -103,6 +103,19 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/table',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'type/data/:code(\\d+)',
+        component: (resolve) => require(['@/views/system/table/data'], resolve),
+        name: 'Data',
+        meta: { title: '列表数据', icon: '' }
+      }
+    ]
+  },
+  {
     path: '/job',
     component: Layout,
     hidden: true,

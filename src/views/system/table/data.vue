@@ -12,7 +12,17 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="接口地址" prop="route">
+        <el-form-item label="字段描述" prop="comment">
+          <el-input
+            v-model="queryParams.comment"
+            placeholder="请输入字段描述"
+            clearable
+            size="small"
+            style="width: 240px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <!-- <el-form-item label="接口地址" prop="route">
           <el-input
             v-model="queryParams.route"
             placeholder="请输入接口地址"
@@ -21,7 +31,7 @@
             style="width: 240px"
             @keyup.enter.native="handleQuery"
           />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
           <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -70,9 +80,8 @@
       <el-table v-loading="loading" highlight-current-row border :data="configList" :close-on-click-modal="false" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="字段名" align="center" prop="fieldName" />
-        <el-table-column label="排序" align="center" sortable prop="sortNum" />
-        <el-table-column label="接口地址" align="center" prop="route" />
         <el-table-column label="字段描述" align="center" prop="comment" />
+        <el-table-column label="排序" align="center" sortable prop="sortNum" />
         <el-table-column label="列宽" align="center" prop="width">
           <template slot-scope="scope">
             <span v-if="scope.row.width">{{ scope.row.width }}</span>
@@ -85,6 +94,7 @@
             <span v-else class="g-color-error">否</span>
           </template>
         </el-table-column>
+        <el-table-column label="接口地址" align="center" prop="route" />
         <el-table-column label="创建时间" align="center" prop="createTime" width="180">
           <template slot-scope="scope">
             <span>{{ parseTime(scope.row.createTime) }}</span>
@@ -120,9 +130,9 @@
           <el-form-item label="字段名" prop="fieldName">
             <el-input v-model="form.fieldName" placeholder="请输入字段名" clearable />
           </el-form-item>
-          <el-form-item label="接口地址" prop="route">
+          <!-- <el-form-item label="接口地址" prop="route">
             <el-input v-model="form.route" placeholder="请输入接口地址" clearable />
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="字段描述" prop="comment">
             <el-input v-model="form.comment" placeholder="请输入字段描述" clearable />
           </el-form-item>
@@ -148,9 +158,9 @@
           <el-form-item label="JAVA类绝对路径" prop="className">
             <el-input v-model="formSync.className" placeholder="请输入JAVA类绝对路径" clearable />
           </el-form-item>
-          <el-form-item label="接口地址" prop="route">
+          <!-- <el-form-item label="接口地址" prop="route">
             <el-input v-model="formSync.route" placeholder="请输入接口地址" clearable />
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="是否覆盖已有" prop="isCover">
             <el-switch v-model="formSync.isCover" />
           </el-form-item>
@@ -194,9 +204,11 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        fieldName: undefined,
-        route: undefined
+        fieldName: null,
+        route: null,
+        comment: null
       },
+      masterCode: null,
       // 表单参数
       form: {},
       formSync: {},
@@ -204,31 +216,32 @@ export default {
       rules: {
         fieldName: [
           { required: true, message: '字段名不能为空', trigger: 'blur' }
-        ],
-        route: [
-          { required: true, message: '接口地址不能为空', trigger: 'blur' }
         ]
+        // route: [
+        //   { required: true, message: '接口地址不能为空', trigger: 'blur' }
+        // ]
       },
       rulesSync: {
         className: [
           { required: true, message: 'JAVA类绝对路径不能为空', trigger: 'blur' }
-        ],
-        route: [
-          { required: true, message: '接口地址不能为空', trigger: 'blur' }
         ]
+        // route: [
+        //   { required: true, message: '接口地址不能为空', trigger: 'blur' }
+        // ]
       },
       // 同步时间较长, 按钮loading
       loadingSync: false
     };
   },
   created() {
+    this.masterCode = this.$route.params && this.$route.params.code;
     this.getList();
   },
   methods: {
     /** 查询参数列表 */
     getList() {
       this.loading = true;
-      listConfig(this.queryParams).then(response => {
+      listConfig(Object.assign({}, this.queryParams, { masterCode: this.masterCode })).then(response => {
         this.configList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -296,7 +309,7 @@ export default {
               this.getList();
             });
           } else {
-            addConfig(this.form).then(response => {
+            addConfig(Object.assign({}, this.form, { masterCode: this.masterCode })).then(response => {
               this.msgSuccess('新增成功');
               this.open = false;
               this.getList();
@@ -334,7 +347,7 @@ export default {
       this.$refs['formSync'].validate(valid => {
         if (valid) {
           this.loadingSync = true;
-          syncConfig(this.formSync).then(response => {
+          syncConfig(Object.assign({}, this.formSync, { masterCode: this.masterCode })).then(response => {
             this.loadingSync = false;
             this.msgSuccess('同步成功');
             this.openSync = false;
