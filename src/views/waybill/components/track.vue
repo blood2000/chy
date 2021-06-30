@@ -4,6 +4,9 @@
       <el-col :span="18">
         <div style="width:100%; height: 600px;border-radius: 6px">
           <el-amap ref="map" vid="DDCmap" :zoom="zoom" :center="center" />
+          <div :class="isPlan? 'noliston-frame':'nolist-frame'">
+            <div :class="isPlan? 'noliston':'nolist'" />
+          </div>
         </div>
       </el-col>
       <el-col :span="6">
@@ -99,7 +102,8 @@ export default {
       timeLineList: [],
       // 轨迹查询参数结束时间
       queryEndtime: '',
-      timePoor: undefined
+      timePoor: undefined,
+      isPlan: false
     };
   },
   computed: {
@@ -124,40 +128,20 @@ export default {
     },
     /** 获取轨迹 */
     getTrackLocation() {
+      this.isPlan = false;
       if (this.wayBillInfo.fillTime) {
         if (this.trackChange === 0) {
+          // 获取APP轨迹
           this.getLieyingTime();
-        // 获取APP轨迹
-        // axios.get('https://tsapi.amap.com/v1/track/terminal/trsearch', { params: this.lieyingQueryParams }).then(response => {
-        //   // console.log(response);
-        //   if (response.data.data) {
-        //     this.tracklist = response.data.data.tracks[0].points.map(function(response) {
-        //       // console.log(response.location.split(','));
-        //       return response.location.split(',');
-        //     });
-        //     if (this.tracklist.length !== 0) {
-        //       // 绘制轨迹
-        //       this.drawPolyline(this.tracklist);
-        //       if (!this.wayBillInfo.signTime) {
-        //         this.getVehicleMark();
-        //       }
-        //     } else {
-        //       // 获取高德地图路线规划
-        //       this.getRoutePlan();
-        //     }
-        //   } else {
-        //     // 获取高德地图路线规划
-        //     this.getRoutePlan();
-        //   }
-        // });
         } else if (this.trackChange === 1) {
-        // 获取硬件轨迹
+          // 获取硬件轨迹
           jimiTrackLocation(this.jimiQueryParams).then(response => {
           // console.log(response.data.result);
             if (response.data.result) {
               this.tracklist = response.data.result.map(function(response) {
                 return [response.lng, response.lat];
               });
+              console.log(this.tracklist);
               if (this.tracklist.length !== 0) {
               // 绘制轨迹
                 this.drawPolyline(this.tracklist);
@@ -168,31 +152,14 @@ export default {
               // 获取高德地图路线规划
                 this.getRoutePlan();
               }
+            } else {
+              // 获取高德地图路线规划
+              this.getRoutePlan();
             }
           });
         } else if (this.trackChange === 2) {
+          // 获取中交兴路轨迹
           this.getZjxlTime();
-        // zjxlTrackLocation(this.zjxlQueryParams).then(response => {
-        //   console.log(response);
-        //   const str = JSON.parse(response.msg);
-        //   console.log(str);
-        //   if (str.result.length !== 0) {
-        //     this.tracklist = str.result.map(response => {
-        //       return [response.lon / 600000, response.lat / 600000];
-        //     });
-        //     console.log(this.tracklist);
-        //     if (this.tracklist.length !== 0) {
-        //       // 绘制轨迹
-        //       this.drawPolyline(this.tracklist);
-        //       if (!this.wayBillInfo.signTime) {
-        //         this.getVehicleMark();
-        //       }
-        //     } else {
-        //       // 获取高德地图路线规划
-        //       this.getRoutePlan();
-        //     }
-        //   }
-        // });
         }
       }
     },
@@ -272,6 +239,8 @@ export default {
     // 获取高德地图路线规划
     getRoutePlan() {
       const that = this;
+      that.isPlan = true;
+      console.log(that.isPlan);
       const driving = new AMap.Driving({
         policy: AMap.DrivingPolicy.LEAST_TIME
         // map 指定将路线规划方案绘制到对应的AMap.Map对象上
@@ -445,6 +414,35 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.shadow{
+  box-shadow: 10px 10px 5px #888888;
+}
+.nolist-frame{
+	position: relative;
+  bottom: 70px;
+	z-index: 999;
+	height: 0;
+	width: 100%;
+	background: linear-gradient(#FFFFFF00 20%, #FFFFFF 80%);
+}
+.nolist{
+	height: 70px;
+	width: 100%;
+	background: linear-gradient(#FFFFFF00 20%, #FFFFFF 80%);
+}
+.noliston-frame{
+	position: relative;
+  bottom: 55px;
+	z-index: 999;
+	height: 0;
+	width: 100%;
+	background: linear-gradient(#FFFFFF00 20%, #FFFFFF 80%);
+}
+.noliston{
+	height: 55px;
+	width: 100%;
+	background: linear-gradient(#FFFFFF00 20%, #FFFFFF 80%);
+}
 .mr3 {
   margin-right: 3%;
 }

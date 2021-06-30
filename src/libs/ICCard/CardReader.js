@@ -799,7 +799,7 @@ CardReader.action['readUserInfoAndreadData'] = async function() {
     // 6. 数据解析
     ret = CardReader.fn.utf8HexToStr(ret.data);
 
-    console.log(ret, '当前卡信息');
+    // console.log(ret, '当前卡信息');
     const userInfo = CardReader.fn.resultData(ret, USERINFO).data;
 
     // 7. 继续 读取卡信息== 进入数据目录 02
@@ -821,7 +821,7 @@ CardReader.action['readUserInfoAndreadData'] = async function() {
       return {
         ...ret,
         userInfo,
-        msg: '已发卡, 无任何订单信息'
+        msg: '发卡成功, 无任何运单信息'
       };
     }
     // 9. 读文件 == 文件多个

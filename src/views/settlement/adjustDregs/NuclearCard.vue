@@ -111,8 +111,6 @@ import CardReader, { USERINFO, versionMark } from '@/libs/ICCard/CardReader';
 import { checkList, check } from '@/api/settlement/adjustDregs';
 const { action, fn } = CardReader;
 
-// console.log(USERINFO);
-
 export default {
   name: 'NuclearCard',
   props: {
@@ -125,10 +123,10 @@ export default {
       userInfo: {},
       list: [],
       IClist: [],
-      // isError: true,
       delData: [], // 保存删除的数据
       meter: null,
-      carId: undefined
+      carId: undefined,
+      errorCount: 0
     };
   },
   computed: {
@@ -159,10 +157,11 @@ export default {
         this.loading = true;
         const ret = await action.readUserInfoAndreadData();
 
-        console.log(ret);
+        // console.log(ret, '数据');
 
         // 失败
         if (!ret.success && !ret.code) {
+          this.errorCount++;
           this._reqerror();
           return;
         }
@@ -190,10 +189,10 @@ export default {
         this.meter = ret.meter;
         this.carId = ret.GetCardNo.data;
 
-        console.log(this.userInfo);
-        console.log(this.IClist);
-        console.log(this.meter);
-        console.log(this.carId);
+        console.log([this.userInfo], '----------持卡者信息');
+        console.log([this.IClist], '----------当前卡数据');
+        console.log([this.meter], '----------卡版本');
+        console.log([this.carId], '----------ka标识');
         // this.setLocalStorage(this.userInfo.user_code, { [this.userInfo]: this.IClist, meter: this.meter }); // 本地存储
 
         // 后端交互
@@ -359,7 +358,7 @@ export default {
     async errorHexiaoCheck(filterArr) {
       // 走发卡-写卡
       if (!this.userInfo) return;
-      console.log(this.userInfo);
+      // console.log(this.userInfo);
 
       await action.issuingCard(this.userInfo);
       // 写卡
@@ -414,7 +413,9 @@ export default {
     },
 
     _reqerror() {
-      this.$confirm('请将【数据IC卡】放至有效位置!', '不能读取到数据', {
+      const msg = this.errorCount > 0 ? '请重新开启应用程序' : '请将【数据IC卡】放至有效位置!';
+
+      this.$confirm(msg, '不能读取到数据', {
         confirmButtonText: '知道了',
         type: 'warning',
         showCancelButton: false,
@@ -494,12 +495,14 @@ export default {
       switch (key) {
         case 'getCardInfo':
           action.getCardInfo().then(res => {
-            console.log(res);
+            // console.log(res);
           });
           break;
         case 'cancellation':
           // 注销卡片
-          action.cancellation().then(res => { console.log(res); });
+          action.cancellation().then(res => {
+            // console.log(res);
+          });
           break;
         case 'issuingCard':
           // 发卡
@@ -513,7 +516,9 @@ export default {
           break;
         case 'readUserinfo':
           // 读取用户信息
-          action.readUserInfo().then(res => console.log(res));
+          action.readUserInfo().then(res => {
+            // console.log(res);
+          });
 
           break;
         case 'readData':

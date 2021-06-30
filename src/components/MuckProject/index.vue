@@ -575,8 +575,6 @@ export default {
     this.isShipment = isShipment;
     // this.shipment = shipment;
     this.shipmentCode = shipment.info ? shipment.info.code : '';
-    // this.tableColumnsInit();
-    // this.getList();
   },
   'methods': {
     /** 初始化表头 */
@@ -592,7 +590,7 @@ export default {
       }, this.tableColumns);
     },
 
-    /** 查询【请填写功能名称】列表 */
+    /** 查询批次列表 */
     async getList() {
       this.loading = true;
 
@@ -751,8 +749,6 @@ export default {
     },
     /* e= */
 
-
-
     // 提示去编辑票务信息
     handleError(msg) {
       this.$confirm(msg + '需要立即去编辑票务信息吗?', '提示', {
@@ -808,10 +804,6 @@ export default {
       this.$refs.RejectDialog.setForm(this.selections);
     },
 
-    // -------------------
-
-
-
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
@@ -823,15 +815,6 @@ export default {
       this.resetForm('queryForm');
       this.handleQuery();
     },
-    // 批量审核
-    // handleVerify() {
-    //   this.formDisable = true;
-    //   this.$refs.VerifyDialog.reset();
-    //   this.verifydialog = true;
-    //   this.title = '批量审批';
-    //   this.$refs.VerifyDialog.setForm(this.ids);
-    //   this.$refs.VerifyDialog.setNum(this.selectlenght);
-    // },
     // 导出运费明细
     // handleExportFreight() {
     // },
@@ -844,57 +827,6 @@ export default {
       await this.download('/transportation/batch/export', this.queryParams, `batch_${new Date().getTime()}.xlsx`);
       this.exportLoading = false;
     }
-
-
-    // handleTableBtn(row, index) {
-    //   this.visible = true;
-    //   switch (index) {
-    //     case 1:
-    //       this.$refs.RejectDialog.reset();
-    //       this.rejectdialog = true;
-    //       this.title = '驳回申请';
-    //       this.$refs.RejectDialog.setForm(row);
-    //       break;
-    //     case 2:
-    //       this.$refs.BillingDialog.reset();
-    //       this.billingdialog = true;
-    //       this.title = '开发票';
-    //       this.formDisable = false;
-    //       this.$refs.BillingDialog.setForm(row);
-    //       break;
-    //     case 3:
-    //       this.Statementsdialog = true;
-    //       this.title = '对账单详情';
-    //       this.$refs.StatementsDialog.setBatchStatementCode(row.batchStatementCode, row); // 传code
-    //       break;
-    //     case 4:
-    //       this.ids = [row.batchNo];
-    //       this.handlerPassPayment();
-    //       break;
-    //     default:
-    //       break;
-    //   }
-    // },
-
-    // // 批量打款
-    // handlerPassPayment() {
-    //   this.$confirm('确定打款?', '提示', {
-    //     confirmButtonText: '确定',
-    //     cancelButtonText: '取消',
-    //     type: 'warning'
-    //   }).then(() => {
-    //     const que = {
-    //       batchNos: this.ids
-    //     };
-
-    //     passPayment(que).then(res => {
-    //       this.msgSuccess('确定打款成功');
-    //       this.queryParams.pageNum = 1;
-    //       this.getList();
-    //     });
-    //   }).catch(() => {});
-    // }
-
   }
 };
 </script>
