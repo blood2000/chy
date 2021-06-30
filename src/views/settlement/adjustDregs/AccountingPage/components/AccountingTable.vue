@@ -22,6 +22,9 @@
                 { 'dictLabel': '已核对', 'dictValue': '1' },
               ], row.icStatus) }}</span>
             </template>
+            <template #goodsBigType="{row}">
+              <span>{{ selectDictLabel(goodsTypeOption, row.goodsBigType) }}</span>
+            </template>
           </RefactorTable>
 
         </template>
@@ -73,13 +76,6 @@
 import AdjustDialog from '../../adjustDialog';
 
 const com = [
-//   {
-//     'prop': 'companyCode',
-//     'isShow': true,
-//     'label': '发货企业',
-//     'sortNum': 2,
-//     'width': 180
-//   },
   {
     'prop': 'cardBatchNo',
     'isShow': true,
@@ -679,7 +675,9 @@ export default {
 
       selected: [], // 选中外层
 
-      nowSort: this.sort
+      nowSort: this.sort,
+
+      goodsTypeOption: []
 
     };
   },
@@ -740,6 +738,8 @@ export default {
       return arr;
     }
 
+
+
   },
 
   watch: {
@@ -750,7 +750,12 @@ export default {
     }
   },
 
+  created() {
+    this.goodsTypeOption = this.get_goodsType();
+  },
+
   methods: {
+
     // 选中运单 data = 当前选中的   row = 当前行  this.list
     handleSelectionChange(data, row) {
       const selectChilds = [];
@@ -841,6 +846,23 @@ export default {
     /** 生成随机id */
     genID(length = 5) {
       return Number(Math.random().toString().substr(3, length) + Date.now()).toString(36);
+    },
+
+    /** 获取字典大类 */
+    get_goodsType() {
+      let goodsBigType_option = this.$store.getters.goodsBigType_option;
+
+      if (!goodsBigType_option) {
+        this.listByDict({
+          dictPid: '0',
+          dictType: 'goodsType'
+        }).then(res => {
+          goodsBigType_option = res.data;
+          this.$store.dispatch('orders/store_goodsBigType_option', res.data);
+        });
+      }
+
+      return goodsBigType_option;
     }
 
 

@@ -1,6 +1,10 @@
 <template>
   <!-- TOP10团队排名 -->
   <div class="s-container">
+    <div class="s-container__h5">
+      <img src="@/assets/images/statistic/arrow_before.png">
+      {{ title }}
+    </div>
     <ul class="s-container__list">
       <li v-for="(item, index) in dataList" :key="index" class="s-container__list__item">
         <div class="s-container__list__item__title">
@@ -105,8 +109,27 @@ export default {
 .s-container{
   height: 100%;
   padding-left: 0.5rem;
+  &__h5{
+    margin-left: -0.5rem;
+    height: 1.5rem;
+    background: url('~@/assets/images/statistic/arrow_bg_line.png') no-repeat 0.5rem;
+    background-size: 100% 1rem;
+    margin-bottom: 0.6rem;
+    padding-left: 0.5rem;
+    font-size: 0.75rem;
+    font-family: PingFang Regular;
+    font-weight: bold;
+    color: #01B6F9;
+    >img{
+      width: 0.25rem;
+      height: 0.4rem;
+      vertical-align: middle;
+      margin-top: -0.4rem;
+      margin-right: 0.1rem;
+    }
+  }
   &__list{
-    height: 100%;
+    height: calc(100% - 2.1rem);
     &__item{
       height: 33.33%;
       &__title{

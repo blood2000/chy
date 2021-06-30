@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 核验的页面 独立 -->
-    <div v-show="showSearch" class="app-container app-container--search">
+    <div v-show="showSearch">
       <QueryForm ref="queryRefForm" v-model="queryParams" :is-shipment="isShipment" @handleQuery="handleQuery" />
     </div>
 
@@ -26,6 +26,7 @@
             type="primary"
             icon="el-icon-s-claim"
             size="mini"
+            :loading="loading"
             @click="handlerPilianHeyang()"
           >批量核验</el-button>
         </el-col>
@@ -36,6 +37,7 @@
             type="primary"
             icon="el-icon-document-checked"
             size="mini"
+            :loading="loading"
             @click="handleAskfor()"
           >批量索票</el-button>
         </el-col>
@@ -56,6 +58,7 @@
             type="primary"
             icon="el-icon-document-checked"
             size="mini"
+            :loading="loading"
             :disabled="selections.length<=0"
             @click="handlerPassPayment()"
           >批量打款</el-button>
@@ -67,6 +70,7 @@
             type="primary"
             icon="el-icon-document-checked"
             size="mini"
+            :loading="loading"
             :disabled="selections.length<=0"
             @click="handleHesuan()"
           >批量再复核</el-button>
@@ -107,6 +111,7 @@
               v-if="status===0"
               size="mini"
               type="text"
+              :loading="loading"
               @click="handlerPilianHeyang(row)"
             >核验</el-button>
 
@@ -114,6 +119,7 @@
               v-if="status===1"
               size="mini"
               type="text"
+              :loading="loading"
               @click="handleAskfor(row)"
             >索票</el-button>
 
@@ -122,6 +128,7 @@
               v-if="status===2 && !isShipment"
               size="mini"
               type="text"
+              :loading="loading"
               @click="handleVerify(row)"
             >开票</el-button>
 
@@ -129,6 +136,7 @@
               v-if="status===3"
               size="mini"
               type="text"
+              :loading="loading"
               @click="handlerPassPayment(row)"
             >打款</el-button>
 
@@ -136,6 +144,7 @@
               v-if="status===-1"
               size="mini"
               type="text"
+              :loading="loading"
               @click="handleHesuan(row)"
             >再复核</el-button>
 
@@ -566,8 +575,6 @@ export default {
     this.isShipment = isShipment;
     // this.shipment = shipment;
     this.shipmentCode = shipment.info ? shipment.info.code : '';
-    // this.tableColumnsInit();
-    // this.getList();
   },
   'methods': {
     /** 初始化表头 */
@@ -583,7 +590,7 @@ export default {
       }, this.tableColumns);
     },
 
-    /** 查询【请填写功能名称】列表 */
+    /** 查询批次列表 */
     async getList() {
       this.loading = true;
 
@@ -622,14 +629,14 @@ export default {
           remark: undefined
         };
         confirmVerification(que).then(res => {
-          console.log(res);
+          // console.log(res);
 
           if (res.data && res.data.data === '201') {
             // this.msgError(res.data.msg);
             this.handleError(res.data.msg);
           } else {
             this.msgSuccess(res.msg);
-            this.selections = [];
+            // this.selections = [];
             this.handleQuery();
           }
         });
@@ -692,6 +699,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.loading = true;
         const que = {
           batchNos: this.selections.map(e => e.batchNo)
         };
@@ -701,7 +709,7 @@ export default {
           this.selections = [];
           this.loading = false;
           this.handleQuery();
-        });
+        }).catch(() => { this.loading = false; });
       }).catch(() => {});
     },
     // 查看图片信息
@@ -740,8 +748,6 @@ export default {
       this.$refs.AdjustDialog.setForm(this.selections);
     },
     /* e= */
-
-
 
     // 提示去编辑票务信息
     handleError(msg) {
@@ -798,13 +804,10 @@ export default {
       this.$refs.RejectDialog.setForm(this.selections);
     },
 
-    // -------------------
-
-
-
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
+      this.selections = [];
       this.getList();
     },
     /** 重置按钮操作 */
@@ -812,15 +815,6 @@ export default {
       this.resetForm('queryForm');
       this.handleQuery();
     },
-    // 批量审核
-    // handleVerify() {
-    //   this.formDisable = true;
-    //   this.$refs.VerifyDialog.reset();
-    //   this.verifydialog = true;
-    //   this.title = '批量审批';
-    //   this.$refs.VerifyDialog.setForm(this.ids);
-    //   this.$refs.VerifyDialog.setNum(this.selectlenght);
-    // },
     // 导出运费明细
     // handleExportFreight() {
     // },
@@ -833,57 +827,6 @@ export default {
       await this.download('/transportation/batch/export', this.queryParams, `batch_${new Date().getTime()}.xlsx`);
       this.exportLoading = false;
     }
-
-
-    // handleTableBtn(row, index) {
-    //   this.visible = true;
-    //   switch (index) {
-    //     case 1:
-    //       this.$refs.RejectDialog.reset();
-    //       this.rejectdialog = true;
-    //       this.title = '驳回申请';
-    //       this.$refs.RejectDialog.setForm(row);
-    //       break;
-    //     case 2:
-    //       this.$refs.BillingDialog.reset();
-    //       this.billingdialog = true;
-    //       this.title = '开发票';
-    //       this.formDisable = false;
-    //       this.$refs.BillingDialog.setForm(row);
-    //       break;
-    //     case 3:
-    //       this.Statementsdialog = true;
-    //       this.title = '对账单详情';
-    //       this.$refs.StatementsDialog.setBatchStatementCode(row.batchStatementCode, row); // 传code
-    //       break;
-    //     case 4:
-    //       this.ids = [row.batchNo];
-    //       this.handlerPassPayment();
-    //       break;
-    //     default:
-    //       break;
-    //   }
-    // },
-
-    // // 批量打款
-    // handlerPassPayment() {
-    //   this.$confirm('确定打款?', '提示', {
-    //     confirmButtonText: '确定',
-    //     cancelButtonText: '取消',
-    //     type: 'warning'
-    //   }).then(() => {
-    //     const que = {
-    //       batchNos: this.ids
-    //     };
-
-    //     passPayment(que).then(res => {
-    //       this.msgSuccess('确定打款成功');
-    //       this.queryParams.pageNum = 1;
-    //       this.getList();
-    //     });
-    //   }).catch(() => {});
-    // }
-
   }
 };
 </script>
