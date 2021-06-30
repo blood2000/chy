@@ -6,60 +6,102 @@
   "description": "",
   "glyphs": [
     {
-      "icon_id": "21555109",
-      "name": "nav-shipment",
-      "font_class": "nav-shipment",
+      "icon_id": "21555110",
+      "name": "nav-data",
+      "font_class": "nav-data",
       "unicode": "e605",
       "unicode_decimal": 58885
     },
     {
-      "icon_id": "21555110",
-      "name": "nav-data",
-      "font_class": "nav-data",
+      "icon_id": "21555111",
+      "name": "nav-setting",
+      "font_class": "nav-setting",
       "unicode": "e606",
       "unicode_decimal": 58886
-    },
-    {
-      "icon_id": "21555111",
-      "name": "nav-system",
-      "font_class": "nav-system",
-      "unicode": "e607",
-      "unicode_decimal": 58887
     },
     {
       "icon_id": "21555112",
       "name": "nav-capital",
       "font_class": "nav-capital",
-      "unicode": "e608",
-      "unicode_decimal": 58888
+      "unicode": "e607",
+      "unicode_decimal": 58887
     },
     {
       "icon_id": "21555113",
       "name": "nav-enterprise",
       "font_class": "nav-enterprise",
-      "unicode": "e609",
-      "unicode_decimal": 58889
+      "unicode": "e608",
+      "unicode_decimal": 58888
     },
     {
       "icon_id": "21555114",
       "name": "nav-settlement",
       "font_class": "nav-settlement",
-      "unicode": "e60a",
-      "unicode_decimal": 58890
+      "unicode": "e609",
+      "unicode_decimal": 58889
     },
     {
       "icon_id": "21555115",
       "name": "nav-waybill",
       "font_class": "nav-waybill",
-      "unicode": "e60b",
-      "unicode_decimal": 58891
+      "unicode": "e60a",
+      "unicode_decimal": 58890
     },
     {
       "icon_id": "21555116",
       "name": "nav-order",
       "font_class": "nav-order",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "22572666",
+      "name": "nav-invoice",
+      "font_class": "nav-invoice",
       "unicode": "e60c",
       "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "22572667",
+      "name": "nav-wallet",
+      "font_class": "nav-wallet",
+      "unicode": "e60d",
+      "unicode_decimal": 58893
+    },
+    {
+      "icon_id": "22572668",
+      "name": "nav-system",
+      "font_class": "nav-system",
+      "unicode": "e60e",
+      "unicode_decimal": 58894
+    },
+    {
+      "icon_id": "22572669",
+      "name": "nav-config",
+      "font_class": "nav-config",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
+      "icon_id": "22572670",
+      "name": "nav-zjz1",
+      "font_class": "nav-zjz1",
+      "unicode": "e610",
+      "unicode_decimal": 58896
+    },
+    {
+      "icon_id": "22572671",
+      "name": "nav-capacity",
+      "font_class": "nav-capacity",
+      "unicode": "e611",
+      "unicode_decimal": 58897
+    },
+    {
+      "icon_id": "22573304",
+      "name": "nav-monitor",
+      "font_class": "nav-monitor",
+      "unicode": "e612",
+      "unicode_decimal": 58898
     }
   ]
 }
