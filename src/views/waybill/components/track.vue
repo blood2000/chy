@@ -141,6 +141,7 @@ export default {
               this.tracklist = response.data.result.map(function(response) {
                 return [response.lng, response.lat];
               });
+              console.log(this.tracklist);
               if (this.tracklist.length !== 0) {
               // 绘制轨迹
                 this.drawPolyline(this.tracklist);
@@ -151,6 +152,9 @@ export default {
               // 获取高德地图路线规划
                 this.getRoutePlan();
               }
+            } else {
+              // 获取高德地图路线规划
+              this.getRoutePlan();
             }
           });
         } else if (this.trackChange === 2) {
@@ -236,6 +240,7 @@ export default {
     getRoutePlan() {
       const that = this;
       that.isPlan = true;
+      console.log(that.isPlan);
       const driving = new AMap.Driving({
         policy: AMap.DrivingPolicy.LEAST_TIME
         // map 指定将路线规划方案绘制到对应的AMap.Map对象上
