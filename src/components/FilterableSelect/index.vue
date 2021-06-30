@@ -87,7 +87,7 @@ export default {
       type: String,
       default: ''
     },
-    requerMsg: { // 必选消息
+    requerMsg: { // 必选消息, 为空就没有
       type: String,
       default: ''
     }
@@ -118,6 +118,19 @@ export default {
     }
   },
 
+  watch: {
+    'axios.queryData': {
+      handler(val) {
+        // 有关联的监听, 清空相关联的下拉值
+        if (this.requerMsg && !val[this.isSureKey]) {
+          this.shipmentList = []; // 清空下拉框
+          this.modelData = ''; // 清空选中项
+        }
+      },
+      deep: true
+    }
+  },
+
   methods: {
     /** 远程搜索列表触底事件 */
     loadmore() {
@@ -128,9 +141,9 @@ export default {
 
     /** 触发远程搜索 */
     remoteMethod(query) {
-      if (query !== '') {
+      if (query.trim() !== '') {
         this.shipmentreq.pageNum = 1;
-        this.shipmentreq[this.keywords] = query;
+        this.shipmentreq[this.keywords] = query.trim();
 
         this.shipmentList = [];
         this.getTeamList();
