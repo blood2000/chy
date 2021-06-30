@@ -703,7 +703,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['token'])
+    ...mapGetters(['token', 'sidebarRouters'])
   },
   watch: {
     value(val) {
@@ -850,10 +850,79 @@ export default {
 
     /** --> 货主端 页面跳转  */
     handlerClick(url, param) {
-      if (param) {
-        this.$router.push({ name: url, query: { [url.toLowerCase()]: param }});
+      const sidebarMenu = JSON.parse(JSON.stringify(this.sidebarRouters)) || [];
+      console.log(sidebarMenu);
+
+      console.log(url);
+      // name children < name
+
+      // sidebarMenu
+
+      let pathName = '404';
+      let paramVal = param;
+      let isOut = false;
+
+      //       try {
+      //        this.list.forEach((item,index)=>{
+      //              if(item.text === '') {
+      //                        this.$set(this.list,index,{text: '内容'});
+
+      //                               throw new Error('finish');
+
+      //                       }
+
+      //         })
+
+      //  } catch (e) {
+      //  }
+
+
+
+      sidebarMenu.forEach(e => {
+        if (isOut) return;
+        if (e.name === url) {
+          pathName = url;
+          isOut = true;
+        } else {
+          e.children && e.children.forEach(ee => {
+            if (isOut) return;
+            if (ee.name === url) {
+              pathName = url;
+              isOut = true;
+              return;
+            } else if (url === 'Adjust') {
+              const obj1 = {
+                'p_4': 'AdjustDregs', // 对应 渣土的核算
+                'p_5': 'PaymentDregs', // 对应 渣土的打款
+                'p_7': 'PaidDregs' // 对应 渣土的已打款
+              };
+              // console.log(obj1);
+              pathName = obj1['p_' + param];
+              paramVal = undefined;
+              isOut = true;
+            } else if (url === 'Askfor') {
+              pathName = 'AskforDregs'; // 待申请发票 对应 索取发票
+              isOut = true;
+            } else if (url === 'List') {
+              // const obj2 = {
+              //   'AskforDregs': '1', // 待审核发票 对应 渣土的
+              //   'AskforDregs': '7' // 已开票 对应 渣土的
+              // };
+              // 没有对应的页面, 全部跳索票页面
+              pathName = 'AskforDregs';
+              paramVal = undefined;
+              isOut = true;
+            }
+          });
+        }
+      });
+
+      console.log(pathName);
+
+      if (paramVal) {
+        this.$router.push({ name: pathName, query: { [url.toLowerCase()]: paramVal }});
       } else {
-        this.$router.push({ name: url });
+        this.$router.push({ name: pathName });
       }
     },
 
