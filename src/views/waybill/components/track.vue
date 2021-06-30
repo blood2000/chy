@@ -427,14 +427,14 @@ export default {
 }
 .noliston-frame{
 	position: relative;
-  bottom: 60px;
+  bottom: 55px;
 	z-index: 999;
 	height: 0;
 	width: 100%;
 	background: linear-gradient(#FFFFFF00 20%, #FFFFFF 80%);
 }
 .noliston{
-	height: 60px;
+	height: 55px;
 	width: 100%;
 	background: linear-gradient(#FFFFFF00 20%, #FFFFFF 80%);
 }
