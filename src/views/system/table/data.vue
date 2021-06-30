@@ -179,7 +179,7 @@
 import { listConfig, getConfig, delConfig, delAllConfig, addConfig, updateConfig, syncConfig } from '@/api/system/table';
 
 export default {
-  name: 'Table',
+  name: 'TableData',
   data() {
     return {
       // 遮罩层
@@ -372,6 +372,12 @@ export default {
         isCover: true
       };
       this.resetForm('formSync');
+    },
+    /** 操作完清除缓存 */
+    clearLocalStorage({ route }) {
+      if (window.localStorage.getItem(route)) {
+        window.localStorage.removeItem(route);
+      }
     }
   }
 };

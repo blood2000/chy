@@ -108,9 +108,9 @@ export const constantRoutes = [
     hidden: true,
     children: [
       {
-        path: 'type/data/:code(\\d+)',
+        path: 'type/data/:code',
         component: (resolve) => require(['@/views/system/table/data'], resolve),
-        name: 'Data',
+        name: 'TableData',
         meta: { title: '列表数据', icon: '' }
       }
     ]
