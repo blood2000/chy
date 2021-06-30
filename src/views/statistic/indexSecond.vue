@@ -15,7 +15,7 @@
       </div>
       <div class="ly-left-center mb05rem ly-border">
         <Title class="title_3" icon="3">运力情况<span>Capacity situation</span></Title>
-        <CapacityInfo ref="CapacityInfoRef" :branch-code="branchCode" :is-scale="!!$route.query.isScale" />
+        <CapacityInfo ref="CapacityInfoRef" :branch-code="branchCode" />
       </div>
       <div class="ly-left-bottom ly-border">
         <div class="ly-left-bottom-box ly-flex-pack-justify">
@@ -79,7 +79,7 @@
         <Title class="title_4 mb05rem" icon="7" :show-time="true" :time-text="timeText">业绩数据<span>Performance data</span></Title>
         <div class="ly-right-right-box ly-border">
           <div class="ly-border" style="height: 15%">
-            <PerformanceInfo ref="PerformanceInfoRef" :performance="performanceData.performance" :is-second="true" :is-scale="!!$route.query.isScale" />
+            <PerformanceInfo ref="PerformanceInfoRef" :performance="performanceData.performance" :is-second="true" />
           </div>
           <div class="ly-border mb1rem" style="height: 23%">
             <TargetChart ref="TargetChartRef" :branch-code="branchCode" style="height: 100%" />

@@ -78,7 +78,11 @@ export default {
         tid: undefined, // tid为终端唯一编号
         trid: undefined, // trid为轨迹唯一编号
         starttime: undefined, // 必须为Unix时间戳精确到毫秒
-        endtime: undefined // 必须为Unix时间戳精确到毫秒
+        endtime: undefined, // 必须为Unix时间戳精确到毫秒
+        correction: 'denoise=1,mapmatch=1,attribute=0,threshold=0,mode=driving', // 对轨迹进行处理
+        recoup: 1, // 对轨迹进行补点
+        page: 1,
+        pagesize: 999
       },
       // 中交兴路轨迹查询参数
       zjxlQueryParams: {
@@ -208,6 +212,10 @@ export default {
         this.zjxlQueryParams.qryEtm = this.parseTime(new Date(this.zjxlQueryParams.qryBtm).getTime() + 24 * 60 * 60 * 1000, '{y}-{m}-{d} {h}:{i}:{s}');
         this.getZjxl();
       } else if (this.timePoor === 0) {
+        // 坐标系转换
+        this.tracklist = this.tracklist.map(res => {
+          return this.wgs84_to_gcj02(res[0], res[1]);
+        });
         // 绘制轨迹
         this.drawPolyline(this.tracklist);
         if (!this.wayBillInfo.signTime) {

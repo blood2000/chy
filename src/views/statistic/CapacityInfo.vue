@@ -23,7 +23,7 @@
       />
       <InfoBox
         label="今日新增路线"
-        :count="!isScale ? 9 : dataList.newLineCount"
+        :count="dataList.newLineCount"
         :last-count="dataList.lastNewLineCount"
         :has-yoy="true"
         :yoy.sync="dataList.newLineYoy"
@@ -34,11 +34,11 @@
     <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 14%">
       <InfoBox
         label="总网点"
-        :count="!isScale ? 983: dataList.branchCount"
+        :count="dataList.branchCount"
       />
       <InfoBox
         label="今日新增网点"
-        :count="!isScale ? 23 : dataList.newBranchCount"
+        :count="dataList.newBranchCount"
         :last-count="dataList.lastNewBranchCount"
         :has-yoy="true"
         :yoy.sync="dataList.newBranchYoy"
@@ -122,8 +122,7 @@ export default {
     branchCode: {
       type: String,
       default: null
-    },
-    isScale: Boolean
+    }
   },
   data() {
     return {
@@ -155,7 +154,6 @@ export default {
       // console.log('orderNotice-capacity: ', val);
       const { newLineNum, newPointNum } = val;
       if (newLineNum) {
-        if (!this.isScale) return;
         this.dataList.newLineCount += newLineNum;
         this.dataList.lienCount += newLineNum;
       }

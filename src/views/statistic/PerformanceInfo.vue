@@ -53,7 +53,7 @@
       <InfoBox
         label="今日司机收款"
         unit="万"
-        :count="!isScale ? myPerformance.newTransactionAmount * 0.9 : myPerformance.newWaybillAmount"
+        :count="myPerformance.newWaybillAmount"
         :last-count="myPerformance.lastWaybillAmount"
         :places="2"
       />
@@ -81,7 +81,6 @@ export default {
         return {};
       }
     },
-    isScale: Boolean,
     isSecond: {
       type: Boolean,
       default: false
