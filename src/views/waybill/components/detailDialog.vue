@@ -220,25 +220,9 @@
         <img v-for="(url, index) in formAttachmentUpUrl" :key="index" v-viewer :src="url ? url:''" class="img-box">
       </el-col>
     </el-row> -->
-    <div class="waybill-title"><div class="waybill-icon" />评价<div class="waybill-divider" /></div>
-    <el-row>
-      <el-col :span="3" class="text-label">
-        司机评价货主：
-      </el-col>
-      <el-col :span="9" class="text-row" style="height:300px">
-        {{ formCommentDriver?formCommentDriver.content:'' }}
-        <DataNull v-if="!formCommentDriver" />
-      </el-col>
-      <el-col :span="3" class="text-label">
-        货主评价司机：
-      </el-col>
-      <el-col :span="9" class="text-row" style="height:300px">
-        {{ formCommentShipment?formCommentShipment.content:'' }}
-        <DataNull v-if="!formCommentShipment" />
-      </el-col>
-    </el-row>
+
     <div class="waybill-title"><div class="waybill-icon" />轨迹<div class="waybill-divider" /></div>
-    <div v-if="form.code" style="height:600px;width:100%;padding: 0 30px;">
+    <div v-if="form.code" style="height:600px;width:100%;padding: 0 30px;overflow: hidden;">
       <Track :waybill="form" />
       <div class="waybill-detail-frame">
         <div class="waybill-detail-card">
@@ -277,6 +261,23 @@
       </div>
 
     </div>
+    <div class="waybill-title"><div class="waybill-icon" />评价<div class="waybill-divider" /></div>
+    <el-row>
+      <el-col :span="3" class="text-label">
+        司机评价货主：
+      </el-col>
+      <el-col :span="9" class="text-row" style="height:300px">
+        {{ formCommentDriver?formCommentDriver.content:'' }}
+        <DataNull v-if="!formCommentDriver" />
+      </el-col>
+      <el-col :span="3" class="text-label">
+        货主评价司机：
+      </el-col>
+      <el-col :span="9" class="text-row" style="height:300px">
+        {{ formCommentShipment?formCommentShipment.content:'' }}
+        <DataNull v-if="!formCommentShipment" />
+      </el-col>
+    </el-row>
 
   </el-dialog>
 </template>
@@ -412,6 +413,9 @@ export default {
 </script>
 
 <style lang="scss">
+.comment{
+  position: relative;
+}
 .waybill-detail-dialog{
   .el-dialog__body{
     padding: 10px 20px 30px !important;

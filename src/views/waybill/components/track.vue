@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { jimiTrackLocation, zjxlTrackLocation, getVehicleInfo, getWebDetail, getWaybillTrace } from '@/api/waybill/tracklist';
+import { jimiTrackLocation, zjxlTrackLocation, getVehicleInfo, getWebDetail, getWaybillTrace, addZjxl } from '@/api/waybill/tracklist';
 // import UploadImage from '@/components/UploadImage/index';
 import axios from 'axios';
 
@@ -57,6 +57,7 @@ export default {
       polyline: {
         path: []
       },
+      vehicleMark: undefined,
       markers: [{
         icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/load.png',
         position: [119.358267, 26.04577]
@@ -89,6 +90,14 @@ export default {
         qryBtm: undefined,
         qryEtm: undefined,
         vclN: '陕YH0008'
+      },
+      // 中交兴路轨迹存储参数
+      zjxlAddParams: {
+        licenseNumber: undefined,
+        startTime: undefined,
+        endTime: undefined,
+        trackData: undefined,
+        type: 'zjxl'
       },
       // 定位轨迹列表
       tracklist: [],
@@ -129,6 +138,8 @@ export default {
     handleTrackChange(e) {
       this.trackChange = e;
       this.getTrackLocation();
+      const that = this;
+      that.$refs.map.$$getInstance().remove(this.vehicleMark);
     },
     /** 获取轨迹 */
     getTrackLocation() {
@@ -216,6 +227,9 @@ export default {
         this.tracklist = this.tracklist.map(res => {
           return this.wgs84_to_gcj02(res[0], res[1]);
         });
+        addZjxl({ ...this.zjxlAddParams, trackDataList: [[119.358267, 26.04577], [119.358267, 26.04577]] }).then(res => {
+          console.log(res);
+        });
         // 绘制轨迹
         this.drawPolyline(this.tracklist);
         if (!this.wayBillInfo.signTime) {
@@ -278,14 +292,14 @@ export default {
     },
     getVehicleMark() {
       const that = this;
-      const vehicleMark = new AMap.Marker({
+      that.vehicleMark = new AMap.Marker({
         position: that.tracklist[that.tracklist.length - 1],
         icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/icon_car1624672021156.png',
         autoFitView: true,
         autoRotation: true,
         offset: new AMap.Pixel(-35, -17)
       });
-      vehicleMark.setMap(that.$refs.map.$$getInstance()); // 点标记
+      that.vehicleMark.setMap(that.$refs.map.$$getInstance()); // 点标记
     },
     // 起点终点
     getMark() {
@@ -358,6 +372,7 @@ export default {
         this.wayBillInfo = response.data;
         // 中交车牌号参数赋值
         this.zjxlQueryParams.vclN = this.wayBillInfo.licenseNumber;
+        this.zjxlAddParams.licenseNumber = this.wayBillInfo.licenseNumber;
         // console.log(this.wayBillInfo);
         // 猎鹰参数赋值
         if (this.wayBillInfo.trackNumber) {
@@ -391,15 +406,18 @@ export default {
         this.time = this.parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}');
         this.jimiQueryParams.begin_time = this.parseTime(this.wayBillInfo.fillTime, '{y}-{m}-{d} {h}:{i}:{s}');
         this.zjxlQueryParams.qryBtm = this.parseTime(this.wayBillInfo.fillTime, '{y}-{m}-{d} {h}:{i}:{s}');
+        this.zjxlAddParams.startTime = this.parseTime(this.wayBillInfo.fillTime, '{y}-{m}-{d} {h}:{i}:{s}');
         this.lieyingQueryParams.starttime = new Date(this.wayBillInfo.fillTime).getTime();
         if (this.wayBillInfo.signTime) {
           this.jimiQueryParams.end_time = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
           this.zjxlQueryParams.qryEtm = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
+          this.zjxlAddParams.endTime = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
           this.lieyingQueryParams.endtime = new Date(this.wayBillInfo.signTime).getTime();
           this.queryEndtime = new Date(this.wayBillInfo.signTime);
         } else {
           this.jimiQueryParams.end_time = this.time;
           this.zjxlQueryParams.qryEtm = this.time;
+          this.zjxlAddParams.endTime = this.time;
           this.lieyingQueryParams.endtime = new Date().getTime();
           this.queryEndtime = new Date();
         }
