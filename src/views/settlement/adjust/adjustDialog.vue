@@ -501,6 +501,8 @@ export default {
         this.deductionClone = this.adjustlist[0].deductionFreightList;
 
         const felexes = [...this.subsidiesClone, ...this.deductionClone];
+
+        // console.log(felexes);
         let waybillCode = '';
 
         this.showSubList.forEach(e => {
@@ -525,23 +527,21 @@ export default {
           return e;
         });
 
-        // console.log(this.showSubList);
 
         this.total = response.total;
         this.loading = false;
       });
     },
 
-    getRuleLists() {
+    async getRuleLists() {
       const que = {
         ruleType: 0
       };
-      getRuleItemList(que).then(response => {
+      return getRuleItemList(que).then(response => {
         this.showSubList = response.data.list.filter(e => {
           return e.showType === 1;
         });
       });
-      // console.log(this.showSubList);
     },
 
 
@@ -555,13 +555,13 @@ export default {
       this.$emit('update:open', false);
     },
     // 获取列表
-    setForm(data) {
-      this.getRuleLists();
+    async setForm(data) {
+      await this.getRuleLists();
       this.isEdit2 = false;
       this.isEdit = false;
       this.deliveryCashFee = undefined;
       this.queryParams.waybillCodeList = data;
-      this.getList();
+      await this.getList();
     },
 
     // 处理增减
