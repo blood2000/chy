@@ -6,12 +6,19 @@
         <span class="mr10">批量修改(元)： </span>
 
         <el-select v-model="selectedValue" size="small" placeholder="请选择" class="mr10">
-          <el-option
-            v-for="(item,index) in showSubList"
-            :key="index"
-            :label="item.cnName"
-            :value="item.enName"
-          />
+
+          <el-option-group
+            v-for="group in openShowList"
+            :key="group.label"
+            :label="group.label"
+          >
+            <el-option
+              v-for="(item, index) in group.options"
+              :key="index"
+              :label="item.cnName"
+              :value="item.enName"
+            />
+          </el-option-group>
         </el-select>
 
         <el-input-number v-model="selectedNum" style="width:200px;" size="small" controls-position="right" :min="0" :precision="2" placeholder="请输入批量修改的值" />
@@ -88,7 +95,7 @@
         <el-table-column width="160" label="司机实收运费(元)" align="center" prop="deliveryFeePractical" />
 
         <!-- 补贴项目 -->
-        <el-table-column align="center" width="420" label="补贴项目">
+        <el-table-column align="center" width="450" label="补贴项目">
           <template slot="header">
             <span>补贴项目
               <el-button type="text" @click="isEdit2 = !isEdit2"><i class="el-icon-edit" /></el-button>
@@ -110,14 +117,14 @@
           <template slot-scope="scope">
             <span v-if="scope.row.isDregs == 1"> -- </span>
 
-            <el-form v-else :inline="true" label-position="right" size="mini" class="ly-flex" label-width="110px">
+            <el-form v-else :inline="true" label-position="right" size="mini" class="ly-flex" label-width="100px">
               <div v-for="(freight, index) in scope.row.subsidiesFreightList" :key="index">
                 <!-- 渣土 其他不能修改 -->
                 <el-form-item :label="freight.cnName + '(元)'">
                   <span v-if="scope.row.isDregs === 1">{{ freight.ruleValue }}</span>
                   <div v-else>
                     <span v-show="!isEdit2">{{ freight.ruleValue }}</span>
-                    <el-input-number v-show="isEdit2" v-model="freight.ruleValue" :controls="false" :precision="2" :min="0" :placeholder="`${freight.cnName}`" style="width:110px;" @keyup.native="handlerBlur($event,scope.row, freight)" />
+                    <el-input-number v-show="isEdit2" v-model="freight.ruleValue" :controls="false" :precision="2" :min="0" :placeholder="`${freight.cnName}`" style="width:100px;" @keyup.native="handlerBlur($event,scope.row, freight)" />
                   </div>
                 </el-form-item>
               </div>
@@ -126,7 +133,7 @@
           </template>
         </el-table-column>
         <!-- 扣费项目 -->
-        <el-table-column align="center" width="420" label="扣费项目">
+        <el-table-column align="center" width="450" label="扣费项目">
           <template slot="header">
             <span>扣费项目
               <el-button type="text" @click="isEdit = !isEdit"><i class="el-icon-edit" /></el-button>
@@ -138,12 +145,12 @@
           <template slot-scope="scope">
             <span v-if="scope.row.isDregs == 1"> -- </span>
 
-            <el-form v-else :inline="true" label-position="right" size="mini" class="ly-flex" label-width="110px">
+            <el-form v-else :inline="true" label-position="right" size="mini" class="ly-flex" label-width="100px">
               <div v-for="(freight, index) in scope.row.deductionFreightList" :key="index">
                 <el-form-item :label="freight.cnName + '(元)'">
                   <div>
                     <span v-show="!isEdit">{{ freight.ruleValue }}</span>
-                    <el-input-number v-show="isEdit" v-model="freight.ruleValue" :controls="false" :precision="2" :min="0" :placeholder="`${freight.cnName}`" style="width:110px;" @keyup.native="handlerBlur($event,scope.row, freight)" />
+                    <el-input-number v-show="isEdit" v-model="freight.ruleValue" :controls="false" :precision="2" :min="0" :placeholder="`${freight.cnName}`" style="width:100px;" @keyup.native="handlerBlur($event,scope.row, freight)" />
                   </div>
                 </el-form-item>
               </div>
@@ -251,6 +258,19 @@ export default {
       set(v) {
         this.$emit('update:open', v);
       }
+    },
+
+    openShowList() {
+      const list = this.adjustlist[0] || {};
+      const arr = [{
+        label: '补贴项目',
+        options: list.subsidiesFreightList || []
+      }, {
+        label: '扣费项目',
+        options: list.deductionFreightList || []
+      }];
+
+      return arr;
     }
   },
 
@@ -497,8 +517,8 @@ export default {
       adjustDetail(this.queryParams).then(response => {
         this.adjustlist = JSON.parse(JSON.stringify(response.data));
 
-        this.subsidiesClone = this.adjustlist[0].subsidiesFreightList;
-        this.deductionClone = this.adjustlist[0].deductionFreightList;
+        this.subsidiesClone = this.adjustlist[0].subsidiesFreightList || [];
+        this.deductionClone = this.adjustlist[0].deductionFreightList || [];
 
         const felexes = [...this.subsidiesClone, ...this.deductionClone];
 
@@ -566,12 +586,19 @@ export default {
 
     // 处理增减
     handlerClick() {
+      // subsidiesClone
+      // deductionClone
+
+      const arr = this.adjustlist[0].subsidiesFreightList || [];
+      const jaarr = this.adjustlist[0].deductionFreightList || [];
+
+
       // 过滤增
-      const a1 = this.adjustlist[0].subsidiesFreightList.filter(e => {
+      const a1 = arr.filter(e => {
         return !e.$_disabled;
       });
       // 过滤减(做禁止操作)
-      this.jianData = this.adjustlist[0].deductionFreightList.filter(e => {
+      this.jianData = jaarr.filter(e => {
         return !e.$_disabled;
       });
       this.selecedName = (a1).map(e => e.cnName);
@@ -581,10 +608,13 @@ export default {
     },
     handlerdeduc() {
       // 同上
-      const a1 = this.adjustlist[0].deductionFreightList.filter(e => {
+      const jaarr = this.adjustlist[0].subsidiesFreightList || [];
+      const arr = this.adjustlist[0].deductionFreightList || [];
+
+      const a1 = arr.filter(e => {
         return !e.$_disabled;
       });
-      this.jianData = this.adjustlist[0].subsidiesFreightList.filter(e => {
+      this.jianData = jaarr.filter(e => {
         return !e.$_disabled;
       });
       this.selecedName = (a1).map(e => e.cnName);
