@@ -18,16 +18,16 @@ export const USERINFO = [
 ];
 // 29804;2614710;广东深圳福龙学校项目;鄂ALF106;张三丰;13812345678;1621648441990;1621648441990;49384299482;广东深圳妈湾石头';
 export const DATAINFO = [
-  'orderId',
-  'waybillNo',
-  'projectName',
-  'licenseNumber',
-  'driverName',
-  'driverPhone',
+  'orderId', // 货源单号
+  'waybillNo', // 运单单号
+  'projectName', // 项目id
+  'licenseNumber', // 车牌号
+  // 'driverName',
+  'driverPhone', // 驾驶员用户手机号
   'fillTime',
   'signTime',
-  'serialNumber',
-  'mudtail'
+  'serialNumber' // 渣土场编号
+  // 'mudtail'
 ];
 // resultData(resUserInfo, USERINFO)
 
