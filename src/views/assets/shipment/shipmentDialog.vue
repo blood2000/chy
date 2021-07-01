@@ -188,7 +188,7 @@
               >
                 <i class="el-icon-question" />
                 <ul slot="content">
-                  <li class="g-text">一票制：调度费点数 = 税点</li>
+                <!--  <li class="g-text">一票制：调度费点数 = 税点</li>-->
                   <li class="g-text">二票制：调度费点数 = 税点</li>
                   <li class="g-text">非一票制：调度费点数 = [税点/(100-税点)]*100</li>
                 </ul>
@@ -521,6 +521,13 @@
           </el-form-item>
         </el-col>
       </el-row>
+        <el-row :gutter="20">
+            <el-col :span="8">
+                <el-form-item prop="isNeedLoadingCertificate">
+                    <el-checkbox v-model="form.isNeedLoadingCertificate">是否需要装货凭证</el-checkbox>
+                </el-form-item>
+            </el-col>
+        </el-row>
     </el-form>
     <div v-if="title === '新增' || title === '编辑'" slot="footer" class="dialog-footer">
       <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
@@ -826,10 +833,14 @@ export default {
           if (this.form.openProjectDesignView === true) {
             openProjectDesignView = 0;
           }
+          var isNeedLoadingCertificate = 1;
+          if (this.form.isNeedLoadingCertificate === true) {
+            isNeedLoadingCertificate = 0;
+          }
           // 复制管理员图片至法人
           this.form.artificialIdentificationImg = this.form.identificationImg;
           this.form.artificialIdentificationBackImg = this.form.identificationBackImg;
-          var extendForm = { noNeedUnloadImg: noNeedUnloadImg, openProjectDesignView: openProjectDesignView };
+          var extendForm = { noNeedUnloadImg: noNeedUnloadImg, openProjectDesignView: openProjectDesignView, isNeedLoadingCertificate: isNeedLoadingCertificate};
           // eslint-disable-next-line no-undef
           this.form = Object.assign(this.form, extendForm);
           if (this.form.id) {
@@ -947,6 +958,7 @@ export default {
         singleSourceMultiCommodity: 1,
         singleSourceMultiLoadingLocations: 1,
         singleSourceMultiUnloadingLocations: 1,
+        isNeedLoadingCertificate: 0,
         editDriverActualAmount: 1,
         allowNoAuditDriverToReceive: 1,
         isNeedApplicationForPayment: 0,
@@ -969,6 +981,11 @@ export default {
         this.form.openProjectDesignView = true;
       } else {
         this.form.openProjectDesignView = false;
+      }
+      if (this.form.isNeedLoadingCertificate === 0) {
+        this.form.isNeedLoadingCertificate = true;
+      } else {
+        this.form.isNeedLoadingCertificate = false;
       }
       if (this.form.branchCode && this.form.branchName) {
         this.branchOptions = [{
