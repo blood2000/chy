@@ -14,7 +14,7 @@
       style="display: inline-block; vertical-align: top"
       class="upload-image"
     >
-      <div v-if="value" v-viewer class="avatar-box">
+      <div v-if="value" class="avatar-box">
         <img :src="attachUrl" class="avatar">
       </div>
       <template v-else>

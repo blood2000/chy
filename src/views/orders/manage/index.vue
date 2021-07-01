@@ -681,8 +681,8 @@ export default {
                   e.contact1 = '-';
                   e.contactPhone1 = '-';
                 } else if (addr.addressType === '1') {
-                  e.addressName1 = addr.formattedAddress;
-                  e.addressAlias1 = addr.addressAlias;
+                  e.addressName1 = addr.formattedAddress; // 地址具体名称
+                  e.addressAlias1 = addr.addressAlias; // 地址别名
                   // 装货人
                   e.contact1 = addr.contact;
                   e.contactPhone1 = addr.contactPhone;
