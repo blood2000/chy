@@ -2,7 +2,7 @@
   <div>
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
-        <el-form-item v-show="!isShipment" label="批次号" prop="batchNo">
+        <el-form-item label="批次号" prop="batchNo">
           <el-input
             v-model.trim="queryParams.batchNo"
             placeholder="请输入批次号"
@@ -38,6 +38,15 @@
 
     <div class="app-container">
       <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            type="primary"
+            icon="el-icon-download"
+            size="mini"
+            :loading="exportLoading"
+            @click="handleExport"
+          >导出</el-button>
+        </el-col>
         <el-col :span="1.5" style="float: right;">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
@@ -45,6 +54,9 @@
       </el-row>
 
       <RefactorTable :loading="loading" :data="rejectList" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
+        <template #opName="{row}">
+          <span>{{ row.nickName || row.opName }}</span>
+        </template>
         <template #operateType="{row}">
           <span>{{ selectDictLabel(operate_typeOptions, row.operateType) }}</span>
         </template>
@@ -86,6 +98,7 @@ export default {
       api: rejectListApi,
       // 遮罩层
       loading: true,
+      exportLoading: false,
       // 选中数组
       ids: [],
       // 非单个禁用
@@ -189,6 +202,12 @@ export default {
       this.ids = selection.map(item => item.waybillCode);
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
+    },
+
+    async handleExport() {
+      this.exportLoading = true;
+      await this.download('/transportation/batch/operateLogExport', this.queryParams, `nullify_${new Date().getTime()}.xlsx`);
+      this.exportLoading = false;
     }
   }
 };

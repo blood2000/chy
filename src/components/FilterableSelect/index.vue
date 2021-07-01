@@ -37,6 +37,8 @@
           clearable
           style="width:255px"
           placeholder="请输入调度者姓名/手机号"
+           requer-msg="请先选择发货企业！" <------- 可选 填上说明请求前 这个是必定要有的, 不然就报填的消息 跟is-sure-key一起使用
+          :is-sure-key="'companyCode'" <------- 可选 指定必填的字段是那个 跟requer-msg一起使用
           :axios="{
             queryFn:listInfo, <----- 请求接口的函数
             queryData:{} <----- 请求的额外参数
@@ -82,6 +84,14 @@ export default {
     keywords: {
       type: String,
       default: 'keywords'
+    },
+    isSureKey: { // 必选的key名称
+      type: String,
+      default: ''
+    },
+    requerMsg: { // 必选消息, 为空就没有
+      type: String,
+      default: ''
     }
   },
 
@@ -110,6 +120,19 @@ export default {
     }
   },
 
+  watch: {
+    'axios.queryData': {
+      handler(val) {
+        // 有关联的监听, 清空相关联的下拉值
+        if (this.requerMsg && !val[this.isSureKey]) {
+          this.shipmentList = []; // 清空下拉框
+          this.modelData = ''; // 清空选中项
+        }
+      },
+      deep: true
+    }
+  },
+
   methods: {
     /** 远程搜索列表触底事件 */
     loadmore() {
@@ -120,9 +143,9 @@ export default {
 
     /** 触发远程搜索 */
     remoteMethod(query) {
-      if (query !== '') {
+      if (query.trim() !== '') {
         this.shipmentreq.pageNum = 1;
-        this.shipmentreq[this.keywords] = query;
+        this.shipmentreq[this.keywords] = query.trim();
 
         this.shipmentList = [];
         this.getTeamList();
@@ -136,6 +159,12 @@ export default {
       // 请求数据
       const { queryFn, queryData = {}, key = 'rows' } = this.axios;
 
+      if (this.requerMsg && (!this.isSureKey || !this.axios.queryData[this.isSureKey])) {
+        this.$message({ type: 'warning', message: this.requerMsg });
+        return;
+      }
+
+
       queryFn && queryFn({ ...this.shipmentreq, ...queryData, [this.keywords]: this.shipmentreq[this.keywords] }).then(
         (res) => {
           this.dataOver = !res[key].length;
@@ -146,6 +175,7 @@ export default {
         this.loading = false;
       });
     },
+
 
     /** 选择的 */
     handlerchange(data) {

@@ -52,7 +52,7 @@
 
 <script>
 import { batchRelatedWaybill, BatchInfoListVo } from '@/api/settlement/adjustDregs';
-
+import { getUserInfo } from '@/utils/auth';
 
 export default {
   'name': 'StatementsInfo',
@@ -63,24 +63,6 @@ export default {
   data() {
     return {
       'tableColumnsConfig': [],
-      'tableColumnsConfig1': [
-        { // 需要顶替掉的项
-          prop: 'waybillNo',
-          isShow: true,
-          tooltip: false,
-          sortNum: 0,
-          label: '运单号',
-          width: 150
-        },
-        { // 需要顶替掉的项
-          prop: 'isReturn',
-          isShow: false,
-          tooltip: false,
-          sortNum: 0,
-          label: '纸质回单状态',
-          width: 120
-        }
-      ],
       // 遮罩层
       'loading': false,
 
@@ -107,11 +89,123 @@ export default {
   'methods': {
     /** 表头初始化 */
     tabColInit() {
+      const { isShipment = false } = getUserInfo() || {};
       this.tableColumnsConfig = [];
+
+      const com = [
+        {
+          'prop': 'waybillNo',
+          'isShow': true,
+          'tooltip': false,
+          'sortNum': 0,
+          'label': '运单号',
+          'width': 150
+        },
+        {
+          'prop': 'isReturn',
+          'isShow': false,
+          'tooltip': false,
+          'sortNum': 0,
+          'label': '纸质回单状态',
+          'width': 120
+        },
+        {
+          'label': '公司名称',
+          'prop': 'companyName',
+          'isShow': !isShipment,
+          'sortNum': 0,
+          'width': '120',
+          'tooltip': true
+        },
+        {
+          'label': '服务费',
+          'prop': 'serviceFee',
+          'isShow': false,
+          'sortNum': 0,
+          'width': '120',
+          'tooltip': true
+        },
+        {
+          'label': '装货-联系电话',
+          'prop': 'loadContactPhone',
+          'isShow': false,
+          'sortNum': 0,
+          'width': '120',
+          'tooltip': true
+        },
+        {
+          'label': '商品大类',
+          'prop': 'goodsBigTypeName',
+          'isShow': false,
+          'sortNum': 0,
+          'width': '120',
+          'tooltip': true
+        },
+        {
+          'label': '服务税费',
+          'prop': 'serviceTaxFee',
+          'isShow': false,
+          'sortNum': 0,
+          'width': '120',
+          'tooltip': true
+        },
+        {
+          'label': '货物单价',
+          'prop': 'goodsPrice',
+          'isShow': true,
+          'sortNum': 0,
+          'width': '120',
+          'tooltip': true
+        },
+        {
+          'label': '货主备注',
+          'prop': 'shipperRemark',
+          'isShow': true,
+          'sortNum': 0,
+          'width': '120',
+          'tooltip': true
+        },
+        {
+          'label': '给货主结算的和展示的每车总费',
+          'prop': 'shipperDeliveryFee',
+          'isShow': false,
+          'sortNum': 0,
+          'width': '120',
+          'tooltip': true
+        },
+        {
+          'label': '运单状态',
+          'prop': 'status',
+          'isShow': true,
+          'sortNum': 0,
+          'width': '120',
+          'tooltip': true
+        },
+        {
+          'prop': 'increaseDes',
+          'isShow': true,
+          'tooltip': true,
+          'sortNum': 10,
+          'label': '数值描述',
+          'width': 120
+        },
+        {
+          'prop': 'deductionDes',
+          'isShow': true,
+          'tooltip': true,
+          'sortNum': 11,
+          'label': '备注',
+          'width': 120
+        }
+      ];
+
+
+
+
       this.tableHeaderConfig(
         this.tableColumnsConfig,
         this.api, null,
-        this.tableColumnsConfig1
+        com
       );
     },
 

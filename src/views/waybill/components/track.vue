@@ -4,6 +4,9 @@
       <el-col :span="18">
         <div style="width:100%; height: 600px;border-radius: 6px">
           <el-amap ref="map" vid="DDCmap" :zoom="zoom" :center="center" />
+          <div :class="isPlan? 'noliston-frame':'nolist-frame'">
+            <div :class="isPlan? 'noliston':'nolist'" />
+          </div>
         </div>
       </el-col>
       <el-col :span="6">
@@ -75,7 +78,11 @@ export default {
         tid: undefined, // tid为终端唯一编号
         trid: undefined, // trid为轨迹唯一编号
         starttime: undefined, // 必须为Unix时间戳精确到毫秒
-        endtime: undefined // 必须为Unix时间戳精确到毫秒
+        endtime: undefined, // 必须为Unix时间戳精确到毫秒
+        correction: 'denoise=1,mapmatch=1,attribute=0,threshold=0,mode=driving', // 对轨迹进行处理
+        recoup: 1, // 对轨迹进行补点
+        page: 1,
+        pagesize: 999
       },
       // 中交兴路轨迹查询参数
       zjxlQueryParams: {
@@ -99,7 +106,8 @@ export default {
       timeLineList: [],
       // 轨迹查询参数结束时间
       queryEndtime: '',
-      timePoor: undefined
+      timePoor: undefined,
+      isPlan: false
     };
   },
   computed: {
@@ -124,40 +132,20 @@ export default {
     },
     /** 获取轨迹 */
     getTrackLocation() {
+      this.isPlan = false;
       if (this.wayBillInfo.fillTime) {
         if (this.trackChange === 0) {
+          // 获取APP轨迹
           this.getLieyingTime();
-        // 获取APP轨迹
-        // axios.get('https://tsapi.amap.com/v1/track/terminal/trsearch', { params: this.lieyingQueryParams }).then(response => {
-        //   // console.log(response);
-        //   if (response.data.data) {
-        //     this.tracklist = response.data.data.tracks[0].points.map(function(response) {
-        //       // console.log(response.location.split(','));
-        //       return response.location.split(',');
-        //     });
-        //     if (this.tracklist.length !== 0) {
-        //       // 绘制轨迹
-        //       this.drawPolyline(this.tracklist);
-        //       if (!this.wayBillInfo.signTime) {
-        //         this.getVehicleMark();
-        //       }
-        //     } else {
-        //       // 获取高德地图路线规划
-        //       this.getRoutePlan();
-        //     }
-        //   } else {
-        //     // 获取高德地图路线规划
-        //     this.getRoutePlan();
-        //   }
-        // });
         } else if (this.trackChange === 1) {
-        // 获取硬件轨迹
+          // 获取硬件轨迹
           jimiTrackLocation(this.jimiQueryParams).then(response => {
           // console.log(response.data.result);
             if (response.data.result) {
               this.tracklist = response.data.result.map(function(response) {
                 return [response.lng, response.lat];
               });
+              console.log(this.tracklist);
               if (this.tracklist.length !== 0) {
               // 绘制轨迹
                 this.drawPolyline(this.tracklist);
@@ -168,35 +156,15 @@ export default {
               // 获取高德地图路线规划
                 this.getRoutePlan();
               }
+            } else {
+              // 获取高德地图路线规划
+              this.getRoutePlan();
             }
           });
         } else if (this.trackChange === 2) {
+          // 获取中交兴路轨迹
           this.getZjxlTime();
-        // zjxlTrackLocation(this.zjxlQueryParams).then(response => {
-        //   console.log(response);
-        //   const str = JSON.parse(response.msg);
-        //   console.log(str);
-        //   if (str.result.length !== 0) {
-        //     this.tracklist = str.result.map(response => {
-        //       return [response.lon / 600000, response.lat / 600000];
-        //     });
-        //     console.log(this.tracklist);
-        //     if (this.tracklist.length !== 0) {
-        //       // 绘制轨迹
-        //       this.drawPolyline(this.tracklist);
-        //       if (!this.wayBillInfo.signTime) {
-        //         this.getVehicleMark();
-        //       }
-        //     } else {
-        //       // 获取高德地图路线规划
-        //       this.getRoutePlan();
-        //     }
-        //   }
-        // });
         }
-      } else {
-        // 获取高德地图路线规划
-        this.getRoutePlan();
       }
     },
     // 猎鹰循环判断开始时间与结束时间
@@ -244,15 +212,14 @@ export default {
         this.zjxlQueryParams.qryEtm = this.parseTime(new Date(this.zjxlQueryParams.qryBtm).getTime() + 24 * 60 * 60 * 1000, '{y}-{m}-{d} {h}:{i}:{s}');
         this.getZjxl();
       } else if (this.timePoor === 0) {
-        if (this.tracklist.length !== 0) {
-          // 绘制轨迹
-          this.drawPolyline(this.tracklist);
-          if (!this.wayBillInfo.signTime) {
-            this.getVehicleMark();
-          }
-        } else {
-          // 获取高德地图路线规划
-          this.getRoutePlan();
+        // 坐标系转换
+        this.tracklist = this.tracklist.map(res => {
+          return this.wgs84_to_gcj02(res[0], res[1]);
+        });
+        // 绘制轨迹
+        this.drawPolyline(this.tracklist);
+        if (!this.wayBillInfo.signTime) {
+          this.getVehicleMark();
         }
       } else if (this.timePoor !== 0 && this.timePoor < 24 * 60 * 60 * 1000) {
         this.getZjxl();
@@ -262,6 +229,7 @@ export default {
     getZjxl() {
       zjxlTrackLocation(this.zjxlQueryParams).then(response => {
         var str = JSON.parse(response.msg);
+        console.log(str);
         if (str.result.length !== 0) {
           this.tracklist = [
             ...this.tracklist,
@@ -279,6 +247,8 @@ export default {
     // 获取高德地图路线规划
     getRoutePlan() {
       const that = this;
+      that.isPlan = true;
+      console.log(that.isPlan);
       const driving = new AMap.Driving({
         policy: AMap.DrivingPolicy.LEAST_TIME
         // map 指定将路线规划方案绘制到对应的AMap.Map对象上
@@ -346,7 +316,8 @@ export default {
     drawPolyline(path) {
       console.log(path);
       const that = this;
-      const polyline = new window.AMap.Polyline({
+      that.$refs.map.$$getInstance().remove(this.polyline);
+      this.polyline = new window.AMap.Polyline({
         map: that.$refs.map.$$getInstance(),
         path,
         showDir: true,
@@ -359,8 +330,7 @@ export default {
         lineJoin: 'round', // 折线拐点的绘制样式
         zIndex: 999
       });
-      console.log(polyline);
-      polyline.setMap(that.$refs.map.$$getInstance());
+      this.polyline.setMap(that.$refs.map.$$getInstance());
     },
     // 获取车辆信息
     getvehicleInfo() {
@@ -452,6 +422,35 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.shadow{
+  box-shadow: 10px 10px 5px #888888;
+}
+.nolist-frame{
+	position: relative;
+  bottom: 70px;
+	z-index: 999;
+	height: 0;
+	width: 100%;
+	background: linear-gradient(#FFFFFF00 20%, #FFFFFF 80%);
+}
+.nolist{
+	height: 70px;
+	width: 100%;
+	background: linear-gradient(#FFFFFF00 20%, #FFFFFF 80%);
+}
+.noliston-frame{
+	position: relative;
+  bottom: 55px;
+	z-index: 999;
+	height: 0;
+	width: 100%;
+	background: linear-gradient(#FFFFFF00 20%, #FFFFFF 80%);
+}
+.noliston{
+	height: 55px;
+	width: 100%;
+	background: linear-gradient(#FFFFFF00 20%, #FFFFFF 80%);
+}
 .mr3 {
   margin-right: 3%;
 }

@@ -333,8 +333,9 @@ export default {
           'cancelButtonText': '取消',
           'type': 'warning'
         }).then(function() {
+          that.loading = true;
           if (row.driverOrShipment === 0) {
-            return getDriverSign(that.waybill);
+            return getDriverSign(that.waybill).catch(() => { that.loading = false; });
           } else {
             if (!that.waybill.electronic.shipmentId) {
               that.msgWarning('货主编码不能为空！');
@@ -343,7 +344,7 @@ export default {
             } else if (!that.waybill.shipmentOrganizationCodeNo) {
               that.msgWarning('货主公司统一信用代码不能为空！');
             } else {
-              return getShipmentSign(that.waybill);
+              return getShipmentSign(that.waybill).catch(() => { that.loading = false; });
             }
           }
         }).then(() => {

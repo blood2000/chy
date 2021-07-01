@@ -320,6 +320,9 @@ export default {
 
         const { detailList, lossList } = value.orderFreightVo;
 
+        // 发布货源的时候给一个默认的
+        console.log(this.formData.ruleItemId, '谁先');
+
         this.formData.ruleItemId = value.ruleCode;
 
         const filterDetailList = detailList.filter(e => {
@@ -391,6 +394,16 @@ export default {
       try {
         const data = (await getListRules({ shipperCode: this.pubilshCode })).data;
         this.ruleItemIdOption = this._baozhuan(data, 'code', 'name');
+        // 最早获取到规则表 this.formData.ruleItemId platformType	平台类型 1.DDC平台 2.货主 触发 handleRuleItemId isDefault
+
+        const rulesItem = this.ruleItemIdOption.filter(e => {
+          return e.platformType === 2 && e.isDefault === 'Y';
+        });
+
+        if (rulesItem[0]) {
+          this.formData.ruleItemId = rulesItem[0].code;
+          this.handleRuleItemId();
+        }
       } catch (error) {
         this.$confirm('司机实收单价计算超时, 点击确定重新计算', '警告', {
           confirmButtonText: '确定',

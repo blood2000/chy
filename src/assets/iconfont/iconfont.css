@@ -1,6 +1,6 @@
 @font-face {
   font-family: "iconfont"; /* Project id  */
-  src: url('iconfont.ttf?t=1620805840614') format('truetype');
+  src: url('iconfont.ttf?t=1625033701119') format('truetype');
 }
 
 .iconfont {
@@ -11,35 +11,59 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-nav-shipment:before {
+.icon-nav-data:before {
   content: "\e605";
 }
 
-.icon-nav-data:before {
+.icon-nav-setting:before {
   content: "\e606";
 }
 
-.icon-nav-system:before {
+.icon-nav-capital:before {
   content: "\e607";
 }
 
-.icon-nav-capital:before {
+.icon-nav-enterprise:before {
   content: "\e608";
 }
 
-.icon-nav-enterprise:before {
+.icon-nav-settlement:before {
   content: "\e609";
 }
 
-.icon-nav-settlement:before {
+.icon-nav-waybill:before {
   content: "\e60a";
 }
 
-.icon-nav-waybill:before {
+.icon-nav-order:before {
   content: "\e60b";
 }
 
-.icon-nav-order:before {
+.icon-nav-invoice:before {
   content: "\e60c";
+}
+
+.icon-nav-wallet:before {
+  content: "\e60d";
+}
+
+.icon-nav-system:before {
+  content: "\e60e";
+}
+
+.icon-nav-config:before {
+  content: "\e60f";
+}
+
+.icon-nav-zjz1:before {
+  content: "\e610";
+}
+
+.icon-nav-capacity:before {
+  content: "\e611";
+}
+
+.icon-nav-monitor:before {
+  content: "\e612";
 }
 

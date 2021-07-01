@@ -18,4 +18,10 @@ export function invalidRejected(wayBillCode) {
   });
 }
 
+export function invalidDelete(wayBillInCode) {
+  return request({
+    url: '/transportation/waybillOper/delInvalid?wayBillInCode=' + wayBillInCode,
+    method: 'get'
+  });
+}
 

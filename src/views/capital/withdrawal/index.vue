@@ -129,12 +129,21 @@
         </el-col>
         <el-col :span="1.5">
           <el-button
-            type="info"
+            type="success"
             icon="el-icon-upload2"
             size="mini"
             :disabled="multiple"
             @click="handleImport"
           >网商批量提现</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            type="info"
+            icon="el-icon-upload2"
+            size="mini"
+            :disabled="multiple"
+            @click="handleReject"
+          >网商批量驳回</el-button>
         </el-col>
         <!-- <el-col :span="1.5">
           <el-button
@@ -187,7 +196,7 @@
 </template>
 
 <script>
-import { withDrawalListApi, getWithDrawalList, toCard } from '@/api/capital/withdrawal';
+import { withDrawalListApi, getWithDrawalList, toCard, reject } from '@/api/capital/withdrawal';
 
 export default {
   name: 'Withdrawal',
@@ -325,6 +334,21 @@ export default {
         type: 'warning'
       }).then(function() {
         toCard(_this.ids).then(response => {
+          _this.msgSuccess('操作成功');
+          _this.$refs.multipleTable.m2ToggleSelection();
+          _this.getList();
+        });
+      });
+    },
+    /** 网商批量驳回 */
+    handleReject() {
+      const _this = this;
+      this.$confirm('是否确认网商批量驳回?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        reject(_this.ids).then(response => {
           _this.msgSuccess('操作成功');
           _this.$refs.multipleTable.m2ToggleSelection();
           _this.getList();

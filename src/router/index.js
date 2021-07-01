@@ -54,6 +54,7 @@ export const constantRoutes = [
   },
   {
     path: '/404',
+    name: '404',
     component: (resolve) => require(['@/views/error/404'], resolve),
     hidden: true
   },
@@ -99,6 +100,19 @@ export const constantRoutes = [
         component: (resolve) => require(['@/views/system/dict/data'], resolve),
         name: 'Data',
         meta: { title: '字典数据', icon: '' }
+      }
+    ]
+  },
+  {
+    path: '/table',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'type/data/:code',
+        component: (resolve) => require(['@/views/system/table/data'], resolve),
+        name: 'TableData',
+        meta: { title: '列表数据', icon: '' }
       }
     ]
   },
