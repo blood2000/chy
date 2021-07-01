@@ -196,4 +196,13 @@ export function getWaybillTrace(code) {
   });
 }
 
+// 新增zjxl轨迹
+export function addZjxl(data) {
+  return request({
+    url: '/assets/vehicle/track/add',
+    method: 'post',
+    data: data
+  });
+}
+
 
