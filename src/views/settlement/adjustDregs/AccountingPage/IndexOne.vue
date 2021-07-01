@@ -152,7 +152,22 @@ export default {
           sortNum: 0,
           label: '纸质回单状态',
           width: 120
-        }]);
+        }, { // 需要顶替掉的项
+          prop: 'loadWeight',
+          isShow: true,
+          tooltip: false,
+          sortNum: 5,
+          label: '装车数量',
+          width: 120
+        }, { // 需要顶替掉的项
+          prop: 'unloadWeight',
+          isShow: true,
+          tooltip: false,
+          sortNum: 6,
+          label: '卸车数量',
+          width: 120
+        }
+        ]);
     },
     getList() {
       this.loading = true;

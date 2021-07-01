@@ -84,11 +84,11 @@
               <th width="50px">货物</th>
 
               <th width="50px">装货地</th>
-              <th width="50px">装货重量</th>
+              <th width="50px">装货数量</th>
               <th width="50px">装货时间</th>
 
               <th width="50px">卸货地</th>
-              <th width="50px">卸货重量</th>
+              <th width="50px">卸货数量</th>
               <th width="50px">卸货时间</th>
 
             </tr>
