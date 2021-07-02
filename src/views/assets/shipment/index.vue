@@ -269,6 +269,14 @@
             </el-dropdown-item>
             <el-dropdown-item>
               <el-button
+                      size="mini"
+                      type="text"
+                      :style="row.status == '0'?'color:red':'color:green'"
+                      @click="updateStatus(row)"
+              >{{row.status == '0'?'停用':'启用'}}</el-button>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <el-button
                 v-hasPermi="['assets:shipment:remove']"
                 size="mini"
                 type="text"
@@ -299,6 +307,7 @@
 
 <script>
 import { listShipmentApi, listShipment, getShipment, delShipment } from '@/api/assets/shipment';
+import { updateUserStatusByUserCode } from '@/api/system/user';
 import { getBranchList } from '@/api/system/branch';
 import ShipmentDialog from './shipmentDialog';
 import ManageDialog from './manageDialog.vue';
@@ -564,6 +573,25 @@ export default {
       this.adminName = row.adminName;
       this.userId = row.userId;
       this.roleAssignmentDialogOpen = true;
+    },
+    // 解/禁用用户
+    updateStatus(row) {
+      var status = '0';
+      if (row.status === '0') {
+        status = '1';
+      } else if (row.status === '1') {
+        status = '0';
+      }
+      this.$confirm('是否确认' + (status === '0' ? '启用' : '停用') + '货主"' + (row.adminName || row.telphone) + '"的账号?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return updateUserStatusByUserCode(row.adminCode, status);
+      }).then(() => {
+        this.getList();
+        this.msgSuccess(status === '0' ? '启用成功' : '停用成功');
+      });
     }
   }
 };
