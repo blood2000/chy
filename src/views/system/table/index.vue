@@ -45,9 +45,7 @@
         <el-table-column label="列表名称" align="center" prop="menuName" />
         <el-table-column label="接口地址" align="center" prop="route" min-width="200">
           <template slot-scope="scope">
-            <router-link :to="'/table/type/data/' + scope.row.code" class="link-type">
-              <span>{{ scope.row.route }}</span>
-            </router-link>
+            <span class="link-type" @click="jumpData(scope.row)">{{ scope.row.route }}</span>
           </template>
         </el-table-column>
         <el-table-column label="修改人" align="center" prop="updateUserName" />
@@ -232,6 +230,15 @@ export default {
       }).then(() => {
         this.getList();
         this.msgSuccess('删除成功');
+      });
+    },
+    /** 路由跳转 */
+    jumpData(row) {
+      this.$router.push({
+        path: '/table/type/data/' + row.code,
+        query: {
+          route: row.route
+        }
       });
     }
   }

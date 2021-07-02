@@ -12,7 +12,17 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="司机姓名" prop="name">
+        <el-form-item label="司机" prop="keywords">
+          <el-input
+                  v-model.trim="queryParams.keywords"
+                  placeholder="请输入司机姓名/手机号"
+                  clearable
+                  size="small"
+                  class="input-width"
+                  @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+       <!-- <el-form-item label="司机姓名" prop="name">
           <el-input
             v-model.trim="queryParams.name"
             placeholder="请输入司机姓名"
@@ -31,7 +41,7 @@
             class="input-width"
             @keyup.enter.native="handleQuery"
           />
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="车牌号" prop="licenseNumber">
           <el-input
             v-model.trim="queryParams.licenseNumber"
@@ -281,6 +291,14 @@
               </el-dropdown-item>
               <el-dropdown-item>
                 <el-button
+                        size="mini"
+                        type="text"
+                        :style="row.status == '0'?'color:red':'color:green'"
+                        @click="updateStatus(row)"
+                >{{row.status == '0'?'停用':'启用'}}</el-button>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <el-button
                   v-if="teamCode"
                   v-hasPermi="['assets:team:driver:del']"
                   size="mini"
@@ -355,6 +373,7 @@
 import { listDriverApi, listDriver, getDriver, delDriver, getAgreementWord } from '@/api/assets/driver';
 import { listInfo, delTeamReDriver } from '@/api/assets/team';
 import { waybillReportDriverByCode } from '@/api/data/report';
+import { updateUserStatusByUserCode } from '@/api/system/user';
 import DriverDialog from './driverDialog';
 import ImportDialog from './importDialog';
 import ManageDialog from './manageDialog';
@@ -458,6 +477,7 @@ export default {
         isAsc: 'desc',
         orderByColumn: 't0.create_time',
         driverType: undefined,
+        keywords: undefined,
         name: undefined,
         telphone: undefined,
         identificationNumber: undefined,
@@ -733,6 +753,25 @@ export default {
       } else {
         this.msgWarning('请选择要上报的司机');
       }
+    },
+    // 解/禁用用户
+    updateStatus(row) {
+      var status = '0';
+      if (row.status === '0') {
+        status = '1';
+      } else if (row.status === '1') {
+        status = '0';
+      }
+      this.$confirm('是否确认' + (status === '0' ? '启用' : '停用') + '司机"' + (row.name || row.telphone) + '"的账号?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return updateUserStatusByUserCode(row.userCode, status);
+      }).then(() => {
+        this.getList();
+        this.msgSuccess(status === '0' ? '启用成功' : '停用成功');
+      });
     }
   }
 };

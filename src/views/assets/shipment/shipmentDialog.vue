@@ -188,7 +188,7 @@
               >
                 <i class="el-icon-question" />
                 <ul slot="content">
-                <!--  <li class="g-text">一票制：调度费点数 = 税点</li>-->
+                  <!--  <li class="g-text">一票制：调度费点数 = 税点</li>-->
                   <li class="g-text">二票制：调度费点数 = 税点</li>
                   <li class="g-text">非一票制：调度费点数 = [税点/(100-税点)]*100</li>
                 </ul>
@@ -521,13 +521,13 @@
           </el-form-item>
         </el-col>
       </el-row>
-        <el-row :gutter="20">
-            <el-col :span="8">
-                <el-form-item prop="isNeedLoadingCertificate">
-                    <el-checkbox v-model="form.isNeedLoadingCertificate">是否需要装货凭证</el-checkbox>
-                </el-form-item>
-            </el-col>
-        </el-row>
+      <el-row :gutter="20">
+        <el-col :span="8">
+          <el-form-item prop="isNeedLoadingCertificate">
+            <el-checkbox v-model="form.isNeedLoadingCertificate">是否需要装货凭证</el-checkbox>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
     <div v-if="title === '新增' || title === '编辑'" slot="footer" class="dialog-footer">
       <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
@@ -840,7 +840,7 @@ export default {
           // 复制管理员图片至法人
           this.form.artificialIdentificationImg = this.form.identificationImg;
           this.form.artificialIdentificationBackImg = this.form.identificationBackImg;
-          var extendForm = { noNeedUnloadImg: noNeedUnloadImg, openProjectDesignView: openProjectDesignView, isNeedLoadingCertificate: isNeedLoadingCertificate};
+          var extendForm = { noNeedUnloadImg: noNeedUnloadImg, openProjectDesignView: openProjectDesignView, isNeedLoadingCertificate: isNeedLoadingCertificate };
           // eslint-disable-next-line no-undef
           this.form = Object.assign(this.form, extendForm);
           if (this.form.id) {

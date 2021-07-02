@@ -205,4 +205,11 @@ export function addZjxl(data) {
   });
 }
 
-
+// 查询zjxl轨迹
+export function queryZjxl(data) {
+  return request({
+    url: '/assets/vehicle/track/query',
+    method: 'post',
+    data: data
+  });
+}

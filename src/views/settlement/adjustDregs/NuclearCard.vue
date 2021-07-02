@@ -65,7 +65,7 @@
         {
           prop: 'orderId',
           isShow: true,
-          label: '货源编号'
+          label: '货源单号'
         },
         {
           prop: 'waybillNo',
@@ -93,6 +93,11 @@
         },
       ]"
     >
+      <!-- {
+          prop: 'mudtail',
+          isShow: true,
+          label: '泥尾'
+        }, -->
       <template #writeOffStatus="{row}">
         <el-switch
           v-model="row.writeOffStatus"

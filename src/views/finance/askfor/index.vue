@@ -542,8 +542,8 @@ export default {
         askInvoice({ shipmentCode: this.queryParams.shipmentCode, waybillCodes: this.ids }).then(response => {
           this.msgSuccess('索票申请成功');
           this.ids = null;
+          this.getList();
         });
-        this.getList();
       });
     },
     handleTableBtn(row, index) {
