@@ -210,6 +210,7 @@ export default {
         comment: null
       },
       masterCode: null,
+      masterRoute: null,
       // 表单参数
       form: {},
       formSync: {},
@@ -235,6 +236,7 @@ export default {
     };
   },
   created() {
+    this.masterRoute = this.$route.query.route;
     this.masterCode = this.$route.params && this.$route.params.code;
     this.getList();
   },
@@ -308,12 +310,14 @@ export default {
               this.msgSuccess('修改成功');
               this.open = false;
               this.getList();
+              this.clearLocalStorage();
             });
           } else {
             addConfig(Object.assign({}, this.form, { masterCode: this.masterCode })).then(response => {
               this.msgSuccess('新增成功');
               this.open = false;
               this.getList();
+              this.clearLocalStorage();
             });
           }
         }
@@ -335,6 +339,7 @@ export default {
       }).then(() => {
         this.getList();
         this.msgSuccess('删除成功');
+        this.clearLocalStorage();
       });
     },
     /** 同步按钮 */
@@ -353,6 +358,7 @@ export default {
             this.msgSuccess('同步成功');
             this.openSync = false;
             this.getList();
+            this.clearLocalStorage();
           }).catch(() => {
             this.loadingSync = false;
           });
@@ -374,9 +380,9 @@ export default {
       this.resetForm('formSync');
     },
     /** 操作完清除缓存 */
-    clearLocalStorage({ route }) {
-      if (window.localStorage.getItem(route)) {
-        window.localStorage.removeItem(route);
+    clearLocalStorage() {
+      if (window.localStorage.getItem(this.masterRoute)) {
+        window.localStorage.removeItem(this.masterRoute);
       }
     }
   }
