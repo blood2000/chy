@@ -762,7 +762,7 @@ export default {
       } else if (row.status === '1') {
         status = '0';
       }
-      this.$confirm('是否确认' + (status === '0' ? '启用' : '停用') + '司机"' + ( row.name || row.telphone )+ '"的账号?', '提示', {
+      this.$confirm('是否确认' + (status === '0' ? '启用' : '停用') + '司机"' + (row.name || row.telphone) + '"的账号?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
