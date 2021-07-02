@@ -543,6 +543,7 @@ export default {
           this.msgSuccess('索票申请成功');
           this.ids = null;
         });
+      }).then(() => {
         this.getList();
       });
     },
