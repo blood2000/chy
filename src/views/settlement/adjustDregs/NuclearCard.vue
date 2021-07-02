@@ -45,11 +45,6 @@
           label: '项目(装货地)'
         },
         {
-          prop: 'mudtail',
-          isShow: true,
-          label: '泥尾'
-        },
-        {
           prop: 'fillTimeDate',
           isShow: true,
           label: '入场时间'
@@ -62,12 +57,12 @@
         {
           prop: 'orderId',
           isShow: true,
-          label: '货源编号'
+          label: '货源单号'
         },
         {
           prop: 'waybillNo',
           isShow: true,
-          label: '运单编号'
+          label: '运输单号'
         },
         {
           prop: 'serialNumber',
@@ -87,6 +82,11 @@
         },
       ]"
     >
+      <!-- {
+          prop: 'mudtail',
+          isShow: true,
+          label: '泥尾'
+        }, -->
       <template #writeOffStatus="{row}">
         <el-switch
           v-model="row.writeOffStatus"

@@ -304,7 +304,7 @@
 
               <el-dropdown-item>
                 <el-button
-                  v-if="row.status+''==='0'"
+                  v-if="row.status+''==='0' && row.scenario!=='1200'"
                   v-hasPermi="['transportation:order:adjustPrice']"
                   size="mini"
                   type="text"
@@ -324,7 +324,7 @@
 
               <el-dropdown-item>
                 <el-button
-                  v-if="row.status+''==='0'"
+                  v-if="row.status+''==='0' && row.scenario!=='1200'"
                   v-hasPermi="['transportation:order:copy']"
                   size="mini"
                   type="text"
