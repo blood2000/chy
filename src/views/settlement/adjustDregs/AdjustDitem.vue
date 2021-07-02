@@ -32,18 +32,24 @@
       <el-table-column width="120" label="车牌号" align="center" prop="licenseNumber" />
 
       <el-table-column width="80" label="装货数量" align="left" prop="loadWeight">
-        <template slot-scope="scope">
-          <span>{{ scope.row.loadWeight }}</span>
+        <template slot-scope="{row}">
+          <!-- <span>{{ scope.row.loadWeight }}</span> -->
+          <span>{{ row.loadWeight +' '+ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
         </template>
       </el-table-column>
 
       <el-table-column width="80" label="卸货数量" align="left" prop="unloadWeight">
-        <template slot-scope="scope">
-          <span>{{ scope.row.unloadWeight }}</span>
+        <template slot-scope="{row}">
+          <!-- <span>{{ scope.row.unloadWeight }}</span> -->
+          <span>{{ row.unloadWeight +' '+ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="100" label="纳税金额(元)" align="center" prop="taxPayment" fixed="right" />
+      <el-table-column width="100" label="纳税金额(元)" align="center" prop="taxPayment" fixed="right">
+        <template slot-scope="scope">
+          <span> {{ floor(scope.row.taxPayment) }} </span>
+        </template>
+      </el-table-column>
 
       <el-table-column width="100" label="服务费(元)" align="center" prop="serviceFee" fixed="right">
         <template slot-scope="scope">
@@ -96,7 +102,13 @@ export default {
       deliveryCashFee: undefined,
 
       floor,
-      changeFee: null
+      changeFee: null,
+
+      stowageStatusOP: [
+        { 'dictLabel': '吨', 'dictValue': '0' },
+        { 'dictLabel': '方', 'dictValue': '1' },
+        { 'dictLabel': '车', 'dictValue': '2' }
+      ]
     };
   },
 
