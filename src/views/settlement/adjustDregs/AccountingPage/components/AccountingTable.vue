@@ -16,6 +16,14 @@
             :cb-data="props.row.selectChilds"
             @selection-change="(lists)=>handleSelectionChange(lists, props.row )"
           >
+
+            <template #loadWeight="{row}">
+              <span>{{ row.loadWeight +' '+ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
+            </template>
+            <template #unloadWeight="{row}">
+              <span>{{ row.unloadWeight +' '+ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
+            </template>
+
             <template #icStatus="{row}">
               <span>{{ selectDictLabel([
                 { 'dictLabel': '未核对', 'dictValue': '0' },
@@ -24,6 +32,11 @@
             </template>
             <template #goodsBigType="{row}">
               <span>{{ selectDictLabel(goodsTypeOption, row.goodsBigType) }}</span>
+            </template>
+
+            <!-- 默认不显示的 -->
+            <template #stowageStatus="{row}">
+              <span>{{ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
             </template>
           </RefactorTable>
 
@@ -677,7 +690,13 @@ export default {
 
       nowSort: this.sort,
 
-      goodsTypeOption: []
+      goodsTypeOption: [],
+
+      stowageStatusOP: [
+        { 'dictLabel': '吨', 'dictValue': '0' },
+        { 'dictLabel': '方', 'dictValue': '1' },
+        { 'dictLabel': '车', 'dictValue': '2' }
+      ]
 
     };
   },
@@ -705,16 +724,6 @@ export default {
         };
         object[item].forEach(ite => {
           obj['freightAmount'] += ite['taxFee'] - 0; // 运费结算金额(取含税价字段)
-          // obj['teamName'] += ite['teamName']; // 调度者Code
-          //   obj['teamCode'] = ite['teamCode']; // 调度者Code
-
-
-          // obj['land'] = ite['unloadAddress']; // 渣土场（卸货地）
-          //   obj['landCode'] = ite['unloadAddressCode']; // 	渣土场（卸货地）Code
-
-
-          // obj['load'] = ite['loadAddress']; // 	项目（装货地）
-        //   obj['loadCode'] = ite['loadAddressCode']; // 	项目（装货地）Code
         });
 
         obj['teamName'] = [...new Set(object[item].map(e => e.teamName))].join(','); // object[item].map(e=> e.teamName)
@@ -751,7 +760,7 @@ export default {
   },
 
   created() {
-    this.goodsTypeOption = this.get_goodsType();
+    this.get_goodsType();
   },
 
   methods: {
@@ -850,19 +859,19 @@ export default {
 
     /** 获取字典大类 */
     get_goodsType() {
-      let goodsBigType_option = this.$store.getters.goodsBigType_option;
+      const goodsBigType_option = this.$store.getters.goodsBigType_option;
 
       if (!goodsBigType_option) {
         this.listByDict({
           dictPid: '0',
           dictType: 'goodsType'
         }).then(res => {
-          goodsBigType_option = res.data;
+          this.goodsTypeOption = res.data;
           this.$store.dispatch('orders/store_goodsBigType_option', res.data);
         });
+      } else {
+        this.goodsTypeOption = goodsBigType_option;
       }
-
-      return goodsBigType_option;
     }
 
 

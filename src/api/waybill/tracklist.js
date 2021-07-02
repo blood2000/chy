@@ -196,4 +196,20 @@ export function getWaybillTrace(code) {
   });
 }
 
+// 新增zjxl轨迹
+export function addZjxl(data) {
+  return request({
+    url: '/assets/vehicle/track/add',
+    method: 'post',
+    data: data
+  });
+}
 
+// 查询zjxl轨迹
+export function queryZjxl(data) {
+  return request({
+    url: '/assets/vehicle/track/query',
+    method: 'post',
+    data: data
+  });
+}

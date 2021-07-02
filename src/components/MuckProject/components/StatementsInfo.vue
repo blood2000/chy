@@ -6,16 +6,18 @@
     </div>
     <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig">
       <template #weight="{row}">
-        <span v-if="row.weight">
-          <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.weight }} 吨</span>
-          <span v-if="row.stowageStatus === '1'">{{ row.weight }} 立方</span>
-          <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.weight) }} 车</span>
-        </span>
+        <span>{{ row.weight +' '+ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
       </template>
+
+      <template #loadWeight="{row}">
+        <span>{{ row.loadWeight +' '+ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
+      </template>
+      <template #unloadWeight="{row}">
+        <span>{{ row.unloadWeight +' '+ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
+      </template>
+
       <template #stowageStatus="{row}">
-        <span v-if="row.stowageStatus === '0'">吨</span>
-        <span v-if="row.stowageStatus === '1'">立方</span>
-        <span v-if="row.stowageStatus === '2'">车</span>
+        <span>{{ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
       </template>
       <template #fillTime="{row}">
         <span>{{ parseTime(row.fillTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
@@ -72,7 +74,12 @@ export default {
       'queryParams': {
         'pageNum': 1,
         'pageSize': 10
-      }
+      },
+      stowageStatusOP: [
+        { 'dictLabel': '吨', 'dictValue': '0' },
+        { 'dictLabel': '方', 'dictValue': '1' },
+        { 'dictLabel': '车', 'dictValue': '2' }
+      ]
     };
   },
   computed: {
@@ -126,14 +133,6 @@ export default {
           'tooltip': true
         },
         {
-          'label': '装货-联系电话',
-          'prop': 'loadContactPhone',
-          'isShow': false,
-          'sortNum': 0,
-          'width': '120',
-          'tooltip': true
-        },
-        {
           'label': '商品大类',
           'prop': 'goodsBigTypeName',
           'isShow': false,
@@ -150,33 +149,9 @@ export default {
           'tooltip': true
         },
         {
-          'label': '货物单价',
-          'prop': 'goodsPrice',
-          'isShow': true,
-          'sortNum': 0,
-          'width': '120',
-          'tooltip': true
-        },
-        {
-          'label': '货主备注',
-          'prop': 'shipperRemark',
-          'isShow': true,
-          'sortNum': 0,
-          'width': '120',
-          'tooltip': true
-        },
-        {
           'label': '给货主结算的和展示的每车总费',
           'prop': 'shipperDeliveryFee',
           'isShow': false,
-          'sortNum': 0,
-          'width': '120',
-          'tooltip': true
-        },
-        {
-          'label': '运单状态',
-          'prop': 'status',
-          'isShow': true,
           'sortNum': 0,
           'width': '120',
           'tooltip': true

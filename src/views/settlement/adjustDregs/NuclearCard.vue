@@ -1,5 +1,13 @@
 <template>
-  <el-dialog v-loading :title="`发卡人: ${ userInfo.issuing_name || ''} (承运司机: ${userInfo.user_name ||''})`" :visible="visible" width="80%" append-to-body :close-on-click-modal="false" @close="handlerClose">
+  <el-dialog
+    v-loading
+    :title="`发卡人: ${ userInfo.issuing_name || ''} 【承运司机: ${userInfo.user_name ||''}】 【发卡时间: ${ parseTime(userInfo.issuing_time - 0) || ''}】 【卡批次号: ${ userInfo.issuing_pc || ''}】 ` "
+    :visible="visible"
+    width="80%"
+    append-to-body
+    :close-on-click-modal="false"
+    @close="handlerClose"
+  >
     <div v-show="false" class="mb20" style="padding: 20px;">
       <!-- <el-button type="primary" @click="handler('cancellation')">注销卡片(清空使用者信息)</el-button> -->
       <el-button type="primary" @click="handler('issuingCard')">issuingCard</el-button>
@@ -64,7 +72,7 @@
         {
           prop: 'serialNumber',
           isShow: true,
-          label: '渣土场编号'
+          label: '渣土场'
         },
         {
           prop: 'writeOffStatus',
@@ -224,8 +232,13 @@ export default {
 
         // 处理数据
         this.list = res.data.map(e => {
+          console.log(e);
           return {
             ...e,
+            driverName: e.batchWayBillBalanceInfoVo.driverName || '-',
+            projectName: e.batchWayBillBalanceInfoVo.projectName || '-',
+            serialNumber: e.batchWayBillBalanceInfoVo.ztcName || e.serialNumber,
+            mudtail: e.batchWayBillBalanceInfoVo.unloadAddress || '-',
             writeOffStatus: e.writeOffStatus === 0,
             $_disable: e.writeOffStatus === -1,
             fillTimeDate: this.parseTime(e.fillTime - 0),
