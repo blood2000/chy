@@ -74,7 +74,7 @@
           label: '运单编号'
         },
         {
-          prop: 'serialNumber',
+          prop: 'ztcName',
           isShow: true,
           tooltip: true,
           label: '渣土场'
@@ -250,7 +250,7 @@ export default {
             ...e,
             driverName: batchInfo.driverName || '-',
             projectName: batchInfo.projectName || '-',
-            serialNumber: batchInfo.ztcName || '-',
+            ztcName: batchInfo.ztcName || '-',
             mudtail: batchInfo.unloadAddress || '-',
             writeOffStatus: e.writeOffStatus === 0,
             $_disable: e.writeOffStatus === -1,
