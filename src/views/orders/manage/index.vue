@@ -291,7 +291,7 @@
               @click="handleClose(row)"
             >{{ row.status+''==='0'?'禁用':'启用' }}</el-button>
 
-            <TableDropdown v-if="!row.haveWaybill || row.status+''==='0'">
+            <TableDropdown v-if="!row.haveWaybill || (row.status+''==='0' && row.scenario!=='1200')">
               <el-dropdown-item>
                 <el-button
                   v-if="!row.haveWaybill"
