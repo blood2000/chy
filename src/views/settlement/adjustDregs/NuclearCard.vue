@@ -250,7 +250,7 @@ export default {
             ...e,
             driverName: batchInfo.driverName || '-',
             projectName: batchInfo.projectName || '-',
-            serialNumber: batchInfo.ztcName || e.serialNumber,
+            serialNumber: batchInfo.ztcName || '-',
             mudtail: batchInfo.unloadAddress || '-',
             writeOffStatus: e.writeOffStatus === 0,
             $_disable: e.writeOffStatus === -1,
