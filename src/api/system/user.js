@@ -117,3 +117,16 @@ export function changeUserAvatar(data) {
     data: data
   });
 }
+
+// 解禁用用户
+export function updateUserStatusByUserCode(userCode, status) {
+  const data = {
+    userCode,
+    status
+  };
+  return request({
+    url: '/system/user/updateUserStatusByUserCode',
+    method: 'put',
+    data: data
+  });
+}
