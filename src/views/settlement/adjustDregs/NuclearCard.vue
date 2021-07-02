@@ -46,12 +46,6 @@
           label: '项目(装货地)'
         },
         {
-          prop: 'mudtail',
-          isShow: true,
-          tooltip: true,
-          label: '泥尾'
-        },
-        {
           prop: 'fillTimeDate',
           isShow: true,
           label: '入场时间'
