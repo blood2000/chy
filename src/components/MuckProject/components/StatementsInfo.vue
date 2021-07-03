@@ -37,7 +37,7 @@
           { 'dictLabel': '已打款', 'dictValue': '7' },
           { 'dictLabel': '已申请开票', 'dictValue': '8' },
           { 'dictLabel': '已开票', 'dictValue': '9' }
-        ], row.stowageStatus) }}</span>
+        ], row.status) }}</span>
       </template>
 
 

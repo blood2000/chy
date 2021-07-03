@@ -92,7 +92,7 @@ export default {
       tableColumnsConfig: [],
       // adjustlist: [],
       // selections: [],
-      sortName: '',
+      sortName: 'cardBatchNo',
 
       // 表格
       myData: undefined,
@@ -203,6 +203,7 @@ export default {
     },
     /** IC卡核销完的数据 */
     listData(data) {
+      this.sortName = 'cardBatchNo';
       const batchWayBillBalanceInfoVo = data.map(e => {
         // 追加 卡批次维度
         return {

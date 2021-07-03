@@ -123,7 +123,7 @@ export default {
     setForm(data) {
       this.form = {
         batchNo: data.batchNo,
-        images: null,
+        images: data.imgCodes,
         invoiceApplyCode: data.code,
         receiveAddress: data.invoiceReceiverAddress,
         receiveName: data.receiver,

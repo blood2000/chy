@@ -42,12 +42,8 @@
         {
           prop: 'projectName',
           isShow: true,
+          tooltip: true,
           label: '项目(装货地)'
-        },
-        {
-          prop: 'mudtail',
-          isShow: true,
-          label: '泥尾'
         },
         {
           prop: 'fillTimeDate',
@@ -57,26 +53,30 @@
         {
           prop: 'signTimeDate',
           isShow: true,
+          tooltip: true,
           label: '出场时间'
         },
         {
           prop: 'orderId',
           isShow: true,
-          label: '货源编号'
+          label: '货源单号'
         },
         {
           prop: 'waybillNo',
           isShow: true,
+          tooltip: true,
           label: '运单编号'
         },
         {
-          prop: 'serialNumber',
+          prop: 'ztcName',
           isShow: true,
+          tooltip: true,
           label: '渣土场'
         },
         {
           prop: 'writeOffStatus',
           isShow: true,
+          tooltip: true,
           label: '异常标记'
         },
         {
@@ -87,6 +87,11 @@
         },
       ]"
     >
+      <!-- {
+          prop: 'mudtail',
+          isShow: true,
+          label: '泥尾'
+        }, -->
       <template #writeOffStatus="{row}">
         <el-switch
           v-model="row.writeOffStatus"
@@ -232,13 +237,16 @@ export default {
 
         // 处理数据
         this.list = res.data.map(e => {
-          console.log(e);
+          // console.log(e);
+
+          const batchInfo = e.batchWayBillBalanceInfoVo || {};
           return {
             ...e,
-            driverName: e.batchWayBillBalanceInfoVo.driverName || '-',
-            projectName: e.batchWayBillBalanceInfoVo.projectName || '-',
-            serialNumber: e.batchWayBillBalanceInfoVo.ztcName || e.serialNumber,
-            mudtail: e.batchWayBillBalanceInfoVo.unloadAddress || '-',
+            driverName: batchInfo.driverName || '-',
+            projectName: batchInfo.projectName || '-',
+            ztcName: batchInfo.ztcName || '-',
+            // serialNumber: batchInfo.ztcName || e.serialNumber,
+            mudtail: batchInfo.unloadAddress || '-',
             writeOffStatus: e.writeOffStatus === 0,
             $_disable: e.writeOffStatus === -1,
             fillTimeDate: this.parseTime(e.fillTime - 0),

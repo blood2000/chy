@@ -576,6 +576,8 @@ export default {
     },
     // 获取列表
     async setForm(data) {
+      this.selectedValue = '';
+      this.selectedNum = '';
       await this.getRuleLists();
       this.isEdit2 = false;
       this.isEdit = false;
