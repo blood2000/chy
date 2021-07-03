@@ -304,9 +304,13 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(async() => {
-          await this.handlerCheck();
+          try {
+            await this.handlerCheck();
+            this.errorHexiaoCheck(filterArr);
+          } catch (error) {
+            this.loading = false;
+          }
           // 写卡
-          this.errorHexiaoCheck(filterArr);
         }).catch(() => {
           // 测试数据 ----------------------------------------------------------------------------------------
           // console.log(this.list);
