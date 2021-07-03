@@ -826,7 +826,7 @@ export default {
     handleTableBtn(rowArr) {
       const lists = rowArr || this.list;
 
-      this.adjustdialog = true;
+
       const arr = [];
       lists.forEach(e => {
         // 找出选中的下标
@@ -841,9 +841,24 @@ export default {
         }
       });
 
-      // console.log(arr);
-
-      this.$refs.AdjustDialog.setForm(arr);
+      // 判断是不是同一个调度者
+      const object = {};
+      arr.forEach(e => {
+        const str = e['teamName'];
+        const array = object[str];
+        if (array) {
+          array.push(e);
+        } else {
+          const suibian = [e];
+          object[str] = suibian;
+        }
+      });
+      if (Object.keys(object).length > 1) {
+        this.msgWarning('只能核算同一个调度者下的运单');
+      } else {
+        this.adjustdialog = true;
+        this.$refs.AdjustDialog.setForm(arr);
+      }
     },
 
     /** headerClick **/
