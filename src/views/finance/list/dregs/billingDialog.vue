@@ -6,7 +6,7 @@
         <el-input v-model="form.batchNo" disabled placeholder="请输入发票号码" clearable size="small" style="width:90%;" />
       </el-form-item>
       <el-form-item label="发票图片">
-        <uploadImage v-model="form.images" @uploadStatus="uploadStatus" />
+        <uploadImage v-model="form.images" :fresh="fresh" @uploadStatus="uploadStatus" />
       </el-form-item>
       <el-form-item label="收票人姓名" prop="receiveName">
         <el-input v-model="form.receiveName" placeholder="请输入收票人姓名" clearable size="small" style="width:90%;" />
@@ -59,7 +59,9 @@ export default {
         receivePhone: null
       },
       // 表单校验
-      rules: {}
+      rules: {},
+      // 图片回显
+      fresh: false
     };
   },
   computed: {
@@ -72,8 +74,7 @@ export default {
       }
     }
   },
-  created() {
-  },
+  created() {},
   methods: {
     /** 提交按钮 */
     submitForm() {
@@ -98,6 +99,7 @@ export default {
     },
     // 关闭弹窗
     close() {
+      this.fresh = false;
       this.$emit('update:open', false);
     },
     // 表单重置
@@ -129,6 +131,9 @@ export default {
         receiveName: data.receiver,
         receivePhone: data.receiverPhone
       };
+      this.$nextTick(() => {
+        this.fresh = !!data.imgCodes;
+      });
     }
   }
 };
