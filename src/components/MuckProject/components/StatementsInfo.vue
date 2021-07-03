@@ -36,10 +36,12 @@
           { 'dictLabel': '已申请(打款)', 'dictValue': '6' },
           { 'dictLabel': '已打款', 'dictValue': '7' },
           { 'dictLabel': '已申请开票', 'dictValue': '8' },
-          { 'dictLabel': '已开票', 'dictValue': '9' }
+          { 'dictLabel': '已开票', 'dictValue': '9' },
+          { 'dictLabel': '已作废', 'dictValue': '10' },
+          { 'dictLabel': '已核验', 'dictValue': '11' },
+          { 'dictLabel': '已完成', 'dictValue': '12' }
         ], row.status) }}</span>
       </template>
-
 
     </RefactorTable>
     <pagination
