@@ -273,6 +273,26 @@ const CardReader = {
       }
       return this.readUTF(buf);
     },
+
+    /** 16进制转10进制 */
+    hex2int: function(hex) {
+      var len = hex.length; var a = new Array(len); var code;
+      for (var i = 0; i < len; i++) {
+        code = hex.charCodeAt(i);
+        if (code >= 48 && code < 58) {
+          code -= 48;
+        } else {
+          code = (code & 0xdf) - 65 + 10;
+        }
+        a[i] = code;
+      }
+
+      return a.reduce(function(acc, c) {
+        acc = 16 * acc + c;
+        return acc;
+      }, 0);
+    },
+
     readUTF: function(arr) {
       if (typeof arr === 'string') {
         return arr;
@@ -368,6 +388,10 @@ const CardReader = {
       // }
       const encrypt = CardReader.fn.encryptByDES(ret.data, CardReader._attr.key);
       ret = await CardReader.fn.exec('SendCOSCommand,0082000008' + encrypt);
+
+      GetCardNo.data = CardReader.fn.hex2int(GetCardNo.data.substring(0, 8));
+
+      console.log(GetCardNo, '卡的基本信息');
 
       resolve && resolve({
         GetCardNo,
@@ -821,7 +845,7 @@ CardReader.action['readUserInfoAndreadData'] = async function() {
       return {
         ...ret,
         userInfo,
-        msg: '发卡成功, 无任何运单信息'
+        msg: '暂无信息'
       };
     }
     // 9. 读文件 == 文件多个

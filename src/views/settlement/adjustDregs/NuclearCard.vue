@@ -176,6 +176,7 @@ export default {
         if (!ret.success && !ret.code) {
           this.errorCount++;
           this._reqerror();
+          this.loading = false;
           return;
         }
 
@@ -185,12 +186,14 @@ export default {
             this.userInfo = ret.userInfo;
           }
           this.msgWarning(ret.msg);
+          this.loading = false;
           return;
         }
 
         // 其他失败
         if (ret.code !== '9000' || (!ret.success && ret.code === '9000')) {
           this.msgError(ret.msg);
+          this.loading = false;
           return;
         }
 
@@ -332,13 +335,17 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(async() => {
-          await this.handlerCheck();
-          // 无异常做核销动作
-          const res = await action.cancellation();
-          if (res.code === 200) {
+          try {
+            await this.handlerCheck();
+            // 无异常做核销动作
+            const res = await action.cancellation();
+            if (res.code === 200) {
+              this.msgSuccess('核销成功');
+              this.handlerClose();
+            }
             this.loading = false;
-            this.msgSuccess('核销成功');
-            this.handlerClose();
+          } catch (error) {
+            this.loading = false;
           }
         });
       }
