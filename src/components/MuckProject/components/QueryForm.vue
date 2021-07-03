@@ -68,7 +68,7 @@
           clearable
           style="width:228px"
           placeholder="请输入渣土场"
-          requer-msg="请先选择发货企业！"
+          :requer-msg="isShipment?null:'请先选择发货企业！'"
           :is-sure-key="'orgCode'"
           :axios="{
             queryFn:listForWeb,
@@ -130,7 +130,7 @@
           clearable
           style="width:228px"
           placeholder="请输入项目名称"
-          requer-msg="请先选择发货企业！"
+          :requer-msg="isShipment?null:'请先选择发货企业！'"
           :is-sure-key="'companyCode'"
           :axios="{
             queryFn:listInfo,

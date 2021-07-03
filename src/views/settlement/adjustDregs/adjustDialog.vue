@@ -57,10 +57,10 @@ export default {
     com: {
       type: Array,
       default: () => [
-        {
-          'label': '调度者名称',
-          'prop': 'teamName'
-        },
+        // {
+        //   'label': '调度者名称',
+        //   'prop': 'teamName'
+        // },
         {
           'label': '项目',
           'prop': 'projectName'
