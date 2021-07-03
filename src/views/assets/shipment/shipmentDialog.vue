@@ -188,9 +188,10 @@
               >
                 <i class="el-icon-question" />
                 <ul slot="content">
+                    <li class="g-text">调度费点数 = 税点</li>
                   <!--  <li class="g-text">一票制：调度费点数 = 税点</li>-->
-                  <li class="g-text">二票制：调度费点数 = 税点</li>
-                  <li class="g-text">非一票制：调度费点数 = [税点/(100-税点)]*100</li>
+                 <!-- <li class="g-text">二票制：调度费点数 = 税点</li>-->
+                <!--  <li class="g-text">非一票制：调度费点数 = [税点/(100-税点)]*100</li>-->
                 </ul>
               </el-tooltip>
               调度费点数(%)
