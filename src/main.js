@@ -111,6 +111,13 @@ Vue.prototype.msgInfo = function(msg) {
 Vue.prototype.msgWarning = function(msg) {
   this.$message({ showClose: true, message: msg, type: 'warning' });
 };
+// 语音播报
+Vue.prototype.voicePlay = function(msg) {
+  var url = 'http://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&text=' + encodeURI(msg);
+  var n = new Audio(url);
+  n.src = url;
+  n.play();
+};
 
 // 全局组件挂载
 Vue.component('Pagination', Pagination);
