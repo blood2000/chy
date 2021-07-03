@@ -81,13 +81,13 @@
               <th width="50px">运输单号</th>
               <th width="50px">司机名称</th>
               <th width="50px">车牌号</th>
-              <th width="50px">货物</th>
+              <!-- <th width="50px">货物</th> -->
 
-              <th width="50px">装货地</th>
+              <th width="50px">项目</th>
               <th width="50px">装货数量</th>
               <th width="50px">装货时间</th>
 
-              <th width="50px">卸货地</th>
+              <th width="50px">渣土场</th>
               <th width="50px">卸货数量</th>
               <th width="50px">卸货时间</th>
 
@@ -98,13 +98,13 @@
               <td>{{ item.waybillNo }}</td>
               <td>{{ item.driverName }}</td>
               <td>{{ item.licenseNumber }}</td>
-              <td>{{ item.goodsName }}</td>
+              <!-- <td>{{ item.goodsName }}</td> -->
 
-              <td>{{ item.loadFormattedAddress }}</td>
+              <td>{{ item.projectName }}</td>
               <td>{{ item.loadWeight }} {{ item.stowageStatus === '0'?'吨':(item.stowageStatus === '1'?'立方' : '车') }}</td>
               <td>{{ parseTime(item.fillTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</td>
 
-              <td>{{ item.unloadFormattedAddress }}</td>
+              <td>{{ item.ztcName }}</td>
               <td>{{ item.unloadWeight }} {{ item.stowageStatus === '0'?'吨':(item.stowageStatus === '1'?'立方' : '车') }}</td>
               <td>{{ parseTime(item.signTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</td>
             </tr>
