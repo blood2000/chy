@@ -54,6 +54,26 @@
           </el-select>
         </el-form-item>
         <el-form-item
+          label="电子合同"
+          prop="isDzqzContract"
+        >
+          <el-select
+            v-model="queryParams.isDzqzContract"
+            placeholder="请选择是否电子合同"
+            clearable
+            filterable
+            size="small"
+            style="width: 260px"
+          >
+            <el-option
+              v-for="dict in isDzqzContractOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item
           label="运输单号"
           prop="waybillNo"
         >
@@ -222,7 +242,8 @@ export default {
         driverOrShipment: undefined,
         waybillNo: undefined,
         startReceiveTime: undefined,
-        endReceiveTime: undefined
+        endReceiveTime: undefined,
+        isDzqzContract: undefined
       },
       receiveTime: [],
 
