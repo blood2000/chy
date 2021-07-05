@@ -16,7 +16,7 @@
             placeholder="请输入合同编号"
             clearable
             size="small"
-            style="width: 260px"
+            style="width: 250px"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
@@ -29,7 +29,7 @@
             placeholder="请输入司机信息"
             clearable
             size="small"
-            style="width: 260px"
+            style="width: 250px"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
@@ -43,10 +43,30 @@
             clearable
             filterable
             size="small"
-            style="width: 260px"
+            style="width: 250px"
           >
             <el-option
               v-for="dict in driverOrShipmentOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="电子合同"
+          prop="isDzqzContract"
+        >
+          <el-select
+            v-model="queryParams.isDzqzContract"
+            placeholder="请选择是否电子合同"
+            clearable
+            filterable
+            size="small"
+            style="width: 250px"
+          >
+            <el-option
+              v-for="dict in isDzqzContractOptions"
               :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
@@ -62,7 +82,7 @@
             placeholder="请输入运输单号"
             clearable
             size="small"
-            style="width: 260px"
+            style="width: 250px"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
@@ -76,7 +96,7 @@
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            style="width: 228px"
+            style="width: 250px"
             @change="datechoose"
           />
         </el-form-item>
@@ -222,7 +242,8 @@ export default {
         driverOrShipment: undefined,
         waybillNo: undefined,
         startReceiveTime: undefined,
-        endReceiveTime: undefined
+        endReceiveTime: undefined,
+        isDzqzContract: undefined
       },
       receiveTime: [],
 
