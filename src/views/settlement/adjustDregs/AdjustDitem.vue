@@ -63,15 +63,14 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="173" label="增减值" align="center" prop="deductionDes" fixed="right">
+      <el-table-column width="173" label="增减值" align="center" prop="increaseDes" fixed="right">
         <template slot-scope="scope">
-          <!-- <el-input v-model="scope.row.deductionDes" placeholder="请输入增加的理由" /> -->
-          <el-input-number v-model="scope.row.deductionDes" :controls="true" controls-position="right" :precision="2" placeholder="请输入增减金额" style="width:100%;" size="mini" />
+          <el-input-number v-model="scope.row.increaseDes" :controls="true" controls-position="right" :precision="2" placeholder="请输入增减金额" style="width:100%;" size="mini" />
         </template>
       </el-table-column>
-      <el-table-column width="162" label="备注" align="center" prop="increaseDes" fixed="right">
+      <el-table-column width="162" label="备注" align="center" prop="deductionDes" fixed="right">
         <template slot-scope="scope">
-          <el-input v-model="scope.row.increaseDes" placeholder="请输入备注" />
+          <el-input v-model="scope.row.deductionDes" placeholder="请输入备注" />
         </template>
       </el-table-column>
 
