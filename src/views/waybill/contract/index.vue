@@ -158,7 +158,7 @@
         />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="contractList" :table-columns-config="tableColumnsConfig" :selectable="checkboxT" @selection-change="handleSelectionChange">
+      <RefactorTable :loading="loading" :data="contractList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
         <template #driverOrShipment="{row}">
           <span>{{ selectDictLabel(driverOrShipmentOptions, row.driverOrShipment) }}</span>
         </template>
@@ -403,6 +403,16 @@ export default {
     },
     // 批量签章
     handleSign() {
+      const listSign = this.selectedList;
+
+      const arr = listSign.filter(e => e.isDzqzContract === 1);
+
+      if (arr.length) {
+        this.msgWarning('请确保,选中的都是未生过的成电子签章的合同');
+        return;
+      }
+
+
       this.$confirm('平均每份合同耗时20秒，确认批量生成电子签章合同？', '批量生成电子章', {
         'confirmButtonText': '确定',
         'cancelButtonText': '取消',
@@ -418,7 +428,7 @@ export default {
       window.open(row.contractPath);
     },
 
-    // 请求pdf转bas64格式的数据
+    // 批量下载
     downloadElectronic() {
       const arrData = this.selectedList;
 
