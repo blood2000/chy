@@ -59,8 +59,18 @@
 
       <el-table-column width="162" label="司机实收金额(元)" align="center" prop="deliveryCashFee" fixed="right">
         <template slot-scope="scope">
-          <el-input-number v-model="scope.row.deliveryCashFee" class="teshu" :controls="false" :precision="2" placeholder="请输入司机实收金额" style="width:100%;" size="mini" @keyup.native="getDeliveryCashFee($event,[scope.row])" />
+          <el-input-number
+            v-model="scope.row.deliveryCashFee"
+            class="teshu"
+            :controls="false"
+            :precision="2"
+            placeholder="请输入司机实收金额"
+            style="width:100%;"
+            size="mini"
+            @keyup.native="getDeliveryCashFee($event,[scope.row])"
+          />
         </template>
+        <!-- @keydown.ctrl.86.native="handlerKeydown($event,[scope.row])" -->
       </el-table-column>
 
       <el-table-column width="173" label="增减值" align="center" prop="increaseDes" fixed="right">
@@ -134,20 +144,26 @@ export default {
       });
       this.getDeliveryCashFee(undefined, this.adjustlist);
     },
+
     // 获取数据
     async getDeliveryCashFee(event, arr) {
       // 过滤其他的键盘事件
-
       if (event) {
-        if (this.loading || (!(/^[0-9]*$/.test(event.key - 0)) && event.key !== 'ArrowUp' && event.key !== 'ArrowDown' && event.key !== 'Backspace')) return;
+        if (this.loading || (!(/^[0-9]*$/.test(event.key - 0)) && event.key !== 'ArrowUp' && event.key !== 'ArrowDown' && event.key !== 'Backspace' && event.key !== 'v')) return;
       }
 
+
       this.que = {
-        deliveryCashFee: event ? event.target.value - 0 : arr[0].deliveryCashFee, //	金额		false
+        deliveryCashFee: (event ? event.target.value - 0 : arr[0].deliveryCashFee), //	金额		false
         waybillCodeList: arr.map(e => e.waybillCode)//	运单ids
       };
-      this.changeFee(arr);
+
+      if (this.isRealNum(this.que.deliveryCashFee)) {
+        this.changeFee(arr);
+      }
     },
+
+
 
     // 防抖=需要带参数,避免和原方法冲突
     newDebounceFun(callback, time) {
@@ -162,9 +178,11 @@ export default {
 
     async setDeliveryCashFee(arr) {
       this.loading = true;
+      this.$emit('isLoading', true);
       try {
         const { data } = await calculateFee(this.que);
         this.loading = false;
+        this.$emit('isLoading', false);
         arr && arr.forEach(row => {
           data.forEach(da => {
             if (row.waybillCode === da.waybillCode) {
@@ -187,6 +205,7 @@ export default {
         });
       } catch (error) {
         this.loading = false;
+        this.$emit('isLoading', false);
       }
     },
 
@@ -203,6 +222,21 @@ export default {
         }
 
         return JSON.stringify(arr);
+      }
+    },
+
+    isRealNum(val) {
+    // isNaN()函数 把空串 空格 以及NUll 按照0来处理 所以先去除，
+
+      if (val === '' || val == null) {
+        return false;
+      }
+      if (!isNaN(val)) {
+        // 对于空数组和只有一个数值成员的数组或全是数字组成的字符串，isNaN返回false，例如：'123'、[]、[2]、['123'],isNaN返回false,
+        // 所以如果不需要val包含这些特殊情况，则这个判断改写为if(!isNaN(val) && typeof val === 'number' )
+        return true;
+      } else {
+        return false;
       }
     }
   }
