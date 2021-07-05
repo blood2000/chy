@@ -1,9 +1,9 @@
 <template>
   <el-dialog class="i-add" title="新增司机" :visible="visible" width="800px" append-to-body :close-on-click-modal="false" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="154px">
-        <el-form-item label="手机号" prop="telphone">
-            <el-input v-model="form.telphone" placeholder="请输入手机号" disabled  class="width90" clearable />
-        </el-form-item>
+      <el-form-item label="手机号" prop="telphone">
+        <el-input v-model="form.telphone" placeholder="请输入手机号" disabled class="width90" clearable />
+      </el-form-item>
       <el-form-item label="司机类别" prop="driverType">
         <el-select v-model="form.driverType" class="width90">
           <el-option
@@ -42,10 +42,10 @@
           />
         </el-select>
       </el-form-item>
-        <el-form-item label="姓名" prop="name">
-            <el-input v-model="form.name" placeholder="支持自动识别" class="width90" clearable />
-        </el-form-item>
-     <!-- <el-form-item label="密码" prop="password">
+      <el-form-item label="姓名" prop="name">
+        <el-input v-model="form.name" placeholder="支持自动识别" class="width90" clearable />
+      </el-form-item>
+      <!-- <el-form-item label="密码" prop="password">
         <el-input v-model="form.password" type="password" :placeholder="form.id?'密码未修改可不填写':'请输入密码'" class="width59 mr3" clearable />
         <span class="g-color-blue">(初始密码为{{ initialPassword }})</span>
       </el-form-item>-->
@@ -231,35 +231,35 @@
           </el-col>
           <el-col v-show="form.driverType===1" :span="7" class="mb">
             <p class="upload-image-label">行驶证</p>
-            <upload-image v-model="form.driverOtherLicenseImage"  image-type="vehicle-license" side="front" icon-type="vehicle" @fillForm="fillForm" />
+            <upload-image v-model="form.driverOtherLicenseImage" image-type="vehicle-license" side="front" icon-type="vehicle" @fillForm="fillForm" />
           </el-col>
           <el-col v-show="form.driverType===1" :span="7" class="mb">
             <p class="upload-image-label">行驶证副页</p>
-            <upload-image v-model="form.driverOtherLicenseBackImage"  image-type="vehicle-license" side="back" icon-type="vehicle_back" @fillForm="fillForm" />
+            <upload-image v-model="form.driverOtherLicenseBackImage" image-type="vehicle-license" side="back" icon-type="vehicle_back" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">身份证(人像面)</p>
-            <upload-image v-model="form.identificationImage"  image-type="id-card" side="front" icon-type="idcard" @fillForm="fillForm" />
+            <upload-image v-model="form.identificationImage" image-type="id-card" side="front" icon-type="idcard" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">身份证(国徽面)</p>
-            <upload-image v-model="form.identificationBackImage"  image-type="id-card" side="back" icon-type="idcard_back" @fillForm="fillForm" />
+            <upload-image v-model="form.identificationBackImage" image-type="id-card" side="back" icon-type="idcard_back" @fillForm="fillForm" />
           </el-col>
           <el-col v-show="form.driverType===1" :span="7" class="mb">
             <p class="upload-image-label">道路运输许可证</p>
-            <upload-image v-model="form.transportPermitImage"  icon-type="transport" />
+            <upload-image v-model="form.transportPermitImage" icon-type="transport" />
           </el-col>
           <el-col v-show="form.driverType===1" :span="7">
             <p class="upload-image-label">车头正面照</p>
-            <upload-image v-model="vehicleForm.vehicleImage"  icon-type="vehicle_head" />
+            <upload-image v-model="vehicleForm.vehicleImage" icon-type="vehicle_head" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">司机照片</p>
-            <upload-image v-model="form.peopleImage"  icon-type="driver_head" />
+            <upload-image v-model="form.peopleImage" icon-type="driver_head" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">从业资格证</p>
-            <upload-image v-model="form.workLicenseImage"  icon-type="work" />
+            <upload-image v-model="form.workLicenseImage" icon-type="work" />
           </el-col>
         </el-row>
       </el-form-item>
@@ -273,7 +273,7 @@
       <template v-if="form.driverType == 1">
         <el-form-item label="车牌号" prop="licenseNumber" :rules="[{ required: true, message: '车牌号不能为空', trigger: ['change', 'blur'] }]">
           <!-- 新增车辆 -->
-          <el-input v-if="addVehicleType === 0" v-model="vehicleForm.licenseNumber"  placeholder="支持自动识别" class="width70" clearable />
+          <el-input v-if="addVehicleType === 0" v-model="vehicleForm.licenseNumber" placeholder="支持自动识别" class="width70" clearable />
           <!-- 选择已有车辆 -->
           <el-select
             v-else
@@ -302,7 +302,7 @@
       </template>
       <template v-if="form.driverType == 1">
         <el-form-item label="车辆归属类型" prop="vehicleAscriptionType">
-          <el-select v-model="vehicleForm.vehicleAscriptionType" placeholder="支持自动识别" class="width90" filterable clearable >
+          <el-select v-model="vehicleForm.vehicleAscriptionType" placeholder="支持自动识别" class="width90" filterable clearable>
             <el-option
               v-for="dict in vehicleAscriptionTypeOptions"
               :key="dict.dictValue"
@@ -312,7 +312,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="车辆类型" prop="vehicleTypeCode">
-          <el-select v-model="vehicleForm.vehicleTypeCode" placeholder="支持自动识别" class="width90" clearable filterable >
+          <el-select v-model="vehicleForm.vehicleTypeCode" placeholder="支持自动识别" class="width90" clearable filterable>
             <el-option
               v-for="dict in vehicleTypeOptions"
               :key="dict.dictValue"
@@ -325,7 +325,7 @@
           <el-input v-model="vehicleForm.chassisNumber" placeholder="支持自动识别" class="width90" clearable />
         </el-form-item>
         <el-form-item label="车牌颜色" prop="vehicleLicenseColorCode">
-          <el-select v-model="vehicleForm.vehicleLicenseColorCode" class="width90" filterable clearable >
+          <el-select v-model="vehicleForm.vehicleLicenseColorCode" class="width90" filterable clearable>
             <el-option
               v-for="dict in licenseColorOptions"
               :key="dict.dictValue"
@@ -335,7 +335,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="车身颜色" prop="vehicleColorCode">
-          <el-select v-model="vehicleForm.vehicleColorCode" class="width90" filterable clearable >
+          <el-select v-model="vehicleForm.vehicleColorCode" class="width90" filterable clearable>
             <el-option
               v-for="dict in carBodyColorOptions"
               :key="dict.dictValue"
@@ -345,7 +345,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="车辆能源类型" prop="vehicleEnergyType">
-          <el-select v-model="vehicleForm.vehicleEnergyType" class="width90" filterable clearable >
+          <el-select v-model="vehicleForm.vehicleEnergyType" class="width90" filterable clearable>
             <el-option
               v-for="dict in energyTypesOptions"
               :key="dict.dictValue"
@@ -355,7 +355,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="车长" prop="vehicleLength">
-          <el-select v-model="vehicleForm.vehicleLength" placeholder="请选择车长" class="width90" clearable filterable >
+          <el-select v-model="vehicleForm.vehicleLength" placeholder="请选择车长" class="width90" clearable filterable>
             <el-option
               v-for="dict in vehicleLengthOptions"
               :key="dict.dictValue"
@@ -365,7 +365,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="车宽" prop="vehicleWidth">
-          <el-select v-model="vehicleForm.vehicleWidth" placeholder="请选择车宽" class="width90" clearable filterable >
+          <el-select v-model="vehicleForm.vehicleWidth" placeholder="请选择车宽" class="width90" clearable filterable>
             <el-option
               v-for="dict in vehicleWidthOptions"
               :key="dict.dictValue"
@@ -375,7 +375,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="车高" prop="vehicleHeight">
-          <el-select v-model="vehicleForm.vehicleHeight" placeholder="请选择车高" class="width90" clearable filterable >
+          <el-select v-model="vehicleForm.vehicleHeight" placeholder="请选择车高" class="width90" clearable filterable>
             <el-option
               v-for="dict in vehicleHeightOptions"
               :key="dict.dictValue"
@@ -410,7 +410,7 @@
           <el-input v-model="vehicleForm.vehiclePower" placeholder="请输入功率" class="width90" clearable :disabled="disable" />
         </el-form-item> -->
         <el-form-item label="轴数" prop="axesNumber">
-          <el-select v-model="vehicleForm.axesNumber" placeholder="请选择轴数" class="width90" clearable filterable >
+          <el-select v-model="vehicleForm.axesNumber" placeholder="请选择轴数" class="width90" clearable filterable>
             <el-option
               v-for="dict in axisTypeOptions"
               :key="dict.dictValue"
@@ -524,7 +524,7 @@ export default {
       // 表单校验
       rules: {
         driverType: [
-          { required: true, message: '司机类型不能为空', trigger: ['blur', 'change']  }
+          { required: true, message: '司机类型不能为空', trigger: ['blur', 'change'] }
         ],
         name: [
           { required: true, message: '姓名不能为空', trigger: ['blur', 'change'] },

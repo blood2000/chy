@@ -188,10 +188,10 @@
               >
                 <i class="el-icon-question" />
                 <ul slot="content">
-                    <li class="g-text">调度费点数 = 税点</li>
+                  <li class="g-text">调度费点数 = 税点</li>
                   <!--  <li class="g-text">一票制：调度费点数 = 税点</li>-->
-                 <!-- <li class="g-text">二票制：调度费点数 = 税点</li>-->
-                <!--  <li class="g-text">非一票制：调度费点数 = [税点/(100-税点)]*100</li>-->
+                  <!-- <li class="g-text">二票制：调度费点数 = 税点</li>-->
+                  <!--  <li class="g-text">非一票制：调度费点数 = [税点/(100-税点)]*100</li>-->
                 </ul>
               </el-tooltip>
               调度费点数(%)
@@ -355,8 +355,7 @@
               v-model="form.creditStartTime"
               clearable
               class="width45"
-              type="date"
-              value-format="yyyy-MM-dd"
+              type="datetime"
               placeholder="授信开始日期"
             />
             <span style="margin: 0 1.5%;">至</span>
@@ -364,9 +363,9 @@
               v-model="form.creditEndTime"
               clearable
               class="width45 mr3"
-              type="date"
-              value-format="yyyy-MM-dd"
+              type="datetime"
               placeholder="授信结束日期"
+              default-time="23:59:59"
             />
           </el-form-item>
         </el-col>
@@ -402,6 +401,7 @@
               v-model="form.operateOrgCode"
               clearable
               filterable
+              style="width: 200px"
               @change="selectOrgCode"
             >
               <el-option
