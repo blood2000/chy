@@ -574,9 +574,9 @@ export default {
         /*  workCompany: [
           { required: true, message: '工作单位不能为空', trigger: 'blur' }
         ],*/
-        transportPermitNo: [
+        /* transportPermitNo: [
           { required: true, message: '道路运输经营许可证不能为空', trigger: 'blur' }
-        ],
+        ],*/
         password: [
           { validator: this.formValidate.passWord, trigger: 'blur' }
         ]
