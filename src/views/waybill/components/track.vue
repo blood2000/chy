@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { jimiTrackLocation, zjxlTrackLocation, getVehicleInfo, getWebDetail, getWaybillTrace, addZjxl } from '@/api/waybill/tracklist';
+import { jimiTrackLocation, zjxlTrackLocation, getVehicleInfo, getWebDetail, getWaybillTrace, addZjxl, queryZjxl } from '@/api/waybill/tracklist';
 // import UploadImage from '@/components/UploadImage/index';
 import axios from 'axios';
 
@@ -139,7 +139,9 @@ export default {
       this.trackChange = e;
       this.getTrackLocation();
       const that = this;
-      that.$refs.map.$$getInstance().remove(this.vehicleMark);
+      if (this.vehicleMark) {
+        that.$refs.map.$$getInstance().remove(this.vehicleMark);
+      }
     },
     /** 获取轨迹 */
     getTrackLocation() {
@@ -173,8 +175,23 @@ export default {
             }
           });
         } else if (this.trackChange === 2) {
-          // 获取中交兴路轨迹
-          this.getZjxlTime();
+          queryZjxl(this.zjxlAddParams).then(res => {
+            console.log(res);
+            if (res.data) {
+              this.tracklist = res.data.trackDataList;
+              if (!this.wayBillInfo.signTime || (this.wayBillInfo.signTime.getTime() > res.data.endTime.getTime())) {
+                this.zjxlQueryParams.qryBtm = this.parseTime(res.data.endTime, '{y}-{m}-{d} {h}:{i}:{s}');
+                // 获取中交兴路轨迹
+                this.getZjxlTime();
+              } else {
+                // 绘制轨迹
+                this.drawPolyline(this.tracklist);
+              }
+            } else {
+              // 获取中交兴路轨迹
+              this.getZjxlTime();
+            }
+          });
         }
       }
     },
@@ -223,13 +240,6 @@ export default {
         this.zjxlQueryParams.qryEtm = this.parseTime(new Date(this.zjxlQueryParams.qryBtm).getTime() + 24 * 60 * 60 * 1000, '{y}-{m}-{d} {h}:{i}:{s}');
         this.getZjxl();
       } else if (this.timePoor === 0) {
-        // 坐标系转换
-        this.tracklist = this.tracklist.map(res => {
-          return this.wgs84_to_gcj02(res[0], res[1]);
-        });
-        addZjxl({ ...this.zjxlAddParams, trackDataList: [[119.358267, 26.04577], [119.358267, 26.04577]] }).then(res => {
-          console.log(res);
-        });
         // 绘制轨迹
         this.drawPolyline(this.tracklist);
         if (!this.wayBillInfo.signTime) {
@@ -244,12 +254,17 @@ export default {
       zjxlTrackLocation(this.zjxlQueryParams).then(response => {
         var str = JSON.parse(response.msg);
         console.log(str);
+        // 坐标系转换
+        var list = str.result.map(res => {
+          return this.wgs84_to_gcj02(res.lon / 600000, res.lat / 600000);
+        });
         if (str.result.length !== 0) {
+          addZjxl({ ...this.zjxlAddParams, trackDataList: list }).then(res => {
+            console.log(res);
+          });
           this.tracklist = [
             ...this.tracklist,
-            ...str.result.map(response => {
-              return [response.lon / 600000, response.lat / 600000];
-            })
+            ...list
           ];
         }
         this.zjxlQueryParams.qryBtm = this.zjxlQueryParams.qryEtm;

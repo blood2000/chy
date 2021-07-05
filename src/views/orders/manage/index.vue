@@ -651,7 +651,7 @@ export default {
           e.businessType = '';
           e.contact2 = '';
           e.contactPhone2 = '';
-          e.specified = ''; // 调度者或司机几人
+          // e.specified = ''; // 调度者或司机几人
           mgoods.push({
             ...this.baseData(e)
           });

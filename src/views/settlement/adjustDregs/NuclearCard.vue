@@ -305,34 +305,12 @@ export default {
           type: 'warning'
         }).then(async() => {
           try {
-            await this.handlerCheck();
             this.errorHexiaoCheck(filterArr);
           } catch (error) {
             this.loading = false;
           }
           // 写卡
-        }).catch(() => {
-          // 测试数据 ----------------------------------------------------------------------------------------
-          // console.log(this.list);
-          // this.$emit('listData', (this.list.filter(e => e.writeOffStatus)).map(e => {
-          //   e.batchWayBillBalanceInfoVo.icStatus = '1';
-          //   e.icStatus = '1';
-          //   e.$_userInfo = this.userInfo;
-          //   return e;
-          // }));
-
-          // const queArr = (this.list.filter(ee => !ee.$_disable)).map(e => {
-          //   return {
-          //     card16no: this.carId,
-          //     cardBatchNo: this.userInfo.issuing_pc,
-          //     waybillNo: e.waybillNo,
-          //     writeOffStatus: e.writeOffStatus ? 0 : 1,
-          //     writeOffRemark: e.writeOffStatus ? '' : e.writeOffRemark
-          //   };
-          // });
-
-          // console.log(queArr);
-        });
+        }).catch(() => {});
       } else {
         this.$confirm(`确定立即核销`, '数据正常', {
           confirmButtonText: '确定',
@@ -340,15 +318,17 @@ export default {
           type: 'warning'
         }).then(async() => {
           try {
-            await this.handlerCheck();
             // 无异常做核销动作
             const res = await action.cancellation();
             if (res.code === 200) {
+              await this.handlerCheck();
               this.msgSuccess('核销成功');
               this.handlerClose();
             }
             this.loading = false;
           } catch (error) {
+            this.msgError('核销失败, 请不要移动IC卡!');
+            this.handlerClose();
             this.loading = false;
           }
         });
@@ -392,7 +372,14 @@ export default {
       if (!this.userInfo) return;
       // console.log(this.userInfo);
 
-      await action.issuingCard(this.userInfo);
+      try {
+        await action.issuingCard(this.userInfo);
+      } catch (error) {
+        this.msgError('核销失败, 请不要移动IC卡!');
+        this.handlerClose();
+        this.loading = false;
+        return;
+      }
       // 写卡
       // 定义 版本标识
       const meter = this.meter ? this.meter.join('|') + '|' : versionMark;
@@ -407,29 +394,15 @@ export default {
             clearTimeout(this['time' + index]);
             arr.push(true);
             if (arr.length === filterArr.length && arr.every(e => e)) {
-              this.loading = false;
-              this.msgSuccess('核销成功');
-              this.handlerClose();
+              this.handlerCheck().then(() => {
+                this.loading = false;
+                this.msgSuccess('核销成功');
+                this.handlerClose();
+              }).catch(() => { this.loading = false; });
             }
           });
         }, (index + 1) * 500);
       });
-
-
-      // for (let index = 0; index < filterArr.length; index++) {
-      //   const e = filterArr[index];
-
-      //   const res = await action.writeData(fn.setData(meter, e));
-      //   arr.push(true);
-      //   if (arr.length === filterArr.length && arr.every(e => e)) {
-      //     this.loading = false;
-
-      //     this.msgSuccess(res.msg, '操作成功');
-      //     this.handlerClose();
-      //   } else {
-      //     console.log(arr.length, '写了条数');
-      //   }
-      // }
     },
 
     // 关闭
@@ -523,7 +496,7 @@ export default {
     async handler(key) {
       const mobj = {};
       const arr = '张三;18415451845;120;16612345678;17812345678;陈大帅;1621648441990;1621648441990129';
-      // const res = '';
+      let res = '';
       switch (key) {
         case 'getCardInfo':
           action.getCardInfo().then(res => {
@@ -562,8 +535,8 @@ export default {
         case 'writeData':
           // 写数据
 
-          // res = await action.writeData('1010|1|30528;2106231554010424;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
-          // // console.log(res);
+          res = await action.writeData('1010|1|30528;2106231554010424;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
+          console.log(res);
           // res = await action.writeData('1010|1|30528;2106231554010424;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
           // // console.log(res);
           // res = await action.writeData('1010|1|30528;2106231534477638;616测试项目1;闽AQ8001;测试独立强;15859109001;1624068000000;1624068000000;31;616测试1—石渣土'); // ok数据
