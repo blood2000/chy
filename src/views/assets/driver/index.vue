@@ -115,7 +115,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="是否绑定银行卡" prop="isBindBankCard">
-          <el-select v-model="queryParams.isBindBankCard" placeholder="请选择状" filterable clearable size="small" class="input-width">
+          <el-select v-model="queryParams.isBindBankCard" placeholder="请选择" filterable clearable size="small" class="input-width">
             <el-option
               v-for="dict in bindBankCardOptions"
               :key="dict.dictValue"
@@ -124,6 +124,22 @@
             />
           </el-select>
         </el-form-item>
+          <el-form-item label="账号状态" prop="status">
+              <el-select
+                      v-model="queryParams.status"
+                      filterable
+                      clearable
+                      size="small"
+                      class="input-width"
+              >
+                  <el-option
+                          v-for="dict in userStatusOptions"
+                          :key="dict.dictValue"
+                          :label="dict.dictLabel"
+                          :value="dict.dictValue"
+                  />
+              </el-select>
+          </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
           <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -251,6 +267,11 @@
         <template #isReportPersonDate="{row}">
           <span>{{ parseTime(row.isReportPersonDate, '{y}-{m}-{d}') }}</span>
         </template>
+          <template #status="{row}">
+              <i v-show="row.status === '1'" class="el-icon-error g-color-error mr5" />
+              <i v-show="row.status === '0'" class="el-icon-success g-color-success mr5" />
+              <span>{{ selectDictLabel(userStatusOptions, row.status) }}</span>
+          </template>
         <template #edit="{row}">
           <el-button
             v-if="row.authStatus != 3"
@@ -440,6 +461,10 @@ export default {
         { dictLabel: '是', dictValue: 1 },
         { dictLabel: '上报中', dictValue: 3 }
       ],
+      userStatusOptions: [
+        { dictLabel: '启用', dictValue: '0' },
+        { dictLabel: '停用', dictValue: '1' }
+      ],
       // 网点编码字典
       branchCodeOptions: [],
       // 驾驶证类型字典
@@ -486,7 +511,8 @@ export default {
         driverLicenseType: undefined,
         teamCode: undefined,
         applyStatus: undefined,
-        isBindBankCard: null
+        isBindBankCard: null,
+        status: undefined
       },
       // 表单是否禁用
       formDisable: false,

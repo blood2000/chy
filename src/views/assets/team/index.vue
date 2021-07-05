@@ -136,6 +136,8 @@
 
       <RefactorTable :loading="loading" :data="infoList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
         <template #status="{row}">
+            <i v-show="row.status === 1" class="el-icon-error g-color-error mr5" />
+            <i v-show="row.status === 0" class="el-icon-success g-color-success mr5" />
           <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
         </template>
         <template #isDistribution="{row}">
@@ -285,7 +287,7 @@ export default {
       // 状态字典
       statusOptions: [
         { dictLabel: '启用', dictValue: '0' },
-        { dictLabel: '禁用', dictValue: '1' }
+        { dictLabel: '停用', dictValue: '1' }
       ],
       // 审核状态字典
       authStatusOptions: [

@@ -213,6 +213,7 @@ export default {
     setForm() {
       this.form.telphone = this.data.phonenumber;
       this.form.teamLeader = this.data.userCode;
+      this.form.status = 0;
       // this.form.name = this.data.nickName;
     },
     /** 提交按钮 */
