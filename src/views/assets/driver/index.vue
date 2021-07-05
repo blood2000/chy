@@ -14,15 +14,15 @@
         </el-form-item>
         <el-form-item label="司机" prop="keywords">
           <el-input
-                  v-model.trim="queryParams.keywords"
-                  placeholder="请输入司机姓名/手机号"
-                  clearable
-                  size="small"
-                  class="input-width"
-                  @keyup.enter.native="handleQuery"
+            v-model.trim="queryParams.keywords"
+            placeholder="请输入司机姓名/手机号"
+            clearable
+            size="small"
+            class="input-width"
+            @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-       <!-- <el-form-item label="司机姓名" prop="name">
+        <!-- <el-form-item label="司机姓名" prop="name">
           <el-input
             v-model.trim="queryParams.name"
             placeholder="请输入司机姓名"
@@ -312,11 +312,11 @@
               </el-dropdown-item>
               <el-dropdown-item>
                 <el-button
-                        size="mini"
-                        type="text"
-                        :style="row.status == '0'?'color:red':'color:green'"
-                        @click="updateStatus(row)"
-                >{{row.status == '0'?'停用':'启用'}}</el-button>
+                  size="mini"
+                  type="text"
+                  :style="row.status == '0'?'color:red':'color:green'"
+                  @click="updateStatus(row)"
+                >{{ row.status == '0'?'停用':'启用' }}</el-button>
               </el-dropdown-item>
               <el-dropdown-item>
                 <el-button
@@ -533,6 +533,22 @@ export default {
       exportLoading: false
     };
   },
+  computed: {
+    routeName() {
+      return this.$store.state.settings.quickEntryName;
+    }
+  },
+  watch: {
+    routeName: {
+      handler: function(val) {
+        if (val === 'Driver') {
+          this.queryParams.authStatus = JSON.parse(this.$route.query.data).authStatus;
+          this.handleQuery();
+        }
+      },
+      deep: true
+    }
+  },
   created() {
     this.tableHeaderConfig(this.tableColumnsConfig, listDriverApi, {
       prop: 'edit',
@@ -566,6 +582,7 @@ export default {
     /** 查询参数列表 */
     getList() {
       this.loading = true;
+      this.$store.dispatch('settings/changeQuick', null);
       listDriver(this.queryParams).then(response => {
         this.driverList = response.rows;
         this.total = response.total;

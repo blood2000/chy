@@ -39,7 +39,7 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item> -->
-       <!-- <el-form-item label="手机号" prop="telphone">
+        <!-- <el-form-item label="手机号" prop="telphone">
           <el-input
             v-model.trim="queryParams.telphone"
             placeholder="请输入手机号"
@@ -334,6 +334,22 @@ export default {
       exportLoading: false
     };
   },
+  computed: {
+    routeName() {
+      return this.$store.state.settings.quickEntryName;
+    }
+  },
+  watch: {
+    routeName: {
+      handler: function(val) {
+        if (val === 'Team') {
+          this.queryParams.authStatus = JSON.parse(this.$route.query.data).authStatus;
+          this.handleQuery();
+        }
+      },
+      deep: true
+    }
+  },
   created() {
     this.tableHeaderConfig(this.tableColumnsConfig, listTeamApi, {
       prop: 'edit',
@@ -353,7 +369,7 @@ export default {
     /** 查询调度者列表 */
     getList() {
       this.loading = true;
-      console.log(this.queryParams);
+      this.$store.dispatch('settings/changeQuick', null);
       listInfo(this.queryParams).then(response => {
         this.infoList = response.rows;
         this.total = response.total;
