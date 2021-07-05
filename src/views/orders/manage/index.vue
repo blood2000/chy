@@ -639,6 +639,14 @@ export default {
           e.cargoCodeQr = orderClass.cargoCodeQr || '-';
         });
 
+        // 先做redisOrderFreightInfoVoList 无
+        e.redisOrderGoodsVoList.forEach(goods => {
+          e = {
+            ...e,
+            ...goods
+          };
+        });
+
         const mgoods = [];
         if (!e.redisOrderFreightInfoVoList.length) {
           e.goodsPrice = '';
@@ -656,6 +664,7 @@ export default {
             ...this.baseData(e)
           });
         }
+
         e.redisOrderFreightInfoVoList.length && e.redisOrderFreightInfoVoList.forEach((redis, index) => {
           e.redisOrderGoodsVoList.forEach(goods => {
             if (goods.code === redis.goodsCode) {
