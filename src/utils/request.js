@@ -141,6 +141,12 @@ error => {
 
 // 通用下载方法
 export function download(url, params, filename, headers) {
+  Message({
+    message: '列表导出中，请稍候',
+    type: 'info',
+    duration: 3 * 1000,
+    showClose: true
+  });
   return service.post(url, params, {
     transformRequest: [(params) => {
       return tansParams(params);
@@ -151,6 +157,12 @@ export function download(url, params, filename, headers) {
     responseType: 'blob',
     timeout: 10 * 60 * 1000 // 有些表导出数据量太大, 超时时间设为10分钟
   }).then((data) => {
+    Message({
+      message: '导出成功',
+      type: 'success',
+      duration: 3 * 1000,
+      showClose: true
+    });
     const content = data;
     const blob = new Blob([content]);
     if ('download' in document.createElement('a')) {
