@@ -79,7 +79,7 @@ export default {
         'pageSize': 10,
 
         companyCode: undefined, // 发货企业	query	false
-        batchNo: undefined, //	批次号	query	false
+        waybillNo: undefined, //	批次号	query	false
         operator: undefined, //	操作人名称	query	false
         // status: 2, //	1已申请对账列表 2已申请开票列表 3已申请打款列表 4已完成列表	query	false
         teamCode: undefined, //	调度者名称	query	false
@@ -92,7 +92,7 @@ export default {
       tableColumnsConfig: [],
       // adjustlist: [],
       // selections: [],
-      sortName: '',
+      sortName: 'cardBatchNo',
 
       // 表格
       myData: undefined,
@@ -203,6 +203,7 @@ export default {
     },
     /** IC卡核销完的数据 */
     listData(data) {
+      this.sortName = 'cardBatchNo';
       const batchWayBillBalanceInfoVo = data.map(e => {
         // 追加 卡批次维度
         return {

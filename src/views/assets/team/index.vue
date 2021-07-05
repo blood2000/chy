@@ -11,10 +11,10 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="调度者姓名" prop="teamLeaderName">
+        <el-form-item label="调度者" prop="keywords">
           <el-input
-            v-model.trim="queryParams.teamLeaderName"
-            placeholder="请输入调度者姓名"
+            v-model.trim="queryParams.keywords"
+            placeholder="请输入调度者姓名/手机号"
             clearable
             size="small"
             @keyup.enter.native="handleQuery"
@@ -39,14 +39,14 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item> -->
-        <el-form-item label="手机号" prop="telphone">
+       <!-- <el-form-item label="手机号" prop="telphone">
           <el-input
             v-model.trim="queryParams.telphone"
             placeholder="请输入手机号"
             clearable
             size="small"
           />
-        </el-form-item>
+        </el-form-item>-->
         <!-- <el-form-item label="车牌号码" prop="licenseNumber">
           <el-input
             v-model="queryParams.licenseNumber"
@@ -312,6 +312,7 @@ export default {
         isAsc: 'desc',
         orderByColumn: 't0.create_time',
         name: undefined,
+        keywords: undefined,
         teamLeaderName: undefined,
         telphone: undefined,
         status: undefined,
