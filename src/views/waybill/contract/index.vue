@@ -298,18 +298,26 @@ export default {
 
     /* 打印 */
     async handleInfo(row) {
-      if (row.isDzqzContract === 1) {
-        window.open(row.contractPath, '_blank');
-      } else {
-        this.title = '电子合同';
-        this.driverOrShipment = row.driverOrShipment;
+      // if (row.isDzqzContract === 1) {
+      //   window.open(row.contractPath, '_blank');
+      // } else {
+      //   this.title = '电子合同';
+      //   this.driverOrShipment = row.driverOrShipment;
 
-        const { data } = await getContractByCode(row.code);
+      //   const { data } = await getContractByCode(row.code);
 
-        this.dialogData = { ...data, contractPath: row.contractPath, isDzqzContract: row.isDzqzContract };
-        console.log(data);
-        this.visible = true;
-      }
+      //   this.dialogData = { ...data, contractPath: row.contractPath, isDzqzContract: row.isDzqzContract };
+      //   console.log(data);
+      //   this.visible = true;
+      // }
+      this.title = '电子合同';
+      this.driverOrShipment = row.driverOrShipment;
+
+      const { data } = await getContractByCode(row.code);
+
+      this.dialogData = { ...data, contractPath: row.contractPath, isDzqzContract: row.isDzqzContract };
+      console.log(data);
+      this.visible = true;
     },
 
     /** 生成电子章合同 */
