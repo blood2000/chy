@@ -408,7 +408,7 @@ export default {
       const arr = listSign.filter(e => e.isDzqzContract === 1);
 
       if (arr.length) {
-        this.msgWarning('请确保,选中的都是未生过的成电子签章的合同');
+        this.msgWarning('请确保,选中的都是未生成过的成电子签章的合同');
         return;
       }
 
@@ -443,6 +443,8 @@ export default {
           // console.log('下载完成');
           this.downloadLoadin = false;
         });
+      } else {
+        this.msgWarning('请确保,选中的都是已生成过的成电子签章的合同');
       }
     }
 

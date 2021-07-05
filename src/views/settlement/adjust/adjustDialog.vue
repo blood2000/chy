@@ -302,13 +302,13 @@ export default {
       if (freight) {
         // event.target.value - 0 enName freight.enName   ruleValue
         if (freight.type === '1') {
-          row.subsidiesFreightList.forEach(e => {
+          row.subsidiesFreightList && row.subsidiesFreightList.forEach(e => {
             if (e.enName === freight.enName) {
               e.ruleValue = event.target.value;
             }
           });
         } else {
-          row.deductionFreightList.forEach(e => {
+          row.deductionFreightList && row.deductionFreightList.forEach(e => {
             if (e.enName === freight.enName) {
               e.ruleValue = event.target.value;
             }
@@ -398,8 +398,8 @@ export default {
           loadWeight: e.loadWeight,
           unloadWeight: e.unloadWeight,
           waybillCode: e.waybillCode,
-          driverAddFee: this._sum(e.subsidiesFreightList),
-          driverReductionFee: this._sum(e.deductionFreightList)
+          driverAddFee: e.subsidiesFreightList ? this._sum(e.subsidiesFreightList) : 0,
+          driverReductionFee: e.deductionFreightList ? this._sum(e.deductionFreightList) : 0
         };
       });
       try {
@@ -661,7 +661,7 @@ export default {
 
       let isZa = false;
       this.adjustlist.forEach(e => {
-        e.deductionFreightList.forEach(e => {
+        e.deductionFreightList && e.deductionFreightList.forEach(e => {
           if (e.enName === this.selectedValue) {
             // 值要求不一样
             if (e.ruleValue !== this.selectedNum) {
@@ -671,7 +671,7 @@ export default {
           }
         });
 
-        e.subsidiesFreightList.forEach(e => {
+        e.subsidiesFreightList && e.subsidiesFreightList.forEach(e => {
           if (e.enName === this.selectedValue) {
             // 同上
             if (e.ruleValue !== this.selectedNum) {
