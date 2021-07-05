@@ -9,7 +9,8 @@ const state = {
   showSettings: showSettings,
   tagsView: tagsView,
   fixedHeader: fixedHeader,
-  sidebarLogo: sidebarLogo
+  sidebarLogo: sidebarLogo,
+  quickEntryName: null
 };
 
 const mutations = {
@@ -17,12 +18,18 @@ const mutations = {
     if (Object.prototype.hasOwnProperty.call(state, key)) {
       state[key] = value;
     }
+  },
+  CHANGE_QUICK: (state, val) => {
+    state.quickEntryName = val;
   }
 };
 
 const actions = {
   changeSetting({ commit }, data) {
     commit('CHANGE_SETTING', data);
+  },
+  changeQuick({ commit }, data) {
+    commit('CHANGE_QUICK', data);
   }
 };
 
