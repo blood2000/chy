@@ -45,13 +45,11 @@
         >
           <template slot-scope="scope">
             <el-button
-              v-if="false"
               size="mini"
               type="text"
               @click="handleDriver(scope.row)"
             >注册为司机</el-button>
             <el-button
-              v-if="false"
               size="mini"
               type="text"
               @click="handleTeam(scope.row)"
