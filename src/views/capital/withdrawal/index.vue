@@ -262,17 +262,27 @@ export default {
       exportLoading: false
     };
   },
-  // watch: {
-  //   $route(route) {
-  //     this.getRouterQuery(route);
-  //   }
-  // },
+  computed: {
+    routeName() {
+      return this.$store.state.settings.quickEntryName;
+    }
+  },
+  watch: {
+    routeName: {
+      handler: function(val) {
+        if (val === 'Withdrawal') {
+          this.queryParams.status = JSON.parse(this.$route.query.data).status;
+          this.handleQuery();
+        }
+      },
+      deep: true
+    }
+  },
   created() {
     this.tableHeaderConfig(this.tableColumnsConfig, withDrawalListApi);
 
     const routeData = this.$route.query.data;
     if (routeData) {
-      console.log(routeData);
       this.queryParams.status = JSON.parse(routeData).status;
     }
 
@@ -293,6 +303,7 @@ export default {
     /** 查询列表 */
     getList() {
       this.loading = true;
+      this.$store.dispatch('settings/changeQuick', null);
       getWithDrawalList(this.queryParams).then(response => {
         this.withdrawalList = response.data.rows;
         this.total = response.data.total;

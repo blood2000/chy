@@ -466,6 +466,22 @@ export default {
       exportLoading: false
     };
   },
+  computed: {
+    routeName() {
+      return this.$store.state.settings.quickEntryName;
+    }
+  },
+  watch: {
+    routeName: {
+      handler: function(val) {
+        if (val === 'Vehicle') {
+          this.queryParams.authStatus = JSON.parse(this.$route.query.data).authStatus + '';
+          this.handleQuery();
+        }
+      },
+      deep: true
+    }
+  },
   created() {
     this.tableHeaderConfig(this.tableColumnsConfig, listVehicleApi, {
       prop: 'edit',
@@ -528,6 +544,7 @@ export default {
     /** 查询车辆列表 */
     getList() {
       this.loading = true;
+      this.$store.dispatch('settings/changeQuick', null);
       listInfo(this.queryParams).then((response) => {
         this.vehicleList = response.rows;
         this.total = response.total;
