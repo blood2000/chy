@@ -5,7 +5,7 @@
       <el-form-item label="手机号" prop="telphone">
         <el-input v-model="form.telphone" placeholder="请输入手机号" disabled class="width90" clearable />
       </el-form-item>
-     <!-- <el-form-item label="密码" prop="password">
+      <!-- <el-form-item label="密码" prop="password">
         <el-input v-model="form.password" type="password" :placeholder="form.id?'密码未修改可不填写':'请输入密码'" class="width60 mr3" clearable />
         <span class="g-color-blue">(初始密码为{{ initialPassword }})</span>
       </el-form-item>-->
@@ -117,11 +117,11 @@
           </el-col>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">营业执照</p>
-            <uploadImage v-model="form.businessLicenseImg"  image-type="business-license" icon-type="organization" @fillForm="fillForm" />
+            <uploadImage v-model="form.businessLicenseImg" image-type="business-license" icon-type="organization" @fillForm="fillForm" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">道路运输经营许可证照</p>
-            <uploadImage v-model="form.transportPermitImage" icon-type="transport"  />
+            <uploadImage v-model="form.transportPermitImage" icon-type="transport" />
           </el-col>
         </el-row>
       </el-form-item>

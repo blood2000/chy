@@ -269,11 +269,11 @@
             </el-dropdown-item>
             <el-dropdown-item>
               <el-button
-                      size="mini"
-                      type="text"
-                      :style="row.status == '0'?'color:red':'color:green'"
-                      @click="updateStatus(row)"
-              >{{row.status == '0'?'停用':'启用'}}</el-button>
+                size="mini"
+                type="text"
+                :style="row.status == '0'?'color:red':'color:green'"
+                @click="updateStatus(row)"
+              >{{ row.status == '0'?'停用':'启用' }}</el-button>
             </el-dropdown-item>
             <el-dropdown-item>
               <el-button
@@ -417,6 +417,22 @@ export default {
       exportLoading: false
     };
   },
+  computed: {
+    routeName() {
+      return this.$store.state.settings.quickEntryName;
+    }
+  },
+  watch: {
+    routeName: {
+      handler: function(val) {
+        if (val === 'Shipment') {
+          this.queryParams.authStatus = JSON.parse(this.$route.query.data).authStatus;
+          this.handleQuery();
+        }
+      },
+      deep: true
+    }
+  },
   created() {
     this.tableHeaderConfig(this.tableColumnsConfig, listShipmentApi, {
       prop: 'edit',
@@ -457,6 +473,7 @@ export default {
     /** 查询参数列表 */
     getList() {
       this.loading = true;
+      this.$store.dispatch('settings/changeQuick', null);
       listShipment(this.queryParams).then(response => {
         this.shipmentList = response.rows;
         this.total = response.total;

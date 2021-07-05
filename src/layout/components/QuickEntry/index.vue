@@ -65,6 +65,7 @@ export default {
         query.type === 'service' && this.serviceOpen();
         return;
       } else if (name === this.$route.name) {
+        this.$store.dispatch('settings/changeQuick', name);
         this.$router.replace({
           name: name,
           query: {
@@ -72,6 +73,7 @@ export default {
           }
         });
       } else {
+        this.$store.dispatch('settings/changeQuick', name);
         this.$router.push({
           name: name,
           query: {
