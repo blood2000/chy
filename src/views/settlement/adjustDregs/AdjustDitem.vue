@@ -145,16 +145,9 @@ export default {
       this.getDeliveryCashFee(undefined, this.adjustlist);
     },
 
-    // handlerKeydown(event, arr) {
-    //   // console.log(event.target.value);
-    //   this.getDeliveryCashFee(event, arr);
-    // },
-
     // 获取数据
     async getDeliveryCashFee(event, arr) {
       // 过滤其他的键盘事件
-      console.log(event);
-
       if (event) {
         if (this.loading || (!(/^[0-9]*$/.test(event.key - 0)) && event.key !== 'ArrowUp' && event.key !== 'ArrowDown' && event.key !== 'Backspace' && event.key !== 'v')) return;
       }
@@ -185,9 +178,11 @@ export default {
 
     async setDeliveryCashFee(arr) {
       this.loading = true;
+      this.$emit('isLoading', true);
       try {
         const { data } = await calculateFee(this.que);
         this.loading = false;
+        this.$emit('isLoading', false);
         arr && arr.forEach(row => {
           data.forEach(da => {
             if (row.waybillCode === da.waybillCode) {
@@ -210,6 +205,7 @@ export default {
         });
       } catch (error) {
         this.loading = false;
+        this.$emit('isLoading', false);
       }
     },
 

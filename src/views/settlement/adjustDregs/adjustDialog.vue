@@ -19,12 +19,12 @@
 
     <div v-for="(item,index) in list" :key="index" v-loading="loading">
       <div class="mb20">
-        <AdjustDitem :list="item.childs" />
+        <AdjustDitem :list="item.childs" @isLoading="(bool)=> isLoading = bool" />
       </div>
     </div>
 
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" :disabled="loading || !adjustlist || adjustlist.length < 1" @click="submitForm">立即核算</el-button>
+      <el-button type="primary" :disabled="loading || !adjustlist || adjustlist.length < 1" :loading="isLoading" @click="submitForm">立即核算</el-button>
       <el-button @click="cancel">返回</el-button>
     </div>
   </el-dialog>
@@ -84,6 +84,7 @@ export default {
       // deliveryCashFee: undefined,
       // 遮罩层
       loading: false,
+      isLoading: false,
       // 评价列表
       adjustlist: [],
       // 查询参数
