@@ -53,8 +53,8 @@
         {
           prop: 'signTimeDate',
           isShow: true,
-          tooltip: true,
-          label: '出场时间'
+          tooltip: false,
+          label: '卸货时间'
         },
         {
           prop: 'orderId',
@@ -253,9 +253,11 @@ export default {
             writeOffStatus: e.writeOffStatus === 0,
             $_disable: e.writeOffStatus === -1,
             fillTimeDate: this.parseTime(e.fillTime - 0),
-            signTimeDate: this.parseTime(e.signTime - 0)
+            signTimeDate: batchInfo.signTime
           };
         });
+
+        console.log(this.list);
 
         // 排序
         this.list.sort((m, n) => {
