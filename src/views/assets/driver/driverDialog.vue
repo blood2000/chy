@@ -438,6 +438,7 @@
                       class="width90"
                       type="textarea"
                       :rows="2"
+                      maxlength="200"
                       placeholder="请输入审核备注"
                       v-model="form.authRemark">
               </el-input>
