@@ -362,6 +362,7 @@ export default {
         zIndex: 999
       });
       that.polyline.setMap(that.$refs.map.$$getInstance());
+      that.$refs.map.$$getInstance().setFitView(that.polyline); // 执行定位
     },
     // 获取车辆信息
     getvehicleInfo() {
