@@ -39,8 +39,8 @@
       <el-form-item prop="identificationEndTime">
         <label slot="label"><span style="color: #ff4949">* </span>身份证有效期</label>
         <el-date-picker
-                :disabled="disable"
           v-model="form.identificationBeginTime"
+          :disabled="disable"
           clearable
           class="width28"
           type="date"
@@ -57,12 +57,12 @@
           placeholder="支持自动识别"
           :disabled="!!form.identificationEffective"
         />
-        <el-checkbox :disabled="disable" v-model="form.identificationEffective">长期有效</el-checkbox>
+        <el-checkbox v-model="form.identificationEffective" :disabled="disable">长期有效</el-checkbox>
       </el-form-item>
       <el-form-item label="是否清分" prop="isDistribution">
         <el-select
-                :disabled="disable"
           v-model="form.isDistribution"
+          :disabled="disable"
           clearable
           filterable
           class="width90"
@@ -79,8 +79,8 @@
         <el-col :span="11">
           <el-form-item label="清分规则" prop="distributionRule">
             <el-select
-                    :disabled="disable"
               v-model="form.distributionRule"
+              :disabled="disable"
               filterable
               class="width90"
             >
@@ -95,10 +95,10 @@
         </el-col>
         <el-col :span="11">
           <el-form-item v-if="form.distributionRule == 1" label="清分百分比(%)" prop="distributionPercent" :rules="[{ required: true, message: '清分百分比不能为空', trigger: ['blur', 'change'] }]">
-            <el-input-number :disabled="disable" v-model="form.distributionPercent" controls-position="right" :precision="2" :step="1" :min="0.01" :max="100" class="width90" clearable />
+            <el-input-number v-model="form.distributionPercent" :disabled="disable" controls-position="right" :precision="2" :step="1" :min="0.01" :max="100" class="width90" clearable />
           </el-form-item>
           <el-form-item v-else label="清分金额" prop="distributionPercent" :rules="[{ required: true, message: '清分金额不能为空', trigger: ['blur', 'change'] }]">
-            <el-input-number :disabled="disable" v-model="form.distributionPercent" controls-position="right" :precision="2" :step="1" :min="0.01" :max="100000000" class="width90" clearable />
+            <el-input-number v-model="form.distributionPercent" :disabled="disable" controls-position="right" :precision="2" :step="1" :min="0.01" :max="100000000" class="width90" clearable />
           </el-form-item>
         </el-col>
       </el-row>
@@ -128,17 +128,17 @@
           </el-col>
         </el-row>
       </el-form-item>
-        <el-form-item label="审核备注" prop="authRemark" v-if="title==='审核'">
-            <el-input
-                    :disabled="false"
-                    class="width90"
-                    type="textarea"
-                    :rows="2"
-                    maxlength="200"
-                    placeholder="请输入审核备注"
-                    v-model="form.authRemark">
-            </el-input>
-        </el-form-item>
+      <el-form-item v-if="title==='审核'" label="审核备注" prop="authRemark">
+        <el-input
+          v-model="form.authRemark"
+          :disabled="false"
+          class="width90"
+          type="textarea"
+          :rows="2"
+          maxlength="200"
+          placeholder="请输入审核备注"
+        />
+      </el-form-item>
     </el-form>
     <div v-if="title === '新增' || title === '编辑'" slot="footer" class="dialog-footer">
       <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
