@@ -37,7 +37,7 @@
               />
               <span class="ml0 mr10"> 元 / {{ mygoodsUnitName }}</span>
 
-              <div v-if="!showbudget" class="ml0 mr10 t_color_c t_m_pac">
+              <div v-if="false && !showbudget" class="ml0 mr10 t_color_c t_m_pac">
                 司机实收单价:
                 <span class="m_pac">{{ _floor(totalTransportationCost) || 0 }}</span>
                 元 / {{ mygoodsUnitName }}
@@ -369,7 +369,7 @@ export default {
     // 获取司机成交单价
     async handlerChange() {
       if (!this.formData.freightPrice || this.formData.freightPrice === 0) return;
-      console.log(this.formData.freightPrice);
+      // console.log(this.formData.freightPrice);
 
       try {
         const data = await getDriverPrice({
