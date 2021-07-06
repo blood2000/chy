@@ -345,8 +345,10 @@ export default {
     drawPolyline(path) {
       console.log(path);
       const that = this;
-      that.$refs.map.$$getInstance().remove(this.polyline);
-      this.polyline = new window.AMap.Polyline({
+      if (that.polyline) {
+        that.$refs.map.$$getInstance().remove(that.polyline);
+      }
+      that.polyline = new window.AMap.Polyline({
         map: that.$refs.map.$$getInstance(),
         path,
         showDir: true,
@@ -359,7 +361,8 @@ export default {
         lineJoin: 'round', // 折线拐点的绘制样式
         zIndex: 999
       });
-      this.polyline.setMap(that.$refs.map.$$getInstance());
+      that.polyline.setMap(that.$refs.map.$$getInstance());
+      that.$refs.map.$$getInstance().setFitView(that.polyline); // 执行定位
     },
     // 获取车辆信息
     getvehicleInfo() {

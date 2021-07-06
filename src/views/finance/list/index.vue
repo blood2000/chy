@@ -157,6 +157,13 @@
             type="text"
             @click="handleTableBtn(row, 3)"
           >详情</el-button>
+          <el-button
+            v-show="row.invoiceStatus == '5'"
+            v-hasPermi="['list:invoiceApply:passCheck']"
+            size="mini"
+            type="text"
+            @click="handleTableBtn(row, 4)"
+          >导出轨迹</el-button>
         </template>
       </RefactorTable>
 
@@ -172,6 +179,8 @@
     <verify-dialog ref="VerifyDialog" :open.sync="verifydialog" :title="title" :disable="formDisable" @refresh="getList" />
     <!-- 开票弹窗 -->
     <billing-dialog ref="BillingDialog" :open.sync="billingdialog" :title="title" @refresh="getList" />
+    <!-- 切图对话框 -->
+    <TrackExport ref="TrackExport" :waybill="waybillTrack" />
   </div>
 </template>
 
@@ -181,12 +190,15 @@ import { billList, billListApi } from '@/api/finance/list';
 import VerifyDialog from './verifyDialog';
 // 开票弹窗
 import BillingDialog from './billingDialog';
+import TrackExport from '@/views/waybill/components/trackExport';
+
 
 export default {
   'name': 'List',
-  components: { VerifyDialog, BillingDialog },
+  components: { VerifyDialog, BillingDialog, TrackExport },
   data() {
     return {
+      waybillTrack: [],
       tableColumnsConfig: [],
       api: billListApi,
       activeName: '1',

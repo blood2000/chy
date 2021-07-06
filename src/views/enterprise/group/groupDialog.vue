@@ -42,7 +42,7 @@
           inactive-value="0"
         />
       </el-form-item>
-      <el-form-item label="不开票打款" prop="isNotInvoice">
+      <el-form-item label="不开票不打款" prop="isNotInvoice">
         <el-switch
           v-model="form.isNotInvoice"
           active-color="#409EFF"

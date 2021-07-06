@@ -350,7 +350,7 @@
       </el-form-item>
       <el-row :gutter="20">
         <el-col :span="23">
-          <el-form-item label="授信保护期" prop="singleSourceMultiUnloadingLocations">
+          <el-form-item label="授信保护期" prop="creditEndTime">
             <el-date-picker
               v-model="form.creditStartTime"
               clearable
@@ -644,6 +644,9 @@ export default {
         ],
         payInvoiceType: [
           { required: true, message: '票务规则不能为空', trigger: ['change', 'blur'] }
+        ],
+        creditEndTime: [
+          { validator: (rules, value, callback) => this.formValidate.idCardTimeValidate(rules, value, callback, this.form.creditStartTime, '授信保护期'), trigger: ['change', 'blur'] }
         ]
       },
       // 网点查询
