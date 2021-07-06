@@ -48,6 +48,8 @@ import { getToken } from '@/utils/auth';
 // 坐标系转换
 import { wgs84_to_gcj02 } from '@/utils/wgs84_to_gcj02';
 
+import domtoimage from 'dom-to-image';
+
 
 var token = '';
 // 浏览器标签页切换监控 (切换标签页后若token变化，则强制刷新)
@@ -98,6 +100,8 @@ Vue.prototype.getLocalStorage = getLocalStorage;
 Vue.prototype.removeLocalStorage = removeLocalStorage;
 Vue.prototype.formValidate = formValidate;
 Vue.prototype.wgs84_to_gcj02 = wgs84_to_gcj02;
+Vue.prototype.domtoimage = domtoimage;
+
 // 提示方法
 Vue.prototype.msgSuccess = function(msg) {
   this.$message({ showClose: true, message: msg, type: 'success' });

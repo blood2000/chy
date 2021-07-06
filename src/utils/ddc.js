@@ -278,7 +278,7 @@ export function compareBeginEndTime(beginTime, endTime) {
   const _begin = Date.parse(new Date(beginTime));
   const _end = Date.parse(new Date(endTime));
   // 8.64e7 为一天的毫秒数
-  if (_end + 8.64e7 > _begin) {
+  if (_end >= _begin) {
     return true;
   } else {
     return false;
