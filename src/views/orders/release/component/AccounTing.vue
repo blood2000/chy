@@ -321,8 +321,9 @@ export default {
         const { detailList, lossList } = value.orderFreightVo;
 
         // 发布货源的时候给一个默认的
-        console.log(this.formData.ruleItemId, '谁先');
+        // console.log(this.formData.ruleItemId, '谁先');
 
+        // 注意 this.initData() 会在这之后再执行的l
         this.formData.ruleItemId = value.ruleCode;
 
         const filterDetailList = detailList.filter(e => {
@@ -401,7 +402,7 @@ export default {
         });
 
         if (rulesItem[0]) {
-          this.formData.ruleItemId = rulesItem[0].code;
+          this.formData.ruleItemId = this.formData.ruleItemId || rulesItem[0].code;
           this.handleRuleItemId();
         }
       } catch (error) {
