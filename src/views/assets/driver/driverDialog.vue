@@ -876,6 +876,9 @@ export default {
       }
       this.form.identificationEffective = praseNumToBoolean(this.form.identificationEffective);
       this.form.validPeriodAlways = praseNumToBoolean(this.form.validPeriodAlways);
+      // 行驶证正面、副页
+      this.form.driverOtherLicenseImage = data.driverOtherLicenseImage || this.vehicleForm.vehicleLicenseImg;
+      this.form.driverOtherLicenseBackImage = data.driverOtherLicenseBackImage || this.vehicleForm.vehicleLicenseSecondImg;
       if (this.form.teamCode && this.form.teamName) {
         this.teamOptions = [{
           code: this.form.teamCode,
