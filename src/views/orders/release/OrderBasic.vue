@@ -339,10 +339,11 @@ export default {
           }
         });
 
-        console.log(this.formData);
+        // console.log(this.formData);
 
         // 2.去根据大类去请求下数据
         await this.handletin2();
+
 
         // 3.回填 小类(商品)
         if (this.isMultiGoods) {
@@ -371,6 +372,7 @@ export default {
         this.formData.tin6 = classList[0] ? classList[0].classCode : '';
         this.classList = classList;
         this.InfoCode = code;
+
         this.formData.tin3 = projectCode || '0';
 
         // 6. 特殊处理
@@ -456,9 +458,10 @@ export default {
       this.handletin2(tin3item);
     },
 
-    // 3. 获取小类列表
+    // 3. 选择大类后 ==>根据大类获取小类列表
     async handletin2(tin3item) {
-      this.formData.tin3 = '0';
+      // this.formData.tin3 = '0'; // 项目清0
+
       this.$emit('input', this.isMultiGoods);
 
       try {
@@ -471,6 +474,8 @@ export default {
         this.tin2_Option = [];
       }
 
+
+
       if (!this.isMultiGoods) {
         this.formData.tin2_2 = this.tin2_Option[0] ? this.tin2_Option[0].dictValue : this.formData.tin2;
         this.formData.tin2_1 = [];
@@ -478,8 +483,9 @@ export default {
         this.formData.tin2_2 = '';
       }
 
-      if (!tin3item) return;
-
+      if (!tin3item || !tin3item.dictValue) return;
+      // 选择了项目后触发了这个, 改版后可能会没有值存在了
+      // console.log('这里也是赋值');
       this.formData.tin3 = tin3item.dictValue;
 
       if (this.isMultiGoods) {

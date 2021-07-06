@@ -104,6 +104,7 @@
       :total="total"
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
+      :page-sizes="[10, 20, 50, 100, 200, 300]"
       @pagination="getList"
     />
   </el-dialog>

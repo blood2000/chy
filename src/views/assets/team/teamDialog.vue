@@ -1,18 +1,18 @@
 <template>
   <!-- 添加或修改调度者对话框 -->
   <el-dialog :class="[{'i-add':title==='新增'},{'i-check':title==='审核'}]" :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
+    <el-form ref="form" :model="form" :rules="rules" label-width="140px">
       <el-form-item label="手机号" prop="telphone">
-        <el-input v-model="form.telphone" placeholder="请输入手机号" class="width90" clearable />
+        <el-input v-model="form.telphone" placeholder="请输入手机号" :disabled="disable" class="width90" clearable />
       </el-form-item>
       <el-form-item label="密码" prop="password">
-        <el-input v-model="form.password" type="password" :placeholder="form.id?'密码未修改可不填写':'请输入密码'" class="width60 mr3" clearable />
+        <el-input v-model="form.password" type="password" :disabled="disable" :placeholder="form.id?'密码未修改可不填写':'请输入密码'" class="width60 mr3" clearable />
         <span class="g-color-blue">(初始密码为{{ initialPassword }})</span>
       </el-form-item>
       <el-row :gutter="20">
         <el-col :span="10">
           <el-form-item label="状态">
-            <el-radio-group v-model="form.status">
+            <el-radio-group v-model="form.status" :disabled="disable">
               <el-radio
                 v-for="dict in statusOptions"
                 :key="dict.dictValue"
@@ -23,23 +23,24 @@
         </el-col>
         <el-col :span="10">
           <el-form-item prop="openProjectDesignView">
-            <el-checkbox v-model="form.openProjectDesignView">开启&nbsp;项目版统计视图</el-checkbox>
+            <el-checkbox v-model="form.openProjectDesignView" :disabled="disable">开启&nbsp;项目版统计视图</el-checkbox>
           </el-form-item>
         </el-col>
       </el-row>
       <el-form-item label="姓名" prop="teamLeaderName">
-        <el-input v-model="form.teamLeaderName" placeholder="支持自动识别" class="width90" clearable />
+        <el-input v-model="form.teamLeaderName" :disabled="disable" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
       <el-form-item label="调度组名称" prop="name">
-        <el-input v-model="form.name" placeholder="请输入调度组名称" class="width90" clearable />
+        <el-input v-model="form.name" :disabled="disable" placeholder="请输入调度组名称" class="width90" clearable />
       </el-form-item>
       <el-form-item label="身份证号" prop="identificationNumber">
-        <el-input v-model="form.identificationNumber" placeholder="支持自动识别" class="width90" clearable />
+        <el-input v-model="form.identificationNumber" :disabled="disable" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
       <el-form-item prop="identificationEndTime">
         <label slot="label"><span style="color: #ff4949">* </span>身份证有效期</label>
         <el-date-picker
           v-model="form.identificationBeginTime"
+          :disabled="disable"
           clearable
           class="width28"
           type="date"
@@ -56,11 +57,12 @@
           placeholder="支持自动识别"
           :disabled="!!form.identificationEffective"
         />
-        <el-checkbox v-model="form.identificationEffective">长期有效</el-checkbox>
+        <el-checkbox v-model="form.identificationEffective" :disabled="disable">长期有效</el-checkbox>
       </el-form-item>
       <el-form-item label="是否清分" prop="isDistribution">
         <el-select
           v-model="form.isDistribution"
+          :disabled="disable"
           clearable
           filterable
           class="width90"
@@ -78,6 +80,7 @@
           <el-form-item label="清分规则" prop="distributionRule">
             <el-select
               v-model="form.distributionRule"
+              :disabled="disable"
               filterable
               class="width90"
             >
@@ -92,10 +95,10 @@
         </el-col>
         <el-col :span="11">
           <el-form-item v-if="form.distributionRule == 1" label="清分百分比(%)" prop="distributionPercent" :rules="[{ required: true, message: '清分百分比不能为空', trigger: ['blur', 'change'] }]">
-            <el-input-number v-model="form.distributionPercent" controls-position="right" :precision="2" :step="1" :min="0.01" :max="100" class="width90" clearable />
+            <el-input-number v-model="form.distributionPercent" :disabled="disable" controls-position="right" :precision="2" :step="1" :min="0.01" :max="100" class="width90" clearable />
           </el-form-item>
           <el-form-item v-else label="清分金额" prop="distributionPercent" :rules="[{ required: true, message: '清分金额不能为空', trigger: ['blur', 'change'] }]">
-            <el-input-number v-model="form.distributionPercent" controls-position="right" :precision="2" :step="1" :min="0.01" :max="100000000" class="width90" clearable />
+            <el-input-number v-model="form.distributionPercent" :disabled="disable" controls-position="right" :precision="2" :step="1" :min="0.01" :max="100000000" class="width90" clearable />
           </el-form-item>
         </el-col>
       </el-row>
@@ -124,6 +127,17 @@
             <uploadImage v-model="form.transportPermitImage" icon-type="transport" :disabled="disable" />
           </el-col>
         </el-row>
+      </el-form-item>
+      <el-form-item v-if="title==='审核'" label="审核备注" prop="authRemark">
+        <el-input
+          v-model="form.authRemark"
+          :disabled="false"
+          class="width90"
+          type="textarea"
+          :rows="2"
+          maxlength="200"
+          placeholder="请输入审核备注"
+        />
       </el-form-item>
     </el-form>
     <div v-if="title === '新增' || title === '编辑'" slot="footer" class="dialog-footer">
@@ -304,7 +318,8 @@ export default {
         isDistribution: 0,
         distributionPercent: 100,
         openProjectDesignView: 1,
-        distributionRule: 1
+        distributionRule: 1,
+        authRemark: null
       };
       this.resetForm('form');
     },
@@ -336,7 +351,8 @@ export default {
           examine({
             authStatus: key,
             code: this.form.code,
-            id: this.form.id
+            id: this.form.id,
+            authRemark: this.form.authRemark
           }).then(response => {
             this.msgSuccess('操作成功');
             this.close();

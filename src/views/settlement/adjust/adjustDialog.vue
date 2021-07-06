@@ -28,7 +28,25 @@
 
       <el-table v-loading="loading" height="650" highlight-current-row :data="adjustlist" border :row-class-name="tableRowClassName">
 
-        <el-table-column width="160" label="运输单号" show-overflow-tooltip align="center" prop="waybillNo" />
+        <el-table-column width="160" label="运输单号" show-overflow-tooltip align="center" prop="waybillNo">
+
+          <template slot-scope="scope">
+            <div>
+              <span class="mr10">{{ scope.row.waybillNo }}</span>
+
+              <el-popover
+                placement="right"
+                :tabindex="scope.$index"
+                trigger="click"
+              >
+                <div>
+                  <ImgShow :rowdata="scope.row" />
+                </div>
+                <i slot="reference" class="el-icon-warning shou" />
+              </el-popover>
+            </div>
+          </template>
+        </el-table-column>
 
         <el-table-column width="120" label="司机姓名" align="center" prop="driverName" />
         <el-table-column width="120" label="司机电话" align="center" prop="driverPhone" />
@@ -92,7 +110,12 @@
 
         <el-table-column width="120" label="抹零金额(元)" align="center" prop="m0Fee" />
 
-        <el-table-column width="160" label="司机实收运费(元)" align="center" prop="deliveryFeePractical" />
+        <!-- <el-table-column width="160" label="司机应收运费(元)" align="center" prop="deliveryFeePractical" /> -->
+        <el-table-column width="160" label="司机应收运费(元)" align="center" prop="deliveryFeeDeserved">
+          <template slot-scope="scope">
+            <span>{{ floor(scope.row.deliveryFeeDeserved) }}</span>
+          </template>
+        </el-table-column>
 
         <!-- 补贴项目 -->
         <el-table-column align="center" width="450" label="补贴项目">
@@ -197,6 +220,7 @@
 <script>
 
 import PopoverCom from './components/PopoverCom';
+import ImgShow from './components/ImgShow';
 // import chooseItemDialog from '@/views/enterprise/rules/chooseItemDialog';
 import { adjustDetail, calculateFee, batchCheck, batchCalculate } from '@/api/settlement/adjust';
 import { getRuleItemList } from '@/api/enterprise/rules';
@@ -205,7 +229,7 @@ import { floor } from '@/utils/ddc';
 
 export default {
   name: 'AdjustDialog',
-  components: { PopoverCom },
+  components: { PopoverCom, ImgShow },
   props: {
     title: {
       type: String,
@@ -275,7 +299,7 @@ export default {
   },
 
   // watch: {
-  //   ruleDetails(val) {
+  //   visiblPopover(val) {
   //     console.log(val);
   //   }
   // },
@@ -366,6 +390,7 @@ export default {
         });
         this.loading1 = false;
 
+        // row.deliveryFeePractical = data.deliveryFeeDeserved;
         row.deliveryFeeDeserved = data.deliveryFeeDeserved;
         row.deliveryCashFee = data.driverRealFee; // ?
         row.serviceFee = data.serviceFee;
