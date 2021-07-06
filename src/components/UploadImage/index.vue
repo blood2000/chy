@@ -117,7 +117,7 @@ export default {
     handleGetFile(code, flag) {
       this.flag = true;
       if (code) {
-        if (code.startsWith('https://')) {
+        if (code.startsWith('https://') || code.startsWith('http://')) {
           this.attachUrl = code;
           this.flag = false;
         } else {
