@@ -130,7 +130,7 @@ export const formValidate = {
       callback();
     }
   },
-  // 证件验证: 起始时间必填; 长期有效的时候截止时间可以不填,否则必填; 起始时间大于截止时间;
+  // 证件验证: 起始时间必填; 长期有效的时候截止时间可以不填,否则必填; 截止时间大于起始时间;
   idCardValidate: function(rule, value, callback, beginTime, effective, text = '身份证') {
     if (!beginTime) {
       return callback(new Error(`${text}有效期起始时间不能为空`));
@@ -138,6 +138,13 @@ export const formValidate = {
       return callback(new Error(`${text}有效期截止时间不能为空`));
     } else if (!effective && !compareBeginEndTime(beginTime, value)) {
       return callback(new Error(`${text}有效期截止时间不能小于起始时间`));
+    }
+    return callback();
+  },
+  // 证件验证: 截止时间大于起始时间;
+  idCardTimeValidate: function(rule, value, callback, beginTime, text = '') {
+    if (!compareBeginEndTime(beginTime, value)) {
+      return callback(new Error(`${text}截止时间不能小于起始时间`));
     }
     return callback();
   },
