@@ -138,6 +138,16 @@
             @click="handleSign"
           >批量生成电子章</el-button>
         </el-col>
+        <el-col :span="1.5">
+          <el-button
+            type="warning"
+            icon="el-icon-magic-stick"
+            size="mini"
+            :disabled="multiple"
+            :loading="downloadLoadin"
+            @click="downloadElectronic"
+          >批量下载电子章合同</el-button>
+        </el-col>
 
         <el-col :span="1.5" style="float: right;">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
@@ -148,7 +158,7 @@
         />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="contractList" :table-columns-config="tableColumnsConfig" :selectable="checkboxT" @selection-change="handleSelectionChange">
+      <RefactorTable :loading="loading" :data="contractList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
         <template #driverOrShipment="{row}">
           <span>{{ selectDictLabel(driverOrShipmentOptions, row.driverOrShipment) }}</span>
         </template>
@@ -202,6 +212,7 @@
 </template>
 
 <script>
+import { handleBatchDownload } from '../../../libs/batchCompression';
 // import tableColumnsConfig from './config';
 import DriverContract from './DriverContract';
 import ShipmentContract from './ShipmentContract';
@@ -225,6 +236,7 @@ export default {
       'loading': true,
       // 选中数组
       ids: [],
+      selectedList: [], // 选中的完整数据
       multiple: true,
       // 显示搜索条件
       'showSearch': true,
@@ -258,7 +270,8 @@ export default {
         { 'dictLabel': '是', 'dictValue': '1' },
         { 'dictLabel': '生成失败', 'dictValue': '3' }
       ],
-      loadingSign: false
+      loadingSign: false,
+      downloadLoadin: false
     };
   },
   created() {
@@ -306,6 +319,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
+      this.selectedList = selection;
       this.ids = selection.map(item => item.code);
       this.multiple = !selection.length;
     },
@@ -389,6 +403,16 @@ export default {
     },
     // 批量签章
     handleSign() {
+      const listSign = this.selectedList;
+
+      const arr = listSign.filter(e => e.isDzqzContract === 1);
+
+      if (arr.length) {
+        this.msgWarning('请确保,选中的都是未生成过的成电子签章的合同');
+        return;
+      }
+
+
       this.$confirm('平均每份合同耗时20秒，确认批量生成电子签章合同？', '批量生成电子章', {
         'confirmButtonText': '确定',
         'cancelButtonText': '取消',
@@ -402,7 +426,29 @@ export default {
     // 下载电子合同
     handleDownload(row) {
       window.open(row.contractPath);
+    },
+
+    // 批量下载
+    downloadElectronic() {
+      const arrData = this.selectedList;
+
+      const batchUrl = arrData.filter(e => e.contractPath).map(e => {
+        const str = (e.contractPath.split('.com'))[1];
+        return `/pdf${str}`;
+      });
+
+      if (batchUrl.length) {
+        this.downloadLoadin = true;
+        handleBatchDownload(batchUrl, null, () => {
+          // console.log('下载完成');
+          this.downloadLoadin = false;
+        });
+      } else {
+        this.msgWarning('请确保,选中的都是已生成过的成电子签章的合同');
+      }
     }
+
+
   }
 };
 </script>

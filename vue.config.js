@@ -46,6 +46,14 @@ module.exports = {
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
         }
+      },
+
+      '/pdf':{
+        target: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com', // 电子签章批量合同导出
+        changeOrigin: true,
+        pathRewrite: {
+          ['^/pdf']: ''
+        }
       }
     },
     disableHostCheck: true
