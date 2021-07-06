@@ -561,7 +561,7 @@ export default {
       this.$refs.RemarkDialog.reset();
       // this.currentId = row.wayBillCode;
       this.openRemark = true;
-      this.title = '编辑货主运单备注';
+      this.title = '编辑运单备注';
       this.$refs.RemarkDialog.setForm(row);
     }
   }

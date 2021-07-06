@@ -7,6 +7,8 @@
 <script>
 import { getWebDetail } from '@/api/waybill/tracklist';
 // import UploadImage from '@/components/UploadImage/index';
+import { handleBatchDownload } from '@/libs/trackExport';
+
 
 export default {
   name: 'Track',
@@ -25,8 +27,10 @@ export default {
     return {
       zoom: 16,
       center: [119.358267, 26.04577],
+      polyline: {
+        path: []
+      },
       graspRoad: '',
-      vehicleMark: undefined,
       // 定位轨迹列表
       tracklist: [],
       // 运单信息
@@ -43,7 +47,7 @@ export default {
       queryEndtime: '',
       timePoor: undefined,
       isPlan: false,
-      images: undefined
+      images: []
     };
   },
   watch: {
@@ -61,7 +65,10 @@ export default {
       const targetDom = document.querySelector('#amap'); // 获取要截图的元素
       // domtoimage 截图
       this.domtoimage.toPng(targetDom).then((dataUrl) => {
-        this.images = dataUrl;
+        this.images.push(dataUrl);
+        if (this.images.length === this.waybill.length) {
+          this.handleBatchDownload();
+        }
       }).catch(function(error) {
         console.error('失败===', error);
       });
@@ -101,6 +108,7 @@ export default {
     // 起点终点
     getMark() {
       const that = this;
+      that.$refs.map.$$getInstance().remove([startMark, endMark]);
       // 装货地marker
       const startPosition = that.loadAddress;
       const startMark = new AMap.Marker({
@@ -127,7 +135,9 @@ export default {
     drawPolyline(path) {
       // console.log(path);
       const that = this;
-      // that.$refs.map.$$getInstance().remove(that.polyline);
+      if (that.polyline) {
+        that.$refs.map.$$getInstance().remove(that.polyline);
+      }
       that.polyline = new window.AMap.Polyline({
         map: that.$refs.map.$$getInstance(),
         path,
@@ -142,9 +152,8 @@ export default {
         zIndex: 999
       });
       that.polyline.setMap(that.$refs.map.$$getInstance());
-      setTimeout(() => {
-        that.screenshot();
-      }, 500);
+      that.$refs.map.$$getInstance().setFitView(that.polyline); // 执行定位
+      this.screenshot();
     },
     /** 取消按钮 */
     cancel() {
@@ -159,27 +168,38 @@ export default {
     },
     // 表单赋值
     setForm(data) {
-      // console.log(data);
-      // 获取运单信息，并标记装卸货地
-      getWebDetail(data.wayBillCode).then(response => {
-        this.wayBillInfo = response.data;
-        // 获取装卸货地址经纬度
-        if (this.wayBillInfo.waybillAddress.loadLocation) {
-          this.loadAddress = this.wayBillInfo.waybillAddress.loadLocation.replace('(', '').replace(')', '').split(',');
-        } else {
-          this.loadAddress = [];
-        }
-        if (this.wayBillInfo.waybillAddress.unloadLocation) {
-          this.unloadAddress = this.wayBillInfo.waybillAddress.unloadLocation.replace('(', '').replace(')', '').split(',');
-        } else {
-          this.unloadAddress = [];
-        }
-        if (this.loadAddress.length !== 0 && this.unloadAddress.length !== 0) {
-          // 标记装卸货地址
-          this.getMark();
-          // 获取路线
-          this.getTrackLocation();
-        }
+      this.images = [];
+      data.forEach(element => {
+        setTimeout(() => {
+          // 获取运单信息，并标记装卸货地
+          getWebDetail(element.code).then(response => {
+            this.wayBillInfo = response.data;
+            // 获取装卸货地址经纬度
+            if (this.wayBillInfo.waybillAddress.loadLocation) {
+              this.loadAddress = this.wayBillInfo.waybillAddress.loadLocation.replace('(', '').replace(')', '').split(',');
+            } else {
+              this.loadAddress = [];
+            }
+            if (this.wayBillInfo.waybillAddress.unloadLocation) {
+              this.unloadAddress = this.wayBillInfo.waybillAddress.unloadLocation.replace('(', '').replace(')', '').split(',');
+            } else {
+              this.unloadAddress = [];
+            }
+            if (this.loadAddress.length !== 0 && this.unloadAddress.length !== 0) {
+            // 标记装卸货地址
+            // this.getMark();
+            // 获取路线
+              this.getTrackLocation();
+            }
+          });
+        }, 5000);
+      });
+    },
+    // 导出
+    handleBatchDownload() {
+      console.log(this.images);
+      handleBatchDownload(this.images, null, () => {
+        // console.log('下载完成');
       });
     }
   }
@@ -191,7 +211,7 @@ export default {
   position: fixed;
   top: 0;
   right: 0;
-  z-index: -1;
+  z-index: 999;
   width:800px;
   height: 600px;
   border-radius: 6px;

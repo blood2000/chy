@@ -185,7 +185,7 @@
 </template>
 
 <script>
-import { billList, billListApi } from '@/api/finance/list';
+import { billList, billListApi, getApplyWaybill } from '@/api/finance/list';
 // 审核弹窗
 import VerifyDialog from './verifyDialog';
 // 开票弹窗
@@ -363,6 +363,11 @@ export default {
           break;
         case 3:
           this.$router.push({ name: 'Statement', query: { code: row.code }});
+          break;
+        case 4:
+          getApplyWaybill(row.code).then(res => {
+            this.waybillTrack = res.data;
+          });
           break;
         default:
           break;
