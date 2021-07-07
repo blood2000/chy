@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="exportLoading">
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form
         v-show="showSearch"
@@ -180,12 +180,12 @@
     <!-- 开票弹窗 -->
     <billing-dialog ref="BillingDialog" :open.sync="billingdialog" :title="title" @refresh="getList" />
     <!-- 切图对话框 -->
-    <TrackExport ref="TrackExport" :waybill="waybillTrack" />
+    <TrackExport ref="TrackExport" :open.sync="exportLoading" :waybill="waybillTrack" />
   </div>
 </template>
 
 <script>
-import { billList, billListApi } from '@/api/finance/list';
+import { billList, billListApi, getApplyWaybill } from '@/api/finance/list';
 // 审核弹窗
 import VerifyDialog from './verifyDialog';
 // 开票弹窗
@@ -198,7 +198,9 @@ export default {
   components: { VerifyDialog, BillingDialog, TrackExport },
   data() {
     return {
+      // 批量轨迹参数
       waybillTrack: [],
+      exportLoading: false,
       tableColumnsConfig: [],
       api: billListApi,
       activeName: '1',
@@ -363,6 +365,11 @@ export default {
           break;
         case 3:
           this.$router.push({ name: 'Statement', query: { code: row.code }});
+          break;
+        case 4:
+          getApplyWaybill(row.code).then(res => {
+            this.waybillTrack = res.data;
+          });
           break;
         default:
           break;

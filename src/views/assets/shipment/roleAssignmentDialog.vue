@@ -15,15 +15,15 @@
         </el-select>
       </el-form-item>
       <el-form-item label="复制货主成员角色" prop="copyShipmentCompanyCode">
-          <el-select v-model="form.copyShipmentCompanyCode" placeholder="请选择搜索关键字" clearable filterable remote :remote-method="shipmentRemoteMethod" style="width: 100%">
-              <el-option
-                      v-for="item in shipmentOptions"
-                      :key="item.code"
-                      :label="item.adminName+'('+item.telphone+')'"
-                      :value="item.companyCode"
-                      :disabled="item.code == shipmentCode"
-              />
-          </el-select>
+        <el-select v-model="form.copyShipmentCompanyCode" placeholder="请选择搜索关键字" clearable filterable remote :remote-method="shipmentRemoteMethod" style="width: 100%">
+          <el-option
+            v-for="item in shipmentOptions"
+            :key="item.code"
+            :label="item.adminName+'('+item.telphone+')'"
+            :value="item.companyCode"
+            :disabled="item.code == shipmentCode"
+          />
+        </el-select>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">

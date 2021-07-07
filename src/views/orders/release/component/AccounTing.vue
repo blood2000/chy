@@ -37,7 +37,7 @@
               />
               <span class="ml0 mr10"> 元 / {{ mygoodsUnitName }}</span>
 
-              <div v-if="!showbudget" class="ml0 mr10 t_color_c t_m_pac">
+              <div v-if="false && !showbudget" class="ml0 mr10 t_color_c t_m_pac">
                 司机实收单价:
                 <span class="m_pac">{{ _floor(totalTransportationCost) || 0 }}</span>
                 元 / {{ mygoodsUnitName }}
@@ -310,6 +310,7 @@ export default {
     },
     redis: {
       handler(value) {
+        console.log(value, '有什么有用的东西');
         if (!value || !value.orderFreightVo) return;
 
         if (this.formData.ruleItemId && this.formData.ruleItemId !== value.ruleCode) return;
@@ -321,8 +322,9 @@ export default {
         const { detailList, lossList } = value.orderFreightVo;
 
         // 发布货源的时候给一个默认的
-        console.log(this.formData.ruleItemId, '谁先');
+        // console.log(this.formData.ruleItemId, '谁先');
 
+        // 注意 this.initData() 会在这之后再执行的l
         this.formData.ruleItemId = value.ruleCode;
 
         const filterDetailList = detailList.filter(e => {
@@ -341,6 +343,14 @@ export default {
           if (e.enName === 'CALCULATION_FORMULA') {
             (JSON.stringify(this.jisuanRule) === '{}') && (this.jisuanRule = e);
           }
+
+          // 取路耗 亏吨方案
+          if (e.enName === 'LOSS_PLAN') {
+            // this.lossPlan = e;
+            // 有可能是多个规则-> 谁下面的规则
+            this.$store.commit('orders/SET_LOSS_PLAN', e);
+          }
+
 
           const bool = (e.enName === 'LOSS_PLAN' || e.enName === 'LOSS_RULE' || e.enName === 'CALCULATION_FORMULA' || e.enName === 'FREIGHT_COST' || e.enName === 'DRIVER_ACTUAL_PRICE');
 
@@ -368,7 +378,7 @@ export default {
     // 获取司机成交单价
     async handlerChange() {
       if (!this.formData.freightPrice || this.formData.freightPrice === 0) return;
-      console.log(this.formData.freightPrice);
+      // console.log(this.formData.freightPrice);
 
       try {
         const data = await getDriverPrice({
@@ -401,7 +411,7 @@ export default {
         });
 
         if (rulesItem[0]) {
-          this.formData.ruleItemId = rulesItem[0].code;
+          this.formData.ruleItemId = this.formData.ruleItemId || rulesItem[0].code;
           this.handleRuleItemId();
         }
       } catch (error) {
@@ -430,6 +440,11 @@ export default {
       const filterDetailList = detailList.filter(e => {
         if (e.enName === 'CALCULATION_FORMULA') {
           this.jisuanRule = e;
+        }
+        if (e.enName === 'LOSS_PLAN') {
+          // this.lossPlan = e;
+          // 有可能是多个规则-> 谁下面的规则
+          this.$store.commit('orders/SET_LOSS_PLAN', e);
         }
         const bool = (e.enName === 'LOSS_PLAN' || e.enName === 'LOSS_RULE' || e.enName === 'CALCULATION_FORMULA');
 

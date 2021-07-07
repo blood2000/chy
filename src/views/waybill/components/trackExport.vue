@@ -7,6 +7,8 @@
 <script>
 import { getWebDetail } from '@/api/waybill/tracklist';
 // import UploadImage from '@/components/UploadImage/index';
+import { handleBatchDownload } from '@/libs/trackExport';
+
 
 export default {
   name: 'Track',
@@ -19,14 +21,17 @@ export default {
       default: function() {
         return [];
       }
-    }
+    },
+    open: Boolean
   },
   data() {
     return {
       zoom: 16,
       center: [119.358267, 26.04577],
+      polyline: {
+        path: []
+      },
       graspRoad: '',
-      vehicleMark: undefined,
       // 定位轨迹列表
       tracklist: [],
       // 运单信息
@@ -43,12 +48,16 @@ export default {
       queryEndtime: '',
       timePoor: undefined,
       isPlan: false,
-      images: undefined
+      images: [],
+      waybillIndex: 0
     };
   },
   watch: {
     waybill(val) {
       if (val) {
+        this.$emit('update:open', true);
+        this.images = [];
+        this.waybillIndex = 0;
         this.setForm(val);
       }
     }
@@ -61,7 +70,15 @@ export default {
       const targetDom = document.querySelector('#amap'); // 获取要截图的元素
       // domtoimage 截图
       this.domtoimage.toPng(targetDom).then((dataUrl) => {
-        this.images = dataUrl;
+        this.images.push(dataUrl);
+        if (this.images.length === this.waybill.length) {
+          this.handleBatchDownload();
+          this.$emit('update:open', false);
+        } else {
+          this.waybillIndex = this.waybillIndex + 1;
+          console.log(this.waybillIndex);
+          this.setForm(this.waybill);
+        }
       }).catch(function(error) {
         console.error('失败===', error);
       });
@@ -101,6 +118,7 @@ export default {
     // 起点终点
     getMark() {
       const that = this;
+      that.$refs.map.$$getInstance().remove([startMark, endMark]);
       // 装货地marker
       const startPosition = that.loadAddress;
       const startMark = new AMap.Marker({
@@ -127,7 +145,9 @@ export default {
     drawPolyline(path) {
       // console.log(path);
       const that = this;
-      // that.$refs.map.$$getInstance().remove(that.polyline);
+      if (that.polyline) {
+        that.$refs.map.$$getInstance().remove(that.polyline);
+      }
       that.polyline = new window.AMap.Polyline({
         map: that.$refs.map.$$getInstance(),
         path,
@@ -142,6 +162,7 @@ export default {
         zIndex: 999
       });
       that.polyline.setMap(that.$refs.map.$$getInstance());
+      that.$refs.map.$$getInstance().setFitView(that.polyline); // 执行定位
       setTimeout(() => {
         that.screenshot();
       }, 500);
@@ -159,9 +180,9 @@ export default {
     },
     // 表单赋值
     setForm(data) {
-      // console.log(data);
+      // this.images = [];
       // 获取运单信息，并标记装卸货地
-      getWebDetail(data.wayBillCode).then(response => {
+      getWebDetail(data[this.waybillIndex].code).then(response => {
         this.wayBillInfo = response.data;
         // 获取装卸货地址经纬度
         if (this.wayBillInfo.waybillAddress.loadLocation) {
@@ -176,10 +197,17 @@ export default {
         }
         if (this.loadAddress.length !== 0 && this.unloadAddress.length !== 0) {
           // 标记装卸货地址
-          this.getMark();
+          // this.getMark();
           // 获取路线
           this.getTrackLocation();
         }
+      });
+    },
+    // 导出
+    handleBatchDownload() {
+      console.log(this.images);
+      handleBatchDownload(this.images, null, () => {
+        // console.log('下载完成');
       });
     }
   }
