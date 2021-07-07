@@ -108,6 +108,8 @@ service.interceptors.response.use(res => {
   } else if (code === 404) {
     // 404时不弹出报错提示
     return Promise.reject(new Error(msg));
+  } else if (code === 501) {
+    return res.data;
   } else if (code !== 200) {
     Message({
       message: msg,
