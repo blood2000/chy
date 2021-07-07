@@ -332,7 +332,7 @@ export default {
       const params = Object.assign({}, this.queryParams);
       params.pageSize = undefined;
       params.pageNum = undefined;
-      this.download('/payment/transferApply/export', params, `提现申请_${new Date().getTime()}.xlsx`).then(() => {
+      this.download('/payment/transferApply/export', params, `提现申请`).then(() => {
         this.exportLoading = false;
       });
     },

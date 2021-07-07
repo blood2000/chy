@@ -273,7 +273,7 @@ export default {
     handleExport() {
       this.download('system/logininfor/export', {
         ...this.queryParams
-      }, `logininfor_${new Date().getTime()}.xlsx`);
+      }, `登录日志信息`);
     }
 
   }

@@ -241,7 +241,7 @@ export default {
     handleExport() {
       this.download('system/test/export', {
         ...this.queryParams
-      }, `system_test.xlsx`);
+      }, `system_test`);
     }
   }
 };

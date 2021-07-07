@@ -1235,8 +1235,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 .m_app-container {
-  overflow-y: auto;
-  height: calc(100vh - 145px);
+  // overflow-y: auto;
+  // height: calc(100vh - 145px);
 }
 .header {
   padding-bottom: 10px;

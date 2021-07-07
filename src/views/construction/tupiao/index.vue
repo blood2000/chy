@@ -63,7 +63,7 @@ export default {
       // 加载
       'loading': false,
       // 总条数
-      'total': 1,
+      'total': 0,
       // 表头
       'tableColumnsConfig': [],
       // 查询参数
@@ -207,7 +207,7 @@ export default {
     },
     async handleExport() {
       this.exportLoading = true;
-      await this.download('/transportation/batch/export', this.queryParams, `batch_${new Date().getTime()}.xlsx`);
+      await this.download('/transportation/batch/export', this.queryParams, `工地土票列表`);
       this.exportLoading = false;
     }
   }

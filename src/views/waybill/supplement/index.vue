@@ -575,7 +575,7 @@ export default {
     /** 下载模板 */
     handleDownload() {
       window.open('/src/assets/tableImport/supplement.xlsx');
-    //   this.download('assets/driver/importTemplate', {}, `driver_${new Date().getTime()}.xlsx`);
+    //   this.download('assets/driver/importTemplate', {}, `driver`);
     },
     // 根据货原单号查询信息
     getOrderDetail(e) {

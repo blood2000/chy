@@ -528,7 +528,7 @@ export default {
     // 导出
     handleExport() {
       this.loadingExport = true;
-      this.download('/transportation/invoice/export', { ...this.queryParams }, `invoiceAskfor_${new Date().getTime()}.xlsx`).then(res => {
+      this.download('/transportation/invoice/export', { ...this.queryParams }, `索票`).then(res => {
         this.loadingExport = false;
       });
     },

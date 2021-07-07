@@ -448,7 +448,7 @@ export default {
       const params = Object.assign({}, this.queryParams);
       params.pageSize = undefined;
       params.pageNum = undefined;
-      this.download('assets/team/export', params, `调度者信息_${new Date().getTime()}.xlsx`).then(() => {
+      this.download('assets/team/export', params, `调度者信息`).then(() => {
         this.exportLoading = false;
       });
     },

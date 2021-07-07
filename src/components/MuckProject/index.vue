@@ -528,7 +528,7 @@ export default {
             {
               'label': '驳回原因',
               'prop': 'remark',
-              'isShow': true,
+              'isShow': false,
               'sortNum': 21,
               'width': '120',
               'tooltip': true
@@ -546,6 +546,10 @@ export default {
       }
 
       return arr;
+    },
+
+    fileName() {
+      return this.selectDictLabel(this.statusOptions, this.status);
     }
 
 
@@ -828,7 +832,7 @@ export default {
     // 导出批次列表
     async handleExport() {
       this.exportLoading = true;
-      await this.download('/transportation/batch/export', this.queryParams, `batch_${new Date().getTime()}.xlsx`);
+      await this.download('/transportation/batch/export', this.queryParams, this.fileName);
       this.exportLoading = false;
     }
   }

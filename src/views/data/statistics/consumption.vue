@@ -284,7 +284,7 @@ export default {
     // 导出
     handleExport() {
       this.loadingExport = true;
-      this.download('/transportation/customerCountSearch/shipmentMoneyCountExport', { ...this.queryParams }, `客户消费统计_${new Date().getTime()}.xlsx`).then(res => {
+      this.download('/transportation/customerCountSearch/shipmentMoneyCountExport', { ...this.queryParams }, `客户消费统计`).then(res => {
         this.loadingExport = false;
       });
     }

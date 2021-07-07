@@ -42,7 +42,7 @@
                 <div class="g-color-blue g-strong">货单统计</div>
               </div>
               <div class="g-flex g-justifybetween g-alignend">
-                <div class="g-directioncenter margintop15" style="width: 70%;">
+                <div class="statistic1-total margintop15" style="width: 70%;">
                   <div class="g-title-smaller">
                     <div>今日货单</div>
                     <div>
@@ -82,7 +82,7 @@
                 <div class="g-color-blue g-strong">发票统计</div>
               </div>
               <div class="g-flex g-justifybetween g-alignend">
-                <div class="g-directioncenter margintop15" style="width: 70%;">
+                <div class="statistic-total margintop15" style="width: 70%;">
                   <div class="g-title-smaller">
                     <div>今日发票</div>
                     <div>
@@ -130,7 +130,7 @@
                 <div class="g-color-blue g-strong">运单统计</div>
               </div>
               <div class="g-flex g-justifybetween g-alignend">
-                <div class="g-directioncenter margintop15" style="width: 70%;">
+                <div class="statistic-total margintop15" style="width: 70%;">
                   <div class="g-title-smaller">
                     <div>今日运单</div>
                     <div>
@@ -178,11 +178,14 @@
           <!-- 平台概览 -->
           <div class="g-aligncenter" style="width:100%;height:100%">
             <div class="g-directioncenter" style="width:25%">
-              <el-progress type="circle" :percentage="shipmentPersent" :stroke-width="width>1366 ? 15:10" :width="width>1366 ? 130:90" color="#409EFF" :show-text="false" />
-              <div class="platform-num g-directioncenter">
-                <div class="g-strong g-title-big"><count-to :end-val="statistic.user?statistic.user.shipmentCount:0" :decimal-places="0" /></div>
-                <div>平台货主</div>
+              <div class="g-flexcenter">
+                <el-progress type="circle" :percentage="shipmentPersent" :stroke-width="width>1366 ? 15:10" :width="width>1366 ? 130:90" color="#409EFF" :show-text="false" />
+                <div class="platform-num g-directioncenter">
+                  <div class="g-strong g-title-big"><count-to :end-val="statistic.user?statistic.user.shipmentCount:0" :decimal-places="0" /></div>
+                  <div class="platform-tag">平台货主</div>
+                </div>
               </div>
+
               <div style="margin-top:10px;"><span class="g-color-blue marginright5">●</span>活跃货主</div>
               <div class="g-flex g-aligncenter g-justifyaround" style="width: 80%">
                 <div>
@@ -200,11 +203,14 @@
               </div>
             </div>
             <div class="g-directioncenter" style="width:25%">
-              <el-progress type="circle" :percentage="driverPersent" :stroke-width="width>1366 ? 15:10" :width="width>1366 ? 130:90" color="#40CBFF" :show-text="false" />
-              <div class="platform-num g-directioncenter">
-                <div class="g-strong g-title-big"><count-to :end-val="statistic.user?statistic.user.driverCount:0" :decimal-places="0" /></div>
-                <div>平台司机</div>
+              <div class="g-flexcenter">
+                <el-progress type="circle" :percentage="driverPersent" :stroke-width="width>1366 ? 15:10" :width="width>1366 ? 130:90" color="#40CBFF" :show-text="false" />
+                <div class="platform-num g-directioncenter">
+                  <div class="g-strong g-title-big"><count-to :end-val="statistic.user?statistic.user.driverCount:0" :decimal-places="0" /></div>
+                  <div class="platform-tag">平台司机</div>
+                </div>
               </div>
+
               <div style="margin-top:10px;"><span class="g-color-blue marginright5">●</span>活跃司机</div>
               <div class="g-flex g-aligncenter g-justifyaround" style="width: 80%">
                 <div>
@@ -222,11 +228,14 @@
               </div>
             </div>
             <div class="g-directioncenter" style="width:25%">
-              <el-progress type="circle" :percentage="vehiclePersent" :stroke-width="width>1366 ? 15:10" :width="width>1366 ? 130:90" color="#67C23A" :show-text="false" />
-              <div class="platform-num g-directioncenter">
-                <div class="g-strong g-title-big"><count-to :end-val="statistic.user?statistic.user.vehicleCount:0" :decimal-places="0" /></div>
-                <div>平台车辆</div>
+              <div class="g-flexcenter">
+                <el-progress type="circle" :percentage="vehiclePersent" :stroke-width="width>1366 ? 15:10" :width="width>1366 ? 130:90" color="#67C23A" :show-text="false" />
+                <div class="platform-num g-directioncenter">
+                  <div class="g-strong g-title-big"><count-to :end-val="statistic.user?statistic.user.vehicleCount:0" :decimal-places="0" /></div>
+                  <div class="platform-tag">平台车辆</div>
+                </div>
               </div>
+
               <div style="margin-top:10px;"><span class="g-color-success marginright5">●</span>活跃车辆</div>
               <div class="g-flex g-aligncenter g-justifyaround" style="width: 80%">
                 <div>
@@ -236,11 +245,14 @@
               </div>
             </div>
             <div class="g-directioncenter" style="width:25%">
-              <el-progress type="circle" :percentage="teamPersent" :stroke-width="width>1366 ? 15:10" :width="width>1366 ? 130:90" color="#FFBB00" :show-text="false" />
-              <div class="platform-num g-directioncenter">
-                <div class="g-strong g-title-big"><count-to :end-val="statistic.user?statistic.user.teamCount:0" :decimal-places="0" /></div>
-                <div>平台调度者</div>
+              <div class="g-flexcenter">
+                <el-progress type="circle" :percentage="teamPersent" :stroke-width="width>1366 ? 15:10" :width="width>1366 ? 130:90" color="#FFBB00" :show-text="false" />
+                <div class="platform-num g-directioncenter">
+                  <div class="g-strong g-title-big"><count-to :end-val="statistic.user?statistic.user.teamCount:0" :decimal-places="0" /></div>
+                  <div class="platform-tag">平台调度者</div>
+                </div>
               </div>
+
               <div style="margin-top:10px;"><span class="g-color-warning marginright5">●</span>活跃调度者</div>
               <div class="g-flex g-aligncenter g-justifyaround" style="width: 80%">
                 <div>

@@ -1,6 +1,6 @@
 
 <template>
-  <div>
+  <div v-loading="payLoading">
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form
         ref="queryForm"
@@ -53,7 +53,7 @@
         >
           <el-input
             v-model.trim="queryParams.driverName"
-            placeholder="请输入司机姓名"
+            placeholder="请输入司机姓名/手机号"
             clearable
             size="small"
             style="width: 225px"
@@ -377,7 +377,8 @@ export default {
         { 'dictLabel': '打款中', 'dictValue': '3' },
         { 'dictLabel': '打款成功', 'dictValue': '4' },
         { 'dictLabel': '打款失败', 'dictValue': '5' }
-      ]
+      ],
+      payLoading: false
     };
   },
   computed: {
@@ -445,9 +446,13 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.payLoading = true;
         batch(this.bodyParams).then(response => {
+          this.payLoading = false;
           this.$message({ type: 'success', message: '发起网商打款成功！' });
           this.getList();
+        }).catch(() => {
+          this.payLoading = false;
         });
       }).catch(() => {
         this.$message({ type: 'info', message: '已取消' });

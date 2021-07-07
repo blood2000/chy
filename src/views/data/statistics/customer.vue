@@ -290,7 +290,7 @@ export default {
       this.download(
         '/transportation/customerCountSearch/customerShipmentCountExport',
         { ...this.queryParams },
-        `客服统计报表_${new Date().getTime()}.xlsx`
+        `客服统计报表`
       ).then(res => {
         this.loadingExport = false;
       });

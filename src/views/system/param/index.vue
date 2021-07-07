@@ -11,6 +11,7 @@
               :expand-on-click-node="false"
               default-expand-all
               :render-content="renderContent"
+              :indent="0"
               @node-click="handleNodeClick"
             />
           </div>
@@ -130,7 +131,7 @@ export default {
   methods: {
     renderContent(h, { node, data, store }) {
       return (
-        <span class='custom-tree-node'>
+        <span class='custom-tree-node el-tree-node__label'>
           <span class='custom-tree-text'>{node.label}</span>
           <span class='custom-tree-button'>
             <el-button type='text' on-click={ (event) => this.appendTree(event, data) }><i class='el-icon-circle-plus-outline' /></el-button>

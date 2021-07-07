@@ -3,7 +3,7 @@ import { MessageBox, Message } from 'element-ui';
 import store from '@/store';
 import { getToken } from '@/utils/auth';
 import errorCode from '@/utils/errorCode';
-import { tansParams } from '@/utils/ddc';
+import { tansParams, parseTime } from '@/utils/ddc';
 import {
   authorPre,
   produceCode,
@@ -108,6 +108,8 @@ service.interceptors.response.use(res => {
   } else if (code === 404) {
     // 404时不弹出报错提示
     return Promise.reject(new Error(msg));
+  } else if (code === 501) {
+    return res.data;
   } else if (code !== 200) {
     Message({
       message: msg,
@@ -140,9 +142,10 @@ error => {
 });
 
 // 通用下载方法
-export function download(url, params, filename, headers) {
+export function download(url, params, filename, headers, type = '.xlsx') {
+  filename = filename + '_' + parseTime(new Date(), '{y}{m}{d}{h}{i}') + type;
   Message({
-    message: '列表导出中，请稍候',
+    message: '导出中，请稍候',
     type: 'info',
     duration: 3 * 1000,
     showClose: true

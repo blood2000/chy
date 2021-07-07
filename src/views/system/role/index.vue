@@ -21,9 +21,17 @@
               :props="defaultTreeProps"
               :expand-on-click-node="false"
               :filter-node-method="filterDepNode"
+              :indent="0"
               default-expand-all
               @node-click="handleNodeClick"
-            />
+            >
+              <!-- <span slot-scope="{ node }">
+                <span class="node-label">
+                  <i class="tree-node-icon i-node-three" />
+                  {{ node.label }}
+                </span>
+              </span> -->
+            </el-tree>
           </div>
         </div>
       </el-col>
@@ -218,6 +226,7 @@
                 :data="deptTreeOptions"
                 :props="defaultTreeProps"
                 :expand-on-click-node="false"
+                :indent="0"
                 @node-click="handleOrgClick"
               /> -->
               <treeselect
@@ -288,6 +297,7 @@
             :check-strictly="!form.deptCheckStrictly"
             empty-text="暂无数据"
             :props="defaultProps"
+            :indent="0"
           />
         </el-form-item>
         <el-form-item label="菜单权限" class="mb0">
@@ -303,6 +313,7 @@
                 :props="produceDefaultProps"
                 :expand-on-click-node="false"
                 :filter-node-method="filterNode"
+                :indent="0"
                 default-expand-all
                 @node-click="handleVersionNodeClick"
               />
@@ -315,6 +326,7 @@
                 show-checkbox
                 node-key="code"
                 :check-strictly="!form.menuCheckStrictly"
+                :indent="0"
                 empty-text="暂无数据"
                 :props="defaultProps"
               />
@@ -364,6 +376,7 @@
             :check-strictly="!form.deptCheckStrictly"
             empty-text="暂无数据"
             :props="defaultProps"
+            :indent="0"
           />
         </el-form-item>
       </el-form>
@@ -846,7 +859,7 @@ export default {
     handleExport() {
       this.download('system/role/export', {
         ...this.queryParams
-      }, `角色信息_${new Date().getTime()}.xlsx`);
+      }, `角色信息`);
     },
     /** 查询部门下拉树结构 */
     getDeptTree() {

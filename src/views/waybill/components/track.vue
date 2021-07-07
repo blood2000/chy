@@ -17,7 +17,7 @@
           <div class="g-flex g-aligncenter g-justifycenter" :class="trackChange === 1 ? 'track-onbtn' : 'track-btn'" @click="handleTrackChange(1)">
             <div :class="trackChange === 1 ? 'track-onicon' : 'track-icon'" />硬件轨迹
           </div>
-          <div class="g-flex g-aligncenter g-justifycenter" :class="trackChange === 2 ? 'track-onbtn' : 'track-btn'" @click="handleTrackChange(2)">
+          <div v-if="!isShipment" class="g-flex g-aligncenter g-justifycenter" :class="trackChange === 2 ? 'track-onbtn' : 'track-btn'" @click="handleTrackChange(2)">
             <div :class="trackChange === 2 ? 'track-onicon' : 'track-icon'" />北斗轨迹
           </div>
         </div>
@@ -37,6 +37,7 @@
 import { jimiTrackLocation, zjxlTrackLocation, getVehicleInfo, getWebDetail, getWaybillTrace, addZjxl, queryZjxl } from '@/api/waybill/tracklist';
 // import UploadImage from '@/components/UploadImage/index';
 import axios from 'axios';
+import { getUserInfo } from '@/utils/auth';
 
 export default {
   name: 'Track',
@@ -116,7 +117,8 @@ export default {
       // 轨迹查询参数结束时间
       queryEndtime: '',
       timePoor: undefined,
-      isPlan: false
+      isPlan: false,
+      isShipment: false
     };
   },
   computed: {
@@ -130,6 +132,8 @@ export default {
     }
   },
   created() {
+    const { isShipment = false } = getUserInfo() || {};
+    this.isShipment = isShipment;
     // console.log(this.waybill);
     this.setForm(this.waybill);
   },

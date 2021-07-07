@@ -346,7 +346,7 @@ export default {
     handleExport() {
       this.download('system/dict/type/export', {
         ...this.queryParams
-      }, `type_${new Date().getTime()}.xlsx`);
+      }, `字典信息`);
     },
     /** 清理缓存按钮操作 */
     handleClearCache() {

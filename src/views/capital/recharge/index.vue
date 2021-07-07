@@ -275,7 +275,7 @@ export default {
       const params = Object.assign({}, this.queryParams);
       params.pageSize = undefined;
       params.pageNum = undefined;
-      this.download('payment/shipmentPaidRecord/export', params, `充值记录_${new Date().getTime()}.xlsx`).then(() => {
+      this.download('payment/shipmentPaidRecord/export', params, `充值记录`).then(() => {
         this.exportLoading = false;
       });
     }

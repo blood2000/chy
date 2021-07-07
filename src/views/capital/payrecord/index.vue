@@ -478,7 +478,7 @@ export default {
       const params = Object.assign({}, this.queryParams);
       params.pageSize = undefined;
       params.pageNum = undefined;
-      this.download('/payment/wallet/remit/export', params, `打款记录_${new Date().getTime()}.xlsx`).then(() => {
+      this.download('/payment/wallet/remit/export', params, `打款记录`).then(() => {
         this.exportLoading = false;
       });
     },
@@ -488,7 +488,7 @@ export default {
     },
     /** 下载模板 */
     handleImportTemplate() {
-      // this.download('assets/driver/importTemplate', {}, `driver_${new Date().getTime()}.xlsx`);
+      // this.download('assets/driver/importTemplate', {}, `模板`);
     },
     // 多选框选中数据
     handleSelectionChange(selection) {

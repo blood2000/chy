@@ -171,7 +171,7 @@ export default {
     },
     /** 下载模板 */
     handleImportTemplateDriver() {
-      this.download('assets/driver/importTemplate', {}, `driver_${new Date().getTime()}.xlsx`);
+      this.download('assets/driver/importTemplate', {}, `司机模板`);
     },
     reset() {
       this.fileList = []; // 清除上传文件
