@@ -365,7 +365,7 @@ export default {
     handleExport() {
       this.download('system/dict/data/export', {
         ...this.queryParams
-      }, `data_${new Date().getTime()}.xlsx`);
+      }, `字典信息`);
     }
   }
 };

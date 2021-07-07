@@ -360,7 +360,7 @@ export default {
         {
           ...this.queryParams
         },
-        `clearing_${new Date().getTime()}.xlsx`
+        `运输清分`
       ).then(res => {
         this.loadingExport = false;
       });

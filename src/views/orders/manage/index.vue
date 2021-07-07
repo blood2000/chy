@@ -891,7 +891,7 @@ export default {
       this.loadingExport = true;
       this.download('/transportation/order/export', {
         ...this.newQueryParams
-      }, `order_${new Date().getTime()}.xlsx`).then(res => {
+      }, `货源管理`).then(res => {
         this.loadingExport = false;
       });
     },

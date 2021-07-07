@@ -3,7 +3,7 @@ import { MessageBox, Message } from 'element-ui';
 import store from '@/store';
 import { getToken } from '@/utils/auth';
 import errorCode from '@/utils/errorCode';
-import { tansParams } from '@/utils/ddc';
+import { tansParams, parseTime } from '@/utils/ddc';
 import {
   authorPre,
   produceCode,
@@ -140,9 +140,10 @@ error => {
 });
 
 // 通用下载方法
-export function download(url, params, filename, headers) {
+export function download(url, params, filename, headers, type = '.xlsx') {
+  filename = filename + '_' + parseTime(new Date(), '{y}{m}{d}{h}{i}') + type;
   Message({
-    message: '列表导出中，请稍候',
+    message: '导出中，请稍候',
     type: 'info',
     duration: 3 * 1000,
     showClose: true

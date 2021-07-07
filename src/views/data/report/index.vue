@@ -686,7 +686,7 @@ export default {
       this.loadingExport = true;
       this.download('/transportation/waybillReport/export', {
         ...this.queryParams
-      }, `waybillReport_${Date.now()}.xlsx`).then(res => {
+      }, `数据上报`).then(res => {
         this.loadingExport = false;
       });
     },

@@ -207,7 +207,7 @@ export default {
     },
     async handleExport() {
       this.exportLoading = true;
-      await this.download('/transportation/batch/export', this.queryParams, `batch_${new Date().getTime()}.xlsx`);
+      await this.download('/transportation/batch/export', this.queryParams, `工地土票列表`);
       this.exportLoading = false;
     }
   }

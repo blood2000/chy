@@ -21,6 +21,7 @@
               :props="defaultTreeProps"
               :expand-on-click-node="false"
               :filter-node-method="filterDepNode"
+              :indent="0"
               default-expand-all
               @node-click="handleNodeClick"
             />
@@ -213,13 +214,14 @@
           <el-col :span="24">
             <el-form-item v-if="!form.roleId" label="所属组织" prop="orgCode" :rules="[{ required: true, message: '所属组织不能为空', trigger: 'change' }]">
               <!-- <el-tree
-                              ref="tree"
-                              class="tree-border"
-                              :data="deptTreeOptions"
-                              :props="defaultTreeProps"
-                              :expand-on-click-node="false"
-                              @node-click="handleOrgClick"
-                            /> -->
+                ref="tree"
+                class="tree-border"
+                :data="deptTreeOptions"
+                :props="defaultTreeProps"
+                :expand-on-click-node="false"
+                :indent="0"
+                @node-click="handleOrgClick"
+              /> -->
               <treeselect
                 v-model="form.orgCode"
                 :options="deptTreeOptions"
@@ -288,6 +290,7 @@
             :check-strictly="!form.deptCheckStrictly"
             empty-text="暂无数据"
             :props="defaultProps"
+            :indent="0"
           />
         </el-form-item>
         <el-form-item label="菜单权限" class="mb0">
@@ -304,6 +307,7 @@
                 :expand-on-click-node="false"
                 :filter-node-method="filterNode"
                 default-expand-all
+                :indent="0"
                 @node-click="handleVersionNodeClick"
               />
             </el-col>
@@ -315,6 +319,7 @@
                 show-checkbox
                 node-key="code"
                 :check-strictly="!form.menuCheckStrictly"
+                :indent="0"
                 empty-text="暂无数据"
                 :props="defaultProps"
               />
@@ -363,6 +368,7 @@
             node-key="code"
             :check-strictly="!form.deptCheckStrictly"
             empty-text="暂无数据"
+            :indent="0"
             :props="defaultProps"
           />
         </el-form-item>
@@ -845,7 +851,7 @@ export default {
     handleExport() {
       this.download('system/role/export', {
         ...this.queryParams
-      }, `角色信息_${new Date().getTime()}.xlsx`);
+      }, `角色信息`);
     },
     /** 查询部门下拉树结构 */
     getDeptTree() {

@@ -471,7 +471,7 @@ export default {
     handleExport() {
       this.download('schedule/job/export', {
         ...this.queryParams
-      }, `job_${new Date().getTime()}.xlsx`);
+      }, `任务`);
     }
   }
 };

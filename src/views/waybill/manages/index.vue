@@ -516,7 +516,7 @@ export default {
     // 导出
     handleExport() {
       this.loadingExport = true;
-      this.download('/transportation/waybill/manageListExport', { ...this.queryParams }, `waybillManages_${new Date().getTime()}.xlsx`).then(res => {
+      this.download('/transportation/waybill/manageListExport', { ...this.queryParams }, `运输单管理`).then(res => {
         this.loadingExport = false;
       });
     },

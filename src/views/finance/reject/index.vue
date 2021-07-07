@@ -206,7 +206,7 @@ export default {
 
     async handleExport() {
       this.exportLoading = true;
-      await this.download('/transportation/batch/operateLogExport', this.queryParams, `nullify_${new Date().getTime()}.xlsx`);
+      await this.download('/transportation/batch/operateLogExport', this.queryParams, `发票驳回`);
       this.exportLoading = false;
     }
   }

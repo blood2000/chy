@@ -296,7 +296,7 @@ export default {
     handleExport() {
       this.download('system/info/export', {
         ...this.queryParams
-      }, `system_info.xlsx`);
+      }, `项目管理`);
     }
   }
 };

@@ -402,16 +402,6 @@ export default {
       this.currentId = row.code;
       this.openReturn = true;
       this.title = '退押金';
-    },
-    /** 导出按钮操作 */
-    handleExport() {
-      this.download(
-        'system/info/export',
-        {
-          ...this.queryParams
-        },
-        `system_info.xlsx`
-      );
     }
   }
 };

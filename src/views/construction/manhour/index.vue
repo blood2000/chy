@@ -206,7 +206,7 @@ export default {
     },
     async handleExport() {
       this.exportLoading = true;
-      await this.download('/transportation/batch/export', this.queryParams, `batch_${new Date().getTime()}.xlsx`);
+      await this.download('/transportation/batch/export', this.queryParams, `机械工时登记`);
       this.exportLoading = false;
     }
   }

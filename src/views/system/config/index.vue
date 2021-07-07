@@ -337,7 +337,7 @@ export default {
     handleExport() {
       this.download('system/config/export', {
         ...this.queryParams
-      }, `config_${new Date().getTime()}.xlsx`);
+      }, `参数设置`);
     },
     /** 清理缓存按钮操作 */
     handleClearCache() {

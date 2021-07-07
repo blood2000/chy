@@ -308,7 +308,7 @@ export default {
     handleExport() {
       this.download('system/post/export', {
         ...this.queryParams
-      }, `post_${new Date().getTime()}.xlsx`);
+      }, `岗位信息`);
     }
   }
 };

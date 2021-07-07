@@ -648,7 +648,7 @@ export default {
       const params = Object.assign({}, this.queryParams);
       params.pageSize = undefined;
       params.pageNum = undefined;
-      this.download('assets/vehicle/export', params, `车辆信息_${new Date().getTime()}.xlsx`).then(() => {
+      this.download('assets/vehicle/export', params, `车辆信息`).then(() => {
         this.exportLoading = false;
       });
     },

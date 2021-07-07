@@ -320,7 +320,7 @@ export default {
       const params = Object.assign({}, this.queryParams);
       params.pageSize = undefined;
       params.pageNum = undefined;
-      this.download('/payment/bankCard/export', params, `银行卡_${new Date().getTime()}.xlsx`).then(() => {
+      this.download('/payment/bankCard/export', params, `银行卡`).then(() => {
         this.exportLoading = false;
       });
     }

@@ -828,7 +828,7 @@ export default {
     // 导出批次列表
     async handleExport() {
       this.exportLoading = true;
-      await this.download('/transportation/batch/export', this.queryParams, `batch_${new Date().getTime()}.xlsx`);
+      await this.download('/transportation/batch/export', this.queryParams, `核验`);
       this.exportLoading = false;
     }
   }

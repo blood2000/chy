@@ -284,7 +284,7 @@ export default {
     handleExport() {
       this.download('schedule/job/log/export', {
         ...this.queryParams
-      }, `log_${new Date().getTime()}.xlsx`);
+      }, `调度日志`);
     }
   }
 };

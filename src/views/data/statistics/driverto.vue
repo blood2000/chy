@@ -256,7 +256,7 @@ export default {
     // 导出
     handleExport() {
       this.loadingExport = true;
-      this.download('/transportation/driverCountSearch/export', { ...this.queryParams }, `司机往来明细_${new Date().getTime()}.xlsx`).then(res => {
+      this.download('/transportation/driverCountSearch/export', { ...this.queryParams }, `司机往来明细`).then(res => {
         this.loadingExport = false;
       });
     }

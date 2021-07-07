@@ -21,6 +21,7 @@
               :props="defaultProps"
               :expand-on-click-node="false"
               :filter-node-method="filterNode"
+              :indent="0"
               default-expand-all
               @node-click="handleNodeClick"
             />

@@ -234,7 +234,7 @@ export default {
         url: row.cargoCodeQR,
         fileName: row.cargoCodeName
       };
-      this.download(downImgApi, params, `货集码_${row.cargoCodeName}.jpg`);
+      this.download(downImgApi, params, `货集码`, null, '.jpg');
       // 前端下载方法1
       // const image = new Image();
       // image.setAttribute('crossOrigin', 'anonymous');
