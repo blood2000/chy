@@ -96,7 +96,7 @@
       <el-col :span="3" class="text-label">
         卸货地址：
       </el-col>
-      <el-col :span="9" class="text-row">
+      <el-col :span="8" class="text-row">
         {{ form.waybillAddress?form.waybillAddress.unloadFormattedAddress:'-' }}
         <div>
           {{ form.waybillAddress?form.waybillAddress.unloadContact:'' }}
