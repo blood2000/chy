@@ -156,17 +156,34 @@ export default {
   computed: {
     unit() {
       let name = 'kg';
-      switch (this.$store.state.orders.orderStowageStatus) {
-        case '0':
-          name = 'kg';
-          break;
-        case '1':
-          name = 'm³';
-          break;
-        case '2':
-          name = '';
-          break;
+      const srcode = this.$store.state.orders.lossPlans;
+      const lossPlans = Object.keys(srcode);
+      let lossPlan = null;
+      if (lossPlans.length) {
+        const rcode = this.dataList[0].ruleCode;
+        lossPlans.forEach(e => {
+          if (e === rcode) {
+            lossPlan = srcode[e].ruleValue;
+          }
+        });
       }
+      if (lossPlan === 'DL') {
+        name = '%';
+      } else {
+        switch (this.$store.state.orders.orderStowageStatus) {
+          case '0':
+            name = 'kg';
+            break;
+          case '1':
+            name = 'm³';
+            break;
+          case '2':
+            name = '';
+            break;
+        }
+      }
+
+
       return name;
     }
   },

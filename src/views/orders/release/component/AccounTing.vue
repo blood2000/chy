@@ -310,6 +310,7 @@ export default {
     },
     redis: {
       handler(value) {
+        console.log(value, '有什么有用的东西');
         if (!value || !value.orderFreightVo) return;
 
         if (this.formData.ruleItemId && this.formData.ruleItemId !== value.ruleCode) return;
@@ -342,6 +343,14 @@ export default {
           if (e.enName === 'CALCULATION_FORMULA') {
             (JSON.stringify(this.jisuanRule) === '{}') && (this.jisuanRule = e);
           }
+
+          // 取路耗 亏吨方案
+          if (e.enName === 'LOSS_PLAN') {
+            // this.lossPlan = e;
+            // 有可能是多个规则-> 谁下面的规则
+            this.$store.commit('orders/SET_LOSS_PLAN', e);
+          }
+
 
           const bool = (e.enName === 'LOSS_PLAN' || e.enName === 'LOSS_RULE' || e.enName === 'CALCULATION_FORMULA' || e.enName === 'FREIGHT_COST' || e.enName === 'DRIVER_ACTUAL_PRICE');
 
@@ -431,6 +440,11 @@ export default {
       const filterDetailList = detailList.filter(e => {
         if (e.enName === 'CALCULATION_FORMULA') {
           this.jisuanRule = e;
+        }
+        if (e.enName === 'LOSS_PLAN') {
+          // this.lossPlan = e;
+          // 有可能是多个规则-> 谁下面的规则
+          this.$store.commit('orders/SET_LOSS_PLAN', e);
         }
         const bool = (e.enName === 'LOSS_PLAN' || e.enName === 'LOSS_RULE' || e.enName === 'CALCULATION_FORMULA');
 
