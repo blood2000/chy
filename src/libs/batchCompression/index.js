@@ -7,6 +7,7 @@ const getFile = (url) => {
     axios({
       method: 'get',
       url,
+      timeout: 30000,
       responseType: 'arraybuffer'
     }).then(data => {
       resolve(data.data);
@@ -26,7 +27,7 @@ const getFile = (url) => {
  * zipName String 压缩包名(不传就是时间戳)
  * success Function 成功回调函数
 */
-export const handleBatchDownload = async(selectImgList, zipName = '', success) => {
+export const handleBatchDownload = async(selectImgList, zipName = '', success, error) => {
   const data = selectImgList;
   const zip = new JSZip();
   const cache = {};
@@ -52,5 +53,7 @@ export const handleBatchDownload = async(selectImgList, zipName = '', success) =
       FileSaver.saveAs(content, zipName + Date.now() + '.zip'); // 利用file-saver保存文件
       success && success();
     });
+  }).catch(err => {
+    error && error(err);
   });
 };
