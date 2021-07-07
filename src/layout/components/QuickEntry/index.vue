@@ -81,6 +81,8 @@ export default {
           }
         });
       }
+
+      this.getList();
     },
 
     serviceOpen() {
