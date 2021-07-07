@@ -218,7 +218,7 @@ export default {
 .mapframe{
   position: fixed;
   top: 0;
-  right: 0;
+  right: -800px;
   z-index: -1;
   width:800px;
   height: 600px;
