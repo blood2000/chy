@@ -54,7 +54,7 @@
 
       <el-table v-loading="loading" highlight-current-row border :data="dataList">
         <el-table-column label="平台角色" align="center" prop="roleName" />
-        <el-table-column label="操作员" align="center" prop="updateName" />
+        <el-table-column label="操作员" align="center" prop="operatorName" />
         <el-table-column label="手机号" align="center" prop="phonenumber" />
         <el-table-column label="收支类型" align="center" prop="paidFeeType">
           <template slot-scope="scope">

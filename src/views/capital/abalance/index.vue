@@ -1,14 +1,15 @@
 <template>
   <!-- 平台账户余额 -->
-  <div class="app-container">
-    <el-row :gutter="10" class="mb8">
-      <!-- <el-col :span="1.5" class="fr">
+  <div>
+    <div class="app-container">
+      <el-row :gutter="10" class="mb8">
+        <!-- <el-col :span="1.5" class="fr">
         <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
       </el-col> -->
-      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
-    </el-row>
-    <el-table v-loading="loading" highlight-current-row border :data="dataList">
-      <!-- <el-table-column label="姓名" align="center" prop="" />
+        <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+      </el-row>
+      <el-table v-loading="loading" highlight-current-row border :data="dataList">
+        <!-- <el-table-column label="姓名" align="center" prop="" />
       <el-table-column label="网商汇款账号" align="center" prop="" />
       <el-table-column label="角色" align="center" prop="" />
       <el-table-column label="平台账号余额" align="center" prop="" />
@@ -16,74 +17,75 @@
       <el-table-column label="公户银行账户" align="center" prop="" />
       <el-table-column label="开户银行" align="center" prop="" />
       <el-table-column label="银行预留手机号" align="center" prop="" /> -->
-      <el-table-column label="平台账号名称" align="center" prop="orgName" />
-      <el-table-column label="平台账号余额" align="center" prop="amount" />
-      <el-table-column label="开户银行" align="center" prop="account" />
-      <el-table-column label="公户银行账户" align="center" prop="bankLineNo" />
-      <el-table-column label="联行号" align="center" prop="bankLineNo" />
-      <el-table-column label="银行预留手机号" align="center" prop="mobile" />
-      <el-table-column label="操作" align="center" fixed="left" class-name="small-padding fixed-width" width="240">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            @click="handleChangeDetail(scope.row)"
-          >变动明细</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            @click="handleRecharge(scope.row)"
-          >划拨充值</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            @click="handleReflect(scope.row)"
-          >平台提现</el-button>
-          <TableDropdown>
-            <el-dropdown-item>
-              <el-button
-                size="mini"
-                type="text"
-                @click="handleMember(scope.row)"
-              >开通网商会员</el-button>
-            </el-dropdown-item>
-            <el-dropdown-item>
-              <el-button
-                size="mini"
-                type="text"
-                @click="handleBindBank(scope.row)"
-              >绑定银行卡</el-button>
-            </el-dropdown-item>
-            <el-dropdown-item>
-              <el-button
-                size="mini"
-                type="text"
-                @click="handleBalance(scope.row)"
-              >查询网商余额</el-button>
-            </el-dropdown-item>
-          </TableDropdown>
-        </template>
-      </el-table-column>
-    </el-table>
+        <el-table-column label="平台账号名称" align="center" prop="orgName" />
+        <el-table-column label="平台账号余额" align="center" prop="amount" />
+        <el-table-column label="开户银行" align="center" prop="account" />
+        <el-table-column label="公户银行账户" align="center" prop="bankLineNo" />
+        <el-table-column label="联行号" align="center" prop="bankLineNo" />
+        <el-table-column label="银行预留手机号" align="center" prop="mobile" />
+        <el-table-column label="操作" align="center" fixed="left" class-name="small-padding fixed-width" width="240">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              type="text"
+              @click="handleChangeDetail(scope.row)"
+            >变动明细</el-button>
+            <el-button
+              size="mini"
+              type="text"
+              @click="handleRecharge(scope.row)"
+            >划拨充值</el-button>
+            <el-button
+              size="mini"
+              type="text"
+              @click="handleReflect(scope.row)"
+            >平台提现</el-button>
+            <TableDropdown>
+              <el-dropdown-item>
+                <el-button
+                  size="mini"
+                  type="text"
+                  @click="handleMember(scope.row)"
+                >开通网商会员</el-button>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <el-button
+                  size="mini"
+                  type="text"
+                  @click="handleBindBank(scope.row)"
+                >绑定银行卡</el-button>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <el-button
+                  size="mini"
+                  type="text"
+                  @click="handleBalance(scope.row)"
+                >查询网商余额</el-button>
+              </el-dropdown-item>
+            </TableDropdown>
+          </template>
+        </el-table-column>
+      </el-table>
 
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
 
-    <!-- 绑定银行卡 对话框 -->
-    <bank-dialog ref="bankDialogRef" :open.sync="bindBankOpen" :title="title" @refresh="getList" />
-    <!-- 变动明细 对话框 -->
-    <change-detail-dialog :open.sync="changeDetailOpen" :title="title" />
-    <!-- 查询网商余额 对话框 -->
-    <check-balance-dialog :open.sync="balanceOpen" :title="title" />
-    <!-- 划拨充值 对话框 -->
-    <recharge-dialog :open.sync="rechargeOpen" :title="title" />
-    <!-- 平台提现 -->
-    <reflect-dialog :open.sync="reflectOpen" :title="title" />
+      <!-- 绑定银行卡 对话框 -->
+      <bank-dialog ref="bankDialogRef" :open.sync="bindBankOpen" :title="title" @refresh="getList" />
+      <!-- 变动明细 对话框 -->
+      <change-detail-dialog :open.sync="changeDetailOpen" :title="title" />
+      <!-- 查询网商余额 对话框 -->
+      <check-balance-dialog :open.sync="balanceOpen" :title="title" />
+      <!-- 划拨充值 对话框 -->
+      <recharge-dialog :open.sync="rechargeOpen" :title="title" />
+      <!-- 平台提现 -->
+      <reflect-dialog :open.sync="reflectOpen" :title="title" />
+    </div>
   </div>
 </template>
 

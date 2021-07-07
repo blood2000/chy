@@ -2,9 +2,13 @@
   <section class="app-main">
     <transition name="fade-transform" mode="out-in">
       <keep-alive :include="cachedViews">
-        <router-view :key="key" />
+        <router-view :key="key" class="app-main-content" />
       </keep-alive>
     </transition>
+    <div class="foot-record-number">
+      <p>福建至简至一信息科技有限公司 版权所有</p>
+      <p>CopyRight@ 2021 All Rights Reserved <a href="https://beian.miit.gov.cn/" target="_blank">闽ICP备19023755号-2</a></p>
+    </div>
   </section>
 </template>
 
@@ -42,6 +46,19 @@ export default {
 .fixed-header+.app-main{
   height: calc(100vh - 119px);
   overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.app-main-content{
+  min-height: calc(100% - 63px);
+}
+
+.foot-record-number{
+  text-align: center;
+  line-height: 24px;
+  font-size: 14px;
+  color: #afafaf;
+  padding: 0px 0 15px;
 }
 </style>
 
