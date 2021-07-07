@@ -53,7 +53,7 @@
         >
           <el-input
             v-model.trim="queryParams.driverName"
-            placeholder="请输入司机姓名"
+            placeholder="请输入司机姓名/手机号"
             clearable
             size="small"
             style="width: 225px"
