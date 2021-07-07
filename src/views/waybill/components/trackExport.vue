@@ -21,7 +21,8 @@ export default {
       default: function() {
         return [];
       }
-    }
+    },
+    open: Boolean
   },
   data() {
     return {
@@ -47,12 +48,16 @@ export default {
       queryEndtime: '',
       timePoor: undefined,
       isPlan: false,
-      images: []
+      images: [],
+      waybillIndex: 0
     };
   },
   watch: {
     waybill(val) {
       if (val) {
+        this.$emit('update:open', true);
+        this.images = [];
+        this.waybillIndex = 0;
         this.setForm(val);
       }
     }
@@ -68,6 +73,11 @@ export default {
         this.images.push(dataUrl);
         if (this.images.length === this.waybill.length) {
           this.handleBatchDownload();
+          this.$emit('update:open', false);
+        } else {
+          this.waybillIndex = this.waybillIndex + 1;
+          console.log(this.waybillIndex);
+          this.setForm(this.waybill);
         }
       }).catch(function(error) {
         console.error('失败===', error);
@@ -153,7 +163,9 @@ export default {
       });
       that.polyline.setMap(that.$refs.map.$$getInstance());
       that.$refs.map.$$getInstance().setFitView(that.polyline); // 执行定位
-      this.screenshot();
+      setTimeout(() => {
+        that.screenshot();
+      }, 500);
     },
     /** 取消按钮 */
     cancel() {
@@ -168,31 +180,27 @@ export default {
     },
     // 表单赋值
     setForm(data) {
-      this.images = [];
-      data.forEach(element => {
-        setTimeout(() => {
-          // 获取运单信息，并标记装卸货地
-          getWebDetail(element.code).then(response => {
-            this.wayBillInfo = response.data;
-            // 获取装卸货地址经纬度
-            if (this.wayBillInfo.waybillAddress.loadLocation) {
-              this.loadAddress = this.wayBillInfo.waybillAddress.loadLocation.replace('(', '').replace(')', '').split(',');
-            } else {
-              this.loadAddress = [];
-            }
-            if (this.wayBillInfo.waybillAddress.unloadLocation) {
-              this.unloadAddress = this.wayBillInfo.waybillAddress.unloadLocation.replace('(', '').replace(')', '').split(',');
-            } else {
-              this.unloadAddress = [];
-            }
-            if (this.loadAddress.length !== 0 && this.unloadAddress.length !== 0) {
-            // 标记装卸货地址
-            // this.getMark();
-            // 获取路线
-              this.getTrackLocation();
-            }
-          });
-        }, 5000);
+      // this.images = [];
+      // 获取运单信息，并标记装卸货地
+      getWebDetail(data[this.waybillIndex].code).then(response => {
+        this.wayBillInfo = response.data;
+        // 获取装卸货地址经纬度
+        if (this.wayBillInfo.waybillAddress.loadLocation) {
+          this.loadAddress = this.wayBillInfo.waybillAddress.loadLocation.replace('(', '').replace(')', '').split(',');
+        } else {
+          this.loadAddress = [];
+        }
+        if (this.wayBillInfo.waybillAddress.unloadLocation) {
+          this.unloadAddress = this.wayBillInfo.waybillAddress.unloadLocation.replace('(', '').replace(')', '').split(',');
+        } else {
+          this.unloadAddress = [];
+        }
+        if (this.loadAddress.length !== 0 && this.unloadAddress.length !== 0) {
+          // 标记装卸货地址
+          // this.getMark();
+          // 获取路线
+          this.getTrackLocation();
+        }
       });
     },
     // 导出
@@ -211,7 +219,7 @@ export default {
   position: fixed;
   top: 0;
   right: 0;
-  z-index: 999;
+  z-index: -1;
   width:800px;
   height: 600px;
   border-radius: 6px;

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="exportLoading">
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form
         v-show="showSearch"
@@ -180,7 +180,7 @@
     <!-- 开票弹窗 -->
     <billing-dialog ref="BillingDialog" :open.sync="billingdialog" :title="title" @refresh="getList" />
     <!-- 切图对话框 -->
-    <TrackExport ref="TrackExport" :waybill="waybillTrack" />
+    <TrackExport ref="TrackExport" :open.sync="exportLoading" :waybill="waybillTrack" />
   </div>
 </template>
 
@@ -198,7 +198,9 @@ export default {
   components: { VerifyDialog, BillingDialog, TrackExport },
   data() {
     return {
+      // 批量轨迹参数
       waybillTrack: [],
+      exportLoading: false,
       tableColumnsConfig: [],
       api: billListApi,
       activeName: '1',
