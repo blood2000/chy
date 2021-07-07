@@ -206,7 +206,7 @@ export default {
 
     async handleExport() {
       this.exportLoading = true;
-      await this.download('/transportation/batch/operateLogExport', this.queryParams, `发票驳回`);
+      await this.download('/transportation/batch/operateLogExport', this.queryParams, `驳回轨迹`);
       this.exportLoading = false;
     }
   }

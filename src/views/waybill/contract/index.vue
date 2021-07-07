@@ -447,7 +447,7 @@ export default {
 
       if (batchUrl.length) {
         this.downloadLoadin = true;
-        handleBatchDownload(batchUrl, null, () => {
+        handleBatchDownload(batchUrl, undefined, () => {
           // console.log('下载完成');
           this.downloadLoadin = false;
         }, () => {

@@ -2,6 +2,7 @@
 import axios from 'axios';
 import JSZip from 'jszip';
 import FileSaver from 'file-saver';
+import { parseTime } from '@/utils/ddc';
 const getFile = (url) => {
   return new Promise((resolve, reject) => {
     axios({
@@ -27,7 +28,7 @@ const getFile = (url) => {
  * zipName String 压缩包名(不传就是时间戳)
  * success Function 成功回调函数
 */
-export const handleBatchDownload = async(selectImgList, zipName = '', success, error) => {
+export const handleBatchDownload = async(selectImgList, zipName = '合同', success, error) => {
   const data = selectImgList;
   const zip = new JSZip();
   const cache = {};
@@ -50,10 +51,12 @@ export const handleBatchDownload = async(selectImgList, zipName = '', success, e
     zip.generateAsync({
       type: 'blob'
     }).then(content => { // 生成二进制流
-      FileSaver.saveAs(content, zipName + Date.now() + '.zip'); // 利用file-saver保存文件
+      FileSaver.saveAs(content, zipName + '_' + parseTime(new Date(), '{y}{m}{d}{h}{i}') + '.zip'); // 利用file-saver保存文件
       success && success();
     });
   }).catch(err => {
     error && error(err);
   });
 };
+
+
