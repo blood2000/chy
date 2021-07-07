@@ -1,10 +1,20 @@
+.statistic-total{
+  display: flex;
+  flex-direction: column;
+  margin-left: 40px;
+}
+.statistic1-total{
+  display: flex;
+  flex-direction: column;
+  margin-left: 20px;
+}
 .workbanch{
   min-width: 1695px;
   overflow-x: scroll;
   height: 100%;
 }
 .minworkbanch{
-  min-width: 1244px;
+  min-width: 1350px;
   overflow-x: scroll;
   height: 100%;
   font-size: 12px;
@@ -136,7 +146,7 @@
 }
 .minworkbanch .user-info{
   margin-left:10px;
-  max-width:150px;
+  max-width:170px;
 }
 .user-post{
   display: flex;
@@ -218,15 +228,21 @@
 // 平台概览
 .platform-num{
   position: relative;
-  bottom: 90px;
-  left: 0;
-  height: 0;
+  bottom: 0;
+  left: -65px;
+  // height: 0;
+  width: 0;
 }
 .minworkbanch .platform-num{
   position: relative;
-  bottom: 70px;
-  left: 0;
-  height: 0;
+  bottom: 0;
+  left: -45px;
+  // height: 0;
+  width: 0;
+}
+.platform-tag{
+  width: 100px;
+  text-align: center;
 }
 // 日历
 ::v-deep .el-calendar-table .el-calendar-day{
@@ -357,7 +373,7 @@
   margin-right: 15px;
 }
 .minworkbanch .user-frame{
-  width:240px;
+  width:260px;
   margin-right: 10px;
 }
 .nav-frame{
@@ -365,7 +381,7 @@
   min-width:835px;
 }
 .minworkbanch .nav-frame{
-  width:calc(100% - 240px);
+  width:calc(100% - 270px);
   min-width:500px;
 }
 .middle-frame{
@@ -384,29 +400,30 @@
   margin-right: 15px;
 }
 .minworkbanch .order-frame{
-  min-width:240px;
-  width:240px;
+  min-width:260px;
+  width:260px;
   height: 100%;
   margin-right: 10px;
 }
 .invoice-frame{
-  width:460px;
+  width:33%;
+  min-width: 450px;
   height: 100%;
   margin-right: 15px;
 }
 .minworkbanch .invoice-frame{
-  width:330px;
+  width:33%;
   min-width:330px;
   height: 100%;
   margin-right: 10px;
 }
 .way-frame{
-  width:calc(100% - 820px);
+  width:calc(67% - 360px);
   min-width:360px;
   height: 100%;
 }
 .minworkbanch .way-frame{
-  width:calc(100% - 570px);
+  width:calc(67% - 280px);
   min-width:300px;
   height: 100%;
 }
@@ -453,4 +470,9 @@
 .minworkbanch .g-title-big{
   font-size: 14px;
 }
+
+// ::-webkit-scrollbar {
+//   width: 8px;
+//   height: 8px;
+// }
 
