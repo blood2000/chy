@@ -65,7 +65,7 @@ export default {
       // 加载
       'loading': false,
       // 总条数
-      'total': 1,
+      'total': 0,
       // 表头
       'tableColumnsConfig': [],
       // 查询参数

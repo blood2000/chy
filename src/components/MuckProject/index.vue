@@ -528,7 +528,7 @@ export default {
             {
               'label': '驳回原因',
               'prop': 'remark',
-              'isShow': true,
+              'isShow': false,
               'sortNum': 21,
               'width': '120',
               'tooltip': true
