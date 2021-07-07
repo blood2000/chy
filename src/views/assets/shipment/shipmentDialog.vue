@@ -333,21 +333,6 @@
         至
         <el-input-number v-model="form.consumptionMax" :controls="false" placeholder="最大值" class="width12" />
       </el-form-item>-->
-      <el-form-item label="是否预付运费" prop="isPrepaid">
-        <el-select
-          v-model="form.isPrepaid"
-          clearable
-          filterable
-          class="width90"
-        >
-          <el-option
-            v-for="dict in isOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
       <el-row :gutter="20">
         <el-col :span="23">
           <el-form-item label="授信保护期" prop="creditEndTime">
@@ -394,6 +379,41 @@
           </el-form-item>
         </el-col>
       </el-row>
+        <el-row :gutter="20">
+            <el-col :span="11">
+                <el-form-item label="是否预付运费" prop="isPrepaid">
+                    <el-select
+                            v-model="form.isPrepaid"
+                            clearable
+                            filterable
+                            style="width: 200px"
+                    >
+                        <el-option
+                                v-for="dict in isOptions"
+                                :key="dict.dictValue"
+                                :label="dict.dictLabel"
+                                :value="dict.dictValue"
+                        />
+                    </el-select>
+                </el-form-item>
+            </el-col>
+            <el-col :span="11" v-if="form.isPrepaid === 1">
+                <el-form-item label="预付运费类型" prop="repaidType">
+                    <el-select
+                            v-model="form.repaidType"
+                            clearable
+                            filterable
+                    >
+                        <el-option
+                                v-for="dict in repaidTypeOptions"
+                                :key="dict.dictValue"
+                                :label="dict.dictLabel"
+                                :value="dict.dictValue"
+                        />
+                    </el-select>
+                </el-form-item>
+            </el-col>
+        </el-row>
       <el-row :gutter="20">
         <el-col :span="11">
           <el-form-item label="负责的运营团队" prop="operateOrgCode">
@@ -587,6 +607,11 @@ export default {
       isOptions: [
         { dictLabel: '否', dictValue: 0 },
         { dictLabel: '是', dictValue: 1 }
+      ],
+      // 预付运费
+      repaidTypeOptions: [
+        { dictLabel: '接单前', dictValue: 0 },
+        { dictLabel: '卸货前', dictValue: 1 }
       ],
       // 是否允许
       allowOptions: [
@@ -946,6 +971,7 @@ export default {
         wipeType: null,
         isMonthly: 0,
         isPrepaid: 1, // 是否预付运费，默认是
+        repaidType: 0, // 预付运费类型
         payInvoiceType: '7',
         isConsumption: null,
         consumptionUnit: null,
