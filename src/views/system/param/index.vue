@@ -3,7 +3,7 @@
     <div class="row-box ly-flex-pack-justify">
       <div class="col-box-left">
         <div class="app-container app-container--tree">
-          <div class="el-tree-scroll-container">
+          <div class="el-tree-scroll-container page-param-tree">
             <el-tree
               ref="tree"
               :data="treeData"

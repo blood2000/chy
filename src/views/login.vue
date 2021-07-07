@@ -219,7 +219,7 @@
     </el-form>
     <!--  底部  -->
     <div class="el-login-footer">
-      <span>Copyright © 2021-2023 ddc.vip All Rights Reserved.</span>
+      <span>CopyRight@ 2021 All Rights Reserved <a href="https://beian.miit.gov.cn/" target="_blank">闽ICP备19023755号-2</a></span>
     </div>
 
 

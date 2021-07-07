@@ -17,6 +17,9 @@
 .el-tree-node__expand-icon.is-leaf {
   display: none;
 }
+.el-tree-node__content {
+  height: 32px;
+}
 .el-tree-node__content > .el-tree-node__expand-icon {
   padding: 6px 0;
   color: #9FA2B5;
@@ -60,14 +63,14 @@
   border-left: 1px solid #D9D9D9;
   bottom: 0px;
   height: 100%;
-  top: -26px;
+  top: -22px;
   width: 1px;
 }
 
 .el-tree-node:after {
   border-top: 1px solid #D9D9D9;
   height: 20px;
-  top: 12px;
+  top: 16px;
   width: 8px;
 }
 
@@ -77,32 +80,26 @@
 }
 
 // 图标样式
-.i-node-first{
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  background: url('~@/assets/images/tree/node_icon_first.png') no-repeat;
-  background-size: 100% 100%;
-  vertical-align: middle;
-  margin: -4px 6px 0 2px;
-}
-
-.i-node-second{
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  background: url('~@/assets/images/tree/node_icon_second.png') no-repeat;
-  background-size: 100% 100%;
-  vertical-align: middle;
-  margin: -4px 6px 0 2px;
-}
-
-.i-node-three{
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  background: url('~@/assets/images/tree/node_icon_three.png') no-repeat;
-  background-size: 100% 100%;
-  vertical-align: middle;
-  margin: -4px 6px 0 2px;
+.el-tree-node__content{
+  .tree-node-icon{
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    margin: -4px 0 0 4px;
+  }
+  .i-node-first{
+    background: url('~@/assets/images/tree/node_icon_first.png') no-repeat;
+    background-size: 100% 100%;
+  }
+  
+  .i-node-second{
+    background: url('~@/assets/images/tree/node_icon_second.png') no-repeat;
+    background-size: 100% 100%;
+  }
+  
+  .i-node-three{
+    background: url('~@/assets/images/tree/node_icon_three.png') no-repeat;
+    background-size: 100% 100%;
+  }
 }

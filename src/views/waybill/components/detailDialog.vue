@@ -96,7 +96,7 @@
       <el-col :span="3" class="text-label">
         卸货地址：
       </el-col>
-      <el-col :span="9" class="text-row">
+      <el-col :span="8" class="text-row">
         {{ form.waybillAddress?form.waybillAddress.unloadFormattedAddress:'-' }}
         <div>
           {{ form.waybillAddress?form.waybillAddress.unloadContact:'' }}
@@ -104,18 +104,18 @@
         </div>
       </el-col>
     </el-row>
-    <el-row>
+    <el-row v-viewer>
       <el-col :span="3" class="text-label">
         装货签照片：
       </el-col>
       <el-col :span="9" class="text-row">
-        <img v-for="(url, index) in formAttachmentUrl" :key="index" v-viewer :src="url ? url:''" class="img-box">
+        <img v-for="(url, index) in formAttachmentUrl" :key="index" :src="url ? url:''" class="img-box">
       </el-col>
       <el-col :span="3" class="text-label">
         卸货签照片：
       </el-col>
       <el-col :span="9" class="text-row">
-        <img v-for="(url, index) in formAttachmentUpUrl" :key="index" v-viewer :src="url ? url:''" class="img-box">
+        <img v-for="(url, index) in formAttachmentUpUrl" :key="index" :src="url ? url:''" class="img-box">
       </el-col>
     </el-row>
     <!-- 费用 -->
