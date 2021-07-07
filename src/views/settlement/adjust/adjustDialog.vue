@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog class="i-adjust" :title="title" :visible="visible" width="1400px" :close-on-click-modal="false" append-to-body @close="cancel">
+    <el-dialog v-loading="adjustLoading" class="i-adjust" :title="title" :visible="visible" width="1400px" :close-on-click-modal="false" append-to-body @close="cancel">
 
       <div slot="title" class="m20">
         <span class="mr10">批量修改(元)： </span>
@@ -271,7 +271,8 @@ export default {
       },
       floor,
       errList: [],
-      className: ''
+      className: '',
+      adjustLoading: false
     };
   },
   computed: {
@@ -514,7 +515,9 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.adjustLoading = true;
         return batchCheck({ boList }).then(res => {
+          this.adjustLoading = false;
           if (res.data) {
             this.msgError(res.msg);
             // console.log(res);
@@ -526,6 +529,8 @@ export default {
             this.visible = false;
             this.$emit('refresh');
           }
+        }).catch(() => {
+          this.adjustLoading = false;
         });
       });
     },
