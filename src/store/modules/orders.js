@@ -6,7 +6,8 @@ const state = {
   provinceList: null,
   goodsBigType_option: null,
 
-  orderStowageStatus: '0' // 单位
+  orderStowageStatus: '0', // 单位
+  lossPlans: {} // 取路耗 亏吨方案, key为规则code,value为路耗内容
 };
 
 const mutations = {
@@ -14,7 +15,14 @@ const mutations = {
   SET_MO: (state, device) => { state.M0_option = device; },
   SET_PROVINCE: (state, device) => { state.provinceList = device; },
   SET_GOODSBIGTYPE: (state, device) => { state.goodsBigType_option = device; },
-  SET_ORDERSTOWAGESTATUS: (state, device) => { state.orderStowageStatus = device; }
+  SET_ORDERSTOWAGESTATUS: (state, device) => { state.orderStowageStatus = device; },
+  SET_LOSS_PLAN: (state, device) => {
+    // console.log(device);
+    state.lossPlans = {
+      ...state.lossPlans,
+      [device.ruleCode]: device
+    };
+  }
 
 };
 
