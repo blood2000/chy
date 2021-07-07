@@ -379,41 +379,41 @@
           </el-form-item>
         </el-col>
       </el-row>
-        <el-row :gutter="20">
-            <el-col :span="11">
-                <el-form-item label="是否预付运费" prop="isPrepaid">
-                    <el-select
-                            v-model="form.isPrepaid"
-                            clearable
-                            filterable
-                            style="width: 200px"
-                    >
-                        <el-option
-                                v-for="dict in isOptions"
-                                :key="dict.dictValue"
-                                :label="dict.dictLabel"
-                                :value="dict.dictValue"
-                        />
-                    </el-select>
-                </el-form-item>
-            </el-col>
-            <el-col :span="11" v-if="form.isPrepaid === 1">
-                <el-form-item label="预付运费类型" prop="repaidType">
-                    <el-select
-                            v-model="form.repaidType"
-                            clearable
-                            filterable
-                    >
-                        <el-option
-                                v-for="dict in repaidTypeOptions"
-                                :key="dict.dictValue"
-                                :label="dict.dictLabel"
-                                :value="dict.dictValue"
-                        />
-                    </el-select>
-                </el-form-item>
-            </el-col>
-        </el-row>
+      <el-row :gutter="20">
+        <el-col :span="11">
+          <el-form-item label="是否预付运费" prop="isPrepaid">
+            <el-select
+              v-model="form.isPrepaid"
+              clearable
+              filterable
+              style="width: 200px"
+            >
+              <el-option
+                v-for="dict in isOptions"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col v-if="form.isPrepaid === 1" :span="11">
+          <el-form-item label="预付运费类型" prop="repaidType">
+            <el-select
+              v-model="form.repaidType"
+              clearable
+              filterable
+            >
+              <el-option
+                v-for="dict in repaidTypeOptions"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-row :gutter="20">
         <el-col :span="11">
           <el-form-item label="负责的运营团队" prop="operateOrgCode">
