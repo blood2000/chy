@@ -144,22 +144,22 @@
             placeholder="请选择"
           />
         </el-form-item>
-          <el-form-item label="账号状态" prop="status">
-              <el-select
-                      v-model="queryParams.status"
-                      filterable
-                      clearable
-                      size="small"
-                      style="width: 272px"
-              >
-                  <el-option
-                          v-for="dict in userStatusOptions"
-                          :key="dict.dictValue"
-                          :label="dict.dictLabel"
-                          :value="dict.dictValue"
-                  />
-              </el-select>
-          </el-form-item>
+        <el-form-item label="账号状态" prop="status">
+          <el-select
+            v-model="queryParams.status"
+            filterable
+            clearable
+            size="small"
+            style="width: 272px"
+          >
+            <el-option
+              v-for="dict in userStatusOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
           <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -238,11 +238,11 @@
           <i v-show="row.authStatus === 3" class="el-icon-success g-color-success mr5" />
           <span>{{ selectDictLabel(statusOptions, row.authStatus) }}</span>
         </template>
-          <template #status="{row}">
-              <i v-show="row.status === '1'" class="el-icon-error g-color-error mr5" />
-              <i v-show="row.status === '0'" class="el-icon-success g-color-success mr5" />
-              <span>{{ selectDictLabel(userStatusOptions, row.status) }}</span>
-          </template>
+        <template #status="{row}">
+          <i v-show="row.status === '1'" class="el-icon-error g-color-error mr5" />
+          <i v-show="row.status === '0'" class="el-icon-success g-color-success mr5" />
+          <span>{{ selectDictLabel(userStatusOptions, row.status) }}</span>
+        </template>
         <template #edit="{row}">
           <el-button
             v-if="row.authStatus != 3"

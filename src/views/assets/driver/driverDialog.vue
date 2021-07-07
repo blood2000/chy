@@ -433,16 +433,16 @@
             />
           </el-select>
         </el-form-item>
-          <el-form-item label="审核备注" prop="authRemark" v-if="title==='审核'">
-              <el-input
-                      class="width90"
-                      type="textarea"
-                      :rows="2"
-                      maxlength="200"
-                      placeholder="请输入审核备注"
-                      v-model="form.authRemark">
-              </el-input>
-          </el-form-item>
+        <el-form-item v-if="title==='审核'" label="审核备注" prop="authRemark">
+          <el-input
+            v-model="form.authRemark"
+            class="width90"
+            type="textarea"
+            :rows="2"
+            maxlength="200"
+            placeholder="请输入审核备注"
+          />
+        </el-form-item>
         <!-- <el-form-item label="年审时间" prop="annualVerificationDate">
           <el-date-picker
             v-model="vehicleForm.annualVerificationDate"
