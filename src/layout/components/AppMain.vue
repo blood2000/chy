@@ -1,11 +1,11 @@
 <template>
-  <section class="app-main">
+  <section class="app-main" :class="showRecord ? 'hidden-x' : ''">
     <transition name="fade-transform" mode="out-in">
       <keep-alive :include="cachedViews">
-        <router-view :key="key" class="app-main-content" />
+        <router-view :key="key" :class="showRecord ? 'app-main-content' : ''" />
       </keep-alive>
     </transition>
-    <div class="foot-record-number">
+    <div v-show="showRecord" class="foot-record-number">
       <p>福建至简至一信息科技有限公司 版权所有</p>
       <p>CopyRight@ 2021 All Rights Reserved <a href="https://beian.miit.gov.cn/" target="_blank">闽ICP备19023755号-2</a></p>
     </div>
@@ -21,6 +21,10 @@ export default {
     },
     key() {
       return this.$route.path;
+    },
+    // 工作台不显示版本号
+    showRecord() {
+      return this.$route.path !== '/index';
     }
   }
 };
@@ -46,7 +50,9 @@ export default {
 .fixed-header+.app-main{
   height: calc(100vh - 119px);
   overflow-y: auto;
-  overflow-x: hidden;
+  &.hidden-x{
+    overflow-x: hidden;
+  }
 }
 
 .app-main-content{
