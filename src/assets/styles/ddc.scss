@@ -290,7 +290,7 @@
 .el-tree-scroll-container{
   width: 100%;
   /*设置纵向滚动条、横向滚动条要配合下面的.el-tree-node的样式才能实现*/
-  overflow: scroll;
+  overflow: auto;
   >.el-tree{
     >.el-tree-node{
       /*设置横向滚动条*/
