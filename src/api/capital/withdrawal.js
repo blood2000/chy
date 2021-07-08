@@ -14,7 +14,8 @@ export function getWithDrawalList(data) {
 export function toCard(ids) {
   return request({
     url: `/payment/pay/toCard?ids=${ids}`,
-    method: 'post'
+    method: 'post',
+    timeout: 3 * 60 * 1000
   });
 }
 
