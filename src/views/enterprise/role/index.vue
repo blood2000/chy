@@ -24,7 +24,14 @@
               :indent="0"
               default-expand-all
               @node-click="handleNodeClick"
-            />
+            >
+              <span slot-scope="{ node, data }">
+                <span class="node-label">
+                  <i class="tree-node-icon" :class="data.icon" />
+                  {{ node.label }}
+                </span>
+              </span>
+            </el-tree>
           </div>
         </div>
       </el-col>

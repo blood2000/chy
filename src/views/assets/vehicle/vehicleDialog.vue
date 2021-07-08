@@ -420,7 +420,7 @@ export default {
         licenseNumber: null,
         vehicleAscriptionType: null,
         classificationCode: null,
-        vehicleLicenseColorCode: null,
+        vehicleLicenseColorCode: '1', // 车牌颜色默认为黄色
         vehicleColorCode: null,
         vehicleTypeCode: null,
         vehicleEnergyType: null,
