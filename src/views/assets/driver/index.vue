@@ -140,6 +140,46 @@
             />
           </el-select>
         </el-form-item>
+          <el-form-item label="审核时间">
+              <el-date-picker
+                      v-model="queryParams.authTimeBegin"
+                      clearable
+                      size="small"
+                      type="date"
+                      value-format="yyyy-MM-dd"
+                      style="width: 130px"
+                      placeholder="请选择"
+              /> -
+              <el-date-picker
+                      v-model="queryParams.authTimeEnd"
+                      clearable
+                      size="small"
+                      type="date"
+                      value-format="yyyy-MM-dd"
+                      style="width: 130px"
+                      placeholder="请选择"
+              />
+          </el-form-item>
+          <el-form-item label="注册时间">
+              <el-date-picker
+                      v-model="queryParams.createTimeBegin"
+                      clearable
+                      size="small"
+                      type="date"
+                      value-format="yyyy-MM-dd"
+                      style="width: 130px"
+                      placeholder="请选择"
+              /> -
+              <el-date-picker
+                      v-model="queryParams.createTimeEnd"
+                      clearable
+                      size="small"
+                      type="date"
+                      value-format="yyyy-MM-dd"
+                      style="width: 130px"
+                      placeholder="请选择"
+              />
+          </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
           <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -512,7 +552,11 @@ export default {
         teamCode: undefined,
         applyStatus: undefined,
         isBindBankCard: null,
-        status: undefined
+        status: undefined,
+        authTimeBegin: undefined,
+        authTimeEnd: undefined,
+        createTimeBegin: undefined,
+        createTimeEnd: undefined
       },
       // 表单是否禁用
       formDisable: false,
@@ -605,6 +649,10 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.queryParams.authTimeBegin = undefined;
+      this.queryParams.authTimeEnd = undefined;
+      this.queryParams.createTimeBegin = undefined;
+      this.queryParams.createTimeEnd = undefined;
       this.resetForm('queryForm');
       this.queryParams.authStatus = null;
       this.queryParams.isBindBankCard = null;
@@ -822,6 +870,6 @@ export default {
 
 <style scoped>
 .input-width{
-  width: 240px;
+  width: 272px;
 }
 </style>

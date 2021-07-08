@@ -151,6 +151,16 @@ export default {
   mounted() {
     this.getCompanyInfo();
   },
+  watch: {
+    shipmentCode: {
+      handler: function(val) {
+        if (val) {
+          this.getCompanyInfo();
+        }
+      },
+      deep: true
+    }
+  },
   methods: {
     getCompanyInfo() {
       getCompanyInfo(this.shipmentCode).then(response => {
