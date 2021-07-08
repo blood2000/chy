@@ -38,7 +38,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="车辆归属类型" prop="vehicleAscriptionType">
+      <!-- <el-form-item label="车辆归属类型" prop="vehicleAscriptionType">
         <el-select v-model="form.vehicleAscriptionType" placeholder="请选择车辆归属类型" class="width90" clearable filterable>
           <el-option
             v-for="dict in vehicleAscriptionTypeOptions"
@@ -47,7 +47,7 @@
             :value="parseInt(dict.dictValue)"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="车辆类型" prop="vehicleTypeCode">
         <el-select v-model="form.vehicleTypeCode" placeholder="请选择车辆类型" class="width90" clearable filterable>
           <el-option
@@ -271,6 +271,18 @@ export default {
           { required: true, message: '车牌号不能为空', trigger: 'blur' },
           { validator: this.formValidate.plateNo, trigger: ['blur', 'change'] }
         ],
+        vehicleLicenseColorCode: [
+          { required: true, message: '车牌颜色不能为空', trigger: ['blur', 'change'] }
+        ],
+        vehicleTypeCode: [
+          { required: true, message: '车辆类型不能为空', trigger: ['blur', 'change'] }
+        ],
+        chassisNumber: [
+          { required: true, message: '车辆识别码不能为空', trigger: 'blur' }
+        ],
+        vehicleEnergyType: [
+          { required: true, message: '车辆能源类型不能为空', trigger: ['blur', 'change'] }
+        ],
         vehicleTotalWeight: [
           { required: true, message: '车辆总重量不能为空', trigger: 'blur' },
           { validator: (rules, value, callback) => this.formValidate.greaterThanZero(rules, value, callback, '车辆总重量'), trigger: ['blur', 'change'] }
@@ -278,9 +290,6 @@ export default {
         vehicleLoadWeight: [
           { required: true, message: '车辆可载重量不能为空', trigger: 'blur' },
           { validator: (rules, value, callback) => this.formValidate.greaterThanZero(rules, value, callback, '车辆可载重量'), trigger: ['blur', 'change'] }
-        ],
-        vehicleLicenseColorCode: [
-          { required: true, message: '车牌颜色不能为空', trigger: ['blur', 'change'] }
         ]
       },
       // 选择车辆

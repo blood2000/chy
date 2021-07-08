@@ -301,7 +301,7 @@
         </el-form-item>
       </template>
       <template v-if="form.driverType == 1">
-        <el-form-item label="车辆归属类型" prop="vehicleAscriptionType">
+        <!-- <el-form-item label="车辆归属类型" prop="vehicleAscriptionType">
           <el-select v-model="vehicleForm.vehicleAscriptionType" placeholder="支持自动识别" class="width90" filterable clearable>
             <el-option
               v-for="dict in vehicleAscriptionTypeOptions"
@@ -310,8 +310,18 @@
               :value="parseInt(dict.dictValue)"
             />
           </el-select>
+        </el-form-item> -->
+        <el-form-item label="车牌颜色" prop="vehicleLicenseColorCode" :rules="[{ required: true, message: '车牌颜色不能为空', trigger: ['change', 'blur'] }]">
+          <el-select v-model="vehicleForm.vehicleLicenseColorCode" class="width90" filterable clearable>
+            <el-option
+              v-for="dict in licenseColorOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
         </el-form-item>
-        <el-form-item label="车辆类型" prop="vehicleTypeCode">
+        <el-form-item label="车辆类型" prop="vehicleTypeCode" :rules="[{ required: true, message: '车辆类型不能为空', trigger: ['change', 'blur'] }]">
           <el-select v-model="vehicleForm.vehicleTypeCode" placeholder="支持自动识别" class="width90" clearable filterable>
             <el-option
               v-for="dict in vehicleTypeOptions"
@@ -321,13 +331,13 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="车辆识别码" prop="chassisNumber" :rules="[{ required: true, message: '车辆识别码不能为空', trigger: 'blur' }]">
+        <el-form-item label="车辆识别码" prop="chassisNumber" :rules="[{ required: true, message: '车辆识别码不能为空', trigger: ['change', 'blur'] }]">
           <el-input v-model="vehicleForm.chassisNumber" placeholder="支持自动识别" class="width90" clearable />
         </el-form-item>
-        <el-form-item label="车牌颜色" prop="vehicleLicenseColorCode">
-          <el-select v-model="vehicleForm.vehicleLicenseColorCode" class="width90" filterable clearable>
+        <el-form-item label="车辆能源类型" prop="vehicleEnergyType" :rules="[{ required: true, message: '车辆能源类型不能为空', trigger: ['change', 'blur'] }]">
+          <el-select v-model="vehicleForm.vehicleEnergyType" class="width90" filterable clearable>
             <el-option
-              v-for="dict in licenseColorOptions"
+              v-for="dict in energyTypesOptions"
               :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
@@ -338,16 +348,6 @@
           <el-select v-model="vehicleForm.vehicleColorCode" class="width90" filterable clearable>
             <el-option
               v-for="dict in carBodyColorOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="车辆能源类型" prop="vehicleEnergyType">
-          <el-select v-model="vehicleForm.vehicleEnergyType" class="width90" filterable clearable>
-            <el-option
-              v-for="dict in energyTypesOptions"
               :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
