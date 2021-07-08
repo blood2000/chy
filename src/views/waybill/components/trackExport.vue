@@ -62,9 +62,6 @@ import { handleBatchDownload } from '@/libs/trackExport';
 
 export default {
   name: 'Track',
-  components: {
-    // UploadImage
-  },
   props: {
     waybill: {
       type: Array,

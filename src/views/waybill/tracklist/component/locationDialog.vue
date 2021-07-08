@@ -52,13 +52,9 @@
 
 <script>
 import { jimiLocation } from '@/api/waybill/tracklist';
-// import UploadImage from '@/components/UploadImage/index';
 
 export default {
   name: 'LocationDialog',
-  components: {
-    // UploadImage
-  },
   props: {
     title: {
       type: String,

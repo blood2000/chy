@@ -24,9 +24,6 @@ const apis = [refuseVerification, refuseBatchClaim, refuseApplied, refuseBilling
 
 export default {
   name: 'RejectDialog',
-  components: {
-    // UploadImage
-  },
   props: {
     title: {
       type: String,

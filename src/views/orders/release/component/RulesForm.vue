@@ -79,14 +79,14 @@
               { required: true, message: '请输入起始值', trigger: 'blur' },
             ]"
           >
-            <span v-if="formData[item.myName+'_0'] !== 0"> - </span>
+            <!-- <span v-if="formData[item.myName+'_0'] !== 0"> - </span> -->
             <el-input-number
               v-model="formData[item.myName+'_0']"
               :controls="false"
               :placeholder="`请输入${item.cnName}`"
               step-strictly
-              :max="item.unit==='%'?100: 999999"
-              :min="item.unit==='%'?0: 0"
+              :max="item.unit==='%'?100: 0"
+              :min="item.unit==='%'?0: -999999"
               :precision="0"
               controls-position="right"
               :style="{ width: '85px' }"

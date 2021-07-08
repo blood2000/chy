@@ -15,13 +15,9 @@
 
 <script>
 import { cancel } from '@/api/waybill/tracklist';
-// import UploadImage from '@/components/UploadImage/index';
 
 export default {
   name: 'CancelDialog',
-  components: {
-    // UploadImage
-  },
   props: {
     title: {
       type: String,

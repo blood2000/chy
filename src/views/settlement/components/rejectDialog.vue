@@ -15,13 +15,9 @@
 
 <script>
 import { rejectUnload } from '@/api/settlement/adjust';
-// import UploadImage from '@/components/UploadImage/index';
 
 export default {
   name: 'RejectDialog',
-  components: {
-    // UploadImage
-  },
   props: {
     title: {
       type: String,

@@ -224,7 +224,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-row>
+        <el-row v-viewer>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">驾驶证</p>
             <upload-image v-model="form.driverLicenseImage" image-type="driver-license" icon-type="driver" @fillForm="fillForm" />
