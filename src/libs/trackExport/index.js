@@ -32,7 +32,7 @@ export const handleBatchDownload = async(selectImgList, zipName = '', success) =
   // const cache = {};
   // const promises = [];
   await data.forEach((item, index) => {
-    console.log(item);
+    // console.log(item);
     // const arr_name = item.split('/');
     const file_name = index + '.png'; // 获取文件名
     zip.file(file_name, item.replace(/^data:image\/\w+;base64,/, ''), {
