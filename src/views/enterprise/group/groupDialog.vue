@@ -61,7 +61,6 @@
 
 <script>
 import { addInfo } from '@/api/enterprise/group';
-// import UploadImage from '@/components/UploadImage/index';
 
 import { listInfo } from '@/api/assets/team';
 import FilterableSelect from '@/components/FilterableSelect';
@@ -69,7 +68,6 @@ import FilterableSelect from '@/components/FilterableSelect';
 
 export default {
   components: {
-    // UploadImage
     FilterableSelect
   },
   props: {

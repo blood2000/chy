@@ -1,103 +1,104 @@
 <template>
   <div>
-      <el-row>
-          <!--部门数据-->
-          <el-col :lg="5" :md="6" :sm="7" :xs="24">
-              <div class="app-container app-container--tree">
-                  <div class="el-tree-scroll-container page-param-tree">
-                    <el-tree
-                      ref="tree"
-                      :data="treeData"
-                      :props="defaultTreeProps"
-                      :expand-on-click-node="false"
-                      default-expand-all
-                      :render-content="renderContent"
-                      @node-click="handleNodeClick"
-                    />
-                  </div>
-             </div>
-          </el-col>
-          <!--用户数据-->
-          <el-col :lg="19" :md="18" :sm="17" :xs="24">
-            <div class="app-container app-container--search">
-                <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-                    <el-form-item label="标题" prop="mediaTitle">
-                        <el-input
-                                v-model="queryParams.mediaTitle"
-                                placeholder="请输入标题"
-                                clearable
-                                size="small"
-                                style="width: 240px"
-                                @keyup.enter.native="handleQuery"
-                        />
-                    </el-form-item>
-                    <el-form-item>
-                        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-                        <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-                    </el-form-item>
-                </el-form>
-            </div>
-            <div class="app-container">
-                <el-row :gutter="10" class="mb8">
-                    <el-col :span="1.5">
-                        <el-button
-                                type="primary"
-                                icon="el-icon-plus"
-                                size="mini"
-                                @click="handleAdd"
-                        >新增</el-button>
-                    </el-col>
-                </el-row>
+    <el-row>
+      <!--部门数据-->
+      <el-col :lg="5" :md="6" :sm="7" :xs="24">
+        <div class="app-container app-container--tree">
+          <div class="el-tree-scroll-container page-param-tree">
+            <el-tree
+              ref="tree"
+              :data="treeData"
+              :props="defaultTreeProps"
+              :expand-on-click-node="false"
+              default-expand-all
+              :render-content="renderContent"
+              :indent="0"
+              @node-click="handleNodeClick"
+            />
+          </div>
+        </div>
+      </el-col>
+      <!--用户数据-->
+      <el-col :lg="19" :md="18" :sm="17" :xs="24">
+        <div class="app-container app-container--search">
+          <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+            <el-form-item label="标题" prop="mediaTitle">
+              <el-input
+                v-model="queryParams.mediaTitle"
+                placeholder="请输入标题"
+                clearable
+                size="small"
+                style="width: 240px"
+                @keyup.enter.native="handleQuery"
+              />
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+              <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+        <div class="app-container">
+          <el-row :gutter="10" class="mb8">
+            <el-col :span="1.5">
+              <el-button
+                type="primary"
+                icon="el-icon-plus"
+                size="mini"
+                @click="handleAdd"
+              >新增</el-button>
+            </el-col>
+          </el-row>
 
-                <el-table v-loading="loading" highlight-current-row border :data="dataList">
-                    <el-table-column label="标题" align="center" prop="mediaTitle" :show-overflow-tooltip="true" />
-                    <el-table-column label="类型" align="center" prop="mediaType" :show-overflow-tooltip="true" />
-                    <el-table-column label="创建时间" align="center" prop="createTime" width="160">
-                        <template slot-scope="scope">
-                            <span>{{ parseTime(scope.row.createTime) }}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column
-                            label="操作"
-                            align="center"
-                            fixed="left"
-                            width="160"
-                            class-name="small-padding fixed-width"
-                    >
-                        <template slot-scope="scope">
-                            <el-button
-                                    size="mini"
-                                    type="text"
-                                    @click="handleLook(scope.row)"
-                            >查看</el-button>
-                            <el-button
-                                    size="mini"
-                                    type="text"
-                                    @click="handleUpdate(scope.row)"
-                            >修改</el-button>
-                            <el-button
-                                    size="mini"
-                                    type="text"
-                                    @click="handleDelete(scope.row)"
-                            >删除</el-button>
-                        </template>
-                    </el-table-column>
-                </el-table>
+          <el-table v-loading="loading" highlight-current-row border :data="dataList">
+            <el-table-column label="标题" align="center" prop="mediaTitle" :show-overflow-tooltip="true" />
+            <el-table-column label="类型" align="center" prop="mediaType" :show-overflow-tooltip="true" />
+            <el-table-column label="创建时间" align="center" prop="createTime" width="160">
+              <template slot-scope="scope">
+                <span>{{ parseTime(scope.row.createTime) }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="操作"
+              align="center"
+              fixed="left"
+              width="160"
+              class-name="small-padding fixed-width"
+            >
+              <template slot-scope="scope">
+                <el-button
+                  size="mini"
+                  type="text"
+                  @click="handleLook(scope.row)"
+                >查看</el-button>
+                <el-button
+                  size="mini"
+                  type="text"
+                  @click="handleUpdate(scope.row)"
+                >修改</el-button>
+                <el-button
+                  size="mini"
+                  type="text"
+                  @click="handleDelete(scope.row)"
+                >删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
 
-                <pagination
-                        v-show="total>0"
-                        :total="total"
-                        :page.sync="queryParams.pageNum"
-                        :limit.sync="queryParams.pageSize"
-                        @pagination="getMediaInfoList"
-                />
-            </div>
-          </el-col>
-      </el-row>
-      <!-- 新增/编辑树 对话框 -->
-      <setting-dialog ref="settingDialogRef" :open.sync="settingOpen" :title="title" @refresh="getTree" />
-      <info-dialog ref="infoDialogRef" :open.sync="paramOpen" :title="title" @refresh="getMediaInfoList" />
-      <PdfLook :src="pdfSrc" :open.sync="visibleOpen"></PdfLook>
+          <pagination
+            v-show="total>0"
+            :total="total"
+            :page.sync="queryParams.pageNum"
+            :limit.sync="queryParams.pageSize"
+            @pagination="getMediaInfoList"
+          />
+        </div>
+      </el-col>
+    </el-row>
+    <!-- 新增/编辑树 对话框 -->
+    <setting-dialog ref="settingDialogRef" :open.sync="settingOpen" :title="title" @refresh="getTree" />
+    <info-dialog ref="infoDialogRef" :open.sync="paramOpen" :title="title" @refresh="getMediaInfoList" />
+    <PdfLook :src="pdfSrc" :open.sync="visibleOpen" />
   </div>
 </template>
 
@@ -151,7 +152,7 @@ export default {
   methods: {
     renderContent(h, { node, data, store }) {
       return (
-        <span class='custom-tree-node'>
+        <span class='custom-tree-node el-tree-node__label'>
           <span class='custom-tree-text'>{node.label}</span>
           <span class='custom-tree-button'>
             <el-button type='text' on-click={ (event) => this.appendTree(event, data) }><i class='el-icon-circle-plus-outline' /></el-button>

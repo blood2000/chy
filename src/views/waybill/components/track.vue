@@ -35,15 +35,11 @@
 
 <script>
 import { jimiTrackLocation, zjxlTrackLocation, getVehicleInfo, getWebDetail, getWaybillTrace, addZjxl, queryZjxl } from '@/api/waybill/tracklist';
-// import UploadImage from '@/components/UploadImage/index';
 import axios from 'axios';
 import { getUserInfo } from '@/utils/auth';
 
 export default {
   name: 'Track',
-  components: {
-    // UploadImage
-  },
   props: {
     waybill: {
       type: Object,

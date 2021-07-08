@@ -15,14 +15,14 @@
       style="display: inline-block; vertical-align: top"
       class="upload-image"
     >
-      <img v-if="value && !disabled" :src="attachUrl" class="avatar">
-      <div v-else-if="value && disabled" v-viewer class="avatar-box">
-        <!-- <img v-real-img="attachUrl" src="@/assets/images/uploadImage/load_error.png" class="avatar"> -->
+      <div v-if="value && !disabled && attachUrl && attachUrl !== ''" class="avatar-box" :style="{background: `url('${attachUrl}') center center /contain no-repeat`}" />
+      <div v-else-if="value && disabled" class="avatar-box">
+        <!-- 只有这里能放img标签，只有控件被禁用才能查看图片大图 -->
         <img :src="attachUrl" class="avatar">
       </div>
       <template v-else>
-        <img :src="require('@/assets/images/uploadImage/' + iconType + '.png')">
-        <img :class="disabled ? 'filter' : ''" src="@/assets/images/uploadImage/upload_icon.png" class="avatar-uploader-icon">
+        <div class="avatar-box icon-type-img" :class="iconType" />
+        <div :class="disabled ? 'filter' : ''" class="avatar-uploader-icon" />
       </template>
     </el-upload>
   </div>
@@ -189,10 +189,15 @@ export default {
     max-height: 100%;
   }
 }
+// 上传按钮
 .upload-image{
   position: relative;
   .avatar-uploader-icon{
+    width: 58px;
+    height: 58px;
     position: absolute;
+    background: url('~@/assets/images/uploadImage/upload_icon.png') no-repeat;
+    background-size: 100% 100%;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -200,6 +205,57 @@ export default {
       filter: grayscale(100%);
       opacity: 0.6;
     }
+  }
+}
+// 背景图样式
+.icon-type-img{
+  &.default{
+    background: url('~@/assets/images/uploadImage/default.png') no-repeat center center;
+    background-size: auto;
+  }
+  &.driver{
+    background: url('~@/assets/images/uploadImage/driver.png') no-repeat center center;
+    background-size: auto;
+  }
+  &.driver_head{
+    background: url('~@/assets/images/uploadImage/driver_head.png') no-repeat center center;
+    background-size: auto;
+  }
+  &.idcard{
+    background: url('~@/assets/images/uploadImage/idcard.png') no-repeat center center;
+    background-size: auto;
+  }
+  &.idcard_back{
+    background: url('~@/assets/images/uploadImage/idcard_back.png') no-repeat center center;
+    background-size: auto;
+  }
+  &.idcard_hand{
+    background: url('~@/assets/images/uploadImage/idcard_hand.png') no-repeat center center;
+    background-size: auto;
+  }
+  &.organization{
+    background: url('~@/assets/images/uploadImage/organization.png') no-repeat center center;
+    background-size: auto;
+  }
+  &.transport{
+    background: url('~@/assets/images/uploadImage/transport.png') no-repeat center center;
+    background-size: auto;
+  }
+  &.vehicle{
+    background: url('~@/assets/images/uploadImage/vehicle.png') no-repeat center center;
+    background-size: auto;
+  }
+  &.vehicle_back{
+    background: url('~@/assets/images/uploadImage/vehicle_back.png') no-repeat center center;
+    background-size: auto;
+  }
+  &.vehicle_head{
+    background: url('~@/assets/images/uploadImage/vehicle_head.png') no-repeat center center;
+    background-size: auto;
+  }
+  &.work{
+    background: url('~@/assets/images/uploadImage/work.png') no-repeat center center;
+    background-size: auto;
   }
 }
 </style>

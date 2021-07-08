@@ -174,7 +174,7 @@
         <upload-image v-model="form.vehicleImage" :disabled="disable" icon-type="vehicle_head" />
       </el-form-item>-->
       <el-form-item>
-        <el-row>
+        <el-row v-viewer>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">车头正面照</p>
             <upload-image v-model="form.vehicleImage" :disabled="disable" icon-type="vehicle_head" />

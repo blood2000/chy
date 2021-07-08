@@ -54,7 +54,6 @@
 
 <script>
 import { addInfo, updateInfo } from '@/api/enterprise/project';
-// import UploadImage from '@/components/UploadImage/index';
 import AmapSearch from '@/components/Ddc/Tin/AmapSearch';
 
 const geocoder = new AMap.Geocoder({
@@ -65,7 +64,6 @@ const geocoder = new AMap.Geocoder({
 export default {
   components: {
     AmapSearch
-    // UploadImage
   },
   props: {
     title: {
