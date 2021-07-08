@@ -19,13 +19,9 @@
 
 <script>
 import { waybillComment, waybillCommentDetail } from '@/api/waybill/tracklist';
-// import UploadImage from '@/components/UploadImage/index';
 
 export default {
   name: 'RateDialog',
-  components: {
-    // UploadImage
-  },
   props: {
     title: {
       type: String,

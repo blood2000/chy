@@ -23,7 +23,7 @@
         <span class="g-color-blue">(初始密码为{{ initialPassword }})</span>
       </el-form-item>
       <el-form-item>
-        <el-row>
+        <el-row v-viewer>
           <!--   客服建议去掉合并管理员和法人信息-->
           <el-col :span="7">
             <p class="upload-image-label">身份证(人像面)</p>
