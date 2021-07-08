@@ -1,19 +1,19 @@
 <template>
-    <el-dialog :visible="visible" width="60%" title="预览" :close-on-click-modal="false" append-to-body @close="cancel">
-        <pdf :src=src></pdf>
-    </el-dialog>
+  <el-dialog :visible="visible" width="60%" title="预览" :close-on-click-modal="false" append-to-body @close="cancel">
+    <pdf :src="src" />
+  </el-dialog>
 </template>
 
 <script>
 import pdf from 'vue-pdf';
 
 export default {
+  components: {
+    pdf
+  },
   props: {
     src: String,
     open: Boolean
-  },
-  components: {
-    pdf
   },
   computed: {
     visible: {

@@ -63,7 +63,7 @@
         <el-input v-model="form.area" class="width90" clearable placeholder="支持自动识别" />
       </el-form-item>
       <el-form-item>
-        <el-row>
+        <el-row v-viewer>
           <el-col :span="7">
             <p class="upload-image-label">身份证(人像面)</p>
             <upload-image v-model="form.identificationImg" image-type="id-card" side="front" icon-type="idcard" @fillForm="fillForm" />

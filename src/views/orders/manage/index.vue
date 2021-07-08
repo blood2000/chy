@@ -251,6 +251,10 @@
           <span :class="row.isPublic===0?'g-color-warning':'g-color-blue'">{{ selectDictLabel(isPublicTypeOptions, row.isPublic) }}</span>
         </template>
 
+        <template #publishMode="{row}">
+          <span :class="row.publishMode===0?'g-color-warning':'g-color-blue'">{{ selectDictLabel(publishModeOptions, row.publishMode) }}</span>
+        </template>
+
         <template #isSpecified="{row}">
           <span v-if="row.isSpecified === 0" class="g-color-error">否</span>
           <span v-if="row.isSpecified === 1">{{ row.specified }}</span>
@@ -458,6 +462,11 @@ export default {
         { dictLabel: '一装一卸', dictValue: '1' },
         { dictLabel: '多装一卸', dictValue: '2' },
         { dictLabel: '一装多卸', dictValue: '3' }
+      ],
+      // 发布方式 0 货源大厅不可见(只能通过货单号或备注搜索) 1 货源大厅可见
+      publishModeOptions: [
+        { dictLabel: '货源大厅不可见', dictValue: 0 },
+        { dictLabel: '货源大厅可见', dictValue: 1 }
       ],
 
       goodsTypeOption: [],
@@ -738,7 +747,7 @@ export default {
         };
       });
 
-      console.log(this.list);
+      console.log(this.list, '当前列表的数据');
       this.loading = false;
     },
 

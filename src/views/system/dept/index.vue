@@ -121,7 +121,6 @@
 import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild } from '@/api/system/dept';
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
-// import UploadImage from '@/components/UploadImage/index';
 
 export default {
   name: 'Dept',

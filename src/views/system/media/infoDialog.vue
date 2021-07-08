@@ -1,29 +1,29 @@
 <template>
-    <el-dialog :visible="visible" :title="`${dictName} - ${title}`" :class="[{'i-add':title==='新增'}]" width="800px" :close-on-click-modal="false" append-to-body @close="cancel">
-        <el-form ref="form" :model="form" :rules="rules" label-width="140px">
-            <el-form-item label="名称" prop="mediaTitle">
-                <el-input v-model="form.mediaTitle" placeholder="请输入名称" class="width90" clearable />
-            </el-form-item>
-            <el-form-item label="地址" prop="mediaUrl">
-                <el-input v-model="form.mediaUrl" placeholder="请输入地址(URL)" class="width90" clearable />
-            </el-form-item>
-            <el-form-item label="类型" prop="mediaType">
-                <el-select v-model="form.mediaType" placeholder="请选择类型" filterable clearable class="width90">
-                    <el-option
-                            v-for="dict in mediaTypeOptions"
-                            :key="dict.dictValue"
-                            :label="dict.dictLabel"
-                            :value="dict.dictValue"
-                    />
-                </el-select>
-            </el-form-item>
-        </el-form>
+  <el-dialog :visible="visible" :title="`${dictName} - ${title}`" :class="[{'i-add':title==='新增'}]" width="800px" :close-on-click-modal="false" append-to-body @close="cancel">
+    <el-form ref="form" :model="form" :rules="rules" label-width="140px">
+      <el-form-item label="名称" prop="mediaTitle">
+        <el-input v-model="form.mediaTitle" placeholder="请输入名称" class="width90" clearable />
+      </el-form-item>
+      <el-form-item label="地址" prop="mediaUrl">
+        <el-input v-model="form.mediaUrl" placeholder="请输入地址(URL)" class="width90" clearable />
+      </el-form-item>
+      <el-form-item label="类型" prop="mediaType">
+        <el-select v-model="form.mediaType" placeholder="请选择类型" filterable clearable class="width90">
+          <el-option
+            v-for="dict in mediaTypeOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+    </el-form>
 
-        <div slot="footer" class="dialog-footer">
-            <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
-            <el-button @click="cancel">取 消</el-button>
-        </div>
-    </el-dialog>
+    <div slot="footer" class="dialog-footer">
+      <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
+      <el-button @click="cancel">取 消</el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script>

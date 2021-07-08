@@ -123,7 +123,6 @@ import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild }
 import Treeselect from '@riophae/vue-treeselect';
 import { getUserInfo } from '@/utils/auth';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
-// import UploadImage from '@/components/UploadImage/index';
 
 export default {
   name: 'CompanyOrg',

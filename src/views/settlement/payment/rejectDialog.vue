@@ -15,13 +15,9 @@
 
 <script>
 import { rejected } from '@/api/settlement/payment';
-// import UploadImage from '@/components/UploadImage/index';
 
 export default {
   name: 'RejectDialog',
-  components: {
-    // UploadImage
-  },
   props: {
     title: {
       type: String,

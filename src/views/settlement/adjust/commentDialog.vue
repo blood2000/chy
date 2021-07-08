@@ -43,13 +43,9 @@
 
 <script>
 import { batchAdd } from '@/api/settlement/adjust';
-// import UploadImage from '@/components/UploadImage/index';
 
 export default {
   name: 'CommentDialog',
-  components: {
-    // UploadImage
-  },
   props: {
     title: {
       type: String,

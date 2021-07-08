@@ -50,7 +50,6 @@
 
 <script>
 import { childListApi, childList } from '@/api/settlement/adjust';
-// import UploadImage from '@/components/UploadImage/index';
 // 运单详情弹窗
 import DetailDialog from '@/views/waybill/components/detailDialog';
 
@@ -58,7 +57,6 @@ export default {
   name: 'ChildDialog',
   components: {
     DetailDialog
-    // UploadImage
   },
   props: {
     title: {

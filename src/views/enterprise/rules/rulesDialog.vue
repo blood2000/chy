@@ -314,8 +314,8 @@ export default {
       }
       if (el.showType === 2) { // 回填范围区域，2个值
         this.$set(obj, el.code, {});
-        this.$set(obj[el.code], 'start', el.ruleValue ? JSON.parse(el.ruleValue)[0] : '');
-        this.$set(obj[el.code], 'end', el.ruleValue ? JSON.parse(el.ruleValue)[1] : '');
+        this.$set(obj[el.code], 'start', el.ruleValue ? Math.abs(JSON.parse(el.ruleValue)[0]) : '');
+        this.$set(obj[el.code], 'end', el.ruleValue ? Math.abs(JSON.parse(el.ruleValue)[1]) : '');
       } else { // 回填单个值
         this.$set(obj, el.code, el.ruleValue ? el.ruleValue : null);
       }
@@ -393,7 +393,7 @@ export default {
           } else {
             params.detailList.push({
               ruleItemCode: el.code,
-              ruleValue: JSON.stringify([obj[el.code].start, obj[el.code].end])
+              ruleValue: JSON.stringify([-obj[el.code].start, obj[el.code].end])
             });
           }
         } else { // 单个值
