@@ -202,7 +202,7 @@
         />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="paymentlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <RefactorTable :loading="loading" :data="paymentlist" :table-columns-config="tableColumnsConfig" :selectable="checkboxT" @selection-change="handleSelectionChange">
         <template #status="{row}">
           <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
         </template>
@@ -381,7 +381,8 @@ export default {
         { 'dictLabel': '打款成功', 'dictValue': '4' },
         { 'dictLabel': '打款失败', 'dictValue': '5' }
       ],
-      payLoading: false
+      payLoading: false,
+      batchIndex: 0
     };
   },
   computed: {
@@ -414,6 +415,13 @@ export default {
       this.ids = selection.map((item) => item.wayBillSettlementCode);
       this.bodyParams.wayBillSettlementCodeList = this.ids;
       this.multiple = !selection.length;
+    },
+    checkboxT(row) {
+      if (row.applyStatus === 3) {
+			  return false;
+      } else {
+			  return true;
+      }
     },
     /** 查询【请填写功能名称】列表 */
     getList() {
@@ -449,19 +457,53 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.$message({ type: 'success', message: '发起网商打款成功！' });
         this.payLoading = true;
-        batch(this.bodyParams).then(response => {
-          this.payLoading = false;
-          this.$message({ type: 'success', message: '发起网商打款成功！' });
-          this.getList();
-        }).catch(() => {
-          this.payLoading = false;
-        });
+        this.batchIndex = 0;
+        this.getBatch();
       }).catch(() => {
         this.$message({ type: 'info', message: '已取消' });
       });
     },
-
+    // 打款接口
+    async getBatch() {
+      const arr = [];
+      for (let index = 0; index < this.ids.length; index++) {
+        const e = this.ids[index];
+        try {
+          await batch({ wayBillSettlementCodeList: [e] });
+          arr.push(true);
+          this.getList();
+        } catch (error) {
+          arr.push(e);
+          this.getList();
+        }
+      }
+      this.payLoading = false;
+      console.log(arr);
+      // this.bodyParams.wayBillSettlementCodeList = [];
+      // this.bodyParams.wayBillSettlementCodeList.push(this.ids[this.batchIndex]);
+      // batch(this.bodyParams).then(response => {
+      //   this.batchIndex++;
+      //   if (this.batchIndex === this.ids.length) {
+      //     this.payLoading = false;
+      //     this.getList();
+      //   } else {
+      //     this.getBatch();
+      //     this.getList();
+      //   }
+      // }).catch(() => {
+      //   this.batchIndex++;
+      //   if (this.batchIndex === this.ids.length) {
+      //     this.payLoading = false;
+      //     this.getList();
+      //   } else {
+      //     this.getBatch();
+      //     this.getList();
+      //   }
+      //   this.payLoading = false;
+      // });
+    },
     handleTableBtn(row, index) {
       // console.log(row, index);
 
