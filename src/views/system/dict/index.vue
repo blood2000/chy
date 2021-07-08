@@ -46,6 +46,8 @@
             style="width: 240px"
             value-format="yyyy-MM-dd"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -189,11 +191,12 @@
 
 <script>
 import { listType, getType, delType, addType, updateType, clearCache } from '@/api/system/dict/type';
-
+import { pickerOptions } from '@/utils/dateRange';
 export default {
   name: 'Dict',
   data() {
     return {
+      pickerOptions,
       // 遮罩层
       loading: true,
       // 选中数组

@@ -26,6 +26,8 @@
           <el-date-picker
             v-model="queryTime"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -107,6 +109,7 @@
 <script>
 import { listConsumptionApi, listConsumption, countConsumption } from '@/api/data/statistics';
 // import tableColumnsConfig from './config';
+import { pickerOptions } from '@/utils/dateRange';
 
 export default {
   name: 'Consumption',
@@ -114,6 +117,7 @@ export default {
   },
   data() {
     return {
+      pickerOptions,
       tableColumnsConfig: [],
       api: listConsumptionApi,
       // 遮罩层

@@ -154,6 +154,8 @@
           <el-date-picker
             v-model="receiveTime"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -467,6 +469,7 @@ import CheckResult from './components/CheckResult';
 import ChildDialog from '@/views/settlement/components/childDialog';
 import DetailDialog from '@/views/waybill/components/detailDialog';
 import importDialog from './components/importDialog';
+import { pickerOptions } from '@/utils/dateRange';
 
 const dictsData1 = [
   { dictLabel: '未上报', dictValue: 0 },
@@ -481,6 +484,7 @@ export default {
   components: { CheckResult, ChildDialog, DetailDialog, importDialog },
   data() {
     return {
+      pickerOptions,
       /* 模板参数必须 */
       loading: false, // 加载
       showSearch: true, // 显示搜索条件

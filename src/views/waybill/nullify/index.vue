@@ -59,6 +59,8 @@
           <el-date-picker
             v-model="receiveTime"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -215,7 +217,7 @@ import { listNullify, invalidRejected, listNullifyApi, invalidDelete } from '@/a
 import DetailDialog from '../components/detailDialog';
 import { getUserInfo } from '@/utils/auth';
 // import tableColumnsConfig from './config';
-
+import { pickerOptions } from '@/utils/dateRange';
 export default {
   name: 'Nullify',
   components: {
@@ -223,6 +225,7 @@ export default {
   },
   data() {
     return {
+      pickerOptions,
       tableColumnsConfig: [],
       api: listNullifyApi,
       // 遮罩层

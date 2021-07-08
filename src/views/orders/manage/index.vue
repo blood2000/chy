@@ -112,6 +112,8 @@
             style="width: 228px"
             value-format="yyyy-MM-dd"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -370,12 +372,13 @@ import OpenDialog from './component/OpenDialog';
 import tableColumnsConfig from './data/config-index';
 import PriceAdjustment from './component/PriceAdjustment';
 import { floor } from '@/utils/ddc';
-
+import { pickerOptions } from '@/utils/dateRange';
 export default {
   name: 'Manage',
   components: { OpenDialog, PriceAdjustment },
   data() {
     return {
+      pickerOptions,
       loadingExport: false,
       activeName: '0',
       listManagesApi,

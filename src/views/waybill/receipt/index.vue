@@ -46,6 +46,8 @@
           <el-date-picker
             v-model="receiveTime"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -218,6 +220,7 @@ import DeductionDialog from './deductionDialog';
 import ReturnDialog from './returnDialog';
 import { getUserInfo } from '@/utils/auth';
 // import tableColumnsConfig from './config';
+import { pickerOptions } from '@/utils/dateRange';
 export default {
   name: 'Receipt',
   components: {
@@ -227,6 +230,7 @@ export default {
   },
   data() {
     return {
+      pickerOptions,
       tableColumnsConfig: [],
       api: listInfoApi,
       // 遮罩层

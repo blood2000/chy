@@ -41,6 +41,8 @@
           <el-date-picker
             v-model="invoiceApplyTime"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -191,13 +193,14 @@ import VerifyDialog from './verifyDialog';
 // 开票弹窗
 import BillingDialog from './billingDialog';
 import TrackExport from '@/views/waybill/components/trackExport';
-
+import { pickerOptions } from '@/utils/dateRange';
 
 export default {
   'name': 'List',
   components: { VerifyDialog, BillingDialog, TrackExport },
   data() {
     return {
+      pickerOptions,
       // 批量轨迹参数
       waybillTrack: [],
       exportLoading: false,

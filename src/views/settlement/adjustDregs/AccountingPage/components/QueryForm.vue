@@ -204,6 +204,8 @@
         <el-date-picker
           v-model="queryParams.receiveTime"
           type="daterange"
+          unlink-panels
+          :picker-options="pickerOptions"
           range-separator="-"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
@@ -258,7 +260,7 @@ import { shipmentList } from '@/api/finance/askfor'; // 获取货主(搜索用)
 import { listForWeb } from '@/api/listForWeb/index'; // 获取渣土(搜索用)
 import { listInfo } from '@/api/enterprise/project'; // 获取渣土项目(搜索用)
 import { listInfo as teamListInfo } from '@/api/assets/team'; // 获取调度者(搜索用)
-
+import { pickerOptions } from '@/utils/dateRange';
 
 import FilterableSelect from '@/components/FilterableSelect'; // 远程组件
 export default {
@@ -275,6 +277,7 @@ export default {
 
   data() {
     return {
+      pickerOptions,
       // 自己页面要用
       shipmentCode: undefined,
       companyCode: undefined,

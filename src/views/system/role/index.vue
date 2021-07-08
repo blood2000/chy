@@ -100,6 +100,8 @@
                 style="width: 240px"
                 value-format="yyyy-MM-dd"
                 type="daterange"
+                unlink-panels
+                :picker-options="pickerOptions"
                 range-separator="-"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
@@ -395,7 +397,7 @@ import { treeselect as deptTreeselect, roleDeptTreeselect } from '@/api/system/d
 import { mapGetters } from 'vuex';
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
-
+import { pickerOptions } from '@/utils/dateRange';
 export default {
   name: 'Role',
   components: {
@@ -420,6 +422,7 @@ export default {
   },
   data() {
     return {
+      pickerOptions,
       buttonLoading: false,
       dataScopeLoading: false,
       // 遮罩层

@@ -99,6 +99,8 @@
           <el-date-picker
             v-model="receiveTime"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -386,7 +388,7 @@ import DetailDialog from '@/views/waybill/components/detailDialog';
 import CommentDialog from './commentDialog';
 // 评价详情弹窗
 import RateDialog from './rateDialog';
-
+import { pickerOptions } from '@/utils/dateRange';
 // import setTheight from '@/layout/mixin/setTheight';
 
 export default {
@@ -395,6 +397,7 @@ export default {
   // mixins: [setTheight],
   data() {
     return {
+      pickerOptions,
       tableColumnsConfig: [],
       api: adjustListApi,
       activeName: '4',

@@ -19,6 +19,8 @@
         <el-form-item label="注册时间">
           <el-date-picker
             v-model="dateRange"
+            unlink-panels
+            :picker-options="pickerOptions"
             size="small"
             style="width: 240px"
             value-format="yyyy-MM-dd"
@@ -87,11 +89,13 @@
 import { list, delRegisterUser } from '@/api/assets/registerUser';
 import RegisterDriver from './driverDialog';
 import RegisterTeam from './teamDialog';
+import { pickerOptions } from '@/utils/dateRange';
 export default {
   name: 'RegisterUser',
   components: { RegisterDriver, RegisterTeam },
   data() {
     return {
+      pickerOptions,
       // 遮罩层
       loading: true,
       // 选中数组

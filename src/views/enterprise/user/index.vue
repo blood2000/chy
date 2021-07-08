@@ -76,6 +76,8 @@
                 style="width: 240px"
                 value-format="yyyy-MM-dd"
                 type="daterange"
+                unlink-panels
+                :picker-options="pickerOptions"
                 range-separator="-"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
@@ -382,11 +384,13 @@ import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 import { mapGetters } from 'vuex';
 import { getUserInfo } from '@/utils/auth';
+import { pickerOptions } from '@/utils/dateRange';
 export default {
   name: 'CompanyUser',
   components: { Treeselect },
   data() {
     return {
+      pickerOptions,
       companyCode: undefined,
       userCode: undefined,
       showShipment: true,
