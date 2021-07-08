@@ -31,6 +31,8 @@
           <el-date-picker
             v-model="queryTime"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -106,12 +108,14 @@ import {
   countCustomer
 } from '@/api/data/statistics';
 // import tableColumnsConfig from './config';
+import { pickerOptions } from '@/utils/dateRange';
 
 export default {
   name: 'Customer',
   components: {},
   data() {
     return {
+      pickerOptions,
       tableColumnsConfig: [],
       api: listCustomerApi,
       // 遮罩层

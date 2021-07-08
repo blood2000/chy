@@ -82,6 +82,8 @@
           <el-date-picker
             v-model="receiveTime"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -364,12 +366,13 @@ import RateDialog from './component/rateDialog';
 import TrackDialog from './component/trackDialog';
 // 定位弹窗
 import LocationDialog from './component/locationDialog';
-
+import { pickerOptions } from '@/utils/dateRange';
 export default {
   'name': 'Tracklist',
   components: { DialogA, DialogB, DialogC, CancelDialog, RateDialog, TrackDialog, LocationDialog },
   data() {
     return {
+      pickerOptions,
       tableColumnsConfig: [],
       api: trackListApi,
       activeName: '1',

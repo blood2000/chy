@@ -52,6 +52,8 @@
           style="width: 240px"
           value-format="yyyy-MM-dd"
           type="daterange"
+          unlink-panels
+          :picker-options="pickerOptions"
           range-separator="-"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
@@ -167,11 +169,12 @@
 
 <script>
 import { listJobLog, delJobLog, cleanJobLog } from '@/api/monitor/jobLog';
-
+import { pickerOptions } from '@/utils/dateRange';
 export default {
   name: 'JobLog',
   data() {
     return {
+      pickerOptions,
       // 遮罩层
       loading: true,
       // 选中数组

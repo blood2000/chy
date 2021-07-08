@@ -119,6 +119,8 @@
           <el-date-picker
             v-model="loadTime"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -133,6 +135,8 @@
           <el-date-picker
             v-model="unloadTime"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -280,13 +284,14 @@ import { getUserInfo } from '@/utils/auth';
 // import ChildDialog from '../components/childDialog';
 // 运单详情弹窗
 import DetailDialog from '@/views/waybill/components/detailDialog';
-
+import { pickerOptions } from '@/utils/dateRange';
 
 export default {
   'name': 'Askfor',
   components: { DetailDialog },
   data() {
     return {
+      pickerOptions,
       tableColumnsConfig: [],
       api: askforListApi,
       // 遮罩层

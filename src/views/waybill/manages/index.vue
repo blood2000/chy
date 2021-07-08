@@ -49,6 +49,8 @@
           <el-date-picker
             v-model="receiveTime"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -338,6 +340,7 @@ import MarkAbnormalDialog from './markAbnormalDialog';
 import SeperateListDialog from './seperateListDialog';
 import RemarkDialog from './remarkDialog';
 import { getUserInfo } from '@/utils/auth';
+import { pickerOptions } from '@/utils/dateRange';
 
 export default {
   name: 'Manages',
@@ -349,6 +352,7 @@ export default {
   },
   data() {
     return {
+      pickerOptions,
       receiveTime: [],
       tableColumnsConfig: [],
       api: listManagesApi,

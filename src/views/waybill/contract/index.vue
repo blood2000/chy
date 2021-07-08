@@ -93,6 +93,8 @@
           <el-date-picker
             v-model="receiveTime"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -218,12 +220,13 @@ import DriverContract from './DriverContract';
 import ShipmentContract from './ShipmentContract';
 
 import { listContract, getContractByCode, listContractApi, getShipmentSign, getDriverSign, getContractSign } from '@/api/waybill/contract';
-
+import { pickerOptions } from '@/utils/dateRange';
 export default {
   'name': 'Contract',
   components: { DriverContract, ShipmentContract },
   data() {
     return {
+      pickerOptions,
       // 弹框 内容
       visible: false,
       title: '',

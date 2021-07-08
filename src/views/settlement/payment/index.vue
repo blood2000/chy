@@ -123,6 +123,8 @@
           <el-date-picker
             v-model="receiveTime"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -289,13 +291,14 @@ import RejectDialog from './rejectDialog';
 import ChildDialog from '../components/childDialog';
 // 运单详情弹窗
 import DetailDialog from '@/views/waybill/components/detailDialog';
-
+import { pickerOptions } from '@/utils/dateRange';
 
 export default {
   'name': 'Payment',
   components: { RejectDialog, DetailDialog, ChildDialog },
   data() {
     return {
+      pickerOptions,
       tableColumnsConfig: [],
       api: paymentListApi,
       createTime: '',

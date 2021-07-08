@@ -26,6 +26,8 @@
           style="width: 240px"
           value-format="yyyy-MM-dd"
           type="daterange"
+          unlink-panels
+          :picker-options="pickerOptions"
           range-separator="-"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
@@ -177,12 +179,13 @@
 import { listTable, previewTable, delTable, genCode, synchDb } from '@/api/tool/gen';
 import importTable from './importTable';
 import { downLoadZip } from '@/utils/zipdownload';
-
+import { pickerOptions } from '@/utils/dateRange';
 export default {
   name: 'Gen',
   components: { importTable },
   data() {
     return {
+      pickerOptions,
       // 遮罩层
       loading: true,
       // 唯一标识符
