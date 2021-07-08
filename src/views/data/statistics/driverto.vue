@@ -33,7 +33,7 @@
             @change="datechoose"
           />
         </el-form-item>
-        <el-form-item label="司机类型" prop="driverType">
+        <el-form-item label="角色" prop="driverType">
           <el-select
             v-model="queryParams.driverType"
             placeholder="请选择角色"

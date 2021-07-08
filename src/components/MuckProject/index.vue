@@ -632,13 +632,14 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.loading = true;
         const que = {
           batchNos: this.selections.map(e => e.batchNo),
           remark: undefined
         };
         confirmVerification(que).then(res => {
           // console.log(res);
-
+          this.loading = false;
           if (res.data && res.data.data === '201') {
             // this.msgError(res.data.msg);
             this.handleError(res.data.msg);
@@ -649,7 +650,7 @@ export default {
           }
         });
       }).catch(() => {
-
+        this.loading = false;
       });
     },
     /* e= */
@@ -665,12 +666,14 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.loading = true;
         const que = {
           batchNos: this.selections.map(e => e.batchNo),
           remark: undefined
         };
 
         passBatchClaim(que).then(response => {
+          this.loading = false;
           this.msgSuccess('索票申请成功');
           this.selections = [];
           this.loading = false;
@@ -678,7 +681,7 @@ export default {
           // this.getList();
         });
       }).catch(() => {
-
+        this.loading = false;
       });
     },
     /* e= */
