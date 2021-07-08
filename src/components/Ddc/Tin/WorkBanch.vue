@@ -5,8 +5,21 @@
       <img class="marginright10" src="~@/assets/images/workbench/icon_notice.png" alt="">
       <img v-if="width>1366" class="marginright10" src="~@/assets/images/workbench/font_notice.png" alt="">
       <span class="notic-tip g-color-gray">
-        <NoticeCard :notice="noticeSys" />
+        <el-popover
+          placement="top-start"
+          :width="800"
+          trigger="hover"
+        >
+          <template #reference>
+            <NoticeCard :notice="noticeSys" />
+          </template>
+          <div v-html="noticeSys" />
+        </el-popover>
       </span>
+
+      <!-- <span class="notic-tip g-color-gray">
+        <NoticeCard :notice="noticeSys" />
+      </span> -->
     </div>
 
     <div class="content-frame g-flex">
@@ -409,6 +422,7 @@ export default {
       // 公告列表
       noticeList2: [],
       noticeSys: '',
+      noticeSys1: '',
       // websocket参数
       websock: null,
       // 弹框 内容
@@ -542,6 +556,7 @@ export default {
           return response.status === '0';
         });
         this.noticeSys = this.noticeList2[0].noticeContent;
+        this.noticeSys1 = this.noticeSys.replace(/<\/?.+?>/g, '');
       });
     },
     loadmore() {
