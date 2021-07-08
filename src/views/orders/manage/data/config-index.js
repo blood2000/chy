@@ -114,13 +114,13 @@ export default [
     tooltip: true,
     label: '货主成交单价'
   },
-  {
-    prop: 'transactionPrice',
-    isShow: true,
-    width: 120,
-    tooltip: true,
-    label: '司机成交单价'
-  },
+  // {
+  //   prop: 'transactionPrice',
+  //   isShow: true,
+  //   width: 120,
+  //   tooltip: true,
+  //   label: '司机成交单价'
+  // },
   {
     prop: 'notRobbedOrder',
     isShow: true,
