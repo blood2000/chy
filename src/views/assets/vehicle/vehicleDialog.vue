@@ -271,6 +271,14 @@ export default {
           { required: true, message: '车牌号不能为空', trigger: 'blur' },
           { validator: this.formValidate.plateNo, trigger: ['blur', 'change'] }
         ],
+        vehicleTotalWeight: [
+          { required: true, message: '车辆总重量不能为空', trigger: 'blur' },
+          { validator: (rules, value, callback) => this.formValidate.greaterThanZero(rules, value, callback, '车辆总重量'), trigger: ['blur', 'change'] }
+        ],
+        vehicleLoadWeight: [
+          { required: true, message: '车辆可载重量不能为空', trigger: 'blur' },
+          { validator: (rules, value, callback) => this.formValidate.greaterThanZero(rules, value, callback, '车辆可载重量'), trigger: ['blur', 'change'] }
+        ],
         vehicleLicenseColorCode: [
           { required: true, message: '车牌颜色不能为空', trigger: ['blur', 'change'] }
         ]

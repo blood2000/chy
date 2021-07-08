@@ -384,11 +384,25 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="车辆总重量" prop="vehicleTotalWeight" :rules="[{ required: true, message: '车辆总重量不能为空', trigger: 'blur' }]">
+        <el-form-item
+          label="车辆总重量"
+          prop="vehicleTotalWeight"
+          :rules="[
+            { required: true, message: '车辆总重量不能为空', trigger: 'blur' },
+            { validator: (rules, value, callback) => formValidate.greaterThanZero(rules, value, callback, '车辆总重量'), trigger: ['blur', 'change'] }
+          ]"
+        >
           <el-input-number v-model="vehicleForm.vehicleTotalWeight" :controls="false" :min="0" :max="1000000" placeholder="请输入车辆总重量" class="width90 unit-item" clearable />
           <span class="unit-span g-color-gray">吨</span>
         </el-form-item>
-        <el-form-item label="车辆可载重量" prop="vehicleLoadWeight" :rules="[{ required: true, message: '车辆可载重量不能为空', trigger: 'blur' }]">
+        <el-form-item
+          label="车辆可载重量"
+          prop="vehicleLoadWeight"
+          :rules="[
+            { required: true, message: '车辆可载重量不能为空', trigger: 'blur' },
+            { validator: (rules, value, callback) => formValidate.greaterThanZero(rules, value, callback, '车辆可载重量'), trigger: ['blur', 'change'] }
+          ]"
+        >
           <el-input-number v-model="vehicleForm.vehicleLoadWeight" :controls="false" :min="0" :max="1000000" placeholder="请输入车辆可载重量" class="width90 unit-item" clearable />
           <span class="unit-span g-color-gray">吨</span>
         </el-form-item>
