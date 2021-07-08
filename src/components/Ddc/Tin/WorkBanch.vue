@@ -6,7 +6,7 @@
       <img v-if="width>1366" class="marginright10" src="~@/assets/images/workbench/font_notice.png" alt="">
       <span class="notic-tip g-color-gray">
         <el-popover
-          placement="top-start"
+          placement="bottom"
           :width="800"
           trigger="hover"
         >
