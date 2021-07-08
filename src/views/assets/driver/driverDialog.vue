@@ -315,7 +315,7 @@
         </el-form-item>
       </template>
       <template v-if="form.driverType == 1 && (title === '新增' || (title !== '新增' && vehicleInfoList.length > 0))">
-        <el-form-item label="车辆归属类型" prop="vehicleAscriptionType">
+        <!-- <el-form-item label="车辆归属类型" prop="vehicleAscriptionType">
           <el-select v-model="vehicleForm.vehicleAscriptionType" placeholder="支持自动识别" class="width90" filterable clearable :disabled="disable">
             <el-option
               v-for="dict in vehicleAscriptionTypeOptions"
@@ -324,8 +324,18 @@
               :value="parseInt(dict.dictValue)"
             />
           </el-select>
+        </el-form-item> -->
+        <el-form-item label="车牌颜色" prop="vehicleLicenseColorCode" :rules="[{ required: true, message: '车牌颜色不能为空', trigger: ['change', 'blur'] }]">
+          <el-select v-model="vehicleForm.vehicleLicenseColorCode" class="width90" filterable clearable :disabled="disable">
+            <el-option
+              v-for="dict in licenseColorOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
         </el-form-item>
-        <el-form-item label="车辆类型" prop="vehicleTypeCode">
+        <el-form-item label="车辆类型" prop="vehicleTypeCode" :rules="[{ required: true, message: '车辆类型不能为空', trigger: ['change', 'blur'] }]">
           <el-select v-model="vehicleForm.vehicleTypeCode" placeholder="支持自动识别" class="width90" clearable filterable :disabled="disable">
             <el-option
               v-for="dict in vehicleTypeOptions"
@@ -335,13 +345,13 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="车辆识别码" prop="chassisNumber" :rules="[{ required: true, message: '车辆识别码不能为空', trigger: 'blur' }]">
+        <el-form-item label="车辆识别码" prop="chassisNumber" :rules="[{ required: true, message: '车辆识别码不能为空', trigger: ['change', 'blur'] }]">
           <el-input v-model="vehicleForm.chassisNumber" placeholder="支持自动识别" class="width90" clearable :disabled="disable" />
         </el-form-item>
-        <el-form-item label="车牌颜色" prop="vehicleLicenseColorCode">
-          <el-select v-model="vehicleForm.vehicleLicenseColorCode" class="width90" filterable clearable :disabled="disable">
+        <el-form-item label="车辆能源类型" prop="vehicleEnergyType" :rules="[{ required: true, message: '车辆能源类型不能为空', trigger: ['change', 'blur'] }]">
+          <el-select v-model="vehicleForm.vehicleEnergyType" class="width90" filterable clearable :disabled="disable">
             <el-option
-              v-for="dict in licenseColorOptions"
+              v-for="dict in energyTypesOptions"
               :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
@@ -352,16 +362,6 @@
           <el-select v-model="vehicleForm.vehicleColorCode" class="width90" filterable clearable :disabled="disable">
             <el-option
               v-for="dict in carBodyColorOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="车辆能源类型" prop="vehicleEnergyType">
-          <el-select v-model="vehicleForm.vehicleEnergyType" class="width90" filterable clearable :disabled="disable">
-            <el-option
-              v-for="dict in energyTypesOptions"
               :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
@@ -398,11 +398,25 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="车辆总重量" prop="vehicleTotalWeight" :rules="[{ required: true, message: '车辆总重量不能为空', trigger: 'blur' }]">
+        <el-form-item
+          label="车辆总重量"
+          prop="vehicleTotalWeight"
+          :rules="[
+            { required: true, message: '车辆总重量不能为空', trigger: 'blur' },
+            { validator: (rules, value, callback) => formValidate.greaterThanZero(rules, value, callback, '车辆总重量'), trigger: ['blur', 'change'] }
+          ]"
+        >
           <el-input-number v-model="vehicleForm.vehicleTotalWeight" :controls="false" :min="0" :max="1000000" placeholder="请输入车辆总重量" class="width90 unit-item" clearable :disabled="disable" />
           <span class="unit-span g-color-gray">吨</span>
         </el-form-item>
-        <el-form-item label="车辆可载重量" prop="vehicleLoadWeight" :rules="[{ required: true, message: '车辆可载重量不能为空', trigger: 'blur' }]">
+        <el-form-item
+          label="车辆可载重量"
+          prop="vehicleLoadWeight"
+          :rules="[
+            { required: true, message: '车辆可载重量不能为空', trigger: 'blur' },
+            { validator: (rules, value, callback) => formValidate.greaterThanZero(rules, value, callback, '车辆可载重量'), trigger: ['blur', 'change'] }
+          ]"
+        >
           <el-input-number v-model="vehicleForm.vehicleLoadWeight" :controls="false" :min="0" :max="1000000" placeholder="请输入车辆可载重量" class="width90 unit-item" clearable :disabled="disable" />
           <span class="unit-span g-color-gray">吨</span>
         </el-form-item>
@@ -433,16 +447,6 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-if="title==='审核'" label="审核备注" prop="authRemark">
-          <el-input
-            v-model="form.authRemark"
-            class="width90"
-            type="textarea"
-            :rows="2"
-            maxlength="200"
-            placeholder="请输入审核备注"
-          />
-        </el-form-item>
         <!-- <el-form-item label="年审时间" prop="annualVerificationDate">
           <el-date-picker
             v-model="vehicleForm.annualVerificationDate"
@@ -458,6 +462,16 @@
           <el-input v-model="vehicleForm.transportMeson" placeholder="请输入运输介子" class="width90" clearable :disabled="disable" />
         </el-form-item> -->
       </template>
+      <el-form-item v-if="title==='审核'" label="审核备注" prop="authRemark">
+        <el-input
+          v-model="form.authRemark"
+          class="width90"
+          type="textarea"
+          :rows="2"
+          maxlength="200"
+          placeholder="请输入审核备注"
+        />
+      </el-form-item>
     </el-form>
 
     <div v-if="title === '新增' || title === '编辑'" slot="footer" class="dialog-footer">

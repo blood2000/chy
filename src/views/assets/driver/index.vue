@@ -140,46 +140,46 @@
             />
           </el-select>
         </el-form-item>
-          <el-form-item label="审核时间">
-              <el-date-picker
-                      v-model="queryParams.authTimeBegin"
-                      clearable
-                      size="small"
-                      type="date"
-                      value-format="yyyy-MM-dd"
-                      style="width: 130px"
-                      placeholder="请选择"
-              /> -
-              <el-date-picker
-                      v-model="queryParams.authTimeEnd"
-                      clearable
-                      size="small"
-                      type="date"
-                      value-format="yyyy-MM-dd"
-                      style="width: 130px"
-                      placeholder="请选择"
-              />
-          </el-form-item>
-          <el-form-item label="注册时间">
-              <el-date-picker
-                      v-model="queryParams.createTimeBegin"
-                      clearable
-                      size="small"
-                      type="date"
-                      value-format="yyyy-MM-dd"
-                      style="width: 130px"
-                      placeholder="请选择"
-              /> -
-              <el-date-picker
-                      v-model="queryParams.createTimeEnd"
-                      clearable
-                      size="small"
-                      type="date"
-                      value-format="yyyy-MM-dd"
-                      style="width: 130px"
-                      placeholder="请选择"
-              />
-          </el-form-item>
+        <el-form-item label="审核时间">
+          <el-date-picker
+            v-model="queryParams.authTimeBegin"
+            clearable
+            size="small"
+            type="date"
+            value-format="yyyy-MM-dd"
+            style="width: 130px"
+            placeholder="请选择"
+          /> -
+          <el-date-picker
+            v-model="queryParams.authTimeEnd"
+            clearable
+            size="small"
+            type="date"
+            value-format="yyyy-MM-dd"
+            style="width: 130px"
+            placeholder="请选择"
+          />
+        </el-form-item>
+        <el-form-item label="注册时间">
+          <el-date-picker
+            v-model="queryParams.createTimeBegin"
+            clearable
+            size="small"
+            type="date"
+            value-format="yyyy-MM-dd"
+            style="width: 130px"
+            placeholder="请选择"
+          /> -
+          <el-date-picker
+            v-model="queryParams.createTimeEnd"
+            clearable
+            size="small"
+            type="date"
+            value-format="yyyy-MM-dd"
+            style="width: 130px"
+            placeholder="请选择"
+          />
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
           <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>

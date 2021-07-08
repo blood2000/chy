@@ -242,5 +242,16 @@ export const formValidate = {
     } else {
       callback();
     }
+  },
+  // 值大于0
+  greaterThanZero: function(rule, value, callback, text = '输入值') {
+    if (value === undefined || value === null || value === '') {
+      callback();
+    }
+    if (value === 0) {
+      callback(new Error(`${text}不能为0`));
+    } else {
+      callback();
+    }
   }
 };
