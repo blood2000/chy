@@ -16,7 +16,7 @@
         </el-select>
       </el-form-item>-->
       <el-form-item label="手机号/账号" prop="telphone">
-        <el-input v-model="form.telphone" placeholder="请输入手机号/账号" class="width90" clearable />
+        <el-input v-model="form.telphone" placeholder="请输入手机号/账号" :disabled="form.id?true:false" class="width90" clearable />
       </el-form-item>
       <el-form-item label="密码" prop="password">
         <el-input v-model="form.password" type="password" :placeholder="form.id?'密码未修改可不填写':'请输入密码'" class="width60 mr3" clearable />

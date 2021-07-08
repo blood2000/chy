@@ -177,7 +177,7 @@ export default {
       // 状态字典
       statusOptions: [
         { dictLabel: '启用', dictValue: 0 },
-        { dictLabel: '停用', dictValue: 1 }
+        { dictLabel: '冻结', dictValue: 1 }
       ],
       isOptions: [
         { dictLabel: '否', dictValue: 0 },

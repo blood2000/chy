@@ -294,7 +294,7 @@
                 type="text"
                 :style="row.status == '0'?'color:red':'color:green'"
                 @click="updateStatus(row)"
-              >{{ row.status == '0'?'停用':'启用' }}</el-button>
+              >{{ row.status == '0'?'冻结':'启用' }}</el-button>
             </el-dropdown-item>
             <el-dropdown-item>
               <el-button
@@ -389,7 +389,7 @@ export default {
       ],
       userStatusOptions: [
         { dictLabel: '启用', dictValue: '0' },
-        { dictLabel: '停用', dictValue: '1' }
+        { dictLabel: '冻结', dictValue: '1' }
       ],
       // 网点字典
       branchOptions: [],
@@ -625,7 +625,7 @@ export default {
       } else if (row.status === '1') {
         status = '0';
       }
-      this.$confirm('是否确认' + (status === '0' ? '启用' : '停用') + '货主"' + (row.adminName || row.telphone) + '"的账号?', '提示', {
+      this.$confirm('是否确认' + (status === '0' ? '启用' : '冻结') + '货主"' + (row.adminName || row.telphone) + '"的账号?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -633,7 +633,7 @@ export default {
         return updateUserStatusByUserCode(row.adminCode, status);
       }).then(() => {
         this.getList();
-        this.msgSuccess(status === '0' ? '启用成功' : '停用成功');
+        this.msgSuccess(status === '0' ? '启用成功' : '冻结成功');
       });
     }
   }
