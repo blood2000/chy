@@ -151,9 +151,10 @@ export default {
   },
   methods: {
     renderContent(h, { node, data, store }) {
+      const className = 'tree-node-icon ' + data.icon;
       return (
         <span class='custom-tree-node el-tree-node__label'>
-          <span class='custom-tree-text'>{node.label}</span>
+          <span class='custom-tree-text'><i class={className} style='margin-right: 4px' />{node.label}</span>
           <span class='custom-tree-button'>
             <el-button type='text' on-click={ (event) => this.appendTree(event, data) }><i class='el-icon-circle-plus-outline' /></el-button>
             <el-button type='text' on-click={ (event) => this.editTree(event, node, data) }><i class='el-icon-edit-outline' /></el-button>

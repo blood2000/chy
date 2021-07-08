@@ -87,19 +87,19 @@
     height: 16px;
     vertical-align: middle;
     margin: -4px 0 0 4px;
-  }
-  .i-node-first{
-    background: url('~@/assets/images/tree/node_icon_first.png') no-repeat;
-    background-size: 100% 100%;
-  }
-  
-  .i-node-second{
-    background: url('~@/assets/images/tree/node_icon_second.png') no-repeat;
-    background-size: 100% 100%;
-  }
-  
-  .i-node-three{
-    background: url('~@/assets/images/tree/node_icon_three.png') no-repeat;
-    background-size: 100% 100%;
+    &.root{
+      background: url('~@/assets/images/tree/node_icon_first.png') no-repeat;
+      background-size: 100% 100%;
+    }
+    
+    &.second{
+      background: url('~@/assets/images/tree/node_icon_second.png') no-repeat;
+      background-size: 100% 100%;
+    }
+    
+    &.deep{
+      background: url('~@/assets/images/tree/node_icon_three.png') no-repeat;
+      background-size: 100% 100%;
+    }
   }
 }
