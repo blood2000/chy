@@ -422,7 +422,6 @@ export default {
       // 公告列表
       noticeList2: [],
       noticeSys: '',
-      noticeSys1: '',
       // websocket参数
       websock: null,
       // 弹框 内容
@@ -556,7 +555,6 @@ export default {
           return response.status === '0';
         });
         this.noticeSys = this.noticeList2[0].noticeContent;
-        this.noticeSys1 = this.noticeSys.replace(/<\/?.+?>/g, '');
       });
     },
     loadmore() {
