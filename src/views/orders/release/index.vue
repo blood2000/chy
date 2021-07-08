@@ -750,7 +750,7 @@ export default {
       const orderInfoBo = {
         code: InfoCode || undefined,
         publishMode,
-        isPublic: isPublic ? 1 : 0,
+        isPublic: isPublic ? 0 : 1,
         isSpecified: isSpecified ? 1 : 0,
         loadType: this.formData.tin7 - 0,
         projectCode,
