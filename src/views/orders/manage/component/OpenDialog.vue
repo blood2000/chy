@@ -19,7 +19,7 @@
     </el-form>
 
     <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-      <el-tab-pane label="司机" name="listDriver" />
+      <el-tab-pane v-if="false" label="司机" name="listDriver" />
       <el-tab-pane label="调度" name="listInfo" />
     </el-tabs>
 
