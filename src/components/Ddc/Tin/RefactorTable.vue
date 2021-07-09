@@ -47,6 +47,8 @@
 
     // element-ui中的table可分页多选功能-记住上一页勾选数据
     <refactor-table :loading='loading' :data='list' :tableColumnsConfig='tableColumnsConfig' :row-key="(row)=> row.id" reserve-selection @selection-change="handleSelectionChange">
+
+    // 数据回填提供2中数据 cbData下标[]  cbDataByKeyword关键字段{id:[]}
 */
 export default {
   name: 'RefactorTable',
@@ -100,6 +102,11 @@ export default {
       type: Array,
       default: null
     },
+    // 数据回填, 添加根据其中一项值一样再回填
+    cbDataByKeyword: {
+      type: Object,
+      default: null
+    },
     reserveSelection: {
       type: Boolean,
       default: false
@@ -127,7 +134,17 @@ export default {
         this.m2ToggleSelection(value.length > 0 ? value : undefined);
       },
       immediate: true
+    },
+    // 通过关键字回填 {id: [5151, 454646]}
+    cbDataByKeyword: {
+      handler(value) {
+        if (!value && !this.data.length) return;
+        const keyname = Object.keys(value)[0];
+        this.cbDataByKeywordToSelection(keyname, value[keyname]);
+      },
+      immediate: true
     }
+
   },
   beforeDestroy() {
     clearTimeout(this.time);
@@ -160,6 +177,21 @@ export default {
           this.time = setTimeout(() => {
             rows.forEach(row => {
               this.$refs[this.refName].toggleRowSelection(this.data[row], true);
+            });
+          }, 100);
+        });
+      } else {
+        this.$nextTick(() => {
+          this.$refs[this.refName].clearSelection();
+        });
+      }
+    },
+    cbDataByKeywordToSelection(keyname, rows) {
+      if (rows && rows.length) {
+        this.$nextTick(() => {
+          this.time = setTimeout(() => {
+            rows.forEach(row => {
+              this.$refs[this.refName].toggleRowSelection((this.data.filter(ee => ee[keyname] === row))[0], true);
             });
           }, 100);
         });
