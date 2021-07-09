@@ -236,7 +236,8 @@ export function tableHeaderConfig(list, url, editColumn, myColumen) {
             isShow: el.isShow,
             sortNum: el.sortNum || 0,
             width: el.width || '120',
-            tooltip: true
+            tooltip: true,
+            isChild: el.isChild
           });
         });
         if (editColumn) {

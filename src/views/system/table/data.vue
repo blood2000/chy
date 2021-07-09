@@ -94,6 +94,12 @@
             <span v-else class="g-color-error">否</span>
           </template>
         </el-table-column>
+        <el-table-column label="是否子级" align="center" prop="isChild">
+          <template slot-scope="scope">
+            <span v-if="scope.row.isChild" class="g-color-success">是</span>
+            <span v-else class="g-color-error">否</span>
+          </template>
+        </el-table-column>
         <el-table-column label="列表名称" align="center" prop="masterName" />
         <!-- <el-table-column label="接口地址" align="center" prop="route" /> -->
         <el-table-column label="创建时间" align="center" prop="createTime" width="180">
@@ -145,6 +151,9 @@
           </el-form-item>
           <el-form-item label="是否显示" prop="isShow">
             <el-switch v-model="form.isShow" />
+          </el-form-item>
+          <el-form-item label="是否子级" prop="isChild">
+            <el-switch v-model="form.isChild" />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
