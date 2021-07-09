@@ -44,19 +44,16 @@ export default {
       default: () => { return {}; }
     }
   },
-  data() {
-    return {
-      loadVoucherAttrs: [],
-      unloadVoucherAttrs: []
-    };
-  },
-
-  created() {
-    console.log(this.rowdata, '想每次都要触发');
-    this.loadVoucherAttrs = this.rowdata.loadVoucherAttrs ? this.rowdata.loadVoucherAttrs.split(',') : [];
-    this.unloadVoucherAttrs = this.rowdata.unloadVoucherAttrs ? this.rowdata.unloadVoucherAttrs.split(',') : [];
+  computed: {
+    loadVoucherAttrs() {
+      console.log(this.rowdata.loadVoucherAttrs);
+      return this.rowdata.loadVoucherAttrs ? this.rowdata.loadVoucherAttrs.split(',') : [];
+    },
+    unloadVoucherAttrs() {
+      console.log(this.rowdata.unloadVoucherAttrs);
+      return this.rowdata.unloadVoucherAttrs ? this.rowdata.unloadVoucherAttrs.split(',') : [];
+    }
   }
-
 };
 </script>
 

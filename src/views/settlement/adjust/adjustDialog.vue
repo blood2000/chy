@@ -39,7 +39,7 @@
                 :tabindex="scope.$index"
                 trigger="click"
               >
-                <div>
+                <div v-if="visible">
                   <ImgShow :rowdata="scope.row" />
                 </div>
                 <i slot="reference" class="el-icon-warning shou" />
