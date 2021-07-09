@@ -100,6 +100,8 @@
     <info-dialog ref="infoDialogRef" :open.sync="paramOpen" :title="title" @refresh="getMediaInfoList" />
     <PdfLook :src="pdfSrc" :open.sync="visibleOpen" :title="pdfTitle"/>
     <VideoLook :src="videoSrc" :open.sync="videoVisibleOpen"></VideoLook>
+      <WordLook :src="wordSrc" :open.sync="wordVisibleOpen"></WordLook>
+      <ImgLook :src="imageSrc" :open.sync="imageVisibleOpen"></ImgLook>
   </div>
 </template>
 
@@ -108,14 +110,18 @@ import { getMediaTypeTree, delMediaTypeTree, getMediaInfoList, delMediaInfo } fr
 import SettingDialog from './settingDialog';
 import InfoDialog from './infoDialog.vue';
 import PdfLook from './pdfLook';
-import VideoLook from './VideoLook';
+import VideoLook from './videoLook';
+import WordLook from './wordLook';
+import ImgLook from './imgLook';
 export default {
   name: 'Param',
   components: {
     SettingDialog,
     InfoDialog,
     PdfLook,
-    VideoLook
+    VideoLook,
+    WordLook,
+    ImgLook
   },
   data() {
     return {
@@ -124,6 +130,8 @@ export default {
       paramOpen: false,
       visibleOpen: false,
       videoVisibleOpen: false,
+      wordVisibleOpen: false,
+      imageVisibleOpen: false,
       title: '',
       // 树
       treeData: [],
@@ -148,7 +156,15 @@ export default {
       rowData: {},
       pdfTitle: '',
       pdfSrc: '',
-      videoSrc: ''
+      videoSrc: '',
+      wordSrc: '',
+      imageSrc: [],
+      companyPreview: {
+        imgList: [], // 所有图片数组
+        index: 0, // 当前点击的图片的索引
+        infinite: true, // 是否可以循环切换
+        popup: false // 弹窗的显示隐藏
+      }
     };
   },
   created() {
@@ -268,7 +284,11 @@ export default {
       });
     },
     handleLook(row) {
-      if (row.mediaType === 'pdf') {
+      if (row.mediaType === 'pdf') { // pdf查看
+        if (!row.mediaUrl.toLocaleString().endsWith('.pdf')) {
+          this.msgWarning('非pdf格式，无法预览');
+          return;
+        }
         this.pdfTitle = '预览';
         this.visibleOpen = true;
         if (row.mediaUrl.startsWith('https://css-backup')) {
@@ -277,9 +297,34 @@ export default {
         } else {
           this.pdfSrc = row.mediaUrl;
         }
-      } else if (row.mediaType === 'vedio') {
+      } else if (row.mediaType === 'video') { // 视频：ogg，webm，mp4
+        if (!(row.mediaUrl.toLocaleString().endsWith('.mp4') || row.mediaUrl.toLocaleString().endsWith('.ogg') || row.mediaUrl.toLocaleString().endsWith('.webm'))) {
+          this.msgWarning('视频支持mp4,webm,ogg格式');
+          return;
+        }
         this.videoVisibleOpen = true;
         this.videoSrc = row.mediaUrl;
+      } else if (row.mediaType === 'word') { // word: docx、doc
+        if (!(row.mediaUrl.toLocaleString().endsWith('.doc') || row.mediaUrl.toLocaleString().endsWith('.docx'))) {
+          this.msgWarning('word暂只支持doc，docx格式');
+          return;
+        }
+        this.wordVisibleOpen = true;
+        this.wordSrc = row.mediaUrl;
+      } else if (row.mediaType === 'excel') { // excel: xls
+        if (!row.mediaUrl.toLocaleString().endsWith('.xls')) {
+          this.msgWarning('excel暂只支持xls格式');
+          return;
+        }
+        this.wordVisibleOpen = true;
+        this.wordSrc = row.mediaUrl;
+      } else if (row.mediaType === 'image') {
+        if (!(row.mediaUrl.toLocaleString().endsWith('.jpg') || row.mediaUrl.toLocaleString().endsWith('.png') || row.mediaUrl.toLocaleString().endsWith('.jpeg'))) {
+          this.msgWarning('图片暂只支持jpg，png，jpeg格式');
+          return;
+        }
+        this.imageVisibleOpen = true;
+        this.imageSrc[0] = row.mediaUrl;
       }
     }
   }

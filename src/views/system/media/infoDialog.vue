@@ -45,9 +45,10 @@ export default {
       // 状态字典
       mediaTypeOptions: [
         { dictLabel: 'pdf', dictValue: 'pdf' },
-        { dictLabel: '文档', dictValue: 'word' },
+        { dictLabel: 'word', dictValue: 'word' },
+        { dictLabel: 'excel', dictValue: 'excel' },
         { dictLabel: '图片', dictValue: 'image' },
-        { dictLabel: '音频', dictValue: 'vedio' }
+        { dictLabel: '视频', dictValue: 'video' }
       ],
       form: {},
       rules: {
@@ -121,6 +122,32 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
+          if (this.form.mediaType === 'pdf') {
+            if (this.form.mediaUrl.toLocaleString().endsWith('.pdf')) {
+              this.msgWarning('非pdf格式，无法预览');
+              return;
+            }
+          } else if (this.form.mediaType === 'video') {
+            if (!(this.form.mediaUrl.toLocaleString().endsWith('.mp4') || this.form.mediaUrl.toLocaleString().endsWith('.ogg') || this.form.mediaUrl.toLocaleString().endsWith('.webm'))) {
+              this.msgWarning('视频暂只支持mp4,webm,ogg格式');
+              return;
+            }
+          } else if (this.form.mediaType === 'word') {
+            if (!(this.form.mediaUrl.toLocaleString().endsWith('.doc') || this.form.mediaUrl.toLocaleString().endsWith('.docx'))) {
+              this.msgWarning('word暂只支持doc，docx格式');
+              return;
+            }
+          } else if (this.form.mediaType === 'image') {
+            if (!(this.form.mediaUrl.toLocaleString().endsWith('.jpg') || this.form.mediaUrl.toLocaleString().endsWith('.png') || this.form.mediaUrl.toLocaleString().endsWith('.jpeg'))) {
+              this.msgWarning('图片暂只支持jpg，png，jpeg格式');
+              return;
+            }
+          } else if (this.form.mediaType === 'excel') {
+            if (!this.form.mediaUrl.toLocaleString().endsWith('.xls')) {
+              this.msgWarning('excel暂只支持xls格式');
+              return;
+            }
+          }
           this.buttonLoading = true;
           if (this.form.mediaCode) {
             editMediaInfo(this.form).then(response => {
