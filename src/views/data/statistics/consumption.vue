@@ -108,8 +108,8 @@
 
 <script>
 import { listConsumptionApi, listConsumption, countConsumption } from '@/api/data/statistics';
-// import tableColumnsConfig from './config';
 import { pickerOptions } from '@/utils/dateRange';
+// import tableColumnsConfig from './data/config-index';
 
 export default {
   name: 'Consumption',
@@ -146,41 +146,19 @@ export default {
       loadingExport: false
     };
   },
+  watch: {
+    tableColumnsConfig(val) {
+      const arrlist = val.filter(item => item.isChild);
+      console.log(arrlist);
+      this.morelist = [{
+        label: '本期客户消费',
+        children: arrlist
+      }];
+    }
+  },
   created() {
     this.tableHeaderConfig(this.tableColumnsConfig, listConsumptionApi, { });
-    // console.log(this.tableColumnsConfig);
-    this.morelist = [{
-      label: '本期客户消费',
-      children: [{
-        label: '运费',
-        prop: 'freightAmount',
-        width: '100'
-      }, {
-        label: '已开票运费',
-        prop: 'freightInvoiceAmount',
-        width: '100'
-      }, {
-        label: '未开票运费',
-        prop: 'freightUnbilledAmount',
-        width: '100'
-      }, {
-        label: '服务费',
-        prop: 'serviceAmount',
-        width: '100'
-      }, {
-        label: '已开票服务费',
-        prop: 'serviceInvoiceAmount',
-        width: '100'
-      }, {
-        label: '未开票服务费',
-        prop: 'serviceUnbilledAmount',
-        width: '100'
-      }, {
-        label: '消费合计',
-        prop: 'transferAmount',
-        width: '100'
-      }]
-    }];
+    console.log(this.tableColumnsConfig);
     this.getList();
   },
   methods: {
