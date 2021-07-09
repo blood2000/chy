@@ -46,11 +46,9 @@ export default {
   },
   computed: {
     loadVoucherAttrs() {
-      console.log(this.rowdata.loadVoucherAttrs);
       return this.rowdata.loadVoucherAttrs ? this.rowdata.loadVoucherAttrs.split(',') : [];
     },
     unloadVoucherAttrs() {
-      console.log(this.rowdata.unloadVoucherAttrs);
       return this.rowdata.unloadVoucherAttrs ? this.rowdata.unloadVoucherAttrs.split(',') : [];
     }
   }
