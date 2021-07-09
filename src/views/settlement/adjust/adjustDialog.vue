@@ -39,7 +39,7 @@
                 :tabindex="scope.$index"
                 trigger="click"
               >
-                <div>
+                <div v-if="visible">
                   <ImgShow :rowdata="scope.row" />
                 </div>
                 <i slot="reference" class="el-icon-warning shou" />
@@ -276,7 +276,8 @@ export default {
       floor,
       errList: [],
       className: '',
-      adjustLoading: false
+      adjustLoading: false,
+      changeFee: null
     };
   },
   computed: {
@@ -309,7 +310,7 @@ export default {
   //   }
   // },
   created() {
-
+    this.changeFee = this.newDebounceFun(this.setDeliveryCashFee, 1000);
   },
 
   methods: {
@@ -382,13 +383,21 @@ export default {
         // taxPayment
       };
       // if (this.loading1) return;
+
+      console.log(445);
+      // this.setDeliveryCashFee(parame, row);
+      this.changeFee(parame, row);
+    },
+
+    // 单项修改
+    async setDeliveryCashFee(parame, row) {
+      console.log(parame, row);
+
       this.loading1 = true;
       try {
         var data = {};
         await calculateFee(parame).then(res => {
           data = res.data;
-          // console.log(data);
-
           if (res.msg) {
             this.msgError(res.msg);
           }
@@ -408,9 +417,6 @@ export default {
         row.loss = data.loss;
       } catch (error) {
         this.loading1 = false;
-
-        // console.log('请求失败');
-        return;
       }
     },
 
@@ -743,6 +749,17 @@ export default {
 
         return JSON.stringify(arr);
       }
+    },
+
+    // 防抖=需要带参数,避免和原方法冲突
+    newDebounceFun(callback, time) {
+      var timer;
+      return function(...argument) {
+        clearTimeout(timer);
+        timer = setTimeout(function() {
+          callback(...argument);
+        }, time);
+      };
     }
   }
 };

@@ -165,6 +165,26 @@
         </el-form-item>
 
 
+        <el-row>
+          <el-col :span="6">
+            <el-form-item label="装货时是否必须上传凭证" label-width="200px">
+              <el-switch
+                v-model="formData.uploadLoadVoucher"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="卸货时是否必须上传凭证" label-width="200px">
+              <el-switch
+                v-model="formData.uploadUnloadVoucher"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+
+
+
         <el-form-item label="货源备注信息" prop="remark">
           <el-input
             v-model="formData.remark"
@@ -242,6 +262,9 @@ export default {
         tin6_1: [], // 调度者
         tin6_2: [], // 司机
         tin6: '', // 货集码
+
+        uploadLoadVoucher: true, // 装货时是否必须上传凭证 7/8追加字段
+        uploadUnloadVoucher: true, // 卸货时是否必须上传凭证 7/8追加字段
 
         remark: ''
       },
@@ -328,7 +351,13 @@ export default {
         if (!this.cbData) return;
         const { code, projectCode, isPublic, isSpecified, remark, orderSpecifiedList, goodsBigType, goodsType, classList, publishMode } = this.cbData;
 
+
+
         // 1.基本的赋值
+
+        this.formData.uploadLoadVoucher = this.cbData.uploadLoadVoucher + '' === '1';
+        this.formData.uploadUnloadVoucher = this.cbData.uploadUnloadVoucher + '' === '1';
+
         this.formData.publishMode = publishMode + '';
         this.formData.tin4 = isPublic + '';
         this.formData.tin5 = isSpecified + '';
@@ -627,7 +656,10 @@ export default {
               orderSpecifiedList: tin6_1.concat(tin6_2),
               projectCode: this.formData.tin3 === '0' ? '' : this.formData.tin3,
               pubilshCode: this.pubilshCode,
-              remark: this.formData.remark
+              remark: this.formData.remark,
+
+              uploadLoadVoucher: this.formData.uploadLoadVoucher,
+              uploadUnloadVoucher: this.formData.uploadUnloadVoucher
             });
           } else {
             return false;
