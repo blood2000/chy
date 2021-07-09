@@ -1,12 +1,12 @@
 <template>
-    <el-dialog :visible="visible" width="60%" title="预览" :close-on-click-modal="false" append-to-body @close="cancel">
-        <video-player
-                class="video-player vjs-custom-skin"
-                ref="videoPlayer"
-                :playsinline="true"
-                :options="playerOptions"
-        ></video-player>
-    </el-dialog>
+  <el-dialog :visible="visible" width="60%" title="预览" :close-on-click-modal="false" append-to-body @close="cancel">
+    <video-player
+      ref="videoPlayer"
+      class="video-player vjs-custom-skin"
+      :playsinline="true"
+      :options="playerOptions"
+    />
+  </el-dialog>
 </template>
 <script>
 export default {
@@ -15,23 +15,6 @@ export default {
   props: {
     src: String,
     open: Boolean
-  },
-  computed: {
-    visible: {
-      get() {
-        return this.open;
-      },
-      set(v) {
-        this.$emit('update:open', v);
-      }
-    }
-  },
-  watch: {
-    open(val) {
-      if (val) {
-        this.initHlsVideo();
-      }
-    }
   },
   data() {
     return {
@@ -61,6 +44,23 @@ export default {
         }
       }
     };
+  },
+  computed: {
+    visible: {
+      get() {
+        return this.open;
+      },
+      set(v) {
+        this.$emit('update:open', v);
+      }
+    }
+  },
+  watch: {
+    open(val) {
+      if (val) {
+        this.initHlsVideo();
+      }
+    }
   },
   mounted() {
     this.initHlsVideo();
