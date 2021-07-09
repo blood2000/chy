@@ -102,6 +102,11 @@ Vue.prototype.formValidate = formValidate;
 Vue.prototype.wgs84_to_gcj02 = wgs84_to_gcj02;
 Vue.prototype.domtoimage = domtoimage;
 
+import VideoPlayer from 'vue-video-player';
+require('video.js/dist/video-js.css');
+require('vue-video-player/src/custom-theme.css');
+Vue.use(VideoPlayer);
+
 // 提示方法
 Vue.prototype.msgSuccess = function(msg) {
   this.$message({ showClose: true, message: msg, type: 'success' });

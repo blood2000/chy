@@ -98,7 +98,8 @@
     <!-- 新增/编辑树 对话框 -->
     <setting-dialog ref="settingDialogRef" :open.sync="settingOpen" :title="title" @refresh="getTree" />
     <info-dialog ref="infoDialogRef" :open.sync="paramOpen" :title="title" @refresh="getMediaInfoList" />
-    <PdfLook :src="pdfSrc" :open.sync="visibleOpen" />
+    <PdfLook :src="pdfSrc" :open.sync="visibleOpen" :title="pdfTitle"/>
+    <VideoLook :src="videoSrc" :open.sync="videoVisibleOpen"></VideoLook>
   </div>
 </template>
 
@@ -107,12 +108,14 @@ import { getMediaTypeTree, delMediaTypeTree, getMediaInfoList, delMediaInfo } fr
 import SettingDialog from './settingDialog';
 import InfoDialog from './infoDialog.vue';
 import PdfLook from './pdfLook';
+import VideoLook from './VideoLook';
 export default {
   name: 'Param',
   components: {
     SettingDialog,
     InfoDialog,
-    PdfLook
+    PdfLook,
+    VideoLook
   },
   data() {
     return {
@@ -120,6 +123,7 @@ export default {
       settingOpen: false,
       paramOpen: false,
       visibleOpen: false,
+      videoVisibleOpen: false,
       title: '',
       // 树
       treeData: [],
@@ -142,7 +146,9 @@ export default {
       multiple: true,
       codes: [],
       rowData: {},
-      pdfSrc: ''
+      pdfTitle: '',
+      pdfSrc: '',
+      videoSrc: ''
     };
   },
   created() {
@@ -263,6 +269,7 @@ export default {
     },
     handleLook(row) {
       if (row.mediaType === 'pdf') {
+        this.pdfTitle = '预览';
         this.visibleOpen = true;
         if (row.mediaUrl.startsWith('https://css-backup')) {
           const str = (row.mediaUrl.split('.com'))[1];
@@ -270,6 +277,9 @@ export default {
         } else {
           this.pdfSrc = row.mediaUrl;
         }
+      } else if (row.mediaType === 'vedio') {
+        this.videoVisibleOpen = true;
+        this.videoSrc = row.mediaUrl;
       }
     }
   }

@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible="visible" width="60%" title="预览" :close-on-click-modal="false" append-to-body @close="cancel">
+  <el-dialog :visible="visible" width="60%" :title="title" :close-on-click-modal="false" append-to-body @close="cancel">
     <pdf :src="src" />
   </el-dialog>
 </template>
@@ -13,7 +13,8 @@ export default {
   },
   props: {
     src: String,
-    open: Boolean
+    open: Boolean,
+    title: String
   },
   computed: {
     visible: {
