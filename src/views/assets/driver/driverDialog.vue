@@ -1000,7 +1000,11 @@ export default {
             if (data.valid_to === '长期') {
               this.$set(this.form, 'validPeriodAlways', true);
             } else if (data.valid_to !== '') {
-              this.$set(this.form, 'validPeriodTo', data.valid_to);
+              if (data.valid_to.startsWith('9999')) {
+                this.$set(this.form, 'validPeriodAlways', true);
+              } else {
+                this.$set(this.form, 'validPeriodTo', data.valid_to);
+              }
             }
           } else {
             this.$set(this.form, 'validPeriodAlways', false);
