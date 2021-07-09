@@ -4,7 +4,7 @@
     <el-table-column v-if="!isShowIndex" label="序号" align="center" type="index" width="50" />
     <template v-for="(th, key) in tableColumnsConfig">
       <el-table-column
-        v-if="th.isShow"
+        v-if="th.isShow && !th.isChild"
         :key="th.prop +''+ key"
         :align="th.align || 'center'"
         :prop="th.prop"
@@ -14,7 +14,6 @@
         :show-overflow-tooltip="th.tooltip || false"
         :sortable="th.sortable || false"
       >
-        <!-- :formatter="th.formatter" -->
         <template slot-scope="scope">
           <slot :name="th.prop" :row="scope.row">{{ scope.row[th.prop] === 0 ? 0 : scope.row[th.prop] || '' }}</slot>
         </template>
@@ -23,34 +22,39 @@
     <!--三级表头-->
     <el-table-column v-for="(level1Item, index) in morelist" :key="index" align="center" :label="level1Item.label" :prop="level1Item.prop" :min-width="level1Item.width">
       <template v-if="level1Item.children">
-        <el-table-column
-          v-for="(level2Item, indexChild1) in level1Item.children"
-          :key="index+'-'+indexChild1"
-          align="center"
-          :label="level2Item.label"
-          :prop="level2Item.prop"
-          :min-width="level2Item.width"
-        >
-          <template slot-scope="scope">
-            <!-- <slot :name="level2Item.prop" :row="scope.row">{{ scope.row[level2Item.prop] || '' }}</slot> -->
-            <span>{{ scope.row[level2Item.prop] === 0 ? 0 : scope.row[level2Item.prop] || '' }}</span>
-          </template>
-          <template v-if="level2Item.children">
-            <el-table-column
-              v-for="(level3Item, indexChild2) in level2Item.children"
-              :key="index+'-'+indexChild1+'-'+indexChild2"
-              align="center"
-              :label="level3Item.label"
-              :prop="level3Item.prop"
-              :min-width="level3Item.width"
-            >
-              <template slot-scope="scope">
-                <!-- <slot :name="level3Item.prop" :row="scope.row">{{ scope.row[level3Item.prop] || '' }}</slot> -->
-                <span>{{ scope.row[level3Item.prop] === 0 ? 0 : scope.row[level3Item.prop] || '' }}</span>
+        <template v-for="(level2Item, indexChild1) in level1Item.children">
+          <el-table-column
+            v-if="level2Item.isShow"
+            :key="index+'-'+indexChild1"
+            align="center"
+            :label="level2Item.label"
+            :prop="level2Item.prop"
+            :min-width="level2Item.width"
+          >
+            <template slot-scope="scope">
+              <!-- <slot :name="level2Item.prop" :row="scope.row">{{ scope.row[level2Item.prop] || '' }}</slot> -->
+              <span>{{ scope.row[level2Item.prop] === 0 ? 0 : scope.row[level2Item.prop] || '' }}</span>
+            </template>
+            <template v-if="level2Item.children">
+              <template v-for="(level3Item, indexChild2) in level2Item.children">
+                <el-table-column
+                  v-if="level3Item.isShow"
+                  :key="index+'-'+indexChild1+'-'+indexChild2"
+                  align="center"
+                  :label="level3Item.label"
+                  :prop="level3Item.prop"
+                  :min-width="level3Item.width"
+                >
+                  <template slot-scope="scope">
+                    <!-- <slot :name="level3Item.prop" :row="scope.row">{{ scope.row[level3Item.prop] || '' }}</slot> -->
+                    <span>{{ scope.row[level3Item.prop] === 0 ? 0 : scope.row[level3Item.prop] || '' }}</span>
+                  </template>
+                </el-table-column>
               </template>
-            </el-table-column>
-          </template>
-        </el-table-column>
+
+            </template>
+          </el-table-column>
+        </template>
       </template>
     </el-table-column>
   </el-table>

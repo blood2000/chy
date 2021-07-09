@@ -98,8 +98,8 @@
     <!-- 新增/编辑树 对话框 -->
     <setting-dialog ref="settingDialogRef" :open.sync="settingOpen" :title="title" @refresh="getTree" />
     <info-dialog ref="infoDialogRef" :open.sync="paramOpen" :title="title" @refresh="getMediaInfoList" />
-    <PdfLook :src="pdfSrc" :open.sync="visibleOpen" :title="pdfTitle"/>
-    <VideoLook :src="videoSrc" :open.sync="videoVisibleOpen"></VideoLook>
+    <PdfLook :src="pdfSrc" :open.sync="visibleOpen" :title="pdfTitle" />
+    <VideoLook :src="videoSrc" :open.sync="videoVisibleOpen" />
       <WordLook :src="wordSrc" :open.sync="wordVisibleOpen"></WordLook>
       <ImgLook :src="imageSrc" :open.sync="imageVisibleOpen"></ImgLook>
   </div>
@@ -158,13 +158,7 @@ export default {
       pdfSrc: '',
       videoSrc: '',
       wordSrc: '',
-      imageSrc: [],
-      companyPreview: {
-        imgList: [], // 所有图片数组
-        index: 0, // 当前点击的图片的索引
-        infinite: true, // 是否可以循环切换
-        popup: false // 弹窗的显示隐藏
-      }
+      imageSrc: []
     };
   },
   created() {

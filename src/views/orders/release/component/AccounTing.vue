@@ -72,7 +72,7 @@
 
     <template v-if="formData.ruleItemId">
 
-      <el-row :gutter="20">
+      <el-row :gutter="20" :loading="loading">
         <el-col :span="!showbudget? 14: 24">
           <div v-if="zichuList.length || shouruList.length" class="t_box_item">
 
@@ -208,6 +208,7 @@ export default {
       }
     };
     return {
+      loading: false,
       jisuanRule: {}, // 计算的规则
       mygoodsUnitName: '', // 单位
       mytotalTypeValue: '', // 配载方式
@@ -410,8 +411,9 @@ export default {
           return e.platformType === 2 && e.isDefault === 'Y';
         });
 
-        if (rulesItem[0]) {
-          this.formData.ruleItemId = this.formData.ruleItemId || rulesItem[0].code;
+        if (rulesItem[0] && !this.formData.ruleItemId) {
+          // console.log(this.formData.ruleItemId, '这里触发一次');
+          this.formData.ruleItemId = rulesItem[0].code;
           this.handleRuleItemId();
         }
       } catch (error) {
@@ -431,10 +433,12 @@ export default {
       this.lossList = [];
       this.zichuList = [];
       this.shouruList = [];
+      this.loading = true;
 
       const { detailList, lossList } = (await getRuleItem({
         code: this.formData.ruleItemId
       })).data;
+      this.loading = false;
 
 
       const filterDetailList = detailList.filter(e => {
