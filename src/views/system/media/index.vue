@@ -98,8 +98,8 @@
     <!-- 新增/编辑树 对话框 -->
     <setting-dialog ref="settingDialogRef" :open.sync="settingOpen" :title="title" @refresh="getTree" />
     <info-dialog ref="infoDialogRef" :open.sync="paramOpen" :title="title" @refresh="getMediaInfoList" />
-    <PdfLook :src="pdfSrc" :open.sync="visibleOpen" :title="pdfTitle"/>
-    <VideoLook :src="videoSrc" :open.sync="videoVisibleOpen"></VideoLook>
+    <PdfLook :src="pdfSrc" :open.sync="visibleOpen" :title="pdfTitle" />
+    <VideoLook :src="videoSrc" :open.sync="videoVisibleOpen" />
   </div>
 </template>
 

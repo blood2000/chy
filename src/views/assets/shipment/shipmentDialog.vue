@@ -458,6 +458,55 @@
           </el-form-item>
         </el-col>
       </el-row>
+      <h5 class="g-card-title g-strong mb20 ml10">
+        通用配置
+        <div class="h5-divider" style="width: 91%" />
+      </h5>
+      <el-row :gutter="20">
+        <el-col :span="11">
+          <el-form-item label="允许未审核司机/车辆接单" prop="allowNoAuditDriverToReceive">
+            <el-radio-group v-model="form.allowNoAuditDriverToReceive">
+              <el-radio
+                v-for="dict in allowOptions"
+                :key="dict.dictValue"
+                :label="parseInt(dict.dictValue)"
+              >{{ dict.dictLabel }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item label="修改司机实收金额" prop="editDriverActualAmount">
+            <el-radio-group v-model="form.editDriverActualAmount">
+              <el-radio
+                v-for="dict in allowOptions"
+                :key="dict.dictValue"
+                :label="parseInt(dict.dictValue)"
+              >{{ dict.dictLabel }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="11">
+          <el-form-item prop="noNeedUnloadImg">
+            <el-checkbox v-model="form.noNeedUnloadImg">是否不需要卸货图片</el-checkbox>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item prop="openProjectDesignView">
+            <el-checkbox v-model="form.openProjectDesignView">开启&nbsp;项目版统计视图</el-checkbox>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item prop="isNeedLoadingCertificate">
+            <el-checkbox v-model="form.isNeedLoadingCertificate">是否需要装货凭证</el-checkbox>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <h5 class="g-card-title g-strong mb20 ml10">
+        普通货物配置
+        <div class="h5-divider" style="width: 87%" />
+      </h5>
       <el-row :gutter="20">
         <el-col :span="11">
           <el-form-item label="单货源多商品" prop="singleSourceMultiCommodity">
@@ -481,35 +530,9 @@
             </el-radio-group>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row :gutter="20">
         <el-col :span="11">
           <el-form-item label="单货源多卸货地" prop="singleSourceMultiUnloadingLocations">
             <el-radio-group v-model="form.singleSourceMultiUnloadingLocations">
-              <el-radio
-                v-for="dict in allowOptions"
-                :key="dict.dictValue"
-                :label="parseInt(dict.dictValue)"
-              >{{ dict.dictLabel }}</el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11">
-          <el-form-item label="修改司机实收金额" prop="editDriverActualAmount">
-            <el-radio-group v-model="form.editDriverActualAmount">
-              <el-radio
-                v-for="dict in allowOptions"
-                :key="dict.dictValue"
-                :label="parseInt(dict.dictValue)"
-              >{{ dict.dictLabel }}</el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="11">
-          <el-form-item label="允许未审核司机/车辆接单" prop="allowNoAuditDriverToReceive">
-            <el-radio-group v-model="form.allowNoAuditDriverToReceive">
               <el-radio
                 v-for="dict in allowOptions"
                 :key="dict.dictValue"
@@ -527,25 +550,6 @@
                 :label="parseInt(dict.dictValue)"
               >{{ dict.dictLabel }}</el-radio>
             </el-radio-group>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="8">
-          <el-form-item prop="noNeedUnloadImg">
-            <el-checkbox v-model="form.noNeedUnloadImg">是否不需要卸货图片</el-checkbox>
-          </el-form-item>
-        </el-col>
-        <el-col :span="10">
-          <el-form-item prop="openProjectDesignView">
-            <el-checkbox v-model="form.openProjectDesignView">开启&nbsp;项目版统计视图</el-checkbox>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="8">
-          <el-form-item prop="isNeedLoadingCertificate">
-            <el-checkbox v-model="form.isNeedLoadingCertificate">是否需要装货凭证</el-checkbox>
           </el-form-item>
         </el-col>
       </el-row>
@@ -1121,7 +1125,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .mr3{
   margin-right: 3%;
 }
@@ -1157,5 +1161,16 @@ export default {
 .upload-image-label{
   margin: 0;
   line-height: 24px;
+}
+/* 标题样式 */
+.g-card-title{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  >.h5-divider{
+    margin-left: 8px;
+    height: 1px;
+    border-bottom: 1px dashed #DAD3D3;
+  }
 }
 </style>
