@@ -58,6 +58,15 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
+        <el-form-item label="支付批次号" prop="bizNo">
+          <el-input
+            v-model.trim="queryParams.bizNo"
+            placeholder="请输入支付批次号"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
         <el-form-item label="转账结果" prop="status">
           <el-select v-model="queryParams.status" placeholder="请选择" clearable filterable size="small">
             <el-option
@@ -133,6 +142,7 @@
             icon="el-icon-upload2"
             size="mini"
             :disabled="multiple"
+            :loading="importLoading"
             @click="handleImport"
           >网商批量提现</el-button>
         </el-col>
@@ -142,6 +152,7 @@
             icon="el-icon-upload2"
             size="mini"
             :disabled="multiple"
+            :loading="rejectLoading"
             @click="handleReject"
           >网商批量驳回</el-button>
         </el-col>
@@ -256,10 +267,13 @@ export default {
         transferTimeBegin: undefined,
         transferTimeEnd: undefined,
         applyTimeBegin: undefined,
-        applyTimeEnd: undefined
+        applyTimeEnd: undefined,
+        bizNo: undefined
       },
       searched: false,
-      exportLoading: false
+      exportLoading: false,
+      importLoading: false,
+      rejectLoading: false
     };
   },
   computed: {
@@ -344,7 +358,9 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
+        _this.importLoading = true;
         toCard(_this.ids).then(response => {
+          _this.importLoading = false;
           _this.msgSuccess('操作成功');
           _this.$refs.multipleTable.m2ToggleSelection();
           _this.getList();
@@ -359,7 +375,9 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
+        _this.rejectLoading = true;
         reject(_this.ids).then(response => {
+          _this.rejectLoading = false;
           _this.msgSuccess('操作成功');
           _this.$refs.multipleTable.m2ToggleSelection();
           _this.getList();

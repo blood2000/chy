@@ -5,8 +5,21 @@
       <img class="marginright10" src="~@/assets/images/workbench/icon_notice.png" alt="">
       <img v-if="width>1366" class="marginright10" src="~@/assets/images/workbench/font_notice.png" alt="">
       <span class="notic-tip g-color-gray">
-        <NoticeCard :notice="noticeSys" />
+        <el-popover
+          placement="bottom"
+          :width="800"
+          trigger="hover"
+        >
+          <template #reference>
+            <NoticeCard :notice="noticeSys" />
+          </template>
+          <div v-html="noticeSys" />
+        </el-popover>
       </span>
+
+      <!-- <span class="notic-tip g-color-gray">
+        <NoticeCard :notice="noticeSys" />
+      </span> -->
     </div>
 
     <div class="content-frame g-flex">
