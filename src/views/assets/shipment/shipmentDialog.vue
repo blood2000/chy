@@ -16,7 +16,7 @@
               </el-select>
             </el-form-item>-->
       <el-form-item label="手机号/账号" prop="telphone">
-        <el-input v-model="form.telphone" placeholder="请输入手机号/账号" :disabled="form.id?true:false" class="width90" clearable />
+        <el-input v-model="form.telphone" @blur="getUserAlreadyExist" ref="telphone" placeholder="请输入手机号/账号" :disabled="form.id?true:false" class="width90" clearable />
       </el-form-item>
       <el-form-item label="密码" prop="password">
         <el-input v-model="form.password" type="password" :placeholder="form.id?'密码未修改可不填写':'请输入密码'" class="width60 mr3" clearable />
@@ -567,6 +567,7 @@
 
 <script>
 import { addShipment, updateShipment, authRead, examine, getShipmentEnterprise, getMarket, getOperateOrg, getOperateUser } from '@/api/assets/shipment';
+import { getUserAlreadyExist } from '@/api/system/user';
 // import { getWaybillStatus } from '@/api/assets/shipment';
 import { listDeptAll } from '@/api/system/dept';
 import { getBranchList } from '@/api/system/branch';
@@ -1123,6 +1124,22 @@ export default {
           break;
         default:
           break;
+      }
+    },
+    getUserAlreadyExist() {
+      if (this.form.telphone) {
+        getUserAlreadyExist({ phoneNum: this.form.telphone }).then(response => {
+          if (response.code === 500) {
+            this.msgWarning(response.msg);
+            this.$nextTick(() => {
+              this.$refs.telphone.focus();
+            });
+          }
+        }).catch(() => {
+          this.$nextTick(() => {
+            this.$refs.telphone.focus();
+          });
+        });
       }
     }
   }
