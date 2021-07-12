@@ -24,17 +24,17 @@
         装货数量：
       </el-col>
       <el-col :span="5" class="text-row">
-        <span v-if="form.stowageStatus === '1'">{{ form.loadWeight || '0.00' }} 方</span>
-        <span v-if="form.stowageStatus === '2'">{{ form.loadWeight || '0.00' }} 车</span>
-        <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ form.loadWeight || '0.00' }} 吨</span>
+        <span v-if="form.stowageStatus === '1'">{{ form.loadWeight || '0.000' }} 方</span>
+        <span v-if="form.stowageStatus === '2'">{{ Math.floor(form.loadWeight) || '0' }} 车</span>
+        <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ form.loadWeight || '0.000' }} 吨</span>
       </el-col>
       <el-col :span="3" class="text-label">
         卸货数量：
       </el-col>
       <el-col :span="5" class="text-row">
-        <span v-if="form.stowageStatus === '1'">{{ form.unloadWeight || '0.00' }} 方</span>
-        <span v-if="form.stowageStatus === '2'">{{ form.unloadWeight || '0.00' }} 车</span>
-        <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ form.unloadWeight || '0.00' }} 吨</span>
+        <span v-if="form.stowageStatus === '1'">{{ form.unloadWeight || '0.000' }} 方</span>
+        <span v-if="form.stowageStatus === '2'">{{ Math.floor(form.unloadWeight) || '0' }} 车</span>
+        <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ form.unloadWeight || '0.000' }} 吨</span>
       </el-col>
       <el-col :span="3" class="text-label">
         货物大类：
