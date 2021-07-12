@@ -17,7 +17,7 @@
           <!-- 用户信息 -->
           <div class="g-flex">
             <div class="index-frame g-flex g-aligncenter  marginright15" style="width: 100%;">
-              <img v-if="user.avatar != null" class="user-avator" :src="user.avatar" @click="JumpH5">
+              <img v-if="user.avatar" class="user-avator" :src="user.avatar" @click="JumpH5">
               <img v-else class="user-avator" src="~@/assets/images/workbench/icon_noavator.png" @click="JumpH5">
               <div style="margin-left:15px;max-width:205px;">
                 <div class="g-color-title g-strong g-title-big">{{ user.nickName }}</div>
