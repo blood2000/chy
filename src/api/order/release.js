@@ -9,6 +9,16 @@ export function orderPubilsh(data) {
   });
 }
 
+// 渣土发布货源
+export function ztPublishOrder(data) {
+  return request({
+    url: '/transportation/app/orderInfo/publishOrder',
+    method: 'post',
+    data: data
+  });
+}
+
+
 // 修改货源 /transportation/order/modify
 export function update(data) {
   return request({
