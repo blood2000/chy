@@ -235,7 +235,7 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd() {
-      this.$refs.GroupDialog.reset();
+      this.$refs.GroupDialog.reset(this.shipmentCode);
       this.open = true;
       this.title = '添加调度组';
     },

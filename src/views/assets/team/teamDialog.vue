@@ -3,7 +3,7 @@
   <el-dialog :class="[{'i-add':title==='新增'},{'i-check':title==='审核'}]" :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="140px">
       <el-form-item label="手机号" prop="telphone">
-        <el-input v-model="form.telphone" placeholder="请输入手机号" :disabled="disable" class="width90" clearable />
+        <el-input ref="telphone" v-model="form.telphone" placeholder="请输入手机号" :disabled="disable" class="width90" clearable @blur="getUserAlreadyExist" />
       </el-form-item>
       <el-form-item label="密码" prop="password">
         <el-input v-model="form.password" type="password" :disabled="disable" :placeholder="form.id?'密码未修改可不填写':'请输入密码'" class="width60 mr3" clearable />
@@ -153,6 +153,7 @@
 
 <script>
 import { addInfo, updateInfo, authRead, examine } from '@/api/assets/team';
+import { getUserAlreadyExist } from '@/api/system/user';
 import UploadImage from '@/components/UploadImage/index';
 import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
 
@@ -406,6 +407,22 @@ export default {
           break;
         default:
           break;
+      }
+    },
+    getUserAlreadyExist() {
+      if (this.form.telphone) {
+        getUserAlreadyExist({ phoneNum: this.form.telphone }).then(response => {
+          if (response.code === 500) {
+            this.msgWarning(response.msg);
+            this.$nextTick(() => {
+              this.$refs.telphone.focus();
+            });
+          }
+        }).catch(() => {
+          this.$nextTick(() => {
+            this.$refs.telphone.focus();
+          });
+        });
       }
     }
   }

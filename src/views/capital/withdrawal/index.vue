@@ -285,6 +285,7 @@ export default {
     routeName: {
       handler: function(val) {
         if (val === 'Withdrawal') {
+          this.resetQueryForm();
           this.queryParams.status = JSON.parse(this.$route.query.data).status;
           this.handleQuery();
         }
@@ -332,13 +333,16 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.resetQueryForm();
+      this.handleQuery();
+    },
+    resetQueryForm() {
       this.queryParams.transferTimeBegin = null;
       this.queryParams.transferTimeEnd = null;
       this.queryParams.applyTimeBegin = null;
       this.queryParams.applyTimeEnd = null;
       this.resetForm('queryForm');
       this.queryParams.status = undefined;
-      this.handleQuery();
     },
     /** 导出按钮操作 */
     handleExport() {
