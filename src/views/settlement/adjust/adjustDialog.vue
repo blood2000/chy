@@ -534,7 +534,6 @@ export default {
             // console.log(res);
             const list = res.data.exceptionList;
             this.errList = list.map(item => item.waybillCode);
-            this.getList();
           } else {
             this.msgSuccess('核算成功');
             this.visible = false;
