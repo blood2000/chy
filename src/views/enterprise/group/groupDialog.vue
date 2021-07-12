@@ -134,14 +134,15 @@ export default {
 	  this.$emit('update:open', false);
     },
     // 表单重置
-    reset() {
+    reset(shipmentCode) {
       this.form = {
         disName: null,
         disUserCode: null,
         disUserName: null,
         disUserPhone: null,
         isNotInvoice: 0,
-        isOften: 0
+        isOften: 0,
+        shipperCode: shipmentCode
       };
       this.resetForm('form');
     },
