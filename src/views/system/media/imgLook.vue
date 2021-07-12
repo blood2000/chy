@@ -1,21 +1,26 @@
 <template>
-    <el-dialog :visible="visible" width="60%" title="预览" :close-on-click-modal="false" append-to-body @close="cancel">
-        <viewer align="center" :images="photo">
-            <img
-                    v-for="(src,index) in photo"
-                    :key="index"
-                    v-real-img="src"
-                    src="@/assets/images/workbench/icon_noavator.png"
-                    class="avatar-wrapper__image"
-            >
-        </viewer>
-    </el-dialog>
+  <el-dialog :visible="visible" width="60%" title="预览" :close-on-click-modal="false" append-to-body @close="cancel">
+    <viewer align="center" :images="photo">
+      <img
+        v-for="(src,index) in photo"
+        :key="index"
+        v-real-img="src"
+        src="@/assets/images/workbench/icon_noavator.png"
+        class="avatar-wrapper__image"
+      >
+    </viewer>
+  </el-dialog>
 </template>
 <script>
 export default {
   props: {
     src: Array,
     open: Boolean
+  },
+  data() {
+    return {
+      photo: []
+    };
   },
   computed: {
     visible: {
@@ -33,11 +38,6 @@ export default {
         this.loadUrl();
       }
     }
-  },
-  data() {
-    return {
-      photo: []
-    };
   },
   mounted() {
   },

@@ -148,9 +148,6 @@ export default {
       }
     };
   },
-  mounted() {
-    this.getCompanyInfo();
-  },
   watch: {
     shipmentCode: {
       handler: function(val) {
@@ -160,6 +157,9 @@ export default {
       },
       deep: true
     }
+  },
+  mounted() {
+    this.getCompanyInfo();
   },
   methods: {
     getCompanyInfo() {

@@ -100,8 +100,8 @@
     <info-dialog ref="infoDialogRef" :open.sync="paramOpen" :title="title" @refresh="getMediaInfoList" />
     <PdfLook :src="pdfSrc" :open.sync="visibleOpen" :title="pdfTitle" />
     <VideoLook :src="videoSrc" :open.sync="videoVisibleOpen" />
-      <WordLook :src="wordSrc" :open.sync="wordVisibleOpen"></WordLook>
-      <ImgLook :src="imageSrc" :open.sync="imageVisibleOpen"></ImgLook>
+    <WordLook :src="wordSrc" :open.sync="wordVisibleOpen" />
+    <ImgLook :src="imageSrc" :open.sync="imageVisibleOpen" />
   </div>
 </template>
 

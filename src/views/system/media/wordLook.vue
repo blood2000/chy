@@ -1,15 +1,19 @@
 <template>
-    <el-dialog :visible="visible" fullscreen title="预览" :close-on-click-modal="false" append-to-body @close="cancel">
-        <!--<div v-html="src" />-->
-        <iframe :src='htmlSrc' width='100%' height='800px' frameborder='0'>
-        </iframe>
-    </el-dialog>
+  <el-dialog :visible="visible" fullscreen title="预览" :close-on-click-modal="false" append-to-body @close="cancel">
+    <!--<div v-html="src" />-->
+    <iframe :src="htmlSrc" width="100%" height="800px" frameborder="0" />
+  </el-dialog>
 </template>
 <script>
 export default {
   props: {
     src: String,
     open: Boolean
+  },
+  data() {
+    return {
+      htmlSrc: ''
+    };
   },
   computed: {
     visible: {
@@ -27,11 +31,6 @@ export default {
         this.loadUrl();
       }
     }
-  },
-  data() {
-    return {
-      htmlSrc: ''
-    };
   },
   mounted() {
   },
