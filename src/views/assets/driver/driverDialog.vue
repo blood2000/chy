@@ -349,7 +349,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="道路运输许可证号" prop="roadTransportCertificateNumber">
-          <el-input v-model="vehicleForm.roadTransportCertificateNumber" placeholder="请输入道路运输许可证号" class="width90" clearable />
+          <el-input v-model="vehicleForm.roadTransportCertificateNumber" placeholder="请输入道路运输许可证号" class="width90" clearable :disabled="disable" />
         </el-form-item>
         <el-form-item label="车身颜色" prop="vehicleColorCode">
           <el-select v-model="vehicleForm.vehicleColorCode" class="width90" filterable clearable :disabled="disable">
