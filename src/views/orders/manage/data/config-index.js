@@ -9,6 +9,14 @@ export default [
     label: '货源单号'
   },
   {
+    prop: 'scanCodeVoucher',
+    isShow: true,
+    width: 130,
+    tooltip: true,
+    fixed: 'left',
+    label: '是否开启上传凭证'
+  },
+  {
     prop: 'updateUserName',
     isShow: true,
     width: 120,

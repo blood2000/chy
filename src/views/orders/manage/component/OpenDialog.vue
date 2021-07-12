@@ -124,7 +124,7 @@ export default {
       myTo_listDriver: null,
       myTo_listInfo: null,
       // tab
-      activeName: 'listDriver',
+      activeName: 'listInfo',
       // 遮罩层
       loading: false,
       // 多选
