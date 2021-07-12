@@ -343,6 +343,7 @@ export default {
     routeName: {
       handler: function(val) {
         if (val === 'Team') {
+          this.resetQueryForm();
           this.queryParams.authStatus = JSON.parse(this.$route.query.data).authStatus;
           this.handleQuery();
         }
@@ -383,9 +384,12 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.resetQueryForm();
+      this.handleQuery();
+    },
+    resetQueryForm() {
       this.resetForm('queryForm');
       this.queryParams.authStatus = undefined;
-      this.handleQuery();
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
