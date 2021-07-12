@@ -650,7 +650,7 @@ export default {
                 }
               ],
               publishMode: this.formData.tin4 - 0,
-              isPublic: this.formData.tin5 === '1' ? '0' : '1', //	是否公开货源 0.非公开 1.公开,
+              isPublic: this.formData.tin5 === '1' ? 0 : 1, //	是否公开货源 0.非公开 1.公开,
               isSpecified: this.formData.tin5 === '1', // 是否指定接单人 0否 1是		false
               orderGoodsList,
               orderSpecifiedList: tin6_1.concat(tin6_2),

@@ -2,7 +2,7 @@
   <!-- 进行改造 -->
   <div v-loading="loading" class="m_app-container">
 
-    <div v-if="true || isZtShipment">
+    <div v-if="false || isZtShipment">
       <ztRelease />
     </div>
 
@@ -766,7 +766,7 @@ export default {
       const orderInfoBo = {
         code: InfoCode || undefined,
         publishMode,
-        isPublic: isPublic ? 0 : 1,
+        isPublic: isPublic,
         isSpecified: isSpecified ? 1 : 0,
         loadType: this.formData.tin7 - 0,
         projectCode,
