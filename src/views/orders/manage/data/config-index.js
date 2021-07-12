@@ -60,10 +60,17 @@ export default [
   },
   {
     prop: 'isPublic',
-    isShow: true,
+    isShow: false,
     width: 120,
     tooltip: true,
     label: '是否公开货源'
+  },
+  {
+    prop: 'publishMode',
+    isShow: true,
+    width: 120,
+    tooltip: true,
+    label: '是否大厅可见'
   },
   {
     prop: 'isSpecified',

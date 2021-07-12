@@ -475,6 +475,9 @@
           </el-row>
         </el-form-item>
       </template>
+    </el-form>
+
+    <el-form label-width="154px">
       <el-form-item v-if="title==='审核'" label="审核备注" prop="authRemark">
         <el-input
           v-model="form.authRemark"

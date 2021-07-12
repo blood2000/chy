@@ -189,7 +189,10 @@ const user = {
           setUserInfo({
             isAdmin: res.isAdmin,
             isShipment: res.isShipment,
+            isZtShipment: res.isZtShipment,
             shipment: res.shipment,
+            isDispatcher: res.isDispatcher,
+            isDriver: res.isDriver,
             user: res.user
           });
 

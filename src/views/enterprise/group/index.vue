@@ -62,7 +62,8 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="infoList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <!-- cbDataByKeyword = {id:[112121,4545]} 7/9 chj 添加 -->
+      <RefactorTable :loading="loading" :data="infoList" :table-columns-config="tableColumnsConfig" :cb-data-by-keyword="iscomponent? mycbDataByKeyword: null" @selection-change="handleSelectionChange">
         <template #isOften="{row}">
           <span>{{ selectDictLabel(isOftenOptions, row.isOften) }}</span>
         </template>
@@ -115,11 +116,18 @@ export default {
     companyCode: {
       type: String,
       default: null
-    }
+    },
+    // 7/9 chj 添加 调用了这个组件数据回填使用
+    cbDataByKeyword: {
+      type: Object,
+      default: null
+    },
+    iscomponent: [Boolean]
   },
 
   data() {
     return {
+      mycbDataByKeyword: null, // 7/9 chj 添加
       tableColumnsConfig: [],
       api: listInfoApi,
       // 遮罩层
@@ -200,6 +208,7 @@ export default {
       }
       listInfo(this.queryParams).then(response => {
         this.infoList = response.data.list;
+        this.mycbDataByKeyword = this.cbDataByKeyword; // 这里触发一下赋值, 不然回填不了
         this.total = response.data.total;
         this.loading = false;
       });
@@ -216,6 +225,9 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
+      // 7/9 chj 不知道为什么会出现 [undefined] 这样出来
+      selection = selection.filter(e => e);
+      this.$emit('groupSelected', selection);
       this.ids = selection.map(item => item.id);
       this.names = selection.map(item => item.disName);
       this.single = selection.length !== 1;
@@ -223,7 +235,7 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd() {
-      this.$refs.GroupDialog.reset();
+      this.$refs.GroupDialog.reset(this.shipmentCode);
       this.open = true;
       this.title = '添加调度组';
     },
