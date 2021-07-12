@@ -56,7 +56,7 @@
           <template slot-scope="scope">
             <span v-if="scope.row.isDregs === 1">{{ scope.row.loadWeight }}</span>
             <div v-else>
-              <el-input-number v-if="scope.row.stowageStatus !== '2'" v-model="scope.row.loadWeight" :controls="false" placeholder="请输入装货数量" style="width:100%;" size="mini" @keyup.native="handlerBlur($event,scope.row,false,'loadWeight')" />
+              <el-input-number v-if="scope.row.stowageStatus !== '2'" v-model="scope.row.loadWeight" :precision="3" :controls="false" placeholder="请输入装货数量" style="width:100%;" size="mini" @keyup.native="handlerBlur($event,scope.row,false,'loadWeight')" />
               <span v-else>{{ scope.row.loadWeight }}</span>
             </div>
 
@@ -67,7 +67,7 @@
           <template slot-scope="scope">
             <span v-if="scope.row.isDregs === 1">{{ scope.row.unloadWeight }}</span>
             <div v-else>
-              <el-input-number v-if="scope.row.stowageStatus !== '2'" v-model="scope.row.unloadWeight" :controls="false" placeholder="请输入卸货数量" style="width:100%;" size="mini" @keyup.native="handlerBlur($event,scope.row,false,'unloadWeight')" />
+              <el-input-number v-if="scope.row.stowageStatus !== '2'" v-model="scope.row.unloadWeight" :precision="3" :controls="false" placeholder="请输入卸货数量" style="width:100%;" size="mini" @keyup.native="handlerBlur($event,scope.row,false,'unloadWeight')" />
               <span v-else>{{ scope.row.unloadWeight }}</span>
             </div>
           </template>
