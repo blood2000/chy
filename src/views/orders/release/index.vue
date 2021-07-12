@@ -2,8 +2,8 @@
   <!-- 进行改造 -->
   <div v-loading="loading" class="m_app-container">
 
-    <div v-if="false || isZtShipment">
-      <ztRelease />
+    <div v-if="isZtShipment || isDregs">
+      <ztRelease :cb-data="ztCbData" />
     </div>
 
     <template v-else>
@@ -354,6 +354,7 @@ export default {
   data() {
     return {
       isZtShipment: false, // 渣土货主
+      ztCbData: null, // 渣土详情
 
       goodsBigTypes: undefined,
       shipmentInfo: null, // 选中的货主信息
@@ -432,6 +433,15 @@ export default {
 
     isShowAddress() {
       return !!this.$store.getters.provinceList;
+    },
+
+    isDregs() {
+      let bool = false;
+      if (this.ztCbData) {
+        // 判断是否渣土货源
+        bool = this.ztCbData.redisOrderInfoVo.isDregs === 1;
+      }
+      return bool;
     }
   },
   watch: {
@@ -461,9 +471,6 @@ export default {
 
   async created() {
     const { isShipment = false, isZtShipment = false, shipment = {}, user = {}} = getUserInfo() || {};
-
-
-
     this.isShipment = isShipment;
     this.isZtShipment = isShipment && isZtShipment;
     if (isShipment) {
@@ -931,7 +938,9 @@ export default {
       try {
         const { data } = await getOrderByCode(id);
 
+        this.ztCbData = data;
 
+        console.log(data);
 
         const { redisOrderInfoVo, redisOrderClassGoodsVoList, redisOrderSpecifiedVoList, redisOrderFreightInfoVoList, redisOrderGoodsVoList, redisAddressList } = data;
 

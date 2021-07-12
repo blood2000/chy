@@ -468,8 +468,8 @@ export default {
       ],
       // 发布方式 0 货源大厅不可见(只能通过货单号或备注搜索) 1 货源大厅可见
       publishModeOptions: [
-        { dictLabel: '货源大厅不可见', dictValue: 0 },
-        { dictLabel: '货源大厅可见', dictValue: 1 }
+        { dictLabel: '不可见', dictValue: 0 },
+        { dictLabel: '可见', dictValue: 1 }
       ],
 
       goodsTypeOption: [],
