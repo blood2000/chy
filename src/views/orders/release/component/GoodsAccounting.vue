@@ -67,6 +67,7 @@
                     :placeholder="`请输入重量(${goodsUnitName})`"
                     :max="999999"
                     :min="0"
+                    :precision="3"
                     controls-position="right"
                     :style="{ width: '150px' }"
                   />
@@ -88,6 +89,7 @@
               placeholder="请输入最高配载"
               :max="999999"
               :min="0"
+              :precision="3"
               controls-position="right"
               :style="{ width: '150px' }"
             />

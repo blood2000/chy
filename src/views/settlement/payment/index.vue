@@ -1,6 +1,6 @@
 
 <template>
-  <div v-loading="payLoading">
+  <div v-loading="payLoading" element-loading-background="rgba(255, 255, 255, 0.3)">
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form
         ref="queryForm"
@@ -202,7 +202,7 @@
         />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="paymentlist" :table-columns-config="tableColumnsConfig" :selectable="checkboxT" @selection-change="handleSelectionChange">
+      <RefactorTable :loading="loading" :data="paymentlist" :table-columns-config="tableColumnsConfig" :row-class-name="tableRowClassName" :selectable="checkboxT" @selection-change="handleSelectionChange">
         <template #status="{row}">
           <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
         </template>
@@ -210,14 +210,14 @@
           <span>{{ selectDictLabel(applyStatusOptions, row.applyStatus) }}</span>
         </template>
         <template #loadWeight="{row}">
-          <span v-if="row.stowageStatus === '1'">{{ row.loadWeight || '0.00' }} 方</span>
-          <span v-if="row.stowageStatus === '2'">{{ row.loadWeight || '0.00' }} 车</span>
-          <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.loadWeight || '0.00' }} 吨</span>
+          <span v-if="row.stowageStatus === '1'">{{ row.loadWeight || '0.000' }} 方</span>
+          <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.loadWeight) || '0' }} 车</span>
+          <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.loadWeight || '0.000' }} 吨</span>
         </template>
         <template #unloadWeight="{row}">
-          <span v-if="row.stowageStatus === '1'">{{ row.unloadWeight || '0.00' }} 方</span>
-          <span v-if="row.stowageStatus === '2'">{{ row.unloadWeight || '0.00' }} 车</span>
-          <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.unloadWeight || '0.00' }} 吨</span>
+          <span v-if="row.stowageStatus === '1'">{{ row.unloadWeight || '0.000' }} 方</span>
+          <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.unloadWeight) || '0' }} 车</span>
+          <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.unloadWeight || '0.000' }} 吨</span>
         </template>
         <template #applyTime="{row}">
           <span>{{ parseTime(row.applyTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
@@ -382,7 +382,9 @@ export default {
         { 'dictLabel': '打款失败', 'dictValue': '5' }
       ],
       payLoading: false,
-      batchIndex: 0
+      batchIndex: 0,
+      errList: [],
+      sucList: []
     };
   },
   computed: {
@@ -424,8 +426,12 @@ export default {
       }
     },
     /** 查询【请填写功能名称】列表 */
-    getList() {
-      this.loading = true;
+    getList(e) {
+      if (e !== 1) {
+        this.errList = [];
+        this.sucList = [];
+        this.loading = true;
+      }
       paymentList(this.queryParams).then(response => {
         this.paymentlist = response.rows;
         this.total = response.total;
@@ -457,7 +463,9 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({ type: 'success', message: '发起网商打款成功！' });
+        this.errList = [];
+        this.sucList = [];
+        // this.$message({ type: 'success', message: '发起网商打款成功！' });
         this.payLoading = true;
         this.batchIndex = 0;
         this.getBatch();
@@ -467,42 +475,33 @@ export default {
     },
     // 打款接口
     async getBatch() {
-      const arr = [];
-      for (let index = 0; index < this.ids.length; index++) {
-        const e = this.ids[index];
+      const len = this.ids;
+      for (let index = 0; index < len.length; index++) {
+        const e = len[index];
         try {
           await batch({ wayBillSettlementCodeList: [e] });
-          arr.push(true);
-          this.getList();
+          this.sucList.push(e);
         } catch (error) {
-          arr.push(e);
-          this.getList();
+          this.errList.push(e);
+          continue;
+        }
+        // console.log(index, '----', this.ids.length, len.length);
+      }
+      this.getList(1);
+      this.payLoading = false;
+      console.log(this.errList);
+    },
+    tableRowClassName({ row, rowIndex }) {
+      if (this.errList.length > 0) {
+        if (this.errList.includes(row.wayBillSettlementCode)) {
+          return 'warning-row';
         }
       }
-      this.payLoading = false;
-      console.log(arr);
-      // this.bodyParams.wayBillSettlementCodeList = [];
-      // this.bodyParams.wayBillSettlementCodeList.push(this.ids[this.batchIndex]);
-      // batch(this.bodyParams).then(response => {
-      //   this.batchIndex++;
-      //   if (this.batchIndex === this.ids.length) {
-      //     this.payLoading = false;
-      //     this.getList();
-      //   } else {
-      //     this.getBatch();
-      //     this.getList();
-      //   }
-      // }).catch(() => {
-      //   this.batchIndex++;
-      //   if (this.batchIndex === this.ids.length) {
-      //     this.payLoading = false;
-      //     this.getList();
-      //   } else {
-      //     this.getBatch();
-      //     this.getList();
-      //   }
-      //   this.payLoading = false;
-      // });
+      if (this.sucList.length > 0) {
+        if (this.sucList.includes(row.wayBillSettlementCode)) {
+          return 'success-row';
+        }
+      }
     },
     handleTableBtn(row, index) {
       // console.log(row, index);
@@ -551,11 +550,17 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .total_bg{
     background: #F8F9FA;
     border-radius: 4px;
     padding: 10px 20px;
     margin-bottom: 10px;
+  }
+  ::v-deep .warning-row{
+    background: #fadbd9 !important;
+  }
+  ::v-deep .success-row{
+    background: #d7f0dbff !important;
   }
 </style>

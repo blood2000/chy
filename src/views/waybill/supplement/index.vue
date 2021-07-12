@@ -223,13 +223,13 @@
             </el-col>
             <el-col :span="6">
               <el-form-item v-if="form.stowageStatus === '1'" label="结算数量（方）" prop="loadWeight">
-                <el-input-number v-model="form.loadWeight" controls-position="right" :precision="2" :min="0" class="width90" @change="inputWeight" />
+                <el-input-number v-model="form.loadWeight" controls-position="right" :precision="3" :min="0" class="width90" @change="inputWeight" />
               </el-form-item>
               <el-form-item v-if="form.stowageStatus === '2'" label="结算数量（车）" prop="loadWeight">
-                <el-input-number v-model="form.loadWeight" controls-position="right" :precision="2" :min="0" class="width90" @change="inputWeight" />
+                <el-input-number v-model="form.loadWeight" controls-position="right" :precision="0" :min="0" class="width90" @change="inputWeight" />
               </el-form-item>
               <el-form-item v-if="form.stowageStatus === '0' || !form.stowageStatus" label="结算数量（吨）" prop="loadWeight">
-                <el-input-number v-model="form.loadWeight" controls-position="right" :precision="2" :min="0" class="width90" @change="inputWeight" />
+                <el-input-number v-model="form.loadWeight" controls-position="right" :precision="3" :min="0" class="width90" @change="inputWeight" />
               </el-form-item>
             </el-col>
           </el-row>

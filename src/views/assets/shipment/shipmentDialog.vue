@@ -3,18 +3,18 @@
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="170px">
       <!--  修改：目前只有发货企业 -->
       <!-- <el-form-item label="发货人/发货企业" prop="shipperType">
-        <el-select
-          v-model="form.shipperType"
-          class="width90"
-        >
-          <el-option
-            v-for="dict in typeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>-->
+              <el-select
+                v-model="form.shipperType"
+                class="width90"
+              >
+                <el-option
+                  v-for="dict in typeOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+            </el-form-item>-->
       <el-form-item label="手机号/账号" prop="telphone">
         <el-input v-model="form.telphone" placeholder="请输入手机号/账号" :disabled="form.id?true:false" class="width90" clearable />
       </el-form-item>
@@ -35,22 +35,22 @@
           </el-col>
           <!--   客服建议去掉-->
           <!-- <el-col :span="7">
-            <p class="upload-image-label">手持身份证照</p>
-            <upload-image v-model="form.identificationInhandImg" icon-type="idcard_hand" :disabled="disable" />
-          </el-col>-->
+                      <p class="upload-image-label">手持身份证照</p>
+                      <upload-image v-model="form.identificationInhandImg" icon-type="idcard_hand" :disabled="disable" />
+                    </el-col>-->
           <!-- <el-col v-show="form.shipperType === 1" :span="7">
-            <p class="upload-image-label">法人身份证(人像面)</p>
-            <upload-image v-model="form.artificialIdentificationImg" icon-type="idcard" :disabled="disable" @fillForm="fillForm"/>
-          </el-col>
-          <el-col v-show="form.shipperType === 1" :span="7">
-            <p class="upload-image-label">法人身份证(国徽面)</p>
-            <upload-image v-model="form.artificialIdentificationBackImg" icon-type="idcard_back" :disabled="disable" @fillForm="fillForm"/>
-          </el-col>-->
+                      <p class="upload-image-label">法人身份证(人像面)</p>
+                      <upload-image v-model="form.artificialIdentificationImg" icon-type="idcard" :disabled="disable" @fillForm="fillForm"/>
+                    </el-col>
+                    <el-col v-show="form.shipperType === 1" :span="7">
+                      <p class="upload-image-label">法人身份证(国徽面)</p>
+                      <upload-image v-model="form.artificialIdentificationBackImg" icon-type="idcard_back" :disabled="disable" @fillForm="fillForm"/>
+                    </el-col>-->
           <!--   客服建议去掉-->
           <!--<el-col v-show="form.shipperType === 1" :span="7" class="mt">
-            <p class="upload-image-label">法人手持身份证照</p>
-            <upload-image v-model="form.artificialIdentificationInhandImg" icon-type="idcard_hand" :disabled="disable" />
-          </el-col>-->
+                      <p class="upload-image-label">法人手持身份证照</p>
+                      <upload-image v-model="form.artificialIdentificationInhandImg" icon-type="idcard_hand" :disabled="disable" />
+                    </el-col>-->
           <el-col v-show="form.shipperType === 1" :span="7">
             <p class="upload-image-label">营业执照</p>
             <upload-image v-model="form.businessLicenseImg" :disabled="disable" icon-type="organization" image-type="business-license" @fillForm="fillForm" />
@@ -87,74 +87,74 @@
       </el-form-item>
       <!-- 选择省/市/区 -->
       <!-- <province-city-county
-        ref="ChooseArea"
-        :visible="visible"
-        :disabled="disable"
-        :prop-province-code="form.provinceCode"
-        :prop-city-code="form.cityCode"
-        :prop-county-code="form.countyCode"
-        @refresh="(data) => {
-          form.provinceCode = data.provinceCode;
-          form.cityCode = data.cityCode;
-          form.countyCode = data.countyCode;
-        }"
-      />-->
+              ref="ChooseArea"
+              :visible="visible"
+              :disabled="disable"
+              :prop-province-code="form.provinceCode"
+              :prop-city-code="form.cityCode"
+              :prop-county-code="form.countyCode"
+              @refresh="(data) => {
+                form.provinceCode = data.provinceCode;
+                form.cityCode = data.cityCode;
+                form.countyCode = data.countyCode;
+              }"
+            />-->
       <el-form-item label="详细地址" prop="area">
         <el-input v-model="form.area" clearable placeholder="支持自动识别" class="width90" />
       </el-form-item>
       <!-- <el-form-item label="网点" prop="branchCode">
-        <el-select
-          v-model="form.branchCode"
-          filterable
-          remote
-          reserve-keyword
-          placeholder="请输入网点"
-          class="width90"
-          :remote-method="getBranchOptions"
-          :loading="loading"
-        >
-          <el-option
-            v-for="item in branchOptions"
-            :key="item.code"
-            :label="item.name"
-            :value="item.code"
-          />
-        </el-select>
-      </el-form-item> -->
+              <el-select
+                v-model="form.branchCode"
+                filterable
+                remote
+                reserve-keyword
+                placeholder="请输入网点"
+                class="width90"
+                :remote-method="getBranchOptions"
+                :loading="loading"
+              >
+                <el-option
+                  v-for="item in branchOptions"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                />
+              </el-select>
+            </el-form-item> -->
       <template v-if="form.shipperType === 1">
         <el-form-item label="企业名称" prop="companyName" :rules="[{ required: true, message: '企业名称不能为空', trigger: 'blur' }]">
           <el-input v-model="form.companyName" placeholder="支持自动识别" class="width90" clearable />
           <!-- <el-select
-            v-model="form.companyName"
-            style="width: 90%"
-            filterable
-            allow-create
-            default-first-option
-            placeholder="请选择企业"
-            @change="changeCompany"
-          >
-            <el-option
-              v-for="item in companyList"
-              :key="item.orgName"
-              :label="item.orgName"
-              :value="item"
-            />
-          </el-select>-->
+                      v-model="form.companyName"
+                      style="width: 90%"
+                      filterable
+                      allow-create
+                      default-first-option
+                      placeholder="请选择企业"
+                      @change="changeCompany"
+                    >
+                      <el-option
+                        v-for="item in companyList"
+                        :key="item.orgName"
+                        :label="item.orgName"
+                        :value="item"
+                      />
+                    </el-select>-->
         </el-form-item>
         <el-form-item label="统一社会信用代码" prop="organizationCodeNo" :rules="[{ required: true, message: '统一社会信用代码不能为空', trigger: 'blur' }]">
           <el-input v-model="form.organizationCodeNo" placeholder="请输入统一社会信用代码" class="width90" clearable />
         </el-form-item>
         <!--  去掉营业执照-->
         <!-- <el-form-item label="营业执照号" prop="businessLicenseNo">
-          <el-input v-model="form.businessLicenseNo" placeholder="支持自动识别" class="width90" clearable />
-        </el-form-item>-->
+                  <el-input v-model="form.businessLicenseNo" placeholder="支持自动识别" class="width90" clearable />
+                </el-form-item>-->
         <!-- 与管理员共用-->
         <!-- <el-form-item label="法人姓名" prop="artificialName">
-          <el-input v-model="form.artificialName" placeholder="请输入法人姓名" class="width90" clearable />
-        </el-form-item>
-        <el-form-item label="法人身份证" prop="artificialIdentificationNumber">
-          <el-input v-model="form.artificialIdentificationNumber" placeholder="请输入法人身份证" class="width90" clearable />
-        </el-form-item>-->
+                  <el-input v-model="form.artificialName" placeholder="请输入法人姓名" class="width90" clearable />
+                </el-form-item>
+                <el-form-item label="法人身份证" prop="artificialIdentificationNumber">
+                  <el-input v-model="form.artificialIdentificationNumber" placeholder="请输入法人身份证" class="width90" clearable />
+                </el-form-item>-->
       </template>
       <el-form-item label="票制类别" prop="ticketType">
         <el-select
@@ -205,8 +205,8 @@
           <el-input-number v-model="form.serviceRate" controls-position="right" :precision="2" placeholder="请输入服务费税率" :step="1" :min="0" :max="100" class="width90" clearable />
         </el-form-item>
         <!-- <el-form-item label="服务费比例(%)" prop="serviceRatio"  :rules="[{ required: true, message: '服务费比例不能为空', trigger: 'blur' }]" >
-          <el-input-number v-model="form.serviceRatio" controls-position="right" :precision="2" placeholder="请输入服务费比例" :step="1" :min="0" :max="100" class="width90" clearable />
-        </el-form-item>-->
+                  <el-input-number v-model="form.serviceRatio" controls-position="right" :precision="2" placeholder="请输入服务费比例" :step="1" :min="0" :max="100" class="width90" clearable />
+                </el-form-item>-->
       </template>
       <el-form-item label="票务规则" prop="payInvoiceType">
         <el-select
@@ -224,35 +224,35 @@
         </el-select>
       </el-form-item>
       <!-- <el-form-item label="是否冻结" prop="isFreezone">
-        <el-select
-          v-model="form.isFreezone"
-          clearable
-          filterable
-          class="width90"
-        >
-          <el-option
-            v-for="dict in isFreezoneOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="货源是否审核" prop="supplyIsAuth">
-        <el-select
-          v-model="form.supplyIsAuth"
-          clearable
-          filterable
-          class="width90"
-        >
-          <el-option
-            v-for="dict in isOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item> -->
+              <el-select
+                v-model="form.isFreezone"
+                clearable
+                filterable
+                class="width90"
+              >
+                <el-option
+                  v-for="dict in isFreezoneOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="货源是否审核" prop="supplyIsAuth">
+              <el-select
+                v-model="form.supplyIsAuth"
+                clearable
+                filterable
+                class="width90"
+              >
+                <el-option
+                  v-for="dict in isOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+            </el-form-item> -->
       <el-form-item label="是否独立核算" prop="isAccount">
         <el-select
           v-model="form.isAccount"
@@ -269,70 +269,70 @@
         </el-select>
       </el-form-item>
       <!-- <el-form-item label="核算方式" prop="accountType">
-        <el-select v-model="form.accountType" placeholder="请选择核算方式" filterable clearable class="width90">
-          <el-option
-            v-for="dict in accountTypeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>-->
+              <el-select v-model="form.accountType" placeholder="请选择核算方式" filterable clearable class="width90">
+                <el-option
+                  v-for="dict in accountTypeOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+            </el-form-item>-->
       <!-- <el-form-item label="是否抹零" prop="isWipe">
-        <el-select
-          v-model="form.isWipe"
-          clearable
-          filterable
-          class="width28 mr3"
-        >
-          <el-option
-            v-for="dict in isOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-        <el-select v-model="form.wipeType" placeholder="请选择抹零方式" filterable clearable class="width28">
-          <el-option
-            v-for="dict in wipeTypeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>-->
+              <el-select
+                v-model="form.isWipe"
+                clearable
+                filterable
+                class="width28 mr3"
+              >
+                <el-option
+                  v-for="dict in isOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+              <el-select v-model="form.wipeType" placeholder="请选择抹零方式" filterable clearable class="width28">
+                <el-option
+                  v-for="dict in wipeTypeOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+            </el-form-item>-->
       <!-- <el-form-item label="是否开启合理路耗">
-        <el-select
-          v-model="form.isConsumption"
-          clearable
-          filterable
-          class="width28 mr3"
-        >
-          <el-option
-            v-for="dict in isOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-        <el-select
-          v-model="form.consumptionUnit"
-          filterable
-          clearable
-          class="width28 mr3"
-          placeholder="路耗单位"
-        >
-          <el-option
-            v-for="dict in consumptionUnitOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-        <el-input-number v-model="form.consumptionMin" :controls="false" placeholder="最小值" class="width12" />
-        至
-        <el-input-number v-model="form.consumptionMax" :controls="false" placeholder="最大值" class="width12" />
-      </el-form-item>-->
+              <el-select
+                v-model="form.isConsumption"
+                clearable
+                filterable
+                class="width28 mr3"
+              >
+                <el-option
+                  v-for="dict in isOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+              <el-select
+                v-model="form.consumptionUnit"
+                filterable
+                clearable
+                class="width28 mr3"
+                placeholder="路耗单位"
+              >
+                <el-option
+                  v-for="dict in consumptionUnitOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+              <el-input-number v-model="form.consumptionMin" :controls="false" placeholder="最小值" class="width12" />
+              至
+              <el-input-number v-model="form.consumptionMax" :controls="false" placeholder="最大值" class="width12" />
+            </el-form-item>-->
       <el-row :gutter="20">
         <el-col :span="23">
           <el-form-item label="授信保护期" prop="creditEndTime">
@@ -432,13 +432,13 @@
               />
             </el-select>
             <!-- <treeselect
-              v-model="form.operateOrgCode"
-              :options="operateOrgList"
-              :normalizer="normalizer"
-              :show-count="true"
-              placeholder="请选择运营团队"
-              @select="selectOrgCode"
-            /> -->
+                          v-model="form.operateOrgCode"
+                          :options="operateOrgList"
+                          :normalizer="normalizer"
+                          :show-count="true"
+                          placeholder="请选择运营团队"
+                          @select="selectOrgCode"
+                        /> -->
           </el-form-item>
         </el-col>
         <el-col v-if="form.operateOrgCode" :span="11">
@@ -1088,7 +1088,11 @@ export default {
               if (data.valid_to === '长期') {
                 this.$set(this.form, 'identificationEffective', true);
               } else if (data.valid_to !== '') {
-                this.$set(this.form, 'identificationEndTime', data.valid_to);
+                if (data.valid_to.startsWith('9999')) {
+                  this.$set(this.form, 'identificationEffective', true);
+                } else {
+                  this.$set(this.form, 'identificationEndTime', data.valid_to);
+                }
               }
             } else {
               this.$set(this.form, 'identificationEffective', false);
@@ -1126,51 +1130,51 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.mr3{
-  margin-right: 3%;
-}
-.mt{
-  margin-top: 22px;
-}
-.width90{
-  width: 90%;
-}
-.width70{
-  width: 70%;
-}
-.width60{
-  width: 60%;
-}
-.width50{
-  width: 50%;
-}
-.width45{
-    width: 45%;
-}
-.width28{
-  width: 28%;
-}
-.width12{
-  width: 12%;
-}
-/* 计数器样式 */
-.el-input-number ::v-deep.el-input__inner{
-  text-align: left;
-}
-/* 上传图片文字样式 */
-.upload-image-label{
-  margin: 0;
-  line-height: 24px;
-}
-/* 标题样式 */
-.g-card-title{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  >.h5-divider{
-    margin-left: 8px;
-    height: 1px;
-    border-bottom: 1px dashed #DAD3D3;
-  }
-}
+    .mr3{
+        margin-right: 3%;
+    }
+    .mt{
+        margin-top: 22px;
+    }
+    .width90{
+        width: 90%;
+    }
+    .width70{
+        width: 70%;
+    }
+    .width60{
+        width: 60%;
+    }
+    .width50{
+        width: 50%;
+    }
+    .width45{
+        width: 45%;
+    }
+    .width28{
+        width: 28%;
+    }
+    .width12{
+        width: 12%;
+    }
+    /* 计数器样式 */
+    .el-input-number ::v-deep.el-input__inner{
+        text-align: left;
+    }
+    /* 上传图片文字样式 */
+    .upload-image-label{
+        margin: 0;
+        line-height: 24px;
+    }
+    /* 标题样式 */
+    .g-card-title{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        >.h5-divider{
+            margin-left: 8px;
+            height: 1px;
+            border-bottom: 1px dashed #DAD3D3;
+        }
+    }
 </style>

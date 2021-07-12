@@ -52,22 +52,22 @@
         <el-table-column width="120" label="司机电话" align="center" prop="driverPhone" />
         <el-table-column width="120" label="车牌号" align="center" prop="licenseNumber" />
 
-        <el-table-column width="80" label="装货数量" align="left" prop="loadWeight">
+        <el-table-column width="120" label="装货数量" align="center" prop="loadWeight">
           <template slot-scope="scope">
             <span v-if="scope.row.isDregs === 1">{{ scope.row.loadWeight }}</span>
             <div v-else>
-              <el-input-number v-if="scope.row.stowageStatus !== '2'" v-model="scope.row.loadWeight" :controls="false" placeholder="请输入装货数量" style="width:100%;" size="mini" @keyup.native="handlerBlur($event,scope.row,false,'loadWeight')" />
+              <el-input-number v-if="scope.row.stowageStatus !== '2'" v-model="scope.row.loadWeight" :precision="3" :controls="false" placeholder="请输入装货数量" style="width:100%;" size="mini" @keyup.native="handlerBlur($event,scope.row,false,'loadWeight')" />
               <span v-else>{{ scope.row.loadWeight }}</span>
             </div>
 
           </template>
         </el-table-column>
 
-        <el-table-column width="80" label="卸货数量" align="left" prop="unloadWeight">
+        <el-table-column width="120" label="卸货数量" align="center" prop="unloadWeight">
           <template slot-scope="scope">
             <span v-if="scope.row.isDregs === 1">{{ scope.row.unloadWeight }}</span>
             <div v-else>
-              <el-input-number v-if="scope.row.stowageStatus !== '2'" v-model="scope.row.unloadWeight" :controls="false" placeholder="请输入卸货数量" style="width:100%;" size="mini" @keyup.native="handlerBlur($event,scope.row,false,'unloadWeight')" />
+              <el-input-number v-if="scope.row.stowageStatus !== '2'" v-model="scope.row.unloadWeight" :precision="3" :controls="false" placeholder="请输入卸货数量" style="width:100%;" size="mini" @keyup.native="handlerBlur($event,scope.row,false,'unloadWeight')" />
               <span v-else>{{ scope.row.unloadWeight }}</span>
             </div>
           </template>
@@ -104,7 +104,7 @@
 
         <el-table-column width="160" label="货主成交单价(元)" align="center" prop="freightPrice" />
 
-        <el-table-column width="160" label="司机成交单价(元)" align="center" prop="freightPriceDriver" />
+        <!-- <el-table-column width="160" label="司机成交单价(元)" align="center" prop="freightPriceDriver" /> -->
         <el-table-column width="160" label="亏涨扣费(元)" align="center" prop="lossDeductionFee">
           <template slot-scope="scope">
             <span>{{ floor(scope.row.lossDeductionFee) }}</span>
@@ -534,7 +534,6 @@ export default {
             // console.log(res);
             const list = res.data.exceptionList;
             this.errList = list.map(item => item.waybillCode);
-            this.getList();
           } else {
             this.msgSuccess('核算成功');
             this.visible = false;

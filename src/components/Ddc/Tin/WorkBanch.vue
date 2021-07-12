@@ -27,7 +27,7 @@
         <div class="g-flex">
           <!-- 用户信息 -->
           <div class="index-frame user-frame g-aligncenter">
-            <img v-if="user.avatar != null" class="user-avator" :src="user.avatar">
+            <img v-if="user.avatar" class="user-avator" :src="user.avatar">
             <img v-else class="user-avator" src="~@/assets/images/workbench/icon_noavator.png">
             <div class="user-info">
               <div class="g-strong g-title-big">{{ user.nickName }}</div>

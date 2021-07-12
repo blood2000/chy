@@ -253,6 +253,10 @@
           <span :class="row.isPublic===0?'g-color-warning':'g-color-blue'">{{ selectDictLabel(isPublicTypeOptions, row.isPublic) }}</span>
         </template>
 
+        <template #scanCodeVoucher="{row}">
+          <span :class="row.scanCodeVoucher!==1?'g-color-error':'g-color-success'">{{ selectDictLabel(scanCodeVoucherOptions, row.scanCodeVoucher) }}</span>
+        </template>
+
         <template #publishMode="{row}">
           <span :class="row.publishMode===0?'g-color-warning':'g-color-blue'">{{ selectDictLabel(publishModeOptions, row.publishMode) }}</span>
         </template>
@@ -297,7 +301,7 @@
               @click="handleClose(row)"
             >{{ row.status+''==='0'?'禁用':'启用' }}</el-button>
 
-            <TableDropdown v-if="(row.status+''==='1' && !row.haveWaybill) || (row.status+''==='0' && row.scenario!=='1200')">
+            <TableDropdown v-if="(row.status+''==='1' && !row.haveWaybill) || (row.status+''==='0' && row.scenario!=='1200') || !isShipment">
               <el-dropdown-item>
                 <el-button
                   v-if="row.status+''==='1' && !row.haveWaybill"
@@ -337,6 +341,14 @@
                   @click="handleclone(row)"
                 >复制</el-button>
               </el-dropdown-item>
+              <el-dropdown-item>
+                <el-button
+                  v-hasPermi="['transportation:order:updateScanCodeVoucher']"
+                  size="mini"
+                  type="text"
+                  @click="handleIsImport(row)"
+                >{{ row.scanCodeVoucher+''!=='1'?'开启上传凭证':'关闭上传凭证' }}</el-button>
+              </el-dropdown-item>
             </TableDropdown>
           </template>
         </template>
@@ -365,7 +377,7 @@
 </template>
 
 <script>
-import { listManagesApi, getOrderInfoList, delOrder, loadAndUnloadingGoods } from '@/api/order/manage';
+import { listManagesApi, getOrderInfoList, delOrder, loadAndUnloadingGoods, isImport } from '@/api/order/manage';
 import { listShipment } from '@/api/assets/shipment';
 import { getUserInfo } from '@/utils/auth';
 import OpenDialog from './component/OpenDialog';
@@ -454,7 +466,10 @@ export default {
         { dictLabel: '非公开', dictValue: 0 },
         { dictLabel: '公开', dictValue: 1 }
       ],
-
+      scanCodeVoucherOptions: [
+        { dictLabel: '否', dictValue: 0 },
+        { dictLabel: '是', dictValue: 1 }
+      ],
       isSpecifiedTypeOptions: [
         { dictLabel: '否', dictValue: 0 },
         { dictLabel: '是', dictValue: 1 }
@@ -921,6 +936,14 @@ export default {
     /** 复制 */
     handleclone(row) {
       this.$router.push({ name: 'Release', query: { id: row.orderCode, t: '3' }});
+    },
+    // 是否开启上传凭证
+    handleIsImport(row) {
+      var scanCodeVoucher = 0;
+      if (row.scanCodeVoucher !== 1) {
+        scanCodeVoucher = 1;
+      }
+      isImport({ orderCode: row.orderCode, scanCodeVoucher: scanCodeVoucher }).then(() => { this.getList(); });
     },
     /** 关闭 */
     submitRes(res) {

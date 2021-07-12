@@ -133,13 +133,12 @@
           />
         </el-select>
       </el-form-item>
-      <!-- ================================================================= -->
       <el-form-item v-show="form.driverType===2" label="工作单位" prop="workCompany">
         <el-input v-model="form.workCompany" placeholder="请输入工作单位" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="道路运输经营许可证" prop="transportPermitNo">
-        <el-input v-model="form.transportPermitNo" placeholder="请输入道路运输经营许可证" class="width90" clearable />
-      </el-form-item>
+      <!-- <el-form-item label="道路运输许可证号" prop="transportPermitNo">
+        <el-input v-model="form.transportPermitNo" placeholder="请输入道路运输许可证号" class="width90" clearable />
+      </el-form-item> -->
       <el-form-item label="从业资格证" prop="workLicense">
         <el-input v-model="form.workLicense" placeholder="请输入从业资格证" class="width90" clearable />
       </el-form-item>
@@ -232,14 +231,6 @@
             <p class="upload-image-label">驾驶证</p>
             <upload-image v-model="form.driverLicenseImage" :disabled="disable" image-type="driver-license" icon-type="driver" @fillForm="fillForm" />
           </el-col>
-          <el-col v-show="form.driverType===1" :span="7" class="mb">
-            <p class="upload-image-label">行驶证</p>
-            <upload-image v-model="form.driverOtherLicenseImage" :disabled="disable" image-type="vehicle-license" side="front" icon-type="vehicle" @fillForm="fillForm" />
-          </el-col>
-          <el-col v-show="form.driverType===1" :span="7" class="mb">
-            <p class="upload-image-label">行驶证副页</p>
-            <upload-image v-model="form.driverOtherLicenseBackImage" :disabled="disable" image-type="vehicle-license" side="back" icon-type="vehicle_back" @fillForm="fillForm" />
-          </el-col>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">身份证(人像面)</p>
             <upload-image v-model="form.identificationImage" :disabled="disable" image-type="id-card" side="front" icon-type="idcard" @fillForm="fillForm" />
@@ -247,14 +238,6 @@
           <el-col :span="7" class="mb">
             <p class="upload-image-label">身份证(国徽面)</p>
             <upload-image v-model="form.identificationBackImage" :disabled="disable" image-type="id-card" side="back" icon-type="idcard_back" @fillForm="fillForm" />
-          </el-col>
-          <el-col v-show="form.driverType===1" :span="7" class="mb">
-            <p class="upload-image-label">道路运输许可证</p>
-            <upload-image v-model="form.transportPermitImage" :disabled="disable" icon-type="transport" />
-          </el-col>
-          <el-col v-show="form.driverType===1" :span="7">
-            <p class="upload-image-label">车头正面照</p>
-            <upload-image v-model="vehicleForm.vehicleImage" :disabled="disable" icon-type="vehicle_head" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">司机照片</p>
@@ -273,7 +256,11 @@
       修改独立司机的时候, 可以修改他名下车辆的信息, 不能新增/删除车辆(在管理页新增/删除)
     -->
     <el-form ref="vehicleForm" :model="vehicleForm" :rules="vehicleRules" label-width="154px">
-      <template v-if="form.driverType == 1">
+      <template v-if="form.driverType == 1 && (title === '新增' || (title !== '新增' && vehicleInfoList.length > 0))">
+        <h5 class="g-card-title g-strong mb20 ml10">
+          车辆信息
+          <div class="h5-divider" style="width: 91%" />
+        </h5>
         <el-form-item v-if="title === '新增'" label="车牌号" prop="licenseNumber" :rules="[{ required: true, message: '车牌号不能为空', trigger: ['change', 'blur'] }]">
           <!-- 新增车辆 -->
           <el-input v-if="addVehicleType === 0" v-model="vehicleForm.licenseNumber" :disabled="disable" placeholder="支持自动识别" class="width70" clearable />
@@ -303,7 +290,7 @@
           <!-- 切换按钮 -->
           <el-button type="text" style="width: 20%;text-decoration: underline;" @click="changeAddVehicleType">{{ addVehicleType === 0 ? '选择已有车辆' : '手动添加车辆' }}</el-button>
         </el-form-item>
-        <el-form-item v-else-if="title !== '新增' && vehicleInfoList.length > 0" label="车牌号" prop="licenseNumber" :rules="[{ required: true, message: '车牌号不能为空', trigger: ['change','blur'] }]">
+        <!-- <el-form-item v-else-if="title !== '新增' && vehicleInfoList.length > 0" label="车牌号" prop="licenseNumber" :rules="[{ required: true, message: '车牌号不能为空', trigger: ['change','blur'] }]">
           <el-select v-model="vehicleForm.licenseNumber" class="width90" filterable @change="changeVehicle" @focus="saveVehicle">
             <el-option
               v-for="dict in vehicleInfoList"
@@ -312,7 +299,10 @@
               :value="dict.licenseNumber"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
+        <el-tabs v-else-if="title !== '新增' && vehicleInfoList.length > 0" v-model="activeName" class="mb10" @tab-click="handleClickTab">
+          <el-tab-pane v-for="item in vehicleInfoList" :key="item.id" :label="item.licenseNumber" :name="item.licenseNumber" />
+        </el-tabs>
       </template>
       <template v-if="form.driverType == 1 && (title === '新增' || (title !== '新增' && vehicleInfoList.length > 0))">
         <!-- <el-form-item label="车辆归属类型" prop="vehicleAscriptionType">
@@ -357,6 +347,9 @@
               :value="dict.dictValue"
             />
           </el-select>
+        </el-form-item>
+        <el-form-item label="道路运输许可证号" prop="roadTransportCertificateNumber">
+          <el-input v-model="vehicleForm.roadTransportCertificateNumber" placeholder="请输入道路运输许可证号" class="width90" clearable :disabled="disable" />
         </el-form-item>
         <el-form-item label="车身颜色" prop="vehicleColorCode">
           <el-select v-model="vehicleForm.vehicleColorCode" class="width90" filterable clearable :disabled="disable">
@@ -461,7 +454,30 @@
         <el-form-item label="运输介子" prop="transportMeson">
           <el-input v-model="vehicleForm.transportMeson" placeholder="请输入运输介子" class="width90" clearable :disabled="disable" />
         </el-form-item> -->
+        <el-form-item>
+          <el-row v-viewer>
+            <el-col :span="7" class="mb">
+              <p class="upload-image-label">行驶证</p>
+              <upload-image v-model="vehicleForm.vehicleLicenseImg" :disabled="disable" image-type="vehicle-license" side="front" icon-type="vehicle" @fillForm="fillForm" />
+            </el-col>
+            <el-col :span="7" class="mb">
+              <p class="upload-image-label">行驶证副页</p>
+              <upload-image v-model="vehicleForm.vehicleLicenseSecondImg" :disabled="disable" image-type="vehicle-license" side="back" icon-type="vehicle_back" @fillForm="fillForm" />
+            </el-col>
+            <el-col :span="7" class="mb">
+              <p class="upload-image-label">道路运输许可证</p>
+              <upload-image v-model="vehicleForm.roadTransportCertificateImg" :disabled="disable" icon-type="transport" />
+            </el-col>
+            <el-col :span="7">
+              <p class="upload-image-label">车头正面照</p>
+              <upload-image v-model="vehicleForm.vehicleImage" :disabled="disable" icon-type="vehicle_head" />
+            </el-col>
+          </el-row>
+        </el-form-item>
       </template>
+    </el-form>
+
+    <el-form label-width="154px">
       <el-form-item v-if="title==='审核'" label="审核备注" prop="authRemark">
         <el-input
           v-model="form.authRemark"
@@ -628,7 +644,9 @@ export default {
         licenseNumber: null
       },
       // 添加车辆方式
-      addVehicleType: 0 // 0input  1select
+      addVehicleType: 0, // 0input  1select
+      // 当前选中tab
+      activeName: null
     };
   },
   computed: {
@@ -796,6 +814,7 @@ export default {
       this.vehicleInfoList = [];
       this.currentIndex = 0;
       this.addVehicleType = 0;
+      this.activeName = null;
       this.form = {
         id: null,
         code: null,
@@ -838,14 +857,11 @@ export default {
         updateCode: null,
         updateTime: null,
         isDel: null,
-        transportPermitNo: null,
+        // transportPermitNo: null,
         validPeriodAlways: null,
         driverLicenseImage: null,
-        driverOtherLicenseImage: null,
-        driverOtherLicenseBackImage: null,
         identificationImage: null,
         identificationBackImage: null,
-        transportPermitImage: null,
         peopleImage: null,
         workLicenseImage: null,
         authRemark: null
@@ -886,7 +902,11 @@ export default {
         updateTime: null,
         delFlag: null,
         vehicleImage: null,
-        licenseNumber: null
+        licenseNumber: null,
+        vehicleLicenseImg: null,
+        vehicleLicenseSecondImg: null,
+        roadTransportCertificateNumber: null,
+        roadTransportCertificateImg: null
       };
       this.resetForm('vehicleForm');
     },
@@ -896,14 +916,12 @@ export default {
       if (data.vehicleInfoList && data.vehicleInfoList.length && data.vehicleInfoList.length > 0) {
         this.vehicleInfoList = data.vehicleInfoList;
         this.vehicleForm = { ...data.vehicleInfoList[0] };
+        this.activeName = this.vehicleForm.licenseNumber;
       } else {
         this.vehicleInfoList = [];
       }
       this.form.identificationEffective = praseNumToBoolean(this.form.identificationEffective);
       this.form.validPeriodAlways = praseNumToBoolean(this.form.validPeriodAlways);
-      // 行驶证正面、副页
-      this.form.driverOtherLicenseImage = data.driverOtherLicenseImage || this.vehicleForm.vehicleLicenseImg;
-      this.form.driverOtherLicenseBackImage = data.driverOtherLicenseBackImage || this.vehicleForm.vehicleLicenseSecondImg;
       if (this.form.teamCode && this.form.teamName) {
         this.teamOptions = [{
           code: this.form.teamCode,
@@ -1000,7 +1018,11 @@ export default {
             if (data.valid_to === '长期') {
               this.$set(this.form, 'validPeriodAlways', true);
             } else if (data.valid_to !== '') {
-              this.$set(this.form, 'validPeriodTo', data.valid_to);
+              if (data.valid_to.startsWith('9999')) {
+                this.$set(this.form, 'validPeriodAlways', true);
+              } else {
+                this.$set(this.form, 'validPeriodTo', data.valid_to);
+              }
             }
           } else {
             this.$set(this.form, 'validPeriodAlways', false);
@@ -1083,7 +1105,7 @@ export default {
           key = el.dictValue;
         }
       });
-      return key || '';
+      return key || 'X99';
     },
     // 选中车辆回显
     changeVehicle(licenseNumber) {
@@ -1143,6 +1165,12 @@ export default {
         this.addVehicleType = 0;
       }
       this.resetVehicle();
+    },
+    handleClickTab() {
+      if (this.activeName === this.vehicleForm.licenseNumber) return;
+      // console.log(this.activeName);
+      this.saveVehicle();
+      this.changeVehicle(this.activeName);
     }
   }
 };
@@ -1176,7 +1204,18 @@ export default {
   margin: 0;
   line-height: 24px;
 }
-
+/* 标题样式 */
+.g-card-title{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  >.h5-divider{
+    margin-left: 8px;
+    height: 1px;
+    border-bottom: 1px dashed #DAD3D3;
+  }
+}
+/* 单位样式 */
 .unit-item{
   ::v-deep .el-input__inner{
     padding-right: 50px;

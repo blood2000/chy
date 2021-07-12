@@ -71,6 +71,9 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="道路运输许可证号" prop="roadTransportCertificateNumber">
+        <el-input v-model="form.roadTransportCertificateNumber" placeholder="请输入道路运输许可证号" class="width90" clearable />
+      </el-form-item>
       <el-form-item label="车身颜色" prop="vehicleColorCode">
         <el-select v-model="form.vehicleColorCode" placeholder="请选择车身颜色" class="width90" clearable filterable>
           <el-option
@@ -176,10 +179,6 @@
       <el-form-item>
         <el-row v-viewer>
           <el-col :span="7" class="mb">
-            <p class="upload-image-label">车头正面照</p>
-            <upload-image v-model="form.vehicleImage" :disabled="disable" icon-type="vehicle_head" />
-          </el-col>
-          <el-col :span="7" class="mb">
             <p class="upload-image-label">行驶证</p>
             <upload-image v-model="form.vehicleLicenseImg" :disabled="disable" image-type="vehicle-license" side="front" icon-type="vehicle" @fillForm="fillForm" />
           </el-col>
@@ -187,12 +186,14 @@
             <p class="upload-image-label">行驶证副页</p>
             <upload-image v-model="form.vehicleLicenseSecondImg" :disabled="disable" image-type="vehicle-license" side="back" icon-type="vehicle_back" @fillForm="fillForm" />
           </el-col>
-          <!--
           <el-col :span="7" class="mb">
+            <p class="upload-image-label">道路运输许可证</p>
+            <upload-image v-model="form.roadTransportCertificateImg" :disabled="disable" icon-type="transport" />
+          </el-col>
+          <el-col :span="7">
             <p class="upload-image-label">车头正面照</p>
             <upload-image v-model="form.vehicleImage" :disabled="disable" icon-type="vehicle_head" />
           </el-col>
-            -->
         </el-row>
       </el-form-item>
     </el-form>
@@ -449,7 +450,9 @@ export default {
         vehicleLicenseSecondImg: null,
         transportPermitImage: null,
         driverOtherLicenseBackImage: null,
-        driverOtherLicenseImage: null
+        driverOtherLicenseImage: null,
+        roadTransportCertificateImg: null,
+        roadTransportCertificateNumber: null
       };
       this.resetForm('form');
     },
@@ -612,7 +615,7 @@ export default {
           key = el.dictValue;
         }
       });
-      return key || '';
+      return key || 'X99';
     }
   }
 };

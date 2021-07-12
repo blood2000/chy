@@ -159,7 +159,7 @@
             <template v-if="!myisdisabled">
               <el-button type="primary" size="mini" @click="open1">请选择</el-button>
               <div class="ml0">调度者: {{ formData.tin6_1.length }} 人</div>
-              <div class="ml0">司机: {{ formData.tin6_2.length }} 人</div>
+              <div v-if="false" class="ml0">司机: {{ formData.tin6_2.length }} 人</div>
             </template>
           </div>
         </el-form-item>
@@ -246,7 +246,7 @@ export default {
   data() {
     return {
       orderSpecifiedList: [],
-      actionIndex: '2', // 控制弹框显示谁
+      actionIndex: '1', // 控制弹框显示谁
       open: false,
       classList: null, // 修改的时候
       InfoCode: null, // 修改临时存放code
