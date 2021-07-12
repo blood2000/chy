@@ -95,8 +95,8 @@
           <div class="header">结算信息</div>
           <div style="padding:20px">
             <el-table v-loading="loading" highlight-current-row :data="invoicelist" border>
-              <el-table-column width="180" label="装货地" align="center" prop="invoiceInfoStatisticsVo.loadFormattedAddress" show-overflow-tooltip />
-              <el-table-column width="180" label="卸货地" align="center" prop="invoiceInfoStatisticsVo.unloadFormattedAddress" show-overflow-tooltip />
+              <el-table-column label="装货地" align="center" prop="invoiceInfoStatisticsVo.loadFormattedAddress" show-overflow-tooltip />
+              <el-table-column label="卸货地" align="center" prop="invoiceInfoStatisticsVo.unloadFormattedAddress" show-overflow-tooltip />
               <el-table-column width="120" label="货物大类" align="center" prop="invoiceInfoStatisticsVo.goodsBigTypeName" />
               <el-table-column width="120" label="装货车数" align="center" prop="invoiceInfoStatisticsVo.wayBillCount" />
               <el-table-column width="120" label="装车数量" align="center">
@@ -126,7 +126,7 @@
                 </template>
               </el-table-column>
               <el-table-column width="120" label="发票类型" align="center" prop="invoiceType" :formatter="invoiceTypeFormatter" />
-              <el-table-column width="150" label="货主成交单价" align="center" prop="invoiceInfoStatisticsVo.goodsPrice" />
+              <!-- <el-table-column width="150" label="货主成交单价" align="center" prop="invoiceInfoStatisticsVo.goodsPrice" /> -->
               <el-table-column width="150" label="货主实付金额" align="center" prop="amount" />
               <el-table-column fixed="left" label="运单明细" align="center" width="100">
                 <template #default="scope">
