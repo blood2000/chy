@@ -246,7 +246,7 @@ export default {
   data() {
     return {
       orderSpecifiedList: [],
-      actionIndex: '2', // 控制弹框显示谁
+      actionIndex: '1', // 控制弹框显示谁
       open: false,
       classList: null, // 修改的时候
       InfoCode: null, // 修改临时存放code

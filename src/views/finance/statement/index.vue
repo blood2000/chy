@@ -108,7 +108,7 @@
                     {{ scope.row.invoiceInfoStatisticsVo.loadWeight }}(方)
                   </span>
                   <span v-show="scope.row.invoiceInfoStatisticsVo.stowageStatus === '2'">
-                    {{ scope.row.invoiceInfoStatisticsVo.loadWeight }}(车)
+                    {{ Math.floor(scope.row.invoiceInfoStatisticsVo.loadWeight) }}(车)
                   </span>
                 </template>
               </el-table-column>
@@ -121,7 +121,7 @@
                     {{ scope.row.invoiceInfoStatisticsVo.unloadWeight }}(方)
                   </span>
                   <span v-show="scope.row.invoiceInfoStatisticsVo.stowageStatus === '2'">
-                    {{ scope.row.invoiceInfoStatisticsVo.unloadWeight }}(车)
+                    {{ Math.floor(scope.row.invoiceInfoStatisticsVo.unloadWeight) }}(车)
                   </span>
                 </template>
               </el-table-column>

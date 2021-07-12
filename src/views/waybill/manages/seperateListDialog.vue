@@ -14,16 +14,16 @@
       <el-table-column label="货物小类" align="center" prop="goodsType" width="150" />
       <el-table-column label="装货数量" align="center" prop="loadWeight">
         <template slot-scope="scope">
-          <span v-if="scope.row.stowageStatus === '1'">{{ scope.row.loadWeight || '0.00' }} 方</span>
-          <span v-if="scope.row.stowageStatus === '2'">{{ scope.row.loadWeight || '0.00' }} 车</span>
-          <span v-if="scope.row.stowageStatus === '0' || !scope.row.stowageStatus">{{ scope.row.loadWeight || '0.00' }} 吨</span>
+          <span v-if="scope.row.stowageStatus === '1'">{{ scope.row.loadWeight || '0.000' }} 方</span>
+          <span v-if="scope.row.stowageStatus === '2'">{{ Math.floor(scope.row.loadWeight) || '0' }} 车</span>
+          <span v-if="scope.row.stowageStatus === '0' || !scope.row.stowageStatus">{{ scope.row.loadWeight || '0.000' }} 吨</span>
         </template>
       </el-table-column>
       <el-table-column label="卸货数量" align="center" prop="unloadWeight">
         <template slot-scope="scope">
-          <span v-if="scope.row.stowageStatus === '1'">{{ scope.row.unloadWeight || '0.00' }} 方</span>
-          <span v-if="scope.row.stowageStatus === '2'">{{ scope.row.unloadWeight || '0.00' }} 车</span>
-          <span v-if="scope.row.stowageStatus === '0' || !scope.row.stowageStatus">{{ scope.row.unloadWeight || '0.00' }} 吨</span>
+          <span v-if="scope.row.stowageStatus === '1'">{{ scope.row.unloadWeight || '0.000' }} 方</span>
+          <span v-if="scope.row.stowageStatus === '2'">{{ Math.floor(scope.row.unloadWeight) || '0' }} 车</span>
+          <span v-if="scope.row.stowageStatus === '0' || !scope.row.stowageStatus">{{ scope.row.unloadWeight || '0.000' }} 吨</span>
         </template>
       </el-table-column>
       <el-table-column label="数量(车)" align="center" prop="carNum" />
