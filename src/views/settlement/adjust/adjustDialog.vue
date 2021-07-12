@@ -104,7 +104,7 @@
 
         <el-table-column width="160" label="货主成交单价(元)" align="center" prop="freightPrice" />
 
-        <el-table-column width="160" label="司机成交单价(元)" align="center" prop="freightPriceDriver" />
+        <!-- <el-table-column width="160" label="司机成交单价(元)" align="center" prop="freightPriceDriver" /> -->
         <el-table-column width="160" label="亏涨扣费(元)" align="center" prop="lossDeductionFee">
           <template slot-scope="scope">
             <span>{{ floor(scope.row.lossDeductionFee) }}</span>
