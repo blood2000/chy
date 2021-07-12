@@ -256,7 +256,7 @@
       修改独立司机的时候, 可以修改他名下车辆的信息, 不能新增/删除车辆(在管理页新增/删除)
     -->
     <el-form ref="vehicleForm" :model="vehicleForm" :rules="vehicleRules" label-width="154px">
-      <template v-if="form.driverType == 1">
+      <template v-if="form.driverType == 1 && (title === '新增' || (title !== '新增' && vehicleInfoList.length > 0))">
         <h5 class="g-card-title g-strong mb20 ml10">
           车辆信息
           <div class="h5-divider" style="width: 91%" />
