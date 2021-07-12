@@ -52,7 +52,7 @@
         <el-table-column width="120" label="司机电话" align="center" prop="driverPhone" />
         <el-table-column width="120" label="车牌号" align="center" prop="licenseNumber" />
 
-        <el-table-column width="80" label="装货数量" align="left" prop="loadWeight">
+        <el-table-column width="120" label="装货数量" align="center" prop="loadWeight">
           <template slot-scope="scope">
             <span v-if="scope.row.isDregs === 1">{{ scope.row.loadWeight }}</span>
             <div v-else>
@@ -63,7 +63,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column width="80" label="卸货数量" align="left" prop="unloadWeight">
+        <el-table-column width="120" label="卸货数量" align="center" prop="unloadWeight">
           <template slot-scope="scope">
             <span v-if="scope.row.isDregs === 1">{{ scope.row.unloadWeight }}</span>
             <div v-else>
