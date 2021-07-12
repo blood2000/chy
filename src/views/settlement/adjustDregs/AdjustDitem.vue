@@ -34,14 +34,14 @@
       <el-table-column width="80" label="装货数量" align="left" prop="loadWeight">
         <template slot-scope="{row}">
           <!-- <span>{{ scope.row.loadWeight }}</span> -->
-          <span>{{ row.loadWeight +' '+ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
+          <span>{{ floor(row.loadWeight, row.stowageStatus === '2'? 0: 3) +' '+ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
         </template>
       </el-table-column>
 
       <el-table-column width="80" label="卸货数量" align="left" prop="unloadWeight">
         <template slot-scope="{row}">
           <!-- <span>{{ scope.row.unloadWeight }}</span> -->
-          <span>{{ row.unloadWeight +' '+ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
+          <span>{{ floor(row.unloadWeight, row.stowageStatus === '2'? 0: 3) +' '+ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
         </template>
       </el-table-column>
 

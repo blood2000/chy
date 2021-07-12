@@ -101,11 +101,13 @@
               <!-- <td>{{ item.goodsName }}</td> -->
 
               <td>{{ item.projectName }}</td>
-              <td>{{ item.loadWeight }} {{ item.stowageStatus === '0'?'吨':(item.stowageStatus === '1'?'立方' : '车') }}</td>
+              <td>{{ floorFn(item.loadWeight, item.stowageStatus === '2'? 0: 3) }} {{ item.stowageStatus === '0'?'吨':(item.stowageStatus === '1'?'立方' : '车') }}</td>
+              <!-- <td>{{ item.loadWeight }} {{ item.stowageStatus === '0'?'吨':(item.stowageStatus === '1'?'立方' : '车') }}</td> -->
               <td>{{ parseTime(item.fillTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</td>
 
               <td>{{ item.ztcName }}</td>
-              <td>{{ item.unloadWeight }} {{ item.stowageStatus === '0'?'吨':(item.stowageStatus === '1'?'立方' : '车') }}</td>
+              <td>{{ floorFn(item.unloadWeight, item.stowageStatus === '2'? 0: 3) }} {{ item.stowageStatus === '0'?'吨':(item.stowageStatus === '1'?'立方' : '车') }}</td>
+              <!-- <td>{{ item.unloadWeight }} {{ item.stowageStatus === '0'?'吨':(item.stowageStatus === '1'?'立方' : '车') }}</td> -->
               <td>{{ parseTime(item.signTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</td>
             </tr>
           </tbody>
