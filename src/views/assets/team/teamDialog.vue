@@ -128,10 +128,10 @@
           </el-col>
         </el-row>
       </el-form-item>
-      <el-form-item v-if="title==='审核'" label="审核备注" prop="authRemark">
+      <el-form-item label="审核备注" prop="authRemark">
         <el-input
           v-model="form.authRemark"
-          :disabled="false"
+          :disabled="!(title === '审核')"
           class="width90"
           type="textarea"
           :rows="2"

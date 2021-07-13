@@ -196,6 +196,17 @@
           </el-col>
         </el-row>
       </el-form-item>
+        <el-form-item label="审核备注" prop="authRemark">
+            <el-input
+                    v-model="form.authRemark"
+                    :disabled="!(title === '审核')"
+                    class="width90"
+                    type="textarea"
+                    :rows="2"
+                    maxlength="200"
+                    placeholder="请输入审核备注"
+            />
+        </el-form-item>
     </el-form>
     <div v-if="title === '新增' || title === '编辑' || title === '添加车辆'" slot="footer" class="dialog-footer">
       <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
@@ -452,7 +463,8 @@ export default {
         driverOtherLicenseBackImage: null,
         driverOtherLicenseImage: null,
         roadTransportCertificateImg: null,
-        roadTransportCertificateNumber: null
+        roadTransportCertificateNumber: null,
+        authRemark: null
       };
       this.resetForm('form');
     },

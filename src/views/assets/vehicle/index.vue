@@ -316,6 +316,13 @@
                   @click="reportVehicle(row)"
                 >上报</el-button>
               </el-dropdown-item>
+            <el-dropdown-item>
+                <el-button
+                        size="mini"
+                        type="text"
+                        @click="handleChange(row)"
+                >转换</el-button>
+            </el-dropdown-item>
               <el-dropdown-item>
                 <el-button
                   v-hasPermi="['assets:vehicle:remove']"
@@ -354,7 +361,7 @@
 </template>
 
 <script>
-import { listVehicleApi, listInfo, getInfo, delInfo, delDriverCar, delTeamCar } from '@/api/assets/vehicle';
+import { listVehicleApi, listInfo, getInfo, delInfo, delDriverCar, delTeamCar, changeDataByLicenseNumber } from '@/api/assets/vehicle';
 import { waybillReportVehicleByCode } from '@/api/data/report';
 import VehicleDialog from './vehicleDialog';
 import ManageDialog from './manageDialog';
@@ -640,6 +647,20 @@ export default {
       }).then(() => {
         this.getList();
         this.msgSuccess('删除成功');
+      });
+    },
+    /** 转换 */
+    handleChange(row) {
+      const vehicleName = row.licenseNumber;
+      this.$confirm('是否确认仅保留车牌号为"' + vehicleName + '"的当前数据项，其他为该车牌号的信息将被转换，包括司机、运单等?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return changeDataByLicenseNumber(row.code, row.licenseNumber);
+      }).then(() => {
+        this.getList();
+        this.msgSuccess('转换成功');
       });
     },
     /** 导出按钮操作 */
