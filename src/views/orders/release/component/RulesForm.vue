@@ -155,6 +155,7 @@ export default {
 
   computed: {
     unit() {
+      console.log(this.$store.state.orders.orderStowageStatus, '调价的时候');
       let name = 'kg';
       const srcode = this.$store.state.orders.lossPlans;
       const lossPlans = Object.keys(srcode);

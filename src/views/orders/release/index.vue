@@ -692,6 +692,13 @@ export default {
         'userCode': this.formData.tin1
       };
       const res = await estimateCost(qData);
+
+      if (res.code === 501) {
+        this.msgError(res.msg);
+        return;
+      }
+
+
       this.$store.dispatch('orders/store_getEst', res.data);
       this.active = 4;
     },
@@ -1045,6 +1052,11 @@ export default {
       };
 
       const res = await estimateCost(qData);
+      console.log(res, '45646');
+      if (res.code === 501) {
+        this.msgError(res.msg);
+        return;
+      }
       this.$nextTick(() => {
         this.$store.dispatch('orders/store_getEst', res.data);
       });

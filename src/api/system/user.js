@@ -130,3 +130,11 @@ export function updateUserStatusByUserCode(userCode, status) {
     data: data
   });
 }
+
+export function getUserAlreadyExist(query) {
+  return request({
+    url: '/system/user/userAlreadyExist',
+    method: 'get',
+    params: query
+  });
+}

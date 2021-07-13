@@ -2,29 +2,43 @@
   <div>
     <el-dialog v-loading="adjustLoading" class="i-adjust" :title="title" :visible="visible" width="1400px" :close-on-click-modal="false" append-to-body @close="cancel">
 
-      <div slot="title" class="m20">
-        <span class="mr10">批量修改(元)： </span>
+      <div slot="title" class="m20 ly-flex-align-center">
+        <div>
+          <span class="mr10">批量修改(元)： </span>
 
-        <el-select v-model="selectedValue" size="small" placeholder="请选择" class="mr10">
+          <el-select v-model="selectedValue" size="small" placeholder="请选择" class="mr10">
 
-          <el-option-group
-            v-for="group in openShowList"
-            :key="group.label"
-            :label="group.label"
-          >
-            <el-option
-              v-for="(item, index) in group.options"
-              :key="index"
-              :label="item.cnName"
-              :value="item.enName"
-            />
-          </el-option-group>
-        </el-select>
+            <el-option-group
+              v-for="group in openShowList"
+              :key="group.label"
+              :label="group.label"
+            >
+              <el-option
+                v-for="(item, index) in group.options"
+                :key="index"
+                :label="item.cnName"
+                :value="item.enName"
+              />
+            </el-option-group>
+          </el-select>
 
-        <el-input-number v-model="selectedNum" style="width:200px;" size="small" controls-position="right" :min="0" :precision="2" placeholder="请输入批量修改的值" />
+          <el-input-number v-model="selectedNum" style="width:200px;" size="small" controls-position="right" :min="0" :precision="2" placeholder="请输入批量修改的值" @keyup.enter.native="handleSelectedNumChange" />
 
-        <el-button size="small" class="m20" type="primary" :loading="plLoading" @click="handleSelectedNumChange">立即修改</el-button>
+          <el-button size="small" class="m20" type="primary" :disabled="!modify" :loading="plLoading" @click="handleSelectedNumChange">立即修改</el-button>
+        </div>
+
+        <div v-if="isDifferent && (!isDifferent.sublength || !isDifferent.dedlength)" style="flex:1;margin: 0 50px;">
+          <el-alert
+            :title="warningtitle"
+            type="warning"
+            effect="dark"
+          />
+        </div>
       </div>
+
+
+
+
 
       <el-table v-loading="loading" height="650" highlight-current-row :data="adjustlist" border :row-class-name="tableRowClassName">
 
@@ -54,10 +68,23 @@
 
         <el-table-column width="120" label="装货数量" align="center" prop="loadWeight">
           <template slot-scope="scope">
-            <span v-if="scope.row.isDregs === 1">{{ scope.row.loadWeight }}</span>
+            <!-- <span v-if="scope.row.isDregs === 1">{{ scope.row.loadWeight }}</span> -->
+            <span v-if="scope.row.isDregs === 1">{{ floor(scope.row.loadWeight, scope.row.stowageStatus === '2'? 0: 3) }}</span>
             <div v-else>
-              <el-input-number v-if="scope.row.stowageStatus !== '2'" v-model="scope.row.loadWeight" :precision="3" :controls="false" placeholder="请输入装货数量" style="width:100%;" size="mini" @keyup.native="handlerBlur($event,scope.row,false,'loadWeight')" />
-              <span v-else>{{ scope.row.loadWeight }}</span>
+              <el-input-number
+                v-if="scope.row.stowageStatus !== '2'"
+                v-model="scope.row.loadWeight"
+                :precision="3"
+                :controls="false"
+                placeholder="请输入装货数量"
+                style="width:100%;"
+                size="mini"
+                @change="handlerChangev(scope.row)"
+                @keyup.enter.native="handlerChangev(scope.row)"
+              />
+              <!-- @keyup.native="handlerBlur($event,scope.row,false,'loadWeight')" -->
+              <!-- <span v-else>{{ scope.row.loadWeight }}</span> -->
+              <span v-else>{{ floor(scope.row.loadWeight, scope.row.stowageStatus === '2'? 0: 3) }}</span>
             </div>
 
           </template>
@@ -65,10 +92,23 @@
 
         <el-table-column width="120" label="卸货数量" align="center" prop="unloadWeight">
           <template slot-scope="scope">
-            <span v-if="scope.row.isDregs === 1">{{ scope.row.unloadWeight }}</span>
+            <!-- <span v-if="scope.row.isDregs === 1">{{ scope.row.unloadWeight }}</span> -->
+            <span v-if="scope.row.isDregs === 1">{{ floor(scope.row.unloadWeight, scope.row.stowageStatus === '2'? 0: 3) }}</span>
             <div v-else>
-              <el-input-number v-if="scope.row.stowageStatus !== '2'" v-model="scope.row.unloadWeight" :precision="3" :controls="false" placeholder="请输入卸货数量" style="width:100%;" size="mini" @keyup.native="handlerBlur($event,scope.row,false,'unloadWeight')" />
-              <span v-else>{{ scope.row.unloadWeight }}</span>
+              <el-input-number
+                v-if="scope.row.stowageStatus !== '2'"
+                v-model="scope.row.unloadWeight"
+                :precision="3"
+                :controls="false"
+                placeholder="请输入卸货数量"
+                style="width:100%;"
+                size="mini"
+                @change="handlerChangev(scope.row)"
+                @keyup.enter.native="handlerChangev(scope.row)"
+              />
+              <!-- @keyup.native="handlerBlur($event,scope.row,false,'unloadWeight')" -->
+              <!-- <span v-else>{{ scope.row.unloadWeight }}</span> -->
+              <span v-else>{{ floor(scope.row.unloadWeight, scope.row.stowageStatus === '2'? 0: 3) }}</span>
             </div>
           </template>
         </el-table-column>
@@ -151,7 +191,18 @@
                   <span v-if="scope.row.isDregs === 1">{{ freight.ruleValue }}</span>
                   <div v-else>
                     <span v-show="!isEdit2">{{ freight.ruleValue }}</span>
-                    <el-input-number v-show="isEdit2" v-model="freight.ruleValue" :controls="false" :precision="2" :min="0" :placeholder="`${freight.cnName}`" style="width:100px;" @keyup.native="handlerBlur($event,scope.row, freight)" />
+                    <el-input-number
+                      v-show="isEdit2"
+                      v-model="freight.ruleValue"
+                      :controls="false"
+                      :precision="2"
+                      :min="0"
+                      :placeholder="`${freight.cnName}`"
+                      style="width:100px;"
+                      @change="handlerChangev(scope.row)"
+                      @keyup.enter.native="handlerChangev(scope.row)"
+                    />
+                    <!-- @keyup.native="handlerBlur($event,scope.row, freight)" -->
                   </div>
                 </el-form-item>
               </div>
@@ -177,7 +228,18 @@
                 <el-form-item :label="freight.cnName + '(元)'">
                   <div>
                     <span v-show="!isEdit">{{ freight.ruleValue }}</span>
-                    <el-input-number v-show="isEdit" v-model="freight.ruleValue" :controls="false" :precision="2" :min="0" :placeholder="`${freight.cnName}`" style="width:100px;" @keyup.native="handlerBlur($event,scope.row, freight)" />
+                    <el-input-number
+                      v-show="isEdit"
+                      v-model="freight.ruleValue"
+                      :controls="false"
+                      :precision="2"
+                      :min="0"
+                      :placeholder="`${freight.cnName}`"
+                      style="width:100px;"
+                      @change="handlerChangev(scope.row)"
+                      @keyup.enter.native="handlerChangev(scope.row)"
+                    />
+                    <!-- @keyup.native="handlerBlur($event,scope.row, freight)" -->
                   </div>
                 </el-form-item>
               </div>
@@ -210,7 +272,7 @@
       </el-table>
 
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">立即核算</el-button>
+        <el-button type="primary" :loading="plLoading" @click="submitForm">立即核算</el-button>
         <el-button @click="cancel">返回</el-button>
       </div>
     </el-dialog>
@@ -228,7 +290,7 @@ import ImgShow from './components/ImgShow';
 // import chooseItemDialog from '@/views/enterprise/rules/chooseItemDialog';
 import { adjustDetail, calculateFee, batchCheck, batchCalculate } from '@/api/settlement/adjust';
 import { getRuleItemList } from '@/api/enterprise/rules';
-import { floor } from '@/utils/ddc';
+import { floor, objReduce } from '@/utils/ddc';
 
 
 export default {
@@ -291,109 +353,178 @@ export default {
     },
 
     openShowList() {
-      const list = this.adjustlist[0] || {};
+      // const list = this.adjustlist[0] || {};
+      // const arr = [{
+      //   label: '补贴项目',
+      //   options: list.subsidiesFreightList || []
+      // }, {
+      //   label: '扣费项目',
+      //   options: list.deductionFreightList || []
+      // }];
+
+      const subList = [];
+      const dedList = [];
+      this.adjustlist.forEach(e => {
+        e.subsidiesFreightList.forEach(ee => {
+          subList.push(ee);
+        });
+        e.deductionFreightList.forEach(ee => {
+          dedList.push(ee);
+        });
+      });
+      // console.log(objReduce(subList, 'enName'));
+      // console.log(objReduce(dedList, 'enName'));
       const arr = [{
         label: '补贴项目',
-        options: list.subsidiesFreightList || []
+        options: objReduce(subList, 'enName')
       }, {
         label: '扣费项目',
-        options: list.deductionFreightList || []
+        options: objReduce(dedList, 'enName')
       }];
 
+      console.log(arr);
+
+
       return arr;
+    },
+
+    modify() {
+      return this.selectedValue && this.selectedNum > 0;
+    },
+
+    // 简单提示增减项不一样
+    isDifferent() {
+      // const bool = true;
+      const sublength = [];
+      const dedlength = [];
+      this.adjustlist.forEach(e => {
+        sublength.push(e.subsidiesFreightList.length);
+        dedlength.push(e.deductionFreightList.length);
+      });
+
+
+      return {
+        sublength: [...new Set(sublength)].length === 1,
+        dedlength: [...new Set(dedlength)].length === 1
+      };
+    },
+    // 警告提示语
+    warningtitle() {
+      const sa = this.isDifferent.sublength ? '' : '注意！补贴项目的规则存在不一致的。';
+      const sb = this.isDifferent.dedlength ? '' : '注意！扣费项目的规则存在不一致的。';
+
+      return sa + sb + ''; // 将无法使用批量处理。
     }
   },
 
-  // watch: {
-  //   visiblPopover(val) {
-  //     console.log(val);
-  //   }
-  // },
   created() {
     this.changeFee = this.newDebounceFun(this.setDeliveryCashFee, 1000);
   },
 
   methods: {
-    handlerInput(val) {
-      // console.log(val);
-      this.adjustlist.forEach(e => {
-        e.subsidiesFreightList = val;
-      });
-      // this.$forceUpdate();
-    },
-
-
-    // 单项修改
-    async handlerBlur(event, row, freight, keyName) {
-      if (event) {
-        if (this.loading || (!(/^[0-9]*$/.test(event.key - 0)) && event.key !== 'ArrowUp' && event.key !== 'ArrowDown' && event.key !== 'Backspace')) return;
-      }
-
-      if (freight) {
-        // event.target.value - 0 enName freight.enName   ruleValue
-        if (freight.type === '1') {
-          row.subsidiesFreightList && row.subsidiesFreightList.forEach(e => {
-            if (e.enName === freight.enName) {
-              e.ruleValue = event.target.value;
-            }
-          });
-        } else {
-          row.deductionFreightList && row.deductionFreightList.forEach(e => {
-            if (e.enName === freight.enName) {
-              e.ruleValue = event.target.value;
-            }
-          });
-        }
-      } else {
-        // event.target.value - 0 loadWeight unloadWeight
-        row[keyName] = event.target.value - 0;
-      }
-      const {
-        m0DictValue,
-        freightPrice,
-        ruleFormulaDictValue,
-        shipperCode,
-        stowageStatus,
-        loadWeight,
-        unloadWeight,
-        waybillCode,
-        subsidiesFreightList,
-        deductionFreightList
-        // serviceFee,
-        // serviceTaxFee,
-        // taxPayment
-
-      } = row;
-
-
-
+    // 数字change事件
+    handlerChangev(row) {
+      // console.log(row, 'oooo');
       const parame = {
-        driverReductionFee: this._sum(deductionFreightList),
-        m0DictValue,
-        freightPrice,
-        ruleFormulaDictValue,
-        shipperCode,
-        stowageStatus,
-        driverAddFee: this._sum(subsidiesFreightList),
-        loadWeight,
-        unloadWeight,
-        waybillCode
+        driverReductionFee: this._sum(row.deductionFreightList),
+        m0DictValue: row.m0DictValue,
+        freightPrice: row.freightPrice,
+        ruleFormulaDictValue: row.ruleFormulaDictValue,
+        shipperCode: row.shipperCode,
+        stowageStatus: row.stowageStatus,
+        driverAddFee: this._sum(row.subsidiesFreightList),
+        loadWeight: row.loadWeight,
+        unloadWeight: row.unloadWeight,
+        waybillCode: row.waybillCode
         // serviceFee,
         // serviceTaxFee,
         // taxPayment
       };
-      // if (this.loading1) return;
 
-      console.log(445);
-      // this.setDeliveryCashFee(parame, row);
+
       this.changeFee(parame, row);
     },
+
+    // handlerInput(val) {
+    //   // console.log(val);
+    //   this.adjustlist.forEach(e => {
+    //     e.subsidiesFreightList = val;
+    //   });
+    //   // this.$forceUpdate();
+    // },
+
+
+    // 单项修改
+    // async handlerBlur(event, row, freight, keyName) {
+    //   if (event) {
+    //     if (this.loading || (!(/^[0-9]*$/.test(event.key - 0)) && event.key !== 'ArrowUp' && event.key !== 'ArrowDown' && event.key !== 'Backspace')) return;
+    //   }
+
+    //   if (freight) {
+    //     // event.target.value - 0 enName freight.enName   ruleValue
+    //     if (freight.type === '1') {
+    //       row.subsidiesFreightList && row.subsidiesFreightList.forEach(e => {
+    //         if (e.enName === freight.enName) {
+    //           e.ruleValue = event.target.value;
+    //         }
+    //       });
+    //     } else {
+    //       row.deductionFreightList && row.deductionFreightList.forEach(e => {
+    //         if (e.enName === freight.enName) {
+    //           e.ruleValue = event.target.value;
+    //         }
+    //       });
+    //     }
+    //   } else {
+    //     // event.target.value - 0 loadWeight unloadWeight
+    //     row[keyName] = event.target.value - 0;
+    //   }
+    //   const {
+    //     m0DictValue,
+    //     freightPrice,
+    //     ruleFormulaDictValue,
+    //     shipperCode,
+    //     stowageStatus,
+    //     loadWeight,
+    //     unloadWeight,
+    //     waybillCode,
+    //     subsidiesFreightList,
+    //     deductionFreightList
+    //     // serviceFee,
+    //     // serviceTaxFee,
+    //     // taxPayment
+
+    //   } = row;
+
+
+
+    //   const parame = {
+    //     driverReductionFee: this._sum(deductionFreightList),
+    //     m0DictValue,
+    //     freightPrice,
+    //     ruleFormulaDictValue,
+    //     shipperCode,
+    //     stowageStatus,
+    //     driverAddFee: this._sum(subsidiesFreightList),
+    //     loadWeight,
+    //     unloadWeight,
+    //     waybillCode
+    //     // serviceFee,
+    //     // serviceTaxFee,
+    //     // taxPayment
+    //   };
+    //   // if (this.loading1) return;
+
+    //   // this.setDeliveryCashFee(parame, row);
+    //   this.changeFee(parame, row);
+    // },
 
     // 单项修改
     async setDeliveryCashFee(parame, row) {
       console.log(parame, row);
 
       this.loading1 = true;
+      this.plLoading = true;
       try {
         var data = {};
         await calculateFee(parame).then(res => {
@@ -403,6 +534,7 @@ export default {
           }
         });
         this.loading1 = false;
+        this.plLoading = false;
         // lossDeductionFee
         row.lossDeductionFee = data.lossDeductionFee;
         row.deliveryFeeDeserved = data.deliveryFeeDeserved;
@@ -417,6 +549,7 @@ export default {
         row.loss = data.loss;
       } catch (error) {
         this.loading1 = false;
+        this.plLoading = false;
       }
     },
 
@@ -557,6 +690,26 @@ export default {
       adjustDetail(this.queryParams).then(response => {
         this.adjustlist = JSON.parse(JSON.stringify(response.data));
 
+        /* 兼容处理*/
+        // const subList = [];
+        // const dedList = [];
+        // this.adjustlist.forEach(e => {
+        //   console.log(e.subsidiesFreightList);
+        //   e.subsidiesFreightList.forEach(ee => {
+        //     subList.push(ee);
+        //   });
+        //   e.deductionFreightList.forEach(ee => {
+        //     dedList.push(ee);
+        //   });
+        // });
+
+
+        // this.subsidiesClone = objReduce(subList, 'enName');
+        // this.deductionClone = objReduce(dedList, 'enName');
+
+
+
+
         this.subsidiesClone = this.adjustlist[0].subsidiesFreightList || [];
         this.deductionClone = this.adjustlist[0].deductionFreightList || [];
 
@@ -605,6 +758,7 @@ export default {
     },
 
 
+
     /** 取消按钮 */
     cancel() {
       // this.showSubList = [];
@@ -626,14 +780,10 @@ export default {
       await this.getList();
     },
 
-    // 处理增减
+    // 处理增
     handlerClick() {
-      // subsidiesClone
-      // deductionClone
-
       const arr = this.adjustlist[0].subsidiesFreightList || [];
       const jaarr = this.adjustlist[0].deductionFreightList || [];
-
 
       // 过滤增
       const a1 = arr.filter(e => {
@@ -643,15 +793,18 @@ export default {
       this.jianData = jaarr.filter(e => {
         return !e.$_disabled;
       });
+      // 回填的数据
       this.selecedName = (a1).map(e => e.cnName);
 
       this.mtype = '1';
       this.popoverOpenCom = true;
     },
+
+    // 处理减
     handlerdeduc() {
       // 同上
-      const jaarr = this.adjustlist[0].subsidiesFreightList || [];
       const arr = this.adjustlist[0].deductionFreightList || [];
+      const jaarr = this.adjustlist[0].subsidiesFreightList || [];
 
       const a1 = arr.filter(e => {
         return !e.$_disabled;
@@ -694,11 +847,6 @@ export default {
 
     /* 批量修改规定的值 */
     handleSelectedNumChange() {
-      // 需要值: selectedValue   selectedNum  this.adjustlist enName ruleValue
-
-      // console.log(this.selectedValue, this.selectedNum);
-      // console.log(this.adjustlist);
-
       let isZa = false;
       this.adjustlist.forEach(e => {
         e.deductionFreightList && e.deductionFreightList.forEach(e => {

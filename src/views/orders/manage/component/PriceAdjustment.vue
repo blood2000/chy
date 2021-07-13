@@ -81,7 +81,11 @@ export default {
       default: () => []
     },
     orderCode: { type: String, default: '' },
-    pubilshCode: { type: String, default: '' }
+    pubilshCode: { type: String, default: '' },
+    stowageStatus: {
+      type: [String],
+      default: null
+    }
   },
 
   data() {
@@ -97,12 +101,14 @@ export default {
 
   computed: {
     goodsUnitName() {
-      return '吨';
+      return this.stowageStatus;
     }
   },
 
   created() {
     this.tabs = JSON.parse(JSON.stringify(this.mytabs));
+
+    console.log(this.tabs, '454545');
   },
 
   methods: {
@@ -152,7 +158,7 @@ export default {
       for (const e of this.tabs) {
         const lists = e.redis.map(async(ee, i) => {
           const accounTing = (await this.$refs['AccounTing' + e.activeName + i][0]._submitForm());
-          console.log(accounTing);
+          // console.log(accounTing);
           return {
             ...ee,
             ...accounTing

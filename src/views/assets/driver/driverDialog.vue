@@ -43,7 +43,7 @@
         <el-input v-model="form.name" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
       <el-form-item label="手机号" prop="telphone">
-        <el-input v-model="form.telphone" placeholder="请输入手机号" :disabled="form.id?true:false" class="width90" clearable />
+        <el-input ref="telphone" v-model="form.telphone" placeholder="请输入手机号" :disabled="form.id?true:false" class="width90" clearable @blur="getUserAlreadyExist" />
       </el-form-item>
       <!-- <el-form-item label="联系人固话" prop="fixedPhone">
         <el-input v-model="form.fixedPhone" placeholder="请输入固话" class="width90" clearable />
@@ -505,6 +505,7 @@
 import { addDriver, updateDriver, authRead, examine } from '@/api/assets/driver';
 import { getProvinceList } from '@/api/system/area';
 import { listInfo } from '@/api/assets/team';
+import { getUserAlreadyExist } from '@/api/system/user';
 import { listInfo as vehicleListInfo } from '@/api/assets/vehicle';
 import UploadImage from '@/components/UploadImage/index';
 // import ProvinceCityCounty from '@/components/ProvinceCityCounty';
@@ -525,6 +526,7 @@ export default {
   },
   data() {
     return {
+      isFocus: false,
       buttonLoading: false,
       authButtonLoading: false,
       // 初始密码
@@ -1171,6 +1173,22 @@ export default {
       // console.log(this.activeName);
       this.saveVehicle();
       this.changeVehicle(this.activeName);
+    },
+    getUserAlreadyExist() {
+      if (this.form.telphone) {
+        getUserAlreadyExist({ phoneNum: this.form.telphone }).then(response => {
+          if (response.code === 500) {
+            this.msgWarning(response.msg);
+            this.$nextTick(() => {
+              this.$refs.telphone.focus();
+            });
+          }
+        }).catch(() => {
+          this.$nextTick(() => {
+            this.$refs.telphone.focus();
+          });
+        });
+      }
     }
   }
 };

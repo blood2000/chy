@@ -263,7 +263,7 @@ export default {
 
     // 关闭
     hamdlerClose(tag) {
-      this.schedSelect = this.schedSelect.filter(e => e.code !== tag.code);
+      this.schedSelect = this.schedSelect.filter(e => e.disUserCode !== tag.disUserCode);
     },
 
     // 预览
