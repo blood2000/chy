@@ -36,23 +36,60 @@
       </el-form>
     </div>
 
-    <div class="app-container total_box">
-      <img src="../../../../src/assets/images/icon/total.png" alt="">
-      <span>新增货主：{{ capacityCount.addShipment || 0 }}</span>
-      <span>新增司机：{{ capacityCount.addDriver || 0 }}</span>
-      <span>新增调度者：{{ capacityCount.addScheduler || 0 }}</span>
+    <div class="total_box">
+      <el-row :gutter="40">
+        <el-col :xs="6" :sm="6" :md="6" :lg="3" :span="3">
+          <div class="count-box blue">
+            <p class="label">新增货主：</p>
+            <p class="count">{{ capacityCount.addShipment || 0 }}</p>
+          </div>
+        </el-col>
+        <el-col :xs="6" :sm="6" :md="6" :lg="3" :span="3">
+          <div class="count-box blue">
+            <p class="label">新增司机：</p>
+            <p class="count">{{ capacityCount.addDriver || 0 }}</p>
+          </div>
+        </el-col>
+        <el-col :xs="6" :sm="6" :md="6" :lg="3" :span="3">
+          <div class="count-box blue">
+            <p class="label">新增调度者：</p>
+            <p class="count">{{ capacityCount.addScheduler || 0 }}</p>
+          </div>
+        </el-col>
+        <el-col :xs="6" :sm="6" :md="6" :lg="3" :span="3">
+          <div class="count-box green">
+            <p class="label">总运单数：</p>
+            <p class="count">{{ waybillCount.sumWaybillCount || 0 }}</p>
+          </div>
+        </el-col>
+        <el-col :xs="6" :sm="6" :md="6" :lg="3" :span="3">
+          <div class="count-box green">
+            <p class="label">已装货：</p>
+            <p class="count">{{ waybillCount.sumLoadingNum || 0 }}</p>
+          </div>
+        </el-col>
+        <el-col :xs="6" :sm="6" :md="6" :lg="3" :span="3">
+          <div class="count-box green">
+            <p class="label">已卸货：</p>
+            <p class="count">{{ waybillCount.sumUnloadingNum || 0 }}</p>
+          </div>
+        </el-col>
+        <el-col :xs="6" :sm="6" :md="6" :lg="3" :span="3">
+          <div class="count-box green">
+            <p class="label">已核算：</p>
+            <p class="count">{{ waybillCount.sumSettledNum || 0 }}</p>
+          </div>
+        </el-col>
+        <el-col :xs="6" :sm="6" :md="6" :lg="3" :span="3">
+          <div class="count-box green">
+            <p class="label">已打款：</p>
+            <p class="count">{{ waybillCount.sumPaidNum || 0 }}</p>
+          </div>
+        </el-col>
+      </el-row>
     </div>
 
     <div class="app-container">
-      <div class="total_bg">
-        <img src="../../../../src/assets/images/icon/total.png" alt="">
-        <span>总运单数：{{ waybillCount.sumWaybillCount || 0 }}</span>
-        <span>已装货：{{ waybillCount.sumLoadingNum || 0 }}</span>
-        <span>已卸货：{{ waybillCount.sumUnloadingNum || 0 }}</span>
-        <span>已核算：{{ waybillCount.sumSettledNum || 0 }}</span>
-        <span>已打款：{{ waybillCount.sumPaidNum || 0 }}</span>
-      </div>
-
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
           <!-- v-hasPermi -->
@@ -64,34 +101,27 @@
             @click="handleExport"
           >导出</el-button>
         </el-col>
-        <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <el-table v-loading="loading" highlight-current-row border :data="infoList">
-        <el-table-column label="货主公司名称" align="center" prop="companyName" min-width="180" />
-        <el-table-column label="货源单号" align="center" prop="mainOrderNumber" min-width="150" />
-        <el-table-column label="总运单数" align="center" prop="waybillCount" sortable />
-        <el-table-column label="已装货" align="center" prop="loadingNum" sortable />
-        <el-table-column label="已卸货" align="center" prop="unloadingNum" sortable />
-        <el-table-column label="已核算" align="center" prop="settledNum" sortable />
-        <el-table-column label="已打款" align="center" prop="paidNum" sortable />
-        <!-- <template slot-scope="scope">
-            <i v-show="scope.row.authStatus === 0" class="g-icon-none mr5" />
-            <i v-show="scope.row.authStatus === 1" class="g-icon-deal-blue mr5" />
-            <i v-show="scope.row.authStatus === 2" class="el-icon-error g-color-error mr5" />
-            <i v-show="scope.row.authStatus === 3" class="el-icon-success g-color-success mr5" />
-            <span>{{ selectDictLabel(statusOptions, scope.row.authStatus) }}</span>
-          </template> -->
-      </el-table>
+      <ul class="info-list">
+        <!-- 公司v-for -->
+        <li v-for="(item, index) in infoList" :key="index" class="info-list-item">
+          <h5 class="companyName">
+            <img src="../../../../src/assets/images/icon/company.png" alt="">
+            <span>{{ item.companyName }}</span>
+          </h5>
+          <el-table highlight-current-row :data="item.shipmentRelatedInfoVoList">
+            <el-table-column label="货主" align="left" prop="companyName" min-width="150" />
+            <el-table-column label="货源单号" align="left" prop="mainOrderNumber" min-width="120" />
+            <el-table-column label="总运单数" align="left" prop="waybillCount" />
+            <el-table-column label="已装货" align="left" prop="loadingNum" />
+            <el-table-column label="已卸货" align="left" prop="unloadingNum" />
+            <el-table-column label="已核算" align="left" prop="settledNum" />
+            <el-table-column label="已打款" align="left" prop="paidNum" />
+          </el-table>
+        </li>
+      </ul>
 
-      <pagination
-        v-show="total>0"
-        :total="total"
-        :page.sync="queryParams.pageNum"
-        :limit.sync="queryParams.pageSize"
-        :page-sizes="[10, 20, 50, 100, 200, 300]"
-        @pagination="getList"
-      />
     </div>
   </div>
 </template>
@@ -115,10 +145,7 @@ export default {
       loading: true,
       showSearch: true,
       total: 0,
-      queryParams: {
-        pageNum: 1,
-        pageSize: 10
-      },
+      queryParams: {},
       timeParams: {
         beginTime: null,
         endTime: null
@@ -153,7 +180,6 @@ export default {
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.pageNum = 1;
       this.getList();
       this.getCapacityCount();
       this.getWaybillCount();
@@ -169,10 +195,8 @@ export default {
     /** 查询列表 */
     getList() {
       this.loading = true;
-      const params = Object.assign({}, this.queryParams, this.timeParams);
-      waybillStatisticsList(params).then(response => {
-        this.infoList = response.data.list;
-        this.total = response.data.total;
+      waybillStatisticsList(this.timeParams).then(response => {
+        this.infoList = response.data || [];
         this.loading = false;
       });
     },
@@ -201,7 +225,54 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.total_box, .total_bg{
+.total_box{
+  width: calc(100% - 30px);
+  border-radius: 4px;
+  margin: 0 15px;
+  .count-box{
+    height: 72px;
+    position: relative;
+    background-color: #fff;
+    padding: 10px 0 10px 20px;
+    margin-bottom: 15px;
+    >.label{
+      font-size: 14px;
+      font-family: PingFang SC;
+      font-weight: 400;
+      line-height: 24px;
+      color: #262626;
+      white-space:nowrap;
+    }
+    >.count{
+      font-size: 24px;
+      font-family: PingFang SC;
+      font-weight: bold;
+      line-height: 24px;
+      color: #262626;
+      white-space:nowrap;
+    }
+    &::before{
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      margin-top: -20px;
+      width: 4px;
+      height: 40px;
+      border-radius: 0px 4px 4px 0px;
+    }
+    &.blue{
+      &::before{
+        background-color: #409EFF;
+      }
+    }
+    &.green{
+      &::before{
+        background-color: #67C23A;
+      }
+    }
+  }
+
   >img{
     vertical-align: middle;
     margin-right: 15px;
@@ -213,11 +284,29 @@ export default {
     line-height: 28px;
   }
 }
-.total_bg{
-  background: #F8F9FA;
-  border-radius: 4px;
-  padding: 10px 20px;
-  margin-bottom: 10px;
-  overflow: hidden;
+
+.info-list{
+  .info-list-item{
+    &:not(:last-child){
+      margin-bottom: 50px;
+    }
+    &:last-child{
+      margin-bottom: 30px;
+    }
+    .companyName{
+      font-size: 18px;
+      font-family: PingFang SC;
+      font-weight: bold;
+      line-height: 24px;
+      color: #262626;
+      vertical-align: middle;
+      margin-bottom: 20px;
+      margin-top: 28px;
+      >img, >span{
+        vertical-align: middle;
+        margin-right: 16px;
+      }
+    }
+  }
 }
 </style>
