@@ -34,14 +34,14 @@
       <el-table-column width="80" label="装货数量" align="left" prop="loadWeight">
         <template slot-scope="{row}">
           <!-- <span>{{ scope.row.loadWeight }}</span> -->
-          <span>{{ row.loadWeight +' '+ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
+          <span>{{ floor(row.loadWeight, row.stowageStatus === '2'? 0: 3) +' '+ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
         </template>
       </el-table-column>
 
       <el-table-column width="80" label="卸货数量" align="left" prop="unloadWeight">
         <template slot-scope="{row}">
           <!-- <span>{{ scope.row.unloadWeight }}</span> -->
-          <span>{{ row.unloadWeight +' '+ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
+          <span>{{ floor(row.unloadWeight, row.stowageStatus === '2'? 0: 3) +' '+ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
         </template>
       </el-table-column>
 
@@ -67,8 +67,10 @@
             placeholder="请输入司机实收金额"
             style="width:100%;"
             size="mini"
-            @keyup.native="getDeliveryCashFee($event,[scope.row])"
+            @change="handlerChangev([scope.row])"
+            @keyup.enter.native="handlerChangev([scope.row])"
           />
+          <!-- @keyup.native="getDeliveryCashFee($event,[scope.row])" -->
         </template>
         <!-- @keydown.ctrl.86.native="handlerKeydown($event,[scope.row])" -->
       </el-table-column>
@@ -142,19 +144,14 @@ export default {
       this.adjustlist.forEach(e => {
         e.deliveryCashFee = this.deliveryCashFee;
       });
-      this.getDeliveryCashFee(undefined, this.adjustlist);
+      this.handlerChangev(this.adjustlist);
+      // this.getDeliveryCashFee(undefined, this.adjustlist);
     },
 
-    // 获取数据
-    async getDeliveryCashFee(event, arr) {
-      // 过滤其他的键盘事件
-      if (event) {
-        if (this.loading || (!(/^[0-9]*$/.test(event.key - 0)) && event.key !== 'ArrowUp' && event.key !== 'ArrowDown' && event.key !== 'Backspace' && event.key !== 'v')) return;
-      }
-
-
+    // 单条修改
+    handlerChangev(arr) {
       this.que = {
-        deliveryCashFee: (event ? event.target.value - 0 : arr[0].deliveryCashFee), //	金额		false
+        deliveryCashFee: arr[0].deliveryCashFee, //	金额		false
         waybillCodeList: arr.map(e => e.waybillCode)//	运单ids
       };
 
@@ -162,6 +159,24 @@ export default {
         this.changeFee(arr);
       }
     },
+
+    // 获取数据
+    // async getDeliveryCashFee(event, arr) {
+    //   // 过滤其他的键盘事件
+    //   if (event) {
+    //     if (this.loading || (!(/^[0-9]*$/.test(event.key - 0)) && event.key !== 'ArrowUp' && event.key !== 'ArrowDown' && event.key !== 'Backspace' && event.key !== 'v')) return;
+    //   }
+
+
+    //   this.que = {
+    //     deliveryCashFee: (event ? event.target.value - 0 : arr[0].deliveryCashFee), //	金额		false
+    //     waybillCodeList: arr.map(e => e.waybillCode)//	运单ids
+    //   };
+
+    //   if (this.isRealNum(this.que.deliveryCashFee)) {
+    //     this.changeFee(arr);
+    //   }
+    // },
 
 
 

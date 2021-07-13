@@ -586,6 +586,7 @@ export default {
     routeName: {
       handler: function(val) {
         if (val === 'Driver') {
+          this.resetQueryForm();
           this.queryParams.authStatus = JSON.parse(this.$route.query.data).authStatus;
           this.handleQuery();
         }
@@ -649,6 +650,10 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.resetQueryForm();
+      this.handleQuery();
+    },
+    resetQueryForm() {
       this.queryParams.authTimeBegin = undefined;
       this.queryParams.authTimeEnd = undefined;
       this.queryParams.createTimeBegin = undefined;
@@ -656,7 +661,6 @@ export default {
       this.resetForm('queryForm');
       this.queryParams.authStatus = null;
       this.queryParams.isBindBankCard = null;
-      this.handleQuery();
     },
     /** 新增按钮操作 */
     handleAdd() {

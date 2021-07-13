@@ -313,6 +313,7 @@ export default {
           vehicleType: vehicleType ? vehicleType.split(',') : [], // 车型->查字典
           vehicleLength: vehicleLength ? vehicleLength.split(',') : [] // 车长->查字典
         };
+        this.$store.commit('orders/SET_ORDERSTOWAGESTATUS', stowageStatus);
       },
       immediate: true
     },

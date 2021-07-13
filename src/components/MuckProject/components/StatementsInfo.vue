@@ -10,10 +10,12 @@
       </template>
 
       <template #loadWeight="{row}">
-        <span>{{ row.loadWeight +' '+ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
+        <span>{{ floor(row.loadWeight, row.stowageStatus === '2'? 0: 3) +' '+ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
+        <!-- <span>{{ row.loadWeight +' '+ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span> -->
       </template>
       <template #unloadWeight="{row}">
-        <span>{{ row.unloadWeight +' '+ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
+        <!-- <span>{{ row.unloadWeight +' '+ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span> -->
+        <span>{{ floor(row.unloadWeight, row.stowageStatus === '2'? 0: 3) +' '+ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
       </template>
 
       <template #stowageStatus="{row}">
@@ -57,6 +59,7 @@
 <script>
 import { batchRelatedWaybill, BatchInfoListVo } from '@/api/settlement/adjustDregs';
 import { getUserInfo } from '@/utils/auth';
+import { floor } from '@/utils/ddc';
 
 export default {
   'name': 'StatementsInfo',
@@ -66,6 +69,7 @@ export default {
   },
   data() {
     return {
+      floor,
       'tableColumnsConfig': [],
       // 遮罩层
       'loading': false,

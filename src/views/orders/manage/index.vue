@@ -286,7 +286,7 @@
               @click="handleInfo(row)"
             >详情</el-button>
             <el-button
-              v-if="row.status+''==='0'"
+              v-if="row.isDregs!==1 && row.status+''==='0'"
               v-hasPermi="['transportation:order:modify']"
               size="mini"
               type="text"
@@ -371,7 +371,7 @@
 
     <!-- 价格调整 -->
     <el-dialog :close-on-click-modal="false" :title="'费用调价'" class="i-price" :visible.sync="openPriceAdjustment" width="900px" append-to-body>
-      <price-adjustment v-if="openPriceAdjustment" :mytabs="tabs" :order-code="orderCode" :pubilsh-code="pubilshCode" @submitRes="submitRes" />
+      <price-adjustment v-if="openPriceAdjustment" :mytabs="tabs" :order-code="orderCode" :pubilsh-code="pubilshCode" :stowage-status="unitName" @submitRes="submitRes" />
     </el-dialog>
   </div>
 </template>
@@ -390,6 +390,8 @@ export default {
   components: { OpenDialog, PriceAdjustment },
   data() {
     return {
+      unitName: null, // 配载方式
+
       pickerOptions,
       loadingExport: false,
       activeName: '0',
@@ -860,6 +862,10 @@ export default {
     },
     /** 调价操作 */
     async handleReadjustPrices(row) {
+      // 特殊处理, 传入配载方式
+      this.unitName = this.selectDictLabel(this.stowageStatusOptions, row.stowageStatus);
+      this.$store.commit('orders/SET_ORDERSTOWAGESTATUS', row.stowageStatus);
+
       const { redisOrderFreightInfoVoList, redisOrderGoodsVoList, redisAddressList, redisOrderInfoVo } = row.source;
       const tabs = redisOrderFreightInfoVoList.map((e, index) => {
         redisOrderGoodsVoList.forEach(ee => {
