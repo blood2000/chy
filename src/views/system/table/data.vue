@@ -275,7 +275,7 @@ export default {
         width: null,
         isShow: true,
         sortNum: null,
-        ischild: false
+        isChild: false
       };
       this.resetForm('form');
     },
