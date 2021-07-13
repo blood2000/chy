@@ -186,7 +186,7 @@ export default {
       return !isShipment ? (shipment.info || {}) : {};
     },
     cbDataByKeyword() {
-      let obj = null;
+      let obj = {};
       if (this.schedSelect.length) {
         obj = { id: this.schedSelect.map(e => e.id) };
       }

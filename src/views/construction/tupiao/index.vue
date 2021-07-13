@@ -30,9 +30,12 @@
       </el-row>
       <!-- @selection-change="(selection)=> selections = selection" -->
       <RefactorTable :loading="loading" :data="list" :table-columns-config="tableColumnsConfig">
-        <!-- <template #batchNo="{row}">
-          <DismissedTrack :batch-no="row.batchNo" />
-        </template> -->
+        <template #price="{row}">
+          <span>{{ floor(row.price - 0) }}</span>
+        </template>
+        <template #total="{row}">
+          <span>{{ row.total? floor(row.total - 0): '--' }}</span>
+        </template>
       </RefactorTable>
 
       <pagination
@@ -47,8 +50,11 @@
 </template>
 
 <script>
-import { getUserInfo } from '@/utils/auth';
+import { getUserInfo, getLocalStorage } from '@/utils/auth';
 import QueryForm from './components/QueryForm';
+import { floor } from '@/utils/ddc';
+
+import { getProjectTicketList, getProjectTicketApi } from '@/api/construction/tupiao';
 export default {
   name: 'Tupiao', // 工地土票列表
 
@@ -71,115 +77,156 @@ export default {
         'pageNum': 1,
         'pageSize': 10,
 
-        xiangamu: undefined,
-        tupoapming: undefined,
-        jiesgosng: undefined,
+        projectName: undefined,
+        ticketName: undefined,
+        receiveSite: undefined,
         receiveTime: [] // 时间
 
+
+
       },
-      'list': [{
-        tupiaoming: 'wuf',
-        cexing: '3232'
-      }],
+      'list': [],
       // 多选
       'selections': [],
       // 登录信息
-      getUserInfo
+      getUserInfo,
+      floor // 工具
     };
   },
 
   computed: {
     api() {
-      return '';
+      return getProjectTicketApi;
     },
+
+    // code	编码	string
+    // earlyStageRemainingTickets	前期余票	integer(int32)
+    // id	主键	integer(int64)
+    // machineType	车型	integer(int32)
+    // price	价格	number(double)
+    // receiveSite	接收工地	string
+    // remark	备注	string
+    // signName	签收人	string
+    // signTime	签收时间	string
+    // thisWeekCollectTickets	本周领票	integer(int32)
+    // thisWeekRefundTickets	本周退票	integer(int32)
+    // thisWeekRemainingTickets	本周余票	integer(int32)
+    // thisWeekUsedTickets	本周用票	integer(int32)
+    // ticketName	土票名称	string
+
     tableColumns() {
     //   const isAdmin = !this.getUserInfo.isShipment;
       return [
         {
+          'label': '项目名称',
+          'prop': 'projectName',
+          'isShow': false,
+          'sortNum': 10,
+          //   'width': '60',
+          'tooltip': true
+        },
+        {
           'label': '土票名称',
-          'prop': 'tupiaoming',
+          'prop': 'ticketName',
           'isShow': true,
-          'sortNum': 2,
+          'sortNum': 20,
           'tooltip': true
         },
         {
           'label': '车型',
-          'prop': 'cexing',
+          'prop': 'vehicleSizeName',
           'isShow': true,
-          'sortNum': 3,
+          'sortNum': 30,
           'width': '60',
           'tooltip': true
         },
         {
           'label': '接收工地',
-          'prop': 'jiesjjgs',
+          'prop': 'receiveSite',
           'isShow': true,
-          'sortNum': 4,
+          'sortNum': 40,
           'tooltip': true
         },
         {
           'label': '接收人',
-          'prop': 'jiesren',
+          'prop': 'signName',
           'isShow': true,
-          'sortNum': 5,
+          'sortNum': 50,
           'tooltip': true
         },
         {
           'label': '前期余票',
-          'prop': 'qianqohui',
+          'prop': 'earlyStageRemainingTickets',
           'isShow': true,
-          'sortNum': 6,
+          'sortNum': 60,
           'width': '90',
           'tooltip': true
         },
         {
           'label': '本周领票',
-          'prop': 'qhiohaog',
+          'prop': 'thisWeekCollectTickets',
           'isShow': true,
-          'sortNum': 7,
+          'sortNum': 70,
           'width': '90',
           'tooltip': true
         },
         {
           'label': '本周余票',
-          'prop': 'yiubpp',
+          'prop': 'thisWeekRemainingTickets',
           'isShow': true,
-          'sortNum': 8,
+          'sortNum': 80,
+          'width': '90',
+          'tooltip': true
+        },
+        {
+          'label': '本周用票',
+          'prop': 'thisWeekUsedTickets',
+          'isShow': false,
+          'sortNum': 85,
           'width': '90',
           'tooltip': true
         },
         {
           'label': '本周退票',
-          'prop': 'sjfiweopw',
+          'prop': 'thisWeekRefundTickets',
           'isShow': true,
-          'sortNum': 9,
+          'sortNum': 90,
           'width': '90',
           'tooltip': true
         },
         {
           'label': '单价',
-          'prop': 'danjai',
+          'prop': 'price',
           'isShow': true,
-          'sortNum': 10,
+          'sortNum': 100,
           'width': '90',
           'tooltip': true
         },
         {
           'label': '总价',
-          'prop': 'zongjia',
+          'prop': 'total',
           'isShow': true,
-          'sortNum': 11,
+          'sortNum': 110,
           'width': '90',
           'tooltip': true
         },
         {
           'label': '备注',
-          'prop': 'beijsij',
+          'prop': 'remark',
           'isShow': true,
-          'sortNum': 12,
+          'sortNum': 120,
           'tooltip': true
         }
       ];
+    },
+
+    queParams() {
+      return {
+        ...this.queryParams,
+        bigSignTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[0] : undefined, //	签收时间		false
+        endSignTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[1] : undefined, //	签收时间		false
+        receiveTime: undefined
+      };
     }
   },
 
@@ -191,7 +238,8 @@ export default {
   methods: {
     // 初始表头
     tabColInit() {
-      this.tableColumnsConfig = this.tableColumns;
+      const tabCol = getLocalStorage(this.api);
+      this.tableColumnsConfig = tabCol || this.tableColumns;
 
     //   this.tableHeaderConfig(this.tableColumnsConfig, this.api, {
     //     prop: 'edit',
@@ -203,11 +251,16 @@ export default {
     },
     // 初始数据
     async getList() {
-      console.log(this.queryParams);
+      this.loading = true;
+      getProjectTicketList(this.queParams).then(res => {
+        this.list = res.data.list;
+        this.total = res.data.total;
+        this.loading = false;
+      }).catch(() => { this.loading = false; });
     },
     async handleExport() {
       this.exportLoading = true;
-      await this.download('/transportation/batch/export', this.queryParams, `工地土票列表`);
+      await this.download('/tools/projectTicket/web—getProjectTicketListExport', this.queParams, `工地土票列表`, 'application/json');
       this.exportLoading = false;
     }
   }

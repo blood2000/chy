@@ -232,6 +232,11 @@ export default {
       type: Object,
       default: null
     },
+    // 当前用户的信息
+    shipmentInfo: {
+      type: Object,
+      default: null
+    },
     // 使用v-model
     value: [Boolean],
     myisdisabled: {
@@ -317,6 +322,22 @@ export default {
   },
 
   watch: {
+    // 获取当前用户的信息
+    shipmentInfo: {
+      handler(info) {
+        if (info) {
+          // isNeedLoadingCertificate 是否需要装货凭证 0：是 1：否
+          // noNeedUnloadImg 是否不需要卸货图片  0，需要  1，不需要
+          const { isNeedLoadingCertificate, noNeedUnloadImg } = info;
+
+          // console.log(isNeedLoadingCertificate, noNeedUnloadImg);
+          this.formData.uploadLoadVoucher = isNeedLoadingCertificate === 0;
+          this.formData.uploadUnloadVoucher = noNeedUnloadImg === 0;
+        }
+      },
+      immediate: true
+    },
+
     // 监听外面 pubilshCode 变化则 全部要跟着初始化
     pubilshCode(value) {
       this.$refs['elForm'] && this.$refs['elForm'].resetFields();

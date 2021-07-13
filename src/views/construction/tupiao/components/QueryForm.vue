@@ -9,10 +9,10 @@
 
       <el-form-item
         label="选择项目"
-        prop="xiangamu"
+        prop="projectName"
       >
         <el-input
-          v-model="queryParams.xiangamu"
+          v-model="queryParams.projectName"
           placeholder="请选择选择项目"
           clearable
           size="small"
@@ -23,10 +23,10 @@
 
       <el-form-item
         label="土票名称"
-        prop="tupoapming"
+        prop="ticketName"
       >
         <el-input
-          v-model="queryParams.tupoapming"
+          v-model="queryParams.ticketName"
           placeholder="请输入土票名称"
           clearable
           size="small"
@@ -37,10 +37,10 @@
 
       <el-form-item
         label="接收工地"
-        prop="jiesgosng"
+        prop="receiveSite"
       >
         <el-input
-          v-model="queryParams.jiesgosng"
+          v-model="queryParams.receiveSite"
           placeholder="请输入接收工地"
           clearable
           size="small"
@@ -48,6 +48,7 @@
           @keyup.enter.native="$emit('handleQuery')"
         />
       </el-form-item>
+
 
       <el-form-item
         label="接收时间"

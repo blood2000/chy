@@ -4,19 +4,21 @@ import { MessageBox, Message } from 'element-ui';
 // 版本二（2021/06/19 启用）
 
 // 用户Id 用户姓名 手机号  项目Id  调度组Id  发卡人Id  发卡人姓名  发卡时间（时间戳） 卡批次号
-
-export const versionMark = '1010|2|';
+// 1000|2|张三;18415451845;120;16612345678;17812345678;陈大帅;1621648441990;1621648441990123;r
+export const userMark = '1000|2|';
 export const USERINFO = [
-  'user_name',
-  'user_telno',
-  'project_id',
-  'team_telno',
-  'issuing_telno',
-  'issuing_name',
-  'issuing_time',
-  'issuing_pc'
+  'user_name', // 张三 用户姓名
+  'user_telno', // 18415451845 手机号
+  'project_id', // 120 项目Id
+  'team_telno', // 16612345678 调度者关联用户的手机号
+  'issuing_telno', // 17812345678 发卡人用户手机号
+  'issuing_name', // 陈大帅 发卡人姓名
+  'issuing_time', // 1621648441990  发卡时间（时间戳）
+  'issuing_pc', // 1621648441990123 卡批次号
+  'icType' // 追加一个 ic卡type
 ];
-// 29804;2614710;广东深圳福龙学校项目;鄂ALF106;张三丰;13812345678;1621648441990;1621648441990;49384299482;广东深圳妈湾石头';
+// 1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710
+export const versionMark = '1010|2|';
 export const DATAINFO = [
   'orderId', // 货源单号
   'waybillNo', // 运单单号
@@ -27,7 +29,6 @@ export const DATAINFO = [
   'fillTime',
   'signTime',
   'serialNumber' // 渣土场编号
-  // 'mudtail'
 ];
 // resultData(resUserInfo, USERINFO)
 
@@ -582,7 +583,7 @@ CardReader.action['issuingCard'] = async function(data) {
     console.log('选择MF', ret);
     // 构造用户数据
 
-    let str = versionMark + (USERINFO.map(e => data[e])).join(';'); // ['1000', '1', (USERINFO.map(e => data[e])).join(';')].join('|');
+    let str = userMark + (USERINFO.map(e => data[e])).join(';'); // ['1000', '1', (USERINFO.map(e => data[e])).join(';')].join('|');
 
     console.log(str);
 
