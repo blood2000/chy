@@ -348,7 +348,7 @@ export default {
       },
       vehicleInfoQuery: {
         'authStatus': 3,
-        // 'isFreeze': 0,
+        'isFreeze': 0,
         'driverCode': null
       },
       loading: false,
