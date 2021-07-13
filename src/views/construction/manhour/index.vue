@@ -51,6 +51,9 @@
 <script>
 import { getUserInfo } from '@/utils/auth';
 import QueryForm from './components/QueryForm';
+
+import { getMachineWorkingList } from '@/api/construction/manhour';
+
 export default {
   name: 'Manhour', // 机械工时登记
 
@@ -73,9 +76,8 @@ export default {
         'pageNum': 1,
         'pageSize': 10,
 
-        xiangamu: undefined,
-        tupoapming: undefined,
-        jiesgosng: undefined,
+        projectName: undefined,
+        phone: undefined,
         receiveTime: [] // 时间
 
       },
@@ -87,7 +89,21 @@ export default {
       // 多选
       'selections': [],
       // 登录信息
-      getUserInfo
+      getUserInfo,
+
+      // 表格字典
+      auditStatus_op: [
+        { dictValue: 0, dictLabel: '待审核' },
+        { dictValue: 1, dictLabel: '已审核' }
+      ],
+      schedule_op: [
+        { dictValue: 0, dictLabel: '白班' },
+        { dictValue: 1, dictLabel: '夜班' }
+      ],
+      status_op: [
+        { dictValue: 0, dictLabel: '未完工' },
+        { dictValue: 1, dictLabel: '已完成' }
+      ]
     };
   },
 
@@ -100,7 +116,7 @@ export default {
       return [
         {
           'label': '机主姓名',
-          'prop': 'tupiaoming',
+          'prop': 'nickName',
           'isShow': true,
           'sortNum': 2,
           //   'width': '60',
@@ -108,7 +124,7 @@ export default {
         },
         {
           'label': '机械类型',
-          'prop': 'cexing',
+          'prop': 'machineType',
           'isShow': true,
           'sortNum': 3,
           //   'width': '60',
@@ -116,7 +132,7 @@ export default {
         },
         {
           'label': '机械型号',
-          'prop': 'jixiexip',
+          'prop': 'machineModel',
           'isShow': true,
           'sortNum': 4,
           'width': '60',
@@ -124,7 +140,7 @@ export default {
         },
         {
           'label': '车数',
-          'prop': 'jiesren',
+          'prop': 'number',
           'isShow': true,
           'sortNum': 5,
           'width': '60',
@@ -132,7 +148,7 @@ export default {
         },
         {
           'label': '作业开始时间',
-          'prop': 'qianqohui',
+          'prop': 'startTime',
           'isShow': true,
           'sortNum': 6,
           'width': '90',
@@ -140,7 +156,7 @@ export default {
         },
         {
           'label': '作业结束时间',
-          'prop': 'qhiohaog',
+          'prop': 'completeTime',
           'isShow': true,
           'sortNum': 7,
           'width': '90',
@@ -148,7 +164,7 @@ export default {
         },
         {
           'label': '作业工时',
-          'prop': 'yiubpp',
+          'prop': 'hours',
           'isShow': true,
           'sortNum': 8,
           'width': '90',
@@ -157,7 +173,7 @@ export default {
 
         {
           'label': '单价',
-          'prop': 'danjai',
+          'prop': 'price',
           'isShow': true,
           'sortNum': 10,
           'width': '90',
@@ -165,7 +181,7 @@ export default {
         },
         {
           'label': '总价',
-          'prop': 'zongjia',
+          'prop': 'total',
           'isShow': true,
           'sortNum': 11,
           'width': '90',
@@ -173,12 +189,21 @@ export default {
         },
         {
           'label': '备注',
-          'prop': 'beijsij',
+          'prop': 'remark',
           'isShow': true,
           'sortNum': 12,
           'tooltip': true
         }
       ];
+    },
+
+    queParams() {
+      return {
+        ...this.queryParams,
+        bigCreateTime: this.queryParams.receiveTime[0], //	签收时间		false
+        endCreateTime: this.queryParams.receiveTime[1], //	签收时间		false
+        receiveTime: undefined
+      };
     }
   },
 
@@ -191,7 +216,6 @@ export default {
     // 初始表头
     tabColInit() {
       this.tableColumnsConfig = this.tableColumns;
-
     //   this.tableHeaderConfig(this.tableColumnsConfig, this.api, {
     //     prop: 'edit',
     //     isShow: true,
@@ -202,11 +226,16 @@ export default {
     },
     // 初始数据
     async getList() {
-      console.log(this.queryParams);
+      this.loading = true;
+      getMachineWorkingList(this.queParams).then(res => {
+        this.list = res.data.list;
+        this.total = res.data.total;
+        this.loading = false;
+      }).catch(() => { this.loading = false; });
     },
     async handleExport() {
       this.exportLoading = true;
-      await this.download('/transportation/batch/export', this.queryParams, `机械工时登记`);
+      await this.download('/tools/machineWork/web—getMachineWorkingListExport', this.queParams, `机械工时登记`);
       this.exportLoading = false;
     }
   }
