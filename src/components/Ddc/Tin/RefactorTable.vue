@@ -105,7 +105,7 @@ export default {
     // 数据回填, 添加根据其中一项值一样再回填
     cbDataByKeyword: {
       type: Object,
-      default: null
+      default: () => { return {}; }
     },
     reserveSelection: {
       type: Boolean,
@@ -138,6 +138,7 @@ export default {
     // 通过关键字回填 {id: [5151, 454646]}
     cbDataByKeyword: {
       handler(value) {
+        if (JSON.stringify(value) === '{}') return;
         if (!value && !this.data.length) return;
         const keyname = Object.keys(value)[0];
         this.cbDataByKeywordToSelection(keyname, value[keyname]);
