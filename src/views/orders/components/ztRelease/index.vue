@@ -186,7 +186,7 @@ export default {
       return !isShipment ? (shipment.info || {}) : {};
     },
     cbDataByKeyword() {
-      let obj = null;
+      let obj = {};
       if (this.schedSelect.length) {
         obj = { id: this.schedSelect.map(e => e.id) };
       }
@@ -263,7 +263,7 @@ export default {
 
     // 关闭
     hamdlerClose(tag) {
-      this.schedSelect = this.schedSelect.filter(e => e.code !== tag.code);
+      this.schedSelect = this.schedSelect.filter(e => e.disUserCode !== tag.disUserCode);
     },
 
     // 预览

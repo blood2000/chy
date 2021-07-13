@@ -476,10 +476,12 @@ export default {
     // 打款接口
     async getBatch() {
       const len = this.ids;
+      // console.log(len);
+      const batchNo = new Date().getTime();
       for (let index = 0; index < len.length; index++) {
         const e = len[index];
         try {
-          await batch({ wayBillSettlementCodeList: [e] });
+          await batch({ wayBillSettlementCodeList: [e], batchNo: batchNo });
           this.sucList.push(e);
         } catch (error) {
           this.errList.push(e);
@@ -489,7 +491,7 @@ export default {
       }
       this.getList(1);
       this.payLoading = false;
-      console.log(this.errList);
+      // console.log(this.sucList, this.errList);
     },
     tableRowClassName({ row, rowIndex }) {
       if (this.errList.length > 0) {

@@ -9,10 +9,10 @@
 
       <el-form-item
         label="选择项目"
-        prop="xiangamu"
+        prop="projectName"
       >
         <el-input
-          v-model="queryParams.xiangamu"
+          v-model="queryParams.projectName"
           placeholder="请选择选择项目"
           clearable
           size="small"
@@ -22,26 +22,12 @@
       </el-form-item>
 
       <el-form-item
-        label="土票名称"
-        prop="tupoapming"
+        label="外部人员手机"
+        prop="phone"
       >
         <el-input
-          v-model="queryParams.tupoapming"
-          placeholder="请输入土票名称"
-          clearable
-          size="small"
-          style="width: 185px"
-          @keyup.enter.native="$emit('handleQuery')"
-        />
-      </el-form-item>
-
-      <el-form-item
-        label="接收工地"
-        prop="jiesgosng"
-      >
-        <el-input
-          v-model="queryParams.jiesgosng"
-          placeholder="请输入接收工地"
+          v-model="queryParams.phone"
+          placeholder="请输入外部人员手机"
           clearable
           size="small"
           style="width: 185px"

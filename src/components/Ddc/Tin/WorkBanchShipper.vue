@@ -868,7 +868,7 @@ export default {
               } else if (url === 'Adjust') {
                 const obj1 = {
                   'p_4': 'AdjustDregs', // 对应 渣土的核算
-                  'p_5': 'PaymentDregs', // 对应 渣土的打款
+                  'p_5': 'VerificationDregs', // 对应 渣土核验页面
                   'p_7': 'PaidDregs' // 对应 渣土的已打款
                 };
                 pathName = obj1['p_' + param];

@@ -114,6 +114,7 @@
                 :pubilsh-code="formData.tin1"
                 :cb-data="cbOrderBasic"
                 :myisdisabled="myisdisabled"
+                :shipment-info="shipmentInfo"
                 :goods-big-types="goodsBigTypes"
                 @goods="handlerGoos"
               >
@@ -482,6 +483,8 @@ export default {
       }
 
       if (isShipment && shipment.info) {
+        // console.log(shipment.info, '货主身份---');
+        this.shipmentInfo = shipment.info;
         this.formData.tin1 = shipment.info.code;
       }
       if (user.orgCode) {
