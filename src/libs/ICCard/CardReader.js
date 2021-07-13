@@ -16,7 +16,7 @@ export const USERINFO = [
   'issuing_time',
   'issuing_pc'
 ];
-// 29804;2614710;广东深圳福龙学校项目;鄂ALF106;张三丰;13812345678;1621648441990;1621648441990;49384299482;广东深圳妈湾石头';
+// 29804;2614710;广东深圳福龙学校项目;鄂ALF106;张三丰;13812345678;1621648441990;1621648441990;49384299482;广东深圳妈湾石头;r';
 export const DATAINFO = [
   'orderId', // 货源单号
   'waybillNo', // 运单单号
@@ -26,8 +26,8 @@ export const DATAINFO = [
   'driverPhone', // 驾驶员用户手机号
   'fillTime',
   'signTime',
-  'serialNumber' // 渣土场编号
-  // 'mudtail'
+  'serialNumber', // 渣土场编号
+  'icType'
 ];
 // resultData(resUserInfo, USERINFO)
 

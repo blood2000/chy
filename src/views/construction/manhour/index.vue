@@ -30,10 +30,14 @@
       </el-row>
       <!-- @selection-change="(selection)=> selections = selection" -->
       <RefactorTable :loading="loading" :data="list" :table-columns-config="tableColumnsConfig">
-        <template #tupiaoming="{row}">
-          <div>
-            {{ row.tupiaoming }}({{ row.dianh }})
-          </div>
+        <template #nickName="{row}">
+          <span>{{ row.nickName || '--' }} [{{ row.phonenumber }}]</span>
+        </template>
+        <template #price="{row}">
+          <span>{{ floor(row.price - 0) }}</span>
+        </template>
+        <template #total="{row}">
+          <span>{{ row.total? floor(row.total - 0): '--' }}</span>
         </template>
       </RefactorTable>
 
@@ -51,8 +55,11 @@
 <script>
 import { getUserInfo } from '@/utils/auth';
 import QueryForm from './components/QueryForm';
+import { floor } from '@/utils/ddc';
+import { getLocalStorage } from '@/utils/auth';
 
-import { getMachineWorkingList } from '@/api/construction/manhour';
+import { getMachineWorkingList, getMachineWorkingapi } from '@/api/construction/manhour';
+console.log(getMachineWorkingapi);
 
 export default {
   name: 'Manhour', // 机械工时登记
@@ -81,11 +88,7 @@ export default {
         receiveTime: [] // 时间
 
       },
-      'list': [{
-        tupiaoming: 'wuf',
-        cexing: '3232',
-        dianh: '17858587458'
-      }],
+      'list': [],
       // 多选
       'selections': [],
       // 登录信息
@@ -96,37 +99,43 @@ export default {
         { dictValue: 0, dictLabel: '待审核' },
         { dictValue: 1, dictLabel: '已审核' }
       ],
-      schedule_op: [
-        { dictValue: 0, dictLabel: '白班' },
-        { dictValue: 1, dictLabel: '夜班' }
-      ],
       status_op: [
         { dictValue: 0, dictLabel: '未完工' },
         { dictValue: 1, dictLabel: '已完成' }
-      ]
+      ],
+
+      floor // 工具
     };
   },
 
   computed: {
     api() {
-      return '';
+      return getMachineWorkingapi;
     },
     tableColumns() {
     //   const isAdmin = !this.getUserInfo.isShipment;
       return [
         {
-          'label': '机主姓名',
-          'prop': 'nickName',
-          'isShow': true,
-          'sortNum': 2,
+          'label': '项目名称',
+          'prop': 'projectName',
+          'isShow': false,
+          'sortNum': 10,
           //   'width': '60',
           'tooltip': true
         },
         {
-          'label': '机械类型',
-          'prop': 'machineType',
+          'label': '机主姓名',
+          'prop': 'nickName',
           'isShow': true,
-          'sortNum': 3,
+          'sortNum': 20,
+          'width': '120',
+          'tooltip': true
+        },
+        {
+          'label': '机械类型',
+          'prop': 'machineTypeName',
+          'isShow': true,
+          'sortNum': 30,
           //   'width': '60',
           'tooltip': true
         },
@@ -134,7 +143,7 @@ export default {
           'label': '机械型号',
           'prop': 'machineModel',
           'isShow': true,
-          'sortNum': 4,
+          'sortNum': 40,
           'width': '60',
           'tooltip': true
         },
@@ -142,7 +151,15 @@ export default {
           'label': '车数',
           'prop': 'number',
           'isShow': true,
-          'sortNum': 5,
+          'sortNum': 50,
+          'width': '60',
+          'tooltip': true
+        },
+        {
+          'label': '班次',
+          'prop': 'scheduleName',
+          'isShow': false,
+          'sortNum': 51,
           'width': '60',
           'tooltip': true
         },
@@ -150,7 +167,7 @@ export default {
           'label': '作业开始时间',
           'prop': 'startTime',
           'isShow': true,
-          'sortNum': 6,
+          'sortNum': 60,
           'width': '90',
           'tooltip': true
         },
@@ -158,7 +175,7 @@ export default {
           'label': '作业结束时间',
           'prop': 'completeTime',
           'isShow': true,
-          'sortNum': 7,
+          'sortNum': 70,
           'width': '90',
           'tooltip': true
         },
@@ -166,7 +183,7 @@ export default {
           'label': '作业工时',
           'prop': 'hours',
           'isShow': true,
-          'sortNum': 8,
+          'sortNum': 80,
           'width': '90',
           'tooltip': true
         },
@@ -175,7 +192,7 @@ export default {
           'label': '单价',
           'prop': 'price',
           'isShow': true,
-          'sortNum': 10,
+          'sortNum': 100,
           'width': '90',
           'tooltip': true
         },
@@ -183,7 +200,7 @@ export default {
           'label': '总价',
           'prop': 'total',
           'isShow': true,
-          'sortNum': 11,
+          'sortNum': 110,
           'width': '90',
           'tooltip': true
         },
@@ -191,7 +208,7 @@ export default {
           'label': '备注',
           'prop': 'remark',
           'isShow': true,
-          'sortNum': 12,
+          'sortNum': 120,
           'tooltip': true
         }
       ];
@@ -200,8 +217,8 @@ export default {
     queParams() {
       return {
         ...this.queryParams,
-        bigCreateTime: this.queryParams.receiveTime[0], //	签收时间		false
-        endCreateTime: this.queryParams.receiveTime[1], //	签收时间		false
+        bigCreateTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[0] : undefined, //	签收时间		false
+        endCreateTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[1] : undefined, //	签收时间		false
         receiveTime: undefined
       };
     }
@@ -215,14 +232,9 @@ export default {
   methods: {
     // 初始表头
     tabColInit() {
-      this.tableColumnsConfig = this.tableColumns;
-    //   this.tableHeaderConfig(this.tableColumnsConfig, this.api, {
-    //     prop: 'edit',
-    //     isShow: true,
-    //     label: '操作',
-    //     width: 170,
-    //     fixed: 'left'
-    //   }, this.tableColumns);
+      const tabCol = getLocalStorage(this.api);
+      this.tableColumnsConfig = tabCol || this.tableColumns;
+      // this.tableHeaderConfig(this.tableColumnsConfig, '', null, this.tableColumns);
     },
     // 初始数据
     async getList() {

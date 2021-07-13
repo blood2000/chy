@@ -30,9 +30,12 @@
       </el-row>
       <!-- @selection-change="(selection)=> selections = selection" -->
       <RefactorTable :loading="loading" :data="list" :table-columns-config="tableColumnsConfig">
-        <!-- <template #batchNo="{row}">
-          <DismissedTrack :batch-no="row.batchNo" />
-        </template> -->
+        <template #price="{row}">
+          <span>{{ floor(row.price - 0) }}</span>
+        </template>
+        <template #total="{row}">
+          <span>{{ row.total? floor(row.total - 0): '--' }}</span>
+        </template>
       </RefactorTable>
 
       <pagination
@@ -47,10 +50,11 @@
 </template>
 
 <script>
-import { getUserInfo } from '@/utils/auth';
+import { getUserInfo, getLocalStorage } from '@/utils/auth';
 import QueryForm from './components/QueryForm';
+import { floor } from '@/utils/ddc';
 
-import { getProjectTicketList } from '@/api/construction/tupiao';
+import { getProjectTicketList, getProjectTicketApi } from '@/api/construction/tupiao';
 export default {
   name: 'Tupiao', // 工地土票列表
 
@@ -81,20 +85,18 @@ export default {
 
 
       },
-      'list': [{
-        ticketName: 'wuf',
-        machineType: '3232'
-      }],
+      'list': [],
       // 多选
       'selections': [],
       // 登录信息
-      getUserInfo
+      getUserInfo,
+      floor // 工具
     };
   },
 
   computed: {
     api() {
-      return '';
+      return getProjectTicketApi;
     },
 
     // code	编码	string
@@ -116,17 +118,25 @@ export default {
     //   const isAdmin = !this.getUserInfo.isShipment;
       return [
         {
+          'label': '项目名称',
+          'prop': 'projectName',
+          'isShow': false,
+          'sortNum': 10,
+          //   'width': '60',
+          'tooltip': true
+        },
+        {
           'label': '土票名称',
           'prop': 'ticketName',
           'isShow': true,
-          'sortNum': 2,
+          'sortNum': 20,
           'tooltip': true
         },
         {
           'label': '车型',
-          'prop': 'machineType',
+          'prop': 'vehicleSizeName',
           'isShow': true,
-          'sortNum': 3,
+          'sortNum': 30,
           'width': '60',
           'tooltip': true
         },
@@ -134,21 +144,21 @@ export default {
           'label': '接收工地',
           'prop': 'receiveSite',
           'isShow': true,
-          'sortNum': 4,
+          'sortNum': 40,
           'tooltip': true
         },
         {
           'label': '接收人',
           'prop': 'signName',
           'isShow': true,
-          'sortNum': 5,
+          'sortNum': 50,
           'tooltip': true
         },
         {
           'label': '前期余票',
           'prop': 'earlyStageRemainingTickets',
           'isShow': true,
-          'sortNum': 6,
+          'sortNum': 60,
           'width': '90',
           'tooltip': true
         },
@@ -156,7 +166,7 @@ export default {
           'label': '本周领票',
           'prop': 'thisWeekCollectTickets',
           'isShow': true,
-          'sortNum': 7,
+          'sortNum': 70,
           'width': '90',
           'tooltip': true
         },
@@ -164,7 +174,15 @@ export default {
           'label': '本周余票',
           'prop': 'thisWeekRemainingTickets',
           'isShow': true,
-          'sortNum': 8,
+          'sortNum': 80,
+          'width': '90',
+          'tooltip': true
+        },
+        {
+          'label': '本周用票',
+          'prop': 'thisWeekUsedTickets',
+          'isShow': false,
+          'sortNum': 85,
           'width': '90',
           'tooltip': true
         },
@@ -172,7 +190,7 @@ export default {
           'label': '本周退票',
           'prop': 'thisWeekRefundTickets',
           'isShow': true,
-          'sortNum': 9,
+          'sortNum': 90,
           'width': '90',
           'tooltip': true
         },
@@ -180,7 +198,7 @@ export default {
           'label': '单价',
           'prop': 'price',
           'isShow': true,
-          'sortNum': 10,
+          'sortNum': 100,
           'width': '90',
           'tooltip': true
         },
@@ -188,7 +206,7 @@ export default {
           'label': '总价',
           'prop': 'total',
           'isShow': true,
-          'sortNum': 11,
+          'sortNum': 110,
           'width': '90',
           'tooltip': true
         },
@@ -196,7 +214,7 @@ export default {
           'label': '备注',
           'prop': 'remark',
           'isShow': true,
-          'sortNum': 12,
+          'sortNum': 120,
           'tooltip': true
         }
       ];
@@ -205,8 +223,8 @@ export default {
     queParams() {
       return {
         ...this.queryParams,
-        bigSignTime: this.queryParams.receiveTime[0], //	签收时间		false
-        endSignTime: this.queryParams.receiveTime[1], //	签收时间		false
+        bigSignTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[0] : undefined, //	签收时间		false
+        endSignTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[1] : undefined, //	签收时间		false
         receiveTime: undefined
       };
     }
@@ -220,7 +238,8 @@ export default {
   methods: {
     // 初始表头
     tabColInit() {
-      this.tableColumnsConfig = this.tableColumns;
+      const tabCol = getLocalStorage(this.api);
+      this.tableColumnsConfig = tabCol || this.tableColumns;
 
     //   this.tableHeaderConfig(this.tableColumnsConfig, this.api, {
     //     prop: 'edit',
@@ -241,7 +260,7 @@ export default {
     },
     async handleExport() {
       this.exportLoading = true;
-      await this.download('/tools/projectTicket/web—getProjectTicketListExport', this.queParams, `工地土票列表`);
+      await this.download('/tools/projectTicket/web—getProjectTicketListExport', this.queParams, `工地土票列表`, 'application/json');
       this.exportLoading = false;
     }
   }
