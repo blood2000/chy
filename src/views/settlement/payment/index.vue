@@ -489,7 +489,7 @@ export default {
         }
         // console.log(index, '----', this.ids.length, len.length);
       }
-      this.getList(1);
+      // this.getList(1);
       this.payLoading = false;
       // console.log(this.sucList, this.errList);
     },
