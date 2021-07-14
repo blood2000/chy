@@ -463,7 +463,7 @@
         <div class="h5-divider" style="width: 91%" />
       </h5>
       <el-row :gutter="20">
-        <el-col :span="11">
+        <!--<el-col :span="11">
           <el-form-item label="允许未审核司机/车辆接单" prop="allowNoAuditDriverToReceive">
             <el-radio-group v-model="form.allowNoAuditDriverToReceive">
               <el-radio
@@ -473,7 +473,7 @@
               >{{ dict.dictLabel }}</el-radio>
             </el-radio-group>
           </el-form-item>
-        </el-col>
+        </el-col>-->
         <el-col :span="11">
           <el-form-item label="修改司机实收金额" prop="editDriverActualAmount">
             <el-radio-group v-model="form.editDriverActualAmount">
@@ -502,11 +502,11 @@
             <el-checkbox v-model="form.isNeedLoadingCertificate">是否需要装货凭证</el-checkbox>
           </el-form-item>
         </el-col>
-          <el-col :span="11">
-              <el-form-item prop="openAppPermissionControl">
-                  <el-checkbox v-model="form.openAppPermissionControl">是否开启货主APP权限控制</el-checkbox>
-              </el-form-item>
-          </el-col>
+        <el-col :span="11">
+          <el-form-item prop="openAppPermissionControl">
+            <el-checkbox v-model="form.openAppPermissionControl">是否开启货主APP权限控制</el-checkbox>
+          </el-form-item>
+        </el-col>
       </el-row>
       <h5 class="g-card-title g-strong mb20 ml10">
         普通货物配置
@@ -619,9 +619,10 @@ export default {
         { dictLabel: '是', dictValue: 1 }
       ],
       // 预付运费
+      // 1757bug 货主审核，新建/修改货主，预付运费类型选项将“接单前”文字改为“接单时”，“卸货前”文字改为“卸货时”
       repaidTypeOptions: [
-        { dictLabel: '接单前', dictValue: 0 },
-        { dictLabel: '卸货前', dictValue: 1 }
+        { dictLabel: '接单时', dictValue: 0 },
+        { dictLabel: '卸货时', dictValue: 1 }
       ],
       // 是否允许
       allowOptions: [
@@ -883,7 +884,7 @@ export default {
           // 复制管理员图片至法人
           this.form.artificialIdentificationImg = this.form.identificationImg;
           this.form.artificialIdentificationBackImg = this.form.identificationBackImg;
-          var extendForm = { noNeedUnloadImg: noNeedUnloadImg, openProjectDesignView: openProjectDesignView, isNeedLoadingCertificate: isNeedLoadingCertificate,openAppPermissionControl: openAppPermissionControl};
+          var extendForm = { noNeedUnloadImg: noNeedUnloadImg, openProjectDesignView: openProjectDesignView, isNeedLoadingCertificate: isNeedLoadingCertificate, openAppPermissionControl: openAppPermissionControl };
           // eslint-disable-next-line no-undef
           this.form = Object.assign(this.form, extendForm);
           if (this.form.id) {
