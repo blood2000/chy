@@ -138,3 +138,12 @@ export function getUserAlreadyExist(query) {
     params: query
   });
 }
+
+// 根据手机号搜索用户名
+export function getUserByPhoneNum(phoneNum) {
+  return request({
+    url: '/system/user/getUserByPhoneNum/' + phoneNum,
+    method: 'get'
+  });
+}
+

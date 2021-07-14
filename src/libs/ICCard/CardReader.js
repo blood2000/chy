@@ -8,7 +8,7 @@ import { MessageBox, Message } from 'element-ui';
 export let userMark = '1000|3|';
 export const USERINFO = [
   // 'user_name', // 张三 用户姓名
-  'user_telno', // 18415451845 手机号
+  'user_telno', //
   'project_id', // 120 项目Id
   'team_telno', // 16612345678 调度者关联用户的手机号
   'issuing_telno', // 17812345678 发卡人用户手机号

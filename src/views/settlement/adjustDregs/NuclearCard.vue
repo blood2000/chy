@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-loading
-    :title="`调度者: ${ userInfo.issuing_name || ''} 【承运司机: ${userInfo.user_name ||''}】 【发卡时间: ${ parseTime(userInfo.issuing_time - 0) || ''}】 【卡批次号: ${ userInfo.issuing_pc || ''}】 ` "
+    :title="`发卡人: ${ userInfo.issuing_name || ''} 【承运司机: ${userInfo.user_name ||''}】【调度者: ${userInfo.team_name ||''}】 【发卡时间: ${ parseTime(userInfo.issuing_time - 0) || ''}】 【卡批次号: ${ userInfo.issuing_pc || ''}】 ` "
     :visible="visible"
     width="80%"
     append-to-body
@@ -120,8 +120,9 @@
 </template>
 
 <script>
-import { listInfo } from '@/api/assets/team';
-import { listDriver } from '@/api/assets/driver';
+// import { listInfo } from '@/api/assets/team';
+// import { listDriver } from '@/api/assets/driver';
+import { getUserByPhoneNum } from '@/api/system/user';
 import CardReader, { USERINFO, versionMark } from '@/libs/ICCard/CardReader';
 import { checkList, check } from '@/api/settlement/adjustDregs';
 const { action, fn } = CardReader;
@@ -203,31 +204,51 @@ export default {
         // 成功 的数据
         this.userInfo = ret.userInfo;
 
-        // 调度者
-        const team = await listInfo({ keywords: 15859109991 });
-        if (team.rows.length) {
-          this.userInfo.issuing_name = team.rows[0].teamLeaderName;
-        } else {
-          this.userInfo.issuing_name = '-';
+        try {
+          const issuing = await getUserByPhoneNum(this.userInfo.issuing_telno);
+          if (issuing.data) {
+            this.userInfo.issuing_name = issuing.data.nickName || issuing.data.userName || issuing.data.phonenumber;
+          } else {
+            this.userInfo.issuing_name = '--';
+            this.msgError('发卡者用户不存在');
+          }
+
+          // 司机
+          const driver = await getUserByPhoneNum(this.userInfo.user_telno);
+          if (driver.data) {
+            this.userInfo.user_name = driver.data.nickName || driver.data.userName || driver.data.phonenumber;
+          } else {
+            this.userInfo.user_name = '--';
+            this.msgError('司机用户不存在');
+          }
+
+
+          // 承运者
+          const team = await getUserByPhoneNum(this.userInfo.team_telno);
+          if (team.data) {
+            this.userInfo.team_name = team.data.nickName || team.data.userName || team.data.phonenumber;
+          } else {
+            this.userInfo.team_name = '--';
+            this.msgError('承运者用户不存在');
+          }
+        } catch (error) {
+          console.log(error);
         }
-        // 司机
-        const driver = await listDriver({ keywords: '13464209919' });
-        if (driver.rows.length) {
-          this.userInfo.user_name = driver.rows[0].name;
-        } else {
-          this.userInfo.user_name = '-';
-        }
+
+
+
+
         this.userInfo.issuing_pc = this.userInfo.issuing_pc || Date.now() + '456';
         this.IClist = ret.dataList;
         this.meter = ret.meter;
         this.userMark = ret.userMark;
         this.carId = ret.GetCardNo.data;
 
-        console.log([this.userInfo], '----------持卡者信息');
-        console.log([this.IClist], '----------当前卡数据');
-        console.log([this.meter], '----------卡版本');
-        console.log([this.userMark], '----------用户版本');
-        console.log([this.carId], '----------ka标识');
+        // console.log([this.userInfo], '----------持卡者信息');
+        // console.log([this.IClist], '----------当前卡数据');
+        // console.log([this.meter], '----------卡版本');
+        // console.log([this.userMark], '----------用户版本');
+        // console.log([this.carId], '----------ka标识');
         // this.setLocalStorage(this.userInfo.user_code, { [this.userInfo]: this.IClist, meter: this.meter }); // 本地存储
 
         // 后端交互
