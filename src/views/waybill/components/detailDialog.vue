@@ -120,21 +120,24 @@
     </el-row>
     <!-- 费用 -->
     <div class="waybill-title"><div class="waybill-icon" />费用<div class="waybill-divider" /></div>
+    <el-row v-if="form.balanceVo.driverRealFeeStr" class="waybill-mark">
+      注：{{ form.balanceVo.driverRealFeeStr }}
+    </el-row>
     <el-row>
       <el-col :span="3" class="text-label">
-        货主实付金额（元）：
+        货主实付金额(元)：
       </el-col>
       <el-col :span="5" class="text-row">
         {{ form.balanceVo.shipperRealPay || '0.00' }}
       </el-col>
       <el-col :span="3" class="text-label">
-        司机实收金额（元）：
+        司机实收金额(元)：
       </el-col>
       <el-col :span="5" class="text-row">
         {{ form.balanceVo.deliveryCashFee || '0.00' }}
       </el-col>
       <el-col :span="3" class="text-label">
-        司机实收运费（元）：
+        司机实收运费(元)：
       </el-col>
       <el-col :span="5" class="text-row">
         {{ form.balanceVo.deliveryFeePractical || '0.00' }}
@@ -147,28 +150,34 @@
         {{ form.balanceVo.serviceTaxFee || '0.00' }}
       </el-col> -->
       <el-col :span="3" class="text-label">
-        司机应收运费（元）：
+        司机应收运费(元)：
       </el-col>
       <el-col :span="5" class="text-row">
         {{ form.balanceVo.deliveryFeeDeserved || '0.00' }}
       </el-col>
       <el-col :span="3" class="text-label">
-        平台服务费用：
+        平台服务费用(元)：
       </el-col>
       <el-col :span="5" class="text-row">
         {{ form.balanceVo.serviceFee || '0.00' }}
       </el-col>
       <el-col :span="3" class="text-label">
-        不含税价：
+        不含税价(元)：
       </el-col>
       <el-col :span="5" class="text-row">
         {{ form.balanceVo.taxFreeFee || '0.00' }}
       </el-col>
       <el-col :span="3" class="text-label">
-        纳税金额：
+        纳税金额(元)：
       </el-col>
       <el-col :span="5" class="text-row">
         {{ form.balanceVo.taxPayment || '0.00' }}
+      </el-col>
+      <el-col :span="3" class="text-label">
+        路耗(元)：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.balanceVo.lossDeductionFee || '0.00' }}
       </el-col>
 
       <div v-for="(item, index) in freightList" :key="index">
@@ -179,8 +188,8 @@
           {{ item.ruleValue || '0.00' }}
         </el-col>
       </div>
-
     </el-row>
+
 
     <div class="waybill-title"><div class="waybill-icon" />轨迹<div class="waybill-divider" /></div>
     <div v-if="form.code" style="height:600px;width:100%;padding: 0 30px;overflow: hidden;">
@@ -515,5 +524,10 @@ export default {
     width: 94%;
     border-bottom: 1px dashed #DAD3D3;
   }
+}
+.waybill-mark{
+  color: #ff4949;
+  // font-size: 12px;
+  margin: 0 0 10px 30px;
 }
 </style>>

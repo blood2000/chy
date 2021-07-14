@@ -107,9 +107,10 @@
                   clearable
                   remote
                   reserve-keyword
-                  placeholder="请输入关键字"
+                  :placeholder="orderDisable? '请先输入货源单号':'请输入关键字'"
                   :remote-method="remoteMethod"
                   :loading="loading"
+                  :disabled="orderDisable"
                   size="small"
                   class="width90"
                   @change="driverChoose"
@@ -312,7 +313,7 @@
 </template>
 
 <script>
-import { extra, getOrder, getGoods, getAddress, driver, vehicle, vehicleInfo, team, getOrderGoodsProce, getWayBillNo, calculate } from '@/api/waybill/supplement';
+import { extra, getOrder, getGoods, getAddress, driver, vehicle, vehicleInfo, team, getOrderGoodsProce, getWayBillNo, calculate, shipmentInfo } from '@/api/waybill/supplement';
 import UploadImage from '@/components/UploadImage/index';
 import WaybillimportDialog from './waybillimportDialog';
 import PictureimportDialog from './pictureimportDialog';
@@ -342,12 +343,12 @@ export default {
       driverInfoQuery: {
         'pageNum': 1,
         'pageSize': 10,
-        'authStatus': 3,
+        'authStatus': null,
         'isFreeze': 0,
         'phoneOrName': null
       },
       vehicleInfoQuery: {
-        'authStatus': 3,
+        'authStatus': null,
         'isFreeze': 0,
         'driverCode': null
       },
@@ -581,20 +582,20 @@ export default {
     getOrderDetail(e) {
       if (e) {
         getOrder(e).then(response => {
-          console.log(response);
+          // console.log(response);
           if (response.data) {
             this.form.orderCode = response.data.redisOrderInfoVo.code; // 货源编码赋值
             this.form.shipperCode = response.data.redisOrderInfoVo.pubilshCode; // 货主编码赋值
             // 获取货源底下的商品列表
             getGoods(response.data.redisOrderInfoVo.code).then(response => {
-              console.log(response);
+              // console.log(response);
               this.goodsCodeOptions = response.data;
               this.form.goodsCode = this.goodsCodeOptions[0].code;
               this.goodsChoose(this.form.goodsCode);
             });
             // 获取货源底下的装卸货地
             getAddress(response.data.redisOrderInfoVo.code).then(response => {
-              console.log(response);
+              // console.log(response);
               const address = response.data;
               if (address) {
               // 装货地址
@@ -617,8 +618,16 @@ export default {
             this.form.remainingWeight = null;
             // 获取运单号
             getWayBillNo().then(response => {
-              console.log(response);
+              // console.log(response);
               this.form.wayBillNo = response.msg;
+            });
+            // 获取货主信息
+            shipmentInfo(response.data.redisOrderInfoVo.pubilshCode).then(res => {
+              if (res.data.allowNoAuditDriverToReceive !== 0) {
+                this.driverInfoQuery.authStatus = 3;
+                this.vehicleInfoQuery.authStatus = 3;
+                // console.log(this.driverInfoQuery, this.vehicleInfoQuery);
+              }
             });
             this.orderDisable = false;
           } else {
@@ -642,7 +651,7 @@ export default {
           orderCode: this.form.orderCode
         };
         getOrderGoodsProce(orderGoodsFindPriceBo).then(response => {
-          console.log(response);
+          // console.log(response);
           // 获取运费单价
           const freightCost = response.data.detailList.find(item => item.ruleItemCode === '17');
           this.form.shipmentPrice = freightCost.ruleValue;
@@ -658,7 +667,7 @@ export default {
           this.form.ruleFormulaDictValue = caculation.ruleValue;
           this.form.addFee = response.data.addFee || 0;
           this.form.reductionFee = response.data.reductionFee || 0;
-          console.log(this.form);
+          // console.log(this.form);
           setTimeout(() => {
             this.calculate();
           }, 100);
