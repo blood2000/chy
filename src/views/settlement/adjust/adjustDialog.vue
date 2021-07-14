@@ -26,14 +26,6 @@
 
           <el-button size="small" class="m20" type="primary" :disabled="!modify" :loading="plLoading" @click="handleSelectedNumChange">立即修改</el-button>
         </div>
-
-        <div v-if="isDifferent && (!isDifferent.sublength || !isDifferent.dedlength)" style="flex:1;margin: 0 50px;">
-          <el-alert
-            :title="warningtitle"
-            type="warning"
-            effect="dark"
-          />
-        </div>
       </div>
 
 
@@ -278,6 +270,16 @@
     </el-dialog>
 
     <el-dialog :title="'规则'" class="i-price" :visible.sync="popoverOpenCom" append-to-body>
+      <div slot="title" class="ly-flex">
+        <div class="b">规则</div>
+        <div v-if="isDifferent && (!isDifferent.sublength || !isDifferent.dedlength)" style="flex:1;margin: 0 50px;">
+          <el-alert
+            :title="warningtitle"
+            type="warning"
+            effect="dark"
+          />
+        </div>
+      </div>
       <PopoverCom v-if="popoverOpenCom" :seleced-name="selecedName" :jian-data="jianData" :list="showSubList" @submitForm="handlerSubmit" />
     </el-dialog>
   </div>
@@ -306,6 +308,8 @@ export default {
   },
   data() {
     return {
+      windShow: false, // 规则不一样提示
+
       plLoading: false, // 批量
       selectedValue: '', // 下拉值
       selectedNum: undefined,
@@ -365,10 +369,10 @@ export default {
       const subList = [];
       const dedList = [];
       this.adjustlist.forEach(e => {
-        e.subsidiesFreightList.forEach(ee => {
+        e.subsidiesFreightList && e.subsidiesFreightList.forEach(ee => {
           subList.push(ee);
         });
-        e.deductionFreightList.forEach(ee => {
+        e.deductionFreightList && e.deductionFreightList.forEach(ee => {
           dedList.push(ee);
         });
       });
@@ -382,7 +386,7 @@ export default {
         options: objReduce(dedList, 'enName')
       }];
 
-      console.log(arr);
+      // console.log(arr);
 
 
       return arr;
@@ -398,22 +402,22 @@ export default {
       const sublength = [];
       const dedlength = [];
       this.adjustlist.forEach(e => {
-        sublength.push(e.subsidiesFreightList.length);
-        dedlength.push(e.deductionFreightList.length);
+        sublength.push(e.subsidiesFreightList ? e.subsidiesFreightList.length : 0);
+        dedlength.push(e.deductionFreightList ? e.deductionFreightList.length : 0);
       });
 
 
       return {
-        sublength: [...new Set(sublength)].length === 1,
-        dedlength: [...new Set(dedlength)].length === 1
+        sublength: [...new Set(sublength)].length <= 1,
+        dedlength: [...new Set(dedlength)].length <= 1
       };
     },
     // 警告提示语
     warningtitle() {
-      const sa = this.isDifferent.sublength ? '' : '注意！补贴项目的规则存在不一致的。';
-      const sb = this.isDifferent.dedlength ? '' : '注意！扣费项目的规则存在不一致的。';
+      const sa = this.isDifferent.sublength ? '' : '补贴项目规则数量不同。';
+      const sb = this.isDifferent.dedlength ? '' : '扣费项目规则数量不同。';
 
-      return sa + sb + ''; // 将无法使用批量处理。
+      return sa + sb + '建议: 核算选择一样的规则再进行批量处理!'; // 批量处理。
     }
   },
 
@@ -707,6 +711,16 @@ export default {
         // this.subsidiesClone = objReduce(subList, 'enName');
         // this.deductionClone = objReduce(dedList, 'enName');
 
+        this.adjustlist.sort((a, b) => {
+          const a1 = a.subsidiesFreightList ? a.subsidiesFreightList.length : 0;
+          const a2 = a.deductionFreightList ? a.deductionFreightList.length : 0;
+          const b1 = b.subsidiesFreightList ? b.subsidiesFreightList.length : 0;
+          const b2 = b.deductionFreightList ? b.deductionFreightList.length : 0;
+
+          return (b1 + b2) - (a1 + a2);
+        });
+
+        console.log(this.adjustlist);
 
 
 
@@ -779,6 +793,7 @@ export default {
       this.queryParams.waybillCodeList = data;
       await this.getList();
     },
+
 
     // 处理增
     handlerClick() {
@@ -913,29 +928,9 @@ export default {
 </script>
 
 <style lang="scss">
-   /* .el-table {
-        .el-table__fixed {
-            height:auto !important;
-            bottom:17px;
-        }
-    }*/
-    .el-table--scrollable-x .el-table__body-wrapper {
-        z-index: 1;
-    }
-   /* .el-table__fixed, .el-table__fixed-right {
-        box-shadow: none;
-    }
-    .el-table__fixed, .el-table__fixed-right {
-        &::after{
-            position:absolute;
-            top:0;
-            right:0;
-            bottom:0;
-            content:'';
-            z-index:100;
-            box-shadow: 0 0 10px rgba(0,0,0,.12) !important;
-        }
-    }*/
+  .el-table--scrollable-x .el-table__body-wrapper {
+      z-index: 1;
+  }
 </style>
 
 <style scoped>
@@ -952,8 +947,6 @@ export default {
   margin-bottom: 0;
 }
 .el-table .el-input-number ::v-deep.el-input__inner {
-  /* text-align: left; */
-  /* border-radius: 0; */
   border: 0;
   background-color: #cceeff;
 }
