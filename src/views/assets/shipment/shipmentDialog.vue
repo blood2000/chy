@@ -463,7 +463,7 @@
         <div class="h5-divider" style="width: 91%" />
       </h5>
       <el-row :gutter="20">
-        <el-col :span="11">
+        <!--<el-col :span="11">
           <el-form-item label="允许未审核司机/车辆接单" prop="allowNoAuditDriverToReceive">
             <el-radio-group v-model="form.allowNoAuditDriverToReceive">
               <el-radio
@@ -473,7 +473,7 @@
               >{{ dict.dictLabel }}</el-radio>
             </el-radio-group>
           </el-form-item>
-        </el-col>
+        </el-col>-->
         <el-col :span="11">
           <el-form-item label="修改司机实收金额" prop="editDriverActualAmount">
             <el-radio-group v-model="form.editDriverActualAmount">
