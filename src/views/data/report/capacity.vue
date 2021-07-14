@@ -203,13 +203,13 @@ export default {
     /** 查询运力统计 */
     getCapacityCount() {
       capacityStatisticsCount(this.timeParams).then(response => {
-        this.capacityCount = response.data;
+        this.capacityCount = response.data || {};
       });
     },
     /** 查询运单统计 */
     getWaybillCount() {
       waybillStatisticsCount(this.timeParams).then(response => {
-        this.waybillCount = response.data;
+        this.waybillCount = response.data || {};
       });
     },
     /** 导出按钮 */
