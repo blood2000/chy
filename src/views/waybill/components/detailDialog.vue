@@ -363,6 +363,7 @@ export default {
         unloadAddress: {},
         balanceVo: {}
       };
+      this.formAttachmentUrl = [];
       this.formAttachment = {};
       this.formAttachmentUp = {};
       this.formCommentDriver = {};
