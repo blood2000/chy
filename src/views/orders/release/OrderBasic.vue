@@ -555,6 +555,8 @@ export default {
 
     // 6. 选取后回调
     handleSelectionChange(obj, bool) {
+      console.log(obj, bool, '-------');
+
       if (bool) {
         this.formData.tin6_1 = obj['listInfo'] || [];
         this.formData.tin6_2 = obj['listDriver'] || [];
@@ -588,10 +590,10 @@ export default {
         this.orderSpecifiedList = [...listDriver, ...listInfo];
         this.formData['tin6_' + this.actionIndex] = this.orderSpecifiedList;
 
-        if (this.formData.tin6_1.length > 1) {
-          this.msgInfo('调度者只能选择一个');
-          return;
-        }
+        // if (this.formData.tin6_1.length > 1) {
+        //   this.msgInfo('调度者只能选择一个');
+        //   return;
+        // }
       }
       this.open = false;
       this.title = '';

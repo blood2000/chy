@@ -46,7 +46,50 @@
 
     <!-- 调度者 -->
     <div v-show="activeName === 'listInfo'">
-      <el-radio-group v-model="radio" style="width:100%" @change="handlerChange">
+
+      <refactor-table
+        ref="refactorTable"
+        :loading="loading"
+        :data="list_listInfo"
+        :table-columns-config="[
+          {
+            prop: 'name',
+            isShow: true,
+            align: 'center',
+            tooltip: true,
+            label: '调度组名称'
+          },
+          {
+            prop: 'teamLeaderName',
+            isShow: true,
+            align: 'center',
+            tooltip: true,
+            label: '管理者'
+          },
+          {
+            prop: 'telphone',
+            isShow: true,
+            align: 'center',
+            tooltip: true,
+            label: '电话'
+          },
+        ]"
+        :row-key="(row)=> row.id"
+        reserve-selection
+        :cb-data-by-keyword="cbDataByKeyword"
+        @selection-change="handleSelectionChange"
+      >
+
+        <!-- <template #tin12="{row}">
+          <span v-if="row">司机</span>
+        </template>
+        <template #driverType="{row}">
+          <span>{{ row.driverType === 1? '零散司机': '雇佣司机' }}</span>
+        </template> -->
+      </refactor-table>
+
+
+      <el-radio-group v-if="false" v-model="radio" style="width:100%" @change="handlerChange">
 
         <el-table v-loading="loading" highlight-current-row :data="list_listInfo" border>
           <el-table-column label="" align="center" width="50">
@@ -79,7 +122,7 @@
 
     <div class="ly-t-right mt20 mb20">
       <el-button v-show="activeName === 'listDriver'" type="primary" :disabled="!(ids.length>0)" size="mini" @click="_ok('listDriver')">确定</el-button>
-      <el-button v-show="activeName === 'listInfo'" type="primary" :disabled="!radio" size="mini" @click="_ok('listInfo')">确定</el-button>
+      <el-button v-show="activeName === 'listInfo'" type="primary" :disabled="disabledOk" size="mini" @click="_ok('listInfo')">确定</el-button>
       <el-button size="mini" @click="_ok(false)">取消</el-button>
     </div>
   </div>
@@ -172,7 +215,22 @@ export default {
     },
     selections() {
       return this['selections_' + this.activeName];
+    },
+
+    cbDataByKeyword() {
+      let obj = {};
+      if (this['t_cbData_' + this.activeName] && this['t_cbData_' + this.activeName].length) {
+        obj = { code: this['t_cbData_' + this.activeName].map(e => e.code) };
+      }
+
+      return obj;
+    },
+
+    disabledOk() {
+      return this.selections_listInfo.length < 1;
     }
+
+
   },
 
   watch: {
@@ -192,6 +250,8 @@ export default {
         tin_isOk: true
       };
     });
+
+
     this.getList();
   },
 
@@ -227,14 +287,6 @@ export default {
               });
             });
             this['myTo_' + this.activeName] = arr;
-          } else {
-            this['t_cbData_' + this.activeName].forEach(ee => {
-              this.list.forEach((e, index) => {
-                if (e.code === ee.code) {
-                  this.radio = e.id;
-                }
-              });
-            });
           }
         }
       }).catch(() => {
@@ -275,6 +327,19 @@ export default {
       this['selections_' + this.activeName] = newArr;
       this['t_cbData_' + this.activeName] = newArr;
     },
+
+    // 调度者多选
+    // listInfoHandleSelectionChange(selection) {
+    //   this.handleSelectionChange(selection);
+    //   // this.selections_listInfo = selection;
+    //   // if()
+    //   // if(this['t_cbData_' + this.activeName].length){
+    //   //   this.selections_listInfo =
+    //   // }
+    //   // console.log(this.selections_listInfo, '调度者多选');
+    //   // console.log(this['t_cbData_' + this.activeName], '调度者多选');
+    // },
+
     // 单选
     handlerChange(value) {},
     handlerclick1(e, value) {
@@ -298,8 +363,7 @@ export default {
           this.$emit('handleSelectionChange', { [this.activeName]: this.selections }, bool);
         } else {
           this['selections_listDriver'] = [];
-          this['selections_listInfo'] = this.list_listInfo.filter(e => e.id === this.radio);
-
+          // this['selections_listInfo'] = this.list_listInfo.filter(e => e.id === this.radio);
 
           this.$emit('handleSelectionChange', { [this.activeName]: this.selections }, bool);
         }
