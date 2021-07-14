@@ -555,8 +555,6 @@ export default {
 
     // 6. 选取后回调
     handleSelectionChange(obj, bool) {
-      console.log(obj, bool, '-------');
-
       if (bool) {
         this.formData.tin6_1 = obj['listInfo'] || [];
         this.formData.tin6_2 = obj['listDriver'] || [];
