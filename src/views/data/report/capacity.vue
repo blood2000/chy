@@ -98,6 +98,7 @@
             icon="el-icon-download"
             size="mini"
             :loading="exportLoading"
+            :disabled="infoList.length === 0"
             @click="handleExport"
           >导出</el-button>
         </el-col>
@@ -121,6 +122,7 @@
           </el-table>
         </li>
       </ul>
+      <DataNull v-if="infoList.length === 0" style="margin: 40px 0" />
 
     </div>
   </div>
@@ -129,9 +131,13 @@
 <script>
 import { pickerOptions } from '@/utils/dateRange';
 import { capacityStatisticsCount, waybillStatisticsCount, waybillStatisticsList } from '@/api/data/capacity';
+import DataNull from '@/components/DataNull/index';
 const dTime = '2021-07-04 00:00:00';
 export default {
   name: 'Capacity',
+  components: {
+    DataNull
+  },
   data() {
     return {
       ownPickerOptions: {
@@ -215,8 +221,7 @@ export default {
     /** 导出按钮 */
     handleExport() {
       this.exportLoading = true;
-      const params = Object.assign({}, this.timeParams);
-      this.download('/transportation/capacityStatistics/export', params, `2.0运力`).then(() => {
+      this.download('/transportation/capacityStatistics/export', this.timeParams, `2.0运力`).then(() => {
         this.exportLoading = false;
       });
     }
