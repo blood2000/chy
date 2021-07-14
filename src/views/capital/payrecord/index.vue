@@ -174,7 +174,7 @@
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
           <el-button
-            type="warning"
+            type="primary"
             icon="el-icon-download"
             size="mini"
             :loading="exportLoading"
@@ -278,6 +278,12 @@
             type="text"
             @click="handleUpdate(row)"
           >修改批次号</el-button>
+          <el-button
+            v-if="row.elecrecepitUrl && row.elecrecepitUrl !== ''"
+            size="mini"
+            type="text"
+            @click="lookOrder(row)"
+          >查看回单</el-button>
         </template>
       </RefactorTable>
 
@@ -297,6 +303,8 @@
 
       <!-- 编辑支付批次号 -->
       <modify-batch-dialog ref="modifyBatchRef" :open.sync="modifyBatchOpen" :title="title" @refresh="getList" />
+      <!-- 查看回单 -->
+      <PdfLook :src="pdfSrc" :open.sync="pdfOpen" title="查看回单" />
     </div>
   </div>
 </template>
@@ -304,11 +312,13 @@
 <script>
 import { payRecordlistApi, payRecordlist } from '@/api/capital/payrecord';
 import modifyBatchDialog from './modifyBatchDialog';
+import PdfLook from '@/views/system/media/pdfLook';
 
 export default {
   name: 'Payrecord',
   components: {
-    modifyBatchDialog
+    modifyBatchDialog,
+    PdfLook
   },
   data() {
     return {
@@ -418,7 +428,9 @@ export default {
         isSplit: undefined,
         abnormal: undefined
       },
-      exportLoading: false
+      exportLoading: false,
+      pdfSrc: '',
+      pdfOpen: false
     };
   },
   created() {
@@ -426,7 +438,7 @@ export default {
       prop: 'edit',
       isShow: true,
       label: '操作',
-      width: 100,
+      width: 180,
       fixed: 'left'
     });
     this.getList();
@@ -490,11 +502,16 @@ export default {
     handleImportTemplate() {
       // this.download('assets/driver/importTemplate', {}, `模板`);
     },
-    // 多选框选中数据
+    /** 多选框选中数据 */
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id);
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
+    },
+    /** 查看回单 */
+    lookOrder(row) {
+      this.pdfSrc = row.elecrecepitUrl;
+      this.pdfOpen = true;
     }
   }
 };
