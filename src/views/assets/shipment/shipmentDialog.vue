@@ -502,6 +502,11 @@
             <el-checkbox v-model="form.isNeedLoadingCertificate">是否需要装货凭证</el-checkbox>
           </el-form-item>
         </el-col>
+          <el-col :span="11">
+              <el-form-item prop="openAppPermissionControl">
+                  <el-checkbox v-model="form.openAppPermissionControl">是否开启货主APP权限控制</el-checkbox>
+              </el-form-item>
+          </el-col>
       </el-row>
       <h5 class="g-card-title g-strong mb20 ml10">
         普通货物配置
@@ -871,10 +876,14 @@ export default {
           if (this.form.isNeedLoadingCertificate === true) {
             isNeedLoadingCertificate = 0;
           }
+          var openAppPermissionControl = 0;
+          if (this.form.openAppPermissionControl === true) {
+            openAppPermissionControl = 1;
+          }
           // 复制管理员图片至法人
           this.form.artificialIdentificationImg = this.form.identificationImg;
           this.form.artificialIdentificationBackImg = this.form.identificationBackImg;
-          var extendForm = { noNeedUnloadImg: noNeedUnloadImg, openProjectDesignView: openProjectDesignView, isNeedLoadingCertificate: isNeedLoadingCertificate };
+          var extendForm = { noNeedUnloadImg: noNeedUnloadImg, openProjectDesignView: openProjectDesignView, isNeedLoadingCertificate: isNeedLoadingCertificate,openAppPermissionControl: openAppPermissionControl};
           // eslint-disable-next-line no-undef
           this.form = Object.assign(this.form, extendForm);
           if (this.form.id) {
@@ -994,6 +1003,7 @@ export default {
         singleSourceMultiLoadingLocations: 1,
         singleSourceMultiUnloadingLocations: 1,
         isNeedLoadingCertificate: 0,
+        openAppPermissionControl: 0,
         editDriverActualAmount: 1,
         allowNoAuditDriverToReceive: 1,
         isNeedApplicationForPayment: 0,
@@ -1021,6 +1031,11 @@ export default {
         this.form.isNeedLoadingCertificate = true;
       } else {
         this.form.isNeedLoadingCertificate = false;
+      }
+      if (this.form.openAppPermissionControl === 1) {
+        this.form.openAppPermissionControl = true;
+      } else {
+        this.form.openAppPermissionControl = false;
       }
       if (this.form.branchCode && this.form.branchName) {
         this.branchOptions = [{
