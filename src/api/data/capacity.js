@@ -21,7 +21,7 @@ export function waybillStatisticsCount(query) {
 // 列表
 export function waybillStatisticsList(query) {
   return request({
-    url: '/transportation/capacityStatistics/listPage',
+    url: '/transportation/capacityStatistics/mapList',
     method: 'get',
     params: query
   });
