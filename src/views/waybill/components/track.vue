@@ -107,14 +107,16 @@ export default {
       // 装卸货地经纬度
       loadAddress: [],
       unloadAddress: [],
-      // 轨迹切换 0：app轨迹、1：硬件轨迹
+      // 轨迹切换 0：app轨迹、1：硬件轨迹、2：北斗轨迹
       trackChange: 0,
       timeLineList: [],
       // 轨迹查询参数结束时间
       queryEndtime: '',
       timePoor: undefined,
       isPlan: false,
-      isShipment: false
+      isShipment: false,
+      // 轨迹颜色
+      lineColor: undefined
     };
   },
   computed: {
@@ -344,6 +346,13 @@ export default {
     // 绘制轨迹
     drawPolyline(path) {
       console.log(path);
+      if (this.trackChange === 1) {
+        this.lineColor = '#08B8A7';
+      } else if (this.trackChange === 2) {
+        this.lineColor = '#67C23A';
+      } else {
+        this.lineColor = '#1990FF';
+      }
       const that = this;
       if (that.polyline) {
         that.$refs.map.$$getInstance().remove(that.polyline);
@@ -352,10 +361,10 @@ export default {
         map: that.$refs.map.$$getInstance(),
         path,
         showDir: true,
-        strokeColor: '#0083F9', // 线颜色
+        strokeColor: this.lineColor, // 线颜色
         isOutline: true, // 是否描边
         outlineColor: '#fff', // 描边颜色
-        strokeOpacity: 0.8, // 线透明度
+        strokeOpacity: 0.7, // 线透明度
         strokeWeight: 10, // 线宽
         strokeStyle: 'solid', // 线样式
         lineJoin: 'round', // 折线拐点的绘制样式
