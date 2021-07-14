@@ -1,6 +1,12 @@
 <template>
   <el-dialog :visible="visible" width="60%" :title="title" :close-on-click-modal="false" append-to-body @close="cancel">
-    <pdf :src="src" />
+      <pdf
+              ref="pdf"
+              v-for="i in numPages"
+              :key="i"
+              :src="src"
+              :page="i"
+      ></pdf>
   </el-dialog>
 </template>
 
@@ -12,9 +18,15 @@ export default {
     pdf
   },
   props: {
-    src: String,
+    src: {
+      type: String,
+      default: ''
+    },
     open: Boolean,
-    title: String
+    title: {
+      type: String,
+      default: ''
+    }
   },
   computed: {
     visible: {
@@ -26,7 +38,26 @@ export default {
       }
     }
   },
+  watch: {
+    open(val) {
+      if (val) {
+        this.getNumPages();
+      }
+    }
+  },
+  data() {
+    return {
+      numPages: null
+    };
+  },
   methods: {
+    getNumPages() {
+      pdf.createLoadingTask(this.src).promise.then(pdf => {
+        this.numPages = pdf.numPages;
+      }).catch(err => {
+        console.error('pdf 加载失败', err);
+      });
+    },
     // 取消按钮
     cancel() {
       this.close();
