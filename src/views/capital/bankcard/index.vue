@@ -101,7 +101,7 @@
         </el-col>
         <el-col :span="1.5">
           <el-button
-            type="warning"
+            type="primary"
             icon="el-icon-download"
             size="mini"
             :loading="exportLoading"
