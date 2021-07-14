@@ -210,6 +210,8 @@
         <shipment-contract v-else :obj="dialogData" />
       </div>
     </el-dialog>
+    <!-- 预览pdf -->
+    <pdf-look ref="PdfLook" :open.sync="pdfdialog" :title="title" :src="pdfsrc" />
   </div>
 </template>
 
@@ -218,12 +220,12 @@ import { handleBatchDownload } from '../../../libs/batchCompression';
 // import tableColumnsConfig from './config';
 import DriverContract from './DriverContract';
 import ShipmentContract from './ShipmentContract';
-
 import { listContract, getContractByCode, listContractApi, getShipmentSign, getDriverSign, getContractSign } from '@/api/waybill/contract';
 import { pickerOptions } from '@/utils/dateRange';
+import PdfLook from '@/views/system/media/pdfLook.vue';
 export default {
   'name': 'Contract',
-  components: { DriverContract, ShipmentContract },
+  components: { DriverContract, ShipmentContract, PdfLook },
   data() {
     return {
       pickerOptions,
@@ -232,7 +234,8 @@ export default {
       title: '',
       dialogData: null, // 弹框数据
       driverOrShipment: 0, // 合同类型 0 司机 1 货主
-
+      pdfdialog: false,
+      pdfsrc: '',
       tableColumnsConfig: [],
       api: listContractApi,
       // 遮罩层
@@ -337,7 +340,14 @@ export default {
     /* 打印 */
     async handleInfo(row) {
       // if (row.isDzqzContract === 1) {
-      //   window.open(row.contractPath, '_blank');
+      //   this.pdfdialog = true;
+      //   this.title = '电子合同';
+      //   if (row.contractPath.startsWith('https://css-backup')) {
+      //     const str = (row.contractPath.split('.com'))[1];
+      //     this.pdfsrc = `/pdf${str}`;
+      //   } else {
+      //     this.pdfsrc = row.mediaUrl;
+      //   }
       // } else {
       //   this.title = '电子合同';
       //   this.driverOrShipment = row.driverOrShipment;
