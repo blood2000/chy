@@ -1,6 +1,6 @@
 <template>
   <el-dialog :class="[{'i-add':title==='新增'},{'i-check':title==='审核'}]" :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="170px">
+    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="174px">
       <!--  修改：目前只有发货企业 -->
       <!-- <el-form-item label="发货人/发货企业" prop="shipperType">
               <el-select
@@ -1154,7 +1154,7 @@ export default {
         margin-top: 22px;
     }
     .width90{
-        width: 90%;
+        width: 88.8%;
     }
     .width70{
         width: 70%;
@@ -1166,7 +1166,7 @@ export default {
         width: 50%;
     }
     .width45{
-        width: 45%;
+        width: 44.2%;
     }
     .width28{
         width: 28%;
