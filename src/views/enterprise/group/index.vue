@@ -226,7 +226,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       // 7/9 chj 不知道为什么会出现 [undefined] 这样出来
-      selection = selection.filter(e => e);
+      // selection = selection.filter(e => e);
       this.$emit('groupSelected', selection);
       this.ids = selection.map(item => item.id);
       this.names = selection.map(item => item.disName);
