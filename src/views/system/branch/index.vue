@@ -64,6 +64,7 @@
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="网点名称" align="center" prop="name" />
         <el-table-column label="组织" align="center" prop="orgName" />
+        <el-table-column label="支付通道" align="center" prop="paymentChannelsName" />
         <el-table-column label="统一信用社会代码" align="center" prop="uniformSocialCreditCode" />
         <el-table-column label="法人" align="center" prop="branchArtificialName" />
         <el-table-column label="电话" align="center" prop="branchTel" />
@@ -116,6 +117,16 @@
               clearable
               @select="selectOrgCode"
             />
+          </el-form-item>
+          <el-form-item label="支付通道" prop="paymentChannels">
+            <el-select v-model="form.paymentChannels" placeholder="请选择支付通道" filterable clearable style="width: 100%">
+              <el-option
+                v-for="dict in paymentChannelsOptions"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
+            </el-select>
           </el-form-item>
           <el-form-item label="统一信用社会代码" prop="uniformSocialCreditCode">
             <el-input v-model="form.uniformSocialCreditCode" placeholder="请输入统一信用社会代码" clearable />
@@ -200,15 +211,28 @@ export default {
         ],*/
         orgCode: [
           { required: true, message: '归属组织不能为空', trigger: ['change', 'blur'] }
+        ],
+        paymentChannels: [
+          { required: true, message: '支付通道不能为空', trigger: ['change', 'blur'] }
         ]
-      }
+      },
+      // 支付通道字典
+      paymentChannelsOptions: []
     };
   },
   created() {
     this.getList();
     this.getTreeselect();
+    this.getDictsOptions();
   },
   methods: {
+    /** 查询字典 */
+    getDictsOptions() {
+      // 支付通道
+      this.getDicts('payment_channels').then(response => {
+        this.paymentChannelsOptions = response.data;
+      });
+    },
     /** 查询岗位列表 */
     getList() {
       this.loading = true;
@@ -231,7 +255,8 @@ export default {
         branchArtificialName: undefined,
         branchTel: undefined,
         orgCode: undefined,
-        uniformSocialCreditCode: undefined
+        uniformSocialCreditCode: undefined,
+        paymentChannels: undefined
       };
       this.resetForm('form');
     },
@@ -297,7 +322,7 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$confirm('是否确认删除数据码?', '警告', {
+      this.$confirm('是否确认删除数据吗?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

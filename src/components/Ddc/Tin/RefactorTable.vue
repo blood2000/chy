@@ -136,12 +136,21 @@ export default {
       immediate: true
     },
     // 通过关键字回填 {id: [5151, 454646]}
-    cbDataByKeyword: {
-      handler(value) {
-        if (JSON.stringify(value) === '{}') return;
-        if (!value && !this.data.length) return;
-        const keyname = Object.keys(value)[0];
-        this.cbDataByKeywordToSelection(keyname, value[keyname]);
+    // cbDataByKeyword: {
+    //   handler(value) {
+    //     if (JSON.stringify(value) === '{}') return;
+    //     if (!value && !this.data.length) return;
+    //     const keyname = Object.keys(value)[0];
+    //     // this.cbDataByKeywordToSelection(keyname, value[keyname]);
+    //   },
+    //   immediate: true
+    // },
+
+    data: {
+      handler(vals) {
+        if (vals && vals.length) {
+          this.$_multipleToSelection(this.cbDataByKeyword);
+        }
       },
       immediate: true
     }
@@ -187,18 +196,29 @@ export default {
         });
       }
     },
-    cbDataByKeywordToSelection(keyname, rows) {
+
+    $_multipleToSelection(cbDataByKeyword) {
+      if (JSON.stringify(cbDataByKeyword) === '{}') return;
+
+      const keyname = Object.keys(cbDataByKeyword)[0];
+      const rows = cbDataByKeyword[keyname];
       if (rows && rows.length) {
+        const selseceds = [];
+
+        rows.forEach(e => {
+          this.data.forEach(ee => {
+            if (ee[keyname] === e) {
+              selseceds.push(ee);
+            }
+          });
+        });
+
         this.$nextTick(() => {
           this.time = setTimeout(() => {
-            rows.forEach(row => {
-              this.$refs[this.refName].toggleRowSelection((this.data.filter(ee => ee[keyname] === row))[0], true);
+            selseceds.forEach(e => {
+              this.$refs[this.refName].toggleRowSelection(e, true);
             });
           }, 100);
-        });
-      } else {
-        this.$nextTick(() => {
-          this.$refs[this.refName].clearSelection();
         });
       }
     }

@@ -1,13 +1,14 @@
 <template>
   <!-- 添加或修改车辆对话框 -->
   <el-dialog :class="[{'i-add':title==='新增'||title==='添加车辆'},{'i-check':title==='审核'}]" :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="140px">
+    <el-form ref="form" :model="form" :rules="rules" label-width="140px">
       <!-- 车辆信息 -->
       <el-form-item label="车牌号" prop="licenseNumber">
         <el-select
           v-if="(teamCode || driverCode) && title!=='详情' && addVehicleType === 1"
           v-model="form.licenseNumber"
           v-el-select-loadmore="loadmore"
+          :disabled="disable"
           filterable
           clearable
           remote
@@ -29,7 +30,7 @@
         <el-button v-if="(teamCode || driverCode) && title!=='详情'" type="text" style="width: 20%;text-decoration: underline;" @click="changeAddVehicleType">{{ addVehicleType === 0 ? '选择已有车辆' : '手动添加车辆' }}</el-button>
       </el-form-item>
       <el-form-item label="车牌颜色" prop="vehicleLicenseColorCode">
-        <el-select v-model="form.vehicleLicenseColorCode" placeholder="请选择车牌颜色" class="width90" clearable filterable>
+        <el-select v-model="form.vehicleLicenseColorCode" placeholder="请选择车牌颜色" class="width90" :disabled="disable" clearable filterable>
           <el-option
             v-for="dict in licenseColorOptions"
             :key="dict.dictValue"
@@ -49,7 +50,7 @@
         </el-select>
       </el-form-item> -->
       <el-form-item label="车辆类型" prop="vehicleTypeCode">
-        <el-select v-model="form.vehicleTypeCode" placeholder="请选择车辆类型" class="width90" clearable filterable>
+        <el-select v-model="form.vehicleTypeCode" placeholder="请选择车辆类型" class="width90" :disabled="disable" clearable filterable>
           <el-option
             v-for="dict in vehicleTypeOptions"
             :key="dict.dictValue"
@@ -59,10 +60,10 @@
         </el-select>
       </el-form-item>
       <el-form-item label="车辆识别码" prop="chassisNumber">
-        <el-input v-model="form.chassisNumber" placeholder="请输入车辆识别码" class="width90" clearable />
+        <el-input v-model="form.chassisNumber" placeholder="请输入车辆识别码" class="width90" clearable :disabled="disable" />
       </el-form-item>
       <el-form-item label="车辆能源类型" prop="vehicleEnergyType">
-        <el-select v-model="form.vehicleEnergyType" placeholder="请选择车辆能源类型" class="width90" clearable filterable>
+        <el-select v-model="form.vehicleEnergyType" placeholder="请选择车辆能源类型" class="width90" clearable filterable :disabled="disable">
           <el-option
             v-for="dict in energyTypesOptions"
             :key="dict.dictValue"
@@ -72,10 +73,10 @@
         </el-select>
       </el-form-item>
       <el-form-item label="道路运输许可证号" prop="roadTransportCertificateNumber">
-        <el-input v-model="form.roadTransportCertificateNumber" placeholder="请输入道路运输许可证号" class="width90" clearable />
+        <el-input v-model="form.roadTransportCertificateNumber" placeholder="请输入道路运输许可证号" class="width90" clearable :disabled="disable" />
       </el-form-item>
       <el-form-item label="车身颜色" prop="vehicleColorCode">
-        <el-select v-model="form.vehicleColorCode" placeholder="请选择车身颜色" class="width90" clearable filterable>
+        <el-select v-model="form.vehicleColorCode" placeholder="请选择车身颜色" class="width90" clearable filterable :disabled="disable">
           <el-option
             v-for="dict in carBodyColorOptions"
             :key="dict.dictValue"
@@ -85,7 +86,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="车长" prop="vehicleLength">
-        <el-select v-model="form.vehicleLength" placeholder="请选择车长" class="width90" clearable filterable>
+        <el-select v-model="form.vehicleLength" placeholder="请选择车长" class="width90" clearable filterable :disabled="disable">
           <el-option
             v-for="dict in vehicleLengthOptions"
             :key="dict.dictValue"
@@ -95,7 +96,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="车宽" prop="vehicleWidth">
-        <el-select v-model="form.vehicleWidth" placeholder="请选择车宽" class="width90" clearable filterable>
+        <el-select v-model="form.vehicleWidth" placeholder="请选择车宽" class="width90" clearable filterable :disabled="disable">
           <el-option
             v-for="dict in vehicleWidthOptions"
             :key="dict.dictValue"
@@ -105,7 +106,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="车高" prop="vehicleHeight">
-        <el-select v-model="form.vehicleHeight" placeholder="请选择车高" class="width90" clearable filterable>
+        <el-select v-model="form.vehicleHeight" placeholder="请选择车高" class="width90" clearable filterable :disabled="disable">
           <el-option
             v-for="dict in vehicleHeightOptions"
             :key="dict.dictValue"
@@ -115,11 +116,11 @@
         </el-select>
       </el-form-item>
       <el-form-item label="车辆总重量" prop="vehicleTotalWeight">
-        <el-input-number v-model="form.vehicleTotalWeight" :controls="false" :min="0" :max="1000000" placeholder="请输入车辆总重量" class="width90 unit-item" clearable />
+        <el-input-number v-model="form.vehicleTotalWeight" :controls="false" :min="0" :max="1000000" placeholder="请输入车辆总重量" class="width90 unit-item" clearable :disabled="disable" />
         <span class="unit-span g-color-gray">吨</span>
       </el-form-item>
       <el-form-item label="车辆可载重量" prop="vehicleLoadWeight">
-        <el-input-number v-model="form.vehicleLoadWeight" :controls="false" :min="0" :max="1000000" placeholder="请输入车辆可载重量" class="width90 unit-item" clearable />
+        <el-input-number v-model="form.vehicleLoadWeight" :controls="false" :min="0" :max="1000000" placeholder="请输入车辆可载重量" class="width90 unit-item" clearable :disabled="disable" />
         <span class="unit-span g-color-gray">吨</span>
       </el-form-item>
       <!-- <el-form-item label="车辆可载平方" prop="vehicleLoadVolume">
@@ -127,7 +128,7 @@
         <span class="unit-span g-color-gray">m²</span>
       </el-form-item> -->
       <el-form-item label="车辆可载立方" prop="vehicleRemainingLoadVolume">
-        <el-input v-model="form.vehicleRemainingLoadVolume" placeholder="请输入车辆可载立方" class="width90 unit-item" clearable />
+        <el-input v-model="form.vehicleRemainingLoadVolume" placeholder="请输入车辆可载立方" class="width90 unit-item" clearable :disabled="disable" />
         <span class="unit-span g-color-gray">m³</span>
       </el-form-item>
       <!-- <el-form-item label="发动机号" prop="engineNumber">
@@ -140,7 +141,7 @@
         <el-input v-model="form.vehiclePower" placeholder="请输入功率" class="width90" clearable />
       </el-form-item> -->
       <el-form-item label="轴数" prop="axesNumber">
-        <el-select v-model="form.axesNumber" placeholder="请选择轴数" class="width90" clearable filterable>
+        <el-select v-model="form.axesNumber" placeholder="请选择轴数" class="width90" clearable filterable :disabled="disable">
           <el-option
             v-for="dict in axisTypeOptions"
             :key="dict.dictValue"
@@ -164,7 +165,7 @@
         <el-input v-model="form.transportMeson" placeholder="请输入运输介子" class="width90" clearable />
       </el-form-item> -->
       <el-form-item label="是否冻结" prop="isFreeze">
-        <el-select v-model="form.isFreeze" placeholder="请选择是否冻结" class="width90" clearable filterable>
+        <el-select v-model="form.isFreeze" placeholder="请选择是否冻结" class="width90" clearable filterable :disabled="disable">
           <el-option
             v-for="dict in isFreezeOptions"
             :key="dict.dictValue"
@@ -196,17 +197,17 @@
           </el-col>
         </el-row>
       </el-form-item>
-        <el-form-item label="审核备注" prop="authRemark">
-            <el-input
-                    v-model="form.authRemark"
-                    :disabled="!(title === '审核')"
-                    class="width90"
-                    type="textarea"
-                    :rows="2"
-                    maxlength="200"
-                    placeholder="请输入审核备注"
-            />
-        </el-form-item>
+      <el-form-item label="审核备注" prop="authRemark">
+        <el-input
+          v-model="form.authRemark"
+          :disabled="!(title === '审核')"
+          class="width90"
+          type="textarea"
+          :rows="2"
+          maxlength="200"
+          placeholder="请输入审核备注"
+        />
+      </el-form-item>
     </el-form>
     <div v-if="title === '新增' || title === '编辑' || title === '添加车辆'" slot="footer" class="dialog-footer">
       <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
@@ -451,7 +452,7 @@ export default {
         annualVerificationDate: null,
         transportMeson: null,
         authStatus: 0,
-        isFreeze: null,
+        isFreeze: 0,
         createCode: null,
         createTime: null,
         updateCode: null,
