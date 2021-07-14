@@ -120,3 +120,11 @@ export function uploadToHWS(data) {
     data: data
   });
 }
+
+// 获取货主信息
+export function shipmentInfo(Code) {
+  return request({
+    url: '/assets/shipment/getShipmentAndEnterprise/' + Code,
+    method: 'get'
+  });
+}

@@ -1,6 +1,6 @@
 <template>
   <el-dialog :class="[{'i-add':title==='新增'},{'i-check':title==='审核'}]" :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="170px">
+    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="174px">
       <!--  修改：目前只有发货企业 -->
       <!-- <el-form-item label="发货人/发货企业" prop="shipperType">
               <el-select
@@ -463,7 +463,7 @@
         <div class="h5-divider" style="width: 91%" />
       </h5>
       <el-row :gutter="20">
-        <el-col :span="11">
+        <!--<el-col :span="11">
           <el-form-item label="允许未审核司机/车辆接单" prop="allowNoAuditDriverToReceive">
             <el-radio-group v-model="form.allowNoAuditDriverToReceive">
               <el-radio
@@ -473,7 +473,7 @@
               >{{ dict.dictLabel }}</el-radio>
             </el-radio-group>
           </el-form-item>
-        </el-col>
+        </el-col>-->
         <el-col :span="11">
           <el-form-item label="修改司机实收金额" prop="editDriverActualAmount">
             <el-radio-group v-model="form.editDriverActualAmount">
@@ -502,6 +502,11 @@
             <el-checkbox v-model="form.isNeedLoadingCertificate">是否需要装货凭证</el-checkbox>
           </el-form-item>
         </el-col>
+          <el-col :span="11">
+              <el-form-item prop="openAppPermissionControl">
+                  <el-checkbox v-model="form.openAppPermissionControl">是否开启货主APP权限控制</el-checkbox>
+              </el-form-item>
+          </el-col>
       </el-row>
       <h5 class="g-card-title g-strong mb20 ml10">
         普通货物配置
@@ -871,10 +876,14 @@ export default {
           if (this.form.isNeedLoadingCertificate === true) {
             isNeedLoadingCertificate = 0;
           }
+          var openAppPermissionControl = 0;
+          if (this.form.openAppPermissionControl === true) {
+            openAppPermissionControl = 1;
+          }
           // 复制管理员图片至法人
           this.form.artificialIdentificationImg = this.form.identificationImg;
           this.form.artificialIdentificationBackImg = this.form.identificationBackImg;
-          var extendForm = { noNeedUnloadImg: noNeedUnloadImg, openProjectDesignView: openProjectDesignView, isNeedLoadingCertificate: isNeedLoadingCertificate };
+          var extendForm = { noNeedUnloadImg: noNeedUnloadImg, openProjectDesignView: openProjectDesignView, isNeedLoadingCertificate: isNeedLoadingCertificate,openAppPermissionControl: openAppPermissionControl};
           // eslint-disable-next-line no-undef
           this.form = Object.assign(this.form, extendForm);
           if (this.form.id) {
@@ -994,6 +1003,7 @@ export default {
         singleSourceMultiLoadingLocations: 1,
         singleSourceMultiUnloadingLocations: 1,
         isNeedLoadingCertificate: 0,
+        openAppPermissionControl: 0,
         editDriverActualAmount: 1,
         allowNoAuditDriverToReceive: 1,
         isNeedApplicationForPayment: 0,
@@ -1021,6 +1031,11 @@ export default {
         this.form.isNeedLoadingCertificate = true;
       } else {
         this.form.isNeedLoadingCertificate = false;
+      }
+      if (this.form.openAppPermissionControl === 1) {
+        this.form.openAppPermissionControl = true;
+      } else {
+        this.form.openAppPermissionControl = false;
       }
       if (this.form.branchCode && this.form.branchName) {
         this.branchOptions = [{
@@ -1154,7 +1169,7 @@ export default {
         margin-top: 22px;
     }
     .width90{
-        width: 90%;
+        width: 88.8%;
     }
     .width70{
         width: 70%;
@@ -1166,7 +1181,7 @@ export default {
         width: 50%;
     }
     .width45{
-        width: 45%;
+        width: 44.2%;
     }
     .width28{
         width: 28%;

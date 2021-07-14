@@ -178,7 +178,7 @@
                 <span>{{ parseTime(scope.row.createTime) }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="操作" align="center" fixed="left">
+            <el-table-column label="操作" align="center" fixed="left" width="160">
               <template slot-scope="scope">
                 <el-button
                   v-hasPermi="['system:role:edit']"
@@ -490,6 +490,9 @@ export default {
       form: {
         dataScope: '6'
       },
+      allMenuCodes: [],
+      ownMenuCodes: {},
+      ownMenuId: 'all',
       defaultProps: {
         children: 'children',
         label: 'label'
@@ -608,7 +611,7 @@ export default {
     },
     /** 查询菜单树结构 */
     getMenuTreeselect(data = {}) {
-      menuTreeselect(data).then(response => {
+      return menuTreeselect(data).then(response => {
         this.menuOptions = response.data;
       });
     },
@@ -626,6 +629,23 @@ export default {
       const halfCheckedKeys = this.$refs.menu.getHalfCheckedKeys();
       checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
       return checkedKeys;
+    },
+    // 选中版本的时候,先从all里面移除own的key
+    removeOwnKeys(ownMenuCodes) {
+      ownMenuCodes.forEach((item1) => {
+        this.allMenuCodes.forEach((item2, j) => {
+          if (item2 === item1) {
+            this.allMenuCodes.splice(j, 1);
+            j -= 1;
+          }
+        });
+      });
+    },
+    saveCheckedKeys() {
+      // 去重合并
+      const arr = this.allMenuCodes.concat(this.getMenuAllCheckedKeys());
+      const arrNew = new Set(arr);
+      this.allMenuCodes = Array.from(arrNew);
     },
     // 所有部门节点数据
     getDeptAllCheckedKeys() {
@@ -677,6 +697,9 @@ export default {
     },
     // 表单重置
     reset() {
+      this.allMenuCodes = [];
+      this.ownMenuCodes = {};
+      this.ownMenuId = 'all';
       if (this.$refs.menu !== undefined) {
         this.$refs.menu.setCheckedKeys([]);
       }
@@ -722,7 +745,6 @@ export default {
           return;
         }
       });
-      // console.log(this.isSystemDisabled);
       this.ids = selection.map(item => item.roleId);
       this.names = selection.map(item => item.roleName);
       this.single = selection.length !== 1;
@@ -805,7 +827,8 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid) {
           this.buttonLoading = true;
-          this.form.menuCodes = this.getMenuAllCheckedKeys();
+          this.saveCheckedKeys();
+          this.form.menuCodes = this.allMenuCodes;
           if (this.form.roleId !== undefined) {
             updateRole(this.form).then(response => {
               this.buttonLoading = false;
@@ -895,6 +918,11 @@ export default {
     },
     // 版本树节点单击事件
     handleVersionNodeClick(data) {
+      this.saveCheckedKeys();
+      // 缓存上一次的勾选
+      this.ownMenuCodes[this.ownMenuId] = this.getMenuAllCheckedKeys();
+      this.ownMenuId = data.code;
+
       const params = {};
       if (data.type === 'produce') {
         params.produceCode = data.code;
@@ -906,10 +934,28 @@ export default {
       if (this.form.roleId !== undefined) {
         const roleMenu = this.getRoleMenuTreeselect(this.form.roleId, params);
         roleMenu.then(res => {
-          this.$refs.menu.setCheckedKeys(res.checkedKeys);
+          this.$refs.menu.setCheckedKeys(this.allMenuCodes);
+          this.$nextTick(() => {
+            if (this.ownMenuCodes[data.code]) {
+              // 读缓存数据
+              this.removeOwnKeys(this.ownMenuCodes[data.code]);
+            } else {
+              // 读接口数据
+              this.removeOwnKeys(res.checkedKeys);
+            }
+          });
         });
       } else {
-        this.getMenuTreeselect(params);
+        const menu = this.getMenuTreeselect(params);
+        menu.then(() => {
+          this.$refs.menu.setCheckedKeys(this.allMenuCodes);
+          this.$nextTick(() => {
+            if (this.ownMenuCodes[data.code]) {
+            // 读缓存数据
+              this.removeOwnKeys(this.ownMenuCodes[data.code]);
+            }
+          });
+        });
       }
     },
     // 判断操作是否禁用

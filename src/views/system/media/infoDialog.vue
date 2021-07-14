@@ -123,7 +123,7 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid) {
           if (this.form.mediaType === 'pdf') {
-            if (this.form.mediaUrl.toLocaleString().endsWith('.pdf')) {
+            if (!this.form.mediaUrl.toLocaleString().endsWith('.pdf')) {
               this.msgWarning('非pdf格式，无法预览');
               return;
             }
