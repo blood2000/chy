@@ -25,7 +25,7 @@
 
       <el-table-column width="160" label="运输单号" show-overflow-tooltip align="center" prop="waybillNo" />
 
-      <el-table-column width="120" label="调度者名称" align="center" prop="teamName" />
+      <el-table-column width="120" label="调度组名称" align="center" prop="teamName" />
 
       <el-table-column width="120" label="司机姓名" align="center" prop="driverName" />
       <el-table-column width="120" label="司机电话" align="center" prop="driverPhone" />

@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-loading
-    :title="`发卡人: ${ userInfo.issuing_name || ''} 【承运司机: ${userInfo.user_name ||''}】【调度者: ${userInfo.team_name ||''}】 【发卡时间: ${ parseTime(userInfo.issuing_time - 0) || ''}】 【卡批次号: ${ userInfo.issuing_pc || ''}】 ` "
+    :title="`发卡人: ${ userInfo.issuing_name || ''} 【承运司机: ${userInfo.user_name ||''}】【调度组: ${userInfo.team_name ||''}】 【发卡时间: ${ parseTime(userInfo.issuing_time - 0) || ''}】 【卡批次号: ${ userInfo.issuing_pc || ''}】 ` "
     :visible="visible"
     width="80%"
     append-to-body
@@ -9,12 +9,12 @@
     @close="handlerClose"
   >
     <div v-show="false" class="mb20" style="padding: 20px;">
+      <el-button type="primary" @click="handler('getCardInfo')">获取卡片基本信息</el-button>
       <el-button type="primary" @click="handler('cancellation')">注销卡片(清空使用者信息)</el-button>
       <el-button type="primary" @click="handler('issuingCard')">发卡</el-button>
       <el-button type="primary" @click="handler('readUserinfo')">读取用户信息</el-button>
+      <el-button type="primary" @click="handler('writeData')">写数据</el-button>
       <el-button type="primary" @click="handler('readData')">读取数据</el-button>
-      <el-button type="primary" @click="handler('writeData')">写卡</el-button>
-      <el-button type="primary" @click="handler('getCardInfo')">获取卡片基本信息</el-button>
     </div>
 
     <RefactorTable
@@ -581,34 +581,17 @@ export default {
           // 写数据
 
           // res = await action.writeData('1010|2|30528;2106231554010424;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
-          res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
-          res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
-          res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
-          res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
-          res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
-          res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
-          res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
-          res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
-          res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
-          res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
+          res = await action.writeData('1010|2|2105272013285566;2106231554010424;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
+          // res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
+          // res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
+          // res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
+          // res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
+          // res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
+          // res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
+          // res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
+          // res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
+          // res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
           console.log(res);
-          // res = await action.writeData('1010|1|30528;2106231554010424;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
-          // // console.log(res);
-          // res = await action.writeData('1010|1|30528;2106231534477638;616测试项目1;闽AQ8001;测试独立强;15859109001;1624068000000;1624068000000;31;616测试1—石渣土'); // ok数据
-          // console.log(res);
-          // res = await action.writeData('1010|1|30528;2106191000275189;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
-          // console.log(res);
-          // res = await action.writeData('1010|1|30528;2106191000275110;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
-          // console.log(res);
-          // res = await action.writeData('1010|1|30528;2106191000275111;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
-          // console.log(res);
-          // res = await action.writeData('1010|1|30528;2106191000275112;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
-          // console.log(res);
-          // res = await action.writeData('1010|1|30528;2106191000275113;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
-          // console.log(res);
-          // res = await action.writeData('1010|1|30528;2106191000275114;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
-          // console.log(res);
-
           break;
         default:
           break;

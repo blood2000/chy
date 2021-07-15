@@ -477,16 +477,21 @@ export default {
 
       // 正式上直接请求??
 
-      let batchUrl = [];
+      // let batchUrl = [];
 
-      if (process.env.NODE_ENV === 'production') {
-        batchUrl = arrData.filter(e => e.contractPath).map(e => e.contractPath);
-      } else {
-        batchUrl = arrData.filter(e => e.contractPath).map(e => {
-          const str = (e.contractPath.split('.com'))[1];
-          return `/pdf${str}`;
-        });
-      }
+      // if (process.env.NODE_ENV === 'production') {
+      //   batchUrl = arrData.filter(e => e.contractPath).map(e => e.contractPath);
+      // } else {
+      //   batchUrl = arrData.filter(e => e.contractPath).map(e => {
+      //     const str = (e.contractPath.split('.com'))[1];
+      //     return `/pdf${str}`;
+      //   });
+      // }
+
+      const batchUrl = arrData.filter(e => e.contractPath).map(e => {
+        const str = (e.contractPath.split('.com'))[1];
+        return `/pdf${str}`;
+      });
 
       if (batchUrl.length) {
         this.downloadLoadin = true;
