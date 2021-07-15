@@ -393,7 +393,7 @@ export default {
         pageNum: 1,
         pageSize: 10,
         authStatus: 3,
-        keywords: null
+        searchValue: null
       },
       shipmentloading: false,
       dataOver: false, // 是否请求完了
@@ -443,7 +443,7 @@ export default {
         this.shipmentloading = true;
         this.shipmentInfoQuery.pageNum = 1;
         this.dataOver = false;
-        this.shipmentInfoQuery.keywords = query;
+        this.shipmentInfoQuery.searchValue = query;
         this.shipmentlist = [];
         this.getShipment();
       } else {
