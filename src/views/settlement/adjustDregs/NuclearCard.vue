@@ -9,12 +9,12 @@
     @close="handlerClose"
   >
     <div v-show="false" class="mb20" style="padding: 20px;">
-      <!-- <el-button type="primary" @click="handler('cancellation')">注销卡片(清空使用者信息)</el-button> -->
+      <el-button type="primary" @click="handler('cancellation')">注销卡片(清空使用者信息)</el-button>
       <el-button type="primary" @click="handler('issuingCard')">发卡</el-button>
-      <!-- <el-button type="primary" @click="handler('readUserinfo')">读取用户信息</el-button> -->
-      <!-- <el-button type="primary" @click="handler('readData')">读取数据</el-button> -->
+      <el-button type="primary" @click="handler('readUserinfo')">读取用户信息</el-button>
+      <el-button type="primary" @click="handler('readData')">读取数据</el-button>
       <el-button type="primary" @click="handler('writeData')">写卡</el-button>
-      <el-button type="primary" @click="handler('getCardInfo')">获取卡信息</el-button>
+      <el-button type="primary" @click="handler('getCardInfo')">获取卡片基本信息</el-button>
     </div>
 
     <RefactorTable
@@ -244,12 +244,12 @@ export default {
         this.userMark = ret.userMark;
         this.carId = ret.GetCardNo.data;
 
-        // console.log([this.userInfo], '----------持卡者信息');
+        console.log([this.userInfo], '----------持卡者信息');
         // console.log([this.IClist], '----------当前卡数据');
         // console.log([this.meter], '----------卡版本');
         // console.log([this.userMark], '----------用户版本');
         // console.log([this.carId], '----------ka标识');
-        // this.setLocalStorage(this.userInfo.user_code, { [this.userInfo]: this.IClist, meter: this.meter }); // 本地存储
+        this.setLocalStorage(this.carId, { [this.userInfo.issuing_pc]: { data: this.IClist, meter: this.meter, userMark: this.userMark }}); // 本地存储
 
         // 后端交互
         this.initData();
@@ -537,16 +537,21 @@ export default {
     /** 卡的操作 */
     async handler(key) {
       const mobj = {};
-      const arr = '18415451845;120;16612345678;17812345678;1621648441990;1621648441990123;r';
+
+      // 当前用户测试数据
+
+      const arr = '14700000001;120;15859102001;15859109601;1626253668656;1626253668656386;r';
       let res = '';
       switch (key) {
         case 'getCardInfo':
-          action.getCardInfo();
+          action.getCardInfo().then(res => {
+            console.log(res);
+          });
           break;
         case 'cancellation':
           // 注销卡片
           action.cancellation().then(res => {
-            // console.log(res);
+            console.log(res);
           });
           break;
         case 'issuingCard':
@@ -557,25 +562,35 @@ export default {
 
           action.issuingCard(mobj).then(res => {
             this.msgSuccess(res.msg);
+            console.log(res);
           });
           break;
         case 'readUserinfo':
           // 读取用户信息
           action.readUserInfo().then(res => {
-            // console.log(res);
+            console.log(res);
           });
 
           break;
         case 'readData':
-          break;
-        case 'readUserInfoAndreadData':
-          // 读取数据e
-          action.readUserInfoAndreadData();
+          action.readUserInfoAndreadData().then(res => {
+            console.log(res);
+          });
           break;
         case 'writeData':
           // 写数据
 
-          res = await action.writeData('1010|2|30528;2106231554010424;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
+          // res = await action.writeData('1010|2|30528;2106231554010424;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
+          res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
+          res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
+          res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
+          res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
+          res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
+          res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
+          res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
+          res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
+          res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
+          res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
           console.log(res);
           // res = await action.writeData('1010|1|30528;2106231554010424;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
           // // console.log(res);
