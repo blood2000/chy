@@ -402,8 +402,8 @@ export default {
     async handleElectron(row) {
       var that = this;
       that.waybill = (await getContractByCode(row.code)).data;
-      that.waybill.createTime = new Date(that.waybill.createTime);
-      that.waybill.loadTime = new Date(that.waybill.loadTime);
+      // that.waybill.createTime = new Date(that.waybill.createTime);
+      // that.waybill.loadTime = new Date(that.waybill.loadTime);
       console.log(that.waybill);
       if (!that.waybill.electronic.idNumber) {
         that.msgWarning('货主或司机的身份证号码不能为空！');

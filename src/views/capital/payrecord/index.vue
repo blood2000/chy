@@ -209,6 +209,10 @@
         <template #amount="{row}">
           <span>{{ row.amount ? (row.amount/100).toFixed(2) : row.amount }}</span>
         </template>
+        <!-- 手续费：单位分转为元 -->
+        <template #totalFee="{row}">
+          <span>{{ row.totalFee ? (row.totalFee/100).toFixed(2) : row.totalFee }}</span>
+        </template>
         <!-- 付款类型 -->
         <template #payType="{row}">
           <span>{{ selectDictLabel(payTypeOptions, row.payType) }}</span>

@@ -70,7 +70,7 @@
           <el-table-column label="装货重量" align="center" prop="loadWeight" />
           <el-table-column label="卸货重量" align="center" prop="unloadWeight" />
           <el-table-column label="货物单价（元）" align="center" prop="goodsPrice" />
-          <el-table-column label="成交单价（元）" align="center" prop="freightPrice" />
+          <el-table-column label="运费单价（元）" align="center" prop="freightPrice" />
           <el-table-column label="冻结总额（元）" align="center" prop="amount" />
           <el-table-column label="操作时间" align="center" prop="createTime" width="180">
             <template slot-scope="scope">
@@ -112,7 +112,7 @@
           </el-table-column>
           <!-- <el-table-column label="货物损耗(kg)" align="center" prop="wastage" /> -->
           <el-table-column label="货物单价（元）" align="center" prop="goodsPrice" />
-          <el-table-column label="成交单价（元）" align="center" prop="freightPriceDriver" />
+          <el-table-column label="运费单价（元）" align="center" prop="freightPriceDriver" />
           <el-table-column label="实付金额（元）" align="center" prop="amount">
             <!-- 金额：单位分转为元 -->
             <template slot-scope="scope">
