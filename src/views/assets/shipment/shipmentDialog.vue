@@ -358,7 +358,7 @@
       <el-row :gutter="20">
         <!--<el-col v-if="form.isMonthly" :span="11">-->
         <el-col :span="11">
-          <el-form-item label="授信金额" prop="creditAmount">
+          <el-form-item label="授信金额(元)" prop="creditAmount">
             <el-input-number v-model="form.creditAmount" :precision="2" :min="0" :max="1000000000" :controls="false" placeholder="保留两位小数" />
           </el-form-item>
         </el-col>
@@ -484,15 +484,15 @@
               >{{ dict.dictLabel }}</el-radio>
             </el-radio-group>
           </el-form-item>-->
-            <el-form-item prop="editDriverActualAmount">
-                <el-checkbox v-model="form.editDriverActualAmount">是否允许修改司机实收金额</el-checkbox>
-            </el-form-item>
+          <el-form-item prop="editDriverActualAmount">
+            <el-checkbox v-model="form.editDriverActualAmount">是否允许修改司机实收金额</el-checkbox>
+          </el-form-item>
         </el-col>
-          <el-col :span="11">
-              <el-form-item prop="openProjectDesignView">
-                  <el-checkbox v-model="form.openProjectDesignView">开启&nbsp;项目版统计视图</el-checkbox>
-              </el-form-item>
-          </el-col>
+        <el-col :span="11">
+          <el-form-item prop="openProjectDesignView">
+            <el-checkbox v-model="form.openProjectDesignView">开启&nbsp;项目版统计视图</el-checkbox>
+          </el-form-item>
+        </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="11">
@@ -510,11 +510,11 @@
             <el-checkbox v-model="form.openAppPermissionControl">是否开启货主APP权限控制</el-checkbox>
           </el-form-item>
         </el-col>
-          <el-col :span="11">
-              <el-form-item prop="openProjectMemberView">
-                  <el-checkbox v-model="form.openProjectMemberView">是否开启项目成员视图</el-checkbox>
-              </el-form-item>
-          </el-col>
+        <el-col :span="11">
+          <el-form-item prop="openProjectMemberView">
+            <el-checkbox v-model="form.openProjectMemberView">是否开启项目成员视图</el-checkbox>
+          </el-form-item>
+        </el-col>
       </el-row>
       <h5 class="g-card-title g-strong mb20 ml10">
         普通货物配置
@@ -690,7 +690,15 @@ export default {
           { required: true, message: '票务规则不能为空', trigger: ['change', 'blur'] }
         ],
         creditEndTime: [
-          { validator: (rules, value, callback) => this.formValidate.idCardTimeValidate(rules, value, callback, this.form.creditStartTime, '授信保护期'), trigger: ['change', 'blur'] }
+          { validator: (rules, value, callback) => this.formValidate.idCardTimeValidate(rules, value, callback, this.form.creditStartTime, '授信保护期'), trigger: ['change', 'blur'] },
+          // 填写授信金额后，保护期必填
+          { validator: (rules, value, callback) => {
+            if (this.form.creditAmount > 0 && (!this.form.creditStartTime || !value)) {
+              return callback(new Error(`授信保护期不能为空`));
+            } else {
+              return callback();
+            }
+          }, trigger: ['change', 'blur'] }
         ]
       },
       // 网点查询

@@ -621,6 +621,7 @@ export default {
     getMenuTreeselect(data = {}) {
       return menuTreeselect(data).then(response => {
         this.menuOptions = response.data;
+        this.treeLoading = false;
       });
     },
     /** 查询部门树结构 */
@@ -668,6 +669,7 @@ export default {
     getRoleMenuTreeselect(roleId, data) {
       return roleMenuTreeselect(roleId, data).then(response => {
         this.menuOptions = response.menus;
+        this.treeLoading = false;
         return response;
       });
     },
@@ -708,6 +710,7 @@ export default {
       this.allMenuCodes = [];
       this.ownMenuCodes = {};
       this.ownMenuId = 'all';
+      this.treeLoading = false;
       if (this.$refs.menu !== undefined) {
         this.$refs.menu.setCheckedKeys([]);
       }
@@ -955,11 +958,9 @@ export default {
             if (this.ownMenuCodes[data.code]) {
               // 读缓存数据
               this.removeOwnKeys(this.ownMenuCodes[data.code]);
-              this.treeLoading = false;
             } else {
               // 读接口数据
               this.removeOwnKeys(res.checkedKeys);
-              this.treeLoading = false;
             }
           });
         });
@@ -971,7 +972,6 @@ export default {
             if (this.ownMenuCodes[data.code]) {
               // 读缓存数据
               this.removeOwnKeys(this.ownMenuCodes[data.code]);
-              this.treeLoading = false;
             }
           });
         });

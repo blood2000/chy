@@ -369,6 +369,8 @@ export default {
           _this.$refs.multipleTable.m2ToggleSelection();
           _this.getList();
         });
+      }).catch(() => {
+        _this.importLoading = false;
       });
     },
     /** 网商批量驳回 */
@@ -386,6 +388,8 @@ export default {
           _this.$refs.multipleTable.m2ToggleSelection();
           _this.getList();
         });
+      }).catch(() => {
+        _this.rejectLoading = false;
       });
     },
     /** 更新网商提现状态 */
