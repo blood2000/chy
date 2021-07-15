@@ -465,7 +465,7 @@ export default {
       }).then(() => {
         this.errList = [];
         this.sucList = [];
-        // this.$message({ type: 'success', message: '发起网商打款成功！' });
+        this.$message({ type: 'warning', message: '发起网商打款成功，请勿关闭或刷新页面！' });
         this.payLoading = true;
         this.batchIndex = 0;
         this.getBatch();
