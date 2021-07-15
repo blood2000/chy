@@ -480,8 +480,8 @@
     <el-form label-width="154px">
       <el-form-item label="审核备注" prop="authRemark">
         <el-input
-                :disabled="!(title === '审核')"
           v-model="form.authRemark"
+          :disabled="!(title === '审核')"
           class="width90"
           type="textarea"
           :rows="2"
@@ -980,19 +980,15 @@ export default {
           }
           if (side === 'back') {
             if (data.valid_from) {
-              this.$set(this.form, 'identificationBeginTime', data.valid_from);
+              this.$set(this.form, 'identificationBeginTime', this.isPeriodFormate(data.valid_from));
             } else {
               this.$set(this.form, 'identificationBeginTime', '');
             }
             if (data.valid_to) {
-              if (data.valid_to === '长期') {
+              if (this.isPeriodAlways(data.valid_to)) {
                 this.$set(this.form, 'identificationEffective', true);
-              } else if (data.valid_to !== '') {
-                if (data.valid_to.startsWith('9999')) {
-                  this.$set(this.form, 'identificationEffective', true);
-                } else {
-                  this.$set(this.form, 'identificationEndTime', data.valid_to);
-                }
+              } else {
+                this.$set(this.form, 'identificationEndTime', this.isPeriodFormate(data.valid_to));
               }
             } else {
               this.$set(this.form, 'identificationEffective', false);
@@ -1013,19 +1009,15 @@ export default {
             this.$set(this.form, 'issuingOrganizations', '');
           }
           if (data.valid_from) {
-            this.$set(this.form, 'validPeriodFrom', data.valid_from);
+            this.$set(this.form, 'validPeriodFrom', this.isPeriodFormate(data.valid_from));
           } else {
             this.$set(this.form, 'validPeriodFrom', '');
           }
           if (data.valid_to) {
-            if (data.valid_to === '长期') {
+            if (this.isPeriodAlways(data.valid_to)) {
               this.$set(this.form, 'validPeriodAlways', true);
-            } else if (data.valid_to !== '') {
-              if (data.valid_to.startsWith('9999')) {
-                this.$set(this.form, 'validPeriodAlways', true);
-              } else {
-                this.$set(this.form, 'validPeriodTo', data.valid_to);
-              }
+            } else {
+              this.$set(this.form, 'validPeriodTo', this.isPeriodFormate(data.valid_to));
             }
           } else {
             this.$set(this.form, 'validPeriodAlways', false);
