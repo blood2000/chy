@@ -306,7 +306,14 @@
           <el-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand($event, 'menu')">展开/折叠</el-checkbox>
           <el-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event, 'menu')">全选/全不选</el-checkbox>
           <el-checkbox v-model="form.menuCheckStrictly" @change="handleCheckedTreeConnect($event, 'menu')">父子联动</el-checkbox>
-          <el-row :gutter="12" class="mb20">
+          <el-row
+            v-loading="treeLoading"
+            :gutter="12"
+            class="mb20"
+            element-loading-text=""
+            element-loading-spinner="el-icon-loading"
+            element-loading-background="rgba(255, 255, 255, 0.6)"
+          >
             <el-col :span="10">
               <el-tree
                 ref="versionTree"
@@ -493,6 +500,7 @@ export default {
       allMenuCodes: [],
       ownMenuCodes: {},
       ownMenuId: 'all',
+      treeLoading: false,
       defaultProps: {
         children: 'children',
         label: 'label'
@@ -918,6 +926,7 @@ export default {
     },
     // 版本树节点单击事件
     handleVersionNodeClick(data) {
+      this.treeLoading = true;
       this.saveCheckedKeys();
       // 缓存上一次的勾选
       this.ownMenuCodes[this.ownMenuId] = this.getMenuAllCheckedKeys();
@@ -939,9 +948,11 @@ export default {
             if (this.ownMenuCodes[data.code]) {
               // 读缓存数据
               this.removeOwnKeys(this.ownMenuCodes[data.code]);
+              this.treeLoading = false;
             } else {
               // 读接口数据
               this.removeOwnKeys(res.checkedKeys);
+              this.treeLoading = false;
             }
           });
         });
@@ -951,8 +962,9 @@ export default {
           this.$refs.menu.setCheckedKeys(this.allMenuCodes);
           this.$nextTick(() => {
             if (this.ownMenuCodes[data.code]) {
-            // 读缓存数据
+              // 读缓存数据
               this.removeOwnKeys(this.ownMenuCodes[data.code]);
+              this.treeLoading = false;
             }
           });
         });
