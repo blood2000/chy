@@ -20,7 +20,7 @@ import './assets/icons'; // icon
 import './permission'; // permission control
 import { getDicts, listByDict, getDictsByType } from '@/api/system/dict/data';
 import { getConfigKey } from '@/api/system/config';
-import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, selectProvinceLabel, selectCityLabel, handleTree, tableHeaderConfig } from '@/utils/ddc';
+import { parseTime, isPeriodAlways, isPeriodFormate, resetForm, addDateRange, selectDictLabel, selectDictLabels, selectProvinceLabel, selectCityLabel, handleTree, tableHeaderConfig } from '@/utils/ddc';
 // 本地缓存
 import { setLocalStorage, getLocalStorage, removeLocalStorage } from '@/utils/auth';
 // 表单校验
@@ -86,6 +86,8 @@ Vue.prototype.listByDict = listByDict;
 Vue.prototype.getDictsByType = getDictsByType;
 Vue.prototype.getConfigKey = getConfigKey;
 Vue.prototype.parseTime = parseTime;
+Vue.prototype.isPeriodAlways = isPeriodAlways;
+Vue.prototype.isPeriodFormate = isPeriodFormate;
 Vue.prototype.resetForm = resetForm;
 Vue.prototype.addDateRange = addDateRange;
 Vue.prototype.selectDictLabel = selectDictLabel;
