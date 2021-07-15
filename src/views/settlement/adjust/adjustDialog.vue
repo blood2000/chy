@@ -706,7 +706,7 @@ export default {
           return (b1 + b2) - (a1 + a2);
         });
 
-        console.log(this.adjustlist);
+        // console.log(this.adjustlist);
 
 
 
@@ -742,6 +742,9 @@ export default {
 
 
         this.total = response.total;
+
+        // 要求初始就要计算一次
+        this.handleSelectedNumChange();
         this.loading = false;
       });
     },
