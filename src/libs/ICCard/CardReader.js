@@ -3,7 +3,7 @@ import { MessageBox, Message } from 'element-ui';
 
 // 版本二（2021/06/19 启用）
 
-// 用户Id 用户姓名 手机号  项目Id  调度组Id  发卡人Id  发卡人姓名  发卡时间（时间戳） 卡批次号
+// 手机号  项目Id  调度组电话  发卡人电话  发卡时间（时间戳） 卡批次号
 // 1000|3|18415451845;120;16612345678;17812345678;1621648441990;1621648441990123;r
 export let userMark = '1000|3|';
 export const USERINFO = [
@@ -17,6 +17,7 @@ export const USERINFO = [
   'issuing_pc', // 1621648441990123 卡批次号
   'icType' // 追加一个 ic卡type
 ];
+// 货源单号 运单单号 项目 车牌号 驾驶员用户手机号 入场时间（时间戳） 出场时间（时间戳） 渣土场编号
 // 1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710
 export const versionMark = '1010|2|';
 export const DATAINFO = [
@@ -410,7 +411,7 @@ const CardReader = {
       await CardReader.fn.exec(CardReader.command.deselect);
       await CardReader.fn.exec(CardReader.command.beep);
       return {
-        ...ret,
+        ret,
         code: 200,
         msg: `注销卡片成功`,
         data: null
@@ -632,7 +633,7 @@ CardReader.action['readUserInfo'] = async function(resEnd) {
   console.log('【读取用户信息】');
   let ret;
   try {
-    !resEnd && (ret = await this.getCard());
+    ret = await this.getCard();
 
     ret = await CardReader.fn.apdu((function() {
       return ['00', 'A4', '00', '00', '02', '3F00'].join('');
@@ -671,7 +672,8 @@ CardReader.action['readUserInfo'] = async function(resEnd) {
     return {
       code: 200,
       msg: `读取成功`,
-      data: data
+      strData: data,
+      data: CardReader.fn.resultData(data, USERINFO)
     };
   } catch (error) {
     CardReader.action.error();
@@ -921,6 +923,7 @@ CardReader.action['readUserInfoAndreadData'] = async function() {
 CardReader.action['writeData'] = async function(data) {
   // data = data;
   if (!data) return;
+  const odata = data;
   data = CardReader.fn.strToHex16(data);
   console.log('【写数据】');
   const dfSize = '1900'; const efSize = '00C8';
@@ -1067,7 +1070,7 @@ CardReader.action['writeData'] = async function(data) {
       code: 200,
       msg: '写入成功',
       data: {
-        data: data
+        data: odata
 
       }
     };

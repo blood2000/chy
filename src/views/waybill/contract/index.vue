@@ -135,7 +135,7 @@
             type="warning"
             icon="el-icon-magic-stick"
             size="mini"
-            :disabled="multiple"
+            :disabled="multiple || isDzqzContract!==0"
             :loading="loadingSign"
             @click="handleSign"
           >批量生成电子章</el-button>
@@ -145,7 +145,7 @@
             type="warning"
             icon="el-icon-magic-stick"
             size="mini"
-            :disabled="multiple"
+            :disabled="multiple || isDzqzContract!==1"
             :loading="downloadLoadin"
             @click="downloadElectronic"
           >批量下载电子章合同</el-button>
@@ -280,6 +280,36 @@ export default {
       downloadLoadin: false
     };
   },
+
+  computed: {
+    // 判断批量是打印, 还是 下载
+    isDzqzContract() {
+      let dzqzStatus = 0;
+
+      const arr1 = [];
+      const arr2 = [];
+
+      if (this.selectedList && this.selectedList.length > 0) {
+        this.selectedList.forEach(e => {
+          if (e.isDzqzContract === 0 || e.isDzqzContract === 2) {
+            arr1.push(true);
+          } else if (e.isDzqzContract === 1) {
+            arr2.push(true);
+          }
+        });
+
+        if (arr1.length === this.selectedList.length) {
+          dzqzStatus = 0;
+        }
+        if (arr2.length === this.selectedList.length) {
+          dzqzStatus = 1;
+        }
+      }
+
+      return dzqzStatus;
+    }
+  },
+
   created() {
     this.tableHeaderConfig(this.tableColumnsConfig, listContractApi, {
       prop: 'edit',
@@ -447,16 +477,21 @@ export default {
 
       // 正式上直接请求??
 
-      let batchUrl = [];
+      // let batchUrl = [];
 
-      if (process.env.NODE_ENV === 'production') {
-        batchUrl = arrData.filter(e => e.contractPath).map(e => e.contractPath);
-      } else {
-        batchUrl = arrData.filter(e => e.contractPath).map(e => {
-          const str = (e.contractPath.split('.com'))[1];
-          return `/pdf${str}`;
-        });
-      }
+      // if (process.env.NODE_ENV === 'production') {
+      //   batchUrl = arrData.filter(e => e.contractPath).map(e => e.contractPath);
+      // } else {
+      //   batchUrl = arrData.filter(e => e.contractPath).map(e => {
+      //     const str = (e.contractPath.split('.com'))[1];
+      //     return `/pdf${str}`;
+      //   });
+      // }
+
+      const batchUrl = arrData.filter(e => e.contractPath).map(e => {
+        const str = (e.contractPath.split('.com'))[1];
+        return `/pdf${str}`;
+      });
 
       if (batchUrl.length) {
         this.downloadLoadin = true;

@@ -97,7 +97,7 @@ const com = [
     'width': 150
   },
   {
-    'label': '调度者名称',
+    'label': '调度组名称',
     'prop': 'teamName',
     'isShow': true,
     'sortNum': 3,
