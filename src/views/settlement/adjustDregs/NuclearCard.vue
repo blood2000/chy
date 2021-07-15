@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-loading
-    :title="`发卡人: ${ userInfo.issuing_name || ''} 【承运司机: ${userInfo.user_name ||''}】 【发卡时间: ${ parseTime(userInfo.issuing_time - 0) || ''}】 【卡批次号: ${ userInfo.issuing_pc || ''}】 ` "
+    :title="`发卡人: ${ userInfo.issuing_name || ''} 【承运司机: ${userInfo.user_name ||''}】【调度者: ${userInfo.team_name ||''}】 【发卡时间: ${ parseTime(userInfo.issuing_time - 0) || ''}】 【卡批次号: ${ userInfo.issuing_pc || ''}】 ` "
     :visible="visible"
     width="80%"
     append-to-body
@@ -10,11 +10,11 @@
   >
     <div v-show="false" class="mb20" style="padding: 20px;">
       <!-- <el-button type="primary" @click="handler('cancellation')">注销卡片(清空使用者信息)</el-button> -->
-      <el-button type="primary" @click="handler('issuingCard')">issuingCard</el-button>
+      <el-button type="primary" @click="handler('issuingCard')">发卡</el-button>
       <!-- <el-button type="primary" @click="handler('readUserinfo')">读取用户信息</el-button> -->
       <!-- <el-button type="primary" @click="handler('readData')">读取数据</el-button> -->
-      <el-button type="primary" @click="handler('writeData')">writeData</el-button>
-      <el-button type="primary" @click="handler('getCardInfo')">卡注册给卡加上标识</el-button>
+      <el-button type="primary" @click="handler('writeData')">写卡</el-button>
+      <el-button type="primary" @click="handler('getCardInfo')">获取卡信息</el-button>
     </div>
 
     <RefactorTable
@@ -120,6 +120,9 @@
 </template>
 
 <script>
+// import { listInfo } from '@/api/assets/team';
+// import { listDriver } from '@/api/assets/driver';
+import { getUserByPhoneNum } from '@/api/system/user';
 import CardReader, { USERINFO, versionMark } from '@/libs/ICCard/CardReader';
 import { checkList, check } from '@/api/settlement/adjustDregs';
 const { action, fn } = CardReader;
@@ -138,6 +141,7 @@ export default {
       IClist: [],
       delData: [], // 保存删除的数据
       meter: null,
+      userMark: null,
       carId: undefined,
       errorCount: 0
     };
@@ -170,7 +174,7 @@ export default {
         this.loading = true;
         const ret = await action.readUserInfoAndreadData();
 
-        // console.log(ret, '数据');
+        // console.log(ret, '数据---');
 
         // 失败
         if (!ret.success && !ret.code) {
@@ -197,18 +201,54 @@ export default {
           return;
         }
 
-
         // 成功 的数据
         this.userInfo = ret.userInfo;
+
+        try {
+          const issuing = await getUserByPhoneNum(this.userInfo.issuing_telno);
+          if (issuing.data) {
+            this.userInfo.issuing_name = issuing.data.nickName || issuing.data.userName || issuing.data.phonenumber;
+          } else {
+            this.userInfo.issuing_name = '--';
+            this.msgError('发卡者用户不存在');
+          }
+
+          // 司机
+          const driver = await getUserByPhoneNum(this.userInfo.user_telno);
+          if (driver.data) {
+            this.userInfo.user_name = driver.data.nickName || driver.data.userName || driver.data.phonenumber;
+          } else {
+            this.userInfo.user_name = '--';
+            this.msgError('司机用户不存在');
+          }
+
+
+          // 承运者
+          const team = await getUserByPhoneNum(this.userInfo.team_telno);
+          if (team.data) {
+            this.userInfo.team_name = team.data.nickName || team.data.userName || team.data.phonenumber;
+          } else {
+            this.userInfo.team_name = '--';
+            this.msgError('承运者用户不存在');
+          }
+        } catch (error) {
+          console.log(error);
+        }
+
+
+
+
         this.userInfo.issuing_pc = this.userInfo.issuing_pc || Date.now() + '456';
         this.IClist = ret.dataList;
         this.meter = ret.meter;
+        this.userMark = ret.userMark;
         this.carId = ret.GetCardNo.data;
 
-        console.log([this.userInfo], '----------持卡者信息');
-        console.log([this.IClist], '----------当前卡数据');
-        console.log([this.meter], '----------卡版本');
-        console.log([this.carId], '----------ka标识');
+        // console.log([this.userInfo], '----------持卡者信息');
+        // console.log([this.IClist], '----------当前卡数据');
+        // console.log([this.meter], '----------卡版本');
+        // console.log([this.userMark], '----------用户版本');
+        // console.log([this.carId], '----------ka标识');
         // this.setLocalStorage(this.userInfo.user_code, { [this.userInfo]: this.IClist, meter: this.meter }); // 本地存储
 
         // 后端交互
@@ -375,7 +415,7 @@ export default {
       // console.log(this.userInfo);
 
       try {
-        await action.issuingCard(this.userInfo);
+        await action.issuingCard(this.userInfo, this.userMark);
       } catch (error) {
         this.msgError('核销失败, 请不要移动IC卡!');
         this.handlerClose();
@@ -497,13 +537,11 @@ export default {
     /** 卡的操作 */
     async handler(key) {
       const mobj = {};
-      const arr = '张三;18415451845;120;16612345678;17812345678;陈大帅;1621648441990;1621648441990123;r';
+      const arr = '18415451845;120;16612345678;17812345678;1621648441990;1621648441990123;r';
       let res = '';
       switch (key) {
         case 'getCardInfo':
-          action.getCardInfo().then(res => {
-            // console.log(res);
-          });
+          action.getCardInfo();
           break;
         case 'cancellation':
           // 注销卡片
@@ -537,7 +575,7 @@ export default {
         case 'writeData':
           // 写数据
 
-          res = await action.writeData('1010|1|30528;2106231554010424;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
+          res = await action.writeData('1010|2|30528;2106231554010424;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
           console.log(res);
           // res = await action.writeData('1010|1|30528;2106231554010424;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
           // // console.log(res);

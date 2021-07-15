@@ -399,7 +399,7 @@ export default {
               this.buttonLoading = false;
             });
           } else {
-            addInfo(this.form).then(response => {
+            addInfo(Object.assign({}, this.form, { fromSource: 1 })).then(response => {
               this.buttonLoading = false;
               this.msgSuccess('新增成功');
               this.close();
