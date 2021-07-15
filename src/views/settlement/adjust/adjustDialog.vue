@@ -1,13 +1,20 @@
 <template>
   <div>
-    <el-dialog v-loading="adjustLoading" class="i-adjust" :title="title" :visible="visible" width="1400px" :close-on-click-modal="false" append-to-body @close="cancel">
-
+    <!-- <el-dialog v-loading="adjustLoading" class="i-adjust" :title="title" :visible="visible" width="1400px" :close-on-click-modal="false" append-to-body @close="cancel"> -->
+    <el-drawer
+      size="96%"
+      title="核算"
+      :visible.sync="visible"
+      direction="rtl"
+      append-to-body
+      destroy-on-close
+      :before-close="cancel"
+      class="page-shipment-manage-dialog"
+    >
       <div slot="title" class="m20 ly-flex-align-center">
         <div>
           <span class="mr10">批量修改(元)： </span>
-
           <el-select v-model="selectedValue" size="small" placeholder="请选择" class="mr10">
-
             <el-option-group
               v-for="group in openShowList"
               :key="group.label"
@@ -21,147 +28,126 @@
               />
             </el-option-group>
           </el-select>
-
           <el-input-number v-model="selectedNum" style="width:200px;" size="small" controls-position="right" :min="0" :precision="2" placeholder="请输入批量修改的值" @keyup.enter.native="handleSelectedNumChange" />
-
           <el-button size="small" class="m20" type="primary" :disabled="!modify" :loading="plLoading" @click="handleSelectedNumChange">立即修改</el-button>
         </div>
       </div>
 
+      <div class="cont-frame">
+        <el-table v-loading="loading" height="780" highlight-current-row :data="adjustlist" border :row-class-name="tableRowClassName" @row-click="showImg">
+          <el-table-column width="160" label="运输单号" show-overflow-tooltip align="center" prop="waybillNo">
+            <!-- <template slot-scope="scope">
+              <div>
+                <span class="mr10">{{ scope.row.waybillNo }}</span>
 
+                <el-popover
+                  placement="right"
+                  :tabindex="scope.$index"
+                  trigger="click"
+                >
+                  <div v-if="visible">
+                    <ImgShow :rowdata="scope.row" />
+                  </div>
+                  <i slot="reference" class="el-icon-warning shou" />
+                </el-popover>
+              </div>
+            </template> -->
+          </el-table-column>
+          <el-table-column width="120" label="司机姓名" align="center" prop="driverName" />
+          <el-table-column width="120" label="司机电话" align="center" prop="driverPhone" />
+          <el-table-column width="120" label="车牌号" align="center" prop="licenseNumber" />
+          <el-table-column width="120" label="装货数量" align="center" prop="loadWeight">
+            <template slot-scope="scope">
+              <!-- <span v-if="scope.row.isDregs === 1">{{ scope.row.loadWeight }}</span> -->
+              <span v-if="scope.row.isDregs === 1">{{ floor(scope.row.loadWeight, scope.row.stowageStatus === '2'? 0: 3) }}</span>
+              <div v-else>
+                <el-input-number
+                  v-if="scope.row.stowageStatus !== '2'"
+                  v-model="scope.row.loadWeight"
+                  :precision="3"
+                  :controls="false"
+                  placeholder="请输入装货数量"
+                  style="width:100%;"
+                  size="mini"
+                  @change="handlerChangev(scope.row)"
+                  @keyup.enter.native="handlerChangev(scope.row)"
+                />
+                <!-- @keyup.native="handlerBlur($event,scope.row,false,'loadWeight')" -->
+                <!-- <span v-else>{{ scope.row.loadWeight }}</span> -->
+                <span v-else>{{ floor(scope.row.loadWeight, scope.row.stowageStatus === '2'? 0: 3) }}</span>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column width="120" label="卸货数量" align="center" prop="unloadWeight">
+            <template slot-scope="scope">
+              <!-- <span v-if="scope.row.isDregs === 1">{{ scope.row.unloadWeight }}</span> -->
+              <span v-if="scope.row.isDregs === 1">{{ floor(scope.row.unloadWeight, scope.row.stowageStatus === '2'? 0: 3) }}</span>
+              <div v-else>
+                <el-input-number
+                  v-if="scope.row.stowageStatus !== '2'"
+                  v-model="scope.row.unloadWeight"
+                  :precision="3"
+                  :controls="false"
+                  placeholder="请输入卸货数量"
+                  style="width:100%;"
+                  size="mini"
+                  @change="handlerChangev(scope.row)"
+                  @keyup.enter.native="handlerChangev(scope.row)"
+                />
+                <!-- @keyup.native="handlerBlur($event,scope.row,false,'unloadWeight')" -->
+                <!-- <span v-else>{{ scope.row.unloadWeight }}</span> -->
+                <span v-else>{{ floor(scope.row.unloadWeight, scope.row.stowageStatus === '2'? 0: 3) }}</span>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column width="80" label="配载方式" align="center" prop="lossAllowScope">
+            <template slot-scope="scope">
+              <span v-show="scope.row.stowageStatus === '0'">
+                吨数配载
+              </span>
+              <span v-show="scope.row.stowageStatus === '1'">
+                方数配载
+              </span>
+              <span v-show="scope.row.stowageStatus === '2'">
+                车数配载
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column width="160" label="路耗(吨/方)" align="center" prop="loss">
+            <template slot-scope="scope">
+              <span v-if="scope.row.stowageStatus === '0'">{{ floor((scope.row.loss -0), 2) }}</span>
+              <span v-else>{{ scope.row.loss || 0 }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column width="160" label="路耗允许范围(吨/方)" align="center" prop="lossAllowScope">
+            <template slot-scope="scope">
+              <span>{{ scope.row.lossAllowScope? _lossAllowScope(scope.row.lossAllowScope, scope.row.stowageStatus === '0' ) : '--' }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column width="160" label="货物单价(元)" align="center" prop="goodsPrice" />
+          <el-table-column width="160" label="货主成交单价(元)" align="center" prop="freightPrice" />
+          <!-- <el-table-column width="160" label="司机成交单价(元)" align="center" prop="freightPriceDriver" /> -->
+          <el-table-column width="160" label="亏涨扣费(元)" align="center" prop="lossDeductionFee">
+            <template slot-scope="scope">
+              <span>{{ floor(scope.row.lossDeductionFee) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column width="120" label="抹零金额(元)" align="center" prop="m0Fee" />
+          <!-- <el-table-column width="160" label="司机应收运费(元)" align="center" prop="deliveryFeePractical" /> -->
+          <el-table-column width="160" label="司机应收运费(元)" align="center" prop="deliveryFeeDeserved">
+            <template slot-scope="scope">
+              <span>{{ floor(scope.row.deliveryFeeDeserved) }}</span>
+            </template>
+          </el-table-column>
+          <!-- 补贴项目 -->
+          <el-table-column align="center" width="450" label="补贴项目">
+            <template slot="header">
+              <span>补贴项目
+                <el-button type="text" @click="isEdit2 = !isEdit2"><i class="el-icon-edit" /></el-button>
 
+                <el-button type="text" @click="handlerClick"><i class="el-icon-plus" /></el-button>
 
-
-      <el-table v-loading="loading" height="650" highlight-current-row :data="adjustlist" border :row-class-name="tableRowClassName">
-
-        <el-table-column width="160" label="运输单号" show-overflow-tooltip align="center" prop="waybillNo">
-
-          <template slot-scope="scope">
-            <div>
-              <span class="mr10">{{ scope.row.waybillNo }}</span>
-
-              <el-popover
-                placement="right"
-                :tabindex="scope.$index"
-                trigger="click"
-              >
-                <div v-if="visible">
-                  <ImgShow :rowdata="scope.row" />
-                </div>
-                <i slot="reference" class="el-icon-warning shou" />
-              </el-popover>
-            </div>
-          </template>
-        </el-table-column>
-
-        <el-table-column width="120" label="司机姓名" align="center" prop="driverName" />
-        <el-table-column width="120" label="司机电话" align="center" prop="driverPhone" />
-        <el-table-column width="120" label="车牌号" align="center" prop="licenseNumber" />
-
-        <el-table-column width="120" label="装货数量" align="center" prop="loadWeight">
-          <template slot-scope="scope">
-            <!-- <span v-if="scope.row.isDregs === 1">{{ scope.row.loadWeight }}</span> -->
-            <span v-if="scope.row.isDregs === 1">{{ floor(scope.row.loadWeight, scope.row.stowageStatus === '2'? 0: 3) }}</span>
-            <div v-else>
-              <el-input-number
-                v-if="scope.row.stowageStatus !== '2'"
-                v-model="scope.row.loadWeight"
-                :precision="3"
-                :controls="false"
-                placeholder="请输入装货数量"
-                style="width:100%;"
-                size="mini"
-                @change="handlerChangev(scope.row)"
-                @keyup.enter.native="handlerChangev(scope.row)"
-              />
-              <!-- @keyup.native="handlerBlur($event,scope.row,false,'loadWeight')" -->
-              <!-- <span v-else>{{ scope.row.loadWeight }}</span> -->
-              <span v-else>{{ floor(scope.row.loadWeight, scope.row.stowageStatus === '2'? 0: 3) }}</span>
-            </div>
-
-          </template>
-        </el-table-column>
-
-        <el-table-column width="120" label="卸货数量" align="center" prop="unloadWeight">
-          <template slot-scope="scope">
-            <!-- <span v-if="scope.row.isDregs === 1">{{ scope.row.unloadWeight }}</span> -->
-            <span v-if="scope.row.isDregs === 1">{{ floor(scope.row.unloadWeight, scope.row.stowageStatus === '2'? 0: 3) }}</span>
-            <div v-else>
-              <el-input-number
-                v-if="scope.row.stowageStatus !== '2'"
-                v-model="scope.row.unloadWeight"
-                :precision="3"
-                :controls="false"
-                placeholder="请输入卸货数量"
-                style="width:100%;"
-                size="mini"
-                @change="handlerChangev(scope.row)"
-                @keyup.enter.native="handlerChangev(scope.row)"
-              />
-              <!-- @keyup.native="handlerBlur($event,scope.row,false,'unloadWeight')" -->
-              <!-- <span v-else>{{ scope.row.unloadWeight }}</span> -->
-              <span v-else>{{ floor(scope.row.unloadWeight, scope.row.stowageStatus === '2'? 0: 3) }}</span>
-            </div>
-          </template>
-        </el-table-column>
-
-        <el-table-column width="80" label="配载方式" align="center" prop="lossAllowScope">
-          <template slot-scope="scope">
-            <span v-show="scope.row.stowageStatus === '0'">
-              吨数配载
-            </span>
-            <span v-show="scope.row.stowageStatus === '1'">
-              方数配载
-            </span>
-            <span v-show="scope.row.stowageStatus === '2'">
-              车数配载
-            </span>
-          </template>
-        </el-table-column>
-
-        <el-table-column width="160" label="路耗(吨/方)" align="center" prop="loss">
-          <template slot-scope="scope">
-            <span v-if="scope.row.stowageStatus === '0'">{{ floor((scope.row.loss -0), 2) }}</span>
-            <span v-else>{{ scope.row.loss || 0 }}</span>
-          </template>
-        </el-table-column>
-
-        <el-table-column width="160" label="路耗允许范围(吨/方)" align="center" prop="lossAllowScope">
-          <template slot-scope="scope">
-            <span>{{ scope.row.lossAllowScope? _lossAllowScope(scope.row.lossAllowScope, scope.row.stowageStatus === '0' ) : '--' }}</span>
-          </template>
-        </el-table-column>
-
-        <el-table-column width="160" label="货物单价(元)" align="center" prop="goodsPrice" />
-
-        <el-table-column width="160" label="货主成交单价(元)" align="center" prop="freightPrice" />
-
-        <!-- <el-table-column width="160" label="司机成交单价(元)" align="center" prop="freightPriceDriver" /> -->
-        <el-table-column width="160" label="亏涨扣费(元)" align="center" prop="lossDeductionFee">
-          <template slot-scope="scope">
-            <span>{{ floor(scope.row.lossDeductionFee) }}</span>
-          </template>
-        </el-table-column>
-
-
-        <el-table-column width="120" label="抹零金额(元)" align="center" prop="m0Fee" />
-
-        <!-- <el-table-column width="160" label="司机应收运费(元)" align="center" prop="deliveryFeePractical" /> -->
-        <el-table-column width="160" label="司机应收运费(元)" align="center" prop="deliveryFeeDeserved">
-          <template slot-scope="scope">
-            <span>{{ floor(scope.row.deliveryFeeDeserved) }}</span>
-          </template>
-        </el-table-column>
-
-        <!-- 补贴项目 -->
-        <el-table-column align="center" width="450" label="补贴项目">
-          <template slot="header">
-            <span>补贴项目
-              <el-button type="text" @click="isEdit2 = !isEdit2"><i class="el-icon-edit" /></el-button>
-
-              <el-button type="text" @click="handlerClick"><i class="el-icon-plus" /></el-button>
-
-            <!-- 1: 是增 2: 是减
+                <!-- 1: 是增 2: 是减
               <el-popover
                 placement="right"
                 width="400"
@@ -170,104 +156,100 @@
                 <PopoverCom v-if="popoverOpenCom" :list="felexes" />
                 <el-button slot="reference" type="text" @click="handlerClick"><i class="el-icon-plus" /></el-button>
               </el-popover> -->
-            </span>
+              </span>
+            </template>
+            <template slot-scope="scope">
+              <span v-if="scope.row.isDregs == 1"> -- </span>
 
-          </template>
-          <template slot-scope="scope">
-            <span v-if="scope.row.isDregs == 1"> -- </span>
-
-            <el-form v-else :inline="true" label-position="right" size="mini" class="ly-flex" label-width="100px">
-              <div v-for="(freight, index) in scope.row.subsidiesFreightList" :key="index">
-                <!-- 渣土 其他不能修改 -->
-                <el-form-item :label="freight.cnName + '(元)'">
-                  <span v-if="scope.row.isDregs === 1">{{ freight.ruleValue }}</span>
-                  <div v-else>
-                    <span v-show="!isEdit2">{{ freight.ruleValue }}</span>
-                    <el-input-number
-                      v-show="isEdit2"
-                      v-model="freight.ruleValue"
-                      :controls="false"
-                      :precision="2"
-                      :min="0"
-                      :placeholder="`${freight.cnName}`"
-                      style="width:100px;"
-                      @change="handlerChangev(scope.row)"
-                      @keyup.enter.native="handlerChangev(scope.row)"
-                    />
+              <el-form v-else :inline="true" label-position="right" size="mini" class="ly-flex" label-width="100px">
+                <div v-for="(freight, index) in scope.row.subsidiesFreightList" :key="index">
+                  <!-- 渣土 其他不能修改 -->
+                  <el-form-item :label="freight.cnName + '(元)'">
+                    <span v-if="scope.row.isDregs === 1">{{ freight.ruleValue }}</span>
+                    <div v-else>
+                      <span v-show="!isEdit2">{{ freight.ruleValue }}</span>
+                      <el-input-number
+                        v-show="isEdit2"
+                        v-model="freight.ruleValue"
+                        :controls="false"
+                        :precision="2"
+                        :min="0"
+                        :placeholder="`${freight.cnName}`"
+                        style="width:100px;"
+                        @change="handlerChangev(scope.row)"
+                        @keyup.enter.native="handlerChangev(scope.row)"
+                      />
                     <!-- @keyup.native="handlerBlur($event,scope.row, freight)" -->
-                  </div>
-                </el-form-item>
-              </div>
-
-            </el-form>
-          </template>
-        </el-table-column>
-        <!-- 扣费项目 -->
-        <el-table-column align="center" width="450" label="扣费项目">
-          <template slot="header">
-            <span>扣费项目
-              <el-button type="text" @click="isEdit = !isEdit"><i class="el-icon-edit" /></el-button>
-
-              <el-button type="text" @click="handlerdeduc"><i class="el-icon-plus" /></el-button>
-            </span>
-          </template>
-
-          <template slot-scope="scope">
-            <span v-if="scope.row.isDregs == 1"> -- </span>
-
-            <el-form v-else :inline="true" label-position="right" size="mini" class="ly-flex" label-width="100px">
-              <div v-for="(freight, index) in scope.row.deductionFreightList" :key="index">
-                <el-form-item :label="freight.cnName + '(元)'">
-                  <div>
-                    <span v-show="!isEdit">{{ freight.ruleValue }}</span>
-                    <el-input-number
-                      v-show="isEdit"
-                      v-model="freight.ruleValue"
-                      :controls="false"
-                      :precision="2"
-                      :min="0"
-                      :placeholder="`${freight.cnName}`"
-                      style="width:100px;"
-                      @change="handlerChangev(scope.row)"
-                      @keyup.enter.native="handlerChangev(scope.row)"
-                    />
+                    </div>
+                  </el-form-item>
+                </div>
+              </el-form>
+            </template>
+          </el-table-column>
+          <!-- 扣费项目 -->
+          <el-table-column align="center" width="450" label="扣费项目">
+            <template slot="header">
+              <span>扣费项目
+                <el-button type="text" @click="isEdit = !isEdit"><i class="el-icon-edit" /></el-button>
+                <el-button type="text" @click="handlerdeduc"><i class="el-icon-plus" /></el-button>
+              </span>
+            </template>
+            <template slot-scope="scope">
+              <span v-if="scope.row.isDregs == 1"> -- </span>
+              <el-form v-else :inline="true" label-position="right" size="mini" class="ly-flex" label-width="100px">
+                <div v-for="(freight, index) in scope.row.deductionFreightList" :key="index">
+                  <el-form-item :label="freight.cnName + '(元)'">
+                    <div>
+                      <span v-show="!isEdit">{{ freight.ruleValue }}</span>
+                      <el-input-number
+                        v-show="isEdit"
+                        v-model="freight.ruleValue"
+                        :controls="false"
+                        :precision="2"
+                        :min="0"
+                        :placeholder="`${freight.cnName}`"
+                        style="width:100px;"
+                        @change="handlerChangev(scope.row)"
+                        @keyup.enter.native="handlerChangev(scope.row)"
+                      />
                     <!-- @keyup.native="handlerBlur($event,scope.row, freight)" -->
-                  </div>
-                </el-form-item>
-              </div>
-            </el-form>
-          </template>
-        </el-table-column>
+                    </div>
+                  </el-form-item>
+                </div>
+              </el-form>
+            </template>
+          </el-table-column>
+          <el-table-column width="120" label="纳税金额(元)" align="center" prop="taxPayment" fixed="right">
+            <template slot-scope="scope">
+              <span> {{ floor(scope.row.taxPayment) }} </span>
+            </template>
+          </el-table-column>
+          <el-table-column width="120" label="服务费(元)" align="center" prop="serviceFee" fixed="right">
+            <template slot-scope="scope">
+              <span> {{ floor(scope.row.serviceFee) }} </span>
+            </template>
+          </el-table-column>
+          <el-table-column width="162" label="司机实收金额(元)" align="center" prop="deliveryCashFee" fixed="right">
+            <template slot-scope="scope">
+              <span>{{ floor(scope.row.deliveryCashFee) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column width="140" label="货主实付金额(元)" align="center" prop="shipperRealPay" fixed="right">
+            <template slot-scope="scope">
+              <span> {{ floor(scope.row.shipperRealPay) }} </span>
+            </template>
+          </el-table-column>
+        </el-table>
+        <ImgShow :rowdata="rowData" />
+      </div>
 
-        <el-table-column width="120" label="纳税金额(元)" align="center" prop="taxPayment" fixed="right">
-          <template slot-scope="scope">
-            <span> {{ floor(scope.row.taxPayment) }} </span>
-          </template>
-        </el-table-column>
-        <el-table-column width="120" label="服务费(元)" align="center" prop="serviceFee" fixed="right">
-          <template slot-scope="scope">
-            <span> {{ floor(scope.row.serviceFee) }} </span>
-          </template>
-        </el-table-column>
-        <el-table-column width="162" label="司机实收金额(元)" align="center" prop="deliveryCashFee" fixed="right">
-          <template slot-scope="scope">
-            <span>{{ floor(scope.row.deliveryCashFee) }}</span>
-          </template>
-        </el-table-column>
 
-        <el-table-column width="140" label="货主实付金额(元)" align="center" prop="shipperRealPay" fixed="right">
-          <template slot-scope="scope">
-            <span> {{ floor(scope.row.shipperRealPay) }} </span>
-          </template>
-        </el-table-column>
-
-      </el-table>
-
-      <div slot="footer" class="dialog-footer">
+      <div class="drawer-footer">
         <el-button type="primary" :loading="plLoading" @click="submitForm">立即核算</el-button>
         <el-button @click="cancel">返回</el-button>
       </div>
-    </el-dialog>
+    </el-drawer>
+    <!-- </el-dialog> -->
 
     <el-dialog :title="'规则'" class="i-price" :visible.sync="popoverOpenCom" append-to-body>
       <div slot="title" class="ly-flex">
@@ -343,7 +325,8 @@ export default {
       errList: [],
       className: '',
       adjustLoading: false,
-      changeFee: null
+      changeFee: null,
+      rowData: {}
     };
   },
   computed: {
@@ -426,6 +409,9 @@ export default {
   },
 
   methods: {
+    showImg(row) {
+      this.rowData = row;
+    },
     // 数字change事件
     handlerChangev(row) {
       // console.log(row, 'oooo');
@@ -775,6 +761,8 @@ export default {
 
     /** 取消按钮 */
     cancel() {
+      this.rowData = {};
+      console.log(this.rowData);
       // this.showSubList = [];
       this.close();
     },
@@ -958,4 +946,13 @@ export default {
   background: #fadbd9;
 }
 
+.drawer-footer{
+  width: 100%;
+  display: flex;
+  margin: 20px 20px 0;
+}
+.cont-frame{
+  display: flex;
+  margin: 0 20px;
+}
 </style>

@@ -1,13 +1,18 @@
 <template>
   <div class="null-cont g-directioncenter g-justifycenter">
     <img class="null-img" src="~@/assets/images/icon/icon_null.png" alt="">
-    <div class="null-text">暂无数据</div>
+    <div class="null-text">{{ nullTitle }}</div>
   </div>
 </template>
 
 <script>
 export default {
-
+  props: {
+    nullTitle: {
+      type: String,
+      default: '暂无数据'
+    }
+  }
 };
 </script>
 
