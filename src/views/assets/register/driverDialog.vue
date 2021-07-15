@@ -134,9 +134,9 @@
       <el-form-item v-show="form.driverType===2" label="工作单位" prop="workCompany">
         <el-input v-model="form.workCompany" placeholder="请输入工作单位" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="道路运输经营许可证" prop="transportPermitNo">
+      <!-- <el-form-item label="道路运输经营许可证" prop="transportPermitNo">
         <el-input v-model="form.transportPermitNo" placeholder="请输入道路运输经营许可证" class="width90" clearable />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="从业资格证" prop="workLicense">
         <el-input v-model="form.workLicense" placeholder="请输入从业资格证" class="width90" clearable />
       </el-form-item>
@@ -229,14 +229,6 @@
             <p class="upload-image-label">驾驶证</p>
             <upload-image v-model="form.driverLicenseImage" image-type="driver-license" icon-type="driver" @fillForm="fillForm" />
           </el-col>
-          <el-col v-show="form.driverType===1" :span="7" class="mb">
-            <p class="upload-image-label">行驶证</p>
-            <upload-image v-model="form.driverOtherLicenseImage" image-type="vehicle-license" side="front" icon-type="vehicle" @fillForm="fillForm" />
-          </el-col>
-          <el-col v-show="form.driverType===1" :span="7" class="mb">
-            <p class="upload-image-label">行驶证副页</p>
-            <upload-image v-model="form.driverOtherLicenseBackImage" image-type="vehicle-license" side="back" icon-type="vehicle_back" @fillForm="fillForm" />
-          </el-col>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">身份证(人像面)</p>
             <upload-image v-model="form.identificationImage" image-type="id-card" side="front" icon-type="idcard" @fillForm="fillForm" />
@@ -244,14 +236,6 @@
           <el-col :span="7" class="mb">
             <p class="upload-image-label">身份证(国徽面)</p>
             <upload-image v-model="form.identificationBackImage" image-type="id-card" side="back" icon-type="idcard_back" @fillForm="fillForm" />
-          </el-col>
-          <el-col v-show="form.driverType===1" :span="7" class="mb">
-            <p class="upload-image-label">道路运输许可证</p>
-            <upload-image v-model="form.transportPermitImage" icon-type="transport" />
-          </el-col>
-          <el-col v-show="form.driverType===1" :span="7">
-            <p class="upload-image-label">车头正面照</p>
-            <upload-image v-model="vehicleForm.vehicleImage" icon-type="vehicle_head" />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">司机照片</p>
@@ -271,6 +255,10 @@
     -->
     <el-form ref="vehicleForm" :model="vehicleForm" :rules="vehicleRules" label-width="154px">
       <template v-if="form.driverType == 1">
+        <h5 class="g-card-title g-strong mb20 ml10">
+          车辆信息
+          <div class="h5-divider" style="width: 91%" />
+        </h5>
         <el-form-item label="车牌号" prop="licenseNumber" :rules="[{ required: true, message: '车牌号不能为空', trigger: ['change', 'blur'] }]">
           <!-- 新增车辆 -->
           <el-input v-if="addVehicleType === 0" v-model="vehicleForm.licenseNumber" placeholder="支持自动识别" class="width70" clearable />
@@ -343,6 +331,9 @@
               :value="dict.dictValue"
             />
           </el-select>
+        </el-form-item>
+        <el-form-item label="道路运输许可证号" prop="roadTransportCertificateNumber">
+          <el-input v-model="vehicleForm.roadTransportCertificateNumber" placeholder="请输入道路运输许可证号" class="width90" clearable />
         </el-form-item>
         <el-form-item label="车身颜色" prop="vehicleColorCode">
           <el-select v-model="vehicleForm.vehicleColorCode" class="width90" filterable clearable>
@@ -447,6 +438,26 @@
         <el-form-item label="运输介子" prop="transportMeson">
           <el-input v-model="vehicleForm.transportMeson" placeholder="请输入运输介子" class="width90" clearable :disabled="disable" />
         </el-form-item> -->
+        <el-form-item>
+          <el-row v-viewer>
+            <el-col :span="7" class="mb">
+              <p class="upload-image-label">行驶证</p>
+              <upload-image v-model="vehicleForm.vehicleLicenseImg" image-type="vehicle-license" side="front" icon-type="vehicle" @fillForm="fillForm" />
+            </el-col>
+            <el-col :span="7" class="mb">
+              <p class="upload-image-label">行驶证副页</p>
+              <upload-image v-model="vehicleForm.vehicleLicenseSecondImg" image-type="vehicle-license" side="back" icon-type="vehicle_back" @fillForm="fillForm" />
+            </el-col>
+            <el-col :span="7" class="mb">
+              <p class="upload-image-label">道路运输许可证</p>
+              <upload-image v-model="vehicleForm.roadTransportCertificateImg" icon-type="transport" />
+            </el-col>
+            <el-col :span="7">
+              <p class="upload-image-label">车头正面照</p>
+              <upload-image v-model="vehicleForm.vehicleImage" icon-type="vehicle_head" />
+            </el-col>
+          </el-row>
+        </el-form-item>
       </template>
     </el-form>
 
@@ -566,9 +577,9 @@ export default {
         /*  workCompany: [
           { required: true, message: '工作单位不能为空', trigger: 'blur' }
         ],*/
-        transportPermitNo: [
+        /* transportPermitNo: [
           { required: true, message: '道路运输经营许可证不能为空', trigger: 'blur' }
-        ],
+        ],*/
         password: [
           { validator: this.formValidate.passWord, trigger: 'blur' }
         ]
@@ -747,14 +758,11 @@ export default {
         updateCode: null,
         updateTime: null,
         isDel: null,
-        transportPermitNo: null,
+        // transportPermitNo: null,
         validPeriodAlways: null,
         driverLicenseImage: null,
-        driverOtherLicenseImage: null,
-        driverOtherLicenseBackImage: null,
         identificationImage: null,
         identificationBackImage: null,
-        transportPermitImage: null,
         peopleImage: null,
         workLicenseImage: null
       };
@@ -794,7 +802,11 @@ export default {
         updateTime: null,
         delFlag: null,
         vehicleImage: null,
-        licenseNumber: null
+        licenseNumber: null,
+        vehicleLicenseImg: null,
+        vehicleLicenseSecondImg: null,
+        roadTransportCertificateNumber: null,
+        roadTransportCertificateImg: null
       };
       this.resetForm('vehicleForm');
     },
@@ -1066,7 +1078,18 @@ export default {
   margin: 0;
   line-height: 24px;
 }
-
+/* 标题样式 */
+.g-card-title{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  >.h5-divider{
+    margin-left: 8px;
+    height: 1px;
+    border-bottom: 1px dashed #DAD3D3;
+  }
+}
+/* 单位样式 */
 .unit-item{
   ::v-deep .el-input__inner{
     padding-right: 50px;
