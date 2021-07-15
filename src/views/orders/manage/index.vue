@@ -267,11 +267,23 @@
         </template>
 
         <template #loadType="{row}">
-          <span>{{ selectDictLabel(loadTypeOptions, row.loadType) }}</span>
+          <span>{{ selectDictLabel(loadTypeOptions, row.loadType) || '-' }}</span>
         </template>
         <template #updateUserName="{row}">
           <span>{{ row.opNickName || row.updateUserName || row.opUserName }}</span>
           <span v-if="row.phonenumber">[{{ row.phonenumber }}]</span>
+        </template>
+        <template #haveWaybill="{row}">
+          <span :class="row.haveWaybill!==1?'g-color-error':'g-color-success'">{{ selectDictLabel(haveWaybill_Options, row.haveWaybill) || '-' }}</span>
+        </template>
+        <template #uploadLoadVoucher="{row}">
+          <span :class="row.uploadLoadVoucher!==1?'g-color-error':'g-color-success'">{{ selectDictLabel(uploadLoadVoucher_Options, row.uploadLoadVoucher) || '-' }}</span>
+        </template>
+        <template #uploadUnloadVoucher="{row}">
+          <span :class="row.uploadUnloadVoucher!==1?'g-color-error':'g-color-success'">{{ selectDictLabel(uploadUnloadVoucher_Options, row.uploadUnloadVoucher) || '-' }}</span>
+        </template>
+        <template #scenario="{row}">
+          <span>{{ selectDictLabel(scenario_Options, row.scenario) || '-' }}</span>
         </template>
 
         <template #accessTime="{row}">
@@ -472,6 +484,12 @@ export default {
         { dictLabel: '否', dictValue: 0 },
         { dictLabel: '是', dictValue: 1 }
       ],
+
+      // 是否有运单 0否 1是
+      haveWaybill_Options: [
+        { dictLabel: '否', dictValue: 0 },
+        { dictLabel: '是', dictValue: 1 }
+      ],
       isSpecifiedTypeOptions: [
         { dictLabel: '否', dictValue: 0 },
         { dictLabel: '是', dictValue: 1 }
@@ -488,6 +506,26 @@ export default {
         { dictLabel: '不可见', dictValue: 0 },
         { dictLabel: '可见', dictValue: 1 }
       ],
+
+      // 装货时是否必须上传装货凭证 1 是 0 否
+      uploadLoadVoucher_Options: [
+        { dictLabel: '否', dictValue: 0 },
+        { dictLabel: '是', dictValue: 1 }
+      ],
+
+      // 卸货时是否必须上传装货凭证 1 是 0 否
+      uploadUnloadVoucher_Options: [
+        { dictLabel: '否', dictValue: 0 },
+        { dictLabel: '是', dictValue: 1 }
+      ],
+      // 场景
+
+      scenario_Options: [
+        { dictLabel: '大宗', dictValue: 1100 },
+        { dictLabel: '渣土', dictValue: 1200 }
+      ],
+
+
 
       goodsTypeOption: [],
       isShipment: false,
@@ -561,7 +599,13 @@ export default {
     this.isShipment = isShipment;
 
     isShipment && (this.queryParams.tin6 = shipment.info.code);
-    this.tableHeaderConfig(this.tableColumnsConfig, listManagesApi, null, tableColumnsConfig);
+    this.tableHeaderConfig(this.tableColumnsConfig, listManagesApi, {
+      prop: 'edit',
+      isShow: true,
+      label: '操作',
+      width: 180,
+      fixed: 'left'
+    }, tableColumnsConfig);
     this.getDict();
     this.getList();
   },
