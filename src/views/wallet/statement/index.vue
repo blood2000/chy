@@ -92,7 +92,7 @@
     <!-- 运单详情 对话框 -->
     <!-- <detail-dialog ref="DetailDialog" :current-id="currentId" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" /> -->
     <el-dialog class="i-adjust" title="运单详情" :visible.sync="openStatementsInfo" width="1200px" append-to-body>
-      <StatementsInfo v-if="openStatementsInfo" :way-bill-codes="a_dataList" />
+      <StatementsInfo v-if="openStatementsInfo" :print-data="a_dataList" />
     </el-dialog>
     <!-- 现金详情 对话框 -->
     <driver-dialog ref="DriverDialog" :open.sync="driverOpen" :batch-no="batchNo" />
@@ -177,8 +177,8 @@ export default {
       // this.open = true;
       // this.title = '运输单信息';
       // this.formDisable = true;
+      this.a_dataList = { batchNo: row.batchNo };
       this.openStatementsInfo = true;
-      this.a_dataList = row.wayBillCodes.split(',');
     }
   }
 };

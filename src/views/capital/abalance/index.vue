@@ -23,7 +23,7 @@
         <el-table-column label="公户银行账户" align="center" prop="bankLineNo" />
         <el-table-column label="联行号" align="center" prop="bankLineNo" />
         <el-table-column label="银行预留手机号" align="center" prop="mobile" />
-        <el-table-column label="操作" align="center" fixed="left" class-name="small-padding fixed-width" width="240">
+        <!-- <el-table-column label="操作" align="center" fixed="left" class-name="small-padding fixed-width" width="240">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -64,7 +64,7 @@
               </el-dropdown-item>
             </TableDropdown>
           </template>
-        </el-table-column>
+        </el-table-column> -->
       </el-table>
 
       <pagination
