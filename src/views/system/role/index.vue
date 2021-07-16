@@ -636,9 +636,9 @@ export default {
       const checkedKeys = this.$refs.menu.getCheckedKeys();
       // console.log('----------------------checkedKeys: ', checkedKeys);
       // 半选中的菜单节点
-      // const halfCheckedKeys = this.$refs.menu.getHalfCheckedKeys();
+      const halfCheckedKeys = this.$refs.menu.getHalfCheckedKeys();
       // console.log('----------------------halfCheckedKeys: ', halfCheckedKeys);
-      // checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
+      checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
       // console.log('----------------------unshift: ', checkedKeys);
       return checkedKeys;
     },
