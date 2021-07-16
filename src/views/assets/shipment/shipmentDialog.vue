@@ -497,14 +497,24 @@
       <el-row :gutter="20">
         <el-col :span="11">
           <el-form-item prop="noNeedUnloadImg">
-            <el-checkbox v-model="form.noNeedUnloadImg">是否不需要卸货图片</el-checkbox>
+            <el-checkbox v-model="form.noNeedUnloadImg">卸货时是否必须上传凭证</el-checkbox>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item prop="isNeedLoadingCertificate">
-            <el-checkbox v-model="form.isNeedLoadingCertificate">是否需要装货凭证</el-checkbox>
+            <el-checkbox v-model="form.isNeedLoadingCertificate">装货时是否必须上传凭证</el-checkbox>
           </el-form-item>
         </el-col>
+          <el-col :span="11">
+              <el-form-item prop="reviewNoNeedUnloadImg">
+                  <el-checkbox v-model="form.reviewNoNeedUnloadImg">复核时是否需要卸货凭证</el-checkbox>
+              </el-form-item>
+          </el-col>
+          <el-col :span="11">
+              <el-form-item prop="reviewIsNeedLoadingCertificate">
+                  <el-checkbox v-model="form.reviewIsNeedLoadingCertificate">复核时是否需要装货凭证</el-checkbox>
+              </el-form-item>
+          </el-col>
         <el-col :span="11">
           <el-form-item prop="openAppPermissionControl">
             <el-checkbox v-model="form.openAppPermissionControl">是否开启货主APP权限控制</el-checkbox>
@@ -881,21 +891,29 @@ export default {
             this.$set(this.form, 'serviceRate', '');// 服务费税率
             this.$set(this.form, 'dispatchPoints', ((this.form.texPoint / (100 - this.form.texPoint)) * 100).toFixed(2));
           }
+          var noNeedUnloadImg = 0;
+          if (this.form.noNeedUnloadImg === false) {
+            noNeedUnloadImg = 1;
+          }
+          var isNeedLoadingCertificate = 0;
+          if (this.form.isNeedLoadingCertificate === false) {
+            isNeedLoadingCertificate = 1;
+          }
           var editDriverActualAmount = 1;
           if (this.form.editDriverActualAmount === true) {
             editDriverActualAmount = 0;
           }
-          var noNeedUnloadImg = 0;
-          if (this.form.noNeedUnloadImg === true) {
-            noNeedUnloadImg = 1;
+          var reviewNoNeedUnloadImg = 0;
+          if (this.form.reviewNoNeedUnloadImg === false) {
+            reviewNoNeedUnloadImg = 1;
+          }
+          var reviewIsNeedLoadingCertificate = 0;
+          if (this.form.reviewIsNeedLoadingCertificate === false) {
+            reviewIsNeedLoadingCertificate = 1;
           }
           var openProjectDesignView = 1;
           if (this.form.openProjectDesignView === true) {
             openProjectDesignView = 0;
-          }
-          var isNeedLoadingCertificate = 1;
-          if (this.form.isNeedLoadingCertificate === true) {
-            isNeedLoadingCertificate = 0;
           }
           var openAppPermissionControl = 0;
           if (this.form.openAppPermissionControl === true) {
@@ -908,7 +926,8 @@ export default {
           // 复制管理员图片至法人
           this.form.artificialIdentificationImg = this.form.identificationImg;
           this.form.artificialIdentificationBackImg = this.form.identificationBackImg;
-          var extendForm = { editDriverActualAmount: editDriverActualAmount, noNeedUnloadImg: noNeedUnloadImg, openProjectDesignView: openProjectDesignView,
+          var extendForm = { editDriverActualAmount: editDriverActualAmount, noNeedUnloadImg: noNeedUnloadImg,
+            reviewNoNeedUnloadImg: reviewNoNeedUnloadImg, reviewIsNeedLoadingCertificate: reviewIsNeedLoadingCertificate, openProjectDesignView: openProjectDesignView,
             isNeedLoadingCertificate: isNeedLoadingCertificate, openAppPermissionControl: openAppPermissionControl, openProjectMemberView: openProjectMemberView };
           // eslint-disable-next-line no-undef
           this.form = Object.assign(this.form, extendForm);
@@ -1024,11 +1043,13 @@ export default {
         serviceRate: null,
         supplyIsAuth: 0, // 是否审核货源，默认否
         noNeedUnloadImg: 0,
+        reviewNoNeedUnloadImg: 0,
         openProjectDesignView: 1,
         singleSourceMultiCommodity: 1,
         singleSourceMultiLoadingLocations: 1,
         singleSourceMultiUnloadingLocations: 1,
         isNeedLoadingCertificate: 0,
+        reviewIsNeedLoadingCertificate: 0,
         openAppPermissionControl: 0,
         openProjectMemberView: 0,
         editDriverActualAmount: 1,
@@ -1039,6 +1060,27 @@ export default {
         // branchCode: null
       };
       this.resetForm('form');
+      // 卸货时是否必须上传凭证  0，需要  1，不需要
+      if (this.form.noNeedUnloadImg === 0) {
+        this.form.noNeedUnloadImg = true;
+      } else {
+        this.form.noNeedUnloadImg = false;
+      }
+      if (this.form.isNeedLoadingCertificate === 0) {
+        this.form.isNeedLoadingCertificate = true;
+      } else {
+        this.form.isNeedLoadingCertificate = false;
+      }
+      if (this.form.reviewNoNeedUnloadImg === 0) {
+        this.form.reviewNoNeedUnloadImg = true;
+      } else {
+        this.form.reviewNoNeedUnloadImg = false;
+      }
+      if (this.form.reviewIsNeedLoadingCertificate === 0) {
+        this.form.reviewIsNeedLoadingCertificate = true;
+      } else {
+        this.form.reviewIsNeedLoadingCertificate = false;
+      }
     },
     // 表单赋值
     setForm(data) {
@@ -1050,9 +1092,14 @@ export default {
         this.form.editDriverActualAmount = false;
       }
       if (this.form.noNeedUnloadImg === 0) {
-        this.form.noNeedUnloadImg = false;
-      } else {
         this.form.noNeedUnloadImg = true;
+      } else {
+        this.form.noNeedUnloadImg = false;
+      }
+      if (this.form.reviewNoNeedUnloadImg === 0) {
+        this.form.reviewNoNeedUnloadImg = true;
+      } else {
+        this.form.reviewNoNeedUnloadImg = false;
       }
       if (this.form.openProjectDesignView === 0) {
         this.form.openProjectDesignView = true;
@@ -1063,6 +1110,11 @@ export default {
         this.form.isNeedLoadingCertificate = true;
       } else {
         this.form.isNeedLoadingCertificate = false;
+      }
+      if (this.form.reviewIsNeedLoadingCertificate === 0) {
+        this.form.reviewIsNeedLoadingCertificate = true;
+      } else {
+        this.form.reviewIsNeedLoadingCertificate = false;
       }
       if (this.form.openAppPermissionControl === 1) {
         this.form.openAppPermissionControl = true;

@@ -249,7 +249,8 @@ export default {
         // console.log([this.meter], '----------卡版本');
         // console.log([this.userMark], '----------用户版本');
         // console.log([this.carId], '----------ka标识');
-        this.setLocalStorage(this.carId, { [this.userInfo.issuing_pc]: { data: this.IClist, meter: this.meter, userMark: this.userMark }}); // 本地存储
+        this.setLocalStorage(this.carId, { [this.userInfo.issuing_pc]: { data: this.IClist, meter: this.meter, userMark: this.userMark, userInfo: this.userInfo }}); // 本地存储
+        console.log(this.getLocalStorage(this.carId));
 
         // 后端交互
         this.initData();
@@ -512,25 +513,6 @@ export default {
     //   });
     // },
     handlerClose() {
-      // if (this.isWart) return;
-      // if (this.delData.length > 0) {
-      //   this.$confirm('删除数据要花费' + (this.list.length * 1500) / 1000 + '秒, 期间禁止移动卡片, 确定要删除' + this.delData.join(',') + '吗', '确定要从卡里面清除吗?', {
-      //     confirmButtonText: '确定删除',
-      //     cancelButtonText: '保留原记录',
-      //     type: 'warning',
-      //     center: true
-      //   }).then(() => {
-      //     this._returnWrite(this.userInfo, this.list);
-      //     // console.log(this.list);
-      //     // console.log(this.IClist);
-      //   }).catch(() => {
-      //     this.$emit('update:open', false);
-      //   });
-      //   this.delData = [];
-
-      //   return;
-      // }
-
       this.$emit('update:open', false);
     },
 
@@ -540,7 +522,13 @@ export default {
 
       // 当前用户测试数据
 
+      const icData = this.getLocalStorage(this.carId) ? this.getLocalStorage(this.carId)[this.userInfo.issuing_pc] : null;
+
+      console.log(icData);
       const arr = '14700000001;120;15859102001;15859109601;1626253668656;1626253668656386;r';
+
+
+      console.log();
       let res = '';
       switch (key) {
         case 'getCardInfo':
@@ -555,15 +543,22 @@ export default {
           });
           break;
         case 'issuingCard':
-          // 发卡
-          USERINFO.forEach((e, index) => {
-            mobj[e] = (arr.split(';'))[index];
-          });
+          if (icData) {
+            action.issuingCard(icData.userInfo, icData.userMark).then(res => {
+              // this.msgSuccess(res.msg);
+              console.log(res);
+            });
+          } else {
+            // 发卡
+            USERINFO.forEach((e, index) => {
+              mobj[e] = (arr.split(';'))[index];
+            });
 
-          action.issuingCard(mobj).then(res => {
-            this.msgSuccess(res.msg);
-            console.log(res);
-          });
+            action.issuingCard(mobj).then(res => {
+              // this.msgSuccess(res.msg);
+              console.log(res);
+            });
+          }
           break;
         case 'readUserinfo':
           // 读取用户信息
@@ -579,9 +574,18 @@ export default {
           break;
         case 'writeData':
           // 写数据
+          if (icData) {
+            icData.data;
+            for (let index = 0; index < icData.data.length; index++) {
+              const e = icData.data[index];
+              res = await action.writeData(fn.setData(icData.meter.join('|') + '|', e));
+            }
+          } else {
+            res = await action.writeData('1010|2|2105272013285566;2106231554010424;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
+          }
+
 
           // res = await action.writeData('1010|2|30528;2106231554010424;616测试项目1;闽AQ8002;测试独立加强;15859109002;1624068000000;1624068000000;31;616测试1—石渣土');
-          res = await action.writeData('1010|2|2105272013285566;2106231554010424;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
           // res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
           // res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
           // res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
