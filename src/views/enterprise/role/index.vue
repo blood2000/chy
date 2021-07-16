@@ -498,6 +498,7 @@ export default {
         dataScope: '6'
       },
       allMenuCodes: [],
+      halfMenuCodes: [],
       ownMenuCodes: {},
       ownMenuId: 'all',
       treeLoading: false,
@@ -630,15 +631,6 @@ export default {
         this.deptOptions = response.data;
       });
     },
-    // 所有菜单节点数据
-    getMenuAllCheckedKeys() {
-      // 目前被选中的菜单节点
-      const checkedKeys = this.$refs.menu.getCheckedKeys();
-      // 半选中的菜单节点
-      const halfCheckedKeys = this.$refs.menu.getHalfCheckedKeys();
-      checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
-      return checkedKeys;
-    },
     // 选中版本的时候,先从all里面移除own的key
     removeOwnKeys(ownMenuCodes) {
       ownMenuCodes.forEach((item1) => {
@@ -649,12 +641,24 @@ export default {
           }
         });
       });
+      ownMenuCodes.forEach((item1) => {
+        this.halfMenuCodes.forEach((item2, j) => {
+          if (item2 === item1) {
+            this.halfMenuCodes.splice(j, 1);
+            j -= 1;
+          }
+        });
+      });
     },
     saveCheckedKeys() {
-      // 去重合并
-      const arr = this.allMenuCodes.concat(this.getMenuAllCheckedKeys());
+      // allMenuCodes去重合并
+      const arr = this.allMenuCodes.concat(this.$refs.menu.getCheckedKeys());
       const arrNew = new Set(arr);
       this.allMenuCodes = Array.from(arrNew);
+      // halfMenuCodes去重合并
+      const arr1 = this.halfMenuCodes.concat(this.$refs.menu.getHalfCheckedKeys());
+      const arrNew1 = new Set(arr1);
+      this.halfMenuCodes = Array.from(arrNew1);
     },
     // 所有部门节点数据
     getDeptAllCheckedKeys() {
@@ -708,6 +712,7 @@ export default {
     // 表单重置
     reset() {
       this.allMenuCodes = [];
+      this.halfMenuCodes = [];
       this.ownMenuCodes = {};
       this.ownMenuId = 'all';
       this.treeLoading = false;
@@ -839,7 +844,7 @@ export default {
         if (valid) {
           this.buttonLoading = true;
           this.saveCheckedKeys();
-          this.form.menuCodes = this.allMenuCodes;
+          this.form.menuCodes = [...this.allMenuCodes, ...this.halfMenuCodes];
           if (this.form.roleId !== undefined) {
             updateRole(this.form).then(response => {
               this.buttonLoading = false;
@@ -932,7 +937,7 @@ export default {
       this.treeLoading = true;
       this.saveCheckedKeys();
       // 缓存上一次的勾选
-      this.ownMenuCodes[this.ownMenuId] = this.getMenuAllCheckedKeys();
+      this.ownMenuCodes[this.ownMenuId] = this.$refs.menu.getCheckedKeys();
       this.ownMenuId = data.code;
 
       const params = {};
