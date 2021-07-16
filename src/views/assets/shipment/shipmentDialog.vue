@@ -358,7 +358,7 @@
       <el-row :gutter="20">
         <!--<el-col v-if="form.isMonthly" :span="11">-->
         <el-col :span="11">
-          <el-form-item label="授信金额" prop="creditAmount">
+          <el-form-item label="授信金额(元)" prop="creditAmount">
             <el-input-number v-model="form.creditAmount" :precision="2" :min="0" :max="1000000000" :controls="false" placeholder="保留两位小数" />
           </el-form-item>
         </el-col>
@@ -475,7 +475,7 @@
           </el-form-item>
         </el-col>-->
         <el-col :span="11">
-          <el-form-item label="修改司机实收金额" prop="editDriverActualAmount">
+          <!--<el-form-item label="修改司机实收金额" prop="editDriverActualAmount">
             <el-radio-group v-model="form.editDriverActualAmount">
               <el-radio
                 v-for="dict in allowOptions"
@@ -483,6 +483,14 @@
                 :label="parseInt(dict.dictValue)"
               >{{ dict.dictLabel }}</el-radio>
             </el-radio-group>
+          </el-form-item>-->
+          <el-form-item prop="editDriverActualAmount">
+            <el-checkbox v-model="form.editDriverActualAmount">是否允许修改司机实收金额</el-checkbox>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item prop="openProjectDesignView">
+            <el-checkbox v-model="form.openProjectDesignView">开启&nbsp;项目版统计视图</el-checkbox>
           </el-form-item>
         </el-col>
       </el-row>
@@ -493,11 +501,6 @@
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item prop="openProjectDesignView">
-            <el-checkbox v-model="form.openProjectDesignView">开启&nbsp;项目版统计视图</el-checkbox>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11">
           <el-form-item prop="isNeedLoadingCertificate">
             <el-checkbox v-model="form.isNeedLoadingCertificate">是否需要装货凭证</el-checkbox>
           </el-form-item>
@@ -505,6 +508,11 @@
         <el-col :span="11">
           <el-form-item prop="openAppPermissionControl">
             <el-checkbox v-model="form.openAppPermissionControl">是否开启货主APP权限控制</el-checkbox>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item prop="openProjectMemberView">
+            <el-checkbox v-model="form.openProjectMemberView">是否开启项目成员视图</el-checkbox>
           </el-form-item>
         </el-col>
       </el-row>
@@ -682,7 +690,15 @@ export default {
           { required: true, message: '票务规则不能为空', trigger: ['change', 'blur'] }
         ],
         creditEndTime: [
-          { validator: (rules, value, callback) => this.formValidate.idCardTimeValidate(rules, value, callback, this.form.creditStartTime, '授信保护期'), trigger: ['change', 'blur'] }
+          { validator: (rules, value, callback) => this.formValidate.idCardTimeValidate(rules, value, callback, this.form.creditStartTime, '授信保护期'), trigger: ['change', 'blur'] },
+          // 填写授信金额后，保护期必填
+          { validator: (rules, value, callback) => {
+            if (this.form.creditAmount > 0 && (!this.form.creditStartTime || !value)) {
+              return callback(new Error(`授信保护期不能为空`));
+            } else {
+              return callback();
+            }
+          }, trigger: ['change', 'blur'] }
         ]
       },
       // 网点查询
@@ -865,6 +881,10 @@ export default {
             this.$set(this.form, 'serviceRate', '');// 服务费税率
             this.$set(this.form, 'dispatchPoints', ((this.form.texPoint / (100 - this.form.texPoint)) * 100).toFixed(2));
           }
+          var editDriverActualAmount = 1;
+          if (this.form.editDriverActualAmount === true) {
+            editDriverActualAmount = 0;
+          }
           var noNeedUnloadImg = 0;
           if (this.form.noNeedUnloadImg === true) {
             noNeedUnloadImg = 1;
@@ -881,10 +901,15 @@ export default {
           if (this.form.openAppPermissionControl === true) {
             openAppPermissionControl = 1;
           }
+          var openProjectMemberView = 0;
+          if (this.form.openProjectMemberView === true) {
+            openProjectMemberView = 1;
+          }
           // 复制管理员图片至法人
           this.form.artificialIdentificationImg = this.form.identificationImg;
           this.form.artificialIdentificationBackImg = this.form.identificationBackImg;
-          var extendForm = { noNeedUnloadImg: noNeedUnloadImg, openProjectDesignView: openProjectDesignView, isNeedLoadingCertificate: isNeedLoadingCertificate, openAppPermissionControl: openAppPermissionControl };
+          var extendForm = { editDriverActualAmount: editDriverActualAmount, noNeedUnloadImg: noNeedUnloadImg, openProjectDesignView: openProjectDesignView,
+            isNeedLoadingCertificate: isNeedLoadingCertificate, openAppPermissionControl: openAppPermissionControl, openProjectMemberView: openProjectMemberView };
           // eslint-disable-next-line no-undef
           this.form = Object.assign(this.form, extendForm);
           if (this.form.id) {
@@ -1005,6 +1030,7 @@ export default {
         singleSourceMultiUnloadingLocations: 1,
         isNeedLoadingCertificate: 0,
         openAppPermissionControl: 0,
+        openProjectMemberView: 0,
         editDriverActualAmount: 1,
         allowNoAuditDriverToReceive: 1,
         isNeedApplicationForPayment: 0,
@@ -1018,6 +1044,11 @@ export default {
     setForm(data) {
       this.form = data;
       this.form.identificationEffective = praseNumToBoolean(this.form.identificationEffective);
+      if (this.form.editDriverActualAmount === 0) {
+        this.form.editDriverActualAmount = true;
+      } else {
+        this.form.editDriverActualAmount = false;
+      }
       if (this.form.noNeedUnloadImg === 0) {
         this.form.noNeedUnloadImg = false;
       } else {
@@ -1037,6 +1068,11 @@ export default {
         this.form.openAppPermissionControl = true;
       } else {
         this.form.openAppPermissionControl = false;
+      }
+      if (this.form.openProjectMemberView === 1) {
+        this.form.openProjectMemberView = true;
+      } else {
+        this.form.openProjectMemberView = false;
       }
       if (this.form.branchCode && this.form.branchName) {
         this.branchOptions = [{

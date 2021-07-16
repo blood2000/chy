@@ -177,7 +177,7 @@
         </el-col>
 
         <el-col :span="1.5" class="fr">
-          <tablec-cascader v-model="tableColumnsConfig" :lcokey="listManagesApi" refresh />
+          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" refresh />
         </el-col>
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
@@ -267,11 +267,23 @@
         </template>
 
         <template #loadType="{row}">
-          <span>{{ selectDictLabel(loadTypeOptions, row.loadType) }}</span>
+          <span>{{ selectDictLabel(loadTypeOptions, row.loadType) || '-' }}</span>
         </template>
         <template #updateUserName="{row}">
           <span>{{ row.opNickName || row.updateUserName || row.opUserName }}</span>
           <span v-if="row.phonenumber">[{{ row.phonenumber }}]</span>
+        </template>
+        <template #haveWaybill="{row}">
+          <span :class="row.haveWaybill!==1?'g-color-error':'g-color-success'">{{ selectDictLabel(haveWaybill_Options, row.haveWaybill) || '-' }}</span>
+        </template>
+        <template #uploadLoadVoucher="{row}">
+          <span :class="row.uploadLoadVoucher!==1?'g-color-error':'g-color-success'">{{ selectDictLabel(uploadLoadVoucher_Options, row.uploadLoadVoucher) || '-' }}</span>
+        </template>
+        <template #uploadUnloadVoucher="{row}">
+          <span :class="row.uploadUnloadVoucher!==1?'g-color-error':'g-color-success'">{{ selectDictLabel(uploadUnloadVoucher_Options, row.uploadUnloadVoucher) || '-' }}</span>
+        </template>
+        <template #scenario="{row}">
+          <span>{{ selectDictLabel(scenario_Options, row.scenario) || '-' }}</span>
         </template>
 
         <template #accessTime="{row}">
@@ -395,7 +407,7 @@ export default {
       pickerOptions,
       loadingExport: false,
       activeName: '0',
-      listManagesApi,
+      // listManagesApi,
       pubilshCode: '',
 
       openPriceAdjustment: false,
@@ -472,6 +484,12 @@ export default {
         { dictLabel: '否', dictValue: 0 },
         { dictLabel: '是', dictValue: 1 }
       ],
+
+      // 是否有运单 0否 1是
+      haveWaybill_Options: [
+        { dictLabel: '否', dictValue: 0 },
+        { dictLabel: '是', dictValue: 1 }
+      ],
       isSpecifiedTypeOptions: [
         { dictLabel: '否', dictValue: 0 },
         { dictLabel: '是', dictValue: 1 }
@@ -488,6 +506,26 @@ export default {
         { dictLabel: '不可见', dictValue: 0 },
         { dictLabel: '可见', dictValue: 1 }
       ],
+
+      // 装货时是否必须上传装货凭证 1 是 0 否
+      uploadLoadVoucher_Options: [
+        { dictLabel: '否', dictValue: 0 },
+        { dictLabel: '是', dictValue: 1 }
+      ],
+
+      // 卸货时是否必须上传装货凭证 1 是 0 否
+      uploadUnloadVoucher_Options: [
+        { dictLabel: '否', dictValue: 0 },
+        { dictLabel: '是', dictValue: 1 }
+      ],
+      // 场景
+
+      scenario_Options: [
+        { dictLabel: '大宗', dictValue: 1100 },
+        { dictLabel: '渣土', dictValue: 1200 }
+      ],
+
+
 
       goodsTypeOption: [],
       isShipment: false,
@@ -506,6 +544,153 @@ export default {
   },
 
   computed: {
+    com() {
+      const isShipment = !this.isShipment;
+      return [
+        {
+          prop: 'mainOrderNumber',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          fixed: 'left',
+          sortNum: 100,
+          label: '货源单号'
+        },
+        {
+          prop: 'scanCodeVoucher',
+          isShow: true,
+          width: 130,
+          tooltip: true,
+          sortNum: 100,
+          label: '是否开启上传凭证'
+        },
+        {
+          prop: 'businessType',
+          isShow: true,
+          width: 120,
+          tooltip: true,
+          sortNum: 100,
+          label: '业务类型'
+        },
+        {
+          prop: 'goodsBigTypeName',
+          isShow: true,
+          width: 120,
+          tooltip: true,
+          sortNum: 100,
+          label: '货物大类'
+        },
+        {
+          prop: 'goodsTypeName',
+          isShow: true,
+          width: 120,
+          tooltip: true,
+          sortNum: 100,
+          label: '货物小类'
+        },
+        {
+          prop: 'addressName1',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          sortNum: 100,
+          label: '装货地'
+        },
+        {
+          prop: 'contact1',
+          isShow: false,
+          width: 200,
+          tooltip: true,
+          sortNum: 100,
+          label: '装货地联系人'
+        },
+        {
+          prop: 'addressName2',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          sortNum: 100,
+          label: '卸货地'
+        },
+        {
+          prop: 'contact2',
+          isShow: false,
+          width: 200,
+          tooltip: true,
+          sortNum: 100,
+          label: '卸货地联系人'
+        },
+        {
+          prop: 'goodsPrice',
+          isShow: true,
+          width: 120,
+          tooltip: true,
+          sortNum: 100,
+          label: '货物单价'
+        },
+        {
+          prop: 'shipmentPrice',
+          isShow: true,
+          width: 120,
+          tooltip: true,
+          sortNum: 100,
+          label: '货主成交单价'
+        },
+        {
+          prop: 'notRobbedOrder',
+          isShow: true,
+          width: 120,
+          tooltip: true,
+          sortNum: 100,
+          label: '可抢单量'
+        },
+        {
+          prop: 'robbedOrder',
+          isShow: true,
+          width: 120,
+          tooltip: true,
+          sortNum: 100,
+          label: '已抢单量'
+        },
+        {
+          prop: 'tin_weight',
+          isShow: true,
+          width: 120,
+          tooltip: true,
+          sortNum: 100,
+          label: '重量/体积/车数'
+        },
+        {
+          prop: 'stowageStatus',
+          isShow: true,
+          width: 120,
+          tooltip: true,
+          sortNum: 100,
+          label: '配载方式'
+        },
+        {
+          prop: 'companyName',
+          isShow: isShipment,
+          width: 120,
+          tooltip: true,
+          sortNum: 100,
+          label: '货主公司名称'
+        },
+        {
+          prop: 'adminName',
+          isShow: isShipment,
+          width: 120,
+          tooltip: true,
+          sortNum: 100,
+          label: '货主名称'
+        }
+      ];
+    },
+
+    api() {
+      return listManagesApi + '--' + this.activeName;
+    },
+
     newQueryParams() {
       return {
         beginTime: this.queryParams.tin10[0], //	开始时间	query	false
@@ -550,6 +735,19 @@ export default {
         }
       },
       immediate: true
+    },
+    activeName: {
+      handler() {
+        this.tableColumnsConfig = [];
+        this.tableHeaderConfig(this.tableColumnsConfig, this.api, {
+          prop: 'edit',
+          isShow: true,
+          label: '操作',
+          width: 180,
+          fixed: 'left'
+        }, this.com || tableColumnsConfig);
+      },
+      immediate: true
     }
   },
 
@@ -561,7 +759,7 @@ export default {
     this.isShipment = isShipment;
 
     isShipment && (this.queryParams.tin6 = shipment.info.code);
-    this.tableHeaderConfig(this.tableColumnsConfig, listManagesApi, null, tableColumnsConfig);
+
     this.getDict();
     this.getList();
   },

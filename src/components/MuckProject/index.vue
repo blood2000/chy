@@ -331,6 +331,8 @@ export default {
         { dictLabel: '已打款', dictValue: 4 }
       ],
 
+
+
       shipmentCode: undefined
     };
   },
