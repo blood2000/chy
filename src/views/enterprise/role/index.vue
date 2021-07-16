@@ -635,8 +635,8 @@ export default {
       // 目前被选中的菜单节点
       const checkedKeys = this.$refs.menu.getCheckedKeys();
       // 半选中的菜单节点
-      const halfCheckedKeys = this.$refs.menu.getHalfCheckedKeys();
-      checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
+      // const halfCheckedKeys = this.$refs.menu.getHalfCheckedKeys();
+      // checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
       return checkedKeys;
     },
     // 选中版本的时候,先从all里面移除own的key
