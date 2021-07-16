@@ -489,7 +489,9 @@ export default {
         }
         // console.log(index, '----', this.ids.length, len.length);
       }
-      // this.getList(1);
+      setTimeout(() => {
+        this.getList();
+      }, 2000);
       this.payLoading = false;
       // console.log(this.sucList, this.errList);
     },
