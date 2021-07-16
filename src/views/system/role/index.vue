@@ -634,9 +634,12 @@ export default {
     getMenuAllCheckedKeys() {
       // 目前被选中的菜单节点
       const checkedKeys = this.$refs.menu.getCheckedKeys();
+      // console.log('----------------------checkedKeys: ', checkedKeys);
       // 半选中的菜单节点
-      const halfCheckedKeys = this.$refs.menu.getHalfCheckedKeys();
-      checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
+      // const halfCheckedKeys = this.$refs.menu.getHalfCheckedKeys();
+      // console.log('----------------------halfCheckedKeys: ', halfCheckedKeys);
+      // checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
+      // console.log('----------------------unshift: ', checkedKeys);
       return checkedKeys;
     },
     // 选中版本的时候,先从all里面移除own的key
@@ -649,12 +652,14 @@ export default {
           }
         });
       });
+      // console.log('remove---allMenuCodes: ', this.allMenuCodes);
     },
     saveCheckedKeys() {
       // 去重合并
       const arr = this.allMenuCodes.concat(this.getMenuAllCheckedKeys());
       const arrNew = new Set(arr);
       this.allMenuCodes = Array.from(arrNew);
+      // console.log('save---allMenuCodes: ', this.allMenuCodes);
     },
     // 所有部门节点数据
     getDeptAllCheckedKeys() {
@@ -940,6 +945,7 @@ export default {
       // 缓存上一次的勾选
       this.ownMenuCodes[this.ownMenuId] = this.getMenuAllCheckedKeys();
       this.ownMenuId = data.code;
+      // console.log('---缓存---： ', this.ownMenuCodes);
 
       const params = {};
       if (data.type === 'produce') {
