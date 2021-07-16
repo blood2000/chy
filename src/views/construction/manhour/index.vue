@@ -247,7 +247,7 @@ export default {
     },
     async handleExport() {
       this.exportLoading = true;
-      await this.download('/project-kydsz/machineWork/web—getMachineWorkingListExport', this.queParams, `机械工时登记`);
+      await this.download('/kydsz/machineWork/web—getMachineWorkingListExport', this.queParams, `机械工时登记`);
       this.exportLoading = false;
     }
   }
