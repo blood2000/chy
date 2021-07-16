@@ -21,12 +21,19 @@
       <template #stowageStatus="{row}">
         <span>{{ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
       </template>
+
+      <template #isChild="{row}">
+        <span>{{ selectDictLabel(isChild_op, row.isChild) }}</span>
+      </template>
+
       <template #fillTime="{row}">
         <span>{{ parseTime(row.fillTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
       </template>
       <template #signTime="{row}">
         <span>{{ parseTime(row.signTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
       </template>
+      <!-- status -->
+      <!-- 运单状态：0未接单/1已接单/2已装货/3已签收（已卸货）/4已回单（收单复核）/5已核算/6已申请（打款）/7已打款/10.已作废 11/已核验 12 已完成 -->
       <template #status="{row}">
         <span>{{ selectDictLabel([
           { 'dictLabel': '未接单', 'dictValue': '0' },
@@ -42,7 +49,7 @@
           { 'dictLabel': '已作废', 'dictValue': '10' },
           { 'dictLabel': '已核验', 'dictValue': '11' },
           { 'dictLabel': '已完成', 'dictValue': '12' }
-        ], row.status) }}</span>
+        ], row.status ) }}</span>
       </template>
 
     </RefactorTable>
@@ -81,10 +88,18 @@ export default {
         'pageNum': 1,
         'pageSize': 10
       },
+      // 配载方式 0->吨，1->方 2->车数配载
       stowageStatusOP: [
         { 'dictLabel': '吨', 'dictValue': '0' },
         { 'dictLabel': '方', 'dictValue': '1' },
         { 'dictLabel': '车', 'dictValue': '2' }
+      ],
+      // isChild
+      // 是否子单 0 不是 （正常单），1 是（子单） ，2 超载的主单
+      isChild_op: [
+        { 'dictLabel': '不是 （正常单）', 'dictValue': 0 },
+        { 'dictLabel': '是（子单）', 'dictValue': 1 },
+        { 'dictLabel': '超载的主单', 'dictValue': 2 }
       ]
     };
   },
@@ -118,7 +133,7 @@ export default {
           'prop': 'isReturn',
           'isShow': false,
           'tooltip': false,
-          'sortNum': 0,
+          'sortNum': 100,
           'label': '纸质回单状态',
           'width': 120
         },
@@ -126,39 +141,7 @@ export default {
           'label': '公司名称',
           'prop': 'companyName',
           'isShow': !isShipment,
-          'sortNum': 0,
-          'width': '120',
-          'tooltip': true
-        },
-        {
-          'label': '服务费',
-          'prop': 'serviceFee',
-          'isShow': false,
-          'sortNum': 0,
-          'width': '120',
-          'tooltip': true
-        },
-        {
-          'label': '商品大类',
-          'prop': 'goodsBigTypeName',
-          'isShow': false,
-          'sortNum': 0,
-          'width': '120',
-          'tooltip': true
-        },
-        {
-          'label': '服务税费',
-          'prop': 'serviceTaxFee',
-          'isShow': false,
-          'sortNum': 0,
-          'width': '120',
-          'tooltip': true
-        },
-        {
-          'label': '给货主结算的和展示的每车总费',
-          'prop': 'shipperDeliveryFee',
-          'isShow': false,
-          'sortNum': 0,
+          'sortNum': 100,
           'width': '120',
           'tooltip': true
         },
@@ -166,7 +149,7 @@ export default {
           'prop': 'increaseDes',
           'isShow': true,
           'tooltip': true,
-          'sortNum': 10,
+          'sortNum': 100,
           'label': '数值描述',
           'width': 120
         },
@@ -174,7 +157,7 @@ export default {
           'prop': 'deductionDes',
           'isShow': true,
           'tooltip': true,
-          'sortNum': 11,
+          'sortNum': 100,
           'label': '备注',
           'width': 120
         }

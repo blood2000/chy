@@ -260,7 +260,7 @@ export default {
     },
     async handleExport() {
       this.exportLoading = true;
-      await this.download('/tools/projectTicket/web—getProjectTicketListExport', this.queParams, `工地土票列表`, 'application/json');
+      await this.download('/project-kydsz/projectTicket/web—getProjectTicketListExport', this.queParams, `工地土票列表`, 'application/json');
       this.exportLoading = false;
     }
   }
