@@ -172,12 +172,13 @@ export default {
     _minit() {
       CardReader.fn.connect(async() => {
         this.loading = true;
+
         const ret = await action.readUserInfoAndreadData();
 
-        // console.log(ret, '数据---');
+        console.log(ret, '肯定是有数据进来不管成功还是失败---');
 
-        // 失败
-        if (!ret.success && !ret.code) {
+        // 读卡失败
+        if (!ret.success) {
           this.errorCount++;
           this._reqerror();
           this.loading = false;
@@ -195,7 +196,7 @@ export default {
         }
 
         // 其他失败
-        if (ret.code !== '9000' || (!ret.success && ret.code === '9000')) {
+        if (ret.code !== '9000') {
           this.msgError(ret.msg);
           this.loading = false;
           return;
@@ -212,8 +213,13 @@ export default {
             this.userInfo.issuing_name = '--';
             this.msgError('发卡者用户不存在');
           }
+        } catch (error) {
+          console.log(error);
+          this.userInfo.issuing_name = '--';
+        }
 
-          // 司机
+        // 司机
+        try {
           const driver = await getUserByPhoneNum(this.userInfo.user_telno);
           if (driver.data) {
             this.userInfo.user_name = driver.data.nickName || driver.data.userName || driver.data.phonenumber;
@@ -221,9 +227,14 @@ export default {
             this.userInfo.user_name = '--';
             this.msgError('司机用户不存在');
           }
+        } catch (error) {
+          console.log(error);
+          this.userInfo.user_name = '--';
+        }
 
 
-          // 承运者
+        // 承运者
+        try {
           const team = await getUserByPhoneNum(this.userInfo.team_telno);
           if (team.data) {
             this.userInfo.team_name = team.data.nickName || team.data.userName || team.data.phonenumber;
@@ -233,12 +244,14 @@ export default {
           }
         } catch (error) {
           console.log(error);
+          this.userInfo.team_name = '--';
         }
 
 
 
 
-        this.userInfo.issuing_pc = this.userInfo.issuing_pc || Date.now() + '456';
+
+        this.userInfo.issuing_pc = this.userInfo.issuing_pc || Date.now() + '000';
         this.IClist = ret.dataList;
         this.meter = ret.meter;
         this.userMark = ret.userMark;
@@ -250,7 +263,7 @@ export default {
         // console.log([this.userMark], '----------用户版本');
         // console.log([this.carId], '----------ka标识');
         this.setLocalStorage(this.carId, { [this.userInfo.issuing_pc]: { data: this.IClist, meter: this.meter, userMark: this.userMark, userInfo: this.userInfo }}); // 本地存储
-        console.log(this.getLocalStorage(this.carId));
+        // console.log(this.getLocalStorage(this.carId));
 
         // 后端交互
         this.initData();
@@ -273,7 +286,6 @@ export default {
           };
         }),
         icCode: this.carId
-        // driverCode: undefined // this.userInfo.user_code //	用户CODE
       };
 
       try {
@@ -281,8 +293,6 @@ export default {
 
         // 处理数据
         this.list = res.data.map(e => {
-          // console.log(e);
-
           const batchInfo = e.batchWayBillBalanceInfoVo || {};
           return {
             ...e,
@@ -342,17 +352,17 @@ export default {
 
       // 数据有异常提示
       if (filterArr.length > 0) {
-        this.$confirm(`运单存在${filterArr.length} 条异常单, 确定继续将把数据写回卡中, 并核销正常单`, '数据存在异常', {
+        this.$confirm(`运单存在${filterArr.length} 条异常单, 确定将会把异常单数据写回卡中, 并核销正常单`, '数据存在异常', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(async() => {
           try {
+            // 写卡
             this.errorHexiaoCheck(filterArr);
           } catch (error) {
             this.loading = false;
           }
-          // 写卡
         }).catch(() => {});
       } else {
         this.$confirm(`确定立即核销`, '数据正常', {
@@ -362,16 +372,23 @@ export default {
         }).then(async() => {
           try {
             // 无异常做核销动作
+            this.loading = true;
             const res = await action.cancellation();
-            if (res.code === 200) {
+            this.loading = false;
+            if (!res.success) {
+              this.msgError('核销失败, 请不要移动IC卡!');
+              this.handlerClose();
+              return;
+            }
+
+            if (res.success && res.code === '9000') {
               await this.handlerCheck();
               this.msgSuccess('核销成功');
               this.handlerClose();
+            } else {
+              this.msgError('核销失败');
             }
-            this.loading = false;
           } catch (error) {
-            this.msgError('核销失败, 请不要移动IC卡!');
-            this.handlerClose();
             this.loading = false;
           }
         });
@@ -416,7 +433,22 @@ export default {
       // console.log(this.userInfo);
 
       try {
-        await action.issuingCard(this.userInfo, this.userMark);
+        this.loading = true;
+        const res = await action.issuingCard(this.userInfo, this.userMark);
+
+
+        if (!res.success) {
+          this.loading = false;
+          this.msgError('核销失败, 请不要移动IC卡!');
+          this.handlerClose();
+          return;
+        }
+
+        if (res.success && res.code !== '9000') {
+          this.loading = false;
+          this.msgError(res.msg);
+          return;
+        }
       } catch (error) {
         this.msgError('核销失败, 请不要移动IC卡!');
         this.handlerClose();
@@ -427,21 +459,30 @@ export default {
       // 定义 版本标识
       const meter = this.meter ? this.meter.join('|') + '|' : versionMark;
 
-      // const arr = [];
-
       // 通过时间来
       const arr = [];
       filterArr.forEach(async(e, index) => {
         this['time' + index] = setTimeout(() => {
           action.writeData(fn.setData(meter, e)).then(res => {
             clearTimeout(this['time' + index]);
-            arr.push(true);
-            if (arr.length === filterArr.length && arr.every(e => e)) {
-              this.handlerCheck().then(() => {
+            if (res.success && res.code === '9000') {
+              arr.push(true);
+              // 执行到最后一步走这里
+            } else {
+              arr.push(false);
+              this.msgSuccess(res.msg);
+            }
+            if (arr.length === filterArr.length) {
+              if (arr.every(e => e)) {
+                this.handlerCheck().then(() => {
+                  this.loading = false;
+                  this.msgSuccess('核销成功');
+                  this.handlerClose();
+                }).catch(() => { this.loading = false; });
+              } else {
                 this.loading = false;
-                this.msgSuccess('核销成功');
-                this.handlerClose();
-              }).catch(() => { this.loading = false; });
+                this.msgSuccess('核销失败');
+              }
             }
           });
         }, (index + 1) * 500);
@@ -461,7 +502,7 @@ export default {
     },
 
     _reqerror() {
-      const msg = this.errorCount > 0 ? '请重新开启应用程序' : '请将【数据IC卡】放至有效位置!';
+      const msg = '请将【数据IC卡】放至有效位置!';
 
       this.$confirm(msg, '不能读取到数据', {
         confirmButtonText: '知道了',
@@ -519,19 +560,15 @@ export default {
     /** 卡的操作 */
     async handler(key) {
       const mobj = {};
-
       // 当前用户测试数据
+      const arr = '14700000001;120;15859102001;15859109601;1626253668656;1626253668656386;r';
 
       const icData = this.getLocalStorage(this.carId) ? this.getLocalStorage(this.carId)[this.userInfo.issuing_pc] : null;
 
-      console.log(icData);
-      const arr = '14700000001;120;15859102001;15859109601;1626253668656;1626253668656386;r';
-
-
-      console.log();
       let res = '';
       switch (key) {
         case 'getCardInfo':
+          // 获取卡信息
           action.getCardInfo().then(res => {
             console.log(res);
           });
@@ -543,19 +580,18 @@ export default {
           });
           break;
         case 'issuingCard':
+          // 发卡
           if (icData) {
             action.issuingCard(icData.userInfo, icData.userMark).then(res => {
-              // this.msgSuccess(res.msg);
               console.log(res);
             });
           } else {
-            // 发卡
+            // 测试的发卡
             USERINFO.forEach((e, index) => {
               mobj[e] = (arr.split(';'))[index];
             });
 
             action.issuingCard(mobj).then(res => {
-              // this.msgSuccess(res.msg);
               console.log(res);
             });
           }
@@ -568,6 +604,7 @@ export default {
 
           break;
         case 'readData':
+          // 读取卡数据
           action.readUserInfoAndreadData().then(res => {
             console.log(res);
           });
@@ -575,13 +612,15 @@ export default {
         case 'writeData':
           // 写数据
           if (icData) {
-            icData.data;
+            // icData.data;
             for (let index = 0; index < icData.data.length; index++) {
               const e = icData.data[index];
               res = await action.writeData(fn.setData(icData.meter.join('|') + '|', e));
+              console.log(res);
             }
           } else {
             res = await action.writeData('1010|2|2105272013285566;2106231554010424;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
+            console.log(res);
           }
 
 
@@ -595,7 +634,6 @@ export default {
           // res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
           // res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
           // res = await action.writeData('1010|2|2105272013285566;2101041059202001;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710');
-          console.log(res);
           break;
         default:
           break;

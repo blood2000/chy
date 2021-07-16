@@ -145,6 +145,14 @@
             >打款</el-button>
 
             <el-button
+              v-if="status===4"
+              size="mini"
+              type="text"
+              :loading="loading"
+              @click="handlerReceipt(row)"
+            >回单</el-button>
+
+            <el-button
               v-if="status===-1"
               size="mini"
               type="text"
@@ -203,6 +211,13 @@
       </div>
     </el-dialog>
 
+    <!-- 已打款的回单 -->
+    <el-dialog class="i-receipt" title="" :visible.sync="receiptOpen" width="1200px" :close-on-click-modal="false" append-to-body>
+      <div v-if="receiptOpen">
+        <ReceiptDialog :receipt-data="receiptData" />
+      </div>
+    </el-dialog>
+
     <!-- 编辑开票信息管理 只在核算页面显示-->
     <el-dialog v-if="status===0" class="i-adjust" title="票务信息" :visible.sync="openBillPage" width="80%" :close-on-click-modal="false" append-to-body>
       <bill-page v-if="openBillPage" :shipment-code="shipmentCode" @submitRes="()=>{openBillPage=false; handleQuery()}" />
@@ -249,14 +264,18 @@ import RejectDialog from './components/rejectDialog';
 import BillPage from '@/views/enterprise/company/billing';
 import DismissedTrack from './components/DismissedTrack';
 
+// 回单
+import ReceiptDialog from './components/ReceiptDialog.vue';
+
 // 开票弹窗
 import BillingDialog from '@/views/finance/list/dregs/billingDialog';
 // 核算
 import AdjustDialog from '@/views/settlement/adjustDregs/adjustDialog';
 
+
 export default {
   'name': 'AskforDregs',
-  components: { QueryForm, StatementsInfo, SettlementPrint, BillPage, RejectDialog, BillingDialog, AdjustDialog, DismissedTrack }, // 筛选条件
+  components: { QueryForm, StatementsInfo, SettlementPrint, BillPage, RejectDialog, BillingDialog, AdjustDialog, DismissedTrack, ReceiptDialog }, // 筛选条件
 
   props: {
     status: {
@@ -317,6 +336,9 @@ export default {
       adjustdialog: false,
 
       openBillPage: false,
+
+      // 回单
+      receiptOpen: false,
 
       // 驳回
       rejectdialog: false,
@@ -725,6 +747,16 @@ export default {
         }).catch(() => { this.loading = false; });
       }).catch(() => {});
     },
+
+    /* s=状态4 */
+    // 回单
+    handlerReceipt(row) {
+      // console.log(row);
+      this.receiptData = row;
+      this.receiptOpen = true;
+    },
+
+
     // 查看图片信息
     loogImage(row) {
       if (!row.imgCodes) {

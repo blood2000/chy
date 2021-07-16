@@ -115,10 +115,19 @@
 
       </div>
 
-      <div class="saiyin pa">
+      <div class="saiyin">
         <div class="grid-content">
           <p class="mb10">
-            签名：
+            甲方签名：{{ printData.companyName||'' }}
+          </p>
+          <p>
+            时间：
+          </p>
+        </div>
+
+        <div class="grid-content grid-right">
+          <p class="mb10">
+            乙方签名：
           </p>
           <p>
             时间：
@@ -228,10 +237,14 @@ table th, table td {
     width: 100%;
 }
 .saiyin{
-    right: 0;
-    bottom: 0;
-    width: 300px;
+    display: flex;
+    justify-content: space-between;
 }
+.grid-content{
+  width: 50%;
+  padding: 50px 30px;
+}
+
 
 @page{
   size:auto; /* auto is the initial value */

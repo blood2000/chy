@@ -3,7 +3,7 @@
     :ref="refName"
     v-loading="loading"
     :show-summary="summary"
-    border
+    :border="border"
     :data="data"
     v-bind="$attrs"
     highlight-current-row
@@ -61,6 +61,10 @@ export default {
     isShowIndex: {
       type: Boolean,
       default: false
+    },
+    border: {
+      type: Boolean,
+      default: true
     },
     /**
      * list  渲染所需数据

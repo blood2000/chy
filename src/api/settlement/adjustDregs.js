@@ -144,3 +144,11 @@ export function refuseApplied(data) {
   });
 }
 
+// 已回单详情
+export function receiptInfo(query) {
+  return request({
+    url: '/transportation/batch/receiptInfo',
+    method: 'get',
+    params: query
+  });
+}
