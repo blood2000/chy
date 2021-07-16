@@ -163,10 +163,13 @@ const CardReader = {
          * @returns {{code: string, data: (string|null), success: boolean}}
          */
     resultData: function(str, key = USERINFO) {
+      // console.log(str);
       // 1000|1|adf34d2d22b64c43b31476a746dd757f;黄婷;18415451845;94671e0bff6647e88db777427d700e32;陈大帅;1622531892853
       const arr = str.split('|');
+      // console.log(arr);
       const arr2 = arr[2].split(';');
       const data = {};
+      // console.log(key);
       key.forEach((e, index) => {
         data[e] = arr2[index];
       });

@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 
 // web土票管理列表
-export const getProjectTicketApi = '/project-kydsz/projectTicket/web—getProjectTicketList';
+export const getProjectTicketApi = '/kydsz/projectTicket/web—getProjectTicketList';
 export function getProjectTicketList(data) {
   return request({
     url: getProjectTicketApi,

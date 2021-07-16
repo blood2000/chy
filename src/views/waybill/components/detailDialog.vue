@@ -120,8 +120,8 @@
     </el-row>
     <!-- 费用 -->
     <div class="waybill-title"><div class="waybill-icon" />费用<div class="waybill-divider" /></div>
-    <el-row v-if="form.balanceVo.driverRealFeeStr" class="waybill-mark">
-      注：{{ form.balanceVo.driverRealFeeStr }}
+    <el-row v-if="form.balanceVo.ruleFormulaDictLabel" class="waybill-mark">
+      注：{{ form.balanceVo.ruleFormulaDictLabel }}（{{ form.balanceVo.driverRealFeeStr }}）
     </el-row>
     <el-row>
       <el-col :span="3" class="text-label">
