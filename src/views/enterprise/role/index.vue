@@ -641,6 +641,8 @@ export default {
           }
         });
       });
+    },
+    removeOwnHalfKeys(ownMenuCodes) {
       ownMenuCodes.forEach((item1) => {
         this.halfMenuCodes.forEach((item2, j) => {
           if (item2 === item1) {
@@ -956,9 +958,11 @@ export default {
             if (this.ownMenuCodes[data.code]) {
               // 读缓存数据
               this.removeOwnKeys(this.ownMenuCodes[data.code]);
+              this.removeOwnHalfKeys(this.$refs.menu.getHalfCheckedKeys());
             } else {
               // 读接口数据
               this.removeOwnKeys(res.checkedKeys);
+              this.removeOwnHalfKeys(this.$refs.menu.getHalfCheckedKeys());
             }
           });
         });
@@ -970,6 +974,7 @@ export default {
             if (this.ownMenuCodes[data.code]) {
               // 读缓存数据
               this.removeOwnKeys(this.ownMenuCodes[data.code]);
+              this.removeOwnHalfKeys(this.$refs.menu.getHalfCheckedKeys());
             }
           });
         });
