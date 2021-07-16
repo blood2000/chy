@@ -619,7 +619,7 @@ export default {
     },
     /** 查询菜单树结构 */
     getMenuTreeselect(data = {}) {
-      return menuTreeselect(data).then(response => {
+      return menuTreeselect(data, this.userCode).then(response => {
         this.menuOptions = response.data;
         this.treeLoading = false;
       });
