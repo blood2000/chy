@@ -24,6 +24,7 @@
       <el-button v-has-permi="['myWallet:account:record']" type="text" class="mr10" @click="handleJumpPage('withdrawalsRecord')">出入账记录</el-button>
       <el-button v-has-permi="['myWallet:account:transaction']" type="text" class="mr10" @click="handleJumpPage('transactionRecord')">交易记录</el-button>
       <el-button v-hasPermi="['wallet:statement']" type="text" class="mr10" @click="handleJumpPage('Statement')">批次对账单</el-button>
+      <el-button v-hasPermi="['myWallet:account:bankcard']" type="text" class="mr10" @click="handleJumpPage('walletBankcard', {code: walletInfo.userCode})">银行卡</el-button>
     </div>
 
     <div class="app-container app-container--card">
@@ -106,10 +107,11 @@ export default {
       this.changePasswordOpen = true;
     },
     // 跳转页面
-    handleJumpPage(url) {
+    handleJumpPage(url, query) {
       if (!url) return;
       this.$router.push({
-        path: url
+        path: url,
+        query: query || {}
       });
     }
   }

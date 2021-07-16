@@ -64,7 +64,9 @@ export default {
   components: { userAvatar, userInfo, resetPwd, Tabs },
   data() {
     return {
-      user: {},
+      user: {
+        org: {}
+      },
       roleGroup: {},
       postGroup: {},
       activeTab: '基本资料',
