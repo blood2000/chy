@@ -122,7 +122,7 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col v-if="false" :span="12">
             <el-form-item label="关联货集码" prop="tin6">
               <el-select
                 v-model="formData.tin6"
