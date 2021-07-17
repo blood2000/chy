@@ -155,7 +155,7 @@
       </el-form-item>
 
       <el-form-item
-        label="接单日期"
+        label="操作时间"
         prop="receiveTime"
       >
         <el-date-picker

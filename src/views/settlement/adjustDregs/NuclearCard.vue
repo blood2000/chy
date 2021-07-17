@@ -113,7 +113,7 @@
 
 
     <div slot="footer" class="dialog-footer ly-flex-pack-center">
-      <el-button type="primary" :disabled="loading || !list.length || isUserInfo || isWart" @click="submitForm">保存并清空</el-button>
+      <el-button type="primary" :disabled="isFilter || loading || !list.length || isUserInfo " @click="submitForm">保存并清空</el-button>
       <!-- <el-button type="primary" :disabled="loading || !list.length || isUserInfo || isError || isWart" @click="submitForm">保存并清空</el-button> -->
     </div>
   </el-dialog>
@@ -163,6 +163,19 @@ export default {
 
     isUserInfo() {
       return JSON.stringify(this.userInfo) === '{}';
+    },
+
+    isFilter() {
+      let bool = false;
+
+      if (this.list && this.list.length) {
+        const filterArr = this.list.filter(e => {
+          return !e.writeOffStatus;
+        });
+
+        bool = this.list.length === filterArr.length;
+      }
+      return bool;
     }
   },
 
@@ -175,7 +188,7 @@ export default {
 
         const ret = await action.readUserInfoAndreadData();
 
-        console.log(ret, '肯定是有数据进来不管成功还是失败---');
+        // console.log(ret, '肯定是有数据进来不管成功还是失败---');
 
         // 读卡失败
         if (!ret.success) {
@@ -308,7 +321,7 @@ export default {
           };
         });
 
-        console.log(this.list);
+        // console.log(this.list);
 
         // 排序
         this.list.sort((m, n) => {

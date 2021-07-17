@@ -176,7 +176,7 @@ export default {
     /** 获取数据 */
     getList() {
       this.loading = true;
-      batchRelatedWaybill({ batchNo: this.printData.batchNo }).then(res => {
+      batchRelatedWaybill({ ...this.queryParams, batchNo: this.printData.batchNo }).then(res => {
         this.loading = false;
         this.adjustlist = res.data.list;
         this.total = res.data.total;

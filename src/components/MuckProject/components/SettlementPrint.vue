@@ -181,8 +181,12 @@ export default {
 
   methods: {
     getList() {
+      const queryParams = {
+        'pageNum': 1,
+        'pageSize': 1000
+      };
       this.loading = true;
-      batchRelatedWaybill({ batchNo: this.printData.batchNo }).then(res => {
+      batchRelatedWaybill({ ...queryParams, batchNo: this.printData.batchNo }).then(res => {
         this.loading = false;
         this.adjustlist = res.data.list;
       });
