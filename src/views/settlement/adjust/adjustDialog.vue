@@ -269,11 +269,11 @@
 </template>
 
 <script>
-import request from '@/utils/request';
 import PopoverCom from './components/PopoverCom';
 import ImgShow from './components/ImgShow';
 // import chooseItemDialog from '@/views/enterprise/rules/chooseItemDialog';
-import { adjustDetail, calculateFee, batchCheck, batchCalculate } from '@/api/settlement/adjust';
+import { adjustDetail, calculateFee, batchCalculate } from '@/api/settlement/adjust';
+import { batchCheck } from '@/api/settlement/toadjust';
 import { getRuleItemList } from '@/api/enterprise/rules';
 import { floor, objReduce } from '@/utils/ddc';
 
@@ -651,7 +651,6 @@ export default {
         type: 'warning'
       }).then(() => {
         this.adjustLoading = true;
-        [request][0].defaults.timeout = 100000;
         return batchCheck({ boList }).then(res => {
           this.adjustLoading = false;
           if (res.data) {
@@ -679,9 +678,7 @@ export default {
     /** 查询核算列表 */
     getList() {
       this.loading = true;
-      // [request][0].defaults.timeout = 100000;
       adjustDetail(this.queryParams).then(response => {
-        // console.log([request]);
         this.adjustlist = JSON.parse(JSON.stringify(response.data));
 
         /* 兼容处理*/
