@@ -196,7 +196,7 @@ export default {
     }
 }
 .receipt-box{
-    padding: 0 50px;
+    padding: 50px 50px 0;
 }
 .receipt-title{
     // width: 100%;

@@ -481,7 +481,7 @@ export default {
                 }).catch(() => { this.loading = false; });
               } else {
                 this.loading = false;
-                this.msgSuccess('核销失败');
+                this.msgError('核销失败');
               }
             }
           });
