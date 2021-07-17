@@ -33,6 +33,9 @@
           <el-button type="success" plain :class="{'myactive': sortName=='ztcName'}" size="mini" @click="()=>{sortName = 'ztcName'}">以渣土场排序</el-button>
         </el-col>
         <el-col :span="1.5">
+          <el-button type="success" plain :class="{'myactive': sortName=='teamName'}" size="mini" @click="()=>{sortName = 'teamName'}">以调度组排序</el-button>
+        </el-col>
+        <el-col :span="1.5">
           <el-button type="success" size="mini" @click="nuclearCardOpen">核销IC卡</el-button>
         </el-col>
         <el-col :span="1.5" class="fr">
@@ -142,14 +145,14 @@ export default {
           prop: 'shipperCopeFee',
           isShow: false,
           tooltip: false,
-          sortNum: 28,
+          sortNum: 100,
           label: '货主应付金额',
           width: 120
         }, { // 需要顶替掉的项
           prop: 'isReturn',
           isShow: false,
           tooltip: false,
-          sortNum: 0,
+          sortNum: 100,
           label: '纸质回单状态',
           width: 120
         }, { // 需要顶替掉的项

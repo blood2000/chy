@@ -9,4 +9,3 @@ export function getMachineWorkingList(data) {
     data: data
   });
 }
-
