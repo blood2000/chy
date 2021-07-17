@@ -165,7 +165,7 @@
         </el-form-item>
 
 
-        <el-row>
+        <el-row v-if="!isShipment">
           <el-col :span="6">
             <el-form-item label="装货时是否必须上传凭证" label-width="200px">
               <el-switch
@@ -218,6 +218,7 @@
 import { listInfo } from '@/api/enterprise/project';
 import { listStockcode } from '@/api/enterprise/stockcode';
 import OpenDialog from '../manage/component/OpenDialog';
+import { getUserInfo } from '@/utils/auth';
 
 export default {
   components: { OpenDialog },
@@ -304,7 +305,8 @@ export default {
         { dictValue: '1', dictLabel: '是' },
         { dictValue: '0', dictLabel: '否' }
       ],
-      tin6Option: []
+      tin6Option: [],
+      isShipment: false
     };
   },
 
@@ -320,11 +322,11 @@ export default {
       return bool;
     }
   },
-
   watch: {
     // 获取当前用户的信息
     shipmentInfo: {
       handler(info) {
+        // console.log(info);
         if (info) {
           // isNeedLoadingCertificate 是否需要装货凭证 0：是 1：否
           // noNeedUnloadImg 是否不需要卸货图片  0，需要  1，不需要
@@ -460,6 +462,10 @@ export default {
       },
       immediate: true
     }
+  },
+  created() {
+    const { isShipment = false } = getUserInfo() || {};
+    this.isShipment = isShipment;
   },
 
   methods: {
