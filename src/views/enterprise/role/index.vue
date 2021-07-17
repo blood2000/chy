@@ -178,7 +178,7 @@
                 <span>{{ parseTime(scope.row.createTime) }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="操作" align="center" fixed="left" width="160">
+            <el-table-column label="操作" align="center" fixed="left">
               <template slot-scope="scope">
                 <el-button
                   v-hasPermi="['system:role:edit']"
@@ -306,14 +306,7 @@
           <el-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand($event, 'menu')">展开/折叠</el-checkbox>
           <el-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event, 'menu')">全选/全不选</el-checkbox>
           <el-checkbox v-model="form.menuCheckStrictly" @change="handleCheckedTreeConnect($event, 'menu')">父子联动</el-checkbox>
-          <el-row
-            v-loading="treeLoading"
-            :gutter="12"
-            class="mb20"
-            element-loading-text=""
-            element-loading-spinner="el-icon-loading"
-            element-loading-background="rgba(255, 255, 255, 0.6)"
-          >
+          <el-row :gutter="12" class="mb20">
             <el-col :span="10">
               <el-tree
                 ref="versionTree"
@@ -497,11 +490,6 @@ export default {
       form: {
         dataScope: '6'
       },
-      allMenuCodes: [],
-      halfMenuCodes: [],
-      ownMenuCodes: {},
-      ownMenuId: 'all',
-      treeLoading: false,
       defaultProps: {
         children: 'children',
         label: 'label'
@@ -620,9 +608,8 @@ export default {
     },
     /** 查询菜单树结构 */
     getMenuTreeselect(data = {}) {
-      return menuTreeselect(data).then(response => {
+      menuTreeselect(data, this.userCode).then(response => {
         this.menuOptions = response.data;
-        this.treeLoading = false;
       });
     },
     /** 查询部门树结构 */
@@ -631,36 +618,14 @@ export default {
         this.deptOptions = response.data;
       });
     },
-    // 选中版本的时候,先从all里面移除own的key
-    removeOwnKeys(ownMenuCodes) {
-      ownMenuCodes.forEach((item1) => {
-        this.allMenuCodes.forEach((item2, j) => {
-          if (item2 === item1) {
-            this.allMenuCodes.splice(j, 1);
-            j -= 1;
-          }
-        });
-      });
-    },
-    removeOwnHalfKeys(ownMenuCodes) {
-      ownMenuCodes.forEach((item1) => {
-        this.halfMenuCodes.forEach((item2, j) => {
-          if (item2 === item1) {
-            this.halfMenuCodes.splice(j, 1);
-            j -= 1;
-          }
-        });
-      });
-    },
-    saveCheckedKeys() {
-      // allMenuCodes去重合并
-      const arr = this.allMenuCodes.concat(this.$refs.menu.getCheckedKeys());
-      const arrNew = new Set(arr);
-      this.allMenuCodes = Array.from(arrNew);
-      // halfMenuCodes去重合并
-      const arr1 = this.halfMenuCodes.concat(this.$refs.menu.getHalfCheckedKeys());
-      const arrNew1 = new Set(arr1);
-      this.halfMenuCodes = Array.from(arrNew1);
+    // 所有菜单节点数据
+    getMenuAllCheckedKeys() {
+      // 目前被选中的菜单节点
+      const checkedKeys = this.$refs.menu.getCheckedKeys();
+      // 半选中的菜单节点
+      const halfCheckedKeys = this.$refs.menu.getHalfCheckedKeys();
+      checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
+      return checkedKeys;
     },
     // 所有部门节点数据
     getDeptAllCheckedKeys() {
@@ -675,7 +640,6 @@ export default {
     getRoleMenuTreeselect(roleId, data) {
       return roleMenuTreeselect(roleId, data).then(response => {
         this.menuOptions = response.menus;
-        this.treeLoading = false;
         return response;
       });
     },
@@ -713,11 +677,6 @@ export default {
     },
     // 表单重置
     reset() {
-      this.allMenuCodes = [];
-      this.halfMenuCodes = [];
-      this.ownMenuCodes = {};
-      this.ownMenuId = 'all';
-      this.treeLoading = false;
       if (this.$refs.menu !== undefined) {
         this.$refs.menu.setCheckedKeys([]);
       }
@@ -763,6 +722,7 @@ export default {
           return;
         }
       });
+      // console.log(this.isSystemDisabled);
       this.ids = selection.map(item => item.roleId);
       this.names = selection.map(item => item.roleName);
       this.single = selection.length !== 1;
@@ -845,8 +805,7 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid) {
           this.buttonLoading = true;
-          this.saveCheckedKeys();
-          this.form.menuCodes = [...this.allMenuCodes, ...this.halfMenuCodes];
+          this.form.menuCodes = this.getMenuAllCheckedKeys();
           if (this.form.roleId !== undefined) {
             updateRole(this.form).then(response => {
               this.buttonLoading = false;
@@ -936,12 +895,6 @@ export default {
     },
     // 版本树节点单击事件
     handleVersionNodeClick(data) {
-      this.treeLoading = true;
-      this.saveCheckedKeys();
-      // 缓存上一次的勾选
-      this.ownMenuCodes[this.ownMenuId] = this.$refs.menu.getCheckedKeys();
-      this.ownMenuId = data.code;
-
       const params = {};
       if (data.type === 'produce') {
         params.produceCode = data.code;
@@ -953,31 +906,10 @@ export default {
       if (this.form.roleId !== undefined) {
         const roleMenu = this.getRoleMenuTreeselect(this.form.roleId, params);
         roleMenu.then(res => {
-          this.$refs.menu.setCheckedKeys(this.allMenuCodes);
-          this.$nextTick(() => {
-            if (this.ownMenuCodes[data.code]) {
-              // 读缓存数据
-              this.removeOwnKeys(this.ownMenuCodes[data.code]);
-              this.removeOwnHalfKeys(this.$refs.menu.getHalfCheckedKeys());
-            } else {
-              // 读接口数据
-              this.removeOwnKeys(res.checkedKeys);
-              this.removeOwnHalfKeys(this.$refs.menu.getHalfCheckedKeys());
-            }
-          });
+          this.$refs.menu.setCheckedKeys(res.checkedKeys);
         });
       } else {
-        const menu = this.getMenuTreeselect(params);
-        menu.then(() => {
-          this.$refs.menu.setCheckedKeys(this.allMenuCodes);
-          this.$nextTick(() => {
-            if (this.ownMenuCodes[data.code]) {
-              // 读缓存数据
-              this.removeOwnKeys(this.ownMenuCodes[data.code]);
-              this.removeOwnHalfKeys(this.$refs.menu.getHalfCheckedKeys());
-            }
-          });
-        });
+        this.getMenuTreeselect(params);
       }
     },
     // 判断操作是否禁用
