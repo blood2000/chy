@@ -187,7 +187,7 @@ export default {
       ztApiList(que).then(response => {
         this.myData = response.data;
         this.loading = false;
-      });
+      }).catch(() => { this.loading = false; });
     },
 
     handlerPiliang() {

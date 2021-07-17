@@ -878,8 +878,8 @@ export default {
 
 <style lang="scss" scoped>
 .avatar-wrapper__image{
-  width: 100px;
-  height: 100px;
+  width: 500px;
+  height: 500px;
   margin: 0 10px;
 }
 </style>

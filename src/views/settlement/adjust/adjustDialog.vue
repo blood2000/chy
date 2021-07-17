@@ -245,7 +245,7 @@
 
 
       <div class="drawer-footer">
-        <el-button type="primary" :loading="plLoading" @click="submitForm">立即核算</el-button>
+        <el-button type="primary" :loading="plLoading || loading" @click="submitForm">立即核算</el-button>
         <el-button @click="cancel">返回</el-button>
       </div>
     </el-drawer>

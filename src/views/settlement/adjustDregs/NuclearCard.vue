@@ -282,8 +282,9 @@ export default {
         // console.log([this.meter], '----------卡版本');
         // console.log([this.userMark], '----------用户版本');
         // console.log([this.carId], '----------ka标识');
+
         this.setLocalStorage(this.carId, { [this.userInfo.issuing_pc]: { data: this.IClist, meter: this.meter, userMark: this.userMark, userInfo: this.userInfo }}); // 本地存储
-        // console.log(this.getLocalStorage(this.carId));
+        console.log(this.getLocalStorage(this.carId));
 
         // 后端交互
         this.initData();
