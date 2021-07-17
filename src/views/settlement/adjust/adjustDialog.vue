@@ -2,6 +2,7 @@
   <div>
     <!-- <el-dialog v-loading="adjustLoading" class="i-adjust" :title="title" :visible="visible" width="1400px" :close-on-click-modal="false" append-to-body @close="cancel"> -->
     <el-drawer
+      v-loading="adjustLoading"
       size="96%"
       title="核算"
       :visible.sync="visible"
@@ -268,7 +269,7 @@
 </template>
 
 <script>
-
+import request from '@/utils/request';
 import PopoverCom from './components/PopoverCom';
 import ImgShow from './components/ImgShow';
 // import chooseItemDialog from '@/views/enterprise/rules/chooseItemDialog';
@@ -650,6 +651,7 @@ export default {
         type: 'warning'
       }).then(() => {
         this.adjustLoading = true;
+        [request][0].defaults.timeout = 100000;
         return batchCheck({ boList }).then(res => {
           this.adjustLoading = false;
           if (res.data) {
@@ -677,7 +679,9 @@ export default {
     /** 查询核算列表 */
     getList() {
       this.loading = true;
+      // [request][0].defaults.timeout = 100000;
       adjustDetail(this.queryParams).then(response => {
+        // console.log([request]);
         this.adjustlist = JSON.parse(JSON.stringify(response.data));
 
         /* 兼容处理*/
@@ -884,9 +888,12 @@ export default {
     /* 计算价格 */
     _sum(arr = []) {
       let sum = 0;
-      arr.forEach(e => {
-        sum += (e.ruleValue - 0);
-      });
+      console.log(arr);
+      if (arr) {
+        arr.forEach(e => {
+          sum += (e.ruleValue - 0);
+        });
+      }
       return sum;
     },
 
