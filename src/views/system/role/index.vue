@@ -641,6 +641,8 @@ export default {
           }
         });
       });
+    },
+    removeOwnHalfKeys(ownMenuCodes) {
       ownMenuCodes.forEach((item1) => {
         this.halfMenuCodes.forEach((item2, j) => {
           if (item2 === item1) {
@@ -844,7 +846,9 @@ export default {
         if (valid) {
           this.buttonLoading = true;
           this.saveCheckedKeys();
-          this.form.menuCodes = [this.allMenuCodes, ...this.halfMenuCodes];
+          // console.log('----------------allMenuCodes: ', this.allMenuCodes);
+          // console.log('----------------halfMenuCodes: ', this.halfMenuCodes);
+          this.form.menuCodes = [...this.allMenuCodes, ...this.halfMenuCodes];
           if (this.form.roleId !== undefined) {
             updateRole(this.form).then(response => {
               this.buttonLoading = false;
@@ -942,6 +946,8 @@ export default {
     handleVersionNodeClick(data) {
       this.treeLoading = true;
       this.saveCheckedKeys();
+      // console.log('----------------allMenuCodes: ', this.allMenuCodes);
+      // console.log('----------------halfMenuCodes: ', this.halfMenuCodes);
       // 缓存上一次的勾选
       this.ownMenuCodes[this.ownMenuId] = this.$refs.menu.getCheckedKeys();
       this.ownMenuId = data.code;
@@ -963,9 +969,15 @@ export default {
             if (this.ownMenuCodes[data.code]) {
               // 读缓存数据
               this.removeOwnKeys(this.ownMenuCodes[data.code]);
+              this.removeOwnHalfKeys(this.$refs.menu.getHalfCheckedKeys());
+              // console.log('remove----------------allMenuCodes: ', this.allMenuCodes);
+              // console.log('remove----------------halfMenuCodes: ', this.halfMenuCodes);
             } else {
               // 读接口数据
               this.removeOwnKeys(res.checkedKeys);
+              this.removeOwnHalfKeys(this.$refs.menu.getHalfCheckedKeys());
+              // console.log('remove----------------allMenuCodes: ', this.allMenuCodes);
+              // console.log('remove----------------halfMenuCodes: ', this.halfMenuCodes);
             }
           });
         });
@@ -977,6 +989,9 @@ export default {
             if (this.ownMenuCodes[data.code]) {
               // 读缓存数据
               this.removeOwnKeys(this.ownMenuCodes[data.code]);
+              this.removeOwnHalfKeys(this.$refs.menu.getHalfCheckedKeys());
+              // console.log('remove----------------allMenuCodes: ', this.allMenuCodes);
+              // console.log('remove----------------halfMenuCodes: ', this.halfMenuCodes);
             }
           });
         });
