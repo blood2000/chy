@@ -170,12 +170,18 @@ export default {
         extraHead: '<meta http-equiv="Content-Language" content="zh-cn"/>'
       },
 
-      adjustlist: []
+      adjustlist: [],
+
+      // 渣土场 1001 场内1002 自倒 1003
+      loadUnloadType_op: [
+        // { 'dictLabel': '渣土场', 'dictValue': '1001' },
+        { 'dictLabel': '场内', 'dictValue': '1002' },
+        { 'dictLabel': '自倒', 'dictValue': '1003' }
+      ]
     };
   },
 
   created() {
-    console.log(this.printData);
     this.getList();
   },
 
@@ -188,7 +194,12 @@ export default {
       this.loading = true;
       batchRelatedWaybill({ ...queryParams, batchNo: this.printData.batchNo }).then(res => {
         this.loading = false;
-        this.adjustlist = res.data.list;
+        this.adjustlist = res.data.list.map(e => {
+          if (e.loadUnloadType !== '1001') {
+            e.ztcName = this.selectDictLabel(this.loadUnloadType_op, e.loadUnloadType) || '-';
+          }
+          return e;
+        });
       });
     }
   }

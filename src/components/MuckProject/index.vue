@@ -235,7 +235,7 @@
             v-for="(src,index) in attachUrl"
             :key="index"
             v-real-img="src"
-            src="@/assets/images/workbench/icon_noavator.png"
+            src="~@/assets/images/icon/icon_null.png"
             class="avatar-wrapper__image"
           >
         </viewer>
@@ -878,8 +878,8 @@ export default {
 
 <style lang="scss" scoped>
 .avatar-wrapper__image{
-  width: 100px;
-  height: 100px;
+  width: 500px;
+  height: 500px;
   margin: 0 10px;
 }
 </style>

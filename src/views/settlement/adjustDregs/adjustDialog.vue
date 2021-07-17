@@ -95,7 +95,14 @@ export default {
       // changeFee: null,
       que: {},
       listData: null, // 外面的列表数据
-      sort: ''
+      sort: '',
+
+      // 渣土场 1001 场内1002 自倒 1003
+      loadUnloadType_op: [
+        // { 'dictLabel': '渣土场', 'dictValue': '1001' },
+        { 'dictLabel': '场内', 'dictValue': '1002' },
+        { 'dictLabel': '自倒', 'dictValue': '1003' }
+      ]
     };
   },
   computed: {
@@ -118,7 +125,6 @@ export default {
       // 包装方法
       const object = {};
 
-      console.log(this.adjustlist);
       this.adjustlist.forEach(e => {
         const str = e[this.sort];
         const array = object[str];
@@ -130,15 +136,17 @@ export default {
         }
       });
 
-      console.log(object);
+      // console.log(object);
 
       for (const item in object) {
         const obj = {
           freightAmount: 0
         };
 
+
         object[item].forEach(ite => {
           obj['freightAmount'] += (ite['shipperRealPay'] - 0); // 运费结算金额(取含税价字段)
+
           // obj['companyName'] = ite['companyName'] || '没有返回'; // 	公司名称
           // obj['shipmentCode'] = ite['shipmentCode'] || '没有返回';
         });
@@ -153,6 +161,7 @@ export default {
         obj['projectNames'] = [...new Set(objArr.map(e => e.projectName))].join(','); // 	项目（装货地）
         obj['teamNames'] = [...new Set(objArr.map(e => e.teamName))].join(',');
         obj['ztcLandNames'] = [...new Set(objArr.map(e => e.ztcLandName))].join(',');
+        obj['loadUnloadType'] = [...new Set(objArr.map(e => e.loadUnloadType))].join(',');
 
 
         obj['loadNum'] = objArr.length; // 装车数量
@@ -175,7 +184,7 @@ export default {
   watch: {
     psort(value) {
       if (value) {
-        console.log(value);
+        // console.log(value);
         this.sort = (value === 'ztcName' ? 'ztcLandName' : value);
       }
     }
@@ -250,6 +259,7 @@ export default {
           };
         });
 
+
         return immediateAccounting({
           batchBusAccBoList,
           immediateWaybillBoList,
@@ -260,13 +270,22 @@ export default {
         this.msgSuccess('核算成功');
         this.visible = false;
         this.$emit('refresh');
+      }).catch(() => {
+        this.loading = false;
       });
     },
     /** 查询核算列表 */
     getList() {
       this.loading = true;
       batchDetail(this.queryParams).then(response => {
-        this.adjustlist = JSON.parse(JSON.stringify(response.data));
+        this.adjustlist = JSON.parse(JSON.stringify(
+          response.data.map(e => {
+            if (e.loadUnloadType !== '1001') {
+              e.ztcLandName = this.selectDictLabel(this.loadUnloadType_op, e.loadUnloadType) || '-';
+            }
+            return e;
+          })
+        ));
         this.loading = false;
       });
     },
@@ -280,7 +299,6 @@ export default {
     },
     // 获取列表
     async setForm(arr) {
-      console.log(arr);
       this.listData = arr; // 做一下保存 后面核算要
       if (this.isAgain === 0) {
         this.queryParams.waybillCodeList = arr.map(e => e.wayBillCode); // 请求参数保存
