@@ -217,6 +217,13 @@ export default {
         { 'dictLabel': '吨', 'dictValue': '0' },
         { 'dictLabel': '方', 'dictValue': '1' },
         { 'dictLabel': '车', 'dictValue': '2' }
+      ],
+
+      // 渣土场 1001 场内1002 自倒 1003
+      loadUnloadType_op: [
+        // { 'dictLabel': '渣土场', 'dictValue': '1001' },
+        { 'dictLabel': '场内', 'dictValue': '1002' },
+        { 'dictLabel': '自倒', 'dictValue': '1003' }
       ]
 
     };
@@ -245,7 +252,13 @@ export default {
         };
         object[item].forEach(ite => {
           obj['freightAmount'] += ite['taxFee'] - 0; // 运费结算金额(取含税价字段)
+          if (ite.loadUnloadType !== '1001') {
+            ite.ztcName = this.selectDictLabel(this.loadUnloadType_op, ite.loadUnloadType);
+          }
         });
+
+        console.log(object[item]);
+
 
         obj['teamName'] = [...new Set(object[item].map(e => (e.teamName || '-')))].join(','); // object[item].map(e=> e.teamName)
         obj['ztcName'] = [...new Set(object[item].map(e => (e.ztcName || '-')))].join(','); // ite['ztcName']; // 渣土场（卸货地）

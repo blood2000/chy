@@ -143,7 +143,14 @@ export default {
       meter: null,
       userMark: null,
       carId: undefined,
-      errorCount: 0
+      errorCount: 0,
+
+      // 渣土场 1001 场内1002 自倒 1003
+      loadUnloadType_op: [
+        // { 'dictLabel': '渣土场', 'dictValue': '1001' },
+        { 'dictLabel': '场内', 'dictValue': '1002' },
+        { 'dictLabel': '自倒', 'dictValue': '1003' }
+      ]
     };
   },
   computed: {
@@ -307,11 +314,19 @@ export default {
         // 处理数据
         this.list = res.data.map(e => {
           const batchInfo = e.batchWayBillBalanceInfoVo || {};
+
+
+          let ztcName = batchInfo.ztcName || '-';
+          if (batchInfo.loadUnloadType !== '1001') {
+            ztcName = this.selectDictLabel(this.loadUnloadType_op, batchInfo.loadUnloadType) || '-';
+          }
+
+
           return {
             ...e,
             driverName: batchInfo.driverName || '-',
             projectName: batchInfo.projectName || '-',
-            ztcName: batchInfo.ztcName || '-',
+            ztcName,
             // serialNumber: batchInfo.ztcName || e.serialNumber,
             mudtail: batchInfo.unloadAddress || '-',
             writeOffStatus: e.writeOffStatus === 0,
