@@ -742,9 +742,12 @@ export default {
 
 
         this.total = response.total;
-
         // 要求初始就要计算一次
         this.handleSelectedNumChange();
+        // 单条数据，进行一次计算
+        if (this.adjustlist.length === 1) {
+          this.handlerChangev(this.adjustlist[0]);
+        }
         this.loading = false;
       });
     },
