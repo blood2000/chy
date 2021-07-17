@@ -235,7 +235,7 @@
             v-for="(src,index) in attachUrl"
             :key="index"
             v-real-img="src"
-            src="@/assets/images/workbench/icon_noavator.png"
+            src="~@/assets/images/icon/icon_null.png"
             class="avatar-wrapper__image"
           >
         </viewer>
