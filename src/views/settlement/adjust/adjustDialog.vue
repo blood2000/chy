@@ -2,6 +2,7 @@
   <div>
     <!-- <el-dialog v-loading="adjustLoading" class="i-adjust" :title="title" :visible="visible" width="1400px" :close-on-click-modal="false" append-to-body @close="cancel"> -->
     <el-drawer
+      v-loading="adjustLoading"
       size="96%"
       title="核算"
       :visible.sync="visible"
@@ -268,11 +269,11 @@
 </template>
 
 <script>
-
 import PopoverCom from './components/PopoverCom';
 import ImgShow from './components/ImgShow';
 // import chooseItemDialog from '@/views/enterprise/rules/chooseItemDialog';
-import { adjustDetail, calculateFee, batchCheck, batchCalculate } from '@/api/settlement/adjust';
+import { adjustDetail, calculateFee, batchCalculate } from '@/api/settlement/adjust';
+import { batchCheck } from '@/api/settlement/toadjust';
 import { getRuleItemList } from '@/api/enterprise/rules';
 import { floor, objReduce } from '@/utils/ddc';
 
@@ -884,9 +885,12 @@ export default {
     /* 计算价格 */
     _sum(arr = []) {
       let sum = 0;
-      arr.forEach(e => {
-        sum += (e.ruleValue - 0);
-      });
+      console.log(arr);
+      if (arr) {
+        arr.forEach(e => {
+          sum += (e.ruleValue - 0);
+        });
+      }
       return sum;
     },
 
