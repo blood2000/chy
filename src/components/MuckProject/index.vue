@@ -85,9 +85,14 @@
         />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="billlist" :table-columns-config="tableColumnsConfig" @selection-change="(selection)=> selections = selection">
+      <RefactorTable
+        :loading="loading"
+        :data="billlist"
+        :table-columns-config="tableColumnsConfig"
+        @selection-change="(selection)=> selections = selection"
+      >
         <template #batchNo="{row}">
-          <DismissedTrack :batch-no="row.batchNo" />
+          <DismissedTrack :batch-no="row.batchNo" :is-success="row.isSuccess" />
         </template>
 
         <template #opName="{row}">
@@ -145,7 +150,7 @@
             >打款</el-button>
 
             <el-button
-              v-if="status===4"
+              v-if="status===4 && row.isSuccess"
               size="mini"
               type="text"
               :loading="loading"
@@ -352,7 +357,6 @@ export default {
         { dictLabel: '已开票', dictValue: 3 },
         { dictLabel: '已打款', dictValue: 4 }
       ],
-
 
 
       shipmentCode: undefined
@@ -872,6 +876,8 @@ export default {
       await this.download('/transportation/batch/export', this.queryParams, this.fileName);
       this.exportLoading = false;
     }
+
+
   }
 };
 </script>
@@ -883,3 +889,4 @@ export default {
   margin: 0 10px;
 }
 </style>
+

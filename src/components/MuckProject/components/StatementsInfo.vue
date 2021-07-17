@@ -4,7 +4,7 @@
     <div class="mb20 ly-t-right">
       <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
     </div>
-    <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig">
+    <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig" :row-class-name="tableRowClassName">
       <template #weight="{row}">
         <span>{{ row.weight +' '+ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
       </template>
@@ -24,6 +24,12 @@
 
       <template #isChild="{row}">
         <span>{{ selectDictLabel(isChild_op, row.isChild) }}</span>
+      </template>
+
+      <template #applyStatus="{row}">
+        <span>
+          {{ selectDictLabel(applyStatus_op, row.applyStatus) }}
+        </span>
       </template>
 
       <template #fillTime="{row}">
@@ -100,6 +106,16 @@ export default {
         { 'dictLabel': '不是 （正常单）', 'dictValue': 0 },
         { 'dictLabel': '是（子单）', 'dictValue': 1 },
         { 'dictLabel': '超载的主单', 'dictValue': 2 }
+      ],
+
+      //  0: 未申请 1: 已申请 2: 已驳回 3: 打款中 4: 已打款 5: 打款失败 "
+      applyStatus_op: [
+        { dictLabel: '未申请', dictValue: 0 },
+        { dictLabel: '已申请', dictValue: 1 },
+        { dictLabel: '已驳回', dictValue: 2 },
+        { dictLabel: '打款中', dictValue: 3 },
+        { dictLabel: '已打款', dictValue: 4 },
+        { dictLabel: '打款失败', dictValue: 5 }
       ]
     };
   },
@@ -146,6 +162,14 @@ export default {
           'tooltip': true
         },
         {
+          'label': '打款状态',
+          'prop': 'applyStatus',
+          'isShow': true,
+          'sortNum': 21,
+          'width': '120',
+          'tooltip': true
+        },
+        {
           'prop': 'increaseDes',
           'isShow': true,
           'tooltip': true,
@@ -178,10 +202,26 @@ export default {
       this.loading = true;
       batchRelatedWaybill({ ...this.queryParams, batchNo: this.printData.batchNo }).then(res => {
         this.loading = false;
-        this.adjustlist = res.data.list;
+        this.adjustlist = res.data.list.sort((m, n) => {
+          return m.applyStatus - n.applyStatus;
+        });
         this.total = res.data.total;
       });
+    },
+
+    tableRowClassName({ row, rowIndex }) {
+      console.log(row.applyStatus);
+      if (row.applyStatus !== 4) {
+        return 'isSuccess-warning-row';
+      }
+      return '';
     }
   }
 };
 </script>
+
+<style>
+.el-table .isSuccess-warning-row {
+  background: #fab6b6;
+}
+</style>

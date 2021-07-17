@@ -44,7 +44,7 @@
         @pagination="getList"
       />
     </div>
-    <span slot="reference" class="shou g-color-success">{{ batchNo }}</span>
+    <span slot="reference" class="shou" :class="isSuccess? 'g-color-success': 'g-color-require' ">{{ batchNo }}</span>
   </el-popover>
 </template>
 
@@ -56,6 +56,10 @@ export default {
     batchNo: {
       type: String,
       default: ''
+    },
+    isSuccess: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
