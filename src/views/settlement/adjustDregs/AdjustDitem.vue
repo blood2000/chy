@@ -195,8 +195,16 @@ export default {
       this.loading = true;
       this.$emit('isLoading', true);
       try {
-        const { data } = await calculateFee(this.que);
+        const res = await calculateFee(this.que);
+
+        // console.log(res);
+        const { data, code, msg } = res;
         this.loading = false;
+
+        if (code === 501) {
+          this.msgError(msg);
+          return;
+        }
         this.$emit('isLoading', false);
         arr && arr.forEach(row => {
           data.forEach(da => {

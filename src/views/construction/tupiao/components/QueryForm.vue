@@ -9,16 +9,23 @@
 
       <el-form-item
         label="选择项目"
-        prop="projectName"
+        prop="projectCode"
       >
-        <el-input
-          v-model="queryParams.projectName"
-          placeholder="请选择选择项目"
+        <el-select
+          v-model="queryParams.projectCode"
           clearable
           size="small"
           style="width: 185px"
-          @keyup.enter.native="$emit('handleQuery')"
-        />
+          placeholder="请选择选择项目"
+          @change="$emit('handleQuery')"
+        >
+          <el-option
+            v-for="item in projectList"
+            :key="item.id + item.code"
+            :label="item.projectName"
+            :value="item.code"
+          />
+        </el-select>
       </el-form-item>
 
       <el-form-item
@@ -94,6 +101,7 @@
 
 <script>
 import { pickerOptions } from '@/utils/dateRange';
+import { webGetMachineProjectList } from '@/api/construction/comon';
 export default {
   props: {
     value: {
@@ -103,7 +111,8 @@ export default {
   },
   data() {
     return {
-      pickerOptions
+      pickerOptions,
+      'projectList': []
     };
   },
   computed: {
@@ -114,6 +123,16 @@ export default {
       set(value) {
         this.$emit('input', value);
       }
+    }
+  },
+  created() {
+    this.initData();
+  },
+  methods: {
+    // 初始化搜索数据
+    async initData() {
+      const res = await webGetMachineProjectList();
+      this.projectList = res.data;
     }
   }
 };

@@ -257,8 +257,6 @@ export default {
           }
         });
 
-        console.log(object[item]);
-
 
         obj['teamName'] = [...new Set(object[item].map(e => (e.teamName || '-')))].join(','); // object[item].map(e=> e.teamName)
         obj['ztcName'] = [...new Set(object[item].map(e => (e.ztcName || '-')))].join(','); // ite['ztcName']; // 渣土场（卸货地）

@@ -59,6 +59,7 @@ import { floor } from '@/utils/ddc';
 import { getLocalStorage } from '@/utils/auth';
 
 import { getMachineWorkingList, getMachineWorkingapi } from '@/api/construction/manhour';
+
 console.log(getMachineWorkingapi);
 
 export default {
@@ -83,11 +84,12 @@ export default {
         'pageNum': 1,
         'pageSize': 10,
 
-        projectName: undefined,
+        projectCode: undefined,
         phone: undefined,
         receiveTime: [] // 时间
 
       },
+
       'list': [],
       // 多选
       'selections': [],
@@ -230,6 +232,7 @@ export default {
   },
 
   methods: {
+
     // 初始表头
     tabColInit() {
       const tabCol = getLocalStorage(this.api);

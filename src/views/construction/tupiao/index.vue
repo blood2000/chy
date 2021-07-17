@@ -77,7 +77,7 @@ export default {
         'pageNum': 1,
         'pageSize': 10,
 
-        projectName: undefined,
+        projectCode: undefined,
         ticketName: undefined,
         receiveSite: undefined,
         receiveTime: [] // 时间
