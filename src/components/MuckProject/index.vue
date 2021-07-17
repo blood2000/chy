@@ -745,12 +745,37 @@ export default {
         };
 
         passPayment(que).then(res => {
-          this.msgSuccess('确定打款成功');
+          this.msgSuccess('打款成功');
           this.selections = [];
           this.loading = false;
           this.handleQuery();
         }).catch(() => { this.loading = false; });
       }).catch(() => {});
+    },
+
+    // 修改
+    pildakuan(selections) {
+      selections = [
+        {
+          waybillCodes: '1231,4564,7816513'
+        },
+        {
+          waybillCodes: '878,4569894,7816909513'
+        }
+      ];
+
+      console.log(selections);
+      const arr = [];
+
+      for (let index = 0; index < selections.length; index++) {
+        const e = selections[index];
+        arr.concat(e.waybillCodes.split(','));
+
+
+        if (index === selections.length) {
+          console.log(arr);
+        }
+      }
     },
 
     /* s=状态4 */
