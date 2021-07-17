@@ -4,7 +4,7 @@
     <div class="mb20 ly-t-right">
       <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
     </div>
-    <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig" :row-class-name="tableRowClassName">
+    <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig">
       <template #weight="{row}">
         <span>{{ row.weight +' '+ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
       </template>
@@ -27,7 +27,7 @@
       </template>
 
       <template #applyStatus="{row}">
-        <span>
+        <span :class="applyStatusClass(row.applyStatus)">
           {{ selectDictLabel(applyStatus_op, row.applyStatus) }}
         </span>
       </template>
@@ -227,18 +227,19 @@ export default {
       });
     },
 
-    tableRowClassName({ row, rowIndex }) {
-      if (this.status === 4 && row.applyStatus !== 4) {
-        return 'isSuccess-warning-row';
+    applyStatusClass(status) {
+      let className = 'g-color-success';
+
+      if (status === 3) {
+        className = 'g-color-warning';
+      } else if (status === 5) {
+        className = 'g-color-require';
       }
-      return '';
+
+      return className;
     }
+
   }
 };
 </script>
 
-<style>
-.el-table .isSuccess-warning-row {
-  background: #fab6b6;
-}
-</style>

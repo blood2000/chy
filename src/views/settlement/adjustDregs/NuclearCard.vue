@@ -337,7 +337,7 @@ export default {
           };
         });
 
-        // console.log(this.list);
+        console.log(this.list);
 
         // 排序
         this.list.sort((m, n) => {
