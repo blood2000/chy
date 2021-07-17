@@ -95,11 +95,11 @@
           <div class="header">结算信息</div>
           <div style="padding:20px">
             <el-table v-loading="loading" highlight-current-row :data="invoicelist" border>
-              <el-table-column label="装货地" align="center" prop="invoiceInfoStatisticsVo.loadFormattedAddress" show-overflow-tooltip />
-              <el-table-column label="卸货地" align="center" prop="invoiceInfoStatisticsVo.unloadFormattedAddress" show-overflow-tooltip />
+              <el-table-column label="装货地" width="120" align="center" prop="invoiceInfoStatisticsVo.loadFormattedAddress" show-overflow-tooltip />
+              <el-table-column label="卸货地" width="120" align="center" prop="invoiceInfoStatisticsVo.unloadFormattedAddress" show-overflow-tooltip />
               <el-table-column width="120" label="货物大类" align="center" prop="invoiceInfoStatisticsVo.goodsBigTypeName" />
               <el-table-column width="120" label="装货车数" align="center" prop="invoiceInfoStatisticsVo.wayBillCount" />
-              <el-table-column width="120" label="装车数量" align="center">
+              <el-table-column width="100" label="装车数量" align="center">
                 <template #default="scope">
                   <span v-show="scope.row.invoiceInfoStatisticsVo.stowageStatus === '0'">
                     {{ scope.row.invoiceInfoStatisticsVo.loadWeight }}(吨)
@@ -127,7 +127,9 @@
               </el-table-column>
               <el-table-column width="120" label="发票类型" align="center" prop="invoiceType" :formatter="invoiceTypeFormatter" />
               <!-- <el-table-column width="150" label="货主成交单价" align="center" prop="invoiceInfoStatisticsVo.goodsPrice" /> -->
-              <el-table-column width="150" label="货主实付金额" align="center" prop="amount" />
+              <el-table-column width="120" label="货主实付金额" align="center" prop="invoiceInfoStatisticsVo.totalShipperRealPay" />
+              <el-table-column width="120" label="纳税金额" align="center" prop="invoiceInfoStatisticsVo.totalTaxPayment" />
+              <el-table-column width="120" label="开票金额" align="center" prop="amount" />
               <el-table-column fixed="left" label="运单明细" align="center" width="100">
                 <template #default="scope">
                   <el-button type="text" size="small" icon="el-icon-document-checked" @click="handleClick(scope.row)">详情</el-button>
