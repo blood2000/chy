@@ -1,6 +1,7 @@
 <template>
   <div>
     <el-table
+      v-loading="loading"
       :data="list"
       style="width: 100%"
       @select="tabSelecedOne"
@@ -197,7 +198,8 @@ export default {
     sort: {
       type: String,
       default: 'cardBatchNo'
-    }
+    },
+    loading: [Boolean]
   },
 
   data() {

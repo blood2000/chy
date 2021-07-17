@@ -885,10 +885,15 @@ CardReader.action['readUserInfoAndreadData'] = async function() {
     ret = CardReader.fn.getResult(ret);
     if (ret.code !== '9000') {
       await CardReader.action.error();
+
+      let msg = CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : '';
+      if (ret.code === '6A82') {
+        msg = '这是一张白卡';
+      }
       return {
         ...ret,
         success: true,
-        msg: CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : '这是一张白卡'
+        msg
       };
     }
 
