@@ -78,7 +78,11 @@ export default {
   'name': 'StatementsInfo',
   props: {
     // wayBillCodes: { type: Array, default: () => [] }
-    printData: { type: Object, default: () => { return {}; } }
+    printData: { type: Object, default: () => { return {}; } },
+    status: {
+      type: Number,
+      default: 0
+    }
   },
   data() {
     return {
@@ -121,7 +125,11 @@ export default {
   },
   computed: {
     api() {
-      return BatchInfoListVo + '--' + 'StatementsInfo';
+      let str = BatchInfoListVo + '--' + 'StatementsInfo';
+      if (this.status === 4) {
+        str = BatchInfoListVo + '--' + 'StatementsInfo4';
+      }
+      return str;
     }
   },
 
@@ -135,6 +143,9 @@ export default {
     tabColInit() {
       const { isShipment = false } = getUserInfo() || {};
       this.tableColumnsConfig = [];
+
+
+
 
       const com = [
         {
@@ -161,14 +172,7 @@ export default {
           'width': '120',
           'tooltip': true
         },
-        {
-          'label': '打款状态',
-          'prop': 'applyStatus',
-          'isShow': true,
-          'sortNum': 21,
-          'width': '120',
-          'tooltip': true
-        },
+
         {
           'prop': 'increaseDes',
           'isShow': true,
@@ -186,6 +190,20 @@ export default {
           'width': 120
         }
       ];
+
+      // 已打款特殊另加打款状态
+      if (this.status === 4) {
+        com.push({
+          'label': '打款状态',
+          'prop': 'applyStatus',
+          'isShow': true,
+          'sortNum': 21,
+          'width': '120',
+          'tooltip': true
+        });
+      }
+
+      // console.log(com);
 
 
 
@@ -210,8 +228,7 @@ export default {
     },
 
     tableRowClassName({ row, rowIndex }) {
-      console.log(row.applyStatus);
-      if (row.applyStatus !== 4) {
+      if (this.status === 4 && row.applyStatus !== 4) {
         return 'isSuccess-warning-row';
       }
       return '';

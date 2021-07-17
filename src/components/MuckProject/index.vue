@@ -92,7 +92,7 @@
         @selection-change="(selection)=> selections = selection"
       >
         <template #batchNo="{row}">
-          <DismissedTrack :batch-no="row.batchNo" :is-success="row.isSuccess" />
+          <DismissedTrack :batch-no="row.batchNo" :is-success="status===4? row.isSuccess : true" />
         </template>
 
         <template #opName="{row}">
@@ -206,6 +206,7 @@
       <StatementsInfo
         v-if="openDetailDialog"
         :print-data="printData"
+        :status="status"
       />
     </el-dialog>
 
