@@ -69,6 +69,8 @@
             size="mini"
             @change="handlerChangev([scope.row])"
             @keyup.enter.native="handlerChangev([scope.row])"
+            @focus="$emit('isLoading', true)"
+            @blur="$emit('isLoading', false)"
           />
           <!-- @keyup.native="getDeliveryCashFee($event,[scope.row])" -->
         </template>
@@ -150,6 +152,7 @@ export default {
 
     // 单条修改
     handlerChangev(arr) {
+      console.log(123);
       this.que = {
         deliveryCashFee: arr[0].deliveryCashFee, //	金额		false
         waybillCodeList: arr.map(e => e.waybillCode)//	运单ids
@@ -261,6 +264,13 @@ export default {
       } else {
         return false;
       }
+    },
+
+    hshiehpos() {
+      console.log('hshiehpos wo选中');
+    },
+    sjfisjoi() {
+      console.log('sjfisjoi 我失焦');
     }
   }
 };

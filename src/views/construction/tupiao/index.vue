@@ -181,7 +181,7 @@ export default {
         {
           'label': '本周用票',
           'prop': 'thisWeekUsedTickets',
-          'isShow': false,
+          'isShow': true,
           'sortNum': 85,
           'width': '90',
           'tooltip': true

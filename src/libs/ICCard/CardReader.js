@@ -102,7 +102,7 @@ const CardReader = {
         CardReader.socket.onmessage = function(e) {
           const ret = CardReader.fn.getResult(e.data);
           if (ret.success) {
-            console.log('读卡成功信息' + CardReader._cmdIndex + '：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
+            console.log('读卡成功信息' + CardReader._cmdIndex + '：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message + ret.code : ret.code));
             resolve(e.data);
           } else {
             // console.log('错误信息', ret);
@@ -885,10 +885,15 @@ CardReader.action['readUserInfoAndreadData'] = async function() {
     ret = CardReader.fn.getResult(ret);
     if (ret.code !== '9000') {
       await CardReader.action.error();
+
+      let msg = CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : '';
+      if (ret.code === '6A82') {
+        msg = '这是一张白卡';
+      }
       return {
         ...ret,
         success: true,
-        msg: CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : '这是一张白卡'
+        msg
       };
     }
 

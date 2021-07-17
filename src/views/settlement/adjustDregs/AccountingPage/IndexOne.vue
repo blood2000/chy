@@ -49,7 +49,7 @@
       </el-row>
 
 
-      <AccountingTable ref="accountingRef" :my-data="myData" :sort="sortName" :columns="tableColumnsConfig" @ismultiple="(bool)=> multiple = bool" @refresh="getList" />
+      <AccountingTable ref="accountingRef" :loading="loading" :my-data="myData" :sort="sortName" :columns="tableColumnsConfig" @ismultiple="(bool)=> multiple = bool" @refresh="getList" />
 
       <!-- 核销IC卡 -->
       <nuclear-card ref="NuclearCard" :open.sync="nuclearCardDialog" @listData="listData" />
