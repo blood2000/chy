@@ -89,7 +89,7 @@
               :min="item.unit==='%'?0: -999999"
               :precision="0"
               controls-position="right"
-              :style="{ width: '85px' }"
+              :style="{ width: '150px' }"
             />
             <span class="ml0 mr10">{{ unit }}</span>
           </el-form-item>
@@ -110,7 +110,7 @@
               :min="item.unit==='%'?0: 0"
               :precision="0"
               controls-position="right"
-              :style="{ width: '85px' }"
+              :style="{ width: '150px' }"
             />
             <span class="ml0 mr10">{{ unit }}</span>
           </el-form-item>
