@@ -151,6 +151,11 @@ export const constantRoutes = [
     path: '/statisticSecond',
     component: (resolve) => require(['@/views/statistic/indexSecond'], resolve),
     hidden: true
+  },
+  {
+    path: '/aaa',
+    component: (resolve) => require(['@/views/acaredit'], resolve),
+    hidden: true
   }
 ];
 
