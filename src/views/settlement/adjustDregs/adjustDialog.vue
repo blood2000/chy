@@ -215,6 +215,10 @@ export default {
       }).then(() => {
         this.loading = true;
 
+        let deliveryCashFee = 0;
+        let taxPayment = 0;
+        let serviceFee = 0;
+
         const immediateWaybillBoList = this.adjustlist.map(e => {
         // immediateWaybillBoList	运单金额BOList		false
         // deductionDes	减项说明		false
@@ -226,6 +230,10 @@ export default {
         // taxPayment	纳税金额		false
         // waybillCode	运单
         // shipmentCode
+          deliveryCashFee += (e.deliveryCashFee ? e.deliveryCashFee - 0 : 0);
+          taxPayment += (e.taxPayment ? e.taxPayment - 0 : 0);
+          serviceFee += (e.serviceFee ? e.serviceFee - 0 : 0);
+
           return {
             deductionDes: e.deductionDes || '',
             increaseDes: e.increaseDes || '',
@@ -240,6 +248,8 @@ export default {
           };
         });
 
+
+
         const batchBusAccBoList = this.list.map(e => {
           //   actualTripsNum	实发趟数（次）		false
           //   loadNum	装车数量		false
@@ -253,13 +263,22 @@ export default {
           //   ztcLandNames	渣土场名称(卸货地)
           return {
             ...e,
+            deliveryCashFee,
+            taxPayment,
+            serviceFee,
             shipperCode: shipmentCodeArr[0],
             batchNo: e.batchNo || undefined,
             childs: undefined
           };
         });
 
+        // console.log({
+        //   batchBusAccBoList,
+        //   immediateWaybillBoList,
+        //   isAgain: this.isAgain
+        // });
 
+        // return;
         return immediateAccounting({
           batchBusAccBoList,
           immediateWaybillBoList,

@@ -842,6 +842,7 @@ export default {
     // 结算单
     handleVerification(row) {
       this.printData = row;
+      // console.log(row);
       this.settlementOpen = true;
     },
     // 驳回

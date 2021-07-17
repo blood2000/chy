@@ -31,6 +31,8 @@
       <el-table-column width="120" label="司机电话" align="center" prop="driverPhone" />
       <el-table-column width="120" label="车牌号" align="center" prop="licenseNumber" />
 
+      <el-table-column width="120" label="货主备注" align="center" prop="shipperRemark" />
+
       <el-table-column width="80" label="装货数量" align="left" prop="loadWeight">
         <template slot-scope="{row}">
           <!-- <span>{{ scope.row.loadWeight }}</span> -->

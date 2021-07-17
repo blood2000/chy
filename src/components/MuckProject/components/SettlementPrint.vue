@@ -65,7 +65,7 @@
           <el-col :span="12">
             <el-row>
               <el-col :span="5"><span class="text-label">运费结算：</span></el-col>
-              <el-col :span="18"><span class="text-row"> {{ floorFn(printData.freightAmount) }} 元</span></el-col>
+              <el-col :span="18"><span class="text-row"> {{ floorFn(printData.deliveryCashFee) }} 元</span></el-col>
             </el-row>
           </el-col>
           <el-col :span="12" />
