@@ -126,10 +126,11 @@
                 </template>
               </el-table-column>
               <el-table-column width="120" label="发票类型" align="center" prop="invoiceType" :formatter="invoiceTypeFormatter" />
-              <!-- <el-table-column width="150" label="货主成交单价" align="center" prop="invoiceInfoStatisticsVo.goodsPrice" /> -->
-              <el-table-column width="120" label="货主实付金额" align="center" prop="invoiceInfoStatisticsVo.totalShipperRealPay" />
-              <el-table-column width="120" label="纳税金额" align="center" prop="invoiceInfoStatisticsVo.totalTaxPayment" />
               <el-table-column width="120" label="开票金额" align="center" prop="amount" />
+              <el-table-column width="150" label="司机实收金额" align="center" prop="invoiceInfoStatisticsVo.totalDeliveryCashFee" />
+              <el-table-column width="120" label="服务费金额" align="center" prop="invoiceInfoStatisticsVo.totalServiceFee" />
+              <el-table-column width="120" label="纳税金额" align="center" prop="invoiceInfoStatisticsVo.totalTaxPayment" />
+              <el-table-column width="120" label="货主实付金额" align="center" prop="invoiceInfoStatisticsVo.totalShipperRealPay" />
               <el-table-column fixed="left" label="运单明细" align="center" width="100">
                 <template #default="scope">
                   <el-button type="text" size="small" icon="el-icon-document-checked" @click="handleClick(scope.row)">详情</el-button>
