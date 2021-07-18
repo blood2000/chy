@@ -734,6 +734,7 @@ export default {
       if (row) {
         this.selections = [row];
       }
+
       this.$confirm('确定打款?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -751,31 +752,6 @@ export default {
           this.handleQuery();
         }).catch(() => { this.loading = false; });
       }).catch(() => {});
-    },
-
-    // 修改
-    pildakuan(selections) {
-      selections = [
-        {
-          waybillCodes: '1231,4564,7816513'
-        },
-        {
-          waybillCodes: '878,4569894,7816909513'
-        }
-      ];
-
-      console.log(selections);
-      const arr = [];
-
-      for (let index = 0; index < selections.length; index++) {
-        const e = selections[index];
-        arr.concat(e.waybillCodes.split(','));
-
-
-        if (index === selections.length) {
-          console.log(arr);
-        }
-      }
     },
 
     /* s=状态4 */
