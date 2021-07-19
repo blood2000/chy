@@ -15,13 +15,13 @@
         <amap-search ref="UnloadAmapSearchRef" v-model="form.unloadDetail" :search-option="searchOption" class="width100" @change="unloadAddressChange" />
       </el-form-item>
       <el-row :gutter="20">
-        <el-col :span="11">
-          <el-form-item label="选择负责的组织/成员">
+        <el-col :span="24">
+          <el-form-item label="选择负责的组织/成员" class="width90">
             <el-select
               v-model="changeOrgValue"
               clearable
               filterable
-              style="width: 200px"
+              style="width: 100%"
             >
               <el-option
                 v-for="dict in changeOrgOptions"
@@ -32,13 +32,14 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="11">
-          <el-form-item v-if="changeOrgValue === 0" label="负责的成员组织" prop="orgCodes">
+        <el-col :span="24">
+          <el-form-item v-if="changeOrgValue === 0" label="负责的成员组织" prop="orgCodes" class="width90">
             <el-select
               v-model="form.orgCodes"
               clearable
               filterable
-              style="width: 200px"
+              style="width: 100%"
+              multiple
             >
               <el-option
                 v-for="dict in memberOrgList"
@@ -48,12 +49,13 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item v-if="changeOrgValue === 1" label="负责的成员" prop="userCodes">
+          <el-form-item v-if="changeOrgValue === 1" label="负责的成员" prop="userCodes" class="width90">
             <el-select
               v-model="form.userCodes"
               clearable
               filterable
-              style="width: 200px"
+              style="width: 100%"
+              multiple
             >
               <el-option
                 v-for="dict in memberList"
@@ -405,6 +407,11 @@ export default {
     // 表单赋值
     setForm(data) {
 	    this.form = data;
+      if (data.orgCodes && data.orgCodes.length > 0) {
+        this.changeOrgValue = 0;
+      } else if (data.userCodes && data.userCodes.length > 0) {
+        this.changeOrgValue = 1;
+      }
       /* if (data.commoditySubclassCodes) {
         this.commoditySubclassCodes = data.commoditySubclassCodes.split(',');
       }
