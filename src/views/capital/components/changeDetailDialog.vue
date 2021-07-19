@@ -146,6 +146,7 @@
             </template>
           </el-table-column>
           <el-table-column label="冻结总额（元）" align="center" prop="amount" />
+          <el-table-column label="操作后冻结金额（元）" align="center" prop="beforeFreezeAmount" />
           <el-table-column label="操作时间" align="center" prop="createTime">
             <template slot-scope="scope">
               <span>{{ parseTime(scope.row.createTime) }}</span>
@@ -214,7 +215,6 @@ export default {
         updateTimeEnd: undefined
       },
       frreezeQueryParams: {
-        type: 1,
         pageNum: 1,
         pageSize: 10,
         startTime: undefined,
