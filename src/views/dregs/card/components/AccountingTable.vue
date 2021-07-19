@@ -20,6 +20,9 @@
             <template #ztcName="{row}">
               <span>{{ row.ztcName || '-' }}</span>
             </template>
+            <template #projectName="{row}">
+              <span>{{ row.projectName || '-' }}</span>
+            </template>
             <template #loadWeight="{row}">
               <span>{{ row.loadWeight +' '+ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
             </template>
@@ -115,40 +118,40 @@ const com = [
     'tooltip': true
   },
   {
-    'label': '运单数量',
-    'prop': 'loadNum',
+    'label': '卡ID',
+    'prop': 'card16no',
     'isShow': true,
     'sortNum': 7,
     'tooltip': true
-  },
-  {
-    'label': '运费结算金额',
-    'prop': 'freightAmount',
-    'isShow': false,
-    'sortNum': 8,
-    'tooltip': true
-  },
-  {
-    'label': '装车数量',
-    'prop': 'loadNum',
-    'isShow': true,
-    'sortNum': 11,
-    'tooltip': true
-  },
-  {
-    'label': '实发趟数',
-    'prop': 'actualTripsNum',
-    'isShow': true,
-    'sortNum': 11,
-    'tooltip': true
-  },
-  {
-    'label': '结算趟数',
-    'prop': 'settlementTripsNum',
-    'isShow': true,
-    'sortNum': 11,
-    'tooltip': true
-  },
+  }
+  // {
+  //   'label': '运费结算金额',
+  //   'prop': 'freightAmount',
+  //   'isShow': false,
+  //   'sortNum': 8,
+  //   'tooltip': true
+  // },
+  // {
+  //   'label': '装车数量',
+  //   'prop': 'loadNum',
+  //   'isShow': true,
+  //   'sortNum': 11,
+  //   'tooltip': true
+  // },
+  // {
+  //   'label': '实发趟数',
+  //   'prop': 'actualTripsNum',
+  //   'isShow': true,
+  //   'sortNum': 11,
+  //   'tooltip': true
+  // },
+  // {
+  //   'label': '结算趟数',
+  //   'prop': 'settlementTripsNum',
+  //   'isShow': true,
+  //   'sortNum': 11,
+  //   'tooltip': true
+  // }
   //   {
   //     'label': '运单号',
   //     'prop': 'waybillCods',
@@ -165,13 +168,13 @@ const com = [
   //     'width': '120',
   //     'tooltip': true
   //   },
-  {
-    'prop': 'edit',
-    'isShow': true,
-    'label': '操作',
-    'width': 50,
-    'fixed': 'left'
-  }
+  // {
+  //   'prop': 'edit',
+  //   'isShow': false,
+  //   'label': '操作',
+  //   'width': 50,
+  //   'fixed': 'left'
+  // }
 ];
 
 
@@ -242,13 +245,14 @@ export default {
           freightAmount: 0
         };
         object[item].forEach(ite => {
-          obj['freightAmount'] += ite['taxFee'] - 0; // 运费结算金额(取含税价字段)
+          // obj['freightAmount'] += ite['taxFee'] - 0; // 运费结算金额(取含税价字段)
           if (ite.loadUnloadType !== '1001') {
             ite.ztcName = this.selectDictLabel(this.loadUnloadType_op, ite.loadUnloadType);
           }
         });
 
 
+        obj['card16no'] = [...new Set(object[item].map(e => (e.card16no || '-')))].join(',');
         obj['teamName'] = [...new Set(object[item].map(e => (e.teamName || '-')))].join(','); // object[item].map(e=> e.teamName)
         obj['ztcName'] = [...new Set(object[item].map(e => (e.ztcName || '-')))].join(','); // ite['ztcName']; // 渣土场（卸货地）
         obj['projectName'] = [...new Set(object[item].map(e => (e.projectName || '-')))].join(','); // ite['projectName']; // 	项目（装货地）
@@ -256,11 +260,11 @@ export default {
 
 
 
-        obj['loadNum'] = object[item].length; // 装车数量
-        obj['actualTripsNum'] = object[item].length; // 实发趟数（次）
-        obj['settlementTripsNum'] = object[item].length; // 结算趟数
+        // obj['loadNum'] = object[item].length; // 装车数量
+        // obj['actualTripsNum'] = object[item].length; // 实发趟数（次）
+        // obj['settlementTripsNum'] = object[item].length; // 结算趟数
         obj['waybillCods'] = object[item].map(e => e.wayBillCode); // 	运单CodeIds
-        obj['childs'] = object[item];
+        obj['childs'] = object[item]; // 肯定
         obj['selectChilds'] = [];
         obj['$_id'] = this.genID();
 
@@ -285,7 +289,7 @@ export default {
   // },
 
   created() {
-    this.get_goodsType();
+    // this.get_goodsType();
   },
 
   methods: {

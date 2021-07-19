@@ -9,10 +9,10 @@
     <div class="app-container app-container--search">
       <el-form-item
         label="司机"
-        prop="sjasjosjpjgps"
+        prop="driverNameOrPhone"
       >
         <el-input
-          v-model="queryParams.sjasjosjpjgps"
+          v-model.trim="queryParams.driverNameOrPhone"
           placeholder="请输入司机名称或手机号"
           clearable
           size="small"
@@ -23,10 +23,10 @@
 
       <el-form-item
         label="车牌号"
-        prop="cheiosslkkk"
+        prop="licenseNumber"
       >
         <el-input
-          v-model="queryParams.cheiosslkkk"
+          v-model.trim="queryParams.licenseNumber"
           placeholder="请输入车牌号"
           clearable
           size="small"
@@ -35,13 +35,29 @@
         />
       </el-form-item>
 
+      <el-form-item
+        label="卡ID"
+        prop="card16no"
+      >
+        <el-input
+          v-model.trim="queryParams.card16no"
+          placeholder="请选择卡ID"
+          clearable
+          size="small"
+          style="width: 228px"
+          @keyup.enter.native="$emit('handleQuery')"
+        />
+
+        <el-button class="ml10" size="small" type="primary" plain @click="$emit('getCardInfo')">读卡</el-button>
+      </el-form-item>
+
 
       <el-form-item
         label="日期"
         prop="receiveTime"
       >
         <el-date-picker
-          v-model="queryParams.receiveTime"
+          v-model.trim="queryParams.receiveTime"
           type="daterange"
           unlink-panels
           :picker-options="pickerOptions"
@@ -79,7 +95,7 @@
 </template>
 
 <script>
-
+import { pickerOptions } from '@/utils/dateRange';
 export default {
   props: {
     // 固定 远程
@@ -91,7 +107,9 @@ export default {
   },
 
   data() {
-    return {};
+    return {
+      pickerOptions
+    };
   },
 
   computed: {

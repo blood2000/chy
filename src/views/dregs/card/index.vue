@@ -9,6 +9,7 @@
           queryParams.pageNum = 1;
           getList()
         }"
+        @getCardInfo="getCardInfo"
       />
     </div>
 
@@ -63,7 +64,24 @@ import QueryForm from './components/QueryForm';
 import AccountingTable from './components/AccountingTable';
 import { cardHistoryList } from '@/api/acaredit';
 
+import CardReader, { USERINFO, versionMark } from '@/libs/ICCard/CardReader';
+const { action, fn } = CardReader;
+
+console.log(action);
+
+// 方法 connect
+
+
 const com = [
+  {
+    'label': '卡ID',
+    'prop': 'card16no',
+    'isShow': true,
+    'sortNum': 0,
+    'width': '120',
+    'tooltip': true,
+    'isChild': false
+  },
   {
     'label': '配载方式',
     'prop': 'stowageStatus',
@@ -369,8 +387,9 @@ export default {
         // 固定--
         'pageNum': 1,
         'pageSize': 10,
-        'sjasjosjpjgps': undefined,
-        'cheiosslkkk': undefined,
+        'driverNameOrPhone': undefined,
+        'licenseNumber': undefined,
+        'card16no': undefined,
         'receiveTime': []
       },
 
@@ -378,7 +397,10 @@ export default {
       tableColumnsConfig: com,
 
       myData: [],
-      multiple: false
+      multiple: false,
+
+      // 卡
+      isConnect: false
 
     };
   },
@@ -389,12 +411,23 @@ export default {
     },
 
     que() {
-      return this.queryParams;
+      return {
+        ...this.queryParams,
+        beginTime: this.queryParams.receiveTime[0],
+        endTime: this.queryParams.receiveTime[1],
+        receiveTime: undefined
+      };
     }
   },
 
   created() {
     this.getList();
+    CardReader.fn.connect(() => {
+      console.log('连接成功');
+      this.isConnect = true;
+    }, () => {
+      this.isConnect = false;
+    });
   },
 
 
@@ -428,9 +461,42 @@ export default {
       // };
       cardHistoryList(this.que).then(response => {
         console.log(response);
-        this.myData = response.data;
+        this.total = response.data.total;
+        this.myData = response.data.list;
         this.loading = false;
       }).catch(() => { this.loading = false; });
+    },
+
+    getCardInfo() {
+      console.log(4545);
+      if (this.isConnect) {
+        action.getCardInfo().then(res => {
+          console.log(res);
+          if (res.code === '9000') {
+            // this.queryParams.card16no = res.GetCardNo.data;
+            this.$set(this.queryParams, 'card16no', res.GetCardNo.data);
+            console.log(this.queryParams);
+          }
+        });
+      } else {
+        CardReader.fn.connect(() => {
+          console.log('连接成功');
+          this.isConnect = true;
+          this.getCardInfo();
+        });
+      }
+    },
+
+    // 关闭
+    _close() {
+      if (CardReader.socket) {
+        CardReader.socket.onclose = function() {}; // disable onclose handler first
+        CardReader.socket.close();
+        CardReader.socket = null;
+        this.userInfo = {};
+        this.list = [];
+        this.IClist = [];
+      }
     }
   }
 };
