@@ -1,54 +1,70 @@
 <template>
   <!-- 添加或修改项目对话框 -->
   <el-dialog :title="title" :class="[{'i-add':title==='添加项目'}]" :visible="visible" width="800px" :close-on-click-modal="false" append-to-body @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" label-width="120px">
-      <el-form-item label="项目名称" prop="projectName">
+    <el-form ref="form" :model="form" :rules="rules" label-width="160px">
+      <el-form-item label="项目名称" prop="projectName" class="width90">
         <el-input v-model="form.projectName" placeholder="请输入项目名称" />
       </el-form-item>
-      <el-form-item label="合作单位" prop="earthworkUnit">
+      <el-form-item label="合作单位" prop="earthworkUnit" class="width90">
         <el-input v-model="form.earthworkUnit" placeholder="请输入合作单位" />
       </el-form-item>
-      <el-form-item label="装货地址" prop="detail">
+      <el-form-item label="装货地址" prop="detail" class="width90">
         <amap-search ref="AmapSearchRef" v-model="form.detail" :search-option="searchOption" class="width100" @change="addressChange" />
       </el-form-item>
-      <el-form-item label="卸货地址" prop="unloadDetail">
+      <el-form-item label="卸货地址" prop="unloadDetail" class="width90">
         <amap-search ref="UnloadAmapSearchRef" v-model="form.unloadDetail" :search-option="searchOption" class="width100" @change="unloadAddressChange" />
       </el-form-item>
-        <el-row :gutter="20">
-            <el-col :span="11">
-                <el-form-item label="负责的成员组织" prop="memberOrgCode">
-                    <el-select
-                            v-model="form.memberOrgCode"
-                            clearable
-                            filterable
-                            style="width: 200px"
-                    >
-                        <el-option
-                                v-for="dict in memberOrgList"
-                                :key="dict.orgCode"
-                                :label="dict.orgName"
-                                :value="dict.orgCode"
-                        />
-                    </el-select>
-                </el-form-item>
-            </el-col>
-            <el-col :span="11">
-                <el-form-item label="负责的成员" prop="userCode">
-                    <el-select
-                            v-model="form.userCode"
-                            clearable
-                            filterable
-                    >
-                        <el-option
-                                v-for="dict in memberList"
-                                :key="dict.userCode"
-                                :label="dict.userName + ' ('+dict.phonenumber+')'"
-                                :value="dict.userCode"
-                        />
-                    </el-select>
-                </el-form-item>
-            </el-col>
-        </el-row>
+      <el-row :gutter="20">
+        <el-col :span="11">
+          <el-form-item label="选择负责的组织/成员">
+            <el-select
+              v-model="changeOrgValue"
+              clearable
+              filterable
+              style="width: 200px"
+            >
+              <el-option
+                v-for="dict in changeOrgOptions"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item v-if="changeOrgValue === 0" label="负责的成员组织" prop="orgCodes">
+            <el-select
+              v-model="form.orgCodes"
+              clearable
+              filterable
+              style="width: 200px"
+            >
+              <el-option
+                v-for="dict in memberOrgList"
+                :key="dict.orgCode"
+                :label="dict.orgName"
+                :value="dict.orgCode"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item v-if="changeOrgValue === 1" label="负责的成员" prop="userCodes">
+            <el-select
+              v-model="form.userCodes"
+              clearable
+              filterable
+              style="width: 200px"
+            >
+              <el-option
+                v-for="dict in memberList"
+                :key="dict.userCode"
+                :label="dict.userName + ' ('+dict.phonenumber+')'"
+                :value="dict.userCode"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
       <!--<el-form-item label="货物大类" prop="commodityCategoryCode">
         <el-radio-group v-model="form.commodityCategoryCode" @change="handlecommodityCategoryChange">
           <el-radio
@@ -90,6 +106,7 @@
 <script>
 import { addInfo, updateInfo } from '@/api/enterprise/project';
 import { listDept } from '@/api/system/dept';
+import { listUser } from '@/api/system/user';
 import AmapSearch from '@/components/Ddc/Tin/AmapSearch';
 
 const geocoder = new AMap.Geocoder({
@@ -182,7 +199,12 @@ export default {
         'status': '0',
         'dictPid': '',
         'dictType': 'goodsType'
-      }
+      },
+      changeOrgValue: 0,
+      changeOrgOptions: [
+        { label: '选择组织', value: 0 },
+        { label: '选择成员', value: 1 }
+      ]
     };
   },
   computed: {
@@ -197,6 +219,7 @@ export default {
   },
   created() {
     this.getMemberOrgList();
+    this.getMemberList();
     /* this.listByDict(this.commodityCategory).then(response => {
       this.commodityCategoryCodeOptions = response.data;
     });
@@ -206,10 +229,28 @@ export default {
     });*/
   },
   methods: {
-    /** 查询角色列表 */
+    /** 查询成员列表 */
+    getMemberList() {
+      const data = {};
+      data.pageNum = 1;
+      data.pageSize = 100;
+      if (this.companyCode) {
+        data.orgCode = this.companyCode;
+      }
+      if (this.showShipment) {
+        data.showShipment = this.showShipment;
+      }
+      if (this.orgType) {
+        data.orgType = this.orgType;
+      }
+      listUser(data).then(response => {
+        this.memberList = response.rows;
+      }
+      );
+    },
     /** 查询部门列表 */
     getMemberOrgList() {
-      var data = {};
+      const data = {};
       data.pageNum = 1;
       data.pageSize = 100;
       if (this.companyCode) {
@@ -226,7 +267,6 @@ export default {
       }
       listDept(data).then(response => {
         this.memberOrgList = response.data;
-        // this.deptList = this.handleTree(response.data, 'id');
       });
     },
     // 搜索地址
@@ -290,6 +330,14 @@ export default {
           if (this.shipment) {
             this.form.shipmentCode = this.shipment;
           }
+          if (this.changeOrgValue === 0) {
+            this.form.userCodes = null;
+          } else if (this.changeOrgValue === 1) {
+            this.form.orgCodes = null;
+          } else {
+            this.form.userCodes = null;
+            this.form.orgCodes = null;
+          }
           if (this.form.id) {
             updateInfo(this.form).then(response => {
               this.msgSuccess('修改成功');
@@ -317,6 +365,7 @@ export default {
     },
     // 表单重置
     reset() {
+      this.changeOrgValue = 0;
       this.form = {
         id: null,
         shipmentCode: null,
@@ -342,8 +391,9 @@ export default {
         unloadDistrict: null,
         unloadLatitude: null,
         unloadLongitude: null,
-        memberOrgCode: null,
-        userCode: null,
+        // 组织成员
+        orgCodes: null,
+        userCodes: null,
         // commodityCategoryCode: null,
         // commoditySubclassCodes: null,
         // projectRemark: null,
@@ -393,7 +443,7 @@ export default {
 	  margin-right: 3%;
 	}
 	.width90{
-	  width: 90% !important;
+	  width: 94.4%;
 	}
 	.width28{
 	  width: 28%;
