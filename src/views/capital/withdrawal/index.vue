@@ -171,7 +171,15 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <RefactorTable ref="multipleTable" :loading="loading" :data="withdrawalList" :table-columns-config="tableColumnsConfig" :selectable-fn="selectableFn" @selection-change="handleSelectionChange">
+      <RefactorTable
+        ref="multipleTable"
+        :loading="loading"
+        :data="withdrawalList"
+        :table-columns-config="tableColumnsConfig"
+        :row-class-name="tableRowClassName"
+        :selectable="selectableFn"
+        @selection-change="handleSelectionChange"
+      >
         <!-- 转账渠道 -->
         <template #payStatus="{row}">
           <span>{{ selectDictLabel(payStatusOption, row.payStatus) }}</span>
@@ -273,7 +281,9 @@ export default {
       searched: false,
       exportLoading: false,
       importLoading: false,
-      rejectLoading: false
+      rejectLoading: false,
+      errList: [],
+      sucList: []
     };
   },
   computed: {
@@ -316,8 +326,12 @@ export default {
       this.getList();
     },
     /** 查询列表 */
-    getList() {
-      this.loading = true;
+    getList(e) {
+      if (e !== 1) {
+        this.errList = [];
+        this.sucList = [];
+        this.loading = true;
+      }
       this.$store.dispatch('settings/changeQuick', null);
       getWithDrawalList(this.queryParams).then(response => {
         this.withdrawalList = response.data.rows;
@@ -356,22 +370,61 @@ export default {
     },
     /** 网商批量提现 */
     handleImport() {
-      const _this = this;
+      // const _this = this;
       this.$confirm('是否确认网商批量提现?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(function() {
-        _this.importLoading = true;
-        toCard(_this.ids).then(response => {
-          _this.importLoading = false;
-          _this.msgSuccess('操作成功');
-          _this.$refs.multipleTable.m2ToggleSelection();
-          _this.getList();
-        }).catch(() => {
-          _this.importLoading = false;
-        });
+      }).then(() => {
+        this.errList = [];
+        this.sucList = [];
+        this.$message({ type: 'warning', message: '发起网商提现成功，请勿关闭或刷新页面！' });
+        this.importLoading = true;
+        this.getToCard();
+        // toCard(_this.ids).then(response => {
+        //   _this.importLoading = false;
+        //   _this.msgSuccess('操作成功');
+        //   _this.$refs.multipleTable.m2ToggleSelection();
+        //   _this.getList();
+        // }).catch(() => {
+        //   _this.importLoading = false;
+        // });
       });
+    },
+    // 提现接口
+    async getToCard() {
+      const len = this.ids;
+      // console.log(len);
+      for (let index = 0; index < len.length; index++) {
+        const e = len[index];
+        try {
+          await toCard([e]);
+          this.sucList.push(e);
+        } catch (error) {
+          this.errList.push(e);
+          continue;
+        }
+        // console.log(index, '----', this.ids.length, len.length);
+      }
+      setTimeout(() => {
+        this.getList();
+      }, 2000);
+      this.$refs.multipleTable.m2ToggleSelection();
+      this.importLoading = false;
+      console.log(this.sucList, this.errList);
+    },
+    // 列表颜色
+    tableRowClassName({ row, rowIndex }) {
+      if (this.errList.length > 0) {
+        if (this.errList.includes(row.id)) {
+          return 'warning-row';
+        }
+      }
+      if (this.sucList.length > 0) {
+        if (this.sucList.includes(row.id)) {
+          return 'success-row';
+        }
+      }
     },
     /** 网商批量驳回 */
     handleReject() {
@@ -413,3 +466,17 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+  .total_bg{
+    background: #F8F9FA;
+    border-radius: 4px;
+    padding: 10px 20px;
+    margin-bottom: 10px;
+  }
+  ::v-deep .warning-row{
+    background: #fadbd9 !important;
+  }
+  ::v-deep .success-row{
+    background: #d7f0dbff !important;
+  }
+</style>
