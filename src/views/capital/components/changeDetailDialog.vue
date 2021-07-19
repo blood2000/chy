@@ -13,7 +13,7 @@
     <el-tabs v-model="activeName">
       <el-tab-pane label="变动明细" name="mx">
         <!-- 变动明细 -->
-        <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="80px">
+        <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="76px">
           <el-form-item label="变动原因" prop="paidItem">
             <el-select v-model="queryParams.paidItem" placeholder="请选择变动原因" filterable clearable size="small" class="input-width">
               <el-option
@@ -113,7 +113,7 @@
       </el-tab-pane>
       <el-tab-pane label="冻结记录" name="dj">
         <!-- 冻结记录 -->
-        <el-form ref="frreezeQueryForm" :model="frreezeQueryParams" :inline="true" label-width="80px">
+        <el-form ref="frreezeQueryForm" :model="frreezeQueryParams" :inline="true" label-width="76px">
           <el-form-item label="交易日期">
             <el-date-picker
               v-model="frreezeQueryParams.startTime"
