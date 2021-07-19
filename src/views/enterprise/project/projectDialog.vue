@@ -22,6 +22,7 @@
               clearable
               filterable
               style="width: 100%"
+              @change="changeOption"
             >
               <el-option
                 v-for="dict in changeOrgOptions"
@@ -60,7 +61,7 @@
               <el-option
                 v-for="dict in memberList"
                 :key="dict.userCode"
-                :label="dict.userName + ' ('+dict.phonenumber+')'"
+                :label="dict.nickName + ' ('+dict.phonenumber+')'"
                 :value="dict.userCode"
               />
             </el-select>
@@ -110,6 +111,7 @@ import { addInfo, updateInfo } from '@/api/enterprise/project';
 import { listDept } from '@/api/system/dept';
 import { listUser } from '@/api/system/user';
 import AmapSearch from '@/components/Ddc/Tin/AmapSearch';
+import { getUserInfo } from '@/utils/auth';
 
 const geocoder = new AMap.Geocoder({
   radius: 1000,
@@ -127,6 +129,10 @@ export default {
     },
     open: Boolean,
     shipment: {
+      type: String,
+      default: null
+    },
+    company: {
       type: String,
       default: null
     },
@@ -231,19 +237,37 @@ export default {
     });*/
   },
   methods: {
+    changeOption(value) {
+      if (value === 1) {
+        this.getMemberList();
+      } else {
+        this.getMemberOrgList();
+      }
+    },
     /** 查询成员列表 */
     getMemberList() {
       const data = {};
       data.pageNum = 1;
       data.pageSize = 100;
+      var flag = true;
       if (this.companyCode) {
         data.orgCode = this.companyCode;
+        flag = false;
+      }
+      if (this.company) {
+        data.orgCode = this.company;
       }
       if (this.showShipment) {
         data.showShipment = this.showShipment;
       }
       if (this.orgType) {
         data.orgType = this.orgType;
+      }
+      if (flag) {
+        const { user = {}, shipment = {}} = getUserInfo() || {};
+        data.orgCode = shipment.info.companyCode;
+        data.orgType = 1;
+        data.showShipment = true;
       }
       listUser(data).then(response => {
         this.memberList = response.rows;
@@ -255,8 +279,13 @@ export default {
       const data = {};
       data.pageNum = 1;
       data.pageSize = 100;
+      var flag = true;
       if (this.companyCode) {
         data.orgCode = this.companyCode;
+        flag = false;
+      }
+      if (this.company) {
+        data.orgCode = this.company;
       }
       if (this.userCode) {
         data.userCode = this.userCode;
@@ -266,6 +295,13 @@ export default {
       }
       if (this.orgType) {
         data.orgType = this.orgType;
+      }
+      if (flag) {
+        const { user = {}, shipment = {}} = getUserInfo() || {};
+        data.orgCode = shipment.info.companyCode;
+        data.userCode = user.userCode;
+        data.orgType = 1;
+        data.showShipment = true;
       }
       listDept(data).then(response => {
         this.memberOrgList = response.data;
