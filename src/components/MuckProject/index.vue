@@ -734,6 +734,7 @@ export default {
       if (row) {
         this.selections = [row];
       }
+
       this.$confirm('确定打款?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -745,7 +746,7 @@ export default {
         };
 
         passPayment(que).then(res => {
-          this.msgSuccess('确定打款成功');
+          this.msgSuccess('打款成功');
           this.selections = [];
           this.loading = false;
           this.handleQuery();

@@ -172,6 +172,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.ly-t-right .wholecont-print{
+  position: static;
+}
 .receipt{
     position: relative;
     width: 800px;

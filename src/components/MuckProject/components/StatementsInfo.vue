@@ -27,7 +27,7 @@
       </template>
 
       <template #applyStatus="{row}">
-        <span :class="applyStatusClass(row.applyStatus)">
+        <span :class="applyStatusClass(row.applyStatus)" @click="handlerClick(row)">
           {{ selectDictLabel(applyStatus_op, row.applyStatus) }}
         </span>
       </template>
@@ -71,6 +71,7 @@
 
 <script>
 import { batchRelatedWaybill, BatchInfoListVo } from '@/api/settlement/adjustDregs';
+import { batch } from '@/api/settlement/payment';
 import { getUserInfo } from '@/utils/auth';
 import { floor } from '@/utils/ddc';
 
@@ -233,10 +234,28 @@ export default {
       if (status === 3) {
         className = 'g-color-warning';
       } else if (status === 5) {
-        className = 'g-color-require';
+        className = 'g-color-require shou';
       }
 
       return className;
+    },
+
+    // 再打款
+    handlerClick(row) {
+      if (row.applyStatus === 5) {
+        this.$confirm('是否确认打款？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          batch({ wayBillSettlementCodeList: [row.settlementCode] }).then(response => {
+            this.$message({ type: 'success', message: '发起打款成功！' });
+            this.getList();
+          });
+        }).catch(() => {
+          this.$message({ type: 'info', message: '已取消' });
+        });
+      }
     }
 
   }

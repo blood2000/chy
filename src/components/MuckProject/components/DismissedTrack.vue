@@ -2,7 +2,6 @@
   <el-popover
     placement="right"
     trigger="click"
-    @show="()=>{ !gridData.length && getList()}"
   >
     <div>
       <div class="mb20 mt20 b f20">
@@ -44,7 +43,7 @@
         @pagination="getList"
       />
     </div>
-    <span slot="reference" class="shou" :class="isSuccess? 'g-color-success': 'g-color-require' ">{{ batchNo }}</span>
+    <span slot="reference" class="shou" :class="isSuccess? 'g-color-success': 'g-color-require' " @click="getList()">{{ batchNo }}</span>
   </el-popover>
 </template>
 
@@ -91,7 +90,6 @@ export default {
   methods: {
     init() {
       this.tableHeaderConfig(this.tableColumnsConfig, rejectListApi);
-      this.getList();
     },
     /** 查询发票驳回列表 */
     getList() {
