@@ -14,6 +14,41 @@
       <el-form-item label="卸货地址" prop="unloadDetail">
         <amap-search ref="UnloadAmapSearchRef" v-model="form.unloadDetail" :search-option="searchOption" class="width100" @change="unloadAddressChange" />
       </el-form-item>
+        <el-row :gutter="20">
+            <el-col :span="11">
+                <el-form-item label="负责的成员组织" prop="memberOrgCode">
+                    <el-select
+                            v-model="form.memberOrgCode"
+                            clearable
+                            filterable
+                            style="width: 200px"
+                    >
+                        <el-option
+                                v-for="dict in memberOrgList"
+                                :key="dict.orgCode"
+                                :label="dict.orgName"
+                                :value="dict.orgCode"
+                        />
+                    </el-select>
+                </el-form-item>
+            </el-col>
+            <el-col :span="11">
+                <el-form-item label="负责的成员" prop="userCode">
+                    <el-select
+                            v-model="form.userCode"
+                            clearable
+                            filterable
+                    >
+                        <el-option
+                                v-for="dict in memberList"
+                                :key="dict.userCode"
+                                :label="dict.userName + ' ('+dict.phonenumber+')'"
+                                :value="dict.userCode"
+                        />
+                    </el-select>
+                </el-form-item>
+            </el-col>
+        </el-row>
       <!--<el-form-item label="货物大类" prop="commodityCategoryCode">
         <el-radio-group v-model="form.commodityCategoryCode" @change="handlecommodityCategoryChange">
           <el-radio
@@ -54,6 +89,7 @@
 
 <script>
 import { addInfo, updateInfo } from '@/api/enterprise/project';
+import { listDept } from '@/api/system/dept';
 import AmapSearch from '@/components/Ddc/Tin/AmapSearch';
 
 const geocoder = new AMap.Geocoder({
@@ -74,10 +110,27 @@ export default {
     shipment: {
       type: String,
       default: null
+    },
+    companyCode: {
+      type: String,
+      default: null
+    },
+    userCode: {
+      type: String,
+      default: null
+    },
+    showShipment: {
+      type: Boolean
+    },
+    orgType: {
+      type: Number,
+      default: 2
     }
   },
   data() {
     return {
+      memberOrgList: [],
+      memberList: [],
       searchOption: {
         city: '全国',
         citylimit: true
@@ -143,6 +196,7 @@ export default {
     }
   },
   created() {
+    this.getMemberOrgList();
     /* this.listByDict(this.commodityCategory).then(response => {
       this.commodityCategoryCodeOptions = response.data;
     });
@@ -152,6 +206,29 @@ export default {
     });*/
   },
   methods: {
+    /** 查询角色列表 */
+    /** 查询部门列表 */
+    getMemberOrgList() {
+      var data = {};
+      data.pageNum = 1;
+      data.pageSize = 100;
+      if (this.companyCode) {
+        data.orgCode = this.companyCode;
+      }
+      if (this.userCode) {
+        data.userCode = this.userCode;
+      }
+      if (this.showShipment) {
+        data.showShipment = this.showShipment;
+      }
+      if (this.orgType) {
+        data.orgType = this.orgType;
+      }
+      listDept(data).then(response => {
+        this.memberOrgList = response.data;
+        // this.deptList = this.handleTree(response.data, 'id');
+      });
+    },
     // 搜索地址
     addressChange(row) {
       const { lng, lat, dictLabel } = row;
@@ -265,6 +342,8 @@ export default {
         unloadDistrict: null,
         unloadLatitude: null,
         unloadLongitude: null,
+        memberOrgCode: null,
+        userCode: null,
         // commodityCategoryCode: null,
         // commoditySubclassCodes: null,
         // projectRemark: null,
