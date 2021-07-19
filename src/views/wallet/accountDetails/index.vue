@@ -131,12 +131,12 @@ export default {
       // 交易类型字典
       consumeOptions: [
         { dictLabel: '充值', dictValue: 0 },
-        { dictLabel: '保证金', dictValue: 1 },
+        // { dictLabel: '保证金', dictValue: 1 },
         { dictLabel: '运费', dictValue: 2 },
-        { dictLabel: '保费', dictValue: 3 },
-        { dictLabel: '罚款', dictValue: 4 },
+        // { dictLabel: '保费', dictValue: 3 },
+        // { dictLabel: '罚款', dictValue: 4 },
         { dictLabel: '提现', dictValue: 5 },
-        { dictLabel: '信息费', dictValue: 6 },
+        // { dictLabel: '信息费', dictValue: 6 },
         { dictLabel: '油费', dictValue: 7 }
       ],
       // 支付类型字典
