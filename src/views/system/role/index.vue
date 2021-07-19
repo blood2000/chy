@@ -323,7 +323,7 @@
             <el-col :span="24">
               <el-tree
                 ref="menu"
-                class="tree-border"
+                class="tree-border own-version-menu-tree"
                 :data="menuOptions"
                 show-checkbox
                 node-key="code"
@@ -937,3 +937,15 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+.own-version-menu-tree{
+  .el-tree-node__content{
+    .el-checkbox{
+      &.is-disabled{
+        display: none;
+      }
+    }
+  }
+}
+</style>
