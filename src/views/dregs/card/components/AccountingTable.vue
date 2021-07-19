@@ -295,21 +295,22 @@ export default {
   methods: {
 
     // 选中运单 data = 当前选中的   row = 当前行  this.list
-    handleSelectionChange(data, row) {
-      const selectChilds = [];
-      row.childs.forEach((e, index) => {
-        data.forEach(ee => {
-          if (e.wayBillCode === ee.wayBillCode) {
-            // 选中
-            selectChilds.push(index);
-          }
-        });
-      });
+    // handleSelectionChange(data, row) {
+    //   const selectChilds = [];
+    //   row.childs.forEach((e, index) => {
+    //     data.forEach(ee => {
+    //       if (e.wayBillCode === ee.wayBillCode) {
+    //         // 选中
+    //         selectChilds.push(index);
+    //       }
+    //     });
+    //   });
 
-      row.selectChilds = selectChilds;
+    //   row.selectChilds = selectChilds;
 
-      this.isDuo();
-    },
+    //   this.isDuo();
+    //   // this.handleTableBtn();
+    // },
     // 点击单个
     tabSelecedOne(selection, row) {
       let isok = false;
@@ -326,6 +327,7 @@ export default {
       }
 
       this.isDuo();
+      this.$emit('onAllSeleced', selection);
     },
     // 点击全选
     tabSelecedAll(selection) {
@@ -373,7 +375,7 @@ export default {
       // 判断是不是同一个调度者
       const object = {};
       arr.forEach(e => {
-        const str = e['teamName'];
+        const str = e['cardBatchNo'];
         const array = object[str];
         if (array) {
           array.push(e);
@@ -383,10 +385,14 @@ export default {
         }
       });
       if (Object.keys(object).length > 1) {
-        this.msgWarning('只能核算同一个调度组下的运单');
+        this.msgWarning('只能选择同批次的');
+        this.$emit('ismultiple', false);
       } else {
-        this.adjustdialog = true;
-        this.$refs.AdjustDialog.setForm(arr);
+        // this.$emit('ismultiple', false);
+        // this.adjustdialog = true;
+        // this.$refs.AdjustDialog.setForm(arr);
+        // console.log(arr, '选中的数据');
+        this.$emit('onAllSeleced', arr);
       }
     },
 
