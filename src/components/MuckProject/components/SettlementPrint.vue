@@ -1,7 +1,7 @@
 <template>
   <div>
 
-    <div class="box-print">
+    <div v-if="btnShow" id="tin_print-btn" class="box-print">
       <el-button
         v-print="printObj"
         size="mini"
@@ -68,7 +68,12 @@
               <el-col :span="18"><span class="text-row"> {{ floorFn(printData.deliveryCashFee) }} 元</span></el-col>
             </el-row>
           </el-col>
-          <el-col :span="12" />
+          <el-col :span="12">
+            <el-row>
+              <el-col :span="5"><span class="text-label">操作人：</span></el-col>
+              <el-col :span="18"><span class="text-row">{{ shipmentName || '-' }}</span></el-col>
+            </el-row>
+          </el-col>
         </el-row>
       </div>
 
@@ -90,6 +95,7 @@
               <th width="50px">渣土场</th>
               <th width="50px">卸货数量</th>
               <th width="50px">卸货时间</th>
+              <th width="50px">运费单价</th>
 
             </tr>
           </thead>
@@ -109,6 +115,7 @@
               <td>{{ floorFn(item.unloadWeight, item.stowageStatus === '2'? 0: 3) }} {{ item.stowageStatus === '0'?'吨':(item.stowageStatus === '1'?'立方' : '车') }}</td>
               <!-- <td>{{ item.unloadWeight }} {{ item.stowageStatus === '0'?'吨':(item.stowageStatus === '1'?'立方' : '车') }}</td> -->
               <td>{{ parseTime(item.signTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</td>
+              <td>{{ floorFn(item.deliveryCashFee) }} 元</td>
             </tr>
           </tbody>
         </table>
@@ -144,11 +151,16 @@
 <script>
 import { floor } from '@/utils/ddc';
 import { batchRelatedWaybill } from '@/api/settlement/adjustDregs';
+import { getUserInfo } from '@/utils/auth';
 export default {
   props: {
     printData: {
       type: Object,
       default: () => { return {}; }
+    },
+    btnShow: {
+      type: Boolean,
+      default: true
     }
     // wayBillCodes: {
     //   type: Array,
@@ -181,6 +193,13 @@ export default {
     };
   },
 
+  computed: {
+    shipmentName() {
+      const { user = {}} = getUserInfo() || {};
+      return user.nickName;
+    }
+  },
+
   created() {
     this.getList();
   },
@@ -194,6 +213,7 @@ export default {
       this.loading = true;
       batchRelatedWaybill({ ...queryParams, batchNo: this.printData.batchNo }).then(res => {
         this.loading = false;
+        this.$emit('onsuccess');
         this.adjustlist = res.data.list.map(e => {
           if (e.loadUnloadType !== '1001') {
             e.ztcName = this.selectDictLabel(this.loadUnloadType_op, e.loadUnloadType) || '-';

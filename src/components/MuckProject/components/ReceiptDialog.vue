@@ -2,7 +2,7 @@
 
 
   <div>
-    <div class="ly-t-right mb20">
+    <div v-if="btnShow" class="ly-t-right mb20">
       <el-button
         v-print="{
           id: 'receipt-printer',
@@ -34,7 +34,6 @@
           <RefactorTable :border="false" :is-show-index="true" :data="list" :table-columns-config="tableColumnsConfig">
 
             <template #amount="{row}">
-
               <span class="g-color-require">
                 <count-to :end-val="row.amount - 0" :decimal-places="2" :duration="0" />
                 元
@@ -45,23 +44,34 @@
 
         <div class="receipt-data">
           <div class="receipt-row">
-            <div class="ly-flex">
+            <!-- <div class="ly-flex">
               <div class="word-break">
                 付款方信息：
               </div>
               <div class="ly-flex-1">
                 {{ recData.companyName || '--' }}
               </div>
+            </div> -->
+
+            <div>
+              <div class="receipt-row-i">付款方：{{ recData.companyName || '--' }}</div>
+              <div class="receipt-row-i">付款账号：{{ recData.payAccount || '--' }}</div>
+              <div class="receipt-row-i">&nbsp;</div>
             </div>
           </div>
           <div class="receipt-row">
-            <div class="ly-flex">
+            <!-- <div class="ly-flex">
               <div class="word-break">
                 收款方信息：
               </div>
               <div class="ly-flex-1">
                 {{ recData.teamLeaderName || '--' }}
               </div>
+            </div> -->
+            <div>
+              <div class="receipt-row-i">收款方：{{ recData.teamLeaderName || '--' }}</div>
+              <div class="receipt-row-i">收款账号：{{ recData.payeeAccount || '--' }}</div>
+              <div class="receipt-row-i">&nbsp;</div>
             </div>
           </div>
           <div class="receipt-row">
@@ -89,6 +99,10 @@ export default {
     receiptData: {
       type: Object,
       default: null
+    },
+    btnShow: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -103,32 +117,35 @@ export default {
           tooltip: false,
           sortNum: 0,
           align: 'left',
+          width: 120,
           label: '交易类型'
         },
         {
-          prop: 'receiptName',
+          prop: 'projectNames',
           isShow: true,
           tooltip: false,
           sortNum: 1,
           align: 'left',
-          label: '名称'
+          width: 150,
+          label: '项目名称'
         },
         {
           prop: 'batchNo',
           isShow: true,
           tooltip: false,
-          width: 120,
+          width: 150,
           sortNum: 2,
           align: 'left',
           label: '批次号'
         },
         {
-          prop: 'platformTransactionNumber',
+          prop: 'ztcLandNames',
           isShow: true,
           tooltip: false,
           sortNum: 3,
           align: 'left',
-          label: '平台交易号'
+          width: 150,
+          label: '渣土场'
         },
         {
           prop: 'amount',
@@ -136,6 +153,7 @@ export default {
           tooltip: false,
           sortNum: 4,
           align: 'left',
+          width: 120,
           label: '交易金额'
         }
       ]
@@ -154,14 +172,16 @@ export default {
         this.list = [
           {
             transactionType: '支付',
-            receiptName: '--',
-            platformTransactionNumber: '--',
             ...res.data
           }];
         this.recData = res.data || {};
 
         this.loading = false;
+        this.$nextTick(() => {
+          this.$emit('onsuccess', 200, this.receiptData.batchNo);
+        });
       } catch (error) {
+        console.log(error);
         this.loading = false;
       }
     }
@@ -177,11 +197,11 @@ export default {
 }
 .receipt{
     position: relative;
-    width: 800px;
+    width: 794px;
+    height: 1123px;
     margin: 0 auto;
-    min-width: 800px;
-    min-height: 60vh;
 }
+
 .receipt-heater{
     border-top: 5px solid #00babc;
     border-bottom: 1px solid #ebebeb;
@@ -198,8 +218,13 @@ export default {
         }
     }
 }
+
+.receipt-list{
+  width: 100%;
+}
 .receipt-box{
-    padding: 50px 50px 0;
+    padding: 60px 50px 0;
+    height: 100%;
 }
 .receipt-title{
     // width: 100%;
@@ -234,7 +259,7 @@ export default {
 
 .receipt-data{
     display: flex;
-    padding: 30px 20px;
+    padding: 30px 10px;
     background-color: #f9f9f9;
     border: 1px solid #f9f9f9;
     .word-break{
