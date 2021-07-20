@@ -497,12 +497,12 @@
       <el-row :gutter="20">
         <el-col :span="11">
           <el-form-item prop="noNeedUnloadImg">
-            <el-checkbox v-model="form.noNeedUnloadImg">卸货时是否必须上传凭证</el-checkbox>
+            <el-checkbox v-model="form.noNeedUnloadImg">扫码卸货时是否必须上传凭证</el-checkbox>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item prop="isNeedLoadingCertificate">
-            <el-checkbox v-model="form.isNeedLoadingCertificate">装货时是否必须上传凭证</el-checkbox>
+            <el-checkbox v-model="form.isNeedLoadingCertificate">扫码装货时是否必须上传凭证</el-checkbox>
           </el-form-item>
         </el-col>
         <el-col :span="11">
