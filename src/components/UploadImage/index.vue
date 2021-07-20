@@ -15,7 +15,8 @@
       style="display: inline-block; vertical-align: top"
       class="upload-image"
     >
-      <div v-if="value && !disabled && attachUrl && attachUrl !== ''" class="avatar-box" :style="{background: `url('${attachUrl}') center center /contain no-repeat`}" />
+      <img v-if="value && !disabled" :src="attachUrl" class="avatar">
+      <!-- <div v-if="value && !disabled && attachUrl && attachUrl !== ''" class="avatar-box" :style="{background: `url('${attachUrl}') center center /contain no-repeat`}" /> -->
       <div v-else-if="value && disabled" class="avatar-box">
         <!-- 只有这里能放img标签，只有控件被禁用才能查看图片大图 -->
         <img :src="attachUrl" class="avatar">

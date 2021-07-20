@@ -100,7 +100,7 @@
         </el-col>
       </el-row>
       <el-form-item>
-        <el-row v-viewer>
+        <el-row>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">
               <span class="g-color-require">* </span>

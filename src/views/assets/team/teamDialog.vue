@@ -103,7 +103,32 @@
         </el-col>
       </el-row>
       <el-form-item>
-        <el-row v-viewer>
+        <!-- 只有图片上传禁用的时候才能使用v-viewer查看大图，复制两份判断 -->
+        <el-row v-if="disable" v-viewer>
+          <el-col :span="7" class="mb">
+            <p class="upload-image-label">
+              <span class="g-color-require">* </span>
+              身份证(人像面)
+            </p>
+            <uploadImage v-model="form.identificationImage" :disabled="disable" image-type="id-card" side="front" icon-type="idcard" @fillForm="fillForm" />
+          </el-col>
+          <el-col :span="7" class="mb">
+            <p class="upload-image-label">
+              <span class="g-color-require">* </span>
+              身份证(国徽面)
+            </p>
+            <uploadImage v-model="form.identificationBackImage" :disabled="disable" image-type="id-card" side="back" icon-type="idcard_back" @fillForm="fillForm" />
+          </el-col>
+          <el-col :span="7" class="mb">
+            <p class="upload-image-label">营业执照</p>
+            <uploadImage v-model="form.businessLicenseImg" :disabled="disable" image-type="business-license" icon-type="organization" @fillForm="fillForm" />
+          </el-col>
+          <el-col :span="7">
+            <p class="upload-image-label">道路运输经营许可证照</p>
+            <uploadImage v-model="form.transportPermitImage" icon-type="transport" :disabled="disable" />
+          </el-col>
+        </el-row>
+        <el-row v-else>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">
               <span class="g-color-require">* </span>
