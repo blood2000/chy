@@ -146,6 +146,10 @@
         :open.sync="open"
         :shipment="shipmentCode"
         :company="companyCode"
+        :company-code="companyCode"
+        :user-code="userCode"
+        :show-shipment="true"
+        :org-type="orgType"
         @refresh="getList"
       />
     </div>
@@ -170,9 +174,19 @@ export default {
     companyCode: {
       type: String,
       default: null
+    },
+    userCode: {
+      type: String,
+      default: null
+    },
+    showShipment: {
+      type: Boolean
+    },
+    orgType: {
+      type: Number,
+      default: 2
     }
   },
-
   data() {
     return {
       tinRadio: undefined, // 7/9 chj 调用这个组件添加了

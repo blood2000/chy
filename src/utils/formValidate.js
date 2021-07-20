@@ -164,7 +164,7 @@ export const formValidate = {
     if (value === undefined || value === null || value === '') {
       callback();
     }
-    if (!bankCardReg.test(value)) {
+    if (!numberReg.test(value)) {
       callback(new Error('请输入正确的银行卡号'));
     } else {
       callback();

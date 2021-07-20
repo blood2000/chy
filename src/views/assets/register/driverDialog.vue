@@ -224,7 +224,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-row v-viewer>
+        <el-row>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">驾驶证</p>
             <upload-image v-model="form.driverLicenseImage" image-type="driver-license" icon-type="driver" @fillForm="fillForm" />
@@ -439,7 +439,7 @@
           <el-input v-model="vehicleForm.transportMeson" placeholder="请输入运输介子" class="width90" clearable :disabled="disable" />
         </el-form-item> -->
         <el-form-item>
-          <el-row v-viewer>
+          <el-row>
             <el-col :span="7" class="mb">
               <p class="upload-image-label">行驶证</p>
               <upload-image v-model="vehicleForm.vehicleLicenseImg" image-type="vehicle-license" side="front" icon-type="vehicle" @fillForm="fillForm" />
