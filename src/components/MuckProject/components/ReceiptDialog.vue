@@ -182,6 +182,7 @@ export default {
         });
       } catch (error) {
         console.log(error);
+        this.$emit('onerror', 500);
         this.loading = false;
       }
     }

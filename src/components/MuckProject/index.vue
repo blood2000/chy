@@ -225,7 +225,7 @@
       >批量打印回单</el-button>
       <div v-if="batchDialog" id="printDataSet">
         <div v-for="(item, index) in printList" :key="index" class="printCss">
-          <ReceiptDialog :receipt-data="item" :btn-show="false" @onsuccess="handlerSuccess" />
+          <ReceiptDialog :receipt-data="item" :btn-show="false" @onsuccess="handlerSuccess" @onerror="()=> loading = false " />
         </div>
       </div>
     </div>
@@ -841,6 +841,7 @@ export default {
 
     // 批量回单打印
     handlerBatchPrint() {
+      this.loading = true;
       this.printList = this.filterSelect;
       this.successcouns = []; // 用于记录请求成功回调
       this.batchDialog = false; // 先删除之前的dom, 为了能重新请求数据
@@ -855,6 +856,7 @@ export default {
       // 只有请求完全后,才触发打印
       if (this.successcouns.length > 0 && this.successcouns.length === this.filterSelect.length) {
         this.$refs.printDataButton.$el.click(); // js触发
+        this.loading = false;
       }
     },
 

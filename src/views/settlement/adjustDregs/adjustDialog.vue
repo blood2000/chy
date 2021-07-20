@@ -19,7 +19,7 @@
 
     <div v-for="(item,index) in list" :key="index" v-loading="loading">
       <div class="mb20">
-        <AdjustDitem :list="item.childs" @isLoading="(bool)=> isLoading = bool" />
+        <AdjustDitem :open="open" :list="item.childs" @isLoading="(bool)=> isLoading = bool" />
       </div>
     </div>
 
