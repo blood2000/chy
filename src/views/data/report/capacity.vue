@@ -73,7 +73,6 @@
         <p class="label">已开票：</p>
         <p class="count">{{ waybillCount.sumInvoicedNum || 0 }}</p>
       </div>
-      </el-row>
     </div>
 
     <div class="app-container">
