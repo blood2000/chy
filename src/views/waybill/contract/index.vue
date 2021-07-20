@@ -393,7 +393,7 @@ export default {
 
       const { data } = await getContractByCode(row.code);
 
-      this.dialogData = { ...data, contractPath: row.contractPath, isDzqzContract: row.isDzqzContract };
+      this.dialogData = { ...data, contractPath: row.contractPath, isDzqzContract: row.isDzqzContract, sealPath: row.sealPath };
       console.log(data);
       this.visible = true;
     },
