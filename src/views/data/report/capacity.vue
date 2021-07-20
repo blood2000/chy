@@ -37,55 +37,42 @@
     </div>
 
     <div class="total_box">
-      <el-row :gutter="40">
-        <el-col :xs="6" :sm="6" :md="6" :lg="3" :span="3">
-          <div class="count-box blue">
-            <p class="label">新增货主：</p>
-            <p class="count">{{ capacityCount.addShipment || 0 }}</p>
-          </div>
-        </el-col>
-        <el-col :xs="6" :sm="6" :md="6" :lg="3" :span="3">
-          <div class="count-box blue">
-            <p class="label">新增司机：</p>
-            <p class="count">{{ capacityCount.addDriver || 0 }}</p>
-          </div>
-        </el-col>
-        <el-col :xs="6" :sm="6" :md="6" :lg="3" :span="3">
-          <div class="count-box blue">
-            <p class="label">新增调度者：</p>
-            <p class="count">{{ capacityCount.addScheduler || 0 }}</p>
-          </div>
-        </el-col>
-        <el-col :xs="6" :sm="6" :md="6" :lg="3" :span="3">
-          <div class="count-box green">
-            <p class="label">总运单数：</p>
-            <p class="count">{{ waybillCount.sumWaybillCount || 0 }}</p>
-          </div>
-        </el-col>
-        <el-col :xs="6" :sm="6" :md="6" :lg="3" :span="3">
-          <div class="count-box green">
-            <p class="label">已装货：</p>
-            <p class="count">{{ waybillCount.sumLoadingNum || 0 }}</p>
-          </div>
-        </el-col>
-        <el-col :xs="6" :sm="6" :md="6" :lg="3" :span="3">
-          <div class="count-box green">
-            <p class="label">已卸货：</p>
-            <p class="count">{{ waybillCount.sumUnloadingNum || 0 }}</p>
-          </div>
-        </el-col>
-        <el-col :xs="6" :sm="6" :md="6" :lg="3" :span="3">
-          <div class="count-box green">
-            <p class="label">已核算：</p>
-            <p class="count">{{ waybillCount.sumSettledNum || 0 }}</p>
-          </div>
-        </el-col>
-        <el-col :xs="6" :sm="6" :md="6" :lg="3" :span="3">
-          <div class="count-box green">
-            <p class="label">已打款：</p>
-            <p class="count">{{ waybillCount.sumPaidNum || 0 }}</p>
-          </div>
-        </el-col>
+      <div class="count-box blue">
+        <p class="label">新增货主：</p>
+        <p class="count">{{ capacityCount.addShipment || 0 }}</p>
+      </div>
+      <div class="count-box blue">
+        <p class="label">新增司机：</p>
+        <p class="count">{{ capacityCount.addDriver || 0 }}</p>
+      </div>
+      <div class="count-box blue">
+        <p class="label">新增调度者：</p>
+        <p class="count">{{ capacityCount.addScheduler || 0 }}</p>
+      </div>
+      <div class="count-box green">
+        <p class="label">总运单数：</p>
+        <p class="count">{{ waybillCount.sumWaybillCount || 0 }}</p>
+      </div>
+      <div class="count-box green">
+        <p class="label">已装货：</p>
+        <p class="count">{{ waybillCount.sumLoadingNum || 0 }}</p>
+      </div>
+      <div class="count-box green">
+        <p class="label">已卸货：</p>
+        <p class="count">{{ waybillCount.sumUnloadingNum || 0 }}</p>
+      </div>
+      <div class="count-box green">
+        <p class="label">已核算：</p>
+        <p class="count">{{ waybillCount.sumSettledNum || 0 }}</p>
+      </div>
+      <div class="count-box green">
+        <p class="label">已打款：</p>
+        <p class="count">{{ waybillCount.sumPaidNum || 0 }}</p>
+      </div>
+      <div class="count-box green">
+        <p class="label">已开票：</p>
+        <p class="count">{{ waybillCount.sumInvoicedNum || 0 }}</p>
+      </div>
       </el-row>
     </div>
 
@@ -119,6 +106,7 @@
             <el-table-column label="已卸货" align="left" prop="unloadingNum" />
             <el-table-column label="已核算" align="left" prop="settledNum" />
             <el-table-column label="已打款" align="left" prop="paidNum" />
+            <el-table-column label="已开票" align="left" prop="invoicedNum" />
           </el-table>
         </li>
       </ul>
@@ -234,12 +222,18 @@ export default {
   width: calc(100% - 30px);
   border-radius: 4px;
   margin: 0 15px;
+  font-size: 0;
   .count-box{
+    display: inline-block;
+    width: calc(11.11% - 18px);
     height: 72px;
     position: relative;
     background-color: #fff;
     padding: 10px 0 10px 20px;
     margin-bottom: 15px;
+    &:not(:last-child){
+      margin-right: 20px;
+    }
     >.label{
       font-size: 14px;
       font-family: PingFang SC;
