@@ -66,6 +66,18 @@
 
         <el-col :span="1.5">
           <el-button
+            v-if="status===4"
+            type="primary"
+            icon="el-icon-document-checked"
+            size="mini"
+            :loading="loading"
+            :disabled="selections.length<=0"
+            @click="handlerBatchPrint()"
+          >批量打印回单</el-button>
+        </el-col>
+
+        <el-col :span="1.5">
+          <el-button
             v-if="status===-1"
             type="primary"
             icon="el-icon-document-checked"
@@ -197,6 +209,27 @@
       />
     </div>
 
+    <!-- 批量打印结算单 -->
+    <div v-show="false">
+      <el-button
+        ref="printDataButton"
+        v-print="{
+          id: 'printDataSet',
+          popTitle: '',
+          extraCss: ``,
+          extraHead: `<meta http-equiv='Content-Language' content='zh-cn'/>`
+        }"
+        type="primary"
+        icon="el-icon-document-checked"
+        size="mini"
+      >批量打印回单</el-button>
+      <div v-if="batchDialog" id="printDataSet">
+        <div v-for="(item, index) in printList" :key="index" class="printCss">
+          <ReceiptDialog :receipt-data="item" :btn-show="false" @onsuccess="handlerSuccess" @onerror="()=> loading = false " />
+        </div>
+      </div>
+    </div>
+
     <!-- 驳回弹窗 -->
     <reject-dialog ref="RejectDialog" :open.sync="rejectdialog" :title="'驳回'" :status="status" @refresh="getList" />
     <!-- 对账单详情弹窗 -->
@@ -216,6 +249,7 @@
         <SettlementPrint :print-data="printData" />
       </div>
     </el-dialog>
+
 
     <!-- 已打款的回单 -->
     <el-dialog class="i-receipt" title="" :visible.sync="receiptOpen" width="1200px" :close-on-click-modal="false" append-to-body>
@@ -248,6 +282,26 @@
       </div>
     </el-dialog>
 
+    <!-- 打款输入密码 -->
+    <el-dialog v-if="status===3" top="30vh!important" :title="'请输入密码'" class="i-price" width="30%" :visible.sync="openPlay" append-to-body :close-on-click-modal="false">
+      <div v-if="openPlay">
+        <el-input
+          v-model.trim="playPassword"
+          placeholder="请输入密码"
+          show-password
+          :maxlength="pswSize"
+          :minlength="pswSize"
+          oninput="value=value.replace(/^\.+|[^\d.]/g,'')"
+          @blur="($event)=> playPassword = $event.target.value"
+        />
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="openPlay = false">取 消</el-button>
+        <el-button type="primary" :disabled="!playPassword || playPassword.length < pswSize" @click="handlerPlay">确 定</el-button>
+      </span>
+
+    </el-dialog>
+
     <!-- 核算弹窗 重新核算的要传1过去-->
     <adjust-dialog ref="AdjustDialog" :open.sync="adjustdialog" :is-again="1" :title="'结算审核'" @refresh="getList" />
   </div>
@@ -277,6 +331,8 @@ import ReceiptDialog from './components/ReceiptDialog.vue';
 import BillingDialog from '@/views/finance/list/dregs/billingDialog';
 // 核算
 import AdjustDialog from '@/views/settlement/adjustDregs/adjustDialog';
+
+import { sha1 } from '@/utils/sha1';
 
 
 export default {
@@ -331,12 +387,20 @@ export default {
       // 结算单数据
       settlementOpen: false,
       printData: undefined,
+      batchDialog: false, // 批量打印
+      successcouns: [],
+      printList: [], // 准备打印的数据
+      // clickNumber: 0, // 点击打印的次数
 
       // 开票
       billingdialog: false,
       // 打款
       openimg: false,
       attachUrl: [],
+      // 支付密码
+      openPlay: false,
+      playPassword: undefined,
+      pswSize: 6,
 
       // 再核算
       adjustdialog: false,
@@ -361,6 +425,8 @@ export default {
 
 
       shipmentCode: undefined
+
+
     };
   },
   computed: {
@@ -579,9 +645,11 @@ export default {
 
     fileName() {
       return this.selectDictLabel(this.statusOptions, this.status);
+    },
+
+    filterSelect() {
+      return this.selections.filter(e => e.isSuccess);
     }
-
-
 
   },
 
@@ -596,6 +664,7 @@ export default {
       },
       immediate: true
     }
+
     // '$route.query.list': {
     //   handler(value) {
     //     if (value) {
@@ -610,7 +679,6 @@ export default {
   created() {
     const { isShipment = false, shipment = {}} = getUserInfo() || {};
     this.isShipment = isShipment;
-    // this.shipment = shipment;
     this.shipmentCode = shipment.info ? shipment.info.code : '';
   },
   'methods': {
@@ -734,34 +802,63 @@ export default {
       if (row) {
         this.selections = [row];
       }
+      this.openPlay = true;
+    },
+
+    handlerPlay() {
+      const psw = this.playPassword.trim();
+      if (!psw || psw.length < this.pswSize) return;
 
       this.$confirm('确定打款?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.openPlay = false;
         this.loading = true;
         const que = {
-          batchNos: this.selections.map(e => e.batchNo)
+          batchNos: this.selections.map(e => e.batchNo),
+          passWord: sha1(psw)
         };
 
+        // 支付密码!!
         passPayment(que).then(res => {
           this.msgSuccess('打款成功');
           this.selections = [];
           this.loading = false;
+          this.playPassword = undefined;
           this.handleQuery();
-        }).catch(() => { this.loading = false; });
+        }).catch(() => { this.loading = false; this.playPassword = undefined; });
       }).catch(() => {});
     },
 
     /* s=状态4 */
     // 回单
     handlerReceipt(row) {
-      // console.log(row);
       this.receiptData = row;
       this.receiptOpen = true;
     },
 
+    // 批量回单打印
+    handlerBatchPrint() {
+      this.loading = true;
+      this.printList = this.filterSelect;
+      this.successcouns = []; // 用于记录请求成功回调
+      this.batchDialog = false; // 先删除之前的dom, 为了能重新请求数据
+      this.$nextTick(() => {
+        this.batchDialog = true; // 生成打印的html结构
+      });
+    },
+    handlerSuccess(code, b) {
+      if (code !== 200) return;
+      this.successcouns.push(b);
+      // console.log(this.successcouns);
+      // 只有请求完全后,才触发打印
+      if (this.successcouns.length > 0 && this.successcouns.length === this.filterSelect.length) {
+        this.$refs.printDataButton.$el.click(); // js触发
+        this.loading = false;
+      }
+    },
 
     // 查看图片信息
     loogImage(row) {
@@ -890,6 +987,13 @@ export default {
   width: 500px;
   height: 500px;
   margin: 0 10px;
+}
+
+.printCss{
+  margin-bottom: 20px;
+}
+.printCss:last-child{
+  margin-bottom: 0;
 }
 </style>
 

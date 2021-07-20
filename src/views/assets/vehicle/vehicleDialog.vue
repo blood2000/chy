@@ -178,7 +178,26 @@
         <upload-image v-model="form.vehicleImage" :disabled="disable" icon-type="vehicle_head" />
       </el-form-item>-->
       <el-form-item>
-        <el-row v-viewer>
+        <!-- 只有图片上传禁用的时候才能使用v-viewer查看大图，复制两份判断 -->
+        <el-row v-if="disable" v-viewer>
+          <el-col :span="7" class="mb">
+            <p class="upload-image-label">行驶证</p>
+            <upload-image v-model="form.vehicleLicenseImg" :disabled="disable" image-type="vehicle-license" side="front" icon-type="vehicle" @fillForm="fillForm" />
+          </el-col>
+          <el-col :span="7" class="mb">
+            <p class="upload-image-label">行驶证副页</p>
+            <upload-image v-model="form.vehicleLicenseSecondImg" :disabled="disable" image-type="vehicle-license" side="back" icon-type="vehicle_back" @fillForm="fillForm" />
+          </el-col>
+          <el-col :span="7" class="mb">
+            <p class="upload-image-label">道路运输许可证</p>
+            <upload-image v-model="form.roadTransportCertificateImg" :disabled="disable" icon-type="transport" />
+          </el-col>
+          <el-col :span="7">
+            <p class="upload-image-label">车头正面照</p>
+            <upload-image v-model="form.vehicleImage" :disabled="disable" icon-type="vehicle_head" />
+          </el-col>
+        </el-row>
+        <el-row v-else>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">行驶证</p>
             <upload-image v-model="form.vehicleLicenseImg" :disabled="disable" image-type="vehicle-license" side="front" icon-type="vehicle" @fillForm="fillForm" />

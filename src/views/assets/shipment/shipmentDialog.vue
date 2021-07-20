@@ -22,9 +22,10 @@
         <el-input v-model="form.password" type="password" :placeholder="form.id?'密码未修改可不填写':'请输入密码'" class="width60 mr3" clearable />
         <span class="g-color-blue">(初始密码为{{ initialPassword }})</span>
       </el-form-item>
-      <el-form-item>
+      <el-form-item v-if="disable">
+        <!-- 只有图片上传禁用的时候才能使用v-viewer查看大图，复制两份判断 -->
         <el-row v-viewer>
-          <!--   客服建议去掉合并管理员和法人信息-->
+          <!-- 客服建议去掉合并管理员和法人信息 -->
           <el-col :span="7">
             <p class="upload-image-label">身份证(人像面)</p>
             <upload-image v-model="form.identificationImg" :disabled="disable" image-type="id-card" side="front" icon-type="idcard" @fillForm="fillForm" />
@@ -33,24 +34,23 @@
             <p class="upload-image-label">身份证(国徽面)</p>
             <upload-image v-model="form.identificationBackImg" :disabled="disable" image-type="id-card" side="back" icon-type="idcard_back" @fillForm="fillForm" />
           </el-col>
-          <!--   客服建议去掉-->
-          <!-- <el-col :span="7">
-                      <p class="upload-image-label">手持身份证照</p>
-                      <upload-image v-model="form.identificationInhandImg" icon-type="idcard_hand" :disabled="disable" />
-                    </el-col>-->
-          <!-- <el-col v-show="form.shipperType === 1" :span="7">
-                      <p class="upload-image-label">法人身份证(人像面)</p>
-                      <upload-image v-model="form.artificialIdentificationImg" icon-type="idcard" :disabled="disable" @fillForm="fillForm"/>
-                    </el-col>
-                    <el-col v-show="form.shipperType === 1" :span="7">
-                      <p class="upload-image-label">法人身份证(国徽面)</p>
-                      <upload-image v-model="form.artificialIdentificationBackImg" icon-type="idcard_back" :disabled="disable" @fillForm="fillForm"/>
-                    </el-col>-->
-          <!--   客服建议去掉-->
-          <!--<el-col v-show="form.shipperType === 1" :span="7" class="mt">
-                      <p class="upload-image-label">法人手持身份证照</p>
-                      <upload-image v-model="form.artificialIdentificationInhandImg" icon-type="idcard_hand" :disabled="disable" />
-                    </el-col>-->
+          <el-col v-show="form.shipperType === 1" :span="7">
+            <p class="upload-image-label">营业执照</p>
+            <upload-image v-model="form.businessLicenseImg" :disabled="disable" icon-type="organization" image-type="business-license" @fillForm="fillForm" />
+          </el-col>
+        </el-row>
+      </el-form-item>
+      <el-form-item v-else>
+        <el-row>
+          <!-- 客服建议去掉合并管理员和法人信息 -->
+          <el-col :span="7">
+            <p class="upload-image-label">身份证(人像面)</p>
+            <upload-image v-model="form.identificationImg" :disabled="disable" image-type="id-card" side="front" icon-type="idcard" @fillForm="fillForm" />
+          </el-col>
+          <el-col :span="7">
+            <p class="upload-image-label">身份证(国徽面)</p>
+            <upload-image v-model="form.identificationBackImg" :disabled="disable" image-type="id-card" side="back" icon-type="idcard_back" @fillForm="fillForm" />
+          </el-col>
           <el-col v-show="form.shipperType === 1" :span="7">
             <p class="upload-image-label">营业执照</p>
             <upload-image v-model="form.businessLicenseImg" :disabled="disable" icon-type="organization" image-type="business-license" @fillForm="fillForm" />
@@ -497,24 +497,24 @@
       <el-row :gutter="20">
         <el-col :span="11">
           <el-form-item prop="noNeedUnloadImg">
-            <el-checkbox v-model="form.noNeedUnloadImg">卸货时是否必须上传凭证</el-checkbox>
+            <el-checkbox v-model="form.noNeedUnloadImg">扫码卸货时是否必须上传凭证</el-checkbox>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item prop="isNeedLoadingCertificate">
-            <el-checkbox v-model="form.isNeedLoadingCertificate">装货时是否必须上传凭证</el-checkbox>
+            <el-checkbox v-model="form.isNeedLoadingCertificate">扫码装货时是否必须上传凭证</el-checkbox>
           </el-form-item>
         </el-col>
-          <el-col :span="11">
-              <el-form-item prop="reviewNoNeedUnloadImg">
-                  <el-checkbox v-model="form.reviewNoNeedUnloadImg">复核时是否需要卸货凭证</el-checkbox>
-              </el-form-item>
-          </el-col>
-          <el-col :span="11">
-              <el-form-item prop="reviewIsNeedLoadingCertificate">
-                  <el-checkbox v-model="form.reviewIsNeedLoadingCertificate">复核时是否需要装货凭证</el-checkbox>
-              </el-form-item>
-          </el-col>
+        <el-col :span="11">
+          <el-form-item prop="reviewNoNeedUnloadImg">
+            <el-checkbox v-model="form.reviewNoNeedUnloadImg">复核时是否需要卸货凭证</el-checkbox>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item prop="reviewIsNeedLoadingCertificate">
+            <el-checkbox v-model="form.reviewIsNeedLoadingCertificate">复核时是否需要装货凭证</el-checkbox>
+          </el-form-item>
+        </el-col>
         <el-col :span="11">
           <el-form-item prop="openAppPermissionControl">
             <el-checkbox v-model="form.openAppPermissionControl">是否开启货主APP权限控制</el-checkbox>

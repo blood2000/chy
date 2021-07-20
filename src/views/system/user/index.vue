@@ -563,9 +563,11 @@ export default {
   },
   methods: {
     /** 查询用户列表 */
-    getList() {
+    getList(orgCode) {
       this.loading = true;
-      if (this.companyCode) {
+      if (orgCode) {
+        this.queryParams.orgCode = orgCode;
+      } else if (this.companyCode) {
         this.queryParams.orgCode = this.companyCode;
       }
       if (this.showShipment) {
@@ -595,8 +597,8 @@ export default {
     },
     // 节点单击事件
     handleNodeClick(data) {
-      this.queryParams.orgCode = data.code;
-      this.getList();
+      // this.queryParams.orgCode = data.code;
+      this.getList(data.code);
     },
     // 用户状态修改
     handleStatusChange(row) {

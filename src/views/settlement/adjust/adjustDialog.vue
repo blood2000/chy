@@ -35,7 +35,7 @@
       </div>
 
       <div class="cont-frame">
-        <el-table v-loading="loading" height="780" highlight-current-row :data="adjustlist" border :row-class-name="tableRowClassName" @row-click="showImg">
+        <el-table ref="adjustTable" v-loading="loading" height="780" highlight-current-row :data="adjustlist" border :row-class-name="tableRowClassName" @row-click="showImg">
           <el-table-column width="160" label="运输单号" show-overflow-tooltip align="center" prop="waybillNo">
             <!-- <template slot-scope="scope">
               <div>
@@ -749,6 +749,9 @@ export default {
         if (this.adjustlist.length === 1) {
           this.handlerChangev(this.adjustlist[0]);
         }
+        // 默认选中第一行
+        this.$refs.adjustTable.setCurrentRow(this.adjustlist[0]);
+        this.showImg(this.adjustlist[0]);
         this.loading = false;
       });
     },

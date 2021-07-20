@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-row v-if="isPiliang" :gutter="10" class="mb8">
+    <el-row :gutter="10" class="mb8">
       <el-col :span="10">
         <span class="mr3">司机实收金额</span>
         <el-input-number
@@ -69,8 +69,8 @@
             placeholder="请输入司机实收金额"
             style="width:100%;"
             size="mini"
-            @change="handlerChangev([scope.row])"
-            @keyup.enter.native="handlerChangev([scope.row])"
+            @change="handlerChangev([scope.row], 1)"
+            @keyup.enter.native="handlerChangev([scope.row], 1)"
             @focus="$emit('isLoading', true)"
             @blur="$emit('isLoading', false)"
           />
@@ -81,7 +81,17 @@
 
       <el-table-column width="173" label="增减值" align="center" prop="increaseDes" fixed="right">
         <template slot-scope="scope">
-          <el-input-number v-model="scope.row.increaseDes" :controls="true" controls-position="right" :precision="2" placeholder="请输入增减金额" style="width:100%;" size="mini" />
+          <el-input-number
+            v-model="scope.row.increaseDes"
+            :controls="true"
+            controls-position="right"
+            :precision="2"
+            placeholder="请输入增减金额"
+            style="width:100%;"
+            size="mini"
+            @change="handlerInOrDe(scope.row)"
+            @keyup.enter.native="handlerInOrDe(scope.row)"
+          />
         </template>
       </el-table-column>
       <el-table-column width="162" label="备注" align="center" prop="deductionDes" fixed="right">
@@ -108,7 +118,8 @@ export default {
     list: {
       type: Array,
       default: () => []
-    }
+    },
+    open: [Boolean]
   },
 
   data() {
@@ -138,6 +149,14 @@ export default {
     }
   },
 
+  watch: {
+    open(b) {
+      if (!b) {
+        this.deliveryCashFee = undefined;
+      }
+    }
+  },
+
   created() {
     this.changeFee = this.newDebounceFun(this.setDeliveryCashFee, 1000);
   },
@@ -147,14 +166,18 @@ export default {
     handleChange() {
       this.adjustlist.forEach(e => {
         e.deliveryCashFee = this.deliveryCashFee;
+        e.increaseDes = 0;
       });
       this.handlerChangev(this.adjustlist);
       // this.getDeliveryCashFee(undefined, this.adjustlist);
     },
 
     // 单条修改
-    handlerChangev(arr) {
-      console.log(123);
+    handlerChangev(arr, mark) {
+      if (mark && mark === 1) {
+        arr[0].increaseDes = 0;
+      }
+
       this.que = {
         deliveryCashFee: arr[0].deliveryCashFee, //	金额		false
         waybillCodeList: arr.map(e => e.waybillCode)//	运单ids
@@ -268,11 +291,15 @@ export default {
       }
     },
 
-    hshiehpos() {
-      console.log('hshiehpos wo选中');
-    },
-    sjfisjoi() {
-      console.log('sjfisjoi 我失焦');
+    // 增减
+    handlerInOrDe(row) {
+      // console.log(row.deliveryCashFee);
+      // console.log(this.deliveryCashFee - 0);
+      // this.deliveryCashFee = this.deliveryCashFee ? this.deliveryCashFee : 0;
+
+      const deliveryCashFee = this.deliveryCashFee ? (this.deliveryCashFee - 0) : 0;
+      row.deliveryCashFee = deliveryCashFee + row.increaseDes;
+      this.handlerChangev([row]);
     }
   }
 };

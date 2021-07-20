@@ -178,7 +178,7 @@
                 <span>{{ parseTime(scope.row.createTime) }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="操作" align="center" fixed="left">
+            <el-table-column label="操作" align="center" fixed="left" width="160">
               <template slot-scope="scope">
                 <el-button
                   v-hasPermi="['system:role:edit']"
@@ -307,7 +307,7 @@
           <el-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event, 'menu')">全选/全不选</el-checkbox>
           <el-checkbox v-model="form.menuCheckStrictly" @change="handleCheckedTreeConnect($event, 'menu')">父子联动</el-checkbox>
           <el-row :gutter="12" class="mb20">
-            <el-col :span="10">
+            <!-- <el-col :span="10">
               <el-tree
                 ref="versionTree"
                 class="tree-border"
@@ -319,11 +319,11 @@
                 default-expand-all
                 @node-click="handleVersionNodeClick"
               />
-            </el-col>
-            <el-col :span="14">
+            </el-col> -->
+            <el-col :span="24">
               <el-tree
                 ref="menu"
-                class="tree-border"
+                class="tree-border own-version-menu-tree"
                 :data="menuOptions"
                 show-checkbox
                 node-key="code"
@@ -331,6 +331,7 @@
                 :indent="0"
                 empty-text="暂无数据"
                 :props="defaultProps"
+                :default-expanded-keys="defaultExpandedKeys"
               />
             </el-col>
           </el-row>
@@ -392,7 +393,7 @@
 
 <script>
 import { listRole, getRole, delRole, addRole, updateRole, dataScope, changeRoleStatus, producelist } from '@/api/system/role';
-import { treeselect as menuTreeselect, roleMenuTreeselect, versionTreeList } from '@/api/system/menu';
+import { treeselect2 as menuTreeselect, roleMenuTreeselect2, versionTreeList } from '@/api/system/menu';
 import { treeselect as deptTreeselect, roleDeptTreeselect } from '@/api/system/dept';
 import { mapGetters } from 'vuex';
 import Treeselect from '@riophae/vue-treeselect';
@@ -495,8 +496,9 @@ export default {
       },
       defaultProps: {
         children: 'children',
-        label: 'label'
+        label: 'cnName'
       },
+      defaultExpandedKeys: [],
       // 表单校验
       rules: {
         /* orgCode: [
@@ -610,6 +612,7 @@ export default {
     getMenuTreeselect(data = {}) {
       menuTreeselect(data, this.userCode).then(response => {
         this.menuOptions = response.data;
+        this.defaultExpandedKeys = response.expandKeys;
       });
     },
     /** 查询部门树结构 */
@@ -638,8 +641,9 @@ export default {
     },
     /** 根据角色ID查询菜单树结构 */
     getRoleMenuTreeselect(roleId, data) {
-      return roleMenuTreeselect(roleId, data).then(response => {
+      return roleMenuTreeselect2(roleId, data).then(response => {
         this.menuOptions = response.menus;
+        this.defaultExpandedKeys = response.expandKeys;
         return response;
       });
     },
@@ -761,7 +765,7 @@ export default {
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
-      this.getVersionTreeselect();
+      // this.getVersionTreeselect();
       this.getMenuTreeselect();
       this.getProduceList();
       this.open = true;
@@ -770,7 +774,7 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      this.getVersionTreeselect();
+      // this.getVersionTreeselect();
       const roleId = row.roleId || this.ids;
       const roleMenu = this.getRoleMenuTreeselect(roleId, { userCode: this.userCode });
       this.getProduceList();
@@ -933,3 +937,15 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+.own-version-menu-tree{
+  .el-tree-node__content{
+    .el-checkbox{
+      &.is-disabled{
+        display: none;
+      }
+    }
+  }
+}
+</style>

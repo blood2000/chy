@@ -205,12 +205,14 @@
           <font id="jiafangspan" style="color:#FFF;font-size:10px">{{ obj.aaaaaaaaaaaaa || '' }}</font>
           <p class="row row2">(签章)</p>
           <p id="jiafangTime" class="row row2">时间：{{ parseTime(obj.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</p>
+          <img v-if="obj.isDzqzContract === 1" class="seal-img" src="~@/assets/images/icon/icon_seal.png" alt="">
         </div>
         <div class="company-info company2" style="margin-left: 5%">
           <p id="dsecond" class="row row1">乙方签字： {{ obj.driverName }}</p>
           <font id="yifangspan" style="color:#FFF;font-size:10px">{{ obj.aaaaaaaaaaaaa || '' }}</font>
           <p class="row row2">(签章)</p>
           <p id="yifangTime" class="row row2">时间：{{ obj.aaaaaaaaaaaaa || '' }}</p>
+          <img v-if="obj.isDzqzContract === 1" class="seal-img" :src="obj.sealPath" alt="">
         </div>
         <div class="clear" />
       </div>
@@ -270,5 +272,12 @@ div .header-top{
   body{
     border: solid 1px blue ;
     margin: 10mm 15mm 10mm 15mm; /* margin you want for the content */
+  }
+  .seal-img{
+    position: relative;
+    top: -200px;
+    left: 50px;
+    height: 200px;
+    width: 200px;
   }
 </style>
