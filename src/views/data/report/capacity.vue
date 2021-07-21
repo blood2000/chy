@@ -2,7 +2,7 @@
   <!-- 2.0运力 -->
   <div>
     <div v-show="showSearch" class="app-container app-container--search">
-      <el-form ref="queryForm" :model="queryParams" :inline="true">
+      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
         <el-form-item label="查询日期" prop="receiveTime">
           <!-- 设置只能查2021-07-04之后的数据 -->
           <el-date-picker
@@ -16,6 +16,16 @@
             style="width: 300px"
             size="small"
             @change="datechoose"
+          />
+        </el-form-item>
+        <el-form-item label="货主" prop="companyName">
+          <el-input
+            v-model.trim="queryParams.companyName"
+            placeholder="请输入货主企业名称"
+            clearable
+            size="small"
+            style="width: 272px"
+            @keyup.enter.native="handleQuery"
           />
         </el-form-item>
         <el-form-item>
@@ -37,56 +47,42 @@
     </div>
 
     <div class="total_box">
-      <el-row :gutter="40">
-        <el-col :xs="6" :sm="6" :md="6" :lg="3" :span="3">
-          <div class="count-box blue">
-            <p class="label">新增货主：</p>
-            <p class="count">{{ capacityCount.addShipment || 0 }}</p>
-          </div>
-        </el-col>
-        <el-col :xs="6" :sm="6" :md="6" :lg="3" :span="3">
-          <div class="count-box blue">
-            <p class="label">新增司机：</p>
-            <p class="count">{{ capacityCount.addDriver || 0 }}</p>
-          </div>
-        </el-col>
-        <el-col :xs="6" :sm="6" :md="6" :lg="3" :span="3">
-          <div class="count-box blue">
-            <p class="label">新增调度者：</p>
-            <p class="count">{{ capacityCount.addScheduler || 0 }}</p>
-          </div>
-        </el-col>
-        <el-col :xs="6" :sm="6" :md="6" :lg="3" :span="3">
-          <div class="count-box green">
-            <p class="label">总运单数：</p>
-            <p class="count">{{ waybillCount.sumWaybillCount || 0 }}</p>
-          </div>
-        </el-col>
-        <el-col :xs="6" :sm="6" :md="6" :lg="3" :span="3">
-          <div class="count-box green">
-            <p class="label">已装货：</p>
-            <p class="count">{{ waybillCount.sumLoadingNum || 0 }}</p>
-          </div>
-        </el-col>
-        <el-col :xs="6" :sm="6" :md="6" :lg="3" :span="3">
-          <div class="count-box green">
-            <p class="label">已卸货：</p>
-            <p class="count">{{ waybillCount.sumUnloadingNum || 0 }}</p>
-          </div>
-        </el-col>
-        <el-col :xs="6" :sm="6" :md="6" :lg="3" :span="3">
-          <div class="count-box green">
-            <p class="label">已核算：</p>
-            <p class="count">{{ waybillCount.sumSettledNum || 0 }}</p>
-          </div>
-        </el-col>
-        <el-col :xs="6" :sm="6" :md="6" :lg="3" :span="3">
-          <div class="count-box green">
-            <p class="label">已打款：</p>
-            <p class="count">{{ waybillCount.sumPaidNum || 0 }}</p>
-          </div>
-        </el-col>
-      </el-row>
+      <div class="count-box blue">
+        <p class="label">新增货主：</p>
+        <p class="count">{{ capacityCount.addShipment || 0 }}</p>
+      </div>
+      <div class="count-box blue">
+        <p class="label">新增司机：</p>
+        <p class="count">{{ capacityCount.addDriver || 0 }}</p>
+      </div>
+      <div class="count-box blue">
+        <p class="label">新增调度者：</p>
+        <p class="count">{{ capacityCount.addScheduler || 0 }}</p>
+      </div>
+      <div class="count-box green">
+        <p class="label">总运单数：</p>
+        <p class="count">{{ waybillCount.sumWaybillCount || 0 }}</p>
+      </div>
+      <div class="count-box green">
+        <p class="label">已装货：</p>
+        <p class="count">{{ waybillCount.sumLoadingNum || 0 }}</p>
+      </div>
+      <div class="count-box green">
+        <p class="label">已卸货：</p>
+        <p class="count">{{ waybillCount.sumUnloadingNum || 0 }}</p>
+      </div>
+      <div class="count-box green">
+        <p class="label">已核算：</p>
+        <p class="count">{{ waybillCount.sumSettledNum || 0 }}</p>
+      </div>
+      <div class="count-box green">
+        <p class="label">已打款：</p>
+        <p class="count">{{ waybillCount.sumPaidNum || 0 }}</p>
+      </div>
+      <div class="count-box green">
+        <p class="label">已开票：</p>
+        <p class="count">{{ waybillCount.sumInvoicedNum || 0 }}</p>
+      </div>
     </div>
 
     <div class="app-container">
@@ -119,6 +115,7 @@
             <el-table-column label="已卸货" align="left" prop="unloadingNum" />
             <el-table-column label="已核算" align="left" prop="settledNum" />
             <el-table-column label="已打款" align="left" prop="paidNum" />
+            <el-table-column label="已开票" align="left" prop="invoicedNum" />
           </el-table>
         </li>
       </ul>
@@ -151,7 +148,9 @@ export default {
       loading: true,
       showSearch: true,
       total: 0,
-      queryParams: {},
+      queryParams: {
+        companyName: ''
+      },
       timeParams: {
         beginTime: null,
         endTime: null
@@ -201,27 +200,27 @@ export default {
     /** 查询列表 */
     getList() {
       this.loading = true;
-      waybillStatisticsList(this.timeParams).then(response => {
+      waybillStatisticsList(Object.assign({}, this.queryParams, this.timeParams)).then(response => {
         this.infoList = response.data || [];
         this.loading = false;
       });
     },
     /** 查询运力统计 */
     getCapacityCount() {
-      capacityStatisticsCount(this.timeParams).then(response => {
+      capacityStatisticsCount(Object.assign({}, this.queryParams, this.timeParams)).then(response => {
         this.capacityCount = response.data || {};
       });
     },
     /** 查询运单统计 */
     getWaybillCount() {
-      waybillStatisticsCount(this.timeParams).then(response => {
+      waybillStatisticsCount(Object.assign({}, this.queryParams, this.timeParams)).then(response => {
         this.waybillCount = response.data || {};
       });
     },
     /** 导出按钮 */
     handleExport() {
       this.exportLoading = true;
-      this.download('/transportation/capacityStatistics/export', this.timeParams, `2.0运力`).then(() => {
+      this.download('/transportation/capacityStatistics/export', Object.assign({}, this.queryParams, this.timeParams), `2.0运力`).then(() => {
         this.exportLoading = false;
       });
     }
@@ -234,12 +233,18 @@ export default {
   width: calc(100% - 30px);
   border-radius: 4px;
   margin: 0 15px;
+  font-size: 0;
   .count-box{
+    display: inline-block;
+    width: calc(11.11% - 18px);
     height: 72px;
     position: relative;
     background-color: #fff;
     padding: 10px 0 10px 20px;
     margin-bottom: 15px;
+    &:not(:last-child){
+      margin-right: 20px;
+    }
     >.label{
       font-size: 14px;
       font-family: PingFang SC;
