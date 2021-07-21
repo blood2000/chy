@@ -6,6 +6,7 @@
       remote
       reserve-keyword
       placeholder="请输入关键词"
+      :clearable="clearable"
       :remote-method="remoteMethod"
       :loading="loading"
       :style="{ width: '100%' }"
@@ -61,6 +62,10 @@ export default {
           citylimit: true
         };
       }
+    },
+    clearable: {
+      type: Boolean,
+      default: false
     }
   },
 
