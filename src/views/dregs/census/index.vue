@@ -1,6 +1,9 @@
 <template>
   <div class="census-page">
-    <el-row :gutter="15">
+    <div v-if="projectList.length === 0" class="app-container" style="margin: 0">
+      <DataNull style="margin: 40px 0" />
+    </div>
+    <el-row v-if="projectList.length > 0" :gutter="15">
       <el-col :xl="6" :lg="7" :md="8" :xs="24">
         <div class="app-container census-page-left">
           <ul class="project-list census-scroll-box">
@@ -135,10 +138,12 @@
 <script>
 import { ListStatistics, ProjectDetails, InOutDetails, MudtailDetails, ListVechicleDetails } from '@/api/dregs/census';
 import Tabs from '@/components/Tabs/index';
+import DataNull from '@/components/DataNull/index';
 export default {
   name: 'Census',
   components: {
-    Tabs
+    Tabs,
+    DataNull
   },
   data() {
     return {
@@ -146,8 +151,8 @@ export default {
       projectActive: 0,
       projectList: [],
       projectQueryParams: {
-        pageNum: 1,
-        pageSize: 10
+        // pageNum: 1,
+        // pageSize: 10
       },
       // 全局控制
       activeTab: '项目统计',
@@ -163,8 +168,8 @@ export default {
       projectStatisticList: [],
       // 车辆明细
       vehicleQuery: {
-        pageNum: 1,
-        pageSize: 10,
+        // pageNum: 1,
+        // pageSize: 10,
         projectCode: '',
         queryDate: '',
         vechicleCode: ''
