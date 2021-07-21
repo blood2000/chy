@@ -1,11 +1,15 @@
 <template>
   <div class="census-page">
-    <div v-if="projectList.length === 0" class="app-container" style="margin: 0">
+    <div v-if="projectList.length === 0 && !loading" class="app-container" style="margin: 0">
       <DataNull style="margin: 40px 0" />
     </div>
-    <el-row v-if="projectList.length > 0" :gutter="15">
+    <el-row v-if="projectList.length > 0 && !loading" :gutter="15">
       <el-col :xl="6" :lg="7" :md="8" :xs="24">
-        <div class="app-container census-page-left">
+        <div
+          v-loading="projectLoading"
+          class="app-container census-page-left"
+          element-loading-background="rgba(255, 255, 255, 0)"
+        >
           <ul class="project-list census-scroll-box">
             <li v-for="(item, index) in projectList" :key="item.projectCode" :class="{active: projectActive === index}" class="project-list-item" @click="handleClickProjectItem(item, index)">
               <h5>项目：{{ item.projectName }}</h5>
@@ -38,12 +42,12 @@
       </el-col>
       <el-col :xl="18" :lg="17" :md="16" :xs="24">
         <div class="census-page-right">
-          <el-date-picker v-model="queryDate" value-format="yyyy-MM-dd" class="census-date-picker" size="large" type="date" placeholder="选择日期" @change="changeDetail" />
+          <el-date-picker v-model="queryDate" value-format="yyyy-MM-dd" class="census-date-picker" size="large" type="date" :clearable="false" placeholder="选择日期" @change="changeDetail" />
           <Tabs :tablist="tablist" @getActiveName="getActiveTab" />
           <div class="app-container">
             <div class="tab-page-wrap census-scroll-box">
               <!-- 1.项目统计 -->
-              <div v-if="activeTab === '项目统计'" class="tab-page width60 own-census-table">
+              <div v-if="activeTab === '项目统计'" v-loading="projectStatisticLoading" class="tab-page width60 own-census-table">
                 <el-row class="total_bg">
                   <el-col :span="2">
                     <img src="@/assets/images/icon/total.png" alt="">
@@ -102,7 +106,7 @@
                 </el-table>
               </div>
               <!-- 3.泥尾统计 -->
-              <div v-if="activeTab === '泥尾统计'" class="tab-page width60 own-census-table">
+              <div v-if="activeTab === '泥尾统计'" v-loading="muckardLoading" class="tab-page width60 own-census-table">
                 <el-row class="total_bg">
                   <el-col :span="2">
                     <img src="@/assets/images/icon/total.png" alt="">
@@ -148,8 +152,10 @@ export default {
   data() {
     return {
       // 项目列表
+      loading: true,
       projectActive: 0,
       projectList: [],
+      projectLoading: false,
       projectQueryParams: {
         // pageNum: 1,
         // pageSize: 10
@@ -165,6 +171,7 @@ export default {
       projectCode: null,
       // 项目统计
       projectStatistic: {},
+      projectStatisticLoading: false,
       projectStatisticList: [],
       // 车辆明细
       vehicleQuery: {
@@ -183,6 +190,7 @@ export default {
       // 泥尾统计
       muckardTotal: 0,
       muckardCounts: [],
+      muckardLoading: false,
       muckardList: [],
       muckardCollapse: []
     };
@@ -194,16 +202,17 @@ export default {
   methods: {
     /* 项目列表 */
     getProgectList() {
+      this.loading = true;
       ListStatistics(this.projectQueryParams).then(response => {
-        const list = response.data.list || [];
-        this.projectList = [...this.projectList, ...list];
+        this.projectList = response.data.list || [];
         // 根据code获取详情，默认展示第一条的
         if (this.projectList.length > 0) {
           this.projectCode = this.projectList[0].projectCode;
           this.changeDetail();
         }
+        this.loading = false;
       }).catch(() => {
-        // 关闭loading
+        this.loading = false;
       });
     },
     /* 选中项目 */
@@ -211,6 +220,7 @@ export default {
       if (index === this.projectActive) return;
       this.projectActive = index;
       this.projectCode = row.projectCode;
+      this.projectLoading = true;
       this.changeDetail();
     },
     /* 选中tab */
@@ -231,10 +241,13 @@ export default {
     },
     /* 获取项目统计 */
     getProjectStatistic() {
+      this.projectStatisticLoading = true;
       ProjectDetails({
         projectCode: this.projectCode,
         queryDate: this.queryDate
       }).then(response => {
+        this.projectLoading = false;
+        this.projectStatisticLoading = false;
         this.projectStatistic = response.data || {};
         this.projectStatisticList = this.projectStatistic.vehicleCounts || [];
         if (this.projectStatisticList.length > 0) {
@@ -243,6 +256,9 @@ export default {
         } else {
           this.vechicleCode = '';
         }
+      }).catch(() => {
+        this.projectLoading = false;
+        this.projectStatisticLoading = false;
       });
     },
     /* 项目统计-选中车辆 */
@@ -272,18 +288,23 @@ export default {
         projectCode: this.projectCode,
         queryDate: this.queryDate
       }).then(response => {
-        this.inOutList = response.data.vechicleWaybillInfos || [];
+        this.projectLoading = false;
         this.inOutLoading = false;
+        this.inOutList = response.data.vechicleWaybillInfos || [];
       }).catch(() => {
+        this.projectLoading = false;
         this.inOutLoading = false;
       });
     },
     /* 获取泥尾统计 */
     getMudtailList() {
+      this.muckardLoading = true;
       MudtailDetails({
         projectCode: this.projectCode,
         queryDate: this.queryDate
       }).then(response => {
+        this.projectLoading = false;
+        this.muckardLoading = false;
         this.muckardTotal = response.data.total || 0;
         this.muckardCounts = response.data.muckardCounts || [];
         this.muckardList = response.data.vechicleMuckards || [];
@@ -294,6 +315,9 @@ export default {
         } else {
           this.muckardCollapse = [];
         }
+      }).catch(() => {
+        this.projectLoading = false;
+        this.muckardLoading = false;
       });
     }
   }
@@ -320,9 +344,8 @@ export default {
           font-size: 16px;
           font-family: PingFang SC;
           font-weight: bold;
-          line-height: 22px;
+          line-height: 30px;
           color: #262626;
-          margin-bottom: 4px;
         }
         .count{
           font-size: 14px;
@@ -336,7 +359,7 @@ export default {
           background: #0672D9;
           box-shadow: 0px 3px 6px rgba(67, 110, 207, 0.4);
           border-radius: 6px;
-          padding: 24px 20px;
+          padding: 20px;
           >h5{
             font-size: 20px;
             color: #fff;
@@ -489,5 +512,15 @@ export default {
 }
 .census-scroll-box::-webkit-scrollbar-thumb:hover {
   background:rgba(0, 0, 0, 0.2);
+}
+// projectLoading
+.census-page{
+  .census-page-left{
+    >.el-loading-mask{
+      .el-loading-spinner{
+        display: none;
+      }
+    }
+  }
 }
 </style>
