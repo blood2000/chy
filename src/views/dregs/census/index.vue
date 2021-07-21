@@ -275,8 +275,8 @@ export default {
       this.vehicleQuery.queryDate = this.queryDate;
       this.vehicleQuery.vechicleCode = this.vechicleCode;
       ListVechicleDetails(this.vehicleQuery).then(response => {
-        this.carDetailList = response.data || [];
         this.vechicleLoading = false;
+        this.carDetailList = response.data || [];
       }).catch(() => {
         this.vechicleLoading = false;
       });
