@@ -101,7 +101,6 @@ const CardReader = {
       return new Promise((resolve, reject) => {
         CardReader.socket.onmessage = function(e) {
           const ret = CardReader.fn.getResult(e.data);
-          console.log(ret);
           if (ret.success) {
             // console.log('读卡成功信息' + CardReader._cmdIndex + '：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message + ret.code : ret.code));
             resolve(e.data);
@@ -1031,7 +1030,7 @@ CardReader.action['writeData'] = async function(data) {
   const index = [3, 0];
   let ret;
   ret = await this.getCard();
-  console.log(ret, '获取卡片');
+  // console.log(ret, '获取卡片');
   if (!ret.success) { // 获取卡片失败
     return ret;
   }
@@ -1041,12 +1040,12 @@ CardReader.action['writeData'] = async function(data) {
     ret = await CardReader.fn.apdu((function() {
       return ['00', 'A4', '00', '00', '02', '3F', '02'].join('');
     })());
-    console.log('选择索引目录', ret);
+    // console.log('选择索引目录', ret);
     // 读取索引目录索引文件
     ret = await CardReader.fn.apdu((function() {
       return ['00', 'B0', CardReader.fn.numToHex16(1 | 0x80), '00', '00'].join('');
     })());
-    console.log('读二进制文件', ret);
+    // console.log('读二进制文件', ret);
     ret = CardReader.fn.getResult(ret);
     if (ret.code === '9000') {
       // 设置文件索引
@@ -1109,7 +1108,7 @@ CardReader.action['writeData'] = async function(data) {
       return cmd;
     })());
 
-    console.log('创建二进制文件', ret);
+    // console.log('创建二进制文件', ret);
     ret = CardReader.fn.getResult(ret);
     if (ret.code !== '9000') {
       await CardReader.action.error();
@@ -1125,7 +1124,7 @@ CardReader.action['writeData'] = async function(data) {
       const recSize = CardReader.fn.numToHex16(data.length / 2);
       return ['00', 'D6', CardReader.fn.numToHex16(index[1] | 0x80), '00', recSize, data].join('');
     })());
-    console.log('写二进制文件', ret);
+    // console.log('写二进制文件', ret);
     ret = CardReader.fn.getResult(ret);
 
     if (ret.code !== '9000') {
@@ -1146,10 +1145,10 @@ CardReader.action['writeData'] = async function(data) {
     ret = await CardReader.fn.apdu((function() {
       return ['00', 'A4', '00', '00', '02', '3F', '02'].join('');
     })());
-    console.log('选择索引目录', ret);
+    // console.log('选择索引目录', ret);
     // 清空索引目录
     ret = await CardReader.fn.exec(CardReader.command.clean);
-    console.log('清空索引目录', ret);
+    // console.log('清空索引目录', ret);
     // 创建二进制文件
     ret = await CardReader.fn.apdu((function() {
       return ['80', 'E0', '00', CardReader.fn.numToHex16(1), '07', '28', '0002', 'F0', 'F0', 'FFFF'].join('');
@@ -1166,7 +1165,7 @@ CardReader.action['writeData'] = async function(data) {
       };
     }
 
-    console.log('创建二进制文件', ret);
+    // console.log('创建二进制文件', ret);
     // 写二进制文件
     ret = await CardReader.fn.apdu((function() {
       // console.log(index);
@@ -1187,7 +1186,7 @@ CardReader.action['writeData'] = async function(data) {
         data: null
       };
     }
-    console.log('写二进制文件', ret);
+    // console.log('写二进制文件', ret);
     // 读取索引文件
     ret = await CardReader.fn.apdu((function() {
       return ['00', 'B0', CardReader.fn.numToHex16(1 | 0x80), '00', '00'].join('');
@@ -1215,7 +1214,6 @@ CardReader.action['writeData'] = async function(data) {
       data: {
         data: odata,
         index: ret.data
-
       }
     };
   } catch (error) {
