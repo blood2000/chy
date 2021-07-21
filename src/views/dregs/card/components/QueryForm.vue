@@ -48,7 +48,7 @@
           @keyup.enter.native="$emit('handleQuery')"
         />
 
-        <el-button class="ml10" size="small" type="primary" plain @click="$emit('getCardInfo')">读卡</el-button>
+        <el-button class="ml10" size="small" type="primary" plain @click="$emit('getCardInfo')">获取卡ID</el-button>
       </el-form-item>
 
 

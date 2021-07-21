@@ -97,6 +97,13 @@ const com = [
     'width': 150
   },
   {
+    'prop': 'card16no',
+    'label': '卡ID',
+    'isShow': true,
+    'sortNum': 2,
+    'tooltip': true
+  },
+  {
     'label': '调度组名称',
     'prop': 'teamName',
     'isShow': true,
@@ -118,8 +125,8 @@ const com = [
     'tooltip': true
   },
   {
-    'label': '卡ID',
-    'prop': 'card16no',
+    'label': '运单数',
+    'prop': 'waybillConts',
     'isShow': true,
     'sortNum': 7,
     'tooltip': true
@@ -260,7 +267,7 @@ export default {
 
 
 
-        // obj['loadNum'] = object[item].length; // 装车数量
+        obj['waybillConts'] = object[item].length; // 运单数量
         // obj['actualTripsNum'] = object[item].length; // 实发趟数（次）
         // obj['settlementTripsNum'] = object[item].length; // 结算趟数
         obj['waybillCods'] = object[item].map(e => e.wayBillCode); // 	运单CodeIds

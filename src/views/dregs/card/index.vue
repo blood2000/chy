@@ -20,8 +20,17 @@
       >
         <el-col :span="1.5">
           <el-button
+
+            :type=" isConnect?'danger':'primary'"
+            icon="el-icon-turn-off"
+            size="mini"
+            @click="handlerCarConnect(isConnect)"
+          >{{ !isConnect? '连接服务器' :'断开服务器' }}</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
             type="primary"
-            icon="el-icon-document-checked"
+            icon="el-icon-mouse"
             size="mini"
             :disabled="!multiple"
             @click="handlerMakeUp"
@@ -30,10 +39,26 @@
         <el-col :span="1.5">
           <el-button
             type="primary"
-            icon="el-icon-document-checked"
+            icon="el-icon-brush"
             size="mini"
             @click="handlerCardInit"
           >卡初始化</el-button>
+        </el-col>
+        <el-col v-if="false" :span="1.5">
+          <el-button
+            type="primary"
+            icon="el-icon-brush"
+            size="mini"
+            @click="handlerReadUserinfo"
+          >读卡用户信息</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            type="primary"
+            icon="el-icon-document"
+            size="mini"
+            @click="handlerReadData"
+          >读卡</el-button>
         </el-col>
         <!-- <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
@@ -63,20 +88,25 @@
         @pagination="getList"
       />
 
-      <!-- 核销IC卡 -->
-      <!-- <nuclear-card ref="NuclearCard" :open.sync="nuclearCardDialog" @listData="listData" /> -->
+      <!-- 已打款的回单 -->
+      <el-dialog class="i-adjust" title="卡信息" :visible.sync="cardinfoOpen" width="1200px" :close-on-click-modal="false" append-to-body>
+        <div v-if="cardinfoOpen">
+          <CarInfo :card-info-data="cardInfoData" />
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
 <script>
 import QueryForm from './components/QueryForm';
 import AccountingTable from './components/AccountingTable';
-import { cardHistoryList } from '@/api/acaredit';
+import CarInfo from './components/CarInfo';
+import { cardHistoryList, cardReplacement } from '@/api/dregs/card';
 
 import CardReader, { USERINFO, versionMark, userMark } from '@/libs/ICCard/CardReader';
 const { action, fn } = CardReader;
 
-console.log(action);
+
 
 // 方法 connect
 
@@ -114,7 +144,7 @@ const com = [
     'prop': 'freightPrice',
     'isShow': false,
     'sortNum': 0,
-    'width': '120',
+    'width': '180',
     'tooltip': true,
     'isChild': false
   },
@@ -237,7 +267,7 @@ const com = [
   },
   {
     'prop': 'icStatus',
-    'isShow': true,
+    'isShow': false,
     'tooltip': false,
     'sortNum': 2,
     'label': 'IC卡核对状态',
@@ -290,7 +320,7 @@ const com = [
   },
   {
     'prop': 'loadWeight',
-    'isShow': true,
+    'isShow': false,
     'tooltip': false,
     'sortNum': 5,
     'label': '装车数量',
@@ -298,7 +328,7 @@ const com = [
   },
   {
     'prop': 'unloadWeight',
-    'isShow': true,
+    'isShow': false,
     'tooltip': false,
     'sortNum': 6,
     'label': '卸车数量',
@@ -307,7 +337,7 @@ const com = [
   {
     'label': '货物类型',
     'prop': 'goodsBigType',
-    'isShow': true,
+    'isShow': false,
     'sortNum': 8,
     'width': '120',
     'tooltip': true,
@@ -384,8 +414,8 @@ const com = [
   }
 ];
 export default {
-  name: 'Acaredit',
-  components: { QueryForm, AccountingTable },
+  name: 'Card',
+  components: { QueryForm, AccountingTable, CarInfo },
 
   data() {
     return {
@@ -410,7 +440,9 @@ export default {
       selectedData: [],
 
       // 卡
-      isConnect: false
+      isConnect: false,
+      cardinfoOpen: false,
+      cardInfoData: null
 
     };
   },
@@ -432,12 +464,10 @@ export default {
 
   created() {
     this.getList();
-    CardReader.fn.connect(() => {
-      console.log('连接成功');
-      this.isConnect = true;
-    }, () => {
-      this.isConnect = false;
-    });
+  },
+
+  beforeDestroy() {
+    console.log(456);
   },
 
 
@@ -452,6 +482,23 @@ export default {
       }).catch(() => { this.loading = false; });
     },
 
+    // 连接本地WebSocket服务
+    handlerCarConnect(isConnect) {
+      if (isConnect) {
+        this._close();
+        this.msgSuccess('断开连接成功');
+        this.isConnect = false;
+      } else {
+        CardReader.fn.connect(() => {
+          // console.log('连接成功');
+          this.msgSuccess('连接成功');
+          this.isConnect = true;
+        }, () => {
+          this.isConnect = false;
+        });
+      }
+    },
+
     // 读取卡基本数据
     getCardInfo() {
       if (this.isConnect) {
@@ -459,6 +506,7 @@ export default {
           console.log(res);
           if (res.code === '9000') {
             this.$set(this.queryParams, 'card16no', res.GetCardNo.data);
+            this.getList();
           }
         });
       } else {
@@ -472,59 +520,122 @@ export default {
 
     // 补卡
     handlerMakeUp() {
-      console.log(this.selectedData);
+      console.log(this.selectedData, '数据');
+      if (!this.isConnect) {
+        this.msgWarning('未连接服务器');
+        return;
+      }
       // console.log(USERINFO);
+      action.getCardInfo().then(res => {
+        // console.log(res);
+        if (res.code === '9000') {
+          const user = this.selectedData[0];
+          const cardData = {
+            card16no: user.card16no,
+            newCard16no: res.GetCardNo.data + '', // 获取当前卡的id
+            cardBatchNo: user.cardBatchNo
+          };
 
-      const user = this.selectedData[0];
+          // 用户数据
+          const userInfo = {
+            icType: 'r',
+            issuing_name: user.orderClient || '-', // orderClient	下单客户
+            issuing_pc: user.cardBatchNo || '-', // cardBatchNo	卡批次
+            issuing_telno: user.sipperPhone || '-', // sipperPhone	货主手机号
+            issuing_time: this.setTimestamp(user.loadingTime) || '-', // loadingTime	装货时间
+            project_id: user.projectId || '-', // projectId	项目Id
+            team_name: user.teamName || '-', // teamName	车队名称
+            team_telno: user.dispatchNumber || '-', // dispatchNumber	调度者手机号
+            user_name: user.driverName || '-', // driverName	司机名字
+            user_telno: user.driverPhone || '-' // driverPhone	司机电话
+          };
 
-      // const userMark = userMark;
+          // 数据
+          const data = this.selectedData.map(e => {
+            return {
+              driverPhone: e.driverPhone || '-', // driverPhone	司机电话
+              fillTime: this.setTimestamp(e.receiveTime) || '-', // loadingTime	接单时间
+              licenseNumber: e.licenseNumber || '-', // '鄂ALF106',
+              orderId: e.mainOrderNumber || '-', // mainOrderNumber	货源编号
+              projectName: e.projectId || '-', // projectId	项目Id
+              serialNumber: e.shipmentMuckyardNo || '-', // shipmentMuckyardNo	渣土场编号
+              signTime: this.setTimestamp(e.loadingTime) || '-', // signTime	装货时间
+              waybillNo: e.waybillNo || '-' // waybillNo	运单号
+            };
+          });
 
-      // 用户数据
-      const userInfo = {
-        icType: 'r',
-        issuing_name: user.orderClient || '-', // orderClient	下单客户
-        issuing_pc: user.cardBatchNo || '-', // cardBatchNo	卡批次
-        issuing_telno: user.sipperPhone || '-', // sipperPhone	货主手机号
-        issuing_time: this.setTimestamp(user.loadingTime) || '-', // loadingTime	装货时间
-        project_id: user.projectId || '-', // projectId	项目Id
-        team_name: user.teamName || '-', // teamName	车队名称
-        team_telno: user.dispatchNumber || '-', // dispatchNumber	调度者手机号
-        user_name: user.driverName || '-', // driverName	司机名字
-        user_telno: user.driverPhone || '-' // driverPhone	司机电话
-      };
+          // console.log(userMark, userInfo, versionMark, data, cardData);
 
-      // 数据
+          // 提示, 需要白卡
 
-      const data = this.selectedData.map(e => {
-        return {
-          driverPhone: e.driverPhone || '-', // driverPhone	司机电话
-          fillTime: this.setTimestamp(e.loadingTime) || '-', // loadingTime	装货时间
-          licenseNumber: e.licenseNumber || '-', // '鄂ALF106',
-          orderId: e.mainOrderNumber || '-', // mainOrderNumber	货源编号
-          projectName: e.projectId || '-', // projectId	项目Id
-          serialNumber: e.shipmentMuckyardNo || '-', // shipmentMuckyardNo	渣土场编号
-          signTime: this.setTimestamp(e.signTime) || '-', // signTime	卸货时间
-          waybillNo: e.waybillNo || '-' // waybillNo	运单号
-        };
+          this.$confirm('此操作将初始化本卡后,再写入数据, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.xexiaoCheck(userMark, userInfo, versionMark, data, cardData);
+          }).catch(() => {});
+        }
       });
-
-
-      console.log(userMark, userInfo, versionMark, data);
-
-      // 提示, 需要白卡
-
-      this.$confirm('此操作将初始化本卡后,再写入数据, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.xexiaoCheck(userMark, userInfo, versionMark, data);
-      }).catch(() => {});
     },
 
     // 初始卡功能
     handlerCardInit() {
       // ??
+      this.$confirm('此操作将格式化本卡, 恢复到出厂状态, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        action.cancellation().then(res => {
+          if (res.success) {
+            this.msgSuccess('初始化成功');
+          } else {
+            this.msgError('初始化失败');
+          }
+          // console.log(res);
+        });
+      }).catch(() => {});
+    },
+
+    // 读取卡用户
+    handlerReadUserinfo() {
+      if (!this.isConnect) {
+        this.msgWarning('未连接服务器');
+        return;
+      }
+      action.readUserInfo().then(res => {
+        if (res.success) {
+          if (res.code === '9000') {
+            this.msgSuccess('读取成功');
+          } else {
+            this.msgWarning(res.msg);
+          }
+        } else {
+          this.msgError('读取失败');
+        }
+      });
+    },
+
+    // 读卡
+    handlerReadData() {
+      if (!this.isConnect) {
+        this.msgWarning('未连接服务器');
+        return;
+      }
+      // 读取卡数据
+      action.readUserInfoAndreadData().then(res => {
+        if (res.success) {
+          if (res.code === '9000') {
+            this.cardInfoData = res;
+            this.cardinfoOpen = true;
+          } else {
+            this.msgWarning(res.msg);
+          }
+        } else {
+          this.msgError('读取失败');
+        }
+      });
     },
 
     // 选择的数据
@@ -548,7 +659,11 @@ export default {
         }
       });
       if (Object.keys(object).length > 1) {
-        this.msgWarning('只能选择同批次的');
+        // this.msgWarning('只能选择同批次的');
+        if (this.multiple) {
+          // this.multiple = false;
+          // this.msgWarning('只能选择同批次的进行写卡');
+        }
         this.multiple = false;
       } else {
         // console.log(arr);
@@ -569,7 +684,7 @@ export default {
     },
 
     // 写回卡的操作
-    async xexiaoCheck(userMark = userMark, userInfo, meter = versionMark, data) {
+    async xexiaoCheck(userMark = userMark, userInfo, meter = versionMark, data, cardData) {
       // 走发卡-写卡
       if (!userInfo) return;
       try {
@@ -612,8 +727,15 @@ export default {
 
             if (arr.length === data.length) {
               if (arr.every(e => e)) {
-                this.loading = false;
-                this.msgSuccess('写入成功');
+                cardReplacement({
+                  card16no: cardData.card16no,
+                  newCard16no: cardData.newCard16no,
+                  cardBatchNo: cardData.cardBatchNo
+                }).then(res => {
+                  this.loading = false;
+                  this.msgSuccess(res.msg || '补卡成功');
+                  this.getList();
+                }).catch(() => { this.loading = false; });
               } else {
                 this.loading = false;
                 this.msgError('写入失败');
