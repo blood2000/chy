@@ -331,7 +331,7 @@ export default {
   // 项目列表
   .census-page-left{
     margin: 0 0 15px;
-    height: calc(100vh - 210px);
+    height: calc(100vh - 146px);
     padding: 20px 0 20px 20px;
     .project-list{
       height: 100%;
@@ -404,7 +404,7 @@ export default {
     }
     >.app-container{
       margin: 0;
-      height: calc(100vh - 302px);
+      height: calc(100vh - 238px);
       padding: 20px 0 20px 20px;
       .tab-page-wrap{
         height: 100%;
