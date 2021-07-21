@@ -2,7 +2,7 @@
   <!-- 2.0运力 -->
   <div>
     <div v-show="showSearch" class="app-container app-container--search">
-      <el-form ref="queryForm" :model="queryParams" :inline="true">
+      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
         <el-form-item label="查询日期" prop="receiveTime">
           <!-- 设置只能查2021-07-04之后的数据 -->
           <el-date-picker
@@ -16,6 +16,16 @@
             style="width: 300px"
             size="small"
             @change="datechoose"
+          />
+        </el-form-item>
+        <el-form-item label="货主" prop="companyName">
+          <el-input
+            v-model.trim="queryParams.companyName"
+            placeholder="请输入货主企业名称"
+            clearable
+            size="small"
+            style="width: 272px"
+            @keyup.enter.native="handleQuery"
           />
         </el-form-item>
         <el-form-item>
@@ -138,7 +148,9 @@ export default {
       loading: true,
       showSearch: true,
       total: 0,
-      queryParams: {},
+      queryParams: {
+        companyName: ''
+      },
       timeParams: {
         beginTime: null,
         endTime: null
@@ -188,27 +200,27 @@ export default {
     /** 查询列表 */
     getList() {
       this.loading = true;
-      waybillStatisticsList(this.timeParams).then(response => {
+      waybillStatisticsList(Object.assign({}, this.queryParams, this.timeParams)).then(response => {
         this.infoList = response.data || [];
         this.loading = false;
       });
     },
     /** 查询运力统计 */
     getCapacityCount() {
-      capacityStatisticsCount(this.timeParams).then(response => {
+      capacityStatisticsCount(Object.assign({}, this.queryParams, this.timeParams)).then(response => {
         this.capacityCount = response.data || {};
       });
     },
     /** 查询运单统计 */
     getWaybillCount() {
-      waybillStatisticsCount(this.timeParams).then(response => {
+      waybillStatisticsCount(Object.assign({}, this.queryParams, this.timeParams)).then(response => {
         this.waybillCount = response.data || {};
       });
     },
     /** 导出按钮 */
     handleExport() {
       this.exportLoading = true;
-      this.download('/transportation/capacityStatistics/export', this.timeParams, `2.0运力`).then(() => {
+      this.download('/transportation/capacityStatistics/export', Object.assign({}, this.queryParams, this.timeParams), `2.0运力`).then(() => {
         this.exportLoading = false;
       });
     }
