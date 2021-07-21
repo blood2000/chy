@@ -80,8 +80,8 @@
       </el-row>
 
       <!-- 别的地方调用这个页面, 特殊处理表格 // 7/9 chj 调用这个组件添加了 -->
-      <div v-if="iscomponent">
-        <el-radio-group v-model="tinRadio" @change="handleRadioChange">
+      <div v-if="iscomponent" style="width:100%;">
+        <el-radio-group v-model="tinRadio" style="width:100%;" @change="handleRadioChange">
           <RefactorTable :loading="loading" :data="infoList" :table-columns-config="tableColumnsConfig" is-show-index>
             <template #tRadio="{row}">
               <el-radio :label="row"><span>&nbsp;</span></el-radio>
