@@ -91,7 +91,7 @@ const CardReader = {
          * @returns {Promise<unknown>}
          */
     exec: async function(command) {
-      CardReader.fn.execute(command);
+      await CardReader.fn.execute(command);
       return CardReader.fn._receiveMessage();
     },
     apdu: async function(command) {
@@ -1030,6 +1030,7 @@ CardReader.action['writeData'] = async function(data) {
   const index = [3, 0];
   let ret;
   ret = await this.getCard();
+  // console.log(ret, '获取卡片');
   if (!ret.success) { // 获取卡片失败
     return ret;
   }
@@ -1106,6 +1107,7 @@ CardReader.action['writeData'] = async function(data) {
       // console.log(cmd);
       return cmd;
     })());
+
     // console.log('创建二进制文件', ret);
     ret = CardReader.fn.getResult(ret);
     if (ret.code !== '9000') {
@@ -1124,6 +1126,7 @@ CardReader.action['writeData'] = async function(data) {
     })());
     // console.log('写二进制文件', ret);
     ret = CardReader.fn.getResult(ret);
+
     if (ret.code !== '9000') {
       await CardReader.action.error();
       // console.error('写卡失败：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
@@ -1211,7 +1214,6 @@ CardReader.action['writeData'] = async function(data) {
       data: {
         data: odata,
         index: ret.data
-
       }
     };
   } catch (error) {
@@ -1243,6 +1245,14 @@ CardReader.action['createFolder'] = async function(index) {
   await CardReader.fn.exec(CardReader.command.deselect);
   await CardReader.fn.exec(CardReader.command.beep);
 };
+
+function abcd() {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, 200);
+  });
+}
 
 
 export default CardReader;
