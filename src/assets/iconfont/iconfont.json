@@ -102,6 +102,20 @@
       "font_class": "nav-monitor",
       "unicode": "e612",
       "unicode_decimal": 58898
+    },
+    {
+      "icon_id": "23020465",
+      "name": "nav-construction",
+      "font_class": "nav-construction",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    },
+    {
+      "icon_id": "23020466",
+      "name": "nav-dreg",
+      "font_class": "nav-dreg",
+      "unicode": "e614",
+      "unicode_decimal": 58900
     }
   ]
 }
