@@ -12,7 +12,7 @@
         <amap-search ref="AmapSearchRef" v-model="form.detail" :search-option="searchOption" class="width100" @change="addressChange" />
       </el-form-item>
       <el-form-item label="卸货地址" prop="unloadDetail" class="width90">
-        <amap-search ref="UnloadAmapSearchRef" v-model="form.unloadDetail" :search-option="searchOption" class="width100" @change="unloadAddressChange" />
+        <amap-search ref="UnloadAmapSearchRef" v-model="form.unloadDetail" :search-option="searchOption" class="width100" :clearable="true" @change="unloadAddressChange" />
       </el-form-item>
       <el-row :gutter="20">
         <el-col :span="24">
@@ -336,12 +336,24 @@ export default {
     },
     // 搜索卸货地址
     unloadAddressChange(row) {
-      const { lng, lat, dictLabel } = row;
-      this.form.unloadLongitude = lng;
-      this.form.unloadLatitude = lat;
-      this.form.unloadDetail = dictLabel;
-      // 根据地址获取省市区
-      this.getUnloadAddressBylnglat(lng, lat);
+      if (row) {
+        const { lng, lat, dictLabel } = row;
+        this.form.unloadLongitude = lng;
+        this.form.unloadLatitude = lat;
+        this.form.unloadDetail = dictLabel;
+        // 根据地址获取省市区
+        this.getUnloadAddressBylnglat(lng, lat);
+      } else {
+        this.form.unloadLongitude = '';
+        this.form.unloadLatitude = '';
+        this.form.unloadDetail = '';
+        this.form.unloadProvinceCode = '';
+        this.form.unloadCityCode = '';
+        this.form.unloadDistrictCode = '';
+        this.form.unloadProvince = '';
+        this.form.unloadCity = '';
+        this.form.unloadDistrict = '';
+      }
     },
     // 通过经纬度获取详细点位信息
     getUnloadAddressBylnglat(lng, lat) {
