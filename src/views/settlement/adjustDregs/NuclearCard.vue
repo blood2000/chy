@@ -499,7 +499,7 @@ export default {
               // 执行到最后一步走这里
             } else {
               arr.push(false);
-              this.msgSuccess(res.msg);
+              this.msgError(res.msg);
             }
             if (arr.length === filterArr.length) {
               if (arr.every(e => e)) {

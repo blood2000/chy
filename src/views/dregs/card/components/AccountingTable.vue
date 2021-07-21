@@ -31,7 +31,7 @@
             </template>
 
             <template #icStatus="{row}">
-              <span>{{ selectDictLabel([
+              <span :class=" row.icStatus==='0'?'g-color-require':'g-color-success' ">{{ selectDictLabel([
                 { 'dictLabel': '未核对', 'dictValue': '0' },
                 { 'dictLabel': '已核对', 'dictValue': '1' },
               ], row.icStatus) }}</span>
@@ -278,7 +278,7 @@ export default {
         arr.push(obj);
       }
 
-      console.log(arr);
+      // console.log(arr);
 
       return arr;
     }

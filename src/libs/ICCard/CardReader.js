@@ -91,7 +91,7 @@ const CardReader = {
          * @returns {Promise<unknown>}
          */
     exec: async function(command) {
-      await CardReader.fn.execute(command);
+      CardReader.fn.execute(command);
       return CardReader.fn._receiveMessage();
     },
     apdu: async function(command) {
@@ -107,13 +107,13 @@ const CardReader = {
           } else {
             // console.log('错误信息', ret);
             if (ret.code) {
-              reject({
+              resolve({
                 ...ret,
                 success: false,
                 msg: '读卡错误信息：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code)
               });
             } else {
-              reject({
+              resolve({
                 ...ret,
                 success: false,
                 code: '',
@@ -1237,22 +1237,22 @@ CardReader.action['createFolder'] = async function(index) {
   // 创建应用目录
   ret = await CardReader.fn.apdu((function() {
     const cmd = ['80', 'E0', '3F', CardReader.fn.numToHex16(index), '0D', '38', '1900', 'F0', 'F0', 96, 'FFFF', CardReader.fn.strToHex16('ADF' + (index < 10 ? '0' + index : index))].join('');
-    console.log(cmd);
+    // console.log(cmd);
     return cmd;
   })());
-  console.log('创建数据目录', ret);
+  // console.log('创建数据目录', ret);
   // 取消选择卡片
   await CardReader.fn.exec(CardReader.command.deselect);
   await CardReader.fn.exec(CardReader.command.beep);
 };
 
-function abcd() {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, 200);
-  });
-}
+// function abcd() {
+//   return new Promise((resolve) => {
+//     setTimeout(() => {
+//       resolve();
+//     }, 200);
+//   });
+// }
 
 
 export default CardReader;

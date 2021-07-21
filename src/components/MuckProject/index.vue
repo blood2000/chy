@@ -845,9 +845,11 @@ export default {
       this.printList = this.filterSelect;
       this.successcouns = []; // 用于记录请求成功回调
       this.batchDialog = false; // 先删除之前的dom, 为了能重新请求数据
-      this.$nextTick(() => {
-        this.batchDialog = true; // 生成打印的html结构
-      });
+      setTimeout(() => {
+        this.$nextTick(() => {
+          this.batchDialog = true; // 生成打印的html结构
+        });
+      }, 10);
     },
     handlerSuccess(code, b) {
       if (code !== 200) return;

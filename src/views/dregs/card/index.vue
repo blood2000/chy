@@ -122,6 +122,15 @@ const com = [
     'isChild': false
   },
   {
+    'label': 'IC卡核对状态',
+    'prop': 'icStatus',
+    'isShow': true,
+    'sortNum': 0,
+    'width': '100',
+    'tooltip': true,
+    'isChild': false
+  },
+  {
     'label': '配载方式',
     'prop': 'stowageStatus',
     'isShow': false,
@@ -467,7 +476,7 @@ export default {
   },
 
   beforeDestroy() {
-    console.log(456);
+    this._close();
   },
 
 
@@ -494,6 +503,7 @@ export default {
           this.msgSuccess('连接成功');
           this.isConnect = true;
         }, () => {
+          this.msgWarning('未开启服务');
           this.isConnect = false;
         });
       }
@@ -503,7 +513,7 @@ export default {
     getCardInfo() {
       if (this.isConnect) {
         action.getCardInfo().then(res => {
-          console.log(res);
+          // console.log(res);
           if (res.code === '9000') {
             this.$set(this.queryParams, 'card16no', res.GetCardNo.data);
             this.getList();
@@ -520,7 +530,7 @@ export default {
 
     // 补卡
     handlerMakeUp() {
-      console.log(this.selectedData, '数据');
+      // console.log(this.selectedData, '数据');
       if (!this.isConnect) {
         this.msgWarning('未连接服务器');
         return;
@@ -659,10 +669,9 @@ export default {
         }
       });
       if (Object.keys(object).length > 1) {
-        // this.msgWarning('只能选择同批次的');
         if (this.multiple) {
           // this.multiple = false;
-          // this.msgWarning('只能选择同批次的进行写卡');
+          this.msgWarning('只能选择同批次的进行写卡');
         }
         this.multiple = false;
       } else {
@@ -690,6 +699,8 @@ export default {
       try {
         this.loading = true;
         const res = await action.issuingCard(userInfo, userMark);
+
+        // console.log(res);
 
         if (!res.success) {
           this.loading = false;
@@ -722,10 +733,12 @@ export default {
               // 执行到最后一步走这里
             } else {
               arr.push(false);
-              this.msgSuccess(res.msg);
+              this.msgError(res.msg);
             }
 
             if (arr.length === data.length) {
+              // console.log(arr, '写入结束');
+
               if (arr.every(e => e)) {
                 cardReplacement({
                   card16no: cardData.card16no,
