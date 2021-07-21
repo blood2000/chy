@@ -534,7 +534,8 @@ export default {
           { required: true, message: '密码不能为空', trigger: 'blur' },
           { validator: this.formValidate.passWord, trigger: 'blur' }
         ]
-      }
+      },
+      currentOrgCode: ''
     };
   },
   computed: {
@@ -563,10 +564,11 @@ export default {
   },
   methods: {
     /** 查询用户列表 */
-    getList(orgCode) {
+    getList() {
       this.loading = true;
-      if (orgCode) {
-        this.queryParams.orgCode = orgCode;
+      // 树点击时
+      if (this.currentOrgCode) {
+        this.queryParams.orgCode = this.currentOrgCode;
       } else if (this.companyCode) {
         this.queryParams.orgCode = this.companyCode;
       }
@@ -598,7 +600,8 @@ export default {
     // 节点单击事件
     handleNodeClick(data) {
       // this.queryParams.orgCode = data.code;
-      this.getList(data.code);
+      this.currentOrgCode = data.code;
+      this.getList();
     },
     // 用户状态修改
     handleStatusChange(row) {
@@ -635,7 +638,8 @@ export default {
         remark: undefined,
         isCreate: '2',
         postIds: [],
-        roleCodes: []
+        roleCodes: [],
+        currentOrgCode: ''
       };
       this.resetForm('form');
     },
@@ -649,6 +653,7 @@ export default {
       this.dateRange = [];
       this.resetForm('queryForm');
       this.queryParams.orgCode = undefined;
+      this.currentOrgCode = undefined;
       this.handleQuery();
     },
     // 多选框选中数据

@@ -241,29 +241,47 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="所属产品" prop="produceCode">
-          <el-select v-model="form.produceCode" clearable filterable placeholder="请选择所属产品" style="width: 100%">
-            <el-option
-              v-for="item in produceList"
-              :key="item.produceCode"
-              :label="item.cnName"
-              :value="item.produceCode"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="角色名称" prop="roleName">
-          <el-input v-model="form.roleName" placeholder="请输入角色名称" />
-        </el-form-item>
+          <el-row :gutter="24">
+              <el-col :span="12">
+                <el-form-item label="所属产品" prop="produceCode">
+                  <el-select v-model="form.produceCode" clearable filterable placeholder="请选择所属产品" style="width: 100%">
+                    <el-option
+                      v-for="item in produceList"
+                      :key="item.produceCode"
+                      :label="item.cnName"
+                      :value="item.produceCode"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="角色名称" prop="roleName">
+                  <el-input v-model="form.roleName" placeholder="请输入角色名称" />
+                </el-form-item>
         <!--<el-form-item label="权限字符" prop="roleKey">
           <el-input v-model="form.roleKey" placeholder="请输入权限字符" />
         </el-form-item>-->
+              </el-col>
+          </el-row>
         <el-row :gutter="20">
-          <el-col :span="12">
+            <el-col :span="12">
+                <el-form-item label="权限范围" prop="dataScope">
+                    <el-select v-model="form.dataScope" clearable filterable style="width: 100%">
+                        <el-option
+                                v-for="item in dataScopeOptions"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value"
+                        />
+                    </el-select>
+                </el-form-item>
+            </el-col>
+          <el-col :span="5">
             <el-form-item label="角色顺序" prop="roleSort">
-              <el-input-number v-model="form.roleSort" style="width: 90%;" controls-position="right" :min="0" />
+              <el-input-number v-model="form.roleSort" style="width: 100%;" controls-position="right" :min="0" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="7">
             <el-form-item label="状态">
               <el-radio-group v-model="form.status">
                 <el-radio
@@ -275,33 +293,27 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="权限范围" prop="dataScope">
-          <el-select v-model="form.dataScope" clearable filterable style="width: 100%">
-            <el-option
-              v-for="item in dataScopeOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item v-show="form.dataScope == 2" label="数据权限">
-          <el-checkbox v-model="deptExpand" @change="handleCheckedTreeExpand($event, 'dept')">展开/折叠</el-checkbox>
-          <el-checkbox v-model="deptNodeAll" @change="handleCheckedTreeNodeAll($event, 'dept')">全选/全不选</el-checkbox>
-          <el-checkbox v-model="form.deptCheckStrictly" @change="handleCheckedTreeConnect($event, 'dept')">父子联动</el-checkbox>
-          <el-tree
-            ref="dept"
-            class="tree-border"
-            :data="deptOptions"
-            show-checkbox
-            default-expand-all
-            node-key="code"
-            :check-strictly="!form.deptCheckStrictly"
-            empty-text="暂无数据"
-            :props="defaultProps"
-            :indent="0"
-          />
-        </el-form-item>
+          <el-row :gutter="20">
+              <el-col :span="12">
+                <el-form-item v-show="form.dataScope == 2" label="数据权限">
+                  <el-checkbox v-model="deptExpand" @change="handleCheckedTreeExpand($event, 'dept')">展开/折叠</el-checkbox>
+                  <el-checkbox v-model="deptNodeAll" @change="handleCheckedTreeNodeAll($event, 'dept')">全选/全不选</el-checkbox>
+                  <el-checkbox v-model="form.deptCheckStrictly" @change="handleCheckedTreeConnect($event, 'dept')">父子联动</el-checkbox>
+                  <el-tree
+                    ref="dept"
+                    class="tree-border"
+                    :data="deptOptions"
+                    show-checkbox
+                    default-expand-all
+                    node-key="code"
+                    :check-strictly="!form.deptCheckStrictly"
+                    empty-text="暂无数据"
+                    :props="defaultProps"
+                    :indent="0"
+                  />
+                </el-form-item>
+              </el-col>
+          </el-row>
         <el-form-item label="菜单权限" class="mb0">
           <el-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand($event, 'menu')">展开/折叠</el-checkbox>
           <el-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event, 'menu')">全选/全不选</el-checkbox>
@@ -542,7 +554,8 @@ export default {
         children: 'children',
         label: 'cnName'
       },
-      isSystemDisabled: false
+      isSystemDisabled: false,
+      currentOrgCode: ''
     };
   },
   computed: {
@@ -591,7 +604,9 @@ export default {
     /** 查询角色列表 */
     getList() {
       this.loading = true;
-      if (this.companyCode) {
+      if (this.currentOrgCode) {
+        this.queryParams.orgCode = this.currentOrgCode;
+      } else if (this.companyCode) {
         this.queryParams.orgCode = this.companyCode;
       }
       if (this.showShipment) {
@@ -700,7 +715,8 @@ export default {
         orgCodes: [],
         menuCheckStrictly: true,
         deptCheckStrictly: true,
-        remark: undefined
+        remark: undefined,
+        currentOrgCode: undefined
       };
       this.resetForm('form');
     },
@@ -714,6 +730,7 @@ export default {
       this.dateRange = [];
       this.resetForm('queryForm');
       this.queryParams.orgCode = undefined;
+      this.currentOrgCode = undefined;
       this.handleQuery();
     },
     // 多选框选中数据
@@ -887,7 +904,8 @@ export default {
     },
     // 部门树节点单击事件
     handleNodeClick(data) {
-      this.queryParams.orgCode = data.code;
+      // this.queryParams.orgCode = data.code;
+      this.currentOrgCode = data.code;
       this.getList();
     },
     filterDepNode(value, data) {
