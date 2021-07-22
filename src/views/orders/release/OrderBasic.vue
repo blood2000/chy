@@ -340,21 +340,24 @@ export default {
         if (info) {
           // isNeedLoadingCertificate 是否需要装货凭证 0：是 1：否
           // noNeedUnloadImg 是否不需要卸货图片  0，需要  1，不需要
-          // 修改司机实收金额 0:允许 1:不允许：editDriverActualAmount
-          // 单货源多商品 0：允许 1:不允许 singleSourceMultiCommodity
-          // 单货源多装货地 0:允许 1:不允许 singleSourceMultiLoadingLocations
-          // 单货源多卸货地 0:允许 1:不允许 singleSourceMultiUnloadingLocations
-          // 是否需要申请打款环节 0：需要 1:不需要 isNeedApplicationForPayment
+          // 修改司机实收金额 0:允许 1:不允许： editDriverActualAmount
+          // 单货源多商品 0：允许 1:不允许  singleSourceMultiCommodity
+          // 单货源多装货地 0:允许 1:不允许  singleSourceMultiLoadingLocations
+          // 单货源多卸货地 0:允许 1:不允许  singleSourceMultiUnloadingLocations
+          // 是否需要申请打款环节 0：需要 1:不需要  isNeedApplicationForPayment
           const {
             isNeedLoadingCertificate,
             noNeedUnloadImg,
             singleSourceMultiCommodity
           } = info;
 
+
           // console.log(isNeedLoadingCertificate, noNeedUnloadImg);
           this.formData.uploadLoadVoucher = isNeedLoadingCertificate === 0;
           this.formData.uploadUnloadVoucher = noNeedUnloadImg === 0;
           this.singleSourceMultiCommodity = singleSourceMultiCommodity === 0;
+
+          console.log(this.singleSourceMultiCommodity);
         }
       },
       immediate: true

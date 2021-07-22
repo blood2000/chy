@@ -133,11 +133,7 @@
               <el-form-item label="装卸类型" prop="tin7">
                 <el-radio-group v-model="formData.tin7" size="medium" @change="zhuangOrxiechange">
                   <el-radio
-                    v-for="(dict,index) in (isMultiGoods?[
-                      { dictValue: '1', dictLabel: '一装一卸' },
-                      { dictValue: '2', dictLabel: '多装一卸' },
-                      { dictValue: '3', dictLabel: '一装多卸' }
-                    ]:[{ dictValue: '1', dictLabel: '一装一卸' }])"
+                    v-for="(dict,index) in loadType_computed"
                     :key="dict.dictValue + '' + index"
                     :label="dict.dictValue"
                   >{{ dict.dictLabel }}</el-radio>
@@ -443,6 +439,56 @@ export default {
         bool = this.ztCbData.redisOrderInfoVo.isDregs === 1;
       }
       return bool;
+    },
+
+    // 装卸类型 7/22 添加 --chj
+    loadType_computed() {
+      // 修改司机实收金额 0:允许 1:不允许： editDriverActualAmount
+      // 单货源多商品 0：允许 1:不允许  singleSourceMultiCommodity
+
+      // 单货源多装货地 0:允许 1:不允许  singleSourceMultiLoadingLocations
+      // 单货源多卸货地 0:允许 1:不允许  singleSourceMultiUnloadingLocations
+      // 是否需要申请打款环节 0：需要 1:不需要  isNeedApplicationForPayment
+      let arr = [
+        { dictValue: '1', dictLabel: '一装一卸' },
+        { dictValue: '2', dictLabel: '多装一卸' },
+        { dictValue: '3', dictLabel: '一装多卸' }
+      ];
+
+      console.log(this.shipmentInfo);
+      if (this.shipmentInfo) {
+        const singleSourceMultiLoadingLocations = true || this.shipmentInfo.singleSourceMultiLoadingLocations === 0;
+        const singleSourceMultiUnloadingLocations = true || this.shipmentInfo.singleSourceMultiUnloadingLocations === 0;
+
+        // console.log(this.shipmentInfo);
+
+
+
+        // 允许
+        if (!singleSourceMultiLoadingLocations && !singleSourceMultiUnloadingLocations) {
+          arr = [
+            { dictValue: '1', dictLabel: '一装一卸' }
+            // { dictValue: '2', dictLabel: '多装一卸' },
+            // { dictValue: '3', dictLabel: '一装多卸' }
+            // { dictValue: '4', dictLabel: '多装多卸' },
+          ];
+        } else if (singleSourceMultiLoadingLocations && !singleSourceMultiUnloadingLocations) {
+          arr = [
+            { dictValue: '1', dictLabel: '一装一卸' },
+            { dictValue: '2', dictLabel: '多装一卸' }
+            // { dictValue: '3', dictLabel: '一装多卸' }
+          ];
+        } else if (!singleSourceMultiLoadingLocations && singleSourceMultiUnloadingLocations) {
+          arr = [
+            { dictValue: '1', dictLabel: '一装一卸' },
+            // { dictValue: '2', dictLabel: '多装一卸' }
+            { dictValue: '3', dictLabel: '一装多卸' }
+          ];
+        }
+      }
+
+
+      return arr;
     }
   },
   watch: {
@@ -1280,10 +1326,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.m_app-container {
-  // overflow-y: auto;
-  // height: calc(100vh - 145px);
-}
+
 .header {
   padding-bottom: 10px;
   position: relative;
