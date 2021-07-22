@@ -20,7 +20,6 @@
       >
         <el-col :span="1.5">
           <el-button
-
             :type=" isConnect?'danger':'primary'"
             icon="el-icon-turn-off"
             size="mini"
@@ -32,7 +31,7 @@
             type="primary"
             icon="el-icon-mouse"
             size="mini"
-            :disabled="!multiple"
+            :disabled="!isConnect || !multiple"
             @click="handlerMakeUp"
           >补卡</el-button>
         </el-col>
@@ -41,6 +40,7 @@
             type="primary"
             icon="el-icon-brush"
             size="mini"
+            :disabled="!isConnect"
             @click="handlerCardInit"
           >卡初始化</el-button>
         </el-col>
@@ -49,6 +49,7 @@
             type="primary"
             icon="el-icon-brush"
             size="mini"
+            :disabled="!isConnect"
             @click="handlerReadUserinfo"
           >读卡用户信息</el-button>
         </el-col>
@@ -57,6 +58,7 @@
             type="primary"
             icon="el-icon-document"
             size="mini"
+            :disabled="!isConnect"
             @click="handlerReadData"
           >读卡</el-button>
         </el-col>
@@ -435,7 +437,7 @@ const com = [
   }
 ];
 export default {
-  name: 'Card',
+  // name: 'Card',
   components: { QueryForm, AccountingTable, CarInfo },
 
   // beforeRouteLeave: (to, from, next) => {
@@ -533,9 +535,13 @@ export default {
       if (this.isConnect) {
         action.getCardInfo().then(res => {
           // console.log(res);
-          if (res.code === '9000') {
-            this.$set(this.queryParams, 'card16no', res.GetCardNo.data);
-            this.getList();
+          if (res.success) {
+            if (res.code === '9000') {
+              this.$set(this.queryParams, 'card16no', res.GetCardNo.data);
+              this.getList();
+            }
+          } else {
+            this.msgError('请将【数据IC卡】放至有效位置');
           }
         });
       } else {
@@ -556,60 +562,69 @@ export default {
       }
       // console.log(USERINFO);
       action.getCardInfo().then(res => {
-        // console.log(res);
-        if (res.code === '9000') {
-          const user = this.selectedData[0];
-          const cardData = {
-            card16no: user.card16no,
-            newCard16no: res.GetCardNo.data + '', // 获取当前卡的id
-            cardBatchNo: user.cardBatchNo
-          };
+        console.log(res);
 
-          // 用户数据
-          const userInfo = {
-            icType: 'r',
-            issuing_name: user.orderClient || '-', // orderClient	下单客户
-            issuing_pc: user.cardBatchNo || '-', // cardBatchNo	卡批次
-            issuing_telno: user.sipperPhone || '-', // sipperPhone	货主手机号
-            issuing_time: this.setTimestamp(user.loadingTime) || '-', // loadingTime	装货时间
-            project_id: user.projectId || '-', // projectId	项目Id
-            team_name: user.teamName || '-', // teamName	车队名称
-            team_telno: user.dispatchNumber || '-', // dispatchNumber	调度者手机号
-            user_name: user.driverName || '-', // driverName	司机名字
-            user_telno: user.driverPhone || '-' // driverPhone	司机电话
-          };
-
-          // 数据
-          const data = this.selectedData.map(e => {
-            return {
-              driverPhone: e.driverPhone || '-', // driverPhone	司机电话
-              fillTime: this.setTimestamp(e.receiveTime) || '-', // loadingTime	接单时间
-              licenseNumber: e.licenseNumber || '-', // '鄂ALF106',
-              orderId: e.mainOrderNumber || '-', // mainOrderNumber	货源编号
-              projectName: e.projectId || '-', // projectId	项目Id
-              serialNumber: e.shipmentMuckyardNo || '-', // shipmentMuckyardNo	渣土场编号
-              signTime: this.setTimestamp(e.loadingTime) || '-', // signTime	装货时间
-              waybillNo: e.waybillNo || '-' // waybillNo	运单号
+        if (res.success) {
+          if (res.code === '9000') {
+            const user = this.selectedData[0];
+            const cardData = {
+              card16no: user.card16no,
+              newCard16no: res.GetCardNo.data + '', // 获取当前卡的id
+              cardBatchNo: user.cardBatchNo
             };
-          });
 
-          // console.log(userMark, userInfo, versionMark, data, cardData);
+            // 用户数据
+            const userInfo = {
+              icType: 'r',
+              issuing_name: user.orderClient || '-', // orderClient	下单客户
+              issuing_pc: user.cardBatchNo || '-', // cardBatchNo	卡批次
+              issuing_telno: user.sipperPhone || '-', // sipperPhone	货主手机号
+              issuing_time: this.setTimestamp(user.loadingTime) || '-', // loadingTime	装货时间
+              project_id: user.projectId || '-', // projectId	项目Id
+              team_name: user.teamName || '-', // teamName	车队名称
+              team_telno: user.dispatchNumber || '-', // dispatchNumber	调度者手机号
+              user_name: user.driverName || '-', // driverName	司机名字
+              user_telno: user.driverPhone || '-' // driverPhone	司机电话
+            };
 
-          // 提示, 需要白卡
+            // 数据
+            const data = this.selectedData.map(e => {
+              return {
+                driverPhone: e.driverPhone || '-', // driverPhone	司机电话
+                fillTime: this.setTimestamp(e.receiveTime) || '-', // loadingTime	接单时间
+                licenseNumber: e.licenseNumber || '-', // '鄂ALF106',
+                orderId: e.mainOrderNumber || '-', // mainOrderNumber	货源编号
+                projectName: e.projectId || '-', // projectId	项目Id
+                serialNumber: e.shipmentMuckyardNo || '-', // shipmentMuckyardNo	渣土场编号
+                signTime: this.setTimestamp(e.loadingTime) || '-', // signTime	装货时间
+                waybillNo: e.waybillNo || '-' // waybillNo	运单号
+              };
+            });
 
-          this.$confirm('此操作将初始化本卡后,再写入数据, 是否继续?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            this.xexiaoCheck(userMark, userInfo, versionMark, data, cardData);
-          }).catch(() => {});
+            // console.log(userMark, userInfo, versionMark, data, cardData);
+
+            // 提示, 需要白卡
+
+            this.$confirm('此操作将初始化本卡后,再写入数据, 是否继续?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              this.xexiaoCheck(userMark, userInfo, versionMark, data, cardData);
+            }).catch(() => {});
+          }
+        } else {
+          this.msgError('请将【数据IC卡】放至有效位置');
         }
       });
     },
 
     // 初始卡功能
     handlerCardInit() {
+      if (!this.isConnect) {
+        this.msgWarning('未连接服务器');
+        return;
+      }
       // ??
       this.$confirm('此操作将格式化本卡, 恢复到出厂状态, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -641,7 +656,7 @@ export default {
             this.msgWarning(res.msg);
           }
         } else {
-          this.msgError('读取失败');
+          this.msgError('请将【数据IC卡】放至有效位置');
         }
       });
     },
@@ -662,7 +677,7 @@ export default {
             this.msgWarning(res.msg);
           }
         } else {
-          this.msgError('读取失败');
+          this.msgError('请将【数据IC卡】放至有效位置');
         }
       });
     },
@@ -724,7 +739,7 @@ export default {
 
         if (!res.success) {
           this.loading = false;
-          this.msgError('核销失败, 请不要移动IC卡!');
+          this.msgError('写卡失败, 请不要移动IC卡!');
           return;
         }
 
@@ -734,7 +749,7 @@ export default {
           return;
         }
       } catch (error) {
-        this.msgError('核销失败, 请不要移动IC卡!');
+        this.msgError('写卡失败, 请不要移动IC卡!');
         this.loading = false;
         return;
       }
@@ -748,12 +763,17 @@ export default {
         this['time' + index] = setTimeout(() => {
           action.writeData(fn.setData(meter, e)).then(res => {
             clearTimeout(this['time' + index]);
-            if (res.success && res.code === '9000') {
-              arr.push(true);
-              // 执行到最后一步走这里
+            if (res.success) {
+              if (res.code === '9000') {
+                arr.push(true);
+                // 执行到最后一步走这里
+              } else {
+                arr.push(false);
+                this.msgError(res.msg);
+              }
             } else {
               arr.push(false);
-              this.msgError(res.msg);
+              this.msgError('写卡失败, 请不要移动IC卡!');
             }
 
             if (arr.length === data.length) {

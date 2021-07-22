@@ -106,13 +106,13 @@ const CardReader = {
             resolve(e.data);
           } else {
             if (ret.code) {
-              resolve({
+              reject({
                 ...ret,
                 success: false,
                 msg: '读卡错误信息：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code)
               });
             } else {
-              resolve({
+              reject({
                 ...ret,
                 success: false,
                 code: '',
@@ -411,8 +411,10 @@ const CardReader = {
           ResetCpuCardNoGetCardNo
         };
       } catch (error) {
+        console.log(error);
         return {
-          ...error,
+          code: '',
+          ...CardReader.fn.catchError(error),
           success: false
         };
       }
