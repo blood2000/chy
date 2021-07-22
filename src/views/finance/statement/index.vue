@@ -260,7 +260,7 @@ export default {
     },
     // 导出服务费明细
     handleExportService() {
-      this.download('/transportation/invoiceApply/export', { applyCode: this.form.code, type: 2 }, `服务费明细`);
+      this.download('/transportation/invoiceApply/export2', { applyCode: this.form.code, type: 2 }, `服务费明细`);
     },
     // 查看发票里的运单
     handleClick(row) {
