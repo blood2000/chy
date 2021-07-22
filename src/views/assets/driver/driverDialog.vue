@@ -1128,6 +1128,9 @@ export default {
           }
           // 车牌颜色 vehicleLicenseColorCode
           // 车辆能源类型 vehicleEnergyType
+          if (data.energy_type) {
+            console.log('能源类型：' + data.energy_type);
+          }
           // 车身颜色 vehicleColorCode
           break;
         default:
