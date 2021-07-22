@@ -873,6 +873,9 @@ export default {
                 };
                 pathName = obj1['p_' + param];
                 paramVal = undefined;
+                if (pathName === 'AdjustDregs') {
+                  paramVal = '4';
+                }
               } else if (url === 'Askfor') {
                 pathName = 'AskforDregs'; // 待申请发票 对应 索取发票
               } else if (url === 'List') {

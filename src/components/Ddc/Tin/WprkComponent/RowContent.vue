@@ -1,25 +1,28 @@
 <template>
   <div class="middle-row-content-item pr" :class="mclassName">
     <div v-once class="middle-row-icon pa" :class="layout.paIcon" />
-    <div v-once class="middle-row-title"><span class="marginright5" :class="layout.color">●</span>{{ layout.title }} <span v-if="layout.z30d" class="z30d">最近30天</span></div>
+
+    <div class="middle-row-tcontent">
+      <div v-once class="middle-row-title"><span class="marginright5" :class="layout.color">●</span>{{ layout.title }} <span v-if="layout.z30d" class="z30d">最近30天</span></div>
 
 
-    <div class="middle-row-btn">
-      <div v-for="(item, index) in datas" :key="index">
-        <div class="middle-span" :class="!item.mt_show?'mt_show': null">{{ item.mt_show || '...' }}</div>
-        <div class="g-text">
-          <!-- {{ item.value }} -->
-          <count-to :end-val="item.value -0" :decimal-places="item.unit==='万元' || item.unit==='元'? 2:0" />
-          <span>{{ item.unit }}</span></div>
+      <div class="middle-row-btn">
+        <div v-for="(item, index) in datas" :key="index">
+          <div class="middle-span" :class="!item.mt_show?'mt_show': null">{{ item.mt_show || '...' }}</div>
+          <div class="g-text">
+            <!-- {{ item.value }} -->
+            <count-to :end-val="item.value -0" :decimal-places="item.unit==='万元' || item.unit==='元'? 2:0" />
+            <span>{{ item.unit }}</span></div>
+        </div>
       </div>
-    </div>
 
-    <div class="middle-row-btn">
-      <div v-if="layout.primary1">
-        <el-button type="primary" size="mini" @click="$emit('click1')">{{ layout.primary1 }}</el-button>
-      </div>
-      <div v-if="layout.primary2">
-        <el-button type="primary" plain class="bgf" size="mini" @click="$emit('click2')">{{ layout.primary2 }}</el-button>
+      <div class="middle-row-btn">
+        <div v-if="layout.primary1">
+          <el-button type="primary" size="mini" @click="$emit('click1')">{{ layout.primary1 }}</el-button>
+        </div>
+        <div v-if="layout.primary2">
+          <el-button type="primary" plain class="bgf" size="mini" @click="$emit('click2')">{{ layout.primary2 }}</el-button>
+        </div>
       </div>
     </div>
     <!-- <div class="middle-row-icon icon-zhanghu pa" />
@@ -105,6 +108,12 @@ export default {
         border-radius: 4px 20px 4px 4px;
         overflow: hidden;
         padding: 6px 30px;
+
+        .middle-row-tcontent{
+          display: flex;
+          flex-direction: column;
+          justify-content: space-around;
+        }
 
         .middle-row-icon{
           top: 0;

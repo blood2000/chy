@@ -113,13 +113,23 @@ export default {
     }
   },
 
+  watch: {
+    '$route.query.adjust': {
+      handler(va) {
+        console.log(va === '4');
+        if (va && va === '4' && !this.myData) {
+          this.getList();
+        }
+      },
+      immediate: true
+    }
+  },
+
   created() {
     const { isShipment } = getUserInfo() || {};
     this.isShipment = isShipment;
 
     this.tableColumnsInit();
-
-    // this.getList();
   },
 
   methods: {
