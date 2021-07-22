@@ -103,7 +103,7 @@ import AccountingTable from './components/AccountingTable';
 import CarInfo from './components/CarInfo';
 import { cardHistoryList, cardReplacement } from '@/api/dregs/card';
 
-import CardReader, { USERINFO, versionMark, userMark } from '@/libs/ICCard/CardReader';
+import CardReader, { versionMark, userMark } from '@/libs/ICCard/CardReader';
 const { action, fn } = CardReader;
 
 
@@ -274,14 +274,7 @@ const com = [
     'tooltip': true,
     'isChild': false
   },
-  {
-    'prop': 'icStatus',
-    'isShow': false,
-    'tooltip': false,
-    'sortNum': 2,
-    'label': 'IC卡核对状态',
-    'width': 120
-  },
+
   {
     'label': '渣土场名称',
     'prop': 'ztcName',
@@ -301,8 +294,35 @@ const com = [
     'isChild': false
   },
   {
+    'label': '车队管理者',
+    'prop': 'teamLeaderName',
+    'isShow': true,
+    'sortNum': 3,
+    'width': '120',
+    'tooltip': true,
+    'isChild': false
+  },
+  {
+    'label': '司机名称',
+    'prop': 'driverName',
+    'isShow': true,
+    'sortNum': 3,
+    'width': '120',
+    'tooltip': true,
+    'isChild': false
+  },
+  {
     'label': '车牌号',
     'prop': 'licenseNumber',
+    'isShow': true,
+    'sortNum': 3,
+    'width': '120',
+    'tooltip': true,
+    'isChild': false
+  },
+  {
+    'label': '司机电话',
+    'prop': 'driverPhone',
     'isShow': true,
     'sortNum': 3,
     'width': '120',
@@ -318,15 +338,7 @@ const com = [
     'tooltip': true,
     'isChild': false
   },
-  {
-    'label': '车队管理者',
-    'prop': 'teamLeaderName',
-    'isShow': true,
-    'sortNum': 3,
-    'width': '120',
-    'tooltip': true,
-    'isChild': false
-  },
+
   {
     'prop': 'loadWeight',
     'isShow': false,
@@ -425,6 +437,13 @@ const com = [
 export default {
   name: 'Card',
   components: { QueryForm, AccountingTable, CarInfo },
+
+  // beforeRouteLeave: (to, from, next) => {
+  //   CardReader.socket.onclose = function() {}; // disable onclose handler first
+  //   CardReader.socket.close();
+  //   CardReader.socket = null;
+  //   next();
+  // },
 
   data() {
     return {
@@ -686,9 +705,10 @@ export default {
         CardReader.socket.onclose = function() {}; // disable onclose handler first
         CardReader.socket.close();
         CardReader.socket = null;
-        this.userInfo = {};
-        this.list = [];
-        this.IClist = [];
+        this.isConnect = false;
+        // this.userInfo = {};
+        // this.list = [];
+        // this.IClist = [];
       }
     },
 

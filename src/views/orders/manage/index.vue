@@ -254,7 +254,7 @@
         </template>
 
         <template #scanCodeVoucher="{row}">
-          <span :class="row.scanCodeVoucher!==1?'g-color-error':'g-color-success'">{{ selectDictLabel(scanCodeVoucherOptions, row.scanCodeVoucher) }}</span>
+          <span :class="row.uploadLoadVoucher!==1?'g-color-error':'g-color-success'">{{ selectDictLabel(scanCodeVoucherOptions, row.uploadLoadVoucher) }}</span>
         </template>
 
         <template #publishMode="{row}">
@@ -359,7 +359,7 @@
                   size="mini"
                   type="text"
                   @click="handleIsImport(row)"
-                >{{ row.scanCodeVoucher+''!=='1'?'开启上传凭证':'关闭上传凭证' }}</el-button>
+                >{{ row.uploadLoadVoucher+''!=='1'?'开启上传凭证':'关闭上传凭证' }}</el-button>
               </el-dropdown-item>
             </TableDropdown>
           </template>
@@ -1143,11 +1143,15 @@ export default {
     },
     // 是否开启上传凭证
     handleIsImport(row) {
+      console.log(row);
       var scanCodeVoucher = 0;
-      if (row.scanCodeVoucher !== 1) {
+      if (row.uploadLoadVoucher !== 1) {
         scanCodeVoucher = 1;
       }
-      isImport({ orderCode: row.orderCode, scanCodeVoucher: scanCodeVoucher }).then(() => { this.getList(); });
+      isImport({ orderCode: row.orderCode, scanCodeVoucher: scanCodeVoucher }).then((res) => {
+        this.msgSuccess(res.msg);
+        this.getList();
+      });
     },
     /** 关闭 */
     submitRes(res) {

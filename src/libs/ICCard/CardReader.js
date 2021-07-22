@@ -105,7 +105,6 @@ const CardReader = {
             // console.log('读卡成功信息' + CardReader._cmdIndex + '：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message + ret.code : ret.code));
             resolve(e.data);
           } else {
-            // console.log('错误信息', ret);
             if (ret.code) {
               resolve({
                 ...ret,
