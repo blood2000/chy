@@ -208,11 +208,15 @@ export default {
     /** 查询常用地址列表 */
     getList() {
       this.loading = true;
-      if (this.companyCode) {
+      // 修改：只需要传货主编码，无货主编码时，后端自主判断
+      if (this.shipmentCode) {
+        this.queryParams.shipmentCode = this.shipmentCode;
+      }
+      /** if (this.companyCode) {
         this.queryParams.companyCode = this.companyCode;
       } else if (this.shipmentCode) {
         this.queryParams.shipmentCode = this.shipmentCode;
-      }
+      } **/
       listAddress(this.queryParams).then(response => {
         this.addressList = response.rows;
         this.total = response.total;
