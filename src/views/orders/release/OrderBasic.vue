@@ -274,6 +274,12 @@ export default {
 
         remark: ''
       },
+
+      // s= 7/22 追加判断字段 -chj
+      singleSourceMultiCommodity: false,
+
+      // e=
+
       rules: {
         tin3: [{ required: false, message: '选择所属项目', trigger: 'change' }],
         tin2: [{ required: true, message: '选择货物大类', trigger: 'change' }],
@@ -313,28 +319,42 @@ export default {
   computed: {
     // 多商品计算(根据大类中的isCheckbox判断) true=>多 false=>单
     isMultiGoods() {
-      const tin2Obj = this._zhaovalue(this.tin2Option, this.formData.tin2);
-      let bool = false;
-      if (tin2Obj && tin2Obj.isCheckbox) {
-        bool = tin2Obj.isCheckbox === '1';
-      }
+      // 7/22 之前 -chj
+      // const tin2Obj = this._zhaovalue(this.tin2Option, this.formData.tin2);
+      // let bool = false;
+      // if (tin2Obj && tin2Obj.isCheckbox) {
+      //   bool = tin2Obj.isCheckbox === '1';
+      // }
 
-      return bool;
+      // return bool;
+
+      // 7/22 修改 -chj
+      return this.singleSourceMultiCommodity;
     }
   },
   watch: {
     // 获取当前用户的信息
     shipmentInfo: {
       handler(info) {
-        // console.log(info);
+        console.log(info);
         if (info) {
           // isNeedLoadingCertificate 是否需要装货凭证 0：是 1：否
           // noNeedUnloadImg 是否不需要卸货图片  0，需要  1，不需要
-          const { isNeedLoadingCertificate, noNeedUnloadImg } = info;
+          // 修改司机实收金额 0:允许 1:不允许：editDriverActualAmount
+          // 单货源多商品 0：允许 1:不允许 singleSourceMultiCommodity
+          // 单货源多装货地 0:允许 1:不允许 singleSourceMultiLoadingLocations
+          // 单货源多卸货地 0:允许 1:不允许 singleSourceMultiUnloadingLocations
+          // 是否需要申请打款环节 0：需要 1:不需要 isNeedApplicationForPayment
+          const {
+            isNeedLoadingCertificate,
+            noNeedUnloadImg,
+            singleSourceMultiCommodity
+          } = info;
 
           // console.log(isNeedLoadingCertificate, noNeedUnloadImg);
           this.formData.uploadLoadVoucher = isNeedLoadingCertificate === 0;
           this.formData.uploadUnloadVoucher = noNeedUnloadImg === 0;
+          this.singleSourceMultiCommodity = singleSourceMultiCommodity === 0;
         }
       },
       immediate: true
@@ -545,12 +565,12 @@ export default {
       this.formData.tin3 = tin3item.dictValue;
 
       if (this.isMultiGoods) {
-        this.formData.tin2_1 = tin3item.commoditySubclassCodes.split(',');
+        this.formData.tin2_1 = tin3item.commoditySubclassCodes ? tin3item.commoditySubclassCodes.split(',') : [];
 
         this.formData.tin2_2 = '';
       } else {
         this.formData.tin2_1 = [];
-        this.formData.tin2_2 = tin3item.commoditySubclassCodes;
+        this.formData.tin2_2 = tin3item.commoditySubclassCodes || '';
       }
     },
 
