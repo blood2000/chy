@@ -11,7 +11,7 @@
         />
       </el-form-item>
 
-      <el-form-item class="fr">
+      <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
 
@@ -51,6 +51,7 @@
         ref="refactorTable"
         :loading="loading"
         :data="list_listInfo"
+        height="400px"
         :table-columns-config="[
           {
             prop: 'name',

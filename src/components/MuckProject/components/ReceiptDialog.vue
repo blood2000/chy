@@ -35,7 +35,8 @@
 
             <template #amount="{row}">
               <span class="g-color-require">
-                <count-to :end-val="row.amount - 0" :decimal-places="2" :duration="0" />
+                <!-- <count-to :end-val="row.amount - 0" :decimal-places="2" :duration="0" /> -->
+                {{ row.amount - 0 }}
                 元
               </span>
             </template>
@@ -90,11 +91,11 @@
 </template>
 
 <script>
-import CountTo from '@/components/CountTo';
+// import CountTo from '@/components/CountTo';
 import { receiptInfo } from '@/api/settlement/adjustDregs';
 export default {
   name: 'ReceiptDialog',
-  components: { CountTo },
+  // components: { CountTo },
   props: {
     receiptData: {
       type: Object,
@@ -182,6 +183,7 @@ export default {
         });
       } catch (error) {
         console.log(error);
+        this.$emit('onerror', 500);
         this.loading = false;
       }
     }

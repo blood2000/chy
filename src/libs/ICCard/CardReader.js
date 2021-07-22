@@ -105,15 +105,14 @@ const CardReader = {
             // console.log('读卡成功信息' + CardReader._cmdIndex + '：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message + ret.code : ret.code));
             resolve(e.data);
           } else {
-            // console.log('错误信息', ret);
             if (ret.code) {
-              reject({
+              resolve({
                 ...ret,
                 success: false,
                 msg: '读卡错误信息：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code)
               });
             } else {
-              reject({
+              resolve({
                 ...ret,
                 success: false,
                 code: '',
@@ -1030,6 +1029,7 @@ CardReader.action['writeData'] = async function(data) {
   const index = [3, 0];
   let ret;
   ret = await this.getCard();
+  // console.log(ret, '获取卡片');
   if (!ret.success) { // 获取卡片失败
     return ret;
   }
@@ -1106,6 +1106,7 @@ CardReader.action['writeData'] = async function(data) {
       // console.log(cmd);
       return cmd;
     })());
+
     // console.log('创建二进制文件', ret);
     ret = CardReader.fn.getResult(ret);
     if (ret.code !== '9000') {
@@ -1124,6 +1125,7 @@ CardReader.action['writeData'] = async function(data) {
     })());
     // console.log('写二进制文件', ret);
     ret = CardReader.fn.getResult(ret);
+
     if (ret.code !== '9000') {
       await CardReader.action.error();
       // console.error('写卡失败：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code));
@@ -1211,7 +1213,6 @@ CardReader.action['writeData'] = async function(data) {
       data: {
         data: odata,
         index: ret.data
-
       }
     };
   } catch (error) {
@@ -1235,14 +1236,22 @@ CardReader.action['createFolder'] = async function(index) {
   // 创建应用目录
   ret = await CardReader.fn.apdu((function() {
     const cmd = ['80', 'E0', '3F', CardReader.fn.numToHex16(index), '0D', '38', '1900', 'F0', 'F0', 96, 'FFFF', CardReader.fn.strToHex16('ADF' + (index < 10 ? '0' + index : index))].join('');
-    console.log(cmd);
+    // console.log(cmd);
     return cmd;
   })());
-  console.log('创建数据目录', ret);
+  // console.log('创建数据目录', ret);
   // 取消选择卡片
   await CardReader.fn.exec(CardReader.command.deselect);
   await CardReader.fn.exec(CardReader.command.beep);
 };
+
+// function abcd() {
+//   return new Promise((resolve) => {
+//     setTimeout(() => {
+//       resolve();
+//     }, 200);
+//   });
+// }
 
 
 export default CardReader;
