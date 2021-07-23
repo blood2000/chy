@@ -25,6 +25,15 @@ export function getShipment(id) {
   });
 }
 
+// 查询货主详细
+export function getShipmentByCode(query) {
+  return request({
+    url: '/assets/shipment/getByCode',
+    method: 'get',
+    params: query
+  });
+}
+
 // 新增货主
 export function addShipment(data) {
   return request({

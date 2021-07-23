@@ -47,7 +47,7 @@
           <el-radio-group
             v-else
             v-model="formData.tin2"
-
+            :disabled="false"
             size="medium"
             @change="handletin2(false)"
           >
@@ -66,7 +66,7 @@
 
         <template v-if="formData.tin2">
           <el-form-item v-if="isMultiGoods" label="货物小类" prop="tin2_1">
-            <el-checkbox-group v-model="formData.tin2_1" size="medium">
+            <el-checkbox-group v-model="formData.tin2_1" size="medium" :disabled="false">
               <template v-for="(dict,index) in tin2_Option">
                 <el-checkbox
                   v-if="dict.status === '0'"
@@ -78,7 +78,7 @@
             </el-checkbox-group>
           </el-form-item>
           <el-form-item v-else label="货物小类" prop="tin2_2">
-            <el-radio-group v-model="formData.tin2_2" size="medium">
+            <el-radio-group v-model="formData.tin2_2" size="medium" :disabled="false">
               <template v-for="(dict,index) in tin2_Option">
                 <el-radio
                   v-if="dict.status === '0'"
@@ -247,7 +247,8 @@ export default {
     goodsBigTypes: {
       type: Array,
       default: null
-    }
+    },
+    isT: [Boolean]
   },
   data() {
     return {
@@ -336,7 +337,7 @@ export default {
     // 获取当前用户的信息
     shipmentInfo: {
       handler(info) {
-        console.log(info);
+        // console.log(info);
         if (info) {
           // isNeedLoadingCertificate 是否需要装货凭证 0：是 1：否
           // noNeedUnloadImg 是否不需要卸货图片  0，需要  1，不需要
@@ -357,7 +358,7 @@ export default {
           this.formData.uploadUnloadVoucher = noNeedUnloadImg === 0;
           this.singleSourceMultiCommodity = singleSourceMultiCommodity === 0;
 
-          console.log(this.singleSourceMultiCommodity);
+          // console.log(this.singleSourceMultiCommodity, '3333');
         }
       },
       immediate: true

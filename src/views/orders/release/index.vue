@@ -116,6 +116,7 @@
                 :myisdisabled="myisdisabled"
                 :shipment-info="shipmentInfo"
                 :goods-big-types="goodsBigTypes"
+                :is-t="isT"
                 @goods="handlerGoos"
               >
 
@@ -136,6 +137,7 @@
                     v-for="(dict,index) in loadType_computed"
                     :key="dict.dictValue + '' + index"
                     :label="dict.dictValue"
+                    :disabled="dict.disabled"
                   >{{ dict.dictLabel }}</el-radio>
                 </el-radio-group>
               </el-form-item>
@@ -331,7 +333,7 @@ import OpenDialog from './OpenDialog';
 import WaybillInfo from './WaybillInfo';
 
 import { getUserInfo } from '@/utils/auth';
-import { listShipment } from '@/api/assets/shipment.js';
+import { listShipment, getShipmentByCode } from '@/api/assets/shipment.js';
 import { orderPubilsh, getOrderByCode, update, estimateCost } from '@/api/order/release';
 import { getProvinceList } from '@/api/system/area';
 
@@ -366,7 +368,7 @@ export default {
         pageSize: 10
       },
       dataOver: false, // 是否请求完了
-      isT: false, //
+      isT: false, // false 是编辑 true 是详情
       orgCode: '', // 接口需要
       isAdmin: false, // 默认是平台
       isShipment: false,
@@ -450,15 +452,15 @@ export default {
       // 单货源多卸货地 0:允许 1:不允许  singleSourceMultiUnloadingLocations
       // 是否需要申请打款环节 0：需要 1:不需要  isNeedApplicationForPayment
       let arr = [
-        { dictValue: '1', dictLabel: '一装一卸' },
-        { dictValue: '2', dictLabel: '多装一卸' },
-        { dictValue: '3', dictLabel: '一装多卸' }
+        { dictValue: '1', dictLabel: '一装一卸', disabled: false },
+        { dictValue: '2', dictLabel: '多装一卸', disabled: false },
+        { dictValue: '3', dictLabel: '一装多卸', disabled: false }
       ];
 
-      console.log(this.shipmentInfo);
+      // console.log(this.shipmentInfo);
       if (this.shipmentInfo) {
-        const singleSourceMultiLoadingLocations = true || this.shipmentInfo.singleSourceMultiLoadingLocations === 0;
-        const singleSourceMultiUnloadingLocations = true || this.shipmentInfo.singleSourceMultiUnloadingLocations === 0;
+        const singleSourceMultiLoadingLocations = this.shipmentInfo.singleSourceMultiLoadingLocations === 0;
+        const singleSourceMultiUnloadingLocations = this.shipmentInfo.singleSourceMultiUnloadingLocations === 0;
 
         // console.log(this.shipmentInfo);
 
@@ -467,22 +469,22 @@ export default {
         // 允许
         if (!singleSourceMultiLoadingLocations && !singleSourceMultiUnloadingLocations) {
           arr = [
-            { dictValue: '1', dictLabel: '一装一卸' }
-            // { dictValue: '2', dictLabel: '多装一卸' },
-            // { dictValue: '3', dictLabel: '一装多卸' }
+            { dictValue: '1', dictLabel: '一装一卸', disabled: false },
+            { dictValue: '2', dictLabel: '多装一卸', disabled: true },
+            { dictValue: '3', dictLabel: '一装多卸', disabled: true }
             // { dictValue: '4', dictLabel: '多装多卸' },
           ];
         } else if (singleSourceMultiLoadingLocations && !singleSourceMultiUnloadingLocations) {
           arr = [
-            { dictValue: '1', dictLabel: '一装一卸' },
-            { dictValue: '2', dictLabel: '多装一卸' }
-            // { dictValue: '3', dictLabel: '一装多卸' }
+            { dictValue: '1', dictLabel: '一装一卸', disabled: false },
+            { dictValue: '2', dictLabel: '多装一卸', disabled: false },
+            { dictValue: '3', dictLabel: '一装多卸', disabled: true }
           ];
         } else if (!singleSourceMultiLoadingLocations && singleSourceMultiUnloadingLocations) {
           arr = [
-            { dictValue: '1', dictLabel: '一装一卸' },
-            // { dictValue: '2', dictLabel: '多装一卸' }
-            { dictValue: '3', dictLabel: '一装多卸' }
+            { dictValue: '1', dictLabel: '一装一卸', disabled: false },
+            { dictValue: '2', dictLabel: '多装一卸', disabled: true },
+            { dictValue: '3', dictLabel: '一装多卸', disabled: false }
           ];
         }
       }
@@ -510,6 +512,8 @@ export default {
         } else if (value === '3') {
           this.isClone = true;
         }
+
+        // console.log(this.isT);
       },
       immediate: true
     }
@@ -530,7 +534,8 @@ export default {
 
       if (isShipment && shipment.info) {
         // console.log(shipment.info, '货主身份---');
-        this.shipmentInfo = shipment.info;
+        // 通过id 获取 7/23 --chj
+        this.getShipmentInfo(shipment.info.code);
         this.formData.tin1 = shipment.info.code;
       }
       if (user.orgCode) {
@@ -553,6 +558,14 @@ export default {
   },
 
   methods: {
+    // 通过货主的id获取详情 7/23 --chj
+    getShipmentInfo(code) {
+      return getShipmentByCode({ code }).then(res => {
+        this.shipmentInfo = res.data;
+      });
+    },
+
+
     // 触发远程搜索
     remoteMethod(query) {
       if (query !== '') {
@@ -591,7 +604,8 @@ export default {
       this.shipmentList.forEach(e => {
         if (e.code === value) {
           this.orgCode = e.orgCode || '';
-          this.shipmentInfo = e;
+          // this.shipmentInfo = e;
+          this.getShipmentInfo(e.code);
         }
       });
     },
@@ -808,7 +822,7 @@ export default {
       this.goodsBigTypeName = this.basicInfor.orderGoodsList[0].goodsBigTypeName;
 
 
-      console.log(this.basicInfor, '-----------------------');
+      // console.log(this.basicInfor, '-----------------------');
 
 
       const {
@@ -996,9 +1010,11 @@ export default {
 
         this.ztCbData = data;
 
-        console.log(data);
+        // console.log(data, '99999');
 
         const { redisOrderInfoVo, redisOrderClassGoodsVoList, redisOrderSpecifiedVoList, redisOrderFreightInfoVoList, redisOrderGoodsVoList, redisAddressList } = data;
+
+        await this.getShipmentInfo(redisOrderInfoVo.pubilshCode);
 
         // 5/18s=特殊处理
         const redisOrderGoodsVoListRest = redisOrderGoodsVoList.map(e => {
@@ -1101,7 +1117,6 @@ export default {
       };
 
       const res = await estimateCost(qData);
-      console.log(res, '45646');
       if (res.code === 501) {
         this.msgError(res.msg);
         return;
