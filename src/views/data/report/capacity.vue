@@ -163,6 +163,9 @@ export default {
     };
   },
   mounted() {
+    this.timeParams.beginTime = this.parseTime(new Date(), '{y}-{m}-{d}');
+    this.timeParams.endTime = this.parseTime(new Date(), '{y}-{m}-{d}');
+    this.receiveTime = [this.timeParams.beginTime, this.timeParams.endTime];
     this.getList();
     this.getCapacityCount();
     this.getWaybillCount();

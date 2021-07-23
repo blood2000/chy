@@ -3,6 +3,16 @@
   <div>
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="80px">
+        <el-form-item label="收支类型" prop="paidFeeType">
+          <el-select v-model="queryParams.paidFeeType" placeholder="请选择收支类型" clearable filterable size="small">
+            <el-option
+              v-for="dict in paidFeeTypeOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="交易类型" prop="paidItem">
           <el-select v-model="queryParams.paidItem" placeholder="请选择交易类型" clearable filterable size="small">
             <el-option
@@ -130,6 +140,11 @@ export default {
       total: 0,
       // 表格数据
       dataList: [],
+      // 收支类型字典
+      paidFeeTypeOptions: [
+        { dictLabel: '收入', dictValue: 0 },
+        { dictLabel: '支出', dictValue: 1 }
+      ],
       // 交易类型字典
       consumeOptions: [
         { dictLabel: '充值', dictValue: 0 },
@@ -144,6 +159,7 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
+        paidFeeType: undefined,
         paidItem: undefined,
         updateTimeBegin: undefined,
         updateTimeEnd: undefined,
