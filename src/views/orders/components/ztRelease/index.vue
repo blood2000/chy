@@ -126,7 +126,8 @@ import MapDialog from './MapDialog.vue';
 
 import { getUserInfo } from '@/utils/auth';
 
-import { ztPublishOrder } from '@/api/order/release'; // 发布渣土请求
+import { ztPublishOrder, ztUpdateOrder } from '@/api/order/release'; // 发布渣土请求
+
 export default {
   components: { ProjectIndex, GroupIndex, MapDialog },
 
@@ -138,7 +139,8 @@ export default {
     ztshipmentinfo: {
       type: Object,
       default: null
-    }
+    },
+    isT: [Boolean]
   },
 
   data() {
@@ -153,7 +155,7 @@ export default {
         'geofenceToggle': false, // 电子围栏是否开启 1 是 0 否		false
         'remark': '', // 备注		false
         'geofenceRadius': 0, // 电子围栏范围		false
-        'publishMode': 0, // 发布方式 0 货源大厅不可见(只能通过货单号或备注搜索) 1 货源大厅可见 默认写死
+        'publishMode': 1, // 发布方式 0 货源大厅不可见(只能通过货单号或备注搜索) 1 货源大厅可见 默认写死可见
 
         // 选填
         'branchCode': undefined, //
@@ -208,7 +210,9 @@ export default {
     },
 
     isEdit() {
-      return !!this.cbData;
+      console.log(this.isT);
+      return this.isT;
+      // return !!this.cbData;
     }
   },
 

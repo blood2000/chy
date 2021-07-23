@@ -310,7 +310,7 @@
               @click="handleInfo(row)"
             >详情</el-button>
             <el-button
-              v-if="row.isDregs!==1 && row.status+''==='0'"
+              v-if="row.status+''==='0'"
               v-hasPermi="['transportation:order:modify']"
               size="mini"
               type="text"
