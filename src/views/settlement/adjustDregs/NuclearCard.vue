@@ -3,7 +3,7 @@
     v-loading
     :title="`发卡人: ${ userInfo.issuing_name || ''} 【承运司机: ${userInfo.user_name ||''}】【调度组: ${userInfo.team_name ||''}】 【发卡时间: ${ parseTime(userInfo.issuing_time - 0) || ''}】 【卡批次号: ${ userInfo.issuing_pc || ''}】 ` "
     :visible="visible"
-    width="80%"
+    width="90%"
     append-to-body
     :close-on-click-modal="false"
     @close="handlerClose"
@@ -20,6 +20,7 @@
     <RefactorTable
       :loading="loading"
       :data="list"
+      height="600px"
       :table-columns-config="[
         {
           prop: 'driverName',
@@ -48,17 +49,19 @@
         {
           prop: 'fillTimeDate',
           isShow: true,
+          tooltip: true,
           label: '入场时间'
         },
         {
           prop: 'signTimeDate',
           isShow: true,
-          tooltip: false,
+          tooltip: true,
           label: '卸货时间'
         },
         {
           prop: 'orderId',
           isShow: true,
+          tooltip: true,
           label: '货源单号'
         },
         {

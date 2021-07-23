@@ -21,17 +21,17 @@
 
 
     </el-row>
-    <el-table v-loading="loading" highlight-current-row :data="adjustlist" border>
+    <el-table v-loading="loading" highlight-current-row :data="adjustlist" border height="500px">
 
       <el-table-column width="160" label="运输单号" show-overflow-tooltip align="center" prop="waybillNo" />
 
-      <el-table-column width="120" label="调度组名称" align="center" prop="teamName" />
+      <el-table-column width="120" label="调度组名称" show-overflow-tooltip align="center" prop="teamName" />
 
-      <el-table-column width="120" label="司机姓名" align="center" prop="driverName" />
-      <el-table-column width="120" label="司机电话" align="center" prop="driverPhone" />
-      <el-table-column width="120" label="车牌号" align="center" prop="licenseNumber" />
+      <el-table-column width="120" label="司机姓名" show-overflow-tooltip align="center" prop="driverName" />
+      <el-table-column width="120" label="司机电话" show-overflow-tooltip align="center" prop="driverPhone" />
+      <el-table-column width="120" label="车牌号" show-overflow-tooltip align="center" prop="licenseNumber" />
 
-      <el-table-column width="120" label="货主备注" align="center" prop="shipperRemark" />
+      <el-table-column width="120" label="货主备注" show-overflow-tooltip align="center" prop="shipperRemark" />
 
       <el-table-column width="80" label="装货数量" align="left" prop="loadWeight">
         <template slot-scope="{row}">
