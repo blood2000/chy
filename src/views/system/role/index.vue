@@ -488,6 +488,7 @@ export default {
       ],
       // 菜单列表
       menuOptions: [],
+      menuAllKeys: [],
       // 部门列表
       deptOptions: [],
       // 产品列表
@@ -628,6 +629,7 @@ export default {
       menuTreeselect(data, this.userCode).then(response => {
         this.menuOptions = response.data;
         this.defaultExpandedKeys = response.expandKeys;
+        this.menuAllKeys = response.allKeys;
       });
     },
     /** 查询部门树结构 */
@@ -659,6 +661,7 @@ export default {
       return roleMenuTreeselect2(roleId, data).then(response => {
         this.menuOptions = response.menus;
         this.defaultExpandedKeys = response.expandKeys;
+        this.menuAllKeys = response.allKeys;
         return response;
       });
     },
@@ -766,7 +769,8 @@ export default {
     // 树权限（全选/全不选）
     handleCheckedTreeNodeAll(value, type) {
       if (type === 'menu') {
-        this.$refs.menu.setCheckedNodes(value ? this.menuOptions : []);
+        this.$refs.menu.setCheckedKeys(value ? this.menuAllKeys : []);
+        // this.$refs.menu.setCheckedNodes(value ? this.menuOptions : []);
       } else if (type === 'dept') {
         this.$refs.dept.setCheckedNodes(value ? this.deptOptions : []);
       }
