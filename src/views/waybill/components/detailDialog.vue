@@ -1,15 +1,5 @@
 <template>
-  <!-- <el-dialog class="waybill-detail-dialog i-add" :title="title" :visible="visible" width="1500px" append-to-body @close="cancel"> -->
-  <el-drawer
-    size="96%"
-    :title="title"
-    :visible.sync="visible"
-    direction="rtl"
-    append-to-body
-    destroy-on-close
-    :before-close="cancel"
-    class="page-shipment-manage-dialog"
-  >
+  <el-dialog class="waybill-detail-dialog i-add" :title="title" :visible="visible" width="1500px" append-to-body @close="cancel">
     <div class="waybill-title"><div class="waybill-icon" />运单<div class="waybill-divider" /></div>
     <el-row>
       <el-col :span="3" class="text-label">
@@ -258,8 +248,8 @@
         <DataNull v-if="!formCommentShipment" />
       </el-col>
     </el-row>
-  </el-drawer>
-  <!-- </el-dialog> -->
+
+  </el-dialog>
 </template>
 
 <script>
@@ -539,9 +529,5 @@ export default {
   color: #ff4949;
   // font-size: 12px;
   margin: 0 0 10px 30px;
-}
- ::v-deep .el-drawer__body{
-    // padding: 0 20px;
-    overflow-y: auto;
 }
 </style>>
