@@ -727,7 +727,8 @@ export default {
           label: node.label,
           children: node.children
         };
-      }
+      },
+      phoneUniq: true
     };
   },
   computed: {
@@ -862,6 +863,10 @@ export default {
     /** 提交按钮 */
     submitForm() {
       // const flag = this.$refs.ChooseArea.submit();
+      // 手机号判断
+      if (!this.phoneUniq) {
+        return;
+      }
       const flag = true;
       this.$refs['form'].validate(valid => {
         if (valid && flag) {
@@ -1230,12 +1235,16 @@ export default {
       if (this.form.telphone) {
         getUserAlreadyExist({ phoneNum: this.form.telphone }).then(response => {
           if (response.code === 500) {
+            this.phoneUniq = false;
             this.msgWarning(response.msg);
             this.$nextTick(() => {
               this.$refs.telphone.focus();
             });
+          } else {
+            this.phoneUniq = true;
           }
         }).catch(() => {
+          this.phoneUniq = false;
           this.$nextTick(() => {
             this.$refs.telphone.focus();
           });
