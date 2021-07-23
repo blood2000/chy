@@ -243,7 +243,8 @@ export default {
         password: [
           { validator: this.formValidate.passWord, trigger: 'blur' }
         ]
-      }
+      },
+      phoneUniq: true
     };
   },
   computed: {
@@ -259,6 +260,10 @@ export default {
   methods: {
     /** 提交按钮 */
     submitForm() {
+      // 手机号判断
+      if (!this.phoneUniq) {
+        return;
+      }
       this.$refs['form'].validate(valid => {
         if (valid) {
           if (!this.form.identificationImage) {
@@ -434,12 +439,16 @@ export default {
       if (this.form.telphone) {
         getUserAlreadyExist({ phoneNum: this.form.telphone }).then(response => {
           if (response.code === 500) {
+            this.phoneUniq = false;
             this.msgWarning(response.msg);
             this.$nextTick(() => {
               this.$refs.telphone.focus();
             });
+          } else {
+            this.phoneUniq = true;
           }
         }).catch(() => {
+          this.phoneUniq = false;
           this.$nextTick(() => {
             this.$refs.telphone.focus();
           });

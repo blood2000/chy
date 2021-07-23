@@ -759,10 +759,10 @@ export default {
     /** 提交按钮 */
     submitForm: function() {
       // const flag = this.$refs.ChooseArea.submit();
-      /** if (!this.phoneUniq) {
-        this.msgWarning('手机号已存在，请修改！');
+      // 手机号判断
+      if (!this.phoneUniq) {
         return;
-      } */
+      }
       const flag = true;
       this.$refs['form'].validate(valid => {
         if (valid && flag) {
@@ -1221,16 +1221,17 @@ export default {
       if (this.form.telphone) {
         getUserAlreadyExist({ phoneNum: this.form.telphone, noUserCode: this.form.userCode }).then(response => {
           if (response.code === 500) {
-            // 为啥不赋值。。
-            this.phoneUniq = false;
             this.msgWarning(response.msg);
             this.$nextTick(() => {
+              this.phoneUniq = false;
               this.$refs.telphone.focus();
             });
           } else {
             this.phoneUniq = true;
           }
         }).catch(() => {
+          // 被全局拦截器拦住了
+          this.phoneUniq = false;
           this.$nextTick(() => {
             this.$refs.telphone.focus();
           });
