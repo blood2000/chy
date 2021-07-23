@@ -298,7 +298,7 @@
             </el-form-item>
           </el-col>-->
           <el-col :span="12">
-            <el-form-item label="角色">
+            <el-form-item label="角色" prop="roleCodes">
               <el-select v-model="form.roleCodes" multiple placeholder="请选择" clearable filterable>
                 <el-option
                   v-for="item in roleOptions"
@@ -310,7 +310,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col v-if="!form.userId" :span="12">
+          <!--<el-col v-if="!form.userId" :span="12">
             <el-form-item label="是否创建银行账号" label-width="140px">
               <el-radio-group v-model="form.isCreate">
                 <el-radio
@@ -320,7 +320,7 @@
                 >{{ dict.dictLabel }}</el-radio>
               </el-radio-group>
             </el-form-item>
-          </el-col>
+          </el-col>-->
         </el-row>
         <el-row>
           <el-col :span="24">
@@ -504,6 +504,9 @@ export default {
         ],
         email: [
           { validator: this.formValidate.email, trigger: 'blur' }
+        ],
+        roleCodes: [
+          { required: true, message: '角色不能为空', trigger: ['change', 'blur'] }
         ]
       },
       // 重置密码
