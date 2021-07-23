@@ -3,6 +3,15 @@
     <el-row :gutter="20">
       <el-col :span="18">
         <div style="width:100%; height: 600px;border-radius: 6px">
+          <div class="g-flex g-justifyend" style="width:100%; height: 0;border-radius: 6px">
+            <div class="legend-frame">
+              <el-checkbox v-model="checked" style="margin-bottom:10px;">显示规划轨迹</el-checkbox>
+              <div class="g-aligncenter" style="margin-bottom:10px;"><div class="legend-color" style="background:#1990FF;" />APP轨迹</div>
+              <div class="g-aligncenter" style="margin-bottom:10px;"><div class="legend-color" style="background:#08B8A7;" />硬件轨迹</div>
+              <div class="g-aligncenter" style="margin-bottom:10px;"><div class="legend-color" style="background:#67C23A;" />北斗轨迹</div>
+              <div class="g-aligncenter" style="margin-bottom:10px;"><div class="legend-color" style="background:#FB8720;" />规划轨迹</div>
+            </div>
+          </div>
           <el-amap ref="map" vid="DDCmap" :zoom="zoom" :center="center" />
           <div :class="isPlan? 'noliston-frame':'nolist-frame'">
             <div :class="isPlan? 'noliston':'nolist'" />
@@ -52,6 +61,9 @@ export default {
       center: [119.358267, 26.04577],
       graspRoad: '',
       polyline: {
+        path: []
+      },
+      planline: {
         path: []
       },
       vehicleMark: undefined,
@@ -116,7 +128,9 @@ export default {
       isPlan: false,
       isShipment: false,
       // 轨迹颜色
-      lineColor: undefined
+      lineColor: undefined,
+      // 是否显示规划轨迹
+      checked: false
     };
   },
   computed: {
@@ -126,6 +140,17 @@ export default {
       },
       set(v) {
         this.$emit('update:open', v);
+      }
+    }
+  },
+  watch: {
+    checked(val) {
+      if (val) {
+        // 获取高德地图路线规划
+        this.getRoutePlan();
+      } else {
+        const that = this;
+        that.$refs.map.$$getInstance().remove(that.planline);
       }
     }
   },
@@ -169,11 +194,11 @@ export default {
                 }
               } else {
               // 获取高德地图路线规划
-                this.getRoutePlan();
+                // this.getRoutePlan();
               }
             } else {
               // 获取高德地图路线规划
-              this.getRoutePlan();
+              // this.getRoutePlan();
             }
           });
         } else if (this.trackChange === 2) {
@@ -212,7 +237,7 @@ export default {
           }
         } else {
           // 获取高德地图路线规划
-          this.getRoutePlan();
+          // this.getRoutePlan();
         }
       } else if (this.timePoor !== 0 && this.timePoor < 24 * 60 * 60 * 1000) {
         this.getLieying();
@@ -279,7 +304,6 @@ export default {
     getRoutePlan() {
       const that = this;
       that.isPlan = true;
-      console.log(that.isPlan);
       const driving = new AMap.Driving({
         policy: AMap.DrivingPolicy.LEAST_TIME
         // map 指定将路线规划方案绘制到对应的AMap.Map对象上
@@ -297,7 +321,21 @@ export default {
           });
           const path = [].concat.apply([], pathArr);
           // 绘制轨迹
-          that.drawPolyline(path);
+          that.planline = new window.AMap.Polyline({
+            map: that.$refs.map.$$getInstance(),
+            path,
+            showDir: true,
+            strokeColor: '#FB8720', // 线颜色
+            isOutline: true, // 是否描边
+            outlineColor: '#fff', // 描边颜色
+            strokeOpacity: 0.7, // 线透明度
+            strokeWeight: 10, // 线宽
+            strokeStyle: 'solid', // 线样式
+            lineJoin: 'round', // 折线拐点的绘制样式
+            zIndex: 999
+          });
+          that.planline.setMap(that.$refs.map.$$getInstance());
+          // that.$refs.map.$$getInstance().setFitView(that.planline); // 执行定位
         } else {
           console.log('获取驾车数据失败');
         }
@@ -581,5 +619,25 @@ export default {
 
 ::v-deep .amap-icon img{
   height: 35px;
+}
+
+.legend-frame{
+  position: relative;
+  right: 10px;
+  top: 10px;
+  z-index: 10;
+  width: 150px;
+  height: 160px;
+  background: #FFFFFF;
+  padding: 15px;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.15);
+  border-radius: 2px;
+}
+.legend-color{
+  margin-right: 10px;
+  height: 15px;
+  width: 50px;
+  border-radius: 4px;
+  opacity: 0.7;
 }
 </style>
