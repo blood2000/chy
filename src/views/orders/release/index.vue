@@ -3,7 +3,57 @@
   <div v-loading="loading" class="m_app-container">
 
     <div v-if="isZtShipment || isDregs">
-      <ztRelease :cb-data="ztCbData" />
+
+      <!-- <div class="ly-flex-pack-justify pr my_huozhu app-container" style="width: 80px;">
+        <div v-if="shipmentInfo" class="ly-flex-1 ly-flex-align-center">
+          <i class="el-icon-office-building my-iocn" />
+          <div class="left-right-box m20">
+            <div class="dai-sytle mb10">代发货主信息:</div>
+            <div class="ly-flex-align-center">
+              <span class="huoz-style mr20">{{ shipmentInfo? shipmentInfo.companyName : '' }}</span>
+              <div class="ly-flex-align-center colorccc">
+                <i class="el-icon-s-custom" />
+                <span class="name-style">{{ shipmentInfo? shipmentInfo.adminName : '' }}</span>
+              </div>
+              <div class="ly-flex-align-center colorccc">
+                <i class="el-icon-phone" />
+                <span class="name-style">{{ shipmentInfo?shipmentInfo.telphone : '' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="right-box ly-flex-align-center ">
+          <div class="mr20 btn">
+            <el-form-item label="代发货主" prop="tin1">
+              <el-select
+                v-model="formData.tin1"
+                v-el-select-loadmore="loadmore"
+                filterable
+                clearable
+                remote
+                reserve-keyword
+                placeholder="请输入关键词"
+                :remote-method="remoteMethod"
+                :loading="loading1"
+                @change="handlerchange"
+              >
+                <el-option
+                  v-for="(item, index1) in shipmentList"
+                  :key="index1 + item.code"
+                  :value="item.code"
+                  :label="item.adminName"
+                >
+                  <div class="ly-flex-pack-justify"><span>{{ item.adminName }}</span><span>{{ item.telphone }}</span></div>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </div>
+        </div>
+
+      </div> -->
+
+      <ztRelease :cb-data="ztCbData" :ztshipmentinfo="shipmentInfo" />
     </div>
 
     <template v-else>
@@ -524,6 +574,7 @@ export default {
     const { isShipment = false, isZtShipment = false, shipment = {}, user = {}} = getUserInfo() || {};
     this.isShipment = isShipment;
     this.isZtShipment = isShipment && isZtShipment;
+    console.log('第一传要最后确认');
     if (isShipment) {
       if (isShipment && shipment.info && shipment.info.authStatus !== 3) {
         this.authStatus = false;
@@ -532,6 +583,7 @@ export default {
         return;
       }
 
+      // 只有普通货主才走这里去请求
       if (!isZtShipment && isShipment && shipment.info) {
         // console.log(shipment.info, '货主身份---');
         // 通过id 获取 7/23 --chj
@@ -562,6 +614,8 @@ export default {
     getShipmentInfo(code) {
       return getShipmentByCode({ code }).then(res => {
         this.shipmentInfo = res.data;
+        // this.isZtShipment = res.data.shipmentRoleCodes.indexOf('6809f8526e764abea23e6f302b9cf44d') !== -1;
+        console.log(this.isZtShipment, '要最后确认111');
       });
     },
 
@@ -604,8 +658,14 @@ export default {
       this.shipmentList.forEach(e => {
         if (e.code === value) {
           this.orgCode = e.orgCode || '';
-          // this.shipmentInfo = e;
-          this.getShipmentInfo(e.code);
+          this.isZtShipment = e.shipmentRoleCodes.indexOf('6809f8526e764abea23e6f302b9cf44d') !== -1;
+          // 如果是大宗货主这需要请求详情
+          if (!this.isZtShipment && !this.shipmentInfo) {
+            this.getShipmentInfo(e.code);
+          } else {
+            // 如果是渣土货主则需要这个
+            this.shipmentInfo = e;
+          }
         }
       });
     },
@@ -1014,7 +1074,9 @@ export default {
 
         const { redisOrderInfoVo, redisOrderClassGoodsVoList, redisOrderSpecifiedVoList, redisOrderFreightInfoVoList, redisOrderGoodsVoList, redisAddressList } = data;
 
-        await this.getShipmentInfo(redisOrderInfoVo.pubilshCode);
+        try {
+          !this.shipmentInfo && (await this.getShipmentInfo(redisOrderInfoVo.pubilshCode));
+        } catch (error) { console.log(error); }
 
         // 5/18s=特殊处理
         const redisOrderGoodsVoListRest = redisOrderGoodsVoList.map(e => {

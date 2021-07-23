@@ -24,7 +24,7 @@
             icon="el-icon-turn-off"
             size="mini"
             @click="handlerCarConnect(isConnect)"
-          >{{ !isConnect? '连接本地服务' :'断开本地服务' }}</el-button>
+          >{{ !isConnect? '连接读卡器' :'断开读卡器' }}</el-button>
         </el-col>
         <el-col :span="1.5">
           <el-button
@@ -525,7 +525,7 @@ export default {
           this.msgSuccess('连接成功');
           this.isConnect = true;
         }, () => {
-          this.msgWarning('未开启本地服务');
+          this.msgWarning('未开启读卡器');
           this.isConnect = false;
         });
       }
@@ -558,7 +558,7 @@ export default {
     handlerMakeUp() {
       // console.log(this.selectedData, '数据');
       if (!this.isConnect) {
-        this.msgWarning('未连接本地服务');
+        this.msgWarning('未连接读卡器');
         return;
       }
       // console.log(USERINFO);
@@ -623,7 +623,7 @@ export default {
     // 初始卡功能
     handlerCardInit() {
       if (!this.isConnect) {
-        this.msgWarning('未连接本地服务');
+        this.msgWarning('未连接读卡器');
         return;
       }
       // ??
@@ -646,7 +646,7 @@ export default {
     // 读取卡用户
     handlerReadUserinfo() {
       if (!this.isConnect) {
-        this.msgWarning('未连接本地服务');
+        this.msgWarning('未连接读卡器');
         return;
       }
       action.readUserInfo().then(res => {
@@ -665,7 +665,7 @@ export default {
     // 读卡
     handlerReadData() {
       if (!this.isConnect) {
-        this.msgWarning('未连接本地服务');
+        this.msgWarning('未连接读卡器');
         return;
       }
       // 读取卡数据
