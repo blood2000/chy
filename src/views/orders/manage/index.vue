@@ -94,6 +94,18 @@
           </el-select>
         </el-form-item>
 
+        <el-form-item v-if="false" label="发布模式" prop="publishMode">
+          <el-select v-model="queryParams.publishMode" placeholder="----请选择----" style="width: 228px" clearable filterable>
+            <el-option
+              v-for="(dict,index) in publishModeOptions"
+              :key="index + '' + dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+              @keyup.enter.native="handleQuery"
+            />
+          </el-select>
+        </el-form-item>
+
         <el-form-item v-show="(queryParams.tin8+'') ==='1'" label="下架状态" prop="isManual">
           <el-select v-model="queryParams.isManual" placeholder="----请选择----" clearable filterable style="width: 228px">
             <el-option
@@ -454,6 +466,7 @@ export default {
         tin11: '',
         isManual: '',
         tin9: '',
+        publishMode: undefined,
         tin10: []
       },
       // 弹框title
@@ -705,6 +718,7 @@ export default {
         driverId: undefined, //	(司机id)查询自己公司的货源	query	false
         isShare: this.queryParams.tin9, //	是否拼单	query	false
         mainOrderNumber: this.queryParams.tin7, //	货源单号	query	false
+        publishMode: this.queryParams.publishMode, // 发布模式
 
         pubilshCode: this.queryParams.tin6, //	货主编码	query	false
 
