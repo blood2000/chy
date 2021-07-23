@@ -532,7 +532,7 @@ export default {
         return;
       }
 
-      if (isShipment && shipment.info) {
+      if (!isZtShipment && isShipment && shipment.info) {
         // console.log(shipment.info, '货主身份---');
         // 通过id 获取 7/23 --chj
         this.getShipmentInfo(shipment.info.code);
