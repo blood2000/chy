@@ -94,7 +94,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item v-if="false" label="发布模式" prop="publishMode">
+        <el-form-item v-if="true" label="发布模式" prop="publishMode">
           <el-select v-model="queryParams.publishMode" placeholder="----请选择----" style="width: 228px" clearable filterable>
             <el-option
               v-for="(dict,index) in publishModeOptions"
