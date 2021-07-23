@@ -298,7 +298,7 @@
             </el-form-item>
           </el-col>-->
           <el-col :span="12">
-            <el-form-item label="角色">
+            <el-form-item label="角色" prop="roleCodes">
               <el-select v-model="form.roleCodes" multiple placeholder="请选择" clearable filterable>
                 <el-option
                   v-for="item in roleOptions"
@@ -520,6 +520,9 @@ export default {
         ],
         email: [
           { validator: this.formValidate.email, trigger: 'blur' }
+        ],
+        roleCodes: [
+          { required: true, message: '角色不能为空', trigger: ['change', 'blur'] }
         ]
       },
       // 重置密码
