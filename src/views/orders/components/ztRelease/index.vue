@@ -17,7 +17,7 @@
         <el-tag v-if="formData.projectCode" :type="'warning'">
           {{ formData.projectName }}
         </el-tag>
-        <el-button v-if="!isEdit" class="ml10" size="mini" type="primary" @click="openObj = true">请选择项目工程</el-button>
+        <el-button v-if="!isCbdata" class="ml10" size="mini" type="primary" @click="openObj = true">请选择项目工程</el-button>
       </el-form-item>
 
       <el-form-item label="选择调度" prop="dispatcherCodes">
@@ -46,12 +46,12 @@
       </el-form-item>
 
       <el-form-item label="是否启用电子围栏" prop="geofenceToggle">
-        <el-switch v-model="formData.geofenceToggle" />
+        <el-switch v-model="formData.geofenceToggle" :disabled="isCbdata" />
       </el-form-item>
 
       <el-form-item v-if="formData.geofenceToggle" label="围栏半径" prop="geofenceRadius">
-        <el-input-number v-model="formData.geofenceRadius" :min="0" label="请输入围栏半径" />
-        <el-button class="ml10" size="mini" type="primary" @click="hangdlerYulang">预览</el-button>
+        <el-input-number v-model="formData.geofenceRadius" :min="0" label="请输入围栏半径" :disabled="isCbdata" />
+        <el-button v-if="!isCbdata" class="ml10" size="mini" type="primary" @click="hangdlerYulang">预览</el-button>
       </el-form-item>
 
       <el-form-item label="备注" prop="remark">
@@ -67,8 +67,9 @@
       </el-form-item>
 
       <el-form-item v-if="!isEdit">
-        <el-button type="primary" plain @click="handlerReset('elForm')">重 置</el-button>
-        <el-button type="primary" :loading="loading" @click="submitForm('elForm')">立即发布</el-button>
+        <el-button v-if="!cbData" type="primary" plain @click="handlerReset('elForm')">重 置</el-button>
+        <el-button v-else type="primary" plain @click="$router.back()">返 回</el-button>
+        <el-button type="primary" :loading="loading" @click="submitForm('elForm')">{{ cbData? '立即保存':'立即发布' }}</el-button>
       </el-form-item>
       <el-form-item v-else>
         <el-button type="primary" plain @click="$router.back()">返 回</el-button>
@@ -197,22 +198,23 @@ export default {
         shipmentInfo = !isShipment ? (shipment.info || {}) : {};
       }
 
-      console.log(shipmentInfo);
-
       return shipmentInfo;
     },
     cbDataByKeyword() {
       let obj = {};
       if (this.schedSelect.length) {
-        obj = { id: this.schedSelect.map(e => e.id) };
+        obj = { disUserCode: this.schedSelect.map(e => e.disUserCode) };
+        // obj = { id: this.schedSelect.map(e => e.id) };
       }
       return obj;
     },
 
+    // true: 是详情  false: 是编辑
     isEdit() {
-      console.log(this.isT);
       return this.isT;
-      // return !!this.cbData;
+    },
+    isCbdata() {
+      return !!this.cbData;
     }
   },
 
@@ -220,7 +222,7 @@ export default {
     cbData: {
       handler(data) {
         if (data) {
-          console.log(data);
+          // console.log(data);
 
           // 调度者
           this.schedSelect = data.redisOrderSpecifiedVoList.map(e => {
@@ -246,7 +248,7 @@ export default {
             'remark': data.redisOrderInfoVo.remark, // 备注		false
             'geofenceRadius': data.redisOrderInfoVo.geofenceRadius, // 电子围栏范围		false
             'publishMode': data.redisOrderInfoVo.publishMode, // 发布方式 0 货源大厅不可见(只能通过货单号或备注搜索) 1 货源大厅可见 默认写死
-
+            'orderCode': data.redisOrderInfoVo.code || undefined,
             // 选填
             'branchCode': undefined, //
             'orgCode': undefined,
@@ -257,12 +259,6 @@ export default {
       immediate: true
     }
 
-    // ztshipmentinfo: {
-    //   handler(va) {
-    //     console.log(va);
-    //   },
-    //   immediate: true
-    // }
   },
 
   created() {
@@ -302,7 +298,7 @@ export default {
         const { latitude, longitude } = this.selectData;
         this.lnglat = [longitude, latitude];
         this.mapDialog = true;
-        console.log({ latitude, longitude });
+        // console.log({ latitude, longitude });
       }
     },
 
@@ -320,8 +316,13 @@ export default {
             projectName: undefined // 不需要传这个
           };
 
+
+          // console.log(qer, 11121);
+
+          const fn = this.isCbdata ? ztUpdateOrder : ztPublishOrder;
+
           this.loading = true;
-          ztPublishOrder(qer).then(res => {
+          fn(qer).then(res => {
             this.msgSuccess(res.msg);
             // 跳转
             var time1 = setTimeout(() => {
