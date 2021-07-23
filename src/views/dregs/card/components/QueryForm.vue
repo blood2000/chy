@@ -36,6 +36,7 @@
       </el-form-item>
 
       <el-form-item
+        v-if="false"
         label="卡ID"
         prop="card16no"
       >
