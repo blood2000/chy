@@ -13,26 +13,16 @@
     <el-tabs v-model="activeName">
       <el-tab-pane label="变动明细" name="mx">
         <!-- 变动明细 -->
-        <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="76px">
-          <el-form-item label="变动原因" prop="paidItem">
-            <el-select v-model="queryParams.paidItem" placeholder="请选择变动原因" filterable clearable size="small" class="input-width">
-              <el-option
-                v-for="dict in consumeOptions"
-                :key="dict.dictValue"
-                :label="dict.dictLabel"
-                :value="dict.dictValue"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="变动类型" prop="paidFeeType">
-            <el-select v-model="queryParams.paidFeeType" placeholder="请选择变动类型" filterable clearable size="small" class="input-width">
-              <el-option
-                v-for="dict in typeOptions"
-                :key="dict.dictValue"
-                :label="dict.dictLabel"
-                :value="dict.dictValue"
-              />
-            </el-select>
+        <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="80px">
+          <el-form-item label="运输单号" prop="waybillNo">
+            <el-input
+              v-model.trim="queryParams.waybillNo"
+              placeholder="请输入运输单号"
+              clearable
+              size="small"
+              class="input-width"
+              @keyup.enter.native="handleQuery"
+            />
           </el-form-item>
           <el-form-item label="变动时间">
             <el-date-picker
@@ -55,14 +45,41 @@
               placeholder="请选择"
             />
           </el-form-item>
+          <el-form-item label="变动原因" prop="paidItem">
+            <el-select v-model="queryParams.paidItem" placeholder="请选择变动原因" filterable clearable size="small" class="input-width">
+              <el-option
+                v-for="dict in consumeOptions"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="变动类型" prop="paidFeeType">
+            <el-select v-model="queryParams.paidFeeType" placeholder="请选择变动类型" filterable clearable size="small" class="input-width">
+              <el-option
+                v-for="dict in typeOptions"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
+            </el-select>
+          </el-form-item>
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
             <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
           </el-form-item>
         </el-form>
+        <el-row :gutter="10" class="mb8">
+          <el-col :span="1.5">
+            <el-button type="primary" icon="el-icon-download" size="mini" :loading="exportLoading" @click="handleExport">导出</el-button>
+          </el-col>
+          <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+        </el-row>
         <el-table v-loading="loading" border highlight-current-row :data="infoList">
           <el-table-column label="序号" align="center" fixed="left" type="index" min-width="5%" />
-          <el-table-column label="客户名称" align="center" prop="userName" />
+          <el-table-column label="客户名称" align="center" prop="userName" min-width="150" />
+          <el-table-column label="运输单号" align="center" prop="waybillNo" min-width="180" />
           <el-table-column label="变动金额" align="center" prop="paidAmount">
             <template slot-scope="scope">
               <p v-if="scope.row.paidFeeType === '0'" class="g-color-success">
@@ -100,7 +117,7 @@
               {{ parseTime(scope.row.createTime) }}
             </template>
           </el-table-column>
-          <el-table-column label="备注" align="center" prop="remark" min-width="180" />
+          <el-table-column label="备注" align="center" prop="remark" min-width="150" />
         </el-table>
         <pagination
           v-show="total>0"
@@ -113,7 +130,17 @@
       </el-tab-pane>
       <el-tab-pane label="冻结记录" name="dj">
         <!-- 冻结记录 -->
-        <el-form ref="frreezeQueryForm" :model="frreezeQueryParams" :inline="true" label-width="76px">
+        <el-form v-show="showSearchFrreeze" ref="frreezeQueryForm" :model="frreezeQueryParams" :inline="true" label-width="80px">
+          <el-form-item label="运输单号" prop="waybillNo">
+            <el-input
+              v-model.trim="frreezeQueryParams.waybillNo"
+              placeholder="请输入运输单号"
+              clearable
+              size="small"
+              class="input-width"
+              @keyup.enter.native="handleQueryFrreeze"
+            />
+          </el-form-item>
           <el-form-item label="交易日期">
             <el-date-picker
               v-model="frreezeQueryParams.startTime"
@@ -121,6 +148,7 @@
               type="date"
               size="small"
               value-format="yyyy-MM-dd"
+              class="input-width"
               placeholder="请选择"
             />
             至
@@ -130,6 +158,7 @@
               type="date"
               size="small"
               value-format="yyyy-MM-dd"
+              class="input-width"
               placeholder="请选择"
             />
           </el-form-item>
@@ -138,7 +167,14 @@
             <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQueryFrreeze">重置</el-button>
           </el-form-item>
         </el-form>
+        <el-row :gutter="10" class="mb8">
+          <el-col :span="1.5">
+            <el-button type="primary" icon="el-icon-download" size="mini" :loading="frreezeExportLoading" @click="handleExportFrreeze">导出</el-button>
+          </el-col>
+          <right-toolbar :show-search.sync="showSearchFrreeze" @queryTable="getFrreezeList" />
+        </el-row>
         <el-table v-loading="frreezeLoading" highlight-current-row border :data="dataList">
+          <el-table-column label="运输单号" align="center" prop="waybillNo" />
           <el-table-column label="类型" align="center" prop="type">
             <template slot-scope="scope">
               <span v-if="scope.row.type === 1" class="g-color-error">冻结</span>
@@ -182,6 +218,8 @@ export default {
   },
   data() {
     return {
+      showSearch: true,
+      showSearchFrreeze: true,
       isfullscreen: false,
       // 遮罩层
       loading: true,
@@ -209,6 +247,7 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
+        waybillNo: undefined,
         paidItem: undefined,
         paidFeeType: undefined,
         updateTimeBegin: undefined,
@@ -217,13 +256,17 @@ export default {
       frreezeQueryParams: {
         pageNum: 1,
         pageSize: 10,
+        waybillNo: undefined,
         startTime: undefined,
         endTime: undefined
       },
       dataList: [],
       frreezeTotal: 0,
       frreezeLoading: false,
-      activeName: 'mx'
+      activeName: 'mx',
+      // 导出
+      exportLoading: false,
+      frreezeExportLoading: false
     };
   },
   computed: {
@@ -306,6 +349,24 @@ export default {
       this.frreezeQueryParams.startTime = undefined;
       this.frreezeQueryParams.endTime = undefined;
       this.resetForm('frreezeQueryForm');
+    },
+    /** 明细-导出按钮操作 */
+    async handleExport() {
+      this.exportLoading = true;
+      const params = Object.assign({}, this.queryParams);
+      params.pageSize = undefined;
+      params.pageNum = undefined;
+      await this.download('payment/shipmentPaidRecord/export', params, `变动明细`);
+      this.exportLoading = false;
+    },
+    /** 冻结-导出按钮操作 */
+    async handleExportFrreeze() {
+      this.frreezeExportLoading = true;
+      const params = Object.assign({}, this.frreezeQueryParams);
+      params.pageSize = undefined;
+      params.pageNum = undefined;
+      await this.download('payment/frreezeAmountLog/export', params, `冻结记录`);
+      this.frreezeExportLoading = false;
     }
   }
 };
