@@ -43,7 +43,7 @@
         <el-input v-model="form.name" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
       <el-form-item label="手机号" prop="telphone">
-        <el-input ref="telphone" v-model="form.telphone" placeholder="请输入手机号" :disabled="form.id?true:false" class="width90" clearable @blur="getUserAlreadyExist" />
+        <el-input ref="telphone" v-model="form.telphone" placeholder="请输入手机号" class="width90" clearable @blur="getUserAlreadyExistMethod" />
       </el-form-item>
       <!-- <el-form-item label="联系人固话" prop="fixedPhone">
         <el-input v-model="form.fixedPhone" placeholder="请输入固话" class="width90" clearable />
@@ -691,7 +691,8 @@ export default {
       // 添加车辆方式
       addVehicleType: 0, // 0input  1select
       // 当前选中tab
-      activeName: null
+      activeName: null,
+      phoneUniq: true
     };
   },
   computed: {
@@ -758,6 +759,10 @@ export default {
     /** 提交按钮 */
     submitForm: function() {
       // const flag = this.$refs.ChooseArea.submit();
+      /** if (!this.phoneUniq) {
+        this.msgWarning('手机号已存在，请修改！');
+        return;
+      } */
       const flag = true;
       this.$refs['form'].validate(valid => {
         if (valid && flag) {
@@ -1212,14 +1217,18 @@ export default {
       this.saveVehicle();
       this.changeVehicle(this.activeName);
     },
-    getUserAlreadyExist() {
+    getUserAlreadyExistMethod() {
       if (this.form.telphone) {
-        getUserAlreadyExist({ phoneNum: this.form.telphone }).then(response => {
+        getUserAlreadyExist({ phoneNum: this.form.telphone, noUserCode: this.form.userCode }).then(response => {
           if (response.code === 500) {
+            // 为啥不赋值。。
+            this.phoneUniq = false;
             this.msgWarning(response.msg);
             this.$nextTick(() => {
               this.$refs.telphone.focus();
             });
+          } else {
+            this.phoneUniq = true;
           }
         }).catch(() => {
           this.$nextTick(() => {
