@@ -311,7 +311,7 @@ export default {
     },
     redis: {
       handler(value) {
-        console.log(value, '有什么有用的东西');
+        // console.log(value, '有什么有用的东西');
         if (!value || !value.orderFreightVo) return;
 
         if (this.formData.ruleItemId && this.formData.ruleItemId !== value.ruleCode) return;

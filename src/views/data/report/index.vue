@@ -703,11 +703,15 @@ export default {
 
       // 6/8 改成一个上报接口
       this.loading = true;
-      const res = await batch(this.ids.map(e => e.waybillReportCode));
-      this.loading = false;
-      if (res.code === 200) {
-        this.msgSuccess(res.msg);
-        this.getList();
+      try {
+        const res = await batch(this.ids.map(e => e.waybillReportCode));
+        this.loading = false;
+        if (res.code === 200) {
+          this.msgSuccess(res.msg);
+          this.getList();
+        }
+      } catch (error) {
+        this.loading = false;
       }
     },
     /** 批量导入 */

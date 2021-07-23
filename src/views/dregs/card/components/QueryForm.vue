@@ -41,14 +41,14 @@
       >
         <el-input
           v-model.trim="queryParams.card16no"
-          placeholder="请选择卡ID"
+          placeholder="请输入卡ID或读卡获取卡ID"
           clearable
           size="small"
           style="width: 228px"
           @keyup.enter.native="$emit('handleQuery')"
         />
 
-        <el-button class="ml10" size="small" type="primary" plain @click="$emit('getCardInfo')">获取卡ID</el-button>
+        <el-button class="ml10" size="small" type="primary" plain @click="$emit('getCardInfo')">读卡获取ID</el-button>
       </el-form-item>
 
 
