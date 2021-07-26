@@ -189,7 +189,7 @@
         </el-col>
 
         <el-col :span="1.5" class="fr">
-          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" refresh />
+          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
@@ -735,9 +735,10 @@ export default {
     '$route.query.p': {
       handler(value, odvalue) {
         if (!value) return;
-        this.$router.replace({
-          path: '/refresh'
-        });
+        this.getList();
+        // this.$router.replace({
+        //   path: '/refresh'
+        // });
       },
       immediate: true
     },

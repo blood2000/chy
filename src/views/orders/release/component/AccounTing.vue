@@ -48,20 +48,26 @@
             label="规则: "
             prop="ruleItemId"
             label-width="60px"
-            style="width:280px;"
+            style="width:440px;"
           >
             <el-select
               v-model="formData.ruleItemId"
               placeholder="请选择规则"
               clearable
+              style="width:100%;"
               @change="handleRuleItemId"
             >
               <el-option
                 v-for="(dict, index) in ruleItemIdOption"
                 :key="index"
-                :label="dict.dictLabel"
+                :label="dict.ruleFormula"
                 :value="dict.dictValue"
-              />
+              >
+                <div>
+                  <span style="color: #c0c4cc; font-size: 13px">{{ dict.dictLabel }}</span>
+                  <div class="b">{{ dict.ruleFormula }}</div>
+                </div>
+              </el-option>
             </el-select>
           </el-form-item>
 
@@ -405,6 +411,7 @@ export default {
       try {
         const data = (await getListRules({ shipperCode: this.pubilshCode })).data;
         this.ruleItemIdOption = this._baozhuan(data, 'code', 'name');
+        // console.log(this.ruleItemIdOption);
         // 最早获取到规则表 this.formData.ruleItemId platformType	平台类型 1.DDC平台 2.货主 触发 handleRuleItemId isDefault
 
         const rulesItem = this.ruleItemIdOption.filter(e => {
@@ -634,4 +641,8 @@ export default {
   }
 }
 
+.el-select-dropdown__item{
+  height: 68px;
+  line-height: 30px;
+}
 </style>
