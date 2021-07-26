@@ -94,7 +94,6 @@
         <div v-show="orderInfo==='0'">
           <el-form
             ref="elForm"
-            v-loading="loading"
             :model="formData"
             :rules="rules"
             size="medium"
@@ -552,18 +551,18 @@ export default {
     },
     '$route.query.t': {
       handler(value, odvalue) {
-        if ((odvalue === '0' || odvalue === '1' || odvalue === '3')) {
-          this.$router.replace({
-            path: '/refresh'
-          });
+        if ((odvalue === '0' || odvalue === '1' || odvalue === '3') && !value) {
+          if (this.$route.path === '/orders/release') {
+            this.$router.replace({
+              path: '/refresh'
+            });
+          }
         }
         if (value === '0') {
           this.isT = true;
         } else if (value === '3') {
           this.isClone = true;
         }
-
-        // console.log(this.isT);
       },
       immediate: true
     }
