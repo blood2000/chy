@@ -1,5 +1,15 @@
 <template>
-  <el-dialog class="waybill-detail-dialog i-add" :title="title" :visible="visible" width="1500px" append-to-body @close="cancel">
+  <!-- <el-dialog class="waybill-detail-dialog i-add" :title="title" :visible="visible" width="1500px" append-to-body @close="cancel"> -->
+  <el-drawer
+    size="96%"
+    :title="title"
+    :visible.sync="visible"
+    direction="rtl"
+    append-to-body
+    destroy-on-close
+    :before-close="cancel"
+    class="page-shipment-manage-dialog"
+  >
     <div class="waybill-title"><div class="waybill-icon" />运单<div class="waybill-divider" /></div>
     <el-row>
       <el-col :span="3" class="text-label">
@@ -248,8 +258,8 @@
         <DataNull v-if="!formCommentShipment" />
       </el-col>
     </el-row>
-
-  </el-dialog>
+  </el-drawer>
+  <!-- </el-dialog> -->
 </template>
 
 <script>
@@ -338,13 +348,13 @@ export default {
       getWaybillAttachment(this.currentId, 1).then(response => {
         // console.log(response);
         this.formAttachment = response.data ? response.data[0] : null;
-        this.formAttachmentUrl = this.formAttachment ? this.formAttachment.attachUrls.split(',') : null;
+        this.formAttachmentUrl = this.formAttachment.attachUrls ? this.formAttachment.attachUrls.split(',') : null;
       });
       // 回单-卸货
       getWaybillAttachment(this.currentId, 2).then(response => {
         // console.log(response);
         this.formAttachmentUp = response.data ? response.data[0] : null;
-        this.formAttachmentUpUrl = this.formAttachmentUp ? this.formAttachmentUp.attachUrls.split(',') : null;
+        this.formAttachmentUpUrl = this.formAttachmentUp.attachUrls ? this.formAttachmentUp.attachUrls.split(',') : null;
       });
       // 评价-司机
       getWaybillComment(this.currentId, 1).then(response => {
@@ -373,6 +383,7 @@ export default {
         balanceVo: {}
       };
       this.formAttachmentUrl = [];
+      this.formAttachmentUpUrl = [];
       this.formAttachment = {};
       this.formAttachmentUp = {};
       this.formCommentDriver = {};
@@ -529,5 +540,9 @@ export default {
   color: #ff4949;
   // font-size: 12px;
   margin: 0 0 10px 30px;
+}
+ ::v-deep .el-drawer__body{
+    // padding: 0 20px;
+    overflow-y: auto;
 }
 </style>>
