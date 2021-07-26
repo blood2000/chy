@@ -348,13 +348,13 @@ export default {
       getWaybillAttachment(this.currentId, 1).then(response => {
         // console.log(response);
         this.formAttachment = response.data ? response.data[0] : null;
-        this.formAttachmentUrl = this.formAttachment ? this.formAttachment.attachUrls.split(',') : null;
+        this.formAttachmentUrl = this.formAttachment.attachUrls ? this.formAttachment.attachUrls.split(',') : null;
       });
       // 回单-卸货
       getWaybillAttachment(this.currentId, 2).then(response => {
         // console.log(response);
         this.formAttachmentUp = response.data ? response.data[0] : null;
-        this.formAttachmentUpUrl = this.formAttachmentUp ? this.formAttachmentUp.attachUrls.split(',') : null;
+        this.formAttachmentUpUrl = this.formAttachmentUp.attachUrls ? this.formAttachmentUp.attachUrls.split(',') : null;
       });
       // 评价-司机
       getWaybillComment(this.currentId, 1).then(response => {
