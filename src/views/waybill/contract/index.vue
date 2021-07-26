@@ -318,6 +318,9 @@ export default {
       width: 180,
       fixed: 'left'
     });
+    this.queryParams.startReceiveTime = this.parseTime(new Date().getTime() - 24 * 60 * 60 * 1000 * 2, '{y}-{m}-{d}');
+    this.queryParams.endReceiveTime = this.parseTime(new Date(), '{y}-{m}-{d}');
+    this.receiveTime = [new Date(new Date().getTime() - 24 * 60 * 60 * 1000 * 2), new Date()];
     this.getList();
   },
   'methods': {

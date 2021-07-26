@@ -475,7 +475,6 @@ export default {
     this.queryParams.startReceiveTime = this.parseTime(new Date().getTime() - 24 * 60 * 60 * 1000 * 2, '{y}-{m}-{d}');
     this.queryParams.endReceiveTime = this.parseTime(new Date(), '{y}-{m}-{d}');
     this.receiveTime = [new Date(new Date().getTime() - 24 * 60 * 60 * 1000 * 2), new Date()];
-    console.log(this.queryParams.startReceiveTime, this.queryParams.endReceiveTime, this.receiveTime);
     this.getList();
   },
   methods: {
