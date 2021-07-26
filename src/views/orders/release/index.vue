@@ -3,7 +3,57 @@
   <div v-loading="loading" class="m_app-container">
 
     <div v-if="isZtShipment || isDregs">
-      <ztRelease :cb-data="ztCbData" />
+
+      <!-- <div class="ly-flex-pack-justify pr my_huozhu app-container" style="width: 80px;">
+        <div v-if="shipmentInfo" class="ly-flex-1 ly-flex-align-center">
+          <i class="el-icon-office-building my-iocn" />
+          <div class="left-right-box m20">
+            <div class="dai-sytle mb10">代发货主信息:</div>
+            <div class="ly-flex-align-center">
+              <span class="huoz-style mr20">{{ shipmentInfo? shipmentInfo.companyName : '' }}</span>
+              <div class="ly-flex-align-center colorccc">
+                <i class="el-icon-s-custom" />
+                <span class="name-style">{{ shipmentInfo? shipmentInfo.adminName : '' }}</span>
+              </div>
+              <div class="ly-flex-align-center colorccc">
+                <i class="el-icon-phone" />
+                <span class="name-style">{{ shipmentInfo?shipmentInfo.telphone : '' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="right-box ly-flex-align-center ">
+          <div class="mr20 btn">
+            <el-form-item label="代发货主" prop="tin1">
+              <el-select
+                v-model="formData.tin1"
+                v-el-select-loadmore="loadmore"
+                filterable
+                clearable
+                remote
+                reserve-keyword
+                placeholder="请输入关键词"
+                :remote-method="remoteMethod"
+                :loading="loading1"
+                @change="handlerchange"
+              >
+                <el-option
+                  v-for="(item, index1) in shipmentList"
+                  :key="index1 + item.code"
+                  :value="item.code"
+                  :label="item.adminName"
+                >
+                  <div class="ly-flex-pack-justify"><span>{{ item.adminName }}</span><span>{{ item.telphone }}</span></div>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </div>
+        </div>
+
+      </div> -->
+
+      <ztRelease :cb-data="ztCbData" :ztshipmentinfo="shipmentInfo" />
     </div>
 
     <template v-else>
@@ -116,6 +166,7 @@
                 :myisdisabled="myisdisabled"
                 :shipment-info="shipmentInfo"
                 :goods-big-types="goodsBigTypes"
+                :is-t="isT"
                 @goods="handlerGoos"
               >
 
@@ -133,13 +184,10 @@
               <el-form-item label="装卸类型" prop="tin7">
                 <el-radio-group v-model="formData.tin7" size="medium" @change="zhuangOrxiechange">
                   <el-radio
-                    v-for="(dict,index) in (isMultiGoods?[
-                      { dictValue: '1', dictLabel: '一装一卸' },
-                      { dictValue: '2', dictLabel: '多装一卸' },
-                      { dictValue: '3', dictLabel: '一装多卸' }
-                    ]:[{ dictValue: '1', dictLabel: '一装一卸' }])"
+                    v-for="(dict,index) in loadType_computed"
                     :key="dict.dictValue + '' + index"
                     :label="dict.dictValue"
+                    :disabled="dict.disabled"
                   >{{ dict.dictLabel }}</el-radio>
                 </el-radio-group>
               </el-form-item>
@@ -335,7 +383,7 @@ import OpenDialog from './OpenDialog';
 import WaybillInfo from './WaybillInfo';
 
 import { getUserInfo } from '@/utils/auth';
-import { listShipment } from '@/api/assets/shipment.js';
+import { listShipment, getShipmentByCode } from '@/api/assets/shipment.js';
 import { orderPubilsh, getOrderByCode, update, estimateCost } from '@/api/order/release';
 import { getProvinceList } from '@/api/system/area';
 
@@ -370,7 +418,7 @@ export default {
         pageSize: 10
       },
       dataOver: false, // 是否请求完了
-      isT: false, //
+      isT: false, // false 是编辑 true 是详情
       orgCode: '', // 接口需要
       isAdmin: false, // 默认是平台
       isShipment: false,
@@ -443,6 +491,56 @@ export default {
         bool = this.ztCbData.redisOrderInfoVo.isDregs === 1;
       }
       return bool;
+    },
+
+    // 装卸类型 7/22 添加 --chj
+    loadType_computed() {
+      // 修改司机实收金额 0:允许 1:不允许： editDriverActualAmount
+      // 单货源多商品 0：允许 1:不允许  singleSourceMultiCommodity
+
+      // 单货源多装货地 0:允许 1:不允许  singleSourceMultiLoadingLocations
+      // 单货源多卸货地 0:允许 1:不允许  singleSourceMultiUnloadingLocations
+      // 是否需要申请打款环节 0：需要 1:不需要  isNeedApplicationForPayment
+      let arr = [
+        { dictValue: '1', dictLabel: '一装一卸', disabled: false },
+        { dictValue: '2', dictLabel: '多装一卸', disabled: false },
+        { dictValue: '3', dictLabel: '一装多卸', disabled: false }
+      ];
+
+      // console.log(this.shipmentInfo);
+      if (this.shipmentInfo) {
+        const singleSourceMultiLoadingLocations = this.shipmentInfo.singleSourceMultiLoadingLocations === 0;
+        const singleSourceMultiUnloadingLocations = this.shipmentInfo.singleSourceMultiUnloadingLocations === 0;
+
+        // console.log(this.shipmentInfo);
+
+
+
+        // 允许
+        if (!singleSourceMultiLoadingLocations && !singleSourceMultiUnloadingLocations) {
+          arr = [
+            { dictValue: '1', dictLabel: '一装一卸', disabled: false },
+            { dictValue: '2', dictLabel: '多装一卸', disabled: true },
+            { dictValue: '3', dictLabel: '一装多卸', disabled: true }
+            // { dictValue: '4', dictLabel: '多装多卸' },
+          ];
+        } else if (singleSourceMultiLoadingLocations && !singleSourceMultiUnloadingLocations) {
+          arr = [
+            { dictValue: '1', dictLabel: '一装一卸', disabled: false },
+            { dictValue: '2', dictLabel: '多装一卸', disabled: false },
+            { dictValue: '3', dictLabel: '一装多卸', disabled: true }
+          ];
+        } else if (!singleSourceMultiLoadingLocations && singleSourceMultiUnloadingLocations) {
+          arr = [
+            { dictValue: '1', dictLabel: '一装一卸', disabled: false },
+            { dictValue: '2', dictLabel: '多装一卸', disabled: true },
+            { dictValue: '3', dictLabel: '一装多卸', disabled: false }
+          ];
+        }
+      }
+
+
+      return arr;
     }
   },
   watch: {
@@ -464,6 +562,8 @@ export default {
         } else if (value === '3') {
           this.isClone = true;
         }
+
+        // console.log(this.isT);
       },
       immediate: true
     }
@@ -474,6 +574,7 @@ export default {
     const { isShipment = false, isZtShipment = false, shipment = {}, user = {}} = getUserInfo() || {};
     this.isShipment = isShipment;
     this.isZtShipment = isShipment && isZtShipment;
+    console.log('第一传要最后确认');
     if (isShipment) {
       if (isShipment && shipment.info && shipment.info.authStatus !== 3) {
         this.authStatus = false;
@@ -482,9 +583,11 @@ export default {
         return;
       }
 
-      if (isShipment && shipment.info) {
+      // 只有普通货主才走这里去请求
+      if (!isZtShipment && isShipment && shipment.info) {
         // console.log(shipment.info, '货主身份---');
-        this.shipmentInfo = shipment.info;
+        // 通过id 获取 7/23 --chj
+        this.getShipmentInfo(shipment.info.code);
         this.formData.tin1 = shipment.info.code;
       }
       if (user.orgCode) {
@@ -507,6 +610,16 @@ export default {
   },
 
   methods: {
+    // 通过货主的id获取详情 7/23 --chj
+    getShipmentInfo(code) {
+      return getShipmentByCode({ code }).then(res => {
+        this.shipmentInfo = res.data;
+        // this.isZtShipment = res.data.shipmentRoleCodes.indexOf('6809f8526e764abea23e6f302b9cf44d') !== -1;
+        console.log(this.isZtShipment, '要最后确认111');
+      });
+    },
+
+
     // 触发远程搜索
     remoteMethod(query) {
       if (query !== '') {
@@ -545,7 +658,14 @@ export default {
       this.shipmentList.forEach(e => {
         if (e.code === value) {
           this.orgCode = e.orgCode || '';
-          this.shipmentInfo = e;
+          this.isZtShipment = e.shipmentRoleCodes.indexOf('6809f8526e764abea23e6f302b9cf44d') !== -1;
+          // 如果是大宗货主这需要请求详情
+          if (!this.isZtShipment && !this.shipmentInfo) {
+            this.getShipmentInfo(e.code);
+          } else {
+            // 如果是渣土货主则需要这个
+            this.shipmentInfo = e;
+          }
         }
       });
     },
@@ -762,7 +882,7 @@ export default {
       this.goodsBigTypeName = this.basicInfor.orderGoodsList[0].goodsBigTypeName;
 
 
-      console.log(this.basicInfor, '-----------------------');
+      // console.log(this.basicInfor, '-----------------------');
 
 
       const {
@@ -950,9 +1070,13 @@ export default {
 
         this.ztCbData = data;
 
-        console.log(data);
+        // console.log(data, '99999');
 
         const { redisOrderInfoVo, redisOrderClassGoodsVoList, redisOrderSpecifiedVoList, redisOrderFreightInfoVoList, redisOrderGoodsVoList, redisAddressList } = data;
+
+        try {
+          !this.shipmentInfo && (await this.getShipmentInfo(redisOrderInfoVo.pubilshCode));
+        } catch (error) { console.log(error); }
 
         // 5/18s=特殊处理
         const redisOrderGoodsVoListRest = redisOrderGoodsVoList.map(e => {
@@ -1055,7 +1179,6 @@ export default {
       };
 
       const res = await estimateCost(qData);
-      console.log(res, '45646');
       if (res.code === 501) {
         this.msgError(res.msg);
         return;
@@ -1280,10 +1403,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.m_app-container {
-  // overflow-y: auto;
-  // height: calc(100vh - 145px);
-}
+
 .header {
   padding-bottom: 10px;
   position: relative;

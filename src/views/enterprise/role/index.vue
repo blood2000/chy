@@ -241,41 +241,41 @@
             </el-form-item>
           </el-col>
         </el-row>
-          <el-row :gutter="24">
-              <el-col :span="12">
-                <el-form-item label="所属产品" prop="produceCode">
-                  <el-select v-model="form.produceCode" clearable filterable placeholder="请选择所属产品" style="width: 100%">
-                    <el-option
-                      v-for="item in produceList"
-                      :key="item.produceCode"
-                      :label="item.cnName"
-                      :value="item.produceCode"
-                    />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item label="角色名称" prop="roleName">
-                  <el-input v-model="form.roleName" placeholder="请输入角色名称" />
-                </el-form-item>
-                <!--<el-form-item label="权限字符" prop="roleKey">
+        <el-row :gutter="24">
+          <el-col :span="12">
+            <el-form-item label="所属产品" prop="produceCode">
+              <el-select v-model="form.produceCode" clearable filterable placeholder="请选择所属产品" style="width: 100%">
+                <el-option
+                  v-for="item in produceList"
+                  :key="item.produceCode"
+                  :label="item.cnName"
+                  :value="item.produceCode"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="角色名称" prop="roleName">
+              <el-input v-model="form.roleName" placeholder="请输入角色名称" />
+            </el-form-item>
+            <!--<el-form-item label="权限字符" prop="roleKey">
                           <el-input v-model="form.roleKey" placeholder="请输入权限字符" />
                         </el-form-item>-->
-              </el-col>
-          </el-row>
+          </el-col>
+        </el-row>
         <el-row :gutter="20">
-            <el-col :span="12">
-                <el-form-item label="权限范围" prop="dataScope">
-                    <el-select v-model="form.dataScope" clearable filterable style="width: 100%">
-                        <el-option
-                                v-for="item in dataScopeOptions"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value"
-                        />
-                    </el-select>
-                </el-form-item>
-            </el-col>
+          <el-col :span="12">
+            <el-form-item label="权限范围" prop="dataScope">
+              <el-select v-model="form.dataScope" clearable filterable style="width: 100%">
+                <el-option
+                  v-for="item in dataScopeOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
           <el-col :span="5">
             <el-form-item label="角色顺序" prop="roleSort">
               <el-input-number v-model="form.roleSort" style="width: 90%;" controls-position="right" :min="0" />
@@ -481,6 +481,7 @@ export default {
       ],
       // 菜单列表
       menuOptions: [],
+      menuAllKeys: [],
       // 部门列表
       deptOptions: [],
       // 产品列表
@@ -624,6 +625,7 @@ export default {
       menuTreeselect(data, this.userCode).then(response => {
         this.menuOptions = response.data;
         this.defaultExpandedKeys = response.expandKeys;
+        this.menuAllKeys = response.allKeys;
       });
     },
     /** 查询部门树结构 */
@@ -655,6 +657,7 @@ export default {
       return roleMenuTreeselect2(roleId, data).then(response => {
         this.menuOptions = response.menus;
         this.defaultExpandedKeys = response.expandKeys;
+        this.menuAllKeys = response.allKeys;
         return response;
       });
     },
@@ -762,7 +765,8 @@ export default {
     // 树权限（全选/全不选）
     handleCheckedTreeNodeAll(value, type) {
       if (type === 'menu') {
-        this.$refs.menu.setCheckedNodes(value ? this.menuOptions : []);
+        this.$refs.menu.setCheckedKeys(value ? this.menuAllKeys : []);
+        // this.$refs.menu.setCheckedNodes(value ? this.menuOptions : []);
       } else if (type === 'dept') {
         this.$refs.dept.setCheckedNodes(value ? this.deptOptions : []);
       }

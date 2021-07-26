@@ -24,29 +24,21 @@
             icon="el-icon-turn-off"
             size="mini"
             @click="handlerCarConnect(isConnect)"
-          >{{ !isConnect? '连接服务器' :'断开服务器' }}</el-button>
+          >{{ !isConnect? '连接本地服务' :'断开本地服务' }}</el-button>
         </el-col>
         <el-col :span="1.5">
           <el-button
-            type="primary"
+            type="success"
             icon="el-icon-mouse"
             size="mini"
             :disabled="!isConnect || !multiple"
             @click="handlerMakeUp"
           >补卡</el-button>
         </el-col>
-        <el-col :span="1.5">
-          <el-button
-            type="primary"
-            icon="el-icon-brush"
-            size="mini"
-            :disabled="!isConnect"
-            @click="handlerCardInit"
-          >卡初始化</el-button>
-        </el-col>
+
         <el-col v-if="false" :span="1.5">
           <el-button
-            type="primary"
+            type="info"
             icon="el-icon-brush"
             size="mini"
             :disabled="!isConnect"
@@ -55,7 +47,8 @@
         </el-col>
         <el-col :span="1.5">
           <el-button
-            type="primary"
+            v-show="false"
+            type="info"
             icon="el-icon-document"
             size="mini"
             :disabled="!isConnect"
@@ -69,6 +62,15 @@
           :show-search.sync="showSearch"
           @queryTable="getList"
         />
+        <el-col :span="1.5" class="fr mr10">
+          <el-button
+            type="danger"
+            icon="el-icon-brush"
+            size="mini"
+            :disabled="!isConnect"
+            @click="handlerCardInit"
+          >消卡</el-button>
+        </el-col>
       </el-row>
 
 
@@ -524,7 +526,7 @@ export default {
           this.msgSuccess('连接成功');
           this.isConnect = true;
         }, () => {
-          this.msgWarning('未开启服务');
+          // this.msgWarning('未开启本地服务');
           this.isConnect = false;
         });
       }
@@ -557,7 +559,7 @@ export default {
     handlerMakeUp() {
       // console.log(this.selectedData, '数据');
       if (!this.isConnect) {
-        this.msgWarning('未连接服务器');
+        this.msgWarning('未连接本地服务');
         return;
       }
       // console.log(USERINFO);
@@ -622,7 +624,7 @@ export default {
     // 初始卡功能
     handlerCardInit() {
       if (!this.isConnect) {
-        this.msgWarning('未连接服务器');
+        this.msgWarning('未连接本地服务');
         return;
       }
       // ??
@@ -645,7 +647,7 @@ export default {
     // 读取卡用户
     handlerReadUserinfo() {
       if (!this.isConnect) {
-        this.msgWarning('未连接服务器');
+        this.msgWarning('未连接本地服务');
         return;
       }
       action.readUserInfo().then(res => {
@@ -664,7 +666,7 @@ export default {
     // 读卡
     handlerReadData() {
       if (!this.isConnect) {
-        this.msgWarning('未连接服务器');
+        this.msgWarning('未连接本地服务');
         return;
       }
       // 读取卡数据

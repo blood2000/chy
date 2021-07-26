@@ -80,7 +80,7 @@
     <!-- 打开弹框 -->
     <el-dialog :close-on-click-modal="false" title="项目工程" :visible.sync="openObj" width="80%">
       <div v-if="openObj">
-        <ProjectIndex ref="ProjectIndex" :shipment-code="shipmentInfo.code" :iscomponent="true" @selected="(data)=> selectData = data" />
+        <ProjectIndex ref="ProjectIndex" :shipment-code="shipmentInfo.code" :company-code="shipmentInfo.companyCode" :iscomponent="true" @selected="(data)=> selectData = data" />
 
         <el-form-item>
           <div class="ly-t-right">
@@ -134,6 +134,10 @@ export default {
     cbData: {
       type: Object,
       default: null
+    },
+    ztshipmentinfo: {
+      type: Object,
+      default: null
     }
   },
 
@@ -149,7 +153,7 @@ export default {
         'geofenceToggle': false, // 电子围栏是否开启 1 是 0 否		false
         'remark': '', // 备注		false
         'geofenceRadius': 0, // 电子围栏范围		false
-        'publishMode': 0, // 发布方式 0 货源大厅不可见(只能通过货单号或备注搜索) 1 货源大厅可见 默认写死
+        'publishMode': 1, // 发布方式 0 货源大厅不可见(只能通过货单号或备注搜索) 1 货源大厅可见 默认写死
 
         // 选填
         'branchCode': undefined, //
@@ -183,7 +187,17 @@ export default {
   computed: {
     shipmentInfo() {
       const { isShipment = false, shipment = {}} = getUserInfo() || {};
-      return !isShipment ? (shipment.info || {}) : {};
+
+      let shipmentInfo = {};
+      if (this.ztshipmentinfo) {
+        shipmentInfo = this.ztshipmentinfo;
+      } else {
+        shipmentInfo = !isShipment ? (shipment.info || {}) : {};
+      }
+
+      console.log(shipmentInfo);
+
+      return shipmentInfo;
     },
     cbDataByKeyword() {
       let obj = {};
@@ -238,10 +252,16 @@ export default {
       },
       immediate: true
     }
+
+    // ztshipmentinfo: {
+    //   handler(va) {
+    //     console.log(va);
+    //   },
+    //   immediate: true
+    // }
   },
 
   created() {
-
   },
 
   methods: {
@@ -290,6 +310,7 @@ export default {
 
           const qer = {
             ...this.formData,
+            'publishCode': this.shipmentInfo ? this.shipmentInfo.code : undefined,
             'geofenceToggle': this.formData.geofenceToggle ? 1 : 0, // 电子围栏是否开启 1 是 0 否		false
             'geofenceRadius': this.formData.geofenceToggle ? this.formData.geofenceRadius : undefined,
             projectName: undefined // 不需要传这个

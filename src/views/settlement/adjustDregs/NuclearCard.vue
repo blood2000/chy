@@ -20,7 +20,6 @@
     <RefactorTable
       :loading="loading"
       :data="list"
-      height="600px"
       :table-columns-config="[
         {
           prop: 'driverName',

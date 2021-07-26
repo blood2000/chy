@@ -873,18 +873,20 @@ export default {
                 };
                 pathName = obj1['p_' + param];
                 paramVal = undefined;
+                // 传参是为了触发初始请求
                 if (pathName === 'AdjustDregs') {
                   paramVal = '4';
                 }
               } else if (url === 'Askfor') {
                 pathName = 'AskforDregs'; // 待申请发票 对应 索取发票
               } else if (url === 'List') {
-                // const obj2 = {
-                //   'AskforDregs': '1', // 待审核发票 对应 渣土的
-                //   'AskforDregs': '7' // 已开票 对应 渣土的
-                // };
+                const obj2 = {
+                  'l_1': 'ListDregs', // 待审核发票 对应 渣土的 开票
+                  'l_5': 'PaymentDregs' // 已开票 对应 渣土的打款
+                };
                 // 没有对应的页面, 全部跳索票页面
-                pathName = 'AskforDregs';
+                // pathName = 'AskforDregs';
+                pathName = obj2['l_' + param];
                 paramVal = undefined;
               }
             });
