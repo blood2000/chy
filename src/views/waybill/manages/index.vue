@@ -193,6 +193,9 @@
         <template #status="{row}">
           <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
         </template>
+        <template #stowageStatus="{row}">
+          <span>{{ selectDictLabel(stowageStatusOptions, row.stowageStatus) }}</span>
+        </template>
         <!-- <template #isChild="{row}">
           <span>{{ selectDictLabel(isChildOptions, row.isChild) }}</span>
         </template> -->
@@ -415,6 +418,12 @@ export default {
         { 'dictLabel': '已作废', 'dictValue': '10' },
         { 'dictLabel': '已核验', 'dictValue': '11' },
         { 'dictLabel': '已完成', 'dictValue': '12' }
+      ],
+      // 配载方式字典
+      stowageStatusOptions: [
+        { 'dictLabel': '吨', 'dictValue': '0' },
+        { 'dictLabel': '方', 'dictValue': '1' },
+        { 'dictLabel': '车', 'dictValue': '2' }
       ],
       // 司机取消订单字典
       'cancelStatusOptions': [
