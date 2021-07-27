@@ -257,7 +257,7 @@
           >
             备注
           </el-button>
-          <el-button
+          <!-- <el-button
             v-if="row.isChild === 2 && isShipment"
             v-hasPermi="['transportation:waybillOper:reinsurance']"
             size="mini"
@@ -265,8 +265,8 @@
             @click="handleSeperate(row)"
           >
             分单列表
-          </el-button>
-          <TableDropdown v-show="!isShipment && (row.isChild === 2 || row.status < '5')">
+          </el-button> -->
+          <TableDropdown v-show="row.isChild === 2 || row.status < '5'">
             <el-dropdown-item>
               <el-button
                 v-if="row.status < '5'"
