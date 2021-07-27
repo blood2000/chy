@@ -299,13 +299,13 @@
           </el-col>-->
           <el-col :span="12">
             <el-form-item label="角色" prop="roleCodes">
-              <el-select v-model="form.roleCodes" multiple placeholder="请选择" clearable filterable>
+              <el-select v-model="form.roleCodes" multiple placeholder="请选择" clearable filterable :disabled="roleDisabled">
                 <el-option
                   v-for="item in roleOptions"
                   :key="item.roleCode"
                   :label="item.roleName"
                   :value="item.roleCode"
-                  :disabled="item.status == 1 || (item.isSystem == 1 && !isAdmin) "
+                  :disabled="item.status == 1 || (item.isSystem == 1) "
                 />
               </el-select>
             </el-form-item>
@@ -538,11 +538,12 @@ export default {
           { validator: this.formValidate.passWord, trigger: 'blur' }
         ]
       },
-      currentOrgCode: ''
+      currentOrgCode: '',
+      roleDisabled: false
     };
   },
   computed: {
-    ...mapGetters(['isAdmin'])
+    ...mapGetters(['isAdmin', 'defaultRoleCode'])
   },
   watch: {
     // 根据名称筛选部门树
@@ -682,6 +683,7 @@ export default {
     handleUpdate(row) {
       this.reset();
       this.getTreeselect();
+      this.roleDisabled = false;
       const userId = row.userId || this.ids;
       getUser(userId, { orgCode: this.companyCode, orgType: this.orgType, showShipment: this.showShipment }).then(response => {
         this.form = response.data;
@@ -692,6 +694,12 @@ export default {
         this.open = true;
         this.title = '修改用户';
         this.form.password = '';
+        response.roleCodes.forEach(role => {
+          if (this.defaultRoleCode.split(',').indexOf(role) > -1) {
+            this.roleDisabled = true;
+            return;
+          }
+        });
       });
     },
     /** 重置密码按钮操作 */
