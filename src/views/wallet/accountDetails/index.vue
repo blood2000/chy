@@ -49,6 +49,15 @@
     </div>
     <div class="app-container">
       <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            type="warning"
+            icon="el-icon-download"
+            size="mini"
+            :loading="exportLoading"
+            @click="handleExport"
+          >导出</el-button>
+        </el-col>
         <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" /><!-- api 使用computed -->
         </el-col>
@@ -187,6 +196,8 @@ export default {
       dataList: [],
       // 表头 7/26 --chj
       tableColumnsConfig: [],
+      exportLoading: false,
+
       // 交易类型字典
       consumeOptions: [
         { dictLabel: '充值', dictValue: 0 },
@@ -313,6 +324,27 @@ export default {
       this.activeName = '';
       this.updateTimeBegin = undefined;
       this.updateTimeEnd = undefined;
+    },
+
+    /** 导出按钮操作 */
+    handleExport() {
+      this.exportLoading = true;
+      const { user = {}} = getUserInfo() || {};
+      const { userCode } = user;
+      const params = Object.assign(
+        {},
+        this.queryParams,
+        { userCode: userCode },
+        {
+          updateTimeBegin: this.queryParams.updateTimeBegin ? this.queryParams.updateTimeBegin : this.updateTimeBegin,
+          updateTimeEnd: this.queryParams.updateTimeEnd ? this.queryParams.updateTimeEnd : this.updateTimeEnd
+        }
+      );
+      params.pageSize = undefined;
+      params.pageNum = undefined;
+      this.download('/payment/shipmentPaidRecord/accountCapotalVoExport', params, `账户明细`).then(() => {
+        this.exportLoading = false;
+      });
     }
   }
 };
