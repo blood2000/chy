@@ -19,7 +19,7 @@
         <el-row :gutter="10">
           <el-col :span="1.5">
             <el-button
-              v-if="hasFreightInvoice"
+              v-if="hasFreightInvoice && !hasServiceInvoice"
               type="primary"
               icon="el-icon-download"
               size="mini"
@@ -260,7 +260,7 @@ export default {
     },
     // 导出服务费明细
     handleExportService() {
-      this.download('/transportation/invoiceApply/export2', { applyCode: this.form.code, type: 2 }, `服务费明细`);
+      this.download('/transportation/invoiceApply/export2', { applyCode: this.form.code, type: 2 }, `服务费明细(两票制)`);
     },
     // 查看发票里的运单
     handleClick(row) {

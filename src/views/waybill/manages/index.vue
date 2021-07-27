@@ -193,6 +193,9 @@
         <template #status="{row}">
           <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
         </template>
+        <template #stowageStatus="{row}">
+          <span>{{ selectDictLabel(stowageStatusOptions, row.stowageStatus) }}</span>
+        </template>
         <!-- <template #isChild="{row}">
           <span>{{ selectDictLabel(isChildOptions, row.isChild) }}</span>
         </template> -->
@@ -254,7 +257,7 @@
           >
             备注
           </el-button>
-          <el-button
+          <!-- <el-button
             v-if="row.isChild === 2 && isShipment"
             v-hasPermi="['transportation:waybillOper:reinsurance']"
             size="mini"
@@ -262,8 +265,8 @@
             @click="handleSeperate(row)"
           >
             分单列表
-          </el-button>
-          <TableDropdown v-show="!isShipment && (row.isChild === 2 || row.status < '5')">
+          </el-button> -->
+          <TableDropdown v-show="row.isChild === 2 || row.status < '5'">
             <el-dropdown-item>
               <el-button
                 v-if="row.status < '5'"
@@ -416,6 +419,12 @@ export default {
         { 'dictLabel': '已核验', 'dictValue': '11' },
         { 'dictLabel': '已完成', 'dictValue': '12' }
       ],
+      // 配载方式字典
+      stowageStatusOptions: [
+        { 'dictLabel': '吨', 'dictValue': '0' },
+        { 'dictLabel': '方', 'dictValue': '1' },
+        { 'dictLabel': '车', 'dictValue': '2' }
+      ],
       // 司机取消订单字典
       'cancelStatusOptions': [
         { 'dictLabel': '正常', 'dictValue': 0 },
@@ -475,7 +484,6 @@ export default {
     this.queryParams.startReceiveTime = this.parseTime(new Date().getTime() - 24 * 60 * 60 * 1000 * 2, '{y}-{m}-{d}');
     this.queryParams.endReceiveTime = this.parseTime(new Date(), '{y}-{m}-{d}');
     this.receiveTime = [new Date(new Date().getTime() - 24 * 60 * 60 * 1000 * 2), new Date()];
-    console.log(this.queryParams.startReceiveTime, this.queryParams.endReceiveTime, this.receiveTime);
     this.getList();
   },
   methods: {
