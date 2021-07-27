@@ -415,12 +415,12 @@ export default {
 
       // -1 核验驳回 0 已核算 1 已核验 2 已索票 3 已开票 4 已打款
       statusOptions: [
-        { dictLabel: '核验驳回', dictValue: -1 },
-        { dictLabel: '已核算', dictValue: 0 },
-        { dictLabel: '已核验', dictValue: 1 },
-        { dictLabel: '已索票', dictValue: 2 },
-        { dictLabel: '已开票', dictValue: 3 },
-        { dictLabel: '已打款', dictValue: 4 }
+        { dictLabel: '核验驳回', dictValue: -1, api: '/transportation/batch/verRejectionVo' },
+        { dictLabel: '已核算', dictValue: 0, api: '/transportation/batch/accountedVo' }, // /transportation/batch/list
+        { dictLabel: '已核验', dictValue: 1, api: '/transportation/batch/batchCheckListVo' },
+        { dictLabel: '已索票', dictValue: 2, api: '/transportation/batch/invoicingReqListVo' },
+        { dictLabel: '已开票', dictValue: 3, api: '/transportation/batch/paymentVo' },
+        { dictLabel: '已打款', dictValue: 4, api: '/transportation/batch/paidVo' }
       ],
 
 
@@ -431,7 +431,15 @@ export default {
   },
   computed: {
     api() {
-      return adjustListApi + '--' + (this.isShipment ? 'isShipment' : 'isNoShipment') + this.status;
+      let api = '';
+
+      this.statusOptions.forEach(e => {
+        if (e.dictValue === this.status) {
+          api = (e.api || adjustListApi) + '--' + (this.isShipment ? 'isShipment' : 'isNoShipment') + this.status;
+        }
+      });
+
+      return api;
     },
     tableColumns() {
       let arr = [];
@@ -447,23 +455,23 @@ export default {
               'sortNum': 2,
               'width': '120',
               'tooltip': true
-            },
-            {
-              'label': '驳回原因',
-              'prop': 'remark',
-              'isShow': true,
-              'sortNum': 21,
-              'width': '120',
-              'tooltip': true
-            },
-            {
-              'label': '驳回人员',
-              'prop': 'opName',
-              'isShow': true,
-              'sortNum': 21,
-              'width': '120',
-              'tooltip': true
             }
+            // {
+            //   'label': '驳回原因',
+            //   'prop': 'remark',
+            //   'isShow': true,
+            //   'sortNum': 21,
+            //   'width': '120',
+            //   'tooltip': true
+            // },
+            // {
+            //   'label': '驳回人员',
+            //   'prop': 'opName',
+            //   'isShow': true,
+            //   'sortNum': 21,
+            //   'width': '120',
+            //   'tooltip': true
+            // }
           ];
           break;
         case 0:
@@ -475,23 +483,23 @@ export default {
               'sortNum': 2,
               'width': '120',
               'tooltip': true
-            },
-            {
-              'label': '驳回原因',
-              'prop': 'remark',
-              'isShow': true,
-              'sortNum': 21,
-              'width': '120',
-              'tooltip': true
-            },
-            {
-              'label': '核算人员',
-              'prop': 'opName',
-              'isShow': true,
-              'sortNum': 21,
-              'width': '120',
-              'tooltip': true
             }
+            // {
+            //   'label': '驳回原因',
+            //   'prop': 'remark',
+            //   'isShow': true,
+            //   'sortNum': 21,
+            //   'width': '120',
+            //   'tooltip': true
+            // },
+            // {
+            //   'label': '核算人员',
+            //   'prop': 'opName',
+            //   'isShow': true,
+            //   'sortNum': 21,
+            //   'width': '120',
+            //   'tooltip': true
+            // }
           ];
           break;
         case 1:
@@ -503,47 +511,47 @@ export default {
               'sortNum': 2,
               'width': '120',
               'tooltip': true
-            },
-            {
-              'label': '收票人',
-              'prop': 'receiver',
-              'isShow': isAdmin,
-              'sortNum': 17,
-              'width': '120',
-              'tooltip': true
-            },
-            {
-              'label': '收票人电话',
-              'prop': 'receiverPhone',
-              'isShow': isAdmin,
-              'sortNum': 18,
-              'width': '120',
-              'tooltip': true
-            },
-            {
-              'label': '收票人地址',
-              'prop': 'invoiceReceiverAddress',
-              'isShow': isAdmin,
-              'sortNum': 19,
-              'width': '120',
-              'tooltip': true
-            },
-            {
-              'label': '驳回原因',
-              'prop': 'remark',
-              'isShow': true,
-              'sortNum': 21,
-              'width': '120',
-              'tooltip': true
-            },
-            {
-              'label': '核验人员',
-              'prop': 'opName',
-              'isShow': true,
-              'sortNum': 21,
-              'width': '120',
-              'tooltip': true
             }
+            // {
+            //   'label': '收票人',
+            //   'prop': 'receiver',
+            //   'isShow': isAdmin,
+            //   'sortNum': 17,
+            //   'width': '120',
+            //   'tooltip': true
+            // },
+            // {
+            //   'label': '收票人电话',
+            //   'prop': 'receiverPhone',
+            //   'isShow': isAdmin,
+            //   'sortNum': 18,
+            //   'width': '120',
+            //   'tooltip': true
+            // },
+            // {
+            //   'label': '收票人地址',
+            //   'prop': 'invoiceReceiverAddress',
+            //   'isShow': isAdmin,
+            //   'sortNum': 19,
+            //   'width': '120',
+            //   'tooltip': true
+            // },
+            // {
+            //   'label': '驳回原因',
+            //   'prop': 'remark',
+            //   'isShow': true,
+            //   'sortNum': 21,
+            //   'width': '120',
+            //   'tooltip': true
+            // },
+            // {
+            //   'label': '核验人员',
+            //   'prop': 'opName',
+            //   'isShow': true,
+            //   'sortNum': 21,
+            //   'width': '120',
+            //   'tooltip': true
+            // }
           ];
           break;
         case 2:
@@ -555,23 +563,23 @@ export default {
               'sortNum': 2,
               'width': '120',
               'tooltip': true
-            },
-            {
-              'label': '驳回原因',
-              'prop': 'remark',
-              'isShow': true,
-              'sortNum': 21,
-              'width': '120',
-              'tooltip': true
-            },
-            {
-              'label': '索票人员',
-              'prop': 'opName',
-              'isShow': true,
-              'sortNum': 21,
-              'width': '120',
-              'tooltip': true
             }
+            // {
+            //   'label': '驳回原因',
+            //   'prop': 'remark',
+            //   'isShow': true,
+            //   'sortNum': 21,
+            //   'width': '120',
+            //   'tooltip': true
+            // },
+            // {
+            //   'label': '索票人员',
+            //   'prop': 'opName',
+            //   'isShow': true,
+            //   'sortNum': 21,
+            //   'width': '120',
+            //   'tooltip': true
+            // }
           ];
           break;
         case 3:
@@ -591,23 +599,23 @@ export default {
               sortNum: 10,
               tooltip: true,
               label: '发票图片'
-            },
-            {
-              'label': '驳回原因',
-              'prop': 'remark',
-              'isShow': true,
-              'sortNum': 21,
-              'width': '120',
-              'tooltip': true
-            },
-            {
-              'label': '开票人员',
-              'prop': 'opName',
-              'isShow': true,
-              'sortNum': 21,
-              'width': '120',
-              'tooltip': true
             }
+            // {
+            //   'label': '驳回原因',
+            //   'prop': 'remark',
+            //   'isShow': true,
+            //   'sortNum': 21,
+            //   'width': '120',
+            //   'tooltip': true
+            // },
+            // {
+            //   'label': '开票人员',
+            //   'prop': 'opName',
+            //   'isShow': true,
+            //   'sortNum': 21,
+            //   'width': '120',
+            //   'tooltip': true
+            // }
           ];
           break;
         case 4:
@@ -619,23 +627,23 @@ export default {
               'sortNum': 2,
               'width': '120',
               'tooltip': true
-            },
-            {
-              'label': '驳回原因',
-              'prop': 'remark',
-              'isShow': false,
-              'sortNum': 21,
-              'width': '120',
-              'tooltip': true
-            },
-            {
-              'label': '打款人员',
-              'prop': 'opName',
-              'isShow': true,
-              'sortNum': 21,
-              'width': '120',
-              'tooltip': true
             }
+            // {
+            //   'label': '驳回原因',
+            //   'prop': 'remark',
+            //   'isShow': false,
+            //   'sortNum': 21,
+            //   'width': '120',
+            //   'tooltip': true
+            // },
+            // {
+            //   'label': '打款人员',
+            //   'prop': 'opName',
+            //   'isShow': true,
+            //   'sortNum': 21,
+            //   'width': '120',
+            //   'tooltip': true
+            // }
           ];
           break;
       }

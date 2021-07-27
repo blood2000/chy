@@ -14,12 +14,13 @@
 
     <el-image
       v-show="chenyunma"
-      style="width: 100px; height: 100px"
+      v-viewer
       :src="url"
-      fit="cover"
+      fit="contain"
+      style="width: 100px; height: 100px"
     >
       <div slot="error" class="image-slot">
-        无货集码...
+        <i class="el-icon-picture-outline" />
       </div>
     </el-image>
 
@@ -55,7 +56,7 @@
 </template>
 
 <script>
-import { getByOrderCode } from '@/api/order/release';
+import { getByOrderCode, getCym } from '@/api/order/release';
 
 // 运单详情弹窗
 import DetailDialog from '@/views/waybill/components/detailDialog';
@@ -169,9 +170,10 @@ export default {
 
   created() {
     if (this.waybillData) {
-      this.url = this.waybillData.classList.length ? this.waybillData.classList[0].cargoCodeQr : '';
+      // this.url = this.waybillData.classList.length ? this.waybillData.classList[0].cargoCodeQr : '';
       this.orderCode = this.waybillData.code;
       this.getList();
+      this.getCymByCode();
     }
   },
 
@@ -188,6 +190,14 @@ export default {
         this.loading = false;
       }
     },
+
+    // 获取承运码
+    async getCymByCode() {
+      const res = await getCym(this.orderCode);
+      // console.log(res);
+      this.url = res.data;
+    },
+
     // 分页
     handleInfo(row) {
       this.$refs.DetailDialog.reset();

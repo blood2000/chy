@@ -17,6 +17,14 @@ export function ztPublishOrder(data) {
     data: data
   });
 }
+// 渣土发布货源
+export function ztUpdateOrder(data) {
+  return request({
+    url: '/transportation/app/orderInfo/updateOrder',
+    method: 'post',
+    data: data
+  });
+}
 
 
 // 修改货源 /transportation/order/modify
@@ -32,6 +40,14 @@ export function update(data) {
 export function getOrderByCode(code) {
   return request({
     url: '/transportation/orderInfoSearch/getOrderDetailBycode/' + code,
+    method: 'get'
+  });
+}
+
+// 获取承运码
+export function getCym(code) {
+  return request({
+    url: '/transportation/waybill/app/getCym/' + code,
     method: 'get'
   });
 }

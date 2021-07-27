@@ -487,8 +487,8 @@ export default {
     que() {
       return {
         ...this.queryParams,
-        beginTime: this.queryParams.receiveTime[0],
-        endTime: this.queryParams.receiveTime[1],
+        beginTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[0] : undefined,
+        endTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[1] : undefined,
         receiveTime: undefined
       };
     }
