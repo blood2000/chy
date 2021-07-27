@@ -36,6 +36,14 @@ export function getOrderByCode(code) {
   });
 }
 
+// 获取承运码
+export function getCym(code) {
+  return request({
+    url: '/transportation/waybill/app/getCym/' + code,
+    method: 'get'
+  });
+}
+
 // 获取货源运费信息
 export function orderFreight(query) {
   return request({
