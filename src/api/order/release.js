@@ -17,6 +17,14 @@ export function ztPublishOrder(data) {
     data: data
   });
 }
+// 渣土发布货源
+export function ztUpdateOrder(data) {
+  return request({
+    url: '/transportation/app/orderInfo/updateOrder',
+    method: 'post',
+    data: data
+  });
+}
 
 
 // 修改货源 /transportation/order/modify

@@ -53,7 +53,7 @@
 
       </div> -->
 
-      <ztRelease :cb-data="ztCbData" :ztshipmentinfo="shipmentInfo" />
+      <ztRelease :cb-data="ztCbData" :ztshipmentinfo="shipmentInfo" :is-t="isT" />
     </div>
 
     <template v-else>
