@@ -36,7 +36,7 @@
           >补卡</el-button>
         </el-col>
 
-        <el-col v-if="false" :span="1.5">
+        <el-col v-show="false" :span="1.5">
           <el-button
             type="info"
             icon="el-icon-brush"
@@ -45,9 +45,8 @@
             @click="handlerReadUserinfo"
           >读卡用户信息</el-button>
         </el-col>
-        <el-col :span="1.5">
+        <el-col v-show="false" :span="1.5">
           <el-button
-            v-show="false"
             type="info"
             icon="el-icon-document"
             size="mini"
@@ -522,11 +521,9 @@ export default {
         this.isConnect = false;
       } else {
         CardReader.fn.connect(() => {
-          // console.log('连接成功');
           this.msgSuccess('连接成功');
           this.isConnect = true;
         }, () => {
-          // this.msgWarning('未开启本地服务');
           this.isConnect = false;
         });
       }
@@ -536,14 +533,13 @@ export default {
     getCardInfo() {
       if (this.isConnect) {
         action.getCardInfo().then(res => {
-          // console.log(res);
           if (res.success) {
             if (res.code === '9000') {
               this.$set(this.queryParams, 'card16no', res.GetCardNo.data);
               this.getList();
             }
           } else {
-            this.msgError('请将【数据IC卡】放至有效位置');
+            this.msgError(res.msg);
           }
         });
       } else {
@@ -616,7 +612,7 @@ export default {
             }).catch(() => {});
           }
         } else {
-          this.msgError('请将【数据IC卡】放至有效位置');
+          this.msgError(res.msg);
         }
       });
     },
@@ -637,7 +633,7 @@ export default {
           if (res.success) {
             this.msgSuccess('初始化成功');
           } else {
-            this.msgError('初始化失败');
+            this.msgError(res.msg);
           }
           // console.log(res);
         });
@@ -653,12 +649,14 @@ export default {
       action.readUserInfo().then(res => {
         if (res.success) {
           if (res.code === '9000') {
-            this.msgSuccess('读取成功');
+            this.cardInfoData = res;
+            this.cardinfoOpen = true;
+            this.msgSuccess(res.msg);
           } else {
             this.msgWarning(res.msg);
           }
         } else {
-          this.msgError('请将【数据IC卡】放至有效位置');
+          this.msgError(res.msg);
         }
       });
     },
@@ -679,7 +677,7 @@ export default {
             this.msgWarning(res.msg);
           }
         } else {
-          this.msgError('请将【数据IC卡】放至有效位置');
+          this.msgError(res.msg);
         }
       });
     },
