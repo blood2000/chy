@@ -16,7 +16,12 @@ export function getStockcode(id) {
     method: 'get'
   });
 }
-
+export function getStockCode(code) {
+  return request({
+    url: `/assets/shipment/cargocode/get/${code}`,
+    method: 'get'
+  });
+}
 // 新增货集码
 export function addStockcode(data) {
   return request({
