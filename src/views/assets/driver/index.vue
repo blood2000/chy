@@ -180,15 +180,16 @@
             placeholder="请选择"
           />
         </el-form-item>
-          <el-form-item label="身份有效期" prop="isIdentityEffective">
-              <el-select v-model="queryParams.isIdentityEffective" placeholder="请选择" filterable clearable size="small" class="input-width">
-                  <el-option
-                          v-for="dict in identityEffectiveOptions"
-                          :label="dict.dictLabel"
-                          :value="dict.dictValue"
-                  />
-              </el-select>
-          </el-form-item>
+        <el-form-item label="身份有效期" prop="isIdentityEffective">
+          <el-select v-model="queryParams.isIdentityEffective" placeholder="请选择" filterable clearable size="small" class="input-width">
+            <el-option
+              v-for="dict in identityEffectiveOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
           <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
