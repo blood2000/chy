@@ -512,7 +512,7 @@ export default {
 
     // 单项修改
     async setDeliveryCashFee(parame, row) {
-      console.log(parame, row);
+      // console.log(parame, row);
 
       this.loading1 = true;
       this.plLoading = true;
@@ -655,7 +655,6 @@ export default {
           this.adjustLoading = false;
           if (res.data) {
             this.msgError(res.msg);
-            // console.log(res);
             const list = res.data.exceptionList;
             this.errList = list.map(item => item.waybillCode);
           } else {
@@ -744,11 +743,11 @@ export default {
 
         this.total = response.total;
         // 要求初始就要计算一次
-        this.handleSelectedNumChange();
+        this.handlerBatchCalculate();
         // 单条数据，进行一次计算
-        if (this.adjustlist.length === 1) {
-          this.handlerChangev(this.adjustlist[0]);
-        }
+        // if (this.adjustlist.length === 1) {
+        //   this.handlerChangev(this.adjustlist[0]);
+        // }
         // 默认选中第一行
         this.$refs.adjustTable.setCurrentRow(this.adjustlist[0]);
         this.showImg(this.adjustlist[0]);
@@ -772,7 +771,7 @@ export default {
     /** 取消按钮 */
     cancel() {
       this.rowData = {};
-      console.log(this.rowData);
+      // console.log(this.rowData);
       // this.showSubList = [];
       this.close();
     },
@@ -888,7 +887,7 @@ export default {
     /* 计算价格 */
     _sum(arr = []) {
       let sum = 0;
-      console.log(arr);
+      // console.log(arr);
       if (arr) {
         arr.forEach(e => {
           sum += (e.ruleValue - 0);

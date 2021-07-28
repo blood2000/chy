@@ -502,7 +502,7 @@ export default {
         {
           label: '货主实付金额',
           value: 0,
-          key: 'taxFee'
+          key: 'shipperRealPay'
         },
         {
           label: '司机实收金额',
@@ -530,9 +530,9 @@ export default {
             key: 'waybillCount'
           },
           {
-            label: '货主应付金额',
+            label: '货主预估金额',
             value: 0,
-            key: 'shipperCopeFee'
+            key: 'shipperEstimate'
           },
           {
             label: '司机应收金额',
@@ -557,14 +557,17 @@ export default {
         arr.forEach(ee => {
           if (e[ee.key]) {
             ee.value += (e[ee.key] - 0);
+          } else if (ee.key === 'shipperEstimate') {
+            ee.value += (e.deliveryFeeDeserved - 0) + (e.taxPayment - 0);
           }
         });
       });
-
+      console.log(arr);
       arr.map(e => {
         e.value = this.floor(e.value);
         return e;
       });
+      console.log(arr);
 
       return arr;
     }
