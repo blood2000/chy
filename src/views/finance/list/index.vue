@@ -96,6 +96,16 @@
             @click="handleVerify"
           >批量审核</el-button>
         </el-col>
+        <el-col :span="1.5">
+          <el-button
+            type="primary"
+            icon="el-icon-download"
+            size="mini"
+            :disabled="multiple"
+            :loading="exportlistLoading"
+            @click="handleExport"
+          >导出</el-button>
+        </el-col>
         <el-col v-show="activeName == '6'" :span="1.5">
           <el-button
             type="primary"
@@ -206,6 +216,7 @@ export default {
       // 批量轨迹参数
       waybillTrack: [],
       exportLoading: false,
+      exportlistLoading: false,
       tableColumnsConfig: [],
       api: billListApi,
       activeName: '1',
@@ -214,6 +225,7 @@ export default {
       'loading': false,
       // 选中数组
       'ids': null,
+      'exportIds': [],
       // 非多个禁用
       multiple: true,
       // 选中数量
@@ -352,6 +364,7 @@ export default {
       this.commentlist = selection;
       this.selectlenght = selection.length;
       this.ids = selection.map((item) => item.code).join(',');
+      this.exportIds = selection.map((item) => item.code);
       this.multiple = !selection.length;
     },
     /** 查询【请填写功能名称】列表 */
@@ -384,6 +397,13 @@ export default {
       this.title = '批量审批';
       this.$refs.VerifyDialog.setForm(this.ids);
       this.$refs.VerifyDialog.setNum(this.selectlenght);
+    },
+    // 导出
+    handleExport() {
+      this.exportlistLoading = true;
+      this.download('/transportation/invoiceApply/export3', { applyCodes: this.ids, type: 1 }, `发票列表`).then(() => {
+        this.exportlistLoading = false;
+      });
     },
     // 导出运费明细
     handleExportFreight() {
