@@ -351,10 +351,10 @@
         </template>
       </RefactorTable>
 
+      <!-- :page-sizes="[10, 50, 100, 500, 1000]" -->
       <pagination
         v-show="total>0"
         :total="total"
-        :page-sizes="[10, 20]"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
         @pagination="getList"
