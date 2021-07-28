@@ -15,6 +15,7 @@
             type="primary"
             icon="el-icon-download"
             size="mini"
+            :disabled="!(total>0)"
             :loading="exportLoading"
             @click="handleExport"
           >导出</el-button>

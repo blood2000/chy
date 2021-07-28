@@ -61,9 +61,10 @@
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
           <el-button
-            type="warning"
+            type="primary"
             icon="el-icon-download"
             size="mini"
+            :disabled="!(total>0)"
             :loading="exportLoading"
             @click="handleExport"
           >导出</el-button>
