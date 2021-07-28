@@ -212,7 +212,7 @@
     </div>
 
     <div class="app-container">
-      <TotalBar :total-list="totalList" />
+      <TotalBar :total-list="totalList" fixed />
       <el-row
         :gutter="10"
         class="mb8"
