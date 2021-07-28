@@ -180,6 +180,15 @@
             placeholder="请选择"
           />
         </el-form-item>
+          <el-form-item label="身份有效期" prop="isIdentityEffective">
+              <el-select v-model="queryParams.isIdentityEffective" placeholder="请选择" filterable clearable size="small" class="input-width">
+                  <el-option
+                          v-for="dict in identityEffectiveOptions"
+                          :label="dict.dictLabel"
+                          :value="dict.dictValue"
+                  />
+              </el-select>
+          </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
           <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -490,6 +499,10 @@ export default {
         { dictLabel: '是', dictValue: 0 },
         { dictLabel: '否', dictValue: 1 }
       ],
+      identityEffectiveOptions: [
+        { dictLabel: '正常', dictValue: 1 },
+        { dictLabel: '已过期', dictValue: 2 }
+      ],
       // 是否冻结字典
       isFreezoneOptions: [
         { dictLabel: '正常', dictValue: 0 },
@@ -556,7 +569,8 @@ export default {
         authTimeBegin: undefined,
         authTimeEnd: undefined,
         createTimeBegin: undefined,
-        createTimeEnd: undefined
+        createTimeEnd: undefined,
+        isIdentityEffective: null
       },
       // 表单是否禁用
       formDisable: false,
