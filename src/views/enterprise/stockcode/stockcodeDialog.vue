@@ -5,7 +5,7 @@
         <el-input v-model="form.cargoCodeName" :disabled="form.id !=null" placeholder="请输入货集码名称" class="width50 mr3" clearable />
         <span class="g-color-gray">(货集码名称可自定义,如线路名称等)</span>
       </el-form-item>
-     <!-- <el-form-item label="货集二维码" :required="true">
+      <!-- <el-form-item label="货集二维码" :required="true">
         &lt;!&ndash; 编辑的时候不能修改二维码 &ndash;&gt;
         <template v-if="form.id == null || form.id == undefined || form.id == ''">
          <el-button type="primary" @click="generateCode">生成货集码</el-button>
@@ -16,12 +16,12 @@
           <img v-if="form.cargoCodeQR" class="cargo-code" :src="form.cargoCodeQR">
         </template>
       </el-form-item>-->
-        <el-form-item label="货集二维码" v-if="form.cargoCodeQR">
-            <img class="cargo-code" :src="form.cargoCodeQR">
-        </el-form-item>
+      <el-form-item v-if="form.cargoCodeQR" label="货集二维码">
+        <img class="cargo-code" :src="form.cargoCodeQR">
+      </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" :loading="buttonLoading" v-if="title == '添加'" @click="submitForm">确 定</el-button>
+      <el-button v-if="title == '添加'" type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
     </div>
   </el-dialog>

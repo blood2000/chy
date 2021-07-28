@@ -115,9 +115,9 @@
           <el-table-column label="运费单价（元）" align="center" prop="freightPriceDriver" />
           <el-table-column label="实付金额（元）" align="center" prop="amount">
             <!-- 金额：单位分转为元 -->
-            <template slot-scope="scope">
+            <!-- <template slot-scope="scope">
               <span>{{ scope.row.amount ? (scope.row.amount/100).toFixed(2) : scope.row.amount }}</span>
-            </template>
+            </template> -->
             <!-- 付款类型 -->
           </el-table-column>
           <el-table-column label="操作时间" align="center" prop="updateTime" width="180">
