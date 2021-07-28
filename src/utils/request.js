@@ -160,26 +160,42 @@ export function download(url, params, filename, headers, type = '.xlsx') {
     responseType: 'blob',
     timeout: 10 * 60 * 1000 // 有些表导出数据量太大, 超时时间设为10分钟
   }).then((data) => {
-    Message({
-      message: '导出成功',
-      type: 'success',
-      duration: 3 * 1000,
-      showClose: true
-    });
-    const content = data;
-    const blob = new Blob([content]);
-    if ('download' in document.createElement('a')) {
-      const elink = document.createElement('a');
-      elink.download = filename;
-      elink.style.display = 'none';
-      elink.href = URL.createObjectURL(blob);
-      document.body.appendChild(elink);
-      elink.click();
-      URL.revokeObjectURL(elink.href);
-      document.body.removeChild(elink);
-    } else {
-      navigator.msSaveBlob(blob, filename);
-    }
+    var reader = new FileReader();
+    reader.onload = function(event) {
+      const result = reader.result.length < 100 ? JSON.parse(reader.result) : '';// 内容就在这里
+      if (Object.prototype.toString.call(result) === '[object Object]' && (result.code === 400 || result.code === 404)) {
+        // 400
+        Message({
+          message: result.msg,
+          type: 'error',
+          duration: 3 * 1000,
+          showClose: true
+        });
+      } else {
+        // success
+        Message({
+          message: '导出成功',
+          type: 'success',
+          duration: 3 * 1000,
+          showClose: true
+        });
+        const content = data;
+        const blob = new Blob([content]);
+        if ('download' in document.createElement('a')) {
+          const elink = document.createElement('a');
+          elink.download = filename;
+          elink.style.display = 'none';
+          elink.href = URL.createObjectURL(blob);
+          document.body.appendChild(elink);
+          elink.click();
+          URL.revokeObjectURL(elink.href);
+          document.body.removeChild(elink);
+        } else {
+          navigator.msSaveBlob(blob, filename);
+        }
+      }
+    };
+    reader.readAsText(data);
   }).catch((r) => {
     console.error(r);
   });
