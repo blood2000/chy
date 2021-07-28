@@ -422,7 +422,7 @@
             { validator: (rules, value, callback) => formValidate.greaterThanZero(rules, value, callback, '车辆总重量'), trigger: ['blur', 'change'] }
           ]"
         >
-          <el-input-number v-model="vehicleForm.vehicleTotalWeight" :controls="false" :min="0" :max="1000000" placeholder="请输入车辆总重量" class="width90 unit-item" clearable :disabled="disable" />
+          <el-input-number v-model="vehicleForm.vehicleTotalWeight" :controls="false" :min="0" :precision="3" :max="1000000" placeholder="请输入车辆总重量" class="width90 unit-item" clearable :disabled="disable" />
           <span class="unit-span g-color-gray">吨</span>
         </el-form-item>
         <el-form-item
@@ -433,7 +433,7 @@
             { validator: (rules, value, callback) => formValidate.greaterThanZero(rules, value, callback, '车辆可载重量'), trigger: ['blur', 'change'] }
           ]"
         >
-          <el-input-number v-model="vehicleForm.vehicleLoadWeight" :controls="false" :min="0" :max="1000000" placeholder="请输入车辆可载重量" class="width90 unit-item" clearable :disabled="disable" />
+          <el-input-number v-model="vehicleForm.vehicleLoadWeight" :controls="false" :min="0" :precision="3" :max="1000000" placeholder="请输入车辆可载重量" class="width90 unit-item" clearable :disabled="disable" />
           <span class="unit-span g-color-gray">吨</span>
         </el-form-item>
         <!-- <el-form-item label="车辆可载平方" prop="vehicleLoadVolume">
