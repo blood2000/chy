@@ -74,9 +74,46 @@
           <el-col :span="1.5">
             <el-button type="primary" icon="el-icon-download" size="mini" :loading="exportLoading" @click="handleExport">导出</el-button>
           </el-col>
+          <el-col :span="1.5" class="fr">
+            <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" /><!-- api 使用computed -->
+          </el-col>
           <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
         </el-row>
-        <el-table v-loading="loading" border highlight-current-row :data="infoList">
+
+        <RefactorTable :loading="loading" :data="infoList" :table-columns-config="tableColumnsConfig">
+          <template #paidAmount="{row}">
+            <p v-if="row.paidFeeType === '0'" class="g-color-success">
+              +{{ row.paidAmount }}
+            </p>
+            <p v-else-if="row.paidFeeType === '1'" class="g-color-error">
+              -{{ row.paidAmount }}
+            </p>
+            <p v-else>
+              {{ row.paidAmount }}
+            </p>
+          </template>
+
+          <template #paidFeeType="{row}">
+            <p v-if="row.paidFeeType === '0'">
+              <span class="g-color-success g-pot" />
+              收入
+            </p>
+            <p v-if="row.paidFeeType === '1'">
+              <span class="g-color-error g-pot" />
+              支出
+            </p>
+          </template>
+
+          <template #paidItem="{row}">
+            <span>{{ selectDictLabel(consumeOptions, row.paidItem) }}</span>
+          </template>
+
+          <template #createTime="{row}">
+            {{ parseTime(row.createTime) }}
+          </template>
+        </RefactorTable>
+
+        <el-table v-if="false" v-loading="loading" border highlight-current-row :data="infoList">
           <el-table-column label="序号" align="center" fixed="left" type="index" min-width="5%" />
           <el-table-column label="客户名称" align="center" prop="userName" min-width="150" />
           <el-table-column label="运输单号" align="center" prop="waybillNo" min-width="180" />
@@ -119,6 +156,7 @@
           </el-table-column>
           <el-table-column label="备注" align="center" prop="remark" min-width="150" />
         </el-table>
+
         <pagination
           v-show="total>0"
           :total="total"
@@ -218,6 +256,7 @@ export default {
   },
   data() {
     return {
+      'tableColumnsConfig': [],
       showSearch: true,
       showSearchFrreeze: true,
       isfullscreen: false,
@@ -270,6 +309,9 @@ export default {
     };
   },
   computed: {
+    api() {
+      return '/payment/shipmentPaidRecord/changeDetailVoList';
+    },
     visible: {
       get() {
         return this.open;
@@ -287,7 +329,17 @@ export default {
       }
     }
   },
+
+  created() {
+    this.tableColumnsInit();
+  },
+
   methods: {
+    /** 初始化表头 */
+    tableColumnsInit() {
+      this.tableColumnsConfig = [];
+      this.tableHeaderConfig(this.tableColumnsConfig, this.api);
+    },
     // 获取变动明细列表
     getList() {
       this.loading = true;
@@ -356,7 +408,8 @@ export default {
       const params = Object.assign({}, this.queryParams);
       params.pageSize = undefined;
       params.pageNum = undefined;
-      await this.download('payment/shipmentPaidRecord/export', params, `变动明细`);
+      // 7/28 导出接口变化 --chj
+      await this.download('payment/shipmentPaidRecord/changeDetailVoExport', params, `变动明细`);
       this.exportLoading = false;
     },
     /** 冻结-导出按钮操作 */
