@@ -212,7 +212,7 @@
     </div>
 
     <div class="app-container">
-      <TotalBar :total-list="totalList" />
+      <TotalBar :total-list="totalList" fixed />
       <el-row
         :gutter="10"
         class="mb8"
@@ -351,10 +351,10 @@
         </template>
       </RefactorTable>
 
+      <!-- :page-sizes="[10, 50, 100, 500, 1000]" -->
       <pagination
         v-show="total>0"
         :total="total"
-        :page-sizes="[10, 20]"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
         @pagination="getList"
@@ -491,8 +491,6 @@ export default {
     },
 
     totalList() {
-      // console.log(this.commentlist);
-
       let arr = [
         {
           label: '运单数量',
@@ -502,7 +500,7 @@ export default {
         {
           label: '货主实付金额',
           value: 0,
-          key: 'taxFee'
+          key: 'shipperRealPay'
         },
         {
           label: '司机实收金额',
@@ -530,9 +528,9 @@ export default {
             key: 'waybillCount'
           },
           {
-            label: '货主应付金额',
+            label: '货主预估金额',
             value: 0,
-            key: 'shipperCopeFee'
+            key: 'shipperEstimate'
           },
           {
             label: '司机应收金额',
@@ -543,24 +541,24 @@ export default {
             label: '纳税金额',
             value: 0,
             key: 'taxPayment'
-          },
-          {
-            label: '服务费',
-            value: 0,
-            key: 'serviceFee'
           }
+          // {
+          //   label: '服务费',
+          //   value: 0,
+          //   key: 'serviceFee'
+          // }
         ];
       }
-
 
       this.commentlist.forEach(e => {
         arr.forEach(ee => {
           if (e[ee.key]) {
             ee.value += (e[ee.key] - 0);
+          } else if (ee.key === 'shipperEstimate') {
+            ee.value += (e.deliveryFeeDeserved - 0) + (e.taxPayment - 0);
           }
         });
       });
-
       arr.map(e => {
         e.value = this.floor(e.value);
         return e;
