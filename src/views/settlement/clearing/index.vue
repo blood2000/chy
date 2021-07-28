@@ -315,11 +315,14 @@ import DetailDialog from '@/views/waybill/components/detailDialog';
 
 import TotalBar from '@/components/Ddc/Tin/TotalBar';
 
+import { pickerOptions } from '@/utils/dateRange';
+
 export default {
   'name': 'Clearing',
   components: { DetailDialog, TotalBar },
   data() {
     return {
+      pickerOptions,
       tableColumnsConfig: [],
       transferTime: [],
       loadTime: [],
