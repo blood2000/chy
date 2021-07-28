@@ -299,15 +299,15 @@
           </el-col>-->
           <el-col :span="12">
             <el-form-item label="角色" prop="roleCodes">
-                <el-select v-model="form.roleCodes" multiple placeholder="请选择" clearable filterable :disabled="roleDisabled">
-                    <el-option
-                            v-for="item in roleOptions"
-                            :key="item.roleCode"
-                            :label="item.roleName"
-                            :value="item.roleCode"
-                            :disabled="item.status == 1 || (item.isSystem == 1) "
-                    />
-                </el-select>
+              <el-select v-model="form.roleCodes" multiple placeholder="请选择" clearable filterable :disabled="roleDisabled">
+                <el-option
+                  v-for="item in roleOptions"
+                  :key="item.roleCode"
+                  :label="item.roleName"
+                  :value="item.roleCode"
+                  :disabled="item.status == 1 || (item.isSystem == 1) "
+                />
+              </el-select>
             </el-form-item>
           </el-col>
           <!--<el-col v-if="!form.userId" :span="12">
