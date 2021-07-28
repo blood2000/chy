@@ -222,6 +222,7 @@
       </el-form>
     </div>
     <div class="app-container">
+      <TotalBar :total-list="totalList" />
       <el-row
         :gutter="10"
         class="mb8"
@@ -312,10 +313,11 @@ import { clarifyList, clarifyListApi, batch, batchStatus } from '@/api/settlemen
 // 运单详情弹窗
 import DetailDialog from '@/views/waybill/components/detailDialog';
 
+import TotalBar from '@/components/Ddc/Tin/TotalBar';
 
 export default {
   'name': 'Clearing',
-  components: { DetailDialog },
+  components: { DetailDialog, TotalBar },
   data() {
     return {
       tableColumnsConfig: [],
@@ -328,6 +330,7 @@ export default {
       'loading': false,
       // 选中数组
       'ids': [],
+      commentlist: [],
       // 非多个禁用
       multiple: true,
       // 显示搜索条件
@@ -381,6 +384,50 @@ export default {
     };
   },
   computed: {
+    totalList() {
+      const arr = [
+        {
+          label: '运单数量',
+          value: this.commentlist.length,
+          key: 'waybillCount'
+        },
+        {
+          label: '货主实付金额',
+          value: 0,
+          key: 'shipperRealPay'
+        },
+        {
+          label: '调度者实收金额',
+          value: 0,
+          key: 'teamTransferAmount'
+        },
+        // {
+        //   label: '纳税金额',
+        //   value: 0,
+        //   key: 'taxPayment'
+        // },
+        {
+          label: '打款金额',
+          value: 0,
+          key: 'totalFee'
+        }
+      ];
+
+      this.commentlist.forEach(e => {
+        arr.forEach(ee => {
+          if (e[ee.key]) {
+            ee.value += (e[ee.key] - 0);
+          }
+        });
+      });
+
+      arr.map(e => {
+        e.value = this.floor(e.value);
+        return e;
+      });
+
+      return arr;
+    }
   },
   created() {
     this.tableHeaderConfig(this.tableColumnsConfig, clarifyListApi, {
@@ -422,6 +469,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
+      this.commentlist = selection;
       this.ids = selection.map((item) => item.wayBillSettlementCode);
       this.bodyParams.wayBillSettlementCodeList = this.ids;
       this.multiple = !selection.length;

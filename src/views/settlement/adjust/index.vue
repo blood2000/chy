@@ -393,7 +393,6 @@ import RateDialog from './rateDialog';
 import { pickerOptions } from '@/utils/dateRange';
 
 import TotalBar from '@/components/Ddc/Tin/TotalBar';
-import { floor } from '@/utils/ddc';
 // import setTheight from '@/layout/mixin/setTheight';
 
 export default {
@@ -563,7 +562,7 @@ export default {
       });
 
       arr.map(e => {
-        e.value = floor(e.value);
+        e.value = this.floor(e.value);
         return e;
       });
 
