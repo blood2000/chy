@@ -171,6 +171,7 @@
       </el-form>
     </div>
     <div class="app-container">
+      <TotalBar :total-list="totalList" />
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
           <el-button
@@ -224,6 +225,10 @@
         <!-- 处理状态 -->
         <template #status="{row}">
           <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
+        </template>
+        <!-- 配载方式 -->
+        <template #stowageStatus="{row}">
+          <span>{{ selectDictLabel(stowageStatusOptions, row.stowageStatus) }}</span>
         </template>
         <!-- 是否进行过回调处理 -->
         <template #isHandle="{row}">
@@ -317,12 +322,14 @@
 import { payRecordlistApi, payRecordlist } from '@/api/capital/payrecord';
 import modifyBatchDialog from './modifyBatchDialog';
 import PdfLook from '@/views/system/media/pdfLook';
+import TotalBar from '@/components/Ddc/Tin/TotalBar';
 
 export default {
   name: 'Payrecord',
   components: {
     modifyBatchDialog,
-    PdfLook
+    PdfLook,
+    TotalBar
   },
   data() {
     return {
@@ -332,6 +339,7 @@ export default {
       loading: true,
       // 选中数组
       ids: [],
+      commentlist: [],
       // 非单个禁用
       single: true,
       // 非多个禁用
@@ -411,6 +419,12 @@ export default {
         { dictLabel: '正常', dictValue: 0 },
         { dictLabel: '异常', dictValue: 1 }
       ],
+      // 配载方式
+      stowageStatusOptions: [
+        { 'dictLabel': '吨', 'dictValue': '0' },
+        { 'dictLabel': '方', 'dictValue': '1' },
+        { 'dictLabel': '车', 'dictValue': '2' }
+      ],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -437,6 +451,53 @@ export default {
       pdfOpen: false
     };
   },
+
+  computed: {
+    totalList() {
+      const arr = [
+        {
+          label: '运单数量',
+          value: this.commentlist.length,
+          key: 'waybillCount'
+        },
+        // {
+        //   label: '货主实付金额',
+        //   value: 0,
+        //   key: 'shipperRealPay'
+        // },
+        {
+          label: '打款金额',
+          value: 0,
+          key: 'deliveryCashFee'
+        },
+        // {
+        //   label: '纳税金额',
+        //   value: 0,
+        //   key: 'taxPayment'
+        // },
+        {
+          label: '手续费',
+          value: 0,
+          key: 'totalFee'
+        }
+      ];
+
+      this.commentlist.forEach(e => {
+        arr.forEach(ee => {
+          if (e[ee.key]) {
+            ee.value += (e[ee.key] - 0);
+          }
+        });
+      });
+
+      arr.map(e => {
+        e.value = this.floor(e.value);
+        return e;
+      });
+
+      return arr;
+    }
+  },
   created() {
     this.tableHeaderConfig(this.tableColumnsConfig, payRecordlistApi, {
       prop: 'edit',
@@ -447,6 +508,7 @@ export default {
     });
     this.getList();
   },
+
   methods: {
     /** 查询列表 */
     getList() {
@@ -508,6 +570,7 @@ export default {
     },
     /** 多选框选中数据 */
     handleSelectionChange(selection) {
+      this.commentlist = selection;
       this.ids = selection.map(item => item.id);
       this.single = selection.length !== 1;
       this.multiple = !selection.length;

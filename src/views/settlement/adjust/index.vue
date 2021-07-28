@@ -212,6 +212,7 @@
     </div>
 
     <div class="app-container">
+      <TotalBar :total-list="totalList" />
       <el-row
         :gutter="10"
         class="mb8"
@@ -390,11 +391,14 @@ import CommentDialog from './commentDialog';
 // 评价详情弹窗
 import RateDialog from './rateDialog';
 import { pickerOptions } from '@/utils/dateRange';
+
+import TotalBar from '@/components/Ddc/Tin/TotalBar';
+import { floor } from '@/utils/ddc';
 // import setTheight from '@/layout/mixin/setTheight';
 
 export default {
   'name': 'Adjust',
-  components: { RejectDialog, AdjustDialog, DetailDialog, ChildDialog, CommentDialog, RateDialog },
+  components: { RejectDialog, AdjustDialog, DetailDialog, ChildDialog, CommentDialog, RateDialog, TotalBar },
   // mixins: [setTheight],
   data() {
     return {
@@ -485,6 +489,85 @@ export default {
   computed: {
     lcokey() {
       return this.$route.name + this.activeName;
+    },
+
+    totalList() {
+      // console.log(this.commentlist);
+
+      let arr = [
+        {
+          label: '运单数量',
+          value: this.commentlist.length,
+          key: 'waybillCount'
+        },
+        {
+          label: '货主实付金额',
+          value: 0,
+          key: 'taxFee'
+        },
+        {
+          label: '司机实收金额',
+          value: 0,
+          key: 'deliveryCashFee'
+        },
+        {
+          label: '纳税金额',
+          value: 0,
+          key: 'taxPayment'
+        },
+        {
+          label: '服务费',
+          value: 0,
+          key: 'serviceFee'
+        }
+      ];
+
+      // 如果是 已复核 页面则展示应付的其他则展示实付
+      if (this.activeName === '4') {
+        arr = [
+          {
+            label: '运单数量',
+            value: this.commentlist.length,
+            key: 'waybillCount'
+          },
+          {
+            label: '货主应付金额',
+            value: 0,
+            key: 'shipperCopeFee'
+          },
+          {
+            label: '司机应收金额',
+            value: 0,
+            key: 'deliveryFeeDeserved'
+          },
+          {
+            label: '纳税金额',
+            value: 0,
+            key: 'taxPayment'
+          },
+          {
+            label: '服务费',
+            value: 0,
+            key: 'serviceFee'
+          }
+        ];
+      }
+
+
+      this.commentlist.forEach(e => {
+        arr.forEach(ee => {
+          if (e[ee.key]) {
+            ee.value += (e[ee.key] - 0);
+          }
+        });
+      });
+
+      arr.map(e => {
+        e.value = floor(e.value);
+        return e;
+      });
+
+      return arr;
     }
   },
 
