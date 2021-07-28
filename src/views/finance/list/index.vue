@@ -81,6 +81,7 @@
     </div>
 
     <div class="app-container">
+      <TotalBar :total-list="totalList" />
       <el-row
         :gutter="10"
         class="mb8"
@@ -194,10 +195,11 @@ import VerifyDialog from './verifyDialog';
 import BillingDialog from './billingDialog';
 import TrackExport from '@/views/waybill/components/trackExport';
 import { pickerOptions } from '@/utils/dateRange';
+import TotalBar from '@/components/Ddc/Tin/TotalBar';
 
 export default {
   'name': 'List',
-  components: { VerifyDialog, BillingDialog, TrackExport },
+  components: { VerifyDialog, BillingDialog, TrackExport, TotalBar },
   data() {
     return {
       pickerOptions,
@@ -222,7 +224,7 @@ export default {
       'total': 0,
       // 表格数据
       'billlist': [],
-
+      commentlist: [],
       // 查询参数
       'queryParams': {
         'pageNum': 1,
@@ -264,6 +266,45 @@ export default {
   computed: {
     lcokey() {
       return this.$route.name + this.activeName;
+    },
+    totalList() {
+      const arr = [
+        {
+          label: '运单数量',
+          value: 0,
+          key: 'waybillCount'
+        },
+        {
+          label: '开票金额',
+          value: 0,
+          key: 'totalAmount'
+        },
+        {
+          label: '运费开票金额',
+          value: 0,
+          key: 'freightAmount'
+        },
+        {
+          label: '服务费开票金额',
+          value: 0,
+          key: 'serverTotalAmount'
+        }
+      ];
+
+      this.commentlist.forEach(e => {
+        arr.forEach(ee => {
+          if (e[ee.key]) {
+            ee.value += (e[ee.key] - 0);
+          }
+        });
+      });
+
+      arr.map(e => {
+        e.value = this.floor(e.value);
+        return e;
+      });
+
+      return arr;
     }
   },
 
@@ -308,6 +349,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       console.log(selection);
+      this.commentlist = selection;
       this.selectlenght = selection.length;
       this.ids = selection.map((item) => item.code).join(',');
       this.multiple = !selection.length;
