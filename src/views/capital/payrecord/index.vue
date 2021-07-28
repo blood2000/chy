@@ -64,6 +64,48 @@
             placeholder="请选择"
           />
         </el-form-item>
+        <el-form-item label="装货时间">
+          <el-date-picker
+            v-model="queryParams.startLoadTime"
+            clearable
+            type="date"
+            size="small"
+            style="width: 130px"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择"
+          />
+          至
+          <el-date-picker
+            v-model="queryParams.endLoadTime"
+            clearable
+            type="date"
+            size="small"
+            style="width: 130px"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择"
+          />
+        </el-form-item>
+        <el-form-item label="卸货时间">
+          <el-date-picker
+            v-model="queryParams.startUnLoadTime"
+            clearable
+            type="date"
+            size="small"
+            style="width: 130px"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择"
+          />
+          至
+          <el-date-picker
+            v-model="queryParams.endUnLoadTime"
+            clearable
+            type="date"
+            size="small"
+            style="width: 130px"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择"
+          />
+        </el-form-item>
         <el-form-item label="车牌号" prop="licenseNumber">
           <el-input
             v-model.trim="queryParams.licenseNumber"
@@ -421,6 +463,10 @@ export default {
         tranId: undefined,
         tranBeginTime: undefined,
         tranEndTime: undefined,
+        startLoadTime: undefined,
+        endLoadTime: undefined,
+        startUnLoadTime: undefined,
+        endUnLoadTime: undefined,
         licenseNumber: undefined,
         payeeName: undefined,
         campanyName: undefined,
@@ -466,6 +512,10 @@ export default {
     resetQuery() {
       this.queryParams.tranBeginTime = undefined;
       this.queryParams.tranEndTime = undefined;
+      this.queryParams.startLoadTime = undefined;
+      this.queryParams.endLoadTime = undefined;
+      this.queryParams.startUnLoadTime = undefined;
+      this.queryParams.endUnLoadTime = undefined;
       this.resetForm('queryForm');
       this.handleQuery();
     },

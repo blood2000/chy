@@ -35,6 +35,64 @@
           />
         </el-form-item>
         <el-form-item
+          label="清分日期"
+          prop="transferTime"
+        >
+          <el-date-picker
+            v-model="transferTime"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 228px"
+            @change="datechoose"
+          />
+        </el-form-item>
+        <el-form-item
+          label="装货日期"
+          prop="loadTime"
+        >
+          <el-date-picker
+            v-model="loadTime"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 228px"
+            @change="loadDateChoose"
+          />
+        </el-form-item>
+        <el-form-item
+          label="卸货日期"
+          prop="unloadTime"
+        >
+          <el-date-picker
+            v-model="unloadTime"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 228px"
+            @change="unloadDateChoose"
+          />
+        </el-form-item>
+        <el-form-item label="货源单号" prop="mainOrderNumber">
+          <el-input
+            v-model.trim="queryParams.mainOrderNumber"
+            placeholder="请输入货源单号"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item
           label="运输单号"
           prop="waybillNo"
         >
@@ -261,6 +319,9 @@ export default {
   data() {
     return {
       tableColumnsConfig: [],
+      transferTime: [],
+      loadTime: [],
+      unloadTime: [],
       api: clarifyListApi,
       createTime: '',
       // 遮罩层
@@ -289,12 +350,17 @@ export default {
         'teamLeaderPhone': undefined,
         'teamName': undefined,
         'teamTransferNo': undefined,
+        'startTeamTransferTime': undefined,
+        'endTeamTransferTime': undefined,
+        'startLoadTime': undefined,
+        'endLoadTime': undefined,
+        'startUnLoadTime': undefined,
+        'endUnLoadTime': undefined,
         'waybillNo': undefined
       },
       bodyParams: {
         wayBillSettlementCodeList: []
       },
-      receiveTime: [],
       // 弹框 内容
       visible: false,
       open: false,
@@ -327,6 +393,33 @@ export default {
     this.getList();
   },
   'methods': {
+    datechoose(date) {
+      if (date) {
+        this.queryParams.startTeamTransferTime = this.parseTime(date[0], '{y}-{m}-{d}');
+        this.queryParams.endTeamTransferTime = this.parseTime(date[1], '{y}-{m}-{d}');
+      } else {
+        this.queryParams.startTeamTransferTime = null;
+        this.queryParams.endTeamTransferTime = null;
+      }
+    },
+    loadDateChoose(date) {
+      if (date) {
+        this.queryParams.startLoadTime = this.parseTime(date[0], '{y}-{m}-{d}');
+        this.queryParams.endLoadTime = this.parseTime(date[1], '{y}-{m}-{d}');
+      } else {
+        this.queryParams.startLoadTime = null;
+        this.queryParams.endLoadTime = null;
+      }
+    },
+    unloadDateChoose(date) {
+      if (date) {
+        this.queryParams.startUnLoadTime = this.parseTime(date[0], '{y}-{m}-{d}');
+        this.queryParams.endUnLoadTime = this.parseTime(date[1], '{y}-{m}-{d}');
+      } else {
+        this.queryParams.startUnLoadTime = null;
+        this.queryParams.endUnLoadTime = null;
+      }
+    },
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map((item) => item.wayBillSettlementCode);
@@ -350,6 +443,15 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.resetForm('queryForm');
+      this.transferTime = [];
+      this.queryParams.startTeamTransferTime = null;
+      this.queryParams.endTeamTransferTime = null;
+      this.loadTime = [];
+      this.queryParams.startLoadTime = null;
+      this.queryParams.endLoadTime = null;
+      this.unloadTime = [];
+      this.queryParams.startUnLoadTime = null;
+      this.queryParams.endUnLoadTime = null;
       this.handleQuery();
     },
     // 导出
