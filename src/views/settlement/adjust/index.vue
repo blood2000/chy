@@ -491,8 +491,6 @@ export default {
     },
 
     totalList() {
-      // console.log(this.commentlist);
-
       let arr = [
         {
           label: '运单数量',
@@ -543,15 +541,14 @@ export default {
             label: '纳税金额',
             value: 0,
             key: 'taxPayment'
-          },
-          {
-            label: '服务费',
-            value: 0,
-            key: 'serviceFee'
           }
+          // {
+          //   label: '服务费',
+          //   value: 0,
+          //   key: 'serviceFee'
+          // }
         ];
       }
-
 
       this.commentlist.forEach(e => {
         arr.forEach(ee => {
@@ -562,12 +559,10 @@ export default {
           }
         });
       });
-      console.log(arr);
       arr.map(e => {
         e.value = this.floor(e.value);
         return e;
       });
-      console.log(arr);
 
       return arr;
     }
