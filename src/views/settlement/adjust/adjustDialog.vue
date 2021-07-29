@@ -438,7 +438,7 @@ export default {
         var data = {};
         await calculateFee(parame).then(res => {
           data = res.data;
-          if (res.msg) {
+          if (res.code === 501 && res.msg) {
             this.msgError(res.msg);
           }
         });
@@ -482,6 +482,12 @@ export default {
       });
       try {
         const res = await batchCalculate(req);
+
+        if (res.code === 501) {
+          this.msgError(res.msg);
+          this.plLoading = false;
+          return;
+        }
 
         res.data.forEach(ee => {
           this.adjustlist.forEach(e => {
