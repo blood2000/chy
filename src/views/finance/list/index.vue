@@ -219,7 +219,7 @@ export default {
       'loading': false,
       // 选中数组
       'ids': null,
-      'exportIds': [],
+      'exportIds': null,
       // 非多个禁用
       multiple: true,
       // 选中数量
@@ -354,11 +354,9 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      console.log(selection);
       this.commentlist = selection;
       this.selectlenght = selection.length;
       this.ids = selection.map((item) => item.code).join(',');
-      this.exportIds = selection.map((item) => item.code);
       this.multiple = !selection.length;
     },
     /** 查询【请填写功能名称】列表 */
@@ -401,8 +399,9 @@ export default {
     },
     // 导出服务费明细
     handleExportService() {
+      this.exportIds = this.commentlist.filter(item => item.serverTotalAmount !== 0).map(item => item.code).join(',');
       this.exportlistLoading = true;
-      this.download('/transportation/invoiceApply/export4', { applyCodes: this.ids, type: 2 }, `服务费明细`).then(() => {
+      this.download('/transportation/invoiceApply/export4', { applyCodes: this.exportIds, type: 2 }, `服务费明细`).then(() => {
         this.exportlistLoading = false;
       });
     },
