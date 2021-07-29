@@ -88,11 +88,13 @@ export default {
     margin-bottom: 10px;
   }
   .fixedBar{
-    width: calc(100% - 153px);
+    width: calc(100% - 73px);
+    // width: calc(100% - 153px);
     position: fixed;
     z-index: 999;
     top: 116px;
-    left: 107px;
+    left: 73px;
+    // left: 107px;
   }
 
 </style>
