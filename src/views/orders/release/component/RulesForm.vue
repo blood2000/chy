@@ -27,6 +27,7 @@
             :max="999999"
             :min="0"
             :precision="2"
+            :step="0.01"
             :placeholder="`请输入${item.cnName}`"
             controls-position="right"
             :style="{ width: '200px' }"
@@ -87,7 +88,8 @@
               step-strictly
               :max="item.unit==='%'?100: 0"
               :min="item.unit==='%'?0: -999999"
-              :precision="0"
+              :precision="precisionMethod(item.unit,unit )"
+              :step="0.001"
               controls-position="right"
               :style="{ width: '150px' }"
             />
@@ -108,7 +110,8 @@
               step-strictly
               :max="item.unit==='%'?100: 999999"
               :min="item.unit==='%'?0: 0"
-              :precision="0"
+              :precision="precisionMethod(item.unit,unit )"
+              :step="0.001"
               controls-position="right"
               :style="{ width: '150px' }"
             />
@@ -272,6 +275,17 @@ export default {
     //
     change() {
       this.$forceUpdate();
+    },
+
+    precisionMethod(unit1, unit) {
+      let num = 0;
+      if (unit1 === '%') {
+        num = 2;
+      } else if (unit === 'm³') {
+        num = 3;
+      }
+
+      return num;
     }
   }
 

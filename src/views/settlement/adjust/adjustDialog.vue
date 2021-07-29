@@ -119,7 +119,7 @@
           </el-table-column>
           <el-table-column width="160" label="路耗(吨/方)" align="center" prop="loss">
             <template slot-scope="scope">
-              <span v-if="scope.row.stowageStatus === '0'">{{ floor((scope.row.loss -0), 2) }}</span>
+              <span v-if="scope.row.stowageStatus !== '2'">{{ floor((scope.row.loss -0), 3) }}</span>
               <span v-else>{{ scope.row.loss || 0 }}</span>
             </template>
           </el-table-column>
@@ -438,7 +438,7 @@ export default {
         var data = {};
         await calculateFee(parame).then(res => {
           data = res.data;
-          if (res.msg) {
+          if (res.code === 501 && res.msg) {
             this.msgError(res.msg);
           }
         });
@@ -482,6 +482,12 @@ export default {
       });
       try {
         const res = await batchCalculate(req);
+
+        if (res.code === 501) {
+          this.msgError(res.msg);
+          this.plLoading = false;
+          return;
+        }
 
         res.data.forEach(ee => {
           this.adjustlist.forEach(e => {
@@ -595,6 +601,7 @@ export default {
     /** 查询核算列表 */
     getList() {
       this.loading = true;
+
       adjustDetail(this.queryParams).then(response => {
         this.adjustlist = JSON.parse(JSON.stringify(response.data));
 
@@ -676,6 +683,7 @@ export default {
     },
     // 获取列表
     async setForm(data) {
+      this.errList = [];
       this.selectedValue = '';
       this.selectedNum = '';
       await this.getRuleLists();
