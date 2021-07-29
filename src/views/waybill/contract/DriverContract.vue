@@ -7,8 +7,8 @@
       icon="el-icon-printer"
       plain
       class="wholecont-print"
-      @click="print"
     >打印</el-button>
+    <!-- @click="print" -->
     <div id="wholecont" class="wholecont-div">
 
       <h3 id="plat_hetong_title" style="text-indent: 4em;">福建大道成物流科技有限公司无车承运平台运输电子合同</h3>
