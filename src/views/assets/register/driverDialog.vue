@@ -402,7 +402,7 @@
           <span class="unit-span g-color-gray">m²</span>
         </el-form-item> -->
         <el-form-item label="车辆可载立方" prop="vehicleRemainingLoadVolume">
-          <el-input v-model="vehicleForm.vehicleRemainingLoadVolume" placeholder="请输入车辆可载立方" class="width90 unit-item" clearable />
+          <el-input-number v-model="vehicleForm.vehicleRemainingLoadVolume" :controls="false" :precision="3" :min="0" :max="10000000" placeholder="请输入车辆可载立方" class="width90 unit-item" clearable />
           <span class="unit-span g-color-gray">m³</span>
         </el-form-item>
         <!-- <el-form-item label="发动机号" prop="engineNumber">
@@ -958,7 +958,7 @@ export default {
             if (data.gross_mass) {
               var num = data.gross_mass.indexOf('kg');
               var value = data.gross_mass.substr(0, num);
-              this.$set(this.vehicleForm, 'vehicleTotalWeight', parseInt(value) / 1000);
+              this.$set(this.vehicleForm, 'vehicleTotalWeight', (value / 1000).toFixed(3));
             } else {
               this.$set(this.vehicleForm, 'vehicleTotalWeight', '0');
             }
@@ -966,7 +966,7 @@ export default {
             if (data.unladen_mass) {
               num = data.unladen_mass.indexOf('kg');
               value = data.unladen_mass.substr(0, num);
-              this.$set(this.vehicleForm, 'vehicleLoadWeight', parseInt(value) / 1000);
+              this.$set(this.vehicleForm, 'vehicleLoadWeight', (value / 1000).toFixed(3));
             }
           }
           // 车牌颜色 vehicleLicenseColorCode
