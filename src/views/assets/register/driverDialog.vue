@@ -958,7 +958,7 @@ export default {
             if (data.gross_mass) {
               var num = data.gross_mass.indexOf('kg');
               var value = data.gross_mass.substr(0, num);
-              this.$set(this.vehicleForm, 'vehicleTotalWeight', parseInt(value) / 1000);
+              this.$set(this.vehicleForm, 'vehicleTotalWeight', (value / 1000).toFixed(3));
             } else {
               this.$set(this.vehicleForm, 'vehicleTotalWeight', '0');
             }
@@ -966,7 +966,7 @@ export default {
             if (data.unladen_mass) {
               num = data.unladen_mass.indexOf('kg');
               value = data.unladen_mass.substr(0, num);
-              this.$set(this.vehicleForm, 'vehicleLoadWeight', parseInt(value) / 1000);
+              this.$set(this.vehicleForm, 'vehicleLoadWeight', (value / 1000).toFixed(3));
             }
           }
           // 车牌颜色 vehicleLicenseColorCode
