@@ -528,7 +528,7 @@ export default {
             key: 'waybillCount'
           },
           {
-            label: '货主预估金额',
+            label: '货主预估应付',
             value: 0,
             key: 'shipperEstimate'
           },
