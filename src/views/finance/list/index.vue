@@ -103,22 +103,16 @@
             size="mini"
             :disabled="multiple"
             :loading="exportlistLoading"
-            @click="handleExport"
-          >导出</el-button>
-        </el-col>
-        <el-col v-show="activeName == '6'" :span="1.5">
-          <el-button
-            type="primary"
-            icon="el-icon-download"
-            size="mini"
             @click="handleExportFreight"
           >导出运费明细</el-button>
         </el-col>
-        <el-col v-show="activeName == '6'" :span="1.5">
+        <el-col :span="1.5">
           <el-button
             type="primary"
             icon="el-icon-download"
             size="mini"
+            :disabled="multiple"
+            :loading="exportlistLoading"
             @click="handleExportService"
           >导出服务费明细</el-button>
         </el-col>
@@ -398,18 +392,19 @@ export default {
       this.$refs.VerifyDialog.setForm(this.ids);
       this.$refs.VerifyDialog.setNum(this.selectlenght);
     },
-    // 导出
-    handleExport() {
+    // 导出运费明细
+    handleExportFreight() {
       this.exportlistLoading = true;
-      this.download('/transportation/invoiceApply/export3', { applyCodes: this.ids, type: 1 }, `发票列表`).then(() => {
+      this.download('/transportation/invoiceApply/export3', { applyCodes: this.ids, type: 1 }, `运费明细`).then(() => {
         this.exportlistLoading = false;
       });
     },
-    // 导出运费明细
-    handleExportFreight() {
-    },
     // 导出服务费明细
     handleExportService() {
+      this.exportlistLoading = true;
+      this.download('/transportation/invoiceApply/export4', { applyCodes: this.ids, type: 2 }, `服务费明细`).then(() => {
+        this.exportlistLoading = false;
+      });
     },
 
     handleTableBtn(row, index) {
