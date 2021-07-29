@@ -128,15 +128,27 @@
               <span>{{ scope.row.lossAllowScope? _lossAllowScope(scope.row.lossAllowScope, scope.row.stowageStatus === '0' ) : '--' }}</span>
             </template>
           </el-table-column>
-          <el-table-column width="160" label="货物单价(元)" align="center" prop="goodsPrice" />
-          <el-table-column width="160" label="货主成交单价(元)" align="center" prop="freightPrice" />
+          <el-table-column width="160" label="货物单价(元)" align="center" prop="goodsPrice">
+            <template slot-scope="scope">
+              <span>{{ floor(scope.row.goodsPrice) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column width="160" label="货主成交单价(元)" align="center" prop="freightPrice">
+            <template slot-scope="scope">
+              <span>{{ floor(scope.row.freightPrice) }}</span>
+            </template>
+          </el-table-column>
           <!-- <el-table-column width="160" label="司机成交单价(元)" align="center" prop="freightPriceDriver" /> -->
           <el-table-column width="160" label="亏涨扣费(元)" align="center" prop="lossDeductionFee">
             <template slot-scope="scope">
               <span>{{ floor(scope.row.lossDeductionFee) }}</span>
             </template>
           </el-table-column>
-          <el-table-column width="120" label="抹零金额(元)" align="center" prop="m0Fee" />
+          <el-table-column width="120" label="抹零金额(元)" align="center" prop="m0Fee">
+            <template slot-scope="scope">
+              <span>{{ floor(scope.row.m0Fee) }}</span>
+            </template>
+          </el-table-column>
           <!-- <el-table-column width="160" label="司机应收运费(元)" align="center" prop="deliveryFeePractical" /> -->
           <el-table-column width="160" label="司机应收运费(元)" align="center" prop="deliveryFeeDeserved">
             <template slot-scope="scope">
