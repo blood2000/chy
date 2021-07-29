@@ -136,7 +136,11 @@
               <span>{{ floor(scope.row.lossDeductionFee) }}</span>
             </template>
           </el-table-column>
-          <el-table-column width="120" label="抹零金额(元)" align="center" prop="m0Fee" />
+          <el-table-column width="120" label="抹零金额(元)" align="center" prop="m0Fee">
+            <template slot-scope="scope">
+              <span>{{ floor(scope.row.m0Fee) }}</span>
+            </template>
+          </el-table-column>
           <!-- <el-table-column width="160" label="司机应收运费(元)" align="center" prop="deliveryFeePractical" /> -->
           <el-table-column width="160" label="司机应收运费(元)" align="center" prop="deliveryFeeDeserved">
             <template slot-scope="scope">
