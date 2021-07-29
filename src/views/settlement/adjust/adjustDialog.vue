@@ -601,6 +601,7 @@ export default {
     /** 查询核算列表 */
     getList() {
       this.loading = true;
+
       adjustDetail(this.queryParams).then(response => {
         this.adjustlist = JSON.parse(JSON.stringify(response.data));
 
@@ -682,6 +683,7 @@ export default {
     },
     // 获取列表
     async setForm(data) {
+      this.errList = [];
       this.selectedValue = '';
       this.selectedNum = '';
       await this.getRuleLists();
