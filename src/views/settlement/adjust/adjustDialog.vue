@@ -125,13 +125,13 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column width="160" label="路耗(kg/m³)" align="center" prop="loss">
+          <el-table-column width="160" label="路耗(吨/方)" align="center" prop="loss">
             <template slot-scope="scope">
               <span v-if="scope.row.stowageStatus === '0'">{{ floor((scope.row.loss -0), 2) }}</span>
               <span v-else>{{ scope.row.loss || 0 }}</span>
             </template>
           </el-table-column>
-          <el-table-column width="160" label="路耗允许范围(kg/m³)" align="center" prop="lossAllowScope">
+          <el-table-column width="160" label="路耗允许范围(吨/方)" align="center" prop="lossAllowScope">
             <template slot-scope="scope">
               <span>{{ scope.row.lossAllowScope? _lossAllowScope(scope.row.lossAllowScope, scope.row.stowageStatus === '0' ) : '--' }}</span>
             </template>
