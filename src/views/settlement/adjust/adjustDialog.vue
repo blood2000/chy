@@ -119,7 +119,7 @@
           </el-table-column>
           <el-table-column width="160" label="路耗(吨/方)" align="center" prop="loss">
             <template slot-scope="scope">
-              <span v-if="scope.row.stowageStatus === '0'">{{ floor((scope.row.loss -0), 3) }}</span>
+              <span v-if="scope.row.stowageStatus !== '2'">{{ floor((scope.row.loss -0), 3) }}</span>
               <span v-else>{{ scope.row.loss || 0 }}</span>
             </template>
           </el-table-column>
