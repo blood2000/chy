@@ -35,7 +35,18 @@
       </div>
 
       <div class="cont-frame">
-        <el-table ref="adjustTable" v-loading="loading" height="780" highlight-current-row :data="adjustlist" border :row-class-name="tableRowClassName" @row-click="showImg">
+        <el-table
+          ref="adjustTable"
+          v-loading="loading"
+          height="780"
+          highlight-current-row
+          :data="adjustlist"
+          border
+          :row-class-name="tableRowClassName"
+          show-summary
+          :summary-method="getSummaries"
+          @row-click="showImg"
+        >
           <el-table-column width="160" label="运输单号" show-overflow-tooltip align="center" prop="waybillNo">
             <!-- <template slot-scope="scope">
               <div>
@@ -114,13 +125,13 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column width="160" label="路耗(吨/方)" align="center" prop="loss">
+          <el-table-column width="160" label="路耗(kg/m³)" align="center" prop="loss">
             <template slot-scope="scope">
               <span v-if="scope.row.stowageStatus === '0'">{{ floor((scope.row.loss -0), 2) }}</span>
               <span v-else>{{ scope.row.loss || 0 }}</span>
             </template>
           </el-table-column>
-          <el-table-column width="160" label="路耗允许范围(吨/方)" align="center" prop="lossAllowScope">
+          <el-table-column width="160" label="路耗允许范围(kg/m³)" align="center" prop="lossAllowScope">
             <template slot-scope="scope">
               <span>{{ scope.row.lossAllowScope? _lossAllowScope(scope.row.lossAllowScope, scope.row.stowageStatus === '0' ) : '--' }}</span>
             </template>
@@ -922,6 +933,46 @@ export default {
           callback(...argument);
         }, time);
       };
+    },
+    // 展示合计
+    getSummaries(param) {
+      const { columns, data } = param;
+      const sums = [];
+      columns.forEach((column, index) => {
+        if (index === 0) {
+          sums[index] = '合计';
+          return;
+        }
+
+        const values = data.map(item => {
+          let va = NaN;
+          if (
+            column.property === 'taxPayment' ||
+            column.property === 'serviceFee' ||
+            column.property === 'deliveryCashFee' ||
+            column.property === 'shipperRealPay'
+          ) {
+            va = Number(item[column.property]);
+          }
+          return va;
+        });
+        if (!values.every(value => isNaN(value))) {
+          sums[index] = values.reduce((prev, curr) => {
+            const value = Number(curr);
+            if (!isNaN(value)) {
+              return prev + curr;
+            } else {
+              return prev;
+            }
+          }, 0);
+          sums[index] = this.floor(sums[index]);
+          sums[index] += ' 元';
+        } else {
+          sums[index] = '';
+        }
+      });
+
+      return sums;
     }
   }
 };
