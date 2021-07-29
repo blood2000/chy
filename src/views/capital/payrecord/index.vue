@@ -13,9 +13,9 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="支付订单号" prop="orderId">
+        <el-form-item label="支付订单号" prop="tradOrderNumber">
           <el-input
-            v-model.trim="queryParams.orderId"
+            v-model.trim="queryParams.tradOrderNumber"
             placeholder="请输入支付订单号"
             clearable
             size="small"
@@ -472,7 +472,7 @@ export default {
         pageNum: 1,
         pageSize: 10,
         bizNo: undefined,
-        orderId: undefined,
+        tradOrderNumber: undefined,
         goodId: undefined,
         tranId: undefined,
         tranBeginTime: undefined,

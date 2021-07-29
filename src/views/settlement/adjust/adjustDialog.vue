@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="loading">
     <!-- <el-dialog v-loading="adjustLoading" class="i-adjust" :title="title" :visible="visible" width="1400px" :close-on-click-modal="false" append-to-body @close="cancel"> -->
     <el-drawer
       v-loading="adjustLoading"
@@ -35,7 +35,18 @@
       </div>
 
       <div class="cont-frame">
-        <el-table ref="adjustTable" v-loading="loading" height="780" highlight-current-row :data="adjustlist" border :row-class-name="tableRowClassName" @row-click="showImg">
+        <el-table
+          ref="adjustTable"
+          v-loading="loading"
+          height="780"
+          highlight-current-row
+          :data="adjustlist"
+          border
+          :row-class-name="tableRowClassName"
+          show-summary
+          :summary-method="getSummaries"
+          @row-click="showImg"
+        >
           <el-table-column width="160" label="运输单号" show-overflow-tooltip align="center" prop="waybillNo">
             <!-- <template slot-scope="scope">
               <div>
@@ -101,17 +112,9 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column width="80" label="配载方式" align="center" prop="lossAllowScope">
+          <el-table-column width="80" label="配载方式" align="center" prop="stowageStatus">
             <template slot-scope="scope">
-              <span v-show="scope.row.stowageStatus === '0'">
-                吨数配载
-              </span>
-              <span v-show="scope.row.stowageStatus === '1'">
-                方数配载
-              </span>
-              <span v-show="scope.row.stowageStatus === '2'">
-                车数配载
-              </span>
+              <span>{{ selectDictLabel(stowageStatusOP, scope.row.stowageStatus) }}</span>
             </template>
           </el-table-column>
           <el-table-column width="160" label="路耗(吨/方)" align="center" prop="loss">
@@ -327,7 +330,14 @@ export default {
       className: '',
       adjustLoading: false,
       changeFee: null,
-      rowData: {}
+      rowData: {},
+
+      // 配载方式 0->吨，1->方 2->车数配载
+      stowageStatusOP: [
+        { 'dictLabel': '吨', 'dictValue': '0' },
+        { 'dictLabel': '方', 'dictValue': '1' },
+        { 'dictLabel': '车', 'dictValue': '2' }
+      ]
     };
   },
   computed: {
@@ -341,15 +351,6 @@ export default {
     },
 
     openShowList() {
-      // const list = this.adjustlist[0] || {};
-      // const arr = [{
-      //   label: '补贴项目',
-      //   options: list.subsidiesFreightList || []
-      // }, {
-      //   label: '扣费项目',
-      //   options: list.deductionFreightList || []
-      // }];
-
       const subList = [];
       const dedList = [];
       this.adjustlist.forEach(e => {
@@ -360,8 +361,6 @@ export default {
           dedList.push(ee);
         });
       });
-      // console.log(objReduce(subList, 'enName'));
-      // console.log(objReduce(dedList, 'enName'));
       const arr = [{
         label: '补贴项目',
         options: objReduce(subList, 'enName')
@@ -369,9 +368,6 @@ export default {
         label: '扣费项目',
         options: objReduce(dedList, 'enName')
       }];
-
-      // console.log(arr);
-
 
       return arr;
     },
@@ -382,7 +378,6 @@ export default {
 
     // 简单提示增减项不一样
     isDifferent() {
-      // const bool = true;
       const sublength = [];
       const dedlength = [];
       this.adjustlist.forEach(e => {
@@ -415,7 +410,6 @@ export default {
     },
     // 数字change事件
     handlerChangev(row) {
-      // console.log(row, 'oooo');
       const parame = {
         driverReductionFee: this._sum(row.deductionFreightList),
         m0DictValue: row.m0DictValue,
@@ -436,84 +430,8 @@ export default {
       this.changeFee(parame, row);
     },
 
-    // handlerInput(val) {
-    //   // console.log(val);
-    //   this.adjustlist.forEach(e => {
-    //     e.subsidiesFreightList = val;
-    //   });
-    //   // this.$forceUpdate();
-    // },
-
-
-    // 单项修改
-    // async handlerBlur(event, row, freight, keyName) {
-    //   if (event) {
-    //     if (this.loading || (!(/^[0-9]*$/.test(event.key - 0)) && event.key !== 'ArrowUp' && event.key !== 'ArrowDown' && event.key !== 'Backspace')) return;
-    //   }
-
-    //   if (freight) {
-    //     // event.target.value - 0 enName freight.enName   ruleValue
-    //     if (freight.type === '1') {
-    //       row.subsidiesFreightList && row.subsidiesFreightList.forEach(e => {
-    //         if (e.enName === freight.enName) {
-    //           e.ruleValue = event.target.value;
-    //         }
-    //       });
-    //     } else {
-    //       row.deductionFreightList && row.deductionFreightList.forEach(e => {
-    //         if (e.enName === freight.enName) {
-    //           e.ruleValue = event.target.value;
-    //         }
-    //       });
-    //     }
-    //   } else {
-    //     // event.target.value - 0 loadWeight unloadWeight
-    //     row[keyName] = event.target.value - 0;
-    //   }
-    //   const {
-    //     m0DictValue,
-    //     freightPrice,
-    //     ruleFormulaDictValue,
-    //     shipperCode,
-    //     stowageStatus,
-    //     loadWeight,
-    //     unloadWeight,
-    //     waybillCode,
-    //     subsidiesFreightList,
-    //     deductionFreightList
-    //     // serviceFee,
-    //     // serviceTaxFee,
-    //     // taxPayment
-
-    //   } = row;
-
-
-
-    //   const parame = {
-    //     driverReductionFee: this._sum(deductionFreightList),
-    //     m0DictValue,
-    //     freightPrice,
-    //     ruleFormulaDictValue,
-    //     shipperCode,
-    //     stowageStatus,
-    //     driverAddFee: this._sum(subsidiesFreightList),
-    //     loadWeight,
-    //     unloadWeight,
-    //     waybillCode
-    //     // serviceFee,
-    //     // serviceTaxFee,
-    //     // taxPayment
-    //   };
-    //   // if (this.loading1) return;
-
-    //   // this.setDeliveryCashFee(parame, row);
-    //   this.changeFee(parame, row);
-    // },
-
     // 单项修改
     async setDeliveryCashFee(parame, row) {
-      // console.log(parame, row);
-
       this.loading1 = true;
       this.plLoading = true;
       try {
@@ -680,23 +598,6 @@ export default {
       adjustDetail(this.queryParams).then(response => {
         this.adjustlist = JSON.parse(JSON.stringify(response.data));
 
-        /* 兼容处理*/
-        // const subList = [];
-        // const dedList = [];
-        // this.adjustlist.forEach(e => {
-        //   console.log(e.subsidiesFreightList);
-        //   e.subsidiesFreightList.forEach(ee => {
-        //     subList.push(ee);
-        //   });
-        //   e.deductionFreightList.forEach(ee => {
-        //     dedList.push(ee);
-        //   });
-        // });
-
-
-        // this.subsidiesClone = objReduce(subList, 'enName');
-        // this.deductionClone = objReduce(dedList, 'enName');
-
         this.adjustlist.sort((a, b) => {
           const a1 = a.subsidiesFreightList ? a.subsidiesFreightList.length : 0;
           const a2 = a.deductionFreightList ? a.deductionFreightList.length : 0;
@@ -706,16 +607,12 @@ export default {
           return (b1 + b2) - (a1 + a2);
         });
 
-        // console.log(this.adjustlist);
-
-
 
         this.subsidiesClone = this.adjustlist[0].subsidiesFreightList || [];
         this.deductionClone = this.adjustlist[0].deductionFreightList || [];
 
         const felexes = [...this.subsidiesClone, ...this.deductionClone];
 
-        // console.log(felexes);
         let waybillCode = '';
 
         this.showSubList.forEach(e => {
@@ -771,8 +668,6 @@ export default {
     /** 取消按钮 */
     cancel() {
       this.rowData = {};
-      // console.log(this.rowData);
-      // this.showSubList = [];
       this.close();
     },
     // 关闭弹窗
@@ -922,6 +817,46 @@ export default {
           callback(...argument);
         }, time);
       };
+    },
+    // 展示合计
+    getSummaries(param) {
+      const { columns, data } = param;
+      const sums = [];
+      columns.forEach((column, index) => {
+        if (index === 0) {
+          sums[index] = '合计';
+          return;
+        }
+
+        const values = data.map(item => {
+          let va = NaN;
+          if (
+            column.property === 'taxPayment' ||
+            column.property === 'serviceFee' ||
+            column.property === 'deliveryCashFee' ||
+            column.property === 'shipperRealPay'
+          ) {
+            va = Number(item[column.property]);
+          }
+          return va;
+        });
+        if (!values.every(value => isNaN(value))) {
+          sums[index] = values.reduce((prev, curr) => {
+            const value = Number(curr);
+            if (!isNaN(value)) {
+              return prev + curr;
+            } else {
+              return prev;
+            }
+          }, 0);
+          sums[index] = this.floor(sums[index]);
+          sums[index] += ' 元';
+        } else {
+          sums[index] = '';
+        }
+      });
+
+      return sums;
     }
   }
 };
