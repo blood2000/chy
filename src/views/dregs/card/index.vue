@@ -36,7 +36,7 @@
           >补卡</el-button>
         </el-col>
 
-        <el-col v-show="false" :span="1.5">
+        <el-col v-show="true" :span="1.5">
           <el-button
             type="info"
             icon="el-icon-brush"
@@ -45,7 +45,7 @@
             @click="handlerReadUserinfo"
           >读卡用户信息</el-button>
         </el-col>
-        <el-col v-show="false" :span="1.5">
+        <el-col v-show="true" :span="1.5">
           <el-button
             type="info"
             icon="el-icon-document"
@@ -560,7 +560,7 @@ export default {
       }
       // console.log(USERINFO);
       action.getCardInfo().then(res => {
-        console.log(res);
+        console.log(res, '先获取卡信息');
 
         if (res.success) {
           if (res.code === '9000') {
@@ -631,7 +631,8 @@ export default {
       }).then(() => {
         action.cancellation().then(res => {
           if (res.success) {
-            this.msgSuccess('初始化成功');
+            console.log(res);
+            this.msgSuccess(res.msg || '初始化成功');
           } else {
             this.msgError(res.msg);
           }
@@ -735,11 +736,10 @@ export default {
         this.loading = true;
         const res = await action.issuingCard(userInfo, userMark);
 
-        // console.log(res);
 
         if (!res.success) {
           this.loading = false;
-          this.msgError('写卡失败, 请不要移动IC卡!');
+          this.msgError(res.code ? res.msg : '写卡失败, 请不要移动IC卡!');
           return;
         }
 
@@ -762,6 +762,8 @@ export default {
       data.forEach(async(e, index) => {
         this['time' + index] = setTimeout(() => {
           action.writeData(fn.setData(meter, e)).then(res => {
+            console.log(res);
+
             clearTimeout(this['time' + index]);
             if (res.success) {
               if (res.code === '9000') {
@@ -773,7 +775,7 @@ export default {
               }
             } else {
               arr.push(false);
-              this.msgError('写卡失败, 请不要移动IC卡!');
+              // this.msgError('写卡失败, 请不要移动IC卡!');
             }
 
             if (arr.length === data.length) {
