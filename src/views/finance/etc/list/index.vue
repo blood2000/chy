@@ -497,7 +497,11 @@ export default {
     /** 查询列表 */
     getList() {
       this.loading = true;
-      etcList(this.queryParams).then(response => {
+      const params = { ...this.queryParams };
+      if (params.licenseNumber) {
+        params.licenseNumber = params.licenseNumber.toUpperCase();
+      }
+      etcList(params).then(response => {
         this.managesList = response.rows;
         this.total = response.total;
         this.loading = false;

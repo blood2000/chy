@@ -625,7 +625,11 @@ export default {
     /** 查询【请填写功能名称】列表 */
     getList() {
       this.loading = true;
-      adjustList({ ...this.queryParams }).then(response => {
+      const params = { ...this.queryParams };
+      if (params.licenseNumber) {
+        params.licenseNumber = params.licenseNumber.toUpperCase();
+      }
+      adjustList(params).then(response => {
         this.adjustlist = response.rows;
         this.total = response.total;
         this.loading = false;

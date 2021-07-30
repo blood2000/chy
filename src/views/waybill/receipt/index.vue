@@ -349,7 +349,11 @@ export default {
     /** 查询纸质回单列表 */
     getList() {
       this.loading = true;
-      listInfo(this.queryParams).then((response) => {
+      const params = { ...this.queryParams };
+      if (params.licenseNumber) {
+        params.licenseNumber = params.licenseNumber.toUpperCase();
+      }
+      listInfo(params).then((response) => {
         this.infoList = response.rows;
         this.total = response.total;
         this.loading = false;
