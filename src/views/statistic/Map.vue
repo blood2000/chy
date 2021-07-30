@@ -108,7 +108,7 @@ export default {
       this.chart.setOption({
         geo: {
           map: 'china',
-          zoom: 1.08,
+          zoom: 1.05,
           z: 2,
           aspectScale: 0.8,
           // layoutCenter: ['49%', '48%'],
@@ -134,7 +134,7 @@ export default {
           type: 'map',
           z: 0,
           map: 'china',
-          zoom: 1.08,
+          zoom: 1.05,
           aspectScale: 0.8,
           // layoutCenter: ['49%', '48%'],
           // layoutSize: '100%',
