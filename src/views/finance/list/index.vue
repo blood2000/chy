@@ -399,11 +399,15 @@ export default {
     },
     // 导出服务费明细
     handleExportService() {
-      this.exportIds = this.commentlist.filter(item => item.serverTotalAmount !== 0).map(item => item.code).join(',');
-      this.exportlistLoading = true;
-      this.download('/transportation/invoiceApply/export4', { applyCodes: this.exportIds, type: 2 }, `服务费明细`).then(() => {
-        this.exportlistLoading = false;
-      });
+      this.exportIds = this.commentlist.filter(item => item.serverTotalAmount === 0).map(item => item.code).join(',');
+      if (!this.exportIds) {
+        this.exportlistLoading = true;
+        this.download('/transportation/invoiceApply/export4', { applyCodes: this.ids, type: 2 }, `服务费明细`).then(() => {
+          this.exportlistLoading = false;
+        });
+      } else {
+        this.msgInfo('勾选的发票记录含有一票制发票，请重新勾选!');
+      }
     },
 
     handleTableBtn(row, index) {
