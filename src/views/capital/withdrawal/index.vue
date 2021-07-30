@@ -180,6 +180,10 @@
         :selectable="selectableFn"
         @selection-change="handleSelectionChange"
       >
+        <!-- 金额 -->
+        <template #money="{row}">
+          <span>{{ floor(row.money) }}</span>
+        </template>
         <!-- 转账渠道 -->
         <template #payStatus="{row}">
           <span>{{ selectDictLabel(payStatusOption, row.payStatus) }}</span>

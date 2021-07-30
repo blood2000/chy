@@ -18,7 +18,11 @@
       <el-table-column label="开户银行" align="center" prop="" />
       <el-table-column label="银行预留手机号" align="center" prop="" /> -->
         <el-table-column label="平台账号名称" align="center" prop="orgName" />
-        <el-table-column label="平台账号余额" align="center" prop="amount" />
+        <el-table-column label="平台账号余额" align="center" prop="amount">
+          <template slot-scope="scope">
+            <span>{{ floor(scope.row.amount) }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="开户银行" align="center" prop="account" />
         <el-table-column label="公户银行账户" align="center" prop="bankLineNo" />
         <el-table-column label="联行号" align="center" prop="bankLineNo" />
