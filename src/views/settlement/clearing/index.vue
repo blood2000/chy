@@ -273,7 +273,15 @@
             {{ selectDictLabel(clarifyStatusOptions, row.clarifyStatus) }}
           </span>
         </template>
-
+        <template #shipperRealPay="{row}">
+          <span>{{ floor(row.shipperRealPay) }}</span>
+        </template>
+        <template #teamTransferAmount="{row}">
+          <span>{{ floor(row.teamTransferAmount) }}</span>
+        </template>
+        <template #totalFee="{row}">
+          <span>{{ floor(row.totalFee) }}</span>
+        </template>
         <template #edit="{row}">
           <el-button
             v-if="row.clarifyStatus !== '2' && row.clarifyStatus !== '99'"

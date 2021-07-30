@@ -21,11 +21,31 @@
           <span v-if="scope.row.stowageStatus === '0' || !scope.row.stowageStatus">{{ scope.row.unloadWeight || '0.000' }} 吨</span>
         </template>
       </el-table-column>
-      <el-table-column width="100" label="司机实收运费" align="center" prop="deliveryCashFee" />
-      <el-table-column width="100" label="货主实付运费" align="center" prop="shipperRealPay" />
-      <el-table-column width="100" label="纳税金额" align="center" prop="taxPayment" />
-      <el-table-column width="100" label="服务费" align="center" prop="serviceFee" />
-      <el-table-column width="100" label="服务费税" align="center" prop="serviceTaxFee" />
+      <el-table-column width="100" label="司机实收运费" align="center" prop="deliveryCashFee">
+        <template #default="scope">
+          <span>{{ floor(scope.row.deliveryCashFee) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="100" label="货主实付运费" align="center" prop="shipperRealPay">
+        <template #default="scope">
+          <span>{{ floor(scope.row.shipperRealPay) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="100" label="纳税金额" align="center" prop="taxPayment">
+        <template #default="scope">
+          <span>{{ floor(scope.row.taxPayment) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="100" label="服务费" align="center" prop="serviceFee">
+        <template #default="scope">
+          <span>{{ floor(scope.row.serviceFee) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="100" label="服务费税" align="center" prop="serviceTaxFee">
+        <template #default="scope">
+          <span>{{ floor(scope.row.serviceTaxFee) }}</span>
+        </template>
+      </el-table-column>
     </el-table>
   </el-dialog>
 </template>

@@ -167,10 +167,13 @@
         <template #isDzqzContract="{row}">
           <span>{{ selectDictLabel(isDzqzContractOptions, row.isDzqzContract) }}</span>
         </template>
+        <template #goodsAmount="{row}">
+          <span>{{ floor(row.goodsAmount) }}</span>
+        </template>
         <template #loadWeight="{row}">
-          <span v-if="row.stowageStatus === '1'">{{ row.loadWeight || '0.000' }} 方</span>
+          <span v-if="row.stowageStatus === '1'">{{ fixed(row.loadWeight) || '0.000' }} 方</span>
           <span v-if="row.stowageStatus === '2'">{{ floor(row.loadWeight, 0) || '0' }} 车</span>
-          <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.loadWeight || '0.000' }} 吨</span>
+          <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ fixed(row.loadWeight) || '0.000' }} 吨</span>
         </template>
 
         <template #edit="{row}">
