@@ -14,7 +14,7 @@
         />
       </el-form-item>
       <el-form-item :label="weightLabel" prop="loadWeight">
-        <el-input-number v-model="form.loadWeight" placeholder="请输入装货量" :precision="2" controls-position="right" :min="0" style="width:90%;" />
+        <el-input-number v-model="form.loadWeight" placeholder="请输入装货量" :precision="3" controls-position="right" :min="0" style="width:90%;" />
       </el-form-item>
       <el-form-item label="装货单据" prop="attachmentCode">
         <uploadImage v-model="form.attachmentCode" :limit="9" :fresh="fresh" />

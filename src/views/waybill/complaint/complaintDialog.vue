@@ -38,7 +38,7 @@
         <el-input v-model="form.description" type="textarea" :autosize="{ minRows: 3, maxRows: 4}" placeholder="请输入投诉说明" :disabled="formDisable" class="width90" />
       </el-form-item>
       <el-form-item label="罚款金额" prop="penalty">
-        <el-input-number v-model="form.penalty" placeholder="请输入罚款金额" :disabled="disable" controls-position="right" :min="0" :max="9999999" class="width90" />
+        <el-input-number v-model="form.penalty" placeholder="请输入罚款金额" :precision="2" :disabled="disable" controls-position="right" :min="0" :max="9999999" class="width90" />
       </el-form-item>
       <el-form-item label="处理结果" prop="handleResult">
         <el-input v-model="form.handleResult" type="textarea" :autosize="{ minRows: 3, maxRows: 4}" placeholder="请输入处理结果" :disabled="disable" class="width90" />
