@@ -75,9 +75,12 @@ export default {
     }
   },
   mounted() {
-    this.$nextTick(() => {
-      this.initChart();
-    });
+    const timer = setInterval(() => {
+      if (this.$refs.map.offsetHeight > 0) {
+        clearInterval(timer);
+        this.initChart();
+      }
+    }, 300);
   },
   beforeDestroy() {
     if (!this.chart) {
