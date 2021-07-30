@@ -397,10 +397,10 @@ const CardReader = {
      * 包含：获得卡、卡片复位、获取随机值进行认证
      * endLve: 单独调用是否结束
      * key: 秘钥
-     * isMsg900: 报错详细
      * newKey: 新key
+     * cardInint: 初始化卡使用 == false(需要初始化 先isMsg900==false)
      */
-    getCard: async function(endLve, key = CardReader._attr.key, isMsg900, newKey = CardReader._attr.key) {
+    getCard: async function(endLve, key = CardReader._attr.key, getCar = false) {
       let ret;
       let GetCardNo;
       let ResetCpuCardNoGetCardNo;
@@ -411,12 +411,28 @@ const CardReader = {
         ret = await CardReader.fn.exec(CardReader.command.reset);
         ResetCpuCardNoGetCardNo = CardReader.fn.getResult(ret); // 卡片复位信息
 
+
+        if (getCar) {
+          const str = CardReader.fn.strReverse(GetCardNo.data.substring(0, 8));
+          GetCardNo.data = CardReader.fn.hex2int(str);
+          await CardReader.fn.exec(CardReader.command.deselect);
+          await CardReader.fn.exec(CardReader.command.beep);
+          return {
+            ...ret,
+            code: '9000',
+            success: true,
+            GetCardNo,
+            ResetCpuCardNoGetCardNo
+          };
+        }
+
         ret = await CardReader.fn.apdu((function() {
           return ['00', 'A4', '00', '00', '02', '3F00'].join('');
         })());
 
         ret = await CardReader.fn.exec(CardReader.command.get.random);
         ret = CardReader.fn.getResult(ret);
+
 
         // 构造外部认证参数
         const encrypt = CardReader.fn.encryptByDES(ret.data, key);
@@ -428,62 +444,19 @@ const CardReader = {
         console.log('获得认证结果', ret);
 
         // 63CB
-        if (!isMsg900) {
-          if (ret.code !== '9000') {
-            if (ret.code === '6983') {
-              // alert('密钥被锁死，卡片失效');
-              await CardReader.action.error();
-              return {
-                ...ret,
-                codeMsg: CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : '',
-                success: false,
-                msg: '密钥被锁死，卡片失效'
-              };
-            }
-            if (ret.code === '6982') {
-              // alert('认证失败，请慎重操作');
-              await CardReader.action.error();
-              return {
-                ...ret,
-                codeMsg: CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : '',
-                success: false,
-                msg: '验证失败，请勿多次尝试，否则易造成锁卡（废卡）'
-              };
-            }
-            // console.log(ret.code.indexOf('63'));
-            if (ret.code.indexOf('63') === 0) {
-              // alert('认证失败，剩余认证次数：' + CardReader.fn.hex2int(ret.code.substr(2)));
-              await CardReader.action.error();
-              return {
-                ...ret,
-                codeMsg: CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : '',
-                success: false,
-                msg: '认证失败，剩余认证次数：' + CardReader.fn.hex2int(ret.code.substr(2))
-              };
-            }
-            if (ret.code === '6A88') {
-              if (!newKey) {
-                await CardReader.action.error();
-                return {
-                  ...ret,
-                  codeMsg: CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : '',
-                  success: false,
-                  msg: '密钥未找到'
-                };
-              } else {
-                // 密钥未找到
-                // 创建密钥文件
-                ret = await CardReader.fn.exec('SendCOSCommand,80E00000073F005001F1FFFF');
-                // 增加外部认证密钥(ZJZ1C@RD)
-                // console.log('> 增加外部认证密钥:');
-                ret = await CardReader.fn.exec('SendCOSCommand,80D401000D39F0F1AADD' + newKey);
-                ret = CardReader.fn.getResult(ret);
-                console.log('创建密钥文件成功');
-              }
-            }
+        if (ret.code !== '9000') {
+          if (ret.code === '6983') {
+            // alert('密钥被锁死，卡片失效');
+            await CardReader.action.error();
+            return {
+              ...ret,
+              codeMsg: CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : '',
+              success: false,
+              msg: '密钥被锁死，卡片失效'
+            };
           }
-        } else {
-          if (ret.code !== '9000') {
+          if (ret.code === '6982') {
+            // alert('认证失败，请慎重操作');
             await CardReader.action.error();
             return {
               ...ret,
@@ -491,6 +464,27 @@ const CardReader = {
               success: false,
               msg: '验证失败，请勿多次尝试，否则易造成锁卡（废卡）'
             };
+          }
+          // console.log(ret.code.indexOf('63'));
+          if (ret.code.indexOf('63') === 0) {
+            // alert('认证失败，剩余认证次数：' + CardReader.fn.hex2int(ret.code.substr(2)));
+            await CardReader.action.error();
+            return {
+              ...ret,
+              codeMsg: CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : '',
+              success: false,
+              msg: '认证失败，剩余认证次数：' + CardReader.fn.hex2int(ret.code.substr(2))
+            };
+          }
+          if (ret.code === '6A88') {
+            // 密钥未找到
+            // 创建密钥文件
+            ret = await CardReader.fn.exec('SendCOSCommand,80E00000073F005001F1FFFF');
+            // 增加外部认证密钥(ZJZ1C@RD)
+            // console.log('> 增加外部认证密钥:');
+            ret = await CardReader.fn.exec('SendCOSCommand,80D401000D39F0F1AADD' + key);
+            ret = CardReader.fn.getResult(ret);
+            console.log('创建密钥文件成功');
           }
         }
 
@@ -848,13 +842,12 @@ CardReader.action['resetPwd'] = async function(oldKey, newKey) {
 /**
  * ==================== 获取卡片的信息 ====================
 */
-CardReader.action['getCardInfo'] = async function(key) {
-  const ret = await this.getCard(true, key);
+CardReader.action['getCardInfo'] = async function(key, getCar) {
+  const ret = await this.getCard(true, key, getCar);
   if (!ret.success) { // 获取卡片失败
     return ret;
   }
 
-  // console.log(ret, '看看是不是和回调的数据一样');
   return {
     ...ret,
     code: '9000',
@@ -1024,6 +1017,7 @@ CardReader.action['readData'] = async function(key, resEnd) {
       await CardReader.fn.exec(CardReader.command.beep);
     }
 
+    console.log(data);
 
     return {
       ...ret,
@@ -1046,7 +1040,7 @@ CardReader.action['readData'] = async function(key, resEnd) {
  * @returns {Promise<void>}
  */
 
-CardReader.action['readUserInfoAndreadData'] = async function(key) {
+CardReader.action['readUserInfoAndreadData'] = async function(key = CardReader._attr.key) {
   // 1. 获取卡片
   let ret = await this.getCard(false, key);
   if (!ret.success) { // 获取卡片失败
@@ -1091,9 +1085,35 @@ CardReader.action['readUserInfoAndreadData'] = async function(key) {
     userMark = `${resInfo.meter[0]}|${resInfo.meter[1]}|`;
 
 
+    // ret = await this.getCard(false, key);
+    // if (!ret.success) { // 获取卡片失败
+    //   return ret;
+    // }
+    // ret = await CardReader.fn.apdu('00A40000023F00');
+    // ret = await CardReader.fn.exec(CardReader.command.get.random);
+    // ret = CardReader.fn.getResult(ret);
+    // console.log(key);
+
+    // const encrypt = CardReader.fn.encryptByDES(ret.data, key);
+
+    // ret = await CardReader.fn.exec('SendCOSCommand,0082000008' + encrypt);
+    // ret = CardReader.fn.getResult(ret);
+    // if (ret.code !== '9000' && ret.code !== '6A88') {
+    //   await CardReader.action.error();
+    //   return {
+    //     ...ret,
+    //     codeMsg: CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : '',
+    //     success: false,
+    //     msg: '验证失败，请勿多次尝试，否则易造成锁卡（废卡）'
+    //   };
+    // }
+
     // 读取卡信息
     ret = await CardReader.fn.apdu((() => ['00', 'A4', '00', '00', '02', '3F', '02'].join(''))());
     ret = CardReader.fn.getResult(ret);
+
+    // console.log(ret);
+
     if (ret.code !== '9000') {
       await CardReader.action.error();
       return {
@@ -1322,9 +1342,10 @@ CardReader.action['writeUserInfo2Card'] = async function(data, umeter, resEnd, k
  * @returns {Promise<void>}
  */
 CardReader.action['writeData'] = async function(data, key = CardReader._attr.key) {
-  console.log('【写数据】');
   if (!data) return;
   const odata = data;
+  console.log('【写数据】:' + odata);
+
   data = CardReader.fn.strToHex16(data);
   const dfSize = '1900'; const efSize = '00C8';
 
@@ -1335,6 +1356,7 @@ CardReader.action['writeData'] = async function(data, key = CardReader._attr.key
   if (!ret.success) { // 获取卡片失败
     return ret;
   }
+  // console.log(ret, '获取卡片成功');
 
   try {
     // 选择索引目录
@@ -1342,8 +1364,13 @@ CardReader.action['writeData'] = async function(data, key = CardReader._attr.key
       return ['00', 'A4', '00', '00', '02', '3F', '02'].join('');
     })());
     ret = CardReader.fn.getResult(ret);
+    console.log('选择索引目录', ret, '6A82');
+    if (ret.code === '6A82') {
+      // 创建 02 目录
+
+    }
+
     if (ret.code === '9000') {
-      // console.log('选择索引目录', ret);
       // 读取索引目录索引文件
       ret = await CardReader.fn.apdu((function() {
         return ['00', 'B0', CardReader.fn.numToHex16(1 | 0x80), '00', '00'].join('');
@@ -1358,6 +1385,16 @@ CardReader.action['writeData'] = async function(data, key = CardReader._attr.key
         index[1] = parseInt(iData[1], 16);
       }
     }
+
+    // if (ret.code === '6A82') {
+    //   ret = await CardReader.fn.apdu((function() {
+    //     const cmd = ['80', 'E0', '3F', '02', '0D', '38', '0032', 'F0', 'F0', 96, 'FFFF', CardReader.fn.strToHex16('ADF03')].join('');
+    //     console.log(cmd);
+    //     return cmd;
+    //   })());
+    //   ret = CardReader.fn.getResult(ret);
+    //   console.log('创建索引目录', ret);
+    // }
     /**
        * 根据索引信息去找
        */
@@ -1370,6 +1407,9 @@ CardReader.action['writeData'] = async function(data, key = CardReader._attr.key
     }
     // 通过索引去找要写的数据目录，若目录不存在就进行创建
     // 选择数据目录
+
+    // console.log(CardReader.fn.numToHex16(index[0]));
+
     ret = await CardReader.fn.apdu((function() {
       return ['00', 'A4', '00', '00', '02', '3F', CardReader.fn.numToHex16(index[0])].join('');
     })());
@@ -1378,9 +1418,9 @@ CardReader.action['writeData'] = async function(data, key = CardReader._attr.key
     if (ret.code === '6A82') {
       // 找不到目录进行创建，默认目录大小参照方法前的定义值  dfSize
       // 选择主目录下去创建数据目录
-      ret = await CardReader.fn.apdu((function() {
-        return ['00', 'A4', '00', '00', '02', '3F', '00'].join('');
-      })());
+      // ret = await CardReader.fn.apdu((function() {
+      //   return ['00', 'A4', '00', '00', '02', '3F', '00'].join('');
+      // })());
       // console.log('选择主目录下去创建数据目录', ret);
       // 创建数据目录
       ret = await CardReader.fn.apdu((function() {
@@ -1388,8 +1428,9 @@ CardReader.action['writeData'] = async function(data, key = CardReader._attr.key
         // console.log(cmd);
         return cmd;
       })());
-      // console.log('创建数据目录', ret);
       ret = CardReader.fn.getResult(ret);
+      console.log('创建数据目录', ret);
+
       if (ret.code !== '9000') {
         await CardReader.action.error();
         return {
@@ -1452,6 +1493,7 @@ CardReader.action['writeData'] = async function(data, key = CardReader._attr.key
     ret = CardReader.fn.getResult(ret);
 
     // 密码
+    console.log(key);
     const encrypt = CardReader.fn.encryptByDES(ret.data, key);
     //  CardReader.log.info("key:"+key+" encrypt:"+encrypt);
 
@@ -1545,8 +1587,8 @@ CardReader.action['writeData'] = async function(data, key = CardReader._attr.key
     ret = await CardReader.fn.apdu((function() {
       return ['00', 'B0', CardReader.fn.numToHex16(1 | 0x80), '00', '00'].join('');
     })());
-    // console.log('读取索引文件', ret);
     ret = CardReader.fn.getResult(ret);
+    console.log('读取索引文件', ret);
     if (ret.code !== '9000') {
       await CardReader.action.error();
       return {
@@ -1582,7 +1624,7 @@ CardReader.action['writeData'] = async function(data, key = CardReader._attr.key
 /**
  * *************************** 写数据 用户信息 估计要废弃 ***************************
  */
-CardReader.action['issuingCard'] = async function(data, umeter, resEnd, key) {
+CardReader.action['issuingCard'] = async function(data, umeter, resEnd, key = CardReader._attr.key) {
   if (data) {
     console.log('【发卡流程】');
     let ret = await this.getCard(false, key);
@@ -1600,6 +1642,8 @@ CardReader.action['issuingCard'] = async function(data, umeter, resEnd, key) {
       }
 
       // 用户信息数据加密
+      console.log(str);
+
       str = CardReader.fn.strToHex16(str);
       const size = '00' + CardReader.fn.numToHex16(str.length / 2);
 
@@ -1661,27 +1705,29 @@ CardReader.action['issuingCard'] = async function(data, umeter, resEnd, key) {
       // ret = await CardReader.fn.apdu((function() {
       //   return ['00', 'A4', '00', '00', '02', '3F', '00'].join('');
       // })());
-      // // 创建数据索引目录
-      // ret = await CardReader.fn.apdu((function() {
-      //   const cmd = ['80', 'E0', '3F', '02', '0D', '38', '0032', 'F0', 'F0', 96, 'FFFF', CardReader.fn.strToHex16('ADF03')].join('');
-      //   return cmd;
-      // })());
-      // ret = CardReader.fn.getResult(ret);
-      // if (ret.code !== '9000') {
-      //   await CardReader.action.error();
-      //   return {
-      //     ...ret,
-      //     success: false,
-      //     codeMsg: CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : '',
-      //     msg: '创建数据索引目录失败'
-      //   };
-      // }
+      // 创建数据索引目录
+      ret = await CardReader.fn.apdu((function() {
+        const cmd = ['80', 'E0', '3F', '02', '0D', '38', '0032', 'F0', 'F0', 96, 'FFFF', CardReader.fn.strToHex16('ADF03')].join('');
+        return cmd;
+      })());
+      ret = CardReader.fn.getResult(ret);
+      console.log('创建索引目录');
+      if (ret.code !== '9000') {
+        await CardReader.action.error();
+        return {
+          ...ret,
+          success: false,
+          codeMsg: CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : '',
+          msg: '创建数据索引目录失败'
+        };
+      }
 
       // 取消选择卡片
       if (!resEnd) {
         await CardReader.fn.exec(CardReader.command.deselect);
         await CardReader.fn.exec(CardReader.command.beep);
       }
+
 
       return {
         code: '9000',

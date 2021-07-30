@@ -532,7 +532,7 @@ export default {
     // 读取卡基本数据
     getCardInfo() {
       if (this.isConnect) {
-        action.getCardInfo().then(res => {
+        action.getCardInfo(undefined, true).then(res => {
           if (res.success) {
             if (res.code === '9000') {
               this.$set(this.queryParams, 'card16no', res.GetCardNo.data);
@@ -559,7 +559,7 @@ export default {
         return;
       }
       // console.log(USERINFO);
-      action.getCardInfo().then(res => {
+      action.getCardInfo(undefined, false).then(res => {
         console.log(res, '先获取卡信息');
 
         if (res.success) {
@@ -670,6 +670,7 @@ export default {
       }
       // 读取卡数据
       action.readUserInfoAndreadData().then(res => {
+        console.log(res);
         if (res.success) {
           if (res.code === '9000') {
             this.cardInfoData = res;
@@ -737,6 +738,7 @@ export default {
         const res = await action.issuingCard(userInfo, userMark);
 
 
+
         if (!res.success) {
           this.loading = false;
           this.msgError(res.code ? res.msg : '写卡失败, 请不要移动IC卡!');
@@ -748,11 +750,15 @@ export default {
           this.msgError(res.msg);
           return;
         }
+
+        console.log(res, '发卡成功');
       } catch (error) {
         this.msgError('写卡失败, 请不要移动IC卡!');
         this.loading = false;
         return;
       }
+
+
       // 写卡
       // 定义 版本标识
       // const meter = this.meter ? this.meter.join('|') + '|' : versionMark;
