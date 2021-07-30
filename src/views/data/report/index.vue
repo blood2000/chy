@@ -638,8 +638,12 @@ export default {
       this.loading = true;
 
       let response = null;
+      const params = { ...this.queryParams };
+      if (params.licenseNumber) {
+        params.licenseNumber = params.licenseNumber.toUpperCase();
+      }
       try {
-        response = await waybillReport(this.queryParams);
+        response = await waybillReport(params);
       } catch (error) {
         // this.$confirm('请求超时,确定刷新页面?', '警告', {
         //   confirmButtonText: '确定',

@@ -525,7 +525,11 @@ export default {
     getList() {
       // console.log(this.queryParams);
       this.loading = true;
-      trackList(this.queryParams).then(response => {
+      const params = { ...this.queryParams };
+      if (params.licenseNumber) {
+        params.licenseNumber = params.licenseNumber.toUpperCase();
+      }
+      trackList(params).then(response => {
         this.tracklist = response.rows;
         this.total = response.total;
         this.loading = false;

@@ -555,7 +555,11 @@ export default {
     /** 查询列表 */
     getList() {
       this.loading = true;
-      listManages(this.queryParams).then(response => {
+      const params = { ...this.queryParams };
+      if (params.licenseNumber) {
+        params.licenseNumber = params.licenseNumber.toUpperCase();
+      }
+      listManages(params).then(response => {
         this.managesList = response.rows;
         this.total = response.total;
         this.loading = false;
