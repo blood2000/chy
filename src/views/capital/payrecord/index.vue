@@ -248,14 +248,30 @@
       </el-row>
 
       <RefactorTable :loading="loading" :data="recordList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
-        <!-- 金额：单位分转为元 -->
-        <!-- <template #amount="{row}">
-          <span>{{ row.amount ? (row.amount/100).toFixed(2) : row.amount }}</span>
-        </template> -->
-        <!-- 手续费：单位分转为元 -->
-        <!-- <template #totalFee="{row}">
-          <span>{{ row.totalFee ? (row.totalFee/100).toFixed(2) : row.totalFee }}</span>
-        </template> -->
+        <!-- 金额 -->
+        <template #amount="{row}">
+          <span>{{ floor(row.amount) }}</span>
+        </template>
+        <!-- 手续费 -->
+        <template #totalFee="{row}">
+          <span>{{ floor(row.totalFee) }}</span>
+        </template>
+        <!-- 司机实收运费 -->
+        <template #deliveryFeePractical="{row}">
+          <span>{{ floor(row.deliveryFeePractical) }}</span>
+        </template>
+        <!-- 司机实收现金 -->
+        <template #deliveryCashFee="{row}">
+          <span>{{ floor(row.deliveryCashFee) }}</span>
+        </template>
+        <!-- 装车重量 -->
+        <template #loadWeight="{row}">
+          <span>{{ fixed(row.loadWeight) }}</span>
+        </template>
+        <!-- 卸车重量 -->
+        <template #unloadWeight="{row}">
+          <span>{{ fixed(row.unloadWeight) }}</span>
+        </template>
         <!-- 付款类型 -->
         <template #payType="{row}">
           <span>{{ selectDictLabel(payTypeOptions, row.payType) }}</span>

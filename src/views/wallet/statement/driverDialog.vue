@@ -28,8 +28,16 @@
       <el-table-column label="运单号" align="center" prop="waybillNo" width="160" />
       <el-table-column label="司机姓名" align="center" prop="driverName" />
       <el-table-column label="司机电话" align="center" prop="driverPhone" />
-      <el-table-column label="金额" align="center" prop="deliveryCashFee" />
-      <el-table-column label="手续费" align="center" prop="fee" />
+      <el-table-column label="金额" align="center" prop="deliveryCashFee">
+        <template slot-scope="scope">
+          <span>{{ floor(scope.row.deliveryCashFee) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="手续费" align="center" prop="fee">
+        <template slot-scope="scope">
+          <span>{{ floor(scope.row.fee) }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="打款结果" align="center" prop="responseStatus">
         <template slot-scope="scope">
           <span v-if="scope.row.responseStatus === 0">处理中</span>
