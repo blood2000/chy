@@ -335,7 +335,11 @@ export default {
     /** 查询作废运单列表 */
     getList() {
       this.loading = true;
-      listNullify(this.queryParams).then(response => {
+      const params = { ...this.queryParams };
+      if (params.licenseNumber) {
+        params.licenseNumber = params.licenseNumber.toUpperCase();
+      }
+      listNullify(params).then(response => {
         this.nullifyList = response.rows;
         this.total = response.total;
         console.log(this.nullifyList);

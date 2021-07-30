@@ -316,13 +316,13 @@
                   @click="reportVehicle(row)"
                 >上报</el-button>
               </el-dropdown-item>
-            <el-dropdown-item>
+              <el-dropdown-item>
                 <el-button
-                        size="mini"
-                        type="text"
-                        @click="handleChange(row)"
+                  size="mini"
+                  type="text"
+                  @click="handleChange(row)"
                 >转换</el-button>
-            </el-dropdown-item>
+              </el-dropdown-item>
               <el-dropdown-item>
                 <el-button
                   v-hasPermi="['assets:vehicle:remove']"
@@ -553,7 +553,11 @@ export default {
     getList() {
       this.loading = true;
       this.$store.dispatch('settings/changeQuick', null);
-      listInfo(this.queryParams).then((response) => {
+      const params = { ...this.queryParams };
+      if (params.licenseNumber) {
+        params.licenseNumber = params.licenseNumber.toUpperCase();
+      }
+      listInfo(params).then((response) => {
         this.vehicleList = response.rows;
         this.total = response.total;
         this.loading = false;
