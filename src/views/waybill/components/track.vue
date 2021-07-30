@@ -135,7 +135,7 @@ export default {
       jimiQueryParams: { // jimi查询参数 map_type:GOOGOLE或BAIDU
         begin_time: '2021-03-22 08:00:00',
         end_time: '2021-03-22 09:00:00',
-        imeis: '867567047562525',
+        imeis: '868120274644936',
         map_type: 'GOOGLE'
       },
       // 中交兴路轨迹相关参数
@@ -576,9 +576,10 @@ export default {
       });
       // 轨迹时间线
       getWaybillTrace(data.code).then(response => {
-        response.data.forEach(el => {
-          this.timeLineList.unshift(el);
-        });
+        this.timeLineList = response.data;
+        // response.data.forEach(el => {
+        //   this.timeLineList.unshift(el);
+        // });
       });
     }
   }
