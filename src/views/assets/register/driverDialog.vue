@@ -1003,6 +1003,7 @@ export default {
     },
     // 查询车辆列表
     getVehicleList() {
+      this.vehicleQueryParams.licenseNumber = this.vehicleQueryParams.licenseNumber.toUpperCase();
       vehicleListInfo(this.vehicleQueryParams).then((response) => {
         this.vehicleLoading = false;
         this.vehicleOptions = [...this.vehicleOptions, ...response.rows];

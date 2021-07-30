@@ -643,7 +643,11 @@ export default {
     getList() {
       this.loading = true;
       this.$store.dispatch('settings/changeQuick', null);
-      listDriver(this.queryParams).then(response => {
+      const params = { ...this.queryParams };
+      if (params.licenseNumber) {
+        params.licenseNumber = params.licenseNumber.toUpperCase();
+      }
+      listDriver(params).then(response => {
         this.driverList = response.rows;
         this.total = response.total;
         this.loading = false;
