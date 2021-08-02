@@ -105,7 +105,7 @@ export default {
       .content__list__item{
         line-height: 1.35rem;
         .text{
-          width: calc(100% - 1.8rem);
+          width: calc(100% - 2.2rem);
           font-size: 0.65rem;
           font-family: PingFang Regular;
           font-weight: 400;
@@ -115,12 +115,13 @@ export default {
           text-overflow: ellipsis;
         }
         .time{
-          width: 1.6rem;
+          width: 2.2rem;
           font-size: 0.5rem;
           font-family: PingFang Regular;
           font-weight: 400;
           color: #A4ACC0;
           transform: scale(0.9, 0.9);
+          text-align: right;
         }
         // 动画
         &.isOpacity:first-child{

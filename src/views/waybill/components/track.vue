@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { jimiTrackLocation, zjxlTrackLocation, getVehicleInfo, getWebDetail, getWaybillTrace, addZjxl, queryZjxl } from '@/api/waybill/tracklist';
+import { jimiTrackLocation, zjxlTrackLocation, getWebDetail, getWaybillTrace, addZjxl, queryZjxl, getDevice } from '@/api/waybill/tracklist';
 import axios from 'axios';
 import { getUserInfo } from '@/utils/auth';
 
@@ -69,8 +69,8 @@ export default {
       graspRoad: '',
       // 运单信息
       wayBillInfo: {},
-      // 车辆信息
-      vehicleInfo: {},
+      // 设备信息
+      deviceInfo: {},
       // 日期
       time: '',
       // 装卸货地经纬度
@@ -133,8 +133,8 @@ export default {
       },
       jmMark: undefined, // 几米车辆定位
       jimiQueryParams: { // jimi查询参数 map_type:GOOGOLE或BAIDU
-        begin_time: '2021-03-22 08:00:00',
-        end_time: '2021-03-22 09:00:00',
+        begin_time: '2021-08-02 00:00:00',
+        end_time: '2021-08-02 17:00:00',
         imeis: '868120274644936',
         map_type: 'GOOGLE'
       },
@@ -319,6 +319,7 @@ export default {
         if (response.data.result) {
           this.jmTracklist = response.data.result.map(function(response) {
             return [response.lng, response.lat];
+            // return this.wgs84_to_gcj02(response.lng, response.lat);
           });
           // console.log(this.jmTracklist);
           if (this.jmTracklist.length !== 0) {
@@ -490,11 +491,12 @@ export default {
       endMark.setMap(that.$refs.map.$$getInstance()); // 点标记
       that.$refs.map.$$getInstance().setFitView([startMark, endMark]); // 执行定位
     },
-    // 获取车辆信息
-    getvehicleInfo() {
-      getVehicleInfo(this.waybill.vehicleCode).then(response => {
-        this.vehicleInfo = response.data;
-        // console.log(this.vehicleInfo);
+    // 获取车辆设备信息
+    getDeviceInfo() {
+      getDevice({ vehicleCode: this.wayBillInfo.vehicleCode, vendorCode: 'jimilot' }).then(response => {
+        this.deviceInfo = response.data[0];
+        this.jimiQueryParams.imeis = response.data[0].deviceImei;
+        // console.log(this.deviceInfo);
       });
     },
     /** 取消按钮 */
@@ -516,6 +518,7 @@ export default {
       // 获取运单信息，并标记装卸货地
       getWebDetail(data.code).then(response => {
         this.wayBillInfo = response.data;
+        this.getDeviceInfo();
         // 中交车牌号参数赋值
         this.zjxlQueryParams.vclN = this.wayBillInfo.licenseNumber;
         this.zjxlAddParams.licenseNumber = this.wayBillInfo.licenseNumber;

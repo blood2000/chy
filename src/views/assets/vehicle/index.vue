@@ -367,7 +367,7 @@
         @refresh="getList"
       />
       <!-- 管理归属司机/归属调度 对话框 -->
-      <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :vehicle-code="vehicleCode" :license-number="licenseNumber"/>
+      <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :vehicle-code="vehicleCode" :license-number="licenseNumber" />
     </div>
   </div>
 </template>

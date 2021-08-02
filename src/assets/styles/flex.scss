@@ -14,7 +14,8 @@
    .ly-flex-align-center,
    .ly-flex-pack-center,
    .ly-flex-pack-start,
-   .ly-flex-pack-justify
+   .ly-flex-pack-justify,
+   .ly-flex-pack-around
    {display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;}
    .ly-flex-v{-webkit-box-orient:vertical;-webkit-flex-direction:column;-ms-flex-direction:column;flex-direction:column;}
    .ly-flex-1{-webkit-box-flex:1;-webkit-flex:1;-ms-flex:1;flex:1;}
@@ -22,6 +23,7 @@
    .ly-flex-pack-center{-webkit-box-pack:center;-webkit-justify-content:center;-ms-flex-pack:center;justify-content:center;}
    .ly-flex-pack-start{-webkit-box-pack:start;-webkit-justify-content:start;-ms-flex-pack:start;justify-content:start;}
    .ly-flex-pack-justify{-webkit-box-pack:justify;-webkit-justify-content:space-between;-ms-flex-pack:justify;justify-content:space-between;}
+   .ly-flex-pack-around{-webkit-box-pack:justify;-webkit-justify-content:space-around;-ms-flex-pack:justify;justify-content:space-around;}
    .ly-flex-w{ flex-wrap: wrap; }
 
    .ly-t-center{ text-align: center; }

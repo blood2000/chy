@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import { jimiLocation, getWebDetail, zjxlLocation } from '@/api/waybill/tracklist';
+import { jimiLocation, getWebDetail, zjxlLocation, getDevice } from '@/api/waybill/tracklist';
 import axios from 'axios';
 export default {
   name: 'LocationDialog',
@@ -121,7 +121,7 @@ export default {
       },
       // 获取到的定位
       location: [],
-      wayBillInfo: [],
+      wayBillInfo: {},
       // 猎鹰相关参数
       lieyingChecked: true,
       lieyingMark: undefined,
@@ -134,12 +134,13 @@ export default {
         correction: 'n'
       },
       // 几米相关参数
+      deviceInfo: {},
       jimiChecked: false,
       jimiMark: undefined,
       jmLocation: [],
       // 查询参数 map_type:GOOGOLE或BAIDU
       queryParams: {
-        imeis: '867567047562525',
+        imeis: '', // 867567047562525
         map_type: 'GOOGLE'
       },
       // 中交兴路相关参数
@@ -179,7 +180,7 @@ export default {
     jimiChecked(val) {
       const that = this;
       if (val) {
-        if (that.wayBillInfo.imeis) {
+        if (that.queryParams.imeis) {
           that.jimiLocation();
         } else {
           that.msgInfo('暂无硬件定位！');
@@ -202,6 +203,14 @@ export default {
   created() {
   },
   methods: {
+    // 获取车辆设备信息
+    getDeviceInfo() {
+      getDevice({ vehicleCode: this.wayBillInfo.vehicleCode, vendorCode: 'jimilot' }).then(response => {
+        this.deviceInfo = response.data[0];
+        this.queryParams.imeis = response.data[0].deviceImei;
+        // console.log(this.deviceInfo);
+      });
+    },
     /** 获取猎鹰定位 */
     lieyingLocation() {
       axios.get('https://tsapi.amap.com/v1/track/terminal/lastpoint', { params: this.lieyingQueryParams }).then(response => {
@@ -311,6 +320,7 @@ export default {
     setForm(data) {
       getWebDetail(data.code).then(response => {
         this.wayBillInfo = response.data;
+        this.getDeviceInfo();
         this.marker = {
           icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/cart.png',
           autoFitView: true,

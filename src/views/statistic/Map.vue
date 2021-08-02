@@ -4,7 +4,7 @@
     <!-- 图例 -->
     <div class="map-legend" :class="{isSecond: isSecond}">
       <h5>运单量</h5>
-      <ul class="ly-flex-v ly-flex-pack-justify">
+      <ul class="ly-flex-v ly-flex-pack-around">
         <li v-for="(item, index) in legendList" :key="index">
           <span class="color" :style="{background: item.color}" />
           <span class="text">{{ item.name }}</span>
@@ -527,7 +527,7 @@ export default {
     }
     >ul{
       height: calc(100% - 1.5rem);
-      padding: 0.4rem 0;
+      padding: 0.2rem 0;
       >li{
         .color{
           display: inline-block;
