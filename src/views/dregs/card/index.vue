@@ -36,7 +36,7 @@
           >补卡</el-button>
         </el-col>
 
-        <el-col v-show="true" :span="1.5">
+        <el-col v-if="true" :span="1.5">
           <el-button
             type="info"
             icon="el-icon-brush"
@@ -44,6 +44,15 @@
             :disabled="!isConnect"
             @click="handlerReadUserinfo"
           >读卡用户信息</el-button>
+        </el-col>
+        <el-col v-if="true" :span="1.5">
+          <el-button
+            type="info"
+            icon="el-icon-document"
+            size="mini"
+            :disabled="!isConnect"
+            @click="handlerReadData"
+          >读运单信息</el-button>
         </el-col>
         <el-col v-show="true" :span="1.5">
           <el-button
@@ -53,6 +62,26 @@
             :disabled="!isConnect"
             @click="handlerReadData"
           >读卡</el-button>
+        </el-col>
+
+        <el-col v-show="false" :span="1.5">
+          <el-button
+            type="info"
+            icon="el-icon-document"
+            size="mini"
+            :disabled="!isConnect"
+            @click="handlerWriteUser"
+          >写入用户数据</el-button>
+        </el-col>
+
+        <el-col v-show="false" :span="1.5">
+          <el-button
+            type="info"
+            icon="el-icon-document"
+            size="mini"
+            :disabled="!isConnect"
+            @click="handlerData"
+          >写入运单数据</el-button>
         </el-col>
         <!-- <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
@@ -670,7 +699,6 @@ export default {
       }
       // 读取卡数据
       action.readUserInfoAndreadData().then(res => {
-        console.log(res);
         if (res.success) {
           if (res.code === '9000') {
             this.cardInfoData = res;
@@ -681,6 +709,50 @@ export default {
         } else {
           this.msgError(res.msg);
         }
+      });
+    },
+
+    // 写用户信息
+    async handlerWriteUser() {
+      const userInfo = {
+        icType: 'r',
+        //   issuing_name: user.orderClient || "-", // orderClient	下单客户
+        issuing_pc: 1627559938998505 || '-', // cardBatchNo	卡批次
+        issuing_telno: 15859109601 || '-', // sipperPhone	货主手机号
+        issuing_time: 1627559820000, // loadingTime	装货时间
+        project_id: 72276 || '-', // projectId	项目Id
+        //   team_name:  "-", // teamName	车队名称
+        team_telno: 15859102001 || '-', // dispatchNumber	调度者手机号
+        //   user_name:  "-", // driverName	司机名字
+        user_telno: 15859101001 || '-' // driverPhone	司机电话
+      };
+
+      const cancellation = await action.cancellation();
+      if (!cancellation.success || cancellation.code !== '9000') {
+        this.msgError(cancellation.msg || '核销失败');
+        return;
+      }
+      action.issuingCard(userInfo, userMark).then((res) => {
+        console.log(res);
+      });
+    },
+    // 写运单信息
+    async handlerData() {
+      const data = {
+        driverPhone: '15859101001' || '-', // driverPhone	司机电话
+        fillTime: '1627559820000' || '-', // loadingTime	接单时间
+        licenseNumber: '闽BQ7801' || '-', // '鄂ALF106',
+        orderId: '2107291757184088' || '-', // mainOrderNumber	货源编号
+        projectName: '72276' || '-', // projectId	项目Id
+        serialNumber: '74' || '-', // shipmentMuckyardNo	渣土场编号
+        signTime: '1627559820000' || '-', // signTime	装货时间
+        waybillNo: '2107291957141395' || '-' // waybillNo	运单号
+      };
+      //   console.log(fn.setData(versionMark, data)); // 1010|2|2107291757184088;2107291957141395;72276;闽BQ7801;15859101001;1627559820000;1627559820000;74
+      //   return;
+
+      action.writeData(fn.setData(versionMark, data)).then((res) => {
+        console.log(res);
       });
     },
 

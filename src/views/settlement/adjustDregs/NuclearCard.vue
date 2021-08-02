@@ -465,6 +465,12 @@ export default {
 
       try {
         this.loading = true;
+        const cancellation = await action.cancellation();
+        if (!cancellation.success || cancellation.code !== '9000') {
+          this.loading = false;
+          this.msgError(cancellation.msg || '核销失败');
+          return;
+        }
         const res = await action.issuingCard(this.userInfo, this.userMark);
 
 
@@ -493,15 +499,22 @@ export default {
       // 通过时间来
       const arr = [];
       filterArr.forEach(async(e, index) => {
+        console.log(fn.setData(meter, e), '要写回的数据');
+
         this['time' + index] = setTimeout(() => {
           action.writeData(fn.setData(meter, e)).then(res => {
             clearTimeout(this['time' + index]);
-            if (res.success && res.code === '9000') {
-              arr.push(true);
+            if (res.success) {
+              if (res.code === '9000') {
+                arr.push(true);
+              } else {
+                arr.push(false);
+                this.msgError(res.msg);
+              }
               // 执行到最后一步走这里
             } else {
               arr.push(false);
-              this.msgError(res.msg);
+              // this.msgError(res.msg);
             }
             if (arr.length === filterArr.length) {
               if (arr.every(e => e)) {
