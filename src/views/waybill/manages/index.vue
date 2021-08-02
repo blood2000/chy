@@ -240,6 +240,9 @@
         <template #freightPrice="{row}">
           <span>{{ row.freightPrice ? floor(row.freightPrice) + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) :'-' }}</span>
         </template>
+        <template #freightPriceDriver="{row}">
+          <span>{{ row.freightPriceDriver ? floor(row.freightPriceDriver) + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) :'-' }}</span>
+        </template>
         <template #taxFee="{row}">
           <span>{{ floor(row.taxFee) }}</span>
         </template>
@@ -257,6 +260,21 @@
         </template>
         <template #serviceFee="{row}">
           <span>{{ floor(row.serviceFee) }}</span>
+        </template>
+        <template #deliveryFeePractical="{row}">
+          <span>{{ floor(row.deliveryFeePractical) }}</span>
+        </template>
+        <template #lossDeductionFee="{row}">
+          <span>{{ floor(row.lossDeductionFee) }}</span>
+        </template>
+        <template #m0Fee="{row}">
+          <span>{{ floor(row.m0Fee) }}</span>
+        </template>
+        <template #driverAddFee="{row}">
+          <span>{{ floor(row.driverAddFee) }}</span>
+        </template>
+        <template #driverReductionFee="{row}">
+          <span>{{ floor(row.driverReductionFee) }}</span>
         </template>
         <!-- <template #isChild="{row}">
           <span>{{ selectDictLabel(isChildOptions, row.isChild) }}</span>
