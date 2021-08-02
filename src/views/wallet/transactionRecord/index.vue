@@ -47,6 +47,7 @@
         </el-row>
 
         <el-table v-show="activeTab == '冻结记录'" v-loading="loading" highlight-current-row border :data="dataList">
+          <el-table-column label="序号" align="center" fixed="left" type="index" min-width="5%" />
           <el-table-column label="运单号" align="center" prop="waybillNo" width="150" />
           <el-table-column label="装货地" align="center" prop="loadAddress" width="150" />
           <el-table-column label="卸货地" align="center" prop="unloadAddress" width="150" />
@@ -67,11 +68,31 @@
           <el-table-column label="交易类型" align="center" prop="payBy">
             <span>冻结</span>
           </el-table-column>
-          <el-table-column label="装货重量" align="center" prop="loadWeight" />
-          <el-table-column label="卸货重量" align="center" prop="unloadWeight" />
-          <el-table-column label="货物单价（元）" align="center" prop="goodsPrice" />
-          <el-table-column label="运费单价（元）" align="center" prop="freightPrice" />
-          <el-table-column label="冻结总额（元）" align="center" prop="amount" />
+          <el-table-column label="装货重量" align="center" prop="loadWeight">
+            <template slot-scope="scope">
+              <span>{{ fixed(scope.row.loadWeight) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="卸货重量" align="center" prop="unloadWeight">
+            <template slot-scope="scope">
+              <span>{{ fixed(scope.row.unloadWeight) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="货物单价（元）" align="center" prop="goodsPrice">
+            <template slot-scope="scope">
+              <span>{{ floor(scope.row.goodsPrice) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="运费单价（元）" align="center" prop="freightPrice">
+            <template slot-scope="scope">
+              <span>{{ floor(scope.row.freightPrice) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="冻结总额（元）" align="center" prop="amount">
+            <template slot-scope="scope">
+              <span>{{ floor(scope.row.amount) }}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="操作时间" align="center" prop="createTime" width="180">
             <template slot-scope="scope">
               <span>{{ parseTime(scope.row.createTime) }}</span>
@@ -80,6 +101,7 @@
         </el-table>
 
         <el-table v-show="activeTab == '付款记录'" v-loading="loading" highlight-current-row border :data="dataList">
+          <el-table-column label="序号" align="center" fixed="left" type="index" min-width="5%" />
           <el-table-column label="运单号" align="center" prop="waybillNo" width="150" />
           <el-table-column label="装货地" align="center" prop="loadAddress" width="150" />
           <el-table-column label="卸货地" align="center" prop="unloadAddress" width="150" />
@@ -111,14 +133,20 @@
             </template>
           </el-table-column>
           <!-- <el-table-column label="货物损耗(kg)" align="center" prop="wastage" /> -->
-          <el-table-column label="货物单价（元）" align="center" prop="goodsPrice" />
-          <el-table-column label="运费单价（元）" align="center" prop="freightPriceDriver" />
+          <el-table-column label="货物单价（元）" align="center" prop="goodsPrice">
+            <template slot-scope="scope">
+              <span>{{ floor(scope.row.goodsPrice) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="运费单价（元）" align="center" prop="freightPriceDriver">
+            <template slot-scope="scope">
+              <span>{{ floor(scope.row.freightPriceDriver) }}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="实付金额（元）" align="center" prop="amount">
-            <!-- 金额：单位分转为元 -->
-            <!-- <template slot-scope="scope">
-              <span>{{ scope.row.amount ? (scope.row.amount/100).toFixed(2) : scope.row.amount }}</span>
-            </template> -->
-            <!-- 付款类型 -->
+            <template slot-scope="scope">
+              <span>{{ floor(scope.row.amount) }}</span>
+            </template>
           </el-table-column>
           <el-table-column label="操作时间" align="center" prop="updateTime" width="180">
             <template slot-scope="scope">

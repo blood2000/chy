@@ -78,6 +78,9 @@
         <template #status="{row}">
           <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
         </template>
+        <template #penalty="{row}">
+          <span>{{ floor(row.penalty) }}</span>
+        </template>
         <template #createTime="{row}">
           <span>{{ parseTime(row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>

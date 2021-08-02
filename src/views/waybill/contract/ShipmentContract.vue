@@ -79,15 +79,15 @@
             </tr>
             <tr>
               <td><b>计划数量</b></td>
-              <td id="weight">{{ obj.loadWeight }}
-                {{ obj.stowageStatus == '0' ? '吨' : (obj.stowageStatus == '1'? '立方': '车') }}
+              <td id="weight">
+                {{ obj.stowageStatus == '0' ? fixed(obj.loadWeight) + '吨' : (obj.stowageStatus == '1'? fixed(obj.loadWeight) + '立方': floor(obj.loadWeight, 0) + '车') }}
               </td>
               <td><b>货物描述</b></td>
               <td id="goods_type">{{ obj.goodsName }}</td>
               <!-- <td><b>货值（元）</b></td>
               <td id="goods_total">{{ obj.goodsAmount }}</td> -->
               <td><b>运费金额（元）</b></td>
-              <td id="amount">￥{{ obj.shipperCopeFee }}</td>
+              <td id="amount">￥{{ floor(obj.shipperCopeFee) }}</td>
             </tr>
             <tr>
               <td><b>合同签订时间</b></td>

@@ -1074,7 +1074,7 @@ export default {
       this.$forceUpdate();
     },
     JumpH5() {
-      window.open('http://10.0.0.75:8090/#/?isWeb=true&tk=' + this.token);
+      // window.open('http://10.0.0.75:8090/#/?isWeb=true&tk=' + this.token);
     }
   }
 };

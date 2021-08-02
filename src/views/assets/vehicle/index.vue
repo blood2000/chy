@@ -243,6 +243,18 @@
         <template #vehicleHeight="{row}">
           <span>{{ selectDictLabel(vehicleHeightOptions, row.vehicleHeight) }}</span>
         </template>
+        <!-- 车总重量 -->
+        <template #vehicleTotalWeight="{row}">
+          <span>{{ fixed(row.vehicleTotalWeight) }}</span>
+        </template>
+        <!-- 车可载重量 -->
+        <template #vehicleLoadWeight="{row}">
+          <span>{{ fixed(row.vehicleLoadWeight) }}</span>
+        </template>
+        <!-- 车可载立方 -->
+        <template #vehicleRemainingLoadVolume="{row}">
+          <span>{{ fixed(row.vehicleRemainingLoadVolume) }}</span>
+        </template>
         <!-- 轴数 -->
         <template #axesNumber="{row}">
           <span>{{ selectDictLabel(axisTypeOptions, row.axesNumber) }}</span>

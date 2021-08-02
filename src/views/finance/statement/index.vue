@@ -9,10 +9,10 @@
           <el-input v-model="form.invoiceCount" disabled placeholder="暂无" clearable size="small" style="width:90%;" />
         </el-form-item>
         <el-form-item label="总运单结算金额" prop="totalDeliveryFeeDeserved">
-          <el-input v-model="form.totalDeliveryFeeDeserved" disabled placeholder="暂无" clearable size="small" style="width:90%;" />
+          <el-input v-model="form.totalDeliveryFeeDeserved" disabled :precision="2" placeholder="暂无" clearable size="small" style="width:90%;" />
         </el-form-item>
         <el-form-item label="服务费结算金额" prop="totalServiceFee">
-          <el-input v-model="form.totalServiceFee" disabled placeholder="暂无" clearable size="small" style="width:90%;" />
+          <el-input v-model="form.totalServiceFee" disabled :precision="2" placeholder="暂无" clearable size="small" style="width:90%;" />
         </el-form-item>
         <!-- <img v-viewer :src="form.invoiceInfoGroupVos[0].invoiceImg" class="img-box"> -->
         <img v-for="(img, index) in form.invoiceImgUrl" :key="index" v-viewer :src="img" class="img-box">
@@ -102,10 +102,10 @@
               <el-table-column width="100" label="装车数量" align="center">
                 <template #default="scope">
                   <span v-show="scope.row.invoiceInfoStatisticsVo.stowageStatus === '0'">
-                    {{ scope.row.invoiceInfoStatisticsVo.loadWeight }}(吨)
+                    {{ fixed(scope.row.invoiceInfoStatisticsVo.loadWeight) }}(吨)
                   </span>
                   <span v-show="scope.row.invoiceInfoStatisticsVo.stowageStatus === '1'">
-                    {{ scope.row.invoiceInfoStatisticsVo.loadWeight }}(方)
+                    {{ fixed(scope.row.invoiceInfoStatisticsVo.loadWeight) }}(方)
                   </span>
                   <span v-show="scope.row.invoiceInfoStatisticsVo.stowageStatus === '2'">
                     {{ Math.floor(scope.row.invoiceInfoStatisticsVo.loadWeight) }}(车)
@@ -115,10 +115,10 @@
               <el-table-column width="120" label="结算数量" align="center">
                 <template #default="scope">
                   <span v-show="scope.row.invoiceInfoStatisticsVo.stowageStatus === '0'">
-                    {{ scope.row.invoiceInfoStatisticsVo.unloadWeight }}(吨)
+                    {{ fixed(scope.row.invoiceInfoStatisticsVo.unloadWeight) }}(吨)
                   </span>
                   <span v-show="scope.row.invoiceInfoStatisticsVo.stowageStatus === '1'">
-                    {{ scope.row.invoiceInfoStatisticsVo.unloadWeight }}(方)
+                    {{ fixed(scope.row.invoiceInfoStatisticsVo.unloadWeight) }}(方)
                   </span>
                   <span v-show="scope.row.invoiceInfoStatisticsVo.stowageStatus === '2'">
                     {{ Math.floor(scope.row.invoiceInfoStatisticsVo.unloadWeight) }}(车)
@@ -126,11 +126,31 @@
                 </template>
               </el-table-column>
               <el-table-column width="120" label="发票类型" align="center" prop="invoiceType" :formatter="invoiceTypeFormatter" />
-              <el-table-column width="120" label="开票金额" align="center" prop="amount" />
-              <el-table-column width="150" label="司机实收金额" align="center" prop="invoiceInfoStatisticsVo.totalDeliveryCashFee" />
-              <el-table-column width="120" label="服务费金额" align="center" prop="invoiceInfoStatisticsVo.totalServiceFee" />
-              <el-table-column width="120" label="纳税金额" align="center" prop="invoiceInfoStatisticsVo.totalTaxPayment" />
-              <el-table-column width="120" label="货主实付金额" align="center" prop="invoiceInfoStatisticsVo.totalShipperRealPay" />
+              <el-table-column width="120" label="开票金额" align="center" prop="amount">
+                <template #default="scope">
+                  <span>{{ floor(scope.row.amount) }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column width="150" label="司机实收金额" align="center" prop="invoiceInfoStatisticsVo.totalDeliveryCashFee">
+                <template #default="scope">
+                  <span>{{ floor(scope.row.invoiceInfoStatisticsVo.totalDeliveryCashFee) }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column width="120" label="服务费金额" align="center" prop="invoiceInfoStatisticsVo.totalServiceFee">
+                <template #default="scope">
+                  <span>{{ floor(scope.row.invoiceInfoStatisticsVo.totalServiceFee) }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column width="120" label="纳税金额" align="center" prop="invoiceInfoStatisticsVo.totalTaxPayment">
+                <template #default="scope">
+                  <span>{{ floor(scope.row.invoiceInfoStatisticsVo.totalTaxPayment) }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column width="120" label="货主实付金额" align="center" prop="invoiceInfoStatisticsVo.totalShipperRealPay">
+                <template #default="scope">
+                  <span>{{ floor(scope.row.invoiceInfoStatisticsVo.totalShipperRealPay) }}</span>
+                </template>
+              </el-table-column>
               <el-table-column fixed="left" label="运单明细" align="center" width="100">
                 <template #default="scope">
                   <el-button type="text" size="small" icon="el-icon-document-checked" @click="handleClick(scope.row)">详情</el-button>

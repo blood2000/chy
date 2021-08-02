@@ -107,7 +107,18 @@
         <template #batchNo="{row}">
           <DismissedTrack :batch-no="row.batchNo" :is-success="status===4? row.isSuccess : true" />
         </template>
-
+        <template #freightAmount="{row}">
+          <span>{{ floor(row.freightAmount) }}</span>
+        </template>
+        <template #deliveryCashFee="{row}">
+          <span>{{ floor(row.deliveryCashFee) }}</span>
+        </template>
+        <template #taxPayment="{row}">
+          <span>{{ floor(row.taxPayment) }}</span>
+        </template>
+        <template #serviceFee="{row}">
+          <span>{{ floor(row.serviceFee) }}</span>
+        </template>
         <template #opName="{row}">
           <span>{{ row.nickName || row.opName }}</span>
         </template>

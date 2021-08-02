@@ -80,14 +80,14 @@
               { required: true, message: '请输入起始值', trigger: 'blur' },
             ]"
           >
-            <!-- <span v-if="formData[item.myName+'_0'] !== 0"> - </span> -->
+            <span> - </span>
             <el-input-number
               v-model="formData[item.myName+'_0']"
               :controls="false"
               :placeholder="`请输入${item.cnName}`"
               step-strictly
-              :max="item.unit==='%'?100: 0"
-              :min="item.unit==='%'?0: -999999"
+              :min="item.unit==='%'?0: 0"
+              :max="item.unit==='%'?100: 999999"
               :precision="precisionMethod(item.unit,unit )"
               :step="0.001"
               controls-position="right"
@@ -108,8 +108,8 @@
               :controls="false"
               :placeholder="`请输入${item.cnName}`"
               step-strictly
-              :max="item.unit==='%'?100: 999999"
               :min="item.unit==='%'?0: 0"
+              :max="item.unit==='%'?100: 999999"
               :precision="precisionMethod(item.unit,unit )"
               :step="0.001"
               controls-position="right"
@@ -214,7 +214,8 @@ export default {
         if (e.showType !== '2') {
           this.formData[e.myName] = this.formData[e.myName] || e.ruleValue;
         } else {
-          this.formData[e.myName + '_0'] = this.formData[e.myName + '_0'] || (JSON.parse(e.ruleValue))[0];
+          const num = this.formData[e.myName + '_0'] || (JSON.parse(e.ruleValue))[0];
+          this.formData[e.myName + '_0'] = num < 0 ? -num : num;
           this.formData[e.myName + '_1'] = this.formData[e.myName + '_1'] || (JSON.parse(e.ruleValue))[1];
         }
       });
@@ -259,7 +260,7 @@ export default {
               if (e.showType !== '2') {
                 e.ruleValue = this.formData[e.myName];
               } else {
-                e.ruleValue = JSON.stringify([this.formData[e.myName + '_0'], this.formData[e.myName + '_1']]);
+                e.ruleValue = JSON.stringify([this.formData[e.myName + '_0'] > 0 ? -this.formData[e.myName + '_0'] : this.formData[e.myName + '_0'], this.formData[e.myName + '_1']]);
               }
               return e;
             });
