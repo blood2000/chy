@@ -91,6 +91,7 @@ export default {
       color: rgba(196, 238, 255, 0.8);
       transition: all 0.2s;
       font-size: 0.6rem;
+      white-space: nowrap;
       &:not(:last-child){
         border-bottom: 0.02rem solid rgba(30, 74, 132, 1);
       }
