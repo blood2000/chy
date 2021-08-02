@@ -74,7 +74,7 @@
     </div>
 </template>
 <script>
-import { listDevice, addDevice, updateDevice, delDevice } from '@/api/assets/vehicleDevice';
+import { listDevice, addDevice, updateDevice, delDevice, getDevice } from '@/api/assets/vehicleDevice';
 export default {
   props: {
     vehicleCode: {
@@ -150,7 +150,10 @@ export default {
     handleEdit(row) {
       this.open = true;
       this.title = '修改车辆设备';
-      this.form = row;
+      getDevice(row.code).then(response => {
+        this.form = response.data;
+      });
+      // this.form = row;
     },
     handleDel(row) {
       this.$confirm('是否确认删除设备IMEI为"' + row.deviceImei + '"的数据项?', '警告', {

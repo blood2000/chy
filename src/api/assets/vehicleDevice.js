@@ -34,3 +34,10 @@ export function delDevice(codes) {
     method: 'delete'
   });
 }
+
+export function getDevice(code) {
+  return request({
+    url: '/assets/vehicle/device/get/' + code,
+    method: 'get'
+  });
+}
