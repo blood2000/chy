@@ -94,7 +94,7 @@
         <el-table-column label="字典标签" align="center" prop="dictLabel" />
         <el-table-column label="字典键值" align="center" prop="dictValue" />
         <el-table-column label="字典排序" align="center" prop="dictSort" />
-       <!-- <el-table-column label="是否上报" align="center" prop="isReport" />-->
+        <!-- <el-table-column label="是否上报" align="center" prop="isReport" />-->
         <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" />
         <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" />
         <el-table-column label="创建时间" align="center" prop="createTime" width="180">
