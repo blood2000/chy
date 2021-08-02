@@ -136,14 +136,18 @@
         <!-- 变动金额 -->
         <template #paidAmount="{row}">
           <p v-if="row.paidFeeType === '0'" class="g-color-success">
-            +{{ row.paidAmount }}
+            +{{ floor(row.paidAmount) }}
           </p>
           <p v-else-if="row.paidFeeType === '1'" class="g-color-error">
-            -{{ row.paidAmount }}
+            -{{ floor(row.paidAmount) }}
           </p>
           <p v-else>
-            {{ row.paidAmount }}
+            {{ floor(row.paidAmount) }}
           </p>
+        </template>
+        <!-- 账户余额 -->
+        <template #accountAmount="{row}">
+          <span>{{ floor(row.accountAmount) }}</span>
         </template>
         <template #createTime="{row}">
           <span>{{ parseTime(row.createTime) }}</span>

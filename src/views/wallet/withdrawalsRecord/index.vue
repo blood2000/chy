@@ -90,43 +90,38 @@
             支出
           </p>
         </template>
-
         <template #paidLineType="{row}">
           <span>{{ selectDictLabel(paidLineTypeOptions, row.paidLineType) }}</span>
         </template>
-
         <template #paidItem="{row}">
           <span>{{ selectDictLabel(consumeOptions, row.paidItem) }}</span>
         </template>
-
         <template #payStatus="{row}">
           <span>{{ selectDictLabel(payStatusOptions, row.payStatus) }}</span>
         </template>
-
         <template #payType="{row}">
           <span>{{ selectDictLabel(payTypeOptions, row.payType) }}</span>
         </template>
-
         <template #staffType="{row}">
           <span>{{ selectDictLabel(staffTypeOptions, row.staffType) }}</span>
         </template>
-
         <template #paidAmount="{row}">
           <p v-if="row.paidFeeType === '0'" class="g-color-success">
-            +{{ row.paidAmount }}
+            +{{ floor(row.paidAmount) }}
           </p>
           <p v-else-if="row.paidFeeType === '1'" class="g-color-error">
-            -{{ row.paidAmount }}
+            -{{ floor(row.paidAmount) }}
           </p>
           <p v-else>
-            {{ row.paidAmount }}
+            {{ floor(row.paidAmount) }}
           </p>
         </template>
-
+        <template #accountAmount="{row}">
+          <span>{{ floor(row.accountAmount) }}</span>
+        </template>
         <template #updateTime="{row}">
           <span>{{ parseTime(row.updateTime) }}</span>
         </template>
-
       </RefactorTable>
 
       <!-- <el-table v-if="false" v-loading="loading" highlight-current-row border :data="dataList">

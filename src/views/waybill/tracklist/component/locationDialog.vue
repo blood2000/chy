@@ -2,6 +2,19 @@
   <!-- 车辆定位对话框 -->
   <el-dialog :title="title" :visible="visible" width="1400px" append-to-body destroy-on-close @close="cancel">
     <div class="map-content">
+      <div class="g-flex g-justifyend" style="width:100%; height: 0;border-radius: 6px">
+        <div class="legend-frame">
+          <el-checkbox v-model="lieyingChecked" style="margin-bottom:10px;">
+            <div class="g-aligncenter">APP定位</div>
+          </el-checkbox>
+          <el-checkbox v-model="jimiChecked" style="margin-bottom:10px;">
+            <div class="g-aligncenter">硬件定位</div>
+          </el-checkbox>
+          <el-checkbox v-model="zjxlChecked" style="margin-bottom:10px;">
+            <div class="g-aligncenter">北斗定位</div>
+          </el-checkbox>
+        </div>
+      </div>
       <el-amap ref="map" vid="amapDemo" :zoom="zoom" :center="center">
         <!-- <el-amap-marker v-for="(marker, index) in markers" :key="index" :events="marker.events" :position="marker.position" :icon="marker.icon" :label="marker.label" /> -->
         <el-amap-info-window :position="window.position" :visible="window.visible" :offset="window.offset" :auto-move="true">
@@ -16,7 +29,7 @@
                 <div style="text-align: right;">司机名称：</div>
               </el-col>
               <el-col :span="18">
-                <div>{{ windowContent.driverName }}</div>
+                <div>{{ windowContent.driverName || '-' }}</div>
               </el-col>
             </el-row>
             <el-row type="flex" class="row-bg" style="margin-top: 5px">
@@ -24,15 +37,23 @@
                 <div style="text-align: right;">车牌号：</div>
               </el-col>
               <el-col :span="18">
-                <div>{{ windowContent.licenseNumber }}</div>
+                <div>{{ windowContent.licenseNumber || '-' }}</div>
               </el-col>
             </el-row>
-            <el-row type="flex" class="row-bg" style="margin-top: 5px">
+            <el-row v-if="windowContent.name === '硬件定位'" type="flex" class="row-bg" style="margin-top: 5px">
               <el-col :span="6">
                 <div style="text-align: right;">设备号：</div>
               </el-col>
               <el-col :span="18">
-                <div>{{ windowContent.imeis }}</div>
+                <div>{{ windowContent.imeis || '-' }}</div>
+              </el-col>
+            </el-row>
+            <el-row v-if="windowContent.name === '北斗定位'" type="flex" class="row-bg" style="margin-top: 5px">
+              <el-col :span="6">
+                <div style="text-align: right;">定位地址：</div>
+              </el-col>
+              <el-col :span="18">
+                <div>{{ windowContent.adr || '-' }}</div>
               </el-col>
             </el-row>
             <el-row type="flex" class="row-bg" style="margin-top: 5px">
@@ -40,7 +61,7 @@
                 <div style="text-align: right;">定位时间：</div>
               </el-col>
               <el-col :span="18">
-                <div>{{ windowContent.gpsTime }}</div>
+                <div>{{ windowContent.gpsTime || '-' }}</div>
               </el-col>
             </el-row>
           </div>
@@ -51,8 +72,8 @@
 </template>
 
 <script>
-import { jimiLocation } from '@/api/waybill/tracklist';
-
+import { jimiLocation, getWebDetail, zjxlLocation } from '@/api/waybill/tracklist';
+import axios from 'axios';
 export default {
   name: 'LocationDialog',
   props: {
@@ -69,23 +90,18 @@ export default {
       zoom: 16,
       // 中心点坐标
       center: [119.358267, 26.04577],
-      // 标记点列表-暂无使用
-      markers: [{
-        // icon: 'https://ddcwl.com/static/img/admin/sys/cc.png',
+      // 标记点
+      marker: {
+        position: [],
         icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/cart.png',
-        position: [119.358267, 26.04577],
+        autoFitView: true,
+        autoRotation: true,
+        clickable: true,
         label: {
           content: '',
-          offset: [-10, -34]
-        },
-        events: {
-          click: () => {
-            this.window.visible = !this.window.visible;
-            // this.window.position = this.markers[0].position;
-            // alert('click marker');
-          }
+          offset: new AMap.Pixel(-10, -34)
         }
-      }],
+      },
       // 信息窗体
       window: {
         position: [119.358267, 26.04577],
@@ -95,26 +111,45 @@ export default {
       },
       // 信息窗体内容
       windowContent: {
+        name: '',
         status: '',
         driverName: '',
         licenseNumber: '',
         imeis: '',
-        gpsTime: ''
+        gpsTime: '',
+        adr: ''
       },
+      // 获取到的定位
+      location: [],
+      wayBillInfo: [],
+      // 猎鹰相关参数
+      lieyingChecked: true,
+      lieyingMark: undefined,
+      lyLocation: [],
+      lieyingQueryParams: {
+        key: undefined,
+        sid: undefined, // sid为终端所属service唯一编号
+        tid: undefined, // tid为终端唯一编号
+        trid: undefined, // trid为轨迹唯一编号
+        correction: 'n'
+      },
+      // 几米相关参数
+      jimiChecked: false,
+      jimiMark: undefined,
+      jmLocation: [],
       // 查询参数 map_type:GOOGOLE或BAIDU
       queryParams: {
         imeis: '867567047562525',
         map_type: 'GOOGLE'
       },
-      // 表单校验
-      rules: {
-        driverApplyRemark: [
-          { required: true, message: '取消理由不能为空', trigger: 'blur' }
-        ]
-      },
-      // 获取到的定位
-      location: [],
-      wayBillInfo: []
+      // 中交兴路相关参数
+      zjxlChecked: false,
+      zjxlMark: undefined,
+      zjLocation: [],
+      zjxlQueryParams: {
+        timeNearby: '24',
+        vclN: '陕YH0008'
+      }
     };
   },
   computed: {
@@ -128,17 +163,77 @@ export default {
     }
   },
   watch: {
-    open(val) {
+    lieyingChecked(val) {
+      const that = this;
       if (val) {
-        this.getLocation();
+        if (that.wayBillInfo.trackNumber) {
+          that.lieyingLocation();
+        } else {
+          that.msgInfo('暂无APP定位！');
+        }
+      } else {
+        that.$refs.map.$$getInstance().remove(that.lieyingMark); // 点移除
+        // that.$refs.map.$$getInstance().setFitView([that.lieyingMark, that.jimiMark, that.zjxlMark]); // 执行定位
+      }
+    },
+    jimiChecked(val) {
+      const that = this;
+      if (val) {
+        if (that.wayBillInfo.imeis) {
+          that.jimiLocation();
+        } else {
+          that.msgInfo('暂无硬件定位！');
+        }
+      } else {
+        that.$refs.map.$$getInstance().remove(that.jimiMark); // 点移除
+        // that.$refs.map.$$getInstance().setFitView([that.lieyingMark, that.jimiMark, that.zjxlMark]); // 执行定位
+      }
+    },
+    zjxlChecked(val) {
+      const that = this;
+      if (val) {
+        that.zjxlLocation();
+      } else {
+        that.$refs.map.$$getInstance().remove(that.zjxlMark); // 点移除
+        // that.$refs.map.$$getInstance().setFitView([that.lieyingMark, that.jimiMark, that.zjxlMark]); // 执行定位
       }
     }
   },
   created() {
   },
   methods: {
-    /** 获取定位 */
-    getLocation() {
+    /** 获取猎鹰定位 */
+    lieyingLocation() {
+      axios.get('https://tsapi.amap.com/v1/track/terminal/lastpoint', { params: this.lieyingQueryParams }).then(response => {
+        console.log(response);
+        if (response.data.data.location) {
+          this.windowContent.gpsTime = this.parseTime(response.data.data.locatetime, '{y}-{m}-{d} {h}:{i}:{s}');
+          this.lyLocation = response.data.data.location.split(',');
+          this.lyMark();
+        } else {
+          this.msgInfo('暂无APP定位！');
+        }
+      });
+    },
+    // 猎鹰标记点
+    lyMark() {
+      const that = this;
+      // 装货地marker
+      that.lieyingMark = new AMap.Marker({
+        position: that.lyLocation,
+        ...this.marker
+      });
+      that.lieyingMark.setMap(that.$refs.map.$$getInstance()); // 点标记
+      that.$refs.map.$$getInstance().setFitView([that.lieyingMark]); // 执行定位
+      // 点标注的点击事件
+      that.lieyingMark.on('click', function(e) {
+        that.window.position = that.lyLocation;
+        that.window.visible = !that.window.visible;
+        that.windowContent.name = 'APP定位';
+      });
+    },
+    /** 获取几米定位 */
+    jimiLocation() {
       jimiLocation(this.queryParams).then(response => {
         // console.log(response);
         this.windowContent.gpsTime = response.data.result[0].gpsTime;
@@ -147,33 +242,61 @@ export default {
           return [response.lng, response.lat];
         });
         console.log(this.location);
-        this.center = this.location[0];
+        this.jmLocation = this.location[0];
         // this.markers[0].position = this.location[0];
-        this.window.position = this.location[0];
-        this.getMark();
-      });
-    },
-    // 标记点
-    getMark() {
-      const that = this;
-      // 装货地marker
-      const startPosition = that.location[0];
-      const startMark = new AMap.Marker({
-        position: startPosition,
-        icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/cart.png',
-        autoFitView: true,
-        autoRotation: true,
-        clickable: true,
-        label: {
-          content: that.wayBillInfo.licenseNumber,
-          offset: new AMap.Pixel(-10, -34)
+        if (this.jmLocation.length > 0) {
+          this.jmMark();
+        } else {
+          this.msgInfo('暂无硬件定位！');
         }
       });
-      startMark.setMap(that.$refs.map.$$getInstance()); // 点标记
-      that.$refs.map.$$getInstance().setFitView([startMark]); // 执行定位
+    },
+    // 几米定位
+    jmMark() {
+      const that = this;
+      that.jimiMark = new AMap.Marker({
+        position: that.jmLocation,
+        ...this.marker
+      });
+      that.jimiMark.setMap(that.$refs.map.$$getInstance()); // 点标记
+      that.$refs.map.$$getInstance().setFitView([that.jimiMark]); // 执行定位
       // 点标注的点击事件
-      startMark.on('click', function(e) {
+      that.jimiMark.on('click', function(e) {
+        that.window.position = that.jmLocation;
         that.window.visible = !that.window.visible;
+        that.windowContent.name = '硬件定位';
+      });
+    },
+    /** 获取中交兴路定位 */
+    zjxlLocation() {
+      zjxlLocation(this.zjxlQueryParams).then(response => {
+        var str = JSON.parse(response.msg);
+        console.log(str);
+        if (str.result) {
+          this.windowContent.adr = str.result.adr;
+          this.windowContent.gpsTime = this.parseTime(new Date(str.result.utc - 0), '{y}-{m}-{d} {h}:{i}:{s}');
+          this.zjLocation = this.wgs84_to_gcj02(str.result.lon / 600000, str.result.lat / 600000);
+          console.log(this.zjLocation);
+          this.zjMark();
+        } else {
+          this.msgInfo('暂无北斗定位！');
+        }
+      });
+    },
+    // 中交兴路定位
+    zjMark() {
+      const that = this;
+      that.zjxlMark = new AMap.Marker({
+        position: that.zjLocation,
+        ...this.marker
+      });
+      that.zjxlMark.setMap(that.$refs.map.$$getInstance()); // 点标记
+      that.$refs.map.$$getInstance().setFitView([that.zjxlMark]); // 执行定位
+      // 点标注的点击事件
+      that.zjxlMark.on('click', function(e) {
+        that.window.position = that.zjLocation;
+        that.window.visible = !that.window.visible;
+        that.windowContent.name = '北斗定位';
       });
     },
     /** 取消按钮 */
@@ -186,7 +309,38 @@ export default {
     },
     // 表单赋值
     setForm(data) {
-      this.wayBillInfo = data;
+      getWebDetail(data.code).then(response => {
+        this.wayBillInfo = response.data;
+        this.marker = {
+          icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/cart.png',
+          autoFitView: true,
+          autoRotation: true,
+          clickable: true,
+          label: {
+            content: this.wayBillInfo.licenseNumber,
+            offset: new AMap.Pixel(-10, -34)
+          }
+        };
+        // 中交车牌号参数赋值
+        this.zjxlQueryParams.vclN = this.wayBillInfo.licenseNumber;
+        // 猎鹰参数赋值
+        if (this.wayBillInfo.trackNumber) {
+          const trackNumber = this.wayBillInfo.trackNumber.split('|');
+          console.log(trackNumber);
+          this.lieyingQueryParams = {
+            ...this.lieyingQueryParams,
+            key: trackNumber[0],
+            sid: trackNumber[1], // sid为终端所属service唯一编号
+            tid: trackNumber[2], // tid为终端唯一编号
+            trid: trackNumber[3] // trid为轨迹唯一编号
+          };
+          console.log(this.lieyingQueryParams);
+          this.lieyingLocation();
+        } else {
+          this.msgInfo('暂无APP定位！');
+        }
+      });
+      console.log(data);
       if (data.status === 2) {
         this.windowContent.status = '负载中';
       } else {
@@ -194,7 +348,6 @@ export default {
       }
       this.windowContent.licenseNumber = data.licenseNumber;
       this.windowContent.driverName = data.driverName;
-      console.log(this.wayBillInfo);
     }
   }
 };
@@ -217,11 +370,29 @@ export default {
   margin-top: 8px;
 }
 .map-content{
-  height:750px;
+  height:600px;
   ::v-deep.amap-icon img{
   max-width: 55px !important;
   max-height: 28px !important;
 }
 }
-
+.legend-frame{
+  position: relative;
+  right: 10px;
+  top: 10px;
+  z-index: 10;
+  width: 165px;
+  height: 130px;
+  background: #FFFFFF;
+  padding: 15px;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.15);
+  border-radius: 2px;
+}
+.legend-color{
+  margin-left: 10px;
+  height: 15px;
+  width: 50px;
+  border-radius: 4px;
+  opacity: 0.7;
+}
 </style>

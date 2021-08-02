@@ -60,7 +60,11 @@
         <el-table-column label="渣土场" align="center" prop="ztcName" />
         <!-- <el-table-column label="货主" align="center" prop="adminName" /> -->
         <el-table-column label="调度组" align="center" prop="teamName" />
-        <el-table-column label="总金额" align="center" prop="shipperRealPay" />
+        <el-table-column label="总金额" align="center" prop="shipperRealPay">
+          <template slot-scope="scope">
+            <span>{{ floor(scope.row.shipperRealPay) }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="打款时间" align="center" prop="updateTime">
           <template slot-scope="scope">
             <span>{{ parseTime(scope.row.updateTime) }}</span>

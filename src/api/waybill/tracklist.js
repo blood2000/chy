@@ -154,6 +154,15 @@ export function zjxlTrackLocation(data) {
   });
 }
 
+// 中交兴路获取车辆定位
+export function zjxlLocation(data) {
+  return request({
+    url: '/iot/zjxl/vLastLocationV3',
+    method: 'post',
+    data: data
+  });
+}
+
 // 获取猎鹰信息
 export function getLieyingInfo(code) {
   return request({

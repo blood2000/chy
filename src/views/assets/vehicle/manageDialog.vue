@@ -27,6 +27,9 @@
       <el-tab-pane label="归属调度" name="team">
         <team-list-page ref="TeamListPage" :vehicle-code="vehicleCode" />
       </el-tab-pane>
+        <el-tab-pane label="车辆设备" name="device">
+            <vehicle-device-list-page ref="DeviceListPage" :vehicle-code="vehicleCode" :license-number="licenseNumber"/>
+        </el-tab-pane>
     </el-tabs>
   </el-drawer>
   <!--</el-dialog>-->
@@ -35,15 +38,21 @@
 <script>
 import DriverListPage from '../components/driverList';
 import TeamListPage from '../components/teamList';
+import VehicleDeviceListPage from './vehicleDevice';
 export default {
   name: 'VehicleManageDialog',
   components: {
     DriverListPage,
-    TeamListPage
+    TeamListPage,
+    VehicleDeviceListPage
   },
   props: {
     open: Boolean,
     vehicleCode: {
+      type: String,
+      default: null
+    },
+    licenseNumber: {
       type: String,
       default: null
     }
@@ -71,6 +80,7 @@ export default {
           this.activeName = 'driver';
           this.$refs.TeamListPage.getList();
           this.$refs.DriverListPage.getList();
+          this.$refs.DeviceListPage.getList();
         });
       }
     }
