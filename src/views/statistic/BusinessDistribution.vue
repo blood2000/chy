@@ -102,7 +102,7 @@ export default {
     padding: 0.3rem 2rem 0.3rem 0;
     >li{
       >.label{
-          width: 1.5rem;
+          width: 1.8rem;
           margin-right: 0.5rem;
           font-size: 0.7rem;
           font-family: PingFang Regular;
@@ -113,7 +113,7 @@ export default {
           text-overflow: ellipsis;
         }
         >.line{
-          width: 10.5rem;
+          width: 10.2rem;
           height: 0.4rem;
           .value{
             width: 0%;

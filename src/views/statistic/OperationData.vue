@@ -23,7 +23,7 @@
         />
         <!-- card -->
         <div class="card-content ly-flex-pack-justify" style="margin:0 0 0 1rem">
-          <div class="card ly-flex-v ly-flex-pack-justify">
+          <div class="card ly-flex-v ly-flex-pack-around">
             <p class="label">已发布</p>
             <p class="text"><count-to :end-val="myOrderVo.publishedNum" /></p>
           </div>
@@ -241,13 +241,14 @@ export default {
         margin-right: 1.2rem;
         .card{
           height: 2.6rem;
-          padding: 0.3rem 0 0.3rem 1rem;
+          padding: 0.25rem 0 0.2rem 1rem;
           border-radius: 1.3rem 0 0 0;
           .label{
             font-size: 0.6rem;
             font-family: PingFang Regular;
             font-weight: 300;
             color: #D5EAFF;
+            line-height: 1rem;
           }
           .text{
             font-size: 0.8rem;

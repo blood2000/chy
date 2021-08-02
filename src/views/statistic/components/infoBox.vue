@@ -170,6 +170,7 @@ export default {
     color: rgba(213, 234, 255, 1);
     line-height: 1.1rem;
     font-family: PingFang Regular;
+    white-space: nowrap;
   }
   >.text{
     font-size: 1.1rem;
