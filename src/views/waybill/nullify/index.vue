@@ -153,6 +153,36 @@
         <template #status="{row}">
           <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
         </template>
+        <template #stowageStatus="{row}">
+          <span>{{ selectDictLabel(stowageStatusOptions, row.stowageStatus) }}</span>
+        </template>
+        <template #goodsPrice="{row}">
+          <span>{{ row.goodsPrice ? floor(row.goodsPrice) + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) :'-' }}</span>
+        </template>
+        <template #mileage="{row}">
+          <span>{{ floor(row.mileage) }}</span>
+        </template>
+        <template #freightPrice="{row}">
+          <span>{{ row.freightPrice ? floor(row.freightPrice) + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) :'-' }}</span>
+        </template>
+        <template #taxFee="{row}">
+          <span>{{ floor(row.taxFee) }}</span>
+        </template>
+        <template #shipperCopeFee="{row}">
+          <span>{{ floor(row.shipperCopeFee) }}</span>
+        </template>
+        <template #taxFreeFee="{row}">
+          <span>{{ floor(row.taxFreeFee) }}</span>
+        </template>
+        <template #deliveryFeeDeserved="{row}">
+          <span>{{ floor(row.deliveryFeeDeserved) }}</span>
+        </template>
+        <template #taxPayment="{row}">
+          <span>{{ floor(row.taxPayment) }}</span>
+        </template>
+        <template #serviceFee="{row}">
+          <span>{{ floor(row.serviceFee) }}</span>
+        </template>
         <template #loadWeight="{row}">
           <span v-if="row.stowageStatus === '1'">{{ row.loadWeight || '0.000' }} 方</span>
           <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.loadWeight) || '0' }} 车</span>
@@ -258,6 +288,12 @@ export default {
         { 'dictLabel': '子单', 'dictValue': 1 },
         { 'dictLabel': '超载的主单', 'dictValue': 1 }
       ],
+      // 配载方式字典
+      stowageStatusOptions: [
+        { 'dictLabel': '吨', 'dictValue': '0' },
+        { 'dictLabel': '方', 'dictValue': '1' },
+        { 'dictLabel': '车', 'dictValue': '2' }
+      ],
       // 回单确认状态 0未标记回单，1-已标记回单字典
       isWarningOptions: [
         { 'dictLabel': '正常', 'dictValue': 0 },
@@ -335,7 +371,11 @@ export default {
     /** 查询作废运单列表 */
     getList() {
       this.loading = true;
-      listNullify(this.queryParams).then(response => {
+      const params = { ...this.queryParams };
+      if (params.licenseNumber) {
+        params.licenseNumber = params.licenseNumber.toUpperCase();
+      }
+      listNullify(params).then(response => {
         this.nullifyList = response.rows;
         this.total = response.total;
         console.log(this.nullifyList);

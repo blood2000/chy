@@ -5,14 +5,14 @@
       <el-row class="mb20">
         <el-col :span="8">
           <p class="g-text mb10">
-            <span class="g-text-20 g-strong mr5">{{ walletInfo.amount||walletInfo.amount==0 ? walletInfo.amount : '---' }}</span>
+            <span class="g-text-20 g-strong mr5">{{ walletInfo.amount||walletInfo.amount==0 ? floor(walletInfo.amount) : '---' }}</span>
             元
           </p>
           <p class="g-text">可用余额</p>
         </el-col>
         <el-col :span="8">
           <p class="g-text mb10">
-            <span class="g-text-20 g-strong mr5">{{ walletInfo.freezeAmount||walletInfo.freezeAmount==0 ? walletInfo.freezeAmount : '---' }}</span>
+            <span class="g-text-20 g-strong mr5">{{ walletInfo.freezeAmount||walletInfo.freezeAmount==0 ? floor(walletInfo.freezeAmount) : '---' }}</span>
             元
           </p>
           <p class="g-text">冻结金额</p>

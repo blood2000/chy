@@ -267,6 +267,21 @@
             {{ selectDictLabel(isReturnOptions, row.isReturn) }}
           </span>
         </template>
+        <template #shipperCopeFee="{row}">
+          <span>{{ floor(row.shipperCopeFee) }}</span>
+        </template>
+        <template #deliveryFeeDeserved="{row}">
+          <span>{{ floor(row.deliveryFeeDeserved) }}</span>
+        </template>
+        <template #shipperRealPay="{row}">
+          <span>{{ floor(row.shipperRealPay) }}</span>
+        </template>
+        <template #deliveryCashFee="{row}">
+          <span>{{ floor(row.deliveryCashFee) }}</span>
+        </template>
+        <template #taxPayment="{row}">
+          <span>{{ floor(row.taxPayment) }}</span>
+        </template>
         <template #loadWeight="{row}">
           <span v-if="row.loadWeight">
             <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.loadWeight }} 吨</span>
@@ -625,7 +640,11 @@ export default {
     /** 查询【请填写功能名称】列表 */
     getList() {
       this.loading = true;
-      adjustList({ ...this.queryParams }).then(response => {
+      const params = { ...this.queryParams };
+      if (params.licenseNumber) {
+        params.licenseNumber = params.licenseNumber.toUpperCase();
+      }
+      adjustList(params).then(response => {
         this.adjustlist = response.rows;
         this.total = response.total;
         this.loading = false;

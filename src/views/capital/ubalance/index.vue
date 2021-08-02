@@ -74,11 +74,17 @@
       </el-row>
 
       <RefactorTable :loading="loading" :data="dataList" :table-columns-config="tableColumnsConfig">
+        <!-- 余额 -->
         <template #amount="{row}">
-          <span>{{ row.amount }}</span>
+          <span>{{ floor(row.amount) }}</span>
         </template>
+        <!-- 保证金 -->
         <template #freezeAmount="{row}">
-          <span>{{ row.freezeAmount }}</span>
+          <span>{{ floor(row.freezeAmount) }}</span>
+        </template>
+        <!-- 可用余额 -->
+        <template #availableBalance="{row}">
+          <span>{{ floor(row.availableBalance) }}</span>
         </template>
         <template #updateTime="{row}">
           <span>{{ parseTime(row.updateTime) }}</span>

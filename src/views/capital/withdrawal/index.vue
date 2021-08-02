@@ -180,6 +180,10 @@
         :selectable="selectableFn"
         @selection-change="handleSelectionChange"
       >
+        <!-- 金额 -->
+        <template #money="{row}">
+          <span>{{ floor(row.money) }}</span>
+        </template>
         <!-- 转账渠道 -->
         <template #payStatus="{row}">
           <span>{{ selectDictLabel(payStatusOption, row.payStatus) }}</span>
@@ -333,7 +337,11 @@ export default {
         this.loading = true;
       }
       this.$store.dispatch('settings/changeQuick', null);
-      getWithDrawalList(this.queryParams).then(response => {
+      const params = { ...this.queryParams };
+      if (params.licenseNumber) {
+        params.licenseNumber = params.licenseNumber.toUpperCase();
+      }
+      getWithDrawalList(params).then(response => {
         this.withdrawalList = response.data.rows;
         this.total = response.data.total;
         this.loading = false;

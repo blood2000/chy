@@ -209,6 +209,33 @@
         <template #applyStatus="{row}">
           <span>{{ selectDictLabel(applyStatusOptions, row.applyStatus) }}</span>
         </template>
+        <template #shipperRealPay="{row}">
+          <span>{{ floor(row.shipperRealPay) }}</span>
+        </template>
+        <template #deliveryCashFee="{row}">
+          <span>{{ floor(row.deliveryCashFee) }}</span>
+        </template>
+        <template #deliveryFeePractical="{row}">
+          <span>{{ floor(row.deliveryFeePractical) }}</span>
+        </template>
+        <template #freightPrice="{row}">
+          <span>{{ row.freightPrice ? floor(row.freightPrice) + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) :'-' }}</span>
+        </template>
+        <template #driverReductionFee="{row}">
+          <span>{{ floor(row.driverReductionFee) }}</span>
+        </template>
+        <template #driverAddFee="{row}">
+          <span>{{ floor(row.driverAddFee) }}</span>
+        </template>
+        <template #m0Fee="{row}">
+          <span>{{ floor(row.m0Fee) }}</span>
+        </template>
+        <template #taxPayment="{row}">
+          <span>{{ floor(row.taxPayment) }}</span>
+        </template>
+        <template #serviceFee="{row}">
+          <span>{{ floor(row.serviceFee) }}</span>
+        </template>
         <template #loadWeight="{row}">
           <span v-if="row.stowageStatus === '1'">{{ row.loadWeight || '0.000' }} 方</span>
           <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.loadWeight) || '0' }} 车</span>
@@ -371,6 +398,12 @@ export default {
         { 'dictLabel': '已打款', 'dictValue': '7' },
         { 'dictLabel': '已申请开票', 'dictValue': '8' },
         { 'dictLabel': '已开票', 'dictValue': '9' }
+      ],
+      // 配载方式字典
+      stowageStatusOptions: [
+        { 'dictLabel': '吨', 'dictValue': '0' },
+        { 'dictLabel': '方', 'dictValue': '1' },
+        { 'dictLabel': '车', 'dictValue': '2' }
       ],
       // 申请状态字典
       applyStatusOptions: [

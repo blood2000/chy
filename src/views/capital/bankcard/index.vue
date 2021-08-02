@@ -259,7 +259,11 @@ export default {
     /** 查询列表 */
     getList() {
       this.loading = true;
-      banklist(this.queryParams).then(response => {
+      const params = { ...this.queryParams };
+      if (params.licenseNumber) {
+        params.licenseNumber = params.licenseNumber.toUpperCase();
+      }
+      banklist(params).then(response => {
         this.dataList = response.data.rows;
         this.total = response.data.total;
         this.loading = false;

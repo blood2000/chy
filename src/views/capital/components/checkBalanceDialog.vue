@@ -8,7 +8,7 @@
       <div class="amount-content ly-flex-align-center ly-flex-pack-center">
         <div>
           <p class="label mb10">可用余额：</p>
-          <p class="text">{{ form.WSBK || form.WSBK ===0 ? form.WSBK : '---' }}</p>
+          <p class="text">{{ form.WSBK || form.WSBK === 0 ? floor(form.WSBK) : '---' }}</p>
         </div>
       </div>
     </el-form>

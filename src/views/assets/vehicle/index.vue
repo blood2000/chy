@@ -243,6 +243,18 @@
         <template #vehicleHeight="{row}">
           <span>{{ selectDictLabel(vehicleHeightOptions, row.vehicleHeight) }}</span>
         </template>
+        <!-- 车总重量 -->
+        <template #vehicleTotalWeight="{row}">
+          <span>{{ fixed(row.vehicleTotalWeight) }}</span>
+        </template>
+        <!-- 车可载重量 -->
+        <template #vehicleLoadWeight="{row}">
+          <span>{{ fixed(row.vehicleLoadWeight) }}</span>
+        </template>
+        <!-- 车可载立方 -->
+        <template #vehicleRemainingLoadVolume="{row}">
+          <span>{{ fixed(row.vehicleRemainingLoadVolume) }}</span>
+        </template>
         <!-- 轴数 -->
         <template #axesNumber="{row}">
           <span>{{ selectDictLabel(axisTypeOptions, row.axesNumber) }}</span>
@@ -316,13 +328,13 @@
                   @click="reportVehicle(row)"
                 >上报</el-button>
               </el-dropdown-item>
-            <el-dropdown-item>
+              <el-dropdown-item>
                 <el-button
-                        size="mini"
-                        type="text"
-                        @click="handleChange(row)"
+                  size="mini"
+                  type="text"
+                  @click="handleChange(row)"
                 >转换</el-button>
-            </el-dropdown-item>
+              </el-dropdown-item>
               <el-dropdown-item>
                 <el-button
                   v-hasPermi="['assets:vehicle:remove']"
@@ -355,7 +367,7 @@
         @refresh="getList"
       />
       <!-- 管理归属司机/归属调度 对话框 -->
-      <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :vehicle-code="vehicleCode" />
+      <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :vehicle-code="vehicleCode" :license-number="licenseNumber"/>
     </div>
   </div>
 </template>
@@ -469,6 +481,7 @@ export default {
       formDisable: false,
       // 车辆code
       vehicleCode: null,
+      licenseNumber: null,
       // 导出
       exportLoading: false
     };
@@ -553,7 +566,11 @@ export default {
     getList() {
       this.loading = true;
       this.$store.dispatch('settings/changeQuick', null);
-      listInfo(this.queryParams).then((response) => {
+      const params = { ...this.queryParams };
+      if (params.licenseNumber) {
+        params.licenseNumber = params.licenseNumber.toUpperCase();
+      }
+      listInfo(params).then((response) => {
         this.vehicleList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -680,6 +697,7 @@ export default {
     /** 管理按钮操作 */
     handleManage(row) {
       this.vehicleCode = row.code;
+      this.licenseNumber = row.licenseNumber;
       this.manageDialogOpen = true;
     },
     /** 解除司机/调度者与车辆的关联 */

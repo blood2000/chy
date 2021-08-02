@@ -226,6 +226,42 @@
         <template #isWarning="{row}">
           <span>{{ selectDictLabel(isWarningOptions, row.isWarning) }}</span>
         </template>
+        <template #stowageStatus="{row}">
+          <span>{{ selectDictLabel(stowageStatusOptions, row.stowageStatus) }}</span>
+        </template>
+        <template #goodsPrice="{row}">
+          <span>{{ row.goodsPrice ? floor(row.goodsPrice) + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) :'-' }}</span>
+        </template>
+        <template #mileage="{row}">
+          <span>{{ floor(row.mileage) }}</span>
+        </template>
+        <template #deliveryCashFee="{row}">
+          <span>{{ floor(row.deliveryCashFee) }}</span>
+        </template>
+        <template #deliveryFeePractical="{row}">
+          <span>{{ floor(row.deliveryFeePractical) }}</span>
+        </template>
+        <template #freightPrice="{row}">
+          <span>{{ row.freightPrice ? floor(row.freightPrice) + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) :'-' }}</span>
+        </template>
+        <template #taxFee="{row}">
+          <span>{{ floor(row.taxFee) }}</span>
+        </template>
+        <template #shipperCopeFee="{row}">
+          <span>{{ floor(row.shipperCopeFee) }}</span>
+        </template>
+        <template #taxFreeFee="{row}">
+          <span>{{ floor(row.taxFreeFee) }}</span>
+        </template>
+        <template #deliveryFeeDeserved="{row}">
+          <span>{{ floor(row.deliveryFeeDeserved) }}</span>
+        </template>
+        <template #taxPayment="{row}">
+          <span>{{ floor(row.taxPayment) }}</span>
+        </template>
+        <template #serviceFee="{row}">
+          <span>{{ floor(row.serviceFee) }}</span>
+        </template>
         <template #loadWeight="{row}">
           <span v-if="row.loadWeight">
             <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.loadWeight }} 吨</span>
@@ -398,6 +434,12 @@ export default {
         // { 'dictLabel': '子单', 'dictValue': 1 },
         { 'dictLabel': '是', 'dictValue': 2 }
       ],
+      // 配载方式字典
+      stowageStatusOptions: [
+        { 'dictLabel': '吨', 'dictValue': '0' },
+        { 'dictLabel': '方', 'dictValue': '1' },
+        { 'dictLabel': '车', 'dictValue': '2' }
+      ],
       // 运单状态字典
       'statusOptions': [
         { 'dictLabel': '未接单', 'dictValue': '0' },
@@ -497,7 +539,11 @@ export default {
     /** 查询列表 */
     getList() {
       this.loading = true;
-      etcList(this.queryParams).then(response => {
+      const params = { ...this.queryParams };
+      if (params.licenseNumber) {
+        params.licenseNumber = params.licenseNumber.toUpperCase();
+      }
+      etcList(params).then(response => {
         this.managesList = response.rows;
         this.total = response.total;
         this.loading = false;

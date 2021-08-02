@@ -81,6 +81,9 @@
         </el-row>
 
         <RefactorTable :loading="loading" :data="infoList" :table-columns-config="tableColumnsConfig">
+          <template #accountAmount="{row}">
+            <span>{{ floor(row.accountAmount) }}</span>
+          </template>
           <template #paidAmount="{row}">
             <p v-if="row.paidFeeType === '0'" class="g-color-success">
               +{{ row.paidAmount }}
@@ -92,7 +95,6 @@
               {{ row.paidAmount }}
             </p>
           </template>
-
           <template #paidFeeType="{row}">
             <p v-if="row.paidFeeType === '0'">
               <span class="g-color-success g-pot" />
@@ -103,11 +105,9 @@
               支出
             </p>
           </template>
-
           <template #paidItem="{row}">
             <span>{{ selectDictLabel(consumeOptions, row.paidItem) }}</span>
           </template>
-
           <template #createTime="{row}">
             {{ parseTime(row.createTime) }}
           </template>
@@ -219,8 +219,16 @@
               <span v-if="scope.row.type === 2" class="g-color-success">解冻</span>
             </template>
           </el-table-column>
-          <el-table-column label="冻结总额（元）" align="center" prop="amount" />
-          <el-table-column label="操作后冻结金额（元）" align="center" prop="beforeFreezeAmount" />
+          <el-table-column label="冻结总额（元）" align="center" prop="amount">
+            <template slot-scope="scope">
+              <span>{{ floor(scope.row.amount) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作后冻结金额（元）" align="center" prop="beforeFreezeAmount">
+            <template slot-scope="scope">
+              <span>{{ floor(scope.row.beforeFreezeAmount) }}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="操作时间" align="center" prop="createTime">
             <template slot-scope="scope">
               <span>{{ parseTime(scope.row.createTime) }}</span>

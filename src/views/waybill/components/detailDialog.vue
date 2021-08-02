@@ -34,17 +34,17 @@
         装货数量：
       </el-col>
       <el-col :span="5" class="text-row">
-        <span v-if="form.stowageStatus === '1'">{{ form.loadWeight || '0.000' }} 方</span>
+        <span v-if="form.stowageStatus === '1'">{{ fixed(form.loadWeight) || '0.000' }} 方</span>
         <span v-if="form.stowageStatus === '2'">{{ Math.floor(form.loadWeight) || '0' }} 车</span>
-        <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ form.loadWeight || '0.000' }} 吨</span>
+        <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ fixed(form.loadWeight) || '0.000' }} 吨</span>
       </el-col>
       <el-col :span="3" class="text-label">
         卸货数量：
       </el-col>
       <el-col :span="5" class="text-row">
-        <span v-if="form.stowageStatus === '1'">{{ form.unloadWeight || '0.000' }} 方</span>
+        <span v-if="form.stowageStatus === '1'">{{ fixed(form.unloadWeight) || '0.000' }} 方</span>
         <span v-if="form.stowageStatus === '2'">{{ Math.floor(form.unloadWeight) || '0' }} 车</span>
-        <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ form.unloadWeight || '0.000' }} 吨</span>
+        <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ fixed(form.unloadWeight) || '0.000' }} 吨</span>
       </el-col>
       <el-col :span="3" class="text-label">
         货物大类：
@@ -138,19 +138,19 @@
         货主实付金额(元)：
       </el-col>
       <el-col :span="5" class="text-row">
-        {{ form.balanceVo.shipperRealPay || '0.00' }}
+        {{ floor(form.balanceVo.shipperRealPay) || '0.00' }}
       </el-col>
       <el-col :span="3" class="text-label">
         司机实收金额(元)：
       </el-col>
       <el-col :span="5" class="text-row">
-        {{ form.balanceVo.deliveryCashFee || '0.00' }}
+        {{ floor(form.balanceVo.deliveryCashFee) || '0.00' }}
       </el-col>
       <el-col :span="3" class="text-label">
         司机实收运费(元)：
       </el-col>
       <el-col :span="5" class="text-row">
-        {{ form.balanceVo.deliveryFeePractical || '0.00' }}
+        {{ floor(form.balanceVo.deliveryFeePractical) || '0.00' }}
       </el-col>
 
       <!-- <el-col :span="3" class="text-label">
@@ -163,39 +163,39 @@
         司机应收运费(元)：
       </el-col>
       <el-col :span="5" class="text-row">
-        {{ form.balanceVo.deliveryFeeDeserved || '0.00' }}
+        {{ floor(form.balanceVo.deliveryFeeDeserved) || '0.00' }}
       </el-col>
       <el-col :span="3" class="text-label">
         平台服务费用(元)：
       </el-col>
       <el-col :span="5" class="text-row">
-        {{ form.balanceVo.serviceFee || '0.00' }}
+        {{ floor(form.balanceVo.serviceFee) || '0.00' }}
       </el-col>
       <el-col :span="3" class="text-label">
         不含税价(元)：
       </el-col>
       <el-col :span="5" class="text-row">
-        {{ form.balanceVo.taxFreeFee || '0.00' }}
+        {{ floor(form.balanceVo.taxFreeFee) || '0.00' }}
       </el-col>
       <el-col :span="3" class="text-label">
         纳税金额(元)：
       </el-col>
       <el-col :span="5" class="text-row">
-        {{ form.balanceVo.taxPayment || '0.00' }}
+        {{ floor(form.balanceVo.taxPayment) || '0.00' }}
       </el-col>
       <el-col :span="3" class="text-label">
         路耗(元)：
       </el-col>
       <el-col :span="5" class="text-row">
-        {{ form.balanceVo.lossDeductionFee || '0.00' }}
+        {{ floor(form.balanceVo.lossDeductionFee) || '0.00' }}
       </el-col>
 
       <div v-for="(item, index) in freightList" :key="index">
         <el-col :span="3" class="text-label">
-          {{ item.cnName || '0.00' }}：
+          {{ item.cnName }}：
         </el-col>
         <el-col :span="5" class="text-row">
-          {{ item.ruleValue || '0.00' }}
+          {{ floor(item.ruleValue) || '0.00' }}
         </el-col>
       </div>
     </el-row>

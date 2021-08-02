@@ -262,25 +262,36 @@
         />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="clarifylist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <RefactorTable :loading="loading" :data="clarifylist" :table-columns-config="tableColumnsConfig" :selectable="checkboxT" @selection-change="handleSelectionChange">
         <template #clarifyStatus="{row}">
           <span>
-            <i v-if="row.isReturn == 0" class="el-icon-info g-color-gray" />
-            <i v-if="row.isReturn == 1" class="g-icon-deal" />
-            <i v-if="row.isReturn == 2" class="el-icon-success g-color-success" />
-            <i v-if="row.isReturn == 3" class="el-icon-error g-color-error" />
+            <i v-if="row.clarifyStatus === '0'" class="el-icon-info g-color-gray" />
+            <i v-if="row.clarifyStatus === '1'" class="g-icon-deal" />
+            <i v-if="row.clarifyStatus === '2'" class="el-icon-success g-color-success" />
+            <i v-if="row.clarifyStatus === '3'" class="el-icon-error g-color-error" />
+            <i v-if="row.clarifyStatus === '99'" class="el-icon-info g-color-gray" />
             {{ selectDictLabel(clarifyStatusOptions, row.clarifyStatus) }}
           </span>
         </template>
-
+        <template #shipperRealPay="{row}">
+          <span>{{ floor(row.shipperRealPay) }}</span>
+        </template>
+        <template #teamTransferAmount="{row}">
+          <span>{{ floor(row.teamTransferAmount) }}</span>
+        </template>
+        <template #totalFee="{row}">
+          <span>{{ floor(row.totalFee) }}</span>
+        </template>
         <template #edit="{row}">
           <el-button
+            v-if="row.clarifyStatus !== '2' && row.clarifyStatus !== '99'"
             v-hasPermi="['transportation:waybillSettlementClarify:batch']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 1)"
           >运单清分</el-button>
           <el-button
+            v-if="row.clarifyStatus !== '2' && row.clarifyStatus !== '99'"
             v-hasPermi="['transportation:waybillSettlementClarify:batchStatus']"
             size="mini"
             type="text"
@@ -381,7 +392,8 @@ export default {
         { 'dictLabel': '待清分', 'dictValue': '0' },
         { 'dictLabel': '清分中', 'dictValue': '1' },
         { 'dictLabel': '清分成功', 'dictValue': '2' },
-        { 'dictLabel': '清分失败', 'dictValue': '3' }
+        { 'dictLabel': '清分失败', 'dictValue': '3' },
+        { 'dictLabel': '无需清分', 'dictValue': '99' }
       ],
       loadingExport: false
     };
@@ -443,6 +455,13 @@ export default {
     this.getList();
   },
   'methods': {
+    checkboxT(row) {
+      if (row.clarifyStatus === '2' || row.clarifyStatus === '99') {
+			  return false;
+      } else {
+			  return true;
+      }
+    },
     datechoose(date) {
       if (date) {
         this.queryParams.startTeamTransferTime = this.parseTime(date[0], '{y}-{m}-{d}');

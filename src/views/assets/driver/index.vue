@@ -190,6 +190,16 @@
             />
           </el-select>
         </el-form-item>
+          <el-form-item label="驾驶证有效期" prop="isDriverLicenseEffective">
+              <el-select v-model="queryParams.isDriverLicenseEffective" placeholder="请选择" filterable clearable size="small" class="input-width">
+                  <el-option
+                          v-for="dict in identityEffectiveOptions"
+                          :key="dict.dictValue"
+                          :label="dict.dictLabel"
+                          :value="dict.dictValue"
+                  />
+              </el-select>
+          </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
           <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -571,7 +581,8 @@ export default {
         authTimeEnd: undefined,
         createTimeBegin: undefined,
         createTimeEnd: undefined,
-        isIdentityEffective: null
+        isIdentityEffective: undefined,
+        isDriverLicenseEffective: undefined
       },
       // 表单是否禁用
       formDisable: false,
@@ -643,7 +654,11 @@ export default {
     getList() {
       this.loading = true;
       this.$store.dispatch('settings/changeQuick', null);
-      listDriver(this.queryParams).then(response => {
+      const params = { ...this.queryParams };
+      if (params.licenseNumber) {
+        params.licenseNumber = params.licenseNumber.toUpperCase();
+      }
+      listDriver(params).then(response => {
         this.driverList = response.rows;
         this.total = response.total;
         this.loading = false;

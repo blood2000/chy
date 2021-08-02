@@ -101,11 +101,11 @@
       <div v-show="form.reduceItem.length === 0" class="none-box g-color-gray">未添加项目</div>
       <el-row>
         <el-form-item v-for="item in form.reduceItem" :key="item.code" :label="item.cnName" :prop="item.code">
-          <el-input-number v-if="item.showType === 1" v-model="form.reduceItemObj[item.code]" :min="0" :controls="false" :placeholder="`请输入${item.cnName}`" class="width-small mr3" clearable />
+          <el-input-number v-if="item.showType === 1" v-model="form.reduceItemObj[item.code]" :min="0" :precision="2" :controls="false" :placeholder="`请输入${item.cnName}`" class="width-small mr3" clearable />
           <template v-if="item.showType === 2">
-            <el-input-number v-model="form.reduceItemObj[item.code].start" :controls="false" placeholder="最小值" class="width-small mr3" clearable />
+            <el-input-number v-model="form.reduceItemObj[item.code].start" :controls="false" :precision="2" placeholder="最小值" class="width-small mr3" clearable />
             -
-            <el-input-number v-model="form.reduceItemObj[item.code].end" :controls="false" placeholder="最大值" class="width-small mr3" clearable />
+            <el-input-number v-model="form.reduceItemObj[item.code].end" :controls="false" :precision="2" placeholder="最大值" class="width-small mr3" clearable />
           </template>
           <el-select v-if="item.showType === 3" v-model="form.reduceItemObj[item.code]" class="width-small mr3" clearable filterable>
             <el-option
@@ -136,11 +136,11 @@
       <div v-show="form.addItem.length === 0" class="none-box g-color-gray">未添加项目</div>
       <el-row>
         <el-form-item v-for="item in form.addItem" :key="item.code" :label="item.cnName" :prop="item.code">
-          <el-input-number v-if="item.showType === 1" v-model="form.addItemObj[item.code]" :min="0" :controls="false" :placeholder="`请输入${item.cnName}`" class="width-small mr3" clearable />
+          <el-input-number v-if="item.showType === 1" v-model="form.addItemObj[item.code]" :min="0" :precision="2" :controls="false" :placeholder="`请输入${item.cnName}`" class="width-small mr3" clearable />
           <template v-if="item.showType === 2">
-            <el-input-number v-model="form.addItemObj[item.code].start" :controls="false" placeholder="最小值" class="width-small mr3" clearable />
+            <el-input-number v-model="form.addItemObj[item.code].start" :controls="false" :precision="2" placeholder="最小值" class="width-small mr3" clearable />
             -
-            <el-input-number v-model="form.addItemObj[item.code].end" :controls="false" placeholder="最大值" class="width-small mr3" clearable />
+            <el-input-number v-model="form.addItemObj[item.code].end" :controls="false" :precision="2" placeholder="最大值" class="width-small mr3" clearable />
           </template>
           <el-select v-if="item.showType === 3" v-model="form.addItemObj[item.code]" class="width-small mr3" clearable filterable>
             <el-option

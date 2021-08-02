@@ -288,7 +288,11 @@ export default {
     // 获取司机列表
     getList() {
       this.loading = true;
-      listDriver(this.queryParams).then(response => {
+      const params = { ...this.queryParams };
+      if (params.licenseNumber) {
+        params.licenseNumber = params.licenseNumber.toUpperCase();
+      }
+      listDriver(params).then(response => {
         this.driverList = response.rows;
         this.total = response.total;
         this.loading = false;
