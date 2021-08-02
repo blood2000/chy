@@ -158,7 +158,7 @@ export default {
 
   computed: {
     unit() {
-      // console.log(this.$store.state.orders.orderStowageStatus, '调价的时候');
+      console.log(this.$store.state.orders.orderStowageStatus, '调价的时候');
       let name = 'kg';
       const srcode = this.$store.state.orders.lossPlans;
       const lossPlans = Object.keys(srcode);
@@ -279,11 +279,11 @@ export default {
     },
 
     precisionMethod(unit1, unit) {
-      let num = 0;
+      let num = 2;
       if (unit1 === '%') {
         num = 2;
       } else if (unit === 'm³') {
-        num = 3;
+        num = 2;
       }
 
       return num;

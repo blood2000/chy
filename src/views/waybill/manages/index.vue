@@ -228,6 +228,9 @@
         <template #stowageStatus="{row}">
           <span>{{ selectDictLabel(stowageStatusOptions, row.stowageStatus) }}</span>
         </template>
+        <template #sourceType="{row}">
+          <span>{{ selectDictLabel(sourceTypeOptions, row.sourceType) }}</span>
+        </template>
         <template #goodsPrice="{row}">
           <span>{{ row.goodsPrice ? floor(row.goodsPrice) + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) :'-' }}</span>
         </template>
@@ -236,6 +239,9 @@
         </template>
         <template #freightPrice="{row}">
           <span>{{ row.freightPrice ? floor(row.freightPrice) + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) :'-' }}</span>
+        </template>
+        <template #freightPriceDriver="{row}">
+          <span>{{ row.freightPriceDriver ? floor(row.freightPriceDriver) + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) :'-' }}</span>
         </template>
         <template #taxFee="{row}">
           <span>{{ floor(row.taxFee) }}</span>
@@ -254,6 +260,21 @@
         </template>
         <template #serviceFee="{row}">
           <span>{{ floor(row.serviceFee) }}</span>
+        </template>
+        <template #deliveryFeePractical="{row}">
+          <span>{{ floor(row.deliveryFeePractical) }}</span>
+        </template>
+        <template #lossDeductionFee="{row}">
+          <span>{{ floor(row.lossDeductionFee) }}</span>
+        </template>
+        <template #m0Fee="{row}">
+          <span>{{ floor(row.m0Fee) }}</span>
+        </template>
+        <template #driverAddFee="{row}">
+          <span>{{ floor(row.driverAddFee) }}</span>
+        </template>
+        <template #driverReductionFee="{row}">
+          <span>{{ floor(row.driverReductionFee) }}</span>
         </template>
         <!-- <template #isChild="{row}">
           <span>{{ selectDictLabel(isChildOptions, row.isChild) }}</span>
@@ -485,6 +506,13 @@ export default {
         { 'dictLabel': '吨', 'dictValue': '0' },
         { 'dictLabel': '方', 'dictValue': '1' },
         { 'dictLabel': '车', 'dictValue': '2' }
+      ],
+      // 配载方式字典
+      sourceTypeOptions: [
+        { 'dictLabel': '承运码', 'dictValue': '1' },
+        { 'dictLabel': '调度者指派', 'dictValue': '2' },
+        { 'dictLabel': '自主接单', 'dictValue': '3' },
+        { 'dictLabel': '后台指派', 'dictValue': '4' }
       ],
       // 司机取消订单字典
       'cancelStatusOptions': [
