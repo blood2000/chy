@@ -228,6 +228,9 @@
         <template #stowageStatus="{row}">
           <span>{{ selectDictLabel(stowageStatusOptions, row.stowageStatus) }}</span>
         </template>
+        <template #sourceType="{row}">
+          <span>{{ selectDictLabel(sourceTypeOptions, row.sourceType) }}</span>
+        </template>
         <template #goodsPrice="{row}">
           <span>{{ row.goodsPrice ? floor(row.goodsPrice) + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) :'-' }}</span>
         </template>
@@ -485,6 +488,13 @@ export default {
         { 'dictLabel': '吨', 'dictValue': '0' },
         { 'dictLabel': '方', 'dictValue': '1' },
         { 'dictLabel': '车', 'dictValue': '2' }
+      ],
+      // 配载方式字典
+      sourceTypeOptions: [
+        { 'dictLabel': '承运码', 'dictValue': '1' },
+        { 'dictLabel': '调度者指派', 'dictValue': '2' },
+        { 'dictLabel': '自主接单', 'dictValue': '3' },
+        { 'dictLabel': '后台指派', 'dictValue': '4' }
       ],
       // 司机取消订单字典
       'cancelStatusOptions': [
