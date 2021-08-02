@@ -551,6 +551,9 @@ export default {
     },
     '$route.query.t': {
       handler(value, odvalue) {
+        console.log('返原初始');
+        this.$store.commit('orders/SET_ORDERSTOWAGESTATUS', '0');
+
         if ((odvalue === '0' || odvalue === '1' || odvalue === '3') && !value) {
           if (this.$route.path === '/orders/release') {
             this.$router.replace({
