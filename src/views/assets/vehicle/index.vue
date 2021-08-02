@@ -367,7 +367,7 @@
         @refresh="getList"
       />
       <!-- 管理归属司机/归属调度 对话框 -->
-      <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :vehicle-code="vehicleCode" />
+      <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :vehicle-code="vehicleCode" :license-number="licenseNumber"/>
     </div>
   </div>
 </template>
@@ -481,6 +481,7 @@ export default {
       formDisable: false,
       // 车辆code
       vehicleCode: null,
+      licenseNumber: null,
       // 导出
       exportLoading: false
     };
@@ -696,6 +697,7 @@ export default {
     /** 管理按钮操作 */
     handleManage(row) {
       this.vehicleCode = row.code;
+      this.licenseNumber = row.licenseNumber;
       this.manageDialogOpen = true;
     },
     /** 解除司机/调度者与车辆的关联 */
