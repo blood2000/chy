@@ -80,7 +80,7 @@ export default {
       trackChange: 0,
       timeLineList: [],
       // 轨迹查询参数结束时间
-      queryEndtime: '2021-08-02 17:00:00',
+      queryEndtime: '',
       isPlan: false,
       isShipment: false,
       // 轨迹参数
@@ -134,9 +134,9 @@ export default {
       jmMark: undefined, // 几米车辆定位
       jmTimePoor: undefined, // 几米轨迹时间差
       jimiQueryParams: { // jimi查询参数 map_type:GOOGOLE或BAIDU
-        begin_time: '2021-07-31 00:00:00',
-        end_time: '2021-08-02 17:00:00',
-        imeis: '868120274644936',
+        begin_time: '', // 2021-07-31 00:00:00
+        end_time: '', // 2021-08-02 17:00:00
+        imeis: '', // 868120274644936
         map_type: 'GOOGLE'
       },
       // 中交兴路轨迹相关参数
@@ -569,22 +569,22 @@ export default {
         }
         // 获取查询轨迹时间
         this.time = this.parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}');
-        // this.jimiQueryParams.begin_time = this.parseTime(this.wayBillInfo.fillTime, '{y}-{m}-{d} {h}:{i}:{s}');
+        this.jimiQueryParams.begin_time = this.parseTime(this.wayBillInfo.fillTime, '{y}-{m}-{d} {h}:{i}:{s}');
         this.zjxlQueryParams.qryBtm = this.parseTime(this.wayBillInfo.fillTime, '{y}-{m}-{d} {h}:{i}:{s}');
         this.zjxlAddParams.startTime = this.parseTime(this.wayBillInfo.fillTime, '{y}-{m}-{d} {h}:{i}:{s}');
         this.lieyingQueryParams.starttime = new Date(this.wayBillInfo.fillTime).getTime();
         if (this.wayBillInfo.signTime) {
-          // this.jimiQueryParams.end_time = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
+          this.jimiQueryParams.end_time = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
           this.zjxlQueryParams.qryEtm = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
           this.zjxlAddParams.endTime = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
           this.lieyingQueryParams.endtime = new Date(this.wayBillInfo.signTime).getTime();
-          // this.queryEndtime = new Date(this.wayBillInfo.signTime);
+          this.queryEndtime = new Date(this.wayBillInfo.signTime);
         } else {
-          // this.jimiQueryParams.end_time = this.time;
+          this.jimiQueryParams.end_time = this.time;
           this.zjxlQueryParams.qryEtm = this.time;
           this.zjxlAddParams.endTime = this.time;
           this.lieyingQueryParams.endtime = new Date().getTime();
-          // this.queryEndtime = new Date();
+          this.queryEndtime = new Date();
         }
         if (this.loadAddress.length !== 0 && this.unloadAddress.length !== 0) {
           // 标记装卸货地址
