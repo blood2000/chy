@@ -393,7 +393,7 @@ export default {
           if (this.driverCode) {
             addDriverCar(Object.assign({}, this.form, { driverCode: this.driverCode })).then(response => {
               this.buttonLoading = false;
-              this.msgSuccess('添加成功');
+              this.msgSuccess(response.msg);
               this.close();
               this.$emit('refresh');
             }).catch(() => {
