@@ -123,7 +123,7 @@ export default {
       location: [],
       wayBillInfo: {},
       // 猎鹰相关参数
-      lieyingChecked: true,
+      lieyingChecked: false,
       lieyingMark: undefined,
       lyLocation: [],
       lieyingQueryParams: {
@@ -347,7 +347,7 @@ export default {
             trid: trackNumber[3] // trid为轨迹唯一编号
           };
           console.log(this.lieyingQueryParams);
-          this.lieyingLocation();
+          this.lieyingChecked = true;
         } else {
           this.msgInfo('暂无APP定位！');
         }
