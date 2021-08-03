@@ -347,10 +347,8 @@ export default {
             trid: trackNumber[3] // trid为轨迹唯一编号
           };
           console.log(this.lieyingQueryParams);
-          this.lieyingChecked = true;
-        } else {
-          this.msgInfo('暂无APP定位！');
         }
+        this.lieyingChecked = true;
       });
       console.log(data);
       if (data.status === 2) {
