@@ -185,6 +185,27 @@
           @keyup.enter.native="$emit('handleQuery')"
         />
       </el-form-item>
+      <el-form-item
+        v-if="queryParams.status === 2"
+        label="状态"
+        prop="pcStatus"
+      >
+        <el-select v-model="queryParams.pcStatus" placeholder="请选择批次状态" style="width: 228px" @change="$emit('handleQuery')">
+          <!-- { dictLabel: '核验驳回', dictValue: -1 },
+              { dictLabel: '已核算', dictValue: 0 },
+              { dictLabel: '已核验', dictValue: 1 }, -->
+          <el-option
+            v-for="item in [// -1 核验驳回 0 已核算 1 已核验 2 已索票 3 已开票 4 已打款
+              { dictLabel: '已索票', dictValue: 2 },
+              { dictLabel: '已开票', dictValue: 3 },
+              { dictLabel: '已打款', dictValue: 4 }
+            ]"
+            :key="item.dictValue"
+            :label="item.dictLabel"
+            :value="item.dictValue"
+          />
+        </el-select>
+      </el-form-item>
 
 
       <el-form-item>

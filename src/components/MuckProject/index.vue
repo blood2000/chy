@@ -373,6 +373,7 @@ export default {
         batchNo: undefined, //	批次号	query	false
         operator: undefined, //	操作人名称	query	false
         status: 0, //	1:已核验 2:已索票 3:已开票 4:已完成
+        pcStatus: 2,
         teamCode: undefined, //	调度者名称	query	false
         ztcCode: undefined, //	渣土场	query	false
         projectCode: undefined, // 项目
@@ -723,7 +724,8 @@ export default {
         ...this.queryParams,
         beginTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[0] : undefined,
         endTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[1] : undefined,
-        receiveTime: undefined
+        receiveTime: undefined,
+        pcStatus: this.queryParams.status === 2 ? this.queryParams.pcStatus : undefined
       };
       this.loading = false;
       let res = null;
