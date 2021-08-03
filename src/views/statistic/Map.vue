@@ -739,18 +739,22 @@ export default {
         font-family: PingFang Regular;
         opacity: 0;
         transition: opacity 0.5s;
+        white-space: nowrap;
         >.s-echart-map-waybill-tooltip-title{
           font-size: 0.7rem;
           font-weight: 400;
+          white-space: nowrap;
         }
         >.s-echart-map-waybill-tooltip-text{
           font-size: 0.6rem;
           font-weight: bold;
           padding-right: 0.4rem;
+          white-space: nowrap;
         }
         >.s-echart-map-waybill-tooltip-time{
           font-size: 0.6rem;
           font-weight: 400;
+          white-space: nowrap;
         }
       }
     }

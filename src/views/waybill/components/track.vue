@@ -184,7 +184,11 @@ export default {
     // 获取猎鹰轨迹
     lyChecked(val) {
       if (val) {
-        this.getLieyingTime();
+        if (this.wayBillInfo.trackNumber) {
+          this.getLieyingTime();
+        } else {
+          this.msgInfo('暂无APP定位！');
+        }
       } else {
         const that = this;
         that.$refs.map.$$getInstance().remove(that.lyPolyline);
@@ -196,7 +200,11 @@ export default {
     // 获取几米轨迹
     jmChecked(val) {
       if (val) {
-        this.getJimiTime();
+        if (this.jimiQueryParams.imeis) {
+          this.getJimiTime();
+        } else {
+          this.msgInfo('暂无硬件轨迹！');
+        }
       } else {
         const that = this;
         that.$refs.map.$$getInstance().remove(that.jmPolyline);
@@ -510,8 +518,10 @@ export default {
     // 获取车辆设备信息
     getDeviceInfo() {
       getDevice({ vehicleCode: this.wayBillInfo.vehicleCode, vendorCode: 'jimilot' }).then(response => {
-        this.deviceInfo = response.data[0];
-        this.jimiQueryParams.imeis = response.data[0].deviceImei;
+        if (response.data.length > 0) {
+          this.deviceInfo = response.data[0];
+          this.jimiQueryParams.imeis = response.data[0].deviceImei;
+        }
         // console.log(this.deviceInfo);
       });
     },

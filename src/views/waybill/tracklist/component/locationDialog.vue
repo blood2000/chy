@@ -206,8 +206,10 @@ export default {
     // 获取车辆设备信息
     getDeviceInfo() {
       getDevice({ vehicleCode: this.wayBillInfo.vehicleCode, vendorCode: 'jimilot' }).then(response => {
-        this.deviceInfo = response.data[0];
-        this.queryParams.imeis = response.data[0].deviceImei;
+        if (response.data.length > 0) {
+          this.deviceInfo = response.data[0];
+          this.queryParams.imeis = response.data[0].deviceImei;
+        }
         // console.log(this.deviceInfo);
       });
     },
