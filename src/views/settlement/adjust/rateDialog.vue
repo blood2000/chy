@@ -19,13 +19,9 @@
 
 <script>
 import { waybillComment, waybillCommentDetail } from '@/api/waybill/tracklist';
-// import UploadImage from '@/components/UploadImage/index';
 
 export default {
   name: 'RateDialog',
-  components: {
-    // UploadImage
-  },
   props: {
     title: {
       type: String,
@@ -98,8 +94,8 @@ export default {
     },
     // 表单赋值
     setForm(data) {
-      this.form.waybillCode = data.code;
-      waybillCommentDetail(0, data.code).then(response => {
+      this.form.waybillCode = data.wayBillCode;
+      waybillCommentDetail(0, data.wayBillCode).then(response => {
         console.log(response);
         this.form.score = response.data[0].score;
         this.form.content = response.data[0].content;

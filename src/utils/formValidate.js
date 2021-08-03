@@ -14,6 +14,9 @@ const phoneReg01 = /^(0|86|17951)?(13[0-9]|15[012356789]|17[01678]|18[0-9]|14[57
 const phoneReg02 = /^(0[0-9]{2,3}\-)([2-9][0-9]{6,7})+(\-[0-9]{1,4})?$/;
 // 身份证
 const idCardReg = /^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)$/;
+// 6位纯数字
+const number6 = /^[0-9]{6}$/;
+
 // 判断传入日期是否小于当前日期
 function compareTime(time) {
   const _new = Date.parse(new Date());
@@ -26,7 +29,7 @@ function compareTime(time) {
 // 车牌号
 const plateNoReg = /^(([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z](([0-9]{5}[DF])|([DF]([A-HJ-NP-Z0-9])[0-9]{4})))|([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z][A-HJ-NP-Z0-9]{4}[A-HJ-NP-Z0-9挂学警港澳使领]))$/;
 // 银行卡
-const bankCardReg = /^([1-9]{1})(\d{15}|\d{16}|\d{18})$/;
+// const bankCardReg = /^([1-9]{1})(\d{15}|\d{16}|\d{18})$/;
 // 驾驶证
 const driverCardReg = /^[1-8]\d{11}$/;
 // 行驶证
@@ -127,7 +130,7 @@ export const formValidate = {
       callback();
     }
   },
-  // 证件验证: 起始时间必填; 长期有效的时候截止时间可以不填,否则必填; 起始时间大于截止时间;
+  // 证件验证: 起始时间必填; 长期有效的时候截止时间可以不填,否则必填; 截止时间大于起始时间;
   idCardValidate: function(rule, value, callback, beginTime, effective, text = '身份证') {
     if (!beginTime) {
       return callback(new Error(`${text}有效期起始时间不能为空`));
@@ -135,6 +138,13 @@ export const formValidate = {
       return callback(new Error(`${text}有效期截止时间不能为空`));
     } else if (!effective && !compareBeginEndTime(beginTime, value)) {
       return callback(new Error(`${text}有效期截止时间不能小于起始时间`));
+    }
+    return callback();
+  },
+  // 证件验证: 截止时间大于起始时间;
+  idCardTimeValidate: function(rule, value, callback, beginTime, text = '') {
+    if (!compareBeginEndTime(beginTime, value)) {
+      return callback(new Error(`${text}截止时间不能小于起始时间`));
     }
     return callback();
   },
@@ -154,10 +164,26 @@ export const formValidate = {
     if (value === undefined || value === null || value === '') {
       callback();
     }
-    if (!bankCardReg.test(value)) {
+    const ptr_length = /^.{0,50}$/;
+    if (!numberReg.test(value)) {
       callback(new Error('请输入正确的银行卡号'));
+    } else if (!ptr_length.test(value)) {
+      callback(new Error('银行卡号长度应小于50位'));
     } else {
       callback();
+    }
+  },
+  // 支行号
+  subBankCard: function(rule, value, callback) {
+    if (value === undefined || value === null || value === '') {
+      callback();
+    }
+    // 12位数字
+    const ptr_length = /^[0-9a-zA-Z_]{12,12}$/;
+    if (ptr_length.test(value)) {
+      callback();
+    } else {
+      callback(new Error('请输入正确的支行号'));
     }
   },
   // 驾驶证
@@ -207,6 +233,28 @@ export const formValidate = {
       callback();
     } else {
       callback(new Error('密码中至少包含字母、数字、特殊字符中的两种'));
+    }
+  },
+  // 6位纯数字
+  number6Password: function(rule, value, callback) {
+    if (value === undefined || value === null || value === '') {
+      callback();
+    }
+    if (!number6.test(value)) {
+      callback(new Error('请输入6位数字的密码'));
+    } else {
+      callback();
+    }
+  },
+  // 值大于0
+  greaterThanZero: function(rule, value, callback, text = '输入值') {
+    if (value === undefined || value === null || value === '') {
+      callback();
+    }
+    if (value === 0) {
+      callback(new Error(`${text}不能为0`));
+    } else {
+      callback();
     }
   }
 };

@@ -4,7 +4,7 @@
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
         <el-form-item label="承运方名称" prop="driverName">
           <el-input
-            v-model="queryParams.driverName"
+            v-model.trim="queryParams.driverName"
             placeholder="请输入客户名称"
             clearable
             size="small"
@@ -14,7 +14,7 @@
         </el-form-item>
         <el-form-item label="手机号码" prop="driverPhone">
           <el-input
-            v-model="queryParams.driverPhone"
+            v-model.trim="queryParams.driverPhone"
             placeholder="请输入手机号码"
             clearable
             size="small"
@@ -26,6 +26,8 @@
           <el-date-picker
             v-model="queryTime"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -33,7 +35,7 @@
             @change="datechoose"
           />
         </el-form-item>
-        <el-form-item label="司机类型" prop="driverType">
+        <el-form-item label="角色" prop="driverType">
           <el-select
             v-model="queryParams.driverType"
             placeholder="请选择角色"
@@ -52,7 +54,7 @@
         </el-form-item>
         <el-form-item label="所属调度" prop="teamName">
           <el-input
-            v-model="queryParams.teamName"
+            v-model.trim="queryParams.teamName"
             placeholder="请输入所属调度"
             clearable
             size="small"
@@ -70,10 +72,11 @@
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
           <el-button
-            v-hasPermi="['assets:vehicle:edit']"
+            v-hasPermi="['data:driverto:export']"
             type="primary"
-            icon="el-icon-upload2"
+            icon="el-icon-download"
             size="mini"
+            :loading="loadingExport"
             @click="handleExport"
           >导出</el-button>
         </el-col>
@@ -108,7 +111,7 @@
         :total="total"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
-        @pagination="getList"
+        @pagination="getList(1)"
       />
     </div>
   </div>
@@ -117,13 +120,14 @@
 <script>
 import { listDrivertoApi, listDriverto, getDriverCount } from '@/api/data/statistics';
 // import tableColumnsConfig from './config';
-
+import { pickerOptions } from '@/utils/dateRange';
 export default {
   name: 'Driverto',
   components: {
   },
   data() {
     return {
+      pickerOptions,
       tableColumnsConfig: [],
       api: listDrivertoApi,
       // 遮罩层
@@ -164,7 +168,8 @@ export default {
       },
       teamloading: false,
       dataOver: false, // 是否请求完了
-      summary: true
+      summary: true,
+      loadingExport: false
     };
   },
   created() {
@@ -217,12 +222,12 @@ export default {
       }
     },
     /** 查询司机往来明细列表 */
-    getList() {
+    getList(e) {
       this.loading = true;
       // 查询列表
       listDriverto(this.queryParams).then(response => {
-        this.drivertoList = response.data;
-        this.total = response.data.length;
+        this.drivertoList = response.data.list;
+        this.total = response.data.total;
         this.loading = false;
       });
       // 查询合计
@@ -231,10 +236,12 @@ export default {
       } else {
         this.queryParams.haveCondition = false;
       }
-      getDriverCount(this.queryParams).then(response => {
-        console.log(response);
-        this.drivertoCount = response.data;
-      });
+      if (e !== 1) {
+        getDriverCount(this.queryParams).then(response => {
+          console.log(response);
+          this.drivertoCount = response.data;
+        });
+      }
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -251,7 +258,10 @@ export default {
     },
     // 导出
     handleExport() {
-      this.download('/transportation/invoice/listWayBill', { ...this.queryParams }, `askfor_${new Date().getTime()}.xlsx`);
+      this.loadingExport = true;
+      this.download('/transportation/driverCountSearch/export', { ...this.queryParams }, `司机往来明细`).then(res => {
+        this.loadingExport = false;
+      });
     }
   }
 };

@@ -1,21 +1,23 @@
 <template>
-  <el-tabs type="border-card">
-    <el-tab-pane label="运单补录" style="padding:0 30px;">
+  <div class="frame">
+    <Tabs :tablist="tablist" @getActiveName="getActiveName" />
+    <div v-if="activeName === '新增运单'">
       <div class="container">
         <el-form ref="form" :model="form" :rules="rules" label-width="140px">
-          <el-divider content-position="left"><span class="supplement-title">货源信息</span></el-divider>
+          <div class="supplement-title"><div class="supplement-icon" />货源信息</div>
+          <el-divider />
           <el-row>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item label="货源单号" prop="mainOrderCode">
-                <el-input v-model="form.mainOrderCode" placeholder="请输入货源单号" class="width90" clearable @change="getOrderDetail" />
+                <el-input v-model.trim="form.mainOrderCode" placeholder="请输入货源单号" class="width90" clearable @change="getOrderDetail" />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item label="货物名称" prop="goodsCode">
                 <el-select
                   v-model="form.goodsCode"
-                  placeholder="请选择货物"
-                  no-data-text="请先输入货源单号"
+                  placeholder="请选择货物名称"
+                  no-data-text="无数据"
                   clearable
                   filterable
                   size="small"
@@ -32,19 +34,19 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item label="运费单价" prop="shipmentPrice">
-                <el-input v-model="form.shipmentPrice" :readonly="true" class="width90" />
+            <el-col :span="6">
+              <el-form-item label="运费单价(元)" prop="shipmentPrice">
+                <el-input v-model.trim="form.shipmentPrice" placeholder="请输入" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item label="装货地址" prop="loadAddressCode">
                 <el-select
                   v-model="form.loadAddressCode"
-                  placeholder="请选择车辆装货地址"
-                  no-data-text="请先输入货源单号"
+                  placeholder="请选择装货地址"
+                  no-data-text="无数据"
                   clearable
                   filterable
                   size="small"
@@ -61,12 +63,12 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item label="卸货地址" prop="unloadAddressCode">
                 <el-select
                   v-model="form.unloadAddressCode"
-                  placeholder="请选择车辆卸货地址"
-                  no-data-text="请先输入货源单号"
+                  placeholder="请选择卸货地址"
+                  no-data-text="无数据"
                   clearable
                   filterable
                   size="small"
@@ -83,19 +85,20 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item v-if="!stowage" label="剩余车数" prop="remainingNumber">
-                <el-input v-model="form.remainingNumber" :readonly="true" class="width90" />
+            <!-- <el-col :span="6">
+              <el-form-item v-if="!stowage" label="剩余车数" prop="notRobbedOrder">
+                <el-input v-model="form.notRobbedOrder" placeholder="请输入" :readonly="true" class="width90" />
               </el-form-item>
               <el-form-item v-if="stowage" label="剩余吨数/立方数" prop="remainingWeight">
-                <el-input v-model="form.remainingWeight" :readonly="true" class="width90" />
+                <el-input v-model="form.remainingWeight" placeholder="请输入" :readonly="true" class="width90" />
               </el-form-item>
-            </el-col>
+            </el-col> -->
           </el-row>
 
-          <el-divider content-position="left"><span class="supplement-title">承运车辆</span></el-divider>
+          <div class="supplement-title"><div class="supplement-icon" />承运车辆</div>
+          <el-divider />
           <el-row>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item label="承运司机" prop="driverCode">
                 <el-select
                   v-model="form.driverCode"
@@ -104,9 +107,10 @@
                   clearable
                   remote
                   reserve-keyword
-                  placeholder="请输入关键词"
+                  :placeholder="orderDisable? '请先输入货源单号':'请输入关键字'"
                   :remote-method="remoteMethod"
                   :loading="loading"
+                  :disabled="orderDisable"
                   size="small"
                   class="width90"
                   @change="driverChoose"
@@ -116,16 +120,21 @@
                     :key="dict.code"
                     :label="dict.name"
                     :value="dict.code"
-                  />
+                  >
+                    <div class="ly-flex-pack-justify">
+                      <span style="margin-right:10px">{{ dict.name }}</span>
+                      <span>{{ dict.telphone }}</span>
+                    </div>
+                  </el-option>
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item label="承运车辆" prop="vehicleCode">
                 <el-select
                   v-model="form.vehicleCode"
                   placeholder="请选择承运车辆"
-                  no-data-text="请先选择承运司机"
+                  no-data-text="司机暂无车辆"
                   clearable
                   filterable
                   size="small"
@@ -142,14 +151,14 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item label="运输许可号" prop="roadTransportCertificateNumber">
-                <el-input v-model="form.roadTransportCertificateNumber" :readonly="true" class="width90" />
+                <el-input v-model.trim="form.roadTransportCertificateNumber" placeholder="请输入" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item label="所属调度" prop="teamCode">
                 <el-select
                   v-model="form.teamCode"
@@ -170,21 +179,22 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item label="车辆识别码" prop="chassisNumber">
-                <el-input v-model="form.chassisNumber" :readonly="true" class="width90" />
+                <el-input v-model.trim="form.chassisNumber" placeholder="请输入" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item label="车辆载重" prop="vehicleLoadWeight">
-                <el-input v-model="form.vehicleLoadWeight" :readonly="true" class="width90" />
+            <el-col :span="6">
+              <el-form-item label="车辆载重(吨)" prop="vehicleLoadWeight">
+                <el-input v-model.trim="form.vehicleLoadWeight" placeholder="请输入" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
           </el-row>
 
-          <el-divider content-position="left"><span class="supplement-title">运单信息</span></el-divider>
+          <div class="supplement-title"><div class="supplement-icon" />运单信息</div>
+          <el-divider />
           <el-row>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item label="装货时间" prop="loadTime">
                 <el-date-picker
                   v-model="form.loadTime"
@@ -198,7 +208,7 @@
                 />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item label="卸货时间" prop="unloadTime">
                 <el-date-picker
                   v-model="form.unloadTime"
@@ -212,39 +222,42 @@
                 />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item v-if="!stowage" label="运单车数" prop="loadWeight">
-                <el-input-number v-model="form.loadWeight" placeholder="请输入运单重量" controls-position="right" :min="0" class="width90" @change="inputWeight" />
+            <el-col :span="6">
+              <el-form-item v-if="form.stowageStatus === '1'" label="结算数量(方)" prop="loadWeight">
+                <el-input-number v-model="form.loadWeight" controls-position="right" :precision="3" :min="0" class="width90" @change="inputWeight" />
               </el-form-item>
-              <el-form-item v-if="stowage" label="运单重量(吨/立方)" prop="loadWeight">
-                <el-input-number v-model="form.loadWeight" placeholder="请输入运单重量" controls-position="right" :min="0" class="width90" @change="inputWeight" />
+              <el-form-item v-if="form.stowageStatus === '2'" label="结算数量(车)" prop="loadWeight">
+                <el-input-number v-model="form.loadWeight" controls-position="right" :precision="0" :min="0" class="width90" @change="inputWeight" />
+              </el-form-item>
+              <el-form-item v-if="form.stowageStatus === '0' || !form.stowageStatus" label="结算数量(吨)" prop="loadWeight">
+                <el-input-number v-model="form.loadWeight" controls-position="right" :precision="3" :min="0" class="width90" @change="inputWeight" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="8">
-              <el-form-item label="货主实付金额" prop="shipperRealPay">
-                <el-input v-model="form.shipperRealPay" :readonly="true" class="width90" />
+            <el-col :span="6">
+              <el-form-item label="货主应付金额" prop="shipperRealPay">
+                <el-input v-model.trim="form.shipperRealPay" placeholder="请输入" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <!-- <el-col :span="6">
               <el-form-item label="司机实收金额" prop="driverRealFee">
-                <el-input v-model="form.driverRealFee" :readonly="true" class="width90" />
+                <el-input v-model="form.driverRealFee" placeholder="请输入" :readonly="true" class="width90" />
               </el-form-item>
-            </el-col>
-            <el-col :span="8">
+            </el-col> -->
+            <el-col :span="6">
               <el-form-item label="运输单号" prop="wayBillNo">
-                <el-input v-model="form.wayBillNo" :readonly="true" class="width90" />
+                <el-input v-model.trim="form.wayBillNo" placeholder="请输入" :readonly="true" class="width90" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item ref="loadAttachment" label="装货单据" prop="loadAttachmentCode">
                 <uploadImage v-model="form.loadAttachmentCode" @input="chooseImg" />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="6">
               <el-form-item ref="unloadAttachment" label="卸货单据/回执单" prop="unloadAttachmentCode">
                 <uploadImage v-model="form.unloadAttachmentCode" @input="chooseImg" />
               </el-form-item>
@@ -254,16 +267,17 @@
 
         <el-row>
           <el-col :span="2" :offset="11">
-            <el-button type="primary" @click="submitForm">确 定</el-button>
+            <el-button v-hasPermi="['transportation:waybillOper:extra']" type="primary" @click="submitForm">确 定</el-button>
           </el-col>
         </el-row>
       </div>
-    </el-tab-pane>
+    </div>
 
-    <el-tab-pane label="批量补录">
-      <el-row :gutter="10" class="mb8">
+    <div v-if="activeName === '批量新增'" class="container">
+      <el-row :gutter="10" style="margin: 0 24px;">
         <el-col :span="1.5">
           <el-button
+            v-has-permi="['supplement:batch:orders:import']"
             type="primary"
             icon="el-icon-upload2"
             size="mini"
@@ -272,7 +286,7 @@
         </el-col>
         <el-col :span="1.5">
           <el-button
-            v-hasPermi="['waybill:abnormal:edit']"
+            v-has-permi="['supplement:batch:pic:import']"
             type="primary"
             icon="el-icon-upload2"
             size="mini"
@@ -281,36 +295,43 @@
         </el-col>
         <el-col :span="1.5">
           <el-button
+            v-has-permi="['supplement:batch:template:export']"
             type="primary"
             icon="el-icon-download"
             size="mini"
-            @click="handleDownload"
-          >下载模板</el-button>
+          >
+            <a href="/supplement.xlsx" download="supplement.xlsx">下载模板</a>
+          </el-button>
         </el-col>
       </el-row>
-    </el-tab-pane>
-
+    </div>
     <!-- 运输单批量导入 对话框 -->
     <waybillimport-dialog ref="WaybillimportDialog" :title="title" :open.sync="openImport" />
     <!-- 装/卸货图片导入 对话框 -->
     <pictureimport-dialog ref="PictureimportDialog" :title="title" :open.sync="open" />
-  </el-tabs>
+  </div>
 </template>
 
 <script>
-import { extra, getOrder, getGoods, getAddress, driver, vehicle, vehicleInfo, team, getOrderGoodsProce, getWayBillNo, calculate } from '@/api/waybill/supplement';
+import { extra, getOrder, getGoods, getAddress, driver, vehicle, vehicleInfo, team, getOrderGoodsProce, getWayBillNo, calculate, shipmentInfo } from '@/api/waybill/supplement';
 import UploadImage from '@/components/UploadImage/index';
 import WaybillimportDialog from './waybillimportDialog';
 import PictureimportDialog from './pictureimportDialog';
+import Tabs from '@/components/Tabs/index';
 
 export default {
+  name: 'Supplement',
   components: {
+    Tabs,
     UploadImage,
     WaybillimportDialog,
     PictureimportDialog
   },
   data() {
     return {
+      // Tabs参数
+      tablist: [{ tabName: '新增运单' }, { tabName: '批量新增' }],
+      activeName: '新增运单',
       // 装货地址选择
       loadAddressOptions: [],
       // 商品选择
@@ -322,12 +343,12 @@ export default {
       driverInfoQuery: {
         'pageNum': 1,
         'pageSize': 10,
-        'authStatus': 3,
+        'authStatus': null,
         'isFreeze': 0,
-        'name': null
+        'phoneOrName': null
       },
       vehicleInfoQuery: {
-        'authStatus': 3,
+        'authStatus': null,
         'isFreeze': 0,
         'driverCode': null
       },
@@ -339,7 +360,7 @@ export default {
       teamOptions: [],
       // 弹出层标题
       title: '',
-      stowage: false,
+      stowage: true,
       // 是否显示弹出层
       open: false,
       openImport: false,
@@ -395,6 +416,9 @@ export default {
     // this.getDriver();
   },
   methods: {
+    getActiveName(val) {
+      this.activeName = val;
+    },
     // 装卸货时间选择判断
     loadTimeChoose(e) {
       const loadtime = new Date(e);
@@ -440,7 +464,7 @@ export default {
         this.loading = true;
         this.driverInfoQuery.pageNum = 1;
         this.dataOver = false;
-        this.driverInfoQuery.name = query;
+        this.driverInfoQuery.phoneOrName = query;
         this.driverOptions = [];
         this.getDriver();
       } else {
@@ -466,30 +490,35 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
-      const loading = this.$loading({
-        lock: true,
-        text: '提交中',
-        spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0.7)'
-      });
       this.$refs['form'].validate(valid => {
         if (valid) {
+          const loading = this.$loading({
+            lock: true,
+            text: '提交中',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+          });
           if (this.form.loadWeight > 0) {
             if (!this.stowage && this.form.loadWeight !== 1) {
               this.msgWarning('运单车数只能为1车！');
+              loading.close();
             } else {
               extra(this.form).then(response => {
                 this.msgSuccess('运单补录成功');
                 this.reset();
+                this.orderDisable = true;
+                this.driverDisable = true;
+                loading.close();
+              }).catch(error => {
+                console.log(error);
+                loading.close();
               });
-              this.orderDisable = true;
-              this.driverDisable = true;
             }
           } else {
             this.msgWarning('运单重量或车数必须大于0！');
+            loading.close();
           }
         }
-        loading.close();
       });
     },
     // 表单重置
@@ -501,19 +530,19 @@ export default {
         'goodsCode': null,
         'loadAddressCode': null,
         'loadAttachmentCode': null,
-        'loadTime': null,
+        'loadTime': this.parseTime((new Date().getTime() - 5 * 60 * 1000), '{y}-{m}-{d} {h}:{i}:{s}'),
         'loadWeight': 0,
         'remark': null,
         'sourceType': 4,
         'unloadAddressCode': null,
         'unloadAttachmentCode': null,
-        'unloadTime': null,
+        'unloadTime': this.parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}'),
         'unloadWeight': 0,
         'vehicleCode': null,
         'shipperRealPay': null, // 货主实付金额
         'driverRealFee': null, // 司机实收金额
         'wayBillNo': null,
-        'remainingNumber': null, // 剩余车数
+        'notRobbedOrder': null, // 剩余车数
         'remainingWeight': null, // 剩余吨数、立方数
         'shipmentPrice': null, // 运费单价
         'roadTransportCertificateNumber': null, // 运输许可证号
@@ -537,36 +566,36 @@ export default {
     /** 运输单批量导入按钮操作 */
     handleWaybillImport() {
       this.openImport = true;
-      this.title = '运输单批量导入(未完成，请勿操作)';
+      this.title = '运输单批量导入';
     },
     /** 装/卸货图片导入按钮操作 */
     handlePictureImport() {
       this.open = true;
-      this.title = '装/卸货图片导入(未完成，请勿操作)';
+      this.title = '装/卸货图片导入';
     },
     /** 下载模板 */
     handleDownload() {
-      console.log('点击了下载模板按钮');
-    //   this.download('assets/driver/importTemplate', {}, `driver_${new Date().getTime()}.xlsx`);
+      window.open('/src/assets/tableImport/supplement.xlsx');
+    //   this.download('assets/driver/importTemplate', {}, `driver`);
     },
     // 根据货原单号查询信息
     getOrderDetail(e) {
       if (e) {
         getOrder(e).then(response => {
-          console.log(response);
+          // console.log(response);
           if (response.data) {
             this.form.orderCode = response.data.redisOrderInfoVo.code; // 货源编码赋值
             this.form.shipperCode = response.data.redisOrderInfoVo.pubilshCode; // 货主编码赋值
             // 获取货源底下的商品列表
             getGoods(response.data.redisOrderInfoVo.code).then(response => {
-              console.log(response);
+              // console.log(response);
               this.goodsCodeOptions = response.data;
               this.form.goodsCode = this.goodsCodeOptions[0].code;
               this.goodsChoose(this.form.goodsCode);
             });
             // 获取货源底下的装卸货地
             getAddress(response.data.redisOrderInfoVo.code).then(response => {
-              console.log(response);
+              // console.log(response);
               const address = response.data;
               if (address) {
               // 装货地址
@@ -585,12 +614,20 @@ export default {
               }
             });
             this.form.shipmentPrice = null;
-            this.form.remainingNumber = null;
+            this.form.notRobbedOrder = null;
             this.form.remainingWeight = null;
             // 获取运单号
             getWayBillNo().then(response => {
-              console.log(response);
+              // console.log(response);
               this.form.wayBillNo = response.msg;
+            });
+            // 获取货主信息
+            shipmentInfo(response.data.redisOrderInfoVo.pubilshCode).then(res => {
+              if (res.data.allowNoAuditDriverToReceive !== 0) {
+                this.driverInfoQuery.authStatus = 3;
+                this.vehicleInfoQuery.authStatus = 3;
+                // console.log(this.driverInfoQuery, this.vehicleInfoQuery);
+              }
             });
             this.orderDisable = false;
           } else {
@@ -614,18 +651,23 @@ export default {
           orderCode: this.form.orderCode
         };
         getOrderGoodsProce(orderGoodsFindPriceBo).then(response => {
-          console.log(response);
+          // console.log(response);
           // 获取运费单价
           const freightCost = response.data.detailList.find(item => item.ruleItemCode === '17');
           this.form.shipmentPrice = freightCost.ruleValue;
           // 获取抹零规则字典值
           const m0 = response.data.detailList.find(item => item.ruleItemCode === '18');
-          this.form.m0DictValue = m0.ruleValue;
+          if (m0) {
+            this.form.m0DictValue = m0.ruleValue;
+          } else {
+            this.form.m0DictValue = '1';
+          }
           // 获取计算公式
           const caculation = response.data.detailList.find(item => item.ruleItemCode === '19');
           this.form.ruleFormulaDictValue = caculation.ruleValue;
-          this.form.addFee = response.data.addFee;
-          this.form.reductionFee = response.data.reductionFee;
+          this.form.addFee = response.data.addFee || 0;
+          this.form.reductionFee = response.data.reductionFee || 0;
+          // console.log(this.form);
           setTimeout(() => {
             this.calculate();
           }, 100);
@@ -654,8 +696,8 @@ export default {
         console.log(calculateBo);
         calculate(calculateBo).then(response => {
           console.log(response);
-          this.form.shipperRealPay = response.data.shipperRealPay;
-          this.form.driverRealFee = response.data.driverRealFee;
+          this.form.shipperRealPay = response.data.shipperRealPay.toFixed(2);
+          this.form.driverRealFee = response.data.driverRealFee.toFixed(2);
         });
       }
     },
@@ -674,13 +716,12 @@ export default {
         } else {
           this.stowage = true;
         }
-        console.log(result);
-        this.form.remainingNumber = result.remainingNumber || '不限';
-        this.form.remainingWeight = result.remainingWeight || '不限';
+        this.form.notRobbedOrder = !result.notRobbedOrder && result.notRobbedOrder !== 0 ? '不限' : result.notRobbedOrder;
+        this.form.remainingWeight = !result.remainingWeight && result.remainingWeight !== 0 ? '不限' : result.remainingWeight;
         this.getOrderGoodsProce();
         this.$forceUpdate(); // 视图强制更新
       } else {
-        this.form.remainingNumber = null;
+        this.form.notRobbedOrder = null;
         this.form.remainingWeight = null;
         this.getOrderGoodsProce();
       }
@@ -752,12 +793,34 @@ export default {
 </script>
 
 <style>
+.frame{
+  margin:0 15px 15px;
+  /* height: 100%; */
+}
 .container {
+  padding: 24px 0 30px;
+  background: #fff;
   overflow-y: auto;
-  height: calc(100vh - 201px);
+}
+.supplement-icon{
+  margin-right: 6px;
+  width: 2px;
+  height: 16px;
+  background: #1990FF;
+  border-radius: 2px;
 }
 .supplement-title{
-    font-size: 18px;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  font-family: PingFang SC;
+  font-weight: bold;
+  line-height: 24px;
+  color: #262626;
+  margin-left: 8px;
+}
+.el-divider--horizontal{
+  margin: 12px 0 24px;
 }
 .width90{
 	width: 90% !important;

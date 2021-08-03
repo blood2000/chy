@@ -70,7 +70,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="10">
-          <el-form-item label="地址别名">
+          <el-form-item label="地址别名" prop="addressAlias">
             <el-input
               v-model="formData.addressAlias"
               clearable
@@ -160,7 +160,7 @@ export default {
       rules: {
         addressName: [{ required: true, message: '请输入详细地址', trigger: 'change' }],
         detail: [{ required: true, message: '选择所属项目', trigger: 'change' }],
-        addressAlias: [{ required: true, message: '选择所属项目', trigger: 'blur' }],
+        addressAlias: [{ required: true, message: '请输入地址别名', trigger: 'blur' }],
         contact: [{ required: true, message: '请输入联系人', trigger: 'blur' }],
         contactPhone: [
           { required: true, message: '请输入联系电话', trigger: 'blue' },
@@ -190,13 +190,7 @@ export default {
         this.formData.addressAlias = addressAlias;
         this.formData.contact = contact;
         this.formData.contactPhone = contactPhone;
-        // this.$nextTick(_ => {
-        //   let time1 = setTimeout(() => {
-        //     this.formData.addressName = addressName;
-        //     clearTimeout(time1);
-        //     time1 = null;
-        //   }, 700);
-        // });
+
         this.midAddressName = addressName;
         this.selected = {
           name: addressName,
@@ -276,13 +270,11 @@ export default {
       geocoder.getAddress(lnglat, function(status, result) {
         if (status === 'complete' && result.info === 'OK') {
           const { adcode } = result.regeocode.addressComponent;
-          // result为对应的地理位置详细信息
           self.getAreaCode(adcode);
         }
       });
     },
 
-    // 截取省市区code
     getAreaCode(code) {
       const provinceCode = code.slice(0, 2);
       const cityCode = code.slice(0, 4);
@@ -291,7 +283,6 @@ export default {
     },
 
 
-    // 3. 选择了什么城市
     getCity(city) {
       this.searchOption.city = city || '全国';
       if (!city) {
@@ -314,11 +305,8 @@ export default {
     },
 
     async _submitForm() {
-      // 获取省市区
       const { city = {}, county = {}, province = {}} = await this.$refs.pccFef._submitForm();
-      // 获取当前
       const { detail, addressAlias, contact, contactPhone } = this.formData;
-      // 获取详情及经纬度
       const { name = '', lat = '', lng = '' } = this.selected;
 
       return new Promise((resolve, reject) => {

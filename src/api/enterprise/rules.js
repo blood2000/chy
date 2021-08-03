@@ -36,6 +36,15 @@ export function updateRules(data) {
   });
 }
 
+// 修改默认规则
+export function updateRulesIsDefault(data) {
+  return request({
+    url: '/transportation/ruleInfoShipment/updateIsDefault',
+    method: 'put',
+    data: data
+  });
+}
+
 // 删除规则
 export function delRules(data) {
   return request({

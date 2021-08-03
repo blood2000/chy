@@ -1,7 +1,7 @@
 <template>
-  <el-dialog :title="title" :visible="visible" width="1000px" append-to-body  :close-on-click-modal="false" @close="cancel">
-    <el-table v-loading="loading" border stripe :data="orderList">
-      <el-table-column label="序号" align="center" type="index" min-width="5%" />
+  <el-dialog :title="title" :visible="visible" width="1000px" append-to-body :close-on-click-modal="false" @close="cancel">
+    <el-table v-loading="loading" highlight-current-row border :data="orderList">
+      <el-table-column label="序号" align="center" fixed="left" type="index" min-width="5%" />
       <el-table-column label="货源单号" align="center" prop="mainOrderNumber" />
       <el-table-column label="公司名称" align="center" prop="companyName" />
       <el-table-column label="项目名称" align="center" prop="projectName" />

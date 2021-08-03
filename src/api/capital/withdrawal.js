@@ -6,7 +6,7 @@ export function getWithDrawalList(data) {
   return request({
     url: withDrawalListApi,
     method: 'post',
-    data: Object.assign({}, { isAsc: 'asc', orderByColumn: 'id' }, data)
+    data: Object.assign({}, { isAsc: 'desc', orderByColumn: 'applyDate' }, data)
   });
 }
 
@@ -14,6 +14,15 @@ export function getWithDrawalList(data) {
 export function toCard(ids) {
   return request({
     url: `/payment/pay/toCard?ids=${ids}`,
+    method: 'post',
+    timeout: 3 * 60 * 1000
+  });
+}
+
+// 网商批量驳回
+export function reject(ids) {
+  return request({
+    url: `/payment/pay/reject?ids=${ids}`,
     method: 'post'
   });
 }

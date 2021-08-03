@@ -1,211 +1,274 @@
 <template>
-  <el-dialog class="waybill-detail-dialog" :title="title" :visible="visible" width="1200px" append-to-body @close="cancel">
-    <el-tabs v-model="activeTab">
-      <!-- 运单 -->
-      <el-tab-pane label="运单" name="1">
-        <el-divider content-position="left" class="m40">
-          <h5 class="g-title-medium">运单</h5>
-        </el-divider>
-        <el-row>
-          <el-col :span="12" class="text-row">
-            <label>运单单号：</label>
-            {{ form.waybillNo }}
-          </el-col>
-          <el-col :span="12" class="text-row">
-            <label>运单状态：</label>
-            {{ form.statusName }}
-          </el-col>
-          <el-col :span="12" class="text-row">
-            <label>装货重量(吨)：</label>
-            {{ form.loadWeight }}
-          </el-col>
-          <el-col :span="12" class="text-row">
-            <label>货品类别：</label>
-            {{ form.goodsBigType }}
-          </el-col>
-          <el-col :span="12" class="text-row">
-            <label>装货日期：</label>
-            {{ form.fillTime }}
-          </el-col>
-          <el-col :span="12" class="text-row">
-            <label>卸货日期：</label>
-            {{ form.signTime }}
-          </el-col>
-          <el-col :span="12" class="text-row">
-            <label>货主备注：</label>
-            {{ form.shipperRemark }}
-          </el-col>
-        </el-row>
-        <el-divider content-position="left" class="m40">
-          <h5 class="g-title-medium">地址</h5>
-        </el-divider>
-        <el-row>
-          <el-col :span="12" class="text-row">
-            <label>装货地址：</label>
-            {{ form.waybillAddress?form.waybillAddress.loadFormattedAddress:'' }}
-            {{ form.waybillAddress?form.waybillAddress.loadContact:'' }}
-            {{ form.waybillAddress?form.waybillAddress.loadContactPhone:'' }}
-          </el-col>
-          <el-col :span="12" class="text-row">
-            <label>卸货地址：</label>
-            {{ form.waybillAddress?form.waybillAddress.unloadFormattedAddress:'' }}
-            {{ form.waybillAddress?form.waybillAddress.unloadContact:'' }}
-            {{ form.waybillAddress?form.waybillAddress.unloadContactPhone:'' }}
-          </el-col>
-          <!-- <el-col :span="12" class="text-row">
-            <label>上传装货位置：</label>
-          </el-col>
-          <el-col :span="12" class="text-row">
-            <label>上传卸货位置：</label>
-          </el-col> -->
-        </el-row>
-        <el-divider content-position="left" class="m40">
-          <h5 class="g-title-medium">费用</h5>
-        </el-divider>
-        <el-row>
-          <el-col :span="12" class="text-row">
-            <label>实收现金（元）：</label>
-            {{ form.balanceVo.deliveryCashFee }}
-          </el-col>
-          <el-col :span="12" class="text-row">
-            <label>应收运费（元）：</label>
-            {{ form.balanceVo.deliveryFeeDeserved }}
-          </el-col>
-          <el-col :span="12" class="text-row">
-            <label>实收运费（元）：</label>
-            {{ form.balanceVo.deliveryFeePractical }}
-          </el-col>
-          <el-col :span="12" class="text-row">
-            <label>服务费：</label>
-            {{ form.balanceVo.serviceFee }}
-          </el-col>
-          <el-col :span="12" class="text-row">
-            <label>服务税费：</label>
-            {{ form.balanceVo.serviceTaxFee }}
-          </el-col>
-          <el-col :span="12" class="text-row">
-            <label>不含税价：</label>
-            {{ form.balanceVo.taxFreeFee }}
-          </el-col>
-          <el-col :span="12" class="text-row">
-            <label>纳税金额：</label>
-            {{ form.balanceVo.taxPayment }}
-          </el-col>
-        </el-row>
-      </el-tab-pane>
-      <!-- 回单 -->
-      <el-tab-pane label="回单" name="2">
-        <el-divider content-position="left" class="m40">
-          <h5 class="g-title-medium">装货单</h5>
-        </el-divider>
-        <el-row>
-          <el-col :span="12" class="text-row">
-            <label>装货签到时间：</label>
-            {{ formAttachment?formAttachment.cargoTime:'' }}
-          </el-col>
-          <el-col :span="12" class="text-row">
-            <label>装货重量（吨）：</label>
-            {{ formAttachment?formAttachment.loadWeight:'' }}
-          </el-col>
-          <el-col :span="12" class="text-row">
-            <label>装货签照片：</label>
-            <img v-viewer :src="formAttachment?formAttachment.attachUrls:''" class="img-box">
-          </el-col>
-        </el-row>
-        <el-divider content-position="left" class="m40">
-          <h5 class="g-title-medium">卸货单</h5>
-        </el-divider>
-        <el-row>
-          <el-col :span="12" class="text-row">
-            <label>卸货签到时间：</label>
-            {{ formAttachmentUp?formAttachmentUp.unloadTime:'' }}
-          </el-col>
-          <el-col :span="12" class="text-row">
-            <label>卸货重量（吨）：</label>
-            {{ formAttachmentUp?formAttachmentUp.unloadWeight:'' }}
-          </el-col>
-          <el-col :span="12" class="text-row">
-            <label>卸货签照片：</label>
-            <img v-viewer :src="formAttachmentUp?formAttachmentUp.attachUrls:''" class="img-box">
-          </el-col>
-        </el-row>
-      </el-tab-pane>
-      <!-- 轨迹 -->
-      <el-tab-pane label="轨迹" name="3">
-        <el-divider content-position="left">
-          <h5 class="g-title-medium">运单轨迹</h5>
-        </el-divider>
-        <el-row v-if="activeTab === '3'" :gutter="20">
-          <el-col :span="18">
-            <div class="map-content">
-              <el-amap vid="amapDemo" :zoom="zoom" :center="center" style="height:600px">
-                <div class="waybill-detail-card">
-                  <h5>
-                    {{ form.driverName }}
-                    <span>{{ form.driverPhone }}</span>
-                    <span class="license">{{ form.licenseNumber }}</span>
-                  </h5>
-                  <p>
-                    <label>货物大类：</label>
-                    {{ form.goodsBigType }}
-                  </p>
-                  <p>
-                    <label>运单号：</label>
-                    {{ form.waybillNo }}
-                  </p>
-                  <p>
-                    <label>接单时间：</label>
-                    {{ parseTime(form.receiveTime) }}
-                  </p>
-                  <p>
-                    <label>装货地：</label>
-                    {{ form.waybillAddress?form.waybillAddress.unloadFormattedAddress:'' }}
-                  </p>
-                  <p>
-                    <label>卸货地：</label>
-                    {{ form.waybillAddress?form.waybillAddress.loadFormattedAddress:'' }}
-                  </p>
-                </div>
-                <el-amap-polyline :path="polyline.path" :stroke-weight="8" :stroke-opacity="0.8" :stroke-color="'#0091ea'" />
-                <el-amap-marker v-for="(marker, index) in markers" :key="index" :position="marker.position" :icon="marker.icon" />
-              </el-amap>
-            </div>
-          </el-col>
-          <el-col :span="6">
-            <ul class="time-line-content">
-              <li v-for="(item, index) in timeLineList" :key="item.id" :class="index===0?'light':''">
-                <p class="g-strong g-text">{{ parseTime(item.createTime, '{y}-{m}-{d} {h}:{i}') }}</p>
-                <p class="g-color-gray g-text">{{ item.content }}</p>
-                <!-- <p class="g-color-warning g-text">状态</p> -->
-              </li>
-            </ul>
-          </el-col>
-        </el-row>
-      </el-tab-pane>
-      <!-- 评价 -->
-      <el-tab-pane label="评价" name="4">
-        <el-divider content-position="left" class="m40">
-          <h5 class="g-title-medium">评价</h5>
-        </el-divider>
-        <el-row>
-          <el-col :span="12" class="text-row">
-            <label>司机评价货主：</label>
-            {{ formCommentDriver?formCommentDriver.content:'暂无任何评价~' }}
-          </el-col>
-          <el-col :span="12" class="text-row">
-            <label>货主评价司机：</label>
-            {{ formCommentShipment?formCommentShipment.content:'暂无任何评价~' }}
-          </el-col>
-        </el-row>
-      </el-tab-pane>
-    </el-tabs>
-  </el-dialog>
+  <!-- <el-dialog class="waybill-detail-dialog i-add" :title="title" :visible="visible" width="1500px" append-to-body @close="cancel"> -->
+  <el-drawer
+    size="96%"
+    :title="title"
+    :visible.sync="visible"
+    direction="rtl"
+    append-to-body
+    destroy-on-close
+    :before-close="cancel"
+    class="page-shipment-manage-dialog"
+  >
+    <div class="waybill-title"><div class="waybill-icon" />运单<div class="waybill-divider" /></div>
+    <el-row>
+      <el-col :span="3" class="text-label">
+        运单单号：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.waybillNo || '-' }}
+      </el-col>
+      <el-col :span="3" class="text-label">
+        运单状态：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.statusName || '-' }}
+      </el-col>
+      <el-col :span="3" class="text-label">
+        项目名称：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.projectName || '-' }}
+      </el-col>
+      <el-col :span="3" class="text-label">
+        装货数量：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        <span v-if="form.stowageStatus === '1'">{{ fixed(form.loadWeight) || '0.000' }} 方</span>
+        <span v-if="form.stowageStatus === '2'">{{ Math.floor(form.loadWeight) || '0' }} 车</span>
+        <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ fixed(form.loadWeight) || '0.000' }} 吨</span>
+      </el-col>
+      <el-col :span="3" class="text-label">
+        卸货数量：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        <span v-if="form.stowageStatus === '1'">{{ fixed(form.unloadWeight) || '0.000' }} 方</span>
+        <span v-if="form.stowageStatus === '2'">{{ Math.floor(form.unloadWeight) || '0' }} 车</span>
+        <span v-if="form.stowageStatus === '0' || !form.stowageStatus">{{ fixed(form.unloadWeight) || '0.000' }} 吨</span>
+      </el-col>
+      <el-col :span="3" class="text-label">
+        货物大类：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.goodsBigType || '-' }}
+      </el-col>
+      <el-col :span="3" class="text-label">
+        装货日期：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.fillTime || '-' }}
+      </el-col>
+      <el-col :span="3" class="text-label">
+        卸货日期：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.signTime || '-' }}
+      </el-col>
+      <el-col :span="3" class="text-label">
+        货物小类：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.goodsType || '-' }}
+      </el-col>
+      <el-col :span="3" class="text-label">
+        货源备注：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.orderRemark || '-' }}
+      </el-col>
+      <el-col :span="3" class="text-label">
+        运单备注：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.shipperRemark || '-' }}
+      </el-col>
+      <el-col :span="3" class="text-label">
+        公里数：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.mileage || '-' }}
+      </el-col>
+    </el-row>
+
+    <!-- 回单 -->
+    <div class="waybill-title"><div class="waybill-icon" />回单<div class="waybill-divider" /></div>
+    <el-row>
+      <el-col :span="3" class="text-label">
+        装货地址：
+      </el-col>
+      <el-col :span="9" class="text-row">
+        {{ form.waybillAddress?form.waybillAddress.loadFormattedAddress:'-' }}
+        <div>
+          {{ form.waybillAddress?form.waybillAddress.loadContact:'' }}
+          {{ form.waybillAddress?form.waybillAddress.loadContactPhone:'' }}
+        </div>
+      </el-col>
+      <el-col :span="3" class="text-label">
+        卸货地址：
+      </el-col>
+      <el-col :span="8" class="text-row">
+        {{ form.waybillAddress?form.waybillAddress.unloadFormattedAddress:'-' }}
+        <div>
+          {{ form.waybillAddress?form.waybillAddress.unloadContact:'' }}
+          {{ form.waybillAddress?form.waybillAddress.unloadContactPhone:'' }}
+        </div>
+      </el-col>
+    </el-row>
+    <el-row v-viewer>
+      <el-col :span="3" class="text-label">
+        装货签照片：
+      </el-col>
+      <el-col :span="9" class="text-row">
+        <img v-for="(url, index) in formAttachmentUrl" :key="index" :src="url ? url:''" class="img-box">
+      </el-col>
+      <el-col :span="3" class="text-label">
+        卸货签照片：
+      </el-col>
+      <el-col :span="9" class="text-row">
+        <img v-for="(url, index) in formAttachmentUpUrl" :key="index" :src="url ? url:''" class="img-box">
+      </el-col>
+    </el-row>
+    <!-- 费用 -->
+    <div class="waybill-title"><div class="waybill-icon" />费用<div class="waybill-divider" /></div>
+    <el-row v-if="form.balanceVo.ruleFormulaDictLabel" class="waybill-mark">
+      注：{{ form.balanceVo.ruleFormulaDictLabel }}（{{ form.balanceVo.driverRealFeeStr }}）
+    </el-row>
+    <el-row>
+      <el-col :span="3" class="text-label">
+        货主实付金额(元)：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ floor(form.balanceVo.shipperRealPay) || '0.00' }}
+      </el-col>
+      <el-col :span="3" class="text-label">
+        司机实收金额(元)：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ floor(form.balanceVo.deliveryCashFee) || '0.00' }}
+      </el-col>
+      <el-col :span="3" class="text-label">
+        司机实收运费(元)：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ floor(form.balanceVo.deliveryFeePractical) || '0.00' }}
+      </el-col>
+
+      <!-- <el-col :span="3" class="text-label">
+        平台服务税费：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ form.balanceVo.serviceTaxFee || '0.00' }}
+      </el-col> -->
+      <el-col :span="3" class="text-label">
+        司机应收运费(元)：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ floor(form.balanceVo.deliveryFeeDeserved) || '0.00' }}
+      </el-col>
+      <el-col :span="3" class="text-label">
+        平台服务费用(元)：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ floor(form.balanceVo.serviceFee) || '0.00' }}
+      </el-col>
+      <el-col :span="3" class="text-label">
+        不含税价(元)：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ floor(form.balanceVo.taxFreeFee) || '0.00' }}
+      </el-col>
+      <el-col :span="3" class="text-label">
+        纳税金额(元)：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ floor(form.balanceVo.taxPayment) || '0.00' }}
+      </el-col>
+      <el-col :span="3" class="text-label">
+        路耗(元)：
+      </el-col>
+      <el-col :span="5" class="text-row">
+        {{ floor(form.balanceVo.lossDeductionFee) || '0.00' }}
+      </el-col>
+
+      <div v-for="(item, index) in freightList" :key="index">
+        <el-col :span="3" class="text-label">
+          {{ item.cnName }}：
+        </el-col>
+        <el-col :span="5" class="text-row">
+          {{ floor(item.ruleValue) || '0.00' }}
+        </el-col>
+      </div>
+    </el-row>
+
+
+    <div class="waybill-title"><div class="waybill-icon" />轨迹<div class="waybill-divider" /></div>
+    <div v-if="form.code" style="height:600px;width:100%;padding: 0 30px;overflow: hidden;">
+      <Track :waybill="form" />
+      <div class="waybill-detail-frame">
+        <div class="waybill-detail-card">
+          <div class="waybill-licenseNumber">{{ form.licenseNumber }}</div>
+          <h5>
+            {{ form.driverName }}
+            <span>{{ form.driverPhone }}</span>
+          </h5>
+          <el-row>
+            <el-col :span="8" class="text-label">
+              运输单号：
+            </el-col>
+            <el-col :span="16" class="text-row">
+              {{ form.waybillNo || '-' }}
+            </el-col>
+            <el-col :span="8" class="text-label">
+              接单时间：
+            </el-col>
+            <el-col :span="16" class="text-row">
+              {{ parseTime(form.receiveTime) || '-' }}
+            </el-col>
+            <el-col :span="8" class="text-label">
+              装货地：
+            </el-col>
+            <el-col :span="16" class="text-row">
+              {{ form.waybillAddress?form.waybillAddress.loadFormattedAddress:'-' }}
+            </el-col>
+            <el-col :span="8" class="text-label">
+              卸货地：
+            </el-col>
+            <el-col :span="16" class="text-row">
+              {{ form.waybillAddress?form.waybillAddress.unloadFormattedAddress:'-' }}
+            </el-col>
+          </el-row>
+        </div>
+      </div>
+
+    </div>
+    <div class="waybill-title"><div class="waybill-icon" />评价<div class="waybill-divider" /></div>
+    <el-row>
+      <el-col :span="3" class="text-label">
+        司机评价货主：
+      </el-col>
+      <el-col :span="9" class="text-row" style="height:300px">
+        {{ formCommentDriver?formCommentDriver.content:'' }}
+        <DataNull v-if="!formCommentDriver" />
+      </el-col>
+      <el-col :span="3" class="text-label">
+        货主评价司机：
+      </el-col>
+      <el-col :span="9" class="text-row" style="height:300px">
+        {{ formCommentShipment?formCommentShipment.content:'' }}
+        <DataNull v-if="!formCommentShipment" />
+      </el-col>
+    </el-row>
+  </el-drawer>
+  <!-- </el-dialog> -->
 </template>
 
 <script>
-import { getWayBill, getWaybillAttachment, getWaybillComment, getWaybillTrace } from '@/api/waybill/manages';
-import { trackLocation } from '@/api/waybill/tracklist';
+import { getWayBill, getWaybillAttachment, getWaybillComment } from '@/api/waybill/manages';
+// import { jimiTrackLocation } from '@/api/waybill/tracklist';
+import DataNull from '@/components/DataNull/index';
+import Track from './track';
 export default {
+  components: { DataNull, Track },
   props: {
     title: {
       type: String,
@@ -233,30 +296,15 @@ export default {
         // unloadAddress: {},
         balanceVo: {}
       },
+      freightList: [],
       formAttachment: {},
+      formAttachmentUrl: [],
       formAttachmentUp: {},
+      formAttachmentUpUrl: [],
       formCommentDriver: {},
       formCommentShipment: {},
-      timeLineList: [],
-      // 地图
-      queryParams: {
-        begin_time: '2021-03-22 08:00:00',
-        end_time: '2021-03-22 09:00:00',
-        imeis: '867567047562525',
-        map_type: 'GOOGLE' // GOOGOLE或BAIDU
-      },
-      zoom: 16,
-      center: [116.478928, 39.997761],
-      polyline: {
-        path: []
-      },
-      markers: [{
-        icon: 'https://webapi.amap.com/theme/v1.3/markers/n/start.png',
-        position: []
-      }, {
-        icon: 'https://webapi.amap.com/theme/v1.3/markers/n/end.png',
-        position: []
-      }]
+      // timeLineList: [],
+      loading: false
     };
   },
   computed: {
@@ -272,6 +320,7 @@ export default {
   watch: {
     open(val) {
       if (val) {
+        this.loading = true;
         this.reset();
         this.getDetail();
       }
@@ -286,19 +335,30 @@ export default {
         this.form.waybillAddress = response.data.waybillAddress || {};
         // this.form.unloadAddress = response.data.waybillAddress || {};
         this.form.balanceVo = response.data.balanceVo || {};
-        // console.log(response);
+        this.freightList = response.data.freightList.filter(e => {
+          const bool = (e.ruleItemCode === '6' || e.ruleItemCode === '11' || e.ruleItemCode === '12' || e.ruleItemCode === '13' || e.ruleItemCode === '14' || e.ruleItemCode === '15' || e.ruleItemCode === '16');
+          return bool;
+        });
+        console.log(this.freightList);
+        this.loading = false;
+      }).catch(e => {
+        this.loading = false;
       });
       // 回单-装货
       getWaybillAttachment(this.currentId, 1).then(response => {
         // console.log(response);
         this.formAttachment = response.data ? response.data[0] : null;
-        console.log(this.formAttachment);
+        if (this.formAttachment) {
+          this.formAttachmentUrl = this.formAttachment.attachUrls ? this.formAttachment.attachUrls.split(',') : null;
+        }
       });
       // 回单-卸货
       getWaybillAttachment(this.currentId, 2).then(response => {
         // console.log(response);
         this.formAttachmentUp = response.data ? response.data[0] : null;
-        console.log(this.formAttachmentUp);
+        if (this.formAttachmentUp) {
+          this.formAttachmentUpUrl = this.formAttachmentUp.attachUrls ? this.formAttachmentUp.attachUrls.split(',') : null;
+        }
       });
       // 评价-司机
       getWaybillComment(this.currentId, 1).then(response => {
@@ -307,25 +367,6 @@ export default {
       // 评价-货主
       getWaybillComment(this.currentId, 0).then(response => {
         this.formCommentShipment = response.data ? response.data[0] : null;
-      });
-      // 轨迹
-      trackLocation(this.queryParams).then(response => {
-        const tracklist = response.data.result.map(function(response) {
-          return [response.lng, response.lat];
-        });
-        this.polyline.path = tracklist || [];
-        if (tracklist.length > 0) {
-          this.center = tracklist[0];
-          this.markers[0].position = tracklist[0];
-          this.markers[1].position = tracklist[tracklist.length - 1];
-        }
-      });
-      // 轨迹时间线
-      getWaybillTrace(this.currentId).then(response => {
-        console.log(response);
-        response.data.forEach(el => {
-          this.timeLineList.unshift(el);
-        });
       });
     },
     // 取消按钮
@@ -345,17 +386,22 @@ export default {
         unloadAddress: {},
         balanceVo: {}
       };
+      this.formAttachmentUrl = [];
+      this.formAttachmentUpUrl = [];
       this.formAttachment = {};
       this.formAttachmentUp = {};
       this.formCommentDriver = {};
       this.formCommentShipment = {};
-      this.timeLineList = [];
+      // this.timeLineList = [];
     }
   }
 };
 </script>
 
 <style lang="scss">
+.comment{
+  position: relative;
+}
 .waybill-detail-dialog{
   .el-dialog__body{
     padding: 10px 20px 30px !important;
@@ -377,49 +423,74 @@ export default {
   margin: 30px 0 40px;
 }
 .text-row{
-  margin-bottom: 22px;
+  font-family: PingFang SC;
+  font-weight: bold;
+  line-height: 22px;
+  color: #20273A;
+  margin-bottom: 12px;
+}
+.text-label{
+  text-align: end;
+  font-family: PingFang SC;
+  font-weight: 400;
+  line-height: 22px;
+  color: #909398;
 }
 .img-box{
-  width: 200px;
-  height: 200px;
+  margin: 5px 5px 0 0;
+  width: 150px;
+  height: 150px;
   vertical-align: top;
   object-fit: contain;
+  border-radius: 6px;
+  border: 1px dashed #dddddd;
 }
 // 轨迹-运单详情卡片
-.map-content{
+.waybill-detail-frame{
   position: relative;
-  height: 600px;
-  .waybill-detail-card{
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 240px;
-    background: #fff;
-    padding: 15px;
-    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.15);
-    >h5{
-      line-height: 30px;
-      border-bottom: 1px solid #d2d4da;
-      margin-bottom: 5px;
+  top: -590px;
+  left: 10px;
+  height: 0;
+}
+.waybill-detail-card{
+  width: 250px;
+  background: #fff;
+  padding: 15px;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.15);
+  border-radius: 2px;
+  .waybill-licenseNumber{
+    background: url('~@/assets/images/location/bg_lic.png') no-repeat;
+    background-size: 100% 100%;
+    height: 24px;
+    width: 90px;
+    font-weight: bold;
+    line-height: 24px;
+    text-align: center;
+    color: #050407;
+  }
+  >h5{
+    line-height: 30px;
+    border-bottom: 1px solid #d2d4da;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #262626;
+    font-weight: bold;
+    >span{
       font-size: 14px;
-      >span{
-        font-size: 13px;
-        &.license{
-          background: #ffba00;
-          padding: 3px 4px 1px;
-          margin-left: 6px;
-          border-radius: 4px;
-          border: 1px solid gray;
-        }
+      &.license{
+        background: #ffba00;
+        padding: 3px 4px 1px;
+        margin-left: 6px;
+        border-radius: 4px;
+        border: 1px solid gray;
       }
     }
-    >p{
-      line-height: 28px;
-      >label{
-        font-weight: normal;
-        color: gray;
-      }
-    }
+  }
+  .text-label{
+    margin-bottom: 6px;
+  }
+  .text-row{
+    margin-bottom: 6px;
   }
 }
 // 轨迹-时间线
@@ -445,5 +516,37 @@ export default {
       }
     }
   }
+}
+.waybill-title{
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  font-family: PingFang SC;
+  font-weight: bold;
+  line-height: 24px;
+  color: #262626;
+  margin: 15px 20px;
+  .waybill-icon{
+    margin-right: 6px;
+    width: 2px;
+    height: 16px;
+    background: #1990FF;
+    border-radius: 2px;
+  }
+  .waybill-divider{
+    margin-left: 8px;
+    height: 1px;
+    width: 94%;
+    border-bottom: 1px dashed #DAD3D3;
+  }
+}
+.waybill-mark{
+  color: #ff4949;
+  // font-size: 12px;
+  margin: 0 0 10px 30px;
+}
+ ::v-deep .el-drawer__body{
+    // padding: 0 20px;
+    overflow-y: auto;
 }
 </style>>

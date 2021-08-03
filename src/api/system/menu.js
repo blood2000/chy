@@ -1,4 +1,5 @@
 import request from '@/utils/request';
+import { praseStrEmpty } from '@/utils/ddc';
 
 // 查询菜单列表
 export function listMenu(query) {
@@ -18,18 +19,37 @@ export function getMenu(menuId) {
 }
 
 // 查询菜单下拉树结构
-export function treeselect(query) {
+export function treeselect(query, userCode) {
   return request({
-    url: '/system/menu/treeselect',
+    url: '/system/menu/treeselect/' + praseStrEmpty(userCode),
     method: 'get',
     params: query
   });
 }
 
+// 查询菜单下拉树结构（版本树+菜单树）
+export function treeselect2(query, userCode) {
+  return request({
+    url: '/system/menu/treeselect2/' + praseStrEmpty(userCode),
+    method: 'get',
+    params: query
+  });
+}
+
+
 // 根据角色ID查询菜单下拉树结构
 export function roleMenuTreeselect(roleId, query) {
   return request({
     url: '/system/menu/roleMenuTreeselect/' + roleId,
+    method: 'get',
+    params: query
+  });
+}
+
+// 根据角色ID查询菜单下拉树结构（版本树+菜单树）
+export function roleMenuTreeselect2(roleId, query) {
+  return request({
+    url: '/system/menu/roleMenuTreeselect2/' + roleId,
     method: 'get',
     params: query
   });

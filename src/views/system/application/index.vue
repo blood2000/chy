@@ -87,7 +87,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <el-table v-loading="loading" :data="applicationList" @selection-change="handleSelectionChange">
+      <el-table v-loading="loading" highlight-current-row border :data="applicationList" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="应用名称" align="center" prop="cnName" />
         <el-table-column label="英文名称" align="center" prop="enName" />
@@ -107,22 +107,20 @@
             <span>{{ parseTime(scope.row.createTime) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <el-table-column label="操作" fixed="left" align="center" class-name="small-padding fixed-width">
           <template slot-scope="scope">
             <el-button
               v-hasPermi="['system:post:edit']"
               size="mini"
               type="text"
-              icon="el-icon-edit"
               @click="handleUpdate(scope.row)"
             >修改</el-button>
-            <!--  <el-button
-            v-hasPermi="['system:post:remove']"
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-          >删除</el-button>-->
+            <!-- <el-button
+              v-hasPermi="['system:post:remove']"
+              size="mini"
+              type="text"
+              @click="handleDelete(scope.row)"
+            >删除</el-button> -->
           </template>
         </el-table-column>
       </el-table>
@@ -183,7 +181,7 @@
 import { list, addApplication, updateApplication, getApplication, changeStatus } from '@/api/system/application';
 import { listProduce } from '@/api/system/produce';
 export default {
-  name: 'Post',
+  name: 'Application',
   data() {
     return {
       // 遮罩层

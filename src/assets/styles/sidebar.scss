@@ -24,8 +24,8 @@
     left: 0;
     z-index: 1001;
     overflow: hidden;
-    -webkit-box-shadow: 2px 0 6px rgba(0,21,41,.05);
-    box-shadow: 2px 0 6px rgba(0,21,41,.05);
+    // -webkit-box-shadow: 2px 0 6px rgba(0,21,41,.05);
+    // box-shadow: 2px 0 6px rgba(0,21,41,.05);
 
     // reset element-ui css
     .horizontal-collapse-transition {
@@ -107,6 +107,7 @@
     }
   }
 
+  // 菜单折叠
   .hideSidebar {
     .sidebar-container {
       width: 72px !important;
@@ -116,25 +117,60 @@
       margin-left: 72px;
     }
 
+    .el-menu--collapse{
+      padding-top: 20px;
+    }
+
     .submenu-title-noDropdown {
       padding: 0 !important;
       position: relative;
 
       .el-tooltip {
         padding: 0 !important;
-
-        .svg-icon {
-          margin-left: 20px;
-        }
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
       }
     }
 
-    .el-submenu {
+    .el-submenu, .el-menu-item{
       overflow: hidden;
       height: 85px;
       display: flex;
       justify-content: center;
       align-items: center;
+      padding-bottom: 20px;
+      transition: all 0.3s;
+
+      .svg-icon-box{
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: transparent;
+        box-shadow: none;
+        transition: all 0.3s;
+      }
+
+      .svg-icon {
+        margin: 0;
+        color: #9FA2B5;
+        font-size: 24px;
+      }
+
+      .label{
+        line-height: 24px;
+        font-size: 12px;
+        font-family: PingFang SC;
+        font-weight: 400;
+        color: #9FA2B5;
+      }
+
+      .el-submenu__icon-arrow {
+        display: none;
+      }
 
       &>.el-submenu__title {
         width: 100%;
@@ -144,53 +180,38 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-
-        .svg-icon-box{
-          display: inline-flex;
-          justify-content: center;
-          align-items: center;
-          width: 38px;
-          height: 38px;
-          border-radius: 50%;
-          background: transparent;
-          box-shadow: none;
-          transition: all 0.3s;
-        }
-
-        .svg-icon {
-          width: 14px;
-          height: 14px;
-          margin: 0;
-          color: #9FA2B5;
-        }
-
-        .label{
-          line-height: 24px;
-          font-size: 12px;
-          font-family: PingFang SC;
-          font-weight: 400;
-          color: #9FA2B5;
-        }
-
-        .el-submenu__icon-arrow {
-          display: none;
-        }
-
         &:hover{
           background: transparent !important;
         }
       }
 
-      &.is-active{
+      // &.is-active{
+      //   >.el-submenu__title{
+      //     .svg-icon-box{
+      //       color: #262626;
+      //       background: linear-gradient(180deg, #409EFF 0%, #006ED5 100%);
+      //       box-shadow: 0px 3px 6px rgba(118, 189, 255, 0.55);
+      //       transition: all 0.3s;
+      //     }
+      //     .svg-icon {
+      //       color: #fff;
+      //     }
+      //     .label{
+      //       color: #262626;
+      //     }
+      //   }
+      // }
+
+      &.is-opened{
+        transition: all 0.3s;
+        background: transparent !important;
         >.el-submenu__title{
-          .svg-icon-box{
-            color: #262626;
-            background: linear-gradient(180deg, #409EFF 0%, #006ED5 100%);
-            box-shadow: 0px 3px 6px rgba(118, 189, 255, 0.55);
-            transition: all 0.3s;
-          }
+          background: #F2F7FC;
           .svg-icon {
-            color: #fff;
+            color: #409EFF;
+          }
+          .label{
+            color: #409EFF;
           }
         }
       }
@@ -232,12 +253,19 @@
 
 // when menu collapsed
 .el-menu--vertical {
+  left: 72px !important;
   &>.el-menu {
+    padding: 0;
+    margin: 0 !important;
+    min-width: 160px !important;
+    background: #F2F7FC !important;
+    box-shadow: 5px 0px 16px rgba(145, 147, 148, 0.31) !important;
     >.nest-menu{
       >.el-submenu{
         >.el-submenu__title{
-          height: 38px;
-          line-height: 38px;
+          height: 44px;
+          line-height: 44px;
+          background: transparent !important;
           >.svg-icon-box{
             display: none;
           }
@@ -248,13 +276,27 @@
             line-height: 20px;
             color: #717171;
           }
+          >.el-submenu__icon-arrow{
+            display: none;
+          }
+          &:hover{
+            background: transparent !important;
+          }
         }
+      }
+      &:first-child{
+        padding-top: 20px;
+      }
+      &:last-child{
+        padding-bottom: 20px;
       }
     }
     .el-menu-item{
-      height: 38px;
-      line-height: 38px;
+      height: 44px;
+      line-height: 44px;
       position: relative;
+      background: transparent !important;
+      transition: all 0.2s;
       &::before{
         content: '';
         width: 2px;
@@ -264,6 +306,18 @@
         position: absolute;
         left: 20px;
         top: 50%;
+        transition: all 0.2s;
+      }
+      &::after{
+        content: '';
+        width: 3px;
+        height: 100%;
+        position: absolute;
+        right: 0;
+        top: 0;
+        background: #409EFF;
+        opacity: 0;
+        transition: all 0.2s;
       }
       .svg-icon-box {
         display: none !important;
@@ -272,9 +326,42 @@
         font-size: 14px;
         color: #717171;
         padding-left: 12px;
+        transition: all 0.2s;
+      }
+      &:hover{
+        transition: all 0.2s;
+        background: rgba(215, 234, 253, 0.5) !important;
+        .label{
+          color: #409EFF;
+          transition: all 0.2s;
+        }
+        &::before{
+          background: #409EFF;
+          transition: all 0.2s;
+        }
+        &::after{
+          opacity: 0.9;
+          transition: all 0.2s;
+        }
+      }
+      &.is-active{
+        transition: all 0.2s;
+        background: #D7EAFD !important;
+        .label{
+          font-weight: bold;
+          color: #409EFF;
+          transition: all 0.2s;
+        }
+        &::before{
+          background: #409EFF;
+          transition: all 0.2s;
+        }
+        &::after{
+          opacity: 1;
+          transition: all 0.2s;
+        }
       }
     }
-    
   }
 
   .nest-menu .el-submenu>.el-submenu__title,

@@ -12,12 +12,13 @@
           class="width90"
           :remote-method="userRemoteMethod"
           :loading="personLoading"
+          :disabled="title === '编辑银行卡信息'"
           @change="userChange"
         >
           <el-option
             v-for="item in personOptions"
             :key="item.userCode"
-            :label="`${item.nickName}(${item.phonenumber})`"
+            :label="item.phonenumber + (item.nickName ? ' (' + item.nickName + ')' : item.userName ? ' (' + item.userName + ')' : '')"
             :value="item.userCode"
           />
         </el-select>
@@ -79,9 +80,6 @@
         v-if="form.bankType === 2"
         label="银行支行号"
         prop="bankLineNo"
-        :rules="[
-          { required: true, message: '银行支行号不能为空', trigger: 'blur' },
-        ]"
       >
         <el-input v-model="form.bankLineNo" placeholder="请输入银行支行号" class="width90" clearable />
       </el-form-item>
@@ -91,7 +89,7 @@
     </el-form>
 
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="submitForm">确 定</el-button>
+      <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
     </div>
   </el-dialog>
@@ -121,6 +119,7 @@ export default {
   },
   data() {
     return {
+      buttonLoading: false,
       // 开户银行字典
       bankOptions: [],
       // 账户类型字典
@@ -139,7 +138,8 @@ export default {
           { required: true, message: '开户姓名不能为空', trigger: ['blur', 'change'] }
         ],
         account: [
-          { required: true, message: '银行卡号不能为空', trigger: 'blur' }
+          { required: true, message: '银行卡号不能为空', trigger: 'blur' },
+          { validator: this.formValidate.bankCard, trigger: ['blur', 'change'] }
         ],
         bankCode: [
           { required: true, message: '开户银行不能为空', trigger: ['blur', 'change'] }
@@ -150,6 +150,10 @@ export default {
         ],
         bankType: [
           { required: true, message: '账户类型不能为空', trigger: 'change' }
+        ],
+        bankLineNo: [
+          { required: true, message: '银行支行号不能为空', trigger: 'blur' },
+          { validator: this.formValidate.subBankCard, trigger: ['blur', 'change'] }
         ]
       },
       // 选择人员
@@ -187,21 +191,31 @@ export default {
       const flag = this.$refs.ChooseArea.submit();
       this.$refs['form'].validate(valid => {
         if (valid && flag) {
+          this.buttonLoading = true;
+          if (this.form.bankType === 1) {
+            this.form.bankLineNo = null;
+          }
           const params = {
             ...this.form,
             isDefault: praseBooleanToNum(this.form.isDefault)
           };
           if (this.form.id) {
             updateBank(params).then(response => {
+              this.buttonLoading = false;
               this.msgSuccess('修改成功');
               this.close();
               this.$emit('refresh');
+            }).catch(() => {
+              this.buttonLoading = false;
             });
           } else {
             addBank(params).then(response => {
+              this.buttonLoading = false;
               this.msgSuccess('新增成功');
               this.close();
               this.$emit('refresh');
+            }).catch(() => {
+              this.buttonLoading = false;
             });
           }
         }
@@ -218,6 +232,8 @@ export default {
     },
     // 表单重置
     reset() {
+      this.buttonLoading = false;
+      this.personOptions = [];
       this.form = {
         id: null,
         userCode: null,
@@ -239,11 +255,11 @@ export default {
     setForm(data) {
       this.form = data;
       this.form.isDefault = praseNumToBoolean(this.form.isDefault);
-      if (this.form.userCode && this.form.name) {
+      if (this.form.userCode) {
         this.personOptions = [{
           userCode: this.form.userCode,
-          nickName: this.form.name,
-          phonenumber: this.form.mobile
+          userName: this.form.nickName,
+          phonenumber: this.form.phonenumber
         }];
       }
     },
@@ -275,7 +291,7 @@ export default {
     userChange(code) {
       this.personOptions.forEach(el => {
         if (el.userCode === code) {
-          this.form.name = el.nickName;
+          this.form.name = el.nickName || el.userName;
           this.form.mobile = el.phonenumber;
         }
       });
@@ -295,8 +311,8 @@ export default {
         userCode: this.userCode
       }).then(response => {
         if (response.rows && response.rows.length > 0) {
-          const { nickName, phonenumber } = response.rows[0];
-          this.form.name = nickName;
+          const { userName, phonenumber } = response.rows[0];
+          this.form.name = userName;
           this.form.mobile = phonenumber;
         }
       });

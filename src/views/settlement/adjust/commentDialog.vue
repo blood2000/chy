@@ -1,16 +1,28 @@
 <template>
   <!-- 评价对话框 -->
   <el-dialog class="i-comment" :title="title" :visible="visible" width="1400px" :close-on-click-modal="false" destroy-on-close append-to-body @close="cancel">
-    <el-table v-loading="loading" :data="commentlist" border stripe>
-      <el-table-column type="index" label="序号" align="center" width="50" />
+    <el-table v-loading="loading" highlight-current-row :data="commentlist" border>
+      <el-table-column type="index" label="序号" align="center" fixed="left" width="50" />
       <el-table-column width="150" label="运输单号" align="center" prop="waybillNo" />
       <el-table-column width="120" label="车牌号" align="center" prop="licenseNumber" />
       <el-table-column width="100" label="司机" align="center" prop="driverName" />
       <el-table-column width="120" label="司机电话" align="center" prop="driverPhone" />
       <el-table-column width="180" label="装货地" align="center" prop="loadAddress" show-overflow-tooltip />
       <el-table-column width="180" label="卸货地" align="center" prop="unloadAddress" show-overflow-tooltip />
-      <el-table-column width="100" label="装货重量" align="center" prop="loadWeight" />
-      <el-table-column width="100" label="卸货重量" align="center" prop="unloadWeight" />
+      <el-table-column width="100" label="装货数量" align="center" prop="loadWeight">
+        <template slot-scope="scope">
+          <span v-if="scope.row.stowageStatus === '1'">{{ scope.row.loadWeight || '0.000' }} 方</span>
+          <span v-if="scope.row.stowageStatus === '2'">{{ Math.floor(scope.row.loadWeight) || '0' }} 车</span>
+          <span v-if="scope.row.stowageStatus === '0' || !scope.row.stowageStatus">{{ scope.row.loadWeight || '0.000' }} 吨</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="100" label="卸货数量" align="center" prop="unloadWeight">
+        <template slot-scope="scope">
+          <span v-if="scope.row.stowageStatus === '1'">{{ scope.row.unloadWeight || '0.000' }} 方</span>
+          <span v-if="scope.row.stowageStatus === '2'">{{ Math.floor(scope.row.unloadWeight) || '0' }} 车</span>
+          <span v-if="scope.row.stowageStatus === '0' || !scope.row.stowageStatus">{{ scope.row.unloadWeight || '0.000' }} 吨</span>
+        </template>
+      </el-table-column>
       <el-table-column width="280" label="评价内容" align="center" fixed="right" prop="content">
         <template #default="scope">
           <el-input v-model="scope.row.content" maxlength="100" show-word-limit placeholder="请输入评价内容" />
@@ -31,13 +43,9 @@
 
 <script>
 import { batchAdd } from '@/api/settlement/adjust';
-// import UploadImage from '@/components/UploadImage/index';
 
 export default {
   name: 'CommentDialog',
-  components: {
-    // UploadImage
-  },
   props: {
     title: {
       type: String,

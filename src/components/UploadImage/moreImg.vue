@@ -1,5 +1,5 @@
 <template>
-  <div class="component-upload-image">
+  <div class="component-upload-image" :class="!isShowUpload ? null :'isShowUpload'">
     <el-upload
       ref="upload"
       :action="uploadImgUrl"
@@ -17,6 +17,7 @@
     >
       <i class="el-icon-plus" />
     </el-upload>
+
     <el-dialog :visible="dialogVisible" width="600px" append-to-body @close="cancel">
       <img width="100%" :src="dialogImageUrl" alt="">
     </el-dialog>
@@ -43,6 +44,7 @@ export default {
   },
   data() {
     return {
+      isShowUpload: false,
       uploadImgUrl: process.env.VUE_APP_BASE_API + uploadImgApi, // 上传的图片服务器地址
       headers: {
         'Authorization': authorPre + getToken(),
@@ -63,7 +65,6 @@ export default {
   },
   watch: {
     fresh(val) {
-      console.log(val);
       if (val) {
         getFile(this.value).then(response => {
           console.log(response);
@@ -72,6 +73,7 @@ export default {
           });
           this.imageOldList = this.imageList;
           console.log(this.imageList);
+          this.isShowUpload = this.imageOldList.length >= this.limit;
           // this.imageList.push({ url: response.data.attachUrl, code: response.data.code });
         });
         this.images = this.value;
@@ -83,25 +85,26 @@ export default {
   methods: {
     // 赋值
     inputInfo() {
-      // console.log(this.imageOldList);
+      console.log(this.imageOldList);
       const images = this.imageOldList.map(function(response) {
         return [response.code];
       });
       this.images = images.join(',');
       this.$emit('input', this.images);
       // console.log(this.images);
+      this.$emit('uploadStatus', false, '上传成功');
     },
     /** 取消按钮 */
     cancel() {
       this.dialogVisible = false;
     },
     handleRemove(images, imageList) {
-      // console.log(imageList);
-      const removeimg = imageList.map(function(response) {
-        return response.response.data;
-      });
+      console.log(imageList);
+      const removeimg = imageList.map(({ code, url }) => ({ code, url }));
       this.imageOldList = removeimg;
       this.inputInfo();
+
+      this.isShowUpload = this.imageOldList.length >= this.limit;
     },
     handlePictureCardPreview(images) {
       console.log(images);
@@ -110,6 +113,8 @@ export default {
     },
     handleUploadSuccess(res, images, imageList) {
       // console.log(res);
+      // console.log(images);
+      console.log(imageList);
       // if (this.images === '') {
       //   this.images = res.data.code;
       // } else {
@@ -118,9 +123,12 @@ export default {
       // console.log(this.images);
       this.imageOldList.push({ url: res.data.path, code: res.data.code });
       this.inputInfo();
+
+      this.isShowUpload = this.imageOldList.length >= this.limit;
       // this.loading.close();
     },
     handleBeforeUpload(file) {
+      this.isShowUpload = true;
       const isJPG = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg';
       const isLt1M = file.size / 1024 / 1024 < 1;
       if (!isJPG) {
@@ -136,6 +144,7 @@ export default {
       //   text: '上传中',
       //   background: 'rgba(0, 0, 0, 0.7)'
       // });
+      this.$emit('uploadStatus', true, '上传中...');
     },
     handleUploadError() {
       this.$message({
@@ -143,6 +152,7 @@ export default {
         message: '上传失败'
       });
       // this.loading.close();
+      this.$emit('uploadStatus', false, '上传失败');
     },
     handleExceed() {
       this.$message({
@@ -155,9 +165,15 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .avatar {
   width: 100%;
   height: 100%;
+}
+.isShowUpload ::v-deep .el-upload--picture-card{
+  display: none;
+}
+::v-deep .el-upload-list--picture-card .el-upload-list__item-thumbnail {
+    object-fit: contain;
 }
 </style>

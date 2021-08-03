@@ -51,3 +51,21 @@ export function openInvoice(data) {
     data: data
   });
 }
+
+// 驳回批量开票(渣土)
+export function refuseBilling(data) {
+  return request({
+    url: '/transportation/batch/refuseBilling',
+    method: 'post',
+    data: data
+  });
+}
+
+// 确定批量打款(渣土) (状态是3)
+export function passPayment(data) {
+  return request({
+    url: '/transportation/batch/passPayment',
+    method: 'post',
+    data: data
+  });
+}

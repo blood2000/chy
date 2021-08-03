@@ -4,17 +4,17 @@
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
         <el-form-item label="项目名称" prop="projectName">
           <el-input
-            v-model="queryParams.projectName"
+            v-model.trim="queryParams.projectName"
             placeholder="请输入项目名称"
             clearable
             size="small"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="商品类别" prop="commodityCategoryCode">
+        <!-- <el-form-item label="货物大类" prop="commodityCategoryCode">
           <el-select
             v-model="queryParams.commodityCategoryCode"
-            placeholder="请选择商品类别"
+            placeholder="请选择货物大类"
             clearable
             filterable
             size="small"
@@ -26,7 +26,7 @@
               :value="dict.dictValue"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
           <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -79,16 +79,42 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="infoList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <!-- 别的地方调用这个页面, 特殊处理表格 // 7/9 chj 调用这个组件添加了 -->
+      <div v-if="iscomponent" style="width:100%;">
+        <el-radio-group v-model="tinRadio" style="width:100%;" @change="handleRadioChange">
+          <RefactorTable :loading="loading" :data="infoList" height="350px" :table-columns-config="tableColumnsConfig" is-show-index>
+            <template #tRadio="{row}">
+              <el-radio :label="row"><span>&nbsp;</span></el-radio>
+            </template>
+
+            <template #edit="{row}">
+              <el-button
+                v-hasPermi="['assets:shipment:project:edit']"
+                size="mini"
+                type="text"
+                @click="handleUpdate(row)"
+              >修改</el-button>
+              <el-button
+                v-hasPermi="['assets:shipment:project:remove']"
+                size="mini"
+                type="text"
+                @click="handleDelete(row)"
+              >删除</el-button>
+            </template>
+          </RefactorTable>
+        </el-radio-group>
+      </div>
+
+      <RefactorTable v-else :loading="loading" :data="infoList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
         <!-- <template #commodityCategoryCode="{row}">
-        <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.commodityCategoryCode) }}</span>
-      </template> -->
+          <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.commodityCategoryCode) }}</span>
+        </template> -->
         <!-- <template #createTime="{row}">
-        <span>{{ parseTime(row.createTime, '{y}-{m}-{d}') }}</span>
-      </template>
-      <template #updateTime="{row}">
-        <span>{{ parseTime(row.updateTime, '{y}-{m}-{d}') }}</span>
-      </template> -->
+          <span>{{ parseTime(row.createTime, '{y}-{m}-{d}') }}</span>
+        </template>
+        <template #updateTime="{row}">
+          <span>{{ parseTime(row.updateTime, '{y}-{m}-{d}') }}</span>
+        </template> -->
         <template #edit="{row}">
           <el-button
             v-hasPermi="['assets:shipment:project:edit']"
@@ -118,7 +144,12 @@
         ref="ProjectDialog"
         :title="title"
         :open.sync="open"
-        :shipment-code="shipmentCode"
+        :shipment="shipmentCode"
+        :company="companyCode"
+        :company-code="companyCode"
+        :user-code="userCode"
+        :show-shipment="true"
+        :org-type="orgType"
         @refresh="getList"
       />
     </div>
@@ -135,19 +166,32 @@ export default {
     ProjectDialog
   },
   props: {
+    iscomponent: [Boolean], // 7/9 chj 调用这个组件添加了
     shipmentCode: {
       type: String,
       default: null
     },
-    orgCode: {
+    companyCode: {
       type: String,
       default: null
+    },
+    userCode: {
+      type: String,
+      default: null
+    },
+    showShipment: {
+      type: Boolean
+    },
+    orgType: {
+      type: Number,
+      default: 2
     }
   },
   data() {
     return {
+      tinRadio: undefined, // 7/9 chj 调用这个组件添加了
       tableColumnsConfig: [],
-      api: listInfoApi,
+      // api: listInfoApi,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -201,14 +245,49 @@ export default {
       }
     };
   },
+
+  computed: { // 7/9 chj 调用这个组件添加了
+    api() {
+      return this.iscomponent ? listInfoApi + '--iscomponent' : listInfoApi;
+    }
+  },
+
+  watch: {
+    '$route.query.project': {
+      handler(value) {
+        if (value) {
+          this.$nextTick(() => {
+            this.handleAdd();
+          });
+        }
+      },
+      immediate: true
+    }
+  },
   created() {
-    this.tableHeaderConfig(this.tableColumnsConfig, listInfoApi, {
+    this.tableHeaderConfig(this.tableColumnsConfig, this.api, {
       prop: 'edit',
       isShow: true,
       label: '操作',
       width: 180,
-      fixed: 'right'
-    });
+      fixed: 'left'
+    }, this.iscomponent ? [ // 7/9 chj 调用这个组件添加了
+      {
+        prop: 'tRadio',
+        isShow: true,
+        width: 50,
+        sortNum: 0,
+        tooltip: false,
+        label: ''
+      },
+      {
+        prop: 'edit',
+        isShow: true,
+        label: '操作',
+        sortNum: 10,
+        fixed: ''
+      }
+    ] : []);
     this.getList();
     this.listByDict(this.commodityCategory).then(response => {
       this.commodityCategoryCodeOptions = response.data;
@@ -218,11 +297,15 @@ export default {
     /** 查询项目列表 */
     getList() {
       this.loading = true;
-      if (this.orgCode) {
-        this.queryParams.orgCode = this.orgCode;
-      } else if (this.shipmentCode) {
+      // 修改：只需要传货主编码，无货主编码时，后端自主判断
+      if (this.shipmentCode) {
         this.queryParams.shipmentCode = this.shipmentCode;
       }
+      /** if (this.companyCode) {
+        this.queryParams.companyCode = this.companyCode;
+      } else if (this.shipmentCode) {
+        this.queryParams.shipmentCode = this.shipmentCode;
+      }**/
       listInfo(this.queryParams).then(response => {
         this.infoList = response.rows;
         this.total = response.total;
@@ -241,6 +324,16 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
+      this.ids = selection.map(item => item.id);
+      this.names = selection.map(item => item.projectName);
+      this.single = selection.length !== 1;
+      this.multiple = !selection.length;
+    },
+    // 单选框选中数据
+    handleRadioChange(radioVal) {
+      // console.log(radioVal);
+      this.$emit('selected', radioVal);
+      const selection = [radioVal];
       this.ids = selection.map(item => item.id);
       this.names = selection.map(item => item.projectName);
       this.single = selection.length !== 1;
@@ -281,7 +374,7 @@ export default {
     handleExport() {
       this.download('system/info/export', {
         ...this.queryParams
-      }, `system_info.xlsx`);
+      }, `项目管理`);
     }
   }
 };

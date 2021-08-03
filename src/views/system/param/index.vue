@@ -11,6 +11,7 @@
               :expand-on-click-node="false"
               default-expand-all
               :render-content="renderContent"
+              :indent="0"
               @node-click="handleNodeClick"
             />
           </div>
@@ -129,9 +130,10 @@ export default {
   },
   methods: {
     renderContent(h, { node, data, store }) {
+      const className = 'tree-node-icon ' + data.icon;
       return (
         <span class='custom-tree-node'>
-          <span class='custom-tree-text'>{node.label}</span>
+          <span class='custom-tree-text'><i class={className} style='margin-right: 4px' />{node.label}</span>
           <span class='custom-tree-button'>
             <el-button type='text' on-click={ (event) => this.appendTree(event, data) }><i class='el-icon-circle-plus-outline' /></el-button>
             <el-button type='text' on-click={ (event) => this.editTree(event, node, data) }><i class='el-icon-edit-outline' /></el-button>
@@ -190,7 +192,9 @@ export default {
               obj.paramValue = (obj.paramValue === 'true');
             }
           });
-          data.paramList = [...(response.data || [])];
+          data.paramList = response.data;
+          this.formList = [];
+          // data.paramList = [...(response.data || [])];
           this.formList.unshift(data);
         });
       }

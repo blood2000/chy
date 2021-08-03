@@ -32,7 +32,7 @@
                   <el-option label="固定右边" value="right" />
                 </el-select></el-col>
               <el-col :span="4">
-                <el-input v-model="th.remark" placeholder="备注" clearable />
+                <el-input v-model="th.sortNum" placeholder="备注" clearable />
               </el-col>
             </el-row>
           </li>
@@ -64,15 +64,19 @@ export default {
     draggable
   },
   props: {
-    value: {
+    value: { // 表头
       type: Array,
       default: function() {
         return [];
       }
     },
-    lcokey: {
+    lcokey: { // 存储的key值
       type: String,
       default: ''
+    },
+    refresh: { // 是否强制刷新
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -90,6 +94,7 @@ export default {
     submitForm() {
       this.$emit('input', this.banner_list);
       setLocalStorage(this.lcokey, this.banner_list);
+      this.refresh && this.replacePage();
       this.open = false;
     },
     cancel() {
@@ -108,15 +113,19 @@ export default {
         type: 'warning'
       }).then(() => {
         removeLocalStorage(this.lcokey);
-        // 当前页面如果有参数, 则保存到vuex中, 重新调用this.$store.getters.parameters
-        const { query } = this.$route;
-        if (JSON.stringify(query) !== '{}') {
-          this.$store.commit('util/setParameters', query);
-        }
-        this.open = false;
-        this.$router.replace({
-          path: '/refresh'
-        });
+        this.replacePage();
+      });
+    },
+    // 刷新页面
+    replacePage() {
+      // 当前页面如果有参数, 则保存到vuex中, 重新调用this.$store.getters.parameters
+      const { query } = this.$route;
+      if (JSON.stringify(query) !== '{}') {
+        this.$store.commit('util/setParameters', query);
+      }
+      this.open = false;
+      this.$router.replace({
+        path: '/refresh'
       });
     }
   }
@@ -125,7 +134,7 @@ export default {
 
 <style scoped>
 .t-thead li {
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #F3F3F3;
 }
 </style>
 

@@ -2,10 +2,10 @@
   <div>
     <div ref="searchBox">
       <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="90px" class="app-container" @submit.native.prevent>
-        <el-form-item v-show="!isShipment" label="下单客户" prop="tin1">
+        <el-form-item v-show="!isShipment" label="下单用户" prop="tin1">
           <el-input
-            v-model="queryParams.tin1"
-            placeholder="企业名称/客户姓名/手机号"
+            v-model.trim="queryParams.tin1"
+            placeholder="发货企业/操作人/手机号"
             clearable
             size="small"
             style="width: 228px"
@@ -15,7 +15,7 @@
 
         <el-form-item label="装货信息" prop="tin2">
           <el-input
-            v-model="queryParams.tin2"
+            v-model.trim="queryParams.tin2"
             placeholder="装货地/装货电话/装货人"
             clearable
             size="small"
@@ -26,7 +26,7 @@
 
         <el-form-item label="卸货信息" prop="tin3">
           <el-input
-            v-model="queryParams.tin3"
+            v-model.trim="queryParams.tin3"
             placeholder="卸货地/卸货电话/卸货人"
             clearable
             size="small"
@@ -48,7 +48,7 @@
 
         <el-form-item v-if="false" label="货物描述" prop="tin5">
           <el-input
-            v-model="queryParams.tin5"
+            v-model.trim="queryParams.tin5"
             placeholder="请输入货物描述"
             clearable
             size="small"
@@ -61,7 +61,7 @@
 
         <el-form-item label="货源单号" prop="tin7">
           <el-input
-            v-model="queryParams.tin7"
+            v-model.trim="queryParams.tin7"
             placeholder="请输入货源单号"
             clearable
             size="small"
@@ -94,6 +94,18 @@
           </el-select>
         </el-form-item>
 
+        <el-form-item label="发布模式" prop="publishMode">
+          <el-select v-model="queryParams.publishMode" placeholder="----请选择----" style="width: 228px" clearable filterable>
+            <el-option
+              v-for="(dict,index) in publishModeOptions"
+              :key="index + '' + dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+              @keyup.enter.native="handleQuery"
+            />
+          </el-select>
+        </el-form-item>
+
         <el-form-item v-show="(queryParams.tin8+'') ==='1'" label="下架状态" prop="isManual">
           <el-select v-model="queryParams.isManual" placeholder="----请选择----" clearable filterable style="width: 228px">
             <el-option
@@ -112,14 +124,16 @@
             style="width: 228px"
             value-format="yyyy-MM-dd"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
           />
         </el-form-item>
 
-        <!-- 做远程的 -->
-        <el-form-item v-show="!isShipment" label="货主" prop="tin6" size="small">
+        <!-- 远程 -->
+        <el-form-item v-show="!isShipment" v-if="false" label="货主" prop="tin6" size="small">
           <el-select
             v-model="queryParams.tin6"
             v-el-select-loadmore="loadmore"
@@ -152,50 +166,45 @@
       </el-form>
     </div>
 
+    <div class="g-radio-group ly-flex-pack-justify">
+      <el-radio-group v-model="activeName" size="small" @change="handleClick">
+        <el-radio-button label="0">已发布</el-radio-button>
+        <el-radio-button label="1">已关闭</el-radio-button>
+      </el-radio-group>
+    </div>
+
     <div class="app-container">
 
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
-          <el-radio-group v-model="activeName" size="small" @change="handleClick">
-            <el-radio-button label="0">已发布</el-radio-button>
-            <el-radio-button label="1">已关闭</el-radio-button>
-          </el-radio-group>
-        </el-col>
-
-        <el-col :span="1.5">
           <el-button
-            v-if="false"
-            v-hasPermi="['system:test:export']"
+            v-if="true"
+            v-has-permi="['transportation:order:export']"
             type="warning"
             icon="el-icon-download"
             size="mini"
+            :disabled="!(total>0)"
+            :loading="loadingExport"
             @click="handleExport"
           >导出</el-button>
         </el-col>
 
         <el-col :span="1.5" class="fr">
-          <tablec-cascader v-model="tableColumnsConfig" :lcokey="listManagesApi" />
+          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
-        <!-- <el-col v-show="showSearch" :span="1.5" class="fr mr20">
-          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-          <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-        </el-col> -->
       </el-row>
 
 
       <RefactorTable
         is-show-index
-        :height="list.length? tHeight : null"
         :loading="loading"
         :data="list"
         row-key="id"
-        stripe
         :row-class-name="tableRowClassName"
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
         :table-columns-config="tableColumnsConfig"
       ><!-- @selection-change="handleSelectionChange" -->
-        <!-- 装货地 -->
         <template #addressName1="{row}">
           <span>{{ row.addressAlias1 || row.addressName1 }}</span>
         </template>
@@ -204,7 +213,6 @@
           <span>{{ `${row.contact1 || '-'} [${row.contactPhone1 || '-'}]` }}</span>
         </template>
 
-        <!-- 装货地 -->
         <template #addressName2="{row}">
           <span>{{ row.addressAlias2 || row.addressName2 }}</span>
         </template>
@@ -218,13 +226,13 @@
         </template>
 
         <template #goodsPrice="{row}">
-          <span>{{ row.goodsPrice + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) }}</span>
+          <span>{{ isWorth(row.goodsPrice) ? floor(row.goodsPrice) + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) :'-' }}</span>
         </template>
         <template #shipmentPrice="{row}">
-          <span>{{ row.shipmentPrice + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) }}</span>
+          <span>{{ isWorth(row.shipmentPrice) ? floor(row.shipmentPrice) + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) : '-' }}</span>
         </template>
         <template #transactionPrice="{row}">
-          <span>{{ row.transactionPrice + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) }}</span>
+          <span>{{ isWorth(row.transactionPrice) ? floor(row.transactionPrice) + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)):'-' }}</span>
         </template>
 
         <template #status="{row}">
@@ -236,21 +244,18 @@
         </template>
 
         <template #businessType="{row}">
-          <span>{{ selectDictLabel(dicts['businessTypes'], row.businessType) }}</span>
+          <span>{{ row.businessType ? selectDictLabel(dicts['businessTypes'], row.businessType) : '-' }}</span>
         </template>
-        <!-- 已抢单量 -->
         <template #robbedOrder="{row}">
           <span>{{ row.robbedOrder || 0 }}</span>
         </template>
-        <!-- 可抢单量 -->
         <template #notRobbedOrder="{row}">
-          <span>{{ row.notRobbedOrder || '不限' }}</span>
+          <span>{{ (!row.notRobbedOrder && row.notRobbedOrder !== 0)? '不限': row.notRobbedOrder }}</span>
         </template>
-        <!-- 重量/体积/车 -->
         <template #tin_weight="{row}">
-          <span v-if="row.stowageStatus == 0">{{ row.remainingWeight? (row.remainingWeight - 0) + ' 吨':'不限' }}</span>
-          <span v-if="row.stowageStatus == 1">{{ row.remainingWeight?(row.remainingWeight - 0) + ' 立方' :'不限' }}</span>
-          <span v-if="row.stowageStatus == 2">{{ row.number? (row.number - 0) + ' 车' : '不限' }}</span>
+          <span v-if="row.stowageStatus == 0">{{ row.totalType === '2'? fixed(row.weight) + ' 吨':'不限' }}</span>
+          <span v-if="row.stowageStatus == 1">{{ row.totalType === '2'? fixed(row.weight) + ' 立方' :'不限' }}</span>
+          <span v-if="row.stowageStatus == 2">{{ row.totalType === '2'? row.number + ' 车' : '不限' }}</span>
         </template>
 
         <template #stowageStatus="{row}">
@@ -261,13 +266,37 @@
           <span :class="row.isPublic===0?'g-color-warning':'g-color-blue'">{{ selectDictLabel(isPublicTypeOptions, row.isPublic) }}</span>
         </template>
 
+        <template #scanCodeVoucher="{row}">
+          <span :class="row.uploadLoadVoucher!==1?'g-color-error':'g-color-success'">{{ selectDictLabel(scanCodeVoucherOptions, row.uploadLoadVoucher) }}</span>
+        </template>
+
+        <template #publishMode="{row}">
+          <span :class="row.publishMode===0?'g-color-warning':'g-color-blue'">{{ selectDictLabel(publishModeOptions, row.publishMode) }}</span>
+        </template>
+
         <template #isSpecified="{row}">
           <span v-if="row.isSpecified === 0" class="g-color-error">否</span>
           <span v-if="row.isSpecified === 1">{{ row.specified }}</span>
         </template>
 
         <template #loadType="{row}">
-          <span>{{ selectDictLabel(loadTypeOptions, row.loadType) }}</span>
+          <span>{{ selectDictLabel(loadTypeOptions, row.loadType) || '-' }}</span>
+        </template>
+        <template #updateUserName="{row}">
+          <span>{{ row.opNickName || row.updateUserName || row.opUserName }}</span>
+          <span v-if="row.phonenumber">[{{ row.phonenumber }}]</span>
+        </template>
+        <template #haveWaybill="{row}">
+          <span :class="row.haveWaybill!==1?'g-color-error':'g-color-success'">{{ selectDictLabel(haveWaybill_Options, row.haveWaybill) || '-' }}</span>
+        </template>
+        <template #uploadLoadVoucher="{row}">
+          <span :class="row.uploadLoadVoucher!==1?'g-color-error':'g-color-success'">{{ selectDictLabel(uploadLoadVoucher_Options, row.uploadLoadVoucher) || '-' }}</span>
+        </template>
+        <template #uploadUnloadVoucher="{row}">
+          <span :class="row.uploadUnloadVoucher!==1?'g-color-error':'g-color-success'">{{ selectDictLabel(uploadUnloadVoucher_Options, row.uploadUnloadVoucher) || '-' }}</span>
+        </template>
+        <template #scenario="{row}">
+          <span>{{ selectDictLabel(scenario_Options, row.scenario) || '-' }}</span>
         </template>
 
         <template #accessTime="{row}">
@@ -276,12 +305,11 @@
         <template #edit="{row}">
           <template v-if="row.isShowEdit">
             <el-button
+              v-has-permi="['transportation:orderInfoSearch:getOrderDetailBycode']"
               size="mini"
               type="text"
               @click="handleInfo(row)"
             >详情</el-button>
-
-            <!-- v-hasPermi="['transportation:order:pubilsh']" -->
             <el-button
               v-if="row.status+''==='0'"
               v-hasPermi="['transportation:order:modify']"
@@ -298,10 +326,10 @@
               @click="handleClose(row)"
             >{{ row.status+''==='0'?'禁用':'启用' }}</el-button>
 
-            <TableDropdown v-if="!row.haveWaybill || row.status+''==='0'">
+            <TableDropdown v-if="(row.status+''==='1' && !row.haveWaybill) || (row.status+''==='0' && row.scenario!=='1200') || !isShipment">
               <el-dropdown-item>
                 <el-button
-                  v-if="!row.haveWaybill"
+                  v-if="row.status+''==='1' && !row.haveWaybill"
                   v-hasPermi="['transportation:order:delete']"
                   size="mini"
                   type="text"
@@ -311,7 +339,7 @@
 
               <el-dropdown-item>
                 <el-button
-                  v-if="row.status+''==='0'"
+                  v-if="row.status+''==='0' && row.scenario!=='1200'"
                   v-hasPermi="['transportation:order:adjustPrice']"
                   size="mini"
                   type="text"
@@ -322,6 +350,7 @@
               <el-dropdown-item>
                 <el-button
                   v-if="false"
+                  v-hasPermi="['transportation:order:check']"
                   size="mini"
                   type="text"
                   @click="handleShenhe(row)"
@@ -330,16 +359,22 @@
 
               <el-dropdown-item>
                 <el-button
-                  v-if="row.status+''==='0'"
+                  v-if="row.status+''==='0' && row.scenario!=='1200'"
+                  v-hasPermi="['transportation:order:copy']"
                   size="mini"
                   type="text"
                   @click="handleclone(row)"
                 >复制</el-button>
               </el-dropdown-item>
+              <el-dropdown-item>
+                <el-button
+                  v-hasPermi="['transportation:order:updateScanCodeVoucher']"
+                  size="mini"
+                  type="text"
+                  @click="handleIsImport(row)"
+                >{{ row.uploadLoadVoucher+''!=='1'?'开启上传凭证':'关闭上传凭证' }}</el-button>
+              </el-dropdown-item>
             </TableDropdown>
-
-
-
           </template>
         </template>
       </RefactorTable>
@@ -361,40 +396,36 @@
 
     <!-- 价格调整 -->
     <el-dialog :close-on-click-modal="false" :title="'费用调价'" class="i-price" :visible.sync="openPriceAdjustment" width="900px" append-to-body>
-      <price-adjustment v-if="openPriceAdjustment" :mytabs="tabs" :order-code="orderCode" :pubilsh-code="pubilshCode" @submitRes="submitRes" />
+      <price-adjustment v-if="openPriceAdjustment" :mytabs="tabs" :order-code="orderCode" :pubilsh-code="pubilshCode" :stowage-status="unitName" @submitRes="submitRes" />
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { listManagesApi, getOrderInfoList, delOrder, loadAndUnloadingGoods } from '@/api/order/manage';
+import { listManagesApi, getOrderInfoList, delOrder, loadAndUnloadingGoods, isImport } from '@/api/order/manage';
 import { listShipment } from '@/api/assets/shipment';
 import { getUserInfo } from '@/utils/auth';
 import OpenDialog from './component/OpenDialog';
 import tableColumnsConfig from './data/config-index';
-
-
 import PriceAdjustment from './component/PriceAdjustment';
-
-import setTheight from '@/layout/mixin/setTheight';
-
+import { floor } from '@/utils/ddc';
+import { pickerOptions } from '@/utils/dateRange';
 export default {
   name: 'Manage',
   components: { OpenDialog, PriceAdjustment },
-  mixins: [setTheight],
   data() {
     return {
-      // tHeight: null,
+      unitName: null, // 配载方式
 
-      activeName: '0', // 做tab切换
-      listManagesApi, // 表头存的key
-      pubilshCode: '', // 当前货主code
-      // 测试数据上
+      pickerOptions,
+      loadingExport: false,
+      activeName: '0',
+      // listManagesApi,
+      pubilshCode: '',
 
       openPriceAdjustment: false,
       tabs: [],
       orderCode: '',
-      // 树形数据
       data: [],
 
       // 遮罩层
@@ -436,6 +467,7 @@ export default {
         tin11: '',
         isManual: '',
         tin9: '',
+        publishMode: undefined,
         tin10: []
       },
       // 弹框title
@@ -452,108 +484,62 @@ export default {
         { dictLabel: '立方', dictValue: 1 },
         { dictLabel: '车', dictValue: 2 }
       ],
-      // 发运方式字典
-      // billingTypeOptions: [
-      //   { dictLabel: '汽运一票制', dictValue: '0' },
-      //   { dictLabel: '对付', dictValue: '1' },
-      //   { dictLabel: '代收代付', dictValue: '2' }
-      // ],
-      // 是否导入货源字典
-      // importTypeOptions: [
-      //   { dictLabel: '正常发布货源', dictValue: '0' },
-      //   { dictLabel: '货源单导入', dictValue: '1' },
-      //   { dictLabel: '运输单导入', dictValue: '2' }
-      // ],
-      // isClass	是否加入货集码
+
       isClassOptions: [
         { dictLabel: '否', dictValue: 0 },
         { dictLabel: '是', dictValue: 1 }
       ],
-      // isDel	是否删除 0.正常 1.删除	boolean
-      // isDelTypeOptions: [
-      //   { dictLabel: '正常', dictValue: 0 },
-      //   { dictLabel: '删除', dictValue: 1 }
-      // ],
-      // isDispatch	是否已受理 0未受理，1已受理	boolean
-      // isDispatchTypeOptions: [
-      //   { dictLabel: '未受理', dictValue: false },
-      //   { dictLabel: '已受理', dictValue: true }
-      // ],
-      // isInsure	投保类别 0否 1是	boolean
-      // isInsureTypeOptions: [
-      //   { dictLabel: '否', dictValue: false },
-      //   { dictLabel: '是', dictValue: true }
-      // ],
-      // isMonthlyOrder	是否月结订单 0否 1 是	boolean
-      // isMonthlyOrderTypeOptions: [
-      //   { dictLabel: '否', dictValue: false },
-      //   { dictLabel: '是', dictValue: true }
-      // ],
-      // isPay	是否已经支付 0 未支付 1 已经支付	boolean
-      // isPayTypeOptions: [
-      //   { dictLabel: '未支付', dictValue: false },
-      //   { dictLabel: '已经支付', dictValue: true }
-      // ],
-      // isPublic	是否公开货源 0.非公开 1.公开
+
       isPublicTypeOptions: [
         { dictLabel: '非公开', dictValue: 0 },
         { dictLabel: '公开', dictValue: 1 }
       ],
-      // isReturnMoney	标记货主是否结算 0 否 1-是	boolean
-      // isReturnMoneyTypeOptions: [
-      //   { dictLabel: '否', dictValue: false },
-      //   { dictLabel: '是', dictValue: true }
-      // ],
-      // isShare	是否拼单 0-否，1-是	boolean
-      // isShareTypeOptions: [
-      //   { dictLabel: '否', dictValue: false },
-      //   { dictLabel: '是', dictValue: true }
-      // ],
-      // isShipperConfirm	是否货主确认装货 0否，1是	boolean
-      // isShipperConfirmTypeOptions: [
-      //   { dictLabel: '否', dictValue: false },
-      //   { dictLabel: '是', dictValue: true }
-      // ],
-      // isSpecified	是否指定接单人 0否 1是	boolean
+      scanCodeVoucherOptions: [
+        { dictLabel: '否', dictValue: 0 },
+        { dictLabel: '是', dictValue: 1 }
+      ],
+
+      // 是否有运单 0否 1是
+      haveWaybill_Options: [
+        { dictLabel: '否', dictValue: 0 },
+        { dictLabel: '是', dictValue: 1 }
+      ],
       isSpecifiedTypeOptions: [
         { dictLabel: '否', dictValue: 0 },
         { dictLabel: '是', dictValue: 1 }
       ],
-      // isSplit	是否允许拆单 0-不允许，1-允许	boolean
-      // isSplitTypeOptions: [
-      //   { dictLabel: '不允许', dictValue: false },
-      //   { dictLabel: '允许', dictValue: true }
-      // ],
-      // isTop	是否置顶 0否 1是	boolean
-      // isTopTypeOptions: [
-      //   { dictLabel: '否', dictValue: false },
-      //   { dictLabel: '是', dictValue: true }
-      // ],
-      // isTrunk	订单类型 0-整车大宗，1-零散多货	boolean
-      // isTrunkTypeOptions: [
-      //   { dictLabel: '整车大宗', dictValue: '0' },
-      //   { dictLabel: '零散多货', dictValue: '1' }
-      // ],
-      // loadType	装卸类型 1.一装一卸 2.多装一卸 3.一装多卸 4.多装多卸
+
       loadTypeOptions: [
         { dictLabel: '', dictValue: '0' },
         { dictLabel: '一装一卸', dictValue: '1' },
         { dictLabel: '多装一卸', dictValue: '2' },
         { dictLabel: '一装多卸', dictValue: '3' }
-        // { dictLabel: '多装多卸', dictValue: '4' }
+      ],
+      // 发布方式 0 货源大厅不可见(只能通过货单号或备注搜索) 1 货源大厅可见
+      publishModeOptions: [
+        { dictLabel: '不可见', dictValue: 0 },
+        { dictLabel: '可见', dictValue: 1 }
       ],
 
-      // orderType	运输类型 0-汽运，1-船运	string
-      // orderTypeTypeOptions: [
-      //   { dictLabel: '汽运', dictValue: '0' },
-      //   { dictLabel: '船运', dictValue: '1' }
-      // ],
-      // paymentCode	支付方式 0-现金，1-打卡，2现金+油卡 (字典表CODE)
-      // paymentCodeTypeOptions: [
-      //   { dictLabel: '现金', dictValue: '0' },
-      //   { dictLabel: '打卡', dictValue: '1' },
-      //   { dictLabel: '现金+油卡', dictValue: '2' }
-      // ],
+      // 装货时是否必须上传装货凭证 1 是 0 否
+      uploadLoadVoucher_Options: [
+        { dictLabel: '否', dictValue: 0 },
+        { dictLabel: '是', dictValue: 1 }
+      ],
+
+      // 卸货时是否必须上传装货凭证 1 是 0 否
+      uploadUnloadVoucher_Options: [
+        { dictLabel: '否', dictValue: 0 },
+        { dictLabel: '是', dictValue: 1 }
+      ],
+      // 场景
+
+      scenario_Options: [
+        { dictLabel: '大宗', dictValue: 1100 },
+        { dictLabel: '渣土', dictValue: 1200 }
+      ],
+
+
 
       goodsTypeOption: [],
       isShipment: false,
@@ -566,16 +552,164 @@ export default {
         pageNum: 1,
         keywords: '',
         pageSize: 10
-      }
+      },
+      floor
     };
   },
 
   computed: {
+    com() {
+      const isShipment = !this.isShipment;
+      return [
+        {
+          prop: 'mainOrderNumber',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          fixed: 'left',
+          sortNum: 100,
+          label: '货源单号'
+        },
+        {
+          prop: 'scanCodeVoucher',
+          isShow: true,
+          width: 130,
+          tooltip: true,
+          sortNum: 100,
+          label: '是否开启上传凭证'
+        },
+        {
+          prop: 'businessType',
+          isShow: true,
+          width: 120,
+          tooltip: true,
+          sortNum: 100,
+          label: '业务类型'
+        },
+        {
+          prop: 'goodsBigTypeName',
+          isShow: true,
+          width: 120,
+          tooltip: true,
+          sortNum: 100,
+          label: '货物大类'
+        },
+        {
+          prop: 'goodsTypeName',
+          isShow: true,
+          width: 120,
+          tooltip: true,
+          sortNum: 100,
+          label: '货物小类'
+        },
+        {
+          prop: 'addressName1',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          sortNum: 100,
+          label: '装货地'
+        },
+        {
+          prop: 'contact1',
+          isShow: false,
+          width: 200,
+          tooltip: true,
+          sortNum: 100,
+          label: '装货地联系人'
+        },
+        {
+          prop: 'addressName2',
+          isShow: true,
+          width: 200,
+          tooltip: true,
+          sortNum: 100,
+          label: '卸货地'
+        },
+        {
+          prop: 'contact2',
+          isShow: false,
+          width: 200,
+          tooltip: true,
+          sortNum: 100,
+          label: '卸货地联系人'
+        },
+        {
+          prop: 'goodsPrice',
+          isShow: true,
+          width: 120,
+          tooltip: true,
+          sortNum: 100,
+          label: '货物单价'
+        },
+        {
+          prop: 'shipmentPrice',
+          isShow: true,
+          width: 120,
+          tooltip: true,
+          sortNum: 100,
+          label: '货主成交单价'
+        },
+        {
+          prop: 'notRobbedOrder',
+          isShow: true,
+          width: 120,
+          tooltip: true,
+          sortNum: 100,
+          label: '可抢单量'
+        },
+        {
+          prop: 'robbedOrder',
+          isShow: true,
+          width: 120,
+          tooltip: true,
+          sortNum: 100,
+          label: '已抢单量'
+        },
+        {
+          prop: 'tin_weight',
+          isShow: true,
+          width: 120,
+          tooltip: true,
+          sortNum: 100,
+          label: '重量/体积/车数'
+        },
+        {
+          prop: 'stowageStatus',
+          isShow: true,
+          width: 120,
+          tooltip: true,
+          sortNum: 100,
+          label: '配载方式'
+        },
+        {
+          prop: 'companyName',
+          isShow: isShipment,
+          width: 120,
+          tooltip: true,
+          sortNum: 100,
+          label: '货主公司名称'
+        },
+        {
+          prop: 'adminName',
+          isShow: isShipment,
+          width: 120,
+          tooltip: true,
+          sortNum: 100,
+          label: '货主名称'
+        }
+      ];
+    },
+
+    api() {
+      return listManagesApi + '--' + this.activeName;
+    },
+
     newQueryParams() {
       return {
         beginTime: this.queryParams.tin10[0], //	开始时间	query	false
         endTime: this.queryParams.tin10[1], //	结束时间	query	false
-        companyAndCustomerAndPhone: this.queryParams.tin1, //	下单客户	query	false
+        companyAndCustomerAndPhone: this.queryParams.tin1, //	下单用户	query	false
         goodsName: this.queryParams.tin5, //	货物描述(名称)	query	false
         goodsBigType: this.queryParams.tin4 ? [this.queryParams.tin4] : undefined, //	货物大类大类	query	false
         goodsType: undefined, // 小类
@@ -585,6 +719,7 @@ export default {
         driverId: undefined, //	(司机id)查询自己公司的货源	query	false
         isShare: this.queryParams.tin9, //	是否拼单	query	false
         mainOrderNumber: this.queryParams.tin7, //	货源单号	query	false
+        publishMode: this.queryParams.publishMode, // 发布模式
 
         pubilshCode: this.queryParams.tin6, //	货主编码	query	false
 
@@ -595,59 +730,60 @@ export default {
         pageSize: this.queryParams.pageSize //	pageSize,示例值(10)	query	false
       };
     }
-
-    // theight() {
-    //   // 头部 70 49 10 460 186 65
-    //   var h = window.innerHeight || document.body.clientHeight;
-    //   return h - 292 - this.searchBoxheight;
-    // }
   },
 
   watch: {
     '$route.query.p': {
       handler(value, odvalue) {
         if (!value) return;
-        this.queryParams.pageNum = 1;
         this.getList();
-        this.$route.query.p = '';
+        // this.$router.replace({
+        //   path: '/refresh'
+        // });
+      },
+      immediate: true
+    },
+    '$route.query.manage': {
+      handler(value) {
+        if (value) {
+          this.activeName = this.$route.query.manage;
+          this.handleClick();
+        }
+      },
+      immediate: true
+    },
+    activeName: {
+      handler() {
+        this.tableColumnsConfig = [];
+        this.tableHeaderConfig(this.tableColumnsConfig, this.api, {
+          prop: 'edit',
+          isShow: true,
+          label: '操作',
+          width: 180,
+          fixed: 'left'
+        }, this.com || tableColumnsConfig);
       },
       immediate: true
     }
-    // showSearch: {
-    //   handler(value, odvalue) {
-    //     this.setTheight('tHeight', 'searchBox', this.showSearch);
-    //   },
-    //   immediate: true
-    // }
   },
 
 
   created() {
-    const { isShipment = false, shipment = {}} = getUserInfo() || {};
+    console.log('页面初始化');
 
-    // isAdmin = true,
-    // 判断当前是什么角色登入的 true 是运营
+    const { isShipment = false, shipment = {}} = getUserInfo() || {};
     this.isShipment = isShipment;
 
     isShipment && (this.queryParams.tin6 = shipment.info.code);
-    // 要配置好才能用
-    this.tableHeaderConfig(this.tableColumnsConfig, listManagesApi, null, tableColumnsConfig);
+
     this.getDict();
     this.getList();
   },
 
-  // mounted() {
-  //   window.addEventListener('resize',
-  //     debounce(() => {
-  //       this.setTheight('tHeight', 'searchBox', this.showSearch);
-  //     }, 700)
-  //   );
-  // },
 
   methods: {
     // tab切换
     handleClick() {
-      // console.log(this.activeName);
       this.queryParams.tin8 = this.activeName;
       if (this.activeName === '0') {
         this.queryParams.isManual = undefined;
@@ -672,8 +808,8 @@ export default {
       this.shipmentreq.pageNum++;
       this.getTeamList();
     },
+    // 获取代理用户表
     getTeamList() {
-      // 获取代理用户表
       listShipment(this.shipmentreq).then(
         (res) => {
           this.dataOver = !res.rows.length;
@@ -728,12 +864,13 @@ export default {
     // 处理返回的列表
     handlerList(lists) {
       this.list = lists.map(e => {
-        // 先判断几个商品
-        e = e.redisOrderInfoListVoList[0];
+        e = {
+          isDregs: e.isDregs,
+          ...e.redisOrderInfoListVoList[0],
+          orderCode: e.orderCode
+        };
 
-        // 调度者
         e.redisOrderSpecifiedVoList.forEach(specified => {
-          // 只考虑互斥
           if (specified.userType === 1) {
             e.specified = `调度者：${e.redisOrderSpecifiedVoList.length} 人`;
           } else {
@@ -741,9 +878,16 @@ export default {
           }
         });
 
-        // 货集码
         e.redisOrderClassGoodsVoList.forEach(orderClass => {
           e.cargoCodeQr = orderClass.cargoCodeQr || '-';
+        });
+
+        // 先做redisOrderFreightInfoVoList 无
+        e.redisOrderGoodsVoList.forEach(goods => {
+          e = {
+            ...e,
+            ...goods
+          };
         });
 
         const mgoods = [];
@@ -755,24 +899,23 @@ export default {
           e.addressName2 = '';
           e.shipmentPrice = '';
           e.transactionPrice = '';
-          // e.unitPrice = '';
           e.businessType = '';
           e.contact2 = '';
           e.contactPhone2 = '';
-          e.specified = ''; // 调度者或司机几人
+          // e.specified = ''; // 调度者或司机几人
           mgoods.push({
             ...this.baseData(e)
           });
         }
-        e.redisOrderFreightInfoVoList.length && e.redisOrderFreightInfoVoList.forEach((redis, index) => {
-          // 获取商品信息到这里获取
 
+        e.redisOrderFreightInfoVoList.length && e.redisOrderFreightInfoVoList.forEach((redis, index) => {
           e.redisOrderGoodsVoList.forEach(goods => {
             if (goods.code === redis.goodsCode) {
               e.goodsPrice = goods.goodsPrice;
               e.goodsTypeName = goods.goodsTypeName;
               e.goodsBigTypeName = goods.goodsBigTypeName;
               e.businessType = goods.businessType;
+              e.totalType = goods.totalType;
 
               e = {
                 ...e,
@@ -780,13 +923,9 @@ export default {
               };
             }
           });
-          // 对应的
           redis.redisOrderAddressInfoVoList.forEach(address => {
             const addresCodes = address.addressCode.split(':');
-            // 地址信息的到这里获取
             e.redisAddressList.forEach(addr => {
-              // 装货地
-
               if (addr.code === addresCodes[0] || addr.code === addresCodes[1]) {
                 if (addr.addressType === '3') {
                   e.addressName1 = '自装';
@@ -794,8 +933,8 @@ export default {
                   e.contact1 = '-';
                   e.contactPhone1 = '-';
                 } else if (addr.addressType === '1') {
-                  e.addressName1 = addr.formattedAddress;
-                  e.addressAlias1 = addr.addressAlias;
+                  e.addressName1 = addr.formattedAddress; // 地址具体名称
+                  e.addressAlias1 = addr.addressAlias; // 地址别名
                   // 装货人
                   e.contact1 = addr.contact;
                   e.contactPhone1 = addr.contactPhone;
@@ -813,7 +952,6 @@ export default {
                   e.contact2 = '-';
                   e.contactPhone2 = '-';
                 }
-              // 卸货地
               }
             });
 
@@ -826,7 +964,6 @@ export default {
               // 成交单价
               if (freight.ruleItemCode === '20') {
                 e.transactionPrice = freight.ruleValue;
-                // e.unitPrice = freight.ruleValue;
               }
             });
 
@@ -843,8 +980,8 @@ export default {
           children: mgoods.length ? mgoods : null
         };
       });
-      // console.log(this.list, '最后封装好的列表数据');
-      // this.theight = null;
+
+      console.log(this.list, '当前列表的数据');
       this.loading = false;
     },
 
@@ -865,10 +1002,12 @@ export default {
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
+      console.log(row);
       this.$router.push({ name: 'Release', query: { id: row.orderCode, t: '1' }});
     },
     /** 查看详情操作 */
     handleInfo(row) {
+      console.log(row);
       this.$router.push({ name: 'Release', query: { id: row.orderCode, t: '0' }});
     },
     /** 上下架货源 */
@@ -893,7 +1032,6 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const testIds = row.orderCode;
-      // 操作删除按钮，判断货单是否产生运单。
       const waybill = row.haveWaybill - 0 === 0;
 
       let msg = '';
@@ -902,9 +1040,6 @@ export default {
       } else {
         msg = `该货源单下，已产生运单，确认是否删除`;
       }
-
-      // 1、无，选择提示“该货源单下，暂无产生运单，确认是否删除”；
-      // 2、有，选择提示“该货源单下，已产生10条运单，确认是否删除”；
 
       this.$confirm(msg, '警告', {
         confirmButtonText: '确定',
@@ -941,6 +1076,10 @@ export default {
     },
     /** 调价操作 */
     async handleReadjustPrices(row) {
+      // 特殊处理, 传入配载方式
+      this.unitName = this.selectDictLabel(this.stowageStatusOptions, row.stowageStatus);
+      this.$store.commit('orders/SET_ORDERSTOWAGESTATUS', row.stowageStatus);
+
       const { redisOrderFreightInfoVoList, redisOrderGoodsVoList, redisAddressList, redisOrderInfoVo } = row.source;
       const tabs = redisOrderFreightInfoVoList.map((e, index) => {
         redisOrderGoodsVoList.forEach(ee => {
@@ -951,9 +1090,6 @@ export default {
             e.goodsPrice = ee.goodsPrice;
           }
         });
-
-        // console.log(e.redisOrderAddressInfoVoList);
-
 
         const redis = e.redisOrderAddressInfoVoList.map(eee => {
           const tin_names = [];
@@ -971,21 +1107,20 @@ export default {
 
           return {
             addressIdentification: eee.addressCode,
-            tin_name: tin_names.join('--'), // 地址a到b 显示
-            ruleCode: eee.ruleCode, // 下拉规则的的值(会改)
-            // ruleDictValue: '1', // 计算规则的值
-            orderFreightVo: eee.orderFreightVo // 细则
+            tin_name: tin_names.join('--'),
+            ruleCode: eee.ruleCode,
+            orderFreightVo: eee.orderFreightVo
           };
         });
 
         return {
-          dictLabel: e.goodsTypeName, // 展示tab
-          activeName: index + '', // 切换tab
-          goodsPrice: e.goodsPrice, // 商品价格??
-          goodsType: e.goodsType, // 商品divtValue
+          dictLabel: e.goodsTypeName,
+          activeName: index + '',
+          goodsPrice: e.goodsPrice,
+          goodsType: e.goodsType,
           goodsCode: e.goodsCode,
           redis,
-          newRedis: [] // 这个是封装返回的时候使用
+          newRedis: []
         };
       });
 
@@ -1000,9 +1135,12 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
+      this.loadingExport = true;
       this.download('/transportation/order/export', {
         ...this.newQueryParams
-      }, `order_export.xlsx`);
+      }, `货源管理`).then(res => {
+        this.loadingExport = false;
+      });
     },
     /** 派单对话 */
     handleDispatch(row) {
@@ -1018,6 +1156,18 @@ export default {
     /** 复制 */
     handleclone(row) {
       this.$router.push({ name: 'Release', query: { id: row.orderCode, t: '3' }});
+    },
+    // 是否开启上传凭证
+    handleIsImport(row) {
+      console.log(row);
+      var scanCodeVoucher = 0;
+      if (row.uploadLoadVoucher !== 1) {
+        scanCodeVoucher = 1;
+      }
+      isImport({ orderCode: row.orderCode, scanCodeVoucher: scanCodeVoucher }).then((res) => {
+        this.msgSuccess(res.msg);
+        this.getList();
+      });
     },
     /** 关闭 */
     submitRes(res) {
@@ -1040,27 +1190,12 @@ export default {
         return 'red-row';
       }
       return '';
+    },
+
+    isWorth(value) {
+      return !!value || value === 0;
     }
 
-    // setTheight(tHeight, refName, showSearch, addition = 0) {
-    //   var h = window.innerHeight || document.body.clientHeight;
-    //   this.$nextTick(() => {
-    //     const searchBoxheight = showSearch ? this.$refs[refName].offsetHeight : 0;
-    //     this[tHeight] = h - 292 - searchBoxheight - addition;
-    //   });
-    // }
   }
 };
 </script>
-
-<style>
-
-.el-table .warning-row,.el-table--striped .el-table__body tr.el-table__row--striped.warning-row td {
-    background: oldlace;
-  }
-
-.el-table .red-row,.el-table--striped .el-table__body tr.el-table__row--striped.red-row td {
-  background: #e1f3d8;
-}
-
-</style>

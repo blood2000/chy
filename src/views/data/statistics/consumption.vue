@@ -2,9 +2,9 @@
   <div>
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
-        <el-form-item label="客户名称" prop="driverName">
+        <el-form-item label="客户名称" prop="companyName">
           <el-input
-            v-model="queryParams.driverName"
+            v-model.trim="queryParams.companyName"
             placeholder="请输入客户名称"
             clearable
             size="small"
@@ -12,9 +12,9 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="手机号码" prop="driverPhone">
+        <el-form-item label="手机号码" prop="shipmentPhone">
           <el-input
-            v-model="queryParams.driverPhone"
+            v-model.trim="queryParams.shipmentPhone"
             placeholder="请输入手机号码"
             clearable
             size="small"
@@ -26,6 +26,8 @@
           <el-date-picker
             v-model="queryTime"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -43,10 +45,11 @@
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
           <el-button
-            v-hasPermi="['assets:vehicle:edit']"
+            v-hasPermi="['data:consumption:export']"
             type="primary"
-            icon="el-icon-upload2"
+            icon="el-icon-download"
             size="mini"
+            :loading="loadingExport"
             @click="handleExport"
           >导出</el-button>
         </el-col>
@@ -70,7 +73,7 @@
         :total="total"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
-        @pagination="getList"
+        @pagination="getList(1)"
       />
 
       <!-- <el-row type="flex" :gutter="10" class="g-statistics-bg">
@@ -104,8 +107,9 @@
 </template>
 
 <script>
-import { listConsumptionApi, listConsumption, getShipmentMoneyCount } from '@/api/data/statistics';
-// import tableColumnsConfig from './config';
+import { listConsumptionApi, listConsumption, countConsumption } from '@/api/data/statistics';
+import { pickerOptions } from '@/utils/dateRange';
+// import tableColumnsConfig from './data/config-index';
 
 export default {
   name: 'Consumption',
@@ -113,6 +117,7 @@ export default {
   },
   data() {
     return {
+      pickerOptions,
       tableColumnsConfig: [],
       api: listConsumptionApi,
       // 遮罩层
@@ -137,44 +142,23 @@ export default {
         haveCondition: false
       },
       summary: true,
-      morelist: []
+      morelist: [],
+      loadingExport: false
     };
+  },
+  watch: {
+    tableColumnsConfig(val) {
+      const arrlist = val.filter(item => item.isChild);
+      console.log(arrlist);
+      this.morelist = [{
+        label: '本期客户消费',
+        children: arrlist
+      }];
+    }
   },
   created() {
     this.tableHeaderConfig(this.tableColumnsConfig, listConsumptionApi, { });
-    // console.log(this.tableColumnsConfig);
-    this.morelist = [{
-      label: '本期客户消费',
-      children: [{
-        label: '运费',
-        prop: 'freightAmount',
-        width: '100'
-      }, {
-        label: '已开票运费',
-        prop: 'freightInvoiceAmount',
-        width: '100'
-      }, {
-        label: '未开票运费',
-        prop: 'freightUnbilledAmount',
-        width: '100'
-      }, {
-        label: '服务费',
-        prop: 'serviceAmount',
-        width: '100'
-      }, {
-        label: '已开票服务费',
-        prop: 'serviceInvoiceAmount',
-        width: '100'
-      }, {
-        label: '未开票服务费',
-        prop: 'serviceUnbilledAmount',
-        width: '100'
-      }, {
-        label: '消费合计',
-        prop: 'transferAmount',
-        width: '100'
-      }]
-    }];
+    console.log(this.tableColumnsConfig);
     this.getList();
   },
   methods: {
@@ -244,12 +228,13 @@ export default {
       }
     },
     /** 查询客户消费明细列表 */
-    getList() {
+    getList(e) {
       this.loading = true;
       // 查询列表
       listConsumption(this.queryParams).then(response => {
-        this.consumptionList = response.data;
-        this.total = response.data.length;
+        console.log(response);
+        this.consumptionList = response.data.list;
+        this.total = response.data.total;
         this.loading = false;
       });
       // 查询列表合计
@@ -258,10 +243,12 @@ export default {
       } else {
         this.queryParams.haveCondition = false;
       }
-      getShipmentMoneyCount(this.queryParams).then(response => {
-        console.log(response);
-        this.consumptionCount = response.data;
-      });
+      if (e !== 1) {
+        countConsumption(this.queryParams).then(response => {
+          console.log(response);
+          this.consumptionCount = response.data;
+        });
+      }
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -278,7 +265,10 @@ export default {
     },
     // 导出
     handleExport() {
-      this.download('/transportation/invoice/listWayBill', { ...this.queryParams }, `askfor_${new Date().getTime()}.xlsx`);
+      this.loadingExport = true;
+      this.download('/transportation/customerCountSearch/shipmentMoneyCountExport', { ...this.queryParams }, `客户消费统计`).then(res => {
+        this.loadingExport = false;
+      });
     }
   }
 };

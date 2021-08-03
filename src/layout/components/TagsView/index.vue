@@ -20,7 +20,7 @@
 
     <el-dropdown ref="TagsDerpDown" class="btn-arrow-container" trigger="click">
       <div class="btn-arrow" />
-      <el-dropdown-menu slot="dropdown" class="tags-dropdown">
+      <el-dropdown-menu slot="dropdown" :append-to-body="false" class="tags-dropdown">
         <router-link
           v-for="tag in overflowTagsList"
           :key="tag.path"
@@ -29,12 +29,12 @@
           @click.middle.native="!isAffix(tag)?closeSelectedTag(tag):''"
           @contextmenu.prevent.native="openMenu(tag,$event)"
         >
-          <el-dropdown-item>
-            <span style="padding-right: 40px">{{ tag.title }}</span>
+          <el-dropdown-item class="btn-arrow-container-item">
+            <span>{{ tag.title }}</span>
             <span v-if="!isAffix(tag)" class="tag-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
           </el-dropdown-item>
         </router-link>
-        <el-dropdown-item v-show="overflowTagsList.length==0" disabled>暂无更多</el-dropdown-item>
+        <el-dropdown-item v-show="overflowTagsList.length==0" class="btn-arrow-container-none" disabled>暂无更多</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
 
@@ -94,16 +94,17 @@ export default {
     this.$nextTick(() => {
       this.tagsOverflow();
     });
-    const throttle = ThrottleFun(this.tagsOverflow, 300);
-    window.onresize = () => {
-      this.$refs.TagsDerpDown.hide();
-      throttle();
-    };
+    window.addEventListener('resize', this.resizeFun);
   },
   beforeDestroy() {
-    window.onresize = null;
+    window.removeEventListener('resize', this.resizeFun);
   },
   methods: {
+    resizeFun() {
+      const throttle = ThrottleFun(this.tagsOverflow, 300);
+      this.$refs.TagsDerpDown.hide();
+      throttle();
+    },
     isActive(route) {
       return route.path === this.$route.path;
     },
@@ -245,22 +246,24 @@ export default {
       this.closeMenu();
     },
     tagsOverflow() {
-      const $ContainerWidth = this.$refs.TagsViewContainer.offsetWidth;
-      const tagList = this.$refs.tag;
-      let tagswidth = 0;
-      let index;
-      let flag = true;
-      for (let i = 0; i < tagList.length; i++) {
-        tagswidth += tagList[i].$el.clientWidth;
-        // 36: The width of a arrow
-        if (flag && (tagswidth > $ContainerWidth - 36)) {
-          flag = false;
-          index = i;
-          this.overflowTagsList = this.visitedViews.slice(index);
+      if (this.$refs.TagsViewContainer) {
+        const $ContainerWidth = this.$refs.TagsViewContainer.offsetWidth;
+        const tagList = this.$refs.tag;
+        let tagswidth = 0;
+        let index;
+        let flag = true;
+        for (let i = 0; i < tagList.length; i++) {
+          tagswidth += tagList[i].$el.clientWidth;
+          // 36: The width of a arrow
+          if (flag && (tagswidth > $ContainerWidth - 36)) {
+            flag = false;
+            index = i;
+            this.overflowTagsList = this.visitedViews.slice(index);
+          }
         }
-      }
-      if (tagswidth < $ContainerWidth - 36) {
-        this.overflowTagsList = [];
+        if (tagswidth < $ContainerWidth - 36) {
+          this.overflowTagsList = [];
+        }
       }
     }
   }
@@ -269,11 +272,12 @@ export default {
 
 <style lang="scss" scoped>
 .tags-view-container {
-  height: 44px;
+  height: 49px;
   width: 100%;
   background: #fff;
-  // box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
   position: relative;
+  border-bottom: 5px solid rgb(242, 245, 248);
+  box-sizing: border-box;
   .tags-view-wrapper {
     width: calc(100% - 36px);
     height: 100%;
@@ -352,17 +356,24 @@ export default {
     position: absolute;
     top: 0;
     right: 0;
+    .btn-arrow-container-item{
+      min-width: 160px;
+    }
+    .btn-arrow-container-none{
+      text-align: center;
+      min-width: 94px;
+    }
   }
   .btn-arrow{
-    height: 16px;
-    width: 12px;
+    height: 44px;
+    width: 36px;
     color: #666;
     line-height: 40px;
     text-align: center;
     cursor: pointer;
-    background: url('~@/assets/images/navBar/tag_icon.png') no-repeat;
-    background-size: 100% 100%;
-    margin: 17px 12px 11px;
+    background: url('~@/assets/images/navBar/tag_icon.png') 12px 17px no-repeat;
+    background-size: 12px 16px;
+    padding: 17px 12px 11px;
   }
   .contextmenu {
     margin: 0;
@@ -424,6 +435,9 @@ export default {
     &:hover{
       background-color: #FAFAFA;
       color: #606266;
+    }
+    &.is-disabled{
+      color: #bbb;
     }
   }
   .tags-dropdown-item-active {

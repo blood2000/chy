@@ -4,7 +4,7 @@
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
         <el-form-item label="地址别名" prop="addressAlias">
           <el-input
-            v-model="queryParams.addressAlias"
+            v-model.trim="queryParams.addressAlias"
             placeholder="请输入地址别名"
             clearable
             size="small"
@@ -13,7 +13,7 @@
         </el-form-item>
         <el-form-item label="地址" prop="addressName">
           <el-input
-            v-model="queryParams.addressName"
+            v-model.trim="queryParams.addressName"
             placeholder="请输入地址"
             clearable
             size="small"
@@ -88,21 +88,22 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <el-table v-loading="loading" :data="addressList" border stripe @selection-change="handleSelectionChange">
+      <el-table v-loading="loading" :data="addressList" highlight-current-row border @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" fixed="left" />
-        <el-table-column label="地址" align="center" prop="addressName">
+        <el-table-column label="地址" align="center" prop="addressName" />
+        <!-- <el-table-column label="地址" align="center" prop="addressName">
           <template slot-scope="scope">
             {{ scope.row.addressName }}
             <el-tag v-if="scope.row.defaultPut === 1 && scope.row.defaultPush === 0" type="success">默认装货地址</el-tag>
             <el-tag v-if="scope.row.defaultPush === 1 && scope.row.defaultPut === 0" type="warning">默认卸货地址</el-tag>
             <el-tag v-if="scope.row.defaultPut === 1 && scope.row.defaultPush === 1">默认装卸货地址</el-tag>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="地址别名" align="center" prop="addressAlias" />
         <el-table-column label="手机号码" align="center" prop="contactPhone" />
         <el-table-column label="联系人" align="center" prop="contact" />
         <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" />
-        <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="200" fixed="right">
+        <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="200" fixed="left">
           <template slot-scope="scope">
             <el-button
               v-hasPermi="['assets:shipment:address:edit']"
@@ -129,7 +130,7 @@
       />
     </div>
     <!-- 新增/编辑对话框 -->
-    <address-dialog ref="AddressDialog" :title="title" :open.sync="open" :shipment-code="shipmentCode" @refresh="getList" />
+    <address-dialog ref="AddressDialog" :title="title" :open.sync="open" :shipment-code="shipmentCode" :org-code="companyCode" @refresh="getList" />
   </div>
 </template>
 
@@ -138,12 +139,16 @@ import { listAddress, getAddress, delAddress } from '@/api/enterprise/company/ad
 import AddressDialog from './addressDialog.vue';
 
 export default {
-  name: 'Address',
+  name: 'CompanyAddress',
   components: {
     AddressDialog
   },
   props: {
     shipmentCode: {
+      type: String,
+      default: null
+    },
+    companyCode: {
       type: String,
       default: null
     }
@@ -184,6 +189,18 @@ export default {
       }
     };
   },
+  watch: {
+    '$route.query.companyaddress': {
+      handler(value) {
+        if (value) {
+          this.$nextTick(() => {
+            this.handleAdd();
+          });
+        }
+      },
+      immediate: true
+    }
+  },
   created() {
     this.getList();
   },
@@ -191,9 +208,15 @@ export default {
     /** 查询常用地址列表 */
     getList() {
       this.loading = true;
+      // 修改：只需要传货主编码，无货主编码时，后端自主判断
       if (this.shipmentCode) {
         this.queryParams.shipmentCode = this.shipmentCode;
       }
+      /** if (this.companyCode) {
+        this.queryParams.companyCode = this.companyCode;
+      } else if (this.shipmentCode) {
+        this.queryParams.shipmentCode = this.shipmentCode;
+      } **/
       listAddress(this.queryParams).then(response => {
         this.addressList = response.rows;
         this.total = response.total;

@@ -1,18 +1,18 @@
 <template>
   <!-- 归属调度列表 -->
   <div class="app-container">
-    <el-table v-loading="loading" border stripe :data="infoList">
-      <el-table-column label="调度者名称" align="center" prop="name" />
+    <el-table v-loading="loading" highlight-current-row border :data="infoList">
+      <el-table-column label="调度组名称" align="center" prop="name" />
       <el-table-column label="审核状态" align="center" prop="authStatus">
         <template slot-scope="scope">
-          <i v-show="scope.row.authStatus === 0" class="el-icon-warning g-color-light-gray mr5" />
-          <i v-show="scope.row.authStatus === 1" class="g-icon-deal mr5" />
+          <i v-show="scope.row.authStatus === 0" class="g-icon-none mr5" />
+          <i v-show="scope.row.authStatus === 1" class="g-icon-deal-blue mr5" />
           <i v-show="scope.row.authStatus === 2" class="el-icon-error g-color-error mr5" />
           <i v-show="scope.row.authStatus === 3" class="el-icon-success g-color-success mr5" />
           <span>{{ selectDictLabel(authStatusOptions, scope.row.authStatus) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="管理者" align="center" prop="teamLeaderName" />
+      <el-table-column label="调度者姓名" align="center" prop="teamLeaderName" />
       <el-table-column label="身份证号" align="center" prop="identificationNumber" />
       <el-table-column label="是否清分" align="center" prop="isDistribution">
         <template slot-scope="scope">
@@ -30,7 +30,7 @@
           <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="driverCode" label="操作" align="center" prop="edit">
+      <el-table-column v-if="driverCode" label="操作" align="center" fixed="left" prop="edit">
         <template slot-scope="scope">
           <el-button
             v-hasPermi="['assets:team:driver:del']"

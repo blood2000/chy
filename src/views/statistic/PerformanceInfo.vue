@@ -1,57 +1,69 @@
 <template>
   <!-- 业绩数据 -->
-  <div class="s-container ly-flex-pack-justify">
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v">
+  <div class="s-container ly-flex-pack-justify" :class="{isSecond: isSecond}">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 35%">
       <InfoBox
         label="交易总额"
-        unit="亿"
-        :count="0.211"
-        :places="3"
+        unit="万"
+        :count="myPerformance.transactionAmount"
+        :places="2"
       />
       <InfoBox
-        label="今日新增交易"
-        :count="0.211"
-        :places="3"
-        :has-yoy="true"
-        :yoy="12.6"
-        :yoy-type="0"
-        :yoy-places="1"
+        label="今日货主付款"
+        unit="万"
+        :count="myPerformance.newTransactionAmount"
+        :last-count="myPerformance.lastTransactionAmount"
+        :places="2"
       />
     </div>
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v">
+    <!--
+      :has-yoy="true"
+      :yoy.sync="myPerformance.newTransactionYoy"
+      :yoy-type.sync="myPerformance.newTransactionYoyType"
+      :yoy-places="1"
+     -->
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 35%">
       <InfoBox
         label="开票总额"
-        unit="亿"
-        :count="0.211"
-        :places="3"
+        unit="万"
+        :count="myPerformance.votesAmount"
+        :places="2"
       />
       <InfoBox
         label="今日新增开票"
-        :count="0.211"
-        :places="3"
-        :has-yoy="true"
-        :yoy="12.6"
-        :yoy-type="1"
-        :yoy-places="1"
+        unit="万"
+        :count="myPerformance.newVotesAmount"
+        :last-count="myPerformance.lastVotesAmount"
+        :places="2"
       />
     </div>
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v">
+    <!--
+      :has-yoy="true"
+      :yoy.sync="myPerformance.newVotesYoy"
+      :yoy-type.sync="myPerformance.newVotesYoyType"
+      :yoy-places="1"
+     -->
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 30%">
       <InfoBox
         label="运费总额"
-        unit="亿"
-        :count="0.211"
-        :places="3"
+        unit="万"
+        :count="myPerformance.waybillAmount"
+        :places="2"
       />
       <InfoBox
-        label="今日新增运费"
-        :count="0.211"
-        :places="3"
-        :has-yoy="true"
-        :yoy="12.6"
-        :yoy-type="0"
-        :yoy-places="1"
+        label="今日司机收款"
+        unit="万"
+        :count="myPerformance.newWaybillAmount"
+        :last-count="myPerformance.lastWaybillAmount"
+        :places="2"
       />
     </div>
+    <!--
+      :has-yoy="true"
+      :yoy.sync="myPerformance.newWaybillYoy"
+      :yoy-type.sync="myPerformance.newWaybillYoyType"
+      :yoy-places="1"
+     -->
   </div>
 </template>
 
@@ -61,13 +73,60 @@ import InfoBox from './components/infoBox';
 export default {
   components: {
     InfoBox
+  },
+  props: {
+    performance: {
+      type: Object,
+      default: () => {
+        return {};
+      }
+    },
+    isSecond: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data() {
+    return {
+      myPerformance: {}
+    };
+  },
+  watch: {
+    performance(val) {
+      this.myPerformance = val;
+    }
+  },
+  methods: {
+    // 处理实时数据-开票
+    setInvoiceData(val) {
+      // console.log('invoiceNotice: ', val);
+      const { invoiceAmount } = val;
+      if (invoiceAmount) {
+        this.myPerformance.votesAmount += invoiceAmount;
+        this.myPerformance.newVotesAmount += invoiceAmount;
+      }
+    },
+    // 处理实时数据-运单
+    setWaybillData(val) {
+      const { shipperRealPay, deliveryCashFee } = val;
+      // 交易
+      if (shipperRealPay) {
+        this.myPerformance.newTransactionAmount += shipperRealPay;
+        this.myPerformance.transactionAmount += shipperRealPay;
+      }
+      // 运费
+      if (deliveryCashFee) {
+        this.myPerformance.newWaybillAmount += deliveryCashFee;
+        this.myPerformance.waybillAmount += deliveryCashFee;
+      }
+    }
   }
 };
 </script>
 
 <style lang="scss" scoped>
 .s-container{
-  height: 26.5%;
+  height: 100%;
   &__box{
     width: 33.33%;
     height: 100%;
@@ -80,8 +139,16 @@ export default {
       right: 1.59rem;
       top: 0;
       bottom: 0;
-      width: 1px;
+      width: 0.05rem;
       background: linear-gradient(rgba(1, 227, 255, 0), rgba(1, 227, 255, 0.22), rgba(1, 227, 255, 0));
+    }
+  }
+  &.isSecond{
+    .s-container__box{
+      &:not(:last-child)::before{
+        right: 0.8rem;
+        display: none;
+      }
     }
   }
 }

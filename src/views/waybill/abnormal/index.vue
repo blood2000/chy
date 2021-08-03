@@ -4,7 +4,7 @@
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
         <el-form-item label="货源单号" prop="orderCode">
           <el-input
-            v-model="queryParams.orderCode"
+            v-model.trim="queryParams.orderCode"
             placeholder="请输入货源单号"
             clearable
             size="small"
@@ -14,7 +14,7 @@
         </el-form-item>
         <el-form-item label="运输单号" prop="waybillNo">
           <el-input
-            v-model="queryParams.waybillNo"
+            v-model.trim="queryParams.waybillNo"
             placeholder="请输入运输单号"
             clearable
             size="small"
@@ -41,7 +41,7 @@
         </el-form-item>
         <el-form-item label="运输司机" prop="driverName">
           <el-input
-            v-model="queryParams.driverName"
+            v-model.trim="queryParams.driverName"
             placeholder="请输入运输司机"
             clearable
             size="small"
@@ -82,11 +82,13 @@
             @click="handleAbnormal(row)"
           >处理异常</el-button>
           <el-button
+            v-hasPermi="['transportation:waybillAbnormal:orders']"
             size="mini"
             type="text"
             @click="handleWaybill(row)"
           >查看运单</el-button>
           <el-button
+            v-hasPermi="['transportation:waybillAbnormal:logs']"
             size="mini"
             type="text"
             @click="handleLog(row)"
@@ -176,7 +178,7 @@ export default {
       isShow: true,
       label: '操作',
       width: 240,
-      fixed: 'right'
+      fixed: 'left'
     });
     this.getList();
   },

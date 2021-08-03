@@ -1,5 +1,15 @@
 import request from '@/utils/request';
 
+// 渣土使用表头
+export const ztApi = '/transportation/batch/findWaybillBalanceList';
+export function ztApiList(query) {
+  return request({
+    url: ztApi,
+    method: 'get',
+    params: query
+  });
+}
+
 // 查询运单核算列表
 export const adjustListApi = '/transportation/waybillBalanceInfo/findList';
 export function adjustList(query) {
@@ -37,11 +47,27 @@ export function adjustDetail(data) {
     data: data
   });
 }
+// 批量渣土核算详情
+export function batchDetail(data) {
+  return request({
+    url: 'transportation/batch/batchDetail',
+    method: 'post',
+    data: data
+  });
+}
 
 // 计算费用
 export function calculateFee(data) {
   return request({
     url: '/transportation/calculateFee/calculate',
+    method: 'post',
+    data: data
+  });
+}
+// 批量计算费用
+export function batchCalculate(data) {
+  return request({
+    url: '/transportation/calculateFee/batchCalculate',
     method: 'post',
     data: data
   });
@@ -83,5 +109,4 @@ export function batchAdd(data) {
     data: data
   });
 }
-
 

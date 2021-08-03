@@ -2,19 +2,19 @@
   <div>
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
-        <el-form-item label="调度者名称" prop="name">
+        <el-form-item label="调度组名称" prop="name">
           <el-input
-            v-model="queryParams.name"
-            placeholder="请输入调度者名称"
+            v-model.trim="queryParams.name"
+            placeholder="请输入调度组名称"
             clearable
             size="small"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="管理者名称" prop="teamLeaderName">
+        <el-form-item label="调度者" prop="keywords">
           <el-input
-            v-model="queryParams.teamLeaderName"
-            placeholder="请输入管理者名称"
+            v-model.trim="queryParams.keywords"
+            placeholder="请输入调度者姓名/手机号"
             clearable
             size="small"
             @keyup.enter.native="handleQuery"
@@ -30,7 +30,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="司机姓名" prop="driverName">
+        <!-- <el-form-item label="司机姓名" prop="driverName">
           <el-input
             v-model="queryParams.driverName"
             placeholder="请输入司机姓名"
@@ -38,16 +38,16 @@
             size="small"
             @keyup.enter.native="handleQuery"
           />
-        </el-form-item>
-        <el-form-item label="手机号" prop="telphone">
+        </el-form-item> -->
+        <!-- <el-form-item label="手机号" prop="telphone">
           <el-input
-            v-model="queryParams.telphone"
+            v-model.trim="queryParams.telphone"
             placeholder="请输入手机号"
             clearable
             size="small"
           />
-        </el-form-item>
-        <el-form-item label="车牌号码" prop="licenseNumber">
+        </el-form-item>-->
+        <!-- <el-form-item label="车牌号码" prop="licenseNumber">
           <el-input
             v-model="queryParams.licenseNumber"
             placeholder="请输入车牌号码"
@@ -55,7 +55,7 @@
             size="small"
             @keyup.enter.native="handleQuery"
           />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="审核状态" prop="authStatus">
           <el-select
             v-model="queryParams.authStatus"
@@ -71,7 +71,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="处理状态" prop="applyStatus">
+        <!-- <el-form-item label="处理状态" prop="applyStatus">
           <el-select v-model="queryParams.applyStatus" placeholder="请选择状态" filterable clearable size="small">
             <el-option
               v-for="dict in applyStatusOptions"
@@ -80,7 +80,7 @@
               :value="dict.dictValue"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
           <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -136,14 +136,16 @@
 
       <RefactorTable :loading="loading" :data="infoList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
         <template #status="{row}">
+          <i v-show="row.status === 1" class="el-icon-error g-color-error mr5" />
+          <i v-show="row.status === 0" class="el-icon-success g-color-success mr5" />
           <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
         </template>
         <template #isDistribution="{row}">
           <span>{{ selectDictLabel(isOptions, row.isDistribution) }}</span>
         </template>
         <template #authStatus="{row}">
-          <i v-show="row.authStatus === 0" class="el-icon-warning g-color-light-gray mr5" />
-          <i v-show="row.authStatus === 1" class="g-icon-deal mr5" />
+          <i v-show="row.authStatus === 0" class="g-icon-none mr5" />
+          <i v-show="row.authStatus === 1" class="g-icon-deal-blue mr5" />
           <i v-show="row.authStatus === 2" class="el-icon-error g-color-error mr5" />
           <i v-show="row.authStatus === 3" class="el-icon-success g-color-success mr5" />
           <span>{{ selectDictLabel(authStatusOptions, row.authStatus) }}</span>
@@ -152,9 +154,16 @@
           <span>{{ parseTime(row.authTime, '{y}-{m}-{d}') }}</span>
         </template>
         <template #createTime="{row}">
-          <span>{{ parseTime(row.createTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
         <template #edit="{row}">
+          <el-button
+            v-if="row.authStatus != 3"
+            v-has-permi="['assets:team:examine']"
+            size="mini"
+            type="text"
+            @click="handleDetail(row, 'review')"
+          >审核</el-button>
           <el-button
             v-hasPermi="['assets:team:manage']"
             size="mini"
@@ -162,30 +171,31 @@
             @click="handleManage(row)"
           >管理</el-button>
           <el-button
-            v-hasPermi="['assets:team:get']"
-            size="mini"
-            type="text"
-            @click="handleDetail(row, 'detail')"
-          >详情</el-button>
-          <el-button
             v-hasPermi="['assets:team:edit']"
             size="mini"
             type="text"
             @click="handleDetail(row, 'edit')"
           >修改</el-button>
+          <el-button
+            v-if="row.authStatus == 3"
+            v-hasPermi="['assets:team:get']"
+            size="mini"
+            type="text"
+            @click="handleDetail(row, 'detail')"
+          >详情</el-button>
           <TableDropdown>
             <el-dropdown-item>
               <el-button
-                v-show="row.authStatus != 3"
-                v-has-permi="['assets:team:examine']"
+                v-if="row.authStatus != 3"
+                v-hasPermi="['assets:team:get']"
                 size="mini"
                 type="text"
-                @click="handleDetail(row, 'review')"
-              >审核</el-button>
+                @click="handleDetail(row, 'detail')"
+              >详情</el-button>
             </el-dropdown-item>
             <el-dropdown-item>
               <el-button
-                v-show="row.status == 0 && row.authStatus == 3"
+                v-if="row.status == 0 && row.authStatus == 3"
                 v-hasPermi="['assets:team:invitation']"
                 size="mini"
                 type="text"
@@ -194,7 +204,7 @@
             </el-dropdown-item>
             <el-dropdown-item>
               <el-button
-                v-show="row.apply && row.status == 0 && row.authStatus == 3"
+                v-if="row.apply && row.status == 0 && row.authStatus == 3"
                 v-hasPermi="['assets:team:deal']"
                 size="mini"
                 type="text"
@@ -277,7 +287,7 @@ export default {
       // 状态字典
       statusOptions: [
         { dictLabel: '启用', dictValue: '0' },
-        { dictLabel: '禁用', dictValue: '1' }
+        { dictLabel: '冻结', dictValue: '1' }
       ],
       // 审核状态字典
       authStatusOptions: [
@@ -292,10 +302,10 @@ export default {
       ],
       // 处理状态字典
       applyStatusOptions: [
-        { dictLabel: '未处理', dictValue: 0 },
-        { dictLabel: '已加入', dictValue: 1 },
+        { dictLabel: '待处理', dictValue: 0 },
+        { dictLabel: '已同意', dictValue: 1 },
         { dictLabel: '已拒绝', dictValue: 2 },
-        { dictLabel: '待加入', dictValue: 3 }
+        { dictLabel: '未邀请', dictValue: 3 }
       ],
       // 查询参数
       queryParams: {
@@ -304,12 +314,14 @@ export default {
         isAsc: 'desc',
         orderByColumn: 't0.create_time',
         name: undefined,
+        keywords: undefined,
         teamLeaderName: undefined,
         telphone: undefined,
         status: undefined,
         driverName: undefined,
         licenseNumber: undefined,
-        applyStatus: undefined
+        applyStatus: undefined,
+        authStatus: undefined
       },
       // 表单参数
       form: {},
@@ -322,20 +334,43 @@ export default {
       exportLoading: false
     };
   },
+  computed: {
+    routeName() {
+      return this.$store.state.settings.quickEntryName;
+    }
+  },
+  watch: {
+    routeName: {
+      handler: function(val) {
+        if (val === 'Team') {
+          this.resetQueryForm();
+          this.queryParams.authStatus = JSON.parse(this.$route.query.data).authStatus;
+          this.handleQuery();
+        }
+      },
+      deep: true
+    }
+  },
   created() {
     this.tableHeaderConfig(this.tableColumnsConfig, listTeamApi, {
       prop: 'edit',
       isShow: true,
       label: '操作',
       width: 180,
-      fixed: 'right'
+      fixed: 'left'
     });
+
+    const routeData = this.$route.query.data;
+    if (routeData) {
+      this.queryParams.authStatus = JSON.parse(routeData).authStatus;
+    }
     this.getList();
   },
   methods: {
     /** 查询调度者列表 */
     getList() {
       this.loading = true;
+      this.$store.dispatch('settings/changeQuick', null);
       listInfo(this.queryParams).then(response => {
         this.infoList = response.rows;
         this.total = response.total;
@@ -349,8 +384,12 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.resetForm('queryForm');
+      this.resetQueryForm();
       this.handleQuery();
+    },
+    resetQueryForm() {
+      this.resetForm('queryForm');
+      this.queryParams.authStatus = undefined;
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
@@ -396,7 +435,7 @@ export default {
     handleDelete(row) {
       const ids = row.id || this.ids;
       const teamNames = row.name || this.teamNames;
-      this.$confirm('是否确认删除调度者名称为"' + teamNames + '"的数据项，并解除关联的司机和车辆?', '警告', {
+      this.$confirm('是否确认删除调度组名称为"' + teamNames + '"的数据项，并解除关联的司机和车辆?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -413,7 +452,7 @@ export default {
       const params = Object.assign({}, this.queryParams);
       params.pageSize = undefined;
       params.pageNum = undefined;
-      this.download('assets/team/export', params, `调度者信息_${new Date().getTime()}.xlsx`).then(() => {
+      this.download('assets/team/export', params, `调度者信息`).then(() => {
         this.exportLoading = false;
       });
     },

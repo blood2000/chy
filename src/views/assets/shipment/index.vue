@@ -4,7 +4,7 @@
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
         <el-form-item label="货主" prop="searchValue">
           <el-input
-            v-model="queryParams.searchValue"
+            v-model.trim="queryParams.searchValue"
             placeholder="企业名称/货主姓名/手机号"
             clearable
             size="small"
@@ -144,6 +144,22 @@
             placeholder="请选择"
           />
         </el-form-item>
+        <el-form-item label="账号状态" prop="status">
+          <el-select
+            v-model="queryParams.status"
+            filterable
+            clearable
+            size="small"
+            style="width: 272px"
+          >
+            <el-option
+              v-for="dict in userStatusOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
           <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -207,7 +223,7 @@
           <span>{{ selectDictLabel(isOptions, row.isPrepaid) }}</span>
         </template>
         <template #createTime="{row}">
-          <span>{{ parseTime(row.createTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
         <template #updateTime="{row}">
           <span>{{ parseTime(row.updateTime, '{y}-{m}-{d}') }}</span>
@@ -216,13 +232,25 @@
           <span>{{ parseTime(row.authTime, '{y}-{m}-{d}') }}</span>
         </template>
         <template #authStatus="{row}">
-          <i v-show="row.authStatus === 0" class="el-icon-warning g-color-light-gray mr5" />
-          <i v-show="row.authStatus === 1" class="g-icon-deal mr5" />
+          <i v-show="row.authStatus === 0" class="g-icon-none mr5" />
+          <i v-show="row.authStatus === 1" class="g-icon-deal-blue mr5" />
           <i v-show="row.authStatus === 2" class="el-icon-error g-color-error mr5" />
           <i v-show="row.authStatus === 3" class="el-icon-success g-color-success mr5" />
           <span>{{ selectDictLabel(statusOptions, row.authStatus) }}</span>
         </template>
+        <template #status="{row}">
+          <i v-show="row.status === '1'" class="el-icon-error g-color-error mr5" />
+          <i v-show="row.status === '0'" class="el-icon-success g-color-success mr5" />
+          <span>{{ selectDictLabel(userStatusOptions, row.status) }}</span>
+        </template>
         <template #edit="{row}">
+          <el-button
+            v-if="row.authStatus != 3"
+            v-hasPermi="['assets:shipment:examine']"
+            size="mini"
+            type="text"
+            @click="handleDetail(row, 'review')"
+          >审核</el-button>
           <el-button
             v-hasPermi="['assets:shipment:manage']"
             size="mini"
@@ -230,26 +258,43 @@
             @click="handleManage(row)"
           >管理</el-button>
           <el-button
-            v-hasPermi="['assets:shipment:query']"
-            size="mini"
-            type="text"
-            @click="handleDetail(row, 'detail')"
-          >详情</el-button>
-          <el-button
             v-hasPermi="['assets:shipment:edit']"
             size="mini"
             type="text"
             @click="handleDetail(row, 'edit')"
           >修改</el-button>
+          <el-button
+            v-if="row.authStatus == 3"
+            v-hasPermi="['assets:shipment:query']"
+            size="mini"
+            type="text"
+            @click="handleDetail(row, 'detail')"
+          >详情</el-button>
           <TableDropdown>
             <el-dropdown-item>
               <el-button
-                v-show="row.authStatus != 3"
+                v-if="row.authStatus != 3"
+                v-hasPermi="['assets:shipment:query']"
+                size="mini"
+                type="text"
+                @click="handleDetail(row, 'detail')"
+              >详情</el-button>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <el-button
                 v-hasPermi="['assets:shipment:examine']"
                 size="mini"
                 type="text"
-                @click="handleDetail(row, 'review')"
-              >审核</el-button>
+                @click="roleAssignment(row)"
+              >角色分配</el-button>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <el-button
+                size="mini"
+                type="text"
+                :style="row.status == '0'?'color:red':'color:green'"
+                @click="updateStatus(row)"
+              >{{ row.status == '0'?'冻结':'启用' }}</el-button>
             </el-dropdown-item>
             <el-dropdown-item>
               <el-button
@@ -274,22 +319,26 @@
       <!-- 新增/修改/详情/审核 对话框 -->
       <shipment-dialog ref="ShipmentDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
       <!-- 管理 对话框 -->
-      <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :shipment-code="shipmentCode" :company-code="companyCode" />
+      <manage-dialog ref="ManageDialog" :shipper-type="shipperType" :open.sync="manageDialogOpen" :shipment-code="shipmentCode" :company-code="companyCode" :user-code="userCode" />
+      <!--  分配角色-->
+      <role-assignment-dialog ref="RoleAssignmentDialog" :open.sync="roleAssignmentDialogOpen" :user-id="userId" :admin-name="adminName" :shipment-code="shipmentCode" :company-code="companyCode" :user-code="userCode" />
     </div>
   </div>
 </template>
 
 <script>
 import { listShipmentApi, listShipment, getShipment, delShipment } from '@/api/assets/shipment';
+import { updateUserStatusByUserCode } from '@/api/system/user';
 import { getBranchList } from '@/api/system/branch';
 import ShipmentDialog from './shipmentDialog';
 import ManageDialog from './manageDialog.vue';
-
+import RoleAssignmentDialog from './roleAssignmentDialog.vue';
 export default {
   name: 'Shipment',
   components: {
     ShipmentDialog,
-    ManageDialog
+    ManageDialog,
+    RoleAssignmentDialog
   },
   data() {
     return {
@@ -315,6 +364,7 @@ export default {
       // 是否显示弹出层
       open: false,
       manageDialogOpen: false,
+      roleAssignmentDialogOpen: false,
       // 货主类型数据字典
       typeOptions: [
         { dictLabel: '发货人', dictValue: 0 },
@@ -336,6 +386,10 @@ export default {
       isOptions: [
         { dictLabel: '否', dictValue: 0 },
         { dictLabel: '是', dictValue: 1 }
+      ],
+      userStatusOptions: [
+        { dictLabel: '启用', dictValue: '0' },
+        { dictLabel: '冻结', dictValue: '1' }
       ],
       // 网点字典
       branchOptions: [],
@@ -371,7 +425,8 @@ export default {
         authTimeEnd: undefined,
         createTimeBegin: undefined,
         createTimeEnd: undefined,
-        branchCode: undefined
+        branchCode: undefined,
+        status: undefined
       },
       // 表单详情
       form: {},
@@ -380,9 +435,30 @@ export default {
       // 货主管理
       shipmentCode: null,
       companyCode: null,
+      userCode: null,
+      adminName: null,
+      userId: null,
+      shipperType: null,
       // 导出
       exportLoading: false
     };
+  },
+  computed: {
+    routeName() {
+      return this.$store.state.settings.quickEntryName;
+    }
+  },
+  watch: {
+    routeName: {
+      handler: function(val) {
+        if (val === 'Shipment') {
+          this.resetQueryForm();
+          this.queryParams.authStatus = JSON.parse(this.$route.query.data).authStatus;
+          this.handleQuery();
+        }
+      },
+      deep: true
+    }
   },
   created() {
     this.tableHeaderConfig(this.tableColumnsConfig, listShipmentApi, {
@@ -390,9 +466,15 @@ export default {
       isShow: true,
       label: '操作',
       width: 180,
-      fixed: 'right'
+      fixed: 'left'
     });
     this.getDictsOptions();
+
+    const routeData = this.$route.query.data;
+    if (routeData) {
+      this.queryParams.authStatus = JSON.parse(routeData).authStatus;
+    }
+
     this.getList();
   },
   methods: {
@@ -418,6 +500,7 @@ export default {
     /** 查询参数列表 */
     getList() {
       this.loading = true;
+      this.$store.dispatch('settings/changeQuick', null);
       listShipment(this.queryParams).then(response => {
         this.shipmentList = response.rows;
         this.total = response.total;
@@ -431,12 +514,16 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.resetQueryForm();
+      this.handleQuery();
+    },
+    resetQueryForm() {
       this.queryParams.authTimeBegin = undefined;
       this.queryParams.authTimeEnd = undefined;
       this.queryParams.createTimeBegin = undefined;
       this.queryParams.createTimeEnd = undefined;
       this.resetForm('queryForm');
-      this.handleQuery();
+      this.queryParams.authStatus = undefined;
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
@@ -482,7 +569,7 @@ export default {
     handleDelete(row) {
       const ids = row.id || this.ids;
       const adminNames = row.adminName || this.adminNames;
-      this.$confirm('是否确认删除货主姓名为"' + adminNames + '"的数据项?', '警告', {
+      this.$confirm('是否确认删除货主姓名为"' + adminNames + '"，以及以下的所有员工的数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -499,7 +586,7 @@ export default {
       const params = Object.assign({}, this.queryParams);
       params.pageSize = undefined;
       params.pageNum = undefined;
-      this.download('assets/shipment/export', params, `货主信息_${new Date().getTime()}.xlsx`).then(() => {
+      this.download('assets/shipment/export', params, `货主信息`).then(() => {
         this.exportLoading = false;
       });
     },
@@ -507,6 +594,8 @@ export default {
     handleManage(row) {
       this.shipmentCode = row.code;
       this.companyCode = row.companyCode;
+      this.userCode = row.adminCode;
+      this.shipperType = row.shipperType;
       this.manageDialogOpen = true;
     },
     /** 查询网点列表 */
@@ -522,6 +611,34 @@ export default {
       } else {
         this.branchOptions = [];
       }
+    },
+    // 分配角色
+    roleAssignment(row) {
+      this.shipmentCode = row.code;
+      this.companyCode = row.companyCode;
+      this.userCode = row.adminCode;
+      this.adminName = row.adminName;
+      this.userId = row.userId;
+      this.roleAssignmentDialogOpen = true;
+    },
+    // 解/禁用用户
+    updateStatus(row) {
+      var status = '0';
+      if (row.status === '0') {
+        status = '1';
+      } else if (row.status === '1') {
+        status = '0';
+      }
+      this.$confirm('是否确认' + (status === '0' ? '启用' : '冻结') + '货主"' + (row.adminName || row.telphone) + '"的账号?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return updateUserStatusByUserCode(row.adminCode, status);
+      }).then(() => {
+        this.getList();
+        this.msgSuccess(status === '0' ? '启用成功' : '冻结成功');
+      });
     }
   }
 };

@@ -5,18 +5,28 @@
         ref="queryForm"
         :model="queryParams"
         :inline="true"
-        label-width="100px"
+        label-width="68px"
       >
         <el-form-item label="车牌号" prop="licenseNumber">
           <el-input
-            v-model="queryParams.licenseNumber"
+            v-model.trim="queryParams.licenseNumber"
             placeholder="请输入车牌号"
             clearable
             size="small"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="归属类型" prop="vehicleAscriptionType">
+        <el-form-item label="车辆类型" prop="vehicleTypeCode">
+          <el-select v-model="queryParams.vehicleTypeCode" placeholder="请选择车辆类型" clearable filterable>
+            <el-option
+              v-for="dict in vehicleTypeOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <!-- <el-form-item label="归属类型" prop="vehicleAscriptionType">
           <el-select
             v-model="queryParams.vehicleAscriptionType"
             placeholder="请选择车辆归属类型"
@@ -31,8 +41,8 @@
               :value="dict.dictValue"
             />
           </el-select>
-        </el-form-item>
-        <el-form-item label="能源类型" prop="vehicleEnergyType">
+        </el-form-item> -->
+        <!-- <el-form-item label="能源类型" prop="vehicleEnergyType">
           <el-select
             v-model="queryParams.vehicleEnergyType"
             placeholder="请选择车辆能源类型"
@@ -47,7 +57,7 @@
               :value="dict.dictValue"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="审核状态" prop="authStatus">
           <el-select
             v-model="queryParams.authStatus"
@@ -80,7 +90,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="年审时间">
+        <!-- <el-form-item label="年审时间">
           <el-date-picker
             v-model="queryParams.annualVerificationBeginDate"
             clearable
@@ -100,7 +110,7 @@
             value-format="yyyy-MM-dd"
             placeholder="请选择"
           />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item>
           <el-button
             type="primary"
@@ -159,6 +169,16 @@
             @click="handleExport"
           >导出</el-button>
         </el-col>
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['assets:vehicle:report']"
+            type="warning"
+            icon="el-icon-upload2"
+            size="mini"
+            :disabled="reportCodes.length == 0"
+            @click="batchReportVehicle"
+          >车辆批量上报</el-button>
+        </el-col>
         <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
@@ -192,6 +212,9 @@
         <!--<template #classificationCode="{row}">
           <span>{{ selectDictLabel( licensePlateTypeOptions, row.classificationCode ) }}</span>
         </template>-->
+        <template #isReport="{row}">
+          <span>{{ selectDictLabel(isOption, row.isReport) }}</span>
+        </template>
         <!-- 车牌颜色 -->
         <template #vehicleLicenseColorCode="{row}">
           <span>{{ selectDictLabel( licenseColorOptions, row.vehicleLicenseColorCode ) }}</span>
@@ -220,6 +243,18 @@
         <template #vehicleHeight="{row}">
           <span>{{ selectDictLabel(vehicleHeightOptions, row.vehicleHeight) }}</span>
         </template>
+        <!-- 车总重量 -->
+        <template #vehicleTotalWeight="{row}">
+          <span>{{ fixed(row.vehicleTotalWeight) }}</span>
+        </template>
+        <!-- 车可载重量 -->
+        <template #vehicleLoadWeight="{row}">
+          <span>{{ fixed(row.vehicleLoadWeight) }}</span>
+        </template>
+        <!-- 车可载立方 -->
+        <template #vehicleRemainingLoadVolume="{row}">
+          <span>{{ fixed(row.vehicleRemainingLoadVolume) }}</span>
+        </template>
         <!-- 轴数 -->
         <template #axesNumber="{row}">
           <span>{{ selectDictLabel(axisTypeOptions, row.axesNumber) }}</span>
@@ -236,14 +271,14 @@
           <span>{{ parseTime(row.annualVerificationDate, '{y}-{m}-{d}') }}</span>
         </template>
         <template #createTime="{row}">
-          <span>{{ parseTime(row.createTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
         <template #updateTime="{row}">
           <span>{{ parseTime(row.updateTime, '{y}-{m}-{d}') }}</span>
         </template>
         <template #authStatus="{row}">
-          <i v-show="row.authStatus === 0" class="el-icon-warning g-color-light-gray mr5" />
-          <i v-show="row.authStatus === 1" class="g-icon-deal mr5" />
+          <i v-show="row.authStatus === 0" class="g-icon-none mr5" />
+          <i v-show="row.authStatus === 1" class="g-icon-deal-blue mr5" />
           <i v-show="row.authStatus === 2" class="el-icon-error g-color-error mr5" />
           <i v-show="row.authStatus === 3" class="el-icon-success g-color-success mr5" />
           <span>{{ selectDictLabel(authStatusOptions, row.authStatus) }}</span>
@@ -257,17 +292,17 @@
             @click="handleManage(row)"
           >管理</el-button>
           <el-button
-            size="mini"
-            type="text"
-            @click="handleDetail(row, 'detail')"
-          >详情</el-button>
-          <el-button
             v-show="teamCode || driverCode"
             v-hasPermi="teamCode?['assets:team:vehicle:del']:['assets:driver:vehicle:del']"
             size="mini"
             type="text"
             @click="handleDelBind(row)"
           >解除绑定</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleDetail(row, 'detail')"
+          >详情</el-button>
           <template v-if="!teamCode && !driverCode">
             <el-button
               v-hasPermi="['assets:vehicle:edit']"
@@ -278,11 +313,27 @@
             <TableDropdown>
               <el-dropdown-item>
                 <el-button
-                  v-show="row.authStatus === 0 || row.authStatus === 1"
+                  v-show="row.authStatus != 3"
                   size="mini"
                   type="text"
                   @click="handleDetail(row, 'review')"
                 >审核</el-button>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <el-button
+                  v-show="row.isReport === 0"
+                  v-hasPermi="['assets:vehicle:report']"
+                  size="mini"
+                  type="text"
+                  @click="reportVehicle(row)"
+                >上报</el-button>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <el-button
+                  size="mini"
+                  type="text"
+                  @click="handleChange(row)"
+                >转换</el-button>
               </el-dropdown-item>
               <el-dropdown-item>
                 <el-button
@@ -316,13 +367,14 @@
         @refresh="getList"
       />
       <!-- 管理归属司机/归属调度 对话框 -->
-      <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :vehicle-code="vehicleCode" />
+      <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :vehicle-code="vehicleCode" :license-number="licenseNumber" />
     </div>
   </div>
 </template>
 
 <script>
-import { listVehicleApi, listInfo, getInfo, delInfo, delDriverCar, delTeamCar } from '@/api/assets/vehicle';
+import { listVehicleApi, listInfo, getInfo, delInfo, delDriverCar, delTeamCar, changeDataByLicenseNumber } from '@/api/assets/vehicle';
+import { waybillReportVehicleByCode } from '@/api/data/report';
 import VehicleDialog from './vehicleDialog';
 import ManageDialog from './manageDialog';
 
@@ -352,6 +404,7 @@ export default {
       ids: [],
       vehicleNames: [],
       codes: [],
+      reportCodes: [],
       // 非单个禁用
       single: true,
       // 非多个禁用
@@ -385,6 +438,12 @@ export default {
   	  vehicleHeightOptions: [],
   	  // 轴数字典
   	  axisTypeOptions: [],
+      // 是否
+      isOption: [
+        { dictLabel: '否', dictValue: 0 },
+        { dictLabel: '是', dictValue: 1 },
+        { dictLabel: '上报中', dictValue: 3 }
+      ],
       // 车辆归属类型字典
       vehicleAscriptionTypeOptions: [
         { dictLabel: '自有', dictValue: '0' },
@@ -415,15 +474,34 @@ export default {
         annualVerificationBeginDate: undefined,
         annualVerificationEndDate: undefined,
         authStatus: undefined,
-        isFreeze: undefined
+        isFreeze: undefined,
+        vehicleTypeCode: undefined
       },
       // 表单是否禁用
       formDisable: false,
       // 车辆code
       vehicleCode: null,
+      licenseNumber: null,
       // 导出
       exportLoading: false
     };
+  },
+  computed: {
+    routeName() {
+      return this.$store.state.settings.quickEntryName;
+    }
+  },
+  watch: {
+    routeName: {
+      handler: function(val) {
+        if (val === 'Vehicle') {
+          this.resetQueryForm();
+          this.queryParams.authStatus = JSON.parse(this.$route.query.data).authStatus + '';
+          this.handleQuery();
+        }
+      },
+      deep: true
+    }
   },
   created() {
     this.tableHeaderConfig(this.tableColumnsConfig, listVehicleApi, {
@@ -431,11 +509,16 @@ export default {
       isShow: true,
       label: '操作',
       width: 180,
-      fixed: 'right'
+      fixed: 'left'
     });
     this.getDictsList();
     if (!this.teamCode && !this.driverCode) {
       // 如果这个页面是以组件形式展示在调度者管理弹窗或司机管理弹窗里面，则这里不加载列表
+      const routeData = this.$route.query.data;
+      if (routeData) {
+        this.queryParams.authStatus = JSON.parse(routeData).authStatus + '';
+      }
+
       this.getList();
     }
   },
@@ -455,7 +538,7 @@ export default {
         this.carBodyColorOptions = response.data;
       });
       // 车辆类型
-      this.getDicts('licenseNumberType').then(response => {
+      this.getDicts('vehicleClassification').then(response => {
         this.vehicleTypeOptions = response.data;
       });
       // 能源类型
@@ -482,7 +565,12 @@ export default {
     /** 查询车辆列表 */
     getList() {
       this.loading = true;
-      listInfo(this.queryParams).then((response) => {
+      this.$store.dispatch('settings/changeQuick', null);
+      const params = { ...this.queryParams };
+      if (params.licenseNumber) {
+        params.licenseNumber = params.licenseNumber.toUpperCase();
+      }
+      listInfo(params).then((response) => {
         this.vehicleList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -501,16 +589,26 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.resetQueryForm();
+      this.handleQuery();
+    },
+    resetQueryForm() {
       this.queryParams.annualVerificationBeginDate = undefined;
       this.queryParams.annualVerificationEndDate = undefined;
       this.resetForm('queryForm');
-      this.handleQuery();
+      this.queryParams.authStatus = undefined;
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map((item) => item.id);
       this.vehicleNames = selection.map((item) => item.licenseNumber);
       this.codes = selection.map((item) => item.code);
+      this.reportCodes = [];
+      selection.map(item => {
+        if (item.isReport === 0) {
+          this.reportCodes.push(item.code);
+        }
+      });
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
     },
@@ -572,19 +670,34 @@ export default {
         this.msgSuccess('删除成功');
       });
     },
+    /** 转换 */
+    handleChange(row) {
+      const vehicleName = row.licenseNumber;
+      this.$confirm('是否确认仅保留车牌号为"' + vehicleName + '"的当前数据项，其他为该车牌号的信息将被转换，包括司机、运单等?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return changeDataByLicenseNumber(row.code, row.licenseNumber);
+      }).then(() => {
+        this.getList();
+        this.msgSuccess('转换成功');
+      });
+    },
     /** 导出按钮操作 */
     handleExport() {
       this.exportLoading = true;
       const params = Object.assign({}, this.queryParams);
       params.pageSize = undefined;
       params.pageNum = undefined;
-      this.download('assets/vehicle/export', params, `车辆信息_${new Date().getTime()}.xlsx`).then(() => {
+      this.download('assets/vehicle/export', params, `车辆信息`).then(() => {
         this.exportLoading = false;
       });
     },
     /** 管理按钮操作 */
     handleManage(row) {
       this.vehicleCode = row.code;
+      this.licenseNumber = row.licenseNumber;
       this.manageDialogOpen = true;
     },
     /** 解除司机/调度者与车辆的关联 */
@@ -612,6 +725,41 @@ export default {
         this.getList();
         this.msgSuccess('操作成功');
       });
+    },
+    batchReportVehicle(row) {
+      var codes = this.reportCodes;
+      if (row.isReport === 0) {
+        codes = row.code || this.reportCodes;
+      }
+      if (codes.length === 0) {
+        this.msgWarning('请选择未上报的车辆');
+        return;
+      }
+      codes.forEach(code => {
+        waybillReportVehicleByCode(code).then(response => {
+          if (response.code === 200) {
+            this.msgSuccess('上报成功');
+          } else {
+            this.msgWarning('上报失败');
+          }
+        });
+      });
+    },
+    // 上报
+    reportVehicle(row) {
+      if (row.code) {
+        waybillReportVehicleByCode(row.code).then(response => {
+          if (response.code === 200) {
+            this.msgSuccess('上报成功');
+          } else {
+            this.msgError(response.data);
+          }
+        }).catch(() => {
+          this.msgError('上报失败');
+        });
+      } else {
+        this.msgWarning('请选择要上报的车辆');
+      }
     }
   }
 };

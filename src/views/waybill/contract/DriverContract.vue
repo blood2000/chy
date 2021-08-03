@@ -8,7 +8,7 @@
       plain
       class="wholecont-print"
     >打印</el-button>
-
+    <!-- @click="print" -->
     <div id="wholecont" class="wholecont-div">
 
       <h3 id="plat_hetong_title" style="text-indent: 4em;">福建大道成物流科技有限公司无车承运平台运输电子合同</h3>
@@ -47,7 +47,7 @@
       <p class="Paragraph">本合同适用于福建大道成物流科技有限公司超好运网络货运平台（以下简称“超好运平台”）所有注册认证的司机会员。甲乙双方达成交易，由甲方委托乙方完成货物运输。双方就货物运输事宜达成以下协议以资共守。</p>
 
       <div class="same-div">
-        <h4><b>一、一、	本批货物内容、运输要求及支付方式见超好运平台上由甲方发布并由乙方确认接受的运单。具体内容如下：</b></h4>
+        <h4><b>一、	本批货物内容、运输要求及支付方式见超好运平台上由甲方发布并由乙方确认接受的运单。具体内容如下：</b></h4>
         <h4><b>1、货物信息表</b></h4>
         <table width="93%" border="1" bordercolor="#404040" cellspacing="0" cellpadding="0" style="padding: 25px">
           <tbody><tr>
@@ -76,35 +76,34 @@
             </tr>
             <tr>
               <td><b>计划数量</b></td>
-              <td id="weight">{{ obj.loadWeight }}
-                吨
+              <td id="weight">
+                {{ obj.stowageStatus == '0' ? fixed(obj.loadWeight) + '吨' : (obj.stowageStatus == '1'? fixed(obj.loadWeight) + '立方': floor(obj.loadWeight, 0) + '车') }}
               </td>
               <td><b>货物描述</b></td>
               <td id="goods_type">{{ obj.goodsName }}</td>
-              <td><b>货值（元）</b></td>
-              <td id="goods_total">{{ obj.goodsAmount }}</td>
+              <!-- <td><b>货值（元）</b></td>
+              <td id="goods_total">{{ obj.goodsAmount }}</td> -->
+              <td><b>运费金额（元）</b></td>
+              <td id="amount">￥{{ floor(obj.deliveryFeeDeserved) }}</td>
             </tr>
             <tr>
-              <td><b>运费金额（元）</b></td>
-              <td id="amount">￥{{ obj.deliveryFeeDeserved }}</td>
               <td><b>合同签订时间</b></td>
               <td id="create_time">{{ obj.createTime }}</td>
-              <td><b>货物装车截止时间</b></td>
-              <td id="last_loading_time">{{ obj.lastLoadingTime }}</td>
+              <td><b>货物装车时间</b></td>
+              <td id="last_loading_time">{{ obj.loadTime }}</td>
+              <td><b>是否开票</b></td>
+              <td>{{ obj.aaaaaaaaaaaaa || '是' }}</td>
             </tr>
             <tr>
-              <td><b>是否开票</b></td>
-
-              <td>{{ obj.aaaaaaaaaaaaa || '是' }}</td>
               <td><b>备注</b></td>
-              <td colspan="4">{{ obj.shipperRemark || '' }}</td>
+              <td colspan="5">{{ obj.orderRemark || '' }}</td>
             </tr>
           </tbody></table>
       </div>
 
 
       <div class="same-div">
-        <h4><b>、在本次运单所含运费总额未完全支付完毕之前，由于订单内容发生变化，甲、
+        <h4><b>二、在本次运单所含运费总额未完全支付完毕之前，由于订单内容发生变化，甲、
           乙双方可协商变更未支付运费部分的现金部分的数额，具体变更情况由双方另行
           签署补充协议确定。</b></h4>
       </div>
@@ -205,13 +204,15 @@
           <p id="dfirst" class="row row1">甲方签字： {{ obj.branchName }}</p>
           <font id="jiafangspan" style="color:#FFF;font-size:10px">{{ obj.aaaaaaaaaaaaa || '' }}</font>
           <p class="row row2">(签章)</p>
-          <p id="jiafangTime" class="row row2">时间：{{ obj.aaaaaaaaaaaaa || '' }}</p>
+          <p id="jiafangTime" class="row row2">时间：{{ parseTime(obj.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</p>
+          <img v-if="obj.isDzqzContract === 1" class="seal-img" src="~@/assets/images/icon/icon_seal.png" alt="">
         </div>
         <div class="company-info company2" style="margin-left: 5%">
           <p id="dsecond" class="row row1">乙方签字： {{ obj.driverName }}</p>
           <font id="yifangspan" style="color:#FFF;font-size:10px">{{ obj.aaaaaaaaaaaaa || '' }}</font>
           <p class="row row2">(签章)</p>
           <p id="yifangTime" class="row row2">时间：{{ obj.aaaaaaaaaaaaa || '' }}</p>
+          <img v-if="obj.isDzqzContract === 1" class="seal-img" :src="obj.sealPath" alt="">
         </div>
         <div class="clear" />
       </div>
@@ -236,10 +237,14 @@ export default {
       printObj: {
         id: 'wholecont',
         popTitle: '福建大道成物流科技有限公司',
-        extraCss: '',
+        extraCss: 'ddc',
         extraHead: '<meta http-equiv="Content-Language" content="zh-cn"/>'
-      }
+      },
+      src: ''
     };
+  },
+  methods: {
+
   }
 };
 </script>
@@ -251,4 +256,28 @@ table th, table td {
     border-right: 1px solid #000;
     font-weight: normal;
 }
+div .header-top{
+  display: none;
+}
+@page{
+    size:  auto;   /* auto is the initial value */
+    margin: 3mm;  /* this affects the margin in the printer settings */
+  }
+
+  html{
+    background-color: #FFFFFF;
+    margin: 0;  /* this affects the margin on the html before sending to printer */
+  }
+
+  body{
+    border: solid 1px blue ;
+    margin: 10mm 15mm 10mm 15mm; /* margin you want for the content */
+  }
+  .seal-img{
+    position: relative;
+    top: -200px;
+    left: 50px;
+    height: 200px;
+    width: 200px;
+  }
 </style>

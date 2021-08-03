@@ -9,19 +9,19 @@
           <el-input v-model="form.invoiceCount" disabled placeholder="暂无" clearable size="small" style="width:90%;" />
         </el-form-item>
         <el-form-item label="总运单结算金额" prop="totalDeliveryFeeDeserved">
-          <el-input v-model="form.totalDeliveryFeeDeserved" disabled placeholder="暂无" clearable size="small" style="width:90%;" />
+          <el-input v-model="form.totalDeliveryFeeDeserved" disabled :precision="2" placeholder="暂无" clearable size="small" style="width:90%;" />
         </el-form-item>
         <el-form-item label="服务费结算金额" prop="totalServiceFee">
-          <el-input v-model="form.totalServiceFee" disabled placeholder="暂无" clearable size="small" style="width:90%;" />
+          <el-input v-model="form.totalServiceFee" disabled :precision="2" placeholder="暂无" clearable size="small" style="width:90%;" />
         </el-form-item>
         <!-- <img v-viewer :src="form.invoiceInfoGroupVos[0].invoiceImg" class="img-box"> -->
         <img v-for="(img, index) in form.invoiceImgUrl" :key="index" v-viewer :src="img" class="img-box">
         <el-row :gutter="10">
           <el-col :span="1.5">
             <el-button
-              v-if="hasFreightInvoice"
+              v-if="hasFreightInvoice && !hasServiceInvoice"
               type="primary"
-              icon="el-icon-upload2"
+              icon="el-icon-download"
               size="mini"
               @click="handleExportFreight"
             >导出运费明细</el-button>
@@ -30,7 +30,7 @@
             <el-button
               v-if="hasServiceInvoice"
               type="primary"
-              icon="el-icon-upload2"
+              icon="el-icon-download"
               size="mini"
               @click="handleExportService"
             >导出服务费明细</el-button>
@@ -94,54 +94,64 @@
         <div class="bg-info">
           <div class="header">结算信息</div>
           <div style="padding:20px">
-            <el-table v-loading="loading" :data="invoicelist" border stripe>
-              <el-table-column width="180" label="装货地" align="center" prop="invoiceInfoStatisticsVo.loadFormattedAddress" show-overflow-tooltip />
-              <el-table-column width="180" label="卸货地" align="center" prop="invoiceInfoStatisticsVo.unloadFormattedAddress" show-overflow-tooltip />
-              <el-table-column width="120" label="货品类型" align="center" prop="invoiceInfoStatisticsVo.goodsName" />
-              <el-table-column width="120" label="装货数量" align="center" prop="invoiceInfoStatisticsVo.wayBillCount" />
-              <el-table-column width="120" label="配载方式" align="center" prop="invoiceInfoStatisticsVo.stowageStatus">
+            <el-table v-loading="loading" highlight-current-row :data="invoicelist" border>
+              <el-table-column label="装货地" width="120" align="center" prop="invoiceInfoStatisticsVo.loadFormattedAddress" show-overflow-tooltip />
+              <el-table-column label="卸货地" width="120" align="center" prop="invoiceInfoStatisticsVo.unloadFormattedAddress" show-overflow-tooltip />
+              <el-table-column width="120" label="货物大类" align="center" prop="invoiceInfoStatisticsVo.goodsBigTypeName" show-overflow-tooltip />
+              <el-table-column width="120" label="装货车数" align="center" prop="invoiceInfoStatisticsVo.wayBillCount" />
+              <el-table-column width="100" label="装车数量" align="center">
                 <template #default="scope">
                   <span v-show="scope.row.invoiceInfoStatisticsVo.stowageStatus === '0'">
-                    吨数配载
+                    {{ fixed(scope.row.invoiceInfoStatisticsVo.loadWeight) }}(吨)
                   </span>
                   <span v-show="scope.row.invoiceInfoStatisticsVo.stowageStatus === '1'">
-                    方数配载
+                    {{ fixed(scope.row.invoiceInfoStatisticsVo.loadWeight) }}(方)
                   </span>
                   <span v-show="scope.row.invoiceInfoStatisticsVo.stowageStatus === '2'">
-                    车数配载
-                  </span>
-                </template>
-              </el-table-column>
-              <el-table-column width="120" label="实发数量" align="center">
-                <template #default="scope">
-                  <span v-show="scope.row.invoiceInfoStatisticsVo.stowageStatus === '0'">
-                    {{ scope.row.invoiceInfoStatisticsVo.loadWeight }}(吨)
-                  </span>
-                  <span v-show="scope.row.invoiceInfoStatisticsVo.stowageStatus === '1'">
-                    {{ scope.row.invoiceInfoStatisticsVo.loadWeight }}(立方)
-                  </span>
-                  <span v-show="scope.row.invoiceInfoStatisticsVo.stowageStatus === '2'">
-                    {{ scope.row.invoiceInfoStatisticsVo.loadWeight }}(车)
+                    {{ Math.floor(scope.row.invoiceInfoStatisticsVo.loadWeight) }}(车)
                   </span>
                 </template>
               </el-table-column>
               <el-table-column width="120" label="结算数量" align="center">
                 <template #default="scope">
                   <span v-show="scope.row.invoiceInfoStatisticsVo.stowageStatus === '0'">
-                    {{ scope.row.invoiceInfoStatisticsVo.unloadWeight }}(吨)
+                    {{ fixed(scope.row.invoiceInfoStatisticsVo.unloadWeight) }}(吨)
                   </span>
                   <span v-show="scope.row.invoiceInfoStatisticsVo.stowageStatus === '1'">
-                    {{ scope.row.invoiceInfoStatisticsVo.unloadWeight }}(立方)
+                    {{ fixed(scope.row.invoiceInfoStatisticsVo.unloadWeight) }}(方)
                   </span>
                   <span v-show="scope.row.invoiceInfoStatisticsVo.stowageStatus === '2'">
-                    {{ scope.row.invoiceInfoStatisticsVo.unloadWeight }}(车)
+                    {{ Math.floor(scope.row.invoiceInfoStatisticsVo.unloadWeight) }}(车)
                   </span>
                 </template>
               </el-table-column>
               <el-table-column width="120" label="发票类型" align="center" prop="invoiceType" :formatter="invoiceTypeFormatter" />
-              <el-table-column width="150" label="结算运价（含税）" align="center" prop="invoiceInfoStatisticsVo.goodsPrice" />
-              <el-table-column width="150" label="发票金额（含税）" align="center" prop="amount" />
-              <el-table-column fixed="right" label="运单明细" align="center" width="100">
+              <el-table-column width="120" label="开票金额" align="center" prop="amount">
+                <template #default="scope">
+                  <span>{{ floor(scope.row.amount) }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column width="150" label="司机实收金额" align="center" prop="invoiceInfoStatisticsVo.totalDeliveryCashFee">
+                <template #default="scope">
+                  <span>{{ floor(scope.row.invoiceInfoStatisticsVo.totalDeliveryCashFee) }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column width="120" label="服务费金额" align="center" prop="invoiceInfoStatisticsVo.totalServiceFee">
+                <template #default="scope">
+                  <span>{{ floor(scope.row.invoiceInfoStatisticsVo.totalServiceFee) }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column width="120" label="纳税金额" align="center" prop="invoiceInfoStatisticsVo.totalTaxPayment">
+                <template #default="scope">
+                  <span>{{ floor(scope.row.invoiceInfoStatisticsVo.totalTaxPayment) }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column width="120" label="货主实付金额" align="center" prop="invoiceInfoStatisticsVo.totalShipperRealPay">
+                <template #default="scope">
+                  <span>{{ floor(scope.row.invoiceInfoStatisticsVo.totalShipperRealPay) }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column fixed="left" label="运单明细" align="center" width="100">
                 <template #default="scope">
                   <el-button type="text" size="small" icon="el-icon-document-checked" @click="handleClick(scope.row)">详情</el-button>
                 </template>
@@ -203,7 +213,7 @@ export default {
   },
   computed: {
     idCode() {
-      return this.$route.query.id;
+      return this.$route.query.code;
     }
   },
   watch: {
@@ -239,19 +249,20 @@ export default {
         });
         // 判断是否有运费发票
         const freightInvoice = that.invoicelist.filter(item => item.invoiceType === '1');
-        // console.log(freightInvoice);
+        console.log(freightInvoice);
         if (freightInvoice.length === 0) {
           that.hasFreightInvoice = false;
         } else {
           that.hasFreightInvoice = true;
         }
+        console.log(that.hasFreightInvoice);
         // 判断是否有服务费发票
         const serviceInvoice = that.invoicelist.filter(item => item.invoiceType === '2');
-        // console.log(serviceInvoice);
+        console.log(serviceInvoice);
         if (serviceInvoice.length === 0) {
           that.hasServiceInvoice = false;
         } else {
-          that.hasFreightInvoice = true;
+          that.hasServiceInvoice = true;
         }
         // console.log(that.hasFreightInvoice);
         // console.log(that.hasServiceInvoice);
@@ -265,11 +276,11 @@ export default {
     },
     // 导出运费明细
     handleExportFreight() {
-      this.download('/transportation/invoiceApply/export', { applyCode: this.form.code, type: 1 }, `运费明细_${new Date().getTime()}.xlsx`);
+      this.download('/transportation/invoiceApply/export', { applyCode: this.form.code, type: 1 }, `运费明细`);
     },
     // 导出服务费明细
     handleExportService() {
-      this.download('/transportation/invoiceApply/export', { applyCode: this.form.code, type: 2 }, `服务费明细_${new Date().getTime()}.xlsx`);
+      this.download('/transportation/invoiceApply/export2', { applyCode: this.form.code, type: 2 }, `服务费明细(两票制)`);
     },
     // 查看发票里的运单
     handleClick(row) {

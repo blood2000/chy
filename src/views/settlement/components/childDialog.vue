@@ -2,6 +2,16 @@
   <!-- 子单对话框 -->
   <el-dialog :title="title" :visible="visible" width="1400px" append-to-body :close-on-click-modal="false" @close="cancel">
     <RefactorTable :loading="loading" :data="childlist" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
+      <template #loadWeight="{row}">
+        <span v-if="row.stowageStatus === '1'">{{ row.loadWeight || '0.000' }} 方</span>
+        <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.loadWeight) || '0' }} 车</span>
+        <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.loadWeight || '0.000' }} 吨</span>
+      </template>
+      <template #unloadWeight="{row}">
+        <span v-if="row.stowageStatus === '1'">{{ row.unloadWeight || '0.000' }} 方</span>
+        <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.unloadWeight) || '0' }} 车</span>
+        <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.unloadWeight || '0.000' }} 吨</span>
+      </template>
       <!-- <template #lastLoadingTime="{row}">
         <span>{{ parseTime(row.lastLoadingTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
       </template>
@@ -40,7 +50,6 @@
 
 <script>
 import { childListApi, childList } from '@/api/settlement/adjust';
-// import UploadImage from '@/components/UploadImage/index';
 // 运单详情弹窗
 import DetailDialog from '@/views/waybill/components/detailDialog';
 
@@ -48,7 +57,6 @@ export default {
   name: 'ChildDialog',
   components: {
     DetailDialog
-    // UploadImage
   },
   props: {
     title: {
@@ -97,7 +105,7 @@ export default {
       isShow: true,
       label: '操作',
       width: 100,
-      fixed: 'right'
+      fixed: 'left'
     });
   },
   methods: {

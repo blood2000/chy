@@ -1,6 +1,7 @@
 'use strict'
 const path = require('path')
 const defaultSettings = require('./src/settings.js')
+const CompressionPlugin = require('compression-webpack-plugin');
 
 function resolve(dir) {
   return path.join(__dirname, dir)
@@ -34,15 +35,29 @@ module.exports = {
     proxy: {
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       [process.env.VUE_APP_BASE_API]: {
-        target: process.env.VUE_APP_BASE_HOST, // 测试
-        // target: `http://192.168.30.1:8080`, // 绍
-        // target: `http://192.168.30.171:8080`, // 觉
-        // target: `http://192.168.30.208:8080`, //秀
-        // target: `http://192.168.30.186:8080`, //同
-        //target: `http://192.168.30.134:8080`, //志
+         target: process.env.VUE_PROTOCOL+process.env.VUE_APP_BASE_HOST, // 测试
+        // target: `http://10.0.0.75:8080`, // test
+        // target: `http://124.71.25.3:8080`, // prop
+        // target: `http://192.168.30.130:8080`, // 绍
+        // target: `http://192.168.30.30:8080`,  // 坤
+        // target: `http://192.168.30.167:8080`, // 秀
+        // target: `http://192.168.30.186:8080`, // 同
+        // target: `http://192.168.30.134:8080`, // 志
+        // target: `http://192.168.30.201:8080`, // 又
+        // target: `http://192.168.30.160:8080`, // 东
+        // target: `http://192.168.30.90:8080`,  // 强
+        // target: `http://192.168.30.29:8080`,  // 旗
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
+        }
+      },
+
+      '/pdf':{
+        target: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com', // 电子签章批量合同导出
+        changeOrigin: true,
+        pathRewrite: {
+          ['^/pdf']: ''
         }
       }
     },
@@ -54,7 +69,17 @@ module.exports = {
       alias: {
         '@': resolve('src')
       }
-    }
+    },
+    plugins: [
+      new CompressionPlugin({
+        algorithm: 'gzip',
+        test: /\.js$|\.html$|\.css$/, // 匹配文件名
+        filename: '[path][base].gz', // 压缩后的文件名(保持原文件名，后缀加.gz)
+        minRatio: 1, // 压缩率小于1才会压缩
+        threshold: 10240, // 对超过10k的数据压缩
+        deleteOriginalAssets: false
+      }),
+    ]
   },
   chainWebpack(config) {
     config.plugins.delete('preload') // TODO: need test

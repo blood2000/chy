@@ -1,7 +1,7 @@
 <template>
   <!-- 归属司机列表 -->
   <div class="app-container">
-    <el-table v-loading="loading" border stripe :data="infoList">
+    <el-table v-loading="loading" highlight-current-row border :data="infoList">
       <el-table-column label="司机姓名" align="center" prop="name" />
       <el-table-column label="司机类别" align="center" prop="driverType">
         <template slot-scope="scope">
@@ -10,8 +10,8 @@
       </el-table-column>
       <el-table-column label="审核状态" align="center" prop="authStatus">
         <template slot-scope="scope">
-          <i v-show="scope.row.authStatus === 0" class="el-icon-warning g-color-light-gray mr5" />
-          <i v-show="scope.row.authStatus === 1" class="g-icon-deal mr5" />
+          <i v-show="scope.row.authStatus === 0" class="g-icon-none mr5" />
+          <i v-show="scope.row.authStatus === 1" class="g-icon-deal-blue mr5" />
           <i v-show="scope.row.authStatus === 2" class="el-icon-error g-color-error mr5" />
           <i v-show="scope.row.authStatus === 3" class="el-icon-success g-color-success mr5" />
           <span>{{ selectDictLabel(statusOptions, scope.row.authStatus) }}</span>
@@ -47,8 +47,8 @@ export default {
       infoList: [],
       // 司机类别字典
       driverTypeOptions: [
-        { dictLabel: '独立司机', dictValue: 1 },
-        { dictLabel: '聘用司机', dictValue: 2 }
+        { dictLabel: '零散司机', dictValue: 1 },
+        { dictLabel: '雇佣司机', dictValue: 2 }
       ],
       // 审核状态字典
       statusOptions: [

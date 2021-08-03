@@ -6,7 +6,7 @@
       :inline="true"
       label-width="90px"
     >
-      <div v-show="isAdmin" class="app-container" style="display: flex; align-items: center;">
+      <div v-if="!isShipment" class="app-container" style="display: flex; align-items: center;">
         <el-form-item label="货主信息" prop="shipmentCode" style="margin-bottom:0">
           <!-- filterable开启可搜索 remote远程搜索 reserve-keyword 保存搜索关键词 -->
           <el-select
@@ -16,7 +16,7 @@
             clearable
             remote
             reserve-keyword
-            placeholder="请选择货主企业"
+            placeholder="请选择货主"
             :remote-method="remoteMethod"
             :loading="shipmentloading"
             style="width: 230px"
@@ -30,7 +30,7 @@
               :value="dict.code"
             >
               <div class="ly-flex-pack-justify">
-                <span style="margin-right:10px">{{ dict.adminName }}</span>
+                <span style="margin-right:10px">{{ dict.adminName }}（{{ dict.telphone }}）</span>
                 <span>{{ dict.companyName }}</span>
               </div>
             </el-option>
@@ -38,7 +38,7 @@
         </el-form-item>
         <span v-if="!queryParams.shipmentCode" class="g-color-warning">
           <i class="el-icon-warning" />
-          你还未选择企业
+          您还未选择货主
         </span>
       </div>
 
@@ -48,7 +48,7 @@
           prop="orderNo"
         >
           <el-input
-            v-model="queryParams.orderNo"
+            v-model.trim="queryParams.orderNo"
             placeholder="请输入货源单号"
             clearable
             size="small"
@@ -78,7 +78,7 @@
           prop="loading"
         >
           <el-input
-            v-model="queryParams.loading"
+            v-model.trim="queryParams.loading"
             placeholder="装货地/装货电话/装货人"
             clearable
             size="small"
@@ -91,7 +91,7 @@
           prop="receiving"
         >
           <el-input
-            v-model="queryParams.receiving"
+            v-model.trim="queryParams.receiving"
             placeholder="卸货地/卸货电话/卸货人"
             clearable
             size="small"
@@ -104,7 +104,7 @@
           prop="waybillNo"
         >
           <el-input
-            v-model="queryParams.waybillNo"
+            v-model.trim="queryParams.waybillNo"
             placeholder="请输入运输单号"
             clearable
             size="small"
@@ -119,6 +119,8 @@
           <el-date-picker
             v-model="loadTime"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -133,6 +135,8 @@
           <el-date-picker
             v-model="unloadTime"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -170,7 +174,7 @@
       >
         <el-col :span="1.5">
           <el-button
-            v-hasPermi="['assets:vehicle:edit']"
+            v-hasPermi="['askfor:invoice:batch']"
             type="primary"
             icon="el-icon-document-checked"
             size="mini"
@@ -178,10 +182,11 @@
             @click="handleAskfor"
           >批量索票</el-button>
           <el-button
-            v-hasPermi="['assets:vehicle:edit']"
+            v-hasPermi="['askfor:invoice:export']"
             type="primary"
-            icon="el-icon-upload2"
+            icon="el-icon-download"
             size="mini"
+            :loading="loadingExport"
             @click="handleExport"
           >导出</el-button>
         </el-col>
@@ -193,8 +198,8 @@
           @queryTable="getList"
         />
       </el-row>
-
-      <RefactorTable :loading="loading" :data="askforlist" :table-columns-config="tableColumnsConfig" :max-height="isAdmin ? '400':'500'" @selection-change="handleSelectionChange">
+      <!-- :max-height="isAdmin ? '380':'500'" -->
+      <RefactorTable :loading="loading" :data="askforlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
         <template #stowageStatus="{row}">
           <span>{{ selectDictLabel(stowageStatusOptions, row.stowageStatus) }}</span>
         </template>
@@ -205,6 +210,16 @@
             {{ selectDictLabel(statusOptions, row.status) }}
           </span>
         </template>
+        <template #loadWeight="{row}">
+          <span v-if="row.stowageStatus === '1'">{{ row.loadWeight || '0.000' }} 方</span>
+          <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.loadWeight) || '0' }} 车</span>
+          <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.loadWeight || '0.000' }} 吨</span>
+        </template>
+        <template #unloadWeight="{row}">
+          <span v-if="row.stowageStatus === '1'">{{ row.unloadWeight || '0.000' }} 方</span>
+          <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.unloadWeight) || '0' }} 车</span>
+          <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.unloadWeight || '0.000' }} 吨</span>
+        </template>
         <template #fillTime="{row}">
           <span>{{ parseTime(row.fillTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
@@ -214,6 +229,7 @@
 
         <template #edit="{row}">
           <el-button
+            v-hasPermi="['askfor:invoice:detail']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 1)"
@@ -224,6 +240,7 @@
       <pagination
         v-show="total>0"
         :total="total"
+        :page-sizes="[10, 50, 100, 1000, 2000, 3000]"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
         @pagination="getList"
@@ -233,30 +250,30 @@
       <detail-dialog ref="DetailDialog" :current-id="currentId" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" />
 
     </div>
-
+    <div style="height:80px" />
     <el-row type="flex" :gutter="10" class="g-statistics-bg">
       <el-col :span="1">
         <img src="../../../../src/assets/images/icon/total.png" alt="">
       </el-col>
       <el-col :span="2">
         <div class="g-statistics-tag">运单数量：</div>
-        <div class="g-statistics-num">{{ feeinfo.waybillNum }}</div>
+        <div class="g-statistics-num">{{ feeinfo.waybillNum.toFixed(2) }}</div>
       </el-col>
       <el-col :span="2">
         <div class="g-statistics-tag">运费金额：</div>
-        <div class="g-statistics-num">{{ feeinfo.deliveryFee }}</div>
+        <div class="g-statistics-num">{{ feeinfo.deliveryCashFee.toFixed(2) }}</div>
       </el-col>
       <el-col :span="2">
         <div class="g-statistics-tag">运费税额：</div>
-        <div class="g-statistics-num">{{ feeinfo.taxPayment }}</div>
+        <div class="g-statistics-num">{{ feeinfo.taxPayment.toFixed(2) }}</div>
       </el-col>
       <el-col :span="2">
         <div class="g-statistics-tag">服务费金额：</div>
-        <div class="g-statistics-num">{{ feeinfo.serviceFee }}</div>
+        <div class="g-statistics-num">{{ feeinfo.serviceFee.toFixed(2) }}</div>
       </el-col>
       <el-col :span="2">
         <div class="g-statistics-tag">服务费税额：</div>
-        <div class="g-statistics-num">{{ feeinfo.serviceTaxFee }}</div>
+        <div class="g-statistics-num">{{ feeinfo.serviceTaxFee.toFixed(2) }}</div>
       </el-col>
     </el-row>
   </div>
@@ -268,13 +285,14 @@ import { getUserInfo } from '@/utils/auth';
 // import ChildDialog from '../components/childDialog';
 // 运单详情弹窗
 import DetailDialog from '@/views/waybill/components/detailDialog';
-
+import { pickerOptions } from '@/utils/dateRange';
 
 export default {
-  'name': 'AskforList',
+  'name': 'Askfor',
   components: { DetailDialog },
   data() {
     return {
+      pickerOptions,
       tableColumnsConfig: [],
       api: askforListApi,
       // 遮罩层
@@ -340,7 +358,7 @@ export default {
         { 'dictLabel': '已装货', 'dictValue': '2' },
         { 'dictLabel': '已签收(已卸货)', 'dictValue': '3' },
         { 'dictLabel': '已回单(收单复核)', 'dictValue': '4' },
-        { 'dictLabel': '已结算', 'dictValue': '5' },
+        { 'dictLabel': '已核算', 'dictValue': '5' },
         { 'dictLabel': '已申请(打款)', 'dictValue': '6' },
         { 'dictLabel': '已打款', 'dictValue': '7' },
         { 'dictLabel': '已申请开票', 'dictValue': '8' },
@@ -360,43 +378,48 @@ export default {
       // },
       // 账号信息
       isAdmin: false,
+      isShipment: false,
       user: {},
       shipment: {},
       // 数据统计
       feeinfo: {
         waybillNum: 0,
-        deliveryFee: 0,
+        // deliveryFee: 0,
         taxPayment: 0,
         serviceFee: 0,
-        serviceTaxFee: 0
+        serviceTaxFee: 0,
+        deliveryCashFee: 0
       },
       shipmentInfoQuery: {
         pageNum: 1,
         pageSize: 10,
         authStatus: 3,
-        adminName: null
+        searchValue: null
       },
       shipmentloading: false,
-      dataOver: false // 是否请求完了
+      dataOver: false, // 是否请求完了
+      loadingExport: false
     };
   },
   computed: {
   },
   created() {
-    const { isAdmin = false, user = {}, shipment = {}} = getUserInfo() || {};
+    const { isAdmin = false, isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
     this.isAdmin = isAdmin;
+    this.isShipment = isShipment;
     this.user = user;
     this.shipment = shipment;
-    if (this.isShipment) {
+    this.getList();
+    /* if (this.isShipment) {
       this.queryParams.shipmentCode = shipment.info.code;
       this.getList();
-    }
+    }*/
     this.tableHeaderConfig(this.tableColumnsConfig, askforListApi, {
       prop: 'edit',
       isShow: true,
       label: '操作',
       width: 180,
-      fixed: 'right'
+      fixed: 'left'
     });
     // this.getShipment();
     this.listByDict(this.commodityCategory).then(response => {
@@ -421,7 +444,7 @@ export default {
         this.shipmentloading = true;
         this.shipmentInfoQuery.pageNum = 1;
         this.dataOver = false;
-        this.shipmentInfoQuery.adminName = query;
+        this.shipmentInfoQuery.searchValue = query;
         this.shipmentlist = [];
         this.getShipment();
       } else {
@@ -458,21 +481,26 @@ export default {
       console.log(selection);
       this.feeinfo = {
         waybillNum: selection.length,
-        deliveryFee: 0,
+        // deliveryFee: 0,
         taxPayment: 0,
         serviceFee: 0,
-        serviceTaxFee: 0
+        serviceTaxFee: 0,
+        deliveryCashFee: 0
       };
-      selection.map((item) => { this.feeinfo.deliveryFee += item.deliveryFeePractical; });
+      // selection.map((item) => { this.feeinfo.deliveryFee += item.deliveryFeePractical; });
       selection.map((item) => { this.feeinfo.taxPayment += item.taxPayment; });
       selection.map((item) => { this.feeinfo.serviceFee += item.serviceFee; });
       selection.map((item) => { this.feeinfo.serviceTaxFee += item.serviceTaxFee; });
+      selection.map((item) => { this.feeinfo.deliveryCashFee += item.deliveryCashFee; });
       this.ids = selection.map((item) => item.code).join(',');
       this.multiple = !selection.length;
       console.log(this.ids);
     },
     /** 查询【请填写功能名称】列表 */
     getList() {
+      if (this.isShipment) {
+        this.queryParams.shipmentCode = this.shipment.info.code;
+      }
       if (this.queryParams.shipmentCode) {
         this.loading = true;
         askforList(this.queryParams).then(response => {
@@ -505,12 +533,24 @@ export default {
     },
     // 导出
     handleExport() {
-      this.download('/transportation/invoice/export', { ...this.queryParams }, `askfor_${new Date().getTime()}.xlsx`);
+      this.loadingExport = true;
+      this.download('/transportation/invoice/export', { ...this.queryParams }, `索票`).then(res => {
+        this.loadingExport = false;
+      });
     },
     // 批量索票
     handleAskfor() {
-      askInvoice({ shipmentCode: this.queryParams.shipmentCode, waybillCodes: this.ids }).then(response => {});
-      this.getList();
+      this.$confirm('是否立即批量索票?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        askInvoice({ shipmentCode: this.queryParams.shipmentCode, waybillCodes: this.ids }).then(response => {
+          this.msgSuccess('索票申请成功');
+          this.ids = null;
+          this.getList();
+        });
+      });
     },
     handleTableBtn(row, index) {
       // console.log(row, index);

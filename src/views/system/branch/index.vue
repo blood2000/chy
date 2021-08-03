@@ -60,10 +60,11 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <el-table v-loading="loading" :data="branchList" @selection-change="handleSelectionChange">
+      <el-table v-loading="loading" highlight-current-row border :data="branchList" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="网点名称" align="center" prop="name" />
         <el-table-column label="组织" align="center" prop="orgName" />
+        <el-table-column label="支付通道" align="center" prop="paymentChannelsName" />
         <el-table-column label="统一信用社会代码" align="center" prop="uniformSocialCreditCode" />
         <el-table-column label="法人" align="center" prop="branchArtificialName" />
         <el-table-column label="电话" align="center" prop="branchTel" />
@@ -73,20 +74,18 @@
             <span>{{ parseTime(scope.row.createTime) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <el-table-column label="操作" align="center" fixed="left" class-name="small-padding fixed-width">
           <template slot-scope="scope">
             <el-button
               v-hasPermi="['system:branch:edit']"
               size="mini"
               type="text"
-              icon="el-icon-edit"
               @click="handleUpdate(scope.row)"
             >修改</el-button>
             <el-button
               v-hasPermi="['system:branch:remove']"
               size="mini"
               type="text"
-              icon="el-icon-delete"
               @click="handleDelete(scope.row)"
             >删除</el-button>
           </template>
@@ -110,6 +109,7 @@
           <el-form-item label="组织" prop="orgCode">
             <treeselect
               v-model="form.orgCode"
+              :disabled="form.code != undefined"
               :options="deptOptions"
               :normalizer="normalizer"
               :show-count="true"
@@ -117,6 +117,16 @@
               clearable
               @select="selectOrgCode"
             />
+          </el-form-item>
+          <el-form-item label="支付通道" prop="paymentChannels">
+            <el-select v-model="form.paymentChannels" placeholder="请选择支付通道" filterable clearable style="width: 100%">
+              <el-option
+                v-for="dict in paymentChannelsOptions"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
+            </el-select>
           </el-form-item>
           <el-form-item label="统一信用社会代码" prop="uniformSocialCreditCode">
             <el-input v-model="form.uniformSocialCreditCode" placeholder="请输入统一信用社会代码" clearable />
@@ -147,7 +157,7 @@ import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 
 export default {
-  name: 'Post',
+  name: 'Branch',
   components: { Treeselect },
   data() {
     return {
@@ -196,20 +206,33 @@ export default {
         name: [
           { required: true, message: '名称不能为空', trigger: 'blur' }
         ],
-        branchTel: [
+        /* branchTel: [
           { validator: this.formValidate.telphone, trigger: 'blur' }
-        ],
+        ],*/
         orgCode: [
           { required: true, message: '归属组织不能为空', trigger: ['change', 'blur'] }
+        ],
+        paymentChannels: [
+          { required: true, message: '支付通道不能为空', trigger: ['change', 'blur'] }
         ]
-      }
+      },
+      // 支付通道字典
+      paymentChannelsOptions: []
     };
   },
   created() {
     this.getList();
     this.getTreeselect();
+    this.getDictsOptions();
   },
   methods: {
+    /** 查询字典 */
+    getDictsOptions() {
+      // 支付通道
+      this.getDicts('payment_channels').then(response => {
+        this.paymentChannelsOptions = response.data;
+      });
+    },
     /** 查询岗位列表 */
     getList() {
       this.loading = true;
@@ -232,7 +255,8 @@ export default {
         branchArtificialName: undefined,
         branchTel: undefined,
         orgCode: undefined,
-        uniformSocialCreditCode: undefined
+        uniformSocialCreditCode: undefined,
+        paymentChannels: undefined
       };
       this.resetForm('form');
     },
@@ -298,7 +322,7 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$confirm('是否确认删除数据码?', '警告', {
+      this.$confirm('是否确认删除数据吗?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -311,7 +335,7 @@ export default {
     },
     /** 查询部门下拉树结构 */
     getTreeselect() {
-      treeselect({ orgCode: this.companyCode }).then(response => {
+      treeselect({ orgCode: this.companyCode, orgType: 2 }).then(response => {
         this.deptOptions = response.data;
       });
     },

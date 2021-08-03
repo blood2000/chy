@@ -15,7 +15,7 @@
         </el-form-item>
         <el-form-item label="用户姓名" prop="userName">
           <el-input
-            v-model="queryParams.userName"
+            v-model.trim="queryParams.userName"
             placeholder="请输入用户姓名"
             clearable
             size="small"
@@ -24,7 +24,7 @@
         </el-form-item>
         <el-form-item label="手机号码" prop="userPhone">
           <el-input
-            v-model="queryParams.userPhone"
+            v-model.trim="queryParams.userPhone"
             placeholder="请输入手机号码"
             clearable
             size="small"
@@ -90,6 +90,15 @@
     </div>
     <div class="app-container">
       <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            type="primary"
+            icon="el-icon-download"
+            size="mini"
+            :loading="exportLoading"
+            @click="handleExport"
+          >导出</el-button>
+        </el-col>
         <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
@@ -127,14 +136,18 @@
         <!-- 变动金额 -->
         <template #paidAmount="{row}">
           <p v-if="row.paidFeeType === '0'" class="g-color-success">
-            +{{ row.paidAmount }}
+            +{{ floor(row.paidAmount) }}
           </p>
           <p v-else-if="row.paidFeeType === '1'" class="g-color-error">
-            -{{ row.paidAmount }}
+            -{{ floor(row.paidAmount) }}
           </p>
           <p v-else>
-            {{ row.paidAmount }}
+            {{ floor(row.paidAmount) }}
           </p>
+        </template>
+        <!-- 账户余额 -->
+        <template #accountAmount="{row}">
+          <span>{{ floor(row.accountAmount) }}</span>
         </template>
         <template #createTime="{row}">
           <span>{{ parseTime(row.createTime) }}</span>
@@ -190,12 +203,13 @@ export default {
       // 消费项目字典
       consumeOptions: [
         { dictLabel: '充值', dictValue: 0 },
-        { dictLabel: '保证金', dictValue: 1 },
+        // { dictLabel: '保证金', dictValue: 1 },
         { dictLabel: '运费', dictValue: 2 },
-        { dictLabel: '保费', dictValue: 3 },
-        { dictLabel: '罚款', dictValue: 4 },
+        // { dictLabel: '保费', dictValue: 3 },
+        // { dictLabel: '罚款', dictValue: 4 },
         { dictLabel: '提现', dictValue: 5 },
-        { dictLabel: '信息费', dictValue: 6 }
+        // { dictLabel: '信息费', dictValue: 6 },
+        { dictLabel: '油费', dictValue: 7 }
       ],
       // 平台角色字典
       roleOptions: [
@@ -229,7 +243,8 @@ export default {
         paidItem: undefined,
         updateTimeBegin: undefined,
         updateTimeEnd: undefined
-      }
+      },
+      exportLoading: false
     };
   },
   created() {
@@ -257,6 +272,16 @@ export default {
       this.queryParams.updateTimeEnd = null;
       this.resetForm('queryForm');
       this.handleQuery();
+    },
+    /** 导出按钮操作 */
+    handleExport() {
+      this.exportLoading = true;
+      const params = Object.assign({}, this.queryParams);
+      params.pageSize = undefined;
+      params.pageNum = undefined;
+      this.download('payment/shipmentPaidRecord/export', params, `充值记录`).then(() => {
+        this.exportLoading = false;
+      });
     }
   }
 };

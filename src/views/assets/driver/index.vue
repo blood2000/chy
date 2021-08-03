@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-show="showSearch" class="app-container app-container--search">
-      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
+      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="110px">
         <el-form-item label="司机类别" prop="driverType">
           <el-select v-model="queryParams.driverType" placeholder="请选择司机类别" filterable clearable size="small" class="input-width">
             <el-option
@@ -12,9 +12,19 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="司机姓名" prop="name">
+        <el-form-item label="司机" prop="keywords">
           <el-input
-            v-model="queryParams.name"
+            v-model.trim="queryParams.keywords"
+            placeholder="请输入司机姓名/手机号"
+            clearable
+            size="small"
+            class="input-width"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <!-- <el-form-item label="司机姓名" prop="name">
+          <el-input
+            v-model.trim="queryParams.name"
             placeholder="请输入司机姓名"
             clearable
             size="small"
@@ -24,17 +34,17 @@
         </el-form-item>
         <el-form-item label="手机号/账号" prop="telphone">
           <el-input
-            v-model="queryParams.telphone"
+            v-model.trim="queryParams.telphone"
             placeholder="请输入手机号/账号"
             clearable
             size="small"
             class="input-width"
             @keyup.enter.native="handleQuery"
           />
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="车牌号" prop="licenseNumber">
           <el-input
-            v-model="queryParams.licenseNumber"
+            v-model.trim="queryParams.licenseNumber"
             placeholder="请输入车牌号"
             clearable
             size="small"
@@ -66,7 +76,7 @@
         </el-form-item>
         <el-form-item label="身份证号" prop="identificationNumber">
           <el-input
-            v-model="queryParams.identificationNumber"
+            v-model.trim="queryParams.identificationNumber"
             placeholder="请输入身份证号"
             clearable
             size="small"
@@ -98,6 +108,92 @@
           <el-select v-model="queryParams.applyStatus" placeholder="请选择状态" filterable clearable size="small" class="input-width">
             <el-option
               v-for="dict in applyStatusOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="是否绑定银行卡" prop="isBindBankCard">
+          <el-select v-model="queryParams.isBindBankCard" placeholder="请选择" filterable clearable size="small" class="input-width">
+            <el-option
+              v-for="dict in bindBankCardOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="账号状态" prop="status">
+          <el-select
+            v-model="queryParams.status"
+            filterable
+            clearable
+            size="small"
+            class="input-width"
+          >
+            <el-option
+              v-for="dict in userStatusOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="审核时间">
+          <el-date-picker
+            v-model="queryParams.authTimeBegin"
+            clearable
+            size="small"
+            type="date"
+            value-format="yyyy-MM-dd"
+            style="width: 130px"
+            placeholder="请选择"
+          /> -
+          <el-date-picker
+            v-model="queryParams.authTimeEnd"
+            clearable
+            size="small"
+            type="date"
+            value-format="yyyy-MM-dd"
+            style="width: 130px"
+            placeholder="请选择"
+          />
+        </el-form-item>
+        <el-form-item label="注册时间">
+          <el-date-picker
+            v-model="queryParams.createTimeBegin"
+            clearable
+            size="small"
+            type="date"
+            value-format="yyyy-MM-dd"
+            style="width: 130px"
+            placeholder="请选择"
+          /> -
+          <el-date-picker
+            v-model="queryParams.createTimeEnd"
+            clearable
+            size="small"
+            type="date"
+            value-format="yyyy-MM-dd"
+            style="width: 130px"
+            placeholder="请选择"
+          />
+        </el-form-item>
+        <el-form-item label="身份有效期" prop="isIdentityEffective">
+          <el-select v-model="queryParams.isIdentityEffective" placeholder="请选择" filterable clearable size="small" class="input-width">
+            <el-option
+              v-for="dict in identityEffectiveOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="驾驶证有效期" prop="isDriverLicenseEffective">
+          <el-select v-model="queryParams.isDriverLicenseEffective" placeholder="请选择" filterable clearable size="small" class="input-width">
+            <el-option
+              v-for="dict in identityEffectiveOptions"
               :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
@@ -152,20 +248,22 @@
         </el-col>
         <el-col :span="1.5">
           <el-button
-            v-hasPermi="['assets:driver:report']"
-            type="warning"
-            icon="el-icon-upload2"
-            size="mini"
-          >司机车辆信息上报</el-button>
-        </el-col>
-        <el-col :span="1.5">
-          <el-button
             v-hasPermi="['assets:driver:down']"
             type="success"
             icon="el-icon-download"
             size="mini"
             @click="handleImportTemplateDriver"
           >下载模板</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['assets:driver:report']"
+            type="warning"
+            icon="el-icon-upload2"
+            size="mini"
+            :disabled="reportCodes.length ==0"
+            @click="batchReportDriver"
+          >司机批量上报</el-button>
         </el-col>
         <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
@@ -190,8 +288,8 @@
           <span>{{ selectDictLabel(driverTypeOptions, row.driverType) }}</span>
         </template>
         <template #authStatus="{row}">
-          <i v-show="row.authStatus === 0" class="el-icon-warning g-color-light-gray mr5" />
-          <i v-show="row.authStatus === 1" class="g-icon-deal mr5" />
+          <i v-show="row.authStatus === 0" class="g-icon-none mr5" />
+          <i v-show="row.authStatus === 1" class="g-icon-deal-blue mr5" />
           <i v-show="row.authStatus === 2" class="el-icon-error g-color-error mr5" />
           <i v-show="row.authStatus === 3" class="el-icon-success g-color-success mr5" />
           <span>{{ selectDictLabel(statusOptions, row.authStatus) }}</span>
@@ -221,7 +319,7 @@
           <span>{{ selectDictLabel(isFreezoneOptions, row.isFreeze) }}</span>
         </template>
         <template #createTime="{row}">
-          <span>{{ parseTime(row.createTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
         <template #updateTime="{row}">
           <span>{{ parseTime(row.updateTime, '{y}-{m}-{d}') }}</span>
@@ -229,7 +327,19 @@
         <template #isReportPersonDate="{row}">
           <span>{{ parseTime(row.isReportPersonDate, '{y}-{m}-{d}') }}</span>
         </template>
+        <template #status="{row}">
+          <i v-show="row.status === '1'" class="el-icon-error g-color-error mr5" />
+          <i v-show="row.status === '0'" class="el-icon-success g-color-success mr5" />
+          <span>{{ selectDictLabel(userStatusOptions, row.status) }}</span>
+        </template>
         <template #edit="{row}">
+          <el-button
+            v-if="row.authStatus != 3"
+            v-hasPermi="['assets:driver:examine']"
+            size="mini"
+            type="text"
+            @click="handleDetail(row, 'review')"
+          >审核</el-button>
           <el-button
             v-show="!teamCode"
             v-hasPermi="['assets:driver:manage']"
@@ -238,38 +348,57 @@
             @click="handleManage(row)"
           >管理</el-button>
           <el-button
+            v-hasPermi="['assets:driver:edit']"
+            size="mini"
+            type="text"
+            @click="handleDetail(row, 'edit')"
+          >修改</el-button>
+          <el-button
+            v-if="row.authStatus == 3"
             v-hasPermi="['assets:driver:get']"
             size="mini"
             type="text"
             @click="handleDetail(row, 'detail')"
           >详情</el-button>
-          <el-button
-            v-show="teamCode"
-            v-hasPermi="['assets:team:driver:del']"
-            size="mini"
-            type="text"
-            @click="handleDelBind(row)"
-          >解除绑定</el-button>
           <template v-if="!teamCode">
-            <el-button
-              v-hasPermi="['assets:driver:edit']"
-              size="mini"
-              type="text"
-              @click="handleDetail(row, 'edit')"
-            >修改</el-button>
             <TableDropdown>
-              <el-dropdown-item>
+              <el-dropdown-item v-if="row.authStatus != 3">
                 <el-button
-                  v-show="row.authStatus != 3"
-                  v-hasPermi="['assets:driver:examine']"
+                  v-hasPermi="['assets:driver:get']"
                   size="mini"
                   type="text"
-                  @click="handleDetail(row, 'review')"
-                >审核</el-button>
+                  @click="handleDetail(row, 'detail')"
+                >详情</el-button>
               </el-dropdown-item>
               <el-dropdown-item>
                 <el-button
-                  v-show="row.authStatus == 3"
+                  size="mini"
+                  type="text"
+                  :style="row.status == '0'?'color:red':'color:green'"
+                  @click="updateStatus(row)"
+                >{{ row.status == '0'?'冻结':'启用' }}</el-button>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <el-button
+                  v-if="teamCode"
+                  v-hasPermi="['assets:team:driver:del']"
+                  size="mini"
+                  type="text"
+                  @click="handleDelBind(row)"
+                >解除绑定</el-button>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <el-button
+                  v-if="row.isReportPerson === 0"
+                  v-hasPermi="['assets:driver:report']"
+                  size="mini"
+                  type="text"
+                  @click="reportDriver(row)"
+                >上报</el-button>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <el-button
+                  v-if="row.authStatus == 3"
                   v-hasPermi="['assets:driver:join']"
                   size="mini"
                   type="text"
@@ -278,7 +407,7 @@
               </el-dropdown-item>
               <el-dropdown-item>
                 <el-button
-                  v-show="row.apply && row.authStatus == 3"
+                  v-if="row.apply && row.authStatus == 3"
                   size="mini"
                   type="text"
                   @click="handleDeal(row)"
@@ -324,6 +453,8 @@
 <script>
 import { listDriverApi, listDriver, getDriver, delDriver, getAgreementWord } from '@/api/assets/driver';
 import { listInfo, delTeamReDriver } from '@/api/assets/team';
+import { waybillReportDriverByCode } from '@/api/data/report';
+import { updateUserStatusByUserCode } from '@/api/system/user';
 import DriverDialog from './driverDialog';
 import ImportDialog from './importDialog';
 import ManageDialog from './manageDialog';
@@ -357,8 +488,8 @@ export default {
       api: listDriverApi,
       // 司机类别字典
       driverTypeOptions: [
-        { dictLabel: '独立司机', dictValue: 1 },
-        { dictLabel: '聘用司机', dictValue: 2 }
+        { dictLabel: '零散司机', dictValue: 1 },
+        { dictLabel: '雇佣司机', dictValue: 2 }
       ],
       // 审核状态字典
       statusOptions: [
@@ -369,10 +500,19 @@ export default {
       ],
       // 处理状态字典
       applyStatusOptions: [
-        { dictLabel: '未处理', dictValue: 0 },
-        { dictLabel: '已加入', dictValue: 1 },
+        { dictLabel: '待处理', dictValue: 0 },
+        { dictLabel: '已同意', dictValue: 1 },
         { dictLabel: '已拒绝', dictValue: 2 },
-        { dictLabel: '待加入', dictValue: 3 }
+        { dictLabel: '未邀请', dictValue: 3 }
+      ],
+      // 是否绑定银行卡
+      bindBankCardOptions: [
+        { dictLabel: '是', dictValue: 0 },
+        { dictLabel: '否', dictValue: 1 }
+      ],
+      identityEffectiveOptions: [
+        { dictLabel: '正常', dictValue: 1 },
+        { dictLabel: '已过期', dictValue: 2 }
       ],
       // 是否冻结字典
       isFreezoneOptions: [
@@ -382,7 +522,12 @@ export default {
       // 是否
       isOption: [
         { dictLabel: '否', dictValue: 0 },
-        { dictLabel: '是', dictValue: 1 }
+        { dictLabel: '是', dictValue: 1 },
+        { dictLabel: '上报中', dictValue: 3 }
+      ],
+      userStatusOptions: [
+        { dictLabel: '启用', dictValue: '0' },
+        { dictLabel: '冻结', dictValue: '1' }
       ],
       // 网点编码字典
       branchCodeOptions: [],
@@ -394,6 +539,7 @@ export default {
       ids: [],
       driverNames: [],
       codes: [],
+      reportCodes: [],
       // 非单个禁用
       single: true,
       // 非多个禁用
@@ -420,14 +566,23 @@ export default {
         isAsc: 'desc',
         orderByColumn: 't0.create_time',
         driverType: undefined,
+        keywords: undefined,
         name: undefined,
         telphone: undefined,
         identificationNumber: undefined,
-        authStatus: undefined,
+        authStatus: null,
         licenseNumber: undefined,
         driverLicenseType: undefined,
         teamCode: undefined,
-        applyStatus: undefined
+        applyStatus: undefined,
+        isBindBankCard: null,
+        status: undefined,
+        authTimeBegin: undefined,
+        authTimeEnd: undefined,
+        createTimeBegin: undefined,
+        createTimeEnd: undefined,
+        isIdentityEffective: undefined,
+        isDriverLicenseEffective: undefined
       },
       // 表单是否禁用
       formDisable: false,
@@ -448,17 +603,42 @@ export default {
       exportLoading: false
     };
   },
+  computed: {
+    routeName() {
+      return this.$store.state.settings.quickEntryName;
+    }
+  },
+  watch: {
+    routeName: {
+      handler: function(val) {
+        if (val === 'Driver') {
+          this.resetQueryForm();
+          this.queryParams.authStatus = JSON.parse(this.$route.query.data).authStatus;
+          this.handleQuery();
+        }
+      },
+      deep: true
+    }
+  },
   created() {
     this.tableHeaderConfig(this.tableColumnsConfig, listDriverApi, {
       prop: 'edit',
       isShow: true,
       label: '操作',
       width: 180,
-      fixed: 'right'
+      fixed: 'left'
+    }).then(() => {
+      this.isShowAgreementNo();
     });
     this.getDictsOptions();
     if (!this.teamCode) {
       // 如果这个页面是以组件形式展示在调度者管理弹窗里面，则这里不加载列表
+
+      const routeData = this.$route.query.data;
+      if (routeData) {
+        this.queryParams.authStatus = JSON.parse(routeData).authStatus;
+      }
+
       this.getList();
     }
   },
@@ -473,7 +653,12 @@ export default {
     /** 查询参数列表 */
     getList() {
       this.loading = true;
-      listDriver(this.queryParams).then(response => {
+      this.$store.dispatch('settings/changeQuick', null);
+      const params = { ...this.queryParams };
+      if (params.licenseNumber) {
+        params.licenseNumber = params.licenseNumber.toUpperCase();
+      }
+      listDriver(params).then(response => {
         this.driverList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -495,8 +680,17 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.resetForm('queryForm');
+      this.resetQueryForm();
       this.handleQuery();
+    },
+    resetQueryForm() {
+      this.queryParams.authTimeBegin = undefined;
+      this.queryParams.authTimeEnd = undefined;
+      this.queryParams.createTimeBegin = undefined;
+      this.queryParams.createTimeEnd = undefined;
+      this.resetForm('queryForm');
+      this.queryParams.authStatus = null;
+      this.queryParams.isBindBankCard = null;
     },
     /** 新增按钮操作 */
     handleAdd() {
@@ -510,6 +704,12 @@ export default {
       this.ids = selection.map(item => item.id);
       this.driverNames = selection.map(item => item.name);
       this.codes = selection.map(item => item.code);
+      this.reportCodes = [];
+      selection.map(item => {
+        if (item.isReportPerson === 0) {
+          this.reportCodes.push(item.code);
+        }
+      });
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
     },
@@ -527,7 +727,7 @@ export default {
         } else if (flag === 'review') {
           this.title = '审核';
           if (row.authStatus === 0) {
-            this.$refs.DriverDialog.authRead({ id: row.id });
+            this.$refs.DriverDialog.authRead({ id: row.id, code: row.code });
           }
         }
         this.formDisable = flag !== 'edit';
@@ -554,7 +754,7 @@ export default {
       const params = Object.assign({}, this.queryParams);
       params.pageSize = undefined;
       params.pageNum = undefined;
-      this.download('assets/driver/export', params, `司机信息_${new Date().getTime()}.xlsx`).then(() => {
+      this.download('assets/driver/export', params, `司机信息`).then(() => {
         this.exportLoading = false;
       });
     },
@@ -565,7 +765,7 @@ export default {
     },
     /** 下载模板 */
     handleImportTemplateDriver() {
-      this.download('assets/driver/importTemplate', {}, `driver_template_${new Date().getTime()}.xlsx`);
+      this.download('assets/driver/importTemplate', {}, `司机模板`);
     },
     /** 管理按钮操作 */
     handleManage(row) {
@@ -636,6 +836,67 @@ export default {
         this.getList();
         this.msgSuccess('操作成功');
       });
+    },
+    // 司机列表不展示协议编号, 调度者管理页面的司机列表展示协议编号
+    isShowAgreementNo() {
+      if (this.teamCode) return;
+      this.tableColumnsConfig = this.tableColumnsConfig.filter(el => {
+        if (el.prop !== 'agreementNo') return true;
+      });
+    },
+    // 车辆信息上报
+    batchReportDriver(row) {
+      var codes = this.reportCodes;
+      if (row.isReportPerson === 0) {
+        codes = row.code || this.reportCodes;
+      }
+      if (codes.length === 0) {
+        this.msgWarning('请选择未上报的司机');
+        return;
+      }
+      codes.forEach(code => {
+        waybillReportDriverByCode(code).then(response => {
+          if (response.code === 200) {
+            this.msgSuccess('上报成功');
+          } else {
+            this.msgWarning('上报失败');
+          }
+        });
+      });
+    },
+    reportDriver(row) {
+      if (row.code) {
+        waybillReportDriverByCode(row.code).then(response => {
+          if (response.code === 200) {
+            this.msgSuccess('上报成功');
+          } else {
+            this.msgError(response.data);
+          }
+        }).catch(() => {
+          this.msgError('上报失败');
+        });
+      } else {
+        this.msgWarning('请选择要上报的司机');
+      }
+    },
+    // 解/禁用用户
+    updateStatus(row) {
+      var status = '0';
+      if (row.status === '0') {
+        status = '1';
+      } else if (row.status === '1') {
+        status = '0';
+      }
+      this.$confirm('是否确认' + (status === '0' ? '启用' : '冻结') + '司机"' + (row.name || row.telphone) + '"的账号?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return updateUserStatusByUserCode(row.userCode, status);
+      }).then(() => {
+        this.getList();
+        this.msgSuccess(status === '0' ? '启用成功' : '冻结');
+      });
     }
   }
 };
@@ -643,6 +904,6 @@ export default {
 
 <style scoped>
 .input-width{
-  width: 240px;
+  width: 272px;
 }
 </style>

@@ -96,8 +96,23 @@ export function getVehicleInfo(code) {
   });
 }
 
+// 获取运单详情（平台）
+export function getWebDetail(waybillCode) {
+  return request({
+    url: `/transportation/waybill/getWayBillByCode?code=${waybillCode}`,
+    method: 'get'
+  });
+}
+// 获取运单详情（app）
+export function getInfoDetail(waybillCode) {
+  return request({
+    url: '/transportation/app/waybillInfo/getWaybillInfo/' + waybillCode,
+    method: 'get'
+  });
+}
+
 // 获取装货、卸货信息
-export function getInfoDetail(waybillNo, type) {
+export function getLoadInfoDetail(waybillNo, type) {
   return request({
     url: '/transportation/waybillAttachment/getByWaybillNo?waybillNo=' + waybillNo + '&type=' + type,
     method: 'get'
@@ -121,8 +136,8 @@ export function addComplaint(data) {
   });
 }
 
-// 获取车辆轨迹
-export function trackLocation(data) {
+// jimi获取车辆轨迹
+export function jimiTrackLocation(data) {
   return request({
     url: '/iot/jimiDevice/getTrackList',
     method: 'post',
@@ -130,8 +145,34 @@ export function trackLocation(data) {
   });
 }
 
-// 获取车辆轨迹
-export function location(data) {
+// 中交兴路获取车辆轨迹
+export function zjxlTrackLocation(data) {
+  return request({
+    url: '/iot/zjxl/vHisTrack24',
+    method: 'post',
+    data: data
+  });
+}
+
+// 中交兴路获取车辆定位
+export function zjxlLocation(data) {
+  return request({
+    url: '/iot/zjxl/vLastLocationV3',
+    method: 'post',
+    data: data
+  });
+}
+
+// 获取猎鹰信息
+export function getLieyingInfo(code) {
+  return request({
+    url: '/gis/track/amap/config/' + code,
+    method: 'get'
+  });
+}
+
+// 获取车辆定位
+export function jimiLocation(data) {
   return request({
     url: '/iot/jimiDevice/location',
     method: 'post',
@@ -156,3 +197,37 @@ export function waybillCommentDetail(commentObject, wayBillCode) {
   });
 }
 
+// 查询运单详情-轨迹(根据运单CODE获取运单轨迹时间线)
+export function getWaybillTrace(code) {
+  return request({
+    url: `/transportation/waybillTrace/getByWayBillCode?waybillCode=${code}`,
+    method: 'get'
+  });
+}
+
+// 新增zjxl轨迹
+export function addZjxl(data) {
+  return request({
+    url: '/assets/vehicle/track/add',
+    method: 'post',
+    data: data
+  });
+}
+
+// 查询zjxl轨迹
+export function queryZjxl(data) {
+  return request({
+    url: '/assets/vehicle/track/query',
+    method: 'post',
+    data: data
+  });
+}
+
+// 获取设备信息
+export function getDevice(query) {
+  return request({
+    url: '/assets/vehicle/device/getByVehicle',
+    method: 'get',
+    params: query
+  });
+}

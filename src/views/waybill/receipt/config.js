@@ -15,7 +15,7 @@ export default [
     prop: 'orderClient',
     isShow: true,
     width: 150,
-    label: '下单客户'
+    label: '下单用户'
   },
   {
     prop: 'waybillNo',
@@ -185,7 +185,7 @@ export default [
     isShow: true,
     label: '操作',
     width: 180,
-    fixed: 'right'
+    fixed: 'left'
   }
 ];
 

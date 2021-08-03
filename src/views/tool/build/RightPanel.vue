@@ -343,6 +343,7 @@
               :data="localActiveData.options"
               node-key="id"
               :expand-on-click-node="false"
+              :indent="0"
               :render-content="renderContent"
             />
             <div v-if="localActiveData.dataType === 'static'" style="margin-left: 20px">
@@ -480,6 +481,7 @@
             <el-tree
               :data="[localActiveData]"
               :props="layoutTreeProps"
+              :indent="0"
               node-key="renderKey"
               default-expand-all
               draggable

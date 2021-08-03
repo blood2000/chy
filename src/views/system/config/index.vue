@@ -39,6 +39,8 @@
             style="width: 240px"
             value-format="yyyy-MM-dd"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -102,7 +104,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <el-table v-loading="loading" :data="configList" :close-on-click-modal="false" @selection-change="handleSelectionChange">
+      <el-table v-loading="loading" highlight-current-row border :data="configList" :close-on-click-modal="false" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="参数主键" align="center" prop="configId" />
         <el-table-column label="参数名称" align="center" prop="configName" :show-overflow-tooltip="true" />
@@ -115,20 +117,18 @@
             <span>{{ parseTime(scope.row.createTime) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <el-table-column label="操作" align="center" fixed="left" class-name="small-padding fixed-width">
           <template slot-scope="scope">
             <el-button
               v-hasPermi="['system:config:edit']"
               size="mini"
               type="text"
-              icon="el-icon-edit"
               @click="handleUpdate(scope.row)"
             >修改</el-button>
             <el-button
               v-hasPermi="['system:config:remove']"
               size="mini"
               type="text"
-              icon="el-icon-delete"
               @click="handleDelete(scope.row)"
             >删除</el-button>
           </template>
@@ -179,11 +179,12 @@
 
 <script>
 import { listConfig, getConfig, delConfig, addConfig, updateConfig, clearCache } from '@/api/system/config';
-
+import { pickerOptions } from '@/utils/dateRange';
 export default {
   name: 'Config',
   data() {
     return {
+      pickerOptions,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -337,9 +338,15 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('system/config/export', {
-        ...this.queryParams
-      }, `config_${new Date().getTime()}.xlsx`);
+      if (this.dateRange[0] && this.dateRange[1]) {
+        this.queryParams.beginTime = this.dateRange[0];
+        this.queryParams.endTime = this.dateRange[1];
+      } else {
+        this.queryParams.beginTime = undefined;
+        this.queryParams.endTime = undefined;
+      }
+      this.queryParams.params = undefined;
+      this.download('system/config/export', this.queryParams, `参数设置`);
     },
     /** 清理缓存按钮操作 */
     handleClearCache() {

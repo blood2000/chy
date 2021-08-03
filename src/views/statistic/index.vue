@@ -2,7 +2,7 @@
   <div class="g-statistic">
     <!-- title -->
     <div class="header-box">
-      至简数字科技大数据
+      <img src="@/assets/images/statistic/title.png">
       <span class="line left" />
       <span class="line right" />
     </div>
@@ -12,26 +12,26 @@
       <div class="ly-left-top mb1rem ly-flex-pack-justify ly-border">
         <div class="ly-left-top-left ly-border">
           <Title class="title_1" icon="1">监管数据<span>Regulatory data</span></Title>
-          <RegulatoryData :branch-code="branchCode" />
+          <RegulatoryData ref="RegulatoryDataRef" :branch-code="branchCode" />
         </div>
         <div class="ly-left-top-right ly-border">
           <Title class="title_2" icon="2">用户情况<span>User situation</span></Title>
-          <UserInfo :branch-code="branchCode" />
+          <UserInfo ref="UserInfoRef" :branch-code="branchCode" />
         </div>
       </div>
       <div class="ly-left-center mb1rem ly-border">
         <Title class="title_3" icon="3">运力情况<span>Capacity situation</span></Title>
-        <CapacityInfo :branch-code="branchCode" />
+        <CapacityInfo ref="CapacityInfoRef" :branch-code="branchCode" />
       </div>
       <div class="ly-left-bottom ly-border">
         <Title class="title_3" icon="4">业绩数据<span>Performance data</span></Title>
         <div class="ly-left-bottom-box ly-flex-pack-justify">
           <div class="ly-left-bottom-left ly-border">
-            <PerformanceInfo class="mb1rem" />
-            <AmountTop10Chart ref="AmountTop10ChartRef" />
+            <PerformanceInfo ref="PerformanceInfoRef" :performance="performanceData.performance" class="mb1rem" style="height: 26.5%;" />
+            <AmountTop5Chart ref="AmountTop5ChartRef" :province-ranking="performanceData.provinceRanking" style="height: 72.5%;" />
           </div>
           <div class="ly-left-bottom-right ly-border">
-            <CompanyTop10List />
+            <CompanyTop10List ref="CompanyTop10ListRef" :province-ranking="performanceData.provinceRanking" />
           </div>
         </div>
       </div>
@@ -39,9 +39,14 @@
 
     <!-- center -->
     <div class="ly-center ly-border ly-flex-v ly-flex-pack-justify">
-      <TotalData class="ly-border" />
-      <Map ref="mapRef" class="ly-border" />
-      <ScrollData class="ly-border" />
+      <TotalData
+        ref="TotalDataRef"
+        :branch-code="branchCode"
+        class="ly-border"
+        @getPartitionListVo="getPartitionListVo"
+      />
+      <Map ref="mapRef" :partition-list-vo="partitionListVo" class="ly-border" />
+      <ScrollData ref="ScrollDataRef" class="ly-border" />
     </div>
 
     <!-- right -->
@@ -50,23 +55,27 @@
         <div class="ly-right-left-top mb1rem ly-border">
           <Title class="title_4 mb05rem" icon="5">运营情况<span>Operation situation</span></Title>
           <div class="ly-right-left-top-box">
-            <OperationData />
-            <OrderChart ref="OrderChartRef" />
-            <ComplaintChart ref="ComplaintChartRef" />
+            <OperationData
+              ref="OperationDataRef"
+              :order-vo="businessData.orderVo"
+              :waill-bill-vo="businessData.waillBillVo"
+              :week-vo-list="businessData.weekVoList"
+            />
+            <ComplaintChart ref="ComplaintChartRef" :complain-vo="businessData.complainVo" />
           </div>
         </div>
         <div class="ly-right-left-bottom ly-border">
           <Title class="title_5 mb05rem" icon="6">目标达成情况<span>Achievement of Goals</span></Title>
-          <TargetChart ref="TargetChartRef" />
+          <TargetChart ref="TargetChartRef" :branch-code="branchCode" />
         </div>
       </div>
       <div class="ly-right-right ly-border">
-        <Title class="title_4 mb05rem" icon="7">总排名<span>Total number</span></Title>
+        <Title class="title_4 mb05rem" icon="7" :show-time="true" :time-text="'最近30天'">总排名<span>Total number</span></Title>
         <div class="ly-right-right-top mb1rem ly-border">
-          <CompanyTop5List />
+          <CompanyTop5List :company-rank-data="companyRankData" />
         </div>
         <div class="ly-right-right-bottom mb1rem ly-border">
-          <DriverTop5List />
+          <DriverTop5List ref="DriverTop5ListRef" :time-key="0" />
         </div>
       </div>
     </div>
@@ -81,10 +90,9 @@ import RegulatoryData from './RegulatoryData';// 监管数据
 import UserInfo from './UserInfo';// 用户情况
 import CapacityInfo from './CapacityInfo';// 运力情况
 import PerformanceInfo from './PerformanceInfo';// 业绩数据
-import AmountTop10Chart from './AmountTop10Chart';// TOP10省份交易额排名
+import AmountTop5Chart from './AmountTop5Chart';// TOP5省份交易额排名
 import CompanyTop10List from './CompanyTop10List';// TOP10省内十大公司
 import OperationData from './OperationData';// 运营情况
-import OrderChart from './OrderChart';// 订单统计
 import ComplaintChart from './ComplaintChart';// 投诉统计
 import TargetChart from './TargetChart';// 目标达成情况
 import CompanyTop5List from './CompanyTop5List';// 总排名TOP5公司
@@ -92,7 +100,8 @@ import DriverTop5List from './DriverTop5List';// 总排名TOP5司机
 import TotalData from './TotalData';// 中间总数统计
 import ScrollData from './ScrollData';// 中间滚屏数据
 import Map from './Map.vue';// 地图
-import { dataJson } from './data';
+import { getCompanyPerformance, getOperationStatusV2, getCompanyDriverRank } from '@/api/statistic/statistic.js';
+// import { dataJson } from './data';
 
 export default {
   name: 'Statistic',
@@ -102,10 +111,9 @@ export default {
     UserInfo,
     CapacityInfo,
     PerformanceInfo,
-    AmountTop10Chart,
+    AmountTop5Chart,
     CompanyTop10List,
     OperationData,
-    OrderChart,
     ComplaintChart,
     TargetChart,
     CompanyTop5List,
@@ -117,7 +125,29 @@ export default {
   data() {
     return {
       branchCode: null,
-      websock: null
+      // websocket
+      wsurl: '/websocket/chy',
+      websock: null,
+      lockReconnect: false,
+      timerReconnect: null,
+      heartTimeout: null,
+      serverTimeout: null,
+      // 地图对应省份运单数据
+      partitionListVo: [],
+      // 业绩数据
+      performanceData: {
+        performance: {}, // 数据
+        provinceRanking: [] // Top5省份交易额
+      },
+      // 运营情况数据
+      businessData: {
+        orderVo: {}, // 货单
+        waillBillVo: {}, // 运单
+        weekVoList: [], // 近8周订单数
+        complainVo: {} // 投诉
+      },
+      // 总排名
+      companyRankData: []
     };
   },
   computed: {
@@ -127,50 +157,221 @@ export default {
   },
   created() {
     this.branchCode = this.branch.code;
-    // this.initWebSocket();
   },
   mounted() {
-    const throttle = ThrottleFun(this.refreshChart, 300);
-    window.onresize = () => {
-      throttle();
-    };
+    this.setHtmlFontSize();
+    this.setScale();
+    window.addEventListener('resize', this.resizeFun);
+    this.getPerformanceData();
+    this.getBusinessData();
+    this.getRankData();
+    this.createWebSocket();
   },
   beforeDestroy() {
-    window.onresize = null;
+    window.removeEventListener('resize', this.resizeFun);
     if (this.websock) this.websock.close();
+    this.removeScale();
   },
   methods: {
-    initWebSocket() { // 初始化websocket
-      const wsuri = 'ws://127.0.0.1:8080';
-      this.websock = new WebSocket(wsuri);
-      this.websock.onmessage = this.websocketonmessage;
-      this.websock.onopen = this.websocketonopen;
-      this.websock.onerror = this.websocketonerror;
-      this.websock.onclose = this.websocketclose;
+    resizeFun() {
+      const throttle = ThrottleFun(this.refreshChart, 300);
+      throttle();
     },
-    websocketonopen() { // 连接建立之后执行send方法发送数据
-      // const actions = { 'test': '12345' };
-      // this.websocketsend(JSON.stringify(actions));
+    // 创建websocket
+    createWebSocket() {
+      try {
+        this.websock = new WebSocket('ws://' + process.env.VUE_APP_BASE_HOST + this.wsurl + '?branchCode=' + this.branchCode);
+        this.initWebSocket();
+      } catch (e) {
+        console.log('catch', e);
+        this.reconnect();
+      }
     },
-    websocketonerror() { // 连接建立失败重连
-      // this.initWebSocket();
+    initWebSocket() {
+      this.websock.onmessage = (e) => {
+        // 拿到pong说明当前连接是正常的
+        if (e.data === 'pong') {
+          // console.log('pong');
+          this.heartCheck();
+        } else if (e.data && e.data.length > 10) {
+          this.setData(JSON.parse(e.data));
+        } else if (e.data === 'refresh') {
+          // 判断凌晨后更新接口
+          this.refreshData();
+        }
+      };
+      this.websock.onopen = () => {
+        console.log('连接成功', this.websock);
+        this.heartCheck();
+      };
+      this.websock.onerror = () => {
+        console.log('连接失败');
+        this.reconnect();
+      };
+      this.websock.onclose = (e) => {
+        console.log('断开连接', e);
+        this.reconnect();
+      };
     },
-    websocketonmessage(e) { // 数据接收
-      console.log('数据接收', e);
-      // const redata = JSON.parse(e.data);
+    // 重连
+    reconnect() {
+      if (this.lockReconnect) {
+        return;
+      }
+      console.log('发起重连');
+      this.lockReconnect = true;
+      // 没连接上会一直重连，设置延迟
+      this.timerReconnect && clearTimeout(this.timerReconnect);
+      this.timerReconnect = setTimeout(() => {
+        this.createWebSocket();
+        this.lockReconnect = false;
+      }, 3 * 1000);
     },
-    websocketsend(data) { // 数据发送
-      this.websock.send(data);
+    // 心跳检测
+    heartCheck() {
+      this.heartTimeout && clearTimeout(this.heartTimeout);
+      this.serverTimeout && clearTimeout(this.serverTimeout);
+      this.heartTimeout = setTimeout(() => {
+        // 发送一个心跳包
+        // console.log('ping');
+        this.websock.send('ping');
+        // 计算答复的超时时间
+        this.serverTimeout = setTimeout(() => {
+          if (this.websock) this.websock.close();
+          console.log('答复超时');
+        }, 5 * 1000);
+      }, 4 * 1000);
     },
-    websocketclose(e) { // 关闭
-      console.log('断开连接', e);
+    // 处理实时数据
+    setData(dJson) {
+      console.log('实时Json：', dJson);
+      const { reportVo, userNotice, invoiceNotice, orderNoticeVo, waybillNotice, waybillSettlementNotice, insertTime } = dJson;
+      // 上报√
+      if (reportVo) {
+        this.$refs.RegulatoryDataRef.setData(reportVo);
+      }
+      // 用户√
+      if (userNotice) {
+        this.$refs.UserInfoRef.setData(userNotice);
+        this.$refs.CapacityInfoRef.setVehicleData(userNotice);
+        this.$refs.ScrollDataRef.setUserData(userNotice, insertTime);
+      }
+      // 开票√
+      if (invoiceNotice) {
+        this.$refs.PerformanceInfoRef.setInvoiceData(invoiceNotice);
+        this.$refs.ScrollDataRef.setInvoiceData(invoiceNotice, insertTime);
+      }
+      // 货单√
+      if (orderNoticeVo && orderNoticeVo.transportVo && orderNoticeVo.transportVo.orderBean) {
+        const orderBean = orderNoticeVo.transportVo.orderBean;
+        this.$refs.TotalDataRef.setOrderData(orderBean);
+        this.$refs.OperationDataRef.setOrderData(orderBean);
+        this.$refs.CapacityInfoRef.setOrderData(orderBean);
+        this.$refs.ScrollDataRef.setOrderData(orderBean, insertTime);
+      }
+      // 运单√
+      if (waybillNotice) {
+        this.$refs.TotalDataRef.setWaybillData(waybillNotice);
+        this.$refs.OperationDataRef.setWaybillData(waybillNotice);
+        this.$refs.CapacityInfoRef.setWayBillData(waybillNotice);
+        this.$refs.mapRef.setWayBillData(waybillNotice, insertTime);
+      }
+      // 打款√
+      if (waybillSettlementNotice) {
+        this.$refs.ScrollDataRef.setWaybillData(waybillSettlementNotice, insertTime);
+        this.$refs.PerformanceInfoRef.setWaybillData(waybillSettlementNotice);
+      }
     },
+    // 图表自适应
     refreshChart() {
-      this.$refs.AmountTop10ChartRef.refreshChart();
+      this.setHtmlFontSize();
+      this.$refs.AmountTop5ChartRef.refreshChart();
       this.$refs.TargetChartRef.refreshChart();
-      this.$refs.OrderChartRef.refreshChart();
-      this.$refs.ComplaintChartRef.refreshChart();
+      this.$refs.OperationDataRef.refreshChart();
+      // this.$refs.ComplaintChartRef.refreshChart();
       this.$refs.mapRef.refreshChart();
+    },
+    // 计算根节点fontsize
+    setHtmlFontSize() {
+      // 设1rem = 20px
+      // 160 = 3200 / 20
+      // 96 = 1920 / 20
+      // font-size: calc(100vw / 96);
+      const clientWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+      if (!clientWidth) return;
+      let size = clientWidth / 20;
+      if (size < 96) size = 96;
+      if (size > 160) size = 160;
+      // console.log('clientWidth: ', clientWidth);
+      // console.log('size: ', size);
+      document.getElementsByTagName('html')[0].style.fontSize = `calc(100vw / ${size})`;
+    },
+    // 临时设置scale
+    setScale() {
+      const { isScale } = this.$route.query;
+      console.log('isScale: ', isScale);
+      if (!isScale) {
+        document.getElementById('app').style.transform = 'scaleX(0.6)'; // 0.6 = 1920 / 3200
+        document.getElementById('app').style.transformOrigin = '0px 0px';
+      } else {
+        this.removeScale();
+      }
+    },
+    removeScale() {
+      document.getElementById('app').style.transform = '';
+    },
+    // 获取地图对应省份运单数据
+    getPartitionListVo(data = []) {
+      this.partitionListVo = data;
+    },
+    // 获取业绩数据
+    getPerformanceData() {
+      getCompanyPerformance(this.branchCode).then(response => {
+        const data = response.data || {};
+        this.performanceData = {
+          performance: data.performance || {}, // 数据
+          provinceRanking: data.provinceRanking || [] // Top5省份交易额
+        };
+        this.$nextTick(() => {
+          this.$refs.AmountTop5ChartRef.initChart();
+          this.$refs.CompanyTop10ListRef.rollTooltip();
+        });
+      });
+    },
+    // 获取运营情况的数据
+    getBusinessData() {
+      getOperationStatusV2(this.branchCode, 0).then(response => {
+        const data = response.data || {};
+        this.businessData = {
+          orderVo: data.orderVo || {}, // 货单
+          waillBillVo: data.waillBillVo || {}, // 运单
+          weekVoList: data.weekVoList || [], // 近8周订单数
+          complainVo: data.complainVo || {} // 投诉
+        };
+        this.$nextTick(() => {
+          this.$refs.OperationDataRef.initChart();
+          // this.$refs.ComplaintChartRef.initChart();
+        });
+      });
+    },
+    // 获取总排名数据
+    getRankData() {
+      getCompanyDriverRank(this.branchCode).then(response => {
+        const data = response.data || {};
+        this.companyRankData = data.companyList || [];
+      });
+    },
+    // 零点更新接口
+    refreshData() {
+      this.getPerformanceData(); // 业绩
+      this.getBusinessData(); // 运营
+      this.getRankData(); // 总排名
+      this.$refs.RegulatoryDataRef.getData(); // 监管
+      this.$refs.UserInfoRef.getData(); // 用户
+      this.$refs.CapacityInfoRef.getData(); // 运力
+      this.$refs.TargetChartRef.getData(); // 目标
+      this.$refs.TotalDataRef.getCount(); // 地图运单
+      this.$refs.DriverTop5ListRef.getData(); // 承运排名
     }
   }
 };
@@ -180,7 +381,7 @@ export default {
 // 辅助线
 .ly-border {
   box-sizing: border-box;
-  // border: 1px dashed rgb(255, 255, 255, 0.2);
+  // border: 0.05rem dashed rgb(255, 255, 255, 0.2);
 }
 
 // 设计稿大小：3200*1080
@@ -286,7 +487,7 @@ export default {
     display: inline-block;
     position: absolute;
     width: 26rem;
-    top: 1.6rem;
+    top: 1.4rem;
     left: 50%;
     margin-left: -13rem;
     font-size: 1.6rem;
@@ -294,6 +495,10 @@ export default {
     font-weight: bold;
     color: #FFFFFF;
     text-align: center;
+    >img{
+      width: 22.45rem;
+      height: 2.35rem;
+    }
     >.line {
       width: 6rem;
       height: 0.1rem;
@@ -301,10 +506,10 @@ export default {
       position: absolute;
       top: 1.1rem;
       &.left {
-        left: -0.5rem;
+        left: -4rem;
       }
       &.right {
-        right: -0.5rem;
+        right: -4rem;
       }
     }
     &::before {
@@ -313,7 +518,7 @@ export default {
       height: 2.1rem;
       position: absolute;
       top: 0.1rem;
-      left: -0.5rem;
+      left: -4rem;
       background: url('~@/assets/images/statistic/header_left.gif') no-repeat;
       background-size: 100% 100%;
     }
@@ -323,7 +528,7 @@ export default {
       height: 2.1rem;
       position: absolute;
       top: 0.1rem;
-      right: -0.5rem;
+      right: -4rem;
       background: url('~@/assets/images/statistic/header_right.gif') no-repeat;
       background-size: 100% 100%;
     }

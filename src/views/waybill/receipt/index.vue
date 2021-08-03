@@ -2,10 +2,10 @@
   <div>
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
-        <el-form-item v-show="isAdmin" label="下单企业" prop="orderClient">
+        <el-form-item v-show="!isShipment" label="下单用户" prop="orderClient">
           <el-input
-            v-model="queryParams.orderClient"
-            placeholder="请输入下单企业"
+            v-model.trim="queryParams.orderClient"
+            placeholder="发货企业/操作人/手机号"
             clearable
             size="small"
             style="width: 228px"
@@ -31,7 +31,7 @@
         </el-form-item>
         <el-form-item label="货源单号" prop="mainOrderNumber">
           <el-input
-            v-model="queryParams.mainOrderNumber"
+            v-model.trim="queryParams.mainOrderNumber"
             placeholder="请输入货源单号"
             clearable
             size="small"
@@ -46,6 +46,8 @@
           <el-date-picker
             v-model="receiveTime"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -55,7 +57,7 @@
         </el-form-item>
         <el-form-item label="车牌号" prop="licenseNumber">
           <el-input
-            v-model="queryParams.licenseNumber"
+            v-model.trim="queryParams.licenseNumber"
             placeholder="请输入车牌号"
             clearable
             size="small"
@@ -65,7 +67,7 @@
         </el-form-item>
         <el-form-item label="司机姓名" prop="driverName">
           <el-input
-            v-model="queryParams.driverName"
+            v-model.trim="queryParams.driverName"
             placeholder="请输入司机姓名"
             clearable
             size="small"
@@ -75,7 +77,7 @@
         </el-form-item>
         <el-form-item label="运输单号" prop="waybillNo">
           <el-input
-            v-model="queryParams.waybillNo"
+            v-model.trim="queryParams.waybillNo"
             placeholder="请输入运输单号"
             clearable
             size="small"
@@ -150,6 +152,22 @@
         <template #status="{row}">
           <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
         </template>
+        <template #goodsPrice="{row}">
+          <span>{{ row.goodsPrice ? floor(row.goodsPrice) + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) :'-' }}</span>
+        </template>
+        <template #freightPrice="{row}">
+          <span>{{ row.freightPrice ? floor(row.freightPrice) + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) :'-' }}</span>
+        </template>
+        <template #loadWeight="{row}">
+          <span v-if="row.stowageStatus === '1'">{{ row.loadWeight || '0.000' }} 方</span>
+          <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.loadWeight) || '0' }} 车</span>
+          <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.loadWeight || '0.000' }} 吨</span>
+        </template>
+        <template #unloadWeight="{row}">
+          <span v-if="row.stowageStatus === '1'">{{ row.unloadWeight || '0.000' }} 方</span>
+          <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.unloadWeight) || '0' }} 车</span>
+          <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.unloadWeight || '0.000' }} 吨</span>
+        </template>
         <template #lastLoadingTime="{row}">
           <span>{{ parseTime(row.lastLoadingTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
@@ -165,6 +183,7 @@
 
         <template #edit="{row}">
           <el-button
+            v-has-permi="['transportation:waybill:receiptList:detail']"
             size="mini"
             type="text"
             @click="handleDetail(row)"
@@ -207,6 +226,7 @@ import DeductionDialog from './deductionDialog';
 import ReturnDialog from './returnDialog';
 import { getUserInfo } from '@/utils/auth';
 // import tableColumnsConfig from './config';
+import { pickerOptions } from '@/utils/dateRange';
 export default {
   name: 'Receipt',
   components: {
@@ -216,6 +236,7 @@ export default {
   },
   data() {
     return {
+      pickerOptions,
       tableColumnsConfig: [],
       api: listInfoApi,
       // 遮罩层
@@ -248,6 +269,12 @@ export default {
         { 'dictLabel': '未标记回单', 'dictValue': 0 },
         { 'dictLabel': '已标记回单', 'dictValue': 1 }
       ],
+      // 配载方式字典
+      stowageStatusOptions: [
+        { 'dictLabel': '吨', 'dictValue': '0' },
+        { 'dictLabel': '方', 'dictValue': '1' },
+        { 'dictLabel': '车', 'dictValue': '2' }
+      ],
       // 运单状态 0未接单/1已接单/2已签收/3已回单/4已结算/5已打款字典
       statusOptions: [
         { 'dictLabel': '未接单', 'dictValue': '0' },
@@ -255,11 +282,12 @@ export default {
         { 'dictLabel': '已装货', 'dictValue': '2' },
         { 'dictLabel': '已签收', 'dictValue': '3' },
         { 'dictLabel': '已回单', 'dictValue': '4' },
-        { 'dictLabel': '已结算', 'dictValue': '5' },
+        { 'dictLabel': '已核算', 'dictValue': '5' },
         { 'dictLabel': '已申请打款', 'dictValue': '6' },
         { 'dictLabel': '已打款', 'dictValue': '7' },
         { 'dictLabel': '已申请开票', 'dictValue': '8' },
-        { 'dictLabel': '已开票', 'dictValue': '9' }
+        { 'dictLabel': '已开票', 'dictValue': '9' },
+        { 'dictLabel': '已作废', 'dictValue': '10' }
       ],
       // 货物大类字典
       goodsBigTypeOptions: [],
@@ -298,12 +326,14 @@ export default {
       },
       isAdmin: false,
       user: {},
-      shipment: {}
+      shipment: {},
+      isShipment: false
     };
   },
   created() {
-    const { isAdmin = false, user = {}, shipment = {}} = getUserInfo() || {};
+    const { isAdmin = false, isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
     this.isAdmin = isAdmin;
+    this.isShipment = isShipment;
     this.user = user;
     this.shipment = shipment;
     this.tableHeaderConfig(this.tableColumnsConfig, listInfoApi, {
@@ -311,7 +341,7 @@ export default {
       isShow: true,
       label: '操作',
       width: 180,
-      fixed: 'right'
+      fixed: 'left'
     });
     this.getList();
     this.listByDict(this.goodsBigType).then(response => {
@@ -331,7 +361,11 @@ export default {
     /** 查询纸质回单列表 */
     getList() {
       this.loading = true;
-      listInfo(this.queryParams).then((response) => {
+      const params = { ...this.queryParams };
+      if (params.licenseNumber) {
+        params.licenseNumber = params.licenseNumber.toUpperCase();
+      }
+      listInfo(params).then((response) => {
         this.infoList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -388,16 +422,6 @@ export default {
       this.currentId = row.code;
       this.openReturn = true;
       this.title = '退押金';
-    },
-    /** 导出按钮操作 */
-    handleExport() {
-      this.download(
-        'system/info/export',
-        {
-          ...this.queryParams
-        },
-        `system_info.xlsx`
-      );
     }
   }
 };

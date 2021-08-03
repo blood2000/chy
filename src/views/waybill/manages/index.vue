@@ -2,19 +2,19 @@
   <div>
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
-        <el-form-item v-show="isAdmin" label="下单企业" prop="orderClient">
+        <el-form-item v-show="!isShipment" label="下单用户" prop="orderClient">
           <el-input
-            v-model="queryParams.orderClient"
-            placeholder="请输入下单企业"
+            v-model.trim="queryParams.orderClient"
+            placeholder="发货企业/操作人/手机号"
             clearable
             size="small"
             style="width: 228px"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item v-show="isAdmin" label="发货企业" prop="deliveryCompany">
+        <el-form-item v-show="!isShipment" label="发货企业" prop="deliveryCompany">
           <el-input
-            v-model="queryParams.deliveryCompany"
+            v-model.trim="queryParams.deliveryCompany"
             placeholder="请输入发货企业"
             clearable
             size="small"
@@ -24,7 +24,7 @@
         </el-form-item>
         <el-form-item label="装货信息" prop="loadInfo">
           <el-input
-            v-model="queryParams.loadInfo"
+            v-model.trim="queryParams.loadInfo"
             placeholder="装货地/装货电话/发货人"
             clearable
             size="small"
@@ -34,7 +34,7 @@
         </el-form-item>
         <el-form-item label="卸货信息" prop="receivedInfo">
           <el-input
-            v-model="queryParams.receivedInfo"
+            v-model.trim="queryParams.receivedInfo"
             placeholder="卸货地/卸货电话/卸货人"
             clearable
             size="small"
@@ -49,6 +49,8 @@
           <el-date-picker
             v-model="receiveTime"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -56,9 +58,41 @@
             @change="datechoose"
           />
         </el-form-item>
+        <el-form-item
+          label="装货日期"
+          prop="loadTime"
+        >
+          <el-date-picker
+            v-model="loadTime"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 228px"
+            @change="loadDateChoose"
+          />
+        </el-form-item>
+        <el-form-item
+          label="卸货日期"
+          prop="unloadTime"
+        >
+          <el-date-picker
+            v-model="unloadTime"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 228px"
+            @change="unloadDateChoose"
+          />
+        </el-form-item>
         <el-form-item label="货源单号" prop="mainOrderNumber">
           <el-input
-            v-model="queryParams.mainOrderNumber"
+            v-model.trim="queryParams.mainOrderNumber"
             placeholder="请输入货源单号"
             clearable
             size="small"
@@ -68,7 +102,7 @@
         </el-form-item>
         <el-form-item label="运输单号" prop="waybillNo">
           <el-input
-            v-model="queryParams.waybillNo"
+            v-model.trim="queryParams.waybillNo"
             placeholder="请输入运输单号"
             clearable
             size="small"
@@ -78,7 +112,7 @@
         </el-form-item>
         <el-form-item label="车牌号" prop="licenseNumber">
           <el-input
-            v-model="queryParams.licenseNumber"
+            v-model.trim="queryParams.licenseNumber"
             placeholder="请输入车牌号"
             clearable
             size="small"
@@ -88,7 +122,7 @@
         </el-form-item>
         <el-form-item label="司机姓名" prop="driverName">
           <el-input
-            v-model="queryParams.driverName"
+            v-model.trim="queryParams.driverName"
             placeholder="请输入司机姓名"
             clearable
             size="small"
@@ -98,7 +132,7 @@
         </el-form-item>
         <el-form-item label="司机电话" prop="driverPhone">
           <el-input
-            v-model="queryParams.driverPhone"
+            v-model.trim="queryParams.driverPhone"
             placeholder="请输入司机电话"
             clearable
             size="small"
@@ -140,6 +174,16 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="调度/调度员" prop="teamName">
+          <el-input
+            v-model.trim="queryParams.teamName"
+            placeholder="请输入调度名称/调度员姓名"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
         <el-form-item>
           <el-button
             type="primary"
@@ -160,6 +204,16 @@
 
     <div class="app-container">
       <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['transportation:waybill:manageListExport']"
+            type="primary"
+            icon="el-icon-download"
+            size="mini"
+            :loading="loadingExport"
+            @click="handleExport"
+          >导出</el-button>
+        </el-col>
         <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
@@ -171,11 +225,83 @@
         <template #status="{row}">
           <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
         </template>
+        <template #stowageStatus="{row}">
+          <span>{{ selectDictLabel(stowageStatusOptions, row.stowageStatus) }}</span>
+        </template>
+        <template #sourceType="{row}">
+          <span>{{ selectDictLabel(sourceTypeOptions, row.sourceType) }}</span>
+        </template>
+        <template #goodsPrice="{row}">
+          <span>{{ row.goodsPrice ? floor(row.goodsPrice) + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) :'-' }}</span>
+        </template>
+        <template #mileage="{row}">
+          <span>{{ floor(row.mileage) }}</span>
+        </template>
+        <template #freightPrice="{row}">
+          <span>{{ row.freightPrice ? floor(row.freightPrice) + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) :'-' }}</span>
+        </template>
+        <template #freightPriceDriver="{row}">
+          <span>{{ row.freightPriceDriver ? floor(row.freightPriceDriver) + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) :'-' }}</span>
+        </template>
+        <template #taxFee="{row}">
+          <span>{{ floor(row.taxFee) }}</span>
+        </template>
+        <template #shipperCopeFee="{row}">
+          <span>{{ floor(row.shipperCopeFee) }}</span>
+        </template>
+        <template #taxFreeFee="{row}">
+          <span>{{ floor(row.taxFreeFee) }}</span>
+        </template>
+        <template #deliveryFeeDeserved="{row}">
+          <span>{{ floor(row.deliveryFeeDeserved) }}</span>
+        </template>
+        <template #taxPayment="{row}">
+          <span>{{ floor(row.taxPayment) }}</span>
+        </template>
+        <template #serviceFee="{row}">
+          <span>{{ floor(row.serviceFee) }}</span>
+        </template>
+        <template #deliveryFeePractical="{row}">
+          <span>{{ floor(row.deliveryFeePractical) }}</span>
+        </template>
+        <template #lossDeductionFee="{row}">
+          <span>{{ floor(row.lossDeductionFee) }}</span>
+        </template>
+        <template #m0Fee="{row}">
+          <span>{{ floor(row.m0Fee) }}</span>
+        </template>
+        <template #driverAddFee="{row}">
+          <span>{{ floor(row.driverAddFee) }}</span>
+        </template>
+        <template #driverReductionFee="{row}">
+          <span>{{ floor(row.driverReductionFee) }}</span>
+        </template>
         <!-- <template #isChild="{row}">
           <span>{{ selectDictLabel(isChildOptions, row.isChild) }}</span>
         </template> -->
         <template #isWarning="{row}">
           <span>{{ selectDictLabel(isWarningOptions, row.isWarning) }}</span>
+        </template>
+        <template #loadWeight="{row}">
+          <span v-if="row.loadWeight">
+            <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.loadWeight }} 吨</span>
+            <span v-if="row.stowageStatus === '1'">{{ row.loadWeight }} 方</span>
+            <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.loadWeight) }} 车</span>
+          </span>
+        </template>
+        <template #unloadWeight="{row}">
+          <span v-if="row.unloadWeight">
+            <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.unloadWeight }} 吨</span>
+            <span v-if="row.stowageStatus === '1'">{{ row.unloadWeight }} 方</span>
+            <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.unloadWeight) }} 车</span>
+          </span>
+        </template>
+        <template #weight="{row}">
+          <span v-if="row.weight">
+            <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.weight }} 吨</span>
+            <span v-if="row.stowageStatus === '1'">{{ row.weight }} 方</span>
+            <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.weight) }} 车</span>
+          </span>
         </template>
         <template #orderTime="{row}">
           <span>{{ parseTime(row.orderTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
@@ -196,12 +322,12 @@
             详情
           </el-button>
           <el-button
-            v-hasPermi="['transportation:waybillOper:invalid']"
+            v-has-permi="['transportation:waybillAbnormal:add']"
             size="mini"
             type="text"
-            @click="handleDelete(row)"
+            @click="handleMark(row)"
           >
-            作废运单
+            标记异常
           </el-button>
           <el-button
             v-has-permi="['transportation:waybillOper:shipperRemark']"
@@ -211,28 +337,31 @@
           >
             备注
           </el-button>
-          <el-button
-            v-if="row.isChild === 2 && !isAdmin"
+          <!-- <el-button
+            v-if="row.isChild === 2 && isShipment"
+            v-hasPermi="['transportation:waybillOper:reinsurance']"
             size="mini"
             type="text"
             @click="handleSeperate(row)"
           >
             分单列表
-          </el-button>
-          <TableDropdown v-show="isAdmin">
+          </el-button> -->
+          <TableDropdown v-show="row.isChild === 2 || row.status < '5'">
             <el-dropdown-item>
               <el-button
-                v-has-permi="['transportation:waybillAbnormal:add']"
+                v-if="row.status < '5'"
+                v-hasPermi="['transportation:waybillOper:invalid']"
                 size="mini"
                 type="text"
-                @click="handleMark(row)"
+                @click="handleDelete(row)"
               >
-                标记异常
+                作废运单
               </el-button>
             </el-dropdown-item>
             <el-dropdown-item>
               <el-button
                 v-if="row.isChild === 2"
+                v-hasPermi="['transportation:waybillOper:reinsurance']"
                 size="mini"
                 type="text"
                 @click="handleSeperate(row)"
@@ -294,6 +423,7 @@ import MarkAbnormalDialog from './markAbnormalDialog';
 import SeperateListDialog from './seperateListDialog';
 import RemarkDialog from './remarkDialog';
 import { getUserInfo } from '@/utils/auth';
+import { pickerOptions } from '@/utils/dateRange';
 
 export default {
   name: 'Manages',
@@ -305,7 +435,10 @@ export default {
   },
   data() {
     return {
+      pickerOptions,
       receiveTime: [],
+      loadTime: [],
+      unloadTime: [],
       tableColumnsConfig: [],
       api: listManagesApi,
       // 遮罩层
@@ -349,7 +482,7 @@ export default {
       ],
       // 给超载的子单排序用字典
       'childSortOptions': [
-        { 'dictLabel': '车辆核载装货重量的子单', 'dictValue': 1 },
+        { 'dictLabel': '车辆核载装货数量的子单', 'dictValue': 1 },
         { 'dictLabel': '其余重量子单', 'dictValue': 2 }
       ],
       // 运单状态字典
@@ -359,11 +492,27 @@ export default {
         { 'dictLabel': '已装货', 'dictValue': '2' },
         { 'dictLabel': '已签收(已卸货)', 'dictValue': '3' },
         { 'dictLabel': '已回单(收单复核)', 'dictValue': '4' },
-        { 'dictLabel': '已结算', 'dictValue': '5' },
+        { 'dictLabel': '已核算', 'dictValue': '5' },
         { 'dictLabel': '已申请(打款)', 'dictValue': '6' },
         { 'dictLabel': '已打款', 'dictValue': '7' },
         { 'dictLabel': '已申请开票', 'dictValue': '8' },
-        { 'dictLabel': '已开票', 'dictValue': '9' }
+        { 'dictLabel': '已开票', 'dictValue': '9' },
+        { 'dictLabel': '已作废', 'dictValue': '10' },
+        { 'dictLabel': '已核验', 'dictValue': '11' },
+        { 'dictLabel': '已完成', 'dictValue': '12' }
+      ],
+      // 配载方式字典
+      stowageStatusOptions: [
+        { 'dictLabel': '吨', 'dictValue': '0' },
+        { 'dictLabel': '方', 'dictValue': '1' },
+        { 'dictLabel': '车', 'dictValue': '2' }
+      ],
+      // 配载方式字典
+      sourceTypeOptions: [
+        { 'dictLabel': '承运码', 'dictValue': '1' },
+        { 'dictLabel': '调度者指派', 'dictValue': '2' },
+        { 'dictLabel': '自主接单', 'dictValue': '3' },
+        { 'dictLabel': '后台指派', 'dictValue': '4' }
       ],
       // 司机取消订单字典
       'cancelStatusOptions': [
@@ -385,12 +534,17 @@ export default {
         'receivedInfo': null,
         'startReceiveTime': null,
         'endReceiveTime': null,
+        'startLoadTime': null,
+        'endLoadTime': null,
+        'startUnLoadTime': null,
+        'endUnLoadTime': null,
         'mainOrderNumber': null,
         'waybillNo': null,
         'licenseNumber': null,
         'driverName': null,
         'driverPhone': null,
-        'status': null
+        'status': null,
+        'teamName': null
       },
       // 表单参数
       'form': {},
@@ -400,14 +554,17 @@ export default {
       // 当前选中的运单id
       'currentId': null,
       'currentRow': null,
+      loadingExport: false,
       isAdmin: false,
       user: {},
-      shipment: {}
+      shipment: {},
+      isShipment: false
     };
   },
   created() {
-    const { isAdmin = false, user = {}, shipment = {}} = getUserInfo() || {};
+    const { isAdmin = false, isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
     this.isAdmin = isAdmin;
+    this.isShipment = isShipment;
     this.user = user;
     this.shipment = shipment;
     this.tableHeaderConfig(this.tableColumnsConfig, listManagesApi, {
@@ -415,8 +572,11 @@ export default {
       isShow: true,
       label: '操作',
       width: 180,
-      fixed: 'right'
+      fixed: 'left'
     });
+    this.queryParams.startReceiveTime = this.parseTime(new Date().getTime() - 24 * 60 * 60 * 1000 * 2, '{y}-{m}-{d}');
+    this.queryParams.endReceiveTime = this.parseTime(new Date(), '{y}-{m}-{d}');
+    this.receiveTime = [new Date(new Date().getTime() - 24 * 60 * 60 * 1000 * 2), new Date()];
     this.getList();
   },
   methods: {
@@ -429,10 +589,32 @@ export default {
         this.queryParams.endReceiveTime = null;
       }
     },
+    loadDateChoose(date) {
+      if (date) {
+        this.queryParams.startLoadTime = this.parseTime(date[0], '{y}-{m}-{d}');
+        this.queryParams.endLoadTime = this.parseTime(date[1], '{y}-{m}-{d}');
+      } else {
+        this.queryParams.startLoadTime = null;
+        this.queryParams.endLoadTime = null;
+      }
+    },
+    unloadDateChoose(date) {
+      if (date) {
+        this.queryParams.startUnLoadTime = this.parseTime(date[0], '{y}-{m}-{d}');
+        this.queryParams.endUnLoadTime = this.parseTime(date[1], '{y}-{m}-{d}');
+      } else {
+        this.queryParams.startUnLoadTime = null;
+        this.queryParams.endUnLoadTime = null;
+      }
+    },
     /** 查询列表 */
     getList() {
       this.loading = true;
-      listManages(this.queryParams).then(response => {
+      const params = { ...this.queryParams };
+      if (params.licenseNumber) {
+        params.licenseNumber = params.licenseNumber.toUpperCase();
+      }
+      listManages(params).then(response => {
         this.managesList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -449,6 +631,12 @@ export default {
       this.receiveTime = [];
       this.queryParams.startReceiveTime = null;
       this.queryParams.endReceiveTime = null;
+      this.loadTime = [];
+      this.queryParams.startLoadTime = null;
+      this.queryParams.endLoadTime = null;
+      this.unloadTime = [];
+      this.queryParams.startUnLoadTime = null;
+      this.queryParams.endUnLoadTime = null;
       this.handleQuery();
     },
     // 多选框选中数据
@@ -457,12 +645,19 @@ export default {
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
     },
+    // 导出
+    handleExport() {
+      this.loadingExport = true;
+      this.download('/transportation/waybill/manageListExport', { ...this.queryParams }, `运输单管理`).then(res => {
+        this.loadingExport = false;
+      });
+    },
     /** 详情按钮操作 */
     handleUpdate(row) {
       this.currentId = row.wayBillCode;
       this.currentRow = row;
       this.open = true;
-      this.title = '查看运单详情';
+      this.title = '运输单信息';
       this.formDisable = true;
     },
     /** 标记异常按钮操作 */
@@ -498,7 +693,7 @@ export default {
       this.$refs.RemarkDialog.reset();
       // this.currentId = row.wayBillCode;
       this.openRemark = true;
-      this.title = '编辑货主运单备注';
+      this.title = '编辑运单备注';
       this.$refs.RemarkDialog.setForm(row);
     }
   }

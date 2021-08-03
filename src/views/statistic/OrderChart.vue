@@ -1,6 +1,6 @@
 <template>
   <!-- 订单统计 -->
-  <div class="s-container" />
+  <div class="s-container-chart" />
 </template>
 
 <script>
@@ -8,15 +8,29 @@ import * as echarts from 'echarts';
 import { setfontSize } from '@/utils/fontSize';
 
 export default {
+  props: {
+    timeData: {
+      type: Array,
+      default: () => {
+        return [];
+      }
+    },
+    orderData: {
+      type: Array,
+      default: () => {
+        return [];
+      }
+    },
+    // 判断货单or运单
+    type: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       chart: null
     };
-  },
-  mounted() {
-    this.$nextTick(() => {
-      this.initChart();
-    });
   },
   beforeDestroy() {
     if (!this.chart) {
@@ -32,31 +46,51 @@ export default {
       this.setFontOption();
     },
     refreshChart() {
+      if (!this.chart) return;
       this.chart.resize();
       this.setFontOption();
     },
     setOption() {
+      // 构造数据
+      let typeName = '';
+      let yAxisName = '';
+      let pointColor = '';
+      let lineColot = '';
+      if (this.type === 'shipment') {
+        typeName = '货单订单数';
+        yAxisName = '货单数';
+        pointColor = '#18B8C5';
+        lineColot = '#267BB7';
+      } else if (this.type === 'wayBill') {
+        typeName = '运单订单数';
+        yAxisName = '运单数';
+        pointColor = '#F6BE61';
+        lineColot = '#E68D27';
+      } else if (this.type === 'transaction') {
+        typeName = '交易额';
+        yAxisName = '万';
+        pointColor = '#43dfb5';
+        lineColot = 'rgba(47, 235, 149, 0.6)';
+      }
       this.chart.setOption({
         legend: {
           show: true,
           right: 0,
-          top: '10%',
+          top: '5%',
           icon: 'circle',
           textStyle: {
             color: '#D5EAFF',
             fontFamily: 'PingFang Medium'
           },
           data: [{
-            name: '货单订单数'
-          }, {
-            name: '运单订单数'
+            name: typeName
           }]
         },
         grid: {
-          left: '3%',
+          left: '0%',
           right: '3%',
-          bottom: '10%',
-          top: '26%',
+          bottom: '0%',
+          top: '22%',
           containLabel: true
         },
         xAxis: {
@@ -65,7 +99,7 @@ export default {
           axisLabel: {
             show: true,
             textStyle: {
-              color: '#CDEDFF',
+              color: '#D5EAFF',
               fontFamily: 'PingFang Regular'
             }
           },
@@ -75,12 +109,12 @@ export default {
               color: '#3F5C84'
             }
           },
-          data: ['第1周', '第2周', '第3周', '第4周', '第5周', '第6周', '第7周', '第8周']
+          data: this.timeData
         },
         yAxis: {
-          name: '订单数(万)',
+          name: yAxisName,
           nameTextStyle: {
-            color: '#CDEDFF',
+            color: '#D5EAFF',
             paddingLeft: '2%',
             fontFamily: 'PingFang Medium'
           },
@@ -96,7 +130,7 @@ export default {
           axisLabel: {
             show: true,
             textStyle: {
-              color: '#CDEDFF',
+              color: '#D5EAFF',
               fontFamily: 'PingFang Medium'
             }
           },
@@ -123,30 +157,16 @@ export default {
           }
         },
         series: [{
-          name: '货单订单数',
-          data: [2, 4, 5, 8, 6, 2, 6, 2, 6, 2],
+          name: typeName,
+          data: this.orderData,
           type: 'line',
           symbol: 'circle',
-          color: 'rgba(38, 123, 183, 1)', // 拐点颜色
+          color: pointColor, // 拐点颜色
           // 折线样式
           itemStyle: {
             normal: {
               lineStyle: {
-                color: 'rgba(38, 123, 183, 1)'
-              }
-            }
-          }
-        }, {
-          name: '运单订单数',
-          data: [5, 3, 4, 8, 5, 6, 5, 6],
-          type: 'line',
-          symbol: 'circle',
-          color: 'rgba(255, 158, 44, 1)', // 拐点颜色
-          // 折线样式
-          itemStyle: {
-            normal: {
-              lineStyle: {
-                color: 'rgba(255, 158, 44, 1)'
+                color: lineColot
               }
             }
           }
@@ -163,6 +183,7 @@ export default {
           }
         },
         tooltip: {
+          padding: setfontSize(10),
           textStyle: {
             fontSize: setfontSize(14)
           }
@@ -185,16 +206,7 @@ export default {
           }
         },
         series: [{
-          symbolSize: setfontSize(8),
-          itemStyle: {
-            normal: {
-              lineStyle: {
-                width: setfontSize(2)
-              }
-            }
-          }
-        }, {
-          symbolSize: setfontSize(8),
+          symbolSize: setfontSize(6),
           itemStyle: {
             normal: {
               lineStyle: {
@@ -210,17 +222,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.s-container{
-  height: 31%;
-  position: relative;
-  &::after{
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(to right, rgba(76, 203, 219, 0.5), rgba(76, 203, 219, 0));
-  }
+.s-container-chart{
+  height: 100%;
+  // position: relative;
+  // &::after{
+  //   content: '';
+  //   position: absolute;
+  //   bottom: 0;
+  //   left: 0;
+  //   right: 0;
+  //   height: 0.05rem;
+  //   background: linear-gradient(to right, rgba(76, 203, 219, 0.5), rgba(76, 203, 219, 0));
+  // }
 }
 </style>

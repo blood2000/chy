@@ -20,7 +20,7 @@ export default [
   {
     prop: 'orderClient',
     isShow: true,
-    label: '下单客户'
+    label: '下单用户'
   },
   {
     prop: 'shipper',
@@ -151,7 +151,7 @@ export default [
     isShow: true,
     label: '操作',
     width: 280,
-    fixed: 'right'
+    fixed: 'left'
   }
 ];
 

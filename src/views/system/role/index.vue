@@ -20,9 +20,18 @@
               :data="deptTreeOptions"
               :props="defaultTreeProps"
               :expand-on-click-node="false"
+              :filter-node-method="filterDepNode"
+              :indent="0"
               default-expand-all
               @node-click="handleNodeClick"
-            />
+            >
+              <span slot-scope="{ node, data }">
+                <span class="node-label">
+                  <i class="tree-node-icon" :class="data.icon" />
+                  {{ node.label }}
+                </span>
+              </span>
+            </el-tree>
           </div>
         </div>
       </el-col>
@@ -91,6 +100,8 @@
                 style="width: 240px"
                 value-format="yyyy-MM-dd"
                 type="daterange"
+                unlink-panels
+                :picker-options="pickerOptions"
                 range-separator="-"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
@@ -119,7 +130,7 @@
                 type="success"
                 icon="el-icon-edit"
                 size="mini"
-                :disabled="single"
+                :disabled="single || isSystemDisabled"
                 @click="handleUpdate"
               >修改</el-button>
             </el-col>
@@ -129,7 +140,7 @@
                 type="danger"
                 icon="el-icon-delete"
                 size="mini"
-                :disabled="multiple"
+                :disabled="multiple || isSystemDisabled"
                 @click="handleDelete"
               >删除</el-button>
             </el-col>
@@ -145,13 +156,13 @@
             <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
           </el-row>
 
-          <el-table v-loading="loading" :data="roleList" @selection-change="handleSelectionChange">
+          <el-table v-loading="loading" highlight-current-row border :data="roleList" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55" align="center" />
-            <el-table-column label="所属产品" prop="produceName" width="120" />
-            <el-table-column label="角色名称" prop="roleName" :show-overflow-tooltip="true" width="150" />
-            <!--   <el-table-column label="权限字符" prop="roleKey" :show-overflow-tooltip="true" width="150" />-->
-            <el-table-column label="显示顺序" prop="roleSort" width="100" />
-            <el-table-column label="状态" align="center" width="100">
+            <el-table-column label="所属产品" prop="produceName" align="center" />
+            <el-table-column label="角色名称" prop="roleName" align="center" :show-overflow-tooltip="true" />
+            <!-- <el-table-column label="权限字符" prop="roleKey" align="center" :show-overflow-tooltip="true" />-->
+            <el-table-column label="显示顺序" prop="roleSort" align="center" />
+            <el-table-column label="状态" align="center">
               <template slot-scope="scope">
                 <el-switch
                   v-model="scope.row.status"
@@ -162,18 +173,17 @@
                 />
               </template>
             </el-table-column>
-            <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+            <el-table-column label="创建时间" align="center" prop="createTime">
               <template slot-scope="scope">
                 <span>{{ parseTime(scope.row.createTime) }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+            <el-table-column label="操作" align="center" fixed="left" width="160">
               <template slot-scope="scope">
                 <el-button
                   v-hasPermi="['system:role:edit']"
                   size="mini"
                   type="text"
-                  icon="el-icon-edit"
                   :disabled="isOperate(scope.row)"
                   @click="handleUpdate(scope.row)"
                 >修改</el-button>
@@ -181,7 +191,6 @@
                   v-hasPermi="['system:role:edit']"
                   size="mini"
                   type="text"
-                  icon="el-icon-circle-check"
                   :disabled="isOperate(scope.row)"
                   @click="handleDataScope(scope.row)"
                 >数据权限</el-button>
@@ -189,7 +198,6 @@
                   v-hasPermi="['system:role:remove']"
                   size="mini"
                   type="text"
-                  icon="el-icon-delete"
                   :disabled="isOperate(scope.row)"
                   @click="handleDelete(scope.row)"
                 >删除</el-button>
@@ -209,18 +217,18 @@
     </el-row>
 
     <!-- 添加或修改角色配置对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body :close-on-click-modal="false">
+    <el-dialog :title="title" :visible.sync="open" width="50%" append-to-body :close-on-click-modal="false">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row :gutter="24">
           <el-col :span="24">
-            <!--  :rules="[{ required: true, message: '所属组织不能为空', trigger: 'blur' }]"-->
-            <el-form-item v-if="!form.roleId" label="所属组织" prop="orgCode">
+            <el-form-item v-if="!form.roleId" label="所属组织" prop="orgCode" :rules="[{ required: true, message: '所属组织不能为空', trigger: 'change' }]">
               <!-- <el-tree
                 ref="tree"
                 class="tree-border"
                 :data="deptTreeOptions"
                 :props="defaultTreeProps"
                 :expand-on-click-node="false"
+                :indent="0"
                 @node-click="handleOrgClick"
               /> -->
               <treeselect
@@ -233,29 +241,47 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="所属产品" prop="produceCode">
-          <el-select v-model="form.produceCode" clearable filterable placeholder="请选择所属产品" style="width: 100%">
-            <el-option
-              v-for="item in produceList"
-              :key="item.produceCode"
-              :label="item.cnName"
-              :value="item.produceCode"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="角色名称" prop="roleName">
-          <el-input v-model="form.roleName" placeholder="请输入角色名称" />
-        </el-form-item>
-        <!--<el-form-item label="权限字符" prop="roleKey">
-          <el-input v-model="form.roleKey" placeholder="请输入权限字符" />
-        </el-form-item>-->
-        <el-row :gutter="20">
+        <el-row :gutter="24">
           <el-col :span="12">
-            <el-form-item label="角色顺序" prop="roleSort">
-              <el-input-number v-model="form.roleSort" style="width: 90%;" controls-position="right" :min="0" />
+            <el-form-item label="所属产品" prop="produceCode">
+              <el-select v-model="form.produceCode" clearable filterable placeholder="请选择所属产品" style="width: 100%">
+                <el-option
+                  v-for="item in produceList"
+                  :key="item.produceCode"
+                  :label="item.cnName"
+                  :value="item.produceCode"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
+            <el-form-item label="角色名称" prop="roleName">
+              <el-input v-model="form.roleName" placeholder="请输入角色名称" />
+            </el-form-item>
+            <!--<el-form-item label="权限字符" prop="roleKey">
+          <el-input v-model="form.roleKey" placeholder="请输入权限字符" />
+        </el-form-item>-->
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="权限范围" prop="dataScope">
+              <el-select v-model="form.dataScope" clearable filterable style="width: 100%">
+                <el-option
+                  v-for="item in dataScopeOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="5">
+            <el-form-item label="角色顺序" prop="roleSort">
+              <el-input-number v-model="form.roleSort" style="width: 100%;" controls-position="right" :min="0" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="7">
             <el-form-item label="状态">
               <el-radio-group v-model="form.status">
                 <el-radio
@@ -267,38 +293,33 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="权限范围" prop="dataScope">
-          <el-select v-model="form.dataScope" clearable filterable style="width: 100%">
-            <el-option
-              v-for="item in dataScopeOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item v-show="form.dataScope == 2" label="数据权限">
-          <el-checkbox v-model="deptExpand" @change="handleCheckedTreeExpand($event, 'dept')">展开/折叠</el-checkbox>
-          <el-checkbox v-model="deptNodeAll" @change="handleCheckedTreeNodeAll($event, 'dept')">全选/全不选</el-checkbox>
-          <el-checkbox v-model="form.deptCheckStrictly" @change="handleCheckedTreeConnect($event, 'dept')">父子联动</el-checkbox>
-          <el-tree
-            ref="dept"
-            class="tree-border"
-            :data="deptOptions"
-            show-checkbox
-            default-expand-all
-            node-key="code"
-            :check-strictly="!form.deptCheckStrictly"
-            empty-text="暂无数据"
-            :props="defaultProps"
-          />
-        </el-form-item>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item v-show="form.dataScope == 2" label="数据权限">
+              <el-checkbox v-model="deptExpand" @change="handleCheckedTreeExpand($event, 'dept')">展开/折叠</el-checkbox>
+              <el-checkbox v-model="deptNodeAll" @change="handleCheckedTreeNodeAll($event, 'dept')">全选/全不选</el-checkbox>
+              <el-checkbox v-model="form.deptCheckStrictly" @change="handleCheckedTreeConnect($event, 'dept')">父子联动</el-checkbox>
+              <el-tree
+                ref="dept"
+                class="tree-border"
+                :data="deptOptions"
+                show-checkbox
+                default-expand-all
+                node-key="code"
+                :check-strictly="!form.deptCheckStrictly"
+                empty-text="暂无数据"
+                :props="defaultProps"
+                :indent="0"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-form-item label="菜单权限" class="mb0">
           <el-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand($event, 'menu')">展开/折叠</el-checkbox>
           <el-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event, 'menu')">全选/全不选</el-checkbox>
           <el-checkbox v-model="form.menuCheckStrictly" @change="handleCheckedTreeConnect($event, 'menu')">父子联动</el-checkbox>
           <el-row :gutter="12" class="mb20">
-            <el-col :span="10">
+            <!-- <el-col :span="10">
               <el-tree
                 ref="versionTree"
                 class="tree-border"
@@ -306,20 +327,23 @@
                 :props="produceDefaultProps"
                 :expand-on-click-node="false"
                 :filter-node-method="filterNode"
+                :indent="0"
                 default-expand-all
                 @node-click="handleVersionNodeClick"
               />
-            </el-col>
-            <el-col :span="14">
+            </el-col> -->
+            <el-col :span="24">
               <el-tree
                 ref="menu"
-                class="tree-border"
+                class="tree-border own-version-menu-tree"
                 :data="menuOptions"
                 show-checkbox
                 node-key="code"
                 :check-strictly="!form.menuCheckStrictly"
+                :indent="0"
                 empty-text="暂无数据"
                 :props="defaultProps"
+                :default-expanded-keys="defaultExpandedKeys"
               />
             </el-col>
           </el-row>
@@ -335,7 +359,7 @@
     </el-dialog>
 
     <!-- 分配角色数据权限对话框 -->
-    <el-dialog :title="title" :visible.sync="openDataScope" width="500px" append-to-body :close-on-click-modal="false">
+    <el-dialog :title="title" :visible.sync="openDataScope" width="60%" append-to-body :close-on-click-modal="false">
       <el-form :model="form" label-width="80px">
         <el-form-item label="角色名称">
           <el-input v-model="form.roleName" :disabled="true" />
@@ -367,6 +391,7 @@
             :check-strictly="!form.deptCheckStrictly"
             empty-text="暂无数据"
             :props="defaultProps"
+            :indent="0"
           />
         </el-form-item>
       </el-form>
@@ -380,12 +405,12 @@
 
 <script>
 import { listRole, getRole, delRole, addRole, updateRole, dataScope, changeRoleStatus, producelist } from '@/api/system/role';
-import { treeselect as menuTreeselect, roleMenuTreeselect, versionTreeList } from '@/api/system/menu';
+import { treeselect2 as menuTreeselect, roleMenuTreeselect2, versionTreeList } from '@/api/system/menu';
 import { treeselect as deptTreeselect, roleDeptTreeselect } from '@/api/system/dept';
 import { mapGetters } from 'vuex';
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
-
+import { pickerOptions } from '@/utils/dateRange';
 export default {
   name: 'Role',
   components: {
@@ -395,10 +420,22 @@ export default {
     companyCode: {
       type: String,
       default: null
+    },
+    userCode: {
+      type: String,
+      default: null
+    },
+    showShipment: {
+      type: Boolean
+    },
+    orgType: {
+      type: Number,
+      default: 2
     }
   },
   data() {
     return {
+      pickerOptions,
       buttonLoading: false,
       dataScopeLoading: false,
       // 遮罩层
@@ -433,14 +470,6 @@ export default {
       // 数据范围选项
       dataScopeOptions: [
         {
-          value: '1',
-          label: '全部数据权限'
-        },
-        {
-          value: '2',
-          label: '自定数据权限'
-        },
-        {
           value: '3',
           label: '本部门数据权限'
         },
@@ -459,6 +488,7 @@ export default {
       ],
       // 菜单列表
       menuOptions: [],
+      menuAllKeys: [],
       // 部门列表
       deptOptions: [],
       // 产品列表
@@ -479,10 +509,14 @@ export default {
       },
       defaultProps: {
         children: 'children',
-        label: 'label'
+        label: 'cnName'
       },
+      defaultExpandedKeys: [],
       // 表单校验
       rules: {
+        /* orgCode: [
+          { required: true, message: '所属组织不能为空', trigger: 'change' }
+        ],*/
         produceCode: [
           { required: true, message: '所属产品不能为空', trigger: 'change' }
         ],
@@ -520,7 +554,9 @@ export default {
       produceDefaultProps: {
         children: 'children',
         label: 'cnName'
-      }
+      },
+      isSystemDisabled: false,
+      currentOrgCode: ''
     };
   },
   computed: {
@@ -569,8 +605,16 @@ export default {
     /** 查询角色列表 */
     getList() {
       this.loading = true;
-      if (this.companyCode) {
+      if (this.currentOrgCode) {
+        this.queryParams.orgCode = this.currentOrgCode;
+      } else if (this.companyCode) {
         this.queryParams.orgCode = this.companyCode;
+      }
+      if (this.showShipment) {
+        this.queryParams.showShipment = this.showShipment;
+      }
+      if (this.orgType) {
+        this.queryParams.orgType = this.orgType;
       }
       listRole(this.addDateRange(this.queryParams, this.dateRange)).then(
         response => {
@@ -582,8 +626,10 @@ export default {
     },
     /** 查询菜单树结构 */
     getMenuTreeselect(data = {}) {
-      menuTreeselect(data).then(response => {
+      menuTreeselect(data, this.userCode).then(response => {
         this.menuOptions = response.data;
+        this.defaultExpandedKeys = response.expandKeys;
+        this.menuAllKeys = response.allKeys;
       });
     },
     /** 查询部门树结构 */
@@ -612,8 +658,10 @@ export default {
     },
     /** 根据角色ID查询菜单树结构 */
     getRoleMenuTreeselect(roleId, data) {
-      return roleMenuTreeselect(roleId, data).then(response => {
+      return roleMenuTreeselect2(roleId, data).then(response => {
         this.menuOptions = response.menus;
+        this.defaultExpandedKeys = response.expandKeys;
+        this.menuAllKeys = response.allKeys;
         return response;
       });
     },
@@ -670,7 +718,8 @@ export default {
         orgCodes: [],
         menuCheckStrictly: true,
         deptCheckStrictly: true,
-        remark: undefined
+        remark: undefined,
+        currentOrgCode: undefined
       };
       this.resetForm('form');
     },
@@ -683,10 +732,21 @@ export default {
     resetQuery() {
       this.dateRange = [];
       this.resetForm('queryForm');
+      this.queryParams.orgCode = undefined;
+      this.currentOrgCode = undefined;
       this.handleQuery();
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
+      // 判断内置角色不允许操作
+      this.isSystemDisabled = false;
+      selection.map(item => {
+        if (this.isOperate(item)) {
+          this.isSystemDisabled = true;
+          return;
+        }
+      });
+      // console.log(this.isSystemDisabled);
       this.ids = selection.map(item => item.roleId);
       this.names = selection.map(item => item.roleName);
       this.single = selection.length !== 1;
@@ -709,7 +769,8 @@ export default {
     // 树权限（全选/全不选）
     handleCheckedTreeNodeAll(value, type) {
       if (type === 'menu') {
-        this.$refs.menu.setCheckedNodes(value ? this.menuOptions : []);
+        this.$refs.menu.setCheckedKeys(value ? this.menuAllKeys : []);
+        // this.$refs.menu.setCheckedNodes(value ? this.menuOptions : []);
       } else if (type === 'dept') {
         this.$refs.dept.setCheckedNodes(value ? this.deptOptions : []);
       }
@@ -725,7 +786,7 @@ export default {
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
-      this.getVersionTreeselect();
+      // this.getVersionTreeselect();
       this.getMenuTreeselect();
       this.getProduceList();
       this.open = true;
@@ -734,9 +795,9 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      this.getVersionTreeselect();
+      // this.getVersionTreeselect();
       const roleId = row.roleId || this.ids;
-      const roleMenu = this.getRoleMenuTreeselect(roleId, null);
+      const roleMenu = this.getRoleMenuTreeselect(roleId, { userCode: this.userCode });
       this.getProduceList();
       getRole(roleId).then(response => {
         this.form = response.data;
@@ -824,13 +885,19 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('system/role/export', {
-        ...this.queryParams
-      }, `角色信息_${new Date().getTime()}.xlsx`);
+      if (this.dateRange[0] && this.dateRange[1]) {
+        this.queryParams.beginTime = this.dateRange[0];
+        this.queryParams.endTime = this.dateRange[1];
+      } else {
+        this.queryParams.beginTime = undefined;
+        this.queryParams.endTime = undefined;
+      }
+      this.queryParams.params = undefined;
+      this.download('system/role/export', this.queryParams, `角色信息`);
     },
     /** 查询部门下拉树结构 */
     getDeptTree() {
-      deptTreeselect({ orgCode: this.companyCode }).then(response => {
+      deptTreeselect({ orgCode: this.companyCode, userCode: this.userCode, showShipment: this.showShipment, orgType: this.orgType }).then(response => {
         this.deptTreeOptions = response.data;
       });
     },
@@ -841,8 +908,13 @@ export default {
     },
     // 部门树节点单击事件
     handleNodeClick(data) {
-      this.queryParams.orgCode = data.code;
+      // this.queryParams.orgCode = data.code;
+      this.currentOrgCode = data.code;
       this.getList();
+    },
+    filterDepNode(value, data) {
+      if (!value) return true;
+      return data.label.indexOf(value) !== -1;
     },
     handleOrgClick(data) {
       this.form.orgCode = data.code;
@@ -863,6 +935,7 @@ export default {
       } else if (data.type === 'version') {
         params.versionCode = data.code;
       }
+      params.userCode = this.userCode;
       if (this.form.roleId !== undefined) {
         const roleMenu = this.getRoleMenuTreeselect(this.form.roleId, params);
         roleMenu.then(res => {
@@ -886,3 +959,15 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+.own-version-menu-tree{
+  .el-tree-node__content{
+    .el-checkbox{
+      &.is-disabled{
+        display: none;
+      }
+    }
+  }
+}
+</style>

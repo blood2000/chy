@@ -1,5 +1,5 @@
 <template>
-  <el-dialog
+  <!-- <el-dialog
     class="page-vehicle-manage-dialog"
     :visible="visible"
     :fullscreen="isfullscreen"
@@ -9,6 +9,16 @@
     :modal-append-to-body="false"
     :close-on-click-modal="false"
     @close="cancel"
+  >-->
+  <el-drawer
+    size="96%"
+    title="管理"
+    :wrapper-closable="false"
+    :visible.sync="visible"
+    direction="rtl"
+    append-to-body
+    :close="cancel"
+    class="page-vehicle-manage-dialog"
   >
     <el-tabs v-model="activeName">
       <el-tab-pane label="归属司机" name="driver">
@@ -17,22 +27,32 @@
       <el-tab-pane label="归属调度" name="team">
         <team-list-page ref="TeamListPage" :vehicle-code="vehicleCode" />
       </el-tab-pane>
+      <el-tab-pane label="车辆设备" name="device">
+        <vehicle-device-list-page ref="DeviceListPage" :vehicle-code="vehicleCode" :license-number="licenseNumber" />
+      </el-tab-pane>
     </el-tabs>
-  </el-dialog>
+  </el-drawer>
+  <!--</el-dialog>-->
 </template>
 
 <script>
 import DriverListPage from '../components/driverList';
 import TeamListPage from '../components/teamList';
+import VehicleDeviceListPage from './vehicleDevice';
 export default {
   name: 'VehicleManageDialog',
   components: {
     DriverListPage,
-    TeamListPage
+    TeamListPage,
+    VehicleDeviceListPage
   },
   props: {
     open: Boolean,
     vehicleCode: {
+      type: String,
+      default: null
+    },
+    licenseNumber: {
       type: String,
       default: null
     }
@@ -60,6 +80,7 @@ export default {
           this.activeName = 'driver';
           this.$refs.TeamListPage.getList();
           this.$refs.DriverListPage.getList();
+          this.$refs.DeviceListPage.getList();
         });
       }
     }
@@ -79,14 +100,13 @@ export default {
 
 <style lang="scss">
 .page-vehicle-manage-dialog{
-  .el-dialog{
-    .el-dialog__body{
-      padding-top: 10px;
-      .app-container{
-        box-shadow: none;
-        margin: 0;
-        padding: 0;
-      }
+  .el-drawer__body{
+    padding: 0 20px;
+    overflow-y: auto;
+    .app-container{
+      box-shadow: none;
+      margin: 0;
+      padding: 0;
     }
   }
 }

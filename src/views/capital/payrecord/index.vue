@@ -5,7 +5,7 @@
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
         <el-form-item label="支付批次号" prop="bizNo">
           <el-input
-            v-model="queryParams.bizNo"
+            v-model.trim="queryParams.bizNo"
             placeholder="请输入支付批次号"
             clearable
             size="small"
@@ -13,9 +13,9 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="支付订单号" prop="orderId">
+        <el-form-item label="支付订单号" prop="tradOrderNumber">
           <el-input
-            v-model="queryParams.orderId"
+            v-model.trim="queryParams.tradOrderNumber"
             placeholder="请输入支付订单号"
             clearable
             size="small"
@@ -25,7 +25,7 @@
         </el-form-item>
         <el-form-item label="货源单号" prop="goodId">
           <el-input
-            v-model="queryParams.goodId"
+            v-model.trim="queryParams.goodId"
             placeholder="请输入货源单号"
             clearable
             size="small"
@@ -35,7 +35,7 @@
         </el-form-item>
         <el-form-item label="运输单号" prop="tranId">
           <el-input
-            v-model="queryParams.tranId"
+            v-model.trim="queryParams.tranId"
             placeholder="请输入运输单号"
             clearable
             size="small"
@@ -64,9 +64,51 @@
             placeholder="请选择"
           />
         </el-form-item>
+        <el-form-item label="装货时间">
+          <el-date-picker
+            v-model="queryParams.startLoadTime"
+            clearable
+            type="date"
+            size="small"
+            style="width: 130px"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择"
+          />
+          至
+          <el-date-picker
+            v-model="queryParams.endLoadTime"
+            clearable
+            type="date"
+            size="small"
+            style="width: 130px"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择"
+          />
+        </el-form-item>
+        <el-form-item label="卸货时间">
+          <el-date-picker
+            v-model="queryParams.startUnLoadTime"
+            clearable
+            type="date"
+            size="small"
+            style="width: 130px"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择"
+          />
+          至
+          <el-date-picker
+            v-model="queryParams.endUnLoadTime"
+            clearable
+            type="date"
+            size="small"
+            style="width: 130px"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择"
+          />
+        </el-form-item>
         <el-form-item label="车牌号" prop="licenseNumber">
           <el-input
-            v-model="queryParams.licenseNumber"
+            v-model.trim="queryParams.licenseNumber"
             placeholder="请输入车牌号"
             clearable
             size="small"
@@ -76,7 +118,7 @@
         </el-form-item>
         <el-form-item label="收款方姓名" prop="payeeName">
           <el-input
-            v-model="queryParams.payeeName"
+            v-model.trim="queryParams.payeeName"
             placeholder="请输入收款方姓名"
             clearable
             size="small"
@@ -86,7 +128,7 @@
         </el-form-item>
         <el-form-item label="运单关联企业" prop="campanyName">
           <el-input
-            v-model="queryParams.campanyName"
+            v-model.trim="queryParams.campanyName"
             placeholder="请输入运单关联企业"
             clearable
             size="small"
@@ -96,7 +138,7 @@
         </el-form-item>
         <el-form-item label="收款人电话" prop="payeeMobile">
           <el-input
-            v-model="queryParams.payeeMobile"
+            v-model.trim="queryParams.payeeMobile"
             placeholder="请输入收款人电话"
             clearable
             size="small"
@@ -171,16 +213,18 @@
       </el-form>
     </div>
     <div class="app-container">
+      <TotalBar :total-list="totalList" />
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
           <el-button
-            type="warning"
+            type="primary"
             icon="el-icon-download"
             size="mini"
+            :loading="exportLoading"
             @click="handleExport"
           >导出</el-button>
         </el-col>
-        <el-col :span="1.5">
+        <!-- <el-col :span="1.5">
           <el-button
             type="info"
             icon="el-icon-upload2"
@@ -196,7 +240,7 @@
             @click="handleImportTemplate"
           >下载模板</el-button>
         </el-col>
-        <el-tag type="warning" class="mb10">提示: 已打款、打款成功的运输单才能上报流水</el-tag>
+        <el-tag type="warning" class="mb10">提示: 已打款、打款成功的运输单才能上报流水</el-tag> -->
         <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
@@ -204,9 +248,29 @@
       </el-row>
 
       <RefactorTable :loading="loading" :data="recordList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
-        <!-- 金额：单位分转为元 -->
+        <!-- 金额 -->
         <template #amount="{row}">
-          <span>{{ row.amount ? (row.amount/100).toFixed(2) : row.amount }}</span>
+          <span>{{ floor(row.amount) }}</span>
+        </template>
+        <!-- 手续费 -->
+        <template #totalFee="{row}">
+          <span>{{ floor(row.totalFee) }}</span>
+        </template>
+        <!-- 司机实收运费 -->
+        <template #deliveryFeePractical="{row}">
+          <span>{{ floor(row.deliveryFeePractical) }}</span>
+        </template>
+        <!-- 司机实收现金 -->
+        <template #deliveryCashFee="{row}">
+          <span>{{ floor(row.deliveryCashFee) }}</span>
+        </template>
+        <!-- 装车重量 -->
+        <template #loadWeight="{row}">
+          <span>{{ fixed(row.loadWeight) }}</span>
+        </template>
+        <!-- 卸车重量 -->
+        <template #unloadWeight="{row}">
+          <span>{{ fixed(row.unloadWeight) }}</span>
         </template>
         <!-- 付款类型 -->
         <template #payType="{row}">
@@ -219,6 +283,10 @@
         <!-- 处理状态 -->
         <template #status="{row}">
           <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
+        </template>
+        <!-- 配载方式 -->
+        <template #stowageStatus="{row}">
+          <span>{{ selectDictLabel(stowageStatusOptions, row.stowageStatus) }}</span>
         </template>
         <!-- 是否进行过回调处理 -->
         <template #isHandle="{row}">
@@ -267,16 +335,22 @@
           <span>{{ parseTime(row.updateTime) }}</span>
         </template>
         <template #edit="{row}">
-          <el-button
+          <!-- <el-button
             size="mini"
             type="text"
             @click="handleReport(row)"
-          >上报流水</el-button>
+          >上报流水</el-button> -->
           <el-button
             size="mini"
             type="text"
             @click="handleUpdate(row)"
           >修改批次号</el-button>
+          <el-button
+            v-if="row.elecrecepitUrl && row.elecrecepitUrl !== ''"
+            size="mini"
+            type="text"
+            @click="lookOrder(row)"
+          >查看回单</el-button>
         </template>
       </RefactorTable>
 
@@ -296,6 +370,8 @@
 
       <!-- 编辑支付批次号 -->
       <modify-batch-dialog ref="modifyBatchRef" :open.sync="modifyBatchOpen" :title="title" @refresh="getList" />
+      <!-- 查看回单 -->
+      <PdfLook :src="pdfSrc" :open.sync="pdfOpen" title="查看回单" />
     </div>
   </div>
 </template>
@@ -303,11 +379,15 @@
 <script>
 import { payRecordlistApi, payRecordlist } from '@/api/capital/payrecord';
 import modifyBatchDialog from './modifyBatchDialog';
+import PdfLook from '@/views/system/media/pdfLook';
+import TotalBar from '@/components/Ddc/Tin/TotalBar';
 
 export default {
   name: 'Payrecord',
   components: {
-    modifyBatchDialog
+    modifyBatchDialog,
+    PdfLook,
+    TotalBar
   },
   data() {
     return {
@@ -317,6 +397,7 @@ export default {
       loading: true,
       // 选中数组
       ids: [],
+      commentlist: [],
       // 非单个禁用
       single: true,
       // 非多个禁用
@@ -396,16 +477,26 @@ export default {
         { dictLabel: '正常', dictValue: 0 },
         { dictLabel: '异常', dictValue: 1 }
       ],
+      // 配载方式
+      stowageStatusOptions: [
+        { 'dictLabel': '吨', 'dictValue': '0' },
+        { 'dictLabel': '方', 'dictValue': '1' },
+        { 'dictLabel': '车', 'dictValue': '2' }
+      ],
       // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
         bizNo: undefined,
-        orderId: undefined,
+        tradOrderNumber: undefined,
         goodId: undefined,
         tranId: undefined,
         tranBeginTime: undefined,
         tranEndTime: undefined,
+        startLoadTime: undefined,
+        endLoadTime: undefined,
+        startUnLoadTime: undefined,
+        endUnLoadTime: undefined,
         licenseNumber: undefined,
         payeeName: undefined,
         campanyName: undefined,
@@ -416,8 +507,58 @@ export default {
         upWaybillStatus: undefined,
         isSplit: undefined,
         abnormal: undefined
-      }
+      },
+      exportLoading: false,
+      pdfSrc: '',
+      pdfOpen: false
     };
+  },
+
+  computed: {
+    totalList() {
+      const arr = [
+        {
+          label: '运单数量',
+          value: this.commentlist.length,
+          key: 'waybillCount'
+        },
+        // {
+        //   label: '货主实付金额',
+        //   value: 0,
+        //   key: 'shipperRealPay'
+        // },
+        {
+          label: '打款金额',
+          value: 0,
+          key: 'deliveryCashFee'
+        },
+        // {
+        //   label: '纳税金额',
+        //   value: 0,
+        //   key: 'taxPayment'
+        // },
+        {
+          label: '手续费',
+          value: 0,
+          key: 'totalFee'
+        }
+      ];
+
+      this.commentlist.forEach(e => {
+        arr.forEach(ee => {
+          if (e[ee.key]) {
+            ee.value += (e[ee.key] - 0);
+          }
+        });
+      });
+
+      arr.map(e => {
+        e.value = this.floor(e.value);
+        return e;
+      });
+
+      return arr;
+    }
   },
   created() {
     this.tableHeaderConfig(this.tableColumnsConfig, payRecordlistApi, {
@@ -425,15 +566,20 @@ export default {
       isShow: true,
       label: '操作',
       width: 180,
-      fixed: 'right'
+      fixed: 'left'
     });
     this.getList();
   },
+
   methods: {
     /** 查询列表 */
     getList() {
       this.loading = true;
-      payRecordlist(this.queryParams).then(response => {
+      const params = { ...this.queryParams };
+      if (params.licenseNumber) {
+        params.licenseNumber = params.licenseNumber.toUpperCase();
+      }
+      payRecordlist(params).then(response => {
         this.recordList = response.data.rows;
         this.total = response.data.total;
         this.loading = false;
@@ -448,6 +594,10 @@ export default {
     resetQuery() {
       this.queryParams.tranBeginTime = undefined;
       this.queryParams.tranEndTime = undefined;
+      this.queryParams.startLoadTime = undefined;
+      this.queryParams.endLoadTime = undefined;
+      this.queryParams.startUnLoadTime = undefined;
+      this.queryParams.endUnLoadTime = undefined;
       this.resetForm('queryForm');
       this.handleQuery();
     },
@@ -472,7 +622,13 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      // this.download('assets/driver/export', {}, `driver_${new Date().getTime()}.xlsx`, 'application/json');
+      this.exportLoading = true;
+      const params = Object.assign({}, this.queryParams);
+      params.pageSize = undefined;
+      params.pageNum = undefined;
+      this.download('/payment/wallet/remit/export', params, `打款记录`).then(() => {
+        this.exportLoading = false;
+      });
     },
     /** 流水批量导入 */
     handleImport() {
@@ -480,13 +636,19 @@ export default {
     },
     /** 下载模板 */
     handleImportTemplate() {
-      // this.download('assets/driver/importTemplate', {}, `driver_${new Date().getTime()}.xlsx`);
+      // this.download('assets/driver/importTemplate', {}, `模板`);
     },
-    // 多选框选中数据
+    /** 多选框选中数据 */
     handleSelectionChange(selection) {
+      this.commentlist = selection;
       this.ids = selection.map(item => item.id);
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
+    },
+    /** 查看回单 */
+    lookOrder(row) {
+      this.pdfSrc = row.elecrecepitUrl;
+      this.pdfOpen = true;
     }
   }
 };

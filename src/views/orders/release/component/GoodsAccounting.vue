@@ -67,6 +67,7 @@
                     :placeholder="`请输入重量(${goodsUnitName})`"
                     :max="999999"
                     :min="0"
+                    :precision="3"
                     controls-position="right"
                     :style="{ width: '150px' }"
                   />
@@ -88,6 +89,7 @@
               placeholder="请输入最高配载"
               :max="999999"
               :min="0"
+              :precision="3"
               controls-position="right"
               :style="{ width: '150px' }"
             />
@@ -147,7 +149,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="10">
-          <el-form-item label="车长" prop="vehicleLength" label-width="40px">
+          <el-form-item label="车长" prop="vehicleLength">
             <el-select
               v-model="formData.vehicleLength"
               placeholder="选择车长"
@@ -262,7 +264,6 @@ export default {
   },
 
   computed: {
-    // 计算显示的单位
     goodsUnitName() {
       let name = '吨';
       switch (this.formData.stowageStatus) {
@@ -277,6 +278,7 @@ export default {
           break;
       }
       this.$emit('getGoodsUnitName', name);
+
       return name;
     }
   },
@@ -308,9 +310,10 @@ export default {
           vehicleMaxWeight,
           shipmentPrice,
           goodsPrice,
-          vehicleType: vehicleType ? vehicleType.split(',') : undefined, // 车型->查字典
-          vehicleLength: vehicleLength ? vehicleLength.split(',') : undefined // 车长->查字典
+          vehicleType: vehicleType ? vehicleType.split(',') : [], // 车型->查字典
+          vehicleLength: vehicleLength ? vehicleLength.split(',') : [] // 车长->查字典
         };
+        this.$store.commit('orders/SET_ORDERSTOWAGESTATUS', stowageStatus);
       },
       immediate: true
     },
@@ -329,6 +332,7 @@ export default {
       } else {
         this.formData.number = undefined;
       }
+      this.$store.commit('orders/SET_ORDERSTOWAGESTATUS', val);
     }
   },
 
@@ -374,4 +378,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.el-col{
+  width: 500px;
+}
 </style>

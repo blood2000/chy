@@ -39,11 +39,11 @@
             <el-form-item label="统一社会信用代码：" prop="organizationCodeNo">
               {{ form.organizationCodeNo }}
             </el-form-item>
-            <el-form-item label="营业执照号：" prop="businessLicenseNo">
+            <!--<el-form-item label="营业执照号：" prop="businessLicenseNo">
               {{ form.businessLicenseNo }}
-            </el-form-item>
-            <el-form-item label="营业执照：" prop="businessLicenseImg">
-              <upload-image v-show="form.businessLicenseImg" v-model="form.businessLicenseImg" :disabled="true" />
+            </el-form-item>-->
+            <el-form-item v-viewer label="营业执照：" prop="businessLicenseImg">
+              <upload-image v-show="form.businessLicenseImg" v-model="form.businessLicenseImg" :disabled="true" icon-type="organization" />
             </el-form-item>
             <!-- <el-form-item label="业务城市" prop="name">
               <add-city-tag :prop-citys="form.citys" @refresh="(val) => form.citys=val" />
@@ -116,6 +116,7 @@ import CertificationDialog from './CertificationDialog.vue';
 import UploadImage from '@/components/UploadImage/index';
 
 export default {
+  name: 'CompanyInfo',
   components: {
     CertificationDialog,
     UploadImage
@@ -146,6 +147,16 @@ export default {
         // ]
       }
     };
+  },
+  watch: {
+    shipmentCode: {
+      handler: function(val) {
+        if (val) {
+          this.getCompanyInfo();
+        }
+      },
+      deep: true
+    }
   },
   mounted() {
     this.getCompanyInfo();

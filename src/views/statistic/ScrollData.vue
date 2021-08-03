@@ -9,7 +9,8 @@
           <span class="flash flash_right" />
         </h5>
       </div>
-      <ScrollCard :data-list="orderList" />
+      <!-- <ScrollCard :data-list="orderList" /> -->
+      <StaticCard ref="orderRef" />
     </div>
 
     <!-- 交易数据 -->
@@ -21,7 +22,8 @@
           <span class="flash flash_right" />
         </h5>
       </div>
-      <ScrollCard :data-list="dealList" />
+      <!-- <ScrollCard :data-list="dealList" /> -->
+      <StaticCard ref="transferRef" />
     </div>
 
     <!-- 用户/车辆 -->
@@ -33,23 +35,120 @@
           <span class="flash flash_right" />
         </h5>
       </div>
-      <ScrollCard :data-list="userList" />
+      <!-- <ScrollCard :data-list="userList" /> -->
+      <StaticCard ref="userRef" />
     </div>
   </div>
 </template>
 
 <script>
-import ScrollCard from './components/scrollCard';
+// import ScrollCard from './components/scrollCard';
+import StaticCard from './components/staticCard';
+import { getOrderTop, getSettlementTop, getUserAndCarTop } from '@/api/statistic/statistic.js';
 export default {
   components: {
-    ScrollCard
+    // ScrollCard
+    StaticCard
   },
   data() {
     return {
-      orderList: [{}, {}, {}, {}],
-      dealList: [{}, {}, {}, {}],
-      userList: [{}, {}, {}, {}]
+      // orderList: [{}],
+      // dealList: [{}],
+      // userList: [{}]
     };
+  },
+  mounted() {
+    this.getOrderData();
+    this.getSettlementData();
+    this.getUserData();
+  },
+  methods: {
+    // 处理实时数据-开票
+    setInvoiceData(val, time) {
+      const { remark } = val;
+      if (remark) {
+        this.$refs.transferRef.setData(remark, time);
+      }
+    },
+    // 处理实时数据-用户
+    setUserData(val, time) {
+      const { car, user } = val;
+      if (car) {
+        const { remark } = car;
+        if (remark) {
+          this.$refs.userRef.setData(remark, time);
+        }
+      }
+      if (user) {
+        const { remark } = user;
+        if (remark) {
+          this.$refs.userRef.setData(remark, time);
+        }
+      }
+    },
+    // 处理实时数据-货单
+    setOrderData(val, time) {
+      const { remark } = val;
+      if (remark) {
+        this.$refs.orderRef.setData(remark, time);
+      }
+    },
+    // 处理实时数据-打款
+    setWaybillData(val, time) {
+      const { remark } = val;
+      if (remark) {
+        this.$refs.transferRef.setData(remark, time);
+      }
+    },
+    // 获取货单初始数据
+    getOrderData() {
+      getOrderTop().then(response => {
+        const dataList = [];
+        response.data.forEach(el => {
+          dataList.push({
+            text: el.remark,
+            time: this.idToday(el.createTime)
+          });
+        });
+        this.$refs.orderRef.initDataList(dataList);
+      });
+    },
+    // 获取交易初始数据
+    getSettlementData() {
+      getSettlementTop().then(response => {
+        const dataList = [];
+        response.data.forEach(el => {
+          dataList.push({
+            text: el.remark,
+            time: this.idToday(el.createTime)
+          });
+        });
+        this.$refs.transferRef.initDataList(dataList);
+      });
+    },
+    // 获取用户初始数据
+    getUserData() {
+      getUserAndCarTop().then(response => {
+        const dataList = [];
+        response.data.forEach(el => {
+          dataList.push({
+            text: el.remark,
+            time: this.idToday(el.create_time)
+          });
+        });
+        this.$refs.userRef.initDataList(dataList);
+      });
+    },
+    // 判断数据是否当天
+    idToday(time) {
+      const today = this.parseTime(new Date(), '{m}:{d}');
+      const day = this.parseTime(time, '{m}:{d}');
+      if (today === day) {
+        return this.parseTime(time, '{h}:{i}');
+      } else {
+        return this.parseTime(time, '{m}/{d}');
+      }
+    }
   }
 };
 </script>
@@ -61,7 +160,7 @@ export default {
     margin: 0 0.4rem;
     width: calc(33.33% - 0.8rem);
     height: 7.2rem;
-    border: 2px solid rgba(23, 129, 167, 0.2);
+    border: 0.1rem solid rgba(23, 129, 167, 0.2);
     padding: 0 0.45rem 0.45rem;
     position: relative;
     >.herder{

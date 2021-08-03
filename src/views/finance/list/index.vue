@@ -1,19 +1,19 @@
 <template>
-  <div>
+  <div v-loading="exportLoading">
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form
         v-show="showSearch"
         ref="queryForm"
         :model="queryParams"
         :inline="true"
-        label-width="80px"
+        label-width="110px"
       >
         <el-form-item
           label="发票抬头"
           prop="invoiceTitle"
         >
           <el-input
-            v-model="queryParams.invoiceTitle"
+            v-model.trim="queryParams.invoiceTitle"
             placeholder="请输入发票抬头"
             clearable
             size="small"
@@ -22,12 +22,12 @@
           />
         </el-form-item>
         <el-form-item
-          label="发票编号"
+          label="发票索取记录号"
           prop="askForNo"
         >
           <el-input
-            v-model="queryParams.askForNo"
-            placeholder="请输入发票编号"
+            v-model.trim="queryParams.askForNo"
+            placeholder="请输入发票索取记录号"
             clearable
             size="small"
             style="width: 230px"
@@ -41,6 +41,8 @@
           <el-date-picker
             v-model="invoiceApplyTime"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -72,20 +74,21 @@
 
     <div class="g-radio-group">
       <el-radio-group v-model="activeName" size="small" @change="handleClick">
-        <el-radio-button label="1">已申请</el-radio-button>
-        <el-radio-button label="2,3,4">已审核</el-radio-button>
-        <el-radio-button label="5">已开票</el-radio-button>
+        <el-radio-button v-has-permi="['list:applayed']" label="1">已申请</el-radio-button>
+        <el-radio-button v-has-permi="['list:checked']" label="2,3,4">已审核</el-radio-button>
+        <el-radio-button v-has-permi="['list:invoiced']" label="5">已开票</el-radio-button>
       </el-radio-group>
     </div>
 
     <div class="app-container">
+      <TotalBar :total-list="totalList" />
       <el-row
         :gutter="10"
         class="mb8"
       >
-        <el-col v-if="activeName == '1'" :span="1.5">
+        <el-col v-show="activeName == '1'" :span="1.5">
           <el-button
-            v-hasPermi="['assets:vehicle:edit']"
+            v-hasPermi="['list:invoiceApply:passCheck']"
             type="primary"
             icon="el-icon-document-checked"
             size="mini"
@@ -93,19 +96,23 @@
             @click="handleVerify"
           >批量审核</el-button>
         </el-col>
-        <el-col v-if="activeName == '6'" :span="1.5">
+        <el-col :span="1.5">
           <el-button
             type="primary"
-            icon="el-icon-upload2"
+            icon="el-icon-download"
             size="mini"
+            :disabled="multiple"
+            :loading="exportlistLoading"
             @click="handleExportFreight"
           >导出运费明细</el-button>
         </el-col>
-        <el-col v-if="activeName == '6'" :span="1.5">
+        <el-col :span="1.5">
           <el-button
             type="primary"
-            icon="el-icon-upload2"
+            icon="el-icon-download"
             size="mini"
+            :disabled="multiple"
+            :loading="exportlistLoading"
             @click="handleExportService"
           >导出服务费明细</el-button>
         </el-col>
@@ -138,24 +145,32 @@
 
         <template #edit="{row}">
           <el-button
-            v-if="activeName == '1'"
-            v-hasPermi="['system:menu:edit']"
+            v-show="activeName == '1'"
+            v-hasPermi="['list:invoiceApply:passCheck']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 1)"
           >审核</el-button>
           <el-button
-            v-if="row.invoiceStatus == '4'"
-            v-hasPermi="['system:menu:edit']"
+            v-show="row.invoiceStatus == '4'"
+            v-hasPermi="['list:invoiceApply:passCheck']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 2)"
           >开票</el-button>
           <el-button
+            v-hasPermi="['list:invoice:detail']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 3)"
           >详情</el-button>
+          <el-button
+            v-show="row.invoiceStatus == '5'"
+            v-hasPermi="['list:invoiceApply:passCheck']"
+            size="mini"
+            type="text"
+            @click="handleTableBtn(row, 4)"
+          >导出轨迹</el-button>
         </template>
       </RefactorTable>
 
@@ -171,26 +186,31 @@
     <verify-dialog ref="VerifyDialog" :open.sync="verifydialog" :title="title" :disable="formDisable" @refresh="getList" />
     <!-- 开票弹窗 -->
     <billing-dialog ref="BillingDialog" :open.sync="billingdialog" :title="title" @refresh="getList" />
-    <!-- 详情弹窗 -->
-    <!-- <detail-dialog ref="DetailDialog" :title="title" :open.sync="open" :disable="formDisable" @refresh="getList" /> -->
+    <!-- 切图对话框 -->
+    <TrackExport ref="TrackExport" :open.sync="exportLoading" :waybill="waybillTrack" />
   </div>
 </template>
 
 <script>
-import { billList, billListApi } from '@/api/finance/list';
+import { billList, billListApi, getApplyWaybill } from '@/api/finance/list';
 // 审核弹窗
 import VerifyDialog from './verifyDialog';
 // 开票弹窗
 import BillingDialog from './billingDialog';
-// 详情弹窗
-// import DetailDialog from './detail';
-
+import TrackExport from '@/views/waybill/components/trackExport';
+import { pickerOptions } from '@/utils/dateRange';
+import TotalBar from '@/components/Ddc/Tin/TotalBar';
 
 export default {
-  'name': 'BillList',
-  components: { VerifyDialog, BillingDialog },
+  'name': 'List',
+  components: { VerifyDialog, BillingDialog, TrackExport, TotalBar },
   data() {
     return {
+      pickerOptions,
+      // 批量轨迹参数
+      waybillTrack: [],
+      exportLoading: false,
+      exportlistLoading: false,
       tableColumnsConfig: [],
       api: billListApi,
       activeName: '1',
@@ -199,6 +219,7 @@ export default {
       'loading': false,
       // 选中数组
       'ids': null,
+      'exportIds': null,
       // 非多个禁用
       multiple: true,
       // 选中数量
@@ -209,7 +230,7 @@ export default {
       'total': 0,
       // 表格数据
       'billlist': [],
-
+      commentlist: [],
       // 查询参数
       'queryParams': {
         'pageNum': 1,
@@ -251,17 +272,69 @@ export default {
   computed: {
     lcokey() {
       return this.$route.name + this.activeName;
+    },
+    totalList() {
+      const arr = [
+        {
+          label: '运单数量',
+          value: 0,
+          key: 'waybillCount'
+        },
+        {
+          label: '开票金额',
+          value: 0,
+          key: 'totalAmount'
+        },
+        {
+          label: '运费开票金额',
+          value: 0,
+          key: 'freightAmount'
+        },
+        {
+          label: '服务费开票金额',
+          value: 0,
+          key: 'serverTotalAmount'
+        }
+      ];
+
+      this.commentlist.forEach(e => {
+        arr.forEach(ee => {
+          if (e[ee.key]) {
+            ee.value += (e[ee.key] - 0);
+          }
+        });
+      });
+
+      arr.map(e => {
+        e.value = this.floor(e.value);
+        return e;
+      });
+
+      return arr;
     }
   },
+
+  watch: {
+    '$route.query.list': {
+      handler(value) {
+        if (value) {
+          this.activeName = value;
+          this.handleClick(value);
+        }
+      },
+      immediate: true
+    }
+  },
+
   created() {
     this.tableHeaderConfig(this.tableColumnsConfig, billListApi, {
       prop: 'edit',
       isShow: true,
       label: '操作',
       width: 180,
-      fixed: 'right'
+      fixed: 'left'
     });
-    this.getList();
+    !this.$route.query.list && this.getList();
   },
   'methods': {
     datechoose(date) {
@@ -281,7 +354,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      console.log(selection);
+      this.commentlist = selection;
       this.selectlenght = selection.length;
       this.ids = selection.map((item) => item.code).join(',');
       this.multiple = !selection.length;
@@ -319,9 +392,22 @@ export default {
     },
     // 导出运费明细
     handleExportFreight() {
+      this.exportlistLoading = true;
+      this.download('/transportation/invoiceApply/export3', { applyCodes: this.ids, type: 1 }, `运费明细`).then(() => {
+        this.exportlistLoading = false;
+      });
     },
     // 导出服务费明细
     handleExportService() {
+      this.exportIds = this.commentlist.filter(item => item.serverTotalAmount === 0).map(item => item.code).join(',');
+      if (!this.exportIds) {
+        this.exportlistLoading = true;
+        this.download('/transportation/invoiceApply/export4', { applyCodes: this.ids, type: 2 }, `服务费明细`).then(() => {
+          this.exportlistLoading = false;
+        });
+      } else {
+        this.msgInfo('勾选的发票记录含有一票制发票，请重新勾选!');
+      }
     },
 
     handleTableBtn(row, index) {
@@ -341,7 +427,12 @@ export default {
           this.$refs.BillingDialog.setForm(row);
           break;
         case 3:
-          this.$router.push({ name: 'Statement', query: { id: row.code }});
+          this.$router.push({ name: 'Statement', query: { code: row.code }});
+          break;
+        case 4:
+          getApplyWaybill(row.code).then(res => {
+            this.waybillTrack = res.data;
+          });
           break;
         default:
           break;

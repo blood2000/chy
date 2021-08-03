@@ -11,7 +11,7 @@
         />
       </el-form-item>
 
-      <el-form-item class="fr">
+      <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
 
@@ -19,7 +19,7 @@
     </el-form>
 
     <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-      <el-tab-pane label="司机" name="listDriver" />
+      <el-tab-pane v-if="false" label="司机" name="listDriver" />
       <el-tab-pane label="调度" name="listInfo" />
     </el-tabs>
 
@@ -39,16 +39,60 @@
           <span v-if="row">司机</span>
         </template>
         <template #driverType="{row}">
-          <span>{{ row.driverType === 1? '独立司机': '聘用司机' }}</span>
+          <span>{{ row.driverType === 1? '零散司机': '雇佣司机' }}</span>
         </template>
       </refactor-table>
     </div>
 
     <!-- 调度者 -->
     <div v-show="activeName === 'listInfo'">
-      <el-radio-group v-model="radio" style="width:100%" @change="handlerChange">
 
-        <el-table v-loading="loading" :data="list_listInfo" border stripe>
+      <refactor-table
+        ref="refactorTable"
+        :loading="loading"
+        :data="list_listInfo"
+        height="400px"
+        :table-columns-config="[
+          {
+            prop: 'name',
+            isShow: true,
+            align: 'center',
+            tooltip: true,
+            label: '调度组名称'
+          },
+          {
+            prop: 'teamLeaderName',
+            isShow: true,
+            align: 'center',
+            tooltip: true,
+            label: '管理者'
+          },
+          {
+            prop: 'telphone',
+            isShow: true,
+            align: 'center',
+            tooltip: true,
+            label: '电话'
+          },
+        ]"
+        :row-key="(row)=> row.id"
+        reserve-selection
+        :cb-data-by-keyword="cbDataByKeyword"
+        @selection-change="handleSelectionChange"
+      >
+
+        <!-- <template #tin12="{row}">
+          <span v-if="row">司机</span>
+        </template>
+        <template #driverType="{row}">
+          <span>{{ row.driverType === 1? '零散司机': '雇佣司机' }}</span>
+        </template> -->
+      </refactor-table>
+
+
+      <el-radio-group v-if="false" v-model="radio" style="width:100%" @change="handlerChange">
+
+        <el-table v-loading="loading" highlight-current-row :data="list_listInfo" border>
           <el-table-column label="" align="center" width="50">
             <template slot-scope="scope">
               <div @click.capture="handlerclick1($event, scope.row.id)">
@@ -59,15 +103,11 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="调度者名称" align="left" prop="name" show-overflow-tooltip />
-          <el-table-column label="身份证" align="left" prop="identificationNumber" show-overflow-tooltip />
-          <el-table-column label="管理者" align="left" prop="teamLeaderName" show-overflow-tooltip />
-          <el-table-column label="承运人类型" align="left" prop="contactPhone" show-overflow-tooltip>
-            <template v-if="scope" slot-scope="scope">
-              调度者
-            </template>
-          </el-table-column>
-          <el-table-column label="电话" align="left" prop="telphone" show-overflow-tooltip />
+          <el-table-column label="调度组名称" align="center" prop="name" show-overflow-tooltip />
+          <!-- <el-table-column label="身份证" align="center" prop="identificationNumber" show-overflow-tooltip /> -->
+          <el-table-column label="管理者" align="center" prop="teamLeaderName" show-overflow-tooltip />
+
+          <el-table-column label="电话" align="center" prop="telphone" show-overflow-tooltip />
 
         </el-table>
       </el-radio-group>
@@ -83,7 +123,7 @@
 
     <div class="ly-t-right mt20 mb20">
       <el-button v-show="activeName === 'listDriver'" type="primary" :disabled="!(ids.length>0)" size="mini" @click="_ok('listDriver')">确定</el-button>
-      <el-button v-show="activeName === 'listInfo'" type="primary" :disabled="!radio" size="mini" @click="_ok('listInfo')">确定</el-button>
+      <el-button v-show="activeName === 'listInfo'" type="primary" :disabled="disabledOk" size="mini" @click="_ok('listInfo')">确定</el-button>
       <el-button size="mini" @click="_ok(false)">取消</el-button>
     </div>
   </div>
@@ -97,16 +137,10 @@ import { dispatchOrder } from '@/api/order/manage';
 import tableColumnsConfig_listDriver from '../data/config-driver';
 import tableColumnsConfig_listInfo from '../data/config-team';
 
-// import { listShipment, getShipment, delShipment } from '@/api/assets/shipment';
-
-const apiFn = {
-  listDriver, listInfo
-};
-
+const apiFn = { listDriver, listInfo };
 
 export default {
   name: 'OpenDialog',
-
   props: {
     dispatch: {
       type: Object,
@@ -134,7 +168,7 @@ export default {
       myTo_listDriver: null,
       myTo_listInfo: null,
       // tab
-      activeName: 'listDriver',
+      activeName: 'listInfo',
       // 遮罩层
       loading: false,
       // 多选
@@ -182,51 +216,58 @@ export default {
     },
     selections() {
       return this['selections_' + this.activeName];
+    },
+
+    cbDataByKeyword() {
+      let obj = {};
+      if (this['t_cbData_' + this.activeName] && this['t_cbData_' + this.activeName].length) {
+        obj = { code: this['t_cbData_' + this.activeName].map(e => e.code) };
+      }
+
+      return obj;
+    },
+
+    disabledOk() {
+      return this.selections_listInfo.length < 1;
     }
+
+
   },
 
   watch: {
     actionIndex: {
       handler(value) {
         if (!value) return;
-
         this.activeName = value === '2' ? 'listDriver' : 'listInfo';
       },
       immediate: true
     }
-
   },
   created() {
-    // this['t_cbData_' + this.activeName] = JSON.parse(JSON.stringify(this.cbData)) || [];
     const arr = JSON.parse(JSON.stringify(this.cbData)) || [];
-
     this['t_cbData_' + this.activeName] = arr.map(e => {
       return {
         ...e,
         tin_isOk: true
       };
     });
+
+
     this.getList();
   },
 
   methods: {
-    /** 查询【请填写功能名称】列表 */
     getList() {
       this.loading = true;
-
       let quer = this.queryParams;
       if (this.activeName === 'listDriver') {
         quer = {
           ...this.queryParams,
-          // authStatus: 3,
           isOK: 0
-
         };
       } else {
         quer = {
           ...this.queryParams,
-          // status: 0,
-          // authStatus: 3,
           isOK: 0
         };
       }
@@ -235,14 +276,10 @@ export default {
         this['list_' + this.activeName] = response.rows;
         this['total_' + this.activeName] = response.total;
         this.loading = false;
-
         if (this['t_cbData_' + this.activeName]) {
           if (this.activeName === 'listDriver') {
             const arr = [];
-
             const data1 = this.t_data1['page_' + this.queryParams_listDriver.pageNum];
-
-            // data1 当前页选中的值(初始值为空)
             (data1 || this['t_cbData_' + this.activeName]).forEach(ee => {
               this.list.forEach((e, index) => {
                 if (e.code === ee.code) {
@@ -250,16 +287,7 @@ export default {
                 }
               });
             });
-
             this['myTo_' + this.activeName] = arr;
-          } else {
-            this['t_cbData_' + this.activeName].forEach(ee => {
-              this.list.forEach((e, index) => {
-                if (e.code === ee.code) {
-                  this.radio = e.id;
-                }
-              });
-            });
           }
         }
       }).catch(() => {
@@ -268,12 +296,10 @@ export default {
     },
 
     /** 切换操作 */
-    handleClick(value) {
+    handleClick() {
       if (!this.list_listDriver.length || !this.list_listInfo.length) {
         this.getList();
       }
-      // !this.list_listDriver.length && this.getList();
-      // !this.list_listInfo.length && this.getList();
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -286,41 +312,39 @@ export default {
       this.handleQuery();
     },
 
-    handleUpdate() {
-
-    },
-
     // 多选框选中数据
     handleSelectionChange(selection) {
-      // this.t_data1['page_' + this.queryParams_listDriver.pageNum] = selection;
-
-      // // 去重
-
-
       const list1 = this['list_' + this.activeName] || [];
       const list2 = this['t_cbData_' + this.activeName] || [];
 
-      const concatArr = this._deduplication([...list1, ...list2], 'code'); // 当前页和其他页选中的数据
+      const concatArr = this._deduplication([...list1, ...list2], 'code');
 
-      // 过滤出其他页的数据
       const weArr = concatArr.filter(e => {
         return e.tin_isOk;
       });
 
-      // 选中的拼接上其他页的数据
       const newArr = this._deduplication([...selection, ...weArr], 'code');
       this.ids = newArr.map(item => item.code);
       this['selections_' + this.activeName] = newArr;
       this['t_cbData_' + this.activeName] = newArr;
     },
+
+    // 调度者多选
+    // listInfoHandleSelectionChange(selection) {
+    //   this.handleSelectionChange(selection);
+    //   // this.selections_listInfo = selection;
+    //   // if()
+    //   // if(this['t_cbData_' + this.activeName].length){
+    //   //   this.selections_listInfo =
+    //   // }
+    //   // console.log(this.selections_listInfo, '调度者多选');
+    //   // console.log(this['t_cbData_' + this.activeName], '调度者多选');
+    // },
+
     // 单选
-    handlerChange(value) {
-      // console.log(value);
-      // console.log(this.radio);
-    },
+    handlerChange(value) {},
     handlerclick1(e, value) {
       if (value === this.radio) {
-        // console.log('点击了2次');
         if (e && e.preventDefault) {
           e.preventDefault();// 非IE浏览器
         } else { window.event.returnValue = false; } // IE浏览器
@@ -340,13 +364,11 @@ export default {
           this.$emit('handleSelectionChange', { [this.activeName]: this.selections }, bool);
         } else {
           this['selections_listDriver'] = [];
-          this['selections_listInfo'] = this.list_listInfo.filter(e => e.id === this.radio);
-
+          // this['selections_listInfo'] = this.list_listInfo.filter(e => e.id === this.radio);
 
           this.$emit('handleSelectionChange', { [this.activeName]: this.selections }, bool);
         }
       } else {
-        // dispatch 有值是manage组件调用的
         if (bool) {
           let arr = [];
           if (this.activeName === 'listDriver') {
@@ -401,21 +423,6 @@ export default {
 
       return result;
     }
-
-    // 回填 rows 为数组
-    // toggleSelection(rows) {
-    //   console.log(this.$refs.multipleTable.toggleRowSelection());
-
-    //   if (rows) {
-    //     rows.forEach(row => {
-    //       this.$refs.multipleTable.toggleRowSelection(row, true);
-    //     });
-    //   } else {
-    //     this.$refs.multipleTable.clearSelection();
-    //   }
-    // }
-
-
   }
 };
 </script>

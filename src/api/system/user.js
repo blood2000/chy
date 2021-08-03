@@ -11,10 +11,11 @@ export function listUser(query) {
 }
 
 // 查询用户详细
-export function getUser(userId) {
+export function getUser(userId, query) {
   return request({
     url: '/system/user/' + praseStrEmpty(userId),
-    method: 'get'
+    method: 'get',
+    params: query
   });
 }
 
@@ -116,3 +117,33 @@ export function changeUserAvatar(data) {
     data: data
   });
 }
+
+// 解禁用用户
+export function updateUserStatusByUserCode(userCode, status) {
+  const data = {
+    userCode,
+    status
+  };
+  return request({
+    url: '/system/user/updateUserStatusByUserCode',
+    method: 'put',
+    data: data
+  });
+}
+
+export function getUserAlreadyExist(query) {
+  return request({
+    url: '/system/user/userAlreadyExist',
+    method: 'get',
+    params: query
+  });
+}
+
+// 根据手机号搜索用户名
+export function getUserByPhoneNum(phoneNum) {
+  return request({
+    url: '/system/user/getUserByPhoneNum/' + phoneNum,
+    method: 'get'
+  });
+}
+

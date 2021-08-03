@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        fill: #9fa2b5;
+      }
+    </style>
+  </defs>
+  <g id="组_407" data-name="组 407" transform="translate(-20 -96)">
+    <rect id="矩形_300" data-name="矩形 300" class="cls-1" width="24" height="24" transform="translate(20 96)"/>
+    <g id="组_22581" data-name="组 22581" transform="translate(-3200.511 774.249)">
+      <g id="组_22579" data-name="组 22579" transform="translate(3228.624 -671.143)">
+        <g id="组_22570" data-name="组 22570" transform="translate(0.186 2.342)">
+          <g id="组_22569" data-name="组 22569">
+            <rect id="矩形_654" data-name="矩形 654" class="cls-2" width="7.586" height="1.97"/>
+          </g>
+        </g>
+        <g id="组_22572" data-name="组 22572" transform="translate(0.186 5.47)">
+          <g id="组_22571" data-name="组 22571">
+            <rect id="矩形_655" data-name="矩形 655" class="cls-2" width="7.586" height="1.97"/>
+          </g>
+        </g>
+        <g id="组_22574" data-name="组 22574" transform="translate(2.993 2.769)">
+          <g id="组_22573" data-name="组 22573">
+            <rect id="矩形_656" data-name="矩形 656" class="cls-2" width="1.97" height="7.017"/>
+          </g>
+        </g>
+        <g id="组_22576" data-name="组 22576">
+          <g id="组_22575" data-name="组 22575">
+            <rect id="矩形_657" data-name="矩形 657" class="cls-2" width="1.97" height="4.103" transform="translate(0 1.393) rotate(-45.005)"/>
+          </g>
+        </g>
+        <g id="组_22578" data-name="组 22578" transform="translate(3.885)">
+          <g id="组_22577" data-name="组 22577">
+            <rect id="矩形_658" data-name="矩形 658" class="cls-2" width="4.103" height="1.97" transform="translate(0 2.901) rotate(-45)"/>
+          </g>
+        </g>
+      </g>
+      <g id="组_22580" data-name="组 22580" transform="translate(3221.511 -677.249)">
+        <path id="路径_18197" data-name="路径 18197" class="cls-2" d="M3232.508-677.249a11.011,11.011,0,0,1,11,11,11.011,11.011,0,0,1-11,11,11.011,11.011,0,0,1-11-11,10.924,10.924,0,0,1,2.07-6.424l.6-.833,1.5,1.434-.431.6a8.884,8.884,0,0,0-1.684,5.225,8.957,8.957,0,0,0,8.946,8.947,8.957,8.957,0,0,0,8.947-8.947,8.957,8.957,0,0,0-8.947-8.947,8.956,8.956,0,0,0-4.362,1.133l-.642.36-1.256-1.648.9-.5A11.009,11.009,0,0,1,3232.508-677.249Z" transform="translate(-3221.511 677.249)"/>
+      </g>
+    </g>
+  </g>
+</svg>

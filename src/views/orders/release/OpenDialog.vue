@@ -1,16 +1,6 @@
 <template>
-  <div class="app-container">
+  <div>
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-      <!-- <el-form-item label="地址类型" prop="addressType">
-        <el-select v-model="queryParams.addressType" placeholder="请选择地址类型" clearable filterable size="small">
-          <el-option
-            v-for="dict in addressTypeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item> -->
       <el-form-item v-if="false" label="状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择状态" clearable filterable size="small">
           <el-option
@@ -39,15 +29,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <!-- <el-form-item label="地址详情" prop="detail">
-        <el-input
-          v-model="queryParams.detail"
-          placeholder="请输入地址详情"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -55,6 +36,9 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
+      <el-col :span="1.5">
+        <el-button type="primary" size="mini" @click="handlerClick">确定</el-button>
+      </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
@@ -62,10 +46,8 @@
 
 
 
-      <el-table v-loading="loading" :data="addressList">
-        <!-- <el-table-column type="selection" width="55" align="center" fixed="left" /> -->
-
-        <el-table-column label="" align="center" width="50">
+      <el-table v-loading="loading" highlight-current-row :data="addressList" border>
+        <el-table-column show-overflow-tooltip label="" align="center" width="50">
           <template slot-scope="scope">
             <el-radio :label="scope.row.id">
               <div v-show="false" />
@@ -73,25 +55,23 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="地址详情" align="center" prop="addressName">
+        <el-table-column show-overflow-tooltip label="地址详情" align="center" prop="addressName">
           <template slot-scope="scope">
             {{ scope.row.addressName }}
-            <el-tag v-if="scope.row.defaultPut === 1 && scope.row.defaultPush === 0" type="success">默认装货地址</el-tag>
+            <!-- <el-tag v-if="scope.row.defaultPut === 1 && scope.row.defaultPush === 0" type="success">默认装货地址</el-tag>
             <el-tag v-if="scope.row.defaultPush === 1 && scope.row.defaultPut === 0" type="warning">默认卸货地址</el-tag>
-            <el-tag v-if="scope.row.defaultPut === 1 && scope.row.defaultPush === 1">默认装卸货地址</el-tag>
+            <el-tag v-if="scope.row.defaultPut === 1 && scope.row.defaultPush === 1">默认装卸货地址</el-tag> -->
           </template>
         </el-table-column>
-        <el-table-column label="地址别名" align="center" prop="addressAlias" />
-        <el-table-column label="地址门牌" align="center" prop="detail" />
-        <el-table-column label="手机号码" align="center" prop="contactPhone" />
-        <el-table-column label="联系人" align="center" prop="contact" />
-        <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" />
+        <el-table-column show-overflow-tooltip label="地址别名" align="center" prop="addressAlias" />
+        <el-table-column show-overflow-tooltip label="地址门牌" align="center" prop="detail" />
+        <el-table-column show-overflow-tooltip label="手机号码" align="center" prop="contactPhone" />
+        <el-table-column show-overflow-tooltip label="联系人" align="center" prop="contact" />
+        <el-table-column show-overflow-tooltip label="状态" align="center" prop="status" :formatter="statusFormat" />
 
       </el-table>
 
     </el-radio-group>
-
-    <el-button type="primary" style="marginTop:30px" @click="handlerClick">确定</el-button>
 
     <pagination
       v-show="total>0"
@@ -163,7 +143,6 @@ export default {
         contactPhone: undefined
       },
 
-      // 选中
       isSelected: {}
     };
   },
@@ -189,7 +168,6 @@ export default {
         this.loading = false;
       });
 
-      // 测试数据
       this.loading = false;
     },
     // 地址类型字典翻译

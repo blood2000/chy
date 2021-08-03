@@ -9,13 +9,13 @@
         label-width="90px"
       >
         <el-form-item
-          v-show="isAdmin"
-          label="下单企业"
+          v-show="!isShipment"
+          label="下单用户"
           prop="orderClient"
         >
           <el-input
-            v-model="queryParams.orderClient"
-            placeholder="请输入下单企业"
+            v-model.trim="queryParams.orderClient"
+            placeholder="发货企业/操作人/手机号"
             clearable
             size="small"
             style="width: 228px"
@@ -23,12 +23,12 @@
           />
         </el-form-item>
         <el-form-item
-          v-show="isAdmin"
+          v-show="!isShipment"
           label="发货企业"
           prop="deliveryCompany"
         >
           <el-input
-            v-model="queryParams.deliveryCompany"
+            v-model.trim="queryParams.deliveryCompany"
             placeholder="请输入发货企业"
             clearable
             size="small"
@@ -41,7 +41,7 @@
           prop="loadInfo"
         >
           <el-input
-            v-model="queryParams.loadInfo"
+            v-model.trim="queryParams.loadInfo"
             placeholder="装货地/装货电话/装货人"
             clearable
             size="small"
@@ -54,7 +54,7 @@
           prop="receivedInfo"
         >
           <el-input
-            v-model="queryParams.receivedInfo"
+            v-model.trim="queryParams.receivedInfo"
             placeholder="卸货地/卸货电话/卸货人"
             clearable
             size="small"
@@ -67,7 +67,7 @@
           prop="mainOrderNumber"
         >
           <el-input
-            v-model="queryParams.mainOrderNumber"
+            v-model.trim="queryParams.mainOrderNumber"
             placeholder="请输入货源单号"
             clearable
             size="small"
@@ -82,6 +82,8 @@
           <el-date-picker
             v-model="receiveTime"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -94,7 +96,7 @@
           prop="licenseNumber"
         >
           <el-input
-            v-model="queryParams.licenseNumber"
+            v-model.trim="queryParams.licenseNumber"
             placeholder="请输入车牌号"
             clearable
             size="small"
@@ -107,7 +109,7 @@
           prop="driverName"
         >
           <el-input
-            v-model="queryParams.driverName"
+            v-model.trim="queryParams.driverName"
             placeholder="请输入司机姓名"
             clearable
             size="small"
@@ -120,7 +122,7 @@
           prop="driverPhone"
         >
           <el-input
-            v-model="queryParams.driverPhone"
+            v-model.trim="queryParams.driverPhone"
             placeholder="请输入司机电话"
             clearable
             size="small"
@@ -133,7 +135,7 @@
           prop="waybillNo"
         >
           <el-input
-            v-model="queryParams.waybillNo"
+            v-model.trim="queryParams.waybillNo"
             placeholder="请输入运输单号"
             clearable
             size="small"
@@ -165,9 +167,9 @@
 
     <div class="g-radio-group">
       <el-radio-group v-model="activeName" size="small" @change="handleClick">
-        <el-radio-button label="1">已接单</el-radio-button>
-        <el-radio-button label="2">已装货</el-radio-button>
-        <el-radio-button label="3">已卸货</el-radio-button>
+        <el-radio-button v-has-permi="['waybill:tracklist:received']" label="1">已接单</el-radio-button>
+        <el-radio-button v-has-permi="['waybill:tracklist:loaded']" label="2">已装货</el-radio-button>
+        <el-radio-button v-has-permi="['waybill:tracklist:unloaded']" label="3">已卸货</el-radio-button>
       </el-radio-group>
     </div>
 
@@ -197,8 +199,48 @@
         <template #cancelStatus="{row}">
           <span>{{ selectDictLabel(cancelStatusOptions, row.cancelStatus) }}</span>
         </template>
-        <!-- <template #goodsBigType="{row}">
-          <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
+        <template #status="{row}">
+          <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
+        </template>
+        <template #shipperCopeFee="{row}">
+          <span>{{ floor(row.shipperCopeFee) }}</span>
+        </template>
+        <template #deliveryCashFee="{row}">
+          <span>{{ floor(row.deliveryCashFee) }}</span>
+        </template>
+        <template #deliveryFeePractical="{row}">
+          <span>{{ floor(row.deliveryFeePractical) }}</span>
+        </template>
+        <template #taxPayment="{row}">
+          <span>{{ floor(row.taxPayment) }}</span>
+        </template>
+        <template #serviceFee="{row}">
+          <span>{{ floor(row.serviceFee) }}</span>
+        </template>
+        <template #loadWeight="{row}">
+          <span v-if="row.loadWeight">
+            <span v-if="row.stowageStatus === '1'">{{ row.loadWeight }} 方</span>
+            <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.loadWeight) }} 车</span>
+            <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.loadWeight }} 吨</span>
+          </span>
+        </template>
+        <template #unloadWeight="{row}">
+          <span v-if="row.unloadWeight">
+            <span v-if="row.stowageStatus === '1'">{{ row.unloadWeight }} 方</span>
+            <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.unloadWeight) }} 车</span>
+            <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.unloadWeight }} 吨</span>
+
+          </span>
+        </template>
+        <template #weight="{row}">
+          <span v-if="row.weight">
+            <span v-if="row.stowageStatus === '1'">{{ row.weight }} 方</span>
+            <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.weight) }} 车</span>
+            <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.weight }} 吨</span>
+          </span>
+        </template>
+        <!-- <template #stowageStatus="{row}">
+          <span>{{ selectDictLabel(stowageStatusOptions, row.stowageStatus) }}</span>
         </template> -->
 
         <template #edit="{row}">
@@ -339,12 +381,13 @@ import RateDialog from './component/rateDialog';
 import TrackDialog from './component/trackDialog';
 // 定位弹窗
 import LocationDialog from './component/locationDialog';
-
+import { pickerOptions } from '@/utils/dateRange';
 export default {
   'name': 'Tracklist',
   components: { DialogA, DialogB, DialogC, CancelDialog, RateDialog, TrackDialog, LocationDialog },
   data() {
     return {
+      pickerOptions,
       tableColumnsConfig: [],
       api: trackListApi,
       activeName: '1',
@@ -406,9 +449,29 @@ export default {
         { 'dictLabel': '货主同意撤销 ', 'dictValue': '2' },
         { 'dictLabel': '货主拒绝撤销 ', 'dictValue': '3' }
       ],
+      // 配载方式
+      stowageStatusOptions: [
+        { 'dictLabel': '吨数配载', 'dictValue': '0' },
+        { 'dictLabel': '立方配载', 'dictValue': '1' },
+        { 'dictLabel': '车数配载 ', 'dictValue': '2' }
+      ],
+      // 运单状态字典
+      'statusOptions': [
+        { 'dictLabel': '未接单', 'dictValue': '0' },
+        { 'dictLabel': '已接单', 'dictValue': '1' },
+        { 'dictLabel': '已装货', 'dictValue': '2' },
+        { 'dictLabel': '已签收(已卸货)', 'dictValue': '3' },
+        { 'dictLabel': '已回单(收单复核)', 'dictValue': '4' },
+        { 'dictLabel': '已核算', 'dictValue': '5' },
+        { 'dictLabel': '已申请(打款)', 'dictValue': '6' },
+        { 'dictLabel': '已打款', 'dictValue': '7' },
+        { 'dictLabel': '已申请开票', 'dictValue': '8' },
+        { 'dictLabel': '已开票', 'dictValue': '9' }
+      ],
       isAdmin: false,
       user: {},
-      shipment: {}
+      shipment: {},
+      isShipment: false
     //   // <!-- isPay	支付给司机运费状态 0-未支付 1-已支付 -->
     //   isPayOptions: [
     //     { 'dictLabel': '未支付', 'dictValue': '0' },
@@ -416,14 +479,29 @@ export default {
     //   ]
     };
   },
+
   computed: {
     lcokey() {
       return this.$route.name + this.activeName;
     }
   },
+
+  watch: {
+    '$route.query.tracklist': {
+      handler(value) {
+        if (value) {
+          this.activeName = value;
+          this.queryParams.statusList[0] = value;
+          this.handleQuery();
+        }
+      },
+      immediate: true
+    }
+  },
   created() {
-    const { isAdmin = false, user = {}, shipment = {}} = getUserInfo() || {};
+    const { isAdmin = false, isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
     this.isAdmin = isAdmin;
+    this.isShipment = isShipment;
     this.user = user;
     this.shipment = shipment;
     // this['tableColumnsConfig' + this.activeName] = this.getLocalStorage(this.lcokey) || this.tableColumnsConfig;
@@ -432,9 +510,9 @@ export default {
       isShow: true,
       label: '操作',
       width: 240,
-      fixed: 'right'
+      fixed: 'left'
     });
-    this.getList();
+    !this.$route.query.tracklist && this.getList();
     this.listByDict(this.commodityCategory).then(response => {
       this.commodityCategoryCodeOptions = response.data;
     });
@@ -462,7 +540,11 @@ export default {
     getList() {
       // console.log(this.queryParams);
       this.loading = true;
-      trackList(this.queryParams).then(response => {
+      const params = { ...this.queryParams };
+      if (params.licenseNumber) {
+        params.licenseNumber = params.licenseNumber.toUpperCase();
+      }
+      trackList(params).then(response => {
         this.tracklist = response.rows;
         this.total = response.total;
         this.loading = false;

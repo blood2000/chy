@@ -61,7 +61,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <el-table v-loading="loading" :data="produceList" @selection-change="handleSelectionChange">
+      <el-table v-loading="loading" highlight-current-row border :data="produceList" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="产品名称" align="center" prop="cnName" />
         <el-table-column label="英文名" align="center" prop="enName" />
@@ -75,18 +75,17 @@
             />
           </template>
         </el-table-column>
-        <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+        <el-table-column label="创建时间" align="center" prop="createTime">
           <template slot-scope="scope">
             <span>{{ parseTime(scope.row.createTime) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <el-table-column label="操作" align="center" fixed="left" class-name="small-padding fixed-width">
           <template slot-scope="scope">
             <el-button
               v-hasPermi="['system:produce:edit']"
               size="mini"
               type="text"
-              icon="el-icon-edit"
               @click="handleUpdate(scope.row)"
             >修改</el-button>
           </template>
@@ -133,7 +132,7 @@
 import { list, addProduce, updateProduce, getProduce, changeStatus } from '@/api/system/produce';
 
 export default {
-  name: 'Post',
+  name: 'Produce',
   data() {
     return {
       // 遮罩层

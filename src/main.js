@@ -5,6 +5,8 @@ import './assets/styles/element-variables.scss';
 import '@/assets/styles/index.scss'; // global css
 import '@/assets/styles/ddc.scss'; // ddc css
 import '@/assets/font/index.scss'; // 自定义字体,只在数据大屏用到,不影响其他页面的加载速度
+import '@/assets/iconfont/iconfont.css'; // 字体图标
+import '@/assets/gIconfont/iconfont.css'; // 字体图标
 import App from './App';
 import store from './store';
 import router from './router';
@@ -18,7 +20,7 @@ import './assets/icons'; // icon
 import './permission'; // permission control
 import { getDicts, listByDict, getDictsByType } from '@/api/system/dict/data';
 import { getConfigKey } from '@/api/system/config';
-import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree, tableHeaderConfig } from '@/utils/ddc';
+import { parseTime, isPeriodAlways, isPeriodFormate, resetForm, addDateRange, selectDictLabel, selectDictLabels, selectProvinceLabel, selectCityLabel, handleTree, tableHeaderConfig, floor, fixed } from '@/utils/ddc';
 // 本地缓存
 import { setLocalStorage, getLocalStorage, removeLocalStorage } from '@/utils/auth';
 // 表单校验
@@ -38,6 +40,28 @@ import 'highlight.js/styles/github-gist.css';
 // 打印
 import Print from 'vue-print-nb';
 Vue.use(Print);
+
+import visibility from 'vue-visibility-change';
+Vue.use(visibility);
+import { getToken } from '@/utils/auth';
+
+// 坐标系转换
+import { wgs84_to_gcj02 } from '@/utils/wgs84_to_gcj02';
+
+import domtoimage from 'dom-to-image';
+
+
+var token = '';
+// 浏览器标签页切换监控 (切换标签页后若token变化，则强制刷新)
+visibility.change((evt, hidden) => {
+  if (hidden) {
+    token = getToken();
+  } else {
+    if (token !== getToken()) {
+      location.reload();
+    }
+  }
+});
 
 // 图片查看插件
 import Viewer from 'v-viewer';
@@ -62,10 +86,14 @@ Vue.prototype.listByDict = listByDict;
 Vue.prototype.getDictsByType = getDictsByType;
 Vue.prototype.getConfigKey = getConfigKey;
 Vue.prototype.parseTime = parseTime;
+Vue.prototype.isPeriodAlways = isPeriodAlways;
+Vue.prototype.isPeriodFormate = isPeriodFormate;
 Vue.prototype.resetForm = resetForm;
 Vue.prototype.addDateRange = addDateRange;
 Vue.prototype.selectDictLabel = selectDictLabel;
 Vue.prototype.selectDictLabels = selectDictLabels;
+Vue.prototype.selectProvinceLabel = selectProvinceLabel;
+Vue.prototype.selectCityLabel = selectCityLabel;
 Vue.prototype.download = download;
 Vue.prototype.handleTree = handleTree;
 Vue.prototype.tableHeaderConfig = tableHeaderConfig;
@@ -73,6 +101,16 @@ Vue.prototype.setLocalStorage = setLocalStorage;
 Vue.prototype.getLocalStorage = getLocalStorage;
 Vue.prototype.removeLocalStorage = removeLocalStorage;
 Vue.prototype.formValidate = formValidate;
+Vue.prototype.floor = floor;
+Vue.prototype.fixed = fixed;
+Vue.prototype.wgs84_to_gcj02 = wgs84_to_gcj02;
+Vue.prototype.domtoimage = domtoimage;
+
+import VideoPlayer from 'vue-video-player';
+require('video.js/dist/video-js.css');
+require('vue-video-player/src/custom-theme.css');
+Vue.use(VideoPlayer);
+
 // 提示方法
 Vue.prototype.msgSuccess = function(msg) {
   this.$message({ showClose: true, message: msg, type: 'success' });
@@ -85,6 +123,13 @@ Vue.prototype.msgInfo = function(msg) {
 };
 Vue.prototype.msgWarning = function(msg) {
   this.$message({ showClose: true, message: msg, type: 'warning' });
+};
+// 语音播报
+Vue.prototype.voicePlay = function(msg) {
+  var url = 'http://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&text=' + encodeURI(msg);
+  var n = new Audio(url);
+  n.src = url;
+  n.play();
 };
 
 // 全局组件挂载

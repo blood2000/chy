@@ -1,103 +1,177 @@
 export const dataJson = {
-  'module': '', // 模块 user,transport,trade
-  branchCode: '', // 网点
-  // 1.平台用户注册注销模块
-  'user': {
-    // 用户
-    'user': {
-      'userType': '', // 货主shipment,司机driver,调度team
-      'operateType': '', // 1.新增 2注销
-      'info': {
-        'name': '' // info内目前只放姓名，如果后期大屏需要更多数据往这里面加
+  'branchCode': '',
+  'insertTime': '', // 时间戳格式
+  'mode': '',
+  'uuid': '',
+  'invoiceNotice': {
+    'companyName': '', // 公司名称
+    'invoiceAmount': 0, // 开票金额
+    'remark': '' // 滚动信息
+  },
+  'orderNoticeVo': {
+    'branchCode': '',
+    'uuid': '',
+    // 货源
+    'transportVo': {
+      // 货单
+      'orderBean': {
+        // 地址
+        'addressBean': {
+          // 卸货
+          'landBeanList': [
+            {
+              'city': '',
+              'districtCode': '',
+              'location': '',
+              'province': ''
+            }
+          ],
+          // 	装货信息
+          'loadBeanList': [
+            {
+              'city': '',
+              'districtCode': '',
+              'location': '',
+              'province': ''
+            }
+          ]
+        },
+        'orderCode': '',
+        'goods': '', // 多商品
+        'isNewLine': true, // 是否新增路线
+        'newLineNum': 0, // 新增路线num  1 -1
+        'isNewPoint': true, // 是否新增网点
+        'newPointNum': 0, // 新增网点num  1 -1
+        'operateType': 0, // 1发布(上架) 2下架
+        'orderInfoNumber': 0, // 货单总数 1 -1
+        'publishedNumber': 0, // 已发布 1 -1
+        'remark': '', // 滚动信息
+        // 货主信息
+        'shipmentBean': {
+          'adminName': '',
+          'code': ''
+        }
       }
-    },
+    }
+  },
+  'reportVo': {
+    'appTrackReportNum': 0, // 已上报APP轨迹信息
+    'carReportNum': 0, // 已上报车辆信息
+    'driverReportNum': 0, // 已上报司机信息
+    'fundReportNum': 0, // 已上报资金信息
+    'hardwareTrackReportNum': 0, // 已上硬件轨迹信息
+    'loadReportNum': 0, // 已上报装货信息
+    'trackReportNum': 0, //	已上报轨迹信息
+    'unLoadReportNum': 0, // 已上报卸货信息
+    'waybillReportNum': 0 // 已上报运单信息
+  },
+  'userNotice': {
+    'branchCode': '',
     // 车辆
     'car': {
-      'operateType': '', // 1.新增 2注销
       'info': {
-        'CPH': '' // info内目前只放车牌号，如果后期大屏需要更多数据往这里面加
-      }
+        'cph': ''
+      },
+      'carNum': 0, // 车辆 1 -1
+      'operateType': '', // 1新增 2注销
+      'remark': '' // 滚动信息
+    },
+    // 运力
+    'user': {
+      'info': {
+        'name': ''
+      },
+      'driverNum': 0, // 司机 1 -1
+      'shipmentNum': 0, // 货主 1 -1
+      'teamNum': 0, // 调度者 1 -1
+      'operateType': '', // 1新增 2注销
+      'userType': '', // 货主shipment,司机driver,调度team
+      'remark': '' // 滚动信息
     }
   },
-
-  // 2.运输
-  'transport': {
-    // 货单
-    'order': {
-      'operateType': '', // 1.发布 2下架  基本是发布的,下架的下面也没有数据
-      'shipment': {
-        'code': '',
-        'name': ''
-      }, // 货主基本信息,
-      'orderCode': '', // 货源CODE,如果后面有更多的需求，可根据CODe去获取
-      'address': {
-        'load': [{
-          'province': '', // 货源省份
-          'City': '', // 货源城市
-          'Location': '' // 货源经纬度
-        }],
-        'land': [{
-          'province': '', // 货源省份
-          'loadCity': '', // 货源城市
-          'loadLocation': '' // 货源经纬度
-        }]
-      },
-      'goods': '', // 多商品逗号隔开
-      'isNewPoint': true, // 是否新增网点
-      'isNewLine': true // 是否新增路线
-
+  'waybillNotice': {
+    'orderCode': '',
+    'waybillCode': '', // 运单编号
+    'newNum': 0, // 总数量
+    'accountNum': 0, // 复核数量
+    'loadNum': 0, // 装货数量
+    'unloadNum': 0, // 卸货数量
+    'receiveNum': 0, // 接单数量
+    'settlementNum': 0, // 结算数量
+    'moneyNum': 0, // 打款数量
+    'tunnage ': 0, // 吨数
+    'mileage': 0, // 公里数
+    'hour': 0, // 时长
+    'status': 0, // 1已接单 2已装货 3已卸货
+    // 运单状态：--0未接单/1已接单/2已装货/3已签收（已卸货）/4已回单（收单复核）/5已结算/6已申请（打款）/7已打款/8已申请开票/9已开票
+    'address': {
+      'loadAddressAlias': '',
+      'loadBankType': '',
+      'loadCity': '',
+      'loadCityCode': '',
+      'loadContact': '',
+      'loadContactPhone': '',
+      'loadCountry': '',
+      'loadDetail': '',
+      'loadDistrict': '',
+      'loadDistrictCode': '',
+      'loadFormattedAddress': '', // 装货地
+      'loadLevel': '',
+      'loadLocations': [], // 装货地经纬度
+      'loadOrderAddressCode': '',
+      'loadProvince': '',
+      'loadProvinceCode': '',
+      'loadStreet': '',
+      'unloadAddressAlias': '',
+      'unloadAddressName': '',
+      'unloadBankType': '',
+      'unloadCity': '',
+      'unloadCityCode': '',
+      'unloadContact': '',
+      'unloadContactPhone': '',
+      'unloadCountry': '',
+      'unloadDetail': '',
+      'unloadDistrict': '',
+      'unloadDistrictCode': '',
+      'unloadFormattedAddress': '', // 卸货地
+      'unloadLevel': '',
+      'unloadLocations': [], // 卸货地经纬度
+      'unloadOrderAddressCode': '',
+      'unloadProvince': '',
+      'unloadProvinceCode': '',
+      'unloadStreet': ''
     },
-    // 运单
-    'waybill': {
-      'status': '', // 1.接单 2装货 3.卸货 4.复核 5.结算
-      'num': 1, // 1.接单 2装货 3.卸货基本为1，4.复核 5.结算存在批量
-      'orderCode': '', // 货源CODE,如果后面有更多的需求，可根据CODE去获取
-      'waybillCode': '', // 运单CODE,如果后面有更多的需求，可根据CODe去获取
-      // 以下只有接单的时候才有
-      'driver': {
-        'code': '',
-        'name': '',
-        'telphone': ''
-      }, // 司机基本信息
-      'shipment': {
-        'code': '',
-        'adminName': '',
-        'companyName': '',
-        'telphone': ''
-      }, // 货主基本信息
-      'address': {
-        'loadProvince': '', // 装货-省份
-        'loadCity': '', // 装货-城市编码
-        'loadLocation': '', // 装货-坐标点
-        'unloadProvince': '', // 卸货-省份
-        'unloadCity': '', // 卸货-城市编码
-        'unloadLocation': '' // 卸货-坐标点
-      },
-      'goods': ''
+    'driver': {
+      'code': '',
+      'name': '',
+      'telphone': ''
+    },
+    'shipment': {
+      'code': '',
+      'adminName': '',
+      'companyName': '',
+      'telphone': ''
+    },
+    'vehicle': {
+      'licenseNumber': '' // 车牌号
     }
   },
-
-  // 3.交易,批量将金额汇总展示
-  'trade': {
-    // 打款
-    'settle': {
-      'shipment': {
-        'code': '',
-        'name': ''
-      }, // 货主基本信息
-      'driver': {
-        'code': '',
-        'name': ''
-      }, // 司机基本信息
-      'amount': 10000
+  'waybillSettlementNotice': {
+    'amount': 0, //	打款金额
+    'totalFee': 0, // 手续费
+    'shipperRealPay': 0, // 货主实付金额 (交易)
+    'deliveryCashFee': 0, // 司机实收金额 (运费)
+    'driver': {
+      'code': '',
+      'name': '',
+      'telphone': ''
     },
-    // 开票，批量将金额汇总展示
-    'invoice': {
-      'shipment': {
-        'code': '',
-        'name': ''
-      }, // 货主基本信息
-      'amount': 10000
+    'remark': '', // 滚动信息
+    'shipment': {
+      'code': '',
+      'adminName': '',
+      'companyName': '',
+      'telphone': ''
     }
   }
 };

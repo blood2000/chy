@@ -84,6 +84,8 @@
         v-loading="loading"
         :data="dataList"
         row-key="dictCode"
+        highlight-current-row
+        border
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
         @selection-change="handleSelectionChange"
       >
@@ -92,7 +94,7 @@
         <el-table-column label="字典标签" align="center" prop="dictLabel" />
         <el-table-column label="字典键值" align="center" prop="dictValue" />
         <el-table-column label="字典排序" align="center" prop="dictSort" />
-        <el-table-column label="是否上报" align="center" prop="isReport" />
+        <!-- <el-table-column label="是否上报" align="center" prop="isReport" />-->
         <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" />
         <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" />
         <el-table-column label="创建时间" align="center" prop="createTime" width="180">
@@ -100,28 +102,25 @@
             <span>{{ parseTime(scope.row.createTime) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <el-table-column label="操作" align="center" fixed="left" class-name="small-padding fixed-width">
           <template slot-scope="scope">
             <el-button
               v-if="scope.row.children"
               v-hasPermi="['system:dict:add']"
               size="mini"
               type="text"
-              icon="el-icon-edit"
               @click="handleAdd(scope.row)"
             >新增</el-button>
             <el-button
               v-hasPermi="['system:dict:edit']"
               size="mini"
               type="text"
-              icon="el-icon-edit"
               @click="handleUpdate(scope.row)"
             >修改</el-button>
             <el-button
               v-hasPermi="['system:dict:remove']"
               size="mini"
               type="text"
-              icon="el-icon-delete"
               @click="handleDelete(scope.row)"
             >删除</el-button>
           </template>
@@ -366,7 +365,7 @@ export default {
     handleExport() {
       this.download('system/dict/data/export', {
         ...this.queryParams
-      }, `data_${new Date().getTime()}.xlsx`);
+      }, `字典信息`);
     }
   }
 };

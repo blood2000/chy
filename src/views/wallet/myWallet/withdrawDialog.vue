@@ -40,7 +40,7 @@
       <el-form-item label="可用余额">
         <div class="amount-content ly-flex-align-center ly-flex-pack-center width90" style="height: 60px">
           <div>
-            <p class="text">{{ crediAmount || crediAmount === 0 ? crediAmount : '---' }}</p>
+            <p class="text">{{ crediAmount || crediAmount === 0 ? floor(crediAmount) : '---' }}</p>
           </div>
         </div>
       </el-form-item>
@@ -131,7 +131,6 @@ export default {
   methods: {
     // 查询用户银行卡
     getBankList() {
-      this.loading = true;
       banklist({
         userCode: this.userCode
       }).then(response => {

@@ -25,7 +25,9 @@
             v-model="formData[item.myName]"
             :controls="false"
             :max="999999"
-            :min="-999999"
+            :min="0"
+            :precision="2"
+            :step="0.01"
             :placeholder="`请输入${item.cnName}`"
             controls-position="right"
             :style="{ width: '200px' }"
@@ -78,18 +80,20 @@
               { required: true, message: '请输入起始值', trigger: 'blur' },
             ]"
           >
-            <span v-if="formData[item.myName+'_0'] !== 0"> - </span>
+            <span> - </span>
             <el-input-number
               v-model="formData[item.myName+'_0']"
               :controls="false"
               :placeholder="`请输入${item.cnName}`"
               step-strictly
-              :max="item.unit==='%'?100: 999999"
               :min="item.unit==='%'?0: 0"
+              :max="item.unit==='%'?100: 999999"
+              :precision="precisionMethod(item.unit,unit )"
+              :step="0.001"
               controls-position="right"
-              :style="{ width: '85px' }"
+              :style="{ width: '150px' }"
             />
-            <span class="ml0 mr10">{{ item.unit }}</span>
+            <span class="ml0 mr10">{{ unit }}</span>
           </el-form-item>
           <el-form-item>至</el-form-item>
           <el-form-item
@@ -104,12 +108,14 @@
               :controls="false"
               :placeholder="`请输入${item.cnName}`"
               step-strictly
-              :max="item.unit==='%'?100: 999999"
               :min="item.unit==='%'?0: 0"
+              :max="item.unit==='%'?100: 999999"
+              :precision="precisionMethod(item.unit,unit )"
+              :step="0.001"
               controls-position="right"
-              :style="{ width: '85px' }"
+              :style="{ width: '150px' }"
             />
-            <span class="ml0 mr10">{{ item.unit }}</span>
+            <span class="ml0 mr10">{{ unit }}</span>
           </el-form-item>
         </div>
 
@@ -150,10 +156,45 @@ export default {
     };
   },
 
+  computed: {
+    unit() {
+      console.log(this.$store.state.orders.orderStowageStatus, '调价的时候');
+      let name = 'kg';
+      const srcode = this.$store.state.orders.lossPlans;
+      const lossPlans = Object.keys(srcode);
+      let lossPlan = null;
+      if (lossPlans.length) {
+        const rcode = this.dataList[0].ruleCode;
+        lossPlans.forEach(e => {
+          if (e === rcode) {
+            lossPlan = srcode[e].ruleValue;
+          }
+        });
+      }
+      if (lossPlan === 'DL') {
+        name = '%';
+      } else {
+        switch (this.$store.state.orders.orderStowageStatus) {
+          case '0':
+            name = 'kg';
+            break;
+          case '1':
+            name = 'm³';
+            break;
+          case '2':
+            name = '';
+            break;
+        }
+      }
+
+
+      return name;
+    }
+  },
+
   watch: {
     dataList: {
-      handler(newName, oldName) {
-        this.formData = {};
+      handler() {
         this.resettingData = [];
         this.initData();
       },
@@ -171,10 +212,11 @@ export default {
         e.showType = e.showType + '';
         e.myName = 't_' + e.enName;
         if (e.showType !== '2') {
-          this.formData[e.myName] = e.ruleValue;
+          this.formData[e.myName] = this.formData[e.myName] || e.ruleValue;
         } else {
-          this.formData[e.myName + '_0'] = (JSON.parse(e.ruleValue))[0];
-          this.formData[e.myName + '_1'] = (JSON.parse(e.ruleValue))[1];
+          const num = this.formData[e.myName + '_0'] || (JSON.parse(e.ruleValue))[0];
+          this.formData[e.myName + '_0'] = num < 0 ? -num : num;
+          this.formData[e.myName + '_1'] = this.formData[e.myName + '_1'] || (JSON.parse(e.ruleValue))[1];
         }
       });
 
@@ -185,12 +227,6 @@ export default {
       const M0_option = this.$store.state.orders.M0_option;
       return arr.map(async e => {
         if (e.dictCode && (e.showType === '3' || e.showType === '4')) {
-          // 新
-          // const { data } = await this.listByDict({
-          //   dictPid: '0',
-          //   dictType: e.dictCode
-          // });
-          // 旧
           if (e.dictCode === 'M0') {
             if (M0_option && M0_option.length) {
               e.Option = M0_option;
@@ -224,7 +260,7 @@ export default {
               if (e.showType !== '2') {
                 e.ruleValue = this.formData[e.myName];
               } else {
-                e.ruleValue = JSON.stringify([this.formData[e.myName + '_0'], this.formData[e.myName + '_1']]);
+                e.ruleValue = JSON.stringify([this.formData[e.myName + '_0'] > 0 ? -this.formData[e.myName + '_0'] : this.formData[e.myName + '_0'], this.formData[e.myName + '_1']]);
               }
               return e;
             });
@@ -240,14 +276,19 @@ export default {
     //
     change() {
       this.$forceUpdate();
+    },
+
+    precisionMethod(unit1, unit) {
+      let num = 2;
+      if (unit1 === '%') {
+        num = 2;
+      } else if (unit === 'm³') {
+        num = 2;
+      }
+
+      return num;
     }
   }
 
 };
 </script>
-
-<style scoped>
-	/* .el-input-number ::v-deep.el-input__inner{
-	  text-align: left;
-	} */
-</style>

@@ -14,7 +14,7 @@
         />
       </el-form-item>
       <el-form-item :label="weightLabel" prop="unloadWeight">
-        <el-input-number v-model="form.unloadWeight" placeholder="请输入卸货数量" controls-position="right" style="width:90%;" />
+        <el-input-number v-model="form.unloadWeight" placeholder="请输入卸货数量" :precision="3" controls-position="right" :min="0" style="width:90%;" />
       </el-form-item>
       <!-- <el-form-item label="卸货地址" prop="waybillAddress">
         <el-select
@@ -35,7 +35,7 @@
         </el-select>
       </el-form-item> -->
       <el-form-item label="卸货凭证" prop="attachmentCode">
-        <uploadImage v-model="form.attachmentCode" />
+        <uploadImage v-model="form.attachmentCode" :limit="9" :fresh="fresh" />
       </el-form-item>
       <el-form-item label="卸货备注" prop="remark">
         <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入装货备注信息" style="width:90%;" />
@@ -49,8 +49,8 @@
 </template>
 
 <script>
-import { unload, getInfoDetail, unloadCredentials } from '@/api/waybill/tracklist';
-import UploadImage from '@/components/UploadImage/index';
+import { unload, getLoadInfoDetail, unloadCredentials } from '@/api/waybill/tracklist';
+import UploadImage from '@/components/UploadImage/moreImg';
 
 export default {
   name: 'DialogC',
@@ -63,7 +63,10 @@ export default {
       default: ''
     },
     open: Boolean,
-    disable: Boolean
+    disable: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
@@ -95,6 +98,7 @@ export default {
       },
       // 日期格式
       time: '',
+      // 加载多图
       fresh: false,
       // 卸车数量标签
       weightLabel: ''
@@ -146,7 +150,7 @@ export default {
     // 获取卸货详情
     getDetail() {
       this.reset();
-      getInfoDetail(this.waybill.waybillNo, 2).then(response => {
+      getLoadInfoDetail(this.waybill.waybillNo, 2).then(response => {
         console.log(response);
         if (response.data.length) {
           const info = response.data[0];
@@ -157,7 +161,7 @@ export default {
           this.form.remark = info.remark;
           // this.form.waybillAddress = info.waybillAddressList[0].orderAddressCode;
           this.form.attachmentCode = info.attachmentCode;
-          this.fresh = true;
+          this.fresh = true; // 加载多图
         } else {
           this.form.unloadTime = this.waybill.signTime;
           this.form.unloadWeight = this.waybill.loadWeight;
@@ -263,7 +267,7 @@ export default {
         this.weightLabel = '卸货立方数';
       } else if (this.waybill.stowageStatus === '2') {
         this.weightLabel = '卸货车数';
-        this.form.loadWeight = 1;
+        this.form.unloadWeight = 1;
       } else {
         this.weightLabel = '卸货重量（吨）';
       }

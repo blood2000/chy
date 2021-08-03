@@ -113,3 +113,16 @@ export function delTeamCar(data) {
     params: data
   });
 }
+
+export function changeDataByLicenseNumber(code, licenseNumber) {
+  const data = {
+    code,
+    licenseNumber
+  };
+  return request({
+    url: `/assets/vehicle/changeDataByLicenseNumber?code=${code}&licenseNumber=${licenseNumber}`,
+    method: 'post',
+    data: data
+  });
+}
+

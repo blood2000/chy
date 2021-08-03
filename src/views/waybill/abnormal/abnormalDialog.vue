@@ -1,6 +1,6 @@
 <template>
   <!-- 添加或修改运输异常对话框 -->
-  <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel" :close-on-click-modal="false">
+  <el-dialog :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="false" @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="130px">
       <el-form-item label="标记时间" prop="warningTime">
         <el-date-picker
@@ -29,18 +29,12 @@
         <el-input v-model="form.operDescription" style="width: 90%" autosize type="textarea" placeholder="请输入处理说明" />
       </el-form-item>
     </el-form>
-    <div :class=" disable === true ?'display':''">
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </div>
 
   </el-dialog>
 </template>
 
 <script>
-import { updateAbnormal, addAbnormal } from '@/api/waybill/abnormal';
+// import { updateAbnormal, addAbnormal } from '@/api/waybill/abnormal';
 
 export default {
   components: {
@@ -79,26 +73,6 @@ export default {
   created() {
   },
   methods: {
-    /** 提交按钮 */
-    submitForm() {
-      this.$refs['form'].validate(valid => {
-        if (valid) {
-          if (this.form.waybillCode != null) {
-            updateAbnormal(this.form).then(response => {
-              this.msgSuccess('修改成功');
-              this.close();
-              this.getList();
-            });
-          } else {
-            addAbnormal(this.form).then(response => {
-              this.msgSuccess('新增成功');
-              this.close();
-              this.getList();
-            });
-          }
-        }
-      });
-    },
     // 取消按钮
     cancel() {
       this.close();

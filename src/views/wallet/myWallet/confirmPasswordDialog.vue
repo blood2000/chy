@@ -8,7 +8,7 @@
     </el-form>
 
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="submitForm">确 定</el-button>
+      <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
     </div>
   </el-dialog>
@@ -30,6 +30,7 @@ export default {
   },
   data() {
     return {
+      buttonLoading: false,
       // 表单参数
       form: {},
       // 表单校验
@@ -56,12 +57,16 @@ export default {
     submitForm: function() {
       this.$refs['form'].validate(valid => {
         if (valid) {
+          this.buttonLoading = true;
           const params = { ...this.info };
           params.password = sha1(this.form.password);
           transferApply(params).then(response => {
+            this.buttonLoading = false;
             this.msgSuccess('提现申请成功');
             this.cancel();
             this.$emit('refresh');
+          }).catch(() => {
+            this.buttonLoading = false;
           });
         }
       });
@@ -77,6 +82,7 @@ export default {
     },
     // 表单重置
     reset() {
+      this.buttonLoading = false;
       this.form = {};
       this.resetForm('form');
     }

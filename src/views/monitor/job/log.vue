@@ -52,6 +52,8 @@
           style="width: 240px"
           value-format="yyyy-MM-dd"
           type="daterange"
+          unlink-panels
+          :picker-options="pickerOptions"
           range-separator="-"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
@@ -95,7 +97,7 @@
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table v-loading="loading" :data="jobLogList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" highlight-current-row border :data="jobLogList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="日志编号" width="80" align="center" prop="jobLogId" />
       <el-table-column label="任务名称" align="center" prop="jobName" :show-overflow-tooltip="true" />
@@ -108,7 +110,7 @@
           <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" fixed="left" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             v-hasPermi="['monitor:job:query']"
@@ -167,11 +169,12 @@
 
 <script>
 import { listJobLog, delJobLog, cleanJobLog } from '@/api/monitor/jobLog';
-
+import { pickerOptions } from '@/utils/dateRange';
 export default {
   name: 'JobLog',
   data() {
     return {
+      pickerOptions,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -284,7 +287,7 @@ export default {
     handleExport() {
       this.download('schedule/job/log/export', {
         ...this.queryParams
-      }, `log_${new Date().getTime()}.xlsx`);
+      }, `调度日志`);
     }
   }
 };

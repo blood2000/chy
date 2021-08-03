@@ -1,19 +1,19 @@
 
 <template>
-  <div>
+  <div v-loading="payLoading" element-loading-background="rgba(255, 255, 255, 0.3)">
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form
         ref="queryForm"
         :model="queryParams"
         :inline="true"
-        label-width="90px"
+        label-width="110px"
       >
         <el-form-item
           label="装货信息"
           prop="loadInfo"
         >
           <el-input
-            v-model="queryParams.loadInfo"
+            v-model.trim="queryParams.loadInfo"
             placeholder="装货地/装货电话/发货人"
             clearable
             size="small"
@@ -26,7 +26,7 @@
           prop="receivedInfo"
         >
           <el-input
-            v-model="queryParams.receivedInfo"
+            v-model.trim="queryParams.receivedInfo"
             placeholder="卸货地/卸货电话/卸货人"
             clearable
             size="small"
@@ -39,7 +39,7 @@
           prop="licenseNumber"
         >
           <el-input
-            v-model="queryParams.licenseNumber"
+            v-model.trim="queryParams.licenseNumber"
             placeholder="请输入车牌号"
             clearable
             size="small"
@@ -52,8 +52,8 @@
           prop="driverName"
         >
           <el-input
-            v-model="queryParams.driverName"
-            placeholder="请输入司机姓名"
+            v-model.trim="queryParams.driverName"
+            placeholder="请输入司机姓名/手机号"
             clearable
             size="small"
             style="width: 225px"
@@ -78,12 +78,12 @@
           </el-select>
         </el-form-item>
         <el-form-item
-          label="支付批次号"
+          label="结算申请批次号"
           prop="bizNo"
         >
           <el-input
-            v-model="queryParams.bizNo"
-            placeholder="请输入支付批次号"
+            v-model.trim="queryParams.bizNo"
+            placeholder="请输入结算申请批次号"
             clearable
             size="small"
             style="width: 225px"
@@ -95,7 +95,7 @@
           prop="mainOrderNumber"
         >
           <el-input
-            v-model="queryParams.mainOrderNumber"
+            v-model.trim="queryParams.mainOrderNumber"
             placeholder="请输入货源单号"
             clearable
             size="small"
@@ -108,7 +108,7 @@
           prop="waybillNo"
         >
           <el-input
-            v-model="queryParams.waybillNo"
+            v-model.trim="queryParams.waybillNo"
             placeholder="请输入运输单号"
             clearable
             size="small"
@@ -123,6 +123,8 @@
           <el-date-picker
             v-model="receiveTime"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -200,12 +202,49 @@
         />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="paymentlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <RefactorTable :loading="loading" :data="paymentlist" :table-columns-config="tableColumnsConfig" :row-class-name="tableRowClassName" :selectable="checkboxT" @selection-change="handleSelectionChange">
         <template #status="{row}">
           <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
         </template>
         <template #applyStatus="{row}">
           <span>{{ selectDictLabel(applyStatusOptions, row.applyStatus) }}</span>
+        </template>
+        <template #shipperRealPay="{row}">
+          <span>{{ floor(row.shipperRealPay) }}</span>
+        </template>
+        <template #deliveryCashFee="{row}">
+          <span>{{ floor(row.deliveryCashFee) }}</span>
+        </template>
+        <template #deliveryFeePractical="{row}">
+          <span>{{ floor(row.deliveryFeePractical) }}</span>
+        </template>
+        <template #freightPrice="{row}">
+          <span>{{ row.freightPrice ? floor(row.freightPrice) + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) :'-' }}</span>
+        </template>
+        <template #driverReductionFee="{row}">
+          <span>{{ floor(row.driverReductionFee) }}</span>
+        </template>
+        <template #driverAddFee="{row}">
+          <span>{{ floor(row.driverAddFee) }}</span>
+        </template>
+        <template #m0Fee="{row}">
+          <span>{{ floor(row.m0Fee) }}</span>
+        </template>
+        <template #taxPayment="{row}">
+          <span>{{ floor(row.taxPayment) }}</span>
+        </template>
+        <template #serviceFee="{row}">
+          <span>{{ floor(row.serviceFee) }}</span>
+        </template>
+        <template #loadWeight="{row}">
+          <span v-if="row.stowageStatus === '1'">{{ row.loadWeight || '0.000' }} 方</span>
+          <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.loadWeight) || '0' }} 车</span>
+          <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.loadWeight || '0.000' }} 吨</span>
+        </template>
+        <template #unloadWeight="{row}">
+          <span v-if="row.stowageStatus === '1'">{{ row.unloadWeight || '0.000' }} 方</span>
+          <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.unloadWeight) || '0' }} 车</span>
+          <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.unloadWeight || '0.000' }} 吨</span>
         </template>
         <template #applyTime="{row}">
           <span>{{ parseTime(row.applyTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
@@ -240,11 +279,13 @@
           >网商打款</el-button>
           <el-button
             v-if="row.isChild == '2'"
+            v-hasPermi="['transportation:waybillSettlement:reinsurance']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 3)"
           >分单列表</el-button>
           <el-button
+            v-hasPermi="['transportation:waybillSettlement:detail']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 4)"
@@ -277,13 +318,14 @@ import RejectDialog from './rejectDialog';
 import ChildDialog from '../components/childDialog';
 // 运单详情弹窗
 import DetailDialog from '@/views/waybill/components/detailDialog';
-
+import { pickerOptions } from '@/utils/dateRange';
 
 export default {
-  'name': 'PaymentList',
+  'name': 'Payment',
   components: { RejectDialog, DetailDialog, ChildDialog },
   data() {
     return {
+      pickerOptions,
       tableColumnsConfig: [],
       api: paymentListApi,
       createTime: '',
@@ -351,11 +393,17 @@ export default {
         { 'dictLabel': '已装货', 'dictValue': '2' },
         { 'dictLabel': '已签收(已卸货)', 'dictValue': '3' },
         { 'dictLabel': '已回单(收单复核)', 'dictValue': '4' },
-        { 'dictLabel': '已结算', 'dictValue': '5' },
+        { 'dictLabel': '已核算', 'dictValue': '5' },
         { 'dictLabel': '已申请(打款)', 'dictValue': '6' },
         { 'dictLabel': '已打款', 'dictValue': '7' },
         { 'dictLabel': '已申请开票', 'dictValue': '8' },
         { 'dictLabel': '已开票', 'dictValue': '9' }
+      ],
+      // 配载方式字典
+      stowageStatusOptions: [
+        { 'dictLabel': '吨', 'dictValue': '0' },
+        { 'dictLabel': '方', 'dictValue': '1' },
+        { 'dictLabel': '车', 'dictValue': '2' }
       ],
       // 申请状态字典
       applyStatusOptions: [
@@ -365,7 +413,11 @@ export default {
         { 'dictLabel': '打款中', 'dictValue': '3' },
         { 'dictLabel': '打款成功', 'dictValue': '4' },
         { 'dictLabel': '打款失败', 'dictValue': '5' }
-      ]
+      ],
+      payLoading: false,
+      batchIndex: 0,
+      errList: [],
+      sucList: []
     };
   },
   computed: {
@@ -376,7 +428,7 @@ export default {
       isShow: true,
       label: '操作',
       width: 240,
-      fixed: 'right'
+      fixed: 'left'
     });
     this.getList();
     this.listByDict(this.commodityCategory).then(response => {
@@ -399,9 +451,20 @@ export default {
       this.bodyParams.wayBillSettlementCodeList = this.ids;
       this.multiple = !selection.length;
     },
+    checkboxT(row) {
+      if (row.applyStatus === 3) {
+			  return false;
+      } else {
+			  return true;
+      }
+    },
     /** 查询【请填写功能名称】列表 */
-    getList() {
-      this.loading = true;
+    getList(e) {
+      if (e !== 1) {
+        this.errList = [];
+        this.sucList = [];
+        this.loading = true;
+      }
       paymentList(this.queryParams).then(response => {
         this.paymentlist = response.rows;
         this.total = response.total;
@@ -433,15 +496,50 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        batch(this.bodyParams).then(response => {
-          this.$message({ type: 'success', message: '批量打款成功！' });
-          this.getList();
-        });
+        this.errList = [];
+        this.sucList = [];
+        this.$message({ type: 'warning', message: '发起网商打款成功，请勿关闭或刷新页面！' });
+        this.payLoading = true;
+        this.batchIndex = 0;
+        this.getBatch();
       }).catch(() => {
         this.$message({ type: 'info', message: '已取消' });
       });
     },
-
+    // 打款接口
+    async getBatch() {
+      const len = this.ids;
+      // console.log(len);
+      const batchNo = new Date().getTime();
+      for (let index = 0; index < len.length; index++) {
+        const e = len[index];
+        try {
+          await batch({ wayBillSettlementCodeList: [e], batchNo: batchNo });
+          this.sucList.push(e);
+        } catch (error) {
+          this.errList.push(e);
+          continue;
+        }
+        // console.log(index, '----', this.ids.length, len.length);
+      }
+      setTimeout(() => {
+        this.getList();
+      }, 2000);
+      this.payLoading = false;
+      // console.log(this.sucList, this.errList);
+    },
+    tableRowClassName({ row, rowIndex }) {
+      if (this.errList.length > 0) {
+        if (this.errList.includes(row.wayBillSettlementCode)) {
+          return 'warning-row';
+        }
+      }
+      if (this.sucList.length > 0) {
+        if (this.sucList.includes(row.wayBillSettlementCode)) {
+          return 'success-row';
+        }
+      }
+    },
     handleTableBtn(row, index) {
       // console.log(row, index);
 
@@ -462,7 +560,7 @@ export default {
             this.bodyParams.wayBillSettlementCodeList = [];
             this.bodyParams.wayBillSettlementCodeList.push(row.wayBillSettlementCode);
             batch(this.bodyParams).then(response => {
-              this.$message({ type: 'success', message: '打款成功！' });
+              this.$message({ type: 'success', message: '发起网商打款成功！' });
               this.getList();
             });
           }).catch(() => {
@@ -489,11 +587,17 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .total_bg{
     background: #F8F9FA;
     border-radius: 4px;
     padding: 10px 20px;
     margin-bottom: 10px;
+  }
+  ::v-deep .warning-row{
+    background: #fadbd9 !important;
+  }
+  ::v-deep .success-row{
+    background: #d7f0dbff !important;
   }
 </style>

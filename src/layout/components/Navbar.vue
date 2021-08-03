@@ -23,12 +23,12 @@
       </template>
 
       <div class="avatar-wrapper">
-        <img :src="avatar" class="avatar-wrapper__image">
+        <img v-real-img="avatar" src="@/assets/images/workbench/icon_noavator.png" class="avatar-wrapper__image">
         <span v-if="roleName !== ''" class="avatar-wrapper__role">{{ roleName }}</span>
-        <span class="avatar-wrapper__user">{{ nickName }}</span>
       </div>
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
+          <span class="avatar-wrapper__user">{{ nickName || name }}</span>
           <span class="avatar-wrapper__icon" />
         </div>
         <el-dropdown-menu slot="dropdown">
@@ -75,7 +75,9 @@ export default {
       'avatar',
       'device',
       'nickName',
-      'roleName'
+      'name',
+      'roleName',
+      'isShipment'
     ]),
     setting: {
       get() {
@@ -105,8 +107,13 @@ export default {
       });
     },
     goToStatistic() {
+      if (this.isShipment) return;
       const routeData = this.$router.resolve({
-        path: '/statistic'
+        // path: '/statistic',
+        path: '/statisticSecond',
+        query: {
+          isScale: true
+        }
       });
       window.open(routeData.href, '_blank');
     }
@@ -225,7 +232,7 @@ export default {
       }
 
       &__user{
-        margin-left: 10px;
+        margin: 0 6px 0 2px;
         font-size: 14px;
         font-family: PingFang SC;
         color: #FFFFFF;

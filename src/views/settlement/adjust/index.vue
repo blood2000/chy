@@ -9,13 +9,13 @@
         label-width="80px"
       >
         <el-form-item
-          v-show="isAdmin"
-          label="下单客户"
+          v-show="!isShipment"
+          label="下单用户"
           prop="orderClient"
         >
           <el-input
-            v-model="queryParams.orderClient"
-            placeholder="请输入下单客户"
+            v-model.trim="queryParams.orderClient"
+            placeholder="发货企业/操作人/手机号"
             clearable
             size="small"
             style="width: 228px"
@@ -23,12 +23,12 @@
           />
         </el-form-item>
         <el-form-item
-          v-show="isAdmin"
+          v-show="!isShipment"
           label="发货企业"
           prop="deliveryCompany"
         >
           <el-input
-            v-model="queryParams.deliveryCompany"
+            v-model.trim="queryParams.deliveryCompany"
             placeholder="请输入发货企业"
             clearable
             size="small"
@@ -41,7 +41,7 @@
           prop="loadInfo"
         >
           <el-input
-            v-model="queryParams.loadInfo"
+            v-model.trim="queryParams.loadInfo"
             placeholder="装货地/装货电话/发货人"
             clearable
             size="small"
@@ -54,7 +54,7 @@
           prop="receivedInfo"
         >
           <el-input
-            v-model="queryParams.receivedInfo"
+            v-model.trim="queryParams.receivedInfo"
             placeholder="卸货地/卸货电话/卸货人"
             clearable
             size="small"
@@ -84,7 +84,7 @@
           prop="mainOrderNumber"
         >
           <el-input
-            v-model="queryParams.mainOrderNumber"
+            v-model.trim="queryParams.mainOrderNumber"
             placeholder="请输入货源单号"
             clearable
             size="small"
@@ -99,6 +99,8 @@
           <el-date-picker
             v-model="receiveTime"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -111,7 +113,7 @@
           prop="licenseNumber"
         >
           <el-input
-            v-model="queryParams.licenseNumber"
+            v-model.trim="queryParams.licenseNumber"
             placeholder="请输入车牌号"
             clearable
             size="small"
@@ -124,7 +126,7 @@
           prop="driverName"
         >
           <el-input
-            v-model="queryParams.driverName"
+            v-model.trim="queryParams.driverName"
             placeholder="请输入司机姓名"
             clearable
             size="small"
@@ -137,7 +139,7 @@
           prop="waybillNo"
         >
           <el-input
-            v-model="queryParams.waybillNo"
+            v-model.trim="queryParams.waybillNo"
             placeholder="请输入运输单号"
             clearable
             size="small"
@@ -204,19 +206,20 @@
     <div class="g-radio-group">
       <el-radio-group v-model="activeName" size="small" @change="handleClick">
         <el-radio-button label="4">已复核</el-radio-button>
-        <el-radio-button label="5">已结算</el-radio-button>
+        <el-radio-button label="5">已核算</el-radio-button>
         <el-radio-button label="7">已打款</el-radio-button>
       </el-radio-group>
     </div>
 
     <div class="app-container">
+      <TotalBar :total-list="totalList" fixed />
       <el-row
         :gutter="10"
         class="mb8"
       >
         <el-col v-if="activeName == '4'" :span="1.5">
           <el-button
-            v-hasPermi="['transportation:waybillBalanceInfo:batchCheck']"
+            v-hasPermi="['transportation:waybillBalanceInfo:batchDetail']"
             type="primary"
             icon="el-icon-document-checked"
             size="mini"
@@ -236,6 +239,7 @@
         </el-col>
         <el-col v-if="activeName == '7' && !isAdmin" :span="1.5">
           <el-button
+            v-hasPermi="['transportation:waybillBalanceInfo:evaluate']"
             type="primary"
             icon="el-icon-chat-dot-square"
             size="mini"
@@ -244,7 +248,7 @@
           >批量评价</el-button>
         </el-col>
         <el-col :span="1.5" class="fr">
-          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
+          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" refresh />
         </el-col>
         <right-toolbar
           :show-search.sync="showSearch"
@@ -252,7 +256,7 @@
         />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig" :height="tHeight" @selection-change="handleSelectionChange">
+      <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
         <template #goodsBigType="{row}">
           <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
         </template>
@@ -261,6 +265,42 @@
             <i v-if="row.isReturn == 0" class="el-icon-error g-color-gray" />
             <i v-if="row.isReturn == 1" class="el-icon-success g-color-success" />
             {{ selectDictLabel(isReturnOptions, row.isReturn) }}
+          </span>
+        </template>
+        <template #shipperCopeFee="{row}">
+          <span>{{ floor(row.shipperCopeFee) }}</span>
+        </template>
+        <template #deliveryFeeDeserved="{row}">
+          <span>{{ floor(row.deliveryFeeDeserved) }}</span>
+        </template>
+        <template #shipperRealPay="{row}">
+          <span>{{ floor(row.shipperRealPay) }}</span>
+        </template>
+        <template #deliveryCashFee="{row}">
+          <span>{{ floor(row.deliveryCashFee) }}</span>
+        </template>
+        <template #taxPayment="{row}">
+          <span>{{ floor(row.taxPayment) }}</span>
+        </template>
+        <template #loadWeight="{row}">
+          <span v-if="row.loadWeight">
+            <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.loadWeight }} 吨</span>
+            <span v-if="row.stowageStatus === '1'">{{ row.loadWeight }} 方</span>
+            <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.loadWeight) }} 车</span>
+          </span>
+        </template>
+        <template #unloadWeight="{row}">
+          <span v-if="row.unloadWeight">
+            <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.unloadWeight }} 吨</span>
+            <span v-if="row.stowageStatus === '1'">{{ row.unloadWeight }} 方</span>
+            <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.unloadWeight) }} 车</span>
+          </span>
+        </template>
+        <template #weight="{row}">
+          <span v-if="row.weight">
+            <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.weight }} 吨</span>
+            <span v-if="row.stowageStatus === '1'">{{ row.weight }} 方</span>
+            <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.weight) }} 车</span>
           </span>
         </template>
         <template #lastLoadingTime="{row}">
@@ -291,18 +331,21 @@
           >核算</el-button>
           <el-button
             v-if="activeName == '5'"
+            v-hasPermi="['transportation:waybillBalanceInfo:batchApply']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 4)"
           >申请打款</el-button>
           <el-button
             v-if="activeName == '7' && !isAdmin"
+            v-hasPermi="['transportation:waybillBalanceInfo:evaluate']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 5)"
           >评价</el-button>
           <el-button
             v-if="activeName == '7' && isAdmin"
+            v-hasPermi="['transportation:waybillBalanceInfo:evaluate:detail']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 8)"
@@ -323,6 +366,7 @@
         </template>
       </RefactorTable>
 
+      <!-- :page-sizes="[10, 50, 100, 500, 1000]" -->
       <pagination
         v-show="total>0"
         :total="total"
@@ -361,15 +405,18 @@ import DetailDialog from '@/views/waybill/components/detailDialog';
 import CommentDialog from './commentDialog';
 // 评价详情弹窗
 import RateDialog from './rateDialog';
+import { pickerOptions } from '@/utils/dateRange';
 
-import setTheight from '@/layout/mixin/setTheight';
+import TotalBar from '@/components/Ddc/Tin/TotalBar';
+// import setTheight from '@/layout/mixin/setTheight';
 
 export default {
-  'name': 'AdjustList',
-  components: { RejectDialog, AdjustDialog, DetailDialog, ChildDialog, CommentDialog, RateDialog },
-  mixins: [setTheight],
+  'name': 'Adjust',
+  components: { RejectDialog, AdjustDialog, DetailDialog, ChildDialog, CommentDialog, RateDialog, TotalBar },
+  // mixins: [setTheight],
   data() {
     return {
+      pickerOptions,
       tableColumnsConfig: [],
       api: adjustListApi,
       activeName: '4',
@@ -446,6 +493,7 @@ export default {
         { 'dictLabel': '是', 'dictValue': '2' }
       ],
       isAdmin: false,
+      isShipment: false,
       user: {},
       shipment: {},
 
@@ -455,11 +503,102 @@ export default {
   computed: {
     lcokey() {
       return this.$route.name + this.activeName;
+    },
+
+    totalList() {
+      let arr = [
+        {
+          label: '运单数量',
+          value: this.commentlist.length,
+          key: 'waybillCount'
+        },
+        {
+          label: '货主实付金额',
+          value: 0,
+          key: 'shipperRealPay'
+        },
+        {
+          label: '司机实收金额',
+          value: 0,
+          key: 'deliveryCashFee'
+        },
+        {
+          label: '纳税金额',
+          value: 0,
+          key: 'taxPayment'
+        },
+        {
+          label: '服务费',
+          value: 0,
+          key: 'serviceFee'
+        }
+      ];
+
+      // 如果是 已复核 页面则展示应付的其他则展示实付
+      if (this.activeName === '4') {
+        arr = [
+          {
+            label: '运单数量',
+            value: this.commentlist.length,
+            key: 'waybillCount'
+          },
+          {
+            label: '货主预估应付',
+            value: 0,
+            key: 'shipperEstimate'
+          },
+          {
+            label: '司机应收金额',
+            value: 0,
+            key: 'deliveryFeeDeserved'
+          },
+          {
+            label: '纳税金额',
+            value: 0,
+            key: 'taxPayment'
+          }
+          // {
+          //   label: '服务费',
+          //   value: 0,
+          //   key: 'serviceFee'
+          // }
+        ];
+      }
+
+      this.commentlist.forEach(e => {
+        arr.forEach(ee => {
+          if (e[ee.key]) {
+            ee.value += (e[ee.key] - 0);
+          } else if (ee.key === 'shipperEstimate') {
+            ee.value += (e.deliveryFeeDeserved - 0) + (e.taxPayment - 0);
+          }
+        });
+      });
+      arr.map(e => {
+        e.value = this.floor(e.value);
+        return e;
+      });
+
+      return arr;
     }
   },
+
+  watch: {
+    '$route.query.adjust': {
+      handler(value) {
+        if (value) {
+          this.activeName = value;
+          this.handleClick(value);
+        }
+      },
+      immediate: true
+    }
+  },
+
   created() {
-    const { isAdmin = false, user = {}, shipment = {}} = getUserInfo() || {};
+    const { isAdmin = false, isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
     this.isAdmin = isAdmin;
+    this.isShipment = isShipment;
     this.user = user;
     this.shipment = shipment;
     this.tableHeaderConfig(this.tableColumnsConfig, adjustListApi, {
@@ -468,9 +607,9 @@ export default {
       tooltip: false,
       label: '操作',
       width: 240,
-      fixed: 'right'
+      fixed: 'left'
     });
-    this.getList();
+    !this.$route.query.adjust && this.getList();
     this.listByDict(this.commodityCategory).then(response => {
       this.commodityCategoryCodeOptions = response.data;
     });
@@ -501,7 +640,11 @@ export default {
     /** 查询【请填写功能名称】列表 */
     getList() {
       this.loading = true;
-      adjustList(this.queryParams).then(response => {
+      const params = { ...this.queryParams };
+      if (params.licenseNumber) {
+        params.licenseNumber = params.licenseNumber.toUpperCase();
+      }
+      adjustList(params).then(response => {
         this.adjustlist = response.rows;
         this.total = response.total;
         this.loading = false;

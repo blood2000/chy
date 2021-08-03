@@ -70,9 +70,9 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <el-table v-loading="loading" :data="noticeList" :close-on-click-modal="false" @selection-change="handleSelectionChange">
+      <el-table v-loading="loading" highlight-current-row border :data="noticeList" :close-on-click-modal="false" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
-        <el-table-column label="序号" align="center" prop="noticeId" width="100" />
+        <el-table-column label="序号" width="55" align="center" fixed="left" prop="noticeId" />
         <el-table-column
           label="公告标题"
           align="center"
@@ -84,35 +84,31 @@
           align="center"
           prop="noticeType"
           :formatter="typeFormat"
-          width="100"
         />
         <el-table-column
           label="状态"
           align="center"
           prop="status"
           :formatter="statusFormat"
-          width="100"
         />
-        <el-table-column label="创建者" align="center" prop="createBy" width="100" />
-        <el-table-column label="创建时间" align="center" prop="createTime" width="100">
+        <el-table-column label="创建者" align="center" prop="createBy" />
+        <el-table-column label="创建时间" align="center" prop="createTime">
           <template slot-scope="scope">
             <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <el-table-column label="操作" align="center" fixed="left">
           <template slot-scope="scope">
             <el-button
               v-hasPermi="['system:notice:edit']"
               size="mini"
               type="text"
-              icon="el-icon-edit"
               @click="handleUpdate(scope.row)"
             >修改</el-button>
             <el-button
               v-hasPermi="['system:notice:remove']"
               size="mini"
               type="text"
-              icon="el-icon-delete"
               @click="handleDelete(scope.row)"
             >删除</el-button>
           </template>
@@ -167,7 +163,7 @@
           </el-row>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="submitForm" :loading="buttonLoading">确 定</el-button>
+          <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
           <el-button @click="cancel">取 消</el-button>
         </div>
       </el-dialog>

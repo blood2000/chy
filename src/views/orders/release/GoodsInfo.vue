@@ -19,7 +19,6 @@
           @totalTypeValue="(data)=> totalTypeValue = data"
           @validatePass="validatePass"
         />
-        <!--规则又是根据地址-->
         <el-divider />
 
         <div v-for="(redi,i) in good.redis" :key="i">
@@ -89,13 +88,11 @@ export default {
     handlerTotalTypeValue(good, data) {
       this.form['totalTypeValue' + good.activeName] = data;
     },
-    // 获取
     handlerGoodsUnitName(good, data) {
       this.form['goodsUnitName' + good.activeName] = data;
     },
 
     async getGoodsAccounting() {
-      // 这里是获取商品的信息
       const arr = this.tabs.map(async e => {
         return {
           ...e,
@@ -107,7 +104,7 @@ export default {
     },
     // 获取规格
     async getAccounTing() {
-      const newArr = await this.getGoodsAccounting(); // 结构就是 this.tabs
+      const newArr = await this.getGoodsAccounting();
       // 只能用 for of 遍历
       const arrarr = [];
 
@@ -121,8 +118,6 @@ export default {
             orderFreightBoList: accounTing.orderFreightBoList,
             goodsType: e.goodsType,
             goodsBigType: this.goodsBigType
-            // ruleDictValue: accounTing.ruleDictValue,
-            // ruleInfoShipmentCode: accounTing.orderFreightBoList[0].ruleCode
           };
         });
 
@@ -141,18 +136,10 @@ export default {
       return this.tabs;
     },
 
-    // 数据初始化(created的时候)
     init() {
       if (!this.goods || (this.goods && !this.goods[0])) return;
-      // console.log(this.goods, '商品');
-      // console.log(this.addrAdd);
-      // console.log(this.addrXie);
-      // console.log(this.pubilshCode);
-      // console.log(this.cbGoodsAccounting, '-----'); // 创建的时候 null
-      // console.log(this.cbOrderFreight, '+++++++++++++'); // 创建的时候 null
 
       this.tabs = this.goods.map((e, index) => {
-        // 回填有值的时候
         if (this.cbGoodsAccounting) {
           this.cbGoodsAccounting.forEach(ee => {
             if (e.dictValue === ee.goodsType) {
@@ -170,14 +157,11 @@ export default {
         }
 
         return {
-        //   ...e, 先存这三个
-          // code: e.goodsAccounting ? e.goodsAccounting.code : undefined,
+
           goodsAccounting: e.goodsAccounting || {},
-          // price: this.handlerPrice(e.price),
           dictLabel: e.dictLabel,
           dictCode: e.dictCode,
           goodsType: e.dictValue,
-          // redis: this.addressInit(), // 规则
           redis: e.redis || this.addressInit() || [], // 规则
           activeName: index + ''
         };
@@ -185,7 +169,6 @@ export default {
       this.activeName = '0';
     },
 
-    // 判断规则是多装还是多卸, 并处理装地址--卸地址
     addressInit() {
       let arr = [];
       if (this.addrXie.length >= 2) {
@@ -205,7 +188,7 @@ export default {
       }
       return arr;
     },
-    handlerPrice(addressIdentification) { // identification
+    handlerPrice(addressIdentification) {
       const redis = this.addressInit().map(e => {
         addressIdentification.forEach(ee => {
           const addressCodeArr = ee.addressCode.split(':');
@@ -224,7 +207,6 @@ export default {
     },
 
     validatePass(data) {
-      // if (data === this.activeName || data === '0') return;
       this.activeName = data;
     },
 

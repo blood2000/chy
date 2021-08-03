@@ -46,6 +46,8 @@
             style="width: 240px"
             value-format="yyyy-MM-dd"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -109,7 +111,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <el-table v-loading="loading" :data="typeList" :close-on-click-modal="false" @selection-change="handleSelectionChange">
+      <el-table v-loading="loading" highlight-current-row border :data="typeList" :close-on-click-modal="false" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
         <!-- <el-table-column label="字典编号" align="center" prop="dictId" />-->
         <el-table-column label="字典名称" align="center" prop="dictName" :show-overflow-tooltip="true" />
@@ -127,20 +129,18 @@
             <span>{{ parseTime(scope.row.createTime) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <el-table-column label="操作" align="center" fixed="left" class-name="small-padding fixed-width">
           <template slot-scope="scope">
             <el-button
               v-hasPermi="['system:dict:edit']"
               size="mini"
               type="text"
-              icon="el-icon-edit"
               @click="handleUpdate(scope.row)"
             >修改</el-button>
             <el-button
               v-hasPermi="['system:dict:remove']"
               size="mini"
               type="text"
-              icon="el-icon-delete"
               @click="handleDelete(scope.row)"
             >删除</el-button>
           </template>
@@ -191,11 +191,12 @@
 
 <script>
 import { listType, getType, delType, addType, updateType, clearCache } from '@/api/system/dict/type';
-
+import { pickerOptions } from '@/utils/dateRange';
 export default {
   name: 'Dict',
   data() {
     return {
+      pickerOptions,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -346,9 +347,15 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('system/dict/type/export', {
-        ...this.queryParams
-      }, `type_${new Date().getTime()}.xlsx`);
+      if (this.dateRange[0] && this.dateRange[1]) {
+        this.queryParams.beginTime = this.dateRange[0];
+        this.queryParams.endTime = this.dateRange[1];
+      } else {
+        this.queryParams.beginTime = undefined;
+        this.queryParams.endTime = undefined;
+      }
+      this.queryParams.params = undefined;
+      this.download('system/dict/type/export', this.queryParams, `字典信息`);
     },
     /** 清理缓存按钮操作 */
     handleClearCache() {

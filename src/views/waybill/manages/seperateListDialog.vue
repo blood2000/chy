@@ -1,10 +1,10 @@
 <template>
   <el-dialog :title="title" :visible="visible" width="1300px" append-to-body :modal-append-to-body="false" class="waybill-seperate-list-dialog" @close="cancel">
-    <el-table v-loading="loading" border stripe :data="childList">
-      <el-table-column label="序号" align="center" type="index" width="50" />
+    <el-table v-loading="loading" highlight-current-row border :data="childList">
+      <el-table-column label="序号" align="center" fixed="left" type="index" width="50" />
       <el-table-column label="货源单号" align="center" prop="mainOrderNumber" width="150" />
       <el-table-column label="发货企业" align="center" prop="shipperFactory" width="150" />
-      <el-table-column label="下单客户" align="center" prop="orderClient" width="160" />
+      <el-table-column label="下单用户" align="center" prop="orderClient" width="160" />
       <el-table-column label="运输单号" align="center" prop="waybillNo" width="160" />
       <!-- <el-table-column label="运单状态" align="center" prop="status" :formatter="statusFormat" /> -->
       <el-table-column label="承运调度" align="center" prop="teamName" />
@@ -12,15 +12,27 @@
       <el-table-column label="司机电话" align="center" prop="driverPhone" width="150" />
       <el-table-column label="货物大类" align="center" prop="goodsBigType" />
       <el-table-column label="货物小类" align="center" prop="goodsType" width="150" />
-      <el-table-column label="装货重量" align="center" prop="loadWeight" />
-      <el-table-column label="卸货重量" align="center" prop="unloadWeight" />
+      <el-table-column label="装货数量" align="center" prop="loadWeight">
+        <template slot-scope="scope">
+          <span v-if="scope.row.stowageStatus === '1'">{{ scope.row.loadWeight || '0.000' }} 方</span>
+          <span v-if="scope.row.stowageStatus === '2'">{{ Math.floor(scope.row.loadWeight) || '0' }} 车</span>
+          <span v-if="scope.row.stowageStatus === '0' || !scope.row.stowageStatus">{{ scope.row.loadWeight || '0.000' }} 吨</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="卸货数量" align="center" prop="unloadWeight">
+        <template slot-scope="scope">
+          <span v-if="scope.row.stowageStatus === '1'">{{ scope.row.unloadWeight || '0.000' }} 方</span>
+          <span v-if="scope.row.stowageStatus === '2'">{{ Math.floor(scope.row.unloadWeight) || '0' }} 车</span>
+          <span v-if="scope.row.stowageStatus === '0' || !scope.row.stowageStatus">{{ scope.row.unloadWeight || '0.000' }} 吨</span>
+        </template>
+      </el-table-column>
       <el-table-column label="数量(车)" align="center" prop="carNum" />
       <el-table-column label="用车类型" align="center" prop="carType" />
       <el-table-column label="货物单价" align="center" prop="goodsPrice" />
       <el-table-column label="运费单价" align="center" prop="freightPrice" />
       <el-table-column label="公里数" align="center" prop="mileage" />
-      <el-table-column label="含税价" align="center" prop="taxFee" />
-      <el-table-column label="不含税价" align="center" prop="noTaxFee" />
+      <!-- <el-table-column label="含税价" align="center" prop="taxFee" />
+      <el-table-column label="不含税价" align="center" prop="noTaxFee" /> -->
       <el-table-column label="装货地" align="center" prop="loadAddress" width="180" />
       <el-table-column label="卸货地" align="center" prop="unloadAddress" width="180" />
       <el-table-column label="发布货源时间" align="center" prop="orderTime" width="150">
@@ -38,7 +50,7 @@
           <span>{{ parseTime(scope.row.lastLoadingTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="100">
+      <el-table-column label="操作" align="center" fixed="left" class-name="small-padding fixed-width" width="100">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -61,7 +73,7 @@
 
     <!-- 详情对话框 -->
     <detail-dialog
-      :title="'查看运单详情'"
+      :title="'运输单信息'"
       :open.sync="detailOpen"
       :current-id="detailCurrentId"
       :disable="true"
@@ -98,7 +110,7 @@ export default {
         { 'dictLabel': '已装货', 'dictValue': '2' },
         { 'dictLabel': '已签收(已卸货)', 'dictValue': '3' },
         { 'dictLabel': '已回单(收单复核)', 'dictValue': '4' },
-        { 'dictLabel': '已结算', 'dictValue': '5' },
+        { 'dictLabel': '已核算', 'dictValue': '5' },
         { 'dictLabel': '已申请(打款)', 'dictValue': '6' },
         { 'dictLabel': '已打款', 'dictValue': '7' },
         { 'dictLabel': '已申请开票', 'dictValue': '8' },

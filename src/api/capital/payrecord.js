@@ -6,7 +6,7 @@ export function payRecordlist(data) {
   return request({
     url: payRecordlistApi,
     method: 'post',
-    data: Object.assign({}, { isAsc: 'asc', orderByColumn: 'id' }, data)
+    data: Object.assign({}, { isAsc: 'desc', orderByColumn: 'id' }, data)
   });
 }
 
@@ -16,5 +16,14 @@ export function editBzno(data) {
     url: '/payment/pay/editBzno',
     method: 'post',
     data: data
+  });
+}
+
+// 冻结记录
+export function frreezeAmountLog(query) {
+  return request({
+    url: '/payment/frreezeAmountLog/list',
+    method: 'get',
+    params: query
   });
 }

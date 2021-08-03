@@ -45,44 +45,42 @@
         v-loading="loading"
         :data="deptList"
         row-key="id"
+        highlight-current-row
+        border
         default-expand-all
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       >
-        <el-table-column prop="orgName" label="组织名称" width="400" />
-        <el-table-column prop="orgType" label="类型" width="100">
+        <el-table-column prop="orgName" label="组织名称" />
+        <!--  <el-table-column prop="orgType" label="类型" width="100">
           <template slot-scope="scope">
             <span>{{ selectDictLabel(orgTypeOptions, scope.row.orgType) }}</span>
           </template>
-        </el-table-column>
-        <el-table-column prop="orderNum" label="排序" width="200" />
+        </el-table-column>-->
+        <el-table-column prop="orderNum" align="center" label="排序" />
         <!--  <el-table-column prop="status" label="状态" :formatter="statusFormat" width="100" />-->
-        <el-table-column label="创建时间" align="center" prop="createTime" width="200">
+        <el-table-column label="创建时间" align="center" prop="createTime">
           <template slot-scope="scope">
             <span>{{ parseTime(scope.row.createTime) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <el-table-column label="操作" align="center" fixed="left" class-name="small-padding fixed-width">
           <template slot-scope="scope">
             <el-button
               v-hasPermi="['system:dept:edit']"
               size="mini"
               type="text"
-              icon="el-icon-edit"
               @click="handleUpdate(scope.row)"
             >修改</el-button>
             <el-button
               v-hasPermi="['system:dept:add']"
               size="mini"
               type="text"
-              icon="el-icon-plus"
               @click="handleAdd(scope.row)"
             >新增</el-button>
             <el-button
-              v-if="scope.row.parentId != 0"
               v-hasPermi="['system:dept:remove']"
               size="mini"
               type="text"
-              icon="el-icon-delete"
               @click="handleDelete(scope.row)"
             >删除</el-button>
           </template>
@@ -123,7 +121,6 @@
 import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild } from '@/api/system/dept';
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
-// import UploadImage from '@/components/UploadImage/index';
 
 export default {
   name: 'Dept',
@@ -132,6 +129,17 @@ export default {
     companyCode: {
       type: String,
       default: null
+    },
+    userCode: {
+      type: String,
+      default: null
+    },
+    showShipment: {
+      type: Boolean
+    },
+    orgType: {
+      type: Number,
+      default: 2
     }
   },
   data() {
@@ -247,6 +255,15 @@ export default {
       if (this.companyCode) {
         this.queryParams.orgCode = this.companyCode;
       }
+      if (this.userCode) {
+        this.queryParams.userCode = this.userCode;
+      }
+      if (this.showShipment) {
+        this.queryParams.showShipment = this.showShipment;
+      }
+      if (this.orgType) {
+        this.queryParams.orgType = this.orgType;
+      }
       listDept(this.queryParams).then(response => {
         this.deptList = this.handleTree(response.data, 'id');
         this.loading = false;
@@ -304,6 +321,12 @@ export default {
       this.title = '添加组织';
       if (this.companyCode) {
         this.queryParams.orgCode = this.companyCode;
+      }
+      if (this.showShipment) {
+        this.queryParams.showShipment = this.showShipment;
+      }
+      if (this.orgType) {
+        this.queryParams.orgType = this.orgType;
       }
       listDept(this.queryParams).then(response => {
 	      this.deptOptions = this.handleTree(response.data, 'id');

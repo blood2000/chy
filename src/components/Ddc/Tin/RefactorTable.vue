@@ -1,7 +1,16 @@
 <template>
-  <el-table :ref="refName" v-loading="loading" :show-summary="summary" border stripe :data="data" v-bind="$attrs" @selection-change="handleSelectionChange">
-    <el-table-column v-if="!!_events['selection-change']" type="selection" width="55" align="center" fixed :selectable="selectableFn" :reserve-selection="reserveSelection" />
-    <el-table-column v-if="!isShowIndex" label="序号" align="center" type="index" width="50" />
+  <el-table
+    :ref="refName"
+    v-loading="loading"
+    :show-summary="summary"
+    :border="border"
+    :data="data"
+    v-bind="$attrs"
+    highlight-current-row
+    @selection-change="handleSelectionChange"
+  >
+    <el-table-column v-if="!!_events['selection-change']" type="selection" width="55" align="center" fixed :selectable="selectable" :reserve-selection="reserveSelection" />
+    <el-table-column v-if="!isShowIndex" label="序号" align="center" fixed="left" type="index" width="50" />
     <template v-for="(th, key) in tableColumnsConfig">
       <el-table-column
         v-if="th.isShow"
@@ -38,6 +47,8 @@
 
     // element-ui中的table可分页多选功能-记住上一页勾选数据
     <refactor-table :loading='loading' :data='list' :tableColumnsConfig='tableColumnsConfig' :row-key="(row)=> row.id" reserve-selection @selection-change="handleSelectionChange">
+
+    // 数据回填提供2中数据 cbData下标[]  cbDataByKeyword关键字段{id:[]}
 */
 export default {
   name: 'RefactorTable',
@@ -50,6 +61,10 @@ export default {
     isShowIndex: {
       type: Boolean,
       default: false
+    },
+    border: {
+      type: Boolean,
+      default: true
     },
     /**
      * list  渲染所需数据
@@ -91,11 +106,16 @@ export default {
       type: Array,
       default: null
     },
+    // 数据回填, 添加根据其中一项值一样再回填
+    cbDataByKeyword: {
+      type: Object,
+      default: () => { return {}; }
+    },
     reserveSelection: {
       type: Boolean,
       default: false
     },
-    selectableFn: {
+    selectable: {
       type: Function,
       default: () => {
         return true;
@@ -105,23 +125,63 @@ export default {
   data() {
     return {
       multipleSelection: [],
-      time: null
+      time: null,
+      getIndex: ''
     };
   },
   watch: {
     cbData: {
+      // cbData数据结构是 [0,1,2 ]
       handler(value) {
         if (!value) return;
 
-        this.m2ToggleSelection(value);
+        this.m2ToggleSelection(value.length > 0 ? value : undefined);
+      },
+      immediate: true
+    },
+    // 通过关键字回填 {id: [5151, 454646]}
+    // cbDataByKeyword: {
+    //   handler(value) {
+    //     if (JSON.stringify(value) === '{}') return;
+    //     if (!value && !this.data.length) return;
+    //     const keyname = Object.keys(value)[0];
+    //     // this.cbDataByKeywordToSelection(keyname, value[keyname]);
+    //   },
+    //   immediate: true
+    // },
+
+    data: {
+      handler(vals) {
+        if (vals && vals.length) {
+          this.$_multipleToSelection(this.cbDataByKeyword);
+        }
       },
       immediate: true
     }
+
   },
   beforeDestroy() {
     clearTimeout(this.time);
   },
   methods: {
+    // highlight({ row, rowIndex }) {
+    //   if ((this.getIndex) === rowIndex) {
+    //     return {
+    //       'background-color': '#FFEEE8'
+    //     };
+    //   }
+    // },
+    // tableRowClassName({ row, rowIndex }) {
+    //   if (rowIndex % 2 > 0 && this.getIndex !== rowIndex) {
+    //     return 'bg-row';
+    //   } else {
+    //     return '';
+    //   }
+    // },
+    // rowClick(row) {
+    //   console.log('测试');
+    //   this.getIndex = row.index;
+    // },
     handleSelectionChange(selection) {
       this.$emit('selection-change', selection);
     },
@@ -135,7 +195,35 @@ export default {
           }, 100);
         });
       } else {
-        this.$refs[this.refName].clearSelection();
+        this.$nextTick(() => {
+          this.$refs[this.refName].clearSelection();
+        });
+      }
+    },
+
+    $_multipleToSelection(cbDataByKeyword) {
+      if (JSON.stringify(cbDataByKeyword) === '{}') return;
+
+      const keyname = Object.keys(cbDataByKeyword)[0];
+      const rows = cbDataByKeyword[keyname];
+      if (rows && rows.length) {
+        const selseceds = [];
+
+        rows.forEach(e => {
+          this.data.forEach(ee => {
+            if (ee[keyname] === e) {
+              selseceds.push(ee);
+            }
+          });
+        });
+
+        this.$nextTick(() => {
+          this.time = setTimeout(() => {
+            selseceds.forEach(e => {
+              this.$refs[this.refName].toggleRowSelection(e, true);
+            });
+          }, 100);
+        });
       }
     }
   }

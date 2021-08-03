@@ -11,11 +11,13 @@
 
 
     <div id="wholecont" class="wholecont-div">
-
       <h3 id="plat_hetong_title" style="text-indent: 4em;">福建大道成物流科技有限公司无车承运平台运输电子合同</h3>
       <div class="seria" style="margin-top: 30px;">合同编号：<span id="contract_no">{{ obj.contractNo }}</span></div>
       <!-- <div class="seria">签约地：<span id="contract_no"></span></div> -->
       <div class="seria">签约时间：<span id="acreate_time">{{ obj.createTime }}</span></div>
+      <br>
+      <br>
+      <br>
       <div id="first" class="t_num1">托运方(简称甲方)：{{ obj.shipmentCompanyName }}</div>
       <div id="business_license_img_no" class="t_num1">统一社会信用代码：{{ obj.shipmentOrganizationCodeNo }}</div>
       <div id="address" class="t_num1">住所：{{ obj.shipmentArea }}</div>
@@ -43,7 +45,11 @@
 					</div>
 					<div class="clear"></div>
 				</div> -->
+      <br>
+      <br>
+      <br>
       <p class="Paragraph">根据《中华人民共和国合同法》及有关法律、法规的规定，为保证双方的合法权益，经甲乙双方协商一致，甲乙双方在自愿、平等、诚信的基础上签订本合同，以便双方共同遵守，本合同适用于福建大道成物流科技有限公司超好运网络货运平台（以下简称“超好运平台”）所有注册认证的货主会员。</p>
+      <br>
       <div class="same-div">
         <h4><b>一、	乙方同意接受甲方委托，提供货物运输服务。货物信息表如下：</b></h4>
         <table width="93%" border="1" bordercolor="#404040" cellspacing="0" cellpadding="0" style="padding: 25px">
@@ -73,31 +79,31 @@
             </tr>
             <tr>
               <td><b>计划数量</b></td>
-              <td id="weight">{{ obj.loadWeight }}
-                吨
+              <td id="weight">
+                {{ obj.stowageStatus == '0' ? fixed(obj.loadWeight) + '吨' : (obj.stowageStatus == '1'? fixed(obj.loadWeight) + '立方': floor(obj.loadWeight, 0) + '车') }}
               </td>
               <td><b>货物描述</b></td>
               <td id="goods_type">{{ obj.goodsName }}</td>
-              <td><b>货值（元）</b></td>
-              <td id="goods_total">{{ obj.goodsAmount }}</td>
+              <!-- <td><b>货值（元）</b></td>
+              <td id="goods_total">{{ obj.goodsAmount }}</td> -->
+              <td><b>运费金额（元）</b></td>
+              <td id="amount">￥{{ floor(obj.shipperCopeFee) }}</td>
             </tr>
             <tr>
-              <td><b>运费金额（元）</b></td>
-              <td id="amount">￥{{ obj.shipperCopeFee }}</td>
               <td><b>合同签订时间</b></td>
               <td id="create_time">{{ obj.createTime }}</td>
-              <td><b>货物装车截止时间</b></td>
-              <td id="last_loading_time">{{ obj.lastLoadingTime }}</td>
+              <td><b>货物装车时间</b></td>
+              <td id="last_loading_time">{{ obj.loadTime }}</td>
+              <td><b>是否开票</b></td>
+              <td>{{ '是' }}</td>
             </tr>
             <tr>
-              <td><b>是否开票</b></td>
-
-              <td>{{ obj.aaaaaaaaaaaaa || '是' }}</td>
               <td><b>备注</b></td>
-              <td colspan="4">{{ obj.shipperRemark || '这是备注信息' }}</td>
+              <td colspan="5">{{ obj.orderRemark }}</td>
             </tr>
           </tbody></table>
       </div>
+      <br>
       <div class="same-div">
         <h4><b>二、运输方式：汽车公路运输。</b></h4>
 
@@ -112,6 +118,7 @@
 
 
       </div>
+      <br>
       <div class="same-div">
         <h4><b>三、货物包装：甲方指定发货人须按照国家相关规定的标准进行包装；没有统一规定包装标准的，应根据保证货物运输安全的原则进行包装，不得在包装内私自夹带危险品和国家有关规定明令禁止托运的货物，以及与所发布货运信息不相符的货物，甲方保证所托运的货物不属于国家违禁品。</b></h4>
 
@@ -125,12 +132,14 @@
 
 
       </div>
+      <br>
       <div class="same-div">
         <h4><b>四、运输期限：乙方应当在运单约定期限内将货物安全运输到约定地点。</b></h4>
 
 
 
       </div>
+      <br>
       <div class="same-div">
         <h4><b style="color: red;">五、运费支付：甲方同意最迟不晚于发布运单之前，先向超好运平台指定的账户缴存不少于本单运费的预付运费和预付服务费。甲方在确认运单完成后，乙方委托超好运平台按照运单约定将甲方已预先缴纳的运费及服务费支付给乙方，乙方每笔运单收取甲方该笔运单运费的%作为服务费。具体的操作流程及操作规则以超好运平台规定的流程为准。</b></h4>
 
@@ -144,6 +153,7 @@
 
 
       </div>
+      <br>
       <div class="same-div">
         <h4><b>六、发票</b></h4>
 
@@ -151,11 +161,13 @@
         <p>2、乙方每月10日前与甲方对上月已完结的运单进行对账，核对无误后，乙方根据甲方的要求以运单为核算单位开具增值税专用发票。</p>
         <p>3、乙方只能按照国家规定在运单符合开具增值税专用发票条件下开具，若由于甲方原因导致运单不符合开具增值税专用发票要求的，乙方有权拒绝开具相应的发票。</p>
       </div>
+      <br>
       <div class="same-div">
         <h4><b>七、运输义务与保管责任：甲方将待运输的货物装载到运输车辆上，乙方按运单约定核对清点货物数量并接收，视为运输义务的开始、保管责任的转移。乙方将货物送至运单指定地点，收货人未对货物数量提出异议，在超好运APP上做卸货确认，视为乙方已经按照运输单证的记载和要求交付货物，交付应视为运输义务的终止、保管责任的转移。乙方不承担在装货、卸货过程中的货物运输、货物安全、场地安全等一切责任。</b></h4>
 
 
       </div>
+      <br>
       <div class="same-div">
         <h4><b>八、双方权利义务</b></h4>
         <p>1.甲方需自行在“超好运”平台上发布运单，乙方将根据甲方发布的运单信息组织司机前往运单指定的装货地。甲方应遵守"超好运"平台规则，不得在未告知“超好运”平台的前提下，以任何形式代替司机或以司机的名义进行平台操作。</p>
@@ -170,6 +182,7 @@
         <p>10.在装货、卸货、交货等过程中发生的任何货损均与乙方无关，由甲方自行承担或向责任人追责。</p>
         <p>11.甲方在超好运平台发布非公开货源或虽发布为公开货源但实际上为非公开货源，包括但不限于甲方自己或通过信息部及其他渠道推荐、指定实际承运人的，在运输过程中若因实际承运人资质存在瑕疵、车辆超载、超限、超速、车辆发生事故、货物毁损、灭失、短少等产生的任何纠纷及损失，皆由甲方负责处理井承担相应的法律责任，乙方仅提供必要的协助。</p>
       </div>
+      <br>
       <div class="same-div">
         <h4><b>十、违约责任</b></h4>
 
@@ -188,10 +201,12 @@
         <p>5.甲方托运的货物到达目的地后，甲方应当按照超好运平台操作流程与操作规则及时在超好运平台上确认或签收运单，若自实际承运人已实际卸货签到或乙方有充分理由认为运输已完成之日起24个小时内，甲方未能完成确认或签收的，应视为相应运输己完成，甲方应按本合同约定及时向乙方支付运费及服务费(如有)，乙方亦有权直接扣划相应的运费及服务费。若甲方在经乙方催告后48个小时内仍未完成确认或签收，则视为甲方逾期，每逾期一天，甲方应自实际承运人已实际卸货签到或乙方有充分理由认为运输已完成之日起按相应运单约定运费的日万分之二的标准向乙方支付违约金，逾期超过30日的，乙方有权单方解除本合同并要求甲方按照相应运单约定运费总额的20%承担相应违约责任。</p>
 
       </div>
+      <br>
       <div class="same-div">
         <h4><b>十一、通知</b></h4>
         <p>甲乙双方按照本合同记载的住所地通过EMS或顺丰快递方式邮寄发出书面通知第三日即视为送达对方，或按照双方留存的联系人手机号码发出短信通知即视为已送达对方。若联系信息发生变更，一方需及时以书面形式告知另一方。</p>
       </div>
+      <br>
       <div class="same-div">
         <h4><b>十二、其他</b></h4>
 
@@ -200,6 +215,8 @@
         <p>3.执行合同发生争议时，甲、乙双方应尽可能通过协商解决，协商解决不成的，双方同意由乙方住所地的人民法院管辖审理双方的争议或纠纷。</p>
         <p>4.本合同未尽事宜，双方可另行协商补充约定。补充合同是本合同的附件，与本合同具有同等法律效力。</p>
       </div>
+      <br>
+      <br>
       <div class="companys-box">
         <div class="company-info company1">
           <font id="jiafangspan" style="color:#FFF;font-size:10px">{{ obj.aaaaaaaaaaaaa || '' }}</font>
@@ -207,13 +224,15 @@
           <p class="row row1">法定代表人或授权代表(签名)：</p>
           <font id="jiafangspan" style="color:#FFF;font-size:10px">&nbsp;</font>
           <p class="row row2">甲方(盖章)：</p>
+          <img v-if="obj.isDzqzContract === 1" class="seal-img" :src="obj.sealPath" alt="">
         </div>
         <div class="company-info company2" style="margin-left: 5%">
           <font id="yifangspan" style="color:#FFF;font-size:10px;bottom: 50px;">{{ obj.aaaaaaaaaaaaa || '' }}</font>
-          <p id="dsecond" class="row row1">乙方： {{ obj.branchName }}</p>
+          <p id="dsecond" class="branch-name row row1">乙方： {{ obj.branchName }}</p>
           <p class="row row1">法定代表人或授权代表(签名)：</p>
           <font id="yifangspan" style="color:#FFF;font-size:10px">&nbsp;</font>
           <p class="row row2">乙方(盖章)：</p>
+          <img v-if="obj.isDzqzContract === 1" class="seal-img" src="~@/assets/images/icon/icon_seal.png" alt="">
         </div>
         <div class="clear" />
       </div>
@@ -254,4 +273,25 @@ table th, table td {
     border-right: 1px solid #000;
     font-weight: normal;
 }
+@page{
+    size:  auto;   /* auto is the initial value */
+    margin: 3mm;  /* this affects the margin in the printer settings */
+  }
+
+  html{
+    background-color: #FFFFFF;
+    margin: 0;  /* this affects the margin on the html before sending to printer */
+  }
+
+  body{
+    border: solid 1px blue ;
+    margin: 10mm 15mm 10mm 15mm; /* margin you want for the content */
+  }
+  .seal-img{
+    position: relative;
+    top: -200px;
+    left: 50px;
+    height: 200px;
+    width: 200px;
+  }
 </style>

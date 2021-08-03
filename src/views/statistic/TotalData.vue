@@ -2,14 +2,14 @@
   <div class="s-container ly-flex-pack-center">
     <div class="s-container__box">
       <div class="s-container__box__content top ly-flex-pack-center">
-        <p>货单总数(万)</p>
-        <p>运单总数(万)</p>
+        <p>货单总数</p>
+        <p>运单总数</p>
       </div>
       <div class="s-container__box__content bottom ly-flex-pack-center">
-        <p><count-to :end-val="24501" /></p>
-        <p><count-to :end-val="25151" /></p>
+        <p><count-to :end-val="dataList.shipmentCount" /></p>
+        <p><count-to :end-val="dataList.waybillCount" /></p>
       </div>
-      <Time class="s-timer" />
+      <Time class="s-timer" @getTimeType="getData" />
     </div>
   </div>
 </template>
@@ -17,10 +17,55 @@
 <script>
 import CountTo from '@/components/CountTo';
 import Time from './components/time';
+import { getShipmentWaybillCount } from '@/api/statistic/statistic';
 export default {
   components: {
     CountTo,
     Time
+  },
+  props: {
+    branchCode: {
+      type: String,
+      default: null
+    }
+  },
+  data() {
+    return {
+      dataList: {},
+      timeType: null
+    };
+  },
+  methods: {
+    getData(timeType) {
+      this.timeType = timeType;
+      this.getCount();
+    },
+    getCount() {
+      getShipmentWaybillCount(this.branchCode, this.timeType).then(response => {
+        this.dataList = response.data || {};
+        if (response.data.partitionListVo && response.data.partitionListVo.length > 0) {
+          this.$emit('getPartitionListVo', response.data.partitionListVo);
+        }
+      });
+    },
+    // 处理实时数据-货单
+    setOrderData(val) {
+      // console.log('orderNotice-total: ', val);
+      const { orderInfoNumber } = val;
+      // 货单
+      if (orderInfoNumber) {
+        this.dataList.shipmentCount += orderInfoNumber;
+      }
+    },
+    // 处理实时数据-运单
+    setWaybillData(val) {
+      // console.log('waybillNotice-total: ', val);
+      const { newNum } = val;
+      // 运单
+      if (newNum) {
+        this.dataList.waybillCount += newNum;
+      }
+    }
   }
 };
 </script>
@@ -59,8 +104,7 @@ export default {
         background: rgba(0, 45, 93, 0.4);
         >p{
           font-size: 1.6rem;
-          font-family: 'PingFang Medium';
-          font-weight: bold;
+          font-family: 'PingFang Bold';
           color: #01E3FF;
         }
       }

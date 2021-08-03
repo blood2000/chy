@@ -14,12 +14,13 @@
 
     <el-image
       v-show="chenyunma"
-      style="width: 100px; height: 100px"
+      v-viewer
       :src="url"
-      fit="cover"
+      fit="contain"
+      style="width: 100px; height: 100px"
     >
       <div slot="error" class="image-slot">
-        无货集码...
+        <i class="el-icon-picture-outline" />
       </div>
     </el-image>
 
@@ -55,7 +56,7 @@
 </template>
 
 <script>
-import { getByOrderCode } from '@/api/order/release';
+import { getByOrderCode, getCym } from '@/api/order/release';
 
 // 运单详情弹窗
 import DetailDialog from '@/views/waybill/components/detailDialog';
@@ -79,19 +80,6 @@ export default {
         pageNum: 1,
         pageSize: 10
       },
-
-      // {
-      //     waybillNo: 123, // waybillCode	运输单CODE	string
-      //     // waybillNo	运输单号	string
-      //     licenseNumber: 123,
-      //     driverName: 123,
-      //     driverPhone: 123,
-      //     fillTime: 123,
-      //     signTime: 123,
-      //     status: 123 // 运单状态：--0未接单/1已接单/2已装货/3已签收（已卸货）/4已回单（收单复核）/5已结算/6已申请（打款）/7已打款/8已申请开票/9已开票
-      //   }
-
-
       tableColumnsConfig: [
         {
           prop: 'waybillNo',
@@ -147,7 +135,7 @@ export default {
           isShow: true,
           label: '操作',
           width: 120,
-          fixed: 'right'
+          fixed: 'left'
         }
 
       ],
@@ -158,22 +146,20 @@ export default {
         { 'dictLabel': '已装货', 'dictValue': 2 },
         { 'dictLabel': '已签收', 'dictValue': 3 },
         { 'dictLabel': '已回单', 'dictValue': 4 },
-        { 'dictLabel': '已结算', 'dictValue': 5 },
+        { 'dictLabel': '已核算', 'dictValue': 5 },
         { 'dictLabel': '已申请打款', 'dictValue': 6 },
         { 'dictLabel': '已打款', 'dictValue': 7 },
         { 'dictLabel': '已申请开票', 'dictValue': 8 },
-        { 'dictLabel': '已开票', 'dictValue': 9 }
+        { 'dictLabel': '已开票', 'dictValue': 9 },
+        { 'dictLabel': '已作废', 'dictValue': 10 }
       ],
 
       // 请求用
       orderCode: '',
-
       // 展示用
       chenyunma: true,
       url: '',
-
       // 弹框
-      // 当前选中的运单id
       currentId: null,
       title: '',
       open: false,
@@ -183,10 +169,11 @@ export default {
   },
 
   created() {
-    if (this.waybillData && this.waybillData.classList.length) {
-      this.url = this.waybillData.classList[0].cargoCodeQr;
+    if (this.waybillData) {
+      // this.url = this.waybillData.classList.length ? this.waybillData.classList[0].cargoCodeQr : '';
       this.orderCode = this.waybillData.code;
       this.getList();
+      this.getCymByCode();
     }
   },
 
@@ -203,6 +190,14 @@ export default {
         this.loading = false;
       }
     },
+
+    // 获取承运码
+    async getCymByCode() {
+      const res = await getCym(this.orderCode);
+      // console.log(res);
+      this.url = res.data;
+    },
+
     // 分页
     handleInfo(row) {
       this.$refs.DetailDialog.reset();

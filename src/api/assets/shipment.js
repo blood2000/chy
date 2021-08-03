@@ -10,11 +10,27 @@ export function listShipment(data) {
   });
 }
 
+export function listShipmentAll(data) {
+  return request({
+    url: '/assets/shipment/listAll',
+    method: 'post',
+    data: Object.assign({}, { isAsc: 'desc', orderByColumn: 'create_time' }, data)
+  });
+}
 // 查询货主详细
 export function getShipment(id) {
   return request({
     url: '/assets/shipment/' + id,
     method: 'get'
+  });
+}
+
+// 查询货主详细
+export function getShipmentByCode(query) {
+  return request({
+    url: '/assets/shipment/getByCode',
+    method: 'get',
+    params: query
   });
 }
 
@@ -69,4 +85,40 @@ export function getShipmentEnterprise(companyCode) {
     method: 'get'
   });
 }
+
+// 票务规则
+export function getWaybillStatus(data) {
+  return request({
+    url: '/transportation/invoiceApply/getWaybillStatus',
+    method: 'post',
+    data: data
+  });
+}
+
+// 获取运营团队
+export function getMarket(data) {
+  return request({
+    url: '/assets/market/list',
+    method: 'post',
+    data: data
+  });
+}
+
+export function getOperateOrg(data) {
+  return request({
+    url: '/system/dept/operate_treeselect',
+    method: 'post',
+    data: data
+  });
+}
+
+// 获取业务员
+export function getOperateUser(data) {
+  return request({
+    url: '/system/user/listByOrg',
+    method: 'post',
+    data: data
+  });
+}
+
 

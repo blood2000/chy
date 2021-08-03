@@ -133,18 +133,23 @@
 .list-group {
 	padding-left: 0px;
 	list-style: none;
+	margin-top: 20px;
 }
 
 .list-group-item {
-	border-bottom: 1px solid #e7eaec;
-	border-top: 1px solid #e7eaec;
+	border-bottom: 1px solid #F3F3F3;
+	border-top: 1px solid #F3F3F3;
 	margin-bottom: -1px;
-	padding: 11px 0px;
-	font-size: 13px;
+	padding: 13px 0px;
+	font-size: 14px;
+	color: #909398;
 }
 
 .pull-right {
 	float: right !important;
+	font-family: PingFang SC;
+	font-weight: bold;
+	color: #20273A;
 }
 
 .el-card__header {
@@ -218,8 +223,8 @@
 }
 
 .img-lg {
-	width: 120px;
-	height: 120px;
+	width: 72px;
+	height: 72px;
 }
 
 .avatar-upload-preview {
@@ -253,8 +258,8 @@
 
 // 滚动条样式
 ::-webkit-scrollbar {
-	width: 6px;     /*高宽分别对应横竖滚动条的尺寸*/
-	height: 6px;
+	width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
+	height: 10px;
 }
 ::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
 	border-radius: 6px;
@@ -285,7 +290,7 @@
 .el-tree-scroll-container{
   width: 100%;
   /*设置纵向滚动条、横向滚动条要配合下面的.el-tree-node的样式才能实现*/
-  overflow: scroll;
+  overflow: auto;
   >.el-tree{
     >.el-tree-node{
       /*设置横向滚动条*/

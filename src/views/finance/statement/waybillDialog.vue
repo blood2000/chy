@@ -1,19 +1,51 @@
 <template>
   <!-- 运单明细对话框 -->
   <el-dialog :title="title" :visible="visible" width="1200px" append-to-body :close-on-click-modal="false" @close="cancel">
-    <el-table v-loading="loading" :data="waybilllist" border stripe>
-      <el-table-column type="index" label="序号" width="50" />
+    <el-table v-loading="loading" highlight-current-row :data="waybilllist" max-height="650" border>
+      <el-table-column type="index" label="序号" fixed="left" align="center" width="50" />
       <el-table-column width="170" label="运输单号" align="center" prop="waybillNo" />
-      <el-table-column width="120" label="商品信息" align="center" prop="goodsName" />
+      <el-table-column width="120" label="货物大类" align="center" prop="goodsBigTypeName" />
       <el-table-column width="180" label="装货地址" align="center" show-overflow-tooltip prop="loadFormattedAddress" />
       <el-table-column width="180" label="卸货地址" align="center" show-overflow-tooltip prop="unloadFormattedAddress" />
-      <el-table-column width="100" label="装货重量" align="center" prop="loadWeight" />
-      <el-table-column width="100" label="卸货重量" align="center" prop="unloadWeight" />
-      <el-table-column width="120" label="货物损耗（kg）" align="center" prop="wastage" />
-      <el-table-column width="100" label="实收运费" align="center" prop="deliveryFeePractical" />
-      <el-table-column width="100" label="纳税金额" align="center" prop="taxPayment" />
-      <el-table-column width="100" label="服务费" align="center" prop="serviceFee" />
-      <el-table-column width="100" label="服务费税" align="center" prop="serviceTaxFee" />
+      <el-table-column width="100" label="装货数量" align="center" prop="loadWeight">
+        <template slot-scope="scope">
+          <span v-if="scope.row.stowageStatus === '1'">{{ scope.row.loadWeight || '0.000' }} 方</span>
+          <span v-if="scope.row.stowageStatus === '2'">{{ Math.floor(scope.row.loadWeight) || '0' }} 车</span>
+          <span v-if="scope.row.stowageStatus === '0' || !scope.row.stowageStatus">{{ scope.row.loadWeight || '0.000' }} 吨</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="100" label="卸货数量" align="center" prop="unloadWeight">
+        <template slot-scope="scope">
+          <span v-if="scope.row.stowageStatus === '1'">{{ scope.row.unloadWeight || '0.000' }} 方</span>
+          <span v-if="scope.row.stowageStatus === '2'">{{ Math.floor(scope.row.unloadWeight) || '0' }} 车</span>
+          <span v-if="scope.row.stowageStatus === '0' || !scope.row.stowageStatus">{{ scope.row.unloadWeight || '0.000' }} 吨</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="100" label="司机实收运费" align="center" prop="deliveryCashFee">
+        <template #default="scope">
+          <span>{{ floor(scope.row.deliveryCashFee) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="100" label="货主实付运费" align="center" prop="shipperRealPay">
+        <template #default="scope">
+          <span>{{ floor(scope.row.shipperRealPay) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="100" label="纳税金额" align="center" prop="taxPayment">
+        <template #default="scope">
+          <span>{{ floor(scope.row.taxPayment) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="100" label="服务费" align="center" prop="serviceFee">
+        <template #default="scope">
+          <span>{{ floor(scope.row.serviceFee) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="100" label="服务费税" align="center" prop="serviceTaxFee">
+        <template #default="scope">
+          <span>{{ floor(scope.row.serviceTaxFee) }}</span>
+        </template>
+      </el-table-column>
     </el-table>
   </el-dialog>
 </template>

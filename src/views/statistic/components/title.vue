@@ -1,9 +1,10 @@
 <template>
   <div class="title ly-flex">
+    <span v-if="showTime" class="time">{{ timeText }}</span>
     <div class="before">
       <img :src="require('@/assets/images/statistic/title_icon_'+icon+'.gif')">
     </div>
-    <div class="text ly-flex-1">
+    <div class="text">
       <slot />
     </div>
     <div class="top_line" />
@@ -22,6 +23,14 @@ export default {
     icon: {
       type: String,
       default: '1'
+    },
+    showTime: {
+      type: Boolean,
+      default: false
+    },
+    timeText: {
+      type: String,
+      default: ''
     }
   }
 };
@@ -32,6 +41,18 @@ export default {
   height: 1.6rem;
   margin-bottom: 1rem;
   position: relative;
+  >.time{
+    display: block;
+    position: absolute;
+    right: -0.15rem;
+    top: 0.65rem;
+    line-height: 0.8rem;
+    font-size: 0.5rem;
+    font-family: PingFang Regular;
+    font-weight: 300;
+    color: #96CFD9;
+    transform: scale(0.9);
+  }
   >.before{
     width: 1.6rem;
     height: 1.6rem;
@@ -57,7 +78,7 @@ export default {
   &::before{
     content: '';
     width: 1.2rem;
-    height: 1px;
+    height: 0.05rem;
     position: absolute;
     bottom: 0;
     right: 0;
@@ -65,7 +86,7 @@ export default {
   }
   &::after{
     content: '';
-    height: 1px;
+    height: 0.05rem;
     position: absolute;
     bottom: 0;
     left: 0;

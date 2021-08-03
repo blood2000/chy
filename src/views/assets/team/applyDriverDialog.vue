@@ -8,9 +8,9 @@
     :close-on-click-modal="false"
     @close="cancel"
   >
-    <el-table v-loading="loading" :data="infoList" border stripe @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="infoList" highlight-current-row border @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" fixed="left" />
-      <el-table-column label="序号" align="center" type="index" min-width="5%" />
+      <el-table-column label="序号" align="center" fixed="left" type="index" min-width="5%" />
       <el-table-column label="司机类别" align="center" prop="driverType">
         <template slot-scope="scope">
           <span>{{ selectDictLabel(driverTypeOptions, scope.row.driverType) }}</span>
@@ -19,8 +19,8 @@
       <el-table-column label="名字" align="center" prop="name" />
       <el-table-column label="审核状态" align="center" prop="authStatus" width="120">
         <template slot-scope="scope">
-          <i v-show="scope.row.authStatus === 0" class="el-icon-warning g-color-light-gray mr5" />
-          <i v-show="scope.row.authStatus === 1" class="g-icon-deal mr5" />
+          <i v-show="scope.row.authStatus === 0" class="g-icon-none mr5" />
+          <i v-show="scope.row.authStatus === 1" class="g-icon-deal-blue mr5" />
           <i v-show="scope.row.authStatus === 2" class="el-icon-error g-color-error mr5" />
           <i v-show="scope.row.authStatus === 3" class="el-icon-success g-color-success mr5" />
           <span>{{ selectDictLabel(authStatusOptions, scope.row.authStatus) }}</span>
@@ -112,8 +112,8 @@ export default {
       multiple: true,
       // 司机类别字典
       driverTypeOptions: [
-        { dictLabel: '独立司机', dictValue: 1 },
-        { dictLabel: '聘用司机', dictValue: 2 }
+        { dictLabel: '零散司机', dictValue: 1 },
+        { dictLabel: '雇佣司机', dictValue: 2 }
       ],
       // 是否冻结字典
       isFreezoneOptions: [

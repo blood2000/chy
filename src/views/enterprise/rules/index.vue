@@ -4,7 +4,7 @@
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
         <el-form-item label="规则名称" prop="name">
           <el-input
-            v-model="queryParams.name"
+            v-model.trim="queryParams.name"
             placeholder="请输入规则名称"
             clearable
             size="small"
@@ -31,14 +31,26 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <el-table v-loading="loading" :data="rulesList" stripe border @selection-change="handleSelectionChange">
+      <el-table v-loading="loading" :data="rulesList" highlight-current-row border @selection-change="handleSelectionChange">
         <!-- <el-table-column type="selection" width="55" align="center" fixed="left" /> -->
+        <el-table-column label="是否默认规则" align="center" prop="isDefault">
+          <template slot-scope="scope">
+            <i v-if="scope.row.isDefault === 'Y'" class="el-icon-success g-color-blue" />
+            <i v-else class="el-icon-error g-color-gray" />
+          </template>
+        </el-table-column>
         <el-table-column label="规则名称" align="center" prop="name" />
         <el-table-column label="计算公式" align="center" prop="ruleDictValue" :formatter="ruleTypeFormat" min-width="150" />
         <el-table-column label="扣费项目" align="center" prop="deduction" min-width="150" />
         <el-table-column label="补贴项目" align="center" prop="subsidies" min-width="150" />
-        <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
+        <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="left">
           <template slot-scope="scope">
+            <el-button
+              v-if="scope.row.isDefault !='Y' && scope.row.platformType != 1"
+              size="mini"
+              type="text"
+              @click="handleUpdateIsDefault(scope.row)"
+            >默认规则设置</el-button>
             <el-button
               v-if="!isAdmin && scope.row.platformType === 1"
               size="mini"
@@ -79,7 +91,7 @@
 </template>
 
 <script>
-import { listRules, getRules, delRules } from '@/api/enterprise/rules';
+import { listRules, getRules, delRules, updateRulesIsDefault } from '@/api/enterprise/rules';
 import RulesDialog from './rulesDialog.vue';
 import { getUserInfo } from '@/utils/auth';
 
@@ -124,8 +136,24 @@ export default {
         pageNum: 1,
         pageSize: 10,
         name: undefined
-      }
+      },
+      statusOptions: [
+        { dictLabel: '是', dictValue: 'Y' },
+        { dictLabel: '否', dictValue: 'N' }
+      ]
     };
+  },
+  watch: {
+    '$route.query.rules': {
+      handler(value) {
+        if (value) {
+          this.$nextTick(() => {
+            this.handleAdd();
+          });
+        }
+      },
+      immediate: true
+    }
   },
   created() {
     this.getAllDicList();
@@ -186,6 +214,19 @@ export default {
         this.open = true;
         this.title = row.platformType !== 1 ? '修改' : '详情';
         this.$refs.RulesDialog.setForm(response.data);
+      });
+    },
+    // 设置默认规则
+    handleUpdateIsDefault(row) {
+      this.$confirm('是否确认设置名称为"' + row.name + '"的规则为默认规则', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return updateRulesIsDefault({ isDefault: 'Y', shipperCode: row.shipperCode, code: row.code });
+      }).then(() => {
+        this.getList();
+        this.msgSuccess('设置成功');
       });
     },
     /** 删除按钮操作 */

@@ -67,4 +67,10 @@
   &.i-adjust .el-dialog .el-dialog__header{
     background: url('~@/assets/images/dialog/before_adjust.png') no-repeat 20px 15px;
   }
+  // 核算
+  &.i-receipt .el-dialog .el-dialog__header{
+    background: url('~@/assets/images/dialog/chylog.png') no-repeat 20px 15px;
+    background-size: 128px 28px;
+    height: 62px;
+  }
 }

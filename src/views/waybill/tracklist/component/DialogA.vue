@@ -13,6 +13,15 @@
           @change="loadTimeChoose"
         />
       </el-form-item>
+      <el-form-item :label="weightLabel" prop="loadWeight">
+        <el-input-number v-model="form.loadWeight" placeholder="请输入装货量" :precision="3" controls-position="right" :min="0" style="width:90%;" />
+      </el-form-item>
+      <el-form-item label="装货单据" prop="attachmentCode">
+        <uploadImage v-model="form.attachmentCode" :limit="9" :fresh="fresh" />
+      </el-form-item>
+      <el-form-item label="装货备注" prop="remark">
+        <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入装货备注信息" style="width:90%;" />
+      </el-form-item>
       <!-- <el-form-item label="货物" prop="goodsCode">
         <el-select
           v-model="form.goodsCode"
@@ -32,9 +41,6 @@
           />
         </el-select>
       </el-form-item> -->
-      <el-form-item :label="weightLabel" prop="loadWeight">
-        <el-input-number v-model="form.loadWeight" placeholder="请输入装货量" controls-position="right" :min="0" style="width:90%;" />
-      </el-form-item>
       <!-- <el-form-item label="装货地址" prop="loadAddressCode">
         <el-select
           v-model="form.loadAddressCode"
@@ -91,12 +97,6 @@
           />
         </el-select>
       </el-form-item> -->
-      <el-form-item label="装货单据" prop="attachmentCode">
-        <uploadImage v-model="form.attachmentCode" />
-      </el-form-item>
-      <el-form-item label="装货备注" prop="remark">
-        <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入装货备注信息" style="width:90%;" />
-      </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" @click="submitForm">立即提交</el-button>
@@ -106,8 +106,8 @@
 </template>
 
 <script>
-import { load, getAddress, getInfoDetail, loadCredentials, getGoods } from '@/api/waybill/tracklist';
-import UploadImage from '@/components/UploadImage/index';
+import { load, getAddress, getLoadInfoDetail, loadCredentials, getGoods } from '@/api/waybill/tracklist';
+import UploadImage from '@/components/UploadImage/moreImg';
 
 export default {
   name: 'DialogA',
@@ -120,7 +120,10 @@ export default {
       default: ''
     },
     open: Boolean,
-    disable: Boolean
+    disable: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
@@ -145,7 +148,7 @@ export default {
           { required: true, message: '装货时间不能为空', trigger: 'blur' }
         ],
         loadWeight: [
-          { required: true, message: '装货重量不能为空', trigger: 'blur' }
+          { required: true, message: '装货数量不能为空', trigger: 'blur' }
         ],
         attachmentCode: [
           { required: true, message: '装货单据不能为空', trigger: 'blur' }
@@ -169,6 +172,7 @@ export default {
       time: '',
       // 商品code
       goodsCode: '',
+      // 加载多图
       fresh: false,
       // 装货数量标签
       weightLabel: '',
@@ -217,7 +221,7 @@ export default {
     // 获取装货详情
     getDetail() {
       this.reset();
-      getInfoDetail(this.waybill.waybillNo, 1).then(response => {
+      getLoadInfoDetail(this.waybill.waybillNo, 1).then(response => {
         if (response.data.length) {
           console.log(response);
           const info = response.data[0];
@@ -230,7 +234,7 @@ export default {
           // this.form.loadAddressCode = info.waybillAddres.loadOrderAddressCode;
           // this.form.unloadAddressCode = info.waybillAddres.unloadOrderAddressCode;
           this.form.attachmentCode = info.attachmentCode;
-          this.fresh = true;
+          this.fresh = true; // 加载多图
         // this.form.vehicleCode = info.vehicleCode;
         } else {
           this.form.loadTime = this.waybill.fillTime;
@@ -300,7 +304,7 @@ export default {
               if (this.form.loadWeight <= 0) {
                 this.msgWarning('装货重量或立方数必须大于0！');
               } else if (this.form.loadWeight > 100) {
-                this.msgWarning('系统检测到您的装货数量吨数或立方数过大，请确认后重新仔细填写!');
+                this.msgWarning('系统检测到您的装货吨数或立方数过大，请确认后重新仔细填写!');
               } else if (this.form.loadWeight <= 100 && this.form.loadWeight > this.goodsInfo.remainingWeight) {
                 this.msgWarning('系统检测到您的装货数量吨数或立方数大于货源剩余数量，请确认后重新仔细填写!');
               } else {

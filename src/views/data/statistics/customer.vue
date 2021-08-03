@@ -1,10 +1,15 @@
 <template>
   <div>
     <div v-show="showSearch" class="app-container app-container--search">
-      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
+      <el-form
+        ref="queryForm"
+        :model="queryParams"
+        :inline="true"
+        label-width="90px"
+      >
         <el-form-item label="客户名称" prop="companyName">
           <el-input
-            v-model="queryParams.companyName"
+            v-model.trim="queryParams.companyName"
             placeholder="请输入客户名称"
             clearable
             size="small"
@@ -14,7 +19,7 @@
         </el-form-item>
         <el-form-item label="手机号码" prop="shipmentPhone">
           <el-input
-            v-model="queryParams.shipmentPhone"
+            v-model.trim="queryParams.shipmentPhone"
             placeholder="请输入手机号码"
             clearable
             size="small"
@@ -26,6 +31,8 @@
           <el-date-picker
             v-model="queryTime"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -34,8 +41,19 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-          <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+          <el-button
+            type="primary"
+            icon="el-icon-search"
+            size="mini"
+            @click="handleQuery"
+          >搜索</el-button>
+          <el-button
+            type="primary"
+            plain
+            icon="el-icon-refresh"
+            size="mini"
+            @click="resetQuery"
+          >重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -43,20 +61,27 @@
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
           <el-button
-            v-hasPermi="['assets:vehicle:edit']"
+            v-hasPermi="['data:customer:export']"
             type="primary"
-            icon="el-icon-upload2"
+            icon="el-icon-download"
             size="mini"
+            :loading="loadingExport"
             @click="handleExport"
           >导出</el-button>
         </el-col>
-        <el-col :span="1.5" style="float: right;">
+        <el-col :span="1.5" style="float: right">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <RefactorTable :loading="loading" :summary="summary" :data="customerList" :table-columns-config="tableColumnsConfig" :summary-method="getSummaries"><!-- @selection-change="handleSelectionChange" -->
+      <RefactorTable
+        :loading="loading"
+        :summary="summary"
+        :data="customerList"
+        :table-columns-config="tableColumnsConfig"
+        :summary-method="getSummaries"
+      ><!-- @selection-change="handleSelectionChange" -->
         <!-- <template #driverType="{row}">
           <span>{{ selectDictLabel(driverTypeOptions, row.driverType) }}</span>
         </template> -->
@@ -66,27 +91,31 @@
       </RefactorTable>
 
       <pagination
-        v-show="total>0"
+        v-show="total > 0"
         :total="total"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
-        @pagination="getList"
+        @pagination="getList(1)"
       />
-
     </div>
   </div>
 </template>
 
 <script>
-import { listCustomerApi, listCustomer, countCustomer } from '@/api/data/statistics';
+import {
+  listCustomerApi,
+  listCustomer,
+  countCustomer
+} from '@/api/data/statistics';
 // import tableColumnsConfig from './config';
+import { pickerOptions } from '@/utils/dateRange';
 
 export default {
   name: 'Customer',
-  components: {
-  },
+  components: {},
   data() {
     return {
+      pickerOptions,
       tableColumnsConfig: [],
       api: listCustomerApi,
       // 遮罩层
@@ -111,11 +140,12 @@ export default {
         haveCondition: false
       },
       // 合计
-      summary: true
+      summary: true,
+      loadingExport: false
     };
   },
   created() {
-    this.tableHeaderConfig(this.tableColumnsConfig, listCustomerApi, { });
+    this.tableHeaderConfig(this.tableColumnsConfig, listCustomerApi, {});
     this.getList();
   },
   methods: {
@@ -131,68 +161,71 @@ export default {
           return;
         }
         switch (column.property) {
-          case 'accConfirmedServiceFee':
-            sums[index] = this.customerCount.accConfirmedServiceFeeCount;
+          case 'paidAmount':
+            sums[index] = this.customerCount.paidAmountCount;
+            break;
+          case 'drawMoney':
+            sums[index] = this.customerCount.drawMoneyCount;
             break;
           case 'closingBalance':
-            sums[index] = this.customerCount.accountBalanceCount;
-            break;
-          case 'arrearsAmount':
-            sums[index] = this.customerCount.arrearsAmountCount;
-            break;
-          case 'confirmFreight':
-            sums[index] = this.customerCount.confirmFreightCount;
-            break;
-          case 'conformService':
-            sums[index] = this.customerCount.conformServiceCount;
-            break;
-          case 'cumConfirmedFreight':
-            sums[index] = this.customerCount.cumConfirmedFreightCount;
-            break;
-          case 'cumEstimatedFreight':
-            sums[index] = this.customerCount.cumEstimatedFreightCount;
-            break;
-          case 'cumEstimatedService':
-            sums[index] = this.customerCount.cumEstimatedServiceCount;
-            break;
-          case 'dailyFreight':
-            sums[index] = this.customerCount.dailyFreightCount;
-            break;
-          case 'dayFreightInvoiceAmount':
-            sums[index] = this.customerCount.dayFreightInvoiceAmountCount;
-            break;
-          case 'deliveryCount':
-            sums[index] = this.customerCount.deliveryCountCount;
+            sums[index] = this.customerCount.closingBalanceCount;
             break;
           case 'deliveryCountDay':
             sums[index] = this.customerCount.deliveryCountDayCount;
             break;
-          case 'driverCount':
-            sums[index] = this.customerCount.driverCountCount;
-            break;
-          case 'freightAmount':
-            sums[index] = this.customerCount.freightAmountCount;
-            break;
-          case 'freightInvoiceAmount':
-            sums[index] = this.customerCount.freightInvoiceAmountCount;
-            break;
-          case 'paidAmount':
-            sums[index] = this.customerCount.paidAmountCount;
-            break;
           case 'prepaidFreight':
             sums[index] = this.customerCount.prepaidFreightCount;
+            break;
+          case 'confirmFreight':
+            sums[index] = this.customerCount.confirmFreightCount;
+            break;
+          case 'dailyFreight':
+            sums[index] = this.customerCount.dailyFreightCount;
             break;
           case 'prepaidService':
             sums[index] = this.customerCount.prepaidServiceCount;
             break;
+          case 'conformService':
+            sums[index] = this.customerCount.conformServiceCount;
+            break;
+          case 'dailyServiceCharge':
+            sums[index] = this.customerCount.dailyServiceChargeCount;
+            break;
+          case 'deliveryCount':
+            sums[index] = this.customerCount.deliveryCountCount;
+            break;
+          case 'cumEstimatedFreight':
+            sums[index] = this.customerCount.cumEstimatedFreightCount;
+            break;
+          case 'cumConfirmedFreight':
+            sums[index] = this.customerCount.cumConfirmedFreightCount;
+            break;
+          case 'freightAmount':
+            sums[index] = this.customerCount.freightAmountCount;
+            break;
+          case 'cumEstimatedService':
+            sums[index] = this.customerCount.cumEstimatedServiceCount;
+            break;
+          case 'accConfirmedServiceFee':
+            sums[index] = this.customerCount.accConfirmedServiceFeeCount;
+            break;
           case 'serviceAmount':
             sums[index] = this.customerCount.serviceAmountCount;
             break;
-          case 'totalRefund':
-            sums[index] = this.customerCount.totalRefundCount;
+          case 'arrearsAmount':
+            sums[index] = this.customerCount.arrearsAmountCount;
+            break;
+          case 'monthFreightInvoiceAmount':
+            sums[index] = this.customerCount.monthFreightInvoiceAmountCount;
+            break;
+          case 'freightInvoiceAmount':
+            sums[index] = this.customerCount.freightInvoiceAmountCount;
             break;
           case 'waybillCount':
             sums[index] = this.customerCount.waybillCountCount;
+            break;
+          case 'driverCount':
+            sums[index] = this.customerCount.driverCountCount;
             break;
           default:
             break;
@@ -212,12 +245,12 @@ export default {
       }
     },
     /** 查询客服统计报表列表 */
-    getList() {
+    getList(e) {
       this.loading = true;
-      listCustomer(this.queryParams).then(response => {
+      listCustomer(this.queryParams).then((response) => {
         console.log(response);
         this.customerList = response.data.list;
-        this.total = response.data.list.length;
+        this.total = response.data.total;
         this.loading = false;
       });
       // 查询列表合计
@@ -226,10 +259,21 @@ export default {
       } else {
         this.queryParams.haveCondition = false;
       }
-      countCustomer(this.queryParams).then(response => {
-        console.log(response);
-        this.customerCount = response.data;
-      });
+      if (e !== 1) {
+        countCustomer(this.queryParams).then((response) => {
+          console.log(response);
+          this.customerCount = response.data;
+          // let tempStr = '';
+          // Object.keys(this.customerCount).forEach((i) => {
+          //   const s = i.substr(0, i.length - 5);
+          //   const temp = `case '${s}':
+          //     sums[index] = this.customerCount.${i};
+          //   break;`;
+          //   tempStr += temp;
+          // });
+          // console.log(tempStr);
+        });
+      }
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -246,7 +290,14 @@ export default {
     },
     // 导出
     handleExport() {
-      this.download('/transportation/invoice/listWayBill', { ...this.queryParams }, `askfor_${new Date().getTime()}.xlsx`);
+      this.loadingExport = true;
+      this.download(
+        '/transportation/customerCountSearch/customerShipmentCountExport',
+        { ...this.queryParams },
+        `客服统计报表`
+      ).then(res => {
+        this.loadingExport = false;
+      });
     }
   }
 };

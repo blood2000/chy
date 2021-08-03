@@ -63,6 +63,8 @@
             style="width: 240px"
             value-format="yyyy-MM-dd"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -107,7 +109,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <el-table v-loading="loading" :data="list" @selection-change="handleSelectionChange">
+      <el-table v-loading="loading" highlight-current-row border :data="list" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="日志编号" align="center" prop="operId" />
         <el-table-column label="系统模块" align="center" prop="title" />
@@ -121,13 +123,12 @@
             <span>{{ parseTime(scope.row.operTime) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <el-table-column label="操作" align="center" fixed="left" class-name="small-padding fixed-width">
           <template slot-scope="scope">
             <el-button
               v-hasPermi="['system:operlog:query']"
               size="mini"
               type="text"
-              icon="el-icon-view"
               @click="handleView(scope.row,scope.index)"
             >详细</el-button>
           </template>
@@ -189,11 +190,12 @@
 
 <script>
 import { list, delOperlog, cleanOperlog } from '@/api/system/operlog';
-
+import { pickerOptions } from '@/utils/dateRange';
 export default {
   name: 'Operlog',
   data() {
     return {
+      pickerOptions,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -305,9 +307,15 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('system/operlog/export', {
-        ...this.queryParams
-      }, `operlog_${new Date().getTime()}.xlsx`);
+      if (this.dateRange[0] && this.dateRange[1]) {
+        this.queryParams.beginTime = this.dateRange[0];
+        this.queryParams.endTime = this.dateRange[1];
+      } else {
+        this.queryParams.beginTime = undefined;
+        this.queryParams.endTime = undefined;
+      }
+      this.queryParams.params = undefined;
+      this.download('system/operlog/export', this.queryParams, `操作日志信息`);
     }
   }
 };

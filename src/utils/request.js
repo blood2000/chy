@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { Notification, MessageBox, Message } from 'element-ui';
+import { MessageBox, Message } from 'element-ui';
 import store from '@/store';
 import { getToken } from '@/utils/auth';
 import errorCode from '@/utils/errorCode';
-import { tansParams } from '@/utils/ddc';
+import { tansParams, parseTime } from '@/utils/ddc';
 import {
   authorPre,
   produceCode,
@@ -22,7 +22,7 @@ const service = axios.create({
   // axios中请求配置有baseURL选项，表示请求URL公共部分
   baseURL: process.env.VUE_APP_BASE_API,
   // 超时
-  timeout: 15000
+  timeout: 30000
 });
 
 // const contentType='application/json';
@@ -101,13 +101,20 @@ service.interceptors.response.use(res => {
   } else if (code === 500) {
     Message({
       message: msg,
-      type: 'error',
+      type: 'info',
       showClose: true
     });
     return Promise.reject(new Error(msg));
+  } else if (code === 404) {
+    // 404时不弹出报错提示
+    return Promise.reject(new Error(msg));
+  } else if (code === 501) {
+    return res.data;
   } else if (code !== 200) {
-    Notification.error({
-      title: msg
+    Message({
+      message: msg,
+      type: 'info',
+      showClose: true
     });
     return Promise.reject('error');
   } else {
@@ -116,26 +123,33 @@ service.interceptors.response.use(res => {
 },
 error => {
   console.log('err' + error);
-  let { message } = error;
+  const { message } = error;
   if (message === 'Network Error') {
-    message = '后端接口连接异常';
+    // message = '后端接口连接异常';
   } else if (message.includes('timeout')) {
-    message = '系统接口请求超时';
+    // message = '系统接口请求超时';
   } else if (message.includes('Request failed with status code')) {
-    message = '系统接口' + message.substr(message.length - 3) + '异常';
+    // message = '系统接口' + message.substr(message.length - 3) + '异常';
+  } else {
+    Message({
+      message: message,
+      type: 'error',
+      duration: 5 * 1000,
+      showClose: true
+    });
   }
-  Message({
-    message: message,
-    type: 'error',
-    duration: 5 * 1000,
-    showClose: true
-  });
   return Promise.reject(error);
-}
-);
+});
 
 // 通用下载方法
-export function download(url, params, filename, headers) {
+export function download(url, params, filename, headers, type = '.xlsx') {
+  filename = filename + '_' + parseTime(new Date(), '{y}{m}{d}{h}{i}') + type;
+  Message({
+    message: '导出中，请稍候',
+    type: 'info',
+    duration: 3 * 1000,
+    showClose: true
+  });
   return service.post(url, params, {
     transformRequest: [(params) => {
       return tansParams(params);
@@ -143,23 +157,52 @@ export function download(url, params, filename, headers) {
     headers: {
       'Content-Type': headers || 'application/x-www-form-urlencoded'
     },
-    responseType: 'blob'
+    responseType: 'blob',
+    timeout: 10 * 60 * 1000 // 有些表导出数据量太大, 超时时间设为10分钟
   }).then((data) => {
-    const content = data;
-    const blob = new Blob([content]);
-    if ('download' in document.createElement('a')) {
-      const elink = document.createElement('a');
-      elink.download = filename;
-      elink.style.display = 'none';
-      elink.href = URL.createObjectURL(blob);
-      document.body.appendChild(elink);
-      elink.click();
-      URL.revokeObjectURL(elink.href);
-      document.body.removeChild(elink);
-    } else {
-      navigator.msSaveBlob(blob, filename);
-    }
+    var reader = new FileReader();
+    reader.onload = function(event) {
+      const result = reader.result.length < 100 ? JSON.parse(reader.result) : '';// 内容就在这里
+      if (Object.prototype.toString.call(result) === '[object Object]' && (result.code === 400 || result.code === 404)) {
+        // 400
+        Message({
+          message: result.msg,
+          type: 'error',
+          duration: 3 * 1000,
+          showClose: true
+        });
+      } else {
+        // success
+        Message({
+          message: '导出成功',
+          type: 'success',
+          duration: 3 * 1000,
+          showClose: true
+        });
+        const content = data;
+        const blob = new Blob([content]);
+        if ('download' in document.createElement('a')) {
+          const elink = document.createElement('a');
+          elink.download = filename;
+          elink.style.display = 'none';
+          elink.href = URL.createObjectURL(blob);
+          document.body.appendChild(elink);
+          elink.click();
+          URL.revokeObjectURL(elink.href);
+          document.body.removeChild(elink);
+        } else {
+          navigator.msSaveBlob(blob, filename);
+        }
+      }
+    };
+    reader.readAsText(data);
   }).catch((r) => {
+    Message({
+      message: '导出失败',
+      type: 'error',
+      duration: 3 * 1000,
+      showClose: true
+    });
     console.error(r);
   });
 }

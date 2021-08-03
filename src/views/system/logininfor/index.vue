@@ -46,6 +46,8 @@
             style="width: 240px"
             value-format="yyyy-MM-dd"
             type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -87,7 +89,7 @@
             @click="handleExport"
           >导出</el-button>
         </el-col>
-        <el-col :span="1.5">
+        <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" />
         </el-col>
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
@@ -102,7 +104,7 @@
         </template>
       </RefactorTable>
 
-      <!-- <el-table v-loading="loading" :data="list" @selection-change="handleSelectionChange">
+      <!-- <el-table v-loading="loading" :data="list" border @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="访问编号" align="center" prop="infoId" />
       <el-table-column label="用户名称" align="center" prop="userName" />
@@ -130,12 +132,13 @@
 
 <script>
 import { list, delLogininfor, cleanLogininfor } from '@/api/system/logininfor';
-
+import { pickerOptions } from '@/utils/dateRange';
 export default {
   name: 'Logininfor',
 
   data() {
     return {
+      pickerOptions,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -271,9 +274,15 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('system/logininfor/export', {
-        ...this.queryParams
-      }, `logininfor_${new Date().getTime()}.xlsx`);
+      if (this.dateRange[0] && this.dateRange[1]) {
+        this.queryParams.beginTime = this.dateRange[0];
+        this.queryParams.endTime = this.dateRange[1];
+      } else {
+        this.queryParams.beginTime = undefined;
+        this.queryParams.endTime = undefined;
+      }
+      this.queryParams.params = undefined;
+      this.download('system/logininfor/export', this.queryParams, `登录日志信息`);
     }
 
   }

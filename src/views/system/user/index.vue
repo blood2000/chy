@@ -21,9 +21,17 @@
               :props="defaultProps"
               :expand-on-click-node="false"
               :filter-node-method="filterNode"
+              :indent="0"
               default-expand-all
               @node-click="handleNodeClick"
-            />
+            >
+              <span slot-scope="{ node, data }">
+                <span class="node-label">
+                  <i class="tree-node-icon" :class="data.icon" />
+                  {{ node.label }}
+                </span>
+              </span>
+            </el-tree>
           </div>
         </div>
       </el-col>
@@ -75,6 +83,8 @@
                 style="width: 240px"
                 value-format="yyyy-MM-dd"
                 type="daterange"
+                unlink-panels
+                :picker-options="pickerOptions"
                 range-separator="-"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
@@ -138,7 +148,7 @@
             <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
           </el-row>
 
-          <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
+          <el-table v-loading="loading" highlight-current-row border :data="userList" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="50" align="center" />
             <!-- <el-table-column label="用户编号" align="center" prop="userId" />-->
             <el-table-column label="用户名称" align="center" prop="userName" :show-overflow-tooltip="true" />
@@ -164,6 +174,7 @@
             <el-table-column
               label="操作"
               align="center"
+              fixed="left"
               width="160"
               class-name="small-padding fixed-width"
             >
@@ -172,7 +183,6 @@
                   v-hasPermi="['system:user:edit']"
                   size="mini"
                   type="text"
-                  icon="el-icon-edit"
                   @click="handleUpdate(scope.row)"
                 >修改</el-button>
                 <el-button
@@ -180,14 +190,12 @@
                   v-hasPermi="['system:user:remove']"
                   size="mini"
                   type="text"
-                  icon="el-icon-delete"
                   @click="handleDelete(scope.row)"
                 >删除</el-button>
                 <el-button
                   v-hasPermi="['system:user:resetPwd']"
                   size="mini"
                   type="text"
-                  icon="el-icon-key"
                   @click="handleResetPwd(scope.row)"
                 >重置</el-button>
               </template>
@@ -230,7 +238,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="手机号码" prop="phonenumber">
-              <el-input v-model="form.phonenumber" placeholder="请输入手机号码" maxlength="11" />
+              <el-input v-model="form.phonenumber" :disabled="form.userId?true:false" placeholder="请输入手机号码" maxlength="11" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -290,19 +298,19 @@
             </el-form-item>
           </el-col>-->
           <el-col :span="12">
-            <el-form-item label="角色">
-              <el-select v-model="form.roleCodes" multiple placeholder="请选择" clearable filterable>
+            <el-form-item label="角色" prop="roleCodes">
+              <el-select v-model="form.roleCodes" multiple placeholder="请选择" clearable filterable :disabled="roleDisabled">
                 <el-option
                   v-for="item in roleOptions"
                   :key="item.roleCode"
                   :label="item.roleName"
                   :value="item.roleCode"
-                  :disabled="item.status == 1"
+                  :disabled="item.status == 1 || (item.isSystem == 1) "
                 />
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col v-if="!form.userId" :span="12">
+          <!-- <el-col v-if="!form.userId" :span="12">
             <el-form-item label="是否创建银行账号" label-width="140px">
               <el-radio-group v-model="form.isCreate">
                 <el-radio
@@ -312,7 +320,7 @@
                 >{{ dict.dictLabel }}</el-radio>
               </el-radio-group>
             </el-form-item>
-          </el-col>
+          </el-col>-->
         </el-row>
         <el-row>
           <el-col :span="24">
@@ -381,7 +389,8 @@ import { getToken } from '@/utils/auth';
 import { authorPre } from '@/headers';
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
-
+import { mapGetters } from 'vuex';
+import { pickerOptions } from '@/utils/dateRange';
 export default {
   name: 'User',
   components: { Treeselect },
@@ -389,10 +398,26 @@ export default {
     companyCode: {
       type: String,
       default: null
+    },
+    userCode: {
+      type: String,
+      default: null
+    },
+    showShipment: {
+      type: Boolean
+    },
+    orgType: {
+      type: Number,
+      default: 2
+    },
+    shipmentCode: {
+      type: String,
+      default: null
     }
   },
   data() {
     return {
+      pickerOptions,
       // 遮罩层
       loading: true,
       // 按钮loading
@@ -471,7 +496,8 @@ export default {
         userName: undefined,
         phonenumber: undefined,
         status: undefined,
-        deptId: undefined
+        deptId: undefined,
+        orgCode: undefined
       },
       // 表单校验
       rules: {
@@ -494,6 +520,9 @@ export default {
         ],
         email: [
           { validator: this.formValidate.email, trigger: 'blur' }
+        ],
+        roleCodes: [
+          { required: true, message: '角色不能为空', trigger: ['change', 'blur'] }
         ]
       },
       // 重置密码
@@ -508,13 +537,17 @@ export default {
           { required: true, message: '密码不能为空', trigger: 'blur' },
           { validator: this.formValidate.passWord, trigger: 'blur' }
         ]
-      }
+      },
+      currentOrgCode: '',
+      roleDisabled: false
     };
+  },
+  computed: {
+    ...mapGetters(['isAdmin', 'defaultRoleCode'])
   },
   watch: {
     // 根据名称筛选部门树
     deptName(val) {
-      console.log(val);
       this.$refs.tree.filter(val);
     }
   },
@@ -537,8 +570,17 @@ export default {
     /** 查询用户列表 */
     getList() {
       this.loading = true;
-      if (this.companyCode) {
+      // 树点击时
+      if (this.currentOrgCode) {
+        this.queryParams.orgCode = this.currentOrgCode;
+      } else if (this.companyCode) {
         this.queryParams.orgCode = this.companyCode;
+      }
+      if (this.showShipment) {
+        this.queryParams.showShipment = this.showShipment;
+      }
+      if (this.orgType) {
+        this.queryParams.orgType = this.orgType;
       }
       listUser(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
         this.userList = response.rows;
@@ -549,7 +591,8 @@ export default {
     },
     /** 查询部门下拉树结构 */
     getTreeselect() {
-      treeselect({ orgCode: this.companyCode }).then(response => {
+      // 只展示普通企业（1:发货企业 2:普通组织 3：发货企业下的组织）
+      treeselect({ orgCode: this.companyCode, userCode: this.userCode, showShipment: this.showShipment, orgType: this.orgType }).then(response => {
         this.deptOptions = response.data;
       });
     },
@@ -560,7 +603,8 @@ export default {
     },
     // 节点单击事件
     handleNodeClick(data) {
-      this.queryParams.orgCode = data.code;
+      // this.queryParams.orgCode = data.code;
+      this.currentOrgCode = data.code;
       this.getList();
     },
     // 用户状态修改
@@ -598,7 +642,8 @@ export default {
         remark: undefined,
         isCreate: '2',
         postIds: [],
-        roleCodes: []
+        roleCodes: [],
+        currentOrgCode: ''
       };
       this.resetForm('form');
     },
@@ -611,6 +656,8 @@ export default {
     resetQuery() {
       this.dateRange = [];
       this.resetForm('queryForm');
+      this.queryParams.orgCode = undefined;
+      this.currentOrgCode = undefined;
       this.handleQuery();
     },
     // 多选框选中数据
@@ -624,7 +671,7 @@ export default {
     handleAdd() {
       this.reset();
       this.getTreeselect();
-      getUser().then(response => {
+      getUser(null, { orgCode: this.companyCode, orgType: this.orgType, showShipment: this.showShipment }).then(response => {
         this.postOptions = response.posts;
         this.roleOptions = response.roles;
         this.open = true;
@@ -636,8 +683,9 @@ export default {
     handleUpdate(row) {
       this.reset();
       this.getTreeselect();
+      this.roleDisabled = false;
       const userId = row.userId || this.ids;
-      getUser(userId).then(response => {
+      getUser(userId, { orgCode: this.companyCode, orgType: this.orgType, showShipment: this.showShipment }).then(response => {
         this.form = response.data;
         this.postOptions = response.posts;
         this.roleOptions = response.roles;
@@ -646,6 +694,12 @@ export default {
         this.open = true;
         this.title = '修改用户';
         this.form.password = '';
+        response.roleCodes.forEach(role => {
+          if (this.defaultRoleCode.split(',').indexOf(role) > -1) {
+            this.roleDisabled = true;
+            return;
+          }
+        });
       });
     },
     /** 重置密码按钮操作 */
@@ -687,7 +741,7 @@ export default {
               this.getList();
             }).catch(() => { this.buttonLoading = false; });
           } else {
-            addUser(this.form).then(response => {
+            addUser(Object.assign(this.form, { showShipment: this.showShipment, shipmentCode: this.shipmentCode, shipmentCompanyCode: this.companyCode })).then(response => {
               this.msgSuccess('新增成功');
               this.open = false;
               this.buttonLoading = false;
@@ -714,9 +768,15 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('system/user/export', {
-        ...this.queryParams
-      }, `用户信息_${new Date().getTime()}.xlsx`);
+      if (this.dateRange[0] && this.dateRange[1]) {
+        this.queryParams.beginTime = this.dateRange[0];
+        this.queryParams.endTime = this.dateRange[1];
+      } else {
+        this.queryParams.beginTime = undefined;
+        this.queryParams.endTime = undefined;
+      }
+      this.queryParams.params = undefined;
+      this.download('system/user/export', this.queryParams, `用户信息`);
     },
     /** 导入按钮操作 */
     handleImport() {
@@ -727,7 +787,7 @@ export default {
     importTemplate() {
       this.download('system/user/importTemplate', {
         ...this.queryParams
-      }, `user_${new Date().getTime()}.xlsx`);
+      }, `用户信息模板`);
     },
     // 文件上传中处理
     handleFileUploadProgress(event, file, fileList) {

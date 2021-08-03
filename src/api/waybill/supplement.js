@@ -93,3 +93,38 @@ export function vehicleInfo(Code) {
     method: 'get'
   });
 }
+
+// 批量补录
+export function batchExtra(data) {
+  return request({
+    url: '/transportation/waybillOper/batchExtra',
+    method: 'post',
+    data: data
+  });
+}
+
+// 批量补录图片
+export function imagesExtra(data) {
+  return request({
+    url: '/transportation/waybillOper/imagesExtra',
+    method: 'post',
+    data: data
+  });
+}
+
+// 批量上传图片到华为云
+export function uploadToHWS(data) {
+  return request({
+    url: '/assets/upload/uploadToHWS',
+    method: 'post',
+    data: data
+  });
+}
+
+// 获取货主信息
+export function shipmentInfo(Code) {
+  return request({
+    url: '/assets/shipment/getShipmentAndEnterprise/' + Code,
+    method: 'get'
+  });
+}

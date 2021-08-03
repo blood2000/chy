@@ -13,12 +13,18 @@
       :disabled="disabled"
       accept=".jpg,.png,.jpeg"
       style="display: inline-block; vertical-align: top"
+      class="upload-image"
     >
       <img v-if="value && !disabled" :src="attachUrl" class="avatar">
-      <div v-else-if="value && disabled" v-viewer class="avatar-box">
+      <!-- <div v-if="value && !disabled && attachUrl && attachUrl !== ''" class="avatar-box" :style="{background: `url('${attachUrl}') center center /contain no-repeat`}" /> -->
+      <div v-else-if="value && disabled" class="avatar-box">
+        <!-- 只有这里能放img标签，只有控件被禁用才能查看图片大图 -->
         <img :src="attachUrl" class="avatar">
       </div>
-      <i v-else class="el-icon-plus avatar-uploader-icon" />
+      <template v-else>
+        <div class="avatar-box icon-type-img" :class="iconType" />
+        <div :class="disabled ? 'filter' : ''" class="avatar-uploader-icon" />
+      </template>
     </el-upload>
   </div>
 </template>
@@ -39,13 +45,20 @@ export default {
       type: Boolean,
       default: false
     },
+    // 图片类型
     imageType: {
       type: String,
       default: null
     },
+    // 图片正反面
     side: {
       type: String,
       default: null
+    },
+    // 图标类型
+    iconType: {
+      type: String,
+      default: 'default'
     }
   },
   data() {
@@ -79,13 +92,13 @@ export default {
   methods: {
     handleBeforeUpload(file) {
       const isJPG = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg';
-      const isLt1M = file.size / 1024 / 1024 < 1;
+      const isLt1M = file.size / 1024 / 1024 < 5;
       if (!isJPG) {
         this.msgWarning('请上传png/jpg/jpeg格式的图片');
         return false;
       }
       if (!isLt1M) {
-        this.msgWarning('上传文件大小不能超过1MB');
+        this.msgWarning('上传文件大小不能超过5MB');
         return false;
       }
       this.loading = this.$loading({
@@ -104,16 +117,23 @@ export default {
     // 根据code获取url
     handleGetFile(code, flag) {
       this.flag = true;
-      getFile(code).then(response => {
-        this.flag = false;
-        if (response.data && response.data.length > 0) {
-          this.attachUrl = response.data[0].attachUrl;
-          if (!flag) return;
-          this.handleOrc(this.attachUrl);
+      if (code) {
+        if (code.startsWith('https://') || code.startsWith('http://')) {
+          this.attachUrl = code;
+          this.flag = false;
         } else {
-          this.attachUrl = '';
+          getFile(code).then(response => {
+            this.flag = false;
+            if (response.data && response.data.length > 0) {
+              this.attachUrl = response.data[0].attachUrl;
+              if (!flag) return;
+              this.handleOrc(this.attachUrl);
+            } else {
+              this.attachUrl = '';
+            }
+          });
         }
-      });
+      }
     },
     // 图片识别
     handleOrc(url) {
@@ -132,8 +152,12 @@ export default {
         formData.append('side', this.side);
       }
       uploadOcr(formData).then(response => {
-        if (response.data && !response.data.msg) {
-          this.$emit('fillForm', this.imageType, response.data);
+        if (response.data) {
+          if (this.side) {
+            this.$emit('fillForm', this.imageType, response.data, this.side);
+          } else {
+            this.$emit('fillForm', this.imageType, response.data);
+          }
         }
       });
     },
@@ -157,9 +181,82 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  background: #F9F9F9;
+  width: 128px;
+  height: 88px;
+  overflow: hidden;
   .avatar {
     max-width: 100%;
     max-height: 100%;
+  }
+}
+// 上传按钮
+.upload-image{
+  position: relative;
+  .avatar-uploader-icon{
+    width: 58px;
+    height: 58px;
+    position: absolute;
+    background: url('~@/assets/images/uploadImage/upload_icon.png') no-repeat;
+    background-size: 100% 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    &.filter{
+      filter: grayscale(100%);
+      opacity: 0.6;
+    }
+  }
+}
+// 背景图样式
+.icon-type-img{
+  &.default{
+    background: url('~@/assets/images/uploadImage/default.png') no-repeat center center;
+    background-size: auto;
+  }
+  &.driver{
+    background: url('~@/assets/images/uploadImage/driver.png') no-repeat center center;
+    background-size: auto;
+  }
+  &.driver_head{
+    background: url('~@/assets/images/uploadImage/driver_head.png') no-repeat center center;
+    background-size: auto;
+  }
+  &.idcard{
+    background: url('~@/assets/images/uploadImage/idcard.png') no-repeat center center;
+    background-size: auto;
+  }
+  &.idcard_back{
+    background: url('~@/assets/images/uploadImage/idcard_back.png') no-repeat center center;
+    background-size: auto;
+  }
+  &.idcard_hand{
+    background: url('~@/assets/images/uploadImage/idcard_hand.png') no-repeat center center;
+    background-size: auto;
+  }
+  &.organization{
+    background: url('~@/assets/images/uploadImage/organization.png') no-repeat center center;
+    background-size: auto;
+  }
+  &.transport{
+    background: url('~@/assets/images/uploadImage/transport.png') no-repeat center center;
+    background-size: auto;
+  }
+  &.vehicle{
+    background: url('~@/assets/images/uploadImage/vehicle.png') no-repeat center center;
+    background-size: auto;
+  }
+  &.vehicle_back{
+    background: url('~@/assets/images/uploadImage/vehicle_back.png') no-repeat center center;
+    background-size: auto;
+  }
+  &.vehicle_head{
+    background: url('~@/assets/images/uploadImage/vehicle_head.png') no-repeat center center;
+    background-size: auto;
+  }
+  &.work{
+    background: url('~@/assets/images/uploadImage/work.png') no-repeat center center;
+    background-size: auto;
   }
 }
 </style>

@@ -20,8 +20,6 @@
             filterable
             @change="handleTin3"
           >
-            <!-- :style="{ width: '200px' }" -->
-            <!-- clearable -->
             <el-option
               v-for="(dict,index) in tin3Optin"
               :key="index + '' + dict.dictValue"
@@ -32,9 +30,24 @@
         </el-form-item>
 
         <el-form-item label="货物大类" prop="tin2">
+          <template v-if="goodsBigTypes && goodsBigTypes.length > 1">
+            <template v-for="(dict,index) in tin2Option">
+              <el-radio
+                v-if="dict.status === '0'"
+                :key="index + '' + dict.dictValue"
+                :value="dict.checkedValue"
+                class="mb10 m_radio"
+                border
+                disabled
+                :label="dict.dictValue"
+              >{{ dict.dictLabel }}</el-radio>
+            </template>
+          </template>
+
           <el-radio-group
+            v-else
             v-model="formData.tin2"
-            :disabled="formData.tin3 !== '0'"
+            :disabled="false"
             size="medium"
             @change="handletin2(false)"
           >
@@ -42,18 +55,18 @@
               <el-radio
                 v-if="dict.status === '0'"
                 :key="index + '' + dict.dictValue"
-                class="mb10 ml0 m_radio"
+                class="mb10 m_radio"
                 border
                 :label="dict.dictValue"
               >{{ dict.dictLabel }}</el-radio>
             </template>
           </el-radio-group>
+
         </el-form-item>
 
         <template v-if="formData.tin2">
-          <!-- isMultiGoods true->多商品 ; false->单商品 -->
           <el-form-item v-if="isMultiGoods" label="货物小类" prop="tin2_1">
-            <el-checkbox-group v-model="formData.tin2_1" size="medium" :disabled="formData.tin3 !== '0'">
+            <el-checkbox-group v-model="formData.tin2_1" size="medium" :disabled="false">
               <template v-for="(dict,index) in tin2_Option">
                 <el-checkbox
                   v-if="dict.status === '0'"
@@ -65,7 +78,7 @@
             </el-checkbox-group>
           </el-form-item>
           <el-form-item v-else label="货物小类" prop="tin2_2">
-            <el-radio-group v-model="formData.tin2_2" size="medium" :disabled="formData.tin3 !== '0'">
+            <el-radio-group v-model="formData.tin2_2" size="medium" :disabled="false">
               <template v-for="(dict,index) in tin2_Option">
                 <el-radio
                   v-if="dict.status === '0'"
@@ -82,11 +95,11 @@
 
       <div class="app-container">
         <div class="header mb8">发布集其他信息</div>
-        <el-form-item label="发布至" prop="tin4">
+        <el-form-item label="发布至" prop="publishMode">
           <el-radio-group
-            v-model="formData.tin4"
+            v-model="formData.publishMode"
             size="medium"
-            @change="handleTin4"
+            @change="()=>{}"
           >
             <el-radio
               v-for="(dict,index) in tin4Option"
@@ -96,65 +109,83 @@
           </el-radio-group>
         </el-form-item>
 
-        <template v-if="formData.tin4 === '0'">
 
-          <el-row>
-            <el-col :span="12">
-              <el-form-item label="指定联系人" prop="tin5">
-                <el-radio-group v-model="formData.tin5" size="medium">
-                  <el-radio
-                    v-for="(dict,index) in tin5Option"
-                    :key="index + '' + dict.dictValue"
-                    :label="dict.dictValue"
-                  >{{ dict.dictLabel }}</el-radio>
-                </el-radio-group>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="关联货集码" prop="tin6">
-                <el-select
-                  v-model="formData.tin6"
-                  placeholder="选择货集码"
-                  clearable
-                  :style="{ width: '100%' }"
-                >
-                  <el-option
-                    v-for="(dict,index) in tin6Option"
-                    :key="index + '' + dict.dictValue"
-                    :label="dict.dictLabel"
-                    :value="dict.dictValue"
-                  />
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </el-row>
-
-
-          <el-form-item v-if="formData.tin5 === '1'" label="指定联系人" prop="tin6_1">
-            <div class="ly-flex-align-center m_warp">
-              <el-tag
-                v-for="(tag, index) in formData['tin6_' + actionIndex]"
-                :key="tag.name + '' + index"
-                class="mr10"
-                :class="actionIndex == 1? 'team':'driver'"
-                :closable="!myisdisabled"
-                :disable-transitions="true"
-                :type="'info'"
-                @close="closable(index)"
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="指定联系人" prop="tin5">
+              <el-radio-group v-model="formData.tin5" size="medium">
+                <el-radio
+                  v-for="(dict,index) in tin5Option"
+                  :key="index + '' + dict.dictValue"
+                  :label="dict.dictValue"
+                >{{ dict.dictLabel }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="关联货集码" prop="tin6">
+              <el-select
+                v-model="formData.tin6"
+                placeholder="选择货集码"
+                clearable
+                :style="{ width: '100%' }"
               >
-                {{ tag.driverName || tag.teamName }}
-              </el-tag>
-              <template v-if="!myisdisabled">
-                <el-button type="primary" size="mini" @click="open1">请选择</el-button>
-                <div class="ml0">调度者: {{ formData.tin6_1.length }} 人</div>
-                <div class="ml0">司机: {{ formData.tin6_2.length }} 人</div>
-              </template>
-            </div>
-          </el-form-item>
+                <el-option
+                  v-for="(dict,index) in tin6Option"
+                  :key="index + '' + dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
 
-        </template>
 
-        <el-form-item label="备注信息" prop="remark">
+        <el-form-item v-if="formData.tin5 === '1'" label="指定联系人" prop="tin6_1">
+          <div class="ly-flex-align-center m_warp">
+            <el-tag
+              v-for="(tag, index) in formData['tin6_' + actionIndex]"
+              :key="tag.name + '' + index"
+              class="mr10"
+              :class="actionIndex == 1? 'team':'driver'"
+              :closable="!myisdisabled"
+              :disable-transitions="true"
+              :type="'info'"
+              @close="closable(index)"
+            >
+              {{ tag.driverName || tag.teamName }}
+            </el-tag>
+            <template v-if="!myisdisabled">
+              <el-button type="primary" size="mini" @click="open1">请选择</el-button>
+              <div class="ml0">调度者: {{ formData.tin6_1.length }} 人</div>
+              <div v-if="false" class="ml0">司机: {{ formData.tin6_2.length }} 人</div>
+            </template>
+          </div>
+        </el-form-item>
+
+
+        <el-row v-if="!isShipment">
+          <el-col :span="6">
+            <el-form-item label="装货时是否必须上传凭证" label-width="200px">
+              <el-switch
+                v-model="formData.uploadLoadVoucher"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="卸货时是否必须上传凭证" label-width="200px">
+              <el-switch
+                v-model="formData.uploadUnloadVoucher"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+
+
+
+        <el-form-item label="货源备注信息" prop="remark">
           <el-input
             v-model="formData.remark"
             type="textarea"
@@ -168,9 +199,6 @@
 
         <slot />
       </div>
-
-
-      <!-- <el-divider /> -->
     </el-form>
 
     <el-dialog
@@ -190,11 +218,7 @@
 import { listInfo } from '@/api/enterprise/project';
 import { listStockcode } from '@/api/enterprise/stockcode';
 import OpenDialog from '../manage/component/OpenDialog';
-
-// import { getDriver } from '@/api/assets/driver';
-// import { listInfo as listTeam } from '@/api/assets/team';
-
-// import OpenDialog from './OpenDialog';
+import { getUserInfo } from '@/utils/auth';
 
 export default {
   components: { OpenDialog },
@@ -209,34 +233,27 @@ export default {
       type: Object,
       default: null
     },
+    // 当前用户的信息
+    shipmentInfo: {
+      type: Object,
+      default: null
+    },
     // 使用v-model
     value: [Boolean],
     myisdisabled: {
       type: Boolean,
       default: false
-    }
-    // active: {
-    //   type: Number,
-    //   default: 0
-    // }
+    },
+    goodsBigTypes: {
+      type: Array,
+      default: null
+    },
+    isT: [Boolean]
   },
   data() {
-    // const tin5_validator = (rule, value, callback) => {
-    //   // 通过 callback(); // 不过 callback(new Error('请输入密码'));
-    //   if (
-    //     this.formData.tin5 === '1' &&
-    //     (!this.formData.tin6_1.length || !this.formData.tin6_2.length)
-    //   ) {
-    //     callback(new Error('请选择调度者/或司机'));
-    //     // callback();
-    //   } else {
-    //     callback();
-    //   }
-    // };
     return {
-      // myisdisabled: false,
-      orderSpecifiedList: [], // 调度者信息 指定联系人 { name: '调度者', type: 'info', userType: 1 }, { name: '司机2', type: 'info', userType: 2 }
-      actionIndex: '2', // 控制弹框显示谁
+      orderSpecifiedList: [],
+      actionIndex: '1', // 控制弹框显示谁
       open: false,
       classList: null, // 修改的时候
       InfoCode: null, // 修改临时存放code
@@ -246,14 +263,24 @@ export default {
         tin2: '', // 货物类别(大类)
         tin2_1: [], // 小类(多商品)
         tin2_2: '', // 小类(单商品)
+        publishMode: '0', // 发布方式 0 货源大厅不可见 1 可见
         tin4: '1', // 发布位置 1=公开 0=非公开
         tin5: '0', // 指定接单人 1=是 0=否
         tin6_1: [], // 调度者
         tin6_2: [], // 司机
         tin6: '', // 货集码
 
+        uploadLoadVoucher: true, // 装货时是否必须上传凭证 7/8追加字段
+        uploadUnloadVoucher: true, // 卸货时是否必须上传凭证 7/8追加字段
+
         remark: ''
       },
+
+      // s= 7/22 追加判断字段 -chj
+      singleSourceMultiCommodity: false,
+
+      // e=
+
       rules: {
         tin3: [{ required: false, message: '选择所属项目', trigger: 'change' }],
         tin2: [{ required: true, message: '选择货物大类', trigger: 'change' }],
@@ -263,12 +290,11 @@ export default {
         tin2_2: [
           { required: true, message: '选择货物小类', trigger: 'change' }
         ],
-        tin4: [{ required: true, message: '选择是否公开货源', trigger: 'change' }],
+        // publishMode: [{ required: true, message: '选择是否公开货源', trigger: 'change' }],
         tin5: [
           { required: true, message: '选择指定接单人', trigger: 'change' }
         ],
         tin6: [{ required: false, message: '选择所属项目', trigger: 'change' }],
-        // tin6_1: [{ validator: tin5_validator, trigger: 'change' }],
         remark: [
           { required: false, message: '选择所属项目', trigger: 'change' }
         ]
@@ -279,49 +305,73 @@ export default {
       tin2Option: [], // 大类
       tin2_Option: [], // 小类
       tin4Option: [
-        { dictValue: '1', dictLabel: '货源大厅(所有人可接)' },
-        { dictValue: '0', dictLabel: '非公开货源(私密货源)' }
+        { dictValue: '1', dictLabel: '货源大厅可见' },
+        { dictValue: '0', dictLabel: '货源大厅不可见' }
       ],
       tin5Option: [
         { dictValue: '1', dictLabel: '是' },
         { dictValue: '0', dictLabel: '否' }
       ],
-      tin6Option: []
+      tin6Option: [],
+      isShipment: false
     };
   },
 
   computed: {
     // 多商品计算(根据大类中的isCheckbox判断) true=>多 false=>单
     isMultiGoods() {
-      const tin2Obj = this._zhaovalue(this.tin2Option, this.formData.tin2);
-      let bool = false;
-      if (tin2Obj && tin2Obj.isCheckbox) {
-        bool = tin2Obj.isCheckbox === '1';
-      }
+      // 7/22 之前 -chj
+      // const tin2Obj = this._zhaovalue(this.tin2Option, this.formData.tin2);
+      // let bool = false;
+      // if (tin2Obj && tin2Obj.isCheckbox) {
+      //   bool = tin2Obj.isCheckbox === '1';
+      // }
 
-      return bool;
+      // return bool;
+
+      // 7/22 修改 -chj
+      return this.singleSourceMultiCommodity;
     }
-
-    // isdisabled(value) {
-    //   console.log(value);
-
-    //   return this.active === 4;
-    // }
-    // InfoCodes() {
-    //   return this.formData.tin6_1.concat(this.formData.tin6_2);
-    // }
   },
-
   watch: {
+    // 获取当前用户的信息
+    shipmentInfo: {
+      handler(info) {
+        // console.log(info);
+        if (info) {
+          // isNeedLoadingCertificate 是否需要装货凭证 0：是 1：否
+          // noNeedUnloadImg 是否不需要卸货图片  0，需要  1，不需要
+          // 修改司机实收金额 0:允许 1:不允许： editDriverActualAmount
+          // 单货源多商品 0：允许 1:不允许  singleSourceMultiCommodity
+          // 单货源多装货地 0:允许 1:不允许  singleSourceMultiLoadingLocations
+          // 单货源多卸货地 0:允许 1:不允许  singleSourceMultiUnloadingLocations
+          // 是否需要申请打款环节 0：需要 1:不需要  isNeedApplicationForPayment
+          const {
+            isNeedLoadingCertificate,
+            noNeedUnloadImg,
+            singleSourceMultiCommodity
+          } = info;
+
+
+          // console.log(isNeedLoadingCertificate, noNeedUnloadImg);
+          this.formData.uploadLoadVoucher = isNeedLoadingCertificate === 0;
+          this.formData.uploadUnloadVoucher = noNeedUnloadImg === 0;
+          this.singleSourceMultiCommodity = singleSourceMultiCommodity === 0;
+
+          // console.log(this.singleSourceMultiCommodity, '3333');
+        }
+      },
+      immediate: true
+    },
+
     // 监听外面 pubilshCode 变化则 全部要跟着初始化
     pubilshCode(value) {
       this.$refs['elForm'] && this.$refs['elForm'].resetFields();
       this.tin3Optin = [{ dictValue: '0', dictLabel: '无所属项目' }]; // 货主项目
-      // this.tin2Option = []; // 大类
       this.tin2_Option = []; // 小类
       this.tin4Option = [
-        { dictValue: '1', dictLabel: '公开货源(所有人可接)' },
-        { dictValue: '0', dictLabel: '非公开货源(私密货源)' }
+        { dictValue: '1', dictLabel: '货源大厅不可见' },
+        { dictValue: '0', dictLabel: '货源大厅可见' }
       ];
       this.tin5Option = [
         { dictValue: '1', dictLabel: '是' },
@@ -330,11 +380,9 @@ export default {
       this.tin6Option = [];
 
       this.api_tin3Optin();
-      // this.api_dictInit();
+      this.handleTin4();
     },
-    // isdisabled(value) {
-    //   console.log(value);
-    // },
+
 
     // 回填数据
     cbData: {
@@ -346,15 +394,20 @@ export default {
         // 货集码
         await this.handleTin4();
 
-        if (!this.cbData) return;
 
-        // goodsType 是包装成数组 [code1, code2]
-        const { code, projectCode, isPublic, isSpecified, remark, orderSpecifiedList, goodsBigType, goodsType, classList } = this.cbData;
+        if (!this.cbData) return;
+        const { code, projectCode, isPublic, isSpecified, remark, orderSpecifiedList, goodsBigType, goodsType, classList, publishMode } = this.cbData;
+
+
 
         // 1.基本的赋值
 
-        this.formData.tin4 = isPublic ? '1' : '0';
-        this.formData.tin5 = isSpecified ? '1' : '0';
+        this.formData.uploadLoadVoucher = this.cbData.uploadLoadVoucher + '' === '1';
+        this.formData.uploadUnloadVoucher = this.cbData.uploadUnloadVoucher + '' === '1';
+
+        this.formData.publishMode = publishMode + '';
+        this.formData.tin4 = isPublic + '';
+        this.formData.tin5 = isSpecified + '';
         this.formData.remark = remark;
         this.tin2Option.forEach(e => {
           if (goodsBigType === e.dictValue) {
@@ -362,10 +415,11 @@ export default {
           }
         });
 
-
+        // console.log(this.formData);
 
         // 2.去根据大类去请求下数据
         await this.handletin2();
+
 
         // 3.回填 小类(商品)
         if (this.isMultiGoods) {
@@ -378,11 +432,8 @@ export default {
           });
         }
 
-
         // 4.处理调度者
         this.orderSpecifiedList = orderSpecifiedList;
-
-
         this.orderSpecifiedList.forEach(e => {
           if (e.userType + '' === '1') {
             e.code = e.teamInfoCode;
@@ -392,14 +443,26 @@ export default {
           this.actionIndex = e.userType + '';
         });
         this.formData['tin6_' + this.actionIndex] = this.orderSpecifiedList;
-
         // 5.货集码只做单选处理
-
-        this.handleTin4();
+        // this.handleTin4();
         this.formData.tin6 = classList[0] ? classList[0].classCode : '';
         this.classList = classList;
         this.InfoCode = code;
+
         this.formData.tin3 = projectCode || '0';
+
+        // 6. 特殊处理
+        if (this.goodsBigTypes && this.goodsBigTypes.length > 1) {
+          this.tin2Option = this.tin2Option.map(e => {
+            e.checkedValue = undefined;
+            this.goodsBigTypes.forEach(ee => {
+              if (ee === e.dictValue) {
+                e.checkedValue = ee;
+              }
+            });
+            return e;
+          });
+        }
       },
       immediate: true
     },
@@ -422,13 +485,24 @@ export default {
         this.$emit('goods', [obj || this._zhaovalue(this.tin2Option, value)]);
       },
       immediate: true
+    },
+    'formData.tin6_1': {
+      handler(value) {
+        if (!value) return;
+        console.log(value);
+        this.$store.commit('orders/SET_TIMELIST', value);
+        // this.$emit('goods', [obj || this._zhaovalue(this.tin2Option, value)]);
+      },
+      immediate: true
     }
   },
-  created() {},
+  created() {
+    const { isShipment = false } = getUserInfo() || {};
+    this.isShipment = isShipment;
+  },
 
   methods: {
-    // api相关
-    // 2. 获取初始的字典值
+    // 获取初始的字典值
     async api_dictInit() {
       const goodsBigType_option = this.$store.getters.goodsBigType_option;
       if (goodsBigType_option) {
@@ -443,10 +517,9 @@ export default {
         this.$store.dispatch('orders/store_goodsBigType_option', data);
       }
     },
-    // 1. 获取项目
+    // 获取项目
     async api_tin3Optin() {
       if (!this.pubilshCode) return;
-
       const query = {
         shipmentCode: this.pubilshCode
       };
@@ -460,9 +533,6 @@ export default {
 
     // 4. 选择所属项目
     handleTin3() {
-      // 如果是复制或者编辑的话 提示一下
-      // console.log(this.$store.getters.isClone);
-
       if (this.formData.tin3 === '0') {
         this.formData.tin2 = '';
         this.formData.tin2_2 = '';
@@ -471,24 +541,30 @@ export default {
         return;
       }
 
-
       const tin3item = this._zhaovalue(this.tin3Optin, this.formData.tin3);
 
       this.formData.tin2 = tin3item.commodityCategoryCode;
       this.handletin2(tin3item);
     },
 
-    // 3. 获取小类列表
+    // 3. 选择大类后 ==>根据大类获取小类列表
     async handletin2(tin3item) {
-      this.formData.tin3 = '0';
+      // this.formData.tin3 = '0'; // 项目清0
+
       this.$emit('input', this.isMultiGoods);
 
-      const { data } = await this.listByDict({
-        dictPid: this._zhaovalue(this.tin2Option, this.formData.tin2).dictCode,
-        dictType: 'goodsType'
-      });
+      try {
+        const { data } = await this.listByDict({
+          dictPid: this._zhaovalue(this.tin2Option, this.formData.tin2).dictCode,
+          dictType: 'goodsType'
+        });
+        this.tin2_Option = data;
+      } catch (error) {
+        this.tin2_Option = [];
+      }
 
-      this.tin2_Option = data;
+
+
       if (!this.isMultiGoods) {
         this.formData.tin2_2 = this.tin2_Option[0] ? this.tin2_Option[0].dictValue : this.formData.tin2;
         this.formData.tin2_1 = [];
@@ -496,18 +572,18 @@ export default {
         this.formData.tin2_2 = '';
       }
 
-      if (!tin3item) return;
-
-
+      if (!tin3item || !tin3item.dictValue) return;
+      // 选择了项目后触发了这个, 改版后可能会没有值存在了
+      // console.log('这里也是赋值');
       this.formData.tin3 = tin3item.dictValue;
 
       if (this.isMultiGoods) {
-        this.formData.tin2_1 = tin3item.commoditySubclassCodes.split(',');
+        this.formData.tin2_1 = tin3item.commoditySubclassCodes ? tin3item.commoditySubclassCodes.split(',') : [];
 
         this.formData.tin2_2 = '';
       } else {
         this.formData.tin2_1 = [];
-        this.formData.tin2_2 = tin3item.commoditySubclassCodes;
+        this.formData.tin2_2 = tin3item.commoditySubclassCodes || '';
       }
     },
 
@@ -551,10 +627,10 @@ export default {
         this.orderSpecifiedList = [...listDriver, ...listInfo];
         this.formData['tin6_' + this.actionIndex] = this.orderSpecifiedList;
 
-        if (this.formData.tin6_1.length > 1) {
-          this.msgInfo('调度者只能选择一个');
-          return;
-        }
+        // if (this.formData.tin6_1.length > 1) {
+        //   this.msgInfo('调度者只能选择一个');
+        //   return;
+        // }
       }
       this.open = false;
       this.title = '';
@@ -562,20 +638,20 @@ export default {
 
     // 7. 发布位置切换
     async handleTin4() {
-      if (this.formData.tin4 === '1') {
-        this.formData.tin5 = '0';
-        this.formData.tin6 = '';
-        this.formData.tin6_1 = []; // 调度者
-        this.formData.tin6_2 = []; // 司机
-      } else {
-        if (this.tin6Option.length) return;
-        const query = {
-          shipmentCode: this.pubilshCode
-        };
-        const { rows } = await listStockcode(query);
+      // if (this.formData.tin4 === '1') {
+      //   this.formData.tin5 = '0';
+      //   this.formData.tin6 = '';
+      //   this.formData.tin6_1 = []; // 调度者
+      //   this.formData.tin6_2 = []; // 司机
+      // } else {
+      //   }
+      if (this.tin6Option.length) return;
+      const query = {
+        shipmentCode: this.pubilshCode
+      };
+      const { rows } = await listStockcode(query);
 
-        this.tin6Option = this._baozhuan(rows, 'code', 'cargoCodeName');
-      }
+      this.tin6Option = this._baozhuan(rows, 'code', 'cargoCodeName');
     },
 
     // 8. 提交
@@ -626,18 +702,6 @@ export default {
               }];
             }
 
-
-
-
-            // if (this.classList) {
-            //   this.classList = this.classList.map(e => {
-            //     return {
-            //       classCode: this.formData.tin6
-            //     };
-            //   });
-            // }
-
-
             resolve({
               InfoCode: this.InfoCode,
               classList: [
@@ -645,15 +709,17 @@ export default {
                   classCode: this.formData.tin6
                 }
               ],
-              isPublic: this.formData.tin4 === '1', //	是否公开货源 0.非公开 1.公开,
+              publishMode: this.formData.publishMode - 0,
+              isPublic: this.formData.tin5 === '1' ? 0 : 1, //	是否公开货源 0.非公开 1.公开,
               isSpecified: this.formData.tin5 === '1', // 是否指定接单人 0否 1是		false
-              // 'loadType': 0,
               orderGoodsList,
               orderSpecifiedList: tin6_1.concat(tin6_2),
               projectCode: this.formData.tin3 === '0' ? '' : this.formData.tin3,
               pubilshCode: this.pubilshCode,
-              remark: this.formData.remark
-              // ruleInfoShipmentCode: ''
+              remark: this.formData.remark,
+
+              uploadLoadVoucher: this.formData.uploadLoadVoucher,
+              uploadUnloadVoucher: this.formData.uploadUnloadVoucher
             });
           } else {
             return false;
@@ -665,29 +731,9 @@ export default {
     /* 关闭 */
     closable(index) {
       this.orderSpecifiedList.splice(index, 1);
-      // console.log(this.orderSpecifiedList);
-      // console.log(this.formData['tin6_' + this.actionIndex]);
 
       this.formData['tin6_' + this.actionIndex] = this.orderSpecifiedList;
-      // this.handlerOrderSpecifiedList(this.orderSpecifiedList);
     },
-
-    // /* 处理司机/调度者 */
-    // handlerOrderSpecifiedList(orderSpecifiedList) {
-    //   this.orderSpecifiedList = orderSpecifiedList;
-    //   this.orderSpecifiedList.forEach(e => {
-    //     if (e.userType + '' === '1') {
-    //       e.code = e.teamInfoCode;
-    //     } else {
-    //       e.code = e.driverInfoCode;
-    //     }
-    //     this.actionIndex = e.userType + '';
-    //     this.formData['tin6_' + e.userType] = this.orderSpecifiedList;
-    //   });
-
-    //   // this.orderSpecifiedList = orderSpecifiedList;
-    // },
-
 
     // 处理小类传入[1,2] =>
     _handleGoodsType(arr) {
@@ -702,8 +748,6 @@ export default {
 
     // 回填多商品处理code
     _handlreMultiGoodsType(arr1, options) {
-      // console.log(arr1);
-
       const arr2 = [];
       arr1.forEach(e => {
         options.forEach(ee => {
@@ -766,6 +810,8 @@ export default {
 }
 
 .m_radio{
+  margin-left: 0;
+  margin-right: 5px;
   ::v-deep .el-radio__input{
       display: none;
   }

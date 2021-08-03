@@ -58,11 +58,11 @@
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
-    <el-table v-loading="loading" :data="testList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" highlight-current-row border :data="testList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="${comment}" align="center" prop="testId" />
       <el-table-column label="${comment}" align="center" prop="testName" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" fixed="left" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             v-hasPermi="['system:test:edit']"
@@ -91,7 +91,7 @@
     />
 
     <!-- 添加或修改【请填写功能名称】对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body  :close-on-click-modal="false">
+    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body :close-on-click-modal="false">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="${comment}" prop="testName">
           <el-input v-model="form.testName" placeholder="请输入${comment}" />
@@ -241,7 +241,7 @@ export default {
     handleExport() {
       this.download('system/test/export', {
         ...this.queryParams
-      }, `system_test.xlsx`);
+      }, `system_test`);
     }
   }
 };

@@ -13,7 +13,7 @@
       <ul class="login-tab">
         <li :class="{'active': active==='0'}" @click="active = '0'">账号登录</li>
         <li :class="{'active': active==='1'}" @click="active = '1'">短信登录</li>
-        <li :class="{'active': active==='3'}" @click="active = '3'">密码登录</li>
+      <!--  <li :class="{'active': active==='3'}" @click="active = '3'">密码登录</li>-->
       </ul>
 
       <div class="p26">
@@ -36,7 +36,7 @@
           <el-form v-show="active==='0'" ref="loginForm" :model="loginForm" :rules="loginRules">
 
             <el-form-item prop="username">
-              <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号">
+              <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号/手机号">
                 <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
               </el-input>
             </el-form-item>
@@ -219,7 +219,7 @@
     </el-form>
     <!--  底部  -->
     <div class="el-login-footer">
-      <span>Copyright © 2021-2023 ddc.vip All Rights Reserved.</span>
+      <span>CopyRight@ 2021 All Rights Reserved <a href="https://beian.miit.gov.cn/" target="_blank">闽ICP备19023755号-2</a></span>
     </div>
 
 
@@ -248,8 +248,8 @@ export default {
       codeUrl: '',
       cookiePassword: '',
       loginForm: {
-        username: 'admin',
-        password: 'admin123',
+        username: '',
+        password: '',
         rememberMe: false,
         code: '',
         uuid: ''

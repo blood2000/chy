@@ -4,7 +4,7 @@
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
         <el-form-item label="货集码名称" prop="cargoCodeName">
           <el-input
-            v-model="queryParams.cargoCodeName"
+            v-model.trim="queryParams.cargoCodeName"
             placeholder="请输入货集码名称"
             clearable
             size="small"
@@ -51,7 +51,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <el-table v-loading="loading" :data="stockcodeList" border stripe @selection-change="handleSelectionChange">
+      <el-table v-loading="loading" :data="stockcodeList" highlight-current-row border @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" fixed="left" />
         <el-table-column label="货集码名称" align="center" prop="cargoCodeName" />
         <el-table-column label="货集码" align="center" prop="cargoCodeQr">
@@ -66,21 +66,20 @@
         <el-table-column label="关联的货源数" align="center" prop="relationOrderNum">
           <template slot-scope="scope">
             <el-button
-              v-hasPermi="['assets:shipment:cargocode:orders']"
               size="mini"
               type="text"
               @click="handleOrderList(scope.row)"
             >{{ scope.row.relationOrderNum }}</el-button>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
+        <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="left">
           <template slot-scope="scope">
             <el-button
               v-hasPermi="['assets:shipment:cargocode:edit']"
               size="mini"
               type="text"
               @click="handleUpdate(scope.row)"
-            >修改</el-button>
+            >详情</el-button>
             <el-button
               v-hasPermi="['assets:shipment:cargocode:remove']"
               size="mini"
@@ -108,7 +107,7 @@
 </template>
 
 <script>
-import { listStockcode, getStockcode, delStockcode } from '@/api/enterprise/stockcode';
+import { listStockcode, getStockCode, delStockcode } from '@/api/enterprise/stockcode';
 import { downImgApi } from '@/api/system/image';
 import StockcodeDialog from './stockcodeDialog.vue';
 import orderListDialog from './orderListDialog.vue';
@@ -200,18 +199,19 @@ export default {
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      console.log(row);
+      // console.log(row);
       this.$refs.StockcodeDialog.reset();
-      let id;
+      /* let id;
       if (row.id !== '' && row.id !== undefined && row.id != null) {
         id = row.id;
       } else {
         id = this.ids;
-      }
-      getStockcode(id).then(response => {
+      }*/
+      getStockCode(row.code).then(response => {
         this.$refs.StockcodeDialog.setForm(response.data);
         this.open = true;
-        this.title = '修改';
+        // this.title = '修改';
+        this.title = '详情';
       });
     },
     /** 删除按钮操作 */
@@ -231,11 +231,12 @@ export default {
     },
     /** 下载货集码 */
     handleDownloadCode(row) {
-      const params = {
+      this.handleDownloadQrIMg(row.cargoCodeQR, row.cargoCodeName);
+      /*  const params = {
         url: row.cargoCodeQR,
         fileName: row.cargoCodeName
       };
-      this.download(downImgApi, params, `货集码_${row.cargoCodeName}.jpg`);
+      this.download(downImgApi, params, `货集码`, null, '.jpg');*/
       // 前端下载方法1
       // const image = new Image();
       // image.setAttribute('crossOrigin', 'anonymous');
@@ -272,6 +273,26 @@ export default {
       this.classCode = row.code;
       this.orderListOpen = true;
       this.title = '关联的货源列表';
+    },
+    handleDownloadQrIMg(imgUrl, fileName) {
+      // 如果浏览器支持msSaveOrOpenBlob方法（也就是使用IE浏览器的时候），那么调用该方法去下载图片
+      console.log(imgUrl);
+      if (window.navigator.msSaveOrOpenBlob) {
+        const bstr = atob(imgUrl.split(',')[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) {
+          u8arr[n] = bstr.charCodeAt(n);
+        }
+        const blob = new Blob([u8arr]);
+        window.navigator.msSaveOrOpenBlob(blob, fileName + '.' + 'png');
+      } else {
+        // 这里就按照chrome等新版浏览器来处理
+        const a = document.createElement('a');
+        a.href = imgUrl;
+        a.setAttribute('download', fileName);
+        a.click();
+      }
     }
   }
 };

@@ -45,3 +45,12 @@ export function adjustPrice(data) {
     data: data
   });
 }
+
+// 货源扫码接单是否上传凭证
+export function isImport(data) {
+  return request({
+    url: '/transportation/order/updateScanCodeVoucher',
+    method: 'post',
+    data: data
+  });
+}

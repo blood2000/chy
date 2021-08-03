@@ -101,6 +101,33 @@ export function selectDictLabels(datas, value, separator) {
   return actions.join('').substring(0, actions.join('').length - 1);
 }
 
+export function selectProvinceLabel(datas, value) {
+  if (datas === undefined || datas === null) {
+    return '';
+  }
+  var actions = [];
+  Object.keys(datas).some((key) => {
+    if (('' + datas[key].provinceCode) === ('' + value)) {
+      actions.push(datas[key].provinceName);
+      return true;
+    }
+  });
+  return actions.join('');
+}
+
+export function selectCityLabel(datas, value) {
+  if (datas === undefined || datas === null) {
+    return '';
+  }
+  var actions = [];
+  Object.keys(datas).some((key) => {
+    if (('' + datas[key].cityCode) === ('' + value)) {
+      actions.push(datas[key].cityName);
+      return true;
+    }
+  });
+  return actions.join('');
+}
 // 通用下载方法
 export function download(fileName) {
   window.location.href = baseURL + '/common/download?fileName=' + encodeURI(fileName) + '&delete=' + true;
@@ -189,34 +216,56 @@ export function tansParams(params) {
  * @param {*} list 表头数组
  * @param {*} url 接口地址
  * @param {*} editColumn 操作列
- * @param {*} myColumen 自定义的表头 数组
+ * @param {*} myColumen 自定义的表头(可以替代) 数组
  */
 import { tableHeadList } from '@/api/system/table';
 export function tableHeaderConfig(list, url, editColumn, myColumen) {
-  if (getLocalStorage(url)) {
-    getLocalStorage(url).forEach(el => {
-      list.push(el);
-    });
-  } else {
-    tableHeadList(url).then(response => {
-      response.data.forEach(el => {
-        list.push({
-          label: el.comment,
-          prop: el.fieldName,
-          isShow: el.isShow,
-          width: el.width || '120',
-          tooltip: true
-        });
+  return new Promise(resolve => {
+    if (getLocalStorage(url)) {
+      getLocalStorage(url).forEach(el => {
+        list.push(el);
       });
-      if (editColumn) {
-        list.push(editColumn);
-      }
-      if (myColumen && myColumen.length) {
-        list.push(...myColumen);
-      }
-      setLocalStorage(url, list);
-    });
-  }
+      resolve();
+    } else {
+      tableHeadList(url.split('--')[0]).then(response => {
+        const arr = [];
+        response.data.forEach(el => {
+          arr.push({
+            label: el.comment,
+            prop: el.fieldName,
+            isShow: el.isShow,
+            sortNum: el.sortNum || 0,
+            width: el.width || '120',
+            tooltip: true,
+            isChild: el.isChild
+          });
+        });
+        if (editColumn) {
+          arr.push(editColumn);
+        }
+        if (myColumen && myColumen.length) {
+          arr.unshift(...myColumen);
+        }
+
+        // 去重
+        list.push(...objReduce(arr, 'prop'));
+
+        // 根據距離遠近排序，越近在前面，升序
+        list.sort(function(a, b) {
+          if (a.sortNum < b.sortNum) {
+            return -1;
+          } else if (a.sortNum === b.sortNum) {
+            return 0;
+          } else {
+            return 1;
+          }
+        });
+
+        setLocalStorage(url, list);
+        resolve();
+      });
+    }
+  });
 }
 
 /**
@@ -230,7 +279,7 @@ export function compareBeginEndTime(beginTime, endTime) {
   const _begin = Date.parse(new Date(beginTime));
   const _end = Date.parse(new Date(endTime));
   // 8.64e7 为一天的毫秒数
-  if (_end + 8.64e7 > _begin) {
+  if (_end >= _begin) {
     return true;
   } else {
     return false;
@@ -246,4 +295,61 @@ export function Md5Util(text) {
   md5.update(text);
   const md5password = md5.digest('hex');
   return md5password;
+}
+
+/**
+ * 数组内对象去重
+ * @param {*} arr 数组
+ * @param {*} id 对什么字段进行去重 字符串
+ */
+export function objReduce(arr, id) {
+  const obj = {};
+  return arr.reduce((cur, next) => {
+    obj[next[id]] ? '' : obj[next[id]] = true && cur.push(next);
+    return cur;
+  }, []); // 设置cur默认类型为数组，并且初始值为空的数组
+}
+
+/**
+ * 四舍五入保留两位
+ * @param {*} number 数字
+ * @param {*} precision 保留位置(1= 小数一位 2=小数二位, -1= 位数, -2=百位数)
+ */
+export function floor(number, precision = 2) {
+  // return Math.floor(number * 100) / 100; // (截取)
+  return (number - 0).toFixed(precision); //  bug比较多
+  // return Math.round((number - 0) * Math.pow(10, precision)) / Math.pow(10, precision);
+}
+
+/**
+ * 四舍五入保留三位
+ * @param {*} number 数字
+ * @param {*} precision 保留位置(1= 小数一位 2=小数二位, -1= 位数, -2=百位数)
+ */
+export function fixed(number, precision = 3) {
+  // return Math.floor(number * 100) / 100; // (截取)
+  return (number - 0).toFixed(precision); //  bug比较多
+  // return Math.round((number - 0) * Math.pow(10, precision)) / Math.pow(10, precision);
+}
+
+/**
+ * 判断是否长期
+ */
+export function isPeriodAlways(date) {
+  if (date.indexOf('长期') !== -1 || date.startsWith('9999')) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+/**
+ * 校验日期格式yyyy-mm-dd
+ */
+export function isPeriodFormate(date) {
+  if (date.match(/^(\d{4})(-)(\d{2})(-)(\d{2})$/)) {
+    return date;
+  } else {
+    return '';
+  }
 }

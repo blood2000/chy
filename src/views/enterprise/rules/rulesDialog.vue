@@ -37,6 +37,19 @@
           </el-form-item>
         </el-col>
       </el-row>
+      <el-row>
+        <el-col v-if="form.platformType !=1" :span="10">
+          <el-form-item label="是否默认规则" prop="isDefault">
+            <el-radio-group v-model="form.isDefault">
+              <el-radio
+                v-for="dict in isDefaultOptions"
+                :key="dict.dictValue"
+                :label="dict.dictValue"
+              >{{ dict.dictLabel }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+      </el-row>
       <!-- 计算路耗 -->
       <!-- 备注：开启路耗之后，路耗的所有项都必填 -->
       <h5 class="g-card-title g-strong mt10">
@@ -56,10 +69,10 @@
           <template v-if="item.showType === 2">
             -
             <el-input-number v-model="lossItemObj[item.code].start" :controls="false" :precision="2" :min="0" :max="currentRadio === 'DE' ? 100000 : 100" placeholder="最小值" class="width-small" clearable />
-            <span v-show="currentRadio && currentRadio !== ''" class="unit-span-l g-color-gray">{{ currentRadio === 'DE' ? 'kg' : '%' }}</span>
+            <span v-show="currentRadio && currentRadio !== ''" class="unit-span-l g-color-gray" :class="currentRadio === 'DE' ? 'double' : ''">{{ currentRadio === 'DE' ? 'kg/m³' : '%' }}</span>
             <span style="margin: 0 15px">至</span>
             <el-input-number v-model="lossItemObj[item.code].end" :controls="false" :precision="2" :min="0" :max="currentRadio === 'DE' ? 100000 : 100" placeholder="最大值" class="width-small" clearable />
-            <span v-show="currentRadio && currentRadio !== ''" class="unit-span-r g-color-gray">{{ currentRadio === 'DE' ? 'kg' : '%' }}</span>
+            <span v-show="currentRadio && currentRadio !== ''" class="unit-span-r g-color-gray" :class="currentRadio === 'DE' ? 'double' : ''">{{ currentRadio === 'DE' ? 'kg/m³' : '%' }}</span>
           </template>
           <el-select v-if="item.showType === 3" v-model="lossItemObj[item.code]" class="width-small" clearable filterable style="width: 350px;">
             <el-option
@@ -88,11 +101,11 @@
       <div v-show="form.reduceItem.length === 0" class="none-box g-color-gray">未添加项目</div>
       <el-row>
         <el-form-item v-for="item in form.reduceItem" :key="item.code" :label="item.cnName" :prop="item.code">
-          <el-input-number v-if="item.showType === 1" v-model="form.reduceItemObj[item.code]" :min="0" :controls="false" :placeholder="`请输入${item.cnName}`" class="width-small mr3" clearable />
+          <el-input-number v-if="item.showType === 1" v-model="form.reduceItemObj[item.code]" :min="0" :precision="2" :controls="false" :placeholder="`请输入${item.cnName}`" class="width-small mr3" clearable />
           <template v-if="item.showType === 2">
-            <el-input-number v-model="form.reduceItemObj[item.code].start" :controls="false" placeholder="最小值" class="width-small mr3" clearable />
+            <el-input-number v-model="form.reduceItemObj[item.code].start" :controls="false" :precision="2" placeholder="最小值" class="width-small mr3" clearable />
             -
-            <el-input-number v-model="form.reduceItemObj[item.code].end" :controls="false" placeholder="最大值" class="width-small mr3" clearable />
+            <el-input-number v-model="form.reduceItemObj[item.code].end" :controls="false" :precision="2" placeholder="最大值" class="width-small mr3" clearable />
           </template>
           <el-select v-if="item.showType === 3" v-model="form.reduceItemObj[item.code]" class="width-small mr3" clearable filterable>
             <el-option
@@ -123,11 +136,11 @@
       <div v-show="form.addItem.length === 0" class="none-box g-color-gray">未添加项目</div>
       <el-row>
         <el-form-item v-for="item in form.addItem" :key="item.code" :label="item.cnName" :prop="item.code">
-          <el-input-number v-if="item.showType === 1" v-model="form.addItemObj[item.code]" :min="0" :controls="false" :placeholder="`请输入${item.cnName}`" class="width-small mr3" clearable />
+          <el-input-number v-if="item.showType === 1" v-model="form.addItemObj[item.code]" :min="0" :precision="2" :controls="false" :placeholder="`请输入${item.cnName}`" class="width-small mr3" clearable />
           <template v-if="item.showType === 2">
-            <el-input-number v-model="form.addItemObj[item.code].start" :controls="false" placeholder="最小值" class="width-small mr3" clearable />
+            <el-input-number v-model="form.addItemObj[item.code].start" :controls="false" :precision="2" placeholder="最小值" class="width-small mr3" clearable />
             -
-            <el-input-number v-model="form.addItemObj[item.code].end" :controls="false" placeholder="最大值" class="width-small mr3" clearable />
+            <el-input-number v-model="form.addItemObj[item.code].end" :controls="false" :precision="2" placeholder="最大值" class="width-small mr3" clearable />
           </template>
           <el-select v-if="item.showType === 3" v-model="form.addItemObj[item.code]" class="width-small mr3" clearable filterable>
             <el-option
@@ -148,6 +161,8 @@
           <el-button type="danger" plain icon="el-icon-delete" size="mini" circle @click="deleteItem('add', item.code)" />
         </el-form-item>
       </el-row>
+
+
     </el-form>
     <div v-if="isAdmin || form.platformType !== 1" slot="footer" class="dialog-footer">
       <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
@@ -195,9 +210,11 @@ export default {
       // 计算公式字典
       ruleTypeOptions: [],
       // 表单参数
+      isDefault: false,
       form: {
         platformType: 2, // 1运营 2货主
         shipperCode: null, // 角色为1时要传
+        // isDefault: false, // 设置默认 "Y" "N"
         addItem: [],
         addItemObj: {},
         reduceItem: [],
@@ -221,7 +238,12 @@ export default {
       chooseItemOpen: false,
       chooseItemType: '',
       // 储存选择的 定额/定率
-      currentRadio: 'DE'
+      currentRadio: 'DE',
+      // 是否允许
+      isDefaultOptions: [
+        { dictLabel: '是', dictValue: 'Y' },
+        { dictLabel: '否', dictValue: 'N' }
+      ]
     };
   },
   computed: {
@@ -233,8 +255,6 @@ export default {
         this.$emit('update:open', v);
       }
     }
-
-
   },
   mounted() {
     this.getAllDicList();
@@ -282,6 +302,7 @@ export default {
     getOptionsByCode(dictCode) {
       this.getDicts(dictCode).then((response) => {
         this.options[dictCode] = response.data;
+        this.$forceUpdate();
       });
     },
     /**
@@ -293,8 +314,8 @@ export default {
       }
       if (el.showType === 2) { // 回填范围区域，2个值
         this.$set(obj, el.code, {});
-        this.$set(obj[el.code], 'start', el.ruleValue ? JSON.parse(el.ruleValue)[0] : '');
-        this.$set(obj[el.code], 'end', el.ruleValue ? JSON.parse(el.ruleValue)[1] : '');
+        this.$set(obj[el.code], 'start', el.ruleValue ? Math.abs(JSON.parse(el.ruleValue)[0]) : '');
+        this.$set(obj[el.code], 'end', el.ruleValue ? Math.abs(JSON.parse(el.ruleValue)[1]) : '');
       } else { // 回填单个值
         this.$set(obj, el.code, el.ruleValue ? el.ruleValue : null);
       }
@@ -304,9 +325,9 @@ export default {
      */
     submitForm() {
       this.$refs['form'].validate(valid => {
-        this.buttonLoading = true;
         // 构造参数
         const params = {
+          isDefault: this.form.isDefault,
           name: this.form.name,
           ruleDictValue: this.form.ruleDictValue,
           detailList: []
@@ -321,6 +342,7 @@ export default {
         this.setParams(this.form.addItem, this.form.addItemObj, params, 1);
         this.setParams(this.form.reduceItem, this.form.reduceItemObj, params, 2);
         if (valid) {
+          this.buttonLoading = true;
           if (this.form.code) {
             params.code = this.form.code;
             updateRules(params).then(response => {
@@ -371,7 +393,7 @@ export default {
           } else {
             params.detailList.push({
               ruleItemCode: el.code,
-              ruleValue: JSON.stringify([obj[el.code].start, obj[el.code].end])
+              ruleValue: JSON.stringify([-obj[el.code].start, obj[el.code].end])
             });
           }
         } else { // 单个值
@@ -443,6 +465,7 @@ export default {
         name: null,
         ruleDictValue: null,
         isLoss: true,
+        isDefault: 'N',
         addItem: [],
         addItemObj: {},
         reduceItem: [],
@@ -459,6 +482,7 @@ export default {
       this.form.name = data.ruleInfo.name;
       this.form.ruleDictValue = data.ruleInfo.ruleDictValue;
       this.form.isLoss = data.lossList.length > 0;
+      this.form.isDefault = data.ruleInfo.isDefault;
       // 回填路耗
       this.setLossList(data.lossList);
       // 回填增减项
@@ -566,6 +590,8 @@ export default {
         }
       });
     }
+
+
   }
 };
 </script>
@@ -591,18 +617,24 @@ export default {
   /* 计数器样式 */
   .el-input-number ::v-deep.el-input__inner{
     text-align: left;
-    padding-right: 30px;
+    padding-right: 46px;
   }
   /* 单位 */
   .unit-span-l{
     position: absolute;
     left: 184px;
     top: 0;
+    &.double{
+      left: 166px;
+    }
   }
   .unit-span-r{
     position: absolute;
     left: 428px;
     top: 0;
+    &.double{
+      left: 410px;
+    }
   }
   /* 暂无数据 */
   .none-box{

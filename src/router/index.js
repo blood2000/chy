@@ -54,6 +54,7 @@ export const constantRoutes = [
   },
   {
     path: '/404',
+    name: '404',
     component: (resolve) => require(['@/views/error/404'], resolve),
     hidden: true
   },
@@ -70,8 +71,8 @@ export const constantRoutes = [
       {
         path: 'index',
         component: (resolve) => require(['@/views/index'], resolve),
-        name: '工作台',
-        meta: { title: '工作台', icon: 'dashboard', noCache: true, affix: true }
+        name: 'Index',
+        meta: { title: '工作台', icon: 'dashboard', noCache: false, affix: true }
       }
     ]
   },
@@ -99,6 +100,19 @@ export const constantRoutes = [
         component: (resolve) => require(['@/views/system/dict/data'], resolve),
         name: 'Data',
         meta: { title: '字典数据', icon: '' }
+      }
+    ]
+  },
+  {
+    path: '/table',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'type/data/:code',
+        component: (resolve) => require(['@/views/system/table/data'], resolve),
+        name: 'TableData',
+        meta: { title: '列表数据', icon: '' }
       }
     ]
   },
@@ -131,6 +145,11 @@ export const constantRoutes = [
   {
     path: '/statistic',
     component: (resolve) => require(['@/views/statistic/index'], resolve),
+    hidden: true
+  },
+  {
+    path: '/statisticSecond',
+    component: (resolve) => require(['@/views/statistic/indexSecond'], resolve),
     hidden: true
   }
 ];

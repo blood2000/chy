@@ -1,5 +1,5 @@
 <template>
-  <el-dialog
+  <!--<el-dialog
     class="page-shipment-manage-dialog"
     :visible="visible"
     :fullscreen="isfullscreen"
@@ -8,6 +8,16 @@
     append-to-body
     :close-on-click-modal="false"
     @close="cancel"
+  >-->
+  <el-drawer
+    size="96%"
+    title="管理"
+    :wrapper-closable="false"
+    :visible.sync="visible"
+    direction="rtl"
+    append-to-body
+    :close="cancel"
+    class="page-shipment-manage-dialog"
   >
     <el-tabs v-model="activeName">
       <el-tab-pane label="企业资料" name="info">
@@ -23,24 +33,28 @@
         <stock-page v-if="activeName === 'stock'" class="table-page" :shipment-code="shipmentCode" :org-code="companyCode" />
       </el-tab-pane>
       <el-tab-pane label="项目管理" name="project">
-        <project-Page v-if="activeName === 'project'" class="table-page" :shipment-code="shipmentCode" :org-code="companyCode"/>
+        <project-Page v-if="activeName === 'project'" class="table-page" :shipment-code="shipmentCode" :company-code="companyCode" :user-code="userCode" :show-shipment="true" :org-type="orgType" />
       </el-tab-pane>
       <el-tab-pane label="常用地址管理" name="address">
-        <address-page v-if="activeName === 'address'" class="table-page" :shipment-code="shipmentCode" :org-code="companyCode"/>
+        <address-page v-if="activeName === 'address'" class="table-page" :shipment-code="shipmentCode" :company-code="companyCode" />
       </el-tab-pane>
       <template v-if="companyCode">
-        <el-tab-pane label="企业成员管理" name="member">
-          <user-page v-if="activeName === 'member'" class="table-page" :company-code="companyCode" />
+        <el-tab-pane v-if="shipperType == 1" label="企业成员管理" name="member">
+          <user-page v-if="activeName === 'member'" class="table-page" :shipment-code="shipmentCode" :company-code="companyCode" :user-code="userCode" :show-shipment="true" :org-type="orgType" />
         </el-tab-pane>
-        <el-tab-pane label="企业组织管理" name="dep">
-          <dept-page v-if="activeName === 'dep'" class="table-page" :company-code="companyCode" />
+        <el-tab-pane v-if="shipperType == 1" label="企业组织管理" name="dep">
+          <dept-page v-if="activeName === 'dep'" class="table-page" :company-code="companyCode" :user-code="userCode" :show-shipment="true" :org-type="orgType" />
         </el-tab-pane>
-        <el-tab-pane label="企业角色管理" name="role">
-          <role-page v-if="activeName === 'role'" class="table-page" :company-code="companyCode" />
+        <el-tab-pane v-if="shipperType == 1" label="企业角色管理" name="role">
+          <role-page v-if="activeName === 'role'" class="table-page" :company-code="companyCode" :user-code="userCode" :show-shipment="true" :org-type="orgType" />
+        </el-tab-pane>
+        <el-tab-pane label="调度组管理" name="group">
+          <group-page v-if="activeName === 'group'" class="table-page" :shipment-code="shipmentCode" />
         </el-tab-pane>
       </template>
     </el-tabs>
-  </el-dialog>
+  </el-drawer>
+  <!-- </el-dialog>-->
 </template>
 
 <script>
@@ -53,6 +67,7 @@ import AddressPage from '../../enterprise/company/address';
 import UserPage from '../../system/user';
 import DeptPage from '../../system/dept';
 import RolePage from '../../system/role';
+import GroupPage from '../../enterprise/group';
 
 export default {
   name: 'ShipmentManageDialog',
@@ -65,7 +80,8 @@ export default {
     AddressPage,
     UserPage,
     DeptPage,
-    RolePage
+    RolePage,
+    GroupPage
   },
   props: {
     open: Boolean,
@@ -76,12 +92,22 @@ export default {
     companyCode: {
       type: String,
       default: null
+    },
+    userCode: {
+      type: String,
+      default: null
+    },
+    shipperType: {
+      type: Number,
+      default: null
     }
   },
   data() {
     return {
       isfullscreen: false,
-      activeName: 'info'
+      activeName: 'info',
+      orgType: 1,
+      isShipment: true
     };
   },
   computed: {
@@ -117,17 +143,16 @@ export default {
 
 <style lang="scss">
 .page-shipment-manage-dialog{
-  .el-dialog{
-    .el-dialog__body{
-      padding-top: 10px;
-      .app-container{
-        box-shadow: none;
-        padding: 0;
-      }
-      .table-page{
-        .app-container, &.app-container{
-          margin: 0;
-        }
+  .el-drawer__body{
+    padding: 0 20px;
+    overflow-y: auto;
+    .app-container{
+      box-shadow: none;
+      padding: 0;
+    }
+    .table-page{
+      .app-container, &.app-container{
+        margin: 0;
       }
     }
   }

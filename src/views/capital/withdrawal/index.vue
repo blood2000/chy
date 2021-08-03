@@ -15,7 +15,7 @@
         </el-form-item>
         <el-form-item label="申请人" prop="applyerName">
           <el-input
-            v-model="queryParams.applyerName"
+            v-model.trim="queryParams.applyerName"
             placeholder="请输入申请人"
             clearable
             size="small"
@@ -24,7 +24,7 @@
         </el-form-item>
         <el-form-item label="收款人姓名" prop="bankAcountName">
           <el-input
-            v-model="queryParams.bankAcountName"
+            v-model.trim="queryParams.bankAcountName"
             placeholder="请输入收款人姓名"
             clearable
             size="small"
@@ -33,7 +33,7 @@
         </el-form-item>
         <el-form-item label="手机号码" prop="userPhone">
           <el-input
-            v-model="queryParams.userPhone"
+            v-model.trim="queryParams.userPhone"
             placeholder="请输入手机号码"
             clearable
             size="small"
@@ -42,7 +42,7 @@
         </el-form-item>
         <el-form-item label="银行卡号" prop="bankNumber">
           <el-input
-            v-model="queryParams.bankNumber"
+            v-model.trim="queryParams.bankNumber"
             placeholder="请输入银行卡号"
             clearable
             size="small"
@@ -51,8 +51,17 @@
         </el-form-item>
         <el-form-item label="车牌号" prop="licenseNumber">
           <el-input
-            v-model="queryParams.licenseNumber"
+            v-model.trim="queryParams.licenseNumber"
             placeholder="请输入车牌号"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item label="支付批次号" prop="bizNo">
+          <el-input
+            v-model.trim="queryParams.bizNo"
+            placeholder="请输入支付批次号"
             clearable
             size="small"
             @keyup.enter.native="handleQuery"
@@ -120,11 +129,22 @@
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
           <el-button
-            type="warning"
+            type="primary"
             icon="el-icon-download"
             size="mini"
+            :loading="exportLoading"
             @click="handleExport"
           >导出</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            type="warning"
+            icon="el-icon-upload2"
+            size="mini"
+            :disabled="multiple"
+            :loading="importLoading"
+            @click="handleImport"
+          >网商批量提现</el-button>
         </el-col>
         <el-col :span="1.5">
           <el-button
@@ -132,8 +152,9 @@
             icon="el-icon-upload2"
             size="mini"
             :disabled="multiple"
-            @click="handleImport"
-          >网商批量提现</el-button>
+            :loading="rejectLoading"
+            @click="handleReject"
+          >网商批量驳回</el-button>
         </el-col>
         <!-- <el-col :span="1.5">
           <el-button
@@ -150,7 +171,19 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <RefactorTable ref="multipleTable" :loading="loading" :data="withdrawalList" :table-columns-config="tableColumnsConfig" :selectable-fn="selectableFn" @selection-change="handleSelectionChange">
+      <RefactorTable
+        ref="multipleTable"
+        :loading="loading"
+        :data="withdrawalList"
+        :table-columns-config="tableColumnsConfig"
+        :row-class-name="tableRowClassName"
+        :selectable="selectableFn"
+        @selection-change="handleSelectionChange"
+      >
+        <!-- 金额 -->
+        <template #money="{row}">
+          <span>{{ floor(row.money) }}</span>
+        </template>
         <!-- 转账渠道 -->
         <template #payStatus="{row}">
           <span>{{ selectDictLabel(payStatusOption, row.payStatus) }}</span>
@@ -186,7 +219,7 @@
 </template>
 
 <script>
-import { withDrawalListApi, getWithDrawalList, toCard } from '@/api/capital/withdrawal';
+import { withDrawalListApi, getWithDrawalList, toCard, reject } from '@/api/capital/withdrawal';
 
 export default {
   name: 'Withdrawal',
@@ -221,7 +254,7 @@ export default {
       // 转帐结果字典
       statusOptions: [
         { dictLabel: '提现申请', dictValue: 0 },
-        { dictLabel: '提交成功', dictValue: 1 },
+        { dictLabel: '提现成功', dictValue: 1 },
         { dictLabel: '转账成功', dictValue: 2 },
         { dictLabel: '转账失败', dictValue: 3 },
         { dictLabel: '处理中', dictValue: 4 },
@@ -246,19 +279,44 @@ export default {
         transferTimeBegin: undefined,
         transferTimeEnd: undefined,
         applyTimeBegin: undefined,
-        applyTimeEnd: undefined
+        applyTimeEnd: undefined,
+        bizNo: undefined
       },
-      searched: false
+      searched: false,
+      exportLoading: false,
+      importLoading: false,
+      rejectLoading: false,
+      errList: [],
+      sucList: []
     };
   },
+  computed: {
+    routeName() {
+      return this.$store.state.settings.quickEntryName;
+    }
+  },
   watch: {
-    $route(route) {
-      this.getRouterQuery(route);
+    routeName: {
+      handler: function(val) {
+        if (val === 'Withdrawal') {
+          this.resetQueryForm();
+          this.queryParams.status = JSON.parse(this.$route.query.data).status;
+          this.handleQuery();
+        }
+      },
+      deep: true
     }
   },
   created() {
     this.tableHeaderConfig(this.tableColumnsConfig, withDrawalListApi);
-    this.getRouterQuery(this.$route);
+
+    const routeData = this.$route.query.data;
+    if (routeData) {
+      this.queryParams.status = JSON.parse(routeData).status;
+    }
+
+    this.getList();
+    // this.getRouterQuery(this.$route);
   },
   methods: {
     /** 从快捷入口进 */
@@ -272,9 +330,18 @@ export default {
       this.getList();
     },
     /** 查询列表 */
-    getList() {
-      this.loading = true;
-      getWithDrawalList(this.queryParams).then(response => {
+    getList(e) {
+      if (e !== 1) {
+        this.errList = [];
+        this.sucList = [];
+        this.loading = true;
+      }
+      this.$store.dispatch('settings/changeQuick', null);
+      const params = { ...this.queryParams };
+      if (params.licenseNumber) {
+        params.licenseNumber = params.licenseNumber.toUpperCase();
+      }
+      getWithDrawalList(params).then(response => {
         this.withdrawalList = response.data.rows;
         this.total = response.data.total;
         this.loading = false;
@@ -288,29 +355,101 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.resetQueryForm();
+      this.handleQuery();
+    },
+    resetQueryForm() {
       this.queryParams.transferTimeBegin = null;
       this.queryParams.transferTimeEnd = null;
       this.queryParams.applyTimeBegin = null;
       this.queryParams.applyTimeEnd = null;
       this.resetForm('queryForm');
-      this.handleQuery();
+      this.queryParams.status = undefined;
     },
     /** 导出按钮操作 */
     handleExport() {
-      // this.download('assets/driver/export', {}, `driver_${new Date().getTime()}.xlsx`, 'application/json');
+      this.exportLoading = true;
+      const params = Object.assign({}, this.queryParams);
+      params.pageSize = undefined;
+      params.pageNum = undefined;
+      this.download('/payment/transferApply/export', params, `提现申请`).then(() => {
+        this.exportLoading = false;
+      });
     },
     /** 网商批量提现 */
     handleImport() {
-      const _this = this;
+      // const _this = this;
       this.$confirm('是否确认网商批量提现?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
+      }).then(() => {
+        this.errList = [];
+        this.sucList = [];
+        this.$message({ type: 'warning', message: '发起网商提现成功，请勿关闭或刷新页面！' });
+        this.importLoading = true;
+        this.getToCard();
+        // toCard(_this.ids).then(response => {
+        //   _this.importLoading = false;
+        //   _this.msgSuccess('操作成功');
+        //   _this.$refs.multipleTable.m2ToggleSelection();
+        //   _this.getList();
+        // }).catch(() => {
+        //   _this.importLoading = false;
+        // });
+      });
+    },
+    // 提现接口
+    async getToCard() {
+      const len = this.ids;
+      // console.log(len);
+      for (let index = 0; index < len.length; index++) {
+        const e = len[index];
+        try {
+          await toCard([e]);
+          this.sucList.push(e);
+        } catch (error) {
+          this.errList.push(e);
+          continue;
+        }
+        // console.log(index, '----', this.ids.length, len.length);
+      }
+      setTimeout(() => {
+        this.getList();
+      }, 2000);
+      this.$refs.multipleTable.m2ToggleSelection();
+      this.importLoading = false;
+      console.log(this.sucList, this.errList);
+    },
+    // 列表颜色
+    tableRowClassName({ row, rowIndex }) {
+      if (this.errList.length > 0) {
+        if (this.errList.includes(row.id)) {
+          return 'warning-row';
+        }
+      }
+      if (this.sucList.length > 0) {
+        if (this.sucList.includes(row.id)) {
+          return 'success-row';
+        }
+      }
+    },
+    /** 网商批量驳回 */
+    handleReject() {
+      const _this = this;
+      this.$confirm('是否确认网商批量驳回?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(function() {
-        toCard(_this.ids).then(response => {
+        _this.rejectLoading = true;
+        reject(_this.ids).then(response => {
+          _this.rejectLoading = false;
           _this.msgSuccess('操作成功');
           _this.$refs.multipleTable.m2ToggleSelection();
           _this.getList();
+        }).catch(() => {
+          _this.rejectLoading = false;
         });
       });
     },
@@ -335,3 +474,17 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+  .total_bg{
+    background: #F8F9FA;
+    border-radius: 4px;
+    padding: 10px 20px;
+    margin-bottom: 10px;
+  }
+  ::v-deep .warning-row{
+    background: #fadbd9 !important;
+  }
+  ::v-deep .success-row{
+    background: #d7f0dbff !important;
+  }
+</style>

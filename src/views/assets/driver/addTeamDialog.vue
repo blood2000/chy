@@ -9,10 +9,10 @@
     @close="cancel"
   >
     <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
-      <el-form-item label="调度者名称" prop="name">
+      <el-form-item label="调度组名称" prop="name">
         <el-input
           v-model="queryParams.name"
-          placeholder="请输入调度者名称"
+          placeholder="请输入调度组名称"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -71,26 +71,26 @@
       </el-form-item>
     </el-form>
 
-    <el-table v-loading="loading" :data="infoList" border stripe @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="infoList" highlight-current-row border @selection-change="handleSelectionChange">
       <el-table-column type="selection" :selectable="checkboxSelectable" width="55" align="center" />
-      <el-table-column label="序号" align="center" type="index" min-width="5%" />
+      <el-table-column label="序号" align="center" fixed="left" type="index" min-width="5%" />
       <!-- <el-table-column label="网点编码" align="center" prop="branchCode" /> -->
       <el-table-column label="处理状态" align="center" prop="applyStatus">
         <template slot-scope="scope">
           <span v-if="scope.row.applyStatus !=null && scope.row.applyStatus>=0">{{ selectDictLabel(applyStatusOptions, scope.row.applyStatus) }}</span>
-          <span v-else>待加入</span>
+          <span v-else>未邀请</span>
         </template>
       </el-table-column>
-      <el-table-column label="调度者名称" align="center" prop="name" />
-      <el-table-column label="审核状态" align="center" prop="authStatus">
+      <el-table-column label="调度组名称" align="center" prop="name" />
+      <!-- <el-table-column label="审核状态" align="center" prop="authStatus">
         <template slot-scope="scope">
-          <i v-show="scope.row.authStatus === 0" class="el-icon-warning g-color-light-gray mr5" />
-          <i v-show="scope.row.authStatus === 1" class="g-icon-deal mr5" />
+          <i v-show="scope.row.authStatus === 0" class="g-icon-none mr5" />
+          <i v-show="scope.row.authStatus === 1" class="g-icon-deal-blue mr5" />
           <i v-show="scope.row.authStatus === 2" class="el-icon-error g-color-error mr5" />
           <i v-show="scope.row.authStatus === 3" class="el-icon-success g-color-success mr5" />
           <span>{{ selectDictLabel(authStatusOptions, scope.row.authStatus) }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <!-- <el-table-column label="管理者" align="center" prop="teamLeader" />-->
       <el-table-column label="身份证号" align="center" prop="identificationNumber" />
       <el-table-column label="是否清分" align="center" prop="isDistribution">
@@ -99,11 +99,11 @@
         </template>
       </el-table-column>
       <el-table-column label="清分百分比" align="center" prop="distributionPercent" />
-      <el-table-column label="状态" align="center" prop="status">
+      <!-- <el-table-column label="状态" align="center" prop="status">
         <template slot-scope="scope">
           <span>{{ selectDictLabel(statusOptions, scope.row.status) }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
     </el-table>
 
     <pagination
@@ -157,10 +157,10 @@ export default {
       ],
       // 处理状态字典
       applyStatusOptions: [
-        { dictLabel: '未处理', dictValue: 0 },
-        { dictLabel: '已加入', dictValue: 1 },
+        { dictLabel: '待处理', dictValue: 0 },
+        { dictLabel: '已同意', dictValue: 1 },
         { dictLabel: '已拒绝', dictValue: 2 },
-        { dictLabel: '待加入', dictValue: 3 }
+        { dictLabel: '未邀请', dictValue: 3 }
       ],
       // 审核状态字典
       authStatusOptions: [

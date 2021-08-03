@@ -8,10 +8,10 @@
     :close-on-click-modal="false"
     @close="cancel"
   >
-    <el-table v-loading="loading" :data="infoList" border stripe @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="infoList" highlight-current-row border @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="序号" align="center" type="index" min-width="5%" />
-      <el-table-column label="调度者名称" align="center" prop="name" />
+      <el-table-column label="序号" align="center" fixed="left" type="index" min-width="5%" />
+      <el-table-column label="调度组名称" align="center" prop="name" />
       <el-table-column label="身份证号" align="center" prop="identificationNumber" />
       <el-table-column label="是否清分" align="center" prop="isDistribution">
         <template slot-scope="scope">
@@ -26,8 +26,8 @@
       </el-table-column>
     </el-table>
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" :disabled="multiple" @click="handleAgree(1)">同 意</el-button>
-      <el-button type="danger" :disabled="multiple" @click="handleAgree(2)">拒 绝</el-button>
+      <el-button type="primary" :loading="buttonLoading" :disabled="multiple" @click="handleAgree(1)">同 意</el-button>
+      <el-button type="danger" :loading="buttonLoading" :disabled="multiple" @click="handleAgree(2)">拒 绝</el-button>
     </div>
   </el-dialog>
 </template>
@@ -46,6 +46,7 @@ export default {
   },
   data() {
     return {
+      buttonLoading: false,
       isfullscreen: false,
       // 遮罩层
       loading: true,
@@ -114,6 +115,7 @@ export default {
     },
     // 同意按钮
     handleAgree(status) {
+      this.buttonLoading = true;
       dealApply({
         driverCode: this.driverCode,
         ids: this.ids,
@@ -123,6 +125,9 @@ export default {
         this.msgSuccess('操作成功');
         this.close();
         this.$emit('refresh');
+        this.buttonLoading = false;
+      }).catch(() => {
+        this.buttonLoading = false;
       });
     }
   }
