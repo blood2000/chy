@@ -164,8 +164,11 @@ export const formValidate = {
     if (value === undefined || value === null || value === '') {
       callback();
     }
+    const ptr_length = /^.{0,50}$/;
     if (!numberReg.test(value)) {
       callback(new Error('请输入正确的银行卡号'));
+    } else if (!ptr_length.test(value)) {
+      callback(new Error('银行卡号长度应小于50位'));
     } else {
       callback();
     }
