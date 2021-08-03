@@ -919,7 +919,7 @@ export default {
               const que = {
                 addressInfo,
                 dispatcherCodeList,
-                mainOrderNumber: response.data
+                orderCode: response.data
               };
 
               try {
