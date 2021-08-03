@@ -67,7 +67,7 @@
           prop: 'waybillNo',
           isShow: true,
           tooltip: true,
-          label: '运单编号'
+          label: '运输单号'
         },
         {
           prop: 'ztcName',

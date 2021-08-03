@@ -525,6 +525,11 @@
             <el-checkbox v-model="form.openProjectMemberView">是否开启项目成员视图</el-checkbox>
           </el-form-item>
         </el-col>
+          <el-col :span="11">
+              <el-form-item prop="openTheElectronicFence">
+                  <el-checkbox v-model="form.openTheElectronicFence">是否开启电子围栏</el-checkbox>
+              </el-form-item>
+          </el-col>
       </el-row>
       <h5 class="g-card-title g-strong mb20 ml10">
         普通货物配置
@@ -928,12 +933,17 @@ export default {
           if (this.form.openProjectMemberView === true) {
             openProjectMemberView = 1;
           }
+          var openTheElectronicFence = 1;
+          if (this.form.openTheElectronicFence === true) {
+            openTheElectronicFence = 0;
+          }
           // 复制管理员图片至法人
           this.form.artificialIdentificationImg = this.form.identificationImg;
           this.form.artificialIdentificationBackImg = this.form.identificationBackImg;
           var extendForm = { editDriverActualAmount: editDriverActualAmount, noNeedUnloadImg: noNeedUnloadImg,
             reviewNoNeedUnloadImg: reviewNoNeedUnloadImg, reviewIsNeedLoadingCertificate: reviewIsNeedLoadingCertificate, openProjectDesignView: openProjectDesignView,
-            isNeedLoadingCertificate: isNeedLoadingCertificate, openAppPermissionControl: openAppPermissionControl, openProjectMemberView: openProjectMemberView };
+            isNeedLoadingCertificate: isNeedLoadingCertificate, openAppPermissionControl: openAppPermissionControl, openProjectMemberView: openProjectMemberView,
+            openTheElectronicFence: openTheElectronicFence };
           // eslint-disable-next-line no-undef
           this.form = Object.assign(this.form, extendForm);
           if (this.form.id) {
@@ -1061,7 +1071,8 @@ export default {
         allowNoAuditDriverToReceive: 1,
         isNeedApplicationForPayment: 0,
         creditStartTime: null,
-        creditEndTime: null
+        creditEndTime: null,
+        openTheElectronicFence: 1
         // branchCode: null
       };
       this.resetForm('form');
@@ -1130,6 +1141,11 @@ export default {
         this.form.openProjectMemberView = true;
       } else {
         this.form.openProjectMemberView = false;
+      }
+      if (this.form.openTheElectronicFence === 0) {
+        this.form.openTheElectronicFence = true;
+      } else {
+        this.form.openTheElectronicFence = false;
       }
       if (this.form.branchCode && this.form.branchName) {
         this.branchOptions = [{
