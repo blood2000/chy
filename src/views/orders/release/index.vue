@@ -923,8 +923,7 @@ export default {
               };
 
               try {
-                const resFence = await fencePlatCreate(que);
-                console.log(resFence);
+                await fencePlatCreate(que);
               } catch (error) {
                 console.log(error);
               }
