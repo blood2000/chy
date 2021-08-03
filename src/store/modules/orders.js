@@ -9,7 +9,8 @@ const state = {
   orderStowageStatus: '0', // 单位
   lossPlans: {}, // 取路耗 亏吨方案, key为规则code,value为路耗内容
   radius1: 200, // 设置电子围栏装
-  radius2: 200 // 设置电子围栏卸
+  radius2: 200, // 设置电子围栏卸
+  tiemList: [] // 调度者
 };
 
 const mutations = {
@@ -28,7 +29,8 @@ const mutations = {
   },
 
   SET_RADIUS1: (state, device) => { state.radius1 = device; },
-  SET_RADIUS2: (state, device) => { state.radius2 = device; }
+  SET_RADIUS2: (state, device) => { state.radius2 = device; },
+  SET_TIMELIST: (state, device) => { state.tiemList = device; }
 
 };
 

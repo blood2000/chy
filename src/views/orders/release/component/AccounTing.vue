@@ -541,9 +541,15 @@ export default {
             const addresCodes = ee.addressIdentification.split(':');
             const arr = this.good.newRedis || this.good.redis;
 
+            // console.log(addresCodes);
+            // console.log(arr);
+            // const identifications = arr.map(e => e.identification);
+
+
 
             arr.forEach(redi => {
               if (addresCodes[0] === redi.identification + '' || addresCodes[1] === redi.identification + '' || addresCodes[0] === redi.code || addresCodes[1] === redi.code) {
+                console.log(ee);
                 this.predictData = ee;
               }
             });

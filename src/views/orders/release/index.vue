@@ -199,16 +199,18 @@
               <div class="mb8 m-flex" style="width:66%;">
                 <div class="m_zhuanghuo">
                   装货信息
-                  <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
-                    设置电子围栏
-                    <el-switch
-                      v-model="switchRadius1"
-                      active-color="#13ce66"
-                      inactive-color="#ff4949"
-                      class="ml10 mr10"
-                    />
+                  <div style="display: inline-block;">
+                    <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
+                      设置电子围栏
+                      <el-switch
+                        v-model="switchRadius1"
+                        active-color="#13ce66"
+                        inactive-color="#ff4949"
+                        class="ml10 mr10"
+                      />
+                    </label>
                     <el-input-number v-if="switchRadius1" v-model="radius1" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS1', radius1)" />
-                  </label>
+                  </div>
 
                   <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '2' || formData.tin7 === '4')" v-model="formData.tin8" :disabled="myisdisabled" style="marginLeft:30px;" @change="handlerCheck('add')">允许自装</el-checkbox>
                 </div>
@@ -257,16 +259,18 @@
               <div class="mb8 m-flex" style="width:66%">
                 <div class="m_xie">
                   卸货信息
-                  <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
-                    设置电子围栏
-                    <el-switch
-                      v-model="switchRadius2"
-                      active-color="#13ce66"
-                      inactive-color="#ff4949"
-                      class="ml10 mr10"
-                    />
+                  <div style="display: inline-block;">
+                    <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
+                      设置电子围栏
+                      <el-switch
+                        v-model="switchRadius2"
+                        active-color="#13ce66"
+                        inactive-color="#ff4949"
+                        class="ml10 mr10"
+                      />
+                    </label>
                     <el-input-number v-if="switchRadius2" v-model="radius2" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS2', radius2)" />
-                  </label>
+                  </div>
                   <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '3' || formData.tin7 === '4')" v-model="formData.tin9" :disabled="myisdisabled" style="marginLeft:30px;" @change="handlerXie('xie')">允许自卸</el-checkbox>
                 </div>
                 <el-button
@@ -572,7 +576,12 @@ export default {
     // 是否可以设置电子围栏
     isOpenTheElectronicFence() {
       // 是否开启电子围栏(0开启 1不开启), 默认不开启
-      return this.shipmentInfo.openTheElectronicFence === 0;
+      let bool = false;
+
+      if (this.shipmentInfo && this.shipmentInfo.openTheElectronicFence === 0 && !this.idCode && this.$store.state.orders.tiemList.length > 0) {
+        bool = true;
+      }
+      return bool;
     }
   },
   watch: {
@@ -882,41 +891,43 @@ export default {
           });
         } else {
           orderPubilsh(this.lastData).then(async(response) => {
-            const { orderAddressPublishBoList, orderSpecifiedList } = this.lastData;
-            const addressInfo = orderAddressPublishBoList.map(e => {
-              let obj = null;
-              if (e.addressType === '1' && this.switchRadius1) {
-                obj = {
-                  addressType: e.addressType,
-                  lng: e.longitude,
-                  lat: e.latitude,
-                  radius: this.$store.state.orders.radius1 + ''
-                };
-              } else if (e.addressType === '2' && this.switchRadius2) {
-                obj = {
-                  addressType: e.addressType,
-                  lng: e.longitude,
-                  lat: e.latitude,
-                  radius: this.$store.state.orders.radius2 + ''
-                };
+            if (this.isOpenTheElectronicFence && (this.switchRadius1 || this.switchRadius2)) {
+              const { orderAddressPublishBoList, orderSpecifiedList } = this.lastData;
+              const addressInfo = orderAddressPublishBoList.map(e => {
+                let obj = null;
+                if (e.addressType === '1' && this.switchRadius1) {
+                  obj = {
+                    addressType: e.addressType,
+                    lng: e.longitude,
+                    lat: e.latitude,
+                    radius: this.$store.state.orders.radius1 + ''
+                  };
+                } else if (e.addressType === '2' && this.switchRadius2) {
+                  obj = {
+                    addressType: e.addressType,
+                    lng: e.longitude,
+                    lat: e.latitude,
+                    radius: this.$store.state.orders.radius2 + ''
+                  };
+                }
+
+                return obj;
+              }).filter(e => e);
+
+              const dispatcherCodeList = orderSpecifiedList.map(e => e.teamInfoCode);
+
+              const que = {
+                addressInfo,
+                dispatcherCodeList,
+                mainOrderNumber: response.data
+              };
+
+              try {
+                const resFence = await fencePlatCreate(que);
+                console.log(resFence);
+              } catch (error) {
+                console.log(error);
               }
-
-              return obj;
-            }).filter(e => e);
-
-            const dispatcherCode = orderSpecifiedList.map(e => e.teamInfoCode);
-
-            const que = {
-              addressInfo,
-              dispatcherCode,
-              mainOrderNumber: response.data
-            };
-
-            try {
-              const resFence = await fencePlatCreate(que);
-              console.log(resFence);
-            } catch (error) {
-              console.log(error);
             }
 
 
@@ -1258,6 +1269,7 @@ export default {
         this.msgError(res.msg);
         return;
       }
+
       this.$nextTick(() => {
         this.$store.dispatch('orders/store_getEst', res.data);
       });
@@ -1592,6 +1604,8 @@ export default {
     transform: rotate(45deg);
     top: -28px;
     left: -24px;
+
+
 }
 .triangleT,.triangleL,.triangleB,.triangleR{position:relative;}
 .triangleT::after,
