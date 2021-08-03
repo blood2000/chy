@@ -725,7 +725,7 @@ export default {
         beginTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[0] : undefined,
         endTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[1] : undefined,
         receiveTime: undefined,
-        pcStatus: this.queryParams.status === 2 ? this.queryParams.pcStatus : undefined
+        status: this.queryParams.status === 2 ? this.queryParams.pcStatus : this.queryParams.status
       };
       this.loading = false;
       let res = null;
