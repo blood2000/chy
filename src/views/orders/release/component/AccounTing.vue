@@ -10,13 +10,13 @@
   >
 
     <div v-if="!showbudget" class="header mb8 mt8">费用信息</div>
-    <el-form-item label="运费单价: " prop="freightPrice" label-width="130px">
-      <el-row>
+    <el-row type="flex" justify="space-between" class="ly-flex-w">
 
-        <el-col :span="24" class="ly-flex-pack-justify ">
+      <el-col :span="10" class="ly-flex-pack-justify" style="flex:1; min-width:750px;">
+        <el-form-item label="运费单价: " prop="freightPrice" label-width="100px">
           <div class="ly-flex ly-flex-w">
-            <div class="mr10">
-              <div class="m_zhuanxieadderss ly-flex-align-center">
+            <div class="mr20">
+              <div class="m_zhuanxieadderss ly-flex-align-center ly-flex-w">
                 <span class="m_text m_zhuanghuo">{{ addressName[0] }}</span>
                 <span class="m_style" />
                 <span class="m_text m_xie">{{ addressName[1] }}</span>
@@ -44,37 +44,39 @@
               </div>
             </div>
           </div>
-          <el-form-item
-            label="规则: "
-            prop="ruleItemId"
-            label-width="60px"
-            style="width:440px;"
+        </el-form-item>
+      </el-col>
+      <el-col :span="10" style="width:500px;">
+        <el-form-item
+          label="规则: "
+          prop="ruleItemId"
+          label-width="60px"
+          style="width:440px;"
+        >
+          <el-select
+            v-model="formData.ruleItemId"
+            placeholder="请选择规则"
+            clearable
+            style="width:100%;"
+            @change="handleRuleItemId"
           >
-            <el-select
-              v-model="formData.ruleItemId"
-              placeholder="请选择规则"
-              clearable
-              style="width:100%;"
-              @change="handleRuleItemId"
+            <el-option
+              v-for="(dict, index) in ruleItemIdOption"
+              :key="index"
+              :label="dict.ruleFormula"
+              :value="dict.dictValue"
             >
-              <el-option
-                v-for="(dict, index) in ruleItemIdOption"
-                :key="index"
-                :label="dict.ruleFormula"
-                :value="dict.dictValue"
-              >
-                <div>
-                  <span style="color: #c0c4cc; font-size: 13px">{{ dict.dictLabel }}</span>
-                  <div class="b">{{ dict.ruleFormula }}</div>
-                </div>
-              </el-option>
-            </el-select>
-          </el-form-item>
+              <div>
+                <span style="color: #c0c4cc; font-size: 13px">{{ dict.dictLabel }}</span>
+                <div class="b">{{ dict.ruleFormula }}</div>
+              </div>
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
 
-        </el-col>
+    </el-row>
 
-      </el-row>
-    </el-form-item>
 
     <template v-if="formData.ruleItemId">
 
@@ -603,6 +605,7 @@ export default {
   }
 }
 .t_box_item{
+  min-width: 570px;
   padding: 15px 0 15px 15px;
   background-color: #f2f2f2;
 }

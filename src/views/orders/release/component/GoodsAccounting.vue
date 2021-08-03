@@ -149,7 +149,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="10">
-          <el-form-item label="车长" prop="vehicleLength" label-width="40px">
+          <el-form-item label="车长" prop="vehicleLength">
             <el-select
               v-model="formData.vehicleLength"
               placeholder="选择车长"
@@ -378,4 +378,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.el-col{
+  width: 500px;
+}
 </style>
