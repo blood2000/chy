@@ -310,7 +310,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-         <!-- <el-col v-if="!form.userId" :span="12">
+          <!-- <el-col v-if="!form.userId" :span="12">
             <el-form-item label="是否创建银行账号" label-width="140px">
               <el-radio-group v-model="form.isCreate">
                 <el-radio
