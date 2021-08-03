@@ -36,7 +36,7 @@
           >补卡</el-button>
         </el-col>
 
-        <el-col v-if="true" :span="1.5">
+        <el-col v-if="testProcess" :span="1.5">
           <el-button
             type="info"
             icon="el-icon-brush"
@@ -45,7 +45,7 @@
             @click="handlerReadUserinfo"
           >读卡用户信息</el-button>
         </el-col>
-        <el-col v-if="true" :span="1.5">
+        <el-col v-if="testProcess" :span="1.5">
           <el-button
             type="info"
             icon="el-icon-document"
@@ -54,7 +54,7 @@
             @click="handlerReadData"
           >读运单信息</el-button>
         </el-col>
-        <el-col v-show="true" :span="1.5">
+        <el-col v-if="testProcess" :span="1.5">
           <el-button
             type="info"
             icon="el-icon-document"
@@ -64,7 +64,7 @@
           >读卡</el-button>
         </el-col>
 
-        <el-col v-show="true" :span="1.5">
+        <el-col v-if="testProcess" :span="1.5">
           <el-button
             type="info"
             icon="el-icon-document"
@@ -74,7 +74,7 @@
           >清卡发卡用户</el-button>
         </el-col>
 
-        <el-col v-show="true" :span="1.5">
+        <el-col v-if="testProcess" :span="1.5">
           <el-button
             type="info"
             icon="el-icon-document"
@@ -519,6 +519,10 @@ export default {
         endTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[1] : undefined,
         receiveTime: undefined
       };
+    },
+
+    testProcess() {
+      return process.env.NODE_ENV === 'development';
     }
   },
 
