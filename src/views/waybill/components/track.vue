@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { jimiTrackLocation, zjxlTrackLocation, getVehicleInfo, getWebDetail, getWaybillTrace, addZjxl, queryZjxl } from '@/api/waybill/tracklist';
+import { jimiTrackLocation, zjxlTrackLocation, getWebDetail, getWaybillTrace, addZjxl, queryZjxl, getDevice } from '@/api/waybill/tracklist';
 import axios from 'axios';
 import { getUserInfo } from '@/utils/auth';
 
@@ -69,8 +69,8 @@ export default {
       graspRoad: '',
       // 运单信息
       wayBillInfo: {},
-      // 车辆信息
-      vehicleInfo: {},
+      // 设备信息
+      deviceInfo: {},
       // 日期
       time: '',
       // 装卸货地经纬度
@@ -132,10 +132,11 @@ export default {
         path: []
       },
       jmMark: undefined, // 几米车辆定位
+      jmTimePoor: undefined, // 几米轨迹时间差
       jimiQueryParams: { // jimi查询参数 map_type:GOOGOLE或BAIDU
-        begin_time: '2021-03-22 08:00:00',
-        end_time: '2021-03-22 09:00:00',
-        imeis: '868120274644936',
+        begin_time: '', // 2021-07-31 00:00:00
+        end_time: '', // 2021-08-02 17:00:00
+        imeis: '', // 868120274644936
         map_type: 'GOOGLE'
       },
       // 中交兴路轨迹相关参数
@@ -195,7 +196,7 @@ export default {
     // 获取几米轨迹
     jmChecked(val) {
       if (val) {
-        this.getJimi();
+        this.getJimiTime();
       } else {
         const that = this;
         that.$refs.map.$$getInstance().remove(that.jmPolyline);
@@ -207,7 +208,7 @@ export default {
     // 获取中交兴路轨迹
     zjChecked(val) {
       if (val) {
-        this.getZjxlTime();
+        this.zjxlList();
       } else {
         const that = this;
         that.$refs.map.$$getInstance().remove(that.zjPolyline);
@@ -312,40 +313,56 @@ export default {
         }
       });
     },
+    // 几米循环判断开始时间与结束时间
+    getJimiTime() {
+      this.jmTimePoor = new Date(this.jimiQueryParams.end_time).getTime() - new Date(this.jimiQueryParams.begin_time).getTime();
+      if (this.jmTimePoor > 24 * 60 * 60 * 1000 * 2) {
+        this.jimiQueryParams.end_time = this.parseTime(new Date(this.jimiQueryParams.begin_time).getTime() + 24 * 60 * 60 * 1000 * 2, '{y}-{m}-{d} {h}:{i}:{s}');
+        this.getJimi();
+      } else if (this.jmTimePoor === 0) {
+        console.log(this.jmTracklist);
+        if (this.jmTracklist.length !== 0) {
+          // 绘制轨迹
+          const that = this;
+          const path = that.jmTracklist;
+          that.jmPolyline = new window.AMap.Polyline({
+            map: that.$refs.map.$$getInstance(),
+            path,
+            strokeColor: '#08B8A7', // 线颜色
+            ...that.lineParams
+          });
+          that.jmPolyline.setMap(that.$refs.map.$$getInstance());
+          that.$refs.map.$$getInstance().setFitView(that.jmPolyline); // 执行定位
+          // 显示车辆定位
+          if (!that.wayBillInfo.signTime) {
+            that.jmMark = new AMap.Marker({
+              position: that.jmTracklist[that.jmTracklist.length - 1],
+              ...that.markParams
+            });
+            that.jmMark.setMap(that.$refs.map.$$getInstance()); // 点标记
+          }
+        } else {
+          this.msgInfo('暂无硬件轨迹！');
+        }
+      } else if (this.jmTimePoor !== 0 && this.jmTimePoor < 24 * 60 * 60 * 1000 * 2) {
+        this.getJimi();
+      }
+    },
     // 获取硬件轨迹
     getJimi() {
       jimiTrackLocation(this.jimiQueryParams).then(response => {
         // console.log(response.data.result);
         if (response.data.result) {
-          this.jmTracklist = response.data.result.map(function(response) {
-            return [response.lng, response.lat];
-          });
-          // console.log(this.jmTracklist);
-          if (this.jmTracklist.length !== 0) {
-            const that = this;
-            const path = that.jmTracklist;
-            that.jmPolyline = new window.AMap.Polyline({
-              map: that.$refs.map.$$getInstance(),
-              path,
-              strokeColor: '#08B8A7', // 线颜色
-              ...that.lineParams
-            });
-            that.jmPolyline.setMap(that.$refs.map.$$getInstance());
-            that.$refs.map.$$getInstance().setFitView(that.jmPolyline); // 执行定位
-            // 显示车辆定位
-            if (!that.wayBillInfo.signTime) {
-              that.jmMark = new AMap.Marker({
-                position: that.jmTracklist[that.jmTracklist.length - 1],
-                ...that.markParams
-              });
-              that.jmMark.setMap(that.$refs.map.$$getInstance()); // 点标记
-            }
-          } else {
-            this.msgInfo('暂无硬件轨迹！');
-          }
-        } else {
-          this.msgInfo('暂无硬件轨迹！');
+          this.jmTracklist = [
+            ...this.jmTracklist,
+            ...response.data.result.map(function(response) {
+              return [response.lng, response.lat];
+            })
+          ];
         }
+        this.jimiQueryParams.begin_time = this.jimiQueryParams.end_time;
+        this.jimiQueryParams.end_time = this.parseTime(this.queryEndtime, '{y}-{m}-{d} {h}:{i}:{s}');
+        this.getJimiTime();
       });
     },
     // 中交兴路轨迹
@@ -490,11 +507,12 @@ export default {
       endMark.setMap(that.$refs.map.$$getInstance()); // 点标记
       that.$refs.map.$$getInstance().setFitView([startMark, endMark]); // 执行定位
     },
-    // 获取车辆信息
-    getvehicleInfo() {
-      getVehicleInfo(this.waybill.vehicleCode).then(response => {
-        this.vehicleInfo = response.data;
-        // console.log(this.vehicleInfo);
+    // 获取车辆设备信息
+    getDeviceInfo() {
+      getDevice({ vehicleCode: this.wayBillInfo.vehicleCode, vendorCode: 'jimilot' }).then(response => {
+        this.deviceInfo = response.data[0];
+        this.jimiQueryParams.imeis = response.data[0].deviceImei;
+        // console.log(this.deviceInfo);
       });
     },
     /** 取消按钮 */
@@ -516,6 +534,7 @@ export default {
       // 获取运单信息，并标记装卸货地
       getWebDetail(data.code).then(response => {
         this.wayBillInfo = response.data;
+        this.getDeviceInfo();
         // 中交车牌号参数赋值
         this.zjxlQueryParams.vclN = this.wayBillInfo.licenseNumber;
         this.zjxlAddParams.licenseNumber = this.wayBillInfo.licenseNumber;

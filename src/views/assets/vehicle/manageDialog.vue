@@ -27,9 +27,9 @@
       <el-tab-pane label="归属调度" name="team">
         <team-list-page ref="TeamListPage" :vehicle-code="vehicleCode" />
       </el-tab-pane>
-        <el-tab-pane label="车辆设备" name="device">
-            <vehicle-device-list-page ref="DeviceListPage" :vehicle-code="vehicleCode" :license-number="licenseNumber"/>
-        </el-tab-pane>
+      <el-tab-pane label="车辆设备" name="device">
+        <vehicle-device-list-page ref="DeviceListPage" :vehicle-code="vehicleCode" :license-number="licenseNumber" />
+      </el-tab-pane>
     </el-tabs>
   </el-drawer>
   <!--</el-dialog>-->

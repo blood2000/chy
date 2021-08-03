@@ -222,3 +222,12 @@ export function queryZjxl(data) {
     data: data
   });
 }
+
+// 获取设备信息
+export function getDevice(query) {
+  return request({
+    url: '/assets/vehicle/device/getByVehicle',
+    method: 'get',
+    params: query
+  });
+}
