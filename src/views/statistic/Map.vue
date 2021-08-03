@@ -334,7 +334,7 @@ export default {
         location = val.address.unloadLocations;
         cityName = val.address.unloadCity;
       }
-      if (location && location.length === 2) {
+      if (location && location.length === 2 && location[0] !== 0 && location[1] !== 0) {
         this.createTooltip(status, location[0], location[1], contentTitle, contentText, contentTime, address);
       } else {
         console.log('后端未获取到经纬度：', val);
@@ -343,7 +343,7 @@ export default {
             console.log('前端也匹配不到经纬度');
             return;
           }
-          console.log('loc: ', loc);
+          console.log('前端根据市匹配经纬度loc: ', loc);
           this.createTooltip(status, loc[0], loc[1], contentTitle, contentText, contentTime, address);
         });
       }
@@ -739,18 +739,22 @@ export default {
         font-family: PingFang Regular;
         opacity: 0;
         transition: opacity 0.5s;
+        white-space: nowrap;
         >.s-echart-map-waybill-tooltip-title{
           font-size: 0.7rem;
           font-weight: 400;
+          white-space: nowrap;
         }
         >.s-echart-map-waybill-tooltip-text{
           font-size: 0.6rem;
           font-weight: bold;
           padding-right: 0.4rem;
+          white-space: nowrap;
         }
         >.s-echart-map-waybill-tooltip-time{
           font-size: 0.6rem;
           font-weight: 400;
+          white-space: nowrap;
         }
       }
     }

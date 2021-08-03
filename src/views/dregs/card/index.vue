@@ -36,7 +36,7 @@
           >补卡</el-button>
         </el-col>
 
-        <el-col v-show="false" :span="1.5">
+        <el-col v-if="testProcess" :span="1.5">
           <el-button
             type="info"
             icon="el-icon-brush"
@@ -45,7 +45,16 @@
             @click="handlerReadUserinfo"
           >读卡用户信息</el-button>
         </el-col>
-        <el-col v-show="false" :span="1.5">
+        <el-col v-if="testProcess" :span="1.5">
+          <el-button
+            type="info"
+            icon="el-icon-document"
+            size="mini"
+            :disabled="!isConnect"
+            @click="handlerReadData"
+          >读运单信息</el-button>
+        </el-col>
+        <el-col v-if="testProcess" :span="1.5">
           <el-button
             type="info"
             icon="el-icon-document"
@@ -53,6 +62,26 @@
             :disabled="!isConnect"
             @click="handlerReadData"
           >读卡</el-button>
+        </el-col>
+
+        <el-col v-if="testProcess" :span="1.5">
+          <el-button
+            type="info"
+            icon="el-icon-document"
+            size="mini"
+            :disabled="!isConnect"
+            @click="handlerWriteUser"
+          >清卡发卡用户</el-button>
+        </el-col>
+
+        <el-col v-if="testProcess" :span="1.5">
+          <el-button
+            type="info"
+            icon="el-icon-document"
+            size="mini"
+            :disabled="!isConnect"
+            @click="handlerData"
+          >写入运单数据</el-button>
         </el-col>
         <!-- <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
@@ -490,6 +519,10 @@ export default {
         endTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[1] : undefined,
         receiveTime: undefined
       };
+    },
+
+    testProcess() {
+      return process.env.NODE_ENV === 'development';
     }
   },
 
@@ -532,7 +565,7 @@ export default {
     // 读取卡基本数据
     getCardInfo() {
       if (this.isConnect) {
-        action.getCardInfo().then(res => {
+        action.getCardInfo(undefined, true).then(res => {
           if (res.success) {
             if (res.code === '9000') {
               this.$set(this.queryParams, 'card16no', res.GetCardNo.data);
@@ -559,8 +592,8 @@ export default {
         return;
       }
       // console.log(USERINFO);
-      action.getCardInfo().then(res => {
-        console.log(res);
+      action.getCardInfo(undefined, false).then(res => {
+        console.log(res, '先获取卡信息');
 
         if (res.success) {
           if (res.code === '9000') {
@@ -631,7 +664,8 @@ export default {
       }).then(() => {
         action.cancellation().then(res => {
           if (res.success) {
-            this.msgSuccess('初始化成功');
+            console.log(res);
+            this.msgSuccess(res.msg || '初始化成功');
           } else {
             this.msgError(res.msg);
           }
@@ -679,6 +713,50 @@ export default {
         } else {
           this.msgError(res.msg);
         }
+      });
+    },
+
+    // 写用户信息
+    async handlerWriteUser() {
+      const userInfo = {
+        icType: 'r',
+        //   issuing_name: user.orderClient || "-", // orderClient	下单客户
+        issuing_pc: 1627559938998505 || '-', // cardBatchNo	卡批次
+        issuing_telno: 15859109601 || '-', // sipperPhone	货主手机号
+        issuing_time: 1627559820000, // loadingTime	装货时间
+        project_id: 72276 || '-', // projectId	项目Id
+        //   team_name:  "-", // teamName	车队名称
+        team_telno: 15859102001 || '-' // dispatchNumber	调度者手机号
+        //   user_name:  "-", // driverName	司机名字
+        // user_telno: 15859101001 || '-' // driverPhone	司机电话
+      };
+
+      const cancellation = await action.cancellation();
+      if (!cancellation.success || cancellation.code !== '9000') {
+        this.msgError(cancellation.msg || '核销失败');
+        return;
+      }
+      action.issuingCard(userInfo, userMark).then((res) => {
+        console.log(res);
+      });
+    },
+    // 写运单信息
+    async handlerData() {
+      const data = {
+        driverPhone: '15859101001' || '-', // driverPhone	司机电话
+        fillTime: '1627559820000' || '-', // loadingTime	接单时间
+        licenseNumber: '闽BQ7801' || '-', // '鄂ALF106',
+        orderId: '2107291757184088' || '-', // mainOrderNumber	货源编号
+        projectName: '72276' || '-', // projectId	项目Id
+        serialNumber: '74' || '-', // shipmentMuckyardNo	渣土场编号
+        signTime: '1627559820000' || '-', // signTime	装货时间
+        waybillNo: '2107291957141395' || '-' // waybillNo	运单号
+      };
+      //   console.log(fn.setData(versionMark, data)); // 1010|2|2107291757184088;2107291957141395;72276;闽BQ7801;15859101001;1627559820000;1627559820000;74
+      //   return;
+
+      action.writeData(fn.setData(versionMark, data)).then((res) => {
+        console.log(res);
       });
     },
 
@@ -733,13 +811,18 @@ export default {
       if (!userInfo) return;
       try {
         this.loading = true;
-        const res = await action.issuingCard(userInfo, userMark);
 
-        // console.log(res);
+        const cancellation = await action.cancellation();
+        if (!cancellation.success || cancellation.code !== '9000') {
+          this.msgError(cancellation.msg || '清卡失败');
+          return;
+        }
+
+        const res = await action.issuingCard(userInfo, userMark);
 
         if (!res.success) {
           this.loading = false;
-          this.msgError('写卡失败, 请不要移动IC卡!');
+          this.msgError(res.code ? res.msg : '写卡失败, 请不要移动IC卡!');
           return;
         }
 
@@ -748,11 +831,15 @@ export default {
           this.msgError(res.msg);
           return;
         }
+
+        // console.log(res, '发卡成功');
       } catch (error) {
         this.msgError('写卡失败, 请不要移动IC卡!');
         this.loading = false;
         return;
       }
+
+
       // 写卡
       // 定义 版本标识
       // const meter = this.meter ? this.meter.join('|') + '|' : versionMark;
@@ -762,6 +849,8 @@ export default {
       data.forEach(async(e, index) => {
         this['time' + index] = setTimeout(() => {
           action.writeData(fn.setData(meter, e)).then(res => {
+            console.log(res);
+
             clearTimeout(this['time' + index]);
             if (res.success) {
               if (res.code === '9000') {
@@ -773,7 +862,7 @@ export default {
               }
             } else {
               arr.push(false);
-              this.msgError('写卡失败, 请不要移动IC卡!');
+              // this.msgError('写卡失败, 请不要移动IC卡!');
             }
 
             if (arr.length === data.length) {

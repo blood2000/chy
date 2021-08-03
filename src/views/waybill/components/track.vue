@@ -184,24 +184,36 @@ export default {
     // 获取猎鹰轨迹
     lyChecked(val) {
       if (val) {
-        this.getLieyingTime();
+        if (this.wayBillInfo.trackNumber) {
+          this.getLieyingTime();
+        } else {
+          this.msgInfo('暂无APP定位！');
+        }
       } else {
         const that = this;
-        that.$refs.map.$$getInstance().remove(that.lyPolyline);
-        if (!that.wayBillInfo.signTime) {
-          that.$refs.map.$$getInstance().remove(that.lyMark);
+        if (that.lyPolyline.path.length > 0) {
+          that.$refs.map.$$getInstance().remove(that.lyPolyline);
+          if (!that.wayBillInfo.signTime && that.lyMark) {
+            that.$refs.map.$$getInstance().remove(that.lyMark);
+          }
         }
       }
     },
     // 获取几米轨迹
     jmChecked(val) {
       if (val) {
-        this.getJimiTime();
+        if (this.jimiQueryParams.imeis) {
+          this.getJimiTime();
+        } else {
+          this.msgInfo('暂无硬件轨迹！');
+        }
       } else {
         const that = this;
-        that.$refs.map.$$getInstance().remove(that.jmPolyline);
-        if (!that.wayBillInfo.signTime) {
-          that.$refs.map.$$getInstance().remove(that.jmMark);
+        if (that.jmPolyline.path.length > 0) {
+          that.$refs.map.$$getInstance().remove(that.jmPolyline);
+          if (!that.wayBillInfo.signTime && that.jmMark) {
+            that.$refs.map.$$getInstance().remove(that.jmMark);
+          }
         }
       }
     },
@@ -211,9 +223,11 @@ export default {
         this.zjxlList();
       } else {
         const that = this;
-        that.$refs.map.$$getInstance().remove(that.zjPolyline);
-        if (!that.wayBillInfo.signTime) {
-          that.$refs.map.$$getInstance().remove(that.zjMark);
+        if (that.zjPolyline.path.length > 0) {
+          that.$refs.map.$$getInstance().remove(that.zjPolyline);
+          if (!that.wayBillInfo.signTime && that.zjMark) {
+            that.$refs.map.$$getInstance().remove(that.zjMark);
+          }
         }
       }
     }
@@ -510,8 +524,10 @@ export default {
     // 获取车辆设备信息
     getDeviceInfo() {
       getDevice({ vehicleCode: this.wayBillInfo.vehicleCode, vendorCode: 'jimilot' }).then(response => {
-        this.deviceInfo = response.data[0];
-        this.jimiQueryParams.imeis = response.data[0].deviceImei;
+        if (response.data.length > 0) {
+          this.deviceInfo = response.data[0];
+          this.jimiQueryParams.imeis = response.data[0].deviceImei;
+        }
         // console.log(this.deviceInfo);
       });
     },
