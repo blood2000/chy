@@ -191,9 +191,11 @@ export default {
         }
       } else {
         const that = this;
-        that.$refs.map.$$getInstance().remove(that.lyPolyline);
-        if (!that.wayBillInfo.signTime) {
-          that.$refs.map.$$getInstance().remove(that.lyMark);
+        if (that.lyPolyline.path.length > 0) {
+          that.$refs.map.$$getInstance().remove(that.lyPolyline);
+          if (!that.wayBillInfo.signTime && that.lyMark) {
+            that.$refs.map.$$getInstance().remove(that.lyMark);
+          }
         }
       }
     },
@@ -207,9 +209,11 @@ export default {
         }
       } else {
         const that = this;
-        that.$refs.map.$$getInstance().remove(that.jmPolyline);
-        if (!that.wayBillInfo.signTime) {
-          that.$refs.map.$$getInstance().remove(that.jmMark);
+        if (that.jmPolyline.path.length > 0) {
+          that.$refs.map.$$getInstance().remove(that.jmPolyline);
+          if (!that.wayBillInfo.signTime && that.jmMark) {
+            that.$refs.map.$$getInstance().remove(that.jmMark);
+          }
         }
       }
     },
@@ -219,9 +223,11 @@ export default {
         this.zjxlList();
       } else {
         const that = this;
-        that.$refs.map.$$getInstance().remove(that.zjPolyline);
-        if (!that.wayBillInfo.signTime) {
-          that.$refs.map.$$getInstance().remove(that.zjMark);
+        if (that.zjPolyline.path.length > 0) {
+          that.$refs.map.$$getInstance().remove(that.zjPolyline);
+          if (!that.wayBillInfo.signTime && that.zjMark) {
+            that.$refs.map.$$getInstance().remove(that.zjMark);
+          }
         }
       }
     }
