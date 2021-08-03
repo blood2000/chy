@@ -123,7 +123,7 @@ export default {
       location: [],
       wayBillInfo: {},
       // 猎鹰相关参数
-      lieyingChecked: true,
+      lieyingChecked: false,
       lieyingMark: undefined,
       lyLocation: [],
       lieyingQueryParams: {
@@ -206,8 +206,10 @@ export default {
     // 获取车辆设备信息
     getDeviceInfo() {
       getDevice({ vehicleCode: this.wayBillInfo.vehicleCode, vendorCode: 'jimilot' }).then(response => {
-        this.deviceInfo = response.data[0];
-        this.queryParams.imeis = response.data[0].deviceImei;
+        if (response.data.length > 0) {
+          this.deviceInfo = response.data[0];
+          this.queryParams.imeis = response.data[0].deviceImei;
+        }
         // console.log(this.deviceInfo);
       });
     },
@@ -345,10 +347,8 @@ export default {
             trid: trackNumber[3] // trid为轨迹唯一编号
           };
           console.log(this.lieyingQueryParams);
-          this.lieyingLocation();
-        } else {
-          this.msgInfo('暂无APP定位！');
         }
+        this.lieyingChecked = true;
       });
       console.log(data);
       if (data.status === 2) {
