@@ -93,7 +93,7 @@ export default {
         ],
         openBankNumber: [
           { required: true, message: '账号不能为空', trigger: 'blur' },
-          { validator: this.formValidate.bankCard, trigger: 'blur' }
+          { validator: this.formValidate.bankCard, trigger: ['blur', 'change'] }
         ],
         payeeName: [
           { required: true, message: '收票人姓名不能为空', trigger: 'blur' },

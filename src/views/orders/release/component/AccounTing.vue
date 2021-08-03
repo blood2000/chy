@@ -13,7 +13,7 @@
     <el-row type="flex" justify="space-between" class="ly-flex-w">
 
       <el-col :span="10" class="ly-flex-pack-justify" style="flex:1; min-width:750px;">
-        <el-form-item label="运费单价: " prop="freightPrice" label-width="100px">
+        <el-form-item label="运输单价: " prop="freightPrice" label-width="100px">
           <div class="ly-flex ly-flex-w">
             <div class="mr20">
               <div class="m_zhuanxieadderss ly-flex-align-center ly-flex-w">
@@ -30,7 +30,7 @@
                 :step="0.01"
                 :max="999999"
                 :min="0"
-                :placeholder="'请输入运费单价'"
+                :placeholder="'请输入运输单价'"
                 controls-position="right"
                 :style="{ width: '140px' }"
                 @change="handlerChange"

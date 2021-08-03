@@ -525,11 +525,11 @@
             <el-checkbox v-model="form.openProjectMemberView">是否开启项目成员视图</el-checkbox>
           </el-form-item>
         </el-col>
-          <el-col :span="11">
-              <el-form-item prop="openTheElectronicFence">
-                  <el-checkbox v-model="form.openTheElectronicFence">是否开启电子围栏</el-checkbox>
-              </el-form-item>
-          </el-col>
+        <el-col :span="11">
+          <el-form-item prop="openTheElectronicFence">
+            <el-checkbox v-model="form.openTheElectronicFence">是否开启电子围栏</el-checkbox>
+          </el-form-item>
+        </el-col>
       </el-row>
       <h5 class="g-card-title g-strong mb20 ml10">
         普通货物配置
