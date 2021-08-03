@@ -1,6 +1,6 @@
 const CryptoJS = require('crypto-js');
 import {
-  MessageBox,
+  // MessageBox,
   Message
 } from 'element-ui';
 
