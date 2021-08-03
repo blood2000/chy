@@ -7,7 +7,9 @@ const state = {
   goodsBigType_option: null,
 
   orderStowageStatus: '0', // 单位
-  lossPlans: {} // 取路耗 亏吨方案, key为规则code,value为路耗内容
+  lossPlans: {}, // 取路耗 亏吨方案, key为规则code,value为路耗内容
+  radius1: 200, // 设置电子围栏装
+  radius2: 200 // 设置电子围栏卸
 };
 
 const mutations = {
@@ -16,13 +18,17 @@ const mutations = {
   SET_PROVINCE: (state, device) => { state.provinceList = device; },
   SET_GOODSBIGTYPE: (state, device) => { state.goodsBigType_option = device; },
   SET_ORDERSTOWAGESTATUS: (state, device) => { state.orderStowageStatus = device; },
+
   SET_LOSS_PLAN: (state, device) => {
     // console.log(device);
     state.lossPlans = {
       ...state.lossPlans,
       [device.ruleCode]: device
     };
-  }
+  },
+
+  SET_RADIUS1: (state, device) => { state.radius1 = device; },
+  SET_RADIUS2: (state, device) => { state.radius2 = device; }
 
 };
 

@@ -27,6 +27,8 @@ export function ztUpdateOrder(data) {
 }
 
 
+
+
 // 修改货源 /transportation/order/modify
 export function update(data) {
   return request({
@@ -84,5 +86,15 @@ export function getByOrderCode(query) {
     url: '/transportation/waybill/getByOrderCode',
     method: 'get',
     params: query
+  });
+}
+
+
+// 创建电子围栏
+export function fencePlatCreate(data) {
+  return request({
+    url: '/iot/fenceBusiness/fencePlatCreate',
+    method: 'post',
+    data: data
   });
 }
