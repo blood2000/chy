@@ -202,7 +202,7 @@ export default {
         // 读卡失败
         if (!ret.success) {
           this.errorCount++;
-          this._reqerror();
+          this._reqerror(ret);
           this.loading = false;
           return;
         }
@@ -545,8 +545,13 @@ export default {
       }
     },
 
-    _reqerror() {
-      const msg = '请将【数据IC卡】放至有效位置!';
+    _reqerror(ret) {
+      let msg = '';
+      if (ret.code) {
+        msg = ret.msg;
+      } else {
+        msg = '请将【数据IC卡】放至有效位置!';
+      }
 
       this.$confirm(msg, '不能读取到数据', {
         confirmButtonText: '知道了',
@@ -661,7 +666,7 @@ export default {
       switch (key) {
         case 'getCardInfo':
           // 获取卡信息
-          action.getCardInfo().then(res => {
+          action.getCardInfo(undefined, true).then(res => {
             console.log(res);
           });
           break;

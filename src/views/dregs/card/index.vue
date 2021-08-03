@@ -64,17 +64,17 @@
           >读卡</el-button>
         </el-col>
 
-        <el-col v-show="false" :span="1.5">
+        <el-col v-show="true" :span="1.5">
           <el-button
             type="info"
             icon="el-icon-document"
             size="mini"
             :disabled="!isConnect"
             @click="handlerWriteUser"
-          >写入用户数据</el-button>
+          >清卡发卡用户</el-button>
         </el-col>
 
-        <el-col v-show="false" :span="1.5">
+        <el-col v-show="true" :span="1.5">
           <el-button
             type="info"
             icon="el-icon-document"
@@ -722,9 +722,9 @@ export default {
         issuing_time: 1627559820000, // loadingTime	装货时间
         project_id: 72276 || '-', // projectId	项目Id
         //   team_name:  "-", // teamName	车队名称
-        team_telno: 15859102001 || '-', // dispatchNumber	调度者手机号
+        team_telno: 15859102001 || '-' // dispatchNumber	调度者手机号
         //   user_name:  "-", // driverName	司机名字
-        user_telno: 15859101001 || '-' // driverPhone	司机电话
+        // user_telno: 15859101001 || '-' // driverPhone	司机电话
       };
 
       const cancellation = await action.cancellation();
@@ -807,9 +807,14 @@ export default {
       if (!userInfo) return;
       try {
         this.loading = true;
+
+        const cancellation = await action.cancellation();
+        if (!cancellation.success || cancellation.code !== '9000') {
+          this.msgError(cancellation.msg || '清卡失败');
+          return;
+        }
+
         const res = await action.issuingCard(userInfo, userMark);
-
-
 
         if (!res.success) {
           this.loading = false;
@@ -823,7 +828,7 @@ export default {
           return;
         }
 
-        console.log(res, '发卡成功');
+        // console.log(res, '发卡成功');
       } catch (error) {
         this.msgError('写卡失败, 请不要移动IC卡!');
         this.loading = false;

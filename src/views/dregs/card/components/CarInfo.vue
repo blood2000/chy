@@ -19,7 +19,7 @@
           <div><span class="b"> 版本:</span> {{ userMark }}</div>
         </el-col>
         <el-col :span="6">
-          <div><span class="b"> 手机号:</span> {{ userInfo.user_telno }}</div>
+          <div><span class="b"> 手机号:</span> {{ userInfo.user_telno || '4版本去掉了' }}</div>
         </el-col>
         <el-col :span="6">
           <div><span class="b"> 项目Id:</span> {{ userInfo.project_id }}</div>
