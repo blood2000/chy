@@ -334,7 +334,7 @@ export default {
         location = val.address.unloadLocations;
         cityName = val.address.unloadCity;
       }
-      if (location && location.length === 2) {
+      if (location && location.length === 2 && location[0] !== 0 && location[1] !== 0) {
         this.createTooltip(status, location[0], location[1], contentTitle, contentText, contentTime, address);
       } else {
         console.log('后端未获取到经纬度：', val);
@@ -343,7 +343,7 @@ export default {
             console.log('前端也匹配不到经纬度');
             return;
           }
-          console.log('loc: ', loc);
+          console.log('前端根据市匹配经纬度loc: ', loc);
           this.createTooltip(status, loc[0], loc[1], contentTitle, contentText, contentTime, address);
         });
       }
