@@ -173,7 +173,9 @@ export default {
           that.msgInfo('暂无APP定位！');
         }
       } else {
-        that.$refs.map.$$getInstance().remove(that.lieyingMark); // 点移除
+        if (that.lieyingMark) {
+          that.$refs.map.$$getInstance().remove(that.lieyingMark); // 点移除
+        }
         // that.$refs.map.$$getInstance().setFitView([that.lieyingMark, that.jimiMark, that.zjxlMark]); // 执行定位
       }
     },
@@ -186,7 +188,9 @@ export default {
           that.msgInfo('暂无硬件定位！');
         }
       } else {
-        that.$refs.map.$$getInstance().remove(that.jimiMark); // 点移除
+        if (that.jimiMark) {
+          that.$refs.map.$$getInstance().remove(that.jimiMark); // 点移除
+        }
         // that.$refs.map.$$getInstance().setFitView([that.lieyingMark, that.jimiMark, that.zjxlMark]); // 执行定位
       }
     },
@@ -195,7 +199,9 @@ export default {
       if (val) {
         that.zjxlLocation();
       } else {
-        that.$refs.map.$$getInstance().remove(that.zjxlMark); // 点移除
+        if (that.zjxlMark) {
+          that.$refs.map.$$getInstance().remove(that.zjxlMark); // 点移除
+        }
         // that.$refs.map.$$getInstance().setFitView([that.lieyingMark, that.jimiMark, that.zjxlMark]); // 执行定位
       }
     }
@@ -316,6 +322,7 @@ export default {
     },
     // 关闭弹窗
     close() {
+      this.lieyingChecked = false;
       this.$emit('update:open', false);
     },
     // 表单赋值
