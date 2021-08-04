@@ -158,7 +158,7 @@
 
             <!-- v-show="!isShipment " -->
             <el-button
-              v-if="status===2 && !isShipment"
+              v-if="row.status === 2 && !isShipment"
               size="mini"
               type="text"
               :loading="loading"
@@ -201,13 +201,17 @@
               @click="handleVerification(row)"
             >结算单</el-button>
             <el-button
-              v-if="status!==4 && status!==-1"
+              v-if="row.status===2"
               size="mini"
               type="text"
               @click="handleBohui(row)"
             >驳回</el-button>
-
-
+            <el-button
+              v-if="row.status!==4 && row.status!==-1 && status!==2"
+              size="mini"
+              type="text"
+              @click="handleBohui(row)"
+            >驳回</el-button>
           </div>
         </template>
       </RefactorTable>
