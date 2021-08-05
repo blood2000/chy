@@ -3,15 +3,21 @@
   <el-dialog :title="title" :visible="visible" width="1400px" append-to-body destroy-on-close @close="cancel">
     <div class="amap-wrapper">
       <div class="slider-box">
-        <div>电子围栏(米): </div>
+        <el-button
+          type="primary"
+          size="mini"
+          style="margin-top: -12px"
+          @click="submit"
+        >确定</el-button>
+        <!-- <div>电子围栏(米): </div>
         <div class="slider-box-rigth">
           <el-slider v-model="radius" show-input :max="10000" :min="0" />
-        </div>
+        </div> -->
       </div>
       <el-amap
         ref="map"
         vid="amapDemo"
-        :center="center"
+        :center="lnglat"
         :zoom="zoom"
         :plugin="plugin"
         :events="events"
@@ -24,14 +30,14 @@
         <!-- :events="{
             dragging: handlerDragging,
           }" -->
-        <el-amap-marker
+        <!-- <el-amap-marker
           vid="component-marker2"
           :position="center"
           :draggable="true"
           :events="{
             dragging: handlerDragging,
           }"
-        />
+        /> -->
 
         <el-amap-circle
           :center="center"
@@ -62,18 +68,17 @@ export default {
       type: String,
       default: ''
     },
-    open: Boolean
-    // value: {
-    //   type: Number,
-    //   default: 500
-    // }
+    open: Boolean,
+    value: {
+      type: Number,
+      default: 200
+    }
   },
   data() {
     return {
       lnglat: [],
       // center: [121.59996, 31.197646],
       center: [],
-      value: 200,
       circleEditor: undefined,
       circle: {},
       // 地图基本信息
@@ -90,8 +95,8 @@ export default {
         'zoomchange': () => {
         },
         'click': (e) => {}
-      }
-
+      },
+      radius: 200
       // visible: false
     };
   },
@@ -104,19 +109,23 @@ export default {
       set(v) {
         this.$emit('update:open', v);
       }
-    },
-
-    radius: {
-      get() {
-        return this.value;
-      },
-      set(data) {
-        this.$emit('input', data);
-      }
     }
+    // radius: {
+    //   get() {
+    //     return this.value;
+    //   },
+    //   set(data) {
+    //     console.log('半径' + data);
+    //     this.$emit('input', data);
+    //   }
+    // }
   },
 
-
+  watch: {
+    value(val) {
+      this.radius = val;
+    }
+  },
   // created() {
   //   this.center = this.lnglat;
   // },
@@ -133,8 +142,9 @@ export default {
     },
     // 修改半径
     handlerAdjust({ type, target, radius }) {
-      // console.log(radius);
-      // this.radius = radius;
+      console.log('修改半径' + radius);
+      this.radius = radius;
+      console.log('you' + this.radius);
     },
 
     circleEdit(lnglat) {
@@ -146,6 +156,10 @@ export default {
     mcircleClick() {
       // console.log('点击圆形了');
       this.visible = !this.visible;
+    },
+    submit() {
+      this.$emit('refresh', { radius: this.radius, lnglat: this.center });
+      this.cancel();
     },
     /** 取消按钮 */
     cancel() {
