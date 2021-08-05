@@ -244,6 +244,12 @@
                       @click="_delAddress('address_add', address.refName)"
                     >删除地址</el-button>
                     <el-button
+                      type="primary"
+                      size="mini"
+                      plain
+                      @click="handleElect(address)"
+                    >设置电子围栏</el-button>
+                    <el-button
                       v-if="!myisdisabled"
                       type="primary"
                       size="mini"
@@ -382,7 +388,8 @@
         </div>
 
       </div>
-
+      <!-- 设置电子围栏弹窗 -->
+      <circle-dialog ref="CircleDialog" :open.sync="circledialog" :title="title" :lnglat="lnglat" />
       <!-- 打开弹框 -->
       <el-dialog
         :close-on-click-modal="false"
@@ -404,7 +411,7 @@ import OrderBasic from './OrderBasic';
 import OneAddress from './component/OneAddress';
 import GoodsInfo from './GoodsInfo';
 import OpenDialog from './OpenDialog';
-
+import CircleDialog from './component/circleDialog';
 import WaybillInfo from './WaybillInfo';
 
 import { getUserInfo } from '@/utils/auth';
@@ -423,10 +430,14 @@ export default {
     GoodsInfo,
     OpenDialog,
     WaybillInfo,
-    ztRelease // 渣土货主发布货源界面
+    ztRelease, // 渣土货主发布货源界面
+    CircleDialog
   },
   data() {
     return {
+      circledialog: false,
+      title: '',
+      lnglat: [],
       switchRadius1: false,
       switchRadius2: false,
       radius1: 200, // 电子围栏 8/3 新加的
@@ -654,7 +665,16 @@ export default {
   },
 
   methods: {
+    handleElect(addr) {
+      console.log(addr.cbData);
 
+      if (addr.cbData) {
+        // if(addr.cbData.location)
+        this.title = '设置电子围栏';
+        this.circledialog = true;
+        this.$refs.CircleDialog.circleEdit(addr.cbData.location);
+      }
+    },
     // 通过货主的id获取详情 7/23 --chj
     getShipmentInfo(code) {
       return getShipmentByCode({ code }).then(res => {
