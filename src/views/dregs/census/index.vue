@@ -42,7 +42,14 @@
       </el-col>
       <el-col :xl="18" :lg="17" :md="16" :xs="24">
         <div class="census-page-right">
-          <el-date-picker v-model="queryDate" value-format="yyyy-MM-dd" class="census-date-picker" size="large" type="date" :clearable="false" placeholder="选择日期" @change="changeDetail" />
+          <div class="ly-flex">
+            <el-date-picker v-model="queryDate" value-format="yyyy-MM-dd" class="census-date-picker mr20" size="large" type="date" :clearable="false" placeholder="选择日期" @change="changeDetail" />
+            <div class="census-groud-picker">
+              <el-radio-group v-model="groudActive" @change="handleGroudClick">
+                <el-radio-button v-for="item in groudList" :key="item.code" :label="item.label" />
+              </el-radio-group>
+            </div>
+          </div>
           <Tabs :tablist="tablist" @getActiveName="getActiveTab" />
           <div class="app-container">
             <div class="tab-page-wrap census-scroll-box">
@@ -169,6 +176,13 @@ export default {
       ],
       queryDate: '',
       projectCode: null,
+      groudActive: '所有',
+      waybillClasses: '',
+      groudList: [
+        { label: '所有', code: '' },
+        { label: '白班', code: '0' },
+        { label: '晚班', code: '1' }
+      ],
       // 项目统计
       projectStatistic: {},
       projectStatisticLoading: false,
@@ -229,6 +243,14 @@ export default {
       this.activeTab = val;
       this.changeDetail();
     },
+    /* 选中班次 */
+    handleGroudClick() {
+      const groud = this.groudList.find(response => {
+        return response.label === this.groudActive;
+      });
+      this.waybillClasses = groud.code;
+      this.changeDetail();
+    },
     /* 根据项目code/tab/时间切换详情*/
     changeDetail() {
       if (this.activeTab === '项目统计') {
@@ -244,7 +266,8 @@ export default {
       this.projectStatisticLoading = true;
       ProjectDetails({
         projectCode: this.projectCode,
-        queryDate: this.queryDate
+        queryDate: this.queryDate,
+        waybillClasses: this.waybillClasses
       }).then(response => {
         this.projectLoading = false;
         this.projectStatisticLoading = false;
@@ -274,6 +297,7 @@ export default {
       this.vehicleQuery.projectCode = this.projectCode;
       this.vehicleQuery.queryDate = this.queryDate;
       this.vehicleQuery.vechicleCode = this.vechicleCode;
+      this.vehicleQuery.waybillClasses = this.waybillClasses;
       ListVechicleDetails(this.vehicleQuery).then(response => {
         this.vechicleLoading = false;
         this.carDetailList = response.data || [];
@@ -286,7 +310,8 @@ export default {
       this.inOutLoading = true;
       InOutDetails({
         projectCode: this.projectCode,
-        queryDate: this.queryDate
+        queryDate: this.queryDate,
+        waybillClasses: this.waybillClasses
       }).then(response => {
         this.projectLoading = false;
         this.inOutLoading = false;
@@ -301,7 +326,8 @@ export default {
       this.muckardLoading = true;
       MudtailDetails({
         projectCode: this.projectCode,
-        queryDate: this.queryDate
+        queryDate: this.queryDate,
+        waybillClasses: this.waybillClasses
       }).then(response => {
         this.projectLoading = false;
         this.muckardLoading = false;
@@ -399,6 +425,22 @@ export default {
         background-size: 22px 22px;
         .el-input__icon{
           display: none;
+        }
+      }
+    }
+    .census-groud-picker{
+      height: 40px;
+      margin-bottom: 18px;
+      .el-radio-group{
+        ::v-deep .el-radio-button__inner{
+          font-size: 16px;
+          border-color: rgba(144, 147, 152, 0.15);
+        }
+        ::v-deep .el-radio-button:first-child .el-radio-button__inner{
+          border-radius: 22px 0 0 22px;
+        }
+        ::v-deep .el-radio-button:last-child .el-radio-button__inner {
+          border-radius: 0 22px 22px 0
         }
       }
     }
