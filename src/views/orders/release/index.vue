@@ -199,19 +199,6 @@
               <div class="mb8 m-flex" style="width:66%;">
                 <div class="m_zhuanghuo">
                   装货信息
-                  <div style="display: inline-block;">
-                    <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
-                      设置电子围栏
-                      <el-switch
-                        v-model="switchRadius1"
-                        active-color="#13ce66"
-                        inactive-color="#ff4949"
-                        class="ml10 mr10"
-                      />
-                    </label>
-                    <el-input-number v-if="switchRadius1" v-model="radius1" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS1', radius1)" />
-                  </div>
-
                   <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '2' || formData.tin7 === '4')" v-model="formData.tin8" :disabled="myisdisabled" style="marginLeft:30px;" @change="handlerCheck('add')">允许自装</el-checkbox>
                 </div>
 
@@ -237,18 +224,33 @@
 
                   <OneAddress v-if="isShowAddress" :ref="address.refName" type="1" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
                   <div class="ly-t-right">
+                    <div style="display: inline-block;">
+                      <label style="margin-left: 50px;">  <!-- v-if="isOpenTheElectronicFence" -->
+                        设置电子围栏
+                        <el-switch
+                          v-model="address.switchRadius"
+                          active-color="#13ce66"
+                          inactive-color="#ff4949"
+                          class="ml10 mr10"
+                        />
+                      </label>
+                      <el-input-number v-if="address.switchRadius" v-model="address.radius" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS1', address.radius)" />
+                    </div>
+                    <el-button
+                      v-if="address.switchRadius"
+                      type="primary"
+                      size="mini"
+                      class="ml10"
+                      plain
+                      @click="handleElect(address)"
+                    >围栏编辑</el-button>
                     <el-button
                       v-if="!myisdisabled && (address_add.length >= 2 || formData.tin8)"
                       type="danger"
                       size="mini"
                       @click="_delAddress('address_add', address.refName)"
                     >删除地址</el-button>
-                    <el-button
-                      type="primary"
-                      size="mini"
-                      plain
-                      @click="handleElect(address)"
-                    >设置电子围栏</el-button>
+
                     <el-button
                       v-if="!myisdisabled"
                       type="primary"
@@ -265,18 +267,6 @@
               <div class="mb8 m-flex" style="width:66%">
                 <div class="m_xie">
                   卸货信息
-                  <div style="display: inline-block;">
-                    <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
-                      设置电子围栏
-                      <el-switch
-                        v-model="switchRadius2"
-                        active-color="#13ce66"
-                        inactive-color="#ff4949"
-                        class="ml10 mr10"
-                      />
-                    </label>
-                    <el-input-number v-if="switchRadius2" v-model="radius2" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS2', radius2)" />
-                  </div>
                   <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '3' || formData.tin7 === '4')" v-model="formData.tin9" :disabled="myisdisabled" style="marginLeft:30px;" @change="handlerXie('xie')">允许自卸</el-checkbox>
                 </div>
                 <el-button
@@ -300,7 +290,26 @@
                   <OneAddress v-if="isShowAddress" :ref="address.refName" type="2" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
 
                   <div class="ly-t-right">
-
+                    <div style="display: inline-block;">
+                      <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
+                        设置电子围栏
+                        <el-switch
+                          v-model="address.switchRadius"
+                          active-color="#13ce66"
+                          inactive-color="#ff4949"
+                          class="ml10 mr10"
+                        />
+                      </label>
+                      <el-input-number v-if="address.switchRadius" v-model="address.radius" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS2', address.radius)" />
+                    </div>
+                    <el-button
+                      v-if="address.switchRadius"
+                      type="primary"
+                      size="mini"
+                      class="ml10"
+                      plain
+                      @click="handleElect(address)"
+                    >围栏编辑</el-button>
                     <el-button
                       v-if="!myisdisabled && (address_xie.length >= 2 || formData.tin9)"
                       type="danger"
@@ -389,7 +398,7 @@
 
       </div>
       <!-- 设置电子围栏弹窗 -->
-      <circle-dialog ref="CircleDialog" :open.sync="circledialog" :title="title" :lnglat="lnglat" />
+      <circle-dialog ref="CircleDialog" :open.sync="circledialog" :value="radius" :title="title" :lnglat="lnglat" @refresh="changeElect" />
       <!-- 打开弹框 -->
       <el-dialog
         :close-on-click-modal="false"
@@ -438,6 +447,8 @@ export default {
       circledialog: false,
       title: '',
       lnglat: [],
+      radius: 200,
+      addressChange: undefined,
       switchRadius1: false,
       switchRadius2: false,
       radius1: 200, // 电子围栏 8/3 新加的
@@ -476,8 +487,8 @@ export default {
       active: 1, // 步骤
       goods: [], // 商品-记入单商品还是多商品
       // 地址数组形式
-      address_add: [{ refName: 'address_add' + Date.now(), addressType: '1' }], // 装-地址组件使用
-      address_xie: [{ refName: 'address_xie' + Date.now(), addressType: '2' }], // 卸-地址组件使用
+      address_add: [{ refName: 'address_add' + Date.now(), addressType: '1', radius: 200, switchRadius: false }], // 装-地址组件使用
+      address_xie: [{ refName: 'address_xie' + Date.now(), addressType: '2', radius: 200, switchRadius: false }], // 卸-地址组件使用
       addr_add: [], // 装-传递数据使用
       addr_xie: [], // 卸-传递数据使用
 
@@ -666,14 +677,21 @@ export default {
 
   methods: {
     handleElect(addr) {
-      console.log(addr.cbData);
-
+      console.log(addr);
       if (addr.cbData) {
+        this.addressChange = addr;
         // if(addr.cbData.location)
         this.title = '设置电子围栏';
         this.circledialog = true;
+        this.radius = addr.radius;
         this.$refs.CircleDialog.circleEdit(addr.cbData.location);
+      } else {
+        this.msgInfo('请先完善地址信息！');
       }
+    },
+    changeElect(val) {
+      console.log(this.addressChange);
+      console.log(val);
     },
     // 通过货主的id获取详情 7/23 --chj
     getShipmentInfo(code) {
