@@ -1,22 +1,13 @@
 <template>
   <el-dialog
     v-loading
-    :title="`发卡人: ${ userInfo.issuing_name || ''} 【承运司机: ${userInfo.user_name ||''}】【调度组: ${userInfo.team_name ||''}】 【发卡时间: ${ parseTime(userInfo.issuing_time - 0) || ''}】 【卡批次号: ${ userInfo.issuing_pc || ''}】 ` "
+    :title="`发卡人: ${ userInfo.issuing_name || ''} ${userInfo.user_name? '【承运司机: '+ userInfo.user_name + '】' :''}【调度组: ${userInfo.team_name ||''}】 【发卡时间: ${ parseTime(userInfo.issuing_time - 0) || ''}】 【卡批次号: ${ userInfo.issuing_pc || ''}】 ` "
     :visible="visible"
     width="90%"
     append-to-body
     :close-on-click-modal="false"
     @close="handlerClose"
   >
-    <div v-show="false" class="mb20" style="padding: 20px;">
-      <el-button type="primary" @click="handler('getCardInfo')">获取卡片基本信息</el-button>
-      <el-button type="primary" @click="handler('cancellation')">注销卡片(清空使用者信息)</el-button>
-      <el-button type="primary" @click="handler('issuingCard')">发卡</el-button>
-      <el-button type="primary" @click="handler('readUserinfo')">读取用户信息</el-button>
-      <el-button type="primary" @click="handler('writeData')">写数据</el-button>
-      <el-button type="primary" @click="handler('readData')">读取数据</el-button>
-    </div>
-
     <RefactorTable
       :loading="loading"
       :data="list"
@@ -89,11 +80,6 @@
         },
       ]"
     >
-      <!-- {
-          prop: 'mudtail',
-          isShow: true,
-          label: '泥尾'
-        }, -->
       <template #writeOffStatus="{row}">
         <el-switch
           v-model="row.writeOffStatus"
@@ -107,25 +93,18 @@
         <el-input v-else v-model="row.writeOffRemark" :disabled="row.$_disable" placeholder="请输入异常备注" />
       </template>
 
-      <!-- <template v-if="!isError" #status="{row}">
-        <span v-if="row.status === 0"><i class="el-icon-check" /></span>
-        <el-button v-else size="mini" type="danger" plain @click="absenceOpen(row)">不存在</el-button>
-      </template> -->
     </RefactorTable>
 
 
     <div slot="footer" class="dialog-footer ly-flex-pack-center">
       <el-button type="primary" :disabled="isFilter || loading || !list.length || isUserInfo " @click="submitForm">保存并清空</el-button>
-      <!-- <el-button type="primary" :disabled="loading || !list.length || isUserInfo || isError || isWart" @click="submitForm">保存并清空</el-button> -->
     </div>
   </el-dialog>
 </template>
 
 <script>
-// import { listInfo } from '@/api/assets/team';
-// import { listDriver } from '@/api/assets/driver';
 import { getUserByPhoneNum } from '@/api/system/user';
-import CardReader, { USERINFO, versionMark } from '@/libs/ICCard/CardReader';
+import CardReader, { versionMark } from '@/libs/ICCard/CardReader';
 import { checkList, check } from '@/api/settlement/adjustDregs';
 const { action, fn } = CardReader;
 
@@ -197,8 +176,6 @@ export default {
 
         const ret = await action.readUserInfoAndreadData();
 
-        // console.log(ret, '肯定是有数据进来不管成功还是失败---');
-
         // 读卡失败
         if (!ret.success) {
           this.errorCount++;
@@ -240,18 +217,20 @@ export default {
           this.userInfo.issuing_name = '--';
         }
 
-        // 司机
-        try {
-          const driver = await getUserByPhoneNum(this.userInfo.user_telno);
-          if (driver.data) {
-            this.userInfo.user_name = driver.data.nickName || driver.data.userName || driver.data.phonenumber;
-          } else {
-            this.userInfo.user_name = '--';
-            this.msgError('司机用户不存在');
+        // 司机(版本3的时候才出现)
+        if (ret.userMark === '1000|3|') {
+          try {
+            const driver = await getUserByPhoneNum(this.userInfo.user_telno);
+            if (driver.data) {
+              this.userInfo.user_name = driver.data.nickName || driver.data.userName || driver.data.phonenumber;
+            } else {
+              this.userInfo.user_name = '';
+              this.msgError('司机用户不存在');
+            }
+          } catch (error) {
+            console.log(error);
+            this.userInfo.user_name = '';
           }
-        } catch (error) {
-          console.log(error);
-          this.userInfo.user_name = '--';
         }
 
 
@@ -273,7 +252,7 @@ export default {
 
 
 
-        this.userInfo.issuing_pc = this.userInfo.issuing_pc || Date.now() + '000';
+        // this.userInfo.issuing_pc = this.userInfo.issuing_pc || Date.now() + '000';
         this.IClist = ret.dataList;
         this.meter = ret.meter;
         this.userMark = ret.userMark;
@@ -286,7 +265,7 @@ export default {
         console.log([this.carId], '----------ka标识');
 
         this.setLocalStorage(this.carId, { [this.userInfo.issuing_pc]: { data: this.IClist, meter: this.meter, userMark: this.userMark, userInfo: this.userInfo }}); // 本地存储
-        console.log(this.getLocalStorage(this.carId));
+        // console.log(this.getLocalStorage(this.carId));
 
         // 后端交互
         this.initData();
@@ -351,29 +330,6 @@ export default {
       }
     },
 
-    /**
-      // absenceOpen(row) {
-      //   this.$confirm('运单不存在', `运单: ${row.waybillId}`, {
-      //     confirmButtonText: '转为正常单',
-      //     cancelButtonText: '删除该条记录',
-      //     distinguishCancelAndClose: true,
-      //     type: 'warning',
-      //     center: true
-      //   }).then(() => {
-      //     // console.log('转为正常单- 接口欠着');
-      //     row.status = 0;
-      //   }).catch((action) => {
-      //     if (action === 'cancel') {
-      //      { waybillId: row.waybillId - 0 }).then(res => {
-      //         this.msgSuccess('删除该条记录成功');
-      //         this.list = this.list.filter(e => e.waybillId !== row.waybillId);
-      //         this.delData.push(row.waybillId);
-      //         // console.log('当前删除的数据是', this.delData);
-      //       });
-      //     }
-      //   });
-      // },
-    */
     /** 核销 */
     async submitForm() {
       // 判断异常的数据 条件 writeOffStatus 为false的时候是异常
@@ -455,7 +411,6 @@ export default {
 
       return await check(queArr);
     },
-
 
     // 异常要做写回卡的操作 filterArr 是异常的数据
     async errorHexiaoCheck(filterArr) {
@@ -565,186 +520,8 @@ export default {
       });
     },
 
-    // _returnWrite(userData, infoDataList) {
-    //   this.loading = true;
-    //   this.isWart = true;
-    //   action.issuingCard({
-    //     user_code: userData.user_code,
-    //     user_telno: userData.user_telno,
-    //     user_name: userData.user_name,
-    //     issuing_code: userData.issuing_code,
-    //     issuing_name: userData.issuing_name
-    //   }).then(res => {
-    //     // console.log(infoDataList);
-    //     let meter = '1010|1|';
-    //     if (this.meter) {
-    //       meter = this.meter.join('|') + '|';
-    //     }
-
-    //     const arr = [];
-    //     infoDataList.forEach(async(e, index) => {
-    //       // 1010|1|30273;2977608;测试项目3;闽AQ8001;测试独立强;15859109001;1623177000000;1623177480000;;妈湾
-    //       // '1010|1|30273;2977608;测试项目3;闽AQ8001;测试独立强;15859109001;1623177000000;1623177480000;;妈湾';
-    //       this['time' + index] = setTimeout(() => {
-    //         action.writeData(fn.setData(meter, e)).then(res => {
-    //           // console.log('写入成功' + index);
-    //           clearTimeout(this['time' + index]);
-    //           arr.push(true);
-    //           if (arr.length === infoDataList.length && arr.every(e => e)) {
-    //             this.loading = false;
-    //             this.isWart = false;
-    //             this.msgSuccess(res.msg, '操作成功');
-    //             this.delData = [];
-    //             this.handlerClose();
-    //           }
-    //         });
-    //       }, (index) * 1500);
-    //     });
-    //   });
-    // },
     handlerClose() {
       this.$emit('update:open', false);
-    },
-
-    /** 卡的操作 */
-    async handler(key) {
-      const mobj = {};
-      // 当前用户测试数据
-      const arr = '14700000001;120;15859102001;15859109601;1626253668656;1626253668656386;r';
-
-      const dataList = [
-        '1010|2|2105272013285561;2106231554010424;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010425;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010426;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010427;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010428;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710',
-        '1010|2|2105272013285561;2106231554010418;110;鄂ALF106;13812345678;1621648441990;1621648441990;2614710'
-
-
-      ];
-
-      const icData = this.getLocalStorage(this.carId) ? this.getLocalStorage(this.carId)[this.userInfo.issuing_pc] : null;
-
-      let res = '';
-      switch (key) {
-        case 'getCardInfo':
-          // 获取卡信息
-          action.getCardInfo(undefined, true).then(res => {
-            console.log(res);
-          });
-          break;
-        case 'cancellation':
-          // 注销卡片
-          action.cancellation().then(res => {
-            console.log(res);
-          });
-          break;
-        case 'issuingCard':
-          // 发卡
-          if (icData) {
-            action.issuingCard(icData.userInfo, icData.userMark).then(res => {
-              console.log(res);
-            });
-          } else {
-            // 测试的发卡
-            USERINFO.forEach((e, index) => {
-              mobj[e] = (arr.split(';'))[index];
-            });
-
-            action.issuingCard(mobj).then(res => {
-              console.log(res);
-            });
-          }
-          break;
-        case 'readUserinfo':
-          // 读取用户信息
-          action.readUserInfo().then(res => {
-            console.log(res);
-          });
-
-          break;
-        case 'readData':
-          // 读取卡数据
-          action.readUserInfoAndreadData().then(res => {
-            console.log(res);
-          });
-          break;
-        case 'writeData':
-          // 写数据
-          if (icData) {
-            // icData.data;
-            for (let index = 0; index < icData.data.length; index++) {
-              const e = icData.data[index];
-              res = await action.writeData(fn.setData(icData.meter.join('|') + '|', e));
-              console.log(res);
-            }
-          } else {
-            const arr1 = [];
-            dataList.forEach(async(e, index) => {
-              this['time' + index] = setTimeout(() => {
-                action.writeData(e).then(res => {
-                  clearTimeout(this['time' + index]);
-                  if (res.success && res.code === '9000') {
-                    arr1.push(true);
-                    // 执行到最后一步走这里
-                  } else {
-                    arr1.push(false);
-                    this.msgSuccess(res.msg);
-                  }
-
-                  if (arr1.length === dataList.length) {
-                    if (arr1.every(e => e)) {
-                      console.log('写入成功');
-                    } else {
-                      this.loading = false;
-                      this.msgError('写入失败');
-                    }
-                  }
-                });
-              }, (index + 1) * 500);
-            });
-          }
-          break;
-        default:
-          break;
-      }
     }
   }
 };
