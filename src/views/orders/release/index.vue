@@ -225,7 +225,7 @@
                   <OneAddress v-if="isShowAddress" :ref="address.refName" type="1" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
                   <div class="ly-t-right">
                     <div style="display: inline-block;">
-                      <label style="margin-left: 50px;">  <!-- v-if="isOpenTheElectronicFence" -->
+                      <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
                         设置电子围栏
                         <el-switch
                           v-model="address.switchRadius"
@@ -680,6 +680,10 @@ export default {
       console.log(addr);
       if (addr.cbData) {
         this.addressChange = addr;
+
+        // this.addressChange.radius = val.radius;
+        // this.addressChange.enclosureRadius = val.radius;
+        // this.addressChange.centerLocation = val.lnglat;
         // if(addr.cbData.location)
         this.title = '设置电子围栏';
         this.circledialog = true;
@@ -690,8 +694,14 @@ export default {
       }
     },
     changeElect(val) {
-      console.log(this.addressChange);
-      console.log(val);
+      // console.log(this.addressChange);
+      // console.log(val);
+      this.addressChange.radius = val.radius;
+      this.addressChange.enclosureRadius = val.radius;
+      this.addressChange.centerLocation = val.lnglat;
+
+      console.log(this.address_add);
+      console.log(this.address_xie);
     },
     // 通过货主的id获取详情 7/23 --chj
     getShipmentInfo(code) {
@@ -929,31 +939,37 @@ export default {
           });
         } else {
           orderPubilsh(this.lastData).then(async(response) => {
-            if (this.isOpenTheElectronicFence && (this.switchRadius1 || this.switchRadius2)) {
+            // 处理电子围栏数据
+            console.log(this.isOpenTheElectronicFence);
+            if (this.isOpenTheElectronicFence) {
+              console.log(this.lastData);
               const { orderAddressPublishBoList, orderSpecifiedList } = this.lastData;
               const addressInfo = orderAddressPublishBoList.map(e => {
                 let obj = null;
-                if (e.addressType === '1' && this.switchRadius1) {
+                if (e.addressType === '1' && e.switchRadius) {
                   obj = {
                     addressType: e.addressType,
-                    lng: e.longitude,
-                    lat: e.latitude,
-                    radius: this.$store.state.orders.radius1 + ''
+                    lng: e.centerLocation ? e.centerLocation[0] + '' : e.longitude,
+                    lat: e.centerLocation ? e.centerLocation[1] + '' : e.latitude,
+                    radius: e.enclosureRadius ? e.enclosureRadius + '' : e.radius
                   };
-                } else if (e.addressType === '2' && this.switchRadius2) {
+                } else if (e.addressType === '2' && e.switchRadius) {
                   obj = {
                     addressType: e.addressType,
-                    lng: e.longitude,
-                    lat: e.latitude,
-                    radius: this.$store.state.orders.radius2 + ''
+                    lng: e.centerLocation ? e.centerLocation[0] + '' : e.longitude,
+                    lat: e.centerLocation ? e.centerLocation[1] + '' : e.latitude,
+                    radius: e.enclosureRadius ? e.enclosureRadius + '' : e.radius
                   };
                 }
+
 
                 return obj;
               }).filter(e => e);
 
+              console.log(addressInfo);
               const dispatcherCodeList = orderSpecifiedList.map(e => e.teamInfoCode);
 
+              console.log(dispatcherCodeList);
               const que = {
                 addressInfo,
                 dispatcherCodeList,
@@ -973,7 +989,8 @@ export default {
               this.loading = false;
               this.$router.push({ name: 'Manage', query: { p: Date.now() }});
             }, 700);
-          }).catch(() => {
+          }).catch((error) => {
+            console.log(error);
             this.loading = false;
           });
         }
@@ -1499,13 +1516,17 @@ export default {
         const { name, type } = this.isRadioSelection;
         this[name].forEach(e => {
           if (e.refName === type) {
+            e.enclosureRadius = e.radius;
+            e.centerLocation = [data.longitude, data.latitude];
             e.cbData = {
               ...data,
               location: [data.longitude, data.latitude]
             };
           }
         });
+        console.log(this[name]);
       }
+
 
       this.isRadioSelection = null;
       this.openSelectaddress = false;
