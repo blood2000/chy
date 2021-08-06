@@ -9,10 +9,10 @@ import { decrypt } from '@/utils/jsencrypt';
 // 手机号  项目Id  调度组电话  发卡人电话  发卡时间（时间戳） 卡批次号
 // 1000|3|18415451845;120;16612345678;17812345678;1621648441990;1621648441990123;r
 // 1000|4|120;16612345678;17812345678;1621648441990;1621648441990123;r
-export let userMark = '1000|3|';
+export let userMark = '1000|4|';
 export const USERINFO = [
   // 'user_name', // 张三 用户姓名
-  'user_telno', //
+  // 'user_telno', //
   'project_id', // 120 项目Id
   'team_telno', // 16612345678 调度者关联用户的手机号
   'issuing_telno', // 17812345678 发卡人用户手机号
@@ -168,8 +168,26 @@ const CardReader = {
      */
     resultData: function(str, key = USERINFO) {
       const arr = str.split('|');
+
       const arr2 = arr[2].split(';');
       const data = {};
+
+      console.log(arr[0] + '|' + arr[1] + '|' === '1000|3|');
+
+      if (arr[0] + '|' + arr[1] + '|' === '1000|3|') {
+        key = [
+          // 'user_name', // 张三 用户姓名
+          'user_telno', //
+          'project_id', // 120 项目Id
+          'team_telno', // 16612345678 调度者关联用户的手机号
+          'issuing_telno', // 17812345678 发卡人用户手机号
+          // 'issuing_name', // 陈大帅 发卡人姓名
+          'issuing_time', // 1621648441990  发卡时间（时间戳）
+          'issuing_pc', // 1621648441990123 卡批次号
+          'icType' // 追加一个 ic卡type
+        ];
+      }
+
       key.forEach((e, index) => {
         data[e] = arr2[index];
       });
@@ -1646,11 +1664,28 @@ CardReader.action['issuingCard'] = async function(data, umeter, resEnd, key = Ca
 
     try {
       // 构造用户数据
+
       let str;
+
+      let user_info = USERINFO;
+
       if (umeter) {
-        str = umeter + (USERINFO.map(e => data[e])).join(';'); // ['1000', '1', (USERINFO.map(e => data[e])).join(';')].join('|');
+        if (umeter === '1000|3|') {
+          user_info = [
+            // 'user_name', // 张三 用户姓名
+            'user_telno', //
+            'project_id', // 120 项目Id
+            'team_telno', // 16612345678 调度者关联用户的手机号
+            'issuing_telno', // 17812345678 发卡人用户手机号
+            // 'issuing_name', // 陈大帅 发卡人姓名
+            'issuing_time', // 1621648441990  发卡时间（时间戳）
+            'issuing_pc', // 1621648441990123 卡批次号
+            'icType' // 追加一个 ic卡type
+          ];
+        }
+        str = umeter + (user_info.map(e => data[e])).join(';'); // ['1000', '1', (user_info.map(e => data[e])).join(';')].join('|');
       } else {
-        str = userMark + (USERINFO.map(e => data[e])).join(';'); // ['1000', '1', (USERINFO.map(e => data[e])).join(';')].join('|');
+        str = userMark + (user_info.map(e => data[e])).join(';'); // ['1000', '1', (user_info.map(e => data[e])).join(';')].join('|');
       }
 
       // 用户信息数据加密

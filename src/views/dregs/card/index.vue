@@ -593,10 +593,11 @@ export default {
       }
       // console.log(USERINFO);
       action.getCardInfo(undefined, false).then(res => {
-        console.log(res, '先获取卡信息');
+        // console.log(res, '先获取卡信息');
 
+        // console.log(this.selectedData);
         if (res.success) {
-          if (res.code === '9000') {
+          if (res.code === '9000' && this.selectedData[0]) {
             const user = this.selectedData[0];
             const cardData = {
               card16no: user.card16no,
@@ -726,9 +727,9 @@ export default {
         issuing_time: 1627559820000, // loadingTime	装货时间
         project_id: 72276 || '-', // projectId	项目Id
         //   team_name:  "-", // teamName	车队名称
-        team_telno: 15859102001 || '-' // dispatchNumber	调度者手机号
+        team_telno: 15859102001 || '-', // dispatchNumber	调度者手机号
         //   user_name:  "-", // driverName	司机名字
-        // user_telno: 15859101001 || '-' // driverPhone	司机电话
+        user_telno: 15859101001 || '-' // driverPhone	司机电话
       };
 
       const cancellation = await action.cancellation();
@@ -736,6 +737,7 @@ export default {
         this.msgError(cancellation.msg || '核销失败');
         return;
       }
+      console.log(userMark);
       action.issuingCard(userInfo, userMark).then((res) => {
         console.log(res);
       });
