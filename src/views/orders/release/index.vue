@@ -230,7 +230,7 @@
                     :myisdisabled="myisdisabled"
                     @getLnglat="(lnglat)=> {
                       if(isOpenTheElectronicFence){
-                        address.centerLocation = []
+                        address.centerLocation = lnglat
                         address.loadLnglat = lnglat
                       }
                     }"
@@ -307,8 +307,8 @@
                     :myisdisabled="myisdisabled"
                     @getLnglat="(lnglat)=> {
                       if(isOpenTheElectronicFence){
-                        address.centerLocation = []
                         address.loadLnglat = lnglat
+                        address.centerLocation = lnglat
                       }
                     }"
                   />
@@ -701,7 +701,6 @@ export default {
   },
 
   methods: {
-
     handleElect(addr) {
       console.log(addr);
 
@@ -1156,7 +1155,7 @@ export default {
           ee.identification = index + 1;
 
           return {
-            addressIdentification: (ee.addressType - 0) === 1 ? (index + 1) + ':0' : '0:' + (index + 1),
+            addressIdentification: (ee.addressType - 0) === 1 || (ee.addressType - 0) === 3 ? (index + 1) + ':0' : '0:' + (index + 1),
             ruleDictValue: ee.ruleDictValue,
             ruleInfoShipmentCode: ee.ruleInfoShipmentCode,
             orderFreightBoList: this.isCreated ? ee.orderFreightBoList : undefined,
@@ -1271,11 +1270,11 @@ export default {
 
         // 5/18e=特殊处理
 
-        this.handlerOrderBasic({ ...redisOrderInfoVo, redisOrderClassGoodsVoList, redisOrderSpecifiedVoList, redisOrderGoodsVoListRest });
+        await this.handlerOrderBasic({ ...redisOrderInfoVo, redisOrderClassGoodsVoList, redisOrderSpecifiedVoList, redisOrderGoodsVoListRest });
 
-        this.handlercbAddress(redisAddressList);
+        await this.handlercbAddress(redisAddressList);
 
-        this.handerRedisOrder(redisAddressList);
+        await this.handerRedisOrder(redisAddressList);
 
         // 4. 处理商品
         this.cbGoodsAccounting = redisOrderGoodsVoListRest;
@@ -1287,17 +1286,17 @@ export default {
 
         this.active = this.isT ? 4 : 3; // 自接全展示
 
-        this.isT && this.isTEstimateCost(data);
+        this.isT && await this.isTEstimateCost(data);
 
         this.$nextTick(() => {
           let tiem = setTimeout(() => {
             this.loading = false;
             clearTimeout(tiem);
             tiem = undefined;
-          }, 700);
+          }, 1000);
         });
       } catch (error) {
-        // this.loading = false;
+        this.loading = false;
       }
     },
 
@@ -1364,7 +1363,7 @@ export default {
     },
 
     // 1.处理 cbOrderBasic 要的数据
-    handlerOrderBasic(data) {
+    async handlerOrderBasic(data) {
       const { code, isPublic, publishMode, isSpecified, loadType, projectCode, pubilshCode, remark, redisOrderClassGoodsVoList, redisOrderGoodsVoListRest: redisOrderGoodsVoList, redisOrderSpecifiedVoList } = data;
 
       this.formData.tin1 = pubilshCode;
@@ -1400,7 +1399,7 @@ export default {
     },
 
     // 2. 处理 OneAddress 地址要的数据
-    handlercbAddress(addressList) {
+    async handlercbAddress(addressList) {
       this.address_add = [];
       this.address_xie = [];
 
@@ -1442,7 +1441,7 @@ export default {
     },
 
     // 3. 处理回填的数据(1.是要获取地址中的规则 2.要获取装地址到卸地址)
-    handerRedisOrder(addressList) {
+    async handerRedisOrder(addressList) {
       addressList.forEach(e => {
         if ((e.addressType - 0) === 1 || (e.addressType - 0) === 3) {
           this.addr_add.push(e);
