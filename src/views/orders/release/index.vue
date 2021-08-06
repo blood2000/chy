@@ -707,11 +707,6 @@ export default {
 
       if (addr.cbData) {
         this.addressChange = addr;
-
-        // this.addressChange.radius = val.radius;
-        // this.addressChange.enclosureRadius = val.radius;
-        // this.addressChange.centerLocation = val.lnglat;
-        // if(addr.cbData.location)
         this.title = '设置电子围栏';
         this.circledialog = true;
         this.radius = addr.radius;
@@ -727,22 +722,17 @@ export default {
       }
     },
     changeElect(val) {
-      // console.log(this.addressChange);
-      // console.log(val);
       this.addressChange.radius = val.radius;
       this.addressChange.enclosureRadius = val.radius;
       this.addressChange.centerLocation = val.lnglat;
-
-      // console.log(this.address_add);
-      // console.log(this.address_xie);
     },
     // 通过货主的id获取详情 7/23 --chj
     getShipmentInfo(code) {
       return getShipmentByCode({ code }).then(res => {
         this.shipmentInfo = res.data;
-        console.log(this.shipmentInfo);
+        // console.log(this.shipmentInfo);
         // this.isZtShipment = res.data.shipmentRoleCodes.indexOf('6809f8526e764abea23e6f302b9cf44d') !== -1;
-        console.log(this.isZtShipment, '要最后确认111');
+        // console.log(this.isZtShipment, '要最后确认111');
       });
     },
 
