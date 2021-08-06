@@ -222,7 +222,19 @@
                   <div class="pa triangleR " />
                   <div class="pa m_pa">{{ index + 1 }}</div>
 
-                  <OneAddress v-if="isShowAddress" :ref="address.refName" type="1" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
+                  <OneAddress
+                    v-if="isShowAddress"
+                    :ref="address.refName"
+                    type="1"
+                    :cb-data="address.cbData"
+                    :myisdisabled="myisdisabled"
+                    @getLnglat="(lnglat)=> {
+                      if(isOpenTheElectronicFence){
+                        address.centerLocation = []
+                        address.loadLnglat = lnglat
+                      }
+                    }"
+                  />
                   <div class="ly-t-right">
                     <div style="display: inline-block;">
                       <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
@@ -287,7 +299,20 @@
                   <div class="pa triangleR " />
                   <div class="pa m_pa">{{ index + 1 }}</div>
 
-                  <OneAddress v-if="isShowAddress" :ref="address.refName" type="2" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
+                  <OneAddress
+                    v-if="isShowAddress"
+                    :ref="address.refName"
+                    type="2"
+                    :cb-data="address.cbData"
+                    :myisdisabled="myisdisabled"
+                    @getLnglat="(lnglat)=> {
+                      if(isOpenTheElectronicFence){
+                        address.centerLocation = []
+                        address.loadLnglat = lnglat
+                      }
+                    }"
+                  />
+                  <!-- address.centerLocation = lnglat -->
 
                   <div class="ly-t-right">
                     <div style="display: inline-block;">
@@ -676,8 +701,11 @@ export default {
   },
 
   methods: {
+
     handleElect(addr) {
       console.log(addr);
+
+
       if (addr.cbData) {
         this.addressChange = addr;
 
@@ -689,6 +717,12 @@ export default {
         this.circledialog = true;
         this.radius = addr.radius;
         this.$refs.CircleDialog.circleEdit(addr.centerLocation && addr.centerLocation.length ? addr.centerLocation : addr.cbData.location, addr.cbData.location);
+      } else if (addr.loadLnglat && addr.loadLnglat.length) {
+        this.addressChange = addr;
+        this.title = '设置电子围栏';
+        this.circledialog = true;
+        this.radius = addr.radius;
+        this.$refs.CircleDialog.circleEdit(addr.centerLocation && addr.centerLocation.length ? addr.centerLocation : addr.loadLnglat, addr.loadLnglat);
       } else {
         this.msgInfo('请先完善地址信息！');
       }

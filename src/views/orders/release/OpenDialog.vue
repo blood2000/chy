@@ -36,9 +36,9 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button type="primary" size="mini" @click="handlerClick">确定</el-button>
-      </el-col>
+      </el-col> -->
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
     </el-row>
 
@@ -80,6 +80,11 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
+
+    <div class="ly-t-right">
+      <el-button type="primary" size="mini" @click="handlerClick">确定</el-button>
+    </div>
+
 
   </div>
 </template>

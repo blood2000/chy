@@ -2,18 +2,7 @@
   <!-- 车辆定位对话框 -->
   <el-dialog :title="title" :visible="visible" width="1400px" append-to-body destroy-on-close :close-on-click-modal="false" @close="cancel">
     <div class="amap-wrapper">
-      <div class="slider-box">
-        <el-button
-          type="primary"
-          size="mini"
-          style="margin-top: -12px"
-          @click="submit"
-        >确定</el-button>
-        <!-- <div>电子围栏(米): </div>
-        <div class="slider-box-rigth">
-          <el-slider v-model="radius" show-input :max="10000" :min="0" />
-        </div> -->
-      </div>
+
       <el-amap
         ref="map"
         vid="amapDemo"
@@ -53,6 +42,19 @@
         />
         <!-- click: mcircleClick, -->
       </el-amap>
+
+      <div class="slider-box">
+        <el-button
+          type="primary"
+          size="mini"
+          style="margin-top: 12px"
+          @click="submit"
+        >确定</el-button>
+        <!-- <div>电子围栏(米): </div>
+        <div class="slider-box-rigth">
+          <el-slider v-model="radius" show-input :max="10000" :min="0" />
+        </div> -->
+      </div>
     </div>
   </el-dialog>
 </template>
