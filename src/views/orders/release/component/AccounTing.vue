@@ -487,6 +487,16 @@ export default {
       this.$_ruleOhData = detailList.filter(e => {
         const bool = (e.enName === 'LOSS_PLAN' || e.enName === 'LOSS_RULE');
         return bool;
+      }).map(e => {
+        return {
+          'code': e.code,
+          'ruleCode': e.ruleCode,
+          'ruleDetailShipmentCode': e.code,
+          'ruleItemCode': e.ruleItemCode,
+          'ruleValue': e.ruleValue,
+          'type': e.type,
+          'unit': e.unit || undefined
+        };
       });
 
 
