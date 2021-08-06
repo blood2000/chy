@@ -1512,15 +1512,16 @@ export default {
     radioSelection(data) {
       if (JSON.stringify(data) === '{}') return;
 
+      console.log(data);
       if (this.isRadioSelection) {
         const { name, type } = this.isRadioSelection;
         this[name].forEach(e => {
           if (e.refName === type) {
             e.enclosureRadius = e.radius;
-            e.centerLocation = [data.longitude, data.latitude];
+            e.centerLocation = [this.floor(data.longitude, 6), this.floor(data.latitude, 6)];
             e.cbData = {
               ...data,
-              location: [data.longitude, data.latitude]
+              location: [this.floor(data.longitude, 6), this.floor(data.latitude, 6)]
             };
           }
         });
