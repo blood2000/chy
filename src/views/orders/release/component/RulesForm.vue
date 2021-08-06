@@ -158,7 +158,6 @@ export default {
 
   computed: {
     unit() {
-      // console.log(this.$store.state.orders.orderStowageStatus, '调价的时候');
       let name = 'kg';
       const srcode = this.$store.state.orders.lossPlans;
       const lossPlans = Object.keys(srcode);
@@ -262,7 +261,6 @@ export default {
       this.resettingData.filter(e => {
         e.ruleValue = this.formData[e.myName];
       });
-
 
       return new Promise((resolve, reject) => {
         this.$refs['formData'].validate((valid) => {

@@ -216,6 +216,7 @@ export default {
       }
     };
     return {
+      $_ruleOhData: [], // 其他规则
       loading: false,
       jisuanRule: {}, // 计算的规则
       mygoodsUnitName: '', // 单位
@@ -366,6 +367,21 @@ export default {
           return !bool;
         });
 
+        this.$_ruleOhData = detailList.filter(e => {
+          const bool = (e.enName === 'LOSS_PLAN' || e.enName === 'LOSS_RULE');
+          return bool;
+        }).map(e => {
+          return {
+            'code': e.code,
+            'ruleCode': e.ruleCode,
+            'ruleDetailShipmentCode': e.code,
+            'ruleItemCode': e.ruleItemCode,
+            'ruleValue': e.ruleValue,
+            'type': e.type,
+            'unit': e.unit || undefined
+          };
+        });
+
         this.setData(filterDetailList, lossList);
       },
       immediate: true
@@ -444,10 +460,14 @@ export default {
       this.shouruList = [];
       this.loading = true;
 
+
+
       const { detailList, lossList } = (await getRuleItem({
         code: this.formData.ruleItemId
       })).data;
       this.loading = false;
+
+
 
 
       const filterDetailList = detailList.filter(e => {
@@ -463,6 +483,12 @@ export default {
 
         return !bool;
       });
+
+      this.$_ruleOhData = detailList.filter(e => {
+        const bool = (e.enName === 'LOSS_PLAN' || e.enName === 'LOSS_RULE');
+        return bool;
+      });
+
 
       this.setData(filterDetailList, lossList);
     },
@@ -506,7 +532,7 @@ export default {
             const zichuList = this.$refs.zichuList ? (await this.$refs.zichuList._submitForm()) : [];
 
             const obj = {
-              orderFreightBoList: await [...this.ruleFreightPrice, ...shouruList, ...zichuList, ...this.claculationFormula, ...[this.jisuanRule]].map(e => {
+              orderFreightBoList: await ([...this.ruleFreightPrice, ...shouruList, ...zichuList, ...this.claculationFormula, ...[this.jisuanRule]].map(e => {
                 return {
                   'code': e.code,
                   'ruleCode': e.ruleCode,
@@ -516,10 +542,11 @@ export default {
                   'type': e.type,
                   'unit': e.unit || undefined
                 };
-              })
+              })).concat(this.$_ruleOhData)
             };
 
 
+            // console.log(obj);
 
             resolve({ ...obj, ruleDictValue: this.formData.ruleDictValue });
           } else {

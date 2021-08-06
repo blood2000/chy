@@ -968,9 +968,9 @@ export default {
         } else {
           orderPubilsh(this.lastData).then(async(response) => {
             // 处理电子围栏数据
-            console.log(this.isOpenTheElectronicFence);
+            // console.log(this.isOpenTheElectronicFence);
             if (this.isOpenTheElectronicFence) {
-              console.log(this.lastData);
+              // console.log(this.lastData);
               const { orderAddressPublishBoList, orderSpecifiedList } = this.lastData;
               const addressInfo = orderAddressPublishBoList.map(e => {
                 let obj = null;
@@ -994,10 +994,10 @@ export default {
                 return obj;
               }).filter(e => e);
 
-              console.log(addressInfo);
+              // console.log(addressInfo);
               const dispatcherCodeList = orderSpecifiedList.map(e => e.teamInfoCode);
 
-              console.log(dispatcherCodeList);
+              // console.log(dispatcherCodeList);
               const que = {
                 addressInfo,
                 dispatcherCodeList,
@@ -1238,7 +1238,7 @@ export default {
 
         this.ztCbData = data;
 
-        console.log(data, '99999');
+        // console.log(data, '99999');
 
         const { redisOrderInfoVo, redisOrderClassGoodsVoList, redisOrderSpecifiedVoList, redisOrderFreightInfoVoList, redisOrderGoodsVoList, redisAddressList } = data;
 
@@ -1269,7 +1269,7 @@ export default {
 
         await this.handlercbAddress(redisAddressList);
 
-        console.log(redisAddressList);
+        // console.log(redisAddressList);
 
         await this.handerRedisOrder(redisAddressList);
 
@@ -1401,12 +1401,12 @@ export default {
       this.address_xie = [];
 
       addressList.forEach((e, index) => {
-        console.log(e);
+        // console.log(e);
         // e.switchRadius = !!e.enclosureRadius;
 
         // 电子围栏回填
         let dzWLobj = {};
-        console.log(e.enclosureRadius);
+        // console.log(e.enclosureRadius);
         if (e.enclosureRadius) {
           dzWLobj = {
             centerLocation: e.centerLocation,
@@ -1560,7 +1560,7 @@ export default {
     radioSelection(data) {
       if (JSON.stringify(data) === '{}') return;
 
-      console.log(data);
+      // console.log(data);
       if (this.isRadioSelection) {
         const { name, type } = this.isRadioSelection;
         this[name].forEach(e => {
@@ -1573,7 +1573,7 @@ export default {
             };
           }
         });
-        console.log(this[name]);
+        // console.log(this[name]);
       }
 
 
