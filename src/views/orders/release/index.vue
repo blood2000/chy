@@ -333,6 +333,7 @@
                       size="mini"
                       class="ml10"
                       plain
+                      :disabled="false"
                       @click="handleElect(address)"
                     >围栏编辑</el-button>
                     <el-button
@@ -625,7 +626,7 @@ export default {
       // 是否开启电子围栏(0开启 1不开启), 默认不开启
       let bool = false;
 
-      if (this.shipmentInfo && this.shipmentInfo.openTheElectronicFence === 0 && !this.idCode && this.$store.state.orders.tiemList.length > 0) {
+      if (this.shipmentInfo && this.shipmentInfo.openTheElectronicFence === 0 && this.$store.state.orders.tiemList.length > 0) {
         bool = true;
       }
       return bool;
@@ -655,6 +656,9 @@ export default {
         } else if (value === '3') {
           this.isClone = true;
         }
+
+
+        console.log(this.$refs.WL);
       },
       immediate: true
     }
@@ -699,6 +703,7 @@ export default {
     const { rows } = await getProvinceList();
     this.$store.dispatch('orders/store_getProvinceList', rows);
   },
+
 
   methods: {
     handleElect(addr) {
@@ -1233,7 +1238,7 @@ export default {
 
         this.ztCbData = data;
 
-        // console.log(data, '99999');
+        console.log(data, '99999');
 
         const { redisOrderInfoVo, redisOrderClassGoodsVoList, redisOrderSpecifiedVoList, redisOrderFreightInfoVoList, redisOrderGoodsVoList, redisAddressList } = data;
 
@@ -1263,6 +1268,8 @@ export default {
         await this.handlerOrderBasic({ ...redisOrderInfoVo, redisOrderClassGoodsVoList, redisOrderSpecifiedVoList, redisOrderGoodsVoListRest });
 
         await this.handlercbAddress(redisAddressList);
+
+        console.log(redisAddressList);
 
         await this.handerRedisOrder(redisAddressList);
 
@@ -1394,6 +1401,20 @@ export default {
       this.address_xie = [];
 
       addressList.forEach((e, index) => {
+        console.log(e);
+        // e.switchRadius = !!e.enclosureRadius;
+
+        // 电子围栏回填
+        let dzWLobj = {};
+        console.log(e.enclosureRadius);
+        if (e.enclosureRadius) {
+          dzWLobj = {
+            centerLocation: e.centerLocation,
+            radius: e.enclosureRadius
+          };
+        }
+        // e电子围栏回填
+
         if ((e.addressType - 0) === 3) {
           this.formData.tin8 = true;
         } else if ((e.addressType - 0) === 4) {
@@ -1403,12 +1424,16 @@ export default {
         if ((e.addressType - 0) === 1) {
           // 装
           this.address_add.push({
+            ...dzWLobj,
+            switchRadius: !!e.enclosureRadius,
             refName: 'address_add' + Date.now() + index,
             cbData: e // 主要是这个
           });
         } else if ((e.addressType - 0) === 2) {
           // 卸
           this.address_xie.push({
+            ...dzWLobj,
+            switchRadius: !!e.enclosureRadius,
             refName: 'address_xie' + Date.now() + index,
             cbData: e
           });
