@@ -1,6 +1,6 @@
 <template>
   <!-- 车辆定位对话框 -->
-  <el-dialog :title="title" :visible="visible" width="1400px" append-to-body destroy-on-close @close="cancel">
+  <el-dialog :title="title" :visible="visible" width="1400px" append-to-body destroy-on-close :close-on-click-modal="false" @close="cancel">
     <div class="amap-wrapper">
       <div class="slider-box">
         <el-button
@@ -47,11 +47,11 @@
           :stroke-color="'#ff4d4d'"
           :editable="true"
           :events="{
-            click: mcircleClick,
             move: handlerMove,
             adjust: handlerAdjust
           }"
         />
+        <!-- click: mcircleClick, -->
       </el-amap>
     </div>
   </el-dialog>
@@ -147,15 +147,15 @@ export default {
       console.log('you' + this.radius);
     },
 
-    circleEdit(lnglat) {
+    circleEdit(lnglat, oldLnglat) {
       this.center = lnglat;
-      this.lnglat = lnglat;
+      this.lnglat = oldLnglat;
     },
 
 
     mcircleClick() {
       // console.log('点击圆形了');
-      this.visible = !this.visible;
+      // this.visible = !this.visible;
     },
     submit() {
       this.$emit('refresh', { radius: this.radius, lnglat: this.center });
@@ -178,7 +178,7 @@ export default {
 .amap-wrapper {
   position: relative;
   width: 100%;
-  height: 500px;
+  height: 65vh;
   display: flex;
   flex-direction: column;
 }
@@ -187,9 +187,9 @@ export default {
 }
 
 .slider-box{
-    width: 80%;
+    width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
     margin-bottom: 10px;
     /* margin: 10px auto; */

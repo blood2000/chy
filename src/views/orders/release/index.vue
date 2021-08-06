@@ -688,7 +688,7 @@ export default {
         this.title = '设置电子围栏';
         this.circledialog = true;
         this.radius = addr.radius;
-        this.$refs.CircleDialog.circleEdit(addr.cbData.location);
+        this.$refs.CircleDialog.circleEdit(addr.centerLocation && addr.centerLocation.length ? addr.centerLocation : addr.cbData.location, addr.cbData.location);
       } else {
         this.msgInfo('请先完善地址信息！');
       }
@@ -700,8 +700,8 @@ export default {
       this.addressChange.enclosureRadius = val.radius;
       this.addressChange.centerLocation = val.lnglat;
 
-      console.log(this.address_add);
-      console.log(this.address_xie);
+      // console.log(this.address_add);
+      // console.log(this.address_xie);
     },
     // 通过货主的id获取详情 7/23 --chj
     getShipmentInfo(code) {
