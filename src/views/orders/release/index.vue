@@ -665,7 +665,7 @@ export default {
     const { isShipment = false, isZtShipment = false, shipment = {}, user = {}} = getUserInfo() || {};
     this.isShipment = isShipment;
     this.isZtShipment = isShipment && isZtShipment;
-    console.log('第一传要最后确认');
+    console.log(shipment, '第一传要最后确认');
     if (isShipment) {
       if (isShipment && shipment.info && shipment.info.authStatus !== 3) {
         this.authStatus = false;
