@@ -123,9 +123,9 @@
               <span v-else>{{ scope.row.loss || 0 }}</span>
             </template>
           </el-table-column>
-          <el-table-column width="170" label="路耗允许范围( kg/m³/% )" align="center" prop="lossAllowScope">
+          <el-table-column width="180" label="路耗允许范围(kg/m³/%)" align="center" prop="lossAllowScope">
             <template slot-scope="scope">
-              <span>{{ scope.row.lossAllowScope || '--' }}</span>
+              <span>{{ _lossAllowScope(scope.row.lossAllowScope) || '--' }}</span>
             </template>
           </el-table-column>
           <el-table-column width="160" label="货物单价(元)" align="center" prop="goodsPrice">
@@ -133,7 +133,7 @@
               <span>{{ floor(scope.row.goodsPrice) }}</span>
             </template>
           </el-table-column>
-          <el-table-column width="160" label="货主成交单价(元)" align="center" prop="freightPrice">
+          <el-table-column width="160" label="运单单价(元)" align="center" prop="freightPrice">
             <template slot-scope="scope">
               <span>{{ floor(scope.row.freightPrice) }}</span>
             </template>
@@ -819,10 +819,10 @@ export default {
         arr[0] = (arr[0] - 0) === 0 ? 0 : -arr[0];
         arr[1] = arr[1] - 0;
 
-        if (bool) {
-          arr[0] = this.floor(arr[0] / 1000, 6);
-          arr[1] = this.floor(arr[1] / 1000, 6);
-        }
+        // if (bool) {
+        //   arr[0] = this.floor(arr[0] / 1000, 6);
+        //   arr[1] = this.floor(arr[1] / 1000, 6);
+        // }
 
         return JSON.stringify(arr);
       }
