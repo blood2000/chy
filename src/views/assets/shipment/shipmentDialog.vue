@@ -459,23 +459,23 @@
         </el-col>
       </el-row>
       <el-row :gutter="20">
-          <el-col :span="11">
-              <el-form-item label="金融体系" prop="financialOption">
-                  <el-select
-                          v-model="form.financialOption"
-                          clearable
-                          filterable
-                          style="width: 200px"
-                  >
-                      <el-option
-                              v-for="dict in financialOptionList"
-                              :key="dict.dictValue"
-                              :label="dict.dictLabel"
-                              :value="dict.dictValue"
-                      />
-                  </el-select>
-              </el-form-item>
-          </el-col>
+        <el-col :span="11">
+          <el-form-item label="金融体系" prop="financialOption">
+            <el-select
+              v-model="form.financialOption"
+              clearable
+              filterable
+              style="width: 200px"
+            >
+              <el-option
+                v-for="dict in financialOptionList"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
       </el-row>
       <h5 class="g-card-title g-strong mb20 ml10">
         通用配置
