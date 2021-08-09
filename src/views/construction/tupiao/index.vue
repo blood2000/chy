@@ -155,45 +155,101 @@ export default {
           'tooltip': true
         },
         {
-          'label': '前期余票',
-          'prop': 'earlyStageRemainingTickets',
+          'label': '签收时间',
+          'prop': 'qingisofjeojso',
+          'isShow': true,
+          'sortNum': 51,
+          'width': '90',
+          'tooltip': true
+        },
+        {
+          'label': '前余',
+          'prop': 'qinghuyuuyu',
+          'isShow': true,
+          'sortNum': 52,
+          'width': '90',
+          'tooltip': true
+        },
+        {
+          'label': '日领',
+          'prop': 'rilisnigii',
           'isShow': true,
           'sortNum': 60,
           'width': '90',
           'tooltip': true
         },
         {
-          'label': '本周领票',
-          'prop': 'thisWeekCollectTickets',
+          'label': '日用',
+          'prop': 'riyoangyiui',
           'isShow': true,
-          'sortNum': 70,
+          'sortNum': 60,
           'width': '90',
           'tooltip': true
         },
         {
-          'label': '本周余票',
-          'prop': 'thisWeekRemainingTickets',
+          'label': '日余',
+          'prop': 'riyuyuyu',
           'isShow': true,
-          'sortNum': 80,
+          'sortNum': 60,
           'width': '90',
           'tooltip': true
         },
         {
-          'label': '本周用票',
-          'prop': 'thisWeekUsedTickets',
+          'label': '日退',
+          'prop': 'rituiuiihise',
           'isShow': true,
-          'sortNum': 85,
+          'sortNum': 60,
           'width': '90',
           'tooltip': true
         },
         {
-          'label': '本周退票',
-          'prop': 'thisWeekRefundTickets',
+          'label': '数量',
+          'prop': 'shukaieni',
           'isShow': true,
-          'sortNum': 90,
+          'sortNum': 60,
           'width': '90',
           'tooltip': true
         },
+        // {
+        //   'label': '前期余票',
+        //   'prop': 'earlyStageRemainingTickets',
+        //   'isShow': false,
+        //   'sortNum': 60,
+        //   'width': '90',
+        //   'tooltip': true
+        // },
+        // {
+        //   'label': '本周领票',
+        //   'prop': 'thisWeekCollectTickets',
+        //   'isShow': false,
+        //   'sortNum': 70,
+        //   'width': '90',
+        //   'tooltip': true
+        // },
+        // {
+        //   'label': '本周余票',
+        //   'prop': 'thisWeekRemainingTickets',
+        //   'isShow': false,
+        //   'sortNum': 80,
+        //   'width': '90',
+        //   'tooltip': true
+        // },
+        // {
+        //   'label': '本周用票',
+        //   'prop': 'thisWeekUsedTickets',
+        //   'isShow': false,
+        //   'sortNum': 85,
+        //   'width': '90',
+        //   'tooltip': true
+        // },
+        // {
+        //   'label': '本周退票',
+        //   'prop': 'thisWeekRefundTickets',
+        //   'isShow': false,
+        //   'sortNum': 90,
+        //   'width': '90',
+        //   'tooltip': true
+        // },
         {
           'label': '单价',
           'prop': 'price',

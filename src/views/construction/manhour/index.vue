@@ -33,6 +33,12 @@
         <template #nickName="{row}">
           <span>{{ row.nickName || '--' }} [{{ row.phonenumber }}]</span>
         </template>
+        <template #objTime="{row}">
+          <div>
+            <div>{{ row.startTime || '7:30 ~ 12:00' }}</div>
+            <div>{{ row.completeTime || '7:30 ~ 12:00' }}</div>
+          </div>
+        </template>
         <template #price="{row}">
           <span>{{ floor(row.price - 0) }}</span>
         </template>
@@ -166,9 +172,17 @@ export default {
           'tooltip': true
         },
         {
+          'label': '作业时段',
+          'prop': 'objTime',
+          'isShow': true,
+          'sortNum': 60,
+          'width': '90',
+          'tooltip': true
+        },
+        {
           'label': '作业开始时间',
           'prop': 'startTime',
-          'isShow': true,
+          'isShow': false,
           'sortNum': 60,
           'width': '90',
           'tooltip': true
@@ -176,7 +190,7 @@ export default {
         {
           'label': '作业结束时间',
           'prop': 'completeTime',
-          'isShow': true,
+          'isShow': false,
           'sortNum': 70,
           'width': '90',
           'tooltip': true
