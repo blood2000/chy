@@ -133,7 +133,7 @@
               <span>{{ floor(scope.row.goodsPrice) }}</span>
             </template>
           </el-table-column>
-          <el-table-column width="160" label="运单单价(元)" align="center" prop="freightPrice">
+          <el-table-column width="160" label="运输单价(元)" align="center" prop="freightPrice">
             <template slot-scope="scope">
               <span>{{ floor(scope.row.freightPrice) }}</span>
             </template>
