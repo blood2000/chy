@@ -311,51 +311,60 @@
           </div>
         </template>
         <template #waybillSendStatus="{row}">
-          <div :class="row.waybillSendStatus == '0'?'shou':null">
-            <span v-if="row.waybillSendStatus == '0'" class="g-color-error" @click="handlerReport(row, 'waybillSendStatus', row.waybillSendStatus == '1')">
-              <svg-icon icon-class="not-reported" class-name="mr10" />未上报
-            </span>
-            <span v-if="row.waybillSendStatus == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
-            <span v-if="row.waybillSendStatus == '2'" class="g-color-warning">上报失败</span>
-            <span v-if="row.waybillSendStatus == '3'" class="g-color-warning">上报中</span>
-            <span v-if="row.waybillSendStatus == '4'" class="g-color-warning">数据异常</span>
-          </div>
+          <el-tooltip :content="row.waybillErrMsg" :disabled="row.waybillErrMsg?false:true" effect="light">
+            <div :class="row.waybillSendStatus == '0'?'shou':null">
+              <span v-if="row.waybillSendStatus == '0'" class="g-color-error" @click="handlerReport(row, 'waybillSendStatus', row.waybillSendStatus == '1')">
+                <svg-icon icon-class="not-reported" class-name="mr10" />未上报
+              </span>
+              <span v-if="row.waybillSendStatus == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
+              <span v-if="row.waybillSendStatus == '2'" class="g-color-warning">上报失败</span>
+              <span v-if="row.waybillSendStatus == '3'" class="g-color-warning">上报中</span>
+              <span v-if="row.waybillSendStatus == '4'" class="g-color-warning">数据异常</span>
+            </div>
+          </el-tooltip>
         </template>
         <template #loadSendStatus="{row}">
-
-          <div :class="row.loadSendStatus == '0'?'shou':null">
-            <span v-if="row.loadSendStatus == '0'" class="g-color-error" @click="handlerReport(row, 'loadSendStatus', row.loadSendStatus == '1')">
-              <svg-icon icon-class="not-reported" class-name="mr10" />未上报
-            </span>
-            <span v-if="row.loadSendStatus == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
-            <span v-if="row.loadSendStatus == '2'" class="g-color-warning">上报失败</span>
-            <span v-if="row.loadSendStatus == '3'" class="g-color-warning">上报中</span>
-            <span v-if="row.loadSendStatus == '4'" class="g-color-warning">数据异常</span>
-          </div>
+          <el-tooltip :content="row.loadErrMsg" :disabled="row.loadErrMsg?false:true" effect="light">
+            <div :class="row.loadSendStatus == '0'?'shou':null">
+              <span v-if="row.loadSendStatus == '0'" class="g-color-error" @click="handlerReport(row, 'loadSendStatus', row.loadSendStatus == '1')">
+                <svg-icon icon-class="not-reported" class-name="mr10" />未上报
+              </span>
+              <span v-if="row.loadSendStatus == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
+              <span v-if="row.loadSendStatus == '2'" class="g-color-warning">上报失败</span>
+              <span v-if="row.loadSendStatus == '3'" class="g-color-warning">上报中</span>
+              <span v-if="row.loadSendStatus == '4'" class="g-color-warning">数据异常</span>
+            </div>
+          </el-tooltip>
         </template>
         <template #unloadSendStatus="{row}">
-          <div :class="row.unloadSendStatus == '0'?'shou':null">
+          <el-tooltip :content="row.unloadErrMsg" :disabled="row.unloadErrMsg?false:true" effect="light">
+            <div :class="row.unloadSendStatus == '0'?'shou':null">
 
-            <span v-if="row.unloadSendStatus == '0'" class="g-color-error" @click="handlerReport(row, 'unloadSendStatus', row.unloadSendStatus == '1')">
-              <svg-icon icon-class="not-reported" class-name="mr10" />未上报
-            </span>
-            <span v-if="row.unloadSendStatus == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
-            <span v-if="row.unloadSendStatus == '2'" class="g-color-warning">上报失败</span>
-            <span v-if="row.unloadSendStatus == '3'" class="g-color-warning">上报中</span>
-            <span v-if="row.unloadSendStatus == '4'" class="g-color-warning">数据异常</span>
-          </div>
+              <span v-if="row.unloadSendStatus == '0'" class="g-color-error" @click="handlerReport(row, 'unloadSendStatus', row.unloadSendStatus == '1')">
+                <svg-icon icon-class="not-reported" class-name="mr10" />未上报
+              </span>
+              <span v-if="row.unloadSendStatus == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
+              <span v-if="row.unloadSendStatus == '2'" class="g-color-warning">上报失败</span>
+              <span v-if="row.unloadSendStatus == '3'" class="g-color-warning">上报中</span>
+              <span v-if="row.unloadSendStatus == '4'" class="g-color-warning">数据异常</span>
+            </div>
+          </el-tooltip>
+
         </template>
         <template #billSendStatus="{row}">
-          <div :class="row.billSendStatus == '0'?'shou':null">
+          <el-tooltip :content="row.billErrMsg" :disabled="row.billErrMsg?false:true" effect="light">
+            <div :class="row.billSendStatus == '0'?'shou':null">
 
-            <span v-if="row.billSendStatus == '0'" class="g-color-error" @click="handlerReport(row, 'billSendStatus', row.billSendStatus == '1')">
-              <svg-icon icon-class="not-reported" class-name="mr10" />未上报
-            </span>
-            <span v-if="row.billSendStatus == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
-            <span v-if="row.billSendStatus == '2'" class="g-color-warning">上报失败</span>
-            <span v-if="row.billSendStatus == '3'" class="g-color-warning">上报中</span>
-            <span v-if="row.billSendStatus == '4'" class="g-color-warning">数据异常</span>
-          </div>
+              <span v-if="row.billSendStatus == '0'" class="g-color-error" @click="handlerReport(row, 'billSendStatus', row.billSendStatus == '1')">
+                <svg-icon icon-class="not-reported" class-name="mr10" />未上报
+              </span>
+              <span v-if="row.billSendStatus == '1'" class="g-color-success"><svg-icon icon-class="reported" class-name="mr10" />已上报</span>
+              <span v-if="row.billSendStatus == '2'" class="g-color-warning">上报失败</span>
+              <span v-if="row.billSendStatus == '3'" class="g-color-warning">上报中</span>
+              <span v-if="row.billSendStatus == '4'" class="g-color-warning">数据异常</span>
+            </div>
+          </el-tooltip>
+
         </template>
 
         <template #waybillStatus="{row}">
