@@ -13,7 +13,7 @@
           @change="unloadTimeChoose"
         />
       </el-form-item>
-      <el-form-item :label="weightLabel" prop="unloadWeight">
+      <el-form-item :label="'卸货数量' + weightLabel" prop="unloadWeight">
         <el-input-number v-model="form.unloadWeight" placeholder="请输入卸货数量" :precision="3" controls-position="right" :min="0" style="width:90%;" />
       </el-form-item>
       <!-- <el-form-item label="卸货地址" prop="waybillAddress">
@@ -85,7 +85,7 @@ export default {
           { required: true, message: '卸货时间不能为空', trigger: 'blur' }
         ],
         unloadWeight: [
-          { required: true, message: '卸货重量不能为空', trigger: 'blur' }
+          { required: true, message: '卸货数量不能为空', trigger: 'blur' }
         ],
         attachmentCode: [
           { required: true, message: '卸货单据不能为空', trigger: 'blur' }
@@ -193,7 +193,7 @@ export default {
               }
             } else {
               if (this.form.unloadWeight <= 0) {
-                this.msgWarning('卸货重量或立方数必须大于0！');
+                this.msgWarning('卸货数量必须大于0！');
               } else {
                 this.submitInfo();
               }
@@ -262,14 +262,13 @@ export default {
         unloadWeight: data.loadWeight - 0
       };
       if (this.waybill.stowageStatus === '0') {
-        this.weightLabel = '卸货重量（吨）';
+        this.weightLabel = '（吨）';
       } else if (this.waybill.stowageStatus === '1') {
-        this.weightLabel = '卸货立方数';
+        this.weightLabel = '（方）';
       } else if (this.waybill.stowageStatus === '2') {
-        this.weightLabel = '卸货车数';
-        this.form.unloadWeight = 1;
+        this.weightLabel = '（车）';
       } else {
-        this.weightLabel = '卸货重量（吨）';
+        this.weightLabel = '（吨）';
       }
     }
   }
