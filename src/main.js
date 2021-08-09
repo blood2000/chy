@@ -10,7 +10,10 @@ import '@/assets/gIconfont/iconfont.css'; // 字体图标
 import App from './App';
 import store from './store';
 import router from './router';
-
+// pl表格
+import plTable from 'pl-table';
+import 'pl-table/themes/index.css';
+Vue.use(plTable);
 // 自定义指令
 import permission from './directive/permission';
 import elementDirective from './directive/element';
@@ -31,6 +34,7 @@ import Pagination from '@/components/Pagination';
 import TablecCascader from '@/components/Ddc/Tin/TablecCascader.vue';
 import RefactorTable from '@/components/Ddc/Tin/RefactorTable.vue';
 import MoreRefactorTable from '@/components/Ddc/Tin/MoreRefactorTable.vue';
+import RefactorPlTable from '@/components/Ddc/Tin/RefactorPlTable.vue';
 import TableDropdown from '@/components/Dropdown';
 // 自定义表格工具扩展
 import RightToolbar from '@/components/RightToolbar';
@@ -137,6 +141,7 @@ Vue.component('Pagination', Pagination);
 Vue.component('RightToolbar', RightToolbar);
 Vue.component('RefactorTable', RefactorTable);
 Vue.component('MoreRefactorTable', MoreRefactorTable);
+Vue.component('RefactorPlTable', RefactorPlTable);
 Vue.component('TablecCascader', TablecCascader);
 Vue.component('TableDropdown', TableDropdown);
 Vue.use(permission);
