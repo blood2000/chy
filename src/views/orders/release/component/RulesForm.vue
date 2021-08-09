@@ -158,11 +158,12 @@ export default {
 
   computed: {
     unit() {
-      console.log(this.$store.state.orders.orderStowageStatus, '调价的时候');
       let name = 'kg';
       const srcode = this.$store.state.orders.lossPlans;
       const lossPlans = Object.keys(srcode);
       let lossPlan = null;
+
+      // 处理返回规则有这个路耗规则值就取这里
       if (lossPlans.length) {
         const rcode = this.dataList[0].ruleCode;
         lossPlans.forEach(e => {
@@ -171,6 +172,15 @@ export default {
           }
         });
       }
+      // LOSS_TOLERANCE 自接判断这个单位
+      if (!lossPlan) {
+        const filterLoss = this.dataList.filter(e => e.enName === 'LOSS_TOLERANCE');
+        if (filterLoss && filterLoss[0].unit === '%') {
+          lossPlan = 'DL';
+        }
+      }
+
+
       if (lossPlan === 'DL') {
         name = '%';
       } else {
@@ -251,7 +261,6 @@ export default {
       this.resettingData.filter(e => {
         e.ruleValue = this.formData[e.myName];
       });
-
 
       return new Promise((resolve, reject) => {
         this.$refs['formData'].validate((valid) => {

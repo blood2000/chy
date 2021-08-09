@@ -9,7 +9,7 @@
     <el-amap
       ref="map"
       vid="amapDemo"
-      :center="lnglat"
+      :center="center"
       :zoom="zoom"
       :plugin="plugin"
       :events="events"
@@ -17,17 +17,23 @@
     >
       <el-amap-marker
         vid="component-marker"
-        :position="lnglat"
+        :position="center"
+        :draggable="true"
+        :events="{
+          dragging: handlerDragging,
+        }"
       />
 
       <el-amap-circle
-        :center="lnglat"
+        :center="center"
         :radius="radius"
         :fill-opacity="0.3"
         :fill-color="'#ff4d4d'"
         :stroke-color="'#ff4d4d'"
+        :editable="true"
         :events="{
           click: mcircleClick,
+          move: handlerMove
         }"
       />
     </el-amap>
@@ -49,6 +55,7 @@ export default {
   data() {
     return {
     //   center: [121.59996, 31.197646],
+      center: [],
 
 
       // 地图基本信息
@@ -71,6 +78,7 @@ export default {
     };
   },
 
+
   computed: {
     radius: {
       get() {
@@ -82,10 +90,23 @@ export default {
     }
   },
 
+  created() {
+    this.center = this.lnglat;
+  },
+
   methods: {
     mcircleClick() {
       console.log('点击圆形了');
       this.visible = !this.visible;
+    },
+
+    handlerDragging(e) {
+      this.center = [e.lnglat.lng, e.lnglat.lat];
+    },
+
+    handlerMove(e) {
+      console.log(e.lnglat, 465);
+      this.center = [e.lnglat.lng, e.lnglat.lat];
     }
   }
 

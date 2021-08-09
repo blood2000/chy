@@ -45,11 +45,11 @@
         </el-radio-group>
       </el-form-item>
 
-      <el-form-item label="是否启用电子围栏" prop="geofenceToggle">
+      <el-form-item v-if="false" label="是否启用电子围栏" prop="geofenceToggle">
         <el-switch v-model="formData.geofenceToggle" :disabled="isCbdata" />
       </el-form-item>
 
-      <el-form-item v-if="formData.geofenceToggle" label="围栏半径" prop="geofenceRadius">
+      <el-form-item v-if="false && formData.geofenceToggle" label="围栏半径" prop="geofenceRadius">
         <el-input-number v-model="formData.geofenceRadius" :min="0" label="请输入围栏半径" :disabled="isCbdata" />
         <el-button v-if="!isCbdata" class="ml10" size="mini" type="primary" @click="hangdlerYulang">预览</el-button>
       </el-form-item>

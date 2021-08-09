@@ -199,19 +199,6 @@
               <div class="mb8 m-flex" style="width:66%;">
                 <div class="m_zhuanghuo">
                   装货信息
-                  <div style="display: inline-block;">
-                    <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
-                      设置电子围栏
-                      <el-switch
-                        v-model="switchRadius1"
-                        active-color="#13ce66"
-                        inactive-color="#ff4949"
-                        class="ml10 mr10"
-                      />
-                    </label>
-                    <el-input-number v-if="switchRadius1" v-model="radius1" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS1', radius1)" />
-                  </div>
-
                   <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '2' || formData.tin7 === '4')" v-model="formData.tin8" :disabled="myisdisabled" style="marginLeft:30px;" @change="handlerCheck('add')">允许自装</el-checkbox>
                 </div>
 
@@ -235,14 +222,47 @@
                   <div class="pa triangleR " />
                   <div class="pa m_pa">{{ index + 1 }}</div>
 
-                  <OneAddress v-if="isShowAddress" :ref="address.refName" type="1" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
+                  <OneAddress
+                    v-if="isShowAddress"
+                    :ref="address.refName"
+                    type="1"
+                    :cb-data="address.cbData"
+                    :myisdisabled="myisdisabled"
+                    @getLnglat="(lnglat)=> {
+                      if(isOpenTheElectronicFence){
+                        address.centerLocation = lnglat
+                        address.loadLnglat = lnglat
+                      }
+                    }"
+                  />
                   <div class="ly-t-right">
+                    <div style="display: inline-block;">
+                      <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
+                        设置电子围栏
+                        <el-switch
+                          v-model="address.switchRadius"
+                          active-color="#13ce66"
+                          inactive-color="#ff4949"
+                          class="ml10 mr10"
+                        />
+                      </label>
+                      <el-input-number v-if="address.switchRadius" v-model="address.radius" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS1', address.radius)" />
+                    </div>
+                    <el-button
+                      v-if="address.switchRadius"
+                      type="primary"
+                      size="mini"
+                      class="ml10"
+                      plain
+                      @click="handleElect(address)"
+                    >围栏编辑</el-button>
                     <el-button
                       v-if="!myisdisabled && (address_add.length >= 2 || formData.tin8)"
                       type="danger"
                       size="mini"
                       @click="_delAddress('address_add', address.refName)"
                     >删除地址</el-button>
+
                     <el-button
                       v-if="!myisdisabled"
                       type="primary"
@@ -259,18 +279,6 @@
               <div class="mb8 m-flex" style="width:66%">
                 <div class="m_xie">
                   卸货信息
-                  <div style="display: inline-block;">
-                    <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
-                      设置电子围栏
-                      <el-switch
-                        v-model="switchRadius2"
-                        active-color="#13ce66"
-                        inactive-color="#ff4949"
-                        class="ml10 mr10"
-                      />
-                    </label>
-                    <el-input-number v-if="switchRadius2" v-model="radius2" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS2', radius2)" />
-                  </div>
                   <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '3' || formData.tin7 === '4')" v-model="formData.tin9" :disabled="myisdisabled" style="marginLeft:30px;" @change="handlerXie('xie')">允许自卸</el-checkbox>
                 </div>
                 <el-button
@@ -291,10 +299,43 @@
                   <div class="pa triangleR " />
                   <div class="pa m_pa">{{ index + 1 }}</div>
 
-                  <OneAddress v-if="isShowAddress" :ref="address.refName" type="2" :cb-data="address.cbData" :myisdisabled="myisdisabled" />
+                  <OneAddress
+                    v-if="isShowAddress"
+                    :ref="address.refName"
+                    type="2"
+                    :cb-data="address.cbData"
+                    :myisdisabled="myisdisabled"
+                    @getLnglat="(lnglat)=> {
+                      if(isOpenTheElectronicFence){
+                        address.loadLnglat = lnglat
+                        address.centerLocation = lnglat
+                      }
+                    }"
+                  />
+                  <!-- address.centerLocation = lnglat -->
 
                   <div class="ly-t-right">
-
+                    <div style="display: inline-block;">
+                      <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
+                        设置电子围栏
+                        <el-switch
+                          v-model="address.switchRadius"
+                          active-color="#13ce66"
+                          inactive-color="#ff4949"
+                          class="ml10 mr10"
+                        />
+                      </label>
+                      <el-input-number v-if="address.switchRadius" v-model="address.radius" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS2', address.radius)" />
+                    </div>
+                    <el-button
+                      v-if="address.switchRadius"
+                      type="primary"
+                      size="mini"
+                      class="ml10"
+                      plain
+                      :disabled="false"
+                      @click="handleElect(address)"
+                    >围栏编辑</el-button>
                     <el-button
                       v-if="!myisdisabled && (address_xie.length >= 2 || formData.tin9)"
                       type="danger"
@@ -382,7 +423,8 @@
         </div>
 
       </div>
-
+      <!-- 设置电子围栏弹窗 -->
+      <circle-dialog ref="CircleDialog" :open.sync="circledialog" :value="radius" :title="title" :lnglat="lnglat" @refresh="changeElect" />
       <!-- 打开弹框 -->
       <el-dialog
         :close-on-click-modal="false"
@@ -404,7 +446,7 @@ import OrderBasic from './OrderBasic';
 import OneAddress from './component/OneAddress';
 import GoodsInfo from './GoodsInfo';
 import OpenDialog from './OpenDialog';
-
+import CircleDialog from './component/circleDialog';
 import WaybillInfo from './WaybillInfo';
 
 import { getUserInfo } from '@/utils/auth';
@@ -423,10 +465,16 @@ export default {
     GoodsInfo,
     OpenDialog,
     WaybillInfo,
-    ztRelease // 渣土货主发布货源界面
+    ztRelease, // 渣土货主发布货源界面
+    CircleDialog
   },
   data() {
     return {
+      circledialog: false,
+      title: '',
+      lnglat: [],
+      radius: 200,
+      addressChange: undefined,
       switchRadius1: false,
       switchRadius2: false,
       radius1: 200, // 电子围栏 8/3 新加的
@@ -465,8 +513,8 @@ export default {
       active: 1, // 步骤
       goods: [], // 商品-记入单商品还是多商品
       // 地址数组形式
-      address_add: [{ refName: 'address_add' + Date.now(), addressType: '1' }], // 装-地址组件使用
-      address_xie: [{ refName: 'address_xie' + Date.now(), addressType: '2' }], // 卸-地址组件使用
+      address_add: [{ refName: 'address_add' + Date.now(), addressType: '1', radius: 200, switchRadius: false }], // 装-地址组件使用
+      address_xie: [{ refName: 'address_xie' + Date.now(), addressType: '2', radius: 200, switchRadius: false }], // 卸-地址组件使用
       addr_add: [], // 装-传递数据使用
       addr_xie: [], // 卸-传递数据使用
 
@@ -578,7 +626,7 @@ export default {
       // 是否开启电子围栏(0开启 1不开启), 默认不开启
       let bool = false;
 
-      if (this.shipmentInfo && this.shipmentInfo.openTheElectronicFence === 0 && !this.idCode && this.$store.state.orders.tiemList.length > 0) {
+      if (this.shipmentInfo && this.shipmentInfo.openTheElectronicFence === 0 && this.$store.state.orders.tiemList.length > 0) {
         bool = true;
       }
       return bool;
@@ -608,6 +656,9 @@ export default {
         } else if (value === '3') {
           this.isClone = true;
         }
+
+
+        console.log(this.$refs.WL);
       },
       immediate: true
     }
@@ -618,7 +669,7 @@ export default {
     const { isShipment = false, isZtShipment = false, shipment = {}, user = {}} = getUserInfo() || {};
     this.isShipment = isShipment;
     this.isZtShipment = isShipment && isZtShipment;
-    console.log('第一传要最后确认');
+    console.log(shipment, '第一传要最后确认');
     if (isShipment) {
       if (isShipment && shipment.info && shipment.info.authStatus !== 3) {
         this.authStatus = false;
@@ -653,15 +704,40 @@ export default {
     this.$store.dispatch('orders/store_getProvinceList', rows);
   },
 
-  methods: {
 
+  methods: {
+    handleElect(addr) {
+      console.log(addr);
+
+
+      if (addr.cbData) {
+        this.addressChange = addr;
+        this.title = '设置电子围栏';
+        this.circledialog = true;
+        this.radius = addr.radius;
+        this.$refs.CircleDialog.circleEdit(addr.centerLocation && addr.centerLocation.length ? addr.centerLocation : addr.cbData.location, addr.cbData.location);
+      } else if (addr.loadLnglat && addr.loadLnglat.length) {
+        this.addressChange = addr;
+        this.title = '设置电子围栏';
+        this.circledialog = true;
+        this.radius = addr.radius;
+        this.$refs.CircleDialog.circleEdit(addr.centerLocation && addr.centerLocation.length ? addr.centerLocation : addr.loadLnglat, addr.loadLnglat);
+      } else {
+        this.msgInfo('请先完善地址信息！');
+      }
+    },
+    changeElect(val) {
+      this.addressChange.radius = val.radius;
+      this.addressChange.enclosureRadius = val.radius;
+      this.addressChange.centerLocation = val.lnglat;
+    },
     // 通过货主的id获取详情 7/23 --chj
     getShipmentInfo(code) {
       return getShipmentByCode({ code }).then(res => {
         this.shipmentInfo = res.data;
-        console.log(this.shipmentInfo);
+        // console.log(this.shipmentInfo);
         // this.isZtShipment = res.data.shipmentRoleCodes.indexOf('6809f8526e764abea23e6f302b9cf44d') !== -1;
-        console.log(this.isZtShipment, '要最后确认111');
+        // console.log(this.isZtShipment, '要最后确认111');
       });
     },
 
@@ -891,31 +967,37 @@ export default {
           });
         } else {
           orderPubilsh(this.lastData).then(async(response) => {
-            if (this.isOpenTheElectronicFence && (this.switchRadius1 || this.switchRadius2)) {
+            // 处理电子围栏数据
+            // console.log(this.isOpenTheElectronicFence);
+            if (this.isOpenTheElectronicFence) {
+              // console.log(this.lastData);
               const { orderAddressPublishBoList, orderSpecifiedList } = this.lastData;
               const addressInfo = orderAddressPublishBoList.map(e => {
                 let obj = null;
-                if (e.addressType === '1' && this.switchRadius1) {
+                if (e.addressType === '1' && e.switchRadius) {
                   obj = {
                     addressType: e.addressType,
-                    lng: e.longitude,
-                    lat: e.latitude,
-                    radius: this.$store.state.orders.radius1 + ''
+                    lng: e.centerLocation ? e.centerLocation[0] + '' : e.longitude,
+                    lat: e.centerLocation ? e.centerLocation[1] + '' : e.latitude,
+                    radius: e.enclosureRadius ? e.enclosureRadius + '' : e.radius
                   };
-                } else if (e.addressType === '2' && this.switchRadius2) {
+                } else if (e.addressType === '2' && e.switchRadius) {
                   obj = {
                     addressType: e.addressType,
-                    lng: e.longitude,
-                    lat: e.latitude,
-                    radius: this.$store.state.orders.radius2 + ''
+                    lng: e.centerLocation ? e.centerLocation[0] + '' : e.longitude,
+                    lat: e.centerLocation ? e.centerLocation[1] + '' : e.latitude,
+                    radius: e.enclosureRadius ? e.enclosureRadius + '' : e.radius
                   };
                 }
+
 
                 return obj;
               }).filter(e => e);
 
+              // console.log(addressInfo);
               const dispatcherCodeList = orderSpecifiedList.map(e => e.teamInfoCode);
 
+              // console.log(dispatcherCodeList);
               const que = {
                 addressInfo,
                 dispatcherCodeList,
@@ -935,7 +1017,8 @@ export default {
               this.loading = false;
               this.$router.push({ name: 'Manage', query: { p: Date.now() }});
             }, 700);
-          }).catch(() => {
+          }).catch((error) => {
+            console.log(error);
             this.loading = false;
           });
         }
@@ -1067,7 +1150,7 @@ export default {
           ee.identification = index + 1;
 
           return {
-            addressIdentification: (ee.addressType - 0) === 1 ? (index + 1) + ':0' : '0:' + (index + 1),
+            addressIdentification: (ee.addressType - 0) === 1 || (ee.addressType - 0) === 3 ? (index + 1) + ':0' : '0:' + (index + 1),
             ruleDictValue: ee.ruleDictValue,
             ruleInfoShipmentCode: ee.ruleInfoShipmentCode,
             orderFreightBoList: this.isCreated ? ee.orderFreightBoList : undefined,
@@ -1182,11 +1265,13 @@ export default {
 
         // 5/18e=特殊处理
 
-        this.handlerOrderBasic({ ...redisOrderInfoVo, redisOrderClassGoodsVoList, redisOrderSpecifiedVoList, redisOrderGoodsVoListRest });
+        await this.handlerOrderBasic({ ...redisOrderInfoVo, redisOrderClassGoodsVoList, redisOrderSpecifiedVoList, redisOrderGoodsVoListRest });
 
-        this.handlercbAddress(redisAddressList);
+        await this.handlercbAddress(redisAddressList);
 
-        this.handerRedisOrder(redisAddressList);
+        // console.log(redisAddressList);
+
+        await this.handerRedisOrder(redisAddressList);
 
         // 4. 处理商品
         this.cbGoodsAccounting = redisOrderGoodsVoListRest;
@@ -1198,17 +1283,17 @@ export default {
 
         this.active = this.isT ? 4 : 3; // 自接全展示
 
-        this.isT && this.isTEstimateCost(data);
+        this.isT && await this.isTEstimateCost(data);
 
         this.$nextTick(() => {
           let tiem = setTimeout(() => {
             this.loading = false;
             clearTimeout(tiem);
             tiem = undefined;
-          }, 700);
+          }, 1000);
         });
       } catch (error) {
-        // this.loading = false;
+        this.loading = false;
       }
     },
 
@@ -1275,7 +1360,7 @@ export default {
     },
 
     // 1.处理 cbOrderBasic 要的数据
-    handlerOrderBasic(data) {
+    async handlerOrderBasic(data) {
       const { code, isPublic, publishMode, isSpecified, loadType, projectCode, pubilshCode, remark, redisOrderClassGoodsVoList, redisOrderGoodsVoListRest: redisOrderGoodsVoList, redisOrderSpecifiedVoList } = data;
 
       this.formData.tin1 = pubilshCode;
@@ -1311,11 +1396,25 @@ export default {
     },
 
     // 2. 处理 OneAddress 地址要的数据
-    handlercbAddress(addressList) {
+    async handlercbAddress(addressList) {
       this.address_add = [];
       this.address_xie = [];
 
       addressList.forEach((e, index) => {
+        // console.log(e);
+        // e.switchRadius = !!e.enclosureRadius;
+
+        // 电子围栏回填
+        let dzWLobj = {};
+        // console.log(e.enclosureRadius);
+        if (e.enclosureRadius) {
+          dzWLobj = {
+            centerLocation: e.centerLocation,
+            radius: e.enclosureRadius
+          };
+        }
+        // e电子围栏回填
+
         if ((e.addressType - 0) === 3) {
           this.formData.tin8 = true;
         } else if ((e.addressType - 0) === 4) {
@@ -1325,12 +1424,16 @@ export default {
         if ((e.addressType - 0) === 1) {
           // 装
           this.address_add.push({
+            ...dzWLobj,
+            switchRadius: !!e.enclosureRadius,
             refName: 'address_add' + Date.now() + index,
             cbData: e // 主要是这个
           });
         } else if ((e.addressType - 0) === 2) {
           // 卸
           this.address_xie.push({
+            ...dzWLobj,
+            switchRadius: !!e.enclosureRadius,
             refName: 'address_xie' + Date.now() + index,
             cbData: e
           });
@@ -1353,7 +1456,7 @@ export default {
     },
 
     // 3. 处理回填的数据(1.是要获取地址中的规则 2.要获取装地址到卸地址)
-    handerRedisOrder(addressList) {
+    async handerRedisOrder(addressList) {
       addressList.forEach(e => {
         if ((e.addressType - 0) === 1 || (e.addressType - 0) === 3) {
           this.addr_add.push(e);
@@ -1457,17 +1560,22 @@ export default {
     radioSelection(data) {
       if (JSON.stringify(data) === '{}') return;
 
+      // console.log(data);
       if (this.isRadioSelection) {
         const { name, type } = this.isRadioSelection;
         this[name].forEach(e => {
           if (e.refName === type) {
+            e.enclosureRadius = e.radius;
+            e.centerLocation = [this.floor(data.longitude, 6), this.floor(data.latitude, 6)];
             e.cbData = {
               ...data,
-              location: [data.longitude, data.latitude]
+              location: [this.floor(data.longitude, 6), this.floor(data.latitude, 6)]
             };
           }
         });
+        // console.log(this[name]);
       }
+
 
       this.isRadioSelection = null;
       this.openSelectaddress = false;
