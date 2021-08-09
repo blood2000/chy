@@ -13,7 +13,7 @@
           @change="loadTimeChoose"
         />
       </el-form-item>
-      <el-form-item :label="weightLabel" prop="loadWeight">
+      <el-form-item :label="'装货数量' + weightLabel" prop="loadWeight">
         <el-input-number v-model="form.loadWeight" placeholder="请输入装货量" :precision="3" controls-position="right" :min="0" style="width:90%;" />
       </el-form-item>
       <el-form-item label="装货单据" prop="attachmentCode">
@@ -302,7 +302,7 @@ export default {
               }
             } else {
               if (this.form.loadWeight <= 0) {
-                this.msgWarning('装货重量或立方数必须大于0！');
+                this.msgWarning('装货数量必须大于0！');
               } else if (this.form.loadWeight > 100) {
                 this.msgWarning('系统检测到您的装货吨数或立方数过大，请确认后重新仔细填写!');
               } else if (this.form.loadWeight <= 100 && this.form.loadWeight > this.goodsInfo.remainingWeight) {
@@ -378,13 +378,13 @@ export default {
       this.form.code = this.waybill.code;
       console.log(this.waybill);
       if (this.waybill.stowageStatus === '0') {
-        this.weightLabel = '装货重量（吨）';
+        this.weightLabel = '（吨）';
       } else if (this.waybill.stowageStatus === '1') {
-        this.weightLabel = '装货立方数';
+        this.weightLabel = '（方）';
       } else if (this.waybill.stowageStatus === '2') {
-        this.weightLabel = '装货车数';
+        this.weightLabel = '（车）';
       } else {
-        this.weightLabel = '装货重量（吨）';
+        this.weightLabel = '（吨）';
       }
     }
     // 图片上传成功会掉
