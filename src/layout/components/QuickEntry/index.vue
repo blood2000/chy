@@ -23,7 +23,7 @@ export default {
   data() {
     return {
       itemList: [
-        { label: '调度者审核', icon: 'team', name: 'Team', query: { authStatus: 0 }, count: 0 },
+        { label: 'FM审核', icon: 'team', name: 'Team', query: { authStatus: 0 }, count: 0 },
         { label: '司机审核', icon: 'driver', name: 'Driver', query: { authStatus: 0 }, count: 0 },
         { label: '车辆审核', icon: 'vehicle', name: 'Vehicle', query: { authStatus: 0 }, count: 0 },
         { label: '货主审核', icon: 'shipment', name: 'Shipment', query: { authStatus: 0 }, count: 0 },

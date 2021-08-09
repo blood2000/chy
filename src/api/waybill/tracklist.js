@@ -54,6 +54,15 @@ export function unloadCredentials(data) {
   });
 }
 
+// 修改凭证
+export function updateVoucher(data) {
+  return request({
+    url: '/transportation/waybillOper/updateVoucher',
+    method: 'post',
+    data: data
+  });
+}
+
 // 取消运单
 export function cancel(data) {
   return request({

@@ -262,15 +262,15 @@
                 <el-progress type="circle" :percentage="teamPersent" :stroke-width="width>1366 ? 15:10" :width="width>1366 ? 130:90" color="#FFBB00" :show-text="false" />
                 <div class="platform-num g-directioncenter">
                   <div class="g-strong g-title-big"><count-to :end-val="statistic.user?statistic.user.teamCount:0" :decimal-places="0" /></div>
-                  <div class="platform-tag">平台调度者</div>
+                  <div class="platform-tag">平台FM</div>
                 </div>
               </div>
 
-              <div style="margin-top:10px;"><span class="g-color-warning marginright5">●</span>活跃调度者</div>
+              <div style="margin-top:10px;"><span class="g-color-warning marginright5">●</span>活跃FM</div>
               <div class="g-flex g-aligncenter g-justifyaround" style="width: 80%">
                 <div>
                   <div class="g-strong g-title-big"><count-to :end-val="statistic.user?statistic.user.activeTeam:0" :decimal-places="0" /></div>
-                  <div class="g-color-tag">活跃调度者</div>
+                  <div class="g-color-tag">活跃FM</div>
                 </div>
               </div>
             </div>
