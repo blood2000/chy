@@ -458,6 +458,25 @@
           </el-form-item>
         </el-col>
       </el-row>
+      <el-row :gutter="20">
+          <el-col :span="11">
+              <el-form-item label="金融体系" prop="financialOption">
+                  <el-select
+                          v-model="form.financialOption"
+                          clearable
+                          filterable
+                          style="width: 200px"
+                  >
+                      <el-option
+                              v-for="dict in financialOptionList"
+                              :key="dict.dictValue"
+                              :label="dict.dictLabel"
+                              :value="dict.dictValue"
+                      />
+                  </el-select>
+              </el-form-item>
+          </el-col>
+      </el-row>
       <h5 class="g-card-title g-strong mb20 ml10">
         通用配置
         <div class="h5-divider" style="width: 91%" />
@@ -660,6 +679,10 @@ export default {
         { dictLabel: '打款成功后', dictValue: '7' },
         { dictLabel: '申请打款后', dictValue: '6' }
       ],
+      financialOptionList: [
+        { dictLabel: '网商', dictValue: 1 },
+        { dictLabel: '民生', dictValue: 2 }
+      ],
       // 核算方式字典
       accountTypeOptions: [],
       // 抹零方式字典
@@ -714,6 +737,9 @@ export default {
               return callback();
             }
           }, trigger: ['change', 'blur'] }
+        ],
+        financialOption: [
+          { required: true, message: '金融体系配置不能为空', trigger: ['change', 'blur'] }
         ]
       },
       // 网点查询
@@ -1072,7 +1098,8 @@ export default {
         isNeedApplicationForPayment: 0,
         creditStartTime: null,
         creditEndTime: null,
-        openTheElectronicFence: 1
+        openTheElectronicFence: 1,
+        financialOption: 1
         // branchCode: null
       };
       this.resetForm('form');
