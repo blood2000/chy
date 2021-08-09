@@ -100,19 +100,23 @@ export default {
     },
 
     // code	编码	string
-    // earlyStageRemainingTickets	前期余票	integer(int32)
-    // id	主键	integer(int64)
-    // machineType	车型	integer(int32)
-    // price	价格	number(double)
+    // earlyStageRemainingTickets	前期余票	integer
+    // id	主键	integer
+    // number	数量	integer
+    // price	价格	number
+    // projectName	项目名称	string
     // receiveSite	接收工地	string
     // remark	备注	string
     // signName	签收人	string
     // signTime	签收时间	string
-    // thisWeekCollectTickets	本周领票	integer(int32)
-    // thisWeekRefundTickets	本周退票	integer(int32)
-    // thisWeekRemainingTickets	本周余票	integer(int32)
-    // thisWeekUsedTickets	本周用票	integer(int32)
+    // thisWeekCollectTickets	本日领票	integer
+    // thisWeekRefundTickets	本日退票	integer
+    // thisWeekRemainingTickets	本日余票	integer
+    // thisWeekUsedTickets	本日用票	integer
     // ticketName	土票名称	string
+    // total	总价	number
+    // vehicleSize	车型	string
+    // vehicleSizeName	车型	string
 
     tableColumns() {
     //   const isAdmin = !this.getUserInfo.isShipment;
@@ -156,7 +160,7 @@ export default {
         },
         {
           'label': '签收时间',
-          'prop': 'qingisofjeojso',
+          'prop': 'signTime',
           'isShow': true,
           'sortNum': 51,
           'width': '90',
@@ -164,98 +168,58 @@ export default {
         },
         {
           'label': '前余',
-          'prop': 'qinghuyuuyu',
+          'prop': 'earlyStageRemainingTickets',
           'isShow': true,
           'sortNum': 52,
-          'width': '90',
+          'width': '50',
           'tooltip': true
         },
         {
           'label': '日领',
-          'prop': 'rilisnigii',
+          'prop': 'thisWeekCollectTickets',
           'isShow': true,
           'sortNum': 60,
-          'width': '90',
+          'width': '50',
           'tooltip': true
         },
         {
           'label': '日用',
-          'prop': 'riyoangyiui',
+          'prop': 'thisWeekUsedTickets',
           'isShow': true,
           'sortNum': 60,
-          'width': '90',
+          'width': '50',
           'tooltip': true
         },
         {
           'label': '日余',
-          'prop': 'riyuyuyu',
+          'prop': 'thisWeekRemainingTickets',
           'isShow': true,
           'sortNum': 60,
-          'width': '90',
+          'width': '50',
           'tooltip': true
         },
         {
           'label': '日退',
-          'prop': 'rituiuiihise',
+          'prop': 'thisWeekRefundTickets',
           'isShow': true,
           'sortNum': 60,
-          'width': '90',
+          'width': '50',
           'tooltip': true
         },
         {
           'label': '数量',
-          'prop': 'shukaieni',
+          'prop': 'number',
           'isShow': true,
           'sortNum': 60,
-          'width': '90',
+          'width': '50',
           'tooltip': true
         },
-        // {
-        //   'label': '前期余票',
-        //   'prop': 'earlyStageRemainingTickets',
-        //   'isShow': false,
-        //   'sortNum': 60,
-        //   'width': '90',
-        //   'tooltip': true
-        // },
-        // {
-        //   'label': '本周领票',
-        //   'prop': 'thisWeekCollectTickets',
-        //   'isShow': false,
-        //   'sortNum': 70,
-        //   'width': '90',
-        //   'tooltip': true
-        // },
-        // {
-        //   'label': '本周余票',
-        //   'prop': 'thisWeekRemainingTickets',
-        //   'isShow': false,
-        //   'sortNum': 80,
-        //   'width': '90',
-        //   'tooltip': true
-        // },
-        // {
-        //   'label': '本周用票',
-        //   'prop': 'thisWeekUsedTickets',
-        //   'isShow': false,
-        //   'sortNum': 85,
-        //   'width': '90',
-        //   'tooltip': true
-        // },
-        // {
-        //   'label': '本周退票',
-        //   'prop': 'thisWeekRefundTickets',
-        //   'isShow': false,
-        //   'sortNum': 90,
-        //   'width': '90',
-        //   'tooltip': true
-        // },
         {
           'label': '单价',
           'prop': 'price',
           'isShow': true,
           'sortNum': 100,
-          'width': '90',
+          'width': '50',
           'tooltip': true
         },
         {

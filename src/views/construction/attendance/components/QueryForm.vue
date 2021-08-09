@@ -1,0 +1,184 @@
+<template>
+  <el-form
+    ref="queryForm"
+    :model="queryParams"
+    :inline="true"
+    label-width="120px"
+  >
+    <div class="app-container app-container--search">
+
+      <el-form-item
+        label="选择项目"
+        prop="projectCode"
+      >
+        <el-select
+          v-model="queryParams.projectCode"
+          clearable
+          size="small"
+          filterable
+          style="width: 185px"
+          placeholder="请选择项目"
+          @change="$emit('handleQuery')"
+        >
+          <el-option
+            v-for="item in projectList"
+            :key="item.id + item.code"
+            :label="item.projectName"
+            :value="item.code"
+          />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item
+        label="成员姓名/手机"
+        prop="phone"
+      >
+        <el-input
+          v-model="queryParams.phone"
+          placeholder="请输入成员姓名/手机"
+          clearable
+          size="small"
+          style="width: 185px"
+          @keyup.enter.native="$emit('handleQuery')"
+        />
+      </el-form-item>
+
+      <el-form-item
+        label="考勤日期"
+        prop="receiveTime"
+      >
+        <!-- <el-date-picker
+          v-model="queryParams.receiveTime"
+          type="daterange"
+          unlink-panels
+          :picker-options="pickerOptions"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          style="width: 228px"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          @change="$emit('handleQuery')"
+        /> -->
+        <el-date-picker
+          v-model="queryParams.yuehushie"
+          type="month"
+          placeholder="选择考勤月份"
+        />
+      </el-form-item>
+
+      <el-form-item
+        label="考勤类型"
+        prop="kaogqihnihijij"
+      >
+        <el-select
+          v-model="queryParams.kaogqihnihijij"
+          clearable
+          size="small"
+          filterable
+          style="width: 185px"
+          placeholder="请选择考勤类型"
+          @change="$emit('handleQuery')"
+        >
+          <el-option
+            v-for="(item, index) in [{
+              dictLabel:'考勤类型',
+              dictValue: '0'
+            }]"
+            :key="index"
+            :label="item.dictLabel"
+            :value="item.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item
+        label="班次"
+        prop="bangieisoopjp"
+      >
+        <el-select
+          v-model="queryParams.bangieisoopjp"
+          clearable
+          size="small"
+          filterable
+          style="width: 185px"
+          placeholder="请选择班次"
+          @change="$emit('handleQuery')"
+        >
+          <el-option
+            v-for="(item, index) in shiftOp"
+            :key="index"
+            :label="item.dictLabel"
+            :value="item.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item>
+        <el-button
+          type="primary"
+          icon="el-icon-search"
+          size="mini"
+          @click="$emit('handleQuery')"
+        >
+          搜索
+        </el-button>
+        <el-button
+          type="primary"
+          plain
+          icon="el-icon-refresh"
+          size="mini"
+          @click="queryParams.pageNum = 1; resetForm('queryForm');$emit('handleQuery');"
+        >
+          重置
+        </el-button>
+      </el-form-item>
+    </div>
+
+  </el-form>
+</template>
+
+<script>
+import { pickerOptions } from '@/utils/dateRange';
+import { webGetMachineProjectList } from '@/api/construction/comon';
+export default {
+  props: {
+    value: {
+      type: Object,
+      default: () => { return {}; }
+    },
+    shiftOp: {
+      type: Array,
+      default: () => []
+    }
+  },
+  data() {
+    return {
+      pickerOptions,
+      'projectList': []
+    };
+  },
+  computed: {
+    queryParams: {
+      get() {
+        return this.value;
+      },
+      set(value) {
+        this.$emit('input', value);
+      }
+    }
+  },
+  created() {
+    this.initData();
+  },
+  methods: {
+    // 初始化搜索数据
+    async initData() {
+      const res = await webGetMachineProjectList();
+      this.projectList = res.data;
+    }
+  }
+};
+</script>
+
+<style>
+
+</style>
