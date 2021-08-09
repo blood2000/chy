@@ -365,9 +365,9 @@ export default {
         type: 'warning'
       }).then(function() {
         return delInfo(ids);
-      }).then(() => {
+      }).then((data) => {
         this.getList();
-        this.msgSuccess('删除成功');
+        this.msgSuccess(data.msg);
       });
     },
     /** 导出按钮操作 */
