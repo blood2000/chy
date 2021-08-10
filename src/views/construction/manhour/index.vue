@@ -66,7 +66,6 @@ import { getLocalStorage } from '@/utils/auth';
 import { getMachineWorkingList, getMachineWorkingapi } from '@/api/construction/manhour';
 import { webGetMachineProjectList } from '@/api/construction/comon';
 
-console.log(getMachineWorkingapi);
 
 export default {
   name: 'Manhour', // 机械工时登记
@@ -249,7 +248,6 @@ export default {
     },
 
     queParams() {
-      // console.log(this.$refs.QueryForm);
       return {
         ...this.queryParams,
         bigCreateTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[0] : undefined, //	签收时间		false
