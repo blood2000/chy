@@ -108,9 +108,7 @@ export default {
       // 猎鹰轨迹相关参数
       lyChecked: false, // 是否显示猎鹰轨迹
       lyTracklist: [], // 猎鹰轨迹列表
-      lyPolyline: { // 猎鹰轨迹线
-        path: []
-      },
+      lyPolyline: {}, // 猎鹰轨迹线
       lyMark: undefined, // 猎鹰轨迹车辆定位
       lyTimePoor: undefined, // 猎鹰轨迹时间差
       lieyingQueryParams: { // 猎鹰查询参数
@@ -191,11 +189,9 @@ export default {
         }
       } else {
         const that = this;
-        if (that.lyPolyline.path.length > 0) {
-          that.$refs.map.$$getInstance().remove(that.lyPolyline);
-          if (!that.wayBillInfo.signTime && that.lyMark) {
-            that.$refs.map.$$getInstance().remove(that.lyMark);
-          }
+        that.$refs.map.$$getInstance().remove(that.lyPolyline);
+        if (!that.wayBillInfo.signTime && that.lyMark) {
+          that.$refs.map.$$getInstance().remove(that.lyMark);
         }
       }
     },
@@ -209,11 +205,9 @@ export default {
         }
       } else {
         const that = this;
-        if (that.jmPolyline.path.length > 0) {
-          that.$refs.map.$$getInstance().remove(that.jmPolyline);
-          if (!that.wayBillInfo.signTime && that.jmMark) {
-            that.$refs.map.$$getInstance().remove(that.jmMark);
-          }
+        that.$refs.map.$$getInstance().remove(that.jmPolyline);
+        if (!that.wayBillInfo.signTime && that.jmMark) {
+          that.$refs.map.$$getInstance().remove(that.jmMark);
         }
       }
     },
@@ -223,11 +217,9 @@ export default {
         this.zjxlList();
       } else {
         const that = this;
-        if (that.zjPolyline.path.length > 0) {
-          that.$refs.map.$$getInstance().remove(that.zjPolyline);
-          if (!that.wayBillInfo.signTime && that.zjMark) {
-            that.$refs.map.$$getInstance().remove(that.zjMark);
-          }
+        that.$refs.map.$$getInstance().remove(that.zjPolyline);
+        if (!that.wayBillInfo.signTime && that.zjMark) {
+          that.$refs.map.$$getInstance().remove(that.zjMark);
         }
       }
     }
