@@ -1,7 +1,7 @@
 <template>
   <el-table :ref="refName" v-loading="loading" :show-summary="summary" border highlight-current-row :data="data" v-bind="$attrs" @selection-change="handleSelectionChange">
     <el-table-column v-if="!!_events['selection-change']" type="selection" width="55" align="center" fixed :reserve-selection="reserveSelection" />
-    <el-table-column v-if="!isShowIndex" label="序号" align="center" type="index" width="50" />
+    <el-table-column v-if="!isShowIndex" label="序号" align="center" type="index" width="50" :fixed="indexfixed" />
     <template v-for="(th, key) in tableColumnsConfig">
       <el-table-column
         v-if="th.isShow && !th.isChild"
@@ -20,7 +20,7 @@
       </el-table-column>
     </template>
     <!--三级表头-->
-    <el-table-column v-for="(level1Item, index) in morelist" :key="index" align="center" :label="level1Item.label" :prop="level1Item.prop" :min-width="level1Item.width">
+    <el-table-column v-for="(level1Item, index) in morelist" :key="index" align="center" :label="level1Item.label" :prop="level1Item.prop" :min-width="level1Item.width" :fixed="level1Item.fixed==='' ? null : level1Item.fixed">
       <template v-if="level1Item.children">
         <template v-for="(level2Item, indexChild1) in level1Item.children">
           <el-table-column
@@ -30,6 +30,7 @@
             :label="level2Item.label"
             :prop="level2Item.prop"
             :min-width="level2Item.width"
+            :fixed="level2Item.fixed==='' ? null : level2Item.fixed"
           >
             <template slot-scope="scope">
               <slot :name="level2Item.prop" :row="scope.row">{{ scope.row[level2Item.prop] === 0 ? 0 : scope.row[level2Item.prop] || '' }}</slot>
@@ -135,6 +136,11 @@ export default {
       default: null
     },
     reserveSelection: {
+      type: Boolean,
+      default: false
+    },
+
+    indexfixed: {
       type: Boolean,
       default: false
     }

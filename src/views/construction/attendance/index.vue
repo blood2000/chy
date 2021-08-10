@@ -2,7 +2,7 @@
 
   <div>
     <div v-show="showSearch">
-      <QueryForm v-model="queryParams" :shift-op="shift_op" @handleQuery="queryParams.pageNum = 1;getList()" />
+      <QueryForm v-model="queryParams" :shift-op="shift_op" :attendance-status-op="attendanceStatus_op" @handleQuery="queryParams.pageNum = 1;getList()" />
     </div>
 
     <div class="app-container">
@@ -25,7 +25,7 @@
           </span>
         </el-col>
 
-        <el-col :span="1.5" class="fr">
+        <el-col v-if="false" :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
         <right-toolbar
@@ -34,14 +34,24 @@
         />
       </el-row>
 
-      <MoreRefactorTable :loading="loading" :summary="false" :data="list" :table-columns-config="tableColumnsConfig" :morelist="morelist">
-        <template #rijiqi1="{row}">
-          <el-tooltip effect="light" placement="top">
-            <div slot="content" style="width: 300px">
-              多行信息第二行信息第二行信息第二行信息第二行信息第二行信息第二行信息第二行信息
-            </div>
-            <div class="triangleL">{{ selectDictLabel(lebshift_op, row.rijiqi1 + '') }}</div>
-          </el-tooltip>
+      <MoreRefactorTable :loading="loading" :summary="false" :data="list" :table-columns-config="tableColumnsConfig" :morelist="morelist" indexfixed>
+
+        <template v-for="(item, index) in morelist[0].children" #[item.prop]="{row}">
+          <!-- <template v-for="(item, index) in morelist[0].children" :slot="item.prop" slot-scope="{row}"> -->
+          <div :key="index">
+            <el-popover
+              v-if="true"
+              placement="top"
+              title="考勤备注"
+              width="300"
+              trigger="click"
+              :content="row.sighowiheio"
+            >
+              <div slot="reference" class="triangleL shou">{{ selectDictLabel(lebshift_op, row[item.prop] + '') }}</div>
+            </el-popover>
+
+            <span v-else>{{ selectDictLabel(lebshift_op, row[item.prop] + '') }}</span>
+          </div>
         </template>
       </MoreRefactorTable>
       <pagination
@@ -69,6 +79,17 @@ export default {
 
   components: { QueryForm },
 
+  // attendanceStatus	0未出勤，1出勤，2请假，3矿工或者离职，4未开工或合理休假，5加班
+  // attendanceTime	考勤日期		false	 string
+  // createTime	创建时间		false	 string
+  // isAsc	desc or asc		false	 string
+  // keyWord	关键字检索		false	 string
+  // orderByColumn	按什么排序		false	 string
+  // orgCode	机构code		false	 string
+  // pageNum	页数		false	integer(int32)
+  // pageSize	每页大小		false	integer(int32)
+  // schedule	班次 0白班1夜班
+  // projectCode	项目code		false	string
   data() {
     return {
       // 搜索显隐
@@ -87,10 +108,11 @@ export default {
         'pageSize': 10,
 
         projectCode: undefined,
-        phone: undefined,
-        yuehushie: undefined, // 时间
-        kaogqihnihijij: undefined, // 考勤类型
-        bangieisoopjp: undefined // 班次
+        keyWord: undefined,
+        attendanceTime: new Date().getFullYear() + '-01', // 默认当前年一月
+
+        attendanceStatus: undefined, // 考勤类型
+        schedule: undefined // 班次
 
       },
 
@@ -110,11 +132,11 @@ export default {
         { dictValue: 1, dictLabel: '已完成' }
       ],
 
+      // schedule	班次 0白班1夜班
       shift_op: [
-        { dictLabel: '不限', dictValue: '0' },
-        { dictLabel: '白班', dictValue: '1' },
-        { dictLabel: '晚班', dictValue: '2' },
-        { dictLabel: '连班', dictValue: '3' }
+        { dictLabel: '白班', dictValue: '0' },
+        { dictLabel: '晚班', dictValue: '1' },
+        { dictLabel: '连班', dictValue: '2' }
       ],
       lebshift_op: [
         { dictLabel: '白', dictValue: '1' },
@@ -127,6 +149,15 @@ export default {
         { dictLabel: '加', dictValue: '8' },
         { dictLabel: '缺', dictValue: '9' }
       ],
+      // attendanceStatus	0 未出勤 ，1 出勤 ，2 请假 ，3 矿工或者离职 ，4 未开工或合理休假 ，5 加班
+      attendanceStatus_op: [
+        { dictLabel: '未出勤', dictValue: '0' },
+        { dictLabel: '出勤', dictValue: '1' },
+        { dictLabel: '请假', dictValue: '2' },
+        { dictLabel: '矿工或者离职', dictValue: '3' },
+        { dictLabel: '未开工或合理休假', dictValue: '4' },
+        { dictLabel: '加班', dictValue: '5' }
+      ],
 
       floor // 工具
     };
@@ -137,26 +168,373 @@ export default {
       return getMachineWorkingapi + '4545';
     },
     morelist() {
-      // const tab1 = [];
-      const tab2 = [];
-      const tab3 = [];
+      // // const tab1 = [];
+      // const tab2 = [];
+      // const tab3 = [];
 
-      this.tableColumns.forEach(e => {
-        if (e.pid === 2) {
-          tab2.push(e);
-        } else if (e.pid === 3) {
-          tab3.push(e);
-        }
-      });
+      // this.tableColumns.forEach(e => {
+      //   if (e.pid === 2) {
+      //     tab2.push(e);
+      //   } else if (e.pid === 3) {
+      //     tab3.push(e);
+      //   }
+      // });
 
       return [
         {
           label: '日期',
-          children: tab2
+          children: [
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '1',
+              prop: 'rijiqi1',
+              sortNum: 0,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '2',
+              prop: 'rijiqi2',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '3',
+              prop: 'rijiqi3',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '4',
+              prop: 'rijiqi4',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '5',
+              prop: 'rijiqi1',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '6',
+              prop: 'rijiqi1',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '7',
+              prop: 'rijiqi1',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '8',
+              prop: 'rijiqi1',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '9',
+              prop: 'rijiqi1',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '10',
+              prop: 'rijiqi1',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '11',
+              prop: 'rijiqi1',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '12',
+              prop: 'rijiqi1',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '13',
+              prop: 'rijiqi1',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '14',
+              prop: 'rijiqi1',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '15',
+              prop: 'rijiqi1',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '16',
+              prop: 'rijiqi1',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '17',
+              prop: 'rijiqi1',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '18',
+              prop: 'rijiqi1',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '19',
+              prop: 'rijiqi1',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '20',
+              prop: 'rijiqi1',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '21',
+              prop: 'rijiqi1',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '22',
+              prop: 'rijiqi1',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '23',
+              prop: 'rijiqi1',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '24',
+              prop: 'rijiqi1',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '25',
+              prop: 'rijiqi1',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '26',
+              prop: 'rijiqi1',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '27',
+              prop: 'rijiqi1',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '28',
+              prop: 'rijiqi1',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '29',
+              prop: 'rijiqi1',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '30',
+              prop: 'rijiqi1',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 2,
+              isChild: true,
+              isShow: true,
+              label: '31',
+              prop: 'rijiqi1',
+              sortNum: 7,
+              tooltip: true,
+              width: '50'
+            }
+          ]
         },
         {
           label: '合计',
-          children: tab3
+          fixed: 'right',
+          width: '150',
+          children: [
+            {
+              pid: 3,
+              isChild: true,
+              isShow: true,
+              label: '出勤',
+              prop: 'attendance',
+              fixed: 'right',
+              sortNum: 300,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 3,
+              isChild: true,
+              isShow: true,
+              label: '连班',
+              prop: 'lqingiqbiiop',
+              sortNum: 310,
+              fixed: 'right',
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 3,
+              isChild: true,
+              isShow: true,
+              label: '请假',
+              prop: 'leave',
+              sortNum: 320,
+              fixed: 'right',
+              tooltip: true,
+              width: '50'
+            }
+          ]
         }
       ];
     },
@@ -170,6 +548,7 @@ export default {
           label: '岗位',
           prop: 'sighowiheio',
           sortNum: 0,
+          fixed: 'left',
           tooltip: true,
           width: '120'
         },
@@ -178,353 +557,12 @@ export default {
           isChild: false,
           isShow: true,
           label: '姓名',
+          fixed: 'left',
           prop: 'xiangijij',
           sortNum: 0,
           tooltip: true,
           width: '120'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '1',
-          prop: 'rijiqi1',
-          sortNum: 0,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '2',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '3',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '4',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '5',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '6',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '7',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '8',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '9',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '10',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '11',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '12',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '13',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '14',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '15',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '16',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '17',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '18',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '19',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '20',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '21',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '22',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '23',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '24',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '25',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '26',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '27',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '28',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '29',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '30',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 2,
-          isChild: true,
-          isShow: true,
-          label: '31',
-          prop: 'rijiqi1',
-          sortNum: 7,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 3,
-          isChild: true,
-          isShow: true,
-          label: '出勤',
-          prop: 'chusqiohoq',
-          sortNum: 300,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 3,
-          isChild: true,
-          isShow: true,
-          label: '连班',
-          prop: 'lqingiqbiiop',
-          sortNum: 310,
-          tooltip: true,
-          width: '50'
-        },
-        {
-          pid: 3,
-          isChild: true,
-          isShow: true,
-          label: '请假',
-          prop: 'qingqijijai',
-          sortNum: 320,
-          tooltip: true,
-          width: '50'
         }
-
-
       ];
     },
 
@@ -555,7 +593,7 @@ export default {
     async getList() {
       this.loading = true;
       getMachineWorkingList(this.queParams).then(res => {
-        this.list = [{ sighowiheio: '主管', rijiqi1: '1' }] || res.data.list;
+        this.list = [{ sighowiheio: '主管', rijiqi1: '1', rijiqi2: '2', rijiqi3: '2', rijiqi4: '3' }] || res.data.list;
         this.total = res.data.total;
         this.loading = false;
       }).catch(() => { this.loading = false; });
@@ -583,13 +621,13 @@ export default {
   width: 10px;
   height: 10px;
   z-index: 1;
-  cursor: pointer;
+
 }
 
 // .triangleT,.triangleL,.triangleB,.triangleR{position:relative;}
 .triangleL::after
 {content:"";position:absolute;width:0;height:0;top:-15px;left:35px;border-color:transparent;border-style:solid;}
 
-.triangleL::after{border-left-color: red;border-width:15px; transform: rotate(-45deg);cursor: pointer; }
+.triangleL::after{border-left-color: red;border-width:15px; transform: rotate(-45deg); }
 
 </style>

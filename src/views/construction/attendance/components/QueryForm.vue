@@ -31,10 +31,10 @@
 
       <el-form-item
         label="成员姓名/手机"
-        prop="phone"
+        prop="keyWord"
       >
         <el-input
-          v-model="queryParams.phone"
+          v-model="queryParams.keyWord"
           placeholder="请输入成员姓名/手机"
           clearable
           size="small"
@@ -45,33 +45,25 @@
 
       <el-form-item
         label="考勤日期"
-        prop="receiveTime"
+        prop="attendanceTime"
       >
-        <!-- <el-date-picker
-          v-model="queryParams.receiveTime"
-          type="daterange"
-          unlink-panels
-          :picker-options="pickerOptions"
-          range-separator="-"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          style="width: 228px"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          @change="$emit('handleQuery')"
-        /> -->
         <el-date-picker
-          v-model="queryParams.yuehushie"
+          v-model="queryParams.attendanceTime"
+          :picker-options="{disabledDate}"
           type="month"
+          value-format="yyyy-MM"
           placeholder="选择考勤月份"
+          style="width: 228px"
+          @change="$emit('handleQuery')"
         />
       </el-form-item>
 
       <el-form-item
         label="考勤类型"
-        prop="kaogqihnihijij"
+        prop="attendanceStatus"
       >
         <el-select
-          v-model="queryParams.kaogqihnihijij"
+          v-model="queryParams.attendanceStatus"
           clearable
           size="small"
           filterable
@@ -80,10 +72,7 @@
           @change="$emit('handleQuery')"
         >
           <el-option
-            v-for="(item, index) in [{
-              dictLabel:'考勤类型',
-              dictValue: '0'
-            }]"
+            v-for="(item, index) in attendanceStatusOp"
             :key="index"
             :label="item.dictLabel"
             :value="item.dictValue"
@@ -92,10 +81,10 @@
       </el-form-item>
       <el-form-item
         label="班次"
-        prop="bangieisoopjp"
+        prop="schedule"
       >
         <el-select
-          v-model="queryParams.bangieisoopjp"
+          v-model="queryParams.schedule"
           clearable
           size="small"
           filterable
@@ -148,6 +137,10 @@ export default {
     shiftOp: {
       type: Array,
       default: () => []
+    },
+    attendanceStatusOp: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -174,6 +167,11 @@ export default {
     async initData() {
       const res = await webGetMachineProjectList();
       this.projectList = res.data;
+    },
+
+    //
+    disabledDate: (time) => {
+      return time.getTime() > new Date(new Date().getTime()) || time.getTime() < new Date('2010-06-01').getTime();
     }
   }
 };
