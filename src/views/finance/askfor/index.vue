@@ -257,7 +257,7 @@
       </el-col>
       <el-col :span="2">
         <div class="g-statistics-tag">运单数量：</div>
-        <div class="g-statistics-num">{{ feeinfo.waybillNum.toFixed(2) }}</div>
+        <div class="g-statistics-num">{{ feeinfo.waybillNum }}</div>
       </el-col>
       <el-col :span="2">
         <div class="g-statistics-tag">运费金额：</div>
@@ -478,7 +478,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      console.log(selection);
+      // console.log(selection);
       this.feeinfo = {
         waybillNum: selection.length,
         // deliveryFee: 0,
@@ -488,13 +488,15 @@ export default {
         deliveryCashFee: 0
       };
       // selection.map((item) => { this.feeinfo.deliveryFee += item.deliveryFeePractical; });
-      selection.map((item) => { this.feeinfo.taxPayment += item.taxPayment; });
-      selection.map((item) => { this.feeinfo.serviceFee += item.serviceFee; });
-      selection.map((item) => { this.feeinfo.serviceTaxFee += item.serviceTaxFee; });
-      selection.map((item) => { this.feeinfo.deliveryCashFee += item.deliveryCashFee; });
+      selection.forEach((item) => {
+        this.feeinfo.taxPayment += item.taxPayment;
+        this.feeinfo.serviceFee += item.serviceFee;
+        this.feeinfo.serviceTaxFee += item.serviceTaxFee;
+        this.feeinfo.deliveryCashFee += item.deliveryCashFee;
+      });
       this.ids = selection.map((item) => item.code).join(',');
       this.multiple = !selection.length;
-      console.log(this.ids);
+      // console.log(this.ids);
     },
     /** 查询【请填写功能名称】列表 */
     getList() {

@@ -310,7 +310,7 @@
             </el-dropdown-item>
             <el-dropdown-item>
               <el-button
-                v-if="activeName != '1'"
+                v-if="activeName == '2' || (activeName == '3' && row.isAccountBack === 0) "
                 v-hasPermi="['transportation:waybillOper:loadCredentials']"
                 size="mini"
                 type="text"
@@ -319,12 +319,21 @@
             </el-dropdown-item>
             <el-dropdown-item>
               <el-button
-                v-if="activeName == '3'"
+                v-if="activeName == '3' && row.isAccountBack === 0"
                 v-hasPermi="['transportation:waybillOper:unloadCredentials']"
                 size="mini"
                 type="text"
                 @click="handleTableBtn(row, 6)"
               >补卸货凭证</el-button>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <el-button
+                v-if="activeName == '3' && row.isAccountBack === 1"
+                v-hasPermi="['transportation:waybillOper:unloadCredentials']"
+                size="mini"
+                type="text"
+                @click="handleTableBtn(row, 12)"
+              >修改凭证</el-button>
             </el-dropdown-item>
             <el-dropdown-item v-if="activeName != '3'">
               <el-button
@@ -360,6 +369,8 @@
     <track-dialog ref="TrackDialog" :open.sync="trackdialog" :title="title" />
     <!-- 定位 -->
     <location-dialog ref="LocationDialog" :open.sync="locationdialog" :title="title" />
+    <!-- 定位 -->
+    <update-dialog ref="UpdateDialog" :open.sync="updatedialog" :title="title" @refresh="getList" />
   </div>
 </template>
 
@@ -381,10 +392,12 @@ import RateDialog from './component/rateDialog';
 import TrackDialog from './component/trackDialog';
 // 定位弹窗
 import LocationDialog from './component/locationDialog';
+// 定位弹窗
+import UpdateDialog from './component/updateDialog';
 import { pickerOptions } from '@/utils/dateRange';
 export default {
   'name': 'Tracklist',
-  components: { DialogA, DialogB, DialogC, CancelDialog, RateDialog, TrackDialog, LocationDialog },
+  components: { DialogA, DialogB, DialogC, CancelDialog, RateDialog, TrackDialog, LocationDialog, UpdateDialog },
   data() {
     return {
       pickerOptions,
@@ -431,6 +444,7 @@ export default {
       ratedialog: false,
       trackdialog: false,
       locationdialog: false,
+      updatedialog: false,
       title: '',
       dialogWidth: '800px',
       // 表单是否禁用
@@ -652,6 +666,11 @@ export default {
           this.formDisable = true;
           this.title = '货主评价司机详情';
           this.$refs.RateDialog.setForm(row);
+          break;
+        case 12:
+          this.updatedialog = true;
+          this.title = '修改凭证';
+          this.$refs.UpdateDialog.setForm(row);
           break;
         default:
           break;
