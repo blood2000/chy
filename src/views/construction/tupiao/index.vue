@@ -100,19 +100,23 @@ export default {
     },
 
     // code	编码	string
-    // earlyStageRemainingTickets	前期余票	integer(int32)
-    // id	主键	integer(int64)
-    // machineType	车型	integer(int32)
-    // price	价格	number(double)
+    // earlyStageRemainingTickets	前期余票	integer
+    // id	主键	integer
+    // number	数量	integer
+    // price	价格	number
+    // projectName	项目名称	string
     // receiveSite	接收工地	string
     // remark	备注	string
     // signName	签收人	string
     // signTime	签收时间	string
-    // thisWeekCollectTickets	本周领票	integer(int32)
-    // thisWeekRefundTickets	本周退票	integer(int32)
-    // thisWeekRemainingTickets	本周余票	integer(int32)
-    // thisWeekUsedTickets	本周用票	integer(int32)
+    // thisWeekCollectTickets	本日领票	integer
+    // thisWeekRefundTickets	本日退票	integer
+    // thisWeekRemainingTickets	本日余票	integer
+    // thisWeekUsedTickets	本日用票	integer
     // ticketName	土票名称	string
+    // total	总价	number
+    // vehicleSize	车型	string
+    // vehicleSizeName	车型	string
 
     tableColumns() {
     //   const isAdmin = !this.getUserInfo.isShipment;
@@ -155,43 +159,59 @@ export default {
           'tooltip': true
         },
         {
-          'label': '前期余票',
+          'label': '签收时间',
+          'prop': 'signTime',
+          'isShow': true,
+          'sortNum': 51,
+          'width': '90',
+          'tooltip': true
+        },
+        {
+          'label': '前余',
           'prop': 'earlyStageRemainingTickets',
           'isShow': true,
-          'sortNum': 60,
-          'width': '90',
+          'sortNum': 52,
+          'width': '50',
           'tooltip': true
         },
         {
-          'label': '本周领票',
+          'label': '日领',
           'prop': 'thisWeekCollectTickets',
           'isShow': true,
-          'sortNum': 70,
-          'width': '90',
+          'sortNum': 60,
+          'width': '50',
           'tooltip': true
         },
         {
-          'label': '本周余票',
-          'prop': 'thisWeekRemainingTickets',
-          'isShow': true,
-          'sortNum': 80,
-          'width': '90',
-          'tooltip': true
-        },
-        {
-          'label': '本周用票',
+          'label': '日用',
           'prop': 'thisWeekUsedTickets',
           'isShow': true,
-          'sortNum': 85,
-          'width': '90',
+          'sortNum': 60,
+          'width': '50',
           'tooltip': true
         },
         {
-          'label': '本周退票',
+          'label': '日余',
+          'prop': 'thisWeekRemainingTickets',
+          'isShow': true,
+          'sortNum': 60,
+          'width': '50',
+          'tooltip': true
+        },
+        {
+          'label': '日退',
           'prop': 'thisWeekRefundTickets',
           'isShow': true,
-          'sortNum': 90,
-          'width': '90',
+          'sortNum': 60,
+          'width': '50',
+          'tooltip': true
+        },
+        {
+          'label': '数量',
+          'prop': 'number',
+          'isShow': true,
+          'sortNum': 60,
+          'width': '50',
           'tooltip': true
         },
         {
@@ -199,7 +219,7 @@ export default {
           'prop': 'price',
           'isShow': true,
           'sortNum': 100,
-          'width': '90',
+          'width': '50',
           'tooltip': true
         },
         {
