@@ -33,6 +33,11 @@
         <template #nickName="{row}">
           <span>{{ row.nickName || '--' }} [{{ row.phonenumber }}]</span>
         </template>
+        <template #startTimeAndCompleteTime="{row}">
+          <div>
+            <div v-for="(item,index) in (_timeHandler(row.startTimeAndCompleteTime))" :key="index">{{ item }}</div>
+          </div>
+        </template>
         <template #price="{row}">
           <span>{{ floor(row.price - 0) }}</span>
         </template>
@@ -158,17 +163,41 @@ export default {
           'tooltip': true
         },
         {
+          'label': '单价',
+          'prop': 'price',
+          'isShow': true,
+          'sortNum': 51,
+          'width': '90',
+          'tooltip': true
+        },
+        {
+          'label': '总价',
+          'prop': 'total',
+          'isShow': true,
+          'sortNum': 52,
+          'width': '90',
+          'tooltip': true
+        },
+        {
           'label': '班次',
           'prop': 'scheduleName',
           'isShow': false,
-          'sortNum': 51,
+          'sortNum': 53,
           'width': '60',
+          'tooltip': true
+        },
+        {
+          'label': '作业时段',
+          'prop': 'startTimeAndCompleteTime',
+          'isShow': true,
+          'sortNum': 60,
+          'width': '90',
           'tooltip': true
         },
         {
           'label': '作业开始时间',
           'prop': 'startTime',
-          'isShow': true,
+          'isShow': false,
           'sortNum': 60,
           'width': '90',
           'tooltip': true
@@ -176,7 +205,7 @@ export default {
         {
           'label': '作业结束时间',
           'prop': 'completeTime',
-          'isShow': true,
+          'isShow': false,
           'sortNum': 70,
           'width': '90',
           'tooltip': true
@@ -191,16 +220,16 @@ export default {
         },
 
         {
-          'label': '单价',
-          'prop': 'price',
+          'label': '台班单价',
+          'prop': 'hoursPrice',
           'isShow': true,
           'sortNum': 100,
           'width': '90',
           'tooltip': true
         },
         {
-          'label': '总价',
-          'prop': 'total',
+          'label': '台班总价',
+          'prop': 'hoursTotal',
           'isShow': true,
           'sortNum': 110,
           'width': '90',
@@ -252,6 +281,16 @@ export default {
       this.exportLoading = true;
       await this.download('/kydsz/machineWork/web—getMachineWorkingListExport', this.queParams, `机械工时登记`);
       this.exportLoading = false;
+    },
+
+    // 处理时间成段
+    _timeHandler(time) {
+      let arr = [];
+      if (time) {
+        arr = time.split(';');
+      }
+
+      return arr;
     }
   }
 };

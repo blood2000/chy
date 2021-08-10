@@ -15,6 +15,7 @@
           v-model="queryParams.projectCode"
           clearable
           size="small"
+          filterable
           style="width: 185px"
           placeholder="请选择选择项目"
           @change="$emit('handleQuery')"
