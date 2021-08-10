@@ -88,8 +88,8 @@ export default {
       plugin: [],
       events: {
         init: (o) => {
-          console.log(o.getCenter());
-          console.log(this.$refs.map.$$getInstance());
+          // console.log(o.getCenter());
+          // console.log(this.$refs.map.$$getInstance());
           o.getCity(result => {});
         },
         'moveend': () => {
@@ -144,9 +144,9 @@ export default {
     },
     // 修改半径
     handlerAdjust({ type, target, radius }) {
-      console.log('修改半径' + radius);
+      // console.log('修改半径' + radius);
       this.radius = radius;
-      console.log('you' + this.radius);
+      // console.log('you' + this.radius);
     },
 
     circleEdit(lnglat, oldLnglat) {

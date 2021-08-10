@@ -241,12 +241,13 @@
                         设置电子围栏
                         <el-switch
                           v-model="address.switchRadius"
+                          :disabled="!!idCode"
                           active-color="#13ce66"
                           inactive-color="#ff4949"
                           class="ml10 mr10"
                         />
                       </label>
-                      <el-input-number v-if="address.switchRadius" v-model="address.radius" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS1', address.radius)" />
+                      <el-input-number v-if="address.switchRadius" v-model="address.radius" :disabled="!!idCode" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS1', address.radius)" />
                     </div>
                     <el-button
                       v-if="address.switchRadius"
@@ -322,10 +323,11 @@
                           v-model="address.switchRadius"
                           active-color="#13ce66"
                           inactive-color="#ff4949"
+                          :disabled="!!idCode"
                           class="ml10 mr10"
                         />
                       </label>
-                      <el-input-number v-if="address.switchRadius" v-model="address.radius" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS2', address.radius)" />
+                      <el-input-number v-if="address.switchRadius" v-model="address.radius" :disabled="!!idCode" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS2', address.radius)" />
                     </div>
                     <el-button
                       v-if="address.switchRadius"
@@ -333,7 +335,6 @@
                       size="mini"
                       class="ml10"
                       plain
-                      :disabled="false"
                       @click="handleElect(address)"
                     >围栏编辑</el-button>
                     <el-button
@@ -641,7 +642,7 @@ export default {
     },
     '$route.query.t': {
       handler(value, odvalue) {
-        console.log('返原初始');
+        // console.log('返原初始');
         this.$store.commit('orders/SET_ORDERSTOWAGESTATUS', '0');
 
         if ((odvalue === '0' || odvalue === '1' || odvalue === '3') && !value) {
@@ -658,7 +659,7 @@ export default {
         }
 
 
-        console.log(this.$refs.WL);
+        // console.log(this.$refs.WL);
       },
       immediate: true
     }
@@ -669,7 +670,7 @@ export default {
     const { isShipment = false, isZtShipment = false, shipment = {}, user = {}} = getUserInfo() || {};
     this.isShipment = isShipment;
     this.isZtShipment = isShipment && isZtShipment;
-    console.log(shipment, '第一传要最后确认');
+    // console.log(shipment, '第一传要最后确认');
     if (isShipment) {
       if (isShipment && shipment.info && shipment.info.authStatus !== 3) {
         this.authStatus = false;
@@ -707,7 +708,7 @@ export default {
 
   methods: {
     handleElect(addr) {
-      console.log(addr);
+      // console.log(addr);
 
 
       if (addr.cbData) {
@@ -970,7 +971,9 @@ export default {
             // 处理电子围栏数据
             // console.log(this.isOpenTheElectronicFence);
             if (this.isOpenTheElectronicFence) {
+              // let isSwitchRadius
               // console.log(this.lastData);
+              let isPost = false;
               const { orderAddressPublishBoList, orderSpecifiedList } = this.lastData;
               const addressInfo = orderAddressPublishBoList.map(e => {
                 let obj = null;
@@ -981,6 +984,7 @@ export default {
                     lat: e.centerLocation ? e.centerLocation[1] + '' : e.latitude,
                     radius: e.enclosureRadius ? e.enclosureRadius + '' : e.radius
                   };
+                  isPost = true;
                 } else if (e.addressType === '2' && e.switchRadius) {
                   obj = {
                     addressType: e.addressType,
@@ -988,6 +992,7 @@ export default {
                     lat: e.centerLocation ? e.centerLocation[1] + '' : e.latitude,
                     radius: e.enclosureRadius ? e.enclosureRadius + '' : e.radius
                   };
+                  isPost = true;
                 }
 
 
@@ -1004,10 +1009,13 @@ export default {
                 orderCode: response.data
               };
 
-              try {
-                await fencePlatCreate(que);
-              } catch (error) {
-                console.log(error);
+              // 有可能不设置围栏了
+              if (isPost) {
+                try {
+                  await fencePlatCreate(que);
+                } catch (error) {
+                  console.log(error);
+                }
               }
             }
 
@@ -1180,8 +1188,11 @@ export default {
       let addr_add = JSON.parse(JSON.stringify(this.addr_add));
       let addr_xie = JSON.parse(JSON.stringify(this.addr_xie));
 
+
       addr_add = addr_add.map(e => {
         e.identification = e.identification || 0;
+        e.radius = e.switchRadius ? e.radius : null;
+        e.enclosureRadius = e.switchRadius ? e.enclosureRadius : null;
         // 自装地址处理
         if (e.type && e.type === 'tin8') {
           e = this.addressItem(e, '3');
@@ -1192,6 +1203,8 @@ export default {
 
       addr_xie = addr_xie.map(e => {
         e.identification = e.identification || 0;
+        e.radius = e.switchRadius ? e.radius : null;
+        e.enclosureRadius = e.switchRadius ? e.enclosureRadius : null;
         if (e.type && e.type === 'tin9') {
           e = this.addressItem(e, '4');
         }
@@ -1560,7 +1573,6 @@ export default {
     radioSelection(data) {
       if (JSON.stringify(data) === '{}') return;
 
-      // console.log(data);
       if (this.isRadioSelection) {
         const { name, type } = this.isRadioSelection;
         this[name].forEach(e => {
