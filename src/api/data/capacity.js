@@ -18,6 +18,14 @@ export function waybillStatisticsCount(query) {
   });
 }
 
+// 地区列表（团队信息）
+export function getMarket() {
+  return request({
+    url: '/transportation/capacityStatistics/getMarket',
+    method: 'get'
+  });
+}
+
 // 列表
 export function waybillStatisticsList(query) {
   return request({
