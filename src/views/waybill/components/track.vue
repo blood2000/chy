@@ -365,11 +365,11 @@ export default {
     // 获取硬件轨迹
     getJimi() {
       jimiTrackLocation(this.jimiQueryParams).then(response => {
-        // console.log(response.data);
-        if (response.data) {
+        // console.log(response.data.result);
+        if (response.data.result) {
           this.jmTracklist = [
             ...this.jmTracklist,
-            ...response.data.map(function(response) {
+            ...response.data.result.map(function(response) {
               return [response.lng, response.lat];
             })
           ];
