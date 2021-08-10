@@ -637,7 +637,7 @@ export default {
     },
     async handleExport() {
       this.exportLoading = true;
-      await this.download('/kydsz/employeeAttendance/web—getEmployeeAttendanceListExport', this.queParams, this.queParams, this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code').projectName + `工地考勤`);
+      await this.download('/kydsz/employeeAttendance/web—getEmployeeAttendanceListExport', this.queParams, this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code').projectName + `_工地考勤`);
       this.exportLoading = false;
     },
 

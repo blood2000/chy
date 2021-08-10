@@ -292,7 +292,7 @@ export default {
     },
     async handleExport() {
       this.exportLoading = true;
-      await this.download('/kydsz/projectTicket/web—getProjectTicketListExport', this.queParams, this.queParams, this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code').projectName + `工地土票列表`);
+      await this.download('/kydsz/projectTicket/web—getProjectTicketListExport', this.queParams, this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code').projectName + `_工地土票列表`);
       this.exportLoading = false;
     },
 
