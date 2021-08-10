@@ -631,7 +631,6 @@ export default {
   created() {
     this.initData();
     this.tabColInit();
-    this.getList();
   },
 
   methods: {
@@ -648,6 +647,8 @@ export default {
       this.getDicts('attendance-type').then((response) => {
         this.attendanceStatus_op = response.data;
       });
+
+      this.getList();
     },
 
     // 初始表头
