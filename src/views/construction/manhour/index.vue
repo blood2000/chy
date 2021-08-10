@@ -2,7 +2,7 @@
 
   <div>
     <div v-show="showSearch">
-      <QueryForm v-model="queryParams" @handleQuery="queryParams.pageNum = 1;getList()" />
+      <QueryForm ref="QueryForm" v-model="queryParams" :project-list-o-p="projectList" @handleQuery="queryParams.pageNum = 1;getList()" />
     </div>
 
     <div class="app-container">
@@ -64,6 +64,7 @@ import { floor } from '@/utils/ddc';
 import { getLocalStorage } from '@/utils/auth';
 
 import { getMachineWorkingList, getMachineWorkingapi } from '@/api/construction/manhour';
+import { webGetMachineProjectList } from '@/api/construction/comon';
 
 console.log(getMachineWorkingapi);
 
@@ -100,6 +101,8 @@ export default {
       'selections': [],
       // 登录信息
       getUserInfo,
+      //
+      projectList: [],
 
       // 表格字典
       auditStatus_op: [
@@ -246,21 +249,31 @@ export default {
     },
 
     queParams() {
+      // console.log(this.$refs.QueryForm);
       return {
         ...this.queryParams,
         bigCreateTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[0] : undefined, //	签收时间		false
         endCreateTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[1] : undefined, //	签收时间		false
-        receiveTime: undefined
+        receiveTime: undefined,
+        projectName: this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code').projectName
+
       };
     }
   },
 
   created() {
+    this.initData();
     this.tabColInit();
-    this.getList();
   },
 
   methods: {
+    // 初始化搜索数据
+    async initData() {
+      const res = await webGetMachineProjectList();
+      this.projectList = res.data;
+      this.queryParams.projectCode = this.projectList[0].code;
+      this.getList();
+    },
 
     // 初始表头
     tabColInit() {
@@ -279,7 +292,7 @@ export default {
     },
     async handleExport() {
       this.exportLoading = true;
-      await this.download('/kydsz/machineWork/web—getMachineWorkingListExport', this.queParams, `机械工时登记`);
+      await this.download('/kydsz/machineWork/web—getMachineWorkingListExport', this.queParams, this.queParams, this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code').projectName + `机械工时登记`);
       this.exportLoading = false;
     },
 
@@ -291,6 +304,13 @@ export default {
       }
 
       return arr;
+    },
+
+    // 根据value匹配数组中的一项
+    _zhaovalue(arr, value, key = 'dictValue') {
+      return (arr.filter(e => {
+        return e[key] === value;
+      }))[0];
     }
   }
 };

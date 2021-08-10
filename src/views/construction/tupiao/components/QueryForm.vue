@@ -21,7 +21,7 @@
           @change="$emit('handleQuery')"
         >
           <el-option
-            v-for="item in projectList"
+            v-for="item in projectListOP"
             :key="item.id + item.code"
             :label="item.projectName"
             :value="item.code"
@@ -102,18 +102,22 @@
 
 <script>
 import { pickerOptions } from '@/utils/dateRange';
-import { webGetMachineProjectList } from '@/api/construction/comon';
+
 export default {
   props: {
     value: {
       type: Object,
       default: () => { return {}; }
+    },
+    projectListOP: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
     return {
-      pickerOptions,
-      'projectList': []
+      pickerOptions
+      // 'projectList': []
     };
   },
   computed: {
@@ -127,14 +131,10 @@ export default {
     }
   },
   created() {
-    this.initData();
+
   },
   methods: {
-    // 初始化搜索数据
-    async initData() {
-      const res = await webGetMachineProjectList();
-      this.projectList = res.data;
-    }
+
   }
 };
 </script>

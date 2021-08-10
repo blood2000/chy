@@ -158,38 +158,6 @@ export default {
     };
   },
 
-  // one	一号	string
-  // two	二号
-  // three	三号	string
-  // four	四号	string
-  // five	五号	string
-  // six	六号	string
-  // seven	七号	string
-  // eight	八号	string
-  // nine	九号	string
-  // ten	十号	string
-  // eleven	十一号	string
-  // twelve	十二号	string
-  // thirteen	十三号	string
-  // fourteen	十四号	string
-  // fifteen	十五号	string
-  // sixteen	十六号	string
-  // seventeen	十七号	string
-  // eighteen	十八号	string
-  // nineteen	十九号	string
-  // twenty	二十号	string
-  // twentyOne	二一号	string
-  // twentyTwo	二二号	string
-  // twentyThree	二三号	string
-  // twentyFour	二四号	string
-  // twentyFive	二五号	string
-  // twentySix	二六号	string
-  // twentySeven	二七号	string
-  // twentyEight	二八号	string
-  // twentyNine	二九号	string
-  // thirty	三十号	string
-  // thirtyOne	三一号	string
-
   computed: {
     isTedate() {
       return this.parseTime(new Date(), '{y}-{m}') === this.queryParams.attendanceMonth;
@@ -623,7 +591,8 @@ export default {
       return {
         ...this.queryParams,
         attendanceStatus: this.queryParams.attendanceStatus ? this.queryParams.attendanceStatus : undefined,
-        schedule: this.queryParams.attendanceStatus ? this.queryParams.schedule : undefined
+        schedule: this.queryParams.attendanceStatus ? this.queryParams.schedule : undefined,
+        projectName: this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code').projectName
       };
     }
   },
@@ -668,8 +637,15 @@ export default {
     },
     async handleExport() {
       this.exportLoading = true;
-      await this.download('/kydsz/employeeAttendance/web—getEmployeeAttendanceListExport', this.queParams, `考勤`);
+      await this.download('/kydsz/employeeAttendance/web—getEmployeeAttendanceListExport', this.queParams, this.queParams, this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code').projectName + `工地考勤`);
       this.exportLoading = false;
+    },
+
+    // 根据value匹配数组中的一项
+    _zhaovalue(arr, value, key = 'dictValue') {
+      return (arr.filter(e => {
+        return e[key] === value;
+      }))[0];
     }
 
 

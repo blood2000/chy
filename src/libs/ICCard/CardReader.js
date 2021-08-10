@@ -1338,7 +1338,7 @@ CardReader.action['readUserInfoAndreadData'] = async function(key = CardReader._
         userInfo,
         success: false,
         codeMsg: CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : '',
-        msg: '读取索引目录索引文件失败'
+        msg: '无运单数据'
       };
     }
     /**
