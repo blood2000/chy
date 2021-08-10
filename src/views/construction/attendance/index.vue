@@ -53,7 +53,8 @@
             >
               <div slot="reference" class="triangleL shou">{{ (row[item.prop].split(';'))[0] }}</div>
             </el-popover>
-            <span v-else>{{ isTedate? (((new Date().getMonth()) >= index || row[item.prop] !== '缺')? row[item.prop]:undefined) : row[item.prop] }}</span>
+            <span v-else>{{ row[item.prop]? row[item.prop] : undefined }}</span>
+            <!-- <span v-else>{{ isTedate? (((new Date().getMonth()) >= index || row[item.prop] !== '缺')? row[item.prop]:undefined) : row[item.prop] }}</span> -->
           </div>
         </template>
       </MoreRefactorTable>
@@ -593,17 +594,17 @@ export default {
     tableColumns() {
     //   const isAdmin = !this.getUserInfo.isShipment;
       return [
-        // {
-        //   pid: 1,
-        //   isChild: false,
-        //   isShow: true,
-        //   label: '岗位',
-        //   prop: 'sighowiheio',
-        //   sortNum: 0,
-        //   fixed: 'left',
-        //   tooltip: true,
-        //   width: '120'
-        // },
+        {
+          pid: 1,
+          isChild: false,
+          isShow: true,
+          label: '岗位',
+          prop: 'postName',
+          sortNum: 0,
+          fixed: 'left',
+          tooltip: true,
+          width: '120'
+        },
         {
           pid: 1,
           isChild: false,

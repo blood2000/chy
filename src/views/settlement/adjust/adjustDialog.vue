@@ -38,7 +38,7 @@
         <el-table
           ref="adjustTable"
           v-loading="loading"
-          height="780"
+          :height="adjustTableHeight"
           highlight-current-row
           :data="adjustlist"
           border
@@ -343,6 +343,8 @@ export default {
       adjustLoading: false,
       changeFee: null,
       rowData: {},
+
+      adjustTableHeight: 780, //
 
       // 配载方式 0->吨，1->方 2->车数配载
       stowageStatusOP: [
@@ -668,6 +670,7 @@ export default {
         this.$refs.adjustTable.setCurrentRow(this.adjustlist[0]);
         this.showImg(this.adjustlist[0]);
         this.loading = false;
+        this.adjustTableHeight = 779;
       });
     },
 
@@ -883,12 +886,17 @@ export default {
 </script>
 
 <style lang="scss">
-  .el-table--scrollable-x .el-table__body-wrapper {
-      z-index: 1;
-  }
+  // .el-table--scrollable-x .el-table__body-wrapper {
+  //     z-index: 1;
+  // }
 </style>
 
 <style scoped>
+
+/* .page-shipment-manage-dialog ::v-deep.el-table__fixed-footer-wrapper{
+  z-index: 0;
+} */
+
 .mr3 {
   margin-right: 3%;
 }
